@@ -3,27 +3,23 @@
 /* globals define, ajaxify, app, utils, socket, translator*/
 
 define(['forum/accountheader'], function(header) {
-	var Account = {};
+	var Account = {},
+		yourid,
+		theirid,
+		isFollowing;
 
 	Account.init = function() {
 		header.init();
 
-		var yourid = ajaxify.variables.get('yourid'),
-			theirid = ajaxify.variables.get('theirid'),
-			isFollowing = ajaxify.variables.get('isFollowing');
+		yourid = ajaxify.variables.get('yourid');
+		theirid = ajaxify.variables.get('theirid');
+		isFollowing = ajaxify.variables.get('isFollowing');
 
-		var username = $('.account-username').html();
 		app.enterRoom('user/' + theirid);
 
-		utils.addCommasToNumbers($('.account .formatted-number'));
-		utils.makeNumbersHumanReadable($('.account .human-readable-number'));
-		$('.user-recent-posts img').addClass('img-responsive');
+		processPage();
 
-
-		var isSelfOrNotLoggedIn = yourid === theirid || yourid === '0';
-		$('#follow-btn').toggleClass('hide', isFollowing || isSelfOrNotLoggedIn);
-		$('#unfollow-btn').toggleClass('hide', !isFollowing || isSelfOrNotLoggedIn);
-		$('#chat-btn').toggleClass('hide', isSelfOrNotLoggedIn);
+		updateButtons();
 
 		$('#follow-btn').on('click', function() {
 			return toggleFollow('follow');
@@ -34,7 +30,7 @@ define(['forum/accountheader'], function(header) {
 		});
 
 		$('#chat-btn').on('click', function() {
-			app.openChat(username, theirid);
+			app.openChat($('.account-username').html(), theirid);
 		});
 
 		socket.on('user.isOnline', handleUserOnline);
@@ -42,9 +38,22 @@ define(['forum/accountheader'], function(header) {
 		socket.emit('user.isOnline', theirid, handleUserOnline);
 	};
 
+	function processPage() {
+		utils.addCommasToNumbers($('.account .formatted-number'));
+		utils.makeNumbersHumanReadable($('.account .human-readable-number'));
+		$('.user-recent-posts img').addClass('img-responsive');
+	}
+
+	function updateButtons() {
+		var isSelfOrNotLoggedIn = yourid === theirid || yourid === '0';
+		$('#follow-btn').toggleClass('hide', isFollowing || isSelfOrNotLoggedIn);
+		$('#unfollow-btn').toggleClass('hide', !isFollowing || isSelfOrNotLoggedIn);
+		$('#chat-btn').toggleClass('hide', isSelfOrNotLoggedIn);
+	}
+
 	function toggleFollow(type) {
 		socket.emit('user.' + type, {
-			uid: ajaxify.variables.get('theirid')
+			uid: theirid
 		}, function(err) {
 			if(err) {
 				return app.alertError(err.message);
@@ -58,6 +67,10 @@ define(['forum/accountheader'], function(header) {
 	}
 
 	function handleUserOnline(err, data) {
+		if (err) {
+			return app.alertError(err.message);
+		}
+
 		var onlineStatus = $('.account-online-status');
 
 		if(parseInt(ajaxify.variables.get('theirid'), 10) !== parseInt(data.uid, 10)) {
