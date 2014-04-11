@@ -55,35 +55,25 @@ module.exports = function(db, module) {
 		});
 	};
 
-	module.getSortedSetRangeByScore = function(args, callback) {
-		var key = args[0],
-			max = (args[1] === '+inf') ? Number.MAX_VALUE : args[1],
-			min = (args[2] === '-inf') ? Number.MIN_VALUE : args[2],
-			start = args[4],
-			count = args[5];
-
-
+	module.getSortedSetRangeByScore = function(key, start, count, min, max, callback) {
 		module.getListRange(key, 0, -1, function(err, list) {
-			list.filter(function(a) {
-				return a.score >= min && a.score <= max; // to check: greater or and equal?
-			});
+			if (min && max) {
+				list.filter(function(a) {
+					return a.score >= min && a.score <= max; // to check: greater or and equal?
+				});
+			}
 
 			flattenSortedSet(list.slice(start ? start : 0, count ? count : list.length), callback);
 		});
 	};
 
-	module.getSortedSetRevRangeByScore = function(args, callback) {
-		var key = args[0],
-			max = (args[1] === '+inf') ? Number.MAX_VALUE : args[1],
-			min = (args[2] === '-inf') ? Number.MIN_VALUE : args[2],
-			start = args[4],
-			count = args[5];
-
-
+	module.getSortedSetRevRangeByScore = function(key, start, count, max, min, callback) {
 		module.getListRange(key, 0, -1, function(err, list) {
-			list.filter(function(a) {
-				return a.score >= min && a.score <= max; // to check: greater or and equal?
-			});
+			if (min && max) {
+				list.filter(function(a) {
+					return a.score >= min && a.score <= max; // to check: greater or and equal?
+				});
+			}
 
 			flattenSortedSet(list.slice(start ? start : 0, count ? count : list.length).reverse(), callback);
 		});
