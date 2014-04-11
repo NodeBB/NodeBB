@@ -40,6 +40,10 @@ var async = require('async'),
 			name: 'database',
 			description: 'Which database to use',
 			'default': nconf.get('database') || 'redis'
+		}, {
+			name: 'secondary_database',
+			description: 'Secondary database (optional)',
+			'default': nconf.get('secondary_database') || 'none'
 		}],
 		redisQuestions : [{
 			name: 'redis:host',
@@ -208,7 +212,14 @@ var async = require('async'),
 								if (err) {
 									return next(err);
 								}
-								require('./database').init(next);
+
+								if (config.secondary_database !== 'none') {
+									require('./database').init(function(err) {
+										askDatabaseQuestions(config.secondary_database);
+									});
+								} else {
+									require('./database').init(next);
+								}
 							});
 						};
 
@@ -222,27 +233,31 @@ var async = require('async'),
 							}
 						}
 
-						if(config.database === 'redis') {
-							if (config['redis:host'] && config['redis:port']) {
-								dbQuestionsSuccess(null, config);
+						function askDatabaseQuestions(database) {
+							if(database === 'redis') {
+								if (config['redis:host'] && config['redis:port']) {
+									dbQuestionsSuccess(null, config);
+								} else {
+									prompt.get(install.redisQuestions, dbQuestionsSuccess);
+								}
+							} else if(database === 'mongo') {
+								if (config['mongo:host'] && config['mongo:port']) {
+									dbQuestionsSuccess(null, config);
+								} else {
+									prompt.get(install.mongoQuestions, dbQuestionsSuccess);
+								}
+							} else if(database === 'level') {
+								if (config['level:database']) {
+									dbQuestionsSuccess(null, config);
+								} else {
+									prompt.get(install.levelQuestions, dbQuestionsSuccess);
+								}
 							} else {
-								prompt.get(install.redisQuestions, dbQuestionsSuccess);
+								return next(new Error('unknown database : ' + database));
 							}
-						} else if(config.database === 'mongo') {
-							if (config['mongo:host'] && config['mongo:port']) {
-								dbQuestionsSuccess(null, config);
-							} else {
-								prompt.get(install.mongoQuestions, dbQuestionsSuccess);
-							}
-						} else if(config.database === 'level') {
-							if (config['level:database']) {
-								dbQuestionsSuccess(null, config);
-							} else {
-								prompt.get(install.levelQuestions, dbQuestionsSuccess);
-							}
-						} else {
-							return next(new Error('unknown database : ' + config.database));
 						}
+
+						askDatabaseQuestions(config.database);
 					};
 
 					// prompt prepends "prompt: " to questions, let's clear that.
