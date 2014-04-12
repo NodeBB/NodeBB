@@ -157,9 +157,18 @@ define(['forum/recent'], function(recent) {
 	}
 
 	function createCategoryLink(category) {
-		var link = $('<li role="presentation" class="category" data-cid="' + category.cid + '"><a role="menuitem" href="#"><i class="fa fa-fw ' + category.icon + '"></i> ' + category.name + '</a></li>');
 
-		$('.markread .dropdown-menu').append(link);
+		var link = $('<a role="menuitem" href="#"></a>');
+		if (category.icon) {
+			link.append('<i class="fa fa-fw ' + category.icon + '"></i> ' + category.name);
+		} else {
+			link.append(category.name);
+		}
+
+
+		$('<li role="presentation" class="category" data-cid="' + category.cid + '"></li>')
+			.append(link)
+			.appendTo($('.markread .dropdown-menu'));
 	}
 
 	return Unread;
