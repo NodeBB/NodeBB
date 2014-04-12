@@ -43,6 +43,7 @@
     "nodebb-widget-essentials": "~0.0.21",
     "nodebb-theme-vanilla": "~0.0.19",
     "nodebb-theme-lavender": "~0.0.25",
+    "nodebb-plugin-soundpack-default": "~0.1.0",
     "less": "~1.6.3",
     "daemon": "~1.1.0",
     "underscore": "~1.6.0",

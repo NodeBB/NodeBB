@@ -156,7 +156,7 @@ adminController.groups.get = function(req, res, next) {
 };
 
 adminController.sounds.get = function(req, res, next) {
-	meta.sounds.getLocal(function(err, sounds) {
+	meta.sounds.getFiles(function(err, sounds) {
 		sounds = Object.keys(sounds).map(function(name) {
 			return {
 				name: name

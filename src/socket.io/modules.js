@@ -224,7 +224,7 @@ SocketModules.notifications.mark_all_read = function(socket, data, callback) {
 /* Sounds */
 SocketModules.sounds.getSounds = function(socket, data, callback) {
 	// Read sounds from local directory
-	meta.sounds.getLocal(callback);
+	meta.sounds.getFiles(callback);
 };
 
 SocketModules.sounds.getMapping = function(socket, data, callback) {

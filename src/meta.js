@@ -8,6 +8,8 @@ var fs = require('fs'),
 	_ = require('underscore'),
 	less = require('less'),
 	fork = require('child_process').fork,
+	rimraf = require('rimraf'),
+	mkdirp = require('mkdirp'),
 
 	utils = require('./../public/src/utils'),
 	translator = require('./../public/src/translator'),
@@ -366,7 +368,42 @@ var fs = require('fs'),
 
 	/* Sounds */
 	Meta.sounds = {};
-	Meta.sounds.getLocal = function(callback) {
+	Meta.sounds.init = function() {
+		var	soundsPath = path.join(__dirname, '../public/sounds');
+
+		plugins.fireHook('filter:sounds.get', [], function(err, filePaths) {
+			if (err) {
+				winston.error('Could not initialise sound files:' + err.message);
+			}
+
+			// Clear the sounds directory
+			async.series([
+				function(next) {
+					rimraf(soundsPath, next);
+				},
+				function(next) {
+					mkdirp(soundsPath, next);
+				}
+			], function(err) {
+				if (err) {
+					winston.error('Could not initialise sound files:' + err.message);
+				}
+
+				// Link paths
+				async.each(filePaths, function(filePath, next) {
+					fs.symlink(filePath, path.join(soundsPath, path.basename(filePath)), 'file', next);
+				}, function(err) {
+					if (!err) {
+						winston.info('[sounds] Sounds OK');
+					} else {
+						winston.error('[sounds] Could not initialise sounds: ' + err.message);
+					}
+				});
+			});
+		});
+	};
+
+	Meta.sounds.getFiles = function(callback) {
 		// todo: Possibly move these into a bundled module?
 		fs.readdir(path.join(__dirname, '../public/sounds'), function(err, files) {
 			var	localList = {};
