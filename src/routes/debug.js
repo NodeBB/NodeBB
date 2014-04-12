@@ -54,14 +54,8 @@ module.exports = function(app, middleware, controllers) {
 		});
 
 		app.get('/test', function(req, res) {
-			var groups = require('../groups');
-
-			groups.list({
-				showAllGroups: true
-			}, function(err, groups) {
-				res.json(200, groups);
-			});
-			// res.send(200);
+			require('../meta').sounds.init();
+			res.send(200);
 		});
 	});
 };
