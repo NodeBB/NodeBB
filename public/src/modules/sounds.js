@@ -101,6 +101,5 @@ define(['buzz'], function(buzz) {
 		}
 	};
 
-	Sounds.init();
 	return Sounds;
 });
