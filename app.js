@@ -119,7 +119,6 @@ function start() {
 	require('./src/database').init(function(err) {
 		meta.configs.init(function () {
 			var templates = require('./public/src/templates'),
-				translator = require('./public/src/translator'),
 				webserver = require('./src/webserver'),
 				sockets = require('./src/socket.io'),
 				plugins = require('./src/plugins'),
@@ -131,7 +130,6 @@ function start() {
 				if (schema_ok || nconf.get('check-schema') === false) {
 					sockets.init(webserver.server);
 					plugins.init();
-					translator.loadServer();
 
 					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
 					nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));

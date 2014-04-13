@@ -2,18 +2,13 @@
 	"use strict";
 	/*global RELATIVE_PATH, config*/
 
-	/*
-	 * TODO:
-	 	* user side settings for preferred language
-	 */
 
 	var translator = {},
 		files = {
 			loaded: {},
 			loading: {},
 			callbacks: {} // could be combined with "loading" in future.
-		},
-		isServer = false;
+		};
 
 	module.exports = translator;
 
@@ -102,7 +97,7 @@
 
 	translator.translate = function (data, callback) {
 		if (!data) {
-			return callback(data);	
+			return callback(data);
 		}
 
 		function insertLanguage(text, key, value, variables) {
@@ -148,7 +143,6 @@
 							checkComplete();
 						});
 					}(keys[key], parsedKey, languageFile, variables));
-
 				}
 			}
 		}
@@ -163,14 +157,12 @@
 
 	};
 
-	translator.load = function (filename, callback) {
-		if (isServer === true) {
-			if (callback) {
-				callback(files.loaded[filename]);
-			}
+	translator.clearLoadedFiles = function() {
+		files.loaded = {};
+		files.loading = {};
+	};
 
-			return files.loaded[filename];
-		}
+	translator.load = function (filename, callback) {
 
 		if (files.loaded[filename] && !files.loading[filename]) {
 			if (callback) {
@@ -182,11 +174,10 @@
 				files.callbacks[filename].push(callback);
 			}
 		} else {
-			var timestamp = new Date().getTime(); //debug
 
 			files.loading[filename] = true;
 
-			$.getJSON(RELATIVE_PATH + '/language/' + config.defaultLang + '/' + filename + '.json?v=' + timestamp, function (language) {
+			load(filename, function(language) {
 				files.loaded[filename] = language;
 
 				if (callback) {
@@ -202,38 +193,39 @@
 		}
 	};
 
-	translator.loadServer = function () {
-		isServer = true;
+	function load(filename, callback) {
+		if ('undefined' !== typeof window) {
+			loadClient(filename, callback);
+		} else {
+			loadServer(filename, callback);
+		}
+	}
 
-		var utils = require('./utils.js'),
-			Meta = require('../../src/meta'),
+	function loadClient(filename, callback) {
+		var timestamp = new Date().getTime();
+		$.getJSON(config.relative_path + '/language/' + config.defaultLang + '/' + filename + '.json?v=' + timestamp, callback);
+	}
+
+	function loadServer(filename, callback) {
+		var fs = require('fs'),
 			path = require('path'),
-			fs = require('fs'),
 			winston = require('winston'),
-			language = Meta.config.defaultLang || 'en_GB';
-
+			meta = require('../../src/meta'),
+			language = meta.config.defaultLang || 'en_GB';
 
 		if (!fs.existsSync(path.join(__dirname, '../language', language))) {
-			winston.warn('[translator] Language \'' + Meta.config.defaultLang + '\' not found. Defaulting to \'en_GB\'');
+			winston.warn('[translator] Language \'' + meta.config.defaultLang + '\' not found. Defaulting to \'en_GB\'');
 			language = 'en_GB';
 		}
 
-		utils.walk(path.join(__dirname, '../language', language), function (err, data) {
-
-			for (var d in data) {
-				if (data.hasOwnProperty(d)) {
-					// Only load .json files
-					if (path.extname(data[d]) === '.json') {
-						files.loaded[path.basename(data[d]).replace('.json', '')] = require(data[d]);
-					} else {
-						if (process.env.NODE_ENV === 'development') {
-							winston.warn('[translator] Skipping language file: ' + path.relative(path.join(__dirname, '../language'), data[d]));
-						}
-					}
-				}
+		fs.readFile(path.join(__dirname, '../language', language, filename + '.json'), function(err, data) {
+			if (err) {
+				return winston.error(err.message);
 			}
+
+			callback(JSON.parse(data.toString()));
 		});
-	};
+	}
 
 	if ('undefined' !== typeof window) {
 		window.translator = module.exports;

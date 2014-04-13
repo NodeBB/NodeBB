@@ -66,7 +66,7 @@ var fs = require('fs'),
 
 				// this might be a good spot to add a hook
 				if (field === 'defaultLang') {
-					translator.loadServer();
+					translator.clearLoadedFiles();
 				}
 			});
 		},
