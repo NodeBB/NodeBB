@@ -2,8 +2,7 @@ var async = require('async'),
 
 	db = require('./database'),
 	posts = require('./posts'),
-	user = require('./user'),
-	translator = require('./../public/src/translator');
+	user = require('./user');
 
 (function (Favourites) {
 	"use strict";

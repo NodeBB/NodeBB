@@ -1,7 +1,6 @@
 "use strict";
 
 var templates = require('./../../public/src/templates'),
-	translator = require('./../../public/src/translator'),
 	utils = require('./../../public/src/utils'),
 	meta = require('./../meta'),
 	plugins = require('./../plugins'),
