@@ -1,0 +1,18 @@
+{
+    "register": "Register",
+    "help.email": "By default, your email will be hidden from the public.",
+    "help.username_restrictions": "A unique username between %1 and %2 characters. Others can mention you with @<span id='yourUsername'>username</span>.",
+    "help.minimum_password_length": "Your password's length must be at least %1 characters.",
+    "email_address": "Email Address",
+    "email_address_placeholder": "Enter Email Address",
+    "username": "Username",
+    "username_placeholder": "Enter Username",
+    "password": "Password",
+    "password_placeholder": "Enter Password",
+    "confirm_password": "Confirm Password",
+    "confirm_password_placeholder": "Confirm Password",
+    "register_now_button": "Register Now",
+    "alternative_registration": "Alternative Registration",
+    "terms_of_use": "Terms of Use",
+    "agree_to_terms_of_use": "I agree to the Terms of Use"
+}
