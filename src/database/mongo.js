@@ -45,7 +45,7 @@
 			winston.error('Unable to initialize MongoDB! Is MongoDB installed? Error :' + err.message);
 			process.exit();
 		}
-		
+
 		mongoClient.connect('mongodb://'+ nconf.get('mongo:host') + ':' + nconf.get('mongo:port') + '/' + nconf.get('mongo:database'), function(err, _db) {
 			if(err) {
 				winston.error("NodeBB could not connect to your Mongo database. Mongo returned the following error: " + err.message);
@@ -104,6 +104,11 @@
 			}
 		});
 	};
+
+	module.close = function() {
+		db.close();
+	};
+
 
 	var helpers = {};
 	helpers.findItem = function(data, key) {

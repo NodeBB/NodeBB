@@ -1,10 +1,6 @@
 "use strict";
 
 module.exports = function(redisClient, module) {
-	module.close = function() {
-		redisClient.quit();
-	};
-
 	module.searchIndex = function(key, content, id) {
 		if (key === 'post') {
 			module.postSearch.index(content, id);

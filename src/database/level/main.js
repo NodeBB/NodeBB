@@ -5,10 +5,6 @@ var nconf = require('nconf'),
 
 module.exports = function(db, module) {
 	var helpers = module.helpers.level;
-	
-	module.close = function(callback) {
-		db.close(callback);
-	};
 
 	module.searchIndex = function(key, content, id) {
 		// o.O

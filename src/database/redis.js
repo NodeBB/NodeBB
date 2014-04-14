@@ -101,5 +101,10 @@
 			callback();
 		}
 	};
+
+	module.close = function() {
+		redisClient.quit();
+	};
+	
 }(exports));
 

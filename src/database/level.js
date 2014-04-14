@@ -38,14 +38,14 @@
 			winston.error('Unable to initialize Level DB! Is Level DB installed? Error :' + err.message);
 			process.exit();
 		}
-		
+
 		if (db) {
 			if(typeof callback === 'function') {
 				callback();
 			}
 
 			return;
-		} 
+		}
 
 		db = levelup(nconf.get('level:database'), {
 			valueEncoding: 'json'
@@ -75,6 +75,10 @@
 		if(typeof callback === 'function') {
 			callback();
 		}
+	};
+
+	module.close = function(callback) {
+		db.close(callback);
 	};
 
 	var helpers = {};

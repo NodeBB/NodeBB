@@ -4,10 +4,7 @@ var winston = require('winston');
 
 module.exports = function(db, module) {
 	var helpers = module.helpers.mongo;
-	
-	module.close = function() {
-		db.close();
-	};
+
 
 	module.searchIndex = function(key, content, id) {
 		var data = {
