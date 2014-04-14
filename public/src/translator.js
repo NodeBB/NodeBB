@@ -67,34 +67,6 @@
 		}
 	};
 
-	translator.get = function (key, callback) {
-		var parsedKey = key.split(':'),
-			languageFile = parsedKey[0];
-
-		parsedKey = parsedKey[1];
-
-		translator.load(languageFile, function (languageData) {
-			if (callback) {
-				callback(languageData[parsedKey]);
-			}
-
-			return languageData[parsedKey];
-		});
-	};
-
-	translator.mget = function (keys, callback) {
-
-		var async = require('async');
-
-		function getKey(key, callback) {
-			translator.get(key, function(value) {
-				callback(null, value);
-			});
-		}
-
-		async.map(keys, getKey, callback);
-	};
-
 	translator.translate = function (data, callback) {
 		if (!data) {
 			return callback(data);
