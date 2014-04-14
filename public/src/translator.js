@@ -208,6 +208,8 @@
 			winston = require('winston'),
 			meta = require('../../src/meta');
 
+		language = language || meta.config.defaultLang || 'en_GB';
+
 		if (!fs.existsSync(path.join(__dirname, '../language', language))) {
 			winston.warn('[translator] Language \'' + meta.config.defaultLang + '\' not found. Defaulting to \'en_GB\'');
 			language = 'en_GB';
