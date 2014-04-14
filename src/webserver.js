@@ -42,6 +42,13 @@ if(nconf.get('ssl')) {
 	notifications.init();
 	user.startJobs();
 
+	// Preparation dependent on plugins
+	plugins.ready(function() {
+		meta.js.minify(app.enabled('minification'));
+		meta.css.minify();
+		meta.sounds.init();
+	});
+
 	async.series({
 		themesData: meta.themes.get,
 		currentThemeData: function(next) {
@@ -88,12 +95,6 @@ if(nconf.get('ssl')) {
 	if ((port === 80 || port === 443) && process.env.NODE_ENV !== 'development') {
 		winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
 	}
-
-	// Front-end assets
-	plugins.ready(function() {
-		meta.js.minify(app.enabled('minification'));
-		meta.css.minify();
-	});
 
 	module.exports.server = server;
 	module.exports.init = function () {

@@ -50,6 +50,10 @@ apiController.getConfig = function(req, res, next) {
 	}
 
 	user.getSettings(req.user.uid, function(err, settings) {
+		if (err) {
+			return next(err);
+		}
+
 		config.usePagination = settings.usePagination;
 		config.topicsPerPage = settings.topicsPerPage;
 		config.postsPerPage = settings.postsPerPage;

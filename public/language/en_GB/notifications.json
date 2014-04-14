@@ -7,5 +7,7 @@
 	"outgoing_link": "Outgoing Link",
 	"outgoing_link_message": "You are now leaving",
 	"continue_to": "Continue to",
-	"return_to": "Return to "
+	"return_to": "Return to ",
+	"new_notification": "New Notification",
+	"you_have_unread_notifications": "You have unread notifications."
 }

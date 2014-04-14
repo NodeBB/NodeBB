@@ -79,6 +79,4 @@ module.exports = function(db, module) {
 	module.expireAt = function(key, timestamp, callback) {
 		// <__<
 	};
-
-	return module;
 };

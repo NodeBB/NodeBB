@@ -151,7 +151,7 @@ middleware.buildHeader = function(req, res, next) {
 		function(next) {
 			controllers.api.getConfig(req, res, function(err, config) {
 				res.locals.config = config;
-				next();
+				next(err);
 			});
 		},
 		function(next) {
@@ -163,9 +163,7 @@ middleware.buildHeader = function(req, res, next) {
 				});
 			});
 		}
-	], function(err) {
-		next(err);
-	});
+	], next);
 };
 
 middleware.renderHeader = function(req, res, callback) {
@@ -253,7 +251,7 @@ middleware.renderHeader = function(req, res, callback) {
 
 		async.parallel([
 			function(next) {
-				translator.get('pages:' + path.basename(req.url), function(translated) {
+				translator.translate('[[pages:' + path.basename(req.url) + ']]', function(translated) {
 					var	metaTitle = templateValues.metaTags.filter(function(tag) {
 							return tag.name === 'title';
 						});

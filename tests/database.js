@@ -295,7 +295,7 @@ describe('Test database', function() {
 		}
 
 		function getSortedSetRevRangeByScore(callback) {
-			db.getSortedSetRevRangeByScore('sortedSet2', +Infinity, 100, 0, 100, function(err, data) {
+			db.getSortedSetRevRangeByScore('sortedSet3', 0, 10, Infinity, 100, function(err, data) {
 				callback(err, {'getSortedSetRevRangeByScore': data});
 			});
 		}

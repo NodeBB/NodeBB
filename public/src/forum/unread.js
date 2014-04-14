@@ -29,7 +29,7 @@ define(['forum/recent'], function(recent) {
 			}
 			socket.emit('topics.markTidsRead', tids, function(err) {
 				if(err) {
-					return app.alertError('There was an error marking topics read!');
+					return app.alertError(err.message);
 				}
 
 				doneRemovingTids(tids);
@@ -39,7 +39,7 @@ define(['forum/recent'], function(recent) {
 		$('#markAllRead').on('click', function() {
 			socket.emit('topics.markAllRead', function(err) {
 				if(err) {
-					return app.alertError('There was an error marking topics read!');
+					return app.alertError(err.message);
 				}
 
 				app.alertSuccess('[[unread:topics_marked_as_read.success]]');
@@ -68,7 +68,7 @@ define(['forum/recent'], function(recent) {
 
 			socket.emit('topics.markCategoryTopicsRead', cid, function(err) {
 				if(err) {
-					return app.alertError('There was an error marking topics read!');
+					return app.alertError(err.message);
 				}
 
 				doneRemovingTids(tids);
@@ -157,9 +157,18 @@ define(['forum/recent'], function(recent) {
 	}
 
 	function createCategoryLink(category) {
-		var link = $('<li role="presentation" class="category" data-cid="' + category.cid + '"><a role="menuitem" href="#"><i class="fa fa-fw ' + category.icon + '"></i> ' + category.name + '</a></li>');
 
-		$('.markread .dropdown-menu').append(link);
+		var link = $('<a role="menuitem" href="#"></a>');
+		if (category.icon) {
+			link.append('<i class="fa fa-fw ' + category.icon + '"></i> ' + category.name);
+		} else {
+			link.append(category.name);
+		}
+
+
+		$('<li role="presentation" class="category" data-cid="' + category.cid + '"></li>')
+			.append(link)
+			.appendTo($('.markread .dropdown-menu'));
 	}
 
 	return Unread;

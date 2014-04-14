@@ -1,0 +1,15 @@
+{
+    "home": "Home",
+    "unread": "Unread Topics",
+    "popular": "Popular Topics",
+    "recent": "Recent Topics",
+    "users": "Registered Users",
+    "notifications": "Notifications",
+    "user.edit": "Editing \"%1\"",
+    "user.following": "People %1 Follows",
+    "user.followers": "People who Follow %1",
+    "user.posts": "Posts made by %1",
+    "user.topics": "Topics created by %1",
+    "user.favourites": "%1's Favorite Posts",
+    "user.settings": "User Settings"
+}
