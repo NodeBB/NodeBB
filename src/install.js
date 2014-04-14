@@ -60,8 +60,7 @@ ALLOWED_DATABASES.forEach(function(db) {
 	questions[db] = require('./database/' + db).questions;
 });
 
-function checkSetupFlags (next) {
-	// Check if the `--setup` flag contained values we can work with
+function checkSetupFlag(next) {
 	var	setupVal;
 	try {
 		setupVal = JSON.parse(nconf.get('setup'));
@@ -95,8 +94,7 @@ function checkSetupFlags (next) {
 	}
 }
 
-function checkCIFlags(next) {
-	// Check if the `--ci` flag contained values we can work with
+function checkCIFlag(next) {
 	var	ciVals;
 	try {
 		ciVals = JSON.parse(nconf.get('ci'));
@@ -296,7 +294,6 @@ function setupConfig(next) {
 }
 
 function setupDefaultConfigs(next) {
-	// Applying default database configs
 	winston.info('Populating database with default configs, if not already set...');
 	var meta = require('./meta');
 
@@ -335,7 +332,6 @@ function enableDefaultTheme(next) {
 }
 
 function createAdministrator(next) {
-	// Check if an administrator needs to be created
 	var Groups = require('./groups');
 	Groups.get('administrators', {}, function (err, groupObj) {
 		if (!err && groupObj && groupObj.memberCount > 0) {
@@ -431,7 +427,6 @@ function createAdmin(callback) {
 }
 
 function createCategories(next) {
-	// Categories
 	var Categories = require('./categories');
 
 	Categories.getAllCategories(0, function (err, data) {
@@ -459,7 +454,6 @@ function createCategories(next) {
 }
 
 function enableDefaultPlugins(next) {
-	// Default plugins
 	var Plugins = require('./plugins');
 
 	winston.info('Enabling default plugins');
@@ -492,7 +486,7 @@ function populateDatabase(next) {
 }
 
 install.setup = function (callback) {
-	async.series([checkSetupFlags, checkCIFlags, setupConfig, setupDefaultConfigs, enableDefaultTheme, createAdministrator, createCategories, enableDefaultPlugins, populateDatabase,
+	async.series([checkSetupFlag, checkCIFlag, setupConfig, setupDefaultConfigs, enableDefaultTheme, createAdministrator, createCategories, enableDefaultPlugins, populateDatabase,
 		function (next) {
 			require('./upgrade').upgrade(next);
 		}
