@@ -2,8 +2,8 @@
     "title": "Uleste",
     "no_unread_topics": "Det er ingen uleste emner.",
     "load_more": "Last mer",
-    "mark_as_read": "Mark as Read",
-    "selected": "Selected",
-    "all": "All",
-    "topics_marked_as_read.success": "Topics marked as read!"
+    "mark_as_read": "Marker som lest",
+    "selected": "Valgte",
+    "all": "Alle",
+    "topics_marked_as_read.success": "Emner merket som lest!"
 }
