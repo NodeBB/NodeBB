@@ -106,5 +106,7 @@
 		redisClient.quit();
 	};
 	
+	module.helpers = module.helpers || {};
+	module.helpers.level = require('./mongo/helpers');
 }(exports));
 

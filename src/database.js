@@ -1,21 +1,21 @@
 "use strict";
 
 var nconf = require('nconf'),
-	primaryDBConfig = nconf.get('database'),
-	secondaryDBConfig = nconf.get('secondary_database'),
+	primaryDBName = nconf.get('database'),
+	secondaryDBName = nconf.get('secondary_database'),
 	secondaryModules = nconf.get('secondary_db_modules'),
 	winston = require('winston'),
 	async = require('async'),
 
 	ALLOWED_MODULES = ['hash', 'list', 'sets', 'sorted'];
 
-if(!primaryDBConfig) {
+if(!primaryDBName) {
 	winston.info('Database type not set! Run node app --setup');
 	process.exit();
 }
 
 function setupSecondaryDB() {
-	var secondaryDB = require('./database/' + secondaryDBConfig);
+	var secondaryDB = require('./database/' + secondaryDBName);
 
 	secondaryModules = secondaryModules.split(/,\s*/);
 
@@ -26,7 +26,8 @@ function setupSecondaryDB() {
 	}
 
 	var primaryDBinit = primaryDB.init,
-		primaryDBclose = primaryDB.close;
+		primaryDBclose = primaryDB.close,
+		primaryDBhelpers = primaryDB.helpers;
 
 	primaryDB.init = function(callback) {
 		async.parallel([primaryDBinit, secondaryDB.init], callback);
@@ -35,12 +36,16 @@ function setupSecondaryDB() {
 	primaryDB.close = function(callback) {
 		async.parallel([primaryDBclose, secondaryDB.close], callback);
 	};
+
+	primaryDB.helpers = {};
+	primaryDB.helpers[primaryDBName] = primaryDBhelpers[primaryDBName];
+	primaryDB.helpers[secondaryDBName] = secondaryDB.helpers[secondaryDBName];
 }
 
 
-var primaryDB = require('./database/' + primaryDBConfig);
+var primaryDB = require('./database/' + primaryDBName);
 
-if (secondaryDBConfig && secondaryModules) {
+if (secondaryDBName && secondaryModules) {
 	setupSecondaryDB();
 }
 
