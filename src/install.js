@@ -42,10 +42,6 @@ var async = require('async'),
 			name: 'database',
 			description: 'Which database to use',
 			'default': nconf.get('database') || 'redis'
-		}, {
-			name: 'secondary_database',
-			description: 'Use secondary database? (optional)',
-			'default': nconf.get('secondary_database') || 'none'
 		}],
 		redisQuestions : [{
 			name: 'redis:host',
@@ -244,20 +240,18 @@ var async = require('async'),
 
 					if (!install.values) {
 						prompt.get(install.questions, function(err, config) {
-							async.waterfall([
-								function(next) {
-									winston.info('Now configuring ' + config.database + ' database:');
-									success(err, config, next);
-								},
-								function(config, next) {
-									winston.info('Now configuring ' + config.secondary_database + ' database:');
-									if (config.secondary_database && ALLOWED_DATABASES.indexOf(config.secondary_database) !== -1) {
-										getSecondaryDatabaseModules(config, next);
-									} else {
-										next(err, config);
-									}
-								}
-							], completeConfigSetup);
+							if (nconf.get('advanced')) {
+								prompt.get({
+									name: 'secondary_database',
+									description: 'Select secondary database',
+									'default': nconf.get('secondary_database') || 'none'
+								}, function(err, dbConfig) {
+									config.secondary_database = dbConfig.secondary_database;
+									configureDatabases(err, config);
+								});
+							} else {
+								configureDatabases(err, config);
+							}
 						});
 					} else {
 						// Use provided values, fall back to defaults
@@ -280,6 +274,23 @@ var async = require('async'),
 							config.secondary_db_modules = db.secondary_db_modules;
 							success(err, config, next);
 						});
+					}
+
+					function configureDatabases(err, config) {
+						async.waterfall([
+							function(next) {
+								winston.info('Now configuring ' + config.database + ' database:');
+								success(err, config, next);
+							},
+							function(config, next) {
+								winston.info('Now configuring ' + config.secondary_database + ' database:');
+								if (config.secondary_database && ALLOWED_DATABASES.indexOf(config.secondary_database) !== -1) {
+									getSecondaryDatabaseModules(config, next);
+								} else {
+									next(err, config);
+								}
+							}
+						], completeConfigSetup);
 					}
 
 					function completeConfigSetup(err, config) {
