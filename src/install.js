@@ -9,6 +9,8 @@ var async = require('async'),
 	nconf = require('nconf'),
 	utils = require('../public/src/utils.js'),
 
+	ALLOWED_DATABASES = ['redis', 'mongo', 'level'],
+
 	install = {
 		questions: [{
 			name: 'base_url',
@@ -40,6 +42,10 @@ var async = require('async'),
 			name: 'database',
 			description: 'Which database to use',
 			'default': nconf.get('database') || 'redis'
+		}, {
+			name: 'secondary_database',
+			description: 'Use secondary database? (optional)',
+			'default': nconf.get('secondary_database') || 'none'
 		}],
 		redisQuestions : [{
 			name: 'redis:host',
@@ -134,10 +140,14 @@ var async = require('async'),
 					}
 				},
 				function (next) {
-					var	success = function (err, config) {
+					var	success = function (err, config, callback) {
 						if (!config) {
 							return next(new Error('aborted'));
 						}
+
+						var database = (config.redis || config.mongo || config.level) ? config.secondary_database : config.database;
+
+						winston.info('Now configuring ' + database + ' database:');
 
 						var dbQuestionsSuccess = function (err, databaseConfig) {
 							if (!databaseConfig) {
@@ -145,7 +155,7 @@ var async = require('async'),
 							}
 
 							// Translate redis properties into redis object
-							if(config.database === 'redis') {
+							if(database === 'redis') {
 								config.redis = {
 									host: databaseConfig['redis:host'],
 									port: databaseConfig['redis:port'],
@@ -156,7 +166,7 @@ var async = require('async'),
 								if (config.redis.host.slice(0, 1) === '/') {
 									delete config.redis.port;
 								}
-							} else if (config.database === 'mongo') {
+							} else if (database === 'mongo') {
 								config.mongo = {
 									host: databaseConfig['mongo:host'],
 									port: databaseConfig['mongo:port'],
@@ -164,38 +174,20 @@ var async = require('async'),
 									password: databaseConfig['mongo:password'],
 									database: databaseConfig['mongo:database']
 								};
-							} else if (config.database === 'level') {
+							} else if (database === 'level') {
 								config.level = {
 									database: databaseConfig['level:database']
 								};
 							} else {
-								return next(new Error('unknown database : ' + config.database));
+								return next(new Error('unknown database : ' + database));
 							}
 
-							var allQuestions = install.redisQuestions.concat(install.mongoQuestions);
+							var allQuestions = install.redisQuestions.concat(install.mongoQuestions.concat(install.levelQuestions));
 							for(var x=0;x<allQuestions.length;x++) {
 								delete config[allQuestions[x].name];
 							}
 
-							config.bcrypt_rounds = 12;
-							config.upload_path = '/public/uploads';
-							config.use_port = config.use_port.slice(0, 1) === 'y';
-
-							var urlObject = url.parse(config.base_url),
-								relative_path = (urlObject.pathname && urlObject.pathname.length > 1) ? urlObject.pathname : '',
-								host = urlObject.host,
-								protocol = urlObject.protocol,
-								server_conf = config;
-
-							server_conf.base_url = protocol + '//' + host;
-							server_conf.relative_path = relative_path;
-
-							install.save(server_conf, function(err) {
-								if (err) {
-									return next(err);
-								}
-								require('./database').init(next);
-							});
+							callback(err, config);
 						};
 
 						// Add CI object
@@ -208,26 +200,26 @@ var async = require('async'),
 							}
 						}
 
-						if(config.database === 'redis') {
+						if(database === 'redis') {
 							if (config['redis:host'] && config['redis:port']) {
 								dbQuestionsSuccess(null, config);
 							} else {
 								prompt.get(install.redisQuestions, dbQuestionsSuccess);
 							}
-						} else if(config.database === 'mongo') {
+						} else if(database === 'mongo') {
 							if (config['mongo:host'] && config['mongo:port']) {
 								dbQuestionsSuccess(null, config);
 							} else {
 								prompt.get(install.mongoQuestions, dbQuestionsSuccess);
 							}
-						} else if(config.database === 'level') {
+						} else if(database === 'level') {
 							if (config['level:database']) {
 								dbQuestionsSuccess(null, config);
 							} else {
 								prompt.get(install.levelQuestions, dbQuestionsSuccess);
 							}
 						} else {
-							return next(new Error('unknown database : ' + config.database));
+							return next(new Error('unknown database : ' + database));
 						}
 					};
 
@@ -237,7 +229,20 @@ var async = require('async'),
 					prompt.delimiter = '';
 
 					if (!install.values) {
-						prompt.get(install.questions, success);
+						prompt.get(install.questions, function(err, config) {
+							async.waterfall([
+								function(next) {
+									success(err, config, next);
+								},
+								function(config, next) {
+									if (config.secondary_database && ALLOWED_DATABASES.indexOf(config.secondary_database) !== -1) {
+										success(err, config, next);
+									} else {
+										next(err, config);
+									}
+								}
+							], completeConfigSetup)
+						});
 					} else {
 						// Use provided values, fall back to defaults
 						var	config = {},
@@ -246,7 +251,31 @@ var async = require('async'),
 							question = allQuestions[x];
 							config[question.name] = install.values[question.name] || question['default'] || '';
 						}
-						success(null, config);
+
+						success(null, config, completeConfigSetup);
+					}
+
+					function completeConfigSetup(err, config) {
+						config.bcrypt_rounds = 12;
+						config.upload_path = '/public/uploads';
+						config.use_port = config.use_port.slice(0, 1) === 'y';
+
+						var urlObject = url.parse(config.base_url),
+							relative_path = (urlObject.pathname && urlObject.pathname.length > 1) ? urlObject.pathname : '',
+							host = urlObject.host,
+							protocol = urlObject.protocol,
+							server_conf = config;
+
+						server_conf.base_url = protocol + '//' + host;
+						server_conf.relative_path = relative_path;
+
+						install.save(server_conf, function(err) {
+							if (err) {
+								return next(err);
+							}
+
+							require('./database').init(next);
+						});
 					}
 				},
 				function (next) {
