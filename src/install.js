@@ -56,10 +56,6 @@ questions.main = [
 
 
 
-ALLOWED_DATABASES.forEach(function(db) {
-	questions[db] = require('./database/' + db).questions;
-});
-
 function checkSetupFlag(next) {
 	var	setupVal;
 	try {
@@ -127,138 +123,7 @@ function checkCIFlag(next) {
 
 
 function setupConfig(next) {
-	// maybe this should go into install/database.js
-	function success(err, config, callback) {
-		if (!config) {
-			return next(new Error('aborted'));
-		}
-
-		var database = (config.redis || config.mongo || config.level) ? config.secondary_database : config.database;
-
-		function dbQuestionsSuccess(err, databaseConfig) {
-			if (!databaseConfig) {
-				return next(new Error('aborted'));
-			}
-
-			// Translate redis properties into redis object
-			if(database === 'redis') {
-				config.redis = {
-					host: databaseConfig['redis:host'],
-					port: databaseConfig['redis:port'],
-					password: databaseConfig['redis:password'],
-					database: databaseConfig['redis:database']
-				};
-
-				if (config.redis.host.slice(0, 1) === '/') {
-					delete config.redis.port;
-				}
-			} else if (database === 'mongo') {
-				config.mongo = {
-					host: databaseConfig['mongo:host'],
-					port: databaseConfig['mongo:port'],
-					username: databaseConfig['mongo:username'],
-					password: databaseConfig['mongo:password'],
-					database: databaseConfig['mongo:database']
-				};
-			} else if (database === 'level') {
-				config.level = {
-					database: databaseConfig['level:database']
-				};
-			} else {
-				return next(new Error('unknown database : ' + database));
-			}
-
-			var allQuestions = questions.redis.concat(questions.mongo.concat(questions.level));
-			for(var x=0;x<allQuestions.length;x++) {
-				delete config[allQuestions[x].name];
-			}
-
-			callback(err, config);
-		}
-
-		// Add CI object
-		if (install.ciVals) {
-			config.test_database = {};
-			for(var prop in install.ciVals) {
-				if (install.ciVals.hasOwnProperty(prop)) {
-					config.test_database[prop] = install.ciVals[prop];
-				}
-			}
-		}
-
-		if(database === 'redis') {
-			if (config['redis:host'] && config['redis:port']) {
-				dbQuestionsSuccess(null, config);
-			} else {
-				prompt.get(questions.redis, dbQuestionsSuccess);
-			}
-		} else if(database === 'mongo') {
-			if (config['mongo:host'] && config['mongo:port']) {
-				dbQuestionsSuccess(null, config);
-			} else {
-				prompt.get(questions.mongo, dbQuestionsSuccess);
-			}
-		} else if(database === 'level') {
-			if (config['level:database']) {
-				dbQuestionsSuccess(null, config);
-			} else {
-				prompt.get(questions.level, dbQuestionsSuccess);
-			}
-		} else {
-			return next(new Error('unknown database : ' + database));
-		}
-	}
-
-	function getSecondaryDatabaseModules(config, next) {
-		prompt.get({
-			"name": "secondary_db_modules",
-			"description": "Which database modules should " + config.secondary_database + " store?",
-			"default": nconf.get('secondary_db_modules') || "hash, list, sets, sorted"
-		}, function(err, db) {
-			config.secondary_db_modules = db.secondary_db_modules;
-			success(err, config, next);
-		});
-	}
-
-	function configureDatabases(err, config) {
-		async.waterfall([
-			function(next) {
-				winston.info('Now configuring ' + config.database + ' database:');
-				success(err, config, next);
-			},
-			function(config, next) {
-				winston.info('Now configuring ' + config.secondary_database + ' database:');
-				if (config.secondary_database && ALLOWED_DATABASES.indexOf(config.secondary_database) !== -1) {
-					getSecondaryDatabaseModules(config, next);
-				} else {
-					next(err, config);
-				}
-			}
-		], completeConfigSetup);
-	}
-
-	function completeConfigSetup(err, config) {
-		config.bcrypt_rounds = 12;
-		config.upload_path = '/public/uploads';
-		config.use_port = config.use_port.slice(0, 1) === 'y';
-
-		var urlObject = url.parse(config.base_url),
-			relative_path = (urlObject.pathname && urlObject.pathname.length > 1) ? urlObject.pathname : '',
-			host = urlObject.host,
-			protocol = urlObject.protocol,
-			server_conf = config;
-
-		server_conf.base_url = protocol + '//' + host;
-		server_conf.relative_path = relative_path;
-
-		install.save(server_conf, function(err) {
-			if (err) {
-				return next(err);
-			}
-
-			require('./database').init(next);
-		});
-	}
+	var configureDatabases = require('./../install/databases');
 
 	// prompt prepends "prompt: " to questions, let's clear that.
 	prompt.start();
@@ -274,23 +139,63 @@ function setupConfig(next) {
 					'default': nconf.get('secondary_database') || 'none'
 				}, function(err, dbConfig) {
 					config.secondary_database = dbConfig.secondary_database;
-					configureDatabases(err, config);
+					configureDatabases(err, config, ALLOWED_DATABASES, function(err, config) {
+						completeConfigSetup(err, config, next);
+					});
 				});
 			} else {
-				configureDatabases(err, config);
+				configureDatabases(err, config, ALLOWED_DATABASES, function(err, config) {
+					completeConfigSetup(err, config, next);
+				});
 			}
 		});
 	} else {
 		// Use provided values, fall back to defaults
 		var	config = {},
 			question, x, numQ, allQuestions = questions.main.concat(questions.redis).concat(questions.mongo.concat(questions.level));
+
 		for(x=0,numQ=allQuestions.length;x<numQ;x++) {
 			question = allQuestions[x];
 			config[question.name] = install.values[question.name] || question['default'] || '';
 		}
 
-		success(null, config, completeConfigSetup);
+		configureDatabases(null, config, ALLOWED_DATABASES, function(err, config) {
+			completeConfigSetup(err, config, next);
+		});
 	}
+}
+
+function completeConfigSetup(err, config, next) {
+	// Add CI object
+	if (install.ciVals) {
+		config.test_database = {};
+		for(var prop in install.ciVals) {
+			if (install.ciVals.hasOwnProperty(prop)) {
+				config.test_database[prop] = install.ciVals[prop];
+			}
+		}
+	}
+
+	config.bcrypt_rounds = 12;
+	config.upload_path = '/public/uploads';
+	config.use_port = config.use_port.slice(0, 1) === 'y';
+
+	var urlObject = url.parse(config.base_url),
+		relative_path = (urlObject.pathname && urlObject.pathname.length > 1) ? urlObject.pathname : '',
+		host = urlObject.host,
+		protocol = urlObject.protocol,
+		server_conf = config;
+
+	server_conf.base_url = protocol + '//' + host;
+	server_conf.relative_path = relative_path;
+
+	install.save(server_conf, function(err) {
+		if (err) {
+			return next(err);
+		}
+
+		require('./database').init(next);
+	});
 }
 
 function setupDefaultConfigs(next) {
