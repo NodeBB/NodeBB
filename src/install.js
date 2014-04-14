@@ -281,83 +281,30 @@ var async = require('async'),
 				function (next) {
 					// Applying default database configs
 					winston.info('Populating database with default configs, if not already set...');
-					var meta = require('./meta'),
-						defaults = [{
-							field: 'title',
-							value: 'NodeBB'
-						}, {
-							field: 'postDelay',
-							value: 10
-						}, {
-							field: 'minimumPostLength',
-							value: 8
-						}, {
-							field: 'allowGuestPosting',
-							value: 0
-						}, {
-							field: 'allowGuestSearching',
-							value: 0
-						}, {
-							field: 'allowTopicsThumbnail',
-							value: 0
-						}, {
-							field: 'allowRegistration',
-							value: 1
-						}, {
-							field: 'allowLocalLogin',
-							value: 1
-						}, {
-							field: 'allowFileUploads',
-							value: 0
-						}, {
-							field: 'maximumFileSize',
-							value: 2048
-						}, {
-							field: 'minimumTitleLength',
-							value: 3
-						}, {
-							field: 'maximumTitleLength',
-							value: 255
-						}, {
-							field: 'minimumUsernameLength',
-							value: 2
-						}, {
-							field: 'maximumUsernameLength',
-							value: 16
-						}, {
-							field: 'minimumPasswordLength',
-							value: 6
-						}, {
-							field: 'maximumSignatureLength',
-							value: 255
-						}, {
-							field: 'maximumProfileImageSize',
-							value: 256
-						}, {
-							field: 'chatMessagesToDisplay',
-							value: 50
-						}];
+					var meta = require('./meta');
 
-					async.each(defaults, function (configObj, next) {
-						meta.configs.setOnEmpty(configObj.field, configObj.value, next);
-					}, function (err) {
-						meta.configs.init(next);
+					fs.readFile(path.join(__dirname, '../', 'install/data/defaults.json'), function (err, defaults) {
+						async.each(defaults, function (configObj, next) {
+							meta.configs.setOnEmpty(configObj.field, configObj.value, next);
+						}, function (err) {
+							meta.configs.init(next);
+						});
+
+						if (install.values) {
+							if (install.values['social:twitter:key'] && install.values['social:twitter:secret']) {
+								meta.configs.setOnEmpty('social:twitter:key', install.values['social:twitter:key']);
+								meta.configs.setOnEmpty('social:twitter:secret', install.values['social:twitter:secret']);
+							}
+							if (install.values['social:google:id'] && install.values['social:google:secret']) {
+								meta.configs.setOnEmpty('social:google:id', install.values['social:google:id']);
+								meta.configs.setOnEmpty('social:google:secret', install.values['social:google:secret']);
+							}
+							if (install.values['social:facebook:key'] && install.values['social:facebook:secret']) {
+								meta.configs.setOnEmpty('social:facebook:app_id', install.values['social:facebook:app_id']);
+								meta.configs.setOnEmpty('social:facebook:secret', install.values['social:facebook:secret']);
+							}
+						}
 					});
-
-					if (install.values) {
-						if (install.values['social:twitter:key'] && install.values['social:twitter:secret']) {
-							meta.configs.setOnEmpty('social:twitter:key', install.values['social:twitter:key']);
-							meta.configs.setOnEmpty('social:twitter:secret', install.values['social:twitter:secret']);
-						}
-						if (install.values['social:google:id'] && install.values['social:google:secret']) {
-							meta.configs.setOnEmpty('social:google:id', install.values['social:google:id']);
-							meta.configs.setOnEmpty('social:google:secret', install.values['social:google:secret']);
-						}
-						if (install.values['social:facebook:key'] && install.values['social:facebook:secret']) {
-							meta.configs.setOnEmpty('social:facebook:app_id', install.values['social:facebook:app_id']);
-							meta.configs.setOnEmpty('social:facebook:secret', install.values['social:facebook:secret']);
-						}
-					}
 				},
 				function(next) {
 					var	meta = require('./meta');
