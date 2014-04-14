@@ -40,10 +40,6 @@ var async = require('async'),
 			name: 'database',
 			description: 'Which database to use',
 			'default': nconf.get('database') || 'redis'
-		}, {
-			name: 'secondary_database',
-			description: 'Secondary database (optional)',
-			'default': nconf.get('secondary_database') || 'none'
 		}],
 		redisQuestions : [{
 			name: 'redis:host',
@@ -103,18 +99,10 @@ var async = require('async'),
 							next();
 						} else {
 							winston.error('Required values are missing for automated setup:');
-							if (!setupVal['admin:username']) {
-								winston.error('  admin:username');
-							}
-							if (!setupVal['admin:password']) {
-								winston.error('  admin:password');
-							}
-							if (!setupVal['admin:password:confirm']) {
-								winston.error('  admin:password:confirm');
-							}
-							if (!setupVal['admin:email']) {
-								winston.error('  admin:email');
-							}
+							if (!setupVal['admin:username']) winston.error('  admin:username');
+							if (!setupVal['admin:password']) winston.error('  admin:password');
+							if (!setupVal['admin:password:confirm']) winston.error('  admin:password:confirm');
+							if (!setupVal['admin:email']) winston.error('  admin:email');
 							process.exit();
 						}
 					} else {
@@ -136,15 +124,9 @@ var async = require('async'),
 							next();
 						} else {
 							winston.error('Required values are missing for automated CI integration:');
-							if (!ciVals.hasOwnProperty('host')) {
-								winston.error('  host');
-							}
-							if (!ciVals.hasOwnProperty('port')) {
-								winston.error('  port');
-							}
-							if (!ciVals.hasOwnProperty('database')) {
-								winston.error('  database');
-							}
+							if (!ciVals.hasOwnProperty('host')) winston.error('  host');
+							if (!ciVals.hasOwnProperty('port')) winston.error('  port');
+							if (!ciVals.hasOwnProperty('database')) winston.error('  database');
 							process.exit();
 						}
 					} else {
@@ -190,7 +172,7 @@ var async = require('async'),
 								return next(new Error('unknown database : ' + config.database));
 							}
 
-							var allQuestions = install.redisQuestions.concat(install.mongoQuestions.concat(install.levelQuestions));
+							var allQuestions = install.redisQuestions.concat(install.mongoQuestions);
 							for(var x=0;x<allQuestions.length;x++) {
 								delete config[allQuestions[x].name];
 							}
@@ -212,52 +194,41 @@ var async = require('async'),
 								if (err) {
 									return next(err);
 								}
-
-								if (config.secondary_database !== 'none') {
-									require('./database').init(function(err) {
-										askDatabaseQuestions(config.secondary_database);
-									});
-								} else {
-									require('./database').init(next);
-								}
+								require('./database').init(next);
 							});
 						};
 
 						// Add CI object
 						if (install.ciVals) {
-							config.test_database = {};
+							config['test_database'] = {};
 							for(var prop in install.ciVals) {
 								if (install.ciVals.hasOwnProperty(prop)) {
-									config.test_database[prop] = install.ciVals[prop];
+									config['test_database'][prop] = install.ciVals[prop];
 								}
 							}
 						}
 
-						function askDatabaseQuestions(database) {
-							if(database === 'redis') {
-								if (config['redis:host'] && config['redis:port']) {
-									dbQuestionsSuccess(null, config);
-								} else {
-									prompt.get(install.redisQuestions, dbQuestionsSuccess);
-								}
-							} else if(database === 'mongo') {
-								if (config['mongo:host'] && config['mongo:port']) {
-									dbQuestionsSuccess(null, config);
-								} else {
-									prompt.get(install.mongoQuestions, dbQuestionsSuccess);
-								}
-							} else if(database === 'level') {
-								if (config['level:database']) {
-									dbQuestionsSuccess(null, config);
-								} else {
-									prompt.get(install.levelQuestions, dbQuestionsSuccess);
-								}
+						if(config.database === 'redis') {
+							if (config['redis:host'] && config['redis:port']) {
+								dbQuestionsSuccess(null, config);
 							} else {
-								return next(new Error('unknown database : ' + database));
+								prompt.get(install.redisQuestions, dbQuestionsSuccess);
 							}
+						} else if(config.database === 'mongo') {
+							if (config['mongo:host'] && config['mongo:port']) {
+								dbQuestionsSuccess(null, config);
+							} else {
+								prompt.get(install.mongoQuestions, dbQuestionsSuccess);
+							}
+						} else if(config.database === 'level') {
+							if (config['level:database']) {
+								dbQuestionsSuccess(null, config);
+							} else {
+								prompt.get(install.levelQuestions, dbQuestionsSuccess);
+							}
+						} else {
+							return next(new Error('unknown database : ' + config.database));
 						}
-
-						askDatabaseQuestions(config.database);
 					};
 
 					// prompt prepends "prompt: " to questions, let's clear that.
