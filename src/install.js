@@ -105,10 +105,19 @@ var async = require('async'),
 							next();
 						} else {
 							winston.error('Required values are missing for automated setup:');
-							if (!setupVal['admin:username']) winston.error('  admin:username');
-							if (!setupVal['admin:password']) winston.error('  admin:password');
-							if (!setupVal['admin:password:confirm']) winston.error('  admin:password:confirm');
-							if (!setupVal['admin:email']) winston.error('  admin:email');
+							if (!setupVal['admin:username']) {
+								winston.error('  admin:username');
+							}
+							if (!setupVal['admin:password']) {
+								winston.error('  admin:password');
+							}
+							if (!setupVal['admin:password:confirm']) {
+								winston.error('  admin:password:confirm');
+							}
+							if (!setupVal['admin:email']) {
+								winston.error('  admin:email');
+							}
+							
 							process.exit();
 						}
 					} else {
@@ -130,9 +139,16 @@ var async = require('async'),
 							next();
 						} else {
 							winston.error('Required values are missing for automated CI integration:');
-							if (!ciVals.hasOwnProperty('host')) winston.error('  host');
-							if (!ciVals.hasOwnProperty('port')) winston.error('  port');
-							if (!ciVals.hasOwnProperty('database')) winston.error('  database');
+							if (!ciVals.hasOwnProperty('host')) {
+								winston.error('  host');
+							}
+							if (!ciVals.hasOwnProperty('port')) {
+								winston.error('  port');
+							}
+							if (!ciVals.hasOwnProperty('database')) {
+								winston.error('  database');
+							}
+
 							process.exit();
 						}
 					} else {
@@ -192,10 +208,10 @@ var async = require('async'),
 
 						// Add CI object
 						if (install.ciVals) {
-							config['test_database'] = {};
+							config.test_database = {};
 							for(var prop in install.ciVals) {
 								if (install.ciVals.hasOwnProperty(prop)) {
-									config['test_database'][prop] = install.ciVals[prop];
+									config.test_database[prop] = install.ciVals[prop];
 								}
 							}
 						}
@@ -241,7 +257,7 @@ var async = require('async'),
 										next(err, config);
 									}
 								}
-							], completeConfigSetup)
+							], completeConfigSetup);
 						});
 					} else {
 						// Use provided values, fall back to defaults
