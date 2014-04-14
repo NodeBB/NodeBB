@@ -55,7 +55,6 @@ questions.main = [
 ];
 
 
-
 function checkSetupFlag(next) {
 	var	setupVal;
 	try {
@@ -120,7 +119,6 @@ function checkCIFlag(next) {
 		next();
 	}
 }
-
 
 function setupConfig(next) {
 	var configureDatabases = require('./../install/databases');
