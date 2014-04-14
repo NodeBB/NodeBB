@@ -11,16 +11,41 @@
 		mongoClient,
 		mongoStore;
 
-	try {
-		mongoClient = require('mongodb').MongoClient;
-		mongoStore = require('connect-mongo')(express);
-	} catch (err) {
-		winston.error('Unable to initialize MongoDB! Is MongoDB installed? Error :' + err.message);
-		process.exit();
-	}
-
+	module.questions = [
+		{
+			name: 'mongo:host',
+			description: 'Host IP or address of your MongoDB instance',
+			'default': nconf.get('mongo:host') || '127.0.0.1'
+		},
+		{
+			name: 'mongo:port',
+			description: 'Host port of your MongoDB instance',
+			'default': nconf.get('mongo:port') || 27017
+		},
+		{
+			name: 'mongo:username',
+			description: 'MongoDB username'
+		},
+		{
+			name: 'mongo:password',
+			description: 'Password of your MongoDB database'
+		},
+		{
+			name: "mongo:database",
+			description: "Which database to use",
+			'default': nconf.get('mongo:database') || 0
+		}
+	];
 
 	module.init = function(callback) {
+		try {
+			mongoClient = require('mongodb').MongoClient;
+			mongoStore = require('connect-mongo')(express);
+		} catch (err) {
+			winston.error('Unable to initialize MongoDB! Is MongoDB installed? Error :' + err.message);
+			process.exit();
+		}
+		
 		mongoClient.connect('mongodb://'+ nconf.get('mongo:host') + ':' + nconf.get('mongo:port') + '/' + nconf.get('mongo:database'), function(err, _db) {
 			if(err) {
 				winston.error("NodeBB could not connect to your Mongo database. Mongo returned the following error: " + err.message);

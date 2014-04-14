@@ -21,16 +21,24 @@
 		connectLevel,
 		db;
 
-	try {
-		levelup = require('levelup');
-		leveldown = require('leveldown');
-		connectLevel = require('connect-leveldb')(express);
-	} catch (err) {
-		winston.error('Unable to initialize Level DB! Is Level DB installed? Error :' + err.message);
-		process.exit();
-	}
+	module.questions = [
+		{
+			name: "level:database",
+			description: "Enter the path to your Level database",
+			'default': nconf.get('level:database') || '/var/level/nodebb'
+		}
+	];
 
 	module.init = function(callback) {
+		try {
+			levelup = require('levelup');
+			leveldown = require('leveldown');
+			connectLevel = require('connect-leveldb')(express);
+		} catch (err) {
+			winston.error('Unable to initialize Level DB! Is Level DB installed? Error :' + err.message);
+			process.exit();
+		}
+		
 		if (db) {
 			if(typeof callback === 'function') {
 				callback();

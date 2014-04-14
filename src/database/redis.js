@@ -15,16 +15,38 @@
 		postSearch,
 		topicSearch;
 
-	try {
-		redis = require('redis');
-		connectRedis = require('connect-redis')(express);
-		reds = require('reds');
-	} catch (err) {
-		winston.error('Unable to initialize Redis! Is Redis installed? Error :' + err.message);
-		process.exit();
-	}
+	module.questions = [
+		{
+			name: 'redis:host',
+			description: 'Host IP or address of your Redis instance',
+			'default': nconf.get('redis:host') || '127.0.0.1'
+		},
+		{
+			name: 'redis:port',
+			description: 'Host port of your Redis instance',
+			'default': nconf.get('redis:port') || 6379
+		},
+		{
+			name: 'redis:password',
+			description: 'Password of your Redis database'
+		},
+		{
+			name: "redis:database",
+			description: "Which database to use (0..n)",
+			'default': nconf.get('redis:database') || 0
+		}
+	];
 
 	module.init = function(callback) {
+		try {
+			redis = require('redis');
+			connectRedis = require('connect-redis')(express);
+			reds = require('reds');
+		} catch (err) {
+			winston.error('Unable to initialize Redis! Is Redis installed? Error :' + err.message);
+			process.exit();
+		}
+
 		if (redis_socket_or_host && redis_socket_or_host.indexOf('/')>=0) {
 			/* If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock */
 			redisClient = redis.createClient(nconf.get('redis:host'));
