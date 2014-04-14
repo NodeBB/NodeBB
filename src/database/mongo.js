@@ -110,6 +110,6 @@
 	};
 
 	module.helpers = module.helpers || {};
-	module.helpers.level = require('./mongo/helpers');
+	module.helpers.mongo = require('./mongo/helpers');
 }(exports));
 
