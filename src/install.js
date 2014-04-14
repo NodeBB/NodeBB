@@ -179,7 +179,7 @@ function completeConfigSetup(err, config, next) {
 
 	config.bcrypt_rounds = 12;
 	config.upload_path = '/public/uploads';
-	config.use_port = config.use_port.slice(0, 1) === 'y';
+	config.use_port = typeof config.use_port === 'boolean' ? config.use_port : config.use_port.slice(0, 1) === 'y';
 
 	var urlObject = url.parse(config.base_url),
 		relative_path = (urlObject.pathname && urlObject.pathname.length > 1) ? urlObject.pathname : '',
