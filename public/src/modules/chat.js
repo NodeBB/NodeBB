@@ -51,6 +51,12 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 		});
 
 		socket.on('event:chats.receive', function(data) {
+
+			var username = data.message.fromUser.username;
+			if(parseInt(data.message.fromUser.uid, 10) === parseInt(app.uid, 10)) {
+				username = data.message.toUser.username;
+			}
+
 			if (module.modalExists(data.withUid)) {
 				var modal = module.getModal(data.withUid);
 				module.appendChatMessage(modal, data.message);
@@ -65,12 +71,12 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 				}
 
 				if (!modal.is(":visible") || !app.isFocused) {
-					app.alternatingTitle(data.message.user.username + ' has messaged you');
+					app.alternatingTitle(username + ' has messaged you');
 				}
 			} else {
-				module.createModal(data.message.user.username, data.withUid, function(modal) {
+				module.createModal(username, data.withUid, function(modal) {
 					module.toggleNew(modal.attr('UUID'), true);
-					app.alternatingTitle(data.message.user.username + ' has messaged you');
+					app.alternatingTitle(username + ' has messaged you');
 				});
 			}
 
@@ -242,8 +248,8 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 
 
 		if (data.fromuid !== chatContent.children().last().attr('data-uid')) {
-			var userPicture = $('<a href="/user/' + data.user.userslug + '"><img class="chat-user-image" src="' + data.user.picture + '"></a>');
-			var userName = $('<strong><span class="chat-user"> '+ data.user.username + '</span></strong>');
+			var userPicture = $('<a href="/user/' + data.fromUser.userslug + '"><img class="chat-user-image" src="' + data.fromUser.picture + '"></a>');
+			var userName = $('<strong><span class="chat-user"> '+ data.fromUser.username + '</span></strong>');
 			userName.toggleClass('chat-user-you', isYou);
 
 			message.append(userPicture)

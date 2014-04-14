@@ -174,7 +174,7 @@ SocketModules.chats.send = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		sendChatNotification(socket.uid, touid, message.user.username);
+		sendChatNotification(socket.uid, touid, message.fromUser.username);
 
 		server.getUserSockets(touid).forEach(function(s) {
 			s.emit('event:chats.receive', {
