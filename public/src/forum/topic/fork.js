@@ -90,7 +90,7 @@ define(function() {
 	}
 
 	function showNoPostsSelected() {
-		translator.get('topic:fork_no_pids', function(translated) {
+		translator.translate('[[topic:fork_no_pids]]', function(translated) {
 			forkModal.find('#fork-pids').html(translated);
 		});
 	}

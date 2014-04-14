@@ -59,7 +59,7 @@
 			});
 
 			// Add directional code if necessary
-			translator.get('language:dir', function(value) {
+			translator.translate('[[language:dir]]', function(value) {
 				if (value) {
 					$('html').css('direction', value).attr('data-dir', value);
 				}

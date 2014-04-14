@@ -25,7 +25,7 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 				chatsListEl.empty();
 
 				if (!chats.length) {
-					translator.get('modules:chat.no_active', function(str) {
+					translator.translate('[[modules:chat.no_active]]', function(str) {
 						$('<li />')
 							.addClass('no_active')
 							.html('<a href="#">' + str + '</a>')
