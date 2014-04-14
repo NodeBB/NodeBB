@@ -104,7 +104,7 @@
 			if (value) {
 				for (var i = 1, ii = variables.length; i < ii; i++) {
 					var variable = variables[i].replace(']]', '');
-					value = ('' + value).replace('%' + i, variable);
+					value = value.replace('%' + i, variable);
 				}
 
 				text = text.replace(key, value);
@@ -119,31 +119,35 @@
 		var keys = data.match(/\[\[.*?\]\]/g),
 			loading = 0;
 
-		for (var key in keys) {
-			if (keys.hasOwnProperty(key)) {
-				keys[key] = '' + keys[key];
-				var variables = keys[key].split(/[,][?\s+]/);
+		if (!keys) {
+			return callback(data);
+		}
 
-				var parsedKey = keys[key].replace('[[', '').replace(']]', '').split(':');
-				if (!(parsedKey[0] && parsedKey[1])) {
-					continue;
-				}
+		for (var i=0; i<keys.length; ++i) {
+			var key = keys[i];
 
-				var languageFile = parsedKey[0];
-				parsedKey = ('' + parsedKey[1]).split(',')[0];
+			key = '' + key;
+			var variables = key.split(/[,][?\s+]/);
 
-				if (files.loaded[languageFile]) {
-					data = insertLanguage(data, keys[key], files.loaded[languageFile][parsedKey], variables);
-				} else {
-					loading++;
-					(function (languageKey, parsedKey, languageFile, variables) {
-						translator.load(languageFile, function (languageData) {
-							data = insertLanguage(data, languageKey, languageData[parsedKey], variables);
-							loading--;
-							checkComplete();
-						});
-					}(keys[key], parsedKey, languageFile, variables));
-				}
+			var parsedKey = key.replace('[[', '').replace(']]', '').split(':');
+			if (!(parsedKey[0] && parsedKey[1])) {
+				continue;
+			}
+
+			var languageFile = parsedKey[0];
+			parsedKey = ('' + parsedKey[1]).split(',')[0];
+
+			if (files.loaded[languageFile]) {
+				data = insertLanguage(data, key, files.loaded[languageFile][parsedKey], variables);
+			} else {
+				loading++;
+				(function (languageKey, parsedKey, languageFile, variables) {
+					translator.load(languageFile, function (languageData) {
+						data = insertLanguage(data, languageKey, languageData[parsedKey], variables);
+						loading--;
+						checkComplete();
+					});
+				}(key, parsedKey, languageFile, variables));
 			}
 		}
 
@@ -154,7 +158,6 @@
 				callback(data);
 			}
 		}
-
 	};
 
 	translator.clearLoadedFiles = function() {
