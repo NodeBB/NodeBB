@@ -117,7 +117,7 @@ var async = require('async'),
 							if (!setupVal['admin:email']) {
 								winston.error('  admin:email');
 							}
-							
+
 							process.exit();
 						}
 					} else {
@@ -162,8 +162,6 @@ var async = require('async'),
 						}
 
 						var database = (config.redis || config.mongo || config.level) ? config.secondary_database : config.database;
-
-						winston.info('Now configuring ' + database + ' database:');
 
 						var dbQuestionsSuccess = function (err, databaseConfig) {
 							if (!databaseConfig) {
@@ -248,11 +246,13 @@ var async = require('async'),
 						prompt.get(install.questions, function(err, config) {
 							async.waterfall([
 								function(next) {
+									winston.info('Now configuring ' + config.database + ' database:');
 									success(err, config, next);
 								},
 								function(config, next) {
+									winston.info('Now configuring ' + config.secondary_database + ' database:');
 									if (config.secondary_database && ALLOWED_DATABASES.indexOf(config.secondary_database) !== -1) {
-										success(err, config, next);
+										getSecondaryDatabaseModules(config, next);
 									} else {
 										next(err, config);
 									}
@@ -269,6 +269,17 @@ var async = require('async'),
 						}
 
 						success(null, config, completeConfigSetup);
+					}
+
+					function getSecondaryDatabaseModules(config, next) {
+						prompt.get({
+							"name": "secondary_db_modules",
+							"description": "Which database modules should " + config.secondary_database + " store?",
+							"default": nconf.get('secondary_db_modules') || "hash, list, sets, sorted"
+						}, function(err, db) {
+							config.secondary_db_modules = db.secondary_db_modules;
+							success(err, config, next);
+						});
 					}
 
 					function completeConfigSetup(err, config) {
