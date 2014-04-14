@@ -241,7 +241,7 @@ var async = require('async'),
 					} else {
 						// Use provided values, fall back to defaults
 						var	config = {},
-							question, x, numQ, allQuestions = install.questions.concat(install.redisQuestions).concat(install.mongoQuestions);
+							question, x, numQ, allQuestions = install.questions.concat(install.redisQuestions).concat(install.mongoQuestions.concat(install.levelQuestions));
 						for(x=0,numQ=allQuestions.length;x<numQ;x++) {
 							question = allQuestions[x];
 							config[question.name] = install.values[question.name] || question['default'] || '';
