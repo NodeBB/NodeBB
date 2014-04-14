@@ -4,9 +4,31 @@ var	Groups = require('./groups'),
 	User = require('./user'),
 
 	async = require('async'),
-	db = require('./database'),
+	db = require('./database');
 
-	CategoryTools = {};
+var internals = {
+	isMember: function(key, candidate, next){
+		Groups.exists(key, function(err, exists) {
+			if (exists) {
+				Groups.isMember(candidate, key, next);
+			} else {
+				next(null, null);
+			}
+		});
+	},
+
+	isMemberOfGroupList: function(key, candidate, next){
+		Groups.exists(key, function(err, exists) {
+			if (exists) {
+				Groups.isMemberOfGroupList(candidate, key, next);
+			} else {
+				next(null, null);
+			}
+		});
+	}
+};
+
+var CategoryTools = {};
 
 CategoryTools.exists = function(cid, callback) {
 	db.isSortedSetMember('categories:cid', cid, callback);
@@ -15,44 +37,16 @@ CategoryTools.exists = function(cid, callback) {
 CategoryTools.privileges = function(cid, uid, callback) {
 	async.parallel({
 		"+r": function(next) {
-			var	key = 'cid:' + cid + ':privileges:+r';
-			Groups.exists(key, function(err, exists) {
-				if (exists) {
-					Groups.isMember(uid, key, next);
-				} else {
-					next(null, null);
-				}
-			});
+			internals.isMember('cid:' + cid + ':privileges:+r', uid, next);
 		},
 		"+w": function(next) {
-			var	key = 'cid:' + cid + ':privileges:+w';
-			Groups.exists(key, function(err, exists) {
-				if (exists) {
-					Groups.isMember(uid, key, next);
-				} else {
-					next(null, null);
-				}
-			});
+			internals.isMember('cid:' + cid + ':privileges:+w', uid, next);
 		},
 		"g+r": function(next) {
-			var	key = 'cid:' + cid + ':privileges:g+r';
-			Groups.exists(key, function(err, exists) {
-				if (exists) {
-					Groups.isMemberOfGroupList(uid, key, next);
-				} else {
-					next(null, null);
-				}
-			});
+			internals.isMemberOfGroupList('cid:' + cid + ':privileges:g+r', uid, next);
 		},
 		"g+w": function(next) {
-			var	key = 'cid:' + cid + ':privileges:g+w';
-			Groups.exists(key, function(err, exists) {
-				if (exists) {
-					Groups.isMemberOfGroupList(uid, key, next);
-				} else {
-					next(null, null);
-				}
-			});
+			internals.isMemberOfGroupList('cid:' + cid + ':privileges:g+w', uid, next);
 		},
 		moderator: function(next) {
 			User.isModerator(uid, cid, next);
@@ -93,23 +87,13 @@ CategoryTools.privileges = function(cid, uid, callback) {
 CategoryTools.groupPrivileges = function(cid, groupName, callback) {
 	async.parallel({
 		"g+r": function(next) {
-			var	key = 'cid:' + cid + ':privileges:g+r';
-			Groups.exists(key, function(err, exists) {
-				if (exists) {
-					Groups.isMember(groupName, key, next);
-				} else {
-					next(null, false);
-				}
+			internals.isMember('cid:' + cid + ':privileges:g+r', groupName, function(err, isMember){
+				next(err, !!isMember);
 			});
 		},
 		"g+w": function(next) {
-			var	key = 'cid:' + cid + ':privileges:g+w';
-			Groups.exists(key, function(err, exists) {
-				if (exists) {
-					Groups.isMember(groupName, key, next);
-				} else {
-					next(null, false);
-				}
+			internals.isMember('cid:' + cid + ':privileges:g+w', groupName, function(err, isMember){
+				next(err, !!isMember);
 			});
 		}
 	}, function(err, privileges) {

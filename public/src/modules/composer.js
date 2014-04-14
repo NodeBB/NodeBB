@@ -188,18 +188,17 @@ define(['taskbar'], function(taskbar) {
 		var draggingDocument = false;
 
 		var postContainer = $('#cmp-uuid-' + post_uuid),
-			fileForm = postContainer.find('#fileForm'),
 			drop = postContainer.find('.imagedrop'),
 			tabContent = postContainer.find('.tab-content'),
 			textarea = postContainer.find('textarea');
 
-		$(document).off('dragstart').on('dragstart', function(e) {
+		$(document).off('dragstart').on('dragstart', function() {
 			draggingDocument = true;
-		}).off('dragend').on('dragend', function(e) {
+		}).off('dragend').on('dragend', function() {
 			draggingDocument = false;
 		});
 
-		textarea.on('dragenter', function(e) {
+		textarea.on('dragenter', function() {
 			if(draggingDocument) {
 				return;
 			}
@@ -208,7 +207,7 @@ define(['taskbar'], function(taskbar) {
 			drop.css('line-height', textarea.height() + 'px');
 			drop.show();
 
-			drop.on('dragleave', function(ev) {
+			drop.on('dragleave', function() {
 				drop.hide();
 				drop.off('dragleave');
 			});
@@ -235,7 +234,6 @@ define(['taskbar'], function(taskbar) {
 					}
 				}
 
-				// fileForm[0].reset();
 				uploadContentFiles({
 					files: files,
 					post_uuid: post_uuid,
@@ -264,7 +262,6 @@ define(['taskbar'], function(taskbar) {
 						fd.append('files[]', blob, blob.name);
 					}
 
-					// fileForm[0].reset();
 					uploadContentFiles({
 						files: [blob],
 						post_uuid: post_uuid,
@@ -277,7 +274,7 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	function escapeRegExp(text) {
-		return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+		return text.replace(/[\-\[\]\{\}\(\)\*\+\?\.\,\\\^\$\|\#\s]/g, "\\$&");
 	}
 
 	function uploadContentFiles(params) {
@@ -417,66 +414,161 @@ define(['taskbar'], function(taskbar) {
 		thumbForm.submit();
 	}
 
-	composer.newTopic = function(cid) {
-		if(allowed()) {
-			push({
-				cid: cid,
-				title: '',
-				body: '',
-				modified: false,
-				isMain: true
-			});
+	function handleFormattingBarClick() {
+		var iconClass = $(this).find('i').attr('class');
+		var textarea = $(this).parents('.composer').find('textarea')[0];
+
+		var textareaValue = $(textarea).val();
+
+		var selectionStart = textarea.selectionStart,
+			selectionEnd = textarea.selectionEnd,
+			selectionLength = selectionEnd - selectionStart,
+			isSelectionAtEnd = selectionStart === selectionEnd;
+
+		function updateSelection(start, end){
+			textarea.setSelectionRange(start, end);
+			textarea.focus();
 		}
+
+		function insertIntoInput(value) {
+			$(textarea).val(textareaValue.slice(0, selectionStart) + value + textareaValue.slice(selectionStart));
+		}
+
+		function wrapSelectedWith(leading, trailing){
+			if(trailing === undefined){
+				trailing = leading;
+			}
+
+			$(textarea).val(textareaValue.slice(0, selectionStart) + leading + textareaValue.slice(selectionStart, selectionEnd) + trailing + textareaValue.slice(selectionEnd));
+		}
+
+		if(iconClass === 'fa fa-bold') {
+			if (isSelectionAtEnd) {
+				insertIntoInput("**bolded text**");
+
+				updateSelection(selectionStart + 2, selectionStart + 13);
+			} else {
+				wrapSelectedWith('**');
+
+				// Highlight selection
+				updateSelection(selectionStart + 2, selectionEnd + 2);
+			}
+		}
+
+		if(iconClass === 'fa fa-italic') {
+			if (isSelectionAtEnd) {
+				insertIntoInput("*italicised text*");
+
+				// Highlight selection
+				updateSelection(selectionStart + 1, selectionStart + 16);
+			} else {
+				wrapSelectedWith('*');
+
+				// Highlight selection
+				updateSelection(selectionStart + 1, selectionEnd + 1);
+			}
+		}
+
+		if (iconClass === 'fa fa-list'){
+			if(isSelectionAtEnd){
+				insertIntoInput("\n* list item");
+
+				// Highlight "list item"
+				updateSelection(selectionStart + 3, selectionStart + 12);
+			} else {
+				wrapSelectedWith('\n* ', '');
+
+				// Maintain selection:
+				updateSelection(selectionStart + 3, selectionEnd + 3);
+			}
+		}
+
+		if (iconClass === 'fa fa-link') {
+			if (isSelectionAtEnd) {
+				insertIntoInput("[link text](link url)");
+
+				// Highlight "link url"
+				updateSelection(selectionStart + 12, selectionEnd + 20);
+			} else {
+				wrapSelectedWith('[', '](link url)');
+
+				// Highlight "link url"
+				updateSelection(selectionStart + selectionLength + 3, selectionEnd + 11);
+			}
+		}
+	}
+
+	composer.newTopic = function(cid) {
+		if(!allowed()) {
+			return;
+		}
+
+		push({
+			cid: cid,
+			title: '',
+			body: '',
+			modified: false,
+			isMain: true
+		});
 	};
 
 	composer.addQuote = function(tid, pid, title, username, text){
-		if (allowed()) {
-			var uuid = composer.active;
-			if(uuid !== undefined){
-				var bodyEl = $('#cmp-uuid-'+uuid).find('textarea');
-				var prevText = bodyEl.val();
-				if(tid !== composer.posts[uuid].tid) {
-					text = username + ' said in ['+title+'](/topic/'+tid+'#'+pid+'):\n'+text;
-				} else {
-					text = username + ' said:\n' + text;
-				}
-				composer.posts[uuid].body = (prevText.length ? prevText + '\n\n' : '') + text;
-				bodyEl.val(composer.posts[uuid].body);
-			} else {
-				composer.newReply(tid, pid, title, username + ' said:\n' + text);
-			}
+		if (!allowed()) {
+			return;
 		}
+
+		var uuid = composer.active;
+
+		if(uuid === undefined){
+			composer.newReply(tid, pid, title, username + ' said:\n' + text);
+			return;
+		}
+
+		var bodyEl = $('#cmp-uuid-'+uuid).find('textarea');
+		var prevText = bodyEl.val();
+		if(tid !== composer.posts[uuid].tid) {
+			text = username + ' said in ['+title+'](/topic/'+tid+'#'+pid+'):\n'+text;
+		} else {
+			text = username + ' said:\n' + text;
+		}
+		composer.posts[uuid].body = (prevText.length ? prevText + '\n\n' : '') + text;
+		bodyEl.val(composer.posts[uuid].body);
 	};
 
 	composer.newReply = function(tid, pid, title, text) {
-		if(allowed()) {
-			push({
-				tid: tid,
-				toPid: pid,
-				title: title,
-				body: text,
-				modified: false,
-				isMain: false
-			});
+		if(!allowed()) {
+			return;
 		}
+
+		push({
+			tid: tid,
+			toPid: pid,
+			title: title,
+			body: text,
+			modified: false,
+			isMain: false
+		});
 	};
 
 	composer.editPost = function(pid) {
-		if(allowed()) {
-			socket.emit('modules.composer.push', pid, function(err, threadData) {
-				if(err) {
-					return app.alertError(err.message);
-				}
-				push({
-					pid: pid,
-					title: threadData.title,
-					body: threadData.body,
-					modified: false,
-					isMain: !threadData.index,
-					topic_thumb: threadData.topic_thumb
-				});
-			});
+		if(!allowed()) {
+			return;
 		}
+
+		socket.emit('modules.composer.push', pid, function(err, threadData) {
+			if(err) {
+				return app.alertError(err.message);
+			}
+
+			push({
+				pid: pid,
+				title: threadData.title,
+				body: threadData.body,
+				modified: false,
+				isMain: !threadData.index,
+				topic_thumb: threadData.topic_thumb
+			});
+		});
 	};
 
 	composer.load = function(post_uuid) {
@@ -576,7 +668,7 @@ define(['taskbar'], function(taskbar) {
 					e.preventDefault();
 				});
 
-				postContainer.on('paste change keypress', 'input#topic-thumb-url', function(e) {
+				postContainer.on('paste change keypress', 'input#topic-thumb-url', function() {
 					var urlEl = $(this);
 					setTimeout(function(){
 						var url = urlEl.val();
@@ -616,72 +708,7 @@ define(['taskbar'], function(taskbar) {
 					}
 				});
 
-				postContainer.on('click', '.formatting-bar span', function() {
-					var postContentEl = postContainer.find('textarea'),
-						iconClass = $(this).find('i').attr('class'),
-						cursorEnd = postContentEl.val().length,
-						selectionStart = postContentEl[0].selectionStart,
-						selectionEnd = postContentEl[0].selectionEnd,
-						selectionLength = selectionEnd - selectionStart,
-						cursorPos;
-
-
-					function insertIntoInput(element, value) {
-						var start = postContentEl[0].selectionStart;
-						element.val(element.val().slice(0, start) + value + element.val().slice(start, element.val().length));
-						postContentEl[0].selectionStart = postContentEl[0].selectionEnd = start + value.length;
-					}
-
-					switch(iconClass) {
-						case 'fa fa-bold':
-							if (selectionStart === selectionEnd) {
-								// Nothing selected
-								cursorPos = postContentEl[0].selectionStart;
-								insertIntoInput(postContentEl, "**bolded text**");
-
-								// Highlight "link url"
-								postContentEl[0].selectionStart = cursorPos + 12;
-								postContentEl[0].selectionEnd = cursorPos + 20;
-							} else {
-								// Text selected
-								postContentEl.val(postContentEl.val().slice(0, selectionStart) + '**' + postContentEl.val().slice(selectionStart, selectionEnd) + '**' + postContentEl.val().slice(selectionEnd));
-								postContentEl[0].selectionStart = selectionStart + 2;
-								postContentEl[0].selectionEnd = selectionEnd + 2;
-							}
-							break;
-						case 'fa fa-italic':
-							if (selectionStart === selectionEnd) {
-								// Nothing selected
-								insertIntoInput(postContentEl, "*italicised text*");
-							} else {
-								// Text selected
-								postContentEl.val(postContentEl.val().slice(0, selectionStart) + '*' + postContentEl.val().slice(selectionStart, selectionEnd) + '*' + postContentEl.val().slice(selectionEnd));
-								postContentEl[0].selectionStart = selectionStart + 1;
-								postContentEl[0].selectionEnd = selectionEnd + 1;
-							}
-							break;
-						case 'fa fa-list':
-							// Nothing selected
-							insertIntoInput(postContentEl, "\n* list item");
-							break;
-						case 'fa fa-link':
-							if (selectionStart === selectionEnd) {
-								// Nothing selected
-								cursorPos = postContentEl[0].selectionStart;
-								insertIntoInput(postContentEl, "[link text](link url)");
-
-								// Highlight "link url"
-								postContentEl[0].selectionStart = cursorPos + 12;
-								postContentEl[0].selectionEnd = cursorPos + 20;
-							} else {
-								// Text selected
-								postContentEl.val(postContentEl.val().slice(0, selectionStart) + '[' + postContentEl.val().slice(selectionStart, selectionEnd) + '](link url)' + postContentEl.val().slice(selectionEnd));
-								postContentEl[0].selectionStart = selectionStart + selectionLength + 3;
-								postContentEl[0].selectionEnd = selectionEnd + 11;
-							}
-							break;
-					}
-				});
+				postContainer.on('click', '.formatting-bar span', handleFormattingBarClick);
 
 				postContainer.on('click', '.formatting-bar span .fa-picture-o, .formatting-bar span .fa-upload', function() {
 					$('#files').click();
@@ -871,11 +898,11 @@ define(['taskbar'], function(taskbar) {
 			titleEl = postContainer.find('.title'),
 			bodyEl = postContainer.find('textarea');
 
-		if ((parseInt(postData.tid) || parseInt(postData.pid)) > 0) {
+		if ((parseInt(postData.tid, 10) || parseInt(postData.pid, 10)) > 0) {
 			bodyEl.focus();
 			bodyEl.selectionStart = bodyEl.val().length;
 			bodyEl.selectionEnd = bodyEl.val().length;
-		} else if (parseInt(postData.cid) > 0) {
+		} else if (parseInt(postData.cid, 10) > 0) {
 			titleEl.focus();
 		}
 	};
