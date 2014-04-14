@@ -150,7 +150,10 @@ function setupConfig(next) {
 	} else {
 		// Use provided values, fall back to defaults
 		var	config = {},
-			question, x, numQ, allQuestions = questions.main.concat(questions.redis).concat(questions.mongo.concat(questions.level));
+			redisQuestions = require('./database/redis').questions,
+			mongoQuestions = require('./database/mongo').questions,
+			levelQuestions = require('./database/level').questions,
+			question, x, numQ, allQuestions = questions.main.concat(redisQuestions).concat(mongoQuestions.concat(levelQuestions));
 
 		for(x=0,numQ=allQuestions.length;x<numQ;x++) {
 			question = allQuestions[x];
