@@ -15,6 +15,7 @@ var fs = require('fs'),
 	utils = require('./../../public/src/utils'),
 	meta = require('./../meta'),
 	plugins = require('./../plugins'),
+	languages = require('./../languages'),
 	image = require('./../image'),
 	file = require('./../file');
 
@@ -331,22 +332,29 @@ accountsController.accountSettings = function(req, res, next) {
 				return next(err);
 			}
 
-			user.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
+			async.parallel({
+				user: function(next) {
+					user.getUserFields(uid, ['username', 'userslug'], next);
+				},
+				languages: function(next) {
+					languages.list(next);
+				}
+			}, function(err, results) {
 				if (err) {
 					return next(err);
 				}
 
-				if(!userData) {
+				if(!results.user) {
 					return userNotFound();
 				}
-				userData.yourid = req.user.uid;
-				userData.theirid = uid;
-				userData.settings = settings;
 
-				res.render('accountsettings', userData);
+				results.user.yourid = req.user.uid;
+				results.user.theirid = uid;
+				results.user.settings = settings;
+
+				res.render('accountsettings', results);
 			});
 		});
-
 	});
 };
 

@@ -7,16 +7,21 @@ define(['forum/accountheader'], function(header) {
 		$('#submitBtn').on('click', function() {
 			var settings = {};
 
-			$('.account input, .account textarea').each(function(id, input) {
+			$('.account').find('input, textarea, select').each(function(id, input) {
 				input = $(input);
+				var setting = input.attr('data-property');
+				if (input.is('select')) {
+					settings[setting] = input.val();
+					return;
+				}
 
 				switch (input.attr('type')) {
 					case 'text' :
 					case 'textarea' :
-						settings[input.attr('data-property')] = input.val();
+						settings[setting] = input.val();
 						break;
 					case 'checkbox' :
-						settings[input.attr('data-property')] = input.is(':checked') ? 1 : 0;
+						settings[setting] = input.is(':checked') ? 1 : 0;
 						break;
 				}
 			});
@@ -32,9 +37,16 @@ define(['forum/accountheader'], function(header) {
 		});
 
 		socket.emit('user.getSettings', function(err, settings) {
-			for (var setting in settings) {
-				if (settings.hasOwnProperty(setting)) {
-					var input = $('.account input[data-property="' + setting + '"]');
+			var inputs = $('.account').find('input, textarea, select');
+
+			inputs.each(function(index, input) {
+				input = $(input);
+				var setting = input.attr('data-property');
+				if (setting) {
+					if (input.is('select')) {
+						input.val(settings[setting]);
+						return;
+					}
 
 					switch (input.attr('type')) {
 						case 'text' :
@@ -46,7 +58,7 @@ define(['forum/accountheader'], function(header) {
 							break;
 					}
 				}
-			}
+			});
 		});
 	};
 

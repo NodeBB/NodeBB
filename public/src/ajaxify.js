@@ -178,7 +178,7 @@ var ajaxify = ajaxify || {};
 				}
 
 				data.relative_path = RELATIVE_PATH;
-				
+
 				templates.parse(tpl_url, data, function(template) {
 					translator.translate(template, function(translatedTemplate) {
 						$('#content').html(translatedTemplate);

@@ -63,11 +63,6 @@ var fs = require('fs'),
 
 					callback(err, res);
 				}
-
-				// this might be a good spot to add a hook
-				if (field === 'defaultLang') {
-					translator.clearLoadedFiles();
-				}
 			});
 		},
 		setOnEmpty: function (field, value, callback) {
@@ -173,10 +168,8 @@ var fs = require('fs'),
 			isTopic: /^topic\/\d+\/?/,
 			isUserPage: /^user\/[^\/]+(\/[\w]+)?/
 		},
-		build: function (urlFragment, callback) {
-			var user = require('./user');
-
-			Meta.title.parseFragment(decodeURIComponent(urlFragment), function(err, title) {
+		build: function (urlFragment, language, callback) {
+			Meta.title.parseFragment(decodeURIComponent(urlFragment), language, function(err, title) {
 				if (err) {
 					title = Meta.config.browserTitle || 'NodeBB';
 				} else {
@@ -186,14 +179,14 @@ var fs = require('fs'),
 				callback(null, title);
 			});
 		},
-		parseFragment: function (urlFragment, callback) {
+		parseFragment: function (urlFragment, language, callback) {
 			var	translated = ['', 'recent', 'unread', 'users', 'notifications'];
 			if (translated.indexOf(urlFragment) !== -1) {
 				if (!urlFragment.length) {
 					urlFragment = 'home';
 				}
 
-				translator.translate('[[pages:' + urlFragment + ']]', function(translated) {
+				translator.translate('[[pages:' + urlFragment + ']]', language, function(translated) {
 					callback(null, translated);
 				});
 			} else if (this.tests.isCategory.test(urlFragment)) {
@@ -215,7 +208,7 @@ var fs = require('fs'),
 
 				User.getUsernameByUserslug(userslug, function(err, username) {
 					if (subpage) {
-						translator.translate('[[pages:user.' + subpage + ', ' + username + ']]', function(translated) {
+						translator.translate('[[pages:user.' + subpage + ', ' + username + ']]', language, function(translated) {
 							callback(null, translated);
 						});
 					} else {

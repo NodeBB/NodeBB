@@ -143,30 +143,31 @@ middleware.checkAccountPermissions = function(req, res, next) {
 };
 
 middleware.buildHeader = function(req, res, next) {
-	async.parallel([
-		function(next) {
-			res.locals.renderHeader = true;
-			next();
+	res.locals.renderHeader = true;
+	async.parallel({
+		config: function(next) {
+			controllers.api.getConfig(req, res, next);
 		},
-		function(next) {
-			controllers.api.getConfig(req, res, function(err, config) {
-				res.locals.config = config;
-				next(err);
-			});
-		},
-		function(next) {
-			// consider caching this, since no user specific information is loaded here
-			app.render('footer', {}, function(err, template) {
-				translator.translate(template, function(parsedTemplate) {
-					res.locals.footer = parsedTemplate;
-					next(err);
-				});
-			});
+		footer: function(next) {
+			app.render('footer', {}, next);
 		}
-	], next);
+	}, function(err, results) {
+		if (err) {
+			return next(err);
+		}
+
+		res.locals.config = results.config;
+
+		translator.translate(results.footer, results.config.defaultLang, function(parsedTemplate) {
+			res.locals.footer = parsedTemplate;
+			next();
+		});
+	});
 };
 
 middleware.renderHeader = function(req, res, callback) {
+	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
+
 	var custom_header = {
 		'navigation': []
 	};
@@ -218,8 +219,6 @@ middleware.renderHeader = function(req, res, callback) {
 			}
 		}
 
-		var uid = '0';
-
 		templateValues.metaTags = defaultMetaTags.concat(res.locals.metaTags || []).map(function(tag) {
 			if(!tag || typeof tag.content !== 'string') {
 				winston.warn('Invalid meta tag. ', tag);
@@ -239,9 +238,6 @@ middleware.renderHeader = function(req, res, callback) {
 			href: nconf.get('relative_path') + '/favicon.ico'
 		});
 
-		if(req.user && req.user.uid) {
-			uid = req.user.uid;
-		}
 
 		templateValues.useCustomCSS = false;
 		if (meta.config.useCustomCSS === '1') {
@@ -249,34 +245,30 @@ middleware.renderHeader = function(req, res, callback) {
 			templateValues.customCSS = meta.config.customCSS;
 		}
 
-		async.parallel([
-			function(next) {
-				translator.translate('[[pages:' + path.basename(req.url) + ']]', function(translated) {
-					var	metaTitle = templateValues.metaTags.filter(function(tag) {
-							return tag.name === 'title';
-						});
-
-					if (translated) {
-						templateValues.browserTitle = translated;
-					} else if (metaTitle.length > 0 && metaTitle[0].content) {
-						templateValues.browserTitle = metaTitle[0].content;
-					} else {
-						templateValues.browserTitle = meta.config.browserTitle || 'NodeBB';
-					}
-
-					next();
-				});
+		async.parallel({
+			title: function(next) {
+				if (uid) {
+					user.getSettings(uid, function(err, settings) {
+						if (err) {
+							return next(err);
+						}
+						meta.title.build(req.url.slice(1), settings.language, next);
+					});
+				} else {
+					meta.title.build(req.url.slice(1), meta.config.defaultLang, next);
+				}
 			},
-			function(next) {
-				user.isAdministrator(uid, function(err, isAdmin) {
-					templateValues.isAdmin = isAdmin || false;
-					next();
-				});
+			isAdmin: function(next) {
+				user.isAdministrator(uid, next);
 			}
-		], function() {
-			app.render('header', templateValues, function(err, template) {
-				callback(null, template);
-			});
+		}, function(err, results) {
+			if (err) {
+				return next(err);
+			}
+			templateValues.browserTitle = results.title;
+			templateValues.isAdmin = results.isAdmin || false;
+
+			app.render('header', templateValues, callback);
 		});
 	});
 };
@@ -322,7 +314,7 @@ middleware.processRender = function(req, res, next) {
 				middleware.renderHeader(req, res, function(err, template) {
 					str = template + str;
 
-					translator.translate(str, function(translated) {
+					translator.translate(str, res.locals.config.defaultLang, function(translated) {
 						fn(err, translated);
 					});
 				});

@@ -58,6 +58,7 @@ apiController.getConfig = function(req, res, next) {
 		config.topicsPerPage = settings.topicsPerPage;
 		config.postsPerPage = settings.postsPerPage;
 		config.notificationSounds = settings.notificationSounds;
+		config.defaultLang = settings.language || config.defaultLang;
 
 		if (res.locals.isAPI) {
 			res.json(200, config);

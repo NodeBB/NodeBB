@@ -29,6 +29,7 @@ module.exports = function(User) {
 				settings.topicsPerPage = settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : parseInt(meta.config.topicsPerPage, 10) || 20;
 				settings.postsPerPage = settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : parseInt(meta.config.postsPerPage, 10) || 10;
 				settings.notificationSounds = settings.notificationSounds ? parseInt(settings.notificationSounds, 10) === 1 : true;
+				settings.language = settings.language || meta.config.defaultLang || 'en_GB';
 				callback(null, settings);
 			});
 		});
@@ -47,7 +48,8 @@ module.exports = function(User) {
 			usePagination: data.usePagination,
 			topicsPerPage: data.topicsPerPage,
 			postsPerPage: data.postsPerPage,
-			notificationSounds: data.notificationSounds
+			notificationSounds: data.notificationSounds,
+			language: data.language || meta.config.defaultLang
 		}, callback);
 	};
 };
