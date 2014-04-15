@@ -1,11 +1,13 @@
 'use strict';
 
 var async = require('async'),
-	db = require('./../database'),
-	utils = require('./../../public/src/utils'),
+	db = require('../database'),
+	utils = require('../../public/src/utils'),
 	validator = require('validator'),
-	plugins = require('./../plugins'),
-	groups = require('./../groups');
+	plugins = require('../plugins'),
+	groups = require('../groups'),
+	notifications = require('../notifications'),
+	translator = require('../../public/src/translator');
 
 module.exports = function(User) {
 
@@ -45,7 +47,23 @@ module.exports = function(User) {
 					if (err) {
 						return next(err);
 					}
-					next(exists ? new Error('[[error:username-taken]]') : null);
+					if (exists) {
+						async.forever(function(next) {
+							// Append a random number to the username
+							var	newUsername = userData.username + (Math.floor(Math.random() * 255) + 1);
+							User.exists(newUsername, function(err, exists) {
+								if (!exists) {
+									next(newUsername);
+								} else {
+									next();
+								}
+							});
+						}, function(username) {
+							next(null, username);
+						});
+					} else {
+						next();
+					}
 				});
 			},
 			function(next) {
@@ -70,6 +88,12 @@ module.exports = function(User) {
 				return callback(err);
 			}
 			userData = results[results.length - 1];
+
+			// If a new username was picked...
+			if (results[3]) {
+				userData.username = results[3];
+				userData.userslug = utils.slugify(results[3]);
+			}
 
 			db.incrObjectField('global', 'nextUid', function(err, uid) {
 				if(err) {
@@ -124,6 +148,19 @@ module.exports = function(User) {
 					db.sortedSetAdd('users:reputation', 0, uid);
 
 					groups.join('registered-users', uid);
+
+					// If their username was automatically changed...
+					if (results[3]) {
+						translator.translate('[[user:username_taken_workaround, ' + userData.username + ']]', function(notifText) {
+							notifications.create({
+								text: notifText,
+								picture: 'brand:logo',
+								datetime: Date.now()
+							}, function(nid) {
+								notifications.push(nid, uid);
+							});
+						});
+					}
 
 					if (password) {
 						User.hashPassword(password, function(err, hash) {

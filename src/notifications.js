@@ -3,11 +3,13 @@
 var async = require('async'),
 	winston = require('winston'),
 	cron = require('cron').CronJob,
+	nconf = require('nconf'),
 
 	db = require('./database'),
 	utils = require('../public/src/utils'),
 	events = require('./events'),
-	User = require('./user');
+	User = require('./user'),
+	meta = require('./meta');
 
 (function(Notifications) {
 
@@ -29,14 +31,22 @@ var async = require('async'),
 			if (exists) {
 				db.sortedSetRank('uid:' + uid + ':notifications:read', nid, function(err, rank) {
 
-					db.getObjectFields('notifications:' + nid, ['nid', 'from', 'text', 'importance', 'score', 'path', 'datetime', 'uniqueId'], function(err, notification) {
+					db.getObjectFields('notifications:' + nid, ['nid', 'from', 'text', 'image', 'importance', 'score', 'path', 'datetime', 'uniqueId'], function(err, notification) {
 						notification.read = rank !== null ? true:false;
 
-						if (notification.from) {
+						if (notification.from && !notification.image) {
 							User.getUserField(notification.from, 'picture', function(err, picture) {
 								notification.image = picture;
 								callback(notification);
 							});
+						} else if (notification.image) {
+							switch(notification.image) {
+								case 'brand:logo':
+									notification.image = meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png';
+								break;
+							}
+
+							callback(notification);
 						} else {
 							callback(notification);
 						}
