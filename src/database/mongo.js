@@ -28,7 +28,8 @@
 		},
 		{
 			name: 'mongo:password',
-			description: 'Password of your MongoDB database'
+			description: 'Password of your MongoDB database',
+			hidden: true
 		},
 		{
 			name: "mongo:database",

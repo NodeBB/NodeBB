@@ -28,7 +28,8 @@
 		},
 		{
 			name: 'redis:password',
-			description: 'Password of your Redis database'
+			description: 'Password of your Redis database',
+			hidden: true
 		},
 		{
 			name: "redis:database",
