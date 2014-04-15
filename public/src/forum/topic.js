@@ -153,13 +153,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 
 		function createUserIcon(uid, picture, userslug, username) {
 			if(!$('.thread_active_users').find('[data-uid="' + uid + '"]').length) {
-				var div = $('<div class="inline-block"><a data-uid="' + uid + '" href="' + RELATIVE_PATH + '/user/' + userslug + '"><img src="'+ picture +'"/></a></div>');
-				div.find('a').tooltip({
-					placement: 'top',
-					title: username
-				});
-
-				return div;
+				return $('<div class="inline-block"><a data-uid="' + uid + '" href="' + RELATIVE_PATH + '/user/' + userslug + '"><img title="' + username + '" src="'+ picture +'"/></a></div>');
 			}
 		}
 
@@ -199,6 +193,10 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 						break;
 					}
 				}
+
+				activeEl.find('a[data-uid] img').tooltip({
+					placement: 'top'
+				});
 
 				var remainingUsers = data.users.length - 9;
 				remainingUsers = remainingUsers < 0 ? 0 : remainingUsers;
@@ -714,7 +712,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 		socket.emit('topics.postcount', ajaxify.variables.get('topic_id'), function(err, postcount) {
 			if(!err) {
 				Topic.postCount = postcount;
-				$('#topic-post-count').html(Topic.postCount);
+				$('.topic-post-count').html(Topic.postCount);
 				navigator.setCount(Topic.postCount);
 			}
 		});
