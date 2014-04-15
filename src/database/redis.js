@@ -108,6 +108,6 @@
 	};
 	
 	module.helpers = module.helpers || {};
-	module.helpers.level = require('./mongo/helpers');
+	module.helpers.redis = require('./redis/helpers');
 }(exports));
 
