@@ -121,7 +121,7 @@ function checkCIFlag(next) {
 }
 
 function setupConfig(next) {
-	var configureDatabases = require('./../install/databases');
+	var configureDatabases = require('../install/databases');
 
 	// prompt prepends "prompt: " to questions, let's clear that.
 	prompt.start();
@@ -195,7 +195,43 @@ function completeConfigSetup(err, config, next) {
 			return next(err);
 		}
 
-		require('./database').init(next);
+		setupDatabase(server_conf, next);
+	});
+}
+
+function setupDatabase(server_conf, next) {
+	var	npm = require('npm'),
+		packages = [];
+
+	npm.load({
+		loglevel: 'silly'
+	}, function(err) {
+		if (err) {
+			next(err);
+		}
+
+		switch(server_conf.database) {
+		case 'redis':
+			packages = packages.concat(['redis', 'hiredis', 'connect-redis']);
+			break;
+
+		case 'mongo':
+			packages = packages.concat(['mongodb', 'connect-mongo']);
+			break;
+
+		case 'level':
+			packages = packages.concat(['levelup', 'leveldown', 'connect-level']);
+			break;
+		}
+
+		console.log(packages);
+		npm.commands.install(packages, function(err) {
+			if (err) {
+				return next(err);
+			}
+
+			require('./database').init(next);
+		});
 	});
 }
 

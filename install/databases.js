@@ -7,7 +7,6 @@ var async = require('async'),
 
 	questions = {};
 
-// maybe this should go into install/database.js
 function success(err, config, callback) {
 	if (!config) {
 		return callback(new Error('aborted'));
