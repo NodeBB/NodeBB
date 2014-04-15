@@ -4,7 +4,6 @@ var groups = require('../../groups'),
 	user = require('../../user'),
 	categories = require('../../categories'),
 	categoryTools = require('../../categoryTools'),
-	index = require('../index'),
 	async = require('async'),
 	Categories = {};
 
