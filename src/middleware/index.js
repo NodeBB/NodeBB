@@ -13,18 +13,23 @@ var templates = require('./../../public/src/templates'),
 	fs = require('fs'),
 	nconf = require('nconf'),
 	express = require('express'),
-	winston = require('winston');
+	winston = require('winston'),
+
+	relativePath,
+	viewsPath,
+	themesPath,
+	baseTemplatesPath,
+	themeTemplatesPath;
 
 
 var middleware = {};
-
 
 function routeThemeScreenshots(app, themes) {
 	var	screenshotPath;
 
 	async.each(themes, function(themeObj, next) {
 		if (themeObj.screenshot) {
-			screenshotPath = path.join(nconf.get('themes_path'), themeObj.id, themeObj.screenshot);
+			screenshotPath = path.join(themesPath, themeObj.id, themeObj.screenshot);
 			(function(id, path) {
 				fs.exists(path, function(exists) {
 					if (exists) {
@@ -50,7 +55,7 @@ function routeCurrentTheme(app, themeData) {
 
 	// Theme's static directory
 	if (themeData['theme:staticDir']) {
-		app.use(nconf.get('relative_path') + '/css/assets', express.static(path.join(nconf.get('themes_path'), themeData['theme:id'], themeData['theme:staticDir']), {
+		app.use(relativePath + '/css/assets', express.static(path.join(themesPath, themeData['theme:id'], themeData['theme:staticDir']), {
 			maxAge: app.enabled('cache') ? 5184000000 : 0
 		}));
 		if (process.env.NODE_ENV === 'development') {
@@ -64,37 +69,37 @@ function compileTemplates(pluginTemplates) {
 		rimraf = require('rimraf');
 
 	winston.info('[themes] Compiling templates');
-	rimraf.sync(nconf.get('views_dir'));
-	mkdirp.sync(nconf.get('views_dir'));
+	rimraf.sync(viewsPath);
+	mkdirp.sync(viewsPath);
 
-	utils.walk(nconf.get('base_templates_path'), function(err, baseTpls) {
-		utils.walk(nconf.get('theme_templates_path'), function (err, themeTpls) {
+	utils.walk(baseTemplatesPath, function(err, baseTpls) {
+		utils.walk(themeTemplatesPath, function (err, themeTpls) {
 			var paths = pluginTemplates;
 
 			if (!baseTpls || !themeTpls) {
-				winston.warn('[themes] Could not find base template files at: ' + nconf.get('base_templates_path'));
+				winston.warn('[themes] Could not find base template files at: ' + baseTemplatesPath);
 			}
 
-			baseTpls = !baseTpls ? [] : baseTpls.map(function(tpl) { return tpl.replace(nconf.get('base_templates_path'), ''); });
-			themeTpls = !themeTpls ? [] : themeTpls.map(function(tpl) { return tpl.replace(nconf.get('theme_templates_path'), ''); });
+			baseTpls = !baseTpls ? [] : baseTpls.map(function(tpl) { return tpl.replace(baseTemplatesPath, ''); });
+			themeTpls = !themeTpls ? [] : themeTpls.map(function(tpl) { return tpl.replace(themeTemplatesPath, ''); });
 
 			baseTpls.forEach(function(el, i) {
-				paths[baseTpls[i]] = path.join(nconf.get('base_templates_path'), baseTpls[i]);
+				paths[baseTpls[i]] = path.join(baseTemplatesPath, baseTpls[i]);
 			});
 
 			themeTpls.forEach(function(el, i) {
-				paths[themeTpls[i]] = path.join(nconf.get('theme_templates_path'), themeTpls[i]);
+				paths[themeTpls[i]] = path.join(themeTemplatesPath, themeTpls[i]);
 			});
 
-			async.each(Object.keys(paths), function(relative_path, next) {
-				var file = fs.readFileSync(paths[relative_path]).toString(),
+			async.each(Object.keys(paths), function(relativePath, next) {
+				var file = fs.readFileSync(paths[relativePath]).toString(),
 					matches = null,
 					regex = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
 
 				while(matches = file.match(regex)) {
 					var partial = "/" + matches[1];
 
-					if (paths[partial] && relative_path !== partial) {
+					if (paths[partial] && relativePath !== partial) {
 						file = file.replace(regex, fs.readFileSync(paths[partial]).toString());
 					} else {
 						winston.warn('[themes] Partial not loaded: ' + matches[1]);
@@ -102,8 +107,8 @@ function compileTemplates(pluginTemplates) {
 					}
 				}
 
-				mkdirp.sync(path.join(nconf.get('views_dir'), relative_path.split('/').slice(0, -1).join('/')));
-				fs.writeFile(path.join(nconf.get('views_dir'), relative_path), file, next);
+				mkdirp.sync(path.join(viewsPath, relativePath.split('/').slice(0, -1).join('/')));
+				fs.writeFile(path.join(viewsPath, relativePath), file, next);
 			}, function(err) {
 				if (err) {
 					winston.error(err);
@@ -130,8 +135,8 @@ function handleErrors(err, req, res, next) {
 }
 
 function catch404(req, res, next) {
-	var	isLanguage = new RegExp('^' + nconf.get('relative_path') + '/language/[\\w]{2,}/.*.json'),
-		isClientScript = new RegExp('^' + nconf.get('relative_path') + '\\/src\\/forum(\\/admin)?\\/.+\\.js');
+	var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
+		isClientScript = new RegExp('^' + relativePath + '\\/src\\/forum(\\/admin)?\\/.+\\.js');
 
 	res.status(404);
 
@@ -144,7 +149,7 @@ function catch404(req, res, next) {
 			winston.warn('Route requested but not found: ' + req.url);
 		}
 
-		res.redirect(nconf.get('relative_path') + '/404');
+		res.redirect(relativePath + '/404');
 	} else if (req.accepts('json')) {
 		if (process.env.NODE_ENV === 'development') {
 			winston.warn('Route requested but not found: ' + req.url);
@@ -164,15 +169,21 @@ function catch404(req, res, next) {
 module.exports = function(app, data) {
 	middleware = require('./middleware')(app);
 
+	relativePath = nconf.get('relative_path');
+	viewsPath = nconf.get('views_dir');
+	themesPath = nconf.get('themes_path');
+	baseTemplatesPath = nconf.get('base_templates_path');
+	themeTemplatesPath = nconf.get('theme_templates_path');
+
 	app.configure(function() {
 		app.engine('tpl', templates.__express);
 		app.set('view engine', 'tpl');
-		app.set('views', nconf.get('views_dir'));
+		app.set('views', viewsPath);
 
 		app.use(express.compress());
 
 		app.use(express.favicon(path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico')));
-		app.use(nconf.get('relative_path') + '/apple-touch-icon', middleware.routeTouchIcon);
+		app.use(relativePath + '/apple-touch-icon', middleware.routeTouchIcon);
 
 		app.use(express.bodyParser());
 		app.use(express.cookieParser());
@@ -206,9 +217,9 @@ module.exports = function(app, data) {
 			compileTemplates(pluginTemplates);
 		});
 
-		app.use(nconf.get('relative_path'), app.router);
+		app.use(relativePath, app.router);
 
-		app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../../', 'public'), {
+		app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
 			maxAge: app.enabled('cache') ? 5184000000 : 0
 		}));
 
