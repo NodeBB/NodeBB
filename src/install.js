@@ -381,7 +381,7 @@ function enableDefaultPlugins(next) {
 	}, next);
 }
 
-function populateDatabase(next) {
+function setCopyrightWidget(next) {
 	var	db = require('./database.js');
 
 	db.init(function(err) {
@@ -392,7 +392,7 @@ function populateDatabase(next) {
 }
 
 install.setup = function (callback) {
-	async.series([checkSetupFlag, checkCIFlag, setupConfig, setupDefaultConfigs, enableDefaultTheme, createAdministrator, createCategories, enableDefaultPlugins, populateDatabase,
+	async.series([checkSetupFlag, checkCIFlag, setupConfig, setupDefaultConfigs, enableDefaultTheme, createAdministrator, createCategories, enableDefaultPlugins, setCopyrightWidget,
 		function (next) {
 			require('./upgrade').upgrade(next);
 		}
