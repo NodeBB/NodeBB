@@ -42,7 +42,9 @@ define(['buzz'], function(buzz) {
 			return callback();
 		}
 
-		loadedSounds[fileName] = new buzz.sound(files[fileName]);
+		if (files && files[fileName]) {
+			loadedSounds[fileName] = new buzz.sound(files[fileName]);
+		}
 		callback();
 	}
 

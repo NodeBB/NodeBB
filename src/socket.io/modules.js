@@ -208,6 +208,23 @@ function sendChatNotification(fromuid, touid, username) {
 	}
 }
 
+SocketModules.chats.userStartTyping = function(socket, data, callback) {
+	sendTypingNotification('event:chats.userStartTyping', socket, data, callback);
+};
+
+SocketModules.chats.userStopTyping = function(socket, data, callback) {
+	sendTypingNotification('event:chats.userStopTyping', socket, data, callback);
+};
+
+function sendTypingNotification(event, socket, data, callback) {
+	if (!socket.uid || !data) {
+		return;
+	}
+	server.getUserSockets(data.touid).forEach(function(socket) {
+		socket.emit(event, data.fromUid);
+	});
+}
+
 SocketModules.chats.list = function(socket, data, callback) {
 	Messaging.getRecentChats(socket.uid, callback);
 };

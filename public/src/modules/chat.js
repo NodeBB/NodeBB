@@ -84,6 +84,20 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 				sounds.play('chat-incoming');
 			}
 		});
+
+		socket.on('event:chats.userStartTyping', function(withUid) {
+			var modal = module.getModal(withUid);
+			var chatContent = modal.find('#chat-content');
+			modal.find('.user-typing')
+				.removeClass('hide')
+				.appendTo(chatContent);
+			scrollToBottom(chatContent);
+		});
+
+		socket.on('event:chats.userStopTyping', function(withUid) {
+			var modal = module.getModal(withUid);
+			modal.find('.user-typing').addClass('hide');
+		});
 	};
 
 	module.bringModalToTop = function(chatModal) {
@@ -152,12 +166,8 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 
 				chatModal.find('#chat-with-name').html(username);
 
-				chatModal.find('#chat-close-btn').on('click', function(e) {
-					clearInterval(chatModal.intervalId);
-					chatModal.intervalId = 0;
-					chatModal.remove();
-					chatModal.data('modal', null);
-					taskbar.discard('chat', uuid);
+				chatModal.find('#chat-close-btn').on('click', function() {
+					module.close(chatModal);
 				});
 
 				chatModal.on('click', function(e) {
@@ -170,6 +180,11 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 					checkOnlineStatus(chatModal);
 				});
 
+				translator.translate('[[modules:chat.user_typing, ' + username + ']]', function(translated) {
+					chatModal.find('.user-typing').text(translated);
+				});
+
+
 				taskbar.push('chat', chatModal.attr('UUID'), {
 					title:'<i class="fa fa-comment"></i> ' + username,
 					state: ''
@@ -178,6 +193,15 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 				callback(chatModal);
 			});
 		});
+	};
+
+	module.close = function(chatModal) {
+		clearInterval(chatModal.intervalId);
+		chatModal.intervalId = 0;
+		chatModal.remove();
+		chatModal.data('modal', null);
+		taskbar.discard('chat', chatModal.attr('UUID'));
+		notifyStopTyping(chatModal.touid);
 	};
 
 	module.center = function(chatModal) {
@@ -199,12 +223,17 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 	};
 
 	module.minimize = function(uuid) {
-		var chatModal = $('div[UUID="'+uuid+'"]');
+		var chatModal = $('div[UUID="' + uuid + '"]');
 		chatModal.addClass('hide');
 		taskbar.minimize('chat', uuid);
 		clearInterval(chatModal.intervalId);
 		chatModal.intervalId = 0;
+		notifyStopTyping(chatModal.touid);
 	};
+
+	function notifyStopTyping(touid) {
+		socket.emit('modules.chats.userStopTyping', {touid:touid, fromUid: app.uid});
+	}
 
 	function getChatMessages(chatModal, callback) {
 		socket.emit('modules.chats.get', {touid:chatModal.touid}, function(err, messages) {
@@ -216,9 +245,18 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 	}
 
 	function addSendHandler(chatModal) {
-		chatModal.find('#chat-message-input').off('keypress').on('keypress', function(e) {
+		var input = chatModal.find('#chat-message-input');
+		input.off('keypress').on('keypress', function(e) {
 			if(e.which === 13) {
 				sendMessage(chatModal);
+			}
+		});
+
+		input.off('keyup').on('keyup', function() {
+			if ($(this).val()) {
+				socket.emit('modules.chats.userStartTyping', {touid:chatModal.touid, fromUid: app.uid});
+			} else {
+				notifyStopTyping(chatModal.touid);
 			}
 		});
 
@@ -230,11 +268,12 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 
 	function sendMessage(chatModal) {
 		var msg = S(chatModal.find('#chat-message-input').val()).stripTags().s;
-		if(msg.length) {
+		if (msg.length) {
 			msg = msg +'\n';
 			socket.emit('modules.chats.send', {touid:chatModal.touid, message:msg});
 			chatModal.find('#chat-message-input').val('');
 			sounds.play('chat-outgoing');
+			notifyStopTyping(chatModal.touid);
 		}
 	}
 
