@@ -18,11 +18,11 @@ var	groups = require('../groups'),
 	SocketAdmin = {
 		user: require('admin/user'),
 		categories: require('admin/categories'),
+		groups: require('admin/groups'),
 		themes: {},
 		plugins: {},
 		widgets: {},
 		config: {},
-		groups: {},
 		settings: {}
 	};
 
@@ -67,7 +67,6 @@ SocketAdmin.fireEvent = function(socket, data, callback) {
 	index.server.sockets.emit(data.name, data.payload || {});
 };
 
-
 SocketAdmin.themes.getInstalled = function(socket, data, callback) {
 	meta.themes.get(callback);
 };
@@ -100,7 +99,6 @@ SocketAdmin.widgets.set = function(socket, data, callback) {
 	widgets.setArea(data, callback);
 };
 
-/* Configs */
 SocketAdmin.config.get = function(socket, data, callback) {
 	meta.configs.list(callback);
 };
@@ -130,56 +128,6 @@ SocketAdmin.config.remove = function(socket, key) {
 	meta.configs.remove(key);
 };
 
-/* Groups */
-SocketAdmin.groups.create = function(socket, data, callback) {
-	if(!data) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-
-	groups.create(data.name, data.description, function(err, groupObj) {
-		callback(err, groupObj || undefined);
-	});
-};
-
-SocketAdmin.groups.delete = function(socket, groupName, callback) {
-	groups.destroy(groupName, callback);
-};
-
-SocketAdmin.groups.get = function(socket, groupName, callback) {
-	groups.get(groupName, {
-		expand: true
-	}, function(err, groupObj) {
-		callback(err, groupObj || undefined);
-	});
-};
-
-SocketAdmin.groups.join = function(socket, data, callback) {
-	if(!data) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-
-	groups.join(data.groupName, data.uid, callback);
-};
-
-SocketAdmin.groups.leave = function(socket, data, callback) {
-	if(!data) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-
-	groups.leave(data.groupName, data.uid, callback);
-};
-
-SocketAdmin.groups.update = function(socket, data, callback) {
-	if(!data) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-
-	groups.update(data.groupName, data.values, function(err) {
-		callback(err ? err.message : null);
-	});
-};
-
-/* Settings */
 SocketAdmin.settings.get = function(socket, data, callback) {
 	meta.settings.get(data.hash, callback);
 };
