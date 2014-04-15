@@ -77,8 +77,9 @@ var db = require('./database'),
 				}
 
 				async.map(messages, function(message, next) {
-					message.fromUser = userData[0];
-					message.toUser = userData[1];
+					var self = parseInt(message.fromuid, 10) === parseInt(fromuid)
+					message.fromUser = self ? userData[0] : userData[1];
+					message.toUser = self ? userData[1] : userData[0];
 
 					Messaging.parse(message.content, message.fromuid, fromuid, userData[1], userData[0], isNew, function(result) {
 						message.content = result;
