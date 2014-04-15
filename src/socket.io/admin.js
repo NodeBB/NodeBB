@@ -17,7 +17,7 @@ var	groups = require('../groups'),
 
 	SocketAdmin = {
 		topics: {},
-		user: {},
+		user: require('admin/user'),
 		categories: {},
 		themes: {},
 		plugins: {},
@@ -68,84 +68,6 @@ SocketAdmin.fireEvent = function(socket, data, callback) {
 	index.server.sockets.emit(data.name, data.payload || {});
 };
 
-/* User */
-SocketAdmin.user.makeAdmin = function(socket, theirid, callback) {
-	groups.join('administrators', theirid, callback);
-};
-
-SocketAdmin.user.removeAdmin = function(socket, theirid, callback) {
-	groups.leave('administrators', theirid, callback);
-};
-
-SocketAdmin.user.createUser = function(socket, userData, callback) {
-	if (!userData) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-	user.create(userData, callback);
-};
-
-SocketAdmin.user.banUser = function(socket, theirid, callback) {
-	user.isAdministrator(theirid, function(err, isAdmin) {
-		if (err || isAdmin) {
-			return callback(err || new Error('[[error:cant-ban-other-admins]]'));
-		}
-
-		user.ban(theirid, function(err) {
-			if (err) {
-				return callback(err);
-			}
-
-			var sockets = index.getUserSockets(theirid);
-
-			for(var i=0; i<sockets.length; ++i) {
-				sockets[i].emit('event:banned');
-			}
-
-			module.parent.exports.logoutUser(theirid);
-			callback();
-		});
-	});
-};
-
-SocketAdmin.user.unbanUser = function(socket, theirid, callback) {
-	user.unban(theirid, callback);
-};
-
-SocketAdmin.user.deleteUser = function(socket, theirid, callback) {
-	user.delete(theirid, function(err) {
-		if (err) {
-			return callback(err);
-		}
-
-		events.logAdminUserDelete(socket.uid, theirid);
-
-		module.parent.exports.logoutUser(theirid);
-		callback();
-	});
-};
-
-SocketAdmin.user.search = function(socket, username, callback) {
-	user.search(username, function(err, data) {
-		function isAdmin(userData, next) {
-			user.isAdministrator(userData.uid, function(err, isAdmin) {
-				if(err) {
-					return next(err);
-				}
-
-				userData.administrator = isAdmin?'1':'0';
-				next();
-			});
-		}
-
-		if (err) {
-			return callback(err);
-		}
-
-		async.each(data.users, isAdmin, function(err) {
-			callback(err, data);
-		});
-	});
-};
 
 /* Categories */
 SocketAdmin.categories.create = function(socket, data, callback) {
