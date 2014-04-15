@@ -16,9 +16,9 @@ var	groups = require('../groups'),
 	index = require('./index'),
 
 	SocketAdmin = {
-		user: require('admin/user'),
-		categories: require('admin/categories'),
-		groups: require('admin/groups'),
+		user: require('./admin/user'),
+		categories: require('./admin/categories'),
+		groups: require('./admin/groups'),
 		themes: {},
 		plugins: {},
 		widgets: {},

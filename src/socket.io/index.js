@@ -41,7 +41,7 @@ Sockets.init = function(server) {
 		files.splice(files.indexOf('index.js'), 1);
 
 		async.each(files, function(lib, next) {
-			if (lib.slice(0, -3) === '.js') {
+			if (lib.substr(lib.length - 3) === '.js') {
 				lib = lib.slice(0, -3);
 				Namespaces[lib] = require('./' + lib);
 			}
