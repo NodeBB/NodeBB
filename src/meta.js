@@ -421,9 +421,9 @@ var fs = require('fs'),
 			if (err || !sounds) {
 				// Send default sounds
 				var	defaults = {
-						notification: 'notification.wav',
-						'chat-incoming': 'waterdrop-high.wav',
-						'chat-outgoing': 'waterdrop-low.wav'
+						'notification': 'notification.mp3',
+						'chat-incoming': 'waterdrop-high.mp3',
+						'chat-outgoing': 'waterdrop-low.mp3'
 					};
 
 				return callback(null, defaults);

@@ -48,7 +48,7 @@
     "nodebb-widget-essentials": "~0.0.21",
     "nodebb-theme-vanilla": "~0.0.19",
     "nodebb-theme-lavender": "~0.0.25",
-    "nodebb-plugin-soundpack-default": "~0.1.0"
+    "nodebb-plugin-soundpack-default": "~0.1.1"
   },
   "devDependencies": {
     "mocha": "~1.13.0"
