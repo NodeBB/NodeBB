@@ -9,7 +9,17 @@ var async = require('async'),
 	nconf = require('nconf'),
 	utils = require('../public/src/utils.js'),
 
-	ALLOWED_DATABASES = ['redis', 'mongo', 'level'];
+	DATABASES = {
+		"redis": {
+			"dependencies": ["redis", "connect-redis@~1.4"]
+		},
+		"mongo": {
+			"dependencies": ["mongodb", "connect-mongo"]
+		},
+		"level": {
+			"dependencies": ["levelup", "leveldown", "connect-leveldb"]
+		}
+	};
 
 
 var install = {},
@@ -137,12 +147,12 @@ function setupConfig(next) {
 					'default': nconf.get('secondary_database') || 'none'
 				}, function(err, dbConfig) {
 					config.secondary_database = dbConfig.secondary_database;
-					configureDatabases(err, config, ALLOWED_DATABASES, function(err, config) {
+					configureDatabases(err, config, DATABASES, function(err, config) {
 						completeConfigSetup(err, config, next);
 					});
 				});
 			} else {
-				configureDatabases(err, config, ALLOWED_DATABASES, function(err, config) {
+				configureDatabases(err, config, DATABASES, function(err, config) {
 					completeConfigSetup(err, config, next);
 				});
 			}
@@ -160,7 +170,7 @@ function setupConfig(next) {
 			config[question.name] = install.values[question.name] || question['default'] || '';
 		}
 
-		configureDatabases(null, config, ALLOWED_DATABASES, function(err, config) {
+		configureDatabases(null, config, DATABASES, function(err, config) {
 			completeConfigSetup(err, config, next);
 		});
 	}
@@ -208,18 +218,9 @@ function setupDatabase(server_conf, next) {
 			next(err);
 		}
 
-		switch(server_conf.database) {
-		case 'redis':
-			packages = packages.concat(['redis', 'connect-redis@~1.4']);
-			break;
-
-		case 'mongo':
-			packages = packages.concat(['mongodb', 'connect-mongo']);
-			break;
-
-		case 'level':
-			packages = packages.concat(['levelup', 'leveldown', 'connect-leveldb']);
-			break;
+		packages = packages.concat(DATABASES[server_conf.database].dependencies);
+		if (server_conf.secondary_database) {
+			packages = packages.concat(DATABASES[server_conf.secondary_database].dependencies);
 		}
 
 		npm.commands.install(packages, function(err) {

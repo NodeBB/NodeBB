@@ -89,7 +89,9 @@ function getSecondaryDatabaseModules(config, next) {
 	});
 }
 
-module.exports = function(err, config, allowedDBs, callback) {
+module.exports = function(err, config, databases, callback) {
+	var allowedDBs = Object.keys(databases);
+	
 	allowedDBs.forEach(function(db) {
 		questions[db] = require('./../src/database/' + db).questions;
 	});
