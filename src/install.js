@@ -365,7 +365,10 @@ function enableDefaultPlugins(next) {
 	winston.info('Enabling default plugins');
 
 	var defaultEnabled = [
-		'nodebb-plugin-markdown', 'nodebb-plugin-mentions', 'nodebb-widget-essentials'
+		'nodebb-plugin-markdown',
+		'nodebb-plugin-mentions',
+		'nodebb-widget-essentials',
+		'nodebb-plugin-soundpack-default'
 	];
 
 	async.each(defaultEnabled, function (pluginId, next) {
