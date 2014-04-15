@@ -203,16 +203,14 @@ function setupDatabase(server_conf, next) {
 	var	npm = require('npm'),
 		packages = [];
 
-	npm.load({
-		loglevel: 'silly'
-	}, function(err) {
+	npm.load({}, function(err) {
 		if (err) {
 			next(err);
 		}
 
 		switch(server_conf.database) {
 		case 'redis':
-			packages = packages.concat(['redis', 'hiredis', 'connect-redis']);
+			packages = packages.concat(['redis', 'connect-redis@~1.4']);
 			break;
 
 		case 'mongo':
