@@ -16,9 +16,8 @@ var	groups = require('../groups'),
 	index = require('./index'),
 
 	SocketAdmin = {
-		topics: {},
 		user: require('admin/user'),
-		categories: {},
+		categories: require('admin/categories'),
 		themes: {},
 		plugins: {},
 		widgets: {},
@@ -69,7 +68,6 @@ SocketAdmin.fireEvent = function(socket, data, callback) {
 };
 
 
-/* Themes, Widgets, and Plugins */
 SocketAdmin.themes.getInstalled = function(socket, data, callback) {
 	meta.themes.get(callback);
 };
