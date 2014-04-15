@@ -42,7 +42,6 @@
     "underscore": "~1.6.0",
     "mkdirp": "~0.3.5",
     "rimraf": "~2.2.6",
-    "reds": "~0.2.4",
     "npm": "^1.4.6",
     "nodebb-plugin-mentions": "~0.4.0",
     "nodebb-plugin-markdown": "~0.4.1",
