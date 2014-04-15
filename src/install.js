@@ -218,11 +218,10 @@ function setupDatabase(server_conf, next) {
 			break;
 
 		case 'level':
-			packages = packages.concat(['levelup', 'leveldown', 'connect-level']);
+			packages = packages.concat(['levelup', 'leveldown', 'connect-leveldb']);
 			break;
 		}
 
-		console.log(packages);
 		npm.commands.install(packages, function(err) {
 			if (err) {
 				return next(err);
