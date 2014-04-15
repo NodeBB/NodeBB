@@ -384,7 +384,7 @@ var fs = require('fs'),
 
 				// Link paths
 				async.each(filePaths, function(filePath, next) {
-					fs.symlink(filePath, path.join(soundsPath, path.basename(filePath)), 'file', next);
+					fs[process.platform !== 'win32' ? 'symlink' : 'link'](filePath, path.join(soundsPath, path.basename(filePath)), 'file', next);
 				}, function(err) {
 					if (!err) {
 						winston.info('[sounds] Sounds OK');
