@@ -47,6 +47,12 @@
 
 	"settings": "Settings",
 	"show_email": "Show My Email",
+	"digest_label": "Subscribe to Digest",
+	"digest_description": "Subscribe to email updates for this forum (new notifications and topics) according to a set schedule",
+	"digest_off": "Off",
+	"digest_daily": "Daily",
+	"digest_weekly": "Weekly",
+	"digest_monthly": "Monthly",
 
 	"has_no_follower": "This user doesn't have any followers :(",
 	"follows_no_one": "This user isn't following anyone :(",
