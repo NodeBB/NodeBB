@@ -79,7 +79,6 @@ SocketAdmin.themes.set = function(socket, data, callback) {
 	widgets.reset(function(err) {
 		meta.themes.set(data, function() {
 			callback();
-			meta.restart();
 		});
 	});
 };
@@ -87,7 +86,6 @@ SocketAdmin.themes.set = function(socket, data, callback) {
 SocketAdmin.plugins.toggle = function(socket, plugin_id) {
 	plugins.toggleActive(plugin_id, function(status) {
 		socket.emit('admin.plugins.toggle', status);
-		meta.restart();
 	});
 };
 
