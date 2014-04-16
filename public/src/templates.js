@@ -296,7 +296,7 @@
 		}
 
 		if (namespace) {
-			template = template.replace(new RegExp("{" + namespace + "[\\s\\S]*?}", 'g'), '');
+			template = template.replace(new RegExp("{" + namespace + "\\.[\\s\\S]*?}", 'g'), '');
 			namespace = '';
 		} else {
 			// clean up all undefined conditionals
