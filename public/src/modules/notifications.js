@@ -1,3 +1,8 @@
+'use strict';
+
+/* globals define, socket, translator, utils, config, app, ajaxify, Tinycon*/
+
+
 define(['sounds'], function(sound) {
 	var Notifications = {};
 
@@ -13,50 +18,44 @@ define(['sounds'], function(sound) {
 
 				socket.emit('notifications.get', null, function(err, data) {
 
-					var	numRead = data.read.length,
-						numUnread = data.unread.length,
-						x;
+					function createNotification(notification, callback) {
+						if (notification.image) {
+							image = '<img class="image" src="' + notification.image + '" />';
+						} else {
+							image = '';
+						}
 
-					var html = '';
+						return '<li class="' + (notification.readClass || '') + '"><a href="' + notification.path + '">' + image + '<span class="pull-right relTime">' + utils.relativeTime(notification.datetime, true) + '</span><span class="text">' + notification.text + '</span></a></li>';
+					}
+
+					var	x, html = '';
 
 					if (!err && (data.read.length + data.unread.length) > 0) {
 						var	image = '';
-						for (x = 0; x < numUnread; x++) {
-							if (data.unread[x].image) {
-								image = '<img class="image" src="' + data.unread[x].image + '" />';
-							} else {
-								image = '';
-							}
-							html += '<li class="' + (data.unread[x].readClass || '') + '"><a href="' + data.unread[x].path + '">' + image + '<span class="pull-right relTime">' + utils.relativeTime(data.unread[x].datetime, true) + '</span><span class="text">' + data.unread[x].text + '</span></a></li>';
+						for (x = 0; x < data.unread.length; x++) {
+							html += createNotification(data.unread[x]);
 						}
 
-						for (x = 0; x < numRead; x++) {
-							if (data.read[x].image) {
-								image = '<img src="' + data.read[x].image + '" />';
-							} else {
-								image = '';
-							}
-							html += '<li class="' + data.read[x].readClass + '"><a href="' + data.read[x].path + '">' + image + '<span class="pull-right relTime">' + utils.relativeTime(data.read[x].datetime, true) + '</span><span class="text">' + data.read[x].text + '</span></a></li>';
+						for (x = 0; x < data.read.length; x++) {
+							html += createNotification(data.read[x]);
 						}
-						addSeeAllLink(replaceHtml);
+
+						addSeeAllLink();
 
 					} else {
-						translator.translate('<li class="no-notifs"><a>[[notifications:no_notifs]]</a></li>', function(translated) {
-							html += translated;
-							addSeeAllLink(replaceHtml);
-						});
+						html += '<li class="no-notifs"><a>[[notifications:no_notifs]]</a></li>';
+						addSeeAllLink();
 					}
 
-					function addSeeAllLink(callback) {
-						translator.translate('<li class="pagelink"><a href="' + RELATIVE_PATH + '/notifications">[[notifications:see_all]]</a></li>', function(translated) {
-							html += translated;
-							callback();
-						});
+					function addSeeAllLink() {
+						html += '<li class="pagelink"><a href="' + config.relative_path + '/notifications">[[notifications:see_all]]</a></li>';
 					}
 
-					function replaceHtml() {
-						notifList.html(html);
-					}
+
+					translator.translate(html, function(translated) {
+						notifList.html(translated);
+					});
+
 
 					updateNotifCount(data.unread.length);
 

@@ -49,7 +49,6 @@ module.exports = function(User) {
 					}
 					if (exists) {
 						async.forever(function(next) {
-							// Append a random number to the username
 							var	newUsername = userData.username + (Math.floor(Math.random() * 255) + 1);
 							User.exists(newUsername, function(err, exists) {
 								if (!exists) {
@@ -87,10 +86,11 @@ module.exports = function(User) {
 			if (err) {
 				return callback(err);
 			}
-			userData = results[results.length - 1];
 
+			userData = results[results.length - 1];
+			var userNameChanged = !!results[3];
 			// If a new username was picked...
-			if (results[3]) {
+			if (userNameChanged) {
 				userData.username = results[3];
 				userData.userslug = utils.slugify(results[3]);
 			}
@@ -149,16 +149,13 @@ module.exports = function(User) {
 
 					groups.join('registered-users', uid);
 
-					// If their username was automatically changed...
-					if (results[3]) {
-						translator.translate('[[user:username_taken_workaround, ' + userData.username + ']]', function(notifText) {
-							notifications.create({
-								text: notifText,
-								picture: 'brand:logo',
-								datetime: Date.now()
-							}, function(nid) {
-								notifications.push(nid, uid);
-							});
+					if (userNameChanged) {
+						notifications.create({
+							text: '[[user:username_taken_workaround, ' + userData.username + ']]',
+							picture: 'brand:logo',
+							datetime: Date.now()
+						}, function(nid) {
+							notifications.push(nid, uid);
 						});
 					}
 

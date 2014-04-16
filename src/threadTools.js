@@ -229,7 +229,7 @@ var winston = require('winston'),
 						}
 
 						notifications.create({
-							text: '<strong>' + username + '</strong> has posted a reply to: "<strong>' + topicData.title + '</strong>"',
+							text: '[[notifications:user_posted_to, ' + username + ', ' + topicData.title + ']]',
 							path: nconf.get('relative_path') + '/topic/' + topicData.slug + '#' + pid,
 							uniqueId: 'topic:' + tid,
 							from: exceptUid

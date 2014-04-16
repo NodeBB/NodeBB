@@ -153,7 +153,7 @@ var async = require('async'),
 			db.getSetMembers('followers:' + uid, function(err, followers) {
 				if (followers && followers.length) {
 					topics.getTopicField(tid, 'slug', function(err, slug) {
-						var message = '<strong>' + username + '</strong> made a new post';
+						var message = '[[notifications:user_made_post, ' + username + ']]';
 
 						notifications.create({
 							text: message,
