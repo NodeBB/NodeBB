@@ -34,10 +34,28 @@ module.exports = function(User) {
 		}, function(err, data) {
 			var	now = new Date();
 
-			User.getMultipleUserFields(data.uids, ['uid', 'username', 'lastonline'], function(err, receipients) {
+			async.parallel({
+				recipients: function(next) {
+					User.getMultipleUserFields(data.uids, ['uid', 'username', 'lastonline'], next);
+				},
+				userSettings: function(next) {
+					User.getMultipleUserSettings(data.uids, next);
+				}
+			}, function(err, users) {
+				var recipients = users.recipients,
+					userSettings = users.userSettings,
+					subscribed;
+
+				// Find uids subscribed to daily digest emails
+				subscribed = userSettings.filter(function(setting) {
+					return !setting.dailyDigestFreq || setting.dailyDigestFreq === 'daily';
+				}).map(function(setting) {
+					return setting.uid;
+				});
+
 				// Find only those users who have not been online in the past 24 hours
-				var	users = receipients.filter(function(userObj) {
-					return yesterday > parseInt(userObj.lastonline, 10);
+				var	users = recipients.filter(function(userObj) {
+					return subscribed.indexOf(userObj.uid) !== -1 && yesterday > parseInt(userObj.lastonline, 10);
 				});
 
 				// Consider using eachLimit, but *only* if people complain about email relays choking -- otherwise we're ok.
