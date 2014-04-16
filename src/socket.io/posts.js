@@ -33,14 +33,11 @@ SocketPosts.reply = function(socket, data, callback) {
 		}
 
 		if (postData) {
+			websockets.server.sockets.emit('event:new_post', {
+				posts: [postData]
+			});
 
 			module.parent.exports.emitTopicPostStats();
-
-			var socketData = {
-				posts: [postData]
-			};
-
-			websockets.server.sockets.emit('event:new_post', socketData);
 
 			callback();
 		}
