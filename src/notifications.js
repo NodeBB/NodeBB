@@ -135,52 +135,40 @@ var async = require('async'),
 	function checkReplace(uniqueId, uid, newNotifObj, callback) {
 		var	replace = false, matched = false;
 
+		function checkAndRemove(set, next) {
+			db.getSortedSetRange(set, 0, -1, function(err, nids) {
+				if (err || !nids || !nids.length) {
+					return next(err);
+				}
+
+				var keys = nids.map(function(nid) {
+					return 'notifications:' + nid;
+				});
+
+				db.getObjectsFields(keys, ['uniqueId', 'importance'], function(err, nid_infos) {
+					if (err) {
+						return next(err);
+					}
+
+					nid_infos.forEach(function(nid_info) {
+						if (nid_info && nid_info.uniqueId === uniqueId) {
+							matched = true;
+							if ((nid_info.importance || 5) >= newNotifObj.importance) {
+								replace = true;
+								db.sortedSetRemove(set, nid_info.nid);
+							}
+						}
+					});
+				});
+			});
+		}
+
 		async.parallel([
 			function(next) {
-				db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, -1, function(err, nids) {
-					if (nids && nids.length > 0) {
-						async.each(nids, function(nid, next) {
-							Notifications.get(nid, uid, function(nid_info) {
-								if (nid_info && nid_info.uniqueId === uniqueId) {
-									matched = true;
-									if ((nid_info.importance || 5) >= newNotifObj.importance) {
-										replace = true;
-										db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid);
-									}
-								}
-								
-								next();
-							});
-						}, function(err) {
-							next();
-						});
-					} else {
-						next();
-					}
-				});
+				checkAndRemove('uid:' + uid + ':notifications:unread', next);
 			},
 			function(next) {
-				db.getSortedSetRange('uid:' + uid + ':notifications:read', 0, -1, function(err, nids) {
-					if (nids && nids.length > 0) {
-						async.each(nids, function(nid, next) {
-							Notifications.get(nid, uid, function(nid_info) {
-								if (nid_info && nid_info.uniqueId === uniqueId) {
-									matched = true;
-									if ((nid_info.importance || 5) >= newNotifObj.importance) {
-										replace = true;
-										db.sortedSetRemove('uid:' + uid + ':notifications:read', nid);
-									}
-								}
-								
-								next();
-							});
-						}, function(err) {
-							next();
-						});
-					} else {
-						next();
-					}
-				});
+				checkAndRemove('uid:' + uid + ':notifcations:read', next);
 			}
 		], function(err) {
 			if (!err) {
