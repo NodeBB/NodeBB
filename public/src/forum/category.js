@@ -225,10 +225,12 @@ define(['composer', 'forum/pagination', 'share', 'navigator'], function(composer
 		});
 	}
 
-	Category.onTopicsLoaded = function(topics, callback) {
-		if(!topics || !topics.length) {
+	Category.onTopicsLoaded = function(data, callback) {
+		if(!data || !data.topics.length) {
 			return;
 		}
+
+		var topics = data.topics;
 
 		function removeAlreadyAddedTopics() {
 			topics = topics.filter(function(topic) {
@@ -261,7 +263,7 @@ define(['composer', 'forum/pagination', 'share', 'navigator'], function(composer
 		findInsertionPoint();
 
 		ajaxify.loadTemplate('category', function(categoryTemplate) {
-			var html = templates.parse(templates.getBlock(categoryTemplate, 'topics'), {topics: topics});
+			var html = templates.parse(templates.getBlock(categoryTemplate, 'topics'), data);
 
 			translator.translate(html, function(translatedHTML) {
 				var container = $('#topics-container'),
@@ -309,6 +311,7 @@ define(['composer', 'forum/pagination', 'share', 'navigator'], function(composer
 			cid: cid,
 			after: after
 		}, function (err, data) {
+			console.log(data);
 			loadingMoreTopics = false;
 
 			if(err) {
@@ -316,7 +319,7 @@ define(['composer', 'forum/pagination', 'share', 'navigator'], function(composer
 			}
 
 			if (data && data.topics.length) {
-				Category.onTopicsLoaded(data.topics, callback);
+				Category.onTopicsLoaded(data, callback);
 				$('#topics-container').attr('data-nextstart', data.nextStart);
 			} else {
 

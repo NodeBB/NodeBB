@@ -383,6 +383,8 @@ var fs = require('fs'),
 					return;
 				}
 
+				// Restart Required flag
+				meta.restartRequired = true;
 
 				if(active) {
 					Plugins.fireHook('action:plugin.deactivate', id);

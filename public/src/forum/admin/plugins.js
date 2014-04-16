@@ -1,3 +1,6 @@
+"use strict";
+/* global define, app, socket */
+
 define(function() {
 	var Plugins = {
 		init: function() {
@@ -19,10 +22,13 @@ define(function() {
 					app.alert({
 						alert_id: 'plugin_toggled',
 						title: 'Plugin ' + (status.active ? 'Enabled' : 'Disabled'),
-						message: 'Restarting your NodeBB <i class="fa fa-refresh fa-spin"></i>',
-						type: 'warning',
-						timeout: 5000
-					})
+						message: 'Please restart your NodeBB to fully ' + (status.active ? 'activate' : 'deactivate') + ' this plugin',
+						type: 'info',
+						timeout: 5000,
+						clickfn: function() {
+							socket.emit('admin.restart');
+						}
+					});
 				});
 			} else {
 				pluginsList.append('<li><p><i>No plugins found.</i></p></li>');

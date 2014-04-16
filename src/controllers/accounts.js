@@ -348,9 +348,15 @@ accountsController.accountSettings = function(req, res, next) {
 					return userNotFound();
 				}
 
-				results.user.yourid = req.user.uid;
-				results.user.theirid = uid;
-				results.user.settings = settings;
+				results = {
+					username: results.user.username,
+					userslug: results.user.userslug,
+					uid: uid,
+					yourid: req.user.uid,
+					theirid: uid,
+					settings: settings,
+					languages: results.languages
+				};
 
 				res.render('accountsettings', results);
 			});

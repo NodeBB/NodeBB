@@ -2,6 +2,7 @@
 
 var	Groups = require('./groups'),
 	User = require('./user'),
+	categories = require('./categories'),
 
 	async = require('async'),
 	db = require('./database');
@@ -36,6 +37,9 @@ CategoryTools.exists = function(cid, callback) {
 
 CategoryTools.privileges = function(cid, uid, callback) {
 	async.parallel({
+		"disabled": function(next) {
+			categories.getCategoryField(cid, 'disabled', next);
+		},
 		"+r": function(next) {
 			internals.isMember('cid:' + cid + ':privileges:+r', uid, next);
 		},
@@ -62,6 +66,7 @@ CategoryTools.privileges = function(cid, uid, callback) {
 			"g+w": privileges['g+w'],
 			read: (
 				(
+					parseInt(privileges.disabled, 10) !== 1 &&
 					(privileges['+r'] || privileges['+r'] === null) &&
 					(privileges['g+r'] || privileges['g+r'] === null)
 				) ||
@@ -70,6 +75,7 @@ CategoryTools.privileges = function(cid, uid, callback) {
 			),
 			write: (
 				(
+					parseInt(privileges.disabled, 10) !== 1 &&
 					(privileges['+w'] || privileges['+w'] === null) &&
 					(privileges['g+w'] || privileges['g+w'] === null)
 				) ||
