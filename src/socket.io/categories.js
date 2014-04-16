@@ -1,6 +1,7 @@
 'use strict';
 
-var	categories = require('../categories'),
+var	async = require('async'),
+	categories = require('../categories'),
 	categoryTools = require('../categoryTools'),
 	meta = require('./../meta'),
 	user = require('./../user'),
@@ -30,12 +31,29 @@ SocketCategories.loadMore = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	user.getSettings(socket.uid, function(err, settings) {
+	async.parallel({
+		privileges: function(next) {
+			categoryTools.privileges(data.cid, socket.uid, next);
+		},
+		settings: function(next) {
+			user.getSettings(socket.uid, next);
+		}
+	}, function(err, results) {
+		if (err) {
+			return callback(err);
+		}
 
 		var start = parseInt(data.after, 10),
-			end = start + settings.topicsPerPage - 1;
+			end = start + results.settings.topicsPerPage - 1;
 
-		categories.getCategoryTopics(data.cid, start, end, socket.uid, callback);
+		categories.getCategoryTopics(data.cid, start, end, socket.uid, function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			data.privileges = results.privileges;
+			callback(null, data);
+		});
 	});
 };
 

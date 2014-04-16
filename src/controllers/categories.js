@@ -68,14 +68,14 @@ categoriesController.get = function(req, res, next) {
 	async.waterfall([
 		function(next) {
 			categoryTools.privileges(cid, uid, function(err, categoryPrivileges) {
-				if (!err) {
-					if (!categoryPrivileges.read) {
-						next(new Error('[[error:no-privileges]]'));
-					} else {
-						next(null, categoryPrivileges);
-					}
+				if (err) {
+					return next(err);
+				}
+
+				if (!categoryPrivileges.read) {
+					next(new Error('[[error:no-privileges]]'));
 				} else {
-					next(err);
+					next(null, categoryPrivileges);
 				}
 			});
 		},

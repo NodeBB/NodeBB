@@ -39,10 +39,13 @@ define(['forum/admin/settings'], function(Settings) {
 
 					app.alert({
 						alert_id: 'admin:theme',
-						type: 'success',
+						type: 'info',
 						title: 'Theme Changed',
-						message: 'Restarting your NodeBB <i class="fa fa-refresh fa-spin"></i>',
-						timeout: 3500
+						message: 'Please restart your NodeBB to fully activate this theme',
+						timeout: 5000,
+						clickfn: function() {
+							socket.emit('admin.restart');
+						}
 					});
 				});
 			}
@@ -251,7 +254,7 @@ define(['forum/admin/settings'], function(Settings) {
 							timeout: 2500
 						});
 					}
-					
+
 				});
 			});
 		}

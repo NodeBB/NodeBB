@@ -194,7 +194,7 @@ SocketModules.chats.send = function(socket, data, callback) {
 
 function sendChatNotification(fromuid, touid, username) {
 	if (!module.parent.exports.isUserOnline(touid)) {
-		var notifText = 'New message from <strong>' + username + '</strong>';
+		var notifText = '[[notifications:new_message_from,' + username + ']]';
 		notifications.create({
 			text: notifText,
 			path: 'javascript:app.openChat(&apos;' + username + '&apos;, ' + fromuid + ');',

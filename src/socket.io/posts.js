@@ -33,14 +33,11 @@ SocketPosts.reply = function(socket, data, callback) {
 		}
 
 		if (postData) {
+			websockets.server.sockets.emit('event:new_post', {
+				posts: [postData]
+			});
 
 			module.parent.exports.emitTopicPostStats();
-
-			var socketData = {
-				posts: [postData]
-			};
-
-			websockets.server.sockets.emit('event:new_post', socketData);
 
 			callback();
 		}
@@ -49,7 +46,7 @@ SocketPosts.reply = function(socket, data, callback) {
 
 SocketPosts.upvote = function(socket, data, callback) {
 	favouriteCommand('upvote', 'voted', socket, data, callback);
-	sendNotificationToPostOwner(data, socket.uid, 'has upvoted your post');
+	sendNotificationToPostOwner(data, socket.uid, 'notifications:upvoted_your_post');
 };
 
 SocketPosts.downvote = function(socket, data, callback) {
@@ -62,7 +59,7 @@ SocketPosts.unvote = function(socket, data, callback) {
 
 SocketPosts.favourite = function(socket, data, callback) {
 	favouriteCommand('favourite', 'favourited', socket, data, callback);
-	sendNotificationToPostOwner(data, socket.uid, 'has favourited your post');
+	sendNotificationToPostOwner(data, socket.uid, 'notifications:favourited_your_post');
 };
 
 SocketPosts.unfavourite = function(socket, data, callback) {
@@ -87,7 +84,7 @@ function favouriteCommand(command, eventName, socket, data, callback) {
 	}
 }
 
-function sendNotificationToPostOwner(data, uid, message) {
+function sendNotificationToPostOwner(data, uid, notification) {
 	if(data && data.pid && uid) {
 		posts.getPostFields(data.pid, ['tid', 'uid'], function(err, postData) {
 			if (err) {
@@ -109,8 +106,9 @@ function sendNotificationToPostOwner(data, uid, message) {
 				if (err) {
 					return;
 				}
+
 				notifications.create({
-					text: '<strong>' + results.username + '</strong> ' + message,
+					text: '[[' + notification + ', ' + results.username + ']]',
 					path: nconf.get('relative_path') + '/topic/' + results.slug + '#' + data.pid,
 					uniqueId: 'post:' + data.pid,
 					from: uid
@@ -258,7 +256,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 			user.getUserField(socket.uid, 'username', next);
 		},
 		function(username, next) {
-			message = '<strong>' + username + '</strong> flagged a post.';
+			message = '[[notifications:user_flagged_post, ' + username + ']]';
 			posts.getPostField(pid, 'tid', next);
 		},
 		function(tid, next) {
