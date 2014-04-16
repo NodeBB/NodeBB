@@ -2,5 +2,6 @@
     "chat.chatting_with": "گفتگو با <span id=\"chat-with-name\"></span>",
     "chat.placeholder": "متن را اینجا بنویسد و دکمهٔ‌ Enter را برای فرستادن بفشارید.",
     "chat.send": "فرستادن",
-    "chat.no_active": "شما هیچ گفتگوی فعالی ندارید."
+    "chat.no_active": "شما هیچ گفتگوی فعالی ندارید.",
+    "chat.user_typing": "%1 is typing ..."
 }

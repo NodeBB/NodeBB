@@ -1,7 +1,7 @@
 {
-    "home": "Home",
+    "home": "Ana Sayfa",
     "search": "Arama",
-    "buttons.close": "Yakın",
+    "buttons.close": "Kapat",
     "403.title": "Erişim Engellendi",
     "403.message": "Erişiminiz olmayan bir sayfaya ulaşmaya çalıştınız. Belki de  href='/login'> < giriş yapmayı denemelisiniz </ a> ?",
     "404.title": "Bulunamadı",
@@ -51,5 +51,6 @@
     "dnd": "Rahatsız Etmeyin",
     "invisible": "Görünmez",
     "offline": "Çevrimdışı",
-    "privacy": "Privacy"
+    "email": "Email",
+    "language": "Language"
 }

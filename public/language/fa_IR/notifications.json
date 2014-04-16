@@ -6,5 +6,13 @@
     "outgoing_link": "پیوند برون‌رو",
     "outgoing_link_message": "شما در حال ترک اینجایید",
     "continue_to": "رفتن به",
-    "return_to": "بازگشت به"
+    "return_to": "بازگشت به",
+    "new_notification": "New Notification",
+    "you_have_unread_notifications": "You have unread notifications.",
+    "user_made_post": "<strong>%1</strong> made a new post",
+    "new_message_from": "New message from <strong>%1</strong>",
+    "upvoted_your_post": "<strong>%1</strong> has upvoted your post.",
+    "favourited_your_post": "<strong>%1</strong> has favourited your post.",
+    "user_flagged_post": "<strong>%1</strong> flagged a post.",
+    "user_posted_to": "<strong>%1</strong> has posted a reply to: <strong>%2</strong>"
 }

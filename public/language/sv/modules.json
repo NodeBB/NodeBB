@@ -2,5 +2,6 @@
     "chat.chatting_with": "Chatta med <span id=\"chat-with-name\"></span>",
     "chat.placeholder": "skriv meddelanden här, tryck enter för att skicka",
     "chat.send": "Skicka",
-    "chat.no_active": "Du har inte några aktiva chattar."
+    "chat.no_active": "Du har inte några aktiva chattar.",
+    "chat.user_typing": "%1 is typing ..."
 }

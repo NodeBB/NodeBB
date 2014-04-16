@@ -3,7 +3,7 @@
     "search": "Recherche",
     "buttons.close": "Fermer",
     "403.title": "Accès Refusé",
-    "403.message": "Il semble que vous vous soyez retrouvé sur une page dont vous n'avez pas accès. Peut-être devriez vous <a href='/login'>essayez de vous connecter</a>?",
+    "403.message": "Il semble que vous vous soyez retrouvé sur une page à laquelle vous n'avez pas accès. Peut-être devriez-vous <a href='/login'>essayer de vous connecter</a>?",
     "404.title": "Introuvable",
     "404.message": "Il semble que vous vous soyez retrouvé sur une page qui n'existe pas. Retourner à <a href='/'>l'accueil</a>.",
     "500.title": "Erreur Interne.",
@@ -29,7 +29,7 @@
     "header.profile": "Profil",
     "notifications.loading": "Chargement des Notifications",
     "chats.loading": "Chargement des Chats",
-    "motd.welcome": "Bienvenue sur NodeBB, la plate-forme de discussion de l'avenir.",
+    "motd.welcome": "Bienvenue sur NodeBB, la plate-forme de discussion du futur.",
     "previouspage": "Page Précédente",
     "nextpage": "Page Suivante",
     "alert.success": "Succès",
@@ -45,11 +45,12 @@
     "norecentposts": "Aucun Message Récent",
     "norecenttopics": "Aucun Sujet Récent",
     "recentposts": "Messages Récents",
-    "recentips": "Adresses IP récememnt enregistée",
+    "recentips": "Adresses IP récemment enregistées",
     "online": "En ligne",
     "away": "Absent",
     "dnd": "Occupé",
     "invisible": "Invisible",
     "offline": "Hors ligne",
-    "privacy": "Vie privée"
+    "email": "Email",
+    "language": "Language"
 }

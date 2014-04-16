@@ -2,5 +2,6 @@
     "chat.chatting_with": "שוחח עם <span id=\"chat-with-name\"></span>",
     "chat.placeholder": "כתוב את הודעתך כאן, ולחץ על שלח",
     "chat.send": "שלח",
-    "chat.no_active": "אין לך צ'אטים פעילים"
+    "chat.no_active": "אין לך צ'אטים פעילים",
+    "chat.user_typing": "%1 is typing ..."
 }

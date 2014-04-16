@@ -2,5 +2,6 @@
     "chat.chatting_with": "Chistiona cun <span id=\"chat-with-name\"></span>",
     "chat.placeholder": "iscrie su messàgiu de tzarra inoghe, carca imbiu pro imbiare",
     "chat.send": "Imbia",
-    "chat.no_active": "Non tenes tzarras ativas."
+    "chat.no_active": "Non tenes tzarras ativas.",
+    "chat.user_typing": "%1 is typing ..."
 }
