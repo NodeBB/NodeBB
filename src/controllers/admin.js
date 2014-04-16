@@ -37,7 +37,8 @@ adminController.home = function(req, res, next) {
 	res.render('admin/index', {
 		version: pkg.version,
 		emailerInstalled: plugins.hasListeners('action:email.send'),
-		searchInstalled: plugins.hasListeners('filter:search.query')
+		searchInstalled: plugins.hasListeners('filter:search.query'),
+		restartRequired: meta.restartRequired
 	});
 };
 

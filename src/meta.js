@@ -18,7 +18,9 @@ var fs = require('fs'),
 	User = require('./user');
 
 (function (Meta) {
+	Meta.restartRequired = false;
 	Meta.config = {};
+
 	Meta.configs = {
 		init: function (callback) {
 			delete Meta.config;
@@ -159,6 +161,9 @@ var fs = require('fs'),
 				db.setObjectField('config', 'theme:src', data.src, callback);
 				break;
 			}
+
+			// Restart Required flag
+			meta.restartRequired = true;
 		}
 	};
 
