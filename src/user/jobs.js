@@ -8,7 +8,6 @@ var db = require('../database'),
 	nconf = require('nconf'),
 
 	user = require('../user'),
-	UserNotifications = require('./notifications'),
 	topics = require('../topics'),
 	emailer = require('../emailer'),
 	meta = require('../meta');
@@ -23,6 +22,8 @@ module.exports = function(User) {
 	};
 
 	User.sendDailyDigests = function() {
+		var	yesterday = Date.now() - (1000*60*60*24);
+
 		async.parallel({
 			recent: function(next) {
 				topics.getLatestTopics(0, 0, 10, 'day', next);
@@ -33,39 +34,43 @@ module.exports = function(User) {
 		}, function(err, data) {
 			var	now = new Date();
 
-			async.each(data.uids, function(uid, next) {
-				UserNotifications.getDailyUnread(uid, function(err, notifications) {
-					if (!err && notifications && notifications.length) {
+			// Consider using eachLimit, but *only* if people complain about email relays choking -- otherwise we're ok.
+			User.getMultipleUserFields(data.uids, ['uid', 'username', 'lastonline'], function(err, receipients) {
+				// Find only those users who have not been online in the past 24 hours
+				var	users = receipients.filter(function(userObj) {
+					return yesterday > parseInt(userObj.lastonline, 10);
+				});
 
+				async.each(users, function(userObj, next) {
+					user.notifications.getDailyUnread(userObj.uid, function(err, notifications) {
+						// Turn relative URLs into absolute ones
 						for(var i=0; i<notifications.length; ++i) {
 							if (notifications[i].image.indexOf('http') !== 0) {
 								notifications[i].image = nconf.get('url') + notifications[i].image;
 							}
 						}
 
-						user.getUserField(uid, 'username', function(err, username) {
-							// Send daily digest email
-							// winston.info('[user/notifications] Sending Daily Digest to uid ' + uid);
-							emailer.send('dailydigest', uid, {
-								subject: '[' + meta.config.title + '] Daily Digest for ' + now.getFullYear()+ '/' + (now.getMonth()+1) + '/' + now.getDate(),
-								username: username,
-								url: nconf.get('url'),
-								site_title: meta.config.title,
-								notifications: notifications,
-								recent: data.recent.topics
-							});
+						// Send daily digest email
+						// winston.info('[user/notifications] Sending Daily Digest to uid ' + userObj.uid);
+						emailer.send('dailydigest', userObj.uid, {
+							subject: '[' + meta.config.title + '] Daily Digest for ' + now.getFullYear()+ '/' + (now.getMonth()+1) + '/' + now.getDate(),
+							username: userObj.username,
+							url: nconf.get('url'),
+							site_title: meta.config.title,
+							notifications: notifications,
+							recent: data.recent.topics
 						});
-					}
 
-					next(err);
+						next(err);
+					});
+				}, function(err) {
+					// When finished...
+					if (!err) {
+						winston.info('[user/jobs] Daily Digests sent!');
+					} else {
+						winston.error('[user/jobs] Could not send daily digests: ' + err.message);
+					}
 				});
-			}, function(err) {
-				// When finished...
-				if (!err) {
-					winston.info('[user/jobs] Daily Digests sent!');
-				} else {
-					winston.error('[user/jobs] Could not send daily digests: ' + err.message);
-				}
 			});
 		});
 	};
