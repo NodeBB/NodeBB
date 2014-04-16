@@ -148,6 +148,27 @@ var async = require('async'),
 		});
 	};
 
+	UserNotifications.sendPostNotificationToFollowers = function(uid, tid, pid) {
+		user.getUserField(uid, 'username', function(err, username) {
+			db.getSetMembers('followers:' + uid, function(err, followers) {
+				if (followers && followers.length) {
+					topics.getTopicField(tid, 'slug', function(err, slug) {
+						var message = '[[notifications:user_made_post, ' + username + ']]';
+
+						notifications.create({
+							text: message,
+							path: nconf.get('relative_path') + '/topic/' + slug + '#' + pid,
+							uniqueId: 'topic:' + tid,
+							from: uid
+						}, function(nid) {
+							notifications.push(nid, followers);
+						});
+					});
+				}
+			});
+		});
+	};
+
 	UserNotifications.pushCount = function(uid) {
 		var websockets = require('./../socket.io');
 		UserNotifications.getUnreadCount(uid, function(err, count) {
