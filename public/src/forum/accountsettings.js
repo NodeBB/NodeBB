@@ -16,11 +16,11 @@ define(['forum/accountheader'], function(header) {
 				}
 
 				switch (input.attr('type')) {
-					case 'text' :
-					case 'textarea' :
+					case 'text':
+					case 'textarea':
 						settings[setting] = input.val();
 						break;
-					case 'checkbox' :
+					case 'checkbox':
 						settings[setting] = input.is(':checked') ? 1 : 0;
 						break;
 				}

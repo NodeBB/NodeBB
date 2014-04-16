@@ -34,13 +34,13 @@ module.exports = function(User) {
 		}, function(err, data) {
 			var	now = new Date();
 
-			// Consider using eachLimit, but *only* if people complain about email relays choking -- otherwise we're ok.
 			User.getMultipleUserFields(data.uids, ['uid', 'username', 'lastonline'], function(err, receipients) {
 				// Find only those users who have not been online in the past 24 hours
 				var	users = receipients.filter(function(userObj) {
 					return yesterday > parseInt(userObj.lastonline, 10);
 				});
 
+				// Consider using eachLimit, but *only* if people complain about email relays choking -- otherwise we're ok.
 				async.each(users, function(userObj, next) {
 					user.notifications.getDailyUnread(userObj.uid, function(err, notifications) {
 						// Turn relative URLs into absolute ones
