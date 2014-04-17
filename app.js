@@ -90,7 +90,7 @@ function loadConfig() {
 	nconf.defaults({
 		base_dir: __dirname,
 		themes_path: path.join(__dirname, 'node_modules'),
-		upload_url: path.join(path.sep, 'uploads', path.sep),
+		upload_url: '/uploads/',
 		views_dir: path.join(__dirname, 'public/templates')
 	});
 
