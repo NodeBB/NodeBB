@@ -7,12 +7,12 @@
     "outgoing_link_message": "Estas saliendo del sitio",
     "continue_to": "Continuar",
     "return_to": "Volver a ",
-    "new_notification": "New Notification",
-    "you_have_unread_notifications": "You have unread notifications.",
-    "user_made_post": "<strong>%1</strong> made a new post",
-    "new_message_from": "New message from <strong>%1</strong>",
-    "upvoted_your_post": "<strong>%1</strong> has upvoted your post.",
-    "favourited_your_post": "<strong>%1</strong> has favourited your post.",
-    "user_flagged_post": "<strong>%1</strong> flagged a post.",
-    "user_posted_to": "<strong>%1</strong> has posted a reply to: <strong>%2</strong>"
+    "new_notification": "Nueva Notificación",
+    "you_have_unread_notifications": "Tienes notificaciones sin leer.",
+    "user_made_post": "<strong>%1</strong> hizo una nueva publicación",
+    "new_message_from": "Nuevo mensaje de <strong>%1</strong>",
+    "upvoted_your_post": "<strong>%1</strong> ha marcado como favorita tu respuesta.",
+    "favourited_your_post": "<strong>%1</strong> ha marcado como favorita tu respuesta.",
+    "user_flagged_post": "<strong>%1</strong> ha marcado como indebida una respuesta.",
+    "user_posted_to": "<strong>%1</strong> ha publicado una respuesta a: <strong>%2</strong>"
 }
