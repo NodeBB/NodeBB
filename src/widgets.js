@@ -29,6 +29,10 @@ var async = require('async'),
 			var widgets = data.global.concat(data.local);
 
 			async.eachSeries(widgets, function(widget, next) {
+				if (!!widget.data['registered-only'] && uid === 0) {
+					return next();
+				}
+
 				plugins.fireHook('filter:widget.render:' + widget.widget, {
 					uid: uid,
 					area: area,
