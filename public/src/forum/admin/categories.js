@@ -157,6 +157,21 @@ define(['uploader'], function(uploader) {
 			});
 		}
 
+		function setupEditTargets() {
+			$('[data-edit-target]').on('click', function() {
+				var $this = $(this),
+					target = $($this.attr('data-edit-target'));
+
+				$this.addClass('hide');
+				target.removeClass('hide').on('blur', function() {
+					$this.removeClass('hide').children('span').html(this.value);
+					$(this).addClass('hide');
+				}).val($this.children('span').html());
+
+				target.focus();
+			});
+		}
+
 		$(function() {
 			var url = window.location.href,
 				parts = url.split('/'),
@@ -241,6 +256,8 @@ define(['uploader'], function(uploader) {
 
 				$(this).addClass('hide').hide();
 			});
+
+			setupEditTargets();
 		});
 	};
 
