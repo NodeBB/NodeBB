@@ -296,7 +296,7 @@ var fs = require('fs'),
 		},
 		minify: function(minify) {
 			// Prepare js for minification/concatenation
-			var	minifier = fork('minifier.js');
+			var minifier = this.minifierProc = fork('minifier.js');
 
 			minifier.on('message', function(payload) {
 				if (payload.action !== 'error') {
@@ -317,6 +317,11 @@ var fs = require('fs'),
 					scripts: Meta.js.scripts
 				});
 			});
+		},
+		killMinifier: function(callback) {
+			if (this.minifierProc) {
+				this.minifierProc.kill('SIGTERM');
+			}
 		}
 	};
 

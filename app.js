@@ -122,7 +122,8 @@ function start() {
 				webserver = require('./src/webserver'),
 				sockets = require('./src/socket.io'),
 				plugins = require('./src/plugins'),
-				upgrade = require('./src/upgrade');
+				upgrade = require('./src/upgrade')
+				meta = require('./src/meta');
 
 			templates.setGlobal('relative_path', nconf.get('relative_path'));
 
@@ -142,6 +143,10 @@ function start() {
 					process.on('SIGTERM', shutdown);
 					process.on('SIGINT', shutdown);
 					process.on('SIGHUP', restart);
+					process.on('uncaughtException', function() {
+						meta.js.killMinifier();
+						shutdown();
+					})
 				} else {
 					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
 					winston.warn('    node app --upgrade');
@@ -281,7 +286,7 @@ function shutdown(code) {
 	winston.info('[app] Database connection closed.');
 
 	winston.info('[app] Shutdown complete.');
-	process.exit();
+	process.exit(1);
 }
 
 function restart() {

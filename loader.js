@@ -8,8 +8,7 @@ var	nconf = require('nconf'),
 			nbb_start = function() {
 				if (timesStarted > 3) {
 					console.log('\n[loader] Experienced three start attempts in 10 seconds, most likely am error on startup. Halting.');
-					process.exit();
-					return;
+					return nbb_stop();
 				}
 
 				timesStarted++;
@@ -54,7 +53,7 @@ var	nconf = require('nconf'),
 				}
 			},
 			nbb_restart = function() {
-				nbb.on('exit', function() {
+				nbb.removeAllListeners('exit').on('exit', function() {
 					nbb_start();
 				});
 				nbb.kill();
