@@ -257,6 +257,10 @@ define(['uploader'], function(uploader) {
 				$(this).addClass('hide').hide();
 			});
 
+			$('#revertChanges').on('click', function() {
+				ajaxify.go('admin/categories/active');
+			});
+
 			setupEditTargets();
 		});
 	};
