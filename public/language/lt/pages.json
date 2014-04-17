@@ -1,0 +1,15 @@
+{
+    "home": "Namai",
+    "unread": "Neskaitytos temos",
+    "popular": "Populiarios temos",
+    "recent": "Paskutinės temos",
+    "users": "Registruoti vartotojai",
+    "notifications": "Pranešimai",
+    "user.edit": "Redaguojama \"%1\"",
+    "user.following": "Vartotojas %1 seka",
+    "user.followers": "Žmonės, kurie seka %1",
+    "user.posts": "Pranešimai, kuriuos parašė %1",
+    "user.topics": "Temos, kurias sukūrė %1",
+    "user.favourites": "Vartotojo %1 mėgstami pranešimai",
+    "user.settings": "Vartotojo nustatymai"
+}

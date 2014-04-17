@@ -1,0 +1,18 @@
+{
+    "title": "Pranešimai",
+    "no_notifs": "Jūs neturite naujų pranešimų",
+    "see_all": "Peržiūrėti visus pranešimus",
+    "back_to_home": "Grįžti į NodeBB",
+    "outgoing_link": "Išeinanti nuoroda",
+    "outgoing_link_message": "Dabar jūs išeinate",
+    "continue_to": "Tęsti",
+    "return_to": "Grįžti į",
+    "new_notification": "Naujas pranešimas",
+    "you_have_unread_notifications": "Jūs turite neperskaitytų pranešimų.",
+    "user_made_post": "<strong>%1</strong> parašė naują pranešimą",
+    "new_message_from": "Nauja žinutė nuo <strong>%1</strong>",
+    "upvoted_your_post": "<strong>%1</strong> teigiamai įvertino jūsų pranešimą.",
+    "favourited_your_post": "<strong>%1</strong> pamėgo jūsų pranešimą.",
+    "user_flagged_post": "<strong>%1</strong> pažymėjo pranešimą moderavimui.",
+    "user_posted_to": "<strong>%1</strong> parašė atsaką <strong>%2</strong>"
+}
