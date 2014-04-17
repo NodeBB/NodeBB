@@ -39,6 +39,7 @@ apiController.getConfig = function(req, res, next) {
 	config.defaultLang = meta.config.defaultLang || 'en_GB';
 	config.environment = process.env.NODE_ENV;
 	config.isLoggedIn = !!req.user;
+	config['cache-buster'] = meta.config['cache-buster'] || '';
 
 	if (!req.user) {
 		if (res.locals.isAPI) {

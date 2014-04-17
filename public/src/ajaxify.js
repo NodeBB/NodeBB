@@ -209,7 +209,7 @@ var ajaxify = ajaxify || {};
 			callback(templates.cache[template]);
 		} else {
 			$.ajax({
-				url: RELATIVE_PATH + '/templates/' + template + '.tpl',
+				url: RELATIVE_PATH + '/templates/' + template + '.tpl' + (config['cache-buster'] ? '?v=' + config['cache-buster'] : ''),
 				type: 'GET',
 				success: function(data) {
 					callback(data.toString());
