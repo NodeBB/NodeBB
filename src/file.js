@@ -1,3 +1,5 @@
+"use strict";
+
 var fs = require('fs'),
 	nconf = require('nconf'),
 	path = require('path'),
@@ -6,7 +8,6 @@ var fs = require('fs'),
 var file = {};
 
 file.saveFileToLocal = function(filename, tempPath, callback) {
-
 	var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
 
 	winston.info('Saving file '+ filename +' to : ' + uploadPath);
@@ -16,7 +17,7 @@ file.saveFileToLocal = function(filename, tempPath, callback) {
 
 	is.on('end', function () {
 		callback(null, {
-			url: nconf.get('upload_url') + filename
+			url: (nconf.get('upload_url') + filename).split(path.sep).join('/')
 		});
 	});
 
@@ -26,7 +27,7 @@ file.saveFileToLocal = function(filename, tempPath, callback) {
 	});
 
 	is.pipe(os);
-}
+};
 
 module.exports = file;
 
