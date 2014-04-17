@@ -163,7 +163,7 @@ var fs = require('fs'),
 			}
 
 			// Restart Required flag
-			meta.restartRequired = true;
+			Meta.restartRequired = true;
 		}
 	};
 
