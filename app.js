@@ -143,9 +143,12 @@ function start() {
 					process.on('SIGTERM', shutdown);
 					process.on('SIGINT', shutdown);
 					process.on('SIGHUP', restart);
-					process.on('uncaughtException', function() {
+					process.on('uncaughtException', function(err) {
+						winston.error(err.message);
+						console.log(err.stack);
+
 						meta.js.killMinifier();
-						shutdown();
+						shutdown(1);
 					})
 				} else {
 					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
@@ -286,7 +289,7 @@ function shutdown(code) {
 	winston.info('[app] Database connection closed.');
 
 	winston.info('[app] Shutdown complete.');
-	process.exit(1);
+	process.exit(code || 0);
 }
 
 function restart() {
@@ -297,7 +300,7 @@ function restart() {
 		});
 	} else {
 		winston.error('[app] Could not restart server. Shutting down.');
-		shutdown();
+		shutdown(1);
 	}
 }
 
