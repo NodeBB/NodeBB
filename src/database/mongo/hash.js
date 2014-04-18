@@ -61,11 +61,7 @@ module.exports = function(db, module) {
 			_fields[fields[i]] = 1;
 		}
 
-		keys = keys.map(function(key) {
-			return { _key : key};
-		});
-
-		db.collection('objects').find({$or: keys}, _fields).toArray(function(err, items) {
+		db.collection('objects').find({_key: {$in: keys}}, _fields).toArray(function(err, items) {
 			if (err) {
 				return callback(err);
 			}
@@ -79,20 +75,14 @@ module.exports = function(db, module) {
 				item;
 
 			for (var i=0; i<keys.length; ++i) {
+				var item = helpers.findItem(items, keys[i]) || {};
 
-				if (items[index] && items[index]._key === keys[i]._key) {
-					item = items[index];
-					index++;
-				} else {
-					item = {};
-				}
-
-				returnData.push(item);
 				for (var k=0; k<fields.length; ++k) {
 					if (item[fields[k]] === null || item[fields[k]] === undefined) {
 						item[fields[k]] = null;
 					}
 				}
+				returnData.push(item);
 			}
 
 			callback(null, returnData);
