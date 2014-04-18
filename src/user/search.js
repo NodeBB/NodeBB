@@ -18,16 +18,21 @@ module.exports = function(User) {
 			query = query.toLowerCase();
 
 			var	usernames = Object.keys(usernamesHash);
-			var uids = usernames.filter(function(username) {
-				return username.toLowerCase().indexOf(query) === 0;
-			})
-			.slice(0, 10)
-			.sort(function(a, b) {
-				return a > b;
-			})
-			.map(function(username) {
-				return usernamesHash[username];
-			});
+			var uids = [];
+
+			for(var i=0; i<usernames.length; ++i) {
+				if (usernames[i].toLowerCase().indexOf(query) === 0) {
+					uids.push(usernames[i]);
+				}
+			}
+
+			uids = uids.slice(0, 10)
+				.sort(function(a, b) {
+					return a > b;
+				})
+				.map(function(username) {
+					return usernamesHash[username];
+				});
 
 			User.getUsers(uids, function(err, userdata) {
 				if (err) {
