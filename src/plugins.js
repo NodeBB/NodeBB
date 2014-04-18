@@ -112,7 +112,7 @@ var fs = require('fs'),
 				libraryPath, staticDir;
 
 			if (pluginData.minver && semver.validRange(pluginData.minver)) {
-				if (!semver.satisfies(pkg.version, pluginData.minver)) {
+				if (!semver.gt(pkg.version, pluginData.minver)) {
 					// If NodeBB is not new enough to run this plugin
 					winston.warn('[plugins/' + pluginData.id + '] This plugin may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing.');
 				}
