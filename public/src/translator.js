@@ -220,7 +220,12 @@
 				return winston.error(err.message);
 			}
 
-			callback(JSON.parse(data.toString()));
+			try {
+				callback(JSON.parse(data.toString()));
+			} catch (e) {
+				winston.error('Could not parse `' + filename + '.json`, syntax error? Skipping...');
+				callback({});
+			}
 		});
 	}
 
