@@ -627,7 +627,7 @@ define(['taskbar'], function(taskbar) {
 					};
 
 				if (parseInt(postData.tid, 10) > 0) {
-					translator.translate('[[topic:composer.replying_to]]: ' + postData.title, function(newTitle) {
+					translator.translate('[[topic:composer.replying_to, ' + postData.title + ']]', function(newTitle) {
 						titleEl.val(newTitle);
 					});
 					titleEl.prop('disabled', true);

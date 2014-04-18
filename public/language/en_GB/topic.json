@@ -94,7 +94,7 @@
 	"composer.help": "Help",
 	"composer.discard": "Discard",
 	"composer.submit": "Submit",
-	"composer.replying_to": "Replying to",
+	"composer.replying_to": "Replying to %1",
 	"composer.new_topic": "New Topic",
 
 	"composer.uploading": "uploading...",
