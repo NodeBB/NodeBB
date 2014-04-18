@@ -120,64 +120,72 @@ SocketTopics.markCategoryTopicsRead = function(socket, cid, callback) {
 	});
 };
 
-SocketTopics.markAsUnreadForAll = function(socket, tid, callback) {
-	topics.markAsUnreadForAll(tid, function(err) {
-		if(err) {
-			return callback(err);
-		}
-
-		db.sortedSetAdd('topics:recent', Date.now(), tid, function(err) {
-			if(err) {
-				return callback(err);
-			}
-			topics.pushUnreadCount();
-			callback();
-		});
-	});
-};
-
-SocketTopics.delete = function(socket, tid, callback) {
-	doTopicAction('delete', socket, tid, callback);
-};
-
-SocketTopics.restore = function(socket, tid, callback) {
-	doTopicAction('restore', socket, tid, callback);
-};
-
-SocketTopics.lock = function(socket, tid, callback) {
-	doTopicAction('lock', socket, tid, callback);
-};
-
-SocketTopics.unlock = function(socket, tid, callback) {
-	doTopicAction('unlock', socket, tid, callback);
-};
-
-SocketTopics.pin = function(socket, tid, callback) {
-	doTopicAction('pin', socket, tid, callback);
-};
-
-SocketTopics.unpin = function(socket, tid, callback) {
-	doTopicAction('unpin', socket, tid, callback);
-};
-
-function doTopicAction(action, socket, tid, callback) {
-	if(!tid) {
+SocketTopics.markAsUnreadForAll = function(socket, tids, callback) {
+	if(!Array.isArray(tids)) {
 		return callback(new Error('[[error:invalid-tid]]'));
 	}
 
-	threadTools.privileges(tid, socket.uid, function(err, privileges) {
-		if(err) {
-			return callback(err);
-		}
+	async.each(tids, function(tid, next) {
+		topics.markAsUnreadForAll(tid, function(err) {
+			if(err) {
+				return next(err);
+			}
 
-		if(!privileges || !privileges.editable) {
-			return callback(new Error('[[error:no-privileges]]'));
-		}
+			db.sortedSetAdd('topics:recent', Date.now(), tid, function(err) {
+				if(err) {
+					return next(err);
+				}
+				topics.pushUnreadCount();
+				next();
+			});
+		});
+	}, callback);
+};
 
-		if(threadTools[action]) {
-			threadTools[action](tid, socket.uid, callback);
-		}
-	});
+SocketTopics.delete = function(socket, tids, callback) {
+	doTopicAction('delete', socket, tids, callback);
+};
+
+SocketTopics.restore = function(socket, tids, callback) {
+	doTopicAction('restore', socket, tids, callback);
+};
+
+SocketTopics.lock = function(socket, tids, callback) {
+	doTopicAction('lock', socket, tids, callback);
+};
+
+SocketTopics.unlock = function(socket, tids, callback) {
+	doTopicAction('unlock', socket, tids, callback);
+};
+
+SocketTopics.pin = function(socket, tids, callback) {
+	doTopicAction('pin', socket, tids, callback);
+};
+
+SocketTopics.unpin = function(socket, tids, callback) {
+	doTopicAction('unpin', socket, tids, callback);
+};
+
+function doTopicAction(action, socket, tids, callback) {
+	if(!tids) {
+		return callback(new Error('[[error:invalid-tid]]'));
+	}
+
+	async.each(tids, function(tid, next) {
+		threadTools.privileges(tid, socket.uid, function(err, privileges) {
+			if(err) {
+				return next(err);
+			}
+
+			if(!privileges || !privileges.editable) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+
+			if(typeof threadTools[action] === 'function') {
+				threadTools[action](tid, socket.uid, next);
+			}
+		});
+	}, callback);
 }
 
 SocketTopics.createTopicFromPosts = function(socket, data, callback) {
@@ -215,21 +223,45 @@ SocketTopics.movePost = function(socket, data, callback) {
 };
 
 SocketTopics.move = function(socket, data, callback) {
-	if(!data || !data.tid || !data.cid) {
+	if(!data || !Array.isArray(data.tids) || !data.cid) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	threadTools.move(data.tid, data.cid, function(err) {
-		if(err) {
-			return callback(err);
-		}
+	async.each(data.tids, function(tid, next) {
+		var oldCid;
+		async.waterfall([
+			function(next) {
+				threadTools.privileges(tid, socket.uid, next);
+			},
+			function(privileges, next) {
+				if(!(privileges.admin || privileges.moderator)) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
+				next();
+			},
+			function(next) {
+				topics.getTopicField(tid, 'cid', next);
+			},
+			function(cid, next) {
+				oldCid = cid;
+				threadTools.move(tid, data.cid, next);
+			}
+		], function(err) {
+			if(err) {
+				return next(err);
+			}
 
-		index.server.sockets.in('topic_' + data.tid).emit('event:topic_moved', {
-			tid: data.tid
+			index.server.sockets.in('topic_' + tid).emit('event:topic_moved', {
+				tid: tid
+			});
+
+			index.server.sockets.in('category_' + oldCid).emit('event:topic_moved', {
+				tid: tid
+			});
+
+			next();
 		});
-
-		callback(null);
-	});
+	}, callback);
 };
 
 SocketTopics.followCheck = function(socket, tid, callback) {

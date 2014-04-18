@@ -2,7 +2,7 @@
 
 /* globals define, app, socket */
 
-define(['forum/recent'], function(recent) {
+define(['forum/recent', 'topicSelect'], function(recent, topicSelect) {
 	var Unread = {},
 		loadingMoreTopics = false;
 
@@ -16,14 +16,7 @@ define(['forum/recent'], function(recent) {
 		recent.watchForNewPosts();
 
 		$('#markSelectedRead').on('click', function() {
-			function getSelectedTids() {
-				var tids = [];
-				$('#topics-container .category-item.selected').each(function() {
-					tids.push($(this).attr('data-tid'));
-				});
-				return tids;
-			}
-			var tids = getSelectedTids();
+			var tids = topicSelect.getSelectedTids();
 			if(!tids.length) {
 				return;
 			}
@@ -77,14 +70,7 @@ define(['forum/recent'], function(recent) {
 
 		socket.emit('categories.get', onCategoriesLoaded);
 
-		$('#topics-container').on('click', '.select', function() {
-			var select = $(this);
-			var isChecked = !select.hasClass('fa-square-o');
-
-			select.toggleClass('fa-check-square-o', !isChecked);
-			select.toggleClass('fa-square-o', isChecked);
-			select.parents('.category-item').toggleClass('selected', !isChecked);
-		});
+		topicSelect.init();
 
 		if ($("body").height() <= $(window).height() && $('#topics-container').children().length >= 20) {
 			$('#load-more-btn').show();

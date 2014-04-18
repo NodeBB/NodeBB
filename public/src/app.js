@@ -569,6 +569,7 @@ var socket,
 
 			createHeaderTooltips();
 			ajaxify.variables.parse();
+			ajaxify.currentPage = tpl_url;
 			app.processPage();
 
 			ajaxify.widgets.render(tpl_url, url);

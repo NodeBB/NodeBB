@@ -1,13 +1,13 @@
 "use strict";
 /* global define, config, templates, app, utils, ajaxify, socket, translator */
 
-define(['composer', 'forum/pagination', 'share', 'navigator'], function(composer, pagination, share, navigator) {
+define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryTools'], function(composer, pagination, share, navigator, categoryTools) {
 	var Category = {},
 		loadingMoreTopics = false;
 
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
-		if(data.url.indexOf('category') !== 0) {
+		if(data && data.url.indexOf('category') !== 0) {
 			navigator.hide();
 		}
 	});
@@ -24,10 +24,13 @@ define(['composer', 'forum/pagination', 'share', 'navigator'], function(composer
 		});
 
 		ajaxify.register_events([
-			'event:new_topic'
+			'event:new_topic', 'event:topic_deleted', 'event:topic_restored', 'event:topic_locked',
+			'event:topic_unlocked', 'event:topic_pinned', 'event:topic_unpinned', 'event:topic_moved'
 		]);
 
 		socket.on('event:new_topic', Category.onNewTopic);
+
+		categoryTools.init(cid);
 
 		enableInfiniteLoading();
 

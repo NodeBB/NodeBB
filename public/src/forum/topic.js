@@ -144,7 +144,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 
 		ajaxify.register_events([
 			'event:voted', 'event:favourited', 'event:new_post', 'get_users_in_room',
-			'event:topic_deleted', 'event:topic_restored', 'event:topic:locked',
+			'event:topic_deleted', 'event:topic_restored', 'event:topic_locked',
 			'event:topic_unlocked', 'event:topic_pinned', 'event:topic_unpinned',
 			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored',
 			'posts.favourite', 'user.isOnline', 'posts.upvote', 'posts.downvote',
