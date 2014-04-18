@@ -258,7 +258,7 @@ define(['uploader'], function(uploader) {
 			});
 
 			$('#revertChanges').on('click', function() {
-				ajaxify.go('admin/categories/active');
+				ajaxify.refresh();
 			});
 
 			setupEditTargets();
