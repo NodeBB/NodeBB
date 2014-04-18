@@ -85,13 +85,7 @@ define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 		$('.posts .follow').toggleClass('btn-success', state).attr('title', state ? 'You are currently receiving updates to this topic' : 'Be notified of new replies in this topic');
 
 		if(alert) {
-			app.alert({
-				alert_id: 'topic_follow',
-				timeout: 2500,
-				title: state ? '[[topic:following_topic.title]]' : '[[topic:not_following_topic.title]]',
-				message: state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]',
-				type: 'success'
-			});
+			app.alertSucces(state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]');
 		}
 	}
 

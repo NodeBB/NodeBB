@@ -30,9 +30,7 @@
 	"flag_success": "This post has been flagged for moderation.",
 	"deleted_message": "This thread has been deleted. Only users with thread management privileges can see it.",
 
-	"following_topic.title": "Following Topic",
 	"following_topic.message": "You will now be receiving notifications when somebody posts to this topic.",
-	"not_following_topic.title": "Not Following Topic",
 	"not_following_topic.message": "You will no longer receive notifications from this topic.",
 
 	"login_to_subscribe": "Please register or log in in order to subscribe to this topic.",
