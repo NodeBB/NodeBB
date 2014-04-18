@@ -60,7 +60,7 @@ var ajaxify = ajaxify || {};
 		}
 
 		if (ajaxify.isTemplateAvailable(tpl_url) && !!!templatesConfig.force_refresh[tpl_url]) {
-			ajaxify.currentPage = tpl_url;
+			ajaxify.currentPage = url;
 
 			if (window.history && window.history.pushState) {
 				window.history[!quiet ? 'pushState' : 'replaceState']({
