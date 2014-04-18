@@ -56,7 +56,7 @@
 	"views": "Views",
 
 	"posted_ago_by": "posted <span class=\"timeago\" title=\"%1\"></span> by %2",
-	"posted_ago": "posted <span class=\"timeago\" title=\"%1\"></span>"
+	"posted_ago": "posted <span class=\"timeago\" title=\"%1\"></span>",
 
 	"posted": "posted",
 	"in": "in",
