@@ -74,6 +74,7 @@ var ajaxify = ajaxify || {};
 
 			ajaxify.variables.flush();
 			ajaxify.loadData(function () {
+				$(window).trigger('action:ajaxify.contentLoaded', {url: url});
 				ajaxify.loadScript(tpl_url);
 
 				if (typeof callback === 'function') {
