@@ -414,89 +414,100 @@ define(['taskbar'], function(taskbar) {
 		thumbForm.submit();
 	}
 
-	function handleFormattingBarClick() {
-		var iconClass = $(this).find('i').attr('class');
-		var textarea = $(this).parents('.composer').find('textarea')[0];
 
-		var textareaValue = $(textarea).val();
+	/*************************************************/
+	/* Rich Textarea Controls                        */
+	/*************************************************/
+	function insertIntoTextarea(textarea, value) {
+		var $textarea = $(textarea);
+		var currentVal = $textarea.val();
 
-		var selectionStart = textarea.selectionStart,
-			selectionEnd = textarea.selectionEnd,
-			selectionLength = selectionEnd - selectionStart,
-			isSelectionAtEnd = selectionStart === selectionEnd;
+		$textarea.val(
+			currentVal.slice(0, textarea.selectionStart) +
+			value +
+			currentVal.slice(textarea.selectionStart)
+		);
+	}
 
-		function updateSelection(start, end){
-			textarea.setSelectionRange(start, end);
-			textarea.focus();
-		}
-
-		function insertIntoInput(value) {
-			$(textarea).val(textareaValue.slice(0, selectionStart) + value + textareaValue.slice(selectionStart));
-		}
-
-		function wrapSelectedWith(leading, trailing){
+	function wrapSelectionInTextareaWith(textarea, leading, trailing){
 			if(trailing === undefined){
 				trailing = leading;
 			}
 
-			$(textarea).val(textareaValue.slice(0, selectionStart) + leading + textareaValue.slice(selectionStart, selectionEnd) + trailing + textareaValue.slice(selectionEnd));
+			var $textarea = $(textarea);
+			var currentVal = $textarea.val()
+
+			$textarea.val(
+				currentVal.slice(0, textarea.selectionStart) +
+				leading +
+				currentVal.slice(textarea.selectionStart, textarea.selectionEnd) +
+				trailing +
+				currentVal.slice(textarea.selectionEnd)
+			);
 		}
 
-		if(iconClass === 'fa fa-bold') {
-			if (isSelectionAtEnd) {
-				insertIntoInput("**bolded text**");
+	function updateTextareaSelection(textarea, start, end){
+			textarea.setSelectionRange(start, end);
+			$(textarea).focus();
+		}
 
-				updateSelection(selectionStart + 2, selectionStart + 13);
+	var formattingDispatchTable = {
+		'fa fa-bold': function(textarea, selectionStart, selectionEnd){
+			if(selectionStart === selectionEnd){
+				insertIntoTextarea(textarea, '**bolded text**');
+				updateTextareaSelection(textarea, selectionStart + 2, selectionStart + 13);
 			} else {
-				wrapSelectedWith('**');
-
-				// Highlight selection
-				updateSelection(selectionStart + 2, selectionEnd + 2);
+				wrapSelectionInTextareaWith(textarea, '**');
+				updateTextareaSelection(textarea, selectionStart + 2, selectionEnd + 2);
 			}
-		}
+		},
 
-		if(iconClass === 'fa fa-italic') {
-			if (isSelectionAtEnd) {
-				insertIntoInput("*italicised text*");
-
-				// Highlight selection
-				updateSelection(selectionStart + 1, selectionStart + 16);
+		'fa fa-italic': function(textarea, selectionStart, selectionEnd){
+			if(selectionStart === selectionEnd){
+				insertIntoTextarea(textarea, "*italicised text*");
+				updateTextareaSelection(textarea, selectionStart + 1, selectionStart + 16);
 			} else {
-				wrapSelectedWith('*');
-
-				// Highlight selection
-				updateSelection(selectionStart + 1, selectionEnd + 1);
+				wrapSelectionInTextareaWith(textarea, '*');
+				updateTextareaSelection(textarea, selectionStart + 1, selectionEnd + 1);
 			}
-		}
+		},
 
-		if (iconClass === 'fa fa-list'){
-			if(isSelectionAtEnd){
-				insertIntoInput("\n* list item");
+		'fa fa-list': function(textarea, selectionStart, selectionEnd){
+			if(selectionStart === selectionEnd){
+				insertIntoTextarea(textarea, "\n* list item");
 
 				// Highlight "list item"
-				updateSelection(selectionStart + 3, selectionStart + 12);
+				updateTextareaSelection(textarea, selectionStart + 3, selectionStart + 12);
 			} else {
-				wrapSelectedWith('\n* ', '');
+				wrapSelectionInTextareaWith(textarea, '\n* ', '');
+				updateTextareaSelection(textarea, selectionStart + 3, selectionEnd + 3);
+			}
+		},
 
-				// Maintain selection:
-				updateSelection(selectionStart + 3, selectionEnd + 3);
+		'fa fa-link': function(textarea, selectionStart, selectionEnd){
+			if(selectionStart === selectionEnd){
+				insertIntoTextarea(textarea, "[link text](link url)");
+
+				// Highlight "link url"
+				updateTextareaSelection(textarea, selectionStart + 12, selectionEnd + 20);
+			} else {
+				wrapSelectionInTextareaWith(textarea, '[', '](link url)');
+
+				// Highlight "link url"
+				updateTextareaSelection(textarea, selectionEnd + 3, selectionEnd + 11);
 			}
 		}
+	};
 
-		if (iconClass === 'fa fa-link') {
-			if (isSelectionAtEnd) {
-				insertIntoInput("[link text](link url)");
+	function handleFormattingBarClick() {
+		var iconClass = $(this).find('i').attr('class');
+		var textarea = $(this).parents('.composer').find('textarea')[0];
 
-				// Highlight "link url"
-				updateSelection(selectionStart + 12, selectionEnd + 20);
-			} else {
-				wrapSelectedWith('[', '](link url)');
-
-				// Highlight "link url"
-				updateSelection(selectionStart + selectionLength + 3, selectionEnd + 11);
-			}
+		if(formattingDispatchTable.hasOwnProperty(iconClass)){
+			formattingDispatchTable[iconClass](textarea, textarea.selectionStart, textarea.selectionEnd);
 		}
 	}
+
 
 	composer.newTopic = function(cid) {
 		if(!allowed()) {
