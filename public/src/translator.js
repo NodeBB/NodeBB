@@ -13,6 +13,7 @@
 		languages[language] = languages[language] || {};
 		languages[language].loaded = languages[language].loaded || {};
 		languages[language].loaded[filename] = translations;
+		languages[language].loading = languages[language].loading || {};
 	};
 
 	translator.getLanguage = function() {
