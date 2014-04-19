@@ -304,6 +304,8 @@ middleware.processRender = function(req, res, next) {
 		}
 
 		render.call(self, template, options, function(err, str) {
+			str = (res.locals.postHeader ? res.locals.postHeader : '') + str + (res.locals.preFooter ? res.locals.preFooter : '');
+
 			if (res.locals.footer) {
 				str = str + res.locals.footer;
 			} else if (res.locals.adminFooter) {
