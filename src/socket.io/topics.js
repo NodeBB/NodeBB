@@ -8,6 +8,7 @@ var topics = require('../topics'),
 	user = require('../user'),
 	db = require('./../database'),
 	meta = require('./../meta'),
+	utils = require('../../public/src/utils'),
 
 	async = require('async'),
 
@@ -331,6 +332,14 @@ SocketTopics.loadMoreFromSet = function(socket, data, callback) {
 		end = start + 9;
 
 	topics.getTopicsFromSet(socket.uid, data.set, start, end, callback);
+};
+
+SocketTopics.loadTopics = function(socket, data, callback) {
+	if(!data || !data.set || !utils.isNumber(data.start) || !utils.isNumber(data.end)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	topics.getTopicsFromSet(socket.uid, data.set, data.start, data.end, callback);
 };
 
 SocketTopics.getPageCount = function(socket, tid, callback) {
