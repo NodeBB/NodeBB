@@ -496,6 +496,14 @@ define(['taskbar'], function(taskbar) {
 				// Highlight "link url"
 				updateTextareaSelection(textarea, selectionEnd + 3, selectionEnd + 11);
 			}
+		},
+
+		'fa fa-picture-o': function(){
+			$('#files').click();
+		},
+
+		'fa fa-upload': function(){
+			$('#files').click();
 		}
 	};
 
@@ -720,10 +728,6 @@ define(['taskbar'], function(taskbar) {
 				});
 
 				postContainer.on('click', '.formatting-bar span', handleFormattingBarClick);
-
-				postContainer.on('click', '.formatting-bar span .fa-picture-o, .formatting-bar span .fa-upload', function() {
-					$('#files').click();
-				});
 
 				postContainer.find('#files').on('change', function(e) {
 					var files = (e.target || {}).files || ($(this).val() ? [{name: $(this).val(), type: utils.fileMimeType($(this).val())}] : null);
