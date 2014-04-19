@@ -1,9 +1,9 @@
 {
-    "title": "Okunmadı",
+    "title": "Okunmamış",
     "no_unread_topics": "Okunmamış başlık mevcut değil.",
     "load_more": "Daha Fazla",
-    "mark_as_read": "Mark as Read",
-    "selected": "Selected",
-    "all": "All",
-    "topics_marked_as_read.success": "Topics marked as read!"
+    "mark_as_read": "Okundu Olarak İşaretle",
+    "selected": "Seçili",
+    "all": "Hepsi",
+    "topics_marked_as_read.success": "Başlıklar okundu olarak işaretlendi!"
 }

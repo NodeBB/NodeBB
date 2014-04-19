@@ -1,15 +1,15 @@
 {
     "home": "Ana Sayfa",
     "unread": "Okunmayan Başlıklar",
-    "popular": "Popular Topics",
+    "popular": "Popüler Başlıklar",
     "recent": "Güncel Konular",
     "users": "Kayıtlı Kullanıcılar",
     "notifications": "Bildirimler",
     "user.edit": "\"% 1\" düzenleniyor",
     "user.following": "İnsanlar %1 Takip Ediyor",
     "user.followers": "%1 takip edenler",
-    "user.posts": "Posts made by %1",
-    "user.topics": "Topics created by %1",
+    "user.posts": "%1 tarafından gönderilen iletiler",
+    "user.topics": "%1 tarafından gönderilen başlıklar",
     "user.favourites": "%1'in Favori İletileri",
     "user.settings": "Kullanıcı Ayarları"
 }

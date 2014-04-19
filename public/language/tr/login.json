@@ -1,7 +1,5 @@
 {
-    "login": "Giriş",
-    "username": "Username / Email",
-    "password": "Şifre",
+    "username": "Kullanıcı İsmi / E-posta",
     "remember_me": "Beni Hatırla!",
     "forgot_password": "Şifrenizi mi unuttunuz?",
     "alternative_logins": "Alternatif Girişler",

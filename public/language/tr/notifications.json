@@ -1,18 +1,18 @@
 {
     "title": "Bildirimler",
-    "no_notifs": "You have no new notifications",
-    "see_all": "See all Notifications",
+    "no_notifs": "Yeni bildirimleriniz yok",
+    "see_all": "Bütün bildirimleri gör",
     "back_to_home": "NodeBB'ye geri dön",
     "outgoing_link": "Harici Link",
     "outgoing_link_message": "Şimdi ayrılıyorsunuz",
     "continue_to": "Devam",
     "return_to": "Geri Dön",
-    "new_notification": "New Notification",
-    "you_have_unread_notifications": "You have unread notifications.",
-    "user_made_post": "<strong>%1</strong> made a new post",
-    "new_message_from": "New message from <strong>%1</strong>",
-    "upvoted_your_post": "<strong>%1</strong> has upvoted your post.",
-    "favourited_your_post": "<strong>%1</strong> has favourited your post.",
-    "user_flagged_post": "<strong>%1</strong> flagged a post.",
-    "user_posted_to": "<strong>%1</strong> has posted a reply to: <strong>%2</strong>"
+    "new_notification": "Yeni bildirim",
+    "you_have_unread_notifications": "Okunmamış bildirimleriniz var.",
+    "user_made_post": "<strong>%1<strong> yeni bir ileti gönderdi",
+    "new_message_from": "<strong>%1</strong> size bir mesaj gönderdi",
+    "upvoted_your_post": "<strong>%1</strong> iletinizi beğendi.",
+    "favourited_your_post": "<strong>%1</strong> iletinizi favorilerine ekledi.",
+    "user_flagged_post": "<strong>%1</strong> bir iletiyi sakıncalı buldu.",
+    "user_posted_to": "<strong>%1</strong> <strong>%2</strong> başlığına bir ileti gönderdi."
 }
