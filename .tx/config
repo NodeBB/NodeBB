@@ -127,37 +127,6 @@ trans.zh_CN = public/language/zh_CN/unread.json
 trans.zh_TW = public/language/zh_TW/unread.json
 type = KEYVALUEJSON
 
-[nodebb.footer]
-source_file = public/language/en_GB/footer.json
-source_lang = en_GB
-trans.ar = public/language/ar/footer.json
-trans.cs = public/language/cs/footer.json
-trans.de = public/language/de/footer.json
-trans.en_US = public/language/en_US/footer.json
-trans.en@pirate = public/language/en@pirate/footer.json
-trans.es = public/language/es/footer.json
-trans.et = public/language/et/footer.json
-trans.fa_IR = public/language/fa_IR/footer.json
-trans.fi = public/language/fi/footer.json
-trans.fr = public/language/fr/footer.json
-trans.he = public/language/he/footer.json
-trans.hu = public/language/hu/footer.json
-trans.it = public/language/it/footer.json
-trans.lt = public/language/lt/footer.json
-trans.nb = public/language/nb/footer.json
-trans.nl = public/language/nl/footer.json
-trans.pl = public/language/pl/footer.json
-trans.pt_BR = public/language/pt_BR/footer.json
-trans.ru = public/language/ru/footer.json
-trans.sc = public/language/sc/footer.json
-trans.sk = public/language/sk/footer.json
-trans.sv = public/language/sv/footer.json
-trans.th = public/language/th/footer.json
-trans.tr = public/language/tr/footer.json
-trans.zh_CN = public/language/zh_CN/footer.json
-trans.zh_TW = public/language/zh_TW/footer.json
-type = KEYVALUEJSON
-
 [nodebb.modules]
 source_file = public/language/en_GB/modules.json
 source_lang = en_GB
