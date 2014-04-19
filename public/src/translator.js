@@ -217,7 +217,8 @@
 
 		fs.readFile(path.join(__dirname, '../language', language, filename + '.json'), function(err, data) {
 			if (err) {
-				return winston.error(err.message);
+				winston.error('Could not load `' + filename + '`: ' + err.message + '. Skipping...');
+				return callback({});
 			}
 
 			try {
