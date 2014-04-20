@@ -328,7 +328,7 @@ var async = require('async'),
 			posts.getPostFields(pid, ['pid', 'uid', 'timestamp'], function(err, postData) {
 				if (err) {
 					return callback(err);
-				} else if(!postData || !postData.uid) {
+				} else if(!postData || !utils.isNumber(postData.uid)) {
 					return callback(new Error('[[error:no-teaser]]'));
 				}
 
