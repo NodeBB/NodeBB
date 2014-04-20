@@ -7,12 +7,12 @@
     "outgoing_link_message": "Du verlässt nun",
     "continue_to": "Gehe weiter zu",
     "return_to": "Kehre zurück zu",
-    "new_notification": "New Notification",
-    "you_have_unread_notifications": "You have unread notifications.",
-    "user_made_post": "<strong>%1</strong> made a new post",
-    "new_message_from": "New message from <strong>%1</strong>",
-    "upvoted_your_post": "<strong>%1</strong> has upvoted your post.",
-    "favourited_your_post": "<strong>%1</strong> has favourited your post.",
-    "user_flagged_post": "<strong>%1</strong> flagged a post.",
-    "user_posted_to": "<strong>%1</strong> has posted a reply to: <strong>%2</strong>"
+    "new_notification": "Neue Benachrichtigungen",
+    "you_have_unread_notifications": "Du hast ungelesene Benachrichtigungen.",
+    "user_made_post": "<strong>%1</strong> hat einen neuen Beitrag geschrieben.",
+    "new_message_from": "Neue Nachricht von <strong>%1</strong>",
+    "upvoted_your_post": "<strong>%1</strong> hat deinen Beitrag positiv bewertet.",
+    "favourited_your_post": "<strong>%1</strong> hat nun deinen Beitrag als Favoriten.",
+    "user_flagged_post": "<strong>%1</strong> hat einen Beitrag markiert.",
+    "user_posted_to": "<strong>%1</strong> hat eine Antwort zu <strong>%2</strong> geschrieben."
 }
