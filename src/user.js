@@ -110,9 +110,13 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.isReadyToPost = function(uid, callback) {
+		if (meta.config.allowGuestPosting && parseInt(uid, 10) === 0) {
+			return callback();
+		}
+
 		async.parallel({
 			banned: function(next) {
-				User.getUserField(uid, 'banned',next);
+				User.getUserField(uid, 'banned', next);
 			},
 			exists: function(next) {
 				db.exists('user:' + uid, next);
