@@ -232,7 +232,7 @@ var db = require('./database'),
 			}
 
 			post.user = {
-				username: userData.username || 'Guest',
+				username: userData.username || '[[global:guest]]',
 				userslug: userData.userslug || '',
 				reputation: userData.reputation || 0,
 				postcount: userData.postcount || 0,
