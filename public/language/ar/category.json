@@ -1,12 +1,7 @@
 {
     "new_topic_button": "موضوع جديد",
     "no_topics": "<strong>لا توجد مواضيع في هذه الفئة</strong>لماذا لا تحاول نشر واحد؟<br />",
-    "posts": "مشاركات",
-    "views": "مشاهدات",
-    "posted": "نشر",
     "browsing": "يتصفح",
     "no_replies": "لم يرد أحد",
-    "replied": "رد",
-    "last_edited_by": "تغيرت أخيراً عبر",
     "share_this_category": "Share this category"
 }

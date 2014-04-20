@@ -32,7 +32,7 @@
     "change_password_error_wrong_current": "Şu anki şifre doğru değil!",
     "change_password_error_length": "Şifre çok kısa!",
     "change_password_error_match": "Şifreler aynı olmalı!",
-    "change_password_error_privileges": "Bu şifreyi değiştirme izniniz yok.",
+    "change_password_error_privileges": "Bu şifreyi değiştirme yetkiniz yok.",
     "change_password_success": "Şifreniz güncellendi!",
     "confirm_password": "Şifreyi Onayla",
     "password": "Şifre",
@@ -44,7 +44,7 @@
     "settings": "Ayarlar",
     "show_email": "E-postamı göster",
     "digest_label": "Özet e-postalarına kaydol",
-    "digest_description": "Bu forum için e-post güncellemelerine kaydol.",
+    "digest_description": "Bu forum için e-posta güncellemelerine kaydol.",
     "digest_off": "Kapalı",
     "digest_daily": "Günlük",
     "digest_weekly": "Haftalık",
@@ -58,5 +58,5 @@
     "paginate_description": "Sonsuz yükleme yerine konu ve iletileri sayfalara böl.",
     "topics_per_page": "Sayfa başına Konular",
     "posts_per_page": "Sayfa başına İletiler",
-    "notification_sounds": "Uyarı alındığında ses çal"
+    "notification_sounds": "Bildirim alındığında ses çal"
 }

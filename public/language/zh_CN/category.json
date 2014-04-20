@@ -1,12 +1,7 @@
 {
     "new_topic_button": "新主题",
     "no_topics": "<strong>这个版面还没有任何内容。</strong><br />赶紧来发帖吧！",
-    "posts": "帖子",
-    "views": "浏览",
-    "posted": "发布",
     "browsing": "正在浏览",
     "no_replies": "还没有回复",
-    "replied": "回复",
-    "last_edited_by": "最后编辑",
     "share_this_category": "Share this category"
 }

@@ -1,12 +1,7 @@
 {
     "new_topic_button": "Nové téma",
     "no_topics": "<strong>V této kategorii zatím nejsou žádné příspěvky.</strong><br />Můžeš být první!",
-    "posts": "příspěvky",
-    "views": "zobrazení",
-    "posted": "odesláno",
     "browsing": "prohlíží",
     "no_replies": "Nikdo ještě neodpověděl",
-    "replied": "přispěl",
-    "last_edited_by": "naposledy upravil",
     "share_this_category": "Share this category"
 }

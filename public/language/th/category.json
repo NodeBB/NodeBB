@@ -1,12 +1,7 @@
 {
     "new_topic_button": "กระทู้",
     "no_topics": "<strong>ยังไม่มีกระทู้ในหมวดนี้</strong><br />โพสต์กระทู้แรก?",
-    "posts": "กระทู้",
-    "views": "ดู",
-    "posted": "โพสต์แล้ว",
     "browsing": "เรียกดู",
     "no_replies": "ยังไม่มีใครตอบ",
-    "replied": "ตอบแล้ว",
-    "last_edited_by": "แก้ไขครั้งสุดท้ายโดย",
     "share_this_category": "Share this category"
 }

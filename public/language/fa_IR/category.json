@@ -1,12 +1,7 @@
 {
     "new_topic_button": "جستار تازه",
     "no_topics": "<strong>هیچ جستاری در این دسته نیست.</strong><br />چرا شما یکی نفرستید؟",
-    "posts": "دیدگاه‌ها",
-    "views": "بازدیدها",
-    "posted": "فرستاده شده",
     "browsing": "بیننده‌ها",
     "no_replies": "هیچ کسی پاسخ نداده است.",
-    "replied": "پاسخ داد",
-    "last_edited_by": "آخرین ویرایش از سوی",
     "share_this_category": "به اشتراک‌گذاری این دسته"
 }

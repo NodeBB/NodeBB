@@ -1,7 +1,5 @@
 {
-    "login": "Zaloguj się",
     "username": "Nazwa użytkownika lub adres e-mail",
-    "password": "Hasło",
     "remember_me": "Zapamiętaj mnie",
     "forgot_password": "Zapomniałeś hasło?",
     "alternative_logins": "Alternatywne logowanie",

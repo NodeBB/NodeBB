@@ -1,12 +1,7 @@
 {
     "new_topic_button": "Nová téma",
     "no_topics": "<strong>V tejto kategórií zatiaľ nie sú žiadne príspevky.</strong><br />Môžeš byť prvý!",
-    "posts": "príspevkov",
-    "views": "zobrazení",
-    "posted": "odoslané",
     "browsing": "prehliada",
     "no_replies": "Nikdo ešte neodpovedal",
-    "replied": "prispel",
-    "last_edited_by": "naposledy upravil",
     "share_this_category": "Share this category"
 }

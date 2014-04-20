@@ -1,12 +1,7 @@
 {
     "new_topic_button": "Nytt emne",
     "no_topics": "<strong>Det er ingen emner i denne kategorien</strong><br />Hvorfor ikke lage ett?",
-    "posts": "inlegg",
-    "views": "visninger",
-    "posted": "skapte",
     "browsing": "leser",
     "no_replies": "Ingen har svart",
-    "replied": "svarte",
-    "last_edited_by": "sist endret av",
     "share_this_category": "Del denne kategorien"
 }

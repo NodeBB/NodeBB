@@ -1,5 +1,6 @@
 {
-    "topic-post": "You have successfully posted.",
-    "authentication-successful": "Authentication Successful",
-    "settings-saved": "Settings saved!"
+    "success": "Pavyko",
+    "topic-post": "Sėkmingai parašėte pranešimą",
+    "authentication-successful": "Autentifikacija sėkminga",
+    "settings-saved": "Nustatymai išsaugoti!"
 }

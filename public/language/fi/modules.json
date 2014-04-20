@@ -3,5 +3,5 @@
     "chat.placeholder": "kirjoita viestisi tähän ja paina enter lähettääksesi",
     "chat.send": "Lähetä",
     "chat.no_active": "Sinulla ei ole aktiivisia keskusteluita.",
-    "chat.user_typing": "%1 is typing ..."
+    "chat.user_typing": "%1 kirjoittaa ..."
 }
