@@ -82,11 +82,8 @@ var async = require('async'),
 			before = new Date(parseInt(before, 10));
 		}
 
-		var args1 = ['uid:' + uid + ':notifications:read', before ? before.getTime(): now.getTime(), -Infinity, 'LIMIT', 0, limit];
-		var args2 = ['uid:' + uid + ':notifications:unread', before ? before.getTime(): now.getTime(), -Infinity, 'LIMIT', 0, limit];
-
-		db.getSortedSetRevRangeByScore(args1, function(err, results1) {
-			db.getSortedSetRevRangeByScore(args2, function(err, results2) {
+		db.getSortedSetRevRangeByScore('uid:' + uid + ':notifications:read', 0, limit, before ? before.getTime(): now.getTime(), -Infinity, function(err, results1) {
+			db.getSortedSetRevRangeByScore('uid:' + uid + ':notifications:unread', 0, limit, before ? before.getTime(): now.getTime(), -Infinity, function(err, results2) {
 
 				var nids = results1.concat(results2);
 				async.map(nids, function(nid, next) {
