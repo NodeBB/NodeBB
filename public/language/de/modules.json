@@ -3,5 +3,5 @@
     "chat.placeholder": "schreibe hier etwas, und drücke Enter zum absenden",
     "chat.send": "Senden",
     "chat.no_active": "Du hast keine aktiven Chats.",
-    "chat.user_typing": "%1 is typing ..."
+    "chat.user_typing": "%1 tippt gerade ..."
 }
