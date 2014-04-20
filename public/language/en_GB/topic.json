@@ -7,7 +7,7 @@
 	"no_posts_found": "No posts found!",
 
 	"profile": "Profile",
-	"posted_by": "Posted by",
+	"posted_by": "Posted by %1",
 	"chat": "Chat",
 	"notify_me": "Be notified of new replies in this topic",
 	"quote": "Quote",

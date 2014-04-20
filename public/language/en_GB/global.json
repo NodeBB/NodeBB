@@ -65,6 +65,7 @@
 	"posted_in_ago": "posted in <a href=\"%1\"><i class=\"fa %2\"></i> %3</a> <span class=\"timeago\" title=\"%4\"></span>",
 	"replied_ago": "replied <span class=\"timeago\" title=\"%1\"></span>",
 	"user_posted_ago": "<a href=\"%1\" itemprop=\"author\">%2</a> posted <span class=\"timeago\" title=\"%3\"></span>",
+	"guest_posted_ago": "<a href=\"#\" itemprop=\"author\">Guest</a> posted <span class=\"timeago\" title=\"%1\"></span>",
 	"last_edited_by_ago": "last edited by <strong><a href=\"%1\">%2</a></strong> <span class=\"timeago\" title=\"%3\"></span>",
 
 	"norecentposts": "No Recent Posts",
