@@ -3,5 +3,5 @@
     "chat.placeholder": "Digite sua mensagem aqui e pressione 'enter' para enviar",
     "chat.send": "Enviar",
     "chat.no_active": "Você não tem bate papos ativos.",
-    "chat.user_typing": "%1 is typing ..."
+    "chat.user_typing": "%1 está digitando..."
 }

@@ -1,10 +1,8 @@
 {
-    "login": "Login",
-    "username": "Username / Email",
-    "password": "Senha",
+    "username": "Usuário / Email",
     "remember_me": "Lembrar?",
     "forgot_password": "Esqueceu a Senha?",
-    "alternative_logins": "Você pode logar usando ...",
+    "alternative_logins": "Você pode logar usando:",
     "failed_login_attempt": "Falha no login, por favor tente novamente.",
     "login_successful": "Você logou com sucesso!"
 }
