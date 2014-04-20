@@ -209,31 +209,37 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 
 					var title = '';
 					if(remainingUsers && anonymousCount) {
-						title = remainingUsers + ' more user(s) and ' + anonymousCount + ' guest(s)';
+						title = '[[topic:more_users_and_guests, ' + remainingUsers + ', ' + anonymousCount + ']]';
 					} else if(remainingUsers) {
-						title = remainingUsers + ' more user(s)';
+						title = '[[topic:more_users, ' + remainingUsers + ']]';
 					} else {
-						title = anonymousCount + ' guest(s)';
+						title = '[[topic:more_guests, ' + anonymousCount + ']]';
 					}
 
-					anonLink.tooltip({
-						placement: 'top',
-						title: title
+					translator.translate(title, function(translated) {
+						$('.anonymous-box').tooltip({
+							placement: 'top',
+							title: translated
+						});
 					});
 				}
 
-				// Get users who are currently replying to the topic entered
-				socket.emit('modules.composer.getUsersByTid', ajaxify.variables.get('topic_id'), function(err, uids) {
-					if (uids && uids.length) {
-						for(var x=0;x<uids.length;x++) {
-							activeEl.find('[data-uid="' + uids[x] + '"]').addClass('replying');
-						}
-					}
-				});
+				getReplyingUsers();
 			}
 
 			app.populateOnlineUsers();
 		});
+
+		function getReplyingUsers() {
+			var activeEl = $('.thread_active_users');
+			socket.emit('modules.composer.getUsersByTid', ajaxify.variables.get('topic_id'), function(err, uids) {
+				if (uids && uids.length) {
+					for(var x=0;x<uids.length;x++) {
+						activeEl.find('[data-uid="' + uids[x] + '"]').addClass('replying');
+					}
+				}
+			});
+		}
 
 		socket.on('user.isOnline', function(err, data) {
 			app.populateOnlineUsers();

@@ -285,6 +285,20 @@ var bcrypt = require('bcryptjs'),
 		});
 	};
 
+	User.getNameSlugPicture = function(uid, callback) {
+		User.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			callback(null, {
+				username: data.username || '[[global:guest]]',
+				userslug: data.userslug || '',
+				picture: data.picture || gravatar.url('', {}, true)
+			});
+		});
+	};
+
 	User.getUidByUsername = function(username, callback) {
 		db.getObjectField('username:uid', username, callback);
 	};

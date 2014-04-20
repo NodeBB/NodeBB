@@ -65,7 +65,7 @@ SocketMeta.updateHeader = function(socket, data, callback) {
 	} else {
 		callback(null, {
 			uid: 0,
-			username: "Anonymous User",
+			username: '[[global:guest]]',
 			email: '',
 			picture: gravatar.url('', {
 				s: '24'

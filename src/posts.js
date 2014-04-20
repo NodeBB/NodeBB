@@ -232,7 +232,7 @@ var db = require('./database'),
 			}
 
 			post.user = {
-				username: userData.username || 'anonymous',
+				username: userData.username || 'Guest',
 				userslug: userData.userslug || '',
 				reputation: userData.reputation || 0,
 				postcount: userData.postcount || 0,
@@ -282,17 +282,11 @@ var db = require('./database'),
 
 			post.relativeTime = utils.toISOString(post.timestamp);
 
-			async.parallel([
-				function(next) {
-					user.getUserFields(post.uid, ['username', 'userslug', 'picture'], function(err, userData) {
-						if (err) {
-							return next(err);
-						}
-						post.user = userData;
-						next();
-					});
+			async.parallel({
+				user: function(next) {
+					user.getNameSlugPicture(post.uid, next);
 				},
-				function(next) {
+				topicCategory: function(next) {
 					topics.getTopicFields(post.tid, ['title', 'cid', 'slug', 'deleted'], function(err, topicData) {
 						if (err) {
 							return next(err);
@@ -305,35 +299,36 @@ var db = require('./database'),
 								return next(err);
 							}
 
-							post.category = categoryData;
 							topicData.title = validator.escape(topicData.title);
-							post.topic = topicData;
-							next();
+
+							next(null, {topic: topicData, category: categoryData});
 						});
 					});
 				},
-				function(next) {
+				content: function(next) {
 					if (!post.content) {
-						return next();
+						return next(null, post.content);
 					}
 
-					postTools.parse(post.content, function(err, content) {
-						if(err) {
-							return next(err);
-						}
-
-						if(stripTags) {
-							var s = S(content);
-							post.content = s.stripTags.apply(s, utils.getTagsExcept(['img', 'i', 'p'])).s;
-						} else {
-							post.content = content;
-						}
-
-						next();
-					});
+					postTools.parse(post.content, next);
 				}
-			], function(err) {
-				callback(err, post);
+			}, function(err, results) {
+				if (err) {
+					return callback(err);
+				}
+
+				post.user = results.user;
+				post.topic = results.topicCategory.topic;
+				post.category = results.topicCategory.category;
+
+				if (stripTags) {
+					var s = S(results.content);
+					post.content = s.stripTags.apply(s, utils.getTagsExcept(['img', 'i', 'p'])).s;
+				} else {
+					post.content = results.content;
+				}
+
+				callback(null, post);
 			});
 		}
 

@@ -79,5 +79,7 @@
 	"offline": "Offline",
 
 	"email": "Email",
-	"language": "Language"
+	"language": "Language",
+
+	"guest": "Guest"
 }

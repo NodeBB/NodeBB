@@ -102,7 +102,7 @@ Sockets.init = function(server) {
 					socket.broadcast.emit('user.anonConnect');
 					socket.emit('event:connect', {
 						status: 1,
-						username: 'Anonymous',
+						username: '[[global:guest]]',
 						isAdmin: false,
 						uid: 0
 					});
