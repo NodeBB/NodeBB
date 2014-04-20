@@ -1,0 +1,18 @@
+{
+    "register": "Mendaftar",
+    "help.email": "E-mel akan disembunyikan daripada orang ramai.",
+    "help.username_restrictions": "Cuba satu nama pengguna yang unik di antara %1 dan %2 aksara. Orang lain boleh menyebut anda dengan @<span id='yourUsername'>nama pengguna</ span>.",
+    "help.minimum_password_length": "Panjang kata laluan anda hendaklah sekurang-kurangnya %1 aksara.",
+    "email_address": "Alamat E-mel",
+    "email_address_placeholder": "Masukkan Alamat E-mel",
+    "username": "Nama Pengguna",
+    "username_placeholder": "Masukkan Nama Pengguna",
+    "password": "Kata Laluan",
+    "password_placeholder": "Masukkan Nama Pengunna",
+    "confirm_password": "Sahkan Kata Laluan",
+    "confirm_password_placeholder": "Sahkan Kata Laluan",
+    "register_now_button": "Daftar Sekarang",
+    "alternative_registration": "Pendaftaran Alternatif",
+    "terms_of_use": "Terma Penggunaan",
+    "agree_to_terms_of_use": "Saya bersetuju dengan Terma Penggunaan"
+}
