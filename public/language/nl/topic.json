@@ -4,8 +4,9 @@
     "topic_id_placeholder": "Enter topic ID",
     "no_topics_found": "Geen onderwerpen gevonden!",
     "no_posts_found": "Geen berichten gevonden!",
+    "post_is_deleted": "This post is deleted!",
     "profile": "Profiel",
-    "posted_by": "Geplaatst door",
+    "posted_by": "Posted by %1",
     "chat": "Chat",
     "notify_me": "Krijg notificaties van nieuwe reacties op dit onderwerp",
     "quote": "Citeren",
@@ -39,6 +40,7 @@
     "thread_tools.lock": "Onderwerp Sluiten",
     "thread_tools.unlock": "Onderwerp Openen",
     "thread_tools.move": "Onderwerp Verplaatsen",
+    "thread_tools.move_all": "Move All",
     "thread_tools.fork": "Onderwerp Forken",
     "thread_tools.delete": "Onderwerp Verwijderen",
     "thread_tools.delete_confirm": "Are you sure you want to delete this thread?",
@@ -84,5 +86,8 @@
     "composer.thumb_file_label": "Of upload een bestand",
     "composer.thumb_remove": "Velden leegmaken",
     "composer.drag_and_drop_images": "Sleep en Zet Afbeeldingen Hier",
-    "composer.upload_instructions": "Upload afbeeldingen door ze te slepen."
+    "composer.upload_instructions": "Upload afbeeldingen door ze te slepen.",
+    "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
+    "more_users": "%1 more user(s)",
+    "more_guests": "%1 more guest(s)"
 }

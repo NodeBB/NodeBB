@@ -4,8 +4,9 @@
     "topic_id_placeholder": "Masukkan ID topik",
     "no_topics_found": "Tiada topik yang ditemui",
     "no_posts_found": "Tiada kirim yang dijumpai",
+    "post_is_deleted": "This post is deleted!",
     "profile": "Profil",
-    "posted_by": "Dikirim oleh",
+    "posted_by": "Posted by %1",
     "chat": "Sembang",
     "notify_me": "Kekal dimaklumkan berkenaan respon dalam topik ini",
     "quote": "Petikan",
@@ -39,6 +40,7 @@
     "thread_tools.lock": "Kunci topik",
     "thread_tools.unlock": "Buka kekunci topik",
     "thread_tools.move": "Pindahkan topik",
+    "thread_tools.move_all": "Move All",
     "thread_tools.fork": "Fork topik",
     "thread_tools.delete": "Padamkan topik",
     "thread_tools.delete_confirm": "Adakah anda pasti untuk memadamkan thread ini?",
@@ -84,5 +86,8 @@
     "composer.thumb_file_label": "Atau muat naik fail",
     "composer.thumb_remove": "Bersihkan kawasan",
     "composer.drag_and_drop_images": "Seret dan lepaskan imej disini",
-    "composer.upload_instructions": "Muatnaik imej dengan menyeret dan melepaskanya"
+    "composer.upload_instructions": "Muatnaik imej dengan menyeret dan melepaskanya",
+    "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
+    "more_users": "%1 more user(s)",
+    "more_guests": "%1 more guest(s)"
 }

@@ -4,8 +4,9 @@
     "topic_id_placeholder": "ID جستار را بنویسید",
     "no_topics_found": "هیچ جستاری یافت نشد!",
     "no_posts_found": "دیدگاهی یافت نشد!",
+    "post_is_deleted": "This post is deleted!",
     "profile": "نمایه",
-    "posted_by": "فرستادهٔ",
+    "posted_by": "Posted by %1",
     "chat": "گفتگو",
     "notify_me": "از پاسخ‌های تازه در جستار آگاه شوید",
     "quote": "نقل قول",
@@ -39,6 +40,7 @@
     "thread_tools.lock": "قفل کردن جستار",
     "thread_tools.unlock": "باز کردن جستار",
     "thread_tools.move": "جابجا کردن جستار",
+    "thread_tools.move_all": "Move All",
     "thread_tools.fork": "شاخه ساختن از جستار",
     "thread_tools.delete": "پاک کردن جستار",
     "thread_tools.delete_confirm": "آیا از پاک کردن این جستار اطمینان دارید؟",
@@ -84,5 +86,8 @@
     "composer.thumb_file_label": "یا بارگذاری یک پرونده",
     "composer.thumb_remove": "پاک کردن جعبه‌ها",
     "composer.drag_and_drop_images": "تصویرها را به اینجا بکشید و رها کنید",
-    "composer.upload_instructions": "با کشیدن و رها کردن تصویرها، آن‌ها را بار بگذارید."
+    "composer.upload_instructions": "با کشیدن و رها کردن تصویرها، آن‌ها را بار بگذارید.",
+    "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
+    "more_users": "%1 more user(s)",
+    "more_guests": "%1 more guest(s)"
 }

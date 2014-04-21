@@ -4,8 +4,9 @@
     "topic_id_placeholder": "Enter topic ID",
     "no_topics_found": "Peruna arresonada agatada!",
     "no_posts_found": "Perunu arresonu agatadu!",
+    "post_is_deleted": "This post is deleted!",
     "profile": "Perfilu",
-    "posted_by": "Publicadu dae",
+    "posted_by": "Posted by %1",
     "chat": "Tzarra",
     "notify_me": "Imbia·mi notìficas pro is rispostas noas a custa arresonada",
     "quote": "Mèntova",
@@ -39,6 +40,7 @@
     "thread_tools.lock": "Bloca Arresonada",
     "thread_tools.unlock": "Isbloca Arresonada",
     "thread_tools.move": "Move Arresonada",
+    "thread_tools.move_all": "Move All",
     "thread_tools.fork": "Partzi Arresonada",
     "thread_tools.delete": "Cantzella Arresonada",
     "thread_tools.delete_confirm": "Are you sure you want to delete this thread?",
@@ -84,5 +86,8 @@
     "composer.thumb_file_label": "O càrriga unu file",
     "composer.thumb_remove": "Lìmpia is datos",
     "composer.drag_and_drop_images": "Tràsina Immàgines Inoghe",
-    "composer.upload_instructions": "Càrriga immàgines trasinende·dda·las"
+    "composer.upload_instructions": "Càrriga immàgines trasinende·dda·las",
+    "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
+    "more_users": "%1 more user(s)",
+    "more_guests": "%1 more guest(s)"
 }

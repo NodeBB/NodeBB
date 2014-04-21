@@ -4,8 +4,9 @@
     "topic_id_placeholder": "Enter topic ID",
     "no_topics_found": "ไม่พบกระทู้",
     "no_posts_found": "ไม่พบโพส",
+    "post_is_deleted": "This post is deleted!",
     "profile": "รายละเอียด",
-    "posted_by": "โพสต์โดย",
+    "posted_by": "Posted by %1",
     "chat": "แชท",
     "notify_me": "แจ้งเตือนเมื่อการตอบใหม่ในกระทู้นี้",
     "quote": "คำอ้างอิง",
@@ -39,6 +40,7 @@
     "thread_tools.lock": "ล็อคกระทู้",
     "thread_tools.unlock": "ปลดล็อคกระทู้",
     "thread_tools.move": "ย้ายกระทู้",
+    "thread_tools.move_all": "Move All",
     "thread_tools.fork": "แยกกระทู้",
     "thread_tools.delete": "ลบกระทู้",
     "thread_tools.delete_confirm": "Are you sure you want to delete this thread?",
@@ -84,5 +86,8 @@
     "composer.thumb_file_label": "หรืออัปโหลดไฟล์",
     "composer.thumb_remove": "ล้างฟิลด์",
     "composer.drag_and_drop_images": "ลากและวางภาพที่นี่",
-    "composer.upload_instructions": "อัปโหลดภาพโดยลากและวาง"
+    "composer.upload_instructions": "อัปโหลดภาพโดยลากและวาง",
+    "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
+    "more_users": "%1 more user(s)",
+    "more_guests": "%1 more guest(s)"
 }

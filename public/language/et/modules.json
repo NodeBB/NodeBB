@@ -3,5 +3,5 @@
     "chat.placeholder": "kirjuta oma sõnum siia ning sõnumi saatmiseks vajuta enterit",
     "chat.send": "Saada",
     "chat.no_active": "Sul ei ole hetkel aktiivseid vestlusi.",
-    "chat.user_typing": "%1 is typing ..."
+    "chat.user_typing": "%1 kirjutab sõnumit..."
 }

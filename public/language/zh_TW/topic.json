@@ -4,8 +4,9 @@
     "topic_id_placeholder": "輸入主題 ID",
     "no_topics_found": "沒有找到主題！",
     "no_posts_found": "找不到帖子!",
+    "post_is_deleted": "This post is deleted!",
     "profile": "資料",
-    "posted_by": "Posted by",
+    "posted_by": "Posted by %1",
     "chat": "聊天",
     "notify_me": "該主題有新回覆時通知我",
     "quote": "引用",
@@ -39,6 +40,7 @@
     "thread_tools.lock": "Lock Topic",
     "thread_tools.unlock": "Unlock Topic",
     "thread_tools.move": "Move Topic",
+    "thread_tools.move_all": "Move All",
     "thread_tools.fork": "Fork Topic",
     "thread_tools.delete": "Delete Topic",
     "thread_tools.delete_confirm": "你確定要刪除這討論串嗎？",
@@ -84,5 +86,8 @@
     "composer.thumb_file_label": "Or upload a file",
     "composer.thumb_remove": "Clear fields",
     "composer.drag_and_drop_images": "拖曳影像到此",
-    "composer.upload_instructions": "拖曳影像到此上傳."
+    "composer.upload_instructions": "拖曳影像到此上傳.",
+    "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
+    "more_users": "%1 more user(s)",
+    "more_guests": "%1 more guest(s)"
 }

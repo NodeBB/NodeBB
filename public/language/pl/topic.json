@@ -4,8 +4,9 @@
     "topic_id_placeholder": "Podaj identyfikator wątku",
     "no_topics_found": "Nie znaleziono żadnych wątków.",
     "no_posts_found": "Nie znaleziono żadnych postów.",
+    "post_is_deleted": "This post is deleted!",
     "profile": "Profil",
-    "posted_by": "napisał",
+    "posted_by": "Posted by %1",
     "chat": "Czat",
     "notify_me": "Powiadamiaj mnie o nowych odpowiedziach w tym wątku",
     "quote": "Cytuj",
@@ -39,6 +40,7 @@
     "thread_tools.lock": "Zamknij wątek",
     "thread_tools.unlock": "Otwórz wątek",
     "thread_tools.move": "Przenieś wątek",
+    "thread_tools.move_all": "Move All",
     "thread_tools.fork": "Skopiuj wątek",
     "thread_tools.delete": "Usuń wątek",
     "thread_tools.delete_confirm": "Na pewno chcesz usunąć ten wątek?",
@@ -84,5 +86,8 @@
     "composer.thumb_file_label": "lub wyślij plik",
     "composer.thumb_remove": "Wyczyść pola",
     "composer.drag_and_drop_images": "Przeciągnij i upuść obrazek tutaj.",
-    "composer.upload_instructions": "Prześlij obrazki przeciągając i upuszczając je."
+    "composer.upload_instructions": "Prześlij obrazki przeciągając i upuszczając je.",
+    "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
+    "more_users": "%1 more user(s)",
+    "more_guests": "%1 more guest(s)"
 }

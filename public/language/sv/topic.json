@@ -4,8 +4,9 @@
     "topic_id_placeholder": "Skriv in ID för ämne",
     "no_topics_found": "Inga ämnen hittades!",
     "no_posts_found": "Inga inlägg hittades!",
+    "post_is_deleted": "This post is deleted!",
     "profile": "Profil",
-    "posted_by": "Skapad av",
+    "posted_by": "Posted by %1",
     "chat": "Chatt",
     "notify_me": "Få notiser om nya svar i detta ämne",
     "quote": "Citera",
@@ -39,6 +40,7 @@
     "thread_tools.lock": "Lås ämne",
     "thread_tools.unlock": "Öppna upp ämne",
     "thread_tools.move": "Flytta ämne",
+    "thread_tools.move_all": "Move All",
     "thread_tools.fork": "Grena ämne",
     "thread_tools.delete": "Ta bort ämne",
     "thread_tools.delete_confirm": "Är du säker på att du vill ta bort den här tråden?",
@@ -84,5 +86,8 @@
     "composer.thumb_file_label": "Eller ladda upp en fil",
     "composer.thumb_remove": "Töm fält",
     "composer.drag_and_drop_images": "Dra och släpp bilder här",
-    "composer.upload_instructions": "Ladda upp bilder genom att dra och släpp dem."
+    "composer.upload_instructions": "Ladda upp bilder genom att dra och släpp dem.",
+    "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
+    "more_users": "%1 more user(s)",
+    "more_guests": "%1 more guest(s)"
 }

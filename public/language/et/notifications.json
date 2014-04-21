@@ -7,12 +7,12 @@
     "outgoing_link_message": "Lahkud foorumist",
     "continue_to": "Jätka",
     "return_to": "Pöördu tagasi",
-    "new_notification": "New Notification",
-    "you_have_unread_notifications": "You have unread notifications.",
-    "user_made_post": "<strong>%1</strong> made a new post",
-    "new_message_from": "New message from <strong>%1</strong>",
-    "upvoted_your_post": "<strong>%1</strong> has upvoted your post.",
-    "favourited_your_post": "<strong>%1</strong> has favourited your post.",
-    "user_flagged_post": "<strong>%1</strong> flagged a post.",
-    "user_posted_to": "<strong>%1</strong> has posted a reply to: <strong>%2</strong>"
+    "new_notification": "Uus teade",
+    "you_have_unread_notifications": "Sul ei ole lugemata teateid.",
+    "user_made_post": "<strong>%1</strong> tegi uue postituse",
+    "new_message_from": "Uus sõnum kasutajalt <strong>%1</strong>",
+    "upvoted_your_post": "<strong>%1</strong> hääletas sinu postituse poolt.",
+    "favourited_your_post": "<strong>%1</strong> märkis sinu postituse lemmikuks.",
+    "user_flagged_post": "<strong>%1</strong> märgistas postituse.",
+    "user_posted_to": "Kasutaja <strong>%1</strong> postitas vastuse teemasse <strong>%2</strong>"
 }

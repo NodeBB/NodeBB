@@ -4,8 +4,9 @@
     "topic_id_placeholder": "Skriv emne-ID",
     "no_topics_found": "Ingen emner funnet!",
     "no_posts_found": "Ingen innlegg funnet!",
+    "post_is_deleted": "This post is deleted!",
     "profile": "Profil",
-    "posted_by": "Skapt av",
+    "posted_by": "Posted by %1",
     "chat": "Chat",
     "notify_me": "Bli varslet om nye svar i dette emnet",
     "quote": "Siter",
@@ -39,6 +40,7 @@
     "thread_tools.lock": "Lås trid",
     "thread_tools.unlock": "Lås opp tråd",
     "thread_tools.move": "Flytt tråd",
+    "thread_tools.move_all": "Move All",
     "thread_tools.fork": "Forgren tråd",
     "thread_tools.delete": "Slett tråd",
     "thread_tools.delete_confirm": "Er du sikker på at du vil slette denne tråden?",
@@ -84,5 +86,8 @@
     "composer.thumb_file_label": "Eller last opp en fil",
     "composer.thumb_remove": "Tøm felter",
     "composer.drag_and_drop_images": "Dra og slipp bilder her",
-    "composer.upload_instructions": "Last opp bilder ved å dra og slippe dem."
+    "composer.upload_instructions": "Last opp bilder ved å dra og slippe dem.",
+    "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
+    "more_users": "%1 more user(s)",
+    "more_guests": "%1 more guest(s)"
 }

@@ -32,7 +32,7 @@
     "change_password_error_wrong_current": "Votre mot de passe est incorrect!",
     "change_password_error_length": "Mot de Passe trop court!",
     "change_password_error_match": "Les Mots de Passe doivent être identiques!",
-    "change_password_error_privileges": "You do not have the rights to change this password.",
+    "change_password_error_privileges": "Vous n'avez pas les droits pour changer ce mot de passe.",
     "change_password_success": "Votre mot de passe a été mis à jour.",
     "confirm_password": "Confirmer le mot de passe",
     "password": "Mot de passe",

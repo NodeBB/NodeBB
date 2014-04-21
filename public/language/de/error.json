@@ -19,7 +19,7 @@
     "no-post": "Der Beitrag existiert nicht",
     "no-group": "Die Gruppe existiert nicht",
     "no-user": "Der Benutzer existiert nicht",
-    "no-teaser": "Teaser doesn't exist",
+    "no-teaser": "Kurztext existiert nicht",
     "no-privileges": "Du verfügst nicht über ausreichende Berechtigungen und die Aktion durchzuführen.",
     "category-disabled": "Kategorie ist deaktiviert",
     "topic-locked": "Thema ist gesperrt",

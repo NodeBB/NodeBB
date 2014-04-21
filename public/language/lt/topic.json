@@ -4,8 +4,9 @@
     "topic_id_placeholder": "Įrašykite temos ID",
     "no_topics_found": "Temų nerasta!",
     "no_posts_found": "Įrašų nerasta!",
+    "post_is_deleted": "This post is deleted!",
     "profile": "Profilis",
-    "posted_by": "Parašė",
+    "posted_by": "Posted by %1",
     "chat": "Susirašinėti",
     "notify_me": "Gauti pranešimus apie naujus atsakymus šioje temoje",
     "quote": "Cituoti",
@@ -39,6 +40,7 @@
     "thread_tools.lock": "Užrakinti temą",
     "thread_tools.unlock": "Atrakinti temą",
     "thread_tools.move": "Perkelti temą",
+    "thread_tools.move_all": "Move All",
     "thread_tools.fork": "Išskaidyti temą",
     "thread_tools.delete": "Ištrinti temą",
     "thread_tools.delete_confirm": "Ar jūs tikrai norite ištrinti šią temą?",
@@ -84,5 +86,8 @@
     "composer.thumb_file_label": "Arba įkelkite failą",
     "composer.thumb_remove": "Ištuštinti laukus",
     "composer.drag_and_drop_images": "Nutempkite paveikslėlius čia",
-    "composer.upload_instructions": "Įkelkite paveikslėlius nutempdami juos."
+    "composer.upload_instructions": "Įkelkite paveikslėlius nutempdami juos.",
+    "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
+    "more_users": "%1 more user(s)",
+    "more_guests": "%1 more guest(s)"
 }

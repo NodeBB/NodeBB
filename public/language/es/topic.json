@@ -4,8 +4,9 @@
     "topic_id_placeholder": "Introducir ID tema",
     "no_topics_found": "No se encontraron temas!",
     "no_posts_found": "No se encontraron publicaciones!",
+    "post_is_deleted": "This post is deleted!",
     "profile": "Perfil",
-    "posted_by": "Publicado por",
+    "posted_by": "Posted by %1",
     "chat": "Chat",
     "notify_me": "Serás notificado cuando haya nuevas respuestas en este tema",
     "quote": "Citar",
@@ -39,6 +40,7 @@
     "thread_tools.lock": "Cerrar Tema",
     "thread_tools.unlock": "Abrir Tema",
     "thread_tools.move": "Mover Tema",
+    "thread_tools.move_all": "Move All",
     "thread_tools.fork": "Bifurcar Tema",
     "thread_tools.delete": "Borrar Tema",
     "thread_tools.delete_confirm": "Estás seguro de que quieres eliminar este hilo?",
@@ -84,5 +86,8 @@
     "composer.thumb_file_label": "Cargar una foto",
     "composer.thumb_remove": "Limpiar campos.",
     "composer.drag_and_drop_images": "Arrastra las imagenes aqui",
-    "composer.upload_instructions": "Carga tus imagenes con solo arrastrarlas aqui."
+    "composer.upload_instructions": "Carga tus imagenes con solo arrastrarlas aqui.",
+    "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
+    "more_users": "%1 more user(s)",
+    "more_guests": "%1 more guest(s)"
 }
