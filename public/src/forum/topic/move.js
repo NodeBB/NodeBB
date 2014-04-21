@@ -15,11 +15,11 @@ define(function() {
 		Move.tids = tids;
 		Move.currentCid = currentCid;
 		Move.onComplete = onComplete;
+		Move.moveAll = tids ? false : true;
 
 		modal.on('shown.bs.modal', onMoveModalShown);
 		$('#move-confirm').hide();
 		modal.modal('show');
-
 	};
 
 	function onMoveModalShown() {
@@ -60,14 +60,15 @@ define(function() {
 		if (!commitEl.prop('disabled') && targetCid) {
 			commitEl.prop('disabled', true);
 
-			moveTopic();
+			moveTopics();
 		}
 	}
 
-	function moveTopic() {
-		socket.emit('topics.move', {
+	function moveTopics() {
+		socket.emit(Move.moveAll ? 'topics.moveAll' : 'topics.move', {
 			tids: Move.tids,
-			cid: targetCid
+			cid: targetCid,
+			currentCid: Move.currentCid
 		}, function(err) {
 			modal.modal('hide');
 			$('#move_thread_commit').prop('disabled', false);

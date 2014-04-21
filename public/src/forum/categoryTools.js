@@ -68,11 +68,17 @@ define(['forum/topic/move', 'topicSelect'], function(move, topicSelect) {
 
 		$('.move_thread').on('click', function() {
 			var tids = topicSelect.getSelectedTids();
-			console.log(tids);
+
 			if (tids.length) {
 				move.init(tids, cid, onCommandComplete);
 			}
 			return false;
+		});
+
+		$('.move_all_threads').on('click', function() {
+			move.init(null, cid, function(err) {
+				ajaxify.refresh();
+			});
 		});
 
 
@@ -151,7 +157,7 @@ define(['forum/topic/move', 'topicSelect'], function(move, topicSelect) {
 		var topic = getTopicEl(data.tid);
 		topic.toggleClass('pinned', data.isPinned);
 		topic.find('.fa-thumb-tack').toggleClass('hide', !data.isPinned);
-		ajaxify.go('category/' + CategoryTools.cid);
+		ajaxify.refresh();
 	}
 
 	function setLockedState(data) {

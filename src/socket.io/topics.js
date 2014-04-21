@@ -4,6 +4,7 @@
 var topics = require('../topics'),
 	categories = require('../categories'),
 	threadTools = require('../threadTools'),
+	categoryTools = require('../categoryTools'),
 	index = require('./index'),
 	user = require('../user'),
 	db = require('./../database'),
@@ -263,6 +264,39 @@ SocketTopics.move = function(socket, data, callback) {
 			next();
 		});
 	}, callback);
+};
+
+SocketTopics.moveAll = function(socket, data, callback) {
+	if(!data || !data.cid || !data.currentCid) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	async.parallel({
+		from: function(next) {
+			categoryTools.privileges(data.currentCid, socket.uid, next);
+		},
+		to: function(next) {
+			categoryTools.privileges(data.cid, socket.uid, next);
+		}
+	}, function(err, results) {
+		if (err) {
+			return callback(err);
+		}
+
+		if (!results.from.admin && (!results.from.moderator || !results.to.moderator)) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+
+		categories.getTopicIds(data.currentCid, 0, -1, function(err, tids) {
+			if (err) {
+				return callback(err);
+			}
+
+			async.each(tids, function(tid, next) {
+				threadTools.move(tid, data.cid, next);
+			}, callback);
+		});
+	});
 };
 
 SocketTopics.followCheck = function(socket, tid, callback) {
