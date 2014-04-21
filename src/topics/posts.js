@@ -70,7 +70,7 @@ module.exports = function(Topics) {
 					postData[i].display_move_tools = results.privileges[i].move;
 
 					if(postData[i].deleted && !results.privileges[i].view_deleted) {
-						postData[i].content = 'This post is deleted!';
+						postData[i].content = '[[topic:post_is_deleted]]';
 					}
 				}
 

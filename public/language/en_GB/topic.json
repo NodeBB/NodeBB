@@ -6,6 +6,8 @@
 	"no_topics_found": "No topics found!",
 	"no_posts_found": "No posts found!",
 
+	"post_is_deleted": "This post is deleted!",
+
 	"profile": "Profile",
 	"posted_by": "Posted by %1",
 	"chat": "Chat",
