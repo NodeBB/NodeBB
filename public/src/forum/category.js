@@ -315,7 +315,6 @@ define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryToo
 			cid: cid,
 			after: after
 		}, function (err, data) {
-			console.log(data);
 			loadingMoreTopics = false;
 
 			if(err) {
