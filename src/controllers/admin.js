@@ -80,15 +80,15 @@ adminController.events.get = function(req, res, next) {
 };
 
 adminController.plugins.get = function(req, res, next) {
-	plugins.showInstalled(function (err, plugins) {
+	plugins.getAll(function(err, plugins) {
 		if (err || !Array.isArray(plugins)) {
 			plugins = [];
 		}
 
-		res.render('admin/plugins', {
+		res.render('admin/plugins' , {
 			plugins: plugins
 		});
-	});
+	})
 };
 
 adminController.languages.get = function(req, res, next) {

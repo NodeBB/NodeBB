@@ -373,20 +373,23 @@ var fs = require('fs'),
 	Plugins.toggleActive = function(id, callback) {
 		Plugins.isActive(id, function(err, active) {
 			if (err) {
-				if (global.env === 'development') winston.info('[plugins] Could not toggle active state on plugin \'' + id + '\'');
-				return;
+				if (global.env === 'development') {
+					winston.info('[plugins] Could not toggle active state on plugin \'' + id + '\'');
+				}
+				return callback(err);
 			}
 
 			db[(active ? 'setRemove' : 'setAdd')]('plugins:active', id, function(err, success) {
 				if (err) {
-					if (global.env === 'development') winston.info('[plugins] Could not toggle active state on plugin \'' + id + '\'');
-					return;
+					if (global.env === 'development') {
+						winston.info('[plugins] Could not toggle active state on plugin \'' + id + '\'');
+					}
+					return callback(err);
 				}
 
-				// Restart Required flag
 				meta.restartRequired = true;
 
-				if(active) {
+				if (active) {
 					Plugins.fireHook('action:plugin.deactivate', id);
 				}
 
@@ -397,12 +400,48 @@ var fs = require('fs'),
 						Plugins.fireHook('action:plugin.activate', id);
 					}
 
-					if (callback) {
-						callback({
+					if (typeof callback === 'function') {
+						callback(null, {
 							id: id,
 							active: !active
 						});
 					}
+				});
+			});
+		});
+	};
+
+	Plugins.toggleInstall = function(id, callback) {
+		Plugins.isInstalled(id, function(err, installed) {
+			if (err) {
+				return callback(err);
+			}
+
+			var npm = require('npm');
+
+			async.waterfall([
+				function(next) {
+					Plugins.isActive(id, next);
+				},
+				function(active, next) {
+					if (active) {
+						Plugins.toggleActive(id, function(err, status) {
+							next(err);
+						});
+						return;
+					}
+					next();
+				},
+				function(next) {
+					npm.load({}, next);
+				},
+				function(res, next) {
+					npm.commands[installed ? 'uninstall' : 'install'](installed ? id : [id], next);
+				}
+			], function(err) {
+				callback(err, {
+					id: id,
+					installed: !installed
 				});
 			});
 		});
@@ -428,6 +467,52 @@ var fs = require('fs'),
 			}, function(err) {
 				callback(err, templates);
 			});
+		});
+	};
+
+	Plugins.getAll = function(callback) {
+		var request = require('request');
+		request('http://npm.aws.af.cm/api/v1/plugins', function(err, res, body) {
+			if (err) {
+				return callback(err);
+			}
+			var plugins = [];
+			try {
+				plugins = JSON.parse(body);
+			} catch(err) {
+				winston.error('Error parsing plugins : ' + err.message);
+				return callback(null, []);
+			}
+
+			async.map(plugins, function(plugin, next) {
+
+				plugin.id = plugin.name;
+
+				async.parallel({
+					active: function(next) {
+						Plugins.isActive(plugin.id, next);
+					},
+					installed: function(next) {
+						Plugins.isInstalled(plugin.id, next);
+					}
+				}, function(err, results) {
+					if (err) {
+						return next(err);
+					}
+					plugin.active = results.active;
+					plugin.installed = results.installed;
+					next(null, plugin);
+				});
+
+			}, callback);
+		});
+	};
+
+	Plugins.isInstalled = function(id, callback) {
+		var pluginDir = path.join(__dirname, '../node_modules', id);
+
+		fs.stat(pluginDir, function(err, stats) {
+			callback(null, err ? false : stats.isDirectory());
 		});
 	};
 
@@ -483,7 +568,8 @@ var fs = require('fs'),
 								delete config.library;
 								delete config.hooks;
 								config.active = active;
-								config.activeText = '<i class="fa fa-power-off"></i> ' + (active ? 'Dea' : 'A') + 'ctivate';
+								config.installed = true;
+
 								next(null, config);
 							});
 						}
