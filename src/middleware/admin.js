@@ -39,7 +39,7 @@ middleware.buildHeader = function(req, res, next) {
 						plugins.fireHook('filter:admin.scripts.get', [], function(err, scripts) {
 							var arr = [];
 							scripts.forEach(function(script) {
-								arr.push({src: path.join(nconf.get('relative_path'), script)});
+								arr.push({src: nconf.get('url') + script});
 							});
 
 							next(err, arr);
