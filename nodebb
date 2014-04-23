@@ -77,31 +77,31 @@ case "$1" in
 		npm install
 		ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm install
 		ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm update
-		node loader --upgrade
+		node app --upgrade
 		touch package.json
 		echo -e "\n\e[00;32mNodeBB Dependencies up-to-date!\e[00;00m";
 		;;
 
 	setup)
-		node loader --setup "$@"
+		node app --setup "$@"
 		;;
 
 	reset)
-		node loader --reset --$2
+		node app --reset --$2
 		;;
 
 	dev)
 		echo "Launching NodeBB in \"development\" mode."
 		echo "To run the production build of NodeBB, please use \"forever\"."
 		echo "More Information: https://github.com/designcreateplay/NodeBB/wiki/How-to-run-NodeBB"
-		NODE_ENV=development node loader "$@"
+		NODE_ENV=development node loader --no-daemon "$@"
 		;;
 
 	watch)
 		echo "Launching NodeBB in \"development\" mode."
 		echo "To run the production build of NodeBB, please use \"forever\"."
 		echo "More Information: https://github.com/designcreateplay/NodeBB/wiki/How-to-run-NodeBB"
-		NODE_ENV=development supervisor -q --ignore public/templates --extensions 'node|js|tpl' -- app "$@"
+		NODE_ENV=development supervisor -q --ignore public/templates --extensions 'node|js|tpl' -- loader --no-daemon "$@"
 		;;
 
 	*)

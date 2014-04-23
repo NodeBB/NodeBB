@@ -140,6 +140,12 @@ function setupConfig(next) {
 
 	if (!install.values) {
 		prompt.get(questions.main, function(err, config) {
+			if (err) {
+				process.stdout.write('\n\n');
+				winston.warn('NodeBB setup ' + err.message);
+				process.exit();
+			}
+
 			if (nconf.get('advanced')) {
 				prompt.get({
 					name: 'secondary_database',

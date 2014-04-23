@@ -76,7 +76,7 @@ var	nconf = require('nconf'),
 nconf.argv();
 
 // Start the daemon!
-if (nconf.get('d')) {
+if (nconf.get('daemon') !== false) {
 	// Check for a still-active NodeBB process
 	if (fs.existsSync(pidFilePath)) {
 		try {
