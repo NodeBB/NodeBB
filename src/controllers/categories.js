@@ -67,6 +67,11 @@ categoriesController.get = function(req, res, next) {
 
 	async.waterfall([
 		function(next) {
+			categories.getCategoryField(cid, 'disabled', function(err, disabled) {
+				next(disabled === '1' ? new Error('category-disabled') : undefined);
+			});
+		},
+		function(next) {
 			categoryTools.privileges(cid, uid, function(err, categoryPrivileges) {
 				if (err) {
 					return next(err);
