@@ -29,6 +29,7 @@
     "sitemap": "~0.7.1",
     "winston": "~0.7.2",
     "rss": "~0.2.0",
+    "request": "~2.34.0",
     "prompt": "~0.2.11",
     "uglify-js": "~2.4.0",
     "validator": "~3.4.0",
