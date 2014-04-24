@@ -48,7 +48,7 @@ define(function() {
 							btn.html('<i class="fa fa-download"></i> Install');
 						}
 
-						btn.toggleClass('btn-warning', status.installed).toggleClass('btn-success', !status.installed)
+						btn.toggleClass('btn-danger', status.installed).toggleClass('btn-success', !status.installed)
 							.attr('disabled', false);
 
 						activateBtn.toggleClass('hide', !status.installed);

@@ -484,27 +484,58 @@ var fs = require('fs'),
 				return callback(null, []);
 			}
 
-			async.map(plugins, function(plugin, next) {
+			var pluginMap = {};
+			for(var i=0; i<plugins.length; ++i) {
+				plugins[i].id = plugins[i].name;
+				plugins[i].installed = false;
+				plugins[i].active = false;
+				pluginMap[plugins[i].name] = plugins[i];
+			}
 
-				plugin.id = plugin.name;
+			Plugins.showInstalled(function(err, installedPlugins) {
+				if (err) {
+					return callback(err);
+				}
 
-				async.parallel({
-					active: function(next) {
-						Plugins.isActive(plugin.id, next);
-					},
-					installed: function(next) {
-						Plugins.isInstalled(plugin.id, next);
-					}
-				}, function(err, results) {
+				async.each(installedPlugins, function(plugin, next) {
+
+					pluginMap[plugin.id] = pluginMap[plugin.id] || {};
+					pluginMap[plugin.id].name = plugin.id;
+					pluginMap[plugin.id].description = plugin.description;
+					pluginMap[plugin.id].url = plugin.url;
+					pluginMap[plugin.id].installed = true;
+
+					Plugins.isActive(plugin.id, function(err, active) {
+						if (err) {
+							return next(err);
+						}
+
+						pluginMap[plugin.id].active = active;
+						next();
+					});
+				}, function(err) {
 					if (err) {
-						return next(err);
+						return callback(err);
 					}
-					plugin.active = results.active;
-					plugin.installed = results.installed;
-					next(null, plugin);
-				});
 
-			}, callback);
+					var pluginArray = [];
+
+					for (var key in pluginMap) {
+						pluginArray.push(pluginMap[key]);
+					}
+
+					pluginArray.sort(function(a, b) {
+						if(a.installed && !b.installed) {
+							return -1;
+						} else if(!a.installed && b.installed) {
+							return 1;
+						}
+						return 0;
+					});
+
+					callback(null, pluginArray);
+				});
+			});
 		});
 	};
 
@@ -536,7 +567,7 @@ var fs = require('fs'),
 						}
 
 						callback(stats.isDirectory());
-					})
+					});
 				}, function(plugins){
 					next(null, plugins);
 				});
@@ -556,7 +587,7 @@ var fs = require('fs'),
 							try {
 								var config = JSON.parse(configJSON);
 							} catch (err) {
-								winston.warn("Plugin: " + file + " is corrupted or invalid. Please check plugin.json for errors.")
+								winston.warn("Plugin: " + file + " is corrupted or invalid. Please check plugin.json for errors.");
 								return next(err, null);
 							}
 
