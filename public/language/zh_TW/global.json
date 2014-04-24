@@ -39,8 +39,8 @@
     "alert.unfollow": "你已不再關注 %1!",
     "alert.follow": "你正在關注 %1!",
     "online": "在線",
-    "users": "Users",
-    "topics": "Topics",
+    "users": "使用者",
+    "topics": "主題",
     "posts": "Posts",
     "views": "Views",
     "reputation": "Reputation",
@@ -64,7 +64,7 @@
     "invisible": "隱形",
     "offline": "離線",
     "email": "Email",
-    "language": "Language",
+    "language": "語言",
     "guest": "Guest",
     "guests": "Guests"
 }

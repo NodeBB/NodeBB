@@ -7,12 +7,12 @@
     "outgoing_link_message": "你正在离开本站",
     "continue_to": "继续前往",
     "return_to": "返回",
-    "new_notification": "New Notification",
-    "you_have_unread_notifications": "You have unread notifications.",
-    "user_made_post": "<strong>%1</strong> made a new post",
-    "new_message_from": "New message from <strong>%1</strong>",
-    "upvoted_your_post": "<strong>%1</strong> has upvoted your post.",
-    "favourited_your_post": "<strong>%1</strong> has favourited your post.",
-    "user_flagged_post": "<strong>%1</strong> flagged a post.",
-    "user_posted_to": "<strong>%1</strong> has posted a reply to: <strong>%2</strong>"
+    "new_notification": "新通知",
+    "you_have_unread_notifications": "你有未读的通知",
+    "user_made_post": "<strong>%1</strong> 发布了一个新帖",
+    "new_message_from": "来自<strong>%1</strong>的新信息",
+    "upvoted_your_post": "<strong>%1</strong>给你的帖子点了赞",
+    "favourited_your_post": "<strong>%1</strong>收藏了你的帖子",
+    "user_flagged_post": "<strong>%1</strong>标记了一个帖子",
+    "user_posted_to": "<strong>%1</strong>回复了<strong>%2</strong>"
 }

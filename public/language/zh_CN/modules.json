@@ -3,5 +3,5 @@
     "chat.placeholder": "在这里输入消息，按Enter发送",
     "chat.send": "发送",
     "chat.no_active": "暂无聊天",
-    "chat.user_typing": "%1 is typing ..."
+    "chat.user_typing": "%1 正在输入……"
 }
