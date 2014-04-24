@@ -34,6 +34,7 @@ Administrating NodeBB
 
     admin/outline
     admin/sso
+    admin/uploads
 
 Contributing to NodeBB
 ----------------------
@@ -86,8 +87,8 @@ Helping out the NodeBB Project
 .. toctree::
     :maxdepth: 2
 
-    docs/contribute
-    docs/share
+    helping/contribute
+    helping/share
 
 Writing Documentation
 ---------------------
