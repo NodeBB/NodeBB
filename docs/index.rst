@@ -98,8 +98,8 @@ Writing Documentation
 
     docs/sphinx
 
-Troubleshooting / Help!!!
--------------------------
+Troubleshooting / Help
+----------------------
 
 .. toctree::
     :maxdepth: 2
