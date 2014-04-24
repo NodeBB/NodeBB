@@ -263,8 +263,6 @@ function updateRoomBrowsingText(roomName) {
 	var	uids = getUidsInRoom(),
 		anonymousCount = getAnonymousCount();
 
-
-
 	user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status'], function(err, users) {
 		if(!err) {
 			users = users.filter(function(user) {
