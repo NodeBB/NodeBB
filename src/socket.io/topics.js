@@ -44,7 +44,7 @@ SocketTopics.post = function(socket, data, callback) {
 
 			module.parent.exports.emitTopicPostStats();
 
-			callback();
+			callback(null, result.topicData);
 		}
 	});
 };

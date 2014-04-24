@@ -1,0 +1,8 @@
+{
+    "username": "Tên người dùng / Email",
+    "remember_me": "Ghi nhớ tôi?",
+    "forgot_password": "Quên mật khẩu?",
+    "alternative_logins": "Đăng nhập bằng tên khác",
+    "failed_login_attempt": "Đăng nhập thất bại, xin hãy thử lại",
+    "login_successful": "Bạn đã đăng nhập thành công!"
+}
