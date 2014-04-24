@@ -1,16 +1,15 @@
-.. NodeBB documentation master file, created by
-   sphinx-quickstart on Thu Apr 24 15:55:18 2014.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. image:: http://i.imgur.com/3yj1n6N.png
 
-Welcome to NodeBB's documentation!
-==================================
+|
+NodeBB is a next-generation discussion platform that utilizes web sockets for instant interactions and real-time notifications. NodeBB forums have many modern features out of the box such as social network integration and streaming discussions.
 
-Contents:
+Installing NodeBB
+-----------------
 
 .. toctree::
    :maxdepth: 2
 
+   installing
 
 
 Indices and tables
