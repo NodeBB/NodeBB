@@ -169,13 +169,13 @@ define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryToo
 		}
 	}
 
-	Category.onNewTopic = function(data) {
-		$(window).trigger('filter:categories.new_topic', data.topicData);
+	Category.onNewTopic = function(topic) {
+		$(window).trigger('filter:categories.new_topic', topic);
 
 		ajaxify.loadTemplate('category', function(categoryTemplate) {
 			var html = templates.parse(templates.getBlock(categoryTemplate, 'topics'), {
-				privileges: data.privileges,
-				topics: [data.topicData]
+				privileges: {editable: !!$('.thread-tools').length},
+				topics: [topic]
 			});
 
 			translator.translate(html, function(translatedHTML) {
