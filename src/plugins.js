@@ -500,7 +500,7 @@ var fs = require('fs'),
 				async.each(installedPlugins, function(plugin, next) {
 
 					pluginMap[plugin.id] = pluginMap[plugin.id] || {};
-					pluginMap[plugin.id].name = plugin.id;
+					pluginMap[plugin.id].id = pluginMap[plugin.id].id || plugin.id;
 					pluginMap[plugin.id].description = plugin.description;
 					pluginMap[plugin.id].url = plugin.url;
 					pluginMap[plugin.id].installed = true;
@@ -521,7 +521,9 @@ var fs = require('fs'),
 					var pluginArray = [];
 
 					for (var key in pluginMap) {
-						pluginArray.push(pluginMap[key]);
+						if (pluginMap.hasOwnProperty(key)) {
+							pluginArray.push(pluginMap[key]);
+						}
 					}
 
 					pluginArray.sort(function(a, b) {
