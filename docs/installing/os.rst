@@ -4,7 +4,7 @@ NodeBB Installation by OS
 Welcome to the NodeBB wiki! We'll try to keep this wiki up-to-date regarding various aspects of NodeBB
 
 
-Installing on Ubuntu
+Ubuntu
 --------------------
 
 First, we install our base software stack:
@@ -36,10 +36,11 @@ Next, clone this repository:
 
 Obtain all of the dependencies required by NodeBB:
 
-```
-$ cd nodebb
-$ npm install
-```
+.. code:: bash
+
+    $ cd nodebb
+    $ npm install
+
 
 Initiate the setup script by running the app with the `--setup` flag:
 
@@ -61,7 +62,7 @@ Lastly, we run the forum.
 
 NodeBB can also be started with helper programs, such as `supervisor` and `forever`. [Take a look at the options here](https://github.com/designcreateplay/NodeBB/wiki/How-to-run-NodeBB).
 
-Installing on SmartOS
+SmartOS
 ----
 ## Requirements
 
@@ -160,7 +161,7 @@ NodeBB requires the following software to be installed:
 **Note:** Detailed upgrade instructions are listed in [Upgrading NodeBB](https://github.com/designcreateplay/NodeBB/wiki/Upgrading-NodeBB).
 
 
-Installing on Debian
+Debian
 --------------------
 
 The current Ubuntu guide is not completely compatible with Debian and there are some specificities and especially the NodeJS installation, and how to get latest Redis.
@@ -327,7 +328,7 @@ You should secure your NodeBB installation, [take a look here](https://github.co
 
 You should use Nginx in order to reverse proxy your NodeBB installation on the port 80, [take a look here](https://github.com/designcreateplay/NodeBB/wiki/Configuring-nginx-as-a-proxy-to-NodeBB)
 
-Installing on Windows 8
+Windows 8
 -----------------------
 ### Required Software
 
@@ -383,3 +384,9 @@ And run NodeBB on "watch" mode:
     ./nodebb watch
 
 It will launch NodeBB in development mode, and watch files that change and automatically restart your forum.
+
+
+CentOS
+------
+
+https://blog.tommyparnell.com/installing-nodebb-on-centos-6-5/
