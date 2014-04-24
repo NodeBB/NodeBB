@@ -68,6 +68,7 @@ module.exports = function(Topics) {
 					postData[i].votes = postData[i].votes || 0;
 					postData[i].display_moderator_tools = parseInt(uid, 10) !== 0 && results.privileges[i].editable;
 					postData[i].display_move_tools = results.privileges[i].move;
+					postData[i].selfPost = parseInt(uid, 10) === parseInt(postData[i].uid, 10);
 
 					if(postData[i].deleted && !results.privileges[i].view_deleted) {
 						postData[i].content = '[[topic:post_is_deleted]]';

@@ -162,7 +162,7 @@ SocketModules.chats.send = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	var touid = data.touid;
+	var touid = parseInt(data.touid, 10);
 	if (touid === socket.uid || socket.uid === 0) {
 		return;
 	}
