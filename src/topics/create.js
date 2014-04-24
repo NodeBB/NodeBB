@@ -82,6 +82,7 @@ module.exports = function(Topics) {
 			return callback(new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]'));
 		}
 
+		var categoryPrivileges;
 		async.waterfall([
 			function(next) {
 				categoryTools.exists(cid, next);
@@ -93,6 +94,7 @@ module.exports = function(Topics) {
 				categoryTools.privileges(cid, uid, next);
 			},
 			function(privileges, next) {
+				categoryPrivileges = privileges;
 				if(!privileges.write) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
@@ -123,6 +125,7 @@ module.exports = function(Topics) {
 					topicData.unreplied = 1;
 
 					next(null, {
+						privileges: categoryPrivileges,
 						topicData: topicData,
 						postData: postData
 					});

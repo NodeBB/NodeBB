@@ -170,10 +170,13 @@ define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryToo
 	}
 
 	Category.onNewTopic = function(data) {
-		$(window).trigger('filter:categories.new_topic', data);
+		$(window).trigger('filter:categories.new_topic', data.topicData);
 
 		ajaxify.loadTemplate('category', function(categoryTemplate) {
-			var html = templates.parse(templates.getBlock(categoryTemplate, 'topics'), {topics: [data]});
+			var html = templates.parse(templates.getBlock(categoryTemplate, 'topics'), {
+				privileges: data.privileges,
+				topics: [data.topicData]
+			});
 
 			translator.translate(html, function(translatedHTML) {
 				var topic = $(translatedHTML),
