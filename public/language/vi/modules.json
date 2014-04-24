@@ -1,0 +1,7 @@
+{
+    "chat.chatting_with": "Chat với <span id=\"chat-with-name\"></span>",
+    "chat.placeholder": "đánh đoạn tin nhắn chat ở đây, nhấn phím enter để gửi đi",
+    "chat.send": "Gửi đi",
+    "chat.no_active": "Bạn hiện giờ không có cuộc chat nào",
+    "chat.user_typing": "%1b đang gõ"
+}
