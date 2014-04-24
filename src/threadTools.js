@@ -201,8 +201,6 @@ var winston = require('winston'),
 				categories.incrementCategoryFieldBy(cid, 'topic_count', 1);
 			}
 
-			categories.moveActiveUsers(tid, oldCid, cid);
-
 			categories.moveRecentReplies(tid, oldCid, cid);
 
 			topics.setTopicField(tid, 'cid', cid, callback);

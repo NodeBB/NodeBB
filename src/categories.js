@@ -317,8 +317,6 @@ var db = require('./database'),
 			if(parseInt(topicData.pinned, 10) === 0) {
 				db.sortedSetAdd('categories:' + cid + ':tid', postData.timestamp, postData.tid);
 			}
-
-			Categories.addActiveUser(cid, postData.uid, postData.timestamp);
 		});
 	};
 
