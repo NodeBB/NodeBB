@@ -1,5 +1,5 @@
-Installing NodeBB
-=================
+NodeBB Installation by OS
+=========================
 
 Welcome to the NodeBB wiki! We'll try to keep this wiki up-to-date regarding various aspects of NodeBB
 
@@ -248,7 +248,7 @@ After this, add the following GPC keys :
 And update your package source :
 
 .. code:: bash
- 
+
 	$ sudo apt-get update
 
 
@@ -273,7 +273,7 @@ After this, add the following GPC keys :
 And update your package source :
 
 .. code:: bash
- 
+
 	$ sudo apt-get update
 
 
