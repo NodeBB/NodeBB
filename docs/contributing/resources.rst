@@ -1,11 +1,8 @@
-Resources
-=========
+Developers Resources
+====================
 
+.. note::
 
-testing
+	This section is under construction.
 
-
-testing
--------
-
-testing
+* `Building a new Admin Page <https://github.com/designcreateplay/NodeBB/wiki/How-to-build-a-new-Admin-Page>`_ (Out of date)
