@@ -13,13 +13,13 @@ The following are step-by-step guides to help you get up and running.
     :hidden:
     :maxdepth: 0
 
-    Ubuntu <ubuntu>
-    Debian <debian>
-    SmartOS <smartos>
-    Windows <windows8>
+    Ubuntu <os/ubuntu>
+    Debian <os/debian>
+    SmartOS <os/smartos>
+    Windows <os/windows8>
 
-* :doc:`Ubuntu <ubuntu>`
-* :doc:`Debian <debian>`
-* :doc:`SmartOS <smartos>`
-* :doc:`Windows <windows8>`
+* :doc:`Ubuntu <os/ubuntu>`
+* :doc:`Debian <os/debian>`
+* :doc:`SmartOS <os/smartos>`
+* :doc:`Windows <os/windows8>`
 * `CentOS <https://blog.tommyparnell.com/installing-nodebb-on-centos-6-5/>`_ (external)
