@@ -20,6 +20,7 @@ var async = require('async'),
 	require('./topics/recent')(Topics);
 	require('./topics/fork')(Topics);
 	require('./topics/posts')(Topics);
+	require('./topics/follow')(Topics);
 
 
 	Topics.getTopicData = function(tid, callback) {
@@ -304,7 +305,7 @@ var async = require('async'),
 	};
 
 	Topics.getTeaser = function(tid, callback) {
-		threadTools.getLatestUndeletedPid(tid, function(err, pid) {
+		Topics.getLatestUndeletedPid(tid, function(err, pid) {
 			if (err) {
 				return callback(err);
 			}

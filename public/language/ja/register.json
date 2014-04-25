@@ -1,0 +1,18 @@
+{
+    "register": "登録",
+    "help.email": "デフォルト設定ではメールアドレスは公開されません。",
+    "help.username_restrictions": "%1 から %2 文字までのユニークなユーザー名.Twitter の @<span id='yourUsername'>username</span> 方式でメンションすることができます。",
+    "help.minimum_password_length": "パスワードには最小 %1 文字が必要です。",
+    "email_address": "メールアドレス",
+    "email_address_placeholder": "メールアドレスを入力ください",
+    "username": "ユーザー名",
+    "username_placeholder": "ユーザー名を入力してください",
+    "password": "パスワード",
+    "password_placeholder": "パスワードを入力してください",
+    "confirm_password": "パスワード再入力",
+    "confirm_password_placeholder": "パスワード再入力してください",
+    "register_now_button": "今すぐ登録する",
+    "alternative_registration": "ほかの登録方法",
+    "terms_of_use": "利用規約",
+    "agree_to_terms_of_use": "利用規約に同意する"
+}

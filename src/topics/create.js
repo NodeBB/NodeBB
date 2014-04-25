@@ -180,7 +180,8 @@ module.exports = function(Topics) {
 			},
 			function(data, next) {
 				postData = data;
-				threadTools.notifyFollowers(tid, postData.pid, uid);
+
+				Topics.notifyFollowers(tid, postData.pid, uid);
 
 				user.notifications.sendPostNotificationToFollowers(uid, tid, postData.pid);
 
