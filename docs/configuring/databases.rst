@@ -28,7 +28,7 @@ Running a Secondary Database
     **This option is experimental and should not be used on a production environment.**
 
 
-Both databases **must** be flushed before beginning - there isn't a mechanism yet that detects an existing installation on one database but not another. Until fail-safe's such as these are implemented this option is hidden under the `--advanced` setup flag.
+Both databases **must** be flushed before beginning - there isn't a mechanism yet that detects an existing installation on one database but not another. Until fail-safe's such as these are implemented this option is hidden under the ``--advanced`` setup flag.
 
 .. code:: bash
 

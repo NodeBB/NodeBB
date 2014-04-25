@@ -13,7 +13,11 @@ You can use : "Anonymous usage without user authorization"
 
 After that you will get a "Client ID". 
 
-Then install the nodebb-plugin-imgur with `npm install nodebb-plugin-imgur`.
+Then install nodebb-plugin-imgur:
+
+.. code::
+	
+	npm install nodebb-plugin-imgur
 
 Activate the plugin from the control panel and restart NodeBB.
 
@@ -26,6 +30,4 @@ Uploading to Amazon S3
 
 .. note:: 
 
-	No documentation for this yet! 
-
-	See `the plugin thread <https://community.nodebb.org/topic/796/nodebb-plugin-s3-uploads-store-your-uploads-in-aws-s3>`_ for more information.
+	No documentation for this yet! See `the plugin thread <https://community.nodebb.org/topic/796/nodebb-plugin-s3-uploads-store-your-uploads-in-aws-s3>`_ for more information.
