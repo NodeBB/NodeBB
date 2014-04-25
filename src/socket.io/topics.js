@@ -300,7 +300,7 @@ SocketTopics.moveAll = function(socket, data, callback) {
 };
 
 SocketTopics.followCheck = function(socket, tid, callback) {
-	threadTools.isFollowing(tid, socket.uid, callback);
+	topics.isFollowing(tid, socket.uid, callback);
 };
 
 SocketTopics.follow = function(socket, tid, callback) {
