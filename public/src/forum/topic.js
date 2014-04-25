@@ -243,7 +243,20 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 
 		socket.on('user.isOnline', function(err, data) {
 			app.populateOnlineUsers();
+
+			updateActiveUsers(data);
 		});
+
+		function updateActiveUsers(data) {
+			var activeEl = $('.thread_active_users');
+			var user = activeEl.find('a[data-uid="'+ data.uid + '"]');
+			if (user.length && !data.online) {
+				user.parent().remove();
+			} else if(!user.length && data.online) {
+				user = createUserIcon(data.uid, data.picture, data.userslug, data.username);
+				activeEl.append(user);
+			}
+		}
 
 		socket.on('event:voted', function(data) {
 			updatePostVotesAndUserReputation(data);

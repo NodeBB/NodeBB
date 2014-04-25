@@ -953,7 +953,12 @@ define(['taskbar'], function(taskbar) {
 				content: bodyEl.val(),
 				topic_thumb: thumbEl.val() || '',
 				category_id: postData.cid
-			}, done);
+			}, function(err, topic) {
+				done(err);
+				if (!err) {
+					ajaxify.go('topic/' + topic.slug);
+				}
+			});
 		} else if (parseInt(postData.tid, 10) > 0) {
 			socket.emit('posts.reply', {
 				tid: postData.tid,

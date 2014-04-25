@@ -32,9 +32,9 @@ SocketTopics.post = function(socket, data, callback) {
 
 		if (result) {
 
-			index.server.sockets.in('category_' + data.category_id).emit('event:new_topic', result);
-			index.server.sockets.in('recent_posts').emit('event:new_topic', result);
-			index.server.sockets.in('home').emit('event:new_topic', result);
+			index.server.sockets.in('category_' + data.category_id).emit('event:new_topic', result.topicData);
+			index.server.sockets.in('recent_posts').emit('event:new_topic', result.topicData);
+			index.server.sockets.in('home').emit('event:new_topic', result.topicData);
 			index.server.sockets.in('home').emit('event:new_post', {
 				posts: result.postData
 			});
@@ -44,7 +44,7 @@ SocketTopics.post = function(socket, data, callback) {
 
 			module.parent.exports.emitTopicPostStats();
 
-			callback();
+			callback(null, result.topicData);
 		}
 	});
 };
@@ -300,7 +300,7 @@ SocketTopics.moveAll = function(socket, data, callback) {
 };
 
 SocketTopics.followCheck = function(socket, tid, callback) {
-	threadTools.isFollowing(tid, socket.uid, callback);
+	topics.isFollowing(tid, socket.uid, callback);
 };
 
 SocketTopics.follow = function(socket, tid, callback) {

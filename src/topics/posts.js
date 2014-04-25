@@ -80,6 +80,36 @@ module.exports = function(Topics) {
 		});
 	};
 
+	Topics.getLatestUndeletedPost = function(tid, callback) {
+		Topics.getLatestUndeletedPid(tid, function(err, pid) {
+			if(err) {
+				return callback(err);
+			}
+
+			posts.getPostData(pid, callback);
+		});
+	};
+
+	Topics.getLatestUndeletedPid = function(tid, callback) {
+		db.getSortedSetRevRange('tid:' + tid + ':posts', 0, -1, function(err, pids) {
+			if(err) {
+				return callback(err);
+			}
+
+			if (!pids || !pids.length) {
+				return callback(null, null);
+			}
+
+			async.detectSeries(pids, function(pid, next) {
+				posts.getPostField(pid, 'deleted', function(err, deleted) {
+					next(parseInt(deleted, 10) === 0);
+				});
+			}, function(pid) {
+				callback(null, pid ? pid : null);
+			});
+		});
+	};
+
 	Topics.addPostToTopic = function(tid, pid, timestamp, callback) {
 		db.sortedSetAdd('tid:' + tid + ':posts', timestamp, pid, callback);
 	};
