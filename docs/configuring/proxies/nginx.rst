@@ -1,7 +1,7 @@
-Configuring nginx as a proxy to NodeBB
-======================================
+Configuring nginx as a proxy
+============================
 
-NodeBB by default runs on port `4567`, meaning that builds are usually accessed using a port number in addition to their hostname:
+NodeBB by default runs on port ``4567``, meaning that builds are usually accessed using a port number in addition to their hostname:
 
     http://example.org:4567
 

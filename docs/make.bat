@@ -1,6 +1,6 @@
 @ECHO OFF
 
-rmdir /s /q _build
+REM rmdir /s /q _build
 
 REM Command file for Sphinx documentation
 
