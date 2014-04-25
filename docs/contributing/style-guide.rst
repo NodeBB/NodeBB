@@ -1,7 +1,7 @@
 NodeBB Style Guide
 ==================
 
-For the most part, NodeBB follows the [Google Javascript Style Guide](http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml)
+For the most part, NodeBB follows the `Google Javascript Style Guide <http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml>`_.
 
 Code Formatting
 -------------------
@@ -13,7 +13,7 @@ Code Formatting
 Indentation & Bracing
 -------------------
 
-NodeBB uses tabbed indentation. Bracing should follow the [One True Brace Style](http://en.wikipedia.org/wiki/Indent_style#Variant:_1TBS):
+NodeBB uses tabbed indentation. Bracing should follow the `One True Brace Style <http://en.wikipedia.org/wiki/Indent_style#Variant:_1TBS>`_:
 
 .. code:: javascript
 
