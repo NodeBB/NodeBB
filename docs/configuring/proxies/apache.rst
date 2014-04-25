@@ -1,3 +1,6 @@
+Configuring apache as a proxy to NodeBB
+======================================
+
 # Prerequisites to making this work:
 Apache 2.4.x
 
