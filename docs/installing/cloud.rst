@@ -13,9 +13,9 @@ The following are step-by-step guides to help you get up and running on the clou
     :hidden:
     :maxdepth: 0
 
-    Heroku <heroku>
-    Cloud9 <cloud9>
+    Heroku <cloud/heroku>
+    Cloud9 <cloud/cloud9>
 
-* :doc:`Heroku <heroku>`
-* :doc:`Cloud9 <cloud9>`
+* :doc:`Heroku <cloud/heroku>`
+* :doc:`Cloud9 <cloud/cloud9>`
 * `Digital Ocean <http://burnaftercompiling.com/nodebb/setting-up-a-nodebb-forum-for-dummies/>`_ (external)
