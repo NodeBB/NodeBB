@@ -1,0 +1,186 @@
+List of Hooks
+=============
+
+The following is a list of all hooks present in NodeBB. This list is intended to guide developers who are looking to write plugins for NodeBB. For more information, please consult [[Writing Plugins for NodeBB]].
+
+There are two types of hooks, **filters**, and **actions**. Filters take an input (provided as a single argument), parse it in some way, and return the changed value. Actions take multiple inputs, and execute actions based on the inputs received. Actions do not return anything.
+
+**Important**: This list is by no means exhaustive. Hooks are added on an as-needed basis (or if we can see a potential use case ahead of time), and all requests to add new hooks to NodeBB should be sent to us via the [issue tracker](https://github.com/designcreateplay/NodeBB/issues).
+
+
+Filters
+----------
+
+``filter:admin.header_build``
+^^^^^^^^^^^^^^^^^^^^^
+
+Allows plugins to create new navigation links in the ACP
+
+`filter:post.save`
+^^^^^^^^^^^^^^^^^^^^^
+
+**Argument(s)**: A post's content (markdown text)
+
+Executed whenever a post is created or edited, but before it is saved into the database.
+
+`filter:post.get`
+^^^^^^^^^^^^^^^^^^^^^
+
+**Argument(s)**: A post object (javascript Object)
+
+Executed whenever a post is retrieved, but before being sent to the client.
+
+`filter:header.build`
+^^^^^^^^^^^^^^^^^^^^^
+
+**Allows plugins to add new navigation links to NodeBB**
+
+[View commit for more details](https://github.com/designcreateplay/NodeBB/commit/a63732027f9ba0bd54254c3b5c83f2a63f1ad531)
+
+`filter:post.parse`
+^^^^^^^^^^^^^^^^^^^^^
+
+**Argument(s)**: A post or signature's raw text (String)
+
+Executed when a post or signature needs to be parsed from raw text to HTML (for output to client). This is useful if you'd like to use a parser to prettify posts, such as [Markdown](http://daringfireball.net/projects/markdown/), or [BBCode](http://www.bbcode.org/).
+
+`filter:posts.custom_profile_info`
+^^^^^^^^^^^^^^^^^^^^^
+
+**Allows plugins to add custom profile information in the topic view's author post block**
+
+[View commit for more details](https://github.com/designcreateplay/NodeBB/commit/bf677522a93ec4c48f6b0fa27ab1388f9eedba4c)
+
+`filter:register.check`
+^^^^^^^^^^^^^^^^^^^^^
+
+**Allows plugins to run checks on information and deny registration if necessary.**
+
+[View commit for more details](https://github.com/designcreateplay/NodeBB/commit/cd4a204f999d5ef5bac4557f03d4c15abebfdce3)
+
+`filter:scripts.get`
+^^^^^^^^^^^^^^^^^^^^^
+
+**Allows to add client-side JS to the header and queue up for minification on production**
+
+[View commit for more details](https://github.com/designcreateplay/NodeBB/commit/5357ad61db6c15bc25a7e836548a02fadd72e6b3)
+
+`filter:uploadImage`
+^^^^^^^^^^^^^^^^^^^^^
+
+`filter:uploadFile`
+^^^^^^^^^^^^^^^^^^^^^
+
+`filter:widgets.getAreas`
+^^^^^^^^^^^^^^^^^^^^^
+
+`filter:widgets.getWidgets`
+^^^^^^^^^^^^^^^^^^^^^
+
+`filter:search.query`
+^^^^^^^^^^^^^^^^^^^^^
+
+`filter:post.parse`
+^^^^^^^^^^^^^^^^^^^^^
+
+`filter:messaging.parse`
+^^^^^^^^^^^^^^^^^^^^^
+
+`filter:sounds.get`
+^^^^^^^^^^^^^^^^^^^^^
+
+`filter:post.getPosts`
+^^^^^^^^^^^^^^^^^^^^^
+
+`filter:post.getFields`
+^^^^^^^^^^^^^^^^^^^^^
+
+`filter:auth.init`
+^^^^^^^^^^^^^^^^^^^^^
+
+`filter:composer.help`
+^^^^^^^^^^^^^^^^^^^^^
+
+`filter:topic.thread_tools`
+^^^^^^^^^^^^^^^^^^^^^
+
+`filter:user.create`
+^^^^^^^^^^^^^^^^^^^^^
+
+`filter:widget.render`
+^^^^^^^^^^^^^^^^^^^^^
+
+
+
+Actions
+----------
+
+`action:app.load`
+^^^^^^^^^^^^^^^^^^^^^
+
+**Argument(s)**: None
+
+Executed when NodeBB is loaded, used to kickstart scripts in plugins (i.e. cron jobs, etc)
+
+`action:page.load`
+^^^^^^^^^^^^^^^^^^^^^
+
+**Argument(s)**: An object containing the following properties:
+
+* `template` - The template loaded
+* `url` - Path to the page (relative to the site's base url)
+
+`action:plugin.activate`
+^^^^^^^^^^^^^^^^^^^^^
+
+**Argument(s)**: A String containing the plugin's `id` (e.g. `nodebb-plugin-markdown`)
+
+Executed whenever a plugin is activated via the admin panel.
+
+**Important**: Be sure to check the `id` that is sent in with this hook, otherwise your plugin will fire its registered hook method, even if your plugin was not the one that was activated.
+
+`action:plugin.deactivate`
+^^^^^^^^^^^^^^^^^^^^^
+
+**Argument(s)**: A String containing the plugin's `id` (e.g. `nodebb-plugin-markdown`)
+
+Executed whenever a plugin is deactivated via the admin panel.
+
+**Important**: Be sure to check the `id` that is sent in with this hook, otherwise your plugin will fire its registered hook method, even if your plugin was not the one that was deactivated.
+
+`action:post.save`
+^^^^^^^^^^^^^^^^^^^^^
+
+**Argument(s)**: A post object (javascript Object)
+
+Executed whenever a post is created or edited, after it is saved into the database.
+
+`action:email.send`
+^^^^^^^^^^^^^^^^^^^^^
+
+`action:post.setField`
+^^^^^^^^^^^^^^^^^^^^^
+
+`action:topic.edit`
+^^^^^^^^^^^^^^^^^^^^^
+
+`action:post.edit`
+^^^^^^^^^^^^^^^^^^^^^
+
+`action:post.delete`
+^^^^^^^^^^^^^^^^^^^^^
+
+`action:post.restore`
+^^^^^^^^^^^^^^^^^^^^^
+
+`action:config.set`
+^^^^^^^^^^^^^^^^^^^^^
+
+`action:topic.save`
+^^^^^^^^^^^^^^^^^^^^^
+
+`action:user.create`
+^^^^^^^^^^^^^^^^^^^^^
+
+`action:topic.delete`
+^^^^^^^^^^^^^^^^^^^^^

@@ -57,6 +57,7 @@ Plugin System
     :maxdepth: 2
 
     plugins/create
+    plugins/hooks
     plugins/resources
 
 Widgets System
