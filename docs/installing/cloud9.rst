@@ -1,4 +1,7 @@
-Installation instructions for the Cloud 9 web based IDE.
+Cloud 9 IDE
+===========
+
+The following are installation instructions for the `Cloud 9 <https://c9.io/>`_ web based IDE.
 
 **Step 1:** Clone NodeBB into a new workspace from GitHub. You can use the following command from the terminal:
 `git clone git://github.com/designcreateplay/NodeBB.git nodebb`
