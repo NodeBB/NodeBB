@@ -1,7 +1,11 @@
 NodeBB Installation by OS
 =========================
 
-The following are step-by-step guides to help you get up and running. If your operating system is not listed here, please feel free to request a guide on our `community <https://community.nodebb.org>`_ or even better yet, submit one here.
+The following are step-by-step guides to help you get up and running.
+
+.. note::
+
+    If your operating system is not listed here, please feel free to request a guide on our `community <https://community.nodebb.org>`_ or even better yet, submit one here.
 
 
 
