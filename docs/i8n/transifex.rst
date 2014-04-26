@@ -1,5 +1,5 @@
-NodeBB Internationalization
-============================
+Internationalization
+====================
 
 
 testing

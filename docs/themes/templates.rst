@@ -1,5 +1,5 @@
-NodeBB's Templating Engine
-==========================
+Templating Engine
+=================
 
 
 testing
