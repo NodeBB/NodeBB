@@ -48,7 +48,6 @@ Contributing to NodeBB
     :maxdepth: 2
 
     contributing/style-guide
-    contributing/resources
 
 Plugin System
 -------------
@@ -58,7 +57,6 @@ Plugin System
 
     plugins/create
     plugins/hooks
-    plugins/resources
 
 Widgets System
 --------------
@@ -67,7 +65,6 @@ Widgets System
     :maxdepth: 2
 
     widgets/create
-    widgets/resources
 
 Theming Engine
 --------------
@@ -77,7 +74,6 @@ Theming Engine
 
     themes/create
     themes/templates
-    themes/resources
 
 Internationalization
 --------------------
@@ -86,6 +82,14 @@ Internationalization
     :maxdepth: 2
 
     i8n/transifex
+
+Developer's Resources
+---------------------
+
+.. toctree::
+    :maxdepth: 2
+
+    resources
 
 Helping out the NodeBB Project
 ------------------------------
