@@ -210,15 +210,15 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.createGravatarURLFromEmail = function(email) {
+
 		var options = {
 			size: '128',
-			default: 'identicon',
+			default: meta.config.customGravatarDefaultImage || meta.config.defaultGravatarImage || '',
 			rating: 'pg'
 		};
 
 		if (!email) {
 			email = '';
-			options.forcedefault = 'y';
 		}
 
 		return gravatar.url(email, options, true);
@@ -294,7 +294,7 @@ var bcrypt = require('bcryptjs'),
 			callback(null, {
 				username: data.username || '[[global:guest]]',
 				userslug: data.userslug || '',
-				picture: data.picture || gravatar.url('', {}, true)
+				picture: data.picture || User.createGravatarURLFromEmail('')
 			});
 		});
 	};

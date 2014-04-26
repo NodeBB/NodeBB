@@ -237,7 +237,7 @@ var db = require('./database'),
 				reputation: userData.reputation || 0,
 				postcount: userData.postcount || 0,
 				banned: parseInt(userData.banned, 10) === 1,
-				picture: userData.picture || gravatar.url('', {}, true)
+				picture: userData.picture || user.createGravatarURLFromEmail('')
 			};
 
 			for (var info in customUserInfo) {

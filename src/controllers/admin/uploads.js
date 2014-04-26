@@ -87,7 +87,20 @@ uploadsController.uploadLogo = function(req, res, next) {
 	if (validateUpload(res, req, allowedTypes)) {
 		var filename = 'site-logo' + path.extname(req.files.userPhoto.name);
 		uploadsController.uploadImage(filename, req, res);
-	}	
+	}
 };
+
+
+uploadsController.uploadGravatarDefault = function(req, res, next) {
+	var allowedTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif'],
+		er;
+
+	if (validateUpload(res, req, allowedTypes)) {
+		var filename = 'gravatar-default' + path.extname(req.files.userPhoto.name);
+		uploadsController.uploadImage(filename, req, res);
+	}
+};
+
+
 
 module.exports = uploadsController;

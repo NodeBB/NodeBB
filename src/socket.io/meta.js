@@ -67,9 +67,7 @@ SocketMeta.updateHeader = function(socket, data, callback) {
 			uid: 0,
 			username: '[[global:guest]]',
 			email: '',
-			picture: gravatar.url('', {
-				s: '24'
-			}, true),
+			picture: user.createGravatarURLFromEmail(''),
 			config: {
 				allowGuestSearching: meta.config.allowGuestSearching
 			}
