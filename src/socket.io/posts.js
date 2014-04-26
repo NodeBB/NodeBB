@@ -16,21 +16,21 @@ var	async = require('async'),
 	SocketPosts = {},
 
     // a shy request-wannabe build from a socket for spam detection purposes
-    reqFromSocket = function(socket) {
-        var headers = socket.handshake.headers,
-            host = headers['host'],
-            referer = headers['referer'];
+	reqFromSocket = function(socket) {
+		var headers = socket.handshake.headers,
+			host = headers['host'],
+			referer = headers['referer'];
 
-        return {
-            'ip': headers['x-forwarded-for'] || socket.handshake.address.address,
-            'host': host,
-            'protocol': headers['secure'] ? 'https' : 'http',
-            'secure': !!headers['secure'],
-            'url': referer,
-            'path': referer.substr(referer.indexOf(host) + host.length),
-            'headers': headers
-        };
-    };
+		return {
+			'ip': headers['x-forwarded-for'] || socket.handshake.address.address,
+			'host': host,
+			'protocol': headers['secure'] ? 'https' : 'http',
+			'secure': !!headers['secure'],
+			'url': referer,
+			'path': referer.substr(referer.indexOf(host) + host.length),
+			'headers': headers
+		};
+	};
 
 SocketPosts.reply = function(socket, data, callback) {
 
@@ -43,7 +43,7 @@ SocketPosts.reply = function(socket, data, callback) {
 	}
 
 	data.uid = socket.uid;
-    data.req = reqFromSocket(socket);
+	data.req = reqFromSocket(socket);
 
 	topics.reply(data, function(err, postData) {
 		if(err) {
