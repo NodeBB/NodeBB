@@ -22,7 +22,7 @@ var	async = require('async'),
 			referer = headers['referer'];
 
 		return {
-			ip: headers['x-forwarded-for'] || socket.handshake.address.address,
+			ip: headers['x-forwarded-for'] || (socket.handshake.address || {}).address,
 			host: host,
 			protocol: headers['secure'] ? 'https' : 'http',
 			secure: !!headers['secure'],
