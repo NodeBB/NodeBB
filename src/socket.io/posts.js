@@ -22,13 +22,13 @@ var	async = require('async'),
 			referer = headers['referer'];
 
 		return {
-			'ip': headers['x-forwarded-for'] || socket.handshake.address.address,
-			'host': host,
-			'protocol': headers['secure'] ? 'https' : 'http',
-			'secure': !!headers['secure'],
-			'url': referer,
-			'path': referer.substr(referer.indexOf(host) + host.length),
-			'headers': headers
+			ip: headers['x-forwarded-for'] || socket.handshake.address.address,
+			host: host,
+			protocol: headers['secure'] ? 'https' : 'http',
+			secure: !!headers['secure'],
+			url: referer,
+			path: referer.substr(referer.indexOf(host) + host.length),
+			headers: headers
 		};
 	};
 
