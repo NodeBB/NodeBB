@@ -9,7 +9,8 @@ define ->
     set: (element, value) -> element.prop 'checked', value
     get: (element, trim, empty) ->
       value = element.prop 'checked'
+      return undefined if !value?
       value = if trim then (if value then 1 else 0) else value
-      if empty then value || null else value
+      if empty then value || undefined else value
 
   SettingsCheckbox

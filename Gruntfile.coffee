@@ -1,3 +1,5 @@
+# npm install grunt grunt-contrib-coffee grunt-jsbeautifier coffee grunt-coffee
+
 module.exports = (grunt) ->
 
   grunt.initConfig
@@ -6,9 +8,9 @@ module.exports = (grunt) ->
         options:
           bare: true
         expand: true
-        cwd: "public/"
+        cwd: "public/src/"
         src: ["**/*.coffee"]
-        dest: "public/"
+        dest: "public/src/"
         ext: ".js"
       server:
         options:
@@ -18,7 +20,13 @@ module.exports = (grunt) ->
         src: ["**/*.coffee"]
         dest: "src/"
         ext: ".js"
+    jsbeautifier:
+      files: ["public/src/**/*.js", "src/**/*.js"]
+      options:
+        config: '.jsbeautifyrc'
+        jsbeautifyrc: true # should work without config-option, but doesn't...
 
   grunt.loadNpmTasks 'grunt-contrib-coffee'
+  grunt.loadNpmTasks 'grunt-jsbeautifier'
 
-  grunt.registerTask "default", ["coffee:public", "coffee:server"]
+  grunt.registerTask "default", ["coffee:public", "coffee:server", "jsbeautifier"]

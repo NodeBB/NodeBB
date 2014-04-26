@@ -11,7 +11,7 @@ define ->
   SettingsSelect =
     types: ['select']
     use: -> Settings = this
-    # data as array of
+  # data as array of
     create: (ignore, ignored, data) ->
       el = $ Settings.helper.createElement 'select'
       addOptions el, data['data-options']
@@ -23,6 +23,6 @@ define ->
     set: (element, value) -> element.val value || ''
     get: (element, ignored, empty) ->
       val = element.val()
-      if empty || val then val else null
+      if empty || val then val else undefined
 
   SettingsSelect

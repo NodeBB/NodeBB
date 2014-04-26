@@ -10,6 +10,6 @@ define ->
       element.val if trim && typeof value?.trim == 'function' then value.trim() else value || ''
     get: (element, trim, empty) ->
       val = if trim then element.val()?.trim() else element.val()
-      if empty || val then val else null
+      if empty || val then val else undefined
 
   SettingsArea
