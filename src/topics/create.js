@@ -141,6 +141,16 @@ module.exports = function(Topics) {
 
 		async.waterfall([
 			function(next) {
+				plugins.fireHook('filter:topic.reply', data, function(err, filteredData) {
+					if (err) {
+						return next(err);
+					}
+
+					content = filteredData.content || data.content;
+					next();
+				});
+			},
+			function(next) {
 				threadTools.exists(tid, next);
 			},
 			function(topicExists, next) {
