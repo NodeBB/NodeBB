@@ -9,7 +9,7 @@ var async = require('async'),
 usersController.getOnlineUsers = function(req, res, next) {
 	var	websockets = require('../socket.io');
 
-	user.getUsersFromSet('users:online', 0, 49, function (err, data) {
+	user.getUsersFromSet('users:online', 0, 49, function (err, users) {
 		if(err) {
 			return next(err);
 		}
@@ -26,34 +26,44 @@ usersController.getOnlineUsers = function(req, res, next) {
 			}
 
 			if (!isAdministrator) {
-				data = data.filter(function(item) {
+				users = users.filter(function(item) {
 					return item.status !== 'offline';
 				});
 			}
 
-			function iterator(userData, next) {
-				var online = websockets.isUserOnline(userData.uid);
-				if(!online) {
-					db.sortedSetRemove('users:online', userData.uid);
-					return next(null);
+			function updateUserOnlineStatus(user, next) {
+				var online = websockets.isUserOnline(user.uid);
+				if (!online) {
+					db.sortedSetRemove('users:online', user.uid);
+					return next();
 				}
 
-				onlineUsers.push(userData);
-				next(null);
+				onlineUsers.push(user);
+				next();
 			}
 
 			var anonymousUserCount = websockets.getOnlineAnonCount();
 
-			async.each(data, iterator, function(err) {
-				var userData = {
-					search_display: 'none',
-					loadmore_display: 'block',
-					users: onlineUsers,
-					anonymousUserCount: anonymousUserCount,
-					show_anon: anonymousUserCount?'':'hide'
-				};
+			async.each(users, updateUserOnlineStatus, function(err) {
+				if (err) {
+					return next(err);
+				}
 
-				res.render('users', userData);
+				db.sortedSetCard('users:online', function(err, count) {
+					if (err) {
+						return next(err);
+					}
+
+					var userData = {
+						search_display: 'none',
+						loadmore_display: count > 50 ? 'block' : 'hide',
+						users: onlineUsers,
+						anonymousUserCount: anonymousUserCount,
+						show_anon: anonymousUserCount?'':'hide'
+					};
+
+					res.render('users', userData);
+				});
 			});
 		});
 	});
@@ -76,14 +86,21 @@ function getUsers(set, res, next) {
 		if (err) {
 			return next(err);
 		}
-		var userData = {
-			search_display: 'none',
-			loadmore_display: 'block',
-			users: data,
-			show_anon: 'hide'
-		};
 
-		res.render('users', userData);
+		db.sortedSetCard(set, function(err, count) {
+			if (err) {
+				return next(err);
+			}
+
+			var userData = {
+				search_display: 'none',
+				loadmore_display: count > 50 ? 'block' : 'hide',
+				users: data,
+				show_anon: 'hide'
+			};
+
+			res.render('users', userData);
+		});
 	});
 }
 
