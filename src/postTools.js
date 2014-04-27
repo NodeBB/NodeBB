@@ -212,7 +212,7 @@ var winston = require('winston'),
 	}
 
 	function updateTopicTimestamp(tid, callback) {
-		threadTools.getLatestUndeletedPid(tid, function(err, pid) {
+		topics.getLatestUndeletedPid(tid, function(err, pid) {
 			if(err || !pid) {
 				return callback(err);
 			}

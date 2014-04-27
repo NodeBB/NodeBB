@@ -15,6 +15,8 @@ var	async = require('async'),
 
 	SocketPosts = {};
 
+
+
 SocketPosts.reply = function(socket, data, callback) {
 
 	if (!socket.uid && !parseInt(meta.config.allowGuestPosting, 10)) {
@@ -26,6 +28,7 @@ SocketPosts.reply = function(socket, data, callback) {
 	}
 
 	data.uid = socket.uid;
+	data.req = websockets.reqFromSocket(socket);
 
 	topics.reply(data, function(err, postData) {
 		if(err) {

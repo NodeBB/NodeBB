@@ -210,15 +210,15 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.createGravatarURLFromEmail = function(email) {
+
 		var options = {
 			size: '128',
-			default: 'identicon',
+			default: meta.config.customGravatarDefaultImage || meta.config.defaultGravatarImage || '',
 			rating: 'pg'
 		};
 
 		if (!email) {
 			email = '';
-			options.forcedefault = 'y';
 		}
 
 		return gravatar.url(email, options, true);
@@ -294,7 +294,7 @@ var bcrypt = require('bcryptjs'),
 			callback(null, {
 				username: data.username || '[[global:guest]]',
 				userslug: data.userslug || '',
-				picture: data.picture || gravatar.url('', {}, true)
+				picture: data.picture || User.createGravatarURLFromEmail('')
 			});
 		});
 	};
@@ -354,25 +354,24 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.isOnline = function(uid, callback) {
-		User.getUserField(uid, 'status', function(err, status) {
+		User.getUserFields(uid, ['username', 'userslug', 'picture', 'status'] , function(err, data) {
 			if(err) {
 				return callback(err);
 			}
 
 			var online = require('./socket.io').isUserOnline(uid);
 
-			status = online ? (status || 'online') : 'offline';
+			data.status = online ? (data.status || 'online') : 'offline';
 
-			if(status === 'offline') {
+			if(data.status === 'offline') {
 				online = false;
 			}
 
-			callback(null, {
-				online: online,
-				uid: uid,
-				timestamp: Date.now(),
-				status: status
-			});
+			data.online = online;
+			data.uid = uid;
+			data.timestamp = Date.now();
+
+			callback(null, data);
 		});
 	};
 

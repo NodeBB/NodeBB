@@ -1,0 +1,18 @@
+{
+    "register": "Đăng ký",
+    "help.email": "Theo mặc định, Email của bạn sẽ ở dạng ẩn và public sẽ không thấy được",
+    "help.username_restrictions": "Một tên truy cập duy nhất có từ %1 đến %2 ký tự. Những người khác có thể nhắc đến bạn bằng @<span id='yourUsername'>tên truy cập</span>.",
+    "help.minimum_password_length": "Mật khẩu của bạn phải có ít nhất %1 ký tự",
+    "email_address": "Địa chỉ Email",
+    "email_address_placeholder": "Nhập địa chỉ Email",
+    "username": "Tên truy cập",
+    "username_placeholder": "Nhập tên truy cập",
+    "password": "Mật khẩu",
+    "password_placeholder": "Nhập mật khẩu",
+    "confirm_password": "Xác nhận mật khẩu",
+    "confirm_password_placeholder": "Xác nhận mật khẩu",
+    "register_now_button": "Đăng ký ngay",
+    "alternative_registration": "Đăng ký tài khoản khác",
+    "terms_of_use": "Điều khoản sử dụng",
+    "agree_to_terms_of_use": "Tôi đồng ý với các điều khoản sử dụng"
+}

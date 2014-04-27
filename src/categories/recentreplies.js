@@ -2,6 +2,8 @@
 'use strict';
 
 var async = require('async'),
+	winston = require('winston'),
+
 	db = require('./../database'),
 	posts = require('./../posts'),
 	topics = require('./../topics'),
@@ -23,26 +25,40 @@ module.exports = function(Categories) {
 	};
 
 	Categories.moveRecentReplies = function(tid, oldCid, cid) {
-		function movePost(pid, next) {
-			posts.getPostField(pid, 'timestamp', function(err, timestamp) {
-				if(err) {
-					return next(err);
+		function movePost(postData, next) {
+			async.parallel([
+				function(next) {
+					db.sortedSetRemove('categories:recent_posts:cid:' + oldCid, postData.pid, next);
+				},
+				function(next) {
+					db.sortedSetAdd('categories:recent_posts:cid:' + cid, postData.timestamp, postData.pid, next);
 				}
-
-				db.sortedSetRemove('categories:recent_posts:cid:' + oldCid, pid);
-				db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid);
-				next();
-			});
+			], next);
 		}
 
 		topics.getPids(tid, function(err, pids) {
-			if(!err && pids) {
-				async.each(pids, movePost, function(err) {
+			if (err) {
+				return winston.error(err.message);
+			}
+			if (pids && !pids.length) {
+				return;
+			}
+
+			var keys = pids.map(function(pid) {
+				return 'post:' + pid;
+			});
+
+			db.getObjectsFields(keys, ['pid', 'timestamp'], function(err, postData) {
+				if (err) {
+					return winston.error(err.message);
+				}
+
+				async.each(postData, movePost, function(err) {
 					if (err) {
 						winston.error(err.message);
 					}
 				});
-			}
+			});
 		});
 	};
 };
