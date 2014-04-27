@@ -9,6 +9,7 @@ var topicsController = {},
 	user = require('./../user'),
 	meta = require('./../meta'),
 	topics = require('./../topics'),
+	posts = require('../posts'),
 	threadTools = require('./../threadTools'),
 	utils = require('./../../public/src/utils');
 
@@ -178,6 +179,31 @@ topicsController.get = function(req, res, next) {
 			});
 		}
 		res.render('topic', data);
+	});
+};
+
+topicsController.teaser = function(req, res, next) {
+	var tid = req.params.topic_id;
+	topics.getLatestUndeletedPid(tid, function(err, pid) {
+		if (err) {
+			return next(err);
+		}
+
+		if (!pid) {
+			return res.json(404, 'not-found');
+		}
+
+		posts.getPostSummaryByPids([pid], false, function(err, posts) {
+			if (err) {
+				return next(err);
+			}
+
+			if (!Array.isArray(posts) || !posts.length) {
+				return res.json(404, 'not-found');
+			}
+
+			res.json(posts[0]);
+		});
 	});
 };
 
