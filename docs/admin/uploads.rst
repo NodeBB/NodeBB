@@ -1,4 +1,4 @@
-File / Image Uploading
+Image Hosting APIs
 ======================
 
 
