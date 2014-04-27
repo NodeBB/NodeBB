@@ -84,6 +84,16 @@ module.exports = function(Topics) {
 
 		async.waterfall([
 			function(next) {
+				plugins.fireHook('filter:topic.post', data, function(err, filteredData) {
+					if (err) {
+						return next(err);
+					}
+
+					content = filteredData.content || data.content;
+					next();
+				});
+			},
+			function(next) {
 				categoryTools.exists(cid, next);
 			},
 			function(categoryExists, next) {
@@ -105,7 +115,7 @@ module.exports = function(Topics) {
 				Topics.create({uid: uid, title: title, cid: cid, thumb: thumb}, next);
 			},
 			function(tid, next) {
-				Topics.reply({uid:uid, tid:tid, content:content}, next);
+				Topics.reply({uid:uid, tid:tid, content:content, req: data.req}, next);
 			},
 			function(postData, next) {
 				threadTools.toggleFollow(postData.tid, uid);
