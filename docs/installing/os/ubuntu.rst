@@ -55,4 +55,4 @@ Lastly, we run the forum.
 	$ ./nodebb start
 
 
-NodeBB can also be started with helper programs, such as ``supervisor`` and ``forever``. `Take a look at the options here <https://github.com/designcreateplay/NodeBB/wiki/How-to-run-NodeBB>`_.
+NodeBB can also be started with helper programs, such as ``supervisor`` and ``forever``. :doc:`Take a look at the options here <../../running/index>`.
