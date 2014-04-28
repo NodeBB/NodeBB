@@ -98,8 +98,6 @@ Troubleshooting / Help
 .. toctree::
     :maxdepth: 2
 
-    help/faq
-    help/bugs
     help/help
 
 Indices and tables
