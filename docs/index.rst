@@ -31,6 +31,14 @@ Configuring NodeBB
     configuring/databases
     configuring/proxies
 
+Running NodeBB
+------------------
+
+.. toctree::
+    :maxdepth: 2
+
+    running/index
+
 Upgrading NodeBB
 ------------------
 
