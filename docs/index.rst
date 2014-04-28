@@ -75,13 +75,6 @@ Theming Engine
     themes/create
     themes/templates
 
-Internationalization
---------------------
-
-.. toctree::
-    :maxdepth: 2
-
-    i8n/transifex
 
 Developer's Resources
 ---------------------
@@ -99,14 +92,7 @@ Helping out the NodeBB Project
 
     helping/contribute
     helping/share
-
-Writing Documentation
----------------------
-
-.. toctree::
-    :maxdepth: 2
-
-    docs/sphinx
+    helping/documentation
 
 Troubleshooting / Help
 ----------------------
