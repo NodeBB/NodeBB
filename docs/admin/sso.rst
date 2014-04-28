@@ -1,4 +1,4 @@
-Social Network SSO
+Social Network SSOs
 ==================
 
 NodeBB supports integration for Facebook, Twitter, and Google through third party plugins:

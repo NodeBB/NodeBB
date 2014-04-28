@@ -23,7 +23,7 @@ Administrative Functions
     * `http://your_nodebb_domain.com/admin/index`
     * Links all go to nodebb.com homepage
       * NOTE: should all the links go to same place? 
-    * Message reminder of what version this is and to check for updates (See [[Upgrading NodeBB]])
+    * Message reminder of what version this is and to check for updates (See :doc:`Upgrading NodeBB <../upgrading/index>`)
       * NOTE: would a link to where the latest stable version is help?
     * Active Users
       * lists number users per page-path (?)
@@ -63,13 +63,13 @@ Administrative Functions
       * Thread Tools:
         * Pin, Lock, Move, Delete
 
-  * Themes (See [[Theming NodeBB]])
+  * Themes (See :doc:`Theming NodeBB <../themes/create>`)
     * `http://your_nodebb_domain.com/admin/themes`
     * List of (Custom | Bootswatch) Themes 
       * Actions: Use, Preview
     * Action: Revert (to base)
 
-  * Plugins (See [[Writing Plugins for NodeBB]])
+  * Plugins (See :doc:`Writing Plugins for NodeBB <../plugins/create>`)
     * `http://your_nodebb_domain.com/admin/plugins`
     * List of Plugins
       * Action: De/activate
@@ -124,7 +124,7 @@ Administrative Functions
     * (textarea) You can enter either full HTML or Markdown text.
     * (checkbox) Show the Message of the Day
 
-**Side Menu: Social Authentication** (See [[Enabling Social Network Logins]])
+**Side Menu: Social Authentication** (See :doc:`Enabling Social Network Logins <../admin/sso>`)
 
   * Twitter
   * `http://your_nodebb_domain.com/admin/twitter`
