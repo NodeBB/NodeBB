@@ -64,8 +64,7 @@
 		}
 
 		redisClient.on('error', function (err) {
-			winston.error(err.message);
-			process.exit();
+			winston.error(err.stack);
 		});
 
 		module.client = redisClient;
