@@ -4,7 +4,7 @@ Creating a new NodeBB Theme
 NodeBB is built on `Twitter Bootstrap <twitter.github.com/bootstrap/>`_, which makes theming incredibly simple.
 
 Packaging for NodeBB
-=====================================
+-------------------------------------
 
 NodeBB expects any installed themes to be installed via ``npm``. Each individual theme is an npm package, and users can install themes through the command line, ex.:
 
@@ -23,7 +23,7 @@ The theme's folder must contain at least two files for it to be a valid theme:
 **Note**: A *suggested* organization for ``theme.less`` is to ``@import`` multiple smaller files instead of placing all of the styles in the main ``theme.less`` file.
 
 Configuration
-=====================================
+-------------------------------------
 The theme configuration file is a simple JSON string containing all appropriate meta data regarding the theme. Please take note of the following properties:
 
 * ``id``: A unique id for a theme (e.g. "my-theme")
@@ -33,12 +33,12 @@ The theme configuration file is a simple JSON string containing all appropriate 
 * ``url``: A fully qualified URL linking back to the theme's homepage/project
 
 Child Themes
-=====================================
+-------------------------------------
 
 If your theme is based off of another theme, simply modify your LESS files to point to the other theme as a base:
 
 topic.less
-----------
+^^^^^^^^^^
 
 .. code: css
 
