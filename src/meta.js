@@ -343,12 +343,12 @@ var fs = require('fs'),
 
 			// Add the imports for each LESS file
 			for(x=0,numLESS=plugins.lessFiles.length;x<numLESS;x++) {
-				source += '\n@import "./' + plugins.lessFiles[x] + '";';
+				source += '\n@import ".' + path.sep + plugins.lessFiles[x] + '";';
 			}
 
 			// ... and for each CSS file
 			for(x=0,numCSS=plugins.cssFiles.length;x<numCSS;x++) {
-				source += '\n@import (inline) "./' + plugins.cssFiles[x] + '";';
+				source += '\n@import (inline) ".' + path.sep + plugins.cssFiles[x] + '";';
 			}
 
 			var	parser = new (less.Parser)({

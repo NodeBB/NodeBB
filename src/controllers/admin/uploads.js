@@ -81,13 +81,20 @@ uploadsController.uploadFavicon = function(req, res, next) {
 };
 
 uploadsController.uploadLogo = function(req, res, next) {
-	var allowedTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif'],
-		er;
+	upload('site-logo', req, res, next);
+};
+
+uploadsController.uploadGravatarDefault = function(req, res, next) {
+	upload('gravatar-default', req, res, next);
+};
+
+function upload(name, req, res, next) {
+	var allowedTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif'];
 
 	if (validateUpload(res, req, allowedTypes)) {
-		var filename = 'site-logo' + path.extname(req.files.userPhoto.name);
+		var filename = name + path.extname(req.files.userPhoto.name);
 		uploadsController.uploadImage(filename, req, res);
-	}	
-};
+	}
+}
 
 module.exports = uploadsController;

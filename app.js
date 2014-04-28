@@ -18,6 +18,7 @@
 
 
 "use strict";
+/*global require, global, process*/
 
 var nconf = require('nconf');
 nconf.argv().env();

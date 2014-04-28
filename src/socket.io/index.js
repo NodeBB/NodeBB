@@ -225,6 +225,22 @@ Sockets.getUserSockets = function(uid) {
 
 /* Helpers */
 
+Sockets.reqFromSocket = function(socket) {
+	var headers = socket.handshake.headers,
+		host = headers.host,
+		referer = headers.referer;
+
+	return {
+		ip: headers['x-forwarded-for'] || (socket.handshake.address || {}).address,
+		host: host,
+		protocol: headers.secure ? 'https' : 'http',
+		secure: !!headers.secure,
+		url: referer,
+		path: referer.substr(referer.indexOf(host) + host.length),
+		headers: headers
+	};
+};
+
 Sockets.isUserOnline = isUserOnline;
 function isUserOnline(uid) {
 	return Sockets.getUserSockets(uid).length > 0;

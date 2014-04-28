@@ -250,8 +250,17 @@ var ajaxify = ajaxify || {};
 					// Internal link
 					var url = this.href.replace(rootUrl + '/', '');
 
-					if (ajaxify.go(url)) {
+					if(window.location.pathname === this.pathname && this.hash) {
+						if (this.hash !== window.location.hash) {
+							window.location.hash = this.hash;
+						}
+
+						ajaxify.loadScript(ajaxify.getTemplateMapping(url));
 						e.preventDefault();
+					} else {
+						if (ajaxify.go(url)) {
+							e.preventDefault();
+						}
 					}
 				} else if (window.location.pathname !== '/outgoing') {
 					// External Link
