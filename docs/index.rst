@@ -90,9 +90,7 @@ Helping out the NodeBB Project
 .. toctree::
     :maxdepth: 2
 
-    helping/contribute
-    helping/share
-    helping/documentation
+    helping/index
 
 Troubleshooting / Help
 ----------------------
