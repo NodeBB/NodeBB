@@ -130,4 +130,4 @@ Installation
 Upgrading NodeBB
 ----------------
 
-**Note:** Detailed upgrade instructions are listed in [Upgrading NodeBB](https://github.com/designcreateplay/NodeBB/wiki/Upgrading-NodeBB).
+**Note:** Detailed upgrade instructions are listed in :doc:`Upgrading NodeBB <../../upgrading/index>`.

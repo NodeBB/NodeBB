@@ -123,4 +123,4 @@ To start the app, run:
 
 Now visit ``yourdomainorip.com:4567`` and your NodeBB installation should be running.
 
-NodeBB can also be started with helper programs, such as [``supervisor`` and ``forever``](https://github.com/designcreateplay/NodeBB/wiki/How-to-run-NodeBB). You can also use `nginx` as a [reverse proxy](https://github.com/designcreateplay/NodeBB/wiki/Configuring-nginx-as-a-proxy-to-NodeBB).
+NodeBB can also be started with helper programs, such as :doc:`supervisor or forever <../../running/index>`. You can also use ``nginx`` as a :doc:`reverse proxy <../../configuring/proxies>`).
