@@ -4,8 +4,8 @@ Helping out the NodeBB Project
 NodeBB is an open source project, and will forever remain free. Here's a number of ways you can help us, even if you aren't a programmer.
 
 * `Like and share our content on Facebook <http://www.facebook.com/NodeBB>`_
-* `Follow us on Twitter <http://www.twitter.com/NodeBB>`_ and perhaps tweet `#NodeBB is most awesome forum software @NodeBB`
-* Update this wiki! ;) We need everything from development/design tutorials to user friendly how-to guides.
+* `Follow us on Twitter <http://www.twitter.com/NodeBB>`_ and perhaps tweet **#NodeBB is most awesome forum software @NodeBB** 
+* Update our wiki! ;) We need everything from development/design tutorials to user friendly how-to guides.
 * Tell everybody about NodeBB, including your grandma and her cats.
 * `Submit a pull request, or two, or three.. <http://www.github.com/designcreateplay/NodeBB>`_
 * Build a new theme
@@ -27,6 +27,6 @@ Writing Documentation
 
 These docs were written using `Sphinx <http://sphinx-doc.org/>`_ and published using `rtfd.org <http://readthedocs.org/>`_. 
 
-You can edit these docs [directly on GitHub](https://github.com/designcreateplay/NodeBB/tree/master/docs), or if you wish, you can clone the repository and compile them yourself. Check out the `Getting Started <https://read-the-docs.readthedocs.org/en/latest/getting_started.html>`_ section for more info on how to accomplish the latter.
+You can edit these docs `directly on GitHub <https://github.com/designcreateplay/NodeBB/tree/master/docs>`_, or if you wish, you can clone the repository and compile them yourself. Check out the `Getting Started <https://read-the-docs.readthedocs.org/en/latest/getting_started.html>`_ section for more info on how to accomplish the latter.
 
 Documents are auto-compiled and pushed to rtfd.org after every commit.
