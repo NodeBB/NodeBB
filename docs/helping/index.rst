@@ -27,6 +27,8 @@ Writing Documentation
 
 These docs were written using `Sphinx <http://sphinx-doc.org/>`_ and published using `rtfd.org <http://readthedocs.org/>`_. 
 
-You can edit these docs `directly on GitHub <https://github.com/designcreateplay/NodeBB/tree/master/docs>`_, or if you wish, you can clone the repository and compile them yourself. Check out the `Getting Started <https://read-the-docs.readthedocs.org/en/latest/getting_started.html>`_ section for more info on how to accomplish the latter.
+You can edit these docs `directly on GitHub <https://github.com/designcreateplay/NodeBB/tree/master/docs>`_, or by clicking on "View page source" on the top right of any page.
 
-Documents are auto-compiled and pushed to rtfd.org after every commit.
+If you wish, you can clone the repository and compile the documentation yourself. Check out the `Getting Started <https://read-the-docs.readthedocs.org/en/latest/getting_started.html>`_ section for more info on how to accomplish the latter.
+
+Documentation are auto-compiled and pushed to rtfd.org after every commit.
