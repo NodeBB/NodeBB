@@ -167,11 +167,11 @@ And after all.. let's run the NodeBB forum
 	$ ./nodebb start
 
 
-**Note:** If you NodeBB or your server crash, your NodeBB instance will not reboot (snap), this is why you should take a look at the other way to start your NodeBB instance with helper programs such as ``supervisor`` and ``forever``, just [take a look here](https://github.com/designcreateplay/NodeBB/wiki/How-to-run-NodeBB) it's simple as a click!
+**Note:** If you NodeBB or your server crash, your NodeBB instance will not reboot (snap), this is why you should take a look at the other way to start your NodeBB instance with helper programs such as ``supervisor`` and ``forever``, just `take a look here <https://github.com/designcreateplay/NodeBB/wiki/How-to-run-NodeBB>`_ it's simple as a click!
 
 Extras, tips and Advice
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 You should secure your NodeBB installation, `take a look here <https://github.com/designcreateplay/NodeBB#securing-nodebb>`_.
 
-You should use Nginx in order to reverse proxy your NodeBB installation on the port 80, [take a look here](https://github.com/designcreateplay/NodeBB/wiki/Configuring-nginx-as-a-proxy-to-NodeBB)
+You should use Nginx in order to reverse proxy your NodeBB installation on the port 80, `take a look here <https://github.com/designcreateplay/NodeBB/wiki/Configuring-nginx-as-a-proxy-to-NodeBB>`_
