@@ -4,7 +4,7 @@
 var groups = require('../../groups'),
 	user = require('../../user'),
 	events = require('../../events'),
-	index = require('../index'),
+	websockets = require('../index'),
 	async = require('async'),
 	User = {};
 
@@ -35,13 +35,13 @@ User.banUser = function(socket, theirid, callback) {
 				return callback(err);
 			}
 
-			var sockets = index.getUserSockets(theirid);
+			var sockets = websockets.getUserSockets(theirid);
 
 			for(var i=0; i<sockets.length; ++i) {
 				sockets[i].emit('event:banned');
 			}
 
-			module.parent.exports.logoutUser(theirid);
+			websockets.logoutUser(theirid);
 			callback();
 		});
 	});
@@ -59,7 +59,7 @@ User.deleteUser = function(socket, theirid, callback) {
 
 		events.logAdminUserDelete(socket.uid, theirid);
 
-		module.parent.exports.logoutUser(theirid);
+		websockets.logoutUser(theirid);
 		callback();
 	});
 };
