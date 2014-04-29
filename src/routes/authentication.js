@@ -89,6 +89,7 @@
 				req.login({
 					uid: uid
 				}, function() {
+					user.logIP(uid, req.ip);
 
 					require('../socket.io').emitUserCount();
 
