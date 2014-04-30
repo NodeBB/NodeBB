@@ -62,7 +62,7 @@
 
 		if (!templates.cache[tpl]) {
 			fs.readFile(filename, function(err, html) {
-				templates.cache[tpl] = html.toString();
+				templates.cache[tpl] = (html || '').toString();
 				return fn(err, templates.parse(templates.cache[tpl], options));
 			});
 		} else {
