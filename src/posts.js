@@ -158,26 +158,25 @@ var db = require('./database'),
 
 	Posts.getPostsByUid = function(callerUid, uid, start, end, callback) {
 		user.getPostIds(uid, start, end, function(err, pids) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
 			async.filter(pids, function(pid, next) {
 				postTools.privileges(pid, callerUid, function(err, privileges) {
-					next(privileges.read);
+					next(!err && privileges.read);
 				});
 			}, function(pids) {
 				if (!(pids && pids.length)) {
 					return callback(null, { posts: [], nextStart: 0});
 				}
 
-
 				Posts.getPostSummaryByPids(pids, false, function(err, posts) {
-					if(err) {
+					if (err) {
 						return callback(err);
 					}
 
-					if(!posts || !posts.length) {
+					if (!Array.isArray(posts) || !posts.length) {
 						return callback(null, { posts: [], nextStart: 0});
 					}
 
