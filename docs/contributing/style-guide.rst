@@ -23,7 +23,7 @@ NodeBB uses tabbed indentation. Bracing should follow the `One True Brace Style 
         // otherwise ...
     }
 
-Put conditionals and statements on separate lines and wrap with curly braces even if they it's just one line:
+Put conditionals and statements on separate lines and wrap with curly braces even if it's just one line:
 
 .. code:: javascript
 
