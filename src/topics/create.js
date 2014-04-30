@@ -201,9 +201,11 @@ module.exports = function(Topics) {
 			function(data, next) {
 				postData = data;
 
-				Topics.notifyFollowers(tid, postData.pid, uid);
+				if (parseInt(uid, 10)) {
+					Topics.notifyFollowers(tid, postData.pid, uid);
 
-				user.notifications.sendPostNotificationToFollowers(uid, tid, postData.pid);
+					user.notifications.sendPostNotificationToFollowers(uid, tid, postData.pid);
+				}
 
 				next();
 			},
