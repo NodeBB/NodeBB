@@ -10,10 +10,11 @@
 * [NodeBB Blog](http://blog.nodebb.org)
 * [Documentation](http://docs.nodebb.org) - includes setup instructions for other platforms
 * [Join us on IRC](https://kiwiirc.com/client/irc.freenode.net/nodebb) - #nodebb on Freenode
-* [Follow on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter")
+* [Follow us on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter")
 * [Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")
 * [Get Plugins](http://community.nodebb.org/category/7/nodebb-plugins "NodeBB Plugins")
 * [Get Themes](http://community.nodebb.org/category/10/nodebb-themes "NodeBB Themes")
+* [Help translate NodeBB](https://www.transifex.com/projects/p/nodebb/)
 
 ## Screenshots
 
@@ -40,7 +41,7 @@ NodeBB requires the following software to be installed:
 
 ## Installation
 
-[Please refer to platform-specific installation documentation](https://github.com/designcreateplay/NodeBB/wiki#wiki-installing-nodebb)
+[Please refer to platform-specific installation documentation](http://docs.nodebb.org/en/latest/installing/os.html)
 
 ## Securing NodeBB
 
