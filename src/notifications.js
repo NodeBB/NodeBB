@@ -168,7 +168,7 @@ var async = require('async'),
 				checkAndRemove('uid:' + uid + ':notifications:unread', next);
 			},
 			function(next) {
-				checkAndRemove('uid:' + uid + ':notifcations:read', next);
+				checkAndRemove('uid:' + uid + ':notifications:read', next);
 			}
 		], function(err) {
 			if (!err) {
