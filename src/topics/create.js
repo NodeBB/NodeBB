@@ -16,11 +16,10 @@ module.exports = function(Topics) {
 	Topics.create = function(data, callback) {
 		var uid = data.uid,
 			title = data.title,
-			cid = data.cid,
-			thumb = data.thumb;
+			cid = data.cid;
 
 		db.incrObjectField('global', 'nextTid', function(err, tid) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
@@ -42,12 +41,12 @@ module.exports = function(Topics) {
 				'pinned': 0
 			};
 
-			if(thumb) {
-				topicData.thumb = thumb;
+			if (data.thumb) {
+				topicData.thumb = data.thumb;
 			}
 
 			db.setObject('topic:' + tid, topicData, function(err) {
-				if(err) {
+				if (err) {
 					return callback(err);
 				}
 
@@ -69,8 +68,7 @@ module.exports = function(Topics) {
 		var uid = data.uid,
 			title = data.title,
 			content = data.content,
-			cid = data.cid,
-			thumb = data.thumb;
+			cid = data.cid;
 
 		if (title) {
 			title = title.trim();
@@ -112,7 +110,7 @@ module.exports = function(Topics) {
 				user.isReadyToPost(uid, next);
 			},
 			function(next) {
-				Topics.create({uid: uid, title: title, cid: cid, thumb: thumb}, next);
+				Topics.create({uid: uid, title: title, cid: cid, thumb: data.thumb}, next);
 			},
 			function(tid, next) {
 				Topics.reply({uid:uid, tid:tid, content:content, req: data.req}, next);
