@@ -82,6 +82,8 @@ topicsController.get = function(req, res, next) {
 				ogImageUrl = nconf.get('url') + ogImageUrl;
 			}
 
+			description = description.replace(/\n/g, ' ');
+
 			res.locals.metaTags = [
 				{
 					name: "title",
