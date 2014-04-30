@@ -52,20 +52,6 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 	}
 };
 
-middleware.redirectToSelf = function(req, res, next) {
-	if (req.user && req.params.userslug === '[self]') {
-		user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
-			if(res.locals.isAPI) {
-				res.json(302, '/user/' + userslug + (req.params.section ? '/' + req.params.section : ''));
-			} else {
-				res.redirect('/user/' + userslug + (req.params.section ? '/' + req.params.section : ''));
-			}
-		});
-	} else {
-		next();
-	}
-};
-
 middleware.addSlug = function(req, res, next) {
 	function redirect(method, id, name) {
 		method(id, 'slug', function(err, slug) {

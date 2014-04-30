@@ -73,8 +73,6 @@ function categoryRoutes(app, middleware, controllers) {
 }
 
 function accountRoutes(app, middleware, controllers) {
-	app.get('/user/:userslug/:section?', middleware.redirectToSelf);
-	app.get('/api/user/:userslug/:section?', middleware.redirectToSelf);
 
 	app.get('/user/:userslug', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.accounts.getAccount);
 	app.get('/api/user/:userslug', middleware.checkGlobalPrivacySettings, controllers.accounts.getAccount);

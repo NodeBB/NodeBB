@@ -79,8 +79,8 @@ Sockets.init = function(server) {
 						socket.join('uid_' + uid);
 
 						async.parallel({
-							username: function(next) {
-								user.getUserField(uid, 'username', next);
+							user: function(next) {
+								user.getUserFields(uid, ['username', 'userslug'], next);
 							},
 							isAdmin: function(next) {
 								user.isAdministrator(uid, next);
@@ -88,7 +88,8 @@ Sockets.init = function(server) {
 						}, function(err, userData) {
 							socket.emit('event:connect', {
 								status: 1,
-								username: userData.username,
+								username: userData.user.username,
+								userslug: userData.user.userslug,
 								isAdmin: userData.isAdmin,
 								uid: uid
 							});

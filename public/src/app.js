@@ -90,6 +90,7 @@ var socket,
 
 			socket.on('event:connect', function (data) {
 				app.username = data.username;
+				app.userslug = data.userslug;
 				app.uid = data.uid;
 				app.isAdmin = data.isAdmin;
 
@@ -285,6 +286,16 @@ var socket,
 		});
 	};
 
+	app.replaceSelfLinks = function(selector) {
+		selector = selector || $('a');
+		selector.each(function() {
+			var href = $(this).attr('href')
+			if (href && app.userslug) {
+				$(this).attr('href', href.replace(/\[self\]/g, app.userslug));
+			}
+		});
+	};
+
 	app.processPage = function () {
 		app.populateOnlineUsers();
 
@@ -298,6 +309,8 @@ var socket,
 		app.createUserTooltips();
 
 		app.createStatusTooltips();
+
+		app.replaceSelfLinks();
 
 		setTimeout(function () {
 			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.
