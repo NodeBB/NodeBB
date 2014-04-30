@@ -456,47 +456,47 @@ define(['taskbar'], function(taskbar) {
 	var formattingDispatchTable = {
 		'fa fa-bold': function(textarea, selectionStart, selectionEnd){
 			if(selectionStart === selectionEnd){
-				composer.insertIntoTextarea(textarea, '**bolded text**');
-				updateTextareaSelection(textarea, selectionStart + 2, selectionStart + 13);
+				controls.insertIntoTextarea(textarea, '**bolded text**');
+				controls.updateTextareaSelection(textarea, selectionStart + 2, selectionStart + 13);
 			} else {
-				wrapSelectionInTextareaWith(textarea, '**');
-				updateTextareaSelection(textarea, selectionStart + 2, selectionEnd + 2);
+				controls.wrapSelectionInTextareaWith(textarea, '**');
+				controls.updateTextareaSelection(textarea, selectionStart + 2, selectionEnd + 2);
 			}
 		},
 
 		'fa fa-italic': function(textarea, selectionStart, selectionEnd){
 			if(selectionStart === selectionEnd){
-				composer.insertIntoTextarea(textarea, "*italicised text*");
-				updateTextareaSelection(textarea, selectionStart + 1, selectionStart + 16);
+				controls.insertIntoTextarea(textarea, "*italicised text*");
+				controls.updateTextareaSelection(textarea, selectionStart + 1, selectionStart + 16);
 			} else {
-				wrapSelectionInTextareaWith(textarea, '*');
-				updateTextareaSelection(textarea, selectionStart + 1, selectionEnd + 1);
+				controls.wrapSelectionInTextareaWith(textarea, '*');
+				controls.updateTextareaSelection(textarea, selectionStart + 1, selectionEnd + 1);
 			}
 		},
 
 		'fa fa-list': function(textarea, selectionStart, selectionEnd){
 			if(selectionStart === selectionEnd){
-				composer.insertIntoTextarea(textarea, "\n* list item");
+				controls.insertIntoTextarea(textarea, "\n* list item");
 
 				// Highlight "list item"
-				updateTextareaSelection(textarea, selectionStart + 3, selectionStart + 12);
+				controls.updateTextareaSelection(textarea, selectionStart + 3, selectionStart + 12);
 			} else {
-				wrapSelectionInTextareaWith(textarea, '\n* ', '');
-				updateTextareaSelection(textarea, selectionStart + 3, selectionEnd + 3);
+				controls.wrapSelectionInTextareaWith(textarea, '\n* ', '');
+				controls.updateTextareaSelection(textarea, selectionStart + 3, selectionEnd + 3);
 			}
 		},
 
 		'fa fa-link': function(textarea, selectionStart, selectionEnd){
 			if(selectionStart === selectionEnd){
-				composer.insertIntoTextarea(textarea, "[link text](link url)");
+				controls.insertIntoTextarea(textarea, "[link text](link url)");
 
 				// Highlight "link url"
-				updateTextareaSelection(textarea, selectionStart + 12, selectionEnd + 20);
+				controls.updateTextareaSelection(textarea, selectionStart + 12, selectionEnd + 20);
 			} else {
-				wrapSelectionInTextareaWith(textarea, '[', '](link url)');
+				controls.wrapSelectionInTextareaWith(textarea, '[', '](link url)');
 
 				// Highlight "link url"
-				updateTextareaSelection(textarea, selectionEnd + 3, selectionEnd + 11);
+				controls.updateTextareaSelection(textarea, selectionEnd + 3, selectionEnd + 11);
 			}
 		},
 
