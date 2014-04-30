@@ -7,7 +7,9 @@ define(['taskbar'], function(taskbar) {
 		active: undefined,
 		posts: {},
 		saving: undefined
-	};
+	},
+	controls = {};
+
 
 	function initialise() {
 		socket.on('event:composer.ping', function(post_uuid) {
@@ -418,7 +420,7 @@ define(['taskbar'], function(taskbar) {
 	/*************************************************/
 	/* Rich Textarea Controls                        */
 	/*************************************************/
-	function insertIntoTextarea(textarea, value) {
+	controls.insertIntoTextarea = function(textarea, value) {
 		var $textarea = $(textarea);
 		var currentVal = $textarea.val();
 
@@ -427,34 +429,34 @@ define(['taskbar'], function(taskbar) {
 			value +
 			currentVal.slice(textarea.selectionStart)
 		);
-	}
+	};
 
-	function wrapSelectionInTextareaWith(textarea, leading, trailing){
-			if(trailing === undefined){
-				trailing = leading;
-			}
-
-			var $textarea = $(textarea);
-			var currentVal = $textarea.val()
-
-			$textarea.val(
-				currentVal.slice(0, textarea.selectionStart) +
-				leading +
-				currentVal.slice(textarea.selectionStart, textarea.selectionEnd) +
-				trailing +
-				currentVal.slice(textarea.selectionEnd)
-			);
+	controls.wrapSelectionInTextareaWith = function(textarea, leading, trailing){
+		if(trailing === undefined){
+			trailing = leading;
 		}
 
-	function updateTextareaSelection(textarea, start, end){
-			textarea.setSelectionRange(start, end);
-			$(textarea).focus();
-		}
+		var $textarea = $(textarea);
+		var currentVal = $textarea.val()
+
+		$textarea.val(
+			currentVal.slice(0, textarea.selectionStart) +
+			leading +
+			currentVal.slice(textarea.selectionStart, textarea.selectionEnd) +
+			trailing +
+			currentVal.slice(textarea.selectionEnd)
+		);
+	};
+
+	controls.updateTextareaSelection = function(textarea, start, end){
+		textarea.setSelectionRange(start, end);
+		$(textarea).focus();
+	};
 
 	var formattingDispatchTable = {
 		'fa fa-bold': function(textarea, selectionStart, selectionEnd){
 			if(selectionStart === selectionEnd){
-				insertIntoTextarea(textarea, '**bolded text**');
+				composer.insertIntoTextarea(textarea, '**bolded text**');
 				updateTextareaSelection(textarea, selectionStart + 2, selectionStart + 13);
 			} else {
 				wrapSelectionInTextareaWith(textarea, '**');
@@ -464,7 +466,7 @@ define(['taskbar'], function(taskbar) {
 
 		'fa fa-italic': function(textarea, selectionStart, selectionEnd){
 			if(selectionStart === selectionEnd){
-				insertIntoTextarea(textarea, "*italicised text*");
+				composer.insertIntoTextarea(textarea, "*italicised text*");
 				updateTextareaSelection(textarea, selectionStart + 1, selectionStart + 16);
 			} else {
 				wrapSelectionInTextareaWith(textarea, '*');
@@ -474,7 +476,7 @@ define(['taskbar'], function(taskbar) {
 
 		'fa fa-list': function(textarea, selectionStart, selectionEnd){
 			if(selectionStart === selectionEnd){
-				insertIntoTextarea(textarea, "\n* list item");
+				composer.insertIntoTextarea(textarea, "\n* list item");
 
 				// Highlight "list item"
 				updateTextareaSelection(textarea, selectionStart + 3, selectionStart + 12);
@@ -486,7 +488,7 @@ define(['taskbar'], function(taskbar) {
 
 		'fa fa-link': function(textarea, selectionStart, selectionEnd){
 			if(selectionStart === selectionEnd){
-				insertIntoTextarea(textarea, "[link text](link url)");
+				composer.insertIntoTextarea(textarea, "[link text](link url)");
 
 				// Highlight "link url"
 				updateTextareaSelection(textarea, selectionStart + 12, selectionEnd + 20);
@@ -507,6 +509,8 @@ define(['taskbar'], function(taskbar) {
 		}
 	};
 
+	var customButtons = [];
+
 	function handleFormattingBarClick() {
 		var iconClass = $(this).find('i').attr('class');
 		var textarea = $(this).parents('.composer').find('textarea')[0];
@@ -516,6 +520,20 @@ define(['taskbar'], function(taskbar) {
 		}
 	}
 
+	function addComposerButtons() {
+		for (var button in customButtons) {
+			if (customButtons.hasOwnProperty(button)) {
+				$('.formatting-bar .btn-group form').before('<span class="btn btn-link" tabindex="-1"><i class="' + customButtons[button].iconClass + '"></i></span>');
+			}
+		}
+	}
+
+	composer.addButton = function(iconClass, onClick) {
+		formattingDispatchTable[iconClass] = onClick;
+		customButtons.push({
+			iconClass: iconClass
+		});
+	};
 
 	composer.newTopic = function(cid) {
 		if(!allowed()) {
@@ -860,6 +878,8 @@ define(['taskbar'], function(taskbar) {
 				$(window).trigger('action:composer.loaded', {
 					post_uuid: post_uuid
 				});
+
+				addComposerButtons();
 			});
 		});
 	};
@@ -1015,7 +1035,9 @@ define(['taskbar'], function(taskbar) {
 		newReply: composer.newReply,
 		addQuote: composer.addQuote,
 		editPost: composer.editPost,
+		addButton: composer.addButton,
 		load: composer.load,
-		minimize: composer.minimize
+		minimize: composer.minimize,
+		controls: controls
 	};
 });
