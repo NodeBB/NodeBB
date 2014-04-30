@@ -20,21 +20,33 @@ var fs = require('fs'),
 	file = require('./../file');
 
 function userNotFound(res) {
-	return res.render('404', {
-		error: 'User not found!'
-	});
+	if (res.locals.isAPI) {
+		res.json(404, 'user-not-found');
+	} else {
+		res.render('404', {
+			error: 'User not found!'
+		});
+	}
 }
 
 function userNotAllowed(res) {
-	return res.render('403', {
-		error: 'Not allowed.'
-	});
+	if (res.locals.isAPI) {
+		res.json(403, 'not-allowed');
+	} else {
+		res.render('403', {
+			error: 'Not allowed.'
+		});
+	}
 }
 
 function getUserDataByUserSlug(userslug, callerUID, callback) {
 	user.getUidByUserslug(userslug, function(err, uid) {
-		if(err || !uid) {
-			return callback(err || new Error('[[error:invalid-uid]]'));
+		if (err) {
+			return callback(err);
+		}
+
+		if (!uid) {
+			return callback(null, null);
 		}
 
 		async.parallel({
@@ -181,7 +193,7 @@ function getFollow(name, req, res, next) {
 		function(data, next) {
 			userData = data;
 			if (!userData) {
-				return userNotFound();
+				return userNotFound(res);
 			}
 			var method = name === 'following' ? 'getFollowing' : 'getFollowers';
 			user[method](userData.uid, next);
@@ -202,11 +214,11 @@ accountsController.getFavourites = function(req, res, next) {
 
 	user.getUidByUserslug(req.params.userslug, function (err, uid) {
 		if (!uid) {
-			return userNotFound();
+			return userNotFound(res);
 		}
 
 		if (parseInt(uid, 10) !== callerUID) {
-			return userNotAllowed();
+			return userNotAllowed(res);
 		}
 
 		user.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
@@ -215,7 +227,7 @@ accountsController.getFavourites = function(req, res, next) {
 			}
 
 			if (!userData) {
-				return userNotFound();
+				return userNotFound(res);
 			}
 
 			posts.getFavourites(uid, 0, 9, function (err, favourites) {
@@ -243,7 +255,7 @@ accountsController.getPosts = function(req, res, next) {
 		}
 
 		if (!userData) {
-			return userNotFound();
+			return userNotFound(res);
 		}
 
 		posts.getPostsByUid(callerUID, userData.uid, 0, 19, function (err, userPosts) {
@@ -270,7 +282,7 @@ accountsController.getTopics = function(req, res, next) {
 		}
 
 		if (!userData) {
-			return userNotFound();
+			return userNotFound(res);
 		}
 
 		var set = 'uid:' + userData.uid + ':topics';
@@ -315,16 +327,17 @@ accountsController.accountSettings = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
 	user.getUidByUserslug(req.params.userslug, function(err, uid) {
+
 		if (err) {
 			return next(err);
 		}
 
 		if (!uid) {
-			return userNotFound();
+			return userNotFound(res);
 		}
 
 		if (parseInt(uid, 10) !== callerUID) {
-			return userNotAllowed();
+			return userNotAllowed(res);
 		}
 
 		plugins.fireHook('filter:user.settings', [], function(err, settings) {
@@ -345,7 +358,7 @@ accountsController.accountSettings = function(req, res, next) {
 				}
 
 				if(!results.user) {
-					return userNotFound();
+					return userNotFound(res);
 				}
 
 				results = {

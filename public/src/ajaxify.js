@@ -198,6 +198,8 @@ var ajaxify = ajaxify || {};
 					return ajaxify.go('404');
 				} else if (data && data.status === 403) {
 					return ajaxify.go('403');
+				} else if (data && data.status === 302) {
+					return ajaxify.go(data.responseJSON.slice(1));
 				} else if (textStatus !== "abort") {
 					app.alertError(data.responseJSON.error);
 				}
