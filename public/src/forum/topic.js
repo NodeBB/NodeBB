@@ -744,7 +744,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 			return;
 		}
 
-		if(after === 0 && $('#post-container li.post-row[data-index="0"]').length) {
+		if (!utils.isNumber(after) || (after === 0 && $('#post-container li.post-row[data-index="0"]').length)) {
 			return;
 		}
 

@@ -307,7 +307,7 @@ define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryToo
 			return;
 		}
 
-		if(after === 0 && $('#topics-container li.category-item[data-index="0"]').length) {
+		if(!utils.isNumber(after) || (after === 0 && $('#topics-container li.category-item[data-index="0"]').length)) {
 			return;
 		}
 
