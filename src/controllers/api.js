@@ -40,6 +40,7 @@ apiController.getConfig = function(req, res, next) {
 	config.environment = process.env.NODE_ENV;
 	config.isLoggedIn = !!req.user;
 	config['cache-buster'] = meta.config['cache-buster'] || '';
+	config.version = pkg.version;
 
 	if (!req.user) {
 		if (res.locals.isAPI) {
