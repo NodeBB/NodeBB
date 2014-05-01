@@ -16,6 +16,12 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 
 		$('#submitBtn').on('click', updateProfile);
 
+		$('#inputBirthday').datepicker({
+			changeMonth: true,
+			changeYear: true,
+			yearRange: '1900:+0'
+		});
+
 		handleImageChange();
 		handleImageUpload();
 		handlePasswordChange();

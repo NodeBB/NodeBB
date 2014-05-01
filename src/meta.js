@@ -351,6 +351,8 @@ var fs = require('fs'),
 				source += '\n@import (inline) ".' + path.sep + plugins.cssFiles[x] + '";';
 			}
 
+			source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css";';
+
 			var	parser = new (less.Parser)({
 					paths: paths
 				});
