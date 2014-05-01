@@ -150,16 +150,23 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.setUserField = function(uid, field, value, callback) {
+		plugins.fireHook('action:user.set', field, value, 'set');
 		db.setObjectField('user:' + uid, field, value, callback);
 	};
 
 	User.setUserFields = function(uid, data, callback) {
+		for (var field in data) {
+			if (data.hasOwnProperty(field)) {
+				plugins.fireHook('action:user.set', field, data[field], 'set');
+			}
+		}
+
 		db.setObject('user:' + uid, data, callback);
 	};
 
 	User.incrementUserFieldBy = function(uid, field, value, callback) {
 		db.incrObjectFieldBy('user:' + uid, field, value, function(err, value) {
-			plugins.fireHook('action:user.incremented', value);
+			plugins.fireHook('action:user.set', field, value, 'increment');
 
 			if (typeof callback === 'function') {
 				callback(err, value);
@@ -169,7 +176,7 @@ var bcrypt = require('bcryptjs'),
 
 	User.decrementUserFieldBy = function(uid, field, value, callback) {
 		db.incrObjectFieldBy('user:' + uid, field, -value, function(err, value) {
-			plugins.fireHook('action:user.decremented', value);
+			plugins.fireHook('action:user.set', field, value, 'decrement');
 			
 			if (typeof callback === 'function') {
 				callback(err, value);
