@@ -1,0 +1,8 @@
+{
+    "username": "Username / Email",
+    "remember_me": "Remember Me?",
+    "forgot_password": "Forgot Password?",
+    "alternative_logins": "Alternative Logins",
+    "failed_login_attempt": "Failed login attempt, please try again.",
+    "login_successful": "You have successfully logged in!"
+}

@@ -1,12 +1,7 @@
 {
     "new_topic_button": "New Topic",
     "no_topics": "<strong>Thar be no topics in 'tis category.</strong><br />Why don't ye give a go' postin' one?",
-    "posts": "messages",
-    "views": "views",
-    "posted": "sent",
     "browsing": "browsin'",
     "no_replies": "No one has replied to ye message",
-    "replied": "replied",
-    "last_edited_by": "last edited by",
     "share_this_category": "Share this category"
 }

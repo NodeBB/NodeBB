@@ -6,5 +6,13 @@
     "outgoing_link": "Utgående link",
     "outgoing_link_message": "Du forlatter nå",
     "continue_to": "Fortsett til",
-    "return_to": "Gå tilbake til"
+    "return_to": "Gå tilbake til",
+    "new_notification": "Nytt varsel",
+    "you_have_unread_notifications": "Du har uleste varsler.",
+    "user_made_post": "<strong>%1</strong> lagde ett nytt innlegg",
+    "new_message_from": "Ny melding fra <strong>%1</strong>",
+    "upvoted_your_post": "<strong>%1</strong> har stemt opp ditt innlegg.",
+    "favourited_your_post": "<strong>%1</strong> har favorittmerket ditt innlegg.",
+    "user_flagged_post": "<strong>%1</strong> flagget ett innlegg.",
+    "user_posted_to": "<strong>%1</strong> har skrevet et svar til: <strong>%2</strong>"
 }

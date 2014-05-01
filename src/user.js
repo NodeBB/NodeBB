@@ -110,9 +110,13 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.isReadyToPost = function(uid, callback) {
+		if (meta.config.allowGuestPosting && parseInt(uid, 10) === 0) {
+			return callback();
+		}
+
 		async.parallel({
 			banned: function(next) {
-				User.getUserField(uid, 'banned',next);
+				User.getUserField(uid, 'banned', next);
 			},
 			exists: function(next) {
 				db.exists('user:' + uid, next);
@@ -126,11 +130,11 @@ var bcrypt = require('bcryptjs'),
 			}
 
 			if (parseInt(results.banned, 10) === 1) {
-				return callback(new Error('user-banned'));
+				return callback(new Error('[[error:user-banned]]'));
 			}
 
 			if (!results.exists) {
-				return callback(new Error('invalid-user'));
+				return callback(new Error('[[error:no-user]]'));
 			}
 
 			var lastposttime = results.lastposttime;
@@ -146,19 +150,38 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.setUserField = function(uid, field, value, callback) {
+		plugins.fireHook('action:user.set', field, value, 'set');
 		db.setObjectField('user:' + uid, field, value, callback);
 	};
 
 	User.setUserFields = function(uid, data, callback) {
+		for (var field in data) {
+			if (data.hasOwnProperty(field)) {
+				plugins.fireHook('action:user.set', field, data[field], 'set');
+			}
+		}
+
 		db.setObject('user:' + uid, data, callback);
 	};
 
 	User.incrementUserFieldBy = function(uid, field, value, callback) {
-		db.incrObjectFieldBy('user:' + uid, field, value, callback);
+		db.incrObjectFieldBy('user:' + uid, field, value, function(err, value) {
+			plugins.fireHook('action:user.set', field, value, 'increment');
+
+			if (typeof callback === 'function') {
+				callback(err, value);
+			}
+		});
 	};
 
 	User.decrementUserFieldBy = function(uid, field, value, callback) {
-		db.incrObjectFieldBy('user:' + uid, field, -value, callback);
+		db.incrObjectFieldBy('user:' + uid, field, -value, function(err, value) {
+			plugins.fireHook('action:user.set', field, value, 'decrement');
+			
+			if (typeof callback === 'function') {
+				callback(err, value);
+			}
+		});
 	};
 
 	User.getUsersFromSet = function(set, start, stop, callback) {
@@ -206,15 +229,15 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.createGravatarURLFromEmail = function(email) {
+
 		var options = {
 			size: '128',
-			default: 'identicon',
+			default: meta.config.customGravatarDefaultImage || meta.config.defaultGravatarImage || '',
 			rating: 'pg'
 		};
 
 		if (!email) {
 			email = '';
-			options.forcedefault = 'y';
 		}
 
 		return gravatar.url(email, options, true);
@@ -281,6 +304,20 @@ var bcrypt = require('bcryptjs'),
 		});
 	};
 
+	User.getNameSlugPicture = function(uid, callback) {
+		User.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			callback(null, {
+				username: data.username || '[[global:guest]]',
+				userslug: data.userslug || '',
+				picture: data.picture || User.createGravatarURLFromEmail('')
+			});
+		});
+	};
+
 	User.getUidByUsername = function(username, callback) {
 		db.getObjectField('username:uid', username, callback);
 	};
@@ -336,25 +373,24 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.isOnline = function(uid, callback) {
-		User.getUserField(uid, 'status', function(err, status) {
+		User.getUserFields(uid, ['username', 'userslug', 'picture', 'status'] , function(err, data) {
 			if(err) {
 				return callback(err);
 			}
 
 			var online = require('./socket.io').isUserOnline(uid);
 
-			status = online ? (status || 'online') : 'offline';
+			data.status = online ? (data.status || 'online') : 'offline';
 
-			if(status === 'offline') {
+			if(data.status === 'offline') {
 				online = false;
 			}
 
-			callback(null, {
-				online: online,
-				uid: uid,
-				timestamp: Date.now(),
-				status: status
-			});
+			data.online = online;
+			data.uid = uid;
+			data.timestamp = Date.now();
+
+			callback(null, data);
 		});
 	};
 

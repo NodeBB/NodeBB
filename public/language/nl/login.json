@@ -1,7 +1,5 @@
 {
-    "login": "Inloggen",
     "username": "Username / Email",
-    "password": "Wachtwoord",
     "remember_me": "Mij Onthouden?",
     "forgot_password": "Wachtwoord Vergeten?",
     "alternative_logins": "Alternatieve Logins",

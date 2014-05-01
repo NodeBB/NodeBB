@@ -1,6 +1,9 @@
 {
     "title": "Unread",
     "no_unread_topics": "There be no unread topics.",
-    "mark_all_read": "I seen 'em all!",
-    "load_more": "Giv'er more"
+    "load_more": "Giv'er more",
+    "mark_as_read": "Mark as Read",
+    "selected": "Selected",
+    "all": "All",
+    "topics_marked_as_read.success": "Topics marked as read!"
 }

@@ -1,0 +1,18 @@
+{
+    "title": "Thông báo",
+    "no_notifs": "Bạn không có thông báo nào mới",
+    "see_all": "Xem tất cả thông báo",
+    "back_to_home": "Quay lại NodeBB",
+    "outgoing_link": "Liên kết ngoài",
+    "outgoing_link_message": "Bạn giờ đang thoát",
+    "continue_to": "Tiếp tục đến",
+    "return_to": "Trở về",
+    "new_notification": "Thông báo mới",
+    "you_have_unread_notifications": "Bạn có thông báo chưa đọc",
+    "user_made_post": "<strong>%1</strong> đã viết bài mới",
+    "new_message_from": "Tin nhắn mới từ <strong>%1</strong>",
+    "upvoted_your_post": "<strong>%1</strong> đã hủy vote cho bài viết của bạn",
+    "favourited_your_post": "<strong>%1</strong> thích bài viết của bạn",
+    "user_flagged_post": "<strong>%1</strong> đã flag một bài viết",
+    "user_posted_to": "<strong>%1</strong> đã trả lời <strong>%2</strong>"
+}

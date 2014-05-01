@@ -37,13 +37,17 @@ define(['uploader'], function(uploader) {
 		}
 
 		function select_icon(el) {
-			var selected = el.attr('class').replace(' fa-2x', '');
+			var selected = el.attr('class').replace('fa-2x', '').replace('fa', '').replace(/\s+/g, '');
 			$('#icons .selected').removeClass('selected');
+
+			if (selected === '') {
+				selected = 'fa-doesnt-exist';
+			}
 			if (selected) {
-				$('#icons .' + selected).parent().addClass('selected');
+				$('#icons .fa-icons .fa.' + selected).parent().addClass('selected');
 			}
 
-			bootbox.confirm('<h2>Select an icon.</h2>' + document.getElementById('icons').innerHTML, function(confirm) {
+			bootbox.confirm('<h2>Select an icon.</h2>' + $('#icons').html(), function(confirm) {
 				if (confirm) {
 					var iconClass = $('.bootbox .selected').children(':first').attr('class');
 
@@ -51,6 +55,9 @@ define(['uploader'], function(uploader) {
 
 					// remove the 'fa ' from the class name, just need the icon name itself
 					var categoryIconClass = iconClass.replace('fa ', '');
+					if(categoryIconClass === 'fa-doesnt-exist') {
+						categoryIconClass = '';
+					}
 					el.val(categoryIconClass);
 					el.attr('value', categoryIconClass);
 
@@ -122,7 +129,7 @@ define(['uploader'], function(uploader) {
 
 				ajaxify.loadTemplate('admin/categories', function(adminCategories) {
 					var html = $(templates.parse(templates.getBlock(adminCategories, 'categories'), {categories: [data]}));
-					
+
 					html.find('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 
 					$('#entry-container').append(html);
@@ -147,6 +154,21 @@ define(['uploader'], function(uploader) {
 
 					modified($inputEl[0]);
 				}
+			});
+		}
+
+		function setupEditTargets() {
+			$('[data-edit-target]').on('click', function() {
+				var $this = $(this),
+					target = $($this.attr('data-edit-target'));
+
+				$this.addClass('hide');
+				target.removeClass('hide').on('blur', function() {
+					$this.removeClass('hide').children('span').html(this.value);
+					$(this).addClass('hide');
+				}).val($this.children('span').html());
+
+				target.focus();
 			});
 		}
 
@@ -234,6 +256,12 @@ define(['uploader'], function(uploader) {
 
 				$(this).addClass('hide').hide();
 			});
+
+			$('#revertChanges').on('click', function() {
+				ajaxify.refresh();
+			});
+
+			setupEditTargets();
 		});
 	};
 

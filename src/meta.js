@@ -8,6 +8,8 @@ var fs = require('fs'),
 	_ = require('underscore'),
 	less = require('less'),
 	fork = require('child_process').fork,
+	rimraf = require('rimraf'),
+	mkdirp = require('mkdirp'),
 
 	utils = require('./../public/src/utils'),
 	translator = require('./../public/src/translator'),
@@ -16,7 +18,9 @@ var fs = require('fs'),
 	User = require('./user');
 
 (function (Meta) {
+	Meta.restartRequired = false;
 	Meta.config = {};
+
 	Meta.configs = {
 		init: function (callback) {
 			delete Meta.config;
@@ -60,11 +64,6 @@ var fs = require('fs'),
 					}
 
 					callback(err, res);
-				}
-
-				// this might be a good spot to add a hook
-				if (field === 'defaultLang') {
-					translator.loadServer();
 				}
 			});
 		},
@@ -151,7 +150,7 @@ var fs = require('fs'),
 					function(config, next) {
 						themeData['theme:staticDir'] = config.staticDir ? config.staticDir : '';
 						themeData['theme:templates'] = config.templates ? config.templates : '';
-						themeData['theme:src'] = config.frameworkCSS ? config.frameworkCSS : '';
+						themeData['theme:src'] = '';
 
 						db.setObject('config', themeData, next);
 					}
@@ -162,6 +161,9 @@ var fs = require('fs'),
 				db.setObjectField('config', 'theme:src', data.src, callback);
 				break;
 			}
+
+			// Restart Required flag
+			Meta.restartRequired = true;
 		}
 	};
 
@@ -171,10 +173,8 @@ var fs = require('fs'),
 			isTopic: /^topic\/\d+\/?/,
 			isUserPage: /^user\/[^\/]+(\/[\w]+)?/
 		},
-		build: function (urlFragment, callback) {
-			var user = require('./user');
-
-			Meta.title.parseFragment(decodeURIComponent(urlFragment), function(err, title) {
+		build: function (urlFragment, language, callback) {
+			Meta.title.parseFragment(decodeURIComponent(urlFragment), language, function(err, title) {
 				if (err) {
 					title = Meta.config.browserTitle || 'NodeBB';
 				} else {
@@ -184,14 +184,14 @@ var fs = require('fs'),
 				callback(null, title);
 			});
 		},
-		parseFragment: function (urlFragment, callback) {
+		parseFragment: function (urlFragment, language, callback) {
 			var	translated = ['', 'recent', 'unread', 'users', 'notifications'];
 			if (translated.indexOf(urlFragment) !== -1) {
 				if (!urlFragment.length) {
 					urlFragment = 'home';
 				}
 
-				translator.translate('[[pages:' + urlFragment + ']]', function(translated) {
+				translator.translate('[[pages:' + urlFragment + ']]', language, function(translated) {
 					callback(null, translated);
 				});
 			} else if (this.tests.isCategory.test(urlFragment)) {
@@ -213,7 +213,7 @@ var fs = require('fs'),
 
 				User.getUsernameByUserslug(userslug, function(err, username) {
 					if (subpage) {
-						translator.translate('[[pages:user.' + subpage + ', ' + username + ']]', function(translated) {
+						translator.translate('[[pages:user.' + subpage + ', ' + username + ']]', language, function(translated) {
 							callback(null, translated);
 						});
 					} else {
@@ -234,6 +234,7 @@ var fs = require('fs'),
 			'vendor/jquery/js/jquery-ui-1.10.4.custom.js',
 			'vendor/jquery/timeago/jquery.timeago.min.js',
 			'vendor/jquery/js/jquery.form.min.js',
+			'vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
 			'vendor/bootstrap/js/bootstrap.min.js',
 			'vendor/requirejs/require.js',
 			'vendor/bootbox/bootbox.min.js',
@@ -296,7 +297,7 @@ var fs = require('fs'),
 		},
 		minify: function(minify) {
 			// Prepare js for minification/concatenation
-			var	minifier = fork('minifier.js');
+			var minifier = this.minifierProc = fork('minifier.js');
 
 			minifier.on('message', function(payload) {
 				if (payload.action !== 'error') {
@@ -317,6 +318,11 @@ var fs = require('fs'),
 					scripts: Meta.js.scripts
 				});
 			});
+		},
+		killMinifier: function(callback) {
+			if (this.minifierProc) {
+				this.minifierProc.kill('SIGTERM');
+			}
 		}
 	};
 
@@ -338,13 +344,15 @@ var fs = require('fs'),
 
 			// Add the imports for each LESS file
 			for(x=0,numLESS=plugins.lessFiles.length;x<numLESS;x++) {
-				source += '\n@import "./' + plugins.lessFiles[x] + '";';
+				source += '\n@import ".' + path.sep + plugins.lessFiles[x] + '";';
 			}
 
 			// ... and for each CSS file
 			for(x=0,numCSS=plugins.cssFiles.length;x<numCSS;x++) {
-				source += '\n@import (inline) "./' + plugins.cssFiles[x] + '";';
+				source += '\n@import (inline) ".' + path.sep + plugins.cssFiles[x] + '";';
 			}
+
+			source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css";';
 
 			var	parser = new (less.Parser)({
 					paths: paths
@@ -366,7 +374,42 @@ var fs = require('fs'),
 
 	/* Sounds */
 	Meta.sounds = {};
-	Meta.sounds.getLocal = function(callback) {
+	Meta.sounds.init = function() {
+		var	soundsPath = path.join(__dirname, '../public/sounds');
+
+		plugins.fireHook('filter:sounds.get', [], function(err, filePaths) {
+			if (err) {
+				winston.error('Could not initialise sound files:' + err.message);
+			}
+
+			// Clear the sounds directory
+			async.series([
+				function(next) {
+					rimraf(soundsPath, next);
+				},
+				function(next) {
+					mkdirp(soundsPath, next);
+				}
+			], function(err) {
+				if (err) {
+					winston.error('Could not initialise sound files:' + err.message);
+				}
+
+				// Link paths
+				async.each(filePaths, function(filePath, next) {
+					fs[process.platform !== 'win32' ? 'symlink' : 'link'](filePath, path.join(soundsPath, path.basename(filePath)), 'file', next);
+				}, function(err) {
+					if (!err) {
+						winston.info('[sounds] Sounds OK');
+					} else {
+						winston.error('[sounds] Could not initialise sounds: ' + err.message);
+					}
+				});
+			});
+		});
+	};
+
+	Meta.sounds.getFiles = function(callback) {
 		// todo: Possibly move these into a bundled module?
 		fs.readdir(path.join(__dirname, '../public/sounds'), function(err, files) {
 			var	localList = {};
@@ -391,9 +434,9 @@ var fs = require('fs'),
 			if (err || !sounds) {
 				// Send default sounds
 				var	defaults = {
-						notification: 'notification.wav',
-						'chat-incoming': 'waterdrop-high.wav',
-						'chat-outgoing': 'waterdrop-low.wav'
+						'notification': 'notification.mp3',
+						'chat-incoming': 'waterdrop-high.mp3',
+						'chat-outgoing': 'waterdrop-low.mp3'
 					};
 
 				return callback(null, defaults);

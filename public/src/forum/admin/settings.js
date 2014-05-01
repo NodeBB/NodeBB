@@ -61,21 +61,7 @@ define(['uploader', 'sounds'], function(uploader, sounds) {
 			}
 		});
 
-		$('#uploadLogoBtn').on('click', function() {
-			uploader.open(RELATIVE_PATH + '/admin/uploadlogo', {}, 0, function(image) {
-				$('#logoUrl').val(image);
-			});
-
-			uploader.hideAlerts();
-		});
-
-		$('#uploadFaviconBtn').on('click', function() {
-			uploader.open(RELATIVE_PATH + '/admin/uploadfavicon', {}, 0, function(icon) {
-				$('#faviconUrl').val(icon);
-			});
-
-			uploader.hideAlerts();
-		});
+		handleUploads();
 
 		$('#settings-tab a').click(function (e) {
 			e.preventDefault();
@@ -87,6 +73,19 @@ define(['uploader', 'sounds'], function(uploader, sounds) {
 			callback();
 		}
 	};
+
+	function handleUploads() {
+		$('#content input[data-action="upload"]').each(function() {
+			var uploadBtn = $(this);
+			uploadBtn.on('click', function() {
+				uploader.open(uploadBtn.attr('data-route'), {}, 0, function(image) {
+					$('#' + uploadBtn.attr('data-target')).val(image);
+				});
+
+				uploader.hideAlerts();
+			});
+		});
+	}
 
 	Settings.remove = function(key) {
 		socket.emit('admin.config.remove', key);

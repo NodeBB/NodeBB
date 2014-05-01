@@ -6,5 +6,13 @@
     "outgoing_link": "Väljaminev link",
     "outgoing_link_message": "Lahkud foorumist",
     "continue_to": "Jätka",
-    "return_to": "Pöördu tagasi"
+    "return_to": "Pöördu tagasi",
+    "new_notification": "Uus teade",
+    "you_have_unread_notifications": "Sul ei ole lugemata teateid.",
+    "user_made_post": "<strong>%1</strong> tegi uue postituse",
+    "new_message_from": "Uus sõnum kasutajalt <strong>%1</strong>",
+    "upvoted_your_post": "<strong>%1</strong> hääletas sinu postituse poolt.",
+    "favourited_your_post": "<strong>%1</strong> märkis sinu postituse lemmikuks.",
+    "user_flagged_post": "<strong>%1</strong> märgistas postituse.",
+    "user_posted_to": "Kasutaja <strong>%1</strong> postitas vastuse teemasse <strong>%2</strong>"
 }

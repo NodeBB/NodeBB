@@ -8,7 +8,6 @@ var	fs = require('fs'),
 	User = require('./user'),
 	Plugins = require('./plugins'),
 	Meta = require('./meta'),
-	Translator = require('../public/src/translator'),
 	templates = require('../public/src/templates'),
 
 	app = {},

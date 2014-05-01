@@ -30,7 +30,7 @@ var db = require('./database'),
 			toPid = data.toPid;
 
 		if (uid === null) {
-			return callback(new Error('invalid-user'));
+			return callback(new Error('[[error:invalid-uid]]'));
 		}
 
 		var timestamp = Date.now(),
@@ -158,26 +158,25 @@ var db = require('./database'),
 
 	Posts.getPostsByUid = function(callerUid, uid, start, end, callback) {
 		user.getPostIds(uid, start, end, function(err, pids) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
 			async.filter(pids, function(pid, next) {
 				postTools.privileges(pid, callerUid, function(err, privileges) {
-					next(privileges.read);
+					next(!err && privileges.read);
 				});
 			}, function(pids) {
 				if (!(pids && pids.length)) {
 					return callback(null, { posts: [], nextStart: 0});
 				}
 
-
 				Posts.getPostSummaryByPids(pids, false, function(err, posts) {
-					if(err) {
+					if (err) {
 						return callback(err);
 					}
 
-					if(!posts || !posts.length) {
+					if (!Array.isArray(posts) || !posts.length) {
 						return callback(null, { posts: [], nextStart: 0});
 					}
 
@@ -210,7 +209,7 @@ var db = require('./database'),
 
 		var count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
 
-		db.getSortedSetRevRangeByScore(['posts:pid', '+inf', Date.now() - since, 'LIMIT', start, count], function(err, pids) {
+		db.getSortedSetRevRangeByScore('posts:pid', start, count, Infinity, Date.now() - since, function(err, pids) {
 			if(err) {
 				return callback(err);
 			}
@@ -232,12 +231,12 @@ var db = require('./database'),
 			}
 
 			post.user = {
-				username: userData.username || 'anonymous',
+				username: userData.username || '[[global:guest]]',
 				userslug: userData.userslug || '',
 				reputation: userData.reputation || 0,
 				postcount: userData.postcount || 0,
 				banned: parseInt(userData.banned, 10) === 1,
-				picture: userData.picture || gravatar.url('', {}, true)
+				picture: userData.picture || user.createGravatarURLFromEmail('')
 			};
 
 			for (var info in customUserInfo) {
@@ -282,17 +281,11 @@ var db = require('./database'),
 
 			post.relativeTime = utils.toISOString(post.timestamp);
 
-			async.parallel([
-				function(next) {
-					user.getUserFields(post.uid, ['username', 'userslug', 'picture'], function(err, userData) {
-						if (err) {
-							return next(err);
-						}
-						post.user = userData;
-						next();
-					});
+			async.parallel({
+				user: function(next) {
+					user.getNameSlugPicture(post.uid, next);
 				},
-				function(next) {
+				topicCategory: function(next) {
 					topics.getTopicFields(post.tid, ['title', 'cid', 'slug', 'deleted'], function(err, topicData) {
 						if (err) {
 							return next(err);
@@ -305,35 +298,37 @@ var db = require('./database'),
 								return next(err);
 							}
 
-							post.category = categoryData;
 							topicData.title = validator.escape(topicData.title);
-							post.topic = topicData;
-							next();
+
+							next(null, {topic: topicData, category: categoryData});
 						});
 					});
 				},
-				function(next) {
+				content: function(next) {
 					if (!post.content) {
-						return next();
+						return next(null, post.content);
 					}
 
-					postTools.parse(post.content, function(err, content) {
-						if(err) {
-							return next(err);
-						}
-
-						if(stripTags) {
-							var s = S(content);
-							post.content = s.stripTags.apply(s, utils.getTagsExcept(['img', 'i', 'p'])).s;
-						} else {
-							post.content = content;
-						}
-
-						next();
-					});
+					postTools.parse(post.content, next);
 				}
-			], function(err) {
-				callback(err, post);
+			}, function(err, results) {
+				if (err) {
+					return callback(err);
+				}
+
+				post.user = results.user;
+				post.topic = results.topicCategory.topic;
+				post.category = results.topicCategory.category;
+
+				if (stripTags) {
+					var s = S(results.content);
+					post.content = s.stripTags.apply(s, utils.stripTags).s;
+				} else {
+					post.content = results.content;
+				}
+
+
+				callback(null, post);
 			});
 		}
 
@@ -347,7 +342,7 @@ var db = require('./database'),
 			}
 
 			posts = posts.filter(function(p) {
-				return !!p || parseInt(p.deleted, 10) !== 1;
+				return !!p && parseInt(p.deleted, 10) !== 1;
 			});
 
 			async.map(posts, getPostSummary, function(err, posts) {
@@ -420,7 +415,7 @@ var db = require('./database'),
 
 			topics.getTopicField(tid, 'cid', function(err, cid) {
 				if(err || !cid) {
-					return callback(err || new Error('invalid-category-id'));
+					return callback(err || new Error('[[error:invalid-cid]]'));
 				}
 				callback(null, cid);
 			});
@@ -458,7 +453,7 @@ var db = require('./database'),
 
 	Posts.getPidPage = function(pid, uid, callback) {
 		if(!pid) {
-			return callback(new Error('invalid-pid'));
+			return callback(new Error('[[error:invalid-pid]]'));
 		}
 
 		var index = 0;

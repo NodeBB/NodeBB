@@ -57,6 +57,7 @@ function apiRoutes(app, middleware, controllers) {
 	app.post('/admin/category/uploadpicture', middleware.authenticate, controllers.admin.uploads.uploadCategoryPicture);
 	app.post('/admin/uploadfavicon', middleware.authenticate, controllers.admin.uploads.uploadFavicon);
 	app.post('/admin/uploadlogo', middleware.authenticate, controllers.admin.uploads.uploadLogo);
+	app.post('/admin/uploadgravatardefault', middleware.authenticate, controllers.admin.uploads.uploadGravatarDefault);
 }
 
 function miscRoutes(app, middleware, controllers) {

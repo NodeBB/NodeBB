@@ -1,12 +1,7 @@
 {
     "new_topic_button": "Nuovo Argomento",
     "no_topics": "<strong>Non ci sono discussioni in questa categoria.</strong><br />Perché non ne inizi una?",
-    "posts": "post",
-    "views": "visualizzazioni",
-    "posted": "postato",
     "browsing": "visualizzando",
     "no_replies": "Nessuno ha risposto",
-    "replied": "risposto",
-    "last_edited_by": "ultima modifica di",
     "share_this_category": "Share this category"
 }

@@ -1,7 +1,5 @@
 {
-    "login": "Kirjaudu sisään",
-    "username": "Username / Email",
-    "password": "Salasana",
+    "username": "Käyttäjätunnus tai sähköpostiosoite",
     "remember_me": "Muista minut?",
     "forgot_password": "Unohditko salasanasi?",
     "alternative_logins": "Vaihtoehtoiset kirjautumistavat",

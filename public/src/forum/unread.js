@@ -2,7 +2,7 @@
 
 /* globals define, app, socket */
 
-define(['forum/recent'], function(recent) {
+define(['forum/recent', 'topicSelect'], function(recent, topicSelect) {
 	var Unread = {},
 		loadingMoreTopics = false;
 
@@ -16,20 +16,13 @@ define(['forum/recent'], function(recent) {
 		recent.watchForNewPosts();
 
 		$('#markSelectedRead').on('click', function() {
-			function getSelectedTids() {
-				var tids = [];
-				$('#topics-container .category-item.selected').each(function() {
-					tids.push($(this).attr('data-tid'));
-				});
-				return tids;
-			}
-			var tids = getSelectedTids();
+			var tids = topicSelect.getSelectedTids();
 			if(!tids.length) {
 				return;
 			}
 			socket.emit('topics.markTidsRead', tids, function(err) {
 				if(err) {
-					return app.alertError('There was an error marking topics read!');
+					return app.alertError(err.message);
 				}
 
 				doneRemovingTids(tids);
@@ -39,7 +32,7 @@ define(['forum/recent'], function(recent) {
 		$('#markAllRead').on('click', function() {
 			socket.emit('topics.markAllRead', function(err) {
 				if(err) {
-					return app.alertError('There was an error marking topics read!');
+					return app.alertError(err.message);
 				}
 
 				app.alertSuccess('[[unread:topics_marked_as_read.success]]');
@@ -68,7 +61,7 @@ define(['forum/recent'], function(recent) {
 
 			socket.emit('topics.markCategoryTopicsRead', cid, function(err) {
 				if(err) {
-					return app.alertError('There was an error marking topics read!');
+					return app.alertError(err.message);
 				}
 
 				doneRemovingTids(tids);
@@ -77,14 +70,7 @@ define(['forum/recent'], function(recent) {
 
 		socket.emit('categories.get', onCategoriesLoaded);
 
-		$('#topics-container').on('click', '.select', function() {
-			var select = $(this);
-			var isChecked = !select.hasClass('fa-square-o');
-
-			select.toggleClass('fa-check-square-o', !isChecked);
-			select.toggleClass('fa-square-o', isChecked);
-			select.parents('.category-item').toggleClass('selected', !isChecked);
-		});
+		topicSelect.init();
 
 		if ($("body").height() <= $(window).height() && $('#topics-container').children().length >= 20) {
 			$('#load-more-btn').show();
@@ -157,9 +143,18 @@ define(['forum/recent'], function(recent) {
 	}
 
 	function createCategoryLink(category) {
-		var link = $('<li role="presentation" class="category" data-cid="' + category.cid + '"><a role="menuitem" href="#"><i class="fa fa-fw ' + category.icon + '"></i> ' + category.name + '</a></li>');
 
-		$('.markread .dropdown-menu').append(link);
+		var link = $('<a role="menuitem" href="#"></a>');
+		if (category.icon) {
+			link.append('<i class="fa fa-fw ' + category.icon + '"></i> ' + category.name);
+		} else {
+			link.append(category.name);
+		}
+
+
+		$('<li role="presentation" class="category" data-cid="' + category.cid + '"></li>')
+			.append(link)
+			.appendTo($('.markread .dropdown-menu'));
 	}
 
 	return Unread;

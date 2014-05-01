@@ -2,5 +2,6 @@
     "chat.chatting_with": "แชทกับ <span id=\"chat-with-name\"></span>",
     "chat.placeholder": "พิมพ์ข้อความการแชทที่นี่   กด Enter เพื่อส่ง",
     "chat.send": "ส่ง",
-    "chat.no_active": "คุณไม่มีแชทที่คุยอยู่"
+    "chat.no_active": "คุณไม่มีแชทที่คุยอยู่",
+    "chat.user_typing": "%1 is typing ..."
 }

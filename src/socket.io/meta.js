@@ -32,12 +32,21 @@ SocketMeta.reconnected = function(socket) {
 };
 
 SocketMeta.buildTitle = function(socket, text, callback) {
-	meta.title.build(text, callback);
+	if (socket.uid) {
+		user.getSettings(socket.uid, function(err, settings) {
+			if (err) {
+				return callback(err);
+			}
+			meta.title.build(text, settings.language, callback);
+		});
+	} else {
+		meta.title.build(text, meta.config.defaultLang, callback);
+	}
 };
 
 SocketMeta.updateHeader = function(socket, data, callback) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	if (socket.uid) {
@@ -56,11 +65,9 @@ SocketMeta.updateHeader = function(socket, data, callback) {
 	} else {
 		callback(null, {
 			uid: 0,
-			username: "Anonymous User",
+			username: '[[global:guest]]',
 			email: '',
-			picture: gravatar.url('', {
-				s: '24'
-			}, true),
+			picture: user.createGravatarURLFromEmail(''),
 			config: {
 				allowGuestSearching: meta.config.allowGuestSearching
 			}
@@ -76,7 +83,7 @@ SocketMeta.getUsageStats = function(socket, data, callback) {
 
 SocketMeta.rooms.enter = function(socket, data) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	if (data.leave !== null) {

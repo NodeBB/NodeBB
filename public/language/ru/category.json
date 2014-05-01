@@ -1,12 +1,7 @@
 {
     "new_topic_button": "Создать тему",
     "no_topics": "<strong>В этой категории еще нет тем.</strong><br />Почему бы вам не создать первую?",
-    "posts": "сообщений",
-    "views": "просмотров",
-    "posted": "написано",
     "browsing": "просматривают",
     "no_replies": "Нет ответов",
-    "replied": "ответил",
-    "last_edited_by": "отредактировано",
     "share_this_category": "Share this category"
 }

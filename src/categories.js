@@ -64,7 +64,7 @@ var db = require('./database'),
 	Categories.getCategoryById = function(cid, start, end, uid, callback) {
 		Categories.getCategoryData(cid, function(err, category) {
 			if(err || !category) {
-				return callback(err || new Error('category-not-found [' + cid + ']'));
+				return callback(err || new Error('[[error:invalid-cid]]'));
 			}
 
 			if(parseInt(uid, 10)) {
@@ -278,7 +278,7 @@ var db = require('./database'),
 	Categories.getCategories = function(cids, uid, callback) {
 
 		if (!Array.isArray(cids) || cids.length === 0) {
-			return callback(new Error('invalid-cids'));
+			return callback(new Error('[[error:invalid-cid]]'));
 		}
 
 		async.parallel({
@@ -317,8 +317,6 @@ var db = require('./database'),
 			if(parseInt(topicData.pinned, 10) === 0) {
 				db.sortedSetAdd('categories:' + cid + ':tid', postData.timestamp, postData.tid);
 			}
-
-			Categories.addActiveUser(cid, postData.uid, postData.timestamp);
 		});
 	};
 

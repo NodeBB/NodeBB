@@ -1,6 +1,9 @@
 {
     "title": "Lukematon",
     "no_unread_topics": "Ei lukemattomia aiheita.",
-    "mark_all_read": "Merkitse kaikki luetuiksi",
-    "load_more": "Lataa lisää"
+    "load_more": "Lataa lisää",
+    "mark_as_read": "Merkitse luetuksi",
+    "selected": "Valitut",
+    "all": "Kaikki",
+    "topics_marked_as_read.success": "Aihe merkitty luetuksi!"
 }

@@ -1,10 +1,18 @@
 {
     "title": "Notificações",
     "no_notifs": "Você não tem nenhuma notificação nova",
-    "see_all": "Visualizar todas as Notificações",
-    "back_to_home": "voltar para home",
+    "see_all": "Visualizar todas as notificações",
+    "back_to_home": "Voltar para a entrada",
     "outgoing_link": "Link Externo",
-    "outgoing_link_message": "Você está; saindo para um link externo",
+    "outgoing_link_message": "Você está saindo para um link externo",
     "continue_to": "Continuar para",
-    "return_to": "Voltar para"
+    "return_to": "Voltar para",
+    "new_notification": "Nova notificação",
+    "you_have_unread_notifications": "Você possui notificações não lidas.",
+    "user_made_post": "<strong>%1</strong> fez um novo post",
+    "new_message_from": "Nova mensagem de <strong>%1</strong>",
+    "upvoted_your_post": "<strong>%1</strong> votou no seu post.",
+    "favourited_your_post": "<strong>%1</strong> favoritou seu post.",
+    "user_flagged_post": "<strong>%1</strong> sinalizou seu post.",
+    "user_posted_to": "<strong>%1</strong> respondeu para: <strong>%2</strong>"
 }

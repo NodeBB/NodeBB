@@ -20,6 +20,7 @@ var async = require('async'),
 	require('./topics/recent')(Topics);
 	require('./topics/fork')(Topics);
 	require('./topics/posts')(Topics);
+	require('./topics/follow')(Topics);
 
 
 	Topics.getTopicData = function(tid, callback) {
@@ -58,25 +59,12 @@ var async = require('async'),
 	Topics.getTopicDataWithUser = function(tid, callback) {
 		Topics.getTopicData(tid, function(err, topic) {
 			if (err || !topic) {
-				return callback(err || new Error('topic doesn\'t exist'));
+				return callback(err || new Error('[[error:no-topic]]'));
 			}
 
-			user.getUserFields(topic.uid, ['username', 'userslug', 'picture'] , function(err, userData) {
-				if (err) {
-					return callback(err);
-				}
-
-				if (!userData) {
-					userData = {};
-				}
-
-				topic.user = {
-					username: userData.username || 'Anonymous',
-					userslug: userData.userslug || '',
-					picture: userData.picture || gravatar.url('', {}, true)
-				};
-
-				callback(null, topic);
+			user.getNameSlugPicture(topic.uid, function(err, userData) {
+				topic.user = userData;
+				callback(err, topic);
 			});
 		});
 	};
@@ -101,7 +89,7 @@ var async = require('async'),
 
 	Topics.getTidPage = function(tid, uid, callback) {
 		if(!tid) {
-			return callback(new Error('invalid-tid'));
+			return callback(new Error('[[error:invalid-tid]]'));
 		}
 
 		async.parallel({
@@ -219,7 +207,8 @@ var async = require('async'),
 					if (userCache[topicData.uid]) {
 						return next(null, userCache[topicData.uid]);
 					}
-					user.getUserFields(topicData.uid, ['username', 'userslug', 'picture'], next);
+
+					user.getNameSlugPicture(topicData.uid, next);
 				}
 			}, function(err, topicInfo) {
 				if(err) {
@@ -270,7 +259,7 @@ var async = require('async'),
 	Topics.getTopicWithPosts = function(tid, uid, start, end, callback) {
 		Topics.getTopicData(tid, function(err, topicData) {
 			if (err || !topicData) {
-				return callback(err || new Error('Topic tid \'' + tid + '\' not found'));
+				return callback(err || new Error('[[error:no-topic]]'));
 			}
 
 			async.parallel({
@@ -316,7 +305,7 @@ var async = require('async'),
 	};
 
 	Topics.getTeaser = function(tid, callback) {
-		threadTools.getLatestUndeletedPid(tid, function(err, pid) {
+		Topics.getLatestUndeletedPid(tid, function(err, pid) {
 			if (err) {
 				return callback(err);
 			}
@@ -328,22 +317,17 @@ var async = require('async'),
 			posts.getPostFields(pid, ['pid', 'uid', 'timestamp'], function(err, postData) {
 				if (err) {
 					return callback(err);
-				} else if(!postData) {
-					return callback(new Error('no-teaser-found'));
+				} else if(!postData || !utils.isNumber(postData.uid)) {
+					return callback(new Error('[[error:no-teaser]]'));
 				}
 
-				user.getUserFields(postData.uid, ['username', 'userslug', 'picture'], function(err, userData) {
+				user.getNameSlugPicture(postData.uid, function(err, userData) {
 					if (err) {
 						return callback(err);
 					}
-
-					callback(null, {
-						pid: postData.pid,
-						username: userData.username || 'anonymous',
-						userslug: userData.userslug || '',
-						picture: userData.picture || gravatar.url('', {}, true),
-						timestamp: utils.toISOString(postData.timestamp)
-					});
+					postData.timestamp = utils.toISOString(postData.timestamp);
+					postData.user = userData;
+					callback(null, postData);
 				});
 			});
 		});

@@ -1,8 +1,7 @@
 {
-    "latest_users": "Usuários Recentes",
-    "top_posters": "Top Posters",
-    "most_reputation": "Com Mais Reputação",
-    "online": "Online",
+    "latest_users": "Usuários recentes",
+    "top_posters": "Quem mais posta",
+    "most_reputation": "Com mais reputação",
     "search": "Procurar",
     "enter_username": "Digite um usuário para buscar",
     "load_more": "Carregar mais"

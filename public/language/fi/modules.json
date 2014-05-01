@@ -2,5 +2,6 @@
     "chat.chatting_with": "Keskustele käyttäjän <span id=\"chat-with-name\"></span> kanssa",
     "chat.placeholder": "kirjoita viestisi tähän ja paina enter lähettääksesi",
     "chat.send": "Lähetä",
-    "chat.no_active": "Sinulla ei ole aktiivisia keskusteluita."
+    "chat.no_active": "Sinulla ei ole aktiivisia keskusteluita.",
+    "chat.user_typing": "%1 kirjoittaa ..."
 }

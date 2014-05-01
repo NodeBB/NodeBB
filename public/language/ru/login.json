@@ -1,7 +1,5 @@
 {
-    "login": "Войти",
     "username": "Username / Email",
-    "password": "Пароль",
     "remember_me": "Запомнить меня",
     "forgot_password": "Забыли пароль?",
     "alternative_logins": "Войти через",

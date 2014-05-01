@@ -2,5 +2,6 @@
     "chat.chatting_with": "和<span id=\"chat-with-name\"></span>聊天中",
     "chat.placeholder": "在這裡輸入消息，按Enter發送",
     "chat.send": "發送",
-    "chat.no_active": "暫無聊天"
+    "chat.no_active": "暫無聊天",
+    "chat.user_typing": "%1 is typing ..."
 }

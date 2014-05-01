@@ -1,7 +1,5 @@
 {
-    "login": "Logg inn",
     "username": "Brukernavn / E-post",
-    "password": "Passord",
     "remember_me": "Husk meg?",
     "forgot_password": "Glemt passord?",
     "alternative_logins": "Alternativ innlogging",

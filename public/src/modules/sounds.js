@@ -1,106 +1,76 @@
 "use strict";
-/* global define, socket */
+/* global define, socket, config */
 
 define(['buzz'], function(buzz) {
 	var	Sounds = {};
 
-	Sounds.initialised = false;
-	Sounds.loaded = {};
-	Sounds.mapping = {};
+	var loadedSounds = {};
+	var eventSoundMapping = {};
+	var files = {};
 
-	Sounds.init = function(callback) {
-		var	ready = false,
-			onComplete = function() {
-				Sounds.initialised = true;
-				if (typeof callback === 'function') {
-					callback();
-				}
-			};
+	loadFiles();
 
-		loadFiles(function() {
-			if (ready) {
-				onComplete();
-			} else {
-				ready = true;
-			}
-		});
+	loadMapping();
 
-		loadMapping(function() {
-			if (ready) {
-				onComplete();
-			} else {
-				ready = true;
-			}
-		});
+	socket.on('event:sounds.reloadMapping', loadMapping);
 
-		// Listen for reload message
-		socket.on('event:sounds.reloadMapping', function() {
-			loadMapping();
-		});
-	};
-
-	var	loadFiles = function(callback) {
+	function loadFiles() {
 		socket.emit('modules.sounds.getSounds', function(err, sounds) {
 			if (err) {
 				return console.log('[sounds] Could not initialise!');
 			}
 
-			for(var name in sounds) {
-				if (sounds.hasOwnProperty(name)) {
-					var	path = sounds[name];
-
-					Sounds.loaded[name] = new buzz.sound(path);
-				}
-			}
-
-			callback();
+			files = sounds;
 		});
-	};
+	}
 
-	var	loadMapping = function(callback) {
+	function loadMapping() {
 		socket.emit('modules.sounds.getMapping', function(err, mapping) {
-			Sounds.mapping = mapping;
-			if (typeof callback === 'function') {
-				callback();
+			if (err) {
+				return console.log('[sounds] Could not load sound mapping!');
 			}
+			eventSoundMapping = mapping;
 		});
-	};
+	}
+
+	function isSoundLoaded(fileName) {
+		return loadedSounds[fileName];
+	}
+
+	function loadFile(fileName, callback) {
+		if (isSoundLoaded(fileName)) {
+			return callback();
+		}
+
+		if (files && files[fileName]) {
+			loadedSounds[fileName] = new buzz.sound(files[fileName]);
+		}
+		callback();
+	}
 
 	Sounds.play = function(name) {
 		if (!config.notificationSounds) {
 			return;
 		}
-		var	ready = function() {
-				if (Sounds.mapping[name] && Sounds.loaded[Sounds.mapping[name]]) {
-					Sounds.loaded[Sounds.mapping[name]].play();
-				} else {
-					console.log('[sounds] Not found:', name);
-				}
-			};
 
-		if (!this.initialised) {
-			this.init(ready);
-		} else {
-			ready();
-		}
+		Sounds.playFile(eventSoundMapping[name]);
 	};
 
 	Sounds.playFile = function(fileName) {
-		var	ready = function() {
-				if (Sounds.loaded[fileName]) {
-					Sounds.loaded[fileName].play();
-				} else {
-					console.log('[sounds] Not found:', name);
-				}
-			};
+		function play() {
+			if (loadedSounds[fileName]) {
+				loadedSounds[fileName].play();
+			} else {
+				console.log('[sounds] Not found:', fileName);
+			}
+		}
 
-		if (!this.initialised) {
-			this.init(ready);
+		if (isSoundLoaded(fileName)) {
+			play();
 		} else {
-			ready();
+			loadFile(fileName, play);
 		}
 	};
 
-	Sounds.init();
 	return Sounds;
 });

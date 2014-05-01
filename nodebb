@@ -4,6 +4,11 @@
 # $1 action
 # $2 subaction
 
+node="$(which nodejs 2>/dev/null)";
+if [ $? -gt 0 ];
+	then node="$(which node)";
+fi
+
 function pidExists() {
 	if [ -e "pidfile" ];
 		then
@@ -29,17 +34,29 @@ case "$1" in
 		fi;
 
 		# Start the loader daemon
-		node loader -d "$@"
+		"$node" loader -d "$@"
 		;;
 
 	stop)
-		echo "Stopping NodeBB. Goodbye!";
-		kill $(cat pidfile);
+		pidExists;
+		if [ 0 -eq $? ];
+			then
+				echo "NodeBB is already stopped.";
+			else
+				echo "Stopping NodeBB. Goodbye!";
+				kill $(cat pidfile);
+		fi
 		;;
 
 	reload|restart)
-		echo "Restarting NodeBB.";
-		kill -1 $(cat pidfile);
+		pidExists;
+		if [ 0 -eq $? ];
+			then
+				echo "NodeBB could not be restarted, as a running instance could not be found.";
+			else
+				echo "Restarting NodeBB.";
+				kill -1 $(cat pidfile);
+		fi
 		;;
 
 	status)
@@ -65,31 +82,31 @@ case "$1" in
 		npm install
 		ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm install
 		ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm update
-		node loader --upgrade
+		"$node" app --upgrade
 		touch package.json
 		echo -e "\n\e[00;32mNodeBB Dependencies up-to-date!\e[00;00m";
 		;;
 
 	setup)
-		node loader --setup "$@"
+		"$node" app --setup "$@"
 		;;
 
 	reset)
-		node loader --reset --$2
+		"$node" app --reset --$2
 		;;
 
 	dev)
 		echo "Launching NodeBB in \"development\" mode."
 		echo "To run the production build of NodeBB, please use \"forever\"."
 		echo "More Information: https://github.com/designcreateplay/NodeBB/wiki/How-to-run-NodeBB"
-		NODE_ENV=development node loader "$@"
+		NODE_ENV=development "$node" loader --no-daemon "$@"
 		;;
 
 	watch)
 		echo "Launching NodeBB in \"development\" mode."
 		echo "To run the production build of NodeBB, please use \"forever\"."
 		echo "More Information: https://github.com/designcreateplay/NodeBB/wiki/How-to-run-NodeBB"
-		NODE_ENV=development supervisor -q --ignore public/templates --extensions 'node|js|tpl' -- app "$@"
+		NODE_ENV=development supervisor -q --ignore public/templates --extensions 'node|js|tpl|less' -- app "$@"
 		;;
 
 	*)

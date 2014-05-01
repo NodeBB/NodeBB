@@ -6,5 +6,13 @@
     "outgoing_link": "Externer Link",
     "outgoing_link_message": "Du verlässt nun",
     "continue_to": "Gehe weiter zu",
-    "return_to": "Kehre zurück zu"
+    "return_to": "Kehre zurück zu",
+    "new_notification": "Neue Benachrichtigung",
+    "you_have_unread_notifications": "Du hast ungelesene Benarichtigungen.",
+    "user_made_post": "<strong>%1</strong> hat einen Beitrag erstellt.",
+    "new_message_from": "Neue Nachricht von <strong>%1</strong>",
+    "upvoted_your_post": "<strong>%1</strong> hat deinem Beitrag positiv bewertet.",
+    "favourited_your_post": "<strong>%1</strong> favorisiert deinen Beitrag.",
+    "user_flagged_post": "<strong>%1</strong> hat einen Beitrag makiert.",
+    "user_posted_to": "<strong>%1</strong> hat auf <strong>%2</strong> geantwortet."
 }

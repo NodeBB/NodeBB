@@ -89,6 +89,7 @@
 				req.login({
 					uid: uid
 				}, function() {
+					user.logIP(uid, req.ip);
 
 					require('../socket.io').emitUserCount();
 
@@ -158,7 +159,7 @@
 
 	Auth.login = function(username, password, next) {
 		if (!username || !password) {
-			return next(new Error('invalid-user'));
+			return next(new Error('[[error:invalid-user-data]]'));
 		}
 
 		var userslug = utils.slugify(username);
@@ -170,7 +171,7 @@
 
 			if(!uid) {
 				// Even if a user doesn't exist, compare passwords anyway, so we don't immediately return
-				return next(null, false, 'user doesn\'t exist');
+				return next(null, false, '[[error:no-user]]');
 			}
 
 			user.getUserFields(uid, ['password', 'banned'], function(err, userData) {
@@ -179,11 +180,11 @@
 				}
 
 				if (!userData || !userData.password) {
-					return next(new Error('invalid userdata or password'));
+					return next(new Error('[[error:invalid-user-data]]'));
 				}
 
 				if (userData.banned && parseInt(userData.banned, 10) === 1) {
-					return next(null, false, 'User banned');
+					return next(null, false, '[[error:user-banned]]');
 				}
 
 				bcrypt.compare(password, userData.password, function(err, res) {
@@ -192,12 +193,12 @@
 					}
 
 					if (!res) {
-						return next(null, false, 'invalid-password');
+						return next(null, false, '[[error:invalid-password]]');
 					}
 
 					next(null, {
 						uid: uid
-					}, 'Authentication successful');
+					}, '[[success:authentication-successful]]');
 				});
 			});
 		});

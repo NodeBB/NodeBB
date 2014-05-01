@@ -8,8 +8,8 @@
     "user.edit": "Muokataan \"%1\"",
     "user.following": "Käyttäjät, joita %1 seuraa",
     "user.followers": "Käyttäjät, jotka seuraavat käyttäjää %1",
-    "user.posts": "Posts made by %1",
-    "user.topics": "Topics created by %1",
+    "user.posts": "Käyttäjän %1 kirjoittamat viestit",
+    "user.topics": "Käyttäjän %1 aloittamat aiheet",
     "user.favourites": "Käyttäjän %1 suosikkiviestit",
     "user.settings": "Käyttäjän asetukset"
 }

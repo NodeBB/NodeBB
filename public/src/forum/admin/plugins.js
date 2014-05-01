@@ -1,29 +1,70 @@
+"use strict";
+/* global define, app, socket */
+
 define(function() {
 	var Plugins = {
 		init: function() {
 			var pluginsList = $('.plugins'),
 				numPlugins = pluginsList[0].querySelectorAll('li').length,
-				pluginID, pluginTgl;
+				pluginID;
 
 			if (numPlugins > 0) {
+
 				pluginsList.on('click', 'button[data-action="toggleActive"]', function() {
 					pluginID = $(this).parents('li').attr('data-plugin-id');
-					socket.emit('admin.plugins.toggle', pluginID);
+					var btn = $(this);
+					socket.emit('admin.plugins.toggleActive', pluginID, function(err, status) {
+
+						btn.html('<i class="fa fa-power-off"></i> ' + (status.active ? 'Dea' : 'A') + 'ctivate');
+						btn.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
+
+						app.alert({
+							alert_id: 'plugin_toggled',
+							title: 'Plugin ' + (status.active ? 'Enabled' : 'Disabled'),
+							message: 'Please restart your NodeBB to fully ' + (status.active ? 'activate' : 'deactivate') + ' this plugin',
+							type: 'info',
+							timeout: 5000,
+							clickfn: function() {
+								socket.emit('admin.restart');
+							}
+						});
+					});
 				});
 
-				socket.on('admin.plugins.toggle', function(status) {
-					pluginTgl = $('.plugins li[data-plugin-id="' + status.id + '"] button');
-					pluginTgl.html('<i class="fa fa-power-off"></i> ' + (status.active ? 'Dea' : 'A') + 'ctivate');
-					pluginTgl.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
+				pluginsList.on('click', 'button[data-action="toggleInstall"]', function() {
+					pluginID = $(this).parents('li').attr('data-plugin-id');
 
-					app.alert({
-						alert_id: 'plugin_toggled',
-						title: 'Plugin ' + (status.active ? 'Enabled' : 'Disabled'),
-						message: 'Restarting your NodeBB <i class="fa fa-refresh fa-spin"></i>',
-						type: 'warning',
-						timeout: 5000
-					})
+					var btn = $(this);
+					btn.html(btn.html() + 'ing')
+						.attr('disabled', true)
+						.find('i').attr('class', 'fa fa-refresh fa-spin');
+
+					socket.emit('admin.plugins.toggleInstall', pluginID, function(err, status) {
+						var activateBtn = $('.plugins li[data-plugin-id="' + pluginID + '"] button[data-action="toggleActive"]');
+
+						if (status.installed) {
+							btn.html('<i class="fa fa-trash-o"></i> Uninstall');
+						} else {
+							btn.html('<i class="fa fa-download"></i> Install');
+						}
+
+						btn.toggleClass('btn-danger', status.installed).toggleClass('btn-success', !status.installed)
+							.attr('disabled', false);
+
+						activateBtn.toggleClass('hide', !status.installed);
+						activateBtn.html('<i class="fa fa-power-off"></i> Activate');
+						activateBtn.toggleClass('btn-success', true).toggleClass('btn-warning', false);
+
+						app.alert({
+							alert_id: 'plugin_toggled',
+							title: 'Plugin ' + (status.installed ? 'Installed' : 'Uninstalled'),
+							message: status.installed ? 'You still have to activate this plugin to use it!' : 'The plugin is also deactivated!',
+							type: 'info',
+							timeout: 5000
+						});
+					});
 				});
+
 			} else {
 				pluginsList.append('<li><p><i>No plugins found.</i></p></li>');
 			}

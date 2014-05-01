@@ -1,6 +1,9 @@
 {
     "title": "De Lèghere",
     "no_unread_topics": "Non bi sunt arresonadas de lèghere.",
-    "mark_all_read": "Signala comente Lèghidos",
-    "load_more": "Càrriga de Prus"
+    "load_more": "Càrriga de Prus",
+    "mark_as_read": "Mark as Read",
+    "selected": "Selected",
+    "all": "All",
+    "topics_marked_as_read.success": "Topics marked as read!"
 }

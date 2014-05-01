@@ -41,8 +41,11 @@ Sockets.init = function(server) {
 		files.splice(files.indexOf('index.js'), 1);
 
 		async.each(files, function(lib, next) {
-			lib = lib.slice(0, -3);
-			Namespaces[lib] = require('./' + lib);
+			if (lib.substr(lib.length - 3) === '.js') {
+				lib = lib.slice(0, -3);
+				Namespaces[lib] = require('./' + lib);
+			}
+
 			next();
 		});
 	});
@@ -76,8 +79,8 @@ Sockets.init = function(server) {
 						socket.join('uid_' + uid);
 
 						async.parallel({
-							username: function(next) {
-								user.getUserField(uid, 'username', next);
+							user: function(next) {
+								user.getUserFields(uid, ['username', 'userslug'], next);
 							},
 							isAdmin: function(next) {
 								user.isAdministrator(uid, next);
@@ -85,7 +88,8 @@ Sockets.init = function(server) {
 						}, function(err, userData) {
 							socket.emit('event:connect', {
 								status: 1,
-								username: userData.username,
+								username: userData.user.username,
+								userslug: userData.user.userslug,
 								isAdmin: userData.isAdmin,
 								uid: uid
 							});
@@ -99,7 +103,7 @@ Sockets.init = function(server) {
 					socket.broadcast.emit('user.anonConnect');
 					socket.emit('event:connect', {
 						status: 1,
-						username: 'Anonymous',
+						username: '[[global:guest]]',
 						isAdmin: false,
 						uid: 0
 					});
@@ -222,6 +226,22 @@ Sockets.getUserSockets = function(uid) {
 
 /* Helpers */
 
+Sockets.reqFromSocket = function(socket) {
+	var headers = socket.handshake.headers,
+		host = headers.host,
+		referer = headers.referer;
+
+	return {
+		ip: headers['x-forwarded-for'] || (socket.handshake.address || {}).address,
+		host: host,
+		protocol: headers.secure ? 'https' : 'http',
+		secure: !!headers.secure,
+		url: referer,
+		path: referer.substr(referer.indexOf(host) + host.length),
+		headers: headers
+	};
+};
+
 Sockets.isUserOnline = isUserOnline;
 function isUserOnline(uid) {
 	return Sockets.getUserSockets(uid).length > 0;
@@ -259,8 +279,6 @@ function updateRoomBrowsingText(roomName) {
 
 	var	uids = getUidsInRoom(),
 		anonymousCount = getAnonymousCount();
-
-
 
 	user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status'], function(err, users) {
 		if(!err) {
@@ -314,37 +332,9 @@ function emitOnlineUserCount(callback) {
 	}
 }
 
-Sockets.emitAlert = emitAlert;
-function emitAlert(socket, title, message) {
-	socket.emit('event:alert', {
-		type: 'danger',
-		timeout: 2000,
-		title: title,
-		message: message,
-		alert_id: 'post_error'
-	});
-}
 
-Sockets.emitContentTooShortAlert = emitContentTooShortAlert;
-function emitContentTooShortAlert(socket) {
-	socket.emit('event:alert', {
-		type: 'danger',
-		timeout: 2000,
-		title: 'Content too short',
-		message: "Please enter a longer post. At least " + meta.config.minimumPostLength + " characters.",
-		alert_id: 'post_error'
-	});
-}
 
-Sockets.emitTooManyPostsAlert = emitTooManyPostsAlert;
-function emitTooManyPostsAlert(socket) {
-	socket.emit('event:alert', {
-		title: 'Too many posts!',
-		message: 'You can only post every ' + meta.config.postDelay + ' seconds.',
-		type: 'danger',
-		timeout: 2000
-	});
-}
+
 
 /* Exporting */
 module.exports = Sockets;

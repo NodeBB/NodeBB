@@ -1,82 +1,76 @@
+'use strict';
+
+/* globals define, ajaxify, app, utils, socket, translator*/
+
 define(['forum/accountheader'], function(header) {
-	var Account = {};
+	var Account = {},
+		yourid,
+		theirid,
+		isFollowing;
 
 	Account.init = function() {
 		header.init();
 
-		var yourid = ajaxify.variables.get('yourid'),
-			theirid = ajaxify.variables.get('theirid'),
-			isFollowing = ajaxify.variables.get('isFollowing');
+		yourid = ajaxify.variables.get('yourid');
+		theirid = ajaxify.variables.get('theirid');
+		isFollowing = ajaxify.variables.get('isFollowing');
 
-		$(document).ready(function() {
-			var username = $('.account-username').html();
-			app.enterRoom('user/' + theirid);
+		app.enterRoom('user/' + theirid);
 
-			utils.addCommasToNumbers($('.account .formatted-number'));
-			utils.makeNumbersHumanReadable($('.account .human-readable-number'));
-			$('.user-recent-posts img').addClass('img-responsive');
+		processPage();
 
-			var followBtn = $('#follow-btn');
-			var unfollowBtn = $('#unfollow-btn');
-			var chatBtn = $('#chat-btn');
+		updateButtons();
 
-			if (yourid !== theirid && yourid !== "0") {
-				if (isFollowing) {
-					followBtn.addClass('hide');
-					unfollowBtn.removeClass('hide');
-				} else {
-					followBtn.removeClass('hide');
-					unfollowBtn.addClass('hide');
-				}
-				chatBtn.removeClass('hide');
-			} else {
-				followBtn.addClass('hide');
-				unfollowBtn.addClass('hide');
-				chatBtn.addClass('hide');
-			}
-
-			followBtn.on('click', function() {
-				socket.emit('user.follow', {
-					uid: theirid
-				}, function(err) {
-					if(err) {
-						return app.alertError('There was an error following' + username + '!');
-					}
-
-					followBtn.addClass('hide');
-					unfollowBtn.removeClass('hide');
-					app.alertSuccess('[[global:alert.follow, ' + username + ']]');
-				});
-				return false;
-			});
-
-			unfollowBtn.on('click', function() {
-				socket.emit('user.unfollow', {
-					uid: theirid
-				}, function(err) {
-					if(err) {
-						return app.alertError('There was an error unfollowing ' + username + '!');
-					}
-
-					followBtn.removeClass('hide');
-					unfollowBtn.addClass('hide');
-					app.alertSuccess('[[global:alert.unfollow, ' + username + ']]');
-				});
-				return false;
-			});
-
-			chatBtn.on('click', function() {
-				app.openChat(username, theirid);
-			});
-
-			socket.on('user.isOnline', Account.handleUserOnline);
-
-			socket.emit('user.isOnline', theirid, Account.handleUserOnline);
-
+		$('#follow-btn').on('click', function() {
+			return toggleFollow('follow');
 		});
+
+		$('#unfollow-btn').on('click', function() {
+			return toggleFollow('unfollow');
+		});
+
+		$('#chat-btn').on('click', function() {
+			app.openChat($('.account-username').html(), theirid);
+		});
+
+		socket.on('user.isOnline', handleUserOnline);
+
+		socket.emit('user.isOnline', theirid, handleUserOnline);
 	};
 
-	Account.handleUserOnline = function(err, data) {
+	function processPage() {
+		utils.addCommasToNumbers($('.account .formatted-number'));
+		utils.makeNumbersHumanReadable($('.account .human-readable-number'));
+		$('.user-recent-posts img').addClass('img-responsive');
+	}
+
+	function updateButtons() {
+		var isSelfOrNotLoggedIn = yourid === theirid || yourid === '0';
+		$('#follow-btn').toggleClass('hide', isFollowing || isSelfOrNotLoggedIn);
+		$('#unfollow-btn').toggleClass('hide', !isFollowing || isSelfOrNotLoggedIn);
+		$('#chat-btn').toggleClass('hide', isSelfOrNotLoggedIn);
+	}
+
+	function toggleFollow(type) {
+		socket.emit('user.' + type, {
+			uid: theirid
+		}, function(err) {
+			if(err) {
+				return app.alertError(err.message);
+			}
+
+			$('#follow-btn').toggleClass('hide', type === 'follow');
+			$('#unfollow-btn').toggleClass('hide', type === 'unfollow');
+			app.alertSuccess('[[global:alert.' + type + ', ' + $('.account-username').html() + ']]');
+		});
+		return false;
+	}
+
+	function handleUserOnline(err, data) {
+		if (err) {
+			return app.alertError(err.message);
+		}
+
 		var onlineStatus = $('.account-online-status');
 
 		if(parseInt(ajaxify.variables.get('theirid'), 10) !== parseInt(data.uid, 10)) {
@@ -89,7 +83,7 @@ define(['forum/accountheader'], function(header) {
 				.attr('data-original-title', translated);
 		});
 
-	};
+	}
 
 	return Account;
 });

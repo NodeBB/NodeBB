@@ -1,12 +1,7 @@
 {
     "new_topic_button": "Novo Tópico",
-    "no_topics": "<strong>Não tem nenhum tópico nesta categoria.</strong><br />Por que não tenta postar um?",
-    "posts": "posts",
-    "views": "visualizações",
-    "posted": "postado",
+    "no_topics": "<strong>Não tem nenhum tópico nesta categoria.</strong><br />Por que não tenta postar o primeiro?",
     "browsing": "navegando",
     "no_replies": "Ninguém respondeu",
-    "replied": "respondeu",
-    "last_edited_by": "última edição por",
-    "share_this_category": "Share this category"
+    "share_this_category": "Compartilhar"
 }

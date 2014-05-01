@@ -62,7 +62,7 @@
 
 		if (!templates.cache[tpl]) {
 			fs.readFile(filename, function(err, html) {
-				templates.cache[tpl] = html.toString();
+				templates.cache[tpl] = (html || '').toString();
 				return fn(err, templates.parse(templates.cache[tpl], options));
 			});
 		} else {
@@ -296,7 +296,7 @@
 		}
 
 		if (namespace) {
-			template = template.replace(new RegExp("{" + namespace + "[\\s\\S]*?}", 'g'), '');
+			template = template.replace(new RegExp("{" + namespace + "\\.[\\s\\S]*?}", 'g'), '');
 			namespace = '';
 		} else {
 			// clean up all undefined conditionals

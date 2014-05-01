@@ -120,7 +120,7 @@ var winston = require('winston'),
 
 		PostTools.privileges(pid, uid, function(err, privileges) {
 			if (err || !privileges.editable) {
-				return callback(err || new Error('not-privileges-to-edit'));
+				return callback(err || new Error('[[error:no-privileges]]'));
 			}
 
 			posts.getPostData(pid, function(err, postData) {
@@ -155,15 +155,15 @@ var winston = require('winston'),
 			},
 			function(deleted, next) {
 				if(parseInt(deleted, 10) === 1 && isDelete) {
-					return next(new Error('Post already deleted'));
+					return next(new Error('[[error:post-already-deleted]]'));
 				} else if(parseInt(deleted, 10) !== 1 && !isDelete) {
-					return next(new Error('Post already restored'));
+					return next(new Error('[[error:post-already-restored]]'));
 				}
 				PostTools.privileges(pid, uid, next);
 			},
 			function(privileges, next) {
 				if (!privileges || !privileges.editable) {
-					return next(new Error('no privileges'));
+					return next(new Error('[[error:no-privileges]]'));
 				}
 				next();
 			}
@@ -212,7 +212,7 @@ var winston = require('winston'),
 	}
 
 	function updateTopicTimestamp(tid, callback) {
-		threadTools.getLatestUndeletedPid(tid, function(err, pid) {
+		topics.getLatestUndeletedPid(tid, function(err, pid) {
 			if(err || !pid) {
 				return callback(err);
 			}

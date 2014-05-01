@@ -1,7 +1,5 @@
 {
-    "login": "เข้าสู่ระบบ",
     "username": "Username / Email",
-    "password": "รหัสผ่าน",
     "remember_me": "จำไว้ในระบบ?",
     "forgot_password": "ลืมรหัสผ่าน?",
     "alternative_logins": "เข้าสู่ระบบโดยทางอื่น",

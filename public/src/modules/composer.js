@@ -7,13 +7,19 @@ define(['taskbar'], function(taskbar) {
 		active: undefined,
 		posts: {},
 		saving: undefined
-	};
+	},
+	controls = {};
+
 
 	function initialise() {
 		socket.on('event:composer.ping', function(post_uuid) {
 			if (composer.active === post_uuid) {
 				socket.emit('modules.composer.pingActive', post_uuid);
 			}
+		});
+
+		require(['composer/controls'], function(composerControls) {
+			controls = composerControls;
 		});
 	}
 
@@ -150,24 +156,6 @@ define(['taskbar'], function(taskbar) {
 		composer.load(uuid);
 	}
 
-	//http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
-	function findBootstrapEnvironment() {
-		var envs = ['xs', 'sm', 'md', 'lg'],
-			$el = $('<div>');
-
-		$el.appendTo($('body'));
-
-		for (var i = envs.length - 1; i >= 0; i--) {
-			var env = envs[i];
-
-			$el.addClass('hidden-'+env);
-			if ($el.is(':hidden')) {
-				$el.remove();
-				return env;
-			}
-		}
-	}
-
 	function composerAlert(message) {
 		$('.action-bar button').removeAttr('disabled');
 		app.alert({
@@ -180,7 +168,6 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	function initializeDragAndDrop(post_uuid) {
-
 		if($.event.props.indexOf('dataTransfer') === -1) {
 			$.event.props.push('dataTransfer');
 		}
@@ -188,18 +175,17 @@ define(['taskbar'], function(taskbar) {
 		var draggingDocument = false;
 
 		var postContainer = $('#cmp-uuid-' + post_uuid),
-			fileForm = postContainer.find('#fileForm'),
 			drop = postContainer.find('.imagedrop'),
 			tabContent = postContainer.find('.tab-content'),
 			textarea = postContainer.find('textarea');
 
-		$(document).off('dragstart').on('dragstart', function(e) {
+		$(document).off('dragstart').on('dragstart', function() {
 			draggingDocument = true;
-		}).off('dragend').on('dragend', function(e) {
+		}).off('dragend').on('dragend', function() {
 			draggingDocument = false;
 		});
 
-		textarea.on('dragenter', function(e) {
+		textarea.on('dragenter', function() {
 			if(draggingDocument) {
 				return;
 			}
@@ -208,7 +194,7 @@ define(['taskbar'], function(taskbar) {
 			drop.css('line-height', textarea.height() + 'px');
 			drop.show();
 
-			drop.on('dragleave', function(ev) {
+			drop.on('dragleave', function() {
 				drop.hide();
 				drop.off('dragleave');
 			});
@@ -235,7 +221,6 @@ define(['taskbar'], function(taskbar) {
 					}
 				}
 
-				// fileForm[0].reset();
 				uploadContentFiles({
 					files: files,
 					post_uuid: post_uuid,
@@ -264,7 +249,6 @@ define(['taskbar'], function(taskbar) {
 						fd.append('files[]', blob, blob.name);
 					}
 
-					// fileForm[0].reset();
 					uploadContentFiles({
 						files: [blob],
 						post_uuid: post_uuid,
@@ -417,66 +401,159 @@ define(['taskbar'], function(taskbar) {
 		thumbForm.submit();
 	}
 
-	composer.newTopic = function(cid) {
-		if(allowed()) {
-			push({
-				cid: cid,
-				title: '',
-				body: '',
-				modified: false,
-				isMain: true
-			});
+	var formattingDispatchTable = {
+		'fa fa-bold': function(textarea, selectionStart, selectionEnd){
+			if(selectionStart === selectionEnd){
+				controls.insertIntoTextarea(textarea, '**bolded text**');
+				controls.updateTextareaSelection(textarea, selectionStart + 2, selectionStart + 13);
+			} else {
+				controls.wrapSelectionInTextareaWith(textarea, '**');
+				controls.updateTextareaSelection(textarea, selectionStart + 2, selectionEnd + 2);
+			}
+		},
+
+		'fa fa-italic': function(textarea, selectionStart, selectionEnd){
+			if(selectionStart === selectionEnd){
+				controls.insertIntoTextarea(textarea, "*italicised text*");
+				controls.updateTextareaSelection(textarea, selectionStart + 1, selectionStart + 16);
+			} else {
+				controls.wrapSelectionInTextareaWith(textarea, '*');
+				controls.updateTextareaSelection(textarea, selectionStart + 1, selectionEnd + 1);
+			}
+		},
+
+		'fa fa-list': function(textarea, selectionStart, selectionEnd){
+			if(selectionStart === selectionEnd){
+				controls.insertIntoTextarea(textarea, "\n* list item");
+
+				// Highlight "list item"
+				controls.updateTextareaSelection(textarea, selectionStart + 3, selectionStart + 12);
+			} else {
+				controls.wrapSelectionInTextareaWith(textarea, '\n* ', '');
+				controls.updateTextareaSelection(textarea, selectionStart + 3, selectionEnd + 3);
+			}
+		},
+
+		'fa fa-link': function(textarea, selectionStart, selectionEnd){
+			if(selectionStart === selectionEnd){
+				controls.insertIntoTextarea(textarea, "[link text](link url)");
+
+				// Highlight "link url"
+				controls.updateTextareaSelection(textarea, selectionStart + 12, selectionEnd + 20);
+			} else {
+				controls.wrapSelectionInTextareaWith(textarea, '[', '](link url)');
+
+				// Highlight "link url"
+				controls.updateTextareaSelection(textarea, selectionEnd + 3, selectionEnd + 11);
+			}
+		},
+
+		'fa fa-picture-o': function(){
+			$('#files').click();
+		},
+
+		'fa fa-upload': function(){
+			$('#files').click();
 		}
+	};
+
+	var customButtons = [];
+
+	function handleFormattingBarClick() {
+		var iconClass = $(this).find('i').attr('class');
+		var textarea = $(this).parents('.composer').find('textarea')[0];
+
+		if(formattingDispatchTable.hasOwnProperty(iconClass)){
+			formattingDispatchTable[iconClass](textarea, textarea.selectionStart, textarea.selectionEnd);
+		}
+	}
+
+	function addComposerButtons() {
+		for (var button in customButtons) {
+			if (customButtons.hasOwnProperty(button)) {
+				$('.formatting-bar .btn-group form').before('<span class="btn btn-link" tabindex="-1"><i class="' + customButtons[button].iconClass + '"></i></span>');
+			}
+		}
+	}
+
+	composer.addButton = function(iconClass, onClick) {
+		formattingDispatchTable[iconClass] = onClick;
+		customButtons.push({
+			iconClass: iconClass
+		});
+	};
+
+	composer.newTopic = function(cid) {
+		if(!allowed()) {
+			return;
+		}
+
+		push({
+			cid: cid,
+			title: '',
+			body: '',
+			modified: false,
+			isMain: true
+		});
 	};
 
 	composer.addQuote = function(tid, pid, title, username, text){
-		if (allowed()) {
-			var uuid = composer.active;
-			if(uuid !== undefined){
-				var bodyEl = $('#cmp-uuid-'+uuid).find('textarea');
-				var prevText = bodyEl.val();
-				if(tid !== composer.posts[uuid].tid) {
-					text = username + ' said in ['+title+'](/topic/'+tid+'#'+pid+'):\n'+text;
-				} else {
-					text = username + ' said:\n' + text;
-				}
-				composer.posts[uuid].body = (prevText.length ? prevText + '\n\n' : '') + text;
-				bodyEl.val(composer.posts[uuid].body);
-			} else {
-				composer.newReply(tid, pid, title, username + ' said:\n' + text);
-			}
+		if (!allowed()) {
+			return;
 		}
+
+		var uuid = composer.active;
+
+		if(uuid === undefined){
+			composer.newReply(tid, pid, title, username + ' said:\n' + text);
+			return;
+		}
+
+		var bodyEl = $('#cmp-uuid-'+uuid).find('textarea');
+		var prevText = bodyEl.val();
+		if(tid !== composer.posts[uuid].tid) {
+			text = username + ' said in ['+title+'](/topic/'+tid+'#'+pid+'):\n'+text;
+		} else {
+			text = username + ' said:\n' + text;
+		}
+		composer.posts[uuid].body = (prevText.length ? prevText + '\n\n' : '') + text;
+		bodyEl.val(composer.posts[uuid].body);
 	};
 
 	composer.newReply = function(tid, pid, title, text) {
-		if(allowed()) {
-			push({
-				tid: tid,
-				toPid: pid,
-				title: title,
-				body: text,
-				modified: false,
-				isMain: false
-			});
+		if(!allowed()) {
+			return;
 		}
+
+		push({
+			tid: tid,
+			toPid: pid,
+			title: title,
+			body: text,
+			modified: false,
+			isMain: false
+		});
 	};
 
 	composer.editPost = function(pid) {
-		if(allowed()) {
-			socket.emit('modules.composer.push', pid, function(err, threadData) {
-				if(err) {
-					return app.alertError(err.message);
-				}
-				push({
-					pid: pid,
-					title: threadData.title,
-					body: threadData.body,
-					modified: false,
-					isMain: !threadData.index,
-					topic_thumb: threadData.topic_thumb
-				});
-			});
+		if(!allowed()) {
+			return;
 		}
+
+		socket.emit('modules.composer.push', pid, function(err, threadData) {
+			if(err) {
+				return app.alertError(err.message);
+			}
+
+			push({
+				pid: pid,
+				title: threadData.title,
+				body: threadData.body,
+				modified: false,
+				isMain: !threadData.index,
+				topic_thumb: threadData.topic_thumb
+			});
+		});
 	};
 
 	composer.load = function(post_uuid) {
@@ -535,7 +612,7 @@ define(['taskbar'], function(taskbar) {
 					};
 
 				if (parseInt(postData.tid, 10) > 0) {
-					translator.translate('[[topic:composer.replying_to]]: ' + postData.title, function(newTitle) {
+					translator.translate('[[topic:composer.replying_to, ' + postData.title + ']]', function(newTitle) {
 						titleEl.val(newTitle);
 					});
 					titleEl.prop('disabled', true);
@@ -576,7 +653,7 @@ define(['taskbar'], function(taskbar) {
 					e.preventDefault();
 				});
 
-				postContainer.on('paste change keypress', 'input#topic-thumb-url', function(e) {
+				postContainer.on('paste change keypress', 'input#topic-thumb-url', function() {
 					var urlEl = $(this);
 					setTimeout(function(){
 						var url = urlEl.val();
@@ -616,76 +693,7 @@ define(['taskbar'], function(taskbar) {
 					}
 				});
 
-				postContainer.on('click', '.formatting-bar span', function() {
-					var postContentEl = postContainer.find('textarea'),
-						iconClass = $(this).find('i').attr('class'),
-						cursorEnd = postContentEl.val().length,
-						selectionStart = postContentEl[0].selectionStart,
-						selectionEnd = postContentEl[0].selectionEnd,
-						selectionLength = selectionEnd - selectionStart,
-						cursorPos;
-
-
-					function insertIntoInput(element, value) {
-						var start = postContentEl[0].selectionStart;
-						element.val(element.val().slice(0, start) + value + element.val().slice(start, element.val().length));
-						postContentEl[0].selectionStart = postContentEl[0].selectionEnd = start + value.length;
-					}
-
-					switch(iconClass) {
-						case 'fa fa-bold':
-							if (selectionStart === selectionEnd) {
-								// Nothing selected
-								cursorPos = postContentEl[0].selectionStart;
-								insertIntoInput(postContentEl, "**bolded text**");
-
-								// Highlight "link url"
-								postContentEl[0].selectionStart = cursorPos + 12;
-								postContentEl[0].selectionEnd = cursorPos + 20;
-							} else {
-								// Text selected
-								postContentEl.val(postContentEl.val().slice(0, selectionStart) + '**' + postContentEl.val().slice(selectionStart, selectionEnd) + '**' + postContentEl.val().slice(selectionEnd));
-								postContentEl[0].selectionStart = selectionStart + 2;
-								postContentEl[0].selectionEnd = selectionEnd + 2;
-							}
-							break;
-						case 'fa fa-italic':
-							if (selectionStart === selectionEnd) {
-								// Nothing selected
-								insertIntoInput(postContentEl, "*italicised text*");
-							} else {
-								// Text selected
-								postContentEl.val(postContentEl.val().slice(0, selectionStart) + '*' + postContentEl.val().slice(selectionStart, selectionEnd) + '*' + postContentEl.val().slice(selectionEnd));
-								postContentEl[0].selectionStart = selectionStart + 1;
-								postContentEl[0].selectionEnd = selectionEnd + 1;
-							}
-							break;
-						case 'fa fa-list':
-							// Nothing selected
-							insertIntoInput(postContentEl, "\n* list item");
-							break;
-						case 'fa fa-link':
-							if (selectionStart === selectionEnd) {
-								// Nothing selected
-								cursorPos = postContentEl[0].selectionStart;
-								insertIntoInput(postContentEl, "[link text](link url)");
-
-								// Highlight "link url"
-								postContentEl[0].selectionStart = cursorPos + 12;
-								postContentEl[0].selectionEnd = cursorPos + 20;
-							} else {
-								// Text selected
-								postContentEl.val(postContentEl.val().slice(0, selectionStart) + '[' + postContentEl.val().slice(selectionStart, selectionEnd) + '](link url)' + postContentEl.val().slice(selectionEnd));
-								postContentEl[0].selectionStart = selectionStart + selectionLength + 3;
-								postContentEl[0].selectionEnd = selectionEnd + 11;
-							}
-							break;
-					}
-				});
-
-				postContainer.on('click', '.formatting-bar span .fa-picture-o, .formatting-bar span .fa-upload', function() {
-					$('#files').click();
-				});
+				postContainer.on('click', '.formatting-bar span', handleFormattingBarClick);
 
 				postContainer.find('#files').on('change', function(e) {
 					var files = (e.target || {}).files || ($(this).val() ? [{name: $(this).val(), type: utils.fileMimeType($(this).val())}] : null);
@@ -818,12 +826,13 @@ define(['taskbar'], function(taskbar) {
 				$(window).trigger('action:composer.loaded', {
 					post_uuid: post_uuid
 				});
+
+				addComposerButtons();
 			});
 		});
 	};
 
 	composer.activateReposition = function(post_uuid) {
-
 		if(composer.active && composer.active !== post_uuid) {
 			composer.minimize(composer.active);
 		}
@@ -832,7 +841,7 @@ define(['taskbar'], function(taskbar) {
 			postContainer = $('#cmp-uuid-' + post_uuid);
 
 		composer.active = post_uuid;
-		var env = findBootstrapEnvironment();
+		var env = utils.findBootstrapEnvironment();
 
 		if (percentage) {
 			if ( env === 'md' || env === 'lg') {
@@ -871,11 +880,11 @@ define(['taskbar'], function(taskbar) {
 			titleEl = postContainer.find('.title'),
 			bodyEl = postContainer.find('textarea');
 
-		if ((parseInt(postData.tid) || parseInt(postData.pid)) > 0) {
+		if ((parseInt(postData.tid, 10) || parseInt(postData.pid, 10)) > 0) {
 			bodyEl.focus();
 			bodyEl.selectionStart = bodyEl.val().length;
 			bodyEl.selectionEnd = bodyEl.val().length;
-		} else if (parseInt(postData.cid) > 0) {
+		} else if (parseInt(postData.cid, 10) > 0) {
 			titleEl.focus();
 		}
 	};
@@ -911,7 +920,12 @@ define(['taskbar'], function(taskbar) {
 				content: bodyEl.val(),
 				topic_thumb: thumbEl.val() || '',
 				category_id: postData.cid
-			}, done);
+			}, function(err, topic) {
+				done(err);
+				if (!err) {
+					ajaxify.go('topic/' + topic.slug);
+				}
+			});
 		} else if (parseInt(postData.tid, 10) > 0) {
 			socket.emit('posts.reply', {
 				tid: postData.tid,
@@ -968,7 +982,9 @@ define(['taskbar'], function(taskbar) {
 		newReply: composer.newReply,
 		addQuote: composer.addQuote,
 		editPost: composer.editPost,
+		addButton: composer.addButton,
 		load: composer.load,
-		minimize: composer.minimize
+		minimize: composer.minimize,
+		controls: controls
 	};
 });

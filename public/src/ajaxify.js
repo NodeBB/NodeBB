@@ -60,7 +60,7 @@ var ajaxify = ajaxify || {};
 		}
 
 		if (ajaxify.isTemplateAvailable(tpl_url) && !!!templatesConfig.force_refresh[tpl_url]) {
-			ajaxify.currentPage = tpl_url;
+			ajaxify.currentPage = url;
 
 			if (window.history && window.history.pushState) {
 				window.history[!quiet ? 'pushState' : 'replaceState']({
@@ -74,6 +74,7 @@ var ajaxify = ajaxify || {};
 
 			ajaxify.variables.flush();
 			ajaxify.loadData(function () {
+				$(window).trigger('action:ajaxify.contentLoaded', {url: url});
 				ajaxify.loadScript(tpl_url);
 
 				if (typeof callback === 'function') {
@@ -178,7 +179,7 @@ var ajaxify = ajaxify || {};
 				}
 
 				data.relative_path = RELATIVE_PATH;
-				
+
 				templates.parse(tpl_url, data, function(template) {
 					translator.translate(template, function(translatedTemplate) {
 						$('#content').html(translatedTemplate);
@@ -197,6 +198,8 @@ var ajaxify = ajaxify || {};
 					return ajaxify.go('404');
 				} else if (data && data.status === 403) {
 					return ajaxify.go('403');
+				} else if (data && data.status === 302) {
+					return ajaxify.go(data.responseJSON.slice(1));
 				} else if (textStatus !== "abort") {
 					app.alertError(data.responseJSON.error);
 				}
@@ -209,7 +212,7 @@ var ajaxify = ajaxify || {};
 			callback(templates.cache[template]);
 		} else {
 			$.ajax({
-				url: RELATIVE_PATH + '/templates/' + template + '.tpl',
+				url: RELATIVE_PATH + '/templates/' + template + '.tpl' + (config['cache-buster'] ? '?v=' + config['cache-buster'] : ''),
 				type: 'GET',
 				success: function(data) {
 					callback(data.toString());
@@ -244,13 +247,22 @@ var ajaxify = ajaxify || {};
 				return;
 			}
 
-			if ((!e.ctrlKey && !e.shiftKey) && e.which === 1) {
+			if ((!e.ctrlKey && !e.shiftKey && !e.metaKey) && e.which === 1) {
 				if (this.host === window.location.host) {
 					// Internal link
 					var url = this.href.replace(rootUrl + '/', '');
 
-					if (ajaxify.go(url)) {
+					if(window.location.pathname === this.pathname && this.hash) {
+						if (this.hash !== window.location.hash) {
+							window.location.hash = this.hash;
+						}
+
+						ajaxify.loadScript(ajaxify.getTemplateMapping(url));
 						e.preventDefault();
+					} else {
+						if (ajaxify.go(url)) {
+							e.preventDefault();
+						}
 					}
 				} else if (window.location.pathname !== '/outgoing') {
 					// External Link

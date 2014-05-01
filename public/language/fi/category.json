@@ -1,12 +1,7 @@
 {
     "new_topic_button": "Uusi aihe",
     "no_topics": "<strong>Tällä aihealueella ei ole yhtään aihetta.</strong><br />Miksi et aloittaisi uutta?",
-    "posts": "viestit",
-    "views": "katsottu",
-    "posted": "kirjoitettu",
     "browsing": "selaamassa",
     "no_replies": "Kukaan ei ole vastannut",
-    "replied": "vastasi",
-    "last_edited_by": "viimeksi muokannut ",
-    "share_this_category": "Share this category"
+    "share_this_category": "Jaa tämä kategoria"
 }

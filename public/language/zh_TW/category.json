@@ -1,12 +1,7 @@
 {
     "new_topic_button": "新主題",
     "no_topics": "<strong>這個版面還沒有任何內容。</strong><br />趕緊來發帖吧！",
-    "posts": "帖子",
-    "views": "瀏覽",
-    "posted": "發布",
     "browsing": "正在瀏覽",
     "no_replies": "還沒有回復",
-    "replied": "回復",
-    "last_edited_by": "最后編輯",
     "share_this_category": "分享這類別"
 }

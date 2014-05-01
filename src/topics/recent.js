@@ -30,7 +30,7 @@ module.exports = function(Topics) {
 
 		var count = parseInt(end, 10) === -1 ? end : end - start + 1;
 
-		db.getSortedSetRevRangeByScore(['topics:recent', '+inf', Date.now() - since, 'LIMIT', start, count], callback);
+		db.getSortedSetRevRangeByScore('topics:recent', start, count, Infinity, Date.now() - since, callback);
 	};
 
 };

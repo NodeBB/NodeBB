@@ -2,5 +2,6 @@
     "chat.chatting_with": "Chat med <span id=\"chat-with-name\"></span>",
     "chat.placeholder": "skriv chat-melding her, trykk enter for å sende",
     "chat.send": "Send",
-    "chat.no_active": "Du har ingen aktive chatter."
+    "chat.no_active": "Du har ingen aktive chatter.",
+    "chat.user_typing": "%1 skriver ..."
 }

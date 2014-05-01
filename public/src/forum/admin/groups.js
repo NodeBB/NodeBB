@@ -80,7 +80,6 @@ define(function() {
 				break;
 			case 'members':
 				socket.emit('admin.groups.get', groupName, function(err, groupObj) {
-					console.log(groupObj);
 					var formEl = detailsModal.find('form'),
 						nameEl = formEl.find('#change-group-name'),
 						descEl = formEl.find('#change-group-desc'),
@@ -146,12 +145,12 @@ define(function() {
 
 		searchResults.on('click', 'li[data-uid]', function() {
 			var userLabel = $(this),
-				uid = parseInt(userLabel.attr('data-uid')),
+				uid = parseInt(userLabel.attr('data-uid'), 10),
 				groupName = detailsModal.attr('data-groupname'),
 				members = [];
 
 			groupMembersEl.find('li[data-uid]').each(function() {
-				members.push(parseInt($(this).attr('data-uid')));
+				members.push(parseInt($(this).attr('data-uid'), 10));
 			});
 
 			if (members.indexOf(uid) === -1) {

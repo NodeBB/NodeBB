@@ -19,7 +19,8 @@ image.resizeImage = function(path, extension, width, height, callback) {
 			.write(path, done);
 	} else {
 		gm(path)
-			.resize(width, height)
+			.gravity('Center')
+			.crop(width, height)
 			.write(path, done);
 	}
 };

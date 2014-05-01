@@ -1,3 +1,5 @@
+"use strict";
+
 var fs = require('fs'),
 	nconf = require('nconf'),
 	path = require('path'),
@@ -26,8 +28,6 @@ file.saveFileToLocal = function(filename, tempPath, callback) {
 	});
 
 	is.pipe(os);
-}
+};
 
 module.exports = file;
-
-
