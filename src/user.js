@@ -158,11 +158,23 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.incrementUserFieldBy = function(uid, field, value, callback) {
-		db.incrObjectFieldBy('user:' + uid, field, value, callback);
+		db.incrObjectFieldBy('user:' + uid, field, value, function(err, value) {
+			plugins.fireHook('action:user.incremented', value);
+
+			if (typeof callback === 'function') {
+				callback(err, value);
+			}
+		});
 	};
 
 	User.decrementUserFieldBy = function(uid, field, value, callback) {
-		db.incrObjectFieldBy('user:' + uid, field, -value, callback);
+		db.incrObjectFieldBy('user:' + uid, field, -value, function(err, value) {
+			plugins.fireHook('action:user.decremented', value);
+			
+			if (typeof callback === 'function') {
+				callback(err, value);
+			}
+		});
 	};
 
 	User.getUsersFromSet = function(set, start, stop, callback) {
