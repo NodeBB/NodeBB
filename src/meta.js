@@ -150,7 +150,7 @@ var fs = require('fs'),
 					function(config, next) {
 						themeData['theme:staticDir'] = config.staticDir ? config.staticDir : '';
 						themeData['theme:templates'] = config.templates ? config.templates : '';
-						themeData['theme:src'] = config.frameworkCSS ? config.frameworkCSS : '';
+						themeData['theme:src'] = '';
 
 						db.setObject('config', themeData, next);
 					}
@@ -234,6 +234,7 @@ var fs = require('fs'),
 			'vendor/jquery/js/jquery-ui-1.10.4.custom.js',
 			'vendor/jquery/timeago/jquery.timeago.min.js',
 			'vendor/jquery/js/jquery.form.min.js',
+			'vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
 			'vendor/bootstrap/js/bootstrap.min.js',
 			'vendor/requirejs/require.js',
 			'vendor/bootbox/bootbox.min.js',

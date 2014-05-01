@@ -49,10 +49,10 @@ if(nconf.get('ssl')) {
 		meta.sounds.init();
 	});
 
-	async.series({
+	async.parallel({
 		themesData: meta.themes.get,
-		currentThemeData: function(next) {
-			db.getObjectFields('config', ['theme:type', 'theme:id', 'theme:staticDir', 'theme:templates'], next);
+		currentThemeId: function(next) {
+			db.getObjectField('config', 'theme:id', next);
 		}
 	}, function(err, data) {
 		middleware = middleware(app, data);
