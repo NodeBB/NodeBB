@@ -534,10 +534,10 @@ define(function () {
 			}
 			helper.persistSettings(hash, Settings.cfg, notify, callback);
 		},
-		load: function(hash, formEl, callback) {
+		load: function (hash, formEl, callback) {
 			socket.emit('admin.settings.get', {
 				hash: hash
-			}, function(err, values) {
+			}, function (err, values) {
 				if (!err) {
 					$(formEl).deserialize(values);
 					if (typeof callback === 'function') {
@@ -548,12 +548,12 @@ define(function () {
 				}
 			});
 		},
-		save: function(hash, formEl, callback) {
+		save: function (hash, formEl, callback) {
 			formEl = $(formEl);
 			if (formEl.length) {
-				var	values = formEl.serializeObject();
+				var values = formEl.serializeObject();
 				// "Fix" checkbox values, so that unchecked options are not omitted
-				formEl.find('input[type="checkbox"]').each(function(idx, inputEl) {
+				formEl.find('input[type="checkbox"]').each(function (idx, inputEl) {
 					inputEl = $(inputEl);
 					if (!inputEl.is(':checked')) {
 						values[inputEl.attr('id')] = 'off';
@@ -562,7 +562,7 @@ define(function () {
 				socket.emit('admin.settings.set', {
 					hash: hash,
 					values: values
-				}, function(err) {
+				}, function (err) {
 					app.alert({
 						title: 'Settings Saved',
 						type: 'success',
