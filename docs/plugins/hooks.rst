@@ -179,3 +179,7 @@ Executed whenever a post is created or edited, after it is saved into the databa
 
 ``action:topic.delete``
 ^^^^^^^^^^^^^^^^^^^^^
+
+``action:user.set``
+^^^^^^^^^^^^^^^^^^^^^
+Useful for things like awarding badges or achievements after a user has reached some value (ex. 100 posts)
