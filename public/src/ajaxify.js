@@ -247,7 +247,7 @@ var ajaxify = ajaxify || {};
 				return;
 			}
 
-			if ((!e.ctrlKey && !e.shiftKey) && e.which === 1) {
+			if ((!e.ctrlKey && !e.shiftKey && !e.metaKey) && e.which === 1) {
 				if (this.host === window.location.host) {
 					// Internal link
 					var url = this.href.replace(rootUrl + '/', '');
