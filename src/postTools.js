@@ -24,7 +24,7 @@ var winston = require('winston'),
 			}
 
 			if(!Array.isArray(pids) || !pids.length) {
-				callback(null, false);
+				return callback(null, false);
 			}
 
 			callback(null, parseInt(pids[0], 10) === parseInt(pid, 10));
