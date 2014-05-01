@@ -117,7 +117,7 @@ var socket,
 			});
 
 			socket.on('reconnecting', function (data, attempt) {
-				if(attempt === config.maxReconnectionAttempts) {
+				if(attempt === parseInt(config.maxReconnectionAttempts, 10)) {
 					socket.socket.reconnectionAttempts = 0;
 					socket.socket.reconnectionDelay = config.reconnectionDelay;
 					return;
