@@ -182,4 +182,12 @@ Executed whenever a post is created or edited, after it is saved into the databa
 
 ``action:user.set``
 ^^^^^^^^^^^^^^^^^^^^^
+Parameters: field (str), value, type ('set', 'increment', or 'decrement')
 Useful for things like awarding badges or achievements after a user has reached some value (ex. 100 posts)
+
+``action:settings.set``
+^^^^^^^^^^^^^^^^^^^^^
+Parameters: hash (str), object (obj)
+Useful if your plugins want to cache settings instead of pulling from DB everytime a method is called. Listen to this and refresh accordingly.
+
+
