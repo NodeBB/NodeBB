@@ -156,24 +156,6 @@ define(['taskbar'], function(taskbar) {
 		composer.load(uuid);
 	}
 
-	//http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
-	function findBootstrapEnvironment() {
-		var envs = ['xs', 'sm', 'md', 'lg'],
-			$el = $('<div>');
-
-		$el.appendTo($('body'));
-
-		for (var i = envs.length - 1; i >= 0; i--) {
-			var env = envs[i];
-
-			$el.addClass('hidden-'+env);
-			if ($el.is(':hidden')) {
-				$el.remove();
-				return env;
-			}
-		}
-	}
-
 	function composerAlert(message) {
 		$('.action-bar button').removeAttr('disabled');
 		app.alert({
@@ -186,7 +168,6 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	function initializeDragAndDrop(post_uuid) {
-
 		if($.event.props.indexOf('dataTransfer') === -1) {
 			$.event.props.push('dataTransfer');
 		}
@@ -852,7 +833,6 @@ define(['taskbar'], function(taskbar) {
 	};
 
 	composer.activateReposition = function(post_uuid) {
-
 		if(composer.active && composer.active !== post_uuid) {
 			composer.minimize(composer.active);
 		}
@@ -861,7 +841,7 @@ define(['taskbar'], function(taskbar) {
 			postContainer = $('#cmp-uuid-' + post_uuid);
 
 		composer.active = post_uuid;
-		var env = findBootstrapEnvironment();
+		var env = utils.findBootstrapEnvironment();
 
 		if (percentage) {
 			if ( env === 'md' || env === 'lg') {

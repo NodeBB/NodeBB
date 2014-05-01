@@ -254,6 +254,24 @@
 			// http://stackoverflow.com/questions/9286355/how-to-detect-only-the-native-android-browser
 			var nua = navigator.userAgent;
 			return ((nua.indexOf('Mozilla/5.0') > -1 && nua.indexOf('Android ') > -1 && nua.indexOf('AppleWebKit') > -1) && !(nua.indexOf('Chrome') > -1));
+		},
+
+		findBootstrapEnvironment: function() {
+			//http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
+			var envs = ['xs', 'sm', 'md', 'lg'],
+				$el = $('<div>');
+
+			$el.appendTo($('body'));
+
+			for (var i = envs.length - 1; i >= 0; i--) {
+				var env = envs[i];
+
+				$el.addClass('hidden-'+env);
+				if ($el.is(':hidden')) {
+					$el.remove();
+					return env;
+				}
+			}
 		}
 	};
 
