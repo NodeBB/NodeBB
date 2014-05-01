@@ -255,6 +255,9 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 			} else if(!user.length && data.online) {
 				user = createUserIcon(data.uid, data.picture, data.userslug, data.username);
 				activeEl.append(user);
+				activeEl.find('a[data-uid] img').tooltip({
+					placement: 'top'
+				});
 			}
 		}
 
