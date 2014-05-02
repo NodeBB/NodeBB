@@ -88,10 +88,12 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 		socket.on('event:chats.userStartTyping', function(withUid) {
 			var modal = module.getModal(withUid);
 			var chatContent = modal.find('#chat-content');
-			modal.find('.user-typing')
-				.removeClass('hide')
-				.appendTo(chatContent);
-			scrollToBottom(chatContent);
+			var atBottom = chatContent[0].scrollHeight - chatContent.scrollTop() === chatContent.innerHeight();
+
+			modal.find('.user-typing').removeClass('hide').appendTo(chatContent);
+			if (atBottom) {
+				scrollToBottom(chatContent);
+			}
 		});
 
 		socket.on('event:chats.userStopTyping', function(withUid) {
@@ -181,7 +183,7 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 				});
 
 				translator.translate('[[modules:chat.user_typing, ' + username + ']]', function(translated) {
-					chatModal.find('.user-typing').text(translated);
+					chatModal.find('.user-typing .text').text(translated);
 				});
 
 
@@ -286,7 +288,7 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 		var time = '<span class="chat-timestamp pull-right timeago" title="' + utils.toISOString(data.timestamp) + '"></span> ';
 
 
-		if (data.fromuid !== chatContent.children().last().attr('data-uid')) {
+		if (data.fromuid !== chatContent.children('.chat-message').last().attr('data-uid')) {
 			var userPicture = $('<a href="/user/' + data.fromUser.userslug + '"><img class="chat-user-image" src="' + data.fromUser.picture + '"></a>');
 			var userName = $('<strong><span class="chat-user"> '+ data.fromUser.username + '</span></strong>');
 			userName.toggleClass('chat-user-you', isYou);
