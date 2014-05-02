@@ -31,7 +31,9 @@ Each plugin package contains a configuration file called ``plugin.json``. Here i
         "description": "Your plugin's description",
         "url": "Absolute URL to your plugin or a Github repository",
         "library": "./my-plugin.js",
-        "staticDir": "/assets",
+        "staticDirs": {
+            "images": "public/images"
+        },
         "less": [
             "assets/style.less"
         ],
@@ -45,7 +47,9 @@ The ``id`` property is a unique name that identifies the plugin.
 
 The ``library`` property is a relative path to the library in your package. It is automatically loaded by NodeBB (if the plugin is activated).
 
-The ``staticDir`` property is a path (relative to your plugin's root) to a directory that NodeBB will expose to the public at the route ``/plugins/{YOUR-PLUGIN-ID}``.
+The ``staticDirs`` property is an object hash that maps out paths (relative to your plugin's root) to a directory that NodeBB will expose to the public at the route ``/plugins/{YOUR-PLUGIN-ID}``.
+
+* e.g. The ``staticDirs`` hash in the sample configuration maps ``/plugins/my-plugin/images`` to ``/path/to/your/plugin/public/images``
 
 The ``less`` property contains an array of paths (relative to your plugin's directory), that will be precompiled into the CSS served by NodeBB.
 
