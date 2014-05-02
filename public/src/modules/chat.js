@@ -166,6 +166,20 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 					handle: '.modal-header'
 				});
 
+				chatModal.find('.modal-content').resizable({
+					minHeight: 250,
+					minWidth: 400
+				});
+
+				chatModal.find('.modal-content').on('resize', function(event, ui) {
+					var totalHeight = chatModal.find('.modal-content').outerHeight() - chatModal.find('.modal-header').outerHeight();
+					var padding = parseInt(chatModal.find('.modal-body').css('padding-top'), 10) + parseInt(chatModal.find('.modal-body').css('padding-bottom'), 10);
+					var contentMargin = parseInt(chatModal.find('#chat-content').css('margin-top'), 10) + parseInt(chatModal.find('#chat-content').css('margin-bottom'), 10);
+					var inputGroupHeight = chatModal.find('.input-group').outerHeight();
+
+					chatModal.find('#chat-content').css('height', totalHeight - padding - contentMargin - inputGroupHeight);
+				});
+
 				chatModal.find('#chat-with-name').html(username);
 
 				chatModal.find('#chat-close-btn').on('click', function() {
