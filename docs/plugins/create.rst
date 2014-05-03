@@ -49,7 +49,7 @@ The ``library`` property is a relative path to the library in your package. It i
 
 The ``staticDirs`` property is an object hash that maps out paths (relative to your plugin's root) to a directory that NodeBB will expose to the public at the route ``/plugins/{YOUR-PLUGIN-ID}``.
 
-* e.g. The ``staticDirs`` hash in the sample configuration maps ``/plugins/my-plugin/images`` to ``/path/to/your/plugin/public/images``
+* e.g. The ``staticDirs`` hash in the sample configuration maps ``/path/to/your/plugin/public/images`` to ``/plugins/my-plugin/images``
 
 The ``less`` property contains an array of paths (relative to your plugin's directory), that will be precompiled into the CSS served by NodeBB.
 
