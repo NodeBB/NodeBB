@@ -4,9 +4,10 @@
     "topic_id_placeholder": "Entrer l'ID du Sujet",
     "no_topics_found": "Aucun sujet trouvé !",
     "no_posts_found": "Aucun message trouvé!",
-    "post_is_deleted": "This post is deleted!",
+    "post_is_deleted": "Ce message a été supprimé!",
     "profile": "Profil",
-    "posted_by": "Posted by %1",
+    "posted_by": "Posté par %1",
+    "posted_by_guest": "Posted by Guest",
     "chat": "Chat",
     "notify_me": "Être notifié des réponses dans ce sujet",
     "quote": "Citer",
@@ -40,7 +41,7 @@
     "thread_tools.lock": "Verrouiller le sujet",
     "thread_tools.unlock": "Déverouiller le sujet",
     "thread_tools.move": "Déplacer le sujet",
-    "thread_tools.move_all": "Move All",
+    "thread_tools.move_all": "Déplacer tout",
     "thread_tools.fork": "Scinder le sujet",
     "thread_tools.delete": "Supprimer le sujet",
     "thread_tools.delete_confirm": "Êtes vous sûr de vouloir supprimer ce sujet?",
@@ -87,7 +88,7 @@
     "composer.thumb_remove": "Effacer les champs",
     "composer.drag_and_drop_images": "Glisser-déposer ici les images",
     "composer.upload_instructions": "Uploader des images par glisser-déposer.",
-    "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
-    "more_users": "%1 more user(s)",
-    "more_guests": "%1 more guest(s)"
+    "more_users_and_guests": "%1 autre(s) utilisateur(s) et %2 invité(s)",
+    "more_users": "%1 autre(s) utilisateur(s)",
+    "more_guests": "%1 autre(s) invité(s)"
 }

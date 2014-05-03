@@ -4,9 +4,10 @@
     "topic_id_placeholder": "Başlık ID gir",
     "no_topics_found": "Hiç konu bulunamadı!",
     "no_posts_found": "Hiç bir ileti bulunamadı!",
-    "post_is_deleted": "This post is deleted!",
+    "post_is_deleted": "Bu ileti silinmiş!",
     "profile": "Profil",
-    "posted_by": "Posted by %1",
+    "posted_by": "%1 tarafından gönderildi",
+    "posted_by_guest": "Posted by Guest",
     "chat": "Sohbet",
     "notify_me": "Bu konudaki cevaplardan haberdar ol",
     "quote": "Alıntı",
@@ -40,7 +41,7 @@
     "thread_tools.lock": "Başlığı Kitle",
     "thread_tools.unlock": "Başlığı Aç",
     "thread_tools.move": "Başlığı Taşı",
-    "thread_tools.move_all": "Move All",
+    "thread_tools.move_all": "Hepsini Taşı",
     "thread_tools.fork": "Başlığı Ayır",
     "thread_tools.delete": "Başlığı Sil",
     "thread_tools.delete_confirm": "Bu başlığı gerçekten silmek istiyor musun?",
@@ -87,7 +88,7 @@
     "composer.thumb_remove": "Alanları temizle",
     "composer.drag_and_drop_images": "Resimleri buraya taşıyıp bırakabilirsiniz",
     "composer.upload_instructions": "Resimleri taşıyıp bırakarak yükleyebilirsiniz.",
-    "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
-    "more_users": "%1 more user(s)",
-    "more_guests": "%1 more guest(s)"
+    "more_users_and_guests": "%1 tane daha kullanıcı ve %2 ziyaretçi",
+    "more_users": "%1 tane daha kullanıcı",
+    "more_guests": "%1 tane daha ziyaretçi"
 }
