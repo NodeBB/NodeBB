@@ -1,12 +1,8 @@
-'use strict';
-
-/* globals define, app, socket, ajaxify, templates, translator, utils */
-
-define(['forum/accountheader'], function(header) {
-	var AccountPosts = {},
+define(['forum/account/header'], function(header) {
+	var Favourites = {},
 		loadingMore = false;
 
-	AccountPosts.init = function() {
+	Favourites.init = function() {
 		header.init();
 
 		$('.user-favourite-posts img').addClass('img-responsive');
@@ -20,8 +16,7 @@ define(['forum/accountheader'], function(header) {
 
 	function loadMore() {
 		loadingMore = true;
-		socket.emit('posts.loadMoreUserPosts', {
-			uid: $('.account-username-box').attr('data-uid'),
+		socket.emit('posts.loadMoreFavourites', {
 			after: $('.user-favourite-posts').attr('data-nextstart')
 		}, function(err, data) {
 			if(err) {
@@ -29,7 +24,7 @@ define(['forum/accountheader'], function(header) {
 			}
 
 			if (data.posts && data.posts.length) {
-				onPostsLoaded(data.posts);
+				onTopicsLoaded(data.posts);
 				$('.user-favourite-posts').attr('data-nextstart', data.nextStart);
 			}
 
@@ -37,11 +32,12 @@ define(['forum/accountheader'], function(header) {
 		});
 	}
 
-	function onPostsLoaded(posts) {
-		ajaxify.loadTemplate('accountposts', function(accountposts) {
-			var html = templates.parse(templates.getBlock(accountposts, 'posts'), {posts: posts});
+	function onTopicsLoaded(posts) {
+		ajaxify.loadTemplate('favourites', function(favouritesTemplate) {
+			var html = templates.parse(templates.getBlock(favouritesTemplate, 'posts'), {posts: posts});
 
 			translator.translate(html, function(translatedHTML) {
+				$('#category-no-topics').remove();
 
 				html = $(translatedHTML);
 				html.find('img').addClass('img-responsive');
@@ -53,5 +49,5 @@ define(['forum/accountheader'], function(header) {
 		});
 	}
 
-	return AccountPosts;
+	return Favourites;
 });

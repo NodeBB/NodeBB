@@ -2,7 +2,7 @@
 
 /* globals define, ajaxify, app, utils, socket, translator*/
 
-define(['forum/accountheader'], function(header) {
+define(['forum/account/header'], function(header) {
 	var Account = {},
 		yourid,
 		theirid,

@@ -2,7 +2,7 @@
 
 /* globals define, ajaxify, socket, app, config, utils, translator */
 
-define(['forum/accountheader', 'uploader'], function(header, uploader) {
+define(['forum/account/header', 'uploader'], function(header, uploader) {
 	var AccountEdit = {},
 		gravatarPicture = '',
 		uploadedPicture = '',

@@ -2,7 +2,7 @@
 
 /* globals define, app, socket, ajaxify, templates, translator, utils */
 
-define(['forum/accountheader'], function(header) {
+define(['forum/account/header'], function(header) {
 	var AccountTopics = {},
 		loadingMore = false;
 
