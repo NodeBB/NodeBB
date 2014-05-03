@@ -19,6 +19,13 @@ define(function() {
 
 		modal.on('shown.bs.modal', onMoveModalShown);
 		$('#move-confirm').hide();
+
+		if (tids.length > 1) {
+			translator.translate('[[topic:move_topics]]', function(translated) {
+				modal.find('.modal-header h3').text(translated);
+			});
+		}
+
 		modal.modal('show');
 	};
 
@@ -93,9 +100,10 @@ define(function() {
 			if(parseInt(info.cid, 10) === parseInt(Move.currentCid, 10)) {
 				continue;
 			}
+
 			$('<li />')
 				.css({background: info.bgColor, color: info.color || '#fff'})
-				.addClass(info.disabled === '1' ? ' disabled' : '')
+				.toggleClass('disabled', info.disabled)
 				.attr('data-cid', info.cid)
 				.html('<i class="fa ' + info.icon + '"></i> ' + info.name)
 				.appendTo(categoriesEl);
