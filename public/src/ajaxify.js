@@ -83,13 +83,13 @@ var ajaxify = ajaxify || {};
 
 				app.processPage();
 
-				ajaxify.widgets.render(tpl_url, url, function(err) {
-					$('#content, #footer').stop(true, true).removeClass('ajaxifying');
-					ajaxify.initialLoad = false;
+				ajaxify.widgets.render(tpl_url, url);
 
-					app.refreshTitle(url);
-					$(window).trigger('action:ajaxify.end', {url: url});
-				});
+				$('#content, #footer').stop(true, true).removeClass('ajaxifying');
+				ajaxify.initialLoad = false;
+
+				app.refreshTitle(url);
+				$(window).trigger('action:ajaxify.end', {url: url});
 			}, url);
 
 			return true;

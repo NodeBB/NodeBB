@@ -8,6 +8,7 @@ var	SocketPlugins = {};
 	How? From your plugin:
 
 		var SocketPlugins = module.parent.require('./socket.io/plugins');
+		SocketPlugins.myPlugin = {};
 		SocketPlugins.myPlugin.myMethod = function() { ... };
 
 	Be a good lad and namespace your methods.

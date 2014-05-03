@@ -50,7 +50,7 @@
     "posted_ago": "posted %1",
     "posted_in_ago_by_guest": "posted in %1 %2 by Guest",
     "posted_in_ago_by": "posted in %1 %2 by %3",
-    "posted_in_ago": "posted in %1",
+    "posted_in_ago": "posted in %1 %2",
     "replied_ago": "replied %1",
     "user_posted_ago": "%1 posted %2",
     "guest_posted_ago": "Guest posted %1",
@@ -63,8 +63,8 @@
     "dnd": "Nie przeszkadzać",
     "invisible": "Niewidoczny",
     "offline": "Niedostępny",
-    "email": "Email",
-    "language": "Language",
+    "email": "Adres e-mail",
+    "language": "Język",
     "guest": "Guest",
     "guests": "Guests"
 }

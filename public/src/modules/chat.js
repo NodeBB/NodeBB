@@ -88,10 +88,12 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 		socket.on('event:chats.userStartTyping', function(withUid) {
 			var modal = module.getModal(withUid);
 			var chatContent = modal.find('#chat-content');
-			modal.find('.user-typing')
-				.removeClass('hide')
-				.appendTo(chatContent);
-			scrollToBottom(chatContent);
+			var atBottom = chatContent[0].scrollHeight - chatContent.scrollTop() === chatContent.innerHeight();
+
+			modal.find('.user-typing').removeClass('hide').appendTo(chatContent);
+			if (atBottom) {
+				scrollToBottom(chatContent);
+			}
 		});
 
 		socket.on('event:chats.userStopTyping', function(withUid) {
@@ -164,6 +166,20 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 					handle: '.modal-header'
 				});
 
+				chatModal.find('.modal-content').resizable({
+					minHeight: 250,
+					minWidth: 400
+				});
+
+				chatModal.find('.modal-content').on('resize', function(event, ui) {
+					var totalHeight = chatModal.find('.modal-content').outerHeight() - chatModal.find('.modal-header').outerHeight();
+					var padding = parseInt(chatModal.find('.modal-body').css('padding-top'), 10) + parseInt(chatModal.find('.modal-body').css('padding-bottom'), 10);
+					var contentMargin = parseInt(chatModal.find('#chat-content').css('margin-top'), 10) + parseInt(chatModal.find('#chat-content').css('margin-bottom'), 10);
+					var inputGroupHeight = chatModal.find('.input-group').outerHeight();
+
+					chatModal.find('#chat-content').css('height', totalHeight - padding - contentMargin - inputGroupHeight);
+				});
+
 				chatModal.find('#chat-with-name').html(username);
 
 				chatModal.find('#chat-close-btn').on('click', function() {
@@ -181,7 +197,7 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 				});
 
 				translator.translate('[[modules:chat.user_typing, ' + username + ']]', function(translated) {
-					chatModal.find('.user-typing').text(translated);
+					chatModal.find('.user-typing .text').text(translated);
 				});
 
 
@@ -286,7 +302,7 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 		var time = '<span class="chat-timestamp pull-right timeago" title="' + utils.toISOString(data.timestamp) + '"></span> ';
 
 
-		if (data.fromuid !== chatContent.children().last().attr('data-uid')) {
+		if (data.fromuid !== chatContent.children('.chat-message').last().attr('data-uid')) {
 			var userPicture = $('<a href="/user/' + data.fromUser.userslug + '"><img class="chat-user-image" src="' + data.fromUser.picture + '"></a>');
 			var userName = $('<strong><span class="chat-user"> '+ data.fromUser.username + '</span></strong>');
 			userName.toggleClass('chat-user-you', isYou);

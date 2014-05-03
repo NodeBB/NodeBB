@@ -4,9 +4,10 @@
     "topic_id_placeholder": "Topic ID eingeben",
     "no_topics_found": "Keine passende Themen gefunden.",
     "no_posts_found": "Keine Beiträge gefunden!",
-    "post_is_deleted": "This post is deleted!",
+    "post_is_deleted": "Dieser Beitrag wurde gelöscht!",
     "profile": "Profil",
-    "posted_by": "Posted by %1",
+    "posted_by": "Geschrieben von %1",
+    "posted_by_guest": "Posted by Guest",
     "chat": "Chat",
     "notify_me": "Werde bei neues Antworten auf dieses Thema benachrichtigt.",
     "quote": "zitieren",
@@ -40,7 +41,7 @@
     "thread_tools.lock": "Thema schließen",
     "thread_tools.unlock": "Thema öffnen",
     "thread_tools.move": "Thema verschieben",
-    "thread_tools.move_all": "Move All",
+    "thread_tools.move_all": "Alle verschieben",
     "thread_tools.fork": "Thema aufspalten",
     "thread_tools.delete": "Thema löschen",
     "thread_tools.delete_confirm": "Sind Sie sicher, dass Sie dieses Thema löschen möchten?",
@@ -87,7 +88,7 @@
     "composer.thumb_remove": "Felder leeren",
     "composer.drag_and_drop_images": "Bilder hier reinziehen",
     "composer.upload_instructions": "Zum Hochladen Bilder hier reinziehen.",
-    "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
-    "more_users": "%1 more user(s)",
-    "more_guests": "%1 more guest(s)"
+    "more_users_and_guests": "%1 weitere(r) Nutzer und %2 Gäste",
+    "more_users": "%1 weitere(r) Nutzer",
+    "more_guests": "%1 weitere Gäste"
 }

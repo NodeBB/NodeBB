@@ -466,6 +466,7 @@ var fs = require('fs'),
 
 	Meta.settings.set = function(hash, values, callback) {
 		hash = 'settings:' + hash;
+		plugins.fireHook('action:settings.set', hash, values);
 		db.setObject(hash, values, callback);
 	};
 
