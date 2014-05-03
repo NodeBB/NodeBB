@@ -4,9 +4,10 @@
     "topic_id_placeholder": "Sisesta teema ID",
     "no_topics_found": "Teemasid ei leitud!",
     "no_posts_found": "Postitusi ei leitud!",
-    "post_is_deleted": "This post is deleted!",
+    "post_is_deleted": "See postitus on kustutatud!",
     "profile": "Profiil",
-    "posted_by": "Posted by %1",
+    "posted_by": "Postitatud %1 poolt",
+    "posted_by_guest": "Posted by Guest",
     "chat": "Vestlus",
     "notify_me": "Saa teateid uutest postitustest selles teemas",
     "quote": "Tsiteeri",
@@ -40,7 +41,7 @@
     "thread_tools.lock": "Lukusta teema",
     "thread_tools.unlock": "Eemalda märgistatud teema",
     "thread_tools.move": "Liiguta teema",
-    "thread_tools.move_all": "Move All",
+    "thread_tools.move_all": "Liiguta kõik",
     "thread_tools.fork": "Fork Topic",
     "thread_tools.delete": "Kustuta teema",
     "thread_tools.delete_confirm": "Oled kindel, et soovid kustutada antud teema?",
@@ -87,7 +88,7 @@
     "composer.thumb_remove": "Puhasta väljad",
     "composer.drag_and_drop_images": "Lohista pildid siia",
     "composer.upload_instructions": "Lae üles pilte lohistades need siia.",
-    "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
-    "more_users": "%1 more user(s)",
-    "more_guests": "%1 more guest(s)"
+    "more_users_and_guests": "%1 kasutaja(t) ja %2 külalist",
+    "more_users": "veel %1 kasutaja(t)",
+    "more_guests": "veel %1 külalist"
 }

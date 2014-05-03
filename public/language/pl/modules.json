@@ -3,5 +3,5 @@
     "chat.placeholder": "napisz wiadomość tutaj i naciśnij enter",
     "chat.send": "Wyślij",
     "chat.no_active": "Nie prowadzisz obecnie żadnych rozmów.",
-    "chat.user_typing": "%1 is typing ..."
+    "chat.user_typing": "%1 pisze..."
 }
