@@ -1,6 +1,6 @@
 {
   "name": "nodebb",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "dependencies": {
     "async": {
       "version": "0.2.10",
@@ -309,7 +309,7 @@
       }
     },
     "npm": {
-      "version": "1.4.8",
+      "version": "1.4.9",
       "from": "npm@^1.4.6",
       "dependencies": {
         "abbrev": {
@@ -452,8 +452,8 @@
           "resolved": "https://registry.npmjs.org/npm-install-checks/-/npm-install-checks-1.0.0.tgz"
         },
         "npm-registry-client": {
-          "version": "0.4.7",
-          "from": "npm-registry-client@latest"
+          "version": "0.4.8",
+          "from": "npm-registry-client@~0.4.7"
         },
         "npm-user-validate": {
           "version": "0.0.3",
