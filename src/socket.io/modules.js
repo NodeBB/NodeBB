@@ -29,7 +29,7 @@ var	posts = require('../posts'),
 
 var	stopTracking = function(replyObj) {
 		if (isLast(replyObj.uid, replyObj.tid)) {
-			server.in('topic_' + replyObj.tid).emit('event:topic.replyStop', replyObj.uid);
+			server.in('topic_' + replyObj.tid).emit('event:topic.toggleReply', {uid: replyObj.uid, isReplying: false});
 		}
 
 		clearInterval(replyObj.timer);
@@ -106,7 +106,7 @@ SocketModules.composer.renderHelp = function(socket, data, callback) {
 SocketModules.composer.register = function(socket, data) {
 	var	now = Date.now();
 
-	server.in('topic_' + data.tid).emit('event:topic.replyStart', data.uid);
+	server.in('topic_' + data.tid).emit('event:topic.toggleReply', {uid: data.uid, isReplying: true});
 
 	data.socket = socket;
 	data.lastPing = now;

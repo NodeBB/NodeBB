@@ -77,7 +77,7 @@ function favouriteCommand(command, eventName, socket, data, callback) {
 				return callback(err);
 			}
 
-			socket.emit('posts.' + command, data.pid);
+			socket.emit('posts.' + command, result);
 
 			if(data.room_id && result && eventName) {
 				websockets.in(data.room_id).emit('event:' + eventName, result);

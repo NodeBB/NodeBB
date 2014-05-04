@@ -11,17 +11,6 @@ var ajaxify = ajaxify || {};
 		availableTemplates = null,
 		apiXHR = null;
 
-	var events = [];
-
-	ajaxify.register_events = function (new_page_events) {
-		for (var i = 0, ii = events.length; i < ii; i++) {
-			socket.removeAllListeners(events[i]); // optimize this to user removeListener(event, listener) instead.
-		}
-
-		events = new_page_events;
-	};
-
-
 	window.onpopstate = function (event) {
 		if (event !== null && event.state && event.state.url !== undefined && !ajaxify.initialLoad) {
 			ajaxify.go(event.state.url, function() {

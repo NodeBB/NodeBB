@@ -1,3 +1,7 @@
+'use strict';
+
+/* globals define, app, socket, ajaxify, templates, translator, utils */
+
 define(function() {
 	var	Recent = {};
 
@@ -14,14 +18,18 @@ define(function() {
 		return active;
 	}
 
+	$(window).on('action:ajaxify.start', function(ev, data) {
+		if(data.url.indexOf('recent') !== 0) {
+			Recent.removeListeners();
+		}
+	});
+
 	Recent.init = function() {
 		app.enterRoom('recent_posts');
 
 		Recent.watchForNewPosts();
 
-
 		active = Recent.selectActivePill();
-
 
 		$('#new-topics-alert').on('click', function() {
 			$(this).addClass('hide');
@@ -48,28 +56,31 @@ define(function() {
 		});
 
 		return active;
-	}
+	};
 
 	Recent.watchForNewPosts = function () {
-
 		newPostCount = 0;
 		newTopicCount = 0;
 
-		ajaxify.register_events([
-			'event:new_topic',
-			'event:new_post'
-		]);
+		socket.on('event:new_topic', onNewTopic);
+		socket.on('event:new_post', onNewPost);
+	};
 
-		socket.on('event:new_topic', function(data) {
-			++newTopicCount;
-			Recent.updateAlertText();
-		});
-
-		socket.on('event:new_post', function(data) {
-			++newPostCount;
-			Recent.updateAlertText();
-		});
+	function onNewTopic(data) {
+		++newTopicCount;
+		Recent.updateAlertText();
 	}
+
+	function onNewPost(data) {
+		++newPostCount;
+		Recent.updateAlertText();
+	}
+
+	Recent.removeListeners = function() {
+		console.log('removing');
+		socket.removeListener('event:new_topic', onNewTopic);
+		socket.removeListener('event:new_post', onNewPost);
+	};
 
 	Recent.updateAlertText = function() {
 		var text = 'There';
@@ -90,7 +101,7 @@ define(function() {
 
 		$('#new-topics-alert').html(text).removeClass('hide').fadeIn('slow');
 		$('#category-no-topics').addClass('hide');
-	}
+	};
 
 	Recent.loadMoreTopics = function() {
 		if(!$('#topics-container').length) {
@@ -113,7 +124,7 @@ define(function() {
 
 			loadingMoreTopics = false;
 		});
-	}
+	};
 
 	Recent.onTopicsLoaded = function(templateName, topics, showSelect) {
 		ajaxify.loadTemplate(templateName, function(template) {
@@ -129,7 +140,7 @@ define(function() {
 				utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			});
 		});
-	}
+	};
 
 	return Recent;
 });

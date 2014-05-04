@@ -286,7 +286,7 @@ function updateRoomBrowsingText(roomName) {
 				return user.status !== 'offline';
 			});
 
-			io.sockets.in(roomName).emit('get_users_in_room', {
+			io.sockets.in(roomName).emit('event:update_users_in_room', {
 				users: users,
 				anonymousCount: anonymousCount,
 				room: roomName

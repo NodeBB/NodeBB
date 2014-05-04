@@ -91,6 +91,16 @@ define(['forum/topic/move', 'topicSelect'], function(move, topicSelect) {
 		socket.on('event:topic_moved', onTopicMoved);
 	};
 
+	CategoryTools.removeListeners = function() {
+		socket.removeListener('event:topic_deleted', setDeleteState);
+		socket.removeListener('event:topic_restored', setDeleteState);
+		socket.removeListener('event:topic_locked', setLockedState);
+		socket.removeListener('event:topic_unlocked', setLockedState);
+		socket.removeListener('event:topic_pinned', setPinnedState);
+		socket.removeListener('event:topic_unpinned', setPinnedState);
+		socket.removeListener('event:topic_moved', onTopicMoved);
+	};
+
 	function closeDropDown() {
 		$('.thread-tools.open').find('.dropdown-toggle').trigger('click');
 	}
