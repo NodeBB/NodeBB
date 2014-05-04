@@ -27,7 +27,7 @@ function trim(obj1, obj2) {
 
 function mergeSettings(cfg, defCfg) {
 	if (typeof cfg._settings !== typeof defCfg || typeof defCfg !== 'object') {
-		return cfg._settings = defCfg;
+		cfg._settings = defCfg;
 	} else {
 		expandObjBy(cfg._settings, defCfg);
 		trim(cfg._settings, defCfg);
@@ -98,22 +98,6 @@ Settings.prototype.persist = function (callback) {
 	}, function () {
 		if (typeof callback === 'function') {
 			callback.apply(_this, arguments || []);
-		}
-	});
-	return this;
-};
-
-/**
- Persists the settings if no settings are saved.
- @param callback Gets called when done.
- */
-Settings.prototype.persistOnEmpty = function (callback) {
-	var _this = this;
-	meta.settings.get(this.hash, function (err, settings) {
-		if (!settings._settings) {
-			_this.persist(callback);
-		} else if (typeof callback === 'function') {
-			callback.call(_this);
 		}
 	});
 	return this;
