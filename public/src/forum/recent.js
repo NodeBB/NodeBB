@@ -77,7 +77,6 @@ define(function() {
 	}
 
 	Recent.removeListeners = function() {
-		console.log('removing');
 		socket.removeListener('event:new_topic', onNewTopic);
 		socket.removeListener('event:new_post', onNewPost);
 	};
