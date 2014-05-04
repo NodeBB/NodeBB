@@ -63,6 +63,10 @@ var async = require('async'),
 			}
 
 			user.getNameSlugPicture(topic.uid, function(err, userData) {
+				if (err) {
+					return callback(err);
+				}
+
 				topic.user = userData;
 				callback(err, topic);
 			});
