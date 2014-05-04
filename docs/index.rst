@@ -73,6 +73,7 @@ Plugin System
 
     plugins/create
     plugins/hooks
+    plugins/settings
 
 Widgets System
 --------------
