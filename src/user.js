@@ -33,14 +33,25 @@ var bcrypt = require('bcryptjs'),
 	require('./user/jobs')(User);
 
 	User.getUserField = function(uid, field, callback) {
-		db.getObjectField('user:' + uid, field, callback);
+		User.getUserFields(uid, [field], function(err, user) {
+			callback(err, user ? user[field] : null);
+		});
 	};
 
 	User.getUserFields = function(uid, fields, callback) {
-		db.getObjectFields('user:' + uid, fields, callback);
+		User.getMultipleUserFields([uid], fields, function(err, users) {
+			callback(err, users ? users[0] : null);
+		});
 	};
 
 	User.getMultipleUserFields = function(uids, fields, callback) {
+		var fieldsToRemove = [];
+		function addField(field) {
+			if (fields.indexOf(field) === -1) {
+				fields.push(field);
+				fieldsToRemove.push(field);
+			}
+		}
 
 		if (!Array.isArray(uids) || !uids.length) {
 			return callback(null, []);
@@ -50,7 +61,21 @@ var bcrypt = require('bcryptjs'),
 			return 'user:' + uid;
 		});
 
-		db.getObjectsFields(keys, fields, callback);
+		addField('uid');
+
+		if (fields.indexOf('picture') !== -1) {
+			addField('email');
+			addField('gravatarpicture');
+			addField('uploadedpicture');
+		}
+
+		db.getObjectsFields(keys, fields, function(err, users) {
+			if (err) {
+				return callback(err);
+			}
+
+			callback(null, modifyUserData(users, fieldsToRemove));
+		});
 	};
 
 	User.getUserData = function(uid, callback) {
@@ -74,24 +99,42 @@ var bcrypt = require('bcryptjs'),
 				return callback(err);
 			}
 
-			users.forEach(function(user) {
-				if (user) {
-					if (user.password) {
-						user.password = null;
-						user.hasPassword = true;
-					} else {
-						user.hasPassword = false;
-					}
-
-					if (user.picture === user.uploadedpicture) {
-						user.picture = nconf.get('relative_path') + user.picture;
-					}
-				}
-			});
-
-			callback(null, users);
+			callback(null, modifyUserData(users, []));
 		});
 	};
+
+	function modifyUserData(users, fieldsToRemove) {
+		users.forEach(function(user) {
+			if (!user) {
+				return;
+			}
+
+			user.hasPassword = !!user.password;
+			if (user.password) {
+				user.password = null;
+			}
+
+			if (parseInt(user.uid, 10) === 0) {
+				user.username = '[[global:guest]]';
+				user.userslug = '';
+			}
+
+			if (user.picture) {
+				if (user.picture === user.uploadedpicture) {
+					user.picture = nconf.get('relative_path') + user.picture;
+				} else {
+					user.picture = User.createGravatarURLFromEmail(user.email);
+				}
+			} else {
+				user.picture = User.createGravatarURLFromEmail('');
+			}
+
+			for(var i=0; i<fieldsToRemove.length; ++i) {
+				user[fieldsToRemove[i]] = undefined;
+			}
+		});
+		return users;
+	}
 
 	User.updateLastOnlineTime = function(uid, callback) {
 		User.getUserField(uid, 'status', function(err, status) {
@@ -177,7 +220,7 @@ var bcrypt = require('bcryptjs'),
 	User.decrementUserFieldBy = function(uid, field, value, callback) {
 		db.incrObjectFieldBy('user:' + uid, field, -value, function(err, value) {
 			plugins.fireHook('action:user.set', field, value, 'decrement');
-			
+
 			if (typeof callback === 'function') {
 				callback(err, value);
 			}
@@ -301,20 +344,6 @@ var bcrypt = require('bcryptjs'),
 	User.count = function(callback) {
 		db.getObjectField('global', 'userCount', function(err, count) {
 			callback(err, count ? count : 0);
-		});
-	};
-
-	User.getNameSlugPicture = function(uid, callback) {
-		User.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, data) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, {
-				username: data.username || '[[global:guest]]',
-				userslug: data.userslug || '',
-				picture: data.picture || User.createGravatarURLFromEmail('')
-			});
 		});
 	};
 

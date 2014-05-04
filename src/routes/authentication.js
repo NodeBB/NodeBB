@@ -10,6 +10,7 @@
 		meta = require('./../meta'),
 		user = require('./../user'),
 		plugins = require('./../plugins'),
+		db = require('../database'),
 		utils = require('./../../public/src/utils'),
 
 		login_strategies = [];
@@ -174,7 +175,7 @@
 				return next(null, false, '[[error:no-user]]');
 			}
 
-			user.getUserFields(uid, ['password', 'banned'], function(err, userData) {
+			db.getObjectFields('user:' + uid, ['password', 'banned'], function(err, userData) {
 				if (err) {
 					return next(err);
 				}

@@ -283,7 +283,7 @@ var db = require('./database'),
 
 			async.parallel({
 				user: function(next) {
-					user.getNameSlugPicture(post.uid, next);
+					user.getUserFields(post.uid, ['username', 'userslug', 'picture'], next);
 				},
 				topicCategory: function(next) {
 					topics.getTopicFields(post.tid, ['title', 'cid', 'slug', 'deleted'], function(err, topicData) {

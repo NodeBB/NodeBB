@@ -62,13 +62,13 @@ var async = require('async'),
 				return callback(err || new Error('[[error:no-topic]]'));
 			}
 
-			user.getNameSlugPicture(topic.uid, function(err, userData) {
+			user.getUserFields(topic.uid, ['username', 'userslug', 'picture'], function(err, userData) {
 				if (err) {
 					return callback(err);
 				}
 
 				topic.user = userData;
-				callback(err, topic);
+				callback(null, topic);
 			});
 		});
 	};
@@ -211,8 +211,7 @@ var async = require('async'),
 					if (userCache[topicData.uid]) {
 						return next(null, userCache[topicData.uid]);
 					}
-
-					user.getNameSlugPicture(topicData.uid, next);
+					user.getUserFields(topicData.uid, ['username', 'userslug', 'picture'], next);
 				}
 			}, function(err, topicInfo) {
 				if(err) {
@@ -325,7 +324,7 @@ var async = require('async'),
 					return callback(new Error('[[error:no-teaser]]'));
 				}
 
-				user.getNameSlugPicture(postData.uid, function(err, userData) {
+				user.getUserFields(postData.uid, ['username', 'userslug', 'picture'], function(err, userData) {
 					if (err) {
 						return callback(err);
 					}
