@@ -271,9 +271,9 @@ define(function () {
 		 @param callback The callback to call when done.
 		 */
 		persistSettings: function (hash, settings, notify, callback) {
-			if (settings != null && settings._settings != null && typeof settings._settings !== 'string') {
+			if (settings != null && settings._ != null && typeof settings._ !== 'string') {
 				settings = helper.deepClone(settings);
-				settings._settings = JSON.stringify(settings._settings);
+				settings._ = JSON.stringify(settings._);
 			}
 			socket.emit('admin.settings.set', {
 				hash: hash,
@@ -307,7 +307,7 @@ define(function () {
 		 */
 		use: function (settings) {
 			try {
-				settings._settings = JSON.parse(settings._settings);
+				settings._ = JSON.parse(settings._);
 			} catch (_error) {}
 			Settings.cfg = settings;
 		}
@@ -324,8 +324,8 @@ define(function () {
 		 @returns Object The settings.
 		 */
 		get: function () {
-			if (Settings.cfg != null && Settings.cfg._settings !== void 0) {
-				return Settings.cfg._settings;
+			if (Settings.cfg != null && Settings.cfg._ !== void 0) {
+				return Settings.cfg._;
 			}
 			return Settings.cfg;
 		},

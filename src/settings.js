@@ -26,16 +26,16 @@ function trim(obj1, obj2) {
 }
 
 function mergeSettings(cfg, defCfg) {
-	if (typeof cfg._settings !== typeof defCfg || typeof defCfg !== 'object') {
-		cfg._settings = defCfg;
+	if (typeof cfg._ !== typeof defCfg || typeof defCfg !== 'object') {
+		cfg._ = defCfg;
 	} else {
-		expandObjBy(cfg._settings, defCfg);
-		trim(cfg._settings, defCfg);
+		expandObjBy(cfg._, defCfg);
+		trim(cfg._, defCfg);
 	}
 }
 
 /**
- A class to manage Objects saved in {@link meta.settings} within property "_settings".
+ A class to manage Objects saved in {@link meta.settings} within property "_".
  Constructor, synchronizes the settings and repairs them if version differs.
  @param hash The hash to use for {@link meta.settings}.
  @param version The version of the settings, used to determine whether the saved settings may be corrupt.
@@ -71,8 +71,8 @@ Settings.prototype.sync = function (callback) {
 	var _this = this;
 	meta.settings.get(this.hash, function (err, settings) {
 		try {
-			if (settings._settings) {
-				settings._settings = JSON.parse(settings._settings);
+			if (settings._) {
+				settings._ = JSON.parse(settings._);
 			}
 		} catch (_error) {}
 		_this.cfg = settings;
@@ -87,15 +87,12 @@ Settings.prototype.sync = function (callback) {
  @param callback Gets called when done.
  */
 Settings.prototype.persist = function (callback) {
-	var conf = this.cfg._settings,
+	var conf = this.cfg._,
 		_this = this;
 	if (typeof conf === 'object') {
 		conf = JSON.stringify(conf);
 	}
-	meta.settings.set(this.hash, {
-		_settings: conf,
-		version: this.cfg.version
-	}, function () {
+	meta.settings.set(this.hash, this.createWrapper(this.cfg.v, conf), function () {
 		if (typeof callback === 'function') {
 			callback.apply(_this, arguments || []);
 		}
@@ -110,7 +107,7 @@ Settings.prototype.persist = function (callback) {
  @returns Object The setting to be used.
  */
 Settings.prototype.get = function (key, def) {
-	var obj = this.cfg._settings,
+	var obj = this.cfg._,
 		parts = (key || '').split('.'),
 		part;
 	for (var i = 0; i < parts.length; i++) {
@@ -148,8 +145,8 @@ Settings.prototype.getWrapper = function () {
  */
 Settings.prototype.createWrapper = function (version, settings) {
 	return {
-		version: version,
-		_settings: settings
+		v: version,
+		_: settings
 	};
 };
 
@@ -168,11 +165,11 @@ Settings.prototype.createDefaultWrapper = function () {
  */
 Settings.prototype.set = function (key, val) {
 	var part, obj, parts;
-	this.cfg.version = this.version;
+	this.cfg.v = this.version;
 	if (val == null || !key) {
-		this.cfg._settings = val || key;
+		this.cfg._ = val || key;
 	} else {
-		obj = this.cfg._settings;
+		obj = this.cfg._;
 		parts = key.split('.');
 		for (var i = 0, _len = parts.length - 1; i < _len; i++) {
 			if (part = parts[i]) {
@@ -202,13 +199,13 @@ Settings.prototype.reset = function (callback) {
  @param force Whether to update and persist the settings even if the versions ara equal.
  */
 Settings.prototype.checkStructure = function (callback, force) {
-	if (!force && this.cfg.version === this.version) {
+	if (!force && this.cfg.v === this.version) {
 		if (typeof callback === 'function') {
 			callback();
 		}
 	} else {
 		mergeSettings(this.cfg, this.defCfg);
-		this.cfg.version = this.version;
+		this.cfg.v = this.version;
 		this.persist(callback);
 	}
 	return this;
