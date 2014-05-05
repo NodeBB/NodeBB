@@ -10,8 +10,7 @@ define(function() {
 			var userBox = $(this).parents('.users-box');
 			var isSelected = userBox.hasClass('selected');
 			userBox.toggleClass('selected', !isSelected);
-			$(this).toggleClass('fa-square-o', isSelected);
-			$(this).toggleClass('fa-check-square-o', !isSelected);
+			$(this).toggleClass('fa-square-o', isSelected).toggleClass('fa-check-square-o', !isSelected);
 		});
 
 		function getSelectedUids() {

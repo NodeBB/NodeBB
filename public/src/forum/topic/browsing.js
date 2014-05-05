@@ -21,7 +21,7 @@ define(function() {
 					});
 
 					if (absent) {
-						$(element).remove();
+						$(element).parent().remove();
 					}
 				}
 			});
