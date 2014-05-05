@@ -189,6 +189,8 @@ module.exports = function(app, data) {
 		app.set('view engine', 'tpl');
 		app.set('views', viewsPath);
 
+		app.enable('view cache');
+
 		app.use(express.compress());
 
 		app.use(express.favicon(path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico')));
