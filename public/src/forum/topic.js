@@ -47,6 +47,8 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 
 		enableInfiniteLoading();
 
+		addBlockquoteEllipses($('.topic .post-content > blockquote'));
+
 		var bookmark = localStorage.getItem('topic:' + tid + ':bookmark');
 		if (window.location.hash) {
 			Topic.scrollToPost(window.location.hash.substr(1), true);
@@ -99,6 +101,19 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 
 		socket.emit('topics.markAsRead', {tid: tid, uid: app.uid});
 		createNewPosts(data);
+	}
+
+	function addBlockquoteEllipses(blockquotes) {
+		blockquotes.each(function() {
+			var $this = $(this);
+			if ($this.find(':hidden').length) {
+				$this.append('<i class="fa fa-ellipsis-h pointer toggle"></i>');
+			}
+		});
+		
+		$('blockquote .toggle').on('click', function() {
+			$(this).parent('blockquote').toggleClass('uncollapsed');
+		});
 	}
 
 	function enableInfiniteLoading() {
@@ -291,8 +306,12 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 			var firstPid = parseInt(data.posts[0].pid, 10);
 
 			$('#post-container li[data-pid]').each(function() {
-				if(firstPid > parseInt($(this).attr('data-pid'), 10)) {
-					after = $(this);
+				var $this = $(this);
+
+				addBlockquoteEllipses($this.find('.post-content > blockquote'));
+
+				if(firstPid > parseInt($this.attr('data-pid'), 10)) {
+					after = $this;
 					if(after.next().length && after.next().hasClass('post-bar')) {
 						after = after.next();
 					}
