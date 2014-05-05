@@ -167,7 +167,7 @@ accountsController.getAccount = function(req, res, next) {
 				postTools.parse(userData.signature, function (err, signature) {
 					userData.signature = signature;
 
-					res.render('account', userData);
+					res.render('account/profile', userData);
 				});
 			});
 		});
@@ -268,7 +268,7 @@ accountsController.getPosts = function(req, res, next) {
 			userData.posts = userPosts.posts;
 			userData.nextStart = userPosts.nextStart;
 
-			res.render('accountposts', userData);
+			res.render('account/posts', userData);
 		});
 	});
 };
@@ -296,7 +296,7 @@ accountsController.getTopics = function(req, res, next) {
 			userData.topics = userTopics.topics;
 			userData.nextStart = userTopics.nextStart;
 
-			res.render('accounttopics', userData);
+			res.render('account/topics', userData);
 		});
 	});
 };
@@ -319,7 +319,7 @@ accountsController.accountEdit = function(req, res, next) {
 			return next(err);
 		}
 
-		res.render('accountedit', userData);
+		res.render('account/edit', userData);
 	});
 };
 
@@ -371,7 +371,7 @@ accountsController.accountSettings = function(req, res, next) {
 					languages: results.languages
 				};
 
-				res.render('accountsettings', results);
+				res.render('account/settings', results);
 			});
 		});
 	});
