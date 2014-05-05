@@ -250,7 +250,8 @@ var bcrypt = require('bcryptjs'),
 				},
 				function(isAdmin, next) {
 					user.status = !user.status ? 'online' : user.status;
-					user.administrator = isAdmin ? '1':'0';
+					user.administrator = isAdmin;
+					user.banned = parseInt(user.banned, 10) === 1;
 					db.isSortedSetMember('users:online', user.uid, next);
 				},
 				function(isMember, next) {

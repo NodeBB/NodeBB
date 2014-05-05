@@ -206,8 +206,6 @@ var winston = require('winston'),
 		});
 	};
 
-
-
 	ThreadTools.toggleFollow = function(tid, uid, callback) {
 		topics.isFollowing(tid, uid, function(err, following) {
 			if (err) {
