@@ -459,9 +459,6 @@ var socket,
 			allowGuestSearching = (data.config || {}).allowGuestSearching === '1';
 
 		if (isLoggedIn) {
-			$('.nodebb-loggedin').show();
-			$('.nodebb-loggedout').hide();
-
 			$('#logged-out-menu').addClass('hide');
 			$('#logged-in-menu').removeClass('hide');
 
@@ -492,12 +489,8 @@ var socket,
 				$('#mobile-search-button').addClass("hide").hide();
 			}
 
-			$('.nodebb-loggedin').hide();
-			$('.nodebb-loggedout').show();
-
 			$('#logged-out-menu').removeClass('hide');
 			$('#logged-in-menu').addClass('hide');
-
 		}
 
 		$('#main-nav a, #user-control-list a, #logged-out-menu li a, #logged-in-menu .visible-xs').off('click').on('click', function() {
