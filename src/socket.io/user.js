@@ -87,21 +87,6 @@ SocketUser.changePicture = function(socket, data, callback) {
 
 	var type = data.type;
 
-	function updateHeader(callback) {
-		user.getUserFields(socket.uid, ['picture'], function(err, fields) {
-			if(err) {
-				return callback(err);
-			}
-
-			if (fields) {
-				fields.uid = socket.uid;
-				socket.emit('meta.updateHeader', null, fields);
-			}
-
-			callback();
-		});
-	}
-
 	function changePicture(uid, callback) {
 		user.getUserField(uid, type, function(err, picture) {
 			if(err) {
@@ -125,7 +110,7 @@ SocketUser.changePicture = function(socket, data, callback) {
 			if(err) {
 				return callback(err);
 			}
-			updateHeader(callback);
+
 		});
 		return;
 	}

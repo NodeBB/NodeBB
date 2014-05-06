@@ -207,7 +207,7 @@ middleware.renderHeader = function(req, res, callback) {
 				csrf: res.locals.csrf_token,
 				navigation: custom_header.navigation,
 				allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
-				searchEnabled: plugins.hasListeners('filter:search.query') ? true : false
+				searchEnabled: plugins.hasListeners('filter:search.query') && (uid || parseInt(meta.config.allowGuestSearching, 10) === 1)
 			},
 			escapeList = {
 				'&': '&amp;',
@@ -264,13 +264,22 @@ middleware.renderHeader = function(req, res, callback) {
 			},
 			isAdmin: function(next) {
 				user.isAdministrator(uid, next);
+			},
+			user: function(next) {
+				if (uid) {
+					user.getUserFields(uid, ['username', 'userslug', 'picture', 'status'], next);
+				} else {
+					next();
+				}
 			}
 		}, function(err, results) {
 			if (err) {
 				return next(err);
 			}
+
 			templateValues.browserTitle = results.title;
 			templateValues.isAdmin = results.isAdmin || false;
+			templateValues.user = results.user;
 
 			app.render('header', templateValues, callback);
 		});

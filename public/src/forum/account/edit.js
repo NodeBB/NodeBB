@@ -26,6 +26,7 @@ define(['forum/account/header', 'uploader'], function(header, uploader) {
 		handleImageUpload();
 		handlePasswordChange();
 		updateSignature();
+		updateImages();
 	};
 
 	function updateProfile() {
@@ -66,7 +67,7 @@ define(['forum/account/header', 'uploader'], function(header, uploader) {
 				$('.account-username-box').attr('data-userslug', data.userslug);
 
 				$('#user-profile-link').attr('href', config.relative_path + '/user/' + data.userslug);
-				$('#user-profile-link span').html(' ' + userData.username);
+				$('#user-header-name').text(userData.username);
 			}
 		});
 
@@ -106,8 +107,10 @@ define(['forum/account/header', 'uploader'], function(header, uploader) {
 
 				if (selectedImageType === 'gravatar') {
 					$('#user-current-picture').attr('src', gravatarPicture);
+					$('#user-header-picture').attr('src', gravatarPicture);
 				} else if (selectedImageType === 'uploaded') {
 					$('#user-current-picture').attr('src', uploadedPicture);
+					$('#user-header-picture').attr('src', uploadedPicture);
 				}
 			}
 		});
@@ -126,12 +129,9 @@ define(['forum/account/header', 'uploader'], function(header, uploader) {
 
 				$('#user-current-picture').attr('src', imageUrlOnServer);
 				$('#user-uploaded-picture').attr('src', imageUrlOnServer);
+				$('#user-header-picture').attr('src', imageUrlOnServer);
 
 				uploadedPicture = imageUrlOnServer;
-
-				socket.emit('meta.updateHeader', {
-					fields: ['username', 'picture', 'userslug']
-				}, app.updateHeader);
 			});
 
 			return false;
@@ -223,7 +223,7 @@ define(['forum/account/header', 'uploader'], function(header, uploader) {
 		$('#gravatar-box').toggle(!!gravatarPicture);
 		$('#uploaded-box').toggle(!!uploadedPicture);
 
-		$('#gravatar-box .fa-check').toggle(currentPicture === gravatarPicture);
+		$('#gravatar-box .fa-check').toggle(currentPicture !== uploadedPicture);
 		$('#uploaded-box .fa-check').toggle(currentPicture === uploadedPicture);
 	}
 
