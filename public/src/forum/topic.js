@@ -308,8 +308,6 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 			$('#post-container li[data-pid]').each(function() {
 				var $this = $(this);
 
-				addBlockquoteEllipses($this.find('.post-content > blockquote'));
-
 				if(firstPid > parseInt($this.attr('data-pid'), 10)) {
 					after = $this;
 					if(after.next().length && after.next().hasClass('post-bar')) {
@@ -350,6 +348,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 			}
 
 			translated.hide().fadeIn('slow');
+			addBlockquoteEllipses(translated.find('.post-content > blockquote'));
 
 			onNewPostsLoaded(translated, data.posts);
 
