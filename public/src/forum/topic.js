@@ -106,7 +106,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 	function addBlockquoteEllipses(blockquotes) {
 		blockquotes.each(function() {
 			var $this = $(this);
-			if ($this.find(':hidden').length) {
+			if ($this.find(':hidden').length && !$this.find('.toggle').length) {
 				$this.append('<i class="fa fa-ellipsis-h pointer toggle"></i>');
 			}
 		});
