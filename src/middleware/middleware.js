@@ -45,7 +45,11 @@ middleware.updateLastOnlineTime = function(req, res, next) {
 middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 	if (req.user) {
 		user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
-			res.redirect('/user/' + userslug);
+			if (res.locals.isAPI) {
+				return res.json(302, '/user/' + userslug);
+			} else {
+				res.redirect('/user/' + userslug);
+			}
 		});
 	} else {
 		next();
