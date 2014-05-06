@@ -175,14 +175,14 @@ accountsController.getAccount = function(req, res, next) {
 };
 
 accountsController.getFollowing = function(req, res, next) {
-	getFollow('following', req, res, next);
+	getFollow('account/following', 'following', req, res, next);
 };
 
 accountsController.getFollowers = function(req, res, next) {
-	getFollow('followers', req, res, next);
+	getFollow('account/followers', 'followers', req, res, next);
 };
 
-function getFollow(name, req, res, next) {
+function getFollow(route, name, req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 	var userData;
 
@@ -205,7 +205,7 @@ function getFollow(name, req, res, next) {
 		userData[name] = users;
 		userData[name + 'Count'] = users.length;
 
-		res.render(name, userData);
+		res.render(route, userData);
 	});
 }
 
@@ -240,7 +240,7 @@ accountsController.getFavourites = function(req, res, next) {
 				userData.posts = favourites.posts;
 				userData.nextStart = favourites.nextStart;
 
-				res.render('favourites', userData);
+				res.render('account/favourites', userData);
 			});
 		});
 	});
