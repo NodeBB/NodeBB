@@ -71,8 +71,6 @@ function miscRoutes(app, middleware, controllers) {
 	app.get('/api/admin/logger', controllers.admin.logger.get);
 }
 
-
-
 module.exports = function(app, middleware, controllers) {
 	mainRoutes(app, middleware, controllers);
 	userRoutes(app, middleware, controllers);
