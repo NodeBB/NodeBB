@@ -129,6 +129,10 @@ module.exports = function(app, middleware) {
 	app.namespace(nconf.get('relative_path'), function() {
 		plugins.ready(function() {
 			app.all('/api/*', middleware.updateLastOnlineTime, middleware.prepareAPI);
+			app.all('/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
+			app.all('/admin/*', middleware.admin.isAdmin);
+			app.get('/admin', middleware.admin.isAdmin);
+
 			plugins.fireHook('action:app.load', app, middleware, controllers);
 
 			adminRoutes(app, middleware, controllers);
