@@ -21,7 +21,6 @@ var async = require('async'),
 	};
 
 	Notifications.get = function(nid, uid, callback) {
-
 		db.exists('notifications:' + nid, function(err, exists) {
 			if (err) {
 				winston.error('[notifications.get] Could not retrieve nid ' + nid + ': ' + err.message);
@@ -117,7 +116,7 @@ var async = require('async'),
 		Notifications.get(nid, null, function(notif_data) {
 			async.each(uids, function(uid, next) {
 				if (parseInt(uid, 10) > 0) {
-					checkReplace(notif_data.uniqueId, uid, notif_data, function(replace) {
+					checkReplace(notif_data.uniqueId, uid, notif_data, function(err, replace) {
 						if (replace) {
 							db.sortedSetAdd('uid:' + uid + ':notifications:unread', notif_data.datetime, nid);
 							websockets.in('uid_' + uid).emit('event:new_notification', notif_data);
@@ -145,7 +144,7 @@ var async = require('async'),
 					return 'notifications:' + nid;
 				});
 
-				db.getObjectsFields(keys, ['uniqueId', 'importance'], function(err, nid_infos) {
+				db.getObjectsFields(keys, ['nid', 'uniqueId', 'importance'], function(err, nid_infos) {
 					if (err) {
 						return next(err);
 					}
@@ -158,7 +157,10 @@ var async = require('async'),
 								db.sortedSetRemove(set, nid_info.nid);
 							}
 						}
+
 					});
+
+					next();
 				});
 			});
 		}
@@ -176,7 +178,7 @@ var async = require('async'),
 					replace = true;
 				}
 
-				callback(replace);
+				callback(null, replace);
 			}
 		});
 	}
