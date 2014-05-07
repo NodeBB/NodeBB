@@ -76,7 +76,7 @@ define(function() {
 
 	navigator.updateTextAndProgressBar = function() {
 		$('#pagination').html(index + ' out of ' + count);
-		$('.progress-bar').width((index / count * 100) + '%');
+		$('.pagination-block .progress-bar').width((index / count * 100) + '%');
 	};
 
 	navigator.scrollToTop = function () {
