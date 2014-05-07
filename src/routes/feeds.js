@@ -135,7 +135,6 @@ function generateForTopics(options, set, req, res, next) {
 
 function generateTopicsFeed(feedOptions, topics) {
 
-	feedOptions.ttl = 60;
 	feedOptions.feed_url = nconf.get('url') + feedOptions.feed_url;
 	feedOptions.site_url = nconf.get('url') + feedOptions.site_url;
 
