@@ -186,7 +186,9 @@ var ajaxify = ajaxify || {};
 				if (data && data.status === 404) {
 					return ajaxify.go('404');
 				} else if (data && data.status === 403) {
-					return ajaxify.go('403');
+					app.alertError('[[global:please_log_in]]');
+					app.previousUrl = url;
+					return ajaxify.go('login');
 				} else if (data && data.status === 302) {
 					return ajaxify.go(data.responseJSON.slice(1));
 				} else if (textStatus !== "abort") {

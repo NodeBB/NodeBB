@@ -15,6 +15,10 @@ var app,
 
 
 middleware.isAdmin = function(req, res, next) {
+	if (!req.user) {
+		return res.redirect('/login?next=admin');
+	}
+
 	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
 		if (err) {
 			return next(err);

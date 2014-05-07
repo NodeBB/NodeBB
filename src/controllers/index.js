@@ -176,6 +176,9 @@ Controllers.login = function(req, res, next) {
 	data.token = res.locals.csrf_token;
 	data.showResetLink = emailersPresent;
 	data.allowLocalLogin = meta.config.allowLocalLogin === undefined || parseInt(meta.config.allowLocalLogin, 10) === 1;
+	if (req.query.next) {
+		data.previousUrl = req.query.next;
+	}
 
 	res.render('login', data);
 };

@@ -99,7 +99,7 @@ middleware.checkGlobalPrivacySettings = function(req, res, next) {
 		if (res.locals.isAPI) {
 			return res.json(403, 'not-allowed');
 		} else {
-			return res.redirect('403');
+			return res.redirect('login?next=' + req.url);
 		}
 	}
 
@@ -107,7 +107,12 @@ middleware.checkGlobalPrivacySettings = function(req, res, next) {
 };
 
 middleware.checkAccountPermissions = function(req, res, next) {
+	// This middleware ensures that only the requested user and admins can pass
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
+
+	if (callerUID === 0) {
+		return res.redirect('/login?next=' + req.url);
+	}
 
 	// this function requires userslug to be passed in. todo: /user/uploadpicture should pass in userslug I think
 	user.getUidByUserslug(req.params.userslug, function (err, uid) {

@@ -31,7 +31,7 @@
 
 	function login(req, res, next) {
 		if(meta.config.allowLocalLogin !== undefined && parseInt(meta.config.allowLocalLogin, 10) === 0) {
-			return res.send(403);
+			return res.send(404);
 		}
 
 		passport.authenticate('local', function(err, userData, info) {

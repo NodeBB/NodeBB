@@ -1,3 +1,6 @@
+"use strict";
+/* global define, app, RELATIVE_PATH */
+
 define(function() {
 	var	Login = {};
 
@@ -6,11 +9,12 @@ define(function() {
 			e.preventDefault();
 
 			var loginData = {
-				'username': $('#username').val(),
-				'password': $('#password').val(),
-				'remember': $('#remember').prop('checked'),
-				'_csrf': $('#csrf-token').val()
-			};
+					'username': $('#username').val(),
+					'password': $('#password').val(),
+					'remember': $('#remember').prop('checked'),
+					'_csrf': $('#csrf-token').val()
+				},
+				previousUrl = $('input[name="previousUrl"]').val();
 
 			$('#login').attr('disabled', 'disabled').html('Logging in...');
 			$('#login-error-notify').hide();
@@ -21,7 +25,9 @@ define(function() {
 				data: loginData,
 				success: function(data, textStatus, jqXHR) {
 					$('#login').html('Redirecting...');
-					if(!app.previousUrl) {
+					if (previousUrl) {
+						app.previousUrl = previousUrl;
+					} else if (!app.previousUrl) {
 						app.previousUrl = '/';
 					}
 
