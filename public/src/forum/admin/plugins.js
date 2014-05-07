@@ -14,7 +14,7 @@ define(function() {
 					pluginID = $(this).parents('li').attr('data-plugin-id');
 					var btn = $(this);
 					socket.emit('admin.plugins.toggleActive', pluginID, function(err, status) {
-						btn.html('<i class="fa fa-power-off"></i> ' + status.active ? 'Deactivate' : 'Activate');
+						btn.html('<i class="fa fa-power-off"></i> ' + (status.active ? 'Deactivate' : 'Activate'));
 						btn.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
 
 						app.alert({
