@@ -39,8 +39,6 @@ define(['forum/account/header'], function(header) {
 	};
 
 	function processPage() {
-		utils.addCommasToNumbers($('.account .formatted-number'));
-		utils.makeNumbersHumanReadable($('.account .human-readable-number'));
 		$('.user-recent-posts img').addClass('img-responsive');
 	}
 

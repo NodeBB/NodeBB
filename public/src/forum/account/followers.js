@@ -13,7 +13,6 @@ define(['forum/account/header'], function(header) {
 			$('#no-followers-notice').removeClass('hide');
 		}
 
-		utils.addCommasToNumbers($('.account .formatted-number'));
 	};
 
 	return Followers;

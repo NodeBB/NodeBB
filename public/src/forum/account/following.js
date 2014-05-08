@@ -9,8 +9,6 @@ define(['forum/account/header'], function(header) {
 		if (parseInt(followingCount, 10) === 0) {
 			$('#no-following-notice').removeClass('hide');
 		}
-
-		utils.addCommasToNumbers($('.account .formatted-number'));
 	};
 
 	return Following;

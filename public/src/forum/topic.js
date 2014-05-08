@@ -33,8 +33,6 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 
 		$(window).trigger('action:topic.loading');
 
-		utils.addCommasToNumbers($('.topic .formatted-number'));
-
 		app.enterRoom('topic_' + tid);
 
 		showBottomPostBar();
@@ -110,7 +108,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 				$this.append('<i class="fa fa-ellipsis-h pointer toggle"></i>');
 			}
 		});
-		
+
 		$('blockquote .toggle').on('click', function() {
 			$(this).parent('blockquote').toggleClass('uncollapsed');
 		});

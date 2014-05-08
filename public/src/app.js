@@ -296,6 +296,8 @@ var socket,
 
 		utils.makeNumbersHumanReadable($('.human-readable-number'));
 
+		utils.addCommasToNumbers($('.formatted-number'));
+
 		app.createUserTooltips();
 
 		app.createStatusTooltips();
