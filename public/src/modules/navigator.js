@@ -75,7 +75,10 @@ define(function() {
 	};
 
 	navigator.updateTextAndProgressBar = function() {
-		$('#pagination').html(index + ' out of ' + count);
+		translator.translate('[[global:pagination.out_of, ' + index + ', ' + count + ']]', function(translated) {
+			$('#pagination').html(translated);
+		});
+
 		$('.pagination-block .progress-bar').width((index / count * 100) + '%');
 	};
 

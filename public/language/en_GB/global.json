@@ -23,6 +23,7 @@
 	"close": "Close",
 
 	"pagination": "Pagination",
+	"pagination.out_of": "%1 out of %2",
 
 	"header.admin": "Admin",
 	"header.recent": "Recent",
