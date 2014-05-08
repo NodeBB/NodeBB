@@ -610,6 +610,8 @@ define(['taskbar'], function(taskbar) {
 							thumbToggleBtnEl.removeClass('hide');
 						}
 					};
+					
+				postData.title = $('<div></div>').html(postData.title).text();
 
 				if (parseInt(postData.tid, 10) > 0) {
 					translator.translate('[[topic:composer.replying_to, ' + postData.title + ']]', function(newTitle) {
