@@ -202,8 +202,6 @@ define(['uploader'], function(uploader) {
 				modified(ev.target);
 			});
 
-
-
 			$('.dropdown').on('click', '[data-disabled]', function(ev) {
 				var btn = $(this),
 					categoryRow = btn.parents('li'),
@@ -336,25 +334,6 @@ define(['uploader'], function(uploader) {
 			}, function(html) {
 				groupsResultsEl.html(html);
 			});
-			// var numResults = results.length,
-			// 	trEl,
-			// 	resultObj;
-
-			// groupsResultsEl.empty();
-
-			// for(var x = 0; x < numResults; x++) {
-			// 	resultObj = results[x];
-			// 	trEl = $('<tr />')
-			// 		.attr('data-name', resultObj.name)
-			// 		.html('<td><h4>' + resultObj.name + '</h4></td>' +
-			// 			'<td>' +
-			// 			'<div class="btn-group pull-right">' +
-			// 			'<button type="button" data-gpriv="g+r" class="btn btn-default' + (resultObj.privileges['g+r'] ? ' active' : '') + '">Read</button>' +
-			// 			'<button type="button" data-gpriv="g+w" class="btn btn-default' + (resultObj.privileges['g+w'] ? ' active' : '') + '">Write</button>' +
-			// 			'</div>' +
-			// 			'</td>');
-			// 	groupsResultsEl.append(trEl);
-			// }
 		});
 
 		groupsResultsEl.off().on('click', '[data-gpriv]', function(e) {
