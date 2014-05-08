@@ -261,6 +261,9 @@ var ajaxify = ajaxify || {};
 					if (config.useOutgoingLinksPage) {
 						ajaxify.go('outgoing?url=' + encodeURIComponent(this.href));
 						e.preventDefault();
+					} else if (config.openOutgoingLinksInNewTab) {
+						window.open(this.href, '_blank');
+						e.preventDefault();
 					}
 				}
 			}

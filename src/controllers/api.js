@@ -62,6 +62,7 @@ apiController.getConfig = function(req, res, next) {
 		config.postsPerPage = settings.postsPerPage;
 		config.notificationSounds = settings.notificationSounds;
 		config.defaultLang = settings.language || config.defaultLang;
+		config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
 
 		if (res.locals.isAPI) {
 			res.json(200, config);

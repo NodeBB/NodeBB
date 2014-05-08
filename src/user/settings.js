@@ -25,6 +25,7 @@ module.exports = function(User) {
 				settings = data.settings;
 
 				settings.showemail = settings.showemail ? parseInt(settings.showemail, 10) !== 0 : false;
+				settings.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab ? parseInt(settings.openOutgoingLinksInNewTab, 10) !== 0 : false;
 				settings.dailyDigestFreq = settings.dailyDigestFreq || 'daily';
 				settings.usePagination = settings.usePagination ? parseInt(settings.usePagination, 10) === 1 : parseInt(meta.config.usePagination, 10) === 1;
 				settings.topicsPerPage = settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : parseInt(meta.config.topicsPerPage, 10) || 20;
@@ -72,6 +73,7 @@ module.exports = function(User) {
 		plugins.fireHook('action:user.saveSettings', {uid: uid, settings: data});
 		db.setObject('user:' + uid + ':settings', {
 			showemail: data.showemail,
+			openOutgoingLinksInNewTab: data.openOutgoingLinksInNewTab,
 			dailyDigestFreq: data.dailyDigestFreq || 'daily',
 			usePagination: data.usePagination,
 			topicsPerPage: data.topicsPerPage,
