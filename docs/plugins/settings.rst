@@ -38,7 +38,7 @@ Now you can use the server-side settings-module to access the saved settings lik
     var mySettings = new Settings('myPlugin', '0.1', defaultSettings, function() {
         // the settings are ready and can accessed.
         console.log(mySettings === this); // true
-        console.log(this.get('someString') === mySettings.get().someString); // true
+        console.log(this.get('strings.someString') === mySettings.get().strings.someString); // true
     });
 
 The second parameter should change at least every time the structure of default settings changes. Because of this it's
