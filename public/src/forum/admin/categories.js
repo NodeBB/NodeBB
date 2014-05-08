@@ -301,18 +301,18 @@ define(['uploader'], function(uploader) {
 		Categories.refreshPrivilegeList(cid);
 
 		resultsEl.off().on('click', '[data-priv]', function(e) {
-			var	btnEl = $(this),
-				uid = btnEl.parents('li[data-uid]').attr('data-uid'),
-				privilege = btnEl.attr('data-priv');
+			var	anchorEl = $(this),
+				uid = anchorEl.parents('li[data-uid]').attr('data-uid'),
+				privilege = anchorEl.attr('data-priv');
 			e.preventDefault();
 
 			socket.emit('admin.categories.setPrivilege', {
 				cid: cid,
 				uid: uid,
 				privilege: privilege,
-				set: !btnEl.hasClass('active')
+				set: !anchorEl.hasClass('active')
 			}, function(err, privileges) {
-				btnEl.toggleClass('active', privileges[privilege]);
+				anchorEl.toggleClass('active', privileges[privilege]);
 
 				Categories.refreshPrivilegeList(cid);
 			});
@@ -336,20 +336,20 @@ define(['uploader'], function(uploader) {
 			});
 		});
 
-		groupsResultsEl.off().on('click', '[data-gpriv]', function(e) {
-			var	btnEl = $(this),
-				name = btnEl.parents('tr[data-name]').attr('data-name'),
-				privilege = btnEl.attr('data-gpriv');
+		groupsResultsEl.off().on('click', '[data-priv]', function(e) {
+			var	anchorEl = $(this),
+				name = anchorEl.parents('li[data-name]').attr('data-name'),
+				privilege = anchorEl.attr('data-priv');
 			e.preventDefault();
 
 			socket.emit('admin.categories.setGroupPrivilege', {
 				cid: cid,
 				name: name,
 				privilege: privilege,
-				set: !btnEl.hasClass('active')
+				set: !anchorEl.hasClass('active')
 			}, function(err) {
 				if (!err) {
-					btnEl.toggleClass('active');
+					anchorEl.toggleClass('active');
 				}
 			});
 		});
