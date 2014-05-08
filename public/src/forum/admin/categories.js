@@ -268,8 +268,8 @@ define(['uploader'], function(uploader) {
 	Categories.launchPermissionsModal = function(cid) {
 		var	modal = $('#category-permissions-modal'),
 			searchEl = modal.find('#permission-search'),
-			resultsEl = modal.find('.search-results'),
-			groupsResultsEl = modal.find('.groups-results'),
+			resultsEl = modal.find('.search-results.users'),
+			groupsResultsEl = modal.find('.search-results.groups'),
 			searchDelay;
 
 		// Clear the search field and results
@@ -291,24 +291,11 @@ define(['uploader'], function(uploader) {
 						return app.alertError(err.message);
 					}
 
-					var	numResults = results.length,
-						resultObj;
-					resultsEl.html('');
-					for(var x = 0; x < numResults; x++) {
-						resultObj = results[x];
-						liEl = $('<li />')
-							.attr('data-uid', resultObj.uid)
-							.html('<div class="pull-right">' +
-								'<div class="btn-group">' +
-								'<button type="button" data-priv="+r" class="btn btn-default' + (resultObj.privileges['+r'] ? ' active' : '') + '">Read</button>' +
-								'<button type="button" data-priv="+w" class="btn btn-default' + (resultObj.privileges['+w'] ? ' active' : '') + '">Write</button>' +
-								'<button type="button" data-priv="mods" class="btn btn-default' + (resultObj.privileges.mods ? ' active' : '') + '">Moderator</button>' +
-								'</div>' +
-								'</div>' +
-								'<img src="' + resultObj.picture + '" /> ' + resultObj.username);
-
-						resultsEl.append(liEl);
-					}
+					templates.parse('partials/admin/categories/users', {
+						users: results
+					}, function(html) {
+						resultsEl.html(html);
+					});
 				});
 			}, 250);
 		});
@@ -343,25 +330,31 @@ define(['uploader'], function(uploader) {
 			if(err) {
 				return app.alertError(err.message);
 			}
-			var numResults = results.length,
-				trEl,
-				resultObj;
 
-			groupsResultsEl.empty();
+			templates.parse('partials/admin/categories/groups', {
+				groups: results
+			}, function(html) {
+				groupsResultsEl.html(html);
+			});
+			// var numResults = results.length,
+			// 	trEl,
+			// 	resultObj;
 
-			for(var x = 0; x < numResults; x++) {
-				resultObj = results[x];
-				trEl = $('<tr />')
-					.attr('data-name', resultObj.name)
-					.html('<td><h4>' + resultObj.name + '</h4></td>' +
-						'<td>' +
-						'<div class="btn-group pull-right">' +
-						'<button type="button" data-gpriv="g+r" class="btn btn-default' + (resultObj.privileges['g+r'] ? ' active' : '') + '">Read</button>' +
-						'<button type="button" data-gpriv="g+w" class="btn btn-default' + (resultObj.privileges['g+w'] ? ' active' : '') + '">Write</button>' +
-						'</div>' +
-						'</td>');
-				groupsResultsEl.append(trEl);
-			}
+			// groupsResultsEl.empty();
+
+			// for(var x = 0; x < numResults; x++) {
+			// 	resultObj = results[x];
+			// 	trEl = $('<tr />')
+			// 		.attr('data-name', resultObj.name)
+			// 		.html('<td><h4>' + resultObj.name + '</h4></td>' +
+			// 			'<td>' +
+			// 			'<div class="btn-group pull-right">' +
+			// 			'<button type="button" data-gpriv="g+r" class="btn btn-default' + (resultObj.privileges['g+r'] ? ' active' : '') + '">Read</button>' +
+			// 			'<button type="button" data-gpriv="g+w" class="btn btn-default' + (resultObj.privileges['g+w'] ? ' active' : '') + '">Write</button>' +
+			// 			'</div>' +
+			// 			'</td>');
+			// 	groupsResultsEl.append(trEl);
+			// }
 		});
 
 		groupsResultsEl.off().on('click', '[data-gpriv]', function(e) {
