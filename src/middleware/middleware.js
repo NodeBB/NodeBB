@@ -279,7 +279,7 @@ middleware.renderHeader = function(req, res, callback) {
 			}
 		}, function(err, results) {
 			if (err) {
-				return next(err);
+				return callback(err);
 			}
 
 			templateValues.browserTitle = results.title;
