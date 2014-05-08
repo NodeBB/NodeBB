@@ -124,16 +124,26 @@ function sendNotificationToPostOwner(data, uid, notification) {
 }
 
 SocketPosts.getRawPost = function(socket, pid, callback) {
-	posts.getPostFields(pid, ['content', 'deleted'], function(err, data) {
+	async.waterfall([
+		function(next) {
+			postTools.privileges(pid, socket.uid, next);
+		},
+		function(privileges, next) {
+			if (!privileges || !privileges.read) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+			posts.getPostFields(pid, ['content', 'deleted'], next);
+		}
+	], function(err, post) {
 		if(err) {
 			return callback(err);
 		}
 
-		if(parseInt(data.deleted, 10) === 1) {
+		if(parseInt(post.deleted, 10) === 1) {
 			return callback(new Error('[[error:no-post]]'));
 		}
 
-		callback(null, data.content);
+		callback(null, post.content);
 	});
 };
 
