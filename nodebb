@@ -80,8 +80,9 @@ case "$1" in
 
 	upgrade)
 		npm install
-		ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm install
-		ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm update
+		# ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm install
+		# ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm update
+		npm i nodebb-theme-vanilla nodebb-theme-lavender
 		"$node" app --upgrade
 		touch package.json
 		echo -e "\n\e[00;32mNodeBB Dependencies up-to-date!\e[00;00m";
