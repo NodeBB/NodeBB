@@ -108,7 +108,7 @@
 			var key = keys[i];
 
 			key = '' + key;
-			var variables = key.split(/[,][?\s+]/);
+			var variables = key.split(/[,][\s]*/);
 
 			var parsedKey = key.replace('[[', '').replace(']]', '').split(':');
 			if (!(parsedKey[0] && parsedKey[1])) {
