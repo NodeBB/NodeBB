@@ -21,17 +21,30 @@ Heroku
     * The server is ``fishyfish.redistogo.com``
     * The port is ``12345``
     * The password is ``h28h3wgh37fns7``
-11. Create a Procfile for Heroku: ``echo "web: node app.js" > Procfile``
-12. Commit the Procfile:
+
+12. Add the following two packages to the ``dependencies`` section of your ``package.json``:
+
+.. code:: json
+
+        "dependencies": {
+            ...
+            "nodebb-plugin-dbsearch": "0.0.9",
+            "redis": "~0.10.1",
+            "connect-redis": "~1.4"
+        },
+        "devDependencies": {
+
+13. Create a Procfile for Heroku: ``echo "web: node app.js" > Procfile``
+14. Commit the Procfile:
 
 .. code:: bash
 
 	git add -f Procfile config.json public/config.json && git commit -am "adding Procfile and configs for Heroku"
 
-13. Push to heroku: ``git push heroku master``
+15. Push to heroku: ``git push heroku master``
     * Ensure that a proper SSH key was added to your account, otherwise the push will not succeed!
-14. Initialise a single dyno: ``heroku ps:scale web=1``
-15. Visit your app!
+16. Initialise a single dyno: ``heroku ps:scale web=1``
+17. Visit your app!
 
 If these instructions are unclear or if you run into trouble, please let us know by `filing an issue <https://github.com/designcreateplay/NodeBB/issues>`_.
 
