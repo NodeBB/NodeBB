@@ -385,16 +385,20 @@ var socket,
 			if (!titleObj.titles[0]) {
 				titleObj.titles[0] = window.document.title;
 			}
-			titleObj.titles[1] = title;
-			if (titleObj.interval) {
-				clearInterval(titleObj.interval);
-			}
-			titleObj.interval = setInterval(function() {
-				var title = titleObj.titles[titleObj.titles.indexOf(window.document.title) ^ 1];
-				if (title) {
-					window.document.title = title;
+
+			translator.translate(title, function(translated) {
+				titleObj.titles[1] = translated;
+				if (titleObj.interval) {
+					clearInterval(titleObj.interval);
 				}
-			}, 2000);
+
+				titleObj.interval = setInterval(function() {
+					var title = titleObj.titles[titleObj.titles.indexOf(window.document.title) ^ 1];
+					if (title) {
+						window.document.title = title;
+					}
+				}, 2000);
+			});
 		} else {
 			if (titleObj.interval) {
 				clearInterval(titleObj.interval);
