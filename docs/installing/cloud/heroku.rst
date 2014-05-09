@@ -13,6 +13,7 @@ Heroku
 8. Enable WebSocket support (beta): ``heroku labs:enable websockets -a {APP_NAME}``, where ``{APP_NAME}`` is provided by Heroku, and looks something like ``adjective-noun-wxyz.herokuapp.com`` (NOTE: `See this doc <https://discussion.heroku.com/t/application-error/160>`_): drop the `.herokuapp.com` when entering ``{APP_NAME}`` above. 
 9. Enable `Redis To Go <https://addons.heroku.com/redistogo>`_ for your heroku account: ``heroku addons:add redistogo:nano``
 10. Run the NodeBB setup script: ``node app --setup`` (information for your Heroku server and Redis to Go instance can be found in your account page)
+
     * Your server name is found in your Heroku app's "settings" page, and looks something like ``adjective-noun-wxyz.herokuapp.com``
     * Use any port number. It will be ignored.
     * Specify "n" when asked if a port will be used. Heroku transparently proxies all requests.
