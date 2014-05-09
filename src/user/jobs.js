@@ -48,7 +48,7 @@ module.exports = function(User) {
 
 				// Find uids subscribed to daily digest emails
 				subscribed = userSettings.filter(function(setting) {
-					return !setting.dailyDigestFreq || setting.dailyDigestFreq === 'daily';
+					return setting.dailyDigestFreq === 'daily';
 				}).map(function(setting) {
 					return setting.uid;
 				});

@@ -26,7 +26,7 @@ module.exports = function(User) {
 
 				settings.showemail = settings.showemail ? parseInt(settings.showemail, 10) !== 0 : false;
 				settings.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab ? parseInt(settings.openOutgoingLinksInNewTab, 10) !== 0 : false;
-				settings.dailyDigestFreq = settings.dailyDigestFreq || 'daily';
+				settings.dailyDigestFreq = settings.dailyDigestFreq || 'off';
 				settings.usePagination = settings.usePagination ? parseInt(settings.usePagination, 10) === 1 : parseInt(meta.config.usePagination, 10) === 1;
 				settings.topicsPerPage = settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : parseInt(meta.config.topicsPerPage, 10) || 20;
 				settings.postsPerPage = settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : parseInt(meta.config.postsPerPage, 10) || 10;
@@ -74,7 +74,7 @@ module.exports = function(User) {
 		db.setObject('user:' + uid + ':settings', {
 			showemail: data.showemail,
 			openOutgoingLinksInNewTab: data.openOutgoingLinksInNewTab,
-			dailyDigestFreq: data.dailyDigestFreq || 'daily',
+			dailyDigestFreq: data.dailyDigestFreq || 'off',
 			usePagination: data.usePagination,
 			topicsPerPage: data.topicsPerPage,
 			postsPerPage: data.postsPerPage,
