@@ -382,13 +382,15 @@ var socket,
 		}
 
 		if (title.length > 0 && !app.isFocused) {
+			if (!titleObj.titles[0]) {
+				titleObj.titles[0] = window.document.title;
+			}
 			titleObj.titles[1] = title;
 			if (titleObj.interval) {
 				clearInterval(titleObj.interval);
 			}
 			titleObj.interval = setInterval(function() {
 				var title = titleObj.titles[titleObj.titles.indexOf(window.document.title) ^ 1];
-
 				if (title) {
 					window.document.title = title;
 				}
@@ -532,7 +534,6 @@ var socket,
 
 			$(window).focus(function(){
 				app.isFocused = true;
-
 				app.alternatingTitle('');
 			});
 

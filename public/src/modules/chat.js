@@ -53,7 +53,8 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 		socket.on('event:chats.receive', function(data) {
 
 			var username = data.message.fromUser.username;
-			if(parseInt(data.message.fromUser.uid, 10) === parseInt(app.uid, 10)) {
+			var isSelf = parseInt(data.message.fromUser.uid, 10) === parseInt(app.uid, 10);
+			if (isSelf) {
 				username = data.message.toUser.username;
 			}
 
@@ -70,17 +71,19 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 					module.toggleNew(modal.attr('UUID'), true);
 				}
 
-				if (!modal.is(":visible") || !app.isFocused) {
+				if (!isSelf && (!modal.is(":visible") || !app.isFocused)) {
 					app.alternatingTitle(username + ' has messaged you');
 				}
 			} else {
 				module.createModal(username, data.withUid, function(modal) {
 					module.toggleNew(modal.attr('UUID'), true);
-					app.alternatingTitle(username + ' has messaged you');
+					if (!isSelf) {
+						app.alternatingTitle(username + ' has messaged you');
+					}
 				});
 			}
 
-			if (parseInt(app.uid, 10) !== parseInt(data.message.fromuid, 10)) {
+			if (!isSelf) {
 				sounds.play('chat-incoming');
 			}
 		});
