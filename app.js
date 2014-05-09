@@ -97,6 +97,7 @@ function loadConfig() {
 
 	// Ensure themes_path is a full filepath
 	nconf.set('themes_path', path.resolve(__dirname, nconf.get('themes_path')));
+	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
 }
 
 function start() {
@@ -134,7 +135,6 @@ function start() {
 					plugins.init();
 
 					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
-					nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
 
 					plugins.ready(function() {
 						webserver.init();
