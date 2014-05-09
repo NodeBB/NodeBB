@@ -39,7 +39,7 @@ Heroku
 
 .. code:: bash
 
-	git add -f Procfile config.json public/config.json && git commit -am "adding Procfile and configs for Heroku"
+	git add -f Procfile config.json package.json && git commit -am "adding Procfile and configs for Heroku"
 
 15. Push to heroku: ``git push heroku master``
     * Ensure that a proper SSH key was added to your account, otherwise the push will not succeed!
