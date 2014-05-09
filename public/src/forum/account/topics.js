@@ -36,7 +36,7 @@ define(['forum/account/header'], function(header) {
 	}
 
 	function onTopicsLoaded(topics) {
-		ajaxify.loadTemplate('accounttopics', function(accounttopics) {
+		ajaxify.loadTemplate('account/topics', function(accounttopics) {
 			var html = templates.parse(templates.getBlock(accounttopics, 'topics'), {topics: topics});
 
 			translator.translate(html, function(translatedHTML) {

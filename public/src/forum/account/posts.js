@@ -38,7 +38,7 @@ define(['forum/account/header'], function(header) {
 	}
 
 	function onPostsLoaded(posts) {
-		ajaxify.loadTemplate('accountposts', function(accountposts) {
+		ajaxify.loadTemplate('account/posts', function(accountposts) {
 			var html = templates.parse(templates.getBlock(accountposts, 'posts'), {posts: posts});
 
 			translator.translate(html, function(translatedHTML) {

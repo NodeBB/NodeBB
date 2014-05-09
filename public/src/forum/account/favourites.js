@@ -33,7 +33,7 @@ define(['forum/account/header'], function(header) {
 	}
 
 	function onTopicsLoaded(posts) {
-		ajaxify.loadTemplate('favourites', function(favouritesTemplate) {
+		ajaxify.loadTemplate('account/favourites', function(favouritesTemplate) {
 			var html = templates.parse(templates.getBlock(favouritesTemplate, 'posts'), {posts: posts});
 
 			translator.translate(html, function(translatedHTML) {
