@@ -172,6 +172,9 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 				});
 
 				chatModal.find('.modal-content').on('resize', function(event, ui) {
+					if (ui.originalSize.height === ui.size.height) {
+						return;
+					}
 					var totalHeight = chatModal.find('.modal-content').outerHeight() - chatModal.find('.modal-header').outerHeight();
 					var padding = parseInt(chatModal.find('.modal-body').css('padding-top'), 10) + parseInt(chatModal.find('.modal-body').css('padding-bottom'), 10);
 					var contentMargin = parseInt(chatModal.find('#chat-content').css('margin-top'), 10) + parseInt(chatModal.find('#chat-content').css('margin-bottom'), 10);
