@@ -35,7 +35,7 @@
     "alert.success": "Success",
     "alert.error": "Error",
     "alert.banned": "Banned",
-    "alert.banned.message": "You are banned you will be logged out!",
+    "alert.banned.message": "You have just been banned, you will now be logged out.",
     "alert.unfollow": "You are no longer following %1!",
     "alert.follow": "You are now following %1!",
     "online": "Online",
