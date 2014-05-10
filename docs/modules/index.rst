@@ -27,7 +27,7 @@ The alert module is a toaster notification that can be called via the following 
 
 The above code will result in this notification (default styling):
 
-.. image:: http://i.imgur.com/jRD5GAI.png
+.. image:: https://i.imgur.com/jRD5GAI.png
 
 To style this, have a look at the vanilla theme's ``modules/alert.less`` and ``templates/alert.tpl``.
 
