@@ -5,9 +5,6 @@ define(function() {
 
 	var module = {};
 
-	// use unique alert_id to have multiple alerts visible at a time, use the same alert_id to fade out the current instance
-	// type : error, success, info, warning/notify
-	// timeout default = permanent
 	module.alert = function (params) {
 		params.alert_id = 'alert_button_' + (params.alert_id ? params.alert_id : new Date().getTime());
 		params.title = params.title || '';
@@ -22,9 +19,7 @@ define(function() {
 	};
 
 	function createNew(params) {
-
 		templates.parse('alert', params, function(alertTpl) {
-
 			translator.translate(alertTpl, function(translatedHTML) {
 				var alert = $(translatedHTML);
 				alert.fadeIn(200);
