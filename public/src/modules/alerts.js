@@ -7,88 +7,86 @@ define(function() {
 
 	// use unique alert_id to have multiple alerts visible at a time, use the same alert_id to fade out the current instance
 	// type : error, success, info, warning/notify
-	// title = bolded title text
-	// message = alert message content
 	// timeout default = permanent
-	// location : alert_window (default) or content
 	module.alert = function (params) {
-		var alert_id = 'alert_button_' + ((params.alert_id) ? params.alert_id : new Date().getTime());
+		params.alert_id = 'alert_button_' + (params.alert_id ? params.alert_id : new Date().getTime());
+		params.title = params.title || '';
+		params.location = (params.location || 'right-top');
 
-		var alert = $('#' + alert_id);
-		var title = params.title || '';
-
-		function fadeOut() {
-			alert.fadeOut(500, function () {
-				$(this).remove();
-			});
-		}
-
-		function startTimeout(timeout) {
-			var timeoutId = setTimeout(function () {
-				fadeOut();
-			}, timeout);
-
-			alert.attr('timeoutId', timeoutId);
-		}
-
+		var alert = $('#' + params.alert_id);
 		if (alert.length) {
-			alert.find('strong').html(title);
-			alert.find('p').html(params.message);
-			alert.attr('class', 'alert alert-dismissable alert-' + params.type);
-
-			clearTimeout(alert.attr('timeoutId'));
-			startTimeout(params.timeout);
-
-			alert.children().fadeOut('100');
-			translator.translate(templates.parse(alert.html(), {}), function(translatedHTML) {
-				alert.children().fadeIn('100');
-				alert.html(translatedHTML);
-			});
+			updateAlert(alert, params);
 		} else {
-			alert = $('<div id="' + alert_id + '" class="alert alert-dismissable alert-' + params.type +'"></div>');
+			createNew(params);
+		}
+	};
 
-			alert.append($('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'))
-				.append($('<strong>' + title + '</strong>'));
+	function createNew(params) {
 
-			if (params.message) {
-				alert.append($('<p>' + params.message + '</p>'));
-			}
+		templates.parse('alert', params, function(alertTpl) {
 
-			if (!params.location) {
-				params.location = 'alert_window';
-			}
+			translator.translate(alertTpl, function(translatedHTML) {
+				var alert = $(translatedHTML);
+				alert.fadeIn(200);
 
-			translator.translate(templates.parse(alert.html(), {}), function(translatedHTML) {
-				alert.html(translatedHTML);
-				$('#' + params.location).prepend(alert.fadeIn('100'));
+				$('.alert-' + params.location).prepend(alert);
 
 				if(typeof params.closefn === 'function') {
 					alert.find('button').on('click', function() {
 						params.closefn();
-						fadeOut();
+						fadeOut(alert);
 						return false;
 					});
 				}
+
+				if (params.timeout) {
+					startTimeout(alert, params.timeout);
+				}
+
+				if (typeof params.clickfn === 'function') {
+					alert.on('click', function (e) {
+						if(!$(e.target).is('.close')) {
+							params.clickfn();
+						}
+						fadeOut(alert);
+					});
+				}
 			});
-
-			if (params.timeout) {
-				startTimeout(params.timeout);
-			}
-
-			if (typeof params.clickfn === 'function') {
-				alert.on('click', function (e) {
-					if(!$(e.target).is('.close')) {
-						params.clickfn();
-					}
-					fadeOut();
-				});
-			}
-		}
-	};
+		});
+	}
 
 	module.remove = function(id) {
 		$('#alert_button_' + id).remove();
 	};
+
+	function updateAlert(alert, params) {
+		alert.find('strong').html(params.title);
+		alert.find('p').html(params.message);
+		alert.attr('class', 'alert alert-dismissable alert-' + params.type);
+
+		clearTimeout(alert.attr('timeoutId'));
+		startTimeout(alert, params.timeout);
+
+		alert.children().fadeOut(100);
+		translator.translate(alert.html(), function(translatedHTML) {
+			alert.children().fadeIn(100);
+			alert.html(translatedHTML);
+		});
+	}
+
+	function fadeOut(alert) {
+		alert.fadeOut(500, function () {
+			$(this).remove();
+		});
+	}
+
+	function startTimeout(alert, timeout) {
+		var timeoutId = setTimeout(function () {
+			fadeOut(alert);
+		}, timeout);
+
+		alert.attr('timeoutId', timeoutId);
+	}
 
 	return module;
 });
