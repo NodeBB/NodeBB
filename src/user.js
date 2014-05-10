@@ -114,7 +114,7 @@ var bcrypt = require('bcryptjs'),
 				user.password = null;
 			}
 
-			if (parseInt(user.uid, 10) === 0) {
+			if (!parseInt(user.uid, 10)) {
 				user.username = '[[global:guest]]';
 				user.userslug = '';
 			}
