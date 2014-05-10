@@ -64,6 +64,7 @@ Contributing to NodeBB
     :maxdepth: 2
 
     contributing/style-guide
+    modules/index
 
 Plugin System
 -------------
