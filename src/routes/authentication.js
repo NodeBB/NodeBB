@@ -171,35 +171,44 @@
 			}
 
 			if(!uid) {
-				// Even if a user doesn't exist, compare passwords anyway, so we don't immediately return
+				// To-do: Even if a user doesn't exist, compare passwords anyway, so we don't immediately return
 				return next(null, false, '[[error:no-user]]');
 			}
 
-			db.getObjectFields('user:' + uid, ['password', 'banned'], function(err, userData) {
+			user.auth.logAttempt(uid, function(err) {
 				if (err) {
-					return next(err);
+					return next(null, false, err.message);
 				}
 
-				if (!userData || !userData.password) {
-					return next(new Error('[[error:invalid-user-data]]'));
-				}
-
-				if (userData.banned && parseInt(userData.banned, 10) === 1) {
-					return next(null, false, '[[error:user-banned]]');
-				}
-
-				bcrypt.compare(password, userData.password, function(err, res) {
+				db.getObjectFields('user:' + uid, ['password', 'banned'], function(err, userData) {
 					if (err) {
-						return next(new Error('bcrypt compare error'));
+						return next(err);
 					}
 
-					if (!res) {
-						return next(null, false, '[[error:invalid-password]]');
+					if (!userData || !userData.password) {
+						return next(new Error('[[error:invalid-user-data]]'));
 					}
 
-					next(null, {
-						uid: uid
-					}, '[[success:authentication-successful]]');
+					if (userData.banned && parseInt(userData.banned, 10) === 1) {
+						return next(null, false, '[[error:user-banned]]');
+					}
+
+					bcrypt.compare(password, userData.password, function(err, res) {
+						if (err) {
+							return next(new Error('bcrypt compare error'));
+						}
+
+						if (!res) {
+							return next(null, false, '[[error:invalid-password]]');
+						}
+
+						// Clear login attempts
+						user.auth.clearLoginAttempts(uid);
+
+						next(null, {
+							uid: uid
+						}, '[[success:authentication-successful]]');
+					});
 				});
 			});
 		});

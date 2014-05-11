@@ -23,6 +23,7 @@ var bcrypt = require('bcryptjs'),
 	User.notifications = require('./user/notifications');
 	User.reset = require('./user/reset');
 
+	require('./user/auth')(User);
 	require('./user/create')(User);
 	require('./user/follow')(User);
 	require('./user/profile')(User);

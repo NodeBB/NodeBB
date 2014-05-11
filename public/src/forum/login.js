@@ -45,7 +45,11 @@ define(function() {
 					app.loadConfig();
 				},
 				error: function(data, textStatus, jqXHR) {
-					$('#login-error-notify').show();
+					// Update error text
+					translator.translate(data.responseJSON, function(errorText) {
+						$('#login-error-notify').show().html(errorText);
+					});
+
 					$('#login').removeAttr('disabled').html('Login');
 				},
 				dataType: 'json',

@@ -79,6 +79,10 @@ module.exports = function(db, module) {
 		module.setObject(key, data, callback);
 	};
 
+	module.increment = function(key, callback) {
+		db.collection('objects').update({_key: key}, { $inc: { value: 1 } }, helpers.done(callback));
+	};
+
 	module.rename = function(oldKey, newKey, callback) {
 		db.collection('objects').update({_key: oldKey}, {$set:{_key: newKey}}, helpers.done(callback));
 	};

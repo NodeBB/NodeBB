@@ -64,6 +64,10 @@ module.exports = function(db, module) {
 		}
 	};
 
+	module.increment = function(key, callback) {
+		// ^_^
+	};
+
 	module.rename = function(oldKey, newKey, callback) {
 		// G__G
 	};
