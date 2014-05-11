@@ -202,7 +202,6 @@
 							return next(null, false, '[[error:invalid-password]]');
 						}
 
-						// Clear login attempts
 						user.auth.clearLoginAttempts(uid);
 
 						next(null, {
