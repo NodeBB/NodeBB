@@ -151,7 +151,7 @@ Additionally the following plugins are registered by default:
     Uses ``data-new`` to define the value of new created elements.
  * key (types: key)
     A field to input keyboard-combinations.
- * checkbox, select, textarea
+ * checkbox, number, select, textarea
     Handle appropriate fields.
 
 A full list of all attributes that may influence the behavior of the default Framework:
