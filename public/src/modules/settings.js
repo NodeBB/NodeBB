@@ -2,6 +2,7 @@ define(function () {
 
 	const DEFAULT_PLUGINS = [
 		'settings/checkbox',
+		'settings/number',
 		'settings/textarea',
 		'settings/select',
 		'settings/array',

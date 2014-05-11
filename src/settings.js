@@ -1,16 +1,20 @@
 var meta = require('./meta');
 
 function expandObjBy(obj1, obj2) {
-	var key, val1, val2;
+	var key, val1, val2, changed = false;
 	for (key in obj2) {
 		val2 = obj2[key];
 		val1 = obj1[key];
 		if (!obj1.hasOwnProperty(key) || typeof val2 !== typeof val1) {
 			obj1[key] = val2;
+			changed = true;
 		} else if (typeof val2 === 'object') {
-			expandObjBy(val1, val2);
+			if (expandObjBy(val1, val2)) {
+				changed = true;
+			}
 		}
 	}
+	return changed;
 }
 
 function trim(obj1, obj2) {
@@ -76,7 +80,9 @@ Settings.prototype.sync = function (callback) {
 			}
 		} catch (_error) {}
 		_this.cfg = settings;
-		if (typeof callback === 'function') {
+		if (expandObjBy(_this.cfg._, _this.defCfg)) {
+			_this.persist(callback);
+		} else if (typeof callback === 'function') {
 			callback.apply(_this, err);
 		}
 	});
