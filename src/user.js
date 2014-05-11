@@ -274,10 +274,14 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.createGravatarURLFromEmail = function(email) {
+		var customGravatarDefaultImage = meta.config.customGravatarDefaultImage;
+		if (customGravatarDefaultImage && customGravatarDefaultImage.indexOf('http') === -1) {
+			customGravatarDefaultImage = nconf.get('url') + meta.config.customGravatarDefaultImage;
+		}
 
 		var options = {
 			size: '128',
-			default: meta.config.customGravatarDefaultImage || meta.config.defaultGravatarImage || '',
+			default: customGravatarDefaultImage || meta.config.defaultGravatarImage || '',
 			rating: 'pg'
 		};
 
