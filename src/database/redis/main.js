@@ -96,4 +96,12 @@ module.exports = function(redisClient, module) {
 	module.expireAt = function(key, timestamp, callback) {
 		redisClient.expireat(key, timestamp, callback);
 	};
+
+	module.pexpire = function(key, ms, callback) {
+		redisClient.pexpire(key, ms, callback);
+	};
+
+	module.expireAt = function(key, timestamp, callback) {
+		redisClient.pexpireat(key, timestamp, callback);
+	};
 };

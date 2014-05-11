@@ -75,4 +75,12 @@ module.exports = function(db, module) {
 	module.expireAt = function(key, timestamp, callback) {
 		// <__<
 	};
+
+	module.pexpire = function(key, ms, callback) {
+		// o_o
+	};
+
+	module.pexpireAt = function(key, timestamp, callback) {
+		// d-_-b
+	};
 };

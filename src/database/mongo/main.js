@@ -90,4 +90,12 @@ module.exports = function(db, module) {
 	module.expireAt = function(key, timestamp, callback) {
 		module.setObjectField(key, 'expireAt', new Date(timestamp * 1000), callback);
 	};
+
+	module.pexpire = function(key, ms, callback) {
+		module.expireAt(key, Date.now() + parseInt(ms, 10), callback);
+	};
+
+	module.pexpireAt = function(key, timestamp, callback) {
+		module.setObjectField(key, 'expireAt', new Date(timestamp), callback);
+	};
 };
