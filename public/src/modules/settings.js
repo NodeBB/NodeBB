@@ -1,3 +1,6 @@
+"use strict";
+/*global define, app, socket*/
+
 define(function () {
 
 	var DEFAULT_PLUGINS = [
@@ -58,7 +61,9 @@ define(function () {
 		createElement: function (tagName, data, text) {
 			var element = document.createElement(tagName);
 			for (var k in data) {
-				element.setAttribute(k, data[k]);
+				if (data.hasOwnProperty(k)) {
+					element.setAttribute(k, data[k]);
+				}
 			}
 			if (text) {
 				element.appendChild(document.createTextNode(text));
@@ -103,7 +108,7 @@ define(function () {
 				if (type != null) {
 					data.type = type;
 				}
-				element = $(helper.createElement(tagName || 'input', data))
+				element = $(helper.createElement(tagName || 'input', data));
 			}
 			element.data('type', type);
 			helper.initElement(element);
