@@ -15,6 +15,7 @@ define(function() {
 	home.init = function() {
 		app.enterRoom('home');
 
+		socket.removeListener('event:new_post', home.onNewPost);
 		socket.on('event:new_post', home.onNewPost);
 
 		$('.home .category-header').tooltip({
