@@ -37,7 +37,7 @@ CategoryTools.exists = function(cid, callback) {
 
 CategoryTools.privileges = function(cid, uid, callback) {
 	async.parallel({
-		disabled: function(next) {
+		"disabled": function(next) {
 			categories.getCategoryField(cid, 'disabled', next);
 		},
 		read: function(next) {
@@ -49,53 +49,39 @@ CategoryTools.privileges = function(cid, uid, callback) {
 		"topics:reply": function(next) {
 			internals.isMember('cid:' + cid + ':privileges:topics:reply', uid, next);
 		},
-		// "+r": function(next) {
-		// 	internals.isMember('cid:' + cid + ':privileges:+r', uid, next);
-		// },
-		// "+w": function(next) {
-		// 	internals.isMember('cid:' + cid + ':privileges:+w', uid, next);
-		// },
-		// "g+r": function(next) {
-		// 	internals.isMemberOfGroupList('cid:' + cid + ':privileges:g+r', uid, next);
-		// },
-		// "g+w": function(next) {
-		// 	internals.isMemberOfGroupList('cid:' + cid + ':privileges:g+w', uid, next);
-		// },
-		moderator: function(next) {
+		"groups:read": function(next) {
+			internals.isMemberOfGroupList('cid:' + cid + ':privileges:groups:read', uid, next);
+		},
+		"groups:topics:create": function(next) {
+			internals.isMemberOfGroupList('cid:' + cid + ':privileges:groups:topics:create', uid, next);
+		},
+		"groups:topics:reply": function(next) {
+			internals.isMemberOfGroupList('cid:' + cid + ':privileges:groups:topics:reply', uid, next);
+		},
+		mods: function(next) {
 			User.isModerator(uid, cid, next);
 		},
 		admin: function(next) {
 			User.isAdministrator(uid, next);
 		}
 	}, function(err, privileges) {
-		callback(err, !privileges ? null : {
-			"+r": privileges['+r'],
-			"+w": privileges['+w'],
-			"g+r": privileges['g+r'],
-			"g+w": privileges['g+w'],
-			read: (
-				(
-					parseInt(privileges.disabled, 10) !== 1 &&
-					(privileges['+r'] || privileges['+r'] === null) &&
-					(privileges['g+r'] || privileges['g+r'] === null)
-				) ||
-				privileges.moderator ||
-				privileges.admin
-			),
-			// write: (
-			// 	(
-			// 		parseInt(privileges.disabled, 10) !== 1 &&
-			// 		(privileges['+w'] || privileges['+w'] === null) &&
-			// 		(privileges['g+w'] || privileges['g+w'] === null)
-			// 	) ||
-			// 	privileges.moderator ||
-			// 	privileges.admin
-			// ),
-			editable: privileges.moderator || privileges.admin,
-			view_deleted: privileges.moderator || privileges.admin,
-			moderator: privileges.moderator,
-			admin: privileges.admin
-		});
+		if (privileges) {
+			privileges.meta = {
+				read: (
+					(
+						parseInt(privileges.disabled, 10) !== 1 &&
+						(privileges.read || privileges.read === null) &&
+						(privileges['groups:read'] || privileges['groups:read'] === null)
+					) ||
+					privileges.mods ||
+					privileges.admin
+				),
+				editable: privileges.mods || privileges.admin,
+				view_deleted: privileges.mods || privileges.admin
+			};
+		}
+
+		callback(err, privileges || null);
 	});
 };
 

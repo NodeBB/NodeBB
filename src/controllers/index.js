@@ -71,7 +71,7 @@ Controllers.home = function(req, res, next) {
 
 				function canSee(category, next) {
 					categoryTools.privileges(category.cid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
-						next(!err && privileges.read);
+						next(!err && privileges.meta.read);
 					});
 				}
 

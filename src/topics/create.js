@@ -101,7 +101,7 @@ module.exports = function(Topics) {
 				categoryTools.privileges(cid, uid, next);
 			},
 			function(privileges, next) {
-				if(!privileges.write) {
+				if(!privileges['topics:create']) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				next();

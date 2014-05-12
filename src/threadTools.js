@@ -43,14 +43,15 @@ var winston = require('winston'),
 				}
 			}
 		}, function(err, results) {
-			callback(err, !results ? undefined : {
-				read: results.categoryPrivs.read,
-				write: results.categoryPrivs.write,
-				editable: results.categoryPrivs.editable || results.hasEnoughRep,
-				view_deleted: results.categoryPrivs.view_deleted || results.hasEnoughRep,
-				moderator: results.categoryPrivs.moderator,
-				admin: results.categoryPrivs.admin
-			});
+			if (err) {
+				return callback(err);
+			}
+
+			var	privileges = results.categoryPrivs;
+			privileges.meta.editable = privileges.meta.editable || results.hasEnoughRep;
+			privileges.meta.view_deleted = privileges.meta.view_deleted || results.hasEnoughRep;
+
+			callback(null, privileges);
 		});
 	};
 

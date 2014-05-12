@@ -77,7 +77,7 @@ categoriesController.get = function(req, res, next) {
 					return next(err);
 				}
 
-				if (!categoryPrivileges.read) {
+				if (!categoryPrivileges.meta.read) {
 					next(new Error('[[error:no-privileges]]'));
 				} else {
 					next(null, categoryPrivileges);

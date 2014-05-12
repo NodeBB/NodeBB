@@ -185,7 +185,7 @@ var async = require('async'),
 
 			function isTopicVisible(topicData, topicInfo) {
 				var deleted = parseInt(topicData.deleted, 10) !== 0;
-				return !deleted || (deleted && topicInfo.privileges.view_deleted) || parseInt(topicData.uid, 10) === parseInt(uid, 10);
+				return !deleted || (deleted && topicInfo.privileges.meta.view_deleted) || parseInt(topicData.uid, 10) === parseInt(uid, 10);
 			}
 
 			async.parallel({

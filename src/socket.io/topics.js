@@ -290,7 +290,7 @@ SocketTopics.moveAll = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		if (!results.from.admin && (!results.from.moderator || !results.to.moderator)) {
+		if (!results.from.admin && (!results.from.mods || !results.to.mods)) {
 			return callback(new Error('[[error:no-privileges]]'));
 		}
 

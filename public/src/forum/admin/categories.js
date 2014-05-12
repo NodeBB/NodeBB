@@ -305,6 +305,7 @@ define(['uploader'], function(uploader) {
 				uid = anchorEl.parents('li[data-uid]').attr('data-uid'),
 				privilege = anchorEl.attr('data-priv');
 			e.preventDefault();
+			e.stopPropagation();
 
 			socket.emit('admin.categories.setPrivilege', {
 				cid: cid,
@@ -341,6 +342,7 @@ define(['uploader'], function(uploader) {
 				name = anchorEl.parents('li[data-name]').attr('data-name'),
 				privilege = anchorEl.attr('data-priv');
 			e.preventDefault();
+			e.stopPropagation();
 
 			socket.emit('admin.categories.setGroupPrivilege', {
 				cid: cid,
