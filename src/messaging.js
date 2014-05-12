@@ -121,8 +121,8 @@ var db = require('./database'),
 		});
 	};
 
-	Messaging.getRecentChats = function(uid, callback) {
-		db.getSortedSetRevRange('uid:' + uid + ':chats', 0, 9, function(err, uids) {
+	Messaging.getRecentChats = function(uid, start, end, callback) {
+		db.getSortedSetRevRange('uid:' + uid + ':chats', start, end, function(err, uids) {
 			if(err) {
 				return callback(err);
 			}

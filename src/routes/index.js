@@ -101,6 +101,9 @@ function accountRoutes(app, middleware, controllers) {
 
 	app.get('/notifications', middleware.buildHeader, middleware.authenticate, controllers.accounts.getNotifications);
 	app.get('/api/notifications', middleware.authenticate, controllers.accounts.getNotifications);
+
+	app.get('/chats', middleware.buildHeader, middleware.authenticate, controllers.accounts.getChats);
+	app.get('/api/chats', middleware.authenticate, controllers.accounts.getChats);
 }
 
 function userRoutes(app, middleware, controllers) {

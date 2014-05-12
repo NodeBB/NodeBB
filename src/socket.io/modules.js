@@ -238,7 +238,7 @@ function sendTypingNotification(event, socket, data, callback) {
 }
 
 SocketModules.chats.list = function(socket, data, callback) {
-	Messaging.getRecentChats(socket.uid, callback);
+	Messaging.getRecentChats(socket.uid, 0, 9, callback);
 };
 
 /* Notifications */

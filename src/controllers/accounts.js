@@ -11,6 +11,7 @@ var fs = require('fs'),
 	user = require('./../user'),
 	posts = require('./../posts'),
 	topics = require('./../topics'),
+	messaging = require('../messaging'),
 	postTools = require('../postTools'),
 	utils = require('./../../public/src/utils'),
 	meta = require('./../meta'),
@@ -448,7 +449,7 @@ accountsController.uploadPicture = function (req, res, next) {
 			});
 		}
 
-		if(err) {
+		if (err) {
 			fs.unlink(req.files.userPhoto.path);
 			return res.json({error:err.message});
 		}
@@ -483,6 +484,18 @@ accountsController.getNotifications = function(req, res, next) {
 	user.notifications.getAll(req.user.uid, null, null, function(err, notifications) {
 		res.render('notifications', {
 			notifications: notifications
+		});
+	});
+};
+
+accountsController.getChats = function(req, res, next) {
+	messaging.getRecentChats(req.user.uid, 0, -1, function(err, chats) {
+		if (err) {
+			return next(err);
+		}
+
+		res.render('chats', {
+			chats: chats
 		});
 	});
 };

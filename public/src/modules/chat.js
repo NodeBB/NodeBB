@@ -47,6 +47,11 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 							userObj.username + '</a>')
 						.appendTo(chatsListEl);
 				}
+
+				var seeAll = '<li class="pagelink"><a href="' + config.relative_path + '/chats">[[modules:chat.see_all]]</a></li>';
+				translator.translate(seeAll, function(translated) {
+					$(translated).appendTo(chatsListEl);
+				});
 			});
 		});
 
