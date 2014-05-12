@@ -3,6 +3,7 @@
 var	async = require('async'),
 	nconf = require('nconf'),
 
+	db = require('../database'),
 	posts = require('../posts'),
 	meta = require('../meta'),
 	topics = require('../topics'),
@@ -262,7 +263,8 @@ SocketPosts.flag = function(socket, pid, callback) {
 	}
 
 	var message = '',
-		path = '';
+		path = '',
+		post;
 
 	async.waterfall([
 		function(next) {
@@ -270,10 +272,11 @@ SocketPosts.flag = function(socket, pid, callback) {
 		},
 		function(username, next) {
 			message = '[[notifications:user_flagged_post, ' + username + ']]';
-			posts.getPostField(pid, 'tid', next);
+			posts.getPostFields(pid, ['tid', 'uid'], next);
 		},
-		function(tid, next) {
-			topics.getTopicField(tid, 'slug', next);
+		function(postData, next) {
+			post = postData;
+			topics.getTopicField(postData.tid, 'slug', next);
 		},
 		function(topicSlug, next) {
 			path = nconf.get('relative_path') + '/topic/' + topicSlug + '#' + pid;
@@ -287,7 +290,30 @@ SocketPosts.flag = function(socket, pid, callback) {
 				from: socket.uid
 			}, function(nid) {
 				notifications.push(nid, adminGroup.members, function() {
-					next(null);
+					next();
+				});
+			});
+		},
+		function(next) {
+			if (!parseInt(post.uid, 10)) {
+				return next();
+			}
+
+			db.setAdd('uid:' + post.uid + ':flagged_by', socket.uid, function(err) {
+				if (err) {
+					return next(err);
+				}
+				db.setCount('uid:' + post.uid + ':flagged_by', function(err, count) {
+					if (err) {
+						return next(err);
+					}
+
+					if (count >= (meta.config.flagsForBan || 3)) {
+						var adminUser = require('./admin/user');
+						adminUser.banUser(post.uid, next);
+						return;
+					}
+					next();
 				});
 			});
 		}

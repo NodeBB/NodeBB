@@ -39,10 +39,10 @@ User.banUsers = function(socket, uids, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	async.each(uids, banUser, callback);
+	async.each(uids, User.banUser, callback);
 };
 
-function banUser(uid, callback) {
+User.banUser = function(uid, callback) {
 	user.isAdministrator(uid, function(err, isAdmin) {
 		if (err || isAdmin) {
 			return callback(err || new Error('[[error:cant-ban-other-admins]]'));
@@ -63,7 +63,7 @@ function banUser(uid, callback) {
 			callback();
 		});
 	});
-}
+};
 
 User.unbanUsers = function(socket, uids, callback) {
 	if(!Array.isArray(uids)) {

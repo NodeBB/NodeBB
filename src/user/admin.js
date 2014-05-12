@@ -50,6 +50,7 @@ module.exports = function(User) {
 	};
 
 	User.unban = function(uid, callback) {
+		db.delete('uid:' + uid + ':flagged_by');
 		User.setUserField(uid, 'banned', 0, callback);
 	};
 };

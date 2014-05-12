@@ -115,17 +115,21 @@ var async = require('async'),
 
 		Notifications.get(nid, null, function(notif_data) {
 			async.each(uids, function(uid, next) {
-				if (parseInt(uid, 10) > 0) {
-					checkReplace(notif_data.uniqueId, uid, notif_data, function(err, replace) {
-						if (replace) {
-							db.sortedSetAdd('uid:' + uid + ':notifications:unread', notif_data.datetime, nid);
-							websockets.in('uid_' + uid).emit('event:new_notification', notif_data);
-						}
+				if (!parseInt(uid, 10)) {
+					next();
+				}
 
-						if (callback) {
-							callback(true);
-						}
-					});
+				checkReplace(notif_data.uniqueId, uid, notif_data, function(err, replace) {
+					if (replace) {
+						db.sortedSetAdd('uid:' + uid + ':notifications:unread', notif_data.datetime, nid);
+						websockets.in('uid_' + uid).emit('event:new_notification', notif_data);
+					}
+					next();
+				});
+
+			}, function(err) {
+				if (callback) {
+					callback(true);
 				}
 			});
 		});
