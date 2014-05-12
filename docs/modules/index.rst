@@ -39,4 +39,5 @@ To style this, have a look at the vanilla theme's ``modules/alert.less`` and ``t
 4. ``timeout`` (optional) - integer in milliseconds, default is permanent until closed.
 5. ``type`` - error, success, info, warning/notify
 6. ``image`` (optional) - string, URL to image.
-
+7. ``closefn`` (optional) - function. This is called when the user closes the alert via the (X) button.
+8. ``clickfn`` (optional) - function. This is called when the user clicks on the alert.
