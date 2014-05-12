@@ -39,12 +39,14 @@ define(function() {
 				}
 
 				if (typeof params.clickfn === 'function') {
-					alert.on('click', function (e) {
-						if(!$(e.target).is('.close')) {
-							params.clickfn();
-						}
-						fadeOut(alert);
-					});
+					alert
+						.addClass('pointer')
+						.on('click', function (e) {
+							if(!$(e.target).is('.close')) {
+								params.clickfn();
+							}
+							fadeOut(alert);
+						});
 				}
 			});
 		});
