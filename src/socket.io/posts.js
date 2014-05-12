@@ -308,7 +308,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 						return next(err);
 					}
 
-					if (count >= (meta.config.flagsForBan || 3)) {
+					if (count >= (meta.config.flagsForBan || 3) && parseInt(meta.config.flagsForBan, 10) !== 0) {
 						var adminUser = require('./admin/user');
 						adminUser.banUser(post.uid, next);
 						return;
