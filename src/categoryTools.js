@@ -70,8 +70,32 @@ CategoryTools.privileges = function(cid, uid, callback) {
 				read: (
 					(
 						parseInt(privileges.disabled, 10) !== 1 &&
-						(privileges.read || privileges.read === null) &&
-						(privileges['groups:read'] || privileges['groups:read'] === null)
+						(
+							(privileges['read'] === null && privileges['groups:read'] === null) ||
+							privileges['read'] || privileges['groups:read']
+						)
+					) ||
+					privileges.mods ||
+					privileges.admin
+				),
+				"topics:create": (
+					(
+						parseInt(privileges.disabled, 10) !== 1 &&
+						(
+							(privileges['topics:create'] === null && privileges['groups:topics:create'] === null) ||
+							privileges['topics:create'] || privileges['groups:topics:create']
+						)
+					) ||
+					privileges.mods ||
+					privileges.admin
+				),
+				"topics:reply": (
+					(
+						parseInt(privileges.disabled, 10) !== 1 &&
+						(
+							(privileges['topics:reply'] === null && privileges['groups:topics:reply'] === null) ||
+							privileges['topics:reply'] || privileges['groups:topics:reply']
+						)
 					) ||
 					privileges.mods ||
 					privileges.admin
@@ -81,6 +105,7 @@ CategoryTools.privileges = function(cid, uid, callback) {
 			};
 		}
 
+		// console.log(privileges, cid, uid);
 		callback(err, privileges || null);
 	});
 };

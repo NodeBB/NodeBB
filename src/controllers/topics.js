@@ -26,7 +26,7 @@ topicsController.get = function(req, res, next) {
 					return next(err);
 				}
 
-				if (!userPrivileges.read) {
+				if (!userPrivileges.meta.read) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 
