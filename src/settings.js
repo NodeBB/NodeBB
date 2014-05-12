@@ -8,10 +8,8 @@ function expandObjBy(obj1, obj2) {
 		if (!obj1.hasOwnProperty(key) || typeof val2 !== typeof val1) {
 			obj1[key] = val2;
 			changed = true;
-		} else if (typeof val2 === 'object') {
-			if (expandObjBy(val1, val2)) {
-				changed = true;
-			}
+		} else if (typeof val2 === 'object' && expandObjBy(val1, val2)) {
+			changed = true;
 		}
 	}
 	return changed;
@@ -30,7 +28,10 @@ function trim(obj1, obj2) {
 }
 
 function mergeSettings(cfg, defCfg) {
-	if (typeof cfg._ !== typeof defCfg || typeof defCfg !== 'object') {
+	if (typeof defCfg !== 'object') {
+		return;
+	}
+	if (typeof cfg._ !== 'object') {
 		cfg._ = defCfg;
 	} else {
 		expandObjBy(cfg._, defCfg);
@@ -80,7 +81,10 @@ Settings.prototype.sync = function (callback) {
 			}
 		} catch (_error) {}
 		_this.cfg = settings;
-		if (expandObjBy(_this.cfg._, _this.defCfg)) {
+		if (typeof _this.cfg._ !== 'object') {
+			_this.cfg._ = _this.defCfg;
+			_this.persist(callback);
+		} else if (expandObjBy(_this.cfg._, _this.defCfg)) {
 			_this.persist(callback);
 		} else if (typeof callback === 'function') {
 			callback.apply(_this, err);
