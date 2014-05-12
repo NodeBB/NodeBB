@@ -133,7 +133,7 @@ var async = require('async'),
 
 		async.filter(tids, function(tid, next) {
 			threadTools.privileges(tid, uid, function(err, privileges) {
-				next(!err && privileges.read);
+				next(!err && privileges.meta.read);
 			});
 		}, function(tids) {
 			Topics.getTopicsByTids(tids, uid, function(err, topicData) {

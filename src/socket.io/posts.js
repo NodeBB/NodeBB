@@ -130,7 +130,7 @@ SocketPosts.getRawPost = function(socket, pid, callback) {
 			postTools.privileges(pid, socket.uid, next);
 		},
 		function(privileges, next) {
-			if (!privileges || !privileges.read) {
+			if (!privileges || !privileges.meta.read) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
 			posts.getPostFields(pid, ['content', 'deleted'], next);

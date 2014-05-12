@@ -69,50 +69,31 @@ Categories.setPrivilege = function(socket, data, callback) {
 };
 
 Categories.getPrivilegeSettings = function(socket, cid, callback) {
-	async.parallel({
-		"+r": function(next) {
-			groups.get('cid:' + cid + ':privileges:+r', { expand: true }, function(err, groupObj) {
-				if (!err) {
-					next.apply(this, arguments);
-				} else {
-					next(null, {
-						members: []
-					});
-				}
-			});
-		},
-		"+w": function(next) {
-			groups.get('cid:' + cid + ':privileges:+w', { expand: true }, function(err, groupObj) {
-				if (!err) {
-					next.apply(this, arguments);
-				} else {
-					next(null, {
-						members: []
-					});
-				}
-			});
-		},
-		"mods": function(next) {
-			groups.get('cid:' + cid + ':privileges:mods', { expand: true }, function(err, groupObj) {
-				if (!err) {
-					next.apply(this, arguments);
-				} else {
-					next(null, {
-						members: []
-					});
-				}
-			});
-		}
-	}, function(err, data) {
-		if(err) {
-			return callback(err);
+	var privileges = ['read', 'topics:create', 'topics:reply', 'mods'];
+
+	async.reduce(privileges, [], function(members, privilege, next) {
+		groups.get('cid:' + cid + ':privileges:' + privilege, { expand: true }, function(err, groupObj) {
+			if (!err) {
+				members = members.concat(groupObj.members);
+			}
+
+			next(null, members);
+		});
+	}, function(err, members) {
+		// Remove duplicates
+		var	present = [],
+			x = members.length,
+			uid;
+		while(x--) {
+			uid = parseInt(members[x].uid, 10);
+			if (present.indexOf(uid) !== -1) {
+				members.splice(x, 1);
+			} else {
+				present.push(uid);
+			}
 		}
 
-		callback(null, {
-			"+r": data['+r'].members,
-			"+w": data['+w'].members,
-			"mods": data.mods.members
-		});
+		callback(err, members);
 	});
 };
 

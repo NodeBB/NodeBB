@@ -361,50 +361,22 @@ define(['uploader'], function(uploader) {
 
 	Categories.refreshPrivilegeList = function (cid) {
 		var	modalEl = $('#category-permissions-modal'),
-			readMembers = modalEl.find('#category-permissions-read'),
-			writeMembers = modalEl.find('#category-permissions-write'),
-			moderatorsEl = modalEl.find('#category-permissions-mods');
+			memberList = $('.members');
 
 		socket.emit('admin.categories.getPrivilegeSettings', cid, function(err, privilegeList) {
-			var	readLength = privilegeList['+r'].length,
-				writeLength = privilegeList['+w'].length,
-				modLength = privilegeList.mods.length,
+			var	membersLength = privilegeList.length,
 				liEl, x, userObj;
 
-			readMembers.html('');
-			if (readLength > 0) {
-				for(x = 0; x < readLength; x++) {
-					userObj = privilegeList['+r'][x];
+			memberList.html('');
+			if (membersLength > 0) {
+				for(x = 0; x < membersLength; x++) {
+					userObj = privilegeList[x];
 					liEl = $('<li/>').attr('data-uid', userObj.uid).html('<img src="' + userObj.picture + '" title="' + userObj.username + '" />');
-					readMembers.append(liEl);
+					memberList.append(liEl);
 				}
 			} else {
-				liEl = $('<li/>').addClass('empty').html('All users can read and see this category');
-				readMembers.append(liEl);
-			}
-
-			writeMembers.html('');
-			if (writeLength > 0) {
-				for(x=0;x<writeLength;x++) {
-					userObj = privilegeList['+w'][x];
-					liEl = $('<li />').attr('data-uid', userObj.uid).html('<img src="' + userObj.picture + '" title="' + userObj.username + '" />');
-					writeMembers.append(liEl);
-				}
-			} else {
-				liEl = $('<li />').addClass('empty').html('All users can write to this category');
-				writeMembers.append(liEl);
-			}
-
-			moderatorsEl.html('');
-			if (modLength > 0) {
-				for(x = 0;x < modLength; x++) {
-					userObj = privilegeList.mods[x];
-					liEl = $('<li />').attr('data-uid', userObj.uid).html('<img src="' + userObj.picture + '" title="' + userObj.username + '" />');
-					moderatorsEl.append(liEl);
-				}
-			} else {
-				liEl = $('<li />').addClass('empty').html('No moderators');
-				moderatorsEl.append(liEl);
+				liEl = $('<li/>').addClass('empty').html('All users can read and post, and reply to topics in this category');
+				memberList.append(liEl);
 			}
 		});
 	};
