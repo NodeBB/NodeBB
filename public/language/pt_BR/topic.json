@@ -4,10 +4,10 @@
     "topic_id_placeholder": "Digite o ID do tópico",
     "no_topics_found": "Nenhum tópico encontrado!",
     "no_posts_found": "Nenhum post encontrado!",
-    "post_is_deleted": "This post is deleted!",
+    "post_is_deleted": "Este post está excluído!",
     "profile": "Perfil",
-    "posted_by": "Posted by %1",
-    "posted_by_guest": "Posted by Guest",
+    "posted_by": "Postado por %1",
+    "posted_by_guest": "Postado por Visitante",
     "chat": "Bate Papo",
     "notify_me": "Ser notificado a cada nova resposta",
     "quote": "Citar",
@@ -41,7 +41,7 @@
     "thread_tools.lock": "Trancar Tópico",
     "thread_tools.unlock": "Destrancar Tópico",
     "thread_tools.move": "Mover Tópico",
-    "thread_tools.move_all": "Move All",
+    "thread_tools.move_all": "Mover todos",
     "thread_tools.fork": "Clonar Tópico",
     "thread_tools.delete": "Deletar Tópico",
     "thread_tools.delete_confirm": "Tem certeza que deseja deletar este tópico?",
@@ -88,7 +88,7 @@
     "composer.thumb_remove": "Limpar campos",
     "composer.drag_and_drop_images": "Clique e arraste imagens para este campo.",
     "composer.upload_instructions": "Mande suas imagens arrastando e soltando.",
-    "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
-    "more_users": "%1 more user(s)",
-    "more_guests": "%1 more guest(s)"
+    "more_users_and_guests": "%1 mais usuário(s) e %2 visitante(s)",
+    "more_users": "%1 mais usuário(s)",
+    "more_guests": "%1 mais visitante(s)"
 }
