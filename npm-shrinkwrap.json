@@ -1,6 +1,6 @@
 {
   "name": "nodebb",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "dependencies": {
     "async": {
       "version": "0.2.10",
@@ -21,10 +21,12 @@
     "express": {
       "version": "3.2.0",
       "from": "express@3.2.0",
+      "resolved": "https://registry.npmjs.org/express/-/express-3.2.0.tgz",
       "dependencies": {
         "connect": {
           "version": "2.7.6",
           "from": "connect@2.7.6",
+          "resolved": "https://registry.npmjs.org/connect/-/connect-2.7.6.tgz",
           "dependencies": {
             "qs": {
               "version": "0.5.1",
@@ -32,7 +34,8 @@
             },
             "formidable": {
               "version": "1.0.11",
-              "from": "formidable@1.0.11"
+              "from": "formidable@1.0.11",
+              "resolved": "https://registry.npmjs.org/formidable/-/formidable-1.0.11.tgz"
             },
             "buffer-crc32": {
               "version": "0.1.1",
@@ -75,16 +78,19 @@
         "send": {
           "version": "0.1.0",
           "from": "send@0.1.0",
+          "resolved": "https://registry.npmjs.org/send/-/send-0.1.0.tgz",
           "dependencies": {
             "mime": {
               "version": "1.2.6",
-              "from": "mime@1.2.6"
+              "from": "mime@1.2.6",
+              "resolved": "https://registry.npmjs.org/mime/-/mime-1.2.6.tgz"
             }
           }
         },
         "cookie-signature": {
           "version": "1.0.1",
-          "from": "cookie-signature@1.0.1"
+          "from": "cookie-signature@1.0.1",
+          "resolved": "https://registry.npmjs.org/cookie-signature/-/cookie-signature-1.0.1.tgz"
         },
         "debug": {
           "version": "0.8.1",
@@ -105,6 +111,7 @@
     "gm": {
       "version": "1.14.2",
       "from": "gm@1.14.2",
+      "resolved": "https://registry.npmjs.org/gm/-/gm-1.14.2.tgz",
       "dependencies": {
         "debug": {
           "version": "0.7.0",
@@ -130,7 +137,8 @@
     },
     "gravatar": {
       "version": "1.0.6",
-      "from": "gravatar@1.0.6"
+      "from": "gravatar@1.0.6",
+      "resolved": "https://registry.npmjs.org/gravatar/-/gravatar-1.0.6.tgz"
     },
     "less": {
       "version": "1.6.3",
@@ -176,11 +184,13 @@
       "dependencies": {
         "async": {
           "version": "0.2.9",
-          "from": "async@0.2.9"
+          "from": "async@0.2.9",
+          "resolved": "https://registry.npmjs.org/async/-/async-0.2.9.tgz"
         },
         "ini": {
-          "version": "1.1.0",
-          "from": "ini@1.x.x"
+          "version": "1.2.0",
+          "from": "ini@1.x.x",
+          "resolved": "https://registry.npmjs.org/ini/-/ini-1.2.0.tgz"
         },
         "optimist": {
           "version": "0.6.0",
@@ -191,8 +201,9 @@
               "from": "wordwrap@~0.0.2"
             },
             "minimist": {
-              "version": "0.0.8",
-              "from": "minimist@~0.0.1"
+              "version": "0.0.10",
+              "from": "minimist@~0.0.1",
+              "resolved": "https://registry.npmjs.org/minimist/-/minimist-0.0.10.tgz"
             }
           }
         }
@@ -200,7 +211,8 @@
     },
     "nodebb-plugin-dbsearch": {
       "version": "0.0.9",
-      "from": "nodebb-plugin-dbsearch@0.0.9"
+      "from": "nodebb-plugin-dbsearch@0.0.9",
+      "resolved": "https://registry.npmjs.org/nodebb-plugin-dbsearch/-/nodebb-plugin-dbsearch-0.0.9.tgz"
     },
     "nodebb-plugin-markdown": {
       "version": "0.4.1",
@@ -224,7 +236,8 @@
                 },
                 "isarray": {
                   "version": "0.0.1",
-                  "from": "isarray@0.0.1"
+                  "from": "isarray@0.0.1",
+                  "resolved": "https://registry.npmjs.org/isarray/-/isarray-0.0.1.tgz"
                 },
                 "string_decoder": {
                   "version": "0.10.25-1",
@@ -254,7 +267,8 @@
                     },
                     "isarray": {
                       "version": "0.0.1",
-                      "from": "isarray@0.0.1"
+                      "from": "isarray@0.0.1",
+                      "resolved": "https://registry.npmjs.org/isarray/-/isarray-0.0.1.tgz"
                     },
                     "string_decoder": {
                       "version": "0.10.25-1",
@@ -291,16 +305,19 @@
       "from": "nodebb-plugin-soundpack-default@~0.1.1"
     },
     "nodebb-theme-lavender": {
-      "version": "0.0.25-12",
-      "from": "nodebb-theme-lavender@~0.0.25"
+      "version": "0.0.25-16",
+      "from": "nodebb-theme-lavender@~0.0.25",
+      "resolved": "https://registry.npmjs.org/nodebb-theme-lavender/-/nodebb-theme-lavender-0.0.25-16.tgz"
     },
     "nodebb-theme-vanilla": {
-      "version": "0.0.19-35",
-      "from": "nodebb-theme-vanilla@~0.0.19"
+      "version": "0.0.19-53",
+      "from": "nodebb-theme-vanilla@~0.0.19",
+      "resolved": "https://registry.npmjs.org/nodebb-theme-vanilla/-/nodebb-theme-vanilla-0.0.19-53.tgz"
     },
     "nodebb-widget-essentials": {
-      "version": "0.0.21-8",
+      "version": "0.0.21-9",
       "from": "nodebb-widget-essentials@~0.0.21",
+      "resolved": "https://registry.npmjs.org/nodebb-widget-essentials/-/nodebb-widget-essentials-0.0.21-9.tgz",
       "dependencies": {
         "marked": {
           "version": "0.3.2",
@@ -309,8 +326,9 @@
       }
     },
     "npm": {
-      "version": "1.4.9",
+      "version": "1.4.10",
       "from": "npm@^1.4.6",
+      "resolved": "https://registry.npmjs.org/npm/-/npm-1.4.10.tgz",
       "dependencies": {
         "abbrev": {
           "version": "1.0.4",
@@ -730,7 +748,7 @@
       "dependencies": {
         "pkginfo": {
           "version": "0.3.0",
-          "from": "pkginfo@0.x.x"
+          "from": "pkginfo@0.3.x"
         },
         "read": {
           "version": "1.0.5",
@@ -821,6 +839,7 @@
         "redis": {
           "version": "0.7.2",
           "from": "redis@0.7.2",
+          "resolved": "https://registry.npmjs.org/redis/-/redis-0.7.2.tgz",
           "dependencies": {
             "hiredis": {
               "version": "0.1.16",
@@ -941,8 +960,9 @@
       }
     },
     "rimraf": {
-      "version": "2.2.6",
-      "from": "rimraf@~2.2.6"
+      "version": "2.2.8",
+      "from": "rimraf@~2.2.6",
+      "resolved": "https://registry.npmjs.org/rimraf/-/rimraf-2.2.8.tgz"
     },
     "rss": {
       "version": "0.2.1",
@@ -973,6 +993,7 @@
         "socket.io-client": {
           "version": "0.9.16",
           "from": "socket.io-client@0.9.16",
+          "resolved": "https://registry.npmjs.org/socket.io-client/-/socket.io-client-0.9.16.tgz",
           "dependencies": {
             "uglify-js": {
               "version": "1.2.5",
@@ -1018,7 +1039,8 @@
         },
         "policyfile": {
           "version": "0.0.4",
-          "from": "policyfile@0.0.4"
+          "from": "policyfile@0.0.4",
+          "resolved": "https://registry.npmjs.org/policyfile/-/policyfile-0.0.4.tgz"
         },
         "base64id": {
           "version": "0.1.0",
@@ -1026,7 +1048,8 @@
         },
         "redis": {
           "version": "0.7.3",
-          "from": "redis@0.7.3"
+          "from": "redis@0.7.3",
+          "resolved": "https://registry.npmjs.org/redis/-/redis-0.7.3.tgz"
         }
       }
     },
