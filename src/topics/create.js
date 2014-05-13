@@ -101,7 +101,7 @@ module.exports = function(Topics) {
 				categoryTools.privileges(cid, uid, next);
 			},
 			function(privileges, next) {
-				if(!privileges['topics:create']) {
+				if(!privileges.meta['topics:create']) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				next();
@@ -177,7 +177,7 @@ module.exports = function(Topics) {
 			},
 			function(privilegesData, next) {
 				privileges = privilegesData;
-				if (!privileges.write) {
+				if (!privileges.meta['topics:reply']) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				next();
