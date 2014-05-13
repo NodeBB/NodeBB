@@ -35,12 +35,19 @@ User.createUser = function(socket, userData, callback) {
 };
 
 User.banUsers = function(socket, uids, callback) {
+	toggleBan(uids, User.banUser, callback);
+};
+
+User.unbanUsers = function(socket, uids, callback) {
+	toggleBan(uids, user.unban, callback);
+};
+
+function toggleBan(uids, method callback) {
 	if(!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-
-	async.each(uids, User.banUser, callback);
-};
+	async.each(uids, method, callback);
+}
 
 User.banUser = function(uid, callback) {
 	user.isAdministrator(uid, function(err, isAdmin) {
@@ -63,13 +70,6 @@ User.banUser = function(uid, callback) {
 			callback();
 		});
 	});
-};
-
-User.unbanUsers = function(socket, uids, callback) {
-	if(!Array.isArray(uids)) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-	async.each(uids, user.unban, callback);
 };
 
 User.deleteUsers = function(socket, uids, callback) {
