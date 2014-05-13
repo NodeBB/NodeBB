@@ -42,7 +42,7 @@ User.unbanUsers = function(socket, uids, callback) {
 	toggleBan(uids, user.unban, callback);
 };
 
-function toggleBan(uids, method callback) {
+function toggleBan(uids, method, callback) {
 	if(!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
