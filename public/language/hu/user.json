@@ -58,5 +58,7 @@
     "paginate_description": "Oldalszámok használata a témáknál és hozzászólásoknál a végtelen görgetés helyett.",
     "topics_per_page": "Téma oldalanként",
     "posts_per_page": "Hozzászólás oldalanként",
-    "notification_sounds": "Hang lejátszása ha értesítés érkezett."
+    "notification_sounds": "Hang lejátszása ha értesítés érkezett.",
+    "browsing": "Browsing Settings",
+    "open_links_in_new_tab": "Open outgoing links in new tab?"
 }

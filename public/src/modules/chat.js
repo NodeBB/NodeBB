@@ -47,13 +47,19 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 							userObj.username + '</a>')
 						.appendTo(chatsListEl);
 				}
+
+				var seeAll = '<li class="pagelink"><a href="' + config.relative_path + '/chats">[[modules:chat.see_all]]</a></li>';
+				translator.translate(seeAll, function(translated) {
+					$(translated).appendTo(chatsListEl);
+				});
 			});
 		});
 
 		socket.on('event:chats.receive', function(data) {
 
 			var username = data.message.fromUser.username;
-			if(parseInt(data.message.fromUser.uid, 10) === parseInt(app.uid, 10)) {
+			var isSelf = parseInt(data.message.fromUser.uid, 10) === parseInt(app.uid, 10);
+			if (isSelf) {
 				username = data.message.toUser.username;
 			}
 
@@ -70,17 +76,19 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 					module.toggleNew(modal.attr('UUID'), true);
 				}
 
-				if (!modal.is(":visible") || !app.isFocused) {
-					app.alternatingTitle(username + ' has messaged you');
+				if (!isSelf && (!modal.is(":visible") || !app.isFocused)) {
+					app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
 				}
 			} else {
 				module.createModal(username, data.withUid, function(modal) {
 					module.toggleNew(modal.attr('UUID'), true);
-					app.alternatingTitle(username + ' has messaged you');
+					if (!isSelf) {
+						app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
+					}
 				});
 			}
 
-			if (parseInt(app.uid, 10) !== parseInt(data.message.fromuid, 10)) {
+			if (!isSelf) {
 				sounds.play('chat-incoming');
 			}
 		});
@@ -88,6 +96,9 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 		socket.on('event:chats.userStartTyping', function(withUid) {
 			var modal = module.getModal(withUid);
 			var chatContent = modal.find('#chat-content');
+			if (!chatContent.length) {
+				return;
+			}
 			var atBottom = chatContent[0].scrollHeight - chatContent.scrollTop() === chatContent.innerHeight();
 
 			modal.find('.user-typing').removeClass('hide').appendTo(chatContent);
@@ -172,6 +183,9 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 				});
 
 				chatModal.find('.modal-content').on('resize', function(event, ui) {
+					if (ui.originalSize.height === ui.size.height) {
+						return;
+					}
 					var totalHeight = chatModal.find('.modal-content').outerHeight() - chatModal.find('.modal-header').outerHeight();
 					var padding = parseInt(chatModal.find('.modal-body').css('padding-top'), 10) + parseInt(chatModal.find('.modal-body').css('padding-bottom'), 10);
 					var contentMargin = parseInt(chatModal.find('#chat-content').css('margin-top'), 10) + parseInt(chatModal.find('#chat-content').css('margin-bottom'), 10);

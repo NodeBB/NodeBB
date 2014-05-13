@@ -64,6 +64,10 @@ module.exports = function(db, module) {
 		}
 	};
 
+	module.increment = function(key, callback) {
+		// ^_^
+	};
+
 	module.rename = function(oldKey, newKey, callback) {
 		// G__G
 	};
@@ -74,5 +78,13 @@ module.exports = function(db, module) {
 
 	module.expireAt = function(key, timestamp, callback) {
 		// <__<
+	};
+
+	module.pexpire = function(key, ms, callback) {
+		// o_o
+	};
+
+	module.pexpireAt = function(key, timestamp, callback) {
+		// d-_-b
 	};
 };

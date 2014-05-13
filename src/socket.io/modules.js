@@ -29,7 +29,7 @@ var	posts = require('../posts'),
 
 var	stopTracking = function(replyObj) {
 		if (isLast(replyObj.uid, replyObj.tid)) {
-			server.in('topic_' + replyObj.tid).emit('event:topic.replyStop', replyObj.uid);
+			server.in('topic_' + replyObj.tid).emit('event:topic.toggleReply', {uid: replyObj.uid, isReplying: false});
 		}
 
 		clearInterval(replyObj.timer);
@@ -100,13 +100,25 @@ SocketModules.composer.renderPreview = function(socket, content, callback) {
 };
 
 SocketModules.composer.renderHelp = function(socket, data, callback) {
-	plugins.fireHook('filter:composer.help', '', callback);
+	var helpText = meta.config['composer:customHelpText'] || '';
+
+	if (meta.config['composer:showHelpTab'] === '0') {
+		return callback(new Error('help-hidden'));
+	}
+
+	plugins.fireHook('filter:post.parse', helpText, function(err, helpText) {
+		if (!meta.config['composer:allowPluginHelp'] || meta.config['composer:allowPluginHelp'] === '1') {
+			plugins.fireHook('filter:composer.help', helpText, callback);
+		} else {
+			callback(null, helpText);
+		}
+	});
 };
 
 SocketModules.composer.register = function(socket, data) {
 	var	now = Date.now();
 
-	server.in('topic_' + data.tid).emit('event:topic.replyStart', data.uid);
+	server.in('topic_' + data.tid).emit('event:topic.toggleReply', {uid: data.uid, isReplying: true});
 
 	data.socket = socket;
 	data.lastPing = now;
@@ -194,7 +206,7 @@ SocketModules.chats.send = function(socket, data, callback) {
 
 function sendChatNotification(fromuid, touid, username) {
 	if (!module.parent.exports.isUserOnline(touid)) {
-		var notifText = '[[notifications:new_message_from,' + username + ']]';
+		var notifText = '[[notifications:new_message_from, ' + username + ']]';
 		notifications.create({
 			text: notifText,
 			path: 'javascript:app.openChat(&apos;' + username + '&apos;, ' + fromuid + ');',
@@ -226,7 +238,7 @@ function sendTypingNotification(event, socket, data, callback) {
 }
 
 SocketModules.chats.list = function(socket, data, callback) {
-	Messaging.getRecentChats(socket.uid, callback);
+	Messaging.getRecentChats(socket.uid, 0, 9, callback);
 };
 
 /* Notifications */

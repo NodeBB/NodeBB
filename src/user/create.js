@@ -126,10 +126,10 @@ module.exports = function(User) {
 				};
 
 				db.setObject('user:' + uid, userData, function(err) {
-
 					if(err) {
 						return callback(err);
 					}
+
 					db.setObjectField('username:uid', userData.username, uid);
 					db.setObjectField('userslug:uid', userData.userslug, uid);
 

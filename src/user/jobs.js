@@ -48,7 +48,7 @@ module.exports = function(User) {
 
 				// Find uids subscribed to daily digest emails
 				subscribed = userSettings.filter(function(setting) {
-					return !setting.dailyDigestFreq || setting.dailyDigestFreq === 'daily';
+					return setting.dailyDigestFreq === 'daily';
 				}).map(function(setting) {
 					return setting.uid;
 				});
@@ -59,7 +59,7 @@ module.exports = function(User) {
 				});
 
 				// Consider using eachLimit, but *only* if people complain about email relays choking -- otherwise we're ok.
-				async.each(users, function(userObj, next) {
+				async.eachLimit(users, 100, function(userObj, next) {
 					user.notifications.getDailyUnread(userObj.uid, function(err, notifications) {
 						// Turn relative URLs into absolute ones
 						for(var i=0; i<notifications.length; ++i) {

@@ -1,4 +1,4 @@
-define(['forum/accountheader'], function(header) {
+define(['forum/account/header'], function(header) {
 	var	Followers = {};
 
 	Followers.init = function() {
@@ -13,7 +13,6 @@ define(['forum/accountheader'], function(header) {
 			$('#no-followers-notice').removeClass('hide');
 		}
 
-		utils.addCommasToNumbers($('.account .formatted-number'));
 	};
 
 	return Followers;

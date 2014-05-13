@@ -1,6 +1,7 @@
 {
     "invalid-data": "Daten ungültig",
     "not-logged-in": "Du bist nicht angemeldet",
+    "account-locked": "Your account has been locked temporarily",
     "invalid-cid": "Ungültige Kategorie-ID",
     "invalid-tid": "Ungültige Themen-ID",
     "invalid-pid": "Ungültige Beitrags-ID",

@@ -3,5 +3,6 @@
     "chat.placeholder": "iscrie su messàgiu de tzarra inoghe, carca imbiu pro imbiare",
     "chat.send": "Imbia",
     "chat.no_active": "Non tenes tzarras ativas.",
-    "chat.user_typing": "%1 is typing ..."
+    "chat.user_typing": "%1 is typing ...",
+    "chat.user_has_messaged_you": "%1 has messaged you."
 }

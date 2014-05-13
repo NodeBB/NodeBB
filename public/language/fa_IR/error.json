@@ -1,6 +1,7 @@
 {
     "invalid-data": "به نظر نمی‌رسد که درون آمده باشید",
     "not-logged-in": "به نظر نمی‌رسد که درون آمده باشید.",
+    "account-locked": "Your account has been locked temporarily",
     "invalid-cid": "شناسهٔ (ID) دسته نامعتبر است",
     "invalid-tid": "شناسهٔ (ID) جستار نامعتبر است",
     "invalid-pid": "شناسهٔ (ID) دیدگاه نامعتبر است",

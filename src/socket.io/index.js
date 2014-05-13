@@ -197,8 +197,12 @@ Sockets.in = function(room) {
 };
 
 Sockets.getConnectedClients = function() {
-	var clients = io.sockets.clients();
 	var uids = [];
+	if (!io) {
+		return uids;
+	}
+	var clients = io.sockets.clients();
+
 	clients.forEach(function(client) {
 		if(client.uid && uids.indexOf(client.uid) === -1) {
 			uids.push(client.uid);
@@ -286,7 +290,7 @@ function updateRoomBrowsingText(roomName) {
 				return user.status !== 'offline';
 			});
 
-			io.sockets.in(roomName).emit('get_users_in_room', {
+			io.sockets.in(roomName).emit('event:update_users_in_room', {
 				users: users,
 				anonymousCount: anonymousCount,
 				room: roomName

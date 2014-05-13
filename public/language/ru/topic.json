@@ -65,6 +65,7 @@
     "favourites.has_no_favourites": "У вас нет избранного, добавьте несколько сообщений в избранное чтобы увидеть их здесь!",
     "loading_more_posts": "Загружаем еще сообщения",
     "move_topic": "Перенести тему",
+    "move_topics": "Move Topics",
     "move_post": "Перенести сообщение",
     "post_moved": "Post moved!",
     "fork_topic": "Ответвить Тему",

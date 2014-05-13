@@ -3,6 +3,7 @@
 var	async = require('async'),
 	nconf = require('nconf'),
 
+	db = require('../database'),
 	posts = require('../posts'),
 	meta = require('../meta'),
 	topics = require('../topics'),
@@ -77,7 +78,7 @@ function favouriteCommand(command, eventName, socket, data, callback) {
 				return callback(err);
 			}
 
-			socket.emit('posts.' + command, data.pid);
+			socket.emit('posts.' + command, result);
 
 			if(data.room_id && result && eventName) {
 				websockets.in(data.room_id).emit('event:' + eventName, result);
@@ -124,16 +125,26 @@ function sendNotificationToPostOwner(data, uid, notification) {
 }
 
 SocketPosts.getRawPost = function(socket, pid, callback) {
-	posts.getPostFields(pid, ['content', 'deleted'], function(err, data) {
+	async.waterfall([
+		function(next) {
+			postTools.privileges(pid, socket.uid, next);
+		},
+		function(privileges, next) {
+			if (!privileges || !privileges.read) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+			posts.getPostFields(pid, ['content', 'deleted'], next);
+		}
+	], function(err, post) {
 		if(err) {
 			return callback(err);
 		}
 
-		if(parseInt(data.deleted, 10) === 1) {
+		if(parseInt(post.deleted, 10) === 1) {
 			return callback(new Error('[[error:no-post]]'));
 		}
 
-		callback(null, data.content);
+		callback(null, post.content);
 	});
 };
 
@@ -252,7 +263,8 @@ SocketPosts.flag = function(socket, pid, callback) {
 	}
 
 	var message = '',
-		path = '';
+		path = '',
+		post;
 
 	async.waterfall([
 		function(next) {
@@ -260,10 +272,11 @@ SocketPosts.flag = function(socket, pid, callback) {
 		},
 		function(username, next) {
 			message = '[[notifications:user_flagged_post, ' + username + ']]';
-			posts.getPostField(pid, 'tid', next);
+			posts.getPostFields(pid, ['tid', 'uid'], next);
 		},
-		function(tid, next) {
-			topics.getTopicField(tid, 'slug', next);
+		function(postData, next) {
+			post = postData;
+			topics.getTopicField(postData.tid, 'slug', next);
 		},
 		function(topicSlug, next) {
 			path = nconf.get('relative_path') + '/topic/' + topicSlug + '#' + pid;
@@ -277,7 +290,30 @@ SocketPosts.flag = function(socket, pid, callback) {
 				from: socket.uid
 			}, function(nid) {
 				notifications.push(nid, adminGroup.members, function() {
-					next(null);
+					next();
+				});
+			});
+		},
+		function(next) {
+			if (!parseInt(post.uid, 10)) {
+				return next();
+			}
+
+			db.setAdd('uid:' + post.uid + ':flagged_by', socket.uid, function(err) {
+				if (err) {
+					return next(err);
+				}
+				db.setCount('uid:' + post.uid + ':flagged_by', function(err, count) {
+					if (err) {
+						return next(err);
+					}
+
+					if (count >= (meta.config.flagsForBan || 3) && parseInt(meta.config.flagsForBan, 10) !== 0) {
+						var adminUser = require('./admin/user');
+						adminUser.banUser(post.uid, next);
+						return;
+					}
+					next();
 				});
 			});
 		}

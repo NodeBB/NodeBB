@@ -15,7 +15,7 @@ var fs = require('fs'),
 	translator = require('./../public/src/translator'),
 	db = require('./database'),
 	plugins = require('./plugins'),
-	User = require('./user');
+	user = require('./user');
 
 (function (Meta) {
 	Meta.restartRequired = false;
@@ -211,7 +211,7 @@ var fs = require('fs'),
 					userslug = matches[1],
 					subpage = matches[2];
 
-				User.getUsernameByUserslug(userslug, function(err, username) {
+				user.getUsernameByUserslug(userslug, function(err, username) {
 					if (subpage) {
 						translator.translate('[[pages:user.' + subpage + ', ' + username + ']]', language, function(translated) {
 							callback(null, translated);

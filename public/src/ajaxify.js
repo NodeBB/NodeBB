@@ -11,17 +11,6 @@ var ajaxify = ajaxify || {};
 		availableTemplates = null,
 		apiXHR = null;
 
-	var events = [];
-
-	ajaxify.register_events = function (new_page_events) {
-		for (var i = 0, ii = events.length; i < ii; i++) {
-			socket.removeAllListeners(events[i]); // optimize this to user removeListener(event, listener) instead.
-		}
-
-		events = new_page_events;
-	};
-
-
 	window.onpopstate = function (event) {
 		if (event !== null && event.state && event.state.url !== undefined && !ajaxify.initialLoad) {
 			ajaxify.go(event.state.url, function() {
@@ -197,7 +186,9 @@ var ajaxify = ajaxify || {};
 				if (data && data.status === 404) {
 					return ajaxify.go('404');
 				} else if (data && data.status === 403) {
-					return ajaxify.go('403');
+					app.alertError('[[global:please_log_in]]');
+					app.previousUrl = url;
+					return ajaxify.go('login');
 				} else if (data && data.status === 302) {
 					return ajaxify.go(data.responseJSON.slice(1));
 				} else if (textStatus !== "abort") {
@@ -269,6 +260,9 @@ var ajaxify = ajaxify || {};
 
 					if (config.useOutgoingLinksPage) {
 						ajaxify.go('outgoing?url=' + encodeURIComponent(this.href));
+						e.preventDefault();
+					} else if (config.openOutgoingLinksInNewTab) {
+						window.open(this.href, '_blank');
 						e.preventDefault();
 					}
 				}

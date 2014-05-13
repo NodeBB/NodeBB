@@ -1,6 +1,7 @@
 {
     "invalid-data": "Conteúdo inválido",
     "not-logged-in": "Você não parece estar logado.",
+    "account-locked": "Your account has been locked temporarily",
     "invalid-cid": "ID inválido de categoria",
     "invalid-tid": "ID inválido de tópico",
     "invalid-pid": "ID inválido de post",

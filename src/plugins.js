@@ -112,7 +112,7 @@ var fs = require('fs'),
 				libraryPath, staticDir;
 
 			if (pluginData.minver && semver.validRange(pluginData.minver)) {
-				if (!semver.gt(pkg.version, pluginData.minver)) {
+				if (!semver.gte(pkg.version, pluginData.minver)) {
 					// If NodeBB is not new enough to run this plugin
 					winston.warn('[plugins/' + pluginData.id + '] This plugin may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing.');
 				}
@@ -291,7 +291,7 @@ var fs = require('fs'),
 	};
 
 	Plugins.hasListeners = function(hook) {
-		return (Plugins.loadedHooks[hook] && Plugins.loadedHooks[hook].length > 0);
+		return !!(Plugins.loadedHooks[hook] && Plugins.loadedHooks[hook].length > 0);
 	};
 
 	Plugins.fireHook = function(hook) {

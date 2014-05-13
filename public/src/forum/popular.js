@@ -3,6 +3,12 @@ define(['forum/recent'], function(recent) {
 		loadingMoreTopics = false,
 		active = '';
 
+	$(window).on('action:ajaxify.start', function(ev, data) {
+		if(data.url.indexOf('recent') !== 0) {
+			recent.removeListeners();
+		}
+	});
+
 	Popular.init = function() {
 		app.enterRoom('recent_posts');
 

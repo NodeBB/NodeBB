@@ -234,7 +234,7 @@ module.exports = function(User) {
 				hashAndSetPassword(callback);
 			});
 		} else {
-			User.getUserField(uid, 'password', function(err, currentPassword) {
+			db.getObjectField('user:' + uid, 'password', function(err, currentPassword) {
 				if(err) {
 					return callback(err);
 				}

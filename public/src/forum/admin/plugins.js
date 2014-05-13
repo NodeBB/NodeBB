@@ -14,15 +14,14 @@ define(function() {
 					pluginID = $(this).parents('li').attr('data-plugin-id');
 					var btn = $(this);
 					socket.emit('admin.plugins.toggleActive', pluginID, function(err, status) {
-
-						btn.html('<i class="fa fa-power-off"></i> ' + (status.active ? 'Dea' : 'A') + 'ctivate');
+						btn.html('<i class="fa fa-power-off"></i> ' + (status.active ? 'Deactivate' : 'Activate'));
 						btn.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
 
 						app.alert({
 							alert_id: 'plugin_toggled',
 							title: 'Plugin ' + (status.active ? 'Enabled' : 'Disabled'),
-							message: 'Please restart your NodeBB to fully ' + (status.active ? 'activate' : 'deactivate') + ' this plugin',
-							type: 'info',
+							message: status.active ? 'Please restart your NodeBB to fully activate this plugin' : 'Plugin successfully deactivated',
+							type: status.active ? 'warning' : 'success',
 							timeout: 5000,
 							clickfn: function() {
 								socket.emit('admin.restart');

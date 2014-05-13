@@ -9,8 +9,15 @@ define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryToo
 	$(window).on('action:ajaxify.start', function(ev, data) {
 		if(data && data.url.indexOf('category') !== 0) {
 			navigator.hide();
+
+			removeListeners();
 		}
 	});
+
+	function removeListeners() {
+		socket.removeListener('event:new_topic', Category.onNewTopic);
+		categoryTools.removeListeners();
+	}
 
 	Category.init = function() {
 		var	cid = ajaxify.variables.get('category_id');
@@ -22,11 +29,6 @@ define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryToo
 		$('#new_post').on('click', function () {
 			composer.newTopic(cid);
 		});
-
-		ajaxify.register_events([
-			'event:new_topic', 'event:topic_deleted', 'event:topic_restored', 'event:topic_locked',
-			'event:topic_unlocked', 'event:topic_pinned', 'event:topic_unpinned', 'event:topic_moved'
-		]);
 
 		socket.on('event:new_topic', Category.onNewTopic);
 

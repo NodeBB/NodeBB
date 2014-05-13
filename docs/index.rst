@@ -64,6 +64,7 @@ Contributing to NodeBB
     :maxdepth: 2
 
     contributing/style-guide
+    modules/index
 
 Plugin System
 -------------
@@ -73,6 +74,7 @@ Plugin System
 
     plugins/create
     plugins/hooks
+    plugins/settings
 
 Widgets System
 --------------

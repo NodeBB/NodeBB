@@ -3,5 +3,6 @@
     "chat.placeholder": "メッセージを入力する",
     "chat.send": "送信",
     "chat.no_active": "チャットはありません。",
-    "chat.user_typing": "%1 は入力中 ..."
+    "chat.user_typing": "%1 は入力中 ...",
+    "chat.user_has_messaged_you": "%1 has messaged you."
 }

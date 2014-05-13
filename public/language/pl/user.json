@@ -58,5 +58,7 @@
     "paginate_description": "Użyj klasycznego trybu paginacji zamiast nieskończonego przewijania.",
     "topics_per_page": "Wątków na stronę",
     "posts_per_page": "Postów na stronę",
-    "notification_sounds": "Odtwórz dźwięk po otrzymaniu powiadomienia."
+    "notification_sounds": "Odtwórz dźwięk po otrzymaniu powiadomienia.",
+    "browsing": "Browsing Settings",
+    "open_links_in_new_tab": "Open outgoing links in new tab?"
 }

@@ -610,6 +610,8 @@ define(['taskbar'], function(taskbar) {
 							thumbToggleBtnEl.removeClass('hide');
 						}
 					};
+					
+				postData.title = $('<div></div>').html(postData.title).text();
 
 				if (parseInt(postData.tid, 10) > 0) {
 					translator.translate('[[topic:composer.replying_to, ' + postData.title + ']]', function(newTitle) {
@@ -817,7 +819,7 @@ define(['taskbar'], function(taskbar) {
 				});
 
 				socket.emit('modules.composer.renderHelp', function(err, html) {
-					if (html && html.length > 0) {
+					if (!err && html && html.length > 0) {
 						postContainer.find('.help').html(html);
 						postContainer.find('[data-pane=".tab-help"]').parent().removeClass('hidden');
 					}

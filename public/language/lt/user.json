@@ -58,5 +58,7 @@
     "paginate_description": "Temose ir kategorijose naudoti numeraciją puslapiams vietoje begalinės slinkties.",
     "topics_per_page": "Temų puslapyje",
     "posts_per_page": "Pranešimų puslapyje",
-    "notification_sounds": "Groti garsą kai gaunate pranešimą."
+    "notification_sounds": "Groti garsą kai gaunate pranešimą.",
+    "browsing": "Browsing Settings",
+    "open_links_in_new_tab": "Open outgoing links in new tab?"
 }

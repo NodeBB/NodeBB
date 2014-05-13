@@ -13,6 +13,7 @@ Heroku
 8. Enable WebSocket support (beta): ``heroku labs:enable websockets -a {APP_NAME}``, where ``{APP_NAME}`` is provided by Heroku, and looks something like ``adjective-noun-wxyz.herokuapp.com`` (NOTE: `See this doc <https://discussion.heroku.com/t/application-error/160>`_): drop the `.herokuapp.com` when entering ``{APP_NAME}`` above. 
 9. Enable `Redis To Go <https://addons.heroku.com/redistogo>`_ for your heroku account: ``heroku addons:add redistogo:nano``
 10. Run the NodeBB setup script: ``node app --setup`` (information for your Heroku server and Redis to Go instance can be found in your account page)
+
     * Your server name is found in your Heroku app's "settings" page, and looks something like ``adjective-noun-wxyz.herokuapp.com``
     * Use any port number. It will be ignored.
     * Specify "n" when asked if a port will be used. Heroku transparently proxies all requests.
@@ -20,17 +21,30 @@ Heroku
     * The server is ``fishyfish.redistogo.com``
     * The port is ``12345``
     * The password is ``h28h3wgh37fns7``
-11. Create a Procfile for Heroku: ``echo "web: node app.js" > Procfile``
-12. Commit the Procfile:
+
+12. Add the following two packages to the ``dependencies`` section of your ``package.json``:
+
+.. code:: json
+
+        "dependencies": {
+            ...
+            "nodebb-plugin-dbsearch": "0.0.9",
+            "redis": "~0.10.1",
+            "connect-redis": "~1.4"
+        },
+        "devDependencies": {
+
+13. Create a Procfile for Heroku: ``echo "web: node app.js" > Procfile``
+14. Commit the Procfile:
 
 .. code:: bash
 
-	git add -f Procfile config.json public/config.json && git commit -am "adding Procfile and configs for Heroku"
+	git add -f Procfile config.json package.json && git commit -am "adding Procfile and configs for Heroku"
 
-13. Push to heroku: ``git push heroku master``
+15. Push to heroku: ``git push heroku master``
     * Ensure that a proper SSH key was added to your account, otherwise the push will not succeed!
-14. Initialise a single dyno: ``heroku ps:scale web=1``
-15. Visit your app!
+16. Initialise a single dyno: ``heroku ps:scale web=1``
+17. Visit your app!
 
 If these instructions are unclear or if you run into trouble, please let us know by `filing an issue <https://github.com/designcreateplay/NodeBB/issues>`_.
 

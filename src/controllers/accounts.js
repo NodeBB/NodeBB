@@ -11,6 +11,7 @@ var fs = require('fs'),
 	user = require('./../user'),
 	posts = require('./../posts'),
 	topics = require('./../topics'),
+	messaging = require('../messaging'),
 	postTools = require('../postTools'),
 	utils = require('./../../public/src/utils'),
 	meta = require('./../meta'),
@@ -167,7 +168,7 @@ accountsController.getAccount = function(req, res, next) {
 				postTools.parse(userData.signature, function (err, signature) {
 					userData.signature = signature;
 
-					res.render('account', userData);
+					res.render('account/profile', userData);
 				});
 			});
 		});
@@ -175,14 +176,14 @@ accountsController.getAccount = function(req, res, next) {
 };
 
 accountsController.getFollowing = function(req, res, next) {
-	getFollow('following', req, res, next);
+	getFollow('account/following', 'following', req, res, next);
 };
 
 accountsController.getFollowers = function(req, res, next) {
-	getFollow('followers', req, res, next);
+	getFollow('account/followers', 'followers', req, res, next);
 };
 
-function getFollow(name, req, res, next) {
+function getFollow(route, name, req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 	var userData;
 
@@ -205,7 +206,7 @@ function getFollow(name, req, res, next) {
 		userData[name] = users;
 		userData[name + 'Count'] = users.length;
 
-		res.render(name, userData);
+		res.render(route, userData);
 	});
 }
 
@@ -240,7 +241,7 @@ accountsController.getFavourites = function(req, res, next) {
 				userData.posts = favourites.posts;
 				userData.nextStart = favourites.nextStart;
 
-				res.render('favourites', userData);
+				res.render('account/favourites', userData);
 			});
 		});
 	});
@@ -268,7 +269,7 @@ accountsController.getPosts = function(req, res, next) {
 			userData.posts = userPosts.posts;
 			userData.nextStart = userPosts.nextStart;
 
-			res.render('accountposts', userData);
+			res.render('account/posts', userData);
 		});
 	});
 };
@@ -296,7 +297,7 @@ accountsController.getTopics = function(req, res, next) {
 			userData.topics = userTopics.topics;
 			userData.nextStart = userTopics.nextStart;
 
-			res.render('accounttopics', userData);
+			res.render('account/topics', userData);
 		});
 	});
 };
@@ -319,7 +320,7 @@ accountsController.accountEdit = function(req, res, next) {
 			return next(err);
 		}
 
-		res.render('accountedit', userData);
+		res.render('account/edit', userData);
 	});
 };
 
@@ -371,7 +372,7 @@ accountsController.accountSettings = function(req, res, next) {
 					languages: results.languages
 				};
 
-				res.render('accountsettings', results);
+				res.render('account/settings', results);
 			});
 		});
 	});
@@ -448,7 +449,7 @@ accountsController.uploadPicture = function (req, res, next) {
 			});
 		}
 
-		if(err) {
+		if (err) {
 			fs.unlink(req.files.userPhoto.path);
 			return res.json({error:err.message});
 		}
@@ -483,6 +484,18 @@ accountsController.getNotifications = function(req, res, next) {
 	user.notifications.getAll(req.user.uid, null, null, function(err, notifications) {
 		res.render('notifications', {
 			notifications: notifications
+		});
+	});
+};
+
+accountsController.getChats = function(req, res, next) {
+	messaging.getRecentChats(req.user.uid, 0, -1, function(err, chats) {
+		if (err) {
+			return next(err);
+		}
+
+		res.render('chats', {
+			chats: chats
 		});
 	});
 };

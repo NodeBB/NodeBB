@@ -1,6 +1,7 @@
 {
     "invalid-data": "Vigased andmed",
     "not-logged-in": "Sa ei ole sisse logitud",
+    "account-locked": "Your account has been locked temporarily",
     "invalid-cid": "Vigane kategooria ID",
     "invalid-tid": "Vigane teema ID",
     "invalid-pid": "Vigane postituse ID",

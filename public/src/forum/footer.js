@@ -1,9 +1,5 @@
 define(['notifications', 'chat'], function(Notifications, Chat) {
 
-	socket.emit('meta.updateHeader', {
-		fields: ['username', 'picture', 'userslug']
-	}, app.updateHeader);
-
 	Notifications.prepareDOM();
 	Chat.prepareDOM();
 	translator.prepareDOM();

@@ -9,13 +9,23 @@ var groups = require('../../groups'),
 	User = {};
 
 
-User.makeAdmin = function(socket, theirid, callback) {
-	groups.join('administrators', theirid, callback);
+User.makeAdmins = function(socket, uids, callback) {
+	toggleAdmin(uids, true, callback);
 };
 
-User.removeAdmin = function(socket, theirid, callback) {
-	groups.leave('administrators', theirid, callback);
+User.removeAdmins = function(socket, uids, callback) {
+	toggleAdmin(uids, false, callback);
 };
+
+function toggleAdmin(uids, isAdmin, callback) {
+	if(!Array.isArray(uids)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	async.each(uids, function(uid, next) {
+		groups[isAdmin ? 'join' : 'leave']('administrators', uid, next);
+	}, callback);
+}
 
 User.createUser = function(socket, userData, callback) {
 	if (!userData) {
@@ -24,44 +34,61 @@ User.createUser = function(socket, userData, callback) {
 	user.create(userData, callback);
 };
 
-User.banUser = function(socket, theirid, callback) {
-	user.isAdministrator(theirid, function(err, isAdmin) {
+User.banUsers = function(socket, uids, callback) {
+	if(!Array.isArray(uids)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	async.each(uids, User.banUser, callback);
+};
+
+User.banUser = function(uid, callback) {
+	user.isAdministrator(uid, function(err, isAdmin) {
 		if (err || isAdmin) {
 			return callback(err || new Error('[[error:cant-ban-other-admins]]'));
 		}
 
-		user.ban(theirid, function(err) {
+		user.ban(uid, function(err) {
 			if (err) {
 				return callback(err);
 			}
 
-			var sockets = websockets.getUserSockets(theirid);
+			var sockets = websockets.getUserSockets(uid);
 
 			for(var i=0; i<sockets.length; ++i) {
 				sockets[i].emit('event:banned');
 			}
 
-			websockets.logoutUser(theirid);
+			websockets.logoutUser(uid);
 			callback();
 		});
 	});
 };
 
-User.unbanUser = function(socket, theirid, callback) {
-	user.unban(theirid, callback);
+User.unbanUsers = function(socket, uids, callback) {
+	if(!Array.isArray(uids)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	async.each(uids, user.unban, callback);
 };
 
-User.deleteUser = function(socket, theirid, callback) {
-	user.delete(theirid, function(err) {
-		if (err) {
-			return callback(err);
-		}
+User.deleteUsers = function(socket, uids, callback) {
+	if(!Array.isArray(uids)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
 
-		events.logAdminUserDelete(socket.uid, theirid);
+	async.each(uids, function(uid, next) {
+		user.delete(uid, function(err) {
+			if (err) {
+				return next(err);
+			}
 
-		websockets.logoutUser(theirid);
-		callback();
-	});
+			events.logAdminUserDelete(socket.uid, uid);
+
+			websockets.logoutUser(uid);
+			next();
+		});
+	}, callback);
 };
 
 User.search = function(socket, username, callback) {

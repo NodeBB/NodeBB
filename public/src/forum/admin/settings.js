@@ -53,11 +53,39 @@ define(['uploader', 'sounds'], function(uploader, sounds) {
 			}
 		}
 
-		saveBtn.on('click', function(e) {
+		saveBtn.off('click').on('click', function(e) {
 			e.preventDefault();
+			var done = 0,
+				error;
 
 			for (x = 0; x < numFields; x++) {
-				saveField(fields[x]);
+				saveField(fields[x], onFieldSaved);
+			}
+
+			function onFieldSaved(err) {
+				if (!error && err) {
+					error = err;
+				}
+
+				done++;
+				if (done === numFields) {
+					if (error) {
+						return app.alert({
+							alert_id: 'config_status',
+							timeout: 2500,
+							title: 'Changes Not Saved',
+							message: 'NodeBB encountered a problem saving your changes',
+							type: 'danger'
+						});
+					}
+					app.alert({
+						alert_id: 'config_status',
+						timeout: 2500,
+						title: 'Changes Saved',
+						message: 'Your changes to the NodeBB configuration have been saved.',
+						type: 'success'
+					});
+				}
 			}
 		});
 
@@ -91,7 +119,7 @@ define(['uploader', 'sounds'], function(uploader, sounds) {
 		socket.emit('admin.config.remove', key);
 	};
 
-	function saveField(field) {
+	function saveField(field, callback) {
 		field = $(field);
 		var key = field.attr('data-field'),
 			value, inputType;
@@ -118,28 +146,10 @@ define(['uploader', 'sounds'], function(uploader, sounds) {
 			key: key,
 			value: value
 		}, function(err) {
-			if(err) {
-				return app.alert({
-					alert_id: 'config_status',
-					timeout: 2500,
-					title: 'Changes Not Saved',
-					message: 'NodeBB encountered a problem saving your changes',
-					type: 'danger'
-				});
-			}
-
-			if(app.config[key] !== undefined) {
+			if(!err && app.config[key] !== undefined) {
 				app.config[key] = value;
 			}
-
-			app.alert({
-				alert_id: 'config_status',
-				timeout: 2500,
-				title: 'Changes Saved',
-				message: 'Your changes to the NodeBB configuration have been saved.',
-				type: 'success'
-			});
-
+			callback(err);
 		});
 	}
 

@@ -1,6 +1,7 @@
 {
     "invalid-data": "Dữ liệu không hợp lệ",
     "not-logged-in": "Bạn không được đăng nhập.",
+    "account-locked": "Your account has been locked temporarily",
     "invalid-cid": "Danh mục ID không hợp lệ",
     "invalid-tid": "ID chủ đề không hợp lệ",
     "invalid-pid": "ID bài viết không hợp lệ",

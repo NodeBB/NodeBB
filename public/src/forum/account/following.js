@@ -1,4 +1,4 @@
-define(['forum/accountheader'], function(header) {
+define(['forum/account/header'], function(header) {
 	var	Following = {};
 
 	Following.init = function() {
@@ -9,8 +9,6 @@ define(['forum/accountheader'], function(header) {
 		if (parseInt(followingCount, 10) === 0) {
 			$('#no-following-notice').removeClass('hide');
 		}
-
-		utils.addCommasToNumbers($('.account .formatted-number'));
 	};
 
 	return Following;

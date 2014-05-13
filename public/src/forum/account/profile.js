@@ -2,7 +2,7 @@
 
 /* globals define, ajaxify, app, utils, socket, translator*/
 
-define(['forum/accountheader'], function(header) {
+define(['forum/account/header'], function(header) {
 	var Account = {},
 		yourid,
 		theirid,
@@ -39,8 +39,6 @@ define(['forum/accountheader'], function(header) {
 	};
 
 	function processPage() {
-		utils.addCommasToNumbers($('.account .formatted-number'));
-		utils.makeNumbersHumanReadable($('.account .human-readable-number'));
 		$('.user-recent-posts img').addClass('img-responsive');
 	}
 

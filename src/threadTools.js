@@ -206,21 +206,15 @@ var winston = require('winston'),
 		});
 	};
 
-
-
 	ThreadTools.toggleFollow = function(tid, uid, callback) {
 		topics.isFollowing(tid, uid, function(err, following) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
-			db[following ? 'setRemove' : 'setAdd']('tid:' + tid + ':followers', uid, function(err, success) {
-				if (callback) {
-					if(err) {
-						return callback(err);
-					}
-
-					callback(null, !following);
+			db[following ? 'setRemove' : 'setAdd']('tid:' + tid + ':followers', uid, function(err) {
+				if (typeof callback === 'function') {
+					callback(err, !following);
 				}
 			});
 		});

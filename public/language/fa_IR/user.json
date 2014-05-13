@@ -58,5 +58,7 @@
     "paginate_description": "محدود کردن شمار جستارها و دیدگاه‌ها در هر برگه به جای مرور بی‌پایان برگه‌ها",
     "topics_per_page": "شمار جستارها در هر برگه",
     "posts_per_page": "شمار دیدگاه‌ها در هر برگه",
-    "notification_sounds": "پخش صدا هنگامی که شما یک آگاه‌سازی دریافت می‌کنید."
+    "notification_sounds": "پخش صدا هنگامی که شما یک آگاه‌سازی دریافت می‌کنید.",
+    "browsing": "Browsing Settings",
+    "open_links_in_new_tab": "Open outgoing links in new tab?"
 }

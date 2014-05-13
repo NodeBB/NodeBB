@@ -65,6 +65,7 @@
     "favourites.has_no_favourites": "Sul pole lemmikuid postitusi. Märgi mõned postitused lemmikuks ning need ilmuvad automaatselt siia!",
     "loading_more_posts": "Laen postitusi",
     "move_topic": "Liiguta teemat",
+    "move_topics": "Move Topics",
     "move_post": "Liiguta postitust",
     "post_moved": "Postitus liigutatud!",
     "fork_topic": "Fork Topic",

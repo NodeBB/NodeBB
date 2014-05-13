@@ -1,6 +1,7 @@
 {
     "invalid-data": "無効なデータ",
     "not-logged-in": "ログインしていていないようです。",
+    "account-locked": "Your account has been locked temporarily",
     "invalid-cid": "無効な板ID",
     "invalid-tid": "無効なスレッドID",
     "invalid-pid": "無効なポストID",

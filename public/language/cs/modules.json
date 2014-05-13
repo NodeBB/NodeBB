@@ -3,5 +3,6 @@
     "chat.placeholder": "napište zprávu sem a zmáčkněte enter pro odeslání",
     "chat.send": "Odeslat",
     "chat.no_active": "Nemáte žádné aktivní konverzace.",
-    "chat.user_typing": "%1 is typing ..."
+    "chat.user_typing": "%1 is typing ...",
+    "chat.user_has_messaged_you": "%1 has messaged you."
 }

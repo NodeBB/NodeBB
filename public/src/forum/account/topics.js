@@ -2,7 +2,7 @@
 
 /* globals define, app, socket, ajaxify, templates, translator, utils */
 
-define(['forum/accountheader'], function(header) {
+define(['forum/account/header'], function(header) {
 	var AccountTopics = {},
 		loadingMore = false;
 
@@ -36,7 +36,7 @@ define(['forum/accountheader'], function(header) {
 	}
 
 	function onTopicsLoaded(topics) {
-		ajaxify.loadTemplate('accounttopics', function(accounttopics) {
+		ajaxify.loadTemplate('account/topics', function(accounttopics) {
 			var html = templates.parse(templates.getBlock(accounttopics, 'topics'), {topics: topics});
 
 			translator.translate(html, function(translatedHTML) {
