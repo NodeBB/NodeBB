@@ -1,6 +1,7 @@
 {
     "invalid-data": "Données Invalides",
     "not-logged-in": "Vous ne semblez pas être connecté.",
+    "account-locked": "Votre compte a été temporairement suspendu.",
     "invalid-cid": "ID de Catégorie Invalide",
     "invalid-tid": "ID de Sujet Invalide",
     "invalid-pid": "ID de Message Invalide",

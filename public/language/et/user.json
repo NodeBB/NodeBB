@@ -58,5 +58,7 @@
     "paginate_description": "Nummerda leheküljed ja postitused ning ära kasuta ''lõputut scrolli''.",
     "topics_per_page": "Teemasi ühe lehekülje kohta",
     "posts_per_page": "Postitusi ühe lehekülje kohta",
-    "notification_sounds": "Tee häält, kui saabub teade."
+    "notification_sounds": "Tee häält, kui saabub teade.",
+    "browsing": "Browsing Settings",
+    "open_links_in_new_tab": "Open outgoing links in new tab?"
 }

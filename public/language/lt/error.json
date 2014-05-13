@@ -1,6 +1,7 @@
 {
     "invalid-data": "Klaidingi duomenys",
     "not-logged-in": "Atrodo, kad jūs neesate prisijungęs.",
+    "account-locked": "Your account has been locked temporarily",
     "invalid-cid": "Klaidingas kategorijos ID",
     "invalid-tid": "Klaidingas temos ID",
     "invalid-pid": "Klaidingas pranešimo ID",

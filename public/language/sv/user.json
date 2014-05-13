@@ -58,5 +58,7 @@
     "paginate_description": "Gör så att ämnen och inlägg visas som sidor istället för oändlig scroll.",
     "topics_per_page": "Ämnen per sida",
     "posts_per_page": "Inlägg per sida",
-    "notification_sounds": "Spela ett ljud när du får en notis."
+    "notification_sounds": "Spela ett ljud när du får en notis.",
+    "browsing": "Browsing Settings",
+    "open_links_in_new_tab": "Open outgoing links in new tab?"
 }

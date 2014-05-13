@@ -58,5 +58,7 @@
     "paginate_description": "Paginer tråder og innlegg istedet for å bruke uendelig skrolling.",
     "topics_per_page": "Tråd per side",
     "posts_per_page": "Innlegg per side",
-    "notification_sounds": "Spill av en lyd når du mottar ett varsel."
+    "notification_sounds": "Spill av en lyd når du mottar ett varsel.",
+    "browsing": "Browsing Settings",
+    "open_links_in_new_tab": "Open outgoing links in new tab?"
 }

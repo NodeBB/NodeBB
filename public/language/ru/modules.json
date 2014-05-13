@@ -3,5 +3,6 @@
     "chat.placeholder": "введите сообщение, нажмите enter для отправки",
     "chat.send": "Отправить",
     "chat.no_active": "У вас нет активных чатов.",
-    "chat.user_typing": "%1 is typing ..."
+    "chat.user_typing": "%1 is typing ...",
+    "chat.user_has_messaged_you": "%1 has messaged you."
 }

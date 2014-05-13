@@ -65,6 +65,7 @@
     "favourites.has_no_favourites": "你还没有任何收藏，收藏的帖子将会出现在这里！",
     "loading_more_posts": "载入更多帖子",
     "move_topic": "移动主题",
+    "move_topics": "Move Topics",
     "move_post": "移动帖子",
     "post_moved": "Post moved!",
     "fork_topic": "作为主题",

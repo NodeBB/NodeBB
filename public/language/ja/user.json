@@ -58,5 +58,7 @@
     "paginate_description": "スクロールでのページ自動ロードはしない",
     "topics_per_page": "ページ毎のスレッド数",
     "posts_per_page": "ページ毎のポスト数",
-    "notification_sounds": "通知が来たとき音を流す"
+    "notification_sounds": "通知が来たとき音を流す",
+    "browsing": "Browsing Settings",
+    "open_links_in_new_tab": "Open outgoing links in new tab?"
 }

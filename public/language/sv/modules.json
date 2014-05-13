@@ -3,5 +3,6 @@
     "chat.placeholder": "skriv meddelanden här, tryck enter för att skicka",
     "chat.send": "Skicka",
     "chat.no_active": "Du har inte några aktiva chattar.",
-    "chat.user_typing": "%1 is typing ..."
+    "chat.user_typing": "%1 is typing ...",
+    "chat.user_has_messaged_you": "%1 has messaged you."
 }

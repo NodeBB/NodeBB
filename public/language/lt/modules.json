@@ -3,5 +3,6 @@
     "chat.placeholder": "žinutę rašykite čia, norėdami išsiųsti spauskite enter",
     "chat.send": "Siųsti",
     "chat.no_active": "Jūs neturite aktyvių susirašinėjimų.",
-    "chat.user_typing": "%1 dabar rašo..."
+    "chat.user_typing": "%1 dabar rašo...",
+    "chat.user_has_messaged_you": "%1 has messaged you."
 }

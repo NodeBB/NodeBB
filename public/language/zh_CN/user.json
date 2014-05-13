@@ -58,5 +58,7 @@
     "paginate_description": "使用分页方式显示话题和帖子,代替滚动显示",
     "topics_per_page": "每页话题数量设置",
     "posts_per_page": "每页帖子数量设置",
-    "notification_sounds": "通知时播放声音提示。"
+    "notification_sounds": "通知时播放声音提示。",
+    "browsing": "Browsing Settings",
+    "open_links_in_new_tab": "Open outgoing links in new tab?"
 }

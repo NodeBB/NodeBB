@@ -3,5 +3,6 @@
     "chat.placeholder": "Yer message goes here, hit enter to send 'er off",
     "chat.send": "Send Parrot",
     "chat.no_active": "Ye be a lonely sailor.",
-    "chat.user_typing": "%1 is typing ..."
+    "chat.user_typing": "%1 is typing ...",
+    "chat.user_has_messaged_you": "%1 has messaged you."
 }

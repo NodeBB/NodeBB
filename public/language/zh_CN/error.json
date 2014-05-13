@@ -1,6 +1,7 @@
 {
     "invalid-data": "无效数据",
     "not-logged-in": "你看起来还没有登陆",
+    "account-locked": "Your account has been locked temporarily",
     "invalid-cid": "无效的板块ID",
     "invalid-tid": "无效的话题ID",
     "invalid-pid": "无效的帖子ID",

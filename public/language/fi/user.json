@@ -58,5 +58,7 @@
     "paginate_description": "Sivuta aiheet ja viestit loputtoman vierittämisen sijaan.",
     "topics_per_page": "Aihetta per sivu",
     "posts_per_page": "Viestiä per sivu",
-    "notification_sounds": "Soita merkkiääni ilmoituksen saapuessa."
+    "notification_sounds": "Soita merkkiääni ilmoituksen saapuessa.",
+    "browsing": "Browsing Settings",
+    "open_links_in_new_tab": "Open outgoing links in new tab?"
 }
