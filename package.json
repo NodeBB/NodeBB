@@ -47,7 +47,7 @@
     "nodebb-plugin-mentions": "~0.4.0",
     "nodebb-plugin-markdown": "~0.4.1",
     "nodebb-widget-essentials": "~0.0.21",
-    "nodebb-theme-vanilla": "~0.0.19",
+    "nodebb-theme-vanilla": "~0.0.20",
     "nodebb-theme-lavender": "~0.0.25",
     "nodebb-plugin-soundpack-default": "~0.1.1",
     "nodebb-plugin-dbsearch": "0.0.9"
