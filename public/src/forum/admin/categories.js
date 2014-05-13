@@ -375,7 +375,7 @@ define(['uploader'], function(uploader) {
 					memberList.append(liEl);
 				}
 			} else {
-				liEl = $('<li/>').addClass('empty').html('All users can read and post, and reply to topics in this category');
+				liEl = $('<li/>').addClass('empty').html('None.');
 				memberList.append(liEl);
 			}
 		});
