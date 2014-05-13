@@ -598,6 +598,54 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2014/4/2] Moved deprecated vanilla footer widgets into draft zone - skipped');
 				next();
 			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 4, 13);
+
+			if (schemaDate < thisSchemaDate) {
+				var tasks = [];
+				db.getSetMembers('groups', function(err, groups) {
+					var	isCidPerm = /^cid:\d+:privileges:g?\+[rw]$/,
+						privMap = {
+							"+r": "read",
+							"+w": "topics:create",
+							"g+r": "groups:read",
+							"g+w": "groups:topics:create"
+						};
+
+					groups = groups.filter(function(groupName) {
+						return isCidPerm.test(groupName);
+					});
+
+					groups.forEach(function(groupName) {
+						var	split = groupName.split(':'),
+							privilege = split.pop(),
+							newPrivilege = privMap[privilege],
+							newName;
+
+						split.push(newPrivilege);
+						newName = split.join(':');
+
+						tasks.push(async.apply(db.rename, 'group:' + groupName, 'group:' + newName));
+						tasks.push(async.apply(db.rename, 'group:' + groupName + ':members', 'group:' + newName + ':members'));
+						tasks.push(async.apply(db.setRemove, 'groups', groupName));
+						tasks.push(async.apply(db.setAdd, 'groups', newName));
+					});
+
+					async.parallel(tasks, function(err) {
+						if (!err) {
+							winston.info('[2014/4/1] Updating privilege settings');
+							Upgrade.update(thisSchemaDate, next);
+						} else {
+							winston.error('[2014/4/1] Error encountered while updating privilege settings');
+							next(err);
+						}
+					});
+				});
+			} else {
+				winston.info('[2014/5/13] Updating privilege settings - skipped');
+				next();
+			}
 		}
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 22!!!
