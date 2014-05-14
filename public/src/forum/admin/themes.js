@@ -120,6 +120,7 @@ define(['forum/admin/settings'], function(Settings) {
 
 		Themes.prepareWidgets();
 
+		populateBranding();
 		Settings.prepare();
 	};
 
@@ -320,19 +321,21 @@ define(['forum/admin/settings'], function(Settings) {
 		});
 	};
 
-	require(['settings'], function (settings) {
-		var wrapper = $('#branding');
+	function populateBranding() {
+		require(['settings'], function (settings) {
+			var wrapper = $('#branding');
 
-		settings.sync('branding', wrapper);
+			settings.sync('branding', wrapper);
 
-		$('#save-branding').click(function(event) {
-			settings.persist('branding', $('#branding'), function() {
-				socket.emit('admin.themes.updateBranding');
+			$('#save-branding').click(function(event) {
+				settings.persist('branding', $('#branding'), function() {
+					socket.emit('admin.themes.updateBranding');
+				});
+
+				event.preventDefault();
 			});
-
-			event.preventDefault();
 		});
-	});
+	}
 
 	return Themes;
 });
