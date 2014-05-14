@@ -211,6 +211,8 @@ function reset() {
 
 		if (nconf.get('themes')) {
 			resetThemes();
+		} else if (nconf.get('plugin')) {
+			resetPlugin(nconf.get('plugin'));
 		} else if (nconf.get('plugins')) {
 			resetPlugins();
 		} else if (nconf.get('widgets')) {
@@ -227,7 +229,7 @@ function reset() {
 				process.exit();
 			});
 		} else {
-			console.log('no match');
+			winston.warn('[reset] Nothing reset.');
 		}
 	});
 }
@@ -257,6 +259,25 @@ function resetThemes(callback) {
 		} else {
 			process.exit();
 		}
+	});
+}
+
+function resetPlugin(pluginId) {
+	var db = require('./src/database');
+	db.setRemove('plugins:active', pluginId, function(err, result) {
+		console.log(result);
+		if (err || result !== 1) {
+			winston.error('[reset] Could not disable plugin: ' + pluginId);
+			if (err) {
+				winston.error('[reset] Encountered error: ' + err.message);
+			} else {
+				winston.info('[reset] Perhaps it has already been disabled?');
+			}
+		} else {
+			winston.info('[reset] Plugin `' + pluginId + '` disabled');
+		}
+
+		process.exit();
 	});
 }
 
