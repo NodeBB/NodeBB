@@ -164,7 +164,7 @@ var db = require('./database'),
 
 			async.filter(pids, function(pid, next) {
 				postTools.privileges(pid, callerUid, function(err, privileges) {
-					next(!err && privileges.read);
+					next(!err && privileges.meta.read);
 				});
 			}, function(pids) {
 				if (!(pids && pids.length)) {
@@ -216,7 +216,7 @@ var db = require('./database'),
 
 			async.filter(pids, function(pid, next) {
 				postTools.privileges(pid, uid, function(err, privileges) {
-					next(!err && privileges.read);
+					next(!err && privileges.meta.read);
 				});
 			}, function(pids) {
 				Posts.getPostSummaryByPids(pids, true, callback);
