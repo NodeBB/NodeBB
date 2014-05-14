@@ -116,7 +116,7 @@ var async = require('async'),
 		Notifications.get(nid, null, function(notif_data) {
 			async.each(uids, function(uid, next) {
 				if (!parseInt(uid, 10)) {
-					next();
+					return next();
 				}
 
 				checkReplace(notif_data.uniqueId, uid, notif_data, function(err, replace) {
