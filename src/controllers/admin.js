@@ -136,9 +136,21 @@ adminController.themes.get = function(req, res, next) {
 				}
 			}
 
+			var branding = [];
+
+			for (var key in meta.css.branding) {
+				if (meta.css.branding.hasOwnProperty(key)) {
+					branding.push({
+						key: key,
+						value: meta.css.branding[key]
+					});
+				}
+			}
+
 			res.render('admin/themes', {
 				areas: widgetData.areas,
-				widgets: widgetData.widgets
+				widgets: widgetData.widgets,
+				branding: branding
 			});
 		});
 	});
