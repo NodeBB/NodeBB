@@ -121,6 +121,7 @@ define(['forum/admin/settings'], function(Settings) {
 		Themes.prepareWidgets();
 
 		populateBranding();
+		admin.enableColorPicker($('.branding'));
 		Settings.prepare();
 	};
 
