@@ -7,32 +7,49 @@
 		db = require('./database'),
 		utils = require('../public/src/utils'),
 
-		filterGroups = function(groups, options) {
-			// Remove system, hidden, or deleted groups from this list
-			if (groups && !options.showAllGroups) {
-				return groups.filter(function (group) {
-					if (group.deleted || (group.hidden && !group.system) || (!options.showSystemGroups && group.system)) {
-						return false;
+		ephemeralGroups = ['guests'],
+
+		internals = {
+			filterGroups: function(groups, options) {
+				// Remove system, hidden, or deleted groups from this list
+				if (groups && !options.showAllGroups) {
+					return groups.filter(function (group) {
+						if (group.deleted || (group.hidden && !group.system) || (!options.showSystemGroups && group.system)) {
+							return false;
+						} else {
+							return true;
+						}
+					});
+				} else {
+					return groups;
+				}
+			},
+			getEphemeralGroup: function(groupName, options, callback) {
+				Groups.exists(groupName, function(err, exists) {
+					if (!err && exists) {
+						Groups.get.apply(null, arguments);
 					} else {
-						return true;
+						callback(null, {
+							name: groupName,
+							description: '',
+							deleted: '0',
+							hidden: '0',
+							system: '1'
+						});
 					}
 				});
-			} else {
-				return groups;
 			}
 		};
 
 	Groups.list = function(options, callback) {
 		db.getSetMembers('groups', function (err, groupNames) {
-			if (groupNames.length > 0) {
-				async.map(groupNames, function (groupName, next) {
-					Groups.get(groupName, options, next);
-				}, function (err, groups) {
-					callback(err, filterGroups(groups, options));
-				});
-			} else {
-				callback(null, []);
-			}
+			groupNames = groupNames.concat(ephemeralGroups);
+
+			async.map(groupNames, function (groupName, next) {
+				Groups.get(groupName, options, next);
+			}, function (err, groups) {
+				callback(err, internals.filterGroups(groups, options));
+			});
 		});
 	};
 
@@ -42,15 +59,19 @@
 
 		async.parallel({
 			base: function (next) {
-				db.getObject('group:' + groupName, function(err, groupObj) {
-					if (err) {
-						next(err);
-					} else if (!groupObj) {
-						next('group-not-found');
-					} else {
-						next(err, groupObj);
-					}
-				});
+				if (ephemeralGroups.indexOf(groupName) === -1) {
+					db.getObject('group:' + groupName, function(err, groupObj) {
+						if (err) {
+							next(err);
+						} else if (!groupObj) {
+							next('group-not-found');
+						} else {
+							next(err, groupObj);
+						}
+					});
+				} else {
+					internals.getEphemeralGroup(groupName, options, next);
+				}
 			},
 			users: function (next) {
 				db.getSetMembers('group:' + groupName + ':members', function (err, uids) {
@@ -103,7 +124,7 @@
 				async.map(groups, function(groupName, next) {
 					Groups.get(groupName, options, next);
 				}, function(err, groups) {
-					callback(err, filterGroups(groups, options));
+					callback(err, internals.filterGroups(groups, options));
 				});
 			});
 		} else {
