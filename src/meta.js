@@ -329,6 +329,8 @@ var fs = require('fs'),
 	/* Themes */
 	Meta.css = {};
 	Meta.css.cache = undefined;
+	Meta.css.branding = {};
+
 	Meta.css.minify = function() {
 		winston.info('[meta/css] Minifying LESS/CSS');
 		db.getObjectFields('config', ['theme:type', 'theme:id'], function(err, themeData) {
@@ -369,17 +371,30 @@ var fs = require('fs'),
 				});
 
 				var re = /.brand-([\S]*?)[ ]*?{[\s\S]*?color:([\S\s]*?)}/gi,
-					match,
-					branding = {};
+					match;
 
 				while (match = re.exec(css)) {
-					branding[match[1]] = match[2];
+					Meta.css.branding[match[1]] = match[2];
+				}
+
+				if (typeof Meta.config.branding !== 'undefined') {
+					Meta.css.updateBranding(Meta.config.branding);
 				}
 
 				Meta.css.cache = css;
 				winston.info('[meta/css] Done.');
 			});
 		});
+	};
+
+	Meta.css.updateBranding = function(branding) {
+		for (var b in branding) {
+			if (branding.hasOwnProperty(b)) {
+				Meta.css.replace(new RegExp(Meta.css.branding[b], 'g'), branding[b]);
+			}
+		}
+
+		Meta.css.branding = branding;
 	};
 
 	/* Sounds */
