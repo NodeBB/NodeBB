@@ -70,7 +70,7 @@ module.exports = function(Topics) {
 					postData[i].display_move_tools = results.privileges[i].move;
 					postData[i].selfPost = parseInt(uid, 10) === parseInt(postData[i].uid, 10);
 
-					if(postData[i].deleted && !results.privileges[i].view_deleted) {
+					if(postData[i].deleted && !results.privileges[i].meta.view_deleted) {
 						postData[i].content = '[[topic:post_is_deleted]]';
 					}
 				}
