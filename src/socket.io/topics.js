@@ -186,7 +186,7 @@ function doTopicAction(action, socket, tids, callback) {
 				return next(err);
 			}
 
-			if(!privileges || !privileges.editable) {
+			if(!privileges || !privileges.meta.editable) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
 

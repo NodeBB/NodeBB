@@ -57,7 +57,7 @@ module.exports = function(Topics) {
 							return next(err);
 						}
 
-						if(privileges.editable) {
+						if(privileges.meta.editable) {
 							Topics.movePostToTopic(pid, tid, next);
 						} else {
 							next();

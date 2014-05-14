@@ -121,7 +121,7 @@ var winston = require('winston'),
 		}
 
 		PostTools.privileges(pid, uid, function(err, privileges) {
-			if (err || !privileges.editable) {
+			if (err || !privileges.meta.editable) {
 				return callback(err || new Error('[[error:no-privileges]]'));
 			}
 
@@ -164,7 +164,7 @@ var winston = require('winston'),
 				PostTools.privileges(pid, uid, next);
 			},
 			function(privileges, next) {
-				if (!privileges || !privileges.editable) {
+				if (!privileges || !privileges.meta.editable) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				next();

@@ -291,7 +291,7 @@ var async = require('async'),
 				topicData.thread_tools = results.threadTools;
 				topicData.pageCount = results.pageCount;
 				topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
-				topicData.expose_tools = results.privileges.editable ? 1 : 0;
+				topicData.expose_tools = results.privileges.meta.editable ? 1 : 0;
 
 				callback(null, topicData);
 			});
