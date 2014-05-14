@@ -69,7 +69,12 @@ To do this on Ubuntu:
 
     # add-apt-repository ppa:chris-lea/node.js
     # apt-get update && apt-get dist-upgrade -y
-    # apt-cache policy nodejs    // should show a version higher than 0.8
+
+If successful, running the following command should show a version higher than 0.8
+
+.. code:: bash
+
+    # apt-cache policy nodejs
 
 
 Submit Bugs on our Issue Tracker
