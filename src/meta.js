@@ -364,9 +364,19 @@ var fs = require('fs'),
 					process.exit();
 				}
 
-				Meta.css.cache = tree.toCSS({
+				var css = tree.toCSS({
 					cleancss: true
 				});
+
+				var re = /.brand-([\S]*?)[ ]*?{[\s\S]*?color:([\S\s]*?)}/gi,
+					match,
+					branding = {};
+
+				while (match = re.exec(css)) {
+					branding[match[1]] = match[2];
+				}
+
+				Meta.css.cache = css;
 				winston.info('[meta/css] Done.');
 			});
 		});
