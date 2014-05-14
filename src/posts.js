@@ -6,6 +6,7 @@ var db = require('./database'),
 	topics = require('./topics'),
 	favourites = require('./favourites'),
 	postTools = require('./postTools'),
+	privileges = require('./privileges'),
 	categories = require('./categories'),
 	plugins = require('./plugins'),
 	meta = require('./meta'),
@@ -163,8 +164,8 @@ var db = require('./database'),
 			}
 
 			async.filter(pids, function(pid, next) {
-				postTools.privileges(pid, callerUid, function(err, privileges) {
-					next(!err && privileges.meta.read);
+				privileges.posts.canRead(pid, callerUid, function(err, canRead) {
+					next(!err && canRead);
 				});
 			}, function(pids) {
 				if (!(pids && pids.length)) {
@@ -215,8 +216,8 @@ var db = require('./database'),
 			}
 
 			async.filter(pids, function(pid, next) {
-				postTools.privileges(pid, uid, function(err, privileges) {
-					next(!err && privileges.meta.read);
+				privileges.posts.canRead(pid, uid, function(err, canRead) {
+					next(!err && canRead);
 				});
 			}, function(pids) {
 				Posts.getPostSummaryByPids(pids, true, callback);
@@ -480,5 +481,15 @@ var db = require('./database'),
 			db.sortedSetRank('tid:' + tid + ':posts', pid, callback);
 		});
 	};
+
+	Posts.isOwner = function(pid, uid, callback) {
+		Posts.getPostField(pid, 'uid', function(err, author) {
+			if (err) {
+				return callback(err);
+			}
+			callback(null, parseInt(author, 10) === parseInt(uid, 10));
+		});
+	};
+
 
 }(exports));

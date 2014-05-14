@@ -5,6 +5,7 @@ var	async = require('async'),
 
 	db = require('../database'),
 	posts = require('../posts'),
+	privileges = require('../privileges'),
 	meta = require('../meta'),
 	topics = require('../topics'),
 	favourites = require('../favourites'),
@@ -15,7 +16,6 @@ var	async = require('async'),
 	websockets = require('./index'),
 
 	SocketPosts = {};
-
 
 
 SocketPosts.reply = function(socket, data, callback) {
@@ -127,10 +127,10 @@ function sendNotificationToPostOwner(data, uid, notification) {
 SocketPosts.getRawPost = function(socket, pid, callback) {
 	async.waterfall([
 		function(next) {
-			postTools.privileges(pid, socket.uid, next);
+			privileges.posts.canRead(pid, socket.uid, next);
 		},
-		function(privileges, next) {
-			if (!privileges || !privileges.meta.read) {
+		function(canRead, next) {
+			if (!canRead) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
 			posts.getPostFields(pid, ['content', 'deleted'], next);
@@ -205,7 +205,7 @@ function deleteOrRestore(command, socket, data, callback) {
 }
 
 SocketPosts.getPrivileges = function(socket, pid, callback) {
-	postTools.privileges(pid, socket.uid, function(err, privileges) {
+	privileges.posts.get(pid, socket.uid, function(err, privileges) {
 		if(err) {
 			return callback(err);
 		}

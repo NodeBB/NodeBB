@@ -8,9 +8,7 @@ var async = require('async'),
 	emitter = require('./../emitter'),
 	favourites = require('./../favourites'),
 	posts = require('./../posts'),
-	postTools = require('./../postTools');
-
-
+	privileges = require('../privileges');
 
 module.exports = function(Topics) {
 
@@ -52,7 +50,7 @@ module.exports = function(Topics) {
 				},
 				privileges : function(next) {
 					async.map(pids, function (pid, next) {
-						postTools.privileges(pid, uid, next);
+						privileges.posts.get(pid, uid, next);
 					}, next);
 				}
 			}, function(err, results) {
@@ -66,7 +64,7 @@ module.exports = function(Topics) {
 					postData[i].upvoted = results.voteData[i].upvoted;
 					postData[i].downvoted = results.voteData[i].downvoted;
 					postData[i].votes = postData[i].votes || 0;
-					postData[i].display_moderator_tools = parseInt(uid, 10) !== 0 && results.privileges[i].meta.editable;
+					postData[i].display_moderator_tools = results.privileges[i].meta.editable;
 					postData[i].display_move_tools = results.privileges[i].meta.move;
 					postData[i].selfPost = parseInt(uid, 10) === parseInt(postData[i].uid, 10);
 

@@ -9,6 +9,7 @@ var winston = require('winston'),
 	posts = require('./posts'),
 	topics = require('./topics'),
 	threadTools = require('./threadTools'),
+	privileges = require('./privileges'),
 	user = require('./user'),
 	utils = require('../public/src/utils'),
 	plugins = require('./plugins'),
@@ -30,47 +31,6 @@ var winston = require('winston'),
 			callback(null, parseInt(pids[0], 10) === parseInt(pid, 10));
 		});
 	};
-
-	PostTools.privileges = function(pid, uid, callback) {
-		async.parallel({
-			topicPrivs: function(next) {
-				posts.getPostField(pid, 'tid', function(err, tid) {
-					threadTools.privileges(tid, uid, next);
-				});
-			},
-			isOwner: function(next) {
-				posts.getPostField(pid, 'uid', function(err, author) {
-					next(null, parseInt(author, 10) === parseInt(uid, 10));
-				});
-			},
-			hasEnoughRep: function(next) {
-				if (parseInt(meta.config['privileges:disabled'], 10)) {
-					return next(null, false);
-				} else {
-					user.getUserField(uid, 'reputation', function(err, reputation) {
-						if (err) {
-							return next(null, false);
-						}
-						next(null, parseInt(reputation, 10) >= parseInt(meta.config['privileges:manage_content'], 10));
-					});
-				}
-			}
-		}, function(err, results) {
-			if(err) {
-				return callback(err);
-			}
-
-			callback(null, {
-				meta: {
-					read: results.topicPrivs.meta.read,
-					editable: results.topicPrivs.meta.editable || results.isOwner || results.hasEnoughRep,
-					view_deleted: results.topicPrivs.meta.view_deleted || results.isOwner || results.hasEnoughRep,
-					move: results.topicPrivs.admin || results.topicPrivs.mods
-				}
-			});
-		});
-	};
-
 
 	PostTools.edit = function(uid, pid, title, content, options, callback) {
 		options = options || {};
@@ -120,8 +80,8 @@ var winston = require('winston'),
 			}, callback);
 		}
 
-		PostTools.privileges(pid, uid, function(err, privileges) {
-			if (err || !privileges.meta.editable) {
+		privileges.posts.canEdit(pid, uid, function(err, canEdit) {
+			if (err || !canEdit) {
 				return callback(err || new Error('[[error:no-privileges]]'));
 			}
 
@@ -161,10 +121,11 @@ var winston = require('winston'),
 				} else if(parseInt(deleted, 10) !== 1 && !isDelete) {
 					return next(new Error('[[error:post-already-restored]]'));
 				}
-				PostTools.privileges(pid, uid, next);
+
+				privileges.posts.canEdit(pid, uid, next);
 			},
-			function(privileges, next) {
-				if (!privileges || !privileges.meta.editable) {
+			function(canEdit, next) {
+				if (!canEdit) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				next();
