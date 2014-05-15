@@ -22,28 +22,29 @@ helpers.allowedTo = function(privilege, uid, cid, callback) {
 
 		async.parallel({
 			hasUserPrivilege: function(next) {
-				hasPrivilege(groups.isMember, 'cid:' + cid + ':privileges:' + privilege, uid, next);
+				isMember(groups.isMember, 'cid:' + cid + ':privileges:' + privilege, uid, next);
 			},
 			hasGroupPrivilege: function(next) {
-				hasPrivilege(groups.isMemberOfGroupList, 'cid:' + cid + ':privileges:groups:' + privilege, uid, next);
+				isMember(groups.isMemberOfGroupList, 'cid:' + cid + ':privileges:groups:' + privilege, uid, next);
 			},
 		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
-			callback(null,  results.hasUserPrivilege && results.hasGroupPrivilege);
+
+			callback(null, (results.hasUserPrivilege === null && results.hasGroupPrivilege === null) || results.hasUserPrivilege || results.hasGroupPrivilege);
 		});
 	});
 };
 
-function hasPrivilege(method, group, uid, callback) {
+function isMember(method, group, uid, callback) {
 	groups.exists(group, function(err, exists) {
 		if (err) {
 			return callback(err);
 		}
 
 		if (!exists) {
-			return callback(null, true);
+			return callback(null, null);
 		}
 
 		method(group, uid, callback);
