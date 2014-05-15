@@ -334,7 +334,7 @@ var fs = require('fs'),
 					}, function(err, values) {
 						if (err) {
 							if (global.env === 'development') {
-								winston.info('[plugins] Problem executing hook: ' + hook);
+								winston.info('[plugins] Problem executing hook: ' + hook + ' err: ' + JSON.stringify(err));
 							}
 						}
 
