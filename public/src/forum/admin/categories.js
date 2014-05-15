@@ -139,21 +139,17 @@ define(['uploader'], function(uploader) {
 		}
 
 		function enableColorPicker(idx, inputEl) {
-			var	$inputEl = $(inputEl),
+			var $inputEl = $(inputEl),
 				previewEl = $inputEl.parents('[data-cid]').find('.preview-box');
 
-			$inputEl.ColorPicker({
-				color: $inputEl.val() || '#000',
-				onChange: function(hsb, hex) {
-					$inputEl.val('#' + hex);
-					if ($inputEl.attr('data-name') === 'bgColor') {
-						previewEl.css('background', '#' + hex);
-					} else if ($inputEl.attr('data-name') === 'color') {
-						previewEl.css('color', '#' + hex);
-					}
-
-					modified($inputEl[0]);
+			admin.enableColorPicker($inputEl, function(hsb, hex) {
+				if ($inputEl.attr('data-name') === 'bgColor') {
+					previewEl.css('background', '#' + hex);
+				} else if ($inputEl.attr('data-name') === 'color') {
+					previewEl.css('color', '#' + hex);
 				}
+
+				modified($inputEl[0]);
 			});
 		}
 

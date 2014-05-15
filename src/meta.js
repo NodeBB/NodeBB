@@ -155,15 +155,14 @@ var fs = require('fs'),
 						db.setObject('config', themeData, next);
 					}
 				], callback);
+
+				Meta.restartRequired = true;
 				break;
 
 			case 'bootswatch':
-				db.setObjectField('config', 'theme:src', data.src, callback);
+				Meta.configs.set('theme:src', data.src, callback);
 				break;
 			}
-
-			// Restart Required flag
-			Meta.restartRequired = true;
 		}
 	};
 
