@@ -73,13 +73,12 @@
 		var userData = {
 			username: req.body.username,
 			password: req.body.password,
-			email: req.body.email,
-			ip: req.ip
+			email: req.body.email
 		};
 
-		plugins.fireHook('filter:register.check', userData, function(err, userData) {
+		plugins.fireHook('filter:register.check', req, res, userData, function(err, userData) {
 			if (err) {
-				return res.redirect(nconf.get('relative_path') + '/register');
+				return res.redirect(nconf.get('relative_path') + '/register' + (err.message ? '?error=' + err.message : ''));
 			}
 
 			user.create(userData, function(err, uid) {
