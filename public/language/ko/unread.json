@@ -1,9 +1,9 @@
 {
-	"title": "읽지 않은 주제",
-	"no_unread_topics": "읽지 않은 주제가 없습니다.",
-	"load_more": "더 보기",
-	"mark_as_read": "읽음으로 표시",
-	"selected": "선택된 주제",
-	"all": "전체",
-	"topics_marked_as_read.success": "성공적으로 읽음으로 표시했습니다."
+    "title": "읽지 않은 주제",
+    "no_unread_topics": "읽지 않은 주제가 없습니다.",
+    "load_more": "더 보기",
+    "mark_as_read": "읽음으로 표시",
+    "selected": "선택된 주제",
+    "all": "전체",
+    "topics_marked_as_read.success": "성공적으로 읽음으로 표시했습니다."
 }

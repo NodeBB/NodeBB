@@ -1,15 +1,15 @@
 {
-	"home": "홈",
-	"unread": "읽지 않은 주제",
-	"popular": "인기 주제",
-	"recent": "최근 주제",
-	"users": "사용자",
-	"notifications": "알림",
-	"user.edit": "%1님의 프로필 수정",
-	"user.following": "%1님이 팔로우하는 사용자",
-	"user.followers": "%1님을 팔로우하는 사용자",
-	"user.posts": "%1님이 작성한 게시물",
-	"user.topics": "%1님이 생성한 주제",
-	"user.favourites": "%1님이 좋아하는 게시물",
-	"user.settings": "설정"
+    "home": "홈",
+    "unread": "읽지 않은 주제",
+    "popular": "인기 주제",
+    "recent": "최근 주제",
+    "users": "사용자",
+    "notifications": "알림",
+    "user.edit": "%1님의 프로필 수정",
+    "user.following": "%1님이 팔로우하는 사용자",
+    "user.followers": "%1님을 팔로우하는 사용자",
+    "user.posts": "%1님이 작성한 게시물",
+    "user.topics": "%1님이 생성한 주제",
+    "user.favourites": "%1님이 좋아하는 게시물",
+    "user.settings": "설정"
 }
