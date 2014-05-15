@@ -108,7 +108,7 @@ Navigate to your NodeBB: ``$ cd /path/to/nodebb``.
 
 If you are upgrading from a lower branch to a higher branch, switch branches as necessary. ***Make sure you are completely up-to-date on your current branch!***.
 
-For example, if upgrading from ``v0.3.2` to ``v0.4.3``:
+For example, if upgrading from ``v0.3.2`` to ``v0.4.3``:
 
 .. code:: bash
 
