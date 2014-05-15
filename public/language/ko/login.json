@@ -1,0 +1,8 @@
+{
+	"username": "사용자 이름 / 이메일",
+	"remember_me": "로그인 유지",
+	"forgot_password": "비밀번호 초기화",
+	"alternative_logins": "다른 방법으로 로그인",
+	"failed_login_attempt": "로그인에 실패했습니다.",
+	"login_successful": "성공적으로 로그인했습니다."
+}
