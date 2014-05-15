@@ -10,6 +10,16 @@ var async = require('async'),
 
 var helpers = {};
 
+helpers.some = function(tasks, callback) {
+	async.some(tasks, function(task, next) {
+		task(function(err, result) {
+			next(!err && result);
+		});
+	}, function(result) {
+		callback(null, result);
+	});
+};
+
 helpers.allowedTo = function(privilege, uid, cid, callback) {
 	categories.getCategoryField(cid, 'disabled', function(err, disabled) {
 		if (err) {
@@ -47,7 +57,7 @@ function isMember(method, group, uid, callback) {
 			return callback(null, null);
 		}
 
-		method(group, uid, callback);
+		method(uid, group, callback);
 	});
 }
 

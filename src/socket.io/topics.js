@@ -3,6 +3,7 @@
 
 var topics = require('../topics'),
 	categories = require('../categories'),
+	privileges = require('../privileges'),
 	threadTools = require('../threadTools'),
 	categoryTools = require('../categoryTools'),
 	websockets = require('./index'),
@@ -181,12 +182,12 @@ function doTopicAction(action, socket, tids, callback) {
 	}
 
 	async.each(tids, function(tid, next) {
-		threadTools.privileges(tid, socket.uid, function(err, privileges) {
+		privileges.topics.canEdit(tid, socket.uid, function(err, canEdit) {
 			if(err) {
 				return next(err);
 			}
 
-			if(!privileges || !privileges.meta.editable) {
+			if(!canEdit) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
 
@@ -210,21 +211,17 @@ SocketTopics.createTopicFromPosts = function(socket, data, callback) {
 };
 
 SocketTopics.movePost = function(socket, data, callback) {
-	if(!socket.uid) {
+	if (!socket.uid) {
 		return callback(new Error('[[error:not-logged-in]]'));
 	}
 
-	if(!data || !data.pid || !data.tid) {
+	if (!data || !data.pid || !data.tid) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	threadTools.privileges(data.tid, socket.uid, function(err, privileges) {
-		if(err) {
-			return callback(err);
-		}
-
-		if(!(privileges.admin || privileges.moderator)) {
-			return callback(new Error('[[error:no-privileges]]'));
+	privileges.posts.canMove(data.tid, socket.uid, function(err, canMove) {
+		if (err || !canMove) {
+			return callback(err || new Error('[[error:no-privileges]]'));
 		}
 
 		topics.movePostToTopic(data.pid, data.tid, callback);
@@ -240,10 +237,10 @@ SocketTopics.move = function(socket, data, callback) {
 		var oldCid;
 		async.waterfall([
 			function(next) {
-				threadTools.privileges(tid, socket.uid, next);
+				privileges.topics.canMove(tid, socket.uid, next);
 			},
-			function(privileges, next) {
-				if(!(privileges.admin || privileges.moderator)) {
+			function(canMove, next) {
+				if (!canMove) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				next();
@@ -336,7 +333,7 @@ SocketTopics.loadMore = function(socket, data, callback) {
 				topics.getTopicPosts(data.tid, start, end, socket.uid, false, next);
 			},
 			privileges: function(next) {
-				threadTools.privileges(data.tid, socket.uid, next);
+				privileges.topics.get(data.tid, socket.uid, next);
 			}
 		}, callback);
 	});

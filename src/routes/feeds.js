@@ -7,30 +7,29 @@ var posts = require('./../posts'),
 	rss = require('rss'),
 	nconf = require('nconf'),
 
-	ThreadTools = require('./../threadTools'),
-	CategoryTools = require('./../categoryTools');
+	privileges = require('../privileges');
 
 function hasTopicPrivileges(req, res, next) {
 	var tid = req.params.topic_id;
 
-	hasPrivileges(ThreadTools, tid, req, res, next);
+	hasPrivileges(privileges.topics.canRead, tid, req, res, next);
 }
 
 function hasCategoryPrivileges(req, res, next) {
 	var cid = req.params.category_id;
 
-	hasPrivileges(CategoryTools, cid, req, res, next);
+	hasPrivileges(privileges.categories.canRead, cid, req, res, next);
 }
 
-function hasPrivileges(module, id, req, res, next) {
+function hasPrivileges(method, id, req, res, next) {
 	var uid = req.user ? req.user.uid || 0 : 0;
 
-	module.privileges(id, uid, function(err, privileges) {
-		if(err) {
+	method(id, uid, function(err, canRead) {
+		if (err) {
 			return next(err);
 		}
 
-		if(!privileges.read) {
+		if (!canRead) {
 			return res.redirect('403');
 		}
 
@@ -66,7 +65,7 @@ function generateForTopic(req, res, next) {
 		}
 
 		topicData.posts.forEach(function(postData) {
-			if (parseInt(postData.deleted, 10) === 0) {
+			if (!postData.deleted) {
 				dateStamp = new Date(parseInt(parseInt(postData.edited, 10) === 0 ? postData.timestamp : postData.edited, 10)).toUTCString();
 
 				feed.item({

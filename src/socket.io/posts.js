@@ -37,8 +37,15 @@ SocketPosts.reply = function(socket, data, callback) {
 		}
 
 		if (postData) {
+			var privileges = {
+				meta : {
+					'topics:reply': true
+				}
+			};
+
 			websockets.server.sockets.emit('event:new_post', {
-				posts: [postData]
+				posts: [postData],
+				privileges: privileges
 			});
 
 			module.parent.exports.emitTopicPostStats();

@@ -9,6 +9,7 @@ var async = require('async'),
 	meta = require('./../meta'),
 	posts = require('./../posts'),
 	threadTools = require('./../threadTools'),
+	privileges = require('../privileges'),
 	categoryTools = require('./../categoryTools');
 
 module.exports = function(Topics) {
@@ -144,7 +145,6 @@ module.exports = function(Topics) {
 			uid = data.uid,
 			toPid = data.toPid,
 			content = data.content,
-			privileges,
 			postData;
 
 		async.waterfall([
@@ -173,11 +173,10 @@ module.exports = function(Topics) {
 					return next(new Error('[[error:topic-locked]]'));
 				}
 
-				threadTools.privileges(tid, uid, next);
+				privileges.topics.canReply(tid, uid, next);
 			},
-			function(privilegesData, next) {
-				privileges = privilegesData;
-				if (!privileges.meta['topics:reply']) {
+			function(canReply, next) {
+				if (!canReply) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				next();
@@ -232,7 +231,8 @@ module.exports = function(Topics) {
 				postData.favourited = false;
 				postData.votes = 0;
 				postData.display_moderator_tools = true;
-				postData.display_move_tools = privileges.admin || privileges.moderator;
+				postData.display_move_tools = true;
+				postData.selfPost = false;
 				postData.relativeTime = utils.toISOString(postData.timestamp);
 
 				next(null, postData);

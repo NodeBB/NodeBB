@@ -11,7 +11,8 @@ var async = require('async'),
 	user = require('./user'),
 	categories = require('./categories'),
 	categoryTools = require('./categoryTools'),
-	threadTools = require('./threadTools');
+	threadTools = require('./threadTools'),
+	privileges = require('./privileges');
 
 (function(Topics) {
 
@@ -132,8 +133,8 @@ var async = require('async'),
 		}
 
 		async.filter(tids, function(tid, next) {
-			threadTools.privileges(tid, uid, function(err, privileges) {
-				next(!err && privileges.meta.read);
+			privileges.topics.canRead(tid, uid, function(err, canRead) {
+				next(!err && canRead);
 			});
 		}, function(tids) {
 			Topics.getTopicsByTids(tids, uid, function(err, topicData) {
@@ -269,9 +270,6 @@ var async = require('async'),
 				posts: function(next) {
 					Topics.getTopicPosts(tid, start, end, uid, false, next);
 				},
-				privileges: function(next) {
-					threadTools.privileges(tid, uid, next);
-				},
 				category: function(next) {
 					Topics.getCategoryData(tid, next);
 				},
@@ -291,7 +289,6 @@ var async = require('async'),
 				topicData.thread_tools = results.threadTools;
 				topicData.pageCount = results.pageCount;
 				topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
-				topicData.expose_tools = results.privileges.meta.editable ? 1 : 0;
 
 				callback(null, topicData);
 			});

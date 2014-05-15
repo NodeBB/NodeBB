@@ -23,38 +23,6 @@ var winston = require('winston'),
 		db.isSortedSetMember('topics:tid', tid, callback);
 	};
 
-	ThreadTools.privileges = function(tid, uid, callback) {
-		async.parallel({
-			categoryPrivs: function(next) {
-				topics.getTopicField(tid, 'cid', function(err, cid) {
-					CategoryTools.privileges(cid, uid, next);
-				});
-			},
-			hasEnoughRep: function(next) {
-				if (parseInt(meta.config['privileges:disabled'], 10)) {
-					return next(null, false);
-				} else {
-					user.getUserField(uid, 'reputation', function(err, reputation) {
-						if (err) {
-							return next(null, false);
-						}
-						next(null, parseInt(reputation, 10) >= parseInt(meta.config['privileges:manage_topic'], 10));
-					});
-				}
-			}
-		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			var	privileges = results.categoryPrivs;
-			privileges.meta.editable = privileges.meta.editable || results.hasEnoughRep;
-			privileges.meta.view_deleted = privileges.meta.view_deleted || results.hasEnoughRep;
-
-			callback(null, privileges);
-		});
-	};
-
 	ThreadTools.delete = function(tid, uid, callback) {
 		toggleDelete(tid, uid, true, callback);
 	};
