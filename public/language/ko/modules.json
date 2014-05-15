@@ -1,0 +1,8 @@
+{
+	"chat.chatting_with": "<span id=\"chat-with-name\"></span>님과의 채팅",
+	"chat.placeholder": "여기에 메시지를 입력하세요.",
+	"chat.send": "전송",
+	"chat.no_active": "활성화된 채팅이 없습니다.",
+	"chat.user_typing": "%1님이 입력 중입니다.",
+	"chat.user_has_messaged_you": "%1님이 메시지를 보냈습니다."
+}
