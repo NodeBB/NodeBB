@@ -40,73 +40,95 @@ CategoryTools.privileges = function(cid, uid, callback) {
 		"disabled": function(next) {
 			categories.getCategoryField(cid, 'disabled', next);
 		},
-		"+r": function(next) {
-			internals.isMember('cid:' + cid + ':privileges:+r', uid, next);
+		read: function(next) {
+			internals.isMember('cid:' + cid + ':privileges:read', uid, next);
 		},
-		"+w": function(next) {
-			internals.isMember('cid:' + cid + ':privileges:+w', uid, next);
+		"topics:create": function(next) {
+			internals.isMember('cid:' + cid + ':privileges:topics:create', uid, next);
 		},
-		"g+r": function(next) {
-			internals.isMemberOfGroupList('cid:' + cid + ':privileges:g+r', uid, next);
+		"topics:reply": function(next) {
+			internals.isMember('cid:' + cid + ':privileges:topics:reply', uid, next);
 		},
-		"g+w": function(next) {
-			internals.isMemberOfGroupList('cid:' + cid + ':privileges:g+w', uid, next);
+		"groups:read": function(next) {
+			internals.isMemberOfGroupList('cid:' + cid + ':privileges:groups:read', uid, next);
 		},
-		moderator: function(next) {
+		"groups:topics:create": function(next) {
+			internals.isMemberOfGroupList('cid:' + cid + ':privileges:groups:topics:create', uid, next);
+		},
+		"groups:topics:reply": function(next) {
+			internals.isMemberOfGroupList('cid:' + cid + ':privileges:groups:topics:reply', uid, next);
+		},
+		mods: function(next) {
 			User.isModerator(uid, cid, next);
 		},
 		admin: function(next) {
 			User.isAdministrator(uid, next);
 		}
 	}, function(err, privileges) {
-		callback(err, !privileges ? null : {
-			"+r": privileges['+r'],
-			"+w": privileges['+w'],
-			"g+r": privileges['g+r'],
-			"g+w": privileges['g+w'],
-			read: (
-				(
-					parseInt(privileges.disabled, 10) !== 1 &&
-					(privileges['+r'] || privileges['+r'] === null) &&
-					(privileges['g+r'] || privileges['g+r'] === null)
-				) ||
-				privileges.moderator ||
-				privileges.admin
-			),
-			write: (
-				(
-					parseInt(privileges.disabled, 10) !== 1 &&
-					(privileges['+w'] || privileges['+w'] === null) &&
-					(privileges['g+w'] || privileges['g+w'] === null)
-				) ||
-				privileges.moderator ||
-				privileges.admin
-			),
-			editable: privileges.moderator || privileges.admin,
-			view_deleted: privileges.moderator || privileges.admin,
-			moderator: privileges.moderator,
-			admin: privileges.admin
-		});
+		if (privileges) {
+			privileges.meta = {
+				read: (
+					(
+						parseInt(privileges.disabled, 10) !== 1 &&
+						(
+							(privileges['read'] === null && privileges['groups:read'] === null) ||
+							privileges['read'] || privileges['groups:read']
+						)
+					) ||
+					privileges.mods ||
+					privileges.admin
+				),
+				"topics:create": (
+					(
+						parseInt(privileges.disabled, 10) !== 1 &&
+						(
+							(privileges['topics:create'] === null && privileges['groups:topics:create'] === null) ||
+							privileges['topics:create'] || privileges['groups:topics:create']
+						)
+					) ||
+					privileges.mods ||
+					privileges.admin
+				),
+				"topics:reply": (
+					(
+						parseInt(privileges.disabled, 10) !== 1 &&
+						(
+							(privileges['topics:reply'] === null && privileges['groups:topics:reply'] === null) ||
+							privileges['topics:reply'] || privileges['groups:topics:reply']
+						)
+					) ||
+					privileges.mods ||
+					privileges.admin
+				),
+				editable: privileges.mods || privileges.admin,
+				view_deleted: privileges.mods || privileges.admin
+			};
+		}
+
+		// console.log(privileges, cid, uid);
+		callback(err, privileges || null);
 	});
 };
 
 CategoryTools.groupPrivileges = function(cid, groupName, callback) {
 	async.parallel({
-		"g+r": function(next) {
-			internals.isMember('cid:' + cid + ':privileges:g+r', groupName, function(err, isMember){
+		"groups:read":function(next) {
+			internals.isMember('cid:' + cid + ':privileges:groups:read', groupName, function(err, isMember){
 				next(err, !!isMember);
 			});
 		},
-		"g+w": function(next) {
-			internals.isMember('cid:' + cid + ':privileges:g+w', groupName, function(err, isMember){
+		"groups:topics:create":function(next) {
+			internals.isMember('cid:' + cid + ':privileges:groups:topics:create', groupName, function(err, isMember){
+				next(err, !!isMember);
+			});
+		},
+		"groups:topics:reply":function(next) {
+			internals.isMember('cid:' + cid + ':privileges:groups:topics:reply', groupName, function(err, isMember){
 				next(err, !!isMember);
 			});
 		}
 	}, function(err, privileges) {
-		callback(err, !privileges ? null : {
-			"g+r": privileges['g+r'],
-			"g+w": privileges['g+w']
-		});
+		callback(err, privileges || null);
 	});
 };
 

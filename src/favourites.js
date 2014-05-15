@@ -48,7 +48,9 @@ var async = require('async'),
 						user: {
 							reputation: newreputation
 						},
-						post: postData
+						post: postData,
+						upvote: type === 'upvote' && !unvote,
+						downvote: type === 'downvote' && !unvote
 					});
 				});
 			});
@@ -154,7 +156,7 @@ var async = require('async'),
 		if (uid === 0) {
 			return callback(new Error('[[error:not-logged-in]]'));
 		}
-
+		var isFavouriting = type === 'favourite';
 		posts.getPostFields(pid, ['pid', 'uid', 'timestamp'], function (err, postData) {
 			if (err) {
 				return callback(err);
@@ -165,22 +167,22 @@ var async = require('async'),
 					return callback(err);
 				}
 
-				if (type === 'favourite' && hasFavourited) {
+				if (isFavouriting && hasFavourited) {
 					return callback(new Error('[[error:already-favourited]]'));
 				}
 
-				if (type === 'unfavourite' && !hasFavourited) {
+				if (!isFavouriting && !hasFavourited) {
 					return callback(new Error('[[error:alrady-unfavourited]]'));
 				}
 
-				if (type === 'favourite') {
+				if (isFavouriting) {
 					db.sortedSetAdd('uid:' + uid + ':favourites', postData.timestamp, pid);
 				} else {
 					db.sortedSetRemove('uid:' + uid + ':favourites', pid);
 				}
 
 
-				db[type === 'favourite' ? 'setAdd' : 'setRemove']('pid:' + pid + ':users_favourited', uid, function(err) {
+				db[isFavouriting ? 'setAdd' : 'setRemove']('pid:' + pid + ':users_favourited', uid, function(err) {
 					if (err) {
 						return callback(err);
 					}
@@ -192,7 +194,8 @@ var async = require('async'),
 						postData.reputation = count;
 						posts.setPostField(pid, 'reputation', count, function(err) {
 							callback(err, {
-								post: postData
+								post: postData,
+								isFavourited: isFavouriting
 							});
 						});
 					});

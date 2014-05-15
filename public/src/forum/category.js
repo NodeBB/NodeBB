@@ -9,8 +9,15 @@ define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryToo
 	$(window).on('action:ajaxify.start', function(ev, data) {
 		if(data && data.url.indexOf('category') !== 0) {
 			navigator.hide();
+
+			removeListeners();
 		}
 	});
+
+	function removeListeners() {
+		socket.removeListener('event:new_topic', Category.onNewTopic);
+		categoryTools.removeListeners();
+	}
 
 	Category.init = function() {
 		var	cid = ajaxify.variables.get('category_id');
@@ -22,11 +29,6 @@ define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryToo
 		$('#new_post').on('click', function () {
 			composer.newTopic(cid);
 		});
-
-		ajaxify.register_events([
-			'event:new_topic', 'event:topic_deleted', 'event:topic_restored', 'event:topic_locked',
-			'event:topic_unlocked', 'event:topic_pinned', 'event:topic_unpinned', 'event:topic_moved'
-		]);
 
 		socket.on('event:new_topic', Category.onNewTopic);
 
@@ -169,11 +171,14 @@ define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryToo
 		}
 	}
 
-	Category.onNewTopic = function(data) {
-		$(window).trigger('filter:categories.new_topic', data);
+	Category.onNewTopic = function(topic) {
+		$(window).trigger('filter:categories.new_topic', topic);
 
 		ajaxify.loadTemplate('category', function(categoryTemplate) {
-			var html = templates.parse(templates.getBlock(categoryTemplate, 'topics'), {topics: [data]});
+			var html = templates.parse(templates.getBlock(categoryTemplate, 'topics'), {
+				privileges: {editable: !!$('.thread-tools').length},
+				topics: [topic]
+			});
 
 			translator.translate(html, function(translatedHTML) {
 				var topic = $(translatedHTML),
@@ -191,7 +196,8 @@ define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryToo
 
 				if (numTopics > 0) {
 					for (var x = 0; x < numTopics; x++) {
-						if ($(topics[x]).find('.fa-thumb-tack').length) {
+						var pinned = $(topics[x]).hasClass('pinned');
+						if (pinned) {
 							if(x === numTopics - 1) {
 								topic.insertAfter(topics[x]);
 							}
@@ -303,7 +309,7 @@ define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryToo
 			return;
 		}
 
-		if(after === 0 && $('#topics-container li.category-item[data-index="0"]').length) {
+		if(!utils.isNumber(after) || (after === 0 && $('#topics-container li.category-item[data-index="0"]').length)) {
 			return;
 		}
 
@@ -314,7 +320,6 @@ define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryToo
 			cid: cid,
 			after: after
 		}, function (err, data) {
-			console.log(data);
 			loadingMoreTopics = false;
 
 			if(err) {

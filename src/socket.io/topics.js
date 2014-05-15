@@ -4,7 +4,8 @@
 var topics = require('../topics'),
 	categories = require('../categories'),
 	threadTools = require('../threadTools'),
-	index = require('./index'),
+	categoryTools = require('../categoryTools'),
+	websockets = require('./index'),
 	user = require('../user'),
 	db = require('./../database'),
 	meta = require('./../meta'),
@@ -24,26 +25,33 @@ SocketTopics.post = function(socket, data, callback) {
 		return callback(new Error('[[error:not-logged-in]]'));
 	}
 
-	topics.post({uid: socket.uid, title: data.title, content: data.content, cid: data.category_id, thumb: data.topic_thumb}, function(err, result) {
+	topics.post({
+		uid: socket.uid,
+		title: data.title,
+		content: data.content,
+		cid: data.category_id,
+		thumb: data.topic_thumb,
+		req: websockets.reqFromSocket(socket)
+	}, function(err, result) {
 		if(err) {
 			return callback(err);
 		}
 
 		if (result) {
 
-			index.server.sockets.in('category_' + data.category_id).emit('event:new_topic', result.topicData);
-			index.server.sockets.in('recent_posts').emit('event:new_topic', result.topicData);
-			index.server.sockets.in('home').emit('event:new_topic', result.topicData);
-			index.server.sockets.in('home').emit('event:new_post', {
+			websockets.server.sockets.in('category_' + data.category_id).emit('event:new_topic', result.topicData);
+			websockets.server.sockets.in('recent_posts').emit('event:new_topic', result.topicData);
+			websockets.server.sockets.in('home').emit('event:new_topic', result.topicData);
+			websockets.server.sockets.in('home').emit('event:new_post', {
 				posts: result.postData
 			});
-			index.server.sockets.in('user/' + socket.uid).emit('event:new_post', {
+			websockets.server.sockets.in('user/' + socket.uid).emit('event:new_post', {
 				posts: result.postData
 			});
 
 			module.parent.exports.emitTopicPostStats();
 
-			callback();
+			callback(null, result.topicData);
 		}
 	});
 };
@@ -178,7 +186,7 @@ function doTopicAction(action, socket, tids, callback) {
 				return next(err);
 			}
 
-			if(!privileges || !privileges.editable) {
+			if(!privileges || !privileges.meta.editable) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
 
@@ -252,11 +260,11 @@ SocketTopics.move = function(socket, data, callback) {
 				return next(err);
 			}
 
-			index.server.sockets.in('topic_' + tid).emit('event:topic_moved', {
+			websockets.server.sockets.in('topic_' + tid).emit('event:topic_moved', {
 				tid: tid
 			});
 
-			index.server.sockets.in('category_' + oldCid).emit('event:topic_moved', {
+			websockets.server.sockets.in('category_' + oldCid).emit('event:topic_moved', {
 				tid: tid
 			});
 
@@ -265,8 +273,41 @@ SocketTopics.move = function(socket, data, callback) {
 	}, callback);
 };
 
+SocketTopics.moveAll = function(socket, data, callback) {
+	if(!data || !data.cid || !data.currentCid) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	async.parallel({
+		from: function(next) {
+			categoryTools.privileges(data.currentCid, socket.uid, next);
+		},
+		to: function(next) {
+			categoryTools.privileges(data.cid, socket.uid, next);
+		}
+	}, function(err, results) {
+		if (err) {
+			return callback(err);
+		}
+
+		if (!results.from.admin && (!results.from.mods || !results.to.mods)) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+
+		categories.getTopicIds(data.currentCid, 0, -1, function(err, tids) {
+			if (err) {
+				return callback(err);
+			}
+
+			async.each(tids, function(tid, next) {
+				threadTools.move(tid, data.cid, next);
+			}, callback);
+		});
+	});
+};
+
 SocketTopics.followCheck = function(socket, tid, callback) {
-	threadTools.isFollowing(tid, socket.uid, callback);
+	topics.isFollowing(tid, socket.uid, callback);
 };
 
 SocketTopics.follow = function(socket, tid, callback) {

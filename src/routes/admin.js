@@ -57,6 +57,7 @@ function apiRoutes(app, middleware, controllers) {
 	app.post('/admin/category/uploadpicture', middleware.authenticate, controllers.admin.uploads.uploadCategoryPicture);
 	app.post('/admin/uploadfavicon', middleware.authenticate, controllers.admin.uploads.uploadFavicon);
 	app.post('/admin/uploadlogo', middleware.authenticate, controllers.admin.uploads.uploadLogo);
+	app.post('/admin/uploadgravatardefault', middleware.authenticate, controllers.admin.uploads.uploadGravatarDefault);
 }
 
 function miscRoutes(app, middleware, controllers) {
@@ -70,13 +71,7 @@ function miscRoutes(app, middleware, controllers) {
 	app.get('/api/admin/logger', controllers.admin.logger.get);
 }
 
-
-
 module.exports = function(app, middleware, controllers) {
-	app.all('/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
-	app.all('/admin/*', middleware.admin.isAdmin);
-	app.get('/admin', middleware.admin.isAdmin);
-
 	mainRoutes(app, middleware, controllers);
 	userRoutes(app, middleware, controllers);
 	forumRoutes(app, middleware, controllers);

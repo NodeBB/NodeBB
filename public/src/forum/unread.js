@@ -6,6 +6,12 @@ define(['forum/recent', 'topicSelect'], function(recent, topicSelect) {
 	var Unread = {},
 		loadingMoreTopics = false;
 
+	$(window).on('action:ajaxify.start', function(ev, data) {
+		if(data.url.indexOf('unread') !== 0) {
+			recent.removeListeners();
+		}
+	});
+
 	Unread.init = function() {
 		app.enterRoom('recent_posts');
 

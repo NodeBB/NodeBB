@@ -14,7 +14,7 @@ SocketCategories.getRecentReplies = function(socket, cid, callback) {
 			return callback(err);
 		}
 
-		if (!privileges || !privileges.read) {
+		if (!privileges || !privileges.meta.read) {
 			return callback(null, []);
 		}
 

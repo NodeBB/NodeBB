@@ -15,7 +15,15 @@ var app,
 
 
 middleware.isAdmin = function(req, res, next) {
+	if (!req.user) {
+		return res.redirect('/login?next=admin');
+	}
+
 	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
+		if (err) {
+			return next(err);
+		}
+
 		if (!isAdmin) {
 			res.status(403);
 			res.redirect('/403');
@@ -26,6 +34,7 @@ middleware.isAdmin = function(req, res, next) {
 };
 
 middleware.buildHeader = function(req, res, next) {
+	var uid = req.user ? req.user.uid : 0;
 	async.parallel([
 		function(next) {
 			var custom_header = {
@@ -33,13 +42,13 @@ middleware.buildHeader = function(req, res, next) {
 				'authentication': []
 			};
 
-			user.getUserFields(req.user.uid, ['username', 'userslug', 'picture'], function(err, userData) {
+			user.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, userData) {
 				async.parallel({
 					scripts: function(next) {
 						plugins.fireHook('filter:admin.scripts.get', [], function(err, scripts) {
 							var arr = [];
 							scripts.forEach(function(script) {
-								arr.push({src: path.join(nconf.get('relative_path'), script)});
+								arr.push({src: nconf.get('url') + script});
 							});
 
 							next(err, arr);

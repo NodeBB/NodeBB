@@ -3,5 +3,6 @@
     "chat.placeholder": "írj be egy üzenetet, majd nyomj enter-t a küldéshez",
     "chat.send": "Küldés",
     "chat.no_active": "Nincs aktív csevegésed.",
-    "chat.user_typing": "%1 is typing ..."
+    "chat.user_typing": "%1 is typing ...",
+    "chat.user_has_messaged_you": "%1 has messaged you."
 }

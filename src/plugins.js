@@ -112,7 +112,7 @@ var fs = require('fs'),
 				libraryPath, staticDir;
 
 			if (pluginData.minver && semver.validRange(pluginData.minver)) {
-				if (!semver.gt(pkg.version, pluginData.minver)) {
+				if (!semver.gte(pkg.version, pluginData.minver)) {
 					// If NodeBB is not new enough to run this plugin
 					winston.warn('[plugins/' + pluginData.id + '] This plugin may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing.');
 				}
@@ -291,7 +291,7 @@ var fs = require('fs'),
 	};
 
 	Plugins.hasListeners = function(hook) {
-		return (Plugins.loadedHooks[hook] && Plugins.loadedHooks[hook].length > 0);
+		return !!(Plugins.loadedHooks[hook] && Plugins.loadedHooks[hook].length > 0);
 	};
 
 	Plugins.fireHook = function(hook) {
@@ -373,20 +373,23 @@ var fs = require('fs'),
 	Plugins.toggleActive = function(id, callback) {
 		Plugins.isActive(id, function(err, active) {
 			if (err) {
-				if (global.env === 'development') winston.info('[plugins] Could not toggle active state on plugin \'' + id + '\'');
-				return;
+				if (global.env === 'development') {
+					winston.info('[plugins] Could not toggle active state on plugin \'' + id + '\'');
+				}
+				return callback(err);
 			}
 
 			db[(active ? 'setRemove' : 'setAdd')]('plugins:active', id, function(err, success) {
 				if (err) {
-					if (global.env === 'development') winston.info('[plugins] Could not toggle active state on plugin \'' + id + '\'');
-					return;
+					if (global.env === 'development') {
+						winston.info('[plugins] Could not toggle active state on plugin \'' + id + '\'');
+					}
+					return callback(err);
 				}
 
-				// Restart Required flag
 				meta.restartRequired = true;
 
-				if(active) {
+				if (active) {
 					Plugins.fireHook('action:plugin.deactivate', id);
 				}
 
@@ -397,12 +400,48 @@ var fs = require('fs'),
 						Plugins.fireHook('action:plugin.activate', id);
 					}
 
-					if (callback) {
-						callback({
+					if (typeof callback === 'function') {
+						callback(null, {
 							id: id,
 							active: !active
 						});
 					}
+				});
+			});
+		});
+	};
+
+	Plugins.toggleInstall = function(id, callback) {
+		Plugins.isInstalled(id, function(err, installed) {
+			if (err) {
+				return callback(err);
+			}
+
+			var npm = require('npm');
+
+			async.waterfall([
+				function(next) {
+					Plugins.isActive(id, next);
+				},
+				function(active, next) {
+					if (active) {
+						Plugins.toggleActive(id, function(err, status) {
+							next(err);
+						});
+						return;
+					}
+					next();
+				},
+				function(next) {
+					npm.load({}, next);
+				},
+				function(res, next) {
+					npm.commands[installed ? 'uninstall' : 'install'](installed ? id : [id], next);
+				}
+			], function(err) {
+				callback(err, {
+					id: id,
+					installed: !installed
 				});
 			});
 		});
@@ -431,6 +470,86 @@ var fs = require('fs'),
 		});
 	};
 
+	Plugins.getAll = function(callback) {
+		var request = require('request');
+		request('http://npm.aws.af.cm/api/v1/plugins', function(err, res, body) {
+			if (err) {
+				return callback(err);
+			}
+			var plugins = [];
+			try {
+				plugins = JSON.parse(body);
+			} catch(err) {
+				winston.error('Error parsing plugins : ' + err.message);
+				return callback(null, []);
+			}
+
+			var pluginMap = {};
+			for(var i=0; i<plugins.length; ++i) {
+				plugins[i].id = plugins[i].name;
+				plugins[i].installed = false;
+				plugins[i].active = false;
+				pluginMap[plugins[i].name] = plugins[i];
+			}
+
+			Plugins.showInstalled(function(err, installedPlugins) {
+				if (err) {
+					return callback(err);
+				}
+
+				async.each(installedPlugins, function(plugin, next) {
+
+					pluginMap[plugin.id] = pluginMap[plugin.id] || {};
+					pluginMap[plugin.id].id = pluginMap[plugin.id].id || plugin.id;
+					pluginMap[plugin.id].name = pluginMap[plugin.id].name || plugin.id;
+					pluginMap[plugin.id].description = plugin.description;
+					pluginMap[plugin.id].url = plugin.url;
+					pluginMap[plugin.id].installed = true;
+
+					Plugins.isActive(plugin.id, function(err, active) {
+						if (err) {
+							return next(err);
+						}
+
+						pluginMap[plugin.id].active = active;
+						next();
+					});
+				}, function(err) {
+					if (err) {
+						return callback(err);
+					}
+
+					var pluginArray = [];
+
+					for (var key in pluginMap) {
+						if (pluginMap.hasOwnProperty(key)) {
+							pluginArray.push(pluginMap[key]);
+						}
+					}
+
+					pluginArray.sort(function(a, b) {
+						if(a.installed && !b.installed) {
+							return -1;
+						} else if(!a.installed && b.installed) {
+							return 1;
+						}
+						return 0;
+					});
+
+					callback(null, pluginArray);
+				});
+			});
+		});
+	};
+
+	Plugins.isInstalled = function(id, callback) {
+		var pluginDir = path.join(__dirname, '../node_modules', id);
+
+		fs.stat(pluginDir, function(err, stats) {
+			callback(null, err ? false : stats.isDirectory());
+		});
+	};
+
 	Plugins.showInstalled = function(callback) {
 		var npmPluginPath = path.join(__dirname, '../node_modules');
 
@@ -451,7 +570,7 @@ var fs = require('fs'),
 						}
 
 						callback(stats.isDirectory());
-					})
+					});
 				}, function(plugins){
 					next(null, plugins);
 				});
@@ -471,7 +590,7 @@ var fs = require('fs'),
 							try {
 								var config = JSON.parse(configJSON);
 							} catch (err) {
-								winston.warn("Plugin: " + file + " is corrupted or invalid. Please check plugin.json for errors.")
+								winston.warn("Plugin: " + file + " is corrupted or invalid. Please check plugin.json for errors.");
 								return next(err, null);
 							}
 
@@ -483,7 +602,8 @@ var fs = require('fs'),
 								delete config.library;
 								delete config.hooks;
 								config.active = active;
-								config.activeText = '<i class="fa fa-power-off"></i> ' + (active ? 'Dea' : 'A') + 'ctivate';
+								config.installed = true;
+
 								next(null, config);
 							});
 						}

@@ -12,7 +12,6 @@
     "profile": "Profil",
     "profile_views": "Profil-visningar",
     "reputation": "Rykte",
-    "posts": "Inlägg",
     "favourites": "Favoriter",
     "followers": "Följare",
     "following": "Följer",
@@ -33,7 +32,7 @@
     "change_password_error_wrong_current": "Ditt nuvarande lösenord är inte korrekt.",
     "change_password_error_length": "Lösenordet är för kort.",
     "change_password_error_match": "Lösenorden måste stämma överens.",
-    "change_password_error_privileges": "Du har inte behörighet att ändra det här lösenordet.",
+    "change_password_error_privileges": "You do not have the rights to change this password.",
     "change_password_success": "Ditt lösenord är uppdaterat.",
     "confirm_password": "Bekräfta lösenord",
     "password": "Lösenord",
@@ -59,5 +58,7 @@
     "paginate_description": "Gör så att ämnen och inlägg visas som sidor istället för oändlig scroll.",
     "topics_per_page": "Ämnen per sida",
     "posts_per_page": "Inlägg per sida",
-    "notification_sounds": "Spela ett ljud när du får en notis."
+    "notification_sounds": "Spela ett ljud när du får en notis.",
+    "browsing": "Browsing Settings",
+    "open_links_in_new_tab": "Open outgoing links in new tab?"
 }

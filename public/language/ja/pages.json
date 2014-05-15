@@ -1,0 +1,15 @@
+{
+    "home": "ホーム",
+    "unread": "未読スレッド",
+    "popular": "人気スレッド",
+    "recent": "最新スレッド",
+    "users": "登録したユーザー",
+    "notifications": "通知",
+    "user.edit": "編集中 \"%1\"",
+    "user.following": "%1がフォロー中",
+    "user.followers": "%1のフォロワー",
+    "user.posts": "%1が作成したポスト",
+    "user.topics": "%1が作成したスレッド",
+    "user.favourites": "%1のお気に入りポスト",
+    "user.settings": "ユーザー設定"
+}

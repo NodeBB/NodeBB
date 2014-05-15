@@ -7,6 +7,7 @@ var async = require('async'),
 	db = require('./../database'),
 
 	posts = require('./../posts'),
+	privileges = require('../privileges'),
 	postTools = require('./../postTools'),
 	threadTools = require('./../threadTools');
 
@@ -52,16 +53,12 @@ module.exports = function(Topics) {
 				});
 
 				function move(pid, next) {
-					postTools.privileges(pid, uid, function(err, privileges) {
-						if(err) {
+					privileges.posts.canEdit(pid, uid, function(err, canEdit) {
+						if(err || !canEdit) {
 							return next(err);
 						}
 
-						if(privileges.editable) {
-							Topics.movePostToTopic(pid, tid, next);
-						} else {
-							next();
-						}
+						Topics.movePostToTopic(pid, tid, next);
 					});
 				}
 			});

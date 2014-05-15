@@ -85,6 +85,10 @@ module.exports = function(redisClient, module) {
 		redisClient.set(key, value, callback);
 	};
 
+	module.increment = function(key, callback) {
+		redisClient.incr(key, callback);
+	};
+
 	module.rename = function(oldKey, newKey, callback) {
 		redisClient.rename(oldKey, newKey, callback);
 	};
@@ -95,5 +99,13 @@ module.exports = function(redisClient, module) {
 
 	module.expireAt = function(key, timestamp, callback) {
 		redisClient.expireat(key, timestamp, callback);
+	};
+
+	module.pexpire = function(key, ms, callback) {
+		redisClient.pexpire(key, ms, callback);
+	};
+
+	module.pexpireAt = function(key, timestamp, callback) {
+		redisClient.pexpireat(key, timestamp, callback);
 	};
 };

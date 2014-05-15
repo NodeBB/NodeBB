@@ -83,10 +83,16 @@ SocketAdmin.themes.set = function(socket, data, callback) {
 	});
 };
 
-SocketAdmin.plugins.toggle = function(socket, plugin_id) {
-	plugins.toggleActive(plugin_id, function(status) {
-		socket.emit('admin.plugins.toggle', status);
-	});
+SocketAdmin.themes.updateBranding = function(socket, data, callback) {
+	meta.css.updateBranding();
+};
+
+SocketAdmin.plugins.toggleActive = function(socket, plugin_id, callback) {
+	plugins.toggleActive(plugin_id, callback);
+};
+
+SocketAdmin.plugins.toggleInstall = function(socket, plugin_id, callback) {
+	plugins.toggleInstall(plugin_id, callback);
 };
 
 SocketAdmin.widgets.set = function(socket, data, callback) {

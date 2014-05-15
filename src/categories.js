@@ -37,7 +37,6 @@ var db = require('./database'),
 				description: data.description,
 				icon: data.icon,
 				bgColor: data.bgColor,
-				background: data.bgColor,
 				color: data.color,
 				slug: slug,
 				topic_count: 0,
@@ -317,8 +316,6 @@ var db = require('./database'),
 			if(parseInt(topicData.pinned, 10) === 0) {
 				db.sortedSetAdd('categories:' + cid + ':tid', postData.timestamp, postData.tid);
 			}
-
-			Categories.addActiveUser(cid, postData.uid, postData.timestamp);
 		});
 	};
 

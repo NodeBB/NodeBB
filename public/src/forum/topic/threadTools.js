@@ -7,6 +7,19 @@ define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 	var ThreadTools = {};
 
 	ThreadTools.init = function(tid, threadState) {
+		ThreadTools.threadState = threadState;
+
+		if (threadState.locked === '1') {
+			ThreadTools.setLockedState({tid: tid, isLocked: true});
+		}
+
+		if (threadState.deleted === '1') {
+			ThreadTools.setDeleteState({tid: tid, isDelete: true});
+		}
+
+		if (threadState.pinned === '1') {
+			ThreadTools.setPinnedState({tid: tid, isPinned: true});
+		}
 
 		if (ajaxify.variables.get('expose_tools') === '1') {
 
@@ -57,7 +70,7 @@ define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 		}
 
 		socket.emit('topics.followCheck', tid, function(err, state) {
-			setFollowState(state, false);
+			setFollowState(state);
 		});
 
 		$('.posts').on('click', '.follow', function() {
@@ -72,21 +85,63 @@ define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 					});
 				}
 
-				setFollowState(state, true);
+				setFollowState(state);
+
+				app.alertSuccess(state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]');
 			});
 
 			return false;
 		});
-
 	};
 
-	function setFollowState(state, alert) {
+	ThreadTools.setLockedState = function(data) {
+		var threadEl = $('#post-container');
+		if (parseInt(data.tid, 10) === parseInt(threadEl.attr('data-tid'), 10)) {
+			translator.translate('<i class="fa fa-fw fa-' + (data.isLocked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (data.isLocked ? 'un': '') + 'lock]]', function(translated) {
+				$('.lock_thread').html(translated);
+			});
 
-		$('.posts .follow').toggleClass('btn-success', state).attr('title', state ? 'You are currently receiving updates to this topic' : 'Be notified of new replies in this topic');
+			threadEl.find('.post_reply').html(data.isLocked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply <i class="fa fa-reply"></i>');
+			threadEl.find('.quote, .edit, .delete').toggleClass('none', data.isLocked);
+			$('.topic-main-buttons .post_reply').attr('disabled', data.isLocked).html(data.isLocked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply');
 
-		if(alert) {
-			app.alertSuccess(state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]');
+			ThreadTools.threadState.locked = data.isLocked ? '1' : '0';
 		}
+	};
+
+	ThreadTools.setDeleteState = function(data) {
+		var threadEl = $('#post-container');
+		if (parseInt(data.tid, 10) === parseInt(threadEl.attr('data-tid'), 10)) {
+			translator.translate('<i class="fa fa-fw ' + (data.isDelete ? 'fa-comment' : 'fa-trash-o') + '"></i> [[topic:thread_tools.' + (data.isDelete ? 'restore' : 'delete') + ']]', function(translated) {
+				$('.delete_thread span').html(translated);
+			});
+
+			threadEl.toggleClass('deleted', data.isDelete);
+			ThreadTools.threadState.deleted = data.isDelete ? '1' : '0';
+
+			if (data.isDelete) {
+				translator.translate('[[topic:deleted_message]]', function(translated) {
+					$('<div id="thread-deleted" class="alert alert-warning">' + translated + '</div>').insertBefore(threadEl);
+				});
+			} else {
+				$('#thread-deleted').remove();
+			}
+		}
+	};
+
+	ThreadTools.setPinnedState = function(data) {
+		var threadEl = $('#post-container');
+		if (parseInt(data.tid, 10) === parseInt(threadEl.attr('data-tid'), 10)) {
+			translator.translate('<i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.' + (data.isPinned ? 'unpin' : 'pin') + ']]', function(translated) {
+				$('.pin_thread').html(translated);
+
+				ThreadTools.threadState.pinned = data.isPinned ? '1' : '0';
+			});
+		}
+	}
+
+	function setFollowState(state) {
+		$('.posts .follow').toggleClass('btn-success', state).attr('title', state ? 'You are currently receiving updates to this topic' : 'Be notified of new replies in this topic');
 	}
 
 

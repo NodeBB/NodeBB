@@ -11,6 +11,7 @@ var fs = require('fs'),
 	user = require('./../user'),
 	posts = require('./../posts'),
 	topics = require('./../topics'),
+	messaging = require('../messaging'),
 	postTools = require('../postTools'),
 	utils = require('./../../public/src/utils'),
 	meta = require('./../meta'),
@@ -20,21 +21,33 @@ var fs = require('fs'),
 	file = require('./../file');
 
 function userNotFound(res) {
-	return res.render('404', {
-		error: 'User not found!'
-	});
+	if (res.locals.isAPI) {
+		res.json(404, 'user-not-found');
+	} else {
+		res.render('404', {
+			error: 'User not found!'
+		});
+	}
 }
 
 function userNotAllowed(res) {
-	return res.render('403', {
-		error: 'Not allowed.'
-	});
+	if (res.locals.isAPI) {
+		res.json(403, 'not-allowed');
+	} else {
+		res.render('403', {
+			error: 'Not allowed.'
+		});
+	}
 }
 
 function getUserDataByUserSlug(userslug, callerUID, callback) {
 	user.getUidByUserslug(userslug, function(err, uid) {
-		if(err || !uid) {
-			return callback(err || new Error('[[error:invalid-uid]]'));
+		if (err) {
+			return callback(err);
+		}
+
+		if (!uid) {
+			return callback(null, null);
 		}
 
 		async.parallel({
@@ -155,7 +168,7 @@ accountsController.getAccount = function(req, res, next) {
 				postTools.parse(userData.signature, function (err, signature) {
 					userData.signature = signature;
 
-					res.render('account', userData);
+					res.render('account/profile', userData);
 				});
 			});
 		});
@@ -163,14 +176,14 @@ accountsController.getAccount = function(req, res, next) {
 };
 
 accountsController.getFollowing = function(req, res, next) {
-	getFollow('following', req, res, next);
+	getFollow('account/following', 'following', req, res, next);
 };
 
 accountsController.getFollowers = function(req, res, next) {
-	getFollow('followers', req, res, next);
+	getFollow('account/followers', 'followers', req, res, next);
 };
 
-function getFollow(name, req, res, next) {
+function getFollow(route, name, req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 	var userData;
 
@@ -181,7 +194,7 @@ function getFollow(name, req, res, next) {
 		function(data, next) {
 			userData = data;
 			if (!userData) {
-				return userNotFound();
+				return userNotFound(res);
 			}
 			var method = name === 'following' ? 'getFollowing' : 'getFollowers';
 			user[method](userData.uid, next);
@@ -193,7 +206,7 @@ function getFollow(name, req, res, next) {
 		userData[name] = users;
 		userData[name + 'Count'] = users.length;
 
-		res.render(name, userData);
+		res.render(route, userData);
 	});
 }
 
@@ -202,11 +215,11 @@ accountsController.getFavourites = function(req, res, next) {
 
 	user.getUidByUserslug(req.params.userslug, function (err, uid) {
 		if (!uid) {
-			return userNotFound();
+			return userNotFound(res);
 		}
 
 		if (parseInt(uid, 10) !== callerUID) {
-			return userNotAllowed();
+			return userNotAllowed(res);
 		}
 
 		user.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
@@ -215,7 +228,7 @@ accountsController.getFavourites = function(req, res, next) {
 			}
 
 			if (!userData) {
-				return userNotFound();
+				return userNotFound(res);
 			}
 
 			posts.getFavourites(uid, 0, 9, function (err, favourites) {
@@ -228,7 +241,7 @@ accountsController.getFavourites = function(req, res, next) {
 				userData.posts = favourites.posts;
 				userData.nextStart = favourites.nextStart;
 
-				res.render('favourites', userData);
+				res.render('account/favourites', userData);
 			});
 		});
 	});
@@ -243,7 +256,7 @@ accountsController.getPosts = function(req, res, next) {
 		}
 
 		if (!userData) {
-			return userNotFound();
+			return userNotFound(res);
 		}
 
 		posts.getPostsByUid(callerUID, userData.uid, 0, 19, function (err, userPosts) {
@@ -256,7 +269,7 @@ accountsController.getPosts = function(req, res, next) {
 			userData.posts = userPosts.posts;
 			userData.nextStart = userPosts.nextStart;
 
-			res.render('accountposts', userData);
+			res.render('account/posts', userData);
 		});
 	});
 };
@@ -270,7 +283,7 @@ accountsController.getTopics = function(req, res, next) {
 		}
 
 		if (!userData) {
-			return userNotFound();
+			return userNotFound(res);
 		}
 
 		var set = 'uid:' + userData.uid + ':topics';
@@ -284,7 +297,7 @@ accountsController.getTopics = function(req, res, next) {
 			userData.topics = userTopics.topics;
 			userData.nextStart = userTopics.nextStart;
 
-			res.render('accounttopics', userData);
+			res.render('account/topics', userData);
 		});
 	});
 };
@@ -307,7 +320,7 @@ accountsController.accountEdit = function(req, res, next) {
 			return next(err);
 		}
 
-		res.render('accountedit', userData);
+		res.render('account/edit', userData);
 	});
 };
 
@@ -315,16 +328,17 @@ accountsController.accountSettings = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
 	user.getUidByUserslug(req.params.userslug, function(err, uid) {
+
 		if (err) {
 			return next(err);
 		}
 
 		if (!uid) {
-			return userNotFound();
+			return userNotFound(res);
 		}
 
 		if (parseInt(uid, 10) !== callerUID) {
-			return userNotAllowed();
+			return userNotAllowed(res);
 		}
 
 		plugins.fireHook('filter:user.settings', [], function(err, settings) {
@@ -345,7 +359,7 @@ accountsController.accountSettings = function(req, res, next) {
 				}
 
 				if(!results.user) {
-					return userNotFound();
+					return userNotFound(res);
 				}
 
 				results = {
@@ -358,7 +372,7 @@ accountsController.accountSettings = function(req, res, next) {
 					languages: results.languages
 				};
 
-				res.render('accountsettings', results);
+				res.render('account/settings', results);
 			});
 		});
 	});
@@ -435,7 +449,7 @@ accountsController.uploadPicture = function (req, res, next) {
 			});
 		}
 
-		if(err) {
+		if (err) {
 			fs.unlink(req.files.userPhoto.path);
 			return res.json({error:err.message});
 		}
@@ -470,6 +484,18 @@ accountsController.getNotifications = function(req, res, next) {
 	user.notifications.getAll(req.user.uid, null, null, function(err, notifications) {
 		res.render('notifications', {
 			notifications: notifications
+		});
+	});
+};
+
+accountsController.getChats = function(req, res, next) {
+	messaging.getRecentChats(req.user.uid, 0, -1, function(err, chats) {
+		if (err) {
+			return next(err);
+		}
+
+		res.render('chats', {
+			chats: chats
 		});
 	});
 };

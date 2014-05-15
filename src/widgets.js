@@ -80,7 +80,8 @@ var async = require('async'),
 
 	Widgets.reset = function(callback) {
 		var defaultAreas = [
-			{ name: 'Global Sidebar', template: 'global', location: 'sidebar' }
+			{ name: 'Global Sidebar', template: 'global', location: 'sidebar' },
+			{ name: 'Draft Zone', template: 'global', location: 'drafts' }
 		];
 
 		plugins.fireHook('filter:widgets.getAreas', defaultAreas, function(err, areas) {

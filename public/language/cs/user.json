@@ -12,7 +12,6 @@
     "profile": "Profile",
     "profile_views": "Zobrazení profilu",
     "reputation": "Reputace",
-    "posts": "Příspěvky",
     "favourites": "Oblíbené",
     "followers": "Sledují ho",
     "following": "Sleduje",
@@ -33,7 +32,7 @@
     "change_password_error_wrong_current": "Your current password is not correct!",
     "change_password_error_length": "Password too short!",
     "change_password_error_match": "Passwords must match!",
-    "change_password_error_privileges": "You are not have the rights to change this password.",
+    "change_password_error_privileges": "You do not have the rights to change this password.",
     "change_password_success": "Your password is updated!",
     "confirm_password": "Potvrzení hesla",
     "password": "Heslo",
@@ -59,5 +58,7 @@
     "paginate_description": "Paginate topics and posts instead of using infinite scroll.",
     "topics_per_page": "Topics per Page",
     "posts_per_page": "Posts per Page",
-    "notification_sounds": "Play a sound when you receive a notification."
+    "notification_sounds": "Play a sound when you receive a notification.",
+    "browsing": "Browsing Settings",
+    "open_links_in_new_tab": "Open outgoing links in new tab?"
 }

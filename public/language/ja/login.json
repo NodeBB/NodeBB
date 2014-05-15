@@ -1,0 +1,8 @@
+{
+    "username": "ユーザー名 / メール",
+    "remember_me": "ログイン情報を記憶",
+    "forgot_password": "パスワードがわからない？",
+    "alternative_logins": "ほかのログイン方法",
+    "failed_login_attempt": "ログインに失敗しました.ユーザー名やパスワードをご確認ください。",
+    "login_successful": "ログインしました！"
+}

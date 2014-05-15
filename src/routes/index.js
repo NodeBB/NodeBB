@@ -49,6 +49,8 @@ function staticRoutes(app, middleware, controllers) {
 }
 
 function topicRoutes(app, middleware, controllers) {
+	app.get('/api/topic/teaser/:topic_id', controllers.topics.teaser);
+
 	app.get('/topic/:topic_id/:slug?', middleware.buildHeader, middleware.addSlug, controllers.topics.get);
 	app.get('/api/topic/:topic_id/:slug?', controllers.topics.get);
 }
@@ -71,6 +73,7 @@ function categoryRoutes(app, middleware, controllers) {
 }
 
 function accountRoutes(app, middleware, controllers) {
+
 	app.get('/user/:userslug', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.accounts.getAccount);
 	app.get('/api/user/:userslug', middleware.checkGlobalPrivacySettings, controllers.accounts.getAccount);
 
@@ -98,6 +101,9 @@ function accountRoutes(app, middleware, controllers) {
 
 	app.get('/notifications', middleware.buildHeader, middleware.authenticate, controllers.accounts.getNotifications);
 	app.get('/api/notifications', middleware.authenticate, controllers.accounts.getNotifications);
+
+	app.get('/chats', middleware.buildHeader, middleware.authenticate, controllers.accounts.getChats);
+	app.get('/api/chats', middleware.authenticate, controllers.accounts.getChats);
 }
 
 function userRoutes(app, middleware, controllers) {
@@ -126,6 +132,10 @@ module.exports = function(app, middleware) {
 	app.namespace(nconf.get('relative_path'), function() {
 		plugins.ready(function() {
 			app.all('/api/*', middleware.updateLastOnlineTime, middleware.prepareAPI);
+			app.all('/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
+			app.all('/admin/*', middleware.admin.isAdmin);
+			app.get('/admin', middleware.admin.isAdmin);
+
 			plugins.fireHook('action:app.load', app, middleware, controllers);
 
 			adminRoutes(app, middleware, controllers);

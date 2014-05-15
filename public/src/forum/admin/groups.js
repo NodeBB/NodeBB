@@ -80,7 +80,6 @@ define(function() {
 				break;
 			case 'members':
 				socket.emit('admin.groups.get', groupName, function(err, groupObj) {
-					console.log(groupObj);
 					var formEl = detailsModal.find('form'),
 						nameEl = formEl.find('#change-group-name'),
 						descEl = formEl.find('#change-group-desc'),

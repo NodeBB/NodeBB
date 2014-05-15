@@ -79,8 +79,8 @@ Sockets.init = function(server) {
 						socket.join('uid_' + uid);
 
 						async.parallel({
-							username: function(next) {
-								user.getUserField(uid, 'username', next);
+							user: function(next) {
+								user.getUserFields(uid, ['username', 'userslug'], next);
 							},
 							isAdmin: function(next) {
 								user.isAdministrator(uid, next);
@@ -88,7 +88,8 @@ Sockets.init = function(server) {
 						}, function(err, userData) {
 							socket.emit('event:connect', {
 								status: 1,
-								username: userData.username,
+								username: userData.user.username,
+								userslug: userData.user.userslug,
 								isAdmin: userData.isAdmin,
 								uid: uid
 							});
@@ -102,7 +103,7 @@ Sockets.init = function(server) {
 					socket.broadcast.emit('user.anonConnect');
 					socket.emit('event:connect', {
 						status: 1,
-						username: 'Anonymous',
+						username: '[[global:guest]]',
 						isAdmin: false,
 						uid: 0
 					});
@@ -196,8 +197,12 @@ Sockets.in = function(room) {
 };
 
 Sockets.getConnectedClients = function() {
-	var clients = io.sockets.clients();
 	var uids = [];
+	if (!io) {
+		return uids;
+	}
+	var clients = io.sockets.clients();
+
 	clients.forEach(function(client) {
 		if(client.uid && uids.indexOf(client.uid) === -1) {
 			uids.push(client.uid);
@@ -224,6 +229,22 @@ Sockets.getUserSockets = function(uid) {
 };
 
 /* Helpers */
+
+Sockets.reqFromSocket = function(socket) {
+	var headers = socket.handshake.headers,
+		host = headers.host,
+		referer = headers.referer;
+
+	return {
+		ip: headers['x-forwarded-for'] || (socket.handshake.address || {}).address,
+		host: host,
+		protocol: headers.secure ? 'https' : 'http',
+		secure: !!headers.secure,
+		url: referer,
+		path: referer.substr(referer.indexOf(host) + host.length),
+		headers: headers
+	};
+};
 
 Sockets.isUserOnline = isUserOnline;
 function isUserOnline(uid) {
@@ -263,15 +284,13 @@ function updateRoomBrowsingText(roomName) {
 	var	uids = getUidsInRoom(),
 		anonymousCount = getAnonymousCount();
 
-
-
 	user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status'], function(err, users) {
 		if(!err) {
 			users = users.filter(function(user) {
 				return user.status !== 'offline';
 			});
 
-			io.sockets.in(roomName).emit('get_users_in_room', {
+			io.sockets.in(roomName).emit('event:update_users_in_room', {
 				users: users,
 				anonymousCount: anonymousCount,
 				room: roomName

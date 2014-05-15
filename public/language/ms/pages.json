@@ -1,0 +1,15 @@
+{
+    "home": "Laman Utama",
+    "unread": "Topik Belum Dibaca",
+    "popular": "Topik popular",
+    "recent": "Topik Baru",
+    "users": "Pengguna Berdaftar",
+    "notifications": "Makluman",
+    "user.edit": "Menyunting \"%1\"",
+    "user.following": "Pengguna yang %1 Ikuti",
+    "user.followers": "Pengguna yang Mengikuti %1",
+    "user.posts": "Kiriman dibuat oleh %1",
+    "user.topics": "Topik dibuat oleh %1",
+    "user.favourites": "Mesej Kegemaran %1",
+    "user.settings": "Tetapan pengguna"
+}

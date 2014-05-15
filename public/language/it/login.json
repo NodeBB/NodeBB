@@ -1,7 +1,5 @@
 {
-    "login": "Accedi",
     "username": "Username / Email",
-    "password": "Password",
     "remember_me": "Memorizzami?",
     "forgot_password": "Password dimenticata?",
     "alternative_logins": "Accessi Alternativi",

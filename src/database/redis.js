@@ -6,7 +6,6 @@
 		nconf = require('nconf'),
 		path = require('path'),
 		express = require('express'),
-		redis_socket_or_host = nconf.get('redis:host'),
 		utils = require('./../../public/src/utils.js'),
 		redis,
 		connectRedis,
@@ -48,6 +47,8 @@
 			process.exit();
 		}
 
+		var redis_socket_or_host = nconf.get('redis:host');
+
 		if (redis_socket_or_host && redis_socket_or_host.indexOf('/')>=0) {
 			/* If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock */
 			redisClient = redis.createClient(nconf.get('redis:host'));
@@ -63,8 +64,7 @@
 		}
 
 		redisClient.on('error', function (err) {
-			winston.error(err.message);
-			process.exit();
+			winston.error(err.stack);
 		});
 
 		module.client = redisClient;
@@ -106,7 +106,7 @@
 	module.close = function() {
 		redisClient.quit();
 	};
-	
+
 	module.helpers = module.helpers || {};
 	module.helpers.redis = require('./redis/helpers');
 }(exports));

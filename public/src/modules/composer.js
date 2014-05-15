@@ -7,13 +7,19 @@ define(['taskbar'], function(taskbar) {
 		active: undefined,
 		posts: {},
 		saving: undefined
-	};
+	},
+	controls = {};
+
 
 	function initialise() {
 		socket.on('event:composer.ping', function(post_uuid) {
 			if (composer.active === post_uuid) {
 				socket.emit('modules.composer.pingActive', post_uuid);
 			}
+		});
+
+		require(['composer/controls'], function(composerControls) {
+			controls = composerControls;
 		});
 	}
 
@@ -150,24 +156,6 @@ define(['taskbar'], function(taskbar) {
 		composer.load(uuid);
 	}
 
-	//http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
-	function findBootstrapEnvironment() {
-		var envs = ['xs', 'sm', 'md', 'lg'],
-			$el = $('<div>');
-
-		$el.appendTo($('body'));
-
-		for (var i = envs.length - 1; i >= 0; i--) {
-			var env = envs[i];
-
-			$el.addClass('hidden-'+env);
-			if ($el.is(':hidden')) {
-				$el.remove();
-				return env;
-			}
-		}
-	}
-
 	function composerAlert(message) {
 		$('.action-bar button').removeAttr('disabled');
 		app.alert({
@@ -180,7 +168,6 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	function initializeDragAndDrop(post_uuid) {
-
 		if($.event.props.indexOf('dataTransfer') === -1) {
 			$.event.props.push('dataTransfer');
 		}
@@ -414,89 +401,87 @@ define(['taskbar'], function(taskbar) {
 		thumbForm.submit();
 	}
 
+	var formattingDispatchTable = {
+		'fa fa-bold': function(textarea, selectionStart, selectionEnd){
+			if(selectionStart === selectionEnd){
+				controls.insertIntoTextarea(textarea, '**bolded text**');
+				controls.updateTextareaSelection(textarea, selectionStart + 2, selectionStart + 13);
+			} else {
+				controls.wrapSelectionInTextareaWith(textarea, '**');
+				controls.updateTextareaSelection(textarea, selectionStart + 2, selectionEnd + 2);
+			}
+		},
+
+		'fa fa-italic': function(textarea, selectionStart, selectionEnd){
+			if(selectionStart === selectionEnd){
+				controls.insertIntoTextarea(textarea, "*italicised text*");
+				controls.updateTextareaSelection(textarea, selectionStart + 1, selectionStart + 16);
+			} else {
+				controls.wrapSelectionInTextareaWith(textarea, '*');
+				controls.updateTextareaSelection(textarea, selectionStart + 1, selectionEnd + 1);
+			}
+		},
+
+		'fa fa-list': function(textarea, selectionStart, selectionEnd){
+			if(selectionStart === selectionEnd){
+				controls.insertIntoTextarea(textarea, "\n* list item");
+
+				// Highlight "list item"
+				controls.updateTextareaSelection(textarea, selectionStart + 3, selectionStart + 12);
+			} else {
+				controls.wrapSelectionInTextareaWith(textarea, '\n* ', '');
+				controls.updateTextareaSelection(textarea, selectionStart + 3, selectionEnd + 3);
+			}
+		},
+
+		'fa fa-link': function(textarea, selectionStart, selectionEnd){
+			if(selectionStart === selectionEnd){
+				controls.insertIntoTextarea(textarea, "[link text](link url)");
+
+				// Highlight "link url"
+				controls.updateTextareaSelection(textarea, selectionStart + 12, selectionEnd + 20);
+			} else {
+				controls.wrapSelectionInTextareaWith(textarea, '[', '](link url)');
+
+				// Highlight "link url"
+				controls.updateTextareaSelection(textarea, selectionEnd + 3, selectionEnd + 11);
+			}
+		},
+
+		'fa fa-picture-o': function(){
+			$('#files').click();
+		},
+
+		'fa fa-upload': function(){
+			$('#files').click();
+		}
+	};
+
+	var customButtons = [];
+
 	function handleFormattingBarClick() {
 		var iconClass = $(this).find('i').attr('class');
 		var textarea = $(this).parents('.composer').find('textarea')[0];
 
-		var textareaValue = $(textarea).val();
-
-		var selectionStart = textarea.selectionStart,
-			selectionEnd = textarea.selectionEnd,
-			selectionLength = selectionEnd - selectionStart,
-			isSelectionAtEnd = selectionStart === selectionEnd;
-
-		function updateSelection(start, end){
-			textarea.setSelectionRange(start, end);
-			textarea.focus();
+		if(formattingDispatchTable.hasOwnProperty(iconClass)){
+			formattingDispatchTable[iconClass](textarea, textarea.selectionStart, textarea.selectionEnd);
 		}
+	}
 
-		function insertIntoInput(value) {
-			$(textarea).val(textareaValue.slice(0, selectionStart) + value + textareaValue.slice(selectionStart));
-		}
-
-		function wrapSelectedWith(leading, trailing){
-			if(trailing === undefined){
-				trailing = leading;
-			}
-
-			$(textarea).val(textareaValue.slice(0, selectionStart) + leading + textareaValue.slice(selectionStart, selectionEnd) + trailing + textareaValue.slice(selectionEnd));
-		}
-
-		if(iconClass === 'fa fa-bold') {
-			if (isSelectionAtEnd) {
-				insertIntoInput("**bolded text**");
-
-				updateSelection(selectionStart + 2, selectionStart + 13);
-			} else {
-				wrapSelectedWith('**');
-
-				// Highlight selection
-				updateSelection(selectionStart + 2, selectionEnd + 2);
-			}
-		}
-
-		if(iconClass === 'fa fa-italic') {
-			if (isSelectionAtEnd) {
-				insertIntoInput("*italicised text*");
-
-				// Highlight selection
-				updateSelection(selectionStart + 1, selectionStart + 16);
-			} else {
-				wrapSelectedWith('*');
-
-				// Highlight selection
-				updateSelection(selectionStart + 1, selectionEnd + 1);
-			}
-		}
-
-		if (iconClass === 'fa fa-list'){
-			if(isSelectionAtEnd){
-				insertIntoInput("\n* list item");
-
-				// Highlight "list item"
-				updateSelection(selectionStart + 3, selectionStart + 12);
-			} else {
-				wrapSelectedWith('\n* ', '');
-
-				// Maintain selection:
-				updateSelection(selectionStart + 3, selectionEnd + 3);
-			}
-		}
-
-		if (iconClass === 'fa fa-link') {
-			if (isSelectionAtEnd) {
-				insertIntoInput("[link text](link url)");
-
-				// Highlight "link url"
-				updateSelection(selectionStart + 12, selectionEnd + 20);
-			} else {
-				wrapSelectedWith('[', '](link url)');
-
-				// Highlight "link url"
-				updateSelection(selectionStart + selectionLength + 3, selectionEnd + 11);
+	function addComposerButtons() {
+		for (var button in customButtons) {
+			if (customButtons.hasOwnProperty(button)) {
+				$('.formatting-bar .btn-group form').before('<span class="btn btn-link" tabindex="-1"><i class="' + customButtons[button].iconClass + '"></i></span>');
 			}
 		}
 	}
+
+	composer.addButton = function(iconClass, onClick) {
+		formattingDispatchTable[iconClass] = onClick;
+		customButtons.push({
+			iconClass: iconClass
+		});
+	};
 
 	composer.newTopic = function(cid) {
 		if(!allowed()) {
@@ -625,6 +610,8 @@ define(['taskbar'], function(taskbar) {
 							thumbToggleBtnEl.removeClass('hide');
 						}
 					};
+					
+				postData.title = $('<div></div>').html(postData.title).text();
 
 				if (parseInt(postData.tid, 10) > 0) {
 					translator.translate('[[topic:composer.replying_to, ' + postData.title + ']]', function(newTitle) {
@@ -709,10 +696,6 @@ define(['taskbar'], function(taskbar) {
 				});
 
 				postContainer.on('click', '.formatting-bar span', handleFormattingBarClick);
-
-				postContainer.on('click', '.formatting-bar span .fa-picture-o, .formatting-bar span .fa-upload', function() {
-					$('#files').click();
-				});
 
 				postContainer.find('#files').on('change', function(e) {
 					var files = (e.target || {}).files || ($(this).val() ? [{name: $(this).val(), type: utils.fileMimeType($(this).val())}] : null);
@@ -836,7 +819,7 @@ define(['taskbar'], function(taskbar) {
 				});
 
 				socket.emit('modules.composer.renderHelp', function(err, html) {
-					if (html && html.length > 0) {
+					if (!err && html && html.length > 0) {
 						postContainer.find('.help').html(html);
 						postContainer.find('[data-pane=".tab-help"]').parent().removeClass('hidden');
 					}
@@ -845,12 +828,13 @@ define(['taskbar'], function(taskbar) {
 				$(window).trigger('action:composer.loaded', {
 					post_uuid: post_uuid
 				});
+
+				addComposerButtons();
 			});
 		});
 	};
 
 	composer.activateReposition = function(post_uuid) {
-
 		if(composer.active && composer.active !== post_uuid) {
 			composer.minimize(composer.active);
 		}
@@ -859,7 +843,7 @@ define(['taskbar'], function(taskbar) {
 			postContainer = $('#cmp-uuid-' + post_uuid);
 
 		composer.active = post_uuid;
-		var env = findBootstrapEnvironment();
+		var env = utils.findBootstrapEnvironment();
 
 		if (percentage) {
 			if ( env === 'md' || env === 'lg') {
@@ -938,7 +922,12 @@ define(['taskbar'], function(taskbar) {
 				content: bodyEl.val(),
 				topic_thumb: thumbEl.val() || '',
 				category_id: postData.cid
-			}, done);
+			}, function(err, topic) {
+				done(err);
+				if (!err) {
+					ajaxify.go('topic/' + topic.slug);
+				}
+			});
 		} else if (parseInt(postData.tid, 10) > 0) {
 			socket.emit('posts.reply', {
 				tid: postData.tid,
@@ -995,7 +984,9 @@ define(['taskbar'], function(taskbar) {
 		newReply: composer.newReply,
 		addQuote: composer.addQuote,
 		editPost: composer.editPost,
+		addButton: composer.addButton,
 		load: composer.load,
-		minimize: composer.minimize
+		minimize: composer.minimize,
+		controls: controls
 	};
 });

@@ -6,135 +6,135 @@ define(function() {
 	Users.init = function() {
 		var yourid = ajaxify.variables.get('yourid');
 
-		function isUserAdmin(element) {
-			var parent = $(element).parents('.users-box');
-			return (parent.attr('data-admin') !== "0");
+		$('#users-container').on('click', '.select', function() {
+			var userBox = $(this).parents('.users-box');
+			var isSelected = userBox.hasClass('selected');
+			userBox.toggleClass('selected', !isSelected);
+			$(this).toggleClass('fa-square-o', isSelected).toggleClass('fa-check-square-o', !isSelected);
+		});
+
+		function getSelectedUids() {
+			var uids = [];
+			$('#users-container .users-box.selected').each(function() {
+				uids.push($(this).attr('data-uid'));
+			});
+			return uids;
 		}
 
-		function isUserBanned(element) {
-			var parent = $(element).parents('.users-box');
-			return (parent.attr('data-banned') !== "" && parent.attr('data-banned') !== "0");
-		}
-
-		function getUID(element) {
-			var parent = $(element).parents('.users-box');
-			return parent.attr('data-uid');
-		}
-
-		function updateUserBanButtons(elements) {
-			elements.each(function(index, element) {
-				var banBtn = $(element);
-				var uid = getUID(banBtn);
-
-				banBtn.toggleClass('disabled', isUserAdmin(banBtn) || uid === yourid);
-				banBtn.toggleClass('btn-warning', isUserBanned(banBtn));
+		function update(className, state) {
+			$('#users-container .users-box.selected ' + className +'.label').each(function() {
+				$(this).toggleClass('hide', !state);
 			});
 		}
 
-		function updateUserAdminButtons(elements) {
-			elements.each(function(index, element) {
-				var adminBtn = $(element);
-				var uid = getUID(adminBtn);
-
-				adminBtn.toggleClass('disabled', (isUserAdmin(adminBtn) && uid === yourid) || isUserBanned(adminBtn));
-				adminBtn.toggleClass('btn-success', isUserAdmin(adminBtn));
-			});
+		function unselectAll() {
+			$('#users-container .users-box.selected').removeClass('selected')
+				.find('.select').toggleClass('fa-square-o', true).toggleClass('fa-check-square-o', false);
 		}
 
-		function updateButtons() {
-			updateUserBanButtons($('.ban-btn'));
-			updateUserAdminButtons($('.admin-btn'));
+		function removeSelected() {
+			$('#users-container .users-box.selected').remove();
 		}
 
-		$('#users-container').on('click', '.ban-btn', function() {
-			var banBtn = $(this);
-			var parent = banBtn.parents('.users-box');
-			var uid = getUID(banBtn);
+		$('.ban-user').on('click', function() {
+			var uids = getSelectedUids();
+			if (!uids.length) {
+				return;
+			}
 
-			if (!isUserAdmin(banBtn)) {
-				if (isUserBanned(banBtn)) {
-					socket.emit('admin.user.unbanUser', uid, function(err) {
+			bootbox.confirm('Do you really want to ban?', function(confirm) {
+				if (confirm) {
+					socket.emit('admin.user.banUsers', uids, function(err) {
 						if (err) {
 							return app.alertError(err.message);
 						}
-						app.alertSuccess('This user is unbanned!');
+						app.alertSuccess('User(s) banned!');
 					});
-
-					banBtn.removeClass('btn-warning');
-					parent.attr('data-banned', 0);
-					updateUserAdminButtons($('.admin-btn'));
-				} else {
-					bootbox.confirm('Do you really want to ban "' + parent.attr('data-username') + '"?', function(confirm) {
-						if (confirm) {
-							socket.emit('admin.user.banUser', uid, function(err) {
-								if (err) {
-									return app.alertError(err.message);
-								}
-								app.alertSuccess('This user is banned!');
-							});
-							banBtn.addClass('btn-warning');
-							parent.attr('data-banned', 1);
-							updateUserAdminButtons($('.admin-btn'));
-						}
-					});
+					update('.ban', true);
+					unselectAll();
 				}
-			}
-
-			return false;
+			});
 		});
 
-		$('#users-container').on('click', '.admin-btn', function() {
-			var adminBtn = $(this);
-			var parent = adminBtn.parents('.users-box');
-			var uid = getUID(adminBtn);
+		$('.unban-user').on('click', function() {
+			var uids = getSelectedUids();
+			if (!uids.length) {
+				return;
+			}
 
-			if(uid === yourid) {
-				app.alert({
-					title: 'Error',
-					message: 'You can\'t remove yourself as Administrator!',
-					type: 'danger',
-					timeout: 5000
-				});
-			} else if (!isUserAdmin(adminBtn)) {
-				socket.emit('admin.user.makeAdmin', uid, function(err) {
+			socket.emit('admin.user.unbanUsers', uids, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				app.alertSuccess('User(s) unbanned!');
+			});
+
+			update('.ban', false);
+			unselectAll();
+		});
+
+		$('.admin-user').on('click', function() {
+			var uids = getSelectedUids();
+			if (!uids.length) {
+				return;
+			}
+
+			if (uids.indexOf(yourid) !== -1) {
+				app.alertError('You can\'t remove yourself as Administrator!');
+			} else {
+				socket.emit('admin.user.makeAdmins', uids, function(err) {
 					if (err) {
 						return app.alertError(err.message);
 					}
-					app.alertSuccess('This user is now an administrator.');
+					app.alertSuccess('User(s) are now administrators.');
 				});
-				parent.attr('data-admin', 1);
-				updateUserBanButtons($('.ban-btn'));
-				updateUserAdminButtons($('.admin-btn'));
-			} else if(uid !== yourid) {
-				bootbox.confirm('Do you really want to remove this user as admin "' + parent.attr('data-username') + '"?', function(confirm) {
+
+				update('.administrator', true);
+				unselectAll();
+			}
+		});
+
+		$('.remove-admin-user').on('click', function() {
+			var uids = getSelectedUids();
+			if (!uids.length) {
+				return;
+			}
+
+			if (uids.indexOf(yourid) !== -1) {
+				app.alertError('You can\'t remove yourself as Administrator!');
+			} else {
+				bootbox.confirm('Do you really want to remove admins?', function(confirm) {
 					if (confirm) {
-						socket.emit('admin.user.removeAdmin', uid, function(err) {
+						socket.emit('admin.user.removeAdmins', uids, function(err) {
 							if (err) {
 								return app.alertError(err.message);
 							}
-							app.alertSuccess('This user is no longer an administrator.');
+							app.alertSuccess('User(s) are no longer administrators.');
 						});
-						parent.attr('data-admin', 0);
-						updateUserBanButtons($('.ban-btn'));
-						updateUserAdminButtons($('.admin-btn'));
+
+						update('.administrator', false);
+						unselectAll();
 					}
 				});
 			}
-			return false;
 		});
 
-		$('#users-container').on('click', '.delete-btn', function() {
-			var deleteBtn = $(this);
-			var parent = deleteBtn.parents('.users-box');
-			var uid = getUID(deleteBtn);
-			bootbox.confirm('<b>Warning!</b><br/>Do you really want to delete this user "' + parent.attr('data-username') + '"?<br/> This action is not reversable, all user data and content will be erased!', function(confirm) {
+		$('.delete-user').on('click', function() {
+			var uids = getSelectedUids();
+			if (!uids.length) {
+				return;
+			}
+
+			bootbox.confirm('<b>Warning!</b><br/>Do you really want to delete user(s)?<br/> This action is not reversable, all user data and content will be erased!', function(confirm) {
 				if (confirm) {
-					socket.emit('admin.user.deleteUser', uid, function(err) {
+					socket.emit('admin.user.deleteUsers', uids, function(err) {
 						if (err) {
 							return app.alertError(err.message);
 						}
-						parent.remove();
-						app.alertSuccess('User Deleted!');
+
+						app.alertSuccess('User(s) Deleted!');
+						removeSelected();
+						unselectAll();
 					});
 				}
 			});
@@ -178,7 +178,6 @@ define(function() {
 
 			});
 		}
-
 
 		$('document').ready(function() {
 
@@ -230,14 +229,10 @@ define(function() {
 									.addClass('label-success')
 									.removeClass('label-danger');
 							}
-
-							updateButtons();
 						});
 					});
 				}, 250);
 			});
-
-			updateButtons();
 
 			handleUserCreate();
 
@@ -245,8 +240,6 @@ define(function() {
 				ajaxify.loadTemplate('admin/users', function(adminUsers) {
 					var html = $(templates.parse(templates.getBlock(adminUsers, 'users'), {users: users}));
 					$('#users-container').append(html);
-					updateUserBanButtons(html.find('.ban-btn'));
-					updateUserAdminButtons(html.find('.admin-btn'));
 				});
 			}
 

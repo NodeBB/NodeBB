@@ -49,10 +49,10 @@ if(nconf.get('ssl')) {
 		meta.sounds.init();
 	});
 
-	async.series({
+	async.parallel({
 		themesData: meta.themes.get,
-		currentThemeData: function(next) {
-			db.getObjectFields('config', ['theme:type', 'theme:id', 'theme:staticDir', 'theme:templates'], next);
+		currentThemeId: function(next) {
+			db.getObjectField('config', 'theme:id', next);
 		}
 	}, function(err, data) {
 		middleware = middleware(app, data);
@@ -108,9 +108,17 @@ if(nconf.get('ssl')) {
 		});
 
 		emitter.on('templates:compiled', function() {
-			winston.info('NodeBB attempting to listen on: ' + ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port);
+			var	bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
+			winston.info('NodeBB attempting to listen on: ' + bind_address);
+
 			server.listen(port, nconf.get('bind_address'), function(){
 				winston.info('NodeBB Ready');
+				if (process.send) {
+					process.send({
+						action: 'ready',
+						bind_address: bind_address
+					});
+				}
 			});
 		});
 	};

@@ -3,5 +3,6 @@
     "chat.placeholder": "type chat bericht hier, druk op enter om te verzenden",
     "chat.send": "Verzenden",
     "chat.no_active": "Je hebt geen actieve chats.",
-    "chat.user_typing": "%1 is typing ..."
+    "chat.user_typing": "%1 is typing ...",
+    "chat.user_has_messaged_you": "%1 has messaged you."
 }

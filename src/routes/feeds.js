@@ -40,8 +40,8 @@ function hasPrivileges(module, id, req, res, next) {
 
 function generateForTopic(req, res, next) {
 	var tid = req.params.topic_id;
-
-	topics.getTopicWithPosts(tid, 0, 0, 25, function (err, topicData) {
+	var uid = req.user ? req.user.uid : 0;
+	topics.getTopicWithPosts(tid, uid, 0, 25, function (err, topicData) {
 		if (err) {
 			return next(err);
 		}
@@ -85,8 +85,8 @@ function generateForTopic(req, res, next) {
 
 function generateForCategory(req, res, next) {
 	var cid = req.params.category_id;
-
-	categories.getCategoryById(cid, 0, 25, 0, function (err, categoryData) {
+	var uid = req.user ? req.user.uid : 0;
+	categories.getCategoryById(cid, 0, 25, uid, function (err, categoryData) {
 		if (err) {
 			return next(err);
 		}
@@ -108,7 +108,7 @@ function generateForRecent(req, res, next) {
 		description: 'A list of topics that have been active within the past 24 hours',
 		feed_url: '/recent.rss',
 		site_url: '/recent'
-	}, 'topics:recent', res, next);
+	}, 'topics:recent', req, res, next);
 }
 
 function generateForPopular(req, res, next) {
@@ -117,11 +117,12 @@ function generateForPopular(req, res, next) {
 		description: 'A list of topics that are sorted by post count',
 		feed_url: '/popular.rss',
 		site_url: '/popular'
-	}, 'topics:posts', res, next);
+	}, 'topics:posts', req, res, next);
 }
 
-function generateForTopics(options, set, res, next) {
-	topics.getTopicsFromSet(0, set, 0, 19, function (err, data) {
+function generateForTopics(options, set, req, res, next) {
+	var uid = req.user ? req.user.uid : 0;
+	topics.getTopicsFromSet(uid, set, 0, 19, function (err, data) {
 		if (err) {
 			return next(err);
 		}

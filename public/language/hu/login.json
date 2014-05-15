@@ -1,7 +1,5 @@
 {
-    "login": "Bejelentkezés",
     "username": "Felhasználónév / Email",
-    "password": "Jelszó",
     "remember_me": "Emlékezz rám",
     "forgot_password": "Elfelejtett Jelszó?",
     "alternative_logins": "Alternatív Belépések",

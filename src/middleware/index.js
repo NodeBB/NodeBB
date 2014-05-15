@@ -45,21 +45,31 @@ function routeThemeScreenshots(app, themes) {
 	});
 }
 
-function routeCurrentTheme(app, themeData) {
-	var themeId = (themeData['theme:id'] || 'nodebb-theme-vanilla');
+function routeCurrentTheme(app, themeId, themesData) {
+	var themeId = (themeId || 'nodebb-theme-vanilla'),
+		themeObj = (function(id) {
+			return themesData.filter(function(themeObj) {
+				return themeObj.id === id;
+			})[0];
+		})(themeId);
 
 	// Detect if a theme has been selected, and handle appropriately
 	if (process.env.NODE_ENV === 'development') {
 		winston.info('[themes] Using theme ' + themeId);
 	}
 
-	// Theme's static directory
-	if (themeData['theme:staticDir']) {
-		app.use(relativePath + '/css/assets', express.static(path.join(themesPath, themeData['theme:id'], themeData['theme:staticDir']), {
+	// Theme's templates path
+	nconf.set('theme_templates_path', themeObj.templates ? path.join(themesPath, themeObj.id, themeObj.templates) : nconf.get('base_templates_path'));
+	themeTemplatesPath = nconf.get('theme_templates_path');
+
+	// Theme's static directory (to be deprecated for 0.5.0)
+	if (themeObj.staticDir) {
+		app.use(relativePath + '/css/assets', express.static(path.join(themesPath, themeObj.id, themeObj.staticDir), {
 			maxAge: app.enabled('cache') ? 5184000000 : 0
 		}));
+
 		if (process.env.NODE_ENV === 'development') {
-			winston.info('Static directory routed for theme: ' + themeData['theme:id']);
+			winston.info('Static directory routed for theme: ' + themeObj.id);
 		}
 	}
 }
@@ -173,12 +183,13 @@ module.exports = function(app, data) {
 	viewsPath = nconf.get('views_dir');
 	themesPath = nconf.get('themes_path');
 	baseTemplatesPath = nconf.get('base_templates_path');
-	themeTemplatesPath = nconf.get('theme_templates_path');
 
 	app.configure(function() {
 		app.engine('tpl', templates.__express);
 		app.set('view engine', 'tpl');
 		app.set('views', viewsPath);
+
+		app.enable('view cache');
 
 		app.use(express.compress());
 
@@ -210,7 +221,7 @@ module.exports = function(app, data) {
 
 		auth.initialize(app);
 
-		routeCurrentTheme(app, data.currentThemeData);
+		routeCurrentTheme(app, data.currentThemeId, data.themesData);
 		routeThemeScreenshots(app, data.themesData);
 
 		plugins.getTemplates(function(err, pluginTemplates) {

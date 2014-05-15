@@ -79,6 +79,10 @@ module.exports = function(db, module) {
 		module.setObject(key, data, callback);
 	};
 
+	module.increment = function(key, callback) {
+		db.collection('objects').update({_key: key}, { $inc: { value: 1 } }, helpers.done(callback));
+	};
+
 	module.rename = function(oldKey, newKey, callback) {
 		db.collection('objects').update({_key: oldKey}, {$set:{_key: newKey}}, helpers.done(callback));
 	};
@@ -89,5 +93,13 @@ module.exports = function(db, module) {
 
 	module.expireAt = function(key, timestamp, callback) {
 		module.setObjectField(key, 'expireAt', new Date(timestamp * 1000), callback);
+	};
+
+	module.pexpire = function(key, ms, callback) {
+		module.expireAt(key, Date.now() + parseInt(ms, 10), callback);
+	};
+
+	module.pexpireAt = function(key, timestamp, callback) {
+		module.setObjectField(key, 'expireAt', new Date(timestamp), callback);
 	};
 };

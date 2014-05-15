@@ -15,7 +15,7 @@ var fs = require('fs'),
 	translator = require('./../public/src/translator'),
 	db = require('./database'),
 	plugins = require('./plugins'),
-	User = require('./user');
+	user = require('./user');
 
 (function (Meta) {
 	Meta.restartRequired = false;
@@ -150,20 +150,19 @@ var fs = require('fs'),
 					function(config, next) {
 						themeData['theme:staticDir'] = config.staticDir ? config.staticDir : '';
 						themeData['theme:templates'] = config.templates ? config.templates : '';
-						themeData['theme:src'] = config.frameworkCSS ? config.frameworkCSS : '';
+						themeData['theme:src'] = '';
 
 						db.setObject('config', themeData, next);
 					}
 				], callback);
+
+				Meta.restartRequired = true;
 				break;
 
 			case 'bootswatch':
-				db.setObjectField('config', 'theme:src', data.src, callback);
+				Meta.configs.set('theme:src', data.src, callback);
 				break;
 			}
-
-			// Restart Required flag
-			Meta.restartRequired = true;
 		}
 	};
 
@@ -211,7 +210,7 @@ var fs = require('fs'),
 					userslug = matches[1],
 					subpage = matches[2];
 
-				User.getUsernameByUserslug(userslug, function(err, username) {
+				user.getUsernameByUserslug(userslug, function(err, username) {
 					if (subpage) {
 						translator.translate('[[pages:user.' + subpage + ', ' + username + ']]', language, function(translated) {
 							callback(null, translated);
@@ -234,6 +233,7 @@ var fs = require('fs'),
 			'vendor/jquery/js/jquery-ui-1.10.4.custom.js',
 			'vendor/jquery/timeago/jquery.timeago.min.js',
 			'vendor/jquery/js/jquery.form.min.js',
+			'vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
 			'vendor/bootstrap/js/bootstrap.min.js',
 			'vendor/requirejs/require.js',
 			'vendor/bootbox/bootbox.min.js',
@@ -328,6 +328,9 @@ var fs = require('fs'),
 	/* Themes */
 	Meta.css = {};
 	Meta.css.cache = undefined;
+	Meta.css.branding = {};
+	Meta.css.defaultBranding = {};
+
 	Meta.css.minify = function() {
 		winston.info('[meta/css] Minifying LESS/CSS');
 		db.getObjectFields('config', ['theme:type', 'theme:id'], function(err, themeData) {
@@ -343,13 +346,15 @@ var fs = require('fs'),
 
 			// Add the imports for each LESS file
 			for(x=0,numLESS=plugins.lessFiles.length;x<numLESS;x++) {
-				source += '\n@import "./' + plugins.lessFiles[x] + '";';
+				source += '\n@import ".' + path.sep + plugins.lessFiles[x] + '";';
 			}
 
 			// ... and for each CSS file
 			for(x=0,numCSS=plugins.cssFiles.length;x<numCSS;x++) {
-				source += '\n@import (inline) "./' + plugins.cssFiles[x] + '";';
+				source += '\n@import (inline) ".' + path.sep + plugins.cssFiles[x] + '";';
 			}
+
+			source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css";';
 
 			var	parser = new (less.Parser)({
 					paths: paths
@@ -361,12 +366,40 @@ var fs = require('fs'),
 					process.exit();
 				}
 
-				Meta.css.cache = tree.toCSS({
+				var css = tree.toCSS({
 					cleancss: true
 				});
+
+				Meta.css.cache = css;
+
+				var re = /.brand-([\S]*?)[ ]*?{[\s\S]*?color:([\S\s]*?)}/gi,
+					match;
+
+				while (match = re.exec(css)) {
+					Meta.css.branding[match[1]] = match[2];
+				}
+
+				Meta.css.defaultBranding = Meta.css.branding;
+				Meta.css.updateBranding();
+
 				winston.info('[meta/css] Done.');
 			});
 		});
+	};
+
+	Meta.css.updateBranding = function() {
+		var Settings = require('./settings');
+		var branding = new Settings('branding', '0', {}, function() {
+			branding = branding.cfg._;
+
+			for (var b in branding) {
+				if (branding.hasOwnProperty(b)) {
+					Meta.css.cache = Meta.css.cache.replace(new RegExp(Meta.css.branding[b], 'g'), branding[b]);
+				}
+			}
+
+			Meta.css.branding = branding;
+		});		
 	};
 
 	/* Sounds */
@@ -463,6 +496,7 @@ var fs = require('fs'),
 
 	Meta.settings.set = function(hash, values, callback) {
 		hash = 'settings:' + hash;
+		plugins.fireHook('action:settings.set', hash, values);
 		db.setObject(hash, values, callback);
 	};
 

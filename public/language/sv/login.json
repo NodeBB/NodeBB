@@ -1,7 +1,5 @@
 {
-    "login": "Logga in",
     "username": "Användarnamn eller epostadress",
-    "password": "Lösenord",
     "remember_me": "Kom ihåg mig?",
     "forgot_password": "Glömt lösenord?",
     "alternative_logins": "Alternativa inloggningssätt",

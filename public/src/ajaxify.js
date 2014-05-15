@@ -11,17 +11,6 @@ var ajaxify = ajaxify || {};
 		availableTemplates = null,
 		apiXHR = null;
 
-	var events = [];
-
-	ajaxify.register_events = function (new_page_events) {
-		for (var i = 0, ii = events.length; i < ii; i++) {
-			socket.removeAllListeners(events[i]); // optimize this to user removeListener(event, listener) instead.
-		}
-
-		events = new_page_events;
-	};
-
-
 	window.onpopstate = function (event) {
 		if (event !== null && event.state && event.state.url !== undefined && !ajaxify.initialLoad) {
 			ajaxify.go(event.state.url, function() {
@@ -83,13 +72,13 @@ var ajaxify = ajaxify || {};
 
 				app.processPage();
 
-				ajaxify.widgets.render(tpl_url, url, function(err) {
-					$('#content, #footer').stop(true, true).removeClass('ajaxifying');
-					ajaxify.initialLoad = false;
+				ajaxify.widgets.render(tpl_url, url);
 
-					app.refreshTitle(url);
-					$(window).trigger('action:ajaxify.end', {url: url});
-				});
+				$('#content, #footer').stop(true, true).removeClass('ajaxifying');
+				ajaxify.initialLoad = false;
+
+				app.refreshTitle(url);
+				$(window).trigger('action:ajaxify.end', {url: url});
 			}, url);
 
 			return true;
@@ -197,7 +186,11 @@ var ajaxify = ajaxify || {};
 				if (data && data.status === 404) {
 					return ajaxify.go('404');
 				} else if (data && data.status === 403) {
-					return ajaxify.go('403');
+					app.alertError('[[global:please_log_in]]');
+					app.previousUrl = url;
+					return ajaxify.go('login');
+				} else if (data && data.status === 302) {
+					return ajaxify.go(data.responseJSON.slice(1));
 				} else if (textStatus !== "abort") {
 					app.alertError(data.responseJSON.error);
 				}
@@ -245,19 +238,31 @@ var ajaxify = ajaxify || {};
 				return;
 			}
 
-			if ((!e.ctrlKey && !e.shiftKey) && e.which === 1) {
+			if ((!e.ctrlKey && !e.shiftKey && !e.metaKey) && e.which === 1) {
 				if (this.host === window.location.host) {
 					// Internal link
 					var url = this.href.replace(rootUrl + '/', '');
 
-					if (ajaxify.go(url)) {
+					if(window.location.pathname === this.pathname && this.hash) {
+						if (this.hash !== window.location.hash) {
+							window.location.hash = this.hash;
+						}
+
+						ajaxify.loadScript(ajaxify.getTemplateMapping(url));
 						e.preventDefault();
+					} else {
+						if (ajaxify.go(url)) {
+							e.preventDefault();
+						}
 					}
 				} else if (window.location.pathname !== '/outgoing') {
 					// External Link
 
 					if (config.useOutgoingLinksPage) {
 						ajaxify.go('outgoing?url=' + encodeURIComponent(this.href));
+						e.preventDefault();
+					} else if (config.openOutgoingLinksInNewTab) {
+						window.open(this.href, '_blank');
 						e.preventDefault();
 					}
 				}

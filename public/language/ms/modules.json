@@ -1,0 +1,8 @@
+{
+    "chat.chatting_with": "Bercakap dengan <span id=\"chat-with-name\"></span>",
+    "chat.placeholder": "Taip pesanan disini, tekan enter untuk menghantar",
+    "chat.send": "hantar",
+    "chat.no_active": "Anda tiada pesanan yang aktif",
+    "chat.user_typing": "%1 menaip",
+    "chat.user_has_messaged_you": "%1 has messaged you."
+}

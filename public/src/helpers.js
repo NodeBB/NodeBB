@@ -12,7 +12,7 @@
 	helpers.buildMetaTag = function(tag) {
 		var name = tag.name ? 'name="' + tag.name + '" ' : '',
 			property = tag.property ? 'property="' + tag.property + '" ' : '',
-			content = tag.content ? 'content="' + tag.content + '" ' : '';
+			content = tag.content ? 'content="' + tag.content.replace(/\n/g, ' ') + '" ' : '';
 
 		return '<meta ' + name + property + content + ' />';
 	};

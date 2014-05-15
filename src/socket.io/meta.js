@@ -44,39 +44,6 @@ SocketMeta.buildTitle = function(socket, text, callback) {
 	}
 };
 
-SocketMeta.updateHeader = function(socket, data, callback) {
-	if(!data) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-
-	if (socket.uid) {
-		user.getUserFields(socket.uid, data.fields, function(err, fields) {
-			if(err) {
-				return callback(err);
-			}
-
-			if (fields) {
-				fields.uid = socket.uid;
-				callback(null, fields);
-			} else {
-				callback(null, []);
-			}
-		});
-	} else {
-		callback(null, {
-			uid: 0,
-			username: "Anonymous User",
-			email: '',
-			picture: gravatar.url('', {
-				s: '24'
-			}, true),
-			config: {
-				allowGuestSearching: meta.config.allowGuestSearching
-			}
-		});
-	}
-};
-
 SocketMeta.getUsageStats = function(socket, data, callback) {
 	module.parent.exports.emitTopicPostStats(callback);
 };

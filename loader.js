@@ -3,11 +3,12 @@
 var	nconf = require('nconf'),
 	fs = require('fs'),
 	pidFilePath = __dirname + '/pidfile',
+	output = fs.openSync(__dirname + '/logs/output.log', 'a'),
 	start = function() {
 		var	fork = require('child_process').fork,
 			nbb_start = function() {
 				if (timesStarted > 3) {
-					console.log('\n[loader] Experienced three start attempts in 10 seconds, most likely am error on startup. Halting.');
+					console.log('\n[loader] Experienced three start attempts in 10 seconds, most likely an error on startup. Halting.');
 					return nbb_stop();
 				}
 
@@ -18,10 +19,10 @@ var	nconf = require('nconf'),
 				startTimer = setTimeout(resetTimer, 1000*10);
 
 				nbb = fork('./app', process.argv.slice(2), {
-						env: {
-							'NODE_ENV': process.env.NODE_ENV
-						}
-					});
+					env: {
+						'NODE_ENV': process.env.NODE_ENV
+					}
+				});
 
 				nbb.on('message', function(message) {
 					if (message && typeof message === 'object' && message.action) {
@@ -76,32 +77,25 @@ var	nconf = require('nconf'),
 nconf.argv();
 
 // Start the daemon!
-if (nconf.get('d')) {
+if (nconf.get('daemon') !== false) {
 	// Check for a still-active NodeBB process
 	if (fs.existsSync(pidFilePath)) {
 		try {
 			var	pid = fs.readFileSync(pidFilePath, { encoding: 'utf-8' });
 			process.kill(pid, 0);
-			console.log('\n  Error: Another NodeBB is already running!');
 			process.exit();
 		} catch (e) {
 			fs.unlinkSync(pidFilePath);
 		}
 	}
 
-	// Initialise logging streams
-	var	outputStream = fs.createWriteStream(__dirname + '/logs/output.log');
-	outputStream.on('open', function(fd) {
-		// Daemonize
-		require('daemon')({
-			stdout: fd
-		});
-
-		// Write its pid to a pidfile
-		fs.writeFile(__dirname + '/pidfile', process.pid);
-
-		start();
+	// Daemonize and record new pid
+	require('daemon')({
+		stdout: output
 	});
+	fs.writeFile(__dirname + '/pidfile', process.pid);
+
+	start();
 } else {
 	start();
 }

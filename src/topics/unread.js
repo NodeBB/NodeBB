@@ -50,7 +50,7 @@ module.exports = function(Topics) {
 
 					async.filter(newtids, function(tid, next) {
 						threadTools.privileges(tid, uid, function(err, privileges) {
-							next(!err && privileges.read);
+							next(!err && privileges.meta.read);
 						});
 					}, function(newtids) {
 						unreadTids.push.apply(unreadTids, newtids);

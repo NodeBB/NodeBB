@@ -1,12 +1,7 @@
 {
     "new_topic_button": "נושא חדש",
     "no_topics": "<strong>קטגוריה זו ריקה מנושאים.</strong><br />למה שלא תנסה להוסיף נושא חדש?",
-    "posts": "פוסטים",
-    "views": "צפיות",
-    "posted": "פורסם",
     "browsing": "צופים בנושא זה כעת",
     "no_replies": "אין תגובות",
-    "replied": "הגיב",
-    "last_edited_by": "נערך לאחרונה על-ידי",
     "share_this_category": "Share this category"
 }

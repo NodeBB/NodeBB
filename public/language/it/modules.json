@@ -3,5 +3,6 @@
     "chat.placeholder": "scrivi un messaggio qui, poi premi Invio",
     "chat.send": "Invia",
     "chat.no_active": "Non hai discussioni attive.",
-    "chat.user_typing": "%1 is typing ..."
+    "chat.user_typing": "%1 is typing ...",
+    "chat.user_has_messaged_you": "%1 has messaged you."
 }

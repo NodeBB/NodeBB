@@ -8,9 +8,7 @@ var async = require('async'),
 	emitter = require('./../emitter'),
 	favourites = require('./../favourites'),
 	posts = require('./../posts'),
-	postTools = require('./../postTools');
-
-
+	privileges = require('../privileges');
 
 module.exports = function(Topics) {
 
@@ -52,7 +50,7 @@ module.exports = function(Topics) {
 				},
 				privileges : function(next) {
 					async.map(pids, function (pid, next) {
-						postTools.privileges(pid, uid, next);
+						privileges.posts.get(pid, uid, next);
 					}, next);
 				}
 			}, function(err, results) {
@@ -66,15 +64,46 @@ module.exports = function(Topics) {
 					postData[i].upvoted = results.voteData[i].upvoted;
 					postData[i].downvoted = results.voteData[i].downvoted;
 					postData[i].votes = postData[i].votes || 0;
-					postData[i].display_moderator_tools = parseInt(uid, 10) !== 0 && results.privileges[i].editable;
-					postData[i].display_move_tools = results.privileges[i].move;
+					postData[i].display_moderator_tools = results.privileges[i].meta.editable;
+					postData[i].display_move_tools = results.privileges[i].meta.move;
+					postData[i].selfPost = parseInt(uid, 10) === parseInt(postData[i].uid, 10);
 
-					if(postData[i].deleted && !results.privileges[i].view_deleted) {
-						postData[i].content = 'This post is deleted!';
+					if(postData[i].deleted && !results.privileges[i].meta.view_deleted) {
+						postData[i].content = '[[topic:post_is_deleted]]';
 					}
 				}
 
 				callback(null, postData);
+			});
+		});
+	};
+
+	Topics.getLatestUndeletedPost = function(tid, callback) {
+		Topics.getLatestUndeletedPid(tid, function(err, pid) {
+			if(err) {
+				return callback(err);
+			}
+
+			posts.getPostData(pid, callback);
+		});
+	};
+
+	Topics.getLatestUndeletedPid = function(tid, callback) {
+		db.getSortedSetRevRange('tid:' + tid + ':posts', 0, -1, function(err, pids) {
+			if(err) {
+				return callback(err);
+			}
+
+			if (!pids || !pids.length) {
+				return callback(null, null);
+			}
+
+			async.detectSeries(pids, function(pid, next) {
+				posts.getPostField(pid, 'deleted', function(err, deleted) {
+					next(parseInt(deleted, 10) === 0);
+				});
+			}, function(pid) {
+				callback(null, pid ? pid : null);
 			});
 		});
 	};

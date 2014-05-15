@@ -68,11 +68,17 @@ define(['forum/topic/move', 'topicSelect'], function(move, topicSelect) {
 
 		$('.move_thread').on('click', function() {
 			var tids = topicSelect.getSelectedTids();
-			console.log(tids);
+
 			if (tids.length) {
 				move.init(tids, cid, onCommandComplete);
 			}
 			return false;
+		});
+
+		$('.move_all_threads').on('click', function() {
+			move.init(null, cid, function(err) {
+				ajaxify.refresh();
+			});
 		});
 
 
@@ -83,6 +89,16 @@ define(['forum/topic/move', 'topicSelect'], function(move, topicSelect) {
 		socket.on('event:topic_pinned', setPinnedState);
 		socket.on('event:topic_unpinned', setPinnedState);
 		socket.on('event:topic_moved', onTopicMoved);
+	};
+
+	CategoryTools.removeListeners = function() {
+		socket.removeListener('event:topic_deleted', setDeleteState);
+		socket.removeListener('event:topic_restored', setDeleteState);
+		socket.removeListener('event:topic_locked', setLockedState);
+		socket.removeListener('event:topic_unlocked', setLockedState);
+		socket.removeListener('event:topic_pinned', setPinnedState);
+		socket.removeListener('event:topic_unpinned', setPinnedState);
+		socket.removeListener('event:topic_moved', onTopicMoved);
 	};
 
 	function closeDropDown() {
@@ -151,7 +167,7 @@ define(['forum/topic/move', 'topicSelect'], function(move, topicSelect) {
 		var topic = getTopicEl(data.tid);
 		topic.toggleClass('pinned', data.isPinned);
 		topic.find('.fa-thumb-tack').toggleClass('hide', !data.isPinned);
-		ajaxify.go('category/' + CategoryTools.cid);
+		ajaxify.refresh();
 	}
 
 	function setLockedState(data) {

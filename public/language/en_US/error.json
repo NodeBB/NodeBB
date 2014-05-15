@@ -1,6 +1,7 @@
 {
     "invalid-data": "Invalid Data",
     "not-logged-in": "You don't seem to be logged in.",
+    "account-locked": "Your account has been locked temporarily",
     "invalid-cid": "Invalid Category ID",
     "invalid-tid": "Invalid Topic ID",
     "invalid-pid": "Invalid Post ID",
@@ -30,8 +31,8 @@
     "too-many-posts": "You can only post every %1 seconds.",
     "file-too-big": "Maximum allowed file size is %1 kbs",
     "cant-vote-self-post": "You cannot vote for your own post",
-    "already-favourited": "You already favourited this post",
-    "already-unfavourited": "You alread unfavourited this post",
+    "already-favourited": "You already favorited this post",
+    "already-unfavourited": "You already unfavorited this post",
     "cant-ban-other-admins": "You can't ban other admins!",
     "invalid-image-type": "Invalid image type",
     "group-name-too-short": "Group name too short",

@@ -139,21 +139,17 @@ define(['uploader'], function(uploader) {
 		}
 
 		function enableColorPicker(idx, inputEl) {
-			var	$inputEl = $(inputEl),
+			var $inputEl = $(inputEl),
 				previewEl = $inputEl.parents('[data-cid]').find('.preview-box');
 
-			$inputEl.ColorPicker({
-				color: $inputEl.val() || '#000',
-				onChange: function(hsb, hex) {
-					$inputEl.val('#' + hex);
-					if ($inputEl.attr('data-name') === 'bgColor') {
-						previewEl.css('background', '#' + hex);
-					} else if ($inputEl.attr('data-name') === 'color') {
-						previewEl.css('color', '#' + hex);
-					}
-
-					modified($inputEl[0]);
+			admin.enableColorPicker($inputEl, function(hsb, hex) {
+				if ($inputEl.attr('data-name') === 'bgColor') {
+					previewEl.css('background', '#' + hex);
+				} else if ($inputEl.attr('data-name') === 'color') {
+					previewEl.css('color', '#' + hex);
 				}
+
+				modified($inputEl[0]);
 			});
 		}
 
@@ -201,8 +197,6 @@ define(['uploader'], function(uploader) {
 			$('.admin-categories form input, .admin-categories form select').on('change', function(ev) {
 				modified(ev.target);
 			});
-
-
 
 			$('.dropdown').on('click', '[data-disabled]', function(ev) {
 				var btn = $(this),
@@ -268,8 +262,8 @@ define(['uploader'], function(uploader) {
 	Categories.launchPermissionsModal = function(cid) {
 		var	modal = $('#category-permissions-modal'),
 			searchEl = modal.find('#permission-search'),
-			resultsEl = modal.find('.search-results'),
-			groupsResultsEl = modal.find('.groups-results'),
+			resultsEl = modal.find('.search-results.users'),
+			groupsResultsEl = modal.find('.search-results.groups'),
 			searchDelay;
 
 		// Clear the search field and results
@@ -291,24 +285,11 @@ define(['uploader'], function(uploader) {
 						return app.alertError(err.message);
 					}
 
-					var	numResults = results.length,
-						resultObj;
-					resultsEl.html('');
-					for(var x = 0; x < numResults; x++) {
-						resultObj = results[x];
-						liEl = $('<li />')
-							.attr('data-uid', resultObj.uid)
-							.html('<div class="pull-right">' +
-								'<div class="btn-group">' +
-								'<button type="button" data-priv="+r" class="btn btn-default' + (resultObj.privileges['+r'] ? ' active' : '') + '">Read</button>' +
-								'<button type="button" data-priv="+w" class="btn btn-default' + (resultObj.privileges['+w'] ? ' active' : '') + '">Write</button>' +
-								'<button type="button" data-priv="mods" class="btn btn-default' + (resultObj.privileges.mods ? ' active' : '') + '">Moderator</button>' +
-								'</div>' +
-								'</div>' +
-								'<img src="' + resultObj.picture + '" /> ' + resultObj.username);
-
-						resultsEl.append(liEl);
-					}
+					templates.parse('partials/admin/categories/users', {
+						users: results
+					}, function(html) {
+						resultsEl.html(html);
+					});
 				});
 			}, 250);
 		});
@@ -316,18 +297,19 @@ define(['uploader'], function(uploader) {
 		Categories.refreshPrivilegeList(cid);
 
 		resultsEl.off().on('click', '[data-priv]', function(e) {
-			var	btnEl = $(this),
-				uid = btnEl.parents('li[data-uid]').attr('data-uid'),
-				privilege = btnEl.attr('data-priv');
+			var	anchorEl = $(this),
+				uid = anchorEl.parents('li[data-uid]').attr('data-uid'),
+				privilege = anchorEl.attr('data-priv');
 			e.preventDefault();
+			e.stopPropagation();
 
 			socket.emit('admin.categories.setPrivilege', {
 				cid: cid,
 				uid: uid,
 				privilege: privilege,
-				set: !btnEl.hasClass('active')
+				set: !anchorEl.hasClass('active')
 			}, function(err, privileges) {
-				btnEl.toggleClass('active', privileges[privilege]);
+				anchorEl.toggleClass('active', privileges[privilege]);
 
 				Categories.refreshPrivilegeList(cid);
 			});
@@ -343,41 +325,29 @@ define(['uploader'], function(uploader) {
 			if(err) {
 				return app.alertError(err.message);
 			}
-			var numResults = results.length,
-				trEl,
-				resultObj;
 
-			groupsResultsEl.empty();
-
-			for(var x = 0; x < numResults; x++) {
-				resultObj = results[x];
-				trEl = $('<tr />')
-					.attr('data-name', resultObj.name)
-					.html('<td><h4>' + resultObj.name + '</h4></td>' +
-						'<td>' +
-						'<div class="btn-group pull-right">' +
-						'<button type="button" data-gpriv="g+r" class="btn btn-default' + (resultObj.privileges['g+r'] ? ' active' : '') + '">Read</button>' +
-						'<button type="button" data-gpriv="g+w" class="btn btn-default' + (resultObj.privileges['g+w'] ? ' active' : '') + '">Write</button>' +
-						'</div>' +
-						'</td>');
-				groupsResultsEl.append(trEl);
-			}
+			templates.parse('partials/admin/categories/groups', {
+				groups: results
+			}, function(html) {
+				groupsResultsEl.html(html);
+			});
 		});
 
-		groupsResultsEl.off().on('click', '[data-gpriv]', function(e) {
-			var	btnEl = $(this),
-				name = btnEl.parents('tr[data-name]').attr('data-name'),
-				privilege = btnEl.attr('data-gpriv');
+		groupsResultsEl.off().on('click', '[data-priv]', function(e) {
+			var	anchorEl = $(this),
+				name = anchorEl.parents('li[data-name]').attr('data-name'),
+				privilege = anchorEl.attr('data-priv');
 			e.preventDefault();
+			e.stopPropagation();
 
 			socket.emit('admin.categories.setGroupPrivilege', {
 				cid: cid,
 				name: name,
 				privilege: privilege,
-				set: !btnEl.hasClass('active')
+				set: !anchorEl.hasClass('active')
 			}, function(err) {
 				if (!err) {
-					btnEl.toggleClass('active');
+					anchorEl.toggleClass('active');
 				}
 			});
 		});
@@ -387,50 +357,22 @@ define(['uploader'], function(uploader) {
 
 	Categories.refreshPrivilegeList = function (cid) {
 		var	modalEl = $('#category-permissions-modal'),
-			readMembers = modalEl.find('#category-permissions-read'),
-			writeMembers = modalEl.find('#category-permissions-write'),
-			moderatorsEl = modalEl.find('#category-permissions-mods');
+			memberList = $('.members');
 
 		socket.emit('admin.categories.getPrivilegeSettings', cid, function(err, privilegeList) {
-			var	readLength = privilegeList['+r'].length,
-				writeLength = privilegeList['+w'].length,
-				modLength = privilegeList.mods.length,
+			var	membersLength = privilegeList.length,
 				liEl, x, userObj;
 
-			readMembers.html('');
-			if (readLength > 0) {
-				for(x = 0; x < readLength; x++) {
-					userObj = privilegeList['+r'][x];
+			memberList.html('');
+			if (membersLength > 0) {
+				for(x = 0; x < membersLength; x++) {
+					userObj = privilegeList[x];
 					liEl = $('<li/>').attr('data-uid', userObj.uid).html('<img src="' + userObj.picture + '" title="' + userObj.username + '" />');
-					readMembers.append(liEl);
+					memberList.append(liEl);
 				}
 			} else {
-				liEl = $('<li/>').addClass('empty').html('All users can read and see this category');
-				readMembers.append(liEl);
-			}
-
-			writeMembers.html('');
-			if (writeLength > 0) {
-				for(x=0;x<writeLength;x++) {
-					userObj = privilegeList['+w'][x];
-					liEl = $('<li />').attr('data-uid', userObj.uid).html('<img src="' + userObj.picture + '" title="' + userObj.username + '" />');
-					writeMembers.append(liEl);
-				}
-			} else {
-				liEl = $('<li />').addClass('empty').html('All users can write to this category');
-				writeMembers.append(liEl);
-			}
-
-			moderatorsEl.html('');
-			if (modLength > 0) {
-				for(x = 0;x < modLength; x++) {
-					userObj = privilegeList.mods[x];
-					liEl = $('<li />').attr('data-uid', userObj.uid).html('<img src="' + userObj.picture + '" title="' + userObj.username + '" />');
-					moderatorsEl.append(liEl);
-				}
-			} else {
-				liEl = $('<li />').addClass('empty').html('No moderators');
-				moderatorsEl.append(liEl);
+				liEl = $('<li/>').addClass('empty').html('None.');
+				memberList.append(liEl);
 			}
 		});
 	};

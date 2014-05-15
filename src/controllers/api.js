@@ -25,6 +25,7 @@ apiController.getConfig = function(req, res, next) {
 	config.maximumSignatureLength = meta.config.maximumSignatureLength;
 	config.useOutgoingLinksPage = parseInt(meta.config.useOutgoingLinksPage, 10) === 1;
 	config.allowGuestPosting = parseInt(meta.config.allowGuestPosting, 10) === 1;
+	config.allowGuestSearching = parseInt(meta.config.allowGuestPosting, 10) === 1;
 	config.allowFileUploads = parseInt(meta.config.allowFileUploads, 10) === 1;
 	config.allowTopicsThumbnail = parseInt(meta.config.allowTopicsThumbnail, 10) === 1;
 	config.privateUserInfo = parseInt(meta.config.privateUserInfo, 10) === 1;
@@ -40,6 +41,7 @@ apiController.getConfig = function(req, res, next) {
 	config.environment = process.env.NODE_ENV;
 	config.isLoggedIn = !!req.user;
 	config['cache-buster'] = meta.config['cache-buster'] || '';
+	config.version = pkg.version;
 
 	if (!req.user) {
 		if (res.locals.isAPI) {
@@ -60,6 +62,7 @@ apiController.getConfig = function(req, res, next) {
 		config.postsPerPage = settings.postsPerPage;
 		config.notificationSounds = settings.notificationSounds;
 		config.defaultLang = settings.language || config.defaultLang;
+		config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
 
 		if (res.locals.isAPI) {
 			res.json(200, config);

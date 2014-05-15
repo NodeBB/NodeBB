@@ -2,7 +2,7 @@
 
 /* globals define, app, translator, ajaxify, socket, bootbox */
 
-define(['composer', 'share'], function(composer, share) {
+define(['composer', 'share', 'navigator'], function(composer, share, navigator) {
 
 	var PostTools = {},
 		topicName;
@@ -13,7 +13,41 @@ define(['composer', 'share'], function(composer, share) {
 		addPostHandlers(tid, threadState);
 
 		share.addShareHandlers(topicName);
+
+		addFavouriteHandler();
 	};
+
+	PostTools.toggle = function(pid, isDeleted) {
+		var postEl = $('#post-container li[data-pid="' + pid + '"]');
+
+		postEl.find('.quote, .favourite, .post_reply, .chat').toggleClass('none', isDeleted);
+
+		translator.translate(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]', function(translated) {
+			postEl.find('.delete').find('span').html(translated);
+		});
+	};
+
+	PostTools.updatePostCount = function() {
+		socket.emit('topics.postcount', ajaxify.variables.get('topic_id'), function(err, postCount) {
+			if (!err) {
+				$('.topic-post-count').html(postCount);
+				navigator.setCount(postCount);
+			}
+		});
+	};
+
+	function addFavouriteHandler() {
+		$('#post-container').on('mouseenter', '.favourite-tooltip', function(e) {
+			if (!$(this).data('users-loaded')) {
+				$(this).data('users-loaded', "true");
+				var pid = $(this).parents('.post-row').attr('data-pid');
+				var el = $(this).attr('title', "Loading...");
+				socket.emit('posts.getFavouritedUsers', pid, function(err, usernames) {
+					el.attr('title', usernames).tooltip('show');
+				});
+			}
+		});
+	}
 
 	function addPostHandlers(tid, threadState) {
 		$('.topic').on('click', '.post_reply', function() {

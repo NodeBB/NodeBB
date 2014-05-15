@@ -12,7 +12,6 @@
     "profile": "個人資料",
     "profile_views": "資料被查看",
     "reputation": "聲望",
-    "posts": "發帖數",
     "favourites": "我的最愛",
     "followers": "跟隨者",
     "following": "正在關注",
@@ -33,7 +32,7 @@
     "change_password_error_wrong_current": "目前的密碼不正確！",
     "change_password_error_length": "密碼太短！",
     "change_password_error_match": "密碼必須要一致！",
-    "change_password_error_privileges": "你沒有更改密碼的權限.",
+    "change_password_error_privileges": "You do not have the rights to change this password.",
     "change_password_success": "你的密碼已經更新！",
     "confirm_password": "確認密碼",
     "password": "密碼",
@@ -59,5 +58,7 @@
     "paginate_description": "使用分頁取代瀏覽載入帖子模式.",
     "topics_per_page": "每頁的主題數",
     "posts_per_page": "每頁的帖子數",
-    "notification_sounds": "當收到新消息時播放提示音"
+    "notification_sounds": "當收到新消息時播放提示音",
+    "browsing": "Browsing Settings",
+    "open_links_in_new_tab": "Open outgoing links in new tab?"
 }

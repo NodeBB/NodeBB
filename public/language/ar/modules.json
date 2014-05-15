@@ -3,5 +3,6 @@
     "chat.placeholder": "اكتب رسالة دردشة هنا، وإضغط ENTER لإرسال",
     "chat.send": "أرسل",
     "chat.no_active": "لا يوجد لديك دردشات نشطة.",
-    "chat.user_typing": "%1 is typing ..."
+    "chat.user_typing": "%1 is typing ...",
+    "chat.user_has_messaged_you": "%1 has messaged you."
 }

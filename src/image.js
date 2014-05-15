@@ -15,11 +15,14 @@ image.resizeImage = function(path, extension, width, height, callback) {
 		gm().in(path)
 			.in('-coalesce')
 			.in('-resize')
-			.in(width+'x'+height)
+			.in(width+'x'+height+'^')
 			.write(path, done);
 	} else {
 		gm(path)
-			.resize(width, height)
+			.in('-resize')
+			.in(width+'x'+height+'^')
+			.gravity('Center')
+			.crop(width, height)
 			.write(path, done);
 	}
 };

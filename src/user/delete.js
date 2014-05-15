@@ -267,9 +267,6 @@ module.exports = function(User) {
 					db.delete('uid:' + uid + ':downvote', next);
 				},
 				function(next) {
-					deleteUserFromCategoryActiveUsers(uid, next);
-				},
-				function(next) {
 					deleteUserFromFollowers(uid, next);
 				},
 				function(next) {
@@ -295,18 +292,6 @@ module.exports = function(User) {
 					}
 				], callback);
 			});
-		});
-	}
-
-	function deleteUserFromCategoryActiveUsers(uid, callback) {
-		db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
-			if (err) {
-				return callback(err);
-			}
-
-			async.each(cids, function(cid, next) {
-				categories.removeActiveUser(cid, uid, next);
-			}, callback);
 		});
 	}
 

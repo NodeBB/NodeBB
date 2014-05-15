@@ -1,4 +1,5 @@
-"use strict";
+'use strict';
+/*global require, module*/
 
 (function(module) {
 	var templates = {
@@ -53,7 +54,7 @@
 	};
 
 	templates.getBlock = function(template, block) {
-		return template.replace(new RegExp("[\\s\\S]*(<!--[\\s]*BEGIN " + block + "[\\s]*-->[\r\n]*[\\s\\S]*?[\r\n]*<!--[\\s]*END " + block + "[\\s]*-->)[\\s\\S]*", 'g'), '$1');
+		return template.replace(new RegExp('[\\s\\S]*(<!--[\\s]*BEGIN ' + block + '[\\s]*-->[\r\n]*[\\s\\S]*?[\r\n]*<!--[\\s]*END ' + block + '[\\s]*-->)[\\s\\S]*', 'g'), '$1');
 	};
 
 	function express(filename, options, fn) {
@@ -62,7 +63,7 @@
 
 		if (!templates.cache[tpl]) {
 			fs.readFile(filename, function(err, html) {
-				templates.cache[tpl] = html.toString();
+				templates.cache[tpl] = (html || '').toString();
 				return fn(err, templates.parse(templates.cache[tpl], options));
 			});
 		} else {
@@ -76,15 +77,19 @@
 	}
 
 	function makeRegex(block) {
-		return new RegExp("<!--[\\s]*BEGIN " + block + "[\\s]*-->[\\s\\S]*?<!--[\\s]*END " + block + "[\\s]*-->", 'g');
+		return new RegExp('<!--[\\s]*BEGIN ' + block + '[\\s]*-->[\\s\\S]*?<!--[\\s]*END ' + block + '[\\s]*-->');
+	}
+
+	function makeBlockRegex(block) {
+		return new RegExp('([\\n]?<!--[\\s]*BEGIN ' + block + '[\\s]*-->[\\n]?)|([\\n]?<!--[\\s]*END ' + block + '[\\s]*-->[\\n]?)', 'g');
 	}
 
 	function makeConditionalRegex(block) {
-		return new RegExp("<!--[\\s]*IF " + block + "[\\s]*-->([\\s\\S]*?)<!--[\\s]*ENDIF " + block + "[\\s]*-->", 'g');
+		return new RegExp('<!--[\\s]*IF ' + block + '[\\s]*-->([\\s\\S]*?)<!--[\\s]*ENDIF ' + block + '[\\s]*-->', 'g');
 	}
 
 	function makeStatementRegex(key) {
-		return new RegExp("([\\s]*<!--[\\s]*IF " + key + "[\\s]*-->)|(<!--[\\s]*ENDIF " + key + "[\\s]*-->[\\s]*)", 'gi');
+		return new RegExp('([\\s]*<!--[\\s]*IF ' + key + '[\\s]*-->)|(<!--[\\s]*ENDIF ' + key + '[\\s]*-->[\\s]*)', 'gi');
 	}
 
 	function registerGlobals(obj) {
@@ -168,41 +173,44 @@
 		template = checkConditional(template, namespace + 'length', array[key].length);
 		template = checkConditional(template, '!' + namespace + 'length', !array[key].length);
 
-		var regex = makeRegex(key),
-			block = namespace.substring(0, namespace.length - 1).split('.').pop();
-		
-		block = template.replace(new RegExp("[\\s\\S]*<!--[\\s]*BEGIN " + block + "[\\s]*-->[\r\n]*([\\s\\S]*?)[\r\n]*<!--[\\s]*END " + block + "[\\s]*-->[\\s\\S]*", 'g'), '$1');
+		var regex = makeRegex(key), block;
 
-		if (typeof block === "undefined" || !array[key].length) {
+		if (!array[key].length) {
 			return template;
 		}
 
-		var numblocks = array[key].length - 1,
-			iterator = 0,
-			result = "",
-			parsedBlock;
-
-		do {
-			parsedBlock = parse(block, array[key][iterator], bind, namespace, {iterator: iterator, total: numblocks}) + ((iterator < numblocks) ? '\r\n':'');
+		while (block = template.match(regex)) {
+			block = block[0].replace(makeBlockRegex(key), '');
 			
-			result += (!bind) ? parsedBlock : setBindContainer(parsedBlock, bind + namespace + iterator);
-			result = parseFunctions(block, result, {
-				data: array[key][iterator],
-				iterator: iterator,
-				numblocks: numblocks
-			});
+			var numblocks = array[key].length - 1,
+				iterator = 0,
+				result = '',
+				parsedBlock;
 
-			result = checkConditional(result, '@first', iterator === 0);
-			result = checkConditional(result, '!@first', iterator !== 0);
-			result = checkConditional(result, '@last', iterator === numblocks);
-			result = checkConditional(result, '!@last', iterator !== numblocks);
+			do {
+				parsedBlock = parse(block, array[key][iterator], bind, namespace, {iterator: iterator, total: numblocks}) + ((iterator < numblocks) ? '\r\n':'');
+				
+				result += (!bind) ? parsedBlock : setBindContainer(parsedBlock, bind + namespace + iterator);
+				result = parseFunctions(block, result, {
+					data: array[key][iterator],
+					iterator: iterator,
+					numblocks: numblocks
+				});
 
-			if (bind) {
-				array[key][iterator].__template = block;
-			}
-		} while (iterator++ < numblocks);
+				result = checkConditional(result, '@first', iterator === 0);
+				result = checkConditional(result, '!@first', iterator !== 0);
+				result = checkConditional(result, '@last', iterator === numblocks);
+				result = checkConditional(result, '!@last', iterator !== numblocks);
 
-		return template.replace(regex, result);
+				if (bind) {
+					array[key][iterator].__template = block;
+				}
+			} while (iterator++ < numblocks);
+
+			template = template.replace(regex, result);
+		}
+		
+		return template;
 	}
 
 	function setBindContainer(block, namespace) {
@@ -265,7 +273,6 @@
 		namespace = namespace || '';
 		originalObj = originalObj || obj;
 
-
 		template = checkConditionalHelper(template, obj);
 
 		for (var key in obj) {
@@ -296,7 +303,7 @@
 		}
 
 		if (namespace) {
-			template = template.replace(new RegExp("{" + namespace + "\\.[\\s\\S]*?}", 'g'), '');
+			template = template.replace(new RegExp('{' + namespace + '\\.[\\s\\S]*?}', 'g'), '');
 			namespace = '';
 		} else {
 			// clean up all undefined conditionals

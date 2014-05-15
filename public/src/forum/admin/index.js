@@ -5,10 +5,11 @@ define(function() {
 	var	Admin = {};
 
 	Admin.init = function() {
-		ajaxify.register_events(['meta.rooms.getAll']);
 
 		app.enterRoom('admin');
 		socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
+
+		socket.removeListener('event:meta.rooms.update', Admin.updateRoomUsage);
 		socket.on('event:meta.rooms.update', Admin.updateRoomUsage);
 
 		$('#logout-link').on('click', function() {
@@ -50,7 +51,6 @@ define(function() {
 					uniqueVisitors.find('#' + key).text(data[key]);
 				}
 			}
-
 		});
 	};
 

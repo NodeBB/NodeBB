@@ -3,5 +3,6 @@
     "chat.placeholder": "כתוב את הודעתך כאן, ולחץ על שלח",
     "chat.send": "שלח",
     "chat.no_active": "אין לך צ'אטים פעילים",
-    "chat.user_typing": "%1 is typing ..."
+    "chat.user_typing": "%1 is typing ...",
+    "chat.user_has_messaged_you": "%1 has messaged you."
 }

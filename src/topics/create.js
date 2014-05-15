@@ -16,11 +16,10 @@ module.exports = function(Topics) {
 	Topics.create = function(data, callback) {
 		var uid = data.uid,
 			title = data.title,
-			cid = data.cid,
-			thumb = data.thumb;
+			cid = data.cid;
 
 		db.incrObjectField('global', 'nextTid', function(err, tid) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
@@ -42,12 +41,12 @@ module.exports = function(Topics) {
 				'pinned': 0
 			};
 
-			if(thumb) {
-				topicData.thumb = thumb;
+			if (data.thumb) {
+				topicData.thumb = data.thumb;
 			}
 
 			db.setObject('topic:' + tid, topicData, function(err) {
-				if(err) {
+				if (err) {
 					return callback(err);
 				}
 
@@ -69,8 +68,7 @@ module.exports = function(Topics) {
 		var uid = data.uid,
 			title = data.title,
 			content = data.content,
-			cid = data.cid,
-			thumb = data.thumb;
+			cid = data.cid;
 
 		if (title) {
 			title = title.trim();
@@ -84,6 +82,16 @@ module.exports = function(Topics) {
 
 		async.waterfall([
 			function(next) {
+				plugins.fireHook('filter:topic.post', data, function(err, filteredData) {
+					if (err) {
+						return next(err);
+					}
+
+					content = filteredData.content || data.content;
+					next();
+				});
+			},
+			function(next) {
 				categoryTools.exists(cid, next);
 			},
 			function(categoryExists, next) {
@@ -93,7 +101,7 @@ module.exports = function(Topics) {
 				categoryTools.privileges(cid, uid, next);
 			},
 			function(privileges, next) {
-				if(!privileges.write) {
+				if(!privileges.meta['topics:create']) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				next();
@@ -102,10 +110,10 @@ module.exports = function(Topics) {
 				user.isReadyToPost(uid, next);
 			},
 			function(next) {
-				Topics.create({uid: uid, title: title, cid: cid, thumb: thumb}, next);
+				Topics.create({uid: uid, title: title, cid: cid, thumb: data.thumb}, next);
 			},
 			function(tid, next) {
-				Topics.reply({uid:uid, tid:tid, content:content}, next);
+				Topics.reply({uid:uid, tid:tid, content:content, req: data.req}, next);
 			},
 			function(postData, next) {
 				threadTools.toggleFollow(postData.tid, uid);
@@ -141,6 +149,16 @@ module.exports = function(Topics) {
 
 		async.waterfall([
 			function(next) {
+				plugins.fireHook('filter:topic.reply', data, function(err, filteredData) {
+					if (err) {
+						return next(err);
+					}
+
+					content = filteredData.content || data.content;
+					next();
+				});
+			},
+			function(next) {
 				threadTools.exists(tid, next);
 			},
 			function(topicExists, next) {
@@ -159,7 +177,7 @@ module.exports = function(Topics) {
 			},
 			function(privilegesData, next) {
 				privileges = privilegesData;
-				if (!privileges.write) {
+				if (!privileges.meta['topics:reply']) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				next();
@@ -180,9 +198,12 @@ module.exports = function(Topics) {
 			},
 			function(data, next) {
 				postData = data;
-				threadTools.notifyFollowers(tid, postData.pid, uid);
 
-				user.notifications.sendPostNotificationToFollowers(uid, tid, postData.pid);
+				if (parseInt(uid, 10)) {
+					Topics.notifyFollowers(tid, postData.pid, uid);
+
+					user.notifications.sendPostNotificationToFollowers(uid, tid, postData.pid);
+				}
 
 				next();
 			},

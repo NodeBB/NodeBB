@@ -1,6 +1,7 @@
 {
     "invalid-data": "Invalid Data",
     "not-logged-in": "You don't seem to be logged in.",
+    "account-locked": "Your account has been locked temporarily",
     "invalid-cid": "Invalid Category ID",
     "invalid-tid": "Invalid Topic ID",
     "invalid-pid": "Invalid Post ID",

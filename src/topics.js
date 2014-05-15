@@ -20,6 +20,7 @@ var async = require('async'),
 	require('./topics/recent')(Topics);
 	require('./topics/fork')(Topics);
 	require('./topics/posts')(Topics);
+	require('./topics/follow')(Topics);
 
 
 	Topics.getTopicData = function(tid, callback) {
@@ -61,21 +62,12 @@ var async = require('async'),
 				return callback(err || new Error('[[error:no-topic]]'));
 			}
 
-			user.getUserFields(topic.uid, ['username', 'userslug', 'picture'] , function(err, userData) {
+			user.getUserFields(topic.uid, ['username', 'userslug', 'picture'], function(err, userData) {
 				if (err) {
 					return callback(err);
 				}
 
-				if (!userData) {
-					userData = {};
-				}
-
-				topic.user = {
-					username: userData.username || 'Anonymous',
-					userslug: userData.userslug || '',
-					picture: userData.picture || gravatar.url('', {}, true)
-				};
-
+				topic.user = userData;
 				callback(null, topic);
 			});
 		});
@@ -141,7 +133,7 @@ var async = require('async'),
 
 		async.filter(tids, function(tid, next) {
 			threadTools.privileges(tid, uid, function(err, privileges) {
-				next(!err && privileges.read);
+				next(!err && privileges.meta.read);
 			});
 		}, function(tids) {
 			Topics.getTopicsByTids(tids, uid, function(err, topicData) {
@@ -193,7 +185,7 @@ var async = require('async'),
 
 			function isTopicVisible(topicData, topicInfo) {
 				var deleted = parseInt(topicData.deleted, 10) !== 0;
-				return !deleted || (deleted && topicInfo.privileges.view_deleted) || parseInt(topicData.uid, 10) === parseInt(uid, 10);
+				return !deleted || (deleted && topicInfo.privileges.meta.view_deleted) || parseInt(topicData.uid, 10) === parseInt(uid, 10);
 			}
 
 			async.parallel({
@@ -299,7 +291,7 @@ var async = require('async'),
 				topicData.thread_tools = results.threadTools;
 				topicData.pageCount = results.pageCount;
 				topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
-				topicData.expose_tools = results.privileges.editable ? 1 : 0;
+				topicData.expose_tools = results.privileges.meta.editable ? 1 : 0;
 
 				callback(null, topicData);
 			});
@@ -316,7 +308,7 @@ var async = require('async'),
 	};
 
 	Topics.getTeaser = function(tid, callback) {
-		threadTools.getLatestUndeletedPid(tid, function(err, pid) {
+		Topics.getLatestUndeletedPid(tid, function(err, pid) {
 			if (err) {
 				return callback(err);
 			}
@@ -328,7 +320,7 @@ var async = require('async'),
 			posts.getPostFields(pid, ['pid', 'uid', 'timestamp'], function(err, postData) {
 				if (err) {
 					return callback(err);
-				} else if(!postData || !postData.uid) {
+				} else if(!postData || !utils.isNumber(postData.uid)) {
 					return callback(new Error('[[error:no-teaser]]'));
 				}
 
@@ -336,14 +328,9 @@ var async = require('async'),
 					if (err) {
 						return callback(err);
 					}
-
-					callback(null, {
-						pid: postData.pid,
-						username: userData.username || 'anonymous',
-						userslug: userData.userslug || '',
-						picture: userData.picture || gravatar.url('', {}, true),
-						timestamp: utils.toISOString(postData.timestamp)
-					});
+					postData.timestamp = utils.toISOString(postData.timestamp);
+					postData.user = userData;
+					callback(null, postData);
 				});
 			});
 		});

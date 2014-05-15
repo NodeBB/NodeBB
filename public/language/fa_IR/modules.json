@@ -3,5 +3,6 @@
     "chat.placeholder": "متن را اینجا بنویسد و دکمهٔ‌ Enter را برای فرستادن بفشارید.",
     "chat.send": "فرستادن",
     "chat.no_active": "شما هیچ گفتگوی فعالی ندارید.",
-    "chat.user_typing": "%1 is typing ..."
+    "chat.user_typing": "%1 در حال نوشتن است...",
+    "chat.user_has_messaged_you": "%1 has messaged you."
 }

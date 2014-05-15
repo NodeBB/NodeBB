@@ -45,7 +45,11 @@ middleware.updateLastOnlineTime = function(req, res, next) {
 middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 	if (req.user) {
 		user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
-			res.redirect('/user/' + userslug);
+			if (res.locals.isAPI) {
+				return res.json(302, '/user/' + userslug);
+			} else {
+				res.redirect('/user/' + userslug);
+			}
 		});
 	} else {
 		next();
@@ -95,7 +99,7 @@ middleware.checkGlobalPrivacySettings = function(req, res, next) {
 		if (res.locals.isAPI) {
 			return res.json(403, 'not-allowed');
 		} else {
-			return res.redirect('403');
+			return res.redirect('login?next=' + req.url);
 		}
 	}
 
@@ -103,7 +107,12 @@ middleware.checkGlobalPrivacySettings = function(req, res, next) {
 };
 
 middleware.checkAccountPermissions = function(req, res, next) {
+	// This middleware ensures that only the requested user and admins can pass
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
+
+	if (callerUID === 0) {
+		return res.redirect('/login?next=' + req.url);
+	}
 
 	// this function requires userslug to be passed in. todo: /user/uploadpicture should pass in userslug I think
 	user.getUidByUserslug(req.params.userslug, function (err, uid) {
@@ -114,7 +123,7 @@ middleware.checkAccountPermissions = function(req, res, next) {
 		// not sure if this check really should belong here. also make sure we're not doing this check again in the actual method
 		if (!uid) {
 			if (res.locals.isAPI) {
-				return res.json(404);
+				return res.json(404, 'not-found');
 			} else {
 				return res.redirect('404');
 			}
@@ -203,7 +212,7 @@ middleware.renderHeader = function(req, res, callback) {
 				csrf: res.locals.csrf_token,
 				navigation: custom_header.navigation,
 				allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
-				searchEnabled: plugins.hasListeners('filter:search.query') ? true : false
+				searchEnabled: plugins.hasListeners('filter:search.query') && (uid || parseInt(meta.config.allowGuestSearching, 10) === 1)
 			},
 			escapeList = {
 				'&': '&amp;',
@@ -260,13 +269,22 @@ middleware.renderHeader = function(req, res, callback) {
 			},
 			isAdmin: function(next) {
 				user.isAdministrator(uid, next);
+			},
+			user: function(next) {
+				if (uid) {
+					user.getUserFields(uid, ['username', 'userslug', 'picture', 'status'], next);
+				} else {
+					next();
+				}
 			}
 		}, function(err, results) {
 			if (err) {
-				return next(err);
+				return callback(err);
 			}
+
 			templateValues.browserTitle = results.title;
 			templateValues.isAdmin = results.isAdmin || false;
+			templateValues.user = results.user;
 
 			app.render('header', templateValues, callback);
 		});
