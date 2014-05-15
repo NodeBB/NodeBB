@@ -1,0 +1,18 @@
+{
+    "title": "알림",
+    "no_notifs": "새 알림이 없습니다.",
+    "see_all": "모든 알림 보기",
+    "back_to_home": "홈으로 돌아가기",
+    "outgoing_link": "외부 링크",
+    "outgoing_link_message": "다른 사이트로 이동합니다.",
+    "continue_to": "계속",
+    "return_to": "돌아가기 : ",
+    "new_notification": "새 알림",
+    "you_have_unread_notifications": "읽지 않은 알림이 있습니다.",
+    "user_made_post": "<strong>%1</strong>님이 새 게시물을 작성했습니다.",
+    "new_message_from": "<strong>%1</strong>님이 메시지를 보냈습니다.",
+    "upvoted_your_post": "<strong>%1</strong>님이 내 게시물을 추천했습니다.",
+    "favourited_your_post": "<strong>%1</strong>님이 내 게시물을 관심글로 등록했습니다.",
+    "user_flagged_post": "<strong>%1</strong>님이 게시물을 신고했습니다.",
+    "user_posted_to": "<strong>%1</strong>님이 <strong>%2</strong>님의 게시물에 답글을 작성했습니다."
+}
