@@ -15,12 +15,12 @@ module.exports = function(privileges) {
 
 	privileges.topics.get = function(tid, uid, callback) {
 
-    	topics.getTopicField(tid, 'cid', function(err, cid) {
-    		if (err) {
-    			return callback(err);
-    		}
+		topics.getTopicField(tid, 'cid', function(err, cid) {
+			if (err) {
+				return callback(err);
+			}
 
-    		async.parallel({
+			async.parallel({
 				'topics:reply': function(next) {
 					helpers.allowedTo('topics:reply', uid, cid, next);
 				},
