@@ -2,5 +2,6 @@
     "chat.chatting_with": "Chat vele: <span id=\"chat-with-name\"></span>",
     "chat.placeholder": "írj be egy üzenetet, majd nyomj enter-t a küldéshez",
     "chat.send": "Küldés",
-    "chat.no_active": "Nincs aktív csevegésed."
+    "chat.no_active": "Nincs aktív csevegésed.",
+    "chat.user_typing": "%1 is typing ..."
 }

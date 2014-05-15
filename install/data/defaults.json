@@ -1,0 +1,74 @@
+[
+    {
+        "field": "title",
+        "value": "NodeBB"
+    },
+    {
+        "field": "postDelay",
+        "value": 10
+    },
+    {
+        "field": "minimumPostLength",
+        "value": 8
+    },
+    {
+        "field": "allowGuestPosting",
+        "value": 0
+    },
+    {
+        "field": "allowGuestSearching",
+        "value": 0
+    },
+    {
+        "field": "allowTopicsThumbnail",
+        "value": 0
+    },
+    {
+        "field": "allowRegistration",
+        "value": 1
+    },
+    {
+        "field": "allowLocalLogin",
+        "value": 1
+    },
+    {
+        "field": "allowFileUploads",
+        "value": 0
+    },
+    {
+        "field": "maximumFileSize",
+        "value": 2048
+    },
+    {
+        "field": "minimumTitleLength",
+        "value": 3
+    },
+    {
+        "field": "maximumTitleLength",
+        "value": 255
+    },
+    {
+        "field": "minimumUsernameLength",
+        "value": 2
+    },
+    {
+        "field": "maximumUsernameLength",
+        "value": 16
+    },
+    {
+        "field": "minimumPasswordLength",
+        "value": 6
+    },
+    {
+        "field": "maximumSignatureLength",
+        "value": 255
+    },
+    {
+        "field": "maximumProfileImageSize",
+        "value": 256
+    },
+    {
+        "field": "chatMessagesToDisplay",
+        "value": 50
+    }
+]

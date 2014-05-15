@@ -76,7 +76,7 @@
 	}
 
 	function makeRegex(block) {
-		return new RegExp("<!--[\\s]*BEGIN " + block + "[\\s]*-->[\\s\\S]*<!--[\\s]*END " + block + "[\\s]*-->", 'g');
+		return new RegExp("<!--[\\s]*BEGIN " + block + "[\\s]*-->[\\s\\S]*?<!--[\\s]*END " + block + "[\\s]*-->", 'g');
 	}
 
 	function makeConditionalRegex(block) {
@@ -104,7 +104,7 @@
 			for (var i = 0, ii = matches.length; i < ii; i++) {
 				var statement = makeStatementRegex(key),
 					nestedConditionals = matches[i].match(/[\s|\S]<!-- IF[\s\S]*ENDIF[\s\S]*-->[\s|\S]/),
-					match = matches[i].replace(statement, '').replace(/[\s|\S]<!-- IF[\s\S]*ENDIF[\s\S]*-->[\s|\S]/, '<!-- NESTED -->'),
+					match = matches[i].replace(statement, '').replace(/[\s|\S]<!-- IF[\s\S]*ENDIF[\s\S]*-->[\s|\S]/gi, '<!-- NESTED -->'),
 					conditionalBlock = match.split(/\s*<!-- ELSE -->\s*/);
 
 				if (conditionalBlock[1]) {
@@ -124,7 +124,9 @@
 				}
 
 				if (nestedConditionals) {
-					template = template.replace('<!-- NESTED -->', nestedConditionals[0]);
+					for (var x = 0, xx = nestedConditionals.length; x < xx; x++) {
+						template = template.replace('<!-- NESTED -->', nestedConditionals[x]);
+					}
 				}
 			}
 		}
@@ -294,7 +296,7 @@
 		}
 
 		if (namespace) {
-			template = template.replace(new RegExp("{" + namespace + "[\\s\\S]*?}", 'g'), '');
+			template = template.replace(new RegExp("{" + namespace + "\\.[\\s\\S]*?}", 'g'), '');
 			namespace = '';
 		} else {
 			// clean up all undefined conditionals

@@ -63,15 +63,14 @@ var winston = require('winston'),
 	};
 
 	function toggleDelete(tid, uid, isDelete, callback) {
-		topics.getTopicField(tid, 'deleted', function(err, deleted) {
+		topics.getTopicFields(tid, ['cid', 'deleted'], function(err, topicData) {
 			if(err) {
 				return callback(err);
 			}
 
-			if (parseInt(deleted, 10) && isDelete) {
-				return callback(new Error('topic-already-deleted'));
-			} else if (!parseInt(deleted, 10) && !isDelete) {
-				return callback(new Error('topic-already-restored'));
+			var alreadyDeletedOrRestored = (parseInt(topicData.deleted, 10) && isDelete) || (!parseInt(topicData.deleted, 10) && !isDelete);
+			if (alreadyDeletedOrRestored) {
+				return callback(null, {tid: tid});
 			}
 
 			topics[isDelete ? 'delete' : 'restore'](tid, function(err) {
@@ -88,7 +87,13 @@ var winston = require('winston'),
 				websockets.emitTopicPostStats();
 
 				websockets.in('topic_' + tid).emit(isDelete ? 'event:topic_deleted' : 'event:topic_restored', {
-					tid: tid
+					tid: tid,
+					isDelete: isDelete
+				});
+
+				websockets.in('category_' + topicData.cid).emit(isDelete ? 'event:topic_deleted' : 'event:topic_restored', {
+					tid: tid,
+					isDelete: isDelete
 				});
 
 				callback(null, {
@@ -107,17 +112,30 @@ var winston = require('winston'),
 	};
 
 	function toggleLock(tid, uid, lock, callback) {
-		topics.setTopicField(tid, 'locked', lock ? 1 : 0);
+		topics.getTopicField(tid, 'cid', function(err, cid) {
+			if (err) {
+				return callback(err);
+			}
 
-		websockets.in('topic_' + tid).emit(lock ? 'event:topic_locked' : 'event:topic_unlocked', {
-			tid: tid
-		});
+			topics.setTopicField(tid, 'locked', lock ? 1 : 0);
 
-		if (typeof callback === 'function') {
-			callback(null, {
-				tid: tid
+			websockets.in('topic_' + tid).emit(lock ? 'event:topic_locked' : 'event:topic_unlocked', {
+				tid: tid,
+				isLocked: lock
 			});
-		}
+
+			websockets.in('category_' + cid).emit(lock ? 'event:topic_locked' : 'event:topic_unlocked', {
+				tid: tid,
+				isLocked: lock
+			});
+
+			if (typeof callback === 'function') {
+				callback(null, {
+					tid: tid,
+					isLocked: lock
+				});
+			}
+		});
 	}
 
 	ThreadTools.pin = function(tid, uid, callback) {
@@ -129,20 +147,33 @@ var winston = require('winston'),
 	};
 
 	function togglePin(tid, uid, pin, callback) {
-		topics.setTopicField(tid, 'pinned', pin ? 1 : 0);
-		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
-			db.sortedSetAdd('categories:' + topicData.cid + ':tid', pin ? Math.pow(2, 53) : topicData.lastposttime, tid);
-		});
+		topics.getTopicField(tid, 'cid', function(err, cid) {
+			if (err) {
+				return callback(err);
+			}
 
-		websockets.in('topic_' + tid).emit(pin ? 'event:topic_pinned' : 'event:topic_unpinned', {
-			tid: tid
-		});
-
-		if (typeof callback === 'function') {
-			callback(null, {
-				tid: tid
+			topics.setTopicField(tid, 'pinned', pin ? 1 : 0);
+			topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
+				db.sortedSetAdd('categories:' + topicData.cid + ':tid', pin ? Math.pow(2, 53) : topicData.lastposttime, tid);
 			});
-		}
+
+			websockets.in('topic_' + tid).emit(pin ? 'event:topic_pinned' : 'event:topic_unpinned', {
+				tid: tid,
+				isPinned: pin
+			});
+
+			websockets.in('category_' + cid).emit(pin ? 'event:topic_pinned' : 'event:topic_unpinned', {
+				tid: tid,
+				isPinned: pin
+			});
+
+			if (typeof callback === 'function') {
+				callback(null, {
+					tid: tid,
+					isPinned: pin
+				});
+			}
+		});
 	}
 
 	ThreadTools.move = function(tid, cid, callback) {
@@ -165,8 +196,6 @@ var winston = require('winston'),
 			}
 			var oldCid = topic.cid;
 
-			topics.setTopicField(tid, 'cid', cid);
-
 			if(!parseInt(topic.deleted, 10)) {
 				categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1);
 				categories.incrementCategoryFieldBy(cid, 'topic_count', 1);
@@ -174,7 +203,9 @@ var winston = require('winston'),
 
 			categories.moveActiveUsers(tid, oldCid, cid);
 
-			categories.moveRecentReplies(tid, oldCid, cid, callback);
+			categories.moveRecentReplies(tid, oldCid, cid);
+
+			topics.setTopicField(tid, 'cid', cid, callback);
 		});
 	};
 
@@ -229,7 +260,7 @@ var winston = require('winston'),
 						}
 
 						notifications.create({
-							text: '<strong>' + username + '</strong> has posted a reply to: "<strong>' + topicData.title + '</strong>"',
+							text: '[[notifications:user_posted_to, ' + username + ', ' + topicData.title + ']]',
 							path: nconf.get('relative_path') + '/topic/' + topicData.slug + '#' + pid,
 							uniqueId: 'topic:' + tid,
 							from: exceptUid

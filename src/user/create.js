@@ -1,11 +1,13 @@
 'use strict';
 
 var async = require('async'),
-	db = require('./../database'),
-	utils = require('./../../public/src/utils'),
+	db = require('../database'),
+	utils = require('../../public/src/utils'),
 	validator = require('validator'),
-	plugins = require('./../plugins'),
-	groups = require('./../groups');
+	plugins = require('../plugins'),
+	groups = require('../groups'),
+	notifications = require('../notifications'),
+	translator = require('../../public/src/translator');
 
 module.exports = function(User) {
 
@@ -25,17 +27,17 @@ module.exports = function(User) {
 		async.parallel([
 			function(next) {
 				if (userData.email) {
-					next(!utils.isEmailValid(userData.email) ? new Error('Invalid Email!') : null);
+					next(!utils.isEmailValid(userData.email) ? new Error('[[error:invalid-email]]') : null);
 				} else {
 					next();
 				}
 			},
 			function(next) {
-				next((!utils.isUserNameValid(userData.username) || !userData.userslug) ? new Error('Invalid Username!') : null);
+				next((!utils.isUserNameValid(userData.username) || !userData.userslug) ? new Error('[[error:invalid-username]]') : null);
 			},
 			function(next) {
 				if (userData.password) {
-					next(!utils.isPasswordValid(userData.password) ? new Error('Invalid Password!') : null);
+					next(!utils.isPasswordValid(userData.password) ? new Error('[[error:invalid-password]]') : null);
 				} else {
 					next();
 				}
@@ -45,7 +47,22 @@ module.exports = function(User) {
 					if (err) {
 						return next(err);
 					}
-					next(exists ? new Error('Username taken!') : null);
+					if (exists) {
+						async.forever(function(next) {
+							var	newUsername = userData.username + (Math.floor(Math.random() * 255) + 1);
+							User.exists(newUsername, function(err, exists) {
+								if (!exists) {
+									next(newUsername);
+								} else {
+									next();
+								}
+							});
+						}, function(username) {
+							next(null, username);
+						});
+					} else {
+						next();
+					}
 				});
 			},
 			function(next) {
@@ -54,7 +71,7 @@ module.exports = function(User) {
 						if (err) {
 							return next(err);
 						}
-						next(!available ? new Error('Email taken!') : null);
+						next(!available ? new Error('[[error:email-taken]]') : null);
 					});
 				} else {
 					next();
@@ -69,7 +86,14 @@ module.exports = function(User) {
 			if (err) {
 				return callback(err);
 			}
+
 			userData = results[results.length - 1];
+			var userNameChanged = !!results[3];
+			// If a new username was picked...
+			if (userNameChanged) {
+				userData.username = results[3];
+				userData.userslug = utils.slugify(results[3]);
+			}
 
 			db.incrObjectField('global', 'nextUid', function(err, uid) {
 				if(err) {
@@ -124,6 +148,16 @@ module.exports = function(User) {
 					db.sortedSetAdd('users:reputation', 0, uid);
 
 					groups.join('registered-users', uid);
+
+					if (userNameChanged) {
+						notifications.create({
+							text: '[[user:username_taken_workaround, ' + userData.username + ']]',
+							picture: 'brand:logo',
+							datetime: Date.now()
+						}, function(nid) {
+							notifications.push(nid, uid);
+						});
+					}
 
 					if (password) {
 						User.hashPassword(password, function(err, hash) {

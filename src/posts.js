@@ -30,7 +30,7 @@ var db = require('./database'),
 			toPid = data.toPid;
 
 		if (uid === null) {
-			return callback(new Error('invalid-user'));
+			return callback(new Error('[[error:invalid-uid]]'));
 		}
 
 		var timestamp = Date.now(),
@@ -210,7 +210,7 @@ var db = require('./database'),
 
 		var count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
 
-		db.getSortedSetRevRangeByScore(['posts:pid', '+inf', Date.now() - since, 'LIMIT', start, count], function(err, pids) {
+		db.getSortedSetRevRangeByScore('posts:pid', start, count, Infinity, Date.now() - since, function(err, pids) {
 			if(err) {
 				return callback(err);
 			}
@@ -347,7 +347,7 @@ var db = require('./database'),
 			}
 
 			posts = posts.filter(function(p) {
-				return !!p || parseInt(p.deleted, 10) !== 1;
+				return !!p && parseInt(p.deleted, 10) !== 1;
 			});
 
 			async.map(posts, getPostSummary, function(err, posts) {
@@ -420,7 +420,7 @@ var db = require('./database'),
 
 			topics.getTopicField(tid, 'cid', function(err, cid) {
 				if(err || !cid) {
-					return callback(err || new Error('invalid-category-id'));
+					return callback(err || new Error('[[error:invalid-cid]]'));
 				}
 				callback(null, cid);
 			});
@@ -458,7 +458,7 @@ var db = require('./database'),
 
 	Posts.getPidPage = function(pid, uid, callback) {
 		if(!pid) {
-			return callback(new Error('invalid-pid'));
+			return callback(new Error('[[error:invalid-pid]]'));
 		}
 
 		var index = 0;

@@ -114,7 +114,7 @@ var async = require('async'),
 	UserNotifications.getDailyUnread = function(uid, callback) {
 		var	now = Date.now(),
 			yesterday = now - (1000*60*60*24);	// Approximate, can be more or less depending on time changes, makes no difference really.
-		db.getSortedSetRangeByScore(['uid:' + uid + ':notifications:unread', yesterday, now], function(err, nids) {
+		db.getSortedSetRangeByScore('uid:' + uid + ':notifications:unread', 0, 20, yesterday, now, function(err, nids) {
 			async.map(nids, function(nid, next) {
 				notifications.get(nid, uid, function(notif_data) {
 					next(null, notif_data);
@@ -153,7 +153,7 @@ var async = require('async'),
 			db.getSetMembers('followers:' + uid, function(err, followers) {
 				if (followers && followers.length) {
 					topics.getTopicField(tid, 'slug', function(err, slug) {
-						var message = '<strong>' + username + '</strong> made a new post';
+						var message = '[[notifications:user_made_post, ' + username + ']]';
 
 						notifications.create({
 							text: message,

@@ -10,6 +10,53 @@ describe('Test database', function() {
 		});
 	});
 
+
+	it('should not throw err', function(done) {
+
+		function get(callback) {
+			db.get('testingStr', function(err, data) {
+				callback(err, {'get': data});
+			});
+		}
+
+		function set(callback) {
+			db.set('testingStr', 'opppa gangastayla', function(err, data) {
+				callback(err, {'set': data});
+			});
+		}
+
+		function deleteKey(callback) {
+			db.delete('testingStr', function(err, data) {
+				callback(err, {'delete': data});
+			});
+		}
+
+		function exists(callback) {
+			db.exists('testingStr', function(err, data) {
+				callback(err, {'exists': data});
+			});
+		}
+
+		var keyTasks = [
+			get,
+			set,
+			get,
+			exists,
+			deleteKey,
+			deleteKey,
+			get,
+			exists
+		];
+
+		async.series(keyTasks, function(err, results) {
+			assert.equal(err, null, 'error in key methods');
+			assert.ok(results);
+
+			done();
+		});
+
+	});
+
 	it('should not throw err', function(done) {
 		var objectKey = 'testObj';
 
@@ -107,74 +154,6 @@ describe('Test database', function() {
 	});
 
 	it('should not throw err', function(done) {
-
-		function sortedSetAdd(callback) {
-			db.sortedSetAdd('sortedSet3', 12, 5, function(err, data) {
-				callback(err, {'sortedSetAdd': data});
-			});
-		}
-
-		function sortedSetRemove(callback) {
-			db.sortedSetRemove('sortedSet3', 12, function(err, data) {
-				callback(err, {'sortedSetRemove': data});
-			});
-		}
-
-		function getSortedSetRange(callback) {
-			db.getSortedSetRevRange('sortedSet3', 0, -1, function(err, data) {
-				callback(err, {'getSortedSetRange': data});
-			});
-		}
-
-		function getSortedSetRevRangeByScore(callback) {
-			var args = ['sortedSet2', '+inf', 100, 'LIMIT', 0, 10];
-			db.getSortedSetRevRangeByScore(args, function(err, data) {
-				callback(err, {'getSortedSetRevRangeByScore': data});
-			});
-		}
-
-		function sortedSetCount(callback) {
-			db.sortedSetCount('sortedSet3', -Infinity, Infinity, function(err, data) {
-				callback(err, {'sortedSetCount': data});
-			});
-		}
-
-		function sortedSetScore(callback) {
-			db.sortedSetScore('users:joindate', 1, function(err, data) {
-				callback(err, {'sortedSetScore': data});
-			});
-		}
-
-		function sortedSetsScore(callback) {
-			db.sortedSetsScore(['users:joindate', 'users:derp', 'users:postcount'], 1, function(err, data) {
-				callback(err, {'sortedSetsScore': data});
-			});
-		}
-
-		var sortedSetTasks = [
-			sortedSetAdd,
-			getSortedSetRange,
-			sortedSetAdd,
-			getSortedSetRange,
-			sortedSetRemove,
-			getSortedSetRange,
-			sortedSetCount,
-			sortedSetScore,
-			sortedSetsScore,
-			getSortedSetRevRangeByScore
-		];
-
-		async.series(sortedSetTasks, function(err, results) {
-			assert.equal(err, null, 'error in sorted set methods');
-			assert.ok(results);
-
-			done();
-		});
-
-	});
-
-	it('should not throw err', function(done) {
-
 		function listAppend(callback) {
 			db.listAppend('myList5', 5, function(err, data) {
 				callback(err, {'listAppend': data});
@@ -210,7 +189,7 @@ describe('Test database', function() {
 		];
 
 		async.series(listTasks, function(err, results) {
-			assert.equal(err, null, 'error in list methods');
+			assert.equal(err, null, 'error in list methods: ' + err);
 			assert.ok(results);
 
 			done();
@@ -219,54 +198,6 @@ describe('Test database', function() {
 	});
 
 	it('should not throw err', function(done) {
-
-		function get(callback) {
-			db.get('testingStr', function(err, data) {
-				callback(err, {'get': data});
-			});
-		}
-
-		function set(callback) {
-			db.set('testingStr', 'opppa gangastayla', function(err, data) {
-				callback(err, {'set': data});
-			});
-		}
-
-		function deleteKey(callback) {
-			db.delete('testingStr', function(err, data) {
-				callback(err, {'delete': data});
-			});
-		}
-
-		function exists(callback) {
-			db.exists('testingStr', function(err, data) {
-				callback(err, {'exists': data});
-			});
-		}
-
-		var keyTasks = [
-			get,
-			set,
-			get,
-			exists,
-			deleteKey,
-			deleteKey,
-			get,
-			exists
-		];
-
-		async.series(keyTasks, function(err, results) {
-			assert.equal(err, null, 'error in key methods');
-			assert.ok(results);
-
-			done();
-		});
-
-	});
-
-	it('should not throw err', function(done) {
-
-
 		function setAdd(callback) {
 			db.setAdd('myTestSet', 15, function(err, data) {
 				callback(err, {'setAdd': data});
@@ -313,6 +244,8 @@ describe('Test database', function() {
 		var setTasks = [
 			getSetMembers,
 			setAdd,
+			setAdd,
+			setAdd,
 			getSetMembers,
 			setRemove,
 			getSetMembers,
@@ -333,5 +266,86 @@ describe('Test database', function() {
 
 			done();
 		});
+	});
+
+
+	it('should not throw err', function(done) {
+		function sortedSetAdd(callback) {
+			db.sortedSetAdd('sortedSet3', 12, 5, function(err, data) {
+				callback(err, {'sortedSetAdd': data});
+			});
+		}
+
+		function sortedSetRemove(callback) {
+			db.sortedSetRemove('sortedSet3', 12, function(err, data) {
+				callback(err, {'sortedSetRemove': data});
+			});
+		}
+
+		function getSortedSetRange(callback) {
+			db.getSortedSetRange('sortedSet3', 0, -1, function(err, data) {
+				callback(err, {'getSortedSetRange': data});
+			});
+		}
+
+		function getSortedSetRevRange(callback) {
+			db.getSortedSetRevRange('sortedSet3', 0, -1, function(err, data) {
+				callback(err, {'getSortedSetRevRange': data});
+			});
+		}
+
+		function getSortedSetRevRangeByScore(callback) {
+			db.getSortedSetRevRangeByScore('sortedSet3', 0, 10, Infinity, 100, function(err, data) {
+				callback(err, {'getSortedSetRevRangeByScore': data});
+			});
+		}
+
+		function sortedSetCount(callback) {
+			db.sortedSetCount('sortedSet3', -Infinity, Infinity, function(err, data) {
+				callback(err, {'sortedSetCount': data});
+			});
+		}
+
+		function sortedSetScore(callback) {
+			db.sortedSetScore('users:joindate', 1, function(err, data) {
+				callback(err, {'sortedSetScore': data});
+			});
+		}
+
+		function sortedSetsScore(callback) {
+			db.sortedSetsScore(['users:joindate', 'users:derp', 'users:postcount'], 1, function(err, data) {
+				callback(err, {'sortedSetsScore': data});
+			});
+		}
+
+		function isSortedSetMember(callback) {
+			db.isSortedSetMember('sortedSet3', 5, function(err, data) {
+				callback(err, {'sortedSetMember': data});
+			});
+		}
+
+		var sortedSetTasks = [
+			sortedSetAdd,
+			sortedSetAdd,
+			isSortedSetMember,
+			getSortedSetRange,
+			sortedSetAdd,
+			getSortedSetRange,
+			getSortedSetRevRange,
+			sortedSetRemove,
+			getSortedSetRange,
+			sortedSetCount,
+			sortedSetScore,
+			sortedSetsScore,
+			getSortedSetRevRangeByScore
+		];
+
+		async.series(sortedSetTasks, function(err, results) {
+			assert.equal(err, null, 'error in sorted set methods');
+			assert.ok(results);
+
+			done();
+		});
+
 	});
 });

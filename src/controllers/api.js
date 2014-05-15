@@ -39,6 +39,7 @@ apiController.getConfig = function(req, res, next) {
 	config.defaultLang = meta.config.defaultLang || 'en_GB';
 	config.environment = process.env.NODE_ENV;
 	config.isLoggedIn = !!req.user;
+	config['cache-buster'] = meta.config['cache-buster'] || '';
 
 	if (!req.user) {
 		if (res.locals.isAPI) {
@@ -50,10 +51,15 @@ apiController.getConfig = function(req, res, next) {
 	}
 
 	user.getSettings(req.user.uid, function(err, settings) {
+		if (err) {
+			return next(err);
+		}
+
 		config.usePagination = settings.usePagination;
 		config.topicsPerPage = settings.topicsPerPage;
 		config.postsPerPage = settings.postsPerPage;
 		config.notificationSounds = settings.notificationSounds;
+		config.defaultLang = settings.language || config.defaultLang;
 
 		if (res.locals.isAPI) {
 			res.json(200, config);

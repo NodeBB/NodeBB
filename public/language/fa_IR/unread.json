@@ -1,6 +1,9 @@
 {
     "title": "نخوانده‌ها",
     "no_unread_topics": "جستار خوانده نشده‌ای وجود ندارد.",
-    "mark_all_read": "همه را خوانده شده بگیر",
-    "load_more": "بارگذاری بیش‌تر"
+    "load_more": "بارگذاری بیش‌تر",
+    "mark_as_read": "Mark as Read",
+    "selected": "Selected",
+    "all": "All",
+    "topics_marked_as_read.success": "Topics marked as read!"
 }

@@ -1,6 +1,9 @@
 {
     "title": "ไม่ได้อ่าน",
     "no_unread_topics": "ไม่มีกระทู้ที่ยังไม่ได้อ่านเป็น",
-    "mark_all_read": "มาร์คทั้งหมดเป็นอ่าน",
-    "load_more": "โหลดเพิ่มเติม"
+    "load_more": "โหลดเพิ่มเติม",
+    "mark_as_read": "Mark as Read",
+    "selected": "Selected",
+    "all": "All",
+    "topics_marked_as_read.success": "Topics marked as read!"
 }

@@ -2,5 +2,6 @@
     "chat.chatting_with": "الدردشة مع <span id=\"chat-with-name\"></span>",
     "chat.placeholder": "اكتب رسالة دردشة هنا، وإضغط ENTER لإرسال",
     "chat.send": "أرسل",
-    "chat.no_active": "لا يوجد لديك دردشات نشطة."
+    "chat.no_active": "لا يوجد لديك دردشات نشطة.",
+    "chat.user_typing": "%1 is typing ..."
 }

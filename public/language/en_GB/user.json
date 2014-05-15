@@ -12,7 +12,6 @@
 	"profile": "Profile",
 	"profile_views": "Profile views",
 	"reputation": "Reputation",
-	"posts": "Posts",
 	"favourites":"Favourites",
 	"followers": "Followers",
 	"following": "Following",
@@ -23,6 +22,7 @@
 	"follow": "Follow",
 	"unfollow": "Unfollow",
 
+	"profile_update_success": "Profile has been updated successfully!",
 	"change_picture": "Change Picture",
 	"edit": "Edit",
 	"uploaded_picture": "Uploaded Picture",
@@ -33,10 +33,11 @@
 	"change_password_error_wrong_current": "Your current password is not correct!",
 	"change_password_error_length": "Password too short!",
 	"change_password_error_match": "Passwords must match!",
-	"change_password_error_privileges": "You are not have the rights to change this password.",
+	"change_password_error_privileges": "You do not have the rights to change this password.",
 	"change_password_success": "Your password is updated!",
 	"confirm_password": "Confirm Password",
 	"password": "Password",
+	"username_taken_workaround": "The username you requested was already taken, so we have altered it slightly. You are now known as <strong>%1</strong>",
 
 	"upload_picture": "Upload picture",
 	"upload_a_picture": "Upload a picture",
@@ -45,6 +46,12 @@
 
 	"settings": "Settings",
 	"show_email": "Show My Email",
+	"digest_label": "Subscribe to Digest",
+	"digest_description": "Subscribe to email updates for this forum (new notifications and topics) according to a set schedule",
+	"digest_off": "Off",
+	"digest_daily": "Daily",
+	"digest_weekly": "Weekly",
+	"digest_monthly": "Monthly",
 
 	"has_no_follower": "This user doesn't have any followers :(",
 	"follows_no_one": "This user isn't following anyone :(",

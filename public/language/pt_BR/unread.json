@@ -1,6 +1,9 @@
 {
     "title": "Não Lido",
     "no_unread_topics": "Todos os tópicos lidos.",
-    "mark_all_read": "Marcar todos como Lido",
-    "load_more": "Carregar"
+    "load_more": "Carregar",
+    "mark_as_read": "Mark as Read",
+    "selected": "Selected",
+    "all": "All",
+    "topics_marked_as_read.success": "Topics marked as read!"
 }

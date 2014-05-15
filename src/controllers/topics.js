@@ -26,7 +26,7 @@ topicsController.get = function(req, res, next) {
 				}
 
 				if (!userPrivileges.read) {
-					return next(new Error('not-enough-privileges'));
+					return next(new Error('[[error:no-privileges]]'));
 				}
 
 				privileges = userPrivileges;
@@ -45,7 +45,7 @@ topicsController.get = function(req, res, next) {
 				topics.getTopicWithPosts(tid, uid, start, end, function (err, topicData) {
 					if (topicData) {
 						if (parseInt(topicData.deleted, 10) === 1 && parseInt(topicData.expose_tools, 10) === 0) {
-							return next(new Error('Topic deleted'));
+							return next(new Error('[[error:no-topic]]'));
 						}
 						topicData.currentPage = page;
 					}

@@ -1,0 +1,10 @@
+{
+    "login": "Prisijungti",
+    "username": "Vartotojo vardas / El. paštas",
+    "password": "Slaptažodis",
+    "remember_me": "Prisiminti?",
+    "forgot_password": "Užmiršote slaptažodį?",
+    "alternative_logins": "Alternatyvūs prisijungimo būdai",
+    "failed_login_attempt": "Prisijungti nepavyko, bandykite dar kartą.",
+    "login_successful": "Jūs sėkmingai prisijungėte!"
+}

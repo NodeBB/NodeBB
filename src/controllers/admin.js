@@ -37,7 +37,8 @@ adminController.home = function(req, res, next) {
 	res.render('admin/index', {
 		version: pkg.version,
 		emailerInstalled: plugins.hasListeners('action:email.send'),
-		searchInstalled: plugins.hasListeners('filter:search.query')
+		searchInstalled: plugins.hasListeners('filter:search.query'),
+		restartRequired: meta.restartRequired
 	});
 };
 
@@ -130,7 +131,8 @@ adminController.themes.get = function(req, res, next) {
 		}, function(err) {
 			for (var w in widgetData.widgets) {
 				if (widgetData.widgets.hasOwnProperty(w)) {
-					widgetData.widgets[w].content += "<br /><label>Title:</label><input type=\"text\" class=\"form-control\" name=\"title\" placeholder=\"Title (only shown on some containers)\" /><br /><label>Container:</label><textarea rows=\"4\" class=\"form-control container-html\" name=\"container\" placeholder=\"Drag and drop a container or enter HTML here.\"></textarea>";
+					// if this gets anymore complicated, it needs to be a template
+					widgetData.widgets[w].content += "<br /><label>Title:</label><input type=\"text\" class=\"form-control\" name=\"title\" placeholder=\"Title (only shown on some containers)\" /><br /><label>Container:</label><textarea rows=\"4\" class=\"form-control container-html\" name=\"container\" placeholder=\"Drag and drop a container or enter HTML here.\"></textarea><div class=\"checkbox\"><label><input name=\"registered-only\" type=\"checkbox\"> Hide from anonymous users?</label></div>";
 				}
 			}
 
@@ -156,7 +158,7 @@ adminController.groups.get = function(req, res, next) {
 };
 
 adminController.sounds.get = function(req, res, next) {
-	meta.sounds.getLocal(function(err, sounds) {
+	meta.sounds.getFiles(function(err, sounds) {
 		sounds = Object.keys(sounds).map(function(name) {
 			return {
 				name: name

@@ -1,6 +1,9 @@
 {
     "title": "Ungelesen",
     "no_unread_topics": "Es gibt keine ungelesenen Themen.",
-    "mark_all_read": "alle als gelesen markieren",
-    "load_more": "mehr laden"
+    "load_more": "mehr laden",
+    "mark_as_read": "Mark as Read",
+    "selected": "Selected",
+    "all": "All",
+    "topics_marked_as_read.success": "Topics marked as read!"
 }

@@ -83,7 +83,6 @@
 			results.base.members = results.users;
 			results.base.memberCount = numUsers || results.users.length;
 
-			results.base.slug = utils.slugify(results.base.name);
 			results.base.deleted = !!parseInt(results.base.deleted, 10);
 			results.base.hidden = !!parseInt(results.base.hidden, 10);
 			results.base.system = !!parseInt(results.base.system, 10);
@@ -133,25 +132,12 @@
 	};
 
 	Groups.exists = function(name, callback) {
-		name = utils.slugify(name);
-		db.getSetMembers('groups', function(err, groupNames) {
-			if (err) {
-				return callback(err);
-			}
-
-			var matches = groupNames.map(function(groupName) {
-				return utils.slugify(groupName);
-			}).filter(function(groupName) {
-				return groupName === name;
-			});
-
-			callback(null, matches.length > 0 ? true : false);
-		});
+		db.isSetMember('groups', name, callback);
 	};
 
 	Groups.create = function(name, description, callback) {
 		if (name.length === 0) {
-			return callback(new Error('name-too-short'));
+			return callback(new Error('[[error:group-name-too-short]]'));
 		}
 
 		if (name === 'administrators' || name === 'registered-users') {
@@ -159,28 +145,32 @@
 		}
 
 		Groups.exists(name, function (err, exists) {
-			if (!exists) {
-				var groupData = {
-					name: name,
-					description: description,
-					deleted: '0',
-					hidden: '0',
-					system: system ? '1' : '0'
-				};
-
-				async.parallel([
-					function(next) {
-						db.setAdd('groups', name, next);
-					},
-					function(next) {
-						db.setObject('group:' + name, groupData, function(err) {
-							Groups.get(name, {}, next);
-						});
-					}
-				], callback);
-			} else {
-				callback(new Error('group-exists'));
+			if (err) {
+				return callback(err);
 			}
+
+			if (exists) {
+				return callback(new Error('[[error:group-already-exists]]'));
+			}
+
+			var groupData = {
+				name: name,
+				description: description,
+				deleted: '0',
+				hidden: '0',
+				system: system ? '1' : '0'
+			};
+
+			async.parallel([
+				function(next) {
+					db.setAdd('groups', name, next);
+				},
+				function(next) {
+					db.setObject('group:' + name, groupData, function(err) {
+						Groups.get(name, {}, next);
+					});
+				}
+			], callback);
 		});
 	};
 
@@ -198,12 +188,12 @@
 					db.setObject('group:' + groupName, values, callback);
 				} else {
 					if (callback) {
-						callback(new Error('name-change-not-allowed'));
+						callback(new Error('[[error:group-name-change-not-allowed]]'));
 					}
 				}
 			} else {
 				if (callback) {
-					callback(new Error('gid-not-found'));
+					callback(new Error('[[error:no-group]]'));
 				}
 			}
 		});

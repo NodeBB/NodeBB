@@ -2,5 +2,6 @@
     "chat.chatting_with": "<span id=\"chat-with-name\"> </ span> ile konuş",
     "chat.placeholder": "Sohbet mesajınızı yazın, göndermek için enter'a basın",
     "chat.send": "Gönder",
-    "chat.no_active": "Aktif sohbet mevcut değil"
+    "chat.no_active": "Aktif sohbet mevcut değil",
+    "chat.user_typing": "%1 yazıyor ..."
 }

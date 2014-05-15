@@ -13,150 +13,156 @@ var socket,
 
 (function () {
 	var showWelcomeMessage = false;
+	var reconnecting = false;
+
+	function onSocketConnect(data) {
+		if (reconnecting) {
+			var reconnectEl = $('#reconnect');
+
+			reconnectEl.tooltip('destroy');
+			reconnectEl.html('<i class="fa fa-check"></i>');
+			reconnecting = false;
+
+			// Rejoin room that was left when we disconnected
+			var	url_parts = document.location.pathname.slice(RELATIVE_PATH.length).split('/').slice(1);
+			var room;
+
+			switch(url_parts[0]) {
+				case 'user':
+					room = 'user/' + ajaxify.variables.get('theirid');
+				break;
+				case 'topic':
+					room = 'topic_' + url_parts[1];
+				break;
+				case 'category':
+					room = 'category_' + url_parts[1];
+				break;
+				case 'recent':	// intentional fall-through
+				case 'unread':
+					room = 'recent_posts';
+				break;
+				case 'admin':
+					room = 'admin';
+				break;
+				default:
+					room = 'global';
+				break;
+			}
+
+			app.enterRoom(room, true);
+
+			socket.emit('meta.reconnected');
+			$(window).trigger('action:reconnected');
+
+			setTimeout(function() {
+				reconnectEl.removeClass('active').addClass("hide");
+			}, 3000);
+		}
+
+		socket.emit('meta.updateHeader', {
+			fields: ['username', 'picture', 'userslug']
+		}, app.updateHeader);
+	}
+
+	function onConfigLoad(data) {
+		config = data;
+
+		exposeConfigToTemplates();
+
+		if(socket) {
+			socket.disconnect();
+			setTimeout(function() {
+				socket.socket.connect();
+			}, 200);
+		} else {
+			var ioParams = {
+				'max reconnection attempts': config.maxReconnectionAttempts,
+				'reconnection delay': config.reconnectionDelay,
+				resource: RELATIVE_PATH.length ? RELATIVE_PATH.slice(1) + '/socket.io' : 'socket.io'
+			};
+
+			if (utils.isAndroidBrowser()) {
+				ioParams.transports = ['xhr-polling'];
+			}
+
+			socket = io.connect('', ioParams);
+			reconnecting = false;
+
+			socket.on('event:connect', function (data) {
+				app.username = data.username;
+				app.uid = data.uid;
+				app.isAdmin = data.isAdmin;
+
+				templates.setGlobal('loggedIn', parseInt(data.uid, 10) !== 0);
+
+				app.showLoginMessage();
+
+				socket.emit('meta.updateHeader', {
+					fields: ['username', 'picture', 'userslug']
+				}, app.updateHeader);
+
+				$(window).trigger('action:connected');
+			});
+
+			socket.on('event:alert', function (data) {
+				app.alert(data);
+			});
+
+			socket.on('connect', onSocketConnect);
+
+			socket.on('event:disconnect', function() {
+				$(window).trigger('action:disconnected');
+				socket.socket.connect();
+			});
+
+			socket.on('reconnecting', function (data, attempt) {
+				if(attempt === config.maxReconnectionAttempts) {
+					socket.socket.reconnectionAttempts = 0;
+					socket.socket.reconnectionDelay = config.reconnectionDelay;
+					return;
+				}
+
+				reconnecting = true;
+				var reconnectEl = $('#reconnect');
+
+				if (!reconnectEl.hasClass('active')) {
+					reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
+				}
+
+				reconnectEl.addClass('active').removeClass("hide").tooltip({
+					placement: 'bottom'
+				});
+			});
+
+			socket.on('event:banned', function() {
+				app.alert({
+					title: '[[global:alert.banned]]',
+					message: '[[global:alert.banned.message]]',
+					type: 'warning',
+					timeout: 1000
+				});
+
+				setTimeout(app.logout, 1000);
+			});
+
+			socket.on('meta.updateHeader', app.updateHeader);
+
+			app.enterRoom('global');
+
+			if (config.environment === 'development' && console && console.log) {
+				var log = console.log;
+				console.log = function() {
+					log.apply(this, arguments);
+					socket.emit('tools.log', arguments);
+				};
+			}
+		}
+	}
 
 	app.loadConfig = function() {
 		$.ajax({
 			url: RELATIVE_PATH + '/api/config',
-			success: function (data) {
-				config = data;
-
-				exposeConfigToTemplates();
-
-				if(socket) {
-					socket.disconnect();
-					setTimeout(function() {
-						socket.socket.connect();
-					}, 200);
-				} else {
-					var ioParams = {
-						'max reconnection attempts': config.maxReconnectionAttempts,
-						'reconnection delay': config.reconnectionDelay,
-						resource: RELATIVE_PATH.length ? RELATIVE_PATH.slice(1) + '/socket.io' : 'socket.io'
-					};
-
-					if (utils.isAndroidBrowser()) {
-						ioParams.transports = ['xhr-polling'];
-					}
-
-					socket = io.connect('', ioParams);
-
-					var reconnecting = false,
-						reconnectEl, reconnectTimer;
-
-					socket.on('event:connect', function (data) {
-						app.username = data.username;
-						app.uid = data.uid;
-						app.isAdmin = data.isAdmin;
-
-						templates.setGlobal('loggedIn', parseInt(data.uid, 10) !== 0);
-
-						app.showLoginMessage();
-
-						socket.emit('meta.updateHeader', {
-							fields: ['username', 'picture', 'userslug']
-						}, app.updateHeader);
-
-						$(window).trigger('action:connected');
-					});
-
-					socket.on('event:alert', function (data) {
-						app.alert(data);
-					});
-
-					socket.on('connect', function (data) {
-						if (reconnecting) {
-							reconnectEl.tooltip('destroy');
-							reconnectEl.html('<i class="fa fa-check"></i>');
-							reconnecting = false;
-
-							// Rejoin room that was left when we disconnected
-							var	url_parts = document.location.pathname.slice(RELATIVE_PATH.length).split('/').slice(1),
-								room;
-							switch(url_parts[0]) {
-								case 'user':
-									room = 'user/' + ajaxify.variables.get('theirid');
-									break;
-								case 'topic':
-									room = 'topic_' + url_parts[1];
-									break;
-								case 'category':
-									room = 'category_' + url_parts[1];
-									break;
-								case 'recent':	// intentional fall-through
-								case 'unread':
-									room = 'recent_posts';
-									break;
-								case 'admin':
-									room = 'admin';
-									break;
-
-								default:
-									room = 'global';
-									break;
-							}
-							app.enterRoom(room, true);
-
-							socket.emit('meta.reconnected');
-							$(window).trigger('action:reconnected');
-
-							setTimeout(function() {
-								reconnectEl.removeClass('active').addClass("hide");
-							}, 3000);
-						}
-
-						socket.emit('meta.updateHeader', {
-							fields: ['username', 'picture', 'userslug']
-						}, app.updateHeader);
-					});
-
-					socket.on('event:disconnect', function() {
-						$(window).trigger('action:disconnected');
-						socket.socket.connect();
-					});
-
-					socket.on('reconnecting', function (data, attempt) {
-						if(attempt === config.maxReconnectionAttempts) {
-							socket.socket.reconnectionAttempts = 0;
-							socket.socket.reconnectionDelay = config.reconnectionDelay;
-							return;
-						}
-
-						reconnectEl = reconnectEl || $('#reconnect');
-						reconnecting = true;
-
-						if (!reconnectEl.hasClass('active')) {
-							reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
-						}
-
-						reconnectEl.addClass('active').removeClass("hide").tooltip({
-							placement: 'bottom'
-						});
-					});
-
-					socket.on('event:banned', function() {
-						app.alert({
-							title: '[[global:alert.banned]]',
-							message: '[[global:alert.banned.message]]',
-							type: 'warning',
-							timeout: 1000
-						});
-
-						setTimeout(app.logout, 1000);
-					});
-
-					socket.on('meta.updateHeader', app.updateHeader);
-
-					app.enterRoom('global');
-
-					if (config.environment === 'development' && console && console.log) {
-						var log = console.log;
-						console.log = function() {
-							log.apply(this, arguments);
-							socket.emit('tools.log', arguments);
-						};
-					}
-				}
-			},
+			success: onConfigLoad,
 			async: false
 		});
 	};
@@ -320,25 +326,11 @@ var socket,
 
 	app.openChat = function (username, touid) {
 		if (username === app.username) {
-			app.alert({
-				type: 'warning',
-				title: 'Invalid Chat',
-				message: "You can't chat with yourself!",
-				timeout: 5000
-			});
-
-			return;
+			return app.alertError('[[error:cant-chat-with-yourself]]');
 		}
 
 		if (!app.uid) {
-			app.alert({
-				type: 'danger',
-				title: 'Not Logged In',
-				message: 'Please log in to chat with <strong>' + username + '</strong>',
-				timeout: 5000
-			});
-
-			return;
+			return app.alertError('[[error:not-logged-in]]');
 		}
 
 		require(['chat'], function (chat) {
@@ -427,21 +419,25 @@ var socket,
 
 
 	app.updateHeader = function(err, data) {
-		$('#search-button').off().on('click', function(e) {
+		var searchButton = $("#search-button"),
+			searchFields = $("#search-fields"),
+			searchInput = $('#search-fields input');
+
+		function dismissSearch(){
+			searchFields.hide();
+			searchButton.show();
+		}
+
+		searchButton.off().on('click', function(e) {
 			e.stopPropagation();
-			$('#search-fields').removeClass('hide').show();
+
+			searchFields.removeClass('hide').show();
 			$(this).hide();
-			$('#search-fields input').focus();
 
-			$('#search-form').on('submit', function() {
-				$('#search-fields').hide();
-				$('#search-button').show();
-			});
+			searchInput.focus();
 
-			$('#search-fields input').on('blur', function() {
-				$('#search-fields').hide();
-				$('#search-button').show();
-			});
+			$('#search-form').on('submit', dismissSearch);
+			searchInput.on('blur', dismissSearch);
 			return false;
 		});
 
@@ -456,7 +452,7 @@ var socket,
 			$('#logged-out-menu').addClass('hide');
 			$('#logged-in-menu').removeClass('hide');
 
-			$('#search-button').removeClass("hide").show();
+			searchButton.removeClass("hide").show();
 
 			var userLabel = loggedInMenu.find('#user_label');
 
@@ -476,10 +472,10 @@ var socket,
 
 		} else {
 			if (allowGuestSearching) {
-				$('#search-button').removeClass("hide").show();
+				searchButton.removeClass("hide").show();
 				$('#mobile-search-button').removeClass("hide").show();
 			} else {
-				$('#search-button').addClass("hide").hide();
+				searchButton.addClass("hide").hide();
 				$('#mobile-search-button').addClass("hide").hide();
 			}
 
@@ -491,7 +487,7 @@ var socket,
 
 		}
 
-		$('#main-nav a,#user-control-list a,#logged-out-menu li a,#logged-in-menu .visible-xs').off('click').on('click', function() {
+		$('#main-nav a, #user-control-list a, #logged-out-menu li a, #logged-in-menu .visible-xs').off('click').on('click', function() {
 			if($('.navbar .navbar-collapse').hasClass('in')) {
 				$('.navbar-header button').click();
 			}
@@ -573,6 +569,7 @@ var socket,
 
 			createHeaderTooltips();
 			ajaxify.variables.parse();
+			ajaxify.currentPage = url;
 			app.processPage();
 
 			ajaxify.widgets.render(tpl_url, url);

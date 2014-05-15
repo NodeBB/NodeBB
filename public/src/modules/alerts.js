@@ -40,7 +40,7 @@ define(function() {
 			startTimeout(params.timeout);
 
 			alert.children().fadeOut('100');
-			translator.translate(alert.html(), function(translatedHTML) {
+			translator.translate(templates.parse(alert.html(), {}), function(translatedHTML) {
 				alert.children().fadeIn('100');
 				alert.html(translatedHTML);
 			});
@@ -58,7 +58,7 @@ define(function() {
 				params.location = 'alert_window';
 			}
 
-			translator.translate(alert.html(), function(translatedHTML) {
+			translator.translate(templates.parse(alert.html(), {}), function(translatedHTML) {
 				alert.html(translatedHTML);
 				$('#' + params.location).prepend(alert.fadeIn('100'));
 

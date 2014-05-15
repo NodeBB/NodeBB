@@ -1,0 +1,7 @@
+{
+    "chat.chatting_with": "Susirašinėti su <span id=\"chat-with-name\"></span>",
+    "chat.placeholder": "žinutę rašykite čia, norėdami išsiųsti spauskite enter",
+    "chat.send": "Siųsti",
+    "chat.no_active": "Jūs neturite aktyvių susirašinėjimų.",
+    "chat.user_typing": "%1 dabar rašo..."
+}

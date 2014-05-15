@@ -1,13 +1,13 @@
 "use strict";
-/* global define, config, templates, app, ajaxify, socket, translator */
+/* global define, config, templates, app, utils, ajaxify, socket, translator */
 
-define(['composer', 'forum/pagination', 'share', 'navigator'], function(composer, pagination, share, navigator) {
+define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryTools'], function(composer, pagination, share, navigator, categoryTools) {
 	var Category = {},
 		loadingMoreTopics = false;
 
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
-		if(data.url.indexOf('category') !== 0) {
+		if(data && data.url.indexOf('category') !== 0) {
 			navigator.hide();
 		}
 	});
@@ -24,10 +24,13 @@ define(['composer', 'forum/pagination', 'share', 'navigator'], function(composer
 		});
 
 		ajaxify.register_events([
-			'event:new_topic'
+			'event:new_topic', 'event:topic_deleted', 'event:topic_restored', 'event:topic_locked',
+			'event:topic_unlocked', 'event:topic_pinned', 'event:topic_unpinned', 'event:topic_moved'
 		]);
 
 		socket.on('event:new_topic', Category.onNewTopic);
+
+		categoryTools.init(cid);
 
 		enableInfiniteLoading();
 
@@ -225,10 +228,12 @@ define(['composer', 'forum/pagination', 'share', 'navigator'], function(composer
 		});
 	}
 
-	Category.onTopicsLoaded = function(topics, callback) {
-		if(!topics || !topics.length) {
+	Category.onTopicsLoaded = function(data, callback) {
+		if(!data || !data.topics.length) {
 			return;
 		}
+
+		var topics = data.topics;
 
 		function removeAlreadyAddedTopics() {
 			topics = topics.filter(function(topic) {
@@ -261,7 +266,7 @@ define(['composer', 'forum/pagination', 'share', 'navigator'], function(composer
 		findInsertionPoint();
 
 		ajaxify.loadTemplate('category', function(categoryTemplate) {
-			var html = templates.parse(templates.getBlock(categoryTemplate, 'topics'), {topics: topics});
+			var html = templates.parse(templates.getBlock(categoryTemplate, 'topics'), data);
 
 			translator.translate(html, function(translatedHTML) {
 				var container = $('#topics-container'),
@@ -309,6 +314,7 @@ define(['composer', 'forum/pagination', 'share', 'navigator'], function(composer
 			cid: cid,
 			after: after
 		}, function (err, data) {
+			console.log(data);
 			loadingMoreTopics = false;
 
 			if(err) {
@@ -316,7 +322,7 @@ define(['composer', 'forum/pagination', 'share', 'navigator'], function(composer
 			}
 
 			if (data && data.topics.length) {
-				Category.onTopicsLoaded(data.topics, callback);
+				Category.onTopicsLoaded(data, callback);
 				$('#topics-container').attr('data-nextstart', data.nextStart);
 			} else {
 

@@ -25,29 +25,59 @@ module.exports = function(User) {
 				settings = data.settings;
 
 				settings.showemail = settings.showemail ? parseInt(settings.showemail, 10) !== 0 : false;
+				settings.dailyDigestFreq = settings.dailyDigestFreq || 'daily';
 				settings.usePagination = settings.usePagination ? parseInt(settings.usePagination, 10) === 1 : parseInt(meta.config.usePagination, 10) === 1;
 				settings.topicsPerPage = settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : parseInt(meta.config.topicsPerPage, 10) || 20;
 				settings.postsPerPage = settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : parseInt(meta.config.postsPerPage, 10) || 10;
 				settings.notificationSounds = settings.notificationSounds ? parseInt(settings.notificationSounds, 10) === 1 : true;
+				settings.language = settings.language || meta.config.defaultLang || 'en_GB';
 				callback(null, settings);
 			});
+		});
+	};
+
+	User.getMultipleUserSettings = function(uids, callback) {
+		if (!Array.isArray(uids) || !uids.length) {
+			return callback(null, []);
+		}
+
+		var keys = uids.map(function(uid) {
+			return 'user:' + uid + ':settings';
+		});
+
+		db.getObjects(keys, function(err, settings) {
+			if (err) {
+				return callback(err);
+			}
+
+			// Associate uid
+			settings = settings.map(function(setting, idx) {
+				setting = setting || {};
+				setting.uid = uids[idx];
+				return setting;
+			});
+
+			callback(null, settings);
 		});
 	};
 
 	User.saveSettings = function(uid, data, callback) {
 
 		if(!data.topicsPerPage || !data.postsPerPage || parseInt(data.topicsPerPage, 10) <= 0 || parseInt(data.postsPerPage, 10) <= 0) {
-			return callback(new Error('Invalid pagination value!'));
+			return callback(new Error('[[error:invalid-pagination-value]]'));
 		}
 
-		plugins.fireHook('action:user.saveSettings', {uid: uid, settings: data});
+		data.language = data.language || meta.config.defaultLang;
 
+		plugins.fireHook('action:user.saveSettings', {uid: uid, settings: data});
 		db.setObject('user:' + uid + ':settings', {
 			showemail: data.showemail,
+			dailyDigestFreq: data.dailyDigestFreq || 'daily',
 			usePagination: data.usePagination,
 			topicsPerPage: data.topicsPerPage,
 			postsPerPage: data.postsPerPage,
-			notificationSounds: data.notificationSounds
+			notificationSounds: data.notificationSounds,
+			language: data.language || meta.config.defaultLang
 		}, callback);
 	};
 };

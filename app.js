@@ -57,7 +57,7 @@ if(os.platform() === 'linux') {
 }
 
 // Log GNU copyright info along with server info
-winston.info('NodeBB v' + pkg.version + ' Copyright (C) 2013 DesignCreatePlay Inc.');
+winston.info('NodeBB v' + pkg.version + ' Copyright (C) 2013-2014 DesignCreatePlay Inc.');
 winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
 winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
 winston.info('');
@@ -90,7 +90,7 @@ function loadConfig() {
 	nconf.defaults({
 		base_dir: __dirname,
 		themes_path: path.join(__dirname, 'node_modules'),
-		upload_url: path.join(path.sep, 'uploads', path.sep),
+		upload_url: '/uploads/',
 		views_dir: path.join(__dirname, 'public/templates')
 	});
 
@@ -104,8 +104,10 @@ function start() {
 	winston.info('Time: ' + new Date());
 	winston.info('Initializing NodeBB v' + pkg.version);
 	winston.info('* using configuration stored in: ' + configFile);
-	var host = nconf.get(nconf.get('database') + ':host');
-	winston.info('* using ' + nconf.get('database') +' store at ' + host + (host.indexOf('/') === -1 ? ':' + nconf.get(nconf.get('database') + ':port') : ''));
+	var host = nconf.get(nconf.get('database') + ':host'),
+		storeLocation = host ? 'at ' + host + (host.indexOf('/') === -1 ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';
+
+	winston.info('* using ' + nconf.get('database') +' store ' + storeLocation);
 	winston.info('* using themes stored in: ' + nconf.get('themes_path'));
 
 	if (process.env.NODE_ENV === 'development') {
@@ -117,11 +119,11 @@ function start() {
 	require('./src/database').init(function(err) {
 		meta.configs.init(function () {
 			var templates = require('./public/src/templates'),
-				translator = require('./public/src/translator'),
 				webserver = require('./src/webserver'),
 				sockets = require('./src/socket.io'),
 				plugins = require('./src/plugins'),
-				upgrade = require('./src/upgrade');
+				upgrade = require('./src/upgrade')
+				meta = require('./src/meta');
 
 			templates.setGlobal('relative_path', nconf.get('relative_path'));
 
@@ -129,7 +131,6 @@ function start() {
 				if (schema_ok || nconf.get('check-schema') === false) {
 					sockets.init(webserver.server);
 					plugins.init();
-					translator.loadServer();
 
 					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
 					nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
@@ -142,6 +143,13 @@ function start() {
 					process.on('SIGTERM', shutdown);
 					process.on('SIGINT', shutdown);
 					process.on('SIGHUP', restart);
+					process.on('uncaughtException', function(err) {
+						winston.error(err.message);
+						console.log(err.stack);
+
+						meta.js.killMinifier();
+						shutdown(1);
+					})
 				} else {
 					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
 					winston.warn('    node app --upgrade');
@@ -281,7 +289,7 @@ function shutdown(code) {
 	winston.info('[app] Database connection closed.');
 
 	winston.info('[app] Shutdown complete.');
-	process.exit();
+	process.exit(code || 0);
 }
 
 function restart() {
@@ -292,7 +300,7 @@ function restart() {
 		});
 	} else {
 		winston.error('[app] Could not restart server. Shutting down.');
-		shutdown();
+		shutdown(1);
 	}
 }
 

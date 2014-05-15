@@ -1,0 +1,9 @@
+{
+    "title": "Neskaityti",
+    "no_unread_topics": "Neskaitytų temų nėra.",
+    "load_more": "Įkelti daugiau",
+    "mark_as_read": "Pažymėti kaip perskaitytus",
+    "selected": "Pasirinkti",
+    "all": "Visi",
+    "topics_marked_as_read.success": "Temos pažymėtos kaip perskaitytos."
+}

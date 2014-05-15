@@ -19,11 +19,11 @@ module.exports = function(Topics) {
 		}
 
 		if(!title) {
-			return callback(new Error('invalid-title'));
+			return callback(new Error('[[error:invalid-title]]'));
 		}
 
 		if(!pids || !pids.length) {
-			return callback(new Error('invalid-pids'));
+			return callback(new Error('[[error:invalid-pid]]'));
 		}
 
 		pids.sort();
@@ -71,7 +71,7 @@ module.exports = function(Topics) {
 	Topics.movePostToTopic = function(pid, tid, callback) {
 		threadTools.exists(tid, function(err, exists) {
 			if(err || !exists) {
-				return callback(err || new Error('Topic doesn\'t exist'));
+				return callback(err || new Error('[[error:no-topic]]'));
 			}
 
 			posts.getPostFields(pid, ['deleted', 'tid', 'timestamp'], function(err, postData) {
@@ -79,8 +79,8 @@ module.exports = function(Topics) {
 					return callback(err);
 				}
 
-				if(!postData) {
-					return callback(new Error('Post doesn\'t exist'));
+				if(!postData || !postData.tid) {
+					return callback(new Error('[[error:no-post]]'));
 				}
 
 				Topics.removePostFromTopic(postData.tid, pid, function(err) {

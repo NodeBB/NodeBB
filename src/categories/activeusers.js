@@ -57,7 +57,7 @@ module.exports = function(Categories) {
 		db.getSortedSetRevRange('cid:' + cid + ':active_users', 0, 23, callback);
 	};
 
-	Categories.moveActiveUsers = function(tid, oldCid, cid, callback) {
+	Categories.moveActiveUsers = function(tid, oldCid, cid) {
 		function updateUser(uid, timestamp) {
 			Categories.addActiveUser(cid, uid, timestamp);
 			Categories.isUserActiveIn(oldCid, uid, function(err, active) {

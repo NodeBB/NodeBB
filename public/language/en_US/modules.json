@@ -1,0 +1,7 @@
+{
+    "chat.chatting_with": "Chat with <span id=\"chat-with-name\"></span>",
+    "chat.placeholder": "type chat message here, press enter to send",
+    "chat.send": "Send",
+    "chat.no_active": "You have no active chats.",
+    "chat.user_typing": "%1 is typing ..."
+}

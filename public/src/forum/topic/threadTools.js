@@ -18,7 +18,7 @@ define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 				translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function(msg) {
 					bootbox.confirm(msg, function(confirm) {
 						if (confirm) {
-							socket.emit('topics.' + command, tid);
+							socket.emit('topics.' + command, [tid]);
 						}
 					});
 				});
@@ -27,18 +27,18 @@ define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 			});
 
 			$('.lock_thread').on('click', function(e) {
-				socket.emit(threadState.locked !== '1' ? 'topics.lock' : 'topics.unlock', tid);
+				socket.emit(threadState.locked !== '1' ? 'topics.lock' : 'topics.unlock', [tid]);
 				return false;
 			});
 
 			$('.pin_thread').on('click', function(e) {
-				socket.emit(threadState.pinned !== '1' ? 'topics.pin' : 'topics.unpin', tid);
+				socket.emit(threadState.pinned !== '1' ? 'topics.pin' : 'topics.unpin', [tid]);
 				return false;
 			});
 
 			$('.markAsUnreadForAll').on('click', function() {
 				var btn = $(this);
-				socket.emit('topics.markAsUnreadForAll', tid, function(err) {
+				socket.emit('topics.markAsUnreadForAll', [tid], function(err) {
 					if(err) {
 						return app.alertError(err.message);
 					}
@@ -48,7 +48,10 @@ define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 				return false;
 			});
 
-			move.init(tid);
+			$('.move_thread').on('click', function(e) {
+				move.init([tid], ajaxify.variables.get('category_id'));
+				return false;
+			});
 
 			fork.init();
 		}
@@ -82,13 +85,7 @@ define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 		$('.posts .follow').toggleClass('btn-success', state).attr('title', state ? 'You are currently receiving updates to this topic' : 'Be notified of new replies in this topic');
 
 		if(alert) {
-			app.alert({
-				alert_id: 'topic_follow',
-				timeout: 2500,
-				title: state ? '[[topic:following_topic.title]]' : '[[topic:not_following_topic.title]]',
-				message: state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]',
-				type: 'success'
-			});
+			app.alertSuccess(state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]');
 		}
 	}
 

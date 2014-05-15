@@ -126,11 +126,11 @@ var bcrypt = require('bcryptjs'),
 			}
 
 			if (parseInt(results.banned, 10) === 1) {
-				return callback(new Error('user-banned'));
+				return callback(new Error('[[error:user-banned]]'));
 			}
 
 			if (!results.exists) {
-				return callback(new Error('invalid-user'));
+				return callback(new Error('[[error:no-user]]'));
 			}
 
 			var lastposttime = results.lastposttime;
@@ -139,7 +139,7 @@ var bcrypt = require('bcryptjs'),
 			}
 
 			if (Date.now() - parseInt(lastposttime, 10) < parseInt(meta.config.postDelay, 10) * 1000) {
-				return callback(new Error('too-many-posts'));
+				return callback(new Error('[[error:too-many-posts, ' + meta.config.postDelay + ']]'));
 			}
 			callback();
 		});

@@ -77,21 +77,9 @@ module.exports = function(Topics) {
 		}
 
 		if (!title || title.length < parseInt(meta.config.minimumTitleLength, 10)) {
-			return callback(new Error('title-too-short'));
+			return callback(new Error('[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]'));
 		} else if(title.length > parseInt(meta.config.maximumTitleLength, 10)) {
-			return callback(new Error('title-too-long'));
-		}
-
-		if (content) {
-			content = content.trim();
-		}
-
-		if (!content || content.length < meta.config.miminumPostLength) {
-			return callback(new Error('content-too-short'));
-		}
-
-		if (!cid) {
-			return callback(new Error('invalid-cid'));
+			return callback(new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]'));
 		}
 
 		async.waterfall([
@@ -100,13 +88,13 @@ module.exports = function(Topics) {
 			},
 			function(categoryExists, next) {
 				if (!categoryExists) {
-					return next(new Error('category doesn\'t exist'));
+					return next(new Error('[[error:no-category]]'));
 				}
 				categoryTools.privileges(cid, uid, next);
 			},
 			function(privileges, next) {
 				if(!privileges.write) {
-					return next(new Error('no-privileges'));
+					return next(new Error('[[error:no-privileges]]'));
 				}
 				next();
 			},
@@ -129,7 +117,7 @@ module.exports = function(Topics) {
 						return next(err);
 					}
 					if(!topicData || !topicData.length) {
-						return next(new Error('no-topic'));
+						return next(new Error('[[error:no-topic]]'));
 					}
 					topicData = topicData[0];
 					topicData.unreplied = 1;
@@ -157,14 +145,14 @@ module.exports = function(Topics) {
 			},
 			function(topicExists, next) {
 				if (!topicExists) {
-					return next(new Error('topic doesn\'t exist'));
+					return next(new Error('[[error:no-topic]]'));
 				}
 
 				Topics.isLocked(tid, next);
 			},
 			function(locked, next) {
 				if (locked) {
-					return next(new Error('topic-locked'));
+					return next(new Error('[[error:topic-locked]]'));
 				}
 
 				threadTools.privileges(tid, uid, next);
@@ -172,7 +160,7 @@ module.exports = function(Topics) {
 			function(privilegesData, next) {
 				privileges = privilegesData;
 				if (!privileges.write) {
-					return next(new Error('no-privileges'));
+					return next(new Error('[[error:no-privileges]]'));
 				}
 				next();
 			},
@@ -184,8 +172,8 @@ module.exports = function(Topics) {
 					content = content.trim();
 				}
 
-				if (!content || content.length < meta.config.minimumPostLength) {
-					return next(new Error('content-too-short'));
+				if (!content || content.length < meta.config.miminumPostLength) {
+					return callback(new Error('[[error:content-too-short, '  + meta.config.minimumPostLength + ']]'));
 				}
 
 				posts.create({uid:uid, tid:tid, content:content, toPid:toPid}, next);

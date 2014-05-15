@@ -1,7 +1,7 @@
 {
     "register": "Kayıt Ol",
     "help.email": "E-posta adresiniz varsayılan olarak topluluktan gizlidir.",
-    "help.username_restrictions": "A unique username between %1 and %2 characters. Others can mention you with @<span id='yourUsername'>username</span>.",
+    "help.username_restrictions": "%1 ve %2 karakter arası bir kullanıcı ismi. Başkaları sizden @<span id='yourUsername'>isim</span> kullanarak bahsedebilir.",
     "help.minimum_password_length": "Şifreniz en az %1 karakter olmalı",
     "email_address": "E-posta adresiniz",
     "email_address_placeholder": "E-posta Adresinizi girin",

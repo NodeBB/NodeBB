@@ -2,5 +2,6 @@
     "chat.chatting_with": "Chatta con <span id=\"chat-with-name\"></span>",
     "chat.placeholder": "scrivi un messaggio qui, poi premi Invio",
     "chat.send": "Invia",
-    "chat.no_active": "Non hai discussioni attive."
+    "chat.no_active": "Non hai discussioni attive.",
+    "chat.user_typing": "%1 is typing ..."
 }

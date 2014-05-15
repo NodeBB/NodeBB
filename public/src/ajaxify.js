@@ -60,7 +60,7 @@ var ajaxify = ajaxify || {};
 		}
 
 		if (ajaxify.isTemplateAvailable(tpl_url) && !!!templatesConfig.force_refresh[tpl_url]) {
-			ajaxify.currentPage = tpl_url;
+			ajaxify.currentPage = url;
 
 			if (window.history && window.history.pushState) {
 				window.history[!quiet ? 'pushState' : 'replaceState']({
@@ -74,6 +74,7 @@ var ajaxify = ajaxify || {};
 
 			ajaxify.variables.flush();
 			ajaxify.loadData(function () {
+				$(window).trigger('action:ajaxify.contentLoaded', {url: url});
 				ajaxify.loadScript(tpl_url);
 
 				if (typeof callback === 'function') {
@@ -178,7 +179,7 @@ var ajaxify = ajaxify || {};
 				}
 
 				data.relative_path = RELATIVE_PATH;
-				
+
 				templates.parse(tpl_url, data, function(template) {
 					translator.translate(template, function(translatedTemplate) {
 						$('#content').html(translatedTemplate);
@@ -209,7 +210,7 @@ var ajaxify = ajaxify || {};
 			callback(templates.cache[template]);
 		} else {
 			$.ajax({
-				url: RELATIVE_PATH + '/templates/' + template + '.tpl',
+				url: RELATIVE_PATH + '/templates/' + template + '.tpl' + (config['cache-buster'] ? '?v=' + config['cache-buster'] : ''),
 				type: 'GET',
 				success: function(data) {
 					callback(data.toString());

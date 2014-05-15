@@ -2,5 +2,6 @@
     "chat.chatting_with": "Chat s <span id=\"chat-with-name\"></span>",
     "chat.placeholder": "napíšte správu sem a stlačte enter pre odoslanie",
     "chat.send": "Odoslať",
-    "chat.no_active": "Nemáte žiadne aktívne konverzácie."
+    "chat.no_active": "Nemáte žiadne aktívne konverzácie.",
+    "chat.user_typing": "%1 is typing ..."
 }

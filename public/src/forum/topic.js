@@ -143,8 +143,8 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 
 
 		ajaxify.register_events([
-			'event:rep_up', 'event:rep_down', 'event:favourited', 'event:unfavourited', 'event:new_post', 'get_users_in_room',
-			'event:topic_deleted', 'event:topic_restored', 'event:topic:locked',
+			'event:voted', 'event:favourited', 'event:new_post', 'get_users_in_room',
+			'event:topic_deleted', 'event:topic_restored', 'event:topic_locked',
 			'event:topic_unlocked', 'event:topic_pinned', 'event:topic_unpinned',
 			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored',
 			'posts.favourite', 'user.isOnline', 'posts.upvote', 'posts.downvote',
@@ -153,13 +153,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 
 		function createUserIcon(uid, picture, userslug, username) {
 			if(!$('.thread_active_users').find('[data-uid="' + uid + '"]').length) {
-				var div = $('<div class="inline-block"><a data-uid="' + uid + '" href="' + RELATIVE_PATH + '/user/' + userslug + '"><img src="'+ picture +'"/></a></div>');
-				div.find('a').tooltip({
-					placement: 'top',
-					title: username
-				});
-
-				return div;
+				return $('<div class="inline-block"><a data-uid="' + uid + '" href="' + RELATIVE_PATH + '/user/' + userslug + '"><img title="' + username + '" src="'+ picture +'"/></a></div>');
 			}
 		}
 
@@ -199,6 +193,10 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 						break;
 					}
 				}
+
+				activeEl.find('a[data-uid] img').tooltip({
+					placement: 'top'
+				});
 
 				var remainingUsers = data.users.length - 9;
 				remainingUsers = remainingUsers < 0 ? 0 : remainingUsers;
@@ -241,20 +239,12 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 			app.populateOnlineUsers();
 		});
 
-		socket.on('event:rep_up', function(data) {
-			adjust_rep(1, data.pid, data.uid);
-		});
-
-		socket.on('event:rep_down', function(data) {
-			adjust_rep(-1, data.pid, data.uid);
+		socket.on('event:voted', function(data) {
+			updatePostVotesAndUserReputation(data);
 		});
 
 		socket.on('event:favourited', function(data) {
-			adjust_favourites(1, data.pid, data.uid);
-		});
-
-		socket.on('event:unfavourited', function(data) {
-			adjust_favourites(-1, data.pid, data.uid);
+			updateFavouriteCount(data.post.pid, data.post.reputation);
 		});
 
 		socket.on('event:new_post', function(data) {
@@ -338,37 +328,31 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 			});
 		});
 
-		socket.on('posts.upvote', function(data) {
-			if (data && data.pid) {
-				$('li[data-pid="' + data.pid + '"] .upvote').addClass('btn-primary upvoted');
-			}
+		socket.on('posts.upvote', function(pid) {
+			toggleUpvoteDownvote(pid, true, false);
 		});
 
-		socket.on('posts.downvote', function(data) {
-			if (data && data.pid) {
-				$('li[data-pid="' + data.pid + '"] .downvote').addClass('btn-primary downvoted');
-			}
+		socket.on('posts.downvote', function(pid) {
+			toggleUpvoteDownvote(pid, false, true);
 		});
 
-		socket.on('posts.unvote', function(data) {
-			if (data && data.pid) {
-				var post = $('li[data-pid="' + data.pid + '"]');
-
-				post.find('.upvote').removeClass('btn-primary upvoted');
-				post.find('.downvote').removeClass('btn-primary downvoted');
-			}
+		socket.on('posts.unvote', function(pid) {
+			toggleUpvoteDownvote(pid, false, false);
 		});
 
-		socket.on('posts.favourite', function(data) {
-			if (data && data.pid) {
-				toggleFavourite(data.pid, true);
-			}
+		function toggleUpvoteDownvote(pid, upvote, downvote) {
+			var post = $('li[data-pid="' + pid + '"]');
+
+			post.find('.upvote').toggleClass('btn-primary upvoted', upvote);
+			post.find('.downvote').toggleClass('btn-primary downvoted', downvote);
+		}
+
+		socket.on('posts.favourite', function(pid) {
+			toggleFavourite(pid, true);
 		});
 
-		socket.on('posts.unfavourite', function(data) {
-			if (data && data.pid) {
-				toggleFavourite(data.pid, false);
-			}
+		socket.on('posts.unfavourite', function(pid) {
+			toggleFavourite(pid, false);
 		});
 
 		function toggleFavourite(pid, isFavourited) {
@@ -406,26 +390,16 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 			$('.thread_active_users [data-uid="' + uid + '"]').removeClass('replying');
 		});
 
-		function adjust_rep(value, pid, uid) {
-			var votes = $('li[data-pid="' + pid + '"] .votes'),
-				reputationElements = $('.reputation[data-uid="' + uid + '"]'),
-				currentVotes = parseInt(votes.attr('data-votes'), 10),
-				reputation = parseInt(reputationElements.attr('data-reputation'), 10);
+		function updatePostVotesAndUserReputation(data) {
+			var votes = $('li[data-pid="' + data.post.pid + '"] .votes'),
+				reputationElements = $('.reputation[data-uid="' + data.post.uid + '"]');
 
-			currentVotes += value;
-			reputation += value;
-
-			votes.html(currentVotes).attr('data-votes', currentVotes);
-			reputationElements.html(reputation).attr('data-reputation', reputation);
+			votes.html(data.post.votes).attr('data-votes', data.post.votes);
+			reputationElements.html(data.user.reputation).attr('data-reputation', data.user.reputation);
 		}
 
-		function adjust_favourites(value, pid, uid) {
-			var favourites = $('li[data-pid="' + pid + '"] .favouriteCount'),
-				currentFavourites = parseInt(favourites.attr('data-favourites'), 10);
-
-			currentFavourites += value;
-
-			favourites.html(currentFavourites).attr('data-favourites', currentFavourites);
+		function updateFavouriteCount(pid, value) {
+			$('li[data-pid="' + pid + '"] .favouriteCount').html(value).attr('data-favourites', value);
 		}
 
 		function set_locked_state(locked, alert) {
@@ -438,13 +412,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 			$('.topic-main-buttons .post_reply').attr('disabled', locked).html(locked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply');
 
 			if (alert) {
-				app.alert({
-					'alert_id': 'thread_lock',
-					type: 'success',
-					title: 'Thread ' + (locked ? 'Locked' : 'Unlocked'),
-					message: 'Thread has been successfully ' + (locked ? 'locked' : 'unlocked'),
-					timeout: 5000
-				});
+				app.alertSuccess(locked ? '[[topic:topic_lock_success]]' : '[[topic:topic_unlock_success]]');
 			}
 
 			thread_state.locked = locked ? '1' : '0';
@@ -474,13 +442,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 				$('.pin_thread').html(translated);
 
 				if (alert) {
-					app.alert({
-						'alert_id': 'thread_pin',
-						type: 'success',
-						title: 'Thread ' + (pinned ? 'Pinned' : 'Unpinned'),
-						message: 'Thread has been successfully ' + (pinned ? 'pinned' : 'unpinned'),
-						timeout: 5000
-					});
+					app.alertSuccess(pinned ? '[[topic:topic_pin_success]]' : '[[topic:topic_unpin_success]]');
 				}
 				thread_state.pinned = pinned ? '1' : '0';
 			});
@@ -750,7 +712,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 		socket.emit('topics.postcount', ajaxify.variables.get('topic_id'), function(err, postcount) {
 			if(!err) {
 				Topic.postCount = postcount;
-				$('#topic-post-count').html(Topic.postCount);
+				$('.topic-post-count').html(Topic.postCount);
 				navigator.setCount(Topic.postCount);
 			}
 		});

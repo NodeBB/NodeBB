@@ -47,36 +47,34 @@ define(function() {
 
 				$('#user-notfound-notify').html('<i class="fa fa-spinner fa-spin"></i>');
 
-				setTimeout(function() {
-					socket.emit('user.search', username, function(err, data) {
-						if(err) {
-							return app.alert(err.message);
-						}
+				socket.emit('user.search', username, function(err, data) {
+					if(err) {
+						return app.alert(err.message);
+					}
 
-						if (!data) {
-							$('#user-notfound-notify').html('You need to be logged in to search!');
-							$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
-							return;
-						}
+					if (!data) {
+						$('#user-notfound-notify').html('You need to be logged in to search!');
+						$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
+						return;
+					}
 
-						ajaxify.loadTemplate('users', function(usersTemplate) {
-							var html = templates.parse(templates.getBlock(usersTemplate, 'users'), data);
+					ajaxify.loadTemplate('users', function(usersTemplate) {
+						var html = templates.parse(templates.getBlock(usersTemplate, 'users'), data);
 
-							translator.translate(html, function(translated) {
-								$('#users-container').html(translated);
+						translator.translate(html, function(translated) {
+							$('#users-container').html(translated);
 
 
-								if (data && data.users.length === 0) {
-									$('#user-notfound-notify').html('User not found!');
-									$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
-								} else {
-									$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.');
-									$('#user-notfound-notify').parent().addClass('btn-success label-success');
-								}
-							});
+							if (data && data.users.length === 0) {
+								$('#user-notfound-notify').html('User not found!');
+								$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
+							} else {
+								$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.');
+								$('#user-notfound-notify').parent().addClass('btn-success label-success');
+							}
 						});
 					});
-				}, 500); //replace this with global throttling function/constant
+				});
 
 			}, 250);
 		});

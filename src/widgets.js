@@ -29,6 +29,10 @@ var async = require('async'),
 			var widgets = data.global.concat(data.local);
 
 			async.eachSeries(widgets, function(widget, next) {
+				if (!!widget.data['registered-only'] && uid === 0) {
+					return next();
+				}
+
 				plugins.fireHook('filter:widget.render:' + widget.widget, {
 					uid: uid,
 					area: area,
@@ -76,8 +80,7 @@ var async = require('async'),
 
 	Widgets.reset = function(callback) {
 		var defaultAreas = [
-			{ name: 'Global Sidebar', template: 'global', location: 'sidebar' },
-			{ name: 'Global Footer', template: 'global', location: 'footer' },
+			{ name: 'Global Sidebar', template: 'global', location: 'sidebar' }
 		];
 
 		plugins.fireHook('filter:widgets.getAreas', defaultAreas, function(err, areas) {

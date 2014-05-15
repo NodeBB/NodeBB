@@ -1,0 +1,9 @@
+{
+    "title": "Unread",
+    "no_unread_topics": "There are no unread topics.",
+    "load_more": "Load More",
+    "mark_as_read": "Mark as Read",
+    "selected": "Selected",
+    "all": "All",
+    "topics_marked_as_read.success": "Topics marked as read!"
+}

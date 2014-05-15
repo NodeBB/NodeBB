@@ -63,14 +63,14 @@ function uploadPost(req, res, next) {
 function uploadThumb(req, res, next) {
 	if (!meta.config.allowTopicsThumbnail) {
 		deleteTempFiles(req.files.files);
-		return callback(new Error('Topic Thumbnails are disabled!'));
+		return callback(new Error('[[error:topic-thumbnails-are-disabled]]'));
 	}
 
 	upload(req, res, function(file, next) {
 		if(file.type.match(/image./)) {
 			uploadImage(file, next);
 		} else {
-			next(new Error('Invalid File'));
+			next(new Error('[[error:invalid-file]]'));
 		}
 	}, next);
 }
@@ -85,7 +85,7 @@ function uploadImage(image, callback) {
 		if (meta.config.allowFileUploads) {
 			uploadFile(image, callback);
 		} else {
-			callback(new Error('Uploads are disabled!'));
+			callback(new Error('[[error:uploads-are-disabled]]'));
 		}
 	}
 }
@@ -97,15 +97,15 @@ function uploadFile(file, callback) {
 	} else {
 
 		if(!meta.config.allowFileUploads) {
-			return callback(new Error('File uploads are not allowed'));
+			return callback(new Error('[[error:uploads-are-disabled]]'));
 		}
 
 		if(!file) {
-			return callback(new Error('invalid file'));
+			return callback(new Error('[[error:invalid-file]]'));
 		}
 
 		if(file.size > parseInt(meta.config.maximumFileSize, 10) * 1024) {
-			return callback(new Error('File too big'));
+			return callback(new Error('[[error:file-too-big, ' + meta.config.maximumFileSize + ']]'));
 		}
 
 		var filename = 'upload-' + utils.generateUUID() + path.extname(file.name);

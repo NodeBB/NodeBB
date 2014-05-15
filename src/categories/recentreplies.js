@@ -22,25 +22,27 @@ module.exports = function(Categories) {
 		});
 	};
 
-	Categories.moveRecentReplies = function(tid, oldCid, cid, callback) {
-		function movePost(pid, callback) {
+	Categories.moveRecentReplies = function(tid, oldCid, cid) {
+		function movePost(pid, next) {
 			posts.getPostField(pid, 'timestamp', function(err, timestamp) {
 				if(err) {
-					return callback(err);
+					return next(err);
 				}
 
 				db.sortedSetRemove('categories:recent_posts:cid:' + oldCid, pid);
 				db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid);
-				callback();
+				next();
 			});
 		}
 
 		topics.getPids(tid, function(err, pids) {
-			if(err) {
-				return callback(err);
+			if(!err && pids) {
+				async.each(pids, movePost, function(err) {
+					if (err) {
+						winston.error(err.message);
+					}
+				});
 			}
-
-			async.each(pids, movePost, callback);
 		});
 	};
 };

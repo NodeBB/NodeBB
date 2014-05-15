@@ -15,6 +15,7 @@ var fs = require('fs'),
 	utils = require('./../../public/src/utils'),
 	meta = require('./../meta'),
 	plugins = require('./../plugins'),
+	languages = require('./../languages'),
 	image = require('./../image'),
 	file = require('./../file');
 
@@ -33,7 +34,7 @@ function userNotAllowed(res) {
 function getUserDataByUserSlug(userslug, callerUID, callback) {
 	user.getUidByUserslug(userslug, function(err, uid) {
 		if(err || !uid) {
-			return callback(err || new Error('invalid-user'));
+			return callback(err || new Error('[[error:invalid-uid]]'));
 		}
 
 		async.parallel({
@@ -54,7 +55,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			}
 		}, function(err, results) {
 			if(err || !results.userData) {
-				return callback(err || new Error('invalid-user'));
+				return callback(err || new Error('[[error:invalid-uid]]'));
 			}
 
 			var userData = results.userData;
@@ -331,22 +332,35 @@ accountsController.accountSettings = function(req, res, next) {
 				return next(err);
 			}
 
-			user.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
+			async.parallel({
+				user: function(next) {
+					user.getUserFields(uid, ['username', 'userslug'], next);
+				},
+				languages: function(next) {
+					languages.list(next);
+				}
+			}, function(err, results) {
 				if (err) {
 					return next(err);
 				}
 
-				if(!userData) {
+				if(!results.user) {
 					return userNotFound();
 				}
-				userData.yourid = req.user.uid;
-				userData.theirid = uid;
-				userData.settings = settings;
 
-				res.render('accountsettings', userData);
+				results = {
+					username: results.user.username,
+					userslug: results.user.userslug,
+					uid: uid,
+					yourid: req.user.uid,
+					theirid: uid,
+					settings: settings,
+					languages: results.languages
+				};
+
+				res.render('accountsettings', results);
 			});
 		});
-
 	});
 };
 
