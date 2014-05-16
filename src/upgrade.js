@@ -646,6 +646,49 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2014/5/13] Updating privilege settings - skipped');
 				next();
 			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 4, 16);
+
+			if (schemaDate < thisSchemaDate) {
+				var tasks = [];
+
+				db.getObjectField('config', 'allowGuestPosting', function(err, value) {
+					if (value === '1') {
+						tasks.push(async.apply(db.deleteObjectField, 'config', 'allowGuestPosting'));
+
+						db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+							async.each(cids, function(cid, next) {
+								Categories.getCategoryField(cid, 'disabled', function(err, disabled) {
+									if (!disabled || disabled === '0') {
+										tasks.push(async.apply(Groups.join, 'cid:' + cid + ':privileges:groups:topics:create', 'guests'));
+										tasks.push(async.apply(Groups.join, 'cid:' + cid + ':privileges:groups:topics:reply', 'guests'));
+										next();
+									} else {
+										next();
+									}
+								});
+							}, function() {
+								async.parallel(tasks, function(err) {
+									if (!err) {
+										winston.info('[2014/5/16] Removing allowGuestPosting option');
+										Upgrade.update(thisSchemaDate, next);
+									} else {
+										winston.error('[2014/4/1] Error encountered while removing allowGuestPosting option');
+										next(err);
+									}
+								});
+							});
+						});
+					} else {
+						winston.info('[2014/5/16] Removing allowGuestPosting option - skipped');
+						next();
+					}
+				});
+			} else {
+				winston.info('[2014/5/16] Removing allowGuestPosting option - skipped');
+				next();
+			}
 		}
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 22!!!
