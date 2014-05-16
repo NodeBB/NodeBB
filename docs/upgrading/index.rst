@@ -108,16 +108,15 @@ Navigate to your NodeBB: ``$ cd /path/to/nodebb``.
 
 If you are upgrading from a lower branch to a higher branch, switch branches as necessary. ***Make sure you are completely up-to-date on your current branch!***.
 
-For example, if upgrading from ``v0.1.4`` to ``v0.2.0``:
+For example, if upgrading from ``v0.3.2`` to ``v0.4.3``:
 
 .. code:: bash
 
-    $ git fetch    # Grab the latest code from your current branch
-    $ git checkout v0.2.x
+    $ git fetch    # Grab the latest code from the NodeBB Repository
+    $ git checkout v0.4.x    # Type this as-is! Not v0.4.2 or v0.4.3, but "v0.4.x"!
+    $ git merge origin/v0.4.x
 
-If not upgrading between branches, skip the commands above.
-
-Then, grab the latest code:
+If not upgrading between branches, just run the following command:
 
 .. code:: bash
 

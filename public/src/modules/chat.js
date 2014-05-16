@@ -323,10 +323,11 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 
 			message.append(userPicture)
 				.append(userName)
-				.append('<br/>');
+				.append('<br/>')
+				.prepend(time);
 		}
 
-		message.append(S(data.content + time).stripTags('p').s);
+		message.append(S(data.content).stripTags('p').s);
 
 		message.toggleClass('chat-message-them', !isYou);
 		message.find('img:not(".chat-user-image")').addClass('img-responsive');

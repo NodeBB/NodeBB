@@ -2,14 +2,15 @@
 'use strict';
 
 var async = require('async'),
-	db = require('./../database'),
-	utils = require('./../../public/src/utils'),
-	plugins = require('./../plugins'),
-	user = require('./../user'),
-	meta = require('./../meta'),
-	posts = require('./../posts'),
-	threadTools = require('./../threadTools'),
-	categoryTools = require('./../categoryTools');
+	db = require('../database'),
+	utils = require('../../public/src/utils'),
+	plugins = require('../plugins'),
+	user = require('../user'),
+	meta = require('../meta'),
+	posts = require('../posts'),
+	threadTools = require('../threadTools'),
+	privileges = require('../privileges'),
+	categories = require('../categories');
 
 module.exports = function(Topics) {
 
@@ -92,16 +93,16 @@ module.exports = function(Topics) {
 				});
 			},
 			function(next) {
-				categoryTools.exists(cid, next);
+				categories.exists(cid, next);
 			},
 			function(categoryExists, next) {
 				if (!categoryExists) {
 					return next(new Error('[[error:no-category]]'));
 				}
-				categoryTools.privileges(cid, uid, next);
+				privileges.topics.canCreate(cid, uid, next);
 			},
-			function(privileges, next) {
-				if(!privileges.meta['topics:create']) {
+			function(canCreate, next) {
+				if(!canCreate) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				next();
@@ -144,7 +145,6 @@ module.exports = function(Topics) {
 			uid = data.uid,
 			toPid = data.toPid,
 			content = data.content,
-			privileges,
 			postData;
 
 		async.waterfall([
@@ -173,11 +173,10 @@ module.exports = function(Topics) {
 					return next(new Error('[[error:topic-locked]]'));
 				}
 
-				threadTools.privileges(tid, uid, next);
+				privileges.topics.canReply(tid, uid, next);
 			},
-			function(privilegesData, next) {
-				privileges = privilegesData;
-				if (!privileges.meta['topics:reply']) {
+			function(canReply, next) {
+				if (!canReply) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				next();
@@ -232,7 +231,8 @@ module.exports = function(Topics) {
 				postData.favourited = false;
 				postData.votes = 0;
 				postData.display_moderator_tools = true;
-				postData.display_move_tools = privileges.admin || privileges.moderator;
+				postData.display_move_tools = true;
+				postData.selfPost = false;
 				postData.relativeTime = utils.toISOString(postData.timestamp);
 
 				next(null, postData);

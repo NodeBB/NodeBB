@@ -2,19 +2,19 @@
 
 var	async = require('async'),
 	categories = require('../categories'),
-	categoryTools = require('../categoryTools'),
+	privileges = require('../privileges'),
 	meta = require('./../meta'),
 	user = require('./../user'),
 
 	SocketCategories = {};
 
 SocketCategories.getRecentReplies = function(socket, cid, callback) {
-	categoryTools.privileges(cid, socket.uid, function(err, privileges) {
+	privileges.categories.canRead(cid, socket.uid, function(err, canRead) {
 		if (err) {
 			return callback(err);
 		}
 
-		if (!privileges || !privileges.meta.read) {
+		if (!canRead) {
 			return callback(null, []);
 		}
 
@@ -33,7 +33,7 @@ SocketCategories.loadMore = function(socket, data, callback) {
 
 	async.parallel({
 		privileges: function(next) {
-			categoryTools.privileges(data.cid, socket.uid, next);
+			privileges.categories.get(data.cid, socket.uid, next);
 		},
 		settings: function(next) {
 			user.getSettings(socket.uid, next);

@@ -10,27 +10,27 @@ var topicsController = {},
 	meta = require('./../meta'),
 	topics = require('./../topics'),
 	posts = require('../posts'),
-	threadTools = require('./../threadTools'),
+	privileges = require('../privileges'),
 	utils = require('./../../public/src/utils');
 
 topicsController.get = function(req, res, next) {
 	var tid = req.params.topic_id,
 		page = req.query.page || 1,
 		uid = req.user ? req.user.uid : 0,
-		privileges;
+		userPrivileges;
 
 	async.waterfall([
 		function(next) {
-			threadTools.privileges(tid, uid, function(err, userPrivileges) {
+			privileges.topics.get(tid, uid, function(err, privileges) {
 				if (err) {
 					return next(err);
 				}
 
-				if (!userPrivileges.meta.read) {
+				if (!privileges.meta.read) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 
-				privileges = userPrivileges;
+				userPrivileges = privileges;
 				next();
 			});
 		},
@@ -45,7 +45,7 @@ topicsController.get = function(req, res, next) {
 
 				topics.getTopicWithPosts(tid, uid, start, end, function (err, topicData) {
 					if (topicData) {
-						if (parseInt(topicData.deleted, 10) === 1 && parseInt(topicData.expose_tools, 10) === 0) {
+						if (parseInt(topicData.deleted, 10) === 1 && !userPrivileges.view_deleted) {
 							return next(new Error('[[error:no-topic]]'));
 						}
 						topicData.currentPage = page;
@@ -147,14 +147,14 @@ topicsController.get = function(req, res, next) {
 		}
 	], function (err, data) {
 		if (err) {
-			if (err.message === 'not-enough-privileges') {
+			if (err.message === '[[error:no-privileges]]') {
 				return res.locals.isAPI ? res.json(403, err.message) : res.redirect('403');
 			} else {
 				return res.locals.isAPI ? res.json(404, 'not-found') : res.redirect('404');
 			}
 		}
 
-		data.privileges = privileges;
+		data.privileges = userPrivileges;
 
 		var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
 		var queryString = qs.stringify(req.query);

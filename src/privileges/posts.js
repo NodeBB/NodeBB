@@ -59,28 +59,12 @@ module.exports = function(privileges) {
 				return callback(err);
 			}
 
-			async.some([
-				function(next) {
-					helpers.allowedTo('read', uid, cid, next);
-				},
-				function(next) {
-					user.isModerator(uid, cid, next);
-				},
-				function(next) {
-					user.isAdministrator(uid, next);
-				}
-			], function(task, next) {
-				task(function(err, result) {
-					next(!err && result);
-				});
-			}, function(result) {
-				callback(null, result);
-			});
+			privileges.categories.canRead(cid, uid, callback);
 		});
 	};
 
 	privileges.posts.canEdit = function(pid, uid, callback) {
-		async.some([
+		helpers.some([
 			function(next) {
 				posts.isOwner(pid, uid, next);
 			},
@@ -101,12 +85,22 @@ module.exports = function(privileges) {
 			function(next) {
 				user.isAdministrator(uid, next);
 			}
-		], function(task, next) {
-			task(function(err, result) {
-				next(!err && result);
-			});
-		}, function(result) {
-			callback(null, result);
-		});
+		], callback);
+	};
+
+	privileges.posts.canMove = function(pid, uid, callback) {
+		helpers.some([
+			function(next) {
+				posts.getCidByPid(pid, function(err, cid) {
+					if (err) {
+						return next(err);
+					}
+					user.isModerator(uid, cid, next);
+				});
+			},
+			function(next) {
+				user.isAdministrator(uid, next);
+			}
+		], callback);
 	};
 };

@@ -4,7 +4,7 @@ var categoriesController = {},
 	async = require('async'),
 	qs = require('querystring'),
 	nconf = require('nconf'),
-	categoryTools = require('./../categoryTools'),
+	privileges = require('../privileges'),
 	user = require('./../user'),
 	categories = require('./../categories'),
 	topics = require('./../topics');
@@ -72,16 +72,16 @@ categoriesController.get = function(req, res, next) {
 			});
 		},
 		function(next) {
-			categoryTools.privileges(cid, uid, function(err, categoryPrivileges) {
+			privileges.categories.get(cid, uid, function(err, categoryPrivileges) {
 				if (err) {
 					return next(err);
 				}
 
 				if (!categoryPrivileges.meta.read) {
-					next(new Error('[[error:no-privileges]]'));
-				} else {
-					next(null, categoryPrivileges);
+					return next(new Error('[[error:no-privileges]]'));
 				}
+
+				next(null, categoryPrivileges);
 			});
 		},
 		function (privileges, next) {
@@ -152,14 +152,14 @@ categoriesController.get = function(req, res, next) {
 		}
 	], function (err, data) {
 		if (err) {
-			if (err.message === 'not-enough-privileges') {
-				return res.redirect('403');
+			if (err.message === '[[error:no-privileges]]') {
+				return res.locals.isAPI ? res.json(403, err.message) : res.redirect('403');
 			} else {
-				return res.redirect('404');
+				return res.locals.isAPI ? res.json(404, 'not-found') : res.redirect('404');
 			}
 		}
 
-		if(data.link) {
+		if (data.link) {
 			return res.redirect(data.link);
 		}
 
