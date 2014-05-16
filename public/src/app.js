@@ -553,7 +553,7 @@ var socket,
 				var hash = window.location.hash ? window.location.hash : '';
 				window.history.replaceState({
 					url: url + search + hash
-				}, url, RELATIVE_PATH + '/' + url + hash);
+				}, url, RELATIVE_PATH + '/' + url + search + hash);
 			}
 
 			ajaxify.loadScript(tpl_url, function() {
