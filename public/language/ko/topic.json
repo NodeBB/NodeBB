@@ -79,7 +79,7 @@
     "composer.help": "도움말",
     "composer.discard": "취소",
     "composer.submit": "등록",
-    "composer.replying_to": "%1님께 답글>",
+    "composer.replying_to": "%1에 대한 답글",
     "composer.new_topic": "새 주제 생성",
     "composer.uploading": "업로드 중",
     "composer.thumb_url_label": "섬네일 URL",

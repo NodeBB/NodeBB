@@ -58,5 +58,7 @@
     "paginate_description": "Phân trang cho chủ đề và bài viết thay vì cuộn liên tục",
     "topics_per_page": "Số chủ đề trong một trang",
     "posts_per_page": "Số bài viết trong một trang",
-    "notification_sounds": "Xuất hiện âm thanh khi bạn nhận được một thông báo"
+    "notification_sounds": "Xuất hiện âm thanh khi bạn nhận được một thông báo",
+    "browsing": "Browsing Settings",
+    "open_links_in_new_tab": "Open outgoing links in new tab?"
 }
