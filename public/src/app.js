@@ -512,6 +512,7 @@ var socket,
 	app.load = function() {
 		$('document').ready(function () {
 			var url = window.location.pathname.slice(1),
+				search = window.location.search,
 				tpl_url = ajaxify.getTemplateMapping(url);
 
 			url = url.replace(/\/$/, "");
@@ -551,7 +552,7 @@ var socket,
 			if (window.history && window.history.replaceState) {
 				var hash = window.location.hash ? window.location.hash : '';
 				window.history.replaceState({
-					url: url + hash
+					url: url + search + hash
 				}, url, RELATIVE_PATH + '/' + url + hash);
 			}
 
