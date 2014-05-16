@@ -12,10 +12,6 @@
         "value": 8
     },
     {
-        "field": "allowGuestPosting",
-        "value": 0
-    },
-    {
         "field": "allowGuestSearching",
         "value": 0
     },

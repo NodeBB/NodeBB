@@ -55,6 +55,16 @@ module.exports = function(privileges) {
 		});
 	};
 
+	privileges.topics.can = function(privilege, tid, uid, callback) {
+		topics.getTopicField(tid, 'cid', function(err, cid) {
+			if (err) {
+				return callback(err);
+			}
+
+			privileges.categories.can(privilege, cid, uid, callback);
+		});
+	};
+
 	privileges.topics.canRead = function(tid, uid, callback) {
 		topics.getTopicField(tid, 'cid', function(err, cid) {
 			if (err) {

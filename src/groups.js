@@ -38,6 +38,16 @@
 						});
 					}
 				});
+			},
+			removeEphemeralGroups: function(groups) {
+				var x = groups.length;
+				while(x--) {
+					if (ephemeralGroups.indexOf(groups[x]) !== -1) {
+						groups.splice(x, 1);
+					}
+				}
+
+				return groups;
 			}
 		};
 
@@ -137,9 +147,14 @@
 	};
 
 	Groups.isMemberOfGroupList = function(uid, groupListKey, callback) {
-		db.getSetMembers('group:' + groupListKey + ':members', function(err, gids) {
-			async.some(gids, function(gid, next) {
-				Groups.isMember(uid, gid, function(err, isMember) {
+		db.getSetMembers('group:' + groupListKey + ':members', function(err, groupNames) {
+			groupNames = internals.removeEphemeralGroups(groupNames);
+			if (groupNames.length === 0) {
+				return callback(null, null);
+			}
+
+			async.some(groupNames, function(groupName, next) {
+				Groups.isMember(uid, groupName, function(err, isMember) {
 					if (!err && isMember) {
 						next(true);
 					} else {

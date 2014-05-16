@@ -40,11 +40,11 @@ helpers.allowedTo = function(privilege, uid, cid, callback) {
 				},
 				function(next) {
 					helpers.isMember(groups.isMember, 'cid:' + cid + ':privileges:groups:' + privilege, 'guests', function(err, isMember) {
-						next(err, privilege !== 'find' ? isMember : isMember !== false);
+						next(err, privilege !== 'find' && privilege !== 'read' ? isMember === true : isMember !== false);
 					});
 				}
 			], function(err, results) {
-				callback(err, results[0] && results[1]);
+				callback(err, results[0] && (results[1] || results[1] === null));
 			});
 		}
 

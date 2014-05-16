@@ -49,10 +49,6 @@ var	stopTracking = function(replyObj) {
 	};
 
 SocketModules.composer.push = function(socket, pid, callback) {
-	if(!socket.uid && parseInt(meta.config.allowGuestPosting, 10) !== 1) {
-		return callback(new Error('[[error:not-logged-in]]'));
-	}
-
 	posts.getPostFields(pid, ['content'], function(err, postData) {
 		if(err || (!postData && !postData.content)) {
 			return callback(err || new Error('[[error:invalid-pid]]'));

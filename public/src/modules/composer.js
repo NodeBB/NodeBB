@@ -41,22 +41,22 @@ define(['taskbar'], function(taskbar) {
 		$el.unwrap();
 	}
 
-	function allowed() {
-		if(!(parseInt(app.uid, 10) > 0 || config.allowGuestPosting)) {
-			app.alert({
-				type: 'danger',
-				timeout: 5000,
-				alert_id: 'post_error',
-				title: '[[global:please_log_in]]',
-				message: '[[global:posting_restriction_info]]',
-				clickfn: function() {
-					ajaxify.go('login');
-				}
-			});
-			return false;
-		}
-		return true;
-	}
+	// function allowed() {
+	// 	if(!(parseInt(app.uid, 10) > 0 || config.allowGuestPosting)) {
+	// 		app.alert({
+	// 			type: 'danger',
+	// 			timeout: 5000,
+	// 			alert_id: 'post_error',
+	// 			title: '[[global:please_log_in]]',
+	// 			message: '[[global:posting_restriction_info]]',
+	// 			clickfn: function() {
+	// 				ajaxify.go('login');
+	// 			}
+	// 		});
+	// 		return false;
+	// 	}
+	// 	return true;
+	// }
 
 	function alreadyOpen(post) {
 		// If a composer for the same cid/tid/pid is already open, return the uuid, else return bool false
@@ -484,9 +484,9 @@ define(['taskbar'], function(taskbar) {
 	};
 
 	composer.newTopic = function(cid) {
-		if(!allowed()) {
-			return;
-		}
+		// if(!allowed()) {
+		// 	return;
+		// }
 
 		push({
 			cid: cid,
@@ -498,9 +498,9 @@ define(['taskbar'], function(taskbar) {
 	};
 
 	composer.addQuote = function(tid, pid, title, username, text){
-		if (!allowed()) {
-			return;
-		}
+		// if (!allowed()) {
+		// 	return;
+		// }
 
 		var uuid = composer.active;
 
@@ -521,9 +521,9 @@ define(['taskbar'], function(taskbar) {
 	};
 
 	composer.newReply = function(tid, pid, title, text) {
-		if(!allowed()) {
-			return;
-		}
+		// if(!allowed()) {
+		// 	return;
+		// }
 
 		push({
 			tid: tid,
@@ -536,9 +536,9 @@ define(['taskbar'], function(taskbar) {
 	};
 
 	composer.editPost = function(pid) {
-		if(!allowed()) {
-			return;
-		}
+		// if(!allowed()) {
+		// 	return;
+		// }
 
 		socket.emit('modules.composer.push', pid, function(err, threadData) {
 			if(err) {
@@ -610,7 +610,7 @@ define(['taskbar'], function(taskbar) {
 							thumbToggleBtnEl.removeClass('hide');
 						}
 					};
-					
+
 				postData.title = $('<div></div>').html(postData.title).text();
 
 				if (parseInt(postData.tid, 10) > 0) {

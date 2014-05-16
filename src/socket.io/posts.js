@@ -19,11 +19,6 @@ var	async = require('async'),
 
 
 SocketPosts.reply = function(socket, data, callback) {
-
-	if (!socket.uid && !parseInt(meta.config.allowGuestPosting, 10)) {
-		return callback(new Error('[[error:not-logged-in]]'));
-	}
-
 	if(!data || !data.tid || !data.content) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}

@@ -21,10 +21,6 @@ SocketTopics.post = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	if (!socket.uid && !parseInt(meta.config.allowGuestPosting, 10)) {
-		return callback(new Error('[[error:not-logged-in]]'));
-	}
-
 	topics.post({
 		uid: socket.uid,
 		title: data.title,
