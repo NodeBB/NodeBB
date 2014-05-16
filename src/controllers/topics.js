@@ -147,7 +147,7 @@ topicsController.get = function(req, res, next) {
 		}
 	], function (err, data) {
 		if (err) {
-			if (err.message === 'not-enough-privileges') {
+			if (err.message === '[[error:no-privileges]]') {
 				return res.locals.isAPI ? res.json(403, err.message) : res.redirect('403');
 			} else {
 				return res.locals.isAPI ? res.json(404, 'not-found') : res.redirect('404');

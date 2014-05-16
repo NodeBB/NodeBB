@@ -65,6 +65,20 @@ module.exports = function(privileges) {
 		});
 	};
 
+	privileges.topics.canCreate = function(cid, uid, callback) {
+		helpers.some([
+			function(next) {
+				helpers.allowedTo('topics:create', uid, cid, next);
+			},
+			function(next) {
+				user.isModerator(uid, cid, next);
+			},
+			function(next) {
+				user.isAdministrator(uid, next);
+			}
+		], callback);
+	};
+
 	privileges.topics.canReply = function(tid, uid, callback) {
 		topics.getTopicField(tid, 'cid', function(err, cid) {
 			if (err) {

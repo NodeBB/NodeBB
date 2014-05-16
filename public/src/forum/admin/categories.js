@@ -308,9 +308,11 @@ define(['uploader'], function(uploader) {
 				uid: uid,
 				privilege: privilege,
 				set: !anchorEl.hasClass('active')
-			}, function(err, privileges) {
-				anchorEl.toggleClass('active', privileges[privilege]);
-
+			}, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				anchorEl.toggleClass('active', !anchorEl.hasClass('active'));
 				Categories.refreshPrivilegeList(cid);
 			});
 		});

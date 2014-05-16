@@ -10,8 +10,6 @@ var async = require('async'),
 	plugins = require('./plugins'),
 	user = require('./user'),
 	categories = require('./categories'),
-	categoryTools = require('./categoryTools'),
-	threadTools = require('./threadTools'),
 	privileges = require('./privileges');
 
 (function(Topics) {
@@ -22,7 +20,6 @@ var async = require('async'),
 	require('./topics/fork')(Topics);
 	require('./topics/posts')(Topics);
 	require('./topics/follow')(Topics);
-
 
 	Topics.getTopicData = function(tid, callback) {
 		Topics.getTopicsData([tid], function(err, topics) {
@@ -200,7 +197,7 @@ var async = require('async'),
 					if (privilegeCache[topicData.cid]) {
 						return next(null, privilegeCache[topicData.cid]);
 					}
-					categoryTools.privileges(topicData.cid, uid, next);
+					privileges.categories.get(topicData.cid, uid, next);
 				},
 				categoryData: function(next) {
 					if (categoryCache[topicData.cid]) {

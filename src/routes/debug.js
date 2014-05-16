@@ -54,11 +54,10 @@ module.exports = function(app, middleware, controllers) {
 		});
 
 		app.get('/test', function(req, res) {
-			var tools = require('../categoryTools');
-			tools.privileges(1, 2, function() {
-				console.log(arguments);
-			})
-			res.send(200);
+			var privileges = require('../privileges');
+			privileges.topics.get(1299, 1, function(err, result) {
+				res.json(result);
+			});
 		});
 	});
 };

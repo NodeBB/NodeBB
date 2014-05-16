@@ -8,7 +8,6 @@ var db = require('./database'),
 	Groups = require('./groups'),
 	topics = require('./topics'),
 	plugins = require('./plugins'),
-	CategoryTools = require('./categoryTools'),
 	meta = require('./meta'),
 	emitter = require('./emitter'),
 	validator = require('validator'),
@@ -58,6 +57,10 @@ var db = require('./database'),
 				callback(null, category);
 			});
 		});
+	};
+
+	Categories.exists = function(cid, callback) {
+		db.isSortedSetMember('categories:cid', cid, callback);
 	};
 
 	Categories.getCategoryById = function(cid, start, end, uid, callback) {

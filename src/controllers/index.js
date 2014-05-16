@@ -17,7 +17,7 @@ var topicsController = require('./topics'),
 	topics = require('./../topics'),
 	plugins = require('./../plugins'),
 	categories = require('./../categories'),
-	categoryTools = require('./../categoryTools');
+	privileges = require('../privileges');
 
 
 
@@ -69,12 +69,6 @@ Controllers.home = function(req, res, next) {
 					return !category.disabled;
 				});
 
-				function canSee(category, next) {
-					categoryTools.privileges(category.cid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
-						next(!err && privileges.meta.read);
-					});
-				}
-
 				function getRecentReplies(category, callback) {
 					categories.getRecentReplies(category.cid, uid, parseInt(category.numRecentReplies, 10), function (err, posts) {
 						category.posts = posts;
@@ -83,7 +77,11 @@ Controllers.home = function(req, res, next) {
 					});
 				}
 
-				async.filter(data.categories, canSee, function(visibleCategories) {
+				async.filter(data.categories, function (category, next) {
+					privileges.categories.canRead(category.cid, uid, function(err, canRead) {
+						next(!err && canRead);
+					});
+				}, function(visibleCategories) {
 					data.categories = visibleCategories;
 
 					async.each(data.categories, getRecentReplies, function (err) {

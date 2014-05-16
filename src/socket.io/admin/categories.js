@@ -3,7 +3,7 @@
 var groups = require('../../groups'),
 	user = require('../../user'),
 	categories = require('../../categories'),
-	categoryTools = require('../../categoryTools'),
+	privileges = require('../../privileges'),
 	async = require('async'),
 	Categories = {};
 
@@ -32,8 +32,12 @@ Categories.search = function(socket, data, callback) {
 		cid = data.cid;
 
 	user.search(username, function(err, data) {
+		if (err) {
+			return callback(err);
+		}
+
 		async.map(data.users, function(userObj, next) {
-			categoryTools.privileges(cid, userObj.uid, function(err, privileges) {
+			privileges.categories.userPrivileges(cid, userObj.uid, function(err, privileges) {
 				if(err) {
 					return next(err);
 				}
@@ -50,22 +54,7 @@ Categories.setPrivilege = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	var	cid = data.cid,
-		uid = data.uid,
-		privilege = data.privilege,
-		set = data.set,
-		cb = function(err) {
-			if(err) {
-				return callback(err);
-			}
-			categoryTools.privileges(cid, uid, callback);
-		};
-
-	if (set) {
-		groups.join('cid:' + cid + ':privileges:' + privilege, uid, cb);
-	} else {
-		groups.leave('cid:' + cid + ':privileges:' + privilege, uid, cb);
-	}
+	groups[data.set ? 'join' : 'leave']('cid:' + data.cid + ':privileges:' + data.privilege, data.uid, callback);
 };
 
 Categories.getPrivilegeSettings = function(socket, cid, callback) {
@@ -119,7 +108,7 @@ Categories.groupsList = function(socket, cid, callback) {
 		}
 
 		async.map(data, function(groupObj, next) {
-			categoryTools.groupPrivileges(cid, groupObj.name, function(err, privileges) {
+			privileges.categories.groupPrivileges(cid, groupObj.name, function(err, privileges) {
 				if(err) {
 					return next(err);
 				}

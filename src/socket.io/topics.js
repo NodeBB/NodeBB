@@ -5,7 +5,6 @@ var topics = require('../topics'),
 	categories = require('../categories'),
 	privileges = require('../privileges'),
 	threadTools = require('../threadTools'),
-	categoryTools = require('../categoryTools'),
 	websockets = require('./index'),
 	user = require('../user'),
 	db = require('./../database'),
@@ -275,20 +274,9 @@ SocketTopics.moveAll = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	async.parallel({
-		from: function(next) {
-			categoryTools.privileges(data.currentCid, socket.uid, next);
-		},
-		to: function(next) {
-			categoryTools.privileges(data.cid, socket.uid, next);
-		}
-	}, function(err, results) {
-		if (err) {
-			return callback(err);
-		}
-
-		if (!results.from.admin && (!results.from.mods || !results.to.mods)) {
-			return callback(new Error('[[error:no-privileges]]'));
+	privileges.categories.canMoveAllTopics(data.currentCid, data.cid, data.uid, function(err, canMove) {
+		if (err || canMove) {
+			return callback(err || new Error('[[error:no-privileges]]'));
 		}
 
 		categories.getTopicIds(data.currentCid, 0, -1, function(err, tids) {

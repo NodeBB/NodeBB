@@ -6,8 +6,7 @@ var async = require('async'),
 
 	db = require('./../database'),
 	posts = require('./../posts'),
-	topics = require('./../topics'),
-	CategoryTools = require('./../categoryTools');
+	topics = require('./../topics');
 
 module.exports = function(Categories) {
 	Categories.getRecentReplies = function(cid, uid, count, callback) {

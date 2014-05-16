@@ -32,10 +32,10 @@ helpers.allowedTo = function(privilege, uid, cid, callback) {
 
 		async.parallel({
 			hasUserPrivilege: function(next) {
-				isMember(groups.isMember, 'cid:' + cid + ':privileges:' + privilege, uid, next);
+				helpers.isMember(groups.isMember, 'cid:' + cid + ':privileges:' + privilege, uid, next);
 			},
 			hasGroupPrivilege: function(next) {
-				isMember(groups.isMemberOfGroupList, 'cid:' + cid + ':privileges:groups:' + privilege, uid, next);
+				helpers.isMember(groups.isMemberOfGroupList, 'cid:' + cid + ':privileges:groups:' + privilege, uid, next);
 			},
 		}, function(err, results) {
 			if (err) {
@@ -47,7 +47,7 @@ helpers.allowedTo = function(privilege, uid, cid, callback) {
 	});
 };
 
-function isMember(method, group, uid, callback) {
+helpers.isMember = function(method, group, uid, callback) {
 	groups.exists(group, function(err, exists) {
 		if (err) {
 			return callback(err);

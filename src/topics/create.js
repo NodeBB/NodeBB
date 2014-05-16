@@ -2,15 +2,15 @@
 'use strict';
 
 var async = require('async'),
-	db = require('./../database'),
-	utils = require('./../../public/src/utils'),
-	plugins = require('./../plugins'),
-	user = require('./../user'),
-	meta = require('./../meta'),
-	posts = require('./../posts'),
-	threadTools = require('./../threadTools'),
+	db = require('../database'),
+	utils = require('../../public/src/utils'),
+	plugins = require('../plugins'),
+	user = require('../user'),
+	meta = require('../meta'),
+	posts = require('../posts'),
+	threadTools = require('../threadTools'),
 	privileges = require('../privileges'),
-	categoryTools = require('./../categoryTools');
+	categories = require('../categories');
 
 module.exports = function(Topics) {
 
@@ -93,16 +93,16 @@ module.exports = function(Topics) {
 				});
 			},
 			function(next) {
-				categoryTools.exists(cid, next);
+				categories.exists(cid, next);
 			},
 			function(categoryExists, next) {
 				if (!categoryExists) {
 					return next(new Error('[[error:no-category]]'));
 				}
-				categoryTools.privileges(cid, uid, next);
+				privileges.topics.canCreate(cid, uid, next);
 			},
-			function(privileges, next) {
-				if(!privileges.meta['topics:create']) {
+			function(canCreate, next) {
+				if(!canCreate) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				next();
