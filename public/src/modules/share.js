@@ -15,7 +15,7 @@ define(function() {
 			return false;
 		}
 
-		$('#content').on('shown.bs.dropdown', '.share-dropdown', function() {
+		$('#content').off('shown.bs.dropdown', '.share-dropdown').on('shown.bs.dropdown', '.share-dropdown', function() {
 
 			var postLink = $(this).find('.post-link');
 			postLink.val(baseUrl + window.location.pathname + getPostHash($(this)));
@@ -26,23 +26,27 @@ define(function() {
 			}, 50);
 		});
 
-		$('#content').on('click', '.post-link', function(e) {
+		addHandler('.post-link', function(e) {
 			e.preventDefault();
 			return false;
 		});
 
-		$('#content').on('click', '.twitter-share', function () {
+		addHandler('.twitter-share', function () {
 			return openShare('https://twitter.com/intent/tweet?text=' + name + '&url=', getPostHash($(this)), 550, 420);
 		});
 
-		$('#content').on('click', '.facebook-share', function () {
+		addHandler('.facebook-share', function () {
 			return openShare('https://www.facebook.com/sharer/sharer.php?u=', getPostHash($(this)), 626, 436);
 		});
 
-		$('#content').on('click', '.google-share', function () {
+		addHandler('.google-share', function () {
 			return openShare('https://plus.google.com/share?url=', getPostHash($(this)), 500, 570);
 		});
 	};
+
+	function addHandler(selector, callback) {
+		$('#content').off('click', selector).on('click', selector, callback);
+	}
 
 	function getPostHash(clickedElement) {
 		var pid = clickedElement.parents('.post-row').attr('data-pid');
