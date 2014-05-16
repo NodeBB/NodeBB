@@ -207,7 +207,6 @@ Controllers.register = function(req, res, next) {
 	data.minimumPasswordLength = meta.config.minimumPasswordLength;
 	data.termsOfUse = meta.config.termsOfUse;
 
-	data.captcha = null;
 	plugins.fireHook('filter:register.build', req, res, data, function(err, data) {
 		if (err && process.env === 'development') {
 			winston.warn(JSON.stringify(err));
