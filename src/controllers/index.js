@@ -78,8 +78,8 @@ Controllers.home = function(req, res, next) {
 				}
 
 				async.filter(data.categories, function (category, next) {
-					privileges.categories.canRead(category.cid, uid, function(err, canRead) {
-						next(!err && canRead);
+					privileges.categories.can('find', category.cid, uid, function(err, findable) {
+						next(!err && findable);
 					});
 				}, function(visibleCategories) {
 					data.categories = visibleCategories;

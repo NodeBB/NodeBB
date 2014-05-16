@@ -44,6 +44,20 @@ module.exports = function(privileges) {
 		});
 	};
 
+	privileges.categories.can = function(privilege, cid, uid, callback) {
+		helpers.some([
+			function(next) {
+				helpers.allowedTo(privilege, uid, cid, next);
+			},
+			function(next) {
+				user.isModerator(uid, cid, next);
+			},
+			function(next) {
+				user.isAdministrator(uid, next);
+			}
+		], callback);
+	};
+
 	privileges.categories.canRead = function(cid, uid, callback) {
 		helpers.some([
 			function(next) {
@@ -80,6 +94,7 @@ module.exports = function(privileges) {
 
 	privileges.categories.userPrivileges = function(cid, uid, callback) {
 		async.parallel({
+			find: async.apply(helpers.isMember, groups.isMember, 'cid:' + cid + ':privileges:find', uid),
 			read: function(next) {
 				helpers.isMember(groups.isMember, 'cid:' + cid + ':privileges:read', uid, next);
 			},
@@ -97,6 +112,7 @@ module.exports = function(privileges) {
 
 	privileges.categories.groupPrivileges = function(cid, groupName, callback) {
 		async.parallel({
+			'groups:find': async.apply(helpers.isMember, groups.isMember, 'cid:' + cid + ':privileges:groups:find', groupName),
 			'groups:read': function(next) {
 				helpers.isMember(groups.isMember, 'cid:' + cid + ':privileges:groups:read', groupName, function(err, isMember){
 					next(err, !!isMember);

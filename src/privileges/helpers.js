@@ -30,13 +30,31 @@ helpers.allowedTo = function(privilege, uid, cid, callback) {
 			return callback(null, false);
 		}
 
+		// Guests handling
+		if (parseInt(uid, 10) === 0) {
+			return async.parallel([
+				function(next) {
+					groups.exists('cid:' + cid + ':privileges:' + privilege, function(err, exists) {
+						next(err, !err ? !exists : false);
+					});
+				},
+				function(next) {
+					helpers.isMember(groups.isMember, 'cid:' + cid + ':privileges:groups:' + privilege, 'guests', function(err, isMember) {
+						next(err, privilege !== 'find' ? isMember : isMember !== false);
+					});
+				}
+			], function(err, results) {
+				callback(err, results[0] && results[1]);
+			});
+		}
+
 		async.parallel({
 			hasUserPrivilege: function(next) {
 				helpers.isMember(groups.isMember, 'cid:' + cid + ':privileges:' + privilege, uid, next);
 			},
 			hasGroupPrivilege: function(next) {
 				helpers.isMember(groups.isMemberOfGroupList, 'cid:' + cid + ':privileges:groups:' + privilege, uid, next);
-			},
+			}
 		}, function(err, results) {
 			if (err) {
 				return callback(err);

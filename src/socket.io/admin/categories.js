@@ -58,7 +58,7 @@ Categories.setPrivilege = function(socket, data, callback) {
 };
 
 Categories.getPrivilegeSettings = function(socket, cid, callback) {
-	var privileges = ['read', 'topics:create', 'topics:reply', 'mods'];
+	var privileges = ['find', 'read', 'topics:create', 'topics:reply', 'mods'];
 
 	async.reduce(privileges, [], function(members, privilege, next) {
 		groups.get('cid:' + cid + ':privileges:' + privilege, { expand: true }, function(err, groupObj) {
