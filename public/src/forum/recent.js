@@ -1,13 +1,12 @@
 'use strict';
 
-/* globals define, app, socket, ajaxify, templates, translator, utils */
+/* globals define, app, socket, utils */
 
-define(function() {
+define(['forum/infinitescroll'], function(infinitescroll) {
 	var	Recent = {};
 
 	var newTopicCount = 0,
-		newPostCount = 0,
-		loadingMoreTopics = false;
+		newPostCount = 0;
 
 	var active = '';
 
@@ -36,11 +35,7 @@ define(function() {
 		});
 
 
-		app.enableInfiniteLoading(function() {
-			if(!loadingMoreTopics) {
-				Recent.loadMoreTopics();
-			}
-		});
+		infinitescroll.init(Recent.loadMoreTopics);
 	};
 
 	Recent.selectActivePill = function() {
@@ -102,42 +97,30 @@ define(function() {
 		$('#category-no-topics').addClass('hide');
 	};
 
-	Recent.loadMoreTopics = function() {
-		if(!$('#topics-container').length) {
+	Recent.loadMoreTopics = function(direction) {
+		if(direction < 0 || !$('#topics-container').length) {
 			return;
 		}
 
-		loadingMoreTopics = true;
-		socket.emit('topics.loadMoreRecentTopics', {
+		infinitescroll.loadMore('topics.loadMoreRecentTopics', {
 			after: $('#topics-container').attr('data-nextstart'),
 			term: active
-		}, function(err, data) {
-			if(err) {
-				return app.alertError(err.message);
-			}
-
+		}, function(data) {
 			if (data.topics && data.topics.length) {
 				Recent.onTopicsLoaded('recent', data.topics, false);
 				$('#topics-container').attr('data-nextstart', data.nextStart);
 			}
-
-			loadingMoreTopics = false;
 		});
 	};
 
 	Recent.onTopicsLoaded = function(templateName, topics, showSelect) {
-		ajaxify.loadTemplate(templateName, function(template) {
-			var html = templates.parse(templates.getBlock(template, 'topics'), {topics: topics, showSelect: showSelect});
+		infinitescroll.parseAndTranslate(templateName, 'topics', {topics: topics, showSelect: showSelect}, function(html) {
+			$('#category-no-topics').remove();
 
-			translator.translate(html, function(translatedHTML) {
-				$('#category-no-topics').remove();
-
-				html = $(translatedHTML);
-				$('#topics-container').append(html);
-				html.find('span.timeago').timeago();
-				app.createUserTooltips();
-				utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
-			});
+			$('#topics-container').append(html);
+			html.find('span.timeago').timeago();
+			app.createUserTooltips();
+			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 		});
 	};
 

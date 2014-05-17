@@ -1,6 +1,9 @@
-define(['forum/recent'], function(recent) {
+'use strict';
+
+/* globals define, app, socket*/
+
+define(['forum/recent', 'forum/infinitescroll'], function(recent, infinitescroll) {
 	var Popular = {},
-		loadingMoreTopics = false,
 		active = '';
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
@@ -20,34 +23,23 @@ define(['forum/recent'], function(recent) {
 
 		active = recent.selectActivePill();
 
-		app.enableInfiniteLoading(function() {
-			if(!loadingMoreTopics) {
-				loadMoreTopics();
-			}
-		});
+		infinitescroll.init(loadMoreTopics);
 
-		function loadMoreTopics() {
-			if(!$('#topics-container').length) {
+		function loadMoreTopics(direction) {
+			if(direction < 0 || !$('#topics-container').length) {
 				return;
 			}
 
-			loadingMoreTopics = true;
-			socket.emit('topics.loadMoreFromSet', {
+			infinitescroll.loadMore('topics.loadMoreFromSet', {
 				set: 'topics:' + $('.nav-pills .active a').html().toLowerCase(),
 				after: $('#topics-container').attr('data-nextstart')
-			}, function(err, data) {
-				if(err) {
-					return app.alertError(err.message);
-				}
-
+			}, function(data) {
 				if (data.topics && data.topics.length) {
 					recent.onTopicsLoaded('popular', data.topics, false);
 					$('#topics-container').attr('data-nextstart', data.nextStart);
 				} else {
 					$('#load-more-btn').hide();
 				}
-
-				loadingMoreTopics = false;
 			});
 		}
 	};

@@ -352,24 +352,6 @@ var socket,
 		});
 	};
 
-	var previousScrollTop = 0;
-
-	app.enableInfiniteLoading = function(callback) {
-		$(window).on('scroll', function() {
-
-			var top = $(window).height() * 0.1;
-			var bottom = ($(document).height() - $(window).height()) * 0.9;
-			var currentScrollTop = $(window).scrollTop();
-
-			if(currentScrollTop < top && currentScrollTop < previousScrollTop) {
-				callback(-1);
-			} else if (currentScrollTop > bottom && currentScrollTop > previousScrollTop) {
-				callback(1);
-			}
-			previousScrollTop = currentScrollTop;
-		});
-	};
-
 	var	titleObj = {
 			active: false,
 			interval: undefined,
