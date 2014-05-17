@@ -1,8 +1,8 @@
 {
     "latest_users": "最近用戶",
-    "top_posters": "發帖最多",
+    "top_posters": "發文數最多",
     "most_reputation": "聲望最高",
-    "search": "搜索",
-    "enter_username": "輸入你想找的用戶名",
+    "search": "搜尋",
+    "enter_username": "輸入想找的使用者帳號",
     "load_more": "載入更多"
 }

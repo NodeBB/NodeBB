@@ -1,15 +1,15 @@
 {
-    "home": "Home",
-    "unread": "Unread Topics",
-    "popular": "Popular Topics",
-    "recent": "Recent Topics",
-    "users": "Registered Users",
-    "notifications": "Notifications",
-    "user.edit": "Editing \"%1\"",
+    "home": "首頁",
+    "unread": "未讀的主題",
+    "popular": "受歡迎的主題",
+    "recent": "近期的主題",
+    "users": "已註冊的使用者",
+    "notifications": "新訊息通知",
+    "user.edit": "編輯中 \"%1\"",
     "user.following": "People %1 Follows",
     "user.followers": "People who Follow %1",
-    "user.posts": "Posts made by %1",
-    "user.topics": "Topics created by %1",
-    "user.favourites": "%1's Favourite Posts",
-    "user.settings": "User Settings"
+    "user.posts": "文章由 %1 所張貼",
+    "user.topics": "主題由 %1 所創建",
+    "user.favourites": "%1's 最喜愛的文章",
+    "user.settings": "使用者設定"
 }
