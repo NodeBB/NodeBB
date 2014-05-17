@@ -24,7 +24,7 @@ var socket,
 			reconnecting = false;
 
 			// Rejoin room that was left when we disconnected
-			var	url_parts = document.location.pathname.slice(RELATIVE_PATH.length).split('/').slice(1);
+			var	url_parts = window.location.pathname.slice(RELATIVE_PATH.length).split('/').slice(1);
 			var room;
 
 			switch(url_parts[0]) {
@@ -512,7 +512,10 @@ var socket,
 	app.load = function() {
 		$('document').ready(function () {
 			var url = window.location.pathname.slice(1),
-				tpl_url = ajaxify.getTemplateMapping(url);
+				search = window.location.search,
+				hash = window.location.hash,
+				tpl_url = ajaxify.getTemplateMapping(url),
+				$window = $(window);
 
 			url = url.replace(/\/$/, "");
 
@@ -520,7 +523,7 @@ var socket,
 				url = url.slice(RELATIVE_PATH.length);
 			}
 
-			$(window).trigger('action:ajaxify.start', {
+			$window.trigger('action:ajaxify.start', {
 				url: url
 			});
 
@@ -532,11 +535,11 @@ var socket,
 
 			$('#logout-link').on('click', app.logout);
 
-			$(window).blur(function(){
+			$window.blur(function(){
 				app.isFocused = false;
 			});
 
-			$(window).focus(function(){
+			$window.focus(function(){
 				app.isFocused = true;
 				app.alternatingTitle('');
 			});
@@ -549,21 +552,20 @@ var socket,
 			ajaxify.widgets.render(tpl_url, url);
 
 			if (window.history && window.history.replaceState) {
-				var hash = window.location.hash ? window.location.hash : '';
 				window.history.replaceState({
-					url: url + hash
-				}, url, RELATIVE_PATH + '/' + url + hash);
+					url: url + search + hash
+				}, url, RELATIVE_PATH + '/' + url + search + hash);
 			}
 
 			ajaxify.loadScript(tpl_url, function() {
-				$(window).trigger('action:ajaxify.end', {
+				$window.trigger('action:ajaxify.end', {
 					url: url
 				});
 			});
 		});
 	};
 
-	showWelcomeMessage = location.href.indexOf('loggedin') !== -1;
+	showWelcomeMessage = window.location.href.indexOf('loggedin') !== -1;
 
 	app.loadConfig();
 	app.alternatingTitle('');

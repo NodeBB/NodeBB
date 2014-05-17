@@ -295,14 +295,14 @@ var fs = require('fs'),
 	};
 
 	Plugins.fireHook = function(hook) {
-		var callback = typeof arguments[arguments.length-1] === "function" ? arguments[arguments.length-1] : null,
+		var callback = typeof arguments[arguments.length-1] === 'function' ? arguments[arguments.length-1] : null,
 			args = arguments.length ? Array.prototype.slice.call(arguments, 1) : [];
 
 		if (callback) {
 			args.pop();
 		}
 
-		hookList = Plugins.loadedHooks[hook];
+		var hookList = Plugins.loadedHooks[hook];
 
 		if (hookList && Array.isArray(hookList)) {
 			// if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
@@ -334,7 +334,7 @@ var fs = require('fs'),
 					}, function(err, values) {
 						if (err) {
 							if (global.env === 'development') {
-								winston.info('[plugins] Problem executing hook: ' + hook);
+								winston.info('[plugins] Problem executing hook: ' + hook + ' err: ' + JSON.stringify(err));
 							}
 						}
 
