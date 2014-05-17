@@ -30,22 +30,8 @@ helpers.allowedTo = function(privilege, uid, cid, callback) {
 			return callback(null, false);
 		}
 
-		// Guests handling
 		if (parseInt(uid, 10) === 0) {
-			return async.parallel([
-				function(next) {
-					groups.exists('cid:' + cid + ':privileges:' + privilege, function(err, exists) {
-						next(err, !err ? !exists : false);
-					});
-				},
-				function(next) {
-					helpers.isMember(groups.isMember, 'cid:' + cid + ':privileges:groups:' + privilege, 'guests', function(err, isMember) {
-						next(err, privilege !== 'find' && privilege !== 'read' ? isMember === true : isMember !== false);
-					});
-				}
-			], function(err, results) {
-				callback(err, results[0] && (results[1] || results[1] === null));
-			});
+			return isGuestAllowedTo(privilege, cid, callback);
 		}
 
 		async.parallel({
@@ -65,6 +51,23 @@ helpers.allowedTo = function(privilege, uid, cid, callback) {
 	});
 };
 
+function isGuestAllowedTo(privilege, cid, callback) {
+	async.parallel([
+		function(next) {
+			groups.exists('cid:' + cid + ':privileges:' + privilege, function(err, exists) {
+				next(err, !err ? !exists : false);
+			});
+		},
+		function(next) {
+			helpers.isMember(groups.isMember, 'cid:' + cid + ':privileges:groups:' + privilege, 'guests', function(err, isMember) {
+				next(err, privilege !== 'find' && privilege !== 'read' ? isMember === true : isMember !== false);
+			});
+		}
+	], function(err, results) {
+		callback(err, results[0] && (results[1] || results[1] === null));
+	});
+}
+
 helpers.isMember = function(method, group, uid, callback) {
 	groups.exists(group, function(err, exists) {
 		if (err) {
@@ -77,7 +80,7 @@ helpers.isMember = function(method, group, uid, callback) {
 
 		method(uid, group, callback);
 	});
-}
+};
 
 helpers.hasEnoughReputationFor = function(privilege, uid, callback) {
 	if (parseInt(meta.config['privileges:disabled'], 10)) {

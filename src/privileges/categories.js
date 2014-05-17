@@ -58,20 +58,6 @@ module.exports = function(privileges) {
 		], callback);
 	};
 
-	privileges.categories.canRead = function(cid, uid, callback) {
-		helpers.some([
-			function(next) {
-				helpers.allowedTo('read', uid, cid, next);
-			},
-			function(next) {
-				user.isModerator(uid, cid, next);
-			},
-			function(next) {
-				user.isAdministrator(uid, next);
-			}
-		], callback);
-	};
-
 	privileges.categories.canMoveAllTopics = function(currentCid, targetCid, uid, callback) {
 		async.parallel({
 			isAdministrator: function(next) {

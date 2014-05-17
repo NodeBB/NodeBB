@@ -130,7 +130,7 @@ var async = require('async'),
 		}
 
 		async.filter(tids, function(tid, next) {
-			privileges.topics.canRead(tid, uid, function(err, canRead) {
+			privileges.topics.can('read', tid, uid, function(err, canRead) {
 				next(!err && canRead);
 			});
 		}, function(tids) {

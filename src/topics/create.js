@@ -99,7 +99,7 @@ module.exports = function(Topics) {
 				if (!categoryExists) {
 					return next(new Error('[[error:no-category]]'));
 				}
-				privileges.topics.canCreate(cid, uid, next);
+				privileges.categories.can('topics:create', cid, uid, next);
 			},
 			function(canCreate, next) {
 				if(!canCreate) {
@@ -173,7 +173,7 @@ module.exports = function(Topics) {
 					return next(new Error('[[error:topic-locked]]'));
 				}
 
-				privileges.topics.canReply(tid, uid, next);
+				privileges.topics.can('topics:reply', tid, uid, next);
 			},
 			function(canReply, next) {
 				if (!canReply) {

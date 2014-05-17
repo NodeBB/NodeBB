@@ -164,7 +164,7 @@ var db = require('./database'),
 			}
 
 			async.filter(pids, function(pid, next) {
-				privileges.posts.canRead(pid, callerUid, function(err, canRead) {
+				privileges.posts.can('read', pid, callerUid, function(err, canRead) {
 					next(!err && canRead);
 				});
 			}, function(pids) {
@@ -216,7 +216,7 @@ var db = require('./database'),
 			}
 
 			async.filter(pids, function(pid, next) {
-				privileges.posts.canRead(pid, uid, function(err, canRead) {
+				privileges.posts.can('read', pid, uid, function(err, canRead) {
 					next(!err && canRead);
 				});
 			}, function(pids) {
