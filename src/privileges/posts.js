@@ -53,13 +53,13 @@ module.exports = function(privileges) {
 		});
 	};
 
-	privileges.posts.canRead = function(pid, uid, callback) {
+	privileges.posts.can = function(privilege, pid, uid, callback) {
 		posts.getCidByPid(pid, function(err, cid) {
 			if (err) {
 				return callback(err);
 			}
 
-			privileges.categories.canRead(cid, uid, callback);
+			privileges.categories.can(privilege, cid, uid, callback);
 		});
 	};
 

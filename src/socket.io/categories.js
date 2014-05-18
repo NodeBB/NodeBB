@@ -9,7 +9,7 @@ var	async = require('async'),
 	SocketCategories = {};
 
 SocketCategories.getRecentReplies = function(socket, cid, callback) {
-	privileges.categories.canRead(cid, socket.uid, function(err, canRead) {
+	privileges.categories.can('read', cid, socket.uid, function(err, canRead) {
 		if (err) {
 			return callback(err);
 		}

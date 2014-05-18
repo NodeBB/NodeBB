@@ -67,10 +67,6 @@
 	};
 
 	translator.translate = function (data, language, callback) {
-		if (!data) {
-			return callback(data);
-		}
-
 		if (typeof language === 'function') {
 			callback = language;
 			if ('undefined' !== typeof window && config) {
@@ -79,6 +75,10 @@
 				var meta = require('../../src/meta');
 				language = meta.config.defaultLang || 'en_GB';
 			}
+		}
+
+		if (!data) {
+			return callback(data);
 		}
 
 		function insertLanguage(text, key, value, variables) {
