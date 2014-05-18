@@ -12,19 +12,19 @@ var posts = require('./../posts'),
 function hasTopicPrivileges(req, res, next) {
 	var tid = req.params.topic_id;
 
-	hasPrivileges(privileges.topics.canRead, tid, req, res, next);
+	hasPrivileges(privileges.topics.can, tid, req, res, next);
 }
 
 function hasCategoryPrivileges(req, res, next) {
 	var cid = req.params.category_id;
 
-	hasPrivileges(privileges.categories.canRead, cid, req, res, next);
+	hasPrivileges(privileges.categories.can, cid, req, res, next);
 }
 
 function hasPrivileges(method, id, req, res, next) {
 	var uid = req.user ? req.user.uid || 0 : 0;
 
-	method(id, uid, function(err, canRead) {
+	method('read', id, uid, function(err, canRead) {
 		if (err) {
 			return next(err);
 		}
