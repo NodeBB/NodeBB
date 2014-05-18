@@ -195,7 +195,7 @@ middleware.renderHeader = function(req, res, callback) {
 				property: 'og:site_name',
 				content: meta.config.title || 'NodeBB'
 			}, {
-				property: 'keywords',
+				name: 'keywords',
 				content: meta.config.keywords || ''
 			}],
 			defaultLinkTags = [{
