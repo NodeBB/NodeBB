@@ -201,15 +201,13 @@ define(function() {
 	function uploadContentFiles(params) {
 		var files = params.files,
 			post_uuid = params.post_uuid,
-			route = params.route,
 			formData = params.formData,
-			callback = params.callback,
 			postContainer = $('#cmp-uuid-' + post_uuid),
 			textarea = postContainer.find('textarea'),
 			text = textarea.val(),
 			uploadForm = postContainer.find('#fileForm');
 
-		uploadForm.attr('action', route);
+		uploadForm.attr('action', params.route);
 
 		for(var i = 0; i < files.length; ++i) {
 			var isImage = files[i].type.match(/image./);
@@ -244,14 +242,7 @@ define(function() {
 				clearForm: true,
 				formData: formData,
 
-				error: function(xhr) {
-					xhr = maybeParse(xhr);
-
-					app.alertError('Error uploading file!\nStatus : ' + xhr.status + '\nMessage : ' + xhr.responseText);
-					if (typeof callback === 'function') {
-						callback(xhr);
-					}
-				},
+				error: onUploadError,
 
 				uploadProgress: function(event, position, total, percent) {
 					for(var i=0; i < files.length; ++i) {
@@ -269,9 +260,6 @@ define(function() {
 					}
 
 					textarea.focus();
-					if (typeof callback === 'function') {
-						callback(null, uploads);
-					}
 				},
 
 				complete: function() {
@@ -288,14 +276,12 @@ define(function() {
 
 	function uploadTopicThumb(params) {
 		var post_uuid = params.post_uuid,
-			route = params.route,
 			formData = params.formData,
-			callback = params.callback,
 			postContainer = $('#cmp-uuid-' + post_uuid),
 			spinner = postContainer.find('.topic-thumb-spinner'),
 			thumbForm = postContainer.find('#thumbForm');
 
-		thumbForm.attr('action', route);
+		thumbForm.attr('action', params.route);
 
 		thumbForm.off('submit').submit(function() {
 			var csrf = $('#csrf_token').val();
@@ -312,21 +298,11 @@ define(function() {
 
 			$(this).ajaxSubmit({
 				formData: formData,
-				error: function(xhr) {
-					xhr = maybeParse(xhr);
-
-					app.alertError('Error uploading file!\nStatus : ' + xhr.status + '\nMessage : ' + xhr.responseText);
-					if (typeof callback === 'function') {
-						callback(xhr);
-					}
-				},
+				error: onUploadError,
 				success: function(uploads) {
 					uploads = maybeParse(uploads);
 
 					postContainer.find('#topic-thumb-url').val((uploads[0] || {}).url || '').trigger('change');
-					if (typeof callback === 'function') {
-						callback(null, uploads);
-					}
 				},
 				complete: function() {
 					uploads[post_uuid].pop();
@@ -336,6 +312,12 @@ define(function() {
 			return false;
 		});
 		thumbForm.submit();
+	}
+
+	function onUploadError(xhr) {
+		xhr = maybeParse(xhr);
+
+		app.alertError('[[error:upload-error, ' + xhr.responseText + ']]');
 	}
 
 	return uploads;
