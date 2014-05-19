@@ -171,6 +171,10 @@ var db = require('./database'),
 		});
 	};
 
+	Categories.getPostCount = function(cid, callback) {
+		db.sortedSetCard('categories:recent_posts:cid:' + cid, callback);
+	};
+
 	Categories.getAllCategories = function(uid, callback) {
 		db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
 			if (err) {
@@ -215,7 +219,6 @@ var db = require('./database'),
 	};
 
 	Categories.hasReadCategories = function(cids, uid, callback) {
-
 		var sets = [];
 
 		for (var i = 0, ii = cids.length; i < ii; i++) {
@@ -237,7 +240,7 @@ var db = require('./database'),
 
 	Categories.getCategoriesData = function(cids, callback) {
 		var keys = cids.map(function(cid) {
-			return 'category:'+cid;
+			return 'category:' + cid;
 		});
 
 		db.getObjects(keys, function(err, categories) {
@@ -249,15 +252,19 @@ var db = require('./database'),
 				return callback(null, []);
 			}
 
-			for (var i=0; i<categories.length; ++i) {
-				if (categories[i]) {
-					categories[i].name = validator.escape(categories[i].name);
-					categories[i].description = validator.escape(categories[i].description);
-					categories[i].backgroundImage = categories[i].image ? nconf.get('relative_path') + categories[i].image : '';
-					categories[i].disabled = categories[i].disabled ? parseInt(categories[i].disabled, 10) !== 0 : false;
-				}
-			}
-			callback(null, categories);
+			async.map(categories, function(category, next) {
+				category.name = validator.escape(category.name);
+				category.description = validator.escape(category.description);
+				category.backgroundImage = category.image ? nconf.get('relative_path') + category.image : '';
+				category.disabled = category.disabled ? parseInt(category.disabled, 10) !== 0 : false;
+				Categories.getPostCount(category.cid, function(err, postCount) {
+					if (err) {
+						return next(err);
+					}
+					category.post_count = postCount;
+					next(err, category);
+				});
+			}, callback);
 		});
 	};
 

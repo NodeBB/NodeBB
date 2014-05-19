@@ -71,9 +71,11 @@ Controllers.home = function(req, res, next) {
 
 				function getRecentReplies(category, callback) {
 					categories.getRecentReplies(category.cid, uid, parseInt(category.numRecentReplies, 10), function (err, posts) {
+						if (err) {
+							return callback(err);
+						}
 						category.posts = posts;
-						category.post_count = posts.length > 2 ? 2 : posts.length; // this was a hack to make metro work back in the day, post_count should just = length
-						callback(null);
+						callback();
 					});
 				}
 
