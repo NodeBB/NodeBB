@@ -63,6 +63,7 @@
 	"topic-thumbnails-are-disabled": "Topic thumbnails are disabled.",
 	"invalid-file": "Invalid File",
 	"uploads-are-disabled": "Uploads are disabled",
+	"upload-error": "Upload Error : %1",
 
 	"signature-too-long" : "Signature can't be longer than %1 characters!",
 
