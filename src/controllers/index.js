@@ -207,7 +207,7 @@ Controllers.register = function(req, res, next) {
 	data.minimumPasswordLength = meta.config.minimumPasswordLength;
 	data.termsOfUse = meta.config.termsOfUse;
 
-	plugins.fireHook('filter:register.build', req, res, data, function(err, data) {
+	plugins.fireHook('filter:register.build', req, res, data, function(err, req, res, data) {
 		if (err && process.env === 'development') {
 			winston.warn(JSON.stringify(err));
 		}
