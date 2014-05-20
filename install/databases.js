@@ -91,13 +91,14 @@ function getSecondaryDatabaseModules(config, next) {
 
 module.exports = function(err, config, databases, callback) {
 	var allowedDBs = Object.keys(databases);
-	
+
 	allowedDBs.forEach(function(db) {
 		questions[db] = require('./../src/database/' + db).questions;
 	});
 
 	async.waterfall([
 		function(next) {
+			process.stdout.write('\n');
 			winston.info('Now configuring ' + config.database + ' database:');
 			success(err, config, next);
 		},

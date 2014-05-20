@@ -28,8 +28,8 @@ var install = {},
 questions.main = [
 	{
 		name: 'base_url',
-		description: 'URL of this installation',
-		'default': nconf.get('base_url') || 'http://localhost',
+		description: 'URL used to access this NodeBB',
+		'default': nconf.get('base_url') || 'http://localhost:4567',
 		pattern: /^http(?:s)?:\/\//,
 		message: 'Base URL must begin with \'http://\' or \'https://\'',
 	},
@@ -39,13 +39,6 @@ questions.main = [
 		'default': nconf.get('port') || 4567,
 		pattern: /[0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]/,
 		message: 'Please enter a value betweeen 1 and 65535'
-	},
-	{
-		name: 'use_port',
-		description: 'Use a port number to access NodeBB?',
-		'default': (nconf.get('use_port') !== undefined ? (nconf.get('use_port') ? 'y' : 'n') : 'y'),
-		pattern: /y[es]*|n[o]?/,
-		message: 'Please enter \'yes\' or \'no\''
 	},
 	{
 		name: 'secret',
@@ -195,16 +188,13 @@ function completeConfigSetup(err, config, next) {
 
 	config.bcrypt_rounds = 12;
 	config.upload_path = '/public/uploads';
-	config.use_port = typeof config.use_port === 'boolean' ? config.use_port : config.use_port.slice(0, 1) === 'y';
 
 	var urlObject = url.parse(config.base_url),
-		relative_path = (urlObject.pathname && urlObject.pathname.length > 1) ? urlObject.pathname : '',
-		host = urlObject.host,
-		protocol = urlObject.protocol,
 		server_conf = config;
 
-	server_conf.base_url = protocol + '//' + host;
-	server_conf.relative_path = relative_path;
+	server_conf.base_url = urlObject.protocol + '//' + urlObject.host;
+	server_conf.use_port = urlObject.port !== null ? true : false;
+	server_conf.relative_path = (urlObject.pathname && urlObject.pathname.length > 1) ? urlObject.pathname : '';
 
 	install.save(server_conf, function(err) {
 		if (err) {
@@ -243,7 +233,7 @@ function setupDefaultConfigs(next) {
 	winston.info('Populating database with default configs, if not already set...');
 	var meta = require('./meta'),
 		defaults = require(path.join(__dirname, '../', 'install/data/defaults.json'));
-	
+
 	async.each(defaults, function (configObj, next) {
 		meta.configs.setOnEmpty(configObj.field, configObj.value, next);
 	}, function (err) {
