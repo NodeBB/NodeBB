@@ -400,7 +400,6 @@ define(['taskbar', 'composer/controls', 'composer/uploads', 'composer/formatting
 	function focusElements(post_uuid) {
 		var postContainer = $('#cmp-uuid-' + post_uuid),
 			postData = composer.posts[post_uuid],
-			titleEl = postContainer.find('.title'),
 			bodyEl = postContainer.find('textarea');
 
 		if ((parseInt(postData.tid, 10) || parseInt(postData.pid, 10)) > 0) {
@@ -408,7 +407,7 @@ define(['taskbar', 'composer/controls', 'composer/uploads', 'composer/formatting
 			bodyEl.selectionStart = bodyEl.val().length;
 			bodyEl.selectionEnd = bodyEl.val().length;
 		} else if (parseInt(postData.cid, 10) > 0) {
-			titleEl.focus();
+			postContainer.find('.title').focus();
 		}
 	}
 
