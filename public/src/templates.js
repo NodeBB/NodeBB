@@ -285,6 +285,8 @@
 					template = parseArray(template, obj, key, namespace + key + '.', bind);
 				} else if (obj[key] instanceof Object) {
 					defineParent(obj[key], originalObj);
+					template = checkConditional(template, key, obj[key]);
+					template = checkConditional(template, '!' + key, !obj[key]);
 					template = parse(template, obj[key], bind, namespace + key + '.');
 				} else {
 					template = parseValue(template, namespace + key, obj[key]);
