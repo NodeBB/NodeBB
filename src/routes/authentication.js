@@ -76,7 +76,7 @@
 			email: req.body.email
 		};
 
-		plugins.fireHook('filter:register.check', req, res, userData, function(err, userData) {
+		plugins.fireHook('filter:register.check', req, res, userData, function(err, req, res, userData) {
 			if (err) {
 				return res.redirect(nconf.get('relative_path') + '/register' + (err.message ? '?error=' + err.message : ''));
 			}
