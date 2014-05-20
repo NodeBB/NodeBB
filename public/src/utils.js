@@ -352,7 +352,70 @@
 			if(props !== undefined && !(obj[prop] instanceof Object) )
 				obj[prop] = {};
 
-			return util.props(obj[prop], newProps, value);
+			return utils.props(obj[prop], newProps, value);
+		},
+
+		// main inject method
+		injectTag: function (tagName, attrs, options) {
+			options || (options = {});
+
+			var tag = document.createElement(tagName);
+			tag.onload = options.onload || null; // @ie8; img.onload cannot be undefined
+
+			var setAttr = tag.setAttribute
+				? function(tag, key, value) { tag.setAttribute(key, value); return tag;}
+				: function(tag, key, value) { tag[key] = value; return tag;};
+
+			Object.keys(attrs).forEach(function(key) {
+				tag = setAttr(tag, key, attrs[key]);
+			});
+
+			if (options.insertBefore) {
+				options.insertBefore.parentNode.insertBefore(tag, options.insertBefore);
+			} else if (options.appendChild) {
+				options.appendChild.appendChild(tag);
+			} else {
+				var scripts = document.getElementsByTagName('script');
+				scripts[scripts.length - 1].parentNode.appendChild(tag);
+			}
+		},
+
+		/* utils.injectTag() helpers */
+
+		injectScript: function(src, options) {
+			options || (options = {});
+			utils.injectTag('script', {src: src, type: 'text/javascript'}, options);
+		},
+
+		injectStyle: function(href, options) {
+			options || (options = {});
+
+			// will always call img.onerror when the round trip is done,
+			// not a perfect CSS.onload solution, but the best out there
+			var img = document.createElement('img');
+			img.onerror = options.onload;
+			delete options.onload;
+
+			utils.injectTag('link', {href: href, type: 'text/css', rel: 'stylesheet'}, options);
+			img.src = href;
+		},
+
+		injectScripts: function (arr, options, callback) {
+			if (arr && arr.length) {
+				utils.injectScript(arr[0], utils.merge({}, options, {onload: function() { utils.injectScripts(arr.slice(1), callback, options);}}));
+			} else {
+				if (typeof(callback) == 'function')
+					callback();
+			}
+		},
+
+		injectStyles: function(arr, options, callback) {
+			if (arr && arr.length) {
+				utils.injectStyle(arr[0], utils.merge({}, options, {onload: function() { utils.injectStyles(arr.slice(1), callback, options)}}));
+			} else {
+				if (typeof(callback) == 'function')
+					callback();
+			}
 		}
 	};
 
