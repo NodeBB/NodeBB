@@ -157,44 +157,7 @@ var db = require('./database'),
 		});
 	};
 
-	Posts.getPostsByUid = function(callerUid, uid, start, end, callback) {
-		user.getPostIds(uid, start, end, function(err, pids) {
-			if (err) {
-				return callback(err);
-			}
 
-			async.filter(pids, function(pid, next) {
-				privileges.posts.can('read', pid, callerUid, function(err, canRead) {
-					next(!err && canRead);
-				});
-			}, function(pids) {
-				if (!(pids && pids.length)) {
-					return callback(null, { posts: [], nextStart: 0});
-				}
-
-				Posts.getPostSummaryByPids(pids, false, function(err, posts) {
-					if (err) {
-						return callback(err);
-					}
-
-					if (!Array.isArray(posts) || !posts.length) {
-						return callback(null, { posts: [], nextStart: 0});
-					}
-
-					db.sortedSetRevRank('uid:' + uid + ':posts', posts[posts.length - 1].pid, function(err, rank) {
-						if(err) {
-							return callback(err);
-						}
-						var userPosts = {
-							posts: posts,
-							nextStart: parseInt(rank, 10) + 1
-						};
-						callback(null, userPosts);
-					});
-				});
-			});
-		});
-	};
 
 	Posts.getRecentPosts = function(uid, start, stop, term, callback) {
 		var terms = {
@@ -423,34 +386,58 @@ var db = require('./database'),
 		});
 	};
 
+	Posts.getPostsByUid = function(callerUid, uid, start, end, callback) {
+		user.getPostIds(uid, start, end, function(err, pids) {
+			if (err) {
+				return callback(err);
+			}
+
+			async.filter(pids, function(pid, next) {
+				privileges.posts.can('read', pid, callerUid, function(err, canRead) {
+					next(!err && canRead);
+				});
+			}, function(pids) {
+				getPostsFromSet('uid:' + uid + ':posts', pids, callback);
+			});
+		});
+	};
+
 	Posts.getFavourites = function(uid, start, end, callback) {
 		db.getSortedSetRevRange('uid:' + uid + ':favourites', start, end, function(err, pids) {
 			if (err) {
 				return callback(err);
 			}
 
-			Posts.getPostSummaryByPids(pids, false, function(err, posts) {
+			getPostsFromSet('uid:' + uid + ':favourites', pids, callback);
+		});
+	};
+
+	function getPostsFromSet(set, pids, callback) {
+		if (!Array.isArray(pids) || !pids.length) {
+			return callback(null, {posts: [], nextStart: 0});
+		}
+
+		Posts.getPostSummaryByPids(pids, false, function(err, posts) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (!Array.isArray(posts) || !posts.length) {
+				return callback(null, {posts: [], nextStart: 0});
+			}
+
+			db.sortedSetRevRank(set, posts[posts.length - 1].pid, function(err, rank) {
 				if(err) {
 					return callback(err);
 				}
-
-				if(!posts || !posts.length) {
-					return callback(null, { posts: [], nextStart: 0});
-				}
-
-				db.sortedSetRevRank('uid:' + uid + ':favourites', posts[posts.length - 1].pid, function(err, rank) {
-					if(err) {
-						return callback(err);
-					}
-					var favourites = {
-						posts: posts,
-						nextStart: parseInt(rank, 10) + 1
-					};
-					callback(null, favourites);
-				});
+				var data = {
+					posts: posts,
+					nextStart: parseInt(rank, 10) + 1
+				};
+				callback(null, data);
 			});
 		});
-	};
+	}
 
 	Posts.getPidPage = function(pid, uid, callback) {
 		if(!pid) {
