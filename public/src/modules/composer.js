@@ -108,19 +108,25 @@ define(['taskbar', 'composer/controls', 'composer/uploads', 'composer/formatting
 		var uuid = composer.active;
 
 		if(uuid === undefined){
-			composer.newReply(tid, pid, title, username + ' said:\n' + text);
+			translator.translate('[[modules:composer.user_said, ' + username + ']]', function(translated) {
+				composer.newReply(tid, pid, title, translated + text);
+			});
 			return;
 		}
 
 		var bodyEl = $('#cmp-uuid-'+uuid).find('textarea');
 		var prevText = bodyEl.val();
 		if(tid !== composer.posts[uuid].tid) {
-			text = username + ' said in ['+title+'](/topic/'+tid+'#'+pid+'):\n'+text;
+			var link = '[' + title + '](/topic/' + tid + '#' + pid + ')';
+			translator.translate('[[modules:composer.user_said_in, ' + username + ', ' + link + ']]', onTranslated);
 		} else {
-			text = username + ' said:\n' + text;
+			translator.translate('[[modules:composer.user_said, ' + username + ']]', onTranslated);
 		}
-		composer.posts[uuid].body = (prevText.length ? prevText + '\n\n' : '') + text;
-		bodyEl.val(composer.posts[uuid].body);
+
+		function onTranslated(translated) {
+			composer.posts[uuid].body = (prevText.length ? prevText + '\n\n' : '') + translated + text;
+			bodyEl.val(composer.posts[uuid].body);
+		}
 	};
 
 	composer.newReply = function(tid, pid, title, text) {
