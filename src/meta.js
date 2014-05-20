@@ -271,7 +271,6 @@ var fs = require('fs'),
 								var	relPath = jsPath.slice(('plugins/' + matches[0]).length),
 									pluginId = matches[0].split(path.sep)[0];
 
-								winston.warn('[meta.scripts.get (' + pluginId + ')] filter:scripts.get is deprecated, consider using "scripts" in plugin.json');
 								return plugins.staticDirs[matches[0]] + relPath;
 							} else {
 								winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + jsPath + '. Are you sure it is defined by a plugin?');
@@ -399,7 +398,7 @@ var fs = require('fs'),
 			}
 
 			Meta.css.branding = branding;
-		});		
+		});
 	};
 
 	/* Sounds */
