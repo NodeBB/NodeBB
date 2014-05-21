@@ -16,6 +16,8 @@
 					return groups.filter(function (group) {
 						if (group.deleted || (group.hidden && !group.system) || (!options.showSystemGroups && group.system)) {
 							return false;
+						} else if (options.removeEphemeralGroups && ephemeralGroups.indexOf(group.name) !== -1) {
+							return false;
 						} else {
 							return true;
 						}
