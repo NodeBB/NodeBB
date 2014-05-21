@@ -57,34 +57,35 @@ module.exports = function(Topics) {
 	}
 
 	Topics.updateTags = function(tid, tags) {
-		async.parallel({
-			timestamp: function(next) {
-				Topics.getTopicField(tid, 'timestamp', next);
-			},
-			currentTags: function(next) {
-				Topics.getTopicTags(tid, next);
+		Topics.getTopicField(tid, 'timestamp', function(err, timestamp) {
+			if (!err) {
+				Topics.deleteTopicTags(tid, function(err) {
+					if (!err) {
+						Topics.createTags(tags, tid, timestamp);
+					}
+				});
 			}
-		}, function(err, results) {
-			removeTopicTags(tid, results.currentTags, function(err) {
-				if (!err) {
-					Topics.createTags(tags, tid, results.timestamp);
-				}
-			});
 		});
 	};
 
-	function removeTopicTags(tid, tags, callback) {
-		async.parallel([
-			function(next) {
-				db.delete('topic:' + tid + ':tags', next);
-			},
-			function(next) {
-				async.each(tags, function(tag, next) {
-					db.sortedSetRemove('tag:' + tag + ':topics', tid, next);
-				}, next);
+	Topics.deleteTopicTags = function(tid, callback) {
+		Topics.getTopicTags(tid, function(err, tags) {
+			if (err) {
+				return callback(err);
 			}
-		], callback);
-	}
+
+			async.parallel([
+				function(next) {
+					db.delete('topic:' + tid + ':tags', next);
+				},
+				function(next) {
+					async.each(tags, function(tag, next) {
+						db.sortedSetRemove('tag:' + tag + ':topics', tid, next);
+					}, next);
+				}
+			], callback);
+		});
+	};
 
 	Topics.searchTags = function(query, callback) {
 		if (!query || query.length === 0) {

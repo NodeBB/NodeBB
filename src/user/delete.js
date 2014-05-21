@@ -153,7 +153,6 @@ module.exports = function(User) {
 	}
 
 	function deleteTopic(tid, callback) {
-
 		async.parallel([
 			function(next) {
 				db.delete('tid:' + tid + ':followers', next);
@@ -175,6 +174,9 @@ module.exports = function(User) {
 			},
 			function(next) {
 				deleteTopicFromCategory(tid, next);
+			},
+			function(next) {
+				topics.deleteTopicTags(tid, next);
 			}
 		], function(err) {
 			if (err) {
