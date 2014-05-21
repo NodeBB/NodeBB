@@ -9,6 +9,7 @@ var async = require('async'),
 	utils = require('../public/src/utils'),
 	events = require('./events'),
 	User = require('./user'),
+	groups = require('./groups'),
 	meta = require('./meta');
 
 (function(Notifications) {
@@ -129,9 +130,26 @@ var async = require('async'),
 
 			}, function(err) {
 				if (callback) {
-					callback(true);
+					callback(null, true);
 				}
 			});
+		});
+	};
+
+	// Note: This method used in mentions plugin. If still unused in core as of 0.6.0, please move to mentions plugin itself.
+	Notifications.pushGroup = function(nid, groupName, callback) {
+		if (!callback) {
+			callback = function() {};
+		}
+
+		groups.get(groupName, {}, function(err, groupObj) {
+			if (!err && groupObj) {
+				if (groupObj.memberCount > 0) {
+					Notifications.push(nid, groupObj.members, callback);
+				}
+			} else {
+				callback(err);
+			}
 		});
 	};
 

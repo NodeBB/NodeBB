@@ -209,9 +209,7 @@ function sendChatNotification(fromuid, touid, username) {
 			uniqueId: 'notification_' + fromuid + '_' + touid,
 			from: fromuid
 		}, function(nid) {
-			notifications.push(nid, [touid], function(success) {
-
-			});
+			notifications.push(nid, [touid]);
 		});
 	}
 }
