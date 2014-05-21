@@ -253,6 +253,9 @@ var db = require('./database'),
 			}
 
 			async.map(categories, function(category, next) {
+				if (!category) {
+					return next(null, category);
+				}
 				category.name = validator.escape(category.name);
 				category.description = validator.escape(category.description);
 				category.backgroundImage = category.image ? nconf.get('relative_path') + category.image : '';
