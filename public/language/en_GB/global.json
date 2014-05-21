@@ -28,6 +28,7 @@
 	"header.admin": "Admin",
 	"header.recent": "Recent",
 	"header.unread": "Unread",
+	"header.tags": "Tags",
 	"header.popular": "Popular",
 	"header.users": "Users",
 	"header.chats": "Chats",

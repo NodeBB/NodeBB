@@ -49,7 +49,7 @@ var	stopTracking = function(replyObj) {
 	};
 
 SocketModules.composer.push = function(socket, pid, callback) {
-	posts.getPostFields(pid, ['content'], function(err, postData) {
+	posts.getPostFields(pid, ['content', 'tid'], function(err, postData) {
 		if(err || (!postData && !postData.content)) {
 			return callback(err || new Error('[[error:invalid-pid]]'));
 		}
@@ -57,6 +57,9 @@ SocketModules.composer.push = function(socket, pid, callback) {
 		async.parallel({
 			topic: function(next) {
 				topics.getTopicDataByPid(pid, next);
+			},
+			tags: function(next) {
+				topics.getTopicTags(postData.tid, next);
 			},
 			index: function(next) {
 				posts.getPidIndex(pid, next);
@@ -71,6 +74,7 @@ SocketModules.composer.push = function(socket, pid, callback) {
 				body: postData.content,
 				title: results.topic.title,
 				topic_thumb: results.topic.thumb,
+				tags: results.tags,
 				index: results.index
 			});
 		});

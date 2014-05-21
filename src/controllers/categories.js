@@ -10,7 +10,7 @@ var categoriesController = {},
 	topics = require('./../topics');
 
 categoriesController.recent = function(req, res, next) {
-	var uid = (req.user) ? req.user.uid : 0;
+	var uid = req.user ? req.user.uid : 0;
 	topics.getLatestTopics(uid, 0, 19, req.params.term, function (err, data) {
 		if(err) {
 			return next(err);
@@ -21,7 +21,7 @@ categoriesController.recent = function(req, res, next) {
 };
 
 categoriesController.popular = function(req, res, next) {
-	var uid = (req.user) ? req.user.uid : 0;
+	var uid = req.user ? req.user.uid : 0;
 	var set = 'topics:' + req.params.set;
 	if(!req.params.set) {
 		set = 'topics:posts';
@@ -37,7 +37,7 @@ categoriesController.popular = function(req, res, next) {
 };
 
 categoriesController.unread = function(req, res, next) {
-	var uid = req.user.uid;
+	var uid = req.user ? req.user.uid : 0;
 
 	topics.getUnreadTopics(uid, 0, 20, function (err, data) {
 		if(err) {
@@ -49,7 +49,7 @@ categoriesController.unread = function(req, res, next) {
 };
 
 categoriesController.unreadTotal = function(req, res, next) {
-	var uid = req.user.uid;
+	var uid = req.user ? req.user.uid : 0;
 
 	topics.getTotalUnread(uid, function (err, data) {
 		if(err) {

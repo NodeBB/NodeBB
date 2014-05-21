@@ -2,6 +2,7 @@
 
 var topicsController = require('./topics'),
 	categoriesController = require('./categories'),
+	tagsController = require('./tags'),
 	usersController = require('./users'),
 	accountsController = require('./accounts'),
 	staticController = require('./static'),
@@ -24,6 +25,7 @@ var topicsController = require('./topics'),
 var Controllers = {
 	topics: topicsController,
 	categories: categoriesController,
+	tags: tagsController,
 	users: usersController,
 	accounts: accountsController,
 	static: staticController,

@@ -161,7 +161,7 @@ SocketPosts.edit = function(socket, data, callback) {
 		return callback(new Error('[[error:content-too-short, ' + meta.config.minimumPostLength + ']]'));
 	}
 
-	postTools.edit(socket.uid, data.pid, data.title, data.content, {topic_thumb: data.topic_thumb}, function(err, results) {
+	postTools.edit(socket.uid, data.pid, data.title, data.content, {topic_thumb: data.topic_thumb, tags: data.tags}, function(err, results) {
 		if(err) {
 			return callback(err);
 		}

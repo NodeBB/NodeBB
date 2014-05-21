@@ -61,6 +61,8 @@ var winston = require('winston'),
 
 							topics.setTopicField(tid, 'thumb', options.topic_thumb);
 
+							topics.updateTags(tid, options.tags);
+
 							plugins.fireHook('action:topic.edit', tid);
 						}
 

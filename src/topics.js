@@ -20,6 +20,7 @@ var async = require('async'),
 	require('./topics/fork')(Topics);
 	require('./topics/posts')(Topics);
 	require('./topics/follow')(Topics);
+	require('./topics/tags')(Topics);
 
 	Topics.getTopicData = function(tid, callback) {
 		Topics.getTopicsData([tid], function(err, topics) {
@@ -275,6 +276,9 @@ var async = require('async'),
 				},
 				threadTools: function(next) {
 					plugins.fireHook('filter:topic.thread_tools', [], next);
+				},
+				tags: function(next) {
+					Topics.getTopicTagsObjects(tid, next);
 				}
 			}, function(err, results) {
 				if (err) {
@@ -283,6 +287,7 @@ var async = require('async'),
 
 				topicData.category = results.category;
 				topicData.posts = results.posts;
+				topicData.tags = results.tags;
 				topicData.thread_tools = results.threadTools;
 				topicData.pageCount = results.pageCount;
 				topicData.unreplied = parseInt(topicData.postcount, 10) === 1;

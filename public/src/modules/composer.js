@@ -2,7 +2,7 @@
 
 /* globals define, socket, app, config, ajaxify, utils, translator, templates, bootbox */
 
-define(['taskbar', 'composer/controls', 'composer/uploads', 'composer/formatting', 'composer/drafts'], function(taskbar, controls, uploads, formatting, drafts) {
+define(['taskbar', 'composer/controls', 'composer/uploads', 'composer/formatting', 'composer/drafts', 'composer/tags'], function(taskbar, controls, uploads, formatting, drafts, tags) {
 	var composer = {
 		active: undefined,
 		posts: {}
@@ -152,7 +152,8 @@ define(['taskbar', 'composer/controls', 'composer/uploads', 'composer/formatting
 				body: threadData.body,
 				modified: false,
 				isMain: !threadData.index,
-				topic_thumb: threadData.topic_thumb
+				topic_thumb: threadData.topic_thumb,
+				tags: threadData.tags
 			});
 		});
 	};
@@ -176,8 +177,10 @@ define(['taskbar', 'composer/controls', 'composer/uploads', 'composer/formatting
 
 	function createNewComposer(post_uuid) {
 		var allowTopicsThumbnail = config.allowTopicsThumbnail && composer.posts[post_uuid].isMain && (config.hasImageUploadPlugin || config.allowFileUploads);
+		var isTopic = composer.posts[post_uuid] ? !!composer.posts[post_uuid].cid : false;
+		var isMain = composer.posts[post_uuid] ? !!composer.posts[post_uuid].isMain : false;
 
-		templates.parse('composer', {allowTopicsThumbnail: allowTopicsThumbnail}, function(composerTemplate) {
+		templates.parse('composer', {allowTopicsThumbnail: allowTopicsThumbnail, showTags: isTopic || isMain}, function(composerTemplate) {
 			translator.translate(composerTemplate, function(composerTemplate) {
 				composerTemplate = $(composerTemplate);
 
@@ -185,9 +188,11 @@ define(['taskbar', 'composer/controls', 'composer/uploads', 'composer/formatting
 
 				$(document.body).append(composerTemplate);
 
-				activateReposition(post_uuid);
-
 				var postContainer = $(composerTemplate[0]);
+
+				tags.init(postContainer, composer.posts[post_uuid]);
+
+				activateReposition(post_uuid);
 
 				if(config.allowFileUploads || config.hasImageUploadPlugin) {
 					uploads.initialize(post_uuid);
@@ -266,6 +271,8 @@ define(['taskbar', 'composer/controls', 'composer/uploads', 'composer/formatting
 				});
 
 				formatting.addComposerButtons();
+
+
 			});
 		});
 	}
@@ -321,15 +328,16 @@ define(['taskbar', 'composer/controls', 'composer/uploads', 'composer/formatting
 				if (resizeActive) {
 					var position = (e.clientY + resizeOffset);
 					var newHeight = $(window).height() - position;
-					var paddingBottom = parseInt(postContainer.css('padding-bottom'), 10);
+
 					if(newHeight > $(window).height() - $('#header-menu').height() - 20) {
 						newHeight = $(window).height() - $('#header-menu').height() - 20;
-					} else if (newHeight < paddingBottom) {
-						newHeight = paddingBottom;
+					} else if (newHeight < 100) {
+						newHeight = 100;
 					}
 
 					postContainer.css('height', newHeight);
 					$('body').css({'margin-bottom': newHeight});
+					resizeTabContent(postContainer);
 					resizeSavePosition(newHeight);
 				}
 				e.preventDefault();
@@ -395,6 +403,19 @@ define(['taskbar', 'composer/controls', 'composer/uploads', 'composer/formatting
 		$('body').css({'margin-bottom': postContainer.css('height')});
 
 		focusElements(post_uuid);
+		resizeTabContent(postContainer);
+	}
+
+	function resizeTabContent(postContainer) {
+		var h1 = postContainer.find('.title').outerHeight(true);
+		var h2 = postContainer.find('.tags-container').outerHeight(true);
+		var h3 = postContainer.find('.formatting-bar').outerHeight(true);
+		var h4 = postContainer.find('.nav-tabs').outerHeight(true);
+		var h5 = postContainer.find('.instructions').outerHeight(true);
+		var h6 = postContainer.find('.topic-thumb-container').outerHeight(true);
+		var h7 = $('.taskbar').height();
+		var total = h1 + h2 + h3 + h4 + h5 + h6 + h7;
+		postContainer.find('.tab-content').css('height', postContainer.height() - total);
 	}
 
 	function focusElements(post_uuid) {
@@ -441,7 +462,8 @@ define(['taskbar', 'composer/controls', 'composer/uploads', 'composer/formatting
 				title: titleEl.val(),
 				content: bodyEl.val(),
 				topic_thumb: thumbEl.val() || '',
-				category_id: postData.cid
+				category_id: postData.cid,
+				tags: tags.getTags(post_uuid)
 			}, function(err, topic) {
 				done(err);
 				if (!err) {
@@ -459,7 +481,8 @@ define(['taskbar', 'composer/controls', 'composer/uploads', 'composer/formatting
 				pid: postData.pid,
 				content: bodyEl.val(),
 				title: titleEl.val(),
-				topic_thumb: thumbEl.val() || ''
+				topic_thumb: thumbEl.val() || '',
+				tags: tags.getTags(post_uuid)
 			}, done);
 		}
 

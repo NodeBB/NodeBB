@@ -3,8 +3,7 @@
 /* globals define, app, socket */
 
 define(['forum/recent', 'topicSelect', 'forum/infinitescroll'], function(recent, topicSelect, infinitescroll) {
-	var Unread = {},
-		loadingMoreTopics = false;
+	var Unread = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
 		if(data.url.indexOf('unread') !== 0) {

@@ -55,6 +55,15 @@ function topicRoutes(app, middleware, controllers) {
 	app.get('/api/topic/:topic_id/:slug?', controllers.topics.get);
 }
 
+function tagRoutes(app, middleware, controllers) {
+
+	app.get('/tags/:tag', middleware.buildHeader, controllers.tags.getTag);
+	app.get('/api/tags/:tag', controllers.tags.getTag);
+
+	app.get('/tags', middleware.buildHeader, controllers.tags.getTags);
+	app.get('/api/tags', controllers.tags.getTags);
+}
+
 function categoryRoutes(app, middleware, controllers) {
 	app.get('/popular/:set?', middleware.buildHeader, controllers.categories.popular);
 	app.get('/api/popular/:set?', controllers.categories.popular);
@@ -152,6 +161,7 @@ module.exports = function(app, middleware) {
 			mainRoutes(app, middleware, controllers);
 			staticRoutes(app, middleware, controllers);
 			topicRoutes(app, middleware, controllers);
+			tagRoutes(app, middleware, controllers);
 			categoryRoutes(app, middleware, controllers);
 			accountRoutes(app, middleware, controllers);
 			userRoutes(app, middleware, controllers);

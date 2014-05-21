@@ -60,6 +60,8 @@ module.exports = function(Topics) {
 				db.incrObjectField('category:' + cid, 'topic_count');
 				db.incrObjectField('global', 'topicCount');
 
+				Topics.createTags(data.tags, tid, timestamp);
+
 				callback(null, tid);
 			});
 		});
@@ -111,7 +113,7 @@ module.exports = function(Topics) {
 				user.isReadyToPost(uid, next);
 			},
 			function(next) {
-				Topics.create({uid: uid, title: title, cid: cid, thumb: data.thumb}, next);
+				Topics.create({uid: uid, title: title, cid: cid, thumb: data.thumb, tags: data.tags}, next);
 			},
 			function(tid, next) {
 				Topics.reply({uid:uid, tid:tid, content:content, req: data.req}, next);

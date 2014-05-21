@@ -27,6 +27,7 @@ SocketTopics.post = function(socket, data, callback) {
 		content: data.content,
 		cid: data.category_id,
 		thumb: data.topic_thumb,
+		tags: data.tags,
 		req: websockets.reqFromSocket(socket)
 	}, function(err, result) {
 		if(err) {
@@ -374,6 +375,10 @@ SocketTopics.getTidPage = function(socket, tid, callback) {
 
 SocketTopics.getTidIndex = function(socket, tid, callback) {
 	categories.getTopicIndex(tid, callback);
+};
+
+SocketTopics.searchTags = function(socket, query, callback) {
+	topics.searchTags(query, callback);
 };
 
 module.exports = SocketTopics;
