@@ -12,7 +12,9 @@ define(function() {
 			return;
 		}
 
-		tagEl.tagsinput();
+		tagEl.tagsinput({
+			maxTags: 5 // TODO: make configurable
+		});
 		addTags(postData.tags, tagEl);
 
 		var input = postContainer.find('.bootstrap-tagsinput input');
