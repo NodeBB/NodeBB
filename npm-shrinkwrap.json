@@ -291,7 +291,7 @@
       "from": "nodebb-plugin-soundpack-default@~0.1.1"
     },
     "nodebb-theme-lavender": {
-      "version": "0.0.25-16",
+      "version": "0.0.25",
       "from": "nodebb-theme-lavender@<0.0.26"
     },
     "nodebb-theme-vanilla": {
