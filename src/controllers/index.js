@@ -4,6 +4,7 @@ var topicsController = require('./topics'),
 	categoriesController = require('./categories'),
 	tagsController = require('./tags'),
 	usersController = require('./users'),
+	groupsController = require('./groups'),
 	accountsController = require('./accounts'),
 	staticController = require('./static'),
 	apiController = require('./api'),
@@ -11,22 +12,21 @@ var topicsController = require('./topics'),
 
 	async = require('async'),
 	nconf = require('nconf'),
-	auth = require('./../routes/authentication'),
-	meta = require('./../meta'),
-	user = require('./../user'),
-	posts = require('./../posts'),
-	topics = require('./../topics'),
-	plugins = require('./../plugins'),
-	categories = require('./../categories'),
+	auth = require('../routes/authentication'),
+	meta = require('../meta'),
+	user = require('../user'),
+	posts = require('../posts'),
+	topics = require('../topics'),
+	plugins = require('../plugins'),
+	categories = require('../categories'),
 	privileges = require('../privileges');
-
-
 
 var Controllers = {
 	topics: topicsController,
 	categories: categoriesController,
 	tags: tagsController,
 	users: usersController,
+	groups: groupsController,
 	accounts: accountsController,
 	static: staticController,
 	api: apiController,
@@ -241,7 +241,7 @@ Controllers.confirmEmail = function(req, res, next) {
 };
 
 Controllers.sitemap = function(req, res, next) {
-	var sitemap = require('./../sitemap.js');
+	var sitemap = require('../sitemap.js');
 
 	sitemap.render(function(xml) {
 		res.header('Content-Type', 'application/xml');

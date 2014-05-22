@@ -136,6 +136,10 @@ function userRoutes(app, middleware, controllers) {
 	app.get('/api/users/search', middleware.checkGlobalPrivacySettings, controllers.users.getUsersForSearch);
 }
 
+function groupRoutes(app, middleware, controllers) {
+	app.get('/groups', middleware.buildHeader, controllers.groups.list);
+}
+
 
 module.exports = function(app, middleware) {
 	app.namespace(nconf.get('relative_path'), function() {
@@ -165,7 +169,7 @@ module.exports = function(app, middleware) {
 			categoryRoutes(app, middleware, controllers);
 			accountRoutes(app, middleware, controllers);
 			userRoutes(app, middleware, controllers);
-
+			groupRoutes(app, middleware, controllers);
 		});
 
 		if (process.env.NODE_ENV === 'development') {
