@@ -33,9 +33,7 @@ SocketPosts.reply = function(socket, data, callback) {
 
 		if (postData) {
 			var privileges = {
-				meta : {
-					'topics:reply': true
-				}
+				'topics:reply': true
 			};
 
 			websockets.server.sockets.emit('event:new_post', {
