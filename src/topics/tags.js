@@ -27,6 +27,11 @@ module.exports = function(Topics) {
 		db.sortedSetCard('tag:' + tag + ':topics', callback);
 	};
 
+	Topics.deleteTag = function(tag) {
+		db.delete('tag:' + tag + ':topics');
+		db.setRemove('tags', tag);
+	};
+
 	Topics.getTags = function(callback) {
 		db.getSetMembers('tags', callback);
 	};

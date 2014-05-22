@@ -18,6 +18,9 @@ tagsController.getTag = function(req, res, next) {
 				return next(err);
 			}
 			data.tag = tag;
+			if (data.topics && !data.topics.length) {
+				topics.deleteTag(tag);
+			}
 			res.render('tag', data);
 		});
 	});
