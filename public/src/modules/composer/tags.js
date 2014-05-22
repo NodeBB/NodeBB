@@ -13,7 +13,7 @@ define(function() {
 		}
 
 		tagEl.tagsinput({
-			maxTags: 5 // TODO: make configurable
+			maxTags: config.tagsPerTopic
 		});
 		addTags(postData.tags, tagEl);
 

@@ -32,6 +32,7 @@ apiController.getConfig = function(req, res, next) {
 	config.disableSocialButtons = parseInt(meta.config.disableSocialButtons, 10) === 1;
 	config.maxReconnectionAttempts = meta.config.maxReconnectionAttempts || 5;
 	config.reconnectionDelay = meta.config.reconnectionDelay || 200;
+	config.tagsPerTopic = meta.config.tagsPerTopic || 5;
 	config.topicsPerPage = meta.config.topicsPerPage || 20;
 	config.postsPerPage = meta.config.postsPerPage || 20;
 	config.maximumFileSize = meta.config.maximumFileSize;

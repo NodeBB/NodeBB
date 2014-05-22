@@ -3,14 +3,16 @@
 
 var async = require('async'),
 	db = require('../database'),
+	meta = require('../meta'),
 	utils = require('../../public/src/utils');
 
 module.exports = function(Topics) {
 
 	Topics.createTags = function(tags, tid, timestamp, callback) {
 		if(Array.isArray(tags)) {
+			tags = tags.slice(0, meta.config.tagsPerTopic || 5);
 			async.each(tags, function(tag, next) {
-				tag = utils.removePunctuation(tag.trim().toLowerCase()).substr(0, 20); // TODO: make max length configurable
+				tag = utils.removePunctuation(tag.trim().toLowerCase()).substr(0, meta.config.maximumTagLength || 15);
 
 				db.setAdd('topic:' + tid + ':tags', tag);
 
