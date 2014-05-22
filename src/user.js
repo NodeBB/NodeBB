@@ -277,7 +277,7 @@ var bcrypt = require('bcryptjs'),
 
 		var options = {
 			size: '128',
-			default: customGravatarDefaultImage || meta.config.defaultGravatarImage || '',
+			default: customGravatarDefaultImage || meta.config.defaultGravatarImage || 'identicon',
 			rating: 'pg'
 		};
 
