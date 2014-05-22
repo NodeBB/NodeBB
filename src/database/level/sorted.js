@@ -5,7 +5,7 @@ var async = require('async');
 
 module.exports = function(db, module) {
 	var helpers = module.helpers.level;
-	
+
 	module.sortedSetAdd = function(key, score, value, callback) {
 		module.getListRange(key, 0, -1, function(err, set) {
 			set = set.filter(function(a) {return a.value !== value.toString();});
@@ -55,6 +55,10 @@ module.exports = function(db, module) {
 			}
 			callback(err, set);
 		});
+	};
+
+	module.getSortedSetRevRangeWithScores = function(key, start, stop, callback) {
+		// should return [{value:"test", score: 2}, {value: "foo", score: 1}, ...]
 	};
 
 	module.getSortedSetRangeByScore = function(key, start, count, min, max, callback) {

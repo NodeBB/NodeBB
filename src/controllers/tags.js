@@ -27,28 +27,12 @@ tagsController.getTag = function(req, res, next) {
 };
 
 tagsController.getTags = function(req, res, next) {
-	topics.getTagsObjects(function(err, tags) {
+	topics.getTags(0, -1, function(err, tags) {
 		if (err) {
 			return next(err);
 		}
 
-		async.map(tags, function(tag, next) {
-			topics.getTagTopicCount(tag.name, function(err, count) {
-				if (err) {
-					return next(err);
-				}
-				tag.topicCount = count;
-				next(null, tag);
-			});
-		}, function(err, tags) {
-			if (err) {
-				return next(err);
-			}
-			tags = tags.sort(function(a, b) {
-				return parseInt(b.topicCount, 10) - parseInt(a.topicCount, 10);
-			});
-			res.render('tags', {tags: tags});
-		});
+		res.render('tags', {tags: tags});
 	});
 
 };

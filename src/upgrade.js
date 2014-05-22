@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 4, 2);
+	latestSchema = Date.UTC(2014, 4, 22);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -687,6 +687,50 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/5/16] Removing allowGuestPosting option - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 4, 22);
+
+			if (schemaDate < thisSchemaDate) {
+				db.exists('tags', function(err, exists) {
+					if (err || !exists) {
+						winston.info('[2014/5/22] Skipping tag upgrade');
+						return Upgrade.update(thisSchemaDate, next);
+					}
+
+					db.getSetMembers('tags', function(err, tags) {
+						if (err) {
+							return next(err);
+						}
+
+						async.each(tags, function(tag, next) {
+							db.sortedSetCard('tag:' + tag + ':topics', function(err, count) {
+								if (err) {
+									return next(err);
+								}
+								db.sortedSetAdd('tags:topic:count', count, tag, next);
+							});
+						}, function(err) {
+							if (err) {
+								winston.error('[2014/5/22] Error encountered while upgrading tags');
+								return next(err);
+							}
+
+							db.delete('tags', function(err) {
+								if (err) {
+									winston.error('[2014/5/22] Error encountered while upgrading tags');
+									return next(err);
+								}
+								winston.info('[2014/5/22] Tags upgraded to sorted set');
+								Upgrade.update(thisSchemaDate, next);
+							});
+						});
+					});
+				});
+			} else {
+				winston.info('[2014/5/16] Tags upgrade - skipped');
 				next();
 			}
 		}

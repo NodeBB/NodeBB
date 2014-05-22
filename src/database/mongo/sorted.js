@@ -19,8 +19,8 @@ module.exports = function(db, module) {
 		db.collection('objects').remove({_key:key, value:value}, helpers.done(callback));
 	};
 
-	function getSortedSetRange(key, start, stop, sort, callback) {
-		db.collection('objects').find({_key:key}, {fields:{value:1}})
+	function getSortedSetRange(key, start, stop, sort, withScores, callback) {
+		db.collection('objects').find({_key:key}, {fields: {_id: 0, value: 1, score: 1}})
 			.limit(stop - start + 1)
 			.skip(start)
 			.sort({score: sort})
@@ -29,20 +29,26 @@ module.exports = function(db, module) {
 					return callback(err, null);
 				}
 
-				data = data.map(function(item) {
-					return item.value;
-				});
+				if (!withScores) {
+					data = data.map(function(item) {
+						return item.value;
+					});
+				}
 
 				callback(null, data);
 			});
 	}
 
 	module.getSortedSetRange = function(key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, 1, callback);
+		getSortedSetRange(key, start, stop, 1, false, callback);
 	};
 
 	module.getSortedSetRevRange = function(key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, -1, callback);
+		getSortedSetRange(key, start, stop, -1, false, callback);
+	};
+
+	module.getSortedSetRevRangeWithScores = function(key, start, stop, callback) {
+		getSortedSetRange(key, start, stop, -1, true, callback)
 	};
 
 	module.getSortedSetRangeByScore = function(key, start, count, min, max, callback) {

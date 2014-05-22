@@ -7,17 +7,30 @@ var async = require('async'),
 
 module.exports = function(Topics) {
 
-	Topics.createTags = function(tags, tid, timestamp) {
+	Topics.createTags = function(tags, tid, timestamp, callback) {
 		if(Array.isArray(tags)) {
-			for (var i=0; i<tags.length; ++i) {
-				tags[i] = utils.removePunctuation(tags[i].trim().toLowerCase()).substr(0, 20); // TODO: make max length configurable
+			async.each(tags, function(tag, next) {
+				tag = utils.removePunctuation(tag.trim().toLowerCase()).substr(0, 20); // TODO: make max length configurable
 
-				db.sortedSetAdd('tag:' + tags[i] + ':topics', timestamp, tid);
-				db.setAdd('topic:' + tid + ':tags', tags[i]);
-				db.setAdd('tags', tags[i]);
-			}
+				db.setAdd('topic:' + tid + ':tags', tag);
+
+				db.sortedSetAdd('tag:' + tag + ':topics', timestamp, tid, function(err) {
+					if (!err) {
+						updateTagCount(tag);
+					}
+					next(err);
+				});
+			}, callback);
 		}
 	};
+
+	function updateTagCount(tag) {
+		Topics.getTagTopicCount(tag, function(err, count) {
+			if (!err) {
+				db.sortedSetAdd('tags:topic:count', count, tag);
+			}
+		});
+	}
 
 	Topics.getTagTids = function(tag, start, end, callback) {
 		db.getSortedSetRevRange('tag:' + tag + ':topics', start, end, callback);
@@ -29,18 +42,11 @@ module.exports = function(Topics) {
 
 	Topics.deleteTag = function(tag) {
 		db.delete('tag:' + tag + ':topics');
-		db.setRemove('tags', tag);
+		db.sortedSetRemove('tags:topic:count', tag);
 	};
 
-	Topics.getTags = function(callback) {
-		db.getSetMembers('tags', callback);
-	};
-
-	//returns tags as objects cuz templates.js cant do arrays yet >_>
-	Topics.getTagsObjects = function(callback) {
-		Topics.getTags(function(err, tags) {
-			callback(err, mapToObject(tags));
-		});
+	Topics.getTags = function(start, end, callback) {
+		db.getSortedSetRevRangeWithScores('tags:topic:count', start, end, callback);
 	};
 
 	Topics.getTopicTags = function(tid, callback) {
@@ -99,7 +105,7 @@ module.exports = function(Topics) {
 			return callback(null, []);
 		}
 
-		db.getSetMembers('tags', function(err, tags) {
+		db.getSortedSetRevRange('tags:topic:count', 0, -1, function(err, tags) {
 			if (err) {
 				return callback(null, []);
 			}
