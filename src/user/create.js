@@ -6,6 +6,7 @@ var async = require('async'),
 	validator = require('validator'),
 	plugins = require('../plugins'),
 	groups = require('../groups'),
+	meta = require('../meta'),
 	notifications = require('../notifications'),
 	translator = require('../../public/src/translator');
 
@@ -43,10 +44,11 @@ module.exports = function(User) {
 				}
 			},
 			function(next) {
-				User.exists(userData.userslug, function(err, exists) {
+				meta.userOrGroupExists(userData.userslug, function(err, exists) {
 					if (err) {
 						return next(err);
 					}
+
 					if (exists) {
 						async.forever(function(next) {
 							var	newUsername = userData.username + (Math.floor(Math.random() * 255) + 1);

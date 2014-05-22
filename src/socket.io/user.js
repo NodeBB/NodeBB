@@ -2,6 +2,7 @@
 
 var	async = require('async'),
 	user = require('../user'),
+	groups = require('../groups'),
 	topics = require('../topics'),
 	utils = require('./../../public/src/utils'),
 	meta = require('../meta'),
@@ -9,7 +10,7 @@ var	async = require('async'),
 
 SocketUser.exists = function(socket, data, callback) {
 	if (data && data.username) {
-		user.exists(utils.slugify(data.username), callback);
+		meta.userOrGroupExists(utils.slugify(data.username), callback);
 	}
 };
 

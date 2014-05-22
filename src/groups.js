@@ -4,6 +4,7 @@
 	var async = require('async'),
 		winston = require('winston'),
 		user = require('./user'),
+		meta = require('./meta'),
 		db = require('./database'),
 		utils = require('../public/src/utils'),
 
@@ -182,7 +183,7 @@
 			var system = true;
 		}
 
-		Groups.exists(name, function (err, exists) {
+		meta.userOrGroupExists(name, function (err, exists) {
 			if (err) {
 				return callback(err);
 			}
