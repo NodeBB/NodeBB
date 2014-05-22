@@ -59,7 +59,7 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 middleware.addSlug = function(req, res, next) {
 	function redirect(method, id, name) {
 		method(id, 'slug', function(err, slug) {
-			if (err || !slug) {
+			if (err || !slug || slug === id + '/') {
 				return next(err);
 			}
 			res.redirect(name + slug);
