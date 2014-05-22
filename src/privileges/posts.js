@@ -44,11 +44,9 @@ module.exports = function(privileges) {
 			var editable = results.isAdministrator || results.isModerator || results.manage_content || results.manage_topic || results.isOwner;
 
 			callback(null, {
-				meta: {
-					editable: editable,
-					view_deleted: editable,
-					move: results.isAdministrator || results.isModerator
-				}
+				editable: editable,
+				view_deleted: editable,
+				move: results.isAdministrator || results.isModerator
 			});
 		});
 	};

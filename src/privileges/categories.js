@@ -34,12 +34,10 @@ module.exports = function(privileges) {
 			var editable = results.isAdministrator || results.isModerator;
 
 			callback(null, {
-				meta: {
-					'topics:create': results['topics:create'],
-					editable: editable,
-					view_deleted: editable,
-					read: results.read
-				}
+				'topics:create': results['topics:create'],
+				editable: editable,
+				view_deleted: editable,
+				read: results.read
 			});
 		});
 	};

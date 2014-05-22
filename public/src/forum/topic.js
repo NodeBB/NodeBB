@@ -351,8 +351,8 @@ define(['forum/pagination', 'forum/infinitescroll', 'forum/topic/threadTools', '
 	}
 
 	function toggleModTools(postHtml, privileges) {
-		postHtml.find('.edit, .delete').toggleClass('none', !privileges.meta.editable);
-		postHtml.find('.move').toggleClass('none', !privileges.meta.move);
+		postHtml.find('.edit, .delete').toggleClass('none', !privileges.editable);
+		postHtml.find('.move').toggleClass('none', !privileges.move);
 		postHtml.find('.reply, .quote').toggleClass('none', !$('.post_reply').length);
 		var isSelfPost = parseInt(postHtml.attr('data-uid'), 10) === parseInt(app.uid, 10);
 		postHtml.find('.chat, .flag').toggleClass('none', isSelfPost);
