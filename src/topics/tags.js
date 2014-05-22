@@ -2,14 +2,16 @@
 'use strict';
 
 var async = require('async'),
-	db = require('../database');
+	db = require('../database'),
+	utils = require('../../public/src/utils');
 
 module.exports = function(Topics) {
 
 	Topics.createTags = function(tags, tid, timestamp) {
 		if(Array.isArray(tags)) {
 			for (var i=0; i<tags.length; ++i) {
-				tags[i] = tags[i].trim().toLowerCase();
+				tags[i] = utils.removePunctuation(tags[i].trim().toLowerCase()).substr(0, 20); // TODO: make max length configurable
+
 				db.sortedSetAdd('tag:' + tags[i] + ':topics', timestamp, tid);
 				db.setAdd('topic:' + tid + ':tags', tags[i]);
 				db.setAdd('tags', tags[i]);

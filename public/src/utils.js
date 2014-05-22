@@ -126,6 +126,9 @@
 			return str;
 		},
 
+		removePunctuation: function(str) {
+			return str.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()?]/g, '');
+		},
 
 		isEmailValid: function(email) {
 			return typeof email === 'string' && email.length && email.indexOf('@') !== -1;

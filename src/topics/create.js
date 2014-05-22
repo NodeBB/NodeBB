@@ -54,13 +54,12 @@ module.exports = function(Topics) {
 				db.sortedSetAdd('topics:tid', timestamp, tid);
 				plugins.fireHook('action:topic.save', tid);
 
+				Topics.createTags(data.tags, tid, timestamp);
 				user.addTopicIdToUser(uid, tid, timestamp);
 
 				db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid);
 				db.incrObjectField('category:' + cid, 'topic_count');
 				db.incrObjectField('global', 'topicCount');
-
-				Topics.createTags(data.tags, tid, timestamp);
 
 				callback(null, tid);
 			});
