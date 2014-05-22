@@ -108,7 +108,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.uid = userData.uid;
 			userData.yourid = callerUID;
 			userData.theirid = userData.uid;
-
+			userData.isSelf = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
 			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
 
 			userData.followingCount = results.followStats.followingCount;
