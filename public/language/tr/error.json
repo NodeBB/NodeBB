@@ -45,6 +45,7 @@
     "topic-thumbnails-are-disabled": "Başlık resimleri kapalı.",
     "invalid-file": "Geçersiz Dosya",
     "uploads-are-disabled": "Yüklemeler kapalı",
+    "upload-error": "Upload Error : %1",
     "signature-too-long": "İmza en fazla %1 karakter olabilir!",
     "cant-chat-with-yourself": "Kendinizle sohbet edemezsiniz!"
 }

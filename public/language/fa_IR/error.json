@@ -45,6 +45,7 @@
     "topic-thumbnails-are-disabled": "چهرک‌های جستار غیرفعال شده است.",
     "invalid-file": "پرونده نامعتبر",
     "uploads-are-disabled": "امکان بارگذاری غیرفعال شده است.",
+    "upload-error": "Upload Error : %1",
     "signature-too-long": "امضا نمی‌تواند بیش‌تر از %1 نویسه داشته باشد.",
     "cant-chat-with-yourself": "شما نمی‌توانید با خودتان گفتگو کنید!"
 }

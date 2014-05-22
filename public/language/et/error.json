@@ -45,6 +45,7 @@
     "topic-thumbnails-are-disabled": "Teema thumbnailid on keelatud.",
     "invalid-file": "Vigane fail",
     "uploads-are-disabled": "Üleslaadimised on keelatud",
+    "upload-error": "Upload Error : %1",
     "signature-too-long": "Allkiri ei saa olla pikem kui %1 tähemärki!",
     "cant-chat-with-yourself": "Sa ei saa endaga vestelda!"
 }

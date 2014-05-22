@@ -45,6 +45,7 @@
     "topic-thumbnails-are-disabled": "Thumbnails para tópico foram desativados.",
     "invalid-file": "Arquivo inválido",
     "uploads-are-disabled": "Uploads estão desativados",
+    "upload-error": "Upload Error : %1",
     "signature-too-long": "Assinatura não pode conter mais que %1 caracteres!",
     "cant-chat-with-yourself": "Impossível bater papo consigo mesmo!"
 }

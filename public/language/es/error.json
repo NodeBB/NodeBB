@@ -45,6 +45,7 @@
     "topic-thumbnails-are-disabled": "Las miniaturas de los temas están deshabilitadas.",
     "invalid-file": "Archivo no válido.",
     "uploads-are-disabled": "Las subidas están deshabilitadas.",
+    "upload-error": "Upload Error : %1",
     "signature-too-long": "Las firmas no pueden ser más largas de %1 caracteres!",
     "cant-chat-with-yourself": "No puedes conversar contigo mismo!"
 }

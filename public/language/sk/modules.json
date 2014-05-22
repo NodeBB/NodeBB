@@ -1,8 +1,11 @@
 {
-    "chat.chatting_with": "Chat s <span id=\"chat-with-name\"></span>",
-    "chat.placeholder": "napíšte správu sem a stlačte enter pre odoslanie",
+    "chat.chatting_with": "Rozhovor s <span id=\"chat-with-name\"></span>",
+    "chat.placeholder": "sem napíšte správu  a stlačte enter pre odoslanie",
     "chat.send": "Odoslať",
     "chat.no_active": "Nemáte žiadne aktívne konverzácie.",
-    "chat.user_typing": "%1 is typing ...",
-    "chat.user_has_messaged_you": "%1 has messaged you."
+    "chat.user_typing": "%1 práve píše ...",
+    "chat.user_has_messaged_you": "%1 má pre Vás správu.",
+    "chat.see_all": "See all Chats",
+    "composer.user_said_in": "%1 said in %2:\n",
+    "composer.user_said": "%1 said:\n"
 }

@@ -22,6 +22,7 @@
     "header.admin": "Admin",
     "header.recent": "Friss",
     "header.unread": "Olvasatlan",
+    "header.tags": "Tags",
     "header.popular": "Népszerű",
     "header.users": "Felhasználók",
     "header.chats": "Chat",

@@ -22,6 +22,7 @@
     "header.admin": "관리자",
     "header.recent": "최근 주제",
     "header.unread": "읽지 않은 주제",
+    "header.tags": "Tags",
     "header.popular": "인기 주제",
     "header.users": "사용자",
     "header.chats": "채팅",

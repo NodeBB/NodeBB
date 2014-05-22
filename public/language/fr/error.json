@@ -45,6 +45,7 @@
     "topic-thumbnails-are-disabled": "Miniatures de sujet désactivés",
     "invalid-file": "Fichier Invalide",
     "uploads-are-disabled": "Téléchargements désactivés",
+    "upload-error": "Upload Error : %1",
     "signature-too-long": "La signature ne peut dépasser %1 caractères!",
     "cant-chat-with-yourself": "Vous ne pouvez chatter avec vous même!"
 }

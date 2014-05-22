@@ -4,5 +4,8 @@
     "chat.send": "發送",
     "chat.no_active": "暫無聊天",
     "chat.user_typing": "%1 正在輸入中...",
-    "chat.user_has_messaged_you": "%1 已傳送訊息給你了"
+    "chat.user_has_messaged_you": "%1 已傳送訊息給你了",
+    "chat.see_all": "See all Chats",
+    "composer.user_said_in": "%1 said in %2:\n",
+    "composer.user_said": "%1 said:\n"
 }

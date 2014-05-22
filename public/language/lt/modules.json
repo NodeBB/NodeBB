@@ -4,5 +4,8 @@
     "chat.send": "Siųsti",
     "chat.no_active": "Jūs neturite aktyvių susirašinėjimų.",
     "chat.user_typing": "%1 dabar rašo...",
-    "chat.user_has_messaged_you": "%1 has messaged you."
+    "chat.user_has_messaged_you": "%1 parašė jums.",
+    "chat.see_all": "See all Chats",
+    "composer.user_said_in": "%1 said in %2:\n",
+    "composer.user_said": "%1 said:\n"
 }

@@ -45,6 +45,7 @@
     "topic-thumbnails-are-disabled": "주제 섬네일이 이미 해제되었습니다.",
     "invalid-file": "올바르지 않은 파일입니다.",
     "uploads-are-disabled": "업로드는 비활성화되어 있습니다.",
+    "upload-error": "Upload Error : %1",
     "signature-too-long": "서명은 최대 %1자로 제한됩니다.",
     "cant-chat-with-yourself": "자신과는 채팅할 수 없습니다."
 }

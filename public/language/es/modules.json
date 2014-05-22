@@ -4,5 +4,8 @@
     "chat.send": "Enviar",
     "chat.no_active": "No tiene conversaciones activas.",
     "chat.user_typing": "%1 está escribiendo ...",
-    "chat.user_has_messaged_you": "%1 te ha enviado un mensaje."
+    "chat.user_has_messaged_you": "%1 te ha enviado un mensaje.",
+    "chat.see_all": "See all Chats",
+    "composer.user_said_in": "%1 said in %2:\n",
+    "composer.user_said": "%1 said:\n"
 }

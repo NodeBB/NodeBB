@@ -45,6 +45,7 @@
     "topic-thumbnails-are-disabled": "Thumbnails cho chủ đề đã bị tắt",
     "invalid-file": "File không hợp lệ",
     "uploads-are-disabled": "Đã khóa lựa chọn tải lên",
+    "upload-error": "Upload Error : %1",
     "signature-too-long": "Chứ ký không được dài quá %1 ký tự",
     "cant-chat-with-yourself": "Bạn không thể chat với chính bạn!"
 }
