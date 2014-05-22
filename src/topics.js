@@ -211,6 +211,9 @@ var async = require('async'),
 						return next(null, userCache[topicData.uid]);
 					}
 					user.getUserFields(topicData.uid, ['username', 'userslug', 'picture'], next);
+				},
+				tags: function(next) {
+					Topics.getTopicTagsObjects(topicData.tid, next);
 				}
 			}, function(err, topicInfo) {
 				if(err) {
@@ -234,6 +237,7 @@ var async = require('async'),
 				topicData.category = topicInfo.categoryData;
 				topicData.teaser = topicInfo.teaser;
 				topicData.user = topicInfo.user;
+				topicData.tags = topicInfo.tags;
 
 				next(null, topicData);
 			});
