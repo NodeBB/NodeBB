@@ -163,28 +163,35 @@ module.exports = function(db, module) {
 			stop = -1;
 		}
 		var limit = stop - start + 1;
-		if (limit < 0) {
+		if (limit <= 0) {
 			limit = 0;
 		}
 
-		db.collection('objects').find({_key:{$in: sets}}, {fields: {_id: 0, value: 1, score: 1}})
-			.limit(limit)
-			.skip(start)
-			.sort({score: sort})
-			.toArray(function(err, data) {
-				if (err || !data) {
-					return callback(err);
-				}
+		var pipeline = [
+			{ $match: { _key: {$in: sets}} },
+			{ $group: { _id: {value: '$value'}, totalScore: {$sum : "$score"}} },
+			{ $sort: { totalScore: sort} }
+		];
 
-				data = data.map(function(item) {
-					return item.value;
-				});
+		if (start) {
+			pipeline.push({ $skip: start });
+		}
 
-				data = data.filter(function(value, index, array) {
-					return array.indexOf(value) === index;
-				});
+		if (limit > 0) {
+			pipeline.push({ $limit: limit });
+		}
 
-				callback(null, data);
+		pipeline.push({	$project: { _id: 0, value: '$_id.value' }});
+
+		db.collection('objects').aggregate(pipeline, function(err, data) {
+			if (err || !data) {
+				return callback(err);
+			}
+
+			data = data.map(function(item) {
+				return item.value;
 			});
+			callback(null, data);
+		});
 	}
 };
