@@ -73,4 +73,33 @@ module.exports = function(redisClient, module) {
 
 		multi.exec(callback);
 	};
+
+	module.getSortedSetUnion = function(sets, start, stop, callback) {
+		// start and stop optional
+		if (typeof start === 'function') {
+			callback = start;
+			start = 0;
+			stop = -1;
+		} else if (typeof stop === 'function') {
+			callback = stop;
+			stop = -1;
+		}
+
+		var	multi = redisClient.multi();
+
+		// zunionstore prep
+		sets.unshift(sets.length);
+		sets.unshift('temp');
+
+		multi.zunionstore.apply(multi, sets);
+		multi.zrange('temp', start, stop);
+		multi.del('temp');
+		multi.exec(function(err, results) {
+			if (!err && typeof callback === 'function') {
+				callback(null, results[1]);
+			} else if (err) {
+				callback(err);
+			}
+		});
+	}
 };

@@ -20,7 +20,7 @@ describe('Test database', function() {
 		}
 
 		function set(callback) {
-			db.set('testingStr', 'opppa gangastayla', function(err, data) {
+			db.set('testingStr', 'oppa gangnam style', function(err, data) {
 				callback(err, {'set': data});
 			});
 		}
@@ -324,6 +324,12 @@ describe('Test database', function() {
 			});
 		}
 
+		function getSortedSetUnion(callback) {
+			db.getSortedSetUnion(['users:joindate', 'users:derp', 'users:postcount'], function(err, data) {
+				callback(err, {'sortedSetUnion': data});
+			});
+		}
+
 		var sortedSetTasks = [
 			sortedSetAdd,
 			sortedSetAdd,
@@ -337,7 +343,8 @@ describe('Test database', function() {
 			sortedSetCount,
 			sortedSetScore,
 			sortedSetsScore,
-			getSortedSetRevRangeByScore
+			getSortedSetRevRangeByScore,
+			getSortedSetUnion
 		];
 
 		async.series(sortedSetTasks, function(err, results) {

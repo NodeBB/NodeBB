@@ -14,7 +14,7 @@ describe('Groups', function() {
 			},
 			function(next) {
 				// Create a new user
-				User.create({
+					User.create({
 					username: 'testuser',
 					email: 'b@c.com'
 				}, done);

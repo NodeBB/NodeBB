@@ -23,6 +23,8 @@ module.exports = function(Topics) {
 					next(err);
 				});
 			}, callback);
+		} else {
+			callback();
 		}
 	};
 

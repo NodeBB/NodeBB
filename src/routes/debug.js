@@ -54,9 +54,10 @@ module.exports = function(app, middleware, controllers) {
 		});
 
 		app.get('/test', function(req, res) {
-			var privileges = require('../privileges');
-			privileges.topics.get(1299, 1, function(err, result) {
-				res.json(result);
+			var db = require('../database');
+			db.getSortedSetUnion(['uid:1:posts', 'uid:3:posts'], function(err, pids) {
+				console.log(err);
+				res.json(pids);
 			});
 		});
 	});
