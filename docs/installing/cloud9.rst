@@ -7,7 +7,7 @@ The following are installation instructions for the `Cloud 9 <https://c9.io/>`_ 
 
 .. code:: bash
 	
-	git clone git://github.com/designcreateplay/NodeBB.git nodebb
+	git clone git://github.com/NodeBB/NodeBB.git nodebb
 
 The nodebb command after the git url will create a file called nodebb so you have to CD into the file after you have cloned NodeBB.
 

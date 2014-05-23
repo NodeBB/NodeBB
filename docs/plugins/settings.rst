@@ -299,8 +299,8 @@ All methods get called within Settings-scope.
     ``trim`` Whether the value is assumed as trimmed.
 
 For further impression take a look at the
-`default plugins <https://github.com/designcreateplay/NodeBB/tree/master/public/src/modules/settings>`_.
+`default plugins <https://github.com/NodeBB/NodeBB/tree/master/public/src/modules/settings>`_.
 
 You should also take a look at the helper-functions within
-`Settings <https://github.com/designcreateplay/NodeBB/tree/master/public/src/modules/settings.js>`_ in order to create
+`Settings <https://github.com/NodeBB/NodeBB/tree/master/public/src/modules/settings.js>`_ in order to create
 your own plugins. There are a few methods that take response to call the methods of other plugins when fittingly.

@@ -16,7 +16,7 @@ There are two types of hooks: **filters** and **actions**.
 
 **Actions** are executed at certain points of NodeBB, and are useful if you'd like to *do* something after a certain trigger. For example, an action hook can be used to notify an admin if a certain user has posted. Other uses include analytics recording, or automatic welcome posts on new user registration.
 
-When you are writing your plugin, make sure a hook exists where you'd like something to happen. If a hook isn't present, `file an issue <https://github.com/designcreateplay/NodeBB/issues>`_ and we'll include it in the next version of NodeBB.
+When you are writing your plugin, make sure a hook exists where you'd like something to happen. If a hook isn't present, `file an issue <https://github.com/NodeBB/NodeBB/issues>`_ and we'll include it in the next version of NodeBB.
 
 Configuration
 ------------------

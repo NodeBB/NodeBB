@@ -7,7 +7,7 @@ NodeBB is an open source project, and will forever remain free. Here's a number 
 * `Follow us on Twitter <http://www.twitter.com/NodeBB>`_ and perhaps tweet **#NodeBB is most awesome forum software @NodeBB** 
 * Update our wiki! ;) We need everything from development/design tutorials to user friendly how-to guides.
 * Tell everybody about NodeBB, including your grandma and her cats.
-* `Submit a pull request, or two, or three.. <http://www.github.com/designcreateplay/NodeBB>`_
+* `Submit a pull request, or two, or three.. <http://www.github.com/NodeBB/NodeBB>`_
 * Build a new theme
 * Write a plugin
 * Keep the link back to us on the footer of your own NodeBB :)
@@ -27,7 +27,7 @@ Writing Documentation
 
 These docs were written using `Sphinx <http://sphinx-doc.org/>`_ and published using `rtfd.org <http://readthedocs.org/>`_. 
 
-You can edit these docs `directly on GitHub <https://github.com/designcreateplay/NodeBB/tree/master/docs>`_, or by clicking on "View page source" on the top right of any page.
+You can edit these docs `directly on GitHub <https://github.com/NodeBB/NodeBB/tree/master/docs>`_, or by clicking on "View page source" on the top right of any page.
 
 If you wish, you can clone the repository and compile the documentation yourself. Check out the `Getting Started <https://read-the-docs.readthedocs.org/en/latest/getting_started.html>`_ section for more info on how to accomplish the latter.
 

@@ -54,7 +54,7 @@ if ('undefined' !== typeof window) {
 	})(jQuery || {fn:{}});
 
 
-	// FIX FOR #1245 - https://github.com/designcreateplay/NodeBB/issues/1245
+	// FIX FOR #1245 - https://github.com/NodeBB/NodeBB/issues/1245
 	// from http://stackoverflow.com/questions/15931962/bootstrap-dropdown-disappear-with-right-click-on-firefox
 	// obtain a reference to the original handler
 	var _clearMenus = $._data(document, "events").click.filter(function (el) {
