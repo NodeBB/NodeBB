@@ -10,7 +10,7 @@ Developer's Resources
 Core
 ----
 
-* `Building a new Admin Page <https://github.com/designcreateplay/NodeBB/wiki/How-to-build-a-new-Admin-Page>`_ (Out of date)
+* `Building a new Admin Page <https://github.com/NodeBB/NodeBB/wiki/How-to-build-a-new-Admin-Page>`_ (Out of date)
 
 
 Plugins

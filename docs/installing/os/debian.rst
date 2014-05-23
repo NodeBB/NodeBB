@@ -139,7 +139,7 @@ Next clone this repository :
 .. code:: bash
 
 	$ cd /path/to/nodebb/install/location
-	$ git clone git://github.com/designcreateplay/NodeBB.git nodebb
+	$ git clone git://github.com/NodeBB/NodeBB.git nodebb
 
 Now we are going to install all dependencies for NodeBB via NPM :
 
@@ -172,6 +172,6 @@ And after all.. let's run the NodeBB forum
 Extras, tips and Advice
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-You should secure your NodeBB installation, `take a look here <https://github.com/designcreateplay/NodeBB#securing-nodebb>`_.
+You should secure your NodeBB installation, `take a look here <https://github.com/NodeBB/NodeBB#securing-nodebb>`_.
 
 You should use Nginx (or similar) in order to reverse proxy your NodeBB installation on the port 80, :doc:`take a look here <../../configuring/proxies>`

@@ -86,7 +86,7 @@ Installation
 
     .. code:: bash
 
-        $ git clone git://github.com/designcreateplay/NodeBB.git nodebb
+        $ git clone git://github.com/NodeBB/NodeBB.git nodebb
 
 5. Install NodeBB's npm dependencies:
 
@@ -125,7 +125,7 @@ Installation
 
     **Note:** With port 80 the `:80` does not need to be entered.  
 
-**Note:** If these instructions are unclear or if you run into trouble, please let us know by `filing an issue <https://github.com/designcreateplay/NodeBB/issues>`_.
+**Note:** If these instructions are unclear or if you run into trouble, please let us know by `filing an issue <https://github.com/NodeBB/NodeBB/issues>`_.
 
 Upgrading NodeBB
 ----------------

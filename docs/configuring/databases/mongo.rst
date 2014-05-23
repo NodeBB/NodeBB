@@ -36,7 +36,7 @@ Enter the following into the terminal, replacing `/path/to/nodebb/install/locati
 .. code:: bash
 
     $ cd /path/to/nodebb/install/location
-    $ git clone git://github.com/designcreateplay/NodeBB.git nodebb
+    $ git clone git://github.com/NodeBB/NodeBB.git nodebb
 
 Step 5: Install The Required NodeBB Dependencies
 -------------------------

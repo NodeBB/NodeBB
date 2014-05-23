@@ -80,7 +80,7 @@ If successful, running the following command should show a version higher than 0
 Submit Bugs on our Issue Tracker
 --------------------------------
 
-Before reporting bugs, please ensure that the issue has not already been filed on our `tracker <https://github.com/designcreateplay/NodeBB/issues?state=closed>`_, or has already been resolved on our `support forum <http://community.nodebb.org/category/6/bug-reports>`_. If it has not been filed, feel free to create an account on GitHub and `create a new issue <https://github.com/designcreateplay/NodeBB/issues>`_.
+Before reporting bugs, please ensure that the issue has not already been filed on our `tracker <https://github.com/NodeBB/NodeBB/issues?state=closed>`_, or has already been resolved on our `support forum <http://community.nodebb.org/category/6/bug-reports>`_. If it has not been filed, feel free to create an account on GitHub and `create a new issue <https://github.com/NodeBB/NodeBB/issues>`_.
 
 
 Ask the NodeBB Community

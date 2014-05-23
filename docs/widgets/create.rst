@@ -74,5 +74,5 @@ Pass this back in the array:
 	}
 
 
-And that's all. You can define as many Widget Areas in your theme as you wish. If you're still stuck, have a look at `this commit <https://github.com/designcreateplay/nodebb-theme-cerulean/commit/50e49a9da5a89484fa8001bbda2e613b69f18e86>`_ which upgraded the Cerulean theme to use the widget system.
+And that's all. You can define as many Widget Areas in your theme as you wish. If you're still stuck, have a look at `this commit <https://github.com/NodeBB/nodebb-theme-cerulean/commit/50e49a9da5a89484fa8001bbda2e613b69f18e86>`_ which upgraded the Cerulean theme to use the widget system.
 
