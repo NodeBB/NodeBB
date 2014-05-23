@@ -180,6 +180,10 @@ module.exports = function(db, module) {
 					return item.value;
 				});
 
+				data = data.filter(function(value, index, array) {
+					return array.indexOf(value) === index;
+				});
+
 				callback(null, data);
 			});
 	}
