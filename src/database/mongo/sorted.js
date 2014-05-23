@@ -26,7 +26,7 @@ module.exports = function(db, module) {
 			.sort({score: sort})
 			.toArray(function(err, data) {
 				if (err || !data) {
-					return callback(err, null);
+					return callback(err);
 				}
 
 				if (!withScores) {
@@ -48,7 +48,7 @@ module.exports = function(db, module) {
 	};
 
 	module.getSortedSetRevRangeWithScores = function(key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, -1, true, callback)
+		getSortedSetRange(key, start, stop, -1, true, callback);
 	};
 
 	module.getSortedSetRangeByScore = function(key, start, count, min, max, callback) {
@@ -144,4 +144,43 @@ module.exports = function(db, module) {
 			callback(null, returnData);
 		});
 	};
+
+	module.getSortedSetUnion = function(sets, start, stop, callback) {
+		getSortedSetUnion(sets, 1, start, stop, callback);
+	};
+
+	module.getSortedSetRevUnion = function(sets, start, stop, callback) {
+		getSortedSetUnion(sets, -1, start, stop, callback);
+	};
+
+	function getSortedSetUnion(sets, sort, start, stop, callback) {
+		if (typeof start === 'function') {
+			callback = start;
+			start = 0;
+			stop = -1;
+		} else if (typeof stop === 'function') {
+			callback = stop;
+			stop = -1;
+		}
+		var limit = stop - start + 1;
+		if (limit < 0) {
+			limit = 0;
+		}
+
+		db.collection('objects').find({_key:{$in: sets}}, {fields: {_id: 0, value: 1, score: 1}})
+			.limit(limit)
+			.skip(start)
+			.sort({score: sort})
+			.toArray(function(err, data) {
+				if (err || !data) {
+					return callback(err);
+				}
+
+				data = data.map(function(item) {
+					return item.value;
+				});
+
+				callback(null, data);
+			});
+	}
 };
