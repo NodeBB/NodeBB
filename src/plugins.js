@@ -195,18 +195,8 @@ var fs = require('fs'),
 						}
 
 						Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
-							if (fs.existsSync(path.join(__dirname, '../node_modules', pluginData.id, file))) {
-								return path.join(pluginData.id, file);
-							} else {
-								// Backwards compatibility with < v0.4.0, remove this for v0.5.0
-								if (pluginData.staticDir) {
-									return path.join(pluginData.id, pluginData.staticDir, file);
-								} else {
-									winston.error('[plugins/' + pluginData.id + '] This plugin\'s CSS is incorrectly configured, please contact the plugin author.');
-									return null;
-								}
-							}
-						}).filter(function(path) { return path }));	// Filter out nulls, remove this for v0.5.0
+							return path.join(pluginData.id, file);
+						}));
 					}
 
 					next();

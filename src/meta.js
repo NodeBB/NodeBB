@@ -259,7 +259,6 @@ var fs = require('fs'),
 					jsPaths = scripts.map(function (jsPath) {
 						jsPath = path.normalize(jsPath);
 
-						// The filter:scripts.get plugin will be deprecated as of v0.5.0, specify scripts in plugin.json instead
 						if (jsPath.substring(0, 7) === 'plugins') {
 							var	matches = _.map(plugins.staticDirs, function(realPath, mappedPath) {
 								if (jsPath.match(mappedPath)) {
@@ -283,7 +282,6 @@ var fs = require('fs'),
 						}
 					});
 
-				// Remove scripts that could not be found (remove this line at v0.5.0)
 				Meta.js.scripts = jsPaths.filter(function(path) {
 					return path !== null;
 				});
