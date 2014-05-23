@@ -83,7 +83,7 @@ var async = require('async'),
 		// Add default values to data Object if not already set
 		var	defaults = {
 				text: '',
-				path: null,
+				path: '',
 				importance: 5,
 				datetime: Date.now(),
 				uniqueId: utils.generateUUID()

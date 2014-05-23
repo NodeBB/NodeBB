@@ -25,7 +25,7 @@ define(['sounds'], function(sound) {
 							image = '';
 						}
 
-						return '<li class="' + (notification.readClass || '') + '"><a href="' + notification.path + '">' + image + '<span class="pull-right relTime">' + utils.relativeTime(notification.datetime, true) + '</span><span class="text">' + notification.text + '</span></a></li>';
+						return '<li class="' + (notification.readClass || '') + '"><a href="' + (notification.path || '#') + '">' + image + '<span class="pull-right relTime">' + utils.relativeTime(notification.datetime, true) + '</span><span class="text">' + notification.text + '</span></a></li>';
 					}
 
 					var	x, html = '';
