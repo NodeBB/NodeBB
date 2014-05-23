@@ -25,7 +25,7 @@ Credit: [Convoe](http://www.convoe.com), [Kano](http://www.kano.me), [Manchester
 
 ## How can I follow along/contribute?
 
-* Our feature roadmap is hosted on the project wiki's [Version History / Roadmap](https://github.com/designcreateplay/NodeBB/wiki/Version-History-%26-Roadmap)
+* Our feature roadmap is hosted on the project wiki's [Version History / Roadmap](https://github.com/NodeBB/NodeBB/wiki/Version-History-%26-Roadmap)
 * If you are a developer, feel free to check out the source and submit pull requests. We also have a wide array of [plugins](http://community.nodebb.org/category/7/nodebb-plugins) which would be a great starting point for learning the codebase.
 * If you are a designer, [NodeBB needs themes](http://community.nodebb.org/category/10/nodebb-themes)! NodeBB's theming system allows extention of the base templates as well as styling via LESS or CSS. NodeBB's base theme utilizes [Bootstrap 3](http://getbootstrap.com/) but themes can choose to use a different framework altogether.
 * Please don't forget to **like**, **follow**, and **star our repo**! Join our growing [community](http://community.nodebb.org) to keep up to date with the latest NodeBB development.
@@ -55,4 +55,4 @@ It is important to ensure that your NodeBB and database servers are secured. Bea
 
 ## Upgrading NodeBB
 
-Detailed upgrade instructions are listed in [Upgrading NodeBB](https://github.com/designcreateplay/NodeBB/wiki/Upgrading-NodeBB)
+Detailed upgrade instructions are listed in [Upgrading NodeBB](https://github.com/NodeBB/NodeBB/wiki/Upgrading-NodeBB)

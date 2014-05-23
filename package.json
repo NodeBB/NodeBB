@@ -6,7 +6,7 @@
   "homepage": "http://www.nodebb.org",
   "repository": {
     "type": "git",
-    "url": "https://github.com/designcreateplay/NodeBB/"
+    "url": "https://github.com/NodeBB/NodeBB/"
   },
   "main": "app.js",
   "scripts": {
@@ -56,7 +56,7 @@
     "mocha": "~1.13.0"
   },
   "bugs": {
-    "url": "https://github.com/designcreateplay/NodeBB/issues"
+    "url": "https://github.com/NodeBB/NodeBB/issues"
   },
   "engines": {
     "node": ">=0.8"
