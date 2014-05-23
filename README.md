@@ -1,4 +1,4 @@
-# <img alt="NodeBB" src="http://i.imgur.com/Gtesm7S.png" />
+# <img alt="NodeBB" src="http://i.imgur.com/mYxPPtB.png" />
 [![Build Status](https://travis-ci.org/NodeBB/NodeBB.svg?branch=master)](https://travis-ci.org/nodebb/nodebb)
 [![Dependency Status](https://david-dm.org/nodebb/nodebb.svg)](https://david-dm.org/nodebb/nodebb)
 [![Code Climate](https://codeclimate.com/github/designcreateplay/NodeBB.png)](https://codeclimate.com/github/designcreateplay/NodeBB)
