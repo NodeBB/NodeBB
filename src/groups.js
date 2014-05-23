@@ -6,6 +6,7 @@
 		user = require('./user'),
 		meta = require('./meta'),
 		db = require('./database'),
+		posts = require('./posts'),
 		utils = require('../public/src/utils'),
 
 		ephemeralGroups = ['guests'],
@@ -304,4 +305,21 @@
 			}, callback);
 		});
 	};
+
+	Groups.getLatestMemberPosts = function(groupName, max, callback) {
+		Groups.get(groupName, {}, function(err, groupObj) {
+			if (err || parseInt(groupObj.memberCount, 10) === 0) {
+				return callback(null, []);
+			}
+
+			var	keys = groupObj.members.map(function(uid) {
+				return 'uid:' + uid + ':posts';
+			});
+			db.getSortedSetRevUnion(keys, 0, max-1, function(err, pids) {
+				posts.getPostSummaryByPids(pids, false, function(err, posts) {
+					callback(null, posts);
+				})
+			})
+		});
+	}
 }(module.exports));

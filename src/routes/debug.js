@@ -54,10 +54,9 @@ module.exports = function(app, middleware, controllers) {
 		});
 
 		app.get('/test', function(req, res) {
-			var db = require('../database');
-			db.getSortedSetUnion(['uid:1:posts', 'uid:3:posts'], function(err, pids) {
-				console.log(err);
-				res.json(pids);
+			var a = require('../groups');
+			a.getLatestMemberPosts('mcg', 5, function() {
+				res.json(arguments);
 			});
 		});
 	});

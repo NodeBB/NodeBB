@@ -1,6 +1,7 @@
 "use strict";
 
 var groups = require('../groups'),
+	async = require('async'),
 
 	groupsController = {};
 
@@ -9,7 +10,6 @@ groupsController.list = function(req, res) {
 		truncateUserList: true,
 		expand: true
 	}, function(err, groups) {
-		console.log(groups);
 		res.render('groups/list', {
 			groups: groups
 		});
@@ -17,11 +17,18 @@ groupsController.list = function(req, res) {
 };
 
 groupsController.details = function(req, res) {
-	groups.get(req.params.name, {
-		expand: true
-	}, function(err, groupObj) {
+	async.parallel({
+		group: function(next) {
+			groups.get(req.params.name, {
+				expand: true
+			}, next);
+		},
+		posts: function(next) {
+			groups.getLatestMemberPosts(req.params.name, 10, next);
+		}
+	}, function(err, results) {
 		if (!err) {
-			res.render('groups/details', groupObj);
+			res.render('groups/details', results);
 		} else {
 			res.redirect('404');
 		}
