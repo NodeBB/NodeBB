@@ -138,6 +138,10 @@ function userRoutes(app, middleware, controllers) {
 
 function groupRoutes(app, middleware, controllers) {
 	app.get('/groups', middleware.buildHeader, controllers.groups.list);
+	app.get('/api/groups', controllers.groups.list);
+
+	app.get('/groups/:name', middleware.buildHeader, controllers.groups.details);
+	app.get('/api/groups/:name', controllers.groups.details);
 }
 
 
