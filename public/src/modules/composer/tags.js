@@ -13,7 +13,8 @@ define(function() {
 		}
 
 		tagEl.tagsinput({
-			maxTags: config.tagsPerTopic
+			maxTags: config.tagsPerTopic,
+			confirmKeys: [13, 188]
 		});
 		addTags(postData.tags, tagEl);
 
