@@ -75,6 +75,18 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.getSortedSetUnion = function(sets, start, stop, callback) {
+		var args = Array.prototype.slice.call(arguments, 0);
+		args.unshift(null);
+		sortedSetUnion.apply(null, args);
+	}
+
+	module.getSortedSetRevUnion = function(sets, start, stop, callback) {
+		var args = Array.prototype.slice.call(arguments, 0);
+		args.unshift(true);
+		sortedSetUnion.apply(null, args);
+	}
+
+	var	sortedSetUnion = function(rev, sets, start, stop, callback) {
 		// start and stop optional
 		if (typeof start === 'function') {
 			callback = start;
@@ -92,7 +104,7 @@ module.exports = function(redisClient, module) {
 		sets.unshift('temp');
 
 		multi.zunionstore.apply(multi, sets);
-		multi.zrange('temp', start, stop);
+		multi[rev ? 'zrevrange' : 'zrange']('temp', start, stop);
 		multi.del('temp');
 		multi.exec(function(err, results) {
 			if (!err && typeof callback === 'function') {

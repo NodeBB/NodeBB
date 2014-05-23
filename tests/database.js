@@ -330,6 +330,12 @@ describe('Test database', function() {
 			});
 		}
 
+		function getSortedSetRevUnion(callback) {
+			db.getSortedSetUnion(['users:joindate', 'users:derp', 'users:postcount'], function(err, data) {
+				callback(err, {'sortedSetUnion': data});
+			});
+		}
+
 		var sortedSetTasks = [
 			sortedSetAdd,
 			sortedSetAdd,
@@ -344,7 +350,8 @@ describe('Test database', function() {
 			sortedSetScore,
 			sortedSetsScore,
 			getSortedSetRevRangeByScore,
-			getSortedSetUnion
+			getSortedSetUnion,
+			getSortedSetRevUnion
 		];
 
 		async.series(sortedSetTasks, function(err, results) {
