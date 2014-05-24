@@ -21,7 +21,7 @@ var ajaxify = ajaxify || {};
 
 	ajaxify.currentPage = null;
 	ajaxify.initialLoad = false;
-	ajaxify.preloaded = null;
+	ajaxify.preloader = null;
 
 	function onAjaxError(err) {
 		var data = err.data, textStatus = err.textStatus;
@@ -185,8 +185,8 @@ var ajaxify = ajaxify || {};
 	};
 
 	ajaxify.loadData = function(callback, url, template) {
-		if (ajaxify.preloaded && ajaxify.preloaded.url === url) {
-			return callback(null, ajaxify.preloaded.data);
+		if (ajaxify.preloader && ajaxify.preloader.url === url) {
+			return callback(null, ajaxify.preloader.data);
 		}
 
 		$(window).trigger('action:ajaxify.loadingData', {url: url});
@@ -299,7 +299,7 @@ var ajaxify = ajaxify || {};
 				// Internal link
 				var url = this.href.replace(rootUrl + '/', '');
 				ajaxify.loadData(function(err, data) {
-					ajaxify.preloaded = {
+					ajaxify.preloader = {
 						url: url,
 						data: data
 					};
@@ -310,7 +310,7 @@ var ajaxify = ajaxify || {};
 
 		$(document.body).on('mouseout', 'a', function (e) {
 			setTimeout(function() {
-				ajaxify.preloaded = null;
+				ajaxify.preloader = null;
 			}, 500);
 		});
 
