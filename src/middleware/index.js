@@ -61,17 +61,6 @@ function routeCurrentTheme(app, themeId, themesData) {
 	// Theme's templates path
 	nconf.set('theme_templates_path', themeObj.templates ? path.join(themesPath, themeObj.id, themeObj.templates) : nconf.get('base_templates_path'));
 	themeTemplatesPath = nconf.get('theme_templates_path');
-
-	// Theme's static directory (to be deprecated for 0.5.0)
-	if (themeObj.staticDir) {
-		app.use(relativePath + '/css/assets', express.static(path.join(themesPath, themeObj.id, themeObj.staticDir), {
-			maxAge: app.enabled('cache') ? 5184000000 : 0
-		}));
-
-		if (process.env.NODE_ENV === 'development') {
-			winston.info('Static directory routed for theme: ' + themeObj.id);
-		}
-	}
 }
 
 function compileTemplates(pluginTemplates) {

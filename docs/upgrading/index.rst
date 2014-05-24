@@ -1,7 +1,7 @@
 Upgrading NodeBB
 ======================
 
-NodeBB's periodic releases are located in the `Releases <https://github.com/designcreateplay/NodeBB/releases>`_. These releases contain what is usually considered the most bug-free code, and is designed to be used on production-level instances of NodeBB.
+NodeBB's periodic releases are located in the `Releases <https://github.com/NodeBB/NodeBB/releases>`_. These releases contain what is usually considered the most bug-free code, and is designed to be used on production-level instances of NodeBB.
 
 You can utilise git to install a specific version of NodeBB, and upgrade periodically as new releases are made.
 
@@ -124,7 +124,7 @@ If not upgrading between branches, just run the following command:
 
 This should retrieve the latest (and greatest) version of NodeBB from the repository.
 
-Alternatively, download and extract the latest versioned copy of the code from `the Releases Page <https://github.com/designcreateplay/NodeBB/releases>`_. Overwrite any files as necessary. This method is not supported.
+Alternatively, download and extract the latest versioned copy of the code from `the Releases Page <https://github.com/NodeBB/NodeBB/releases>`_. Overwrite any files as necessary. This method is not supported.
 
 4. Run the NodeBB upgrade script
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

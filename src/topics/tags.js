@@ -9,24 +9,39 @@ var async = require('async'),
 module.exports = function(Topics) {
 
 	Topics.createTags = function(tags, tid, timestamp, callback) {
-		if(Array.isArray(tags)) {
-			tags = tags.slice(0, meta.config.tagsPerTopic || 5);
-			async.each(tags, function(tag, next) {
-				tag = utils.removePunctuation(tag.trim().toLowerCase()).substr(0, meta.config.maximumTagLength || 15);
-
-				db.setAdd('topic:' + tid + ':tags', tag);
-
-				db.sortedSetAdd('tag:' + tag + ':topics', timestamp, tid, function(err) {
-					if (!err) {
-						updateTagCount(tag);
-					}
-					next(err);
-				});
-			}, callback);
-		} else {
-			callback();
+		if (!Array.isArray(tags) || !tags.length) {
+			return callback();
 		}
+
+		tags = tags.slice(0, meta.config.tagsPerTopic || 5);
+
+		async.each(tags, function(tag, next) {
+			tag = cleanUpTag(tag);
+
+			if (tag.length < (meta.config.minimumTagLength || 3)) {
+				return next();
+			}
+			db.setAdd('topic:' + tid + ':tags', tag);
+
+			db.sortedSetAdd('tag:' + tag + ':topics', timestamp, tid, function(err) {
+				if (!err) {
+					updateTagCount(tag);
+				}
+				next(err);
+			});
+		}, callback);
 	};
+
+	function cleanUpTag(tag) {
+		tag = tag.trim().toLowerCase();
+		tag = tag.replace(/[\.,\/#!$%\^&\*;:{}=_`<>'"~()?\|]/g, '');
+		tag = tag.substr(0, meta.config.maximumTagLength || 15);
+		var matches = tag.match(/^-*(.+?)-*$/);
+		if (matches && matches.length > 1) {
+			tag = matches[1];
+		}
+		return tag;
+	}
 
 	function updateTagCount(tag) {
 		Topics.getTagTopicCount(tag, function(err, count) {

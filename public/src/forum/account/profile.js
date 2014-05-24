@@ -43,7 +43,7 @@ define(['forum/account/header'], function(header) {
 	}
 
 	function updateButtons() {
-		var isSelfOrNotLoggedIn = yourid === theirid || yourid === '0';
+		var isSelfOrNotLoggedIn = yourid === theirid || parseInt(yourid, 10) === 0;
 		$('#follow-btn').toggleClass('hide', isFollowing || isSelfOrNotLoggedIn);
 		$('#unfollow-btn').toggleClass('hide', !isFollowing || isSelfOrNotLoggedIn);
 		$('#chat-btn').toggleClass('hide', isSelfOrNotLoggedIn);

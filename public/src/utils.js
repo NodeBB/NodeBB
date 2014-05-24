@@ -355,7 +355,7 @@
 			if(props !== undefined && !(obj[prop] instanceof Object) )
 				obj[prop] = {};
 
-			return util.props(obj[prop], newProps, value);
+			return utils.props(obj[prop], newProps, value);
 		}
 	};
 

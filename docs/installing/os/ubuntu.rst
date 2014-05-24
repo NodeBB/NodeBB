@@ -26,7 +26,7 @@ Next, clone this repository:
 .. code:: bash
 
 	$ cd /path/to/nodebb/install/location
-	$ git clone git://github.com/designcreateplay/NodeBB.git nodebb
+	$ git clone git://github.com/NodeBB/NodeBB.git nodebb
 
 
 Obtain all of the dependencies required by NodeBB:

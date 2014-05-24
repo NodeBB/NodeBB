@@ -6,7 +6,7 @@ Heroku
 1. Download and install `Heroku Toolbelt <https://toolbelt.heroku.com/>`_ for your operating system
 2. Log into your Heroku account: ``heroku login``
 3. Verify your Heroku account by adding a credit card (at http://heroku.com/verify)
-4. Clone the repository: ``git clone https://github.com/designcreateplay/NodeBB.git /path/to/repo/clone``
+4. Clone the repository: ``git clone https://github.com/NodeBB/NodeBB.git /path/to/repo/clone``
 5. ``cd /path/to/repo/clone``
 6. Install dependencies locally ``npm install``
 7. Create the heroku app: ``heroku create``
@@ -46,7 +46,7 @@ Heroku
 16. Initialise a single dyno: ``heroku ps:scale web=1``
 17. Visit your app!
 
-If these instructions are unclear or if you run into trouble, please let us know by `filing an issue <https://github.com/designcreateplay/NodeBB/issues>`_.
+If these instructions are unclear or if you run into trouble, please let us know by `filing an issue <https://github.com/NodeBB/NodeBB/issues>`_.
 
 Keeping it up to date
 ---------------------
