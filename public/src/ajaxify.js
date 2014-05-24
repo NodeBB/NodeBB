@@ -21,7 +21,27 @@ var ajaxify = ajaxify || {};
 
 	ajaxify.currentPage = null;
 	ajaxify.initialLoad = false;
+	ajaxify.preloaded = null;
 
+	function onAjaxError(err) {
+		var data = err.data, textStatus = err.textStatus;
+
+		$('#content, #footer').stop(true, true).removeClass('ajaxifying');
+
+		if (data) {
+			if (data.status === 404) {
+				return ajaxify.go('404');
+			} else if (data.status === 403) {
+				app.alertError('[[global:please_log_in]]');
+				app.previousUrl = url;
+				return ajaxify.go('login');
+			} else if (data.status === 302) {
+				return ajaxify.go(data.responseJSON.slice(1));
+			} 
+		} else if (textStatus !== "abort") {
+			app.alertError(data.responseJSON.error);
+		}
+	}
 
 	ajaxify.go = function (url, callback, quiet) {
 		// "quiet": If set to true, will not call pushState
@@ -62,23 +82,38 @@ var ajaxify = ajaxify || {};
 			$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
 			ajaxify.variables.flush();
-			ajaxify.loadData(function () {
-				$(window).trigger('action:ajaxify.contentLoaded', {url: url});
-				ajaxify.loadScript(tpl_url);
-
-				if (typeof callback === 'function') {
-					callback();
+			ajaxify.loadData(function(err, data) {
+				if (err) {
+					return onAjaxError(err);
 				}
 
-				app.processPage();
+				$(window).trigger('action:ajaxify.loadingTemplates', {});
 
-				ajaxify.widgets.render(tpl_url, url);
+				templates.parse(tpl_url, data, function(template) {
+					translator.translate(template, function(translatedTemplate) {
+						$('#content').html(translatedTemplate);
 
-				$('#content, #footer').stop(true, true).removeClass('ajaxifying');
-				ajaxify.initialLoad = false;
+						ajaxify.variables.parse();
 
-				app.refreshTitle(url);
-				$(window).trigger('action:ajaxify.end', {url: url});
+						$(window).trigger('action:ajaxify.contentLoaded', {url: url});
+
+						ajaxify.loadScript(tpl_url);
+
+						if (typeof callback === 'function') {
+							callback();
+						}
+
+						app.processPage();
+
+						ajaxify.widgets.render(tpl_url, url);
+
+						$('#content, #footer').stop(true, true).removeClass('ajaxifying');
+						ajaxify.initialLoad = false;
+
+						app.refreshTitle(url);
+						$(window).trigger('action:ajaxify.end', {url: url});
+					});
+				});
 			}, url);
 
 			return true;
@@ -150,6 +185,12 @@ var ajaxify = ajaxify || {};
 	};
 
 	ajaxify.loadData = function(callback, url, template) {
+		if (ajaxify.preloaded && ajaxify.preloaded.url === url) {
+			return callback(null, ajaxify.preloaded.data);
+		}
+
+		$(window).trigger('action:ajaxify.loadingData', {url: url});
+
 		var location = document.location || window.location,
 			api_url = (url === '' || url === '/') ? 'home' : url,
 			tpl_url = ajaxify.getCustomTemplateMapping(api_url.split('?')[0]);
@@ -169,31 +210,15 @@ var ajaxify = ajaxify || {};
 
 				data.relative_path = RELATIVE_PATH;
 
-				templates.parse(tpl_url, data, function(template) {
-					translator.translate(template, function(translatedTemplate) {
-						$('#content').html(translatedTemplate);
-
-						ajaxify.variables.parse();
-
-						if (callback) {
-							callback(true);
-						}
-					});
-				});
+				if (callback) {
+					callback(null, data);
+				}
 			},
 			error: function(data, textStatus) {
-				$('#content, #footer').stop(true, true).removeClass('ajaxifying');
-				if (data && data.status === 404) {
-					return ajaxify.go('404');
-				} else if (data && data.status === 403) {
-					app.alertError('[[global:please_log_in]]');
-					app.previousUrl = url;
-					return ajaxify.go('login');
-				} else if (data && data.status === 302) {
-					return ajaxify.go(data.responseJSON.slice(1));
-				} else if (textStatus !== "abort") {
-					app.alertError(data.responseJSON.error);
-				}
+				callback({
+					data: data,
+					textStatus: textStatus
+				});
 			}
 		});
 	};
@@ -220,22 +245,18 @@ var ajaxify = ajaxify || {};
 			return; // no ajaxification for old browsers
 		}
 
+		function hrefEmpty(href) {
+			return href === 'javascript:;' || href === window.location.href + "#" || href.slice(-1) === "#";
+		}
+
 		// Enhancing all anchors to ajaxify...
 		$(document.body).on('click', 'a', function (e) {
-			function hrefEmpty(href) {
-				return href === 'javascript:;' || href === window.location.href + "#" || href.slice(-1) === "#";
-			}
-
-			if (hrefEmpty(this.href) || this.target !== '' || this.protocol === 'javascript:') {
+			if (hrefEmpty(this.href) || this.target !== '' || this.protocol === 'javascript:' || $(this).attr('data-ajaxify') === 'false') {
 				return;
 			}
 
 			if(!window.location.pathname.match(/\/(403|404)$/g)) {
 				app.previousUrl = window.location.href;
-			}
-
-			if ($(this).attr('data-ajaxify') === 'false') {
-				return;
 			}
 
 			if ((!e.ctrlKey && !e.shiftKey && !e.metaKey) && e.which === 1) {
@@ -267,6 +288,30 @@ var ajaxify = ajaxify || {};
 					}
 				}
 			}
+		});
+
+		$(document.body).on('mouseover', 'a', function (e) {
+			if (hrefEmpty(this.href) || this.target !== '' || this.protocol === 'javascript:' || $(this).attr('data-ajaxify') === 'false') {
+				return;
+			}
+
+			if (this.host === window.location.host) {
+				// Internal link
+				var url = this.href.replace(rootUrl + '/', '');
+				ajaxify.loadData(function(err, data) {
+					ajaxify.preloaded = {
+						url: url,
+						data: data
+					};
+				}, url);
+			}
+
+		});
+
+		$(document.body).on('mouseout', 'a', function (e) {
+			setTimeout(function() {
+				ajaxify.preloaded = null;
+			}, 500);
 		});
 
 		templates.registerLoader(ajaxify.loadTemplate);
