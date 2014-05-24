@@ -199,8 +199,8 @@
 	}
 
 	function loadClient(language, filename, callback) {
-		var timestamp = new Date().getTime();
-		$.getJSON(config.relative_path + '/language/' + language + '/' + filename + '.json?v=' + timestamp, callback);
+		console.log(config['cache-buster']);
+		$.getJSON(config.relative_path + '/language/' + language + '/' + filename + '.json?v=' + config['cache-buster'], callback);
 	}
 
 	function loadServer(language, filename, callback) {
