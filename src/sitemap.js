@@ -78,7 +78,7 @@ var path = require('path'),
 				urls = urls[0].concat(urls[1]);
 				var map = sm.createSitemap({
 						hostname: nconf.get('url'),
-						cacheTime: 600000,
+						cacheTime: 60*60,	// Cached for 1 hour
 						urls: urls
 					}),
 					xml = map.toXML(function(xml) {
