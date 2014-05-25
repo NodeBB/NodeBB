@@ -36,9 +36,9 @@ module.exports = function(Topics) {
 
 	function cleanUpTag(tag) {
 		tag = tag.trim().toLowerCase();
-		tag = tag.replace(/[\.,\/#!$%\^&\*;:{}=_`<>'"~()?\|]/g, '');
+		tag = tag.replace(/[,\/#!$%\^&\*;:{}=_`<>'"~()?\|]/g, '');
 		tag = tag.substr(0, meta.config.maximumTagLength || 15);
-		var matches = tag.match(/^-*(.+?)-*$/);
+		var matches = tag.match(/^[.-]*(.+?)[.-]*$/);
 		if (matches && matches.length > 1) {
 			tag = matches[1];
 		}
