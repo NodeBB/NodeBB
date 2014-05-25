@@ -9,6 +9,8 @@ var async = require('async'),
 module.exports = function(Topics) {
 
 	Topics.createTags = function(tags, tid, timestamp, callback) {
+		callback = callback || function () {};
+
 		if (!Array.isArray(tags) || !tags.length) {
 			return callback();
 		}
