@@ -199,7 +199,6 @@
 	}
 
 	function loadClient(language, filename, callback) {
-		console.log(config['cache-buster']);
 		$.getJSON(config.relative_path + '/language/' + language + '/' + filename + '.json?v=' + config['cache-buster'], callback);
 	}
 
