@@ -76,6 +76,13 @@ If successful, running the following command should show a version higher than 0
 
     # apt-cache policy nodejs
 
+URLs on my NodeBB (or emails) still have the port number in them!
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you are using :doc:`nginx <../configuring/proxies/nginx>` or :doc:`Apache <../configuring/proxies/apache>` as a reverse proxy, you don't need the port to be shown. Simply run `./nodebb setup` and specify the base URL without a port number.
+
+Alternatively, edit the ``config.json`` file using your favourite text editor and change ``use_port`` to ``false``.
+
 
 Submit Bugs on our Issue Tracker
 --------------------------------
