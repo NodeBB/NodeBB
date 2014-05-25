@@ -6,6 +6,7 @@
 		nconf = require('nconf'),
 		bcrypt = require('bcryptjs'),
 		winston = require('winston'),
+		async = require('async'),
 
 		meta = require('./../meta'),
 		user = require('./../user'),
@@ -30,39 +31,53 @@
 	}
 
 	function login(req, res, next) {
+		var continueLogin = function() {
+			passport.authenticate('local', function(err, userData, info) {
+				if (err) {
+					return res.json(403, err.message);
+				}
+
+				if (!userData) {
+					return res.json(403, info);
+				}
+
+				// Alter user cookie depending on passed-in option
+				if (req.body.remember === 'true') {
+					var duration = 1000*60*60*24*parseInt(meta.configs.loginDays || 14, 10);
+					req.session.cookie.maxAge = duration;
+					req.session.cookie.expires = new Date(Date.now() + duration);
+				} else {
+					req.session.cookie.maxAge = false;
+					req.session.cookie.expires = false;
+				}
+
+				req.login({
+					uid: userData.uid
+				}, function() {
+					if (userData.uid) {
+						user.logIP(userData.uid, req.ip);
+					}
+
+					res.json(200, info);
+				});
+			})(req, res, next);
+		};
+
 		if(meta.config.allowLocalLogin !== undefined && parseInt(meta.config.allowLocalLogin, 10) === 0) {
 			return res.send(404);
 		}
 
-		passport.authenticate('local', function(err, userData, info) {
-			if (err) {
-				return next(err);
-			}
-
-			if (!userData) {
-				return res.json(403, info);
-			}
-
-			// Alter user cookie depending on passed-in option
-			if (req.body.remember === 'true') {
-				var duration = 1000*60*60*24*parseInt(meta.configs.loginDays || 14, 10);
-				req.session.cookie.maxAge = duration;
-				req.session.cookie.expires = new Date(Date.now() + duration);
-			} else {
-				req.session.cookie.maxAge = false;
-				req.session.cookie.expires = false;
-			}
-
-			req.login({
-				uid: userData.uid
-			}, function() {
-				if (userData.uid) {
-					user.logIP(userData.uid, req.ip);
+		if (req.body.username && utils.isEmailValid(req.body.username)) {
+			user.getUsernameByEmail(req.body.username, function(err, username) {
+				if (err) {
+					return next(err);
 				}
-
-				res.json(200, info);
+				req.body.username = username ? username : req.body.username;
+				continueLogin();
 			});
-		})(req, res, next);
+		} else {
+			continueLogin();
+		}
 	}
 
 	function register(req, res) {
@@ -140,19 +155,7 @@
 
 				app.post('/logout', logout);
 				app.post('/register', register);
-				app.post('/login', function(req, res, next) {
-					if (req.body.username && utils.isEmailValid(req.body.username)) {
-						user.getUsernameByEmail(req.body.username, function(err, username) {
-							if (err) {
-								return next(err);
-							}
-							req.body.username = username ? username : req.body.username;
-							login(req, res, next);
-						});
-					} else {
-						login(req, res, next);
-					}
-				});
+				app.post('/login', login);
 			});
 		});
 	};
