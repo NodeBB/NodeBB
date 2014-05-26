@@ -185,11 +185,11 @@ var ajaxify = ajaxify || {};
 	};
 
 	ajaxify.loadData = function(callback, url, template) {
+		$(window).trigger('action:ajaxify.loadingData', {url: url});
+		
 		if (ajaxify.preloader && ajaxify.preloader.url === url) {
 			return callback(null, ajaxify.preloader.data);
 		}
-
-		$(window).trigger('action:ajaxify.loadingData', {url: url});
 
 		var location = document.location || window.location,
 			api_url = (url === '' || url === '/') ? 'home' : url,
