@@ -9,7 +9,7 @@ define(function() {
 	var Browsing = {};
 
 	Browsing.onUpdateUsersInRoom = function(data) {
-		if(data && data.room.indexOf('topic') !== -1) {
+		if(data && data.room.indexOf('topic_' + ajaxify.variables.get('topic_id')) !== -1) {
 			var activeEl = $('.thread_active_users');
 
 			// remove users that are no longer here
@@ -92,7 +92,7 @@ define(function() {
 		var user = activeEl.find('a[data-uid="'+ data.uid + '"]');
 		if (user.length && !data.online) {
 			user.parent().remove();
-		} else if(!user.length && data.online) {
+		} else if(!user.length && data.online && data.rooms.indexOf('topic_' + ajaxify.variables.get('topic_id')) !== -1) {
 			user = createUserIcon(data.uid, data.picture, data.userslug, data.username);
 			activeEl.append(user);
 			activeEl.find('a[data-uid] img').tooltip({
@@ -106,7 +106,6 @@ define(function() {
 			return $('<div class="inline-block"><a data-uid="' + uid + '" href="' + config.relative_path + '/user/' + userslug + '"><img title="' + username + '" src="'+ picture +'"/></a></div>');
 		}
 	}
-
 
 	function getReplyingUsers() {
 		var activeEl = $('.thread_active_users');

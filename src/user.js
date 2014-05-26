@@ -408,8 +408,8 @@ var bcrypt = require('bcryptjs'),
 			if(err) {
 				return callback(err);
 			}
-
-			var online = require('./socket.io').isUserOnline(uid);
+			var websockets = require('./socket.io');
+			var online = websockets.isUserOnline(uid);
 
 			data.status = online ? (data.status || 'online') : 'offline';
 
@@ -420,7 +420,8 @@ var bcrypt = require('bcryptjs'),
 			data.online = online;
 			data.uid = uid;
 			data.timestamp = Date.now();
-
+			data.rooms = websockets.getUserRooms(uid);
+console.log(data);
 			callback(null, data);
 		});
 	};

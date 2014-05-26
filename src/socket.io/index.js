@@ -228,6 +228,20 @@ Sockets.getUserSockets = function(uid) {
 	return sockets;
 };
 
+Sockets.getUserRooms = function(uid) {
+	var sockets = Sockets.getUserSockets(uid);
+	var rooms = {};
+	for (var i=0; i<sockets.length; ++i) {
+		var roomClients = io.sockets.manager.roomClients[sockets[i].id];
+		for (var roomName in roomClients) {
+			rooms[roomName.slice(1)] = true;
+		}
+	}
+	rooms = Object.keys(rooms);
+	return rooms;
+};
+
+
 /* Helpers */
 
 Sockets.reqFromSocket = function(socket) {
