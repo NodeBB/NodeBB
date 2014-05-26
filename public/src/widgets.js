@@ -68,6 +68,7 @@
 			numLocations--;
 			if (numLocations < 0 && callback) {
 				callback();
+				$(window).trigger('action:widgets.loaded', {});
 			}
 		}
 
