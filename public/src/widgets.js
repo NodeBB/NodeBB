@@ -66,9 +66,11 @@
 
 		function checkCallback() {
 			numLocations--;
-			if (numLocations < 0 && callback) {
-				callback();
+			if (numLocations < 0) {
 				$(window).trigger('action:widgets.loaded', {});
+				if (typeof callback === 'function') {
+					callback();
+				}
 			}
 		}
 
