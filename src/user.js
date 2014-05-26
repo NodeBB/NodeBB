@@ -421,7 +421,7 @@ var bcrypt = require('bcryptjs'),
 			data.uid = uid;
 			data.timestamp = Date.now();
 			data.rooms = websockets.getUserRooms(uid);
-console.log(data);
+
 			callback(null, data);
 		});
 	};
