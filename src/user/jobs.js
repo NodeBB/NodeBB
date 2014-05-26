@@ -74,7 +74,7 @@ module.exports = function(User) {
 							subject: '[' + meta.config.title + '] Daily Digest for ' + now.getFullYear()+ '/' + (now.getMonth()+1) + '/' + now.getDate(),
 							username: userObj.username,
 							url: nconf.get('url'),
-							site_title: meta.config.title,
+							site_title: meta.config.title | meta.config.browserTitle | 'NodeBB',
 							notifications: notifications,
 							recent: data.recent.topics
 						});
