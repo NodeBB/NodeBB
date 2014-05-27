@@ -136,7 +136,6 @@ var async = require('async'),
 		});
 	};
 
-	// Note: This method used in mentions plugin. If still unused in core as of 0.6.0, please move to mentions plugin itself.
 	Notifications.pushGroup = function(nid, groupName, callback) {
 		if (!callback) {
 			callback = function() {};
