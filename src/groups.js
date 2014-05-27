@@ -172,7 +172,6 @@
 	};
 
 	Groups.exists = function(name, callback) {
-		name = utils.slugify(name);
 		db.isSetMember('groups', name, callback);
 	};
 
