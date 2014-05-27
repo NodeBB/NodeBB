@@ -188,7 +188,7 @@ function deleteOrRestore(command, socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	postTools[command](socket.uid, data.pid, function(err) {
+	postTools[command](socket.uid, data.pid, function(err, postData) {
 		if(err) {
 			return callback(err);
 		}
@@ -196,9 +196,7 @@ function deleteOrRestore(command, socket, data, callback) {
 		module.parent.exports.emitTopicPostStats();
 
 		var eventName = command === 'restore' ? 'event:post_restored' : 'event:post_deleted';
-		websockets.server.sockets.in('topic_' + data.tid).emit(eventName, {
-			pid: data.pid
-		});
+		websockets.server.sockets.in('topic_' + data.tid).emit(eventName, postData);
 
 		callback();
 	});

@@ -146,7 +146,7 @@ var winston = require('winston'),
 
 				db.incrObjectFieldBy('global', 'postCount', isDelete ? -1 : 1);
 
-				posts.getPostFields(pid, ['tid', 'uid', 'content'], function(err, postData) {
+				posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content'], function(err, postData) {
 					if (err) {
 						return callback(err);
 					}
@@ -170,7 +170,16 @@ var winston = require('winston'),
 						function(next) {
 							addOrRemoveFromCategoryRecentPosts(pid, postData.tid, isDelete, next);
 						}
-					], callback);
+					], function(err) {
+						if (!isDelete) {
+							PostTools.parse(postData.content, function(err, parsed) {
+								postData.content = parsed;
+								callback(err, postData);
+							});
+							return;
+						}
+						callback(err, postData);
+					});
 				});
 			});
 		});

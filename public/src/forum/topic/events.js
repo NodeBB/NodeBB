@@ -113,8 +113,18 @@ define(['forum/topic/browsing', 'forum/topic/postTools', 'forum/topic/threadTool
 
 		if (postEl.length) {
 			postEl.toggleClass('deleted');
+			var isDeleted = postEl.hasClass('deleted');
+			postTools.toggle(data.pid, isDeleted);
 
-			postTools.toggle(data.pid, postEl.hasClass('deleted'));
+			if (!app.isAdmin && parseInt(data.uid, 10) !== parseInt(app.uid, 10)) {
+				if (isDeleted) {
+					translator.translate('[[topic:post_is_deleted]]', function(translated) {
+						postEl.find('.post-content').html(translated);
+					});
+				} else {
+					postEl.find('.post-content').html(data.content);
+				}
+			}
 
 			postTools.updatePostCount();
 		}
