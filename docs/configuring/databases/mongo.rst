@@ -67,11 +67,11 @@ To add a user to access the `nodebb` database, type:
 
 .. code::
 
-    > db.addUser( { user: "nodebb",
+    > db.createUser( { user: "nodebb",
     ...       pwd: "<Enter in a secure password>",
-    ...       roles: [ "userAdmin" ] } )
+    ...       roles: [ "readWrite" ] } )
 
-**Note:** The role ``userAdmin`` gives all permissions to the user for that specific database.
+**Note:** The role ``readWrite`` provides read or write any collection within a specific database to user.
 
 Step 7: Configure MongoDB
 -------------------------
