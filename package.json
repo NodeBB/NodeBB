@@ -44,7 +44,7 @@
     "mkdirp": "~0.3.5",
     "rimraf": "~2.2.6",
     "npm": "^1.4.6",
-    "nodebb-plugin-mentions": "~0.4.0",
+    "nodebb-plugin-mentions": "~0.5.0",
     "nodebb-plugin-markdown": "~0.4.1",
     "nodebb-widget-essentials": "~0.0.21",
     "nodebb-theme-vanilla": "~0.0.21",
