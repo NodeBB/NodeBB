@@ -62,7 +62,7 @@ middleware.addSlug = function(req, res, next) {
 			if (err || !slug || slug === id + '/') {
 				return next(err);
 			}
-			res.redirect(name + slug);
+			res.redirect(name + encodeURI(slug));
 		});
 	}
 
