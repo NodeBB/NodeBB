@@ -37,7 +37,7 @@ var ajaxify = ajaxify || {};
 				return ajaxify.go('login');
 			} else if (data.status === 302) {
 				return ajaxify.go(data.responseJSON.slice(1));
-			} 
+			}
 		} else if (textStatus !== "abort") {
 			app.alertError(data.responseJSON.error);
 		}
@@ -146,24 +146,18 @@ var ajaxify = ajaxify || {};
 		var tpl_url = ajaxify.getCustomTemplateMapping(url.split('?')[0]);
 
 		if (tpl_url === false && !templates[url]) {
-			if (url === '' || url === '/') {
-				tpl_url = 'home';
-			} else if (url === 'admin' || url === 'admin/') {
-				tpl_url = 'admin/index';
-			} else {
-				tpl_url = url.split('/');
+			tpl_url = url.split('/');
 
-				while(tpl_url.length) {
-					if (ajaxify.isTemplateAvailable(tpl_url.join('/'))) {
-						tpl_url = tpl_url.join('/');
-						break;
-					}
-					tpl_url.pop();
+			while(tpl_url.length) {
+				if (ajaxify.isTemplateAvailable(tpl_url.join('/'))) {
+					tpl_url = tpl_url.join('/');
+					break;
 				}
+				tpl_url.pop();
+			}
 
-				if (!tpl_url.length) {
-					tpl_url = url.split('/')[0].split('?')[0];
-				}
+			if (!tpl_url.length) {
+				tpl_url = url.split('/')[0].split('?')[0];
 			}
 		} else if (templates[url]) {
 			tpl_url = url;
@@ -173,7 +167,7 @@ var ajaxify = ajaxify || {};
 	};
 
 	ajaxify.getCustomTemplateMapping = function(tpl) {
-		if (templatesConfig.custom_mapping && tpl) {
+		if (templatesConfig.custom_mapping && tpl !== undefined) {
 			for (var pattern in templatesConfig.custom_mapping) {
 				if (tpl.match(pattern)) {
 					return (templatesConfig.custom_mapping[pattern]);
@@ -186,17 +180,17 @@ var ajaxify = ajaxify || {};
 
 	ajaxify.loadData = function(callback, url, template) {
 		$(window).trigger('action:ajaxify.loadingData', {url: url});
-		
+
 		if (ajaxify.preloader && ajaxify.preloader.url === url) {
 			return callback(null, ajaxify.preloader.data);
 		}
 
 		var location = document.location || window.location,
 			api_url = (url === '' || url === '/') ? 'home' : url,
-			tpl_url = ajaxify.getCustomTemplateMapping(api_url.split('?')[0]);
+			tpl_url = ajaxify.getCustomTemplateMapping(url.split('?')[0]);
 
 		if (!tpl_url) {
-			tpl_url = ajaxify.getTemplateMapping(api_url);
+			tpl_url = ajaxify.getTemplateMapping(url);
 		}
 
 		apiXHR = $.ajax({
