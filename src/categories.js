@@ -11,6 +11,7 @@ var db = require('./database'),
 	meta = require('./meta'),
 	emitter = require('./emitter'),
 	validator = require('validator'),
+	privileges = require('./privileges'),
 
 	async = require('async'),
 	winston = require('winston'),
@@ -175,7 +176,7 @@ var db = require('./database'),
 		db.sortedSetCard('categories:recent_posts:cid:' + cid, callback);
 	};
 
-	Categories.getAllCategories = function(uid, callback) {
+	Categories.getAllCategories = function(callback) {
 		db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
 			if (err) {
 				return callback(err);
@@ -185,7 +186,35 @@ var db = require('./database'),
 				return callback(null, {categories : []});
 			}
 
-			Categories.getCategories(cids, uid, callback);
+			Categories.getCategoriesData(cids, callback);
+		});
+	};
+
+	Categories.getVisibleCategories = function(uid, callback) {
+		db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (!Array.isArray(cids) || !cids.length) {
+				return callback(null, {categories : []});
+			}
+
+			Categories.getCategories(cids, uid, function(err, categories) {
+				if (err) {
+					return callback(err);
+				}
+				async.filter(categories, function (category, next) {
+					if (category.disabled) {
+						return next(false);
+					}
+					privileges.categories.can('find', category.cid, uid, function(err, findable) {
+						next(!err && findable);
+					});
+				}, function(visibleCategories) {
+					callback(null, visibleCategories);
+				});
+			});
 		});
 	};
 
@@ -312,7 +341,7 @@ var db = require('./database'),
 				categories[i]['unread-class'] = (parseInt(categories[i].topic_count, 10) === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
 			}
 
-			callback(null, {categories: categories});
+			callback(null, categories);
 		});
 	};
 

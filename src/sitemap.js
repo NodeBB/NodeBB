@@ -29,23 +29,21 @@ var path = require('path'),
 			async.parallel([
 				function(next) {
 					var categoryUrls = [];
-					categories.getAllCategories(0, function(err, data) {
+					categories.getVisibleCategories(0, function(err, data) {
 						if (err) {
 							return next(err);
 						}
 
 						data.categories.forEach(function(category) {
-							if (!category.disabled) {
-								categoryUrls.push({
-									url: path.join('/category', category.slug),
-									changefreq: 'weekly',
-									priority: '0.4'
-								});
-							}
+							categoryUrls.push({
+								url: path.join('/category', category.slug),
+								changefreq: 'weekly',
+								priority: '0.4'
+							});
 						});
 
 						next(null, categoryUrls);
-					}, 0);
+					});
 				},
 				function(next) {
 					var topicUrls = [];

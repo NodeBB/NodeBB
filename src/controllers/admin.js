@@ -51,12 +51,12 @@ adminController.categories.disabled = function(req, res, next) {
 };
 
 function filterAndRenderCategories(req, res, next, active) {
-	categories.getAllCategories(0, function (err, data) {
-		data.categories = data.categories.filter(function (category) {
+	categories.getAllCategories(function (err, categoryData) {
+		categoryData = categoryData.filter(function (category) {
 			return active ? !category.disabled : category.disabled;
 		});
 
-		res.render('admin/categories', data);
+		res.render('admin/categories', {categories: categoryData});
 	});
 }
 

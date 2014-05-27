@@ -364,8 +364,8 @@ function createAdmin(callback) {
 function createCategories(next) {
 	var Categories = require('./categories');
 
-	Categories.getAllCategories(0, function (err, data) {
-		if (data.categories.length === 0) {
+	Categories.getAllCategories(function (err, categoryData) {
+		if (categoryData.length === 0) {
 			winston.warn('No categories found, populating instance with default categories');
 
 			fs.readFile(path.join(__dirname, '../', 'install/data/categories.json'), function (err, default_categories) {
@@ -382,7 +382,7 @@ function createCategories(next) {
 				});
 			});
 		} else {
-			winston.info('Categories OK. Found ' + data.categories.length + ' categories.');
+			winston.info('Categories OK. Found ' + categoryData.length + ' categories.');
 			next();
 		}
 	});

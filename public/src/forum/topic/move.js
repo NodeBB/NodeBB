@@ -38,12 +38,12 @@ define(function() {
 		socket.emit('categories.get', onCategoriesLoaded);
 	}
 
-	function onCategoriesLoaded(err, data) {
+	function onCategoriesLoaded(err, categories) {
 		if (err) {
 			return app.alertError(err.message);
 		}
 
-		renderCategories(data.categories);
+		renderCategories(categories);
 
 		modal.find('.category-list').on('click', 'li[data-cid]', function(e) {
 			selectCategory($(this));

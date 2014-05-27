@@ -62,14 +62,10 @@ Controllers.home = function(req, res, next) {
 		},
 		categories: function (next) {
 			var uid = req.user ? req.user.uid : 0;
-			categories.getAllCategories(uid, function (err, data) {
+			categories.getVisibleCategories(uid, function (err, categoryData) {
 				if (err) {
 					return next(err);
 				}
-
-				data.categories = data.categories.filter(function (category) {
-					return !category.disabled;
-				});
 
 				function getRecentReplies(category, callback) {
 					categories.getRecentReplies(category.cid, uid, parseInt(category.numRecentReplies, 10), function (err, posts) {
@@ -81,16 +77,8 @@ Controllers.home = function(req, res, next) {
 					});
 				}
 
-				async.filter(data.categories, function (category, next) {
-					privileges.categories.can('find', category.cid, uid, function(err, findable) {
-						next(!err && findable);
-					});
-				}, function(visibleCategories) {
-					data.categories = visibleCategories;
-
-					async.each(data.categories, getRecentReplies, function (err) {
-						next(err, data.categories);
-					});
+				async.each(categoryData, getRecentReplies, function (err) {
+					next(err, categoryData);
 				});
 			});
 		}

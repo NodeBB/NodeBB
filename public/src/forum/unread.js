@@ -122,8 +122,8 @@ define(['forum/recent', 'topicSelect', 'forum/infinitescroll'], function(recent,
 		}
 	}
 
-	function onCategoriesLoaded(err, data) {
-		createCategoryLinks(data.categories);
+	function onCategoriesLoaded(err, categories) {
+		createCategoryLinks(categories);
 	}
 
 	function createCategoryLinks(categories) {
