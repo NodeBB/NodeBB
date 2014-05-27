@@ -111,10 +111,25 @@ var fs = require('fs'),
 			var pluginData = JSON.parse(data),
 				libraryPath, staticDir;
 
-			if (pluginData.minver && semver.validRange(pluginData.minver)) {
-				if (!semver.gte(pkg.version, pluginData.minver)) {
-					// If NodeBB is not new enough to run this plugin
+			/*
+				Starting v0.5.0, `minver` is deprecated in favour of `compatibility`.
+				`minver` will be transparently parsed to `compatibility` until v0.6.0,
+				at which point `minver` will not be parsed altogether.
+
+				Please see NodeBB/NodeBB#1437 for more details
+			*/
+			if (pluginData.minver && !pluginData.compatibility) {
+				pluginData.compatibility = '~' + pluginData.minver;
+			}
+			// End backwards compatibility block (#1437)
+
+			if (pluginData.compatibility && semver.validRange(pluginData.compatibility)) {
+				if (semver.ltr(pkg.version, pluginData.compatibility)) {
+					// NodeBB may not be new enough to run this plugin
+					process.stdout.write('\n');
 					winston.warn('[plugins/' + pluginData.id + '] This plugin may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing.');
+					winston.warn('[plugins/' + pluginData.id + '] In the event of an unresponsive NodeBB caused by this plugin, run ./nodebb reset plugin="' + pluginData.id + '".');
+					process.stdout.write('\n');
 				}
 			}
 
