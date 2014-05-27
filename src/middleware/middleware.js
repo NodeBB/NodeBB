@@ -248,13 +248,20 @@ middleware.renderHeader = function(req, res, callback) {
 		});
 
 
-		templateValues.useCustomCSS = false;
-		if (meta.config.useCustomCSS === '1') {
-			templateValues.useCustomCSS = true;
-			templateValues.customCSS = meta.config.customCSS;
-		}
-
 		async.parallel({
+			customCSS: function(next) {
+				templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1;
+				if (!templateValues.useCustomCSS) {
+					return next(null, '');
+				}
+
+				var less = require('less');
+				var parser = new (less.Parser)();
+
+				parser.parse(meta.config.customCSS, function(err, tree) {
+					next(err, tree ? tree.toCSS({cleancss: true}) : '');
+				});
+			},
 			title: function(next) {
 				if (uid) {
 					user.getSettings(uid, function(err, settings) {
@@ -285,6 +292,7 @@ middleware.renderHeader = function(req, res, callback) {
 			templateValues.browserTitle = results.title;
 			templateValues.isAdmin = results.isAdmin || false;
 			templateValues.user = results.user;
+			templateValues.customCSS = results.customCSS;
 
 			app.render('header', templateValues, callback);
 		});
