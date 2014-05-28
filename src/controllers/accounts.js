@@ -136,9 +136,7 @@ accountsController.getAccount = function(req, res, next) {
 		}
 
 		if(!userData) {
-			return res.json(404, {
-				error: 'User not found!'
-			});
+			return userNotFound(res);
 		}
 
 		user.isFollowing(callerUID, userData.theirid, function (err, isFollowing) {
