@@ -57,6 +57,10 @@ SocketTopics.postcount = function(socket, tid, callback) {
 	topics.getTopicField(tid, 'postcount', callback);
 };
 
+SocketTopics.increaseViewCount = function(socket, tid) {
+	topics.increaseViewCount(tid);
+}
+
 SocketTopics.markAsRead = function(socket, data) {
 	if(!data || !data.tid || !data.uid) {
 		return;

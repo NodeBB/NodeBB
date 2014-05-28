@@ -27,7 +27,7 @@ SocketUser.emailExists = function(socket, data, callback) {
 SocketUser.increaseViewCount = function(socket, uid, callback) {
 	if (uid) {
 		if (socket.uid !== parseInt(uid, 10)) {
-			user.incrementUserFieldBy(uid, 'profileviews', 1);
+			user.incrementUserFieldBy(uid, 'profileviews', 1, callback);
 		}
 	}
 };

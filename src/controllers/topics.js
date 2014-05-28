@@ -162,18 +162,6 @@ topicsController.get = function(req, res, next) {
 			topic_url += '?' + queryString;
 		}
 
-
-		if (!req.query.prefetched) {
-			topics.increaseViewCount(tid);
-			
-			if (uid) {
-				topics.markAsRead(tid, uid, function(err) {
-					topics.pushUnreadCount(uid);
-					topics.markTopicNotificationsRead(tid, uid);
-				});
-			}
-		}
-
 		// Paginator for noscript
 		data.pages = [];
 		for(var x=1; x<=data.pageCount; x++) {

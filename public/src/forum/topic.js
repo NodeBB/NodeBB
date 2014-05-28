@@ -73,6 +73,9 @@ define(['forum/pagination', 'forum/infinitescroll', 'forum/topic/threadTools', '
 		$(window).on('scroll', updateTopicTitle);
 
 		$(window).trigger('action:topic.loaded');
+
+		socket.emit('topics.markAsRead', {tid: tid, uid: app.uid});
+		socket.emit('topics.increaseViewCount', tid);
 	};
 
 	function showBottomPostBar() {
