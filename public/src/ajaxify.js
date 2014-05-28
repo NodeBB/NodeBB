@@ -82,7 +82,7 @@ var ajaxify = ajaxify || {};
 			$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
 			ajaxify.variables.flush();
-			ajaxify.loadData(function(err, data) {
+			ajaxify.loadData(url, function(err, data) {
 				if (err) {
 					return onAjaxError(err);
 				}
@@ -114,7 +114,7 @@ var ajaxify = ajaxify || {};
 						$(window).trigger('action:ajaxify.end', {url: url});
 					});
 				});
-			}, url);
+			});
 
 			return true;
 		}
@@ -178,7 +178,7 @@ var ajaxify = ajaxify || {};
 		return false;
 	};
 
-	ajaxify.loadData = function(callback, url, template) {
+	ajaxify.loadData = function(url, callback) {
 		$(window).trigger('action:ajaxify.loadingData', {url: url});
 
 		if (ajaxify.preloader && ajaxify.preloader.url === url) {
@@ -292,12 +292,12 @@ var ajaxify = ajaxify || {};
 			if (this.host === window.location.host) {
 				// Internal link
 				var url = this.href.replace(rootUrl + '/', '');
-				ajaxify.loadData(function(err, data) {
+				ajaxify.loadData(url, function(err, data) {
 					ajaxify.preloader = {
 						url: url,
 						data: data
 					};
-				}, url);
+				});
 			}
 
 		});
