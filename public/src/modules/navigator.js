@@ -59,9 +59,6 @@ define(function() {
 
 			if (elementInView(el)) {
 				index = parseInt(el.attr('data-index'), 10) + 1;
-				if(index > count) {
-					index = count;
-				}
 
 				navigator.updateTextAndProgressBar();
 
@@ -75,6 +72,7 @@ define(function() {
 	};
 
 	navigator.updateTextAndProgressBar = function() {
+		index = index > count ? count : index;
 		translator.translate('[[global:pagination.out_of, ' + index + ', ' + count + ']]', function(translated) {
 			$('#pagination').html(translated);
 		});
