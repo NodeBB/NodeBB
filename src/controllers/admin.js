@@ -112,6 +112,7 @@ adminController.themes.get = function(req, res, next) {
 		areas: function(next) {
 			var defaultAreas = [
 				{ name: 'Global Sidebar', template: 'global', location: 'sidebar' },
+				{ name: 'Global Header', template: 'global', location: 'header' },
 				{ name: 'Global Footer', template: 'global', location: 'footer' },
 			];
 

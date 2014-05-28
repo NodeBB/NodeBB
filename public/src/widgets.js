@@ -15,7 +15,7 @@
 	};
 
 	ajaxify.widgets.render = function(tpl_url, url, callback) {
-		var widgetLocations = ['sidebar', 'footer'], numLocations;
+		var widgetLocations = ['sidebar', 'footer', 'header'], numLocations;
 
 		$('#content [widget-area]').each(function() {
 			var location = $(this).attr('widget-area');
@@ -48,6 +48,8 @@
 					} else if (location === 'sidebar') {
 						$('#content > *').wrapAll($('<div class="col-lg-9 col-xs-12"></div>'));
 						$('#content').append($('<div class="col-lg-3 col-xs-12"><div widget-area="sidebar"></div></div>'));
+					} else if (location === 'header') {
+						$('#content').prepend($('<div class="col-xs-12"><div widget-area="header"></div></div>'));
 					}
 
 					area = $('#content [widget-area="' + location + '"]');
