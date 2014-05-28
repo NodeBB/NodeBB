@@ -181,7 +181,7 @@ var ajaxify = ajaxify || {};
 	ajaxify.loadData = function(url, callback) {
 		$(window).trigger('action:ajaxify.loadingData', {url: url});
 
-		if (ajaxify.preloader && ajaxify.preloader.url.replace(/[\?|\&]prefetched=true/, '') === url) {
+		if (ajaxify.preloader && ajaxify.preloader.url === url) {
 			return callback(null, ajaxify.preloader.data);
 		}
 
@@ -292,7 +292,6 @@ var ajaxify = ajaxify || {};
 			if (this.host === window.location.host) {
 				// Internal link
 				var url = this.href.replace(rootUrl + '/', '');
-				url = url + (url.match(/\?/) ? '&' : '?') + 'prefetched=true';
 
 				ajaxify.loadData(url, function(err, data) {
 					ajaxify.preloader = {
