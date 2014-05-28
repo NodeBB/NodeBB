@@ -62,13 +62,13 @@ SocketTopics.increaseViewCount = function(socket, tid) {
 }
 
 SocketTopics.markAsRead = function(socket, data) {
-	if(!data || !data.tid) {
+	if(!data || !tid) {
 		return;
 	}
 
-	topics.markAsRead(data.tid, socket.uid, function(err) {
+	topics.markAsRead(tid, socket.uid, function(err) {
 		topics.pushUnreadCount(socket.uid);
-		topics.markTopicNotificationsRead(data.tid, socket.uid);
+		topics.markTopicNotificationsRead(tid, socket.uid);
 	});
 };
 
