@@ -74,7 +74,7 @@ define(['forum/pagination', 'forum/infinitescroll', 'forum/topic/threadTools', '
 
 		$(window).trigger('action:topic.loaded');
 
-		socket.emit('topics.markAsRead', {tid: tid, uid: app.uid});
+		socket.emit('topics.markAsRead', tid);
 		socket.emit('topics.increaseViewCount', tid);
 	};
 
@@ -99,7 +99,7 @@ define(['forum/pagination', 'forum/infinitescroll', 'forum/topic/threadTools', '
 			postcount.html(parseInt(postcount.html(), 10) + 1);
 		}
 
-		socket.emit('topics.markAsRead', {tid: tid, uid: app.uid});
+		socket.emit('topics.markAsRead', tid);
 		createNewPosts(data);
 	}
 
