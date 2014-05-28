@@ -159,7 +159,7 @@ accountsController.getAccount = function(req, res, next) {
 					userData.profileviews = 1;
 				}
 
-				if (callerUID !== parseInt(userData.uid, 10) && callerUID) {
+				if (callerUID !== parseInt(userData.uid, 10) && callerUID && !req.query.prefetched) {
 					user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
 				}
 
