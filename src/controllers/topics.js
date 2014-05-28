@@ -163,14 +163,16 @@ topicsController.get = function(req, res, next) {
 		}
 
 
-		if (uid) {
-			topics.markAsRead(tid, uid, function(err) {
-				topics.pushUnreadCount(uid);
-				topics.markTopicNotificationsRead(tid, uid);
-			});
+		if (!req.query.prefetched) {
+			topics.increaseViewCount(tid);
+			
+			if (uid) {
+				topics.markAsRead(tid, uid, function(err) {
+					topics.pushUnreadCount(uid);
+					topics.markTopicNotificationsRead(tid, uid);
+				});
+			}
 		}
-
-		topics.increaseViewCount(tid);
 
 		// Paginator for noscript
 		data.pages = [];

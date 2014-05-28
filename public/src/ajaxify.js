@@ -292,6 +292,9 @@ var ajaxify = ajaxify || {};
 			if (this.host === window.location.host) {
 				// Internal link
 				var url = this.href.replace(rootUrl + '/', '');
+				url = url + (url.match(/\?/) ? '&' : '?') + 'prefetched=true';
+				console.log(url);
+
 				ajaxify.loadData(url, function(err, data) {
 					ajaxify.preloader = {
 						url: url,
