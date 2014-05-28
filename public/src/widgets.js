@@ -53,9 +53,10 @@
 					area = $('#content [widget-area="' + location + '"]');
 				}
 
-				area.html(html).removeClass('hidden');
+				area.html(html);
 
 				if (!renderedWidgets.length) {
+					area.addClass('hidden');
 					ajaxify.widgets.reposition(location);
 				}
 
