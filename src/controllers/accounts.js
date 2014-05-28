@@ -159,10 +159,6 @@ accountsController.getAccount = function(req, res, next) {
 					userData.profileviews = 1;
 				}
 
-				if (callerUID !== parseInt(userData.uid, 10) && callerUID && !req.query.prefetched) {
-					user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
-				}
-
 				postTools.parse(userData.signature, function (err, signature) {
 					userData.signature = signature;
 

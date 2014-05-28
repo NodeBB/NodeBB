@@ -24,6 +24,14 @@ SocketUser.emailExists = function(socket, data, callback) {
 	}
 };
 
+SocketUser.increaseViewCount = function(socket, uid, callback) {
+	if (uid) {
+		if (socket.uid !== parseInt(uid, 10)) {
+			user.incrementUserFieldBy(uid, 'profileviews', 1);
+		}
+	}
+};
+
 SocketUser.search = function(socket, username, callback) {
 	user.search(username, callback);
 };
