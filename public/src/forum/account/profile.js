@@ -37,7 +37,6 @@ define(['forum/account/header'], function(header) {
 
 		socket.emit('user.isOnline', theirid, handleUserOnline);
 
-console.log('test', yourid, theirid);
 		if (yourid !== theirid) {
 			socket.emit('user.increaseViewCount', theirid);
 		}
