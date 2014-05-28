@@ -61,8 +61,8 @@ SocketTopics.increaseViewCount = function(socket, tid) {
 	topics.increaseViewCount(tid);
 }
 
-SocketTopics.markAsRead = function(socket, data) {
-	if(!data || !tid) {
+SocketTopics.markAsRead = function(socket, tid) {
+	if(!tid || !socket.uid) {
 		return;
 	}
 
