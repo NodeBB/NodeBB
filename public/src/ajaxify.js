@@ -9,7 +9,9 @@ var ajaxify = ajaxify || {};
 		rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : ''),
 		templatesConfig = null,
 		availableTemplates = null,
-		apiXHR = null;
+		apiXHR = null,
+
+		PRELOADER_RATE_LIMIT = 10000;
 
 	window.onpopstate = function (event) {
 		if (event !== null && event.state && event.state.url !== undefined && !ajaxify.initialLoad) {
@@ -21,7 +23,7 @@ var ajaxify = ajaxify || {};
 
 	ajaxify.currentPage = null;
 	ajaxify.initialLoad = false;
-	ajaxify.preloader = null;
+	ajaxify.preloader = {};
 
 	function onAjaxError(err) {
 		var data = err.data, textStatus = err.textStatus;
@@ -181,8 +183,8 @@ var ajaxify = ajaxify || {};
 	ajaxify.loadData = function(url, callback) {
 		$(window).trigger('action:ajaxify.loadingData', {url: url});
 
-		if (ajaxify.preloader && ajaxify.preloader.url === url) {
-			return callback(null, ajaxify.preloader.data);
+		if (ajaxify.preloader && ajaxify.preloader[url]) {
+			return callback(null, ajaxify.preloader[url].data);
 		}
 
 		var location = document.location || window.location,
@@ -291,22 +293,21 @@ var ajaxify = ajaxify || {};
 
 			if (this.host === window.location.host) {
 				// Internal link
-				var url = this.href.replace(rootUrl + '/', '');
-
-				ajaxify.loadData(url, function(err, data) {
-					ajaxify.preloader = {
-						url: url,
-						data: data
-					};
-				});
+				var url = this.href.replace(rootUrl + '/', ''),
+					currentTime = (new Date()).getTime();
+				
+				if (!ajaxify.preloader[url] || currentTime - ajaxify.preloader[url].lastFetched > PRELOADER_RATE_LIMIT) {
+					ajaxify.preloader[url] = null;
+					ajaxify.loadData(url, function(err, data) {
+						ajaxify.preloader[url] = {
+							url: url,
+							data: data,
+							lastFetched: currentTime
+						};
+					});
+				}
 			}
 
-		});
-
-		$(document.body).on('mouseout', 'a', function (e) {
-			setTimeout(function() {
-				ajaxify.preloader = null;
-			}, 500);
 		});
 
 		templates.registerLoader(ajaxify.loadTemplate);
