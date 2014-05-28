@@ -20,6 +20,8 @@
 	"username-taken": "Username taken",
 	"email-taken": "Email taken",
 
+	"username-too-short": "User name too short",
+
 	"user-banned": "User banned",
 
 	"no-category": "Category doesn't exist",
