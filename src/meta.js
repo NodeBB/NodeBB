@@ -242,6 +242,7 @@ var fs = require('fs'),
 			'vendor/tinycon/tinycon.js',
 			'vendor/xregexp/xregexp.js',
 			'vendor/xregexp/unicode/unicode-base.js',
+			'vendor/buzz/buzz.min.js',
 			'src/utils.js',
 			'src/app.js',
 			'src/templates.js',
@@ -254,8 +255,6 @@ var fs = require('fs'),
 		],
 		minFile: 'nodebb.min.js',
 		loadRJS: function(callback) {
-			//return callback();
-
 			var rjsPath = path.join(__dirname, '..', '/public/src');
 
 			async.parallel({
@@ -274,10 +273,6 @@ var fs = require('fs'),
 
 				Meta.js.scripts = Meta.js.scripts.concat(rjsFiles);
 
-				// todo: not sure how to convert string.js
-				Meta.js.scripts.splice(Meta.js.scripts.indexOf(path.join('src/modules/string.js'), 1));
-
-				console.log(Meta.js.scripts);
 				callback(err);
 			});
 		},
