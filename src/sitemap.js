@@ -29,12 +29,12 @@ var path = require('path'),
 			async.parallel([
 				function(next) {
 					var categoryUrls = [];
-					categories.getVisibleCategories(0, function(err, data) {
+					categories.getVisibleCategories(0, function(err, categoriesData) {
 						if (err) {
 							return next(err);
 						}
 
-						data.categories.forEach(function(category) {
+						categoriesData.forEach(function(category) {
 							categoryUrls.push({
 								url: path.join('/category', category.slug),
 								changefreq: 'weekly',
