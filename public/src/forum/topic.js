@@ -376,7 +376,8 @@ define(['forum/pagination', 'forum/infinitescroll', 'forum/topic/threadTools', '
 	}
 
 	function loadPostsAfter(after, callback) {
-		if (!utils.isNumber(after) || (after === 0 && $('#post-container li.post-row[data-index="0"]').length)) {
+		var tid = ajaxify.variables.get('topic_id');
+		if (!utils.isNumber(tid) || !utils.isNumber(after) || (after === 0 && $('#post-container li.post-row[data-index="0"]').length)) {
 			return;
 		}
 
@@ -386,7 +387,7 @@ define(['forum/pagination', 'forum/infinitescroll', 'forum/topic/threadTools', '
 		}
 
 		infinitescroll.loadMore('topics.loadMore', {
-			tid: ajaxify.variables.get('topic_id'),
+			tid: tid,
 			after: after
 		}, function (data) {
 
