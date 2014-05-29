@@ -1,4 +1,4 @@
-define(function() {
+define('forum/reset', function() {
 	var	ResetPassword = {};
 
 	ResetPassword.init = function() {

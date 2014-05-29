@@ -1,6 +1,6 @@
 "use strict";
 
-define(function() {
+define('forum/groups/details', function() {
 	var Details = {};
 
 	Details.init = function() {

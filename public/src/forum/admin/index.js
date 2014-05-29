@@ -1,7 +1,7 @@
 "use strict";
 /*global define, ajaxify, app, socket, RELATIVE_PATH*/
 
-define(function() {
+define('forum/admin/index', function() {
 	var	Admin = {};
 
 	Admin.init = function() {

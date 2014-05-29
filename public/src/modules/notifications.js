@@ -3,7 +3,7 @@
 /* globals define, socket, translator, utils, config, app, ajaxify, Tinycon*/
 
 
-define(['sounds'], function(sound) {
+define('notifications', ['sounds'], function(sound) {
 	var Notifications = {};
 
 	Notifications.prepareDOM = function() {

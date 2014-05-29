@@ -1,4 +1,4 @@
-define(function() {
+define('forum/users', function() {
 	var	Users = {};
 
 	Users.init = function() {

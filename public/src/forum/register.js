@@ -3,7 +3,7 @@
 /* globals define, app, utils, socket, config */
 
 
-define(function() {
+define('forum/register', function() {
 	var Register = {},
 		validationError = false,
 		successIcon = '<i class="fa fa-check"></i>';

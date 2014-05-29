@@ -3,7 +3,7 @@
 
 /*globals define*/
 
-define(function() {
+define('composer/tags', function() {
 	var tags = {};
 
 	tags.init = function(postContainer, postData) {

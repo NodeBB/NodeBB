@@ -1,4 +1,4 @@
-define(['forum/account/header'], function(header) {
+define('forum/account/settings', ['forum/account/header'], function(header) {
 	var	AccountSettings = {};
 
 	AccountSettings.init = function() {

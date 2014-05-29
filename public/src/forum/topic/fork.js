@@ -2,7 +2,7 @@
 
 /* globals define, app, translator, socket */
 
-define(function() {
+define('forum/topic/fork', function() {
 
 	var Fork = {},
 		forkModal,

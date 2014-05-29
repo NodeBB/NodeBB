@@ -3,7 +3,7 @@
 
 /* globals app, ajaxify, define, socket */
 
-define(['forum/topic/browsing', 'forum/topic/postTools', 'forum/topic/threadTools'], function(browsing, postTools, threadTools) {
+define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', 'forum/topic/threadTools'], function(browsing, postTools, threadTools) {
 
 	var Events = {};
 

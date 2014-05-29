@@ -1,4 +1,4 @@
-define(function () {
+define('settings/number', function () {
 
 	return {
 		types: ['number'],

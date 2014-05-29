@@ -250,9 +250,37 @@ var fs = require('fs'),
 			'src/widgets.js',
 			'src/translator.js',
 			'src/helpers.js',
-			'src/overrides.js'
+			'src/overrides.js',
 		],
 		minFile: 'nodebb.min.js',
+		loadRJS: function(callback) {
+			//return callback();
+
+			var rjsPath = path.join(__dirname, '..', '/public/src');
+
+			async.parallel({
+				forum: function(next) {
+					utils.walk(path.join(rjsPath, 'forum'), next);
+				},
+				modules: function(next) {
+					utils.walk(path.join(rjsPath, 'modules'), next);
+				}
+			}, function(err, rjsFiles) {
+				rjsFiles = rjsFiles.forum.concat(rjsFiles.modules);
+
+				rjsFiles = rjsFiles.map(function(file) {
+					return path.join('src', file.replace(rjsPath, ''));
+				});
+
+				Meta.js.scripts = Meta.js.scripts.concat(rjsFiles);
+
+				// todo: not sure how to convert string.js
+				Meta.js.scripts.splice(Meta.js.scripts.indexOf(path.join('src/modules/string.js'), 1));
+
+				console.log(Meta.js.scripts);
+				callback(err);
+			});
+		},
 		prepare: function (callback) {
 			plugins.fireHook('filter:scripts.get', this.scripts, function(err, scripts) {
 				var ctime,
@@ -310,10 +338,12 @@ var fs = require('fs'),
 				}
 			});
 
-			this.prepare(function() {
-				minifier.send({
-					action: minify ? 'js.minify' : 'js.concatenate',
-					scripts: Meta.js.scripts
+			Meta.js.loadRJS(function() {
+				Meta.js.prepare(function() {
+					minifier.send({
+						action: minify ? 'js.minify' : 'js.concatenate',
+						scripts: Meta.js.scripts
+					});
 				});
 			});
 		},

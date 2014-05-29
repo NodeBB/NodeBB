@@ -1,4 +1,4 @@
-define(function() {
+define('uploader', function() {
 
 	var module = {},
 		maybeParse = function(response) {

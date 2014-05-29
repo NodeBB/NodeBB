@@ -2,7 +2,7 @@
 
 /* globals define */
 
-define(function() {
+define('composer/drafts', function() {
 
 	var drafts = {};
 

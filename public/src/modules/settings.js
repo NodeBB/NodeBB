@@ -1,7 +1,7 @@
 "use strict";
 /*global define, app, socket*/
 
-define(function () {
+define('settings', function () {
 
 	var DEFAULT_PLUGINS = [
 		'settings/checkbox',

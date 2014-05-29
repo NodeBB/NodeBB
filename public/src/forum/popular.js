@@ -2,7 +2,7 @@
 
 /* globals define, app, socket*/
 
-define(['forum/recent', 'forum/infinitescroll'], function(recent, infinitescroll) {
+define('forum/popular', ['forum/recent', 'forum/infinitescroll'], function(recent, infinitescroll) {
 	var Popular = {},
 		active = '';
 

@@ -2,7 +2,7 @@
 
 /* globals define, app, translator, ajaxify, socket, bootbox */
 
-define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
+define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 
 	var ThreadTools = {};
 

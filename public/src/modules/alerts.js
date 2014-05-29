@@ -1,7 +1,7 @@
 'use strict';
 /* globals define, translator, templates */
 
-define(function() {
+define('alerts', function() {
 
 	var module = {};
 

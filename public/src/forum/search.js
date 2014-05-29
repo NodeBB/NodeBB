@@ -1,4 +1,4 @@
-define(function() {
+define('forum/search', function() {
 	var	Search = {};
 
 	Search.init = function() {

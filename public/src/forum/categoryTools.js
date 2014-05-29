@@ -4,7 +4,7 @@
 /* globals define, app, translator, socket, bootbox */
 
 
-define(['forum/topic/move', 'topicSelect'], function(move, topicSelect) {
+define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move, topicSelect) {
 
 	var CategoryTools = {};
 

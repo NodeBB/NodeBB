@@ -2,7 +2,7 @@
 
 /* globals define, app, socket, utils */
 
-define(['forum/account/header', 'forum/infinitescroll'], function(header, infinitescroll) {
+define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'], function(header, infinitescroll) {
 	var AccountTopics = {};
 
 	AccountTopics.init = function() {

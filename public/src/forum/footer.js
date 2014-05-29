@@ -1,4 +1,4 @@
-define(['notifications', 'chat'], function(Notifications, Chat) {
+define('forum/footer', ['notifications', 'chat'], function(Notifications, Chat) {
 
 	Notifications.prepareDOM();
 	Chat.prepareDOM();

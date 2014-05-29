@@ -2,7 +2,7 @@
 
 /* globals define, app, translator, ajaxify, socket, bootbox */
 
-define(['composer', 'share', 'navigator'], function(composer, share, navigator) {
+define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(composer, share, navigator) {
 
 	var PostTools = {},
 		topicName;

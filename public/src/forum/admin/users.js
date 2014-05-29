@@ -1,6 +1,6 @@
 "use strict";
 /* global socket, define, templates, bootbox, app, ajaxify,  */
-define(function() {
+define('forum/admin/users', function() {
 	var Users = {};
 
 	Users.init = function() {

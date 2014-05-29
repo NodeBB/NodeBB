@@ -1,4 +1,4 @@
-define(function () {
+define('settings/key', function () {
 
 	var Settings = null,
 		SettingsKey,

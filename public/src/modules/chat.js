@@ -1,7 +1,7 @@
 "use strict";
 /* globals app, config, define, socket, translator, templates, utils */
 
-define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
+define('chat', ['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 
 	var module = {};
 

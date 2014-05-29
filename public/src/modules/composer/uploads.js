@@ -2,7 +2,7 @@
 
 /* globals define, utils, config, app */
 
-define(function() {
+define('composer/uploads', function() {
 	var uploads = {};
 
 	uploads.initialize = function(post_uuid) {

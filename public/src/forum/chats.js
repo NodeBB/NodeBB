@@ -2,7 +2,7 @@
 
 /* globals define, app*/
 
-define(function() {
+define('forum/chats', function() {
 	var Chats = {};
 
 	Chats.init = function() {

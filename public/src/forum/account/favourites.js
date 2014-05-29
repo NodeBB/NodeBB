@@ -2,7 +2,7 @@
 
 /* globals define, app, utils */
 
-define(['forum/account/header', 'forum/infinitescroll'], function(header, infinitescroll) {
+define('forum/account/favourites', ['forum/account/header', 'forum/infinitescroll'], function(header, infinitescroll) {
 	var Favourites = {};
 
 	Favourites.init = function() {

@@ -1,4 +1,4 @@
-define(function() {
+define('taskbar', function() {
 	var taskbar = {
 		initialized: false,
 		init: function() {

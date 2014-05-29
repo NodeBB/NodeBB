@@ -1,4 +1,4 @@
-define(function () {
+define('settings/checkbox', function () {
 
 	var Settings = null,
 		SettingsCheckbox;

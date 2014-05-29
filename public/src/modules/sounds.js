@@ -1,7 +1,7 @@
 "use strict";
 /* global define, socket, config */
 
-define(['buzz'], function(buzz) {
+define('sounds', ['buzz'], function(buzz) {
 	var	Sounds = {};
 
 	var loadedSounds = {};

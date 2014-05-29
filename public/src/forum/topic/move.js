@@ -2,7 +2,7 @@
 
 /* globals define, app, socket */
 
-define(function() {
+define('forum/topic/move', function() {
 
 	var Move = {},
 		modal,

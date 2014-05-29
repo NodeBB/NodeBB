@@ -1,4 +1,4 @@
-define(function() {
+define('forum/account/header', function() {
 	var	AccountHeader = {};
 
 	AccountHeader.init = function() {

@@ -3,7 +3,7 @@
 
 /* globals define, app, templates, translator, socket, bootbox, config, ajaxify, RELATIVE_PATH, utils */
 
-define(['forum/pagination', 'forum/infinitescroll', 'forum/topic/threadTools', 'forum/topic/postTools', 'forum/topic/events', 'navigator'], function(pagination, infinitescroll, threadTools, postTools, events, navigator) {
+define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/threadTools', 'forum/topic/postTools', 'forum/topic/events', 'navigator'], function(pagination, infinitescroll, threadTools, postTools, events, navigator) {
 	var	Topic = {},
 		scrollingToPost = false,
 		currentUrl = '';

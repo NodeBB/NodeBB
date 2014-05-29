@@ -2,7 +2,7 @@
 
 /*global define*/
 
-define(function() {
+define('composer/controls', function() {
 	var controls = {};
 
 	/*************************************************/

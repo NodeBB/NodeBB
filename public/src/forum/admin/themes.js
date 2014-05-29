@@ -1,7 +1,7 @@
 "use strict";
 /*global define, socket, app, bootbox, tabIndent, config, RELATIVE_PATH*/
 
-define(['forum/admin/settings'], function(Settings) {
+define('forum/admin/themes', ['forum/admin/settings'], function(Settings) {
 	var Themes = {};
 
 	function highlightSelectedTheme(themeId) {

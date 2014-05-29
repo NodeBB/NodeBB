@@ -2,7 +2,7 @@
 
 /* globals define, socket, ajaxify, translator, templates, app */
 
-define(function() {
+define('forum/infinitescroll', function() {
 
 	var scroll = {};
 	var callback;

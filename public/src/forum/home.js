@@ -2,7 +2,7 @@
 
 /* globals define, socket, app, templates, translator, ajaxify*/
 
-define(function() {
+define('forum/home', function() {
 	var	home = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {

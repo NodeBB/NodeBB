@@ -2,7 +2,7 @@
 
 /* globals define */
 
-define(function() {
+define('share', function() {
 
 	var module = {};
 

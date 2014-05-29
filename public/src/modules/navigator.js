@@ -4,7 +4,7 @@
 /* globals app, define, ajaxify */
 
 
-define(function() {
+define('navigator', function() {
 
 	var navigator = {};
 	var index = 1;

@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, RELATIVE_PATH */
 
-define(function() {
+define('forum/login', function() {
 	var	Login = {};
 
 	Login.init = function() {

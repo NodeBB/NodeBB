@@ -2,7 +2,7 @@
 
 /* globals define */
 
-define(['composer/controls'], function(controls) {
+define('composer/formatting', ['composer/controls'], function(controls) {
 
 	var formatting = {};
 

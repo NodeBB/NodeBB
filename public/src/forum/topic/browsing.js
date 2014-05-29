@@ -4,7 +4,7 @@
 
 /* globals define, app, translator, config, socket, ajaxify */
 
-define(function() {
+define('forum/topic/browsing', function() {
 
 	var Browsing = {};
 

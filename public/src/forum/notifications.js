@@ -1,4 +1,4 @@
-define(function() {
+define('forum/notifications', function() {
 	var Notifications = {};
 
 	Notifications.init = function() {
