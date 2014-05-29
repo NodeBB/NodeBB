@@ -11,7 +11,15 @@ var path = require('path'),
 
 
 function sendMinifiedJS(req, res, next) {
+	if (!minificationEnabled) {
+		res.set('X-SourceMap', '/nodebb.min.js.map');
+	}
+
 	return res.type('text/javascript').send(meta.js.cache);
+}
+
+function sendSourceMap(req, res) {
+	return res.type('application/json').send(meta.js.map);
 }
 
 function sendStylesheet(req, res, next) {
@@ -19,10 +27,12 @@ function sendStylesheet(req, res, next) {
 }
 
 module.exports = function(app, middleware, controllers) {
-	minificationEnabled = app.enabled('minification');
-
 	app.get('/stylesheet.css', sendStylesheet);
 	app.get('/nodebb.min.js', sendMinifiedJS);
 	app.get('/sitemap.xml', controllers.sitemap);
 	app.get('/robots.txt', controllers.robots);
+
+	if (!minificationEnabled) {
+		app.get('/nodebb.min.js.map', sendSourceMap);
+	}
 };
