@@ -122,7 +122,7 @@ var bcrypt = require('bcryptjs'),
 
 			if (user.picture) {
 				if (user.picture === user.uploadedpicture) {
-					user.picture = nconf.get('relative_path') + user.picture;
+					user.picture = user.picture.indexOf('http') === -1 ? nconf.get('relative_path') + user.picture : user.picture;
 				} else {
 					user.picture = User.createGravatarURLFromEmail(user.email);
 				}
