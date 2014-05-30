@@ -60,9 +60,8 @@ var ajaxify = ajaxify || {};
 		// Remove trailing slash
 		url = url.replace(/\/$/, "");
 
-		if (url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {
-			url = url.slice(RELATIVE_PATH.length);
-		}
+		url = removeRelativePath(url);
+
 		var tpl_url = ajaxify.getTemplateMapping(url);
 
 		var hash = '';
@@ -124,6 +123,13 @@ var ajaxify = ajaxify || {};
 		return false;
 	};
 
+	function removeRelativePath(url) {
+		if (url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {
+			url = url.slice(RELATIVE_PATH.length);
+		}
+		return url;
+	}
+
 	ajaxify.refresh = function() {
 		ajaxify.go(ajaxify.currentPage);
 	};
@@ -181,6 +187,8 @@ var ajaxify = ajaxify || {};
 	};
 
 	ajaxify.loadData = function(url, callback) {
+		url = removeRelativePath(url);
+
 		$(window).trigger('action:ajaxify.loadingData', {url: url});
 
 		if (ajaxify.preloader && ajaxify.preloader[url]) {
@@ -295,7 +303,7 @@ var ajaxify = ajaxify || {};
 				// Internal link
 				var url = this.href.replace(rootUrl + '/', ''),
 					currentTime = (new Date()).getTime();
-				
+
 				if (!ajaxify.preloader[url] || currentTime - ajaxify.preloader[url].lastFetched > PRELOADER_RATE_LIMIT) {
 					ajaxify.preloader[url] = null;
 					ajaxify.loadData(url, function(err, data) {
