@@ -78,7 +78,13 @@ All of the textual data stored in NodeBB is found in a ``.rdb`` file. On typical
 Backing up MongoDB
 ~~~~~~~~~~~~~~
 
-TBA
+To run a backup of your complete MongoDB you can simply run
+
+    mongodump
+
+which will create a directory structure that can be restored with the `mongorestore` command.
+
+It is recommended that you first shut down your database. On Debian / Ubuntu it's likely to be: `sudo service mongodb stop`
 
 Backing up LevelDB
 ~~~~~~~~~~~~~~
