@@ -31,7 +31,7 @@
     "rss": "~0.2.0",
     "request": "~2.34.0",
     "prompt": "~0.2.11",
-    "uglify-js": "~2.4.0",
+    "uglify-js": "git+https://github.com/julianlam/UglifyJS2.git",
     "validator": "~3.4.0",
     "cron": "~1.0.4",
     "semver": "~2.2.1",

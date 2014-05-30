@@ -323,7 +323,8 @@ var fs = require('fs'),
 			minifier.on('message', function(payload) {
 				if (payload.action !== 'error') {
 					winston.info('[meta/js] Compilation complete');
-					Meta.js.cache = payload.data;
+					Meta.js.cache = payload.data.js;
+					Meta.js.map = payload.data.map;
 					minifier.kill();
 				} else {
 					winston.error('[meta/js] Could not compile client-side scripts!');
@@ -336,7 +337,8 @@ var fs = require('fs'),
 			Meta.js.loadRJS(function() {
 				Meta.js.prepare(function() {
 					minifier.send({
-						action: minify ? 'js.minify' : 'js.concatenate',
+						action: 'js',
+						minify: minify,
 						scripts: Meta.js.scripts
 					});
 				});
