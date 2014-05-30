@@ -22,7 +22,7 @@
 
 	translator.prepareDOM = function() {
 		// Load the appropriate timeago locale file
-		if (config.defaultLang !== 'en_GB') {
+		if (config.defaultLang !== 'en_GB' && config.defaultLang !== 'en_US') {
 			// Correct NodeBB language codes to timeago codes, if necessary
 			var	languageCode;
 			switch(config.defaultLang) {
