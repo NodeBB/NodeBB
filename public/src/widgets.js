@@ -31,7 +31,8 @@
 		}
 
 		function renderWidgets(location) {
-			var area = $('#content [widget-area="' + location + '"]');
+			var area = $('#content [widget-area="' + location + '"]')
+				.html(localStorage.getItem('cache:widgets:' + url + ':' + location));
 
 			socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, function(err, renderedWidgets) {
 				var html = '';
@@ -56,6 +57,7 @@
 				}
 
 				area.html(html);
+				localStorage.setItem('cache:widgets:' + url + ':' + location, html);
 
 				if (!renderedWidgets.length) {
 					area.addClass('hidden');
