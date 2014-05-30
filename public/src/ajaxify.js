@@ -93,6 +93,7 @@ var ajaxify = ajaxify || {};
 				templates.parse(tpl_url, data, function(template) {
 					translator.translate(template, function(translatedTemplate) {
 						$('#content').html(translatedTemplate);
+						ajaxify.widgets.render(tpl_url, url);
 
 						ajaxify.variables.parse();
 
@@ -105,8 +106,6 @@ var ajaxify = ajaxify || {};
 						}
 
 						app.processPage();
-
-						ajaxify.widgets.render(tpl_url, url);
 
 						$('#content, #footer').stop(true, true).removeClass('ajaxifying');
 						ajaxify.initialLoad = false;
