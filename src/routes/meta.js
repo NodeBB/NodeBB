@@ -38,7 +38,7 @@ function setupPluginSourceMapping(app) {
 		prefix = __dirname.split(path.sep).length - 1;
 
 	routes.forEach(function(route) {
-		mapping = path.sep + route.split('/').slice(prefix).join('/');
+		mapping = path.sep + route.split(path.sep).slice(prefix).join(path.sep);
 		app.get(mapping, function(req, res) {
 			res.type('text/javascript').sendfile(route);
 		});
