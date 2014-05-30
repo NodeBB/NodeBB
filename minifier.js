@@ -4,6 +4,7 @@ var uglifyjs = require('uglify-js'),
 	less = require('less'),
 	async = require('async'),
 	fs = require('fs'),
+	path = require('path'),
 
 	Minifier = {
 		js: {},
@@ -19,7 +20,7 @@ Minifier.js.minify = function (scripts, minify, callback) {
 		options.outSourceMap = 'nodebb.min.js.map';
 		options.mangle = false;
 		options.compress = false;
-		options.prefix = 6;
+		options.prefix = __dirname.split(path.sep).length;
 	}
 
 	try {
