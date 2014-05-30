@@ -34,10 +34,11 @@ function setupPluginSourceMapping(app) {
 		development mode (`./nodebb dev`)
 	*/
 	var	routes = plugins.clientScripts,
-		mapping;
+		mapping,
+		prefix = __dirname.split(path.sep).length - 1;
 
 	routes.forEach(function(route) {
-		mapping = '/' + route.split('/').slice(7).join('/');
+		mapping = '/' + route.split('/').slice(prefix).join('/');
 		app.get(mapping, function(req, res) {
 			res.type('text/javascript').sendfile(route);
 		});
