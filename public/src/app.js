@@ -493,17 +493,17 @@ var socket,
 
 	app.load = function() {
 		$('document').ready(function () {
-			var url = window.location.pathname.slice(1),
+			var url = window.location.pathname.slice(1).replace(/\/$/, ""),
 				search = window.location.search,
 				hash = window.location.hash,
 				tpl_url = ajaxify.getTemplateMapping(url),
 				$window = $(window);
 
-			url = url.replace(/\/$/, "");
-
 			if (url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {
 				url = url.slice(RELATIVE_PATH.length);
 			}
+
+			ajaxify.widgets.render(tpl_url, url);
 
 			$window.trigger('action:ajaxify.start', {
 				url: url
@@ -530,8 +530,6 @@ var socket,
 			ajaxify.variables.parse();
 			ajaxify.currentPage = url;
 			app.processPage();
-
-			ajaxify.widgets.render(tpl_url, url);
 
 			if (window.history && window.history.replaceState) {
 				window.history.replaceState({
