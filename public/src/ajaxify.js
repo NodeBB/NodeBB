@@ -169,7 +169,7 @@ var ajaxify = ajaxify || {};
 	};
 
 	ajaxify.getCustomTemplateMapping = function(tpl) {
-		if (templatesConfig.custom_mapping && tpl !== undefined) {
+		if (templatesConfig && templatesConfig.custom_mapping && tpl !== undefined) {
 			for (var pattern in templatesConfig.custom_mapping) {
 				if (tpl.match(pattern)) {
 					return (templatesConfig.custom_mapping[pattern]);
