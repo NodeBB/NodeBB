@@ -15,9 +15,11 @@ Minifier.js.minify = function (scripts, minify, callback) {
 	var options = {};
 
 	if (!minify) {
+		options.sourceMapURL = '/nodebb.min.js.map';
 		options.outSourceMap = 'nodebb.min.js.map';
 		options.mangle = false;
 		options.compress = false;
+		options.prefix = 6;
 	}
 
 	try {
