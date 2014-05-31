@@ -64,8 +64,9 @@ winston.info('This is free software, and you are welcome to redistribute it unde
 winston.info('');
 
 // Alternate configuration file support
-var	configFile = __dirname + '/config.json',
+var	configFile = path.join(__dirname, '/config.json'),
 	configExists;
+
 if (nconf.get('config')) {
 	configFile = path.resolve(__dirname, nconf.get('config'));
 }
