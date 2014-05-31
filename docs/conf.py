@@ -197,7 +197,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
   ('index', 'NodeBB.tex', u'NodeBB Documentation',
-   u'psychobunny, julianlam, barisusakli', 'manual'),
+   u'The NodeBB Team (https://github.com/NodeBB/NodeBB/graphs/contributors)', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -227,7 +227,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'nodebb', u'NodeBB Documentation',
-     [u'psychobunny, julianlam, barisusakli'], 1)
+     [u'The NodeBB Team (https://github.com/NodeBB/NodeBB/graphs/contributors)'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -241,7 +241,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'NodeBB', u'NodeBB Documentation',
-   u'psychobunny, julianlam, barisusakli', 'NodeBB', 'One line description of project.',
+   u'The NodeBB Team (https://github.com/NodeBB/NodeBB/graphs/contributors)', 'NodeBB', 'One line description of project.',
    'Miscellaneous'),
 ]
 
