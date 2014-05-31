@@ -73,7 +73,7 @@ function compileTemplates(pluginTemplates) {
 
 	utils.walk(baseTemplatesPath, function(err, baseTpls) {
 		utils.walk(themeTemplatesPath, function (err, themeTpls) {
-			var paths = pluginTemplates;
+			var paths = {};
 
 			if (!baseTpls || !themeTpls) {
 				winston.warn('[themes] Could not find base template files at: ' + baseTemplatesPath);
@@ -89,6 +89,12 @@ function compileTemplates(pluginTemplates) {
 			themeTpls.forEach(function(el, i) {
 				paths[themeTpls[i]] = path.join(themeTemplatesPath, themeTpls[i]);
 			});
+
+			for (var tpl in pluginTemplates) {
+				if (pluginTemplates.hasOwnProperty(tpl)) {
+					paths[tpl] = pluginTemplates[tpl];
+				}
+			}
 
 			async.each(Object.keys(paths), function(relativePath, next) {
 				var file = fs.readFileSync(paths[relativePath]).toString(),
