@@ -20,7 +20,7 @@ define('forum/admin/index', function() {
 			});
 		});
 
-		$.get('https://api.github.com/repos/designcreateplay/NodeBB/tags', function(releases) {
+		$.get('https://api.github.com/repos/NodeBB/NodeBB/tags', function(releases) {
 			var	version = $('#version').html(),
 				latestVersion = releases[0].name.slice(1),
 				checkEl = $('.version-check');
