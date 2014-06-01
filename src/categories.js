@@ -183,7 +183,7 @@ var db = require('./database'),
 			}
 
 			if (!Array.isArray(cids) || !cids.length) {
-				return callback(null, {categories : []});
+				return callback(null, []);
 			}
 
 			Categories.getCategoriesData(cids, callback);
@@ -197,7 +197,7 @@ var db = require('./database'),
 			}
 
 			if (!Array.isArray(cids) || !cids.length) {
-				return callback(null, {categories : []});
+				return callback(null, []);
 			}
 
 			Categories.getCategories(cids, uid, function(err, categories) {
