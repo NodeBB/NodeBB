@@ -191,7 +191,9 @@ var ajaxify = ajaxify || {};
 		$(window).trigger('action:ajaxify.loadingData', {url: url});
 
 		if (ajaxify.preloader && ajaxify.preloader[url]) {
-			return callback(null, ajaxify.preloader[url].data);
+			callback(null, ajaxify.preloader[url].data);
+			ajaxify.preloader[url] = null;
+			return;
 		}
 
 		var location = document.location || window.location,
