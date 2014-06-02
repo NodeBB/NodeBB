@@ -107,12 +107,16 @@ if(nconf.get('ssl')) {
 			}
 		});
 
+		emitter.all(['templates:compiled', 'meta:js.compiled', 'meta:css.compiled'], function() {
+			winston.info('NodeBB Ready');
+		});
+
 		emitter.on('templates:compiled', function() {
 			var	bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
 			winston.info('NodeBB attempting to listen on: ' + bind_address);
 
 			server.listen(port, nconf.get('bind_address'), function(){
-				winston.info('NodeBB Ready');
+				winston.info('NodeBB is now listening on: ' + bind_address);
 				if (process.send) {
 					process.send({
 						action: 'ready',
