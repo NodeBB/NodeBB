@@ -29,7 +29,7 @@ module.exports = function(Topics) {
 			if (Array.isArray(postData) && !postData.length) {
 				return callback(null, []);
 			}
-
+			start = parseInt(start, 10);
 			for(var i=0; i<postData.length; ++i) {
 				postData[i].index = start + i;
 			}

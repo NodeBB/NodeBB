@@ -441,7 +441,7 @@ define('composer', ['taskbar', 'composer/controls', 'composer/uploads', 'compose
 
 		titleEl.val(titleEl.val().trim());
 		bodyEl.val(bodyEl.val().trim());
-		if(thumbEl.length) {
+		if (thumbEl.length) {
 			thumbEl.val(thumbEl.val().trim());
 		}
 
@@ -453,6 +453,8 @@ define('composer', ['taskbar', 'composer/controls', 'composer/uploads', 'compose
 			return composerAlert('[[error:title-too-short, ' + config.minimumTitleLength + ']]');
 		} else if (checkTitle && titleEl.val().length > parseInt(config.maximumTitleLength, 10)) {
 			return composerAlert('[[error:title-too-long, ' + config.maximumTitleLength + ']]');
+		} else if (checkTitle && !utils.slugify(titleEl.val()).length) {
+			return composerAlert('[[error:invalid-title]]');
 		} else if (bodyEl.val().length < parseInt(config.minimumPostLength, 10)) {
 			return composerAlert('[[error:content-too-short, ' + config.minimumPostLength + ']]');
 		}

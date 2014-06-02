@@ -312,29 +312,40 @@ var async = require('async'),
 
 	Topics.getTeaser = function(tid, callback) {
 		Topics.getLatestUndeletedPid(tid, function(err, pid) {
-			if (err) {
+			if (err || !pid) {
 				return callback(err);
 			}
 
-			if (!pid) {
-				return callback(null, null);
-			}
+			async.parallel({
+				postData: function(next) {
+					posts.getPostFields(pid, ['pid', 'uid', 'timestamp'], function(err, postData) {
+						if (err) {
+							return next(err);
+						} else if(!postData || !utils.isNumber(postData.uid)) {
+							return next(new Error('[[error:no-teaser]]'));
+						}
 
-			posts.getPostFields(pid, ['pid', 'uid', 'timestamp'], function(err, postData) {
+						user.getUserFields(postData.uid, ['username', 'userslug', 'picture'], function(err, userData) {
+							if (err) {
+								return next(err);
+							}
+							postData.user = userData;
+							next(null, postData);
+						});
+					});
+				},
+				postIndex: function(next) {
+					posts.getPidIndex(pid, next);
+				}
+			}, function(err, results) {
 				if (err) {
 					return callback(err);
-				} else if(!postData || !utils.isNumber(postData.uid)) {
-					return callback(new Error('[[error:no-teaser]]'));
 				}
 
-				user.getUserFields(postData.uid, ['username', 'userslug', 'picture'], function(err, userData) {
-					if (err) {
-						return callback(err);
-					}
-					postData.timestamp = utils.toISOString(postData.timestamp);
-					postData.user = userData;
-					callback(null, postData);
-				});
+				results.postData.timestamp = utils.toISOString(results.postData.timestamp);
+				results.postData.index = parseInt(results.postIndex, 10) + 1;
+
+				callback(null, results.postData);
 			});
 		});
 	};
