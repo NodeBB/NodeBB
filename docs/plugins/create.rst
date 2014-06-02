@@ -119,3 +119,18 @@ Run NodeBB in development mode:
     ./nodebb dev
 
 This will expose the plugin debug logs, allowing you to see if your plugin is loaded, and its hooks registered. Activate your plugin from the administration panel, and test it out.
+
+Disabling Plugins
+-------------------
+
+You can disable plugins from the ACP, but if your forum is crashing due to a broken plugin you can reset all plugins by executing
+
+.. code::
+
+    ./nodebb reset plugins
+
+Alternatively, you can disable one plugin by running
+
+.. code::
+
+    ./nodebb reset plugin="nodebb-plugin-im-broken"
