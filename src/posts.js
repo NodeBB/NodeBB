@@ -274,6 +274,9 @@ var db = require('./database'),
 					}
 
 					postTools.parse(post.content, next);
+				},
+				index: function(next) {
+					Posts.getPidIndex(post.pid, next);
 				}
 			}, function(err, results) {
 				if (err) {
@@ -283,6 +286,7 @@ var db = require('./database'),
 				post.user = results.user;
 				post.topic = results.topicCategory.topic;
 				post.category = results.topicCategory.category;
+				post.index = parseInt(results.index, 10) + 1;
 
 				if (stripTags) {
 					var s = S(results.content);

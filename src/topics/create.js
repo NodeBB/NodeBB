@@ -24,8 +24,14 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			var slug = tid + '/' + utils.slugify(title),
+			var slug = utils.slugify(title),
 				timestamp = Date.now();
+
+			if (!slug.length) {
+				return callback(new Error('[[error:invalid-title]]'));
+			}
+
+			slug = tid + '/' + slug;
 
 			var topicData = {
 				'tid': tid,

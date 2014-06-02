@@ -20,7 +20,7 @@ topicsController.get = function(req, res, next) {
 		userPrivileges;
 
 	async.waterfall([
-		function(next) {
+		function (next) {
 			privileges.topics.get(tid, uid, function(err, privileges) {
 				if (err) {
 					return next(err);
@@ -40,8 +40,16 @@ topicsController.get = function(req, res, next) {
 					return next(err);
 				}
 
-				var start = (page - 1) * settings.postsPerPage,
-					end = start + settings.postsPerPage - 1;
+				var postIndex = 0;
+				if (!settings.usePagination) {
+					postIndex = Math.max((req.params.post_index || 1) - (settings.postsPerPage), 0);
+				} else if (!req.query.page) {
+					var index = Math.max(parseInt((req.params.post_index || 0), 10), 0);
+					page = Math.ceil((index + 1) / settings.postsPerPage);
+				}
+
+				var start = (page - 1) * settings.postsPerPage + postIndex,
+					end = start + settings.postsPerPage - 1 + postIndex;
 
 				topics.getTopicWithPosts(tid, uid, start, end, function (err, topicData) {
 					if (topicData) {
