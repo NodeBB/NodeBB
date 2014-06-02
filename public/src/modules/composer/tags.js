@@ -35,17 +35,24 @@ define('composer/tags', function() {
 			select: function(event, ui) {
 				// when autocomplete is selected from the dropdown simulate a enter key down to turn it into a tag
 				// http://stackoverflow.com/a/3276819/583363
-				var e = jQuery.Event('keydown');
-				e.which = 13;
-				e.keyCode = 13;
-				setTimeout(function() {
-					input.trigger(e);
-				}, 100);
+				triggerEnter(input);
 			}
 		});
 
 		input.attr('tabIndex', tagEl.attr('tabIndex'));
+		input.on('blur', function() {
+			triggerEnter(input);
+		})
 	};
+
+	function triggerEnter(input) {
+		var e = jQuery.Event('keydown');
+		e.which = 13;
+		e.keyCode = 13;
+		setTimeout(function() {
+			input.trigger(e);
+		}, 100);
+	}
 
 	function addTags(tags, tagEl) {
 		if (tags && tags.length) {
