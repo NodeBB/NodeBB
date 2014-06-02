@@ -205,22 +205,24 @@ var async = require('async'),
 	}
 
 	Notifications.mark_read = function(nid, uid, callback) {
-		if (parseInt(uid, 10) > 0) {
-			Notifications.get(nid, uid, function(notif_data) {
-				async.parallel([
-					function(next) {
-						db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid, next);
-					},
-					function(next) {
-						db.sortedSetAdd('uid:' + uid + ':notifications:read', notif_data.datetime, nid, next);
-					}
-				], function(err) {
-					if (callback) {
-						callback();
-					}
-				});
-			});
+		callback = callback || function() {};
+		if (!parseInt(uid, 10)) {
+			return callback();
 		}
+
+		Notifications.get(nid, uid, function(notif_data) {
+			async.parallel([
+				function(next) {
+					db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid, next);
+				},
+				function(next) {
+					if (!notif_data) {
+						return next();
+					}
+					db.sortedSetAdd('uid:' + uid + ':notifications:read', notif_data.datetime, nid, next);
+				}
+			], callback);
+		});
 	};
 
 	Notifications.mark_read_multiple = function(nids, uid, callback) {
