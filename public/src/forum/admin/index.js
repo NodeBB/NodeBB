@@ -37,6 +37,17 @@ define('forum/admin/index', function() {
 		});
 
 		$('.restart').on('click', function() {
+			app.alert({
+				timeout: 5000,
+				title: 'Restarting...',
+				message: 'NodeBB is restarting.',
+				type: 'info'
+			});
+
+			$(window).one('action:reconnected', function() {
+				app.alertSuccess('NodeBB has successfully restarted.');
+			});
+
 			socket.emit('admin.restart');
 		});
 
