@@ -31,8 +31,16 @@
 		}
 
 		function renderWidgets(location) {
+			// remove when https://code.google.com/p/chromium/issues/detail?id=357625 is fixed
+			try {
+				var temp = localStorage.getItem('cache:widgets:' + url + ':' + location);
+			} catch (e) {
+				var temp = null;
+			}
+
 			var area = $('#content [widget-area="' + location + '"]')
-				.html(localStorage.getItem('cache:widgets:' + url + ':' + location));
+				.html(temp);
+
 
 			socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, function(err, renderedWidgets) {
 				var html = '';
@@ -57,8 +65,11 @@
 				}
 
 				area.html(html);
-				localStorage.setItem('cache:widgets:' + url + ':' + location, html);
-
+				// remove when https://code.google.com/p/chromium/issues/detail?id=357625 is fixed
+				try {
+					localStorage.setItem('cache:widgets:' + url + ':' + location, html);
+				} catch (e) {}
+				
 				if (!renderedWidgets.length) {
 					area.addClass('hidden');
 					ajaxify.widgets.reposition(location);
