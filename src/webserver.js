@@ -109,6 +109,7 @@ if(nconf.get('ssl')) {
 
 		emitter.all(['templates:compiled', 'meta:js.compiled', 'meta:css.compiled'], function() {
 			winston.info('NodeBB Ready');
+			emitter.emit('nodebb:ready');
 		});
 
 		emitter.on('templates:compiled', function() {
