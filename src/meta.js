@@ -16,7 +16,8 @@ var fs = require('fs'),
 	db = require('./database'),
 	plugins = require('./plugins'),
 	user = require('./user'),
-	groups = require('./groups');
+	groups = require('./groups'),
+	emitter = require('./emitter');
 
 (function (Meta) {
 	Meta.restartRequired = false;
@@ -326,6 +327,8 @@ var fs = require('fs'),
 					Meta.js.cache = payload.data.js;
 					Meta.js.map = payload.data.map;
 					minifier.kill();
+
+					emitter.emit('meta:js.compiled');
 				} else {
 					winston.error('[meta/js] Could not compile client-side scripts!');
 					winston.error('[meta/js]   ' + payload.error.message);
@@ -410,6 +413,7 @@ var fs = require('fs'),
 				Meta.css.updateBranding();
 
 				winston.info('[meta/css] Done.');
+				emitter.emit('meta:css.compiled');
 			});
 		});
 	};

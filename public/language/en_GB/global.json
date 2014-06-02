@@ -90,5 +90,8 @@
 	"language": "Language",
 
 	"guest": "Guest",
-	"guests": "Guests"
+	"guests": "Guests",
+
+	"updated:title": "Forum Updated",
+	"updated:message": "This forum has just been updated to the latest version. Click here to refresh the page."
 }

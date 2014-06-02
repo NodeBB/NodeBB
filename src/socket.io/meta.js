@@ -3,6 +3,7 @@ var	meta = require('../meta'),
 	topics = require('../topics'),
 	logger = require('../logger'),
 	plugins = require('../plugins'),
+	emitter = require('../emitter'),
 
 	nconf = require('nconf'),
 	gravatar = require('gravatar'),
@@ -13,13 +14,19 @@ var	meta = require('../meta'),
 		rooms: {}
 	};
 
-SocketMeta.reconnected = function(socket) {
+SocketMeta.reconnected = function(socket, data, callback) {
 	var	uid = socket.uid,
 		sessionID = socket.id;
 
 	if (uid) {
 		topics.pushUnreadCount(uid);
 		user.notifications.pushCount(uid);
+	}
+
+	if (typeof callback === 'function') {
+		emitter.on('nodebb:ready', function() {
+			callback(null, meta.config['cache-buster']);
+		});
 	}
 
 	if (process.env.NODE_ENV === 'development') {

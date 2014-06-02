@@ -8,7 +8,8 @@ var socket,
 		'uid': null,
 		'isFocused': true,
 		'currentRoom': null,
-		'widgets': {}
+		'widgets': {},
+		'cacheBuster': null
 	};
 
 (function () {
@@ -51,7 +52,21 @@ var socket,
 
 			app.enterRoom(room, true);
 
-			socket.emit('meta.reconnected');
+			socket.emit('meta.reconnected', {}, function(err, cacheBuster) {
+				if (app.cacheBuster !== cacheBuster) {
+					app.cacheBuster = cacheBuster;
+
+					app.alert({
+						title: '[[global.updated:title]]',
+						message: '[[global.updated:message]]',
+						clickfn: function() {
+							window.location.reload();
+						},
+						type: 'warning'
+					});
+				}
+			});
+			
 			$(window).trigger('action:reconnected');
 
 			setTimeout(function() {
@@ -147,6 +162,8 @@ var socket,
 					socket.emit('tools.log', arguments);
 				};
 			}
+			
+			app.cacheBuster = config['cache-buster'];
 		}
 	}
 
