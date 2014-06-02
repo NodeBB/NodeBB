@@ -321,6 +321,8 @@ middleware.processRender = function(req, res, next) {
 			options = {};
 		}
 
+		options.loggedIn = req.user ? parseInt(req.user.uid, 10) !== 0 : false;
+
 		if ('function' !== typeof fn) {
 			fn = defaultFn;
 		}
