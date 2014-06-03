@@ -79,6 +79,21 @@ middleware.addSlug = function(req, res, next) {
 	next();
 };
 
+middleware.checkPostIndex = function(req, res, next) {
+	topics.getPostCount(req.params.topic_id, function(err, postCount) {
+		if (err) {
+			return next(err);
+		}
+		var postIndex = parseInt(req.params.post_index, 10);
+		if (postIndex > postCount) {
+			return res.redirect('/topic/' + req.params.topic_id + '/' + req.params.slug + '/' + postCount);
+		} else if (postIndex <= 1) {
+			return res.redirect('/topic/' + req.params.topic_id + '/' + req.params.slug);
+		}
+		next();
+	});
+};
+
 middleware.prepareAPI = function(req, res, next) {
 	res.locals.isAPI = true;
 	next();

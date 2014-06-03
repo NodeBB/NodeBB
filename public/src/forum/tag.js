@@ -26,11 +26,12 @@ define('forum/tag', ['forum/recent', 'forum/infinitescroll'], function(recent, i
 			infinitescroll.loadMore('topics.loadMoreFromSet', {
 				set: 'tag:' + ajaxify.variables.get('tag') + ':topics',
 				after: $('#topics-container').attr('data-nextstart')
-			}, function(data) {
+			}, function(data, done) {
 				if (data.topics && data.topics.length) {
-					recent.onTopicsLoaded('tag', data.topics, false);
+					recent.onTopicsLoaded('tag', data.topics, false, done);
 					$('#topics-container').attr('data-nextstart', data.nextStart);
 				} else {
+					done();
 					$('#load-more-btn').hide();
 				}
 			});

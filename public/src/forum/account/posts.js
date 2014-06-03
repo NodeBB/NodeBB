@@ -21,21 +21,24 @@ define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll'], 
 		infinitescroll.loadMore('posts.loadMoreUserPosts', {
 			uid: $('.account-username-box').attr('data-uid'),
 			after: $('.user-favourite-posts').attr('data-nextstart')
-		}, function(data) {
+		}, function(data, done) {
 			if (data.posts && data.posts.length) {
-				onPostsLoaded(data.posts);
+				onPostsLoaded(data.posts, done);
 				$('.user-favourite-posts').attr('data-nextstart', data.nextStart);
+			} else {
+				done();
 			}
 		});
 	}
 
-	function onPostsLoaded(posts) {
+	function onPostsLoaded(posts, callback) {
 		infinitescroll.parseAndTranslate('account/posts', 'posts', {posts: posts}, function(html) {
 			$('.user-favourite-posts').append(html);
 			html.find('img').addClass('img-responsive');
 			html.find('span.timeago').timeago();
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
+			callback();
 		});
 	}
 

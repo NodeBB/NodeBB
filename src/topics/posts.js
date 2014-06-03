@@ -157,5 +157,8 @@ module.exports = function(Topics) {
 		});
 	};
 
+	Topics.getPostCount = function(tid, callback) {
+		db.sortedSetCard('tid:' + tid + ':posts', callback);
+	};
 
 };

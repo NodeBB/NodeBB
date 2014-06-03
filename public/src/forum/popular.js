@@ -33,11 +33,12 @@ define('forum/popular', ['forum/recent', 'forum/infinitescroll'], function(recen
 			infinitescroll.loadMore('topics.loadMoreFromSet', {
 				set: 'topics:' + $('.nav-pills .active a').html().toLowerCase(),
 				after: $('#topics-container').attr('data-nextstart')
-			}, function(data) {
+			}, function(data, done) {
 				if (data.topics && data.topics.length) {
-					recent.onTopicsLoaded('popular', data.topics, false);
+					recent.onTopicsLoaded('popular', data.topics, false, done);
 					$('#topics-container').attr('data-nextstart', data.nextStart);
 				} else {
+					done();
 					$('#load-more-btn').hide();
 				}
 			});

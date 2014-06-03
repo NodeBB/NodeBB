@@ -294,11 +294,16 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 		infinitescroll.loadMore('categories.loadMore', {
 			cid: ajaxify.variables.get('category_id'),
 			after: after
-		}, function (data) {
+		}, function (data, done) {
 
 			if (data.topics && data.topics.length) {
-				Category.onTopicsLoaded(data, callback);
+				Category.onTopicsLoaded(data, function() {
+					done();
+					callback();
+				});
 				$('#topics-container').attr('data-nextstart', data.nextStart);
+			} else {
+				done();
 			}
 
 			$(window).trigger('action:categories.loaded');

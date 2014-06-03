@@ -34,10 +34,12 @@ define('forum/infinitescroll', function() {
 		loadingMore = true;
 		socket.emit(method, data, function(err, data) {
 			if (err) {
+				loadingMore = false;
 				return app.alertError(err.message);
 			}
-			callback(data);
-			loadingMore = false;
+			callback(data, function() {
+				loadingMore = false;
+			});
 		});
 	};
 

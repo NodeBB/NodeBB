@@ -21,45 +21,37 @@ topicsController.get = function(req, res, next) {
 
 	async.waterfall([
 		function (next) {
-			privileges.topics.get(tid, uid, function(err, privileges) {
-				if (err) {
-					return next(err);
-				}
-
-				if (!privileges.read) {
-					return next(new Error('[[error:no-privileges]]'));
-				}
-
-				userPrivileges = privileges;
-				next();
-			});
+			privileges.topics.get(tid, uid, next);
 		},
-		function (next) {
-			user.getSettings(uid, function(err, settings) {
-				if (err) {
-					return next(err);
-				}
+		function (privileges, next) {
+			if (!privileges.read) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
 
-				var postIndex = 0;
-				if (!settings.usePagination) {
-					postIndex = Math.max((req.params.post_index || 1) - (settings.postsPerPage), 0);
-				} else if (!req.query.page) {
-					var index = Math.max(parseInt((req.params.post_index || 0), 10), 0);
-					page = Math.ceil((index + 1) / settings.postsPerPage);
-				}
+			userPrivileges = privileges;
 
-				var start = (page - 1) * settings.postsPerPage + postIndex,
-					end = start + settings.postsPerPage - 1 + postIndex;
+			user.getSettings(uid, next);
+		},
+		function (settings, next) {
+			var postIndex = 0;
+			if (!settings.usePagination) {
+				postIndex = Math.max((req.params.post_index || 1) - (settings.postsPerPage - 1), 0);
+			} else if (!req.query.page) {
+				var index = Math.max(parseInt((req.params.post_index || 0), 10), 0);
+				page = Math.ceil((index + 1) / settings.postsPerPage);
+			}
 
-				topics.getTopicWithPosts(tid, uid, start, end, function (err, topicData) {
-					if (topicData) {
-						if (parseInt(topicData.deleted, 10) === 1 && !userPrivileges.view_deleted) {
-							return next(new Error('[[error:no-topic]]'));
-						}
-						topicData.currentPage = page;
+			var start = (page - 1) * settings.postsPerPage + postIndex,
+				end = start + settings.postsPerPage - 1;
+
+			topics.getTopicWithPosts(tid, uid, start, end, function (err, topicData) {
+				if (topicData) {
+					if (parseInt(topicData.deleted, 10) === 1 && !userPrivileges.view_deleted) {
+						return next(new Error('[[error:no-topic]]'));
 					}
-					next(err, topicData);
-				});
+					topicData.currentPage = page;
+				}
+				next(err, topicData);
 			});
 		},
 		function (topicData, next) {

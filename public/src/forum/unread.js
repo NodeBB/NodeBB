@@ -94,11 +94,12 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 
 			infinitescroll.loadMore('topics.loadMoreUnreadTopics', {
 				after: $('#topics-container').attr('data-nextstart')
-			}, function(data) {
+			}, function(data, done) {
 				if (data.topics && data.topics.length) {
-					recent.onTopicsLoaded('unread', data.topics, true);
+					recent.onTopicsLoaded('unread', data.topics, true, done);
 					$('#topics-container').attr('data-nextstart', data.nextStart);
 				} else {
+					done();
 					$('#load-more-btn').hide();
 				}
 			});

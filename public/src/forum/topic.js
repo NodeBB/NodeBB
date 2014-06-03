@@ -229,6 +229,8 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 					scrollingToPost = false;
 					navigator.update();
 					highlightPost();
+					$('body').scrollTop($('body').scrollTop() - 1);
+					$('html').scrollTop($('html').scrollTop() - 1);
 				});
 			}
 
@@ -394,15 +396,19 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 		infinitescroll.loadMore('topics.loadMore', {
 			tid: tid,
 			after: after
-		}, function (data) {
+		}, function (data, done) {
 
 			indicatorEl.fadeOut();
 
 			if (data && data.posts && data.posts.length) {
-				createNewPosts(data, callback);
+				createNewPosts(data, function() {
+					done();
+					callback();
+				});
 				hidePostToolsForDeletedPosts();
 			} else {
 				navigator.update();
+				done();
 			}
 		});
 	}

@@ -105,15 +105,17 @@ define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
 		infinitescroll.loadMore('topics.loadMoreRecentTopics', {
 			after: $('#topics-container').attr('data-nextstart'),
 			term: active
-		}, function(data) {
+		}, function(data, done) {
 			if (data.topics && data.topics.length) {
-				Recent.onTopicsLoaded('recent', data.topics, false);
+				Recent.onTopicsLoaded('recent', data.topics, false, done);
 				$('#topics-container').attr('data-nextstart', data.nextStart);
+			} else {
+				done();
 			}
 		});
 	};
 
-	Recent.onTopicsLoaded = function(templateName, topics, showSelect) {
+	Recent.onTopicsLoaded = function(templateName, topics, showSelect, callback) {
 		infinitescroll.parseAndTranslate(templateName, 'topics', {topics: topics, showSelect: showSelect}, function(html) {
 			$('#category-no-topics').remove();
 
@@ -121,6 +123,7 @@ define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
 			html.find('span.timeago').timeago();
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
+			callback();
 		});
 	};
 
