@@ -9,6 +9,7 @@ var async = require('async'),
 	utils = require('../../public/src/utils'),
 	db = require('../database'),
 	notifications = require('../notifications'),
+	posts = require('../posts'),
 	topics = require('../topics');
 
 (function(UserNotifications) {
@@ -146,22 +147,36 @@ var async = require('async'),
 	};
 
 	UserNotifications.sendPostNotificationToFollowers = function(uid, tid, pid) {
-		user.getUserField(uid, 'username', function(err, username) {
-			db.getSetMembers('followers:' + uid, function(err, followers) {
-				if (followers && followers.length) {
-					topics.getTopicField(tid, 'slug', function(err, slug) {
-						var message = '[[notifications:user_made_post, ' + username + ']]';
+		db.getSetMembers('followers:' + uid, function(err, followers) {
+			if (err || !followers || !followers.length) {
+				return;
+			}
 
-						notifications.create({
-							text: message,
-							path: nconf.get('relative_path') + '/topic/' + slug + '#' + pid,
-							uniqueId: 'topic:' + tid,
-							from: uid
-						}, function(nid) {
-							notifications.push(nid, followers);
-						});
-					});
+			async.parallel({
+				usename: function(next) {
+					user.getUserField(uid, 'username', next);
+				},
+				slug: function(next) {
+					topics.getTopicField(tid, 'slug', next);
+				},
+				postIndex: function(next) {
+					posts.getPidIndex(pid, next);
 				}
+			}, function(err, results) {
+				if (err) {
+					return;
+				}
+
+				var message = '[[notifications:user_made_post, ' + results.username + ']]';
+
+				notifications.create({
+					text: message,
+					path: nconf.get('relative_path') + '/topic/' + results.slug + '/' + results.postIndex,
+					uniqueId: 'topic:' + tid,
+					from: uid
+				}, function(nid) {
+					notifications.push(nid, followers);
+				});
 			});
 		});
 	};

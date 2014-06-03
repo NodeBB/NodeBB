@@ -105,6 +105,9 @@ function sendNotificationToPostOwner(data, uid, notification) {
 				},
 				slug: function(next) {
 					topics.getTopicField(postData.tid, 'slug', next);
+				},
+				index: function(next) {
+					posts.getPidIndex(data.pid, next);
 				}
 			}, function(err, results) {
 				if (err) {
@@ -113,7 +116,7 @@ function sendNotificationToPostOwner(data, uid, notification) {
 
 				notifications.create({
 					text: '[[' + notification + ', ' + results.username + ']]',
-					path: nconf.get('relative_path') + '/topic/' + results.slug + '#' + data.pid,
+					path: nconf.get('relative_path') + '/topic/' + results.slug + '/' + results.index,
 					uniqueId: 'post:' + data.pid,
 					from: uid
 				}, function(nid) {
@@ -277,7 +280,11 @@ SocketPosts.flag = function(socket, pid, callback) {
 			topics.getTopicField(postData.tid, 'slug', next);
 		},
 		function(topicSlug, next) {
-			path = nconf.get('relative_path') + '/topic/' + topicSlug + '#' + pid;
+			path = nconf.get('relative_path') + '/topic/' + topicSlug;
+			posts.getPidIndex(pid, next);
+		},
+		function(postIndex, next) {
+			path += '/' + postIndex;
 			groups.get('administrators', {}, next);
 		},
 		function(adminGroup, next) {

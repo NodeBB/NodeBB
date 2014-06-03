@@ -6,6 +6,7 @@ var async = require('async'),
 
 	db = require('../database'),
 	user = require('../user'),
+	posts = require('../posts'),
 	notifications = require('../notifications');
 
 module.exports = function(Topics) {
@@ -22,24 +23,28 @@ module.exports = function(Topics) {
 	Topics.notifyFollowers = function(tid, pid, exceptUid) {
 		async.parallel({
 			nid: function(next) {
-				Topics.getTopicFields(tid, ['title', 'slug'], function(err, topicData) {
-					if(err) {
+				async.parallel({
+					topicData: function(next) {
+						Topics.getTopicFields(tid, ['title', 'slug'], next);
+					},
+					username: function(next) {
+						user.getUserField(exceptUid, 'username', next);
+					},
+					postIndex: function(next) {
+						posts.getPidIndex(pid, next);
+					}
+				}, function(err, results) {
+					if (err) {
 						return next(err);
 					}
 
-					user.getUserField(exceptUid, 'username', function(err, username) {
-						if(err) {
-							return next(err);
-						}
-
-						notifications.create({
-							text: '[[notifications:user_posted_to, ' + username + ', ' + topicData.title + ']]',
-							path: nconf.get('relative_path') + '/topic/' + topicData.slug + '#' + pid,
-							uniqueId: 'topic:' + tid,
-							from: exceptUid
-						}, function(nid) {
-							next(null, nid);
-						});
+					notifications.create({
+						text: '[[notifications:user_posted_to, ' + results.username + ', ' + results.topicData.title + ']]',
+						path: nconf.get('relative_path') + '/topic/' + results.topicData.slug + '/' + results.postIndex,
+						uniqueId: 'topic:' + tid,
+						from: exceptUid
+					}, function(nid) {
+						next(null, nid);
 					});
 				});
 			},
