@@ -308,7 +308,7 @@ var ajaxify = ajaxify || {};
 				if (!ajaxify.preloader[url] || currentTime - ajaxify.preloader[url].lastFetched > PRELOADER_RATE_LIMIT) {
 					ajaxify.preloader[url] = null;
 					ajaxify.loadData(url, function(err, data) {
-						ajaxify.preloader[url] = {
+						ajaxify.preloader[url] = err ? null : {
 							url: url,
 							data: data,
 							lastFetched: currentTime
