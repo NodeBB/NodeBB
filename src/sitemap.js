@@ -7,6 +7,7 @@ var path = require('path'),
 	nconf = require('nconf'),
 	categories = require('./categories'),
 	topics = require('./topics'),
+	utils = require('../public/src/utils'),
 	sitemap = {
 		getStaticUrls: function(callback) {
 			callback(null, [{
@@ -55,6 +56,7 @@ var path = require('path'),
 						data.topics.forEach(function(topic) {
 							topicUrls.push({
 								url: path.join('/topic', topic.slug),
+								lastmodISO: utils.toISOString(topic.lastposttime),
 								changefreq: 'daily',
 								priority: '0.6'
 							});
