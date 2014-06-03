@@ -268,10 +268,13 @@ var fs = require('fs'),
 			}, function(err, rjsFiles) {
 				rjsFiles = rjsFiles.forum.concat(rjsFiles.modules);
 
-				rjsFiles = rjsFiles.map(function(file) {
-					return path.join('src', file.replace(rjsPath, ''));
+				rjsFiles.forEach(function(file, i) {
+					rjsFiles[i] = path.join('src', file.replace(rjsPath, ''));
+					if (rjsFiles[i].match('admin')) {
+						delete rjsFiles[i];
+					}
 				});
-
+				
 				Meta.js.scripts = Meta.js.scripts.concat(rjsFiles);
 
 				callback(err);
