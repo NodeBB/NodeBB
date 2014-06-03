@@ -57,8 +57,8 @@ var socket,
 					app.cacheBuster = cacheBuster;
 
 					app.alert({
-						title: '[[global.updated:title]]',
-						message: '[[global.updated:message]]',
+						title: '[[global:updated.title]]',
+						message: '[[global:updated.message]]',
 						clickfn: function() {
 							window.location.reload();
 						},
