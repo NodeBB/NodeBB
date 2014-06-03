@@ -51,7 +51,7 @@ define('share', function() {
 	function getPostUrl(clickedElement) {
 		var parts = window.location.pathname.split('/');
 		var postIndex = parseInt(clickedElement.parents('.post-row').attr('data-index'), 10);
-		return '/topic/' + parts[2] + (parts[3] ? '/' + parts[3] : '') + (postIndex ? '/' + (postIndex + 1) : '');
+		return '/' + parts[1] + '/' + parts[2] + (parts[3] ? '/' + parts[3] : '') + (postIndex ? '/' + (postIndex + 1) : '');
 	}
 
 	return module;
