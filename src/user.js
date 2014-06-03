@@ -176,7 +176,7 @@ var bcrypt = require('bcryptjs'),
 				return callback(new Error('[[error:no-user]]'));
 			}
 
-			if (userData.email && (parseInt(meta.config.requireEmailConfirmation, 10) === 1 || meta.config.requireEmailConfirmation === undefined) && parseInt(userData['email:confirmed'], 10) !== 1) {
+			if (userData.email && parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
 				return callback(new Error('[[error:email-not-confirmed]]'));
 			}
 
