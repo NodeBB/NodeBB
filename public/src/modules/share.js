@@ -18,7 +18,7 @@ define('share', function() {
 		$('#content').off('shown.bs.dropdown', '.share-dropdown').on('shown.bs.dropdown', '.share-dropdown', function() {
 
 			var postLink = $(this).find('.post-link');
-			postLink.val(baseUrl + window.location.pathname + getPostHash($(this)));
+			postLink.val(baseUrl + getPostUrl($(this)));
 
 			// without the setTimeout can't select the text in the input
 			setTimeout(function() {
@@ -48,7 +48,7 @@ define('share', function() {
 		$('#content').off('click', selector).on('click', selector, callback);
 	}
 
-	function getPostHash(clickedElement) {
+	function getPostUrl(clickedElement) {
 		var parts = window.location.pathname.split('/');
 		var postIndex = parseInt(clickedElement.parents('.post-row').attr('data-index'), 10);
 		return '/topic/' + parts[2] + (parts[3] ? '/' + parts[3] : '') + (postIndex ? '/' + (postIndex + 1) : '');
