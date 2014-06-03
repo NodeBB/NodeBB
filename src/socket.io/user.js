@@ -24,6 +24,23 @@ SocketUser.emailExists = function(socket, data, callback) {
 	}
 };
 
+SocketUser.emailConfirm = function(socket, data, callback) {
+	if (socket.uid && parseInt(meta.config.requireEmailConfirmation, 10) === 1) {
+		user.getUserField(socket.uid, 'email', function(err, email) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (!email) {
+				return;
+			}
+
+			user.email.verify(socket.uid, email);
+			callback();
+		});
+	}
+};
+
 SocketUser.increaseViewCount = function(socket, uid, callback) {
 	if (uid) {
 		if (socket.uid !== parseInt(uid, 10)) {

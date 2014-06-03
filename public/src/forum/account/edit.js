@@ -24,6 +24,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 
 		handleImageChange();
 		handleImageUpload();
+		handleEmailConfirm();
 		handlePasswordChange();
 		updateSignature();
 		updateImages();
@@ -135,6 +136,17 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 			});
 
 			return false;
+		});
+	}
+
+	function handleEmailConfirm() {
+		$('#confirm-email').on('click', function() {
+			socket.emit('user.emailConfirm', {}, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				app.alertSuccess('[[notifications:email-confirm-sent]]');
+			});
 		});
 	}
 

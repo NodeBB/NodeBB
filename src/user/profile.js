@@ -40,7 +40,6 @@ module.exports = function(User) {
 					}
 
 					next(!available ? new Error('[[error:email-taken]]') : null);
-
 				});
 			});
 		}
@@ -102,9 +101,7 @@ module.exports = function(User) {
 				}
 			}
 
-			User.setUserField(uid, field, data[field]);
-
-			next();
+			User.setUserField(uid, field, data[field], next);
 		}
 	};
 
@@ -137,8 +134,16 @@ module.exports = function(User) {
 						User.setUserField(uid, 'email', newEmail, next);
 					},
 					function(next) {
+						if (parseInt(meta.config.requireEmailConfirmation, 10) === 1) {
+							User.email.verify(uid, newEmail);
+						}
+						User.setUserField(uid, 'email:confirmed', 0, next);
+					},
+					function(next) {
 						if (userData.picture !== userData.uploadedpicture) {
 							User.setUserField(uid, 'picture', gravatarpicture, next);
+						} else {
+							next();
 						}
 					},
 				], callback);
