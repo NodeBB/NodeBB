@@ -38,9 +38,13 @@ module.exports = function(Topics) {
 						return next(err);
 					}
 
+					var path = nconf.get('relative_path') + '/topic/' + results.topicData.slug;
+					if (parseInt(results.postIndex, 10)) {
+						path += '/' + (parseInt(results.postIndex, 10) + 1);
+					}
 					notifications.create({
 						text: '[[notifications:user_posted_to, ' + results.username + ', ' + results.topicData.title + ']]',
-						path: nconf.get('relative_path') + '/topic/' + results.topicData.slug + '/' + results.postIndex,
+						path: path,
 						uniqueId: 'topic:' + tid,
 						from: exceptUid
 					}, function(nid) {

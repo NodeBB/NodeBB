@@ -114,9 +114,14 @@ function sendNotificationToPostOwner(data, uid, notification) {
 					return;
 				}
 
+				var path = nconf.get('relative_path') + '/topic/' + results.slug;
+				if (parseInt(results.index, 10)) {
+					path += '/' + (parseInt(results.index, 10) + 1);
+				}
+
 				notifications.create({
 					text: '[[' + notification + ', ' + results.username + ']]',
-					path: nconf.get('relative_path') + '/topic/' + results.slug + '/' + results.index,
+					path: path,
 					uniqueId: 'post:' + data.pid,
 					from: uid
 				}, function(nid) {
@@ -284,7 +289,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 			posts.getPidIndex(pid, next);
 		},
 		function(postIndex, next) {
-			path += '/' + postIndex;
+			path += '/' + (parseInt(postIndex, 10) + 1);
 			groups.get('administrators', {}, next);
 		},
 		function(adminGroup, next) {

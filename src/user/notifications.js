@@ -153,7 +153,7 @@ var async = require('async'),
 			}
 
 			async.parallel({
-				usename: function(next) {
+				username: function(next) {
 					user.getUserField(uid, 'username', next);
 				},
 				slug: function(next) {
@@ -168,10 +168,13 @@ var async = require('async'),
 				}
 
 				var message = '[[notifications:user_made_post, ' + results.username + ']]';
-
+				var path = nconf.get('relative_path') + '/topic/' + results.slug + '/' + results.postIndex;
+				if (parseInt(results.postIndex, 10)) {
+					path += '/' + (parseInt(results.postIndex, 10) + 1);
+				}
 				notifications.create({
 					text: message,
-					path: nconf.get('relative_path') + '/topic/' + results.slug + '/' + results.postIndex,
+					path: path,
 					uniqueId: 'topic:' + tid,
 					from: uid
 				}, function(nid) {
