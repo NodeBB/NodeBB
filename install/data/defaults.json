@@ -69,6 +69,6 @@
     },
     {
         "field": "requireEmailConfirmation",
-        "value": 1
+        "value": 0
     }
 ]
