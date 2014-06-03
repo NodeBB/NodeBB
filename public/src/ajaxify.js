@@ -25,7 +25,7 @@ var ajaxify = ajaxify || {};
 	ajaxify.initialLoad = false;
 	ajaxify.preloader = {};
 
-	function onAjaxError(err) {
+	function onAjaxError(err, url) {
 		var data = err.data, textStatus = err.textStatus;
 
 		$('#content, #footer').stop(true, true).removeClass('ajaxifying');
@@ -85,7 +85,7 @@ var ajaxify = ajaxify || {};
 			ajaxify.variables.flush();
 			ajaxify.loadData(url, function(err, data) {
 				if (err) {
-					return onAjaxError(err);
+					return onAjaxError(err, url);
 				}
 
 				$(window).trigger('action:ajaxify.loadingTemplates', {});
