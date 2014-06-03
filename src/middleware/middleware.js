@@ -215,6 +215,9 @@ middleware.renderHeader = function(req, res, callback) {
 			}, {
 				name: 'msapplication-badge',
 				content: 'frequency=30; polling-uri=' + nconf.get('url') + '/sitemap.xml'
+			}, {
+				name: 'msapplication-square150x150logo',
+				content: meta.config['brand:logo'] || ''
 			}],
 			defaultLinkTags = [{
 				rel: 'apple-touch-icon',
