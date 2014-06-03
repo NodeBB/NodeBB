@@ -19,6 +19,7 @@
 
 	"username-taken": "Username taken",
 	"email-taken": "Email taken",
+	"email-not-confirmed": "Your email is not confirmed",
 
 	"username-too-short": "User name too short",
 

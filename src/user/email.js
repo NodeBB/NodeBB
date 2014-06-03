@@ -45,7 +45,6 @@ var async = require('async'),
 				db.expireAt('confirm:' + confirm_code, Math.floor(Date.now() / 1000 + 60 * 60 * 2), next);
 			}
 		], function(err) {
-			// Send intro email w/ confirm code
 			user.getUserField(uid, 'username', function(err, username) {
 				if (err) {
 					return winston.error(err.message);
@@ -73,7 +72,7 @@ var async = require('async'),
 			}
 
 			if (confirmObj && confirmObj.uid && confirmObj.email) {
-				db.setObjectField('email:confirmed', confirmObj.email, '1', function() {
+				user.setUserField(confirmObj.uid, 'email:confirmed', 1, function() {
 					callback({
 						status: 'ok'
 					});

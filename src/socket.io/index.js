@@ -165,7 +165,7 @@ Sockets.init = function(server) {
 			}
 
 			if (Namespaces[namespace].before) {
-				Namespaces[namespace].before(socket, function() {
+				Namespaces[namespace].before(socket, payload.name, function() {
 					callMethod(methodToCall);
 				});
 			} else {

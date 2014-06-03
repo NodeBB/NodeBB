@@ -155,21 +155,20 @@ var bcrypt = require('bcryptjs'),
 
 	User.isReadyToPost = function(uid, callback) {
 		async.parallel({
-			banned: function(next) {
-				User.getUserField(uid, 'banned', next);
+			userData: function(next) {
+				User.getUserFields(uid, ['banned', 'lastposttime', 'email', 'email:confirmed'], next);
 			},
 			exists: function(next) {
 				db.exists('user:' + uid, next);
-			},
-			lastposttime: function(next) {
-				User.getUserField(uid, 'lastposttime', next);
 			}
 		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			if (parseInt(results.banned, 10) === 1) {
+			var userData = results.userData;
+
+			if (parseInt(userData.banned, 10) === 1) {
 				return callback(new Error('[[error:user-banned]]'));
 			}
 
@@ -177,7 +176,11 @@ var bcrypt = require('bcryptjs'),
 				return callback(new Error('[[error:no-user]]'));
 			}
 
-			var lastposttime = results.lastposttime;
+			if (userData.email && (parseInt(meta.config.requireEmailConfirmation, 10) === 1 || meta.config.requireEmailConfirmation === undefined) && parseInt(userData['email:confirmed'], 10) !== 1) {
+				return callback(new Error('[[error:email-not-confirmed]]'));
+			}
+
+			var lastposttime = userData.lastposttime;
 			if (!lastposttime) {
 				lastposttime = 0;
 			}

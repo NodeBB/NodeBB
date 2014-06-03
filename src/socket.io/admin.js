@@ -25,12 +25,12 @@ var	groups = require('../groups'),
 		settings: {}
 	};
 
-SocketAdmin.before = function(socket, next) {
+SocketAdmin.before = function(socket, method, next) {
 	user.isAdministrator(socket.uid, function(err, isAdmin) {
 		if (!err && isAdmin) {
 			next();
 		} else {
-			winston.warn('[socket.io] Call to admin method blocked (accessed by uid ' + socket.uid + ')');
+			winston.warn('[socket.io] Call to admin method ( ' + method + ' ) blocked (accessed by uid ' + socket.uid + ')');
 		}
 	});
 };

@@ -210,20 +210,7 @@ Controllers.register = function(req, res, next) {
 
 Controllers.confirmEmail = function(req, res, next) {
 	user.email.confirm(req.params.code, function (data) {
-		if (data.status === 'ok') {
-			data = {
-				'alert-class': 'alert-success',
-				title: 'Email Confirmed',
-				text: 'Thank you for vaidating your email. Your account is now fully activated.'
-			};
-		} else {
-			data = {
-				'alert-class': 'alert-danger',
-				title: 'An error occurred...',
-				text: 'There was a problem validating your email address. Perhaps the code was invalid or has expired.'
-			};
-		}
-
+		data.status = data.status === 'ok';
 		res.render('confirm', data);
 	});
 };
