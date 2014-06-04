@@ -83,7 +83,7 @@
 		if(meta.config.allowRegistration !== undefined && parseInt(meta.config.allowRegistration, 10) === 0) {
 			return res.send(403);
 		}
-		
+
 		var userData = {};
 
 		for (var key in req.body) {
@@ -109,11 +109,13 @@
 
 					require('../socket.io').emitUserCount();
 
-					if(req.body.referrer) {
-						res.redirect(req.body.referrer);
-					} else {
-						res.redirect(nconf.get('relative_path') + '/');
-					}
+					plugins.fireHook('filter:register.complete', uid, req.body.referrer, function(err, uid, destination) {
+						if(destination) {
+							res.redirect(destination);
+						} else {
+							res.redirect(nconf.get('relative_path') + '/');
+						}
+					});
 				});
 			});
 		});
