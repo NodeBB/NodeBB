@@ -5,14 +5,15 @@ var path = require('path'),
 	fs = require('fs'),
 	nconf = require('nconf'),
 
-	user = require('./../user'),
-	topics = require('./../topics'),
-	posts = require('./../posts'),
-	categories = require('./../categories'),
-	meta = require('./../meta'),
-	plugins = require('./../plugins'),
-	utils = require('./../../public/src/utils'),
-	pkg = require('./../../package.json');
+	user = require('../user'),
+	topics = require('../topics'),
+	posts = require('../posts'),
+	categories = require('../categories'),
+	meta = require('../meta'),
+	plugins = require('../plugins'),
+	utils = require('../../public/src/utils'),
+	image = require('../image'),
+	pkg = require('../../package.json');
 
 
 function deleteTempFiles(files) {
@@ -63,12 +64,18 @@ function uploadPost(req, res, next) {
 function uploadThumb(req, res, next) {
 	if (!meta.config.allowTopicsThumbnail) {
 		deleteTempFiles(req.files.files);
-		return callback(new Error('[[error:topic-thumbnails-are-disabled]]'));
+		return next(new Error('[[error:topic-thumbnails-are-disabled]]'));
 	}
 
 	upload(req, res, function(file, next) {
 		if(file.type.match(/image./)) {
-			uploadImage(file, next);
+			var size = meta.config.topicThumbSize || 120;
+			image.resizeImage(file.path, path.extname(file.name), size, size, function(err) {
+				if (err) {
+					return next(err);
+				}
+				uploadImage(file, next);
+			});
 		} else {
 			next(new Error('[[error:invalid-file]]'));
 		}
@@ -77,7 +84,6 @@ function uploadThumb(req, res, next) {
 
 
 function uploadImage(image, callback) {
-
 	if(plugins.hasListeners('filter:uploadImage')) {
 		plugins.fireHook('filter:uploadImage', image, callback);
 	} else {
@@ -91,7 +97,6 @@ function uploadImage(image, callback) {
 }
 
 function uploadFile(file, callback) {
-
 	if(plugins.hasListeners('filter:uploadFile')) {
 		plugins.fireHook('filter:uploadFile', file, callback);
 	} else {
