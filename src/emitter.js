@@ -20,4 +20,20 @@ eventEmitter.all = function(events, callback) {
 	}
 };
 
+eventEmitter.any = function(events, callback) {
+	for (var ev in events) {
+		if (events.hasOwnProperty(ev)) {
+			(function(ev) {
+				eventEmitter.on(events[ev], function() {
+					if (events !== null) {
+						callback();
+					}
+
+					events = null;
+				});
+			}(ev));
+		}
+	}
+};
+
 module.exports = eventEmitter;
