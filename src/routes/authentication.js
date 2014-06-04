@@ -83,12 +83,14 @@
 		if(meta.config.allowRegistration !== undefined && parseInt(meta.config.allowRegistration, 10) === 0) {
 			return res.send(403);
 		}
+		
+		var userData = {};
 
-		var userData = {
-			username: req.body.username,
-			password: req.body.password,
-			email: req.body.email
-		};
+		for (var key in req.body) {
+			if (req.body.hasOwnProperty(key)) {
+				userData[key] = req.body[key];
+			}
+		}
 
 		plugins.fireHook('filter:register.check', req, res, userData, function(err, req, res, userData) {
 			if (err) {
