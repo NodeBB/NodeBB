@@ -13,6 +13,8 @@ var async = require('async'),
 module.exports = function(User) {
 
 	User.create = function(userData, callback) {
+		var customFields = {};
+
 		userData = userData || {};
 		userData.userslug = utils.slugify(userData.username);
 
@@ -80,6 +82,12 @@ module.exports = function(User) {
 				}
 			},
 			function(next) {
+				plugins.fireHook('filter:user.custom_fields', userData, function(err, fields) {
+					customFields = fields;
+					next(err);
+				});
+			},
+			function(next) {
 				plugins.fireHook('filter:user.create', userData, function(err, filteredUserData){
 					next(err, utils.merge(userData, filteredUserData));
 				});
@@ -126,6 +134,8 @@ module.exports = function(User) {
 					'banned': 0,
 					'status': 'online'
 				};
+
+				userData = utils.merge(userData, customFields);
 
 				db.setObject('user:' + uid, userData, function(err) {
 					if(err) {
