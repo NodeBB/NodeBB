@@ -168,7 +168,7 @@ var async = require('async'),
 				}
 
 				var message = '[[notifications:user_made_post, ' + results.username + ']]';
-				var path = nconf.get('relative_path') + '/topic/' + results.slug + '/' + results.postIndex;
+				var path = nconf.get('relative_path') + '/topic/' + results.slug;
 				if (parseInt(results.postIndex, 10)) {
 					path += '/' + (parseInt(results.postIndex, 10) + 1);
 				}
