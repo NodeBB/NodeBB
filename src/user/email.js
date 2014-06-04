@@ -27,37 +27,42 @@ var async = require('async'),
 	};
 
 	UserEmail.verify = function(uid, email) {
-		if (!plugins.hasListeners('action:email.send')) {
-			return;
-		}
-
 		var confirm_code = utils.generateUUID(),
 			confirm_link = nconf.get('url') + '/confirm/' + confirm_code;
 
-		async.series([
-			function(next) {
-				db.setObject('confirm:' + confirm_code, {
-					email: email,
-					uid: uid
-				}, next);
-			},
-			function(next) {
-				db.expireAt('confirm:' + confirm_code, Math.floor(Date.now() / 1000 + 60 * 60 * 2), next);
-			}
-		], function(err) {
-			user.getUserField(uid, 'username', function(err, username) {
-				if (err) {
-					return winston.error(err.message);
+		plugins.fireHook('filter:user.verify.code', confirm_code, function(err, confirm_code) {
+			async.series([
+				function(next) {
+					db.setObject('confirm:' + confirm_code, {
+						email: email,
+						uid: uid
+					}, next);
+				},
+				function(next) {
+					db.expireAt('confirm:' + confirm_code, Math.floor(Date.now() / 1000 + 60 * 60 * 2), next);
 				}
+			], function(err) {
+				user.getUserField(uid, 'username', function(err, username) {
+					if (err) {
+						return winston.error(err.message);
+					}
 
-				emailer.send('welcome', uid, {
-					site_title: (meta.config.title || 'NodeBB'),
-					username: username,
-					confirm_link: confirm_link,
+					var data = {
+						site_title: (meta.config.title || 'NodeBB'),
+						username: username,
+						confirm_link: confirm_link,
+						confirm_code: confirm_code,
 
-					subject: 'Welcome to ' + (meta.config.title || 'NodeBB') + '!',
-					template: 'welcome',
-					uid: uid
+						subject: 'Welcome to ' + (meta.config.title || 'NodeBB') + '!',
+						template: 'welcome',
+						uid: uid
+					};
+
+					if (plugins.hasListeners('action:user.verify')) {
+						plugins.fireHook('action:user.verify', uid, data);
+					} else if (plugins.hasListeners('action:email.send')) {
+						emailer.send('welcome', uid, data);
+					}
 				});
 			});
 		});
