@@ -283,6 +283,10 @@ middleware.renderHeader = function(req, res, callback) {
 					next(err, tree ? tree.toCSS({cleancss: true}) : '');
 				});
 			},
+			customJS: function(next) {
+				templateValues.useCustomJS = parseInt(meta.config.useCustomJS, 10) === 1;
+				next(null, templateValues.useCustomJS ? meta.config.customJS : '');
+			},
 			title: function(next) {
 				if (uid) {
 					user.getSettings(uid, function(err, settings) {
@@ -314,6 +318,7 @@ middleware.renderHeader = function(req, res, callback) {
 			templateValues.isAdmin = results.isAdmin || false;
 			templateValues.user = results.user;
 			templateValues.customCSS = results.customCSS;
+			templateValues.customJS = results.customJS;
 
 			app.render('header', templateValues, callback);
 		});
