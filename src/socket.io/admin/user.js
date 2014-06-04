@@ -99,7 +99,7 @@ User.search = function(socket, username, callback) {
 					return next(err);
 				}
 
-				userData.administrator = isAdmin?'1':'0';
+				userData.administrator = isAdmin;
 				next();
 			});
 		}
