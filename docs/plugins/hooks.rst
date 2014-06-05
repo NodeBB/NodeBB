@@ -118,6 +118,25 @@ Executed when a post or signature needs to be parsed from raw text to HTML (for 
 ``filter:user.create``
 ^^^^^^^^^^^^^^^^^^^^^
 
+``filter:user.verify.code``
+^^^^^^^^^^^^^^^^^^^^^
+Parameters: confirm_code
+
+Ability to modify the generated verification code (ex. for using a shorter verification code instead for SMS verification)
+
+``filter:user.custom_fields``
+^^^^^^^^^^^^^^^^^^^^^
+
+Parameters: userData
+
+Allows you to append custom fields to the newly created user, ex. mobileNumber
+
+``filter:register.complete``
+^^^^^^^^^^^^^^^^^^^^^
+Parameters: uid, destination
+
+Set the post-registration destination, or do post-register tasks here.
+
 ``filter:widget.render``
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -195,6 +214,12 @@ Executed whenever a post is created or edited, after it is saved into the databa
 
 ``action:topic.delete``
 ^^^^^^^^^^^^^^^^^^^^^
+
+``action:user.verify``
+^^^^^^^^^^^^^^^^^^^^^
+Parameters: uid; a hash of confirmation data (ex. confirm_link, confirm_code)
+Useful for overriding the verification system. Currently if this hook is set, the email verification system is disabled outright.
+
 
 ``action:user.set``
 ^^^^^^^^^^^^^^^^^^^^^
