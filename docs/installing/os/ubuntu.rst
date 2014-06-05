@@ -16,8 +16,8 @@ If you want to use MongoDB, LevelDB, or another database instead of Redis please
 
 .. code:: bash
 
-	$ add-apt-repository ppa:chris-lea/node.js
-	$ apt-get update && apt-get dist-upgrade
+	$ sudo add-apt-repository ppa:chris-lea/node.js
+	$ sudo apt-get update && sudo apt-get dist-upgrade
 
 
 Next, clone this repository:
