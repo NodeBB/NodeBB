@@ -103,8 +103,8 @@ module.exports = function(err, config, databases, callback) {
 			success(err, config, next);
 		},
 		function(config, next) {
-			winston.info('Now configuring ' + config.secondary_database + ' database:');
 			if (config.secondary_database && allowedDBs.indexOf(config.secondary_database) !== -1) {
+				winston.info('Now configuring ' + config.secondary_database + ' database:');
 				getSecondaryDatabaseModules(config, next);
 			} else {
 				next(err, config);
