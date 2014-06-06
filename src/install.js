@@ -214,6 +214,8 @@ function setupDatabase(server_conf, next) {
 			next(err);
 		}
 
+		npm.config.set('spin', false);
+
 		packages = packages.concat(DATABASES[server_conf.database].dependencies);
 		if (server_conf.secondary_database) {
 			packages = packages.concat(DATABASES[server_conf.secondary_database].dependencies);
