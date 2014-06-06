@@ -150,8 +150,8 @@
 						}));
 
 						app.get(strategy.callbackURL, passport.authenticate(strategy.name, {
-							successRedirect: '/',
-							failureRedirect: '/login'
+							successRedirect: nconf.get('relative_path) + '/',
+							failureRedirect: nconf.get('relative_path') + '/login'
 						}));
 					}
 				}
