@@ -135,14 +135,27 @@ function getModerators(req, res, next) {
 }
 
 function getTemplatesListing(req, res, next) {
-	utils.walk(nconf.get('views_dir'), function (err, data) {
-		data = data
-				.filter(function(value, index, self) {
-					return self.indexOf(value) === index;
-				}).map(function(el) {
-					return el.replace(nconf.get('views_dir') + '/', '');
-				});
+	var data = [];
 
+	async.parallel({
+		views: function(next) {
+			utils.walk(nconf.get('views_dir'), function (err, views) {
+				data = data.concat(
+						views.filter(function(value, index, self) {
+							return self.indexOf(value) === index;
+						}).map(function(el) {
+							return el.replace(nconf.get('views_dir') + '/', '');
+						}));
+
+				res.json(data);
+			});
+		},
+		extended: function(next) {
+			plugins.fireHook('filter:templates.get_virtual', [], function(err, virtual) {
+				data = data.concat(virtual);
+			});
+		}
+	}, function(err) {
 		res.json(data);
 	});
 }
