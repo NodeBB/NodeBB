@@ -110,8 +110,8 @@
 					require('../socket.io').emitUserCount();
 
 					plugins.fireHook('filter:register.complete', uid, req.body.referrer, function(err, uid, destination) {
-						if(destination) {
-							res.redirect(destination);
+						if (destination) {
+							res.redirect(nconf.get('relative_path') + destination);
 						} else {
 							res.redirect(nconf.get('relative_path') + '/');
 						}
@@ -150,8 +150,8 @@
 						}));
 
 						app.get(strategy.callbackURL, passport.authenticate(strategy.name, {
-							successRedirect: '/',
-							failureRedirect: '/login'
+							successRedirect: nconf.get('relative_path') + '/',
+							failureRedirect: nconf.get('relative_path') + '/login'
 						}));
 					}
 				}
