@@ -44,11 +44,11 @@ module.exports = function(app, middleware, controllers) {
 				if (matches.length) {
 					res.sendfile(matches[0]);
 				} else {
-					res.redirect('/404');
+					res.redirect(nconf.get('relative_path') + '/404');
 				}
 			});
 		} else {
-			res.redirect('/404');
+			res.redirect(nconf.get('relative_path') + '/404');
 		}
 	});
 };
