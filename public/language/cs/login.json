@@ -4,5 +4,6 @@
     "forgot_password": "Zapomněli jste heslo?",
     "alternative_logins": "Další způsoby přihlášení",
     "failed_login_attempt": "Přihlášení se nezdařilo, zkuste to prosím znovu.",
-    "login_successful": "Přihlášení proběhlo úspěšně!"
+    "login_successful": "Přihlášení proběhlo úspěšně!",
+    "dont_have_account": "Don't have an account?"
 }

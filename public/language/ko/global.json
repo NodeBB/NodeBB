@@ -68,5 +68,7 @@
     "email": "이메일",
     "language": "언어",
     "guest": "익명 사용자",
-    "guests": "익명 사용자"
+    "guests": "익명 사용자",
+    "updated.title": "Forum Updated",
+    "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page."
 }

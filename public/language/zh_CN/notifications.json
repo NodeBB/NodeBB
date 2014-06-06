@@ -14,5 +14,10 @@
     "upvoted_your_post": "<strong>%1</strong>给你的帖子点了赞",
     "favourited_your_post": "<strong>%1</strong>收藏了你的帖子",
     "user_flagged_post": "<strong>%1</strong>标记了一个帖子",
-    "user_posted_to": "<strong>%1</strong>回复了<strong>%2</strong>"
+    "user_posted_to": "<strong>%1</strong>回复了<strong>%2</strong>",
+    "email-confirmed": "Email Confirmed",
+    "email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",
+    "email-confirm-error": "An error occurred...",
+    "email-confirm-error-message": "There was a problem validating your email address. Perhaps the code was invalid or has expired.",
+    "email-confirm-sent": "Confirmation email sent."
 }

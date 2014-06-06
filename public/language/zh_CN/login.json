@@ -4,5 +4,6 @@
     "forgot_password": "忘记密码？",
     "alternative_logins": "其他登录方式",
     "failed_login_attempt": "登录失败，请再尝试。",
-    "login_successful": "您已经成功登录！"
+    "login_successful": "您已经成功登录！",
+    "dont_have_account": "Don't have an account?"
 }

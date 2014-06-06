@@ -4,5 +4,6 @@
     "forgot_password": "ลืมรหัสผ่าน?",
     "alternative_logins": "เข้าสู่ระบบโดยทางอื่น",
     "failed_login_attempt": "เข้าสู่ระบบล้มเหลว โปรดลองอีกครั้ง",
-    "login_successful": "คุณเข้าสู่ระบบเรียบร้อยแล้ว"
+    "login_successful": "คุณเข้าสู่ระบบเรียบร้อยแล้ว",
+    "dont_have_account": "Don't have an account?"
 }

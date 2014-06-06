@@ -4,5 +4,6 @@
     "forgot_password": "Elfelejtett Jelszó?",
     "alternative_logins": "Alternatív Belépések",
     "failed_login_attempt": "Sikertelen belépési kísérlet, kérlek próbálkozz újra.",
-    "login_successful": "Sikeresen beléptél!"
+    "login_successful": "Sikeresen beléptél!",
+    "dont_have_account": "Don't have an account?"
 }

@@ -4,5 +4,6 @@
     "forgot_password": "نسيت كلمة المرور؟",
     "alternative_logins": "تسجيلات الدخول البديلة",
     "failed_login_attempt": "فشلت محاولة تسجيل الدخول، يرجى المحاولة مرة أخرى.",
-    "login_successful": "قمت بتسجيل الدخول بنجاح!"
+    "login_successful": "قمت بتسجيل الدخول بنجاح!",
+    "dont_have_account": "Don't have an account?"
 }

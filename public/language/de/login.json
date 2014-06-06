@@ -4,5 +4,6 @@
     "forgot_password": "Passwort vergessen?",
     "alternative_logins": "Login Alternativen",
     "failed_login_attempt": " Anmeldeversuch fehlgeschlagen, versuche es erneut.",
-    "login_successful": "Du hast dich erfolgreich eingeloggt!"
+    "login_successful": "Du hast dich erfolgreich eingeloggt!",
+    "dont_have_account": "Don't have an account?"
 }

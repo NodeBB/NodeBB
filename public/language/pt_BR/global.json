@@ -18,7 +18,7 @@
     "save_changes": "Salvar Alterações",
     "close": "Fechar",
     "pagination": "Paginação",
-    "pagination.out_of": "%1 out of %2",
+    "pagination.out_of": "%1 de %2",
     "header.admin": "Admin",
     "header.recent": "Recente",
     "header.unread": "Não Lido",
@@ -37,7 +37,7 @@
     "alert.success": "Sucesso",
     "alert.error": "Erro",
     "alert.banned": "Banido",
-    "alert.banned.message": "You have just been banned, you will now be logged out.",
+    "alert.banned.message": "Você foi banido, efetuando logout.",
     "alert.unfollow": "Você deixou  de seguir %1!",
     "alert.follow": "Você está seguindo %1!",
     "online": "Online",
@@ -68,5 +68,7 @@
     "email": "Email",
     "language": "Linguagem",
     "guest": "Visitante",
-    "guests": "Visitantes"
+    "guests": "Visitantes",
+    "updated.title": "Forum Updated",
+    "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page."
 }

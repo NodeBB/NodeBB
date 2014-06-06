@@ -4,5 +4,6 @@
     "forgot_password": "Wachtwoord Vergeten?",
     "alternative_logins": "Alternatieve Logins",
     "failed_login_attempt": "Mislukte inlog poging, probeer het later opnieuw.",
-    "login_successful": "Je bent succesvol ingelogd!"
+    "login_successful": "Je bent succesvol ingelogd!",
+    "dont_have_account": "Don't have an account?"
 }

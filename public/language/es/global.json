@@ -18,11 +18,11 @@
     "save_changes": "Guardar Cambios",
     "close": "Cerrar",
     "pagination": "Paginación",
-    "pagination.out_of": "%1 out of %2",
+    "pagination.out_of": "%1 de %2",
     "header.admin": "Administración",
     "header.recent": "Recientes",
     "header.unread": "No Leídos",
-    "header.tags": "Tags",
+    "header.tags": "Etiquetas",
     "header.popular": "Popular",
     "header.users": "Miembros",
     "header.chats": "Chats",
@@ -68,5 +68,7 @@
     "email": "Email",
     "language": "Lenguaje",
     "guest": "Invitado",
-    "guests": "Invitados"
+    "guests": "Invitados",
+    "updated.title": "Forum Updated",
+    "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page."
 }

@@ -14,5 +14,10 @@
     "upvoted_your_post": "<strong>%1</strong> a voté pour votre message.",
     "favourited_your_post": "<strong>%1</strong> a mis votre message en favoris.",
     "user_flagged_post": "<strong>%1</strong> a signalé un message.",
-    "user_posted_to": "<strong>%1</strong> a répondu à : <strong>%2</strong>"
+    "user_posted_to": "<strong>%1</strong> a répondu à : <strong>%2</strong>",
+    "email-confirmed": "Email Confirmed",
+    "email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",
+    "email-confirm-error": "An error occurred...",
+    "email-confirm-error-message": "There was a problem validating your email address. Perhaps the code was invalid or has expired.",
+    "email-confirm-sent": "Confirmation email sent."
 }

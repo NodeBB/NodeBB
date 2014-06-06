@@ -14,5 +14,10 @@
     "upvoted_your_post": "<strong>%1</strong>님이 내 게시물을 추천했습니다.",
     "favourited_your_post": "<strong>%1</strong>님이 내 게시물을 관심글로 등록했습니다.",
     "user_flagged_post": "<strong>%1</strong>님이 게시물을 신고했습니다.",
-    "user_posted_to": "<strong>%1</strong>님이 <strong>%2</strong>님의 게시물에 답글을 작성했습니다."
+    "user_posted_to": "<strong>%1</strong>님이 <strong>%2</strong>님의 게시물에 답글을 작성했습니다.",
+    "email-confirmed": "Email Confirmed",
+    "email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",
+    "email-confirm-error": "An error occurred...",
+    "email-confirm-error-message": "There was a problem validating your email address. Perhaps the code was invalid or has expired.",
+    "email-confirm-sent": "Confirmation email sent."
 }

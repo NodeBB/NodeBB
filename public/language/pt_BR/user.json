@@ -59,6 +59,6 @@
     "topics_per_page": "Tópicos por Página",
     "posts_per_page": "Posts por Página",
     "notification_sounds": "Tocar um som quando receber notificação.",
-    "browsing": "Browsing Settings",
-    "open_links_in_new_tab": "Open outgoing links in new tab?"
+    "browsing": "Configurações de Navegação",
+    "open_links_in_new_tab": "Abrir links externos em nova aba?"
 }

@@ -14,5 +14,10 @@
     "upvoted_your_post": "<strong>%1</strong> به دیدگاه شما رای داده است.",
     "favourited_your_post": "<strong>%1</strong> دیدگاه شما را پسندیده است.",
     "user_flagged_post": "پرچم خوردن یک دیدگاه از سوی <strong>%1</strong>",
-    "user_posted_to": "پاسخ دادن به <strong>%2</strong> از سوی <strong>%1</strong>"
+    "user_posted_to": "پاسخ دادن به <strong>%2</strong> از سوی <strong>%1</strong>",
+    "email-confirmed": "Email Confirmed",
+    "email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",
+    "email-confirm-error": "An error occurred...",
+    "email-confirm-error-message": "There was a problem validating your email address. Perhaps the code was invalid or has expired.",
+    "email-confirm-sent": "Confirmation email sent."
 }

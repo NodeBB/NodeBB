@@ -4,5 +4,6 @@
     "forgot_password": "My mind be a scatt'rbrain, help a matey out!",
     "alternative_logins": "Oth'r gangplanks",
     "failed_login_attempt": "Failed login attempt, please give it a go' again.",
-    "login_successful": "Welcome on board, matey!"
+    "login_successful": "Welcome on board, matey!",
+    "dont_have_account": "Don't have an account?"
 }

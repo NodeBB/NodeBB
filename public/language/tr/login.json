@@ -4,5 +4,6 @@
     "forgot_password": "Şifrenizi mi unuttunuz?",
     "alternative_logins": "Alternatif Girişler",
     "failed_login_attempt": "Oturum açma girişimi başarısız, lütfen tekrar deneyin.",
-    "login_successful": "Başarıyla giriş yaptınız!"
+    "login_successful": "Başarıyla giriş yaptınız!",
+    "dont_have_account": "Don't have an account?"
 }

@@ -4,5 +4,6 @@
     "forgot_password": "Glömt lösenord?",
     "alternative_logins": "Alternativa inloggningssätt",
     "failed_login_attempt": "Inloggningen misslyckades, var god försök igen.",
-    "login_successful": "Du är nu inloggad!"
+    "login_successful": "Du är nu inloggad!",
+    "dont_have_account": "Don't have an account?"
 }

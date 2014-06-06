@@ -68,5 +68,7 @@
     "email": "رایانامه",
     "language": "زبان",
     "guest": "مهمان",
-    "guests": "مهمان‌ها"
+    "guests": "مهمان‌ها",
+    "updated.title": "Forum Updated",
+    "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page."
 }
