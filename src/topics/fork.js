@@ -15,15 +15,15 @@ var async = require('async'),
 module.exports = function(Topics) {
 
 	Topics.createTopicFromPosts = function(uid, title, pids, callback) {
-		if(title) {
+		if (title) {
 			title = title.trim();
 		}
 
-		if(!title) {
+		if (!title) {
 			return callback(new Error('[[error:invalid-title]]'));
 		}
 
-		if(!pids || !pids.length) {
+		if (!pids || !pids.length) {
 			return callback(new Error('[[error:invalid-pid]]'));
 		}
 
@@ -39,12 +39,12 @@ module.exports = function(Topics) {
 			}
 		}, function(err, results) {
 			Topics.create({uid: results.postData.uid, title: title, cid: results.cid}, function(err, tid) {
-				if(err) {
+				if (err) {
 					return callback(err);
 				}
 
 				async.eachSeries(pids, move, function(err) {
-					if(err) {
+					if (err) {
 						return callback(err);
 					}
 

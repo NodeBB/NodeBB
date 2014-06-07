@@ -131,7 +131,14 @@ module.exports = function(Topics) {
 	};
 
 	Topics.removePostFromTopic = function(tid, pid, callback) {
-		db.sortedSetRemove('tid:' + tid + ':posts', pid, callback);
+		async.parallel([
+			function (next) {
+				db.sortedSetRemove('tid:' + tid + ':posts', pid, next);
+			},
+			function (next) {
+				db.sortedSetRemove('tid:' + tid + ':posts:votes', pid, next);
+			}
+		], callback);
 	};
 
 	Topics.getPids = function(tid, callback) {
