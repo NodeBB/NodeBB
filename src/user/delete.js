@@ -66,7 +66,14 @@ module.exports = function(User) {
 				return callback(err);
 			}
 
-			db.sortedSetRemove('tid:' + postData.tid + ':posts', pid, function(err) {
+			async.parallel([
+				function(next) {
+					db.sortedSetRemove('tid:' + postData.tid + ':posts', pid, next);
+				},
+				function(next) {
+					db.sortedSetRemove('tid:' + postData.tid + ':posts:votes', pid, next);
+				}
+			], function(err) {
 				if (err) {
 					return callback(err);
 				}

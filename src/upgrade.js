@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 4, 22);
+	latestSchema = Date.UTC(2014, 5, 6);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -731,6 +731,74 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/5/16] Tags upgrade - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 5, 6);
+
+			if (schemaDate < thisSchemaDate) {
+				db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
+					function upgradeTopic(tid, callback) {
+
+						Topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
+							if (err) {
+								return callback(err);
+							}
+
+							db.getSortedSetRange('tid:' + tid + ':posts', 0, -1, function(err, pids) {
+								if (err) {
+									return callback(err);
+								}
+
+								if (!Array.isArray(pids) || !pids.length) {
+									return callback();
+								}
+
+								if (!parseInt(mainPid, 10)) {
+									mainPid = pids[0];
+									pids.splice(0, 1);
+									Topics.setTopicField(tid, 'mainPid', mainPid);
+									db.sortedSetRemove('tid:' + tid + ':posts', mainPid);
+									db.sortedSetRemove('tid:' + tid + ':posts:votes', mainPid);
+								}
+
+								if (!pids.length) {
+									return callback();
+								}
+
+								async.each(pids, function(pid, next) {
+									Posts.getPostField(pid, 'votes', function(err, votes) {
+										if (err) {
+											return next(err);
+										}
+										db.sortedSetAdd('tid:' + tid + ':posts:votes', votes ? votes : 0, pid, next);
+									});
+								}, callback);
+							});
+						});
+					}
+
+					if (err) {
+						return next(err);
+					}
+
+					if (!Array.isArray(tids) || !tids.length)  {
+						winston.info('[2014/6/6] Skipping topic upgrade');
+						return Upgrade.update(thisSchemaDate, next);
+					}
+
+					async.each(tids, upgradeTopic, function(err) {
+						if (err) {
+							winston.error('[2014/6/6] Error encountered while upgrading topics');
+							return next(err);
+						}
+						winston.info('[2014/6/6] Topics upgraded.');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2014/6/6] Topic upgrade - skipped');
 				next();
 			}
 		}

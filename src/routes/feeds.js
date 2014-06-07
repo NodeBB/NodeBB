@@ -40,7 +40,7 @@ function hasPrivileges(method, id, req, res, next) {
 function generateForTopic(req, res, next) {
 	var tid = req.params.topic_id;
 	var uid = req.user ? req.user.uid : 0;
-	topics.getTopicWithPosts(tid, uid, 0, 25, function (err, topicData) {
+	topics.getTopicWithPosts(tid, 'tid:' + tid + ':posts', uid, 0, 25, false, function (err, topicData) {
 		if (err) {
 			return next(err);
 		}

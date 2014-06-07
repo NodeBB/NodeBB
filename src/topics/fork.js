@@ -71,7 +71,7 @@ module.exports = function(Topics) {
 				return callback(err || new Error('[[error:no-topic]]'));
 			}
 
-			posts.getPostFields(pid, ['deleted', 'tid', 'timestamp'], function(err, postData) {
+			posts.getPostFields(pid, ['deleted', 'tid', 'timestamp', 'votes'], function(err, postData) {
 				if(err) {
 					return callback(err);
 				}
@@ -91,7 +91,7 @@ module.exports = function(Topics) {
 					}
 
 					posts.setPostField(pid, 'tid', tid);
-					Topics.addPostToTopic(tid, pid, postData.timestamp, callback);
+					Topics.addPostToTopic(tid, pid, postData.timestamp, postData.votes, callback);
 				});
 			});
 		});

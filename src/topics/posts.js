@@ -15,13 +15,13 @@ module.exports = function(Topics) {
 	Topics.onNewPostMade = function(postData) {
 		Topics.increasePostCount(postData.tid);
 		Topics.updateTimestamp(postData.tid, postData.timestamp);
-		Topics.addPostToTopic(postData.tid, postData.pid, postData.timestamp);
+		Topics.addPostToTopic(postData.tid, postData.pid, postData.timestamp, 0);
 	};
 
 	emitter.on('event:newpost', Topics.onNewPostMade);
 
-	Topics.getTopicPosts = function(tid, start, end, uid, reverse, callback) {
-		posts.getPostsByTid(tid, start, end, reverse, function(err, postData) {
+	Topics.getTopicPosts = function(tid, set, start, end, uid, reverse, callback) {
+		posts.getPostsByTid(tid, set, start, end, reverse, function(err, postData) {
 			if(err) {
 				return callback(err);
 			}
@@ -29,52 +29,57 @@ module.exports = function(Topics) {
 			if (Array.isArray(postData) && !postData.length) {
 				return callback(null, []);
 			}
+
 			start = parseInt(start, 10);
 			for(var i=0; i<postData.length; ++i) {
-				postData[i].index = start + i;
+				postData[i].index = start + i + 1;
 			}
 
-			var pids = postData.map(function(post) {
-				return post.pid;
-			});
+			Topics.addPostData(postData, uid, callback);
+		});
+	};
 
-			async.parallel({
-				favourites : function(next) {
-					favourites.getFavouritesByPostIDs(pids, uid, next);
-				},
-				voteData : function(next) {
-					favourites.getVoteStatusByPostIDs(pids, uid, next);
-				},
-				userData : function(next) {
-					async.each(postData, posts.addUserInfoToPost, next);
-				},
-				privileges : function(next) {
-					async.map(pids, function (pid, next) {
-						privileges.posts.get(pid, uid, next);
-					}, next);
+	Topics.addPostData = function(postData, uid, callback) {
+		var pids = postData.map(function(post) {
+			return post.pid;
+		});
+
+		async.parallel({
+			favourites : function(next) {
+				favourites.getFavouritesByPostIDs(pids, uid, next);
+			},
+			voteData : function(next) {
+				favourites.getVoteStatusByPostIDs(pids, uid, next);
+			},
+			userData : function(next) {
+				async.each(postData, posts.addUserInfoToPost, next);
+			},
+			privileges : function(next) {
+				async.map(pids, function (pid, next) {
+					privileges.posts.get(pid, uid, next);
+				}, next);
+			}
+		}, function(err, results) {
+			if(err) {
+				return callback(err);
+			}
+
+			for (var i = 0; i < postData.length; ++i) {
+				postData[i].deleted = parseInt(postData[i].deleted, 10) === 1;
+				postData[i].favourited = results.favourites[i];
+				postData[i].upvoted = results.voteData[i].upvoted;
+				postData[i].downvoted = results.voteData[i].downvoted;
+				postData[i].votes = postData[i].votes || 0;
+				postData[i].display_moderator_tools = results.privileges[i].editable;
+				postData[i].display_move_tools = results.privileges[i].move;
+				postData[i].selfPost = parseInt(uid, 10) === parseInt(postData[i].uid, 10);
+
+				if(postData[i].deleted && !results.privileges[i].view_deleted) {
+					postData[i].content = '[[topic:post_is_deleted]]';
 				}
-			}, function(err, results) {
-				if(err) {
-					return callback(err);
-				}
+			}
 
-				for (var i = 0; i < postData.length; ++i) {
-					postData[i].deleted = parseInt(postData[i].deleted, 10) === 1;
-					postData[i].favourited = results.favourites[i];
-					postData[i].upvoted = results.voteData[i].upvoted;
-					postData[i].downvoted = results.voteData[i].downvoted;
-					postData[i].votes = postData[i].votes || 0;
-					postData[i].display_moderator_tools = results.privileges[i].editable;
-					postData[i].display_move_tools = results.privileges[i].move;
-					postData[i].selfPost = parseInt(uid, 10) === parseInt(postData[i].uid, 10);
-
-					if(postData[i].deleted && !results.privileges[i].view_deleted) {
-						postData[i].content = '[[topic:post_is_deleted]]';
-					}
-				}
-
-				callback(null, postData);
-			});
+			callback(null, postData);
 		});
 	};
 
@@ -108,8 +113,21 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.addPostToTopic = function(tid, pid, timestamp, callback) {
-		db.sortedSetAdd('tid:' + tid + ':posts', timestamp, pid, callback);
+	Topics.addPostToTopic = function(tid, pid, timestamp, votes, callback) {
+		Topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
+			if (!parseInt(mainPid, 10)) {
+				Topics.setTopicField(tid, 'mainPid', pid, callback);
+			} else {
+				async.parallel([
+					function(next) {
+						db.sortedSetAdd('tid:' + tid + ':posts', timestamp, pid, next);
+					},
+					function(next) {
+						db.sortedSetAdd('tid:' + tid + ':posts:votes', votes, pid, next);
+					}
+				], callback);
+			}
+		});
 	};
 
 	Topics.removePostFromTopic = function(tid, pid, callback) {

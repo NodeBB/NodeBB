@@ -42,6 +42,7 @@ apiController.getConfig = function(req, res, next) {
 	config.isLoggedIn = !!req.user;
 	config['cache-buster'] = meta.config['cache-buster'] || '';
 	config.requireEmailConfirmation = parseInt(meta.config.requireEmailConfirmation, 10) === 1;
+	config.topicPostSort = meta.config.topicPostSort || 'oldest_to_newest';
 	config.version = pkg.version;
 
 	if (!req.user) {
@@ -64,6 +65,7 @@ apiController.getConfig = function(req, res, next) {
 		config.notificationSounds = settings.notificationSounds;
 		config.defaultLang = settings.language || config.defaultLang;
 		config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
+		config.topicPostSort = settings.topicPostSort || config.topicPostSort;
 
 		if (res.locals.isAPI) {
 			res.json(200, config);

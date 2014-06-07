@@ -90,8 +90,8 @@ var db = require('./database'),
 		], callback);
 	};
 
-	Posts.getPostsByTid = function(tid, start, end, reverse, callback) {
-		db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange']('tid:' + tid + ':posts', start, end, function(err, pids) {
+	Posts.getPostsByTid = function(tid, set, start, end, reverse, callback) {
+		db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, end, function(err, pids) {
 			if(err) {
 				return callback(err);
 			}
@@ -156,8 +156,6 @@ var db = require('./database'),
 			}, callback);
 		});
 	};
-
-
 
 	Posts.getRecentPosts = function(uid, start, stop, term, callback) {
 		var terms = {
@@ -469,7 +467,9 @@ var db = require('./database'),
 				return callback(err);
 			}
 
-			db.sortedSetRank('tid:' + tid + ':posts', pid, callback);
+			db.sortedSetRank('tid:' + tid + ':posts', pid, function(err, index) {
+				callback(err, parseInt(index, 10) + 1);
+			});
 		});
 	};
 
@@ -482,5 +482,28 @@ var db = require('./database'),
 		});
 	};
 
+	Posts.updatePostVoteCount = function(pid, voteCount, callback) {
+		async.parallel([
+			function(next) {
+				Posts.getPostField(pid, 'tid', function(err, tid) {
+					if (err) {
+						return next(err);
+					}
+					topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
+						if (err) {
+							return next(err);
+						}
+						if (parseInt(mainPid, 10) === parseInt(pid, 10)) {
+							return next();
+						}
+						db.sortedSetAdd('tid:' + tid + ':posts:votes', voteCount, pid, next);
+					});
+				});
+			},
+			function(next) {
+				Posts.setPostField(pid, 'votes', voteCount, next);
+			}
+		], callback);
+	};
 
 }(exports));

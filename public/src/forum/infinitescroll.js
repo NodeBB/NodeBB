@@ -8,14 +8,16 @@ define('forum/infinitescroll', function() {
 	var callback;
 	var previousScrollTop = 0;
 	var loadingMore	= false;
+	var topOffset = 0;
 
-	scroll.init = function(cb) {
+	scroll.init = function(cb, _topOffest) {
 		callback = cb;
+		topOffset = _topOffest || 0;
 		$(window).off('scroll', onScroll).on('scroll', onScroll);
 	};
 
 	function onScroll() {
-		var top = $(window).height() * 0.1;
+		var top = $(window).height() * 0.1 + topOffset;
 		var bottom = ($(document).height() - $(window).height()) * 0.9;
 		var currentScrollTop = $(window).scrollTop();
 

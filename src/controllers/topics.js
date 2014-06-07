@@ -44,7 +44,17 @@ topicsController.get = function(req, res, next) {
 			var start = (page - 1) * settings.postsPerPage + postIndex,
 				end = start + settings.postsPerPage - 1;
 
-			topics.getTopicWithPosts(tid, uid, start, end, function (err, topicData) {
+			var set = 'tid:' + tid + ':posts',
+				reverse = false;
+
+			if (settings.topicPostSort === 'newest_to_oldest') {
+				reverse = true;
+			} else if (settings.topicPostSort === 'most_votes') {
+				reverse = true;
+				set = 'tid:' + tid + ':posts:votes';
+			}
+
+			topics.getTopicWithPosts(tid, set, uid, start, end, reverse, function (err, topicData) {
 				if (topicData) {
 					if (parseInt(topicData.deleted, 10) === 1 && !userPrivileges.view_deleted) {
 						return next(new Error('[[error:no-topic]]'));
