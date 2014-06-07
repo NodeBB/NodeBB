@@ -60,6 +60,9 @@ topicsController.get = function(req, res, next) {
 						return next(new Error('[[error:no-topic]]'));
 					}
 					topicData.currentPage = page;
+					if(page > 1) {
+						topicData.posts.splice(0, 1);
+					}
 				}
 				next(err, topicData);
 			});
