@@ -58,7 +58,7 @@ if(os.platform() === 'linux') {
 }
 
 // Log GNU copyright info along with server info
-winston.info('NodeBB v' + pkg.version + ' Copyright (C) 2013-2014 DesignCreatePlay Inc.');
+winston.info('NodeBB v' + pkg.version + ' Copyright (C) 2013-2014 NodeBB Inc.');
 winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
 winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
 winston.info('');
