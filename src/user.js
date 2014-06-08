@@ -138,18 +138,13 @@ var bcrypt = require('bcryptjs'),
 	}
 
 	User.updateLastOnlineTime = function(uid, callback) {
+		callback = callback || function() {};
 		User.getUserField(uid, 'status', function(err, status) {
-			function cb(err) {
-				if(typeof callback === 'function') {
-					callback(err);
-				}
-			}
-
 			if(err || status === 'offline') {
-				return cb(err);
+				return callback(err);
 			}
 
-			User.setUserField(uid, 'lastonline', Date.now(), cb);
+			User.setUserField(uid, 'lastonline', Date.now(), callback);
 		});
 	};
 
