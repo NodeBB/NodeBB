@@ -137,11 +137,9 @@ function getModerators(req, res, next) {
 var templatsListingCache = [];
 
 function getTemplatesListing(req, res, next) {
-	var st = process.hrtime();
-	//if (templatsListingCache.length) {
-	//	process.profile('with cache', st);
-//		return res.json(templatsListingCache);
-//	}
+	if (templatsListingCache.length) {
+		return res.json(templatsListingCache);
+	}
 
 	async.parallel({
 		views: function(next) {
@@ -163,7 +161,6 @@ function getTemplatesListing(req, res, next) {
 
 		data = data.concat(results.extended);
 		templatsListingCache = data;
-		process.profile('without cache', st);
 		res.json(data);
 	});
 }
