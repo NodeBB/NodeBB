@@ -134,11 +134,11 @@ function getModerators(req, res, next) {
 	});
 }
 
-var templatsListingCache = [];
+var templatesListingCache = [];
 
 function getTemplatesListing(req, res, next) {
-	if (templatsListingCache.length) {
-		return res.json(templatsListingCache);
+	if (templatesListingCache.length) {
+		return res.json(templatesListingCache);
 	}
 
 	async.parallel({
@@ -160,7 +160,7 @@ function getTemplatesListing(req, res, next) {
 				});
 
 		data = data.concat(results.extended);
-		templatsListingCache = data;
+		templatesListingCache = data;
 		res.json(data);
 	});
 }
