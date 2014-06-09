@@ -24,6 +24,8 @@ var db = require('./database'),
 (function(Posts) {
 	var customUserInfo = {};
 
+	require('./posts/delete')(Posts);
+
 	Posts.create = function(data, callback) {
 		var uid = data.uid,
 			tid = data.tid,
