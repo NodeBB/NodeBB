@@ -113,12 +113,12 @@
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
 		slugify: function(str) {
 			str = str.replace(utils.trimRegex, '');
-			str = str.toLowerCase();
 			if(utils.isLatin.test(str)) {
 				str = str.replace(utils.invalidLatinChars, '-');
 			} else {
 				str = XRegExp.replace(str, utils.invalidUnicodeChars, '-');
 			}
+			str = str.toLocaleLowerCase();
 			str = str.replace(utils.collapseWhitespace, '-')
 			str = str.replace(utils.collapseDash, '-');
 			str = str.replace(utils.trimTrailingDash, '');
