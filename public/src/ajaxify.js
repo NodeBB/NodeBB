@@ -60,7 +60,7 @@ var ajaxify = ajaxify || {};
 		// Remove trailing slash
 		url = url.replace(/\/$/, "");
 
-		url = removeRelativePath(url);
+		url = ajaxify.removeRelativePath(url);
 
 		var tpl_url = ajaxify.getTemplateMapping(url);
 
@@ -186,7 +186,7 @@ var ajaxify = ajaxify || {};
 	};
 
 	ajaxify.loadData = function(url, callback) {
-		url = removeRelativePath(url);
+		url = ajaxify.removeRelativePath(url);
 
 		$(window).trigger('action:ajaxify.loadingData', {url: url});
 
