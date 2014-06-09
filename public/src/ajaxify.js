@@ -123,7 +123,7 @@ var ajaxify = ajaxify || {};
 	};
 
 	function removeRelativePath(url) {
-		if (url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {
+		if (url.indexOf(RELATIVE_PATH.slice(1)) === 0) {
 			url = url.slice(RELATIVE_PATH.length);
 		}
 		return url;
