@@ -134,28 +134,36 @@ function getModerators(req, res, next) {
 	});
 }
 
+var templatsListingCache = [];
+
 function getTemplatesListing(req, res, next) {
-	var data = [];
+	var st = process.hrtime();
+	//if (templatsListingCache.length) {
+	//	process.profile('with cache', st);
+//		return res.json(templatsListingCache);
+//	}
 
 	async.parallel({
 		views: function(next) {
-			utils.walk(nconf.get('views_dir'), function (err, views) {
-				data = data.concat(
-						views.filter(function(value, index, self) {
-							return self.indexOf(value) === index;
-						}).map(function(el) {
-							return el.replace(nconf.get('views_dir') + '/', '');
-						}));
-
-				res.json(data);
-			});
+			utils.walk(nconf.get('views_dir'), next);
 		},
 		extended: function(next) {
-			plugins.fireHook('filter:templates.get_virtual', [], function(err, virtual) {
-				data = data.concat(virtual);
-			});
+			plugins.fireHook('filter:templates.get_virtual', [], next);
 		}
-	}, function(err) {
+	}, function(err, results) {
+		if (err) {
+			return next(err);
+		}
+		var data = [];
+		data = results.views.filter(function(value, index, self) {
+					return self.indexOf(value) === index;
+				}).map(function(el) {
+					return el.replace(nconf.get('views_dir') + '/', '');
+				});
+
+		data = data.concat(results.extended);
+		templatsListingCache = data;
+		process.profile('without cache', st);
 		res.json(data);
 	});
 }
