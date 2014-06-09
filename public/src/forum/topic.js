@@ -40,6 +40,8 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 		threadTools.init(tid, thread_state);
 		events.init();
 
+		handleSorting();
+
 		hidePostToolsForDeletedPosts();
 
 		enableInfiniteLoadingOrPagination();
@@ -76,6 +78,21 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 		socket.emit('topics.markAsRead', tid);
 		socket.emit('topics.increaseViewCount', tid);
 	};
+
+	function handleSorting() {
+		var threadSort = $('.thread-sort');
+		threadSort.find('i').removeClass('fa-check');
+		var currentSetting = threadSort.find('a[data-sort="' + config.topicPostSort + '"]');
+		currentSetting.find('i').addClass('fa-check');
+
+		$('.thread-sort').on('click', 'a', function() {
+			var newSetting = $(this).attr('data-sort');
+			socket.emit('user.setTopicSort', newSetting, function(err) {
+				config.topicPostSort = newSetting;
+				ajaxify.go('topic/' + ajaxify.variables.get('topic_slug'));
+			});
+		});
+	}
 
 	function getPostIndex() {
 		var parts = window.location.pathname.split('/');
@@ -122,7 +139,7 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 
 	function enableInfiniteLoadingOrPagination() {
 		if(!config.usePagination) {
-			infinitescroll.init(loadMorePosts);
+			infinitescroll.init(loadMorePosts, $('#post-container .post-row[data-index="0"]').height());
 		} else {
 			navigator.hide();
 
@@ -283,25 +300,36 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 			before = null;
 
 		function findInsertionPoint() {
-			var firstPid = parseInt(data.posts[0].pid, 10);
+			var firstPostTimestamp = parseInt(data.posts[0].timestamp, 10);
+			var firstPostVotes = parseInt(data.posts[0].votes, 10);
+			var firstPostPid = data.posts[0].pid;
 
-			$('#post-container li[data-pid]').each(function() {
-				var $this = $(this);
+			var firstReply = $('#post-container li.post-row[data-index!="0"]').first();
+			var lastReply = $('#post-container li.post-row[data-index!="0"]').last();
 
-				if(firstPid > parseInt($this.attr('data-pid'), 10)) {
-					after = $this;
-					if(after.next().length && after.next().hasClass('post-bar')) {
-						after = after.next();
-					}
-				} else {
-					return false;
+			if (config.topicPostSort === 'oldest_to_newest') {
+				if (firstPostTimestamp < parseInt(firstReply.attr('data-timestamp'), 10)) {
+					before = firstReply;
+				} else if(firstPostTimestamp >= parseInt(lastReply.attr('data-timestamp'), 10)) {
+					after = lastReply;
 				}
-			});
-
-			if (!after) {
-				var firstPost = $('#post-container .post-row').first();
-				if(firstPid < parseInt(firstPost.attr('data-pid'), 10)) {
-					before = firstPost;
+			} else if(config.topicPostSort === 'newest_to_oldest') {
+				if (firstPostTimestamp > parseInt(firstReply.attr('data-timestamp'), 10)) {
+					before = firstReply;
+				} else if(firstPostTimestamp <= parseInt(lastReply.attr('data-timestamp'), 10)) {
+					after = lastReply;
+				}
+			} else if(config.topicPostSort === 'most_votes') {
+				if (firstPostVotes > parseInt(firstReply.attr('data-votes'), 10)) {
+					before = firstReply;
+				} else if(firstPostVotes < parseInt(firstReply.attr('data-votes'), 10)) {
+					after = lastReply;
+				} else {
+					if (firstPostPid > firstReply.attr('data-pid')) {
+						before = firstReply;
+					} else if(firstPostPid <= firstReply.attr('data-pid')) {
+						after = lastReply;
+					}
 				}
 			}
 		}
@@ -373,7 +401,7 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 			return;
 		}
 
-		infinitescroll.calculateAfter(direction, '#post-container .post-row', config.postsPerPage, function(after, offset, el) {
+		infinitescroll.calculateAfter(direction, '#post-container .post-row[data-index!="0"]', config.postsPerPage, function(after, offset, el) {
 			loadPostsAfter(after, function() {
 				if (direction < 0 && el) {
 					Topic.scrollToPost(el.attr('data-index'), false, 0, offset);
@@ -384,7 +412,7 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 
 	function loadPostsAfter(after, callback) {
 		var tid = ajaxify.variables.get('topic_id');
-		if (!utils.isNumber(tid) || !utils.isNumber(after) || (after === 0 && $('#post-container li.post-row[data-index="0"]').length)) {
+		if (!utils.isNumber(tid) || !utils.isNumber(after) || (after === 0 && $('#post-container li.post-row[data-index="1"]').length)) {
 			return;
 		}
 

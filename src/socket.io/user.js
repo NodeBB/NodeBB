@@ -178,6 +178,12 @@ SocketUser.saveSettings = function(socket, data, callback) {
 	}
 };
 
+SocketUser.setTopicSort = function(socket, sort, callback) {
+	if(socket.uid) {
+		user.setSetting(socket.uid, 'topicPostSort', sort, callback);
+	}
+};
+
 SocketUser.getOnlineUsers = function(socket, data, callback) {
 	var returnData = {};
 	if(!data) {

@@ -37,6 +37,7 @@ module.exports = function(Topics) {
 				'tid': tid,
 				'uid': uid,
 				'cid': cid,
+				'mainPid': 0,
 				'title': title,
 				'slug': slug,
 				'timestamp': timestamp,

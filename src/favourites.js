@@ -88,7 +88,8 @@ var async = require('async'),
 					return callback(err);
 				}
 				var voteCount = parseInt(results.upvotes, 10) - parseInt(results.downvotes, 10);
-				posts.setPostField(pid, 'votes', voteCount, function(err) {
+
+				posts.updatePostVoteCount(pid, voteCount, function(err) {
 					callback(err, voteCount);
 				});
 			});

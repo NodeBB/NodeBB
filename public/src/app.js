@@ -66,7 +66,7 @@ var socket,
 					});
 				}
 			});
-			
+
 			$(window).trigger('action:reconnected');
 
 			setTimeout(function() {
@@ -162,7 +162,7 @@ var socket,
 					socket.emit('tools.log', arguments);
 				};
 			}
-			
+
 			app.cacheBuster = config['cache-buster'];
 		}
 	}
@@ -516,9 +516,7 @@ var socket,
 				tpl_url = ajaxify.getTemplateMapping(url),
 				$window = $(window);
 
-			if (url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {
-				url = url.slice(RELATIVE_PATH.length);
-			}
+			url = ajaxify.removeRelativePath(url);
 
 			ajaxify.widgets.render(tpl_url, url);
 

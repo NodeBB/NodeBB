@@ -134,15 +134,33 @@ function getModerators(req, res, next) {
 	});
 }
 
+var templatesListingCache = [];
+
 function getTemplatesListing(req, res, next) {
-	utils.walk(nconf.get('views_dir'), function (err, data) {
-		data = data
-				.filter(function(value, index, self) {
+	if (templatesListingCache.length) {
+		return res.json(templatesListingCache);
+	}
+
+	async.parallel({
+		views: function(next) {
+			utils.walk(nconf.get('views_dir'), next);
+		},
+		extended: function(next) {
+			plugins.fireHook('filter:templates.get_virtual', [], next);
+		}
+	}, function(err, results) {
+		if (err) {
+			return next(err);
+		}
+		var data = [];
+		data = results.views.filter(function(value, index, self) {
 					return self.indexOf(value) === index;
 				}).map(function(el) {
 					return el.replace(nconf.get('views_dir') + '/', '');
 				});
 
+		data = data.concat(results.extended);
+		templatesListingCache = data;
 		res.json(data);
 	});
 }

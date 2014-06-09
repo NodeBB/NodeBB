@@ -19,16 +19,8 @@ var winston = require('winston'),
 (function(PostTools) {
 
 	PostTools.isMain = function(pid, tid, callback) {
-		db.getSortedSetRange('tid:' + tid + ':posts', 0, 0, function(err, pids) {
-			if(err) {
-				return callback(err);
-			}
-
-			if(!Array.isArray(pids) || !pids.length) {
-				return callback(null, false);
-			}
-
-			callback(null, parseInt(pids[0], 10) === parseInt(pid, 10));
+		topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
+			callback(err, parseInt(pid, 10) === parseInt(mainPid, 10));
 		});
 	};
 

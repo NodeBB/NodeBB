@@ -15,15 +15,15 @@ var async = require('async'),
 module.exports = function(Topics) {
 
 	Topics.createTopicFromPosts = function(uid, title, pids, callback) {
-		if(title) {
+		if (title) {
 			title = title.trim();
 		}
 
-		if(!title) {
+		if (!title) {
 			return callback(new Error('[[error:invalid-title]]'));
 		}
 
-		if(!pids || !pids.length) {
+		if (!pids || !pids.length) {
 			return callback(new Error('[[error:invalid-pid]]'));
 		}
 
@@ -39,12 +39,12 @@ module.exports = function(Topics) {
 			}
 		}, function(err, results) {
 			Topics.create({uid: results.postData.uid, title: title, cid: results.cid}, function(err, tid) {
-				if(err) {
+				if (err) {
 					return callback(err);
 				}
 
 				async.eachSeries(pids, move, function(err) {
-					if(err) {
+					if (err) {
 						return callback(err);
 					}
 
@@ -71,7 +71,7 @@ module.exports = function(Topics) {
 				return callback(err || new Error('[[error:no-topic]]'));
 			}
 
-			posts.getPostFields(pid, ['deleted', 'tid', 'timestamp'], function(err, postData) {
+			posts.getPostFields(pid, ['deleted', 'tid', 'timestamp', 'votes'], function(err, postData) {
 				if(err) {
 					return callback(err);
 				}
@@ -91,7 +91,7 @@ module.exports = function(Topics) {
 					}
 
 					posts.setPostField(pid, 'tid', tid);
-					Topics.addPostToTopic(tid, pid, postData.timestamp, callback);
+					Topics.addPostToTopic(tid, pid, postData.timestamp, postData.votes, callback);
 				});
 			});
 		});

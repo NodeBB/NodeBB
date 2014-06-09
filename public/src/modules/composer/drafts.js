@@ -5,22 +5,27 @@
 define('composer/drafts', function() {
 
 	var drafts = {};
-
+	var	saveThrottleId;
 	var saving = false;
 
 	drafts.init = function(postContainer, postData) {
-		var	saveThrottle;
+
 		var bodyEl = postContainer.find('textarea');
 		bodyEl.on('keyup', function() {
-			if (saveThrottle) {
-				clearTimeout(saveThrottle);
-			}
+			resetTimeout();
 
-			saveThrottle = setTimeout(function() {
+			saveThrottleId = setTimeout(function() {
 				saveDraft(postContainer, postData);
 			}, 1000);
 		});
 	};
+
+	function resetTimeout() {
+		if (saveThrottleId) {
+			clearTimeout(saveThrottleId);
+			saveThrottleId = 0;
+		}
+	}
 
 	drafts.getDraft = function(save_id) {
 		return localStorage.getItem(save_id);
@@ -40,6 +45,7 @@ define('composer/drafts', function() {
 	}
 
 	drafts.removeDraft = function(save_id) {
+		resetTimeout();
 		return localStorage.removeItem(save_id);
 	};
 

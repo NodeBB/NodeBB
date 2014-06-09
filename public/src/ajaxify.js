@@ -60,7 +60,7 @@ var ajaxify = ajaxify || {};
 		// Remove trailing slash
 		url = url.replace(/\/$/, "");
 
-		url = removeRelativePath(url);
+		url = ajaxify.removeRelativePath(url);
 
 		var tpl_url = ajaxify.getTemplateMapping(url);
 
@@ -122,12 +122,12 @@ var ajaxify = ajaxify || {};
 		return false;
 	};
 
-	function removeRelativePath(url) {
-		if (url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {
+	ajaxify.removeRelativePath = function(url) {
+		if (url.indexOf(RELATIVE_PATH.slice(1)) === 0) {
 			url = url.slice(RELATIVE_PATH.length);
 		}
 		return url;
-	}
+	};
 
 	ajaxify.refresh = function() {
 		ajaxify.go(ajaxify.currentPage);
@@ -186,7 +186,7 @@ var ajaxify = ajaxify || {};
 	};
 
 	ajaxify.loadData = function(url, callback) {
-		url = removeRelativePath(url);
+		url = ajaxify.removeRelativePath(url);
 
 		$(window).trigger('action:ajaxify.loadingData', {url: url});
 
