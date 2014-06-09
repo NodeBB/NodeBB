@@ -122,12 +122,12 @@ var ajaxify = ajaxify || {};
 		return false;
 	};
 
-	function removeRelativePath(url) {
+	ajaxify.removeRelativePath = function(url) {
 		if (url.indexOf(RELATIVE_PATH.slice(1)) === 0) {
 			url = url.slice(RELATIVE_PATH.length);
 		}
 		return url;
-	}
+	};
 
 	ajaxify.refresh = function() {
 		ajaxify.go(ajaxify.currentPage);
