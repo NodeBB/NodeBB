@@ -15,13 +15,13 @@ var async = require('async'),
 (function(UserEmail) {
 
 	UserEmail.exists = function(email, callback) {
-		user.getUidByEmail(email, function(err, exists) {
+		user.getUidByEmail(email.toLowerCase(), function(err, exists) {
 			callback(err, !!exists);
 		});
 	};
 
 	UserEmail.available = function(email, callback) {
-		db.isObjectField('email:uid', email, function(err, exists) {
+		db.isObjectField('email:uid', email.toLowerCase(), function(err, exists) {
 			callback(err, !exists);
 		});
 	};
@@ -34,7 +34,7 @@ var async = require('async'),
 			async.series([
 				function(next) {
 					db.setObject('confirm:' + confirm_code, {
-						email: email,
+						email: email.toLowerCase(),
 						uid: uid
 					}, next);
 				},
