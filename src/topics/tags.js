@@ -35,6 +35,9 @@ module.exports = function(Topics) {
 	};
 
 	function cleanUpTag(tag) {
+		if (typeof tag !== 'string' || !tag.length ) {
+			return '';
+		}
 		tag = tag.trim().toLowerCase();
 		tag = tag.replace(/[,\/#!$%\^&\*;:{}=_`<>'"~()?\|]/g, '');
 		tag = tag.substr(0, meta.config.maximumTagLength || 15);
