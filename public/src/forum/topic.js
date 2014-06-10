@@ -173,9 +173,9 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 		}
 
 		if (!scrollingToPost) {
-			var parts = window.location.pathname.split('/');
-			var topicId = parts[2],
-				slug = parts[3];
+			var parts = ajaxify.removeRelativePath(window.location.pathname.slice(1)).split('/');
+			var topicId = parts[1],
+				slug = parts[2];
 			var newUrl = 'topic/' + topicId + '/' + (slug ? slug : '');
 			if (postIndex > 0) {
 				 newUrl += '/' + (postIndex + 1);
@@ -186,7 +186,7 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 					var search = (window.location.search ? window.location.search : '');
 					history.replaceState({
 						url: newUrl + search
-					}, null, window.location.protocol + '//' + window.location.host + '/' + newUrl + search);
+					}, null, window.location.protocol + '//' + window.location.host + RELATIVE_PATH + '/' + newUrl + search);
 				}
 				currentUrl = newUrl;
 			}
