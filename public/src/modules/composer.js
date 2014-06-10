@@ -179,8 +179,11 @@ define('composer', ['taskbar', 'composer/controls', 'composer/uploads', 'compose
 		var allowTopicsThumbnail = config.allowTopicsThumbnail && composer.posts[post_uuid].isMain && (config.hasImageUploadPlugin || config.allowFileUploads);
 		var isTopic = composer.posts[post_uuid] ? !!composer.posts[post_uuid].cid : false;
 		var isMain = composer.posts[post_uuid] ? !!composer.posts[post_uuid].isMain : false;
+		var bsEnvironment = utils.findBootstrapEnvironment();
 
-		templates.parse('composer', {allowTopicsThumbnail: allowTopicsThumbnail, showTags: isTopic || isMain}, function(composerTemplate) {
+		var template = (bsEnvironment === 'xs' || bsEnvironment === 'sm') ? 'composer-mobile' : 'composer';
+
+		templates.parse(template, {allowTopicsThumbnail: allowTopicsThumbnail, showTags: isTopic || isMain}, function(composerTemplate) {
 			translator.translate(composerTemplate, function(composerTemplate) {
 				composerTemplate = $(composerTemplate);
 
