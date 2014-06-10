@@ -14,7 +14,7 @@ define('composer/tags', function() {
 
 		tagEl.tagsinput({
 			maxTags: config.tagsPerTopic,
-			confirmKeys: [13, 188]
+			confirmKeys: [13, 44]
 		});
 		addTags(postData.tags, tagEl);
 
@@ -46,7 +46,7 @@ define('composer/tags', function() {
 
 	function triggerEnter(input) {
 		// http://stackoverflow.com/a/3276819/583363
-		var e = jQuery.Event('keydown');
+		var e = jQuery.Event('keypress');
 		e.which = 13;
 		e.keyCode = 13;
 		setTimeout(function() {
