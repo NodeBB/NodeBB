@@ -381,11 +381,11 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.getUidByEmail = function(email, callback) {
-		db.getObjectField('email:uid', email, callback);
+		db.getObjectField('email:uid', email.toLowerCase(), callback);
 	};
 
 	User.getUsernameByEmail = function(email, callback) {
-		db.getObjectField('email:uid', email, function(err, uid) {
+		db.getObjectField('email:uid', email.toLowerCase(), function(err, uid) {
 			if (err) {
 				return callback(err);
 			}
