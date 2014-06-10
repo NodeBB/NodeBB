@@ -1,10 +1,11 @@
 "use strict";
 
-var groups = require('../../groups'),
+var async = require('async'),
+
+	groups = require('../../groups'),
 	user = require('../../user'),
 	categories = require('../../categories'),
 	privileges = require('../../privileges'),
-	async = require('async'),
 	Categories = {};
 
 Categories.create = function(socket, data, callback) {
@@ -13,6 +14,10 @@ Categories.create = function(socket, data, callback) {
 	}
 
 	categories.create(data, callback);
+};
+
+Categories.purge = function(socket, cid, callback) {
+	categories.purge(cid, callback);
 };
 
 Categories.update = function(socket, data, callback) {

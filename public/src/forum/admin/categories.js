@@ -216,6 +216,23 @@ define('forum/admin/categories', ['uploader'], function(uploader) {
 			$('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 
 			$('.admin-categories').on('click', '.save', save);
+			$('.admin-categories').on('click', '.purge', function() {
+				var categoryRow = $(this).parents('li[data-cid]');
+				var	cid = categoryRow.attr('data-cid');
+
+				bootbox.confirm('Do you really want to purge this category "' + categoryRow.find('#cid-' + cid + '-name').val() + '"?<br/><strong class="text-danger">Warning!</strong> All topics and posts in this category will be purged!', function(confirm) {
+					if (!confirm) {
+						return;
+					}
+					socket.emit('admin.categories.purge', cid, function(err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						app.alertSuccess('Category purged!');
+						categoryRow.remove();
+					});
+				});
+			});
 
 			// Permissions modal
 			$('.admin-categories').on('click', '.permissions', function() {

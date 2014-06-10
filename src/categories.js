@@ -19,6 +19,7 @@ var db = require('./database'),
 
 (function(Categories) {
 
+	require('./categories/delete')(Categories);
 	require('./categories/activeusers')(Categories);
 	require('./categories/recentreplies')(Categories);
 	require('./categories/update')(Categories);
