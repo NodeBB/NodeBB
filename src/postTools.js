@@ -177,6 +177,16 @@ var winston = require('winston'),
 		});
 	}
 
+	PostTools.purge = function(uid, pid, callback) {
+		privileges.posts.canEdit(pid, uid, function(err, canEdit) {
+			if (err || !canEdit) {
+				return callback(err || new Error('[[error:no-privileges]]'));
+			}
+
+			posts.delete(pid, callback);
+		});
+	};
+
 	function updateTopicTimestamp(tid, callback) {
 		topics.getLatestUndeletedPid(tid, function(err, pid) {
 			if(err || !pid) {

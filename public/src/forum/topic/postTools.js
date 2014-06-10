@@ -21,8 +21,10 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		var postEl = $('#post-container li[data-pid="' + pid + '"]');
 
 		postEl.find('.quote, .favourite, .post_reply, .chat').toggleClass('none', isDeleted);
+		postEl.find('.purge').toggleClass('none', !isDeleted);
 
 		translator.translate(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]', function(translated) {
+			postEl.find('.delete').find('i').toggleClass('fa-trash-o', !isDeleted).toggleClass('fa-comment', isDeleted);
 			postEl.find('.delete').find('span').html(translated);
 		});
 	};
@@ -87,6 +89,10 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		postContainer.on('click', '.delete', function(e) {
 			deletePost($(this), tid);
 		});
+
+		postContainer.on('click', '.purge', function(e) {
+			purgePost($(this), tid);
+		})
 
 		postContainer.on('click', '.move', function(e) {
 			openMovePostModal($(this));
@@ -186,21 +192,31 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 
 	function deletePost(button, tid) {
 		var pid = getPid(button),
-			postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
+			postEl = $('#post-container li[data-pid="' + pid + '"]'),
 			action = !postEl.hasClass('deleted') ? 'delete' : 'restore';
 
+		postAction(action, pid, tid);
+	}
+
+	function purgePost(button, tid) {
+		postAction('purge', getPid(button), tid);
+	}
+
+	function postAction(action, pid, tid) {
 		translator.translate('[[topic:post_' + action + '_confirm]]', function(msg) {
 			bootbox.confirm(msg, function(confirm) {
-				if (confirm) {
-					socket.emit('posts.' + action, {
-						pid: pid,
-						tid: tid
-					}, function(err) {
-						if(err) {
-							app.alertError('[[topic:post_' + action + '_error]]');
-						}
-					});
+				if (!confirm) {
+					return;
 				}
+
+				socket.emit('posts.' + action, {
+					pid: pid,
+					tid: tid
+				}, function(err) {
+					if(err) {
+						app.alertError(err.message);
+					}
+				});
 			});
 		});
 	}

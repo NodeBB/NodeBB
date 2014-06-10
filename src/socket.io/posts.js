@@ -210,6 +210,23 @@ function deleteOrRestore(command, socket, data, callback) {
 	});
 }
 
+SocketPosts.purge = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	postTools.purge(socket.uid, data.pid, function(err) {
+		if(err) {
+			return callback(err);
+		}
+
+		module.parent.exports.emitTopicPostStats();
+
+		websockets.server.sockets.in('topic_' + data.tid).emit('event:post_purged', data.pid);
+
+		callback();
+	});
+};
+
 SocketPosts.getPrivileges = function(socket, pid, callback) {
 	privileges.posts.get(pid, socket.uid, function(err, privileges) {
 		if(err) {

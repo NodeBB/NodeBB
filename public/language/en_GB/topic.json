@@ -17,6 +17,7 @@
 	"reply": "Reply",
 	"edit": "Edit",
 	"delete": "Delete",
+	"purge": "Purge",
 	"restore": "Restore",
 	"move": "Move",
 	"fork": "Fork",
@@ -68,8 +69,7 @@
 
 	"post_delete_confirm": "Are you sure you want to delete this post?",
 	"post_restore_confirm": "Are you sure you want to restore this post?",
-	"post_delete_error": "Could not delete this post!",
-	"post_restore_error": "Could not restore this post!",
+	"post_purge_confirm": "Are you you want to purge this post?",
 
 	"load_categories": "Loading Categories",
 	"disabled_categories_note": "Disabled Categories are greyed out",

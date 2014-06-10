@@ -25,6 +25,7 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 		'event:topic_moved': onTopicMoved,
 
 		'event:post_edited': onPostEdited,
+		'event:post_purged': onPostPurged,
 
 		'event:post_deleted': togglePostDeleteState,
 		'event:post_restored': togglePostDeleteState,
@@ -108,41 +109,50 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 		});
 	}
 
+	function onPostPurged(pid) {
+		$('#post-container li[data-pid="' + pid + '"]').fadeOut(500, function() {
+			$(this).remove();
+		});
+	}
+
 	function togglePostDeleteState(data) {
 		var postEl = $('#post-container li[data-pid="' + data.pid + '"]');
 
-		if (postEl.length) {
-			postEl.toggleClass('deleted');
-			var isDeleted = postEl.hasClass('deleted');
-			postTools.toggle(data.pid, isDeleted);
-
-			if (!app.isAdmin && parseInt(data.uid, 10) !== parseInt(app.uid, 10)) {
-				if (isDeleted) {
-					translator.translate('[[topic:post_is_deleted]]', function(translated) {
-						postEl.find('.post-content').html(translated);
-					});
-				} else {
-					postEl.find('.post-content').html(data.content);
-				}
-			}
-
-			postTools.updatePostCount();
+		if (!postEl.length) {
+			return;
 		}
+
+		postEl.toggleClass('deleted');
+		var isDeleted = postEl.hasClass('deleted');
+		postTools.toggle(data.pid, isDeleted);
+
+		if (!app.isAdmin && parseInt(data.uid, 10) !== parseInt(app.uid, 10)) {
+			if (isDeleted) {
+				translator.translate('[[topic:post_is_deleted]]', function(translated) {
+					postEl.find('.post-content').html(translated);
+				});
+			} else {
+				postEl.find('.post-content').html(data.content);
+			}
+		}
+
+		postTools.updatePostCount();
 	}
 
 	function togglePostFavourite(data) {
-
 		var favBtn = $('li[data-pid="' + data.post.pid + '"] .favourite');
-		if (favBtn.length) {
-			favBtn.addClass('btn-warning')
-				.attr('data-favourited', data.isFavourited);
+		if (!favBtn.length) {
+			return;
+		}
 
-			var icon = favBtn.find('i');
-			var className = icon.attr('class');
+		favBtn.addClass('btn-warning')
+			.attr('data-favourited', data.isFavourited);
 
-			if (data.isFavourited ? className.indexOf('-o') !== -1 : className.indexOf('-o') === -1) {
-				icon.attr('class', data.isFavourited ? className.replace('-o', '') : className + '-o');
-			}
+		var icon = favBtn.find('i');
+		var className = icon.attr('class');
+
+		if (data.isFavourited ? className.indexOf('-o') !== -1 : className.indexOf('-o') === -1) {
+			icon.attr('class', data.isFavourited ? className.replace('-o', '') : className + '-o');
 		}
 	}
 
