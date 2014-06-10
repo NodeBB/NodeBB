@@ -8,7 +8,7 @@ var async = require('async'),
 
 module.exports = function(Posts) {
 
-	Posts.delete = function(pid, callback) {
+	Posts.purge = function(pid, callback) {
 		async.parallel([
 			function(next) {
 				deletePostFromTopicAndUser(pid, next);

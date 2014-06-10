@@ -15,6 +15,7 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 
 		'event:topic_deleted': toggleTopicDeleteState,
 		'event:topic_restored': toggleTopicDeleteState,
+		'event:topic_purged': onTopicPurged,
 
 		'event:topic_locked': toggleTopicLockedState,
 		'event:topic_unlocked': toggleTopicLockedState,
@@ -71,6 +72,10 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 	function toggleTopicDeleteState(data) {
 		threadTools.setLockedState(data);
 		threadTools.setDeleteState(data);
+	}
+
+	function onTopicPurged(tid) {
+		ajaxify.refresh();
 	}
 
 	function toggleTopicLockedState(data) {

@@ -316,6 +316,9 @@ var async = require('async'),
 				topicData.thread_tools = results.threadTools;
 				topicData.pageCount = results.pageCount;
 				topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
+				topicData.deleted = parseInt(topicData.deleted, 10) === 1;
+				topicData.locked = parseInt(topicData.locked, 10) === 1;
+				topicData.pinned = parseInt(topicData.pinned, 10) === 1;
 
 				callback(null, topicData);
 			});
@@ -433,71 +436,5 @@ var async = require('async'),
 		});
 	};
 
-	Topics.delete = function(tid, callback) {
-		async.parallel([
-			function(next) {
-				Topics.setTopicField(tid, 'deleted', 1, next);
-			},
-			function(next) {
-				db.sortedSetRemove('topics:recent', tid, next);
-			},
-			function(next) {
-				db.sortedSetRemove('topics:posts', tid, next);
-			},
-			function(next) {
-				db.sortedSetRemove('topics:views', tid, next);
-			},
-			function(next) {
-				Topics.getTopicField(tid, 'cid', function(err, cid) {
-					if(err) {
-						return next(err);
-					}
-					db.incrObjectFieldBy('category:' + cid, 'topic_count', -1, next);
-				});
-			}
-		], function(err) {
-			if (err) {
-				return callback(err);
-			}
 
-			Topics.updateTopicCount(callback);
-		});
-	};
-
-	Topics.restore = function(tid, callback) {
-		Topics.getTopicFields(tid, ['lastposttime', 'postcount', 'viewcount'], function(err, topicData) {
-			if(err) {
-				return callback(err);
-			}
-
-			async.parallel([
-				function(next) {
-					Topics.setTopicField(tid, 'deleted', 0, next);
-				},
-				function(next) {
-					db.sortedSetAdd('topics:recent', topicData.lastposttime, tid, next);
-				},
-				function(next) {
-					db.sortedSetAdd('topics:posts', topicData.postcount, tid, next);
-				},
-				function(next) {
-					db.sortedSetAdd('topics:views', topicData.viewcount, tid, next);
-				},
-				function(next) {
-					Topics.getTopicField(tid, 'cid', function(err, cid) {
-						if(err) {
-							return next(err);
-						}
-						db.incrObjectFieldBy('category:' + cid, 'topic_count', 1, next);
-					});
-				}
-			], function(err) {
-				if (err) {
-					return callback(err);
-				}
-
-				Topics.updateTopicCount(callback);
-			});
-		});
-	};
 }(exports));

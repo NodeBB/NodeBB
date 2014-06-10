@@ -183,7 +183,7 @@ var winston = require('winston'),
 				return callback(err || new Error('[[error:no-privileges]]'));
 			}
 
-			posts.delete(pid, callback);
+			posts.purge(pid, callback);
 		});
 	};
 

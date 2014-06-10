@@ -160,6 +160,10 @@ SocketTopics.restore = function(socket, tids, callback) {
 	doTopicAction('restore', socket, tids, callback);
 };
 
+SocketTopics.purge = function(socket, tids, callback) {
+	doTopicAction('purge', socket, tids, callback);
+};
+
 SocketTopics.lock = function(socket, tids, callback) {
 	doTopicAction('lock', socket, tids, callback);
 };

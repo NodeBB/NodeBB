@@ -70,6 +70,44 @@ var winston = require('winston'),
 		});
 	}
 
+	ThreadTools.purge = function(tid, uid, callback) {
+		async.parallel({
+			topic: function(next) {
+				topics.getTopicFields(tid, ['cid', 'mainPid'], next);
+			},
+			pids: function(next) {
+				topics.getPids(tid, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			var pids = [];
+			if (results.topic.mainPid) {
+				pids = [results.topic.mainPid].concat(results.pids);
+			}
+
+			async.parallel([
+				function(next) {
+					async.each(pids, posts.purge, next);
+				},
+				function(next) {
+					topics.purge(tid, next);
+				}
+			], function(err) {
+				if (err) {
+					return callback(err);
+				}
+
+				websockets.emitTopicPostStats();
+				websockets.in('topic_' + tid).emit('event:topic_purged', tid);
+				websockets.in('category_' + results.topic.cid).emit('event:topic_purged', tid);
+				callback();
+			});
+		});
+	};
+
 	ThreadTools.lock = function(tid, uid, callback) {
 		toggleLock(tid, uid, true, callback);
 	};

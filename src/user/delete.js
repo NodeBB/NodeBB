@@ -28,11 +28,11 @@ module.exports = function(User) {
 	};
 
 	function deletePosts(uid, callback) {
-		deleteSortedSetElements('uid:' + uid + ':posts', posts.delete, callback);
+		deleteSortedSetElements('uid:' + uid + ':posts', posts.purge, callback);
 	}
 
 	function deleteTopics(uid, callback) {
-		deleteSortedSetElements('uid:' + uid + ':topics', topics.delete, callback);
+		deleteSortedSetElements('uid:' + uid + ':topics', topics.purge, callback);
 	}
 
 	function deleteSortedSetElements(set, deleteMethod, callback) {

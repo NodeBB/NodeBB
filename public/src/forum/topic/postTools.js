@@ -53,7 +53,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 
 	function addPostHandlers(tid, threadState) {
 		$('.topic').on('click', '.post_reply', function() {
-			if (threadState.locked !== '1') {
+			if (!threadState.locked) {
 				onReplyClicked($(this), tid, topicName);
 			}
 		});
@@ -61,7 +61,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		var postContainer = $('#post-container');
 
 		postContainer.on('click', '.quote', function() {
-			if (threadState.locked !== '1') {
+			if (!threadState.locked) {
 				onQuoteClicked($(this), tid, topicName);
 			}
 		});

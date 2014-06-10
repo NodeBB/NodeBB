@@ -15,34 +15,25 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 
 		$('.delete_thread').on('click', function(e) {
 			var tids = topicSelect.getSelectedTids();
-
-			if (tids.length) {
-				var command = isAny(isTopicDeleted, tids) ? 'restore' : 'delete';
-
-				translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function(msg) {
-					bootbox.confirm(msg, function(confirm) {
-						if (!confirm) {
-							return;
-						}
-
-						socket.emit('topics.' + command, tids, onCommandComplete);
-					});
-				});
-			}
-
+			categoryCommand(isAny(isTopicDeleted, tids) ? 'restore' : 'delete', tids);
 			return false;
 		});
 
-		$('.lock_thread').on('click', function(e) {
+		$('.purge_thread').on('click', function() {
+			var tids = topicSelect.getSelectedTids();
+			categoryCommand('purge', tids);
+			return false;
+		});
+
+		$('.lock_thread').on('click', function() {
 			var tids = topicSelect.getSelectedTids();
 			if (tids.length) {
 				socket.emit(isAny(isTopicLocked, tids) ? 'topics.unlock' : 'topics.lock', tids, onCommandComplete);
 			}
-
 			return false;
 		});
 
-		$('.pin_thread').on('click', function(e) {
+		$('.pin_thread').on('click', function() {
 			var tids = topicSelect.getSelectedTids();
 			if (tids.length) {
 				socket.emit(isAny(isTopicPinned, tids) ? 'topics.unpin' : 'topics.pin', tids, onCommandComplete);
@@ -84,6 +75,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 
 		socket.on('event:topic_deleted', setDeleteState);
 		socket.on('event:topic_restored', setDeleteState);
+		socket.on('event:topic_purged', onTopicPurged);
 		socket.on('event:topic_locked', setLockedState);
 		socket.on('event:topic_unlocked', setLockedState);
 		socket.on('event:topic_pinned', setPinnedState);
@@ -91,9 +83,25 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 		socket.on('event:topic_moved', onTopicMoved);
 	};
 
+	function categoryCommand(command, tids) {
+		if (!tids.length) {
+			return;
+		}
+
+		translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function(msg) {
+			bootbox.confirm(msg, function(confirm) {
+				if (!confirm) {
+					return;
+				}
+				socket.emit('topics.' + command, tids, onCommandComplete);
+			});
+		});
+	}
+
 	CategoryTools.removeListeners = function() {
 		socket.removeListener('event:topic_deleted', setDeleteState);
 		socket.removeListener('event:topic_restored', setDeleteState);
+		socket.removeListener('event:topic_purged', onTopicPurged);
 		socket.removeListener('event:topic_locked', setLockedState);
 		socket.removeListener('event:topic_unlocked', setLockedState);
 		socket.removeListener('event:topic_pinned', setPinnedState);
@@ -116,6 +124,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 	function onTopicSelect() {
 		var tids = topicSelect.getSelectedTids();
 		var isAnyDeleted = isAny(isTopicDeleted, tids);
+		var areAllDeleted = areAll(isTopicDeleted, tids);
 		var isAnyPinned = isAny(isTopicPinned, tids);
 		var isAnyLocked = isAny(isTopicLocked, tids);
 
@@ -130,6 +139,8 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 		translator.translate('<i class="fa fa-fw fa-' + (isAnyLocked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (isAnyLocked ? 'un': '') + 'lock]]', function(translated) {
 			$('.lock_thread').html(translated);
 		});
+
+		$('.purge_thread').toggleClass('none', !areAllDeleted);
 	}
 
 	function isAny(method, tids) {
@@ -139,6 +150,15 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 			}
 		}
 		return false;
+	}
+
+	function areAll(method, tids) {
+		for(var i=0; i<tids.length; ++i) {
+			if(!method(tids[i])) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	function isTopicDeleted(tid) {
@@ -178,6 +198,10 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 
 	function onTopicMoved(data) {
 		getTopicEl(data.tid).remove();
+	}
+
+	function onTopicPurged(tid) {
+		getTopicEl(tid).remove();
 	}
 
 	return CategoryTools;
