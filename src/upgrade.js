@@ -738,6 +738,8 @@ Upgrade.upgrade = function(callback) {
 			thisSchemaDate = Date.UTC(2014, 5, 6);
 
 			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/6/6] Upgrading topics...');
+
 				db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
 					function upgradeTopic(tid, callback) {
 
