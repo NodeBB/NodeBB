@@ -5,7 +5,8 @@
 define('composer', ['taskbar', 'composer/controls', 'composer/uploads', 'composer/formatting', 'composer/drafts', 'composer/tags'], function(taskbar, controls, uploads, formatting, drafts, tags) {
 	var composer = {
 		active: undefined,
-		posts: {}
+		posts: {},
+		bsEnvironment: undefined
 	};
 
 	socket.on('event:composer.ping', function(post_uuid) {
@@ -179,9 +180,10 @@ define('composer', ['taskbar', 'composer/controls', 'composer/uploads', 'compose
 		var allowTopicsThumbnail = config.allowTopicsThumbnail && composer.posts[post_uuid].isMain && (config.hasImageUploadPlugin || config.allowFileUploads);
 		var isTopic = composer.posts[post_uuid] ? !!composer.posts[post_uuid].cid : false;
 		var isMain = composer.posts[post_uuid] ? !!composer.posts[post_uuid].isMain : false;
-		var bsEnvironment = utils.findBootstrapEnvironment();
 
-		var template = (bsEnvironment === 'xs' || bsEnvironment === 'sm') ? 'composer-mobile' : 'composer';
+		composer.bsEnvironment = utils.findBootstrapEnvironment()
+
+		var template = (composer.bsEnvironment === 'xs' || composer.bsEnvironment === 'sm') ? 'composer-mobile' : 'composer';
 
 		templates.parse(template, {allowTopicsThumbnail: allowTopicsThumbnail, showTags: isTopic || isMain}, function(composerTemplate) {
 			translator.translate(composerTemplate, function(composerTemplate) {
@@ -375,7 +377,7 @@ define('composer', ['taskbar', 'composer/controls', 'composer/uploads', 'compose
 			postContainer = $('#cmp-uuid-' + post_uuid);
 
 		composer.active = post_uuid;
-		var env = utils.findBootstrapEnvironment();
+		var env = composer.bsEnvironment;
 
 		if (percentage) {
 			if ( env === 'md' || env === 'lg') {
@@ -405,7 +407,10 @@ define('composer', ['taskbar', 'composer/controls', 'composer/uploads', 'compose
 
 		$('body').css({'margin-bottom': postContainer.css('height')});
 
-		focusElements(post_uuid);
+		if (env !== 'sm' && env !== 'xs') {
+			focusElements(post_uuid);	
+		}
+		
 		resizeTabContent(postContainer);
 	}
 
