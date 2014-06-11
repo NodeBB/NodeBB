@@ -60,11 +60,12 @@ define('taskbar', function() {
 			var element = taskbar.tasklist.find('li[data-uuid="'+uuid+'"]');
 			if(element.length)
 				return;
+			var title = $('<div></div>').html(options.title || 'NodeBB Task').text();
 
 			var	btnEl = $('<li />')
 				.html('<a href="#">' +
 					(options.icon ? '<img src="' + options.icon + '" />' : '') +
-					'<span>' + (options.title || 'NodeBB Task') + '</span>' +
+					'<span>' + title + '</span>' +
 					'</a>')
 				.attr({
 					'data-module': module,
