@@ -14,6 +14,18 @@ define('forum/admin/themes', ['forum/admin/settings'], function(Settings) {
 		scriptEl.attr('src', '//bootswatch.aws.af.cm/3/?callback=bootswatchListener');
 		$('body').append(scriptEl);
 
+		$('#widgets .nav-pills a').on('click', function(ev) {
+			var $this = $(this);
+			$('#widgets .nav-pills li').removeClass('active');
+			$this.parent().addClass('active');
+
+			$('#widgets .tab-pane').removeClass('active');
+			$('#widgets .tab-pane[data-template="' + $this.attr('data-template') + '"]').addClass('active');
+
+			ev.preventDefault();
+			return false;
+		});
+
 		var bootstrapThemeContainer = $('#bootstrap_themes'),
 			installedThemeContainer = $('#installed_themes');
 

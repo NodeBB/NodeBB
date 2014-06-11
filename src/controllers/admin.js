@@ -148,7 +148,28 @@ adminController.themes.get = function(req, res, next) {
 				}
 			}
 
+			var templates = [],
+				list = {}, index = 0;
+
+			widgetData.areas.forEach(function(area) {
+				if (typeof list[area.template] === 'undefined') {
+					list[area.template] = index;
+					templates.push({
+						template: area.template,
+						areas: []
+					});
+
+					index++;
+				}
+
+				templates[list[area.template]].areas.push({
+					name: area.name,
+					location: area.location
+				});
+			});
+
 			res.render('admin/themes', {
+				templates: templates,
 				areas: widgetData.areas,
 				widgets: widgetData.widgets,
 				branding: branding
