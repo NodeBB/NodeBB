@@ -153,6 +153,10 @@ topicsController.get = function(req, res, next) {
 				{
 					rel: 'up',
 					href: nconf.get('url') + '/category/' + topicData.category.slug
+				},
+				{
+					rel: 'canonical',
+					href: nconf.get('url') + '/topic/' + topicData.slug
 				}
 			];
 
