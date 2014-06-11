@@ -116,7 +116,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 			return;
 		}
 
-		translator.translate('<i class="fa fa-fw ' + (data.isDelete ? 'fa-comment' : 'fa-trash-o') + '"></i> [[topic:thread_tools.' + (data.isDelete ? 'restore' : 'delete') + ']]', function(translated) {
+		translator.translate('<i class="fa fa-fw ' + (data.isDelete ? 'fa-history' : 'fa-trash-o') + '"></i> [[topic:thread_tools.' + (data.isDelete ? 'restore' : 'delete') + ']]', function(translated) {
 			$('.delete_thread span').html(translated);
 		});
 

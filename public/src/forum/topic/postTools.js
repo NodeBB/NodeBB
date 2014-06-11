@@ -24,7 +24,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		postEl.find('.purge').toggleClass('none', !isDeleted);
 
 		translator.translate(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]', function(translated) {
-			postEl.find('.delete').find('i').toggleClass('fa-trash-o', !isDeleted).toggleClass('fa-comment', isDeleted);
+			postEl.find('.delete').find('i').toggleClass('fa-trash-o', !isDeleted).toggleClass('fa-history', isDeleted);
 			postEl.find('.delete').find('span').html(translated);
 		});
 	};

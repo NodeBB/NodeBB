@@ -128,7 +128,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 		var isAnyPinned = isAny(isTopicPinned, tids);
 		var isAnyLocked = isAny(isTopicLocked, tids);
 
-		translator.translate('<i class="fa fa-fw ' + (isAnyDeleted ? 'fa-comment' : 'fa-trash-o') + '"></i> [[topic:thread_tools.' + (isAnyDeleted ? 'restore' : 'delete') + ']]', function(translated) {
+		translator.translate('<i class="fa fa-fw ' + (isAnyDeleted ? 'fa-history' : 'fa-trash-o') + '"></i> [[topic:thread_tools.' + (isAnyDeleted ? 'restore' : 'delete') + ']]', function(translated) {
 			$('.delete_thread span').html(translated);
 		});
 
