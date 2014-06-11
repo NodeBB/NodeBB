@@ -56,7 +56,7 @@ topicsController.get = function(req, res, next) {
 
 			topics.getTopicWithPosts(tid, set, uid, start, end, reverse, function (err, topicData) {
 				if (topicData) {
-					if (parseInt(topicData.deleted, 10) === 1 && !userPrivileges.view_deleted) {
+					if (topicData.deleted && !userPrivileges.view_deleted) {
 						return next(new Error('[[error:no-topic]]'));
 					}
 					topicData.currentPage = page;
