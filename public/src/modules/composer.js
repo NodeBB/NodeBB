@@ -209,7 +209,7 @@ define('composer', ['taskbar', 'composer/controls', 'composer/uploads', 'compose
 					bodyEl = postContainer.find('textarea'),
 					draft = drafts.getDraft(postData.save_id);
 
-				postData.title = $('<div></div>').html(postData.title).text();
+				postData.title = $('<div></div>').text(postData.title).html();
 
 				updateTitle(postData, postContainer);
 
@@ -408,9 +408,9 @@ define('composer', ['taskbar', 'composer/controls', 'composer/uploads', 'compose
 		$('body').css({'margin-bottom': postContainer.css('height')});
 
 		if (env !== 'sm' && env !== 'xs') {
-			focusElements(post_uuid);	
+			focusElements(post_uuid);
 		}
-		
+
 		resizeTabContent(postContainer);
 	}
 
@@ -455,7 +455,7 @@ define('composer', ['taskbar', 'composer/controls', 'composer/uploads', 'compose
 
 		var checkTitle = parseInt(postData.cid, 10) || parseInt(postData.pid, 10);
 
-		if (postData.uploadsInProgress && postData.uploadsInProgress.length) {
+		if (uploads.inProgress[post_uuid] && uploads.inProgress[post_uuid].length) {
 			return composerAlert('[[error:still-uploading]]');
 		} else if (checkTitle && titleEl.val().length < parseInt(config.minimumTitleLength, 10)) {
 			return composerAlert('[[error:title-too-short, ' + config.minimumTitleLength + ']]');

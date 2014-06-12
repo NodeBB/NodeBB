@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async'),
+	validator = require('validator'),
 	db = require('../database'),
 	utils = require('../../public/src/utils'),
 	plugins = require('../plugins'),
@@ -229,6 +230,7 @@ module.exports = function(Topics) {
 				Topics.getTopicFields(tid, ['tid', 'title', 'slug'], next);
 			},
 			function(topicData, next) {
+				topicData.title = validator.escape(topicData.title);
 				postData.topic = topicData;
 				next();
 			},

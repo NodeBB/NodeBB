@@ -60,7 +60,7 @@ define('taskbar', function() {
 			var element = taskbar.tasklist.find('li[data-uuid="'+uuid+'"]');
 			if(element.length)
 				return;
-			var title = $('<div></div>').html(options.title || 'NodeBB Task').text();
+			var title = $('<div></div>').text(options.title || 'NodeBB Task').html();
 
 			var	btnEl = $('<li />')
 				.html('<a href="#">' +

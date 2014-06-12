@@ -3,7 +3,9 @@
 /* globals define, utils, config, app */
 
 define('composer/uploads', function() {
-	var uploads = {};
+	var uploads = {
+		inProgress: {}
+	};
 
 	uploads.initialize = function(post_uuid) {
 
@@ -234,8 +236,8 @@ define('composer/uploads', function() {
 				formData.append('_csrf', $('#csrf_token').val());
 			}
 
-			uploads[post_uuid] = uploads[post_uuid] || [];
-			uploads[post_uuid].push(1);
+			uploads.inProgress[post_uuid] = uploads.inProgress[post_uuid] || [];
+			uploads.inProgress[post_uuid].push(1);
 
 			$(this).ajaxSubmit({
 				resetForm: true,
@@ -264,7 +266,7 @@ define('composer/uploads', function() {
 
 				complete: function() {
 					uploadForm[0].reset();
-					uploads[post_uuid].pop();
+					uploads.inProgress[post_uuid].pop();
 				}
 			});
 
@@ -293,8 +295,8 @@ define('composer/uploads', function() {
 
 			spinner.removeClass('hide');
 
-			uploads[post_uuid] = uploads[post_uuid] || [];
-			uploads[post_uuid].push(1);
+			uploads.inProgress[post_uuid] = uploads.inProgress[post_uuid] || [];
+			uploads.inProgress[post_uuid].push(1);
 
 			$(this).ajaxSubmit({
 				formData: formData,
@@ -305,7 +307,7 @@ define('composer/uploads', function() {
 					postContainer.find('#topic-thumb-url').val((uploads[0] || {}).url || '').trigger('change');
 				},
 				complete: function() {
-					uploads[post_uuid].pop();
+					uploads.inProgress[post_uuid].pop();
 					spinner.addClass('hide');
 				}
 			});

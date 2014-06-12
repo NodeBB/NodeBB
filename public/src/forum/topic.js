@@ -341,7 +341,7 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 
 		findInsertionPoint();
 
-		data.title = ajaxify.variables.get('topic_name');
+		data.title = $('<div></div>').text(ajaxify.variables.get('topic_name')).html();
 		data.viewcount = ajaxify.variables.get('viewcount');
 
 		infinitescroll.parseAndTranslate('topic', 'posts', data, function(html) {
