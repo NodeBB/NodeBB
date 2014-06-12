@@ -184,6 +184,9 @@ adminController.groups.get = function(req, res, next) {
 		showSystemGroups: true,
 		truncateUserList: true
 	}, function(err, groups) {
+		groups = groups.filter(function(group) {
+			return group.name !== 'registered-users' && group.name !== 'guests';
+		});
 		res.render('admin/groups', {
 			groups: groups,
 			yourid: req.user.uid

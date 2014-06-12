@@ -83,11 +83,13 @@ define('forum/admin/groups', function() {
 					var formEl = detailsModal.find('form'),
 						nameEl = formEl.find('#change-group-name'),
 						descEl = formEl.find('#change-group-desc'),
+						userTitleEl = formEl.find('#change-group-user-title'),
 						numMembers = groupObj.members.length,
 						x;
 
 					nameEl.val(groupObj.name);
 					descEl.val(groupObj.description);
+					userTitleEl.val(groupObj.userTitle);
 
 					if (numMembers > 0) {
 						groupMembersEl.empty();
@@ -191,12 +193,14 @@ define('forum/admin/groups', function() {
 			var formEl = detailsModal.find('form'),
 				nameEl = formEl.find('#change-group-name'),
 				descEl = formEl.find('#change-group-desc'),
+				userTitleEl = formEl.find('#change-group-user-title'),
 				groupName = detailsModal.attr('data-groupname');
 
 			socket.emit('admin.groups.update', {
 				groupName: groupName,
 				values: {
 					name: nameEl.val(),
+					userTitle: userTitleEl.val(),
 					description: descEl.val()
 				}
 			}, function(err) {

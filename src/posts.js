@@ -212,6 +212,9 @@ var async = require('async'),
 				},
 				customProfileInfo: function(next) {
 					plugins.fireHook('filter:posts.custom_profile_info', {profile: [], uid: post.uid, pid: post.pid}, next);
+				},
+				groups: function(next) {
+					groups.getUserGroups(post.uid, next);
 				}
 			}, function(err, results) {
 				if (err) {

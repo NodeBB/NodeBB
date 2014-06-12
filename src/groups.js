@@ -221,21 +221,16 @@
 	};
 
 	Groups.update = function(groupName, values, callback) {
+		callback = callback || function() {};
 		db.exists('group:' + groupName, function (err, exists) {
-			if (!err && exists) {
-				// If the group was renamed, check for dupes
-				if (!values.name) {
-					db.setObject('group:' + groupName, values, callback);
-				} else {
-					if (callback) {
-						callback(new Error('[[error:group-name-change-not-allowed]]'));
-					}
-				}
-			} else {
-				if (callback) {
-					callback(new Error('[[error:no-group]]'));
-				}
+			if (err || !exists) {
+				return callback(err || new Error('[[error:no-group]]'));
 			}
+
+			db.setObject('group:' + groupName, {
+				userTitle: values.userTitle,
+				description: values.description
+			}, callback);
 		});
 	};
 
@@ -320,6 +315,40 @@
 					callback(null, posts);
 				})
 			})
+		});
+	};
+
+	Groups.getUserGroups = function(uid, callback) {
+		var ignoredGroups = ['registered-users'];
+
+		db.getSetMembers('groups', function(err, groupNames) {
+			var groupKeys = groupNames.filter(function(groupName) {
+				return ignoredGroups.indexOf(groupName) === -1;
+			}).map(function(groupName) {
+				return 'group:' + groupName;
+			});
+
+			db.getObjectsFields(groupKeys, ['name', 'hidden', 'userTitle'], function(err, groupData) {
+
+				groupData = groupData.filter(function(group) {
+					return parseInt(group.hidden, 10) !== 1;
+				});
+
+				var groupSets = groupData.map(function(group) {
+					group.userTitle = group.userTitle || group.name;
+					return 'group:' + group.name + ':members';
+				})
+
+				db.isMemberOfSets(groupSets, uid, function(err, isMembers) {
+					for(var i=isMembers.length - 1; i>=0; --i) {
+						if (parseInt(isMembers[i], 10) !== 1) {
+							groupData.splice(i, 1);
+						}
+					}
+
+					callback(null, groupData);
+				});
+			});
 		});
 	}
 }(module.exports));
