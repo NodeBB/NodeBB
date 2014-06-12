@@ -224,9 +224,10 @@ module.exports = function(Topics) {
 			},
 			function(result, next) {
 				Topics.pushUnreadCount();
-				posts.addUserInfoToPost(postData, next);
+				posts.getUserInfoForPost(postData, next);
 			},
-			function(postData, next) {
+			function(userInfo, next) {
+				postData.user = userInfo;
 				Topics.getTopicFields(tid, ['tid', 'title', 'slug'], next);
 			},
 			function(topicData, next) {
