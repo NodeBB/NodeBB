@@ -1,7 +1,7 @@
 "use strict";
 /*global define, socket, app, bootbox, templates, ajaxify, RELATIVE_PATH*/
 
-define('forum/admin/categories', ['uploader'], function(uploader) {
+define('forum/admin/categories', ['uploader', 'forum/admin/iconSelect'], function(uploader, iconSelect) {
 	var	Categories = {};
 
 	Categories.init = function() {
@@ -35,44 +35,6 @@ define('forum/admin/categories', ['uploader'], function(uploader) {
 			}
 			return false;
 		}
-
-		function select_icon(el) {
-			var selected = el.attr('class').replace('fa-2x', '').replace('fa', '').replace(/\s+/g, '');
-			$('#icons .selected').removeClass('selected');
-
-			if (selected === '') {
-				selected = 'fa-doesnt-exist';
-			}
-			if (selected) {
-				$('#icons .fa-icons .fa.' + selected).parent().addClass('selected');
-			}
-
-			bootbox.confirm('<h2>Select an icon.</h2>' + $('#icons').html(), function(confirm) {
-				if (confirm) {
-					var iconClass = $('.bootbox .selected').children(':first').attr('class');
-
-					el.attr('class', iconClass + ' fa-2x');
-
-					// remove the 'fa ' from the class name, just need the icon name itself
-					var categoryIconClass = iconClass.replace('fa ', '');
-					if(categoryIconClass === 'fa-doesnt-exist') {
-						categoryIconClass = '';
-					}
-					el.val(categoryIconClass);
-					el.attr('value', categoryIconClass);
-
-					modified(el);
-				}
-			});
-
-			setTimeout(function() { //bootbox was rewritten for BS3 and I had to add this timeout for the previous code to work. TODO: to look into
-				$('.bootbox .col-md-3').on('click', function() {
-					$('.bootbox .selected').removeClass('selected');
-					$(this).addClass('selected');
-				});
-			}, 500);
-		}
-
 
 		function update_blockclass(el) {
 			el.parentNode.parentNode.className = 'entry-row ' + el.value;
@@ -186,12 +148,8 @@ define('forum/admin/categories', ['uploader'], function(uploader) {
 			$('#addNew').on('click', showCreateCategoryModal);
 			$('#create-category-btn').on('click', createNewCategory);
 
-			$('#entry-container').on('click', '.icon', function(ev) {
-				select_icon($(this).find('i'));
-			});
-
-			$('#new-category-modal').on('click', '.icon', function(ev) {
-				select_icon($(this).find('i'));
+			$('#entry-container, #new-category-modal').on('click', '.icon', function(ev) {
+				iconSelect.init($(this).find('i'), modified);
 			});
 
 			$('.admin-categories form input, .admin-categories form select').on('change', function(ev) {

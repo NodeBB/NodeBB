@@ -229,7 +229,9 @@
 
 			db.setObject('group:' + groupName, {
 				userTitle: values.userTitle,
-				description: values.description
+				description: values.description,
+				icon: values.icon || '',
+				labelColor: values.labelColor || '#000000'
 			}, callback);
 		});
 	};
@@ -328,7 +330,7 @@
 				return 'group:' + groupName;
 			});
 
-			db.getObjectsFields(groupKeys, ['name', 'hidden', 'userTitle'], function(err, groupData) {
+			db.getObjectsFields(groupKeys, ['name', 'hidden', 'userTitle', 'icon', 'labelColor'], function(err, groupData) {
 
 				groupData = groupData.filter(function(group) {
 					return parseInt(group.hidden, 10) !== 1;
@@ -336,8 +338,9 @@
 
 				var groupSets = groupData.map(function(group) {
 					group.userTitle = group.userTitle || group.name;
+					group.labelColor = group.labelColor || '#000000';
 					return 'group:' + group.name + ':members';
-				})
+				});
 
 				db.isMemberOfSets(groupSets, uid, function(err, isMembers) {
 					for(var i=isMembers.length - 1; i>=0; --i) {

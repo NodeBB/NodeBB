@@ -16,6 +16,9 @@ var admin = {};
 					if (typeof callback === 'function') {
 						callback(hsb, hex);
 					}
+				},
+				onShow: function(colpkr) {
+					$(colpkr).css('z-index', 1051);
 				}
 			});
 		});
