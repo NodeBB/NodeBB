@@ -24,7 +24,7 @@ define('notifications', ['sounds'], function(sound) {
 						} else {
 							image = '';
 						}
-						notification.text = $('<div/>').text(notification.text).html();
+
 						return '<li class="' + (notification.readClass || '') + '"><a href="' + (notification.path || '#') + '">' + image + '<span class="pull-right relTime">' + utils.relativeTime(notification.datetime, true) + '</span><span class="text">' + notification.text + '</span></a></li>';
 					}
 

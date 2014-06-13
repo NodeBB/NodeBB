@@ -59,8 +59,7 @@ define('composer', ['taskbar', 'composer/controls', 'composer/uploads', 'compose
 
 		translator.translate('[[topic:composer.new_topic]]', function(newTopicStr) {
 			taskbar.push('composer', uuid, {
-				title: post.title ? post.title : newTopicStr,
-				icon: post.picture
+				title: post.title ? post.title : newTopicStr
 			});
 		});
 

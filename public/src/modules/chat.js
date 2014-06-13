@@ -216,7 +216,8 @@ define('chat', ['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 
 
 				taskbar.push('chat', chatModal.attr('UUID'), {
-					title:'<i class="fa fa-comment"></i> ' + username,
+					title: username,
+					icon: 'fa-comment',
 					state: ''
 				});
 

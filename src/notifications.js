@@ -4,6 +4,7 @@ var async = require('async'),
 	winston = require('winston'),
 	cron = require('cron').CronJob,
 	nconf = require('nconf'),
+	validator = require('validator'),
 
 	db = require('./database'),
 	utils = require('../public/src/utils'),
@@ -33,6 +34,7 @@ var async = require('async'),
 
 					db.getObjectFields('notifications:' + nid, ['nid', 'from', 'text', 'image', 'importance', 'score', 'path', 'datetime', 'uniqueId'], function(err, notification) {
 						notification.read = rank !== null ? true:false;
+						notification.text = validator.escape(notification.text);
 
 						if (notification.from && !notification.image) {
 							User.getUserField(notification.from, 'picture', function(err, picture) {
