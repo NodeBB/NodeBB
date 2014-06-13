@@ -62,7 +62,7 @@ SocketModules.composer.push = function(socket, pid, callback) {
 				topics.getTopicTags(postData.tid, next);
 			},
 			isMain: function(next) {
-				postTools.isMain(pid, next);
+				postTools.isMain(pid, postData.tid, next);
 			}
 		}, function(err, results) {
 			if(err) {
