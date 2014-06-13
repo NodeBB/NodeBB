@@ -297,7 +297,7 @@ var async = require('async'),
 							if (err) {
 								return next(err);
 							}
-							if (!Array.isArray(postData) || !postData.length) {
+							if (!Array.isArray(postData) || !postData.length || !postData[0]) {
 								return next(null, []);
 							}
 							postData[0].index = 0;
