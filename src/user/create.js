@@ -136,7 +136,7 @@ module.exports = function(User) {
 				};
 
 				userData = utils.merge(userData, customFields);
-				userData.password-confirm = '';
+				userData['password-confirm'] = '';
 
 				db.setObject('user:' + uid, userData, function(err) {
 					if(err) {
