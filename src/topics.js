@@ -367,7 +367,7 @@ var async = require('async'),
 				}
 
 				results.postData.timestamp = utils.toISOString(results.postData.timestamp);
-				results.postData.index = parseInt(results.postIndex, 10) + 1;
+				results.postData.index = results.postIndex;
 
 				callback(null, results.postData);
 			});

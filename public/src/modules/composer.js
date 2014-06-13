@@ -151,7 +151,7 @@ define('composer', ['taskbar', 'composer/controls', 'composer/uploads', 'compose
 				title: threadData.title,
 				body: threadData.body,
 				modified: false,
-				isMain: !threadData.index,
+				isMain: threadData.isMain,
 				topic_thumb: threadData.topic_thumb,
 				tags: threadData.tags
 			});

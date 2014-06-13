@@ -51,7 +51,7 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 		var bookmark = localStorage.getItem('topic:' + tid + ':bookmark');
 		var postIndex = getPostIndex();
 		if (postIndex) {
-			Topic.scrollToPost(postIndex, true);
+			Topic.scrollToPost(postIndex - 1, true);
 		} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1)) && postCount > 1) {
 			app.alert({
 				alert_id: 'bookmark',
@@ -96,7 +96,7 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 
 	function getPostIndex() {
 		var parts = window.location.pathname.split('/');
-		return parts[4] ? (parseInt(parts[4], 10) - 1) : '';
+		return parts[4] ? parseInt(parts[4], 10) : 0;
 	}
 
 	function showBottomPostBar() {
@@ -194,7 +194,7 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 	};
 
 	Topic.scrollToPost = function(postIndex, highlight, duration, offset) {
-		if (!postIndex) {
+		if (!utils.isNumber(postIndex)) {
 			return;
 		}
 

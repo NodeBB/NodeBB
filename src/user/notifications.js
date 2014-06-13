@@ -167,14 +167,9 @@ var async = require('async'),
 					return;
 				}
 
-				var message = '[[notifications:user_made_post, ' + results.username + ']]';
-				var path = nconf.get('relative_path') + '/topic/' + results.slug;
-				if (parseInt(results.postIndex, 10)) {
-					path += '/' + (parseInt(results.postIndex, 10) + 1);
-				}
 				notifications.create({
-					text: message,
-					path: path,
+					text: '[[notifications:user_made_post, ' + results.username + ']]',
+					path: nconf.get('relative_path') + '/topic/' + results.slug + '/' + results.postIndex,
 					uniqueId: 'topic:' + tid,
 					from: uid
 				}, function(nid) {

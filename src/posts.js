@@ -275,7 +275,7 @@ var async = require('async'),
 				post.user = results.user;
 				post.topic = results.topicCategory.topic;
 				post.category = results.topicCategory.category;
-				post.index = parseInt(results.index, 10) + 1;
+				post.index = results.index;
 
 				if (stripTags) {
 					var s = S(results.content);
@@ -444,10 +444,13 @@ var async = require('async'),
 			},
 			function(result, next) {
 				index = result;
+				if (index === 1) {
+					return callback(null, 1);
+				}
 				user.getSettings(uid, next);
 			},
 			function(settings, next) {
-				next(null, Math.ceil((index + 1) / settings.postsPerPage));
+				next(null, Math.ceil((index - 1) / settings.postsPerPage));
 			}
 		], callback);
 	};
@@ -459,7 +462,10 @@ var async = require('async'),
 			}
 
 			db.sortedSetRank('tid:' + tid + ':posts', pid, function(err, index) {
-				callback(err, parseInt(index, 10) + 1);
+				if (!utils.isNumber(index)) {
+					return callback(err, 1);
+				}
+				callback(err, parseInt(index, 10) + 2);
 			});
 		});
 	};

@@ -239,7 +239,7 @@ module.exports = function(Topics) {
 				posts.getPidIndex(postData.pid, next);
 			},
 			function(index, next) {
-				postData.index = index;
+				postData.index = index - 1;
 				postData.favourited = false;
 				postData.votes = 0;
 				postData.display_moderator_tools = true;

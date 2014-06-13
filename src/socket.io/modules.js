@@ -61,8 +61,8 @@ SocketModules.composer.push = function(socket, pid, callback) {
 			tags: function(next) {
 				topics.getTopicTags(postData.tid, next);
 			},
-			index: function(next) {
-				posts.getPidIndex(pid, next);
+			isMain: function(next) {
+				postTools.isMain(pid, next);
 			}
 		}, function(err, results) {
 			if(err) {
@@ -75,7 +75,7 @@ SocketModules.composer.push = function(socket, pid, callback) {
 				title: results.topic.title,
 				topic_thumb: results.topic.thumb,
 				tags: results.tags,
-				index: results.index
+				isMain: results.isMain
 			});
 		});
 	});
