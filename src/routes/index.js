@@ -55,7 +55,7 @@ function topicRoutes(app, middleware, controllers) {
 	app.get('/api/topic/:topic_id/:slug/:post_index?', middleware.checkPostIndex, controllers.topics.get);
 
 	app.get('/topic/:topic_id/:slug?', middleware.buildHeader, middleware.addSlug, controllers.topics.get);
-	app.get('/api/topic/:topic_id/:slug?', controllers.topics.get);
+	app.get('/api/topic/:topic_id/:slug?', middleware.addSlug, controllers.topics.get);
 }
 
 function tagRoutes(app, middleware, controllers) {

@@ -62,7 +62,8 @@ middleware.addSlug = function(req, res, next) {
 			if (err || !slug || slug === id + '/') {
 				return next(err);
 			}
-			res.redirect(name + encodeURI(slug));
+			var url = name + encodeURI(slug);
+			res.locals.isAPI ? res.json(302, url) : res.redirect(url);
 		});
 	}
 
@@ -86,10 +87,13 @@ middleware.checkPostIndex = function(req, res, next) {
 		}
 		var postIndex = parseInt(req.params.post_index, 10);
 		postCount = parseInt(postCount, 10) + 1;
+		var url = '';
 		if (postIndex > postCount) {
-			return res.locals.isAPI ? res.json(302, '/topic/' + req.params.topic_id + '/' + req.params.slug + '/' + postCount) : res.redirect('/topic/' + req.params.topic_id + '/' + req.params.slug + '/' + postCount);
+			url = '/topic/' + req.params.topic_id + '/' + req.params.slug + '/' + postCount;
+			return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
 		} else if (postIndex < 1) {
-			return res.locals.isAPI ? res.json(302, '/topic/' + req.params.topic_id + '/' + req.params.slug) : res.redirect('/topic/' + req.params.topic_id + '/' + req.params.slug);
+			url = '/topic/' + req.params.topic_id + '/' + req.params.slug;
+			return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
 		}
 		next();
 	});
