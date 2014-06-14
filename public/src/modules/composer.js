@@ -148,7 +148,7 @@ define('composer', ['taskbar', 'composer/controls', 'composer/uploads', 'compose
 
 			push({
 				pid: pid,
-				title: threadData.title,
+				title: $('<div/>').html(threadData.title).text(),
 				body: threadData.body,
 				modified: false,
 				isMain: threadData.isMain,
@@ -207,8 +207,6 @@ define('composer', ['taskbar', 'composer/controls', 'composer/uploads', 'compose
 				var postData = composer.posts[post_uuid],
 					bodyEl = postContainer.find('textarea'),
 					draft = drafts.getDraft(postData.save_id);
-
-				postData.title = $('<div></div>').text(postData.title).html();
 
 				updateTitle(postData, postContainer);
 
