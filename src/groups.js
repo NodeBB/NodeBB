@@ -235,7 +235,8 @@
 				userTitle: values.userTitle,
 				description: values.description,
 				icon: values.icon || '',
-				labelColor: values.labelColor || '#000000'
+				labelColor: values.labelColor || '#000000',
+				hidden: values.hidden || '0'
 			}, callback);
 		});
 	};
@@ -265,7 +266,6 @@
 						return callback(err);
 					}
 
-					Groups.hide(groupName);
 					db.setAdd('group:' + groupName + ':members', uid, callback);
 				});
 			}

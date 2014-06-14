@@ -96,11 +96,13 @@ Categories.setGroupPrivilege = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	if (data.set) {
-		groups.join('cid:' + data.cid + ':privileges:' + data.privilege, data.name, callback);
-	} else {
-		groups.leave('cid:' + data.cid + ':privileges:' + data.privilege, data.name, callback);
-	}
+	groups[data.set ? 'join' : 'leave']('cid:' + data.cid + ':privileges:' + data.privilege, data.name, function (err) {
+		if (err) {
+			return callback(err);
+		}
+
+		groups.hide('cid:' + data.cid + ':privileges:' + data.privilege, callback);
+	});
 };
 
 Categories.groupsList = function(socket, cid, callback) {
