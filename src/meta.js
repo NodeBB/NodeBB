@@ -373,15 +373,16 @@ var fs = require('fs'),
 					path.join(__dirname, '../public/vendor/fontawesome/less')
 				],
 				source = '@import "./theme";\n@import "font-awesome";',
-				x, numLESS, numCSS;
+				x;
 
-			// Add the imports for each LESS file
-			for(x=0,numLESS=plugins.lessFiles.length;x<numLESS;x++) {
+
+			plugins.lessFiles = filterMissingFiles(plugins.lessFiles);
+			for(x=0; x<plugins.lessFiles.length; ++x) {
 				source += '\n@import ".' + path.sep + plugins.lessFiles[x] + '";';
 			}
 
-			// ... and for each CSS file
-			for(x=0,numCSS=plugins.cssFiles.length;x<numCSS;x++) {
+			plugins.cssFiles = filterMissingFiles(plugins.cssFiles);
+			for(x=0; x<plugins.cssFiles.length; ++x) {
 				source += '\n@import (inline) ".' + path.sep + plugins.cssFiles[x] + '";';
 			}
 
@@ -419,6 +420,16 @@ var fs = require('fs'),
 			});
 		});
 	};
+
+	function filterMissingFiles(files) {
+		return files.filter(function(file) {
+			var exists = fs.existsSync(path.join(__dirname, '../node_modules', file));
+			if (!exists) {
+				winston.warn('[meta/css] File not found! ' + file);
+			}
+			return exists;
+		});
+	}
 
 	Meta.css.updateBranding = function() {
 		var Settings = require('./settings');
