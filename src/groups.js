@@ -150,6 +150,10 @@
 		db.isSetMember('group:' + groupName + ':members', uid, callback);
 	};
 
+	Groups.getMemberCount = function(groupName, callback) {
+		db.setCount('group:' + groupName + ':members', callback);
+	};
+
 	Groups.isMemberOfGroupList = function(uid, groupListKey, callback) {
 		db.getSetMembers('group:' + groupListKey + ':members', function(err, groupNames) {
 			groupNames = internals.removeEphemeralGroups(groupNames);

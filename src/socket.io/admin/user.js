@@ -10,22 +10,38 @@ var groups = require('../../groups'),
 
 
 User.makeAdmins = function(socket, uids, callback) {
-	toggleAdmin(uids, true, callback);
-};
-
-User.removeAdmins = function(socket, uids, callback) {
-	toggleAdmin(uids, false, callback);
-};
-
-function toggleAdmin(uids, isAdmin, callback) {
 	if(!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	async.each(uids, function(uid, next) {
-		groups[isAdmin ? 'join' : 'leave']('administrators', uid, next);
+		groups.join('administrators', uid, next);
 	}, callback);
-}
+};
+
+User.removeAdmins = function(socket, uids, callback) {
+	if(!Array.isArray(uids)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	if (uids.indexOf(socket.uid.toString()) !== -1) {
+		return callback(new Error('[[error:cant-remove-self-as-admin]]'));
+	}
+
+	async.eachSeries(uids, function(uid, next) {
+		groups.getMemberCount('administrators', function(err, count) {
+			if (err) {
+				return next(err);
+			}
+
+			if (count === 1) {
+				return next(new Error('[[error:cant-remove-last-admin]]'));
+			}
+
+			groups.leave('administrators', uid, next);
+		});
+	}, callback);
+};
 
 User.createUser = function(socket, userData, callback) {
 	if (!userData) {
