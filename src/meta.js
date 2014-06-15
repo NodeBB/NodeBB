@@ -281,32 +281,31 @@ var fs = require('fs'),
 		},
 		prepare: function (callback) {
 			plugins.fireHook('filter:scripts.get', this.scripts, function(err, scripts) {
-				var ctime,
-					jsPaths = scripts.map(function (jsPath) {
-						jsPath = path.normalize(jsPath);
+				var jsPaths = scripts.map(function (jsPath) {
+					jsPath = path.normalize(jsPath);
 
-						if (jsPath.substring(0, 7) === 'plugins') {
-							var	matches = _.map(plugins.staticDirs, function(realPath, mappedPath) {
-								if (jsPath.match(mappedPath)) {
-									return mappedPath;
-								} else {
-									return null;
-								}
-							}).filter(function(a) { return a; });
-
-							if (matches.length) {
-								var	relPath = jsPath.slice(('plugins/' + matches[0]).length),
-									pluginId = matches[0].split(path.sep)[0];
-
-								return plugins.staticDirs[matches[0]] + relPath;
+					if (jsPath.substring(0, 7) === 'plugins') {
+						var	matches = _.map(plugins.staticDirs, function(realPath, mappedPath) {
+							if (jsPath.match(mappedPath)) {
+								return mappedPath;
 							} else {
-								winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + jsPath + '. Are you sure it is defined by a plugin?');
 								return null;
 							}
+						}).filter(function(a) { return a; });
+
+						if (matches.length) {
+							var	relPath = jsPath.slice(('plugins/' + matches[0]).length),
+								pluginId = matches[0].split(path.sep)[0];
+
+							return plugins.staticDirs[matches[0]] + relPath;
 						} else {
-							return path.join(__dirname, '..', '/public', jsPath);
+							winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + jsPath + '. Are you sure it is defined by a plugin?');
+							return null;
 						}
-					});
+					} else {
+						return path.join(__dirname, '..', '/public', jsPath);
+					}
+				});
 
 				Meta.js.scripts = jsPaths.filter(function(path) {
 					return path !== null;
@@ -332,8 +331,7 @@ var fs = require('fs'),
 
 					emitter.emit('meta:js.compiled');
 				} else {
-					winston.error('[meta/js] Could not compile client-side scripts!');
-					winston.error('[meta/js]   ' + payload.error.message);
+					winston.error('[meta/js] Could not compile client-side scripts! ' + payload.error.message);
 					minifier.kill();
 					process.exit();
 				}

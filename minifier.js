@@ -15,6 +15,10 @@ var uglifyjs = require('uglify-js'),
 Minifier.js.minify = function (scripts, minify, callback) {
 	var options = {};
 
+	scripts = scripts.filter(function(file) {
+		return fs.existsSync(file);
+	});
+
 	if (!minify) {
 		options.sourceMapURL = '/nodebb.min.js.map';
 		options.outSourceMap = 'nodebb.min.js.map';
@@ -32,7 +36,9 @@ Minifier.js.minify = function (scripts, minify, callback) {
 	} catch(err) {
 		process.send({
 			action: 'error',
-			error: err
+			error: {
+				message: err.message
+			}
 		});
 	}
 };
