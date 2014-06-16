@@ -56,7 +56,7 @@ categoriesController.unreadTotal = function(req, res, next) {
 			return next(err);
 		}
 
-		res.render('unread', data);
+		res.json(data);
 	});
 };
 
