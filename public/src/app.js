@@ -511,7 +511,7 @@ var socket,
 	app.load = function() {
 		$('document').ready(function () {
 			var url = ajaxify.removeRelativePath(window.location.pathname.slice(1).replace(/\/$/, "")),
-			        tpl_url = ajaxify.getTemplateMapping(url),
+				tpl_url = ajaxify.getTemplateMapping(url),
 				search = window.location.search,
 				hash = window.location.hash,
 				$window = $(window);
