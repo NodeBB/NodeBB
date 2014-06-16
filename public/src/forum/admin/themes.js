@@ -161,7 +161,7 @@ define('forum/admin/themes', ['forum/admin/settings'], function(Settings) {
 	};
 
 	Themes.prepareWidgets = function() {
-		$('[data-location="drafts"]').insertAfter($('[data-location="drafts"]').parents('.tab-content'));
+		$('[data-location="drafts"]').insertAfter($('[data-location="drafts"]').closest('.tab-content'));
 		
 		$('#widgets .available-widgets .panel').draggable({
 			helper: function(e) {
