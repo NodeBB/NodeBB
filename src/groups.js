@@ -232,8 +232,8 @@
 			}
 
 			db.setObject('group:' + groupName, {
-				userTitle: values.userTitle,
-				description: values.description,
+				userTitle: values.userTitle || '',
+				description: values.description || '',
 				icon: values.icon || '',
 				labelColor: values.labelColor || '#000000',
 				hidden: values.hidden || '0'
