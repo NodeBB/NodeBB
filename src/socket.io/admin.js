@@ -75,11 +75,16 @@ SocketAdmin.themes.set = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	widgets.reset(function(err) {
+	var wrappedCallback = function(err) {
 		meta.themes.set(data, function() {
 			callback();
 		});
-	});
+	};
+	if (data.type == 'bootswatch') {
+		wrappedCallback();
+	} else {
+		widgets.reset(wrappedCallback);
+	}
 };
 
 SocketAdmin.themes.updateBranding = function(socket, data, callback) {
