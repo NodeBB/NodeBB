@@ -101,7 +101,7 @@ var winston = require('winston'),
 				}
 
 				websockets.emitTopicPostStats();
-				websockets.in('topic_' + tid).emit('event:topic_purged', tid);
+				websockets.in('topic_' + tid).emit('event:topic_purged', tid, results.topic.cid);
 				websockets.in('category_' + results.topic.cid).emit('event:topic_purged', tid);
 				callback();
 			});
