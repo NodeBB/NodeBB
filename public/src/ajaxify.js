@@ -153,7 +153,7 @@ var ajaxify = ajaxify || {};
 		var tpl_url = ajaxify.getCustomTemplateMapping(url.split('?')[0]);
 
 		if (tpl_url === false && !templates[url]) {
-			tpl_url = ajaxify.removeRelativePath(url).split('/');
+			tpl_url = url.split('/');
 
 			while(tpl_url.length) {
 				if (ajaxify.isTemplateAvailable(tpl_url.join('/'))) {
