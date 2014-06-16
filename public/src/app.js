@@ -510,13 +510,11 @@ var socket,
 
 	app.load = function() {
 		$('document').ready(function () {
-			var url = window.location.pathname.slice(1).replace(/\/$/, ""),
+			var url = ajaxify.removeRelativePath(window.location.pathname.slice(1).replace(/\/$/, "")),
+			        tpl_url = ajaxify.getTemplateMapping(url),
 				search = window.location.search,
 				hash = window.location.hash,
-				tpl_url = ajaxify.getTemplateMapping(url),
 				$window = $(window);
-
-			url = ajaxify.removeRelativePath(url);
 
 			ajaxify.widgets.render(tpl_url, url);
 
