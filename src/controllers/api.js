@@ -13,6 +13,7 @@ apiController.getConfig = function(req, res, next) {
 	var config = {};
 	config.relative_path = serverConfig.relative_path;
 	config.version = pkg.version;
+	config.siteTitle = meta.config.title || meta.config.browserTitle || 'NodeBB';
 	config.postDelay = meta.config.postDelay;
 	config.minimumTitleLength = meta.config.minimumTitleLength;
 	config.maximumTitleLength = meta.config.maximumTitleLength;

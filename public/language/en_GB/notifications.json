@@ -3,7 +3,7 @@
 	"no_notifs": "You have no new notifications",
 	"see_all": "See all Notifications",
 
-	"back_to_home": "Back to NodeBB",
+	"back_to_home": "Back to %1",
 	"outgoing_link": "Outgoing Link",
 	"outgoing_link_message": "You are now leaving",
 	"continue_to": "Continue to",
