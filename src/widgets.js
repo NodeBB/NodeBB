@@ -80,8 +80,6 @@ var async = require('async'),
 
 	Widgets.reset = function(callback) {
 		var defaultAreas = [
-			{ name: 'Global Sidebar', template: 'global', location: 'sidebar' },
-			{ name: 'Global Header', template: 'global', location: 'header' },
 			{ name: 'Draft Zone', template: 'global', location: 'drafts' }
 		];
 
