@@ -1,6 +1,6 @@
 {
     "success": "Succès",
-    "topic-post": "Message posté avec succès.",
-    "authentication-successful": "Authentification réussie",
-    "settings-saved": "Paramètres enregistrés!"
+    "topic-post": "Le message a bien été posté !",
+    "authentication-successful": "Authentification réussie !",
+    "settings-saved": "Paramètres enregistrés !"
 }

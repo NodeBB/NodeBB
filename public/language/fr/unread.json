@@ -1,9 +1,9 @@
 {
-    "title": "Non Lu",
+    "title": "Non lu",
     "no_unread_topics": "Aucun sujet non lu.",
     "load_more": "Charger la suite",
-    "mark_as_read": "Marquer comme Lu",
+    "mark_as_read": "Marquer comme lu",
     "selected": "Sélectionnés",
     "all": "Tous",
-    "topics_marked_as_read.success": "Sujets marqués comme lus!"
+    "topics_marked_as_read.success": "Sujets marqués comme lus !"
 }
