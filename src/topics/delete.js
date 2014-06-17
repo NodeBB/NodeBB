@@ -8,6 +8,24 @@ var async = require('async'),
 
 module.exports = function(Topics) {
 
+	function updateGlobalCounters(tid, incr, callback) {
+		console.log('updateGlobalCounters');
+		async.parallel([
+			function(next) {
+				db.incrObjectFieldBy('global', 'topicCount', incr, next);
+			},
+			function(next) {
+				Topics.getPostCount(tid, function(err, postCount) {
+					if (err) {
+						return next(err);
+					}
+					postCount = parseInt(postCount, 10) + 1;
+					db.incrObjectFieldBy('global', 'postCount', incr * postCount, next);
+				});
+			}
+		], callback);
+	}
+
 	Topics.delete = function(tid, callback) {
 		async.parallel([
 			function(next) {
@@ -35,7 +53,7 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			Topics.updateTopicCount(callback);
+			updateGlobalCounters(tid, -1, callback);
 		});
 	};
 
@@ -71,7 +89,7 @@ module.exports = function(Topics) {
 					return callback(err);
 				}
 
-				Topics.updateTopicCount(callback);
+				updateGlobalCounters(tid, 1, callback);
 			});
 		});
 	};
@@ -135,7 +153,7 @@ module.exports = function(Topics) {
 							db.decrObjectField('category:' + topicData.cid, 'topic_count', next);
 						},
 						function(next) {
-							db.decrObjectField('global', 'topicCount', callback);
+							updateGlobalCounters(tid, -1, next);
 						}
 					], callback);
 				} else {
