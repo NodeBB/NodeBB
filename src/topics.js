@@ -426,15 +426,4 @@ var async = require('async'),
 		});
 	};
 
-	Topics.updateTopicCount = function(callback) {
-		db.sortedSetCard('topics:recent', function(err, count) {
-			if(err) {
-				return callback(err);
-			}
-
-			db.setObjectField('global', 'topicCount', count, callback);
-		});
-	};
-
-
 }(exports));

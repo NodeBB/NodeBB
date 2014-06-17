@@ -35,6 +35,8 @@ module.exports = function(Categories) {
 			], next);
 		}
 
+		updatePostCount(tid, oldCid, cid);
+
 		topics.getPids(tid, function(err, pids) {
 			if (err) {
 				return winston.error(err.message);
@@ -60,6 +62,25 @@ module.exports = function(Categories) {
 			});
 		});
 	};
+
+	function updatePostCount(tid, oldCid, newCid) {
+		topics.getTopicField(tid, 'postcount', function(err, postCount) {
+			if (err) {
+				return winston.error(err.message);
+			}
+
+			async.parallel([
+				function(next) {
+					db.incrObjectFieldBy('category:' + oldCid, 'post_count', -postCount, next);
+				},
+				function(next) {
+					db.incrObjectFieldBy('category:' + newCid, 'post_count', postCount, next);
+				}
+			], function(err) {
+				winston.error(err.message);
+			});
+		});
+	}
 };
 
 

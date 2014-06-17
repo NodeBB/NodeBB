@@ -41,6 +41,7 @@ var db = require('./database'),
 				color: data.color,
 				slug: slug,
 				topic_count: 0,
+				post_count: 0,
 				disabled: 0,
 				order: data.order,
 				link: '',
@@ -173,10 +174,6 @@ var db = require('./database'),
 		});
 	};
 
-	Categories.getPostCount = function(cid, callback) {
-		db.sortedSetCard('categories:recent_posts:cid:' + cid, callback);
-	};
-
 	Categories.getAllCategories = function(callback) {
 		db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
 			if (err) {
@@ -290,13 +287,7 @@ var db = require('./database'),
 				category.description = validator.escape(category.description);
 				category.backgroundImage = category.image ? nconf.get('relative_path') + category.image : '';
 				category.disabled = category.disabled ? parseInt(category.disabled, 10) !== 0 : false;
-				Categories.getPostCount(category.cid, function(err, postCount) {
-					if (err) {
-						return next(err);
-					}
-					category.post_count = postCount;
-					next(err, category);
-				});
+				next(null, category);
 			}, callback);
 		});
 	};
@@ -355,6 +346,7 @@ var db = require('./database'),
 			var cid = topicData.cid;
 
 			db.sortedSetAdd('categories:recent_posts:cid:' + cid, postData.timestamp, postData.pid);
+			db.incrObjectField('category:' + cid, 'post_count');
 
 			if(parseInt(topicData.pinned, 10) === 0) {
 				db.sortedSetAdd('categories:' + cid + ':tid', postData.timestamp, postData.tid);

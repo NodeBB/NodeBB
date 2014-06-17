@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 5, 6);
+	latestSchema = Date.UTC(2014, 5, 17);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -801,6 +801,51 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/6/6] Topic upgrade - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 5, 17);
+
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/6/17] Upgrading category post counts...');
+
+				db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
+					function upgradeTopic(tid, callback) {
+
+						Topics.getTopicFields(tid, ['cid', 'postcount', 'deleted'], function(err, topicData) {
+							if (err || !topicData) {
+								return callback(err);
+							}
+
+							if (parseInt(topicData.deleted, 10) === 1) {
+								return callback();
+							}
+
+							db.incrObjectFieldBy('category:' + topicData.cid, 'post_count', topicData.postcount, callback);
+						});
+					}
+
+					if (err) {
+						return next(err);
+					}
+
+					if (!Array.isArray(tids) || !tids.length)  {
+						winston.info('[2014/6/17] Skipping category post upgrade');
+						return Upgrade.update(thisSchemaDate, next);
+					}
+
+					async.each(tids, upgradeTopic, function(err) {
+						if (err) {
+							winston.error('[2014/6/17] Error encountered while upgrading category postcounts');
+							return next(err);
+						}
+						winston.info('[2014/6/17] Category post counts upgraded');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2014/6/17] Category post count upgrade - skipped');
 				next();
 			}
 		}

@@ -8,18 +8,28 @@ var async = require('async'),
 
 module.exports = function(Topics) {
 
-	function updateGlobalCounters(tid, incr, callback) {
+	function updateCounters(tid, incr, callback) {
 		async.parallel([
 			function(next) {
 				db.incrObjectFieldBy('global', 'topicCount', incr, next);
 			},
 			function(next) {
-				Topics.getPostCount(tid, function(err, postCount) {
+				Topics.getTopicFields(tid, ['cid', 'postcount'], function(err, topicData) {
 					if (err) {
 						return next(err);
 					}
-					postCount = parseInt(postCount, 10) + 1;
-					db.incrObjectFieldBy('global', 'postCount', incr * postCount, next);
+					var postCountChange = incr * parseInt(topicData.postcount, 10);
+					async.parallel([
+						function(next) {
+							db.incrObjectFieldBy('global', 'postCount', postCountChange, next);
+						},
+						function(next) {
+							db.incrObjectFieldBy('category:' + topicData.cid, 'post_count', postCountChange, next);
+						},
+						function(next) {
+							db.incrObjectFieldBy('category:' + topicData.cid, 'topic_count', incr, next);
+						}
+					], next);
 				});
 			}
 		], callback);
@@ -38,21 +48,13 @@ module.exports = function(Topics) {
 			},
 			function(next) {
 				db.sortedSetRemove('topics:views', tid, next);
-			},
-			function(next) {
-				Topics.getTopicField(tid, 'cid', function(err, cid) {
-					if(err) {
-						return next(err);
-					}
-					db.incrObjectFieldBy('category:' + cid, 'topic_count', -1, next);
-				});
 			}
 		], function(err) {
 			if (err) {
 				return callback(err);
 			}
 
-			updateGlobalCounters(tid, -1, callback);
+			updateCounters(tid, -1, callback);
 		});
 	};
 
@@ -74,21 +76,13 @@ module.exports = function(Topics) {
 				},
 				function(next) {
 					db.sortedSetAdd('topics:views', topicData.viewcount, tid, next);
-				},
-				function(next) {
-					Topics.getTopicField(tid, 'cid', function(err, cid) {
-						if(err) {
-							return next(err);
-						}
-						db.incrObjectFieldBy('category:' + cid, 'topic_count', 1, next);
-					});
 				}
 			], function(err) {
 				if (err) {
 					return callback(err);
 				}
 
-				updateGlobalCounters(tid, 1, callback);
+				updateCounters(tid, 1, callback);
 			});
 		});
 	};

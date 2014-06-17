@@ -138,7 +138,7 @@ var winston = require('winston'),
 
 				db.incrObjectFieldBy('global', 'postCount', isDelete ? -1 : 1);
 
-				posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content'], function(err, postData) {
+				posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'timestamp'], function(err, postData) {
 					if (err) {
 						return callback(err);
 					}
@@ -160,7 +160,7 @@ var winston = require('winston'),
 							updateTopicTimestamp(postData.tid, next);
 						},
 						function(next) {
-							addOrRemoveFromCategoryRecentPosts(pid, postData.tid, isDelete, next);
+							addOrRemoveFromCategory(pid, postData.tid, postData.timestamp, isDelete, next);
 						}
 					], function(err) {
 						if (!isDelete) {
@@ -206,23 +206,19 @@ var winston = require('winston'),
 		});
 	}
 
-	function addOrRemoveFromCategoryRecentPosts(pid, tid, isDelete, callback) {
+	function addOrRemoveFromCategory(pid, tid, timestamp, isDelete, callback) {
 		topics.getTopicField(tid, 'cid', function(err, cid) {
 			if (err) {
 				return callback(err);
 			}
 
-			posts.getPostField(pid, 'timestamp', function(err, timestamp) {
-				if (err) {
-					return callback(err);
-				}
+			db.incrObjectFieldBy('category:' + cid, 'post_count', isDelete ? -1 : 1);
 
-				if (isDelete) {
-					db.sortedSetRemove('categories:recent_posts:cid:' + cid, pid, callback);
-				} else {
-					db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid, callback);
-				}
-			});
+			if (isDelete) {
+				db.sortedSetRemove('categories:recent_posts:cid:' + cid, pid, callback);
+			} else {
+				db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid, callback);
+			}
 		});
 	}
 
