@@ -152,7 +152,7 @@ module.exports = function(Topics) {
 							db.decrObjectField('category:' + topicData.cid, 'topic_count', next);
 						},
 						function(next) {
-							updateGlobalCounters(tid, -1, next);
+							db.decrObjectField('global', 'topicCount', next);
 						}
 					], callback);
 				} else {

@@ -2,9 +2,8 @@
 
 var async = require('async'),
 	db = require('../database'),
-
+	topics = require('../topics'),
 	plugins = require('../plugins');
-
 
 module.exports = function(Posts) {
 
@@ -56,11 +55,17 @@ module.exports = function(Posts) {
 					return callback(err);
 				}
 
-				if (parseInt(postData.deleted, 10) === 0) {
-					db.decrObjectField('global', 'postCount', callback);
-				} else {
-					callback();
-				}
+				topics.getTopicFields(postData.tid, ['deleted'], function(err, topicData) {
+					if (err) {
+						return callback(err);
+					}
+
+					if (parseInt(postData.deleted, 10) === 0 && parseInt(topicData.deleted, 10) !== 1) {
+						db.decrObjectField('global', 'postCount', callback);
+					} else {
+						callback();
+					}
+				});
 			});
 		});
 	}
