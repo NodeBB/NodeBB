@@ -9,7 +9,6 @@ var async = require('async'),
 module.exports = function(Topics) {
 
 	function updateGlobalCounters(tid, incr, callback) {
-		console.log('updateGlobalCounters');
 		async.parallel([
 			function(next) {
 				db.incrObjectFieldBy('global', 'topicCount', incr, next);
