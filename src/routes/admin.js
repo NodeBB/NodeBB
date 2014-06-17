@@ -38,8 +38,8 @@ function userRoutes(app, middleware, controllers) {
 	app.get('/admin/users/sort-reputation', middleware.admin.buildHeader, controllers.admin.users.sortByReputation);
 	app.get('/api/admin/users/sort-reputation', controllers.admin.users.sortByReputation);
 
-	app.get('/admin/users', middleware.admin.buildHeader, controllers.admin.users.sortByJoinDate);
-	app.get('/api/admin/users', controllers.admin.users.sortByJoinDate);
+	app.get('/admin/users', middleware.admin.buildHeader, controllers.admin.users.search);
+	app.get('/api/admin/users', controllers.admin.users.search);
 }
 
 function forumRoutes(app, middleware, controllers) {

@@ -810,38 +810,51 @@ Upgrade.upgrade = function(callback) {
 			if (schemaDate < thisSchemaDate) {
 				winston.info('[2014/6/17] Upgrading category post counts...');
 
-				db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
-					function upgradeTopic(tid, callback) {
-
-						Topics.getTopicFields(tid, ['cid', 'postcount', 'deleted'], function(err, topicData) {
-							if (err || !topicData) {
-								return callback(err);
-							}
-
-							if (parseInt(topicData.deleted, 10) === 1) {
-								return callback();
-							}
-
-							db.incrObjectFieldBy('category:' + topicData.cid, 'post_count', topicData.postcount, callback);
-						});
-					}
-
+				db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
 					if (err) {
 						return next(err);
 					}
 
-					if (!Array.isArray(tids) || !tids.length)  {
-						winston.info('[2014/6/17] Skipping category post upgrade');
-						return Upgrade.update(thisSchemaDate, next);
-					}
-
-					async.each(tids, upgradeTopic, function(err) {
+					async.each(cids, function(cid, next) {
+						db.setObjectField('category:' + cid, 'post_count', 0, next);
+					}, function(err) {
 						if (err) {
-							winston.error('[2014/6/17] Error encountered while upgrading category postcounts');
 							return next(err);
 						}
-						winston.info('[2014/6/17] Category post counts upgraded');
-						Upgrade.update(thisSchemaDate, next);
+						db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
+							function upgradeTopic(tid, callback) {
+
+								Topics.getTopicFields(tid, ['cid', 'postcount', 'deleted'], function(err, topicData) {
+									if (err || !topicData) {
+										return callback(err);
+									}
+
+									if (parseInt(topicData.deleted, 10) === 1) {
+										return callback();
+									}
+
+									db.incrObjectFieldBy('category:' + topicData.cid, 'post_count', topicData.postcount, callback);
+								});
+							}
+
+							if (err) {
+								return next(err);
+							}
+
+							if (!Array.isArray(tids) || !tids.length)  {
+								winston.info('[2014/6/17] Skipping category post upgrade');
+								return Upgrade.update(thisSchemaDate, next);
+							}
+
+							async.each(tids, upgradeTopic, function(err) {
+								if (err) {
+									winston.error('[2014/6/17] Error encountered while upgrading category postcounts');
+									return next(err);
+								}
+								winston.info('[2014/6/17] Category post counts upgraded');
+								Upgrade.update(thisSchemaDate, next);
+							});
+						});
 					});
 				});
 			} else {
