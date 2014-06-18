@@ -219,9 +219,8 @@
 	};
 
 	Groups.hide = function(groupName, callback) {
-		Groups.update(groupName, {
-			hidden: '1'
-		}, callback);
+		callback = callback || function() {};
+		db.setObjectField('group:' + groupName, 'hidden', 1, callback);
 	};
 
 	Groups.update = function(groupName, values, callback) {
@@ -265,7 +264,7 @@
 						winston.error('[groups.join] Could not create new hidden group: ' + err.message);
 						return callback(err);
 					}
-
+					Groups.hide(groupName);
 					db.setAdd('group:' + groupName + ':members', uid, callback);
 				});
 			}
@@ -316,11 +315,14 @@
 			var	keys = groupObj.members.map(function(uid) {
 				return 'uid:' + uid + ':posts';
 			});
+
 			db.getSortedSetRevUnion(keys, 0, max-1, function(err, pids) {
-				posts.getPostSummaryByPids(pids, false, function(err, posts) {
-					callback(null, posts);
-				})
-			})
+				if (err) {
+					return callback(err);
+				}
+
+				posts.getPostSummaryByPids(pids, false, callback);
+			});
 		});
 	};
 
@@ -357,5 +359,5 @@
 				});
 			});
 		});
-	}
+	};
 }(module.exports));
