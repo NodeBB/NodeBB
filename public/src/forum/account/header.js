@@ -15,12 +15,15 @@ define('forum/account/header', function() {
 			favouritesLink = $('#favouritesLink');
 
 		if (parseInt(yourid, 10) !== 0 && parseInt(yourid, 10) === parseInt(theirid, 10)) {
-			editLink.removeClass('hide');
-			settingsLink.removeClass('hide');
-			favouritesLink.removeClass('hide');
+			$('#editLink, #settingsLink, #favouritesLink').removeClass('hide');
+		} else {
+			$('.account-sub-links .plugin-link').each(function() {
+				$this = $(this);
+				$this.toggleClass('hide', $this.hasClass('private'));
+			});
 		}
 
-		if(app.isAdmin) {
+		if (app.isAdmin) {
 			editLink.removeClass('hide');
 		}
 	}

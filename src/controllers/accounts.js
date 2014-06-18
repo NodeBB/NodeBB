@@ -8,17 +8,17 @@ var fs = require('fs'),
 	nconf = require('nconf'),
 	async= require('async'),
 
-	user = require('./../user'),
-	posts = require('./../posts'),
-	topics = require('./../topics'),
+	user = require('../user'),
+	posts = require('../posts'),
+	topics = require('../topics'),
 	messaging = require('../messaging'),
 	postTools = require('../postTools'),
-	utils = require('./../../public/src/utils'),
-	meta = require('./../meta'),
-	plugins = require('./../plugins'),
-	languages = require('./../languages'),
-	image = require('./../image'),
-	file = require('./../file');
+	utils = require('../../public/src/utils'),
+	meta = require('../meta'),
+	plugins = require('../plugins'),
+	languages = require('../languages'),
+	image = require('../image'),
+	file = require('../file');
 
 function userNotFound(res) {
 	if (res.locals.isAPI) {
@@ -65,6 +65,9 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			},
 			ips: function(next) {
 				user.getIPs(uid, 4, next);
+			},
+			profile_links: function(next) {
+				plugins.fireHook('filter:user.profileLinks', [], next);
 			}
 		}, function(err, results) {
 			if(err || !results.userData) {
@@ -111,7 +114,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.isSelf = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
 			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
-
+			userData.profile_links = results.profile_links;
 
 			userData.followingCount = results.followStats.followingCount;
 			userData.followerCount = results.followStats.followerCount;
@@ -141,32 +144,33 @@ accountsController.getAccount = function(req, res, next) {
 			return userNotFound(res);
 		}
 
-		user.isFollowing(callerUID, userData.theirid, function (err, isFollowing) {
+		async.parallel({
+			isFollowing: function(next) {
+				user.isFollowing(callerUID, userData.theirid, next);
+			},
+			posts: function(next) {
+				posts.getPostsByUid(callerUID, userData.theirid, 0, 9, next);
+			},
+			signature: function(next) {
+				postTools.parse(userData.signature, next);
+			}
+		}, function(err, results) {
 			if(err) {
 				return next(err);
 			}
 
-			posts.getPostsByUid(callerUID, userData.theirid, 0, 9, function (err, userPosts) {
-				if(err) {
-					return next(err);
-				}
-
-				userData.posts = userPosts.posts.filter(function (p) {
-					return p && parseInt(p.deleted, 10) !== 1;
-				});
-
-				userData.isFollowing = isFollowing;
-
-				if (!userData.profileviews) {
-					userData.profileviews = 1;
-				}
-
-				postTools.parse(userData.signature, function (err, signature) {
-					userData.signature = signature;
-
-					res.render('account/profile', userData);
-				});
+			userData.posts = results.posts.posts.filter(function (p) {
+				return p && parseInt(p.deleted, 10) !== 1;
 			});
+
+			userData.isFollowing = results.isFollowing;
+
+			if (!userData.profileviews) {
+				userData.profileviews = 1;
+			}
+
+			userData.signature = results.signature;
+			res.render('account/profile', userData);
 		});
 	});
 };
@@ -209,36 +213,30 @@ function getFollow(route, name, req, res, next) {
 accountsController.getFavourites = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
-	user.getUidByUserslug(req.params.userslug, function (err, uid) {
-		if (!uid) {
+	getBaseUser(req.params.userslug, function(err, userData) {
+		if (err) {
+			return next(err);
+		}
+
+		if (!userData) {
 			return userNotFound(res);
 		}
 
-		if (parseInt(uid, 10) !== callerUID) {
+		if (parseInt(userData.uid, 10) !== callerUID) {
 			return userNotAllowed(res);
 		}
 
-		user.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
+		posts.getFavourites(userData.uid, 0, 9, function (err, favourites) {
 			if (err) {
 				return next(err);
 			}
 
-			if (!userData) {
-				return userNotFound(res);
-			}
+			userData.theirid = userData.uid;
+			userData.yourid = callerUID;
+			userData.posts = favourites.posts;
+			userData.nextStart = favourites.nextStart;
 
-			posts.getFavourites(uid, 0, 9, function (err, favourites) {
-				if (err) {
-					return next(err);
-				}
-
-				userData.theirid = uid;
-				userData.yourid = callerUID;
-				userData.posts = favourites.posts;
-				userData.nextStart = favourites.nextStart;
-
-				res.render('account/favourites', userData);
-			});
+			res.render('account/favourites', userData);
 		});
 	});
 };
@@ -304,7 +302,23 @@ function getBaseUser(userslug, callback) {
 			return callback(err);
 		}
 
-		user.getUserFields(uid, ['uid', 'username', 'userslug'], callback);
+		async.parallel({
+			user: function(next) {
+				user.getUserFields(uid, ['uid', 'username', 'userslug'], next);
+			},
+			profile_links: function(next) {
+				plugins.fireHook('filter:user.profileLinks', [], next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			if (!results.user) {
+				return callback();
+			}
+			results.user.profile_links = results.profile_links;
+			callback(null, results.user);
+		});
 	});
 }
 
@@ -323,53 +337,37 @@ accountsController.accountEdit = function(req, res, next) {
 accountsController.accountSettings = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
-	user.getUidByUserslug(req.params.userslug, function(err, uid) {
-
+	getBaseUser(req.params.userslug, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
 
-		if (!uid) {
+		if (!userData) {
 			return userNotFound(res);
 		}
 
-		if (parseInt(uid, 10) !== callerUID) {
+		if (parseInt(userData.uid, 10) !== callerUID) {
 			return userNotAllowed(res);
 		}
 
-		plugins.fireHook('filter:user.settings', [], function(err, settings) {
+		async.parallel({
+			settings: function(next) {
+				plugins.fireHook('filter:user.settings', [], next);
+			},
+			languages: function(next) {
+				languages.list(next);
+			}
+		}, function(err, results) {
 			if (err) {
 				return next(err);
 			}
 
-			async.parallel({
-				user: function(next) {
-					user.getUserFields(uid, ['username', 'userslug'], next);
-				},
-				languages: function(next) {
-					languages.list(next);
-				}
-			}, function(err, results) {
-				if (err) {
-					return next(err);
-				}
+			userData.yourid = callerUID;
+			userData.theirid = userData.uid;
+			userData.settings = results.settings;
+			userData.languages = results.languages;
 
-				if(!results.user) {
-					return userNotFound(res);
-				}
-
-				results = {
-					username: results.user.username,
-					userslug: results.user.userslug,
-					uid: uid,
-					yourid: req.user.uid,
-					theirid: uid,
-					settings: settings,
-					languages: results.languages
-				};
-
-				res.render('account/settings', results);
-			});
+			res.render('account/settings', userData);
 		});
 	});
 };
