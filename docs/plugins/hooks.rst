@@ -38,7 +38,7 @@ Executed whenever a post is retrieved, but before being sent to the client.
 ``filter:register.build``
 ^^^^^^^^^^^^^^^^^^^^^
 
-**Argument(s)**: 
+**Argument(s)**:
  - `req` the express request object (javascript Object)
  - `res` the express response object (javascript Object)
  - `data` the data passed to the template (javascript Object)
@@ -62,7 +62,7 @@ Executed when a post or signature needs to be parsed from raw text to HTML (for 
 ``filter:register.check``
 ^^^^^^^^^^^^^^^^^^^^^
 
-**Argument(s)**: 
+**Argument(s)**:
  - `req` the express request object (javascript Object)
  - `res` the express response object (javascript Object)
  - `userData` the user data parsed from the form
@@ -116,6 +116,9 @@ Executed when a post or signature needs to be parsed from raw text to HTML (for 
 ^^^^^^^^^^^^^^^^^^^^^
 
 ``filter:user.create``
+^^^^^^^^^^^^^^^^^^^^^
+
+``filter:user.profileLinks``
 ^^^^^^^^^^^^^^^^^^^^^
 
 ``filter:user.verify.code``
