@@ -192,7 +192,7 @@ function completeConfigSetup(err, config, next) {
 	var urlObject = url.parse(config.base_url),
 		server_conf = config;
 
-	server_conf.base_url = urlObject.protocol + '//' + urlObject.host;
+	server_conf.base_url = urlObject.protocol + '//' + urlObject.hostname;
 	server_conf.use_port = urlObject.port !== null ? true : false;
 	server_conf.relative_path = (urlObject.pathname && urlObject.pathname.length > 1) ? urlObject.pathname : '';
 
