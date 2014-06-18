@@ -5,7 +5,7 @@
     "403.title": "Zugriff verweigert",
     "403.message": "Du bist nicht dazu berechtigt, diese Seite aufzurufen. <a href='/login'>Logge dich ein</a> und versuche es erneut.",
     "404.title": " Nicht Gefunden",
-    "404.message": "Die abgefragte Seite wurde nicht gefunden. <a href='/''>Zurück zur Übersicht</a>.",
+    "404.message": "Die angeforderte Seite wurde nicht gefunden. <a href='/''>Zurück zur Übersicht</a>.",
     "500.title": "Interner Fehler.",
     "500.message": "Ups! Scheint als wäre etwas schief gelaufen!",
     "register": "Registrieren",
@@ -29,7 +29,7 @@
     "header.notifications": "Benachrichtigungen",
     "header.search": "Suche",
     "header.profile": "Profil",
-    "notifications.loading": "Benachrichtigungen laden",
+    "notifications.loading": "Benachrichtigungen werden geladen",
     "chats.loading": "Nachrichten werden geladen",
     "motd.welcome": "Willkommen auf NodeBB, der Diskussionsplattform der Zukunft.",
     "previouspage": "Vorherige Seite",
@@ -70,5 +70,5 @@
     "guest": "Gast",
     "guests": "Gäste",
     "updated.title": "Forum aktualisiert",
-    "updated.message": "Dieses Forum wurde gerade auf die neueste Version aktualisiert. Klicke hier, um die Seite zu neu zuladen."
+    "updated.message": "Dieses Forum wurde gerade auf die neueste Version aktualisiert. Klicke hier, um die Seite  neuzuladen."
 }

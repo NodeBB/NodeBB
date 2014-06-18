@@ -4,8 +4,8 @@
     "chat.send": "Wyślij",
     "chat.no_active": "Nie prowadzisz obecnie żadnych rozmów.",
     "chat.user_typing": "%1 pisze...",
-    "chat.user_has_messaged_you": "%1 has messaged you.",
-    "chat.see_all": "See all Chats",
-    "composer.user_said_in": "%1 said in %2:\n",
-    "composer.user_said": "%1 said:\n"
+    "chat.user_has_messaged_you": "%1 napisał do Ciebie",
+    "chat.see_all": "Pokaż wszystkie czaty",
+    "composer.user_said_in": "%1 powiedział w %2\n",
+    "composer.user_said": "%1 powiedział:\n"
 }

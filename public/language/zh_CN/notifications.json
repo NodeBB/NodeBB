@@ -15,9 +15,9 @@
     "favourited_your_post": "<strong>%1</strong>收藏了你的帖子",
     "user_flagged_post": "<strong>%1</strong>标记了一个帖子",
     "user_posted_to": "<strong>%1</strong>回复了<strong>%2</strong>",
-    "email-confirmed": "Email Confirmed",
-    "email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",
-    "email-confirm-error": "An error occurred...",
-    "email-confirm-error-message": "There was a problem validating your email address. Perhaps the code was invalid or has expired.",
-    "email-confirm-sent": "Confirmation email sent."
+    "email-confirmed": "邮箱确认成功",
+    "email-confirmed-message": "感谢您验证您的邮箱，您的账号所有功能均已激活。",
+    "email-confirm-error": "出错了...",
+    "email-confirm-error-message": "验证您邮箱地址时出错了，或许是验证码无效或过期，请重新再试。",
+    "email-confirm-sent": "确认邮件已发出，请点击邮件中的连接激活您的账户。"
 }

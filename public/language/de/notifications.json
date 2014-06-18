@@ -11,13 +11,13 @@
     "you_have_unread_notifications": "Du hast ungelesene Benarichtigungen.",
     "user_made_post": "<strong>%1</strong> hat einen Beitrag erstellt.",
     "new_message_from": "Neue Nachricht von <strong>%1</strong>",
-    "upvoted_your_post": "<strong>%1</strong> hat deinem Beitrag positiv bewertet.",
+    "upvoted_your_post": "<strong>%1</strong> hat deinen Beitrag positiv bewertet.",
     "favourited_your_post": "<strong>%1</strong> favorisiert deinen Beitrag.",
-    "user_flagged_post": "<strong>%1</strong> hat einen Beitrag makiert.",
+    "user_flagged_post": "<strong>%1</strong> hat einen Beitrag markiert.",
     "user_posted_to": "<strong>%1</strong> hat auf <strong>%2</strong> geantwortet.",
     "email-confirmed": "E-Mail bestätigt",
     "email-confirmed-message": "Vielen Dank für Ihre E-Mail-Validierung. Ihr Konto ist nun vollständig aktiviert.",
     "email-confirm-error": "Es ist ein Fehler aufgetreten ...",
-    "email-confirm-error-message": "Es gab ein Problem der Validierung Ihrer E-Mail-Adresse. Möglicherweise ist der Code ungültig oder abgelaufen.",
+    "email-confirm-error-message": "Es gab ein Problem bei der Validierung Ihrer E-Mail-Adresse. Möglicherweise ist der Code ungültig oder abgelaufen.",
     "email-confirm-sent": "Bestätigungs-E-Mail gesendet."
 }

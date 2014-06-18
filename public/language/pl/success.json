@@ -1,6 +1,6 @@
 {
-    "success": "Success",
-    "topic-post": "You have successfully posted.",
-    "authentication-successful": "Authentication Successful",
-    "settings-saved": "Settings saved!"
+    "success": "Sukces!",
+    "topic-post": "Wysłałeś posta!",
+    "authentication-successful": "Autoryzacja przebiegła pomyślnie!",
+    "settings-saved": "Ustawienia zapisane!"
 }
