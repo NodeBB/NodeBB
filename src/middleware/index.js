@@ -14,6 +14,7 @@ var templates = require('./../../public/src/templates'),
 	nconf = require('nconf'),
 	express = require('express'),
 	winston = require('winston'),
+	flash = require('connect-flash'),
 
 	relativePath,
 	viewsPath,
@@ -138,12 +139,13 @@ function handleErrors(err, req, res, next) {
 	// here and next(err) appropriately, or if
 	// we possibly recovered from the error, simply next().
 	console.error(err.stack);
+
 	var status = err.status || 500;
 	res.status(status);
 
-	res.json(status, {
-		error: err.message
-	});
+	req.flash('errorMessage', err.message);
+
+	res.redirect('500');
 }
 
 function catch404(req, res, next) {
@@ -190,6 +192,7 @@ module.exports = function(app, data) {
 		app.engine('tpl', templates.__express);
 		app.set('view engine', 'tpl');
 		app.set('views', viewsPath);
+		app.use(flash());
 
 		app.enable('view cache');
 

@@ -12,7 +12,9 @@ function createStatic(statusCode) {
 			res.statusCode = parseInt(statusCode, 10);
 		}
 
-		res.render(statusCode, {});
+		res.render(statusCode, {
+			errorMessage: req.flash('errorMessage')[0] || undefined
+		});
 	};
 }
 
