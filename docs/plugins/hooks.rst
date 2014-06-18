@@ -203,6 +203,13 @@ Executed whenever a post is created or edited, after it is saved into the databa
 ``action:post.restore``
 ^^^^^^^^^^^^^^^^^^^^^
 
+``action:notification.pushed``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**Argument(s)**: A notification object (javascript Object)
+
+Executed whenever a notification is pushed to a user.
+
 ``action:config.set``
 ^^^^^^^^^^^^^^^^^^^^^
 

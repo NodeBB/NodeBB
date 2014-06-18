@@ -11,7 +11,8 @@ var async = require('async'),
 	events = require('./events'),
 	User = require('./user'),
 	groups = require('./groups'),
-	meta = require('./meta');
+	meta = require('./meta'),
+	plugins = require('./plugins');
 
 (function(Notifications) {
 
@@ -125,7 +126,13 @@ var async = require('async'),
 				checkReplace(notif_data.uniqueId, uid, notif_data, function(err, replace) {
 					if (replace) {
 						db.sortedSetAdd('uid:' + uid + ':notifications:unread', notif_data.datetime, nid);
+
+						// Client-side
 						websockets.in('uid_' + uid).emit('event:new_notification', notif_data);
+
+						// Plugins
+						notif_data.uid = uid;
+						plugins.fireHook('action:notification.pushed', notif_data);
 					}
 					next();
 				});
