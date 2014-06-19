@@ -8,7 +8,8 @@ define('alerts', function() {
 	module.alert = function (params) {
 		params.alert_id = 'alert_button_' + (params.alert_id ? params.alert_id : new Date().getTime());
 		params.title = params.title || '';
-		params.location = (params.location || 'right-top');
+		params.location = params.location || 'right-top';
+		params.type = params.type || 'info';
 
 		var alert = $('#' + params.alert_id);
 		if (alert.length) {

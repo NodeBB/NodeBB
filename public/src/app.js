@@ -468,6 +468,14 @@ var socket,
 		}
 
 		searchButton.off().on('click', function(e) {
+			if (!config.isLoggedIn && !config.allowGuestSearching) {
+				app.alert({
+					message:'[[error:search-requires-login]]',
+					timeout: 3000
+				});
+				ajaxify.go('login');
+				return false;
+			}
 			e.stopPropagation();
 
 			searchFields.removeClass('hide').show();

@@ -238,7 +238,7 @@ middleware.renderHeader = function(req, res, callback) {
 				csrf: res.locals.csrf_token,
 				navigation: custom_header.navigation,
 				allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
-				searchEnabled: plugins.hasListeners('filter:search.query') && (uid || parseInt(meta.config.allowGuestSearching, 10) === 1)
+				searchEnabled: plugins.hasListeners('filter:search.query')
 			},
 			escapeList = {
 				'&': '&amp;',
