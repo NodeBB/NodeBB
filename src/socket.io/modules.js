@@ -208,10 +208,8 @@ function sendChatNotification(fromuid, touid, username, message) {
 	if (!module.parent.exports.isUserOnline(touid)) {
 		var notifText = '[[notifications:new_message_from, ' + username + ']]';
 		notifications.create({
-			body: {
-				short: notifText,
-				long: message
-			},
+			bodyShort: notifText,
+			bodyLong: message,
 			path: 'javascript:app.openChat(&apos;' + username + '&apos;, ' + fromuid + ');',
 			uniqueId: 'notification_' + fromuid + '_' + touid,
 			from: fromuid

@@ -34,10 +34,8 @@ module.exports = function(Topics) {
 					}
 
 					notifications.create({
-						body: {
-							short: '[[notifications:user_posted_to, ' + results.username + ', ' + results.topicData.title + ']]',
-							long: results.postContent
-						},
+						bodyShort: '[[notifications:user_posted_to, ' + results.username + ', ' + results.topicData.title + ']]',
+						bodyLong: results.postContent,
 						path: nconf.get('relative_path') + '/topic/' + results.topicData.slug + '/' + results.postIndex,
 						uniqueId: 'topic:' + tid,
 						from: exceptUid

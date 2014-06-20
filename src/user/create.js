@@ -163,10 +163,8 @@ module.exports = function(User) {
 
 					if (userNameChanged) {
 						notifications.create({
-							body: {
-								short: '[[user:username_taken_workaround, ' + userData.username + ']]',
-								long: ''
-							},
+							bodyShort: '[[user:username_taken_workaround, ' + userData.username + ']]',
+							bodyLong: '',
 							image: 'brand:logo',
 							datetime: Date.now()
 						}, function(nid) {

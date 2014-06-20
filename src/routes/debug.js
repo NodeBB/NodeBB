@@ -54,10 +54,7 @@ module.exports = function(app, middleware, controllers) {
 		});
 
 		app.get('/test', function(req, res) {
-			var a = require('../groups');
-			a.getLatestMemberPosts('mcg', 5, function() {
-				res.json(arguments);
-			});
+			res.redirect('404');
 		});
 	});
 };

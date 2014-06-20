@@ -115,10 +115,8 @@ function sendNotificationToPostOwner(data, uid, notification) {
 				}
 
 				notifications.create({
-					body: {
-						short: '[[' + notification + ', ' + results.username + ']]',
-						long: results.topicData.content
-					},
+					bodyShort: '[[' + notification + ', ' + results.username + ']]',
+					bodyLong: results.topicData.content,
 					path: nconf.get('relative_path') + '/topic/' + results.topicData.slug + '/' + results.index,
 					uniqueId: 'post:' + data.pid,
 					from: uid
@@ -309,10 +307,8 @@ SocketPosts.flag = function(socket, pid, callback) {
 		},
 		function(adminGroup, next) {
 			notifications.create({
-				body: {
-					short: message,
-					long: post.content
-				},
+				bodyShort: message,
+				bodyLong: post.content,
 				path: path,
 				uniqueId: 'post_flag:' + pid,
 				from: socket.uid

@@ -32,10 +32,18 @@ var async = require('async'),
 
 			if (exists) {
 				db.sortedSetRank('uid:' + uid + ':notifications:read', nid, function(err, rank) {
-
-					db.getObjectFields('notifications:' + nid, ['nid', 'from', 'text', 'image', 'importance', 'score', 'path', 'datetime', 'uniqueId'], function(err, notification) {
+					db.getObject('notifications:' + nid, function(err, notification) {
 						notification.read = rank !== null ? true:false;
-						notification.text = validator.escape(notification.text);
+						
+						// Backwards compatibility for old notification schema
+						if (notification.hasOwnProperty('text')) {
+							notification.bodyShort = notification.text;
+							notification.bodyLong = '';
+							notification.text = validator.escape(notification.text);
+						}
+
+						notification.bodyShort = validator.escape(notification.bodyShort);
+						notification.bodyLong = validator.escape(notification.bodyLong);
 
 						if (notification.from && !notification.image) {
 							User.getUserField(notification.from, 'picture', function(err, picture) {
@@ -85,10 +93,8 @@ var async = require('async'),
 
 		// Add default values to data Object if not already set
 		var	defaults = {
-				body: {
-					short: '',
-					long: ''
-				},
+				bodyShort: '',
+				bodyLong: '',
 				path: '',
 				importance: 5,
 				datetime: Date.now(),
@@ -101,13 +107,11 @@ var async = require('async'),
 			}
 		}
 
-		// Backwards compatibility for old notification syntax
+		// Backwards compatibility for old notification schema
 		// Remove this block for NodeBB v0.6.0
-		if (data.hasOwnProperty('text') && !data.hasOwnProperty('body')) {
-			data.body = {
-				short: data.text,
-				long: ''
-			};
+		if (data.hasOwnProperty('text')) {
+			data.bodyShort = data.text;
+			data.bodyLong = '';
 			delete data.text;
 		}
 
@@ -117,6 +121,8 @@ var async = require('async'),
 			db.setObject('notifications:' + nid, data, function(err, status) {
 				if (!err) {
 					callback(nid);
+				} else {
+					winston.error('[notifications.create] ' + err.message);
 				}
 			});
 		});

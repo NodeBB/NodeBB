@@ -163,10 +163,8 @@ var async = require('async'),
 				}
 
 				notifications.create({
-					body: {
-						short: '[[notifications:user_made_post, ' + results.username + ']]',
-						long: results.postContent
-					},
+					bodyShort: '[[notifications:user_made_post, ' + results.username + ']]',
+					bodyLong: results.postContent,
 					path: nconf.get('relative_path') + '/topic/' + results.slug + '/' + results.postIndex,
 					uniqueId: 'topic:' + tid,
 					from: uid
