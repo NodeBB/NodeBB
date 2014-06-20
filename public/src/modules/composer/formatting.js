@@ -2,7 +2,7 @@
 
 /* globals define */
 
-define('composer/formatting', ['composer/controls'], function(controls) {
+define('composer/formatting', ['composer/controls', 'composer/preview'], function(controls, preview) {
 
 	var formatting = {};
 
@@ -86,6 +86,7 @@ define('composer/formatting', ['composer/controls'], function(controls) {
 
 			if(formattingDispatchTable.hasOwnProperty(iconClass)){
 				formattingDispatchTable[iconClass](textarea, textarea.selectionStart, textarea.selectionEnd);
+				preview.render(postContainer);
 			}
 		});
 	};
