@@ -186,7 +186,7 @@ SocketModules.chats.send = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		sendChatNotification(socket.uid, touid, message.fromUser.username);
+		sendChatNotification(socket.uid, touid, message.fromUser.username, message);
 
 		server.getUserSockets(touid).forEach(function(s) {
 			s.emit('event:chats.receive', {
@@ -204,11 +204,14 @@ SocketModules.chats.send = function(socket, data, callback) {
 	});
 };
 
-function sendChatNotification(fromuid, touid, username) {
+function sendChatNotification(fromuid, touid, username, message) {
 	if (!module.parent.exports.isUserOnline(touid)) {
 		var notifText = '[[notifications:new_message_from, ' + username + ']]';
 		notifications.create({
-			text: notifText,
+			body: {
+				short: notifText,
+				long: message
+			},
 			path: 'javascript:app.openChat(&apos;' + username + '&apos;, ' + fromuid + ');',
 			uniqueId: 'notification_' + fromuid + '_' + touid,
 			from: fromuid

@@ -103,8 +103,8 @@ function sendNotificationToPostOwner(data, uid, notification) {
 				username: function(next) {
 					user.getUserField(uid, 'username', next);
 				},
-				slug: function(next) {
-					topics.getTopicField(postData.tid, 'slug', next);
+				topicData: function(next) {
+					topics.getTopicFields(postData.tid, ['slug', 'content'], next);
 				},
 				index: function(next) {
 					posts.getPidIndex(data.pid, next);
@@ -115,8 +115,11 @@ function sendNotificationToPostOwner(data, uid, notification) {
 				}
 
 				notifications.create({
-					text: '[[' + notification + ', ' + results.username + ']]',
-					path: nconf.get('relative_path') + '/topic/' + results.slug + '/' + results.index,
+					body: {
+						short: '[[' + notification + ', ' + results.username + ']]',
+						long: results.topicData.content
+					},
+					path: nconf.get('relative_path') + '/topic/' + results.topicData.slug + '/' + results.index,
 					uniqueId: 'post:' + data.pid,
 					from: uid
 				}, function(nid) {
@@ -290,7 +293,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 		},
 		function(username, next) {
 			message = '[[notifications:user_flagged_post, ' + username + ']]';
-			posts.getPostFields(pid, ['tid', 'uid'], next);
+			posts.getPostFields(pid, ['tid', 'uid', 'content'], next);
 		},
 		function(postData, next) {
 			post = postData;
@@ -306,7 +309,10 @@ SocketPosts.flag = function(socket, pid, callback) {
 		},
 		function(adminGroup, next) {
 			notifications.create({
-				text: message,
+				body: {
+					short: message,
+					long: post.content
+				},
 				path: path,
 				uniqueId: 'post_flag:' + pid,
 				from: socket.uid

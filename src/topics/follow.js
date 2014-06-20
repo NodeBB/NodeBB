@@ -24,22 +24,20 @@ module.exports = function(Topics) {
 		async.parallel({
 			nid: function(next) {
 				async.parallel({
-					topicData: function(next) {
-						Topics.getTopicFields(tid, ['title', 'slug'], next);
-					},
-					username: function(next) {
-						user.getUserField(exceptUid, 'username', next);
-					},
-					postIndex: function(next) {
-						posts.getPidIndex(pid, next);
-					}
+					topicData: async.apply(Topics.getTopicFields, tid, ['title', 'slug']),
+					username: async.apply(user.getUserField, exceptUid, 'username'),
+					postIndex: async.apply(posts.getPidIndex, pid),
+					postContent: async.apply(posts.getPostField, pid, 'content')
 				}, function(err, results) {
 					if (err) {
 						return next(err);
 					}
 
 					notifications.create({
-						text: '[[notifications:user_posted_to, ' + results.username + ', ' + results.topicData.title + ']]',
+						body: {
+							short: '[[notifications:user_posted_to, ' + results.username + ', ' + results.topicData.title + ']]',
+							long: results.postContent
+						},
 						path: nconf.get('relative_path') + '/topic/' + results.topicData.slug + '/' + results.postIndex,
 						uniqueId: 'topic:' + tid,
 						from: exceptUid

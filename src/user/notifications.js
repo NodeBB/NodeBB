@@ -153,22 +153,20 @@ var async = require('async'),
 			}
 
 			async.parallel({
-				username: function(next) {
-					user.getUserField(uid, 'username', next);
-				},
-				slug: function(next) {
-					topics.getTopicField(tid, 'slug', next);
-				},
-				postIndex: function(next) {
-					posts.getPidIndex(pid, next);
-				}
+				username: async.apply(user.getUserField, uid, 'username'),
+				slug: async.apply(topics.getTopicField, tid, 'slug'),
+				postIndex: async.apply(posts.getPidIndex, pid),
+				postContent: async.apply(posts.getPostField, pid, 'content')
 			}, function(err, results) {
 				if (err) {
 					return;
 				}
 
 				notifications.create({
-					text: '[[notifications:user_made_post, ' + results.username + ']]',
+					body: {
+						short: '[[notifications:user_made_post, ' + results.username + ']]',
+						long: results.postContent
+					},
 					path: nconf.get('relative_path') + '/topic/' + results.slug + '/' + results.postIndex,
 					uniqueId: 'topic:' + tid,
 					from: uid

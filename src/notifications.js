@@ -85,16 +85,30 @@ var async = require('async'),
 
 		// Add default values to data Object if not already set
 		var	defaults = {
-				text: '',
+				body: {
+					short: '',
+					long: ''
+				},
 				path: '',
 				importance: 5,
 				datetime: Date.now(),
 				uniqueId: utils.generateUUID()
 			};
+
 		for(var v in defaults) {
 			if (defaults.hasOwnProperty(v) && !data[v]) {
 				data[v] = defaults[v];
 			}
+		}
+
+		// Backwards compatibility for old notification syntax
+		// Remove this block for NodeBB v0.6.0
+		if (data.hasOwnProperty('text') && !data.hasOwnProperty('body')) {
+			data.body = {
+				short: data.text,
+				long: ''
+			};
+			delete data.text;
 		}
 
 		db.incrObjectField('global', 'nextNid', function(err, nid) {
