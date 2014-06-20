@@ -18,7 +18,7 @@ define('forum/account/header', function() {
 			$('#editLink, #settingsLink, #favouritesLink').removeClass('hide');
 		} else {
 			$('.account-sub-links .plugin-link').each(function() {
-				$this = $(this);
+				var $this = $(this);
 				$this.toggleClass('hide', $this.hasClass('private'));
 			});
 		}
