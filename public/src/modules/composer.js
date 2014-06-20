@@ -263,8 +263,14 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 					preview.render(postContainer);
 				});
 
+				bodyEl.on('scroll', function() {
+					preview.matchScroll(postContainer);
+				})
+
 				bodyEl.val(draft ? draft : postData.body);
-				preview.render(postContainer);
+				preview.render(postContainer, function() {
+					preview.matchScroll(postContainer);
+				});
 				drafts.init(postContainer, postData);
 
 				handleResize(postContainer);
