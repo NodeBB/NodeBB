@@ -285,7 +285,12 @@ middleware.renderHeader = function(req, res, callback) {
 				var parser = new (less.Parser)();
 
 				parser.parse(meta.config.customCSS, function(err, tree) {
-					next(err, tree ? tree.toCSS({cleancss: true}) : '');
+					if (!err) {
+						next(err, tree ? tree.toCSS({cleancss: true}) : '');
+					} else {
+						winston.error('[less] Could not convert custom LESS to CSS! Please check your syntax.');
+						next(undefined, '');
+					}
 				});
 			},
 			customJS: function(next) {
