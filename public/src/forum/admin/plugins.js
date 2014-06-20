@@ -64,6 +64,14 @@ define('forum/admin/plugins', function() {
 					});
 				});
 
+				$('#plugin-search').on('input propertychange', function() {
+					var term = $(this).val();
+					$('.plugins li').each(function() {
+						var pluginId = $(this).attr('data-plugin-id');
+						$(this).toggleClass('hide', pluginId && pluginId.indexOf(term) === -1);
+					});
+				});
+
 			} else {
 				pluginsList.append('<li><p><i>No plugins found.</i></p></li>');
 			}
