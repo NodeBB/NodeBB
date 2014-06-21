@@ -10,6 +10,7 @@ var async = require('async'),
 	db = require('../database'),
 	notifications = require('../notifications'),
 	posts = require('../posts'),
+	postTools = require('../postTools'),
 	topics = require('../topics');
 
 (function(UserNotifications) {
@@ -156,7 +157,14 @@ var async = require('async'),
 				username: async.apply(user.getUserField, uid, 'username'),
 				slug: async.apply(topics.getTopicField, tid, 'slug'),
 				postIndex: async.apply(posts.getPidIndex, pid),
-				postContent: async.apply(posts.getPostField, pid, 'content')
+				postContent: function(next) {
+					async.waterfall([
+						async.apply(posts.getPostField, pid, 'content'),
+						function(content, next) {
+							postTools.parse(content, next);
+						}
+					], next);
+				}
 			}, function(err, results) {
 				if (err) {
 					return;

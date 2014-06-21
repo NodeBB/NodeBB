@@ -100,14 +100,16 @@ function sendNotificationToPostOwner(data, uid, notification) {
 			}
 
 			async.parallel({
-				username: function(next) {
-					user.getUserField(uid, 'username', next);
-				},
-				topicData: function(next) {
-					topics.getTopicFields(postData.tid, ['slug', 'content'], next);
-				},
-				index: function(next) {
-					posts.getPidIndex(data.pid, next);
+				username: async.apply(user.getUserField, uid, 'username'),
+				slug: async.apply(topics.getTopicField, postData.tid, 'slug'),
+				index: async.apply(posts.getPidIndex, data.pid),
+				postContent: function(next) {
+					async.waterfall([
+						async.apply(posts.getPostField, data.pid, 'content'),
+						function(content, next) {
+							postTools.parse(content, next);
+						}
+					], next);
 				}
 			}, function(err, results) {
 				if (err) {
@@ -116,8 +118,8 @@ function sendNotificationToPostOwner(data, uid, notification) {
 
 				notifications.create({
 					bodyShort: '[[' + notification + ', ' + results.username + ']]',
-					bodyLong: results.topicData.content,
-					path: nconf.get('relative_path') + '/topic/' + results.topicData.slug + '/' + results.index,
+					bodyLong: results.postContent,
+					path: nconf.get('relative_path') + '/topic/' + results.slug + '/' + results.index,
 					uniqueId: 'post:' + data.pid,
 					from: uid
 				}, function(nid) {
@@ -292,6 +294,12 @@ SocketPosts.flag = function(socket, pid, callback) {
 		function(username, next) {
 			message = '[[notifications:user_flagged_post, ' + username + ']]';
 			posts.getPostFields(pid, ['tid', 'uid', 'content'], next);
+		},
+		function(postData, next) {
+			postTools.parse(postData.content, function(err, parsed) {
+				postData.content = parsed;
+				next(undefined, postData);
+			});
 		},
 		function(postData, next) {
 			post = postData;

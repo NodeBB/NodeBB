@@ -7,6 +7,7 @@ var async = require('async'),
 	db = require('../database'),
 	user = require('../user'),
 	posts = require('../posts'),
+	postTools = require('../postTools'),
 	notifications = require('../notifications');
 
 module.exports = function(Topics) {
@@ -27,7 +28,14 @@ module.exports = function(Topics) {
 					topicData: async.apply(Topics.getTopicFields, tid, ['title', 'slug']),
 					username: async.apply(user.getUserField, exceptUid, 'username'),
 					postIndex: async.apply(posts.getPidIndex, pid),
-					postContent: async.apply(posts.getPostField, pid, 'content')
+					postContent: function(next) {
+						async.waterfall([
+							async.apply(posts.getPostField, pid, 'content'),
+							function(content, next) {
+								postTools.parse(content, next);
+							}
+						], next);
+					}
 				}, function(err, results) {
 					if (err) {
 						return next(err);
