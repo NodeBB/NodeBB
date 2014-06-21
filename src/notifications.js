@@ -4,7 +4,7 @@ var async = require('async'),
 	winston = require('winston'),
 	cron = require('cron').CronJob,
 	nconf = require('nconf'),
-	validator = require('validator'),
+	S = require('string'),
 
 	db = require('./database'),
 	utils = require('../public/src/utils'),
@@ -36,14 +36,15 @@ var async = require('async'),
 						notification.read = rank !== null ? true:false;
 						
 						// Backwards compatibility for old notification schema
+						// Remove this block when NodeBB v0.6.0 is released.
 						if (notification.hasOwnProperty('text')) {
 							notification.bodyShort = notification.text;
 							notification.bodyLong = '';
-							notification.text = validator.escape(notification.text);
+							notification.text = S(notification.text).escapeHTML().s;
 						}
 
-						notification.bodyShort = validator.escape(notification.bodyShort);
-						notification.bodyLong = validator.escape(notification.bodyLong);
+						notification.bodyShort = S(notification.bodyShort).escapeHTML().s;
+						notification.bodyLong = S(notification.bodyLong).escapeHTML().s;
 
 						if (notification.from && !notification.image) {
 							User.getUserField(notification.from, 'picture', function(err, picture) {
