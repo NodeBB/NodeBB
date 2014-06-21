@@ -62,7 +62,7 @@ define('alerts', function() {
 		alert.find('p').html(params.message);
 		alert.attr('class', 'alert alert-dismissable alert-' + params.type);
 
-		clearTimeout(alert.attr('timeoutId'));
+		clearTimeout(parseInt(alert.attr('timeoutId'), 10));
 		startTimeout(alert, params.timeout);
 
 		alert.children().fadeOut(100);

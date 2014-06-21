@@ -78,7 +78,12 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 
 				setFollowState(state);
 
-				app.alertSuccess(state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]');
+				app.alert({
+					alert_id: 'follow_thread',
+					message: state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]',
+					type: 'success',
+					timeout: 5000
+				});
 			});
 
 			return false;
