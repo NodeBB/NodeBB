@@ -39,8 +39,8 @@ module.exports = function(User) {
 				next((!utils.isUserNameValid(userData.username) || !userData.userslug) ? new Error('[[error:invalid-username]]') : null);
 			},
 			function(next) {
-				if (userData.password) {
-					next(!utils.isPasswordValid(userData.password) ? new Error('[[error:invalid-password]]') : null);
+				if (password) {
+					next(!utils.isPasswordValid(password) ? new Error('[[error:invalid-password]]') : null);
 				} else {
 					next();
 				}
