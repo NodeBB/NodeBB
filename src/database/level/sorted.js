@@ -27,6 +27,11 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.sortedSetsRemove = function(keys, value, callback) {
+		// TODO :
+		// remove value from sorted sets given by keys
+	};
+
 	function flattenSortedSet(set, callback) {
 		callback(null, !set.length ? [] : set.reduce(function(a, b) {
 			return (a.length ? a : [a.value]).concat([b.value]);

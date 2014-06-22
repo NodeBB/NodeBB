@@ -9,6 +9,16 @@ module.exports = function(redisClient, module) {
 		redisClient.zrem(key, value, callback);
 	};
 
+	module.sortedSetsRemove = function(keys, value, callback) {
+		var multi = redisClient.multi();
+
+		for(var x=0; x<keys.length; ++x) {
+			multi.zrem(keys[x], value);
+		}
+
+		multi.exec(callback);
+	};
+
 	module.getSortedSetRange = function(key, start, stop, callback) {
 		redisClient.zrange(key, start, stop, callback);
 	};

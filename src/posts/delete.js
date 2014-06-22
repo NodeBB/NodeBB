@@ -86,9 +86,11 @@ module.exports = function(Posts) {
 				return callback(err);
 			}
 
-			async.each(cids, function(cid, next) {
-				db.sortedSetRemove('categories:recent_posts:cid:' + cid, pid, next);
-			}, callback);
+			var sets = cids.map(function(cid) {
+				return 'categories:recent_posts:cid:' + cid;
+			});
+
+			db.sortedSetsRemove(sets, pid, callback);
 		});
 	}
 
@@ -98,9 +100,11 @@ module.exports = function(Posts) {
 				return callback(err);
 			}
 
-			async.each(uids, function(uid, next) {
-				db.sortedSetRemove('uid:' + uid + ':favourites', pid, next);
-			}, function(err) {
+			var sets = uids.map(function(uid) {
+				return 'uid:' + uid + ':favourites'
+			});
+
+			db.sortedSetsRemove(sets, pid, function(err) {
 				if (err) {
 					return callback(err);
 				}
@@ -123,16 +127,20 @@ module.exports = function(Posts) {
 				return callback(err);
 			}
 
+			var upvoterSets = results.upvoters.map(function(uid) {
+				return 'uid:' + uid + ':upvote';
+			});
+
+			var downvoterSets = results.downvoters.map(function(uid) {
+				return 'uid:' + uid + ':downvote';
+			});
+
 			async.parallel([
 				function(next) {
-					async.each(results.upvoters, function(uid, next) {
-						db.sortedSetRemove('uid:' + uid + ':upvote', pid, next);
-					}, next);
+					db.sortedSetsRemove(upvoterSets, pid, next);
 				},
 				function(next) {
-					async.each(results.downvoters, function(uid, next) {
-						db.sortedSetRemove('uid:' + uid + ':downvote', pid, next);
-					}, next);
+					db.sortedSetsRemove(downvoterSets, pid, next);
 				},
 				function(next) {
 					db.delete('pid:' + pid + ':upvote', next);

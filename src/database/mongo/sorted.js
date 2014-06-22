@@ -10,13 +10,19 @@ module.exports = function(db, module) {
 			value: value
 		};
 
-		db.collection('objects').update({_key:key, value:value}, {$set:data}, {upsert:true, w: 1}, helpers.done(callback));
+		db.collection('objects').update({_key: key, value: value}, {$set: data}, {upsert:true, w: 1}, helpers.done(callback));
 	};
 
 	module.sortedSetRemove = function(key, value, callback) {
 		value = helpers.valueToString(value);
 
-		db.collection('objects').remove({_key:key, value:value}, helpers.done(callback));
+		db.collection('objects').remove({_key: key, value: value}, helpers.done(callback));
+	};
+
+	module.sortedSetsRemove = function(keys, value, callback) {
+		value = helpers.valueToString(value);
+
+		db.collection('objects').remove({_key: {$in: keys}, value: value}, helpers.done(callback));
 	};
 
 	function getSortedSetRange(key, start, stop, sort, withScores, callback) {
