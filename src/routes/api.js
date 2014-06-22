@@ -25,23 +25,23 @@ function deleteTempFiles(files) {
 function upload(req, res, filesIterator, next) {
 	var files = req.files.files;
 
-	if(!req.user) {
+	if (!req.user) {
 		deleteTempFiles(files);
-		return res.json(403, {message:'not allowed'});
+		return res.json(403, 'not allowed');
 	}
 
-	if(!Array.isArray(files)) {
-		return res.json(500, {message: 'invalid files'});
+	if (!Array.isArray(files)) {
+		return res.json(500, 'invalid files');
 	}
 
-	if(Array.isArray(files[0])) {
+	if (Array.isArray(files[0])) {
 		files = files[0];
 	}
 
 	async.map(files, filesIterator, function(err, images) {
 		deleteTempFiles(files);
 
-		if(err) {
+		if (err) {
 			return res.send(500, err.message);
 		}
 

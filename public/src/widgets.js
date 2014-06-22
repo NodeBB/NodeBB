@@ -31,24 +31,16 @@
 		}
 
 		function renderWidgets(location) {
-			// remove when https://code.google.com/p/chromium/issues/detail?id=357625 is fixed
-			try {
-				var temp = localStorage.getItem('cache:widgets:' + url + ':' + location);
-			} catch (e) {
-				var temp = null;
-			}
-
-			var area = $('#content [widget-area="' + location + '"]')
-				.html(temp);
-
+			var area = $('#content [widget-area="' + location + '"]');
 
 			socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, function(err, renderedWidgets) {
+				if (err) {
+					return;
+				}
 				var html = '';
 
-				for (var widget in renderedWidgets) {
-					if (renderedWidgets.hasOwnProperty(widget)) {
-						html += templates.parse(renderedWidgets[widget].html, {});
-					}
+				for (var i=0; i<renderedWidgets.length; ++i) {
+					html += templates.parse(renderedWidgets[i].html, {});
 				}
 
 				if (!area.length && window.location.pathname.indexOf('/admin') === -1 && renderedWidgets.length) {
@@ -65,11 +57,7 @@
 				}
 
 				area.html(html);
-				// remove when https://code.google.com/p/chromium/issues/detail?id=357625 is fixed
-				try {
-					localStorage.setItem('cache:widgets:' + url + ':' + location, html);
-				} catch (e) {}
-				
+
 				if (!renderedWidgets.length) {
 					area.addClass('hidden');
 					ajaxify.widgets.reposition(location);
@@ -90,10 +78,8 @@
 			}
 		}
 
-		for (var i in widgetLocations) {
-			if (widgetLocations.hasOwnProperty(i)) {
-				renderWidgets(widgetLocations[i]);
-			}
+		for (var i=0; i<widgetLocations.length; ++i) {
+			renderWidgets(widgetLocations[i]);
 		}
 
 		checkCallback();
