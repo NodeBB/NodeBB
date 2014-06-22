@@ -32,12 +32,12 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 		});
 
 		$('.lock_thread').on('click', function() {
-			socket.emit(threadState.locked ? 'topics.unlock' : 'topics.lock', [tid]);
+			socket.emit(threadState.locked ? 'topics.unlock' : 'topics.lock', {tids: [tid], cid: ajaxify.variables.get('category_id')});
 			return false;
 		});
 
 		$('.pin_thread').on('click', function() {
-			socket.emit(threadState.pinned ? 'topics.unpin' : 'topics.pin', [tid]);
+			socket.emit(threadState.pinned ? 'topics.unpin' : 'topics.pin', {tids: [tid], cid: ajaxify.variables.get('category_id')});
 			return false;
 		});
 
@@ -94,7 +94,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 		translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function(msg) {
 			bootbox.confirm(msg, function(confirm) {
 				if (confirm) {
-					socket.emit('topics.' + command, [tid]);
+					socket.emit('topics.' + command, {tids: [tid], cid: ajaxify.variables.get('category_id')});
 				}
 			});
 		});
@@ -103,13 +103,14 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 	ThreadTools.setLockedState = function(data) {
 		var threadEl = $('#post-container');
 		if (parseInt(data.tid, 10) === parseInt(threadEl.attr('data-tid'), 10)) {
-			translator.translate('<i class="fa fa-fw fa-' + (data.isLocked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (data.isLocked ? 'un': '') + 'lock]]', function(translated) {
+			var isLocked = data.isLocked && !app.isAdmin;
+			translator.translate('<i class="fa fa-fw fa-' + (isLocked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (isLocked ? 'un': '') + 'lock]]', function(translated) {
 				$('.lock_thread').html(translated);
 			});
 
-			threadEl.find('.post_reply').html(data.isLocked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply <i class="fa fa-reply"></i>');
-			threadEl.find('.quote, .edit, .delete').toggleClass('none', data.isLocked);
-			$('.topic-main-buttons .post_reply').attr('disabled', data.isLocked).html(data.isLocked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply');
+			threadEl.find('.post_reply').html(isLocked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply <i class="fa fa-reply"></i>');
+			threadEl.find('.quote, .edit, .delete').toggleClass('none', isLocked);
+			$('.topic-main-buttons .post_reply').attr('disabled', isLocked).html(isLocked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply');
 
 			ThreadTools.threadState.locked = data.isLocked;
 		}
