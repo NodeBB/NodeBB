@@ -27,7 +27,25 @@ var winston = require('winston'),
 	PostTools.edit = function(uid, pid, title, content, options, callback) {
 		options = options || {};
 
-		function success(postData) {
+		async.waterfall([
+			function (next) {
+				privileges.posts.canEdit(pid, uid, next);
+			},
+			function(canEdit, next) {
+				if (!canEdit) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
+				posts.getPostData(pid, next);
+			},
+			function(postData, next) {
+				postData.content = content;
+				plugins.fireHook('filter:post.save', postData, next);
+			}
+		], function(err, postData) {
+			if (err) {
+				return callback(err);
+			}
+
 			posts.setPostFields(pid, {
 				edited: Date.now(),
 				editor: uid,
@@ -46,12 +64,15 @@ var winston = require('winston'),
 
 						if (isMainPost) {
 							title = title.trim();
-							var slug = tid + '/' + utils.slugify(title);
 
-							topics.setTopicField(tid, 'title', title);
-							topics.setTopicField(tid, 'slug', slug);
-
-							topics.setTopicField(tid, 'thumb', options.topic_thumb);
+							var topicData = {
+								title: title,
+								slug: tid + '/' + utils.slugify(title)
+							};
+							if (options.topic_thumb) {
+								topicData.thumb = options.topic_thumb;
+							}
+							db.setObject('topic:' + tid, topicData);
 
 							topics.updateTags(tid, options.tags);
 
@@ -72,27 +93,6 @@ var winston = require('winston'),
 					PostTools.parse(postData.content, next);
 				}
 			}, callback);
-		}
-
-		privileges.posts.canEdit(pid, uid, function(err, canEdit) {
-			if (err || !canEdit) {
-				return callback(err || new Error('[[error:no-privileges]]'));
-			}
-
-			posts.getPostData(pid, function(err, postData) {
-				if (err) {
-					return callback(err);
-				}
-
-				postData.content = content;
-				plugins.fireHook('filter:post.save', postData, function(err, postData) {
-					if (err) {
-						return callback(err);
-					}
-
-					success(postData);
-				});
-			});
 		});
 	};
 
