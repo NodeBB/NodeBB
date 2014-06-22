@@ -116,9 +116,11 @@ module.exports = function(Topics) {
 					db.delete('topic:' + tid + ':tags', next);
 				},
 				function(next) {
-					async.each(tags, function(tag, next) {
-						db.sortedSetRemove('tag:' + tag + ':topics', tid, next);
-					}, next);
+					var sets = tags.map(function(tag) {
+						return 'tag:' + tag + ':topics';
+					});
+
+					db.sortedSetsRemove(sets, tid, next);
 				}
 			], callback);
 		});
