@@ -512,8 +512,6 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 				return app.alertError(err.message);
 			}
 
-			app.alertSuccess('[[success:topic-post]]');
-
 			discard(post_uuid);
 			drafts.removeDraft(postData.save_id);
 		}
