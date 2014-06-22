@@ -1,7 +1,7 @@
 
 'use strict';
 
-/* globals define, app, translator, socket, bootbox */
+/* globals define, app, translator, socket, bootbox, ajaxify */
 
 
 define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move, topicSelect) {
@@ -28,7 +28,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 		$('.lock_thread').on('click', function() {
 			var tids = topicSelect.getSelectedTids();
 			if (tids.length) {
-				socket.emit(isAny(isTopicLocked, tids) ? 'topics.unlock' : 'topics.lock', tids, onCommandComplete);
+				socket.emit(isAny(isTopicLocked, tids) ? 'topics.unlock' : 'topics.lock', {tids: tids, cid: CategoryTools.cid}, onCommandComplete);
 			}
 			return false;
 		});
@@ -36,7 +36,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 		$('.pin_thread').on('click', function() {
 			var tids = topicSelect.getSelectedTids();
 			if (tids.length) {
-				socket.emit(isAny(isTopicPinned, tids) ? 'topics.unpin' : 'topics.pin', tids, onCommandComplete);
+				socket.emit(isAny(isTopicPinned, tids) ? 'topics.unpin' : 'topics.pin', {tids: tids, cid: CategoryTools.cid}, onCommandComplete);
 			}
 			return false;
 		});
@@ -93,7 +93,8 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 				if (!confirm) {
 					return;
 				}
-				socket.emit('topics.' + command, tids, onCommandComplete);
+
+				socket.emit('topics.' + command, {tids: tids, cid: CategoryTools.cid}, onCommandComplete);
 			});
 		});
 	}
@@ -200,8 +201,13 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 		getTopicEl(data.tid).remove();
 	}
 
-	function onTopicPurged(tid) {
-		getTopicEl(tid).remove();
+	function onTopicPurged(tids) {
+		if (!tids) {
+			return;
+		}
+		for(var i=0; i<tids.length; ++i) {
+			getTopicEl(tids[i]).remove();
+		}
 	}
 
 	return CategoryTools;

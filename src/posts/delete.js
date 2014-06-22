@@ -133,6 +133,12 @@ module.exports = function(Posts) {
 					async.each(results.downvoters, function(uid, next) {
 						db.sortedSetRemove('uid:' + uid + ':downvote', pid, next);
 					}, next);
+				},
+				function(next) {
+					db.delete('pid:' + pid + ':upvote', next);
+				},
+				function(next) {
+					db.delete('pid:' + pid + ':downvote', next);
 				}
 			], callback);
 		});

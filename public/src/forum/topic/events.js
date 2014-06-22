@@ -74,8 +74,8 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 		threadTools.setDeleteState(data);
 	}
 
-	function onTopicPurged(tid, cid) {
-		ajaxify.go('category/' + cid);
+	function onTopicPurged(tid) {
+		ajaxify.go('category/' + ajaxify.variables.get('category_id'));
 	}
 
 	function toggleTopicLockedState(data) {

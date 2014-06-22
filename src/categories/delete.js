@@ -14,7 +14,7 @@ module.exports = function(Categories) {
 				return callback(err);
 			}
 
-			async.each(tids, function(tid, next) {
+			async.eachLimit(tids, 10, function(tid, next) {
 				threadTools.purge(tid, 0, next);
 			}, function(err) {
 				if (err) {

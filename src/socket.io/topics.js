@@ -59,7 +59,7 @@ SocketTopics.postcount = function(socket, tid, callback) {
 
 SocketTopics.increaseViewCount = function(socket, tid) {
 	topics.increaseViewCount(tid);
-}
+};
 
 SocketTopics.markAsRead = function(socket, tid) {
 	if(!tid || !socket.uid) {
@@ -152,40 +152,50 @@ SocketTopics.markAsUnreadForAll = function(socket, tids, callback) {
 	}, callback);
 };
 
-SocketTopics.delete = function(socket, tids, callback) {
-	doTopicAction('delete', socket, tids, callback);
+SocketTopics.delete = function(socket, data, callback) {
+	doTopicAction('delete', socket, data, callback);
 };
 
-SocketTopics.restore = function(socket, tids, callback) {
-	doTopicAction('restore', socket, tids, callback);
+SocketTopics.restore = function(socket, data, callback) {
+	doTopicAction('restore', socket, data, callback);
 };
 
-SocketTopics.purge = function(socket, tids, callback) {
-	doTopicAction('purge', socket, tids, callback);
+SocketTopics.purge = function(socket, data, callback) {
+	doTopicAction('purge', socket, data, function(err) {
+		if (err) {
+			return callback(err);
+		}
+		websockets.emitTopicPostStats();
+		websockets.in('category_' + data.cid).emit('event:topic_purged', data.tids);
+		async.each(data.tids, function(tid, next) {
+			websockets.in('topic_' + tid).emit('event:topic_purged', tid);
+			next();
+		}, callback);
+	});
 };
 
-SocketTopics.lock = function(socket, tids, callback) {
-	doTopicAction('lock', socket, tids, callback);
+SocketTopics.lock = function(socket, data, callback) {
+	doTopicAction('lock', socket, data, callback);
 };
 
-SocketTopics.unlock = function(socket, tids, callback) {
-	doTopicAction('unlock', socket, tids, callback);
+SocketTopics.unlock = function(socket, data, callback) {
+	doTopicAction('unlock', socket, data, callback);
 };
 
-SocketTopics.pin = function(socket, tids, callback) {
-	doTopicAction('pin', socket, tids, callback);
+SocketTopics.pin = function(socket, data, callback) {
+	doTopicAction('pin', socket, data, callback);
 };
 
-SocketTopics.unpin = function(socket, tids, callback) {
-	doTopicAction('unpin', socket, tids, callback);
+SocketTopics.unpin = function(socket, data, callback) {
+	doTopicAction('unpin', socket, data, callback);
 };
 
-function doTopicAction(action, socket, tids, callback) {
-	if(!tids) {
+function doTopicAction(action, socket, data, callback) {
+	if(!data || !Array.isArray(data.tids) || !data.cid) {
 		return callback(new Error('[[error:invalid-tid]]'));
 	}
 
-	async.each(tids, function(tid, next) {
+	async.each(data.tids, function(tid, next) {
 		privileges.topics.canEdit(tid, socket.uid, function(err, canEdit) {
 			if(err) {
 				return next(err);

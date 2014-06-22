@@ -86,25 +86,18 @@ var winston = require('winston'),
 			var pids = [];
 			if (results.topic.mainPid) {
 				pids = [results.topic.mainPid].concat(results.pids);
+			} else {
+				pids = results.pids;
 			}
 
 			async.parallel([
 				function(next) {
-					async.each(pids, posts.purge, next);
+					async.eachLimit(pids, 10, posts.purge, next);
 				},
 				function(next) {
 					topics.purge(tid, next);
 				}
-			], function(err) {
-				if (err) {
-					return callback(err);
-				}
-
-				websockets.emitTopicPostStats();
-				websockets.in('topic_' + tid).emit('event:topic_purged', tid, results.topic.cid);
-				websockets.in('category_' + results.topic.cid).emit('event:topic_purged', tid);
-				callback();
-			});
+			], callback);
 		});
 	};
 
