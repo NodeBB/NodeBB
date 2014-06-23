@@ -148,9 +148,11 @@
 				for (var i in login_strategies) {
 					if (login_strategies.hasOwnProperty(i)) {
 						var strategy = login_strategies[i];
-						app.get(strategy.url, passport.authenticate(strategy.name, {
-							scope: strategy.scope
-						}));
+						if (strategy.url) {
+							app.get(strategy.url, passport.authenticate(strategy.name, {
+								scope: strategy.scope
+							}));
+						}
 
 						app.get(strategy.callbackURL, passport.authenticate(strategy.name, {
 							successRedirect: nconf.get('relative_path') + '/',
