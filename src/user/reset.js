@@ -4,13 +4,15 @@
 var async = require('async'),
 	nconf = require('nconf'),
 
-	user = require('./../user'),
-	utils = require('./../../public/src/utils'),
+	user = require('../user'),
+	utils = require('../../public/src/utils'),
+	translator = require('../../public/src/translator'),
 
-	db = require('./../database'),
-	meta = require('./../meta'),
-	events = require('./../events'),
-	emailer = require('./../emailer');
+	db = require('../database'),
+	meta = require('../meta'),
+	events = require('../events'),
+	emailer = require('../emailer'),
+	tran;
 
 (function(UserReset) {
 
@@ -39,27 +41,26 @@ var async = require('async'),
 
 	UserReset.send = function(socket, email, callback) {
 		user.getUidByEmail(email, function(err, uid) {
-			if(err || !uid) {
+			if (err || !uid) {
 				return callback(err || new Error('[[error:invalid-email]]'));
 			}
 
-			// Generate a new reset code
 			var reset_code = utils.generateUUID();
 			db.setObjectField('reset:uid', reset_code, uid);
 			db.setObjectField('reset:expiry', reset_code, (60 * 60) + Math.floor(Date.now() / 1000));
 
 			var reset_link = nconf.get('url') + '/reset/' + reset_code;
 
-			emailer.send('reset', uid, {
-				site_title: (meta.config.title || 'NodeBB'),
-				reset_link: reset_link,
-
-				subject: 'Password Reset Requested - ' + (meta.config.title || 'NodeBB') + '!',
-				template: 'reset',
-				uid: uid
+			translator.translate('[[email:password-reset-requested, ' + (meta.config.title || 'NodeBB') + ']]', meta.config.defaultLang, function(subject) {
+				emailer.send('reset', uid, {
+					site_title: (meta.config.title || 'NodeBB'),
+					reset_link: reset_link,
+					subject: subject,
+					template: 'reset',
+					uid: uid
+				});
+				callback();
 			});
-
-			callback();
 		});
 	};
 

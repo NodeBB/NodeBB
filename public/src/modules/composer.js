@@ -225,8 +225,6 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 					uploads.toggleThumbEls(postContainer, composer.posts[post_uuid].topic_thumb || '');
 				}
 
-
-
 				postContainer.on('change', 'input, textarea', function() {
 					composer.posts[post_uuid].modified = true;
 				});

@@ -164,6 +164,10 @@ var socket,
 			}
 
 			app.cacheBuster = config['cache-buster'];
+
+			bootbox.setDefaults({
+				locale: config.defaultLang
+			});
 		}
 	}
 
@@ -570,4 +574,5 @@ var socket,
 
 	app.loadConfig();
 	app.alternatingTitle('');
+
 }());
