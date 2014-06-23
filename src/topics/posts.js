@@ -22,6 +22,7 @@ module.exports = function(Topics) {
 	emitter.on('event:newpost', Topics.onNewPostMade);
 
 	Topics.getTopicPosts = function(tid, set, start, end, uid, reverse, callback) {
+		callback = callback || function() {};
 		posts.getPostsByTid(tid, set, start, end, reverse, function(err, postData) {
 			if(err) {
 				return callback(err);
