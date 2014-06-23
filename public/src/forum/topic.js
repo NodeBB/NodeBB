@@ -132,7 +132,7 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 			}
 		});
 
-		$('blockquote .toggle').on('click', function() {
+		$('.post-container').on('click', 'blockquote .toggle', function() {
 			$(this).parent('blockquote').toggleClass('uncollapsed');
 		});
 	}
