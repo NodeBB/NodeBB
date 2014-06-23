@@ -237,15 +237,18 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 				});
 
 				postContainer.on('click', '.action-bar button[data-action="discard"]', function() {
-					if (composer.posts[post_uuid].modified) {
-						bootbox.confirm('Are you sure you wish to discard this post?', function(confirm) {
+					if (!composer.posts[post_uuid].modified) {
+						discard(post_uuid);
+						return;
+					}
+
+					translator.translate('[[modules:composer.discard]]', function(translated) {
+						bootbox.confirm(translated, function(confirm) {
 							if (confirm) {
 								discard(post_uuid);
 							}
 						});
-					} else {
-						discard(post_uuid);
-					}
+					});
 				});
 
 				postContainer.find('.nav-tabs a').click(function (e) {

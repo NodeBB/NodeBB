@@ -63,8 +63,6 @@ define('forum/users', function() {
 						return;
 					}
 
-
-
 					ajaxify.loadTemplate('users', function(usersTemplate) {
 						var html = templates.parse(templates.getBlock(usersTemplate, 'users'), data);
 
