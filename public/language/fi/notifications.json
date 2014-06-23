@@ -12,12 +12,12 @@
     "user_made_post": "<strong>%1</strong> kirjoitti uuden viestin",
     "new_message_from": "Uusi viesti käyttäjältä <strong>%1</strong>",
     "upvoted_your_post": "<strong>%1</strong> has upvoted your post.",
-    "favourited_your_post": "<strong>%1</strong> has favourited your post.",
+    "favourited_your_post": "<strong>%1</strong> lisäsi viestisi suosikkeihinsa.",
     "user_flagged_post": "<strong>%1</strong> flagged a post.",
     "user_posted_to": "<strong>%1</strong> has posted a reply to: <strong>%2</strong>",
-    "email-confirmed": "Email Confirmed",
-    "email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",
-    "email-confirm-error": "An error occurred...",
-    "email-confirm-error-message": "There was a problem validating your email address. Perhaps the code was invalid or has expired.",
-    "email-confirm-sent": "Confirmation email sent."
+    "email-confirmed": "Sähköpostiosoite vahvistettu",
+    "email-confirmed-message": "Kiitos sähköpostiosoitteesi vahvistamisesta. Käyttäjätilisi on nyt täysin aktivoitu.",
+    "email-confirm-error": "Tapahtui virhe...",
+    "email-confirm-error-message": "Ongelma sähköpostiosoitteen vahvistamisessa. Ehkäpä koodi oli virheellinen tai vanhentunut.",
+    "email-confirm-sent": "Vahvistussähköposti lähetetty."
 }

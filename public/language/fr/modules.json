@@ -1,11 +1,11 @@
 {
     "chat.chatting_with": "Chat avec <span id=\"chat-with-name\"></span>",
-    "chat.placeholder": "taper le message ici, presser entrer pour envoyer",
+    "chat.placeholder": "écrivez le message ici, pressez entrer pour envoyer",
     "chat.send": "Envoyer",
-    "chat.no_active": "Vous n'avez aucune discussion active.",
-    "chat.user_typing": "%1 est en train d'écrire",
+    "chat.no_active": "Vous n'avez aucun chat en cours.",
+    "chat.user_typing": "%1 est en train d'écrire ...",
     "chat.user_has_messaged_you": "%1 vous a envoyé un message.",
-    "chat.see_all": "See all Chats",
-    "composer.user_said_in": "%1 said in %2:\n",
-    "composer.user_said": "%1 said:\n"
+    "chat.see_all": "Voir tous les chats",
+    "composer.user_said_in": "%1 a envoyé dans %2 :\n",
+    "composer.user_said": "%1 a envoyé :\n"
 }

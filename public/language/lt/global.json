@@ -22,7 +22,7 @@
     "header.admin": "Administratorius",
     "header.recent": "Naujausi",
     "header.unread": "Neskaityti",
-    "header.tags": "Tags",
+    "header.tags": "Žymos",
     "header.popular": "Populiarūs",
     "header.users": "Vartotojai",
     "header.chats": "Susirašinėjimai",
@@ -69,6 +69,6 @@
     "language": "Kalba",
     "guest": "Svečias",
     "guests": "Svečiai",
-    "updated.title": "Forum Updated",
-    "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page."
+    "updated.title": "Forumas atnaujintas",
+    "updated.message": "Forumas buvo atnaujintas iki naujausios versijos. Paspauskite čia norėdami perkrauti puslapį."
 }

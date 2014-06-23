@@ -4,8 +4,8 @@
     "chat.send": "Lähetä",
     "chat.no_active": "Sinulla ei ole aktiivisia keskusteluita.",
     "chat.user_typing": "%1 kirjoittaa ...",
-    "chat.user_has_messaged_you": "%1 has messaged you.",
-    "chat.see_all": "See all Chats",
-    "composer.user_said_in": "%1 said in %2:\n",
-    "composer.user_said": "%1 said:\n"
+    "chat.user_has_messaged_you": "%1 lähetti sinulle viestin.",
+    "chat.see_all": "Näytä kaikki keskustelut",
+    "composer.user_said_in": "%1 sanoi — %2:\n",
+    "composer.user_said": "%1 sanoi:\n"
 }

@@ -1,7 +1,7 @@
 {
     "new_topic_button": "موضوع جديد",
-    "no_topics": "<strong>لا توجد مواضيع في هذه الفئة</strong>لماذا لا تحاول نشر واحد؟<br />",
-    "browsing": "يتصفح",
+    "no_topics": "<strong>لا توجد مواضيع في هذه الفئة</strong>لماذا لا تحاول نشر موضوع؟<br />",
+    "browsing": "تصفح",
     "no_replies": "لم يرد أحد",
-    "share_this_category": "Share this category"
+    "share_this_category": "انشر هذه الفئة"
 }
