@@ -476,6 +476,17 @@ var async = require('async'),
 		});
 	};
 
+	Posts.isMain = function(pid, callback) {
+		Posts.getPostField(pid, 'tid', function(err, tid) {
+			if (err) {
+				return callback(err);
+			}
+			topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
+				callback(err, parseInt(pid, 10) === parseInt(mainPid, 10));
+			});
+		});
+	};
+
 	Posts.updatePostVoteCount = function(pid, voteCount, callback) {
 		async.parallel([
 			function(next) {

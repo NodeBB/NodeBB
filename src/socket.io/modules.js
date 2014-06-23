@@ -62,7 +62,7 @@ SocketModules.composer.push = function(socket, pid, callback) {
 				topics.getTopicTags(postData.tid, next);
 			},
 			isMain: function(next) {
-				postTools.isMain(pid, postData.tid, next);
+				posts.isMain(pid, next);
 			}
 		}, function(err, results) {
 			if(err) {
@@ -82,15 +82,9 @@ SocketModules.composer.push = function(socket, pid, callback) {
 };
 
 SocketModules.composer.editCheck = function(socket, pid, callback) {
-	posts.getPostField(pid, 'tid', function(err, tid) {
-		if (err) {
-			return callback(err);
-		}
-
-		postTools.isMain(pid, tid, function(err, isMain) {
-			callback(err, {
-				titleEditable: isMain
-			});
+	posts.isMain(pid, function(err, isMain) {
+		callback(err, {
+			titleEditable: isMain
 		});
 	});
 };

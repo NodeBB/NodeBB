@@ -79,7 +79,12 @@ module.exports = function(privileges) {
 	};
 
 	privileges.posts.canMove = function(pid, uid, callback) {
-		isAdminOrMod(pid, uid, callback);
+		posts.isMain(pid, function(err, isMain) {
+			if (err || isMain) {
+				return callback(err || new Error('[[error:cant-move-mainpost]]'));
+			}
+			isAdminOrMod(pid, uid, callback);
+		});
 	};
 
 	function isAdminOrMod(pid, uid, callback) {

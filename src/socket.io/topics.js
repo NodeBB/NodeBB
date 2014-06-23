@@ -233,7 +233,7 @@ SocketTopics.movePost = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	privileges.posts.canMove(data.tid, socket.uid, function(err, canMove) {
+	privileges.posts.canMove(data.pid, socket.uid, function(err, canMove) {
 		if (err || !canMove) {
 			return callback(err || new Error('[[error:no-privileges]]'));
 		}

@@ -18,12 +18,6 @@ var winston = require('winston'),
 
 (function(PostTools) {
 
-	PostTools.isMain = function(pid, tid, callback) {
-		topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
-			callback(err, parseInt(pid, 10) === parseInt(mainPid, 10));
-		});
-	};
-
 	PostTools.edit = function(uid, pid, title, content, options, callback) {
 		options = options || {};
 
@@ -57,7 +51,7 @@ var winston = require('winston'),
 			async.parallel({
 				topic: function(next) {
 					var tid = postData.tid;
-					PostTools.isMain(pid, tid, function(err, isMainPost) {
+					posts.isMain(pid, function(err, isMainPost) {
 						if (err) {
 							return next(err);
 						}
