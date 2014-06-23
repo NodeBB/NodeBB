@@ -50,6 +50,9 @@ SocketUser.increaseViewCount = function(socket, uid, callback) {
 };
 
 SocketUser.search = function(socket, username, callback) {
+	if (!socket.uid) {
+		return callback(new Error('[[error:not-logged-in]]'));
+	}
 	user.search(username, callback);
 };
 

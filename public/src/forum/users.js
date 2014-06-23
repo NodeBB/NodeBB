@@ -32,43 +32,54 @@ define('forum/users', function() {
 			}
 
 			timeoutId = setTimeout(function() {
+				function reset() {
+					notify.html('<i class="fa fa-search"></i>');
+					notify.parent().removeClass('btn-warning label-warning btn-success label-success');
+				}
 				var username = $('#search-user').val();
+				var notify = $('#user-notfound-notify');
 
-				if (username == '') {
-					$('#user-notfound-notify').html('<i class="fa fa-circle-o"></i>');
-					$('#user-notfound-notify').parent().removeClass('btn-warning label-warning btn-success label-success');
+				if (username === '') {
+					notify.html('<i class="fa fa-circle-o"></i>');
+					notify.parent().removeClass('btn-warning label-warning btn-success label-success');
 					return;
 				}
 
-				if (lastSearch === username) return;
+				if (lastSearch === username) {
+					return;
+				}
 				lastSearch = username;
 
-				$('#user-notfound-notify').html('<i class="fa fa-spinner fa-spin"></i>');
+				notify.html('<i class="fa fa-spinner fa-spin"></i>');
 
 				socket.emit('user.search', username, function(err, data) {
-					if(err) {
-						return app.alert(err.message);
+					if (err) {
+						reset();
+						return app.alertError(err.message);
 					}
 
 					if (!data) {
-						$('#user-notfound-notify').html('You need to be logged in to search!');
-						$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
+						reset();
 						return;
 					}
+
+
 
 					ajaxify.loadTemplate('users', function(usersTemplate) {
 						var html = templates.parse(templates.getBlock(usersTemplate, 'users'), data);
 
 						translator.translate(html, function(translated) {
 							$('#users-container').html(translated);
-
-
-							if (data && data.users.length === 0) {
-								$('#user-notfound-notify').html('User not found!');
-								$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
+							if (!data.users.length) {
+								translator.translate('[[users:user-not-found]]', function(translated) {
+									notify.html(translated);
+									notify.parent().addClass('btn-warning label-warning');
+								});
 							} else {
-								$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.');
-								$('#user-notfound-notify').parent().addClass('btn-success label-success');
+								translator.translate('[[users:users-found-search-took, ' + data.users.length + ', ' + data.timing + ']]', function(translated) {
+									notify.html(translated);
+									notify.parent().addClass('btn-success label-success');
+								});
 							}
 						});
 					});
