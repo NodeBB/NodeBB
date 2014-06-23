@@ -77,7 +77,9 @@ module.exports = function(Categories) {
 					db.incrObjectFieldBy('category:' + newCid, 'post_count', postCount, next);
 				}
 			], function(err) {
-				winston.error(err.message);
+				if (err) {
+					winston.error(err.message);
+				}
 			});
 		});
 	}
