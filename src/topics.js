@@ -395,6 +395,12 @@ var async = require('async'),
 		});
 	};
 
+	Topics.isOwner = function(tid, uid, callback) {
+		Topics.getTopicField(tid, 'uid', function(err, author) {
+			callback(err, parseInt(author, 10) === parseInt(uid, 10));
+		});
+	};
+
 	Topics.updateTimestamp = function(tid, timestamp) {
 		db.sortedSetAdd('topics:recent', timestamp, tid);
 		Topics.setTopicField(tid, 'lastposttime', timestamp);

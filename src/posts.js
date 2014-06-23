@@ -472,10 +472,7 @@ var async = require('async'),
 
 	Posts.isOwner = function(pid, uid, callback) {
 		Posts.getPostField(pid, 'uid', function(err, author) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, parseInt(author, 10) === parseInt(uid, 10));
+			callback(err, parseInt(author, 10) === parseInt(uid, 10));
 		});
 	};
 

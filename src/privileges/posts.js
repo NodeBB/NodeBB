@@ -73,20 +73,16 @@ module.exports = function(privileges) {
 				helpers.hasEnoughReputationFor('privileges:manage_topic', uid, next);
 			},
 			function(next) {
-				posts.getCidByPid(pid, function(err, cid) {
-					if (err) {
-						return next(err);
-					}
-					user.isModerator(uid, cid, next);
-				});
-			},
-			function(next) {
-				user.isAdministrator(uid, next);
+				isAdminOrMod(pid, uid, next);
 			}
 		], callback);
 	};
 
 	privileges.posts.canMove = function(pid, uid, callback) {
+		isAdminOrMod(pid, uid, callback);
+	};
+
+	function isAdminOrMod(pid, uid, callback) {
 		helpers.some([
 			function(next) {
 				posts.getCidByPid(pid, function(err, cid) {
@@ -100,5 +96,5 @@ module.exports = function(privileges) {
 				user.isAdministrator(uid, next);
 			}
 		], callback);
-	};
+	}
 };

@@ -27,6 +27,9 @@ module.exports = function(privileges) {
 				read: function(next) {
 					helpers.allowedTo('read', uid, cid, next);
 				},
+				isOwner: function(next) {
+					topics.isOwner(tid, uid, next);
+				},
 				manage_topic: function(next) {
 					helpers.hasEnoughReputationFor('privileges:manage_topic', uid, next);
 				},
@@ -40,14 +43,17 @@ module.exports = function(privileges) {
 				if(err) {
 					return callback(err);
 				}
-
-				var editable = results.isAdministrator || results.isModerator || results.manage_topic;
+				var	isAdminOrMod = results.isAdministrator || results.isModerator;
+				var editable =  isAdminOrMod || results.manage_topic;
+				var deletable = isAdminOrMod || results.isOwner;
 
 				callback(null, {
 					'topics:reply': results['topics:reply'],
+					read: results.read,
+					view_thread_tools: editable || deletable,
 					editable: editable,
-					view_deleted: editable,
-					read: results.read
+					deletable: deletable,
+					view_deleted: isAdminOrMod || results.manage_topic || results.isOwner
 				});
 			});
 		});
@@ -66,23 +72,22 @@ module.exports = function(privileges) {
 	privileges.topics.canEdit = function(tid, uid, callback) {
 		helpers.some([
 			function(next) {
+				topics.isOwner(tid, uid, next);
+			},
+			function(next) {
 				helpers.hasEnoughReputationFor('privileges:manage_topic', uid, next);
 			},
 			function(next) {
-				topics.getTopicField(tid, 'cid', function(err, cid) {
-					if (err) {
-						return next(err);
-					}
-					user.isModerator(uid, cid, next);
-				});
-			},
-			function(next) {
-				user.isAdministrator(uid, next);
+				isAdminOrMod(tid, uid, next);
 			}
 		], callback);
 	};
 
 	privileges.topics.canMove = function(tid, uid, callback) {
+		isAdminOrMod(tid, uid, callback);
+	};
+
+	function isAdminOrMod(tid, uid, callback) {
 		helpers.some([
 			function(next) {
 				topics.getTopicField(tid, 'cid', function(err, cid) {
@@ -96,5 +101,5 @@ module.exports = function(privileges) {
 				user.isAdministrator(uid, next);
 			}
 		], callback);
-	};
+	}
 };
