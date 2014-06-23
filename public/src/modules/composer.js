@@ -118,9 +118,7 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 		var uuid = composer.active;
 
 		if(uuid === undefined){
-			translator.translate('[[modules:composer.user_said, ' + username + ']]', function(translated) {
-				composer.newReply(tid, pid, title, translated + text);
-			});
+			composer.newReply(tid, pid, title, '[[modules:composer.user_said, ' + username + ']]' + text);
 			return;
 		}
 
@@ -136,17 +134,20 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 		function onTranslated(translated) {
 			composer.posts[uuid].body = (prevText.length ? prevText + '\n\n' : '') + translated + text;
 			bodyEl.val(composer.posts[uuid].body);
+			preview.render($('#cmp-uuid-' + uuid));
 		}
 	};
 
 	composer.newReply = function(tid, pid, title, text) {
-		push({
-			tid: tid,
-			toPid: pid,
-			title: title,
-			body: text,
-			modified: false,
-			isMain: false
+		translator.translate(text, function(translated) {
+			push({
+				tid: tid,
+				toPid: pid,
+				title: title,
+				body: translated,
+				modified: false,
+				isMain: false
+			});
 		});
 	};
 

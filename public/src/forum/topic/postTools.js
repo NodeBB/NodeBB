@@ -140,7 +140,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 			if($('.composer').length) {
 				composer.addQuote(tid, pid, topicName, username, quoted);
 			} else {
-				composer.newReply(tid, pid, topicName, username + ' said:\n' + quoted);
+				composer.newReply(tid, pid, topicName, '[[modules:composer.user_said, ' + username + ']]' + quoted);
 			}
 		});
 	}
