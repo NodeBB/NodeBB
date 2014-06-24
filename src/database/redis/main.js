@@ -1,11 +1,11 @@
 "use strict";
 
 module.exports = function(redisClient, module) {
-	module.searchIndex = function(key, content, id) {
+	module.searchIndex = function(key, content, id, callback) {
 		if (key === 'post') {
-			module.postSearch.index(content, id);
+			module.postSearch.index(content, id, callback);
 		} else if(key === 'topic') {
-			module.topicSearch.index(content, id);
+			module.topicSearch.index(content, id, callback);
 		}
 	};
 
