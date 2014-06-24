@@ -4,5 +4,7 @@
     "most_reputation": "Didžiausia reputacija",
     "search": "Ieškoti",
     "enter_username": "Įrašykite vartotojo vardą paieškai",
-    "load_more": "Įkelti daugiau"
+    "load_more": "Įkelti daugiau",
+    "user-not-found": "User not found!",
+    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
 }

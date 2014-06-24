@@ -7,5 +7,6 @@
     "chat.user_has_messaged_you": "%1 parašė jums.",
     "chat.see_all": "Žiūrėti visus susirašynėjimus",
     "composer.user_said_in": "%1 parašė %2:\n",
-    "composer.user_said": "%1 parašė:\n"
+    "composer.user_said": "%1 parašė:\n",
+    "composer.discard": "Are you sure you wish to discard this post?"
 }

@@ -14,6 +14,7 @@
     "reply": "返答",
     "edit": "編集",
     "delete": "削除",
+    "purge": "Purge",
     "restore": "リストア",
     "move": "移動",
     "fork": "フォーク",
@@ -47,6 +48,8 @@
     "thread_tools.delete_confirm": "本当にスレッドを削除しますか？",
     "thread_tools.restore": "スレッドをリストア",
     "thread_tools.restore_confirm": "本当にスレッドをリストアしますか？",
+    "thread_tools.purge": "Purge Topic",
+    "thread_tools.purge_confirm": "Are you sure you want to purge this thread?",
     "topic_lock_success": "スレッドはロックされました。",
     "topic_unlock_success": "スレッドはアンロックされました。",
     "topic_pin_success": "スレッドは上部に固定されました。",
@@ -54,8 +57,7 @@
     "topic_move_success": "このスレッドを %1 に移動しました。",
     "post_delete_confirm": "本当にポストを削除しますか？",
     "post_restore_confirm": "本当にポストをリストアしますか？",
-    "post_delete_error": "ポストを削除できませんでした！",
-    "post_restore_error": "ポストをリストアできませんでした！",
+    "post_purge_confirm": "Are you you want to purge this post?",
     "load_categories": "板をローディング中...",
     "disabled_categories_note": "使用不可の板はグレーに表示されます。",
     "confirm_move": "移動",
@@ -91,5 +93,9 @@
     "composer.upload_instructions": "ドラッグ＆ドロップで画像をアップロードすることができます。",
     "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
     "more_users": "%1 more user(s)",
-    "more_guests": "%1 more guest(s)"
+    "more_guests": "%1 more guest(s)",
+    "sort_by": "Sort by",
+    "oldest_to_newest": "Oldest to Newest",
+    "newest_to_oldest": "Newest to Oldest",
+    "most_votes": "Most votes"
 }

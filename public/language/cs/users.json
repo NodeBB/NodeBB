@@ -4,5 +4,7 @@
     "most_reputation": "Nejváženější",
     "search": "Vyhledávat",
     "enter_username": "Zadej uživatelské jméno k hledání",
-    "load_more": "Načíst další"
+    "load_more": "Načíst další",
+    "user-not-found": "User not found!",
+    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
 }

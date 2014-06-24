@@ -4,5 +4,7 @@
     "most_reputation": "Reputasi terbaik",
     "search": "Cari",
     "enter_username": "Masukkan nama pengguna untuk carian",
-    "load_more": "Muat lagi"
+    "load_more": "Muat lagi",
+    "user-not-found": "User not found!",
+    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
 }

@@ -4,5 +4,7 @@
     "most_reputation": "Uy tín nhất",
     "search": "Tìm kiếm",
     "enter_username": "Gõ tên người dùng để tìm kiếm",
-    "load_more": "Tải thêm"
+    "load_more": "Tải thêm",
+    "user-not-found": "User not found!",
+    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
 }

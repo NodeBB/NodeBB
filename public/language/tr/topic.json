@@ -14,6 +14,7 @@
     "reply": "Cevap",
     "edit": "Düzenle",
     "delete": "Sil",
+    "purge": "Purge",
     "restore": "Geri Getir",
     "move": "Taşı",
     "fork": "Ayır",
@@ -47,6 +48,8 @@
     "thread_tools.delete_confirm": "Bu başlığı gerçekten silmek istiyor musun?",
     "thread_tools.restore": "Başlığı Geri Getir",
     "thread_tools.restore_confirm": "Bu başlığı gerçekten geri getirmek istiyor musun?",
+    "thread_tools.purge": "Purge Topic",
+    "thread_tools.purge_confirm": "Are you sure you want to purge this thread?",
     "topic_lock_success": "Başlık başarıyla kitlendi.",
     "topic_unlock_success": "Başlık başarıyla açıldı.",
     "topic_pin_success": "Başlık başarıyla iğnelendi.",
@@ -54,8 +57,7 @@
     "topic_move_success": "Başlık %1 kategorisine başarıyla taşındı.",
     "post_delete_confirm": "Bu iletiyi gerçekten silmek istiyor musun?",
     "post_restore_confirm": "Bu iletiyi gerçekten geri getirmek istiyor musun?",
-    "post_delete_error": "Bu ileti silinemedi!",
-    "post_restore_error": "Bu ileti geri getirilemedi!",
+    "post_purge_confirm": "Are you you want to purge this post?",
     "load_categories": "Kategoriler Yükleniyor",
     "disabled_categories_note": "Etkin Olmayan Kategoriler soluklaştırılır",
     "confirm_move": "Taşı",
@@ -91,5 +93,9 @@
     "composer.upload_instructions": "Resimleri taşıyıp bırakarak yükleyebilirsiniz.",
     "more_users_and_guests": "%1 tane daha kullanıcı ve %2 ziyaretçi",
     "more_users": "%1 tane daha kullanıcı",
-    "more_guests": "%1 tane daha ziyaretçi"
+    "more_guests": "%1 tane daha ziyaretçi",
+    "sort_by": "Sort by",
+    "oldest_to_newest": "Oldest to Newest",
+    "newest_to_oldest": "Newest to Oldest",
+    "most_votes": "Most votes"
 }

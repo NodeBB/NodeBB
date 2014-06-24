@@ -14,6 +14,7 @@
     "reply": "Svara",
     "edit": "Ändra",
     "delete": "Ta bort",
+    "purge": "Purge",
     "restore": "Återställ",
     "move": "Flytta",
     "fork": "Grena",
@@ -47,6 +48,8 @@
     "thread_tools.delete_confirm": "Är du säker på att du vill ta bort den här tråden?",
     "thread_tools.restore": "Återställ ämne",
     "thread_tools.restore_confirm": "Är du säker på att du vill återställa den här tråden?",
+    "thread_tools.purge": "Purge Topic",
+    "thread_tools.purge_confirm": "Are you sure you want to purge this thread?",
     "topic_lock_success": "Ämnet har nu låsts.",
     "topic_unlock_success": "Ämnet har nu låsts upp.",
     "topic_pin_success": "Ämnet är nu fäst.",
@@ -54,8 +57,7 @@
     "topic_move_success": "Det här ämnet har flyttats till %1",
     "post_delete_confirm": "Är du säker på att du vill ta bort det här inlägget?",
     "post_restore_confirm": "Är du säker på att du vill återställa det här inlägget?",
-    "post_delete_error": "Kunde inte ta bort det här inlägget.",
-    "post_restore_error": "Kunde inte återställa det här inlägget.",
+    "post_purge_confirm": "Are you you want to purge this post?",
     "load_categories": "Laddar kategorier",
     "disabled_categories_note": "Inaktiverade kategorier är utgråade",
     "confirm_move": "Flytta",
@@ -91,5 +93,9 @@
     "composer.upload_instructions": "Ladda upp bilder genom att dra och släpp dem.",
     "more_users_and_guests": "%1 fler användare() och %2 gäst(er)",
     "more_users": "%1 fler användare()",
-    "more_guests": "1% fler gäst(er)"
+    "more_guests": "1% fler gäst(er)",
+    "sort_by": "Sort by",
+    "oldest_to_newest": "Oldest to Newest",
+    "newest_to_oldest": "Newest to Oldest",
+    "most_votes": "Most votes"
 }

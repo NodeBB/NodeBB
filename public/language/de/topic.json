@@ -14,6 +14,7 @@
     "reply": "antworten",
     "edit": "bearbeiten",
     "delete": "löschen",
+    "purge": "Purge",
     "restore": "Wiederherstellen",
     "move": "verschieben",
     "fork": "Aufspalten",
@@ -47,6 +48,8 @@
     "thread_tools.delete_confirm": "Sind Sie sicher, dass Sie dieses Thema löschen möchten?",
     "thread_tools.restore": "Thema wiederherstellen",
     "thread_tools.restore_confirm": "Sind Sie sicher, dass Sie dieses Thema wiederherstellen möchten?",
+    "thread_tools.purge": "Purge Topic",
+    "thread_tools.purge_confirm": "Are you sure you want to purge this thread?",
     "topic_lock_success": "Das Thema wurde erfolgreich gesperrt.",
     "topic_unlock_success": "Das Thema wurde erfolgreich entsperrt.",
     "topic_pin_success": "Thema wurde efolgreich angepinnt.",
@@ -54,8 +57,7 @@
     "topic_move_success": "Thema wurde erfolgreich zu %1 verschoben.",
     "post_delete_confirm": "Sind Sie sicher, dass Sie diesen Beitrag löschen möchten?",
     "post_restore_confirm": "Sind Sie sicher, dass Sie diesen Beitrag wiederherstellen möchten?",
-    "post_delete_error": "Beitrag konnte nicht gelöscht werden!",
-    "post_restore_error": "Beitrag konnte nicht wiederhergestellt werden!",
+    "post_purge_confirm": "Are you you want to purge this post?",
     "load_categories": "Kategorien laden",
     "disabled_categories_note": "Deaktivierte Kategorien sind ausgegraut.",
     "confirm_move": "Verschieben",
@@ -91,5 +93,9 @@
     "composer.upload_instructions": "Zum Hochladen Bilder hier reinziehen.",
     "more_users_and_guests": "%1 weitere(r) Nutzer und %2 Gäste",
     "more_users": "%1 weitere(r) Nutzer",
-    "more_guests": "%1 weitere Gäste"
+    "more_guests": "%1 weitere Gäste",
+    "sort_by": "Sort by",
+    "oldest_to_newest": "Oldest to Newest",
+    "newest_to_oldest": "Newest to Oldest",
+    "most_votes": "Most votes"
 }

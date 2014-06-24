@@ -4,5 +4,7 @@
     "most_reputation": "Meeste Reputatie",
     "search": "Zoeken",
     "enter_username": "Vul een gebruikersnaam in om te zoeken",
-    "load_more": "Meer Laden"
+    "load_more": "Meer Laden",
+    "user-not-found": "User not found!",
+    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
 }

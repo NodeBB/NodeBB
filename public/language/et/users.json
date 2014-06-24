@@ -4,5 +4,7 @@
     "most_reputation": "Kõige rohkem reputatsiooni",
     "search": "Otsi",
     "enter_username": "Sisesta kasutajanimi, keda soovid otsida",
-    "load_more": "Lae veel"
+    "load_more": "Lae veel",
+    "user-not-found": "User not found!",
+    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
 }

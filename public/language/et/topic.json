@@ -14,6 +14,7 @@
     "reply": "Vasta",
     "edit": "Muuda",
     "delete": "Kustuta",
+    "purge": "Purge",
     "restore": "Taasta",
     "move": "Liiguta",
     "fork": "Fork",
@@ -47,6 +48,8 @@
     "thread_tools.delete_confirm": "Oled kindel, et soovid kustutada antud teema?",
     "thread_tools.restore": "Taasta teema",
     "thread_tools.restore_confirm": "Oled kindel, et soovid taastada antud teema?",
+    "thread_tools.purge": "Purge Topic",
+    "thread_tools.purge_confirm": "Are you sure you want to purge this thread?",
     "topic_lock_success": "Teema edukalt lukustatud.",
     "topic_unlock_success": "Teema edukalt avatud.",
     "topic_pin_success": "Teema edukalt sticky'ks tehtud.",
@@ -54,8 +57,7 @@
     "topic_move_success": "Teema liigutatud kategooriasse %1",
     "post_delete_confirm": "Oled kindel, et soovid kustutada selle postituse?",
     "post_restore_confirm": "Oled kindel, et soovid taastada antud postituse?",
-    "post_delete_error": "Ei saa kahjuks antud postitust kustutada!",
-    "post_restore_error": "Ei saa kahjuks antud postitust taastada!",
+    "post_purge_confirm": "Are you you want to purge this post?",
     "load_categories": "Laen kategooriaid",
     "disabled_categories_note": "Kinnised kategooriad on hallid",
     "confirm_move": "Liiguta",
@@ -91,5 +93,9 @@
     "composer.upload_instructions": "Lae üles pilte lohistades need siia.",
     "more_users_and_guests": "%1 kasutaja(t) ja %2 külalist",
     "more_users": "veel %1 kasutaja(t)",
-    "more_guests": "veel %1 külalist"
+    "more_guests": "veel %1 külalist",
+    "sort_by": "Sort by",
+    "oldest_to_newest": "Oldest to Newest",
+    "newest_to_oldest": "Newest to Oldest",
+    "most_votes": "Most votes"
 }

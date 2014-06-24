@@ -4,5 +4,7 @@
     "most_reputation": "인기도",
     "search": "검색",
     "enter_username": "검색할 사용자 이름을 입력하세요.",
-    "load_more": "더 보기"
+    "load_more": "더 보기",
+    "user-not-found": "User not found!",
+    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
 }

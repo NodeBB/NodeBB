@@ -4,5 +4,7 @@
     "most_reputation": "Com mais reputação",
     "search": "Procurar",
     "enter_username": "Digite um usuário para buscar",
-    "load_more": "Carregar mais"
+    "load_more": "Carregar mais",
+    "user-not-found": "User not found!",
+    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
 }

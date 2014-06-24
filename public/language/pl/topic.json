@@ -14,6 +14,7 @@
     "reply": "Odpowiedz",
     "edit": "Edytuj",
     "delete": "Usuń",
+    "purge": "Purge",
     "restore": "Przywróć",
     "move": "Przenieś",
     "fork": "Skopiuj",
@@ -47,6 +48,8 @@
     "thread_tools.delete_confirm": "Na pewno chcesz usunąć ten wątek?",
     "thread_tools.restore": "Przywróć wątek",
     "thread_tools.restore_confirm": "Na pewno chcesz przywrócić ten wątek?",
+    "thread_tools.purge": "Purge Topic",
+    "thread_tools.purge_confirm": "Are you sure you want to purge this thread?",
     "topic_lock_success": "Temat został zamknięty",
     "topic_unlock_success": "Temat został otwarty",
     "topic_pin_success": "Temat został przypiety",
@@ -54,8 +57,7 @@
     "topic_move_success": "Temat przeniesiono do %1",
     "post_delete_confirm": "Na pewno chcesz usunąć ten post?",
     "post_restore_confirm": "Na pewno chcesz przywrócić ten post?",
-    "post_delete_error": "Nie można usunąć tego posta!",
-    "post_restore_error": "Nie można przywrócić tego posta!",
+    "post_purge_confirm": "Are you you want to purge this post?",
     "load_categories": "Ładowanie kategorii",
     "disabled_categories_note": "Zablokowane kategorie zostały wyszarzone.",
     "confirm_move": "Przenieś",
@@ -91,5 +93,9 @@
     "composer.upload_instructions": "Prześlij obrazki przeciągając i upuszczając je.",
     "more_users_and_guests": "%1 więcej użytkownik(ów) i %2 gośc(i)",
     "more_users": "%1 więcej użytkownik(ów)",
-    "more_guests": "%1 więcej gośc(i)"
+    "more_guests": "%1 więcej gośc(i)",
+    "sort_by": "Sort by",
+    "oldest_to_newest": "Oldest to Newest",
+    "newest_to_oldest": "Newest to Oldest",
+    "most_votes": "Most votes"
 }

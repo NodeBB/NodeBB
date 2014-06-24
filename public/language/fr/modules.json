@@ -7,5 +7,6 @@
     "chat.user_has_messaged_you": "%1 vous a envoyé un message.",
     "chat.see_all": "Voir tous les chats",
     "composer.user_said_in": "%1 a envoyé dans %2 :\n",
-    "composer.user_said": "%1 a envoyé :\n"
+    "composer.user_said": "%1 a envoyé :\n",
+    "composer.discard": "Are you sure you wish to discard this post?"
 }

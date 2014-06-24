@@ -7,5 +7,6 @@
     "chat.user_has_messaged_you": "%1 má pre Vás správu.",
     "chat.see_all": "Pozri všetky rozhovory",
     "composer.user_said_in": "%1 povedal o  %2\n",
-    "composer.user_said": "%1 povedal:\n"
+    "composer.user_said": "%1 povedal:\n",
+    "composer.discard": "Are you sure you wish to discard this post?"
 }

@@ -4,5 +4,7 @@
     "most_reputation": "ผู้ที่มีชื่อเสียงมากที่สุด",
     "search": "ค้นหา",
     "enter_username": "ใส่ชื่อผู้ใช้เพื่อค้นหา",
-    "load_more": "โหลดเพิ่มเติม"
+    "load_more": "โหลดเพิ่มเติม",
+    "user-not-found": "User not found!",
+    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
 }

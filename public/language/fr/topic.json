@@ -14,6 +14,7 @@
     "reply": "Répondre",
     "edit": "ßditer",
     "delete": "Supprimer",
+    "purge": "Purge",
     "restore": "Restaurer",
     "move": "Déplacer",
     "fork": "Scinder",
@@ -47,6 +48,8 @@
     "thread_tools.delete_confirm": "Êtes-vous sûr de bien vouloir supprimer ce sujet ?",
     "thread_tools.restore": "Restaurer le sujet",
     "thread_tools.restore_confirm": "Êtes-vous sûr de bien vouloir restaurer ce sujet ?",
+    "thread_tools.purge": "Purge Topic",
+    "thread_tools.purge_confirm": "Are you sure you want to purge this thread?",
     "topic_lock_success": "Le sujet a bien été verrouillé.",
     "topic_unlock_success": "Le sujet a bien été déverrouillé.",
     "topic_pin_success": "Le sujet a bien été épinglé.",
@@ -54,8 +57,7 @@
     "topic_move_success": "Ce sujet a bien été déplacé vers %1.",
     "post_delete_confirm": "Êtes-vous sûr de bien vouloir supprimer ce message ?",
     "post_restore_confirm": "Êtes-vous sûr de bien vouloir restaurer ce message ?",
-    "post_delete_error": "Impossible de supprimer ce message !",
-    "post_restore_error": "Impossible de restaurer ce message !",
+    "post_purge_confirm": "Are you you want to purge this post?",
     "load_categories": "Chargement des catégories en cours",
     "disabled_categories_note": "Les catégories désactivées sont grisées",
     "confirm_move": "Déplacer",
@@ -91,5 +93,9 @@
     "composer.upload_instructions": "Uploader des images par glisser-déposer.",
     "more_users_and_guests": "%1 autre(s) utilisateur(s) et %2 invité(s)",
     "more_users": "%1 autre(s) utilisateur(s)",
-    "more_guests": "%1 autre(s) invité(s)"
+    "more_guests": "%1 autre(s) invité(s)",
+    "sort_by": "Sort by",
+    "oldest_to_newest": "Oldest to Newest",
+    "newest_to_oldest": "Newest to Oldest",
+    "most_votes": "Most votes"
 }

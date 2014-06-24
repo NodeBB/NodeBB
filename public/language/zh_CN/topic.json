@@ -14,6 +14,7 @@
     "reply": "回复",
     "edit": "编辑",
     "delete": "删除",
+    "purge": "Purge",
     "restore": "恢复",
     "move": "移动",
     "fork": "作为主题",
@@ -47,6 +48,8 @@
     "thread_tools.delete_confirm": "确定要删除这条线索？",
     "thread_tools.restore": "恢复主题",
     "thread_tools.restore_confirm": "确定要恢复线索吗？",
+    "thread_tools.purge": "Purge Topic",
+    "thread_tools.purge_confirm": "Are you sure you want to purge this thread?",
     "topic_lock_success": "主题被成功锁定",
     "topic_unlock_success": "主题被成功解锁",
     "topic_pin_success": "主题被成功置顶",
@@ -54,8 +57,7 @@
     "topic_move_success": "主题被移到%1",
     "post_delete_confirm": "确定要删除帖子？",
     "post_restore_confirm": "确定要恢复帖子？",
-    "post_delete_error": "不能删除这个帖子",
-    "post_restore_error": "不能恢复这个帖子",
+    "post_purge_confirm": "Are you you want to purge this post?",
     "load_categories": "版面载入中",
     "disabled_categories_note": "停用的版面为灰色",
     "confirm_move": "移动",
@@ -91,5 +93,9 @@
     "composer.upload_instructions": "拖拽图片以上传",
     "more_users_and_guests": "%1个用户和%2个游客",
     "more_users": "%1个用户",
-    "more_guests": "%1个游客"
+    "more_guests": "%1个游客",
+    "sort_by": "Sort by",
+    "oldest_to_newest": "Oldest to Newest",
+    "newest_to_oldest": "Newest to Oldest",
+    "most_votes": "Most votes"
 }

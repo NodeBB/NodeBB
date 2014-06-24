@@ -4,5 +4,7 @@
     "most_reputation": "Лучшая репутация",
     "search": "Поиск",
     "enter_username": "Введите имя пользователя для поиска",
-    "load_more": "Загрузить еще"
+    "load_more": "Загрузить еще",
+    "user-not-found": "User not found!",
+    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
 }

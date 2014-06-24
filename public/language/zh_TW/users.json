@@ -4,5 +4,7 @@
     "most_reputation": "聲望最高",
     "search": "搜尋",
     "enter_username": "輸入想找的使用者帳號",
-    "load_more": "載入更多"
+    "load_more": "載入更多",
+    "user-not-found": "User not found!",
+    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
 }

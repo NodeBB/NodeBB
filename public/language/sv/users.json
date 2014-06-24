@@ -4,5 +4,7 @@
     "most_reputation": "Bäst rykte",
     "search": "Sök",
     "enter_username": "Ange ett användarnamn för att söka",
-    "load_more": "Ladda fler"
+    "load_more": "Ladda fler",
+    "user-not-found": "User not found!",
+    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
 }

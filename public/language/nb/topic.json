@@ -14,6 +14,7 @@
     "reply": "Svar",
     "edit": "Endre",
     "delete": "Slett",
+    "purge": "Purge",
     "restore": "Gjenopprett",
     "move": "Flytt",
     "fork": "Del",
@@ -47,6 +48,8 @@
     "thread_tools.delete_confirm": "Er du sikker på at du vil slette denne tråden?",
     "thread_tools.restore": "Gjenopprett tråd",
     "thread_tools.restore_confirm": "Er du sikker på at du vil gjenopprette denne tråden?",
+    "thread_tools.purge": "Purge Topic",
+    "thread_tools.purge_confirm": "Are you sure you want to purge this thread?",
     "topic_lock_success": "Emnet har blitt låst.",
     "topic_unlock_success": "Emnet har blitt låst opp.",
     "topic_pin_success": "Emnet har blitt stiftet.",
@@ -54,8 +57,7 @@
     "topic_move_success": "Emnet har blitt flyttet til %1",
     "post_delete_confirm": "Er du sikker på at du vil slette dette innlegget?",
     "post_restore_confirm": "Er du sikker på at du vil gjenopprette dette innlegget?",
-    "post_delete_error": "Kunne ikke slette dette innlegget!",
-    "post_restore_error": "Kunne ikke gjenopprette dette innlegget!",
+    "post_purge_confirm": "Are you you want to purge this post?",
     "load_categories": "Laster kategorier",
     "disabled_categories_note": "Deaktiverte kategorier er grået ut",
     "confirm_move": "Flytt",
@@ -91,5 +93,9 @@
     "composer.upload_instructions": "Last opp bilder ved å dra og slippe dem.",
     "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
     "more_users": "%1 more user(s)",
-    "more_guests": "%1 more guest(s)"
+    "more_guests": "%1 more guest(s)",
+    "sort_by": "Sort by",
+    "oldest_to_newest": "Oldest to Newest",
+    "newest_to_oldest": "Newest to Oldest",
+    "most_votes": "Most votes"
 }

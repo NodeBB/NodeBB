@@ -14,6 +14,7 @@
     "reply": "Balas",
     "edit": "Edit",
     "delete": "Padamkan",
+    "purge": "Purge",
     "restore": "Pulihkan",
     "move": "Pindahkan",
     "fork": "Fork",
@@ -47,6 +48,8 @@
     "thread_tools.delete_confirm": "Adakah anda pasti untuk memadamkan thread ini?",
     "thread_tools.restore": "Pulihkan topik",
     "thread_tools.restore_confirm": "Adakah anda pasti untuk memulihkan threa ini?",
+    "thread_tools.purge": "Purge Topic",
+    "thread_tools.purge_confirm": "Are you sure you want to purge this thread?",
     "topic_lock_success": "Topik telah dikunci",
     "topic_unlock_success": "Topik telah dibuka",
     "topic_pin_success": "Topik telah di pinkan",
@@ -54,8 +57,7 @@
     "topic_move_success": "Topik telah dipindahkan ke %1",
     "post_delete_confirm": "Adakah anda pasti untuk memadam kiriman ini?",
     "post_restore_confirm": "Adakah anda pasti untuk memulihkan kiriman ini?",
-    "post_delete_error": "Gagal memadamkan kiriman ini!",
-    "post_restore_error": "Gagal memulihkan kiriman ini!",
+    "post_purge_confirm": "Are you you want to purge this post?",
     "load_categories": "Memuatkan kategori",
     "disabled_categories_note": "Kategori yang disekat diwarnakan kelabu",
     "confirm_move": "Pindahkan",
@@ -91,5 +93,9 @@
     "composer.upload_instructions": "Muatnaik imej dengan menyeret dan melepaskanya",
     "more_users_and_guests": "%1 more user(s) and %2 guest(s)",
     "more_users": "%1 more user(s)",
-    "more_guests": "%1 more guest(s)"
+    "more_guests": "%1 more guest(s)",
+    "sort_by": "Sort by",
+    "oldest_to_newest": "Oldest to Newest",
+    "newest_to_oldest": "Newest to Oldest",
+    "most_votes": "Most votes"
 }

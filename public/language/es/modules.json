@@ -5,7 +5,8 @@
     "chat.no_active": "No tiene conversaciones activas.",
     "chat.user_typing": "%1 está escribiendo ...",
     "chat.user_has_messaged_you": "%1 te ha enviado un mensaje.",
-    "chat.see_all": "See all Chats",
-    "composer.user_said_in": "%1 said in %2:\n",
-    "composer.user_said": "%1 said:\n"
+    "chat.see_all": "Ver todas las conversaciones",
+    "composer.user_said_in": "%1 dijo en: %2:\n",
+    "composer.user_said": "%1 dijo:\n",
+    "composer.discard": "Are you sure you wish to discard this post?"
 }

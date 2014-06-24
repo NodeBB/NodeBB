@@ -7,5 +7,6 @@
     "chat.user_has_messaged_you": "%1 napisał do Ciebie",
     "chat.see_all": "Pokaż wszystkie czaty",
     "composer.user_said_in": "%1 powiedział w %2\n",
-    "composer.user_said": "%1 powiedział:\n"
+    "composer.user_said": "%1 powiedział:\n",
+    "composer.discard": "Are you sure you wish to discard this post?"
 }
