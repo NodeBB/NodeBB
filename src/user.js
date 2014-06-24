@@ -149,6 +149,10 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.isReadyToPost = function(uid, callback) {
+		if (parseInt(uid, 10) === 0) {
+			return callback();
+		}
+
 		async.parallel({
 			userData: function(next) {
 				User.getUserFields(uid, ['banned', 'lastposttime', 'email', 'email:confirmed'], next);
