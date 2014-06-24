@@ -108,9 +108,9 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 				$('.lock_thread').html(translated);
 			});
 
-			threadEl.find('.post_reply').html(isLocked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply <i class="fa fa-reply"></i>');
+			threadEl.find('.post_reply').html(isLocked ? '<i class="fa fa-lock"></i> Locked' : '<i class="fa fa-reply"></i> Reply');
 			threadEl.find('.quote, .edit, .delete').toggleClass('none', isLocked);
-			$('.topic-main-buttons .post_reply').attr('disabled', isLocked).html(isLocked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply');
+			$('.topic-main-buttons .post_reply').attr('disabled', isLocked).html(isLocked ? '<i class="fa fa-lock"></i> Locked' : 'Reply');
 
 			ThreadTools.threadState.locked = data.isLocked;
 		}
