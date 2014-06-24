@@ -4,6 +4,7 @@
 var async = require('async'),
 
 	posts = require('../posts'),
+	topics = require('../topics'),
 	user = require('../user'),
 	helpers = require('./helpers'),
 	groups = require('../groups'),
@@ -64,13 +65,23 @@ module.exports = function(privileges) {
 	privileges.posts.canEdit = function(pid, uid, callback) {
 		helpers.some([
 			function(next) {
-				posts.isOwner(pid, uid, next);
-			},
-			function(next) {
-				helpers.hasEnoughReputationFor('privileges:manage_content', uid, next);
-			},
-			function(next) {
-				helpers.hasEnoughReputationFor('privileges:manage_topic', uid, next);
+				isPostTopicLocked(pid, function(err, isLocked) {
+					if (err || isLocked) {
+						return next(err, false);
+					}
+
+					helpers.some([
+						function(next) {
+							posts.isOwner(pid, uid, next);
+						},
+						function(next) {
+							helpers.hasEnoughReputationFor('privileges:manage_content', uid, next);
+						},
+						function(next) {
+							helpers.hasEnoughReputationFor('privileges:manage_topic', uid, next);
+						}
+					], next);
+				});
 			},
 			function(next) {
 				isAdminOrMod(pid, uid, next);
@@ -86,6 +97,15 @@ module.exports = function(privileges) {
 			isAdminOrMod(pid, uid, callback);
 		});
 	};
+
+	function isPostTopicLocked(pid, callback) {
+		posts.getPostField(pid, 'tid', function(err, tid) {
+			if (err) {
+				return callback(err);
+			}
+			topics.isLocked(tid, callback);
+		});
+	}
 
 	function isAdminOrMod(pid, uid, callback) {
 		helpers.some([
