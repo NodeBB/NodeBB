@@ -143,8 +143,8 @@ Next clone this repository :
 
 Now we are going to install all dependencies for NodeBB via NPM :
 
-    $ cd /path/to/nodebb/install/location/nodebb (or if you are on your install location directory run : cd nodebb)
-    $ npm install
+	$ cd /path/to/nodebb/install/location/nodebb (or if you are on your install location directory run : cd nodebb)
+	$ npm install
 
 Install NodeBB by running the app with `--setup` flag :
 
