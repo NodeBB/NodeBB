@@ -380,6 +380,7 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 
 		app.populateOnlineUsers();
 		app.createUserTooltips();
+		app.replaceSelfLinks(html.find('a'));
 		utils.addCommasToNumbers(html.find('.formatted-number'));
 		utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 		html.find('span.timeago').timeago();

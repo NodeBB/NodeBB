@@ -108,7 +108,7 @@ var socket,
 				templates.setGlobal('loggedIn', parseInt(data.uid, 10) !== 0);
 
 				app.showLoginMessage();
-
+				app.replaceSelfLinks();
 				$(window).trigger('action:connected');
 			});
 
