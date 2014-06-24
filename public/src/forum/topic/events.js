@@ -110,6 +110,7 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 		editedPostEl.fadeOut(250, function() {
 			editedPostEl.html(data.content);
 			editedPostEl.find('img').addClass('img-responsive');
+			app.replaceSelfLinks(editedPostEl.find('a'));
 			editedPostEl.fadeIn(250);
 		});
 	}
