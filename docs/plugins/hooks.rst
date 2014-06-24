@@ -242,3 +242,57 @@ Parameters: hash (str), object (obj)
 Useful if your plugins want to cache settings instead of pulling from DB everytime a method is called. Listen to this and refresh accordingly.
 
 
+Client Side Hooks
+--------------------
+
+``filter:categories.new_topic``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+``action:popstate``
+^^^^^^^^^^^^^^^^^^^
+
+``action:ajaxify.start``
+^^^^^^^^^^^^^^^^^^^
+
+``action:ajaxify.loadingTemplates``
+^^^^^^^^^^^^^^^^^^^
+
+``action:ajaxify.loadingData``
+^^^^^^^^^^^^^^^^^^^
+
+``action:ajaxify.contentLoaded``
+^^^^^^^^^^^^^^^^^^^
+
+``action:ajaxify.end``
+^^^^^^^^^^^^^^^^^^^
+
+``action:reconnected``
+^^^^^^^^^^^^^^^^^^^
+
+``action:connected``
+^^^^^^^^^^^^^^^^^^^
+
+``action:disconnected``
+^^^^^^^^^^^^^^^^^^^
+
+``action:categories.loading``
+^^^^^^^^^^^^^^^^^^^
+
+``action:categories.loaded``
+^^^^^^^^^^^^^^^^^^^
+
+``action:categories.new_topic.loaded``
+^^^^^^^^^^^^^^^^^^^
+
+``action:topic.loading``
+^^^^^^^^^^^^^^^^^^^
+
+``action:topic.loaded``
+^^^^^^^^^^^^^^^^^^^
+
+``action:composer.loaded``
+^^^^^^^^^^^^^^^^^^^
+
+``action:widgets.loaded``
+^^^^^^^^^^^^^^^^^^^
