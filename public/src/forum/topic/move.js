@@ -20,7 +20,7 @@ define('forum/topic/move', function() {
 		modal.on('shown.bs.modal', onMoveModalShown);
 		$('#move-confirm').hide();
 
-		if (tids.length > 1) {
+		if (Move.moveAll || (tids && tids.length > 1)) {
 			translator.translate('[[topic:move_topics]]', function(translated) {
 				modal.find('.modal-header h3').text(translated);
 			});

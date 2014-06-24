@@ -192,10 +192,10 @@ define('forum/admin/categories', ['uploader', 'forum/admin/iconSelect'], functio
 				});
 			});
 
-			// Permissions modal
 			$('.admin-categories').on('click', '.permissions', function() {
 				var	cid = $(this).parents('li[data-cid]').attr('data-cid');
 				Categories.launchPermissionsModal(cid);
+				return false;
 			});
 
 
