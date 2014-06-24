@@ -26,6 +26,7 @@
 	"share": "Share",
 	"tools": "Tools",
 	"flag": "Flag",
+	"locked": "Locked",
 
 	"bookmark_instructions" : "Click here to return to your last position or close to discard.",
 
@@ -60,12 +61,6 @@
 	"thread_tools.restore_confirm": "Are you sure you want to restore this thread?",
 	"thread_tools.purge": "Purge Topic",
 	"thread_tools.purge_confirm" : "Are you sure you want to purge this thread?",
-
-	"topic_lock_success": "Topic has been successfully locked.",
-	"topic_unlock_success": "Topic has been successfully unlocked.",
-
-	"topic_pin_success": "Topic has been successfully pinned.",
-	"topic_unpin_success": "Topic has been successfully unpinned.",
 
 	"topic_move_success": "This topic has been successfully moved to %1",
 

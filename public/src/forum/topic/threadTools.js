@@ -104,14 +104,19 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 		var threadEl = $('#post-container');
 		if (parseInt(data.tid, 10) === parseInt(threadEl.attr('data-tid'), 10)) {
 			var isLocked = data.isLocked && !app.isAdmin;
-			translator.translate('<i class="fa fa-fw fa-' + (isLocked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (isLocked ? 'un': '') + 'lock]]', function(translated) {
+			translator.translate('<i class="fa fa-fw fa-' + (data.isLocked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (data.isLocked ? 'un': '') + 'lock]]', function(translated) {
 				$('.lock_thread').html(translated);
 			});
 
-			threadEl.find('.post_reply').html(isLocked ? '<i class="fa fa-lock"></i> Locked' : '<i class="fa fa-reply"></i> Reply');
-			threadEl.find('.quote, .edit, .delete').toggleClass('none', isLocked);
-			$('.topic-main-buttons .post_reply').attr('disabled', isLocked).html(isLocked ? '<i class="fa fa-lock"></i> Locked' : 'Reply');
 
+			translator.translate(isLocked ? '[[topic:locked]]' : '[[topic:reply]]', function(translated) {
+				var className = isLocked ? 'fa-lock' : 'fa-reply';
+				threadEl.find('.post_reply').html('<i class="fa ' + className + '"></i> ' + translated);
+				$('.topic-main-buttons .post_reply').attr('disabled', isLocked).html(isLocked ? '<i class="fa fa-lock"></i> ' + translated : translated);
+			});
+
+			threadEl.find('.quote, .edit, .delete').toggleClass('none', isLocked);
+			$('.topic-title i.fa-lock').toggleClass('hide', !data.isLocked);
 			ThreadTools.threadState.locked = data.isLocked;
 		}
 	};
@@ -144,9 +149,9 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 		if (parseInt(data.tid, 10) === parseInt(threadEl.attr('data-tid'), 10)) {
 			translator.translate('<i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.' + (data.isPinned ? 'unpin' : 'pin') + ']]', function(translated) {
 				$('.pin_thread').html(translated);
-
 				ThreadTools.threadState.pinned = data.isPinned;
 			});
+			$('.topic-title i.fa-thumb-tack').toggleClass('hide', !data.isPinned);
 		}
 	}
 
