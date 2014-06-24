@@ -89,9 +89,6 @@
 	"fork_success": "Succesfully forked topic!",
 
 	"composer.title_placeholder": "Enter your topic title here...",
-	"composer.write": "Write",
-	"composer.preview": "Preview",
-	"composer.help": "Help",
 	"composer.discard": "Discard",
 	"composer.submit": "Submit",
 	"composer.replying_to": "Replying to %1",
@@ -104,7 +101,6 @@
 	"composer.thumb_file_label": "Or upload a file",
 	"composer.thumb_remove": "Clear fields",
 	"composer.drag_and_drop_images": "Drag and Drop Images Here",
-	"composer.upload_instructions": "Upload images by dragging & dropping them.",
 
 	"more_users_and_guests": "%1 more user(s) and %2 guest(s)",
 	"more_users": "%1 more user(s)",

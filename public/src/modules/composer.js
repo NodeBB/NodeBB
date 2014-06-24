@@ -277,12 +277,7 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 
 				handleResize(postContainer);
 
-				socket.emit('modules.composer.renderHelp', function(err, html) {
-					if (!err && html && html.length > 0) {
-						postContainer.find('.help').html(html);
-						postContainer.find('[data-pane=".tab-help"]').parent().removeClass('hidden');
-					}
-				});
+				handleHelp(postContainer);
 
 				$(window).trigger('action:composer.loaded', {
 					post_uuid: post_uuid
@@ -291,6 +286,18 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 				formatting.addComposerButtons();
 
 			});
+		});
+	}
+
+	function handleHelp(postContainer) {
+		var helpBtn = postContainer.find('.help');
+		socket.emit('modules.composer.renderHelp', function(err, html) {
+			if (!err && html && html.length > 0) {
+				helpBtn.removeClass('hidden');
+				helpBtn.on('click', function() {
+					bootbox.alert(html);
+				});
+			}
 		});
 	}
 
@@ -402,9 +409,6 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 		}
 
 		if(config.hasImageUploadPlugin) {
-			if(env === 'md' || env === 'lg') {
-				postContainer.find('.upload-instructions').removeClass('hide');
-			}
 			postContainer.find('.img-upload-btn').removeClass('hide');
 			postContainer.find('#files.lt-ie9').removeClass('hide');
 		}
@@ -430,12 +434,10 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 		var h1 = postContainer.find('.title').outerHeight(true);
 		var h2 = postContainer.find('.tags-container').outerHeight(true);
 		var h3 = postContainer.find('.formatting-bar').outerHeight(true);
-		var h4 = postContainer.find('.nav-tabs').outerHeight(true);
-		var h5 = postContainer.find('.instructions').outerHeight(true);
-		var h6 = postContainer.find('.topic-thumb-container').outerHeight(true);
-		var h7 = $('.taskbar').height();
-		var total = h1 + h2 + h3 + h4 + h5 + h6 + h7;
-		postContainer.find('.tab-content').css('height', postContainer.height() - total);
+		var h4 = postContainer.find('.topic-thumb-container').outerHeight(true);
+		var h5 = $('.taskbar').height();
+		var total = h1 + h2 + h3 + h4 + h5;
+		postContainer.find('.write-preview-container').css('height', postContainer.height() - total);
 	}
 
 	function focusElements(post_uuid) {
