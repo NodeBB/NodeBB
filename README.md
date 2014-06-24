@@ -56,3 +56,7 @@ It is important to ensure that your NodeBB and database servers are secured. Bea
 ## Upgrading NodeBB
 
 Detailed upgrade instructions are listed in [Upgrading NodeBB](https://github.com/NodeBB/NodeBB/wiki/Upgrading-NodeBB)
+
+## License
+
+NodeBB is licensed under the **GNU General Public License v3 (GPL-3)** (http://www.gnu.org/copyleft/gpl.html)
