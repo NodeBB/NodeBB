@@ -30,6 +30,9 @@ Credit: [Convoe](http://www.convoe.com), [Kano](http://www.kano.me), [Manchester
 * If you are a designer, [NodeBB needs themes](http://community.nodebb.org/category/10/nodebb-themes)! NodeBB's theming system allows extention of the base templates as well as styling via LESS or CSS. NodeBB's base theme utilizes [Bootstrap 3](http://getbootstrap.com/) but themes can choose to use a different framework altogether.
 * Please don't forget to **like**, **follow**, and **star our repo**! Join our growing [community](http://community.nodebb.org) to keep up to date with the latest NodeBB development.
 
+## License
+NodeBB is licensed under the **GNU General Public License v3 (GPL-3)** (https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3))
+
 ## Requirements
 
 NodeBB requires the following software to be installed:
