@@ -99,7 +99,7 @@ define('forum/topic/browsing', function() {
 
 		socket.emit('user.getOnlineUsers', uids, function (err, users) {
 
-			$('.username-field').each(function (index, element) {
+			$('.username-field').each(function () {
 				var el = $(this),
 					uid = el.parents('li').attr('data-uid');
 
