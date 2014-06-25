@@ -10,13 +10,7 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.sortedSetsRemove = function(keys, value, callback) {
-		var multi = redisClient.multi();
-
-		for(var x=0; x<keys.length; ++x) {
-			multi.zrem(keys[x], value);
-		}
-
-		multi.exec(callback);
+		multi('zrem', keys, value, callback);
 	};
 
 	module.getSortedSetRange = function(key, start, stop, callback) {
@@ -75,28 +69,32 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.sortedSetsScore = function(keys, value, callback) {
-		var	multi = redisClient.multi();
+		multi('zscore', keys, value, callback);
+	};
+
+	function multi(command, keys, value, callback) {
+		var	m = redisClient.multi();
 
 		for(var x=0; x<keys.length; ++x) {
-			multi.zscore(keys[x], value);
+			m[command](keys[x], value);
 		}
 
-		multi.exec(callback);
-	};
+		m.exec(callback);
+	}
 
 	module.getSortedSetUnion = function(sets, start, stop, callback) {
 		var args = Array.prototype.slice.call(arguments, 0);
 		args.unshift(null);
 		sortedSetUnion.apply(null, args);
-	}
+	};
 
 	module.getSortedSetRevUnion = function(sets, start, stop, callback) {
 		var args = Array.prototype.slice.call(arguments, 0);
 		args.unshift(true);
 		sortedSetUnion.apply(null, args);
-	}
+	};
 
-	var	sortedSetUnion = function(rev, sets, start, stop, callback) {
+	function sortedSetUnion(rev, sets, start, stop, callback) {
 		// start and stop optional
 		if (typeof start === 'function') {
 			callback = start;
