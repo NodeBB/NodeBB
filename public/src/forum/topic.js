@@ -3,11 +3,19 @@
 
 /* globals define, app, templates, translator, socket, bootbox, config, ajaxify, RELATIVE_PATH, utils */
 
-define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/threadTools', 'forum/topic/postTools', 'forum/topic/events', 'navigator'], function(pagination, infinitescroll, threadTools, postTools, events, navigator) {
-	var	Topic = {},
-		scrollingToPost = false,
-		currentUrl = '';
+var dependencies = [
+	'forum/pagination',
+	'forum/infinitescroll',
+	'forum/topic/threadTools',
+	'forum/topic/postTools',
+	'forum/topic/events',
+	'forum/topic/scrollTo',
+	'navigator'
+];
 
+define('forum/topic', dependencies, function(pagination, infinitescroll, threadTools, postTools, events, scrollTo, navigator) {
+	var	Topic = {},
+		currentUrl = '';
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
 		if(data.url.indexOf('topic') !== 0) {
@@ -51,7 +59,7 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 		var bookmark = localStorage.getItem('topic:' + tid + ':bookmark');
 		var postIndex = getPostIndex();
 		if (postIndex) {
-			Topic.scrollToPost(postIndex - 1, true);
+			scrollTo.scrollToPost(postIndex - 1, true);
 		} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1)) && postCount > 1) {
 			app.alert({
 				alert_id: 'bookmark',
@@ -59,7 +67,7 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 				timeout: 0,
 				type: 'info',
 				clickfn : function() {
-					Topic.scrollToPost(parseInt(bookmark, 10), true);
+					scrollTo.scrollToPost(parseInt(bookmark, 10), true);
 				},
 				closefn : function() {
 					localStorage.removeItem('topic:' + tid + ':bookmark');
@@ -177,7 +185,7 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 			app.removeAlert('bookmark');
 		}
 
-		if (!scrollingToPost) {
+		if (!scrollTo.active) {
 			var parts = ajaxify.removeRelativePath(window.location.pathname.slice(1)).split('/');
 			var topicId = parts[1],
 				slug = parts[2];
@@ -194,84 +202,6 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 					}, null, window.location.protocol + '//' + window.location.host + RELATIVE_PATH + '/' + newUrl + search);
 				}
 				currentUrl = newUrl;
-			}
-		}
-	};
-
-	Topic.scrollToPost = function(postIndex, highlight, duration, offset) {
-		if (!utils.isNumber(postIndex)) {
-			return;
-		}
-
-		if (!offset) {
-			offset = 0;
-		}
-
-		scrollingToPost = true;
-
-		if($('#post_anchor_' + postIndex).length) {
-			return scrollToPid(postIndex);
-		}
-
-		if(config.usePagination) {
-			if (window.location.search.indexOf('page') !== -1) {
-				navigator.update();
-				scrollingToPost = false;
-				return;
-			}
-
-			var page = Math.ceil((postIndex + 1) / config.postsPerPage)
-
-			if(parseInt(page, 10) !== pagination.currentPage) {
-				pagination.loadPage(page, function() {
-					scrollToPid(postIndex);
-				});
-			} else {
-				scrollToPid(postIndex);
-			}
-		} else {
-			$('#post-container').empty();
-			var after = postIndex - config.postsPerPage + 1;
-			if(after < 0) {
-				after = 0;
-			}
-			loadPostsAfter(after, function() {
-				scrollToPid(postIndex);
-			});
-		}
-
-		function scrollToPid(postIndex) {
-			var scrollTo = $('#post_anchor_' + postIndex),
-				tid = $('#post-container').attr('data-tid');
-
-			function animateScroll() {
-				$('html, body').animate({
-					scrollTop: (scrollTo.offset().top - $('#header-menu').height() - offset) + 'px'
-				}, duration !== undefined ? duration : 400, function() {
-					scrollingToPost = false;
-					navigator.update();
-					highlightPost();
-					$('body').scrollTop($('body').scrollTop() - 1);
-					$('html').scrollTop($('html').scrollTop() - 1);
-				});
-			}
-
-			function highlightPost() {
-				if (highlight) {
-					scrollTo.parent().find('.topic-item').addClass('highlight');
-					setTimeout(function() {
-						scrollTo.parent().find('.topic-item').removeClass('highlight');
-					}, 5000);
-				}
-			}
-
-			if (tid && scrollTo.length) {
-				if($('#post-container li.post-row[data-index="' + postIndex + '"]').attr('data-index') !== '0') {
-					animateScroll();
-				} else {
-					navigator.update();
-					highlightPost();
-				}
 			}
 		}
 	};
@@ -403,14 +333,14 @@ define('forum/topic', ['forum/pagination', 'forum/infinitescroll', 'forum/topic/
 	}
 
 	function loadMorePosts(direction) {
-		if (!$('#post-container').length || scrollingToPost) {
+		if (!$('#post-container').length || scrollTo.active) {
 			return;
 		}
 
 		infinitescroll.calculateAfter(direction, '#post-container .post-row[data-index!="0"]', config.postsPerPage, function(after, offset, el) {
 			loadPostsAfter(after, function() {
 				if (direction < 0 && el) {
-					Topic.scrollToPost(el.attr('data-index'), false, 0, offset);
+					scrollTo.scrollToPost(el.attr('data-index'), false, 0, offset);
 				}
 			});
 		});
