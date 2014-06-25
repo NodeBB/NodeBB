@@ -233,34 +233,6 @@ var socket,
 		}
 	};
 
-	app.populateOnlineUsers = function () {
-		var uids = [];
-
-		$('.post-row').each(function () {
-			var uid = $(this).attr('data-uid');
-			if(uids.indexOf(uid) === -1) {
-				uids.push(uid);
-			}
-		});
-
-		socket.emit('user.getOnlineUsers', uids, function (err, users) {
-
-			$('.username-field').each(function (index, element) {
-				var el = $(this),
-					uid = el.parents('li').attr('data-uid');
-
-				if (uid && users[uid]) {
-					translator.translate('[[global:' + users[uid].status + ']]', function(translated) {
-						el.siblings('i')
-							.attr('class', 'fa fa-circle status ' + users[uid].status)
-							.attr('title', translated)
-							.attr('data-original-title', translated);
-					});
-				}
-			});
-		});
-	};
-
 	function highlightNavigationLink() {
 		var path = window.location.pathname,
 			parts = path.split('/'),
@@ -309,12 +281,9 @@ var socket,
 	};
 
 	app.processPage = function () {
-		app.populateOnlineUsers();
-
 		highlightNavigationLink();
 
 		$('span.timeago').timeago();
-		$('.post-content img').addClass('img-responsive');
 
 		utils.makeNumbersHumanReadable($('.human-readable-number'));
 

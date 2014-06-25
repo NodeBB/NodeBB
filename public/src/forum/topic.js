@@ -10,10 +10,11 @@ var dependencies = [
 	'forum/topic/postTools',
 	'forum/topic/events',
 	'forum/topic/scrollTo',
+	'forum/topic/browsing',
 	'navigator'
 ];
 
-define('forum/topic', dependencies, function(pagination, infinitescroll, threadTools, postTools, events, scrollTo, navigator) {
+define('forum/topic', dependencies, function(pagination, infinitescroll, threadTools, postTools, events, scrollTo, browsing, navigator) {
 	var	Topic = {},
 		currentUrl = '';
 
@@ -41,6 +42,9 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 		$(window).trigger('action:topic.loading');
 
 		app.enterRoom('topic_' + tid);
+
+		browsing.populateOnlineUsers();
+		$('.post-content img').addClass('img-responsive');
 
 		showBottomPostBar();
 
@@ -317,7 +321,7 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 			getPostPrivileges(posts[x].pid);
 		}
 
-		app.populateOnlineUsers();
+		browsing.populateOnlineUsers();
 		app.createUserTooltips();
 		app.replaceSelfLinks(html.find('a'));
 		utils.addCommasToNumbers(html.find('.formatted-number'));
