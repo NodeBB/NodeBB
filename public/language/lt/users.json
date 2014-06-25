@@ -5,6 +5,6 @@
     "search": "Ieškoti",
     "enter_username": "Įrašykite vartotojo vardą paieškai",
     "load_more": "Įkelti daugiau",
-    "user-not-found": "User not found!",
-    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
+    "user-not-found": "Paskyra nerasta!",
+    "users-found-search-took": "%1 paskyra(-os)! Paieška užtruko %2 ms."
 }

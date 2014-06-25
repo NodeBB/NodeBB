@@ -3,10 +3,10 @@
     "chat.placeholder": "введите сообщение, нажмите enter для отправки",
     "chat.send": "Отправить",
     "chat.no_active": "У вас нет активных чатов.",
-    "chat.user_typing": "%1 is typing ...",
-    "chat.user_has_messaged_you": "%1 has messaged you.",
-    "chat.see_all": "See all Chats",
-    "composer.user_said_in": "%1 said in %2:\n",
-    "composer.user_said": "%1 said:\n",
-    "composer.discard": "Are you sure you wish to discard this post?"
+    "chat.user_typing": "%1 печатает ...",
+    "chat.user_has_messaged_you": "%1 отправил вам сообщение.",
+    "chat.see_all": "Просмотр всех диалогов",
+    "composer.user_said_in": "%1 сказал %2:\n",
+    "composer.user_said": "%1 сказал:\n",
+    "composer.discard": "Вы уверены, что хотите отказаться от этого поста?"
 }
