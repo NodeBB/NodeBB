@@ -57,6 +57,7 @@ var socket,
 					app.cacheBuster = cacheBuster;
 
 					app.alert({
+						alert_id: 'forum_updated',
 						title: '[[global:updated.title]]',
 						message: '[[global:updated.message]]',
 						clickfn: function() {
