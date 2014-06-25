@@ -121,7 +121,7 @@ function start() {
 
 	require('./src/database').init(function(err) {
 		meta.configs.init(function () {
-			var templates = require('./public/src/templates'),
+			var templates = require('templates.js'),
 				webserver = require('./src/webserver'),
 				sockets = require('./src/socket.io'),
 				plugins = require('./src/plugins'),

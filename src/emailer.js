@@ -4,11 +4,11 @@ var	fs = require('fs'),
 	async = require('async'),
 	path = require('path'),
 	winston = require('winston'),
+	templates = require('templates.js'),
 
 	User = require('./user'),
 	Plugins = require('./plugins'),
 	Meta = require('./meta'),
-	templates = require('../public/src/templates'),
 
 	app = {},
 	Emailer = {};

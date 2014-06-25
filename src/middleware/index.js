@@ -1,7 +1,6 @@
 "use strict";
 
-var templates = require('./../../public/src/templates'),
-	utils = require('./../../public/src/utils'),
+var utils = require('./../../public/src/utils'),
 	meta = require('./../meta'),
 	plugins = require('./../plugins'),
 	db = require('./../database'),
@@ -15,6 +14,7 @@ var templates = require('./../../public/src/templates'),
 	express = require('express'),
 	winston = require('winston'),
 	flash = require('connect-flash'),
+	templates = require('templates.js'),
 
 	relativePath,
 	viewsPath,

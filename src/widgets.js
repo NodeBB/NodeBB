@@ -2,9 +2,10 @@
 
 var async = require('async'),
 	winston = require('winston'),
+	templates = require('templates.js'),
+	
 	plugins = require('./plugins'),
-	db = require('./database'),
-	templates = require('./../public/src/templates');
+	db = require('./database');
 
 
 (function(Widgets) {

@@ -26,7 +26,7 @@
 	}
 
 	module.exports = function() {
-		var templates = templates || require('./templates');
+		var templates = templates || require('templates.js');
 
 		templates.registerHelper('displayUsersLink', helpers.displayUsersLink);
 		templates.registerHelper('buildMetaTag', helpers.buildMetaTag);
