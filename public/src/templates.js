@@ -1,3 +1,7 @@
+/* TO BE DEPRECATED IN 0.6x
+Please use the npm module instead - require('templates.js')
+*/
+
 'use strict';
 /*global require, module*/
 
