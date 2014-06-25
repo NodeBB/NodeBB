@@ -4,9 +4,9 @@
 var async = require('async'),
 	winston = require('winston'),
 
-	db = require('./../database'),
-	posts = require('./../posts'),
-	topics = require('./../topics');
+	db = require('../database'),
+	posts = require('../posts'),
+	topics = require('../topics');
 
 module.exports = function(Categories) {
 	Categories.getRecentReplies = function(cid, uid, count, callback) {
@@ -48,7 +48,7 @@ module.exports = function(Categories) {
 				return winston.error(err.message);
 			}
 
-			if (!results.mainPid && results.pids && !pids.length) {
+			if (!results.mainPid && results.pids && !results.pids.length) {
 				return;
 			}
 
