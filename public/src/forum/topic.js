@@ -56,11 +56,26 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 
 		addBlockquoteEllipses($('.topic .post-content > blockquote'));
 
+		handleBookmark(tid);
+
+		navigator.init('.posts > .post-row', postCount, Topic.navigatorCallback);
+
+		socket.on('event:new_post', onNewPost);
+
+		$(window).on('scroll', updateTopicTitle);
+
+		$(window).trigger('action:topic.loaded');
+
+		socket.emit('topics.markAsRead', tid);
+		socket.emit('topics.increaseViewCount', tid);
+	};
+
+	function handleBookmark(tid) {
 		var bookmark = localStorage.getItem('topic:' + tid + ':bookmark');
 		var postIndex = getPostIndex();
 		if (postIndex) {
 			scrollTo.scrollToPost(postIndex - 1, true);
-		} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1)) && postCount > 1) {
+		} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1)) && ajaxify.variables.get('postcount') > 1) {
 			app.alert({
 				alert_id: 'bookmark',
 				message: '[[topic:bookmark_instructions]]',
@@ -74,18 +89,12 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 				}
 			});
 		}
+	}
 
-		navigator.init('.posts > .post-row', postCount, Topic.navigatorCallback);
-
-		socket.on('event:new_post', onNewPost);
-
-		$(window).on('scroll', updateTopicTitle);
-
-		$(window).trigger('action:topic.loaded');
-
-		socket.emit('topics.markAsRead', tid);
-		socket.emit('topics.increaseViewCount', tid);
-	};
+	function getPostIndex() {
+		var parts = window.location.pathname.split('/');
+		return parts[4] ? parseInt(parts[4], 10) : 0;
+	}
 
 	function handleSorting() {
 		var threadSort = $('.thread-sort');
@@ -100,11 +109,6 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 				ajaxify.go('topic/' + ajaxify.variables.get('topic_slug'));
 			});
 		});
-	}
-
-	function getPostIndex() {
-		var parts = window.location.pathname.split('/');
-		return parts[4] ? parseInt(parts[4], 10) : 0;
 	}
 
 	function showBottomPostBar() {
