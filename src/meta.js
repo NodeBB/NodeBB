@@ -329,11 +329,11 @@ var fs = require('fs'),
 				async.each(pluginDirectories, function(directory, next) {
 					utils.walk(directory, function(err, scripts) {
 						Meta.js.scripts = Meta.js.scripts.concat(scripts);
-						next();
+						next(err);
 					});
 				}, function(err) {
 					Meta.js.prepared = true;
-					callback();
+					callback(err);
 				});
 			});
 		},
