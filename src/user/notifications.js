@@ -11,7 +11,8 @@ var async = require('async'),
 	notifications = require('../notifications'),
 	posts = require('../posts'),
 	postTools = require('../postTools'),
-	topics = require('../topics');
+	topics = require('../topics'),
+	privileges = require('../privileges');
 
 (function(UserNotifications) {
 	UserNotifications.get = function(uid, callback) {
@@ -155,7 +156,7 @@ var async = require('async'),
 
 			async.parallel({
 				username: async.apply(user.getUserField, uid, 'username'),
-				slug: async.apply(topics.getTopicField, tid, 'slug'),
+				topic: async.apply(topics.getTopicFields, tid, ['slug', 'cid']),
 				postIndex: async.apply(posts.getPidIndex, pid),
 				postContent: function(next) {
 					async.waterfall([
@@ -173,11 +174,17 @@ var async = require('async'),
 				notifications.create({
 					bodyShort: '[[notifications:user_made_post, ' + results.username + ']]',
 					bodyLong: results.postContent,
-					path: nconf.get('relative_path') + '/topic/' + results.slug + '/' + results.postIndex,
+					path: nconf.get('relative_path') + '/topic/' + results.topic.slug + '/' + results.postIndex,
 					uniqueId: 'topic:' + tid,
 					from: uid
 				}, function(nid) {
-					notifications.push(nid, followers);
+					async.filter(followers, function(uid, next) {
+						privileges.categories.can('read', results.topic.cid, uid, function(err, canRead) {
+							next(!err && canRead);
+						});
+					}, function(followers){
+						notifications.push(nid, followers);
+					});
 				});
 			});
 		});
