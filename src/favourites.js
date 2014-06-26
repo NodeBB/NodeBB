@@ -2,7 +2,8 @@ var async = require('async'),
 
 	db = require('./database'),
 	posts = require('./posts'),
-	user = require('./user');
+	user = require('./user'),
+	meta = require('./meta');
 
 (function (Favourites) {
 	"use strict";
@@ -102,7 +103,7 @@ var async = require('async'),
 
 	Favourites.downvote = function(pid, uid, callback) {
 		user.getUserField(uid, 'reputation', function(err, reputation) {
-			if (reputation < 0) {
+			if (reputation < meta.config['privileges:downvote']) {
 				return callback(new Error('[[error:not-enough-reputation-to-downvote]]'));
 			}
 
