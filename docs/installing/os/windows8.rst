@@ -21,7 +21,7 @@ Start Redis Server
 
 	The default location of Redis Server is
 
-	**C:\Program Files (x86)\Redis\StartRedisServer.cmd**
+	**C:\\Program Files (x86)\\Redis\\StartRedisServer.cmd**
 
 Open Git Shell, and type the following commands. Clone NodeBB repo:
 
