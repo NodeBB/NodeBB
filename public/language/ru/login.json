@@ -1,9 +1,9 @@
 {
-    "username": "Username / Email",
+    "username": "Имя пользователя / Email",
     "remember_me": "Запомнить меня",
     "forgot_password": "Забыли пароль?",
     "alternative_logins": "Войти через",
     "failed_login_attempt": "Не удалось войти, попробуйте еще раз.",
     "login_successful": "Вы успешно вошли!",
-    "dont_have_account": "Don't have an account?"
+    "dont_have_account": "Нет акканута?"
 }

@@ -8,5 +8,5 @@
     "chat.see_all": "查看所有聊天",
     "composer.user_said_in": "%1在%2中说：\n",
     "composer.user_said": "%1说：\n",
-    "composer.discard": "Are you sure you wish to discard this post?"
+    "composer.discard": "确定要取消此帖？"
 }

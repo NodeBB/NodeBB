@@ -35,7 +35,7 @@
     "file-too-big": "Maximum allowed file size is %1 kbs",
     "cant-vote-self-post": "You cannot vote for your own post",
     "already-favourited": "You already favorited this post",
-    "already-unfavourited": "You already unfavourited this post",
+    "already-unfavourited": "You already unfavorited this post",
     "cant-ban-other-admins": "You can't ban other admins!",
     "invalid-image-type": "Invalid image type",
     "group-name-too-short": "Group name too short",
