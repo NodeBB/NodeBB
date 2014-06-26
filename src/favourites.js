@@ -101,7 +101,13 @@ var async = require('async'),
 	};
 
 	Favourites.downvote = function(pid, uid, callback) {
-		toggleVote('downvote', pid, uid, callback);
+		user.getUserField(uid, 'reputation', function(err, reputation) {
+			if (reputation < 0) {
+				return callback(new Error('[[error:not-enough-reputation-to-downvote]]'));
+			}
+
+			toggleVote('downvote', pid, uid, callback);
+		});
 	};
 
 	function toggleVote(type, pid, uid, callback) {
