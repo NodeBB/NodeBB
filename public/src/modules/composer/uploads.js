@@ -2,7 +2,7 @@
 
 /* globals define, utils, config, app */
 
-define('composer/uploads', function() {
+define('composer/uploads', ['composer/preview'], function(preview) {
 	var uploads = {
 		inProgress: {}
 	};
@@ -260,7 +260,7 @@ define('composer/uploads', function() {
 							updateTextArea(uploads[i].name, uploads[i].url);
 						}
 					}
-
+					preview.render(postContainer);
 					textarea.focus();
 				},
 
