@@ -93,7 +93,7 @@ define('composer/uploads', function() {
 			if(draggingDocument) {
 				return;
 			}
-			drop.css('top', postContainer.find('.tab-content').position().top + 'px');
+			drop.css('top', postContainer.find('.write-preview-container').position().top + 'px');
 			drop.css('height', textarea.height());
 			drop.css('line-height', textarea.height() + 'px');
 			drop.show();
