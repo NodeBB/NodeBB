@@ -98,10 +98,18 @@ var async = require('async'),
 	}
 
 	Favourites.upvote = function(pid, uid, callback) {
+		if (meta.config['votingEnabled'] === false) {
+			return callback(false);
+		}
+		
 		toggleVote('upvote', pid, uid, callback);
 	};
 
 	Favourites.downvote = function(pid, uid, callback) {
+		if (meta.config['votingEnabled'] === false) {
+			return callback(false);
+		}
+
 		user.getUserField(uid, 'reputation', function(err, reputation) {
 			if (reputation < meta.config['privileges:downvote']) {
 				return callback(new Error('[[error:not-enough-reputation-to-downvote]]'));
