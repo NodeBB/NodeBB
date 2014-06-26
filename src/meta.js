@@ -312,11 +312,29 @@ var fs = require('fs'),
 					return path !== null;
 				});
 
+				var pluginDirectories = [];
+
+				plugins.clientScripts = plugins.clientScripts.filter(function(path) {
+					if (path.indexOf('.js') !== -1) {
+						return true;
+					} else {
+						pluginDirectories.push(path);
+						return false;
+					}
+				});
+
 				// Add plugin scripts
 				Meta.js.scripts = Meta.js.scripts.concat(plugins.clientScripts);
 
-				Meta.js.prepared = true;
-				callback();
+				async.each(pluginDirectories, function(directory, next) {
+					utils.walk(directory, function(err, scripts) {
+						Meta.js.scripts = Meta.js.scripts.concat(scripts);
+						next();
+					});
+				}, function(err) {
+					Meta.js.prepared = true;
+					callback();
+				});
 			});
 		},
 		minify: function(minify) {
