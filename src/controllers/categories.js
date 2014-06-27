@@ -90,7 +90,15 @@ categoriesController.get = function(req, res, next) {
 					return next(err);
 				}
 
-				var start = (page - 1) * settings.topicsPerPage,
+				var topicIndex = 0;
+				if (!settings.usePagination) {
+					topicIndex = Math.max((req.params.topic_index || 1) - (settings.topicsPerPage - 1), 0);
+				} else if (!req.query.page) {
+					var index = Math.max(parseInt((req.params.topic_index || 0), 10), 0);
+					page = Math.ceil((index + 1) / settings.topicsPerPage);
+				}
+
+				var start = (page - 1) * settings.topicsPerPage + topicIndex,
 					end = start + settings.topicsPerPage - 1;
 
 				categories.getCategoryById(cid, start, end, uid, function (err, categoryData) {

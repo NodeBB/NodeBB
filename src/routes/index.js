@@ -79,6 +79,9 @@ function categoryRoutes(app, middleware, controllers) {
 
 	app.get('/api/unread/total', middleware.authenticate, controllers.categories.unreadTotal);
 
+	app.get('/category/:category_id/:slug/:topic_index', middleware.buildHeader, middleware.checkTopicIndex, controllers.categories.get);
+	app.get('/api/category/:category_id/:slug/:topic_index', middleware.checkTopicIndex, controllers.categories.get);
+
 	app.get('/category/:category_id/:slug?', middleware.buildHeader, middleware.addSlug, controllers.categories.get);
 	app.get('/api/category/:category_id/:slug?', controllers.categories.get);
 }

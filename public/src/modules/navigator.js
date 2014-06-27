@@ -1,7 +1,7 @@
 
 'use strict';
 
-/* globals app, define, ajaxify */
+/* globals app, define, ajaxify, utils, translator */
 
 
 define('navigator', function() {
@@ -17,21 +17,48 @@ define('navigator', function() {
 
 		$(window).on('scroll', navigator.update);
 
-		$('.pagination-block a').off('click').on('click', function() {
-			return false;
+		$('.pagination-block .dropdown-menu').off('click').on('click', function(e) {
+			e.stopPropagation();
 		});
 
-		$('.pagination-block i:first').off('click').on('click', function() {
+		$('.pagination-block .pageup').off('click').on('click', function() {
 			navigator.scrollToTop();
 		});
 
-		$('.pagination-block i:last').off('click').on('click', function() {
+		$('.pagination-block .pagedown').off('click').on('click', function() {
 			navigator.scrollToBottom();
+		});
+
+		$('.pagination-block .pagetop').off('click').on('click', function() {
+			ajaxify.go(generateUrl());
+		});
+
+		$('.pagination-block .pagebottom').off('click').on('click', function() {
+			ajaxify.go(generateUrl(count));
+		});
+
+		$('.pagination-block input').on('keydown', function(e) {
+			if (e.which === 13) {
+				var input = $(this);
+				if (!utils.isNumber(input.val())) {
+					input.val('');
+					return;
+				}
+				var url = generateUrl(input.val());
+				input.val('');
+				$('.pagination-block .dropdown-toggle').trigger('click');
+				ajaxify.go(url);
+			}
 		});
 
 		navigator.setCount(count);
 		navigator.update();
 	};
+
+	function generateUrl(index) {
+		var parts = window.location.pathname.split('/');
+		return parts[1] + '/' + parts[2] + '/' + parts[3] + (index ? '/' + index : '');
+	}
 
 	navigator.setCount = function(value) {
 		count = parseInt(value, 10);
