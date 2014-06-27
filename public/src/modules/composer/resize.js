@@ -44,15 +44,31 @@ define('composer/resize', function() {
 			var resizeCenterY = resizeRect.top + (resizeRect.height/2);
 			resizeOffset = resizeCenterY - e.clientY;
 			resizeActive = true;
+            resizeDown = e.clientY;
 
 			$(window).on('mousemove', resizeAction);
 			$(window).on('mouseup', resizeStop);
 			$('body').on('touchmove', resizeTouchAction);
 		}
 
-		function resizeStop() {
+		function resizeStop(e) {
 			resizeActive = false;
-			postContainer.find('textarea').focus();
+            if(e.clientY-resizeDown==0){
+                var newHeight;
+                var max = $(window).height() - $('#header-menu').height() - 20;
+                if(max != postContainer.height()){
+                    newHeight = max;
+                    $('.fa-chevron-up').addClass("fa-chevron-down").removeClass("fa-chevron-up");
+                }else{
+                    newHeight = 400;
+                    $('.fa-chevron-down').addClass("fa-chevron-up").removeClass("fa-chevron-down");
+                }
+                postContainer.css('height', newHeight);
+                $('body').css({'margin-bottom': newHeight});
+                resizeWritePreview(postContainer);
+                resizeSavePosition(newHeight);
+            }
+            postContainer.find('textarea').focus();
 			$(window).off('mousemove', resizeAction);
 			$(window).off('mouseup', resizeStop);
 			$('body').off('touchmove', resizeTouchAction);
@@ -90,6 +106,7 @@ define('composer/resize', function() {
 
 		var	resizeActive = false,
 			resizeOffset = 0,
+            resizeDown = 0,
 			resizeEl = postContainer.find('.resizer');
 
 		resizeEl.on('mousedown', resizeStart);
