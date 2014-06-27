@@ -172,7 +172,7 @@ topicsController.get = function(req, res, next) {
 		}
 
 		data.privileges = userPrivileges;
-		data.votingEnabled = meta.config['votingEnabled'] ? meta.config['votingEnabled'] : true;
+		data['reputation:disabled'] = meta.config['reputation:disabled'] === '1' ? true : false;
 
 		var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
 		var queryString = qs.stringify(req.query);

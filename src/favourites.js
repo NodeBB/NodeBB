@@ -98,7 +98,7 @@ var async = require('async'),
 	}
 
 	Favourites.upvote = function(pid, uid, callback) {
-		if (meta.config['votingEnabled'] === false) {
+		if (meta.config['reputation:disabled'] === false) {
 			return callback(false);
 		}
 		
@@ -106,7 +106,7 @@ var async = require('async'),
 	};
 
 	Favourites.downvote = function(pid, uid, callback) {
-		if (meta.config['votingEnabled'] === false) {
+		if (meta.config['reputation:disabled'] === false) {
 			return callback(false);
 		}
 
