@@ -9,6 +9,7 @@ var	fs = require('fs'),
 	User = require('./user'),
 	Plugins = require('./plugins'),
 	Meta = require('./meta'),
+	translator = require('../public/src/translator'),
 
 	app = {},
 	Emailer = {};
@@ -26,23 +27,27 @@ Emailer.send = function(template, uid, params) {
 		},
 		plaintext: function(next) {
 			app.render('emails/' + template + '_plaintext', params, next);
-		}
+		},
+		email: async.apply(User.getUserField, uid, 'email'),
+		settings: async.apply(User.getSettings, uid)
 	}, function(err, results) {
-		User.getUserField(uid, 'email', function(err, email) {
+		async.map([results.html, results.plaintext], function(raw, next) {
+			translator.translate(raw, results.settings.language || meta.config.defaultLang || 'en_GB', function(translated) {
+				next(undefined, translated);
+			});
+		}, function(err, translated) {
 			if(err) {
 				return winston.error(err.message);
-			}
-
-			if(!email) {
+			} else if (!results.email) {
 				return winston.warn('uid : ' + uid + ' has no email, not sending.');
 			}
 
 			Plugins.fireHook('action:email.send', {
-				to: email,
+				to: results.email,
 				from: Meta.config['email:from'] || 'no-reply@localhost.lan',
 				subject: params.subject,
-				html: results.html,
-				plaintext: results.plaintext,
+				html: translated[0],
+				plaintext: translated[1],
 				template: template,
 				uid: uid
 			});
