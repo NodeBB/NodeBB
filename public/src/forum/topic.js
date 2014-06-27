@@ -62,7 +62,7 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 
 		handleBookmark(tid);
 
-		navigator.init('.posts > .post-row', postCount, Topic.navigatorCallback);
+		navigator.init('.posts > .post-row', postCount, Topic.navigatorCallback, Topic.toTop, Topic.toBottom);
 
 		socket.on('event:new_post', onNewPost);
 
@@ -72,6 +72,16 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 
 		socket.emit('topics.markAsRead', tid);
 		socket.emit('topics.increaseViewCount', tid);
+	};
+
+	Topic.toTop = function() {
+		navigator.scrollTop(1);
+	};
+
+	Topic.toBottom = function() {
+		socket.emit('topics.lastPostIndex', ajaxify.variables.get('topic_id'), function(err, index) {
+			navigator.scrollBottom(index);
+		});
 	};
 
 	function handleBookmark(tid) {

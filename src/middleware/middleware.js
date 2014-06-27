@@ -100,7 +100,7 @@ middleware.checkPostIndex = function(req, res, next) {
 };
 
 middleware.checkTopicIndex = function(req, res, next) {
-	categories.getCategoryField(req.params.category_id, 'topic_count', function(err, topicCount) {
+	db.sortedSetCard('categories:' + req.params.category_id + ':tid', function(err, topicCount) {
 		if (err) {
 			return next(err);
 		}

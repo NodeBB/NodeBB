@@ -10,10 +10,12 @@ define('navigator', function() {
 	var index = 1;
 	var count = 0;
 
-	navigator.init = function(selector, count, callback) {
+	navigator.init = function(selector, count, callback, toTop, toBottom) {
 
 		navigator.selector = selector;
 		navigator.callback = callback;
+		toTop = toTop || function() {};
+		toBottom = toBottom || function() {};
 
 		$(window).on('scroll', navigator.update);
 
@@ -21,21 +23,10 @@ define('navigator', function() {
 			e.stopPropagation();
 		});
 
-		$('.pagination-block .pageup').off('click').on('click', function() {
-			navigator.scrollToTop();
-		});
-
-		$('.pagination-block .pagedown').off('click').on('click', function() {
-			navigator.scrollToBottom();
-		});
-
-		$('.pagination-block .pagetop').off('click').on('click', function() {
-			ajaxify.go(generateUrl());
-		});
-
-		$('.pagination-block .pagebottom').off('click').on('click', function() {
-			ajaxify.go(generateUrl(count));
-		});
+		$('.pagination-block .pageup').off('click').on('click', navigator.scrollUp);
+		$('.pagination-block .pagedown').off('click').on('click', navigator.scrollDown);
+		$('.pagination-block .pagetop').off('click').on('click', toTop);
+		$('.pagination-block .pagebottom').off('click').on('click', toBottom);
 
 		$('.pagination-block input').on('keydown', function(e) {
 			if (e.which === 13) {
@@ -107,16 +98,33 @@ define('navigator', function() {
 		$('.pagination-block .progress-bar').width((index / count * 100) + '%');
 	};
 
-	navigator.scrollToTop = function () {
+	navigator.scrollUp = function () {
 		$('body,html').animate({
 			scrollTop: 0
 		});
 	};
 
-	navigator.scrollToBottom = function () {
+	navigator.scrollDown = function () {
 		$('body,html').animate({
 			scrollTop: $('html').height() - 100
 		});
+	};
+
+	navigator.scrollTop = function(index) {
+		if ($('li[data-index="' + index + '"]').length) {
+			navigator.scrollUp();
+		} else {
+			ajaxify.go(generateUrl());
+		}
+	};
+
+	navigator.scrollBottom = function(index) {
+		if ($('li[data-index="' + index + '"]').length) {
+			navigator.scrollDown();
+		} else {
+			index = parseInt(index, 10) + 1;
+			ajaxify.go(generateUrl(index));
+		}
 	};
 
 	function elementInView(el) {

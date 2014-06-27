@@ -57,6 +57,10 @@ SocketTopics.postcount = function(socket, tid, callback) {
 	topics.getTopicField(tid, 'postcount', callback);
 };
 
+SocketTopics.lastPostIndex = function(socket, tid, callback) {
+	db.sortedSetCard('tid:' + tid + ':posts', callback);
+};
+
 SocketTopics.increaseViewCount = function(socket, tid) {
 	topics.increaseViewCount(tid);
 };

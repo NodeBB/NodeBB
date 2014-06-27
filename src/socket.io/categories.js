@@ -1,10 +1,11 @@
 'use strict';
 
 var	async = require('async'),
+	db = require('../database'),
 	categories = require('../categories'),
 	privileges = require('../privileges'),
-	meta = require('./../meta'),
-	user = require('./../user'),
+	meta = require('../meta'),
+	user = require('../user'),
 
 	SocketCategories = {};
 
@@ -63,6 +64,10 @@ SocketCategories.getPageCount = function(socket, cid, callback) {
 
 SocketCategories.getTopicCount = function(socket, cid, callback) {
 	categories.getCategoryField(cid, 'topic_count', callback);
+};
+
+SocketCategories.lastTopicIndex = function(socket, cid, callback) {
+	db.sortedSetCard('categories:' + cid + ':tid', callback);
 };
 
 module.exports = SocketCategories;
