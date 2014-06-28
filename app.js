@@ -125,7 +125,7 @@ function start() {
 				webserver = require('./src/webserver'),
 				sockets = require('./src/socket.io'),
 				plugins = require('./src/plugins'),
-				upgrade = require('./src/upgrade')
+				upgrade = require('./src/upgrade'),
 				meta = require('./src/meta');
 
 			templates.setGlobal('relative_path', nconf.get('relative_path'));
