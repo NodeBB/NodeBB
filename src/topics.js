@@ -350,7 +350,7 @@ var async = require('async'),
 						if (err) {
 							return next(err);
 						} else if(!postData || !utils.isNumber(postData.uid)) {
-							return next(new Error('[[error:no-teaser]]'));
+							return callback();
 						}
 
 						user.getUserFields(postData.uid, ['username', 'userslug', 'picture'], function(err, userData) {
