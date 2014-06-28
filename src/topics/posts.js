@@ -42,7 +42,6 @@ module.exports = function(Topics) {
 	};
 
 	Topics.addPostData = function(postData, uid, callback) {
-		var st = process.hrtime();
 		var pids = postData.map(function(post) {
 			return post.pid;
 		});
@@ -119,7 +118,7 @@ module.exports = function(Topics) {
 					postData[i].content = '[[topic:post_is_deleted]]';
 				}
 			}
-process.profile('derp', st);
+
 			callback(null, postData);
 		});
 	};
