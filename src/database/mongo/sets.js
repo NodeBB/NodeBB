@@ -78,7 +78,7 @@ module.exports = function(db, module) {
 			});
 
 			result = sets.map(function(set) {
-				return result.indexOf(set) !== -1 ? 1 : 0;
+				return result.indexOf(set) !== -1;
 			});
 
 			callback(null, result);

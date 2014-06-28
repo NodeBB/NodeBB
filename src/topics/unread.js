@@ -45,7 +45,7 @@ module.exports = function(Topics) {
 						return callback(err);
 					}
 					var newtids = tids.filter(function(tid, index, self) {
-						return parseInt(read[index], 10) === 0;
+						return !read[index];
 					});
 
 					async.filter(newtids, function(tid, next) {

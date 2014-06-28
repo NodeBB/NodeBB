@@ -42,6 +42,7 @@ module.exports = function(Topics) {
 	};
 
 	Topics.addPostData = function(postData, uid, callback) {
+		var st = process.hrtime();
 		var pids = postData.map(function(post) {
 			return post.pid;
 		});
@@ -54,27 +55,43 @@ module.exports = function(Topics) {
 				favourites.getVoteStatusByPostIDs(pids, uid, next);
 			},
 			userData: function(next) {
-				async.each(postData, function(post, next) {
-					async.parallel({
-						editor: function(next) {
-							if (!post.editor) {
-								return next();
-							}
-							user.getUserFields(post.editor, ['username', 'userslug'], next);
-						},
-						user: function(next) {
-							posts.getUserInfoForPost(post, next);
-						}
-					}, function(err, results) {
-						if (err) {
-							return next(err);
-						}
+				var uids = [];
+				for(var i=0; i<postData.length; ++i) {
+					if (uids.indexOf(postData[i].uid) === -1) {
+						uids.push(postData[i].uid);
+					}
+				}
 
-						post.user = results.user;
-						post.editor = results.editor;
-						next();
+				posts.getUserInfoForPosts(uids, function(err, users) {
+					if (err) {
+						return next(err);
+					}
+
+					var userData = {};
+					users.forEach(function(user) {
+						userData[user.uid] = user;
 					});
-				}, next);
+					next(null, userData);
+				});
+			},
+			editors: function(next) {
+				var editors = [];
+				for(var i=0; i<postData.length; ++i) {
+					if (postData[i].editor && editors.indexOf(postData[i].editor) === -1) {
+						editors.push(postData[i].editor);
+					}
+				}
+
+				user.getMultipleUserFields(editors, ['uid', 'username', 'userslug'], function(err, editors) {
+					if (err) {
+						return next(err);
+					}
+					var editorData = {};
+					editors.forEach(function(editor) {
+						editorData[editor.uid] = editor;
+					})
+					next(null, editorData);
+				});
 			},
 			privileges: function(next) {
 				async.map(pids, function (pid, next) {
@@ -88,9 +105,11 @@ module.exports = function(Topics) {
 
 			for (var i = 0; i < postData.length; ++i) {
 				postData[i].deleted = parseInt(postData[i].deleted, 10) === 1;
+				postData[i].user = results.userData[postData[i].uid];
+				postData[i].editor = postData[i].editor ? results.editors[postData[i].editor] : null;
 				postData[i].favourited = results.favourites[i];
-				postData[i].upvoted = results.voteData[i].upvoted;
-				postData[i].downvoted = results.voteData[i].downvoted;
+				postData[i].upvoted = results.voteData.upvotes[i];
+				postData[i].downvoted = results.voteData.downvotes[i];
 				postData[i].votes = postData[i].votes || 0;
 				postData[i].display_moderator_tools = results.privileges[i].editable;
 				postData[i].display_move_tools = results.privileges[i].move && postData[i].index !== 0;
@@ -100,7 +119,7 @@ module.exports = function(Topics) {
 					postData[i].content = '[[topic:post_is_deleted]]';
 				}
 			}
-
+process.profile('derp', st);
 			callback(null, postData);
 		});
 	};

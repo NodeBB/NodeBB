@@ -40,11 +40,20 @@ module.exports = function(redisClient, module) {
 	module.isMemberOfSets = function(sets, value, callback) {
 		var multi = redisClient.multi();
 
-		for (var i = 0, ii = sets.length; i < ii; i++) {
+		for (var i = 0; i < sets.length; ++i) {
 			multi.sismember(sets[i], value);
 		}
 
-		multi.exec(callback);
+		multi.exec(function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			for (var i=0; i<results.length; ++i) {
+				results[i] = results[i] === 1;
+			}
+			callback(null, results);
+		});
 	};
 
 	module.getSetMembers = function(key, callback) {

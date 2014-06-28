@@ -101,7 +101,7 @@ var async = require('async'),
 		if (meta.config['reputation:disabled'] === false) {
 			return callback(false);
 		}
-		
+
 		toggleVote('upvote', pid, uid, callback);
 	};
 
@@ -155,8 +155,21 @@ var async = require('async'),
 	};
 
 	Favourites.getVoteStatusByPostIDs = function(pids, uid, callback) {
-		async.map(pids, function(pid, next) {
-			Favourites.hasVoted(pid, uid, next);
+		var upvoteSets = [],
+			downvoteSets = [];
+
+		for (var i=0; i<pids.length; ++i) {
+			upvoteSets.push('pid:' + pids[i] + ':upvote');
+			downvoteSets.push('pid:' + pids[i] + ':downvote');
+		}
+
+		async.parallel({
+			upvotes: function(next) {
+				db.isMemberOfSets(upvoteSets, uid, next);
+			},
+			downvotes: function(next) {
+				db.isMemberOfSets(downvoteSets, uid, next);
+			}
 		}, callback);
 	};
 
@@ -225,9 +238,12 @@ var async = require('async'),
 	};
 
 	Favourites.getFavouritesByPostIDs = function(pids, uid, callback) {
-		async.map(pids, function(pid, next) {
-			Favourites.hasFavourited(pid, uid, next);
-		}, callback);
+		var sets = [];
+		for (var i=0; i<pids.length; ++i) {
+			sets.push('pid:' + pids[i] + ':users_favourited');
+		}
+
+		db.isMemberOfSets(sets, uid, callback);
 	};
 
 	Favourites.getFavouritedUidsByPids = function(pids, callback) {

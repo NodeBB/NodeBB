@@ -188,43 +188,46 @@ var async = require('async'),
 		});
 	};
 
-	Posts.getUserInfoForPost = function(post, callback) {
-		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(err, userData) {
+	Posts.getUserInfoForPosts = function(uids, callback) {
+		user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(err, userData) {
 			if (err) {
 				return callback(err);
 			}
 
-			var userInfo = {
-				username: userData.username || '[[global:guest]]',
-				userslug: userData.userslug || '',
-				reputation: userData.reputation || 0,
-				postcount: userData.postcount || 0,
-				banned: parseInt(userData.banned, 10) === 1,
-				picture: userData.picture || user.createGravatarURLFromEmail('')
-			};
+			async.map(userData, function(userData, next) {
+				var userInfo = {
+					uid: userData.uid,
+					username: userData.username || '[[global:guest]]',
+					userslug: userData.userslug || '',
+					reputation: userData.reputation || 0,
+					postcount: userData.postcount || 0,
+					banned: parseInt(userData.banned, 10) === 1,
+					picture: userData.picture || user.createGravatarURLFromEmail('')
+				};
 
-			async.parallel({
-				signature: function(next) {
-					if (parseInt(meta.config.disableSignatures, 10) === 1) {
-						return next();
+				async.parallel({
+					signature: function(next) {
+						if (parseInt(meta.config.disableSignatures, 10) === 1) {
+							return next();
+						}
+						postTools.parseSignature(userData.signature, next);
+					},
+					customProfileInfo: function(next) {
+						plugins.fireHook('filter:posts.custom_profile_info', {profile: [], uid: userData.uid}, next);
+					},
+					groups: function(next) {
+						groups.getUserGroups(userData.uid, next);
 					}
-					postTools.parseSignature(userData.signature, next);
-				},
-				customProfileInfo: function(next) {
-					plugins.fireHook('filter:posts.custom_profile_info', {profile: [], uid: post.uid, pid: post.pid}, next);
-				},
-				groups: function(next) {
-					groups.getUserGroups(post.uid, next);
-				}
-			}, function(err, results) {
-				if (err) {
-					return callback(err);
-				}
-				userInfo.signature = results.signature;
-				userInfo.custom_profile_info = results.custom_profile_info;
-				userInfo.groups = results.groups;
-				callback(null, userInfo);
-			});
+				}, function(err, results) {
+					if (err) {
+						return next(err);
+					}
+					userInfo.signature = results.signature;
+					userInfo.custom_profile_info = results.custom_profile_info;
+					userInfo.groups = results.groups;
+					next(null, userInfo);
+				});
+			}, callback);
 		});
 	};
 
