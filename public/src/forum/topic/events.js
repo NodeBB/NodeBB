@@ -42,6 +42,7 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 	};
 
 	Events.init = function() {
+		Events.removeListeners();
 		for(var eventName in events) {
 			if (events.hasOwnProperty(eventName)) {
 				socket.on(eventName, events[eventName]);
