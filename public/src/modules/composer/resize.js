@@ -44,7 +44,7 @@ define('composer/resize', function() {
 			var resizeCenterY = resizeRect.top + (resizeRect.height/2);
 			resizeOffset = resizeCenterY - e.clientY;
 			resizeActive = true;
-            resizeDown = e.clientY;
+			resizeDown = e.clientY;
 
 			$(window).on('mousemove', resizeAction);
 			$(window).on('mouseup', resizeStop);
@@ -52,23 +52,25 @@ define('composer/resize', function() {
 		}
 
 		function resizeStop(e) {
+			var triggerIconEl = $('.resizer i');
 			resizeActive = false;
-            if(e.clientY-resizeDown==0){
-                var newHeight;
-                var max = $(window).height() - $('#header-menu').height() - 20;
-                if(max != postContainer.height()){
-                    newHeight = max;
-                    $('.fa-chevron-up').addClass("fa-chevron-down").removeClass("fa-chevron-up");
-                }else{
-                    newHeight = 400;
-                    $('.fa-chevron-down').addClass("fa-chevron-up").removeClass("fa-chevron-down");
-                }
-                postContainer.css('height', newHeight);
-                $('body').css({'margin-bottom': newHeight});
-                resizeWritePreview(postContainer);
-                resizeSavePosition(newHeight);
-            }
-            postContainer.find('textarea').focus();
+			if (e.clientY-resizeDown === 0){
+				var newHeight;
+				var max = $(window).height() - $('#header-menu').height() - 20;
+				if (max != postContainer.height()){
+					postContainer.css('height', max);
+					$('body').css({'margin-bottom': max});
+					resizeWritePreview(postContainer);
+					triggerIconEl.addClass("fa-chevron-down").removeClass("fa-chevron-up");
+				} else {
+					resize.reposition(postContainer);
+					triggerIconEl.addClass("fa-chevron-up").removeClass("fa-chevron-down");
+				}
+			} else {
+				triggerIconEl.addClass("fa-chevron-up").removeClass("fa-chevron-down");
+			}
+
+			postContainer.find('textarea').focus();
 			$(window).off('mousemove', resizeAction);
 			$(window).off('mouseup', resizeStop);
 			$('body').off('touchmove', resizeTouchAction);
