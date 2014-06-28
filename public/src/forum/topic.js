@@ -58,6 +58,8 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 
 		enableInfiniteLoadingOrPagination();
 
+		addBlockQuoteHandler();
+
 		addBlockquoteEllipses($('.topic .post-content > blockquote'));
 
 		handleBookmark(tid);
@@ -150,21 +152,22 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 		createNewPosts(data);
 	}
 
-	function addBlockquoteEllipses(blockquotes) {
-		blockquotes.each(function() {
-			var $this = $(this);
-			if ($this.find(':hidden').length && !$this.find('.toggle').length) {
-				$this.append('<i class="fa fa-angle-down pointer toggle"></i>');
-			}
-		});
-
+	function addBlockQuoteHandler() {
 		$('#post-container').on('click', 'blockquote .toggle', function() {
 			var blockQuote = $(this).parent('blockquote');
 			var toggle = $(this);
 			blockQuote.toggleClass('uncollapsed');
 			var collapsed = !blockQuote.hasClass('uncollapsed');
 			toggle.toggleClass('fa-angle-down', collapsed).toggleClass('fa-angle-up', !collapsed);
+		});
+	}
 
+	function addBlockquoteEllipses(blockquotes) {
+		blockquotes.each(function() {
+			var $this = $(this);
+			if ($this.find(':hidden').length && !$this.find('.toggle').length) {
+				$this.append('<i class="fa fa-angle-down pointer toggle"></i>');
+			}
 		});
 	}
 
