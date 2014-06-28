@@ -14,12 +14,9 @@ module.exports = function(privileges) {
 
 	privileges.posts = {};
 
-	privileges.posts.get = function(pid, uid, callback) {
+	privileges.posts.get = function(pids, uid, callback) {
 
 		async.parallel({
-			isOwner: function(next) {
-				posts.isOwner(pid, uid, next);
-			},
 			manage_content: function(next) {
 				helpers.hasEnoughReputationFor('privileges:manage_content', uid, next);
 			},
@@ -29,25 +26,42 @@ module.exports = function(privileges) {
 			isAdministrator: function(next) {
 				user.isAdministrator(uid, next);
 			},
-			isModerator: function(next) {
-				posts.getCidByPid(pid, function(err, cid) {
-					if (err) {
-						return next(err);
-					}
-					user.isModerator(uid, cid, next);
-				});
-			}
-		}, function(err, results) {
+		}, function(err, userResults) {
 			if(err) {
 				return callback(err);
 			}
 
-			var editable = results.isAdministrator || results.isModerator || results.manage_content || results.manage_topic || results.isOwner;
+			var userPriv = userResults.isAdministrator || userResults.manage_topic || userResults.manage_content;
 
-			callback(null, {
-				editable: editable,
-				view_deleted: editable,
-				move: results.isAdministrator || results.isModerator
+			async.parallel({
+				isOwner: function(next) {
+					posts.isOwner(pids, uid, next);
+				},
+				isModerator: function(next) {
+					posts.getCidsByPids(pids, function(err, cids) {
+						if (err) {
+							return next(err);
+						}
+						user.isModerator(uid, cids, next);
+					});
+				}
+			}, function(err, postResults) {
+				if (err) {
+					return callback(err);
+				}
+
+				var privileges = [];
+
+				for (var i=0; i<pids.length; ++i) {
+					var editable = userPriv || postResults.isModerator[i] || postResults.isOwner[i];
+					privileges.push({
+						editable: editable,
+						view_deleted: editable,
+						move: userResults.isAdministrator || postResults.isModerator[i]
+					});
+				}
+
+				callback(null, privileges);
 			});
 		});
 	};

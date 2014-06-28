@@ -386,6 +386,13 @@ var async = require('async'),
 		db.getObjectFields('topic:' + tid, fields, callback);
 	};
 
+	Topics.getTopicsFields = function(tids, fields, callback) {
+		var keys = tids.map(function(tid) {
+			return 'topic:' + tid;
+		});
+		db.getObjectsFields(keys, fields, callback);
+	};
+
 	Topics.setTopicField = function(tid, field, value, callback) {
 		db.setObjectField('topic:' + tid, field, value, callback);
 	};

@@ -344,6 +344,14 @@ var async = require('async'),
 		});
 	};
 
+	Posts.getPostsFields = function(pids, fields, callback) {
+		var keys = pids.map(function(pid) {
+			return 'post:' + pid;
+		});
+
+		db.getObjectsFields(keys, fields, callback);
+	};
+
 	Posts.getPostField = function(pid, field, callback) {
 		Posts.getPostFields(pid, [field], function(err, data) {
 			if(err) {
@@ -378,6 +386,28 @@ var async = require('async'),
 					return callback(err || new Error('[[error:invalid-cid]]'));
 				}
 				callback(null, cid);
+			});
+		});
+	};
+
+	Posts.getCidsByPids = function(pids, callback) {
+		Posts.getPostsFields(pids, ['tid'], function(err, posts) {
+			if (err) {
+				return callback(err);
+			}
+
+			var tids = posts.map(function(post) {
+				return post.tid;
+			});
+
+			topics.getTopicsFields(tids, ['cid'], function(err, topics) {
+				if (err) {
+					return callback(err);
+				}
+				var cids = topics.map(function(topic) {
+					return topic.cid;
+				});
+				callback(null, cids);
 			});
 		});
 	};
@@ -474,9 +504,22 @@ var async = require('async'),
 	};
 
 	Posts.isOwner = function(pid, uid, callback) {
-		Posts.getPostField(pid, 'uid', function(err, author) {
-			callback(err, parseInt(author, 10) === parseInt(uid, 10));
-		});
+		uid = parseInt(uid, 10);
+		if (Array.isArray(pid)) {
+			Posts.getPostsFields(pid, ['uid'], function(err, posts) {
+				if (err) {
+					return callback(err);
+				}
+				posts = posts.map(function(post) {
+					return post && parseInt(post.uid, 10) === uid;
+				});
+				callback(null, posts);
+			});
+		} else {
+			Posts.getPostField(pid, 'uid', function(err, author) {
+				callback(err, parseInt(author, 10) === uid);
+			});
+		}
 	};
 
 	Posts.isMain = function(pid, callback) {

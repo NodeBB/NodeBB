@@ -405,7 +405,14 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.isModerator = function(uid, cid, callback) {
-		groups.isMember(uid, 'cid:' + cid + ':privileges:mods', callback);
+		if (Array.isArray(cid)) {
+			var groupNames = cid.map(function(cid) {
+				return 'cid:' + cid + ':privileges:mods';
+			});
+			groups.isMemberOfGroups(uid, groupNames, callback);
+		} else {
+			groups.isMember(uid, 'cid:' + cid + ':privileges:mods', callback);
+		}
 	};
 
 	User.isAdministrator = function(uid, callback) {

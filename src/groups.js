@@ -150,6 +150,10 @@
 		db.isSetMember('group:' + groupName + ':members', uid, callback);
 	};
 
+	Groups.isMemberOfGroups = function(uid, groups, callback) {
+		db.isMemberOfSets(groups, uid, callback);
+	};
+
 	Groups.getMemberCount = function(groupName, callback) {
 		db.setCount('group:' + groupName + ':members', callback);
 	};

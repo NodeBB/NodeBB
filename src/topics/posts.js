@@ -55,6 +55,7 @@ module.exports = function(Topics) {
 			},
 			userData: function(next) {
 				var uids = [];
+
 				for(var i=0; i<postData.length; ++i) {
 					if (uids.indexOf(postData[i].uid) === -1) {
 						uids.push(postData[i].uid);
@@ -70,6 +71,7 @@ module.exports = function(Topics) {
 					users.forEach(function(user) {
 						userData[user.uid] = user;
 					});
+
 					next(null, userData);
 				});
 			},
@@ -93,9 +95,7 @@ module.exports = function(Topics) {
 				});
 			},
 			privileges: function(next) {
-				async.map(pids, function (pid, next) {
-					privileges.posts.get(pid, uid, next);
-				}, next);
+				privileges.posts.get(pids, uid, next);
 			}
 		}, function(err, results) {
 			if(err) {
