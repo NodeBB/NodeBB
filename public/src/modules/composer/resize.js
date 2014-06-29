@@ -52,28 +52,32 @@ define('composer/resize', function() {
 		}
 
 		function resizeStop(e) {
-			var triggerIconEl = $('.resizer i');
 			resizeActive = false;
-			if (e.clientY-resizeDown === 0){
-				var newHeight;
-				var max = $(window).height() - $('#header-menu').height() - 20;
-				if (max != postContainer.height()){
-					postContainer.css('height', max);
-					$('body').css({'margin-bottom': max});
-					resizeWritePreview(postContainer);
-					triggerIconEl.addClass("fa-chevron-down").removeClass("fa-chevron-up");
-				} else {
-					resize.reposition(postContainer);
-					triggerIconEl.addClass("fa-chevron-up").removeClass("fa-chevron-down");
-				}
-			} else {
-				triggerIconEl.addClass("fa-chevron-up").removeClass("fa-chevron-down");
-			}
+			toggleHeight(e);
 
 			postContainer.find('textarea').focus();
 			$(window).off('mousemove', resizeAction);
 			$(window).off('mouseup', resizeStop);
 			$('body').off('touchmove', resizeTouchAction);
+		}
+
+		function toggleHeight(e) {
+			var triggerIconEl = $('.resizer i');
+			if (e.clientY - resizeDown === 0){
+				var newHeight;
+				var max = $(window).height() - $('#header-menu').height() - 20;
+				if (max !== postContainer.height()){
+					postContainer.css('height', max);
+					$('body').css({'margin-bottom': max});
+					resizeWritePreview(postContainer);
+					triggerIconEl.addClass('fa-chevron-down').removeClass('fa-chevron-up');
+				} else {
+					resize.reposition(postContainer);
+					triggerIconEl.addClass('fa-chevron-up').removeClass('fa-chevron-down');
+				}
+			} else {
+				triggerIconEl.addClass('fa-chevron-up').removeClass('fa-chevron-down');
+			}
 		}
 
 		function resizeTouchAction(e) {
