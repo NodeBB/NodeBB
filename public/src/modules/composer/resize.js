@@ -64,7 +64,6 @@ define('composer/resize', function() {
 		function toggleHeight(e) {
 			var triggerIconEl = $('.resizer i');
 			if (e.clientY - resizeDown === 0){
-				var newHeight;
 				var max = $(window).height() - $('#header-menu').height() - 20;
 				if (max !== postContainer.height()){
 					postContainer.css('height', max);
