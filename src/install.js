@@ -243,18 +243,17 @@ function setupDefaultConfigs(next) {
 	});
 
 	if (install.values) {
-		if (install.values['social:twitter:key'] && install.values['social:twitter:secret']) {
-			meta.configs.setOnEmpty('social:twitter:key', install.values['social:twitter:key']);
-			meta.configs.setOnEmpty('social:twitter:secret', install.values['social:twitter:secret']);
-		}
-		if (install.values['social:google:id'] && install.values['social:google:secret']) {
-			meta.configs.setOnEmpty('social:google:id', install.values['social:google:id']);
-			meta.configs.setOnEmpty('social:google:secret', install.values['social:google:secret']);
-		}
-		if (install.values['social:facebook:key'] && install.values['social:facebook:secret']) {
-			meta.configs.setOnEmpty('social:facebook:app_id', install.values['social:facebook:app_id']);
-			meta.configs.setOnEmpty('social:facebook:secret', install.values['social:facebook:secret']);
-		}
+		setOnEmpty('social:twitter:key', 'social:twitter:secret');
+		setOnEmpty('social:google:id', 'social:google:secret');
+		setOnEmpty('social:facebook:app_id', 'social:facebook:secret');
+	}
+}
+
+function setOnEmpty(key1, key2) {
+	var meta = require('./meta');
+	if (install.values[key1] && install.values[key2]) {
+		meta.configs.setOnEmpty(key1, install.values[key1]);
+		meta.configs.setOnEmpty(key2, install.values[key2]);
 	}
 }
 
