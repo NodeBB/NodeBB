@@ -122,8 +122,8 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 			composer.newReply(tid, pid, title, '[[modules:composer.user_said, ' + username + ']]' + text);
 			return;
 		}
-
-		var bodyEl = $('#cmp-uuid-'+uuid).find('textarea');
+		var postContainer = $('#cmp-uuid-' + uuid);
+		var bodyEl = postContainer.find('textarea');
 		var prevText = bodyEl.val();
 		if(tid !== composer.posts[uuid].tid) {
 			var link = '[' + title + '](/topic/' + tid + '#' + pid + ')';
@@ -135,7 +135,8 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 		function onTranslated(translated) {
 			composer.posts[uuid].body = (prevText.length ? prevText + '\n\n' : '') + translated + text;
 			bodyEl.val(composer.posts[uuid].body);
-			preview.render($('#cmp-uuid-' + uuid));
+			focusElements(postContainer);
+			preview.render(postContainer);
 		}
 	};
 
@@ -328,9 +329,7 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 			bodyEl = postContainer.find('textarea');
 
 		if (title.is(':disabled')) {
-			bodyEl.focus();
-			bodyEl.selectionStart = bodyEl.val().length;
-			bodyEl.selectionEnd = bodyEl.val().length;
+			bodyEl.focus().putCursorAtEnd();
 		} else {
 			title.focus();
 		}
