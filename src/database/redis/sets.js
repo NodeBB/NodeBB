@@ -25,25 +25,19 @@ module.exports = function(redisClient, module) {
 			multi.sismember(key, values[i]);
 		}
 
-		multi.exec(function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			for (var i=0; i<results.length; ++i) {
-				results[i] = results[i] === 1;
-			}
-			callback(null, results);
-		});
+		execSetMembers(multi, callback);
 	};
 
 	module.isMemberOfSets = function(sets, value, callback) {
 		var multi = redisClient.multi();
-
 		for (var i = 0; i < sets.length; ++i) {
 			multi.sismember(sets[i], value);
 		}
 
+		execSetMembers(multi, callback);
+	};
+
+	function execSetMembers(multi, callback) {
 		multi.exec(function(err, results) {
 			if (err) {
 				return callback(err);
@@ -54,7 +48,7 @@ module.exports = function(redisClient, module) {
 			}
 			callback(null, results);
 		});
-	};
+	}
 
 	module.getSetMembers = function(key, callback) {
 		redisClient.smembers(key, callback);
