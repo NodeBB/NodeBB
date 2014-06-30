@@ -769,7 +769,7 @@ Upgrade.upgrade = function(callback) {
 									return callback();
 								}
 
-								async.each(pids, function(pid, next) {
+								async.eachLimit(pids, 10, function(pid, next) {
 									Posts.getPostField(pid, 'votes', function(err, votes) {
 										if (err) {
 											return next(err);
@@ -790,7 +790,7 @@ Upgrade.upgrade = function(callback) {
 						return Upgrade.update(thisSchemaDate, next);
 					}
 
-					async.each(tids, upgradeTopic, function(err) {
+					async.eachLimit(tids, 10, upgradeTopic, function(err) {
 						if (err) {
 							winston.error('[2014/6/6] Error encountered while upgrading topics');
 							return next(err);
