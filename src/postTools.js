@@ -66,11 +66,12 @@ var winston = require('winston'),
 							if (options.topic_thumb) {
 								topicData.thumb = options.topic_thumb;
 							}
-							db.setObject('topic:' + tid, topicData);
+
+							db.setObject('topic:' + tid, topicData, function(err) {
+								plugins.fireHook('action:topic.edit', tid);
+							});
 
 							topics.updateTags(tid, options.tags);
-
-							plugins.fireHook('action:topic.edit', tid);
 						}
 
 						plugins.fireHook('action:post.edit', postData);
