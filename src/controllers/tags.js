@@ -13,14 +13,16 @@ tagsController.getTag = function(req, res, next) {
 			return next(err);
 		}
 
+		if (!tids || !tids.length) {
+			topics.deleteTag(tag);
+			return res.render('tag', {topics: [], tag:tag});
+		}
+
 		topics.getTopics('tag:' + tag + ':topics', uid, tids, function(err, data) {
 			if (err) {
 				return next(err);
 			}
 			data.tag = tag;
-			if (data.topics && !data.topics.length) {
-				topics.deleteTag(tag);
-			}
 			res.render('tag', data);
 		});
 	});
