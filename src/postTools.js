@@ -40,15 +40,14 @@ var winston = require('winston'),
 				return callback(err);
 			}
 
-			posts.setPostFields(pid, {
-				edited: Date.now(),
-				editor: uid,
-				content: postData.content
-			});
-
-			events.logPostEdit(uid, pid);
-
 			async.parallel({
+				post: function(next) {
+					posts.setPostFields(pid, {
+						edited: Date.now(),
+						editor: uid,
+						content: postData.content
+					}, next);
+				},
 				topic: function(next) {
 					var tid = postData.tid;
 					posts.isMain(pid, function(err, isMainPost) {
@@ -74,8 +73,6 @@ var winston = require('winston'),
 							topics.updateTags(tid, options.tags);
 						}
 
-						plugins.fireHook('action:post.edit', postData);
-
 						next(null, {
 							tid: tid,
 							title: validator.escape(title),
@@ -87,7 +84,15 @@ var winston = require('winston'),
 				content: function(next) {
 					PostTools.parse(postData.content, next);
 				}
-			}, callback);
+			}, function(err, results) {
+				if (err) {
+					return callback(err);
+				}
+
+				events.logPostEdit(uid, pid);
+				plugins.fireHook('action:post.edit', postData);
+				callback(null, results);
+			});
 		});
 	};
 
