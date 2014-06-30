@@ -846,7 +846,7 @@ Upgrade.upgrade = function(callback) {
 								return Upgrade.update(thisSchemaDate, next);
 							}
 
-							async.each(tids, upgradeTopic, function(err) {
+							async.eachLimit(tids, 10, upgradeTopic, function(err) {
 								if (err) {
 									winston.error('[2014/6/17] Error encountered while upgrading category postcounts');
 									return next(err);
