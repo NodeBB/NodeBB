@@ -5,7 +5,6 @@ var async = require('async'),
 	url = require('url'),
 	path = require('path'),
 	prompt = require('prompt'),
-	meta = require('./meta'),
 	winston = require('winston'),
 	nconf = require('nconf'),
 	utils = require('../public/src/utils.js'),
@@ -234,7 +233,8 @@ function setupDatabase(server_conf, next) {
 
 function setupDefaultConfigs(next) {
 	winston.info('Populating database with default configs, if not already set...');
-	var defaults = require(path.join(__dirname, '../', 'install/data/defaults.json'));
+	var meta = require('./meta'),
+		defaults = require(path.join(__dirname, '../', 'install/data/defaults.json'));
 
 	async.each(defaults, function (configObj, next) {
 		meta.configs.setOnEmpty(configObj.field, configObj.value, next);
@@ -250,6 +250,7 @@ function setupDefaultConfigs(next) {
 }
 
 function setOnEmpty(key1, key2) {
+	var meta = require('./meta');
 	if (install.values[key1] && install.values[key2]) {
 		meta.configs.setOnEmpty(key1, install.values[key1]);
 		meta.configs.setOnEmpty(key2, install.values[key2]);
@@ -257,6 +258,7 @@ function setOnEmpty(key1, key2) {
 }
 
 function enableDefaultTheme(next) {
+	var	meta = require('./meta');
 	winston.info('Enabling default theme: Lavender');
 
 	meta.themes.set({
