@@ -154,13 +154,11 @@ middleware.checkAccountPermissions = function(req, res, next) {
 		return res.redirect('/login?next=' + req.url);
 	}
 
-	// this function requires userslug to be passed in. todo: /user/uploadpicture should pass in userslug I think
 	user.getUidByUserslug(req.params.userslug, function (err, uid) {
 		if (err) {
 			return next(err);
 		}
 
-		// not sure if this check really should belong here. also make sure we're not doing this check again in the actual method
 		if (!uid) {
 			if (res.locals.isAPI) {
 				return res.json(404, 'not-found');

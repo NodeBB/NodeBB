@@ -188,9 +188,7 @@ module.exports =  function(app, middleware, controllers) {
 
 		app.post('/post/upload', uploadPost);
 		app.post('/topic/thumb/upload', uploadThumb);
+		app.post('/user/:userslug/uploadpicture', middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.uploadPicture);
 	});
 
-	// this should be in the API namespace
-	// also, perhaps pass in :userslug so we can use checkAccountPermissions middleware - in future will allow admins to upload a picture for a user
-	app.post('/user/uploadpicture', middleware.authenticate, middleware.checkGlobalPrivacySettings, /*middleware.checkAccountPermissions,*/ controllers.accounts.uploadPicture);
 };

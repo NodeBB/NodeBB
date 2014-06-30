@@ -407,26 +407,24 @@ accountsController.uploadPicture = function (req, res, next) {
 			image.convertImageToPng(req.files.userPhoto.path, extension, next);
 		},
 		function(next) {
-			try {
-				var params = JSON.parse(req.body.params);
-				if(parseInt(updateUid, 10) === parseInt(params.uid, 10)) {
-					return next();
+			user.getUidByUserslug(req.params.userslug, next);
+		},
+		function(uid, next) {
+			if(parseInt(updateUid, 10) === parseInt(uid, 10)) {
+				return next();
+			}
+
+			user.isAdministrator(req.user.uid, function(err, isAdmin) {
+				if (err) {
+					return next(err);
 				}
 
-				user.isAdministrator(req.user.uid, function(err, isAdmin) {
-					if(err) {
-						return next(err);
-					}
-
-					if(!isAdmin) {
-						return userNotAllowed();
-					}
-					updateUid = params.uid;
-					next();
-				});
-			} catch(err) {
-				next(err);
-			}
+				if (!isAdmin) {
+					return userNotAllowed();
+				}
+				updateUid = uid;
+				next();
+			});
 		}
 	], function(err, result) {
 

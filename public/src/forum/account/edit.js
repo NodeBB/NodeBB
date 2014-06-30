@@ -125,7 +125,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 		$('#uploadPictureBtn').on('click', function() {
 
 			$('#change-picture-modal').modal('hide');
-			uploader.open(config.relative_path + '/user/uploadpicture', {uid: ajaxify.variables.get('theirid')}, config.maximumProfileImageSize, function(imageUrlOnServer) {
+			uploader.open(config.relative_path + '/api/user/' + ajaxify.variables.get('userslug') + '/uploadpicture', {}, config.maximumProfileImageSize, function(imageUrlOnServer) {
 				imageUrlOnServer = imageUrlOnServer + '?' + new Date().getTime();
 
 				$('#user-current-picture').attr('src', imageUrlOnServer);
