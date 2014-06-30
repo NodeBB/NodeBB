@@ -19,6 +19,7 @@
     "close": "Uždaryti",
     "pagination": "Numeracija",
     "pagination.out_of": "%1 iš %2",
+    "pagination.enter_index": "Įrašykite indeksą",
     "header.admin": "Administratorius",
     "header.recent": "Naujausi",
     "header.unread": "Neskaityti",
