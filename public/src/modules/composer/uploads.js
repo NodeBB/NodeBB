@@ -200,6 +200,10 @@ define('composer/uploads', ['composer/preview'], function(preview) {
 		return response;
 	}
 
+	function insertText(str, index, insert) {
+		return str.slice(0, index) + insert + str.slice(index);
+	};
+
 	function uploadContentFiles(params) {
 		var files = params.files,
 			post_uuid = params.post_uuid,
@@ -213,7 +217,8 @@ define('composer/uploads', ['composer/preview'], function(preview) {
 
 		for(var i = 0; i < files.length; ++i) {
 			var isImage = files[i].type.match(/image./);
-			text += (isImage ? '!' : '') + '[' + files[i].name + '](uploading...) ';
+
+			text = insertText(text, textarea.getCursorPosition(), (isImage ? '!' : '') + '[' + files[i].name + '](uploading...) ');
 
 			if(files[i].size > parseInt(config.maximumFileSize, 10) * 1024) {
 				uploadForm[0].reset();
