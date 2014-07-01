@@ -174,6 +174,7 @@ SocketPosts.edit = function(socket, data, callback) {
 			pid: data.pid,
 			title: results.topic.title,
 			isMainPost: results.topic.isMainPost,
+			tags: results.topic.tags,
 			content: results.content
 		});
 

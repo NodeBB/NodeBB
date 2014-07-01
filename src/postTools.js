@@ -76,7 +76,8 @@ var winston = require('winston'),
 						next(null, {
 							tid: tid,
 							title: validator.escape(title),
-							isMainPost: isMainPost
+							isMainPost: isMainPost,
+							tags: options.tags.map(function(tag) { return {name:tag}; })
 						});
 					});
 

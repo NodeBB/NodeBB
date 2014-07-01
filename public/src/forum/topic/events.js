@@ -91,8 +91,7 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 
 		if (editedPostTitle.length) {
 			editedPostTitle.fadeOut(250, function() {
-				editedPostTitle.html(data.title);
-				editedPostTitle.fadeIn(250);
+				editedPostTitle.html(data.title).fadeIn(250);
 			});
 		}
 
@@ -102,6 +101,18 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 			app.replaceSelfLinks(editedPostEl.find('a'));
 			editedPostEl.fadeIn(250);
 		});
+
+		if (data.tags && data.tags.length !== $('.tags').first().children().length) {
+			ajaxify.loadTemplate('partials/post_bar', function(postBarTemplate) {
+				var html = templates.parse(templates.getBlock(postBarTemplate, 'tags'), {
+					tags: data.tags
+				});
+				var tags = $('.tags');
+				tags.fadeOut(250, function() {
+					tags.html(html).fadeIn(250);
+				});
+			});
+		}
 	}
 
 	function onPostPurged(pid) {
