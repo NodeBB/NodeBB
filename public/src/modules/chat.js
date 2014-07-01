@@ -221,6 +221,8 @@ define('chat', ['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 					state: ''
 				});
 
+				$(window).trigger('action:chat.loaded', chatModal);
+
 				callback(chatModal);
 			});
 		});
