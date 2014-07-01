@@ -28,7 +28,7 @@ Enable the necessary modules
 -----------------------------
 
 1. sudo a2enmod proxy
-2. sudo a2enmod proxy_html
+2. sudo a2enmod proxy_http
 3. sudo a2enmod proxy_wstunnel
 
 Add the config to Apache
