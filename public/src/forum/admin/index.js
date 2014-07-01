@@ -50,19 +50,6 @@ define('forum/admin/index', function() {
 
 			socket.emit('admin.restart');
 		});
-
-		socket.emit('admin.getVisitorCount', function(err, data) {
-			if(err) {
-				return app.alertError(err.message);
-			}
-
-			var uniqueVisitors = $('#unique-visitors');
-			for(var key in data) {
-				if (data.hasOwnProperty(key)) {
-					uniqueVisitors.find('#' + key).text(data[key]);
-				}
-			}
-		});
 	};
 
 	Admin.updateRoomUsage = function(err, data) {

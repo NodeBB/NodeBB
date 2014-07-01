@@ -34,13 +34,69 @@ var adminController = {
 };
 
 adminController.home = function(req, res, next) {
-	res.render('admin/index', {
-		version: pkg.version,
-		emailerInstalled: plugins.hasListeners('action:email.send'),
-		searchInstalled: plugins.hasListeners('filter:search.query'),
-		restartRequired: meta.restartRequired
+	getStats(function(err, stats) {
+		if (err) {
+			return next(err);
+		}
+		res.render('admin/index', {
+			version: pkg.version,
+			emailerInstalled: plugins.hasListeners('action:email.send'),
+			searchInstalled: plugins.hasListeners('filter:search.query'),
+			restartRequired: meta.restartRequired,
+			stats: stats
+		});
 	});
 };
+
+function getStats(callback) {
+	async.parallel([
+		function(next) {
+			getStatsForSet('ip:recent', next);
+		},
+		function(next) {
+			getStatsForSet('users:joindate', next);
+		},
+		function(next) {
+			getStatsForSet('posts:pid', next);
+		},
+		function(next) {
+			getStatsForSet('topics:tid', next);
+		}
+	], function(err, results) {
+		if (err) {
+			return callback(err);
+		}
+		results[0].name = 'Unique Visitors';
+		results[1].name = 'Users';
+		results[2].name = 'Posts';
+		results[3].name = 'Topics';
+
+		callback(null, results);
+	});
+}
+
+function getStatsForSet(set, callback) {
+	var terms = {
+		day: 86400000,
+		week: 604800000,
+		month: 2592000000
+	};
+	var now = Date.now();
+	async.parallel({
+		day: function(next) {
+			db.sortedSetCount(set, now - terms.day, now, next);
+		},
+		week: function(next) {
+			db.sortedSetCount(set, now - terms.week, now, next);
+		},
+		month: function(next) {
+			db.sortedSetCount(set, now - terms.month, now, next);
+		},
+		alltime: function(next) {
+			db.sortedSetCount(set, 0, now, next);
+		}
+	}, callback);
+}
 
 adminController.categories.active = function(req, res, next) {
 	filterAndRenderCategories(req, res, next, true);
