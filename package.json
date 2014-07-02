@@ -48,6 +48,7 @@
     "express-session": "^1.0.2",
     "csurf": "^1.1.0",
     "compression": "^1.0.1",
+    "connect-multiparty": "^1.0.1",
 
     "morgan": "^1.0.0",
 
@@ -62,7 +63,7 @@
     "validator": "~3.4.0",
     "winston": "~0.7.2",
     "xregexp": "~2.0.0",
-    "templates.js": "0.0.6"
+    "templates.js": "0.0.7"
   },
   "devDependencies": {
     "mocha": "~1.13.0"

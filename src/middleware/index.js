@@ -19,6 +19,7 @@ var utils = require('./../../public/src/utils'),
 	cookieParser = require('cookie-parser'),
 	compression = require('compression'),
 	favicon = require('serve-favicon'),
+	multipart = require('connect-multiparty'),
 	csrf = require('csurf'),
 	session = require('express-session'),
 
@@ -140,52 +141,6 @@ function compileTemplates(pluginTemplates) {
 	});
 }
 
-function handleErrors(err, req, res, next) {
-	// we may use properties of the error object
-	// here and next(err) appropriately, or if
-	// we possibly recovered from the error, simply next().
-	console.error(err.stack);
-
-	var status = err.status || 500;
-	res.status(status);
-
-	req.flash('errorMessage', err.message);
-
-	res.redirect('500');
-}
-
-function catch404(req, res, next) {
-	var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
-		isClientScript = new RegExp('^' + relativePath + '\\/src\\/forum(\\/admin)?\\/.+\\.js');
-
-	res.status(404);
-
-	if (isClientScript.test(req.url)) {
-		res.type('text/javascript').send(200, '');
-	} else if (isLanguage.test(req.url)) {
-		res.json(200, {});
-	} else if (req.accepts('html')) {
-		if (process.env.NODE_ENV === 'development') {
-			winston.warn('Route requested but not found: ' + req.url);
-		}
-
-		res.redirect(relativePath + '/404');
-	} else if (req.accepts('json')) {
-		if (process.env.NODE_ENV === 'development') {
-			winston.warn('Route requested but not found: ' + req.url);
-		}
-
-		res.json({
-			error: 'Not found'
-		});
-	} else {
-		res.type('txt').send('Not found');
-	}
-}
-
-
-
-
 module.exports = function(app, data) {
 	middleware = require('./middleware')(app);
 
@@ -198,6 +153,7 @@ module.exports = function(app, data) {
 	app.engine('tpl', templates.__express);
 	app.set('view engine', 'tpl');
 	app.set('views', viewsPath);
+	app.set('json spaces', process.env.NODE_ENV === 'development' ? 4 : 0);
 	app.use(flash());
 
 	app.enable('view cache');
@@ -207,7 +163,8 @@ module.exports = function(app, data) {
 	app.use(favicon(path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico')));
 	app.use(relativePath + '/apple-touch-icon', middleware.routeTouchIcon);
 
-	app.use(bodyParser());
+	app.use(bodyParser.urlencoded({extended: true}));
+	app.use(bodyParser.json());
 	app.use(cookieParser());
 
 	app.use(session({
@@ -216,13 +173,16 @@ module.exports = function(app, data) {
 		key: 'express.sid',
 		cookie: {
 			maxAge: 1000 * 60 * 60 * 24 * parseInt(meta.configs.loginDays || 14, 10)
-		}
+		},
+		resave: true,
+		saveUninitialized: true
 	}));
 
+	app.use(multipart());
 	app.use(csrf());
 
 	app.use(function (req, res, next) {
-		res.locals.csrf_token = req.session._csrf;
+		res.locals.csrf_token = req.csrfToken();
 		res.setHeader('X-Powered-By', 'NodeBB');
 
 		res.setHeader('X-Frame-Options', 'SAMEORIGIN');
@@ -247,9 +207,6 @@ module.exports = function(app, data) {
 	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
 	}));
-
-	//app.use(catch404);
-	//app.use(handleErrors);
 
 
 	return middleware;

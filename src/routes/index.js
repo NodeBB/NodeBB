@@ -1,6 +1,7 @@
 "use strict";
 
 var nconf = require('nconf'),
+	winston = require('winston'),
 	controllers = require('./../controllers'),
 	meta = require('./../meta'),
 	plugins = require('./../plugins'),
@@ -184,10 +185,10 @@ module.exports = function(app, middleware) {
 		userRoutes(app, middleware, controllers);
 		groupRoutes(app, middleware, controllers);
 
+		app.use(nconf.get('relative_path'), router);
+
 		app.use(catch404);
 		app.use(handleErrors);
-
-		app.use(nconf.get('relative_path'), router);
 	});
 
 	if (process.env.NODE_ENV === 'development') {
@@ -211,6 +212,7 @@ function handleErrors(err, req, res, next) {
 }
 
 function catch404(req, res, next) {
+	var relativePath = nconf.get('relative_path');
 	var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
 		isClientScript = new RegExp('^' + relativePath + '\\/src\\/forum(\\/admin)?\\/.+\\.js');
 
