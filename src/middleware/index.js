@@ -204,10 +204,6 @@ module.exports = function(app, data) {
 		compileTemplates(pluginTemplates);
 	});
 
-	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
-		maxAge: app.enabled('cache') ? 5184000000 : 0
-	}));
-
 
 	return middleware;
 };
