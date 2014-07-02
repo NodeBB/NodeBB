@@ -50,5 +50,6 @@
     "uploads-are-disabled": "Uploadurile sunt dezactivate",
     "upload-error": "Eroare Upload : %1",
     "signature-too-long": "Semnătura ta nu poate fi mai lungă de %1 caractere!",
-    "cant-chat-with-yourself": "Nu poți conversa cu tine!"
+    "cant-chat-with-yourself": "Nu poți conversa cu tine!",
+    "not-enough-reputation-to-downvote": "Nu ai destulă reputație pentru a vota negativ acest post."
 }

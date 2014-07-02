@@ -19,6 +19,7 @@
     "close": "סגור",
     "pagination": "עימוד",
     "pagination.out_of": "%1 out of %2",
+    "pagination.enter_index": "Enter index",
     "header.admin": "ניהול",
     "header.recent": "פוסטים אחרונים",
     "header.unread": "לא נקרא",

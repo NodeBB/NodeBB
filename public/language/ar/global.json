@@ -19,6 +19,7 @@
     "close": "أغلق",
     "pagination": "Pagination",
     "pagination.out_of": "%1 out of %2",
+    "pagination.enter_index": "Enter index",
     "header.admin": "مشرف",
     "header.recent": "حديث",
     "header.unread": "غير مقروء",

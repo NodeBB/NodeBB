@@ -50,5 +50,6 @@
     "uploads-are-disabled": "Las subidas están deshabilitadas.",
     "upload-error": "Error de subida: %1",
     "signature-too-long": "Las firmas no pueden ser más largas de %1 caracteres!",
-    "cant-chat-with-yourself": "No puedes conversar contigo mismo!"
+    "cant-chat-with-yourself": "No puedes conversar contigo mismo!",
+    "not-enough-reputation-to-downvote": "No tienes suficiente reputación para votar negativo este post"
 }

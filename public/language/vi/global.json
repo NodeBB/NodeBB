@@ -19,6 +19,7 @@
     "close": "Đóng lại",
     "pagination": "Số trang",
     "pagination.out_of": "%1 out of %2",
+    "pagination.enter_index": "Enter index",
     "header.admin": "Quản trị viên",
     "header.recent": "Gần đây",
     "header.unread": "Chưa đọc",

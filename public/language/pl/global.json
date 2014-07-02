@@ -19,6 +19,7 @@
     "close": "Zamknij",
     "pagination": "Numerowanie stron",
     "pagination.out_of": "%1 poza %2",
+    "pagination.enter_index": "Enter index",
     "header.admin": "Administracja",
     "header.recent": "Ostatnie",
     "header.unread": "Nieprzeczytane",

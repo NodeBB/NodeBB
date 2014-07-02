@@ -50,5 +50,6 @@
     "uploads-are-disabled": "Nahrávanie je znefunkčnené",
     "upload-error": "Upload chyba: %1",
     "signature-too-long": "Podpis nesmie byť dlhší ako %1 znakov!",
-    "cant-chat-with-yourself": "Nemôžete chatovat so samým sebou."
+    "cant-chat-with-yourself": "Nemôžete chatovat so samým sebou.",
+    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post"
 }

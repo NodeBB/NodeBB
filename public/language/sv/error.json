@@ -50,5 +50,6 @@
     "uploads-are-disabled": "Uppladdningar är inaktiverat",
     "upload-error": "Fel vid uppladdning: %1",
     "signature-too-long": "Signaturer kan inte vara längre än %1 tecken.",
-    "cant-chat-with-yourself": "Du kan inte chatta med dig själv."
+    "cant-chat-with-yourself": "Du kan inte chatta med dig själv.",
+    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post"
 }

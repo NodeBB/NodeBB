@@ -19,6 +19,7 @@
     "close": "关闭",
     "pagination": "分页",
     "pagination.out_of": "%1超出了%2",
+    "pagination.enter_index": "输入索引",
     "header.admin": "管理",
     "header.recent": "最近",
     "header.unread": "未读",

@@ -50,5 +50,6 @@
     "uploads-are-disabled": "Uploads are disabled",
     "upload-error": "مشكلة في الرفع: 1%",
     "signature-too-long": "Signature can't be longer than %1 characters!",
-    "cant-chat-with-yourself": "You can't chat with yourself!"
+    "cant-chat-with-yourself": "You can't chat with yourself!",
+    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post"
 }

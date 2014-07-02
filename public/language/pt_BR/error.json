@@ -50,5 +50,6 @@
     "uploads-are-disabled": "Uploads estão desativados",
     "upload-error": "Erro de Upload : %1",
     "signature-too-long": "Assinatura não pode conter mais que %1 caracteres!",
-    "cant-chat-with-yourself": "Impossível bater papo consigo mesmo!"
+    "cant-chat-with-yourself": "Impossível bater papo consigo mesmo!",
+    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post"
 }

@@ -18,11 +18,12 @@
     "save_changes": "Değişiklikleri kaydet",
     "close": "Yakın",
     "pagination": "Sayfalara numara koyma",
-    "pagination.out_of": "%1 out of %2",
+    "pagination.out_of": "%1 - %2",
+    "pagination.enter_index": "İndex gir",
     "header.admin": "Yönetim",
     "header.recent": "Yeni",
     "header.unread": "Okunmamış",
-    "header.tags": "Tags",
+    "header.tags": "Etiketler",
     "header.popular": "Popüler",
     "header.users": "Kullanıcılar",
     "header.chats": "Sohbetler",
@@ -37,7 +38,7 @@
     "alert.success": "Başarılı",
     "alert.error": "Hata",
     "alert.banned": "Yasaklı",
-    "alert.banned.message": "You have just been banned, you will now be logged out.",
+    "alert.banned.message": "Şu anda yasaklandınız, şimdi çevrim dışı olacaksınız.",
     "alert.unfollow": "Artık %1'i takip etmiyorsunuz!",
     "alert.follow": "%1'i takip ediyorsunuz!",
     "online": "Çevrimiçi",
@@ -69,6 +70,6 @@
     "language": "Dil",
     "guest": "Ziyaretçi",
     "guests": "Ziyaretçiler",
-    "updated.title": "Forum Updated",
-    "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page."
+    "updated.title": "Forum güncellendi",
+    "updated.message": "Bu forum şu anda güncellendi. Sayfayı tekrar yüklemek için buraya tıklayın."
 }

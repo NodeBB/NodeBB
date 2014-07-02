@@ -9,7 +9,7 @@
     "invalid-uid": "Ungültige Benutzer-ID",
     "invalid-username": "Ungültiger Benutzername",
     "invalid-email": "Ungültige E-Mail-Adresse",
-    "invalid-title": "Ungültiger Titel!",
+    "invalid-title": "Ungültiger Titel",
     "invalid-user-data": "Ungültige Benutzerdaten",
     "invalid-password": "Ungültiges Passwort",
     "invalid-pagination-value": "Die Nummerierung ist ungültig",
@@ -50,5 +50,6 @@
     "uploads-are-disabled": "Uploads sind deaktiviert",
     "upload-error": "Upload-Fehler: %1",
     "signature-too-long": "Die Signatur darf maximal %1 Zeichen enthalten!",
-    "cant-chat-with-yourself": "Du kannst nicht mit dir selber chatten!"
+    "cant-chat-with-yourself": "Du kannst nicht mit dir selber chatten!",
+    "not-enough-reputation-to-downvote": "Deine Reputation ist zu niedrig, um diesen Beitrag negativ zu bewerten."
 }

@@ -19,6 +19,7 @@
     "close": "닫기",
     "pagination": "페이지",
     "pagination.out_of": "%1개 중 %2개",
+    "pagination.enter_index": "Enter index",
     "header.admin": "관리자",
     "header.recent": "최근 주제",
     "header.unread": "읽지 않은 주제",

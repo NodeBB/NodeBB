@@ -19,6 +19,7 @@
     "close": "Sulje",
     "pagination": "Sivutus",
     "pagination.out_of": "%1/%2",
+    "pagination.enter_index": "Enter index",
     "header.admin": "Ylläpitäjä",
     "header.recent": "Viimeisimmät",
     "header.unread": "Lukemattomat",

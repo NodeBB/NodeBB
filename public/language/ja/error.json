@@ -50,5 +50,6 @@
     "uploads-are-disabled": "アップロードが無効された",
     "upload-error": "Upload Error : %1",
     "signature-too-long": "署名は最大%1文字までです！",
-    "cant-chat-with-yourself": "自分にチャットすることはできません！"
+    "cant-chat-with-yourself": "自分にチャットすることはできません！",
+    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post"
 }

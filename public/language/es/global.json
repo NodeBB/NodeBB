@@ -19,6 +19,7 @@
     "close": "Cerrar",
     "pagination": "Paginación",
     "pagination.out_of": "%1 de %2",
+    "pagination.enter_index": "Ingrese índice",
     "header.admin": "Administración",
     "header.recent": "Recientes",
     "header.unread": "No leídos",

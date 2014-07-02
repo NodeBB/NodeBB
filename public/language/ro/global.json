@@ -19,6 +19,7 @@
     "close": "Închide",
     "pagination": "Paginație",
     "pagination.out_of": "%1 din %2",
+    "pagination.enter_index": "Introdu index",
     "header.admin": "Admin",
     "header.recent": "Recente",
     "header.unread": "Necitite",

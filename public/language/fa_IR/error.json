@@ -50,5 +50,6 @@
     "uploads-are-disabled": "امکان بارگذاری غیرفعال شده است.",
     "upload-error": "Upload Error : %1",
     "signature-too-long": "امضا نمی‌تواند بیش‌تر از %1 نویسه داشته باشد.",
-    "cant-chat-with-yourself": "شما نمی‌توانید با خودتان گفتگو کنید!"
+    "cant-chat-with-yourself": "شما نمی‌توانید با خودتان گفتگو کنید!",
+    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post"
 }

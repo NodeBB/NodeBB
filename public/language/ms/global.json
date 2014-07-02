@@ -19,6 +19,7 @@
     "close": "Tutup",
     "pagination": "Mukasurat",
     "pagination.out_of": "%1 out of %2",
+    "pagination.enter_index": "Enter index",
     "header.admin": "Pentadbir",
     "header.recent": "terkini",
     "header.unread": "Belum dibaca",

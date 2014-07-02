@@ -50,5 +50,6 @@
     "uploads-are-disabled": "Les envois sont désactivés",
     "upload-error": "Erreur d'envoi : %1",
     "signature-too-long": "La signature ne peut dépasser %1 caractères !",
-    "cant-chat-with-yourself": "Vous ne pouvez chatter avec vous même !"
+    "cant-chat-with-yourself": "Vous ne pouvez chatter avec vous même !",
+    "not-enough-reputation-to-downvote": "Vous n'avez pas une réputation assez élevée pour noter négativement ce message"
 }

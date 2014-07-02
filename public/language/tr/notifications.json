@@ -2,7 +2,7 @@
     "title": "Bildirimler",
     "no_notifs": "Yeni bildirimleriniz yok",
     "see_all": "Bütün bildirimleri gör",
-    "back_to_home": "Back to %1",
+    "back_to_home": "Geri dön %1",
     "outgoing_link": "Harici Link",
     "outgoing_link_message": "Şimdi ayrılıyorsunuz",
     "continue_to": "Devam",
@@ -15,10 +15,10 @@
     "favourited_your_post": "<strong>%1</strong> iletinizi favorilerine ekledi.",
     "user_flagged_post": "<strong>%1</strong> bir iletiyi sakıncalı buldu.",
     "user_posted_to": "<strong>%1</strong> <strong>%2</strong> başlığına bir ileti gönderdi.",
-    "user_mentioned_you_in": "<strong>%1</strong> mentioned you in <strong>%2</strong>",
-    "email-confirmed": "Email Confirmed",
-    "email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",
-    "email-confirm-error": "An error occurred...",
-    "email-confirm-error-message": "There was a problem validating your email address. Perhaps the code was invalid or has expired.",
-    "email-confirm-sent": "Confirmation email sent."
+    "user_mentioned_you_in": "<strong>%1</strong> <strong>%2</strong> başlığında sizden bahsetti.",
+    "email-confirmed": "E-posta onaylandı",
+    "email-confirmed-message": "E-postanızı onaylandığınız için teşekkürler. Hesabınız tamamen aktive edildi.",
+    "email-confirm-error": "Bir hata oluştu...",
+    "email-confirm-error-message": "E-posta adresinizi onaylarken bir hata oluştu. Kodunuz geçersiz ya da eski olabilir.",
+    "email-confirm-sent": "Onay e-postası gönderildi."
 }

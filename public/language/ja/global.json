@@ -19,6 +19,7 @@
     "close": "閉じる",
     "pagination": "ページ",
     "pagination.out_of": "%1 out of %2",
+    "pagination.enter_index": "Enter index",
     "header.admin": "管理",
     "header.recent": "最近",
     "header.unread": "未読",

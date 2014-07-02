@@ -19,6 +19,7 @@
     "close": "Shoot down",
     "pagination": "Pagination",
     "pagination.out_of": "%1 out of %2",
+    "pagination.enter_index": "Enter index",
     "header.admin": "Captains only",
     "header.recent": "Recent",
     "header.unread": "Undiscovered",

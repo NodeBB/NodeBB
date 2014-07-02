@@ -17,7 +17,7 @@
     "email-taken": "Email занят",
     "email-not-confirmed": "Вы не подтвердили Ваш Email",
     "username-too-short": "Слишком короткое имя пользователя",
-    "user-banned": "User banned",
+    "user-banned": "Пользователь заблокирован",
     "no-category": "Несуществующая категория",
     "no-topic": "Несуществующая тема",
     "no-post": "Несуществующая запись",
@@ -50,5 +50,6 @@
     "uploads-are-disabled": "Загрузка запрещена",
     "upload-error": "Ошибка загрузки : %1",
     "signature-too-long": "Подпись не может быть длиннее %1 символов",
-    "cant-chat-with-yourself": "Вы не можете общаться с самим собой"
+    "cant-chat-with-yourself": "Вы не можете общаться с самим собой",
+    "not-enough-reputation-to-downvote": "У Вас недостаточно репутации для понижения оценки поста"
 }

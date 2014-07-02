@@ -19,6 +19,7 @@
     "close": "بستن",
     "pagination": "صفحه‌بندی",
     "pagination.out_of": "%1 out of %2",
+    "pagination.enter_index": "Enter index",
     "header.admin": "مدیر",
     "header.recent": "تازه‌ها",
     "header.unread": "نخوانده‌ها",

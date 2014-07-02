@@ -50,5 +50,6 @@
     "uploads-are-disabled": "Đã khóa lựa chọn tải lên",
     "upload-error": "Upload Error : %1",
     "signature-too-long": "Chứ ký không được dài quá %1 ký tự",
-    "cant-chat-with-yourself": "Bạn không thể chat với chính bạn!"
+    "cant-chat-with-yourself": "Bạn không thể chat với chính bạn!",
+    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post"
 }

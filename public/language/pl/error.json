@@ -50,5 +50,6 @@
     "uploads-are-disabled": "Uploadowanie jest wyłączone",
     "upload-error": "Błąd uploadu: %1",
     "signature-too-long": "Sygnatura nie może mieć więcej niż %1 znaków.",
-    "cant-chat-with-yourself": "Nie możesz czatować ze sobą"
+    "cant-chat-with-yourself": "Nie możesz czatować ze sobą",
+    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post"
 }

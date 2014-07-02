@@ -19,6 +19,7 @@
     "close": "Zrušiť",
     "pagination": "Stránkovanie",
     "pagination.out_of": "%1 z %2",
+    "pagination.enter_index": "Enter index",
     "header.admin": "Administrácia",
     "header.recent": "Aktuality",
     "header.unread": "Neprečítané",
