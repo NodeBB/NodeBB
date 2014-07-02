@@ -181,6 +181,7 @@ function getRecentPosts(req, res, next) {
 module.exports =  function(app, middleware, controllers) {
 
 	var router = express.Router();
+	app.use('/api', router);
 
 	router.get('/config', controllers.api.getConfig);
 
@@ -193,5 +194,4 @@ module.exports =  function(app, middleware, controllers) {
 	router.post('/topic/thumb/upload', uploadThumb);
 	router.post('/user/:userslug/uploadpicture', middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.uploadPicture);
 
-	app.use('/api', router);
 };

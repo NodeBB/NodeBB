@@ -373,8 +373,6 @@ accountsController.accountSettings = function(req, res, next) {
 };
 
 accountsController.uploadPicture = function (req, res, next) {
-console.log(req.body, req.files);
-
 	var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
 	if (req.files.userPhoto.size > uploadSize * 1024) {
 		fs.unlink(req.files.userPhoto.path);

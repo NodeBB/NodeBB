@@ -155,44 +155,45 @@ function groupRoutes(app, middleware, controllers) {
 module.exports = function(app, middleware) {
 
 	var router = express.Router();
+	app.use(nconf.get('relative_path'), router);
 
 	plugins.ready(function() {
 
-		app.all('/api/*', middleware.updateLastOnlineTime, middleware.prepareAPI);
-		app.all('/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
-		app.all('/admin/*', middleware.admin.isAdmin);
-		app.get('/admin', middleware.admin.isAdmin);
+		router.all('/api/*', middleware.updateLastOnlineTime, middleware.prepareAPI);
+		router.all('/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
+		router.all('/admin/*', middleware.admin.isAdmin);
+		router.get('/admin', middleware.admin.isAdmin);
 
-		plugins.fireHook('action:app.load', app, middleware, controllers);
+		plugins.fireHook('action:app.load', router, middleware, controllers);
 
-		adminRoutes(app, middleware, controllers);
-		metaRoutes(app, middleware, controllers);
-		apiRoutes(app, middleware, controllers);
-		feedRoutes(app, middleware, controllers);
-		pluginRoutes(app, middleware, controllers);
-		authRoutes.createRoutes(app, middleware, controllers);
+		adminRoutes(router, middleware, controllers);
+		metaRoutes(router, middleware, controllers);
+		apiRoutes(router, middleware, controllers);
+		feedRoutes(router, middleware, controllers);
+		pluginRoutes(router, middleware, controllers);
+		authRoutes.createRoutes(router, middleware, controllers);
 
 		/**
 		* Every view has an associated API route.
 		*
 		*/
-		mainRoutes(app, middleware, controllers);
-		staticRoutes(app, middleware, controllers);
-		topicRoutes(app, middleware, controllers);
-		tagRoutes(app, middleware, controllers);
-		categoryRoutes(app, middleware, controllers);
-		accountRoutes(app, middleware, controllers);
-		userRoutes(app, middleware, controllers);
-		groupRoutes(app, middleware, controllers);
+		mainRoutes(router, middleware, controllers);
+		staticRoutes(router, middleware, controllers);
+		topicRoutes(router, middleware, controllers);
+		tagRoutes(router, middleware, controllers);
+		categoryRoutes(router, middleware, controllers);
+		accountRoutes(router, middleware, controllers);
+		userRoutes(router, middleware, controllers);
+		groupRoutes(router, middleware, controllers);
 
-		app.use(nconf.get('relative_path'), router);
+
 
 		app.use(catch404);
 		app.use(handleErrors);
 	});
 
 	if (process.env.NODE_ENV === 'development') {
-		app.use('/debug', require('./debug')(middleware, controllers));
+		require('./debug')(app, middleware, controllers);
 	}
 
 };
