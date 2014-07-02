@@ -76,8 +76,8 @@ function categoryRoutes(app, middleware, controllers) {
 	app.get('/recent/:term?', middleware.buildHeader, controllers.categories.recent);
 	app.get('/api/recent/:term?', controllers.categories.recent);
 
-	app.get('/unread/', middleware.buildHeader, middleware.authenticate, controllers.categories.unread);
-	app.get('/api/unread/', middleware.authenticate, controllers.categories.unread);
+	app.get('/unread', middleware.buildHeader, middleware.authenticate, controllers.categories.unread);
+	app.get('/api/unread', middleware.authenticate, controllers.categories.unread);
 
 	app.get('/api/unread/total', middleware.authenticate, controllers.categories.unreadTotal);
 
