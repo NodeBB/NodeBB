@@ -7,8 +7,7 @@ var	SocketIO = require('socket.io'),
 	path = require('path'),
 	fs = require('fs'),
 	nconf = require('nconf'),
-	express = require('express'),
-	socketCookieParser = express.cookieParser(nconf.get('secret')),
+	socketCookieParser = require('cookie-parser')(nconf.get('secret')),
 	winston = require('winston'),
 
 	db = require('../database'),
@@ -60,7 +59,7 @@ Sockets.init = function(server) {
 				winston.error(err.message);
 			}
 
-			sessionID = socket.handshake.signedCookies["express.sid"];
+			sessionID = socket.handshake.signedCookies['express.sid'];
 			db.sessionStore.get(sessionID, function(err, sessionData) {
 				if (!err && sessionData && sessionData.passport && sessionData.passport.user) {
 					uid = parseInt(sessionData.passport.user, 10);

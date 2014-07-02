@@ -15,6 +15,12 @@ var utils = require('./../../public/src/utils'),
 	winston = require('winston'),
 	flash = require('connect-flash'),
 	templates = require('templates.js'),
+	bodyParser = require('body-parser'),
+	cookieParser = require('cookie-parser'),
+	compression = require('compression'),
+	favicon = require('serve-favicon'),
+	csrf = require('csurf'),
+	session = require('express-session'),
 
 	relativePath,
 	viewsPath,
@@ -188,65 +194,63 @@ module.exports = function(app, data) {
 	themesPath = nconf.get('themes_path');
 	baseTemplatesPath = nconf.get('base_templates_path');
 
-	app.configure(function() {
-		app.engine('tpl', templates.__express);
-		app.set('view engine', 'tpl');
-		app.set('views', viewsPath);
-		app.use(flash());
 
-		app.enable('view cache');
+	app.engine('tpl', templates.__express);
+	app.set('view engine', 'tpl');
+	app.set('views', viewsPath);
+	app.use(flash());
 
-		app.use(express.compress());
+	app.enable('view cache');
 
-		app.use(express.favicon(path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico')));
-		app.use(relativePath + '/apple-touch-icon', middleware.routeTouchIcon);
+	app.use(compression());
 
-		app.use(express.bodyParser());
-		app.use(express.cookieParser());
+	app.use(favicon(path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico')));
+	app.use(relativePath + '/apple-touch-icon', middleware.routeTouchIcon);
 
-		app.use(express.session({
-			store: db.sessionStore,
-			secret: nconf.get('secret'),
-			key: 'express.sid',
-			cookie: {
-				maxAge: 1000 * 60 * 60 * 24 * parseInt(meta.configs.loginDays || 14, 10)
-			}
-		}));
+	app.use(bodyParser());
+	app.use(cookieParser());
 
-		app.use(express.csrf()); // todo, make this a conditional middleware
+	app.use(session({
+		store: db.sessionStore,
+		secret: nconf.get('secret'),
+		key: 'express.sid',
+		cookie: {
+			maxAge: 1000 * 60 * 60 * 24 * parseInt(meta.configs.loginDays || 14, 10)
+		}
+	}));
 
-		app.use(function (req, res, next) {
-			res.locals.csrf_token = req.session._csrf;
-			res.setHeader('X-Powered-By', 'NodeBB');
+	app.use(csrf());
 
-			res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-			if (meta.config['allow-from-uri']) {
-				res.setHeader('ALLOW-FROM', meta.config['allow-from-uri']);
-			}
+	app.use(function (req, res, next) {
+		res.locals.csrf_token = req.session._csrf;
+		res.setHeader('X-Powered-By', 'NodeBB');
 
-			next();
-		});
+		res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+		if (meta.config['allow-from-uri']) {
+			res.setHeader('ALLOW-FROM', meta.config['allow-from-uri']);
+		}
 
-		app.use(middleware.processRender);
-
-		auth.initialize(app);
-
-		routeCurrentTheme(app, data.currentThemeId, data.themesData);
-		routeThemeScreenshots(app, data.themesData);
-
-		plugins.getTemplates(function(err, pluginTemplates) {
-			compileTemplates(pluginTemplates);
-		});
-
-		app.use(relativePath, app.router);
-
-		app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
-			maxAge: app.enabled('cache') ? 5184000000 : 0
-		}));
-
-		app.use(catch404);
-		app.use(handleErrors);
+		next();
 	});
+
+	app.use(middleware.processRender);
+
+	auth.initialize(app);
+
+	routeCurrentTheme(app, data.currentThemeId, data.themesData);
+	routeThemeScreenshots(app, data.themesData);
+
+	plugins.getTemplates(function(err, pluginTemplates) {
+		compileTemplates(pluginTemplates);
+	});
+
+	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
+		maxAge: app.enabled('cache') ? 5184000000 : 0
+	}));
+
+	//app.use(catch404);
+	//app.use(handleErrors);
+
 
 	return middleware;
 };

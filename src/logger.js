@@ -10,7 +10,8 @@ var fs = require('fs'),
 	winston = require('winston'),
 	util = require('util'),
 	socketio = require('socket.io'),
-	meta = require('./meta');
+	meta = require('./meta'),
+	morgan = require('morgan');
 
 var opts = {
 	/*
@@ -124,7 +125,7 @@ var opts = {
 		/*
 		 * Always initialize "ofn" (original function) with the original logger function
 		 */
-		opts.express.ofn = express.logger({stream : opts.streams.log.f});
+		opts.express.ofn = morgan({stream : opts.streams.log.f});
 	};
 
 	Logger.expressLogger = function(req,res,next) {

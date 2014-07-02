@@ -36,7 +36,7 @@ Please use the npm module instead - require('templates.js')
 					}
 
 					callback(parse(loaded, obj, bind));
-				});	
+				});
 			} else {
 				callback(parse(templates.cache[template], obj, bind));
 			}
@@ -62,6 +62,7 @@ Please use the npm module instead - require('templates.js')
 	};
 
 	function express(filename, options, fn) {
+		console.log(filename, options, fn);
 		var fs = require('fs'),
 			tpl = filename.replace(options.settings.views + '/', '');
 
@@ -185,7 +186,7 @@ Please use the npm module instead - require('templates.js')
 
 		while (block = template.match(regex)) {
 			block = block[0].replace(makeBlockRegex(key), '');
-			
+
 			var numblocks = array[key].length - 1,
 				iterator = 0,
 				result = '',
@@ -193,7 +194,7 @@ Please use the npm module instead - require('templates.js')
 
 			do {
 				parsedBlock = parse(block, array[key][iterator], bind, namespace, {iterator: iterator, total: numblocks}) + ((iterator < numblocks) ? '\r\n':'');
-				
+
 				result += (!bind) ? parsedBlock : setBindContainer(parsedBlock, bind + namespace + iterator);
 				result = parseFunctions(block, result, {
 					data: array[key][iterator],
@@ -213,7 +214,7 @@ Please use the npm module instead - require('templates.js')
 
 			template = template.replace(regex, result);
 		}
-		
+
 		return template;
 	}
 
@@ -247,14 +248,14 @@ Please use the npm module instead - require('templates.js')
 				this['__' + key] = value;
 
 				var els = document.querySelectorAll('[data-binding="' + (this.__iterator !== false ? (bind + this.__namespace + this.__iterator) : bind) + '"]');
-				
+
 				for (var el in els) {
 					if (els.hasOwnProperty(el)) {
 						if (this.__parent) {
 							var parent = this.__parent();
 							els[el].innerHTML = parse(parent.template, parent.data, false);
 						} else {
-							els[el].innerHTML = parse(this.__template, obj, false, this.__namespace);	
+							els[el].innerHTML = parse(this.__template, obj, false, this.__namespace);
 						}
 					}
 				}
@@ -294,7 +295,7 @@ Please use the npm module instead - require('templates.js')
 					template = parse(template, obj[key], bind, namespace + key + '.');
 				} else {
 					template = parseValue(template, namespace + key, obj[key]);
-					
+
 					if (bind && obj[key]) {
 						setupBindings({
 							obj: obj,

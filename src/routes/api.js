@@ -4,6 +4,7 @@ var path = require('path'),
 	async = require('async'),
 	fs = require('fs'),
 	nconf = require('nconf'),
+	express = require('express'),
 
 	user = require('../user'),
 	topics = require('../topics'),
@@ -178,17 +179,19 @@ function getRecentPosts(req, res, next) {
 }
 
 module.exports =  function(app, middleware, controllers) {
-	app.namespace('/api', function () {
-		app.get('/config', controllers.api.getConfig);
 
-		app.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
-		app.get('/get_templates_listing', getTemplatesListing);
-		app.get('/categories/:cid/moderators', getModerators);
-		app.get('/recent/posts/:term?', getRecentPosts);
+	var router = express.Router();
 
-		app.post('/post/upload', uploadPost);
-		app.post('/topic/thumb/upload', uploadThumb);
-		app.post('/user/:userslug/uploadpicture', middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.uploadPicture);
-	});
+	router.get('/config', controllers.api.getConfig);
 
+	router.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
+	router.get('/get_templates_listing', getTemplatesListing);
+	router.get('/categories/:cid/moderators', getModerators);
+	router.get('/recent/posts/:term?', getRecentPosts);
+
+	router.post('/post/upload', uploadPost);
+	router.post('/topic/thumb/upload', uploadThumb);
+	router.post('/user/:userslug/uploadpicture', middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.uploadPicture);
+
+	app.use('/api', router);
 };
