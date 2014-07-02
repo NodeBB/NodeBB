@@ -54,7 +54,7 @@ var winston = require('winston'),
 						if (err) {
 							return next(err);
 						}
-
+						options.tags = options.tags || [];
 						if (isMainPost) {
 							title = title.trim();
 
