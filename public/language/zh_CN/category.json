@@ -1,7 +1,7 @@
 {
     "new_topic_button": "新主题",
-    "no_topics": "<strong>这个版面还没有任何内容。</strong><br />赶紧来发帖吧！",
+    "no_topics": "<strong>此版块还没有任何内容。</strong><br />赶紧来发帖吧！",
     "browsing": "正在浏览",
-    "no_replies": "还没有回复",
+    "no_replies": "尚无回复",
     "share_this_category": "分享此版块"
 }

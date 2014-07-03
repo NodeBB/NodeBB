@@ -4,9 +4,9 @@
     "chat.send": "发送",
     "chat.no_active": "暂无聊天",
     "chat.user_typing": "%1 正在输入……",
-    "chat.user_has_messaged_you": "%1向你发送了信息。",
-    "chat.see_all": "查看所有聊天",
+    "chat.user_has_messaged_you": "%1 向您发送了消息。",
+    "chat.see_all": "查看全部聊天",
     "composer.user_said_in": "%1 在 %2 中说：",
     "composer.user_said": "%1 说：",
-    "composer.discard": "确定要取消此帖？"
+    "composer.discard": "确定想要取消此帖？"
 }
