@@ -1,11 +1,11 @@
 {
     "banned": "مسدود",
-    "offline": "غایب",
+    "offline": "آفلاین",
     "username": "نام کاربری",
     "email": "رایانامه",
-    "email.confirmed": "Confirmed",
-    "email.not_confirmed": "Not Confirmed",
-    "email.confirm_button_text": "Resend Confirmation",
+    "email.confirmed": "تایید شده",
+    "email.not_confirmed": "تایید نشده",
+    "email.confirm_button_text": "ارسال مجدد تاییدیه",
     "fullname": "نام کامل",
     "website": "تارنما",
     "location": "محل سکونت",
@@ -35,7 +35,7 @@
     "change_password_error_wrong_current": "این گذرواژهٔ شما نادرست است.",
     "change_password_error_length": "گذرواژه خیلی کوتاه است!",
     "change_password_error_match": "گذرواژه‌ها باید یکسان باشند.",
-    "change_password_error_privileges": "You do not have the rights to change this password.",
+    "change_password_error_privileges": "شما اجازه تغییر این گذرواژه را ندارید.",
     "change_password_success": "گذرواژه‌تان تازه شد.",
     "confirm_password": "تکرار گذرواژه",
     "password": "گذرواژه",
@@ -48,7 +48,7 @@
     "show_email": "نمایش رایانامه‌ام",
     "digest_label": "مشترک شدن در چکیده",
     "digest_description": "مشترک شدن برای دریافت تازه‌هی این انجمن (جستارها و آکاه‌سازی‌های تازه) با رایانامه روی یک برنامه زمان‌بندی",
-    "digest_off": "Off",
+    "digest_off": "خاموش",
     "digest_daily": "روزانه",
     "digest_weekly": "هفتگی",
     "digest_monthly": "ماهانه",
@@ -62,6 +62,6 @@
     "topics_per_page": "شمار جستارها در هر برگه",
     "posts_per_page": "شمار دیدگاه‌ها در هر برگه",
     "notification_sounds": "پخش صدا هنگامی که شما یک آگاه‌سازی دریافت می‌کنید.",
-    "browsing": "Browsing Settings",
-    "open_links_in_new_tab": "Open outgoing links in new tab?"
+    "browsing": "تنظیمات مرور",
+    "open_links_in_new_tab": "بازکردن لینک‌های خارجی در تب جدید؟"
 }

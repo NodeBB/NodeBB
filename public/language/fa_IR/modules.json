@@ -4,9 +4,9 @@
     "chat.send": "فرستادن",
     "chat.no_active": "شما هیچ گفتگوی فعالی ندارید.",
     "chat.user_typing": "%1 در حال نوشتن است...",
-    "chat.user_has_messaged_you": "%1 has messaged you.",
-    "chat.see_all": "See all Chats",
-    "composer.user_said_in": "%1 said in %2:",
-    "composer.user_said": "%1 said:",
-    "composer.discard": "Are you sure you wish to discard this post?"
+    "chat.user_has_messaged_you": "%1 به شما پیام داده است.",
+    "chat.see_all": "نمایش تمامی گفتگوها",
+    "composer.user_said_in": "%1 در %2 گفته است:",
+    "composer.user_said": "%1 گفته است:",
+    "composer.discard": "آیا از دور انداختن این دیدگاه اطمینان دارید؟"
 }
