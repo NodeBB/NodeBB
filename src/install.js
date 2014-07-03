@@ -11,7 +11,7 @@ var async = require('async'),
 
 	DATABASES = {
 		"redis": {
-			"dependencies": ["redis@~0.10.1", "connect-redis@~1.4"]
+			"dependencies": ["redis@~0.10.1", "connect-redis@~2.0.0"]
 		},
 		"mongo": {
 			"dependencies": ["mongodb", "connect-mongo"]
@@ -366,26 +366,25 @@ function createCategories(next) {
 	var Categories = require('./categories');
 
 	Categories.getAllCategories(function (err, categoryData) {
-		if (categoryData.length === 0) {
-			winston.warn('No categories found, populating instance with default categories');
-
-			fs.readFile(path.join(__dirname, '../', 'install/data/categories.json'), function (err, default_categories) {
-				default_categories = JSON.parse(default_categories);
-
-				async.eachSeries(default_categories, function (category, next) {
-					Categories.create(category, next);
-				}, function (err) {
-					if (!err) {
-						next();
-					} else {
-						winston.error('Could not set up categories');
-					}
-				});
-			});
-		} else {
-			winston.info('Categories OK. Found ' + categoryData.length + ' categories.');
-			next();
+		if (err) {
+			return next(err);
 		}
+
+		if (Array.isArray(categoryData) && categoryData.length) {
+			winston.info('Categories OK. Found ' + categoryData.length + ' categories.');
+			return next();
+		}
+
+		winston.warn('No categories found, populating instance with default categories');
+
+		fs.readFile(path.join(__dirname, '../', 'install/data/categories.json'), function (err, default_categories) {
+			if (err) {
+				return next(err);
+			}
+			default_categories = JSON.parse(default_categories);
+
+			async.eachSeries(default_categories, Categories.create, next);
+		});
 	});
 }
 

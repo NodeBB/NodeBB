@@ -1,9 +1,12 @@
 "use strict";
 
 var nconf = require('nconf'),
+	path = require('path'),
+	winston = require('winston'),
 	controllers = require('./../controllers'),
 	meta = require('./../meta'),
 	plugins = require('./../plugins'),
+	express = require('express'),
 
 	metaRoutes = require('./meta'),
 	apiRoutes = require('./api'),
@@ -74,8 +77,8 @@ function categoryRoutes(app, middleware, controllers) {
 	app.get('/recent/:term?', middleware.buildHeader, controllers.categories.recent);
 	app.get('/api/recent/:term?', controllers.categories.recent);
 
-	app.get('/unread/', middleware.buildHeader, middleware.authenticate, controllers.categories.unread);
-	app.get('/api/unread/', middleware.authenticate, controllers.categories.unread);
+	app.get('/unread', middleware.buildHeader, middleware.authenticate, controllers.categories.unread);
+	app.get('/api/unread', middleware.authenticate, controllers.categories.unread);
 
 	app.get('/api/unread/total', middleware.authenticate, controllers.categories.unreadTotal);
 
@@ -151,38 +154,93 @@ function groupRoutes(app, middleware, controllers) {
 
 
 module.exports = function(app, middleware) {
-	app.namespace(nconf.get('relative_path'), function() {
-		plugins.ready(function() {
-			app.all('/api/*', middleware.updateLastOnlineTime, middleware.prepareAPI);
-			app.all('/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
-			app.all('/admin/*', middleware.admin.isAdmin);
-			app.get('/admin', middleware.admin.isAdmin);
 
-			plugins.fireHook('action:app.load', app, middleware, controllers);
+	var router = express.Router();
+	app.use(nconf.get('relative_path'), router);
 
-			adminRoutes(app, middleware, controllers);
-			metaRoutes(app, middleware, controllers);
-			apiRoutes(app, middleware, controllers);
-			feedRoutes(app, middleware, controllers);
-			pluginRoutes(app, middleware, controllers);
-			authRoutes.createRoutes(app, middleware, controllers);
+	plugins.ready(function() {
 
-			/**
-			* Every view has an associated API route.
-			*
-			*/
-			mainRoutes(app, middleware, controllers);
-			staticRoutes(app, middleware, controllers);
-			topicRoutes(app, middleware, controllers);
-			tagRoutes(app, middleware, controllers);
-			categoryRoutes(app, middleware, controllers);
-			accountRoutes(app, middleware, controllers);
-			userRoutes(app, middleware, controllers);
-			groupRoutes(app, middleware, controllers);
-		});
+		router.all('/api/*', middleware.updateLastOnlineTime, middleware.prepareAPI);
+		router.all('/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
+		router.all('/admin/*', middleware.admin.isAdmin);
+		router.get('/admin', middleware.admin.isAdmin);
 
-		if (process.env.NODE_ENV === 'development') {
-			require('./debug')(app, middleware, controllers);
-		}
+		plugins.fireHook('action:app.load', router, middleware, controllers);
+
+		adminRoutes(router, middleware, controllers);
+		metaRoutes(router, middleware, controllers);
+		apiRoutes(router, middleware, controllers);
+		feedRoutes(router, middleware, controllers);
+		pluginRoutes(router, middleware, controllers);
+		authRoutes.createRoutes(router, middleware, controllers);
+
+		/**
+		* Every view has an associated API route.
+		*
+		*/
+		mainRoutes(router, middleware, controllers);
+		staticRoutes(router, middleware, controllers);
+		topicRoutes(router, middleware, controllers);
+		tagRoutes(router, middleware, controllers);
+		categoryRoutes(router, middleware, controllers);
+		accountRoutes(router, middleware, controllers);
+		userRoutes(router, middleware, controllers);
+		groupRoutes(router, middleware, controllers);
+
+
+		app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../../', 'public'), {
+			maxAge: app.enabled('cache') ? 5184000000 : 0
+		}));
+		app.use(catch404);
+		app.use(handleErrors);
 	});
+
+	if (process.env.NODE_ENV === 'development') {
+		require('./debug')(app, middleware, controllers);
+	}
+
 };
+
+function handleErrors(err, req, res, next) {
+	// we may use properties of the error object
+	// here and next(err) appropriately, or if
+	// we possibly recovered from the error, simply next().
+	console.error(err.stack);
+
+	var status = err.status || 500;
+	res.status(status);
+
+	req.flash('errorMessage', err.message);
+
+	res.redirect('500');
+}
+
+function catch404(req, res, next) {
+	var relativePath = nconf.get('relative_path');
+	var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
+		isClientScript = new RegExp('^' + relativePath + '\\/src\\/forum(\\/admin)?\\/.+\\.js');
+
+	res.status(404);
+
+	if (isClientScript.test(req.url)) {
+		res.type('text/javascript').send(200, '');
+	} else if (isLanguage.test(req.url)) {
+		res.json(200, {});
+	} else if (req.accepts('html')) {
+		if (process.env.NODE_ENV === 'development') {
+			winston.warn('Route requested but not found: ' + req.url);
+		}
+
+		res.redirect(relativePath + '/404');
+	} else if (req.accepts('json')) {
+		if (process.env.NODE_ENV === 'development') {
+			winston.warn('Route requested but not found: ' + req.url);
+		}
+
+		res.json({
+			error: 'Not found'
+		});
+	} else {
+		res.type('txt').send('Not found');
+	}
+}

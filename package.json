@@ -20,8 +20,15 @@
     "connect-flash": "^0.1.1",
     "cron": "~1.0.4",
     "daemon": "~1.1.0",
-    "express": "3.2.0",
-    "express-namespace": "~0.1.1",
+    "express": "4.4.5",
+    "cookie-parser": "^1.0.1",
+    "body-parser": "^1.0.1",
+    "serve-favicon": "^2.0.1",
+    "express-session": "^1.0.2",
+    "csurf": "^1.1.0",
+    "compression": "^1.0.1",
+    "connect-multiparty": "^1.0.1",
+    "morgan": "^1.0.0",
     "gm": "1.14.2",
     "gravatar": "1.0.6",
     "less": "~1.6.3",
@@ -52,7 +59,7 @@
     "validator": "~3.4.0",
     "winston": "~0.7.2",
     "xregexp": "~2.0.0",
-    "templates.js": "0.0.6"
+    "templates.js": "0.0.7"
   },
   "devDependencies": {
     "mocha": "~1.13.0"

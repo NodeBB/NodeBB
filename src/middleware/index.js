@@ -15,6 +15,13 @@ var utils = require('./../../public/src/utils'),
 	winston = require('winston'),
 	flash = require('connect-flash'),
 	templates = require('templates.js'),
+	bodyParser = require('body-parser'),
+	cookieParser = require('cookie-parser'),
+	compression = require('compression'),
+	favicon = require('serve-favicon'),
+	multipart = require('connect-multiparty'),
+	csrf = require('csurf'),
+	session = require('express-session'),
 
 	relativePath,
 	viewsPath,
@@ -134,52 +141,6 @@ function compileTemplates(pluginTemplates) {
 	});
 }
 
-function handleErrors(err, req, res, next) {
-	// we may use properties of the error object
-	// here and next(err) appropriately, or if
-	// we possibly recovered from the error, simply next().
-	console.error(err.stack);
-
-	var status = err.status || 500;
-	res.status(status);
-
-	req.flash('errorMessage', err.message);
-
-	res.redirect('500');
-}
-
-function catch404(req, res, next) {
-	var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
-		isClientScript = new RegExp('^' + relativePath + '\\/src\\/forum(\\/admin)?\\/.+\\.js');
-
-	res.status(404);
-
-	if (isClientScript.test(req.url)) {
-		res.type('text/javascript').send(200, '');
-	} else if (isLanguage.test(req.url)) {
-		res.json(200, {});
-	} else if (req.accepts('html')) {
-		if (process.env.NODE_ENV === 'development') {
-			winston.warn('Route requested but not found: ' + req.url);
-		}
-
-		res.redirect(relativePath + '/404');
-	} else if (req.accepts('json')) {
-		if (process.env.NODE_ENV === 'development') {
-			winston.warn('Route requested but not found: ' + req.url);
-		}
-
-		res.json({
-			error: 'Not found'
-		});
-	} else {
-		res.type('txt').send('Not found');
-	}
-}
-
-
-
-
 module.exports = function(app, data) {
 	middleware = require('./middleware')(app);
 
@@ -188,65 +149,61 @@ module.exports = function(app, data) {
 	themesPath = nconf.get('themes_path');
 	baseTemplatesPath = nconf.get('base_templates_path');
 
-	app.configure(function() {
-		app.engine('tpl', templates.__express);
-		app.set('view engine', 'tpl');
-		app.set('views', viewsPath);
-		app.use(flash());
 
-		app.enable('view cache');
+	app.engine('tpl', templates.__express);
+	app.set('view engine', 'tpl');
+	app.set('views', viewsPath);
+	app.set('json spaces', process.env.NODE_ENV === 'development' ? 4 : 0);
+	app.use(flash());
 
-		app.use(express.compress());
+	app.enable('view cache');
 
-		app.use(express.favicon(path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico')));
-		app.use(relativePath + '/apple-touch-icon', middleware.routeTouchIcon);
+	app.use(compression());
 
-		app.use(express.bodyParser());
-		app.use(express.cookieParser());
+	app.use(favicon(path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico')));
+	app.use(relativePath + '/apple-touch-icon', middleware.routeTouchIcon);
 
-		app.use(express.session({
-			store: db.sessionStore,
-			secret: nconf.get('secret'),
-			key: 'express.sid',
-			cookie: {
-				maxAge: 1000 * 60 * 60 * 24 * parseInt(meta.configs.loginDays || 14, 10)
-			}
-		}));
+	app.use(bodyParser.urlencoded({extended: true}));
+	app.use(bodyParser.json());
+	app.use(cookieParser());
 
-		app.use(express.csrf()); // todo, make this a conditional middleware
+	app.use(session({
+		store: db.sessionStore,
+		secret: nconf.get('secret'),
+		key: 'express.sid',
+		cookie: {
+			maxAge: 1000 * 60 * 60 * 24 * parseInt(meta.configs.loginDays || 14, 10)
+		},
+		resave: true,
+		saveUninitialized: true
+	}));
 
-		app.use(function (req, res, next) {
-			res.locals.csrf_token = req.session._csrf;
-			res.setHeader('X-Powered-By', 'NodeBB');
+	app.use(multipart());
+	app.use(csrf());
 
-			res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-			if (meta.config['allow-from-uri']) {
-				res.setHeader('ALLOW-FROM', meta.config['allow-from-uri']);
-			}
+	app.use(function (req, res, next) {
+		res.locals.csrf_token = req.csrfToken();
+		res.setHeader('X-Powered-By', 'NodeBB');
 
-			next();
-		});
+		res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+		if (meta.config['allow-from-uri']) {
+			res.setHeader('ALLOW-FROM', meta.config['allow-from-uri']);
+		}
 
-		app.use(middleware.processRender);
-
-		auth.initialize(app);
-
-		routeCurrentTheme(app, data.currentThemeId, data.themesData);
-		routeThemeScreenshots(app, data.themesData);
-
-		plugins.getTemplates(function(err, pluginTemplates) {
-			compileTemplates(pluginTemplates);
-		});
-
-		app.use(relativePath, app.router);
-
-		app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
-			maxAge: app.enabled('cache') ? 5184000000 : 0
-		}));
-
-		app.use(catch404);
-		app.use(handleErrors);
+		next();
 	});
+
+	app.use(middleware.processRender);
+
+	auth.initialize(app);
+
+	routeCurrentTheme(app, data.currentThemeId, data.themesData);
+	routeThemeScreenshots(app, data.themesData);
+
+	plugins.getTemplates(function(err, pluginTemplates) {
+		compileTemplates(pluginTemplates);
+	});
+
 
 	return middleware;
 };

@@ -275,7 +275,7 @@ var db = require('./database'),
 				return callback(err);
 			}
 
-			if (!Array.isArray(categories)) {
+			if (!Array.isArray(categories) || !categories.length) {
 				return callback(null, []);
 			}
 

@@ -73,7 +73,7 @@ var fs = require('fs'),
 			},
 			function(plugins, next) {
 				if (!plugins || !Array.isArray(plugins)) {
-					next();
+					return next();
 				}
 
 				plugins.push(meta.config['theme:id']);
