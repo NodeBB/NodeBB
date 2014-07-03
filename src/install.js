@@ -11,7 +11,7 @@ var async = require('async'),
 
 	DATABASES = {
 		"redis": {
-			"dependencies": ["redis@~0.10.1", "connect-redis@~2.0.0"]
+			"dependencies": ["redis@~0.10.1", "connect-redis@~2.0.0", "reds@~0.2.4"]
 		},
 		"mongo": {
 			"dependencies": ["mongodb", "connect-mongo"]
