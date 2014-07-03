@@ -54,7 +54,7 @@
     "topic_move_success": "Acest mesaj a fost mutat cu succes în %1",
     "post_delete_confirm": "Ești sigur că vrei să ștergi acest mesaj?",
     "post_restore_confirm": "Esti sigur că vrei să restaurezi acest mesaj?",
-    "post_purge_confirm": "Ești sigur că vrei să cureți acest mesaj?",
+    "post_purge_confirm": "Are you sure you want to purge this post?",
     "load_categories": "Se Încarcă Categoriile",
     "disabled_categories_note": "Categoriile dezactivate sunt decolorate cu gri",
     "confirm_move": "Mută",

@@ -54,7 +54,7 @@
     "topic_move_success": "Đã chuyển thành công chủ đề này sang %1",
     "post_delete_confirm": "Bạn có chắc là muốn xóa bài gửi này không?",
     "post_restore_confirm": "Bạn có chắc là muốn phục hồi bài gửi này không?",
-    "post_purge_confirm": "Are you you want to purge this post?",
+    "post_purge_confirm": "Are you sure you want to purge this post?",
     "load_categories": "Đang tải các phần mục",
     "disabled_categories_note": "Các phần mục bị khóa đã được đánh xám",
     "confirm_move": "Chuyển",

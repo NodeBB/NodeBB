@@ -54,7 +54,7 @@
     "topic_move_success": "This topic has been successfully moved to %1",
     "post_delete_confirm": "Are you sure you want to delete this post?",
     "post_restore_confirm": "Are you sure you want to restore this post?",
-    "post_purge_confirm": "Are you you want to purge this post?",
+    "post_purge_confirm": "Are you sure you want to purge this post?",
     "load_categories": "กำลังโหลดหมวดหมู่",
     "disabled_categories_note": "หมวดหมู่ที่ปิดใช้งานจะเป็นสีเทา",
     "confirm_move": "ย้าย",

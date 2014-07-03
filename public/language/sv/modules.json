@@ -6,7 +6,7 @@
     "chat.user_typing": "%1 skriver ...",
     "chat.user_has_messaged_you": "%1 har skickat ett medelande till dig.",
     "chat.see_all": "Visa alla chattar",
-    "composer.user_said_in": "%1 sa till %2:\n",
-    "composer.user_said": "%1 sa:\n",
+    "composer.user_said_in": "%1 said in %2:",
+    "composer.user_said": "%1 said:",
     "composer.discard": "Are you sure you wish to discard this post?"
 }

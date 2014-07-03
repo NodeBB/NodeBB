@@ -6,7 +6,7 @@
     "chat.user_typing": "%1 scrie ...",
     "chat.user_has_messaged_you": "%1 ți-a trimis un mesaj.",
     "chat.see_all": "Vezi toate conversațiile",
-    "composer.user_said_in": "%1 a spus în %2:\n",
-    "composer.user_said": "%1 a spus:\n",
+    "composer.user_said_in": "%1 said in %2:",
+    "composer.user_said": "%1 said:",
     "composer.discard": "Ești sigur că vrei să renunți la acest mesaj?"
 }

@@ -54,7 +54,7 @@
     "topic_move_success": "このスレッドを %1 に移動しました。",
     "post_delete_confirm": "本当にポストを削除しますか？",
     "post_restore_confirm": "本当にポストをリストアしますか？",
-    "post_purge_confirm": "Are you you want to purge this post?",
+    "post_purge_confirm": "Are you sure you want to purge this post?",
     "load_categories": "板をローディング中...",
     "disabled_categories_note": "使用不可の板はグレーに表示されます。",
     "confirm_move": "移動",

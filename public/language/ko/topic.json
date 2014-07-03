@@ -54,7 +54,7 @@
     "topic_move_success": "성공적으로 이 주제를 %1로 이동했습니다.",
     "post_delete_confirm": "이 게시물을 삭제하시겠습니까?",
     "post_restore_confirm": "이 게시물을 복원하시겠습니까?",
-    "post_purge_confirm": "Are you you want to purge this post?",
+    "post_purge_confirm": "Are you sure you want to purge this post?",
     "load_categories": "카테고리 로딩 중",
     "disabled_categories_note": "비활성화된 카테고리는 회색으로 표시됩니다.",
     "confirm_move": "이동",

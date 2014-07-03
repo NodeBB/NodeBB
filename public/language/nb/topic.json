@@ -54,7 +54,7 @@
     "topic_move_success": "Emnet har blitt flyttet til %1",
     "post_delete_confirm": "Er du sikker på at du vil slette dette innlegget?",
     "post_restore_confirm": "Er du sikker på at du vil gjenopprette dette innlegget?",
-    "post_purge_confirm": "Are you you want to purge this post?",
+    "post_purge_confirm": "Are you sure you want to purge this post?",
     "load_categories": "Laster kategorier",
     "disabled_categories_note": "Deaktiverte kategorier er grået ut",
     "confirm_move": "Flytt",

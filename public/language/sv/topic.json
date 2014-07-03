@@ -54,7 +54,7 @@
     "topic_move_success": "Det här ämnet har flyttats till %1",
     "post_delete_confirm": "Är du säker på att du vill ta bort det här inlägget?",
     "post_restore_confirm": "Är du säker på att du vill återställa det här inlägget?",
-    "post_purge_confirm": "Are you you want to purge this post?",
+    "post_purge_confirm": "Are you sure you want to purge this post?",
     "load_categories": "Laddar kategorier",
     "disabled_categories_note": "Inaktiverade kategorier är utgråade",
     "confirm_move": "Flytta",

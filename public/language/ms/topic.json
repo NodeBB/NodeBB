@@ -54,7 +54,7 @@
     "topic_move_success": "Topik telah dipindahkan ke %1",
     "post_delete_confirm": "Adakah anda pasti untuk memadam kiriman ini?",
     "post_restore_confirm": "Adakah anda pasti untuk memulihkan kiriman ini?",
-    "post_purge_confirm": "Are you you want to purge this post?",
+    "post_purge_confirm": "Are you sure you want to purge this post?",
     "load_categories": "Memuatkan kategori",
     "disabled_categories_note": "Kategori yang disekat diwarnakan kelabu",
     "confirm_move": "Pindahkan",

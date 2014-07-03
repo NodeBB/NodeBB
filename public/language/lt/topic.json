@@ -54,7 +54,7 @@
     "topic_move_success": "Ši tema buvo sėkmingai perkelta į %1",
     "post_delete_confirm": "Ar jūs tikrai norite ištrinti šį įrašą?",
     "post_restore_confirm": "Ar jūs tikrai norite atkurti šį įrašą?",
-    "post_purge_confirm": "Ar tikrai norite išvalyti šį pranešimą?",
+    "post_purge_confirm": "Are you sure you want to purge this post?",
     "load_categories": "Įkeliamos kategorijos",
     "disabled_categories_note": "Neaktyvios kategorijos pažymėtos pilkai",
     "confirm_move": "Perkelti",

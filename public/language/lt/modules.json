@@ -6,7 +6,7 @@
     "chat.user_typing": "%1 dabar rašo...",
     "chat.user_has_messaged_you": "%1 parašė jums.",
     "chat.see_all": "Žiūrėti visus susirašynėjimus",
-    "composer.user_said_in": "%1 parašė %2:\n",
-    "composer.user_said": "%1 parašė:\n",
+    "composer.user_said_in": "%1 said in %2:",
+    "composer.user_said": "%1 said:",
     "composer.discard": "Ar tikrai norite sunaikinti šį pranešimą?"
 }

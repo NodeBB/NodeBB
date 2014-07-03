@@ -6,7 +6,7 @@
     "chat.user_typing": "%1 正在输入……",
     "chat.user_has_messaged_you": "%1向你发送了信息。",
     "chat.see_all": "查看所有聊天",
-    "composer.user_said_in": "%1在%2中说：\n",
-    "composer.user_said": "%1说：\n",
+    "composer.user_said_in": "%1 在 %2 中说：",
+    "composer.user_said": "%1 说：",
     "composer.discard": "确定要取消此帖？"
 }

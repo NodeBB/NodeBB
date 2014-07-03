@@ -6,7 +6,7 @@
     "chat.user_typing": "%1 está digitando...",
     "chat.user_has_messaged_you": "%1 te enviou uma mensagem.",
     "chat.see_all": "Vizualisar todas Conversas",
-    "composer.user_said_in": "%1 disse em %2:\n",
-    "composer.user_said": "%1 disse:\n",
+    "composer.user_said_in": "%1 said in %2:",
+    "composer.user_said": "%1 said:",
     "composer.discard": "Deseja mesmo remover essa postagem?"
 }

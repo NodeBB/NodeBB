@@ -54,7 +54,7 @@
     "topic_move_success": "Başlık %1 kategorisine başarıyla taşındı.",
     "post_delete_confirm": "Bu iletiyi gerçekten silmek istiyor musun?",
     "post_restore_confirm": "Bu iletiyi gerçekten geri getirmek istiyor musun?",
-    "post_purge_confirm": "Bu iletiyi temizlemek istediğinize eminmisiniz?",
+    "post_purge_confirm": "Are you sure you want to purge this post?",
     "load_categories": "Kategoriler Yükleniyor",
     "disabled_categories_note": "Etkin Olmayan Kategoriler soluklaştırılır",
     "confirm_move": "Taşı",

@@ -54,7 +54,7 @@
     "topic_move_success": "Ce sujet a bien été déplacé vers %1.",
     "post_delete_confirm": "Êtes-vous sûr de bien vouloir supprimer ce message ?",
     "post_restore_confirm": "Êtes-vous sûr de bien vouloir restaurer ce message ?",
-    "post_purge_confirm": "Êtes-vous sûr de bien vouloir supprimer définitivement ce message ?",
+    "post_purge_confirm": "Êtes-vous sûr de bien vouloir supprimer définitivement ce sujet ?",
     "load_categories": "Chargement des catégories en cours",
     "disabled_categories_note": "Les catégories désactivées sont grisées",
     "confirm_move": "Déplacer",

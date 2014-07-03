@@ -54,7 +54,7 @@
     "topic_move_success": "主題已成功移至 %1",
     "post_delete_confirm": "你確定要刪除這文章嗎？",
     "post_restore_confirm": "你確定要還原這文章嗎？",
-    "post_purge_confirm": "Are you you want to purge this post?",
+    "post_purge_confirm": "Are you sure you want to purge this post?",
     "load_categories": "版面載入中",
     "disabled_categories_note": "停用的版面為灰色",
     "confirm_move": "移動",

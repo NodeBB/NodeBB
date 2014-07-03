@@ -54,7 +54,7 @@
     "topic_move_success": "Teema liigutatud kategooriasse %1",
     "post_delete_confirm": "Oled kindel, et soovid kustutada selle postituse?",
     "post_restore_confirm": "Oled kindel, et soovid taastada antud postituse?",
-    "post_purge_confirm": "Are you you want to purge this post?",
+    "post_purge_confirm": "Are you sure you want to purge this post?",
     "load_categories": "Laen kategooriaid",
     "disabled_categories_note": "Kinnised kategooriad on hallid",
     "confirm_move": "Liiguta",

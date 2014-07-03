@@ -54,7 +54,7 @@
     "topic_move_success": "Téma bola úspešne presunutá do %1",
     "post_delete_confirm": "Ste si istý, že chcete vymazať tento príspevok?",
     "post_restore_confirm": "Ste si istí, že chcete obnoviť tento príspevok?",
-    "post_purge_confirm": "Are you you want to purge this post?",
+    "post_purge_confirm": "Are you sure you want to purge this post?",
     "load_categories": "Načítanie kategórií",
     "disabled_categories_note": "Vypnuté (disabled) kategorie sú šedé.",
     "confirm_move": "Presunúť",

@@ -54,7 +54,7 @@
     "topic_move_success": "Thema wurde erfolgreich zu %1 verschoben.",
     "post_delete_confirm": "Sind Sie sicher, dass Sie diesen Beitrag löschen möchten?",
     "post_restore_confirm": "Sind Sie sicher, dass Sie diesen Beitrag wiederherstellen möchten?",
-    "post_purge_confirm": "Du möchtest dieses Thema bereinigen?",
+    "post_purge_confirm": "Are you sure you want to purge this post?",
     "load_categories": "Kategorien laden",
     "disabled_categories_note": "Deaktivierte Kategorien sind ausgegraut.",
     "confirm_move": "Verschieben",

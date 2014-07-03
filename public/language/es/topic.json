@@ -54,7 +54,7 @@
     "topic_move_success": "El tema ha sido movido correctamente a %1",
     "post_delete_confirm": "¿Estás seguro de que quieres eliminar esta respuesta?",
     "post_restore_confirm": "¿Estás seguro de que quieres restaurar esta respuesta?",
-    "post_purge_confirm": "Are you you want to purge this post?",
+    "post_purge_confirm": "Estás seguro de que quieres limpiar esta publicación?",
     "load_categories": "Cargando Categorías",
     "disabled_categories_note": "Las categorías deshabilitadas estan en gris",
     "confirm_move": "Mover",
