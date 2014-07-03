@@ -196,7 +196,7 @@ var async = require('async'),
 
 			async.map(userData, function(userData, next) {
 				var userInfo = {
-					uid: userData.uid,
+					uid: userData.uid || 0,
 					username: userData.username || '[[global:guest]]',
 					userslug: userData.userslug || '',
 					reputation: userData.reputation || 0,
