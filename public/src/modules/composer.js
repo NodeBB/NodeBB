@@ -394,12 +394,35 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 		function done(err) {
 			$('.action-bar button').removeAttr('disabled');
 			if (err) {
+				if (err.message === '[[error:email-not-confirmed]]') {
+					return showEmailConfirmAlert(err);
+				}
+
 				return app.alertError(err.message);
 			}
 
 			discard(post_uuid);
 			drafts.removeDraft(postData.save_id);
 		}
+	}
+
+	function showEmailConfirmAlert(err) {
+		app.alert({
+			id: 'email_confirm',
+			title: '[[global:alert.error]]',
+			message: err.message,
+			type: 'danger',
+			timeout: 0,
+			clickfn: function() {
+				app.removeAlert('email_confirm');
+				socket.emit('user.emailConfirm', {}, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					app.alertSuccess('[[notifications:email-confirm-sent]]');
+				});
+			}
+		});
 	}
 
 	function discard(post_uuid) {

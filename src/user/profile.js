@@ -77,7 +77,7 @@ module.exports = function(User) {
 					return callback(err);
 				}
 
-				User.getUserFields(uid, ['userslug', 'picture', 'gravatarpicture'], callback);
+				User.getUserFields(uid, ['email', 'userslug', 'picture', 'gravatarpicture'], callback);
 			});
 		});
 
@@ -111,7 +111,7 @@ module.exports = function(User) {
 				return callback(err);
 			}
 
-			if(userData.email === newEmail) {
+			if (userData.email === newEmail) {
 				return callback();
 			}
 

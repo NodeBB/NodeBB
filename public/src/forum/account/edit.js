@@ -6,7 +6,8 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 	var AccountEdit = {},
 		gravatarPicture = '',
 		uploadedPicture = '',
-		selectedImageType = '';
+		selectedImageType = '',
+		currentEmail;
 
 	AccountEdit.init = function() {
 		gravatarPicture = ajaxify.variables.get('gravatarpicture');
@@ -21,6 +22,8 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 			changeYear: true,
 			yearRange: '1900:+0'
 		});
+
+		currentEmail = $('#inputEmail').val();
 
 		handleImageChange();
 		handleImageUpload();
@@ -69,6 +72,11 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 
 				$('#user-profile-link').attr('href', config.relative_path + '/user/' + data.userslug);
 				$('#user-header-name').text(userData.username);
+			}
+
+			if (currentEmail !== data.email) {
+				currentEmail = data.email;
+				$('#confirm-email').removeClass('hide');
 			}
 		});
 
