@@ -15,6 +15,7 @@ var app,
 	db = require('./../database'),
 	categories = require('./../categories'),
 	topics = require('./../topics'),
+	messaging = require('../messaging'),
 
 	controllers = {
 		api: require('./../controllers/api')
@@ -186,6 +187,20 @@ middleware.checkAccountPermissions = function(req, res, next) {
 				return res.redirect('403');
 			}
 		});
+	});
+};
+
+middleware.getChatMessages = function(req, res, next) {
+	user.getUidByUserslug(req.params.userslug, function(err, toUid) {
+		if (!err && toUid) {
+			messaging.getMessages(req.user.uid, toUid, false, function(err, messages) {
+				res.locals.messages = messages;
+				next();
+			});
+		} else {
+			res.locals.messages = [];
+			next();
+		}
 	});
 };
 
