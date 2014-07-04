@@ -165,7 +165,7 @@ module.exports = function(app, middleware) {
 		router.all('/admin/*', middleware.admin.isAdmin);
 		router.get('/admin', middleware.admin.isAdmin);
 
-		plugins.fireHook('action:app.load', router, middleware, controllers);
+		plugins.fireHook('action:app.load', app, middleware, controllers);
 
 		adminRoutes(router, middleware, controllers);
 		metaRoutes(router, middleware, controllers);
