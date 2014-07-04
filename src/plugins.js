@@ -1,3 +1,5 @@
+'use strict';
+
 var fs = require('fs'),
 	path = require('path'),
 	async = require('async'),
@@ -8,7 +10,7 @@ var fs = require('fs'),
 
 	db = require('./database'),
 	meta = require('./meta'),
-	utils = require('./../public/src/utils'),
+	utils = require('../public/src/utils'),
 	pkg = require('../package.json');
 
 (function(Plugins) {
@@ -23,7 +25,7 @@ var fs = require('fs'),
 	Plugins.initialized = false;
 
 	// Events
-	Plugins.readyEvent = new eventEmitter;
+	Plugins.readyEvent = new eventEmitter();
 
 	Plugins.init = function() {
 		if (Plugins.initialized) {
@@ -89,7 +91,9 @@ var fs = require('fs'),
 				});
 			},
 			function(next) {
-				if (global.env === 'development') winston.info('[plugins] Sorting hooks to fire in priority sequence');
+				if (global.env === 'development') {
+					winston.info('[plugins] Sorting hooks to fire in priority sequence');
+				}
 				Object.keys(Plugins.loadedHooks).forEach(function(hook) {
 					var hooks = Plugins.loadedHooks[hook];
 					hooks = hooks.sort(function(a, b) {
@@ -270,7 +274,9 @@ var fs = require('fs'),
 
 		if (data.hook && data.method && typeof data.method === 'string' && data.method.length > 0) {
 			data.id = id;
-			if (!data.priority) data.priority = 10;
+			if (!data.priority) {
+				data.priority = 10;
+			}
 			method = data.method.split('.').reduce(function(memo, prop) {
 				if (memo !== null && memo[prop]) {
 					return memo[prop];
@@ -292,7 +298,7 @@ var fs = require('fs'),
 			Plugins.loadedHooks[data.hook].push(data);
 
 			callback();
-		} else return;
+		}
 	};
 
 	Plugins.hasListeners = function(hook) {
@@ -613,7 +619,9 @@ var fs = require('fs'),
 							});
 						}
 					], function(err, config) {
-						if (err) return next(); // Silently fail
+						if (err) {
+							return next(); // Silently fail
+						}
 
 						plugins.push(config);
 						next();
