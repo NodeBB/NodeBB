@@ -486,8 +486,11 @@ accountsController.getChats = function(req, res, next) {
 			return next(err);
 		}
 
+		console.log(res.locals.messages);
+
 		res.render('chats', {
-			chats: chats
+			chats: chats,
+			messages: res.locals.messages || undefined
 		});
 	});
 };
