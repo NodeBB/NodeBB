@@ -1,7 +1,7 @@
 {
     "register": "نام‌نویسی",
-    "help.email": "پیش‌فرض، رایانامهٔ شما از دید همگان پنهان می‌شود.",
-    "help.username_restrictions": "یک نام کاربری یکتا بین %1 و %2 نویسه؛ دیگران می‌توانند با @<span id='yourUsername'>نام‌کاربری</span> به شما اشاره کنند.",
+    "help.email": "به طور پیش‌فرض، رایانامه‌ی شما از دید همگان پنهان می‌شود.",
+    "help.username_restrictions": "یک نام کاربری یکتا بین %1 و %2 نویسه. دیگران می‌توانند با @<span id='yourUsername'>نام‌کاربری</span> به شما اشاره کنند.",
     "help.minimum_password_length": "گذرواژه شما باید دست‌کم %1 نویسه داشته باشد.",
     "email_address": "نشانی رایانامه",
     "email_address_placeholder": "نوشتن نشانی رایانامه",
