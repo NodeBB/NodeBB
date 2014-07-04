@@ -15,9 +15,9 @@
     "favourited_your_post": "<strong>%1</strong> iletinizi favorilerine ekledi.",
     "user_flagged_post": "<strong>%1</strong> bir iletiyi sakıncalı buldu.",
     "user_posted_to": "<strong>%1</strong> <strong>%2</strong> başlığına bir ileti gönderdi.",
-    "email-confirmed": "Email Confirmed",
-    "email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",
-    "email-confirm-error": "An error occurred...",
-    "email-confirm-error-message": "There was a problem validating your email address. Perhaps the code was invalid or has expired.",
-    "email-confirm-sent": "Confirmation email sent."
+    "email-confirmed": "Email adresiniz doğrulandı.",
+    "email-confirmed-message": "Email adresinizi doğruladığınız için teşekkür ederiz. Hesabınız tümüyle aktive edilmiştir.",
+    "email-confirm-error": "Bir hata oluştu...",
+    "email-confirm-error-message": "Email adresinizi doğrularken bir hata oluştu. Girmiş olduğunuz kod hatalı veya süresi geçmiş olabilir.",
+    "email-confirm-sent": "Doğrulama epostası gönderildi."
 }
