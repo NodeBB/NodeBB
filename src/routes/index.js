@@ -121,6 +121,8 @@ function accountRoutes(app, middleware, controllers) {
 
 	app.get('/chats', middleware.buildHeader, middleware.authenticate, controllers.accounts.getChats);
 	app.get('/api/chats', middleware.authenticate, controllers.accounts.getChats);
+	app.get('/chats/:userslug', middleware.buildHeader, middleware.authenticate, middleware.getChatMessages, controllers.accounts.getChats);
+	app.get('/api/chats/:userslug', middleware.authenticate, middleware.getChatMessages, controllers.accounts.getChats);
 }
 
 function userRoutes(app, middleware, controllers) {
