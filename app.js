@@ -117,20 +117,18 @@ function start() {
 		winston.info('Base Configuration OK.');
 	}
 
-	var meta = require('./src/meta');
-
 	require('./src/database').init(function(err) {
 		if (err) {
 			winston.error(err.stack);
 			process.exit();
 		}
+		var meta = require('./src/meta');
 		meta.configs.init(function () {
 			var templates = require('templates.js'),
 				webserver = require('./src/webserver'),
 				sockets = require('./src/socket.io'),
 				plugins = require('./src/plugins'),
-				upgrade = require('./src/upgrade'),
-				meta = require('./src/meta');
+				upgrade = require('./src/upgrade');
 
 			templates.setGlobal('relative_path', nconf.get('relative_path'));
 
@@ -196,14 +194,12 @@ function setup() {
 function upgrade() {
 	loadConfig();
 
-	var meta = require('./src/meta');
-
 	require('./src/database').init(function(err) {
 		if (err) {
 			winston.error(err.stack);
 			process.exit();
 		}
-		meta.configs.init(function () {
+		require('./src/meta').configs.init(function () {
 			require('./src/upgrade').upgrade();
 		});
 	});
