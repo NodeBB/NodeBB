@@ -52,10 +52,7 @@ define('notifications', ['sounds'], function(sound) {
 					}
 
 
-					translator.translate(html, function(translated) {
-						notifList.html(translated);
-					});
-
+					notifList.translateHtml(html);
 
 					updateNotifCount(data.unread.length);
 

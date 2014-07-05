@@ -51,6 +51,27 @@ if ('undefined' !== typeof window) {
 			});
 		};
 
+		$.fn.translateHtml = function(str) {
+			return translate(this, 'html', str);
+		};
+
+		$.fn.translateText = function(str) {
+			return translate(this, 'text', str);
+		};
+
+		$.fn.translateVal = function(str) {
+			return translate(this, 'val', str);
+		};
+
+		function translate(elements, type, str) {
+			return elements.each(function() {
+				var el = $(this);
+				translator.translate(str, function(translated) {
+					el[type](translated);
+				});
+			});
+		}
+
 	})(jQuery || {fn:{}});
 
 

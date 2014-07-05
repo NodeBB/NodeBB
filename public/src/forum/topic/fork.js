@@ -90,9 +90,7 @@ define('forum/topic/fork', function() {
 	}
 
 	function showNoPostsSelected() {
-		translator.translate('[[topic:fork_no_pids]]', function(translated) {
-			forkModal.find('#fork-pids').html(translated);
-		});
+		forkModal.find('#fork-pids').translateHtml('[[topic:fork_no_pids]]');
 	}
 
 	function checkForkButtonEnable() {

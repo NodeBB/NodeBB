@@ -91,10 +91,8 @@ define('navigator', ['forum/topic/pagination'], function(pagination) {
 
 	navigator.updateTextAndProgressBar = function() {
 		index = index > count ? count : index;
-		translator.translate('[[global:pagination.out_of, ' + index + ', ' + count + ']]', function(translated) {
-			$('#pagination').html(translated);
-		});
 
+		$('#pagination').translateHtml('[[global:pagination.out_of, ' + index + ', ' + count + ']]');
 		$('.pagination-block .progress-bar').width((index / count * 100) + '%');
 	};
 

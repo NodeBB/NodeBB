@@ -21,9 +21,7 @@ define('forum/topic/move', function() {
 		$('#move-confirm').hide();
 
 		if (Move.moveAll || (tids && tids.length > 1)) {
-			translator.translate('[[topic:move_topics]]', function(translated) {
-				modal.find('.modal-header h3').text(translated);
-			});
+			modal.find('.modal-header h3').translateText('[[topic:move_topics]]');
 		}
 
 		modal.modal('show');

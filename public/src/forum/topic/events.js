@@ -134,9 +134,7 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 
 		if (!app.isAdmin && parseInt(data.uid, 10) !== parseInt(app.uid, 10)) {
 			if (isDeleted) {
-				translator.translate('[[topic:post_is_deleted]]', function(translated) {
-					postEl.find('.post-content').html(translated);
-				});
+				postEl.find('.post-content').translateHtml('[[topic:post_is_deleted]]');
 			} else {
 				postEl.find('.post-content').html(data.content);
 			}

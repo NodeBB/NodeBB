@@ -104,10 +104,8 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 		var threadEl = $('#post-container');
 		if (parseInt(data.tid, 10) === parseInt(threadEl.attr('data-tid'), 10)) {
 			var isLocked = data.isLocked && !app.isAdmin;
-			translator.translate('<i class="fa fa-fw fa-' + (data.isLocked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (data.isLocked ? 'un': '') + 'lock]]', function(translated) {
-				$('.lock_thread').html(translated);
-			});
 
+			$('.lock_thread').translateHtml('<i class="fa fa-fw fa-' + (data.isLocked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (data.isLocked ? 'un': '') + 'lock]]');
 
 			translator.translate(isLocked ? '[[topic:locked]]' : '[[topic:reply]]', function(translated) {
 				var className = isLocked ? 'fa-lock' : 'fa-reply';
@@ -127,9 +125,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 			return;
 		}
 
-		translator.translate('<i class="fa fa-fw ' + (data.isDelete ? 'fa-history' : 'fa-trash-o') + '"></i> [[topic:thread_tools.' + (data.isDelete ? 'restore' : 'delete') + ']]', function(translated) {
-			$('.delete_thread span').html(translated);
-		});
+		$('.delete_thread span').translateHtml('<i class="fa fa-fw ' + (data.isDelete ? 'fa-history' : 'fa-trash-o') + '"></i> [[topic:thread_tools.' + (data.isDelete ? 'restore' : 'delete') + ']]');
 
 		threadEl.toggleClass('deleted', data.isDelete);
 		ThreadTools.threadState.deleted = data.isDelete;

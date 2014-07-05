@@ -129,18 +129,9 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 		var isAnyPinned = isAny(isTopicPinned, tids);
 		var isAnyLocked = isAny(isTopicLocked, tids);
 
-		translator.translate('<i class="fa fa-fw ' + (isAnyDeleted ? 'fa-history' : 'fa-trash-o') + '"></i> [[topic:thread_tools.' + (isAnyDeleted ? 'restore' : 'delete') + ']]', function(translated) {
-			$('.delete_thread span').html(translated);
-		});
-
-		translator.translate('<i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.' + (isAnyPinned ? 'unpin' : 'pin') + ']]', function(translated) {
-			$('.pin_thread').html(translated);
-		});
-
-		translator.translate('<i class="fa fa-fw fa-' + (isAnyLocked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (isAnyLocked ? 'un': '') + 'lock]]', function(translated) {
-			$('.lock_thread').html(translated);
-		});
-
+		$('.delete_thread span').translateHtml('<i class="fa fa-fw ' + (isAnyDeleted ? 'fa-history' : 'fa-trash-o') + '"></i> [[topic:thread_tools.' + (isAnyDeleted ? 'restore' : 'delete') + ']]');
+		$('.pin_thread').translateHtml('<i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.' + (isAnyPinned ? 'unpin' : 'pin') + ']]');
+		$('.lock_thread').translateHtml('<i class="fa fa-fw fa-' + (isAnyLocked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (isAnyLocked ? 'un': '') + 'lock]]');
 		$('.purge_thread').toggleClass('none', !areAllDeleted);
 	}
 
