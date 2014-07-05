@@ -190,18 +190,41 @@ middleware.checkAccountPermissions = function(req, res, next) {
 	});
 };
 
-middleware.getChatMessages = function(req, res, next) {
-	user.getUidByUserslug(req.params.userslug, function(err, toUid) {
-		if (!err && toUid) {
-			messaging.getMessages(req.user.uid, toUid, false, function(err, messages) {
-				res.locals.messages = messages;
-				next();
-			});
-		} else {
-			res.locals.messages = [];
-			next();
+/* Chat related middlewares */
+
+middleware.chat = {};
+middleware.chat.getMetadata = function(req, res, next) {
+	async.waterfall([
+		async.apply(user.getUidByUserslug, req.params.userslug),
+		function(toUid, next) {
+			user.getUserFields(toUid, ['uid', 'username'], next);
 		}
+	], function(err, chatData) {
+		if (!err) {
+			res.locals.chatData = chatData;
+		}
+
+		next();
 	});
+};
+
+middleware.chat.getContactList = function(req, res, next) {
+	user.getFollowing(req.user.uid, function(err, contacts) {
+		res.locals.contacts = contacts;
+		next();
+	});
+};
+
+middleware.chat.getMessages = function(req, res, next) {
+	if (res.locals.chatData) {
+		messaging.getMessages(req.user.uid, res.locals.chatData.uid, false, function(err, messages) {
+			res.locals.messages = messages;
+			next();
+		});
+	} else {
+		res.locals.messages = [];
+		next();
+	}
 };
 
 middleware.buildHeader = function(req, res, next) {

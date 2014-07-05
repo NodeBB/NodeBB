@@ -8,6 +8,8 @@
 	"chat.see_all": "See all Chats",
 	"chat.no-messages": "Please select a recipient to view chat message history",
 	"chat.recent-chats": "Recent Chats",
+	"chat.contacts": "Contacts",
+	"chat.message-history": "Message History",
 
 	"composer.user_said_in": "%1 said in %2:\n",
 	"composer.user_said": "%1 said:\n",
