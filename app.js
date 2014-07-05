@@ -120,6 +120,10 @@ function start() {
 	var meta = require('./src/meta');
 
 	require('./src/database').init(function(err) {
+		if (err) {
+			winston.error(err.stack);
+			process.exit();
+		}
 		meta.configs.init(function () {
 			var templates = require('templates.js'),
 				webserver = require('./src/webserver'),
@@ -195,6 +199,10 @@ function upgrade() {
 	var meta = require('./src/meta');
 
 	require('./src/database').init(function(err) {
+		if (err) {
+			winston.error(err.stack);
+			process.exit();
+		}
 		meta.configs.init(function () {
 			require('./src/upgrade').upgrade();
 		});
