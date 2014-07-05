@@ -98,20 +98,16 @@ module.exports = function(db, module) {
 	};
 
 	module.setRemoveRandom = function(key, callback) {
+		callback = callback || function() {};
 		db.collection('objects').findOne({_key:key}, function(err, data) {
 			if(err || !data) {
-				if(typeof callback === 'function') {
-					callback(err, 0);
-				}
-				return;
+				return callback(err);
 			}
 
 			var randomIndex = Math.floor(Math.random() * data.members.length);
 			var value = data.members[randomIndex];
-			module.setRemove(data._key, value, function(err, result) {
-				if(typeof callback === 'function') {
-					callback(err, value);
-				}
+			module.setRemove(data._key, value, function(err) {
+				callback(err, value);
 			});
 		});
 	};
