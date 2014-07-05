@@ -154,7 +154,7 @@ function start() {
 
 						meta.js.killMinifier();
 						shutdown(1);
-					})
+					});
 				} else {
 					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
 					winston.warn('    node app --upgrade');
