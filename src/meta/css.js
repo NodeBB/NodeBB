@@ -51,7 +51,7 @@ module.exports = function(Meta) {
 			parser.parse(source, function(err, tree) {
 				if (err) {
 					winston.error('[meta/css] Could not minify LESS/CSS: ' + err.message);
-					process.exit();
+					return;
 				}
 
 				var css = tree.toCSS({
