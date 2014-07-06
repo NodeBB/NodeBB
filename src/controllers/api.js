@@ -44,7 +44,6 @@ apiController.getConfig = function(req, res, next) {
 	config['cache-buster'] = meta.config['cache-buster'] || '';
 	config.requireEmailConfirmation = parseInt(meta.config.requireEmailConfirmation, 10) === 1;
 	config.topicPostSort = meta.config.topicPostSort || 'oldest_to_newest';
-	config.version = pkg.version;
 
 	if (!req.user) {
 		if (res.locals.isAPI) {
