@@ -486,8 +486,6 @@ accountsController.getChats = function(req, res, next) {
 			return next(err);
 		}
 
-		console.log(res.locals);
-
 		res.render('chats', {
 			meta: res.locals.chatData,
 			chats: chats,
