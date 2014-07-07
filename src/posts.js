@@ -183,7 +183,7 @@ var async = require('async'),
 					next(!err && canRead);
 				});
 			}, function(pids) {
-				Posts.getPostSummaryByPids(pids, true, callback);
+				Posts.getPostSummaryByPids(pids, {stripTags: true}, callback);
 			});
 		});
 	};
@@ -231,7 +231,9 @@ var async = require('async'),
 		});
 	};
 
-	Posts.getPostSummaryByPids = function(pids, stripTags, callback) {
+	Posts.getPostSummaryByPids = function(pids, options, callback) {
+		options.stripTags = options.hasOwnProperty('stripTags') ? options.stripTags : false;
+		options.parse = options.hasOwnProperty('parse') ? options.parse : true;
 
 		function getPostSummary(post, callback) {
 
@@ -261,7 +263,7 @@ var async = require('async'),
 					});
 				},
 				content: function(next) {
-					if (!post.content) {
+					if (!post.content || !options.parse) {
 						return next(null, post.content);
 					}
 
@@ -280,7 +282,7 @@ var async = require('async'),
 				post.category = results.topicCategory.category;
 				post.index = results.index;
 
-				if (stripTags) {
+				if (options.stripTags) {
 					var s = S(results.content);
 					post.content = s.stripTags.apply(s, utils.stripTags).s;
 				} else {
@@ -443,7 +445,7 @@ var async = require('async'),
 			return callback(null, {posts: [], nextStart: 0});
 		}
 
-		Posts.getPostSummaryByPids(pids, false, function(err, posts) {
+		Posts.getPostSummaryByPids(pids, {stripTags: false}, function(err, posts) {
 			if (err) {
 				return callback(err);
 			}

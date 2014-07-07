@@ -325,7 +325,7 @@
 					return callback(err);
 				}
 
-				posts.getPostSummaryByPids(pids, false, callback);
+				posts.getPostSummaryByPids(pids, {stripTags: false}, callback);
 			});
 		});
 	};

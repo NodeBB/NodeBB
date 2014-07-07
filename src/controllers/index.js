@@ -12,11 +12,13 @@ var topicsController = require('./topics'),
 
 	async = require('async'),
 	nconf = require('nconf'),
+	winston = require('winston'),
 	auth = require('../routes/authentication'),
 	meta = require('../meta'),
 	user = require('../user'),
 	posts = require('../posts'),
 	topics = require('../topics'),
+	search = require('../search'),
 	plugins = require('../plugins'),
 	categories = require('../categories'),
 	privileges = require('../privileges');
@@ -83,69 +85,35 @@ Controllers.home = function(req, res, next) {
 			});
 		}
 	}, function (err, data) {
+		if (err) {
+			return next(err);
+		}
 		res.render('home', data);
 	});
 };
 
 Controllers.search = function(req, res, next) {
-	var start = process.hrtime();
-
 	if (!req.params.term) {
 		return res.render('search', {
+			time: 0,
 			search_query: '',
 			posts: [],
 			topics: []
 		});
 	}
 
+	var uid = req.user ? req.user.uid : 0;
+
 	if (!plugins.hasListeners('filter:search.query')) {
 		return res.redirect('/404');
 	}
 
-	function search(index, callback) {
-		plugins.fireHook('filter:search.query', {
-			index: index,
-			query: req.params.term
-		}, callback);
-	}
-
-	async.parallel({
-		pids: function(next) {
-			search('post', next);
-		},
-		tids: function(next) {
-			search('topic', next);
-		}
-	}, function (err, results) {
+	search.search(req.params.term, uid, function(err, results) {
 		if (err) {
 			return next(err);
 		}
 
-		if(!results) {
-			results = {pids:[], tids: []};
-		}
-
-		async.parallel({
-			posts: function(next) {
-				posts.getPostSummaryByPids(results.pids, false, next);
-			},
-			topics: function(next) {
-				topics.getTopicsByTids(results.tids, 0, next);
-			}
-		}, function(err, results) {
-			if (err) {
-				return next(err);
-			}
-
-			return res.render('search', {
-				time: process.elapsedTimeSince(start),
-				search_query: req.params.term,
-				posts: results.posts,
-				topics: results.topics,
-				post_matches : results.posts.length,
-				topic_matches : results.topics.length
-			});
-		});
+		return res.render('search', results);
 	});
 };
 
