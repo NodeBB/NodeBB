@@ -263,10 +263,8 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 
 	function getChatMessages(chatModal, callback) {
 		socket.emit('modules.chats.get', {touid:chatModal.touid}, function(err, messages) {
-			for(var i = 0; i<messages.length; ++i) {
-				module.appendChatMessage(chatModal, messages[i]);
-			}
-			callback();
+			console.log(messages);
+			module.appendChatMessage(chatModal, messages, callback);
 		});
 	}
 
@@ -292,35 +290,18 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 		});
 	}
 
-	module.appendChatMessage = function(chatModal, data) {
+	module.appendChatMessage = function(chatModal, data, done) {
 		var chatContent = chatModal.find('#chat-content');
 
-		var isYou = parseInt(app.uid, 10) === parseInt(data.fromuid, 10);
+		Chats.parseMessage(data, function(html) {
+			var message = $(html);
+			message.find('img:not(".chat-user-image")').addClass('img-responsive');
+			message.find('span.timeago').timeago();
+			chatContent.append(message);
+			Chats.scrollToBottom(chatContent);
 
-		var message = $('<li class="chat-message clear" data-uid="' + data.fromuid + '"></li>');
-		var time = '<span class="chat-timestamp pull-right timeago" title="' + utils.toISOString(data.timestamp) + '"></span> ';
-
-
-		if (data.fromuid !== chatContent.children('.chat-message').last().attr('data-uid')) {
-			var userPicture = $('<a href="/user/' + data.fromUser.userslug + '"><img class="chat-user-image" src="' + data.fromUser.picture + '"></a>');
-			var userName = $('<strong><span class="chat-user"> '+ data.fromUser.username + '</span></strong>');
-			userName.toggleClass('chat-user-you', isYou);
-
-			message.append(userPicture)
-				.append(userName)
-				.append('<br/>')
-				.prepend(time);
-		}
-
-		message.append(S(data.content).stripTags('p').s);
-
-		message.toggleClass('chat-message-them', !isYou);
-		message.find('img:not(".chat-user-image")').addClass('img-responsive');
-		message.find('span.timeago').timeago();
-
-		chatContent.append(message);
-
-		Chats.scrollToBottom(chatContent);
+			if (typeof done === 'function') done();
+		});
 	};
 
 	module.toggleNew = function(uuid, state) {

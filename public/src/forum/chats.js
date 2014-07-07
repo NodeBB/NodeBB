@@ -1,21 +1,27 @@
 'use strict';
 
-/* globals define, app, ajaxify, utils, socket */
+/* globals define, app, ajaxify, utils, socket, templates */
 
 define('forum/chats', ['string', 'sounds'], function(S, sounds) {
-	var Chats = {};
+	var Chats = {
+		initialised: false
+	};
 
 	Chats.init = function() {
 		var containerEl = $('.expanded-chat ul');
 
+		if (!Chats.initialised) {
+			Chats.addSocketListeners();
+		}
+
 		Chats.addEventListeners();
-		Chats.addSocketListeners();
 		Chats.scrollToBottom(containerEl);
 		Chats.setActive();
+
+		Chats.initialised = true;
 	};
 
 	Chats.getRecipientUid = function() {
-		console.log($('.expanded-chat'));
 		return parseInt($('.expanded-chat').attr('data-uid'), 10);
 	};
 
@@ -33,17 +39,16 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 			sendEl = $('.expanded-chat button[data-action="send"]');
 
 		$('.chats-list').on('click', 'li', function(e) {
-			// app.openChat($(this).attr('data-username'), $(this).attr('data-uid'));
 			ajaxify.go('chats/' + utils.slugify($(this).attr('data-username')));
 		});
 
-		inputEl.off('keypress').on('keypress', function(e) {
+		inputEl.on('keypress', function(e) {
 			if(e.which === 13) {
 				Chats.sendMessage(Chats.getRecipientUid(), inputEl);
 			}
 		});
 
-		inputEl.off('keyup').on('keyup', function() {
+		inputEl.on('keyup', function() {
 			if ($(this).val()) {
 				Chats.notifyTyping(Chats.getRecipientUid(), true);
 			} else {
@@ -51,29 +56,45 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 			}
 		});
 
-		sendEl.off('click').on('click', function(e) {
+		sendEl.on('click', function(e) {
 			Chats.sendMessage(Chats.getRecipientUid(), inputEl);
 			return false;
 		});
 	};
 
 	Chats.addSocketListeners = function() {
-		var typingNotifEl = $('.user-typing');
+		var typingNotifEl = $('.user-typing'),
+			containerEl = $('.expanded-chat ul');
 
 		socket.on('event:chats.receive', function(data) {
-
+			if (Chats.isCurrentChat(data.withUid)) {
+				Chats.parseMessage(data.message, function(html) {
+					var newMessage = $(html);
+					newMessage.insertBefore(typingNotifEl);
+					newMessage.find('span.timeago').timeago();
+					newMessage.find('img:not(".chat-user-image")').addClass('img-responsive');
+					Chats.scrollToBottom(containerEl);
+				});
+			} else {
+				$('.chats-list li[data-uid="' + data.withUid + '"]').addClass('unread');
+				app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + data.message.username + ']]');
+			}
 		});
 
 		socket.on('event:chats.userStartTyping', function(withUid) {
 			if (Chats.isCurrentChat(withUid)) {
 				typingNotifEl.removeClass('hide');
 			}
+
+			$('.chats-list li[data-uid="' + withUid + '"]').addClass('typing');
 		});
 
 		socket.on('event:chats.userStopTyping', function(withUid) {
 			if (Chats.isCurrentChat(withUid)) {
 				typingNotifEl.addClass('hide');
 			}
+
+			$('.chats-list li[data-uid="' + withUid + '"]').removeClass('typing');
 		});
 	};
 
@@ -110,6 +131,12 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 		console.log(Chats.getRecipientUid());
 		$('.chats-list li').removeClass('bg-primary');
 		$('.chats-list li[data-uid="' + Chats.getRecipientUid() + '"]').addClass('bg-primary');
+	};
+
+	Chats.parseMessage = function(data, callback) {
+		templates.parse('partials/chat_message' + (Array.isArray(data) ? 's' : ''), {
+			messages: data
+		}, callback);
 	};
 
 	return Chats;
