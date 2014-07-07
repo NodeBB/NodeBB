@@ -17,10 +17,6 @@
 		return '<meta ' + name + property + content + ' />';
 	};
 
-
-
-
-
 	if ('undefined' !== typeof window) {
 		$(document).ready(module.exports);
 	}

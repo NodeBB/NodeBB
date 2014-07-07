@@ -56,6 +56,10 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 		});
 
 		socket.on('event:chats.receive', function(data) {
+			if (ajaxify.currentPage.slice(0, 6) === 'chats/') {
+				// User is on the chats page, so do nothing (src/forum/chats.js will handle it)
+				return;
+			}
 
 			var username = data.message.fromUser.username;
 			var isSelf = parseInt(data.message.fromUser.uid, 10) === parseInt(app.uid, 10);
@@ -78,18 +82,16 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 
 				if (!isSelf && (!modal.is(":visible") || !app.isFocused)) {
 					app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
+					sounds.play('chat-incoming');
 				}
 			} else {
 				module.createModal(username, data.withUid, function(modal) {
 					module.toggleNew(modal.attr('UUID'), true);
 					if (!isSelf) {
 						app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
+						sounds.play('chat-incoming');
 					}
 				});
-			}
-
-			if (!isSelf) {
-				sounds.play('chat-incoming');
 			}
 		});
 
@@ -101,7 +103,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 			}
 			var atBottom = chatContent[0].scrollHeight - chatContent.scrollTop() === chatContent.innerHeight();
 
-			modal.find('.user-typing').removeClass('hide').appendTo(chatContent);
+			modal.find('.user-typing').removeClass('hide');
 			if (atBottom) {
 				Chats.scrollToBottom(chatContent);
 			}
@@ -263,7 +265,6 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 
 	function getChatMessages(chatModal, callback) {
 		socket.emit('modules.chats.get', {touid:chatModal.touid}, function(err, messages) {
-			console.log(messages);
 			module.appendChatMessage(chatModal, messages, callback);
 		});
 	}
@@ -291,13 +292,14 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 	}
 
 	module.appendChatMessage = function(chatModal, data, done) {
-		var chatContent = chatModal.find('#chat-content');
+		var chatContent = chatModal.find('#chat-content'),
+			typingNotif = chatModal.find('.user-typing');
 
 		Chats.parseMessage(data, function(html) {
 			var message = $(html);
 			message.find('img:not(".chat-user-image")').addClass('img-responsive');
 			message.find('span.timeago').timeago();
-			chatContent.append(message);
+			message.insertBefore(typingNotif);
 			Chats.scrollToBottom(chatContent);
 
 			if (typeof done === 'function') done();

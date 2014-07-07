@@ -502,7 +502,9 @@ accountsController.getChats = function(req, res, next) {
 		}
 
 		// Limit returned chats
-		chats.length = 20;
+		if (chats.length > 20) {
+			chats.length = 20;
+		}
 
 		res.render('chats', {
 			meta: res.locals.chatData,

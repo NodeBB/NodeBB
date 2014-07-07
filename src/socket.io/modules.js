@@ -182,10 +182,13 @@ SocketModules.chats.send = function(socket, data, callback) {
 
 		sendChatNotification(socket.uid, touid, message.fromUser.username, message);
 
+		// After-the-fact fixing of the "self" property for the message that goes to the receipient
+		var recipMessage = JSON.parse(JSON.stringify(message));
+		recipMessage.self = 0;
 		server.getUserSockets(touid).forEach(function(s) {
 			s.emit('event:chats.receive', {
 				withUid: socket.uid,
-				message: message
+				message: recipMessage
 			});
 		});
 

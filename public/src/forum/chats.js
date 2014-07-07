@@ -63,10 +63,10 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 	};
 
 	Chats.addSocketListeners = function() {
-		var typingNotifEl = $('.user-typing'),
-			containerEl = $('.expanded-chat ul');
-
 		socket.on('event:chats.receive', function(data) {
+			var typingNotifEl = $('.user-typing'),
+				containerEl = $('.expanded-chat ul');
+
 			if (Chats.isCurrentChat(data.withUid)) {
 				Chats.parseMessage(data.message, function(html) {
 					var newMessage = $(html);
@@ -82,6 +82,8 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 		});
 
 		socket.on('event:chats.userStartTyping', function(withUid) {
+			var typingNotifEl = $('.user-typing');
+
 			if (Chats.isCurrentChat(withUid)) {
 				typingNotifEl.removeClass('hide');
 			}
@@ -90,6 +92,8 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 		});
 
 		socket.on('event:chats.userStopTyping', function(withUid) {
+			var typingNotifEl = $('.user-typing');
+
 			if (Chats.isCurrentChat(withUid)) {
 				typingNotifEl.addClass('hide');
 			}

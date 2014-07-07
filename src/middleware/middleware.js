@@ -26,7 +26,7 @@ middleware.authenticate = function(req, res, next) {
 		if (res.locals.isAPI) {
 			return res.json(403, 'not-allowed');
 		} else {
-			return res.redirect('403');
+			return res.redirect(nconf.get('url') + '/403');
 		}
 	} else {
 		next();
