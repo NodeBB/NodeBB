@@ -50,7 +50,7 @@ search.search = function(term, uid, callback) {
 					next(!err && canRead);
 				});
 			}, function(pids) {
-				posts.getPostSummaryByPids(pids, {stripTags: false, parse: false}, function(err, posts) {
+				posts.getPostSummaryByPids(pids, {stripTags: true, parse: false}, function(err, posts) {
 					if (err) {
 						return callback(err);
 					}
