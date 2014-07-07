@@ -2,7 +2,7 @@
 
 /* globals define, app*/
 
-define('forum/chats', function() {
+define('forum/chats', ['string','sounds'], function(S, sounds) {
 	var Chats = {};
 
 	Chats.init = function() {
@@ -24,31 +24,32 @@ define('forum/chats', function() {
 	};
 
 	Chats.addEventListeners = function() {
-		var inputEl = $('.chat-input');
+		var inputEl = $('.chat-input'),
+			sendEl = $('.expanded-chat button[data-action="send"]');
 
 		$('.chats-list').on('click', 'li', function(e) {
 			// app.openChat($(this).attr('data-username'), $(this).attr('data-uid'));
 			ajaxify.go('chats/' + utils.slugify($(this).attr('data-username')));
 		});
 
-		// inputEl.off('keypress').on('keypress', function(e) {
-		// 	if(e.which === 13) {
-		// 		Chat.sendMessage(chatModal);
-		// 	}
-		// });
-
-		inputEl.off('keyup').on('keyup', function() {
-			if ($(this).val()) {
-				Chats.notifyTyping(true);
-			} else {
-				Chats.notifyTyping(false);
+		inputEl.off('keypress').on('keypress', function(e) {
+			if(e.which === 13) {
+				Chats.sendMessage(Chats.getRecipientUid(), inputEl);
 			}
 		});
 
-		// chatModal.find('#chat-message-send-btn').off('click').on('click', function(e){
-		// 	sendMessage(chatModal);
-		// 	return false;
-		// });
+		inputEl.off('keyup').on('keyup', function() {
+			if ($(this).val()) {
+				Chats.notifyTyping(Chats.getRecipientUid(), true);
+			} else {
+				Chats.notifyTyping(Chats.getRecipientUid(), false);
+			}
+		});
+
+		sendEl.off('click').on('click', function(e) {
+			Chats.sendMessage(Chats.getRecipientUid(), inputEl);
+			return false;
+		});
 	};
 
 	Chats.addSocketListeners = function() {
@@ -71,11 +72,25 @@ define('forum/chats', function() {
 		});
 	};
 
-	Chats.notifyTyping = function(typing) {
+	Chats.notifyTyping = function(toUid, typing) {
 		socket.emit('modules.chats.user' + (typing ? 'Start' : 'Stop') + 'Typing', {
-			touid: Chats.getRecipientUid(),
+			touid: toUid,
 			fromUid: app.uid
 		});
+	};
+
+	Chats.sendMessage = function(toUid, inputEl) {
+		var msg = S(inputEl.val()).stripTags().s;
+		if (msg.length) {
+			msg = msg +'\n';
+			socket.emit('modules.chats.send', {
+				touid:toUid,
+				message:msg
+			});
+			inputEl.val('');
+			sounds.play('chat-outgoing');
+			Chats.notifyTyping(toUid, false);
+		}
 	};
 
 	return Chats;

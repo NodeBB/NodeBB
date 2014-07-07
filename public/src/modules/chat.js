@@ -1,7 +1,7 @@
 "use strict";
 /* globals app, config, define, socket, translator, templates, utils */
 
-define('chat', ['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
+define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar, S, sounds, Chats) {
 
 	var module = {};
 
@@ -234,7 +234,7 @@ define('chat', ['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 		chatModal.remove();
 		chatModal.data('modal', null);
 		taskbar.discard('chat', chatModal.attr('UUID'));
-		notifyStopTyping(chatModal.touid);
+		Chats.notifyTyping(chatModal.touid, false);
 	};
 
 	module.center = function(chatModal) {
@@ -261,12 +261,8 @@ define('chat', ['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 		taskbar.minimize('chat', uuid);
 		clearInterval(chatModal.intervalId);
 		chatModal.intervalId = 0;
-		notifyStopTyping(chatModal.touid);
+		Chats.notifyTyping(chatModal.touid, false);
 	};
-
-	function notifyStopTyping(touid) {
-		socket.emit('modules.chats.userStopTyping', {touid:touid, fromUid: app.uid});
-	}
 
 	function getChatMessages(chatModal, callback) {
 		socket.emit('modules.chats.get', {touid:chatModal.touid}, function(err, messages) {
@@ -281,7 +277,7 @@ define('chat', ['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 		var input = chatModal.find('#chat-message-input');
 		input.off('keypress').on('keypress', function(e) {
 			if(e.which === 13) {
-				sendMessage(chatModal);
+				Chats.sendMessage(chatModal.touid, chatModal.find('#chat-message-input'));
 			}
 		});
 
@@ -289,25 +285,14 @@ define('chat', ['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 			if ($(this).val()) {
 				socket.emit('modules.chats.userStartTyping', {touid:chatModal.touid, fromUid: app.uid});
 			} else {
-				notifyStopTyping(chatModal.touid);
+				Chats.notifyTyping(chatModal.touid, false);
 			}
 		});
 
 		chatModal.find('#chat-message-send-btn').off('click').on('click', function(e){
-			sendMessage(chatModal);
+			Chats.sendMessage(chatModal.touid, chatModal.find('#chat-message-input'));
 			return false;
 		});
-	}
-
-	function sendMessage(chatModal) {
-		var msg = S(chatModal.find('#chat-message-input').val()).stripTags().s;
-		if (msg.length) {
-			msg = msg +'\n';
-			socket.emit('modules.chats.send', {touid:chatModal.touid, message:msg});
-			chatModal.find('#chat-message-input').val('');
-			sounds.play('chat-outgoing');
-			notifyStopTyping(chatModal.touid);
-		}
 	}
 
 	module.appendChatMessage = function(chatModal, data) {
