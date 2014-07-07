@@ -1,16 +1,21 @@
 'use strict';
 
-/* globals define, app*/
+/* globals define, app, ajaxify, utils, socket */
 
-define('forum/chats', ['string','sounds'], function(S, sounds) {
+define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 	var Chats = {};
 
 	Chats.init = function() {
+		var containerEl = $('.expanded-chat ul');
+
 		Chats.addEventListeners();
 		Chats.addSocketListeners();
+		Chats.scrollToBottom(containerEl);
+		Chats.setActive();
 	};
 
 	Chats.getRecipientUid = function() {
+		console.log($('.expanded-chat'));
 		return parseInt($('.expanded-chat').attr('data-uid'), 10);
 	};
 
@@ -91,6 +96,20 @@ define('forum/chats', ['string','sounds'], function(S, sounds) {
 			sounds.play('chat-outgoing');
 			Chats.notifyTyping(toUid, false);
 		}
+	};
+
+	Chats.scrollToBottom = function(containerEl) {
+		if (containerEl.length) {
+			containerEl.scrollTop(
+				containerEl[0].scrollHeight - containerEl.height()
+			);
+		}
+	};
+
+	Chats.setActive = function() {
+		console.log(Chats.getRecipientUid());
+		$('.chats-list li').removeClass('bg-primary');
+		$('.chats-list li[data-uid="' + Chats.getRecipientUid() + '"]').addClass('bg-primary');
 	};
 
 	return Chats;

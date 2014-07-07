@@ -71,7 +71,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 					module.bringModalToTop(modal);
 					checkOnlineStatus(modal);
 					taskbar.updateActive(modal.attr('UUID'));
-					scrollToBottom(modal.find('#chat-content'));
+					Chats.scrollToBottom(modal.find('#chat-content'));
 				} else {
 					module.toggleNew(modal.attr('UUID'), true);
 				}
@@ -103,7 +103,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 
 			modal.find('.user-typing').removeClass('hide').appendTo(chatContent);
 			if (atBottom) {
-				scrollToBottom(chatContent);
+				Chats.scrollToBottom(chatContent);
 			}
 		});
 
@@ -247,7 +247,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 		chatModal.removeClass('hide');
 		checkOnlineStatus(chatModal);
 		taskbar.updateActive(uuid);
-		scrollToBottom(chatModal.find('#chat-content'));
+		Chats.scrollToBottom(chatModal.find('#chat-content'));
 		module.center(chatModal);
 		module.bringModalToTop(chatModal);
 	};
@@ -320,16 +320,8 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 
 		chatContent.append(message);
 
-		scrollToBottom(chatContent);
+		Chats.scrollToBottom(chatContent);
 	};
-
-	function scrollToBottom(chatContent) {
-		if(chatContent[0]) {
-			chatContent.scrollTop(
-				chatContent[0].scrollHeight - chatContent.height()
-			);
-		}
-	}
 
 	module.toggleNew = function(uuid, state) {
 		taskbar.toggleNew(uuid, state);
