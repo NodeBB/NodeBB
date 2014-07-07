@@ -227,6 +227,8 @@ middleware.chat.getMessages = function(req, res, next) {
 	}
 };
 
+/* End Chat Middlewares */
+
 middleware.buildHeader = function(req, res, next) {
 	res.locals.renderHeader = true;
 	async.parallel({
