@@ -81,6 +81,7 @@ var db = require('./database'),
 					message.fromUser = self ? userData[0] : userData[1];
 					message.toUser = self ? userData[1] : userData[0];
 					message.timestampISO = new Date(parseInt(message.timestamp, 10)).toISOString();
+					message.self = self ? 1 : 0;
 
 					Messaging.parse(message.content, message.fromuid, fromuid, userData[1], userData[0], isNew, function(result) {
 						message.content = result;

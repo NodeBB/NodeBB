@@ -486,6 +486,21 @@ accountsController.getChats = function(req, res, next) {
 			return next(err);
 		}
 
+		// Remove entries if they were already present as a followed contact
+		if (res.locals.contacts && res.locals.contacts.length) {
+			var contactUids = res.locals.contacts.map(function(contact) {
+					return parseInt(contact.uid, 10);
+				});
+
+			chats = chats.filter(function(chatObj) {
+				if (contactUids.indexOf(parseInt(chatObj.uid, 10)) !== -1) {
+					return false;
+				} else {
+					return true;
+				}
+			});
+		}
+
 		res.render('chats', {
 			meta: res.locals.chatData,
 			chats: chats,
