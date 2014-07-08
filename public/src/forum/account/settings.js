@@ -30,7 +30,10 @@ define('forum/account/settings', ['forum/account/header'], function(header) {
 				if (err) {
 					return app.alertError(err.message);
 				}
+
 				app.alertSuccess('[[success:settings-saved]]');
+				app.loadConfig();
+				ajaxify.refresh();
 			});
 
 			return false;
