@@ -8,6 +8,7 @@ var	posts = require('../posts'),
 	user = require('../user'),
 	notifications = require('../notifications'),
 	plugins = require('../plugins'),
+	utils = require('../../public/src/utils'),
 
 	async = require('async'),
 	S = require('string'),
@@ -180,11 +181,13 @@ SocketModules.chats.send = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		sendChatNotification(socket.uid, touid, message.fromUser.username, message);
+		sendChatNotification(socket.uid, touid, message);
 
 		// After-the-fact fixing of the "self" property for the message that goes to the receipient
 		var recipMessage = JSON.parse(JSON.stringify(message));
 		recipMessage.self = 0;
+
+		// Recipient
 		server.getUserSockets(touid).forEach(function(s) {
 			s.emit('event:chats.receive', {
 				withUid: socket.uid,
@@ -192,6 +195,7 @@ SocketModules.chats.send = function(socket, data, callback) {
 			});
 		});
 
+		// Sender
 		server.getUserSockets(socket.uid).forEach(function(s) {
 			s.emit('event:chats.receive', {
 				withUid: touid,
@@ -201,13 +205,13 @@ SocketModules.chats.send = function(socket, data, callback) {
 	});
 };
 
-function sendChatNotification(fromuid, touid, username, message) {
+function sendChatNotification(fromuid, touid, messageObj) {
+	// todo #1798 -- this should check if the user is in room `chat_{uidA}_{uidB}` instead, see `Sockets.uidInRoom(uid, room);`
 	if (!module.parent.exports.isUserOnline(touid)) {
-		var notifText = '[[notifications:new_message_from, ' + username + ']]';
 		notifications.create({
-			bodyShort: notifText,
-			bodyLong: message,
-			path: 'javascript:app.openChat(&apos;' + username + '&apos;, ' + fromuid + ');',
+			bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
+			bodyLong: messageObj.content,
+			path: nconf.get('relative_path') + '/chats/' + utils.slugify(messageObj.fromUser.username),
 			uniqueId: 'notification_' + fromuid + '_' + touid,
 			from: fromuid
 		}, function(nid) {

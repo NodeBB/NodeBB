@@ -151,4 +151,21 @@ var db = require('./database'),
 		});
 	};
 
+	// todo #1798 -- this utility method creates a room name given an array of uids.
+	Messaging.uidsToRoom = function(uids, callback) {
+		uid = parseInt(uid, 10);
+		if (typeof uid === 'number' && Array.isArray(roomUids)) {
+			var room = 'chat_';
+
+			room = room + roomUids.map(function(uid) {
+				return parseInt(uid, 10);
+			}).sort(function(a, b) {
+				return a-b;
+			}).join('_');
+
+			callback(null, room);
+		} else {
+			callback(new Error('invalid-uid-or-participant-uids'));
+		}
+	};
 }(exports));

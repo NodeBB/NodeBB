@@ -195,6 +195,22 @@ Sockets.in = function(room) {
 	return io.sockets.in(room);
 };
 
+Sockets.uidInRoom = function(uid, room) {
+	var clients = io.sockets.clients(room);
+
+	uid = parseInt(uid, 10);
+
+	if (typeof uid === 'number' && uid > 0) {
+		clients = clients.filter(function(socketObj) {
+			return uid === socketObj.uid;
+		});
+
+		return clients.length ? true : false;
+	} else {
+		return false;
+	}
+};
+
 Sockets.getConnectedClients = function() {
 	var uids = [];
 	if (!io) {
