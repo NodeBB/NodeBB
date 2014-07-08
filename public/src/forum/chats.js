@@ -77,7 +77,7 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 				});
 			} else {
 				$('.chats-list li[data-uid="' + data.withUid + '"]').addClass('unread');
-				app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + data.message.username + ']]');
+				app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + data.message.fromUser.username + ']]');
 			}
 		});
 
@@ -132,7 +132,6 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 	};
 
 	Chats.setActive = function() {
-		console.log(Chats.getRecipientUid());
 		$('.chats-list li').removeClass('bg-primary');
 		$('.chats-list li[data-uid="' + Chats.getRecipientUid() + '"]').addClass('bg-primary');
 	};
