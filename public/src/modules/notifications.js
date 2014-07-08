@@ -39,18 +39,11 @@ define('notifications', ['sounds'], function(sound) {
 						for (x = 0; x < data.read.length; x++) {
 							html += createNotification(data.read[x]);
 						}
-
-						addSeeAllLink();
-
 					} else {
 						html += '<li class="no-notifs"><a>[[notifications:no_notifs]]</a></li>';
-						addSeeAllLink();
 					}
 
-					function addSeeAllLink() {
-						html += '<li class="pagelink"><a href="' + config.relative_path + '/notifications">[[notifications:see_all]]</a></li>';
-					}
-
+					html += '<li class="pagelink"><a href="' + config.relative_path + '/notifications">[[notifications:see_all]]</a></li>';
 
 					notifList.translateHtml(html);
 
