@@ -49,6 +49,15 @@ module.exports = function(Posts) {
 				},
 				function(next) {
 					db.sortedSetRemove('uid:' + postData.uid + ':posts', pid, next);
+				},
+				function(next) {
+					db.setCount('tid:' + postData.tid + ':posts', function(err, count) {
+						if (count === 0) {
+							topics.purge(postData.tid, next);
+						} else {
+							next();
+						}
+					});
 				}
 			], function(err) {
 				if (err) {
