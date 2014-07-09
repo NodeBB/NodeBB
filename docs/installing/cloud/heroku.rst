@@ -10,13 +10,12 @@ Heroku
 5. ``cd /path/to/repo/clone``
 6. Install dependencies locally ``npm install``
 7. Create the heroku app: ``heroku create``
-8. Enable WebSocket support (beta): ``heroku labs:enable websockets -a {APP_NAME}``, where ``{APP_NAME}`` is provided by Heroku, and looks something like ``adjective-noun-wxyz.herokuapp.com`` (NOTE: `See this doc <https://discussion.heroku.com/t/application-error/160>`_): drop the `.herokuapp.com` when entering ``{APP_NAME}`` above. 
+8. Enable WebSocket support (beta): ``heroku labs:enable websockets -a {APP_NAME}``, where ``{APP_NAME}`` is provided by Heroku, and looks something like ``adjective-noun-wxyz.herokuapp.com`` (NOTE: `See this doc <https://discussion.heroku.com/t/application-error/160>`_): drop the `.herokuapp.com` when entering ``{APP_NAME}`` above.
 9. Enable `Redis To Go <https://addons.heroku.com/redistogo>`_ for your heroku account: ``heroku addons:add redistogo:nano``
 10. Run the NodeBB setup script: ``node app --setup`` (information for your Heroku server and Redis to Go instance can be found in your account page)
 
     * Your server name is found in your Heroku app's "settings" page, and looks something like ``adjective-noun-wxyz.herokuapp.com``
     * Use any port number. It will be ignored.
-    * Specify "n" when asked if a port will be used. Heroku transparently proxies all requests.
     * Your redis server can be found as part of the redis url. For example, for the url: ``redis://redistogo:h28h3wgh37fns7@crestfish.redistogo.com:12345/``
     * The server is ``fishyfish.redistogo.com``
     * The port is ``12345``
