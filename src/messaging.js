@@ -28,18 +28,24 @@ var db = require('./database'),
 				touid: touid
 			};
 
-			db.setObject('message:' + mid, message, function(err) {
+			plugins.fireHook('filter:messaging.save', message, function(err, message) {
 				if (err) {
 					return callback(err);
 				}
 
-				db.listAppend('messages:' + uids[0] + ':' + uids[1], mid);
+				db.setObject('message:' + mid, message, function(err) {
+					if (err) {
+						return callback(err);
+					}
 
-				Messaging.updateChatTime(fromuid, touid);
-				Messaging.updateChatTime(touid, fromuid);
+					db.listAppend('messages:' + uids[0] + ':' + uids[1], mid);
 
-				getMessages([mid], fromuid, touid, true, function(err, messages) {
-					callback(err, messages ? messages[0] : null);
+					Messaging.updateChatTime(fromuid, touid);
+					Messaging.updateChatTime(touid, fromuid);
+
+					getMessages([mid], fromuid, touid, true, function(err, messages) {
+						callback(err, messages ? messages[0] : null);
+					});
 				});
 			});
 		});

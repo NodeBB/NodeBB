@@ -94,6 +94,9 @@ Executed when a post or signature needs to be parsed from raw text to HTML (for 
 ``filter:post.parse``
 ^^^^^^^^^^^^^^^^^^^^^
 
+``filter:messaging.save``
+^^^^^^^^^^^^^^^^^^^^^^^^
+
 ``filter:messaging.parse``
 ^^^^^^^^^^^^^^^^^^^^^
 
