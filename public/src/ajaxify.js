@@ -93,7 +93,7 @@ var ajaxify = ajaxify || {};
 				templates.parse(tpl_url, data, function(template) {
 					translator.translate(template, function(translatedTemplate) {
 						$('#content').html(translatedTemplate);
-						ajaxify.widgets.render(tpl_url, url);
+						ajaxify.widgets.render(tpl_url);
 
 						ajaxify.variables.parse();
 

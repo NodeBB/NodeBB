@@ -14,7 +14,7 @@
 		});
 	};
 
-	ajaxify.widgets.render = function(tpl_url, url, callback) {
+	ajaxify.widgets.render = function(tpl_url, callback) {
 		var widgetLocations = ['sidebar', 'footer', 'header'], numLocations;
 
 		$('#content [widget-area]').each(function() {
@@ -33,7 +33,7 @@
 		function renderWidgets(location) {
 			var area = $('#content [widget-area="' + location + '"]');
 
-			socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, function(err, renderedWidgets) {
+			socket.emit('widgets.render', {template: tpl_url + '.tpl', location: location}, function(err, renderedWidgets) {
 				if (err) {
 					return;
 				}
