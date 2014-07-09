@@ -203,7 +203,7 @@ topicsController.teaser = function(req, res, next) {
 			return res.json(404, 'not-found');
 		}
 
-		posts.getPostSummaryByPids([pid], false, function(err, posts) {
+		posts.getPostSummaryByPids([pid], {stripTags: false}, function(err, posts) {
 			if (err) {
 				return next(err);
 			}

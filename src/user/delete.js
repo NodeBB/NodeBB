@@ -5,7 +5,8 @@ var async = require('async'),
 	posts = require('../posts'),
 	user = require('../user'),
 	topics = require('../topics'),
-	groups = require('../groups');
+	groups = require('../groups'),
+	plugins = require('../plugins');
 
 
 module.exports = function(User) {
@@ -111,6 +112,7 @@ module.exports = function(User) {
 					return callback(err);
 				}
 
+				plugins.fireHook('action:user.delete', uid);
 				async.parallel([
 					function(next) {
 						db.delete('followers:' + uid, next);

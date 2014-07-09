@@ -222,6 +222,9 @@ Executed whenever a notification is pushed to a user.
 ``action:user.create``
 ^^^^^^^^^^^^^^^^^^^^^
 
+``action:user.delete``
+^^^^^^^^^^^^^^^^^^^^^
+
 ``action:topic.delete``
 ^^^^^^^^^^^^^^^^^^^^^
 

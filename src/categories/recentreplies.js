@@ -19,7 +19,7 @@ module.exports = function(Categories) {
 				return callback(err, []);
 			}
 
-			posts.getPostSummaryByPids(pids, true, callback);
+			posts.getPostSummaryByPids(pids, {stripTags: true}, callback);
 		});
 	};
 

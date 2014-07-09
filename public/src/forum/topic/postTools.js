@@ -89,7 +89,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 
 		postContainer.on('click', '.purge', function(e) {
 			purgePost($(this), tid);
-		})
+		});
 
 		postContainer.on('click', '.move', function(e) {
 			openMovePostModal($(this));
