@@ -64,7 +64,13 @@ module.exports = function(db, module) {
 	};
 
 	module.getSortedSetRevRangeWithScores = function(key, start, stop, callback) {
-		// should return [{value:"test", score: 2}, {value: "foo", score: 1}, ...]
+		module.getListRange(key, start, stop, function(err, set) {
+			if (err) {
+				return callback(err);
+			}
+			set.sort(function(a, b) {return b.score - a.score;});
+			callback(null, set);
+		})
 	};
 
 	module.getSortedSetRangeByScore = function(key, start, count, min, max, callback) {
