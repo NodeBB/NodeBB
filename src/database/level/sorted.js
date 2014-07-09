@@ -167,4 +167,56 @@ module.exports = function(db, module) {
 			callback(err, sets);
 		});
 	};
+
+	module.getSortedSetUnion = function(sets, start, stop, callback) {
+		sortedSetUnion(sets, false, start, stop, callback);
+	};
+
+	module.getSortedSetRevUnion = function(sets, start, stop, callback) {
+		sortedSetUnion(sets, true, start, stop, callback);
+	};
+
+	function sortedSetUnion(sets, reverse, start, stop, callback) {
+		if (typeof start === 'function') {
+			callback = start;
+			start = 0;
+			stop = -1;
+		} else if (typeof stop === 'function') {
+			callback = stop;
+			stop = -1;
+		}
+
+		async.map(sets, function(key, next) {
+			module.getListRange(key, 0, -1, next);
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			var data = {};
+
+			results.forEach(function(set) {
+				for(var i=0; i<set.length; ++i) {
+					data[set[i].value] = data[set[i].value] || {value: set[i].value, score: 0};
+					data[set[i].value].score += parseInt(set[i].score, 10);
+				}
+			});
+
+			var returnData = [];
+
+			for(var key in data) {
+				if (data.hasOwnProperty(key)) {
+					returnData.push(data[key]);
+				}
+			}
+
+			returnData = returnData.sort(function(a, b) {
+				return reverse ? b.score - a.score : a.score - b.score;
+			}).map(function(item) {
+				return item.value;
+			});
+
+			callback(null, returnData);
+		});
+	}
 };

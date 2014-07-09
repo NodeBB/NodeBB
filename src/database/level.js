@@ -13,7 +13,7 @@
 	var winston = require('winston'),
 		nconf = require('nconf'),
 		path = require('path'),
-		express = require('express'),
+		session = require('express-session'),
 		utils = require('./../../public/src/utils.js'),
 		levelup,
 		leveldown,
@@ -32,7 +32,7 @@
 		try {
 			levelup = require('levelup');
 			leveldown = require('leveldown');
-			connectLevel = require('connect-leveldb')(express);
+			connectLevel = require('connect-leveldb')(session);
 		} catch (err) {
 			winston.error('Unable to initialize Level DB! Is Level DB installed? Error :' + err.message);
 			process.exit();
