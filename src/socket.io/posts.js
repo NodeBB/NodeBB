@@ -38,7 +38,8 @@ SocketPosts.reply = function(socket, data, callback) {
 
 			websockets.server.sockets.emit('event:new_post', {
 				posts: [postData],
-				privileges: privileges
+				privileges: privileges,
+				'reputation:disabled': parseInt(meta.config['reputation:disabled'], 10) === 1
 			});
 
 			module.parent.exports.emitTopicPostStats();

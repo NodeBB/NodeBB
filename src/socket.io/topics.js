@@ -351,6 +351,9 @@ SocketTopics.loadMore = function(socket, data, callback) {
 			},
 			privileges: function(next) {
 				privileges.topics.get(data.tid, socket.uid, next);
+			},
+			'reputation:disabled': function(next) {
+				next(null, parseInt(meta.config['reputation:disabled'], 10) === 1);
 			}
 		}, callback);
 	});
