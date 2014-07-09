@@ -65,8 +65,10 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 		});
 
 		popoutEl.on('click', function() {
+			var	username = $('.expanded-chat').attr('data-username'),
+				uid = Chats.getRecipientUid();
 			ajaxify.go('chats', function() {
-				app.openChat($('.expanded-chat').attr('data-username'), Chats.getRecipientUid());
+				app.openChat(username, uid);
 			}, true);
 		});
 	};
