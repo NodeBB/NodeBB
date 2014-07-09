@@ -1,3 +1,5 @@
+'use strict';
+
 var	fs = require('fs'),
 	path = require('path'),
 	async = require('async'),
@@ -9,29 +11,34 @@ Languages.list = function(callback) {
 		languages = [];
 
 	fs.readdir(languagesPath, function(err, files) {
+		if (err) {
+			return callback(err);
+		}
+
 		async.each(files, function(folder, next) {
 			fs.stat(path.join(languagesPath, folder), function(err, stat) {
-				if (!err) {
-					if (stat.isDirectory()) {
-						var configPath = path.join(languagesPath, folder, 'language.json');
-						fs.exists(configPath, function(exists) {
-							if (exists) {
-								fs.readFile(configPath, function(err, stream) {
-									languages.push(JSON.parse(stream.toString()));
-									next();
-								});
-							} else {
-								next();
-							}
-						});
-					} else {
+				if (err) {
+					return next(err);
+				}
+
+				if (!stat.isDirectory()) {
+					return next();
+				}
+
+				var configPath = path.join(languagesPath, folder, 'language.json');
+
+				fs.readFile(configPath, function(err, stream) {
+					if (err) {
 						next();
 					}
-				} else {
+					languages.push(JSON.parse(stream.toString()));
 					next();
-				}
+				});
 			});
 		}, function(err) {
+			if (err) {
+				return callback(err);
+			}
 			// Sort alphabetically
 			languages = languages.sort(function(a, b) {
 				return a.code > b.code ? 1 : -1;
