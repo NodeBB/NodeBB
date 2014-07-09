@@ -28,8 +28,9 @@ module.exports = function(db, module) {
 	};
 
 	module.sortedSetsRemove = function(keys, value, callback) {
-		// TODO :
-		// remove value from sorted sets given by keys
+		async.each(keys, function(key, next) {
+			module.sortedSetRemove(key, value, next);
+		}, callback);
 	};
 
 	function flattenSortedSet(set, callback) {
