@@ -202,9 +202,15 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 					module.close(chatModal);
 				});
 
+				chatModal.find('button[data-action="maximize"]').on('click', function() {
+					ajaxify.go('chats/' + username);
+					module.close(chatModal);
+				});
+
 				chatModal.on('click', function(e) {
 					module.bringModalToTop(chatModal);
 				});
+
 
 				addSendHandler(chatModal);
 
