@@ -19,9 +19,7 @@ var	nconf = require('nconf'),
 				startTimer = setTimeout(resetTimer, 1000*10);
 
 				nbb = fork('./app', process.argv.slice(2), {
-					env: {
-						'NODE_ENV': process.env.NODE_ENV
-					}
+					env: process.env
 				});
 
 				nbb.on('message', function(message) {
