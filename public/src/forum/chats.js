@@ -38,7 +38,8 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 
 	Chats.addEventListeners = function() {
 		var inputEl = $('.chat-input'),
-			sendEl = $('.expanded-chat button[data-action="send"]');
+			sendEl = $('.expanded-chat button[data-action="send"]'),
+			popoutEl = $('[data-action="pop-out"]');
 
 		$('.chats-list').on('click', 'li', function(e) {
 			ajaxify.go('chats/' + utils.slugify($(this).attr('data-username')));
@@ -61,6 +62,11 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 		sendEl.on('click', function(e) {
 			Chats.sendMessage(Chats.getRecipientUid(), inputEl);
 			return false;
+		});
+
+		popoutEl.on('click', function() {
+			app.openChat($('.expanded-chat').attr('data-username'), Chats.getRecipientUid());
+			ajaxify.go('chats');
 		});
 	};
 
@@ -120,7 +126,7 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 
 			messagesList.height(viewportHeight-(fromTop+inputHeight+(margin*4)));
 		}
-		
+
 		return;
 	};
 

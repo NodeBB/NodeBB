@@ -10,6 +10,8 @@
 	"chat.recent-chats": "Recent Chats",
 	"chat.contacts": "Contacts",
 	"chat.message-history": "Message History",
+	"chat.pop-out": "Pop out chat",
+	"chat.maximize": "Maximize",
 
 	"composer.user_said_in": "%1 said in %2:\n",
 	"composer.user_said": "%1 said:\n",
