@@ -81,9 +81,14 @@ apiController.getConfig = function(req, res, next) {
 apiController.renderWidgets = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0,
 		area = {
-			template: req.params.template + '.tpl',
-			location: req.params.location
+			template: req.query.template,
+			location: req.query.location,
+			url: req.query.url
 		};
+
+	if (!area.template || !area.location) {
+		return res.json(200, {});
+	}
 
 	widgets.render(uid, area, function(err, data) {
 		res.json(200, data);

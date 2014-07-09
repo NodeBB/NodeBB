@@ -18,7 +18,6 @@ var async = require('async'),
 
 		var rendered = [];
 
-
 		async.parallel({
 			global: function(next) {
 				Widgets.getArea('global', area.location, next);

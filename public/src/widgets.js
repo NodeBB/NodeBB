@@ -1,5 +1,5 @@
 "use strict";
-/*global ajaxify, socket, templates*/
+/*global ajaxify, templates*/
 
 (function(ajaxify) {
 	ajaxify.widgets = {};
@@ -14,7 +14,7 @@
 		});
 	};
 
-	ajaxify.widgets.render = function(tpl_url, callback) {
+	ajaxify.widgets.render = function(template, url, callback) {
 		var widgetLocations = ['sidebar', 'footer', 'header'], numLocations;
 
 		$('#content [widget-area]').each(function() {
@@ -29,11 +29,16 @@
 		if (!numLocations) {
 			ajaxify.widgets.reposition();
 		}
-
+		
 		function renderWidgets(location) {
-			var area = $('#content [widget-area="' + location + '"]');
+			var area = $('#content [widget-area="' + location + '"]'),
+				areaData = {
+					location: location,
+					template: template + '.tpl',
+					url: url
+				};
 
-			$.get(RELATIVE_PATH + '/api/widgets/render/' + tpl_url + '/' + location, function(renderedWidgets) {
+			$.get(RELATIVE_PATH + '/api/widgets/render', areaData, function(renderedWidgets) {
 				var html = '';
 
 				for (var i=0; i<renderedWidgets.length; ++i) {
