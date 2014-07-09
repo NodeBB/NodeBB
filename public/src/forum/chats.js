@@ -12,9 +12,11 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 
 		if (!Chats.initialised) {
 			Chats.addSocketListeners();
+			Chats.addGlobalEventListeners();
 		}
 
 		Chats.addEventListeners();
+		Chats.resizeMainWindow();
 		Chats.scrollToBottom(containerEl);
 		Chats.setActive();
 
@@ -62,6 +64,10 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 		});
 	};
 
+	Chats.addGlobalEventListeners = function() {
+		$(window).on('resize', Chats.resizeMainWindow);
+	};
+
 	Chats.addSocketListeners = function() {
 		socket.on('event:chats.receive', function(data) {
 			var typingNotifEl = $('.user-typing'),
@@ -100,6 +106,22 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 
 			$('.chats-list li[data-uid="' + withUid + '"]').removeClass('typing');
 		});
+	};
+
+	Chats.resizeMainWindow = function() {
+		var	messagesList = $('.expanded-chat ul');
+
+		if (messagesList.length) {
+			var	inputEl = $('.chat-input'),
+				viewportHeight = $(window).height(),
+				margin = $('.expanded-chat ul').outerHeight() - $('.expanded-chat ul').height(),
+				inputHeight = inputEl.outerHeight(),
+				fromTop = messagesList.offset().top;
+
+			messagesList.height(viewportHeight-(fromTop+inputHeight+(margin*4)));
+		}
+		
+		return;
 	};
 
 	Chats.notifyTyping = function(toUid, typing) {

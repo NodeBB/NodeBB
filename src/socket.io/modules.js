@@ -15,6 +15,7 @@ var	posts = require('../posts'),
 	winston = require('winston'),
 	_ = require('underscore'),
 	server = require('./'),
+	nconf = require('nconf'),
 
 	SocketModules = {
 		composer: {
