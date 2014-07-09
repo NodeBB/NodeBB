@@ -184,7 +184,7 @@ module.exports =  function(app, middleware, controllers) {
 	app.use('/api', router);
 
 	router.get('/config', controllers.api.getConfig);
-	router.get('/widgets/render/:template/:location', controllers.api.renderWidgets);
+	router.get('/widgets/render/:template/:location/:term?', controllers.api.renderWidgets);
 
 	router.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
 	router.get('/get_templates_listing', getTemplatesListing);
