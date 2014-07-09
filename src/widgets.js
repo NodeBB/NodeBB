@@ -9,7 +9,6 @@ var async = require('async'),
 
 
 (function(Widgets) {
-
 	Widgets.render = function(uid, area, callback) {
 		if (!area.location || !area.template) {
 			callback({
@@ -18,6 +17,7 @@ var async = require('async'),
 		}
 
 		var rendered = [];
+
 
 		async.parallel({
 			global: function(next) {

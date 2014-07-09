@@ -33,10 +33,7 @@
 		function renderWidgets(location) {
 			var area = $('#content [widget-area="' + location + '"]');
 
-			socket.emit('widgets.render', {template: tpl_url + '.tpl', location: location}, function(err, renderedWidgets) {
-				if (err) {
-					return;
-				}
+			$.get(RELATIVE_PATH + '/api/widgets/render/' + tpl_url + '/' + location, function(renderedWidgets) {
 				var html = '';
 
 				for (var i=0; i<renderedWidgets.length; ++i) {

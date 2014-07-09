@@ -93,25 +93,25 @@ var ajaxify = ajaxify || {};
 				templates.parse(tpl_url, data, function(template) {
 					translator.translate(template, function(translatedTemplate) {
 						$('#content').html(translatedTemplate);
-						ajaxify.widgets.render(tpl_url);
+						ajaxify.widgets.render(tpl_url, function() {
+							if (typeof callback === 'function') {
+								callback();
+							}
+
+							app.processPage();
+
+							$('#content, #footer').stop(true, true).removeClass('ajaxifying');
+							ajaxify.initialLoad = false;
+
+							app.refreshTitle(url);
+							$(window).trigger('action:ajaxify.end', {url: url});
+						});
 
 						ajaxify.variables.parse();
 
 						$(window).trigger('action:ajaxify.contentLoaded', {url: url});
 
 						ajaxify.loadScript(tpl_url);
-
-						if (typeof callback === 'function') {
-							callback();
-						}
-
-						app.processPage();
-
-						$('#content, #footer').stop(true, true).removeClass('ajaxifying');
-						ajaxify.initialLoad = false;
-
-						app.refreshTitle(url);
-						$(window).trigger('action:ajaxify.end', {url: url});
 					});
 				});
 			});
