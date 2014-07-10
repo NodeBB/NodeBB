@@ -141,6 +141,8 @@ module.exports = function(Topics) {
 					topicData = topicData[0];
 					topicData.unreplied = 1;
 
+					plugins.fireHook('action:topic.post', topicData);
+
 					next(null, {
 						topicData: topicData,
 						postData: postData
