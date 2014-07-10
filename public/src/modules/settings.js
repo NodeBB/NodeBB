@@ -476,13 +476,14 @@ define('settings', function () {
 					hash: hash,
 					values: values
 				}, function (err) {
-					app.alert({
-						title: 'Settings Saved',
-						type: 'success',
-						timeout: 2500
-					});
 					if (typeof callback === 'function') {
 						callback();
+					} else {
+						app.alert({
+							title: 'Settings Saved',
+							type: 'success',
+							timeout: 2500
+						});
 					}
 				});
 			} else {
