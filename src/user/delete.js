@@ -106,13 +106,15 @@ module.exports = function(User) {
 				},
 				function(next) {
 					groups.leaveAllGroups(uid, next);
+				},
+				function(next) {
+					plugins.fireHook('filter:user.delete', uid, next);
 				}
 			], function(err) {
 				if (err) {
 					return callback(err);
 				}
 
-				plugins.fireHook('action:user.delete', uid);
 				async.parallel([
 					function(next) {
 						db.delete('followers:' + uid, next);

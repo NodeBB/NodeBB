@@ -121,6 +121,9 @@ Executed when a post or signature needs to be parsed from raw text to HTML (for 
 ``filter:user.create``
 ^^^^^^^^^^^^^^^^^^^^^
 
+``filter:user.delete``
+^^^^^^^^^^^^^^^^^^^^^
+
 ``filter:user.profileLinks``
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -223,9 +226,6 @@ Executed whenever a notification is pushed to a user.
 ^^^^^^^^^^^^^^^^^^^^^
 
 ``action:user.create``
-^^^^^^^^^^^^^^^^^^^^^
-
-``action:user.delete``
 ^^^^^^^^^^^^^^^^^^^^^
 
 ``action:topic.delete``
