@@ -22,17 +22,15 @@ categoriesController.recent = function(req, res, next) {
 
 categoriesController.popular = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
-	var set = 'topics:' + req.params.set;
-	if(!req.params.set) {
-		set = 'topics:posts';
-	}
 
-	topics.getTopicsFromSet(uid, set, 0, 19, function(err, data) {
+	var term = req.params.term || 'daily';
+
+	topics.getPopular(term, uid, function(err, data) {
 		if(err) {
 			return next(err);
 		}
 
-		res.render('popular', data);
+		res.render('popular', {topics: data});
 	});
 };
 

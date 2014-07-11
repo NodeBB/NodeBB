@@ -71,8 +71,8 @@ function tagRoutes(app, middleware, controllers) {
 }
 
 function categoryRoutes(app, middleware, controllers) {
-	app.get('/popular/:set?', middleware.buildHeader, controllers.categories.popular);
-	app.get('/api/popular/:set?', controllers.categories.popular);
+	app.get('/popular/:term?', middleware.buildHeader, controllers.categories.popular);
+	app.get('/api/popular/:term?', controllers.categories.popular);
 
 	app.get('/recent/:term?', middleware.buildHeader, controllers.categories.recent);
 	app.get('/api/recent/:term?', controllers.categories.recent);

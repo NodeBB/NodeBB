@@ -18,6 +18,7 @@ var async = require('async'),
 	require('./topics/delete')(Topics);
 	require('./topics/unread')(Topics);
 	require('./topics/recent')(Topics);
+	require('./topics/popular')(Topics);
 	require('./topics/fork')(Topics);
 	require('./topics/posts')(Topics);
 	require('./topics/follow')(Topics);
