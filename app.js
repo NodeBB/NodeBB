@@ -1,6 +1,7 @@
 /*
-	NodeBB - A forum powered by node in development by designcreateplay
-	Copyright (C) 2013  DesignCreatePlay Inc.
+	NodeBB - A better forum platform for the modern web
+	https://github.com/NodeBB/NodeBB/
+	Copyright (C) 2013-2014  NodeBB Inc.
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
