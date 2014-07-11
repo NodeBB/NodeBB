@@ -3,10 +3,10 @@
     "chat.placeholder": "כתוב את הודעתך כאן, ולחץ על שלח",
     "chat.send": "שלח",
     "chat.no_active": "אין לך צ'אטים פעילים",
-    "chat.user_typing": "%1 is typing ...",
-    "chat.user_has_messaged_you": "%1 has messaged you.",
-    "chat.see_all": "See all Chats",
-    "composer.user_said_in": "%1 said in %2:",
-    "composer.user_said": "%1 said:",
-    "composer.discard": "Are you sure you wish to discard this post?"
+    "chat.user_typing": "%1 מקליד ...",
+    "chat.user_has_messaged_you": "ל%1 יש הודעה עבורך.",
+    "chat.see_all": "צפה בכל הצ'אטים",
+    "composer.user_said_in": "%1 אמר ב%2:",
+    "composer.user_said": "%1 אמר:",
+    "composer.discard": "האם למחוק פוסט זה?"
 }

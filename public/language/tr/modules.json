@@ -6,7 +6,7 @@
     "chat.user_typing": "%1 yazıyor ...",
     "chat.user_has_messaged_you": "%1 size bir mesaj gönderdi.",
     "chat.see_all": "Bütün mesajları gör",
-    "composer.user_said_in": "%1 %2 içinde söyledi:\n",
-    "composer.user_said": "%1 söyledi :\n",
+    "composer.user_said_in": "%1 %2 içinde söyledi:",
+    "composer.user_said": "%1 söyledi:",
     "composer.discard": "Bu iletiyi iptal etmek istediğinizden eminmisiniz?"
 }
