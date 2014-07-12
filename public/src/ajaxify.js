@@ -100,7 +100,7 @@ var ajaxify = ajaxify || {};
 
 							app.processPage();
 
-							$('#content, #footer').stop(true, true).removeClass('ajaxifying');
+							$('#content, #footer').removeClass('ajaxifying');
 							ajaxify.initialLoad = false;
 
 							app.refreshTitle(url);
@@ -194,7 +194,7 @@ var ajaxify = ajaxify || {};
 			setTimeout(function() {
 				callback(null, ajaxify.preloader[url].data);
 				ajaxify.preloader[url] = null;
-			}, 50);
+			}, 100);
 			return;
 		}
 
