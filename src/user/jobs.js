@@ -54,7 +54,7 @@ module.exports = function(User) {
 				});
 
 				// Find only those users who have not been online in the past 24 hours
-				var	users = recipients.filter(function(userObj) {
+				users = recipients.filter(function(userObj) {
 					return subscribed.indexOf(userObj.uid) !== -1 && yesterday > parseInt(userObj.lastonline, 10);
 				});
 
@@ -74,7 +74,7 @@ module.exports = function(User) {
 							subject: '[' + meta.config.title + '] Daily Digest for ' + now.getFullYear()+ '/' + (now.getMonth()+1) + '/' + now.getDate(),
 							username: userObj.username,
 							url: nconf.get('url'),
-							site_title: meta.config.title | meta.config.browserTitle | 'NodeBB',
+							site_title: meta.config.title || meta.config.browserTitle || 'NodeBB',
 							notifications: notifications,
 							recent: data.recent.topics
 						});
