@@ -58,7 +58,7 @@
     "validator": "~3.4.0",
     "winston": "~0.7.2",
     "xregexp": "~2.0.0",
-    "templates.js": "0.0.7"
+    "templates.js": "0.0.8"
   },
   "devDependencies": {
     "mocha": "~1.13.0"
