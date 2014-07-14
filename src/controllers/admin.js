@@ -34,16 +34,26 @@ var adminController = {
 };
 
 adminController.home = function(req, res, next) {
-	getStats(function(err, stats) {
+	async.parallel({
+		stats: function(next) {
+			getStats(next);
+		},
+		notices: function(next) {
+			var notices = [
+				{done: !meta.restartRequired, doneText: 'Restart not required', notDoneText:'Restart required'},
+				{done: plugins.hasListeners('action:email.send'), doneText: 'Emailer Installed', notDoneText:'Emailer not installed'},
+				{done: plugins.hasListeners('filter:search.query'), doneText: 'Search Plugin Installed', notDoneText:'Search Plugin not installed'}
+			];
+			plugins.fireHook('filter:admin.notices', notices, next);
+		}
+	}, function(err, results) {
 		if (err) {
 			return next(err);
 		}
 		res.render('admin/index', {
 			version: pkg.version,
-			emailerInstalled: plugins.hasListeners('action:email.send'),
-			searchInstalled: plugins.hasListeners('filter:search.query'),
-			restartRequired: meta.restartRequired,
-			stats: stats
+			notices: results.notices,
+			stats: results.stats
 		});
 	});
 };
