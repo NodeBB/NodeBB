@@ -115,7 +115,7 @@ module.exports = function(User) {
 				return callback();
 			}
 
-			db.deleteObjectField('email:uid', userData.email, function(err) {
+			db.deleteObjectField('email:uid', userData.email.toLowerCase(), function(err) {
 				if (err) {
 					return callback(err);
 				}
@@ -128,7 +128,7 @@ module.exports = function(User) {
 						User.setUserField(uid, 'gravatarpicture', gravatarpicture, next);
 					},
 					function(next) {
-						db.setObjectField('email:uid', newEmail, uid, next);
+						db.setObjectField('email:uid', newEmail.toLowerCase(), uid, next);
 					},
 					function(next) {
 						User.setUserField(uid, 'email', newEmail, next);

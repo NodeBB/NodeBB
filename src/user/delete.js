@@ -60,7 +60,7 @@ module.exports = function(User) {
 					db.deleteObjectField('userslug:uid', userData.userslug, next);
 				},
 				function(next) {
-					db.deleteObjectField('email:uid', userData.email, next);
+					db.deleteObjectField('email:uid', userData.email.toLowerCase(), next);
 				},
 				function(next) {
 					db.delete('uid:' + uid + ':notifications:read', next);
