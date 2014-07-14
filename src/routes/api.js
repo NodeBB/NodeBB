@@ -63,7 +63,7 @@ function uploadPost(req, res, next) {
 }
 
 function uploadThumb(req, res, next) {
-	if (!meta.config.allowTopicsThumbnail) {
+	if (parseInt(meta.config.allowTopicsThumbnail, 10) !== 1) {
 		deleteTempFiles(req.files.files);
 		return next(new Error('[[error:topic-thumbnails-are-disabled]]'));
 	}
@@ -89,7 +89,7 @@ function uploadImage(image, callback) {
 		plugins.fireHook('filter:uploadImage', image, callback);
 	} else {
 
-		if (meta.config.allowFileUploads) {
+		if (parseInt(meta.config.allowFileUploads, 10)) {
 			uploadFile(image, callback);
 		} else {
 			callback(new Error('[[error:uploads-are-disabled]]'));
@@ -102,7 +102,7 @@ function uploadFile(file, callback) {
 		plugins.fireHook('filter:uploadFile', file, callback);
 	} else {
 
-		if(!meta.config.allowFileUploads) {
+		if(parseInt(meta.config.allowFileUploads, 10) !== 1) {
 			return callback(new Error('[[error:uploads-are-disabled]]'));
 		}
 
