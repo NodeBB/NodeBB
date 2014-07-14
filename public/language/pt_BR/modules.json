@@ -1,11 +1,17 @@
 {
     "chat.chatting_with": "Conversar com <span id=\"chat-with-name\"></span>",
-    "chat.placeholder": "Digite sua mensagem aqui e pressione 'enter' para enviar",
+    "chat.placeholder": "Type chat message here, press enter to send",
     "chat.send": "Enviar",
     "chat.no_active": "Você não tem bate papos ativos.",
     "chat.user_typing": "%1 está digitando...",
     "chat.user_has_messaged_you": "%1 te enviou uma mensagem.",
     "chat.see_all": "Vizualisar todas Conversas",
+    "chat.no-messages": "Please select a recipient to view chat message history",
+    "chat.recent-chats": "Recent Chats",
+    "chat.contacts": "Contacts",
+    "chat.message-history": "Message History",
+    "chat.pop-out": "Pop out chat",
+    "chat.maximize": "Maximize",
     "composer.user_said_in": "%1 said in %2:",
     "composer.user_said": "%1 said:",
     "composer.discard": "Deseja mesmo remover essa postagem?"

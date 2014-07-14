@@ -15,7 +15,7 @@
     "invalid-pagination-value": "Invalid pagination value",
     "username-taken": "اسم المستخدم ماخوذ",
     "email-taken": "البريد الالكتروني ماخوذ",
-    "email-not-confirmed": "البريد الالكتروني ليس مؤكد",
+    "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "Username too short",
     "user-banned": "المستخدم محظور",
     "no-category": "Category doesn't exist",

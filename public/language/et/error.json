@@ -15,7 +15,7 @@
     "invalid-pagination-value": "Vigane lehe väärtus",
     "username-taken": "Kasutajanimi on juba võetud",
     "email-taken": "Email on võetud",
-    "email-not-confirmed": "Your email is not confirmed",
+    "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "Username too short",
     "user-banned": "Kasutaja bannitud",
     "no-category": "Kategooriat ei eksisteeri",

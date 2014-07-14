@@ -15,7 +15,7 @@
     "invalid-pagination-value": "ערך דפדוף שגוי",
     "username-taken": "שם משתמש תפוס",
     "email-taken": "כתובת אימייל תפוסה",
-    "email-not-confirmed": "האימייל שלך אינו מאומת",
+    "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "שם משתמש קצר מדי",
     "user-banned": "המשתמש חסום",
     "no-category": "קטגוריה אינה קיימת",

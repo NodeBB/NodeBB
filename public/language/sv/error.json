@@ -15,7 +15,7 @@
     "invalid-pagination-value": "Ogiltigt sidnummer",
     "username-taken": "Användarnamn upptaget",
     "email-taken": "Epostadress upptagen",
-    "email-not-confirmed": "Din epostadress är inte bekräftad",
+    "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "Username too short",
     "user-banned": "Användare bannad",
     "no-category": "Kategori hittades inte",

@@ -3,9 +3,7 @@
     "offline": "Çevrimdışı",
     "username": "Kullanıcı Adı",
     "email": "E-posta",
-    "email.confirmed": "Confirmed",
-    "email.not_confirmed": "Not Confirmed",
-    "email.confirm_button_text": "Resend Confirmation",
+    "confirm_email": "Confirm Email",
     "fullname": "Tam Ad",
     "website": "Websitesi",
     "location": "Konum",
@@ -62,6 +60,6 @@
     "topics_per_page": "Sayfa başına Konular",
     "posts_per_page": "Sayfa başına İletiler",
     "notification_sounds": "Bildirim alındığında ses çal",
-    "browsing": "Browsing Settings",
-    "open_links_in_new_tab": "Open outgoing links in new tab?"
+    "browsing": "Tarayıcı Ayaları",
+    "open_links_in_new_tab": "Dışarı giden bağlantıları yeni sekmede aç?"
 }

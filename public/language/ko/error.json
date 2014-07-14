@@ -15,7 +15,7 @@
     "invalid-pagination-value": "올바르지 않은 페이지입니다.",
     "username-taken": "이미 사용 중인 사용자 이름입니다.",
     "email-taken": "이미 사용 중인 이메일입니다.",
-    "email-not-confirmed": "Your email is not confirmed",
+    "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "Username too short",
     "user-banned": "차단된 사용자입니다.",
     "no-category": "존재하지 않는 카테고리입니다.",

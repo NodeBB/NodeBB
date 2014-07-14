@@ -1,11 +1,17 @@
 {
     "chat.chatting_with": "<span id=\"chat-with-name\"></span>님과의 채팅",
-    "chat.placeholder": "여기에 메시지를 입력하세요.",
+    "chat.placeholder": "Type chat message here, press enter to send",
     "chat.send": "전송",
     "chat.no_active": "활성화된 채팅이 없습니다.",
     "chat.user_typing": "%1님이 입력 중입니다.",
     "chat.user_has_messaged_you": "%1님이 메시지를 보냈습니다.",
     "chat.see_all": "See all Chats",
+    "chat.no-messages": "Please select a recipient to view chat message history",
+    "chat.recent-chats": "Recent Chats",
+    "chat.contacts": "Contacts",
+    "chat.message-history": "Message History",
+    "chat.pop-out": "Pop out chat",
+    "chat.maximize": "Maximize",
     "composer.user_said_in": "%1 said in %2:",
     "composer.user_said": "%1 said:",
     "composer.discard": "Are you sure you wish to discard this post?"

@@ -15,7 +15,7 @@
     "invalid-pagination-value": "无效页码",
     "username-taken": "用户名已注册",
     "email-taken": "电子邮箱已注册",
-    "email-not-confirmed": "您的电子邮箱尚未确认",
+    "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "用户名太短",
     "user-banned": "用户已禁止",
     "no-category": "版块不存在",

@@ -1,11 +1,17 @@
 {
     "chat.chatting_with": "和<span id=\"chat-with-name\"></span>聊天中",
-    "chat.placeholder": "在这里输入消息，按Enter发送",
+    "chat.placeholder": "在这里输入聊天消息，按Enter发送",
     "chat.send": "发送",
     "chat.no_active": "暂无聊天",
     "chat.user_typing": "%1 正在输入……",
     "chat.user_has_messaged_you": "%1 向您发送了消息。",
     "chat.see_all": "查看全部聊天",
+    "chat.no-messages": "Please select a recipient to view chat message history",
+    "chat.recent-chats": "Recent Chats",
+    "chat.contacts": "Contacts",
+    "chat.message-history": "Message History",
+    "chat.pop-out": "Pop out chat",
+    "chat.maximize": "Maximize",
     "composer.user_said_in": "%1 在 %2 中说：",
     "composer.user_said": "%1 说：",
     "composer.discard": "确定想要取消此帖？"

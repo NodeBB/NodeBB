@@ -15,7 +15,7 @@
     "invalid-pagination-value": "Geçersiz Sayfa Değeri",
     "username-taken": "Kullanıcı İsmi Alınmış",
     "email-taken": "E-posta Alınmış",
-    "email-not-confirmed": "E-postanız onaylanmamış",
+    "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "Kullanıcı ismi çok kısa",
     "user-banned": "Kullanıcı Yasaklı",
     "no-category": "Kategori Yok",

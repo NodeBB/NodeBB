@@ -15,7 +15,7 @@
     "invalid-pagination-value": "無効な改ページ設定値",
     "username-taken": "ユーザー名が取られた",
     "email-taken": "メールアドレスが使用された",
-    "email-not-confirmed": "Your email is not confirmed",
+    "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "Username too short",
     "user-banned": "ユーザーが停止された",
     "no-category": "板が存在しない",

@@ -15,7 +15,7 @@
     "invalid-pagination-value": "Nesprávna hodnota stránkovania",
     "username-taken": "Užívateľske meno je obsadené",
     "email-taken": "Email je obsadený",
-    "email-not-confirmed": "Tvoj email nebol potvrdený",
+    "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "Username too short",
     "user-banned": "Užívateľ je zakázaný",
     "no-category": "Kategória neexistuje",

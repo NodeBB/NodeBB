@@ -15,7 +15,7 @@
     "invalid-pagination-value": "Date paginație invalide",
     "username-taken": "Numele de utilizator este deja folosit",
     "email-taken": "Adresa de email este deja folostă",
-    "email-not-confirmed": "Adresa ta de email nu a fost confirmată",
+    "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "Numele de utilizator este prea scurt",
     "user-banned": "Utilizator banat",
     "no-category": "Categoria nu există",

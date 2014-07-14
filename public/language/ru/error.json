@@ -15,7 +15,7 @@
     "invalid-pagination-value": "Неверное значение пагинации",
     "username-taken": "Имя пользователя занято",
     "email-taken": "Email занят",
-    "email-not-confirmed": "Вы не подтвердили Ваш Email",
+    "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "Слишком короткое имя пользователя",
     "user-banned": "Пользователь заблокирован",
     "no-category": "Несуществующая категория",

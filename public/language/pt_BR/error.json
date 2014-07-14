@@ -15,7 +15,7 @@
     "invalid-pagination-value": "Informação inválida de paginação",
     "username-taken": "Usuário já existe",
     "email-taken": "Email já foi utilizado em um cadastro",
-    "email-not-confirmed": "Seu email não está confirmado",
+    "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "Nome de usuário muito curto",
     "user-banned": "Usuário banido",
     "no-category": "Categoria não existe",
