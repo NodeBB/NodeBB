@@ -50,13 +50,19 @@ module.exports = function(Meta) {
 
 			parser.parse(source, function(err, tree) {
 				if (err) {
-					winston.error('[meta/css] Could not minify LESS/CSS: ' + err.stack);
+					winston.error('[meta/css] Could not minify LESS/CSS: ' + err.message);
 					return;
 				}
 
-				var css = tree.toCSS({
-					cleancss: true
-				});
+				try {
+					var css = tree.toCSS({
+						cleancss: true
+					});	
+				} catch (err) {
+					winston.error('[meta/css] Syntax Error: ' + err.message + ' - ' + path.basename(err.filename) + ' on line ' + err.line);
+					return;	
+				}
+				
 
 				Meta.css.cache = css;
 
