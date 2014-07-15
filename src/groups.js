@@ -259,6 +259,8 @@
 	};
 
 	Groups.join = function(groupName, uid, callback) {
+		callback = callback || function() {};
+
 		Groups.exists(groupName, function(err, exists) {
 			if (exists) {
 				db.setAdd('group:' + groupName + ':members', uid, callback);
