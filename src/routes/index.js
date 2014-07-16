@@ -156,11 +156,8 @@ function groupRoutes(app, middleware, controllers) {
 
 
 module.exports = function(app, middleware) {
-
-	var router = express.Router();
-	app.use(nconf.get('relative_path'), router);
-
 	plugins.ready(function() {
+		var router = express.Router();
 
 		router.all('/api/*', middleware.updateLastOnlineTime, middleware.prepareAPI);
 		router.all('/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
@@ -189,6 +186,7 @@ module.exports = function(app, middleware) {
 		userRoutes(router, middleware, controllers);
 		groupRoutes(router, middleware, controllers);
 
+		app.use(nconf.get('relative_path'), router);
 
 		app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../../', 'public'), {
 			maxAge: app.enabled('cache') ? 5184000000 : 0
