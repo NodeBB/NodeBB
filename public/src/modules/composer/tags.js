@@ -1,7 +1,7 @@
 
 'use strict';
 
-/*globals define*/
+/*globals define, config, socket, app*/
 
 define('composer/tags', function() {
 	var tags = {};
@@ -16,15 +16,20 @@ define('composer/tags', function() {
 			maxTags: config.tagsPerTopic,
 			confirmKeys: [13, 44]
 		});
+
+		tagEl.on('itemAdded', function(event) {
+			$(window).trigger('action:tag.added', {cid: postData.cid, tagEl: tagEl, tag: event.item});
+		});
+
 		addTags(postData.tags, tagEl);
 
 		var input = postContainer.find('.bootstrap-tagsinput input');
 		input.autocomplete({
 			delay: 100,
 			source: function(request, response) {
-				socket.emit('topics.searchTags', request.term, function(err, tags) {
+				socket.emit('topics.searchTags', {query: request.term, cid: postData.cid}, function(err, tags) {
 					if (err) {
-						return app.alertError(err.message)
+						return app.alertError(err.message);
 					}
 					if (tags) {
 						response(tags);

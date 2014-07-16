@@ -412,8 +412,8 @@ SocketTopics.getTidIndex = function(socket, tid, callback) {
 	categories.getTopicIndex(tid, callback);
 };
 
-SocketTopics.searchTags = function(socket, query, callback) {
-	topics.searchTags(query, callback);
+SocketTopics.searchTags = function(socket, data, callback) {
+	topics.searchTags(data, callback);
 };
 
 module.exports = SocketTopics;

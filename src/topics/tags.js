@@ -4,6 +4,7 @@
 var async = require('async'),
 	db = require('../database'),
 	meta = require('../meta'),
+	plugins = require('../plugins'),
 	utils = require('../../public/src/utils');
 
 module.exports = function(Topics) {
@@ -15,26 +16,32 @@ module.exports = function(Topics) {
 			return callback();
 		}
 
-		tags = tags.slice(0, meta.config.tagsPerTopic || 5);
-
-		async.each(tags, function(tag, next) {
-			tag = cleanUpTag(tag);
-
-			if (tag.length < (meta.config.minimumTagLength || 3)) {
-				return next();
+		plugins.fireHook('filter:tags.filter', {tags: tags, tid: tid}, function(err, data) {
+			if (err) {
+				return callback(err);
 			}
-			db.setAdd('topic:' + tid + ':tags', tag);
 
-			db.sortedSetAdd('tag:' + tag + ':topics', timestamp, tid, function(err) {
-				if (!err) {
-					updateTagCount(tag);
+			tags = data.tags.slice(0, meta.config.tagsPerTopic || 5);
+
+			async.each(tags, function(tag, next) {
+				tag = Topics.cleanUpTag(tag);
+
+				if (tag.length < (meta.config.minimumTagLength || 3)) {
+					return next();
 				}
-				next(err);
-			});
-		}, callback);
+				db.setAdd('topic:' + tid + ':tags', tag);
+
+				db.sortedSetAdd('tag:' + tag + ':topics', timestamp, tid, function(err) {
+					if (!err) {
+						updateTagCount(tag);
+					}
+					next(err);
+				});
+			}, callback);
+		});
 	};
 
-	function cleanUpTag(tag) {
+	Topics.cleanUpTag = function(tag) {
 		if (typeof tag !== 'string' || !tag.length ) {
 			return '';
 		}
@@ -47,7 +54,7 @@ module.exports = function(Topics) {
 			tag = matches[1];
 		}
 		return tag;
-	}
+	};
 
 	function updateTagCount(tag) {
 		Topics.getTagTopicCount(tag, function(err, count) {
@@ -127,20 +134,28 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.searchTags = function(query, callback) {
-		if (!query || query.length === 0) {
+	Topics.searchTags = function(data, callback) {
+		if (!data) {
 			return callback(null, []);
 		}
 
-		db.getSortedSetRevRange('tags:topic:count', 0, -1, function(err, tags) {
+		if (plugins.hasListeners('filter:tags.category')) {
+			plugins.fireHook('filter:tags.category', {tags: [], cid: data.cid}, function(err, data) {
+				doSearch(err, data ? data.tags : null);
+			});
+		} else {
+			db.getSortedSetRevRange('tags:topic:count', 0, -1, doSearch);
+		}
+
+		function doSearch(err, tags) {
 			if (err) {
 				return callback(null, []);
 			}
 
-			query = query.toLowerCase();
+			data.query = data.query.toLowerCase();
 			var matches = [];
 			for(var i=0; i<tags.length; ++i) {
-				if (tags[i].toLowerCase().indexOf(query) === 0) {
+				if (tags[i].toLowerCase().indexOf(data.query) === 0) {
 					matches.push(tags[i]);
 				}
 			}
@@ -150,7 +165,7 @@ module.exports = function(Topics) {
 			});
 
 			callback(null, matches);
-		});
+		}
 	};
 
 };
