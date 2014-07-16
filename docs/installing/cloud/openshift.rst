@@ -89,6 +89,8 @@ Host IP or address of your MongoDB instance: Enter what your $OPENSHIFT_MONGODB_
 
 Host port of your MongoDB instance: 27017
 
+MongoDB username : admin
+
 MongoDB Admin Password: When you have added the cartridge MongoDB, the terminal give you a password, use it. If you are lost him, you will find it on the [Openshift Panel](https://openshift.redhat.com/app/console).
 
 **Step 14:** And the last one, in other terminal, restart the application
