@@ -37,43 +37,43 @@ The nodebb command after the git url will create a file called nodebb so you hav
 	
 	cd nodebb && git remote add upstream -m master git://github.com/NodeBB/NodeBB.git
 
-**Step 6:** Get the files and push
+**Step 7:** Get the files and push
 
 .. code:: bash
 	
 	git pull -s recursive -X theirs upstream master && git push
 
-**Step 7:** SSH to the application
+**Step 8:** SSH to the application
 
 .. code:: bash
 	
 	rhc app ssh -a nodebb
 	
-**Step 8:** In other terminal, stop the application
+**Step 9:** In other terminal, stop the application
 
 .. code:: bash
 	
 	rhc app stop -a nodebb
 
-**Step 9:** Edit the environnement NodeJS on the terminal with the SSH
+**Step 10:** Edit the environnement NodeJS on the terminal with the SSH
 
 .. code:: bash
 	
 	cd ~/nodejs/configuration && nano node.env
 	
-**Step 10:** Replace server.js by app.js and exit the editor
+**Step 11:** Replace server.js by app.js and exit the editor
 
 .. code:: bash
 	
 	ctrl + x
 	
-**Step 11:** In other terminal, start the application
+**Step 12:** In other terminal, start the application
 
 .. code:: bash
 	
 	rhc app start -a nodebb
 
-**Step 12:** Start the setup of NodeBB on the terminal with the SSH
+**Step 13:** Start the setup of NodeBB on the terminal with the SSH
 
 .. code:: bash
 	
@@ -91,7 +91,7 @@ Host port of your MongoDB instance: 27017
 
 MongoDB Admin Password: When you have added the cartridge MongoDB, the terminal give you a password, use it. If you are lost him, you will find it on the [Openshift Panel](https://openshift.redhat.com/app/console).
 
-**Step 13:** And the last one, in other terminal, restart the application
+**Step 14:** And the last one, in other terminal, restart the application
 
 .. code:: bash
 	
