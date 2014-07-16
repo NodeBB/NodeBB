@@ -41,18 +41,18 @@ The ouput of the echo $REDIS_CLI like this : -h ip_redis -p port_redis -a passwo
 .. code:: bash
 	
 	git pull -s recursive -X theirs upstream master && git push
-
-**Step 8:** SSH to the application
-
-.. code:: bash
 	
-	rhc app ssh -a nodebb
-	
-**Step 9:** In other terminal, stop the application
+**Step 8:** Stop the application
 
 .. code:: bash
 	
 	rhc app stop -a nodebb
+
+**Step 9:** SSH to the application
+
+.. code:: bash
+	
+	rhc app ssh -a nodebb
 
 **Step 10:** Edit the environnement NodeJS on the terminal with the SSH
 
