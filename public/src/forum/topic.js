@@ -164,7 +164,7 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 	function addBlockquoteEllipses(blockquotes) {
 		blockquotes.each(function() {
 			var $this = $(this);
-			if ($this.find(':hidden').length && !$this.find('.toggle').length) {
+			if ($this.find(':hidden:not(br)').length && !$this.find('.toggle').length) {
 				$this.append('<i class="fa fa-angle-down pointer toggle"></i>');
 			}
 		});
