@@ -99,3 +99,11 @@ Redis Password: Enter what your $REDIS_CLI value holds here found in step 4.
 	rhc app restart -a nodebb
 
 And then open http://nodebb-username.rhcloud.com in your browser.
+
+Note
+---------------------------------------
+Restart NodeBB in the admin doesn't work. Use :
+
+.. code:: bash
+	
+	rhc app restart -a nodebb
