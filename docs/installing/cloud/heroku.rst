@@ -27,9 +27,9 @@ Heroku
 
         "dependencies": {
             ...
-            "nodebb-plugin-dbsearch": "0.0.9",
+            "nodebb-plugin-dbsearch": "0.0.10",
             "redis": "~0.10.1",
-            "connect-redis": "~1.4"
+            "connect-redis": "~2.0.0"
         },
         "devDependencies": {
 
