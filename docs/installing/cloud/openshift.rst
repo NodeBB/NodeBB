@@ -9,8 +9,6 @@ The following are installation instructions for the `Openshift <http://openshift
 	
 	rhc app create nodebb nodejs-0.10
 
-The nodebb command after the git url will create a file called nodebb so you have to CD into the file after you have cloned NodeBB.
-
 **Step 2:** Add cartridge Redis
 
 .. code:: bash
