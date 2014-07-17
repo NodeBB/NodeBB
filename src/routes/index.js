@@ -164,6 +164,7 @@ module.exports = function(app, middleware) {
 		router.all('/admin/*', middleware.admin.isAdmin);
 		router.get('/admin', middleware.admin.isAdmin);
 
+		// Deprecated as of v0.5.0, remove this hook call for NodeBB v0.6.0-1
 		plugins.fireHook('action:app.load', app, middleware, controllers);
 
 		adminRoutes(router, middleware, controllers);
@@ -186,13 +187,15 @@ module.exports = function(app, middleware) {
 		userRoutes(router, middleware, controllers);
 		groupRoutes(router, middleware, controllers);
 
-		app.use(nconf.get('relative_path'), router);
+		plugins.fireHook('filter:app.load', app, middleware, controllers, function() {
+			app.use(nconf.get('relative_path'), router);
 
-		app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../../', 'public'), {
-			maxAge: app.enabled('cache') ? 5184000000 : 0
-		}));
-		app.use(catch404);
-		app.use(handleErrors);
+			app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../../', 'public'), {
+				maxAge: app.enabled('cache') ? 5184000000 : 0
+			}));
+			app.use(catch404);
+			app.use(handleErrors);
+		});
 	});
 
 	if (process.env.NODE_ENV === 'development') {

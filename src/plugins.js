@@ -266,7 +266,6 @@ var fs = require('fs'),
 			`data` is an object consisting of (* is required):
 				`data.hook`*, the name of the NodeBB hook
 				`data.method`*, the method called in that plugin
-				`data.callbacked`, whether or not the hook expects a callback (true), or a return (false). Only used for filters. (Default: false)
 				`data.priority`, the relative priority of the method when it is eventually called (default: 10)
 		*/
 
@@ -327,6 +326,10 @@ var fs = require('fs'),
 									next(arguments[0], Array.prototype.slice.call(arguments, 1));
 								}));
 
+								/*
+									Backwards compatibility block for v0.5.0
+									Remove this once NodeBB enters v0.5.0-1
+								*/
 								if (value !== undefined && value !== callback) {
 									winston.warn('[plugins/' + hookObj.id + '] "callbacked" deprecated as of 0.4x. Use asynchronous method instead for hook: ' + hook);
 									next(null, [value]);
@@ -353,12 +356,31 @@ var fs = require('fs'),
 					});
 					break;
 				case 'action':
-					async.each(hookList, function(hookObj) {
+					var deprecationWarn = [];
+					async.each(hookList, function(hookObj, next) {
+						/*
+							Backwards compatibility block for v0.5.0
+							Remove this once NodeBB enters v0.5.0-1
+						*/
+						if (hook === 'action:app.load') {
+							deprecationWarn.push(hookObj.id);
+						}
+						/* End backwards compatibility block */
+
 						if (hookObj.method) {
 							hookObj.method.apply(Plugins, args);
 						} else {
 							if (global.env === 'development') {
 								winston.info('[plugins] Expected method \'' + hookObj.method + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
+							}
+						}
+
+						next();
+					}, function() {
+						if (deprecationWarn.length) {
+							winston.warn('[plugins] The `action:app.load` hook is deprecated in favour of `filter:app.load`, please notify the developers of the following plugins:');
+							for(var x=0,numDeprec=deprecationWarn.length;x<numDeprec;x++) {
+								process.stdout.write('  * ' + deprecationWarn[x] + '\n');
 							}
 						}
 					});
