@@ -140,8 +140,12 @@ module.exports = function(Topics) {
 		}
 
 		if (plugins.hasListeners('filter:tags.category')) {
-			plugins.fireHook('filter:tags.category', {tags: [], cid: data.cid}, function(err, data) {
-				doSearch(err, data ? data.tags : null);
+			plugins.fireHook('filter:tags.category', {tags: [], cid: data.cid}, function(err, result) {
+				if (data.query.length === 1) {
+					callback(err, result.tags);
+				} else {
+					doSearch(err, result ? result.tags : null);
+				}
 			});
 		} else {
 			db.getSortedSetRevRange('tags:topic:count', 0, -1, doSearch);
