@@ -158,11 +158,12 @@ function groupRoutes(app, middleware, controllers) {
 module.exports = function(app, middleware) {
 	plugins.ready(function() {
 		var router = express.Router();
+		var relativePath = nconf.get('relative_path');
 
-		router.all('/api/*', middleware.updateLastOnlineTime, middleware.prepareAPI);
-		router.all('/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
-		router.all('/admin/*', middleware.admin.isAdmin);
-		router.get('/admin', middleware.admin.isAdmin);
+		app.all(relativePath + '/api/*', middleware.updateLastOnlineTime, middleware.prepareAPI);
+		app.all(relativePath + '/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
+		app.all(relativePath + '/admin/*', middleware.admin.isAdmin);
+		app.get(relativePath + '/admin', middleware.admin.isAdmin);
 
 		// Deprecated as of v0.5.0, remove this hook call for NodeBB v0.6.0-1
 		plugins.fireHook('action:app.load', app, middleware, controllers);
@@ -188,9 +189,9 @@ module.exports = function(app, middleware) {
 		groupRoutes(router, middleware, controllers);
 
 		plugins.fireHook('filter:app.load', app, middleware, controllers, function() {
-			app.use(nconf.get('relative_path'), router);
+			app.use(relativePath, router);
 
-			app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../../', 'public'), {
+			app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
 				maxAge: app.enabled('cache') ? 5184000000 : 0
 			}));
 			app.use(catch404);
