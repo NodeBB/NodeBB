@@ -339,6 +339,7 @@ var fs = require('fs'),
 								value = hookObj.method.apply(Plugins, value);
 								next(null, [value]);
 							}
+							/* End backwards compatibility block */
 						} else {
 							if (global.env === 'development') {
 								winston.info('[plugins] Expected method for hook \'' + hook + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
@@ -377,12 +378,17 @@ var fs = require('fs'),
 
 						next();
 					}, function() {
+						/*
+							Backwards compatibility block for v0.5.0
+							Remove this once NodeBB enters v0.5.0-1
+						*/
 						if (deprecationWarn.length) {
 							winston.warn('[plugins] The `action:app.load` hook is deprecated in favour of `filter:app.load`, please notify the developers of the following plugins:');
 							for(var x=0,numDeprec=deprecationWarn.length;x<numDeprec;x++) {
 								process.stdout.write('  * ' + deprecationWarn[x] + '\n');
 							}
 						}
+						/* End backwards compatibility block */
 					});
 					break;
 				default:
