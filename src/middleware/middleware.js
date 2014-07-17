@@ -108,7 +108,7 @@ middleware.checkTopicIndex = function(req, res, next) {
 		var topicIndex = parseInt(req.params.topic_index, 10);
 		topicCount = parseInt(topicCount, 10) + 1;
 		var url = '';
-		console.log(topicIndex, topicCount);
+		
 		if (topicIndex > topicCount) {
 			url = '/category/' + req.params.category_id + '/' + req.params.slug + '/' + topicCount;
 			return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
