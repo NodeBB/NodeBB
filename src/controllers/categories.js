@@ -7,7 +7,8 @@ var categoriesController = {},
 	privileges = require('../privileges'),
 	user = require('./../user'),
 	categories = require('./../categories'),
-	topics = require('./../topics');
+	topics = require('./../topics'),
+	meta = require('./../meta');
 
 categoriesController.recent = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
@@ -15,6 +16,8 @@ categoriesController.recent = function(req, res, next) {
 		if(err) {
 			return next(err);
 		}
+
+		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
 
 		res.render('recent', data);
 	});
@@ -29,6 +32,8 @@ categoriesController.popular = function(req, res, next) {
 		if(err) {
 			return next(err);
 		}
+
+		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
 
 		res.render('popular', {topics: data});
 	});
@@ -176,6 +181,7 @@ categoriesController.get = function(req, res, next) {
 		}
 
 		data.currentPage = page;
+		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
 
 		// Paginator for noscript
 		data.pages = [];
