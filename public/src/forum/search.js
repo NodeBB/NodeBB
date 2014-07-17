@@ -3,12 +3,19 @@ define('forum/search', function() {
 
 	Search.init = function() {
 		var searchQuery = $('#post-results').attr('data-search-query');
+		var regexes = [];
+		var searchTerms = searchQuery.split(' ');
+		for (var i=0; i<searchTerms.length; ++i) {
+			var regex = new RegExp(searchTerms[i], 'gi');
+			regexes.push({regex: regex, term: searchTerms[i]});
+		}
 
 		$('.search-result-text').each(function() {
 			var result = $(this);
 			var text = result.html();
-			var regex = new RegExp(searchQuery, 'gi');
-			text = text.replace(regex, '<strong>' + searchQuery + '</strong>');
+			for(var i=0; i<regexes.length; ++i) {
+				text = text.replace(regexes[i].regex, '<strong>' + regexes[i].term + '</strong>');
+			}
 			result.html(text).find('img').addClass('img-responsive');
 		});
 
