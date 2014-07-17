@@ -524,6 +524,10 @@ var socket,
 			ajaxify.variables.parse();
 			ajaxify.currentPage = url;
 
+			$window.trigger('action:ajaxify.contentLoaded', {
+				url: url
+			});
+
 			if (window.history && window.history.replaceState) {
 				window.history.replaceState({
 					url: url + search + hash
