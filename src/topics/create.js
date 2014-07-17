@@ -225,7 +225,6 @@ module.exports = function(Topics) {
 				Topics.markAsRead(tid, uid, next);
 			},
 			function(result, next) {
-				Topics.pushUnreadCount();
 				posts.getUserInfoForPosts([postData.uid], next);
 			},
 			function(userInfo, next) {

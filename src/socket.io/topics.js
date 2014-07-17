@@ -47,6 +47,7 @@ SocketTopics.post = function(socket, data, callback) {
 			});
 
 			module.parent.exports.emitTopicPostStats();
+			topics.pushUnreadCount();
 
 			callback(null, result.topicData);
 		}

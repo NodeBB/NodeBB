@@ -43,6 +43,7 @@ SocketPosts.reply = function(socket, data, callback) {
 			});
 
 			module.parent.exports.emitTopicPostStats();
+			topics.pushUnreadCount();
 
 			callback();
 		}
