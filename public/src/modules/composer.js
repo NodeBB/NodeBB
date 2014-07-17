@@ -125,7 +125,7 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 		var postContainer = $('#cmp-uuid-' + uuid);
 		var bodyEl = postContainer.find('textarea');
 		var prevText = bodyEl.val();
-		if(tid !== composer.posts[uuid].tid) {
+		if (parseInt(tid, 10) !== parseInt(composer.posts[uuid].tid, 10)) {
 			var link = '[' + title + '](/topic/' + topicSlug + '/' + (parseInt(postIndex, 10) + 1) + ')';
 			translator.translate('[[modules:composer.user_said_in, ' + username + ', ' + link + ']]', onTranslated);
 		} else {
