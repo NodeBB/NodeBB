@@ -37,13 +37,15 @@ var async = require('async'),
 			return callback(new Error('[[error:invalid-uid]]'));
 		}
 
+		var postData;
+
 		async.waterfall([
 			function(next) {
 				db.incrObjectField('global', 'nextPid', next);
 			},
 			function(pid, next) {
 
-				var postData = {
+				postData = {
 					'pid': pid,
 					'uid': uid,
 					'tid': tid,
