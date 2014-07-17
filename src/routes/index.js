@@ -157,11 +157,12 @@ function groupRoutes(app, middleware, controllers) {
 
 module.exports = function(app, middleware) {
 	plugins.ready(function() {
-		var router = express.Router();
+		var router = express.Router(),
+			relativePath = nconf.get('relative_path');
+
 		router.render = function() {
 			app.render.call(arguments);
-		}
-		var relativePath = nconf.get('relative_path');
+		};
 
 		app.all(relativePath + '/api/*', middleware.updateLastOnlineTime, middleware.prepareAPI);
 		app.all(relativePath + '/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
