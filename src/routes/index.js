@@ -158,6 +158,9 @@ function groupRoutes(app, middleware, controllers) {
 module.exports = function(app, middleware) {
 	plugins.ready(function() {
 		var router = express.Router();
+		router.render = function() {
+			app.render.call(arguments);
+		}
 		var relativePath = nconf.get('relative_path');
 
 		app.all(relativePath + '/api/*', middleware.updateLastOnlineTime, middleware.prepareAPI);
@@ -166,7 +169,7 @@ module.exports = function(app, middleware) {
 		app.get(relativePath + '/admin', middleware.admin.isAdmin);
 
 		// Deprecated as of v0.5.0, remove this hook call for NodeBB v0.6.0-1
-		plugins.fireHook('action:app.load', app, middleware, controllers);
+		plugins.fireHook('action:app.load', router, middleware, controllers);
 
 		adminRoutes(router, middleware, controllers);
 		metaRoutes(router, middleware, controllers);
@@ -188,7 +191,7 @@ module.exports = function(app, middleware) {
 		userRoutes(router, middleware, controllers);
 		groupRoutes(router, middleware, controllers);
 
-		plugins.fireHook('filter:app.load', app, middleware, controllers, function() {
+		plugins.fireHook('filter:app.load', router, middleware, controllers, function() {
 			app.use(relativePath, router);
 
 			app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
