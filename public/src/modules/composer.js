@@ -115,7 +115,7 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 		});
 	};
 
-	composer.addQuote = function(tid, pid, title, username, text){
+	composer.addQuote = function(tid, topicSlug, postIndex, pid, title, username, text) {
 		var uuid = composer.active;
 
 		if (uuid === undefined) {
@@ -126,7 +126,7 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 		var bodyEl = postContainer.find('textarea');
 		var prevText = bodyEl.val();
 		if(tid !== composer.posts[uuid].tid) {
-			var link = '[' + title + '](/topic/' + tid + '#' + pid + ')';
+			var link = '[' + title + '](/topic/' + topicSlug + '/' + (parseInt(postIndex, 10) + 1) + ')';
 			translator.translate('[[modules:composer.user_said_in, ' + username + ', ' + link + ']]', onTranslated);
 		} else {
 			translator.translate('[[modules:composer.user_said, ' + username + ']]', onTranslated);

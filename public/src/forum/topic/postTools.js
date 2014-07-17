@@ -64,7 +64,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		});
 
 		postContainer.on('click', '.favourite', function() {
-			favouritePost($(this), getPid($(this)));
+			favouritePost($(this), getData($(this), 'data-pid'));
 		});
 
 		postContainer.on('click', '.upvote', function() {
@@ -76,11 +76,11 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		});
 
 		postContainer.on('click', '.flag', function() {
-			flagPost(getPid($(this)));
+			flagPost(getData($(this), 'data-pid'));
 		});
 
 		postContainer.on('click', '.edit', function(e) {
-			composer.editPost(getPid($(this)));
+			composer.editPost(getData($(this), 'data-pid'));
 		});
 
 		postContainer.on('click', '.delete', function(e) {
@@ -114,16 +114,16 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		var username = getUserName(selectionText ? $(selection.baseNode) : button);
 
 		if (selectionText.length) {
-			composer.addQuote(tid, getPid(button), topicName, username, selectionText);
+			composer.addQuote(tid, ajaxify.variables.get('topic_slug'), getData(button, 'data-index'), getData(button, 'data-pid'), topicName, username, selectionText);
 		} else {
-			composer.newReply(tid, getPid(button), topicName, username ? username + ' ' : '');
+			composer.newReply(tid, getData(button, 'data-pid'), topicName, username ? username + ' ' : '');
 		}
 
 	}
 
 	function onQuoteClicked(button, tid, topicName) {
 		var username = getUserName(button),
-			pid = getPid(button);
+			pid = getData(button, 'data-pid');
 
 		socket.emit('posts.getRawPost', pid, function(err, post) {
 			if(err) {
@@ -135,7 +135,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 			}
 
 			if($('.composer').length) {
-				composer.addQuote(tid, pid, topicName, username, quoted);
+				composer.addQuote(tid, ajaxify.variables.get('topic_slug'), getData(button, 'data-index'), pid, topicName, username, quoted);
 			} else {
 				composer.newReply(tid, pid, topicName, '[[modules:composer.user_said, ' + username + ']]' + quoted);
 			}
@@ -173,8 +173,8 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		return false;
 	}
 
-	function getPid(button) {
-		return button.parents('.post-row').attr('data-pid');
+	function getData(button, data) {
+		return button.parents('.post-row').attr(data);
 	}
 
 	function getUserName(button) {
@@ -188,7 +188,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	}
 
 	function deletePost(button, tid) {
-		var pid = getPid(button),
+		var pid = getData(button, 'data-pid'),
 			postEl = $('#post-container li[data-pid="' + pid + '"]'),
 			action = !postEl.hasClass('deleted') ? 'delete' : 'restore';
 
@@ -196,7 +196,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	}
 
 	function purgePost(button, tid) {
-		postAction('purge', getPid(button), tid);
+		postAction('purge', getData(button, 'data-pid'), tid);
 	}
 
 	function postAction(action, pid, tid) {
@@ -238,7 +238,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		});
 
 		moveBtn.on('click', function() {
-			movePost(button.parents('.post-row'), getPid(button), topicId.val());
+			movePost(button.parents('.post-row'), getData(button, 'data-pid'), topicId.val());
 		});
 	}
 
