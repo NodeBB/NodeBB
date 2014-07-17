@@ -3,6 +3,7 @@
 var posts = require('./../posts'),
 	topics = require('./../topics'),
 	categories = require('./../categories'),
+	meta = require('./../meta'),
 
 	rss = require('rss'),
 	nconf = require('nconf'),
@@ -130,6 +131,14 @@ function generateForPopular(req, res, next) {
 	}, 'topics:posts', req, res, next);
 }
 
+function disabledRSS(req, res, next) {
+	if (meta.config['feeds:disableRSS'] === '1') {
+		return res.redirect('404');
+	}
+
+	next();
+}
+
 function generateForTopics(options, set, req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
 	topics.getTopicsFromSet(uid, set, 0, 19, function (err, data) {
@@ -173,8 +182,8 @@ function sendFeed(feed, res) {
 }
 
 module.exports = function(app, middleware, controllers){
-	app.get('/topic/:topic_id.rss', hasTopicPrivileges, generateForTopic);
-	app.get('/category/:category_id.rss', hasCategoryPrivileges, generateForCategory);
-	app.get('/recent.rss', generateForRecent);
-	app.get('/popular.rss', generateForPopular);
+	app.get('/topic/:topic_id.rss', hasTopicPrivileges, disabledRSS, generateForTopic);
+	app.get('/category/:category_id.rss', hasCategoryPrivileges, disabledRSS, generateForCategory);
+	app.get('/recent.rss', disabledRSS, generateForRecent);
+	app.get('/popular.rss', disabledRSS, generateForPopular);
 };
