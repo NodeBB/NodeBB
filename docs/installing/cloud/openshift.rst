@@ -9,13 +9,11 @@ The following are installation instructions for the `Openshift <http://openshift
 	
 	rhc app create nodebb nodejs-0.10
 
-The nodebb command after the git url will create a file called nodebb so you have to CD into the file after you have cloned NodeBB.
-
-**Step 2:** Add cartridge MongoDB
+**Step 2:** Add cartridge Redis
 
 .. code:: bash
 	
-	rhc cartridge add mongodb-2.4 -a nodebb
+	rhc add-cartridge http://cartreflect-claytondev.rhcloud.com/reflect?github=smarterclayton/openshift-redis-cart -a nodebb
 
 **Step 3:** SSH to the application
 
@@ -23,11 +21,12 @@ The nodebb command after the git url will create a file called nodebb so you hav
 	
 	rhc app ssh -a nodebb
 	
-**Step 4:** Find out your instance’s ip address NodeJS and MongoDB so NodeBB can bind to it correctly. This is one of Openshift’s demands and seems to be the only way it will work. You can’t use $IP in your config.json either (which means you can’t enter $IP in the node app –setup). First line : NodeJS and second line : MongoDB
+**Step 4:** Find out your instance’s ip address NodeJS and Redis so NodeBB can bind to it correctly. This is one of Openshift’s demands and seems to be the only way it will work. You can’t use $IP in your config.json either (which means you can’t enter $IP in the node app –setup). First line : NodeJS and second line : Redis
+The ouput of the echo $REDIS_CLI like this : -h ip_redis -p port_redis -a password
 
 .. code:: bash
 
-  echo $OPENSHIFT_NODEJS_IP && echo $OPENSHIFT_MONGODB_DB_HOST
+  echo $OPENSHIFT_NODEJS_IP && echo $REDIS_CLI
   
 **Step 5:** Exit SSH
 
@@ -42,18 +41,18 @@ The nodebb command after the git url will create a file called nodebb so you hav
 .. code:: bash
 	
 	git pull -s recursive -X theirs upstream master && git push
-
-**Step 8:** SSH to the application
-
-.. code:: bash
 	
-	rhc app ssh -a nodebb
-	
-**Step 9:** In other terminal, stop the application
+**Step 8:** Stop the application
 
 .. code:: bash
 	
 	rhc app stop -a nodebb
+
+**Step 9:** SSH to the application
+
+.. code:: bash
+	
+	rhc app ssh -a nodebb
 
 **Step 10:** Edit the environnement NodeJS on the terminal with the SSH
 
@@ -85,13 +84,11 @@ Port number : 8080
 
 IP or Hostname to bind to: Enter what your $OPENSHIFT_NODEJS_IP value holds here found in step 4.
 
-Host IP or address of your MongoDB instance: Enter what your $OPENSHIFT_MONGODB_DB_HOST value holds here found in step 4. 
+Host IP or address of your MongoDB instance: Enter what your $REDIS_CLI value holds here found in step 4.
 
-Host port of your MongoDB instance: 27017
+Host port of your MongoDB instance: Enter what your $REDIS_CLI value holds here found in step 4.
 
-MongoDB username : admin
-
-MongoDB Admin Password: When you have added the cartridge MongoDB, the terminal give you a password, use it. If you are lost him, you will find it on the [Openshift Panel](https://openshift.redhat.com/app/console).
+Redis Password: Enter what your $REDIS_CLI value holds here found in step 4.
 
 **Step 14:** And the last one, in other terminal, restart the application
 
@@ -100,3 +97,11 @@ MongoDB Admin Password: When you have added the cartridge MongoDB, the terminal 
 	rhc app restart -a nodebb
 
 And then open http://nodebb-username.rhcloud.com in your browser.
+
+Note
+---------------------------------------
+Restart NodeBB in the admin doesn't work. Use :
+
+.. code:: bash
+	
+	rhc app restart -a nodebb
