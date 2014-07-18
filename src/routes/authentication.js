@@ -148,6 +148,17 @@
 				for (var i in login_strategies) {
 					if (login_strategies.hasOwnProperty(i)) {
 						var strategy = login_strategies[i];
+
+						/*
+							Backwards compatibility block for v0.6.0
+							Remove this upon release of v0.6.0-1
+							Ref: nodebb/nodebb#1849
+						*/
+						if (strategy.icon.slice(0, 3) !== 'fa-') {
+							strategy.icon = 'fa-' + strategy.icon + '-square';
+						}
+						/* End backwards compatibility block */
+
 						if (strategy.url) {
 							app.get(strategy.url, passport.authenticate(strategy.name, {
 								scope: strategy.scope
