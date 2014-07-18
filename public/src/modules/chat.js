@@ -203,7 +203,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 				});
 
 				chatModal.find('button[data-action="maximize"]').on('click', function() {
-					ajaxify.go('chats/' + username);
+					ajaxify.go('chats/' + utils.slugify(username));
 					module.close(chatModal);
 				});
 
