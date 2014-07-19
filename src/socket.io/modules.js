@@ -189,6 +189,7 @@ SocketModules.chats.send = function(socket, data, callback) {
 		recipMessage.self = 0;
 
 		// Recipient
+		SocketModules.chats.pushUnreadCount(touid);
 		server.getUserSockets(touid).forEach(function(s) {
 			s.emit('event:chats.receive', {
 				withUid: socket.uid,
@@ -197,6 +198,7 @@ SocketModules.chats.send = function(socket, data, callback) {
 		});
 
 		// Sender
+		SocketModules.chats.pushUnreadCount(socket.uid);
 		server.getUserSockets(socket.uid).forEach(function(s) {
 			s.emit('event:chats.receive', {
 				withUid: touid,
@@ -220,6 +222,25 @@ function sendChatNotification(fromuid, touid, messageObj) {
 		});
 	}
 }
+
+SocketModules.chats.pushUnreadCount = function(uid) {
+	Messaging.getUnreadCount(uid, function(err, unreadCount) {
+		if (err) {
+			return;
+		}
+		server.getUserSockets(uid).forEach(function(s) {
+			s.emit('event:unread.updateChatCount', null, unreadCount);
+		});
+	});
+};
+
+SocketModules.chats.markRead = function(socket, touid, callback) {
+	Messaging.markRead(socket.uid, touid, function(err) {
+		if (!err) {
+			SocketModules.chats.pushUnreadCount(socket.uid);
+		}
+	});
+};
 
 SocketModules.chats.userStartTyping = function(socket, data, callback) {
 	sendTypingNotification('event:chats.userStartTyping', socket, data, callback);

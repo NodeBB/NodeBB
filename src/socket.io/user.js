@@ -4,6 +4,7 @@ var	async = require('async'),
 	user = require('../user'),
 	groups = require('../groups'),
 	topics = require('../topics'),
+	messaging = require('../messaging'),
 	utils = require('./../../public/src/utils'),
 	meta = require('../meta'),
 	SocketUser = {};
@@ -214,6 +215,10 @@ SocketUser.getOnlineAnonCount = function(socket, data, callback) {
 
 SocketUser.getUnreadCount = function(socket, data, callback) {
 	topics.getTotalUnread(socket.uid, callback);
+};
+
+SocketUser.getUnreadChatCount = function(socket, data, callback) {
+	messaging.getUnreadCount(socket.uid, callback);
 };
 
 SocketUser.getActiveUsers = function(socket, data, callback) {

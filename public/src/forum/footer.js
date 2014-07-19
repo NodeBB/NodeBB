@@ -4,19 +4,30 @@ define('forum/footer', ['notifications', 'chat'], function(Notifications, Chat) 
 	Chat.prepareDOM();
 	translator.prepareDOM();
 
-	function updateUnreadCount(err, count) {
-		var unreadEl = $('#unread-count');
-
+	function updateUnreadTopicCount(err, count) {
 		if (err) {
-			console.warn('Error updating unread count', err);
+			return console.warn('Error updating unread count', err);
 		}
 
-		unreadEl
+		$('#unread-count')
+			.toggleClass('unread-count', count > 0)
+			.attr('data-content', count > 20 ? '20+' : count);
+	}
+
+	function updateUnreadChatCount(err, count) {
+		if (err) {
+			return console.warn('Error updating unread count', err);
+		}
+
+		$('#chat-count')
 			.toggleClass('unread-count', count > 0)
 			.attr('data-content', count > 20 ? '20+' : count);
 	}
 
 
-	socket.on('event:unread.updateCount', updateUnreadCount);
-	socket.emit('user.getUnreadCount', updateUnreadCount);
+	socket.on('event:unread.updateCount', updateUnreadTopicCount);
+	socket.emit('user.getUnreadCount', updateUnreadTopicCount);
+
+	socket.on('event:unread.updateChatCount', updateUnreadChatCount);
+	socket.emit('user.getUnreadChatCount', updateUnreadChatCount);
 });

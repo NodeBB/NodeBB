@@ -43,8 +43,21 @@ var db = require('./database'),
 					Messaging.updateChatTime(fromuid, touid);
 					Messaging.updateChatTime(touid, fromuid);
 
-					getMessages([mid], fromuid, touid, true, function(err, messages) {
-						callback(err, messages ? messages[0] : null);
+					async.parallel([
+						function(next) {
+							Messaging.markRead(fromuid, touid, next);
+						},
+						function(next) {
+							Messaging.markUnread(touid, fromuid, next);
+						}
+					], function(err, results) {
+						if (err) {
+							return callback(err);
+						}
+
+						getMessages([mid], fromuid, touid, true, function(err, messages) {
+							callback(err, messages ? messages[0] : null);
+						});
 					});
 				});
 			});
@@ -122,11 +135,8 @@ var db = require('./database'),
 	};
 
 	Messaging.updateChatTime = function(uid, toUid, callback) {
-		db.sortedSetAdd('uid:' + uid + ':chats', Date.now(), toUid, function(err) {
-			if (callback) {
-				callback(err);
-			}
-		});
+		callback = callback || function() {};
+		db.sortedSetAdd('uid:' + uid + ':chats', Date.now(), toUid, callback);
 	};
 
 	Messaging.getRecentChats = function(uid, start, end, callback) {
@@ -155,6 +165,18 @@ var db = require('./database'),
 				}, callback);
 			});
 		});
+	};
+
+	Messaging.getUnreadCount = function(uid, callback) {
+		db.sortedSetCard('uid:' + uid + ':chats:unread', callback);
+	};
+
+	Messaging.markRead = function(uid, toUid, callback) {
+		db.sortedSetRemove('uid:' + uid + ':chats:unread', toUid, callback);
+	};
+
+	Messaging.markUnread = function(uid, toUid, callback) {
+		db.sortedSetAdd('uid:' + uid + ':chats:unread', Date.now(), toUid, callback);
 	};
 
 	// todo #1798 -- this utility method creates a room name given an array of uids.

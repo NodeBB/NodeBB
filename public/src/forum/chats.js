@@ -7,6 +7,8 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 		initialised: false
 	};
 
+	var newMessage = false;
+
 	Chats.init = function() {
 		var containerEl = $('.expanded-chat ul');
 
@@ -75,6 +77,15 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 
 	Chats.addGlobalEventListeners = function() {
 		$(window).on('resize', Chats.resizeMainWindow);
+		$(window).on('mousemove keypress click', function() {
+			if (newMessage) {
+				var recipientUid = Chats.getRecipientUid();
+				if (recipientUid) {
+					socket.emit('modules.chats.markRead', recipientUid);
+					newMessage = false;
+				}
+			}
+		});
 	};
 
 	Chats.addSocketListeners = function() {
@@ -83,6 +94,8 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 				containerEl = $('.expanded-chat ul');
 
 			if (Chats.isCurrentChat(data.withUid)) {
+				newMessage = data.message.self === 0;
+
 				Chats.parseMessage(data.message, function(html) {
 					var newMessage = $(html);
 					newMessage.insertBefore(typingNotifEl);
@@ -163,8 +176,12 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 	};
 
 	Chats.setActive = function() {
+		var recipientUid = Chats.getRecipientUid();
+		if (recipientUid) {
+			socket.emit('modules.chats.markRead', recipientUid);
+		}
 		$('.chats-list li').removeClass('bg-primary');
-		$('.chats-list li[data-uid="' + Chats.getRecipientUid() + '"]').addClass('bg-primary');
+		$('.chats-list li[data-uid="' + recipientUid + '"]').addClass('bg-primary');
 	};
 
 	Chats.parseMessage = function(data, callback) {
