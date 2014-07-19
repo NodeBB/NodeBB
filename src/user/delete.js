@@ -93,6 +93,9 @@ module.exports = function(User) {
 					db.delete('uid:' + uid + ':chats', next);
 				},
 				function(next) {
+					db.delete('uid:' + uid + ':chats:unread', next);
+				},
+				function(next) {
 					db.delete('uid:' + uid + ':ip', next);
 				},
 				function(next) {
