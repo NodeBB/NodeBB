@@ -30,12 +30,7 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 	};
 
 	Chats.isCurrentChat = function(uid) {
-		uid = parseInt(uid, 10);
-		if (Chats.getRecipientUid() === uid) {
-			return true;
-		} else {
-			return false;
-		}
+		return Chats.getRecipientUid() === parseInt(uid, 10);
 	};
 
 	Chats.addEventListeners = function() {
@@ -134,16 +129,12 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 		var	messagesList = $('.expanded-chat ul');
 
 		if (messagesList.length) {
-			var	inputEl = $('.chat-input'),
-				viewportHeight = $(window).height(),
-				margin = $('.expanded-chat ul').outerHeight() - $('.expanded-chat ul').height(),
-				inputHeight = inputEl.outerHeight(),
+			var	margin = $('.expanded-chat ul').outerHeight(true) - $('.expanded-chat ul').height(),
+				inputHeight = $('.chat-input').outerHeight(true),
 				fromTop = messagesList.offset().top;
 
-			messagesList.height(viewportHeight-(fromTop+inputHeight+(margin*4)));
+			messagesList.height($(window).height() - (fromTop + inputHeight + (margin * 4)));
 		}
-
-		return;
 	};
 
 	Chats.notifyTyping = function(toUid, typing) {
