@@ -413,6 +413,9 @@ var socket,
 	}
 
 	function createHeaderTooltips() {
+		if (utils.findBootstrapEnvironment() === 'xs') {
+			return;
+		}
 		$('#header-menu li i[title]').each(function() {
 			$(this).parents('a').tooltip({
 				placement: 'bottom',
