@@ -182,7 +182,22 @@ module.exports = function(Topics) {
 	};
 
 	Topics.getPids = function(tid, callback) {
-		db.getSortedSetRange('tid:' + tid + ':posts', 0, -1, callback);
+		async.parallel({
+			mainPid: function(next) {
+				Topics.getTopicField(tid, 'mainPid', next);
+			},
+			pids: function(next) {
+				db.getSortedSetRange('tid:' + tid + ':posts', 0, -1, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			if (results.mainPid) {
+				results.pids = [results.mainPid].concat(results.pids);
+			}
+			callback(null, results.pids);
+		});
 	};
 
 	Topics.increasePostCount = function(tid, callback) {

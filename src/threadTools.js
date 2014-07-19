@@ -73,7 +73,7 @@ var winston = require('winston'),
 	ThreadTools.purge = function(tid, uid, callback) {
 		async.parallel({
 			topic: function(next) {
-				topics.getTopicFields(tid, ['cid', 'mainPid'], next);
+				topics.getTopicFields(tid, ['cid'], next);
 			},
 			pids: function(next) {
 				topics.getPids(tid, next);
@@ -83,16 +83,9 @@ var winston = require('winston'),
 				return callback(err);
 			}
 
-			var pids = [];
-			if (results.topic.mainPid) {
-				pids = [results.topic.mainPid].concat(results.pids);
-			} else {
-				pids = results.pids;
-			}
-
 			async.parallel([
 				function(next) {
-					async.eachLimit(pids, 10, posts.purge, next);
+					async.eachLimit(results.pids, 10, posts.purge, next);
 				},
 				function(next) {
 					topics.purge(tid, next);

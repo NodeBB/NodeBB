@@ -36,23 +36,14 @@ module.exports = function(Categories) {
 		}
 
 		updatePostCount(tid, oldCid, cid);
-		async.parallel({
-			mainPid: function(next) {
-				topics.getTopicField(tid, 'mainPid', next);
-			},
-			pids: function(next) {
-				topics.getPids(tid, next);
-			}
-		}, function(err, results) {
+		topics.getPids(tid, function(err, pids) {
 			if (err) {
 				return winston.error(err.message);
 			}
 
-			if (!results.mainPid && results.pids && !results.pids.length) {
+			if (pids && !pids.length) {
 				return;
 			}
-
-			var pids = [results.mainPid].concat(results.pids);
 
 			var keys = pids.map(function(pid) {
 				return 'post:' + pid;
