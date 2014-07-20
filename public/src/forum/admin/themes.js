@@ -162,7 +162,7 @@ define('forum/admin/themes', ['forum/admin/settings'], function(Settings) {
 
 	Themes.prepareWidgets = function() {
 		$('[data-location="drafts"]').insertAfter($('[data-location="drafts"]').closest('.tab-content'));
-		
+
 		$('#widgets .available-widgets .panel').draggable({
 			helper: function(e) {
 				return $(e.target).parents('.panel').clone().addClass('block').width($(e.target.parentNode).width());
@@ -298,20 +298,18 @@ define('forum/admin/themes', ['forum/admin/settings'], function(Settings) {
 		$.get(RELATIVE_PATH + '/api/admin/themes', function(data) {
 			var areas = data.areas;
 
-			for (var a in areas) {
-				if (areas.hasOwnProperty(a)) {
-					var area = areas[a],
-						widgetArea = $('#widgets .area[data-template="' + area.template + '"][data-location="' + area.location + '"]').find('.widget-area');
+			for(var i=0; i<areas.length; ++i) {
+				var area = areas[i],
+					widgetArea = $('#widgets .area[data-template="' + area.template + '"][data-location="' + area.location + '"]').find('.widget-area');
 
-					for (var i in area.data) {
-						if (area.data.hasOwnProperty(i)) {
-							var widgetData = area.data[i],
-								widgetEl = $('.available-widgets [data-widget="' + widgetData.widget + '"]').clone();
+				widgetArea.html('');
 
-							widgetArea.append(populateWidget(widgetEl, widgetData.data));
-							appendToggle(widgetEl);
-						}
-					}
+				for (var k=0; k<area.data.length; ++k) {
+					var widgetData = area.data[k],
+						widgetEl = $('.available-widgets [data-widget="' + widgetData.widget + '"]').clone();
+
+					widgetArea.append(populateWidget(widgetEl, widgetData.data));
+					appendToggle(widgetEl);
 				}
 			}
 		});
