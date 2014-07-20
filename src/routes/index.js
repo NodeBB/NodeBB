@@ -161,7 +161,7 @@ module.exports = function(app, middleware) {
 			relativePath = nconf.get('relative_path');
 
 		router.render = function() {
-			app.render.call(arguments);
+			app.render.apply(app, arguments);
 		};
 
 		app.all(relativePath + '/api/*', middleware.updateLastOnlineTime, middleware.prepareAPI);
