@@ -52,7 +52,10 @@ var socket,
 
 			app.enterRoom(room, true);
 
-			socket.emit('meta.reconnected', {}, function(err, cacheBuster) {
+			socket.emit('meta.reconnected');
+
+			socket.removeAllListeners('event:nodebb.ready');
+			socket.on('event:nodebb.ready', function(cacheBuster) {
 				if (app.cacheBuster !== cacheBuster) {
 					app.cacheBuster = cacheBuster;
 
