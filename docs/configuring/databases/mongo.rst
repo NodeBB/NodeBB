@@ -67,9 +67,7 @@ To add a user to access the `nodebb` database, type:
 
 .. code::
 
-    > db.createUser( { user: "nodebb",
-    ...       pwd: "<Enter in a secure password>",
-    ...       roles: [ "readWrite" ] } )
+    > db.createUser( { user: "nodebb", pwd: "<Enter in a secure password>", roles: [ "readWrite" ] } )
 
 **Note:** The role ``readWrite`` provides read or write any collection within a specific database to user.
 
