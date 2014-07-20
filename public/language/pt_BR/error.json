@@ -15,7 +15,7 @@
     "invalid-pagination-value": "Informação inválida de paginação",
     "username-taken": "Usuário já existe",
     "email-taken": "Email já foi utilizado em um cadastro",
-    "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
+    "email-not-confirmed": "Seu email não está confirmado, por favor, clique aqui para confirmá-lo",
     "username-too-short": "Nome de usuário muito curto",
     "user-banned": "Usuário banido",
     "no-category": "Categoria não existe",
@@ -51,5 +51,5 @@
     "upload-error": "Erro de Upload : %1",
     "signature-too-long": "Assinatura não pode conter mais que %1 caracteres!",
     "cant-chat-with-yourself": "Impossível bater papo consigo mesmo!",
-    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post"
+    "not-enough-reputation-to-downvote": "Você não possui reputação suficiente para negativar este post"
 }

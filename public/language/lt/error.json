@@ -15,7 +15,7 @@
     "invalid-pagination-value": "Klaidinga puslapiavimo reikšmė",
     "username-taken": "Vartotojo vardas jau užimtas",
     "email-taken": "El. pašto adresas jau užimtas",
-    "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
+    "email-not-confirmed": "Jūsų el. paštas nepatvirtintas, prašome paspausti čia norint jį patvirtinti.",
     "username-too-short": "Slapyvardis per trumpas",
     "user-banned": "Vartotojas užblokuotas",
     "no-category": "Kategorija neegzistuoja",
