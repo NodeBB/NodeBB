@@ -22,17 +22,17 @@ module.exports = function(db, module) {
 	};
 
 	module.search = function(key, term, limit, callback) {
-		db.command({text:'search' , search: term, filter: {key:key}, limit: limit }, function(err, result) {
+		db.collection('search').find({ $text: { $search: term }, key: key}, {limit: limit}).toArray(function(err, results) {
 			if(err) {
 				return callback(err);
 			}
 
-			if(!result || !result.results || !result.results.length) {
+			if(!results || !results.length) {
 				return callback(null, []);
 			}
 
-			var data = result.results.map(function(item) {
-				return item.obj.id;
+			var data = results.map(function(item) {
+				return item.id;
 			});
 
 			callback(null, data);
