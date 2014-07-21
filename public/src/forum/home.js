@@ -41,7 +41,7 @@ define('forum/home', function() {
 		var category = $('.home .category-item[data-cid="' + cid + '"]');
 		var categoryBox = category.find('.category-box');
 		var numRecentReplies = category.attr('data-numRecentReplies');
-		if (!numRecentReplies) {
+		if (!numRecentReplies || !parseInt(numRecentReplies, 10)) {
 			return;
 		}
 
