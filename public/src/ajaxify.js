@@ -97,16 +97,6 @@ var ajaxify = ajaxify || {};
 						setTimeout(function() {
 							$('#content').html(translatedTemplate);
 							ajaxify.widgets.render(tpl_url, url, function() {
-								if (typeof callback === 'function') {
-									callback();
-								}
-
-								app.processPage();
-
-								$('#content, #footer').removeClass('ajaxifying');
-								ajaxify.initialLoad = false;
-
-								app.refreshTitle(url);
 								$(window).trigger('action:ajaxify.end', {url: url});
 							});
 
@@ -115,6 +105,17 @@ var ajaxify = ajaxify || {};
 							$(window).trigger('action:ajaxify.contentLoaded', {url: url});
 
 							ajaxify.loadScript(tpl_url);
+
+							if (typeof callback === 'function') {
+								callback();
+							}
+
+							app.processPage();
+
+							$('#content, #footer').removeClass('ajaxifying');
+							ajaxify.initialLoad = false;
+
+							app.refreshTitle(url);
 						}, animationDuration * 1000 - ((new Date()).getTime() - startTime))
 						
 					});
