@@ -319,9 +319,25 @@ var fs = require('fs'),
 			var hookType = hook.split(':')[0];
 			switch (hookType) {
 				case 'filter':
+					if (hook === 'filter:app.load') {
+						// Special case for this hook, as arguments passed in are always the same
+						async.each(hookList, function(hookObj, next) {
+							if (hookObj.method) {
+								hookObj.method.apply(Plugins, args.concat(next));
+							}
+						}, function(err) {
+							callback(err);
+						});
+
+						return;
+					}
+
 					async.reduce(hookList, args, function(value, hookObj, next) {
 						if (hookObj.method) {
 							if (!hookObj.hasOwnProperty('callbacked') || hookObj.callbacked === true) {
+								// omg, after 6 months I finally realised what this does...
+								// It adds the callback to the arguments passed-in, since the callback
+								// is defined in *this* file (the async cb), and not the hooks themselves.
 								var	value = hookObj.method.apply(Plugins, value.concat(function() {
 									next(arguments[0], Array.prototype.slice.call(arguments, 1));
 								}));
@@ -353,7 +369,9 @@ var fs = require('fs'),
 							}
 						}
 
-						callback.apply(Plugins, [err].concat(values));
+						if (callback) {
+							callback.apply(Plugins, [err].concat(values));
+						}
 					});
 					break;
 				case 'action':
