@@ -28,7 +28,7 @@ var ajaxify = ajaxify || {};
 	function onAjaxError(err, url) {
 		var data = err.data, textStatus = err.textStatus;
 
-		$('#content, #footer').stop(true, true).removeClass('ajaxifying');
+		$('#content, #footer').removeClass('ajaxifying');
 
 		if (data) {
 			if (data.status === 404) {
