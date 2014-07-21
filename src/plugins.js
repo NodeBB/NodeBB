@@ -269,28 +269,34 @@ var fs = require('fs'),
 
 		var method;
 
-		if (data.hook && data.method && typeof data.method === 'string' && data.method.length > 0) {
+		if (data.hook && data.method) {
 			data.id = id;
 			if (!data.priority) {
 				data.priority = 10;
 			}
-			method = data.method.split('.').reduce(function(memo, prop) {
-				if (memo !== null && memo[prop]) {
-					return memo[prop];
-				} else {
-					// Couldn't find method by path, aborting
-					return null;
-				}
-			}, Plugins.libraries[data.id]);
 
-			if (method === null) {
+			if (typeof data.method === 'string' && data.method.length > 0) {
+				method = data.method.split('.').reduce(function(memo, prop) {
+					if (memo !== null && memo[prop]) {
+						return memo[prop];
+					} else {
+						// Couldn't find method by path, aborting
+						return null;
+					}
+				}, Plugins.libraries[data.id]);
+
+				// Write the actual method reference to the hookObj
+				data.method = method;
+
+				register();
+			} else if (typeof data.method === 'function') {
+				register();
+			} else {
 				winston.warn('[plugins/' + id + '] Hook method mismatch: ' + data.hook + ' => ' + data.method);
-				return callback();
 			}
+		}
 
-			// Write the actual method reference to the hookObj
-			data.method = method;
-
+		function register() {
 			Plugins.loadedHooks[data.hook] = Plugins.loadedHooks[data.hook] || [];
 			Plugins.loadedHooks[data.hook].push(data);
 
@@ -680,4 +686,5 @@ var fs = require('fs'),
 			callback(err, plugins);
 		});
 	};
+
 }(exports));
