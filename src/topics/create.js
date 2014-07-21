@@ -161,16 +161,10 @@ module.exports = function(Topics) {
 
 		async.waterfall([
 			function(next) {
-				plugins.fireHook('filter:topic.reply', data, function(err, filteredData) {
-					if (err) {
-						return next(err);
-					}
-
-					content = filteredData.content || data.content;
-					next();
-				});
+				plugins.fireHook('filter:topic.reply', data, next);
 			},
-			function(next) {
+			function(filteredData, next) {
+				content = filteredData.content || data.content;
 				threadTools.exists(tid, next);
 			},
 			function(topicExists, next) {
@@ -201,7 +195,7 @@ module.exports = function(Topics) {
 					content = content.trim();
 				}
 
-				if (!content || content.length < meta.config.miminumPostLength) {
+				if (!content || content.length < parseInt(meta.config.miminumPostLength, 10)) {
 					return callback(new Error('[[error:content-too-short, '  + meta.config.minimumPostLength + ']]'));
 				}
 
