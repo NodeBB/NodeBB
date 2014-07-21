@@ -3,19 +3,13 @@
 var bcrypt = require('bcryptjs'),
 	async = require('async'),
 	nconf = require('nconf'),
-	winston = require('winston'),
 	gravatar = require('gravatar'),
-	S = require('string'),
 
-	utils = require('./../public/src/utils'),
 	plugins = require('./plugins'),
 	db = require('./database'),
 	meta = require('./meta'),
 	groups = require('./groups'),
-	topics = require('./topics'),
-	events = require('./events'),
-	emitter = require('./emitter'),
-	Emailer = require('./emailer');
+	emitter = require('./emitter');
 
 (function(User) {
 
