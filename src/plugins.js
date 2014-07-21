@@ -5,10 +5,10 @@ var fs = require('fs'),
 	async = require('async'),
 	winston = require('winston'),
 	nconf = require('nconf'),
-	eventEmitter = require('events').EventEmitter,
 	semver = require('semver'),
 
 	db = require('./database'),
+	emitter = require('./emitter'),
 	meta = require('./meta'),
 	utils = require('../public/src/utils'),
 	pkg = require('../package.json');
@@ -23,9 +23,6 @@ var fs = require('fs'),
 	Plugins.clientScripts = [];
 
 	Plugins.initialized = false;
-
-	// Events
-	Plugins.readyEvent = new eventEmitter();
 
 	Plugins.init = function() {
 		if (Plugins.initialized) {
@@ -47,14 +44,15 @@ var fs = require('fs'),
 			if (global.env === 'development') {
 				winston.info('[plugins] Plugins OK');
 			}
+
 			Plugins.initialized = true;
-			Plugins.readyEvent.emit('ready');
+			emitter.emit('plugins:loaded');
 		});
 	};
 
 	Plugins.ready = function(callback) {
 		if (!Plugins.initialized) {
-			Plugins.readyEvent.once('ready', callback);
+			emitter.once('plugins:loaded', callback);
 		} else {
 			callback();
 		}
@@ -271,32 +269,40 @@ var fs = require('fs'),
 
 		var method;
 
-		if (data.hook && data.method && typeof data.method === 'string' && data.method.length > 0) {
+		if (data.hook && data.method) {
 			data.id = id;
 			if (!data.priority) {
 				data.priority = 10;
 			}
-			method = data.method.split('.').reduce(function(memo, prop) {
-				if (memo !== null && memo[prop]) {
-					return memo[prop];
-				} else {
-					// Couldn't find method by path, aborting
-					return null;
-				}
-			}, Plugins.libraries[data.id]);
 
-			if (method === null) {
+			if (typeof data.method === 'string' && data.method.length > 0) {
+				method = data.method.split('.').reduce(function(memo, prop) {
+					if (memo !== null && memo[prop]) {
+						return memo[prop];
+					} else {
+						// Couldn't find method by path, aborting
+						return null;
+					}
+				}, Plugins.libraries[data.id]);
+
+				// Write the actual method reference to the hookObj
+				data.method = method;
+
+				register();
+			} else if (typeof data.method === 'function') {
+				register();
+			} else {
 				winston.warn('[plugins/' + id + '] Hook method mismatch: ' + data.hook + ' => ' + data.method);
-				return callback();
 			}
+		}
 
-			// Write the actual method reference to the hookObj
-			data.method = method;
-
+		function register() {
 			Plugins.loadedHooks[data.hook] = Plugins.loadedHooks[data.hook] || [];
 			Plugins.loadedHooks[data.hook].push(data);
 
-			callback();
+			if (typeof callback === 'function') {
+				callback();
+			}
 		}
 	};
 
@@ -319,9 +325,25 @@ var fs = require('fs'),
 			var hookType = hook.split(':')[0];
 			switch (hookType) {
 				case 'filter':
+					if (hook === 'filter:app.load') {
+						// Special case for this hook, as arguments passed in are always the same
+						async.each(hookList, function(hookObj, next) {
+							if (hookObj.method) {
+								hookObj.method.apply(Plugins, args.concat(next));
+							}
+						}, function(err) {
+							callback(err);
+						});
+
+						return;
+					}
+
 					async.reduce(hookList, args, function(value, hookObj, next) {
 						if (hookObj.method) {
 							if (!hookObj.hasOwnProperty('callbacked') || hookObj.callbacked === true) {
+								// omg, after 6 months I finally realised what this does...
+								// It adds the callback to the arguments passed-in, since the callback
+								// is defined in *this* file (the async cb), and not the hooks themselves.
 								var	value = hookObj.method.apply(Plugins, value.concat(function() {
 									next(arguments[0], Array.prototype.slice.call(arguments, 1));
 								}));
@@ -353,7 +375,9 @@ var fs = require('fs'),
 							}
 						}
 
-						callback.apply(Plugins, [err].concat(values));
+						if (callback) {
+							callback.apply(Plugins, [err].concat(values));
+						}
 					});
 					break;
 				case 'action':
@@ -662,4 +686,5 @@ var fs = require('fs'),
 			callback(err, plugins);
 		});
 	};
+
 }(exports));
