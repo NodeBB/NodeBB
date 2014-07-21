@@ -44,7 +44,7 @@ var fs = require('fs'),
 			if (global.env === 'development') {
 				winston.info('[plugins] Plugins OK');
 			}
-			
+
 			Plugins.initialized = true;
 			emitter.emit('plugins:loaded');
 		});
@@ -294,7 +294,9 @@ var fs = require('fs'),
 			Plugins.loadedHooks[data.hook] = Plugins.loadedHooks[data.hook] || [];
 			Plugins.loadedHooks[data.hook].push(data);
 
-			callback();
+			if (typeof callback === 'function') {
+				callback();
+			}
 		}
 	};
 
