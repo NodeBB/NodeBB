@@ -10,6 +10,7 @@ var fs = require('fs'),
 	db = require('./database'),
 	emitter = require('./emitter'),
 	meta = require('./meta'),
+	translator = require('../public/src/translator'),
 	utils = require('../public/src/utils'),
 	pkg = require('../package.json');
 
@@ -21,6 +22,7 @@ var fs = require('fs'),
 	Plugins.cssFiles = [];
 	Plugins.lessFiles = [];
 	Plugins.clientScripts = [];
+	Plugins.customLanguages = [];
 
 	Plugins.initialized = false;
 
@@ -47,6 +49,11 @@ var fs = require('fs'),
 
 			Plugins.initialized = true;
 			emitter.emit('plugins:loaded');
+		});
+
+		Plugins.registerHook('core', {
+			hook: 'filter:app.load',
+			method: addLanguages
 		});
 	};
 
@@ -245,6 +252,31 @@ var fs = require('fs'),
 					}
 
 					next();
+				},
+				function(next) {
+					if (pluginData.languages && typeof pluginData.languages === 'string') {
+						var pathToFolder = path.join(__dirname, '../node_modules/', pluginData.id, pluginData.languages);
+
+						utils.walk(pathToFolder, function(err, languages) {
+							var arr = [];
+
+							async.each(languages, function(pathToLang, next) {
+								fs.readFile(pathToLang, function(err, file) {
+									arr.push({
+										file: JSON.parse(file.toString()),
+										route: pathToLang.replace(pathToFolder, '')
+									});
+
+									next(err);
+								});
+							}, function(err) {
+								Plugins.customLanguages = Plugins.customLanguages.concat(arr);
+								next(err);
+							});
+						});
+					} else {
+						next();
+					}
 				}
 			], function(err) {
 				if (!err) {
@@ -686,5 +718,23 @@ var fs = require('fs'),
 			callback(err, plugins);
 		});
 	};
+
+
+
+	function addLanguages(router, middleware, controllers, callback) {
+		Plugins.customLanguages.forEach(function(lang) {
+			router.get('/language' + lang.route, function(req, res, next) {
+				res.json(lang.file);
+			});
+
+			var components = lang.route.split('/'),
+				language = components[1],
+				filename = components[2].replace('.json', '');
+			
+			translator.addTranslation(language, filename, lang.file);
+		});
+
+		callback(null);
+	}
 
 }(exports));
