@@ -115,7 +115,7 @@ var ajaxify = ajaxify || {};
 							$(window).trigger('action:ajaxify.contentLoaded', {url: url});
 
 							ajaxify.loadScript(tpl_url);
-						}, ((new Date()).getTime() - startTime) - animationDuration * 100)
+						}, (new Date()).getTime() - startTime - animationDuration * 100)
 
 					});
 				});
