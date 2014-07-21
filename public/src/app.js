@@ -159,14 +159,6 @@ var socket,
 
 			app.enterRoom('global');
 
-			// if (config.environment === 'development' && console && console.log) {
-			// 	var log = console.log;
-			// 	console.log = function() {
-			// 		log.apply(this, arguments);
-			// 		socket.emit('tools.log', arguments);
-			// 	};
-			// }
-
 			app.cacheBuster = config['cache-buster'];
 
 			bootbox.setDefaults({
