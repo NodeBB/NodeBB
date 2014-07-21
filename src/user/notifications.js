@@ -156,7 +156,7 @@ var async = require('async'),
 
 			async.parallel({
 				username: async.apply(user.getUserField, uid, 'username'),
-				topic: async.apply(topics.getTopicFields, tid, ['slug', 'cid']),
+				topic: async.apply(topics.getTopicFields, tid, ['slug', 'cid', 'title']),
 				postIndex: async.apply(posts.getPidIndex, pid),
 				postContent: function(next) {
 					async.waterfall([
@@ -165,14 +165,21 @@ var async = require('async'),
 							postTools.parse(content, next);
 						}
 					], next);
+				},
+				topicFollowers: function(next) {
+					db.isSetMembers('tid:' + tid + ':followers', followers, next);
 				}
 			}, function(err, results) {
 				if (err) {
 					return;
 				}
 
+				followers = followers.filter(function(value, index) {
+					return !results.topicFollowers[index];
+				});
+
 				notifications.create({
-					bodyShort: '[[notifications:user_made_post, ' + results.username + ']]',
+					bodyShort: '[[notifications:user_posted_to, ' + results.username + ', ' + results.topic.title + ']]',
 					bodyLong: results.postContent,
 					path: nconf.get('relative_path') + '/topic/' + results.topic.slug + '/' + results.postIndex,
 					uniqueId: 'topic:' + tid,
