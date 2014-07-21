@@ -73,14 +73,13 @@ To add a user to access the `nodebb` database, type:
 
 Step 7: Configure MongoDB
 -------------------------
-
-MongoDB needs text search enabled. Modify ``/etc/mongodb.conf``.
+Modify ``/etc/mongodb.conf``.
 
 .. code::
 
     # nano /etc/mongodb.conf
 
-Add ``setParameter=textSearchEnabled=true`` to the end. Also, to enable authentication, uncomment ``auth = true``. Restart MongoDB.
+To enable authentication, uncomment ``auth = true``. Restart MongoDB.
 
 .. code::
 
@@ -101,7 +100,7 @@ To setup the app, type:
 
     $ node app --setup
 
-* Change the hostname to your domain name.  
+* Change the hostname to your domain name.
 * Accept the defaults by pressing enter until it asks you what database you want to use. Type ``mongo`` in that field.
 * Accept the default port, unless you changed it in the previous steps.
 * Change your username to ``nodebb``, unless you set it to another username.
