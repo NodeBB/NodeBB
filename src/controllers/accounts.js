@@ -346,10 +346,6 @@ accountsController.accountSettings = function(req, res, next) {
 			return userNotFound(res);
 		}
 
-		if (parseInt(userData.uid, 10) !== callerUID) {
-			return userNotAllowed(res);
-		}
-
 		async.parallel({
 			settings: function(next) {
 				plugins.fireHook('filter:user.settings', [], next);

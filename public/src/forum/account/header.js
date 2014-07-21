@@ -10,10 +10,6 @@ define('forum/account/header', function() {
 		var yourid = ajaxify.variables.get('yourid'),
 			theirid = ajaxify.variables.get('theirid');
 
-		var editLink = $('#editLink'),
-			settingsLink = $('#settingsLink'),
-			favouritesLink = $('#favouritesLink');
-
 		if (parseInt(yourid, 10) !== 0 && parseInt(yourid, 10) === parseInt(theirid, 10)) {
 			$('#editLink, #settingsLink, #favouritesLink').removeClass('hide');
 		} else {
@@ -24,7 +20,7 @@ define('forum/account/header', function() {
 		}
 
 		if (app.isAdmin) {
-			editLink.removeClass('hide');
+			$('#editLink, #settingsLink').removeClass('hide');
 		}
 	}
 
