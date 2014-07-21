@@ -40,7 +40,8 @@ Each plugin package contains a configuration file called ``plugin.json``. Here i
         "hooks": [
             { "hook": "filter:post.save", "method": "filter" },
             { "hook": "action:post.save", "method": "emailme" }
-        ]
+        ],
+        "languages": "path/to/languages"
     }
 
 The ``id`` property is a unique name that identifies the plugin.
@@ -58,6 +59,8 @@ The ``hooks`` property is an array containing objects that tell NodeBB which hoo
 * ``hook``, the name of the NodeBB hook
 * ``method``, the method called in your plugin
 * ``priority``, the relative priority of the method when it is eventually called (default: 10)
+
+The ``languages`` property is optional, which allows you to set up your own internationalization for your plugin (or theme). Set up a similar directory structure as core, for example: ``language/en_GB/myplugin.json``.
 
 Writing the plugin library
 ------------------
