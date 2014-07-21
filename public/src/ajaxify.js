@@ -197,7 +197,7 @@ var ajaxify = ajaxify || {};
 
 		if (ajaxify.preloader && ajaxify.preloader[url]) {
 			callback(null, ajaxify.preloader[url].data);
-			ajaxify.preloader[url] = null;
+			ajaxify.preloader = {};
 		
 			return;
 		}
