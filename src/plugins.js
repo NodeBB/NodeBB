@@ -5,10 +5,10 @@ var fs = require('fs'),
 	async = require('async'),
 	winston = require('winston'),
 	nconf = require('nconf'),
-	eventEmitter = require('events').EventEmitter,
 	semver = require('semver'),
 
 	db = require('./database'),
+	emitter = require('./emitter'),
 	meta = require('./meta'),
 	utils = require('../public/src/utils'),
 	pkg = require('../package.json');
@@ -23,9 +23,6 @@ var fs = require('fs'),
 	Plugins.clientScripts = [];
 
 	Plugins.initialized = false;
-
-	// Events
-	Plugins.readyEvent = new eventEmitter();
 
 	Plugins.init = function() {
 		if (Plugins.initialized) {
@@ -47,14 +44,15 @@ var fs = require('fs'),
 			if (global.env === 'development') {
 				winston.info('[plugins] Plugins OK');
 			}
+			
 			Plugins.initialized = true;
-			Plugins.readyEvent.emit('ready');
+			emitter.emit('plugins:loaded');
 		});
 	};
 
 	Plugins.ready = function(callback) {
 		if (!Plugins.initialized) {
-			Plugins.readyEvent.once('ready', callback);
+			emitter.once('plugins:loaded', callback);
 		} else {
 			callback();
 		}
