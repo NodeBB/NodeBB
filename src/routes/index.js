@@ -118,17 +118,14 @@ function accountRoutes(app, middleware, controllers) {
 	app.get('/notifications', middleware.buildHeader, middleware.authenticate, controllers.accounts.getNotifications);
 	app.get('/api/notifications', middleware.authenticate, controllers.accounts.getNotifications);
 
-	app.get('/chats', middleware.buildHeader, middleware.authenticate, middleware.chat.getContactList, controllers.accounts.getChats);
-	app.get('/api/chats', middleware.authenticate, middleware.chat.getContactList, controllers.accounts.getChats);
-	app.get('/chats/:userslug', middleware.buildHeader, middleware.authenticate, middleware.chat.getMetadata, middleware.chat.getContactList, middleware.chat.getMessages, controllers.accounts.getChats);
-	app.get('/api/chats/:userslug', middleware.authenticate, middleware.chat.getMetadata, middleware.chat.getContactList, middleware.chat.getMessages, controllers.accounts.getChats);
+	app.get('/chats/:userslug?', middleware.buildHeader, middleware.authenticate, controllers.accounts.getChats);
+	app.get('/api/chats/:userslug?', middleware.authenticate, controllers.accounts.getChats);
 }
 
 function userRoutes(app, middleware, controllers) {
 	app.get('/users', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
 	app.get('/api/users', middleware.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
 
-	// was this duped by accident or purpose?
 	app.get('/users/online', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
 	app.get('/api/users/online', middleware.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
 

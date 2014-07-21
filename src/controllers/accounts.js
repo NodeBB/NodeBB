@@ -477,36 +477,55 @@ accountsController.getNotifications = function(req, res, next) {
 };
 
 accountsController.getChats = function(req, res, next) {
-	messaging.getRecentChats(req.user.uid, 0, -1, function(err, chats) {
+	async.parallel({
+		contacts: async.apply(user.getFollowing, req.user.uid),
+		recentChats: async.apply(messaging.getRecentChats, req.user.uid, 0, -1)
+	}, function(err, results) {
 		if (err) {
 			return next(err);
 		}
 
 		// Remove entries if they were already present as a followed contact
-		if (res.locals.contacts && res.locals.contacts.length) {
-			var contactUids = res.locals.contacts.map(function(contact) {
+		if (results.contacts && results.contacts.length) {
+			var contactUids = results.contacts.map(function(contact) {
 					return parseInt(contact.uid, 10);
 				});
 
-			chats = chats.filter(function(chatObj) {
-				if (contactUids.indexOf(parseInt(chatObj.uid, 10)) !== -1) {
-					return false;
-				} else {
-					return true;
-				}
+			results.recentChats = results.recentChats.filter(function(chatObj) {
+				return contactUids.indexOf(parseInt(chatObj.uid, 10)) === -1;
 			});
 		}
 
-		// Limit returned chats
-		if (chats.length > 20) {
-			chats.length = 20;
+		if (results.recentChats.length > 20) {
+			results.recentChats.length = 20;
 		}
 
-		res.render('chats', {
-			meta: res.locals.chatData,
-			chats: chats,
-			contacts: res.locals.contacts,
-			messages: res.locals.messages || undefined
+		if (!req.params.userslug) {
+			return res.render('chats', {
+				chats: results.recentChats,
+				contacts: results.contacts
+			});
+		}
+
+		async.waterfall([
+			async.apply(user.getUidByUserslug, req.params.userslug),
+			function(toUid, next) {
+				async.parallel({
+					toUser: async.apply(user.getUserFields, toUid, ['uid', 'username']),
+					messages: async.apply(messaging.getMessages, req.user.uid, toUid, false)
+				}, next);
+			}
+		], function(err, data) {
+			if (err) {
+				return next(err);
+			}
+
+			res.render('chats', {
+				chats: results.recentChats,
+				contacts: results.contacts,
+				meta: data.toUser,
+				messages: data.messages
+			});
 		});
 	});
 };
