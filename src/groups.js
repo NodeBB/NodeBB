@@ -203,6 +203,7 @@
 
 			var groupData = {
 				name: name,
+				userTitle: name,
 				description: description,
 				deleted: '0',
 				hidden: '0',
@@ -345,11 +346,10 @@
 			db.getObjectsFields(groupKeys, ['name', 'hidden', 'userTitle', 'icon', 'labelColor'], function(err, groupData) {
 
 				groupData = groupData.filter(function(group) {
-					return parseInt(group.hidden, 10) !== 1;
+					return parseInt(group.hidden, 10) !== 1 && !!group.userTitle;
 				});
 
 				var groupSets = groupData.map(function(group) {
-					group.userTitle = group.userTitle || group.name;
 					group.labelColor = group.labelColor || '#000000';
 					return 'group:' + group.name + ':members';
 				});
