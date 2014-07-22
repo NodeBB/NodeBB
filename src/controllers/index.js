@@ -70,7 +70,7 @@ Controllers.home = function(req, res, next) {
 				}
 
 				function getRecentReplies(category, callback) {
-					categories.getRecentReplies(category.cid, uid, parseInt(category.numRecentReplies, 10), function (err, posts) {
+					categories.getRecentTopicReplies(category.cid, uid, parseInt(category.numRecentReplies, 10), function (err, posts) {
 						if (err) {
 							return callback(err);
 						}

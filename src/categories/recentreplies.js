@@ -10,7 +10,7 @@ var async = require('async'),
 
 module.exports = function(Categories) {
 	Categories.getRecentReplies = function(cid, uid, count, callback) {
-		if(!parseInt(count, 10)) {
+		if (!parseInt(count, 10)) {
 			return callback(null, []);
 		}
 
@@ -20,6 +20,26 @@ module.exports = function(Categories) {
 			}
 
 			posts.getPostSummaryByPids(pids, {stripTags: true}, callback);
+		});
+	};
+
+	Categories.getRecentTopicReplies = function(cid, uid, count, callback) {
+		if (!parseInt(count, 10)) {
+			return callback(null, []);
+		}
+
+		db.getSortedSetRevRange('categories:' + cid + ':tid', 0, count - 1, function(err, tids) {
+			if (err || !tids || !tids.length) {
+				return callback(err, []);
+			}
+
+			async.map(tids, topics.getLatestUndeletedPid, function(err, pids) {
+				pids = pids.filter(function(pid) {
+					return !!pid;
+				});
+
+				posts.getPostSummaryByPids(pids, {stripTags: true}, callback);
+			});
 		});
 	};
 
