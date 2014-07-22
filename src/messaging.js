@@ -145,12 +145,20 @@ var db = require('./database'),
 				return callback(err);
 			}
 
-			user.getMultipleUserFields(uids, ['username', 'picture', 'uid'], function(err, users) {
+			async.parallel({
+				unreadUids: async.apply(db.isSortedSetMembers, 'uid:' + uid + ':chats:unread', uids),
+				users: async.apply(user.getMultipleUserFields, uids, ['username', 'picture', 'uid'])
+			}, function(err, results) {
 				if (err) {
 					return callback(err);
 				}
+				var users = results.users;
 
-				users = users.filter(function(user) {
+				for (var i=0; i<users.length; ++i) {
+					users[i].unread = results.unreadUids[i];
+				}
+
+				users = users.filter(function(user, index) {
 					return !!user.uid;
 				});
 

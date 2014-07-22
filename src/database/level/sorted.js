@@ -70,7 +70,7 @@ module.exports = function(db, module) {
 			}
 			set.sort(function(a, b) {return b.score - a.score;});
 			callback(null, set);
-		})
+		});
 	};
 
 	module.getSortedSetRangeByScore = function(key, start, count, min, max, callback) {
@@ -159,6 +159,19 @@ module.exports = function(db, module) {
 			}
 
 			callback(err, false);
+		});
+	};
+
+	module.isSortedSetMembers = function(key, values, callback) {
+		module.getListRange(key, 0, -1, function(err, list) {
+			list = list.map(function(item) {
+				return item.value;
+			});
+			values = values.map(function(value) {
+				return list.indexOf(value.toString()) !== -1;
+			});
+
+			callback(err, values);
 		});
 	};
 

@@ -37,7 +37,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 
 				for(var x = 0; x<chats.length; ++x) {
 					userObj = chats[x];
-					$('<li />')
+					$('<li class="' + (userObj.unread ? 'unread' : '') + '"/>')
 						.attr('data-uid', userObj.uid)
 						.html('<a href="javascript:app.openChat(\'' +
 							userObj.username +
