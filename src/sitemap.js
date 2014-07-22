@@ -9,6 +9,7 @@ var path = require('path'),
 	topics = require('./topics'),
 	utils = require('../public/src/utils'),
 	sitemap = {
+		obj: undefined,
 		getStaticUrls: function(callback) {
 			callback(null, [{
 				url: '',
@@ -74,17 +75,28 @@ var path = require('path'),
 			});
 		},
 		render: function(callback) {
-			async.parallel([sitemap.getStaticUrls, sitemap.getDynamicUrls], function(err, urls) {
-				urls = urls[0].concat(urls[1]);
-				var map = sm.createSitemap({
-						hostname: nconf.get('url'),
-						cacheTime: 60*60,	// Cached for 1 hour
-						urls: urls
-					}),
-					xml = map.toXML(function(xml) {
+			var returnSitemap = function() {
+					sitemap.obj.toXML(function(xml) {
 						callback(xml);
 					});
-			});
+				};
+
+			if (sitemap.obj !== undefined && sitemap.obj.cache.length) {
+				console.log('using sitemap from cache!');
+				returnSitemap();
+			} else {
+				console.log('generating new sitemap!', sitemap.obj);
+				async.parallel([sitemap.getStaticUrls, sitemap.getDynamicUrls], function(err, urls) {
+					urls = urls[0].concat(urls[1]);
+					sitemap.obj = sm.createSitemap({
+						hostname: nconf.get('url'),
+						cacheTime: 1000 * 60 * 60,	// Cached for 1 hour
+						urls: urls
+					});
+
+					returnSitemap();
+				});
+			}
 		}
 	};
 
