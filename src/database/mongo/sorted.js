@@ -135,15 +135,15 @@ module.exports = function(db, module) {
 	module.isSortedSetMembers = function(key, values, callback) {
 		values = values.map(helpers.valueToString);
 		db.collection('objects').find({_key: key, value: {$in: values}}).toArray(function(err, results) {
-
-
+			if (err) {
+				return callback(err);
+			}
 			results = results.map(function(item) {
 				return item.value;
 			});
 			values = values.map(function(value) {
 				return results.indexOf(value) !== -1;
 			});
-			console.log(err, values);
 			callback(err, results);
 		});
 	};
