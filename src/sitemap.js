@@ -75,15 +75,9 @@ var path = require('path'),
 			});
 		},
 		render: function(callback) {
-			var returnSitemap = function() {
-					sitemap.obj.toXML(function(xml) {
-						callback(xml);
-					});
-				};
-
 			if (sitemap.obj !== undefined && sitemap.obj.cache.length) {
 				console.log('using sitemap from cache!');
-				returnSitemap();
+				sitemap.obj.toXML(callback);
 			} else {
 				console.log('generating new sitemap!', sitemap.obj);
 				async.parallel([sitemap.getStaticUrls, sitemap.getDynamicUrls], function(err, urls) {
@@ -94,7 +88,7 @@ var path = require('path'),
 						urls: urls
 					});
 
-					returnSitemap();
+					sitemap.obj.toXML(callback);
 				});
 			}
 		}
