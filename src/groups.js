@@ -151,6 +151,9 @@
 	};
 
 	Groups.isMemberOfGroups = function(uid, groups, callback) {
+		groups = groups.map(function(groupName) {
+			return 'group:' + groupName + ':members';
+		});
 		db.isMemberOfSets(groups, uid, callback);
 	};
 
