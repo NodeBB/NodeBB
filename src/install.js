@@ -206,6 +206,16 @@ function completeConfigSetup(err, config, next) {
 }
 
 function setupDatabase(server_conf, next) {
+	install.installDbDependencies(server_conf, function(err) {
+		if (err) {
+			return next(err);
+		}
+
+		require('./database').init(next);
+	});
+}
+
+install.installDbDependencies = function(server_conf, next) {
 	var	npm = require('npm'),
 		packages = [];
 
@@ -221,15 +231,9 @@ function setupDatabase(server_conf, next) {
 			packages = packages.concat(DATABASES[server_conf.secondary_database].dependencies);
 		}
 
-		npm.commands.install(packages, function(err) {
-			if (err) {
-				return next(err);
-			}
-
-			require('./database').init(next);
-		});
+		npm.commands.install(packages, next);
 	});
-}
+};
 
 function setupDefaultConfigs(next) {
 	winston.info('Populating database with default configs, if not already set...');

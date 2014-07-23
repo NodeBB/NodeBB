@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 5, 17);
+	latestSchema = Date.UTC(2014, 6, 23);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -859,6 +859,26 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/6/17] Category post count upgrade - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 6, 23);
+
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/7/23] Upgrading db dependencies...');
+				var install = require('./install');
+				var config = require('../config.json');
+				install.installDbDependencies(config, function(err) {
+					if (err) {
+						winston.error('[2014/7/23] Error encountered while upgrading db dependencies');
+						return next(err);
+					}
+					winston.error('[2014/7/23] Upgraded db dependencies');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2014/7/23] Upgrading db dependencies - skipped');
 				next();
 			}
 		}
