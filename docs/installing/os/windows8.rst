@@ -9,6 +9,7 @@ First, install the following programs:
 * https://windows.github.com/
 * http://nodejs.org/
 * http://sourceforge.net/projects/redis/files/redis-2.6.10/
+* http://http://imagemagick.org/script/binary-releases.php#windows/
 
 You may have to restart your computer.
 
