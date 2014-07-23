@@ -150,7 +150,7 @@ var socket,
 				app.alert({
 					title: '[[global:alert.banned]]',
 					message: '[[global:alert.banned.message]]',
-					type: 'warning',
+					type: 'danger',
 					timeout: 1000
 				});
 
