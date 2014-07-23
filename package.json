@@ -43,7 +43,7 @@
     "nodebb-widget-essentials": "~0.1.0",
     "npm": "^1.4.6",
     "passport": "~0.2.0",
-    "passport-local": "0.1.6",
+    "passport-local": "1.0.0",
     "prompt": "~0.2.11",
     "request": "~2.38.0",
     "rimraf": "~2.2.6",
