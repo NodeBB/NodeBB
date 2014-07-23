@@ -126,7 +126,7 @@ module.exports = function(Meta) {
 			}, function(err) {
 				// Translate into relative paths
 				Meta.js.scripts = Meta.js.scripts.map(function(script) {
-					return path.relative(path.resolve(__dirname, '../../'), script).replace(/\\/g, '/');
+					return path.relative(path.resolve(__dirname, '../..'), script).replace(/\\/g, '/');
 				});
 
 				Meta.js.prepared = true;
