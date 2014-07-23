@@ -5,6 +5,7 @@ var winston = require('winston'),
 	path = require('path'),
 	async = require('async'),
 	_ = require('underscore'),
+	os = require('os'),
 
 	plugins = require('../plugins'),
 	emitter = require('../emitter'),
@@ -74,30 +75,30 @@ module.exports = function(Meta) {
 	Meta.js.prepare = function (callback) {
 		plugins.fireHook('filter:scripts.get', Meta.js.scripts, function(err, scripts) {
 			var jsPaths = scripts.map(function (jsPath) {
-				jsPath = path.normalize(jsPath);
+					jsPath = path.normalize(jsPath);
 
-				if (jsPath.substring(0, 7) === 'plugins') {
-					var	matches = _.map(plugins.staticDirs, function(realPath, mappedPath) {
-						if (jsPath.match(mappedPath)) {
-							return mappedPath;
+					if (jsPath.substring(0, 7) === 'plugins') {
+						var	matches = _.map(plugins.staticDirs, function(realPath, mappedPath) {
+							if (jsPath.match(mappedPath)) {
+								return mappedPath;
+							} else {
+								return null;
+							}
+						}).filter(function(a) { return a; });
+
+						if (matches.length) {
+							var	relPath = jsPath.slice(('plugins/' + matches[0]).length),
+								pluginId = matches[0].split(path.sep)[0];
+
+							return plugins.staticDirs[matches[0]] + relPath;
 						} else {
+							winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + jsPath + '. Are you sure it is defined by a plugin?');
 							return null;
 						}
-					}).filter(function(a) { return a; });
-
-					if (matches.length) {
-						var	relPath = jsPath.slice(('plugins/' + matches[0]).length),
-							pluginId = matches[0].split(path.sep)[0];
-
-						return plugins.staticDirs[matches[0]] + relPath;
 					} else {
-						winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + jsPath + '. Are you sure it is defined by a plugin?');
-						return null;
+						return path.join(__dirname, '../..', '/public', jsPath);
 					}
-				} else {
-					return path.join(__dirname, '../..', '/public', jsPath);
-				}
-			});
+				});
 
 			Meta.js.scripts = jsPaths.filter(function(path) {
 				return path !== null;
@@ -123,6 +124,11 @@ module.exports = function(Meta) {
 					next(err);
 				});
 			}, function(err) {
+				// Translate into relative paths
+				Meta.js.scripts = Meta.js.scripts.map(function(script) {
+					return path.relative(path.resolve(__dirname, '../..'), script).replace(/\\/g, '/');
+				});
+
 				Meta.js.prepared = true;
 				callback(err);
 			});
@@ -163,4 +169,11 @@ module.exports = function(Meta) {
 			Meta.js.minifierProc.kill('SIGTERM');
 		}
 	};
+
+	// OS detection and handling
+	// if (os.platform() === 'win32') {
+	// 	Meta.js.scripts = Meta.js.scripts.map(function(script) {
+	// 		return script.replace(/\//g, '\\');
+	// 	});
+	// }
 };
