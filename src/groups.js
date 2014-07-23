@@ -327,6 +327,16 @@
 			},
 			function(next) {
 				db.delete('group:' + groupName + ':members', next);
+			},
+			function(next) {
+				db.getSetMembers('groups', function(err, groups) {
+					if (err) {
+						return next(err);
+					}
+					async.each(groups, function(group, next) {
+						db.setRemove('group:' + group + ':members', groupName, next);
+					}, next);
+				});
 			}
 		], callback);
 	};
