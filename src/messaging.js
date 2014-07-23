@@ -39,6 +39,17 @@ var db = require('./database'),
 					}
 
 					db.listAppend('messages:' + uids[0] + ':' + uids[1], mid);
+					db.listPrepend('messages:recent:' + fromuid, message.content, function(err) {
+						if (err) {
+							return callback(err);
+						}
+
+						db.getListRange('messages:recent:' + fromuid, 0, -1, function(err, list) {
+							if (list.length > 10) {
+								db.listRemoveLast('messages:recent:' + uids[0]);
+							}
+						});
+					});
 
 					Messaging.updateChatTime(fromuid, touid);
 					Messaging.updateChatTime(touid, fromuid);
@@ -204,4 +215,51 @@ var db = require('./database'),
 			callback(new Error('invalid-uid-or-participant-uids'));
 		}
 	};
+
+	Messaging.verifySpammer = function(uid, callback) {
+		var messagesToCompare = 10;
+
+		db.getListRange('messages:recent:' + uid, 0, messagesToCompare - 1, function(err, msgs) {
+			var total = 0;
+
+			for (var i = 0, ii = msgs.length - 1; i < ii; ++i) {
+				total += areTooSimilar(msgs[i], msgs[i+1]) ? 1 : 0;
+			}
+
+			var isSpammer = total === messagesToCompare - 1;
+			if (isSpammer) {
+				db.delete('messages:recent:' + uid);
+			}
+
+			callback(err, isSpammer);
+		});
+	};
+
+	// modified from http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance
+	function areTooSimilar(a, b) {
+		var matrix = [];
+
+		for(var i = 0; i <= b.length; i++){
+			matrix[i] = [i];
+		}
+
+		for(var j = 0; j <= a.length; j++){
+			matrix[0][j] = j;
+		}
+
+		for(i = 1; i <= b.length; i++){
+			for(j = 1; j <= a.length; j++){
+				if(b.charAt(i-1) === a.charAt(j-1)){
+					matrix[i][j] = matrix[i-1][j-1];
+				} else {
+					matrix[i][j] = Math.min(matrix[i-1][j-1] + 1,
+					Math.min(matrix[i][j-1] + 1,
+					matrix[i-1][j] + 1));
+				}
+			}
+		}
+
+		return (matrix[b.length][a.length] / b.length < 0.1);
+	}
+
 }(exports));

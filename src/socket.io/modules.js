@@ -175,6 +175,20 @@ SocketModules.chats.send = function(socket, data, callback) {
 		return;
 	}
 
+	Messaging.verifySpammer(socket.uid, function(err, isSpammer) {
+		if (!err && isSpammer) {
+			var sockets = server.getUserSockets(socket.uid);
+
+			for(var i = 0; i < sockets.length; ++i) {
+				sockets[i].emit('event:banned');
+			}
+
+			// We're just logging them out, so a "temporary ban" to prevent abuse. Revisit once we implement a way to temporarily ban users
+			server.logoutUser(socket.uid);
+			return callback();
+		}
+	});
+
 	var msg = S(data.message).stripTags().s;
 
 	Messaging.addMessage(socket.uid, touid, msg, function(err, message) {
