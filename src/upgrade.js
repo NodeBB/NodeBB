@@ -874,7 +874,7 @@ Upgrade.upgrade = function(callback) {
 						winston.error('[2014/7/23] Error encountered while upgrading db dependencies');
 						return next(err);
 					}
-					winston.error('[2014/7/23] Upgraded db dependencies');
+					winston.info('[2014/7/23] Upgraded db dependencies');
 					Upgrade.update(thisSchemaDate, next);
 				});
 			} else {
