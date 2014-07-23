@@ -282,7 +282,7 @@ var async = require('async'),
 				post.category = results.topicCategory.category;
 				post.index = results.index;
 
-				if (options.stripTags) {
+				if (options.stripTags && results.content) {
 					var s = S(results.content);
 					post.content = s.stripTags.apply(s, utils.stripTags).s;
 				} else {
