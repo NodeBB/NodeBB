@@ -80,7 +80,7 @@ define('forum/admin/groups', ['forum/admin/iconSelect'], function(iconSelect) {
 				socket.emit('admin.groups.get', groupName, function(err, groupObj) {
 					var formEl = detailsModal.find('form');
 
-					formEl.find('#change-group-name').val(groupObj.name);
+					formEl.find('#change-group-name').val(groupObj.name).prop('readonly', groupObj.system);
 					formEl.find('#change-group-desc').val(groupObj.description);
 					formEl.find('#change-group-user-title').val(groupObj.userTitle);
 					formEl.find('#group-icon').attr('class', 'fa fa-2x ' + groupObj.icon).attr('value', groupObj.icon);
