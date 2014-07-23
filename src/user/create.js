@@ -27,34 +27,38 @@ module.exports = function(User) {
 		var password = userData.password;
 		userData.password = null;
 
-		async.parallel([
-			function(next) {
+		async.parallel({
+			emailValid: function(next) {
 				if (userData.email) {
 					next(!utils.isEmailValid(userData.email) ? new Error('[[error:invalid-email]]') : null);
 				} else {
 					next();
 				}
 			},
-			function(next) {
+			userNameValid: function(next) {
 				next((!utils.isUserNameValid(userData.username) || !userData.userslug) ? new Error('[[error:invalid-username]]') : null);
 			},
-			function(next) {
+			passwordValid: function(next) {
 				if (password) {
 					next(!utils.isPasswordValid(password) ? new Error('[[error:invalid-password]]') : null);
 				} else {
 					next();
 				}
 			},
-			function(next) {
+			renamedUsername: function(next) {
 				meta.userOrGroupExists(userData.userslug, function(err, exists) {
 					if (err) {
 						return next(err);
 					}
 
 					if (exists) {
+						var	newUsername = '';
 						async.forever(function(next) {
-							var	newUsername = userData.username + (Math.floor(Math.random() * 255) + 1);
+							newUsername = userData.username + (Math.floor(Math.random() * 255) + 1);
 							User.exists(newUsername, function(err, exists) {
+								if (err) {
+									return callback(err);
+								}
 								if (!exists) {
 									next(newUsername);
 								} else {
@@ -69,7 +73,7 @@ module.exports = function(User) {
 					}
 				});
 			},
-			function(next) {
+			emailAvailable: function(next) {
 				if (userData.email) {
 					User.email.available(userData.email, function(err, available) {
 						if (err) {
@@ -81,28 +85,34 @@ module.exports = function(User) {
 					next();
 				}
 			},
-			function(next) {
+			customFields: function(next) {
 				plugins.fireHook('filter:user.custom_fields', userData, function(err, fields) {
+					if (err) {
+						return next(err);
+					}
+					delete fields.username;
+					delete fields.userslug;
 					customFields = fields;
 					next(err);
 				});
 			},
-			function(next) {
+			userData: function(next) {
 				plugins.fireHook('filter:user.create', userData, function(err, filteredUserData){
 					next(err, utils.merge(userData, filteredUserData));
 				});
 			}
-		], function(err, results) {
+		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			userData = results[results.length - 1];
-			var userNameChanged = !!results[3];
+			userData = results.userData;
+			var userNameChanged = !!results.renamedUsername;
+
 			// If a new username was picked...
 			if (userNameChanged) {
-				userData.username = results[3];
-				userData.userslug = utils.slugify(results[3]);
+				userData.username = results.renamedUsername;
+				userData.userslug = utils.slugify(results.renamedUsername);
 			}
 
 			db.incrObjectField('global', 'nextUid', function(err, uid) {
