@@ -24,7 +24,7 @@ Minifier.js.minify = function (scripts, minify, callback) {
 		options.outSourceMap = 'nodebb.min.js.map';
 		options.mangle = false;
 		options.compress = false;
-		options.prefix = __dirname.split(path.sep).length;
+		options.prefix = 1;
 	}
 
 	try {
