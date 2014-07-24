@@ -95,7 +95,7 @@ In nginx, ensure that the following line is present in your ``server`` block:
 
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
-In addition, ensure that the `use_port` option is set to `false` in your NodeBB's ``config.json``
+In addition, ensure that the ``use_port`` option is set to ``false`` in your NodeBB's ``config.json``
 
 
 Submit Bugs on our Issue Tracker
