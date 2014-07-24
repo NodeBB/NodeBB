@@ -140,6 +140,12 @@
 		}
 	};
 
+	translator.compile = function() {
+		var args = Array.prototype.slice.call(arguments, 0);
+		
+		return '[[' + args.join(', ') + ']]';
+	};
+
 	translator.load = function (language, filename, callback) {
 
 		if (isLanguageFileLoaded(language, filename)) {
