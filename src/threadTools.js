@@ -221,17 +221,23 @@ var winston = require('winston'),
 	};
 
 	ThreadTools.toggleFollow = function(tid, uid, callback) {
-		topics.isFollowing(tid, uid, function(err, following) {
-			if (err) {
-				return callback(err);
-			}
-
-			db[following ? 'setRemove' : 'setAdd']('tid:' + tid + ':followers', uid, function(err) {
-				if (typeof callback === 'function') {
-					callback(err, !following);
+		callback = callback || function() {};
+		async.waterfall([
+			function (next) {
+				ThreadTools.exists(tid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-topic]]'));
 				}
-			});
-		});
+				topics.isFollowing(tid, uid, next);
+			},
+			function (isFollowing, next) {
+				db[isFollowing ? 'setRemove' : 'setAdd']('tid:' + tid + ':followers', uid, function(err) {
+					next(err, !isFollowing);
+				});
+			}
+		], callback);
 	};
 
 }(exports));
