@@ -120,7 +120,8 @@ var winston = require('winston'),
 			plugins.fireHook('action:topic.lock', {
 				tid: tid,
 				isLocked: lock,
-				uid: uid
+				uid: uid,
+				timestamp: Date.now()
 			});
 
 			emitTo('topic_' + tid);
@@ -164,7 +165,8 @@ var winston = require('winston'),
 			plugins.fireHook('action:topic.pin', {
 				tid: tid,
 				isPinned: pin,
-				uid: uid
+				uid: uid,
+				timestamp: Date.now()
 			});
 
 			emitTo('topic_' + tid);
@@ -212,7 +214,8 @@ var winston = require('winston'),
 				tid: tid,
 				fromCid: oldCid,
 				toCid: cid,
-				uid: uid
+				uid: uid,
+				timestamp: Date.now()
 			});
 		});
 	};
