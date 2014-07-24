@@ -13,7 +13,7 @@ var winston = require('winston'),
 	meta = require('./meta'),
 	websockets = require('./socket.io'),
 	events = require('./events'),
-	Plugins = require('./plugins');
+	plugins = require('./plugins');
 
 
 (function(ThreadTools) {
@@ -54,7 +54,7 @@ var winston = require('winston'),
 
 				ThreadTools[isDelete ? 'lock' : 'unlock'](tid);
 
-				Plugins.fireHook(isDelete ? 'action:topic.delete' : 'action:topic.restore', tid);
+				plugins.fireHook(isDelete ? 'action:topic.delete' : 'action:topic.restore', tid);
 
 				events[isDelete ? 'logTopicDelete' : 'logTopicRestore'](uid, tid);
 
@@ -117,6 +117,11 @@ var winston = require('winston'),
 
 			topics.setTopicField(tid, 'locked', lock ? 1 : 0);
 
+			plugins.fireHook('action:topic.lock', {
+				tid: tid,
+				isLocked: lock
+			});
+
 			emitTo('topic_' + tid);
 			emitTo('category_' + cid);
 
@@ -153,6 +158,11 @@ var winston = require('winston'),
 			topics.setTopicField(tid, 'pinned', pin ? 1 : 0);
 			topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
 				db.sortedSetAdd('categories:' + topicData.cid + ':tid', pin ? Math.pow(2, 53) : topicData.lastposttime, tid);
+			});
+
+			plugins.fireHook('action:topic.pin', {
+				tid: tid,
+				isPinned: pin
 			});
 
 			emitTo('topic_' + tid);
@@ -195,6 +205,12 @@ var winston = require('winston'),
 			categories.moveRecentReplies(tid, oldCid, cid);
 
 			topics.setTopicField(tid, 'cid', cid, callback);
+
+			plugins.fireHook('action:topic.move', {
+				tid: tid,
+				fromCid: oldCid,
+				toCid: cid
+			});
 		});
 	};
 
