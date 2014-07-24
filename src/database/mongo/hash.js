@@ -20,17 +20,16 @@ module.exports = function(db, module) {
 	};
 
 	module.getObjects = function(keys, callback) {
-
-		db.collection('objects').find({_key:{$in:keys}}, {_id:0}).toArray(function(err, data) {
-
+		db.collection('objects').find({_key: {$in: keys}}, {_id: 0}).toArray(function(err, data) {
 			if(err) {
 				return callback(err);
 			}
 
+			var map = helpers.toMap(data);
 			var returnData = [];
 
 			for(var i=0; i<keys.length; ++i) {
-				returnData.push(helpers.findItem(data, keys[i]));
+				returnData.push(map[keys[i]]);
 			}
 
 			callback(null, returnData);
@@ -70,12 +69,13 @@ module.exports = function(db, module) {
 				items = [];
 			}
 
+			var map = helpers.toMap(items);
 			var returnData = [],
 				index = 0,
 				item;
 
 			for (var i=0; i<keys.length; ++i) {
-				var item = helpers.findItem(items, keys[i]) || {};
+				var item = map[keys[i]] || {};
 
 				for (var k=0; k<fields.length; ++k) {
 					if (item[fields[k]] === null || item[fields[k]] === undefined) {

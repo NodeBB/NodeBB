@@ -155,11 +155,12 @@ module.exports = function(db, module) {
 				return callback(err);
 			}
 
-			var returnData = [],
+			var map = helpers.toMap(result),
+				returnData = [],
 				item;
 
 			for(var i=0; i<keys.length; ++i) {
-				item = helpers.findItem(result, keys[i]);
+				item = map[keys[i]];
 				returnData.push(item ? item.score : null);
 			}
 
