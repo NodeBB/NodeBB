@@ -84,6 +84,20 @@ If you are using :doc:`nginx <../configuring/proxies/nginx>` or :doc:`Apache <..
 Alternatively, edit the ``config.json`` file using your favourite text editor and change ``use_port`` to ``false``.
 
 
+The "Recently Logged In IPs" section only shows 127.0.0.1
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+NodeBBs running behind a proxy may have difficulties determining the original IP address that requests come from. It is important that the proxy server provides the referral IP header.
+
+In nginx, ensure that the following line is present in your ``server`` block:
+
+.. code:: nginx
+
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+In addition, ensure that the `use_port` option is set to `false` in your NodeBB's ``config.json``
+
+
 Submit Bugs on our Issue Tracker
 --------------------------------
 
