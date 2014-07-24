@@ -56,7 +56,7 @@ It is important to ensure that your NodeBB and database servers are secured. Bea
 
 ## Upgrading NodeBB
 
-Detailed upgrade instructions are listed in [Upgrading NodeBB](https://github.com/NodeBB/NodeBB/wiki/Upgrading-NodeBB)
+Detailed upgrade instructions are listed in [Upgrading NodeBB](https://docs.nodebb.org/en/latest/upgrading/index.html)
 
 ## License
 
