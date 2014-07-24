@@ -4,7 +4,7 @@
 /* globals app, define, ajaxify, utils, translator, config */
 
 
-define('navigator', ['forum/topic/pagination'], function(pagination) {
+define('navigator', ['forum/pagination'], function(pagination) {
 
 	var navigator = {};
 	var index = 1;
