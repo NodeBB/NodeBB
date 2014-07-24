@@ -170,9 +170,8 @@ module.exports = function(app, data) {
 	var cookie = {
 		maxAge: 1000 * 60 * 60 * 24 * parseInt(meta.configs.loginDays || 14, 10)
 	};
-	var cookieDomain = nconf.get('cookie-domain');
-	if(cookieDomain) {
-		cookie.domain = cookieDomain;
+	if(meta.config.cookieDomain) {
+		cookie.domain = meta.config.cookieDomain;
 	}
 	
 	app.use(session({
