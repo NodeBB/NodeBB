@@ -6,10 +6,9 @@ Requirements
 
 NodeBB requires the following software to be installed:
 
-* A version of Node.js at least 0.10 or greater.
-* Redis, version 2.6 or greater (steps to install from Joyent's package repository given below),
-    or MongoDB, version 2.6 or greater (untested).
-* nginx, version 1.3.13 or greater (**only if** intending to use nginx to proxy requests to a NodeBB server).
+* A version of Node.js at least 0.10 or greater.  
+* Redis, version 2.6 or greater or MongoDB, version 2.6 or greater. (Steps to use Redis are given below.)  
+* nginx, version 1.3.13 or greater (**only if** intending to use nginx to proxy requests to a NodeBB server).  
 
 Server Access
 ----------------
@@ -130,7 +129,7 @@ Installation
 
     **Note:** With port 80 the ``:80`` does not need to be entered.  
 
-**Note:** If these instructions are unclear or if you run into trouble, please let us know by `filing an issue <https://github.com/NodeBB/NodeBB/issues>`.
+**Note:** If these instructions are unclear or if you run into trouble, please let us know by `filing an issue <https://github.com/NodeBB/NodeBB/issues>`_.
 
 Upgrading NodeBB
 ----------------
