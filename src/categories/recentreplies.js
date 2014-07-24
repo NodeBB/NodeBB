@@ -53,11 +53,19 @@ module.exports = function(Categories) {
 				results.tids = results.tids.concat(results.pinnedTids);
 
 				async.map(results.tids, topics.getLatestUndeletedPid, function(err, topicPids) {
+					if (err) {
+						return callback(err);
+					}
+
 					pids = pids.concat(topicPids).filter(function(pid, index, array) {
 						return !!pid && array.indexOf(pid) === index;
 					});
 
 					posts.getPostSummaryByPids(pids, {stripTags: true}, function(err, posts) {
+						if (err) {
+							return callback(err);
+						}
+
 						posts = posts.sort(function(a, b) {
 							return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10);
 						}).slice(0, count);

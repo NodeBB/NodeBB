@@ -157,7 +157,7 @@ module.exports = function(Topics) {
 					next(parseInt(deleted, 10) === 0);
 				});
 			}, function(pid) {
-				callback(null, pid ? pid : null);
+				callback(null, pid ? pid.toString() : null);
 			});
 		});
 	};
