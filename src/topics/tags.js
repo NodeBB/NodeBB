@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async'),
+	winston = require('winston'),
 	db = require('../database'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
@@ -56,10 +57,11 @@ module.exports = function(Topics) {
 		return tag;
 	};
 
-	function updateTagCount(tag) {
+	function updateTagCount(tag, callback) {
+		callback = callback || function() {};
 		Topics.getTagTopicCount(tag, function(err, count) {
 			if (!err) {
-				db.sortedSetAdd('tags:topic:count', count, tag);
+				db.sortedSetAdd('tags:topic:count', count, tag, callback);
 			}
 		});
 	}
@@ -85,7 +87,6 @@ module.exports = function(Topics) {
 		db.getSetMembers('topic:' + tid + ':tags', callback);
 	};
 
-	//returns tags as objects cuz templates.js cant do arrays yet >_>
 	Topics.getTopicTagsObjects = function(tid, callback) {
 		Topics.getTopicTags(tid, function(err, tags) {
 			callback(err, mapToObject(tags));
@@ -103,13 +104,15 @@ module.exports = function(Topics) {
 
 	Topics.updateTags = function(tid, tags) {
 		Topics.getTopicField(tid, 'timestamp', function(err, timestamp) {
-			if (!err) {
-				Topics.deleteTopicTags(tid, function(err) {
-					if (!err) {
-						Topics.createTags(tags, tid, timestamp);
-					}
-				});
+			if (err) {
+				return winston.error(err.message);
 			}
+
+			Topics.deleteTopicTags(tid, function(err) {
+				if (!err) {
+					Topics.createTags(tags, tid, timestamp);
+				}
+			});
 		});
 	};
 
@@ -119,7 +122,7 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			async.parallel([
+			async.series([
 				function(next) {
 					db.delete('topic:' + tid + ':tags', next);
 				},
@@ -129,6 +132,11 @@ module.exports = function(Topics) {
 					});
 
 					db.sortedSetsRemove(sets, tid, next);
+				},
+				function(next) {
+					async.each(tags, function(tag, next) {
+						updateTagCount(tag, next);
+					}, next);
 				}
 			], callback);
 		});
