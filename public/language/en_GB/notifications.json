@@ -5,9 +5,9 @@
 
 	"back_to_home": "Back to %1",
 	"outgoing_link": "Outgoing Link",
-	"outgoing_link_message": "You are now leaving",
-	"continue_to": "Continue to",
-	"return_to": "Return to ",
+	"outgoing_link_message": "You are now leaving %1.",
+	"continue_to": "Continue to %1",
+	"return_to": "Return to %1",
 	"new_notification": "New Notification",
 	"you_have_unread_notifications": "You have unread notifications.",
 
