@@ -118,6 +118,11 @@ Executed when a post or signature needs to be parsed from raw text to HTML (for 
 ``filter:topic.thread_tools``
 ^^^^^^^^^^^^^^^^^^^^^
 
+``filter:topic.get``
+^^^^^^^^^^^^^^^^^^^^^
+
+Passes in the final parsed topic data.
+
 ``filter:user.create``
 ^^^^^^^^^^^^^^^^^^^^^
 
