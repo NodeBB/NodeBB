@@ -337,7 +337,7 @@ function displayHelp() {
 	winston.info('Options:');
 	winston.info('  --help              displays this usage information');
 	winston.info('  --setup             configure your environment and setup NodeBB');
-	winston.info('  --upgrade           upgrade NodeBB, first read: github.com/NodeBB/NodeBB/wiki/Upgrading-NodeBB');
+	winston.info('  --upgrade           upgrade NodeBB, first read: https://docs.nodebb.org/en/latest/upgrading/');
 	winston.info('  --reset             soft resets NodeBB; disables all plugins and restores selected theme to Vanilla');
 	winston.info('  --start             manually start NodeBB (default when no options are given)');
 }
