@@ -167,13 +167,19 @@ module.exports = function(app, data) {
 	app.use(bodyParser.json());
 	app.use(cookieParser());
 
+	var cookie = {
+		maxAge: 1000 * 60 * 60 * 24 * parseInt(meta.configs.loginDays || 14, 10)
+	};
+	var cookieDomain = nconf.get('cookie-domain');
+	if(cookieDomain) {
+		cookie.domain = cookieDomain;
+	}
+	
 	app.use(session({
 		store: db.sessionStore,
 		secret: nconf.get('secret'),
 		key: 'express.sid',
-		cookie: {
-			maxAge: 1000 * 60 * 60 * 24 * parseInt(meta.configs.loginDays || 14, 10)
-		},
+		cookie: cookie,
 		resave: true,
 		saveUninitialized: true
 	}));
