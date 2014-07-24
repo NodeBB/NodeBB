@@ -212,19 +212,19 @@ Executed whenever a post is created or edited, after it is saved into the databa
 ^^^^^^^^^^^^^^^^^^^^^
 
 Called when toggling pinned state
-Object: tid, isPinned
+Object: tid, isPinned, uid
 
 ``action:topic.lock``
 ^^^^^^^^^^^^^^^^^^^^^
 
 Called when toggling locked state
-Object: tid, isLocked
+Object: tid, isLocked, uid
 
 ``action:topic.move``
 ^^^^^^^^^^^^^^^^^^^^^
 
 Called when moving a topic from one category to another
-Object: tid, fromCid, toCid
+Object: tid, fromCid, toCid, uid
 
 ``action:post.edit``
 ^^^^^^^^^^^^^^^^^^^^^
