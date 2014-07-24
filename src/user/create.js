@@ -13,8 +13,6 @@ var async = require('async'),
 module.exports = function(User) {
 
 	User.create = function(userData, callback) {
-		var customFields = {};
-
 		userData = userData || {};
 		userData.userslug = utils.slugify(userData.username);
 
@@ -86,30 +84,20 @@ module.exports = function(User) {
 				}
 			},
 			customFields: function(next) {
-				plugins.fireHook('filter:user.custom_fields', userData, function(err, fields) {
-					if (err) {
-						return next(err);
-					}
-					delete fields.username;
-					delete fields.userslug;
-					customFields = fields;
-					next(err);
-				});
+				plugins.fireHook('filter:user.custom_fields', userData, next);
 			},
 			userData: function(next) {
-				plugins.fireHook('filter:user.create', userData, function(err, filteredUserData){
-					next(err, utils.merge(userData, filteredUserData));
-				});
+				plugins.fireHook('filter:user.create', userData, next);
 			}
 		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			userData = results.userData;
+			userData = utils.merge(results.userData, results.customFields);
+
 			var userNameChanged = !!results.renamedUsername;
 
-			// If a new username was picked...
 			if (userNameChanged) {
 				userData.username = results.renamedUsername;
 				userData.userslug = utils.slugify(results.renamedUsername);
@@ -123,7 +111,7 @@ module.exports = function(User) {
 				var gravatar = User.createGravatarURLFromEmail(userData.email);
 				var timestamp = Date.now();
 
-				userData = {
+				userData = utils.merge({
 					'uid': uid,
 					'username': userData.username,
 					'userslug': userData.userslug,
@@ -143,9 +131,7 @@ module.exports = function(User) {
 					'lastposttime': 0,
 					'banned': 0,
 					'status': 'online'
-				};
-
-				userData = utils.merge(userData, customFields);
+				}, userData);
 
 				db.setObject('user:' + uid, userData, function(err) {
 					if(err) {
