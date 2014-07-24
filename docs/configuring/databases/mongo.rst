@@ -65,9 +65,18 @@ To add a new database called `nodebb`, type:
 
 To add a user to access the `nodebb` database, type:
 
+For MongoDB 2.6.x
+
 .. code::
 
     > db.createUser( { user: "nodebb", pwd: "<Enter in a secure password>", roles: [ "readWrite" ] } )
+    
+For MongoDB 2.4.x
+
+.. code::
+
+    > db.addUser( { user: "nodebb", pwd: "<Enter in a secure password>", roles: [ "readWrite" ] } )
+
 
 **Note:** The role ``readWrite`` provides read or write any collection within a specific database to user.
 
