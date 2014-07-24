@@ -269,7 +269,7 @@ SocketTopics.move = function(socket, data, callback) {
 			},
 			function(cid, next) {
 				oldCid = cid;
-				threadTools.move(tid, data.cid, next);
+				threadTools.move(tid, data.cid, data.uid, next);
 			}
 		], function(err) {
 			if(err) {
@@ -305,7 +305,7 @@ SocketTopics.moveAll = function(socket, data, callback) {
 			}
 
 			async.each(tids, function(tid, next) {
-				threadTools.move(tid, data.cid, next);
+				threadTools.move(tid, data.cid, data.uid, next);
 			}, callback);
 		});
 	});

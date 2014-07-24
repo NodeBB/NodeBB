@@ -119,7 +119,8 @@ var winston = require('winston'),
 
 			plugins.fireHook('action:topic.lock', {
 				tid: tid,
-				isLocked: lock
+				isLocked: lock,
+				uid: uid
 			});
 
 			emitTo('topic_' + tid);
@@ -162,7 +163,8 @@ var winston = require('winston'),
 
 			plugins.fireHook('action:topic.pin', {
 				tid: tid,
-				isPinned: pin
+				isPinned: pin,
+				uid: uid
 			});
 
 			emitTo('topic_' + tid);
@@ -177,7 +179,7 @@ var winston = require('winston'),
 		});
 	}
 
-	ThreadTools.move = function(tid, cid, callback) {
+	ThreadTools.move = function(tid, cid, uid, callback) {
 		var topic;
 		async.waterfall([
 			function(next) {
@@ -209,7 +211,8 @@ var winston = require('winston'),
 			plugins.fireHook('action:topic.move', {
 				tid: tid,
 				fromCid: oldCid,
-				toCid: cid
+				toCid: cid,
+				uid: uid
 			});
 		});
 	};
