@@ -446,4 +446,15 @@ var async = require('async'),
 		});
 	};
 
+	Topics.search = function(tid, term, callback) {
+		if (plugins.hasListeners('filter:topic.search')) {
+			plugins.fireHook('filter:topic.search', {
+				tid: tid,
+				term: term
+			}, callback);
+		} else {
+			callback(undefined, []);
+		}
+	};
+
 }(exports));

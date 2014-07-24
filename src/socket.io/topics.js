@@ -417,4 +417,8 @@ SocketTopics.searchTags = function(socket, data, callback) {
 	topics.searchTags(data, callback);
 };
 
+SocketTopics.search = function(socket, data, callback) {
+	topics.search(data.tid, data.term, callback);
+};
+
 module.exports = SocketTopics;
