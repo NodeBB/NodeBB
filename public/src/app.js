@@ -440,7 +440,7 @@ var socket,
 		}
 
 		searchButton.off().on('click', function(e) {
-			if (!config.isLoggedIn && !config.allowGuestSearching) {
+			if (!config.loggedIn && !config.allowGuestSearching) {
 				app.alert({
 					message:'[[error:search-requires-login]]',
 					timeout: 3000
