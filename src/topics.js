@@ -259,7 +259,7 @@ var async = require('async'),
 					return !!topic;
 				});
 
-				callback(null, topics);
+				plugins.fireHook('filter:topics.get', topics, callback);
 			});
 		});
 	};

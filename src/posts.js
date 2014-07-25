@@ -289,7 +289,6 @@ var async = require('async'),
 					post.content = results.content;
 				}
 
-
 				callback(null, post);
 			});
 		}
