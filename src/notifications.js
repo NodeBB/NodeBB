@@ -34,7 +34,7 @@ var async = require('async'),
 				db.sortedSetRank('uid:' + uid + ':notifications:read', nid, function(err, rank) {
 					db.getObject('notifications:' + nid, function(err, notification) {
 						notification.read = rank !== null ? true:false;
-						
+
 						// Backwards compatibility for old notification schema
 						// Remove this block when NodeBB v0.6.0 is released.
 						if (notification.hasOwnProperty('text')) {
@@ -287,6 +287,27 @@ var async = require('async'),
 				callback();
 			}
 		});
+	};
+
+	// why_are_we_using_underscores_here_?
+	// maybe_camel_case_ALL_THE_THINGS
+	Notifications.mark_read_by_uniqueid = function(uid, uniqueId, callback) {
+		async.waterfall([
+			async.apply(db.getSortedSetRange, 'uid:' + uid + ':notifications:unread', 0, 10),
+			function(nids, next) {
+				async.filter(nids, function(nid, next) {
+					db.getObjectField('notifications:' + nid, 'uniqueId', function(err, value) {
+						next(uniqueId === value);
+					});
+				}, function(nids) {
+					next(null, nids);
+				});
+			},
+			function(nids, next) {
+				console.log('matches:', nids);
+				Notifications.mark_read_multiple(nids, uid, next);
+			}
+		], callback);
 	};
 
 	Notifications.prune = function(cutoff) {

@@ -2,9 +2,12 @@
 
 var db = require('./database'),
 	async = require('async'),
+	winston = require('winston'),
 	user = require('./user'),
 	plugins = require('./plugins'),
-	meta = require('./meta');
+	meta = require('./meta'),
+	notifications = require('./notifications'),
+	userNotifications = require('./user/notifications');
 
 
 (function(Messaging) {
@@ -32,12 +35,6 @@ var db = require('./database'),
 				if (err) {
 					return callback(err);
 				}
-
-				/*
-					TODO: Here I'd check the score of the previous message in this chat's sorted set.
-					but unfortunately, chats are stored as a list. Once nodebb/nodebb#1902 is resolved,
-					I can finish it up here.
-				*/
 
 				db.setObject('message:' + mid, message, function(err) {
 					if (err) {
@@ -98,6 +95,15 @@ var db = require('./database'),
 			}
 
 			getMessages(mids, fromuid, touid, isNew, callback);
+		});
+
+		// Mark any chat notifications pertaining to this chat as read
+		notifications.mark_read_by_uniqueid(fromuid, 'chat_' + touid + '_' + fromuid, function(err) {
+			if (err) {
+				winston.error('[messaging] Could not mark notifications related to this chat as read: ' + err.message);
+			}
+
+			userNotifications.pushCount(fromuid);
 		});
 	};
 
