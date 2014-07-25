@@ -6,9 +6,9 @@ Requirements
 
 NodeBB requires the following software to be installed:
 
-* A version of Node.js at least 0.10 or greater.  
-* Redis, version 2.6 or greater or MongoDB, version 2.6 or greater. (Steps to use Redis are given below.)  
-* nginx, version 1.3.13 or greater (**only if** intending to use nginx to proxy requests to a NodeBB server).  
+* Node.js (version 0.10 or greater, instructions below).  
+* Redis (version 2.6 or greater, instructions below) or MongoDB (version 2.6 or greater).  
+* nginx (version 1.3.13 or greater, **only if** intending to use nginx to proxy requests to a NodeBB server).  
 
 Server Access
 ----------------
@@ -53,15 +53,15 @@ Installation
     If you want to use MongoDB, LevelDB, or another database instead of Redis please look at the :doc:`Configuring Databases <../../configuring/databases>` section.
     
     **Note:** These steps quickly setup a redis server but do not fine-tuned it for production.  
+    
     **Note:** If you manually ran ``redis-server`` then exit out of it now.  
 
     .. code:: bash
 
         $ svcadm enable redis
         $ svcs svc:/pkgsrc/redis:default
-
     **Note:** If the STATE is maintenance then:
-
+    
     .. code:: bash
 
         $ scvadm clear redis  
@@ -103,7 +103,7 @@ Installation
 
         $ ./nodebb setup
 
-    a. ``URL used to access this NodeBB`` is either your public ip address from your ssh `Login` or your domain name pointing to that ip address.  
+    a. ``URL used to access this NodeBB`` is either your public ip address from your ssh ``Login`` or your domain name pointing to that ip address.  
 
         **Example:** ``http://0.0.0.0`` or ``http://example.org``  
 
@@ -118,7 +118,7 @@ Installation
     e. If you used the above steps to setup your redis-server then use the default redis settings.  
 
 7. Start NodeBB process manually:  
-    **Note:** This should not be used for production but instead create a deamon manually, use Forever, or use Supervisor :doc:`Take a look at the options here <../../running/index>`.  
+    **Note:** This should not be used for production but instead create a deamon manually, use Forever, or use Supervisor. :doc:`Take a look at the options here <../../running/index>`.  
 
     .. code:: bash
 
