@@ -33,6 +33,12 @@ var db = require('./database'),
 					return callback(err);
 				}
 
+				/*
+					TODO: Here I'd check the score of the previous message in this chat's sorted set.
+					but unfortunately, chats are stored as a list. Once nodebb/nodebb#1902 is resolved,
+					I can finish it up here.
+				*/
+
 				db.setObject('message:' + mid, message, function(err) {
 					if (err) {
 						return callback(err);
@@ -44,6 +50,7 @@ var db = require('./database'),
 							return callback(err);
 						}
 
+						// Truncate recent chats list back down to 10 (should use LTRIM, see nodebb/nodebb#1901)
 						db.getListRange('messages:recent:' + fromuid, 0, -1, function(err, list) {
 							if (list.length > 10) {
 								db.listRemoveLast('messages:recent:' + uids[0]);
@@ -101,24 +108,38 @@ var db = require('./database'),
 				return 'message:' + mid;
 			});
 
-			db.getObjects(keys, function(err, messages) {
-				if (err) {
-					return callback(err);
-				}
+			async.waterfall([
+				async.apply(db.getObjects, keys),
+				function(messages, next) {
+					async.map(messages, function(message, next) {
+						var self = parseInt(message.fromuid, 10) === parseInt(fromuid, 10);
+						message.fromUser = self ? userData[0] : userData[1];
+						message.toUser = self ? userData[1] : userData[0];
+						message.timestampISO = new Date(parseInt(message.timestamp, 10)).toISOString();
+						message.self = self ? 1 : 0;
+						message.newSet = false;
 
-				async.map(messages, function(message, next) {
-					var self = parseInt(message.fromuid, 10) === parseInt(fromuid, 10);
-					message.fromUser = self ? userData[0] : userData[1];
-					message.toUser = self ? userData[1] : userData[0];
-					message.timestampISO = new Date(parseInt(message.timestamp, 10)).toISOString();
-					message.self = self ? 1 : 0;
+						Messaging.parse(message.content, message.fromuid, fromuid, userData[1], userData[0], isNew, function(result) {
+							message.content = result;
+							next(null, message);
+						});
+					}, next);
+				},
+				function(messages, next) {
+					// Add a spacer in between messages with time gaps between them
+					messages = messages.map(function(message, index) {
+						// Compare timestamps with the previous message, and check if a spacer needs to be added
+						if (index > 0 && parseInt(message.timestamp, 10) > parseInt(messages[index-1].timestamp, 10) + (1000*60*5)) {
+							// If it's been 5 minutes, this is a new set of messages
+							message.newSet = true;
+						}
 
-					Messaging.parse(message.content, message.fromuid, fromuid, userData[1], userData[0], isNew, function(result) {
-						message.content = result;
-						next(null, message);
+						return message;
 					});
-				}, callback);
-			});
+
+					next(undefined, messages);
+				}
+			], callback);
 		});
 	}
 
