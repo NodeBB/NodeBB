@@ -1,5 +1,5 @@
 {
-    "chat.chatting_with": "和<span id=\"chat-with-name\"></span>聊天中",
+    "chat.chatting_with": "和<span id=\"chat-with-name\"></span>聊天",
     "chat.placeholder": "在这里输入聊天消息，按回车键发送",
     "chat.send": "发送",
     "chat.no_active": "暂无聊天",

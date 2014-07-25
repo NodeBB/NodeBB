@@ -5,6 +5,6 @@
     "search": "Søk",
     "enter_username": "Skriv ett brukernavn for å søke",
     "load_more": "Last flere",
-    "user-not-found": "User not found!",
-    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
+    "user-not-found": "Bruker ikke funnet!",
+    "users-found-search-took": "%1 bruker(e) funnet! Søk tok %2 ms."
 }
