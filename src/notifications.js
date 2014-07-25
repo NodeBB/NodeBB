@@ -304,7 +304,6 @@ var async = require('async'),
 				});
 			},
 			function(nids, next) {
-				console.log('matches:', nids);
 				Notifications.mark_read_multiple(nids, uid, next);
 			}
 		], callback);
