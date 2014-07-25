@@ -31,56 +31,69 @@ var db = require('./database'),
 				touid: touid
 			};
 
-			plugins.fireHook('filter:messaging.save', message, function(err, message) {
+			async.waterfall([
+				function(next) {
+					plugins.fireHook('filter:messaging.save', message, next);
+				},
+				function(message, next) {
+					db.setObject('message:' + mid, message, next);
+				}
+			], function(err) {
 				if (err) {
 					return callback(err);
 				}
 
-				db.setObject('message:' + mid, message, function(err) {
+				async.parallel([
+					async.apply(addToRecent, fromuid, message),
+					async.apply(db.sortedSetAdd, 'messages:uid:' + uids[0] + ':to:' + uids[1], timestamp, mid),
+					async.apply(Messaging.updateChatTime, fromuid, touid),
+					async.apply(Messaging.updateChatTime, touid, fromuid),
+					async.apply(Messaging.markRead, fromuid, touid),
+					async.apply(Messaging.markUnread, touid, fromuid),
+				], function(err, results) {
 					if (err) {
 						return callback(err);
 					}
 
-					db.sortedSetAdd('messages:uid:' + uids[0] + ':to:' + uids[1], timestamp, mid);
-					db.listPrepend('messages:recent:' + fromuid, message.content, function(err) {
-						if (err) {
-							return callback(err);
-						}
-
-						// Truncate recent chats list back down to 10 (should use LTRIM, see nodebb/nodebb#1901)
-						db.getListRange('messages:recent:' + fromuid, 0, -1, function(err, list) {
-							if (list.length > 10) {
-								db.listRemoveLast('messages:recent:' + uids[0]);
-							}
-						});
-					});
-
-					Messaging.updateChatTime(fromuid, touid);
-					Messaging.updateChatTime(touid, fromuid);
-
-					async.parallel([
+					async.waterfall([
 						function(next) {
-							Messaging.markRead(fromuid, touid, next);
+							getMessages([mid], fromuid, touid, true, next);
 						},
-						function(next) {
-							Messaging.markUnread(touid, fromuid, next);
-						}
-					], function(err, results) {
-						if (err) {
-							return callback(err);
-						}
-
-						getMessages([mid], fromuid, touid, true, function(err, messages) {
+						function(messages, next) {
 							Messaging.isNewSet(fromuid, touid, mid, function(err, isNewSet) {
+								if (err) {
+									return next(err);
+								}
 								messages[0].newSet = isNewSet;
-								callback(err, messages ? messages[0] : null);
+								next(null, messages ? messages[0] : null);
 							});
-						});
-					});
+						}
+					], callback);
 				});
 			});
 		});
 	};
+
+	function addToRecent(fromuid, message, callback) {
+		db.listPrepend('messages:recent:' + fromuid, message.content, function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			// Truncate recent chats list back down to 10 (should use LTRIM, see nodebb/nodebb#1901)
+			db.getListRange('messages:recent:' + fromuid, 0, -1, function(err, list) {
+				if (err) {
+					return callback(err);
+				}
+
+				if (list.length > 10) {
+					db.listRemoveLast('messages:recent:' + fromuid, callback);
+				} else {
+					callback();
+				}
+			});
+		});
+	}
 
 	Messaging.getMessages = function(fromuid, touid, isNew, callback) {
 		var uids = sortUids(fromuid, touid);
