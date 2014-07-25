@@ -20,10 +20,10 @@ var db = require('./database'),
 			if (err) {
 				return callback(err);
 			}
-
+			var timestamp = Date.now();
 			var message = {
 				content: content,
-				timestamp: Date.now(),
+				timestamp: timestamp,
 				fromuid: fromuid,
 				touid: touid
 			};
@@ -44,7 +44,7 @@ var db = require('./database'),
 						return callback(err);
 					}
 
-					db.listAppend('messages:' + uids[0] + ':' + uids[1], mid);
+					db.sortedSetAdd('messages:uid:' + uids[0] + ':to:' + uids[1], timestamp, mid);
 					db.listPrepend('messages:recent:' + fromuid, message.content, function(err) {
 						if (err) {
 							return callback(err);
@@ -85,7 +85,7 @@ var db = require('./database'),
 	Messaging.getMessages = function(fromuid, touid, isNew, callback) {
 		var uids = sortUids(fromuid, touid);
 
-		db.getListRange('messages:' + uids[0] + ':' + uids[1], -((meta.config.chatMessagesToDisplay || 50) - 1), -1, function(err, mids) {
+		db.getSortedSetRange('messages:uid:' + uids[0] + ':to:' + uids[1], -((meta.config.chatMessagesToDisplay || 50) - 1), -1, function(err, mids) {
 			if (err) {
 				return callback(err);
 			}
