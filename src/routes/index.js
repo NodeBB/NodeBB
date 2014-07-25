@@ -188,7 +188,7 @@ module.exports = function(app, middleware) {
 		userRoutes(router, middleware, controllers);
 		groupRoutes(router, middleware, controllers);
 
-		plugins.fireHook('filter:app.load', router, middleware, controllers, function() {
+		plugins.fireHook('static:app.load', router, middleware, controllers, function() {
 			app.use(relativePath, router);
 
 			app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
