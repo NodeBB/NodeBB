@@ -255,7 +255,7 @@
 	};
 
 	function renameGroup(oldName, newName, callback) {
-		if (oldName === newName || newName.length === 0) {
+		if (oldName === newName || !newName || newName.length === 0) {
 			return callback();
 		}
 
