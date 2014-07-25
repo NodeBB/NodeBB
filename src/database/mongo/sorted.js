@@ -177,14 +177,6 @@ module.exports = function(db, module) {
 	};
 
 	function getSortedSetUnion(sets, sort, start, stop, callback) {
-		if (typeof start === 'function') {
-			callback = start;
-			start = 0;
-			stop = -1;
-		} else if (typeof stop === 'function') {
-			callback = stop;
-			stop = -1;
-		}
 		var limit = stop - start + 1;
 		if (limit <= 0) {
 			limit = 0;
