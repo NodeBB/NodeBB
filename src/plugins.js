@@ -52,7 +52,7 @@ var fs = require('fs'),
 		});
 
 		Plugins.registerHook('core', {
-			hook: 'filter:app.load',
+			hook: 'static:app.load',
 			method: addLanguages
 		});
 	};
