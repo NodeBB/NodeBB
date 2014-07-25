@@ -74,7 +74,10 @@ var db = require('./database'),
 						}
 
 						getMessages([mid], fromuid, touid, true, function(err, messages) {
-							callback(err, messages ? messages[0] : null);
+							Messaging.isNewSet(fromuid, touid, mid, function(err, isNewSet) {
+								messages[0].newSet = isNewSet;
+								callback(err, messages ? messages[0] : null);
+							});
 						});
 					});
 				});
@@ -164,6 +167,32 @@ var db = require('./database'),
 				callback(messageData.parsedMessage);
 			});
 		});
+	};
+
+	Messaging.isNewSet = function(fromuid, touid, mid, callback) {
+		var uids = sortUids(fromuid, touid),
+			setKey = 'messages:uid:' + uids[0] + ':to:' + uids[1];
+
+		async.waterfall([
+			async.apply(db.sortedSetRank, setKey, mid),
+			function(index, next) {
+				if (index > 0) {
+					db.getSortedSetRange(setKey, index-1, index, next);
+				} else {
+					next(null, true);
+				}
+			},
+			function(mids, next) {
+				db.getObjects(['message:' + mids[0], 'message:' + mids[1]], next);
+			},
+			function(messages, next) {
+				if (typeof messages !== 'boolean') {
+					next(null, parseInt(messages[1].timestamp, 10) > parseInt(messages[0].timestamp, 10) + (1000*60*5));
+				} else {
+					next(null, messages);
+				}
+			}
+		], callback);
 	};
 
 	Messaging.updateChatTime = function(uid, toUid, callback) {
