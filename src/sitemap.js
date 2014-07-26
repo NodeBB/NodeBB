@@ -7,7 +7,9 @@ var path = require('path'),
 	nconf = require('nconf'),
 	categories = require('./categories'),
 	topics = require('./topics'),
+	utils = require('../public/src/utils'),
 	sitemap = {
+		obj: undefined,
 		getStaticUrls: function(callback) {
 			callback(null, [{
 				url: '',
@@ -29,23 +31,21 @@ var path = require('path'),
 			async.parallel([
 				function(next) {
 					var categoryUrls = [];
-					categories.getAllCategories(0, function(err, data) {
+					categories.getVisibleCategories(0, function(err, categoriesData) {
 						if (err) {
 							return next(err);
 						}
 
-						data.categories.forEach(function(category) {
-							if (!category.disabled) {
-								categoryUrls.push({
-									url: path.join('/category', category.slug),
-									changefreq: 'weekly',
-									priority: '0.4'
-								});
-							}
+						categoriesData.forEach(function(category) {
+							categoryUrls.push({
+								url: path.join('/category', category.slug),
+								changefreq: 'weekly',
+								priority: '0.4'
+							});
 						});
 
 						next(null, categoryUrls);
-					}, 0);
+					});
 				},
 				function(next) {
 					var topicUrls = [];
@@ -57,6 +57,7 @@ var path = require('path'),
 						data.topics.forEach(function(topic) {
 							topicUrls.push({
 								url: path.join('/topic', topic.slug),
+								lastmodISO: utils.toISOString(topic.lastposttime),
 								changefreq: 'daily',
 								priority: '0.6'
 							});
@@ -74,17 +75,22 @@ var path = require('path'),
 			});
 		},
 		render: function(callback) {
-			async.parallel([sitemap.getStaticUrls, sitemap.getDynamicUrls], function(err, urls) {
-				urls = urls[0].concat(urls[1]);
-				var map = sm.createSitemap({
+			if (sitemap.obj !== undefined && sitemap.obj.cache.length) {
+				console.log('using sitemap from cache!');
+				sitemap.obj.toXML(callback);
+			} else {
+				console.log('generating new sitemap!', sitemap.obj);
+				async.parallel([sitemap.getStaticUrls, sitemap.getDynamicUrls], function(err, urls) {
+					urls = urls[0].concat(urls[1]);
+					sitemap.obj = sm.createSitemap({
 						hostname: nconf.get('url'),
-						cacheTime: 600000,
+						cacheTime: 1000 * 60 * 60,	// Cached for 1 hour
 						urls: urls
-					}),
-					xml = map.toXML(function(xml) {
-						callback(xml);
 					});
-			});
+
+					sitemap.obj.toXML(callback);
+				});
+			}
 		}
 	};
 

@@ -1,8 +1,18 @@
 {
     "chat.chatting_with": "Keskustele käyttäjän <span id=\"chat-with-name\"></span> kanssa",
-    "chat.placeholder": "kirjoita viestisi tähän ja paina enter lähettääksesi",
+    "chat.placeholder": "Type chat message here, press enter to send",
     "chat.send": "Lähetä",
     "chat.no_active": "Sinulla ei ole aktiivisia keskusteluita.",
     "chat.user_typing": "%1 kirjoittaa ...",
-    "chat.user_has_messaged_you": "%1 has messaged you."
+    "chat.user_has_messaged_you": "%1 lähetti sinulle viestin.",
+    "chat.see_all": "Näytä kaikki keskustelut",
+    "chat.no-messages": "Please select a recipient to view chat message history",
+    "chat.recent-chats": "Recent Chats",
+    "chat.contacts": "Contacts",
+    "chat.message-history": "Message History",
+    "chat.pop-out": "Pop out chat",
+    "chat.maximize": "Maximize",
+    "composer.user_said_in": "%1 said in %2:",
+    "composer.user_said": "%1 said:",
+    "composer.discard": "Are you sure you wish to discard this post?"
 }

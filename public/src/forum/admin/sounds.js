@@ -1,7 +1,7 @@
 "use strict";
 /* global define, socket */
 
-define(['sounds', 'settings'], function(Sounds, Settings) {
+define('forum/admin/sounds', ['sounds', 'settings'], function(Sounds, Settings) {
 	var	SoundsAdmin = {};
 
 	SoundsAdmin.init = function() {

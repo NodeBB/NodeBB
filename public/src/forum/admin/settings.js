@@ -1,7 +1,7 @@
 "use strict";
 /*global define, app, socket, RELATIVE_PATH */
 
-define(['uploader', 'sounds'], function(uploader, sounds) {
+define('forum/admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 	var Settings = {};
 
 	Settings.init = function() {

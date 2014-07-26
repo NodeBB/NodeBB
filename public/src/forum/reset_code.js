@@ -1,4 +1,4 @@
-define(function() {
+define('forum/reset_code', function() {
 	var	ResetCode = {};
 
 	ResetCode.init = function() {

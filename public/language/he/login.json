@@ -1,8 +1,9 @@
 {
-    "username": "Username / Email",
+    "username": "שם משתמש / אימייל",
     "remember_me": "זכור אותי?",
     "forgot_password": "שכחת סיסמתך?",
     "alternative_logins": "התחבר באמצעות...",
     "failed_login_attempt": "נסיון התחברות נכשל, נסה שוב.",
-    "login_successful": "התחברת בהצלחה!"
+    "login_successful": "התחברת בהצלחה!",
+    "dont_have_account": "אין לך חשבון עדיין?"
 }

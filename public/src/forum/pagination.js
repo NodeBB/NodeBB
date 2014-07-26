@@ -1,7 +1,7 @@
 'use strict';
 /*global define, utils, ajaxify, bootbox*/
 
-define(function() {
+define('forum/pagination', function() {
 	var pagination = {};
 
 	pagination.currentPage = 0;

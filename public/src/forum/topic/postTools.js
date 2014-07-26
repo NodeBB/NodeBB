@@ -2,7 +2,7 @@
 
 /* globals define, app, translator, ajaxify, socket, bootbox */
 
-define(['composer', 'share', 'navigator'], function(composer, share, navigator) {
+define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(composer, share, navigator) {
 
 	var PostTools = {},
 		topicName;
@@ -21,10 +21,9 @@ define(['composer', 'share', 'navigator'], function(composer, share, navigator) 
 		var postEl = $('#post-container li[data-pid="' + pid + '"]');
 
 		postEl.find('.quote, .favourite, .post_reply, .chat').toggleClass('none', isDeleted);
-
-		translator.translate(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]', function(translated) {
-			postEl.find('.delete').find('span').html(translated);
-		});
+		postEl.find('.purge').toggleClass('none', !isDeleted);
+		postEl.find('.delete .i').toggleClass('fa-trash-o', !isDeleted).toggleClass('fa-history', isDeleted);
+		postEl.find('.delete span').translateHtml(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]');
 	};
 
 	PostTools.updatePostCount = function() {
@@ -51,7 +50,7 @@ define(['composer', 'share', 'navigator'], function(composer, share, navigator) 
 
 	function addPostHandlers(tid, threadState) {
 		$('.topic').on('click', '.post_reply', function() {
-			if (threadState.locked !== '1') {
+			if (!threadState.locked) {
 				onReplyClicked($(this), tid, topicName);
 			}
 		});
@@ -59,13 +58,13 @@ define(['composer', 'share', 'navigator'], function(composer, share, navigator) 
 		var postContainer = $('#post-container');
 
 		postContainer.on('click', '.quote', function() {
-			if (threadState.locked !== '1') {
+			if (!threadState.locked) {
 				onQuoteClicked($(this), tid, topicName);
 			}
 		});
 
 		postContainer.on('click', '.favourite', function() {
-			favouritePost($(this), getPid($(this)));
+			favouritePost($(this), getData($(this), 'data-pid'));
 		});
 
 		postContainer.on('click', '.upvote', function() {
@@ -77,15 +76,19 @@ define(['composer', 'share', 'navigator'], function(composer, share, navigator) 
 		});
 
 		postContainer.on('click', '.flag', function() {
-			flagPost(getPid($(this)));
+			flagPost(getData($(this), 'data-pid'));
 		});
 
 		postContainer.on('click', '.edit', function(e) {
-			composer.editPost(getPid($(this)));
+			composer.editPost(getData($(this), 'data-pid'));
 		});
 
 		postContainer.on('click', '.delete', function(e) {
 			deletePost($(this), tid);
+		});
+
+		postContainer.on('click', '.purge', function(e) {
+			purgePost($(this), tid);
 		});
 
 		postContainer.on('click', '.move', function(e) {
@@ -111,16 +114,16 @@ define(['composer', 'share', 'navigator'], function(composer, share, navigator) 
 		var username = getUserName(selectionText ? $(selection.baseNode) : button);
 
 		if (selectionText.length) {
-			composer.addQuote(tid, getPid(button), topicName, username, selectionText);
+			composer.addQuote(tid, ajaxify.variables.get('topic_slug'), getData(button, 'data-index'), getData(button, 'data-pid'), topicName, username, selectionText);
 		} else {
-			composer.newReply(tid, getPid(button), topicName, username ? username + ' ' : '');
+			composer.newReply(tid, getData(button, 'data-pid'), topicName, username ? username + ' ' : '');
 		}
 
 	}
 
 	function onQuoteClicked(button, tid, topicName) {
 		var username = getUserName(button),
-			pid = getPid(button);
+			pid = getData(button, 'data-pid');
 
 		socket.emit('posts.getRawPost', pid, function(err, post) {
 			if(err) {
@@ -132,9 +135,9 @@ define(['composer', 'share', 'navigator'], function(composer, share, navigator) 
 			}
 
 			if($('.composer').length) {
-				composer.addQuote(tid, pid, topicName, username, quoted);
+				composer.addQuote(tid, ajaxify.variables.get('topic_slug'), getData(button, 'data-index'), pid, topicName, username, quoted);
 			} else {
-				composer.newReply(tid, pid, topicName, username + ' said:\n' + quoted);
+				composer.newReply(tid, pid, topicName, '[[modules:composer.user_said, ' + username + ']]' + quoted);
 			}
 		});
 	}
@@ -170,8 +173,8 @@ define(['composer', 'share', 'navigator'], function(composer, share, navigator) 
 		return false;
 	}
 
-	function getPid(button) {
-		return button.parents('.post-row').attr('data-pid');
+	function getData(button, data) {
+		return button.parents('.post-row').attr(data);
 	}
 
 	function getUserName(button) {
@@ -185,22 +188,32 @@ define(['composer', 'share', 'navigator'], function(composer, share, navigator) 
 	}
 
 	function deletePost(button, tid) {
-		var pid = getPid(button),
-			postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
+		var pid = getData(button, 'data-pid'),
+			postEl = $('#post-container li[data-pid="' + pid + '"]'),
 			action = !postEl.hasClass('deleted') ? 'delete' : 'restore';
 
+		postAction(action, pid, tid);
+	}
+
+	function purgePost(button, tid) {
+		postAction('purge', getData(button, 'data-pid'), tid);
+	}
+
+	function postAction(action, pid, tid) {
 		translator.translate('[[topic:post_' + action + '_confirm]]', function(msg) {
 			bootbox.confirm(msg, function(confirm) {
-				if (confirm) {
-					socket.emit('posts.' + action, {
-						pid: pid,
-						tid: tid
-					}, function(err) {
-						if(err) {
-							app.alertError('[[topic:post_' + action + '_error]]');
-						}
-					});
+				if (!confirm) {
+					return;
 				}
+
+				socket.emit('posts.' + action, {
+					pid: pid,
+					tid: tid
+				}, function(err) {
+					if(err) {
+						app.alertError(err.message);
+					}
+				});
 			});
 		});
 	}
@@ -225,7 +238,7 @@ define(['composer', 'share', 'navigator'], function(composer, share, navigator) 
 		});
 
 		moveBtn.on('click', function() {
-			movePost(button.parents('.post-row'), getPid(button), topicId.val());
+			movePost(button.parents('.post-row'), getData(button, 'data-pid'), topicId.val());
 		});
 	}
 

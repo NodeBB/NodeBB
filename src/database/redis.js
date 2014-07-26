@@ -5,7 +5,7 @@
 	var winston = require('winston'),
 		nconf = require('nconf'),
 		path = require('path'),
-		express = require('express'),
+		session = require('express-session'),
 		utils = require('./../../public/src/utils.js'),
 		redis,
 		connectRedis,
@@ -40,7 +40,7 @@
 	module.init = function(callback) {
 		try {
 			redis = require('redis');
-			connectRedis = require('connect-redis')(express);
+			connectRedis = require('connect-redis')(session);
 			reds = require('reds');
 		} catch (err) {
 			winston.error('Unable to initialize Redis! Is Redis installed? Error :' + err.message);
@@ -65,6 +65,7 @@
 
 		redisClient.on('error', function (err) {
 			winston.error(err.stack);
+			process.exit(1);
 		});
 
 		module.client = redisClient;

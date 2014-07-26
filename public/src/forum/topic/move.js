@@ -2,7 +2,7 @@
 
 /* globals define, app, socket */
 
-define(function() {
+define('forum/topic/move', function() {
 
 	var Move = {},
 		modal,
@@ -20,10 +20,8 @@ define(function() {
 		modal.on('shown.bs.modal', onMoveModalShown);
 		$('#move-confirm').hide();
 
-		if (tids.length > 1) {
-			translator.translate('[[topic:move_topics]]', function(translated) {
-				modal.find('.modal-header h3').text(translated);
-			});
+		if (Move.moveAll || (tids && tids.length > 1)) {
+			modal.find('.modal-header h3').translateText('[[topic:move_topics]]');
 		}
 
 		modal.modal('show');
@@ -38,12 +36,12 @@ define(function() {
 		socket.emit('categories.get', onCategoriesLoaded);
 	}
 
-	function onCategoriesLoaded(err, data) {
+	function onCategoriesLoaded(err, categories) {
 		if (err) {
 			return app.alertError(err.message);
 		}
 
-		renderCategories(data.categories);
+		renderCategories(categories);
 
 		modal.find('.category-list').on('click', 'li[data-cid]', function(e) {
 			selectCategory($(this));

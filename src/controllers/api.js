@@ -3,7 +3,8 @@
 var pkg = require('./../../package.json'),
 	meta = require('./../meta'),
 	user = require('./../user'),
-	plugins = require('./../plugins');
+	plugins = require('./../plugins'),
+	widgets = require('../widgets');
 
 var apiController = {};
 
@@ -13,6 +14,8 @@ apiController.getConfig = function(req, res, next) {
 	var config = {};
 	config.relative_path = serverConfig.relative_path;
 	config.version = pkg.version;
+	config.siteTitle = meta.config.title || meta.config.browserTitle || 'NodeBB';
+	config.showSiteTitle = meta.config.showSiteTitle === '1';
 	config.postDelay = meta.config.postDelay;
 	config.minimumTitleLength = meta.config.minimumTitleLength;
 	config.maximumTitleLength = meta.config.maximumTitleLength;
@@ -24,8 +27,7 @@ apiController.getConfig = function(req, res, next) {
 	config.minimumPasswordLength = meta.config.minimumPasswordLength;
 	config.maximumSignatureLength = meta.config.maximumSignatureLength;
 	config.useOutgoingLinksPage = parseInt(meta.config.useOutgoingLinksPage, 10) === 1;
-	config.allowGuestPosting = parseInt(meta.config.allowGuestPosting, 10) === 1;
-	config.allowGuestSearching = parseInt(meta.config.allowGuestPosting, 10) === 1;
+	config.allowGuestSearching = parseInt(meta.config.allowGuestSearching, 10) === 1;
 	config.allowFileUploads = parseInt(meta.config.allowFileUploads, 10) === 1;
 	config.allowTopicsThumbnail = parseInt(meta.config.allowTopicsThumbnail, 10) === 1;
 	config.privateUserInfo = parseInt(meta.config.privateUserInfo, 10) === 1;
@@ -33,15 +35,17 @@ apiController.getConfig = function(req, res, next) {
 	config.disableSocialButtons = parseInt(meta.config.disableSocialButtons, 10) === 1;
 	config.maxReconnectionAttempts = meta.config.maxReconnectionAttempts || 5;
 	config.reconnectionDelay = meta.config.reconnectionDelay || 200;
+	config.tagsPerTopic = meta.config.tagsPerTopic || 5;
 	config.topicsPerPage = meta.config.topicsPerPage || 20;
 	config.postsPerPage = meta.config.postsPerPage || 20;
 	config.maximumFileSize = meta.config.maximumFileSize;
 	config['theme:id'] = meta.config['theme:id'];
 	config.defaultLang = meta.config.defaultLang || 'en_GB';
 	config.environment = process.env.NODE_ENV;
-	config.isLoggedIn = !!req.user;
+	config.loggedIn = !!req.user;
 	config['cache-buster'] = meta.config['cache-buster'] || '';
-	config.version = pkg.version;
+	config.requireEmailConfirmation = parseInt(meta.config.requireEmailConfirmation, 10) === 1;
+	config.topicPostSort = meta.config.topicPostSort || 'oldest_to_newest';
 
 	if (!req.user) {
 		if (res.locals.isAPI) {
@@ -63,6 +67,7 @@ apiController.getConfig = function(req, res, next) {
 		config.notificationSounds = settings.notificationSounds;
 		config.defaultLang = settings.language || config.defaultLang;
 		config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
+		config.topicPostSort = settings.topicPostSort || config.topicPostSort;
 
 		if (res.locals.isAPI) {
 			res.json(200, config);
@@ -73,5 +78,22 @@ apiController.getConfig = function(req, res, next) {
 
 };
 
+
+apiController.renderWidgets = function(req, res, next) {
+	var uid = req.user ? req.user.uid : 0,
+		area = {
+			template: req.query.template,
+			location: req.query.location,
+			url: req.query.url
+		};
+
+	if (!area.template || !area.location) {
+		return res.json(200, {});
+	}
+
+	widgets.render(uid, area, function(err, data) {
+		res.json(200, data);
+	});
+};
 
 module.exports = apiController;

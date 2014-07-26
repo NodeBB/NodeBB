@@ -113,12 +113,12 @@
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
 		slugify: function(str) {
 			str = str.replace(utils.trimRegex, '');
-			str = str.toLowerCase();
 			if(utils.isLatin.test(str)) {
 				str = str.replace(utils.invalidLatinChars, '-');
 			} else {
 				str = XRegExp.replace(str, utils.invalidUnicodeChars, '-');
 			}
+			str = str.toLocaleLowerCase();
 			str = str.replace(utils.collapseWhitespace, '-')
 			str = str.replace(utils.collapseDash, '-');
 			str = str.replace(utils.trimTrailingDash, '');
@@ -126,6 +126,9 @@
 			return str;
 		},
 
+		removePunctuation: function(str) {
+			return str.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`<>'"~()?]/g, '');
+		},
 
 		isEmailValid: function(email) {
 			return typeof email === 'string' && email.length && email.indexOf('@') !== -1;
@@ -272,6 +275,87 @@
 					return env;
 				}
 			}
+		},
+
+		// get all the url params in a single key/value hash
+		params: function(options) {
+			var a, hash = {}, params;
+
+			options = options || {};
+			options.skipToType = options.skipToType || {};
+
+			if (options.url) {
+				a = utils.urlToLocation(options.url);
+			}
+			params = (a ? a.search : window.location.search).substring(1).split("&");
+
+			params.forEach(function(param) {
+				var val = param.split('='),
+					key = decodeURI(val[0]),
+					value = options.skipToType[key] ? decodeURI(val[1]) : utils.toType(decodeURI(val[1]));
+
+				if (key)
+					hash[key] = value;
+			});
+			return hash;
+		},
+
+		param: function(key) {
+			return this.params()[key];
+		},
+
+		urlToLocation: function(url) {
+			var a = document.createElement('a');
+			a.href = url;
+			return a;
+		},
+
+		// return boolean if string 'true' or string 'false', or if a parsable string which is a number
+		// also supports JSON object and/or arrays parsing
+		toType: function(str) {
+			var type = typeof str;
+			if (type !== 'string') {
+				return str;
+			} else {
+				var nb = parseFloat(str);
+				if (!isNaN(nb) && isFinite(str))
+					return nb;
+				if (str === 'false')
+					return false;
+				if (str === 'true')
+					return true;
+
+				try {
+					str = JSON.parse(str);
+				} catch (e) {}
+
+				return str;
+			}
+		},
+
+		// Safely get/set chained properties on an object
+		// set example: utils.props(A, 'a.b.c.d', 10) // sets A to {a: {b: {c: {d: 10}}}}, and returns 10
+		// get example: utils.props(A, 'a.b.c') // returns {d: 10}
+		// get example: utils.props(A, 'a.b.c.foo.bar') // returns undefined without throwing a TypeError
+		// credits to github.com/gkindel
+		props: function(obj, props, value) {
+			if(obj === undefined)
+				obj = window;
+			if(props == null)
+				return undefined;
+			var i = props.indexOf('.');
+			if( i == -1 ) {
+				if(value !== undefined)
+					obj[props] = value;
+				return obj[props];
+			}
+			var prop = props.slice(0, i),
+				newProps = props.slice(i + 1);
+
+			if(props !== undefined && !(obj[prop] instanceof Object) )
+				obj[prop] = {};
+
+			return utils.props(obj[prop], newProps, value);
 		}
 	};
 

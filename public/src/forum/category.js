@@ -1,10 +1,8 @@
 "use strict";
 /* global define, config, templates, app, utils, ajaxify, socket, translator */
 
-define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryTools'], function(composer, pagination, share, navigator, categoryTools) {
-	var Category = {},
-		loadingMoreTopics = false;
-
+define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll', 'share', 'navigator', 'forum/categoryTools'], function(composer, pagination, infinitescroll, share, navigator, categoryTools) {
+	var Category = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
 		if(data && data.url.indexOf('category') !== 0) {
@@ -34,10 +32,10 @@ define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryToo
 
 		categoryTools.init(cid);
 
-		enableInfiniteLoading();
+		enableInfiniteLoadingOrPagination();
 
 		if (!config.usePagination) {
-			navigator.init('#topics-container > .category-item', ajaxify.variables.get('topic_count'));
+			navigator.init('#topics-container > .category-item', ajaxify.variables.get('topic_count'), undefined, Category.toTop, Category.toBottom);
 		}
 
 		$('#topics-container').on('click', '.topic-title', function() {
@@ -49,6 +47,16 @@ define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryToo
 					return false;
 				}
 			});
+		});
+	};
+
+	Category.toTop = function() {
+		navigator.scrollTop(0);
+	};
+
+	Category.toBottom = function() {
+		socket.emit('categories.lastTopicIndex', ajaxify.variables.get('category_id'), function(err, index) {
+			navigator.scrollBottom(index);
 		});
 	};
 
@@ -87,9 +95,8 @@ define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryToo
 						}
 
 						$('#topics-container').empty();
-						loadingMoreTopics = false;
 
-						Category.loadMoreTopics(ajaxify.variables.get('category_id'), index, function() {
+						loadTopicsAfter(index, function() {
 							Category.scrollToTopic(bookmark, clicked, 0);
 						});
 					});
@@ -132,41 +139,11 @@ define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryToo
 		}
 	};
 
-	function enableInfiniteLoading() {
-		if(!config.usePagination) {
-
-			app.enableInfiniteLoading(function(direction) {
-
-				if(!loadingMoreTopics && $('#topics-container').children().length) {
-
-					var after = 0,
-						offset = 0,
-						el = null;
-
-					if(direction > 0) {
-						el = $('#topics-container .category-item[data-tid]').last();
-						after = parseInt(el.attr('data-index'), 10) + 1;
-					} else {
-						el = $('#topics-container .category-item[data-tid]').first();
-						after = parseInt(el.attr('data-index'), 10);
-						if(isNaN(after)){
-							after = 0;
-						}
-						after -= config.topicsPerPage;
-						if(after < 0) {
-							after = 0;
-						}
-						offset = el.offset().top - $('#header-menu').offset().top + $('#header-menu').height();
-					}
-
-					Category.loadMoreTopics(ajaxify.variables.get('category_id'), after, function() {
-						if(direction < 0 && el) {
-							Category.scrollToTopic(el.attr('data-tid'), null, 0, offset);
-						}
-					});
-				}
-			});
+	function enableInfiniteLoadingOrPagination() {
+		if (!config.usePagination) {
+			infinitescroll.init(Category.loadMoreTopics);
 		} else {
+			navigator.hide();
 			pagination.init(ajaxify.variables.get('currentPage'), ajaxify.variables.get('pageCount'));
 		}
 	}
@@ -293,53 +270,55 @@ define(['composer', 'forum/pagination', 'share', 'navigator', 'forum/categoryToo
 					}
 				}
 
+				if (typeof callback === 'function') {
+					callback();
+				}
 				html.find('span.timeago').timeago();
 				app.createUserTooltips();
 				utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
+			});
+		});
+	};
 
-				if (typeof callback === 'function') {
-					callback(topics);
+	Category.loadMoreTopics = function(direction) {
+		if (!$('#topics-container').length || !$('#topics-container').children().length) {
+			return;
+		}
+
+		infinitescroll.calculateAfter(direction, '#topics-container .category-item[data-tid]', config.topicsPerPage, function(after, offset, el) {
+
+			loadTopicsAfter(after, function() {
+				if (direction < 0 && el) {
+					Category.scrollToTopic(el.attr('data-tid'), null, 0, offset);
 				}
 			});
 		});
 	};
 
-	Category.loadMoreTopics = function(cid, after, callback) {
-		if (loadingMoreTopics || !$('#topics-container').length) {
-			return;
-		}
-
+	function loadTopicsAfter(after, callback) {
 		if(!utils.isNumber(after) || (after === 0 && $('#topics-container li.category-item[data-index="0"]').length)) {
 			return;
 		}
 
 		$(window).trigger('action:categories.loading');
-		loadingMoreTopics = true;
-
-		socket.emit('categories.loadMore', {
-			cid: cid,
+		infinitescroll.loadMore('categories.loadMore', {
+			cid: ajaxify.variables.get('category_id'),
 			after: after
-		}, function (err, data) {
-			loadingMoreTopics = false;
+		}, function (data, done) {
 
-			if(err) {
-				return app.alertError(err.message);
-			}
-
-			if (data && data.topics.length) {
-				Category.onTopicsLoaded(data, callback);
+			if (data.topics && data.topics.length) {
+				Category.onTopicsLoaded(data, function() {
+					done();
+					callback();
+				});
 				$('#topics-container').attr('data-nextstart', data.nextStart);
 			} else {
-
-				if (typeof callback === 'function') {
-					callback(data.topics);
-				}
+				done();
 			}
-
 
 			$(window).trigger('action:categories.loaded');
 		});
-	};
+	}
 
 	return Category;
 });

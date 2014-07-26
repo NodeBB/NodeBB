@@ -4,40 +4,43 @@ var categoriesController = {},
 	async = require('async'),
 	qs = require('querystring'),
 	nconf = require('nconf'),
-	categoryTools = require('./../categoryTools'),
+	privileges = require('../privileges'),
 	user = require('./../user'),
 	categories = require('./../categories'),
-	topics = require('./../topics');
+	topics = require('./../topics'),
+	meta = require('./../meta');
 
 categoriesController.recent = function(req, res, next) {
-	var uid = (req.user) ? req.user.uid : 0;
+	var uid = req.user ? req.user.uid : 0;
 	topics.getLatestTopics(uid, 0, 19, req.params.term, function (err, data) {
 		if(err) {
 			return next(err);
 		}
+
+		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
 
 		res.render('recent', data);
 	});
 };
 
 categoriesController.popular = function(req, res, next) {
-	var uid = (req.user) ? req.user.uid : 0;
-	var set = 'topics:' + req.params.set;
-	if(!req.params.set) {
-		set = 'topics:posts';
-	}
+	var uid = req.user ? req.user.uid : 0;
 
-	topics.getTopicsFromSet(uid, set, 0, 19, function(err, data) {
+	var term = req.params.term || 'daily';
+
+	topics.getPopular(term, uid, function(err, data) {
 		if(err) {
 			return next(err);
 		}
 
-		res.render('popular', data);
+		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
+
+		res.render('popular', {topics: data});
 	});
 };
 
 categoriesController.unread = function(req, res, next) {
-	var uid = req.user.uid;
+	var uid = req.user ? req.user.uid : 0;
 
 	topics.getUnreadTopics(uid, 0, 20, function (err, data) {
 		if(err) {
@@ -49,14 +52,14 @@ categoriesController.unread = function(req, res, next) {
 };
 
 categoriesController.unreadTotal = function(req, res, next) {
-	var uid = req.user.uid;
+	var uid = req.user ? req.user.uid : 0;
 
 	topics.getTotalUnread(uid, function (err, data) {
 		if(err) {
 			return next(err);
 		}
 
-		res.render('unread', data);
+		res.json(data);
 	});
 };
 
@@ -72,16 +75,16 @@ categoriesController.get = function(req, res, next) {
 			});
 		},
 		function(next) {
-			categoryTools.privileges(cid, uid, function(err, categoryPrivileges) {
+			privileges.categories.get(cid, uid, function(err, categoryPrivileges) {
 				if (err) {
 					return next(err);
 				}
 
-				if (!categoryPrivileges.meta.read) {
-					next(new Error('[[error:no-privileges]]'));
-				} else {
-					next(null, categoryPrivileges);
+				if (!categoryPrivileges.read) {
+					return next(new Error('[[error:no-privileges]]'));
 				}
+
+				next(null, categoryPrivileges);
 			});
 		},
 		function (privileges, next) {
@@ -90,7 +93,15 @@ categoriesController.get = function(req, res, next) {
 					return next(err);
 				}
 
-				var start = (page - 1) * settings.topicsPerPage,
+				var topicIndex = 0;
+				if (!settings.usePagination) {
+					topicIndex = Math.max((req.params.topic_index || 1) - (settings.topicsPerPage - 1), 0);
+				} else if (!req.query.page) {
+					var index = Math.max(parseInt((req.params.topic_index || 0), 10), 0);
+					page = Math.ceil((index + 1) / settings.topicsPerPage);
+				}
+
+				var start = (page - 1) * settings.topicsPerPage + topicIndex,
 					end = start + settings.topicsPerPage - 1;
 
 				categories.getCategoryById(cid, start, end, uid, function (err, categoryData) {
@@ -152,14 +163,14 @@ categoriesController.get = function(req, res, next) {
 		}
 	], function (err, data) {
 		if (err) {
-			if (err.message === 'not-enough-privileges') {
-				return res.redirect('403');
+			if (err.message === '[[error:no-privileges]]') {
+				return res.locals.isAPI ? res.json(403, err.message) : res.redirect('403');
 			} else {
-				return res.redirect('404');
+				return res.locals.isAPI ? res.json(404, 'not-found') : res.redirect('404');
 			}
 		}
 
-		if(data.link) {
+		if (data.link) {
 			return res.redirect(data.link);
 		}
 
@@ -170,6 +181,7 @@ categoriesController.get = function(req, res, next) {
 		}
 
 		data.currentPage = page;
+		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
 
 		// Paginator for noscript
 		data.pages = [];

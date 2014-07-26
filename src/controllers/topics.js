@@ -10,48 +10,61 @@ var topicsController = {},
 	meta = require('./../meta'),
 	topics = require('./../topics'),
 	posts = require('../posts'),
-	threadTools = require('./../threadTools'),
+	privileges = require('../privileges'),
 	utils = require('./../../public/src/utils');
 
 topicsController.get = function(req, res, next) {
 	var tid = req.params.topic_id,
 		page = req.query.page || 1,
 		uid = req.user ? req.user.uid : 0,
-		privileges;
+		userPrivileges;
 
 	async.waterfall([
-		function(next) {
-			threadTools.privileges(tid, uid, function(err, userPrivileges) {
-				if (err) {
-					return next(err);
-				}
-
-				if (!userPrivileges.meta.read) {
-					return next(new Error('[[error:no-privileges]]'));
-				}
-
-				privileges = userPrivileges;
-				next();
-			});
-		},
 		function (next) {
-			user.getSettings(uid, function(err, settings) {
-				if (err) {
-					return next(err);
-				}
+			privileges.topics.get(tid, uid, next);
+		},
+		function (privileges, next) {
+			if (!privileges.read) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
 
-				var start = (page - 1) * settings.postsPerPage,
-					end = start + settings.postsPerPage - 1;
+			userPrivileges = privileges;
 
-				topics.getTopicWithPosts(tid, uid, start, end, function (err, topicData) {
-					if (topicData) {
-						if (parseInt(topicData.deleted, 10) === 1 && parseInt(topicData.expose_tools, 10) === 0) {
-							return next(new Error('[[error:no-topic]]'));
-						}
-						topicData.currentPage = page;
+			user.getSettings(uid, next);
+		},
+		function (settings, next) {
+			var postIndex = 0;
+			if (!settings.usePagination) {
+				postIndex = Math.max((req.params.post_index || 1) - (settings.postsPerPage - 1), 0);
+			} else if (!req.query.page) {
+				var index = Math.max(parseInt((req.params.post_index || 0), 10), 0);
+				page = Math.ceil((index + 1) / settings.postsPerPage);
+			}
+
+			var start = (page - 1) * settings.postsPerPage + postIndex,
+				end = start + settings.postsPerPage - 1;
+
+			var set = 'tid:' + tid + ':posts',
+				reverse = false;
+
+			if (settings.topicPostSort === 'newest_to_oldest') {
+				reverse = true;
+			} else if (settings.topicPostSort === 'most_votes') {
+				reverse = true;
+				set = 'tid:' + tid + ':posts:votes';
+			}
+
+			topics.getTopicWithPosts(tid, set, uid, start, end, reverse, function (err, topicData) {
+				if (topicData) {
+					if (topicData.deleted && !userPrivileges.view_deleted) {
+						return next(new Error('[[error:no-topic]]'));
 					}
-					next(err, topicData);
-				});
+					topicData.currentPage = page;
+					if(page > 1) {
+						topicData.posts.splice(0, 1);
+					}
+				}
+				next(err, topicData);
 			});
 		},
 		function (topicData, next) {
@@ -140,6 +153,10 @@ topicsController.get = function(req, res, next) {
 				{
 					rel: 'up',
 					href: nconf.get('url') + '/category/' + topicData.category.slug
+				},
+				{
+					rel: 'canonical',
+					href: nconf.get('url') + '/topic/' + topicData.slug
 				}
 			];
 
@@ -147,30 +164,22 @@ topicsController.get = function(req, res, next) {
 		}
 	], function (err, data) {
 		if (err) {
-			if (err.message === 'not-enough-privileges') {
+			if (err.message === '[[error:no-privileges]]') {
 				return res.locals.isAPI ? res.json(403, err.message) : res.redirect('403');
 			} else {
 				return res.locals.isAPI ? res.json(404, 'not-found') : res.redirect('404');
 			}
 		}
 
-		data.privileges = privileges;
+		data.privileges = userPrivileges;
+		data['reputation:disabled'] = meta.config['reputation:disabled'] === '1' ? true : false;
+		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
 
 		var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
 		var queryString = qs.stringify(req.query);
 		if(queryString.length) {
 			topic_url += '?' + queryString;
 		}
-
-
-		if (uid) {
-			topics.markAsRead(tid, uid, function(err) {
-				topics.pushUnreadCount(uid);
-				topics.markTopicNotificationsRead(tid, uid);
-			});
-		}
-
-		topics.increaseViewCount(tid);
 
 		// Paginator for noscript
 		data.pages = [];
@@ -195,7 +204,7 @@ topicsController.teaser = function(req, res, next) {
 			return res.json(404, 'not-found');
 		}
 
-		posts.getPostSummaryByPids([pid], false, function(err, posts) {
+		posts.getPostSummaryByPids([pid], {stripTags: false}, function(err, posts) {
 			if (err) {
 				return next(err);
 			}

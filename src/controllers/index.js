@@ -2,7 +2,9 @@
 
 var topicsController = require('./topics'),
 	categoriesController = require('./categories'),
+	tagsController = require('./tags'),
 	usersController = require('./users'),
+	groupsController = require('./groups'),
 	accountsController = require('./accounts'),
 	staticController = require('./static'),
 	apiController = require('./api'),
@@ -10,21 +12,23 @@ var topicsController = require('./topics'),
 
 	async = require('async'),
 	nconf = require('nconf'),
-	auth = require('./../routes/authentication'),
-	meta = require('./../meta'),
-	user = require('./../user'),
-	posts = require('./../posts'),
-	topics = require('./../topics'),
-	plugins = require('./../plugins'),
-	categories = require('./../categories'),
-	categoryTools = require('./../categoryTools');
-
-
+	winston = require('winston'),
+	auth = require('../routes/authentication'),
+	meta = require('../meta'),
+	user = require('../user'),
+	posts = require('../posts'),
+	topics = require('../topics'),
+	search = require('../search'),
+	plugins = require('../plugins'),
+	categories = require('../categories'),
+	privileges = require('../privileges');
 
 var Controllers = {
 	topics: topicsController,
 	categories: categoriesController,
+	tags: tagsController,
 	users: usersController,
+	groups: groupsController,
 	accounts: accountsController,
 	static: staticController,
 	api: apiController,
@@ -60,102 +64,56 @@ Controllers.home = function(req, res, next) {
 		},
 		categories: function (next) {
 			var uid = req.user ? req.user.uid : 0;
-			categories.getAllCategories(uid, function (err, data) {
+			categories.getVisibleCategories(uid, function (err, categoryData) {
 				if (err) {
 					return next(err);
 				}
 
-				data.categories = data.categories.filter(function (category) {
-					return !category.disabled;
-				});
-
-				function canSee(category, next) {
-					categoryTools.privileges(category.cid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
-						next(!err && privileges.meta.read);
-					});
-				}
-
 				function getRecentReplies(category, callback) {
-					categories.getRecentReplies(category.cid, uid, parseInt(category.numRecentReplies, 10), function (err, posts) {
+					categories.getRecentTopicReplies(category.cid, uid, parseInt(category.numRecentReplies, 10), function (err, posts) {
+						if (err) {
+							return callback(err);
+						}
 						category.posts = posts;
-						category.post_count = posts.length > 2 ? 2 : posts.length; // this was a hack to make metro work back in the day, post_count should just = length
-						callback(null);
+						callback();
 					});
 				}
 
-				async.filter(data.categories, canSee, function(visibleCategories) {
-					data.categories = visibleCategories;
-
-					async.each(data.categories, getRecentReplies, function (err) {
-						next(err, data.categories);
-					});
+				async.each(categoryData, getRecentReplies, function (err) {
+					next(err, categoryData);
 				});
 			});
 		}
 	}, function (err, data) {
+		if (err) {
+			return next(err);
+		}
 		res.render('home', data);
 	});
 };
 
 Controllers.search = function(req, res, next) {
-	var start = process.hrtime();
-
 	if (!req.params.term) {
 		return res.render('search', {
+			time: 0,
 			search_query: '',
 			posts: [],
 			topics: []
 		});
 	}
 
+	var uid = req.user ? req.user.uid : 0;
+
 	if (!plugins.hasListeners('filter:search.query')) {
 		return res.redirect('/404');
 	}
 
-	function search(index, callback) {
-		plugins.fireHook('filter:search.query', {
-			index: index,
-			query: req.params.term
-		}, callback);
-	}
-
-	async.parallel({
-		pids: function(next) {
-			search('post', next);
-		},
-		tids: function(next) {
-			search('topic', next);
-		}
-	}, function (err, results) {
+	search.search(req.params.term, uid, function(err, results) {
 		if (err) {
 			return next(err);
 		}
 
-		if(!results) {
-			results = {pids:[], tids: []};
-		}
-
-		async.parallel({
-			posts: function(next) {
-				posts.getPostSummaryByPids(results.pids, false, next);
-			},
-			topics: function(next) {
-				topics.getTopicsByTids(results.tids, 0, next);
-			}
-		}, function(err, results) {
-			if (err) {
-				return next(err);
-			}
-
-			return res.render('search', {
-				time: process.elapsedTimeSince(start),
-				search_query: req.params.term,
-				posts: results.posts,
-				topics: results.topics,
-				post_matches : results.posts.length,
-				topic_matches : results.topics.length
-			});
-		});
+		return res.render('search', results);
 	});
 };
 
@@ -176,6 +134,8 @@ Controllers.login = function(req, res, next) {
 	data.token = res.locals.csrf_token;
 	data.showResetLink = emailersPresent;
 	data.allowLocalLogin = meta.config.allowLocalLogin === undefined || parseInt(meta.config.allowLocalLogin, 10) === 1;
+	data.allowRegistration = meta.config.allowRegistration;
+
 	if (req.query.next) {
 		data.previousUrl = req.query.next;
 	}
@@ -208,33 +168,30 @@ Controllers.register = function(req, res, next) {
 	data.maximumUsernameLength = meta.config.maximumUsernameLength;
 	data.minimumPasswordLength = meta.config.minimumPasswordLength;
 	data.termsOfUse = meta.config.termsOfUse;
+	data.regFormEntry = [];
 
-	res.render('register', data);
+	plugins.fireHook('filter:register.build', req, res, data, function(err, req, res, data) {
+		if (err && process.env === 'development') {
+			winston.warn(JSON.stringify(err));
+		}
+		res.render('register', data);
+	});
 };
 
 
 Controllers.confirmEmail = function(req, res, next) {
 	user.email.confirm(req.params.code, function (data) {
-		if (data.status === 'ok') {
-			data = {
-				'alert-class': 'alert-success',
-				title: 'Email Confirmed',
-				text: 'Thank you for vaidating your email. Your account is now fully activated.'
-			};
-		} else {
-			data = {
-				'alert-class': 'alert-danger',
-				title: 'An error occurred...',
-				text: 'There was a problem validating your email address. Perhaps the code was invalid or has expired.'
-			};
-		}
-
+		data.status = data.status === 'ok';
 		res.render('confirm', data);
 	});
 };
 
 Controllers.sitemap = function(req, res, next) {
-	var sitemap = require('./../sitemap.js');
+	if (meta.config['feeds:disableSitemap'] === '1') {
+		return res.redirect('404');
+	}
+
+	var sitemap = require('../sitemap.js');
 
 	sitemap.render(function(xml) {
 		res.header('Content-Type', 'application/xml');

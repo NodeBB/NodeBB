@@ -2,11 +2,11 @@
     "title": "Varsler",
     "no_notifs": "Du har ingen nye varsler",
     "see_all": "Se alle varsler",
-    "back_to_home": "Tilbake til NodeBB",
+    "back_to_home": "Back to %1",
     "outgoing_link": "Utgående link",
     "outgoing_link_message": "Du forlatter nå",
     "continue_to": "Fortsett til",
-    "return_to": "Gå tilbake til",
+    "return_to": "Return to",
     "new_notification": "Nytt varsel",
     "you_have_unread_notifications": "Du har uleste varsler.",
     "user_made_post": "<strong>%1</strong> lagde ett nytt innlegg",
@@ -14,5 +14,11 @@
     "upvoted_your_post": "<strong>%1</strong> har stemt opp ditt innlegg.",
     "favourited_your_post": "<strong>%1</strong> har favorittmerket ditt innlegg.",
     "user_flagged_post": "<strong>%1</strong> flagget ett innlegg.",
-    "user_posted_to": "<strong>%1</strong> har skrevet et svar til: <strong>%2</strong>"
+    "user_posted_to": "<strong>%1</strong> har skrevet et svar til: <strong>%2</strong>",
+    "user_mentioned_you_in": "<strong>%1</strong> mentioned you in <strong>%2</strong>",
+    "email-confirmed": "Email Confirmed",
+    "email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",
+    "email-confirm-error": "An error occurred...",
+    "email-confirm-error-message": "There was a problem validating your email address. Perhaps the code was invalid or has expired.",
+    "email-confirm-sent": "Confirmation email sent."
 }

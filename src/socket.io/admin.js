@@ -7,7 +7,6 @@ var	groups = require('../groups'),
 	user = require('../user'),
 	topics = require('../topics'),
 	categories = require('../categories'),
-	CategoryTools = require('../categoryTools'),
 	logger = require('../logger'),
 	events = require('../events'),
 	db = require('../database'),
@@ -26,41 +25,18 @@ var	groups = require('../groups'),
 		settings: {}
 	};
 
-SocketAdmin.before = function(socket, next) {
+SocketAdmin.before = function(socket, method, next) {
 	user.isAdministrator(socket.uid, function(err, isAdmin) {
 		if (!err && isAdmin) {
 			next();
 		} else {
-			winston.warn('[socket.io] Call to admin method blocked (accessed by uid ' + socket.uid + ')');
+			winston.warn('[socket.io] Call to admin method ( ' + method + ' ) blocked (accessed by uid ' + socket.uid + ')');
 		}
 	});
 };
 
 SocketAdmin.restart = function(socket, data, callback) {
 	meta.restart();
-};
-
-SocketAdmin.getVisitorCount = function(socket, data, callback) {
-	var terms = {
-		day: 86400000,
-		week: 604800000,
-		month: 2592000000
-	};
-	var now = Date.now();
-	async.parallel({
-		day: function(next) {
-			db.sortedSetCount('ip:recent', now - terms.day, now, next);
-		},
-		week: function(next) {
-			db.sortedSetCount('ip:recent', now - terms.week, now, next);
-		},
-		month: function(next) {
-			db.sortedSetCount('ip:recent', now - terms.month, now, next);
-		},
-		alltime: function(next) {
-			db.sortedSetCount('ip:recent', 0, now, next);
-		}
-	}, callback);
 };
 
 SocketAdmin.fireEvent = function(socket, data, callback) {
@@ -76,11 +52,16 @@ SocketAdmin.themes.set = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	widgets.reset(function(err) {
+	var wrappedCallback = function(err) {
 		meta.themes.set(data, function() {
 			callback();
 		});
-	});
+	};
+	if (data.type == 'bootswatch') {
+		wrappedCallback();
+	} else {
+		widgets.reset(wrappedCallback);
+	}
 };
 
 SocketAdmin.themes.updateBranding = function(socket, data, callback) {

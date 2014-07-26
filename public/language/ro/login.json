@@ -1,0 +1,9 @@
+{
+    "username": "Utilizator / Email",
+    "remember_me": "Autentifică-mă automat la fiecare vizită",
+    "forgot_password": "Ai uitat parola?",
+    "alternative_logins": "Autentificare Alternativă",
+    "failed_login_attempt": "Încercare de autentificare eșuată, te rugăm să încerci dinou.",
+    "login_successful": "Te-ai autentificat cu succes!",
+    "dont_have_account": "Nu ai un cont?"
+}

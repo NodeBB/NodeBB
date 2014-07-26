@@ -4,12 +4,12 @@
 
 /* globals define, app, translator, config, socket, ajaxify */
 
-define(function() {
+define('forum/topic/browsing', function() {
 
 	var Browsing = {};
 
 	Browsing.onUpdateUsersInRoom = function(data) {
-		if(data && data.room.indexOf('topic') !== -1) {
+		if(data && data.room.indexOf('topic_' + ajaxify.variables.get('topic_id')) !== -1) {
 			var activeEl = $('.thread_active_users');
 
 			// remove users that are no longer here
@@ -78,13 +78,41 @@ define(function() {
 			getReplyingUsers();
 		}
 
-		app.populateOnlineUsers();
+		Browsing.populateOnlineUsers();
 	};
 
 	Browsing.onUserOnline = function(err, data) {
-		app.populateOnlineUsers();
+		Browsing.populateOnlineUsers();
 
 		updateBrowsingUsers(data);
+	};
+
+	Browsing.populateOnlineUsers = function () {
+		var uids = [];
+
+		$('.post-row').each(function () {
+			var uid = $(this).attr('data-uid');
+			if(uids.indexOf(uid) === -1) {
+				uids.push(uid);
+			}
+		});
+
+		socket.emit('user.getOnlineUsers', uids, function (err, users) {
+
+			$('.username-field').each(function () {
+				var el = $(this),
+					uid = el.parents('li').attr('data-uid');
+
+				if (uid && users[uid]) {
+					translator.translate('[[global:' + users[uid].status + ']]', function(translated) {
+						el.siblings('i')
+							.attr('class', 'fa fa-circle status ' + users[uid].status)
+							.attr('title', translated)
+							.attr('data-original-title', translated);
+					});
+				}
+			});
+		});
 	};
 
 	function updateBrowsingUsers(data) {
@@ -92,7 +120,7 @@ define(function() {
 		var user = activeEl.find('a[data-uid="'+ data.uid + '"]');
 		if (user.length && !data.online) {
 			user.parent().remove();
-		} else if(!user.length && data.online) {
+		} else if(!user.length && data.online && data.rooms.indexOf('topic_' + ajaxify.variables.get('topic_id')) !== -1) {
 			user = createUserIcon(data.uid, data.picture, data.userslug, data.username);
 			activeEl.append(user);
 			activeEl.find('a[data-uid] img').tooltip({
@@ -106,7 +134,6 @@ define(function() {
 			return $('<div class="inline-block"><a data-uid="' + uid + '" href="' + config.relative_path + '/user/' + userslug + '"><img title="' + username + '" src="'+ picture +'"/></a></div>');
 		}
 	}
-
 
 	function getReplyingUsers() {
 		var activeEl = $('.thread_active_users');

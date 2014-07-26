@@ -2,7 +2,8 @@ var async = require('async'),
 
 	db = require('./database'),
 	posts = require('./posts'),
-	user = require('./user');
+	user = require('./user'),
+	meta = require('./meta');
 
 (function (Favourites) {
 	"use strict";
@@ -88,7 +89,8 @@ var async = require('async'),
 					return callback(err);
 				}
 				var voteCount = parseInt(results.upvotes, 10) - parseInt(results.downvotes, 10);
-				posts.setPostField(pid, 'votes', voteCount, function(err) {
+
+				posts.updatePostVoteCount(pid, voteCount, function(err) {
 					callback(err, voteCount);
 				});
 			});
@@ -96,11 +98,25 @@ var async = require('async'),
 	}
 
 	Favourites.upvote = function(pid, uid, callback) {
+		if (meta.config['reputation:disabled'] === false) {
+			return callback(false);
+		}
+
 		toggleVote('upvote', pid, uid, callback);
 	};
 
 	Favourites.downvote = function(pid, uid, callback) {
-		toggleVote('downvote', pid, uid, callback);
+		if (meta.config['reputation:disabled'] === false) {
+			return callback(false);
+		}
+
+		user.getUserField(uid, 'reputation', function(err, reputation) {
+			if (reputation < meta.config['privileges:downvote']) {
+				return callback(new Error('[[error:not-enough-reputation-to-downvote]]'));
+			}
+
+			toggleVote('downvote', pid, uid, callback);
+		});
 	};
 
 	function toggleVote(type, pid, uid, callback) {
@@ -139,8 +155,21 @@ var async = require('async'),
 	};
 
 	Favourites.getVoteStatusByPostIDs = function(pids, uid, callback) {
-		async.map(pids, function(pid, next) {
-			Favourites.hasVoted(pid, uid, next);
+		var upvoteSets = [],
+			downvoteSets = [];
+
+		for (var i=0; i<pids.length; ++i) {
+			upvoteSets.push('pid:' + pids[i] + ':upvote');
+			downvoteSets.push('pid:' + pids[i] + ':downvote');
+		}
+
+		async.parallel({
+			upvotes: function(next) {
+				db.isMemberOfSets(upvoteSets, uid, next);
+			},
+			downvotes: function(next) {
+				db.isMemberOfSets(downvoteSets, uid, next);
+			}
 		}, callback);
 	};
 
@@ -209,9 +238,12 @@ var async = require('async'),
 	};
 
 	Favourites.getFavouritesByPostIDs = function(pids, uid, callback) {
-		async.map(pids, function(pid, next) {
-			Favourites.hasFavourited(pid, uid, next);
-		}, callback);
+		var sets = [];
+		for (var i=0; i<pids.length; ++i) {
+			sets.push('pid:' + pids[i] + ':users_favourited');
+		}
+
+		db.isMemberOfSets(sets, uid, callback);
 	};
 
 	Favourites.getFavouritedUidsByPids = function(pids, callback) {

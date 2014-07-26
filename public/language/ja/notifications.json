@@ -2,11 +2,11 @@
     "title": "通知センター",
     "no_notifs": "新しい通知はありません",
     "see_all": "すべての通知を確認",
-    "back_to_home": "NodeBBへ戻る",
+    "back_to_home": "Back to %1",
     "outgoing_link": "外部サイトへのリンク",
     "outgoing_link_message": "リービング",
     "continue_to": "続き",
-    "return_to": "戻る ",
+    "return_to": "Return to",
     "new_notification": "新しい通知",
     "you_have_unread_notifications": "未読の通知があります。",
     "user_made_post": "<strong>%1</strong>は新しいポストを投稿しました。",
@@ -14,5 +14,11 @@
     "upvoted_your_post": "<strong>%1</strong>はあなたのポストを評価しました。",
     "favourited_your_post": "<strong>%1</strong>はあなたのポストをお気に入りにしました。",
     "user_flagged_post": "<strong>%1</strong> ポストを報告しました。",
-    "user_posted_to": "<strong>%1</strong> は <strong>%2</strong> への返事を作成しました。"
+    "user_posted_to": "<strong>%1</strong> は <strong>%2</strong> への返事を作成しました。",
+    "user_mentioned_you_in": "<strong>%1</strong> mentioned you in <strong>%2</strong>",
+    "email-confirmed": "Email Confirmed",
+    "email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",
+    "email-confirm-error": "An error occurred...",
+    "email-confirm-error-message": "There was a problem validating your email address. Perhaps the code was invalid or has expired.",
+    "email-confirm-sent": "Confirmation email sent."
 }

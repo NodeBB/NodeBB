@@ -3,6 +3,7 @@
     "offline": "Väljas",
     "username": "Kasutajanimi",
     "email": "Email",
+    "confirm_email": "Kinnita email",
     "fullname": "Täisnimi",
     "website": "Koduleht",
     "location": "Asukoht",
@@ -59,6 +60,6 @@
     "topics_per_page": "Teemasi ühe lehekülje kohta",
     "posts_per_page": "Postitusi ühe lehekülje kohta",
     "notification_sounds": "Tee häält, kui saabub teade.",
-    "browsing": "Browsing Settings",
-    "open_links_in_new_tab": "Open outgoing links in new tab?"
+    "browsing": "Sirvimis sätted",
+    "open_links_in_new_tab": "Ava väljaminevad lingid uues vaheaknas?"
 }

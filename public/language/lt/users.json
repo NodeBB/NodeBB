@@ -4,5 +4,7 @@
     "most_reputation": "Didžiausia reputacija",
     "search": "Ieškoti",
     "enter_username": "Įrašykite vartotojo vardą paieškai",
-    "load_more": "Įkelti daugiau"
+    "load_more": "Įkelti daugiau",
+    "user-not-found": "Paskyra nerasta!",
+    "users-found-search-took": "%1 paskyra(-os)! Paieška užtruko %2 ms."
 }

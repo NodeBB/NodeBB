@@ -1,6 +1,7 @@
 /*
-	NodeBB - A forum powered by node in development by designcreateplay
-	Copyright (C) 2013  DesignCreatePlay Inc.
+	NodeBB - A better forum platform for the modern web
+	https://github.com/NodeBB/NodeBB/
+	Copyright (C) 2013-2014  NodeBB Inc.
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -58,14 +59,15 @@ if(os.platform() === 'linux') {
 }
 
 // Log GNU copyright info along with server info
-winston.info('NodeBB v' + pkg.version + ' Copyright (C) 2013-2014 DesignCreatePlay Inc.');
+winston.info('NodeBB v' + pkg.version + ' Copyright (C) 2013-2014 NodeBB Inc.');
 winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
 winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
 winston.info('');
 
 // Alternate configuration file support
-var	configFile = __dirname + '/config.json',
+var	configFile = path.join(__dirname, '/config.json'),
 	configExists;
+
 if (nconf.get('config')) {
 	configFile = path.resolve(__dirname, nconf.get('config'));
 }
@@ -116,16 +118,18 @@ function start() {
 		winston.info('Base Configuration OK.');
 	}
 
-	var meta = require('./src/meta');
-
 	require('./src/database').init(function(err) {
+		if (err) {
+			winston.error(err.stack);
+			process.exit();
+		}
+		var meta = require('./src/meta');
 		meta.configs.init(function () {
-			var templates = require('./public/src/templates'),
+			var templates = require('templates.js'),
 				webserver = require('./src/webserver'),
 				sockets = require('./src/socket.io'),
 				plugins = require('./src/plugins'),
-				upgrade = require('./src/upgrade')
-				meta = require('./src/meta');
+				upgrade = require('./src/upgrade');
 
 			templates.setGlobal('relative_path', nconf.get('relative_path'));
 
@@ -149,7 +153,7 @@ function start() {
 
 						meta.js.killMinifier();
 						shutdown(1);
-					})
+					});
 				} else {
 					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
 					winston.warn('    node app --upgrade');
@@ -191,10 +195,12 @@ function setup() {
 function upgrade() {
 	loadConfig();
 
-	var meta = require('./src/meta');
-
 	require('./src/database').init(function(err) {
-		meta.configs.init(function () {
+		if (err) {
+			winston.error(err.stack);
+			process.exit();
+		}
+		require('./src/meta').configs.init(function () {
 			require('./src/upgrade').upgrade();
 		});
 	});
@@ -265,7 +271,6 @@ function resetThemes(callback) {
 function resetPlugin(pluginId) {
 	var db = require('./src/database');
 	db.setRemove('plugins:active', pluginId, function(err, result) {
-		console.log(result);
 		if (err || result !== 1) {
 			winston.error('[reset] Could not disable plugin: ' + pluginId);
 			if (err) {
@@ -332,7 +337,7 @@ function displayHelp() {
 	winston.info('Options:');
 	winston.info('  --help              displays this usage information');
 	winston.info('  --setup             configure your environment and setup NodeBB');
-	winston.info('  --upgrade           upgrade NodeBB, first read: github.com/designcreateplay/NodeBB/wiki/Upgrading-NodeBB');
+	winston.info('  --upgrade           upgrade NodeBB, first read: https://docs.nodebb.org/en/latest/upgrading/');
 	winston.info('  --reset             soft resets NodeBB; disables all plugins and restores selected theme to Vanilla');
 	winston.info('  --start             manually start NodeBB (default when no options are given)');
 }

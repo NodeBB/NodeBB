@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 4, 2);
+	latestSchema = Date.UTC(2014, 6, 24);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -521,7 +521,7 @@ Upgrade.upgrade = function(callback) {
 			thisSchemaDate = Date.UTC(2014, 3, 31, 12, 30);
 
 			if (schemaDate < thisSchemaDate) {
-				db.setObjectField('widgets:global', 'footer', "[{\"widget\":\"html\",\"data\":{\"html\":\"<footer id=\\\"footer\\\" class=\\\"container footer\\\">\\r\\n\\t<div class=\\\"copyright\\\">\\r\\n\\t\\tCopyright © 2014 <a target=\\\"_blank\\\" href=\\\"https://www.nodebb.com\\\">NodeBB Forums</a> | <a target=\\\"_blank\\\" href=\\\"//github.com/designcreateplay/NodeBB/graphs/contributors\\\">Contributors</a>\\r\\n\\t</div>\\r\\n</footer>\",\"title\":\"\",\"container\":\"\"}}]", function(err) {
+				db.setObjectField('widgets:global', 'footer', "[{\"widget\":\"html\",\"data\":{\"html\":\"<footer id=\\\"footer\\\" class=\\\"container footer\\\">\\r\\n\\t<div class=\\\"copyright\\\">\\r\\n\\t\\tCopyright © 2014 <a target=\\\"_blank\\\" href=\\\"https://www.nodebb.com\\\">NodeBB Forums</a> | <a target=\\\"_blank\\\" href=\\\"//github.com/NodeBB/NodeBB/graphs/contributors\\\">Contributors</a>\\r\\n\\t</div>\\r\\n</footer>\",\"title\":\"\",\"container\":\"\"}}]", function(err) {
 					if (err) {
 						winston.error('[2014/3/31] Problem re-adding copyright message into global footer widget');
 						next();
@@ -644,6 +644,323 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/5/13] Updating privilege settings - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 4, 16);
+
+			if (schemaDate < thisSchemaDate) {
+				var tasks = [];
+
+				db.getObjectField('config', 'allowGuestPosting', function(err, value) {
+					if (value === '1') {
+						tasks.push(async.apply(db.deleteObjectField, 'config', 'allowGuestPosting'));
+
+						db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+							async.each(cids, function(cid, next) {
+								Categories.getCategoryField(cid, 'disabled', function(err, disabled) {
+									if (!disabled || disabled === '0') {
+										tasks.push(async.apply(Groups.join, 'cid:' + cid + ':privileges:groups:topics:create', 'guests'));
+										tasks.push(async.apply(Groups.join, 'cid:' + cid + ':privileges:groups:topics:reply', 'guests'));
+										next();
+									} else {
+										next();
+									}
+								});
+							}, function() {
+								async.parallel(tasks, function(err) {
+									if (!err) {
+										winston.info('[2014/5/16] Removing allowGuestPosting option');
+										Upgrade.update(thisSchemaDate, next);
+									} else {
+										winston.error('[2014/4/1] Error encountered while removing allowGuestPosting option');
+										next(err);
+									}
+								});
+							});
+						});
+					} else {
+						winston.info('[2014/5/16] Removing allowGuestPosting option - skipped');
+						next();
+					}
+				});
+			} else {
+				winston.info('[2014/5/16] Removing allowGuestPosting option - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 4, 22);
+
+			if (schemaDate < thisSchemaDate) {
+				db.exists('tags', function(err, exists) {
+					if (err || !exists) {
+						winston.info('[2014/5/22] Skipping tag upgrade');
+						return Upgrade.update(thisSchemaDate, next);
+					}
+
+					db.getSetMembers('tags', function(err, tags) {
+						if (err) {
+							return next(err);
+						}
+
+						async.each(tags, function(tag, next) {
+							db.sortedSetCard('tag:' + tag + ':topics', function(err, count) {
+								if (err) {
+									return next(err);
+								}
+								db.sortedSetAdd('tags:topic:count', count, tag, next);
+							});
+						}, function(err) {
+							if (err) {
+								winston.error('[2014/5/22] Error encountered while upgrading tags');
+								return next(err);
+							}
+
+							db.delete('tags', function(err) {
+								if (err) {
+									winston.error('[2014/5/22] Error encountered while upgrading tags');
+									return next(err);
+								}
+								winston.info('[2014/5/22] Tags upgraded to sorted set');
+								Upgrade.update(thisSchemaDate, next);
+							});
+						});
+					});
+				});
+			} else {
+				winston.info('[2014/5/16] Tags upgrade - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 5, 6);
+
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/6/6] Upgrading topics...');
+
+				db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
+					function upgradeTopic(tid, callback) {
+
+						Topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
+							if (err) {
+								return callback(err);
+							}
+
+							db.getSortedSetRange('tid:' + tid + ':posts', 0, -1, function(err, pids) {
+								if (err) {
+									return callback(err);
+								}
+
+								if (!Array.isArray(pids) || !pids.length) {
+									return callback();
+								}
+
+								if (!parseInt(mainPid, 10)) {
+									mainPid = pids[0];
+									pids.splice(0, 1);
+									Topics.setTopicField(tid, 'mainPid', mainPid);
+									db.sortedSetRemove('tid:' + tid + ':posts', mainPid);
+									db.sortedSetRemove('tid:' + tid + ':posts:votes', mainPid);
+								}
+
+								if (!pids.length) {
+									return callback();
+								}
+
+								async.eachLimit(pids, 10, function(pid, next) {
+									Posts.getPostField(pid, 'votes', function(err, votes) {
+										if (err) {
+											return next(err);
+										}
+										db.sortedSetAdd('tid:' + tid + ':posts:votes', votes ? votes : 0, pid, next);
+									});
+								}, callback);
+							});
+						});
+					}
+
+					if (err) {
+						return next(err);
+					}
+
+					if (!Array.isArray(tids) || !tids.length)  {
+						winston.info('[2014/6/6] Skipping topic upgrade');
+						return Upgrade.update(thisSchemaDate, next);
+					}
+
+					async.eachLimit(tids, 10, upgradeTopic, function(err) {
+						if (err) {
+							winston.error('[2014/6/6] Error encountered while upgrading topics');
+							return next(err);
+						}
+						winston.info('[2014/6/6] Topics upgraded.');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2014/6/6] Topic upgrade - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 5, 17);
+
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/6/17] Upgrading category post counts...');
+
+				db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+					if (err) {
+						return next(err);
+					}
+
+					async.each(cids, function(cid, next) {
+						db.setObjectField('category:' + cid, 'post_count', 0, next);
+					}, function(err) {
+						if (err) {
+							return next(err);
+						}
+						db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
+							function upgradeTopic(tid, callback) {
+
+								Topics.getTopicFields(tid, ['cid', 'postcount', 'deleted'], function(err, topicData) {
+									if (err || !topicData) {
+										return callback(err);
+									}
+
+									if (parseInt(topicData.deleted, 10) === 1) {
+										return callback();
+									}
+
+									db.incrObjectFieldBy('category:' + topicData.cid, 'post_count', topicData.postcount, callback);
+								});
+							}
+
+							if (err) {
+								return next(err);
+							}
+
+							if (!Array.isArray(tids) || !tids.length)  {
+								winston.info('[2014/6/17] Skipping category post upgrade');
+								return Upgrade.update(thisSchemaDate, next);
+							}
+
+							async.eachLimit(tids, 10, upgradeTopic, function(err) {
+								if (err) {
+									winston.error('[2014/6/17] Error encountered while upgrading category postcounts');
+									return next(err);
+								}
+								winston.info('[2014/6/17] Category post counts upgraded');
+								Upgrade.update(thisSchemaDate, next);
+							});
+						});
+					});
+				});
+			} else {
+				winston.info('[2014/6/17] Category post count upgrade - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 6, 23);
+
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/7/23] Upgrading db dependencies...');
+				var install = require('./install');
+				var config = require('../config.json');
+				install.installDbDependencies(config, function(err) {
+					if (err) {
+						winston.error('[2014/7/23] Error encountered while upgrading db dependencies');
+						return next(err);
+					}
+
+					winston.info('[2014/7/23] Upgraded db dependencies');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2014/7/23] Upgrading db dependencies - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 6, 24);
+
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/7/24] Upgrading chats to sorted set...');
+
+				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
+					if (err) {
+						return next(err);
+					}
+
+					async.eachLimit(uids, 10, function(uid, next) {
+						db.getSortedSetRange('uid:' + uid + ':chats', 0, -1, function(err, toUids) {
+							if (err) {
+								return next(err);
+							}
+
+							if (!Array.isArray(toUids) || !toUids.length) {
+								return next();
+							}
+
+							async.eachLimit(toUids, 10, function(toUid, next) {
+								var uids = [uid, toUid].sort();
+								db.getListRange('messages:' + uids[0] + ':' + uids[1], 0, -1, function(err, mids) {
+									if (err) {
+										return next(err);
+									}
+
+									if (!Array.isArray(mids) || !mids.length) {
+										return next();
+									}
+
+									async.eachLimit(mids, 10, function(mid, next) {
+										db.getObjectField('message:' + mid, 'timestamp', function(err, timestamp) {
+											if (err || !timestamp) {
+												return next(err);
+											}
+
+											db.sortedSetAdd('messages:uid:' + uids[0] + ':to:' + uids[1], timestamp, mid, next);
+										});
+									}, next);
+								});
+							}, next);
+						});
+					}, function(err) {
+						if (err) {
+							winston.error('[2014/7/24] Error encountered while updating chats to sorted set');
+							return next(err);
+						}
+
+						async.eachLimit(uids, 10, function(uid, next) {
+							db.getSortedSetRange('uid:' + uid + ':chats', 0, -1, function(err, toUids) {
+								if (err) {
+									return next(err);
+								}
+
+								if (!Array.isArray(toUids) || !toUids.length) {
+									return next();
+								}
+
+								async.eachLimit(toUids, 10, function(toUid, next) {
+									var uids = [uid, toUid].sort();
+									db.delete('messages:' + uids[0] + ':' + uids[1], next);
+								}, next);
+							});
+						}, function(err) {
+							if (err) {
+								winston.error('[2014/7/24] Error encountered while updating chats to sorted set');
+								return next(err);
+							}
+
+							winston.info('[2014/7/24] Upgraded chats to sorted set');
+							Upgrade.update(thisSchemaDate, next);
+						});
+					});
+				});
+			} else {
+				winston.info('[2014/7/24] Upgrading chats to sorted set - skipped');
 				next();
 			}
 		}

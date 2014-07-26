@@ -1,6 +1,6 @@
 {
-    "success": "Success",
-    "topic-post": "You have successfully posted.",
-    "authentication-successful": "Authentication Successful",
-    "settings-saved": "Settings saved!"
+    "success": "成功",
+    "topic-post": "您的文章已張貼成功",
+    "authentication-successful": "驗證成功",
+    "settings-saved": "設定已儲存"
 }

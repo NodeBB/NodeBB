@@ -1,7 +1,9 @@
-define(['forum/recent'], function(recent) {
-	var Popular = {},
-		loadingMoreTopics = false,
-		active = '';
+'use strict';
+
+/* globals define, app, socket*/
+
+define('forum/popular', ['forum/recent', 'forum/infinitescroll'], function(recent, infinitescroll) {
+	var Popular = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
 		if(data.url.indexOf('recent') !== 0) {
@@ -18,38 +20,7 @@ define(['forum/recent'], function(recent) {
 
 		recent.watchForNewPosts();
 
-		active = recent.selectActivePill();
-
-		app.enableInfiniteLoading(function() {
-			if(!loadingMoreTopics) {
-				loadMoreTopics();
-			}
-		});
-
-		function loadMoreTopics() {
-			if(!$('#topics-container').length) {
-				return;
-			}
-
-			loadingMoreTopics = true;
-			socket.emit('topics.loadMoreFromSet', {
-				set: 'topics:' + $('.nav-pills .active a').html().toLowerCase(),
-				after: $('#topics-container').attr('data-nextstart')
-			}, function(err, data) {
-				if(err) {
-					return app.alertError(err.message);
-				}
-
-				if (data.topics && data.topics.length) {
-					recent.onTopicsLoaded('popular', data.topics, false);
-					$('#topics-container').attr('data-nextstart', data.nextStart);
-				} else {
-					$('#load-more-btn').hide();
-				}
-
-				loadingMoreTopics = false;
-			});
-		}
+		recent.selectActivePill();
 	};
 
 	return Popular;

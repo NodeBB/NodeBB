@@ -3,8 +3,8 @@
 
 var topics = require('../topics'),
 	categories = require('../categories'),
+	privileges = require('../privileges'),
 	threadTools = require('../threadTools'),
-	categoryTools = require('../categoryTools'),
 	websockets = require('./index'),
 	user = require('../user'),
 	db = require('./../database'),
@@ -21,16 +21,13 @@ SocketTopics.post = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	if (!socket.uid && !parseInt(meta.config.allowGuestPosting, 10)) {
-		return callback(new Error('[[error:not-logged-in]]'));
-	}
-
 	topics.post({
 		uid: socket.uid,
 		title: data.title,
 		content: data.content,
 		cid: data.category_id,
 		thumb: data.topic_thumb,
+		tags: data.tags,
 		req: websockets.reqFromSocket(socket)
 	}, function(err, result) {
 		if(err) {
@@ -50,6 +47,7 @@ SocketTopics.post = function(socket, data, callback) {
 			});
 
 			module.parent.exports.emitTopicPostStats();
+			topics.pushUnreadCount();
 
 			callback(null, result.topicData);
 		}
@@ -60,14 +58,22 @@ SocketTopics.postcount = function(socket, tid, callback) {
 	topics.getTopicField(tid, 'postcount', callback);
 };
 
-SocketTopics.markAsRead = function(socket, data) {
-	if(!data || !data.tid || !data.uid) {
+SocketTopics.lastPostIndex = function(socket, tid, callback) {
+	db.sortedSetCard('tid:' + tid + ':posts', callback);
+};
+
+SocketTopics.increaseViewCount = function(socket, tid) {
+	topics.increaseViewCount(tid);
+};
+
+SocketTopics.markAsRead = function(socket, tid) {
+	if(!tid || !socket.uid) {
 		return;
 	}
 
-	topics.markAsRead(data.tid, data.uid, function(err) {
-		topics.pushUnreadCount(data.uid);
-		topics.markTopicNotificationsRead(data.tid, data.uid);
+	topics.markAsRead(tid, socket.uid, function(err) {
+		topics.pushUnreadCount(socket.uid);
+		topics.markTopicNotificationsRead(tid, socket.uid);
 	});
 };
 
@@ -151,42 +157,56 @@ SocketTopics.markAsUnreadForAll = function(socket, tids, callback) {
 	}, callback);
 };
 
-SocketTopics.delete = function(socket, tids, callback) {
-	doTopicAction('delete', socket, tids, callback);
+SocketTopics.delete = function(socket, data, callback) {
+	doTopicAction('delete', socket, data, callback);
 };
 
-SocketTopics.restore = function(socket, tids, callback) {
-	doTopicAction('restore', socket, tids, callback);
+SocketTopics.restore = function(socket, data, callback) {
+	doTopicAction('restore', socket, data, callback);
 };
 
-SocketTopics.lock = function(socket, tids, callback) {
-	doTopicAction('lock', socket, tids, callback);
+SocketTopics.purge = function(socket, data, callback) {
+	doTopicAction('purge', socket, data, function(err) {
+		if (err) {
+			return callback(err);
+		}
+		websockets.emitTopicPostStats();
+		websockets.in('category_' + data.cid).emit('event:topic_purged', data.tids);
+		async.each(data.tids, function(tid, next) {
+			websockets.in('topic_' + tid).emit('event:topic_purged', tid);
+			next();
+		}, callback);
+	});
 };
 
-SocketTopics.unlock = function(socket, tids, callback) {
-	doTopicAction('unlock', socket, tids, callback);
+SocketTopics.lock = function(socket, data, callback) {
+	doTopicAction('lock', socket, data, callback);
 };
 
-SocketTopics.pin = function(socket, tids, callback) {
-	doTopicAction('pin', socket, tids, callback);
+SocketTopics.unlock = function(socket, data, callback) {
+	doTopicAction('unlock', socket, data, callback);
 };
 
-SocketTopics.unpin = function(socket, tids, callback) {
-	doTopicAction('unpin', socket, tids, callback);
+SocketTopics.pin = function(socket, data, callback) {
+	doTopicAction('pin', socket, data, callback);
 };
 
-function doTopicAction(action, socket, tids, callback) {
-	if(!tids) {
+SocketTopics.unpin = function(socket, data, callback) {
+	doTopicAction('unpin', socket, data, callback);
+};
+
+function doTopicAction(action, socket, data, callback) {
+	if(!data || !Array.isArray(data.tids) || !data.cid) {
 		return callback(new Error('[[error:invalid-tid]]'));
 	}
 
-	async.each(tids, function(tid, next) {
-		threadTools.privileges(tid, socket.uid, function(err, privileges) {
+	async.each(data.tids, function(tid, next) {
+		privileges.topics.canEdit(tid, socket.uid, function(err, canEdit) {
 			if(err) {
 				return next(err);
 			}
 
-			if(!privileges || !privileges.meta.editable) {
+			if(!canEdit) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
 
@@ -210,21 +230,17 @@ SocketTopics.createTopicFromPosts = function(socket, data, callback) {
 };
 
 SocketTopics.movePost = function(socket, data, callback) {
-	if(!socket.uid) {
+	if (!socket.uid) {
 		return callback(new Error('[[error:not-logged-in]]'));
 	}
 
-	if(!data || !data.pid || !data.tid) {
+	if (!data || !data.pid || !data.tid) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	threadTools.privileges(data.tid, socket.uid, function(err, privileges) {
-		if(err) {
-			return callback(err);
-		}
-
-		if(!(privileges.admin || privileges.moderator)) {
-			return callback(new Error('[[error:no-privileges]]'));
+	privileges.posts.canMove(data.pid, socket.uid, function(err, canMove) {
+		if (err || !canMove) {
+			return callback(err || new Error('[[error:no-privileges]]'));
 		}
 
 		topics.movePostToTopic(data.pid, data.tid, callback);
@@ -240,10 +256,10 @@ SocketTopics.move = function(socket, data, callback) {
 		var oldCid;
 		async.waterfall([
 			function(next) {
-				threadTools.privileges(tid, socket.uid, next);
+				privileges.topics.canMove(tid, socket.uid, next);
 			},
-			function(privileges, next) {
-				if(!(privileges.admin || privileges.moderator)) {
+			function(canMove, next) {
+				if (!canMove) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				next();
@@ -253,7 +269,7 @@ SocketTopics.move = function(socket, data, callback) {
 			},
 			function(cid, next) {
 				oldCid = cid;
-				threadTools.move(tid, data.cid, next);
+				threadTools.move(tid, data.cid, socket.uid, next);
 			}
 		], function(err) {
 			if(err) {
@@ -278,20 +294,9 @@ SocketTopics.moveAll = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	async.parallel({
-		from: function(next) {
-			categoryTools.privileges(data.currentCid, socket.uid, next);
-		},
-		to: function(next) {
-			categoryTools.privileges(data.cid, socket.uid, next);
-		}
-	}, function(err, results) {
-		if (err) {
-			return callback(err);
-		}
-
-		if (!results.from.admin && (!results.from.mods || !results.to.mods)) {
-			return callback(new Error('[[error:no-privileges]]'));
+	privileges.categories.canMoveAllTopics(data.currentCid, data.cid, data.uid, function(err, canMove) {
+		if (err || canMove) {
+			return callback(err || new Error('[[error:no-privileges]]'));
 		}
 
 		categories.getTopicIds(data.currentCid, 0, -1, function(err, tids) {
@@ -300,7 +305,7 @@ SocketTopics.moveAll = function(socket, data, callback) {
 			}
 
 			async.each(tids, function(tid, next) {
-				threadTools.move(tid, data.cid, next);
+				threadTools.move(tid, data.cid, socket.uid, next);
 			}, callback);
 		});
 	});
@@ -328,15 +333,28 @@ SocketTopics.loadMore = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		var start = parseInt(data.after, 10),
+		var start = Math.max(parseInt(data.after, 10) - 1, 0),
 			end = start + settings.postsPerPage - 1;
+
+		var set = 'tid:' + data.tid + ':posts',
+			reverse = false;
+
+		if (settings.topicPostSort === 'newest_to_oldest') {
+			reverse = true;
+		} else if (settings.topicPostSort === 'most_votes') {
+			reverse = true;
+			set = 'tid:' + data.tid + ':posts:votes';
+		}
 
 		async.parallel({
 			posts: function(next) {
-				topics.getTopicPosts(data.tid, start, end, socket.uid, false, next);
+				topics.getTopicPosts(data.tid, set, start, end, socket.uid, reverse, next);
 			},
 			privileges: function(next) {
-				threadTools.privileges(data.tid, socket.uid, next);
+				privileges.topics.get(data.tid, socket.uid, next);
+			},
+			'reputation:disabled': function(next) {
+				next(null, parseInt(meta.config['reputation:disabled'], 10) === 1);
 			}
 		}, callback);
 	});
@@ -393,6 +411,10 @@ SocketTopics.getTidPage = function(socket, tid, callback) {
 
 SocketTopics.getTidIndex = function(socket, tid, callback) {
 	categories.getTopicIndex(tid, callback);
+};
+
+SocketTopics.searchTags = function(socket, data, callback) {
+	topics.searchTags(data, callback);
 };
 
 module.exports = SocketTopics;

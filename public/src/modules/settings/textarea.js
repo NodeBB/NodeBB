@@ -1,4 +1,4 @@
-define(function () {
+define('settings/textarea', function () {
 
 	var Settings = null,
 		SettingsArea;

@@ -4,5 +4,7 @@
     "most_reputation": "Prus Famados",
     "search": "Chirca",
     "enter_username": "Pone unu nùmene de impitadore de chircare",
-    "load_more": "Càrriga de prus"
+    "load_more": "Càrriga de prus",
+    "user-not-found": "User not found!",
+    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
 }

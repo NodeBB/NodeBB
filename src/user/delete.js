@@ -1,13 +1,12 @@
 'use strict';
 
 var async = require('async'),
-	db = require('./../database'),
-	posts = require('./../posts'),
-	user = require('./../user'),
-	topics = require('./../topics'),
-	categories = require('./../categories'),
-	plugins = require('./../plugins'),
-	groups = require('./../groups');
+	db = require('../database'),
+	posts = require('../posts'),
+	user = require('../user'),
+	topics = require('../topics'),
+	groups = require('../groups'),
+	plugins = require('../plugins');
 
 
 module.exports = function(User) {
@@ -30,116 +29,11 @@ module.exports = function(User) {
 	};
 
 	function deletePosts(uid, callback) {
-		deleteSortedSetElements('uid:' + uid + ':posts', deletePost, callback);
-	}
-
-	function deletePost(pid, callback) {
-		async.parallel([
-			function(next) {
-				deletePostFromTopic(pid, next);
-			},
-			function(next) {
-				deletePostFromCategoryRecentPosts(pid, next);
-			},
-			function(next) {
-				deletePostFromUsersFavourites(pid, next);
-			},
-			function(next) {
-				deletePostFromUsersVotes(pid, next);
-			},
-			function(next) {
-				db.sortedSetRemove('posts:pid', pid, next);
-			}
-		], function(err) {
-			if (err) {
-				return callback(err);
-			}
-
-			plugins.fireHook('action:post.delete', pid);
-			db.delete('post:' + pid, callback);
-		});
-	}
-
-	function deletePostFromTopic(pid, callback) {
-		posts.getPostFields(pid, ['tid', 'deleted'], function(err, postData) {
-			if (err) {
-				return callback(err);
-			}
-
-			db.sortedSetRemove('tid:' + postData.tid + ':posts', pid, function(err) {
-				if (err) {
-					return callback(err);
-				}
-
-				if (parseInt(postData.deleted, 10) === 0) {
-					db.decrObjectField('global', 'postCount', callback);
-				} else {
-					callback();
-				}
-			});
-		});
-	}
-
-	function deletePostFromCategoryRecentPosts(pid, callback) {
-		db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
-			if (err) {
-				return callback(err);
-			}
-
-			async.each(cids, function(cid, next) {
-				db.sortedSetRemove('categories:recent_posts:cid:' + cid, pid, next);
-			}, callback);
-		});
-	}
-
-	function deletePostFromUsersFavourites(pid, callback) {
-		db.getSetMembers('pid:' + pid + ':users_favourited', function(err, uids) {
-			if (err) {
-				return callback(err);
-			}
-
-			async.each(uids, function(uid, next) {
-				db.sortedSetRemove('uid:' + uid + ':favourites', pid, next);
-			}, function(err) {
-				if (err) {
-					return callback(err);
-				}
-
-				db.delete('pid:' + pid + ':users_favourited', callback);
-			});
-		});
-	}
-
-	function deletePostFromUsersVotes(pid, callback) {
-		async.parallel({
-			upvoters: function(next) {
-				db.getSetMembers('pid:' + pid + ':upvote', next);
-			},
-			downvoters: function(next) {
-				db.getSetMembers('pid:' + pid + ':downvote', next);
-			}
-		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			async.parallel([
-				function(next) {
-					async.each(results.upvoters, function(uid, next) {
-						db.sortedSetRemove('uid:' + uid + ':upvote', pid, next);
-					}, next);
-				},
-				function(next) {
-					async.each(results.downvoters, function(uid, next) {
-						db.sortedSetRemove('uid:' + uid + ':downvote', pid, next);
-					}, next);
-				}
-			], callback);
-		});
+		deleteSortedSetElements('uid:' + uid + ':posts', posts.purge, callback);
 	}
 
 	function deleteTopics(uid, callback) {
-		deleteSortedSetElements('uid:' + uid + ':topics', deleteTopic, callback);
+		deleteSortedSetElements('uid:' + uid + ':topics', topics.purge, callback);
 	}
 
 	function deleteSortedSetElements(set, deleteMethod, callback) {
@@ -149,65 +43,6 @@ module.exports = function(User) {
 			}
 
 			async.each(ids, deleteMethod, callback);
-		});
-	}
-
-	function deleteTopic(tid, callback) {
-
-		async.parallel([
-			function(next) {
-				db.delete('tid:' + tid + ':followers', next);
-			},
-			function(next) {
-				db.delete('tid:' + tid + ':read_by_uid', next);
-			},
-			function(next) {
-				db.sortedSetRemove('topics:tid', tid, next);
-			},
-			function(next) {
-				db.sortedSetRemove('topics:recent', tid, next);
-			},
-			function(next) {
-				db.sortedSetRemove('topics:posts', tid, next);
-			},
-			function(next) {
-				db.sortedSetRemove('topics:views', tid, next);
-			},
-			function(next) {
-				deleteTopicFromCategory(tid, next);
-			}
-		], function(err) {
-			if (err) {
-				return callback(err);
-			}
-			plugins.fireHook('action:topic.delete', tid);
-			db.delete('topic:' + tid, callback);
-		});
-	}
-
-	function deleteTopicFromCategory(tid, callback) {
-		topics.getTopicFields(tid, ['cid', 'deleted'], function(err, topicData) {
-			if (err) {
-				return callback(err);
-			}
-
-			db.sortedSetRemove('categories:' + topicData.cid + ':tid', tid, function(err) {
-				if (err) {
-					return callback(err);
-				}
-
-				db.decrObjectField('category:' + topicData.cid, 'topic_count', function(err) {
-					if (err) {
-						return callback(err);
-					}
-
-					if (parseInt(topicData.deleted, 10) === 0) {
-						db.decrObjectField('global', 'topicCount', callback);
-					} else {
-						callback();
-					}
-				});
-			});
 		});
 	}
 
@@ -225,7 +60,7 @@ module.exports = function(User) {
 					db.deleteObjectField('userslug:uid', userData.userslug, next);
 				},
 				function(next) {
-					db.deleteObjectField('email:uid', userData.email, next);
+					db.deleteObjectField('email:uid', userData.email.toLowerCase(), next);
 				},
 				function(next) {
 					db.delete('uid:' + uid + ':notifications:read', next);
@@ -258,6 +93,9 @@ module.exports = function(User) {
 					db.delete('uid:' + uid + ':chats', next);
 				},
 				function(next) {
+					db.delete('uid:' + uid + ':chats:unread', next);
+				},
+				function(next) {
 					db.delete('uid:' + uid + ':ip', next);
 				},
 				function(next) {
@@ -271,6 +109,9 @@ module.exports = function(User) {
 				},
 				function(next) {
 					groups.leaveAllGroups(uid, next);
+				},
+				function(next) {
+					plugins.fireHook('filter:user.delete', uid, next);
 				}
 			], function(err) {
 				if (err) {

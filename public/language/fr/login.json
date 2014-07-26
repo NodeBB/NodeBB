@@ -1,8 +1,9 @@
 {
     "username": "Nom d'utilisateur / Email",
-    "remember_me": "Se souvenir de moi?",
-    "forgot_password": "Mot de passe oublié?",
-    "alternative_logins": "Connexions Alternatives",
+    "remember_me": "Se souvenir de moi ?",
+    "forgot_password": "Mot de passe oublié ?",
+    "alternative_logins": "Autres méthodes de connexion",
     "failed_login_attempt": "Echèc d'authentification, veuillez réessayer.",
-    "login_successful": "Vous êtes maintenant connecté!"
+    "login_successful": "Vous êtes maintenant connecté !",
+    "dont_have_account": "Vous n'avez pas de compte ?"
 }

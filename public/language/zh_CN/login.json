@@ -1,8 +1,9 @@
 {
-    "username": "用户名/邮箱",
+    "username": "用户名/电子邮箱",
     "remember_me": "记住我？",
     "forgot_password": "忘记密码？",
-    "alternative_logins": "其他登录方式",
-    "failed_login_attempt": "登录失败，请再尝试。",
-    "login_successful": "您已经成功登录！"
+    "alternative_logins": "其他登录方式使用合作网站账号登录京东",
+    "failed_login_attempt": "登录失败，请重试。",
+    "login_successful": "您已经成功登录！",
+    "dont_have_account": "没有帐号？"
 }

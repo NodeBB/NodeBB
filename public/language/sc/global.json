@@ -19,9 +19,11 @@
     "close": "Serra",
     "pagination": "Paginatzione",
     "pagination.out_of": "%1 out of %2",
+    "pagination.enter_index": "Enter index",
     "header.admin": "Amministradore",
     "header.recent": "Ùrtimos",
     "header.unread": "De lèghere",
+    "header.tags": "Tags",
     "header.popular": "Populare",
     "header.users": "Impitadores",
     "header.chats": "Tzarras",
@@ -67,5 +69,7 @@
     "email": "Email",
     "language": "Language",
     "guest": "Guest",
-    "guests": "Guests"
+    "guests": "Guests",
+    "updated.title": "Forum Updated",
+    "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page."
 }

@@ -1,8 +1,18 @@
 {
     "chat.chatting_with": "Chat med <span id=\"chat-with-name\"></span>",
-    "chat.placeholder": "skriv chat-melding her, trykk enter for å sende",
+    "chat.placeholder": "Skriv chat-melding her, trykk enter for å sende",
     "chat.send": "Send",
     "chat.no_active": "Du har ingen aktive chatter.",
     "chat.user_typing": "%1 skriver ...",
-    "chat.user_has_messaged_you": "%1 has messaged you."
+    "chat.user_has_messaged_you": "%1 har sendt deg en melding",
+    "chat.see_all": "Se alle chatter",
+    "chat.no-messages": "Vennligst velg en mottaker for å vise chatte-melding historikk",
+    "chat.recent-chats": "Nylige chatter",
+    "chat.contacts": "Kontakter",
+    "chat.message-history": "Meldingshistorikk",
+    "chat.pop-out": "Pop-out chat",
+    "chat.maximize": "Maksimer",
+    "composer.user_said_in": "%1 sa i %2: ",
+    "composer.user_said": "%1 sa: ",
+    "composer.discard": "Er du sikker på at du vil forkaste dette innlegget?"
 }

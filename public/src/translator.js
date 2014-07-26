@@ -8,7 +8,6 @@
 
 	module.exports = translator;
 
-	// Use this in plugins to add your own translation files.
 	translator.addTranslation = function(language, filename, translations) {
 		languages[language] = languages[language] || {};
 		languages[language].loaded = languages[language].loaded || {};
@@ -22,7 +21,7 @@
 
 	translator.prepareDOM = function() {
 		// Load the appropriate timeago locale file
-		if (config.defaultLang !== 'en_GB') {
+		if (config.defaultLang !== 'en_GB' && config.defaultLang !== 'en_US') {
 			// Correct NodeBB language codes to timeago codes, if necessary
 			var	languageCode;
 			switch(config.defaultLang) {
@@ -67,10 +66,6 @@
 	};
 
 	translator.translate = function (data, language, callback) {
-		if (!data) {
-			return callback(data);
-		}
-
 		if (typeof language === 'function') {
 			callback = language;
 			if ('undefined' !== typeof window && config) {
@@ -79,6 +74,10 @@
 				var meta = require('../../src/meta');
 				language = meta.config.defaultLang || 'en_GB';
 			}
+		}
+
+		if (!data) {
+			return callback(data);
 		}
 
 		function insertLanguage(text, key, value, variables) {
@@ -141,6 +140,12 @@
 		}
 	};
 
+	translator.compile = function() {
+		var args = Array.prototype.slice.call(arguments, 0);
+		
+		return '[[' + args.join(', ') + ']]';
+	};
+
 	translator.load = function (language, filename, callback) {
 
 		if (isLanguageFileLoaded(language, filename)) {
@@ -199,8 +204,7 @@
 	}
 
 	function loadClient(language, filename, callback) {
-		var timestamp = new Date().getTime();
-		$.getJSON(config.relative_path + '/language/' + language + '/' + filename + '.json?v=' + timestamp, callback);
+		$.getJSON(config.relative_path + '/language/' + language + '/' + filename + '.json?v=' + config['cache-buster'], callback);
 	}
 
 	function loadServer(language, filename, callback) {

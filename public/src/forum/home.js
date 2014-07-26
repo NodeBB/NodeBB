@@ -2,7 +2,7 @@
 
 /* globals define, socket, app, templates, translator, ajaxify*/
 
-define(function() {
+define('forum/home', function() {
 	var	home = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
@@ -41,7 +41,7 @@ define(function() {
 		var category = $('.home .category-item[data-cid="' + cid + '"]');
 		var categoryBox = category.find('.category-box');
 		var numRecentReplies = category.attr('data-numRecentReplies');
-		if (!numRecentReplies) {
+		if (!numRecentReplies || !parseInt(numRecentReplies, 10)) {
 			return;
 		}
 

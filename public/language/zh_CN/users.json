@@ -1,8 +1,10 @@
 {
-    "latest_users": "最近用户",
-    "top_posters": "发帖最多",
-    "most_reputation": "声望最高",
+    "latest_users": "最近访问",
+    "top_posters": "发帖排行",
+    "most_reputation": "威望排行",
     "search": "搜索",
-    "enter_username": "输入你想找的用户名",
-    "load_more": "载入更多"
+    "enter_username": "输入用户名搜索",
+    "load_more": "加载更多",
+    "user-not-found": "未找到用户！",
+    "users-found-search-took": "找到 %1 位用户！搜索耗时 %2 毫秒。"
 }

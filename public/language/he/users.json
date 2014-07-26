@@ -4,5 +4,7 @@
     "most_reputation": "המוניטין הגבוה ביותר",
     "search": "חיפוש",
     "enter_username": "הכנס שם משתמש לחיפוש",
-    "load_more": "טען עוד"
+    "load_more": "טען עוד",
+    "user-not-found": "משתמש לא נמצא!",
+    "users-found-search-took": "נמצאו %1 משתמש(ים)! החיפוש ארך %2 מילי שניות."
 }

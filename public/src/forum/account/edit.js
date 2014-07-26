@@ -2,11 +2,12 @@
 
 /* globals define, ajaxify, socket, app, config, utils, translator */
 
-define(['forum/account/header', 'uploader'], function(header, uploader) {
+define('forum/account/edit', ['forum/account/header', 'uploader'], function(header, uploader) {
 	var AccountEdit = {},
 		gravatarPicture = '',
 		uploadedPicture = '',
-		selectedImageType = '';
+		selectedImageType = '',
+		currentEmail;
 
 	AccountEdit.init = function() {
 		gravatarPicture = ajaxify.variables.get('gravatarpicture');
@@ -22,8 +23,11 @@ define(['forum/account/header', 'uploader'], function(header, uploader) {
 			yearRange: '1900:+0'
 		});
 
+		currentEmail = $('#inputEmail').val();
+
 		handleImageChange();
 		handleImageUpload();
+		handleEmailConfirm();
 		handlePasswordChange();
 		updateSignature();
 		updateImages();
@@ -68,6 +72,11 @@ define(['forum/account/header', 'uploader'], function(header, uploader) {
 
 				$('#user-profile-link').attr('href', config.relative_path + '/user/' + data.userslug);
 				$('#user-header-name').text(userData.username);
+			}
+
+			if (currentEmail !== data.email) {
+				currentEmail = data.email;
+				$('#confirm-email').removeClass('hide');
 			}
 		});
 
@@ -124,7 +133,7 @@ define(['forum/account/header', 'uploader'], function(header, uploader) {
 		$('#uploadPictureBtn').on('click', function() {
 
 			$('#change-picture-modal').modal('hide');
-			uploader.open(config.relative_path + '/user/uploadpicture', {uid: ajaxify.variables.get('theirid')}, config.maximumProfileImageSize, function(imageUrlOnServer) {
+			uploader.open(config.relative_path + '/api/user/' + ajaxify.variables.get('userslug') + '/uploadpicture', {}, config.maximumProfileImageSize, function(imageUrlOnServer) {
 				imageUrlOnServer = imageUrlOnServer + '?' + new Date().getTime();
 
 				$('#user-current-picture').attr('src', imageUrlOnServer);
@@ -135,6 +144,17 @@ define(['forum/account/header', 'uploader'], function(header, uploader) {
 			});
 
 			return false;
+		});
+	}
+
+	function handleEmailConfirm() {
+		$('#confirm-email').on('click', function() {
+			socket.emit('user.emailConfirm', {}, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				app.alertSuccess('[[notifications:email-confirm-sent]]');
+			});
 		});
 	}
 

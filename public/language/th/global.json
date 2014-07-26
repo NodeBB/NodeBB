@@ -19,9 +19,11 @@
     "close": "ปิด",
     "pagination": "ให้เลขหน้า",
     "pagination.out_of": "%1 out of %2",
+    "pagination.enter_index": "Enter index",
     "header.admin": "ผู้ดูแลระบบ",
     "header.recent": "ล่าสุด",
     "header.unread": "ไม่ได้อ่าน",
+    "header.tags": "Tags",
     "header.popular": "ฮิต",
     "header.users": "ผู้ใช้",
     "header.chats": "สนทนา",
@@ -67,5 +69,7 @@
     "email": "Email",
     "language": "Language",
     "guest": "Guest",
-    "guests": "Guests"
+    "guests": "Guests",
+    "updated.title": "Forum Updated",
+    "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page."
 }

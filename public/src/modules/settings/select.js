@@ -1,4 +1,4 @@
-define(function () {
+define('settings/select', function () {
 
 	var Settings = null,
 		SettingsSelect;

@@ -2,11 +2,11 @@
     "title": "แจ้งเตือน",
     "no_notifs": "คุณไม่มีข้อแจ้งเตือนใหม่",
     "see_all": "ดูข้อแจ้งเตือนทั้งหมด",
-    "back_to_home": "กลับไปที่ NodeBB",
+    "back_to_home": "Back to %1",
     "outgoing_link": "ลิงค์ออก",
     "outgoing_link_message": "ตอนนี้คุณจะออกจาก",
     "continue_to": "ดำเนินการต่อไป",
-    "return_to": "กลับไปที่",
+    "return_to": "Return to",
     "new_notification": "New Notification",
     "you_have_unread_notifications": "You have unread notifications.",
     "user_made_post": "<strong>%1</strong> made a new post",
@@ -14,5 +14,11 @@
     "upvoted_your_post": "<strong>%1</strong> has upvoted your post.",
     "favourited_your_post": "<strong>%1</strong> has favourited your post.",
     "user_flagged_post": "<strong>%1</strong> flagged a post.",
-    "user_posted_to": "<strong>%1</strong> has posted a reply to: <strong>%2</strong>"
+    "user_posted_to": "<strong>%1</strong> has posted a reply to: <strong>%2</strong>",
+    "user_mentioned_you_in": "<strong>%1</strong> mentioned you in <strong>%2</strong>",
+    "email-confirmed": "Email Confirmed",
+    "email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",
+    "email-confirm-error": "An error occurred...",
+    "email-confirm-error-message": "There was a problem validating your email address. Perhaps the code was invalid or has expired.",
+    "email-confirm-sent": "Confirmation email sent."
 }

@@ -1,0 +1,15 @@
+{
+    "home": "Acasă",
+    "unread": "Subiecte Necitite",
+    "popular": "Subiecte Populare",
+    "recent": "Subiecte Noi",
+    "users": "Utilizatori înregistrați",
+    "notifications": "Notificări",
+    "user.edit": "Editează \"%1\"",
+    "user.following": "Utilizatori urmăriți de %1",
+    "user.followers": "Utilizatori care îl urmăresc pe %1",
+    "user.posts": "Mesaje postate de %1",
+    "user.topics": "Subiecte create de %1",
+    "user.favourites": "Mesajele favorite ale lui %1",
+    "user.settings": "Setări Utilizator"
+}

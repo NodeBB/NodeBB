@@ -1,4 +1,4 @@
-define(function () {
+define('settings/array', function () {
 
 	var Settings = null,
 		SettingsArray,

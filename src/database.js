@@ -10,7 +10,7 @@ var nconf = require('nconf'),
 	ALLOWED_MODULES = ['hash', 'list', 'sets', 'sorted'];
 
 if(!primaryDBName) {
-	winston.info('Database type not set! Run node app --setup');
+	winston.info('Database type not set! Run ./nodebb setup');
 	process.exit();
 }
 

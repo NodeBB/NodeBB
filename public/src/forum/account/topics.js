@@ -1,51 +1,42 @@
 'use strict';
 
-/* globals define, app, socket, ajaxify, templates, translator, utils */
+/* globals define, app, socket, utils */
 
-define(['forum/account/header'], function(header) {
-	var AccountTopics = {},
-		loadingMore = false;
+define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'], function(header, infinitescroll) {
+	var AccountTopics = {};
 
 	AccountTopics.init = function() {
 		header.init();
 
-		app.enableInfiniteLoading(function() {
-			if(!loadingMore) {
-				loadMore();
-			}
-		});
+		infinitescroll.init(loadMore);
 	};
 
-	function loadMore() {
-		loadingMore = true;
-		socket.emit('topics.loadMoreFromSet', {
+	function loadMore(direction) {
+		if (direction < 0) {
+			return;
+		}
+
+		infinitescroll.loadMore('topics.loadMoreFromSet', {
 			set: 'uid:' + $('.account-username-box').attr('data-uid') + ':topics',
 			after: $('.user-topics').attr('data-nextstart')
-		}, function(err, data) {
-			if(err) {
-				return app.alertError(err.message);
-			}
+		}, function(data, done) {
 
 			if (data.topics && data.topics.length) {
-				onTopicsLoaded(data.topics);
+				onTopicsLoaded(data.topics, done);
 				$('.user-topics').attr('data-nextstart', data.nextStart);
+			} else {
+				done();
 			}
-
-			loadingMore = false;
 		});
 	}
 
-	function onTopicsLoaded(topics) {
-		ajaxify.loadTemplate('account/topics', function(accounttopics) {
-			var html = templates.parse(templates.getBlock(accounttopics, 'topics'), {topics: topics});
-
-			translator.translate(html, function(translatedHTML) {
-				html = $(translatedHTML);
-				$('#topics-container').append(html);
-				html.find('span.timeago').timeago();
-				app.createUserTooltips();
-				utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
-			});
+	function onTopicsLoaded(topics, callback) {
+		infinitescroll.parseAndTranslate('account/topics', 'topics', {topics: topics}, function(html) {
+			$('#topics-container').append(html);
+			html.find('span.timeago').timeago();
+			app.createUserTooltips();
+			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
+			callback();
 		});
 	}
 

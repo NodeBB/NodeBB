@@ -9,7 +9,10 @@ var async = require('async'),
 	utils = require('../../public/src/utils'),
 	db = require('../database'),
 	notifications = require('../notifications'),
-	topics = require('../topics');
+	posts = require('../posts'),
+	postTools = require('../postTools'),
+	topics = require('../topics'),
+	privileges = require('../privileges');
 
 (function(UserNotifications) {
 	UserNotifications.get = function(uid, callback) {
@@ -146,22 +149,50 @@ var async = require('async'),
 	};
 
 	UserNotifications.sendPostNotificationToFollowers = function(uid, tid, pid) {
-		user.getUserField(uid, 'username', function(err, username) {
-			db.getSetMembers('followers:' + uid, function(err, followers) {
-				if (followers && followers.length) {
-					topics.getTopicField(tid, 'slug', function(err, slug) {
-						var message = '[[notifications:user_made_post, ' + username + ']]';
+		db.getSetMembers('followers:' + uid, function(err, followers) {
+			if (err || !followers || !followers.length) {
+				return;
+			}
 
-						notifications.create({
-							text: message,
-							path: nconf.get('relative_path') + '/topic/' + slug + '#' + pid,
-							uniqueId: 'topic:' + tid,
-							from: uid
-						}, function(nid) {
-							notifications.push(nid, followers);
-						});
-					});
+			async.parallel({
+				username: async.apply(user.getUserField, uid, 'username'),
+				topic: async.apply(topics.getTopicFields, tid, ['slug', 'cid', 'title']),
+				postIndex: async.apply(posts.getPidIndex, pid),
+				postContent: function(next) {
+					async.waterfall([
+						async.apply(posts.getPostField, pid, 'content'),
+						function(content, next) {
+							postTools.parse(content, next);
+						}
+					], next);
+				},
+				topicFollowers: function(next) {
+					db.isSetMembers('tid:' + tid + ':followers', followers, next);
 				}
+			}, function(err, results) {
+				if (err) {
+					return;
+				}
+
+				followers = followers.filter(function(value, index) {
+					return !results.topicFollowers[index];
+				});
+
+				notifications.create({
+					bodyShort: '[[notifications:user_posted_to, ' + results.username + ', ' + results.topic.title + ']]',
+					bodyLong: results.postContent,
+					path: nconf.get('relative_path') + '/topic/' + results.topic.slug + '/' + results.postIndex,
+					uniqueId: 'topic:' + tid,
+					from: uid
+				}, function(nid) {
+					async.filter(followers, function(uid, next) {
+						privileges.categories.can('read', results.topic.cid, uid, function(err, canRead) {
+							next(!err && canRead);
+						});
+					}, function(followers){
+						notifications.push(nid, followers);
+					});
+				});
 			});
 		});
 	};

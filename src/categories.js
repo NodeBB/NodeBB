@@ -8,10 +8,10 @@ var db = require('./database'),
 	Groups = require('./groups'),
 	topics = require('./topics'),
 	plugins = require('./plugins'),
-	CategoryTools = require('./categoryTools'),
 	meta = require('./meta'),
 	emitter = require('./emitter'),
 	validator = require('validator'),
+	privileges = require('./privileges'),
 
 	async = require('async'),
 	winston = require('winston'),
@@ -19,6 +19,7 @@ var db = require('./database'),
 
 (function(Categories) {
 
+	require('./categories/delete')(Categories);
 	require('./categories/activeusers')(Categories);
 	require('./categories/recentreplies')(Categories);
 	require('./categories/update')(Categories);
@@ -40,6 +41,7 @@ var db = require('./database'),
 				color: data.color,
 				slug: slug,
 				topic_count: 0,
+				post_count: 0,
 				disabled: 0,
 				order: data.order,
 				link: '',
@@ -58,6 +60,10 @@ var db = require('./database'),
 				callback(null, category);
 			});
 		});
+	};
+
+	Categories.exists = function(cid, callback) {
+		db.isSortedSetMember('categories:cid', cid, callback);
 	};
 
 	Categories.getCategoryById = function(cid, start, end, uid, callback) {
@@ -168,17 +174,45 @@ var db = require('./database'),
 		});
 	};
 
-	Categories.getAllCategories = function(uid, callback) {
+	Categories.getAllCategories = function(callback) {
 		db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
 			if (err) {
 				return callback(err);
 			}
 
 			if (!Array.isArray(cids) || !cids.length) {
-				return callback(null, {categories : []});
+				return callback(null, []);
 			}
 
-			Categories.getCategories(cids, uid, callback);
+			Categories.getCategoriesData(cids, callback);
+		});
+	};
+
+	Categories.getVisibleCategories = function(uid, callback) {
+		db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (!Array.isArray(cids) || !cids.length) {
+				return callback(null, []);
+			}
+
+			Categories.getCategories(cids, uid, function(err, categories) {
+				if (err) {
+					return callback(err);
+				}
+				async.filter(categories, function (category, next) {
+					if (category.disabled) {
+						return next(false);
+					}
+					privileges.categories.can('find', category.cid, uid, function(err, findable) {
+						next(!err && findable);
+					});
+				}, function(visibleCategories) {
+					callback(null, visibleCategories);
+				});
+			});
 		});
 	};
 
@@ -212,7 +246,6 @@ var db = require('./database'),
 	};
 
 	Categories.hasReadCategories = function(cids, uid, callback) {
-
 		var sets = [];
 
 		for (var i = 0, ii = cids.length; i < ii; i++) {
@@ -234,7 +267,7 @@ var db = require('./database'),
 
 	Categories.getCategoriesData = function(cids, callback) {
 		var keys = cids.map(function(cid) {
-			return 'category:'+cid;
+			return 'category:' + cid;
 		});
 
 		db.getObjects(keys, function(err, categories) {
@@ -242,19 +275,20 @@ var db = require('./database'),
 				return callback(err);
 			}
 
-			if (!Array.isArray(categories)) {
+			if (!Array.isArray(categories) || !categories.length) {
 				return callback(null, []);
 			}
 
-			for (var i=0; i<categories.length; ++i) {
-				if (categories[i]) {
-					categories[i].name = validator.escape(categories[i].name);
-					categories[i].description = validator.escape(categories[i].description);
-					categories[i].backgroundImage = categories[i].image ? nconf.get('relative_path') + categories[i].image : '';
-					categories[i].disabled = categories[i].disabled ? parseInt(categories[i].disabled, 10) !== 0 : false;
+			async.map(categories, function(category, next) {
+				if (!category) {
+					return next(null, category);
 				}
-			}
-			callback(null, categories);
+				category.name = validator.escape(category.name);
+				category.description = validator.escape(category.description);
+				category.backgroundImage = category.image ? nconf.get('relative_path') + category.image : '';
+				category.disabled = category.disabled ? parseInt(category.disabled, 10) !== 0 : false;
+				next(null, category);
+			}, callback);
 		});
 	};
 
@@ -299,7 +333,7 @@ var db = require('./database'),
 				categories[i]['unread-class'] = (parseInt(categories[i].topic_count, 10) === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
 			}
 
-			callback(null, {categories: categories});
+			callback(null, categories);
 		});
 	};
 
@@ -312,6 +346,7 @@ var db = require('./database'),
 			var cid = topicData.cid;
 
 			db.sortedSetAdd('categories:recent_posts:cid:' + cid, postData.timestamp, postData.pid);
+			db.incrObjectField('category:' + cid, 'post_count');
 
 			if(parseInt(topicData.pinned, 10) === 0) {
 				db.sortedSetAdd('categories:' + cid + ':tid', postData.timestamp, postData.tid);

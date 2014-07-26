@@ -1,4 +1,4 @@
-define(function () {
+define('settings/checkbox', function () {
 
 	var Settings = null,
 		SettingsCheckbox;
@@ -21,7 +21,7 @@ define(function () {
 			if (value == null) {
 				return void 0;
 			}
-			if (empty) {
+			if (!empty) {
 				return value || void 0;
 			}
 			if (trim) {

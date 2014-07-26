@@ -8,12 +8,14 @@ var	posts = require('../posts'),
 	user = require('../user'),
 	notifications = require('../notifications'),
 	plugins = require('../plugins'),
+	utils = require('../../public/src/utils'),
 
 	async = require('async'),
 	S = require('string'),
 	winston = require('winston'),
 	_ = require('underscore'),
 	server = require('./'),
+	nconf = require('nconf'),
 
 	SocketModules = {
 		composer: {
@@ -49,11 +51,7 @@ var	stopTracking = function(replyObj) {
 	};
 
 SocketModules.composer.push = function(socket, pid, callback) {
-	if(!socket.uid && parseInt(meta.config.allowGuestPosting, 10) !== 1) {
-		return callback(new Error('[[error:not-logged-in]]'));
-	}
-
-	posts.getPostFields(pid, ['content'], function(err, postData) {
+	posts.getPostFields(pid, ['content', 'tid'], function(err, postData) {
 		if(err || (!postData && !postData.content)) {
 			return callback(err || new Error('[[error:invalid-pid]]'));
 		}
@@ -62,8 +60,11 @@ SocketModules.composer.push = function(socket, pid, callback) {
 			topic: function(next) {
 				topics.getTopicDataByPid(pid, next);
 			},
-			index: function(next) {
-				posts.getPidIndex(pid, next);
+			tags: function(next) {
+				topics.getTopicTags(postData.tid, next);
+			},
+			isMain: function(next) {
+				posts.isMain(pid, next);
 			}
 		}, function(err, results) {
 			if(err) {
@@ -75,22 +76,17 @@ SocketModules.composer.push = function(socket, pid, callback) {
 				body: postData.content,
 				title: results.topic.title,
 				topic_thumb: results.topic.thumb,
-				index: results.index
+				tags: results.tags,
+				isMain: results.isMain
 			});
 		});
 	});
 };
 
 SocketModules.composer.editCheck = function(socket, pid, callback) {
-	posts.getPostField(pid, 'tid', function(err, tid) {
-		if (err) {
-			return callback(err);
-		}
-
-		postTools.isMain(pid, tid, function(err, isMain) {
-			callback(err, {
-				titleEditable: isMain
-			});
+	posts.isMain(pid, function(err, isMain) {
+		callback(err, {
+			titleEditable: isMain
 		});
 	});
 };
@@ -179,6 +175,20 @@ SocketModules.chats.send = function(socket, data, callback) {
 		return;
 	}
 
+	Messaging.verifySpammer(socket.uid, function(err, isSpammer) {
+		if (!err && isSpammer) {
+			var sockets = server.getUserSockets(socket.uid);
+
+			for(var i = 0; i < sockets.length; ++i) {
+				sockets[i].emit('event:banned');
+			}
+
+			// We're just logging them out, so a "temporary ban" to prevent abuse. Revisit once we implement a way to temporarily ban users
+			server.logoutUser(socket.uid);
+			return callback();
+		}
+	});
+
 	var msg = S(data.message).stripTags().s;
 
 	Messaging.addMessage(socket.uid, touid, msg, function(err, message) {
@@ -186,15 +196,23 @@ SocketModules.chats.send = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		sendChatNotification(socket.uid, touid, message.fromUser.username);
+		sendChatNotification(socket.uid, touid, message);
 
+		// After-the-fact fixing of the "self" property for the message that goes to the receipient
+		var recipMessage = JSON.parse(JSON.stringify(message));
+		recipMessage.self = 0;
+
+		// Recipient
+		SocketModules.chats.pushUnreadCount(touid);
 		server.getUserSockets(touid).forEach(function(s) {
 			s.emit('event:chats.receive', {
 				withUid: socket.uid,
-				message: message
+				message: recipMessage
 			});
 		});
 
+		// Sender
+		SocketModules.chats.pushUnreadCount(socket.uid);
 		server.getUserSockets(socket.uid).forEach(function(s) {
 			s.emit('event:chats.receive', {
 				withUid: touid,
@@ -204,21 +222,39 @@ SocketModules.chats.send = function(socket, data, callback) {
 	});
 };
 
-function sendChatNotification(fromuid, touid, username) {
+function sendChatNotification(fromuid, touid, messageObj) {
+	// todo #1798 -- this should check if the user is in room `chat_{uidA}_{uidB}` instead, see `Sockets.uidInRoom(uid, room);`
 	if (!module.parent.exports.isUserOnline(touid)) {
-		var notifText = '[[notifications:new_message_from, ' + username + ']]';
 		notifications.create({
-			text: notifText,
-			path: 'javascript:app.openChat(&apos;' + username + '&apos;, ' + fromuid + ');',
-			uniqueId: 'notification_' + fromuid + '_' + touid,
+			bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
+			bodyLong: messageObj.content,
+			path: nconf.get('relative_path') + '/chats/' + utils.slugify(messageObj.fromUser.username),
+			uniqueId: 'chat_' + fromuid + '_' + touid,
 			from: fromuid
 		}, function(nid) {
-			notifications.push(nid, [touid], function(success) {
-
-			});
+			notifications.push(nid, [touid]);
 		});
 	}
 }
+
+SocketModules.chats.pushUnreadCount = function(uid) {
+	Messaging.getUnreadCount(uid, function(err, unreadCount) {
+		if (err) {
+			return;
+		}
+		server.getUserSockets(uid).forEach(function(s) {
+			s.emit('event:unread.updateChatCount', null, unreadCount);
+		});
+	});
+};
+
+SocketModules.chats.markRead = function(socket, touid, callback) {
+	Messaging.markRead(socket.uid, touid, function(err) {
+		if (!err) {
+			SocketModules.chats.pushUnreadCount(socket.uid);
+		}
+	});
+};
 
 SocketModules.chats.userStartTyping = function(socket, data, callback) {
 	sendTypingNotification('event:chats.userStartTyping', socket, data, callback);

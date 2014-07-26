@@ -15,6 +15,7 @@ var app,
 	db = require('./../database'),
 	categories = require('./../categories'),
 	topics = require('./../topics'),
+	messaging = require('../messaging'),
 
 	controllers = {
 		api: require('./../controllers/api')
@@ -25,7 +26,7 @@ middleware.authenticate = function(req, res, next) {
 		if (res.locals.isAPI) {
 			return res.json(403, 'not-allowed');
 		} else {
-			return res.redirect('403');
+			return res.redirect(nconf.get('url') + '/403');
 		}
 	} else {
 		next();
@@ -59,10 +60,11 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 middleware.addSlug = function(req, res, next) {
 	function redirect(method, id, name) {
 		method(id, 'slug', function(err, slug) {
-			if (err || !slug) {
+			if (err || !slug || slug === id + '/') {
 				return next(err);
 			}
-			res.redirect(name + slug);
+			var url = name + encodeURI(slug);
+			res.locals.isAPI ? res.json(302, url) : res.redirect(url);
 		});
 	}
 
@@ -77,6 +79,45 @@ middleware.addSlug = function(req, res, next) {
 		return;
 	}
 	next();
+};
+
+middleware.checkPostIndex = function(req, res, next) {
+	topics.getPostCount(req.params.topic_id, function(err, postCount) {
+		if (err) {
+			return next(err);
+		}
+		var postIndex = parseInt(req.params.post_index, 10);
+		postCount = parseInt(postCount, 10) + 1;
+		var url = '';
+		if (postIndex > postCount) {
+			url = '/topic/' + req.params.topic_id + '/' + req.params.slug + '/' + postCount;
+			return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
+		} else if (postIndex < 1) {
+			url = '/topic/' + req.params.topic_id + '/' + req.params.slug;
+			return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
+		}
+		next();
+	});
+};
+
+middleware.checkTopicIndex = function(req, res, next) {
+	db.sortedSetCard('categories:' + req.params.category_id + ':tid', function(err, topicCount) {
+		if (err) {
+			return next(err);
+		}
+		var topicIndex = parseInt(req.params.topic_index, 10);
+		topicCount = parseInt(topicCount, 10) + 1;
+		var url = '';
+
+		if (topicIndex > topicCount) {
+			url = '/category/' + req.params.category_id + '/' + req.params.slug + '/' + topicCount;
+			return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
+		} else if (topicIndex < 1) {
+			url = '/category/' + req.params.category_id + '/' + req.params.slug;
+			return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
+		}
+		next();
+	});
 };
 
 middleware.prepareAPI = function(req, res, next) {
@@ -114,13 +155,11 @@ middleware.checkAccountPermissions = function(req, res, next) {
 		return res.redirect('/login?next=' + req.url);
 	}
 
-	// this function requires userslug to be passed in. todo: /user/uploadpicture should pass in userslug I think
 	user.getUidByUserslug(req.params.userslug, function (err, uid) {
 		if (err) {
 			return next(err);
 		}
 
-		// not sure if this check really should belong here. also make sure we're not doing this check again in the actual method
 		if (!uid) {
 			if (res.locals.isAPI) {
 				return res.json(404, 'not-found');
@@ -195,8 +234,14 @@ middleware.renderHeader = function(req, res, callback) {
 				property: 'og:site_name',
 				content: meta.config.title || 'NodeBB'
 			}, {
-				property: 'keywords',
+				name: 'keywords',
 				content: meta.config.keywords || ''
+			}, {
+				name: 'msapplication-badge',
+				content: 'frequency=30; polling-uri=' + nconf.get('url') + '/sitemap.xml'
+			}, {
+				name: 'msapplication-square150x150logo',
+				content: meta.config['brand:logo'] || ''
 			}],
 			defaultLinkTags = [{
 				rel: 'apple-touch-icon',
@@ -212,7 +257,7 @@ middleware.renderHeader = function(req, res, callback) {
 				csrf: res.locals.csrf_token,
 				navigation: custom_header.navigation,
 				allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
-				searchEnabled: plugins.hasListeners('filter:search.query') && (uid || parseInt(meta.config.allowGuestSearching, 10) === 1)
+				searchEnabled: plugins.hasListeners('filter:search.query')
 			},
 			escapeList = {
 				'&': '&amp;',
@@ -248,13 +293,29 @@ middleware.renderHeader = function(req, res, callback) {
 		});
 
 
-		templateValues.useCustomCSS = false;
-		if (meta.config.useCustomCSS === '1') {
-			templateValues.useCustomCSS = true;
-			templateValues.customCSS = meta.config.customCSS;
-		}
-
 		async.parallel({
+			customCSS: function(next) {
+				templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1;
+				if (!templateValues.useCustomCSS) {
+					return next(null, '');
+				}
+
+				var less = require('less');
+				var parser = new (less.Parser)();
+
+				parser.parse(meta.config.customCSS, function(err, tree) {
+					if (!err) {
+						next(err, tree ? tree.toCSS({cleancss: true}) : '');
+					} else {
+						winston.error('[less] Could not convert custom LESS to CSS! Please check your syntax.');
+						next(undefined, '');
+					}
+				});
+			},
+			customJS: function(next) {
+				templateValues.useCustomJS = parseInt(meta.config.useCustomJS, 10) === 1;
+				next(null, templateValues.useCustomJS ? meta.config.customJS : '');
+			},
 			title: function(next) {
 				if (uid) {
 					user.getSettings(uid, function(err, settings) {
@@ -285,6 +346,8 @@ middleware.renderHeader = function(req, res, callback) {
 			templateValues.browserTitle = results.title;
 			templateValues.isAdmin = results.isAdmin || false;
 			templateValues.user = results.user;
+			templateValues.customCSS = results.customCSS;
+			templateValues.customJS = results.customJS;
 
 			app.render('header', templateValues, callback);
 		});
@@ -312,6 +375,8 @@ middleware.processRender = function(req, res, next) {
 			fn = options;
 			options = {};
 		}
+
+		options.loggedIn = req.user ? parseInt(req.user.uid, 10) !== 0 : false;
 
 		if ('function' !== typeof fn) {
 			fn = defaultFn;

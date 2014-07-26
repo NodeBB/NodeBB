@@ -1,7 +1,7 @@
 "use strict";
 /*global define, socket, app, bootbox, tabIndent, config, RELATIVE_PATH*/
 
-define(['forum/admin/settings'], function(Settings) {
+define('forum/admin/themes', ['forum/admin/settings'], function(Settings) {
 	var Themes = {};
 
 	function highlightSelectedTheme(themeId) {
@@ -13,6 +13,18 @@ define(['forum/admin/settings'], function(Settings) {
 		var scriptEl = $('<script />');
 		scriptEl.attr('src', '//bootswatch.aws.af.cm/3/?callback=bootswatchListener');
 		$('body').append(scriptEl);
+
+		$('#widgets .nav-pills a').on('click', function(ev) {
+			var $this = $(this);
+			$('#widgets .nav-pills li').removeClass('active');
+			$this.parent().addClass('active');
+
+			$('#widgets .tab-pane').removeClass('active');
+			$('#widgets .tab-pane[data-template="' + $this.attr('data-template') + '"]').addClass('active');
+
+			ev.preventDefault();
+			return false;
+		});
 
 		var bootstrapThemeContainer = $('#bootstrap_themes'),
 			installedThemeContainer = $('#installed_themes');
@@ -149,6 +161,8 @@ define(['forum/admin/settings'], function(Settings) {
 	};
 
 	Themes.prepareWidgets = function() {
+		$('[data-location="drafts"]').insertAfter($('[data-location="drafts"]').closest('.tab-content'));
+
 		$('#widgets .available-widgets .panel').draggable({
 			helper: function(e) {
 				return $(e.target).parents('.panel').clone().addClass('block').width($(e.target.parentNode).width());
@@ -208,9 +222,9 @@ define(['forum/admin/settings'], function(Settings) {
 		$('#widgets .save').on('click', saveWidgets);
 
 		function saveWidgets() {
-			var total = $('#widgets [data-template]').length;
+			var total = $('#widgets [data-template][data-location]').length;
 
-			$('#widgets [data-template]').each(function(i, el) {
+			$('#widgets [data-template][data-location]').each(function(i, el) {
 				el = $(el);
 
 				var template = el.attr('data-template'),
@@ -284,20 +298,18 @@ define(['forum/admin/settings'], function(Settings) {
 		$.get(RELATIVE_PATH + '/api/admin/themes', function(data) {
 			var areas = data.areas;
 
-			for (var a in areas) {
-				if (areas.hasOwnProperty(a)) {
-					var area = areas[a],
-						widgetArea = $('#widgets .area[data-template="' + area.template + '"][data-location="' + area.location + '"]').find('.widget-area');
+			for(var i=0; i<areas.length; ++i) {
+				var area = areas[i],
+					widgetArea = $('#widgets .area[data-template="' + area.template + '"][data-location="' + area.location + '"]').find('.widget-area');
 
-					for (var i in area.data) {
-						if (area.data.hasOwnProperty(i)) {
-							var widgetData = area.data[i],
-								widgetEl = $('.available-widgets [data-widget="' + widgetData.widget + '"]').clone();
+				widgetArea.html('');
 
-							widgetArea.append(populateWidget(widgetEl, widgetData.data));
-							appendToggle(widgetEl);
-						}
-					}
+				for (var k=0; k<area.data.length; ++k) {
+					var widgetData = area.data[k],
+						widgetEl = $('.available-widgets [data-widget="' + widgetData.widget + '"]').clone();
+
+					widgetArea.append(populateWidget(widgetEl, widgetData.data));
+					appendToggle(widgetEl);
 				}
 			}
 		});

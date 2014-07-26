@@ -19,9 +19,11 @@
     "close": "Tutup",
     "pagination": "Mukasurat",
     "pagination.out_of": "%1 out of %2",
+    "pagination.enter_index": "Enter index",
     "header.admin": "Pentadbir",
     "header.recent": "terkini",
     "header.unread": "Belum dibaca",
+    "header.tags": "Tags",
     "header.popular": "popular",
     "header.users": "pengguna",
     "header.chats": "chats",
@@ -67,5 +69,7 @@
     "email": "Emel",
     "language": "Bahasa",
     "guest": "Guest",
-    "guests": "Guests"
+    "guests": "Guests",
+    "updated.title": "Forum Updated",
+    "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page."
 }

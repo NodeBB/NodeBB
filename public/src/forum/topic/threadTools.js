@@ -2,72 +2,63 @@
 
 /* globals define, app, translator, ajaxify, socket, bootbox */
 
-define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
+define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 
 	var ThreadTools = {};
 
 	ThreadTools.init = function(tid, threadState) {
 		ThreadTools.threadState = threadState;
 
-		if (threadState.locked === '1') {
+		if (threadState.locked) {
 			ThreadTools.setLockedState({tid: tid, isLocked: true});
 		}
 
-		if (threadState.deleted === '1') {
+		if (threadState.deleted) {
 			ThreadTools.setDeleteState({tid: tid, isDelete: true});
 		}
 
-		if (threadState.pinned === '1') {
+		if (threadState.pinned) {
 			ThreadTools.setPinnedState({tid: tid, isPinned: true});
 		}
 
-		if (ajaxify.variables.get('expose_tools') === '1') {
+		$('.delete_thread').on('click', function() {
+			topicCommand(threadState.deleted ? 'restore' : 'delete', tid);
+			return false;
+		});
 
-			$('.thread-tools').removeClass('hide');
+		$('.purge_thread').on('click', function() {
+			topicCommand('purge', tid);
+			return false;
+		});
 
-			$('.delete_thread').on('click', function(e) {
-				var command = threadState.deleted !== '1' ? 'delete' : 'restore';
+		$('.lock_thread').on('click', function() {
+			socket.emit(threadState.locked ? 'topics.unlock' : 'topics.lock', {tids: [tid], cid: ajaxify.variables.get('category_id')});
+			return false;
+		});
 
-				translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function(msg) {
-					bootbox.confirm(msg, function(confirm) {
-						if (confirm) {
-							socket.emit('topics.' + command, [tid]);
-						}
-					});
-				});
+		$('.pin_thread').on('click', function() {
+			socket.emit(threadState.pinned ? 'topics.unpin' : 'topics.pin', {tids: [tid], cid: ajaxify.variables.get('category_id')});
+			return false;
+		});
 
-				return false;
+		$('.markAsUnreadForAll').on('click', function() {
+			var btn = $(this);
+			socket.emit('topics.markAsUnreadForAll', [tid], function(err) {
+				if(err) {
+					return app.alertError(err.message);
+				}
+				app.alertSuccess('[[topic:markAsUnreadForAll.success]]');
+				btn.parents('.thread-tools.open').find('.dropdown-toggle').trigger('click');
 			});
+			return false;
+		});
 
-			$('.lock_thread').on('click', function(e) {
-				socket.emit(threadState.locked !== '1' ? 'topics.lock' : 'topics.unlock', [tid]);
-				return false;
-			});
+		$('.move_thread').on('click', function(e) {
+			move.init([tid], ajaxify.variables.get('category_id'));
+			return false;
+		});
 
-			$('.pin_thread').on('click', function(e) {
-				socket.emit(threadState.pinned !== '1' ? 'topics.pin' : 'topics.unpin', [tid]);
-				return false;
-			});
-
-			$('.markAsUnreadForAll').on('click', function() {
-				var btn = $(this);
-				socket.emit('topics.markAsUnreadForAll', [tid], function(err) {
-					if(err) {
-						return app.alertError(err.message);
-					}
-					app.alertSuccess('[[topic:markAsUnreadForAll.success]]');
-					btn.parents('.thread-tools.open').find('.dropdown-toggle').trigger('click');
-				});
-				return false;
-			});
-
-			$('.move_thread').on('click', function(e) {
-				move.init([tid], ajaxify.variables.get('category_id'));
-				return false;
-			});
-
-			fork.init();
-		}
+		fork.init();
 
 		socket.emit('topics.followCheck', tid, function(err, state) {
 			setFollowState(state);
@@ -87,45 +78,65 @@ define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 
 				setFollowState(state);
 
-				app.alertSuccess(state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]');
+				app.alert({
+					alert_id: 'follow_thread',
+					message: state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]',
+					type: 'success',
+					timeout: 5000
+				});
 			});
 
 			return false;
 		});
 	};
 
+	function topicCommand(command, tid) {
+		translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function(msg) {
+			bootbox.confirm(msg, function(confirm) {
+				if (confirm) {
+					socket.emit('topics.' + command, {tids: [tid], cid: ajaxify.variables.get('category_id')});
+				}
+			});
+		});
+	}
+
 	ThreadTools.setLockedState = function(data) {
 		var threadEl = $('#post-container');
 		if (parseInt(data.tid, 10) === parseInt(threadEl.attr('data-tid'), 10)) {
-			translator.translate('<i class="fa fa-fw fa-' + (data.isLocked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (data.isLocked ? 'un': '') + 'lock]]', function(translated) {
-				$('.lock_thread').html(translated);
+			var isLocked = data.isLocked && !app.isAdmin;
+
+			$('.lock_thread').translateHtml('<i class="fa fa-fw fa-' + (data.isLocked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (data.isLocked ? 'un': '') + 'lock]]');
+
+			translator.translate(isLocked ? '[[topic:locked]]' : '[[topic:reply]]', function(translated) {
+				var className = isLocked ? 'fa-lock' : 'fa-reply';
+				threadEl.find('.post_reply').html('<i class="fa ' + className + '"></i> ' + translated);
+				$('.topic-main-buttons .post_reply').attr('disabled', isLocked).html(isLocked ? '<i class="fa fa-lock"></i> ' + translated : translated);
 			});
 
-			threadEl.find('.post_reply').html(data.isLocked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply <i class="fa fa-reply"></i>');
-			threadEl.find('.quote, .edit, .delete').toggleClass('none', data.isLocked);
-			$('.topic-main-buttons .post_reply').attr('disabled', data.isLocked).html(data.isLocked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply');
-
-			ThreadTools.threadState.locked = data.isLocked ? '1' : '0';
+			threadEl.find('.quote, .edit, .delete').toggleClass('none', isLocked);
+			$('.topic-title i.fa-lock').toggleClass('hide', !data.isLocked);
+			ThreadTools.threadState.locked = data.isLocked;
 		}
 	};
 
 	ThreadTools.setDeleteState = function(data) {
 		var threadEl = $('#post-container');
-		if (parseInt(data.tid, 10) === parseInt(threadEl.attr('data-tid'), 10)) {
-			translator.translate('<i class="fa fa-fw ' + (data.isDelete ? 'fa-comment' : 'fa-trash-o') + '"></i> [[topic:thread_tools.' + (data.isDelete ? 'restore' : 'delete') + ']]', function(translated) {
-				$('.delete_thread span').html(translated);
+		if (parseInt(data.tid, 10) !== parseInt(threadEl.attr('data-tid'), 10)) {
+			return;
+		}
+
+		$('.delete_thread span').translateHtml('<i class="fa fa-fw ' + (data.isDelete ? 'fa-history' : 'fa-trash-o') + '"></i> [[topic:thread_tools.' + (data.isDelete ? 'restore' : 'delete') + ']]');
+
+		threadEl.toggleClass('deleted', data.isDelete);
+		ThreadTools.threadState.deleted = data.isDelete;
+		$('.purge_thread').toggleClass('none', !data.isDelete);
+
+		if (data.isDelete) {
+			translator.translate('[[topic:deleted_message]]', function(translated) {
+				$('<div id="thread-deleted" class="alert alert-warning">' + translated + '</div>').insertBefore(threadEl);
 			});
-
-			threadEl.toggleClass('deleted', data.isDelete);
-			ThreadTools.threadState.deleted = data.isDelete ? '1' : '0';
-
-			if (data.isDelete) {
-				translator.translate('[[topic:deleted_message]]', function(translated) {
-					$('<div id="thread-deleted" class="alert alert-warning">' + translated + '</div>').insertBefore(threadEl);
-				});
-			} else {
-				$('#thread-deleted').remove();
-			}
+		} else {
+			$('#thread-deleted').remove();
 		}
 	};
 
@@ -134,9 +145,9 @@ define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 		if (parseInt(data.tid, 10) === parseInt(threadEl.attr('data-tid'), 10)) {
 			translator.translate('<i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.' + (data.isPinned ? 'unpin' : 'pin') + ']]', function(translated) {
 				$('.pin_thread').html(translated);
-
-				ThreadTools.threadState.pinned = data.isPinned ? '1' : '0';
+				ThreadTools.threadState.pinned = data.isPinned;
 			});
+			$('.topic-title i.fa-thumb-tack').toggleClass('hide', !data.isPinned);
 		}
 	}
 

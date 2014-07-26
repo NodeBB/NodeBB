@@ -6,6 +6,7 @@
 		nconf = require('nconf'),
 		bcrypt = require('bcryptjs'),
 		winston = require('winston'),
+		async = require('async'),
 
 		meta = require('./../meta'),
 		user = require('./../user'),
@@ -14,7 +15,6 @@
 		utils = require('./../../public/src/utils'),
 
 		login_strategies = [];
-
 
 	function logout(req, res) {
 		if (req.user && parseInt(req.user.uid, 10) > 0) {
@@ -30,39 +30,53 @@
 	}
 
 	function login(req, res, next) {
+		var continueLogin = function() {
+			passport.authenticate('local', function(err, userData, info) {
+				if (err) {
+					return res.json(403, err.message);
+				}
+
+				if (!userData) {
+					return res.json(403, info);
+				}
+
+				// Alter user cookie depending on passed-in option
+				if (req.body.remember === 'true') {
+					var duration = 1000*60*60*24*parseInt(meta.configs.loginDays || 14, 10);
+					req.session.cookie.maxAge = duration;
+					req.session.cookie.expires = new Date(Date.now() + duration);
+				} else {
+					req.session.cookie.maxAge = false;
+					req.session.cookie.expires = false;
+				}
+
+				req.login({
+					uid: userData.uid
+				}, function() {
+					if (userData.uid) {
+						user.logIP(userData.uid, req.ip);
+					}
+
+					res.json(200, info);
+				});
+			})(req, res, next);
+		};
+
 		if(meta.config.allowLocalLogin !== undefined && parseInt(meta.config.allowLocalLogin, 10) === 0) {
 			return res.send(404);
 		}
 
-		passport.authenticate('local', function(err, userData, info) {
-			if (err) {
-				return next(err);
-			}
-
-			if (!userData) {
-				return res.json(403, info);
-			}
-
-			// Alter user cookie depending on passed-in option
-			if (req.body.remember === 'true') {
-				var duration = 1000*60*60*24*parseInt(meta.configs.loginDays || 14, 10);
-				req.session.cookie.maxAge = duration;
-				req.session.cookie.expires = new Date(Date.now() + duration);
-			} else {
-				req.session.cookie.maxAge = false;
-				req.session.cookie.expires = false;
-			}
-
-			req.login({
-				uid: userData.uid
-			}, function() {
-				if (userData.uid) {
-					user.logIP(userData.uid, req.ip);
+		if (req.body.username && utils.isEmailValid(req.body.username)) {
+			user.getUsernameByEmail(req.body.username, function(err, username) {
+				if (err) {
+					return next(err);
 				}
-
-				res.json(200, info);
+				req.body.username = username ? username : req.body.username;
+				continueLogin();
 			});
-		})(req, res, next);
+		} else {
+			continueLogin();
+		}
 	}
 
 	function register(req, res) {
@@ -70,17 +84,21 @@
 			return res.send(403);
 		}
 
-		var userData = {
-			username: req.body.username,
-			password: req.body.password,
-			email: req.body.email,
-			ip: req.ip
-		};
+		var userData = {};
 
-		plugins.fireHook('filter:register.check', userData, function(err, userData) {
-			if (err) {
-				return res.redirect(nconf.get('relative_path') + '/register');
+		for (var key in req.body) {
+			if (req.body.hasOwnProperty(key)) {
+				userData[key] = req.body[key];
 			}
+		}
+
+		plugins.fireHook('filter:register.check', req, res, userData, function(err, req, res, userData) {
+			if (err) {
+				return res.redirect(nconf.get('relative_path') + '/register' + (err.message ? '?error=' + err.message : ''));
+			}
+
+			delete userData['password-confirm'];
+			delete userData['_csrf'];
 
 			user.create(userData, function(err, uid) {
 				if (err || !uid) {
@@ -94,11 +112,13 @@
 
 					require('../socket.io').emitUserCount();
 
-					if(req.body.referrer) {
-						res.redirect(req.body.referrer);
-					} else {
-						res.redirect(nconf.get('relative_path') + '/');
-					}
+					plugins.fireHook('filter:register.complete', uid, req.body.referrer, function(err, uid, destination) {
+						if (destination) {
+							res.redirect(nconf.get('relative_path') + destination);
+						} else {
+							res.redirect(nconf.get('relative_path') + '/');
+						}
+					});
 				});
 			});
 		});
@@ -125,35 +145,51 @@
 					winston.error('filter:auth.init - plugin failure');
 				}
 
+				var deprecList = [];
 				for (var i in login_strategies) {
 					if (login_strategies.hasOwnProperty(i)) {
 						var strategy = login_strategies[i];
-						app.get(strategy.url, passport.authenticate(strategy.name, {
-							scope: strategy.scope
-						}));
+
+						/*
+							Backwards compatibility block for v0.6.0
+							Remove this upon release of v0.6.0-1
+							Ref: nodebb/nodebb#1849
+						*/
+						if (strategy.icon.slice(0, 3) !== 'fa-') {
+							deprecList.push(strategy.name);
+							strategy.icon = 'fa-' + strategy.icon + '-square';
+						}
+						/* End backwards compatibility block */
+
+						if (strategy.url) {
+							app.get(strategy.url, passport.authenticate(strategy.name, {
+								scope: strategy.scope
+							}));
+						}
 
 						app.get(strategy.callbackURL, passport.authenticate(strategy.name, {
-							successRedirect: '/',
-							failureRedirect: '/login'
+							successRedirect: nconf.get('relative_path') + '/',
+							failureRedirect: nconf.get('relative_path') + '/login'
 						}));
 					}
 				}
 
+				/*
+					Backwards compatibility block for v0.6.0
+					Remove this upon release of v0.6.0-1
+					Ref: nodebb/nodebb#1849
+				*/
+				if (deprecList.length) {
+					winston.warn('[plugins] Deprecation notice: SSO plugins should now pass in the full fontawesome icon name (e.g. "fa-facebook-o"). Please update the following plugins:');
+					for(var x=0,numDeprec=deprecList.length;x<numDeprec;x++) {
+						process.stdout.write('  * ' + deprecList[x] + '\n');
+					}
+				}
+				/* End backwards compatibility block */
+
 				app.post('/logout', logout);
 				app.post('/register', register);
-				app.post('/login', function(req, res, next) {
-					if (req.body.username && utils.isEmailValid(req.body.username)) {
-						user.getUsernameByEmail(req.body.username, function(err, username) {
-							if (err) {
-								return next(err);
-							}
-							req.body.username = username ? username : req.body.username;
-							login(req, res, next);
-						});
-					} else {
-						login(req, res, next);
-					}
-				});
+				app.post('/login', login);
 			});
 		});
 	};

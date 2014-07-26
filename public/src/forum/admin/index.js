@@ -1,7 +1,7 @@
 "use strict";
 /*global define, ajaxify, app, socket, RELATIVE_PATH*/
 
-define(function() {
+define('forum/admin/index', function() {
 	var	Admin = {};
 
 	Admin.init = function() {
@@ -20,7 +20,7 @@ define(function() {
 			});
 		});
 
-		$.get('https://api.github.com/repos/designcreateplay/NodeBB/tags', function(releases) {
+		$.get('https://api.github.com/repos/NodeBB/NodeBB/tags', function(releases) {
 			var	version = $('#version').html(),
 				latestVersion = releases[0].name.slice(1),
 				checkEl = $('.version-check');
@@ -37,20 +37,18 @@ define(function() {
 		});
 
 		$('.restart').on('click', function() {
+			app.alert({
+				timeout: 5000,
+				title: 'Restarting...',
+				message: 'NodeBB is restarting.',
+				type: 'info'
+			});
+
+			$(window).one('action:reconnected', function() {
+				app.alertSuccess('NodeBB has successfully restarted.');
+			});
+
 			socket.emit('admin.restart');
-		});
-
-		socket.emit('admin.getVisitorCount', function(err, data) {
-			if(err) {
-				return app.alertError(err.message);
-			}
-
-			var uniqueVisitors = $('#unique-visitors');
-			for(var key in data) {
-				if (data.hasOwnProperty(key)) {
-					uniqueVisitors.find('#' + key).text(data[key]);
-				}
-			}
 		});
 	};
 

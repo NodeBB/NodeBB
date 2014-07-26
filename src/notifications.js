@@ -4,12 +4,15 @@ var async = require('async'),
 	winston = require('winston'),
 	cron = require('cron').CronJob,
 	nconf = require('nconf'),
+	S = require('string'),
 
 	db = require('./database'),
 	utils = require('../public/src/utils'),
 	events = require('./events'),
 	User = require('./user'),
-	meta = require('./meta');
+	groups = require('./groups'),
+	meta = require('./meta'),
+	plugins = require('./plugins');
 
 (function(Notifications) {
 
@@ -29,9 +32,19 @@ var async = require('async'),
 
 			if (exists) {
 				db.sortedSetRank('uid:' + uid + ':notifications:read', nid, function(err, rank) {
-
-					db.getObjectFields('notifications:' + nid, ['nid', 'from', 'text', 'image', 'importance', 'score', 'path', 'datetime', 'uniqueId'], function(err, notification) {
+					db.getObject('notifications:' + nid, function(err, notification) {
 						notification.read = rank !== null ? true:false;
+
+						// Backwards compatibility for old notification schema
+						// Remove this block when NodeBB v0.6.0 is released.
+						if (notification.hasOwnProperty('text')) {
+							notification.bodyShort = notification.text;
+							notification.bodyLong = '';
+							notification.text = S(notification.text).escapeHTML().s;
+						}
+
+						notification.bodyShort = S(notification.bodyShort).escapeHTML().s;
+						notification.bodyLong = S(notification.bodyLong).escapeHTML().s;
 
 						if (notification.from && !notification.image) {
 							User.getUserField(notification.from, 'picture', function(err, picture) {
@@ -81,16 +94,26 @@ var async = require('async'),
 
 		// Add default values to data Object if not already set
 		var	defaults = {
-				text: '',
-				path: null,
+				bodyShort: '',
+				bodyLong: '',
+				path: '',
 				importance: 5,
 				datetime: Date.now(),
 				uniqueId: utils.generateUUID()
 			};
+
 		for(var v in defaults) {
 			if (defaults.hasOwnProperty(v) && !data[v]) {
 				data[v] = defaults[v];
 			}
+		}
+
+		// Backwards compatibility for old notification schema
+		// Remove this block for NodeBB v0.6.0
+		if (data.hasOwnProperty('text')) {
+			data.bodyShort = data.text;
+			data.bodyLong = '';
+			delete data.text;
 		}
 
 		db.incrObjectField('global', 'nextNid', function(err, nid) {
@@ -99,6 +122,8 @@ var async = require('async'),
 			db.setObject('notifications:' + nid, data, function(err, status) {
 				if (!err) {
 					callback(nid);
+				} else {
+					winston.error('[notifications.create] ' + err.message);
 				}
 			});
 		});
@@ -122,16 +147,38 @@ var async = require('async'),
 				checkReplace(notif_data.uniqueId, uid, notif_data, function(err, replace) {
 					if (replace) {
 						db.sortedSetAdd('uid:' + uid + ':notifications:unread', notif_data.datetime, nid);
+
+						// Client-side
 						websockets.in('uid_' + uid).emit('event:new_notification', notif_data);
+
+						// Plugins
+						notif_data.uid = uid;
+						plugins.fireHook('action:notification.pushed', notif_data);
 					}
 					next();
 				});
 
 			}, function(err) {
 				if (callback) {
-					callback(true);
+					callback(null, true);
 				}
 			});
+		});
+	};
+
+	Notifications.pushGroup = function(nid, groupName, callback) {
+		if (!callback) {
+			callback = function() {};
+		}
+
+		groups.get(groupName, {}, function(err, groupObj) {
+			if (!err && groupObj) {
+				if (groupObj.memberCount > 0) {
+					Notifications.push(nid, groupObj.members, callback);
+				}
+			} else {
+				callback(err);
+			}
 		});
 	};
 
@@ -188,22 +235,24 @@ var async = require('async'),
 	}
 
 	Notifications.mark_read = function(nid, uid, callback) {
-		if (parseInt(uid, 10) > 0) {
-			Notifications.get(nid, uid, function(notif_data) {
-				async.parallel([
-					function(next) {
-						db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid, next);
-					},
-					function(next) {
-						db.sortedSetAdd('uid:' + uid + ':notifications:read', notif_data.datetime, nid, next);
-					}
-				], function(err) {
-					if (callback) {
-						callback();
-					}
-				});
-			});
+		callback = callback || function() {};
+		if (!parseInt(uid, 10)) {
+			return callback();
 		}
+
+		Notifications.get(nid, uid, function(notif_data) {
+			async.parallel([
+				function(next) {
+					db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid, next);
+				},
+				function(next) {
+					if (!notif_data) {
+						return next();
+					}
+					db.sortedSetAdd('uid:' + uid + ':notifications:read', notif_data.datetime, nid, next);
+				}
+			], callback);
+		});
 	};
 
 	Notifications.mark_read_multiple = function(nids, uid, callback) {
@@ -238,6 +287,26 @@ var async = require('async'),
 				callback();
 			}
 		});
+	};
+
+	// why_are_we_using_underscores_here_?
+	// maybe_camel_case_ALL_THE_THINGS
+	Notifications.mark_read_by_uniqueid = function(uid, uniqueId, callback) {
+		async.waterfall([
+			async.apply(db.getSortedSetRange, 'uid:' + uid + ':notifications:unread', 0, 10),
+			function(nids, next) {
+				async.filter(nids, function(nid, next) {
+					db.getObjectField('notifications:' + nid, 'uniqueId', function(err, value) {
+						next(uniqueId === value);
+					});
+				}, function(nids) {
+					next(null, nids);
+				});
+			},
+			function(nids, next) {
+				Notifications.mark_read_multiple(nids, uid, next);
+			}
+		], callback);
 	};
 
 	Notifications.prune = function(cutoff) {

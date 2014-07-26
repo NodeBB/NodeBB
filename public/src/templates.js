@@ -1,3 +1,7 @@
+/* TO BE DEPRECATED IN 0.6x
+Please use the npm module instead - require('templates.js')
+*/
+
 'use strict';
 /*global require, module*/
 
@@ -32,7 +36,7 @@
 					}
 
 					callback(parse(loaded, obj, bind));
-				});	
+				});
 			} else {
 				callback(parse(templates.cache[template], obj, bind));
 			}
@@ -58,6 +62,7 @@
 	};
 
 	function express(filename, options, fn) {
+		console.log(filename, options, fn);
 		var fs = require('fs'),
 			tpl = filename.replace(options.settings.views + '/', '');
 
@@ -181,7 +186,7 @@
 
 		while (block = template.match(regex)) {
 			block = block[0].replace(makeBlockRegex(key), '');
-			
+
 			var numblocks = array[key].length - 1,
 				iterator = 0,
 				result = '',
@@ -189,7 +194,7 @@
 
 			do {
 				parsedBlock = parse(block, array[key][iterator], bind, namespace, {iterator: iterator, total: numblocks}) + ((iterator < numblocks) ? '\r\n':'');
-				
+
 				result += (!bind) ? parsedBlock : setBindContainer(parsedBlock, bind + namespace + iterator);
 				result = parseFunctions(block, result, {
 					data: array[key][iterator],
@@ -209,7 +214,7 @@
 
 			template = template.replace(regex, result);
 		}
-		
+
 		return template;
 	}
 
@@ -243,14 +248,14 @@
 				this['__' + key] = value;
 
 				var els = document.querySelectorAll('[data-binding="' + (this.__iterator !== false ? (bind + this.__namespace + this.__iterator) : bind) + '"]');
-				
+
 				for (var el in els) {
 					if (els.hasOwnProperty(el)) {
 						if (this.__parent) {
 							var parent = this.__parent();
 							els[el].innerHTML = parse(parent.template, parent.data, false);
 						} else {
-							els[el].innerHTML = parse(this.__template, obj, false, this.__namespace);	
+							els[el].innerHTML = parse(this.__template, obj, false, this.__namespace);
 						}
 					}
 				}
@@ -285,10 +290,12 @@
 					template = parseArray(template, obj, key, namespace + key + '.', bind);
 				} else if (obj[key] instanceof Object) {
 					defineParent(obj[key], originalObj);
+					template = checkConditional(template, key, obj[key]);
+					template = checkConditional(template, '!' + key, !obj[key]);
 					template = parse(template, obj[key], bind, namespace + key + '.');
 				} else {
 					template = parseValue(template, namespace + key, obj[key]);
-					
+
 					if (bind && obj[key]) {
 						setupBindings({
 							obj: obj,

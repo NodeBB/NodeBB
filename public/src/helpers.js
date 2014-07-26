@@ -6,7 +6,7 @@
 	var helpers = {};
 
 	helpers.displayUsersLink = function(config) {
-		return (config.isLoggedIn || !config.privateUserInfo);
+		return (config.loggedIn || !config.privateUserInfo);
 	};
 
 	helpers.buildMetaTag = function(tag) {
@@ -17,16 +17,12 @@
 		return '<meta ' + name + property + content + ' />';
 	};
 
-
-
-
-
 	if ('undefined' !== typeof window) {
 		$(document).ready(module.exports);
 	}
 
 	module.exports = function() {
-		var templates = templates || require('./templates');
+		var templates = templates || require('templates.js');
 
 		templates.registerHelper('displayUsersLink', helpers.displayUsersLink);
 		templates.registerHelper('buildMetaTag', helpers.buildMetaTag);

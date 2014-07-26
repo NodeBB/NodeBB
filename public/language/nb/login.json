@@ -4,5 +4,6 @@
     "forgot_password": "Glemt passord?",
     "alternative_logins": "Alternativ innlogging",
     "failed_login_attempt": "Mislykket innloggingsforsøk, vennligst prøv igjen.",
-    "login_successful": "Du har blitt logget inn!"
+    "login_successful": "Du har blitt logget inn!",
+    "dont_have_account": "Har du ikke en konto?"
 }

@@ -1,8 +1,9 @@
 {
-    "username": "Username / Email",
+    "username": "Prihlasovacie meno / email",
     "remember_me": "Zapamätať si ma?",
-    "forgot_password": "Zabudli ste heslo?",
-    "alternative_logins": "Dalšie spôsoby prihlásení",
-    "failed_login_attempt": "Prihlásenie sa nepodarilo, skuste to prosím znovu.",
-    "login_successful": "Prihlásenie prebehlo úspešne!"
+    "forgot_password": "Zabudol si heslo?",
+    "alternative_logins": "Ďalšie spôsoby prihlásenia",
+    "failed_login_attempt": "Prihlásenie sa nepodarilo, skús to znovu.",
+    "login_successful": "Prihlásenie prebehlo úspešne!",
+    "dont_have_account": "Nemáš účet?"
 }

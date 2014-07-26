@@ -10,39 +10,51 @@ module.exports = function(db, module) {
 			value: value
 		};
 
-		db.collection('objects').update({_key:key, value:value}, {$set:data}, {upsert:true, w: 1}, helpers.done(callback));
+		db.collection('objects').update({_key: key, value: value}, {$set: data}, {upsert:true, w: 1}, helpers.done(callback));
 	};
 
 	module.sortedSetRemove = function(key, value, callback) {
 		value = helpers.valueToString(value);
 
-		db.collection('objects').remove({_key:key, value:value}, helpers.done(callback));
+		db.collection('objects').remove({_key: key, value: value}, helpers.done(callback));
 	};
 
-	function getSortedSetRange(key, start, stop, sort, callback) {
-		db.collection('objects').find({_key:key}, {fields:{value:1}})
+	module.sortedSetsRemove = function(keys, value, callback) {
+		value = helpers.valueToString(value);
+
+		db.collection('objects').remove({_key: {$in: keys}, value: value}, helpers.done(callback));
+	};
+
+	function getSortedSetRange(key, start, stop, sort, withScores, callback) {
+		db.collection('objects').find({_key:key}, {fields: {_id: 0, value: 1, score: 1}})
 			.limit(stop - start + 1)
 			.skip(start)
 			.sort({score: sort})
 			.toArray(function(err, data) {
 				if (err || !data) {
-					return callback(err, null);
+					return callback(err);
 				}
 
-				data = data.map(function(item) {
-					return item.value;
-				});
+				if (!withScores) {
+					data = data.map(function(item) {
+						return item.value;
+					});
+				}
 
 				callback(null, data);
 			});
 	}
 
 	module.getSortedSetRange = function(key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, 1, callback);
+		getSortedSetRange(key, start, stop, 1, false, callback);
 	};
 
 	module.getSortedSetRevRange = function(key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, -1, callback);
+		getSortedSetRange(key, start, stop, -1, false, callback);
+	};
+
+	module.getSortedSetRevRangeWithScores = function(key, start, stop, callback) {
+		getSortedSetRange(key, start, stop, -1, true, callback);
 	};
 
 	module.getSortedSetRangeByScore = function(key, start, count, min, max, callback) {
@@ -120,6 +132,22 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.isSortedSetMembers = function(key, values, callback) {
+		values = values.map(helpers.valueToString);
+		db.collection('objects').find({_key: key, value: {$in: values}}).toArray(function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			results = results.map(function(item) {
+				return item.value;
+			});
+			values = values.map(function(value) {
+				return results.indexOf(value) !== -1;
+			});
+			callback(err, results);
+		});
+	};
+
 	module.sortedSetsScore = function(keys, value, callback) {
 		value = helpers.valueToString(value);
 		db.collection('objects').find({_key:{$in:keys}, value: value}).toArray(function(err, result) {
@@ -127,15 +155,58 @@ module.exports = function(db, module) {
 				return callback(err);
 			}
 
-			var returnData = [],
+			var map = helpers.toMap(result),
+				returnData = [],
 				item;
 
 			for(var i=0; i<keys.length; ++i) {
-				item = helpers.findItem(result, keys[i]);
+				item = map[keys[i]];
 				returnData.push(item ? item.score : null);
 			}
 
 			callback(null, returnData);
 		});
 	};
+
+	module.getSortedSetUnion = function(sets, start, stop, callback) {
+		getSortedSetUnion(sets, 1, start, stop, callback);
+	};
+
+	module.getSortedSetRevUnion = function(sets, start, stop, callback) {
+		getSortedSetUnion(sets, -1, start, stop, callback);
+	};
+
+	function getSortedSetUnion(sets, sort, start, stop, callback) {
+		var limit = stop - start + 1;
+		if (limit <= 0) {
+			limit = 0;
+		}
+
+		var pipeline = [
+			{ $match: { _key: {$in: sets}} },
+			{ $group: { _id: {value: '$value'}, totalScore: {$sum : "$score"}} },
+			{ $sort: { totalScore: sort} }
+		];
+
+		if (start) {
+			pipeline.push({ $skip: start });
+		}
+
+		if (limit > 0) {
+			pipeline.push({ $limit: limit });
+		}
+
+		pipeline.push({	$project: { _id: 0, value: '$_id.value' }});
+
+		db.collection('objects').aggregate(pipeline, function(err, data) {
+			if (err || !data) {
+				return callback(err);
+			}
+
+			data = data.map(function(item) {
+				return item.value;
+			});
+			callback(null, data);
+		});
+	}
 };

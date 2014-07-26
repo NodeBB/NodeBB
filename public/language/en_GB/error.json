@@ -3,6 +3,7 @@
 
 	"not-logged-in": "You don't seem to be logged in.",
 	"account-locked": "Your account has been locked temporarily",
+	"search-requires-login": "Searching requires an account! Please login or register!",
 
 	"invalid-cid": "Invalid Category ID",
 	"invalid-tid": "Invalid Topic ID",
@@ -19,6 +20,9 @@
 
 	"username-taken": "Username taken",
 	"email-taken": "Email taken",
+	"email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
+
+	"username-too-short": "Username too short",
 
 	"user-banned": "User banned",
 
@@ -34,16 +38,17 @@
 
 	"topic-locked": "Topic Locked",
 
-	"still-uploading" : "Please wait for uploads to complete.",
-	"content-too-short" : "Please enter a longer post. At least %1 characters.",
-	"title-too-short" : "Please enter a longer title. At least %1 characters.",
-	"title-too-long" : "Please enter a shorter title. Titles can't be longer than %1 characters.",
-	"too-many-posts" : "You can only post every %1 seconds.",
-	"file-too-big" : "Maximum allowed file size is %1 kbs",
+	"still-uploading": "Please wait for uploads to complete.",
+	"content-too-short": "Please enter a longer post. At least %1 characters.",
+	"title-too-short": "Please enter a longer title. At least %1 characters.",
+	"title-too-long": "Please enter a shorter title. Titles can't be longer than %1 characters.",
+	"invalid-title": "Invalid title!",
+	"too-many-posts": "You can only post every %1 seconds.",
+	"file-too-big": "Maximum allowed file size is %1 kbs",
 
 	"cant-vote-self-post": "You cannot vote for your own post",
 	"already-favourited": "You already favourited this post",
-	"already-unfavourited": "You alread unfavourited this post",
+	"already-unfavourited": "You already unfavourited this post",
 
 	"cant-ban-other-admins": "You can't ban other admins!",
 
@@ -63,8 +68,11 @@
 	"topic-thumbnails-are-disabled": "Topic thumbnails are disabled.",
 	"invalid-file": "Invalid File",
 	"uploads-are-disabled": "Uploads are disabled",
+	"upload-error": "Upload Error : %1",
 
 	"signature-too-long" : "Signature can't be longer than %1 characters!",
 
-	"cant-chat-with-yourself": "You can't chat with yourself!"
+	"cant-chat-with-yourself": "You can't chat with yourself!",
+
+	"not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post"
 }

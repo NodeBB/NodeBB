@@ -4,5 +4,7 @@
     "most_reputation": "Legnépszerűbbek",
     "search": "Keresés",
     "enter_username": "Írj be egy nicknevet a kereséshez",
-    "load_more": "Több betöltése"
+    "load_more": "Több betöltése",
+    "user-not-found": "User not found!",
+    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
 }

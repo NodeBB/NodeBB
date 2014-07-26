@@ -1,9 +1,9 @@
 
 'use strict';
 
-/* globals app, ajaxify, define, socket */
+/* globals app, ajaxify, define, socket, translator */
 
-define(['forum/topic/browsing', 'forum/topic/postTools', 'forum/topic/threadTools'], function(browsing, postTools, threadTools) {
+define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', 'forum/topic/threadTools'], function(browsing, postTools, threadTools) {
 
 	var Events = {};
 
@@ -15,16 +15,18 @@ define(['forum/topic/browsing', 'forum/topic/postTools', 'forum/topic/threadTool
 
 		'event:topic_deleted': toggleTopicDeleteState,
 		'event:topic_restored': toggleTopicDeleteState,
+		'event:topic_purged': onTopicPurged,
 
-		'event:topic_locked': toggleTopicLockedState,
-		'event:topic_unlocked': toggleTopicLockedState,
+		'event:topic_locked': threadTools.setLockedState,
+		'event:topic_unlocked': threadTools.setLockedState,
 
-		'event:topic_pinned': toggleTopicPinnedState,
-		'event:topic_unpinned': toggleTopicPinnedState,
+		'event:topic_pinned': threadTools.setPinnedState,
+		'event:topic_unpinned': threadTools.setPinnedState,
 
 		'event:topic_moved': onTopicMoved,
 
 		'event:post_edited': onPostEdited,
+		'event:post_purged': onPostPurged,
 
 		'event:post_deleted': togglePostDeleteState,
 		'event:post_restored': togglePostDeleteState,
@@ -40,6 +42,7 @@ define(['forum/topic/browsing', 'forum/topic/postTools', 'forum/topic/threadTool
 	};
 
 	Events.init = function() {
+		Events.removeListeners();
 		for(var eventName in events) {
 			if (events.hasOwnProperty(eventName)) {
 				socket.on(eventName, events[eventName]);
@@ -72,16 +75,8 @@ define(['forum/topic/browsing', 'forum/topic/postTools', 'forum/topic/threadTool
 		threadTools.setDeleteState(data);
 	}
 
-	function toggleTopicLockedState(data) {
-		threadTools.setLockedState(data);
-
-		app.alertSuccess(data.isLocked ? '[[topic:topic_lock_success]]' : '[[topic:topic_unlock_success]]');
-	}
-
-	function toggleTopicPinnedState(data) {
-		threadTools.setPinnedState(data);
-
-		app.alertSuccess(data.isPinned ? '[[topic:topic_pin_success]]' : '[[topic:topic_unpin_success]]');
+	function onTopicPurged(tid) {
+		ajaxify.go('category/' + ajaxify.variables.get('category_id'));
 	}
 
 	function onTopicMoved(data) {
@@ -96,43 +91,72 @@ define(['forum/topic/browsing', 'forum/topic/postTools', 'forum/topic/threadTool
 
 		if (editedPostTitle.length) {
 			editedPostTitle.fadeOut(250, function() {
-				editedPostTitle.html(data.title);
-				editedPostTitle.fadeIn(250);
+				editedPostTitle.html(data.title).fadeIn(250);
 			});
 		}
 
 		editedPostEl.fadeOut(250, function() {
 			editedPostEl.html(data.content);
 			editedPostEl.find('img').addClass('img-responsive');
+			app.replaceSelfLinks(editedPostEl.find('a'));
 			editedPostEl.fadeIn(250);
+		});
+
+		if (data.tags && data.tags.length !== $('.tags').first().children().length) {
+			ajaxify.loadTemplate('partials/post_bar', function(postBarTemplate) {
+				var html = templates.parse(templates.getBlock(postBarTemplate, 'tags'), {
+					tags: data.tags
+				});
+				var tags = $('.tags');
+				tags.fadeOut(250, function() {
+					tags.html(html).fadeIn(250);
+				});
+			});
+		}
+	}
+
+	function onPostPurged(pid) {
+		$('#post-container li[data-pid="' + pid + '"]').fadeOut(500, function() {
+			$(this).remove();
 		});
 	}
 
 	function togglePostDeleteState(data) {
 		var postEl = $('#post-container li[data-pid="' + data.pid + '"]');
 
-		if (postEl.length) {
-			postEl.toggleClass('deleted');
-
-			postTools.toggle(data.pid, postEl.hasClass('deleted'));
-
-			postTools.updatePostCount();
+		if (!postEl.length) {
+			return;
 		}
+
+		postEl.toggleClass('deleted');
+		var isDeleted = postEl.hasClass('deleted');
+		postTools.toggle(data.pid, isDeleted);
+
+		if (!app.isAdmin && parseInt(data.uid, 10) !== parseInt(app.uid, 10)) {
+			if (isDeleted) {
+				postEl.find('.post-content').translateHtml('[[topic:post_is_deleted]]');
+			} else {
+				postEl.find('.post-content').html(data.content);
+			}
+		}
+
+		postTools.updatePostCount();
 	}
 
 	function togglePostFavourite(data) {
-
 		var favBtn = $('li[data-pid="' + data.post.pid + '"] .favourite');
-		if (favBtn.length) {
-			favBtn.addClass('btn-warning')
-				.attr('data-favourited', data.isFavourited);
+		if (!favBtn.length) {
+			return;
+		}
 
-			var icon = favBtn.find('i');
-			var className = icon.attr('class');
+		favBtn.addClass('btn-warning')
+			.attr('data-favourited', data.isFavourited);
 
-			if (data.isFavourited ? className.indexOf('-o') !== -1 : className.indexOf('-o') === -1) {
-				icon.attr('class', data.isFavourited ? className.replace('-o', '') : className + '-o');
-			}
+		var icon = favBtn.find('i');
+		var className = icon.attr('class');
+
+		if (data.isFavourited ? className.indexOf('-o') !== -1 : className.indexOf('-o') === -1) {
+			icon.attr('class', data.isFavourited ? className.replace('-o', '') : className + '-o');
 		}
 	}
 

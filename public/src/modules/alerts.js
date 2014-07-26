@@ -1,14 +1,15 @@
 'use strict';
 /* globals define, translator, templates */
 
-define(function() {
+define('alerts', function() {
 
 	var module = {};
 
 	module.alert = function (params) {
 		params.alert_id = 'alert_button_' + (params.alert_id ? params.alert_id : new Date().getTime());
 		params.title = params.title || '';
-		params.location = (params.location || 'right-top');
+		params.location = params.location || 'right-top';
+		params.type = params.type || 'info';
 
 		var alert = $('#' + params.alert_id);
 		if (alert.length) {
@@ -61,7 +62,7 @@ define(function() {
 		alert.find('p').html(params.message);
 		alert.attr('class', 'alert alert-dismissable alert-' + params.type);
 
-		clearTimeout(alert.attr('timeoutId'));
+		clearTimeout(parseInt(alert.attr('timeoutId'), 10));
 		startTimeout(alert, params.timeout);
 
 		alert.children().fadeOut(100);

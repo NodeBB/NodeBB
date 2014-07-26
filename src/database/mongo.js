@@ -6,7 +6,7 @@
 	var winston = require('winston'),
 		async = require('async'),
 		nconf = require('nconf'),
-		express = require('express'),
+		session = require('express-session'),
 		db,
 		mongoClient,
 		mongoStore;
@@ -41,7 +41,7 @@
 	module.init = function(callback) {
 		try {
 			mongoClient = require('mongodb').MongoClient;
-			mongoStore = require('connect-mongo')(express);
+			mongoStore = require('connect-mongo')({session: session});
 		} catch (err) {
 			winston.error('Unable to initialize MongoDB! Is MongoDB installed? Error :' + err.message);
 			process.exit();

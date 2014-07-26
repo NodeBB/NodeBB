@@ -1,6 +1,6 @@
 {
     "register": "Registrase",
-    "help.email": "Por defecto, tu cuenta de correo electrónico será oculto al publico.",
+    "help.email": "Por defecto, tu cuenta de correo electrónico estará oculta al publico.",
     "help.username_restrictions": "El nombre de usuario debe tener entre %1 y %2 carácteres. Los miembros pueden responderte escribiendo @<span id='yourUsername'>usuario</span>.",
     "help.minimum_password_length": "Tu contraseña debe tener al menos %1 carácteres.",
     "email_address": "Correo electrónico",
@@ -12,7 +12,7 @@
     "confirm_password": "Confirmar Contraseña",
     "confirm_password_placeholder": "Confirmar Contraseña",
     "register_now_button": "Registrarme ahora",
-    "alternative_registration": "Otros métodos interesantes para registrarse",
+    "alternative_registration": "Métodos de registro alternativos",
     "terms_of_use": "Términos y Condiciones de uso",
     "agree_to_terms_of_use": "Acepto los Términos y Condiciones de uso"
 }

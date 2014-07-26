@@ -1,14 +1,17 @@
+'use strict';
+
 var fs = require('fs'),
 	path = require('path'),
 	async = require('async'),
 	winston = require('winston'),
 	nconf = require('nconf'),
-	eventEmitter = require('events').EventEmitter,
 	semver = require('semver'),
 
 	db = require('./database'),
+	emitter = require('./emitter'),
 	meta = require('./meta'),
-	utils = require('./../public/src/utils'),
+	translator = require('../public/src/translator'),
+	utils = require('../public/src/utils'),
 	pkg = require('../package.json');
 
 (function(Plugins) {
@@ -19,11 +22,9 @@ var fs = require('fs'),
 	Plugins.cssFiles = [];
 	Plugins.lessFiles = [];
 	Plugins.clientScripts = [];
+	Plugins.customLanguages = [];
 
 	Plugins.initialized = false;
-
-	// Events
-	Plugins.readyEvent = new eventEmitter;
 
 	Plugins.init = function() {
 		if (Plugins.initialized) {
@@ -45,14 +46,20 @@ var fs = require('fs'),
 			if (global.env === 'development') {
 				winston.info('[plugins] Plugins OK');
 			}
+
 			Plugins.initialized = true;
-			Plugins.readyEvent.emit('ready');
+			emitter.emit('plugins:loaded');
+		});
+
+		Plugins.registerHook('core', {
+			hook: 'static:app.load',
+			method: addLanguages
 		});
 	};
 
 	Plugins.ready = function(callback) {
 		if (!Plugins.initialized) {
-			Plugins.readyEvent.once('ready', callback);
+			emitter.once('plugins:loaded', callback);
 		} else {
 			callback();
 		}
@@ -73,7 +80,7 @@ var fs = require('fs'),
 			},
 			function(plugins, next) {
 				if (!plugins || !Array.isArray(plugins)) {
-					next();
+					return next();
 				}
 
 				plugins.push(meta.config['theme:id']);
@@ -89,7 +96,9 @@ var fs = require('fs'),
 				});
 			},
 			function(next) {
-				if (global.env === 'development') winston.info('[plugins] Sorting hooks to fire in priority sequence');
+				if (global.env === 'development') {
+					winston.info('[plugins] Sorting hooks to fire in priority sequence');
+				}
 				Object.keys(Plugins.loadedHooks).forEach(function(hook) {
 					var hooks = Plugins.loadedHooks[hook];
 					hooks = hooks.sort(function(a, b) {
@@ -111,10 +120,25 @@ var fs = require('fs'),
 			var pluginData = JSON.parse(data),
 				libraryPath, staticDir;
 
-			if (pluginData.minver && semver.validRange(pluginData.minver)) {
-				if (!semver.gte(pkg.version, pluginData.minver)) {
-					// If NodeBB is not new enough to run this plugin
+			/*
+				Starting v0.5.0, `minver` is deprecated in favour of `compatibility`.
+				`minver` will be transparently parsed to `compatibility` until v0.6.0,
+				at which point `minver` will not be parsed altogether.
+
+				Please see NodeBB/NodeBB#1437 for more details
+			*/
+			if (pluginData.minver && !pluginData.compatibility) {
+				pluginData.compatibility = '~' + pluginData.minver;
+			}
+			// End backwards compatibility block (#1437)
+
+			if (pluginData.compatibility && semver.validRange(pluginData.compatibility)) {
+				if (semver.ltr(pkg.version, pluginData.compatibility)) {
+					// NodeBB may not be new enough to run this plugin
+					process.stdout.write('\n');
 					winston.warn('[plugins/' + pluginData.id + '] This plugin may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing.');
+					winston.warn('[plugins/' + pluginData.id + '] In the event of an unresponsive NodeBB caused by this plugin, run ./nodebb reset plugin="' + pluginData.id + '".');
+					process.stdout.write('\n');
 				}
 			}
 
@@ -195,18 +219,8 @@ var fs = require('fs'),
 						}
 
 						Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
-							if (fs.existsSync(path.join(__dirname, '../node_modules', pluginData.id, file))) {
-								return path.join(pluginData.id, file);
-							} else {
-								// Backwards compatibility with < v0.4.0, remove this for v0.5.0
-								if (pluginData.staticDir) {
-									return path.join(pluginData.id, pluginData.staticDir, file);
-								} else {
-									winston.error('[plugins/' + pluginData.id + '] This plugin\'s CSS is incorrectly configured, please contact the plugin author.');
-									return null;
-								}
-							}
-						}).filter(function(path) { return path }));	// Filter out nulls, remove this for v0.5.0
+							return path.join(pluginData.id, file);
+						}));
 					}
 
 					next();
@@ -238,6 +252,31 @@ var fs = require('fs'),
 					}
 
 					next();
+				},
+				function(next) {
+					if (pluginData.languages && typeof pluginData.languages === 'string') {
+						var pathToFolder = path.join(__dirname, '../node_modules/', pluginData.id, pluginData.languages);
+
+						utils.walk(pathToFolder, function(err, languages) {
+							var arr = [];
+
+							async.each(languages, function(pathToLang, next) {
+								fs.readFile(pathToLang, function(err, file) {
+									arr.push({
+										file: JSON.parse(file.toString()),
+										route: pathToLang.replace(pathToFolder, '')
+									});
+
+									next(err);
+								});
+							}, function(err) {
+								Plugins.customLanguages = Plugins.customLanguages.concat(arr);
+								next(err);
+							});
+						});
+					} else {
+						next();
+					}
 				}
 			], function(err) {
 				if (!err) {
@@ -257,37 +296,46 @@ var fs = require('fs'),
 			`data` is an object consisting of (* is required):
 				`data.hook`*, the name of the NodeBB hook
 				`data.method`*, the method called in that plugin
-				`data.callbacked`, whether or not the hook expects a callback (true), or a return (false). Only used for filters. (Default: false)
 				`data.priority`, the relative priority of the method when it is eventually called (default: 10)
 		*/
 
 		var method;
 
-		if (data.hook && data.method && typeof data.method === 'string' && data.method.length > 0) {
+		if (data.hook && data.method) {
 			data.id = id;
-			if (!data.priority) data.priority = 10;
-			method = data.method.split('.').reduce(function(memo, prop) {
-				if (memo !== null && memo[prop]) {
-					return memo[prop];
-				} else {
-					// Couldn't find method by path, aborting
-					return null;
-				}
-			}, Plugins.libraries[data.id]);
-
-			if (method === null) {
-				winston.warn('[plugins/' + id + '] Hook method mismatch: ' + data.hook + ' => ' + data.method);
-				return callback();
+			if (!data.priority) {
+				data.priority = 10;
 			}
 
-			// Write the actual method reference to the hookObj
-			data.method = method;
+			if (typeof data.method === 'string' && data.method.length > 0) {
+				method = data.method.split('.').reduce(function(memo, prop) {
+					if (memo !== null && memo[prop]) {
+						return memo[prop];
+					} else {
+						// Couldn't find method by path, aborting
+						return null;
+					}
+				}, Plugins.libraries[data.id]);
 
+				// Write the actual method reference to the hookObj
+				data.method = method;
+
+				register();
+			} else if (typeof data.method === 'function') {
+				register();
+			} else {
+				winston.warn('[plugins/' + id + '] Hook method mismatch: ' + data.hook + ' => ' + data.method);
+			}
+		}
+
+		function register() {
 			Plugins.loadedHooks[data.hook] = Plugins.loadedHooks[data.hook] || [];
 			Plugins.loadedHooks[data.hook].push(data);
 
-			callback();
-		} else return;
+			if (typeof callback === 'function') {
+				callback();
+			}
+		}
 	};
 
 	Plugins.hasListeners = function(hook) {
@@ -295,16 +343,16 @@ var fs = require('fs'),
 	};
 
 	Plugins.fireHook = function(hook) {
-		var callback = typeof arguments[arguments.length-1] === "function" ? arguments[arguments.length-1] : null,
+		var callback = typeof arguments[arguments.length-1] === 'function' ? arguments[arguments.length-1] : null,
 			args = arguments.length ? Array.prototype.slice.call(arguments, 1) : [];
 
 		if (callback) {
 			args.pop();
 		}
 
-		hookList = Plugins.loadedHooks[hook];
+		var hookList = Plugins.loadedHooks[hook];
 
-		if (hookList && Array.isArray(hookList)) {
+		if (Array.isArray(hookList)) {
 			// if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
 			var hookType = hook.split(':')[0];
 			switch (hookType) {
@@ -312,10 +360,17 @@ var fs = require('fs'),
 					async.reduce(hookList, args, function(value, hookObj, next) {
 						if (hookObj.method) {
 							if (!hookObj.hasOwnProperty('callbacked') || hookObj.callbacked === true) {
+								// omg, after 6 months I finally realised what this does...
+								// It adds the callback to the arguments passed-in, since the callback
+								// is defined in *this* file (the async cb), and not the hooks themselves.
 								var	value = hookObj.method.apply(Plugins, value.concat(function() {
 									next(arguments[0], Array.prototype.slice.call(arguments, 1));
 								}));
 
+								/*
+									Backwards compatibility block for v0.5.0
+									Remove this once NodeBB enters v0.5.0-1
+								*/
 								if (value !== undefined && value !== callback) {
 									winston.warn('[plugins/' + hookObj.id + '] "callbacked" deprecated as of 0.4x. Use asynchronous method instead for hook: ' + hook);
 									next(null, [value]);
@@ -325,6 +380,7 @@ var fs = require('fs'),
 								value = hookObj.method.apply(Plugins, value);
 								next(null, [value]);
 							}
+							/* End backwards compatibility block */
 						} else {
 							if (global.env === 'development') {
 								winston.info('[plugins] Expected method for hook \'' + hook + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
@@ -334,15 +390,27 @@ var fs = require('fs'),
 					}, function(err, values) {
 						if (err) {
 							if (global.env === 'development') {
-								winston.info('[plugins] Problem executing hook: ' + hook);
+								winston.info('[plugins] Problem executing hook: ' + hook + ' err: ' + JSON.stringify(err));
 							}
 						}
 
-						callback.apply(Plugins, [err].concat(values));
+						if (callback) {
+							callback.apply(Plugins, [err].concat(values));
+						}
 					});
 					break;
 				case 'action':
-					async.each(hookList, function(hookObj) {
+					var deprecationWarn = [];
+					async.each(hookList, function(hookObj, next) {
+						/*
+							Backwards compatibility block for v0.5.0
+							Remove this once NodeBB enters v0.6.0-1
+						*/
+						if (hook === 'action:app.load') {
+							deprecationWarn.push(hookObj.id);
+						}
+						/* End backwards compatibility block */
+
 						if (hookObj.method) {
 							hookObj.method.apply(Plugins, args);
 						} else {
@@ -350,6 +418,29 @@ var fs = require('fs'),
 								winston.info('[plugins] Expected method \'' + hookObj.method + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
 							}
 						}
+
+						next();
+					}, function() {
+						/*
+							Backwards compatibility block for v0.5.0
+							Remove this once NodeBB enters v0.6.0-1
+						*/
+						if (deprecationWarn.length) {
+							winston.warn('[plugins] The `action:app.load` hook is deprecated in favour of `static:app.load`, please notify the developers of the following plugins:');
+							for(var x=0,numDeprec=deprecationWarn.length;x<numDeprec;x++) {
+								process.stdout.write('  * ' + deprecationWarn[x] + '\n');
+							}
+						}
+						/* End backwards compatibility block */
+					});
+					break;
+				case 'static':
+					async.each(hookList, function(hookObj, next) {
+						if (hookObj.method) {
+							hookObj.method.apply(Plugins, args.concat(next));
+						}
+					}, function(err) {
+						callback(err);
 					});
 					break;
 				default:
@@ -608,7 +699,9 @@ var fs = require('fs'),
 							});
 						}
 					], function(err, config) {
-						if (err) return next(); // Silently fail
+						if (err) {
+							return next(); // Silently fail
+						}
 
 						plugins.push(config);
 						next();
@@ -621,4 +714,23 @@ var fs = require('fs'),
 			callback(err, plugins);
 		});
 	};
+
+
+
+	function addLanguages(router, middleware, controllers, callback) {
+		Plugins.customLanguages.forEach(function(lang) {
+			router.get('/language' + lang.route, function(req, res, next) {
+				res.json(lang.file);
+			});
+
+			var components = lang.route.split('/'),
+				language = components[1],
+				filename = components[2].replace('.json', '');
+
+			translator.addTranslation(language, filename, lang.file);
+		});
+
+		callback(null);
+	}
+
 }(exports));

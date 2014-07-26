@@ -9,12 +9,29 @@ module.exports = function(redisClient, module) {
 		redisClient.zrem(key, value, callback);
 	};
 
+	module.sortedSetsRemove = function(keys, value, callback) {
+		multi('zrem', keys, value, callback);
+	};
+
 	module.getSortedSetRange = function(key, start, stop, callback) {
 		redisClient.zrange(key, start, stop, callback);
 	};
 
 	module.getSortedSetRevRange = function(key, start, stop, callback) {
 		redisClient.zrevrange(key, start, stop, callback);
+	};
+
+	module.getSortedSetRevRangeWithScores = function(key, start, stop, callback) {
+		redisClient.zrevrange([key, start, stop, 'WITHSCORES'], function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+			var objects = [];
+			for(var i=0; i<data.length; i+=2) {
+				objects.push({value: data[i], score: data[i+1]});
+			}
+			callback(null, objects);
+		});
 	};
 
 	module.getSortedSetRangeByScore = function(key, start, count, min, max, callback) {
@@ -51,13 +68,60 @@ module.exports = function(redisClient, module) {
 		});
 	};
 
+	module.isSortedSetMembers = function(key, values, callback) {
+		var multi = redisClient.multi();
+		for (var i=0; i<values.length; ++i) {
+			multi.zscore(key, values[i]);
+		}
+		multi.exec(function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			results = results.map(function(score) {
+				return !!score;
+			});
+			callback(null, results);
+		});
+	};
+
 	module.sortedSetsScore = function(keys, value, callback) {
-		var	multi = redisClient.multi();
+		multi('zscore', keys, value, callback);
+	};
+
+	function multi(command, keys, value, callback) {
+		var	m = redisClient.multi();
 
 		for(var x=0; x<keys.length; ++x) {
-			multi.zscore(keys[x], value);
+			m[command](keys[x], value);
 		}
 
-		multi.exec(callback);
+		m.exec(callback);
+	}
+
+	module.getSortedSetUnion = function(sets, start, stop, callback) {
+		sortedSetUnion(sets, false, start, stop, callback);
 	};
+
+	module.getSortedSetRevUnion = function(sets, start, stop, callback) {
+		sortedSetUnion(sets, true, start, stop, callback);
+	};
+
+	function sortedSetUnion(sets, reverse, start, stop, callback) {
+		var	multi = redisClient.multi();
+
+		// zunionstore prep
+		sets.unshift(sets.length);
+		sets.unshift('temp');
+
+		multi.zunionstore.apply(multi, sets);
+		multi[reverse ? 'zrevrange' : 'zrange']('temp', start, stop);
+		multi.del('temp');
+		multi.exec(function(err, results) {
+			if (!err && typeof callback === 'function') {
+				callback(null, results[1]);
+			} else if (err) {
+				callback(err);
+			}
+		});
+	}
 };

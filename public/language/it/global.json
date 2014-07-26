@@ -19,9 +19,11 @@
     "close": "Chiudi",
     "pagination": "Paginazione",
     "pagination.out_of": "%1 out of %2",
+    "pagination.enter_index": "Enter index",
     "header.admin": "Amministratore",
     "header.recent": "Recenti",
     "header.unread": "Non letti",
+    "header.tags": "Tags",
     "header.popular": "Popolare",
     "header.users": "Utenti",
     "header.chats": "Messaggi",
@@ -67,5 +69,7 @@
     "email": "Email",
     "language": "Language",
     "guest": "Guest",
-    "guests": "Guests"
+    "guests": "Guests",
+    "updated.title": "Forum Updated",
+    "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page."
 }

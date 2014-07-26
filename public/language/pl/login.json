@@ -4,5 +4,6 @@
     "forgot_password": "Zapomniałeś hasło?",
     "alternative_logins": "Alternatywne logowanie",
     "failed_login_attempt": "Nie udało się zalogować. Spróbuj ponownie.",
-    "login_successful": "Zostałeś pomyślnie zalogowany."
+    "login_successful": "Zostałeś pomyślnie zalogowany.",
+    "dont_have_account": "Nie masz konta?"
 }

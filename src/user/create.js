@@ -6,6 +6,7 @@ var async = require('async'),
 	validator = require('validator'),
 	plugins = require('../plugins'),
 	groups = require('../groups'),
+	meta = require('../meta'),
 	notifications = require('../notifications'),
 	translator = require('../../public/src/translator');
 
@@ -24,33 +25,38 @@ module.exports = function(User) {
 		var password = userData.password;
 		userData.password = null;
 
-		async.parallel([
-			function(next) {
+		async.parallel({
+			emailValid: function(next) {
 				if (userData.email) {
 					next(!utils.isEmailValid(userData.email) ? new Error('[[error:invalid-email]]') : null);
 				} else {
 					next();
 				}
 			},
-			function(next) {
+			userNameValid: function(next) {
 				next((!utils.isUserNameValid(userData.username) || !userData.userslug) ? new Error('[[error:invalid-username]]') : null);
 			},
-			function(next) {
-				if (userData.password) {
-					next(!utils.isPasswordValid(userData.password) ? new Error('[[error:invalid-password]]') : null);
+			passwordValid: function(next) {
+				if (password) {
+					next(!utils.isPasswordValid(password) ? new Error('[[error:invalid-password]]') : null);
 				} else {
 					next();
 				}
 			},
-			function(next) {
-				User.exists(userData.userslug, function(err, exists) {
+			renamedUsername: function(next) {
+				meta.userOrGroupExists(userData.userslug, function(err, exists) {
 					if (err) {
 						return next(err);
 					}
+
 					if (exists) {
+						var	newUsername = '';
 						async.forever(function(next) {
-							var	newUsername = userData.username + (Math.floor(Math.random() * 255) + 1);
+							newUsername = userData.username + (Math.floor(Math.random() * 255) + 1);
 							User.exists(newUsername, function(err, exists) {
+								if (err) {
+									return callback(err);
+								}
 								if (!exists) {
 									next(newUsername);
 								} else {
@@ -65,7 +71,7 @@ module.exports = function(User) {
 					}
 				});
 			},
-			function(next) {
+			emailAvailable: function(next) {
 				if (userData.email) {
 					User.email.available(userData.email, function(err, available) {
 						if (err) {
@@ -77,22 +83,24 @@ module.exports = function(User) {
 					next();
 				}
 			},
-			function(next) {
-				plugins.fireHook('filter:user.create', userData, function(err, filteredUserData){
-					next(err, utils.merge(userData, filteredUserData));
-				});
+			customFields: function(next) {
+				plugins.fireHook('filter:user.custom_fields', userData, next);
+			},
+			userData: function(next) {
+				plugins.fireHook('filter:user.create', userData, next);
 			}
-		], function(err, results) {
+		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			userData = results[results.length - 1];
-			var userNameChanged = !!results[3];
-			// If a new username was picked...
+			userData = utils.merge(results.userData, results.customFields);
+
+			var userNameChanged = !!results.renamedUsername;
+
 			if (userNameChanged) {
-				userData.username = results[3];
-				userData.userslug = utils.slugify(results[3]);
+				userData.username = results.renamedUsername;
+				userData.userslug = utils.slugify(results.renamedUsername);
 			}
 
 			db.incrObjectField('global', 'nextUid', function(err, uid) {
@@ -103,7 +111,7 @@ module.exports = function(User) {
 				var gravatar = User.createGravatarURLFromEmail(userData.email);
 				var timestamp = Date.now();
 
-				userData = {
+				userData = utils.merge({
 					'uid': uid,
 					'username': userData.username,
 					'userslug': userData.userslug,
@@ -123,7 +131,7 @@ module.exports = function(User) {
 					'lastposttime': 0,
 					'banned': 0,
 					'status': 'online'
-				};
+				}, userData);
 
 				db.setObject('user:' + uid, userData, function(err) {
 					if(err) {
@@ -134,8 +142,8 @@ module.exports = function(User) {
 					db.setObjectField('userslug:uid', userData.userslug, uid);
 
 					if (userData.email !== undefined) {
-						db.setObjectField('email:uid', userData.email, uid);
-						if (parseInt(uid, 10) !== 1) {
+						db.setObjectField('email:uid', userData.email.toLowerCase(), uid);
+						if (parseInt(uid, 10) !== 1 && parseInt(meta.config.requireEmailConfirmation, 10) === 1) {
 							User.email.verify(uid, userData.email);
 						}
 					}
@@ -151,8 +159,9 @@ module.exports = function(User) {
 
 					if (userNameChanged) {
 						notifications.create({
-							text: '[[user:username_taken_workaround, ' + userData.username + ']]',
-							picture: 'brand:logo',
+							bodyShort: '[[user:username_taken_workaround, ' + userData.username + ']]',
+							bodyLong: '',
+							image: 'brand:logo',
 							datetime: Date.now()
 						}, function(nid) {
 							notifications.push(nid, uid);

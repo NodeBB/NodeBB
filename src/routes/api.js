@@ -4,15 +4,17 @@ var path = require('path'),
 	async = require('async'),
 	fs = require('fs'),
 	nconf = require('nconf'),
+	express = require('express'),
 
-	user = require('./../user'),
-	topics = require('./../topics'),
-	posts = require('./../posts'),
-	categories = require('./../categories'),
-	meta = require('./../meta'),
-	plugins = require('./../plugins'),
-	utils = require('./../../public/src/utils'),
-	pkg = require('./../../package.json');
+	user = require('../user'),
+	topics = require('../topics'),
+	posts = require('../posts'),
+	categories = require('../categories'),
+	meta = require('../meta'),
+	plugins = require('../plugins'),
+	utils = require('../../public/src/utils'),
+	image = require('../image'),
+	pkg = require('../../package.json');
 
 
 function deleteTempFiles(files) {
@@ -24,23 +26,23 @@ function deleteTempFiles(files) {
 function upload(req, res, filesIterator, next) {
 	var files = req.files.files;
 
-	if(!req.user) {
+	if (!req.user) {
 		deleteTempFiles(files);
-		return res.json(403, {message:'not allowed'});
+		return res.json(403, 'not allowed');
 	}
 
-	if(!Array.isArray(files)) {
-		return res.json(500, {message: 'invalid files'});
+	if (!Array.isArray(files)) {
+		return res.json(500, 'invalid files');
 	}
 
-	if(Array.isArray(files[0])) {
+	if (Array.isArray(files[0])) {
 		files = files[0];
 	}
 
 	async.map(files, filesIterator, function(err, images) {
 		deleteTempFiles(files);
 
-		if(err) {
+		if (err) {
 			return res.send(500, err.message);
 		}
 
@@ -61,14 +63,20 @@ function uploadPost(req, res, next) {
 }
 
 function uploadThumb(req, res, next) {
-	if (!meta.config.allowTopicsThumbnail) {
+	if (parseInt(meta.config.allowTopicsThumbnail, 10) !== 1) {
 		deleteTempFiles(req.files.files);
-		return callback(new Error('[[error:topic-thumbnails-are-disabled]]'));
+		return next(new Error('[[error:topic-thumbnails-are-disabled]]'));
 	}
 
 	upload(req, res, function(file, next) {
 		if(file.type.match(/image./)) {
-			uploadImage(file, next);
+			var size = meta.config.topicThumbSize || 120;
+			image.resizeImage(file.path, path.extname(file.name), size, size, function(err) {
+				if (err) {
+					return next(err);
+				}
+				uploadImage(file, next);
+			});
 		} else {
 			next(new Error('[[error:invalid-file]]'));
 		}
@@ -77,12 +85,11 @@ function uploadThumb(req, res, next) {
 
 
 function uploadImage(image, callback) {
-
 	if(plugins.hasListeners('filter:uploadImage')) {
 		plugins.fireHook('filter:uploadImage', image, callback);
 	} else {
 
-		if (meta.config.allowFileUploads) {
+		if (parseInt(meta.config.allowFileUploads, 10)) {
 			uploadFile(image, callback);
 		} else {
 			callback(new Error('[[error:uploads-are-disabled]]'));
@@ -91,12 +98,11 @@ function uploadImage(image, callback) {
 }
 
 function uploadFile(file, callback) {
-
 	if(plugins.hasListeners('filter:uploadFile')) {
 		plugins.fireHook('filter:uploadFile', file, callback);
 	} else {
 
-		if(!meta.config.allowFileUploads) {
+		if(parseInt(meta.config.allowFileUploads, 10) !== 1) {
 			return callback(new Error('[[error:uploads-are-disabled]]'));
 		}
 
@@ -129,15 +135,33 @@ function getModerators(req, res, next) {
 	});
 }
 
+var templatesListingCache = [];
+
 function getTemplatesListing(req, res, next) {
-	utils.walk(nconf.get('views_dir'), function (err, data) {
-		data = data
-				.filter(function(value, index, self) {
+	if (templatesListingCache.length) {
+		return res.json(templatesListingCache);
+	}
+
+	async.parallel({
+		views: function(next) {
+			utils.walk(nconf.get('views_dir'), next);
+		},
+		extended: function(next) {
+			plugins.fireHook('filter:templates.get_virtual', [], next);
+		}
+	}, function(err, results) {
+		if (err) {
+			return next(err);
+		}
+		var data = [];
+		data = results.views.filter(function(value, index, self) {
 					return self.indexOf(value) === index;
 				}).map(function(el) {
 					return el.replace(nconf.get('views_dir') + '/', '');
 				});
 
+		data = data.concat(results.extended);
+		templatesListingCache = data;
 		res.json(data);
 	});
 }
@@ -155,19 +179,20 @@ function getRecentPosts(req, res, next) {
 }
 
 module.exports =  function(app, middleware, controllers) {
-	app.namespace('/api', function () {
-		app.get('/config', controllers.api.getConfig);
 
-		app.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
-		app.get('/get_templates_listing', getTemplatesListing);
-		app.get('/categories/:cid/moderators', getModerators);
-		app.get('/recent/posts/:term?', getRecentPosts);
+	var router = express.Router();
+	app.use('/api', router);
 
-		app.post('/post/upload', uploadPost);
-		app.post('/topic/thumb/upload', uploadThumb);
-	});
+	router.get('/config', controllers.api.getConfig);
+	router.get('/widgets/render', controllers.api.renderWidgets);
 
-	// this should be in the API namespace
-	// also, perhaps pass in :userslug so we can use checkAccountPermissions middleware - in future will allow admins to upload a picture for a user
-	app.post('/user/uploadpicture', middleware.authenticate, middleware.checkGlobalPrivacySettings, /*middleware.checkAccountPermissions,*/ controllers.accounts.uploadPicture);
+	router.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
+	router.get('/get_templates_listing', getTemplatesListing);
+	router.get('/categories/:cid/moderators', getModerators);
+	router.get('/recent/posts/:term?', getRecentPosts);
+
+	router.post('/post/upload', uploadPost);
+	router.post('/topic/thumb/upload', uploadThumb);
+	router.post('/user/:userslug/uploadpicture', middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.uploadPicture);
+
 };

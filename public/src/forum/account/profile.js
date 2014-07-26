@@ -2,7 +2,7 @@
 
 /* globals define, ajaxify, app, utils, socket, translator*/
 
-define(['forum/account/header'], function(header) {
+define('forum/account/profile', ['forum/account/header'], function(header) {
 	var Account = {},
 		yourid,
 		theirid,
@@ -36,6 +36,10 @@ define(['forum/account/header'], function(header) {
 		socket.on('user.isOnline', handleUserOnline);
 
 		socket.emit('user.isOnline', theirid, handleUserOnline);
+
+		if (yourid !== theirid) {
+			socket.emit('user.increaseViewCount', theirid);
+		}
 	};
 
 	function processPage() {
@@ -43,7 +47,7 @@ define(['forum/account/header'], function(header) {
 	}
 
 	function updateButtons() {
-		var isSelfOrNotLoggedIn = yourid === theirid || yourid === '0';
+		var isSelfOrNotLoggedIn = yourid === theirid || parseInt(yourid, 10) === 0;
 		$('#follow-btn').toggleClass('hide', isFollowing || isSelfOrNotLoggedIn);
 		$('#unfollow-btn').toggleClass('hide', !isFollowing || isSelfOrNotLoggedIn);
 		$('#chat-btn').toggleClass('hide', isSelfOrNotLoggedIn);

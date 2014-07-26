@@ -2,7 +2,7 @@
 
 
 function mainRoutes(app, middleware, controllers) {
-	app.get('/admin/', middleware.admin.buildHeader, controllers.admin.home);
+	app.get('/admin', middleware.admin.buildHeader, controllers.admin.home);
 	app.get('/admin/index', middleware.admin.buildHeader, controllers.admin.home);
 	app.get('/api/admin/index', controllers.admin.home);
 
@@ -38,8 +38,8 @@ function userRoutes(app, middleware, controllers) {
 	app.get('/admin/users/sort-reputation', middleware.admin.buildHeader, controllers.admin.users.sortByReputation);
 	app.get('/api/admin/users/sort-reputation', controllers.admin.users.sortByReputation);
 
-	app.get('/admin/users', middleware.admin.buildHeader, controllers.admin.users.sortByJoinDate);
-	app.get('/api/admin/users', controllers.admin.users.sortByJoinDate);
+	app.get('/admin/users', middleware.admin.buildHeader, controllers.admin.users.search);
+	app.get('/api/admin/users', controllers.admin.users.search);
 }
 
 function forumRoutes(app, middleware, controllers) {

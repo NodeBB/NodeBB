@@ -4,5 +4,6 @@
     "forgot_password": "パスワードがわからない？",
     "alternative_logins": "ほかのログイン方法",
     "failed_login_attempt": "ログインに失敗しました.ユーザー名やパスワードをご確認ください。",
-    "login_successful": "ログインしました！"
+    "login_successful": "ログインしました！",
+    "dont_have_account": "Don't have an account?"
 }

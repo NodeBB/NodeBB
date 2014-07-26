@@ -7,8 +7,7 @@ var	SocketIO = require('socket.io'),
 	path = require('path'),
 	fs = require('fs'),
 	nconf = require('nconf'),
-	express = require('express'),
-	socketCookieParser = express.cookieParser(nconf.get('secret')),
+	socketCookieParser = require('cookie-parser')(nconf.get('secret')),
 	winston = require('winston'),
 
 	db = require('../database'),
@@ -60,7 +59,7 @@ Sockets.init = function(server) {
 				winston.error(err.message);
 			}
 
-			sessionID = socket.handshake.signedCookies["express.sid"];
+			sessionID = socket.handshake.signedCookies['express.sid'];
 			db.sessionStore.get(sessionID, function(err, sessionData) {
 				if (!err && sessionData && sessionData.passport && sessionData.passport.user) {
 					uid = parseInt(sessionData.passport.user, 10);
@@ -165,7 +164,7 @@ Sockets.init = function(server) {
 			}
 
 			if (Namespaces[namespace].before) {
-				Namespaces[namespace].before(socket, function() {
+				Namespaces[namespace].before(socket, payload.name, function() {
 					callMethod(methodToCall);
 				});
 			} else {
@@ -194,6 +193,22 @@ Sockets.emitUserCount = function() {
 
 Sockets.in = function(room) {
 	return io.sockets.in(room);
+};
+
+Sockets.uidInRoom = function(uid, room) {
+	var clients = io.sockets.clients(room);
+
+	uid = parseInt(uid, 10);
+
+	if (typeof uid === 'number' && uid > 0) {
+		clients = clients.filter(function(socketObj) {
+			return uid === socketObj.uid;
+		});
+
+		return clients.length ? true : false;
+	} else {
+		return false;
+	}
 };
 
 Sockets.getConnectedClients = function() {
@@ -227,6 +242,20 @@ Sockets.getUserSockets = function(uid) {
 
 	return sockets;
 };
+
+Sockets.getUserRooms = function(uid) {
+	var sockets = Sockets.getUserSockets(uid);
+	var rooms = {};
+	for (var i=0; i<sockets.length; ++i) {
+		var roomClients = io.sockets.manager.roomClients[sockets[i].id];
+		for (var roomName in roomClients) {
+			rooms[roomName.slice(1)] = true;
+		}
+	}
+	rooms = Object.keys(rooms);
+	return rooms;
+};
+
 
 /* Helpers */
 

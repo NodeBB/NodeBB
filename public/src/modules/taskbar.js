@@ -1,4 +1,4 @@
-define(function() {
+define('taskbar', function() {
 	var taskbar = {
 		initialized: false,
 		init: function() {
@@ -58,13 +58,16 @@ define(function() {
 
 		push: function(module, uuid, options) {
 			var element = taskbar.tasklist.find('li[data-uuid="'+uuid+'"]');
-			if(element.length)
+			if(element.length) {
 				return;
+			}
+			var title = $('<div></div>').text(options.title || 'NodeBB Task').html();
 
 			var	btnEl = $('<li />')
 				.html('<a href="#">' +
-					(options.icon ? '<img src="' + options.icon + '" />' : '') +
-					'<span>' + (options.title || 'NodeBB Task') + '</span>' +
+					(options.icon ? '<i class="fa ' + options.icon + '"></i> ' : '') +
+					(options.image ? '<img src="' + options.image + '"/> ': '') +
+					'<span>' + title + '</span>' +
 					'</a>')
 				.attr({
 					'data-module': module,

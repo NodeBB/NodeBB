@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, socket */
 
-define(function() {
+define('forum/admin/plugins', function() {
 	var Plugins = {
 		init: function() {
 			var pluginsList = $('.plugins'),
@@ -61,6 +61,14 @@ define(function() {
 							type: 'info',
 							timeout: 5000
 						});
+					});
+				});
+
+				$('#plugin-search').on('input propertychange', function() {
+					var term = $(this).val();
+					$('.plugins li').each(function() {
+						var pluginId = $(this).attr('data-plugin-id');
+						$(this).toggleClass('hide', pluginId && pluginId.indexOf(term) === -1);
 					});
 				});
 

@@ -1,7 +1,7 @@
 "use strict";
 /*global define, app, socket*/
 
-define(function () {
+define('settings', function () {
 
 	var DEFAULT_PLUGINS = [
 		'settings/checkbox',
@@ -476,13 +476,14 @@ define(function () {
 					hash: hash,
 					values: values
 				}, function (err) {
-					app.alert({
-						title: 'Settings Saved',
-						type: 'success',
-						timeout: 2500
-					});
 					if (typeof callback === 'function') {
 						callback();
+					} else {
+						app.alert({
+							title: 'Settings Saved',
+							type: 'success',
+							timeout: 2500
+						});
 					}
 				});
 			} else {

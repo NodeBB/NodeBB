@@ -4,5 +4,7 @@
     "most_reputation": "En Saygın",
     "search": "Ara",
     "enter_username": "Aramak için bir kullanıcı adı girin",
-    "load_more": "Daha Fazla Yükle"
+    "load_more": "Daha Fazla Yükle",
+    "user-not-found": "Kullanıcı bulunamadı!",
+    "users-found-search-took": "%1 kullanıcı bulundu! Arama %2 ms sürdü."
 }

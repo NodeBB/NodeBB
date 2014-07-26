@@ -8,7 +8,7 @@ var async = require('async'),
 	user = require('./../user'),
 	notifications = require('./../notifications'),
 	categories = require('./../categories'),
-	threadTools = require('./../threadTools');
+	privileges = require('../privileges');
 
 module.exports = function(Topics) {
 
@@ -45,12 +45,12 @@ module.exports = function(Topics) {
 						return callback(err);
 					}
 					var newtids = tids.filter(function(tid, index, self) {
-						return parseInt(read[index], 10) === 0;
+						return !read[index];
 					});
 
 					async.filter(newtids, function(tid, next) {
-						threadTools.privileges(tid, uid, function(err, privileges) {
-							next(!err && privileges.meta.read);
+						privileges.topics.can('read', tid, uid, function(err, canRead) {
+							next(!err && canRead);
 						});
 					}, function(newtids) {
 						unreadTids.push.apply(unreadTids, newtids);

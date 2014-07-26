@@ -3,7 +3,7 @@
 /* globals define, socket, translator, utils, config, app, ajaxify, Tinycon*/
 
 
-define(['sounds'], function(sound) {
+define('notifications', ['sounds'], function(sound) {
 	var Notifications = {};
 
 	Notifications.prepareDOM = function() {
@@ -25,7 +25,7 @@ define(['sounds'], function(sound) {
 							image = '';
 						}
 
-						return '<li class="' + (notification.readClass || '') + '"><a href="' + notification.path + '">' + image + '<span class="pull-right relTime">' + utils.relativeTime(notification.datetime, true) + '</span><span class="text">' + notification.text + '</span></a></li>';
+						return '<li class="' + (notification.readClass || '') + '"><a href="' + (notification.path || '#') + '">' + image + '<span class="pull-right relTime">' + utils.relativeTime(notification.datetime, true) + '</span><span class="text">' + notification.bodyShort + '</span></a></li>';
 					}
 
 					var	x, html = '';
@@ -39,23 +39,13 @@ define(['sounds'], function(sound) {
 						for (x = 0; x < data.read.length; x++) {
 							html += createNotification(data.read[x]);
 						}
-
-						addSeeAllLink();
-
 					} else {
 						html += '<li class="no-notifs"><a>[[notifications:no_notifs]]</a></li>';
-						addSeeAllLink();
 					}
 
-					function addSeeAllLink() {
-						html += '<li class="pagelink"><a href="' + config.relative_path + '/notifications">[[notifications:see_all]]</a></li>';
-					}
+					html += '<li class="pagelink"><a href="' + config.relative_path + '/notifications">[[notifications:see_all]]</a></li>';
 
-
-					translator.translate(html, function(translated) {
-						notifList.html(translated);
-					});
-
+					notifList.translateHtml(html);
 
 					updateNotifCount(data.unread.length);
 

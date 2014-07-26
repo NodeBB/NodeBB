@@ -4,5 +4,6 @@
     "forgot_password": "Unohditko salasanasi?",
     "alternative_logins": "Vaihtoehtoiset kirjautumistavat",
     "failed_login_attempt": "Kirjautumisyritys epäonnistui, ole hyvä ja yritä uudestaan.",
-    "login_successful": "Olet onnistuneesti kirjautunut sisään!"
+    "login_successful": "Olet onnistuneesti kirjautunut sisään!",
+    "dont_have_account": "Ei käyttäjätunnusta?"
 }

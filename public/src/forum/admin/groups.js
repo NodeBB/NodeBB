@@ -1,14 +1,12 @@
 "use strict";
 /*global define, templates, socket, ajaxify, app, bootbox*/
 
-define(function() {
+define('forum/admin/groups', ['forum/admin/iconSelect'], function(iconSelect) {
 	var	Groups = {};
 
 	Groups.init = function() {
 		var yourid = ajaxify.variables.get('yourid'),
-			createEl = $('#create'),
 			createModal = $('#create-modal'),
-			createSubmitBtn = $('#create-modal-go'),
 			createNameEl = $('#create-group-name'),
 			detailsModal = $('#group-details-modal'),
 			detailsSearch = detailsModal.find('#group-details-search'),
@@ -18,14 +16,14 @@ define(function() {
 			searchDelay,
 			listEl = $('#groups-list');
 
-		createEl.on('click', function() {
+		$('#create').on('click', function() {
 			createModal.modal('show');
 			setTimeout(function() {
 				createNameEl.focus();
 			}, 250);
 		});
 
-		createSubmitBtn.on('click', function() {
+		$('#create-modal-go').on('click', function() {
 			var submitObj = {
 					name: createNameEl.val(),
 					description: $('#create-group-desc').val()
@@ -80,18 +78,18 @@ define(function() {
 				break;
 			case 'members':
 				socket.emit('admin.groups.get', groupName, function(err, groupObj) {
-					var formEl = detailsModal.find('form'),
-						nameEl = formEl.find('#change-group-name'),
-						descEl = formEl.find('#change-group-desc'),
-						numMembers = groupObj.members.length,
-						x;
+					var formEl = detailsModal.find('form');
 
-					nameEl.val(groupObj.name);
-					descEl.val(groupObj.description);
+					formEl.find('#change-group-name').val(groupObj.name).prop('readonly', groupObj.system);
+					formEl.find('#change-group-desc').val(groupObj.description);
+					formEl.find('#change-group-user-title').val(groupObj.userTitle);
+					formEl.find('#group-icon').attr('class', 'fa fa-2x ' + groupObj.icon).attr('value', groupObj.icon);
+					formEl.find('#change-group-label-color').val(groupObj.labelColor);
+					formEl.find('#group-label-preview').css('background', groupObj.labelColor || '#000000').text(groupObj.userTitle);
+					groupMembersEl.empty();
 
-					if (numMembers > 0) {
-						groupMembersEl.empty();
-						for (x = 0; x < numMembers; x++) {
+					if (groupObj.members.length > 0) {
+						for (var x = 0; x < groupObj.members.length; x++) {
 							var memberIcon = $('<li />')
 								.attr('data-uid', groupObj.members[x].uid)
 								.append($('<img />').attr('src', groupObj.members[x].picture))
@@ -187,17 +185,25 @@ define(function() {
 			});
 		});
 
+		$('#change-group-icon').on('click', function() {
+			iconSelect.init($('#group-icon'));
+		});
+
+		admin.enableColorPicker($('#change-group-label-color'), function(hsb, hex) {
+			$('#group-label-preview').css('background-color', '#' + hex);
+		});
+
 		detailsModalSave.on('click', function() {
-			var formEl = detailsModal.find('form'),
-				nameEl = formEl.find('#change-group-name'),
-				descEl = formEl.find('#change-group-desc'),
-				groupName = detailsModal.attr('data-groupname');
+			var formEl = detailsModal.find('form');
 
 			socket.emit('admin.groups.update', {
-				groupName: groupName,
+				groupName: detailsModal.attr('data-groupname'),
 				values: {
-					name: nameEl.val(),
-					description: descEl.val()
+					name: formEl.find('#change-group-name').val(),
+					userTitle: formEl.find('#change-group-user-title').val(),
+					description: formEl.find('#change-group-desc').val(),
+					icon: formEl.find('#group-icon').attr('value'),
+					labelColor: formEl.find('#change-group-label-color').val()
 				}
 			}, function(err) {
 				if (!err) {

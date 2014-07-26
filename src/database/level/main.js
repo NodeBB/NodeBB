@@ -6,12 +6,12 @@ var nconf = require('nconf'),
 module.exports = function(db, module) {
 	var helpers = module.helpers.level;
 
-	module.searchIndex = function(key, content, id) {
+	module.searchIndex = function(key, content, id, callback) {
 		// o.O
 	};
 
 	module.search = function(key, term, limit, callback) {
-		// O.o	
+		// O.o
 	};
 
 	module.searchRemove = function(key, id, callback) {
@@ -22,7 +22,7 @@ module.exports = function(db, module) {
 		db.close(function() {
 			module.leveldown.destroy(nconf.get('level:database'), function() {
 				db.open(callback);
-			});	
+			});
 		});
 	};
 

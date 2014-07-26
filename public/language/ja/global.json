@@ -19,9 +19,11 @@
     "close": "閉じる",
     "pagination": "ページ",
     "pagination.out_of": "%1 out of %2",
+    "pagination.enter_index": "Enter index",
     "header.admin": "管理",
     "header.recent": "最近",
     "header.unread": "未読",
+    "header.tags": "Tags",
     "header.popular": "人気",
     "header.users": "ユーザー",
     "header.chats": "チャット",
@@ -67,5 +69,7 @@
     "email": "メール",
     "language": "言語",
     "guest": "ゲスト",
-    "guests": "ゲスト"
+    "guests": "ゲスト",
+    "updated.title": "Forum Updated",
+    "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page."
 }

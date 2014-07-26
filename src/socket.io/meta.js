@@ -1,19 +1,22 @@
+'use strict';
+
 var	meta = require('../meta'),
 	user = require('../user'),
 	topics = require('../topics'),
 	logger = require('../logger'),
 	plugins = require('../plugins'),
+	emitter = require('../emitter'),
 
 	nconf = require('nconf'),
 	gravatar = require('gravatar'),
 	winston = require('winston'),
-	server = require('./'),
+	websockets = require('./'),
 
 	SocketMeta = {
 		rooms: {}
 	};
 
-SocketMeta.reconnected = function(socket) {
+SocketMeta.reconnected = function(socket, data, callback) {
 	var	uid = socket.uid,
 		sessionID = socket.id;
 
@@ -30,6 +33,10 @@ SocketMeta.reconnected = function(socket) {
 		}
 	}
 };
+
+emitter.on('nodebb:ready', function() {
+	websockets.server.sockets.emit('event:nodebb.ready', meta.config['cache-buster']);
+});
 
 SocketMeta.buildTitle = function(socket, text, callback) {
 	if (socket.uid) {
@@ -50,7 +57,7 @@ SocketMeta.getUsageStats = function(socket, data, callback) {
 
 /* Rooms */
 
-SocketMeta.rooms.enter = function(socket, data) {
+SocketMeta.rooms.enter = function(socket, data, callback) {
 	if(!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -67,13 +74,13 @@ SocketMeta.rooms.enter = function(socket, data) {
 
 	module.parent.exports.updateRoomBrowsingText(data.enter);
 
-	if (data.enter != 'admin') {
-		server.in('admin').emit('event:meta.rooms.update', null, server.server.sockets.manager.rooms);
+	if (data.enter !== 'admin') {
+		websockets.in('admin').emit('event:meta.rooms.update', null, websockets.server.sockets.manager.rooms);
 	}
 };
 
 SocketMeta.rooms.getAll = function(socket, data, callback) {
-	callback(null, server.server.sockets.manager.rooms);
+	callback(null, websockets.server.sockets.manager.rooms);
 };
 
 /* Exports */

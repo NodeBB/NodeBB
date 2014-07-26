@@ -5,33 +5,34 @@ var winston = require('winston');
 module.exports = function(db, module) {
 	var helpers = module.helpers.mongo;
 
-
-	module.searchIndex = function(key, content, id) {
+	module.searchIndex = function(key, content, id, callback) {
+		callback = callback || function() {};
 		var data = {
-			id:id,
-			key:key,
-			content:content
+			id: id,
+			key: key,
+			content: content
 		};
 
-		db.collection('search').update({id:id, key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
+		db.collection('search').update({id:id, key:key}, {$set:data}, {upsert:true, w: 1}, function(err) {
 			if(err) {
 				winston.error('Error indexing ' + err.message);
 			}
+			callback(err);
 		});
 	};
 
 	module.search = function(key, term, limit, callback) {
-		db.command({text:'search' , search: term, filter: {key:key}, limit: limit }, function(err, result) {
+		db.collection('search').find({ $text: { $search: term }, key: key}, {limit: limit}).toArray(function(err, results) {
 			if(err) {
 				return callback(err);
 			}
 
-			if(!result || !result.results || !result.results.length) {
+			if(!results || !results.length) {
 				return callback(null, []);
 			}
 
-			var data = result.results.map(function(item) {
-				return item.obj.id;
+			var data = results.map(function(item) {
+				return item.id;
 			});
 
 			callback(null, data);

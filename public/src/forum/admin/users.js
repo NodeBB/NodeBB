@@ -1,6 +1,6 @@
 "use strict";
 /* global socket, define, templates, bootbox, app, ajaxify,  */
-define(function() {
+define('forum/admin/users', function() {
 	var Users = {};
 
 	Users.init = function() {
@@ -100,7 +100,7 @@ define(function() {
 				return;
 			}
 
-			if (uids.indexOf(yourid) !== -1) {
+			if (uids.indexOf(yourid.toString()) !== -1) {
 				app.alertError('You can\'t remove yourself as Administrator!');
 			} else {
 				bootbox.confirm('Do you really want to remove admins?', function(confirm) {

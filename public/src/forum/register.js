@@ -3,7 +3,7 @@
 /* globals define, app, utils, socket, config */
 
 
-define(function() {
+define('forum/register', function() {
 	var Register = {},
 		validationError = false,
 		successIcon = '<i class="fa fa-check"></i>';
@@ -15,8 +15,8 @@ define(function() {
 				.removeClass('alert-success')
 				.addClass('alert-danger');
 			element.show();
-			validationError = true;
 		});
+		validationError = true;
 	}
 
 	function showSuccess(element, msg) {
@@ -29,7 +29,8 @@ define(function() {
 		});
 	}
 
-	function validateEmail(email) {
+	function validateEmail(email, callback) {
+		callback = callback || function() {};
 		var email_notify = $('#email-notify');
 
 		if (!email) {
@@ -38,7 +39,7 @@ define(function() {
 		}
 
 		if (!utils.isEmailValid(email)) {
-			showError(email_notify, 'Invalid email address.');
+			showError(email_notify, '[[error:invalid-email]]');
 			return;
 		}
 
@@ -50,14 +51,18 @@ define(function() {
 			}
 
 			if (exists) {
-				showError(email_notify, 'Email address already taken!');
+				showError(email_notify, '[[error:email-taken]]');
 			} else {
 				showSuccess(email_notify, successIcon);
 			}
+
+			callback();
 		});
 	}
 
-	function validateUsername(username) {
+	function validateUsername(username, callback) {
+		callback = callback || function() {};
+
 		var username_notify = $('#username-notify');
 
 		if (!username) {
@@ -66,11 +71,11 @@ define(function() {
 		}
 
 		if (username.length < config.minimumUsernameLength) {
-			showError(username_notify, 'Username too short!');
+			showError(username_notify, '[[error:username-too-short]]');
 		} else if (username.length > config.maximumUsernameLength) {
-			showError(username_notify, 'Username too long!');
+			showError(username_notify, '[[error:username-too-long]]');
 		} else if (!utils.isUserNameValid(username) || !utils.slugify(username)) {
-			showError(username_notify, 'Invalid username!');
+			showError(username_notify, '[[error:invalid-username]]');
 		} else {
 			socket.emit('user.exists', {
 				username: username
@@ -80,10 +85,12 @@ define(function() {
 				}
 
 				if (exists) {
-					showError(username_notify, 'Username already taken!');
+					showError(username_notify, '[[error:username-taken]]');
 				} else {
 					showSuccess(username_notify, successIcon);
 				}
+
+				callback();
 			});
 		}
 	}
@@ -154,21 +161,24 @@ define(function() {
 			validatePasswordConfirm(password.val(), password_confirm.val());
 		});
 
-		function validateForm() {
+		function validateForm(callback) {
 			validationError = false;
-
-			validateEmail(email.val());
-			validateUsername(username.val());
 			validatePassword(password.val(), password_confirm.val());
 			validatePasswordConfirm(password.val(), password_confirm.val());
 
-			return validationError;
+			validateEmail(email.val(), function() {
+				validateUsername(username.val(), callback);
+			});
 		}
 
 		register.on('click', function(e) {
-			if (validateForm()) {
-				e.preventDefault();
-			}
+			var registerBtn = $(this);
+			e.preventDefault();
+			validateForm(function() {
+				if (!validationError) {
+					registerBtn.parents('form').trigger('submit');
+				}
+			});
 		});
 
 		if(agreeTerms.length) {

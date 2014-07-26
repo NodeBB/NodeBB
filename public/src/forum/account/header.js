@@ -1,4 +1,4 @@
-define(function() {
+define('forum/account/header', function() {
 	var	AccountHeader = {};
 
 	AccountHeader.init = function() {
@@ -10,18 +10,17 @@ define(function() {
 		var yourid = ajaxify.variables.get('yourid'),
 			theirid = ajaxify.variables.get('theirid');
 
-		var editLink = $('#editLink'),
-			settingsLink = $('#settingsLink'),
-			favouritesLink = $('#favouritesLink');
-
 		if (parseInt(yourid, 10) !== 0 && parseInt(yourid, 10) === parseInt(theirid, 10)) {
-			editLink.removeClass('hide');
-			settingsLink.removeClass('hide');
-			favouritesLink.removeClass('hide');
+			$('#editLink, #settingsLink, #favouritesLink').removeClass('hide');
+		} else {
+			$('.account-sub-links .plugin-link').each(function() {
+				var $this = $(this);
+				$this.toggleClass('hide', $this.hasClass('private'));
+			});
 		}
 
-		if(app.isAdmin) {
-			editLink.removeClass('hide');
+		if (app.isAdmin) {
+			$('#editLink, #settingsLink').removeClass('hide');
 		}
 	}
 

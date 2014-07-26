@@ -5,7 +5,7 @@ var async = require('async');
 
 module.exports = function(db, module) {
 	var helpers = module.helpers.level;
-	
+
 	module.sortedSetAdd = function(key, score, value, callback) {
 		module.getListRange(key, 0, -1, function(err, set) {
 			set = set.filter(function(a) {return a.value !== value.toString();});
@@ -25,6 +25,12 @@ module.exports = function(db, module) {
 			set = set.filter(function(a) {return a.value !== value.toString();});
 			module.set(key, set, callback);
 		});
+	};
+
+	module.sortedSetsRemove = function(keys, value, callback) {
+		async.each(keys, function(key, next) {
+			module.sortedSetRemove(key, value, next);
+		}, callback);
 	};
 
 	function flattenSortedSet(set, callback) {
@@ -54,6 +60,16 @@ module.exports = function(db, module) {
 				set = [set.value];
 			}
 			callback(err, set);
+		});
+	};
+
+	module.getSortedSetRevRangeWithScores = function(key, start, stop, callback) {
+		module.getListRange(key, start, stop, function(err, set) {
+			if (err) {
+				return callback(err);
+			}
+			set.sort(function(a, b) {return b.score - a.score;});
+			callback(null, set);
 		});
 	};
 
@@ -146,6 +162,19 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.isSortedSetMembers = function(key, values, callback) {
+		module.getListRange(key, 0, -1, function(err, list) {
+			list = list.map(function(item) {
+				return item.value;
+			});
+			values = values.map(function(value) {
+				return list.indexOf(value.toString()) !== -1;
+			});
+
+			callback(err, values);
+		});
+	};
+
 	module.sortedSetsScore = function(keys, value, callback) {
 		var sets = {};
 		async.each(keys, function(key, next) {
@@ -157,4 +186,47 @@ module.exports = function(db, module) {
 			callback(err, sets);
 		});
 	};
+
+	module.getSortedSetUnion = function(sets, start, stop, callback) {
+		sortedSetUnion(sets, false, start, stop, callback);
+	};
+
+	module.getSortedSetRevUnion = function(sets, start, stop, callback) {
+		sortedSetUnion(sets, true, start, stop, callback);
+	};
+
+	function sortedSetUnion(sets, reverse, start, stop, callback) {
+		async.map(sets, function(key, next) {
+			module.getListRange(key, 0, -1, next);
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			var data = {};
+
+			results.forEach(function(set) {
+				for(var i=0; i<set.length; ++i) {
+					data[set[i].value] = data[set[i].value] || {value: set[i].value, score: 0};
+					data[set[i].value].score += parseInt(set[i].score, 10);
+				}
+			});
+
+			var returnData = [];
+
+			for(var key in data) {
+				if (data.hasOwnProperty(key)) {
+					returnData.push(data[key]);
+				}
+			}
+
+			returnData = returnData.sort(function(a, b) {
+				return reverse ? b.score - a.score : a.score - b.score;
+			}).map(function(item) {
+				return item.value;
+			});
+
+			callback(null, returnData);
+		});
+	}
 };

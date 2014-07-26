@@ -3,12 +3,19 @@
 
 /* globals define, app, templates, translator, socket, bootbox, config, ajaxify, RELATIVE_PATH, utils */
 
-define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 'forum/topic/events', 'navigator'], function(pagination, threadTools, postTools, events, navigator) {
-	var	Topic = {},
-		infiniteLoaderActive = false,
-		scrollingToPost = false,
-		currentUrl = '';
+var dependencies = [
+	'forum/pagination',
+	'forum/infinitescroll',
+	'forum/topic/threadTools',
+	'forum/topic/postTools',
+	'forum/topic/events',
+	'forum/topic/browsing',
+	'navigator'
+];
 
+define('forum/topic', dependencies, function(pagination, infinitescroll, threadTools, postTools, events, browsing, navigator) {
+	var	Topic = {},
+		currentUrl = '';
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
 		if(data.url.indexOf('topic') !== 0) {
@@ -35,46 +42,89 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 
 		app.enterRoom('topic_' + tid);
 
+		browsing.populateOnlineUsers();
+		$('.post-content img').addClass('img-responsive');
+
 		showBottomPostBar();
 
 		postTools.init(tid, thread_state);
 		threadTools.init(tid, thread_state);
 		events.init();
 
+		handleSorting();
+
 		hidePostToolsForDeletedPosts();
 
-		enableInfiniteLoading();
+		enableInfiniteLoadingOrPagination();
+
+		addBlockQuoteHandler();
 
 		addBlockquoteEllipses($('.topic .post-content > blockquote'));
 
-		var bookmark = localStorage.getItem('topic:' + tid + ':bookmark');
-		if (window.location.hash) {
-			Topic.scrollToPost(window.location.hash.substr(1), true);
-		} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1)) && postCount > 1) {
-			app.alert({
-				alert_id: 'bookmark',
-				message: '[[topic:bookmark_instructions]]',
-				timeout: 0,
-				type: 'info',
-				clickfn : function() {
-					Topic.scrollToPost(parseInt(bookmark, 10), true);
-				},
-				closefn : function() {
-					localStorage.removeItem('topic:' + tid + ':bookmark');
-				}
-			});
-		}
+		handleBookmark(tid);
 
-		if (!config.usePagination) {
-			navigator.init('.posts > .post-row', postCount, Topic.navigatorCallback);
-		}
+		navigator.init('.posts > .post-row', postCount, Topic.navigatorCallback, Topic.toTop, Topic.toBottom);
 
 		socket.on('event:new_post', onNewPost);
 
 		$(window).on('scroll', updateTopicTitle);
 
 		$(window).trigger('action:topic.loaded');
+
+		socket.emit('topics.markAsRead', tid);
+		socket.emit('topics.increaseViewCount', tid);
 	};
+
+	Topic.toTop = function() {
+		navigator.scrollTop(1);
+	};
+
+	Topic.toBottom = function() {
+		socket.emit('topics.lastPostIndex', ajaxify.variables.get('topic_id'), function(err, index) {
+			navigator.scrollBottom(index);
+		});
+	};
+
+	function handleBookmark(tid) {
+		var bookmark = localStorage.getItem('topic:' + tid + ':bookmark');
+		var postIndex = getPostIndex();
+		if (postIndex) {
+			navigator.scrollToPost(postIndex - 1, true);
+		} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1)) && ajaxify.variables.get('postcount') > 1) {
+			app.alert({
+				alert_id: 'bookmark',
+				message: '[[topic:bookmark_instructions]]',
+				timeout: 0,
+				type: 'info',
+				clickfn : function() {
+					navigator.scrollToPost(parseInt(bookmark, 10), true);
+				},
+				closefn : function() {
+					localStorage.removeItem('topic:' + tid + ':bookmark');
+				}
+			});
+		}
+	}
+
+	function getPostIndex() {
+		var parts = window.location.pathname.split('/');
+		return parts[4] ? parseInt(parts[4], 10) : 0;
+	}
+
+	function handleSorting() {
+		var threadSort = $('.thread-sort');
+		threadSort.find('i').removeClass('fa-check');
+		var currentSetting = threadSort.find('a[data-sort="' + config.topicPostSort + '"]');
+		currentSetting.find('i').addClass('fa-check');
+
+		$('.thread-sort').on('click', 'a', function() {
+			var newSetting = $(this).attr('data-sort');
+			socket.emit('user.setTopicSort', newSetting, function(err) {
+				config.topicPostSort = newSetting;
+				ajaxify.go('topic/' + ajaxify.variables.get('topic_slug'));
+			});
+		});
+	}
 
 	function showBottomPostBar() {
 		if($('#post-container .post-row').length > 1 || !$('#post-container li[data-index="0"]').length) {
@@ -97,53 +147,32 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 			postcount.html(parseInt(postcount.html(), 10) + 1);
 		}
 
-		socket.emit('topics.markAsRead', {tid: tid, uid: app.uid});
+		socket.emit('topics.markAsRead', tid);
 		createNewPosts(data);
+	}
+
+	function addBlockQuoteHandler() {
+		$('#post-container').on('click', 'blockquote .toggle', function() {
+			var blockQuote = $(this).parent('blockquote');
+			var toggle = $(this);
+			blockQuote.toggleClass('uncollapsed');
+			var collapsed = !blockQuote.hasClass('uncollapsed');
+			toggle.toggleClass('fa-angle-down', collapsed).toggleClass('fa-angle-up', !collapsed);
+		});
 	}
 
 	function addBlockquoteEllipses(blockquotes) {
 		blockquotes.each(function() {
 			var $this = $(this);
-			if ($this.find(':hidden').length && !$this.find('.toggle').length) {
-				$this.append('<i class="fa fa-ellipsis-h pointer toggle"></i>');
+			if ($this.find(':hidden:not(br)').length && !$this.find('.toggle').length) {
+				$this.append('<i class="fa fa-angle-down pointer toggle"></i>');
 			}
-		});
-
-		$('blockquote .toggle').on('click', function() {
-			$(this).parent('blockquote').toggleClass('uncollapsed');
 		});
 	}
 
-	function enableInfiniteLoading() {
+	function enableInfiniteLoadingOrPagination() {
 		if(!config.usePagination) {
-
-			app.enableInfiniteLoading(function(direction) {
-
-				if (!infiniteLoaderActive && $('#post-container').children().length) {
-					var after = 0;
-					var el = null;
-					if(direction > 0) {
-						el = $('#post-container .post-row').last();
-						after = parseInt(el.attr('data-index'), 10) + 1;
-					} else {
-						el = $('#post-container .post-row').first();
-						after = parseInt(el.attr('data-index'), 10);
-						after -= config.postsPerPage;
-						if(after < 0) {
-							after = 0;
-						}
-					}
-
-					var offset = el.offset().top - $('#header-menu').offset().top + $('#header-menu').height();
-
-					loadMorePosts(ajaxify.variables.get('topic_id'), after, function() {
-						hidePostToolsForDeletedPosts();
-						if(direction < 0 && el) {
-							Topic.scrollToPost(el.attr('data-pid'), false, 0, offset);
-						}
-					});
-				}
-			});
+			infinitescroll.init(loadMorePosts, $('#post-container .post-row[data-index="0"]').height());
 		} else {
 			navigator.hide();
 
@@ -167,107 +196,32 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 	}
 
 	Topic.navigatorCallback = function(element) {
-		var pid = element.attr('data-pid');
+		var postIndex = parseInt(element.attr('data-index'), 10);
 
 		var currentBookmark = localStorage.getItem('topic:' + ajaxify.variables.get('topic_id') + ':bookmark');
 
-		if (!currentBookmark || parseInt(pid, 10) >= parseInt(currentBookmark, 10)) {
-			localStorage.setItem('topic:' + ajaxify.variables.get('topic_id') + ':bookmark', pid);
+		if (!currentBookmark || parseInt(postIndex, 10) >= parseInt(currentBookmark, 10)) {
+			localStorage.setItem('topic:' + ajaxify.variables.get('topic_id') + ':bookmark', postIndex);
 			app.removeAlert('bookmark');
 		}
 
-		if (!scrollingToPost) {
-
-			var newUrl = window.location.href.replace(window.location.hash, '') + '#' + pid;
+		if (!navigator.scrollActive) {
+			var parts = ajaxify.removeRelativePath(window.location.pathname.slice(1)).split('/');
+			var topicId = parts[1],
+				slug = parts[2];
+			var newUrl = 'topic/' + topicId + '/' + (slug ? slug : '');
+			if (postIndex > 0) {
+				 newUrl += '/' + (postIndex + 1);
+			}
 
 			if (newUrl !== currentUrl) {
 				if (history.replaceState) {
+					var search = (window.location.search ? window.location.search : '');
 					history.replaceState({
-						url: window.location.pathname.slice(1) + (window.location.search ? window.location.search : '' ) + '#' + pid
-					}, null, newUrl);
+						url: newUrl + search
+					}, null, window.location.protocol + '//' + window.location.host + RELATIVE_PATH + '/' + newUrl + search);
 				}
 				currentUrl = newUrl;
-			}
-		}
-	};
-
-	Topic.scrollToPost = function(pid, highlight, duration, offset) {
-		if (!pid) {
-			return;
-		}
-
-		if(!offset) {
-			offset = 0;
-		}
-
-		scrollingToPost = true;
-
-		if($('#post_anchor_' + pid).length) {
-			return scrollToPid(pid);
-		}
-
-		if(config.usePagination) {
-			socket.emit('posts.getPidPage', pid, function(err, page) {
-				if(err) {
-					return;
-				}
-				if(parseInt(page, 10) !== pagination.currentPage) {
-					pagination.loadPage(page, function() {
-						scrollToPid(pid);
-					});
-				} else {
-					scrollToPid(pid);
-				}
-			});
-		} else {
-			socket.emit('posts.getPidIndex', pid, function(err, index) {
-				if(err) {
-					return;
-				}
-				var tid = $('#post-container').attr('data-tid');
-				$('#post-container').empty();
-				var after = index - config.postsPerPage + 1;
-				if(after < 0) {
-					after = 0;
-				}
-
-				loadMorePosts(tid, after, function() {
-					scrollToPid(pid);
-				});
-			});
-		}
-
-		function scrollToPid(pid) {
-			var scrollTo = $('#post_anchor_' + pid),
-				tid = $('#post-container').attr('data-tid');
-
-			function animateScroll() {
-				$("html, body").animate({
-					scrollTop: (scrollTo.offset().top - $('#header-menu').height() - offset) + "px"
-				}, duration !== undefined ? duration : 400, function() {
-					scrollingToPost = false;
-					navigator.update();
-					highlightPost();
-				});
-			}
-
-			function highlightPost() {
-				if (highlight) {
-					scrollTo.parent().find('.topic-item').addClass('highlight');
-					setTimeout(function() {
-						scrollTo.parent().find('.topic-item').removeClass('highlight');
-					}, 5000);
-				}
-			}
-
-
-			if (tid && scrollTo.length) {
-				if($('#post-container li.post-row[data-pid="' + pid + '"]').attr('data-index') !== '0') {
-					animateScroll();
-				} else {
-					navigator.update();
-					highlightPost();
-				}
 			}
 		}
 	};
@@ -278,7 +232,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 
 			pagination.recreatePaginationLinks(newPageCount);
 
-			if(pagination.currentPage === pagination.pageCount) {
+			if (pagination.currentPage === pagination.pageCount) {
 				createNewPosts(data);
 			} else if(data.posts && data.posts.length && parseInt(data.posts[0].uid, 10) === parseInt(app.uid, 10)) {
 				pagination.loadPage(pagination.pageCount);
@@ -301,25 +255,36 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 			before = null;
 
 		function findInsertionPoint() {
-			var firstPid = parseInt(data.posts[0].pid, 10);
+			var firstPostTimestamp = parseInt(data.posts[0].timestamp, 10);
+			var firstPostVotes = parseInt(data.posts[0].votes, 10);
+			var firstPostPid = data.posts[0].pid;
 
-			$('#post-container li[data-pid]').each(function() {
-				var $this = $(this);
+			var firstReply = $('#post-container li.post-row[data-index!="0"]').first();
+			var lastReply = $('#post-container li.post-row[data-index!="0"]').last();
 
-				if(firstPid > parseInt($this.attr('data-pid'), 10)) {
-					after = $this;
-					if(after.next().length && after.next().hasClass('post-bar')) {
-						after = after.next();
-					}
-				} else {
-					return false;
+			if (config.topicPostSort === 'oldest_to_newest') {
+				if (firstPostTimestamp < parseInt(firstReply.attr('data-timestamp'), 10)) {
+					before = firstReply;
+				} else if(firstPostTimestamp >= parseInt(lastReply.attr('data-timestamp'), 10)) {
+					after = lastReply;
 				}
-			});
-
-			if(!after) {
-				var firstPost = $('#post-container .post-row').first();
-				if(firstPid < parseInt(firstPost.attr('data-pid'), 10)) {
-					before = firstPost;
+			} else if(config.topicPostSort === 'newest_to_oldest') {
+				if (firstPostTimestamp > parseInt(firstReply.attr('data-timestamp'), 10)) {
+					before = firstReply;
+				} else if(firstPostTimestamp <= parseInt(lastReply.attr('data-timestamp'), 10)) {
+					after = lastReply;
+				}
+			} else if(config.topicPostSort === 'most_votes') {
+				if (firstPostVotes > parseInt(firstReply.attr('data-votes'), 10)) {
+					before = firstReply;
+				} else if(firstPostVotes < parseInt(firstReply.attr('data-votes'), 10)) {
+					after = lastReply;
+				} else {
+					if (firstPostPid > firstReply.attr('data-pid')) {
+						before = firstReply;
+					} else if(firstPostPid <= firstReply.attr('data-pid')) {
+						after = lastReply;
+					}
 				}
 			}
 		}
@@ -331,35 +296,27 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 
 		findInsertionPoint();
 
-		data.title = ajaxify.variables.get('topic_name');
+		data.title = $('<div></div>').text(ajaxify.variables.get('topic_name')).html();
 		data.viewcount = ajaxify.variables.get('viewcount');
 
-		parseAndTranslatePosts(data, function(translatedHTML) {
-			var translated = $(translatedHTML);
-
+		infinitescroll.parseAndTranslate('topic', 'posts', data, function(html) {
 			if(after) {
-				translated.insertAfter(after);
+				html.insertAfter(after);
 			} else if(before) {
-				translated.insertBefore(before);
+				html.insertBefore(before);
 			} else {
-				$('#post-container').append(translated);
+				$('#post-container').append(html);
 			}
 
-			translated.hide().fadeIn('slow');
-			addBlockquoteEllipses(translated.find('.post-content > blockquote'));
+			html.hide().fadeIn('slow');
 
-			onNewPostsLoaded(translated, data.posts);
+			addBlockquoteEllipses(html.find('.post-content > blockquote'));
 
-			if(typeof callback === 'function') {
+			$(window).trigger('action:posts.loaded');
+			onNewPostsLoaded(html, data.posts);
+			if (typeof callback === 'function') {
 				callback();
 			}
-		});
-	}
-
-	function parseAndTranslatePosts(data, callback) {
-		ajaxify.loadTemplate('topic', function(topicTemplate) {
-			var html = templates.parse(templates.getBlock(topicTemplate, 'posts'), data);
-			translator.translate(html, callback);
 		});
 	}
 
@@ -377,10 +334,9 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 			getPostPrivileges(posts[x].pid);
 		}
 
-		infiniteLoaderActive = false;
-
-		app.populateOnlineUsers();
+		browsing.populateOnlineUsers();
 		app.createUserTooltips();
+		app.replaceSelfLinks(html.find('a'));
 		utils.addCommasToNumbers(html.find('.formatted-number'));
 		utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 		html.find('span.timeago').timeago();
@@ -392,42 +348,52 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 	function toggleModTools(postHtml, privileges) {
 		postHtml.find('.edit, .delete').toggleClass('none', !privileges.editable);
 		postHtml.find('.move').toggleClass('none', !privileges.move);
+		postHtml.find('.reply, .quote').toggleClass('none', !$('.post_reply').length);
+		var isSelfPost = parseInt(postHtml.attr('data-uid'), 10) === parseInt(app.uid, 10);
+		postHtml.find('.chat, .flag').toggleClass('none', isSelfPost);
 	}
 
-	function loadMorePosts(tid, after, callback) {
+	function loadMorePosts(direction) {
+		if (!$('#post-container').length || navigator.scrollActive) {
+			return;
+		}
+
+		infinitescroll.calculateAfter(direction, '#post-container .post-row[data-index!="0"]', config.postsPerPage, function(after, offset, el) {
+			loadPostsAfter(after, function() {
+				if (direction < 0 && el) {
+					navigator.scrollToPost(el.attr('data-index'), false, 0, offset);
+				}
+			});
+		});
+	}
+
+	function loadPostsAfter(after, callback) {
+		var tid = ajaxify.variables.get('topic_id');
+		if (!utils.isNumber(tid) || !utils.isNumber(after) || (after === 0 && $('#post-container li.post-row[data-index="1"]').length)) {
+			return;
+		}
+
 		var indicatorEl = $('.loading-indicator');
-
-		if (infiniteLoaderActive || !$('#post-container').length) {
-			return;
+		if (!indicatorEl.is(':animated')) {
+			indicatorEl.fadeIn();
 		}
 
-		if (!utils.isNumber(after) || (after === 0 && $('#post-container li.post-row[data-index="0"]').length)) {
-			return;
-		}
-
-		infiniteLoaderActive = true;
-		indicatorEl.fadeIn();
-
-		socket.emit('topics.loadMore', {
+		infinitescroll.loadMore('topics.loadMore', {
 			tid: tid,
 			after: after
-		}, function (err, data) {
+		}, function (data, done) {
 
-			indicatorEl.fadeOut(function() {
-				infiniteLoaderActive = false;
-			});
-
-			if(err) {
-				return app.alertError(err.message);
-			}
+			indicatorEl.fadeOut();
 
 			if (data && data.posts && data.posts.length) {
-				createNewPosts(data, callback);
+				createNewPosts(data, function() {
+					done();
+					callback();
+				});
+				hidePostToolsForDeletedPosts();
 			} else {
 				navigator.update();
-				if (typeof callback === 'function') {
-					callback(data.posts);
-				}
+				done();
 			}
 		});
 	}

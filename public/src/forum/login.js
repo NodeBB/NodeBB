@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, RELATIVE_PATH */
 
-define(function() {
+define('forum/login', function() {
 	var	Login = {};
 
 	Login.init = function() {
@@ -45,8 +45,11 @@ define(function() {
 					app.loadConfig();
 				},
 				error: function(data, textStatus, jqXHR) {
-					// Update error text
-					translator.translate(data.responseJSON, function(errorText) {
+					var message = data.responseJSON;
+					if (typeof data.responseJSON !== 'string') {
+ 						message = data.responseJSON.message || '';
+					}
+					translator.translate(message, function(errorText) {
 						$('#login-error-notify').show().html(errorText);
 					});
 

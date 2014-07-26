@@ -1,8 +1,18 @@
 {
-    "chat.chatting_with": "和<span id=\"chat-with-name\"></span>聊天中",
-    "chat.placeholder": "在这里输入消息，按Enter发送",
+    "chat.chatting_with": "和<span id=\"chat-with-name\"></span>聊天",
+    "chat.placeholder": "在这里输入聊天消息，按回车键发送",
     "chat.send": "发送",
     "chat.no_active": "暂无聊天",
     "chat.user_typing": "%1 正在输入……",
-    "chat.user_has_messaged_you": "%1 has messaged you."
+    "chat.user_has_messaged_you": "%1 向您发送了消息。",
+    "chat.see_all": "查看全部聊天",
+    "chat.no-messages": "请选择接收人，以查看聊天消息历史",
+    "chat.recent-chats": "最近聊天",
+    "chat.contacts": "联系人",
+    "chat.message-history": "消息历史",
+    "chat.pop-out": "弹出聊天窗口",
+    "chat.maximize": "最大化",
+    "composer.user_said_in": "%1 在 %2 中说：",
+    "composer.user_said": "%1 说：",
+    "composer.discard": "确定想要取消此帖？"
 }

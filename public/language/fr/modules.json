@@ -1,8 +1,18 @@
 {
-    "chat.chatting_with": "Chat avec <span id=\"chat-with-name\"></span>",
-    "chat.placeholder": "taper le message ici, presser entrer pour envoyer",
+    "chat.chatting_with": "Discuter avec <span id=\"chat-with-name\"></span>",
+    "chat.placeholder": "Taper votre message ici, appuyer sur Entrer pour envoyer",
     "chat.send": "Envoyer",
-    "chat.no_active": "Vous n'avez aucune discussion active.",
-    "chat.user_typing": "%1 est en train d'écrire",
-    "chat.user_has_messaged_you": "%1 vous a envoyé un message."
+    "chat.no_active": "Vous n'avez aucune discussion en cours.",
+    "chat.user_typing": "%1 est en train d'écrire ...",
+    "chat.user_has_messaged_you": "%1 vous a envoyé un message.",
+    "chat.see_all": "Voir toutes les Discussions",
+    "chat.no-messages": "Veuillez sélectionner un destinataire pour voir l'historique des discussions",
+    "chat.recent-chats": "Discussions récentes",
+    "chat.contacts": "Contacts",
+    "chat.message-history": "Historique des messages",
+    "chat.pop-out": "Afficher la discussion",
+    "chat.maximize": "Agrandir",
+    "composer.user_said_in": "%1 a dit dans %2 :",
+    "composer.user_said": "%1 a dit :",
+    "composer.discard": "Êtes-vous sûr de bien vouloir supprimer ce message ?"
 }

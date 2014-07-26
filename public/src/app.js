@@ -8,7 +8,8 @@ var socket,
 		'uid': null,
 		'isFocused': true,
 		'currentRoom': null,
-		'widgets': {}
+		'widgets': {},
+		'cacheBuster': null
 	};
 
 (function () {
@@ -24,7 +25,7 @@ var socket,
 			reconnecting = false;
 
 			// Rejoin room that was left when we disconnected
-			var	url_parts = document.location.pathname.slice(RELATIVE_PATH.length).split('/').slice(1);
+			var	url_parts = window.location.pathname.slice(RELATIVE_PATH.length).split('/').slice(1);
 			var room;
 
 			switch(url_parts[0]) {
@@ -52,6 +53,24 @@ var socket,
 			app.enterRoom(room, true);
 
 			socket.emit('meta.reconnected');
+
+			socket.removeAllListeners('event:nodebb.ready');
+			socket.on('event:nodebb.ready', function(cacheBuster) {
+				if (app.cacheBuster !== cacheBuster) {
+					app.cacheBuster = cacheBuster;
+
+					app.alert({
+						alert_id: 'forum_updated',
+						title: '[[global:updated.title]]',
+						message: '[[global:updated.message]]',
+						clickfn: function() {
+							window.location.reload();
+						},
+						type: 'warning'
+					});
+				}
+			});
+
 			$(window).trigger('action:reconnected');
 
 			setTimeout(function() {
@@ -93,7 +112,7 @@ var socket,
 				templates.setGlobal('loggedIn', parseInt(data.uid, 10) !== 0);
 
 				app.showLoginMessage();
-
+				app.replaceSelfLinks();
 				$(window).trigger('action:connected');
 			});
 
@@ -131,7 +150,7 @@ var socket,
 				app.alert({
 					title: '[[global:alert.banned]]',
 					message: '[[global:alert.banned.message]]',
-					type: 'warning',
+					type: 'danger',
 					timeout: 1000
 				});
 
@@ -140,13 +159,11 @@ var socket,
 
 			app.enterRoom('global');
 
-			if (config.environment === 'development' && console && console.log) {
-				var log = console.log;
-				console.log = function() {
-					log.apply(this, arguments);
-					socket.emit('tools.log', arguments);
-				};
-			}
+			app.cacheBuster = config['cache-buster'];
+
+			bootbox.setDefaults({
+				locale: config.defaultLang
+			});
 		}
 	}
 
@@ -211,34 +228,6 @@ var socket,
 		}
 	};
 
-	app.populateOnlineUsers = function () {
-		var uids = [];
-
-		$('.post-row').each(function () {
-			var uid = $(this).attr('data-uid');
-			if(uids.indexOf(uid) === -1) {
-				uids.push(uid);
-			}
-		});
-
-		socket.emit('user.getOnlineUsers', uids, function (err, users) {
-
-			$('.username-field').each(function (index, element) {
-				var el = $(this),
-					uid = el.parents('li').attr('data-uid');
-
-				if (uid && users[uid]) {
-					translator.translate('[[global:' + users[uid].status + ']]', function(translated) {
-						el.siblings('i')
-							.attr('class', 'fa fa-circle status ' + users[uid].status)
-							.attr('title', translated)
-							.attr('data-original-title', translated);
-					});
-				}
-			});
-		});
-	};
-
 	function highlightNavigationLink() {
 		var path = window.location.pathname,
 			parts = path.split('/'),
@@ -287,12 +276,9 @@ var socket,
 	};
 
 	app.processPage = function () {
-		app.populateOnlineUsers();
-
 		highlightNavigationLink();
 
 		$('span.timeago').timeago();
-		$('.post-content img').addClass('img-responsive');
 
 		utils.makeNumbersHumanReadable($('.human-readable-number'));
 
@@ -349,24 +335,6 @@ var socket,
 				chat.load(chatModal.attr('UUID'));
 				chat.center(chatModal);
 			}
-		});
-	};
-
-	var previousScrollTop = 0;
-
-	app.enableInfiniteLoading = function(callback) {
-		$(window).on('scroll', function() {
-
-			var top = $(window).height() * 0.1;
-			var bottom = ($(document).height() - $(window).height()) * 0.9;
-			var currentScrollTop = $(window).scrollTop();
-
-			if(currentScrollTop < top && currentScrollTop < previousScrollTop) {
-				callback(-1);
-			} else if (currentScrollTop > bottom && currentScrollTop > previousScrollTop) {
-				callback(1);
-			}
-			previousScrollTop = currentScrollTop;
 		});
 	};
 
@@ -440,6 +408,9 @@ var socket,
 	}
 
 	function createHeaderTooltips() {
+		if (utils.findBootstrapEnvironment() === 'xs') {
+			return;
+		}
 		$('#header-menu li i[title]').each(function() {
 			$(this).parents('a').tooltip({
 				placement: 'bottom',
@@ -469,6 +440,14 @@ var socket,
 		}
 
 		searchButton.off().on('click', function(e) {
+			if (!config.loggedIn && !config.allowGuestSearching) {
+				app.alert({
+					message:'[[error:search-requires-login]]',
+					timeout: 3000
+				});
+				ajaxify.go('login');
+				return false;
+			}
 			e.stopPropagation();
 
 			searchFields.removeClass('hide').show();
@@ -511,16 +490,14 @@ var socket,
 
 	app.load = function() {
 		$('document').ready(function () {
-			var url = window.location.pathname.slice(1),
-				tpl_url = ajaxify.getTemplateMapping(url);
+			var url = ajaxify.removeRelativePath(window.location.pathname.slice(1).replace(/\/$/, "")),
+				tpl_url = ajaxify.getTemplateMapping(url),
+				search = window.location.search,
+				hash = window.location.hash,
+				$window = $(window);
 
-			url = url.replace(/\/$/, "");
 
-			if (url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {
-				url = url.slice(RELATIVE_PATH.length);
-			}
-
-			$(window).trigger('action:ajaxify.start', {
+			$window.trigger('action:ajaxify.start', {
 				url: url
 			});
 
@@ -532,11 +509,11 @@ var socket,
 
 			$('#logout-link').on('click', app.logout);
 
-			$(window).blur(function(){
+			$window.blur(function(){
 				app.isFocused = false;
 			});
 
-			$(window).focus(function(){
+			$window.focus(function(){
 				app.isFocused = true;
 				app.alternatingTitle('');
 			});
@@ -544,27 +521,31 @@ var socket,
 			createHeaderTooltips();
 			ajaxify.variables.parse();
 			ajaxify.currentPage = url;
-			app.processPage();
 
-			ajaxify.widgets.render(tpl_url, url);
+			$window.trigger('action:ajaxify.contentLoaded', {
+				url: url
+			});
 
 			if (window.history && window.history.replaceState) {
-				var hash = window.location.hash ? window.location.hash : '';
 				window.history.replaceState({
-					url: url + hash
-				}, url, RELATIVE_PATH + '/' + url + hash);
+					url: url + search + hash
+				}, url, RELATIVE_PATH + '/' + url + search + hash);
 			}
 
 			ajaxify.loadScript(tpl_url, function() {
-				$(window).trigger('action:ajaxify.end', {
-					url: url
+				ajaxify.widgets.render(tpl_url, url, function() {
+					app.processPage();
+					$window.trigger('action:ajaxify.end', {
+						url: url
+					});
 				});
 			});
 		});
 	};
 
-	showWelcomeMessage = location.href.indexOf('loggedin') !== -1;
+	showWelcomeMessage = window.location.href.indexOf('loggedin') !== -1;
 
 	app.loadConfig();
 	app.alternatingTitle('');
+
 }());

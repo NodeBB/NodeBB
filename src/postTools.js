@@ -18,58 +18,66 @@ var winston = require('winston'),
 
 (function(PostTools) {
 
-	PostTools.isMain = function(pid, tid, callback) {
-		db.getSortedSetRange('tid:' + tid + ':posts', 0, 0, function(err, pids) {
-			if(err) {
-				return callback(err);
-			}
-
-			if(!Array.isArray(pids) || !pids.length) {
-				return callback(null, false);
-			}
-
-			callback(null, parseInt(pids[0], 10) === parseInt(pid, 10));
-		});
-	};
-
 	PostTools.edit = function(uid, pid, title, content, options, callback) {
 		options = options || {};
 
-		function success(postData) {
-			posts.setPostFields(pid, {
-				edited: Date.now(),
-				editor: uid,
-				content: postData.content
-			});
-
-			events.logPostEdit(uid, pid);
+		async.waterfall([
+			function (next) {
+				privileges.posts.canEdit(pid, uid, next);
+			},
+			function(canEdit, next) {
+				if (!canEdit) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
+				posts.getPostData(pid, next);
+			},
+			function(postData, next) {
+				postData.content = content;
+				plugins.fireHook('filter:post.save', postData, next);
+			}
+		], function(err, postData) {
+			if (err) {
+				return callback(err);
+			}
 
 			async.parallel({
+				post: function(next) {
+					posts.setPostFields(pid, {
+						edited: Date.now(),
+						editor: uid,
+						content: postData.content
+					}, next);
+				},
 				topic: function(next) {
 					var tid = postData.tid;
-					PostTools.isMain(pid, tid, function(err, isMainPost) {
+					posts.isMain(pid, function(err, isMainPost) {
 						if (err) {
 							return next(err);
 						}
-
+						options.tags = options.tags || [];
 						if (isMainPost) {
 							title = title.trim();
-							var slug = tid + '/' + utils.slugify(title);
 
-							topics.setTopicField(tid, 'title', title);
-							topics.setTopicField(tid, 'slug', slug);
+							var topicData = {
+								title: title,
+								slug: tid + '/' + utils.slugify(title)
+							};
+							if (options.topic_thumb) {
+								topicData.thumb = options.topic_thumb;
+							}
 
-							topics.setTopicField(tid, 'thumb', options.topic_thumb);
+							db.setObject('topic:' + tid, topicData, function(err) {
+								plugins.fireHook('action:topic.edit', tid);
+							});
 
-							plugins.fireHook('action:topic.edit', tid);
+							topics.updateTags(tid, options.tags);
 						}
-
-						plugins.fireHook('action:post.edit', postData);
 
 						next(null, {
 							tid: tid,
 							title: validator.escape(title),
-							isMainPost: isMainPost
+							isMainPost: isMainPost,
+							tags: options.tags.map(function(tag) { return {name:tag}; })
 						});
 					});
 
@@ -77,27 +85,14 @@ var winston = require('winston'),
 				content: function(next) {
 					PostTools.parse(postData.content, next);
 				}
-			}, callback);
-		}
-
-		privileges.posts.canEdit(pid, uid, function(err, canEdit) {
-			if (err || !canEdit) {
-				return callback(err || new Error('[[error:no-privileges]]'));
-			}
-
-			posts.getPostData(pid, function(err, postData) {
+			}, function(err, results) {
 				if (err) {
 					return callback(err);
 				}
 
-				postData.content = content;
-				plugins.fireHook('filter:post.save', postData, function(err, postData) {
-					if (err) {
-						return callback(err);
-					}
-
-					success(postData);
-				});
+				events.logPostEdit(uid, pid);
+				plugins.fireHook('action:post.edit', postData);
+				callback(null, results);
 			});
 		});
 	};
@@ -144,7 +139,7 @@ var winston = require('winston'),
 
 				db.incrObjectFieldBy('global', 'postCount', isDelete ? -1 : 1);
 
-				posts.getPostFields(pid, ['tid', 'uid', 'content'], function(err, postData) {
+				posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'timestamp'], function(err, postData) {
 					if (err) {
 						return callback(err);
 					}
@@ -166,13 +161,32 @@ var winston = require('winston'),
 							updateTopicTimestamp(postData.tid, next);
 						},
 						function(next) {
-							addOrRemoveFromCategoryRecentPosts(pid, postData.tid, isDelete, next);
+							addOrRemoveFromCategory(pid, postData.tid, postData.timestamp, isDelete, next);
 						}
-					], callback);
+					], function(err) {
+						if (!isDelete) {
+							PostTools.parse(postData.content, function(err, parsed) {
+								postData.content = parsed;
+								callback(err, postData);
+							});
+							return;
+						}
+						callback(err, postData);
+					});
 				});
 			});
 		});
 	}
+
+	PostTools.purge = function(uid, pid, callback) {
+		privileges.posts.canEdit(pid, uid, function(err, canEdit) {
+			if (err || !canEdit) {
+				return callback(err || new Error('[[error:no-privileges]]'));
+			}
+
+			posts.purge(pid, callback);
+		});
+	};
 
 	function updateTopicTimestamp(tid, callback) {
 		topics.getLatestUndeletedPid(tid, function(err, pid) {
@@ -193,23 +207,19 @@ var winston = require('winston'),
 		});
 	}
 
-	function addOrRemoveFromCategoryRecentPosts(pid, tid, isDelete, callback) {
+	function addOrRemoveFromCategory(pid, tid, timestamp, isDelete, callback) {
 		topics.getTopicField(tid, 'cid', function(err, cid) {
 			if (err) {
 				return callback(err);
 			}
 
-			posts.getPostField(pid, 'timestamp', function(err, timestamp) {
-				if (err) {
-					return callback(err);
-				}
+			db.incrObjectFieldBy('category:' + cid, 'post_count', isDelete ? -1 : 1);
 
-				if (isDelete) {
-					db.sortedSetRemove('categories:recent_posts:cid:' + cid, pid, callback);
-				} else {
-					db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid, callback);
-				}
-			});
+			if (isDelete) {
+				db.sortedSetRemove('categories:recent_posts:cid:' + cid, pid, callback);
+			} else {
+				db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid, callback);
+			}
 		});
 	}
 

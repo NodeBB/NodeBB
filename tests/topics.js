@@ -3,31 +3,42 @@
 var	assert = require('assert'),
 	db = require('../mocks/databasemock'),
 	topics = require('../src/topics'),
-	categories = require('../src/categories');
+	categories = require('../src/categories'),
+	User = require('../src/user');
 
 describe('Topic\'s', function() {
 	var topic,
 		categoryObj;
 
 	before(function(done) {
-
-		categories.create({
-			name: 'Test Category',
-			description: 'Test category created by testing script',
-			icon: 'fa-check',
-			blockclass: 'category-blue',
-			order: '5'
-		}, function(err, category) {
-			categoryObj = category;
-
-			topic = {
-				userId: 1,
-				categoryId: categoryObj.cid,
-				title: 'Test Topic Title',
-				content: 'The content of test topic'
+		var userData = {
+				username: 'John Smith',
+				password: 'swordfish',
+				email: 'john@example.com',
+				callback: undefined
 			};
-			done();
+
+		User.create({username: userData.username, password: userData.password, email: userData.email}, function(err, uid) {
+			categories.create({
+				name: 'Test Category',
+				description: 'Test category created by testing script',
+				icon: 'fa-check',
+				blockclass: 'category-blue',
+				order: '5'
+			}, function(err, category) {
+				categoryObj = category;
+
+				topic = {
+					userId: uid,
+					categoryId: categoryObj.cid,
+					title: 'Test Topic Title',
+					content: 'The content of test topic'
+				};
+				done();
+			});
 		});
+
+		
 	});
 
 	describe('.post', function() {

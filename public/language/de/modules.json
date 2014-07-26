@@ -1,8 +1,18 @@
 {
     "chat.chatting_with": "Mit <span id='chat-with-name'></span> chatten",
-    "chat.placeholder": "Schreibe hier etwas, und drücke Enter zum absenden.",
+    "chat.placeholder": "Schreibe hier etwas, und drücke Enter zum Absenden.",
     "chat.send": "Senden",
     "chat.no_active": "Du hast keine aktiven Chats.",
     "chat.user_typing": "%1 tippt gerade ...",
-    "chat.user_has_messaged_you": "%1 has messaged you."
+    "chat.user_has_messaged_you": "%1 hat dir geschrieben.",
+    "chat.see_all": "Alle Chats anzeigen",
+    "chat.no-messages": "Bitte wähle einen Empfänger, um den jeweiligen Nachrichtenverlauf anzuzeigen.",
+    "chat.recent-chats": "Aktuelle Chats",
+    "chat.contacts": "Kontakte",
+    "chat.message-history": "Nachrichtenverlauf",
+    "chat.pop-out": "Chat als Pop-out anzeigen",
+    "chat.maximize": "Maximieren",
+    "composer.user_said_in": "%1 sagte in %2:",
+    "composer.user_said": "%1 sagte:",
+    "composer.discard": "Bist du sicher, dass du diesen Post verwerfen möchtest?"
 }

@@ -4,5 +4,7 @@
     "most_reputation": "最も評価されたユーザー",
     "search": "検索",
     "enter_username": "検索するユーザー名を入力してください",
-    "load_more": "もっと表示"
+    "load_more": "もっと表示",
+    "user-not-found": "User not found!",
+    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
 }

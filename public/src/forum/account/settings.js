@@ -1,4 +1,4 @@
-define(['forum/account/header'], function(header) {
+define('forum/account/settings', ['forum/account/header'], function(header) {
 	var	AccountSettings = {};
 
 	AccountSettings.init = function() {
@@ -26,17 +26,22 @@ define(['forum/account/header'], function(header) {
 				}
 			});
 
-			socket.emit('user.saveSettings', settings, function(err) {
+			socket.emit('user.saveSettings', {uid: ajaxify.variables.get('theirid'), settings: settings}, function(err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
+
 				app.alertSuccess('[[success:settings-saved]]');
+				app.loadConfig();
+				if (parseInt(app.uid, 10) === parseInt(ajaxify.variables.get('theirid'), 10)) {
+					ajaxify.refresh();
+				}
 			});
 
 			return false;
 		});
 
-		socket.emit('user.getSettings', function(err, settings) {
+		socket.emit('user.getSettings', {uid: ajaxify.variables.get('theirid')}, function(err, settings) {
 			var inputs = $('.account').find('input, textarea, select');
 
 			inputs.each(function(index, input) {

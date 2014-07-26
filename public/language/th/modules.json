@@ -1,8 +1,18 @@
 {
     "chat.chatting_with": "แชทกับ <span id=\"chat-with-name\"></span>",
-    "chat.placeholder": "พิมพ์ข้อความการแชทที่นี่   กด Enter เพื่อส่ง",
+    "chat.placeholder": "Type chat message here, press enter to send",
     "chat.send": "ส่ง",
     "chat.no_active": "คุณไม่มีแชทที่คุยอยู่",
     "chat.user_typing": "%1 is typing ...",
-    "chat.user_has_messaged_you": "%1 has messaged you."
+    "chat.user_has_messaged_you": "%1 has messaged you.",
+    "chat.see_all": "See all Chats",
+    "chat.no-messages": "Please select a recipient to view chat message history",
+    "chat.recent-chats": "Recent Chats",
+    "chat.contacts": "Contacts",
+    "chat.message-history": "Message History",
+    "chat.pop-out": "Pop out chat",
+    "chat.maximize": "Maximize",
+    "composer.user_said_in": "%1 said in %2:",
+    "composer.user_said": "%1 said:",
+    "composer.discard": "Are you sure you wish to discard this post?"
 }

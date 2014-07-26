@@ -51,10 +51,31 @@ if ('undefined' !== typeof window) {
 			});
 		};
 
+		$.fn.translateHtml = function(str) {
+			return translate(this, 'html', str);
+		};
+
+		$.fn.translateText = function(str) {
+			return translate(this, 'text', str);
+		};
+
+		$.fn.translateVal = function(str) {
+			return translate(this, 'val', str);
+		};
+
+		function translate(elements, type, str) {
+			return elements.each(function() {
+				var el = $(this);
+				translator.translate(str, function(translated) {
+					el[type](translated);
+				});
+			});
+		}
+
 	})(jQuery || {fn:{}});
 
 
-	// FIX FOR #1245 - https://github.com/designcreateplay/NodeBB/issues/1245
+	// FIX FOR #1245 - https://github.com/NodeBB/NodeBB/issues/1245
 	// from http://stackoverflow.com/questions/15931962/bootstrap-dropdown-disappear-with-right-click-on-firefox
 	// obtain a reference to the original handler
 	var _clearMenus = $._data(document, "events").click.filter(function (el) {

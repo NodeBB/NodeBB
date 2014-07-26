@@ -1,20 +1,21 @@
 'use strict';
 
 var	async = require('async'),
+	db = require('../database'),
 	categories = require('../categories'),
-	categoryTools = require('../categoryTools'),
-	meta = require('./../meta'),
-	user = require('./../user'),
+	privileges = require('../privileges'),
+	meta = require('../meta'),
+	user = require('../user'),
 
 	SocketCategories = {};
 
 SocketCategories.getRecentReplies = function(socket, cid, callback) {
-	categoryTools.privileges(cid, socket.uid, function(err, privileges) {
+	privileges.categories.can('read', cid, socket.uid, function(err, canRead) {
 		if (err) {
 			return callback(err);
 		}
 
-		if (!privileges || !privileges.meta.read) {
+		if (!canRead) {
 			return callback(null, []);
 		}
 
@@ -23,7 +24,7 @@ SocketCategories.getRecentReplies = function(socket, cid, callback) {
 };
 
 SocketCategories.get = function(socket, data, callback) {
-	categories.getAllCategories(0, callback);
+	categories.getAllCategories(callback);
 };
 
 SocketCategories.loadMore = function(socket, data, callback) {
@@ -33,7 +34,7 @@ SocketCategories.loadMore = function(socket, data, callback) {
 
 	async.parallel({
 		privileges: function(next) {
-			categoryTools.privileges(data.cid, socket.uid, next);
+			privileges.categories.get(data.cid, socket.uid, next);
 		},
 		settings: function(next) {
 			user.getSettings(socket.uid, next);
@@ -63,6 +64,10 @@ SocketCategories.getPageCount = function(socket, cid, callback) {
 
 SocketCategories.getTopicCount = function(socket, cid, callback) {
 	categories.getCategoryField(cid, 'topic_count', callback);
+};
+
+SocketCategories.lastTopicIndex = function(socket, cid, callback) {
+	db.sortedSetCard('categories:' + cid + ':tid', callback);
 };
 
 module.exports = SocketCategories;
