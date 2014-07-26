@@ -117,7 +117,7 @@ var ajaxify = ajaxify || {};
 
 							app.refreshTitle(url);
 						}, animationDuration * 1000 - ((new Date()).getTime() - startTime))
-						
+
 					});
 				});
 			});
@@ -199,7 +199,7 @@ var ajaxify = ajaxify || {};
 		if (ajaxify.preloader && ajaxify.preloader[url]) {
 			callback(null, ajaxify.preloader[url].data);
 			ajaxify.preloader = {};
-		
+
 			return;
 		}
 
@@ -311,7 +311,7 @@ var ajaxify = ajaxify || {};
 				// Internal link
 				var url = this.href.replace(rootUrl + '/', ''),
 					currentTime = (new Date()).getTime();
-
+console.log(Date.now(), ajaxify.preloader[url]);
 				if (!ajaxify.preloader[url] || currentTime - ajaxify.preloader[url].lastFetched > PRELOADER_RATE_LIMIT) {
 					ajaxify.preloader[url] = null;
 					ajaxify.loadData(url, function(err, data) {

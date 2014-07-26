@@ -352,7 +352,7 @@ var fs = require('fs'),
 
 		var hookList = Plugins.loadedHooks[hook];
 
-		if (hookList && Array.isArray(hookList)) {
+		if (Array.isArray(hookList)) {
 			// if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
 			var hookType = hook.split(':')[0];
 			switch (hookType) {
