@@ -78,7 +78,7 @@ var ajaxify = ajaxify || {};
 				}, url, RELATIVE_PATH + '/' + url + hash);
 			}
 
-			translator.load(tpl_url);
+			translator.load(config.defaultLang, tpl_url);
 
 			$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 			var animationDuration = parseFloat($('#content').css('transition-duration')) || 0.2,
@@ -196,10 +196,9 @@ var ajaxify = ajaxify || {};
 
 		$(window).trigger('action:ajaxify.loadingData', {url: url});
 
-		if (ajaxify.preloader && ajaxify.preloader[url]) {
+		if (ajaxify.preloader && ajaxify.preloader[url] && !ajaxify.preloader[url].loading) {
 			callback(null, ajaxify.preloader[url].data);
 			ajaxify.preloader = {};
-
 			return;
 		}
 
@@ -312,13 +311,16 @@ var ajaxify = ajaxify || {};
 				var url = this.href.replace(rootUrl + '/', ''),
 					currentTime = (new Date()).getTime();
 
-				if (!ajaxify.preloader[url] || currentTime - ajaxify.preloader[url].lastFetched > PRELOADER_RATE_LIMIT) {
-					ajaxify.preloader[url] = null;
+				if (!ajaxify.preloader[url] || (!ajaxify.preloader[url].loading && currentTime - ajaxify.preloader[url].lastFetched > PRELOADER_RATE_LIMIT)) {
+					ajaxify.preloader[url] = {
+						loading: true
+					};
 					ajaxify.loadData(url, function(err, data) {
 						ajaxify.preloader[url] = err ? null : {
 							url: url,
 							data: data,
-							lastFetched: currentTime
+							lastFetched: currentTime,
+							loading: false
 						};
 					});
 				}
