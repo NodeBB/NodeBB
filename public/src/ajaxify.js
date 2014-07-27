@@ -311,7 +311,7 @@ var ajaxify = ajaxify || {};
 				// Internal link
 				var url = this.href.replace(rootUrl + '/', ''),
 					currentTime = (new Date()).getTime();
-console.log(Date.now(), ajaxify.preloader[url]);
+
 				if (!ajaxify.preloader[url] || currentTime - ajaxify.preloader[url].lastFetched > PRELOADER_RATE_LIMIT) {
 					ajaxify.preloader[url] = null;
 					ajaxify.loadData(url, function(err, data) {
