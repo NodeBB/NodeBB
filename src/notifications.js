@@ -135,6 +135,7 @@ var async = require('async'),
 					}
 
 					async.parallel([
+						async.apply(db.setObjectField, 'uid:' + uid + ':notifications:uniqueId:nid', notif_data.uniqueId, nid),
 						async.apply(db.sortedSetAdd, 'uid:' + uid + ':notifications:unread', notif_data.datetime, notif_data.uniqueId),
 						async.apply(db.sortedSetRemove, 'uid:' + uid + ':notifications:read', notif_data.uniqueId)
 					], function(err) {
@@ -151,8 +152,7 @@ var async = require('async'),
 						// Plugins
 						notif_data.uid = uid;
 						plugins.fireHook('action:notification.pushed', notif_data);
-
-						db.setObjectField('uid:' + uid + ':notifications:uniqueId:nid', notif_data.uniqueId, nid, next);
+						next();
 					});
 				});
 			}, callback);

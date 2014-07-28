@@ -203,13 +203,6 @@ module.exports = function(Topics) {
 			},
 			function(data, next) {
 				postData = data;
-
-				if (parseInt(uid, 10)) {
-					Topics.notifyFollowers(tid, postData.pid, uid);
-
-					user.notifications.sendPostNotificationToFollowers(uid, tid, postData.pid);
-				}
-
 				next();
 			},
 			function(next) {
@@ -241,6 +234,12 @@ module.exports = function(Topics) {
 				postData.display_move_tools = true;
 				postData.selfPost = false;
 				postData.relativeTime = utils.toISOString(postData.timestamp);
+
+				if (parseInt(uid, 10)) {
+					Topics.notifyFollowers(tid, postData.pid, uid);
+
+					user.notifications.sendPostNotificationToFollowers(uid, tid, postData.pid);
+				}
 
 				next(null, postData);
 			}
