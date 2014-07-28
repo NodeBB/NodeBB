@@ -5,6 +5,7 @@ var uglifyjs = require('uglify-js'),
 	async = require('async'),
 	fs = require('fs'),
 	path = require('path'),
+	crypto = require('crypto'),
 
 	Minifier = {
 		js: {},
@@ -28,13 +29,27 @@ Minifier.js.minify = function (scripts, minify, callback) {
 	}
 
 	try {
-		var minified = uglifyjs.minify(scripts, options);
+		var minified = uglifyjs.minify(scripts, options),
+			hasher = crypto.createHash('md5'),
+			hash;
+
+		// Calculate js hash
+		hasher.update(minified.code, 'utf-8');
+		hash = hasher.digest('hex');
+		process.send({
+			type: 'hash',
+			payload: hash.slice(0, 8)
+		});
+
 		callback({
 			js: minified.code,
 			map: minified.map
 		});
 	} catch(err) {
-		process.send(err.message);
+		process.send({
+			type: 'error',
+			payload: err
+		});
 	}
 };
 
@@ -43,9 +58,16 @@ process.on('message', function(payload) {
 	case 'js':
 		Minifier.js.minify(payload.scripts, payload.minify, function(data) {
 			process.stdout.write(data.js);
-			process.send('end.script');
+			process.send({
+				type: 'end',
+				payload: 'script'
+			});
+
 			process.stderr.write(data.map);
-			process.send('end.mapping');
+			process.send({
+				type: 'end',
+				payload: 'mapping'
+			});
 		});
 		break;
 	}

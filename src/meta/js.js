@@ -16,6 +16,7 @@ module.exports = function(Meta) {
 	Meta.js = {
 		cache: '',
 		map: '',
+		hash: +new Date(),
 		prepared: false,
 		minFile: 'nodebb.min.js',
 		scripts: [
@@ -160,19 +161,22 @@ module.exports = function(Meta) {
 			Meta.js.map += buffer.toString();
 		});
 
-		minifier.on('message', function(payload) {
-			switch(payload) {
-			case 'end.script':
-				winston.info('[meta/js] Successfully minified.');
-				onComplete();
+		minifier.on('message', function(message) {
+			switch(message.type) {
+			case 'end':
+				if (message.payload === 'script') {
+					winston.info('[meta/js] Successfully minified.');
+					onComplete();
+				} else if (message.payload === 'mapping') {
+					winston.info('[meta/js] Retrieved Mapping.');
+					onComplete();
+				}
 				break;
-			case 'end.mapping':
-				winston.info('[meta/js] Retrieved Mapping.');
-				onComplete();
+			case 'hash':
+				Meta.js.hash = message.payload;
 				break;
-
-			default:
-				winston.error('[meta/js] Could not compile client-side scripts! ' + payload);
+			case 'error':
+				winston.error('[meta/js] Could not compile client-side scripts! ' + message.payload.message);
 				minifier.kill();
 				process.exit();
 				break;

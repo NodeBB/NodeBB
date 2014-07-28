@@ -6,6 +6,7 @@ var path = require('path'),
 	meta = require('../meta'),
 	db = require('../database'),
 	plugins = require('../plugins'),
+	middleware = require('../middleware'),
 
 	minificationEnabled = false;
 
@@ -46,13 +47,13 @@ function setupPluginSourceMapping(app) {
 }
 
 module.exports = function(app, middleware, controllers) {
-	app.get('/stylesheet.css', sendStylesheet);
-	app.get('/nodebb.min.js', sendMinifiedJS);
+	app.get('/stylesheet.css', middleware.addExpiresHeaders, sendStylesheet);
+	app.get('/nodebb.min.js', middleware.addExpiresHeaders, sendMinifiedJS);
 	app.get('/sitemap.xml', controllers.sitemap);
 	app.get('/robots.txt', controllers.robots);
 
 	if (!minificationEnabled) {
-		app.get('/nodebb.min.js.map', sendSourceMap);
+		app.get('/nodebb.min.js.map', middleware.addExpiresHeaders, sendSourceMap);
 		setupPluginSourceMapping(app);
 	}
 };
