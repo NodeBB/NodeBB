@@ -72,6 +72,7 @@ module.exports = function(app, middleware, controllers) {
 			bodyLong: 'asdasd khajsdhakhdakj hdkash dakhdakjdhakjs',
 			path: nconf.get('relative_path') + '/topic/' + topicSlug + '/' + postIndex,
 			uniqueId: 'topic:' + tid,
+			tid: tid,
 			from: fromUid
 		}, function(err, nid) {
 			notifications.push(nid, [1]);

@@ -212,7 +212,7 @@ var async = require('async'),
 				});
 
 				async.filter(nids, function(nid, next) {
-					notifications.get(nid, uid, function(err, notifObj) {
+					notifications.get(nid, function(err, notifObj) {
 						if (err || !notifObj) {
 							return next(false);
 						}
