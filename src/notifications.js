@@ -142,8 +142,11 @@ var async = require('async'),
 							return next(err);
 						}
 
-						// Client-side
-						websockets.in('uid_' + uid).emit('event:new_notification', notif_data);
+						User.notifications.getUnreadCount(uid, function(err, count) {
+							if (!err) {
+								websockets.in('uid_' + uid).emit('event:new_notification', notif_data, count);
+							}
+						});
 
 						// Plugins
 						notif_data.uid = uid;

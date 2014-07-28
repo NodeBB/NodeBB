@@ -69,7 +69,6 @@ define('notifications', ['sounds'], function(sound) {
 			notifIcon.attr('data-content', count > 20 ? '20+' : count);
 
 			Tinycon.setBubble(count);
-			localStorage.setItem('notifications:count', count);
 		};
 
 		socket.emit('notifications.getCount', function(err, count) {
@@ -80,8 +79,7 @@ define('notifications', ['sounds'], function(sound) {
 			}
 		});
 
-		socket.on('event:new_notification', function() {
-
+		socket.on('event:new_notification', function(notifData, notifCount) {
 			app.alert({
 				alert_id: 'new_notif',
 				title: '[[notifications:new_notification]]',
@@ -95,8 +93,7 @@ define('notifications', ['sounds'], function(sound) {
 				ajaxify.refresh();
 			}
 
-			var	savedCount = parseInt(localStorage.getItem('notifications:count'), 10) || 0;
-			updateNotifCount(savedCount + 1);
+			updateNotifCount(notifCount);
 
 			sound.play('notification');
 		});

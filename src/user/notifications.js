@@ -39,11 +39,13 @@ var async = require('async'),
 					}
 
 					var nidsToUniqueIds = {};
-					Object.keys(uniqueIdToNids).forEach(function(uniqueId) {
+					var nids = [];
+					uniqueIds.forEach(function(uniqueId) {
 						nidsToUniqueIds[uniqueIdToNids[uniqueId]] = uniqueId;
+						nids.push(uniqueIdToNids[uniqueId]);
 					});
 
-					async.map(Object.keys(nidsToUniqueIds), function(nid, next) {
+					async.map(nids, function(nid, next) {
 						notifications.get(nid, function(err, notif_data) {
 							if (err) {
 								return next(err);
@@ -261,7 +263,7 @@ var async = require('async'),
 					bodyShort: '[[notifications:user_posted_to, ' + results.username + ', ' + results.topic.title + ']]',
 					bodyLong: results.postContent,
 					path: nconf.get('relative_path') + '/topic/' + results.topic.slug + '/' + results.postIndex,
-					uniqueId: 'topic:' + tid,
+					uniqueId: 'topic:' + tid + ':uid:' + uid,
 					from: uid
 				}, function(err, nid) {
 					if (err) {
