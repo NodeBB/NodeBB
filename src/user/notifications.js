@@ -73,7 +73,7 @@ var async = require('async'),
 
 		async.parallel({
 			unread: function(next) {
-				getNotifications('uid:' + uid + ':notifications:unread', 0, 9, function(notif_data) {
+				getNotifications('uid:' + uid + ':notifications:unread', 0, 9, function(notif_data, next) {
 					notif_data.read = false;
 					notif_data.readClass = !notif_data.read ? 'label-warning' : '';
 					next(null, notif_data);
@@ -89,7 +89,8 @@ var async = require('async'),
 			function filterDeleted(notifObj) {
 				return !!notifObj;
 			}
-			if(err) {
+
+			if (err) {
 				return callback(err);
 			}
 
