@@ -58,7 +58,7 @@ define('notifications', ['sounds'], function(sound) {
 			}
 		});
 
-		var	updateNotifCount = function(count) {
+		function updateNotifCount(count) {
 			if (count > 0) {
 				notifIcon.removeClass('fa-bell-o').addClass('fa-bell');
 			} else {
