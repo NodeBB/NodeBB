@@ -80,18 +80,7 @@ var db = require('./database'),
 				return callback(err);
 			}
 
-			// Truncate recent chats list back down to 10 (should use LTRIM, see nodebb/nodebb#1901)
-			db.getListRange('messages:recent:' + fromuid, 0, -1, function(err, list) {
-				if (err) {
-					return callback(err);
-				}
-
-				if (list.length > 10) {
-					db.listRemoveLast('messages:recent:' + fromuid, callback);
-				} else {
-					callback();
-				}
-			});
+			db.listTrim('messages:recent:' + fromuid, 0, 9, callback);
 		});
 	}
 
