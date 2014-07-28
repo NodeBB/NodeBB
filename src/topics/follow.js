@@ -47,9 +47,7 @@ module.exports = function(Topics) {
 						path: nconf.get('relative_path') + '/topic/' + results.topicData.slug + '/' + results.postIndex,
 						uniqueId: 'topic:' + tid,
 						from: exceptUid
-					}, function(nid) {
-						next(null, nid);
-					});
+					}, next);
 				});
 			},
 			followers: function(next) {

@@ -181,8 +181,8 @@ module.exports = function(Topics) {
 	};
 
 	Topics.markTopicNotificationsRead = function(tid, uid) {
-		user.notifications.getUnreadByUniqueId(uid, 'topic:' + tid, function(err, nids) {
-			notifications.mark_read_multiple(nids, uid, function() {
+		user.notifications.getUnreadByField(uid, 'tid', tid, function(err, nids) {
+			notifications.markReadMultiple(nids, uid, function() {
 				user.notifications.pushCount(uid);
 			});
 		});

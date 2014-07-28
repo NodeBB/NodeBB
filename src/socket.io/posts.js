@@ -124,8 +124,10 @@ function sendNotificationToPostOwner(data, uid, notification) {
 					path: nconf.get('relative_path') + '/topic/' + results.slug + '/' + results.index,
 					uniqueId: 'post:' + data.pid,
 					from: uid
-				}, function(nid) {
-					notifications.push(nid, [postData.uid]);
+				}, function(err, nid) {
+					if (!err) {
+						notifications.push(nid, [postData.uid]);
+					}
 				});
 			});
 		});
@@ -327,10 +329,11 @@ SocketPosts.flag = function(socket, pid, callback) {
 				path: path,
 				uniqueId: 'post_flag:' + pid,
 				from: socket.uid
-			}, function(nid) {
-				notifications.push(nid, adminGroup.members, function() {
-					next();
-				});
+			}, function(err, nid) {
+				if (err) {
+					return next(err);
+				}
+				notifications.push(nid, adminGroup.members, next);
 			});
 		},
 		function(next) {

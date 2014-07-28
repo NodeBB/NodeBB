@@ -69,6 +69,9 @@ module.exports = function(User) {
 					db.delete('uid:' + uid + ':notifications:unread', next);
 				},
 				function(next) {
+					db.delete('uid:' + uid + ':notifications:uniqueId:nid', next);
+				},
+				function(next) {
 					db.sortedSetRemove('users:joindate', uid, next);
 				},
 				function(next) {

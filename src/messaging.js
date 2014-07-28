@@ -100,7 +100,7 @@ var db = require('./database'),
 		});
 
 		// Mark any chat notifications pertaining to this chat as read
-		notifications.mark_read_by_uniqueid(fromuid, 'chat_' + touid + '_' + fromuid, function(err) {
+		notifications.markReadByUniqueId(fromuid, 'chat_' + touid + '_' + fromuid, function(err) {
 			if (err) {
 				winston.error('[messaging] Could not mark notifications related to this chat as read: ' + err.message);
 			}

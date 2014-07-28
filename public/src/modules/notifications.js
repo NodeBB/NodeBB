@@ -49,7 +49,7 @@ define('notifications', ['sounds'], function(sound) {
 
 					updateNotifCount(data.unread.length);
 
-					socket.emit('modules.notifications.mark_all_read', null, function(err) {
+					socket.emit('modules.notifications.markAllRead', null, function(err) {
 						if (!err) {
 							updateNotifCount(0);
 						}

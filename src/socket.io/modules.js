@@ -231,8 +231,10 @@ function sendChatNotification(fromuid, touid, messageObj) {
 			path: nconf.get('relative_path') + '/chats/' + utils.slugify(messageObj.fromUser.username),
 			uniqueId: 'chat_' + fromuid + '_' + touid,
 			from: fromuid
-		}, function(nid) {
-			notifications.push(nid, [touid]);
+		}, function(err, nid) {
+			if (!err) {
+				notifications.push(nid, [touid]);
+			}
 		});
 	}
 }
@@ -278,12 +280,12 @@ SocketModules.chats.list = function(socket, data, callback) {
 };
 
 /* Notifications */
-SocketModules.notifications.mark_read = function(socket, nid) {
-	notifications.mark_read(nid, socket.uid);
+SocketModules.notifications.markRead = function(socket, nid) {
+	notifications.markRead(nid, socket.uid);
 };
 
-SocketModules.notifications.mark_all_read = function(socket, data, callback) {
-	notifications.mark_all_read(socket.uid, callback);
+SocketModules.notifications.markAllRead = function(socket, data, callback) {
+	notifications.markAllRead(socket.uid, callback);
 };
 
 /* Sounds */
