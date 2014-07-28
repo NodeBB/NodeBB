@@ -34,43 +34,19 @@ Minifier.js.minify = function (scripts, minify, callback) {
 			map: minified.map
 		});
 	} catch(err) {
-		process.send({
-			action: 'error',
-			error: {
-				message: err.message
-			}
-		});
+		process.send(err.message);
 	}
 };
 
-// Minifier.js.concatenate = function(scripts, callback) {
-// 	async.map(scripts, function(path, next) {
-// 		fs.readFile(path, { encoding: 'utf-8' }, next);
-// 	}, function(err, contents) {
-// 		if (err) {
-// 			process.send({
-// 				action: 'error',
-// 				error: err
-// 			});
-// 		} else {
-// 			callback(contents.reduce(function(output, src) {
-// 				return output.length ? output + ';\n' + src : src;
-// 			}, ''));
-// 		}
-// 	});
-// };
-
 process.on('message', function(payload) {
-	var	executeCallback = function(data) {
-			process.send({
-				action: payload.action,
-				data: data
-			});
-		};
-
 	switch(payload.action) {
 	case 'js':
-		Minifier.js.minify(payload.scripts, payload.minify, executeCallback);
+		Minifier.js.minify(payload.scripts, payload.minify, function(data) {
+			process.stdout.write(data.js);
+			process.send('end.script');
+			process.stderr.write(data.map);
+			process.send('end.mapping');
+		});
 		break;
 	}
 });

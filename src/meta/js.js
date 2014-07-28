@@ -14,7 +14,8 @@ var winston = require('winston'),
 module.exports = function(Meta) {
 
 	Meta.js = {
-		cache: undefined,
+		cache: '',
+		map: '',
 		prepared: false,
 		minFile: 'nodebb.min.js',
 		scripts: [
@@ -136,20 +137,45 @@ module.exports = function(Meta) {
 	};
 
 	Meta.js.minify = function(minify) {
-		var minifier = Meta.js.minifierProc = fork('minifier.js');
+		var minifier = Meta.js.minifierProc = fork('minifier.js', {
+				silent: true
+			}),
+			minifiedStream = minifier.stdio[1],
+			mapStream = minifier.stdio[2],
+			step = 0,
+			onComplete = function() {
+				if (step === 0) {
+					return step++;
+				}
+
+				winston.info('[meta/js] Compilation complete');
+				emitter.emit('meta:js.compiled');
+				minifier.kill();
+			};
+
+		minifiedStream.on('data', function(buffer) {
+			Meta.js.cache += buffer.toString();
+		});
+		mapStream.on('data', function(buffer) {
+			Meta.js.map += buffer.toString();
+		});
 
 		minifier.on('message', function(payload) {
-			if (payload.action !== 'error') {
-				winston.info('[meta/js] Compilation complete');
-				Meta.js.cache = payload.data.js;
-				Meta.js.map = payload.data.map;
-				minifier.kill();
+			switch(payload) {
+			case 'end.script':
+				winston.info('[meta/js] Successfully minified.');
+				onComplete();
+				break;
+			case 'end.mapping':
+				winston.info('[meta/js] Retrieved Mapping.');
+				onComplete();
+				break;
 
-				emitter.emit('meta:js.compiled');
-			} else {
-				winston.error('[meta/js] Could not compile client-side scripts! ' + payload.error.message);
+			default:
+				winston.error('[meta/js] Could not compile client-side scripts! ' + payload);
 				minifier.kill();
 				process.exit();
+				break;
 			}
 		});
 
@@ -169,11 +195,4 @@ module.exports = function(Meta) {
 			Meta.js.minifierProc.kill('SIGTERM');
 		}
 	};
-
-	// OS detection and handling
-	// if (os.platform() === 'win32') {
-	// 	Meta.js.scripts = Meta.js.scripts.map(function(script) {
-	// 		return script.replace(/\//g, '\\');
-	// 	});
-	// }
 };
