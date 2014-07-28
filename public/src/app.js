@@ -154,7 +154,9 @@ var socket,
 					timeout: 1000
 				});
 
-				setTimeout(app.logout, 1000);
+				setTimeout(function() {
+					window.location.href = RELATIVE_PATH + '/';
+				}, 1000);
 			});
 
 			app.enterRoom('global');
