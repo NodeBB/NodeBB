@@ -43,6 +43,23 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.listTrim = function(key, start, stop, callback) {
+		module.getListRange(key, start, stop, function(err, value) {
+			if(err) {
+				if(typeof callback === 'function') {
+					return callback(err);
+				}
+				return;
+			}
+
+			db.collection('objects').update({_key: key}, {$set: value}, function(err, result) {
+				if(typeof callback === 'function') {
+					callback(err, (value && value.length) ? value[0] : null);
+				}
+			});
+		});
+	};
+
 	module.listRemoveAll = function(key, value, callback) {
 		value = helpers.valueToString(value);
 
