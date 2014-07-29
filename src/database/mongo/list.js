@@ -52,7 +52,7 @@ module.exports = function(db, module) {
 				return;
 			}
 
-			db.collection('objects').update({_key: key}, {$set: value}, function(err, result) {
+			db.collection('objects').update({_key: key}, {$set: {array: value }}, function(err, result) {
 				if(typeof callback === 'function') {
 					callback(err, (value && value.length) ? value[0] : null);
 				}
