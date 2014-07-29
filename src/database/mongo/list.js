@@ -27,36 +27,26 @@ module.exports = function(db, module) {
 	};
 
 	module.listRemoveLast = function(key, callback) {
+		callback = callback || function() {};
 		module.getListRange(key, -1, 0, function(err, value) {
-			if(err) {
-				if(typeof callback === 'function') {
-					return callback(err);
-				}
-				return;
+			if (err) {
+				return callback(err);
 			}
 
 			db.collection('objects').update({_key: key }, { $pop: { array: 1 } }, function(err, result) {
-				if(typeof callback === 'function') {
-					callback(err, (value && value.length) ? value[0] : null);
-				}
+				callback(err, (value && value.length) ? value[0] : null);
 			});
 		});
 	};
 
 	module.listTrim = function(key, start, stop, callback) {
+		callback = callback || function() {};
 		module.getListRange(key, start, stop, function(err, value) {
-			if(err) {
-				if(typeof callback === 'function') {
-					return callback(err);
-				}
-				return;
+			if (err) {
+				return callback(err);
 			}
 
-			db.collection('objects').update({_key: key}, {$set: {array: value }}, function(err, result) {
-				if(typeof callback === 'function') {
-					callback(err, (value && value.length) ? value[0] : null);
-				}
-			});
+			db.collection('objects').update({_key: key}, {$set: {array: value}}, callback);
 		});
 	};
 
