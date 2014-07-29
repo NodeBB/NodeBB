@@ -26,7 +26,7 @@ define('forum/reset_code', function() {
 					password: password.val()
 				}, function(err) {
 					if(err) {
-						return app.alert(err.message);
+						return app.alertError(err.message);
 					}
 					$('#error').addClass('hide').hide();
 					$('#notice').addClass('hide').hide();
