@@ -4,17 +4,16 @@ module.exports = function(db, module) {
 	var helpers = module.helpers.mongo;
 
 	module.listPrepend = function(key, value, callback) {
+		callback = callback || function() {};
 		value = helpers.valueToString(value);
 
 		module.isObjectField(key, 'array', function(err, exists) {
-			if(err) {
-				if(typeof callback === 'function') {
-					return callback(err);
-				}
+			if (err) {
+				return callback(err);
 			}
 
-			if(exists) {
-				db.collection('objects').update({_key:key}, {'$set': {'array.-1': value}}, {upsert:true, w:1 }, helpers.done(callback));
+			if (exists) {
+				db.collection('objects').update({_key:key}, {$push: {array: {$each: [value], $position: 0}}}, {upsert:true, w:1 }, callback);
 			} else {
 				module.listAppend(key, value, callback);
 			}

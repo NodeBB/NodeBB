@@ -87,7 +87,7 @@ var db = require('./database'),
 	Messaging.getMessages = function(fromuid, touid, isNew, callback) {
 		var uids = sortUids(fromuid, touid);
 
-		db.getSortedSetRange('messages:uid:' + uids[0] + ':to:' + uids[1], -((meta.config.chatMessagesToDisplay || 50) - 1), -1, function(err, mids) {
+		db.getSortedSetRevRange('messages:uid:' + uids[0] + ':to:' + uids[1], 0, (meta.config.chatMessagesToDisplay || 50) - 1, function(err, mids) {
 			if (err) {
 				return callback(err);
 			}
@@ -95,6 +95,8 @@ var db = require('./database'),
 			if (!mids || !mids.length) {
 				return callback(null, []);
 			}
+
+			mids.reverse();
 
 			getMessages(mids, fromuid, touid, isNew, callback);
 		});
