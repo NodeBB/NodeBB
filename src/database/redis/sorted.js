@@ -54,6 +54,14 @@ module.exports = function(redisClient, module) {
 		redisClient.zrank(key, value, callback);
 	};
 
+	module.sortedSetsRanks = function(keys, values, callback) {
+		var multi = redisClient.multi();
+		for(var i=0; i<values.length; ++i) {
+			multi.zrank(keys[i], values[i]);
+		}
+		multi.exec(callback);
+	};
+
 	module.sortedSetRevRank = function(key, value, callback) {
 		redisClient.zrevrank(key, value, callback);
 	};

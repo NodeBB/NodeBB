@@ -1,5 +1,7 @@
 "use strict";
 
+var async = require('async');
+
 module.exports = function(db, module) {
 	var helpers = module.helpers.mongo;
 
@@ -118,6 +120,17 @@ module.exports = function(db, module) {
 			callback(null, rank !== -1 ? rank : null);
 		});
 	}
+
+	module.sortedSetsRanks = function(keys, values, callback) {
+		var data = new Array(values.length);
+		for (var i=0; i<values.length; ++i) {
+			data[i] = {key: keys[i], value: values[i]};
+		}
+
+		async.map(data, function(item, next) {
+			getSortedSetRank(module.getSortedSetRange, item.key, item.value, next);
+		}, callback);
+	};
 
 	module.sortedSetScore = function(key, value, callback) {
 		value = helpers.valueToString(value);
