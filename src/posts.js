@@ -178,11 +178,14 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			async.filter(pids, function(pid, next) {
-				privileges.posts.can('read', pid, uid, function(err, canRead) {
-					next(!err && canRead);
-				});
-			}, function(pids) {
+			if (!Array.isArray(pids) || !pids.length) {
+				return callback(null, []);
+			}
+
+			privileges.posts.filter('read', pids, uid, function(err, pids) {
+				if (err) {
+					return callback(err);
+				}
 				Posts.getPostSummaryByPids(pids, {stripTags: true}, callback);
 			});
 		});
@@ -487,11 +490,10 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			async.filter(pids, function(pid, next) {
-				privileges.posts.can('read', pid, callerUid, function(err, canRead) {
-					next(!err && canRead);
-				});
-			}, function(pids) {
+			privileges.posts.filter('read', pids, callerUid, function(err, pids) {
+				if (err) {
+					return callback(err);
+				}
 				getPostsFromSet('uid:' + uid + ':posts', pids, callback);
 			});
 		});

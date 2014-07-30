@@ -4,6 +4,7 @@
 var async = require('async'),
 
 	user = require('../user'),
+	categories = require('../categories'),
 	groups = require('../groups'),
 	helpers = require('./helpers');
 
@@ -43,17 +44,54 @@ module.exports = function(privileges) {
 	};
 
 	privileges.categories.can = function(privilege, cid, uid, callback) {
-		helpers.some([
-			function(next) {
-				helpers.allowedTo(privilege, uid, cid, next);
+		categories.getCategoryField(cid, 'disabled', function(err, disabled) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (parseInt(disabled, 10) === 1) {
+				return callback(null, false);
+			}
+
+			helpers.some([
+				function(next) {
+					helpers.allowedTo(privilege, uid, cid, next);
+				},
+				function(next) {
+					user.isModerator(uid, cid, next);
+				},
+				function(next) {
+					user.isAdministrator(uid, next);
+				}
+			], callback);
+		});
+	};
+
+	privileges.categories.filter = function(privilege, cids, uid, callback) {
+		async.parallel({
+			allowedTo: function(next) {
+				helpers.allowedTo(privilege, uid, cids, next);
 			},
-			function(next) {
-				user.isModerator(uid, cid, next);
+			isModerators: function(next) {
+				user.isModerator(uid, cids, next);
 			},
-			function(next) {
+			isAdmin: function(next) {
 				user.isAdministrator(uid, next);
 			}
-		], callback);
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (results.isAdmin) {
+				return callback(null, cids);
+			}
+
+			cids = cids.filter(function(cid, index) {
+				return results.allowedTo[index] || results.isModerators[index];
+			});
+			callback(null, cids);
+		});
 	};
 
 	privileges.categories.canMoveAllTopics = function(currentCid, targetCid, uid, callback) {
@@ -78,15 +116,15 @@ module.exports = function(privileges) {
 
 	privileges.categories.userPrivileges = function(cid, uid, callback) {
 		async.parallel({
-			find: async.apply(helpers.isMember, groups.isMember, 'cid:' + cid + ':privileges:find', uid),
+			find: async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:find'),
 			read: function(next) {
-				helpers.isMember(groups.isMember, 'cid:' + cid + ':privileges:read', uid, next);
+				groups.isMember(uid, 'cid:' + cid + ':privileges:read', next);
 			},
 			'topics:create': function(next) {
-				helpers.isMember(groups.isMember, 'cid:' + cid + ':privileges:topics:create', uid, next);
+				groups.isMember(uid, 'cid:' + cid + ':privileges:topics:create', next);
 			},
 			'topics:reply': function(next) {
-				helpers.isMember(groups.isMember, 'cid:' + cid + ':privileges:topics:reply', uid, next);
+				groups.isMember(uid, 'cid:' + cid + ':privileges:topics:reply', next);
 			},
 			mods: function(next) {
 				user.isModerator(uid, cid, next);
@@ -96,21 +134,15 @@ module.exports = function(privileges) {
 
 	privileges.categories.groupPrivileges = function(cid, groupName, callback) {
 		async.parallel({
-			'groups:find': async.apply(helpers.isMember, groups.isMember, 'cid:' + cid + ':privileges:groups:find', groupName),
+			'groups:find': async.apply(groups.isMember, groupName, 'cid:' + cid + ':privileges:groups:find'),
 			'groups:read': function(next) {
-				helpers.isMember(groups.isMember, 'cid:' + cid + ':privileges:groups:read', groupName, function(err, isMember){
-					next(err, !!isMember);
-				});
+				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:read', next);
 			},
 			'groups:topics:create': function(next) {
-				helpers.isMember(groups.isMember, 'cid:' + cid + ':privileges:groups:topics:create', groupName, function(err, isMember){
-					next(err, !!isMember);
-				});
+				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:create', next);
 			},
 			'groups:topics:reply': function(next) {
-				helpers.isMember(groups.isMember, 'cid:' + cid + ':privileges:groups:topics:reply', groupName, function(err, isMember){
-					next(err, !!isMember);
-				});
+				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:reply', next);
 			}
 		}, callback);
 	};

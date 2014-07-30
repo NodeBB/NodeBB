@@ -17,8 +17,6 @@ var async = require('async'),
 (function(UserNotifications) {
 
 	UserNotifications.get = function(uid, callback) {
-
-
 		function getNotifications(set, start, stop, iterator, done) {
 			db.getSortedSetRevRange(set, start, stop, function(err, uniqueIds) {
 				if(err) {

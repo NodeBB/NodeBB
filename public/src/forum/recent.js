@@ -56,7 +56,7 @@ define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
 	Recent.watchForNewPosts = function () {
 		newPostCount = 0;
 		newTopicCount = 0;
-
+		Recent.removeListeners();
 		socket.on('event:new_topic', onNewTopic);
 		socket.on('event:new_post', onNewPost);
 	};

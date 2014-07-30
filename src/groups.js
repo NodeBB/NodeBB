@@ -183,7 +183,11 @@
 	};
 
 	Groups.exists = function(name, callback) {
-		db.isSetMember('groups', name, callback);
+		if (Array.isArray(name)) {
+			db.isSetMembers('groups', name, callback);
+		} else {
+			db.isSetMember('groups', name, callback);
+		}
 	};
 
 	Groups.create = function(name, description, callback) {

@@ -3,6 +3,7 @@
 
 var async = require('async'),
 
+	db = require('../database'),
 	topics = require('../topics'),
 	user = require('../user'),
 	helpers = require('./helpers'),
@@ -66,6 +67,35 @@ module.exports = function(privileges) {
 			}
 
 			privileges.categories.can(privilege, cid, uid, callback);
+		});
+	};
+
+	privileges.topics.filter = function(privilege, tids, uid, callback) {
+		var keys = tids.map(function(tid) {
+			return 'topic:' + tid;
+		});
+
+		db.getObjectsFields(keys, ['tid', 'cid'], function(err, topics) {
+			if (err) {
+				return callback(err);
+			}
+
+			var cids = topics.map(function(topic) {
+				return topic.cid;
+			});
+
+			privileges.categories.filter(privilege, cids, uid, function(err, cids) {
+				if (err) {
+					return callback(err);
+				}
+
+				tids = topics.filter(function(topic) {
+					return cids.indexOf(topic.cid) !== -1;
+				}).map(function(topic) {
+					return topic.tid;
+				});
+				callback(null, tids);
+			});
 		});
 	};
 
