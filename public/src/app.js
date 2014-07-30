@@ -100,7 +100,7 @@ var socket,
 				ioParams.transports = ['xhr-polling'];
 			}
 
-			socket = io.connect('', ioParams);
+			socket = io.connect(config.websocketAddress, ioParams);
 			reconnecting = false;
 
 			socket.on('event:connect', function (data) {
