@@ -338,19 +338,15 @@ var async = require('async'),
 				results.topics = toObject('tid', results.topicsAndCategories.topics);
 				results.categories = toObject('cid', results.topicsAndCategories.categories);
 
-				for(var i=0; i<posts.length; ++i) {
-					if (!utils.isNumber(results.indices[i])) {
-						posts[i].index = 1;
-					} else {
-						posts[i].index = parseInt(results.indices[i], 10) + 2;
-					}
+				for (var i=0; i<posts.length; ++i) {
+					posts[i].index = utils.isNumber(results.indices[i]) ? parseInt(results.indices[i], 10) + 2 : 1;
 				}
 
-				async.map(posts, function(post, next) {
-					if (parseInt(results.topics[post.tid].deleted, 10) === 1) {
-						return next();
-					}
+				posts = posts.filter(function(post) {
+					return parseInt(results.topics[post.tid].deleted, 10) !== 1;
+				});
 
+				async.map(posts, function(post, next) {
 					post.user = results.users[post.uid];
 					post.topic = results.topics[post.tid];
 					post.category = results.categories[post.topic.cid];
@@ -376,17 +372,7 @@ var async = require('async'),
 
 						next(null, post);
 					});
-				}, function(err, posts) {
-					if (err) {
-						return callback(err);
-					}
-
-					posts = posts.filter(function(post) {
-						return !!post;
-					});
-
-					callback(null, posts);
-				});
+				}, callback);
 			});
 		});
 	};

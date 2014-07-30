@@ -263,7 +263,7 @@ var fs = require('fs'),
 							async.each(languages, function(pathToLang, next) {
 								fs.readFile(pathToLang, function(err, file) {
 									try {
-										var json = JSON.parse(file.toString());	
+										var json = JSON.parse(file.toString());
 									} catch (err) {
 										winston.error('[plugins] Unable to parse custom language file: ' + pathToLang + '\r\n' + err.stack);
 										return next(err);
