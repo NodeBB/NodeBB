@@ -20,4 +20,8 @@ module.exports = function(redisClient, module) {
 	module.getListRange = function(key, start, stop, callback) {
 		redisClient.lrange(key, start, stop, callback);
 	};
+
+	module.listTrim = function(key, start, stop, callback) {
+		redisClient.ltrim(key, start, stop, callback);
+	};
 };

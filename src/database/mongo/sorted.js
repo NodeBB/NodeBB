@@ -1,5 +1,7 @@
 "use strict";
 
+var async = require('async');
+
 module.exports = function(db, module) {
 	var helpers = module.helpers.mongo;
 
@@ -119,6 +121,17 @@ module.exports = function(db, module) {
 		});
 	}
 
+	module.sortedSetsRanks = function(keys, values, callback) {
+		var data = new Array(values.length);
+		for (var i=0; i<values.length; ++i) {
+			data[i] = {key: keys[i], value: values[i]};
+		}
+
+		async.map(data, function(item, next) {
+			getSortedSetRank(module.getSortedSetRange, item.key, item.value, next);
+		}, callback);
+	};
+
 	module.sortedSetScore = function(key, value, callback) {
 		value = helpers.valueToString(value);
 		db.collection('objects').findOne({_key:key, value: value}, {fields:{score:1}}, function(err, result) {
@@ -177,14 +190,6 @@ module.exports = function(db, module) {
 	};
 
 	function getSortedSetUnion(sets, sort, start, stop, callback) {
-		if (typeof start === 'function') {
-			callback = start;
-			start = 0;
-			stop = -1;
-		} else if (typeof stop === 'function') {
-			callback = stop;
-			stop = -1;
-		}
 		var limit = stop - start + 1;
 		if (limit <= 0) {
 			limit = 0;

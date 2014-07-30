@@ -1,5 +1,5 @@
 {
-    "chat.chatting_with": "Discter avec <span id=\"chat-with-name\"></span>",
+    "chat.chatting_with": "Discuter avec <span id=\"chat-with-name\"></span>",
     "chat.placeholder": "Taper votre message ici, appuyer sur Entrer pour envoyer",
     "chat.send": "Envoyer",
     "chat.no_active": "Vous n'avez aucune discussion en cours.",

@@ -2,9 +2,12 @@
 
 var db = require('./database'),
 	async = require('async'),
+	winston = require('winston'),
 	user = require('./user'),
 	plugins = require('./plugins'),
-	meta = require('./meta');
+	meta = require('./meta'),
+	notifications = require('./notifications'),
+	userNotifications = require('./user/notifications');
 
 
 (function(Messaging) {
@@ -20,65 +23,71 @@ var db = require('./database'),
 			if (err) {
 				return callback(err);
 			}
-
+			var timestamp = Date.now();
 			var message = {
 				content: content,
-				timestamp: Date.now(),
+				timestamp: timestamp,
 				fromuid: fromuid,
 				touid: touid
 			};
 
-			plugins.fireHook('filter:messaging.save', message, function(err, message) {
+			async.waterfall([
+				function(next) {
+					plugins.fireHook('filter:messaging.save', message, next);
+				},
+				function(message, next) {
+					db.setObject('message:' + mid, message, next);
+				}
+			], function(err) {
 				if (err) {
 					return callback(err);
 				}
 
-				db.setObject('message:' + mid, message, function(err) {
+				async.parallel([
+					async.apply(addToRecent, fromuid, message),
+					async.apply(db.sortedSetAdd, 'messages:uid:' + uids[0] + ':to:' + uids[1], timestamp, mid),
+					async.apply(Messaging.updateChatTime, fromuid, touid),
+					async.apply(Messaging.updateChatTime, touid, fromuid),
+					async.apply(Messaging.markRead, fromuid, touid),
+					async.apply(Messaging.markUnread, touid, fromuid),
+				], function(err, results) {
 					if (err) {
 						return callback(err);
 					}
 
-					db.listAppend('messages:' + uids[0] + ':' + uids[1], mid);
-					db.listPrepend('messages:recent:' + fromuid, message.content, function(err) {
-						if (err) {
-							return callback(err);
-						}
-
-						db.getListRange('messages:recent:' + fromuid, 0, -1, function(err, list) {
-							if (list.length > 10) {
-								db.listRemoveLast('messages:recent:' + uids[0]);
-							}
-						});
-					});
-
-					Messaging.updateChatTime(fromuid, touid);
-					Messaging.updateChatTime(touid, fromuid);
-
-					async.parallel([
+					async.waterfall([
 						function(next) {
-							Messaging.markRead(fromuid, touid, next);
+							getMessages([mid], fromuid, touid, true, next);
 						},
-						function(next) {
-							Messaging.markUnread(touid, fromuid, next);
+						function(messages, next) {
+							Messaging.isNewSet(fromuid, touid, mid, function(err, isNewSet) {
+								if (err) {
+									return next(err);
+								}
+								messages[0].newSet = isNewSet;
+								next(null, messages ? messages[0] : null);
+							});
 						}
-					], function(err, results) {
-						if (err) {
-							return callback(err);
-						}
-
-						getMessages([mid], fromuid, touid, true, function(err, messages) {
-							callback(err, messages ? messages[0] : null);
-						});
-					});
+					], callback);
 				});
 			});
 		});
 	};
 
+	function addToRecent(fromuid, message, callback) {
+		db.listPrepend('messages:recent:' + fromuid, message.content, function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			db.listTrim('messages:recent:' + fromuid, 0, 9, callback);
+		});
+	}
+
 	Messaging.getMessages = function(fromuid, touid, isNew, callback) {
 		var uids = sortUids(fromuid, touid);
 
-		db.getListRange('messages:' + uids[0] + ':' + uids[1], -((meta.config.chatMessagesToDisplay || 50) - 1), -1, function(err, mids) {
+		db.getSortedSetRevRange('messages:uid:' + uids[0] + ':to:' + uids[1], 0, (meta.config.chatMessagesToDisplay || 50) - 1, function(err, mids) {
 			if (err) {
 				return callback(err);
 			}
@@ -87,7 +96,18 @@ var db = require('./database'),
 				return callback(null, []);
 			}
 
+			mids.reverse();
+
 			getMessages(mids, fromuid, touid, isNew, callback);
+		});
+
+		// Mark any chat notifications pertaining to this chat as read
+		notifications.markReadByUniqueId(fromuid, 'chat_' + touid + '_' + fromuid, function(err) {
+			if (err) {
+				winston.error('[messaging] Could not mark notifications related to this chat as read: ' + err.message);
+			}
+
+			userNotifications.pushCount(fromuid);
 		});
 	};
 
@@ -101,24 +121,38 @@ var db = require('./database'),
 				return 'message:' + mid;
 			});
 
-			db.getObjects(keys, function(err, messages) {
-				if (err) {
-					return callback(err);
-				}
+			async.waterfall([
+				async.apply(db.getObjects, keys),
+				function(messages, next) {
+					async.map(messages, function(message, next) {
+						var self = parseInt(message.fromuid, 10) === parseInt(fromuid, 10);
+						message.fromUser = self ? userData[0] : userData[1];
+						message.toUser = self ? userData[1] : userData[0];
+						message.timestampISO = new Date(parseInt(message.timestamp, 10)).toISOString();
+						message.self = self ? 1 : 0;
+						message.newSet = false;
 
-				async.map(messages, function(message, next) {
-					var self = parseInt(message.fromuid, 10) === parseInt(fromuid, 10);
-					message.fromUser = self ? userData[0] : userData[1];
-					message.toUser = self ? userData[1] : userData[0];
-					message.timestampISO = new Date(parseInt(message.timestamp, 10)).toISOString();
-					message.self = self ? 1 : 0;
+						Messaging.parse(message.content, message.fromuid, fromuid, userData[1], userData[0], isNew, function(result) {
+							message.content = result;
+							next(null, message);
+						});
+					}, next);
+				},
+				function(messages, next) {
+					// Add a spacer in between messages with time gaps between them
+					messages = messages.map(function(message, index) {
+						// Compare timestamps with the previous message, and check if a spacer needs to be added
+						if (index > 0 && parseInt(message.timestamp, 10) > parseInt(messages[index-1].timestamp, 10) + (1000*60*5)) {
+							// If it's been 5 minutes, this is a new set of messages
+							message.newSet = true;
+						}
 
-					Messaging.parse(message.content, message.fromuid, fromuid, userData[1], userData[0], isNew, function(result) {
-						message.content = result;
-						next(null, message);
+						return message;
 					});
-				}, callback);
-			});
+
+					next(undefined, messages);
+				}
+			], callback);
 		});
 	}
 
@@ -143,6 +177,32 @@ var db = require('./database'),
 				callback(messageData.parsedMessage);
 			});
 		});
+	};
+
+	Messaging.isNewSet = function(fromuid, touid, mid, callback) {
+		var uids = sortUids(fromuid, touid),
+			setKey = 'messages:uid:' + uids[0] + ':to:' + uids[1];
+
+		async.waterfall([
+			async.apply(db.sortedSetRank, setKey, mid),
+			function(index, next) {
+				if (index > 0) {
+					db.getSortedSetRange(setKey, index-1, index, next);
+				} else {
+					next(null, true);
+				}
+			},
+			function(mids, next) {
+				db.getObjects(['message:' + mids[0], 'message:' + mids[1]], next);
+			},
+			function(messages, next) {
+				if (typeof messages !== 'boolean') {
+					next(null, parseInt(messages[1].timestamp, 10) > parseInt(messages[0].timestamp, 10) + (1000*60*5));
+				} else {
+					next(null, messages);
+				}
+			}
+		], callback);
 	};
 
 	Messaging.updateChatTime = function(uid, toUid, callback) {

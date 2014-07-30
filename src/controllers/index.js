@@ -188,7 +188,7 @@ Controllers.confirmEmail = function(req, res, next) {
 
 Controllers.sitemap = function(req, res, next) {
 	if (meta.config['feeds:disableSitemap'] === '1') {
-		return res.redirect('404');
+		return res.redirect(nconf.get('relative_path') + '/404')
 	}
 
 	var sitemap = require('../sitemap.js');

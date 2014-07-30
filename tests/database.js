@@ -325,13 +325,13 @@ describe('Test database', function() {
 		}
 
 		function getSortedSetUnion(callback) {
-			db.getSortedSetUnion(['users:joindate', 'users:derp', 'users:postcount'], function(err, data) {
+			db.getSortedSetUnion(['users:joindate', 'users:derp', 'users:postcount'], 0, -1, function(err, data) {
 				callback(err, {'sortedSetUnion': data});
 			});
 		}
 
 		function getSortedSetRevUnion(callback) {
-			db.getSortedSetUnion(['users:joindate', 'users:derp', 'users:postcount'], function(err, data) {
+			db.getSortedSetRevUnion(['users:joindate', 'users:derp', 'users:postcount'], 0, -1, function(err, data) {
 				callback(err, {'sortedSetUnion': data});
 			});
 		}

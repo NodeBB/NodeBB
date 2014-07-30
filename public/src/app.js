@@ -100,7 +100,7 @@ var socket,
 				ioParams.transports = ['xhr-polling'];
 			}
 
-			socket = io.connect('', ioParams);
+			socket = io.connect(config.websocketAddress, ioParams);
 			reconnecting = false;
 
 			socket.on('event:connect', function (data) {
@@ -154,7 +154,9 @@ var socket,
 					timeout: 1000
 				});
 
-				setTimeout(app.logout, 1000);
+				setTimeout(function() {
+					window.location.href = RELATIVE_PATH + '/';
+				}, 1000);
 			});
 
 			app.enterRoom('global');
@@ -440,7 +442,7 @@ var socket,
 		}
 
 		searchButton.off().on('click', function(e) {
-			if (!config.isLoggedIn && !config.allowGuestSearching) {
+			if (!config.loggedIn && !config.allowGuestSearching) {
 				app.alert({
 					message:'[[error:search-requires-login]]',
 					timeout: 3000

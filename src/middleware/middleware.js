@@ -161,11 +161,7 @@ middleware.checkAccountPermissions = function(req, res, next) {
 		}
 
 		if (!uid) {
-			if (res.locals.isAPI) {
-				return res.json(404, 'not-found');
-			} else {
-				return res.redirect('404');
-			}
+			return res.locals.isAPI ? res.json(404, 'not-found') : res.redirect(nconf.get('relative_path') + '/404');
 		}
 
 		if (parseInt(uid, 10) === callerUID) {
@@ -181,11 +177,7 @@ middleware.checkAccountPermissions = function(req, res, next) {
 				return next();
 			}
 
-			if (res.locals.isAPI) {
-				return res.json(403, 'not-allowed');
-			} else {
-				return res.redirect('403');
-			}
+			res.locals.isAPI ? res.json(403, 'not-allowed') : res.redirect(nconf.get('relative_path') + '/403');
 		});
 	});
 };
@@ -423,6 +415,15 @@ middleware.routeTouchIcon = function(req, res) {
 			maxAge: app.enabled('cache') ? 5184000000 : 0
 		});
 	}
+};
+
+middleware.addExpiresHeaders = function(req, res, next) {
+	if (app.enabled('cache')) {
+		res.setHeader("Cache-Control", "public, max-age=5184000");
+		res.setHeader("Expires", new Date(Date.now() + 5184000000).toUTCString());
+	}
+
+	next();
 };
 
 module.exports = function(webserver) {

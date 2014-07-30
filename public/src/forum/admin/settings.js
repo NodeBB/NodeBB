@@ -91,10 +91,22 @@ define('forum/admin/settings', ['uploader', 'sounds'], function(uploader, sounds
 
 		handleUploads();
 
-		$('#settings-tab a').click(function (e) {
+		$('#settings-tab a').off('click').on('click', function (e) {
 			e.preventDefault();
 			$(this).tab('show');
 			return false;
+		});
+
+		$('button[data-action="email.test"]').off('click').on('click', function() {
+			socket.emit('admin.email.test', function(err) {
+				app.alert({
+					alert_id: 'test_email_sent',
+					type: !err ? 'info' : 'danger',
+					title: 'Test Email Sent',
+					message: err ? err.message : '',
+					timeout: 2500
+				});
+			});
 		});
 
 		if (typeof callback === 'function') {

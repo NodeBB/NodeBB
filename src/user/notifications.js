@@ -15,30 +15,57 @@ var async = require('async'),
 	privileges = require('../privileges');
 
 (function(UserNotifications) {
+
 	UserNotifications.get = function(uid, callback) {
 		function getNotifications(set, start, stop, iterator, done) {
-			db.getSortedSetRevRange(set, start, stop, function(err, nids) {
+			db.getSortedSetRevRange(set, start, stop, function(err, uniqueIds) {
 				if(err) {
 					return done(err);
 				}
 
-				if(!nids || nids.length === 0) {
+				if(!Array.isArray(uniqueIds) || !uniqueIds.length) {
 					return done(null, []);
 				}
 
-				if (nids.length > maxNotifs) {
-					nids.length = maxNotifs;
+				if (uniqueIds.length > maxNotifs) {
+					uniqueIds.length = maxNotifs;
 				}
 
-				async.map(nids, function(nid, next) {
-					notifications.get(nid, uid, function(notif_data) {
-						if(typeof iterator === 'function') {
-							iterator(notif_data);
-						}
+				db.getObjectFields('uid:' + uid + ':notifications:uniqueId:nid', uniqueIds, function(err, uniqueIdToNids) {
+					if (err) {
+						return done(err);
+					}
 
-						next(null, notif_data);
+					var nidsToUniqueIds = {};
+					var nids = [];
+					uniqueIds.forEach(function(uniqueId) {
+						nidsToUniqueIds[uniqueIdToNids[uniqueId]] = uniqueId;
+						nids.push(uniqueIdToNids[uniqueId]);
 					});
-				}, done);
+
+					async.map(nids, function(nid, next) {
+						notifications.get(nid, function(err, notif_data) {
+							if (err) {
+								return next(err);
+							}
+
+							if (!notif_data) {
+								if (process.env.NODE_ENV === 'development') {
+									winston.info('[notifications.get] nid ' + nid + ' not found. Removing.');
+								}
+
+								db.sortedSetRemove(set, nidsToUniqueIds[nid]);
+								return next();
+							}
+
+							if (typeof iterator === 'function') {
+								iterator(notif_data, next);
+							} else {
+								next(null, notif_data);
+							}
+						});
+					}, done);
+				});
 			});
 		}
 
@@ -46,20 +73,24 @@ var async = require('async'),
 
 		async.parallel({
 			unread: function(next) {
-				getNotifications('uid:' + uid + ':notifications:unread', 0, 9, function(notif_data) {
-					if (notif_data) {
-						notif_data.readClass = !notif_data.read ? 'label-warning' : '';
-					}
+				getNotifications('uid:' + uid + ':notifications:unread', 0, 9, function(notif_data, next) {
+					notif_data.read = false;
+					notif_data.readClass = !notif_data.read ? 'label-warning' : '';
+					next(null, notif_data);
 				}, next);
 			},
 			read: function(next) {
-				getNotifications('uid:' + uid + ':notifications:read', 0, 9, null, next);
+				getNotifications('uid:' + uid + ':notifications:read', 0, 9, function(notif_data, next) {
+					notif_data.read = true;
+					next(null, notif_data);
+				}, next);
 			}
 		}, function(err, notifications) {
 			function filterDeleted(notifObj) {
 				return !!notifObj;
 			}
-			if(err) {
+
+			if (err) {
 				return callback(err);
 			}
 
@@ -85,41 +116,75 @@ var async = require('async'),
 			before = new Date(parseInt(before, 10));
 		}
 
-		db.getSortedSetRevRangeByScore('uid:' + uid + ':notifications:read', 0, limit, before ? before.getTime(): now.getTime(), -Infinity, function(err, results1) {
-			db.getSortedSetRevRangeByScore('uid:' + uid + ':notifications:unread', 0, limit, before ? before.getTime(): now.getTime(), -Infinity, function(err, results2) {
+		db.getObjectValues('uid:' + uid + ':notifications:uniqueId:nid', function(err, nids) {
+			if (err) {
+				return callback(err);
+			}
 
-				var nids = results1.concat(results2);
-				async.map(nids, function(nid, next) {
-					notifications.get(nid, uid, function(notif_data) {
+			async.map(nids, function(nid, next) {
+				notifications.get(nid, function(err, notif_data) {
+					if (err || !notif_data) {
+						return next(err);
+					}
+					UserNotifications.isNotificationRead(notif_data.nid, uid, function(err, isRead) {
+						if (err) {
+							return next(err);
+						}
+
+						notif_data.read = isRead;
 						next(null, notif_data);
 					});
-				}, function(err, notifs) {
-					notifs = notifs.filter(function(notif) {
-						return notif !== null;
-					}).sort(function(a, b) {
-						return parseInt(b.datetime, 10) - parseInt(a.datetime, 10);
-					}).map(function(notif) {
-						notif.datetimeISO = utils.toISOString(notif.datetime);
-						notif.readClass = !notif.read ? 'label-warning' : '';
-
-						return notif;
-					});
-
-					callback(err, notifs);
 				});
+			}, function(err, notifs) {
+				if (err) {
+					return callback(err);
+				}
+
+				notifs = notifs.filter(function(notif) {
+					return notif !== null;
+				}).sort(function(a, b) {
+					return parseInt(b.datetime, 10) - parseInt(a.datetime, 10);
+				}).map(function(notif) {
+					notif.datetimeISO = utils.toISOString(notif.datetime);
+					notif.readClass = !notif.read ? 'label-warning' : '';
+					return notif;
+				});
+
+				callback(null, notifs);
 			});
 		});
+	};
+
+	UserNotifications.isNotificationRead = function(nid, uid, callback) {
+		db.isSortedSetMember('uid:' + uid + ':notifications:read', nid, callback);
 	};
 
 	UserNotifications.getDailyUnread = function(uid, callback) {
 		var	now = Date.now(),
 			yesterday = now - (1000*60*60*24);	// Approximate, can be more or less depending on time changes, makes no difference really.
-		db.getSortedSetRangeByScore('uid:' + uid + ':notifications:unread', 0, 20, yesterday, now, function(err, nids) {
-			async.map(nids, function(nid, next) {
-				notifications.get(nid, uid, function(notif_data) {
-					next(null, notif_data);
+
+		db.getSortedSetRangeByScore('uid:' + uid + ':notifications:unread', 0, 20, yesterday, now, function(err, uniqueIds) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (!Array.isArray(uniqueIds) || !uniqueIds.length) {
+				return callback(null, []);
+			}
+
+			db.getObjectFields('uid:' + uid + ':notifications:uniqueId:nid', uniqueIds, function(err, uniqueIdToNids) {
+				if (err) {
+					return callback(err);
+				}
+
+				var nids = Object.keys(uniqueIdToNids).map(function(uniqueId) {
+					return uniqueIdToNids[uniqueId];
 				});
-			}, callback);
+
+				async.map(nids, function(nid, next) {
+					notifications.get(nid, next);
+				}, callback);
+			});
 		});
 	};
 
@@ -127,26 +192,40 @@ var async = require('async'),
 		db.sortedSetCount('uid:' + uid + ':notifications:unread', -Infinity, Infinity, callback);
 	};
 
-	UserNotifications.getUnreadByUniqueId = function(uid, uniqueId, callback) {
-		db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, -1, function(err, nids) {
+	UserNotifications.getUnreadByField = function(uid, field, value, callback) {
+		db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, -1, function(err, uniqueIds) {
+			if (err) {
+				return callback(err);
+			}
 
-			async.filter(nids, function(nid, next) {
-				notifications.get(nid, uid, function(notifObj) {
-					if(!notifObj) {
-						return next(false);
-					}
+			if (!Array.isArray(uniqueIds) || !uniqueIds.length) {
+				return callback(null, []);
+			}
 
-					if (notifObj.uniqueId === uniqueId) {
-						next(true);
-					} else {
-						next(false);
-					}
+			db.getObjectFields('uid:' + uid + ':notifications:uniqueId:nid', uniqueIds, function(err, uniqueIdsToNids) {
+				if (err) {
+					return callback(err);
+				}
+
+				var nids = Object.keys(uniqueIdsToNids).map(function(uniqueId) {
+					return uniqueIdsToNids[uniqueId];
 				});
-			}, function(nids) {
-				callback(null, nids);
+
+				async.filter(nids, function(nid, next) {
+					notifications.get(nid, function(err, notifObj) {
+						if (err || !notifObj) {
+							return next(false);
+						}
+
+						next(notifObj[field] === value.toString());
+					});
+				}, function(nids) {
+					callback(null, nids);
+				});
 			});
 		});
 	};
+
 
 	UserNotifications.sendPostNotificationToFollowers = function(uid, tid, pid) {
 		db.getSetMembers('followers:' + uid, function(err, followers) {
@@ -182,9 +261,12 @@ var async = require('async'),
 					bodyShort: '[[notifications:user_posted_to, ' + results.username + ', ' + results.topic.title + ']]',
 					bodyLong: results.postContent,
 					path: nconf.get('relative_path') + '/topic/' + results.topic.slug + '/' + results.postIndex,
-					uniqueId: 'topic:' + tid,
+					uniqueId: 'topic:' + tid + ':uid:' + uid,
 					from: uid
-				}, function(nid) {
+				}, function(err, nid) {
+					if (err) {
+						return;
+					}
 					async.filter(followers, function(uid, next) {
 						privileges.categories.can('read', results.topic.cid, uid, function(err, canRead) {
 							next(!err && canRead);

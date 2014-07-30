@@ -196,15 +196,6 @@ module.exports = function(db, module) {
 	};
 
 	function sortedSetUnion(sets, reverse, start, stop, callback) {
-		if (typeof start === 'function') {
-			callback = start;
-			start = 0;
-			stop = -1;
-		} else if (typeof stop === 'function') {
-			callback = stop;
-			stop = -1;
-		}
-
 		async.map(sets, function(key, next) {
 			module.getListRange(key, 0, -1, next);
 		}, function(err, results) {

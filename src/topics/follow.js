@@ -45,11 +45,10 @@ module.exports = function(Topics) {
 						bodyShort: '[[notifications:user_posted_to, ' + results.username + ', ' + results.topicData.title + ']]',
 						bodyLong: results.postContent,
 						path: nconf.get('relative_path') + '/topic/' + results.topicData.slug + '/' + results.postIndex,
-						uniqueId: 'topic:' + tid,
+						uniqueId: 'topic:' + tid + ':uid:' + exceptUid,
+						tid: tid,
 						from: exceptUid
-					}, function(nid) {
-						next(null, nid);
-					});
+					}, next);
 				});
 			},
 			followers: function(next) {

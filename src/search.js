@@ -45,11 +45,11 @@ search.search = function(term, uid, callback) {
 				}
 			});
 
-			async.filter(mainPids, function(pid, next) {
-				privileges.posts.can('read', pid, uid, function(err, canRead) {
-					next(!err && canRead);
-				});
-			}, function(pids) {
+			privileges.posts.filter('read', mainPids, uid, function(err, pids) {
+				if (err) {
+					return callback(err);
+				}
+
 				posts.getPostSummaryByPids(pids, {stripTags: true, parse: false}, function(err, posts) {
 					if (err) {
 						return callback(err);

@@ -5,6 +5,7 @@ var winston = require('winston'),
 	fs = require('fs'),
 	path = require('path'),
 	less = require('less'),
+	crypto = require('crypto'),
 
 	plugins = require('../plugins'),
 	emitter = require('../emitter'),
@@ -12,7 +13,9 @@ var winston = require('winston'),
 
 module.exports = function(Meta) {
 
-	Meta.css = {};
+	Meta.css = {
+		'css-buster': +new Date()
+	};
 	Meta.css.cache = undefined;
 	Meta.css.branding = {};
 	Meta.css.defaultBranding = {};
@@ -57,14 +60,21 @@ module.exports = function(Meta) {
 				try {
 					var css = tree.toCSS({
 						cleancss: true
-					});	
+					});
 				} catch (err) {
 					winston.error('[meta/css] Syntax Error: ' + err.message + ' - ' + path.basename(err.filename) + ' on line ' + err.line);
-					return;	
+					return;
 				}
-				
+
 
 				Meta.css.cache = css;
+
+				// Calculate css buster
+				var hasher = crypto.createHash('md5'),
+					hash;
+				hasher.update(css, 'utf-8');
+				hash = hasher.digest('hex').slice(0, 8);
+				Meta.css.hash = hash;
 
 				var re = /.brand-([\S]*?)[ ]*?{[\s\S]*?color:([\S\s]*?)}/gi,
 					match = re.exec(css);

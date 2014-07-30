@@ -35,6 +35,7 @@ apiController.getConfig = function(req, res, next) {
 	config.disableSocialButtons = parseInt(meta.config.disableSocialButtons, 10) === 1;
 	config.maxReconnectionAttempts = meta.config.maxReconnectionAttempts || 5;
 	config.reconnectionDelay = meta.config.reconnectionDelay || 200;
+	config.websocketAddress = meta.config.websocketAddress || '';
 	config.tagsPerTopic = meta.config.tagsPerTopic || 5;
 	config.topicsPerPage = meta.config.topicsPerPage || 20;
 	config.postsPerPage = meta.config.postsPerPage || 20;
@@ -42,8 +43,10 @@ apiController.getConfig = function(req, res, next) {
 	config['theme:id'] = meta.config['theme:id'];
 	config.defaultLang = meta.config.defaultLang || 'en_GB';
 	config.environment = process.env.NODE_ENV;
-	config.isLoggedIn = !!req.user;
+	config.loggedIn = !!req.user;
 	config['cache-buster'] = meta.config['cache-buster'] || '';
+	config['script-buster'] = meta.js.hash;
+	config['css-buster'] = meta.css.hash;
 	config.requireEmailConfirmation = parseInt(meta.config.requireEmailConfirmation, 10) === 1;
 	config.topicPostSort = meta.config.topicPostSort || 'oldest_to_newest';
 

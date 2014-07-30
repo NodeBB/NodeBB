@@ -6,7 +6,7 @@
 	var helpers = {};
 
 	helpers.displayUsersLink = function(config) {
-		return (config.isLoggedIn || !config.privateUserInfo);
+		return (config.loggedIn || !config.privateUserInfo);
 	};
 
 	helpers.buildMetaTag = function(tag) {

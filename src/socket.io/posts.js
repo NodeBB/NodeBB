@@ -90,19 +90,19 @@ function favouriteCommand(command, eventName, socket, data, callback) {
 	}
 }
 
-function sendNotificationToPostOwner(data, uid, notification) {
-	if(data && data.pid && uid) {
+function sendNotificationToPostOwner(data, fromuid, notification) {
+	if(data && data.pid && fromuid) {
 		posts.getPostFields(data.pid, ['tid', 'uid'], function(err, postData) {
 			if (err) {
 				return;
 			}
 
-			if (uid === parseInt(postData.uid, 10)) {
+			if (fromuid === parseInt(postData.uid, 10)) {
 				return;
 			}
 
 			async.parallel({
-				username: async.apply(user.getUserField, uid, 'username'),
+				username: async.apply(user.getUserField, fromuid, 'username'),
 				slug: async.apply(topics.getTopicField, postData.tid, 'slug'),
 				index: async.apply(posts.getPidIndex, data.pid),
 				postContent: function(next) {
@@ -122,10 +122,12 @@ function sendNotificationToPostOwner(data, uid, notification) {
 					bodyShort: '[[' + notification + ', ' + results.username + ']]',
 					bodyLong: results.postContent,
 					path: nconf.get('relative_path') + '/topic/' + results.slug + '/' + results.index,
-					uniqueId: 'post:' + data.pid,
-					from: uid
-				}, function(nid) {
-					notifications.push(nid, [postData.uid]);
+					uniqueId: 'post:' + data.pid + ':uid:' + fromuid,
+					from: fromuid
+				}, function(err, nid) {
+					if (!err) {
+						notifications.push(nid, [postData.uid]);
+					}
 				});
 			});
 		});
@@ -327,10 +329,11 @@ SocketPosts.flag = function(socket, pid, callback) {
 				path: path,
 				uniqueId: 'post_flag:' + pid,
 				from: socket.uid
-			}, function(nid) {
-				notifications.push(nid, adminGroup.members, function() {
-					next();
-				});
+			}, function(err, nid) {
+				if (err) {
+					return next(err);
+				}
+				notifications.push(nid, adminGroup.members, next);
 			});
 		},
 		function(next) {

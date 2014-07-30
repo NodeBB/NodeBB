@@ -24,7 +24,7 @@ topicsController.get = function(req, res, next) {
 			privileges.topics.get(tid, uid, next);
 		},
 		function (privileges, next) {
-			if (!privileges.read) {
+			if (!privileges.read || privileges.disabled) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
 
@@ -164,11 +164,7 @@ topicsController.get = function(req, res, next) {
 		}
 	], function (err, data) {
 		if (err) {
-			if (err.message === '[[error:no-privileges]]') {
-				return res.locals.isAPI ? res.json(403, err.message) : res.redirect('403');
-			} else {
-				return res.locals.isAPI ? res.json(404, 'not-found') : res.redirect('404');
-			}
+			return res.locals.isAPI ? res.json(404, 'not-found') : res.redirect(nconf.get('relative_path') + '/404');
 		}
 
 		data.privileges = userPrivileges;

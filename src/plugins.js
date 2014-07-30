@@ -52,7 +52,7 @@ var fs = require('fs'),
 		});
 
 		Plugins.registerHook('core', {
-			hook: 'filter:app.load',
+			hook: 'static:app.load',
 			method: addLanguages
 		});
 	};
@@ -262,8 +262,15 @@ var fs = require('fs'),
 
 							async.each(languages, function(pathToLang, next) {
 								fs.readFile(pathToLang, function(err, file) {
+									try {
+										var json = JSON.parse(file.toString());	
+									} catch (err) {
+										winston.error('[plugins] Unable to parse custom language file: ' + pathToLang + '\r\n' + err.stack);
+										return next(err);
+									}
+
 									arr.push({
-										file: JSON.parse(file.toString()),
+										file: json,
 										route: pathToLang.replace(pathToFolder, '')
 									});
 
@@ -352,24 +359,11 @@ var fs = require('fs'),
 
 		var hookList = Plugins.loadedHooks[hook];
 
-		if (hookList && Array.isArray(hookList)) {
+		if (Array.isArray(hookList)) {
 			// if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
 			var hookType = hook.split(':')[0];
 			switch (hookType) {
 				case 'filter':
-					if (hook === 'filter:app.load') {
-						// Special case for this hook, as arguments passed in are always the same
-						async.each(hookList, function(hookObj, next) {
-							if (hookObj.method) {
-								hookObj.method.apply(Plugins, args.concat(next));
-							}
-						}, function(err) {
-							callback(err);
-						});
-
-						return;
-					}
-
 					async.reduce(hookList, args, function(value, hookObj, next) {
 						if (hookObj.method) {
 							if (!hookObj.hasOwnProperty('callbacked') || hookObj.callbacked === true) {
@@ -417,7 +411,7 @@ var fs = require('fs'),
 					async.each(hookList, function(hookObj, next) {
 						/*
 							Backwards compatibility block for v0.5.0
-							Remove this once NodeBB enters v0.5.0-1
+							Remove this once NodeBB enters v0.6.0-1
 						*/
 						if (hook === 'action:app.load') {
 							deprecationWarn.push(hookObj.id);
@@ -436,15 +430,24 @@ var fs = require('fs'),
 					}, function() {
 						/*
 							Backwards compatibility block for v0.5.0
-							Remove this once NodeBB enters v0.5.0-1
+							Remove this once NodeBB enters v0.6.0-1
 						*/
 						if (deprecationWarn.length) {
-							winston.warn('[plugins] The `action:app.load` hook is deprecated in favour of `filter:app.load`, please notify the developers of the following plugins:');
+							winston.warn('[plugins] The `action:app.load` hook is deprecated in favour of `static:app.load`, please notify the developers of the following plugins:');
 							for(var x=0,numDeprec=deprecationWarn.length;x<numDeprec;x++) {
 								process.stdout.write('  * ' + deprecationWarn[x] + '\n');
 							}
 						}
 						/* End backwards compatibility block */
+					});
+					break;
+				case 'static':
+					async.each(hookList, function(hookObj, next) {
+						if (hookObj.method) {
+							hookObj.method.apply(Plugins, args.concat(next));
+						}
+					}, function(err) {
+						callback(err);
 					});
 					break;
 				default:
@@ -730,7 +733,7 @@ var fs = require('fs'),
 			var components = lang.route.split('/'),
 				language = components[1],
 				filename = components[2].replace('.json', '');
-			
+
 			translator.addTranslation(language, filename, lang.file);
 		});
 

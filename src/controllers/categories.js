@@ -70,11 +70,13 @@ categoriesController.get = function(req, res, next) {
 
 	async.waterfall([
 		function(next) {
-			categories.getCategoryField(cid, 'disabled', function(err, disabled) {
-				next(disabled === '1' ? new Error('category-disabled') : undefined);
-			});
+			categories.getCategoryField(cid, 'disabled', next);
 		},
-		function(next) {
+		function(disabled, next) {
+			if (parseInt(disabled, 10) === 1) {
+				return next(new Error('category-disabled'));
+			}
+
 			privileges.categories.get(cid, uid, function(err, categoryPrivileges) {
 				if (err) {
 					return next(err);
@@ -163,11 +165,7 @@ categoriesController.get = function(req, res, next) {
 		}
 	], function (err, data) {
 		if (err) {
-			if (err.message === '[[error:no-privileges]]') {
-				return res.locals.isAPI ? res.json(403, err.message) : res.redirect('403');
-			} else {
-				return res.locals.isAPI ? res.json(404, 'not-found') : res.redirect('404');
-			}
+			return res.locals.isAPI ? res.json(404, 'not-found') : res.redirect(nconf.get('relative_path') + '/404');
 		}
 
 		if (data.link) {

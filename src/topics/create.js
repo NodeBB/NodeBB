@@ -93,16 +93,6 @@ module.exports = function(Topics) {
 
 		async.waterfall([
 			function(next) {
-				plugins.fireHook('filter:topic.post', data, function(err, filteredData) {
-					if (err) {
-						return next(err);
-					}
-
-					content = filteredData.content || data.content;
-					next();
-				});
-			},
-			function(next) {
 				categories.exists(cid, next);
 			},
 			function(categoryExists, next) {
@@ -119,6 +109,13 @@ module.exports = function(Topics) {
 			},
 			function(next) {
 				user.isReadyToPost(uid, next);
+			},
+			function(next) {
+				plugins.fireHook('filter:topic.post', data, next);
+			},
+			function(filteredData, next) {
+				content = filteredData.content || data.content;
+				next();
 			},
 			function(next) {
 				Topics.create({uid: uid, title: title, cid: cid, thumb: data.thumb, tags: data.tags}, next);
@@ -161,10 +158,6 @@ module.exports = function(Topics) {
 
 		async.waterfall([
 			function(next) {
-				plugins.fireHook('filter:topic.reply', data, next);
-			},
-			function(filteredData, next) {
-				content = filteredData.content || data.content;
 				threadTools.exists(tid, next);
 			},
 			function(topicExists, next) {
@@ -191,6 +184,10 @@ module.exports = function(Topics) {
 				user.isReadyToPost(uid, next);
 			},
 			function(next) {
+				plugins.fireHook('filter:topic.reply', data, next);
+			},
+			function(filteredData, next) {
+				content = filteredData.content || data.content;
 				if (content) {
 					content = content.trim();
 				}
@@ -203,13 +200,6 @@ module.exports = function(Topics) {
 			},
 			function(data, next) {
 				postData = data;
-
-				if (parseInt(uid, 10)) {
-					Topics.notifyFollowers(tid, postData.pid, uid);
-
-					user.notifications.sendPostNotificationToFollowers(uid, tid, postData.pid);
-				}
-
 				next();
 			},
 			function(next) {
@@ -241,6 +231,12 @@ module.exports = function(Topics) {
 				postData.display_move_tools = true;
 				postData.selfPost = false;
 				postData.relativeTime = utils.toISOString(postData.timestamp);
+
+				if (parseInt(uid, 10)) {
+					Topics.notifyFollowers(tid, postData.pid, uid);
+
+					user.notifications.sendPostNotificationToFollowers(uid, tid, postData.pid);
+				}
 
 				next(null, postData);
 			}

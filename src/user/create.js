@@ -163,8 +163,10 @@ module.exports = function(User) {
 							bodyLong: '',
 							image: 'brand:logo',
 							datetime: Date.now()
-						}, function(nid) {
-							notifications.push(nid, uid);
+						}, function(err, nid) {
+							if (!err) {
+								notifications.push(nid, uid);
+							}
 						});
 					}
 

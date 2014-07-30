@@ -44,15 +44,16 @@ module.exports = function(Topics) {
 					if(err) {
 						return callback(err);
 					}
+
 					var newtids = tids.filter(function(tid, index, self) {
 						return !read[index];
 					});
 
-					async.filter(newtids, function(tid, next) {
-						privileges.topics.can('read', tid, uid, function(err, canRead) {
-							next(!err && canRead);
-						});
-					}, function(newtids) {
+					privileges.topics.filter('read', newtids, uid, function(err, newTids) {
+						if(err) {
+							return callback(err);
+						}
+
 						unreadTids.push.apply(unreadTids, newtids);
 
 						start = stop + 1;
@@ -181,8 +182,8 @@ module.exports = function(Topics) {
 	};
 
 	Topics.markTopicNotificationsRead = function(tid, uid) {
-		user.notifications.getUnreadByUniqueId(uid, 'topic:' + tid, function(err, nids) {
-			notifications.mark_read_multiple(nids, uid, function() {
+		user.notifications.getUnreadByField(uid, 'tid', tid, function(err, nids) {
+			notifications.markReadMultiple(nids, uid, function() {
 				user.notifications.pushCount(uid);
 			});
 		});

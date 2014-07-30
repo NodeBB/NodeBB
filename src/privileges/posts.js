@@ -76,6 +76,31 @@ module.exports = function(privileges) {
 		});
 	};
 
+	privileges.posts.filter = function(privilege, pids, uid, callback) {
+		posts.getCidsByPids(pids, function(err, cids) {
+			if (err) {
+				return callback(err);
+			}
+
+			pids = pids.map(function(pid, index) {
+				return {pid: pid, cid: cids[index]};
+			});
+
+			privileges.categories.filter(privilege, cids, uid, function(err, cids) {
+				if (err) {
+					return callback(err);
+				}
+
+				pids = pids.filter(function(post) {
+					return cids.indexOf(post.cid) !== -1;
+				}).map(function(post) {
+					return post.pid;
+				});
+				callback(null, pids);
+			});
+		});
+	};
+
 	privileges.posts.canEdit = function(pid, uid, callback) {
 		helpers.some([
 			function(next) {

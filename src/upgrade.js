@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 6, 23);
+	latestSchema = Date.UTC(2014, 6, 24);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -880,6 +880,87 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/7/23] Upgrading db dependencies - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 6, 24);
+
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/7/24] Upgrading chats to sorted set...');
+
+				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
+					if (err) {
+						return next(err);
+					}
+
+					async.eachLimit(uids, 10, function(uid, next) {
+						db.getSortedSetRange('uid:' + uid + ':chats', 0, -1, function(err, toUids) {
+							if (err) {
+								return next(err);
+							}
+
+							if (!Array.isArray(toUids) || !toUids.length) {
+								return next();
+							}
+
+							async.eachLimit(toUids, 10, function(toUid, next) {
+								var uids = [uid, toUid].sort();
+								db.getListRange('messages:' + uids[0] + ':' + uids[1], 0, -1, function(err, mids) {
+									if (err) {
+										return next(err);
+									}
+
+									if (!Array.isArray(mids) || !mids.length) {
+										return next();
+									}
+
+									async.eachLimit(mids, 10, function(mid, next) {
+										db.getObjectField('message:' + mid, 'timestamp', function(err, timestamp) {
+											if (err || !timestamp) {
+												return next(err);
+											}
+
+											db.sortedSetAdd('messages:uid:' + uids[0] + ':to:' + uids[1], timestamp, mid, next);
+										});
+									}, next);
+								});
+							}, next);
+						});
+					}, function(err) {
+						if (err) {
+							winston.error('[2014/7/24] Error encountered while updating chats to sorted set');
+							return next(err);
+						}
+
+						async.eachLimit(uids, 10, function(uid, next) {
+							db.getSortedSetRange('uid:' + uid + ':chats', 0, -1, function(err, toUids) {
+								if (err) {
+									return next(err);
+								}
+
+								if (!Array.isArray(toUids) || !toUids.length) {
+									return next();
+								}
+
+								async.eachLimit(toUids, 10, function(toUid, next) {
+									var uids = [uid, toUid].sort();
+									db.delete('messages:' + uids[0] + ':' + uids[1], next);
+								}, next);
+							});
+						}, function(err) {
+							if (err) {
+								winston.error('[2014/7/24] Error encountered while updating chats to sorted set');
+								return next(err);
+							}
+
+							winston.info('[2014/7/24] Upgraded chats to sorted set');
+							Upgrade.update(thisSchemaDate, next);
+						});
+					});
+				});
+			} else {
+				winston.info('[2014/7/24] Upgrading chats to sorted set - skipped');
 				next();
 			}
 		}

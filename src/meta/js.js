@@ -14,7 +14,9 @@ var winston = require('winston'),
 module.exports = function(Meta) {
 
 	Meta.js = {
-		cache: undefined,
+		cache: '',
+		map: '',
+		hash: +new Date(),
 		prepared: false,
 		minFile: 'nodebb.min.js',
 		scripts: [
@@ -136,20 +138,48 @@ module.exports = function(Meta) {
 	};
 
 	Meta.js.minify = function(minify) {
-		var minifier = Meta.js.minifierProc = fork('minifier.js');
+		var minifier = Meta.js.minifierProc = fork('minifier.js', {
+				silent: true
+			}),
+			minifiedStream = minifier.stdio[1],
+			mapStream = minifier.stdio[2],
+			step = 0,
+			onComplete = function() {
+				if (step === 0) {
+					return step++;
+				}
 
-		minifier.on('message', function(payload) {
-			if (payload.action !== 'error') {
 				winston.info('[meta/js] Compilation complete');
-				Meta.js.cache = payload.data.js;
-				Meta.js.map = payload.data.map;
-				minifier.kill();
-
 				emitter.emit('meta:js.compiled');
-			} else {
-				winston.error('[meta/js] Could not compile client-side scripts! ' + payload.error.message);
+				minifier.kill();
+			};
+
+		minifiedStream.on('data', function(buffer) {
+			Meta.js.cache += buffer.toString();
+		});
+		mapStream.on('data', function(buffer) {
+			Meta.js.map += buffer.toString();
+		});
+
+		minifier.on('message', function(message) {
+			switch(message.type) {
+			case 'end':
+				if (message.payload === 'script') {
+					winston.info('[meta/js] Successfully minified.');
+					onComplete();
+				} else if (message.payload === 'mapping') {
+					winston.info('[meta/js] Retrieved Mapping.');
+					onComplete();
+				}
+				break;
+			case 'hash':
+				Meta.js.hash = message.payload;
+				break;
+			case 'error':
+				winston.error('[meta/js] Could not compile client-side scripts! ' + message.payload.message);
 				minifier.kill();
 				process.exit();
+				break;
 			}
 		});
 
@@ -169,11 +199,4 @@ module.exports = function(Meta) {
 			Meta.js.minifierProc.kill('SIGTERM');
 		}
 	};
-
-	// OS detection and handling
-	// if (os.platform() === 'win32') {
-	// 	Meta.js.scripts = Meta.js.scripts.map(function(script) {
-	// 		return script.replace(/\//g, '\\');
-	// 	});
-	// }
 };

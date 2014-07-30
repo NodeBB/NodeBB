@@ -183,7 +183,11 @@
 	};
 
 	Groups.exists = function(name, callback) {
-		db.isSetMember('groups', name, callback);
+		if (Array.isArray(name)) {
+			db.isSetMembers('groups', name, callback);
+		} else {
+			db.isSetMember('groups', name, callback);
+		}
 	};
 
 	Groups.create = function(name, description, callback) {
@@ -255,7 +259,7 @@
 	};
 
 	function renameGroup(oldName, newName, callback) {
-		if (oldName === newName || newName.length === 0) {
+		if (oldName === newName || !newName || newName.length === 0) {
 			return callback();
 		}
 

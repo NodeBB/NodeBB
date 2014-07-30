@@ -70,23 +70,30 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			if (validated) {
-				db.getObjectField('reset:uid', code, function(err, uid) {
+			if (!validated) {
+				return;
+			}
+
+			db.getObjectField('reset:uid', code, function(err, uid) {
+				if (err) {
+					return callback(err);
+				}
+
+				user.hashPassword(password, function(err, hash) {
 					if (err) {
 						return callback(err);
 					}
-
-					user.hashPassword(password, function(err, hash) {
-						user.setUserField(uid, 'password', hash);
-						events.logPasswordReset(uid);
-					});
+					user.setUserField(uid, 'password', hash);
+					events.logPasswordReset(uid);
 
 					db.deleteObjectField('reset:uid', code);
 					db.deleteObjectField('reset:expiry', code);
+					db.delete('lockout:' + uid);
+					user.auth.clearLoginAttempts(uid);
 
-					callback(null);
+					callback();
 				});
-			}
+			});
 		});
 	};
 

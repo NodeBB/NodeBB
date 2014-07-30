@@ -132,11 +132,11 @@ var async = require('async'),
 			return callback(null, returnTopics);
 		}
 
-		async.filter(tids, function(tid, next) {
-			privileges.topics.can('read', tid, uid, function(err, canRead) {
-				next(!err && canRead);
-			});
-		}, function(tids) {
+		privileges.topics.filter('read', tids, uid, function(err, tids) {
+			if (err) {
+				return callback(err);
+			}
+
 			Topics.getTopicsByTids(tids, uid, function(err, topicData) {
 				if(err) {
 					return callback(err);
@@ -185,6 +185,9 @@ var async = require('async'),
 			}
 
 			function isTopicVisible(topicData, topicInfo) {
+				if (parseInt(topicInfo.categoryData.disabled, 10) === 1) {
+					return false;
+				}
 				var deleted = parseInt(topicData.deleted, 10) !== 0;
 				return !deleted || (deleted && topicInfo.privileges.view_deleted) || parseInt(topicData.uid, 10) === parseInt(uid, 10);
 			}
@@ -206,7 +209,7 @@ var async = require('async'),
 					if (categoryCache[topicData.cid]) {
 						return next(null, categoryCache[topicData.cid]);
 					}
-					categories.getCategoryFields(topicData.cid, ['name', 'slug', 'icon', 'bgColor', 'color'], next);
+					categories.getCategoryFields(topicData.cid, ['name', 'slug', 'icon', 'bgColor', 'color', 'disabled'], next);
 				},
 				user: function(next) {
 					if (userCache[topicData.uid]) {
@@ -259,7 +262,7 @@ var async = require('async'),
 					return !!topic;
 				});
 
-				callback(null, topics);
+				plugins.fireHook('filter:topics.get', topics, callback);
 			});
 		});
 	};
