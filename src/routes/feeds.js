@@ -31,7 +31,7 @@ function hasPrivileges(method, id, req, res, next) {
 		}
 
 		if (!canRead) {
-			return res.redirect('403');
+			return res.redirect(nconf.get('relative_path') + '/403')
 		}
 
 		return next();
@@ -53,7 +53,7 @@ function generateForTopic(req, res, next) {
 			}
 
 			if (topicData.deleted && !userPrivileges.view_deleted) {
-				return res.redirect('404');
+				return res.redirect(nconf.get('relative_path') + '/404')
 			}
 
 			var description = topicData.posts.length ? topicData.posts[0].content : '';
@@ -133,7 +133,7 @@ function generateForPopular(req, res, next) {
 
 function disabledRSS(req, res, next) {
 	if (meta.config['feeds:disableRSS'] === '1') {
-		return res.redirect('404');
+		return res.redirect(nconf.get('relative_path') + '/404')
 	}
 
 	next();

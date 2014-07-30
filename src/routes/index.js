@@ -216,7 +216,7 @@ function handleErrors(err, req, res, next) {
 
 	req.flash('errorMessage', err.message);
 
-	res.redirect('500');
+	res.redirect(nconf.get('relative_path') + '/500')
 }
 
 function catch404(req, res, next) {

@@ -39,13 +39,17 @@ module.exports = function(privileges) {
 				},
 				isModerator: function(next) {
 					user.isModerator(uid, cid, next);
+				},
+				disabled: function(next) {
+					categories.getCategoryField(cid, 'disabled', next);
 				}
 			}, function(err, results) {
 				if(err) {
 					return callback(err);
 				}
+				var disabled = parseInt(results.disabled, 10) === 1;
 				var	isAdminOrMod = results.isAdministrator || results.isModerator;
-				var editable =  isAdminOrMod || results.manage_topic;
+				var editable = isAdminOrMod || results.manage_topic;
 				var deletable = isAdminOrMod || results.isOwner;
 
 				callback(null, {
@@ -54,7 +58,8 @@ module.exports = function(privileges) {
 					view_thread_tools: editable || deletable,
 					editable: editable,
 					deletable: deletable,
-					view_deleted: isAdminOrMod || results.manage_topic || results.isOwner
+					view_deleted: isAdminOrMod || results.manage_topic || results.isOwner,
+					disabled: disabled
 				});
 			});
 		});

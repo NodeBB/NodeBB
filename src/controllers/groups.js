@@ -30,7 +30,7 @@ groupsController.details = function(req, res) {
 		if (!err) {
 			res.render('groups/details', results);
 		} else {
-			res.redirect('404');
+			res.redirect(nconf.get('relative_path') + '/404')
 		}
 	});
 };
