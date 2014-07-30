@@ -9,6 +9,7 @@ var	groups = require('../groups'),
 	categories = require('../categories'),
 	logger = require('../logger'),
 	events = require('../events'),
+	emailer = require('../emailer'),
 	db = require('../database'),
 	async = require('async'),
 	winston = require('winston'),
@@ -22,7 +23,8 @@ var	groups = require('../groups'),
 		plugins: {},
 		widgets: {},
 		config: {},
-		settings: {}
+		settings: {},
+		email: {}
 	};
 
 SocketAdmin.before = function(socket, method, next) {
@@ -119,6 +121,18 @@ SocketAdmin.settings.get = function(socket, data, callback) {
 
 SocketAdmin.settings.set = function(socket, data, callback) {
 	meta.settings.set(data.hash, data.values, callback);
+};
+
+SocketAdmin.email.test = function(socket, data, callback) {
+	if (plugins.hasListeners('action:email.send')) {
+		emailer.send('test', socket.uid, {
+			subject: '[NodeBB] Test Email',
+			site_title: meta.config.site_title || 'NodeBB'
+		});
+		callback();
+	} else {
+		callback(new Error('[[error:no-emailers-configured]]'));
+	}
 };
 
 module.exports = SocketAdmin;
