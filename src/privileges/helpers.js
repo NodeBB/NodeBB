@@ -80,6 +80,9 @@ function isGuestAllowedTo(privilege, cids, callback) {
 		userPrivilegeExists: function(next) {
 			groups.exists(userKeys, next);
 		},
+		groupPrivilegeExists: function(next) {
+			groups.exists(groupKeys, next);
+		},
 		hasGroupPrivilege: function(next) {
 			groups.isMemberOfGroups('guests', groupKeys, next);
 		}
@@ -90,7 +93,10 @@ function isGuestAllowedTo(privilege, cids, callback) {
 
 		var result = [];
 		for (var i = 0; i<cids.length; ++i) {
-			var groupPriv = privilege !== 'find' && privilege !== 'read' ? results.hasGroupPrivilege[i] === true : results.hasGroupPrivilege[i] !== false;
+			var groupPriv = (privilege === 'find' || privilege === 'read') ?
+				(!results.groupPrivilegeExists[i] || results.hasGroupPrivilege[i] !== false) :
+				(results.groupPrivilegeExists[i] || results.hasGroupPrivilege[i] === true);
+
 			result.push(!results.userPrivilegeExists[i] && groupPriv);
 		}
 

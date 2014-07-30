@@ -57,7 +57,7 @@ module.exports = function(db, module) {
 			}
 
 			values = values.map(function(value) {
-				return items.members.indexOf(value) !== -1;
+				return items && Array.isArray(items.members) && items.members.indexOf(value) !== -1;
 			});
 
 			callback(null, values);
