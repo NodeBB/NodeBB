@@ -414,7 +414,7 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.isOnline = function(uid, callback) {
-		User.getUserFields(uid, ['username', 'userslug', 'picture', 'status'] , function(err, data) {
+		User.getUserFields(uid, ['username', 'userslug', 'picture', 'status', 'reputation', 'postcount'] , function(err, data) {
 			if(err) {
 				return callback(err);
 			}
