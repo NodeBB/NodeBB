@@ -95,7 +95,7 @@ function isGuestAllowedTo(privilege, cids, callback) {
 		for (var i = 0; i<cids.length; ++i) {
 			var groupPriv = (privilege === 'find' || privilege === 'read') ?
 				(!results.groupPrivilegeExists[i] || results.hasGroupPrivilege[i] !== false) :
-				(results.groupPrivilegeExists[i] || results.hasGroupPrivilege[i] === true);
+				(results.groupPrivilegeExists[i] && results.hasGroupPrivilege[i] === true);
 
 			result.push(!results.userPrivilegeExists[i] && groupPriv);
 		}
