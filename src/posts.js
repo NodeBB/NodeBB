@@ -256,7 +256,7 @@ var async = require('async'),
 						return next(err);
 					}
 					userInfo.signature = results.signature;
-					userInfo.custom_profile_info = results.custom_profile_info;
+					userInfo.custom_profile_info = results.customProfileInfo;
 					userInfo.groups = results.groups;
 					next(null, userInfo);
 				});
