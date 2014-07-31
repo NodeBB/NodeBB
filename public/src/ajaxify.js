@@ -289,12 +289,11 @@ var ajaxify = ajaxify || {};
 					}
 				} else if (window.location.pathname !== '/outgoing') {
 					// External Link
-
-					if (config.useOutgoingLinksPage) {
-						ajaxify.go('outgoing?url=' + encodeURIComponent(this.href));
-						e.preventDefault();
-					} else if (config.openOutgoingLinksInNewTab) {
+					if (config.openOutgoingLinksInNewTab) {
 						window.open(this.href, '_blank');
+						e.preventDefault();
+					} else if (config.useOutgoingLinksPage) {
+						ajaxify.go('outgoing?url=' + encodeURIComponent(this.href));
 						e.preventDefault();
 					}
 				}
