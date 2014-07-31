@@ -296,8 +296,11 @@
 					},
 					function(next) {
 						Groups.exists('group:' + oldName + ':members', function(err, exists) {
+							if (err) {
+								return next(err);
+							}
 							if (exists) {
-								db.rename('group:' + oldName + ':members', 'group:' + newName + ':members', next);							
+								db.rename('group:' + oldName + ':members', 'group:' + newName + ':members', next);
 							} else {
 								next();
 							}
