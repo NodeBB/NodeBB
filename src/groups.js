@@ -295,7 +295,13 @@
 						db.rename('group:' + oldName, 'group:' + newName, next);
 					},
 					function(next) {
-						db.rename('group:' + oldName + ':members', 'group:' + newName + ':members', next);
+						Groups.exists('group:' + oldName + ':members', function(err, exists) {
+							if (exists) {
+								db.rename('group:' + oldName + ':members', 'group:' + newName + ':members', next);							
+							} else {
+								next();
+							}
+						});
 					},
 					function(next) {
 						renameGroupMember('groups', oldName, newName, next);
