@@ -16,6 +16,9 @@
 				// Remove system, hidden, or deleted groups from this list
 				if (groups && !options.showAllGroups) {
 					return groups.filter(function (group) {
+						if (!group) {
+							return false;
+						}
 						if (group.deleted || (group.hidden && !group.system) || (!options.showSystemGroups && group.system)) {
 							return false;
 						} else if (options.removeEphemeralGroups && ephemeralGroups.indexOf(group.name) !== -1) {
@@ -57,6 +60,9 @@
 
 	Groups.list = function(options, callback) {
 		db.getSetMembers('groups', function (err, groupNames) {
+			if (err) {
+				return callback(err);
+			}
 			groupNames = groupNames.concat(ephemeralGroups);
 
 			async.map(groupNames, function (groupName, next) {
