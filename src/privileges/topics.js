@@ -76,6 +76,10 @@ module.exports = function(privileges) {
 	};
 
 	privileges.topics.filter = function(privilege, tids, uid, callback) {
+		if (!tids.length) {
+			return callback(null, []);
+		}
+
 		var keys = tids.map(function(tid) {
 			return 'topic:' + tid;
 		});

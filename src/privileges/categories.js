@@ -68,6 +68,14 @@ module.exports = function(privileges) {
 	};
 
 	privileges.categories.filter = function(privilege, cids, uid, callback) {
+		if (!cids.length) {
+			return callback(null, []);
+		}
+
+		cids = cids.filter(function(cid, index, array) {
+			return array.indexOf(cid) === index;
+		});
+
 		async.parallel({
 			allowedTo: function(next) {
 				helpers.allowedTo(privilege, uid, cids, next);
