@@ -7,28 +7,53 @@ define('forum/admin/groups', ['forum/admin/iconSelect'], function(iconSelect) {
 	Groups.init = function() {
 		var yourid = ajaxify.variables.get('yourid'),
 			createModal = $('#create-modal'),
-			createNameEl = $('#create-group-name'),
-			detailsModal = $('#group-details-modal'),
-			detailsSearch = detailsModal.find('#group-details-search'),
-			searchResults = detailsModal.find('#group-details-search-results'),
-			groupMembersEl = detailsModal.find('ul.current_members'),
-			detailsModalSave = detailsModal.find('.btn-primary'),
-			searchDelay,
-			listEl = $('#groups-list');
+			createGroupName = $('#create-group-name'),
+			create = $('#create'),
+			createModalGo = $('#create-modal-go'),
+			createGroupDesc = $('#create-group-desc'),
+			createModalError = $('#create-modal-error'),
+			groupDetailsModal = $('#group-details-modal'),
+			groupDetailsSearch = $('#group-details-search'),
+			groupDetailsSearchResults = $('#group-details-search-results'),
+			groupMembersEl = $('ul.current_members'),
+			formEl = groupDetailsModal.find('form'),
+			detailsModalSave = $('#details-modal-save'),
+			groupsList = $('#groups-list'),
+			groupIcon = $('#group-icon'),
+			changeGroupIcon = $('#change-group-icon'),
+			changeGroupName = $('#change-group-name'),
+			changeGroupDesc = $('#change-group-desc'),
+			changeGroupUserTitle = $('#change-group-user-title'),
+			changeGroupLabelColor = $('#change-group-label-color'),
+			groupIcon = $('#group-icon'),
+			groupLabelPreview = $('#group-label-preview'),
+			searchDelay;
 
-		$('#create').on('click', function() {
+		// Tooltips
+		$('#groups-list .members li').tooltip();
+
+		createModal.on('keypress', function(e) {
+			switch(e.keyCode) {
+				case 13:
+					createModalGo.click();
+					break;
+				default:
+					break;
+			}
+		});
+
+		create.on('click', function() {
 			createModal.modal('show');
 			setTimeout(function() {
-				createNameEl.focus();
+				createGroupName.focus();
 			}, 250);
 		});
 
-		$('#create-modal-go').on('click', function() {
+		createModalGo.on('click', function() {
 			var submitObj = {
-					name: createNameEl.val(),
-					description: $('#create-group-desc').val()
+					name: createGroupName.val(),
+					description: createGroupDesc.val()
 				},
-				errorEl = $('#create-modal-error'),
 				errorText;
 
 			socket.emit('admin.groups.create', submitObj, function(err, data) {
@@ -45,10 +70,10 @@ define('forum/admin/groups', ['forum/admin/iconSelect'], function(iconSelect) {
 							break;
 					}
 
-					errorEl.html(errorText).removeClass('hide');
+					createModalError.html(errorText).removeClass('hide');
 				} else {
-					errorEl.addClass('hide');
-					createNameEl.val('');
+					createModalError.addClass('hide');
+					createGroupName.val('');
 					createModal.on('hidden.bs.modal', function() {
 						ajaxify.go('admin/groups');
 					});
@@ -57,7 +82,29 @@ define('forum/admin/groups', ['forum/admin/iconSelect'], function(iconSelect) {
 			});
 		});
 
-		listEl.on('click', 'button[data-action]', function() {
+		formEl.keypress(function(e) {
+			switch(e.keyCode) {
+				case 13:
+					detailsModalSave.click();
+					break;
+				default:
+					break;
+			}
+		});
+
+		changeGroupUserTitle.keydown(function() {
+			setTimeout(function() {
+				groupLabelPreview.text(changeGroupUserTitle.val());
+			}, 0);
+		});
+
+		changeGroupLabelColor.keydown(function() {
+			setTimeout(function() {
+				groupLabelPreview.css('background', changeGroupLabelColor.val() || '#000000');
+			}, 0);	
+		});
+
+		groupsList.on('click', 'button[data-action]', function() {
 			var el = $(this),
 				action = el.attr('data-action'),
 				groupName = el.parents('li[data-groupname]').attr('data-groupname');
@@ -78,32 +125,12 @@ define('forum/admin/groups', ['forum/admin/iconSelect'], function(iconSelect) {
 				break;
 			case 'members':
 				socket.emit('admin.groups.get', groupName, function(err, groupObj) {
-					var formEl = detailsModal.find('form').keypress(function(e) {
-						switch(e.keyCode) {
-							case 13:
-								detailsModalSave.click();
-								break;
-							default:
-								break;
-						}
-					}),
-						groupLabelPreview = formEl.find('#group-label-preview'),
-						changeGroupUserTitle = formEl.find('#change-group-user-title'),
-						changeGroupLabelColor = formEl.find('#change-group-label-color');
 
-					formEl.find('#change-group-name').val(groupObj.name).prop('readonly', groupObj.system);
-					formEl.find('#change-group-desc').val(groupObj.description);
-					changeGroupUserTitle.val(groupObj.userTitle).keydown(function() {
-						setTimeout(function() {
-							groupLabelPreview.text(changeGroupUserTitle.val());
-						}, 0);
-					});
-					formEl.find('#group-icon').attr('class', 'fa fa-2x ' + groupObj.icon).attr('value', groupObj.icon);
-					changeGroupLabelColor.val(groupObj.labelColor).keydown(function() {
-						setTimeout(function() {
-							groupLabelPreview.css('background', changeGroupLabelColor.val() || '#000000');
-						}, 0);	
-					});
+					changeGroupName.val(groupObj.name).prop('readonly', groupObj.system);
+					changeGroupDesc.val(groupObj.description);
+					changeGroupUserTitle.val(groupObj.userTitle);
+					groupIcon.attr('class', 'fa fa-2x ' + groupObj.icon).attr('value', groupObj.icon);
+					changeGroupLabelColor.val(groupObj.labelColor);
 					groupLabelPreview.css('background', groupObj.labelColor || '#000000').text(groupObj.userTitle);
 					groupMembersEl.empty();
 
@@ -117,23 +144,21 @@ define('forum/admin/groups', ['forum/admin/iconSelect'], function(iconSelect) {
 						}
 					}
 
-					detailsModal.attr('data-groupname', groupObj.name);
-					detailsModal.modal('show');
+					groupDetailsModal.attr('data-groupname', groupObj.name);
+					groupDetailsModal.modal('show');
 				});
 				break;
 			}
 		});
 
-		detailsSearch.on('keyup', function() {
-			var searchEl = this;
+		groupDetailsSearch.on('keyup', function() {
 
 			if (searchDelay) {
 				clearTimeout(searchDelay);
 			}
 
 			searchDelay = setTimeout(function() {
-				var searchText = searchEl.value,
-					resultsEl = $('#group-details-search-results'),
+				var searchText = groupDetailsSearch.val(),
 					foundUser;
 
 				socket.emit('admin.user.search', searchText, function(err, results) {
@@ -143,7 +168,7 @@ define('forum/admin/groups', ['forum/admin/iconSelect'], function(iconSelect) {
 							numResults = 4;
 						}
 
-						resultsEl.empty();
+						groupDetailsSearchResults.empty();
 						for (x = 0; x < numResults; x++) {
 							foundUser = $('<li />');
 							foundUser
@@ -151,19 +176,19 @@ define('forum/admin/groups', ['forum/admin/iconSelect'], function(iconSelect) {
 								.append($('<img />').attr('src', results.users[x].picture))
 								.append($('<span />').html(results.users[x].username));
 
-							resultsEl.append(foundUser);
+							groupDetailsSearchResults.append(foundUser);
 						}
 					} else {
-						resultsEl.html('<li>No Users Found</li>');
+						groupDetailsSearchResults.html('<li>No Users Found</li>');
 					}
 				});
 			}, 200);
 		});
 
-		searchResults.on('click', 'li[data-uid]', function() {
+		groupDetailsSearchResults.on('click', 'li[data-uid]', function() {
 			var userLabel = $(this),
 				uid = parseInt(userLabel.attr('data-uid'), 10),
-				groupName = detailsModal.attr('data-groupname'),
+				groupName = groupDetailsModal.attr('data-groupname'),
 				members = [];
 
 			groupMembersEl.find('li[data-uid]').each(function() {
@@ -184,7 +209,7 @@ define('forum/admin/groups', ['forum/admin/iconSelect'], function(iconSelect) {
 
 		groupMembersEl.on('click', 'li[data-uid]', function() {
 			var uid = $(this).attr('data-uid'),
-				groupName = detailsModal.attr('data-groupname');
+				groupName = groupDetailsModal.attr('data-groupname');
 
 			socket.emit('admin.groups.get', groupName, function(err, groupObj){
 				if (!err){
@@ -204,38 +229,34 @@ define('forum/admin/groups', ['forum/admin/iconSelect'], function(iconSelect) {
 			});
 		});
 
-		$('#change-group-icon').on('click', function() {
-			iconSelect.init($('#group-icon'));
+		changeGroupIcon.on('click', function() {
+			iconSelect.init(groupIcon);
 		});
 
-		admin.enableColorPicker($('#change-group-label-color'), function(hsb, hex) {
-			$('#group-label-preview').css('background-color', '#' + hex);
+		admin.enableColorPicker(changeGroupLabelColor, function(hsb, hex) {
+			groupLabelPreview.css('background-color', '#' + hex);
 		});
 
 		detailsModalSave.on('click', function() {
-			var formEl = detailsModal.find('form');
-
 			socket.emit('admin.groups.update', {
-				groupName: detailsModal.attr('data-groupname'),
+				groupName: groupDetailsModal.attr('data-groupname'),
 				values: {
-					name: formEl.find('#change-group-name').val(),
-					userTitle: formEl.find('#change-group-user-title').val(),
-					description: formEl.find('#change-group-desc').val(),
-					icon: formEl.find('#group-icon').attr('value'),
-					labelColor: formEl.find('#change-group-label-color').val()
+					name: changeGroupName.val(),
+					userTitle: changeGroupUserTitle.val(),
+					description: changeGroupDesc.val(),
+					icon: groupIcon.attr('value'),
+					labelColor: changeGroupLabelColor.val()
 				}
 			}, function(err) {
 				if (!err) {
-					detailsModal.on('hidden.bs.modal', function() {
+					groupDetailsModal.on('hidden.bs.modal', function() {
 						ajaxify.go('admin/groups');
 					});
-					detailsModal.modal('hide');
+					groupDetailsModal.modal('hide');
 				}
 			});
 		});
 
-		// Tooltips
-		$('#groups-list .members li').tooltip();
 	};
 
 	return Groups;

@@ -302,16 +302,11 @@
 					},
 					function(next) {
 						Groups.exists('group:' + oldName + ':members', function(err, exists) {
-<<<<<<< HEAD
-							if (exists) {
-								db.rename('group:' + oldName + ':members', 'group:' + newName + ':members', next);							
-=======
 							if (err) {
 								return next(err);
 							}
 							if (exists) {
 								db.rename('group:' + oldName + ':members', 'group:' + newName + ':members', next);
->>>>>>> aa4089e6d78b6412bae1274bfa0c20bbb754c054
 							} else {
 								next();
 							}
