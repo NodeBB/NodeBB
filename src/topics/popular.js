@@ -2,7 +2,8 @@
 'use strict';
 
 var async = require('async'),
-	db = require('./../database');
+	db = require('../database'),
+	privileges = require('../privileges');
 
 
 module.exports = function(Topics) {
@@ -17,13 +18,31 @@ module.exports = function(Topics) {
 
 		var since = terms[term] || 'day';
 
-		Topics.getLatestTids(0, -1, since, function(err, tids) {
-			if (err) {
-				return callback(err);
-			}
+		async.waterfall([
+			function(next) {
+				Topics.getLatestTids(0, -1, since, next);
+			},
+			function(tids, next) {
+				getTopics(tids, uid, next);
+			},
+			function(topics, next) {
+				var tids = topics.map(function(topic) {
+					return topic.tid;
+				});
 
-			getTopics(tids, uid, callback);
-		});
+				privileges.topics.filter('read', tids, uid, function(err, tids) {
+					if (err) {
+						return next(err);
+					}
+
+					topics = topics.filter(function(topic) {
+						return tids.indexOf(topic.tid) !== -1;
+					});
+
+					next(null, topics);
+				});
+			}
+		], callback);
 	};
 
 	function getTopics(tids, uid, callback) {
@@ -32,6 +51,10 @@ module.exports = function(Topics) {
 		});
 
 		db.getObjectsFields(keys, ['tid', 'postcount'], function(err, topics) {
+			if (err) {
+				return callback(err);
+			}
+
 			topics.sort(function(a, b) {
 				return parseInt(b.postcount, 10) - parseInt(a.postcount, 10);
 			});
