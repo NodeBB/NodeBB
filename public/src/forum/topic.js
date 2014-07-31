@@ -42,8 +42,7 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 
 		app.enterRoom('topic_' + tid);
 
-		browsing.populateOnlineUsers();
-		$('.post-content img').addClass('img-responsive');
+		processPage($('.topic'));
 
 		showBottomPostBar();
 
@@ -334,13 +333,19 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 			getPostPrivileges(posts[x].pid);
 		}
 
+		processPage(html);
+	}
+
+	function processPage(element) {
 		browsing.populateOnlineUsers();
 		app.createUserTooltips();
-		app.replaceSelfLinks(html.find('a'));
-		utils.addCommasToNumbers(html.find('.formatted-number'));
-		utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
-		html.find('span.timeago').timeago();
-		html.find('.post-content img').addClass('img-responsive');
+		app.replaceSelfLinks(element.find('a'));
+		utils.addCommasToNumbers(element.find('.formatted-number'));
+		utils.makeNumbersHumanReadable(element.find('.human-readable-number'));
+		element.find('span.timeago').timeago();
+		element.find('.post-content img:not(.emoji)').addClass('img-responsive').each(function() {
+			$(this).wrap('<a href="' + $(this).attr('src') + '" target="_blank">');
+		});
 		postTools.updatePostCount();
 		showBottomPostBar();
 	}

@@ -16,6 +16,9 @@
 				// Remove system, hidden, or deleted groups from this list
 				if (groups && !options.showAllGroups) {
 					return groups.filter(function (group) {
+						if (!group) {
+							return false;
+						}
 						if (group.deleted || (group.hidden && !group.system) || (!options.showSystemGroups && group.system)) {
 							return false;
 						} else if (options.removeEphemeralGroups && ephemeralGroups.indexOf(group.name) !== -1) {
@@ -57,6 +60,9 @@
 
 	Groups.list = function(options, callback) {
 		db.getSetMembers('groups', function (err, groupNames) {
+			if (err) {
+				return callback(err);
+			}
 			groupNames = groupNames.concat(ephemeralGroups);
 
 			async.map(groupNames, function (groupName, next) {
@@ -296,8 +302,16 @@
 					},
 					function(next) {
 						Groups.exists('group:' + oldName + ':members', function(err, exists) {
+<<<<<<< HEAD
 							if (exists) {
 								db.rename('group:' + oldName + ':members', 'group:' + newName + ':members', next);							
+=======
+							if (err) {
+								return next(err);
+							}
+							if (exists) {
+								db.rename('group:' + oldName + ':members', 'group:' + newName + ':members', next);
+>>>>>>> aa4089e6d78b6412bae1274bfa0c20bbb754c054
 							} else {
 								next();
 							}

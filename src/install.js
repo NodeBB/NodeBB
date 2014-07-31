@@ -176,6 +176,9 @@ function setupConfig(next) {
 }
 
 function completeConfigSetup(err, config, next) {
+	if (err) {
+		return next(err);
+	}
 	// Add CI object
 	if (install.ciVals) {
 		config.test_database = {};
