@@ -78,14 +78,33 @@ define('forum/admin/groups', ['forum/admin/iconSelect'], function(iconSelect) {
 				break;
 			case 'members':
 				socket.emit('admin.groups.get', groupName, function(err, groupObj) {
-					var formEl = detailsModal.find('form');
+					var formEl = detailsModal.find('form').keypress(function(e) {
+						switch(e.keyCode) {
+							case 13:
+								detailsModalSave.click();
+								break;
+							default:
+								break;
+						}
+					}),
+						groupLabelPreview = formEl.find('#group-label-preview'),
+						changeGroupUserTitle = formEl.find('#change-group-user-title'),
+						changeGroupLabelColor = formEl.find('#change-group-label-color');
 
 					formEl.find('#change-group-name').val(groupObj.name).prop('readonly', groupObj.system);
 					formEl.find('#change-group-desc').val(groupObj.description);
-					formEl.find('#change-group-user-title').val(groupObj.userTitle);
+					changeGroupUserTitle.val(groupObj.userTitle).keydown(function() {
+						setTimeout(function() {
+							groupLabelPreview.text(changeGroupUserTitle.val());
+						}, 0);
+					});
 					formEl.find('#group-icon').attr('class', 'fa fa-2x ' + groupObj.icon).attr('value', groupObj.icon);
-					formEl.find('#change-group-label-color').val(groupObj.labelColor);
-					formEl.find('#group-label-preview').css('background', groupObj.labelColor || '#000000').text(groupObj.userTitle);
+					changeGroupLabelColor.val(groupObj.labelColor).keydown(function() {
+						setTimeout(function() {
+							groupLabelPreview.css('background', changeGroupLabelColor.val() || '#000000');
+						}, 0);	
+					});
+					groupLabelPreview.css('background', groupObj.labelColor || '#000000').text(groupObj.userTitle);
 					groupMembersEl.empty();
 
 					if (groupObj.members.length > 0) {
