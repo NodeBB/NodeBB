@@ -45,11 +45,11 @@ module.exports = function(Topics) {
 						return callback(err);
 					}
 
-					var newtids = tids.filter(function(tid, index, self) {
+					var newtids = tids.filter(function(tid, index) {
 						return !read[index];
 					});
 
-					privileges.topics.filter('read', newtids, uid, function(err, newTids) {
+					privileges.topics.filter('read', newtids, uid, function(err, newtids) {
 						if(err) {
 							return callback(err);
 						}
