@@ -185,25 +185,23 @@ var fs = require('fs'),
 					}
 
 					function mapStaticDirs(mappedPath) {
-						if (pluginData.staticDirs.hasOwnProperty(mappedPath)) {
-							if (Plugins.staticDirs[mappedPath]) {
-								winston.warn('[plugins/' + pluginData.id + '] Mapped path (' + mappedPath + ') already specified!');
-							} else if (!validMappedPath.test(mappedPath)) {
-								winston.warn('[plugins/' + pluginData.id + '] Invalid mapped path specified: ' + mappedPath + '. Path must adhere to: ' + validMappedPath.toString());
-							} else {
-								realPath = pluginData.staticDirs[mappedPath];
-								staticDir = path.join(pluginPath, realPath);
+						if (Plugins.staticDirs[mappedPath]) {
+							winston.warn('[plugins/' + pluginData.id + '] Mapped path (' + mappedPath + ') already specified!');
+						} else if (!validMappedPath.test(mappedPath)) {
+							winston.warn('[plugins/' + pluginData.id + '] Invalid mapped path specified: ' + mappedPath + '. Path must adhere to: ' + validMappedPath.toString());
+						} else {
+							realPath = pluginData.staticDirs[mappedPath];
+							staticDir = path.join(pluginPath, realPath);
 
-								(function(staticDir) {
-									fs.exists(staticDir, function(exists) {
-										if (exists) {
-											Plugins.staticDirs[pluginData.id + '/' + mappedPath] = staticDir;
-										} else {
-											winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' + mappedPath + ' => ' + staticDir + '\' not found.');
-										}
-									});
-								}(staticDir));
-							}
+							(function(staticDir) {
+								fs.exists(staticDir, function(exists) {
+									if (exists) {
+										Plugins.staticDirs[pluginData.id + '/' + mappedPath] = staticDir;
+									} else {
+										winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' + mappedPath + ' => ' + staticDir + '\' not found.');
+									}
+								});
+							}(staticDir));
 						}
 					}
 
