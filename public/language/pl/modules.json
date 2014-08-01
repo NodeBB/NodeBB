@@ -1,18 +1,18 @@
 {
     "chat.chatting_with": "Rozmawiaj z <span id=\"chat-with-name\"></span>",
-    "chat.placeholder": "Type chat message here, press enter to send",
+    "chat.placeholder": "Wpisz wiadomość czatu tutaj, naciśnij enter by wysłać.",
     "chat.send": "Wyślij",
     "chat.no_active": "Nie prowadzisz obecnie żadnych rozmów.",
     "chat.user_typing": "%1 pisze...",
     "chat.user_has_messaged_you": "%1 napisał do Ciebie",
     "chat.see_all": "Pokaż wszystkie czaty",
-    "chat.no-messages": "Please select a recipient to view chat message history",
-    "chat.recent-chats": "Recent Chats",
-    "chat.contacts": "Contacts",
-    "chat.message-history": "Message History",
-    "chat.pop-out": "Pop out chat",
-    "chat.maximize": "Maximize",
-    "composer.user_said_in": "%1 said in %2:",
-    "composer.user_said": "%1 said:",
-    "composer.discard": "Are you sure you wish to discard this post?"
+    "chat.no-messages": "Wybierz odbiorce by zobaczyć historię czatu.",
+    "chat.recent-chats": "Ostatnie czaty.",
+    "chat.contacts": "Kontakty",
+    "chat.message-history": "Historia wiadomości",
+    "chat.pop-out": "Pokaż czat",
+    "chat.maximize": "Maksymalizuj",
+    "composer.user_said_in": "%1 powiedział w %2:",
+    "composer.user_said": "%1 powiedział:",
+    "composer.discard": "Na pewno chcesz ignorować ten post?"
 }
