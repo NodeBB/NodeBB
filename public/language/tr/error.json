@@ -25,6 +25,7 @@
     "no-user": "Kullanıcı Yok",
     "no-teaser": "İleti Yok",
     "no-privileges": "Bu işlemi yapmak için yeterli yetkiniz yok.",
+    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "Kategori aktif değil",
     "topic-locked": "Başlık Kilitli",
     "still-uploading": "Lütfen yüklemelerin bitmesini bekleyin.",

@@ -2,7 +2,7 @@
     "invalid-data": "Błędne dane",
     "not-logged-in": "Nie jesteś zalogowany/a.",
     "account-locked": "Twoje konto zostało tymczasowo zablokowane.",
-    "search-requires-login": "Searching requires an account! Please login or register!",
+    "search-requires-login": "Wyszukiwanie wymaga konta! Zaloguj się lub zarejestruj!",
     "invalid-cid": "Błędne ID kategorii.",
     "invalid-tid": "Błędne ID tematu",
     "invalid-pid": "Błędne ID postu",
@@ -15,8 +15,8 @@
     "invalid-pagination-value": "Błędna wartość paginacji",
     "username-taken": "Login zajęty.",
     "email-taken": "E-mail zajęty.",
-    "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
-    "username-too-short": "Username too short",
+    "email-not-confirmed": "Twój email nie jest potwierdzony, kliknij tutaj aby go potwierdzić.",
+    "username-too-short": "Nazwa użytkownika za krótka.",
     "user-banned": "Użytkownik zbanowany",
     "no-category": "Kategoria nie istnieje.",
     "no-topic": "Temat nie istnieje",
@@ -25,6 +25,7 @@
     "no-user": "Użytkownik nie istnieje",
     "no-teaser": "Podgląd nie istnieje",
     "no-privileges": "Nie masz wystarczających praw by to wykonać.",
+    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "Kategoria wyłączona.",
     "topic-locked": "Temat zamknięty",
     "still-uploading": "Poczekaj na pełne załadowanie",
@@ -35,7 +36,7 @@
     "file-too-big": "Maksymalna wielkość pliku to %1 kilobajtów.",
     "cant-vote-self-post": "Nie możesz głosować na własny post.",
     "already-favourited": "Już polubiłeś/aś ten post.",
-    "already-unfavourited": "You already unfavourited this post",
+    "already-unfavourited": "Usunąłeś post z ulubionych.",
     "cant-ban-other-admins": "Nie możesz zbanować innych adminów!",
     "invalid-image-type": "Błędny typ pliku",
     "group-name-too-short": "Nazwa grupy za krótka",
@@ -51,5 +52,5 @@
     "upload-error": "Błąd uploadu: %1",
     "signature-too-long": "Sygnatura nie może mieć więcej niż %1 znaków.",
     "cant-chat-with-yourself": "Nie możesz czatować ze sobą",
-    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post"
+    "not-enough-reputation-to-downvote": "Masz za mało reputacji by ocenić ten post."
 }

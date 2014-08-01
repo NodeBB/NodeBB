@@ -25,6 +25,7 @@
     "no-user": "ユーザーが存在しない",
     "no-teaser": "ティーザーが存在しない",
     "no-privileges": "このアクションを実行する権限を持っていない。",
+    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "この板は無効された",
     "topic-locked": "スレッドがロックされた",
     "still-uploading": "アップロードが完成するまでお待ちください。",

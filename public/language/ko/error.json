@@ -25,6 +25,7 @@
     "no-user": "존재하지 않는 사용자입니다.",
     "no-teaser": "존재하지 않는 미리보기입니다.",
     "no-privileges": "이 작업을 할 수 있는 권한이 없습니다.",
+    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "비활성화된 카테고리입니다.",
     "topic-locked": "잠긴 주제입니다.",
     "still-uploading": "업로드가 끝날 때까지 기다려 주세요.",

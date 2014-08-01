@@ -25,6 +25,7 @@
     "no-user": "Несуществующий пользователь",
     "no-teaser": "Несуществующее превью",
     "no-privileges": "У вас недостаточно прав, чтобы совершить данное действие.",
+    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "Категория отключена",
     "topic-locked": "Тема закрыт",
     "still-uploading": "Пожалуйста, подождите завершения загрузки",

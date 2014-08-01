@@ -25,6 +25,7 @@
     "no-user": "Vartotojas neegzistuoja",
     "no-teaser": "Trumpas skelbimas neegzistuoja!",
     "no-privileges": "Jūs neturite teisės atlikti šį veiksmą.",
+    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "Kategorija išjungta",
     "topic-locked": "Tema užrakinta",
     "still-uploading": "Prašome palaukti kol bus baigti visi kėlimai į serverį",

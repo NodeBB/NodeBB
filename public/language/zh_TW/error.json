@@ -25,6 +25,7 @@
     "no-user": "使用者並不存在",
     "no-teaser": "Teaser 並不存在",
     "no-privileges": "您似乎沒有執行這個行為的權限！",
+    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "該類別已被關閉",
     "topic-locked": "該主題已被鎖定",
     "still-uploading": "請等待上傳完成。",

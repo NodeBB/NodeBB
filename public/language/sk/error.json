@@ -25,6 +25,7 @@
     "no-user": "Užívateľ neexistuje ",
     "no-teaser": "Teaser neexistuje",
     "no-privileges": "Nemáte dostatočné oprávnenia pre túto akciu ",
+    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "Kategória je znefunkčená.",
     "topic-locked": "Uzamknutá téma",
     "still-uploading": "Prosím čakajte na dokončenie nahrávania",

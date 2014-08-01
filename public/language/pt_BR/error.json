@@ -25,6 +25,7 @@
     "no-user": "Usuário não existe",
     "no-teaser": "Chamada não existe",
     "no-privileges": "Você não possui permissões para esta ação.",
+    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "Categoria desativada",
     "topic-locked": "Tópico trancado",
     "still-uploading": "Aguarde a conclusão dos uploads.",
