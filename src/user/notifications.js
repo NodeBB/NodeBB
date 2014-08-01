@@ -262,6 +262,7 @@ var async = require('async'),
 					bodyLong: results.postContent,
 					path: nconf.get('relative_path') + '/topic/' + results.topic.slug + '/' + results.postIndex,
 					uniqueId: 'topic:' + tid + ':uid:' + uid,
+					tid: tid,
 					from: uid
 				}, function(err, nid) {
 					if (err) {
