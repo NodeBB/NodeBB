@@ -213,7 +213,6 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 				chatModal.on('mousemove keypress click', function() {
 					if (newMessage) {
 						socket.emit('modules.chats.markRead', touid);
-						console.log('sent')
 						newMessage = false;
 					}
 				});
