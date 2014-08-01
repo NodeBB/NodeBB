@@ -587,6 +587,7 @@ var fs = require('fs'),
 				plugins[i].id = plugins[i].name;
 				plugins[i].installed = false;
 				plugins[i].active = false;
+				plugins[i].url = plugins[i].repository ? plugins[i].repository.url : '';
 				pluginMap[plugins[i].name] = plugins[i];
 			}
 
