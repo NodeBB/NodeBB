@@ -602,7 +602,7 @@ var fs = require('fs'),
 					pluginMap[plugin.id].id = pluginMap[plugin.id].id || plugin.id;
 					pluginMap[plugin.id].name = pluginMap[plugin.id].name || plugin.id;
 					pluginMap[plugin.id].description = plugin.description;
-					pluginMap[plugin.id].url = plugin.url;
+					pluginMap[plugin.id].url = pluginMap[plugin.id].url || plugin.url;
 					pluginMap[plugin.id].installed = true;
 
 					Plugins.isActive(plugin.id, function(err, active) {
