@@ -438,6 +438,10 @@
 		var ignoredGroups = ['registered-users'];
 
 		db.getSetMembers('groups', function(err, groupNames) {
+			if (err) {
+				return callback(err);
+			}
+
 			var groupKeys = groupNames.filter(function(groupName) {
 				return ignoredGroups.indexOf(groupName) === -1;
 			}).map(function(groupName) {
@@ -445,6 +449,9 @@
 			});
 
 			db.getObjectsFields(groupKeys, ['name', 'hidden', 'userTitle', 'icon', 'labelColor'], function(err, groupData) {
+				if (err) {
+					return callback(err);
+				}
 
 				groupData = groupData.filter(function(group) {
 					return parseInt(group.hidden, 10) !== 1 && !!group.userTitle;
@@ -456,6 +463,10 @@
 				});
 
 				db.isMemberOfSets(groupSets, uid, function(err, isMembers) {
+					if (err) {
+						return callback(err);
+					}
+
 					for(var i=isMembers.length - 1; i>=0; --i) {
 						if (!isMembers[i]) {
 							groupData.splice(i, 1);

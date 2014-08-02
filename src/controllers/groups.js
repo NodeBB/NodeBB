@@ -2,7 +2,7 @@
 
 var groups = require('../groups'),
 	async = require('async'),
-
+	nconf = require('nconf'),
 	groupsController = {};
 
 groupsController.list = function(req, res) {
@@ -30,7 +30,7 @@ groupsController.details = function(req, res) {
 		if (!err) {
 			res.render('groups/details', results);
 		} else {
-			res.redirect(nconf.get('relative_path') + '/404')
+			res.redirect(nconf.get('relative_path') + '/404');
 		}
 	});
 };

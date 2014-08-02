@@ -18,10 +18,6 @@ define('forum/account/header', function() {
 				$this.toggleClass('hide', $this.hasClass('private'));
 			});
 		}
-
-		if (app.isAdmin) {
-			$('#editLink, #settingsLink').removeClass('hide');
-		}
 	}
 
 	function selectActivePill() {

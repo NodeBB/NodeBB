@@ -25,6 +25,7 @@
     "no-user": "Användare hittades inte",
     "no-teaser": "Förtexten hittades inte",
     "no-privileges": "Du har inte rättigheter nog för den här åtgärden.",
+    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "Kategorin inaktiverad",
     "topic-locked": "Ämnet låst",
     "still-uploading": "Vänta medan uppladdningen slutförs.",

@@ -25,6 +25,7 @@
     "no-user": "Kasutajat ei eksisteeri",
     "no-teaser": "Eelvaadet ei eksisteeri",
     "no-privileges": "Sul pole piisvalt õigusi.",
+    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "Kategooria keelatud",
     "topic-locked": "Teema lukustatud",
     "still-uploading": "Palun oota, kuni üleslaadimised on laetud.",

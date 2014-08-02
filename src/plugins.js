@@ -184,29 +184,31 @@ var fs = require('fs'),
 						Plugins.staticDirs[pluginData.id] = path.join(pluginPath, pluginData.staticDir);
 					}
 
-					for(var key in pluginData.staticDirs) {
-						(function(mappedPath) {
-							if (pluginData.staticDirs.hasOwnProperty(mappedPath)) {
-								if (Plugins.staticDirs[mappedPath]) {
-									winston.warn('[plugins/' + pluginData.id + '] Mapped path (' + mappedPath + ') already specified!');
-								} else if (!validMappedPath.test(mappedPath)) {
-									winston.warn('[plugins/' + pluginData.id + '] Invalid mapped path specified: ' + mappedPath + '. Path must adhere to: ' + validMappedPath.toString());
-								} else {
-									realPath = pluginData.staticDirs[mappedPath];
-									staticDir = path.join(pluginPath, realPath);
+					function mapStaticDirs(mappedPath) {
+						if (Plugins.staticDirs[mappedPath]) {
+							winston.warn('[plugins/' + pluginData.id + '] Mapped path (' + mappedPath + ') already specified!');
+						} else if (!validMappedPath.test(mappedPath)) {
+							winston.warn('[plugins/' + pluginData.id + '] Invalid mapped path specified: ' + mappedPath + '. Path must adhere to: ' + validMappedPath.toString());
+						} else {
+							realPath = pluginData.staticDirs[mappedPath];
+							staticDir = path.join(pluginPath, realPath);
 
-									(function(staticDir) {
-										fs.exists(staticDir, function(exists) {
-											if (exists) {
-												Plugins.staticDirs[pluginData.id + '/' + mappedPath] = staticDir;
-											} else {
-												winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' + mappedPath + ' => ' + staticDir + '\' not found.');
-											}
-										});
-									}(staticDir));
-								}
-							}
-						}(key));
+							(function(staticDir) {
+								fs.exists(staticDir, function(exists) {
+									if (exists) {
+										Plugins.staticDirs[pluginData.id + '/' + mappedPath] = staticDir;
+									} else {
+										winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' + mappedPath + ' => ' + staticDir + '\' not found.');
+									}
+								});
+							}(staticDir));
+						}
+					}
+
+					for(var key in pluginData.staticDirs) {
+						if (pluginData.staticDirs.hasOwnProperty(key)) {
+							mapStaticDirs(key);
+						}
 					}
 
 					next();
@@ -262,8 +264,10 @@ var fs = require('fs'),
 
 							async.each(languages, function(pathToLang, next) {
 								fs.readFile(pathToLang, function(err, file) {
+									var json;
+
 									try {
-										var json = JSON.parse(file.toString());
+										json = JSON.parse(file.toString());
 									} catch (err) {
 										winston.error('[plugins] Unable to parse custom language file: ' + pathToLang + '\r\n' + err.stack);
 										return next(err);
@@ -370,7 +374,7 @@ var fs = require('fs'),
 								// omg, after 6 months I finally realised what this does...
 								// It adds the callback to the arguments passed-in, since the callback
 								// is defined in *this* file (the async cb), and not the hooks themselves.
-								var	value = hookObj.method.apply(Plugins, value.concat(function() {
+								value = hookObj.method.apply(Plugins, value.concat(function() {
 									next(arguments[0], Array.prototype.slice.call(arguments, 1));
 								}));
 
@@ -587,6 +591,7 @@ var fs = require('fs'),
 				plugins[i].id = plugins[i].name;
 				plugins[i].installed = false;
 				plugins[i].active = false;
+				plugins[i].url = plugins[i].repository ? plugins[i].repository.url : '';
 				pluginMap[plugins[i].name] = plugins[i];
 			}
 
@@ -601,7 +606,7 @@ var fs = require('fs'),
 					pluginMap[plugin.id].id = pluginMap[plugin.id].id || plugin.id;
 					pluginMap[plugin.id].name = pluginMap[plugin.id].name || plugin.id;
 					pluginMap[plugin.id].description = plugin.description;
-					pluginMap[plugin.id].url = plugin.url;
+					pluginMap[plugin.id].url = pluginMap[plugin.id].url || plugin.url;
 					pluginMap[plugin.id].installed = true;
 
 					Plugins.isActive(plugin.id, function(err, active) {
@@ -685,8 +690,10 @@ var fs = require('fs'),
 							fs.readFile(path.join(file, 'plugin.json'), next);
 						},
 						function(configJSON, next) {
+							var config;
+
 							try {
-								var config = JSON.parse(configJSON);
+								config = JSON.parse(configJSON);
 							} catch (err) {
 								winston.warn("Plugin: " + file + " is corrupted or invalid. Please check plugin.json for errors.");
 								return next(err, null);

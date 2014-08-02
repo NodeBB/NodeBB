@@ -25,6 +25,7 @@
     "no-user": "Utilizatorul nu există",
     "no-teaser": "Rezumatul nu există",
     "no-privileges": "Nu ai destule privilegii pentru această acțiune.",
+    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "Categorie dezactivată",
     "topic-locked": "Subiect Închis",
     "still-uploading": "Te rugăm să aștepți până se termină uploadul.",

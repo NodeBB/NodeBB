@@ -25,6 +25,7 @@
     "no-user": "المستخدم لا يوجد",
     "no-teaser": "Teaser doesn't exist",
     "no-privileges": "You don't have enough privileges for this action.",
+    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "Category disabled",
     "topic-locked": "الموضوع مقفول",
     "still-uploading": "الرجاء انتظار الرفع",

@@ -25,6 +25,7 @@
     "no-user": "Cet utilisateur n'existe pas",
     "no-teaser": "L’aperçu n'existe pas",
     "no-privileges": "Vous n'avez pas les privilèges nécessaires pour effectuer cette action.",
+    "no-emailers-configured": "Un email de test n'a pas pu être envoyé car aucun plugin de gestion des emails n'était chargé",
     "category-disabled": "Catégorie désactivée",
     "topic-locked": "Sujet verrouillé",
     "still-uploading": "Veuillez patienter pendant le téléchargement.",

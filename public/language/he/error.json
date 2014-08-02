@@ -25,6 +25,7 @@
     "no-user": "משתמש אינו קיים",
     "no-teaser": "גרין (טיזר) אינו קיים",
     "no-privileges": "ההרשאות שלך אינן מספיקות לביצוי פעולה זו",
+    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "קטגוריה לא פעילה",
     "topic-locked": "נושא נעול",
     "still-uploading": "אנא המתן לסיום ההעלאות",

@@ -163,21 +163,29 @@ define('forum/users', function() {
 	}
 
 	function updateUser(data) {
-		var userEl = $('#users-container li[data-uid="' + data.uid +'"]');
+		var usersContainer = $('#users-container');
+		var userEl = usersContainer.find('li[data-uid="' + data.uid +'"]');
 		if (!data.online) {
 			userEl.remove();
-		} else {
-			ajaxify.loadTemplate('users', function(usersTemplate) {
-				var html = templates.parse(templates.getBlock(usersTemplate, 'users'), {users: [data]});
-				translator.translate(html, function(translated) {
-					if (!userEl.length) {
-						$('#users-container').append(translated);
-					} else {
-						userEl.replaceWith(translated);
-					}
-				});
-			});
+			return;
 		}
+
+		ajaxify.loadTemplate('users', function(usersTemplate) {
+			var html = templates.parse(templates.getBlock(usersTemplate, 'users'), {users: [data]});
+			translator.translate(html, function(translated) {
+				if (userEl.length) {
+					userEl.replaceWith(translated);
+					return;
+				}
+
+				var anonBox = usersContainer.find('li.anon-user');
+				if (anonBox.length) {
+					$(translated).insertBefore(anonBox);
+				} else {
+					usersContainer.append(translated);
+				}
+			});
+		});
 	}
 
 	function updateAnonCount() {
