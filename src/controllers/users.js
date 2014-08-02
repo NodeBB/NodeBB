@@ -14,11 +14,7 @@ usersController.getOnlineUsers = function(req, res, next) {
 			return next(err);
 		}
 		var onlineUsers = [],
-			uid = 0;
-
-		if (req.user) {
-			uid = req.user.uid;
-		}
+			uid = req.user ? req.user.uid : 0;
 
 		user.isAdministrator(uid, function (err, isAdministrator) {
 			if(err) {
@@ -26,8 +22,8 @@ usersController.getOnlineUsers = function(req, res, next) {
 			}
 
 			if (!isAdministrator) {
-				users = users.filter(function(item) {
-					return item.status !== 'offline';
+				users = users.filter(function(user) {
+					return user.status !== 'offline';
 				});
 			}
 
