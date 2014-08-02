@@ -153,7 +153,7 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 
 	function onNewNotification(data) {
 		var tid = ajaxify.variables.get('topic_id');
-		if (data && data.tid && parseInt(data.tid, 10) === tid) {
+		if (data && data.tid && parseInt(data.tid, 10) === parseInt(tid, 10)) {
 			socket.emit('topics.markTopicNotificationsRead', tid);
 		}
 	}
