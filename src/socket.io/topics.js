@@ -304,7 +304,7 @@ SocketTopics.moveAll = function(socket, data, callback) {
 				return callback(err);
 			}
 
-			async.each(tids, function(tid, next) {
+			async.eachLimit(tids, 10, function(tid, next) {
 				threadTools.move(tid, data.cid, socket.uid, next);
 			}, callback);
 		});
