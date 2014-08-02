@@ -144,18 +144,14 @@ SocketPosts.getRawPost = function(socket, pid, callback) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
 			posts.getPostFields(pid, ['content', 'deleted'], next);
+		},
+		function(postData, next) {
+			if (parseInt(postData.deleted, 10) === 1) {
+				return next(new Error('[[error:no-post]]'));
+			}
+			next(null, postData.content);
 		}
-	], function(err, post) {
-		if(err) {
-			return callback(err);
-		}
-
-		if(parseInt(post.deleted, 10) === 1) {
-			return callback(new Error('[[error:no-post]]'));
-		}
-
-		callback(null, post.content);
-	});
+	], callback);
 };
 
 SocketPosts.edit = function(socket, data, callback) {
