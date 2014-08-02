@@ -23,10 +23,10 @@ module.exports = function(privileges) {
 
 			async.parallel({
 				'topics:reply': function(next) {
-					helpers.allowedTo('topics:reply', uid, cid, next);
+					helpers.allowedTo('topics:reply', uid, [cid], next);
 				},
 				read: function(next) {
-					helpers.allowedTo('read', uid, cid, next);
+					helpers.allowedTo('read', uid, [cid], next);
 				},
 				isOwner: function(next) {
 					topics.isOwner(tid, uid, next);
@@ -53,8 +53,8 @@ module.exports = function(privileges) {
 				var deletable = isAdminOrMod || results.isOwner;
 
 				callback(null, {
-					'topics:reply': results['topics:reply'],
-					read: results.read,
+					'topics:reply': results['topics:reply'][0],
+					read: results.read[0],
 					view_thread_tools: editable || deletable,
 					editable: editable,
 					deletable: deletable,

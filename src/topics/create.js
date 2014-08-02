@@ -200,9 +200,6 @@ module.exports = function(Topics) {
 			},
 			function(data, next) {
 				postData = data;
-				next();
-			},
-			function(next) {
 				Topics.markAsUnreadForAll(tid, next);
 			},
 			function(next) {
@@ -218,9 +215,6 @@ module.exports = function(Topics) {
 			function(topicData, next) {
 				topicData.title = validator.escape(topicData.title);
 				postData.topic = topicData;
-				next();
-			},
-			function(next) {
 				posts.getPidIndex(postData.pid, next);
 			},
 			function(index, next) {

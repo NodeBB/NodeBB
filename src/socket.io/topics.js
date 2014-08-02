@@ -73,12 +73,10 @@ SocketTopics.markAsRead = function(socket, tid) {
 
 	topics.markAsRead(tid, socket.uid, function(err) {
 		topics.pushUnreadCount(socket.uid);
-		topics.markTopicNotificationsRead(tid, socket.uid);
 	});
 };
 
 SocketTopics.markTidsRead = function(socket, tids, callback) {
-
 	if (!Array.isArray(tids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -96,6 +94,13 @@ SocketTopics.markTidsRead = function(socket, tids, callback) {
 
 		callback();
 	});
+};
+
+SocketTopics.markTopicNotificationsRead = function(socket, tid, callback) {
+	if(!tid || !socket.uid) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	topics.markTopicNotificationsRead(tid, socket.uid);
 };
 
 SocketTopics.markAllRead = function(socket, data, callback) {

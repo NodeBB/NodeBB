@@ -26,6 +26,7 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 			events.removeListeners();
 
 			socket.removeListener('event:new_post', onNewPost);
+			socket.removeListener('event:new_notification', onNewNotification);
 		}
 	});
 
@@ -65,6 +66,7 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 		navigator.init('.posts > .post-row', postCount, Topic.navigatorCallback, Topic.toTop, Topic.toBottom);
 
 		socket.on('event:new_post', onNewPost);
+		socket.on('event:new_notification', onNewNotification);
 
 		$(window).on('scroll', updateTopicTitle);
 
@@ -145,9 +147,15 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 			var postcount = $('.user_postcount_' + data.posts[i].uid);
 			postcount.html(parseInt(postcount.html(), 10) + 1);
 		}
-
 		socket.emit('topics.markAsRead', tid);
 		createNewPosts(data);
+	}
+
+	function onNewNotification(data) {
+		var tid = ajaxify.variables.get('topic_id');
+		if (data && data.tid && parseInt(data.tid, 10) === tid) {
+			socket.emit('topics.markTopicNotificationsRead', tid);
+		}
 	}
 
 	function addBlockQuoteHandler() {

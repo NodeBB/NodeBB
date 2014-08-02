@@ -21,11 +21,6 @@ helpers.some = function(tasks, callback) {
 };
 
 helpers.allowedTo = function(privilege, uid, cids, callback) {
-
-	if (!Array.isArray(cids)) {
-		cids = [cids];
-	}
-
 	if (parseInt(uid, 10) === 0) {
 		return isGuestAllowedTo(privilege, cids, callback);
 	}
@@ -61,9 +56,6 @@ helpers.allowedTo = function(privilege, uid, cids, callback) {
 			result.push((!results.userPrivilegeExists[i] && !results.groupPrivilegeExists[i]) || results.hasUserPrivilege[i] || results.hasGroupPrivilege[i]);
 		}
 
-		if (result.length === 1) {
-			result = result[0];
-		}
 
 		callback(null, result);
 	});
@@ -98,10 +90,6 @@ function isGuestAllowedTo(privilege, cids, callback) {
 				(results.groupPrivilegeExists[i] && results.hasGroupPrivilege[i] === true);
 
 			result.push(!results.userPrivilegeExists[i] && groupPriv);
-		}
-
-		if (result.length === 1) {
-			result = result[0];
 		}
 
 		callback(null, result);
