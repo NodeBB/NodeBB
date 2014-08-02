@@ -160,6 +160,10 @@ var async = require('async'),
 	};
 
 	function shouldPush(uid, newNotifObj, callback) {
+		if (!newNotifObj) {
+			return callback(null, false);
+		}
+
 		hasNotification(newNotifObj.uniqueId, uid, function(err, hasNotification) {
 			if (err) {
 				return callback(err);
