@@ -257,7 +257,7 @@ var ajaxify = ajaxify || {};
 		}
 
 		function hrefEmpty(href) {
-			return href === undefined || href === '' || href === 'javascript:;' || href === window.location.href + "#" || href.slice(-1) === "#";
+			return href === undefined || href === '' || href === 'javascript:;' || href === window.location.href + "#" || href.slice(0, 1) === "#";
 		}
 
 		// Enhancing all anchors to ajaxify...
