@@ -214,7 +214,7 @@ var async = require('async'),
 
 	Notifications.markRead = function(nid, uid, callback) {
 		callback = callback || function() {};
-		if (!parseInt(uid, 10)) {
+		if (!parseInt(uid, 10) || !parseInt(nid, 10)) {
 			return callback();
 		}
 

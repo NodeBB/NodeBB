@@ -92,7 +92,7 @@ var db = require('./database'),
 				return callback(err);
 			}
 
-			if (!mids || !mids.length) {
+			if (!Array.isArray(mids) || !mids.length) {
 				return callback(null, []);
 			}
 
