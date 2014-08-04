@@ -25,7 +25,7 @@
     "no-user": "用户不存在",
     "no-teaser": "主题预览不存在",
     "no-privileges": "您没有足够的权限进行此操作。",
-    "no-emailers-configured": "未加载任何电子邮箱插件，无法发送测试电邮",
+    "no-emailers-configured": "未加载任何电子邮箱插件，无法发送测试邮件",
     "category-disabled": "版块已禁用",
     "topic-locked": "主题已锁定",
     "still-uploading": "请等待上传完成",
