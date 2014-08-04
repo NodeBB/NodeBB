@@ -1,7 +1,7 @@
 {
-    "view_group": "View Group",
-    "details.title": "Group Details",
-    "details.members": "Member List",
-    "details.has_no_posts": "This group's members have not made any posts.",
-    "details.latest_posts": "Latest Posts"
+    "view_group": "Voir le groupe",
+    "details.title": "Informations du groupe",
+    "details.members": "Liste des membres",
+    "details.has_no_posts": "Ce membre du groupe n'a envoyé aucun message.",
+    "details.latest_posts": "Derniers messages"
 }
