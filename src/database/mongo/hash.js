@@ -136,14 +136,13 @@ module.exports = function(db, module) {
 	};
 
 	module.incrObjectFieldBy = function(key, field, value, callback) {
+		callback = callback || function() {};
 		var data = {};
 		field = helpers.fieldToString(field);
 		data[field] = value;
 
 		db.collection('objects').findAndModify({_key:key}, {}, {$inc: data}, {new:true, upsert:true}, function(err, result) {
-			if(typeof callback === 'function') {
-				callback(err, result ? result[field] : null);
-			}
+			callback(err, result ? result[field] : null);
 		});
 	};
 };

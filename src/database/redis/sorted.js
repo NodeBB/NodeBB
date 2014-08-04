@@ -125,11 +125,7 @@ module.exports = function(redisClient, module) {
 		multi[reverse ? 'zrevrange' : 'zrange']('temp', start, stop);
 		multi.del('temp');
 		multi.exec(function(err, results) {
-			if (!err && typeof callback === 'function') {
-				callback(null, results[1]);
-			} else if (err) {
-				callback(err);
-			}
+			callback(err, results ? results[1] : null);
 		});
 	}
 };
