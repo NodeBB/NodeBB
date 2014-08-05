@@ -329,9 +329,9 @@ var ajaxify = ajaxify || {};
 
 		templates.registerLoader(ajaxify.loadTemplate);
 
-		$.when($.getJSON(RELATIVE_PATH + '/templates/config.json'), $.getJSON(RELATIVE_PATH + '/api/get_templates_listing')).done(function (config_data, templates_data) {
-			templatesConfig = config_data[0];
-			availableTemplates = templates_data[0];
+		$.getJSON(RELATIVE_PATH + '/api/get_templates_listing', function (data) {
+			templatesConfig = data.templatesConfig;
+			availableTemplates = data.availableTemplates;
 
 			app.load();
 		});
