@@ -360,33 +360,45 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 			return composerAlert('[[error:content-too-short, ' + config.minimumPostLength + ']]');
 		}
 
+		var composerData = {}, action;
+
 		if (parseInt(postData.cid, 10) > 0) {
-			socket.emit('topics.post', {
+			composerData = {
 				title: titleEl.val(),
 				content: bodyEl.val(),
 				topic_thumb: thumbEl.val() || '',
 				category_id: postData.cid,
 				tags: tags.getTags(post_uuid)
-			}, function(err, topic) {
+			};
+
+			action = 'topics.post';
+			socket.emit(action, composerData, function(err, topic) {
 				done(err);
+
 				if (!err) {
 					ajaxify.go('topic/' + topic.slug);
 				}
 			});
 		} else if (parseInt(postData.tid, 10) > 0) {
-			socket.emit('posts.reply', {
+			composerData = {
 				tid: postData.tid,
 				content: bodyEl.val(),
 				toPid: postData.toPid
-			}, done);
+			};
+
+			action = 'posts.reply';
+			socket.emit(action, composerData, done);
 		} else if (parseInt(postData.pid, 10) > 0) {
-			socket.emit('posts.edit', {
+			composerData = {
 				pid: postData.pid,
 				content: bodyEl.val(),
 				title: titleEl.val(),
 				topic_thumb: thumbEl.val() || '',
 				tags: tags.getTags(post_uuid)
-			}, done);
+			};
+
+			action = 'posts.edit';
+			socket.emit(action, composerData, done);
 		}
 
 		function done(err) {
@@ -401,6 +413,8 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 
 			discard(post_uuid);
 			drafts.removeDraft(postData.save_id);
+
+			$(window).trigger('action:composer.' + action, composerData);
 		}
 	}
 
