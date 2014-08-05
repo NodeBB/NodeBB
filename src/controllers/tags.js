@@ -13,7 +13,7 @@ tagsController.getTag = function(req, res, next) {
 			return next(err);
 		}
 
-		if (!tids || !tids.length) {
+		if (Array.isArray(tids) && !tids.length) {
 			topics.deleteTag(tag);
 			return res.render('tag', {topics: [], tag:tag});
 		}

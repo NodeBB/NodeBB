@@ -47,7 +47,6 @@ module.exports = function(Topics) {
 			return '';
 		}
 		tag = tag.trim().toLowerCase();
-		tag = tag.replace(/&/g, '&amp;');
 		tag = tag.replace(/[,\/#!$%\^\*;:{}=_`<>'"~()?\|]/g, '');
 		tag = tag.substr(0, meta.config.maximumTagLength || 15);
 		var matches = tag.match(/^[.-]*(.+?)[.-]*$/);
