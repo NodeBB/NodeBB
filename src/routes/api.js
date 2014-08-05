@@ -150,7 +150,10 @@ function getTemplatesListing(req, res, next) {
 			plugins.fireHook('filter:templates.get_virtual', [], next);
 		},
 		config: function(next) {
-			fs.readFile(path.join(nconf.get('views_dir'), 'config.json'), next);
+			fs.readFile(path.join(nconf.get('views_dir'), 'config.json'), function(err, config) {
+				config = JSON.parse(config.toString());
+				plugins.fireHook('filter:templates.get_config', config, next);
+			});
 		},
 	}, function(err, results) {
 		if (err) {
