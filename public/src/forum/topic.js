@@ -72,9 +72,7 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 
 		$(window).trigger('action:topic.loaded');
 
-		socket.emit('topics.markAsRead', tid);
-		socket.emit('topics.markTopicNotificationsRead', tid);
-		socket.emit('topics.increaseViewCount', tid);
+		socket.emit('topics.enter', tid);
 	};
 
 	Topic.toTop = function() {

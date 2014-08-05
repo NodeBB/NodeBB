@@ -54,6 +54,15 @@ SocketTopics.post = function(socket, data, callback) {
 	});
 };
 
+SocketTopics.enter = function(socket, tid, callback) {
+	if (!tid || !socket.uid) {
+		return;
+	}
+	SocketTopics.markAsRead(socket, tid);
+	topics.markTopicNotificationsRead(tid, socket.uid);
+	topics.increaseViewCount(tid);
+};
+
 SocketTopics.postcount = function(socket, tid, callback) {
 	topics.getTopicField(tid, 'postcount', callback);
 };
