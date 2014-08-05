@@ -365,6 +365,8 @@ accountsController.accountSettings = function(req, res, next) {
 			userData.settings = results.settings;
 			userData.languages = results.languages;
 
+			userData.disableEmailSubscriptions = meta.config.disableEmailSubscriptions !== undefined && parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
+
 			res.render('account/settings', userData);
 		});
 	});
