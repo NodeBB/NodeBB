@@ -364,7 +364,7 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 		postHtml.find('.move').toggleClass('none', !privileges.move);
 		postHtml.find('.reply, .quote').toggleClass('none', !$('.post_reply').length);
 		var isSelfPost = parseInt(postHtml.attr('data-uid'), 10) === parseInt(app.uid, 10);
-		postHtml.find('.chat, .flag').toggleClass('none', isSelfPost);
+		postHtml.find('.chat, .flag').toggleClass('none', isSelfPost || !app.uid);
 	}
 
 	function loadMorePosts(direction) {
