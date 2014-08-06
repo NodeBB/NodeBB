@@ -156,6 +156,10 @@
 		db.isSetMember('group:' + groupName + ':members', uid, callback);
 	};
 
+	Groups.isMembers = function(uids, groupName, callback) {
+		db.isSetMembers('group:' + groupName + ':members', uids, callback);
+	};
+
 	Groups.isMemberOfGroups = function(uid, groups, callback) {
 		groups = groups.map(function(groupName) {
 			return 'group:' + groupName + ':members';
