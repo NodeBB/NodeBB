@@ -93,7 +93,7 @@ var db = require('./database'),
 				category.pageCount = results.pageCount;
 				category.topic_row_size = 'col-md-9';
 
-				plugins.fireHook('filter:category.get', category, function(err, category) {
+				plugins.fireHook('filter:category.get', category, uid, function(err, category) {
 					callback(null, category);
 				});
 			});
