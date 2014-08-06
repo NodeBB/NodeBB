@@ -238,7 +238,9 @@ var db = require('./database'),
 
 	Categories.markAsUnreadForAll = function(cid, callback) {
 		callback = callback || function() {};
-		db.delete('cid:' + cid + ':read_by_uid', callback);
+		db.delete('cid:' + cid + ':read_by_uid', function(err) {
+			callback(err);
+		});
 	};
 
 	Categories.hasReadCategories = function(cids, uid, callback) {
