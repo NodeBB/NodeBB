@@ -26,7 +26,6 @@ module.exports = function(Meta) {
 	};
 
 	Meta.title.parseFragment = function (urlFragment, language, callback) {
-		console.log(urlFragment);
 		var	translated = ['', 'recent', 'unread', 'users', 'notifications'];
 		if (translated.indexOf(urlFragment) !== -1) {
 			if (!urlFragment.length) {
