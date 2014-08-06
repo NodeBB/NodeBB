@@ -44,6 +44,10 @@ SocketCategories.loadMore = function(socket, data, callback) {
 			return callback(err);
 		}
 
+		if (!results.privileges.read) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+
 		var start = parseInt(data.after, 10),
 			end = start + results.settings.topicsPerPage - 1;
 
