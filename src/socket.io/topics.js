@@ -150,25 +150,58 @@ SocketTopics.markCategoryTopicsRead = function(socket, cid, callback) {
 };
 
 SocketTopics.markAsUnreadForAll = function(socket, tids, callback) {
-	if(!Array.isArray(tids)) {
+	if (!Array.isArray(tids)) {
 		return callback(new Error('[[error:invalid-tid]]'));
 	}
 
-	async.each(tids, function(tid, next) {
-		topics.markAsUnreadForAll(tid, function(err) {
-			if(err) {
-				return next(err);
-			}
+	if (!socket.uid) {
+		return callback(new Error('[[error:no-privileges]]'));
+	}
 
-			db.sortedSetAdd('topics:recent', Date.now(), tid, function(err) {
-				if(err) {
+	user.isAdministrator(socket.uid, function(err, isAdmin) {
+		if (err) {
+			return callback(err);
+		}
+
+		async.each(tids, function(tid, next) {
+			async.waterfall([
+				function(next) {
+					threadTools.exists(tid, next);
+				},
+				function(exists, next) {
+					if (!exists) {
+						return next(new Error('[[error:invalid-tid]]'));
+					}
+					topics.getTopicField(tid, 'cid', next);
+				},
+				function(cid, next) {
+					user.isModerator(socket.uid, cid, next);
+				}
+			], function(err, isMod) {
+				if (err) {
 					return next(err);
 				}
-				topics.pushUnreadCount();
-				next();
+
+				if (!isAdmin && !isMod) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
+
+				topics.markAsUnreadForAll(tid, function(err) {
+					if(err) {
+						return next(err);
+					}
+
+					db.sortedSetAdd('topics:recent', Date.now(), tid, function(err) {
+						if(err) {
+							return next(err);
+						}
+						topics.pushUnreadCount();
+						next();
+					});
+				});
 			});
-		});
-	}, callback);
+		}, callback);
+	});
 };
 
 SocketTopics.delete = function(socket, data, callback) {
