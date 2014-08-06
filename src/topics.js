@@ -413,8 +413,12 @@ var async = require('async'),
 	};
 
 	Topics.isOwner = function(tid, uid, callback) {
+		uid = parseInt(uid, 10);
+		if (uid === 0) {
+			return callback(null, false);
+		}
 		Topics.getTopicField(tid, 'uid', function(err, author) {
-			callback(err, parseInt(author, 10) === parseInt(uid, 10));
+			callback(err, parseInt(author, 10) === uid);
 		});
 	};
 

@@ -342,20 +342,31 @@ SocketTopics.loadMore = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	user.getSettings(socket.uid, function(err, settings) {
-		if(err) {
+	async.parallel({
+		settings: function(next) {
+			user.getSettings(socket.uid, next);
+		},
+		privileges: function(next) {
+			privileges.topics.get(data.tid, socket.uid, next);
+		}
+	}, function(err, results) {
+		if (err) {
 			return callback(err);
 		}
 
+		if (!results.privileges.read) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+
 		var start = Math.max(parseInt(data.after, 10) - 1, 0),
-			end = start + settings.postsPerPage - 1;
+			end = start + results.settings.postsPerPage - 1;
 
 		var set = 'tid:' + data.tid + ':posts',
 			reverse = false;
 
-		if (settings.topicPostSort === 'newest_to_oldest') {
+		if (results.settings.topicPostSort === 'newest_to_oldest') {
 			reverse = true;
-		} else if (settings.topicPostSort === 'most_votes') {
+		} else if (results.settings.topicPostSort === 'most_votes') {
 			reverse = true;
 			set = 'tid:' + data.tid + ':posts:votes';
 		}
@@ -365,7 +376,7 @@ SocketTopics.loadMore = function(socket, data, callback) {
 				topics.getTopicPosts(data.tid, set, start, end, socket.uid, reverse, next);
 			},
 			privileges: function(next) {
-				privileges.topics.get(data.tid, socket.uid, next);
+				next(null, results.privileges);
 			},
 			'reputation:disabled': function(next) {
 				next(null, parseInt(meta.config['reputation:disabled'], 10) === 1);
