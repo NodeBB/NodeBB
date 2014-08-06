@@ -4,7 +4,6 @@ var	async = require('async'),
 	db = require('../database'),
 	categories = require('../categories'),
 	privileges = require('../privileges'),
-	meta = require('../meta'),
 	user = require('../user'),
 
 	SocketCategories = {};
