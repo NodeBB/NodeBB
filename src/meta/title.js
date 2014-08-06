@@ -45,7 +45,10 @@ module.exports = function(Meta) {
 			require('../topics').getTopicField(tid, 'title', callback);
 		} else if (tests.isTag.test(urlFragment)) {
 			var tag = urlFragment.match(/tags\/([\s\S]+)/)[1];
-			callback(null, tag);
+
+			translator.translate('[[pages:tags, ' + tag + ']]', language, function(translated) {
+				callback(null, translated);
+			});
 		} else if (tests.isUserPage.test(urlFragment)) {
 			var	matches = urlFragment.match(/user\/([^\/]+)\/?([\w]+)?/),
 				userslug = matches[1],
