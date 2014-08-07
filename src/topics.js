@@ -244,9 +244,9 @@ var async = require('async'),
 				}
 
 				topics = topics.filter(function(topic) {
-					return !topic.category.disabled ||
-						!topic.deleted || (topic.deleted && isAdminOrMod[topic.cid]) ||
-						parseInt(topic.uid, 10) === parseInt(uid, 10);
+					return !topic.category.disabled &&
+						(!topic.deleted || (topic.deleted && isAdminOrMod[topic.cid]) ||
+						parseInt(topic.uid, 10) === parseInt(uid, 10));
 				});
 
 				plugins.fireHook('filter:topics.get', topics, callback);
