@@ -258,7 +258,9 @@ var db = require('./database'),
 		db.sortedSetAdd('uid:' + uid + ':chats:unread', Date.now(), toUid, callback);
 	};
 
-	// todo #1798 -- this utility method creates a room name given an array of uids.
+	/*
+	todo #1798 -- this utility method creates a room name given an array of uids.
+	
 	Messaging.uidsToRoom = function(uids, callback) {
 		uid = parseInt(uid, 10);
 		if (typeof uid === 'number' && Array.isArray(roomUids)) {
@@ -274,7 +276,7 @@ var db = require('./database'),
 		} else {
 			callback(new Error('invalid-uid-or-participant-uids'));
 		}
-	};
+	};*/
 
 	Messaging.verifySpammer = function(uid, callback) {
 		var messagesToCompare = 10;
