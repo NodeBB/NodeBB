@@ -26,11 +26,7 @@ var async = require('async'),
 
 	Topics.getTopicData = function(tid, callback) {
 		Topics.getTopicsData([tid], function(err, topics) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, topics ? topics[0] : null);
+			callback(err, Array.isArray(topics) && topics.length ? topics[0] : null);
 		});
 	};
 
