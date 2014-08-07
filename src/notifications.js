@@ -285,11 +285,21 @@ var async = require('async'),
 				return winston.error(err.message);
 			}
 
-			async.filter(nids, function(nid, next) {
-				db.getObjectField('notifications:' + nid, 'datetime', function(err, datetime) {
-					next(!err && parseInt(datetime, 10) < cutoffTime);
+			var keys = nids.map(function(nid) {
+				return 'notifications:' + nid;
+			});
+
+			db.getObjectsFields(keys, ['nid', 'datetime'], function(err, notifs) {
+				if (err) {
+					return winston.error(err.message);
+				}
+
+				var expiredNids = notifs.filter(function(notif) {
+					return notif && parseInt(notif.datetime, 10) < cutoffTime;
+				}).map(function(notif) {
+					return notif.nid;
 				});
-			}, function(expiredNids) {
+
 				async.each(expiredNids, function(nid, next) {
 					async.parallel([
 						function(next) {
@@ -303,15 +313,15 @@ var async = require('async'),
 						next(err);
 					});
 				}, function(err) {
-					if (!err) {
-						if (process.env.NODE_ENV === 'development') {
-							winston.info('[notifications.prune] Notification pruning completed. ' + numPruned + ' expired notification' + (numPruned !== 1 ? 's' : '') + ' removed.');
-						}
-						var diff = process.hrtime(start);
-						events.log('Pruning notifications took : ' + (diff[0] * 1e3 + diff[1] / 1e6) + ' ms');
-					} else {
-						winston.error('Encountered error pruning notifications: ' + err.message);
+					if (err) {
+						return winston.error('Encountered error pruning notifications: ' + err.message);
 					}
+
+					if (process.env.NODE_ENV === 'development') {
+						winston.info('[notifications.prune] Notification pruning completed. ' + numPruned + ' expired notification' + (numPruned !== 1 ? 's' : '') + ' removed.');
+					}
+					var diff = process.hrtime(start);
+					events.log('Pruning '+ numPruned + 'notifications took : ' + (diff[0] * 1e3 + diff[1] / 1e6) + ' ms');
 				});
 			});
 		});
