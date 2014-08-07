@@ -124,7 +124,7 @@ var async = require('async'),
 			nextStart: 0
 		};
 
-		if (!tids || !tids.length) {
+		if (!Array.isArray(tids) || !tids.length) {
 			return callback(null, returnTopics);
 		}
 
