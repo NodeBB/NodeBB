@@ -51,6 +51,10 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.getSetsMembers = function(keys, callback) {
+		throw new Error('not-implemented');
+	};
+
 	module.setCount = function(key, callback) {
 		module.getListRange(key, 0, -1, function(err, set) {
 			callback(err, set.length);

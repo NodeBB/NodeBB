@@ -296,6 +296,13 @@ var db = require('./database'),
 		db.getObjectField('category:' + cid, field, callback);
 	};
 
+	Categories.getMultipleCategoryFields = function(cids, fields, callback) {
+		var keys = cids.map(function(cid) {
+			return 'category:' + cid;
+		});
+		db.getObjectsFields(keys, fields, callback);
+	};
+
 	Categories.getCategoryFields = function(cid, fields, callback) {
 		db.getObjectFields('category:' + cid, fields, callback);
 	};

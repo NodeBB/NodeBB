@@ -104,6 +104,28 @@ module.exports = function(privileges) {
 		});
 	};
 
+	privileges.categories.isAdminOrMod = function(cids, uid, callback) {
+		async.parallel({
+			isModerators: function(next) {
+				user.isModerator(uid, cids, next);
+			},
+			isAdmin: function(next) {
+				user.isAdministrator(uid, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			var returnData = new Array(cids.length);
+			for (var i=0; i<cids.length; ++i) {
+				returnData[i] = results.isAdmin || results.isModerators[i];
+			}
+
+			callback(null, returnData);
+		});
+	};
+
 	privileges.categories.canMoveAllTopics = function(currentCid, targetCid, uid, callback) {
 		async.parallel({
 			isAdministrator: function(next) {

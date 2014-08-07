@@ -74,22 +74,16 @@ categoriesController.get = function(req, res, next) {
 		},
 		function(disabled, next) {
 			if (parseInt(disabled, 10) === 1) {
-				return next(new Error('category-disabled'));
+				return next(new Error('[[error:category-disabled]]'));
 			}
 
-			privileges.categories.get(cid, uid, function(err, categoryPrivileges) {
-				if (err) {
-					return next(err);
-				}
-
-				if (!categoryPrivileges.read) {
-					return next(new Error('[[error:no-privileges]]'));
-				}
-
-				next(null, categoryPrivileges);
-			});
+			privileges.categories.get(cid, uid, next);
 		},
 		function (privileges, next) {
+			if (!privileges.read) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+
 			user.getSettings(uid, function(err, settings) {
 				if (err) {
 					return next(err);
@@ -109,12 +103,6 @@ categoriesController.get = function(req, res, next) {
 				categories.getCategoryById(cid, start, end, uid, function (err, categoryData) {
 					if (err) {
 						return next(err);
-					}
-
-					if (categoryData) {
-						if (parseInt(categoryData.disabled, 10) === 1) {
-							return next(new Error('[[error:category-disabled]]'));
-						}
 					}
 
 					categoryData.privileges = privileges;
@@ -189,7 +177,6 @@ categoriesController.get = function(req, res, next) {
 				active: x === parseInt(page, 10)
 			});
 		}
-
 		res.render('category', data);
 	});
 };

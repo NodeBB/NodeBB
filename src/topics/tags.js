@@ -92,6 +92,25 @@ module.exports = function(Topics) {
 		});
 	};
 
+	Topics.getTopicsTagsObjects = function(tids, callback) {
+		var sets = tids.map(function(tid) {
+			return 'topic:' + tid + ':tags';
+		});
+
+		db.getSetsMembers(sets, function(err, members) {
+			if (err) {
+				return callback(err);
+			}
+
+			members.forEach(function(tags, index) {
+				if (Array.isArray(tags)) {
+					members[index] = mapToObject(tags);
+				}
+			})
+			callback(null, members);
+		});
+	};
+
 	function mapToObject(tags) {
 		if (!tags) {
 			return tags;
