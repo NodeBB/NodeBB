@@ -55,6 +55,7 @@ var async = require('async'),
 								}
 
 								db.sortedSetRemove(set, nidsToUniqueIds[nid]);
+								db.deleteObjectField('uid:' + uid + ':notifications:uniqueId:nid', nidsToUniqueIds[nid]);
 								return next();
 							}
 
@@ -141,7 +142,7 @@ var async = require('async'),
 				}
 
 				notifs = notifs.filter(function(notif) {
-					return notif !== null;
+					return !!notif;
 				}).sort(function(a, b) {
 					return parseInt(b.datetime, 10) - parseInt(a.datetime, 10);
 				}).map(function(notif) {
