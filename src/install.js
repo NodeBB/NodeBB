@@ -266,12 +266,19 @@ function setOnEmpty(key1, key2) {
 
 function enableDefaultTheme(next) {
 	var	meta = require('./meta');
-	winston.info('Enabling default theme: Lavender');
 
-	meta.themes.set({
-		type: 'local',
-		id: 'nodebb-theme-lavender'
-	}, next);
+	meta.configs.get('theme:id', function(err, id) {
+		if (err || id) {
+			winston.info('Previous theme detected, skipping enabling default theme');
+			return next(err);
+		}
+
+		winston.info('Enabling default theme: Lavender');
+		meta.themes.set({
+			type: 'local',
+			id: 'nodebb-theme-lavender'
+		}, next);
+	});
 }
 
 function createAdministrator(next) {
