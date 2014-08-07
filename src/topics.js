@@ -1,12 +1,11 @@
 "use strict";
 
 var async = require('async'),
-	gravatar = require('gravatar'),
 	validator = require('validator'),
 
 	db = require('./database'),
 	posts = require('./posts'),
-	utils = require('./../public/src/utils'),
+	utils = require('../public/src/utils'),
 	plugins = require('./plugins'),
 	user = require('./user'),
 	categories = require('./categories'),
