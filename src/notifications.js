@@ -300,7 +300,7 @@ var async = require('async'),
 					return notif.nid;
 				});
 
-				async.each(expiredNids, function(nid, next) {
+				async.eachLimit(expiredNids, 50, function(nid, next) {
 					async.parallel([
 						function(next) {
 							db.setRemove('notifications', nid, next);
@@ -321,7 +321,7 @@ var async = require('async'),
 						winston.info('[notifications.prune] Notification pruning completed. ' + numPruned + ' expired notification' + (numPruned !== 1 ? 's' : '') + ' removed.');
 					}
 					var diff = process.hrtime(start);
-					events.log('Pruning '+ numPruned + 'notifications took : ' + (diff[0] * 1e3 + diff[1] / 1e6) + ' ms');
+					events.log('Pruning '+ numPruned + ' notifications took : ' + (diff[0] * 1e3 + diff[1] / 1e6) + ' ms');
 				});
 			});
 		});
