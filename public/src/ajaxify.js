@@ -203,7 +203,7 @@ var ajaxify = ajaxify || {};
 		}
 
 		var location = document.location || window.location,
-			api_url = (url === '' || url === '/') ? 'home' : url,
+			api_url = (url === RELATIVE_PATH || url === '/' + RELATIVE_PATH) ? 'home' : url,
 			tpl_url = ajaxify.getCustomTemplateMapping(url.split('?')[0]);
 
 		if (!tpl_url) {
