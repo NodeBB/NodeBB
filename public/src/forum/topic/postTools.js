@@ -150,7 +150,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 			if($('.composer').length) {
 				composer.addQuote(tid, ajaxify.variables.get('topic_slug'), getData(button, 'data-index'), pid, topicName, username, quoted);
 			} else {
-				composer.newReply(tid, pid, topicName, '[[modules:composer.user_said, ' + username + ']]' + quoted);
+				composer.newReply(tid, pid, topicName, '[[modules:composer.user_said, ' + username + ']]\n' + quoted);
 			}
 		});
 	}

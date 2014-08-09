@@ -119,7 +119,7 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 		var uuid = composer.active;
 
 		if (uuid === undefined) {
-			composer.newReply(tid, pid, title, '[[modules:composer.user_said, ' + username + ']]' + text);
+			composer.newReply(tid, pid, title, '[[modules:composer.user_said, ' + username + ']]\n' + text);
 			return;
 		}
 		var postContainer = $('#cmp-uuid-' + uuid);
@@ -127,9 +127,9 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 		var prevText = bodyEl.val();
 		if (parseInt(tid, 10) !== parseInt(composer.posts[uuid].tid, 10)) {
 			var link = '[' + title + '](/topic/' + topicSlug + '/' + (parseInt(postIndex, 10) + 1) + ')';
-			translator.translate('[[modules:composer.user_said_in, ' + username + ', ' + link + ']]', onTranslated);
+			translator.translate('[[modules:composer.user_said_in, ' + username + ', ' + link + ']]\n', onTranslated);
 		} else {
-			translator.translate('[[modules:composer.user_said, ' + username + ']]', onTranslated);
+			translator.translate('[[modules:composer.user_said, ' + username + ']]\n', onTranslated);
 		}
 
 		function onTranslated(translated) {
