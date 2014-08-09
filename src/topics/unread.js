@@ -23,48 +23,45 @@ module.exports = function(Topics) {
 			done = false;
 
 		uid = parseInt(uid, 10);
-		if(uid === 0) {
+		if (uid === 0) {
 			return callback(null, unreadTids);
 		}
 
 		async.whilst(function() {
 			return unreadTids.length < 21 && !done;
-		}, function(callback) {
+		}, function(next) {
 			Topics.getLatestTids(start, stop, 'month', function(err, tids) {
 				if (err) {
-					return callback(err);
+					return next(err);
 				}
 
 				if (tids && !tids.length) {
 					done = true;
-					return callback();
+					return next();
 				}
 
 				Topics.hasReadTopics(tids, uid, function(err, read) {
-					if(err) {
-						return callback(err);
+					if (err) {
+						return next(err);
 					}
 
 					var newtids = tids.filter(function(tid, index) {
 						return !read[index];
 					});
 
-					privileges.topics.filter('read', newtids, uid, function(err, newtids) {
-						if(err) {
-							return callback(err);
-						}
+					unreadTids.push.apply(unreadTids, newtids);
 
-						unreadTids.push.apply(unreadTids, newtids);
+					start = stop + 1;
+					stop = start + 19;
 
-						start = stop + 1;
-						stop = start + 19;
-
-						callback();
-					});
+					next();
 				});
 			});
 		}, function(err) {
-			callback(err, unreadTids);
+			if (err) {
+				return callback(err);
+			}
+			privileges.topics.filter('read', unreadTids, uid, callback);
 		});
 	};
 
