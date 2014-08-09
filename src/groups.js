@@ -438,7 +438,7 @@
 		});
 	};
 
-	Groups.getUserGroups = function(uid, callback) {
+	Groups.getUserGroups = function(uids, callback) {
 		var ignoredGroups = ['registered-users'];
 
 		db.getSetMembers('groups', function(err, groupNames) {
@@ -466,19 +466,22 @@
 					return 'group:' + group.name + ':members';
 				});
 
-				db.isMemberOfSets(groupSets, uid, function(err, isMembers) {
-					if (err) {
-						return callback(err);
-					}
-
-					for(var i=isMembers.length - 1; i>=0; --i) {
-						if (!isMembers[i]) {
-							groupData.splice(i, 1);
+				async.map(uids, function(uid, next) {
+					db.isMemberOfSets(groupSets, uid, function(err, isMembers) {
+						if (err) {
+							return next(err);
 						}
-					}
 
-					callback(null, groupData);
-				});
+						var memberOf = [];
+						isMembers.forEach(function(isMember, index) {
+							if (isMember) {
+								memberOf.push(groupData[index]);
+							}
+						});
+
+						next(null, memberOf);
+					});
+				}, callback);
 			});
 		});
 	};
