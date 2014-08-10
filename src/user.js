@@ -68,8 +68,9 @@ var bcrypt = require('bcryptjs'),
 			if (err) {
 				return callback(err);
 			}
-
-			callback(null, modifyUserData(users, fieldsToRemove));
+			plugins.fireHook('filter:user.removeFields', fieldsToRemove, function(err, fields) {
+				callback(err, modifyUserData(users, fields));
+			});
 		});
 	};
 
@@ -94,7 +95,9 @@ var bcrypt = require('bcryptjs'),
 				return callback(err);
 			}
 
-			callback(null, modifyUserData(users, []));
+			plugins.fireHook('filter:user.removeFields', [], function(err, fields) {
+				callback(err, modifyUserData(users, fields));
+			});
 		});
 	};
 
