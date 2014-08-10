@@ -96,11 +96,12 @@ var ajaxify = ajaxify || {};
 					translator.translate(template, function(translatedTemplate) {
 						setTimeout(function() {
 							$('#content').html(translatedTemplate);
+
+							ajaxify.variables.parse();
+
 							ajaxify.widgets.render(tpl_url, url, function() {
 								$(window).trigger('action:ajaxify.end', {url: url});
 							});
-
-							ajaxify.variables.parse();
 
 							$(window).trigger('action:ajaxify.contentLoaded', {url: url});
 
