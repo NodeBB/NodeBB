@@ -12,14 +12,14 @@ var async = require('async'),
 
 module.exports = function(User) {
 
-	User.create = function(userData, callback) {
-		var gravatar = User.createGravatarURLFromEmail(userData.email);
+	User.create = function(data, callback) {
+		var gravatar = User.createGravatarURLFromEmail(data.email);
 		var timestamp = Date.now();
-		var password = userData.password;
+		var password = data.password;
 
-		userData = {
-			'username': userData.username.trim(),
-			'email': userData.email,
+		var userData = {
+			'username': data.username.trim(),
+			'email': data.email,
 			'joindate': timestamp,
 			'picture': gravatar,
 			'gravatarpicture': gravatar,
@@ -103,7 +103,7 @@ module.exports = function(User) {
 				}
 			},
 			customFields: function(next) {
-				plugins.fireHook('filter:user.custom_fields', userData, next);
+				plugins.fireHook('filter:user.custom_fields', [], next);
 			},
 			userData: function(next) {
 				plugins.fireHook('filter:user.create', userData, next);
@@ -113,7 +113,14 @@ module.exports = function(User) {
 				return callback(err);
 			}
 
-			userData = utils.merge(results.userData, results.customFields);
+			var customData = {};
+			results.customFields.forEach(function(customField) {
+				if (data[customField]) {
+					customData[customField] = data[customField];
+				}
+			});
+
+			userData = utils.merge(results.userData, customData);
 
 			var userNameChanged = !!results.renamedUsername;
 
