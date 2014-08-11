@@ -441,7 +441,7 @@ var socket,
 			searchButton.show();
 		}
 
-		searchButton.off().on('click', function(e) {
+		searchButton.on('click', function(e) {
 			if (!config.loggedIn && !config.allowGuestSearching) {
 				app.alert({
 					message:'[[error:search-requires-login]]',
