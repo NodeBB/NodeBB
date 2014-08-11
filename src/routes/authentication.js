@@ -97,9 +97,6 @@
 				return res.redirect(nconf.get('relative_path') + '/register' + (err.message ? '?error=' + err.message : ''));
 			}
 
-			delete userData['password-confirm'];
-			delete userData['_csrf'];
-
 			user.create(userData, function(err, uid) {
 				if (err || !uid) {
 					return res.redirect(nconf.get('relative_path') + '/register');
