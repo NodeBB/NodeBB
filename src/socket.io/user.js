@@ -227,6 +227,7 @@ SocketUser.getOnlineUsers = function(socket, uids, callback) {
 		if (err) {
 			return callback(err);
 		}
+
 		userData.forEach(function(user) {
 			if (user) {
 				returnData[user.uid] = user;
@@ -291,9 +292,9 @@ SocketUser.loadMore = function(socket, data, callback) {
 SocketUser.setStatus = function(socket, status, callback) {
 	var server = require('./index');
 	user.setUserField(socket.uid, 'status', status, function(err) {
-		SocketUser.isOnline(socket, socket.uid, function(err, data) {
-			server.server.sockets.emit('user.isOnline', err, data);
-			callback(err, data);
+		SocketUser.isOnline(socket, [socket.uid], function(err, data) {
+			server.server.sockets.emit('user.isOnline', err, data[0]);
+			callback(err, data[0]);
 		});
 	});
 };

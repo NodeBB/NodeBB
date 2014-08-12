@@ -93,8 +93,8 @@ Sockets.init = function(server) {
 								uid: uid
 							});
 
-							socketUser.isOnline(socket, uid, function(err, data) {
-								socket.broadcast.emit('user.isOnline', err, data);
+							socketUser.isOnline(socket, [uid], function(err, data) {
+								socket.broadcast.emit('user.isOnline', err, data[0]);
 							});
 						});
 					});
@@ -114,8 +114,8 @@ Sockets.init = function(server) {
 
 			if (uid && Sockets.getUserSockets(uid).length <= 1) {
 				db.sortedSetRemove('users:online', uid, function(err) {
-					socketUser.isOnline(socket, uid, function(err, data) {
-						socket.broadcast.emit('user.isOnline', err, data);
+					socketUser.isOnline(socket, [uid], function(err, data) {
+						socket.broadcast.emit('user.isOnline', err, data[0]);
 					});
 				});
 			}

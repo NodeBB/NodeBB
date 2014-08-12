@@ -442,10 +442,6 @@ var bcrypt = require('bcryptjs'),
 				return user;
 			});
 
-			if (uids.length === 1) {
-				userData = userData[0];
-			}
-
 			callback(null, userData);
 		});
 	};
