@@ -110,7 +110,7 @@ define('navigator', ['forum/pagination'], function(pagination) {
 
 	navigator.scrollTop = function(index) {
 		if ($('li[data-index="' + index + '"]').length) {
-			navigator.scrollUp();
+			navigator.scrollToPost(index, true);
 		} else {
 			ajaxify.go(generateUrl());
 		}
@@ -118,7 +118,7 @@ define('navigator', ['forum/pagination'], function(pagination) {
 
 	navigator.scrollBottom = function(index) {
 		if ($('li[data-index="' + index + '"]').length) {
-			navigator.scrollDown();
+			navigator.scrollToPost(index, true);
 		} else {
 			index = parseInt(index, 10) + 1;
 			ajaxify.go(generateUrl(index));

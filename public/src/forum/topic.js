@@ -76,7 +76,7 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 	};
 
 	Topic.toTop = function() {
-		navigator.scrollTop(1);
+		navigator.scrollTop(0);
 	};
 
 	Topic.toBottom = function() {
