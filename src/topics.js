@@ -262,7 +262,10 @@ var async = require('async'),
 							return next(err);
 						}
 
-						pids = [topicData.mainPid].concat(pids);
+						pids = topicData.mainPid ? [topicData.mainPid].concat(pids) : pids;
+						if (!pids.length) {
+							return next(null, []);
+						}
 						posts.getPostsByPids(pids, tid, function(err, posts) {
 							if (err) {
 								return next(err);
