@@ -1,17 +1,20 @@
 
 'use strict';
 
-var topics = require('../topics'),
+var nconf = require('nconf'),
+	async = require('async'),
+
+	topics = require('../topics'),
 	categories = require('../categories'),
 	privileges = require('../privileges'),
+	notifications = require('../notifications'),
 	threadTools = require('../threadTools'),
 	websockets = require('./index'),
 	user = require('../user'),
-	db = require('./../database'),
-	meta = require('./../meta'),
+	db = require('../database'),
+	meta = require('../meta'),
 	utils = require('../../public/src/utils'),
-
-	async = require('async'),
+	SocketPosts = require('./posts'),
 
 	SocketTopics = {};
 
@@ -290,7 +293,14 @@ SocketTopics.movePost = function(socket, data, callback) {
 			return callback(err || new Error('[[error:no-privileges]]'));
 		}
 
-		topics.movePostToTopic(data.pid, data.tid, callback);
+		topics.movePostToTopic(data.pid, data.tid, function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:moved_your_post');
+			callback();
+		});
 	});
 };
 
@@ -299,7 +309,7 @@ SocketTopics.move = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	async.each(data.tids, function(tid, next) {
+	async.eachLimit(data.tids, 10, function(tid, next) {
 		var oldCid;
 		async.waterfall([
 			function(next) {
@@ -331,10 +341,40 @@ SocketTopics.move = function(socket, data, callback) {
 				tid: tid
 			});
 
+			SocketTopics.sendNotificationToTopicOwner(tid, socket.uid, 'notifications:moved_your_topic');
+
 			next();
 		});
 	}, callback);
 };
+
+
+SocketTopics.sendNotificationToTopicOwner = function(tid, fromuid, notification) {
+	if(!tid || !fromuid) {
+		return;
+	}
+
+	async.parallel({
+		username: async.apply(user.getUserField, fromuid, 'username'),
+		topicData: async.apply(topics.getTopicFields, tid, ['uid', 'slug']),
+	}, function(err, results) {
+		if (err || fromuid === parseInt(results.topicData.uid, 10)) {
+			return;
+		}
+
+		notifications.create({
+			bodyShort: '[[' + notification + ', ' + results.username + ']]',
+			path: nconf.get('relative_path') + '/topic/' + results.topicData.slug,
+			uniqueId: 'topic:' + tid + ':uid:' + fromuid,
+			from: fromuid
+		}, function(err, nid) {
+			if (!err) {
+				notifications.push(nid, [results.topicData.uid]);
+			}
+		});
+	});
+};
+
 
 SocketTopics.moveAll = function(socket, data, callback) {
 	if(!data || !data.cid || !data.currentCid) {

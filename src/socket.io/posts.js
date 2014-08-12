@@ -51,8 +51,11 @@ SocketPosts.reply = function(socket, data, callback) {
 };
 
 SocketPosts.upvote = function(socket, data, callback) {
+	if (!data || !data.pid) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
 	favouriteCommand('upvote', 'voted', socket, data, callback);
-	sendNotificationToPostOwner(data, socket.uid, 'notifications:upvoted_your_post');
+	SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:upvoted_your_post');
 };
 
 SocketPosts.downvote = function(socket, data, callback) {
@@ -64,8 +67,11 @@ SocketPosts.unvote = function(socket, data, callback) {
 };
 
 SocketPosts.favourite = function(socket, data, callback) {
+	if (!data || !data.pid) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
 	favouriteCommand('favourite', 'favourited', socket, data, callback);
-	sendNotificationToPostOwner(data, socket.uid, 'notifications:favourited_your_post');
+	SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:favourited_your_post');
 };
 
 SocketPosts.unfavourite = function(socket, data, callback) {
@@ -73,7 +79,6 @@ SocketPosts.unfavourite = function(socket, data, callback) {
 };
 
 function favouriteCommand(command, eventName, socket, data, callback) {
-
 	if(data && data.pid && data.room_id) {
 		favourites[command](data.pid, socket.uid, function(err, result) {
 			if (err) {
@@ -90,49 +95,50 @@ function favouriteCommand(command, eventName, socket, data, callback) {
 	}
 }
 
-function sendNotificationToPostOwner(data, fromuid, notification) {
-	if(data && data.pid && fromuid) {
-		posts.getPostFields(data.pid, ['tid', 'uid'], function(err, postData) {
+SocketPosts.sendNotificationToPostOwner = function(pid, fromuid, notification) {
+	if(!pid || !fromuid) {
+		return;
+	}
+	posts.getPostFields(pid, ['tid', 'uid'], function(err, postData) {
+		if (err) {
+			return;
+		}
+
+		if (fromuid === parseInt(postData.uid, 10)) {
+			return;
+		}
+
+		async.parallel({
+			username: async.apply(user.getUserField, fromuid, 'username'),
+			slug: async.apply(topics.getTopicField, postData.tid, 'slug'),
+			index: async.apply(posts.getPidIndex, pid),
+			postContent: function(next) {
+				async.waterfall([
+					async.apply(posts.getPostField, pid, 'content'),
+					function(content, next) {
+						postTools.parse(content, next);
+					}
+				], next);
+			}
+		}, function(err, results) {
 			if (err) {
 				return;
 			}
 
-			if (fromuid === parseInt(postData.uid, 10)) {
-				return;
-			}
-
-			async.parallel({
-				username: async.apply(user.getUserField, fromuid, 'username'),
-				slug: async.apply(topics.getTopicField, postData.tid, 'slug'),
-				index: async.apply(posts.getPidIndex, data.pid),
-				postContent: function(next) {
-					async.waterfall([
-						async.apply(posts.getPostField, data.pid, 'content'),
-						function(content, next) {
-							postTools.parse(content, next);
-						}
-					], next);
+			notifications.create({
+				bodyShort: '[[' + notification + ', ' + results.username + ']]',
+				bodyLong: results.postContent,
+				path: nconf.get('relative_path') + '/topic/' + results.slug + '/' + results.index,
+				uniqueId: 'post:' + pid + ':uid:' + fromuid,
+				from: fromuid
+			}, function(err, nid) {
+				if (!err) {
+					notifications.push(nid, [postData.uid]);
 				}
-			}, function(err, results) {
-				if (err) {
-					return;
-				}
-
-				notifications.create({
-					bodyShort: '[[' + notification + ', ' + results.username + ']]',
-					bodyLong: results.postContent,
-					path: nconf.get('relative_path') + '/topic/' + results.slug + '/' + results.index,
-					uniqueId: 'post:' + data.pid + ':uid:' + fromuid,
-					from: fromuid
-				}, function(err, nid) {
-					if (!err) {
-						notifications.push(nid, [postData.uid]);
-					}
-				});
 			});
 		});
-	}
-}
+	});
+};
 
 SocketPosts.getRawPost = function(socket, pid, callback) {
 	async.waterfall([
