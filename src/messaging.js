@@ -194,7 +194,11 @@ var db = require('./database'),
 				}
 			},
 			function(mids, next) {
-				db.getObjects(['message:' + mids[0], 'message:' + mids[1]], next);
+				if (typeof mids !== 'boolean') {
+					db.getObjects(['message:' + mids[0], 'message:' + mids[1]], next);
+				} else {
+					next(null, mids);
+				}
 			},
 			function(messages, next) {
 				if (typeof messages !== 'boolean') {
