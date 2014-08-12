@@ -19,6 +19,7 @@ var nconf = require('nconf'),
 
 function mainRoutes(app, middleware, controllers) {
 	app.get('/', middleware.buildHeader, controllers.home);
+	app.get('/api', controllers.home);
 	app.get('/api/home', controllers.home);
 
 	app.get('/login', middleware.redirectToAccountIfLoggedIn, middleware.buildHeader, controllers.login);
