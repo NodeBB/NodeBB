@@ -221,32 +221,27 @@ var db = require('./database'),
 				return callback(err);
 			}
 
-			async.parallel({
-				unreadUids: async.apply(db.isSortedSetMembers, 'uid:' + uid + ':chats:unread', uids),
-				users: async.apply(user.getMultipleUserFields, uids, ['username', 'picture', 'uid'])
-			}, function(err, results) {
+			db.isSortedSetMembers('uid:' + uid + ':chats:unread', uids, function(err, unreadUids) {
 				if (err) {
 					return callback(err);
 				}
-				var users = results.users;
 
-				for (var i=0; i<users.length; ++i) {
-					users[i].unread = results.unreadUids[i];
-				}
+				user.isOnline(uids, function(err, users) {
+					if (err) {
+						return callback(err);
+					}
 
-				users = users.filter(function(user, index) {
-					return !!user.uid;
-				});
-
-				async.map(users, function(userData, next) {
-					user.isOnline(userData.uid, function(err, data) {
-						if (err) {
-							return next(err);
+					users.forEach(function(user, index) {
+						if (user) {
+							user.unread = unreadUids[index];
 						}
-						userData.status = data.status;
-						next(null, userData);
 					});
-				}, callback);
+
+					users = users.filter(function(user) {
+						return !!user.uid;
+					});
+					callback(null, users);
+				});
 			});
 		});
 	};
