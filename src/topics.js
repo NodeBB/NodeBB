@@ -256,11 +256,24 @@ var async = require('async'),
 			}
 
 			async.parallel({
-				mainPost: function(next) {
-					Topics.getMainPost(tid, uid, next);
-				},
 				posts: function(next) {
-					Topics.getTopicPosts(tid, set, start, end, uid, reverse, next);
+					posts.getPidsFromSet(set, start, end, reverse, function(err, pids) {
+						if (err) {
+							return next(err);
+						}
+
+						pids = [topicData.mainPid].concat(pids);
+						posts.getPostsByPids(pids, tid, function(err, posts) {
+							if (err) {
+								return next(err);
+							}
+							start = parseInt(start, 10);
+							for(var i=0; i<posts.length; ++i) {
+								posts[i].index = start + i + 1;
+							}
+							Topics.addPostData(posts, uid, next);
+						});
+					});
 				},
 				category: function(next) {
 					Topics.getCategoryData(tid, next);
@@ -280,7 +293,7 @@ var async = require('async'),
 				}
 
 				topicData.category = results.category;
-				topicData.posts = results.mainPost.concat(results.posts);
+				topicData.posts = results.posts;
 				topicData.tags = results.tags;
 				topicData.thread_tools = results.threadTools;
 				topicData.pageCount = results.pageCount;
@@ -302,7 +315,7 @@ var async = require('async'),
 			if (!parseInt(mainPid, 10)) {
 				return callback(null, []);
 			}
-			posts.getPostsByPids([mainPid], function(err, postData) {
+			posts.getPostsByPids([mainPid], tid, function(err, postData) {
 				if (err) {
 					return callback(err);
 				}

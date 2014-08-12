@@ -93,7 +93,7 @@ var async = require('async'),
 	};
 
 	Posts.getPostsByTid = function(tid, set, start, end, reverse, callback) {
-		db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, end, function(err, pids) {
+		Posts.getPidsFromSet(set, start, end, reverse, function(err, pids) {
 			if(err) {
 				return callback(err);
 			}
@@ -102,31 +102,15 @@ var async = require('async'),
 				return callback(null, []);
 			}
 
-			Posts.getPostsByPids(pids, function(err, posts) {
-				if(err) {
-					return callback(err);
-				}
-
-				if(!Array.isArray(posts) || !posts.length) {
-					return callback(null, []);
-				}
-
-				plugins.fireHook('filter:post.getPosts', {tid: tid, posts: posts}, function(err, data) {
-					if(err) {
-						return callback(err);
-					}
-
-					if(!data || !Array.isArray(data.posts)) {
-						return callback(null, []);
-					}
-
-					callback(null, data.posts);
-				});
-			});
+			Posts.getPostsByPids(pids, tid, callback);
 		});
 	};
 
-	Posts.getPostsByPids = function(pids, callback) {
+	Posts.getPidsFromSet = function(set, start, end, reverse, callback) {
+		db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, end, callback);
+	};
+
+	Posts.getPostsByPids = function(pids, tid, callback) {
 		var keys = [];
 
 		for(var x=0, numPids=pids.length; x<numPids; ++x) {
@@ -155,7 +139,23 @@ var async = require('async'),
 					next(null, postData);
 				});
 
-			}, callback);
+			}, function(err, posts) {
+				if (err) {
+					return callback(err);
+				}
+
+				plugins.fireHook('filter:post.getPosts', {tid: tid, posts: posts}, function(err, data) {
+					if (err) {
+						return callback(err);
+					}
+
+					if (!data || !Array.isArray(data.posts)) {
+						return callback(null, []);
+					}
+
+					callback(null, data.posts);
+				});
+			});
 		});
 	};
 

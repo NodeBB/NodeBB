@@ -217,24 +217,22 @@ SocketUser.setTopicSort = function(socket, sort, callback) {
 	}
 };
 
-SocketUser.getOnlineUsers = function(socket, data, callback) {
+SocketUser.getOnlineUsers = function(socket, uids, callback) {
 	var returnData = {};
-	if(!data) {
+	if (!uids) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	function getUserStatus(uid, next) {
-		SocketUser.isOnline(socket, uid, function(err, data) {
-			if(err) {
-				return next(err);
+	SocketUser.isOnline(socket, uids, function(err, userData) {
+		if (err) {
+			return callback(err);
+		}
+		userData.forEach(function(user) {
+			if (user) {
+				returnData[user.uid] = user;
 			}
-			returnData[uid] = data;
-			next();
 		});
-	}
-
-	async.each(data, getUserStatus, function(err) {
-		callback(err, returnData);
+		callback(null, returnData);
 	});
 };
 

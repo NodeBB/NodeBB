@@ -416,26 +416,33 @@ var bcrypt = require('bcryptjs'),
 		}
 	};
 
-	User.isOnline = function(uid, callback) {
-		User.getUserFields(uid, ['username', 'userslug', 'picture', 'status', 'reputation', 'postcount'] , function(err, data) {
-			if(err) {
+	User.isOnline = function(uids, callback) {
+		if (!Array.isArray(uids)) {
+			uids = [uids];
+		}
+
+		User.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'reputation', 'postcount'] , function(err, userData) {
+			if (err) {
 				return callback(err);
 			}
+
 			var websockets = require('./socket.io');
-			var online = websockets.isUserOnline(uid);
 
-			data.status = online ? (data.status || 'online') : 'offline';
+			userData = userData.map(function(user) {
+				var online = websockets.isUserOnline(user.uid);
+				user.status = online ? (user.status || 'online') : 'offline';
 
-			if(data.status === 'offline') {
-				online = false;
-			}
+				if (user.status === 'offline') {
+					online = false;
+				}
 
-			data.online = online;
-			data.uid = uid;
-			data.timestamp = Date.now();
-			data.rooms = websockets.getUserRooms(uid);
+				user.online = online;
+				user.timestamp = Date.now();
+				user.rooms = websockets.getUserRooms(user.uid);
+				return user;
+			});
 
-			callback(null, data);
+			callback(null, userData);
 		});
 	};
 
