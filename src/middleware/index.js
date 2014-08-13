@@ -41,7 +41,7 @@ function routeThemeScreenshots(app, themes) {
 			(function(id, path) {
 				fs.exists(path, function(exists) {
 					if (exists) {
-						app.get('/css/previews/' + id, function(req, res) {
+						app.get(relativePath + '/css/previews/' + id, function(req, res) {
 							res.sendfile(path);
 						});
 					}
@@ -173,7 +173,7 @@ module.exports = function(app, data) {
 	if(meta.config.cookieDomain) {
 		cookie.domain = meta.config.cookieDomain;
 	}
-	
+
 	app.use(session({
 		store: db.sessionStore,
 		secret: nconf.get('secret'),
