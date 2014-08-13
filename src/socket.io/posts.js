@@ -250,19 +250,24 @@ SocketPosts.getPrivileges = function(socket, pid, callback) {
 
 SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
 	favourites.getFavouritedUidsByPids([pid], function(err, data) {
-		if(err) {
+		if (err || !Array.isArray(data) || !data.length) {
 			return callback(err);
 		}
 
-		if(!Array.isArray(data) || !data.length) {
-			callback(null, []);
-		}
-
-		var pid_uids = data[0];
-
-		user.getUsernamesByUids(pid_uids, callback);
+		user.getUsernamesByUids(data[0], callback);
 	});
 };
+
+SocketPosts.getUpvoters = function(socket, pid, callback) {
+	favourites.getUpvotedUidsByPids([pid], function(err, data) {
+		if (err || !Array.isArray(data) || !data.length) {
+			return callback(err, []);
+		}
+
+		user.getUsernamesByUids(data[0], callback);
+	});
+};
+
 
 SocketPosts.getPidPage = function(socket, pid, callback) {
 	posts.getPidPage(pid, socket.uid, callback);

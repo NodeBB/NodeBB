@@ -253,4 +253,12 @@ var async = require('async'),
 		db.getSetsMembers(sets, callback);
 	};
 
+	Favourites.getUpvotedUidsByPids = function(pids, callback) {
+		var sets = pids.map(function(pid) {
+			return 'pid:' + pid + ':upvote';
+		});
+		db.getSetsMembers(sets, callback);
+	};
+
+
 }(exports));
