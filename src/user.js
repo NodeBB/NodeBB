@@ -279,7 +279,7 @@ var
 		}
 
 		var options = {
-			size: '128',
+			size: parseInt(meta.config.profileImageDimension, 10) || 128,
 			default: customGravatarDefaultImage || meta.config.defaultGravatarImage || 'identicon',
 			rating: 'pg'
 		};

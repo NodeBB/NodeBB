@@ -398,10 +398,11 @@ accountsController.uploadPicture = function (req, res, next) {
 	}
 
 	var updateUid = req.user.uid;
+	var imageDimension = parseInt(meta.config.profileImageDimension, 10) || 128;
 
 	async.waterfall([
 		function(next) {
-			image.resizeImage(req.files.userPhoto.path, extension, 128, 128, next);
+			image.resizeImage(req.files.userPhoto.path, extension, imageDimension, imageDimension, next);
 		},
 		function(next) {
 			if (parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1) {

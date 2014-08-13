@@ -64,6 +64,10 @@
         "value": 256
     },
     {
+        "field": "profileImageDimension",
+        "value": 128
+    },
+    {
         "field": "chatMessagesToDisplay",
         "value": 50
     },
