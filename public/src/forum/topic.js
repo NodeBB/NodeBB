@@ -351,7 +351,10 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 		utils.makeNumbersHumanReadable(element.find('.human-readable-number'));
 		element.find('span.timeago').timeago();
 		element.find('.post-content img:not(.emoji)').addClass('img-responsive').each(function() {
-			$(this).wrap('<a href="' + $(this).attr('src') + '" target="_blank">');
+			var $this = $(this);
+			if (!$this.parent().is('a')) {
+				$this.wrap('<a href="' + $this.attr('src') + '" target="_blank">');
+			}
 		});
 		postTools.updatePostCount();
 		showBottomPostBar();
