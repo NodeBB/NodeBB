@@ -4,15 +4,15 @@
 	var passport = require('passport'),
 		passportLocal = require('passport-local').Strategy,
 		nconf = require('nconf'),
-		bcrypt = require('bcryptjs'),
+		Password = require('../password'),
 		winston = require('winston'),
 		async = require('async'),
 
-		meta = require('./../meta'),
-		user = require('./../user'),
-		plugins = require('./../plugins'),
+		meta = require('../meta'),
+		user = require('../user'),
+		plugins = require('../plugins'),
 		db = require('../database'),
-		utils = require('./../../public/src/utils'),
+		utils = require('../../public/src/utils'),
 
 		login_strategies = [];
 
@@ -226,7 +226,7 @@
 						return next(null, false, '[[error:user-banned]]');
 					}
 
-					bcrypt.compare(password, userData.password, function(err, res) {
+					Password.compare(password, userData.password, function(err, res) {
 						if (err) {
 							return next(new Error('bcrypt compare error'));
 						}

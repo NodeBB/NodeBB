@@ -1,6 +1,6 @@
 'use strict';
 
-var bcrypt = require('bcryptjs'),
+var
 	async = require('async'),
 	nconf = require('nconf'),
 	gravatar = require('gravatar'),
@@ -9,7 +9,8 @@ var bcrypt = require('bcryptjs'),
 	db = require('./database'),
 	meta = require('./meta'),
 	groups = require('./groups'),
-	emitter = require('./emitter');
+	emitter = require('./emitter'),
+	Password = require('./password');
 
 (function(User) {
 
@@ -295,12 +296,7 @@ var bcrypt = require('bcryptjs'),
 			return callback(null, password);
 		}
 
-		bcrypt.genSalt(nconf.get('bcrypt_rounds'), function(err, salt) {
-			if (err) {
-				return callback(err);
-			}
-			bcrypt.hash(password, salt, callback);
-		});
+		Password.hash(nconf.get('bcrypt_rounds'), password, callback);
 	};
 
 	User.onNewPostMade = function(postData) {

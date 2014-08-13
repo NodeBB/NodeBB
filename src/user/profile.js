@@ -1,15 +1,15 @@
 
 'use strict';
 
-var bcrypt = require('bcryptjs'),
-	async = require('async'),
+var async = require('async'),
 	validator = require('validator'),
 	S = require('string'),
 
-	utils = require('./../../public/src/utils'),
-	meta = require('./../meta'),
-	events = require('./../events'),
-	db = require('./../database');
+	utils = require('../../public/src/utils'),
+	meta = require('../meta'),
+	events = require('../events'),
+	db = require('../database'),
+	Password = require('../password');
 
 module.exports = function(User) {
 
@@ -248,7 +248,7 @@ module.exports = function(User) {
 					return hashAndSetPassword(callback);
 				}
 
-				bcrypt.compare(data.currentPassword, currentPassword, function(err, res) {
+				Password.compare(data.currentPassword, currentPassword, function(err, res) {
 					if (err || !res) {
 						return callback(err || new Error('[[user:change_password_error_wrong_current]]'));
 					}
