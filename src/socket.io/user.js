@@ -1,11 +1,13 @@
 'use strict';
 
 var	async = require('async'),
+	nconf = require('nconf'),
 	user = require('../user'),
 	groups = require('../groups'),
 	topics = require('../topics'),
+	notifications = require('../notifications'),
 	messaging = require('../messaging'),
-	utils = require('./../../public/src/utils'),
+	utils = require('../../public/src/utils'),
 	meta = require('../meta'),
 	SocketUser = {};
 
@@ -159,7 +161,29 @@ SocketUser.changePicture = function(socket, data, callback) {
 
 SocketUser.follow = function(socket, data, callback) {
 	if (socket.uid && data) {
-		user.follow(socket.uid, data.uid, callback);
+		user.follow(socket.uid, data.uid, function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			user.getUserFields(socket.uid, ['username', 'userslug'], function(err, userData) {
+				if (err) {
+					return callback(err);
+				}
+
+				notifications.create({
+					bodyShort: '[[notifications:user_started_following_you, ' + userData.username + ']]',
+					path: nconf.get('relative_path') + '/user/' + userData.userslug,
+					uniqueId: 'follow:uid:' + socket.uid,
+					from: socket.uid
+				}, function(err, nid) {
+					if (!err) {
+						notifications.push(nid, [data.uid]);
+					}
+					callback(err);
+				});
+			});
+		});
 	}
 };
 
