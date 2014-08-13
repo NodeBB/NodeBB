@@ -5,6 +5,7 @@ var	async = require('async'),
 	categories = require('../categories'),
 	privileges = require('../privileges'),
 	user = require('../user'),
+	websockets = require('./index'),
 
 	SocketCategories = {};
 
@@ -71,6 +72,11 @@ SocketCategories.getTopicCount = function(socket, cid, callback) {
 
 SocketCategories.lastTopicIndex = function(socket, cid, callback) {
 	db.sortedSetCard('categories:' + cid + ':tid', callback);
+};
+
+SocketCategories.getUsersInCategory = function(socket, cid, callback) {
+	var uids = websockets.getUidsInRoom('category_' + cid);
+	user.getMultipleUserFields(uids, ['uid', 'userslug', 'username', 'picture'], callback);
 };
 
 module.exports = SocketCategories;
