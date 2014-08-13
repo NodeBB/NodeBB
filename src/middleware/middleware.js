@@ -208,6 +208,7 @@ middleware.renderHeader = function(req, res, callback) {
 	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
 
 	var custom_header = {
+		uid: uid,
 		'navigation': []
 	};
 
