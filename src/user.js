@@ -310,12 +310,10 @@ var
 	emitter.on('event:newpost', User.onNewPostMade);
 
 	User.incrementUserPostCountBy = function(uid, value, callback) {
+		callback = callback || function() {};
 		User.incrementUserFieldBy(uid, 'postcount', value, function(err, newpostcount) {
 			if (err) {
-				if(typeof callback === 'function') {
-					callback(err);
-				}
-				return;
+				return callback(err);
 			}
 			db.sortedSetAdd('users:postcount', newpostcount, uid, callback);
 		});
