@@ -321,7 +321,7 @@ Sockets.getUidsInRoom = function(roomName) {
 	var uids = [];
 	var clients = io.sockets.clients(roomName);
 	for(var i=0; i<clients.length; ++i) {
-		if (uids.indexOf(clients[i].uid) === -1 && clients[i].uid !== 0) {
+		if (clients[i].uid !== 0 && uids.indexOf(clients[i].uid) === -1) {
 			uids.push(clients[i].uid);
 		}
 	}
