@@ -25,9 +25,7 @@ module.exports = function(Categories) {
 	};
 
 	Categories.getRecentTopicReplies = function(categoryData, callback) {
-		async.map(categoryData, function(category, next) {
-			getRecentTopicPids(category.cid, parseInt(category.numRecentReplies), next);
-		}, function(err, results) {
+		async.map(categoryData, getRecentTopicPids, function(err, results) {
 			var pids = _.flatten(results);
 
 			pids = pids.filter(function(pid, index, array) {
@@ -56,13 +54,13 @@ module.exports = function(Categories) {
 		next();
 	}
 
-	function getRecentTopicPids(cid, count, callback) {
-		count = parseInt(count, 10);
+	function getRecentTopicPids(category, callback) {
+		var count = parseInt(category.numRecentReplies, 10);
 		if (!count) {
 			return callback(null, []);
 		}
 
-		db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, 0, function(err, pids) {
+		db.getSortedSetRevRange('categories:recent_posts:cid:' + category.cid, 0, 0, function(err, pids) {
 			if (err || !Array.isArray(pids) || !pids.length) {
 				return callback(err, []);
 			}
@@ -73,10 +71,10 @@ module.exports = function(Categories) {
 
 			async.parallel({
 				pinnedTids: function(next) {
-					db.getSortedSetRevRangeByScore('categories:' + cid + ':tid', 0, -1, Infinity, Date.now(), next);
+					db.getSortedSetRevRangeByScore('categories:' + category.cid + ':tid', 0, -1, Infinity, Date.now(), next);
 				},
 				tids: function(next) {
-					db.getSortedSetRevRangeByScore('categories:' + cid + ':tid', 0, Math.max(0, count), Date.now(), 0, next);
+					db.getSortedSetRevRangeByScore('categories:' + category.cid + ':tid', 0, Math.max(0, count), Date.now(), 0, next);
 				}
 			}, function(err, results) {
 				if (err) {
