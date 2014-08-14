@@ -240,4 +240,19 @@ var winston = require('winston'),
 		], callback);
 	};
 
+	ThreadTools.follow = function(tid, uid, callback) {
+		callback = callback || function() {};
+		async.waterfall([
+			function (next) {
+				ThreadTools.exists(tid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-topic]]'));
+				}
+				db.setAdd('tid:' + tid + ':followers', uid, next);
+			}
+		], callback);
+	};
+
 }(exports));

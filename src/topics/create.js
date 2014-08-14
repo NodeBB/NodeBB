@@ -105,9 +105,6 @@ module.exports = function(Topics) {
 				if(!canCreate) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
-				next();
-			},
-			function(next) {
 				user.isReadyToPost(uid, next);
 			},
 			function(next) {
@@ -115,35 +112,46 @@ module.exports = function(Topics) {
 			},
 			function(filteredData, next) {
 				content = filteredData.content || data.content;
-				next();
-			},
-			function(next) {
 				Topics.create({uid: uid, title: title, cid: cid, thumb: data.thumb, tags: data.tags}, next);
 			},
 			function(tid, next) {
 				Topics.reply({uid:uid, tid:tid, content:content, req: data.req}, next);
 			},
 			function(postData, next) {
-				threadTools.toggleFollow(postData.tid, uid);
-				next(null, postData);
+				async.parallel({
+					postData: function(next) {
+						next(null, postData);
+					},
+					settings: function(next) {
+						user.getSettings(uid, function(err, settings) {
+							if (err) {
+								return next(err);
+							}
+							if (settings.followTopicsOnCreate) {
+								threadTools.follow(postData.tid, uid, next);
+							} else {
+								next();
+							}
+						});
+					},
+					topicData: function(next) {
+						Topics.getTopicsByTids([postData.tid], 0, next);
+					}
+				}, next);
 			},
-			function(postData, next) {
-				Topics.getTopicsByTids([postData.tid], 0, function(err, topicData) {
-					if(err) {
-						return next(err);
-					}
-					if(!topicData || !topicData.length) {
-						return next(new Error('[[error:no-topic]]'));
-					}
-					topicData = topicData[0];
-					topicData.unreplied = 1;
+			function(data, next) {
+				if(!Array.isArray(data.topicData) || !data.topicData.length) {
+					return next(new Error('[[error:no-topic]]'));
+				}
 
-					plugins.fireHook('action:topic.post', topicData);
+				data.topicData = data.topicData[0];
+				data.topicData.unreplied = 1;
 
-					next(null, {
-						topicData: topicData,
-						postData: postData
-					});
+				plugins.fireHook('action:topic.post', data.topicData);
+
+				next(null, {
+					topicData: data.topicData,
+					postData: data.postData
 				});
 			}
 		], callback);
@@ -178,9 +186,6 @@ module.exports = function(Topics) {
 				if (!canReply) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
-				next();
-			},
-			function(next) {
 				user.isReadyToPost(uid, next);
 			},
 			function(next) {
@@ -215,6 +220,12 @@ module.exports = function(Topics) {
 			function(topicData, next) {
 				topicData.title = validator.escape(topicData.title);
 				postData.topic = topicData;
+				user.getSettings(uid, next);
+			},
+			function(settings, next) {
+				if (settings.followTopicsOnReply) {
+					threadTools.follow(postData.tid, uid);
+				}
 				posts.getPidIndex(postData.pid, next);
 			},
 			function(index, next) {
