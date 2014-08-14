@@ -7,7 +7,8 @@ var	async = require('async'),
 	topics = require('../topics'),
 	notifications = require('../notifications'),
 	messaging = require('../messaging'),
-	utils = require('../../public/src/utils'),
+	plugins = require('../plugins'),
+	utils = require('./../../public/src/utils'),
 	meta = require('../meta'),
 	SocketUser = {};
 
@@ -163,7 +164,7 @@ SocketUser.changePicture = function(socket, data, callback) {
 
 SocketUser.follow = function(socket, data, callback) {
 	if (socket.uid && data) {
-		user.follow(socket.uid, data.uid, function(err) {
+		toggleFollow('follow', socket.uid, data.uid, function(err) {
 			if (err) {
 				return callback(err);
 			}
@@ -191,9 +192,22 @@ SocketUser.follow = function(socket, data, callback) {
 
 SocketUser.unfollow = function(socket, data, callback) {
 	if (socket.uid && data) {
-		user.unfollow(socket.uid, data.uid, callback);
+		toggleFollow('unfollow', socket.uid, data.uid, callback);
 	}
 };
+
+function toggleFollow(method, uid, theiruid, callback) {
+	user[method](uid, theiruid, function(err) {
+		if (err) {
+			return callback(err);
+		}
+
+		plugins.fireHook('action:user.' + method, {
+			fromUid: uid,
+			toUid: theiruid
+		});
+	});
+}
 
 SocketUser.getSettings = function(socket, data, callback) {
 	if (socket.uid) {
