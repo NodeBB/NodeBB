@@ -69,17 +69,7 @@ Controllers.home = function(req, res, next) {
 					return next(err);
 				}
 
-				function getRecentReplies(category, callback) {
-					categories.getRecentTopicReplies(category.cid, uid, parseInt(category.numRecentReplies, 10), function (err, posts) {
-						if (err) {
-							return callback(err);
-						}
-						category.posts = posts;
-						callback();
-					});
-				}
-
-				async.each(categoryData, getRecentReplies, function (err) {
+				categories.getRecentTopicReplies(categoryData, function(err) {
 					next(err, categoryData);
 				});
 			});

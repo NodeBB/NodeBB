@@ -3,6 +3,7 @@
 
 var async = require('async'),
 	winston = require('winston'),
+	_ = require('underscore'),
 
 	db = require('../database'),
 	posts = require('../posts'),
@@ -23,19 +24,51 @@ module.exports = function(Categories) {
 		});
 	};
 
-	Categories.getRecentTopicReplies = function(cid, uid, count, callback) {
+	Categories.getRecentTopicReplies = function(categoryData, callback) {
+		async.map(categoryData, function(category, next) {
+			getRecentTopicPids(category.cid, parseInt(category.numRecentReplies), next);
+		}, function(err, results) {
+			var pids = _.flatten(results);
+
+			pids = pids.filter(function(pid, index, array) {
+				return !!pid && array.indexOf(pid) === index;
+			});
+
+			posts.getPostSummaryByPids(pids, {stripTags: true}, function(err, posts) {
+				if (err) {
+					return callback(err);
+				}
+
+				async.each(categoryData, function(category, next) {
+					assignPostsToCategory(category, posts, next);
+				}, callback);
+			});
+		});
+	};
+
+	function assignPostsToCategory(category, posts, next) {
+		category.posts = posts.filter(function(post) {
+			return parseInt(post.category.cid, 10) === parseInt(category.cid);
+		}).sort(function(a, b) {
+			return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10);
+		}).slice(0, parseInt(category.numRecentReplies, 10));
+
+		next();
+	}
+
+	function getRecentTopicPids(cid, count, callback) {
 		count = parseInt(count, 10);
 		if (!count) {
 			return callback(null, []);
 		}
 
 		db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, 0, function(err, pids) {
-			if (err || !pids || !pids.length) {
+			if (err || !Array.isArray(pids) || !pids.length) {
 				return callback(err, []);
 			}
 
 			if (count === 1) {
-				return posts.getPostSummaryByPids(pids, {stripTags: true}, callback);
+				return callback(null, pids);
 			}
 
 			async.parallel({
@@ -60,22 +93,12 @@ module.exports = function(Categories) {
 					pids = pids.concat(topicPids).filter(function(pid, index, array) {
 						return !!pid && array.indexOf(pid) === index;
 					});
-
-					posts.getPostSummaryByPids(pids, {stripTags: true}, function(err, posts) {
-						if (err) {
-							return callback(err);
-						}
-
-						posts = posts.sort(function(a, b) {
-							return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10);
-						}).slice(0, count);
-
-						callback(err, posts);
-					});
+					callback(null, pids);
 				});
 			});
 		});
-	};
+	}
+
 
 	Categories.moveRecentReplies = function(tid, oldCid, cid) {
 		function movePost(postData, next) {
