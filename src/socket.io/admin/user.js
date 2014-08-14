@@ -88,6 +88,14 @@ User.banUser = function(uid, callback) {
 	});
 };
 
+User.resetLockouts = function(socket, uids, callback) {
+	if (!Array.isArray(uids)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	async.each(uids, user.auth.resetLockout, callback);
+};
+
 User.deleteUsers = function(socket, uids, callback) {
 	if(!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));

@@ -73,6 +73,22 @@ define('forum/admin/users', function() {
 			unselectAll();
 		});
 
+		$('.reset-lockout').on('click', function() {
+			var uids = getSelectedUids();
+			if (!uids.length) {
+				return;
+			}
+
+			socket.emit('admin.user.resetLockouts', uids, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				app.alertSuccess('Lockout(s) reset!');
+			});
+
+			unselectAll();
+		});
+
 		$('.admin-user').on('click', function() {
 			var uids = getSelectedUids();
 			if (!uids.length) {
