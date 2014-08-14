@@ -79,7 +79,9 @@ SocketUser.reset.commit = function(socket, data, callback) {
 };
 
 SocketUser.isOnline = function(socket, uid, callback) {
-	user.isOnline(uid, callback);
+	user.isOnline([uid], function(err, data) {
+		callback(err, Array.isArray(data) ? data[0] : null);
+	});
 };
 
 SocketUser.changePassword = function(socket, data, callback) {
@@ -223,7 +225,7 @@ SocketUser.getOnlineUsers = function(socket, uids, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	SocketUser.isOnline(socket, uids, function(err, userData) {
+	user.isOnline(uids, function(err, userData) {
 		if (err) {
 			return callback(err);
 		}
@@ -292,9 +294,9 @@ SocketUser.loadMore = function(socket, data, callback) {
 SocketUser.setStatus = function(socket, status, callback) {
 	var server = require('./index');
 	user.setUserField(socket.uid, 'status', status, function(err) {
-		SocketUser.isOnline(socket, [socket.uid], function(err, data) {
-			server.server.sockets.emit('user.isOnline', err, data[0]);
-			callback(err, data[0]);
+		SocketUser.isOnline(socket, socket.uid, function(err, data) {
+			server.server.sockets.emit('user.isOnline', err, data);
+			callback(err, data);
 		});
 	});
 };
