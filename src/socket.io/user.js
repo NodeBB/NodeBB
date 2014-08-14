@@ -162,25 +162,28 @@ SocketUser.changePicture = function(socket, data, callback) {
 
 SocketUser.follow = function(socket, data, callback) {
 	if (socket.uid && data) {
-		plugins.fireHook('action:user.follow', {
-			fromUid: socket.uid,
-			toUid: data.uid
-		});
-
-		user.follow(socket.uid, data.uid, callback);
+		toggleFollow('follow', socket.uid, data.uid, callback);
 	}
 };
 
 SocketUser.unfollow = function(socket, data, callback) {
 	if (socket.uid && data) {
-		plugins.fireHook('action:user.unfollow', {
-			fromUid: socket.uid,
-			toUid: data.uid
-		});
-
-		user.unfollow(socket.uid, data.uid, callback);
+		toggleFollow('unfollow', socket.uid, data.uid, callback);
 	}
 };
+
+function toggleFollow(method, uid, theiruid, callback) {
+	user[method](uid, theiruid, function(err) {
+		if (err) {
+			return callback(err);
+		}
+
+		plugins.fireHook('action:user.' + method, {
+			fromUid: uid,
+			toUid: theiruid
+		});
+	});
+}
 
 SocketUser.getSettings = function(socket, data, callback) {
 	if (socket.uid) {
