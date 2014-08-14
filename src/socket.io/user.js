@@ -5,6 +5,7 @@ var	async = require('async'),
 	groups = require('../groups'),
 	topics = require('../topics'),
 	messaging = require('../messaging'),
+	plugins = require('../plugins'),
 	utils = require('./../../public/src/utils'),
 	meta = require('../meta'),
 	SocketUser = {};
@@ -161,12 +162,22 @@ SocketUser.changePicture = function(socket, data, callback) {
 
 SocketUser.follow = function(socket, data, callback) {
 	if (socket.uid && data) {
+		plugins.fireHook('action:user.follow', {
+			fromUid: socket.uid,
+			toUid: data.uid
+		});
+
 		user.follow(socket.uid, data.uid, callback);
 	}
 };
 
 SocketUser.unfollow = function(socket, data, callback) {
 	if (socket.uid && data) {
+		plugins.fireHook('action:user.unfollow', {
+			fromUid: socket.uid,
+			toUid: data.uid
+		});
+
 		user.unfollow(socket.uid, data.uid, callback);
 	}
 };
