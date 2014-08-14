@@ -16,6 +16,10 @@ module.exports = function(Topics) {
 			yearly: 'year'
 		};
 
+		if (term === 'alltime') {
+			return getAllTimePopular(uid, callback);
+		}
+
 		var since = terms[term] || 'day';
 
 		async.waterfall([
@@ -44,6 +48,12 @@ module.exports = function(Topics) {
 			}
 		], callback);
 	};
+
+	function getAllTimePopular(uid, callback) {
+		Topics.getTopicsFromSet(uid, 'topics:posts', 0, 19, function(err, data) {
+			callback(err, data ? data.topics : null);
+		});
+	}
 
 	function getTopics(tids, uid, callback) {
 		var keys = tids.map(function(tid) {

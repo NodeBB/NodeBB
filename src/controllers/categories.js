@@ -17,7 +17,7 @@ categoriesController.recent = function(req, res, next) {
 			return next(err);
 		}
 
-		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
+		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
 		res.render('recent', data);
 	});
@@ -33,7 +33,7 @@ categoriesController.popular = function(req, res, next) {
 			return next(err);
 		}
 
-		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
+		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
 		res.render('popular', {topics: data});
 	});
