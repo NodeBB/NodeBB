@@ -5,15 +5,16 @@ var categoriesController = {},
 	qs = require('querystring'),
 	nconf = require('nconf'),
 	privileges = require('../privileges'),
-	user = require('./../user'),
-	categories = require('./../categories'),
-	topics = require('./../topics'),
-	meta = require('./../meta');
+	user = require('../user'),
+	categories = require('../categories'),
+	topics = require('../topics'),
+	meta = require('../meta');
 
 categoriesController.recent = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
-	topics.getLatestTopics(uid, 0, 19, req.params.term, function (err, data) {
-		if(err) {
+	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+	topics.getLatestTopics(uid, 0, end, req.params.term, function (err, data) {
+		if (err) {
 			return next(err);
 		}
 
@@ -28,8 +29,8 @@ categoriesController.popular = function(req, res, next) {
 
 	var term = req.params.term || 'daily';
 
-	topics.getPopular(term, uid, function(err, data) {
-		if(err) {
+	topics.getPopular(term, uid, meta.config.topicsPerList, function(err, data) {
+		if (err) {
 			return next(err);
 		}
 
@@ -41,12 +42,12 @@ categoriesController.popular = function(req, res, next) {
 
 categoriesController.unread = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
-
-	topics.getUnreadTopics(uid, 0, 20, function (err, data) {
-		if(err) {
+	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+	topics.getUnreadTopics(uid, 0, end, function (err, data) {
+		if (err) {
 			return next(err);
 		}
-
+		data.topics = data.topics.slice(0, parseInt(meta.config.topicsPerList, 10) || 20);
 		res.render('unread', data);
 	});
 };

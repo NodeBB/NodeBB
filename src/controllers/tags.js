@@ -3,13 +3,14 @@
 var tagsController = {},
 	async = require('async'),
 	nconf = require('nconf'),
-	topics = require('./../topics');
+	meta = require('../meta'),
+	topics = require('../topics');
 
 tagsController.getTag = function(req, res, next) {
 	var tag = req.params.tag;
 	var uid = req.user ? req.user.uid : 0;
-
-	topics.getTagTids(tag, 0, 19, function(err, tids) {
+	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+	topics.getTagTids(tag, 0, end, function(err, tids) {
 		if (err) {
 			return next(err);
 		}

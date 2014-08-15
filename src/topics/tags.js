@@ -132,16 +132,19 @@ module.exports = function(Topics) {
 		});
 	}
 
-	Topics.updateTags = function(tid, tags) {
+	Topics.updateTags = function(tid, tags, callback) {
+		callback = callback || function() {};
 		Topics.getTopicField(tid, 'timestamp', function(err, timestamp) {
 			if (err) {
-				return winston.error(err.message);
+				return callback(err);
 			}
 
 			Topics.deleteTopicTags(tid, function(err) {
-				if (!err) {
-					Topics.createTags(tags, tid, timestamp);
+				if (err) {
+					return callback(err);
 				}
+
+				Topics.createTags(tags, tid, timestamp, callback);
 			});
 		});
 	};

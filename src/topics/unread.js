@@ -4,10 +4,11 @@
 var async = require('async'),
 	winston = require('winston'),
 
-	db = require('./../database'),
-	user = require('./../user'),
-	notifications = require('./../notifications'),
-	categories = require('./../categories'),
+	db = require('../database'),
+	user = require('../user'),
+	meta = require('../meta'),
+	notifications = require('../notifications'),
+	categories = require('../categories'),
 	privileges = require('../privileges');
 
 module.exports = function(Topics) {
@@ -27,8 +28,14 @@ module.exports = function(Topics) {
 			return callback(null, unreadTids);
 		}
 
+		var count = 0;
+		if (stop === -1) {
+			count = Infinity;
+		}  else {
+			count = stop - start + 1;
+		}
 		async.whilst(function() {
-			return unreadTids.length < 21 && !done;
+			return unreadTids.length < count && !done;
 		}, function(next) {
 			Topics.getLatestTids(start, stop, 'month', function(err, tids) {
 				if (err) {
@@ -49,19 +56,21 @@ module.exports = function(Topics) {
 						return !read[index];
 					});
 
-					unreadTids.push.apply(unreadTids, newtids);
+					privileges.topics.filter('read', newtids, uid, function(err, newtids) {
+						if (err) {
+							return next(err);
+						}
+						unreadTids.push.apply(unreadTids, newtids);
 
-					start = stop + 1;
-					stop = start + 19;
+						start = stop + 1;
+						stop = start + 19;
 
-					next();
+						next();
+					});
 				});
 			});
 		}, function(err) {
-			if (err) {
-				return callback(err);
-			}
-			privileges.topics.filter('read', unreadTids, uid, callback);
+			callback(err, unreadTids.slice(0, count));
 		});
 	};
 
@@ -162,7 +171,6 @@ module.exports = function(Topics) {
 	};
 
 	Topics.markAsRead = function(tid, uid, callback) {
-
 		db.setAdd('tid:' + tid + ':read_by_uid', uid, function(err) {
 			if (err) {
 				return callback(err);
