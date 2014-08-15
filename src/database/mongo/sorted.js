@@ -101,6 +101,10 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.sortedSetsCard = function(keys, callback) {
+		async.map(keys, module.sortedSetCard, callback);
+	};
+
 	module.sortedSetRank = function(key, value, callback) {
 		getSortedSetRank(module.getSortedSetRange, key, value, callback);
 	};

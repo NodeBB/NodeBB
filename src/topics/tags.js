@@ -5,6 +5,7 @@ var async = require('async'),
 	winston = require('winston'),
 	db = require('../database'),
 	meta = require('../meta'),
+	_ = require('underscore'),
 	plugins = require('../plugins'),
 	utils = require('../../public/src/utils');
 
@@ -87,8 +88,8 @@ module.exports = function(Topics) {
 	};
 
 	Topics.getTopicTagsObjects = function(tid, callback) {
-		Topics.getTopicTags(tid, function(err, tags) {
-			callback(err, mapToObject(tags));
+		Topics.getTopicsTagsObjects([tid], function(err, data) {
+			callback(err, Array.isArray(data) && data.length ? data[0] : []);
 		});
 	};
 
@@ -102,21 +103,34 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			members.forEach(function(tags, index) {
-				if (Array.isArray(tags)) {
-					members[index] = mapToObject(tags);
+			var uniqueTags = _.uniq(_.flatten(members));
+			var tagTopicSets = uniqueTags.map(function(tag) {
+				return 'tag:' + tag + ':topics';
+			});
+
+			db.sortedSetsCard(tagTopicSets, function(err, data) {
+				if (err) {
+					return callback(err);
 				}
-			})
-			callback(null, members);
+				var tagCounts = _.object(uniqueTags, data);
+
+				members.forEach(function(tags, index) {
+					if (Array.isArray(tags)) {
+						members[index] = mapToObject(tags, tagCounts);
+					}
+				});
+				callback(null, members);
+			});
 		});
 	};
 
-	function mapToObject(tags) {
+	function mapToObject(tags, tagCounts) {
 		if (!tags) {
 			return tags;
 		}
+
 		return tags.map(function(tag) {
-			return {name: tag};
+			return {name: tag, score: tagCounts ? tagCounts[tag] : 0};
 		});
 	}
 

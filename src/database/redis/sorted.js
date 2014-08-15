@@ -51,6 +51,17 @@ module.exports = function(redisClient, module) {
 		redisClient.zcard(key, callback);
 	};
 
+	module.sortedSetsCard = function(keys, callback) {
+		if (Array.isArray(keys) && !keys.length) {
+			return callback(null, []);
+		}
+		var multi = redisClient.multi();
+		for(var i=0; i<keys.length; ++i) {
+			multi.zcard(keys[i]);
+		}
+		multi.exec(callback);
+	};
+
 	module.sortedSetRank = function(key, value, callback) {
 		redisClient.zrank(key, value, callback);
 	};

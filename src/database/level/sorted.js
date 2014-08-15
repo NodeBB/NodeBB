@@ -113,6 +113,10 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.sortedSetsCard = function(keys, callback) {
+		async.map(keys, module.sortedSetCard, callback);
+	};
+
 	module.sortedSetRank = function(key, value, callback) {
 		module.getListRange(key, 0, -1, function(err, list) {
 			for (var i = 0, ii=list.length; i< ii; i++) {
