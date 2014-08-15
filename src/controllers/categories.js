@@ -47,7 +47,7 @@ categoriesController.unread = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		data.topics = data.topics.slice(0, parseInt(meta.config.topicsPerList, 10) || 20);
+
 		res.render('unread', data);
 	});
 };
