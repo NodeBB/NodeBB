@@ -188,7 +188,7 @@ var db = require('./database'),
 		});
 	};
 
-	Categories.getVisibleCategories = function(uid, callback) {
+	Categories.getCategoriesByPrivilege = function(uid, privilege, callback) {
 		db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
 			if (err) {
 				return callback(err);
@@ -198,7 +198,7 @@ var db = require('./database'),
 				return callback(null, []);
 			}
 
-			privileges.categories.filter('find', cids, uid, function(err, cids) {
+			privileges.categories.filter(privilege, cids, uid, function(err, cids) {
 				if (err) {
 					return callback(err);
 				}

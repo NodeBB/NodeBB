@@ -9,11 +9,12 @@ var dependencies = [
 	'composer/formatting',
 	'composer/drafts',
 	'composer/tags',
+	'composer/categoryList',
 	'composer/preview',
 	'composer/resize'
 ];
 
-define('composer', dependencies, function(taskbar, controls, uploads, formatting, drafts, tags, preview, resize) {
+define('composer', dependencies, function(taskbar, controls, uploads, formatting, drafts, tags, categoryList, preview, resize) {
 	var composer = {
 		active: undefined,
 		posts: {},
@@ -200,84 +201,96 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 
 		var template = (composer.bsEnvironment === 'xs' || composer.bsEnvironment === 'sm') ? 'composer-mobile' : 'composer';
 
-		templates.parse(template, {allowTopicsThumbnail: allowTopicsThumbnail, showTags: isTopic || isMain}, function(composerTemplate) {
-			translator.translate(composerTemplate, function(composerTemplate) {
-				composerTemplate = $(composerTemplate);
+		var data = {
+			allowTopicsThumbnail: allowTopicsThumbnail,
+			showTags: isTopic || isMain,
+			isTopic: isTopic
+		};
 
-				composerTemplate.attr('id', 'cmp-uuid-' + post_uuid);
+		parseAndTranslate(template, data, function(composerTemplate) {
 
-				$(document.body).append(composerTemplate);
+			composerTemplate = $(composerTemplate);
 
-				var postContainer = $(composerTemplate[0]),
-					postData = composer.posts[post_uuid],
-					bodyEl = postContainer.find('textarea'),
-					draft = drafts.getDraft(postData.save_id);
+			composerTemplate.attr('id', 'cmp-uuid-' + post_uuid);
 
-				tags.init(postContainer, composer.posts[post_uuid]);
-				updateTitle(postData, postContainer);
+			$(document.body).append(composerTemplate);
 
-				activate(post_uuid);
-				resize.reposition(postContainer);
+			var postContainer = $(composerTemplate[0]),
+				postData = composer.posts[post_uuid],
+				bodyEl = postContainer.find('textarea'),
+				draft = drafts.getDraft(postData.save_id);
 
-				if (config.allowFileUploads || config.hasImageUploadPlugin) {
-					uploads.initialize(post_uuid);
+			tags.init(postContainer, composer.posts[post_uuid]);
+			categoryList.init(postContainer, composer.posts[post_uuid]);
+			updateTitle(postData, postContainer);
+
+			activate(post_uuid);
+			resize.reposition(postContainer);
+
+			if (config.allowFileUploads || config.hasImageUploadPlugin) {
+				uploads.initialize(post_uuid);
+			}
+
+			formatting.addHandler(postContainer);
+
+			if (allowTopicsThumbnail) {
+				uploads.toggleThumbEls(postContainer, composer.posts[post_uuid].topic_thumb || '');
+			}
+
+			postContainer.on('change', 'input, textarea', function() {
+				composer.posts[post_uuid].modified = true;
+			});
+
+			postContainer.on('click', '.action-bar button[data-action="post"]', function() {
+				$(this).attr('disabled', true);
+				post(post_uuid);
+			});
+
+			postContainer.on('click', '.action-bar button[data-action="discard"]', function() {
+				if (!composer.posts[post_uuid].modified) {
+					discard(post_uuid);
+					return;
 				}
 
-				formatting.addHandler(postContainer);
-
-				if (allowTopicsThumbnail) {
-					uploads.toggleThumbEls(postContainer, composer.posts[post_uuid].topic_thumb || '');
-				}
-
-				postContainer.on('change', 'input, textarea', function() {
-					composer.posts[post_uuid].modified = true;
-				});
-
-				postContainer.on('click', '.action-bar button[data-action="post"]', function() {
-					$(this).attr('disabled', true);
-					post(post_uuid);
-				});
-
-				postContainer.on('click', '.action-bar button[data-action="discard"]', function() {
-					if (!composer.posts[post_uuid].modified) {
-						discard(post_uuid);
-						return;
-					}
-
-					translator.translate('[[modules:composer.discard]]', function(translated) {
-						bootbox.confirm(translated, function(confirm) {
-							if (confirm) {
-								discard(post_uuid);
-							}
-						});
+				translator.translate('[[modules:composer.discard]]', function(translated) {
+					bootbox.confirm(translated, function(confirm) {
+						if (confirm) {
+							discard(post_uuid);
+						}
 					});
 				});
-
-				bodyEl.on('input propertychange', function() {
-					preview.render(postContainer);
-				});
-
-				bodyEl.on('scroll', function() {
-					preview.matchScroll(postContainer);
-				});
-
-				bodyEl.val(draft ? draft : postData.body);
-				preview.render(postContainer, function() {
-					preview.matchScroll(postContainer);
-				});
-				drafts.init(postContainer, postData);
-
-				resize.handleResize(postContainer);
-
-				handleHelp(postContainer);
-
-				$(window).trigger('action:composer.loaded', {
-					post_uuid: post_uuid
-				});
-
-				formatting.addComposerButtons();
-				focusElements(postContainer);
 			});
+
+			bodyEl.on('input propertychange', function() {
+				preview.render(postContainer);
+			});
+
+			bodyEl.on('scroll', function() {
+				preview.matchScroll(postContainer);
+			});
+
+			bodyEl.val(draft ? draft : postData.body);
+			preview.render(postContainer, function() {
+				preview.matchScroll(postContainer);
+			});
+			drafts.init(postContainer, postData);
+
+			resize.handleResize(postContainer);
+
+			handleHelp(postContainer);
+
+			$(window).trigger('action:composer.loaded', {
+				post_uuid: post_uuid
+			});
+
+			formatting.addComposerButtons();
+			focusElements(postContainer);
+		});
+	}
+
+	function parseAndTranslate(template, data, callback) {
+		templates.parse(template, data, function(composerTemplate) {
+			translator.translate(composerTemplate, callback);
 		});
 	}
 

@@ -64,7 +64,7 @@ Controllers.home = function(req, res, next) {
 		},
 		categories: function (next) {
 			var uid = req.user ? req.user.uid : 0;
-			categories.getVisibleCategories(uid, function (err, categoryData) {
+			categories.getCategoriesByPrivilege(uid, 'find', function (err, categoryData) {
 				if (err) {
 					return next(err);
 				}

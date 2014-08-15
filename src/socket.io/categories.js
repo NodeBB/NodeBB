@@ -79,4 +79,8 @@ SocketCategories.getUsersInCategory = function(socket, cid, callback) {
 	user.getMultipleUserFields(uids, ['uid', 'userslug', 'username', 'picture'], callback);
 };
 
+SocketCategories.getCategoriesByPrivilege = function(socket, privilege, callback) {
+	categories.getCategoriesByPrivilege(socket.uid, privilege, callback);
+};
+
 module.exports = SocketCategories;

@@ -31,7 +31,7 @@ var path = require('path'),
 			async.parallel([
 				function(next) {
 					var categoryUrls = [];
-					categories.getVisibleCategories(0, function(err, categoriesData) {
+					categories.getCategoriesByPrivilege(0, 'find', function(err, categoriesData) {
 						if (err) {
 							return next(err);
 						}
