@@ -49,19 +49,21 @@ module.exports = function(Topics) {
 						return !read[index];
 					});
 
-					unreadTids.push.apply(unreadTids, newtids);
+					privileges.topics.filter('read', newtids, uid, function(err, newtids) {
+						if (err) {
+							return next(err);
+						}
+						unreadTids.push.apply(unreadTids, newtids);
 
-					start = stop + 1;
-					stop = start + 19;
+						start = stop + 1;
+						stop = start + 19;
 
-					next();
+						next();
+					});
 				});
 			});
 		}, function(err) {
-			if (err) {
-				return callback(err);
-			}
-			privileges.topics.filter('read', unreadTids, uid, callback);
+			callback(err, unreadTids);
 		});
 	};
 
