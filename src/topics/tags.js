@@ -104,14 +104,12 @@ module.exports = function(Topics) {
 			}
 
 			var uniqueTags = _.uniq(_.flatten(members));
-			var tagTopicSets = uniqueTags.map(function(tag) {
-				return 'tag:' + tag + ':topics';
-			});
 
-			db.sortedSetsCard(tagTopicSets, function(err, data) {
+			db.sortedSetScores('tags:topic:count', uniqueTags, function(err, data) {
 				if (err) {
 					return callback(err);
 				}
+
 				var tagCounts = _.object(uniqueTags, data);
 
 				members.forEach(function(tags, index) {

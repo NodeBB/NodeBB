@@ -143,6 +143,50 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.sortedSetsScore = function(keys, value, callback) {
+		value = helpers.valueToString(value);
+		db.collection('objects').find({_key:{$in:keys}, value: value}).toArray(function(err, result) {
+			if (err) {
+				return callback(err);
+			}
+
+			var map = helpers.toMap(result),
+				returnData = [],
+				item;
+
+			for(var i=0; i<keys.length; ++i) {
+				item = map[keys[i]];
+				returnData.push(item ? item.score : null);
+			}
+
+			callback(null, returnData);
+		});
+	};
+
+	module.sortedSetScores = function(key, values, callback) {
+		values = values.map(helpers.valueToString);
+		db.collection('objects').find({_key: key, value: {$in: values}}).toArray(function(err, result) {
+			if (err) {
+				return callback(err);
+			}
+
+			var map = {};
+			result.forEach(function(item) {
+				map[item.value] = item.score;
+			});
+
+			var	returnData = new Array(values.length),
+				score;
+
+			for(var i=0; i<values.length; ++i) {
+				score = map[values[i]];
+				returnData[i] = score ? score : null;
+			}
+
+			callback(null, returnData);
+		});
+	};
+
 	module.isSortedSetMember = function(key, value, callback) {
 		module.sortedSetScore(key, value, function(err, score) {
 			callback(err, !!score);
@@ -164,26 +208,6 @@ module.exports = function(db, module) {
 				return results.indexOf(value) !== -1;
 			});
 			callback(null, values);
-		});
-	};
-
-	module.sortedSetsScore = function(keys, value, callback) {
-		value = helpers.valueToString(value);
-		db.collection('objects').find({_key:{$in:keys}, value: value}).toArray(function(err, result) {
-			if(err) {
-				return callback(err);
-			}
-
-			var map = helpers.toMap(result),
-				returnData = [],
-				item;
-
-			for(var i=0; i<keys.length; ++i) {
-				item = map[keys[i]];
-				returnData.push(item ? item.score : null);
-			}
-
-			callback(null, returnData);
 		});
 	};
 

@@ -82,6 +82,18 @@ module.exports = function(redisClient, module) {
 		redisClient.zscore(key, value, callback);
 	};
 
+	module.sortedSetsScore = function(keys, value, callback) {
+		multi('zscore', keys, value, callback);
+	};
+
+	module.sortedSetScores = function(key, values, callback) {
+		var multi = redisClient.multi();
+		for(var i=0; i<values.length; ++i) {
+			multi.zscore(key, values[i]);
+		}
+		multi.exec(callback);
+	};
+
 	module.isSortedSetMember = function(key, value, callback) {
 		module.sortedSetScore(key, value, function(err, score) {
 			callback(err, !!score);
@@ -102,10 +114,6 @@ module.exports = function(redisClient, module) {
 			});
 			callback(null, results);
 		});
-	};
-
-	module.sortedSetsScore = function(keys, value, callback) {
-		multi('zscore', keys, value, callback);
 	};
 
 	function multi(command, keys, value, callback) {

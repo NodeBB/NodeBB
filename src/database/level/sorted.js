@@ -153,6 +153,35 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.sortedSetScores = function(key, values, callback) {
+		values = values.map(function(value) {
+			return value ? value.toString() : value;
+		});
+
+		module.getListRange(key, 0, -1, function(err, list) {
+			if (err) {
+				return callback(err);
+			}
+
+			var map = {};
+			list = list.filter(function(item) {
+				return values.indexOf(item.value) !== -1;
+			}).forEach(function(item) {
+				map[item.value] = item.score;
+			});
+
+			var	returnData = new Array(values.length),
+				score;
+
+			for(var i=0; i<values.length; ++i) {
+				score = map[values[i]];
+				returnData[i] = score ? score : null;
+			}
+
+			callback(null, returnData);
+		});
+	};
+
 	module.isSortedSetMember = function(key, value, callback) {
 		// maybe can be improved by having a parallel array
 		module.getListRange(key, 0, -1, function(err, list) {
