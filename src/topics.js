@@ -386,7 +386,7 @@ var async = require('async'),
 		});
 	};
 
-	Topics.getTeaser = function(tid, callback) {
+	Topics.getTeaser = function(tid, uid, callback) {
 		Topics.getLatestUndeletedPid(tid, function(err, pid) {
 			if (err || !pid) {
 				return callback(err);
@@ -411,7 +411,7 @@ var async = require('async'),
 					});
 				},
 				postIndex: function(next) {
-					posts.getPidIndex(pid, next);
+					posts.getPidIndex(pid, uid, next);
 				}
 			}, function(err, results) {
 				if (err) {

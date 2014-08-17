@@ -37,9 +37,8 @@ module.exports = function(Topics) {
 			}
 
 			async.parallel({
-				topicData: async.apply(Topics.getTopicFields, tid, ['title', 'slug']),
+				title: async.apply(Topics.getTopicField, tid, 'title'),
 				username: async.apply(user.getUserField, exceptUid, 'username'),
-				postIndex: async.apply(posts.getPidIndex, pid),
 				postContent: function(next) {
 					async.waterfall([
 						async.apply(posts.getPostField, pid, 'content'),
@@ -54,9 +53,9 @@ module.exports = function(Topics) {
 				}
 
 				notifications.create({
-					bodyShort: '[[notifications:user_posted_to, ' + results.username + ', ' + results.topicData.title + ']]',
+					bodyShort: '[[notifications:user_posted_to, ' + results.username + ', ' + results.title + ']]',
 					bodyLong: results.postContent,
-					path: nconf.get('relative_path') + '/topic/' + results.topicData.slug + '/' + results.postIndex,
+					pid: pid,
 					uniqueId: 'topic:' + tid + ':uid:' + exceptUid,
 					tid: tid,
 					from: exceptUid

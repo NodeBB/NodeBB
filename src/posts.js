@@ -522,13 +522,20 @@ var async = require('async'),
 		});
 	}
 
-	Posts.getPidIndex = function(pid, callback) {
-		Posts.getPostField(pid, 'tid', function(err, tid) {
+	Posts.getPidIndex = function(pid, uid, callback) {
+		async.parallel({
+			settings: function(next) {
+				user.getSettings(uid, next);
+			},
+			tid: function(next) {
+				Posts.getPostField(pid, 'tid', next);
+			}
+		}, function(err, results) {
 			if(err) {
 				return callback(err);
 			}
-
-			db.sortedSetRank('tid:' + tid + ':posts', pid, function(err, index) {
+			var set = results.settings.topicPostSort === 'most_votes' ? 'tid:' + results.tid + ':posts:votes' : 'tid:' + results.tid + ':posts';
+			db.sortedSetRank(set, pid, function(err, index) {
 				if (!utils.isNumber(index)) {
 					return callback(err, 1);
 				}

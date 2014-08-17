@@ -110,8 +110,6 @@ SocketPosts.sendNotificationToPostOwner = function(pid, fromuid, notification) {
 
 		async.parallel({
 			username: async.apply(user.getUserField, fromuid, 'username'),
-			slug: async.apply(topics.getTopicField, postData.tid, 'slug'),
-			index: async.apply(posts.getPidIndex, pid),
 			postContent: function(next) {
 				async.waterfall([
 					async.apply(posts.getPostField, pid, 'content'),
@@ -128,7 +126,7 @@ SocketPosts.sendNotificationToPostOwner = function(pid, fromuid, notification) {
 			notifications.create({
 				bodyShort: '[[' + notification + ', ' + results.username + ']]',
 				bodyLong: results.postContent,
-				path: nconf.get('relative_path') + '/topic/' + results.slug + '/' + results.index,
+				pid: pid,
 				uniqueId: 'post:' + pid + ':uid:' + fromuid,
 				from: fromuid
 			}, function(err, nid) {
@@ -274,7 +272,6 @@ SocketPosts.flag = function(socket, pid, callback) {
 	}
 
 	var message = '',
-		path = '',
 		post;
 
 	async.waterfall([
@@ -293,21 +290,13 @@ SocketPosts.flag = function(socket, pid, callback) {
 		},
 		function(postData, next) {
 			post = postData;
-			topics.getTopicField(postData.tid, 'slug', next);
-		},
-		function(topicSlug, next) {
-			path = nconf.get('relative_path') + '/topic/' + topicSlug;
-			posts.getPidIndex(pid, next);
-		},
-		function(postIndex, next) {
-			path += '/' + postIndex;
 			groups.get('administrators', {}, next);
 		},
 		function(adminGroup, next) {
 			notifications.create({
 				bodyShort: message,
 				bodyLong: post.content,
-				path: path,
+				pid: pid,
 				uniqueId: 'post_flag:' + pid,
 				from: socket.uid
 			}, function(err, nid) {

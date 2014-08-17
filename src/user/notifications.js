@@ -130,20 +130,73 @@ var async = require('async'),
 					return callback(err);
 				}
 
-				notifications = notifications.map(function(notification, index) {
-					if (!notification) {
-						return null;
-					}
-					notification.read = hasRead[index];
-					notification.datetimeISO = utils.toISOString(notification.datetime);
-					notification.readClass = !notification.read ? 'label-warning' : '';
-					return notification;
+				var pids = notifications.map(function(notification) {
+					return notification ? notification.pid : null;
 				});
 
-				callback(null, notifications);
+				generatePostPaths(pids, uid, function(err, paths) {
+					if (err) {
+						return callback(err);
+					}
+
+					notifications = notifications.map(function(notification, index) {
+						if (!notification) {
+							return null;
+						}
+
+						notification.read = hasRead[index];
+						notification.path = paths[index] || notification.path || '';
+						notification.datetimeISO = utils.toISOString(notification.datetime);
+						notification.readClass = !notification.read ? 'label-warning' : '';
+						return notification;
+					});
+
+					callback(null, notifications);
+				});
 			});
 		});
 	};
+
+	function generatePostPaths(pids, uid, callback) {
+		var postKeys = pids.map(function(pid) {
+			return 'post:' + pid;
+		});
+
+		db.getObjectsFields(postKeys, ['pid', 'tid'], function(err, postData) {
+			if (err) {
+				return callback(err);
+			}
+
+			var topicKeys = postData.map(function(post) {
+				return post ? 'topic:' + post.tid : null;
+			});
+
+			async.parallel({
+				indices: function(next) {
+					posts.getPostIndices(postData, uid, next);
+				},
+				topics: function(next) {
+					db.getObjectsFields(topicKeys, ['slug'], next);
+				}
+			}, function(err, results) {
+				if (err) {
+					return callback(err);
+				}
+
+				var paths = [];
+				pids.forEach(function(pid, index) {
+					var slug = results.topics[index] ? results.topics[index].slug : null;
+					var postIndex = results.indices[index] ? parseInt(results.indices[index], 10) + 1 : null;
+					if (slug && postIndex) {
+						paths.push(nconf.get('relative_path') + '/topic/' + slug + '/' + postIndex);
+					} else {
+						paths.push(null);
+					}
+				});
+				callback(null, paths);
+			});
+		});
+	}
 
 	UserNotifications.getDailyUnread = function(uid, callback) {
 		var	now = Date.now(),
@@ -221,8 +274,7 @@ var async = require('async'),
 
 			async.parallel({
 				username: async.apply(user.getUserField, uid, 'username'),
-				topic: async.apply(topics.getTopicFields, tid, ['slug', 'cid', 'title']),
-				postIndex: async.apply(posts.getPidIndex, pid),
+				topic: async.apply(topics.getTopicFields, tid, ['cid', 'title']),
 				postContent: function(next) {
 					async.waterfall([
 						async.apply(posts.getPostField, pid, 'content'),
@@ -246,7 +298,7 @@ var async = require('async'),
 				notifications.create({
 					bodyShort: '[[notifications:user_posted_to, ' + results.username + ', ' + results.topic.title + ']]',
 					bodyLong: results.postContent,
-					path: nconf.get('relative_path') + '/topic/' + results.topic.slug + '/' + results.postIndex,
+					pid: pid,
 					uniqueId: 'topic:' + tid + ':uid:' + uid,
 					tid: tid,
 					from: uid

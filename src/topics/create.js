@@ -226,7 +226,7 @@ module.exports = function(Topics) {
 				if (settings.followTopicsOnReply) {
 					threadTools.follow(postData.tid, uid);
 				}
-				posts.getPidIndex(postData.pid, next);
+				posts.getPidIndex(postData.pid, uid, next);
 			},
 			function(index, next) {
 				postData.index = index - 1;
