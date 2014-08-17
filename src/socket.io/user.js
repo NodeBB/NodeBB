@@ -182,6 +182,7 @@ function toggleFollow(method, uid, theiruid, callback) {
 			fromUid: uid,
 			toUid: theiruid
 		});
+		callback();
 	});
 }
 
