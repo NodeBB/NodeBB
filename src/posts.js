@@ -522,29 +522,6 @@ var async = require('async'),
 		});
 	}
 
-	Posts.getPidPage = function(pid, uid, callback) {
-		if(!pid) {
-			return callback(new Error('[[error:invalid-pid]]'));
-		}
-
-		var index = 0;
-		async.waterfall([
-			function(next) {
-				Posts.getPidIndex(pid, next);
-			},
-			function(result, next) {
-				index = result;
-				if (index === 1) {
-					return callback(null, 1);
-				}
-				user.getSettings(uid, next);
-			},
-			function(settings, next) {
-				next(null, Math.ceil((index - 1) / settings.postsPerPage));
-			}
-		], callback);
-	};
-
 	Posts.getPidIndex = function(pid, callback) {
 		Posts.getPostField(pid, 'tid', function(err, tid) {
 			if(err) {
