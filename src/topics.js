@@ -199,7 +199,7 @@ var async = require('async'),
 					privileges.categories.isAdminOrMod(cids, uid, next);
 				},
 				teasers: function(next) {
-					Topics.getTeasers(tids, next);
+					Topics.getTeasers(tids, uid, next);
 				},
 				tags: function(next) {
 					Topics.getTopicsTagsObjects(tids, next);
@@ -256,7 +256,7 @@ var async = require('async'),
 			}
 
 			async.parallel({
- 				posts: function(next) {
+				posts: function(next) {
 					posts.getPidsFromSet(set, start, end, reverse, function(err, pids) {
 						if (err) {
 							return next(err);
@@ -270,11 +270,7 @@ var async = require('async'),
 							if (err) {
 								return next(err);
 							}
-							start = parseInt(start, 10);
-							for(var i=0; i<posts.length; ++i) {
-								posts[i].index = start + i;
-							}
-							posts[0].index = 0;
+
 							Topics.addPostData(posts, uid, next);
 						});
 					});
@@ -332,7 +328,7 @@ var async = require('async'),
 		});
 	};
 
-	Topics.getTeasers = function(tids, callback) {
+	Topics.getTeasers = function(tids, uid, callback) {
 		if(!Array.isArray(tids)) {
 			return callback(null, []);
 		}
@@ -350,51 +346,41 @@ var async = require('async'),
 				return 'post:' + pid;
 			});
 
-			async.parallel({
-				indices: function(next) {
-					var sets = tids.map(function(tid) {
-						return 'tid:' + tid + ':posts';
-					});
-					db.sortedSetsRanks(sets, pids, next);
-				},
-				posts: function(next) {
-					db.getObjectsFields(postKeys, ['pid', 'uid', 'timestamp'], next);
-				}
-			}, function(err, results) {
+			db.getObjectsFields(postKeys, ['pid', 'uid', 'timestamp', 'tid'], function(err, postData) {
 				if (err) {
 					return callback(err);
 				}
 
-				var indices = results.indices.map(function(index) {
-					if (!utils.isNumber(index)) {
-						return 1;
-					}
-					return parseInt(index, 10) + 2;
-				});
-
-				var uids = results.posts.map(function(post) {
+				var uids = postData.map(function(post) {
 					return post.uid;
 				}).filter(function(uid, index, array) {
 					return array.indexOf(uid) === index;
 				});
 
-				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, userData) {
+				async.parallel({
+					users: function(next) {
+						user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+					},
+					indices: function(next) {
+						posts.getPostIndices(postData, uid, next);
+					}
+				}, function(err, results) {
 					if (err) {
 						return callback(err);
 					}
 
 					var users = {};
-					userData.forEach(function(user) {
+					results.users.forEach(function(user) {
 						users[user.uid] = user;
 					});
 
-					results.posts.forEach(function(post, index) {
+					postData.forEach(function(post, index) {
 						post.user = users[post.uid];
-						post.index = indices[index];
+						post.index = results.indices[index] + 1;
 						post.timestamp = utils.toISOString(post.timestamp);
 					});
 
-					callback(err, results.posts);
+					callback(null, postData);
 				});
 			});
 		});

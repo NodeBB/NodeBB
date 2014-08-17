@@ -35,7 +35,7 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 		enableInfiniteLoadingOrPagination();
 
 		if (!config.usePagination) {
-			navigator.init('#topics-container > .category-item', ajaxify.variables.get('topic_count'), undefined, Category.toTop, Category.toBottom);
+			navigator.init('#topics-container > .category-item', ajaxify.variables.get('topic_count'), Category.toTop, Category.toBottom, Category.navigatorCallback);
 		}
 
 		$('#topics-container').on('click', '.topic-title', function() {
@@ -59,6 +59,10 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 			navigator.scrollBottom(index);
 		});
 	};
+
+	Category.navigatorCallback = function(element, elementCount) {
+		return parseInt(element.attr('data-index'), 10) + 1;
+	}
 
 	$(window).on('action:popstate', function(ev, data) {
 		if(data.url.indexOf('category/') === 0) {
@@ -285,8 +289,7 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 			return;
 		}
 
-		infinitescroll.calculateAfter(direction, '#topics-container .category-item[data-tid]', config.topicsPerPage, function(after, offset, el) {
-
+		infinitescroll.calculateAfter(direction, '#topics-container .category-item[data-tid]', config.topicsPerPage, false, function(after, offset, el) {
 			loadTopicsAfter(after, function() {
 				if (direction < 0 && el) {
 					Category.scrollToTopic(el.attr('data-tid'), null, 0, offset);

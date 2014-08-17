@@ -418,7 +418,7 @@
 		});
 	};
 
-	Groups.getLatestMemberPosts = function(groupName, max, callback) {
+	Groups.getLatestMemberPosts = function(groupName, max, uid, callback) {
 		Groups.get(groupName, {}, function(err, groupObj) {
 			if (err || parseInt(groupObj.memberCount, 10) === 0) {
 				return callback(null, []);
@@ -433,7 +433,7 @@
 					return callback(err);
 				}
 
-				posts.getPostSummaryByPids(pids, {stripTags: false}, callback);
+				posts.getPostSummaryByPids(pids, uid, {stripTags: false}, callback);
 			});
 		});
 	};

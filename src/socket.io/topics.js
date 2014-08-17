@@ -70,10 +70,6 @@ SocketTopics.postcount = function(socket, tid, callback) {
 	topics.getTopicField(tid, 'postcount', callback);
 };
 
-SocketTopics.lastPostIndex = function(socket, tid, callback) {
-	db.sortedSetCard('tid:' + tid + ':posts', callback);
-};
-
 SocketTopics.increaseViewCount = function(socket, tid) {
 	topics.increaseViewCount(tid);
 };
@@ -421,6 +417,9 @@ SocketTopics.loadMore = function(socket, data, callback) {
 		},
 		privileges: function(next) {
 			privileges.topics.get(data.tid, socket.uid, next);
+		},
+		postCount: function(next) {
+			topics.getPostCount(data.tid, next);
 		}
 	}, function(err, results) {
 		if (err) {
@@ -431,18 +430,22 @@ SocketTopics.loadMore = function(socket, data, callback) {
 			return callback(new Error('[[error:no-privileges]]'));
 		}
 
-		var start = Math.max(parseInt(data.after, 10) - 1, 0),
-			end = start + results.settings.postsPerPage - 1;
-
 		var set = 'tid:' + data.tid + ':posts',
-			reverse = false;
+			reverse = false,
+			start = Math.max(parseInt(data.after, 10) - 1, 0);
 
 		if (results.settings.topicPostSort === 'newest_to_oldest') {
 			reverse = true;
+			data.after = results.postCount - data.after;
+			start = Math.max(parseInt(data.after, 10), 0);
 		} else if (results.settings.topicPostSort === 'most_votes') {
 			reverse = true;
+			data.after = results.postCount - data.after;
+			start = Math.max(parseInt(data.after, 10), 0);
 			set = 'tid:' + data.tid + ':posts:votes';
 		}
+
+		var end = start + results.settings.postsPerPage - 1;
 
 		async.parallel({
 			posts: function(next) {

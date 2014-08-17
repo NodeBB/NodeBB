@@ -20,11 +20,11 @@ module.exports = function(Categories) {
 				return callback(err, []);
 			}
 
-			posts.getPostSummaryByPids(pids, {stripTags: true}, callback);
+			posts.getPostSummaryByPids(pids, uid, {stripTags: true}, callback);
 		});
 	};
 
-	Categories.getRecentTopicReplies = function(categoryData, callback) {
+	Categories.getRecentTopicReplies = function(categoryData, uid, callback) {
 		async.map(categoryData, getRecentTopicPids, function(err, results) {
 			var pids = _.flatten(results);
 
@@ -32,7 +32,7 @@ module.exports = function(Categories) {
 				return !!pid && array.indexOf(pid) === index;
 			});
 
-			posts.getPostSummaryByPids(pids, {stripTags: true}, function(err, posts) {
+			posts.getPostSummaryByPids(pids, uid, {stripTags: true}, function(err, posts) {
 				if (err) {
 					return callback(err);
 				}

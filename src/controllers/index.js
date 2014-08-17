@@ -69,7 +69,7 @@ Controllers.home = function(req, res, next) {
 					return next(err);
 				}
 
-				categories.getRecentTopicReplies(categoryData, function(err) {
+				categories.getRecentTopicReplies(categoryData, uid, function(err) {
 					next(err, categoryData);
 				});
 			});

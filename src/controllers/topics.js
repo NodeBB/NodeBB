@@ -30,20 +30,18 @@ topicsController.get = function(req, res, next) {
 
 			userPrivileges = privileges;
 
-			user.getSettings(uid, next);
+			async.parallel({
+				postCount: function(next) {
+					topics.getPostCount(tid, next);
+				},
+				settings: function(next) {
+					user.getSettings(uid, next);
+				}
+			}, next);
 		},
-		function (settings, next) {
-			var postIndex = 0;
-			if (!settings.usePagination) {
-				postIndex = Math.max((req.params.post_index || 1) - (settings.postsPerPage - 1), 0);
-			} else if (!req.query.page) {
-				var index = Math.max(parseInt((req.params.post_index || 0), 10), 0);
-				page = Math.ceil((index + 1) / settings.postsPerPage);
-			}
-
-			var start = (page - 1) * settings.postsPerPage + postIndex,
-				end = start + settings.postsPerPage - 1;
-
+		function (results, next) {
+			var settings = results.settings;
+			var postCount = parseInt(results.postCount, 10) + 1;
 			var set = 'tid:' + tid + ':posts',
 				reverse = false;
 
@@ -53,6 +51,24 @@ topicsController.get = function(req, res, next) {
 				reverse = true;
 				set = 'tid:' + tid + ':posts:votes';
 			}
+
+			var postIndex = 0;
+			if (!settings.usePagination) {
+				if (reverse) {
+					if (!req.params.post_index || parseInt(req.params.post_index, 10) === 1) {
+						req.params.post_index = 0;
+					}
+					postIndex = Math.max(postCount - (req.params.post_index || postCount) - (settings.postsPerPage - 1), 0);
+				} else {
+					postIndex = Math.max((req.params.post_index || 1) - (settings.postsPerPage + 1), 0);
+				}
+			} else if (!req.query.page) {
+				var index = Math.max(parseInt(req.params.post_index, 10), 0);
+				page = Math.ceil((index + 1) / settings.postsPerPage);
+			}
+
+			var start = (page - 1) * settings.postsPerPage + postIndex,
+				end = start + settings.postsPerPage - 1;
 
 			topics.getTopicWithPosts(tid, set, uid, start, end, reverse, function (err, topicData) {
 				if (topicData) {
@@ -191,6 +207,7 @@ topicsController.get = function(req, res, next) {
 
 topicsController.teaser = function(req, res, next) {
 	var tid = req.params.topic_id;
+	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
 	topics.getLatestUndeletedPid(tid, function(err, pid) {
 		if (err) {
 			return next(err);
@@ -200,7 +217,7 @@ topicsController.teaser = function(req, res, next) {
 			return res.json(404, 'not-found');
 		}
 
-		posts.getPostSummaryByPids([pid], {stripTags: false}, function(err, posts) {
+		posts.getPostSummaryByPids([pid], uid, {stripTags: false}, function(err, posts) {
 			if (err) {
 				return next(err);
 			}
