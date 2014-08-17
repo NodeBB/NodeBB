@@ -24,47 +24,57 @@ var async = require('async'),
 	};
 
 	Notifications.get = function(nid, callback) {
-		db.getObject('notifications:' + nid, function(err, notification) {
+		Notifications.getMultiple([nid], function(err, notifications) {
+			callback(err, Array.isArray(notifications) && notifications.length ? notifications[0] : null);
+		});
+	};
+
+	Notifications.getMultiple = function(nids, callback) {
+		var keys = nids.map(function(nid) {
+			return 'notifications:' + nid;
+		});
+
+		db.getObjects(keys, function(err, notifications) {
 			if (err) {
 				return callback(err);
 			}
 
-			if (!notification) {
-				winston.info('[notifications.get] Could not retrieve nid ' + nid);
-				return callback(null, null);
-			}
-
-			// Backwards compatibility for old notification schema
-			// Remove this block when NodeBB v0.6.0 is released.
-			if (notification.hasOwnProperty('text')) {
-				notification.bodyShort = notification.text;
-				notification.bodyLong = '';
-				notification.text = S(notification.text).escapeHTML().s;
-			}
-
-			notification.bodyShort = S(notification.bodyShort).escapeHTML().s;
-			notification.bodyLong = S(notification.bodyLong).escapeHTML().s;
-
-			if (notification.from && !notification.image) {
-				User.getUserField(notification.from, 'picture', function(err, picture) {
-					if (err) {
-						return callback(err);
-					}
-					notification.image = picture;
-					callback(null, notification);
-				});
-				return;
-			} else if (notification.image) {
-				switch(notification.image) {
-					case 'brand:logo':
-						notification.image = meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png';
-					break;
+			async.map(notifications, function(notification, next) {
+				if (!notification) {
+					return next(null, null);
 				}
 
-				return callback(null, notification);
-			}
+				// Backwards compatibility for old notification schema
+				// Remove this block when NodeBB v0.6.0 is released.
+				if (notification.hasOwnProperty('text')) {
+					notification.bodyShort = notification.text;
+					notification.bodyLong = '';
+					notification.text = S(notification.text).escapeHTML().s;
+				}
 
-			callback(null, notification);
+				notification.bodyShort = S(notification.bodyShort).escapeHTML().s;
+				notification.bodyLong = S(notification.bodyLong).escapeHTML().s;
+
+				if (notification.from && !notification.image) {
+					User.getUserField(notification.from, 'picture', function(err, picture) {
+						if (err) {
+							return next(err);
+						}
+						notification.image = picture;
+						next(null, notification);
+					});
+					return;
+				} else if (notification.image) {
+					switch(notification.image) {
+						case 'brand:logo':
+							notification.image = meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png';
+						break;
+					}
+
+					return next(null, notification);
+				}
+
+			}, callback);
 		});
 	};
 
