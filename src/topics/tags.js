@@ -57,6 +57,10 @@ module.exports = function(Topics) {
 		return tag;
 	};
 
+	Topics.updateTag = function(tag, data, callback) {
+		db.setObject('tag:' + tag, data, callback);
+	};
+
 	function updateTagCount(tag, callback) {
 		callback = callback || function() {};
 		Topics.getTagTopicCount(tag, function(err, count) {
@@ -80,8 +84,32 @@ module.exports = function(Topics) {
 	};
 
 	Topics.getTags = function(start, end, callback) {
-		db.getSortedSetRevRangeWithScores('tags:topic:count', start, end, callback);
+		db.getSortedSetRevRangeWithScores('tags:topic:count', start, end, function(err, tags) {
+			if (err) {
+				return callback(err);
+			}
+
+			addTagData(tags, callback);
+		});
 	};
+
+	function addTagData(tags, callback) {
+		var keys = tags.map(function(tag) {
+			return 'tag:' + tag.value;
+		});
+
+		db.getObjects(keys, function(err, tagData) {
+			if (err) {
+				return callback(err);
+			}
+
+			tags.forEach(function(tag, index) {
+				tag.color = tagData[index] ? tagData[index].color : '';
+				tag.bgColor = tagData[index] ? tagData[index].bgColor : '';
+			});
+			callback(null, tags);
+		});
+	}
 
 	Topics.getTopicTags = function(tid, callback) {
 		db.getSetMembers('topic:' + tid + ':tags', callback);
@@ -98,39 +126,45 @@ module.exports = function(Topics) {
 			return 'topic:' + tid + ':tags';
 		});
 
-		db.getSetsMembers(sets, function(err, members) {
+		db.getSetsMembers(sets, function(err, topicTags) {
 			if (err) {
 				return callback(err);
 			}
 
-			var uniqueTags = _.uniq(_.flatten(members));
+			var uniqueTopicTags = _.uniq(_.flatten(topicTags));
 
-			db.sortedSetScores('tags:topic:count', uniqueTags, function(err, data) {
+			var tags = uniqueTopicTags.map(function(tag) {
+				return {value: tag};
+			});
+
+			async.parallel({
+				tagData: function(next) {
+					addTagData(tags, next);
+				},
+				counts: function(next) {
+					db.sortedSetScores('tags:topic:count', uniqueTopicTags, next);
+				}
+			}, function(err, results) {
 				if (err) {
 					return callback(err);
 				}
 
-				var tagCounts = _.object(uniqueTags, data);
+				results.tagData.forEach(function(tag, index) {
+					tag.score = results.counts[index] ? results.counts[index] : 0;
+				});
 
-				members.forEach(function(tags, index) {
+				var tagData = _.object(uniqueTopicTags, results.tagData);
+
+				topicTags.forEach(function(tags, index) {
 					if (Array.isArray(tags)) {
-						members[index] = mapToObject(tags, tagCounts);
+						topicTags[index] = tags.map(function(tag) {return tagData[tag];});
 					}
 				});
-				callback(null, members);
+
+				callback(null, topicTags);
 			});
 		});
 	};
-
-	function mapToObject(tags, tagCounts) {
-		if (!tags) {
-			return tags;
-		}
-
-		return tags.map(function(tag) {
-			return {name: tag, score: tagCounts ? tagCounts[tag] : 0};
-		});
-	}
 
 	Topics.updateTags = function(tid, tags, callback) {
 		callback = callback || function() {};

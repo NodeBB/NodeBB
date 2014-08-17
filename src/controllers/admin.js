@@ -16,9 +16,9 @@ var async = require('async'),
 	validator = require('validator');
 
 
-
 var adminController = {
 	categories: {},
+	tags: {},
 	topics: {},
 	groups: {},
 	themes: {},
@@ -125,6 +125,16 @@ function filterAndRenderCategories(req, res, next, active) {
 		res.render('admin/categories', {categories: categoryData});
 	});
 }
+
+adminController.tags.get = function(req, res, next) {
+	topics.getTags(0, -1, function(err, tags) {
+		if (err) {
+			return next(err);
+		}
+
+		res.render('admin/tags', {tags: tags});
+	});
+};
 
 adminController.database.get = function(req, res, next) {
 	db.info(function (err, data) {
