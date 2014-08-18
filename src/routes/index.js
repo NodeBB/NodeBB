@@ -160,7 +160,7 @@ module.exports = function(app, middleware) {
 			app.render.apply(app, arguments);
 		};
 
-		app.all(relativePath + '/api/*', middleware.updateLastOnlineTime, middleware.prepareAPI);
+		app.all(relativePath + '/api/?*', middleware.updateLastOnlineTime, middleware.prepareAPI);
 		app.all(relativePath + '/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
 		app.all(relativePath + '/admin/*', middleware.admin.isAdmin);
 		app.get(relativePath + '/admin', middleware.admin.isAdmin);
