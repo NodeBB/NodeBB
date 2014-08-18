@@ -308,23 +308,8 @@ var async = require('async'),
 	};
 
 	Topics.getMainPost = function(tid, uid, callback) {
-		Topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
-			if (err) {
-				return callback(err);
-			}
-			if (!parseInt(mainPid, 10)) {
-				return callback(null, []);
-			}
-			posts.getPostsByPids([mainPid], function(err, postData) {
-				if (err) {
-					return callback(err);
-				}
-				if (!Array.isArray(postData) || !postData[0]) {
-					return callback(null, []);
-				}
-				postData[0].index = 0;
-				Topics.addPostData(postData, uid, callback);
-			});
+		Topics.getMainPosts([tid], uid, function(err, mainPosts) {
+			calllback(err, Array.isArray(mainPosts) && mainPosts.length ? mainPosts[0] : null);
 		});
 	};
 
