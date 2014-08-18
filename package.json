@@ -67,7 +67,7 @@
     "url": "https://github.com/NodeBB/NodeBB/issues"
   },
   "engines": {
-    "node": ">=0.8"
+    "node": ">=0.10"
   },
   "maintainers": [
     {
