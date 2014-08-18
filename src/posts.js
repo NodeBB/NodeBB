@@ -102,7 +102,7 @@ var async = require('async'),
 				return callback(null, []);
 			}
 
-			Posts.getPostsByPids(pids, tid, callback);
+			Posts.getPostsByPids(pids, callback);
 		});
 	};
 
@@ -110,7 +110,7 @@ var async = require('async'),
 		db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, end, callback);
 	};
 
-	Posts.getPostsByPids = function(pids, tid, callback) {
+	Posts.getPostsByPids = function(pids, callback) {
 		var keys = [];
 
 		for(var x=0, numPids=pids.length; x<numPids; ++x) {
@@ -144,7 +144,7 @@ var async = require('async'),
 					return callback(err);
 				}
 
-				plugins.fireHook('filter:post.getPosts', {tid: tid, posts: posts}, function(err, data) {
+				plugins.fireHook('filter:post.getPosts', {posts: posts}, function(err, data) {
 					if (err) {
 						return callback(err);
 					}

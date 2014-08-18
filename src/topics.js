@@ -266,7 +266,7 @@ var async = require('async'),
 						if (!pids.length) {
 							return next(null, []);
 						}
-						posts.getPostsByPids(pids, tid, function(err, posts) {
+						posts.getPostsByPids(pids, function(err, posts) {
 							if (err) {
 								return next(err);
 							}
@@ -315,7 +315,7 @@ var async = require('async'),
 			if (!parseInt(mainPid, 10)) {
 				return callback(null, []);
 			}
-			posts.getPostsByPids([mainPid], tid, function(err, postData) {
+			posts.getPostsByPids([mainPid], function(err, postData) {
 				if (err) {
 					return callback(err);
 				}
@@ -327,6 +327,34 @@ var async = require('async'),
 			});
 		});
 	};
+
+	Topics.getMainPosts = function(tids, uid, callback) {
+		var keys = tids.map(function(tid) {
+			return 'topic:' + tid;
+		});
+
+		db.getObjectsFields(keys, ['mainPid'], function(err, topicData) {
+			if (err) {
+				return callback(err);
+			}
+
+			var mainPids = topicData.map(function(topic) {
+				return topic ? topic.mainPid : null;
+			});
+
+			posts.getPostsByPids(mainPids, function(err, postData) {
+				if (err) {
+					return callback(err);
+				}
+
+				if (!Array.isArray(postData) || !postData.length) {
+					return callback(null, []);
+				}
+
+				Topics.addPostData(postData, uid, callback);
+			});
+		});
+	}
 
 	Topics.getTeasers = function(tids, uid, callback) {
 		if(!Array.isArray(tids)) {
