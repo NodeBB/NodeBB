@@ -8,7 +8,8 @@ var categoriesController = {},
 	user = require('./../user'),
 	categories = require('./../categories'),
 	topics = require('./../topics'),
-	meta = require('./../meta');
+	meta = require('./../meta'),
+	plugins = require('./../plugins');
 
 categoriesController.recent = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
@@ -19,7 +20,9 @@ categoriesController.recent = function(req, res, next) {
 
 		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
 
-		res.render('recent', data);
+		plugins.fireHook('filter:category.get', data, uid, function(err, data) {
+			res.render('recent', data);
+		});
 	});
 };
 
@@ -35,7 +38,9 @@ categoriesController.popular = function(req, res, next) {
 
 		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
 
-		res.render('popular', {topics: data});
+		plugins.fireHook('filter:category.get', {topics: data}, uid, function(err, data) {
+			res.render('popular', data);
+		});
 	});
 };
 
@@ -47,7 +52,9 @@ categoriesController.unread = function(req, res, next) {
 			return next(err);
 		}
 
-		res.render('unread', data);
+		plugins.fireHook('filter:category.get', data, uid, function(err, data) {
+			res.render('unread', data);
+		});
 	});
 };
 
