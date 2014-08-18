@@ -226,7 +226,7 @@ var async = require('async'),
 	};
 
 	UserNotifications.getUnreadCount = function(uid, callback) {
-		db.sortedSetCount('uid:' + uid + ':notifications:unread', -Infinity, Infinity, callback);
+		db.sortedSetCard('uid:' + uid + ':notifications:unread', callback);
 	};
 
 	UserNotifications.getUnreadByField = function(uid, field, value, callback) {
