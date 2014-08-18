@@ -128,7 +128,7 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			async.each(uids, function(uid, next) {
+			async.eachLimit(uids, 10, function(uid, next) {
 				if (!parseInt(uid, 10)) {
 					return next();
 				}
