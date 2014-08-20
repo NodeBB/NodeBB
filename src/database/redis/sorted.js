@@ -2,6 +2,7 @@
 
 module.exports = function(redisClient, module) {
 	module.sortedSetAdd = function(key, score, value, callback) {
+		callback = callback || function() {};
 		redisClient.zadd(key, score, value, callback);
 	};
 

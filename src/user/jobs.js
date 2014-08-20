@@ -22,6 +22,11 @@ module.exports = function(User) {
 	};
 
 	User.sendDailyDigests = function() {
+		var digestsDisabled = meta.config.disableEmailSubscriptions !== undefined && parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
+		if (digestsDisabled) {
+			return winston.log('[user/jobs] Did not send daily digests because subscription system is disabled.');
+		}
+
 		async.parallel({
 			recent: function(next) {
 				topics.getLatestTopics(0, 0, 10, 'day', next);

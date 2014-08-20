@@ -68,8 +68,9 @@ var bcrypt = require('bcryptjs'),
 			if (err) {
 				return callback(err);
 			}
-
-			callback(null, modifyUserData(users, fieldsToRemove));
+			plugins.fireHook('filter:user.removeFields', fieldsToRemove, function(err, fields) {
+				callback(err, modifyUserData(users, fields));
+			});
 		});
 	};
 
@@ -94,7 +95,9 @@ var bcrypt = require('bcryptjs'),
 				return callback(err);
 			}
 
-			callback(null, modifyUserData(users, []));
+			plugins.fireHook('filter:user.removeFields', [], function(err, fields) {
+				callback(err, modifyUserData(users, fields));
+			});
 		});
 	};
 
@@ -239,36 +242,32 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.getUsers = function(uids, callback) {
-		function loadUserInfo(user, callback) {
-			if (!user) {
-				return callback(null, user);
+		async.parallel({
+			userData: function(next) {
+				User.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'postcount', 'reputation'], next);
+			},
+			isAdmin: function(next) {
+				User.isAdministrator(uids, next);
+			},
+			isOnline: function(next) {
+				db.isSortedSetMembers('users:online', uids, next);
 			}
-
-			async.waterfall([
-				function(next) {
-					User.isAdministrator(user.uid, next);
-				},
-				function(isAdmin, next) {
-					user.status = !user.status ? 'online' : user.status;
-					user.administrator = isAdmin;
-					user.banned = parseInt(user.banned, 10) === 1;
-					db.isSortedSetMember('users:online', user.uid, next);
-				},
-				function(isMember, next) {
-					if (!isMember) {
-						user.status = 'offline';
-					}
-					next(null, user);
-				}
-			], callback);
-		}
-
-		User.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'postcount', 'reputation'], function(err, usersData) {
+		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			async.map(usersData, loadUserInfo, callback);
+			results.userData.forEach(function(user, index) {
+				if (!user) {
+					return;
+				}
+				user.status = !user.status ? 'online' : user.status;
+				user.status = !results.isOnline[index] ? 'offline' : user.status;
+				user.administrator = results.isAdmin[index];
+				user.banned = parseInt(user.banned, 10) === 1;
+			});
+
+			callback(err, results.userData);
 		});
 	};
 
@@ -410,29 +409,40 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.isAdministrator = function(uid, callback) {
-		groups.isMember(uid, 'administrators', callback);
+		if (Array.isArray(uid)) {
+			groups.isMembers(uid, 'administrators', callback);
+		} else {
+			groups.isMember(uid, 'administrators', callback);
+		}
 	};
 
-	User.isOnline = function(uid, callback) {
-		User.getUserFields(uid, ['username', 'userslug', 'picture', 'status', 'reputation', 'postcount'] , function(err, data) {
-			if(err) {
+	User.isOnline = function(uids, callback) {
+		if (!Array.isArray(uids)) {
+			uids = [uids];
+		}
+
+		User.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'reputation', 'postcount'] , function(err, userData) {
+			if (err) {
 				return callback(err);
 			}
+
 			var websockets = require('./socket.io');
-			var online = websockets.isUserOnline(uid);
 
-			data.status = online ? (data.status || 'online') : 'offline';
+			userData = userData.map(function(user) {
+				var online = websockets.isUserOnline(user.uid);
+				user.status = online ? (user.status || 'online') : 'offline';
 
-			if(data.status === 'offline') {
-				online = false;
-			}
+				if (user.status === 'offline') {
+					online = false;
+				}
 
-			data.online = online;
-			data.uid = uid;
-			data.timestamp = Date.now();
-			data.rooms = websockets.getUserRooms(uid);
+				user.online = online;
+				user.timestamp = Date.now();
+				user.rooms = websockets.getUserRooms(user.uid);
+				return user;
+			});
 
-			callback(null, data);
+			callback(null, userData);
 		});
 	};
 

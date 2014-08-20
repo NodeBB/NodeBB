@@ -6,6 +6,7 @@ var db = require('./database'),
 	user = require('./user'),
 	plugins = require('./plugins'),
 	meta = require('./meta'),
+	utils = require('../public/src/utils'),
 	notifications = require('./notifications'),
 	userNotifications = require('./user/notifications');
 
@@ -128,7 +129,7 @@ var db = require('./database'),
 						var self = parseInt(message.fromuid, 10) === parseInt(fromuid, 10);
 						message.fromUser = self ? userData[0] : userData[1];
 						message.toUser = self ? userData[1] : userData[0];
-						message.timestampISO = new Date(parseInt(message.timestamp, 10)).toISOString();
+						message.timestampISO = utils.toISOString(message.timestamp);
 						message.self = self ? 1 : 0;
 						message.newSet = false;
 
@@ -193,7 +194,11 @@ var db = require('./database'),
 				}
 			},
 			function(mids, next) {
-				db.getObjects(['message:' + mids[0], 'message:' + mids[1]], next);
+				if (typeof mids !== 'boolean') {
+					db.getObjects(['message:' + mids[0], 'message:' + mids[1]], next);
+				} else {
+					next(null, mids);
+				}
 			},
 			function(messages, next) {
 				if (typeof messages !== 'boolean') {
@@ -216,32 +221,27 @@ var db = require('./database'),
 				return callback(err);
 			}
 
-			async.parallel({
-				unreadUids: async.apply(db.isSortedSetMembers, 'uid:' + uid + ':chats:unread', uids),
-				users: async.apply(user.getMultipleUserFields, uids, ['username', 'picture', 'uid'])
-			}, function(err, results) {
+			db.isSortedSetMembers('uid:' + uid + ':chats:unread', uids, function(err, unreadUids) {
 				if (err) {
 					return callback(err);
 				}
-				var users = results.users;
 
-				for (var i=0; i<users.length; ++i) {
-					users[i].unread = results.unreadUids[i];
-				}
+				user.isOnline(uids, function(err, users) {
+					if (err) {
+						return callback(err);
+					}
 
-				users = users.filter(function(user, index) {
-					return !!user.uid;
-				});
-
-				async.map(users, function(userData, next) {
-					user.isOnline(userData.uid, function(err, data) {
-						if (err) {
-							return next(err);
+					users.forEach(function(user, index) {
+						if (user) {
+							user.unread = unreadUids[index];
 						}
-						userData.status = data.status;
-						next(null, userData);
 					});
-				}, callback);
+
+					users = users.filter(function(user) {
+						return !!user.uid;
+					});
+					callback(null, users);
+				});
 			});
 		});
 	};
@@ -258,7 +258,9 @@ var db = require('./database'),
 		db.sortedSetAdd('uid:' + uid + ':chats:unread', Date.now(), toUid, callback);
 	};
 
-	// todo #1798 -- this utility method creates a room name given an array of uids.
+	/*
+	todo #1798 -- this utility method creates a room name given an array of uids.
+
 	Messaging.uidsToRoom = function(uids, callback) {
 		uid = parseInt(uid, 10);
 		if (typeof uid === 'number' && Array.isArray(roomUids)) {
@@ -274,7 +276,7 @@ var db = require('./database'),
 		} else {
 			callback(new Error('invalid-uid-or-participant-uids'));
 		}
-	};
+	};*/
 
 	Messaging.verifySpammer = function(uid, callback) {
 		var messagesToCompare = 10;

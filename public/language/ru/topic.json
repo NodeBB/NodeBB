@@ -54,7 +54,7 @@
     "topic_move_success": "Эта тема успешно перемещена в %1",
     "post_delete_confirm": "Вы уверены, что хотите удалить этот пост?",
     "post_restore_confirm": "Вы уверены, что хотите восстановить этот пост?",
-    "post_purge_confirm": "Are you sure you want to purge this post?",
+    "post_purge_confirm": "Вы уверены, что хотите очистить эту запись?",
     "load_categories": "Загружаем Категории",
     "disabled_categories_note": "Отключенные категории затемненны",
     "confirm_move": "Перенести",

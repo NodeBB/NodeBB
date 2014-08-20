@@ -47,7 +47,6 @@ module.exports = function(Topics) {
 			return '';
 		}
 		tag = tag.trim().toLowerCase();
-		tag = tag.replace(/&/g, '&amp;');
 		tag = tag.replace(/[,\/#!$%\^\*;:{}=_`<>'"~()?\|]/g, '');
 		tag = tag.substr(0, meta.config.maximumTagLength || 15);
 		var matches = tag.match(/^[.-]*(.+?)[.-]*$/);
@@ -90,6 +89,25 @@ module.exports = function(Topics) {
 	Topics.getTopicTagsObjects = function(tid, callback) {
 		Topics.getTopicTags(tid, function(err, tags) {
 			callback(err, mapToObject(tags));
+		});
+	};
+
+	Topics.getTopicsTagsObjects = function(tids, callback) {
+		var sets = tids.map(function(tid) {
+			return 'topic:' + tid + ':tags';
+		});
+
+		db.getSetsMembers(sets, function(err, members) {
+			if (err) {
+				return callback(err);
+			}
+
+			members.forEach(function(tags, index) {
+				if (Array.isArray(tags)) {
+					members[index] = mapToObject(tags);
+				}
+			})
+			callback(null, members);
 		});
 	};
 

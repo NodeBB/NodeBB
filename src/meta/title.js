@@ -9,6 +9,7 @@ module.exports = function(Meta) {
 	var tests = {
 		isCategory: /^category\/\d+\/?/,
 		isTopic: /^topic\/\d+\/?/,
+		isTag: /^tags\/[\s\S]+\/?/,
 		isUserPage: /^user\/[^\/]+(\/[\w]+)?/
 	};
 
@@ -42,6 +43,12 @@ module.exports = function(Meta) {
 			var tid = urlFragment.match(/topic\/(\d+)/)[1];
 
 			require('../topics').getTopicField(tid, 'title', callback);
+		} else if (tests.isTag.test(urlFragment)) {
+			var tag = urlFragment.match(/tags\/([\s\S]+)/)[1];
+
+			translator.translate('[[pages:tags, ' + tag + ']]', language, function(translated) {
+				callback(null, translated);
+			});
 		} else if (tests.isUserPage.test(urlFragment)) {
 			var	matches = urlFragment.match(/user\/([^\/]+)\/?([\w]+)?/),
 				userslug = matches[1],

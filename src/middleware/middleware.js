@@ -6,7 +6,6 @@ var app,
 	path = require('path'),
 	winston = require('winston'),
 	validator = require('validator'),
-	fs = require('fs'),
 	nconf = require('nconf'),
 	plugins = require('./../plugins'),
 	meta = require('./../meta'),
@@ -209,6 +208,7 @@ middleware.renderHeader = function(req, res, callback) {
 	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
 
 	var custom_header = {
+		uid: uid,
 		'navigation': []
 	};
 

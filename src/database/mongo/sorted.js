@@ -151,13 +151,15 @@ module.exports = function(db, module) {
 			if (err) {
 				return callback(err);
 			}
+
 			results = results.map(function(item) {
 				return item.value;
 			});
+
 			values = values.map(function(value) {
 				return results.indexOf(value) !== -1;
 			});
-			callback(err, results);
+			callback(null, values);
 		});
 	};
 

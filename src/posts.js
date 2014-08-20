@@ -93,7 +93,7 @@ var async = require('async'),
 	};
 
 	Posts.getPostsByTid = function(tid, set, start, end, reverse, callback) {
-		db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, end, function(err, pids) {
+		Posts.getPidsFromSet(set, start, end, reverse, function(err, pids) {
 			if(err) {
 				return callback(err);
 			}
@@ -102,31 +102,15 @@ var async = require('async'),
 				return callback(null, []);
 			}
 
-			Posts.getPostsByPids(pids, function(err, posts) {
-				if(err) {
-					return callback(err);
-				}
-
-				if(!Array.isArray(posts) || !posts.length) {
-					return callback(null, []);
-				}
-
-				plugins.fireHook('filter:post.getPosts', {tid: tid, posts: posts}, function(err, data) {
-					if(err) {
-						return callback(err);
-					}
-
-					if(!data || !Array.isArray(data.posts)) {
-						return callback(null, []);
-					}
-
-					callback(null, data.posts);
-				});
-			});
+			Posts.getPostsByPids(pids, tid, callback);
 		});
 	};
 
-	Posts.getPostsByPids = function(pids, callback) {
+	Posts.getPidsFromSet = function(set, start, end, reverse, callback) {
+		db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, end, callback);
+	};
+
+	Posts.getPostsByPids = function(pids, tid, callback) {
 		var keys = [];
 
 		for(var x=0, numPids=pids.length; x<numPids; ++x) {
@@ -155,7 +139,23 @@ var async = require('async'),
 					next(null, postData);
 				});
 
-			}, callback);
+			}, function(err, posts) {
+				if (err) {
+					return callback(err);
+				}
+
+				plugins.fireHook('filter:post.getPosts', {tid: tid, posts: posts}, function(err, data) {
+					if (err) {
+						return callback(err);
+					}
+
+					if (!data || !Array.isArray(data.posts)) {
+						return callback(null, []);
+					}
+
+					callback(null, data.posts);
+				});
+			});
 		});
 	};
 
@@ -222,21 +222,31 @@ var async = require('async'),
 	};
 
 	Posts.getUserInfoForPosts = function(uids, callback) {
-		user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(err, userData) {
+		async.parallel({
+			groups: function(next) {
+				groups.getUserGroups(uids, next);
+			},
+			userData: function(next) {
+				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], next);
+			}
+		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
+			var userData = results.userData;
+			for(var i=0; i<userData.length; ++i) {
+				userData[i].groups = results.groups[i];
+			}
+
 			async.map(userData, function(userData, next) {
-				var userInfo = {
-					uid: userData.uid || 0,
-					username: userData.username || '[[global:guest]]',
-					userslug: userData.userslug || '',
-					reputation: userData.reputation || 0,
-					postcount: userData.postcount || 0,
-					banned: parseInt(userData.banned, 10) === 1,
-					picture: userData.picture || user.createGravatarURLFromEmail('')
-				};
+				userData.uid = userData.uid || 0;
+				userData.username = userData.username || '[[global:guest]]';
+				userData.userslug = userData.userslug || '';
+				userData.reputation = userData.reputation || 0;
+				userData.postcount = userData.postcount || 0;
+				userData.banned = parseInt(userData.banned, 10) === 1;
+				userData.picture = userData.picture || user.createGravatarURLFromEmail('');
 
 				async.parallel({
 					signature: function(next) {
@@ -247,18 +257,14 @@ var async = require('async'),
 					},
 					customProfileInfo: function(next) {
 						plugins.fireHook('filter:posts.custom_profile_info', {profile: [], uid: userData.uid}, next);
-					},
-					groups: function(next) {
-						groups.getUserGroups(userData.uid, next);
 					}
 				}, function(err, results) {
 					if (err) {
 						return next(err);
 					}
-					userInfo.signature = results.signature;
-					userInfo.custom_profile_info = results.customProfileInfo.profile;
-					userInfo.groups = results.groups;
-					next(null, userInfo);
+					userData.signature = results.signature;
+					userData.custom_profile_info = results.customProfileInfo.profile;
+					next(null, userData);
 				});
 			}, callback);
 		});

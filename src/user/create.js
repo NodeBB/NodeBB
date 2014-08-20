@@ -12,18 +12,37 @@ var async = require('async'),
 
 module.exports = function(User) {
 
-	User.create = function(userData, callback) {
-		userData = userData || {};
+	User.create = function(data, callback) {
+		var gravatar = User.createGravatarURLFromEmail(data.email);
+		var timestamp = Date.now();
+		var password = data.password;
+
+		var userData = {
+			'username': data.username.trim(),
+			'email': data.email,
+			'joindate': timestamp,
+			'picture': gravatar,
+			'gravatarpicture': gravatar,
+			'fullname': '',
+			'location': '',
+			'birthday': '',
+			'website': '',
+			'signature': '',
+			'uploadedpicture': '',
+			'profileviews': 0,
+			'reputation': 0,
+			'postcount': 0,
+			'lastposttime': 0,
+			'banned': 0,
+			'status': 'online'
+		};
+
 		userData.userslug = utils.slugify(userData.username);
 
-		userData.username = userData.username.trim();
 		if (userData.email !== undefined) {
 			userData.email = userData.email.trim();
 			userData.email = validator.escape(userData.email);
 		}
-
-		var password = userData.password;
-		userData.password = null;
 
 		async.parallel({
 			emailValid: function(next) {
@@ -84,7 +103,7 @@ module.exports = function(User) {
 				}
 			},
 			customFields: function(next) {
-				plugins.fireHook('filter:user.custom_fields', userData, next);
+				plugins.fireHook('filter:user.custom_fields', [], next);
 			},
 			userData: function(next) {
 				plugins.fireHook('filter:user.create', userData, next);
@@ -94,7 +113,14 @@ module.exports = function(User) {
 				return callback(err);
 			}
 
-			userData = utils.merge(results.userData, results.customFields);
+			var customData = {};
+			results.customFields.forEach(function(customField) {
+				if (data[customField]) {
+					customData[customField] = data[customField];
+				}
+			});
+
+			userData = utils.merge(results.userData, customData);
 
 			var userNameChanged = !!results.renamedUsername;
 
@@ -104,37 +130,14 @@ module.exports = function(User) {
 			}
 
 			db.incrObjectField('global', 'nextUid', function(err, uid) {
-				if(err) {
+				if (err) {
 					return callback(err);
 				}
 
-				var gravatar = User.createGravatarURLFromEmail(userData.email);
-				var timestamp = Date.now();
-
-				userData = utils.merge({
-					'uid': uid,
-					'username': userData.username,
-					'userslug': userData.userslug,
-					'fullname': '',
-					'location': '',
-					'birthday': '',
-					'website': '',
-					'email': userData.email || '',
-					'signature': '',
-					'joindate': timestamp,
-					'picture': gravatar,
-					'gravatarpicture': gravatar,
-					'uploadedpicture': '',
-					'profileviews': 0,
-					'reputation': 0,
-					'postcount': 0,
-					'lastposttime': 0,
-					'banned': 0,
-					'status': 'online'
-				}, userData);
+				userData.uid = uid;
 
 				db.setObject('user:' + uid, userData, function(err) {
-					if(err) {
+					if (err) {
 						return callback(err);
 					}
 

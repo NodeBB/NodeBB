@@ -1,7 +1,7 @@
 {
-    "view_group": "View Group",
-    "details.title": "Group Details",
-    "details.members": "Member List",
-    "details.has_no_posts": "This group's members have not made any posts.",
-    "details.latest_posts": "Latest Posts"
+    "view_group": "查看用户组",
+    "details.title": "用户组详情",
+    "details.members": "会员列表",
+    "details.has_no_posts": "此用户组的会员尚未发表任何帖子。",
+    "details.latest_posts": "最新帖子"
 }

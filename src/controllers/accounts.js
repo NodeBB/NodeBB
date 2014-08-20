@@ -365,6 +365,8 @@ accountsController.accountSettings = function(req, res, next) {
 			userData.settings = results.settings;
 			userData.languages = results.languages;
 
+			userData.disableEmailSubscriptions = meta.config.disableEmailSubscriptions !== undefined && parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
+
 			res.render('account/settings', userData);
 		});
 	});
@@ -402,7 +404,11 @@ accountsController.uploadPicture = function (req, res, next) {
 			image.resizeImage(req.files.userPhoto.path, extension, 128, 128, next);
 		},
 		function(next) {
-			image.convertImageToPng(req.files.userPhoto.path, extension, next);
+			if (parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1) {
+				image.convertImageToPng(req.files.userPhoto.path, extension, next);
+			} else {
+				next();
+			}
 		},
 		function(next) {
 			user.getUidByUserslug(req.params.userslug, next);
@@ -448,7 +454,7 @@ accountsController.uploadPicture = function (req, res, next) {
 			return plugins.fireHook('filter:uploadImage', req.files.userPhoto, done);
 		}
 
-		var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10);
+		var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1;
 		var filename = updateUid + '-profileimg' + (convertToPNG ? '.png' : extension);
 
 		user.getUserField(updateUid, 'uploadedpicture', function (err, oldpicture) {

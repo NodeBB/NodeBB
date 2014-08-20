@@ -161,6 +161,8 @@ SocketPosts.edit = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	} else if (!data.title || data.title.length < parseInt(meta.config.minimumTitleLength, 10)) {
 		return callback(new Error('[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]'));
+	} else if (data.title.length > parseInt(meta.config.maximumTitleLength, 10)) {
+		return callback(new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]'));
 	} else if (!data.content || data.content.length < parseInt(meta.config.minimumPostLength, 10)) {
 		return callback(new Error('[[error:content-too-short, ' + meta.config.minimumPostLength + ']]'));
 	}
@@ -241,37 +243,18 @@ SocketPosts.getPrivileges = function(socket, pid, callback) {
 };
 
 SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
-
 	favourites.getFavouritedUidsByPids([pid], function(err, data) {
-
 		if(err) {
 			return callback(err);
 		}
 
 		if(!Array.isArray(data) || !data.length) {
-			callback(null, "");
+			callback(null, []);
 		}
-
-		var max = 5; //hardcoded
-		var finalText = "";
 
 		var pid_uids = data[0];
-		var rest_amount = 0;
 
-		if (pid_uids.length > max) {
-			rest_amount = pid_uids.length - max;
-			pid_uids = pid_uids.slice(0, max);
-		}
-
-		user.getUsernamesByUids(pid_uids, function(err, usernames) {
-			if(err) {
-				return callback(err);
-			}
-
-			finalText = usernames.join(', ') + (rest_amount > 0 ?
-				(" and " + rest_amount + (rest_amount > 1 ? " others" : " other")) : "");
-			callback(null, finalText);
-		});
+		user.getUsernamesByUids(pid_uids, callback);
 	});
 };
 

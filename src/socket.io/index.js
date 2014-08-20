@@ -287,17 +287,6 @@ function updateRoomBrowsingText(roomName) {
 		return;
 	}
 
-	function getUidsInRoom() {
-		var uids = [];
-		var clients = io.sockets.clients(roomName);
-		for(var i=0; i<clients.length; ++i) {
-			if (uids.indexOf(clients[i].uid) === -1 && clients[i].uid !== 0) {
-				uids.push(clients[i].uid);
-			}
-		}
-		return uids;
-	}
-
 	function getAnonymousCount() {
 		var clients = io.sockets.clients(roomName);
 		var anonCount = 0;
@@ -310,7 +299,7 @@ function updateRoomBrowsingText(roomName) {
 		return anonCount;
 	}
 
-	var	uids = getUidsInRoom(),
+	var	uids = Sockets.getUidsInRoom(roomName),
 		anonymousCount = getAnonymousCount();
 
 	user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status'], function(err, users) {
@@ -327,6 +316,18 @@ function updateRoomBrowsingText(roomName) {
 		}
 	});
 }
+
+Sockets.getUidsInRoom = function(roomName) {
+	var uids = [];
+	var clients = io.sockets.clients(roomName);
+	for(var i=0; i<clients.length; ++i) {
+		if (uids.indexOf(clients[i].uid) === -1 && clients[i].uid !== 0) {
+			uids.push(clients[i].uid);
+		}
+	}
+	return uids;
+};
+
 
 Sockets.emitTopicPostStats = emitTopicPostStats;
 function emitTopicPostStats(callback) {

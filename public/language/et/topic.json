@@ -41,7 +41,7 @@
     "thread_tools.pin": "Tõsta esile teema",
     "thread_tools.unpin": "Märgista teema",
     "thread_tools.lock": "Lukusta teema",
-    "thread_tools.unlock": "Eemalda märgistatud teema",
+    "thread_tools.unlock": "Taasava teema",
     "thread_tools.move": "Liiguta teema",
     "thread_tools.move_all": "Liiguta kõik",
     "thread_tools.fork": "Fork Topic",

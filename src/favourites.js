@@ -247,9 +247,10 @@ var async = require('async'),
 	};
 
 	Favourites.getFavouritedUidsByPids = function(pids, callback) {
-		async.map(pids, function(pid, next) {
-			db.getSetMembers('pid:' + pid + ':users_favourited', next);
-		}, callback);
+		var sets = pids.map(function(pid) {
+			return 'pid:' + pid + ':users_favourited';
+		});
+		db.getSetsMembers(sets, callback);
 	};
 
 }(exports));

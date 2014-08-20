@@ -1,7 +1,7 @@
 {
-    "view_group": "View Group",
-    "details.title": "Group Details",
-    "details.members": "Member List",
-    "details.has_no_posts": "This group's members have not made any posts.",
-    "details.latest_posts": "Latest Posts"
+    "view_group": "Grubu Gör",
+    "details.title": "Grup Detayları",
+    "details.members": "Üye Listesi",
+    "details.has_no_posts": "Bu grubun üyeleri henüz bir ileti göndermedi.",
+    "details.latest_posts": "En son iletiler"
 }

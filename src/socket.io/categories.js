@@ -4,8 +4,8 @@ var	async = require('async'),
 	db = require('../database'),
 	categories = require('../categories'),
 	privileges = require('../privileges'),
-	meta = require('../meta'),
 	user = require('../user'),
+	websockets = require('./index'),
 
 	SocketCategories = {};
 
@@ -44,6 +44,10 @@ SocketCategories.loadMore = function(socket, data, callback) {
 			return callback(err);
 		}
 
+		if (!results.privileges.read) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+
 		var start = parseInt(data.after, 10),
 			end = start + results.settings.topicsPerPage - 1;
 
@@ -68,6 +72,11 @@ SocketCategories.getTopicCount = function(socket, cid, callback) {
 
 SocketCategories.lastTopicIndex = function(socket, cid, callback) {
 	db.sortedSetCard('categories:' + cid + ':tid', callback);
+};
+
+SocketCategories.getUsersInCategory = function(socket, cid, callback) {
+	var uids = websockets.getUidsInRoom('category_' + cid);
+	user.getMultipleUserFields(uids, ['uid', 'userslug', 'username', 'picture'], callback);
 };
 
 module.exports = SocketCategories;

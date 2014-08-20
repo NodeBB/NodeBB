@@ -93,7 +93,7 @@ var db = require('./database'),
 				category.pageCount = results.pageCount;
 				category.topic_row_size = 'col-md-9';
 
-				callback(null, category);
+				plugins.fireHook('filter:category.get', category, uid, callback);
 			});
 		});
 	};
@@ -237,10 +237,9 @@ var db = require('./database'),
 	};
 
 	Categories.markAsUnreadForAll = function(cid, callback) {
+		callback = callback || function() {};
 		db.delete('cid:' + cid + ':read_by_uid', function(err) {
-			if(typeof callback === 'function') {
-				callback(err);
-			}
+			callback(err);
 		});
 	};
 
@@ -293,6 +292,13 @@ var db = require('./database'),
 
 	Categories.getCategoryField = function(cid, field, callback) {
 		db.getObjectField('category:' + cid, field, callback);
+	};
+
+	Categories.getMultipleCategoryFields = function(cids, fields, callback) {
+		var keys = cids.map(function(cid) {
+			return 'category:' + cid;
+		});
+		db.getObjectsFields(keys, fields, callback);
 	};
 
 	Categories.getCategoryFields = function(cid, fields, callback) {

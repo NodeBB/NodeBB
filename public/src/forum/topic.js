@@ -72,13 +72,11 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 
 		$(window).trigger('action:topic.loaded');
 
-		socket.emit('topics.markAsRead', tid);
-		socket.emit('topics.markTopicNotificationsRead', tid);
-		socket.emit('topics.increaseViewCount', tid);
+		socket.emit('topics.enter', tid);
 	};
 
 	Topic.toTop = function() {
-		navigator.scrollTop(1);
+		navigator.scrollTop(0);
 	};
 
 	Topic.toBottom = function() {
@@ -353,7 +351,10 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 		utils.makeNumbersHumanReadable(element.find('.human-readable-number'));
 		element.find('span.timeago').timeago();
 		element.find('.post-content img:not(.emoji)').addClass('img-responsive').each(function() {
-			$(this).wrap('<a href="' + $(this).attr('src') + '" target="_blank">');
+			var $this = $(this);
+			if (!$this.parent().is('a')) {
+				$this.wrap('<a href="' + $this.attr('src') + '" target="_blank">');
+			}
 		});
 		postTools.updatePostCount();
 		showBottomPostBar();
@@ -364,7 +365,7 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 		postHtml.find('.move').toggleClass('none', !privileges.move);
 		postHtml.find('.reply, .quote').toggleClass('none', !$('.post_reply').length);
 		var isSelfPost = parseInt(postHtml.attr('data-uid'), 10) === parseInt(app.uid, 10);
-		postHtml.find('.chat, .flag').toggleClass('none', isSelfPost);
+		postHtml.find('.chat, .flag').toggleClass('none', isSelfPost || !app.uid);
 	}
 
 	function loadMorePosts(direction) {

@@ -54,6 +54,14 @@ module.exports = function(redisClient, module) {
 		redisClient.smembers(key, callback);
 	};
 
+	module.getSetsMembers = function(keys, callback) {
+		var multi = redisClient.multi();
+		for (var i=0; i<keys.length; ++i) {
+			multi.smembers(keys[i]);
+		}
+		multi.exec(callback);
+	};
+
 	module.setCount = function(key, callback) {
 		redisClient.scard(key, callback);
 	};
