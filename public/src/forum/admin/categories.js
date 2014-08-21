@@ -231,6 +231,30 @@ define('forum/admin/categories', ['uploader', 'forum/admin/iconSelect'], functio
 			});
 
 			setupEditTargets();
+
+			$('button[data-action="setParent"]').on('click', function() {
+				var cid = $(this).parents('[data-cid]').attr('data-cid'),
+					modal = $('#setParent');
+
+				modal.find('select').val($(this).attr('data-parentCid'));
+				modal.attr('data-cid', cid).modal();
+			});
+			$('#setParent [data-cid]').on('click', function() {
+				var modalEl = $('#setParent'),
+					parentCid = $(this).attr('data-cid'),
+					payload = {};
+
+				payload[modalEl.attr('data-cid')] = {
+					parentCid: parentCid
+				};
+
+				socket.emit('admin.categories.update', payload, function(err) {
+					modalEl.one('hidden.bs.modal', function() {
+						ajaxify.go('admin/categories/active');
+					});
+					modalEl.modal('hide');
+				});
+			});
 		});
 	};
 

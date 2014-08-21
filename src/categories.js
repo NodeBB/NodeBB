@@ -263,7 +263,13 @@ var db = require('./database'),
 		});
 	};
 
-	Categories.getCategoriesData = function(cids, callback) {
+	Categories.getCategoriesData = function(cids, expandParent, callback) {
+		// expandParent is optional, default: true
+		if (typeof expandParent === 'function' && !callback) {
+			callback = expandParent;
+			expandParent = undefined;
+		}
+
 		var keys = cids.map(function(cid) {
 			return 'category:' + cid;
 		});
@@ -285,7 +291,18 @@ var db = require('./database'),
 				category.description = validator.escape(category.description);
 				category.backgroundImage = category.image ? nconf.get('relative_path') + category.image : '';
 				category.disabled = category.disabled ? parseInt(category.disabled, 10) !== 0 : false;
-				next(null, category);
+
+				if (expandParent !== false && category.parentCid) {
+					Categories.getCategoriesData([category.parentCid], false, function(err, categories) {
+						if (!err && categories.length) {
+							category.parent = categories[0];
+						}
+
+						next(null, category);
+					});
+				} else {
+					next(null, category);
+				}
 			}, callback);
 		});
 	};

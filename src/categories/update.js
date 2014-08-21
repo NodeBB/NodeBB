@@ -13,6 +13,7 @@ module.exports = function(Categories) {
 		function updateCategory(cid, next) {
 			var category = modified[cid];
 			var fields = Object.keys(category);
+			console.log('updating', cid, 'fields:', fields);
 
 			async.each(fields, function(key, next) {
 				updateCategoryField(cid, key, category[key], next);

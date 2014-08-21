@@ -8,7 +8,7 @@ var categoriesController = {},
 	user = require('../user'),
 	categories = require('../categories'),
 	topics = require('../topics'),
-	meta = require('../meta');
+	meta = require('../meta'),
 	plugins = require('../plugins');
 
 categoriesController.recent = function(req, res, next) {
