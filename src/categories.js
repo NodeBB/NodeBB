@@ -67,12 +67,13 @@ var db = require('./database'),
 	};
 
 	Categories.getCategoryById = function(cid, start, end, uid, callback) {
-		Categories.getCategoryData(cid, function(err, category) {
-			if(err || !category) {
+		Categories.getCategories([cid], uid, function(err, categories) {
+			if (err || !Array.isArray(categories) || !categories[0]) {
 				return callback(err || new Error('[[error:invalid-cid]]'));
 			}
+			var category = categories[0];
 
-			if(parseInt(uid, 10)) {
+			if (parseInt(uid, 10)) {
 				Categories.markAsRead(cid, uid);
 			}
 
@@ -174,7 +175,7 @@ var db = require('./database'),
 		});
 	};
 
-	Categories.getAllCategories = function(callback) {
+	Categories.getAllCategories = function(uid, callback) {
 		db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
 			if (err) {
 				return callback(err);
@@ -184,7 +185,7 @@ var db = require('./database'),
 				return callback(null, []);
 			}
 
-			Categories.getCategoriesData(cids, callback);
+			Categories.getCategories(cids, uid, callback);
 		});
 	};
 
@@ -257,25 +258,13 @@ var db = require('./database'),
 		db.isSetMember('cid:' + cid + ':read_by_uid', uid, callback);
 	};
 
-	Categories.getCategoryData = function(cid, expandFamily, callback) {
-		// expandFamily is optional, default: true
-		if (typeof expandFamily === 'function' && !callback) {
-			callback = expandFamily;
-			expandFamily = true;
-		}
-
-		Categories.getCategoriesData([cid], expandFamily, function(err, categories) {
+	Categories.getCategoryData = function(cid, callback) {
+		Categories.getCategoriesData([cid], function(err, categories) {
 			callback(err, categories ? categories[0] : null);
 		});
 	};
 
-	Categories.getCategoriesData = function(cids, expandFamily, callback) {
-		// expandFamily is optional, default: true
-		if (typeof expandFamily === 'function' && !callback) {
-			callback = expandFamily;
-			expandFamily = true;
-		}
-
+	Categories.getCategoriesData = function(cids, callback) {
 		var keys = cids.map(function(cid) {
 			return 'category:' + cid;
 		});
@@ -298,21 +287,7 @@ var db = require('./database'),
 				category.backgroundImage = category.image ? nconf.get('relative_path') + category.image : '';
 				category.disabled = category.disabled ? parseInt(category.disabled, 10) !== 0 : false;
 
-				if (expandFamily !== false) {
-					async.parallel({
-						children: async.apply(Categories.getChildren, category.cid),
-						parent: async.apply(Categories.getCategoryData, category.parentCid, false)
-					}, function(err, data) {
-						if (!err) {
-							category.parent = data.parent;
-							category.children = data.children;
-						}
-
-						next(null, category);
-					});
-				} else {
-					next(null, category);
-				}
+				next(null, category);
 			}, callback);
 		});
 	};
@@ -353,6 +328,12 @@ var db = require('./database'),
 			categories: function(next) {
 				Categories.getCategoriesData(cids, next);
 			},
+			children: function(next) {
+				Categories.getChildren(cids, uid, next);
+			},
+			parents: function(next) {
+				Categories.getParents(cids, next);
+			},
 			hasRead: function(next) {
 				Categories.hasReadCategories(cids, uid, next);
 			}
@@ -366,27 +347,47 @@ var db = require('./database'),
 			uid = parseInt(uid, 10);
 			for(var i=0; i<results.categories.length; ++i) {
 				categories[i]['unread-class'] = (parseInt(categories[i].topic_count, 10) === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
+				categories[i].children = results.children[i];
+				categories[i].parent = results.parents[i];
 			}
 
 			callback(null, categories);
 		});
 	};
 
-	Categories.getChildren = function(cid, callback) {
+	Categories.getParents = function(cids, callback) {
+		var keys = cids.map(function(cid) {
+			return 'category:' + cid;
+		});
+
+		db.getObjectsFields(keys, ['parentCid'], function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			var parentCids = data.map(function(category) {
+				return category && category.parentCid;
+			});
+
+			Categories.getCategoriesData(parentCids, callback);
+		});
+	};
+
+	Categories.getChildren = function(cids, uid, callback) {
 		async.waterfall([
 			async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
-			function (cids, next) {
-				Categories.getMultipleCategoryFields(cids, ['cid', 'parentCid'], next);
-			},
-			function (data, next) {
-				next(null, data.filter(function(category) {
-					if (parseInt(category.parentCid, 10) === parseInt(cid, 10)) return true;
-				}).map(function(category) {
-					return category.cid;
-				}));
+			function(cids, next) {
+				privileges.categories.filter('find', cids, uid, next);
 			},
 			function (cids, next) {
-				Categories.getCategoriesData(cids, false, next);
+				Categories.getCategoriesData(cids, next);
+			},
+			function (categories, next) {
+				async.map(cids, function(cid, next) {
+					next(null, categories.filter(function(category) {
+						return parseInt(category.parentCid, 10) === parseInt(cid, 10);
+					}));
+				}, next);
 			}
 		], callback);
 	};

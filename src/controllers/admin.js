@@ -117,7 +117,12 @@ adminController.categories.disabled = function(req, res, next) {
 };
 
 function filterAndRenderCategories(req, res, next, active) {
-	categories.getAllCategories(function (err, categoryData) {
+	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
+	categories.getAllCategories(uid, function (err, categoryData) {
+		if (err) {
+			return next(err);
+		}
+
 		categoryData = categoryData.filter(function (category) {
 			return active ? !category.disabled : category.disabled;
 		});
