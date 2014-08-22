@@ -24,7 +24,7 @@ SocketCategories.getRecentReplies = function(socket, cid, callback) {
 };
 
 SocketCategories.get = function(socket, data, callback) {
-	categories.getAllCategories(callback);
+	categories.getCategoriesByPrivilege(socket.uid, 'find', callback);
 };
 
 SocketCategories.loadMore = function(socket, data, callback) {
