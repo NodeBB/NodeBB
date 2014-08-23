@@ -1,7 +1,7 @@
 {
-    "view_group": "View Group",
-    "details.title": "Group Details",
-    "details.members": "Member List",
-    "details.has_no_posts": "This group's members have not made any posts.",
-    "details.latest_posts": "Latest Posts"
+    "view_group": "Bekijk Groep",
+    "details.title": "Groep Details",
+    "details.members": "Ledenlijst",
+    "details.has_no_posts": "Deze groepleden hebben nog geen berichten geplaatst",
+    "details.latest_posts": "Nieuwste Berichten"
 }
