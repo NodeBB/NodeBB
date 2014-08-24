@@ -5,6 +5,7 @@
     "recent": "Viimeisimmät aiheet",
     "users": "Rekisteröityneet käyttäjät",
     "notifications": "Ilmoitukset",
+    "tags": "Topics tagged under \"%1\"",
     "user.edit": "Muokataan \"%1\"",
     "user.following": "Käyttäjät, joita %1 seuraa",
     "user.followers": "Käyttäjät, jotka seuraavat käyttäjää %1",

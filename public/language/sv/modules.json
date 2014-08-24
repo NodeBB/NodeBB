@@ -1,18 +1,18 @@
 {
     "chat.chatting_with": "Chatta med <span id=\"chat-with-name\"></span>",
-    "chat.placeholder": "Type chat message here, press enter to send",
+    "chat.placeholder": "Skriv chatmeddelande här och tryck sen enter för att skicka ",
     "chat.send": "Skicka",
     "chat.no_active": "Du har inte några aktiva chattar.",
     "chat.user_typing": "%1 skriver ...",
     "chat.user_has_messaged_you": "%1 har skickat ett medelande till dig.",
     "chat.see_all": "Visa alla chattar",
-    "chat.no-messages": "Please select a recipient to view chat message history",
-    "chat.recent-chats": "Recent Chats",
-    "chat.contacts": "Contacts",
-    "chat.message-history": "Message History",
-    "chat.pop-out": "Pop out chat",
-    "chat.maximize": "Maximize",
-    "composer.user_said_in": "%1 said in %2:",
-    "composer.user_said": "%1 said:",
-    "composer.discard": "Are you sure you wish to discard this post?"
+    "chat.no-messages": "Välj mottagare för att visa historik för chatmeddelande",
+    "chat.recent-chats": "Senaste chattarna",
+    "chat.contacts": "Kontakter ",
+    "chat.message-history": "Historik för meddelande",
+    "chat.pop-out": "Utskjutande chatt",
+    "chat.maximize": "Maximera",
+    "composer.user_said_in": "%1 sa i %2:",
+    "composer.user_said": "%1 sa:",
+    "composer.discard": "Är du säker på att du vill förkasta det här inlägget?"
 }

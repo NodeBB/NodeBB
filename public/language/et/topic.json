@@ -87,6 +87,7 @@
     "more_users_and_guests": "%1 kasutaja(t) ja %2 külalist",
     "more_users": "veel %1 kasutaja(t)",
     "more_guests": "veel %1 külalist",
+    "users_and_others": "%1 and %2 others",
     "sort_by": "Sorteeri",
     "oldest_to_newest": "Vanematest uuemateni",
     "newest_to_oldest": "Uuematest vanemateni",

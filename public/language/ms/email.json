@@ -1,6 +1,6 @@
 {
     "password-reset-requested": "Password Reset Requested - %1!",
-    "welcome-to": "Welcome to %1",
+    "welcome-to": "Selemat datang ke %1",
     "greeting_no_name": "Hello",
     "greeting_with_name": "Hello %1",
     "welcome.text1": "Thank you for registering with %1!",
@@ -16,5 +16,5 @@
     "digest.unsub.cta": "Click here to alter those settings",
     "digest.daily.no_topics": "There have been no active topics in the past day",
     "test.text1": "This is a test email to verify that the emailer is set up correctly for your NodeBB.",
-    "closing": "Thanks!"
+    "closing": "Terima Kasih!"
 }

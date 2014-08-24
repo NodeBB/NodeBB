@@ -5,6 +5,7 @@
     "recent": "Recent Topics",
     "users": "Registered Users",
     "notifications": "Notifications",
+    "tags": "Topics tagged under \"%1\"",
     "user.edit": "Editing \"%1\"",
     "user.following": "People %1 Follows",
     "user.followers": "People who Follow %1",

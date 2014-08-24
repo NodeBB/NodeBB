@@ -95,7 +95,7 @@ Please use the npm module instead - require('templates.js')
 	}
 
 	function makeStatementRegex(key) {
-		return new RegExp('([\\s]*<!--[\\s]*IF ' + key + '[\\s]*-->)|(<!--[\\s]*ENDIF ' + key + '[\\s]*-->[\\s]*)', 'g');
+		return new RegExp('(<!--[\\s]*IF ' + key + '[\\s]*-->)|(<!--[\\s]*ENDIF ' + key + '[\\s]*-->)', 'g');
 	}
 
 	function registerGlobals(obj) {
@@ -114,8 +114,8 @@ Please use the npm module instead - require('templates.js')
 		if (matches !== null) {
 			for (var i = 0, ii = matches.length; i < ii; i++) {
 				var statement = makeStatementRegex(key),
-					nestedConditionals = matches[i].match(/(?!^)<!-- IF[\s\S]*ENDIF[\s\S]*?-->(?!$)/),
-					match = matches[i].replace(statement, '').replace(/(?!^)<!-- IF[\s\S]*ENDIF[\s\S]*?-->/gi, '<!-- NESTED -->'),
+					nestedConditionals = matches[i].match(/(?!^)<!-- IF([\s\S]*?)ENDIF[ a-zA-Z0-9\._:]*-->(?!$)/gi),
+					match = matches[i].replace(statement, '').replace(/(?!^)<!-- IF([\s\S]*?)ENDIF[ a-zA-Z0-9\._:]*-->(?!$)/gi, '<!-- NESTED -->'),
 					conditionalBlock = match.split(/[\r\n?\n]*?<!-- ELSE -->[\r\n?\n]*?/);
 
 				if (conditionalBlock[1]) {

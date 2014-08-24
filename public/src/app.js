@@ -413,8 +413,8 @@ var socket,
 		if (utils.findBootstrapEnvironment() === 'xs') {
 			return;
 		}
-		$('#header-menu li i[title]').each(function() {
-			$(this).parents('a').tooltip({
+		$('#header-menu li [title]').each(function() {
+			$(this).tooltip({
 				placement: 'bottom',
 				title: $(this).attr('title')
 			});

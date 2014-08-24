@@ -25,7 +25,7 @@
     "no-user": "Der Benutzer existiert nicht",
     "no-teaser": "Kurztext existiert nicht",
     "no-privileges": "Du verfügst nicht über ausreichende Berechtigungen, um die Aktion durchzuführen.",
-    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
+    "no-emailers-configured": "Es wurde keine E-Mail-Plugins geladen, weshalb eine Test-E-Mail nicht gesendet werden konnte.",
     "category-disabled": "Kategorie ist deaktiviert",
     "topic-locked": "Thema ist gesperrt",
     "still-uploading": "Bitte warte bis der Vorgang abgeschlossen ist.",

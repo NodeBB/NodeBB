@@ -87,6 +87,7 @@
     "more_users_and_guests": "%1명 이상의 회원과 %2명의 익명 사용자",
     "more_users": "%1명 이상의 회원",
     "more_guests": "%1명 이상의 익명 사용자",
+    "users_and_others": "%1 and %2 others",
     "sort_by": "Sort by",
     "oldest_to_newest": "Oldest to Newest",
     "newest_to_oldest": "Newest to Oldest",
