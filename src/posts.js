@@ -330,6 +330,14 @@ var async = require('async'),
 					return obj;
 				}
 
+				function stripTags(content) {
+					if (options.stripTags && content) {
+						var s = S(content);
+						return s.stripTags.apply(s, utils.stripTags).s;
+					}
+					return content;
+				}
+
 				if (err) {
 					return callback(err);
 				}
@@ -355,6 +363,7 @@ var async = require('async'),
 					post.relativeTime = utils.toISOString(post.timestamp);
 
 					if (!post.content || !options.parse) {
+						post.content = stripTags(post.content);
 						return next(null, post);
 					}
 
@@ -363,12 +372,7 @@ var async = require('async'),
 							return next(err);
 						}
 
-						if (options.stripTags && content) {
-							var s = S(content);
-							post.content = s.stripTags.apply(s, utils.stripTags).s;
-						} else {
-							post.content = content;
-						}
+						post.content = stripTags(content);
 
 						next(null, post);
 					});
