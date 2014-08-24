@@ -28,6 +28,11 @@ var async = require('async'),
 		});
 	};
 
+	Meta.reload = function(step) {
+		// 1. Reload plugins and associated routes
+		// 2. Minify scripts and css, update cache buster
+	};
+
 	Meta.restart = function() {
 		if (process.send) {
 			process.send({
