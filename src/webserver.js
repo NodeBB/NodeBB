@@ -56,6 +56,7 @@ if(nconf.get('ssl')) {
 	}, function(err, data) {
 		middleware = middleware(app, data);
 		routes(app, middleware);
+		plugins.prepareApp(app, middleware);
 
 		if (err) {
 			winston.error('Errors were encountered while attempting to initialise NodeBB.');
