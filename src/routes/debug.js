@@ -56,6 +56,10 @@ module.exports = function(app, middleware, controllers) {
 	});
 
 	router.get('/test', function(req, res) {
-		res.redirect('404');
+		res.redirect(404);
+		var plugins = require('../plugins');
+		plugins.reloadRoutes(function() {
+			res.send(200, 'routes replaced');
+		});
 	});
 };

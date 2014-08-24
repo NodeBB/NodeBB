@@ -6,13 +6,18 @@ var fs = require('fs'),
 	winston = require('winston'),
 	nconf = require('nconf'),
 	semver = require('semver'),
+	express = require('express'),
 
 	db = require('./database'),
 	emitter = require('./emitter'),
 	meta = require('./meta'),
 	translator = require('../public/src/translator'),
 	utils = require('../public/src/utils'),
-	pkg = require('../package.json');
+	hotswap = require('./hotswap'),
+	pkg = require('../package.json'),
+
+	controllers = require('./controllers'),
+	app, middleware;
 
 (function(Plugins) {
 
@@ -55,6 +60,12 @@ var fs = require('fs'),
 			hook: 'static:app.load',
 			method: addLanguages
 		});
+	};
+
+	Plugins.prepareApp = function(nbbApp, nbbMiddleware) {
+		app = nbbApp;
+		middleware = nbbMiddleware;
+		hotswap.prepare(nbbApp);
 	};
 
 	Plugins.ready = function(callback) {
@@ -107,8 +118,27 @@ var fs = require('fs'),
 				});
 
 				next();
-			}
+			},
+			async.apply(Plugins.reloadRoutes)
 		], callback);
+	};
+
+	Plugins.reloadRoutes = function(callback) {
+		if (!app || !middleware || !controllers) {
+			return;
+		} else {
+			var router = express.Router();
+			router.hotswapId = 'plugins';
+
+			// Deprecated as of v0.5.0, remove this hook call for NodeBB v0.6.0-1
+			Plugins.fireHook('action:app.load', router, middleware, controllers);
+
+			Plugins.fireHook('static:app.load', router, middleware, controllers, function() {
+				hotswap.replace('plugins', router);
+			});
+
+			callback();
+		}
 	};
 
 	Plugins.loadPlugin = function(pluginPath, callback) {
