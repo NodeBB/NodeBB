@@ -8,8 +8,7 @@ var	_ = require('underscore'),
 	async = require('async'),
 	winston = require('winston'),
 
-	plugins = require('../plugins'),
-	pluginRoutes = [];
+	plugins = require('../plugins');
 
 
 module.exports = function(app, middleware, controllers) {

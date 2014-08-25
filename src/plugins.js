@@ -129,15 +129,18 @@ var fs = require('fs'),
 		} else {
 			var router = express.Router();
 			router.hotswapId = 'plugins';
+			router.render = function() {
+				app.render.apply(app, arguments);
+			};
 
 			// Deprecated as of v0.5.0, remove this hook call for NodeBB v0.6.0-1
 			Plugins.fireHook('action:app.load', router, middleware, controllers);
 
 			Plugins.fireHook('static:app.load', router, middleware, controllers, function() {
 				hotswap.replace('plugins', router);
+				winston.info('[plugins] All plugins reloaded and rerouted');
+				callback();
 			});
-
-			callback();
 		}
 	};
 
@@ -527,7 +530,6 @@ var fs = require('fs'),
 
 				// Reload meta data
 				Plugins.reload(function() {
-
 					if(!active) {
 						Plugins.fireHook('action:plugin.activate', id);
 					}

@@ -117,28 +117,35 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.js.minify = function(minify) {
+	Meta.js.minify = function(minify, callback) {
 		var minifier = Meta.js.minifierProc = fork('minifier.js', {
 				silent: true
 			}),
 			minifiedStream = minifier.stdio[1],
+			minifiedString = '',
 			mapStream = minifier.stdio[2],
+			mapString = '',
 			step = 0,
 			onComplete = function() {
 				if (step === 0) {
 					return step++;
 				}
 
+				Meta.js.cache = minifiedString;
+				Meta.js.map = mapString;
 				winston.info('[meta/js] Compilation complete');
 				emitter.emit('meta:js.compiled');
 				minifier.kill();
+				if (typeof callback === 'function') {
+					callback();
+				}
 			};
 
 		minifiedStream.on('data', function(buffer) {
-			Meta.js.cache += buffer.toString();
+			minifiedString += buffer.toString();
 		});
 		mapStream.on('data', function(buffer) {
-			Meta.js.map += buffer.toString();
+			mapString += buffer.toString();
 		});
 
 		minifier.on('message', function(message) {
@@ -158,7 +165,11 @@ module.exports = function(Meta) {
 			case 'error':
 				winston.error('[meta/js] Could not compile client-side scripts! ' + message.payload.message);
 				minifier.kill();
-				process.exit();
+				if (typeof callback === 'function') {
+					callback(err);
+				} else {
+					process.exit(0);
+				}
 				break;
 			}
 		});
@@ -185,7 +196,6 @@ module.exports = function(Meta) {
 			var jsPaths = scripts.map(function (jsPath) {
 					jsPath = path.normalize(jsPath);
 
-					// if (jsPath.substring(0, 7) === 'plugins') {
 					var	matches = _.map(plugins.staticDirs, function(realPath, mappedPath) {
 						if (jsPath.match(mappedPath)) {
 							return mappedPath;
@@ -203,9 +213,6 @@ module.exports = function(Meta) {
 						winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + jsPath + '. Are you sure it is defined by a plugin?');
 						return null;
 					}
-					// } else {
-					// 	return path.join(__dirname, '../..', jsPath);
-					// }
 				});
 
 			Meta.js.scripts.plugin = jsPaths.filter(Boolean);
