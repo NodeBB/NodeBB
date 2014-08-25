@@ -3,7 +3,8 @@
 var async = require('async'),
 	winston = require('winston'),
 	user = require('./user'),
-	groups = require('./groups');
+	groups = require('./groups'),
+	plugins = require('./plugins');
 
 
 (function (Meta) {
@@ -28,9 +29,13 @@ var async = require('async'),
 		});
 	};
 
-	Meta.reload = function(step) {
-		// 1. Reload plugins and associated routes
-		// 2. Minify scripts and css, update cache buster
+	Meta.reload = function(callback) {
+		plugins.reload(function() {
+			async.parallel([
+				async.apply(Meta.js.minify, false),
+				async.apply(Meta.css.minify)
+			], callback);
+		});
 	};
 
 	Meta.restart = function() {
