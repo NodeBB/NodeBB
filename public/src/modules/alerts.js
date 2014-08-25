@@ -63,7 +63,9 @@ define('alerts', function() {
 		alert.attr('class', 'alert alert-dismissable alert-' + params.type);
 
 		clearTimeout(parseInt(alert.attr('timeoutId'), 10));
-		startTimeout(alert, params.timeout);
+		if (params.timeout) {
+			startTimeout(alert, params.timeout);
+		}
 
 		alert.children().fadeOut(100);
 		translator.translate(alert.html(), function(translatedHTML) {
