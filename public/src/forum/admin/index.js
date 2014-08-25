@@ -37,18 +37,45 @@ define('forum/admin/index', function() {
 		});
 
 		$('.restart').on('click', function() {
+			bootbox.confirm('Are you sure you wish to restart NodeBB?', function(confirm) {
+				if (confirm) {
+					app.alert({
+						timeout: 5000,
+						title: 'Restarting... <i class="fa fa-spin fa-refresh"></i>',
+						message: 'NodeBB is restarting.',
+						type: 'info'
+					});
+
+					$(window).one('action:reconnected', function() {
+						app.alertSuccess('NodeBB has successfully restarted.');
+					});
+
+					socket.emit('admin.restart');
+				}
+			});
+		});
+
+		$('.reload').on('click', function() {
 			app.alert({
-				timeout: 5000,
-				title: 'Restarting...',
+				alert_id: 'instance_reload',
+				title: 'Reloading... <i class="fa fa-spin fa-refresh"></i>',
 				message: 'NodeBB is restarting.',
-				type: 'info'
+				type: 'info',
+				timeout: 5000
 			});
 
-			$(window).one('action:reconnected', function() {
-				app.alertSuccess('NodeBB has successfully restarted.');
+			socket.emit('admin.reload', function(err) {
+				if (!err) {
+					app.alertSuccess('NodeBB has successfully reloaded.');
+				} else {
+					app.alert({
+						alert_id: 'instance_reload',
+						title: '[[global:alert.error]]',
+						message: err.message,
+						type: 'danger'
+					});
+				}
 			});
-
-			socket.emit('admin.restart');
 		});
 	};
 

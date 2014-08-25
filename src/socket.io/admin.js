@@ -38,6 +38,10 @@ SocketAdmin.before = function(socket, method, next) {
 	});
 };
 
+SocketAdmin.reload = function(socket, data, callback) {
+	meta.reload(callback);
+};
+
 SocketAdmin.restart = function(socket, data, callback) {
 	meta.restart();
 };
