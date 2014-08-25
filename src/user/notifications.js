@@ -127,7 +127,7 @@ var async = require('async'),
 					if (err || !notif_data) {
 						return next(err);
 					}
-					UserNotifications.isNotificationRead(notif_data.nid, uid, function(err, isRead) {
+					UserNotifications.isNotificationRead(notif_data.uniqueId, uid, function(err, isRead) {
 						if (err) {
 							return next(err);
 						}
@@ -156,8 +156,8 @@ var async = require('async'),
 		});
 	};
 
-	UserNotifications.isNotificationRead = function(nid, uid, callback) {
-		db.isSortedSetMember('uid:' + uid + ':notifications:read', nid, callback);
+	UserNotifications.isNotificationRead = function(uniqueId, uid, callback) {
+		db.isSortedSetMember('uid:' + uid + ':notifications:read', uniqueId, callback);
 	};
 
 	UserNotifications.getDailyUnread = function(uid, callback) {
