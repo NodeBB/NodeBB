@@ -5,8 +5,7 @@ var	nconf = require('nconf'),
 	pidFilePath = __dirname + '/pidfile',
 	output = fs.openSync(__dirname + '/logs/output.log', 'a'),
 	start = function() {
-		var	fork = require('child_process').fork,
-			nbb_start = function() {
+		var	nbb_start = function(callback) {
 				if (timesStarted > 3) {
 					console.log('\n[loader] Experienced three start attempts in 10 seconds, most likely an error on startup. Halting.');
 					return nbb_stop();
@@ -18,14 +17,24 @@ var	nconf = require('nconf'),
 				}
 				startTimer = setTimeout(resetTimer, 1000*10);
 
-				nbb = fork('./app', process.argv.slice(2), {
+				if (nbb) {
+					nbbOld = nbb;
+				}
+
+				nbb = require('child_process').fork('./app', process.argv.slice(2), {
 					env: process.env
 				});
 
 				nbb.on('message', function(message) {
 					if (message && typeof message === 'object' && message.action) {
-						if (message.action === 'restart') {
-							nbb_restart();
+						switch (message.action) {
+							case 'ready':
+								if (!callback) return nbb.kill('SIGCONT');
+								callback();
+							break;
+							case 'restart':
+								nbb_restart();
+							break;
 						}
 					}
 				});
@@ -52,10 +61,12 @@ var	nconf = require('nconf'),
 				}
 			},
 			nbb_restart = function() {
-				nbb.removeAllListeners('exit').on('exit', function() {
-					nbb_start();
+				nbb_start(function() {
+					nbbOld.removeAllListeners('exit').on('exit', function() {
+						nbb.kill('SIGCONT');
+					});
+					nbbOld.kill();
 				});
-				nbb.kill();
 			},
 			resetTimer = function() {
 				clearTimeout(startTimer);
@@ -70,7 +81,7 @@ var	nconf = require('nconf'),
 
 		nbb_start();
 	},
-	nbb;
+	nbb, nbbOld;
 
 nconf.argv();
 
