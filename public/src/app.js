@@ -54,23 +54,6 @@ var socket,
 
 			socket.emit('meta.reconnected');
 
-			socket.removeAllListeners('event:nodebb.ready');
-			socket.on('event:nodebb.ready', function(cacheBuster) {
-				if (app.cacheBuster !== cacheBuster) {
-					app.cacheBuster = cacheBuster;
-
-					app.alert({
-						alert_id: 'forum_updated',
-						title: '[[global:updated.title]]',
-						message: '[[global:updated.message]]',
-						clickfn: function() {
-							window.location.reload();
-						},
-						type: 'warning'
-					});
-				}
-			});
-
 			$(window).trigger('action:reconnected');
 
 			setTimeout(function() {
@@ -541,6 +524,28 @@ var socket,
 						url: url
 					});
 				});
+			});
+
+			socket.removeAllListeners('event:nodebb.ready');
+			socket.on('event:nodebb.ready', function(cacheBusters) {
+				if (
+					!app.cacheBusters ||
+					app.cacheBusters.general !== cacheBusters.general ||
+					app.cacheBusters.css !== cacheBusters.css ||
+					app.cacheBusters.js !== cacheBusters.js
+				) {
+					app.cacheBusters = cacheBusters;
+
+					app.alert({
+						alert_id: 'forum_updated',
+						title: '[[global:updated.title]]',
+						message: '[[global:updated.message]]',
+						clickfn: function() {
+							window.location.reload();
+						},
+						type: 'warning'
+					});
+				}
 			});
 		});
 	};

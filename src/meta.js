@@ -4,8 +4,8 @@ var async = require('async'),
 	winston = require('winston'),
 	user = require('./user'),
 	groups = require('./groups'),
-	plugins = require('./plugins');
-
+	plugins = require('./plugins'),
+	emitter = require('./emitter');
 
 (function (Meta) {
 	Meta.restartRequired = false;
@@ -34,7 +34,10 @@ var async = require('async'),
 			async.parallel([
 				async.apply(Meta.js.minify, false),
 				async.apply(Meta.css.minify)
-			], callback);
+			], function() {
+				emitter.emit('nodebb:ready');
+				callback.apply(null, arguments);
+			});
 		});
 	};
 
