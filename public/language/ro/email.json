@@ -1,8 +1,8 @@
 {
     "password-reset-requested": "Password Reset Requested - %1!",
-    "welcome-to": "Welcome to %1",
-    "greeting_no_name": "Hello",
-    "greeting_with_name": "Hello %1",
+    "welcome-to": "Salutare lui %1",
+    "greeting_no_name": "Salut",
+    "greeting_with_name": "Salut %1",
     "welcome.text1": "Thank you for registering with %1!",
     "welcome.text2": "To fully activate your account, we need to verify that you own the email address you registered with.",
     "welcome.cta": "Click here to confirm your email address",
@@ -11,10 +11,10 @@
     "reset.cta": "Click here to reset your password",
     "digest.notifications": "You have some unread notifications from %1:",
     "digest.latest_topics": "Latest topics from %1",
-    "digest.cta": "Click here to visit %1",
+    "digest.cta": "Apasă aici pentru a vizita %1",
     "digest.unsub.info": "This digest was sent to you due to your subscription settings.",
     "digest.unsub.cta": "Click here to alter those settings",
     "digest.daily.no_topics": "There have been no active topics in the past day",
     "test.text1": "This is a test email to verify that the emailer is set up correctly for your NodeBB.",
-    "closing": "Thanks!"
+    "closing": "Mulțumesc!"
 }
