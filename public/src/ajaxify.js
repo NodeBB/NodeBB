@@ -327,14 +327,7 @@ $(document).ready(function() {
 			});
 
 			templates.registerLoader(ajaxify.loadTemplate);
-
 			templatesModule.refresh(app.load);
-			// $.getJSON(RELATIVE_PATH + '/api/get_templates_listing', function (data) {
-			// 	templatesModule.config = data.templatesConfig;
-			// 	availableTemplates = data.availableTemplates;
-
-			// 	app.load();
-			// });
 		});
 
 	});

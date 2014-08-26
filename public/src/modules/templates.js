@@ -7,7 +7,6 @@ define('templates', function() {
 			Templates.available = data.availableTemplates;
 
 			if (callback) callback();
-			// app.load();
 		});
 	};
 
