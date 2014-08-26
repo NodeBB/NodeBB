@@ -125,6 +125,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 			}
 		});
 		chatModal.css('zIndex', topZ + 1);
+		taskbar.updateActive(chatModal.attr('UUID'));
 	};
 
 	module.getModal = function(touid) {
