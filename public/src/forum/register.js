@@ -106,7 +106,7 @@ define('forum/register', function() {
 		if (password.length < config.minimumPasswordLength) {
 			showError(password_notify, '[[user:change_password_error_length]]');
 		} else if (!utils.isPasswordValid(password)) {
-			showError(password_notify, '[[user:change_password_error_]]');
+			showError(password_notify, '[[user:change_password_error]]');
 		} else {
 			showSuccess(password_notify, successIcon);
 		}
