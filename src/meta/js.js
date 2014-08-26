@@ -166,7 +166,7 @@ module.exports = function(Meta) {
 				winston.error('[meta/js] Could not compile client-side scripts! ' + message.payload.message);
 				minifier.kill();
 				if (typeof callback === 'function') {
-					callback(err);
+					callback(new Error(message.payload.message));
 				} else {
 					process.exit(0);
 				}

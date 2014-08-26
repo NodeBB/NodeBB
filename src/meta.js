@@ -38,11 +38,9 @@ var async = require('async'),
 			], function(err) {
 				if (!err) {
 					emitter.emit('nodebb:ready');
-					callback.apply(null, arguments);
-				} else {
-					console.log('failed!');
-					emitter.emit('nodebb:reload.failed');
 				}
+
+				callback.apply(null, arguments);
 			});
 		});
 	};

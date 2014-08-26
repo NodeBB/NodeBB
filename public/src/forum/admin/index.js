@@ -85,7 +85,7 @@ define('forum/admin/index', function() {
 						alert_id: 'instance_reload',
 						type: 'danger',
 						title: '[[global:alert.error]]',
-						message: err.message
+						message: '[[error:reload-failed, ' + err.message + ']]'
 					});
 				}
 			});
