@@ -18,6 +18,12 @@ SocketUser.exists = function(socket, data, callback) {
 	}
 };
 
+SocketUser.deleteAccount = function(socket, data, callback) {
+	if (socket.uid) {
+		user.deleteAccount(socket.uid, callback);
+	}
+};
+
 SocketUser.count = function(socket, data, callback) {
 	user.count(callback);
 };

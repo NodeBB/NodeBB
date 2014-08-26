@@ -3,6 +3,7 @@
 var async = require('async'),
 	validator = require('validator'),
 
+	_ = require('underscore'),
 	db = require('./database'),
 	posts = require('./posts'),
 	utils = require('../public/src/utils'),
@@ -205,20 +206,12 @@ var async = require('async'),
 					Topics.getTopicsTagsObjects(tids, next);
 				}
 			}, function(err, results) {
-				function arrayToObject(array, field) {
-					var obj = {};
-					for (var i=0; i<array.length; ++i) {
-						obj[array[i][field]] = array[i];
-					}
-					return obj;
-				}
-
 				if (err) {
 					return callback(err);
 				}
 
-				var users = arrayToObject(results.users, 'uid');
-				var categories = arrayToObject(results.categories, 'cid');
+				var users = _.object(uids, results.users);
+				var categories = _.object(cids, results.categories);
 				var isAdminOrMod = {};
 				cids.forEach(function(cid, index) {
 					isAdminOrMod[cid] = results.isAdminOrMod[index];

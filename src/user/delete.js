@@ -20,7 +20,7 @@ module.exports = function(User) {
 				deleteTopics(uid, next);
 			},
 			function(next) {
-				deleteAccount(uid, next);
+				User.deleteAccount(uid, next);
 			}
 		], callback);
 	};
@@ -43,7 +43,7 @@ module.exports = function(User) {
 		});
 	}
 
-	function deleteAccount(uid, callback) {
+	User.deleteAccount = function(uid, callback) {
 		user.getUserFields(uid, ['username', 'userslug', 'email'], function(err, userData) {
 			if (err)  {
 				return callback(err);
@@ -134,7 +134,7 @@ module.exports = function(User) {
 				], callback);
 			});
 		});
-	}
+	};
 
 	function deleteUserFromFollowers(uid, callback) {
 		db.getSetMembers('followers:' + uid, function(err, uids) {

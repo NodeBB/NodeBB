@@ -63,8 +63,8 @@ module.exports = function(Topics) {
 					}
 
 					var userData = {};
-					users.forEach(function(user) {
-						userData[user.uid] = user;
+					users.forEach(function(user, index) {
+						userData[uids[index]] = user;
 					});
 
 					next(null, userData);

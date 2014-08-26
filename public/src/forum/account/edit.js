@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, ajaxify, socket, app, config, utils, translator */
+/* globals define, ajaxify, socket, app, config, utils, translator, bootbox */
 
 define('forum/account/edit', ['forum/account/header', 'uploader'], function(header, uploader) {
 	var AccountEdit = {},
@@ -26,6 +26,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 		currentEmail = $('#inputEmail').val();
 
 		handleImageChange();
+		handleAccountDelete();
 		handleImageUpload();
 		handleEmailConfirm();
 		handlePasswordChange();
@@ -122,6 +123,24 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 					$('#user-header-picture').attr('src', uploadedPicture);
 				}
 			}
+		});
+	}
+
+	function handleAccountDelete() {
+		$('#deleteAccountBtn').on('click', function() {
+			translator.translate('[[user:delete_account_confirm]]', function(translated) {
+				bootbox.confirm(translated, function(confirm) {
+					if (!confirm) {
+						return;
+					}
+					socket.emit('user.deleteAccount', {}, function(err) {
+						if (!err) {
+							app.logout();
+						}
+					});
+				});
+			});
+			return false;
 		});
 	}
 
