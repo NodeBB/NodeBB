@@ -17,7 +17,7 @@ var async = require('async'),
 	require('./meta/css')(Meta);
 	require('./meta/sounds')(Meta);
 	require('./meta/settings')(Meta);
-
+	Meta.templates = require('./meta/templates');
 
 	/* Assorted */
 	Meta.userOrGroupExists = function(slug, callback) {
@@ -33,10 +33,16 @@ var async = require('async'),
 		plugins.reload(function() {
 			async.parallel([
 				async.apply(Meta.js.minify, false),
-				async.apply(Meta.css.minify)
-			], function() {
-				emitter.emit('nodebb:ready');
-				callback.apply(null, arguments);
+				async.apply(Meta.css.minify),
+				async.apply(Meta.templates.compile)
+			], function(err) {
+				if (!err) {
+					emitter.emit('nodebb:ready');
+					callback.apply(null, arguments);
+				} else {
+					console.log('failed!');
+					emitter.emit('nodebb:reload.failed');
+				}
 			});
 		});
 	};
