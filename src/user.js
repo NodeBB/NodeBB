@@ -69,9 +69,8 @@ var
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('filter:user.removeFields', fieldsToRemove, function(err, fields) {
-				callback(err, modifyUserData(users, fields));
-			});
+
+			modifyUserData(users, fieldsToRemove, callback);
 		});
 	};
 
@@ -96,13 +95,11 @@ var
 				return callback(err);
 			}
 
-			plugins.fireHook('filter:user.removeFields', [], function(err, fields) {
-				callback(err, modifyUserData(users, fields));
-			});
+			modifyUserData(users, [], callback);
 		});
 	};
 
-	function modifyUserData(users, fieldsToRemove) {
+	function modifyUserData(users, fieldsToRemove, callback) {
 		users.forEach(function(user) {
 			if (!user) {
 				return;
@@ -132,7 +129,8 @@ var
 				user[fieldsToRemove[i]] = undefined;
 			}
 		});
-		return users;
+
+		plugins.fireHook('filter:users.get', users, callback);
 	}
 
 	User.updateLastOnlineTime = function(uid, callback) {
