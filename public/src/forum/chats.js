@@ -170,6 +170,7 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 		var recipientUid = Chats.getRecipientUid();
 		if (recipientUid) {
 			socket.emit('modules.chats.markRead', recipientUid);
+			$('.expanded-chat input').focus();
 		}
 		$('.chats-list li').removeClass('bg-primary');
 		$('.chats-list li[data-uid="' + recipientUid + '"]').addClass('bg-primary');
