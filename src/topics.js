@@ -508,7 +508,7 @@ var async = require('async'),
 				term: term
 			}, callback);
 		} else {
-			callback(undefined, []);
+			callback(new Error('no-plugins-available'), []);
 		}
 	};
 
