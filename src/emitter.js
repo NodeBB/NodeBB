@@ -1,7 +1,6 @@
 "use strict";
 
-var events = require('events'),
-	eventEmitter = new events.EventEmitter();
+var eventEmitter = new (require('events')).EventEmitter();
 
 
 eventEmitter.all = function(events, callback) {
