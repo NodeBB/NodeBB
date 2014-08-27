@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/NodeBB/NodeBB.svg?branch=master)](https://travis-ci.org/NodeBB/NodeBB)
 [![Dependency Status](https://david-dm.org/nodebb/nodebb.svg)](https://david-dm.org/nodebb/nodebb)
 [![Code Climate](https://codeclimate.com/github/designcreateplay/NodeBB.png)](https://codeclimate.com/github/designcreateplay/NodeBB)
+[![Documentation Status](https://readthedocs.org/projects/nodebb/badge/?version=latest)](https://readthedocs.org/projects/nodebb/?badge=latest)
 
 **NodeBB Forum Software** is powered by Node.js and built on a Redis database. It utilizes web sockets for instant interactions and real-time notifications. NodeBB is compatible down to IE8 and has many modern features out of the box such as social network integration and streaming discussions.
 
