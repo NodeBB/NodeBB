@@ -29,6 +29,10 @@ module.exports = function(User) {
 				return next();
 			}
 
+			if (!utils.isEmailValid(data.email)) {
+				return next(new Error('[[error:invalid-email]]'));
+			}
+
 			User.getUserField(uid, 'email', function(err, email) {
 				if(email === data.email) {
 					return next();
@@ -51,6 +55,14 @@ module.exports = function(User) {
 
 				if(userslug === userData.userslug) {
 					return next();
+				}
+
+				if (data.username.length < meta.config.minimumUsernameLength) {
+					return next(new Error('[[error:username-too-short]]'));
+				}
+
+				if (data.username.length > meta.config.maximumUsernameLength) {
+					return next(new Error('[[error:username-too-long]]'));
 				}
 
 				if(!utils.isUserNameValid(data.username) || !userslug) {

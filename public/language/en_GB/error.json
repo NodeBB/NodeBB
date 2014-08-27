@@ -23,6 +23,7 @@
 	"email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
 
 	"username-too-short": "Username too short",
+	"username-too-long": "Username too long",
 
 	"user-banned": "User banned",
 
