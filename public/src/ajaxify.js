@@ -24,7 +24,7 @@ $(document).ready(function() {
 		ajaxify.initialLoad = false;
 		ajaxify.preloader = {};
 
-		function onAjaxError(err, url) {
+		function onAjaxError(err, url, callback, quiet) {
 			var data = err.data, textStatus = err.textStatus;
 
 			$('#content, #footer').removeClass('ajaxifying');
@@ -37,7 +37,7 @@ $(document).ready(function() {
 					app.previousUrl = url;
 					return ajaxify.go('login');
 				} else if (data.status === 302) {
-					return ajaxify.go(data.responseJSON.slice(1));
+					return ajaxify.go(data.responseJSON.slice(1), callback, quiet);
 				}
 			} else if (textStatus !== "abort") {
 				app.alertError(data.responseJSON.error);
@@ -86,7 +86,7 @@ $(document).ready(function() {
 				ajaxify.variables.flush();
 				ajaxify.loadData(url, function(err, data) {
 					if (err) {
-						return onAjaxError(err, url);
+						return onAjaxError(err, url, callback, quiet);
 					}
 
 					$(window).trigger('action:ajaxify.loadingTemplates', {});
