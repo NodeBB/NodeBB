@@ -47,14 +47,13 @@ tagsController.getTag = function(req, res, next) {
 };
 
 tagsController.getTags = function(req, res, next) {
-	topics.getTags(0, -1, function(err, tags) {
+	topics.getTags(0, 99, function(err, tags) {
 		if (err) {
 			return next(err);
 		}
 
-		res.render('tags', {tags: tags});
+		res.render('tags', {tags: tags, nextStart: 100});
 	});
-
 };
 
 module.exports = tagsController;
