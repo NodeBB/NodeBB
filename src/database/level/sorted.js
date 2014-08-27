@@ -113,6 +113,10 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.sortedSetsCard = function(keys, callback) {
+		async.map(keys, module.sortedSetCard, callback);
+	};
+
 	module.sortedSetRank = function(key, value, callback) {
 		module.getListRange(key, 0, -1, function(err, list) {
 			for (var i = 0, ii=list.length; i< ii; i++) {
@@ -146,6 +150,35 @@ module.exports = function(db, module) {
 			}
 
 			callback(err, null);
+		});
+	};
+
+	module.sortedSetScores = function(key, values, callback) {
+		values = values.map(function(value) {
+			return value ? value.toString() : value;
+		});
+
+		module.getListRange(key, 0, -1, function(err, list) {
+			if (err) {
+				return callback(err);
+			}
+
+			var map = {};
+			list = list.filter(function(item) {
+				return values.indexOf(item.value) !== -1;
+			}).forEach(function(item) {
+				map[item.value] = item.score;
+			});
+
+			var	returnData = new Array(values.length),
+				score;
+
+			for(var i=0; i<values.length; ++i) {
+				score = map[values[i]];
+				returnData[i] = score ? score : null;
+			}
+
+			callback(null, returnData);
 		});
 	};
 

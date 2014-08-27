@@ -88,10 +88,8 @@ var async = require('async'),
 
 					db.deleteObjectField('reset:uid', code);
 					db.deleteObjectField('reset:expiry', code);
-					db.delete('lockout:' + uid);
-					user.auth.clearLoginAttempts(uid);
 
-					callback();
+					user.auth.resetLockout(uid, callback);
 				});
 			});
 		});

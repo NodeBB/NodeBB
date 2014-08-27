@@ -9,11 +9,12 @@ var dependencies = [
 	'composer/formatting',
 	'composer/drafts',
 	'composer/tags',
+	'composer/categoryList',
 	'composer/preview',
 	'composer/resize'
 ];
 
-define('composer', dependencies, function(taskbar, controls, uploads, formatting, drafts, tags, preview, resize) {
+define('composer', dependencies, function(taskbar, controls, uploads, formatting, drafts, tags, categoryList, preview, resize) {
 	var composer = {
 		active: undefined,
 		posts: {},
@@ -119,7 +120,7 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 		var uuid = composer.active;
 
 		if (uuid === undefined) {
-			composer.newReply(tid, pid, title, '[[modules:composer.user_said, ' + username + ']]' + text);
+			composer.newReply(tid, pid, title, '[[modules:composer.user_said, ' + username + ']]\n' + text);
 			return;
 		}
 		var postContainer = $('#cmp-uuid-' + uuid);
@@ -127,9 +128,9 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 		var prevText = bodyEl.val();
 		if (parseInt(tid, 10) !== parseInt(composer.posts[uuid].tid, 10)) {
 			var link = '[' + title + '](/topic/' + topicSlug + '/' + (parseInt(postIndex, 10) + 1) + ')';
-			translator.translate('[[modules:composer.user_said_in, ' + username + ', ' + link + ']]', onTranslated);
+			translator.translate('[[modules:composer.user_said_in, ' + username + ', ' + link + ']]\n', onTranslated);
 		} else {
-			translator.translate('[[modules:composer.user_said, ' + username + ']]', onTranslated);
+			translator.translate('[[modules:composer.user_said, ' + username + ']]\n', onTranslated);
 		}
 
 		function onTranslated(translated) {
@@ -200,84 +201,96 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 
 		var template = (composer.bsEnvironment === 'xs' || composer.bsEnvironment === 'sm') ? 'composer-mobile' : 'composer';
 
-		templates.parse(template, {allowTopicsThumbnail: allowTopicsThumbnail, showTags: isTopic || isMain}, function(composerTemplate) {
-			translator.translate(composerTemplate, function(composerTemplate) {
-				composerTemplate = $(composerTemplate);
+		var data = {
+			allowTopicsThumbnail: allowTopicsThumbnail,
+			showTags: isTopic || isMain,
+			isTopic: isTopic
+		};
 
-				composerTemplate.attr('id', 'cmp-uuid-' + post_uuid);
+		parseAndTranslate(template, data, function(composerTemplate) {
 
-				$(document.body).append(composerTemplate);
+			composerTemplate = $(composerTemplate);
 
-				var postContainer = $(composerTemplate[0]),
-					postData = composer.posts[post_uuid],
-					bodyEl = postContainer.find('textarea'),
-					draft = drafts.getDraft(postData.save_id);
+			composerTemplate.attr('id', 'cmp-uuid-' + post_uuid);
 
-				tags.init(postContainer, composer.posts[post_uuid]);
-				updateTitle(postData, postContainer);
+			$(document.body).append(composerTemplate);
 
-				activate(post_uuid);
-				resize.reposition(postContainer);
+			var postContainer = $(composerTemplate[0]),
+				postData = composer.posts[post_uuid],
+				bodyEl = postContainer.find('textarea'),
+				draft = drafts.getDraft(postData.save_id);
 
-				if (config.allowFileUploads || config.hasImageUploadPlugin) {
-					uploads.initialize(post_uuid);
+			tags.init(postContainer, composer.posts[post_uuid]);
+			categoryList.init(postContainer, composer.posts[post_uuid]);
+			updateTitle(postData, postContainer);
+
+			activate(post_uuid);
+			resize.reposition(postContainer);
+
+			if (config.allowFileUploads || config.hasImageUploadPlugin) {
+				uploads.initialize(post_uuid);
+			}
+
+			formatting.addHandler(postContainer);
+
+			if (allowTopicsThumbnail) {
+				uploads.toggleThumbEls(postContainer, composer.posts[post_uuid].topic_thumb || '');
+			}
+
+			postContainer.on('change', 'input, textarea', function() {
+				composer.posts[post_uuid].modified = true;
+			});
+
+			postContainer.on('click', '.action-bar button[data-action="post"]', function() {
+				$(this).attr('disabled', true);
+				post(post_uuid);
+			});
+
+			postContainer.on('click', '.action-bar button[data-action="discard"]', function() {
+				if (!composer.posts[post_uuid].modified) {
+					discard(post_uuid);
+					return;
 				}
 
-				formatting.addHandler(postContainer);
-
-				if (allowTopicsThumbnail) {
-					uploads.toggleThumbEls(postContainer, composer.posts[post_uuid].topic_thumb || '');
-				}
-
-				postContainer.on('change', 'input, textarea', function() {
-					composer.posts[post_uuid].modified = true;
-				});
-
-				postContainer.on('click', '.action-bar button[data-action="post"]', function() {
-					$(this).attr('disabled', true);
-					post(post_uuid);
-				});
-
-				postContainer.on('click', '.action-bar button[data-action="discard"]', function() {
-					if (!composer.posts[post_uuid].modified) {
-						discard(post_uuid);
-						return;
-					}
-
-					translator.translate('[[modules:composer.discard]]', function(translated) {
-						bootbox.confirm(translated, function(confirm) {
-							if (confirm) {
-								discard(post_uuid);
-							}
-						});
+				translator.translate('[[modules:composer.discard]]', function(translated) {
+					bootbox.confirm(translated, function(confirm) {
+						if (confirm) {
+							discard(post_uuid);
+						}
 					});
 				});
-
-				bodyEl.on('input propertychange', function() {
-					preview.render(postContainer);
-				});
-
-				bodyEl.on('scroll', function() {
-					preview.matchScroll(postContainer);
-				});
-
-				bodyEl.val(draft ? draft : postData.body);
-				preview.render(postContainer, function() {
-					preview.matchScroll(postContainer);
-				});
-				drafts.init(postContainer, postData);
-
-				resize.handleResize(postContainer);
-
-				handleHelp(postContainer);
-
-				$(window).trigger('action:composer.loaded', {
-					post_uuid: post_uuid
-				});
-
-				formatting.addComposerButtons();
-				focusElements(postContainer);
 			});
+
+			bodyEl.on('input propertychange', function() {
+				preview.render(postContainer);
+			});
+
+			bodyEl.on('scroll', function() {
+				preview.matchScroll(postContainer);
+			});
+
+			bodyEl.val(draft ? draft : postData.body);
+			preview.render(postContainer, function() {
+				preview.matchScroll(postContainer);
+			});
+			drafts.init(postContainer, postData);
+
+			resize.handleResize(postContainer);
+
+			handleHelp(postContainer);
+
+			$(window).trigger('action:composer.loaded', {
+				post_uuid: post_uuid
+			});
+
+			formatting.addComposerButtons();
+			focusElements(postContainer);
+		});
+	}
+
+	function parseAndTranslate(template, data, callback) {
+		templates.parse(template, data, function(composerTemplate) {
+			translator.translate(composerTemplate, callback);
 		});
 	}
 
@@ -360,33 +373,45 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 			return composerAlert('[[error:content-too-short, ' + config.minimumPostLength + ']]');
 		}
 
+		var composerData = {}, action;
+
 		if (parseInt(postData.cid, 10) > 0) {
-			socket.emit('topics.post', {
+			composerData = {
 				title: titleEl.val(),
 				content: bodyEl.val(),
 				topic_thumb: thumbEl.val() || '',
 				category_id: postData.cid,
 				tags: tags.getTags(post_uuid)
-			}, function(err, topic) {
+			};
+
+			action = 'topics.post';
+			socket.emit(action, composerData, function(err, topic) {
 				done(err);
+
 				if (!err) {
 					ajaxify.go('topic/' + topic.slug);
 				}
 			});
 		} else if (parseInt(postData.tid, 10) > 0) {
-			socket.emit('posts.reply', {
+			composerData = {
 				tid: postData.tid,
 				content: bodyEl.val(),
 				toPid: postData.toPid
-			}, done);
+			};
+
+			action = 'posts.reply';
+			socket.emit(action, composerData, done);
 		} else if (parseInt(postData.pid, 10) > 0) {
-			socket.emit('posts.edit', {
+			composerData = {
 				pid: postData.pid,
 				content: bodyEl.val(),
 				title: titleEl.val(),
 				topic_thumb: thumbEl.val() || '',
 				tags: tags.getTags(post_uuid)
-			}, done);
+			};
+
+			action = 'posts.edit';
+			socket.emit(action, composerData, done);
 		}
 
 		function done(err) {
@@ -401,6 +426,8 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 
 			discard(post_uuid);
 			drafts.removeDraft(postData.save_id);
+
+			$(window).trigger('action:composer.' + action, composerData);
 		}
 	}
 

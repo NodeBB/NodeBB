@@ -5,6 +5,7 @@
     "recent": "Sujets récents",
     "users": "Utilisateurs enregistrés",
     "notifications": "Notifications",
+    "tags": "Sujets contenant le mot-clé \"%1\"",
     "user.edit": "Edite \"%1\"",
     "user.following": "Personnes que %1 suit",
     "user.followers": "Personnes qui suivent %1",

@@ -2,7 +2,7 @@
   "name": "nodebb",
   "license": "GPLv3 or later",
   "description": "NodeBB Forum",
-  "version": "0.4.3",
+  "version": "0.5.0-2",
   "homepage": "http://www.nodebb.org",
   "repository": {
     "type": "git",
@@ -34,7 +34,7 @@
     "less": "~1.7.3",
     "mkdirp": "~0.5.0",
     "nconf": "~0.6.7",
-    "nodebb-plugin-dbsearch": "0.0.12",
+    "nodebb-plugin-dbsearch": "0.0.13",
     "nodebb-plugin-markdown": "~0.5.0",
     "nodebb-plugin-mentions": "~0.5.0",
     "nodebb-plugin-soundpack-default": "~0.1.1",
@@ -58,7 +58,7 @@
     "validator": "~3.16.1",
     "winston": "~0.7.2",
     "xregexp": "~2.0.0",
-    "templates.js": "0.0.8"
+    "templates.js": "0.0.13"
   },
   "devDependencies": {
     "mocha": "~1.13.0"
@@ -67,7 +67,7 @@
     "url": "https://github.com/NodeBB/NodeBB/issues"
   },
   "engines": {
-    "node": ">=0.8"
+    "node": ">=0.10"
   },
   "maintainers": [
     {

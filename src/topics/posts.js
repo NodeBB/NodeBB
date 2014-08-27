@@ -32,11 +32,6 @@ module.exports = function(Topics) {
 				return callback(null, []);
 			}
 
-			start = parseInt(start, 10);
-			for(var i=0; i<postData.length; ++i) {
-				postData[i].index = start + i + 1;
-			}
-
 			Topics.addPostData(postData, uid, callback);
 		});
 	};
@@ -68,8 +63,8 @@ module.exports = function(Topics) {
 					}
 
 					var userData = {};
-					users.forEach(function(user) {
-						userData[user.uid] = user;
+					users.forEach(function(user, index) {
+						userData[uids[index]] = user;
 					});
 
 					next(null, userData);
@@ -96,6 +91,9 @@ module.exports = function(Topics) {
 			},
 			privileges: function(next) {
 				privileges.posts.get(pids, uid, next);
+			},
+			indices: function(next) {
+				posts.getPostIndices(postData, uid, next);
 			}
 		}, function(err, results) {
 			if(err) {
@@ -103,6 +101,7 @@ module.exports = function(Topics) {
 			}
 
 			for (var i = 0; i < postData.length; ++i) {
+				postData[i].index = results.indices[i];
 				postData[i].deleted = parseInt(postData[i].deleted, 10) === 1;
 				postData[i].user = results.userData[postData[i].uid];
 				postData[i].editor = postData[i].editor ? results.editors[postData[i].editor] : null;

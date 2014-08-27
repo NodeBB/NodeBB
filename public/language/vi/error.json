@@ -25,6 +25,7 @@
     "no-user": "Tài khoản không tồn tại",
     "no-teaser": "Teaser không tồn tại",
     "no-privileges": "Bạn không đủ quyền cho hành động này",
+    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "Danh mục bị disabled",
     "topic-locked": "Chủ đề bị khóa",
     "still-uploading": "Vui lòng chờ upload",

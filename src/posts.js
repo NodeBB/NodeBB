@@ -93,7 +93,7 @@ var async = require('async'),
 	};
 
 	Posts.getPostsByTid = function(tid, set, start, end, reverse, callback) {
-		db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, end, function(err, pids) {
+		Posts.getPidsFromSet(set, start, end, reverse, function(err, pids) {
 			if(err) {
 				return callback(err);
 			}
@@ -102,28 +102,12 @@ var async = require('async'),
 				return callback(null, []);
 			}
 
-			Posts.getPostsByPids(pids, function(err, posts) {
-				if(err) {
-					return callback(err);
-				}
-
-				if(!Array.isArray(posts) || !posts.length) {
-					return callback(null, []);
-				}
-
-				plugins.fireHook('filter:post.getPosts', {tid: tid, posts: posts}, function(err, data) {
-					if(err) {
-						return callback(err);
-					}
-
-					if(!data || !Array.isArray(data.posts)) {
-						return callback(null, []);
-					}
-
-					callback(null, data.posts);
-				});
-			});
+			Posts.getPostsByPids(pids, callback);
 		});
+	};
+
+	Posts.getPidsFromSet = function(set, start, end, reverse, callback) {
+		db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, end, callback);
 	};
 
 	Posts.getPostsByPids = function(pids, callback) {
@@ -155,7 +139,23 @@ var async = require('async'),
 					next(null, postData);
 				});
 
-			}, callback);
+			}, function(err, posts) {
+				if (err) {
+					return callback(err);
+				}
+
+				plugins.fireHook('filter:post.getPosts', {posts: posts}, function(err, data) {
+					if (err) {
+						return callback(err);
+					}
+
+					if (!data || !Array.isArray(data.posts)) {
+						return callback(null, []);
+					}
+
+					callback(null, data.posts);
+				});
+			});
 		});
 	};
 
@@ -186,7 +186,7 @@ var async = require('async'),
 				if (err) {
 					return callback(err);
 				}
-				Posts.getPostSummaryByPids(pids, {stripTags: true}, callback);
+				Posts.getPostSummaryByPids(pids, uid, {stripTags: true}, callback);
 			});
 		});
 	};
@@ -222,21 +222,31 @@ var async = require('async'),
 	};
 
 	Posts.getUserInfoForPosts = function(uids, callback) {
-		user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(err, userData) {
+		async.parallel({
+			groups: function(next) {
+				groups.getUserGroups(uids, next);
+			},
+			userData: function(next) {
+				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], next);
+			}
+		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
+			var userData = results.userData;
+			for(var i=0; i<userData.length; ++i) {
+				userData[i].groups = results.groups[i];
+			}
+
 			async.map(userData, function(userData, next) {
-				var userInfo = {
-					uid: userData.uid || 0,
-					username: userData.username || '[[global:guest]]',
-					userslug: userData.userslug || '',
-					reputation: userData.reputation || 0,
-					postcount: userData.postcount || 0,
-					banned: parseInt(userData.banned, 10) === 1,
-					picture: userData.picture || user.createGravatarURLFromEmail('')
-				};
+				userData.uid = userData.uid || 0;
+				userData.username = userData.username || '[[global:guest]]';
+				userData.userslug = userData.userslug || '';
+				userData.reputation = userData.reputation || 0;
+				userData.postcount = userData.postcount || 0;
+				userData.banned = parseInt(userData.banned, 10) === 1;
+				userData.picture = userData.picture || user.createGravatarURLFromEmail('');
 
 				async.parallel({
 					signature: function(next) {
@@ -247,24 +257,20 @@ var async = require('async'),
 					},
 					customProfileInfo: function(next) {
 						plugins.fireHook('filter:posts.custom_profile_info', {profile: [], uid: userData.uid}, next);
-					},
-					groups: function(next) {
-						groups.getUserGroups(userData.uid, next);
 					}
 				}, function(err, results) {
 					if (err) {
 						return next(err);
 					}
-					userInfo.signature = results.signature;
-					userInfo.custom_profile_info = results.custom_profile_info;
-					userInfo.groups = results.groups;
-					next(null, userInfo);
+					userData.signature = results.signature;
+					userData.custom_profile_info = results.customProfileInfo.profile;
+					next(null, userData);
 				});
 			}, callback);
 		});
 	};
 
-	Posts.getPostSummaryByPids = function(pids, options, callback) {
+	Posts.getPostSummaryByPids = function(pids, uid, options, callback) {
 		options.stripTags = options.hasOwnProperty('stripTags') ? options.stripTags : false;
 		options.parse = options.hasOwnProperty('parse') ? options.parse : true;
 
@@ -296,7 +302,7 @@ var async = require('async'),
 					user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
 				},
 				topicsAndCategories: function(next) {
-					db.getObjectsFields(tids, ['tid', 'title', 'cid', 'slug', 'deleted'], function(err, topics) {
+					db.getObjectsFields(tids, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted'], function(err, topics) {
 						if (err) {
 							return next(err);
 						}
@@ -313,13 +319,7 @@ var async = require('async'),
 					});
 				},
 				indices: function(next) {
-					var pids = [], keys = [];
-					for (var i=0; i<posts.length; ++i) {
-						pids.push(posts[i].pid);
-						keys.push('tid:' + posts[i].tid + ':posts');
-					}
-
-					db.sortedSetsRanks(keys, pids, next);
+					Posts.getPostIndices(posts, uid, next);
 				}
 			}, function(err, results) {
 				function toObject(key, data) {
@@ -330,6 +330,14 @@ var async = require('async'),
 					return obj;
 				}
 
+				function stripTags(content) {
+					if (options.stripTags && content) {
+						var s = S(content);
+						return s.stripTags.apply(s, utils.stripTags).s;
+					}
+					return content;
+				}
+
 				if (err) {
 					return callback(err);
 				}
@@ -338,19 +346,15 @@ var async = require('async'),
 				results.topics = toObject('tid', results.topicsAndCategories.topics);
 				results.categories = toObject('cid', results.topicsAndCategories.categories);
 
-				for(var i=0; i<posts.length; ++i) {
-					if (!utils.isNumber(results.indices[i])) {
-						posts[i].index = 1;
-					} else {
-						posts[i].index = parseInt(results.indices[i], 10) + 2;
-					}
+				for (var i=0; i<posts.length; ++i) {
+					posts[i].index = utils.isNumber(results.indices[i]) ? parseInt(results.indices[i], 10) + 1 : 1;
 				}
 
-				async.map(posts, function(post, next) {
-					if (parseInt(results.topics[post.tid].deleted, 10) === 1) {
-						return next();
-					}
+				posts = posts.filter(function(post) {
+					return parseInt(results.topics[post.tid].deleted, 10) !== 1;
+				});
 
+				async.map(posts, function(post, next) {
 					post.user = results.users[post.uid];
 					post.topic = results.topics[post.tid];
 					post.category = results.categories[post.topic.cid];
@@ -359,6 +363,7 @@ var async = require('async'),
 					post.relativeTime = utils.toISOString(post.timestamp);
 
 					if (!post.content || !options.parse) {
+						post.content = stripTags(post.content);
 						return next(null, post);
 					}
 
@@ -367,26 +372,11 @@ var async = require('async'),
 							return next(err);
 						}
 
-						if (options.stripTags && content) {
-							var s = S(content);
-							post.content = s.stripTags.apply(s, utils.stripTags).s;
-						} else {
-							post.content = content;
-						}
+						post.content = stripTags(content);
 
 						next(null, post);
 					});
-				}, function(err, posts) {
-					if (err) {
-						return callback(err);
-					}
-
-					posts = posts.filter(function(post) {
-						return !!post;
-					});
-
-					callback(null, posts);
-				});
+				}, callback);
 			});
 		});
 	};
@@ -494,7 +484,7 @@ var async = require('async'),
 				if (err) {
 					return callback(err);
 				}
-				getPostsFromSet('uid:' + uid + ':posts', pids, callback);
+				getPostsFromSet('uid:' + uid + ':posts', pids, callerUid, callback);
 			});
 		});
 	};
@@ -505,16 +495,16 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			getPostsFromSet('uid:' + uid + ':favourites', pids, callback);
+			getPostsFromSet('uid:' + uid + ':favourites', pids, uid, callback);
 		});
 	};
 
-	function getPostsFromSet(set, pids, callback) {
+	function getPostsFromSet(set, pids, uid, callback) {
 		if (!Array.isArray(pids) || !pids.length) {
 			return callback(null, {posts: [], nextStart: 0});
 		}
 
-		Posts.getPostSummaryByPids(pids, {stripTags: false}, function(err, posts) {
+		Posts.getPostSummaryByPids(pids, uid, {stripTags: false}, function(err, posts) {
 			if (err) {
 				return callback(err);
 			}
@@ -536,40 +526,56 @@ var async = require('async'),
 		});
 	}
 
-	Posts.getPidPage = function(pid, uid, callback) {
-		if(!pid) {
-			return callback(new Error('[[error:invalid-pid]]'));
-		}
-
-		var index = 0;
-		async.waterfall([
-			function(next) {
-				Posts.getPidIndex(pid, next);
-			},
-			function(result, next) {
-				index = result;
-				if (index === 1) {
-					return callback(null, 1);
-				}
+	Posts.getPidIndex = function(pid, uid, callback) {
+		async.parallel({
+			settings: function(next) {
 				user.getSettings(uid, next);
 			},
-			function(settings, next) {
-				next(null, Math.ceil((index - 1) / settings.postsPerPage));
+			tid: function(next) {
+				Posts.getPostField(pid, 'tid', next);
 			}
-		], callback);
-	};
-
-	Posts.getPidIndex = function(pid, callback) {
-		Posts.getPostField(pid, 'tid', function(err, tid) {
+		}, function(err, results) {
 			if(err) {
 				return callback(err);
 			}
-
-			db.sortedSetRank('tid:' + tid + ':posts', pid, function(err, index) {
+			var set = results.settings.topicPostSort === 'most_votes' ? 'tid:' + results.tid + ':posts:votes' : 'tid:' + results.tid + ':posts';
+			db.sortedSetRank(set, pid, function(err, index) {
 				if (!utils.isNumber(index)) {
 					return callback(err, 1);
 				}
 				callback(err, parseInt(index, 10) + 2);
+			});
+		});
+	};
+
+	Posts.getPostIndices = function(posts, uid, callback) {
+		user.getSettings(uid, function(err, settings) {
+			if (err) {
+				return callback(err);
+			}
+			var byVotes = settings.topicPostSort === 'most_votes';
+			var sets = posts.map(function(post) {
+				if (byVotes) {
+					return 'tid:' + post.tid + ':posts:votes';
+				} else {
+					return 'tid:' + post.tid + ':posts';
+				}
+			});
+
+			var pids = posts.map(function(post) {
+				return post.pid;
+			});
+
+			db.sortedSetsRanks(sets, pids, function(err, indices) {
+				if (err) {
+					return callback(err);
+				}
+
+				for (var i=0; i<indices.length; ++i) {
+					indices[i] = utils.isNumber(indices[i]) ? parseInt(indices[i], 10) + 1 : 0;
+				}
+
+				callback(null, indices);
 			});
 		});
 	};

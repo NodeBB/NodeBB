@@ -2,18 +2,20 @@
 
 var tagsController = {},
 	async = require('async'),
-	topics = require('./../topics');
+	nconf = require('nconf'),
+	meta = require('../meta'),
+	topics = require('../topics');
 
 tagsController.getTag = function(req, res, next) {
 	var tag = req.params.tag;
 	var uid = req.user ? req.user.uid : 0;
-
-	topics.getTagTids(tag, 0, 19, function(err, tids) {
+	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+	topics.getTagTids(tag, 0, end, function(err, tids) {
 		if (err) {
 			return next(err);
 		}
 
-		if (!tids || !tids.length) {
+		if (Array.isArray(tids) && !tids.length) {
 			topics.deleteTag(tag);
 			return res.render('tag', {topics: [], tag:tag});
 		}
@@ -22,6 +24,22 @@ tagsController.getTag = function(req, res, next) {
 			if (err) {
 				return next(err);
 			}
+
+			res.locals.metaTags = [
+				{
+					name: "title",
+					content: tag
+				},
+				{
+					property: 'og:title',
+					content: tag
+				},
+				{
+					property: "og:url",
+					content: nconf.get('url') + '/tags/' + tag
+				}
+			];
+
 			data.tag = tag;
 			res.render('tag', data);
 		});

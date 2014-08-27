@@ -5,21 +5,25 @@ var categoriesController = {},
 	qs = require('querystring'),
 	nconf = require('nconf'),
 	privileges = require('../privileges'),
-	user = require('./../user'),
-	categories = require('./../categories'),
-	topics = require('./../topics'),
-	meta = require('./../meta');
+	user = require('../user'),
+	categories = require('../categories'),
+	topics = require('../topics'),
+	meta = require('../meta'),
+	plugins = require('../plugins');
 
 categoriesController.recent = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
-	topics.getLatestTopics(uid, 0, 19, req.params.term, function (err, data) {
-		if(err) {
+	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+	topics.getLatestTopics(uid, 0, end, req.params.term, function (err, data) {
+		if (err) {
 			return next(err);
 		}
 
-		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
+		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
-		res.render('recent', data);
+		plugins.fireHook('filter:category.get', data, uid, function(err, data) {
+			res.render('recent', data);
+		});
 	});
 };
 
@@ -28,26 +32,30 @@ categoriesController.popular = function(req, res, next) {
 
 	var term = req.params.term || 'daily';
 
-	topics.getPopular(term, uid, function(err, data) {
-		if(err) {
+	topics.getPopular(term, uid, meta.config.topicsPerList, function(err, data) {
+		if (err) {
 			return next(err);
 		}
 
-		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
+		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
-		res.render('popular', {topics: data});
+		plugins.fireHook('filter:category.get', {topics: data}, uid, function(err, data) {
+			res.render('popular', data);
+		});
 	});
 };
 
 categoriesController.unread = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
-
-	topics.getUnreadTopics(uid, 0, 20, function (err, data) {
-		if(err) {
+	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+	topics.getUnreadTopics(uid, 0, end, function (err, data) {
+		if (err) {
 			return next(err);
 		}
 
-		res.render('unread', data);
+		plugins.fireHook('filter:category.get', data, uid, function(err, data) {
+			res.render('unread', data);
+		});
 	});
 };
 
@@ -74,22 +82,16 @@ categoriesController.get = function(req, res, next) {
 		},
 		function(disabled, next) {
 			if (parseInt(disabled, 10) === 1) {
-				return next(new Error('category-disabled'));
+				return next(new Error('[[error:category-disabled]]'));
 			}
 
-			privileges.categories.get(cid, uid, function(err, categoryPrivileges) {
-				if (err) {
-					return next(err);
-				}
-
-				if (!categoryPrivileges.read) {
-					return next(new Error('[[error:no-privileges]]'));
-				}
-
-				next(null, categoryPrivileges);
-			});
+			privileges.categories.get(cid, uid, next);
 		},
 		function (privileges, next) {
+			if (!privileges.read) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+
 			user.getSettings(uid, function(err, settings) {
 				if (err) {
 					return next(err);
@@ -109,12 +111,6 @@ categoriesController.get = function(req, res, next) {
 				categories.getCategoryById(cid, start, end, uid, function (err, categoryData) {
 					if (err) {
 						return next(err);
-					}
-
-					if (categoryData) {
-						if (parseInt(categoryData.disabled, 10) === 1) {
-							return next(new Error('[[error:category-disabled]]'));
-						}
 					}
 
 					categoryData.privileges = privileges;
@@ -189,7 +185,6 @@ categoriesController.get = function(req, res, next) {
 				active: x === parseInt(page, 10)
 			});
 		}
-
 		res.render('category', data);
 	});
 };

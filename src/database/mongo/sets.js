@@ -91,6 +91,24 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.getSetsMembers = function(keys, callback) {
+		db.collection('objects').find({_key: {$in: keys}}, {_key: 1, members: 1}).toArray(function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+			var sets = {};
+			data.forEach(function(set) {
+				sets[set._key] = set.members || [];
+			});
+
+			var returnData = new Array(keys.length);
+			for(var i=0; i<keys.length; ++i) {
+				returnData[i] = sets[keys[i]] || [];
+			}
+			callback(null, returnData);
+		});
+	};
+
 	module.setCount = function(key, callback) {
 		db.collection('objects').findOne({_key:key}, function(err, data) {
 			return callback(err, data ? data.members.length : 0);

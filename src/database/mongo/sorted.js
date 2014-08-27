@@ -101,6 +101,10 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.sortedSetsCard = function(keys, callback) {
+		async.map(keys, module.sortedSetCard, callback);
+	};
+
 	module.sortedSetRank = function(key, value, callback) {
 		getSortedSetRank(module.getSortedSetRange, key, value, callback);
 	};
@@ -139,32 +143,10 @@ module.exports = function(db, module) {
 		});
 	};
 
-	module.isSortedSetMember = function(key, value, callback) {
-		module.sortedSetScore(key, value, function(err, score) {
-			callback(err, !!score);
-		});
-	};
-
-	module.isSortedSetMembers = function(key, values, callback) {
-		values = values.map(helpers.valueToString);
-		db.collection('objects').find({_key: key, value: {$in: values}}).toArray(function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-			results = results.map(function(item) {
-				return item.value;
-			});
-			values = values.map(function(value) {
-				return results.indexOf(value) !== -1;
-			});
-			callback(err, results);
-		});
-	};
-
 	module.sortedSetsScore = function(keys, value, callback) {
 		value = helpers.valueToString(value);
 		db.collection('objects').find({_key:{$in:keys}, value: value}).toArray(function(err, result) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
@@ -178,6 +160,54 @@ module.exports = function(db, module) {
 			}
 
 			callback(null, returnData);
+		});
+	};
+
+	module.sortedSetScores = function(key, values, callback) {
+		values = values.map(helpers.valueToString);
+		db.collection('objects').find({_key: key, value: {$in: values}}).toArray(function(err, result) {
+			if (err) {
+				return callback(err);
+			}
+
+			var map = {};
+			result.forEach(function(item) {
+				map[item.value] = item.score;
+			});
+
+			var	returnData = new Array(values.length),
+				score;
+
+			for(var i=0; i<values.length; ++i) {
+				score = map[values[i]];
+				returnData[i] = score ? score : null;
+			}
+
+			callback(null, returnData);
+		});
+	};
+
+	module.isSortedSetMember = function(key, value, callback) {
+		module.sortedSetScore(key, value, function(err, score) {
+			callback(err, !!score);
+		});
+	};
+
+	module.isSortedSetMembers = function(key, values, callback) {
+		values = values.map(helpers.valueToString);
+		db.collection('objects').find({_key: key, value: {$in: values}}).toArray(function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			results = results.map(function(item) {
+				return item.value;
+			});
+
+			values = values.map(function(value) {
+				return results.indexOf(value) !== -1;
+			});
+			callback(null, values);
 		});
 	};
 

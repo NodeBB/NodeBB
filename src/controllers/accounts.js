@@ -112,6 +112,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.yourid = callerUID;
 			userData.theirid = userData.uid;
 			userData.isSelf = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
+			userData.showSettings = userData.isSelf || isAdmin;
 			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
 			userData.profile_links = results.profile_links;
@@ -213,7 +214,7 @@ function getFollow(route, name, req, res, next) {
 accountsController.getFavourites = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
-	getBaseUser(req.params.userslug, function(err, userData) {
+	getBaseUser(req.params.userslug, callerUID, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -231,8 +232,6 @@ accountsController.getFavourites = function(req, res, next) {
 				return next(err);
 			}
 
-			userData.theirid = userData.uid;
-			userData.yourid = callerUID;
 			userData.posts = favourites.posts;
 			userData.nextStart = favourites.nextStart;
 
@@ -244,7 +243,7 @@ accountsController.getFavourites = function(req, res, next) {
 accountsController.getPosts = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
-	getBaseUser(req.params.userslug, function(err, userData) {
+	getBaseUser(req.params.userslug, callerUID, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -258,8 +257,6 @@ accountsController.getPosts = function(req, res, next) {
 				return next(err);
 			}
 
-			userData.theirid = userData.uid;
-			userData.yourid = callerUID;
 			userData.posts = userPosts.posts;
 			userData.nextStart = userPosts.nextStart;
 
@@ -271,7 +268,7 @@ accountsController.getPosts = function(req, res, next) {
 accountsController.getTopics = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
-	getBaseUser(req.params.userslug, function(err, userData) {
+	getBaseUser(req.params.userslug, callerUID, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -286,8 +283,6 @@ accountsController.getTopics = function(req, res, next) {
 				return next(err);
 			}
 
-			userData.theirid = userData.uid;
-			userData.yourid = callerUID;
 			userData.topics = userTopics.topics;
 			userData.nextStart = userTopics.nextStart;
 
@@ -296,7 +291,7 @@ accountsController.getTopics = function(req, res, next) {
 	});
 };
 
-function getBaseUser(userslug, callback) {
+function getBaseUser(userslug, callerUID, callback) {
 	user.getUidByUserslug(userslug, function (err, uid) {
 		if (err || !uid) {
 			return callback(err);
@@ -306,6 +301,9 @@ function getBaseUser(userslug, callback) {
 			user: function(next) {
 				user.getUserFields(uid, ['uid', 'username', 'userslug'], next);
 			},
+			isAdmin: function(next) {
+				user.isAdministrator(callerUID, next);
+			},
 			profile_links: function(next) {
 				plugins.fireHook('filter:user.profileLinks', [], next);
 			}
@@ -313,9 +311,15 @@ function getBaseUser(userslug, callback) {
 			if (err) {
 				return callback(err);
 			}
+
 			if (!results.user) {
 				return callback();
 			}
+
+			results.user.yourid = callerUID;
+			results.user.theirid = uid;
+			results.user.isSelf = parseInt(callerUID, 10) === parseInt(uid, 10);
+			results.user.showSettings = results.user.isSelf || results.isAdmin;
 			results.user.profile_links = results.profile_links;
 			callback(null, results.user);
 		});
@@ -337,7 +341,7 @@ accountsController.accountEdit = function(req, res, next) {
 accountsController.accountSettings = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
-	getBaseUser(req.params.userslug, function(err, userData) {
+	getBaseUser(req.params.userslug, callerUID, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -358,10 +362,10 @@ accountsController.accountSettings = function(req, res, next) {
 				return next(err);
 			}
 
-			userData.yourid = callerUID;
-			userData.theirid = userData.uid;
 			userData.settings = results.settings;
 			userData.languages = results.languages;
+
+			userData.disableEmailSubscriptions = meta.config.disableEmailSubscriptions !== undefined && parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 
 			res.render('account/settings', userData);
 		});
@@ -394,13 +398,18 @@ accountsController.uploadPicture = function (req, res, next) {
 	}
 
 	var updateUid = req.user.uid;
+	var imageDimension = parseInt(meta.config.profileImageDimension, 10) || 128;
 
 	async.waterfall([
 		function(next) {
-			image.resizeImage(req.files.userPhoto.path, extension, 128, 128, next);
+			image.resizeImage(req.files.userPhoto.path, extension, imageDimension, imageDimension, next);
 		},
 		function(next) {
-			image.convertImageToPng(req.files.userPhoto.path, extension, next);
+			if (parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1) {
+				image.convertImageToPng(req.files.userPhoto.path, extension, next);
+			} else {
+				next();
+			}
 		},
 		function(next) {
 			user.getUidByUserslug(req.params.userslug, next);
@@ -446,7 +455,7 @@ accountsController.uploadPicture = function (req, res, next) {
 			return plugins.fireHook('filter:uploadImage', req.files.userPhoto, done);
 		}
 
-		var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10);
+		var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1;
 		var filename = updateUid + '-profileimg' + (convertToPNG ? '.png' : extension);
 
 		user.getUserField(updateUid, 'uploadedpicture', function (err, oldpicture) {
@@ -469,7 +478,7 @@ accountsController.uploadPicture = function (req, res, next) {
 };
 
 accountsController.getNotifications = function(req, res, next) {
-	user.notifications.getAll(req.user.uid, null, null, function(err, notifications) {
+	user.notifications.getAll(req.user.uid, 25, function(err, notifications) {
 		res.render('notifications', {
 			notifications: notifications
 		});

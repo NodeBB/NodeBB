@@ -56,6 +56,7 @@ if(nconf.get('ssl')) {
 	}, function(err, data) {
 		middleware = middleware(app, data);
 		routes(app, middleware);
+		plugins.prepareApp(app, middleware);
 
 		if (err) {
 			winston.error('Errors were encountered while attempting to initialise NodeBB.');
@@ -96,7 +97,7 @@ if(nconf.get('ssl')) {
 	}
 
 	module.exports.server = server;
-	module.exports.init = function () {
+	module.exports.init = function(callback) {
 		server.on("error", function(err){
 			if (err.code === 'EADDRINUSE') {
 				winston.error('NodeBB address in use, exiting...');
@@ -109,21 +110,30 @@ if(nconf.get('ssl')) {
 		emitter.all(['templates:compiled', 'meta:js.compiled', 'meta:css.compiled'], function() {
 			winston.info('NodeBB Ready');
 			emitter.emit('nodebb:ready');
+			emitter.removeAllListeners('templates:compiled').removeAllListeners('meta:js.compiled').removeAllListeners('meta:css.compiled');
 		});
 
 		emitter.on('templates:compiled', function() {
-			var	bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
-			winston.info('NodeBB attempting to listen on: ' + bind_address);
+			if (process.send) {
+				callback();
+			} else {
+				module.exports.listen();
+			}
+		});
+	};
 
-			server.listen(port, nconf.get('bind_address'), function(){
-				winston.info('NodeBB is now listening on: ' + bind_address);
-				if (process.send) {
-					process.send({
-						action: 'ready',
-						bind_address: bind_address
-					});
-				}
-			});
+	module.exports.listen = function() {
+		var	bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
+		winston.info('NodeBB attempting to listen on: ' + bind_address);
+
+		server.listen(port, nconf.get('bind_address'), function(){
+			winston.info('NodeBB is now listening on: ' + bind_address);
+			if (process.send) {
+				process.send({
+					action: 'listening',
+					bind_address: bind_address
+				});
+			}
 		});
 	};
 

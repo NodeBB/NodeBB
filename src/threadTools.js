@@ -120,8 +120,7 @@ var winston = require('winston'),
 			plugins.fireHook('action:topic.lock', {
 				tid: tid,
 				isLocked: lock,
-				uid: uid,
-				timestamp: Date.now()
+				uid: uid
 			});
 
 			emitTo('topic_' + tid);
@@ -165,8 +164,7 @@ var winston = require('winston'),
 			plugins.fireHook('action:topic.pin', {
 				tid: tid,
 				isPinned: pin,
-				uid: uid,
-				timestamp: Date.now()
+				uid: uid
 			});
 
 			emitTo('topic_' + tid);
@@ -214,8 +212,7 @@ var winston = require('winston'),
 				tid: tid,
 				fromCid: oldCid,
 				toCid: cid,
-				uid: uid,
-				timestamp: Date.now()
+				uid: uid
 			});
 		});
 	};
@@ -236,6 +233,21 @@ var winston = require('winston'),
 				db[isFollowing ? 'setRemove' : 'setAdd']('tid:' + tid + ':followers', uid, function(err) {
 					next(err, !isFollowing);
 				});
+			}
+		], callback);
+	};
+
+	ThreadTools.follow = function(tid, uid, callback) {
+		callback = callback || function() {};
+		async.waterfall([
+			function (next) {
+				ThreadTools.exists(tid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-topic]]'));
+				}
+				db.setAdd('tid:' + tid + ':followers', uid, next);
 			}
 		], callback);
 	};

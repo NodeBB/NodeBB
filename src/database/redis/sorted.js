@@ -2,6 +2,7 @@
 
 module.exports = function(redisClient, module) {
 	module.sortedSetAdd = function(key, score, value, callback) {
+		callback = callback || function() {};
 		redisClient.zadd(key, score, value, callback);
 	};
 
@@ -50,6 +51,17 @@ module.exports = function(redisClient, module) {
 		redisClient.zcard(key, callback);
 	};
 
+	module.sortedSetsCard = function(keys, callback) {
+		if (Array.isArray(keys) && !keys.length) {
+			return callback(null, []);
+		}
+		var multi = redisClient.multi();
+		for(var i=0; i<keys.length; ++i) {
+			multi.zcard(keys[i]);
+		}
+		multi.exec(callback);
+	};
+
 	module.sortedSetRank = function(key, value, callback) {
 		redisClient.zrank(key, value, callback);
 	};
@@ -68,6 +80,18 @@ module.exports = function(redisClient, module) {
 
 	module.sortedSetScore = function(key, value, callback) {
 		redisClient.zscore(key, value, callback);
+	};
+
+	module.sortedSetsScore = function(keys, value, callback) {
+		multi('zscore', keys, value, callback);
+	};
+
+	module.sortedSetScores = function(key, values, callback) {
+		var multi = redisClient.multi();
+		for(var i=0; i<values.length; ++i) {
+			multi.zscore(key, values[i]);
+		}
+		multi.exec(callback);
 	};
 
 	module.isSortedSetMember = function(key, value, callback) {
@@ -90,10 +114,6 @@ module.exports = function(redisClient, module) {
 			});
 			callback(null, results);
 		});
-	};
-
-	module.sortedSetsScore = function(keys, value, callback) {
-		multi('zscore', keys, value, callback);
 	};
 
 	function multi(command, keys, value, callback) {
@@ -125,11 +145,7 @@ module.exports = function(redisClient, module) {
 		multi[reverse ? 'zrevrange' : 'zrange']('temp', start, stop);
 		multi.del('temp');
 		multi.exec(function(err, results) {
-			if (!err && typeof callback === 'function') {
-				callback(null, results[1]);
-			} else if (err) {
-				callback(err);
-			}
+			callback(err, results ? results[1] : null);
 		});
 	}
 };

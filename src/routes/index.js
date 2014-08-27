@@ -19,7 +19,7 @@ var nconf = require('nconf'),
 
 function mainRoutes(app, middleware, controllers) {
 	app.get('/', middleware.buildHeader, controllers.home);
-	app.get('/api/home', controllers.home);
+	app.get('/api', controllers.home);
 
 	app.get('/login', middleware.redirectToAccountIfLoggedIn, middleware.buildHeader, controllers.login);
 	app.get('/api/login', middleware.redirectToAccountIfLoggedIn, controllers.login);
@@ -152,57 +152,61 @@ function groupRoutes(app, middleware, controllers) {
 
 
 module.exports = function(app, middleware) {
-	plugins.ready(function() {
-		var router = express.Router(),
-			relativePath = nconf.get('relative_path');
+	var router = express.Router(),
+		pluginRouter = express.Router(),
+		relativePath = nconf.get('relative_path');
 
-		router.render = function() {
-			app.render.apply(app, arguments);
-		};
+	pluginRouter.render = function() {
+		app.render.apply(app, arguments);
+	};
+	pluginRouter.hotswapId = 'plugins';
 
-		app.all(relativePath + '/api/*', middleware.updateLastOnlineTime, middleware.prepareAPI);
-		app.all(relativePath + '/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
-		app.all(relativePath + '/admin/*', middleware.admin.isAdmin);
-		app.get(relativePath + '/admin', middleware.admin.isAdmin);
+	app.all(relativePath + '/api/?*', middleware.updateLastOnlineTime, middleware.prepareAPI);
+	app.all(relativePath + '/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
+	app.all(relativePath + '/admin/*', middleware.admin.isAdmin);
+	app.get(relativePath + '/admin', middleware.admin.isAdmin);
 
-		// Deprecated as of v0.5.0, remove this hook call for NodeBB v0.6.0-1
-		plugins.fireHook('action:app.load', router, middleware, controllers);
+	adminRoutes(router, middleware, controllers);
+	metaRoutes(router, middleware, controllers);
+	apiRoutes(router, middleware, controllers);
+	feedRoutes(router, middleware, controllers);
+	pluginRoutes(router, middleware, controllers);
+	authRoutes.createRoutes(router, middleware, controllers);
 
-		adminRoutes(router, middleware, controllers);
-		metaRoutes(router, middleware, controllers);
-		apiRoutes(router, middleware, controllers);
-		feedRoutes(router, middleware, controllers);
-		pluginRoutes(router, middleware, controllers);
-		authRoutes.createRoutes(router, middleware, controllers);
+	/**
+	* Every view has an associated API route.
+	*
+	*/
+	mainRoutes(router, middleware, controllers);
+	staticRoutes(router, middleware, controllers);
+	topicRoutes(router, middleware, controllers);
+	tagRoutes(router, middleware, controllers);
+	categoryRoutes(router, middleware, controllers);
+	accountRoutes(router, middleware, controllers);
+	userRoutes(router, middleware, controllers);
+	groupRoutes(router, middleware, controllers);
 
-		/**
-		* Every view has an associated API route.
-		*
-		*/
-		mainRoutes(router, middleware, controllers);
-		staticRoutes(router, middleware, controllers);
-		topicRoutes(router, middleware, controllers);
-		tagRoutes(router, middleware, controllers);
-		categoryRoutes(router, middleware, controllers);
-		accountRoutes(router, middleware, controllers);
-		userRoutes(router, middleware, controllers);
-		groupRoutes(router, middleware, controllers);
-
-		plugins.fireHook('static:app.load', router, middleware, controllers, function() {
-			app.use(relativePath, router);
-
-			app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
-				maxAge: app.enabled('cache') ? 5184000000 : 0
-			}));
-			app.use(catch404);
-			app.use(handleErrors);
-		});
-	});
-
+	// Add the routers to the application
+	app.use(relativePath, router);
+	app.use(relativePath, pluginRouter);
+	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
+		maxAge: app.enabled('cache') ? 5184000000 : 0
+	}));
 	if (process.env.NODE_ENV === 'development') {
 		require('./debug')(app, middleware, controllers);
 	}
+	app.use(catch404);
+	app.use(handleErrors);
 
+	// Add plugin routes
+	plugins.reloadRoutes();
+	// plugins.ready(function() {
+	// 	plugins.fireHook('static:app.load', pluginRouter, middleware, controllers, function() {
+			
+
+			
+	// 	});
+	// });
 };
 
 function handleErrors(err, req, res, next) {

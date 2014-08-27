@@ -5,11 +5,12 @@
     "recent": "Recente Onderwerpen",
     "users": "Geregistreerde Gebruikers",
     "notifications": "Notificaties",
+    "tags": "Onderwerpen getagd onder \"%1\"",
     "user.edit": "\"%1\" aanpassen",
     "user.following": "Mensen %1 Volgt",
     "user.followers": "Mensen die %1 Volgen",
     "user.posts": "Berichten geplaatst door %1",
-    "user.topics": "Topics created by %1",
+    "user.topics": "Topics gecreëerd door %1",
     "user.favourites": "%1's Favoriete Berichten",
     "user.settings": "Gebruikersinstellingen"
 }

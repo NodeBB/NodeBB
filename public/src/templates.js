@@ -36,7 +36,7 @@ Please use the npm module instead - require('templates.js')
 					}
 
 					callback(parse(loaded, obj, bind));
-				});
+				});	
 			} else {
 				callback(parse(templates.cache[template], obj, bind));
 			}
@@ -58,13 +58,14 @@ Please use the npm module instead - require('templates.js')
 	};
 
 	templates.getBlock = function(template, block) {
-		return template.replace(new RegExp('[\\s\\S]*(<!--[\\s]*BEGIN ' + block + '[\\s]*-->[\r\n]*[\\s\\S]*?[\r\n]*<!--[\\s]*END ' + block + '[\\s]*-->)[\\s\\S]*', 'g'), '$1');
+		return template.replace(new RegExp('[\\s\\S]*(<!--[\\s]*BEGIN ' + block + '[\\s]*-->[\\s\\S]*?<!--[\\s]*END ' + block + '[\\s]*-->)[\\s\\S]*', 'g'), '$1');
 	};
 
 	function express(filename, options, fn) {
-		console.log(filename, options, fn);
 		var fs = require('fs'),
 			tpl = filename.replace(options.settings.views + '/', '');
+
+		options['_locals'] = null;
 
 		if (!templates.cache[tpl]) {
 			fs.readFile(filename, function(err, html) {
@@ -82,11 +83,11 @@ Please use the npm module instead - require('templates.js')
 	}
 
 	function makeRegex(block) {
-		return new RegExp('<!--[\\s]*BEGIN ' + block + '[\\s]*-->[\\s\\S]*?<!--[\\s]*END ' + block + '[\\s]*-->');
+		return new RegExp('[\\t ]*<!--[\\s]*BEGIN ' + block + '[\\s]*-->[\\s\\S]*?<!--[\\s]*END ' + block + '[\\s]*-->');
 	}
 
 	function makeBlockRegex(block) {
-		return new RegExp('([\\n]?<!--[\\s]*BEGIN ' + block + '[\\s]*-->[\\n]?)|([\\n]?<!--[\\s]*END ' + block + '[\\s]*-->[\\n]?)', 'g');
+		return new RegExp('([\\t ]*<!--[\\s]*BEGIN ' + block + '[\\s]*-->[\\r\\n?|\\n]?)|(<!--[\\s]*END ' + block + '[\\s]*-->)', 'g');
 	}
 
 	function makeConditionalRegex(block) {
@@ -94,7 +95,7 @@ Please use the npm module instead - require('templates.js')
 	}
 
 	function makeStatementRegex(key) {
-		return new RegExp('([\\s]*<!--[\\s]*IF ' + key + '[\\s]*-->)|(<!--[\\s]*ENDIF ' + key + '[\\s]*-->[\\s]*)', 'gi');
+		return new RegExp('(<!--[\\s]*IF ' + key + '[\\s]*-->)|(<!--[\\s]*ENDIF ' + key + '[\\s]*-->)', 'g');
 	}
 
 	function registerGlobals(obj) {
@@ -113,23 +114,23 @@ Please use the npm module instead - require('templates.js')
 		if (matches !== null) {
 			for (var i = 0, ii = matches.length; i < ii; i++) {
 				var statement = makeStatementRegex(key),
-					nestedConditionals = matches[i].match(/[\s|\S]<!-- IF[\s\S]*ENDIF[\s\S]*-->[\s|\S]/),
-					match = matches[i].replace(statement, '').replace(/[\s|\S]<!-- IF[\s\S]*ENDIF[\s\S]*-->[\s|\S]/gi, '<!-- NESTED -->'),
-					conditionalBlock = match.split(/\s*<!-- ELSE -->\s*/);
+					nestedConditionals = matches[i].match(/(?!^)<!-- IF([\s\S]*?)ENDIF[ a-zA-Z0-9\._:]*-->(?!$)/gi),
+					match = matches[i].replace(statement, '').replace(/(?!^)<!-- IF([\s\S]*?)ENDIF[ a-zA-Z0-9\._:]*-->(?!$)/gi, '<!-- NESTED -->'),
+					conditionalBlock = match.split(/[\r\n?\n]*?<!-- ELSE -->[\r\n?\n]*?/);
 
 				if (conditionalBlock[1]) {
 					// there is an else statement
-					if (!value) {
-						template = template.replace(matches[i], conditionalBlock[1].replace(/(^[\r\n\t]*)|([\r\n\t]*$)/gi, ''));
+					if (!value) { // todo check second line break conditional, doesn't match.
+						template = template.replace(matches[i], conditionalBlock[1].replace(/(^[\r\n?|\n]*)|([\r\n\t]*$)/gi, ''));
 					} else {
-						template = template.replace(matches[i], conditionalBlock[0].replace(/(^[\r\n\t]*)|([\r\n\t]*$)/gi, ''));
+						template = template.replace(matches[i], conditionalBlock[0].replace(/(^[\r\n?|\n]*)|([\r\n\t]*$)/gi, ''));
 					}
 				} else {
 					// regular if statement
 					if (!value) {
 						template = template.replace(matches[i], '');
 					} else {
-						template = template.replace(matches[i], match.replace(/(^[\r\n\t]*)|([\r\n\t]*$)/gi, ''));
+						template = template.replace(matches[i], match.replace(/(^[\r\n?|\n]*)|([\r\n\t]*$)/gi, ''));
 					}
 				}
 
@@ -181,40 +182,43 @@ Please use the npm module instead - require('templates.js')
 		var regex = makeRegex(key), block;
 
 		if (!array[key].length) {
-			return template;
+			return template.replace(regex, '');
 		}
 
 		while (block = template.match(regex)) {
 			block = block[0].replace(makeBlockRegex(key), '');
-
+			
 			var numblocks = array[key].length - 1,
 				iterator = 0,
 				result = '',
 				parsedBlock;
 
 			do {
-				parsedBlock = parse(block, array[key][iterator], bind, namespace, {iterator: iterator, total: numblocks}) + ((iterator < numblocks) ? '\r\n':'');
-
+				parsedBlock = parse(block, array[key][iterator], bind, namespace, {iterator: iterator, total: numblocks});
+				
 				result += (!bind) ? parsedBlock : setBindContainer(parsedBlock, bind + namespace + iterator);
-				result = parseFunctions(block, result, {
-					data: array[key][iterator],
-					iterator: iterator,
-					numblocks: numblocks
-				});
 
 				result = checkConditional(result, '@first', iterator === 0);
 				result = checkConditional(result, '!@first', iterator !== 0);
 				result = checkConditional(result, '@last', iterator === numblocks);
 				result = checkConditional(result, '!@last', iterator !== numblocks);
 
+				result = result.replace(/^[\r\n?|\n|\t]*?|[\r\n?|\n|\t]*?$/g, '');
+
+				result = parseFunctions(block, result, {
+					data: array[key][iterator],
+					iterator: iterator,
+					numblocks: numblocks
+				});
+
 				if (bind) {
 					array[key][iterator].__template = block;
 				}
 			} while (iterator++ < numblocks);
 
-			template = template.replace(regex, result);
+			template = template.replace(regex, result.replace(/^[\r\n?|\n]|[\r\n?|\n]$/g, ''));
 		}
-
+		
 		return template;
 	}
 
@@ -248,14 +252,14 @@ Please use the npm module instead - require('templates.js')
 				this['__' + key] = value;
 
 				var els = document.querySelectorAll('[data-binding="' + (this.__iterator !== false ? (bind + this.__namespace + this.__iterator) : bind) + '"]');
-
+				
 				for (var el in els) {
 					if (els.hasOwnProperty(el)) {
 						if (this.__parent) {
 							var parent = this.__parent();
 							els[el].innerHTML = parse(parent.template, parent.data, false);
 						} else {
-							els[el].innerHTML = parse(this.__template, obj, false, this.__namespace);
+							els[el].innerHTML = parse(this.__template, obj, false, this.__namespace);	
 						}
 					}
 				}
@@ -295,7 +299,7 @@ Please use the npm module instead - require('templates.js')
 					template = parse(template, obj[key], bind, namespace + key + '.');
 				} else {
 					template = parseValue(template, namespace + key, obj[key]);
-
+					
 					if (bind && obj[key]) {
 						setupBindings({
 							obj: obj,

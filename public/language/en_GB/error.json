@@ -75,5 +75,7 @@
 
 	"cant-chat-with-yourself": "You can't chat with yourself!",
 
-	"not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post"
+	"not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post",
+
+	"reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }

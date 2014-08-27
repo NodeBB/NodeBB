@@ -50,7 +50,7 @@ search.search = function(term, uid, callback) {
 					return callback(err);
 				}
 
-				posts.getPostSummaryByPids(pids, {stripTags: true, parse: false}, function(err, posts) {
+				posts.getPostSummaryByPids(pids, uid, {stripTags: true, parse: false}, function(err, posts) {
 					if (err) {
 						return callback(err);
 					}

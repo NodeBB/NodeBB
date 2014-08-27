@@ -135,10 +135,10 @@ function getModerators(req, res, next) {
 	});
 }
 
-var templatesListingCache = [];
+var templatesListingCache = {};
 
 function getTemplatesListing(req, res, next) {
-	if (templatesListingCache.length) {
+	if (templatesListingCache.availableTemplates && templatesListingCache.templatesConfig) {
 		return res.json(templatesListingCache);
 	}
 
@@ -148,11 +148,18 @@ function getTemplatesListing(req, res, next) {
 		},
 		extended: function(next) {
 			plugins.fireHook('filter:templates.get_virtual', [], next);
-		}
+		},
+		config: function(next) {
+			fs.readFile(path.join(nconf.get('views_dir'), 'config.json'), function(err, config) {
+				config = JSON.parse(config.toString());
+				plugins.fireHook('filter:templates.get_config', config, next);
+			});
+		},
 	}, function(err, results) {
 		if (err) {
 			return next(err);
 		}
+		
 		var data = [];
 		data = results.views.filter(function(value, index, self) {
 					return self.indexOf(value) === index;
@@ -161,8 +168,13 @@ function getTemplatesListing(req, res, next) {
 				});
 
 		data = data.concat(results.extended);
-		templatesListingCache = data;
-		res.json(data);
+
+		templatesListingCache = {
+			availableTemplates: data,
+			templatesConfig: results.config
+		};
+
+		res.json(templatesListingCache);
 	});
 }
 

@@ -56,6 +56,6 @@ module.exports = function(app, middleware, controllers) {
 	});
 
 	router.get('/test', function(req, res) {
-		res.redirect('404');
+		res.redirect(404);
 	});
 };

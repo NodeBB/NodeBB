@@ -33,6 +33,8 @@ module.exports = function(User) {
 				settings.notificationSounds = settings.notificationSounds ? parseInt(settings.notificationSounds, 10) === 1 : true;
 				settings.language = settings.language || meta.config.defaultLang || 'en_GB';
 				settings.topicPostSort = settings.topicPostSort || meta.config.topicPostSort || 'oldest_to_newest';
+				settings.followTopicsOnCreate = settings.followTopicsOnCreate ? parseInt(settings.followTopicsOnCreate, 10) === 1 : true;
+				settings.followTopicsOnReply = settings.followTopicsOnReply ? parseInt(settings.followTopicsOnReply, 10) === 1 : false;
 				callback(null, settings);
 			});
 		});
@@ -80,7 +82,9 @@ module.exports = function(User) {
 			topicsPerPage: data.topicsPerPage,
 			postsPerPage: data.postsPerPage,
 			notificationSounds: data.notificationSounds,
-			language: data.language || meta.config.defaultLang
+			language: data.language || meta.config.defaultLang,
+			followTopicsOnCreate: data.followTopicsOnCreate,
+			followTopicsOnReply: data.followTopicsOnReply
 		}, callback);
 	};
 

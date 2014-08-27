@@ -15,6 +15,8 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		share.addShareHandlers(topicName);
 
 		addFavouriteHandler();
+
+		addVoteHandler();
 	};
 
 	PostTools.toggle = function(pid, isDeleted) {
@@ -36,16 +38,41 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	};
 
 	function addFavouriteHandler() {
-		$('#post-container').on('mouseenter', '.favourite-tooltip', function(e) {
-			if (!$(this).data('users-loaded')) {
-				$(this).data('users-loaded', "true");
-				var pid = $(this).parents('.post-row').attr('data-pid');
-				var el = $(this).attr('title', "Loading...");
-				socket.emit('posts.getFavouritedUsers', pid, function(err, usernames) {
-					el.attr('title', usernames).tooltip('show');
-				});
+		$('#post-container').on('mouseenter', '.favourite-tooltip', function() {
+			loadDataAndCreateTooltip($(this), 'posts.getFavouritedUsers');
+		});
+	}
+
+	function addVoteHandler() {
+		$('#post-container').on('mouseenter', '.post-row .votes', function() {
+			loadDataAndCreateTooltip($(this), 'posts.getUpvoters');
+		});
+	}
+
+	function loadDataAndCreateTooltip(el, method) {
+		var pid = el.parents('.post-row').attr('data-pid');
+		socket.emit(method, pid, function(err, usernames) {
+			if (!err) {
+				createTooltip(el, usernames);
 			}
 		});
+	}
+
+	function createTooltip(el, usernames) {
+		if (!usernames.length) {
+			return;
+		}
+		if (usernames.length > 6) {
+			var otherCount = usernames.length - 5;
+			usernames = usernames.slice(0, 5).join(', ').replace(/,/g, '|');
+			translator.translate('[[topic:users_and_others, ' + usernames + ', ' + otherCount + ']]', function(translated) {
+				translated = translated.replace(/\|/g, ',');
+				el.attr('title', translated).tooltip('destroy').tooltip('show');
+			});
+		} else {
+			usernames = usernames.join(', ');
+			el.attr('title', usernames).tooltip('destroy').tooltip('show');
+		}
 	}
 
 	function addPostHandlers(tid, threadState) {
@@ -137,7 +164,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 			if($('.composer').length) {
 				composer.addQuote(tid, ajaxify.variables.get('topic_slug'), getData(button, 'data-index'), pid, topicName, username, quoted);
 			} else {
-				composer.newReply(tid, pid, topicName, '[[modules:composer.user_said, ' + username + ']]' + quoted);
+				composer.newReply(tid, pid, topicName, '[[modules:composer.user_said, ' + username + ']]\n' + quoted);
 			}
 		});
 	}

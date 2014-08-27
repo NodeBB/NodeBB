@@ -77,6 +77,9 @@ module.exports = function(privileges) {
 	};
 
 	privileges.posts.filter = function(privilege, pids, uid, callback) {
+		if (!pids.length) {
+			return callback(null, []);
+		}
 		posts.getCidsByPids(pids, function(err, cids) {
 			if (err) {
 				return callback(err);

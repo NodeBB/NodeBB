@@ -20,7 +20,7 @@ module.exports = function(Meta) {
 	Meta.css.branding = {};
 	Meta.css.defaultBranding = {};
 
-	Meta.css.minify = function() {
+	Meta.css.minify = function(callback) {
 		winston.info('[meta/css] Minifying LESS/CSS');
 		db.getObjectFields('config', ['theme:type', 'theme:id'], function(err, themeData) {
 			var themeId = (themeData['theme:id'] || 'nodebb-theme-vanilla'),
@@ -54,6 +54,9 @@ module.exports = function(Meta) {
 			parser.parse(source, function(err, tree) {
 				if (err) {
 					winston.error('[meta/css] Could not minify LESS/CSS: ' + err.message);
+					if (typeof callback === 'function') {
+						callback(err);
+					}
 					return;
 				}
 
@@ -63,6 +66,9 @@ module.exports = function(Meta) {
 					});
 				} catch (err) {
 					winston.error('[meta/css] Syntax Error: ' + err.message + ' - ' + path.basename(err.filename) + ' on line ' + err.line);
+					if (typeof callback === 'function') {
+						callback(err);
+					}
 					return;
 				}
 
@@ -89,6 +95,9 @@ module.exports = function(Meta) {
 
 				winston.info('[meta/css] Done.');
 				emitter.emit('meta:css.compiled');
+				if (typeof callback === 'function') {
+					callback();
+				}
 			});
 		});
 	};

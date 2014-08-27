@@ -64,22 +64,12 @@ Controllers.home = function(req, res, next) {
 		},
 		categories: function (next) {
 			var uid = req.user ? req.user.uid : 0;
-			categories.getVisibleCategories(uid, function (err, categoryData) {
+			categories.getCategoriesByPrivilege(uid, 'find', function (err, categoryData) {
 				if (err) {
 					return next(err);
 				}
 
-				function getRecentReplies(category, callback) {
-					categories.getRecentTopicReplies(category.cid, uid, parseInt(category.numRecentReplies, 10), function (err, posts) {
-						if (err) {
-							return callback(err);
-						}
-						category.posts = posts;
-						callback();
-					});
-				}
-
-				async.each(categoryData, getRecentReplies, function (err) {
+				categories.getRecentTopicReplies(categoryData, uid, function(err) {
 					next(err, categoryData);
 				});
 			});

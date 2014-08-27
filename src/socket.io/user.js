@@ -1,10 +1,13 @@
 'use strict';
 
 var	async = require('async'),
+	nconf = require('nconf'),
 	user = require('../user'),
 	groups = require('../groups'),
 	topics = require('../topics'),
+	notifications = require('../notifications'),
 	messaging = require('../messaging'),
+	plugins = require('../plugins'),
 	utils = require('./../../public/src/utils'),
 	meta = require('../meta'),
 	SocketUser = {};
@@ -12,6 +15,12 @@ var	async = require('async'),
 SocketUser.exists = function(socket, data, callback) {
 	if (data && data.username) {
 		meta.userOrGroupExists(utils.slugify(data.username), callback);
+	}
+};
+
+SocketUser.deleteAccount = function(socket, data, callback) {
+	if (socket.uid) {
+		user.deleteAccount(socket.uid, callback);
 	}
 };
 
@@ -79,7 +88,9 @@ SocketUser.reset.commit = function(socket, data, callback) {
 };
 
 SocketUser.isOnline = function(socket, uid, callback) {
-	user.isOnline(uid, callback);
+	user.isOnline([uid], function(err, data) {
+		callback(err, Array.isArray(data) ? data[0] : null);
+	});
 };
 
 SocketUser.changePassword = function(socket, data, callback) {
@@ -159,15 +170,51 @@ SocketUser.changePicture = function(socket, data, callback) {
 
 SocketUser.follow = function(socket, data, callback) {
 	if (socket.uid && data) {
-		user.follow(socket.uid, data.uid, callback);
+		toggleFollow('follow', socket.uid, data.uid, function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			user.getUserFields(socket.uid, ['username', 'userslug'], function(err, userData) {
+				if (err) {
+					return callback(err);
+				}
+
+				notifications.create({
+					bodyShort: '[[notifications:user_started_following_you, ' + userData.username + ']]',
+					path: nconf.get('relative_path') + '/user/' + userData.userslug,
+					uniqueId: 'follow:uid:' + socket.uid,
+					from: socket.uid
+				}, function(err, nid) {
+					if (!err) {
+						notifications.push(nid, [data.uid]);
+					}
+					callback(err);
+				});
+			});
+		});
 	}
 };
 
 SocketUser.unfollow = function(socket, data, callback) {
 	if (socket.uid && data) {
-		user.unfollow(socket.uid, data.uid, callback);
+		toggleFollow('unfollow', socket.uid, data.uid, callback);
 	}
 };
+
+function toggleFollow(method, uid, theiruid, callback) {
+	user[method](uid, theiruid, function(err) {
+		if (err) {
+			return callback(err);
+		}
+
+		plugins.fireHook('action:user.' + method, {
+			fromUid: uid,
+			toUid: theiruid
+		});
+		callback();
+	});
+}
 
 SocketUser.getSettings = function(socket, data, callback) {
 	if (socket.uid) {
@@ -217,24 +264,23 @@ SocketUser.setTopicSort = function(socket, sort, callback) {
 	}
 };
 
-SocketUser.getOnlineUsers = function(socket, data, callback) {
+SocketUser.getOnlineUsers = function(socket, uids, callback) {
 	var returnData = {};
-	if(!data) {
+	if (!uids) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	function getUserStatus(uid, next) {
-		SocketUser.isOnline(socket, uid, function(err, data) {
-			if(err) {
-				return next(err);
-			}
-			returnData[uid] = data;
-			next();
-		});
-	}
+	user.isOnline(uids, function(err, userData) {
+		if (err) {
+			return callback(err);
+		}
 
-	async.each(data, getUserStatus, function(err) {
-		callback(err, returnData);
+		userData.forEach(function(user) {
+			if (user) {
+				returnData[user.uid] = user;
+			}
+		});
+		callback(null, returnData);
 	});
 };
 

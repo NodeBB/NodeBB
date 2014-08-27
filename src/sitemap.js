@@ -31,7 +31,7 @@ var path = require('path'),
 			async.parallel([
 				function(next) {
 					var categoryUrls = [];
-					categories.getVisibleCategories(0, function(err, categoriesData) {
+					categories.getCategoriesByPrivilege(0, 'find', function(err, categoriesData) {
 						if (err) {
 							return next(err);
 						}
@@ -76,10 +76,8 @@ var path = require('path'),
 		},
 		render: function(callback) {
 			if (sitemap.obj !== undefined && sitemap.obj.cache.length) {
-				console.log('using sitemap from cache!');
 				sitemap.obj.toXML(callback);
 			} else {
-				console.log('generating new sitemap!', sitemap.obj);
 				async.parallel([sitemap.getStaticUrls, sitemap.getDynamicUrls], function(err, urls) {
 					urls = urls[0].concat(urls[1]);
 					sitemap.obj = sm.createSitemap({

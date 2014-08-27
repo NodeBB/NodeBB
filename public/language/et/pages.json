@@ -5,6 +5,7 @@
     "recent": "Hiljutised teemad",
     "users": "Registreeritud kasutajad",
     "notifications": "Teated",
+    "tags": "Topics tagged under \"%1\"",
     "user.edit": "Muudan \"%1\"",
     "user.following": "Kasutaja %1 jälgib",
     "user.followers": "Kasutajad, kes jälgivad %1",

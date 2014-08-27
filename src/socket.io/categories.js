@@ -4,8 +4,8 @@ var	async = require('async'),
 	db = require('../database'),
 	categories = require('../categories'),
 	privileges = require('../privileges'),
-	meta = require('../meta'),
 	user = require('../user'),
+	websockets = require('./index'),
 
 	SocketCategories = {};
 
@@ -24,7 +24,7 @@ SocketCategories.getRecentReplies = function(socket, cid, callback) {
 };
 
 SocketCategories.get = function(socket, data, callback) {
-	categories.getAllCategories(callback);
+	categories.getCategoriesByPrivilege(socket.uid, 'find', callback);
 };
 
 SocketCategories.loadMore = function(socket, data, callback) {
@@ -42,6 +42,10 @@ SocketCategories.loadMore = function(socket, data, callback) {
 	}, function(err, results) {
 		if (err) {
 			return callback(err);
+		}
+
+		if (!results.privileges.read) {
+			return callback(new Error('[[error:no-privileges]]'));
 		}
 
 		var start = parseInt(data.after, 10),
@@ -68,6 +72,15 @@ SocketCategories.getTopicCount = function(socket, cid, callback) {
 
 SocketCategories.lastTopicIndex = function(socket, cid, callback) {
 	db.sortedSetCard('categories:' + cid + ':tid', callback);
+};
+
+SocketCategories.getUsersInCategory = function(socket, cid, callback) {
+	var uids = websockets.getUidsInRoom('category_' + cid);
+	user.getMultipleUserFields(uids, ['uid', 'userslug', 'username', 'picture'], callback);
+};
+
+SocketCategories.getCategoriesByPrivilege = function(socket, privilege, callback) {
+	categories.getCategoriesByPrivilege(socket.uid, privilege, callback);
 };
 
 module.exports = SocketCategories;

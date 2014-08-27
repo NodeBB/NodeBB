@@ -141,7 +141,13 @@ function start() {
 					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
 
 					plugins.ready(function() {
-						webserver.init();
+						webserver.init(function() {
+							// If this callback is called, this means that loader.js is used
+							process.on('SIGCONT', webserver.listen);
+							process.send({
+								action: 'ready'
+							});
+						});
 					});
 
 					process.on('SIGTERM', shutdown);
@@ -313,6 +319,8 @@ function shutdown(code) {
 	winston.info('[app] Shutdown (SIGTERM/SIGINT) Initialised.');
 	require('./src/database').close();
 	winston.info('[app] Database connection closed.');
+	require('./src/webserver').server.close();
+	winston.info('[app] Web server closed to connections.');
 
 	winston.info('[app] Shutdown complete.');
 	process.exit(code || 0);

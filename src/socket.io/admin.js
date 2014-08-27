@@ -19,6 +19,7 @@ var	groups = require('../groups'),
 		user: require('./admin/user'),
 		categories: require('./admin/categories'),
 		groups: require('./admin/groups'),
+		tags: require('./admin/tags'),
 		themes: {},
 		plugins: {},
 		widgets: {},
@@ -35,6 +36,10 @@ SocketAdmin.before = function(socket, method, next) {
 			winston.warn('[socket.io] Call to admin method ( ' + method + ' ) blocked (accessed by uid ' + socket.uid + ')');
 		}
 	});
+};
+
+SocketAdmin.reload = function(socket, data, callback) {
+	meta.reload(callback);
 };
 
 SocketAdmin.restart = function(socket, data, callback) {

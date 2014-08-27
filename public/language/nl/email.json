@@ -1,0 +1,20 @@
+{
+    "password-reset-requested": "Wachtwoord Reset Aangevraagd - %1!",
+    "welcome-to": "Welkom bij %1",
+    "greeting_no_name": "Hallo",
+    "greeting_with_name": "Hallo %1",
+    "welcome.text1": "Bedank voor het registreren met %1!",
+    "welcome.text2": "Om u account volledig te activeren, moet u op de link klikken die u heeft ontvangen in uw inbox",
+    "welcome.cta": "Klik hier om te bevestigen met uw email adres",
+    "reset.text1": "Wij ontvingen een verzoek van u om uw wachtwoord te resetten. Als dat niet het geval is, kunt u deze mail negeren ",
+    "reset.text2": "Om uw wachtwoord te resetten, klik op de volgende link",
+    "reset.cta": "Klik hier om u wachtwoord te resetten",
+    "digest.notifications": "U heeft ongelezen notificaties van %1:",
+    "digest.latest_topics": "De laatste onderwerpen van %1",
+    "digest.cta": "Klik hier om deze website te bezoeken %1 ",
+    "digest.unsub.info": "Deze overzicht was verzonden naar jou vanwege je abbonement instellingen",
+    "digest.unsub.cta": "Klik hier om u instellingen te wijzigen",
+    "digest.daily.no_topics": "Er zijn geen actieve topics vandaag",
+    "test.text1": "Dit is een test email om te verifiëren dat de email service correct is opgezet voor jou NodeBB",
+    "closing": "Bedankt!"
+}

@@ -48,6 +48,9 @@ function forumRoutes(app, middleware, controllers) {
 
 	app.get('/admin/categories/disabled', middleware.admin.buildHeader, controllers.admin.categories.disabled);
 	app.get('/api/admin/categories/disabled', controllers.admin.categories.disabled);
+
+	app.get('/admin/tags', middleware.admin.buildHeader, controllers.admin.tags.get);
+	app.get('/api/admin/tags', controllers.admin.tags.get);
 }
 
 function apiRoutes(app, middleware, controllers) {

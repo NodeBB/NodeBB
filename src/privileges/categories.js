@@ -16,10 +16,10 @@ module.exports = function(privileges) {
 	privileges.categories.get = function(cid, uid, callback) {
 		async.parallel({
 			'topics:create': function(next) {
-				helpers.allowedTo('topics:create', uid, cid, next);
+				helpers.allowedTo('topics:create', uid, [cid], next);
 			},
 			read: function(next) {
-				helpers.allowedTo('read', uid, cid, next);
+				helpers.allowedTo('read', uid, [cid], next);
 			},
 			isAdministrator: function(next) {
 				user.isAdministrator(uid, next);
@@ -35,10 +35,10 @@ module.exports = function(privileges) {
 			var editable = results.isAdministrator || results.isModerator;
 
 			callback(null, {
-				'topics:create': results['topics:create'],
+				'topics:create': results['topics:create'][0],
 				editable: editable,
 				view_deleted: editable,
-				read: results.read
+				read: results.read[0]
 			});
 		});
 	};
@@ -55,7 +55,9 @@ module.exports = function(privileges) {
 
 			helpers.some([
 				function(next) {
-					helpers.allowedTo(privilege, uid, cid, next);
+					helpers.allowedTo(privilege, uid, [cid], function(err, results) {
+						next(err, Array.isArray(results) && results.length ? results[0] : false);
+					});
 				},
 				function(next) {
 					user.isModerator(uid, cid, next);
@@ -68,6 +70,14 @@ module.exports = function(privileges) {
 	};
 
 	privileges.categories.filter = function(privilege, cids, uid, callback) {
+		if (!cids.length) {
+			return callback(null, []);
+		}
+
+		cids = cids.filter(function(cid, index, array) {
+			return array.indexOf(cid) === index;
+		});
+
 		async.parallel({
 			allowedTo: function(next) {
 				helpers.allowedTo(privilege, uid, cids, next);
@@ -91,6 +101,28 @@ module.exports = function(privileges) {
 				return results.allowedTo[index] || results.isModerators[index];
 			});
 			callback(null, cids);
+		});
+	};
+
+	privileges.categories.isAdminOrMod = function(cids, uid, callback) {
+		async.parallel({
+			isModerators: function(next) {
+				user.isModerator(uid, cids, next);
+			},
+			isAdmin: function(next) {
+				user.isAdministrator(uid, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			var returnData = new Array(cids.length);
+			for (var i=0; i<cids.length; ++i) {
+				returnData[i] = results.isAdmin || results.isModerators[i];
+			}
+
+			callback(null, returnData);
 		});
 	};
 

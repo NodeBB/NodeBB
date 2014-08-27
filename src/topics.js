@@ -1,12 +1,12 @@
 "use strict";
 
 var async = require('async'),
-	gravatar = require('gravatar'),
 	validator = require('validator'),
 
+	_ = require('underscore'),
 	db = require('./database'),
 	posts = require('./posts'),
-	utils = require('./../public/src/utils'),
+	utils = require('../public/src/utils'),
 	plugins = require('./plugins'),
 	user = require('./user'),
 	categories = require('./categories'),
@@ -26,11 +26,7 @@ var async = require('async'),
 
 	Topics.getTopicData = function(tid, callback) {
 		Topics.getTopicsData([tid], function(err, topics) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, topics ? topics[0] : null);
+			callback(err, Array.isArray(topics) && topics.length ? topics[0] : null);
 		});
 	};
 
@@ -128,7 +124,7 @@ var async = require('async'),
 			nextStart: 0
 		};
 
-		if (!tids || !tids.length) {
+		if (!Array.isArray(tids) || !tids.length) {
 			return callback(null, returnTopics);
 		}
 
@@ -170,96 +166,75 @@ var async = require('async'),
 	};
 
 	Topics.getTopicsByTids = function(tids, uid, callback) {
-		if (!Array.isArray(tids) || tids.length === 0) {
+		if (!Array.isArray(tids) || !tids.length) {
 			return callback(null, []);
 		}
 
-		var categoryCache = {},
-			privilegeCache = {},
-			userCache = {};
-
-
-		function loadTopicInfo(topicData, next) {
-			if (!topicData) {
-				return next(null, null);
-			}
-
-			function isTopicVisible(topicData, topicInfo) {
-				if (parseInt(topicInfo.categoryData.disabled, 10) === 1) {
-					return false;
-				}
-				var deleted = parseInt(topicData.deleted, 10) !== 0;
-				return !deleted || (deleted && topicInfo.privileges.view_deleted) || parseInt(topicData.uid, 10) === parseInt(uid, 10);
-			}
-
-			async.parallel({
-				hasread: function(next) {
-					Topics.hasReadTopic(topicData.tid, uid, next);
-				},
-				teaser: function(next) {
-					Topics.getTeaser(topicData.tid, next);
-				},
-				privileges: function(next) {
-					if (privilegeCache[topicData.cid]) {
-						return next(null, privilegeCache[topicData.cid]);
-					}
-					privileges.categories.get(topicData.cid, uid, next);
-				},
-				categoryData: function(next) {
-					if (categoryCache[topicData.cid]) {
-						return next(null, categoryCache[topicData.cid]);
-					}
-					categories.getCategoryFields(topicData.cid, ['name', 'slug', 'icon', 'bgColor', 'color', 'disabled'], next);
-				},
-				user: function(next) {
-					if (userCache[topicData.uid]) {
-						return next(null, userCache[topicData.uid]);
-					}
-					user.getUserFields(topicData.uid, ['username', 'userslug', 'picture'], next);
-				},
-				tags: function(next) {
-					Topics.getTopicTagsObjects(topicData.tid, next);
-				}
-			}, function(err, topicInfo) {
-				if(err) {
-					return next(err);
-				}
-
-				privilegeCache[topicData.cid] = topicInfo.privileges;
-				categoryCache[topicData.cid] = topicInfo.categoryData;
-				userCache[topicData.uid] = topicInfo.user;
-
-				if (!isTopicVisible(topicData, topicInfo)) {
-					return next(null, null);
-				}
-
-				topicData.pinned = parseInt(topicData.pinned, 10) === 1;
-				topicData.locked = parseInt(topicData.locked, 10) === 1;
-				topicData.deleted = parseInt(topicData.deleted, 10) === 1;
-				topicData.unread = !(topicInfo.hasread && parseInt(uid, 10) !== 0);
-				topicData.unreplied = parseInt(topicData.postcount, 10) <= 1;
-
-				topicData.category = topicInfo.categoryData;
-				topicData.teaser = topicInfo.teaser;
-				topicData.user = topicInfo.user;
-				topicData.tags = topicInfo.tags;
-
-				next(null, topicData);
-			});
-		}
-
 		Topics.getTopicsData(tids, function(err, topics) {
+			function mapFilter(array, field) {
+				return array.map(function(topic) {
+					return topic[field];
+				}).filter(function(value, index, array) {
+					return array.indexOf(value) === index;
+				});
+			}
+
 			if (err) {
 				return callback(err);
 			}
 
-			async.mapSeries(topics, loadTopicInfo, function(err, topics) {
-				if(err) {
+			var uids = mapFilter(topics, 'uid');
+			var cids = mapFilter(topics, 'cid');
+
+			async.parallel({
+				users: function(next) {
+					user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+				},
+				categories: function(next) {
+					categories.getMultipleCategoryFields(cids, ['cid', 'name', 'slug', 'icon', 'bgColor', 'color', 'disabled'], next);
+				},
+				hasRead: function(next) {
+					Topics.hasReadTopics(tids, uid, next);
+				},
+				isAdminOrMod: function(next) {
+					privileges.categories.isAdminOrMod(cids, uid, next);
+				},
+				teasers: function(next) {
+					Topics.getTeasers(tids, uid, next);
+				},
+				tags: function(next) {
+					Topics.getTopicsTagsObjects(tids, next);
+				}
+			}, function(err, results) {
+				if (err) {
 					return callback(err);
 				}
 
+				var users = _.object(uids, results.users);
+				var categories = _.object(cids, results.categories);
+				var isAdminOrMod = {};
+				cids.forEach(function(cid, index) {
+					isAdminOrMod[cid] = results.isAdminOrMod[index];
+				});
+
+				for (var i=0; i<topics.length; ++i) {
+					topics[i].category = categories[topics[i].cid];
+					topics[i].category.disabled = parseInt(topics[i].category.disabled, 10) === 1;
+					topics[i].user = users[topics[i].uid];
+					topics[i].teaser = results.teasers[i];
+					topics[i].tags = results.tags[i];
+
+					topics[i].pinned = parseInt(topics[i].pinned, 10) === 1;
+					topics[i].locked = parseInt(topics[i].locked, 10) === 1;
+					topics[i].deleted = parseInt(topics[i].deleted, 10) === 1;
+					topics[i].unread = !(results.hasRead[i] && parseInt(uid, 10) !== 0);
+					topics[i].unreplied = parseInt(topics[i].postcount, 10) <= 1;
+				}
+
 				topics = topics.filter(function(topic) {
-					return !!topic;
+					return !topic.category.disabled &&
+						(!topic.deleted || (topic.deleted && isAdminOrMod[topic.cid]) ||
+						parseInt(topic.uid, 10) === parseInt(uid, 10));
 				});
 
 				plugins.fireHook('filter:topics.get', topics, callback);
@@ -274,12 +249,25 @@ var async = require('async'),
 			}
 
 			async.parallel({
-				mainPost: function(next) {
-					Topics.getMainPost(tid, uid, next);
-				},
 				posts: function(next) {
-					Topics.getTopicPosts(tid, set, start, end, uid, reverse, next);
-				},
+					posts.getPidsFromSet(set, start, end, reverse, function(err, pids) {
+						if (err) {
+							return next(err);
+						}
+
+						pids = topicData.mainPid ? [topicData.mainPid].concat(pids) : pids;
+						if (!pids.length) {
+							return next(null, []);
+						}
+						posts.getPostsByPids(pids, function(err, posts) {
+							if (err) {
+								return next(err);
+							}
+
+							Topics.addPostData(posts, uid, next);
+						});
+					});
+ 				},
 				category: function(next) {
 					Topics.getCategoryData(tid, next);
 				},
@@ -298,7 +286,7 @@ var async = require('async'),
 				}
 
 				topicData.category = results.category;
-				topicData.posts = results.mainPost.concat(results.posts);
+				topicData.posts = results.posts;
 				topicData.tags = results.tags;
 				topicData.thread_tools = results.threadTools;
 				topicData.pageCount = results.pageCount;
@@ -307,44 +295,104 @@ var async = require('async'),
 				topicData.locked = parseInt(topicData.locked, 10) === 1;
 				topicData.pinned = parseInt(topicData.pinned, 10) === 1;
 
-				plugins.fireHook('filter:topic.get', topicData, function(err, topicData) {
-					callback(null, topicData);
-				});
+				plugins.fireHook('filter:topic.get', topicData, callback);
 			});
 		});
 	};
 
 	Topics.getMainPost = function(tid, uid, callback) {
-		Topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
-			if (err) {
-				return callback(err);
-			}
-			if (!parseInt(mainPid, 10)) {
-				return callback(null, []);
-			}
-			posts.getPostsByPids([mainPid], function(err, postData) {
-				if (err) {
-					return callback(err);
-				}
-				if (!Array.isArray(postData) || !postData[0]) {
-					return callback(null, []);
-				}
-				postData[0].index = 0;
-				Topics.addPostData(postData, uid, callback);
-			});
+		Topics.getMainPosts([tid], uid, function(err, mainPosts) {
+			calllback(err, Array.isArray(mainPosts) && mainPosts.length ? mainPosts[0] : null);
 		});
 	};
 
-	Topics.getTeasers = function(tids, callback) {
+	Topics.getMainPosts = function(tids, uid, callback) {
+		var keys = tids.map(function(tid) {
+			return 'topic:' + tid;
+		});
 
+		db.getObjectsFields(keys, ['mainPid'], function(err, topicData) {
+			if (err) {
+				return callback(err);
+			}
+
+			var mainPids = topicData.map(function(topic) {
+				return topic ? topic.mainPid : null;
+			});
+
+			posts.getPostsByPids(mainPids, function(err, postData) {
+				if (err) {
+					return callback(err);
+				}
+
+				if (!Array.isArray(postData) || !postData.length) {
+					return callback(null, []);
+				}
+
+				Topics.addPostData(postData, uid, callback);
+			});
+		});
+	}
+
+	Topics.getTeasers = function(tids, uid, callback) {
 		if(!Array.isArray(tids)) {
 			return callback(null, []);
 		}
 
-		async.map(tids, Topics.getTeaser, callback);
+		async.map(tids, function(tid, next) {
+			db.getSortedSetRevRange('tid:' + tid + ':posts', 0, 0, function(err, data) {
+				next(err, Array.isArray(data) && data.length ? data[0] : null);
+			});
+		}, function(err, pids) {
+			if (err) {
+				return callback(err);
+			}
+
+			var postKeys = pids.map(function(pid) {
+				return 'post:' + pid;
+			});
+
+			db.getObjectsFields(postKeys, ['pid', 'uid', 'timestamp', 'tid'], function(err, postData) {
+				if (err) {
+					return callback(err);
+				}
+
+				var uids = postData.map(function(post) {
+					return post.uid;
+				}).filter(function(uid, index, array) {
+					return array.indexOf(uid) === index;
+				});
+
+				async.parallel({
+					users: function(next) {
+						user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+					},
+					indices: function(next) {
+						posts.getPostIndices(postData, uid, next);
+					}
+				}, function(err, results) {
+					if (err) {
+						return callback(err);
+					}
+
+					var users = {};
+					results.users.forEach(function(user) {
+						users[user.uid] = user;
+					});
+
+					postData.forEach(function(post, index) {
+						post.user = users[post.uid];
+						post.index = results.indices[index] + 1;
+						post.timestamp = utils.toISOString(post.timestamp);
+					});
+
+					callback(null, postData);
+				});
+			});
+		});
 	};
 
-	Topics.getTeaser = function(tid, callback) {
+	Topics.getTeaser = function(tid, uid, callback) {
 		Topics.getLatestUndeletedPid(tid, function(err, pid) {
 			if (err || !pid) {
 				return callback(err);
@@ -369,7 +417,7 @@ var async = require('async'),
 					});
 				},
 				postIndex: function(next) {
-					posts.getPidIndex(pid, next);
+					posts.getPidIndex(pid, uid, next);
 				}
 			}, function(err, results) {
 				if (err) {
@@ -413,8 +461,12 @@ var async = require('async'),
 	};
 
 	Topics.isOwner = function(tid, uid, callback) {
+		uid = parseInt(uid, 10);
+		if (uid === 0) {
+			return callback(null, false);
+		}
 		Topics.getTopicField(tid, 'uid', function(err, author) {
-			callback(err, parseInt(author, 10) === parseInt(uid, 10));
+			callback(err, parseInt(author, 10) === uid);
 		});
 	};
 

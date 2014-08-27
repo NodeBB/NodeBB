@@ -16,9 +16,9 @@ var async = require('async'),
 	validator = require('validator');
 
 
-
 var adminController = {
 	categories: {},
+	tags: {},
 	topics: {},
 	groups: {},
 	themes: {},
@@ -117,7 +117,12 @@ adminController.categories.disabled = function(req, res, next) {
 };
 
 function filterAndRenderCategories(req, res, next, active) {
-	categories.getAllCategories(function (err, categoryData) {
+	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
+	categories.getAllCategories(uid, function (err, categoryData) {
+		if (err) {
+			return next(err);
+		}
+
 		categoryData = categoryData.filter(function (category) {
 			return active ? !category.disabled : category.disabled;
 		});
@@ -125,6 +130,16 @@ function filterAndRenderCategories(req, res, next, active) {
 		res.render('admin/categories', {categories: categoryData});
 	});
 }
+
+adminController.tags.get = function(req, res, next) {
+	topics.getTags(0, -1, function(err, tags) {
+		if (err) {
+			return next(err);
+		}
+
+		res.render('admin/tags', {tags: tags});
+	});
+};
 
 adminController.database.get = function(req, res, next) {
 	db.info(function (err, data) {

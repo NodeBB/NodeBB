@@ -176,6 +176,9 @@ function setupConfig(next) {
 }
 
 function completeConfigSetup(err, config, next) {
+	if (err) {
+		return next(err);
+	}
 	// Add CI object
 	if (install.ciVals) {
 		config.test_database = {};
@@ -263,12 +266,19 @@ function setOnEmpty(key1, key2) {
 
 function enableDefaultTheme(next) {
 	var	meta = require('./meta');
-	winston.info('Enabling default theme: Lavender');
 
-	meta.themes.set({
-		type: 'local',
-		id: 'nodebb-theme-lavender'
-	}, next);
+	meta.configs.get('theme:id', function(err, id) {
+		if (err || id) {
+			winston.info('Previous theme detected, skipping enabling default theme');
+			return next(err);
+		}
+
+		winston.info('Enabling default theme: Lavender');
+		meta.themes.set({
+			type: 'local',
+			id: 'nodebb-theme-lavender'
+		}, next);
+	});
 }
 
 function createAdministrator(next) {
@@ -369,7 +379,7 @@ function createAdmin(callback) {
 function createCategories(next) {
 	var Categories = require('./categories');
 
-	Categories.getAllCategories(function (err, categoryData) {
+	Categories.getAllCategories(0, function (err, categoryData) {
 		if (err) {
 			return next(err);
 		}

@@ -4,10 +4,11 @@
 var async = require('async'),
 	winston = require('winston'),
 
-	db = require('./../database'),
-	user = require('./../user'),
-	notifications = require('./../notifications'),
-	categories = require('./../categories'),
+	db = require('../database'),
+	user = require('../user'),
+	meta = require('../meta'),
+	notifications = require('../notifications'),
+	categories = require('../categories'),
 	privileges = require('../privileges');
 
 module.exports = function(Topics) {
@@ -23,48 +24,53 @@ module.exports = function(Topics) {
 			done = false;
 
 		uid = parseInt(uid, 10);
-		if(uid === 0) {
+		if (uid === 0) {
 			return callback(null, unreadTids);
 		}
 
+		var count = 0;
+		if (stop === -1) {
+			count = Infinity;
+		}  else {
+			count = stop - start + 1;
+		}
 		async.whilst(function() {
-			return unreadTids.length < 21 && !done;
-		}, function(callback) {
+			return unreadTids.length < count && !done;
+		}, function(next) {
 			Topics.getLatestTids(start, stop, 'month', function(err, tids) {
 				if (err) {
-					return callback(err);
+					return next(err);
 				}
 
 				if (tids && !tids.length) {
 					done = true;
-					return callback();
+					return next();
 				}
 
 				Topics.hasReadTopics(tids, uid, function(err, read) {
-					if(err) {
-						return callback(err);
+					if (err) {
+						return next(err);
 					}
 
-					var newtids = tids.filter(function(tid, index, self) {
+					var newtids = tids.filter(function(tid, index) {
 						return !read[index];
 					});
 
-					privileges.topics.filter('read', newtids, uid, function(err, newTids) {
-						if(err) {
-							return callback(err);
+					privileges.topics.filter('read', newtids, uid, function(err, newtids) {
+						if (err) {
+							return next(err);
 						}
-
 						unreadTids.push.apply(unreadTids, newtids);
 
 						start = stop + 1;
 						stop = start + 19;
 
-						callback();
+						next();
 					});
 				});
 			});
 		}, function(err) {
-			callback(err, unreadTids);
+			callback(err, unreadTids.slice(0, count));
 		});
 	};
 
@@ -165,7 +171,6 @@ module.exports = function(Topics) {
 	};
 
 	Topics.markAsRead = function(tid, uid, callback) {
-
 		db.setAdd('tid:' + tid + ':read_by_uid', uid, function(err) {
 			if (err) {
 				return callback(err);

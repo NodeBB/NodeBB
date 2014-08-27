@@ -1,5 +1,5 @@
 "use strict";
-/*global define, socket, app, bootbox, tabIndent, config, RELATIVE_PATH*/
+/*global define, socket, app, bootbox, tabIndent, config, RELATIVE_PATH, templates */
 
 define('forum/admin/themes', ['forum/admin/settings'], function(Settings) {
 	var Themes = {};
@@ -71,17 +71,17 @@ define('forum/admin/themes', ['forum/admin/settings'], function(Settings) {
 				if (confirm) {
 					socket.emit('admin.themes.set', {
 						type: 'local',
-						id: 'nodebb-theme-cerulean'
+						id: 'nodebb-theme-vanilla'
 					}, function(err) {
 						if (err) {
 							return app.alertError(err.message);
 						}
-						highlightSelectedTheme('nodebb-theme-cerulean');
+						highlightSelectedTheme('nodebb-theme-vanilla');
 						app.alert({
 							alert_id: 'admin:theme',
 							type: 'success',
 							title: 'Theme Changed',
-							message: 'You have successfully reverted your NodeBB back to it\'s default theme. Restarting your NodeBB <i class="fa fa-refresh fa-spin"></i>',
+							message: 'You have successfully reverted your NodeBB back to it\'s default theme.',
 							timeout: 3500
 						});
 					});
@@ -95,34 +95,19 @@ define('forum/admin/themes', ['forum/admin/settings'], function(Settings) {
 				return app.alertError(err.message);
 			}
 
-			var instListEl = $('#installed_themes').empty(), liEl;
+			var instListEl = $('#installed_themes');
 
 			if (!themes.length) {
 				instListEl.append($('<li/ >').addClass('no-themes').html('No installed themes found'));
 				return;
+			} else {
+				templates.parse('partials/admin/theme_list', {
+					themes: themes
+				}, function(html) {
+					instListEl.html(html);
+					highlightSelectedTheme(config['theme:id']);
+				});
 			}
-
-			for (var x = 0, numThemes = themes.length; x < numThemes; x++) {
-				liEl = $('<li/ >').attr({
-					'data-type': 'local',
-					'data-theme': themes[x].id
-				}).html('<img src="' + (themes[x].screenshot ? RELATIVE_PATH + '/css/previews/' + themes[x].id : RELATIVE_PATH + '/images/themes/default.png') + '" />' +
-						'<div>' +
-						'<div class="pull-right">' +
-						'<button class="btn btn-primary" data-action="use">Use</button> ' +
-						'</div>' +
-						'<h4>' + themes[x].name + '</h4>' +
-						'<p>' +
-						themes[x].description +
-						(themes[x].url ? ' (<a href="' + themes[x].url + '">Homepage</a>)' : '') +
-						'</p>' +
-						'</div>' +
-						'<div class="clear">');
-
-				instListEl.append(liEl);
-			}
-
-			highlightSelectedTheme(config['theme:id']);
 		});
 
 		// Proper tabbing for "Custom CSS" field
@@ -138,26 +123,23 @@ define('forum/admin/themes', ['forum/admin/settings'], function(Settings) {
 	};
 
 	Themes.render = function(bootswatch) {
-		var themeContainer = $('#bootstrap_themes').empty(),
-			numThemes = bootswatch.themes.length, themeEl, theme;
+		var themeContainer = $('#bootstrap_themes');
 
-		for (var x = 0; x < numThemes; x++) {
-			theme = bootswatch.themes[x];
-			themeEl = $('<li />').attr({
-				'data-type': 'bootswatch',
-				'data-css': theme.cssCdn,
-				'data-theme': theme.name
-			}).html('<img src="' + theme.thumbnail + '" />' +
-					'<div>' +
-					'<div class="pull-right">' +
-					'<button class="btn btn-primary" data-action="use">Use</button> ' +
-					'</div>' +
-					'<h4>' + theme.name + '</h4>' +
-					'<p>' + theme.description + '</p>' +
-					'</div>' +
-					'<div class="clear">');
-			themeContainer.append(themeEl);
-		}
+		templates.parse('partials/admin/theme_list', {
+			themes: bootswatch.themes.map(function(theme) {
+				return {
+					type: 'bootswatch',
+					id: theme.name,
+					name: theme.name,
+					description: theme.description,
+					screenshot_url: theme.thumbnail,
+					url: theme.preview,
+					css: theme.cssCdn
+				};
+			})
+		}, function(html) {
+			themeContainer.html(html);
+		});
 	};
 
 	Themes.prepareWidgets = function() {

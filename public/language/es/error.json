@@ -25,6 +25,7 @@
     "no-user": "El usuario no existe",
     "no-teaser": "El extracto del tema no existe.",
     "no-privileges": "No tienes los privilegios necesarios para esa acción.",
+    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "Categoría deshabilitada.",
     "topic-locked": "Tema bloqueado.",
     "still-uploading": "Por favor, espera a que terminen las subidas.",

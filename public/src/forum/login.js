@@ -28,7 +28,7 @@ define('forum/login', function() {
 					if (previousUrl) {
 						app.previousUrl = previousUrl;
 					} else if (!app.previousUrl) {
-						app.previousUrl = '/';
+						app.previousUrl = RELATIVE_PATH || '/';
 					}
 
 					if(app.previousUrl.indexOf('/reset/') !== -1) {

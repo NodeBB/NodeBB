@@ -25,6 +25,7 @@
     "no-user": "Käyttäjää ei ole olemassa",
     "no-teaser": "Teaseria ei ole olemassa",
     "no-privileges": "Oikeutesi eivät riitä toiminnon suorittamiseen",
+    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "Kategoria ei ole käytössä",
     "topic-locked": "Aihe lukittu",
     "still-uploading": "Ole hyvä ja odota tiedostojen lähettämisen valmistumista.",
