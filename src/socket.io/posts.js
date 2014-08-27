@@ -367,4 +367,8 @@ SocketPosts.getCategory = function(socket, pid, callback) {
 	posts.getCidByPid(pid, callback);
 };
 
+SocketPosts.getPidIndex = function(socket, pid, callback) {
+	posts.getPidIndex(pid, socket.uid, callback);
+};
+
 module.exports = SocketPosts;
