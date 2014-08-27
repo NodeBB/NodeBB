@@ -6,6 +6,7 @@ var winston = require('winston'),
 	async = require('async'),
 	_ = require('underscore'),
 	os = require('os'),
+	nconf = require('nconf'),
 
 	plugins = require('../plugins'),
 	emitter = require('../emitter'),
@@ -177,6 +178,7 @@ module.exports = function(Meta) {
 		Meta.js.prepare(function() {
 			minifier.send({
 				action: 'js',
+				relativePath: nconf.get('url') + '/',
 				minify: minify,
 				scripts: Meta.js.scripts.all
 			});
