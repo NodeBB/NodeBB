@@ -2,8 +2,8 @@
     "title": "Ongelezen",
     "no_unread_topics": "Er zijn geen ongelezen onderwerpen",
     "load_more": "Meer Laden",
-    "mark_as_read": "Mark as Read",
-    "selected": "Selected",
-    "all": "All",
-    "topics_marked_as_read.success": "Topics marked as read!"
+    "mark_as_read": "Markeer als Gelezen",
+    "selected": "Geselecteerd",
+    "all": "Alles",
+    "topics_marked_as_read.success": "Onderwerp gemarkeerd als gelezen!"
 }

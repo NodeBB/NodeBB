@@ -5,6 +5,7 @@
     "recent": "Последние темы",
     "users": "Зарегистрированные пользователи",
     "notifications": "Уведомления",
+    "tags": "Topics tagged under \"%1\"",
     "user.edit": "Редактирование \"%1\"",
     "user.following": "%1 читает",
     "user.followers": "Читают %1",

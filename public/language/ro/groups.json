@@ -1,7 +1,7 @@
 {
-    "view_group": "View Group",
-    "details.title": "Group Details",
-    "details.members": "Member List",
-    "details.has_no_posts": "This group's members have not made any posts.",
-    "details.latest_posts": "Latest Posts"
+    "view_group": "Vezi Grup",
+    "details.title": "Detalii Grup",
+    "details.members": "Listă Membrii",
+    "details.has_no_posts": "Membrii acestui grup nu au facut nici o postare.",
+    "details.latest_posts": "Ultimele Mesaje"
 }

@@ -87,6 +87,7 @@
     "more_users_and_guests": "%1 autre(s) utilisateur(s) et %2 invité(s)",
     "more_users": "%1 autre(s) utilisateur(s)",
     "more_guests": "%1 autre(s) invité(s)",
+    "users_and_others": "%1 and %2 others",
     "sort_by": "Trier",
     "oldest_to_newest": "Du plus ancien au plus récent",
     "newest_to_oldest": "Du plus récent au plus ancien",

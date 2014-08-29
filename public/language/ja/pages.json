@@ -5,6 +5,7 @@
     "recent": "最新スレッド",
     "users": "登録したユーザー",
     "notifications": "通知",
+    "tags": "Topics tagged under \"%1\"",
     "user.edit": "編集中 \"%1\"",
     "user.following": "%1がフォロー中",
     "user.followers": "%1のフォロワー",
