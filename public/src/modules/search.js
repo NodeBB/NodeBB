@@ -51,16 +51,6 @@ define('search', ['navigator'], function(nav) {
 	};
 
 	Search.topicDOM = {};
-	Search.topicDOM.start = function() {
-		var topicSearchEl = $('.topic-search');
-
-		topicSearchEl.find('.count').html('1 / ' + Search.current.results.length);
-		topicSearchEl.removeClass('hidden');
-		Search.checkPagePresence(Search.current.tid, function() {
-			Search.highlightResult(0);
-		});
-	};
-
 	Search.topicDOM.prev = function() {
 		Search.topicDOM.update((Search.current.index === 0) ? Search.current.results.length-1 : Search.current.index-1);
 	};
@@ -71,17 +61,26 @@ define('search', ['navigator'], function(nav) {
 
 	Search.topicDOM.update = function(index) {
 		var topicSearchEl = $('.topic-search');
-
 		Search.current.index = index;
 
-		topicSearchEl.find('.count').html((index+1) + ' / ' + Search.current.results.length);
-		topicSearchEl.removeClass('hidden');
-		Search.checkPagePresence(Search.current.tid, function() {
-			socket.emit('posts.getPidIndex', Search.current.results[index], function(err, postIndex) {
-				nav.scrollToPost(postIndex-1, true);	// why -1? Ask @barisusakli
+		if (Search.current.results.length > 0) {
+			topicSearchEl.find('.count').html((index+1) + ' / ' + Search.current.results.length);
+			topicSearchEl.removeClass('hidden').find('.prev, .next').removeAttr('disabled');
+			Search.checkPagePresence(Search.current.tid, function() {
+				socket.emit('posts.getPidIndex', Search.current.results[index], function(err, postIndex) {
+					nav.scrollToPost(postIndex-1, true);	// why -1? Ask @barisusakli
+				});
 			});
-		});
+		} else {
+			translator.translate('[[search:no-matches]]', function(text) {
+				topicSearchEl.find('.count').html(text);
+			});
+			topicSearchEl.removeClass('hidden').find('.prev, .next').attr('disabled', 'disabled');
+		}
+	};
 
+	Search.topicDOM.end = function() {
+		$('.topic-search').addClass('hidden');
 	};
 
 	return Search;

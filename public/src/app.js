@@ -419,9 +419,18 @@ var socket,
 			searchFields = $("#search-fields"),
 			searchInput = $('#search-fields input');
 
+		$('#search-form').on('submit', dismissSearch);
+		searchInput.on('blur', dismissSearch);
+
 		function dismissSearch(){
 			searchFields.hide();
 			searchButton.show();
+		}
+
+		function prepareSearch() {
+			searchFields.removeClass('hide').show();
+			searchButton.hide();
+			searchInput.focus();
 		}
 
 		searchButton.on('click', function(e) {
@@ -435,17 +444,11 @@ var socket,
 			}
 			e.stopPropagation();
 
-			searchFields.removeClass('hide').show();
-			$(this).hide();
-
-			searchInput.focus();
-
-			$('#search-form').on('submit', dismissSearch);
-			searchInput.on('blur', dismissSearch);
+			prepareSearch();
 			return false;
 		});
 
-		require(['search'], function(search) {
+		require(['search', 'mousetrap'], function(search, Mousetrap) {
 			$('#search-form').on('submit', function (e) {
 				e.preventDefault();
 				var input = $(this).find('input'),
@@ -464,6 +467,18 @@ var socket,
 				.on('click', '.next', function() {
 					search.topicDOM.next();
 				});
+
+			Mousetrap.bind('ctrl+f', function(e) {
+				// If in topic, open search window and populate, otherwise regular behaviour
+				var match = ajaxify.currentPage.match(/^topic\/([\d]+)/),
+					tid;
+				if (match) {
+					e.preventDefault();
+					tid = match[1];
+					searchInput.val('in:topic-' + tid + ' ');
+					prepareSearch();
+				}
+			});
 		});
 	}
 

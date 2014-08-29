@@ -116,9 +116,13 @@ $(document).ready(function() {
 								ajaxify.initialLoad = false;
 
 								app.refreshTitle(url);
-							}, animationDuration * 1000 - ((new Date()).getTime() - startTime))
+							}, animationDuration * 1000 - ((new Date()).getTime() - startTime));
 
 						});
+					});
+
+					require(['search'], function(search) {
+						search.topicDOM.end();
 					});
 				});
 
