@@ -522,4 +522,53 @@ SocketTopics.search = function(socket, data, callback) {
 	topics.search(data.tid, data.term, callback);
 };
 
+SocketTopics.searchAndLoadTags = function(socket, data, callback) {
+	topics.searchTags(data, function(err, tags) {
+		if (err) {
+			return callback(err);
+		}
+		async.parallel({
+			counts: function(next) {
+				db.sortedSetScores('tags:topic:count', tags, next);
+			},
+			tagData: function(next) {
+				tags = tags.map(function(tag) {
+					return {value: tag};
+				});
+
+				topics.getTagData(tags, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			results.tagData.forEach(function(tag, index) {
+				tag.score = results.counts[index];
+			});
+			results.tagData.sort(function(a, b) {
+				return parseInt(b.score, 10) - parseInt(a.score, 10);
+			});
+
+			callback(null, results.tagData);
+		});
+	});
+};
+
+SocketTopics.loadMoreTags = function(socket, data, callback) {
+	if(!data || !data.after) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	var start = parseInt(data.after, 10),
+		end = start + 99;
+
+	topics.getTags(start, end, function(err, tags) {
+		if (err) {
+			return callback(err);
+		}
+
+		callback(null, {tags: tags, nextStart: end + 1});
+	});
+};
+
 module.exports = SocketTopics;

@@ -89,11 +89,11 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			addTagData(tags, callback);
+			Topics.getTagData(tags, callback);
 		});
 	};
 
-	function addTagData(tags, callback) {
+	Topics.getTagData = function(tags, callback) {
 		var keys = tags.map(function(tag) {
 			return 'tag:' + tag.value;
 		});
@@ -109,7 +109,7 @@ module.exports = function(Topics) {
 			});
 			callback(null, tags);
 		});
-	}
+	};
 
 	Topics.getTopicTags = function(tid, callback) {
 		db.getSetMembers('topic:' + tid + ':tags', callback);
@@ -139,7 +139,7 @@ module.exports = function(Topics) {
 
 			async.parallel({
 				tagData: function(next) {
-					addTagData(tags, next);
+					Topics.getTagData(tags, next);
 				},
 				counts: function(next) {
 					db.sortedSetScores('tags:topic:count', uniqueTopicTags, next);
@@ -214,12 +214,13 @@ module.exports = function(Topics) {
 			return callback(null, []);
 		}
 
-
 		db.getSortedSetRevRange('tags:topic:count', 0, -1, function(err, tags) {
 			if (err) {
 				return callback(null, []);
 			}
-
+			if (data.query === '') {
+				return callback(null, tags);
+			}
 			data.query = data.query.toLowerCase();
 			var matches = [];
 			for(var i=0; i<tags.length; ++i) {

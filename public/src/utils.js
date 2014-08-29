@@ -139,7 +139,7 @@
 		},
 
 		isPasswordValid: function(password) {
-			return typeof password === 'string' && password.length && password.indexOf(' ') === -1;
+			return typeof password === 'string' && password.length;
 		},
 
 		isNumber: function(n) {

@@ -132,7 +132,7 @@ function filterAndRenderCategories(req, res, next, active) {
 }
 
 adminController.tags.get = function(req, res, next) {
-	topics.getTags(0, -1, function(err, tags) {
+	topics.getTags(0, 99, function(err, tags) {
 		if (err) {
 			return next(err);
 		}

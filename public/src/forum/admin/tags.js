@@ -1,8 +1,9 @@
 "use strict";
-/*global define, socket, app, admin*/
+/*global define, socket, app, admin, utils*/
 
-define('forum/admin/tags', [], function() {
+define('forum/admin/tags', ['forum/infinitescroll'], function(infinitescroll) {
 	var	Tags = {};
+	var timeoutId = 0;
 
 	Tags.init = function() {
 		handleColorPickers();
@@ -12,10 +13,22 @@ define('forum/admin/tags', [], function() {
 		});
 
 		$('#tag-search').on('input propertychange', function() {
-			$('.tag-list').children().each(function() {
-				var $this = $(this);
-				$this.toggleClass('hide', $this.attr('data-tag').indexOf($('#tag-search').val()) === -1);
-			});
+			if (timeoutId) {
+				clearTimeout(timeoutId);
+				timeoutId = 0;
+			}
+			timeoutId = setTimeout(function() {
+				socket.emit('topics.searchAndLoadTags', {query: $('#tag-search').val()}, function(err, tags) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					infinitescroll.parseAndTranslate('admin/tags', 'tags', {tags: tags}, function(html) {
+						$('.tag-list').html(html);
+						utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
+						timeoutId = 0;
+					});
+				});
+			}, 100);
 		});
 	};
 

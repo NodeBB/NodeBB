@@ -163,8 +163,7 @@ module.exports = function(app, middleware) {
 
 	app.all(relativePath + '/api/?*', middleware.updateLastOnlineTime, middleware.prepareAPI);
 	app.all(relativePath + '/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
-	app.all(relativePath + '/admin/*', middleware.admin.isAdmin);
-	app.get(relativePath + '/admin', middleware.admin.isAdmin);
+	app.all(relativePath + '/admin/?*', middleware.admin.isAdmin);
 
 	adminRoutes(router, middleware, controllers);
 	metaRoutes(router, middleware, controllers);
@@ -202,9 +201,9 @@ module.exports = function(app, middleware) {
 	plugins.reloadRoutes();
 	// plugins.ready(function() {
 	// 	plugins.fireHook('static:app.load', pluginRouter, middleware, controllers, function() {
-			
 
-			
+
+
 	// 	});
 	// });
 };
