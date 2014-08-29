@@ -19,6 +19,50 @@ module.exports = function(Topics) {
 		});
 	};
 
+	Topics.getUnreadTopics = function(uid, start, stop, callback) {
+
+		var unreadTopics = {
+			showSelect: true,
+			nextStart : 0,
+			topics: []
+		};
+
+		function sendUnreadTopics(tids) {
+			Topics.getTopicsByTids(tids, uid, function(err, topicData) {
+				if (err) {
+					return callback(err);
+				}
+
+				if (!Array.isArray(topicData) || !topicData.length) {
+					return callback(null, unreadTopics);
+				}
+
+				db.sortedSetRevRank('topics:recent', topicData[topicData.length - 1].tid, function(err, rank) {
+					if (err) {
+						return callback(err);
+					}
+
+					unreadTopics.topics = topicData;
+					unreadTopics.nextStart = parseInt(rank, 10) + 1;
+
+					callback(null, unreadTopics);
+				});
+			});
+		}
+
+		Topics.getUnreadTids(uid, start, stop, function(err, unreadTids) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (unreadTids.length) {
+				sendUnreadTopics(unreadTids);
+			} else {
+				callback(null, unreadTopics);
+			}
+		});
+	};
+
 	Topics.getUnreadTids = function(uid, start, stop, callback) {
 		var unreadTids = [],
 			done = false;
@@ -74,53 +118,7 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.getUnreadTopics = function(uid, start, stop, callback) {
 
-		var unreadTopics = {
-			no_topics_message: '',
-			show_markread_button: 'hidden',
-			showSelect: true,
-			nextStart : 0,
-			topics: []
-		};
-
-		function sendUnreadTopics(tids) {
-			Topics.getTopicsByTids(tids, uid, function(err, topicData) {
-				if (err) {
-					return callback(err);
-				}
-
-				if (!Array.isArray(topicData) || !topicData.length) {
-					return callback(null, unreadTopics);
-				}
-
-				db.sortedSetRevRank('topics:recent', topicData[topicData.length - 1].tid, function(err, rank) {
-					if(err) {
-						return callback(err);
-					}
-
-					unreadTopics.topics = topicData;
-					unreadTopics.nextStart = parseInt(rank, 10) + 1;
-					unreadTopics.no_topics_message = (!topicData || topicData.length === 0) ? '' : 'hidden';
-					unreadTopics.show_markread_button = topicData.length === 0 ? 'hidden' : '';
-
-					callback(null, unreadTopics);
-				});
-			});
-		}
-
-		Topics.getUnreadTids(uid, start, stop, function(err, unreadTids) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (unreadTids.length) {
-				sendUnreadTopics(unreadTids);
-			} else {
-				callback(null, unreadTopics);
-			}
-		});
-	};
 
 	Topics.pushUnreadCount = function(uids, callback) {
 		var	websockets = require('./../socket.io');
