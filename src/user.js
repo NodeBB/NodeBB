@@ -443,10 +443,16 @@ var
 	};
 
 	User.ignoreCategory = function(uid, cid, callback) {
+		if (!uid) {
+			return callback();
+		}
 		db.sortedSetAdd('uid:' + uid + ':ignored:cids', Date.now(), cid, callback);
 	};
 
 	User.watchCategory = function(uid, cid, callback) {
+		if (!uid) {
+			return callback();
+		}
 		db.sortedSetRemove('uid:' + uid + ':ignored:cids', cid, callback);
 	};
 
