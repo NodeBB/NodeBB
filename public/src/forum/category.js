@@ -54,7 +54,7 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 
 	function handleIgnoreWatch(cid) {
 		$('.watch, .ignore').on('click', function() {
-			$this = $(this);
+			var $this = $(this);
 			var command = $this.hasClass('watch') ? 'watch' : 'ignore';
 
 			socket.emit('categories.' + command, cid, function(err) {
@@ -65,7 +65,7 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 				$('.watch').toggleClass('hidden', command === 'watch');
 				$('.ignore').toggleClass('hidden', command === 'ignore');
 			});
-		})
+		});
 	}
 
 	Category.toTop = function() {
@@ -80,7 +80,7 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 
 	Category.navigatorCallback = function(element, elementCount) {
 		return parseInt(element.attr('data-index'), 10) + 1;
-	}
+	};
 
 	$(window).on('action:popstate', function(ev, data) {
 		if(data.url.indexOf('category/') === 0) {
@@ -238,10 +238,8 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 			return;
 		}
 
-		var topics = data.topics;
-
-		function removeAlreadyAddedTopics() {
-			topics = topics.filter(function(topic) {
+		function removeAlreadyAddedTopics(topics) {
+			return topics.filter(function(topic) {
 				return $('#topics-container li[data-tid="' + topic.tid +'"]').length === 0;
 			});
 		}
@@ -255,7 +253,7 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 			}
 			var last = $('#topics-container .category-item[data-tid]').last();
 			var lastIndex = last.attr('data-index');
-			var firstIndex = topics[topics.length - 1].index;
+			var firstIndex = data.topics[data.topics.length - 1].index;
 			if (firstIndex > lastIndex) {
 				after = last;
 			} else {
@@ -263,8 +261,8 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 			}
 		}
 
-		removeAlreadyAddedTopics();
-		if(!topics.length) {
+		data.topics = removeAlreadyAddedTopics(data.topics);
+		if(!data.topics.length) {
 			return;
 		}
 
