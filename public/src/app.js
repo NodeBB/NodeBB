@@ -576,6 +576,11 @@ var socket,
 					});
 				}
 			});
+
+			// Admin keyboard shortcuts
+			require(['admin'], function(Admin) {
+				Admin.init();
+			});
 		});
 	};
 
