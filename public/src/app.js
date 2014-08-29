@@ -445,16 +445,25 @@ var socket,
 			return false;
 		});
 
-		$('#search-form').on('submit', function (e) {
-			e.preventDefault();
-			var input = $(this).find('input'),
-				term = input.val();
+		require(['search'], function(search) {
+			$('#search-form').on('submit', function (e) {
+				e.preventDefault();
+				var input = $(this).find('input'),
+					term = input.val();
 
-			require(['search'], function(search) {
+
 				search.query(term, function() {
 					input.val('');
 				});
 			});
+
+			$('.topic-search')
+				.on('click', '.prev', function() {
+					search.topicDOM.prev();
+				})
+				.on('click', '.next', function() {
+					search.topicDOM.next();
+				});
 		});
 	}
 
