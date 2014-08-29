@@ -27,7 +27,11 @@ module.exports = function(Topics) {
 			topics: []
 		};
 
-		function sendUnreadTopics(tids) {
+		function sendUnreadTopics(tids, callback) {
+			if (!tids.length) {
+				return callback(null, unreadTopics);
+			}
+
 			Topics.getTopicsByTids(tids, uid, function(err, topicData) {
 				if (err) {
 					return callback(err);
@@ -55,11 +59,7 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			if (unreadTids.length) {
-				sendUnreadTopics(unreadTids);
-			} else {
-				callback(null, unreadTopics);
-			}
+			sendUnreadTopics(unreadTids, callback);
 		});
 	};
 
@@ -75,50 +75,86 @@ module.exports = function(Topics) {
 		var count = 0;
 		if (stop === -1) {
 			count = Infinity;
-		}  else {
+		} else {
 			count = stop - start + 1;
 		}
-		async.whilst(function() {
-			return unreadTids.length < count && !done;
-		}, function(next) {
-			Topics.getLatestTids(start, stop, 'month', function(err, tids) {
-				if (err) {
-					return next(err);
-				}
 
-				if (tids && !tids.length) {
-					done = true;
-					return next();
-				}
+		user.getIgnoredCategories(uid, function(err, ignoredCids) {
+			if (err) {
+				return callback(err);
+			}
 
-				Topics.hasReadTopics(tids, uid, function(err, read) {
+			async.whilst(function() {
+				return unreadTids.length < count && !done;
+			}, function(next) {
+				Topics.getLatestTids(start, stop, 'month', function(err, tids) {
 					if (err) {
 						return next(err);
 					}
 
-					var newtids = tids.filter(function(tid, index) {
-						return !read[index];
-					});
+					if (tids && !tids.length) {
+						done = true;
+						return next();
+					}
 
-					privileges.topics.filter('read', newtids, uid, function(err, newtids) {
+					Topics.hasReadTopics(tids, uid, function(err, read) {
 						if (err) {
 							return next(err);
 						}
-						unreadTids.push.apply(unreadTids, newtids);
 
-						start = stop + 1;
-						stop = start + 19;
+						var newtids = tids.filter(function(tid, index) {
+							return !read[index];
+						});
 
-						next();
+						privileges.topics.filter('read', newtids, uid, function(err, newtids) {
+							if (err) {
+								return next(err);
+							}
+
+							filterTopicsFromIgnoredCategories(newtids, ignoredCids, function(err, newtids) {
+								if (err) {
+									return next(err);
+								}
+
+								unreadTids.push.apply(unreadTids, newtids);
+
+								start = stop + 1;
+								stop = start + 19;
+
+								next();
+							});
+						});
 					});
 				});
+			}, function(err) {
+				callback(err, unreadTids.slice(0, count));
 			});
-		}, function(err) {
-			callback(err, unreadTids.slice(0, count));
+
 		});
 	};
 
+	function filterTopicsFromIgnoredCategories(tids, ignoredCids, callback) {
+		if (!Array.isArray(ignoredCids) || !ignoredCids.length || !tids.length) {
+			return callback(null, tids);
+		}
 
+		var keys = tids.map(function(tid) {
+			return 'topic:' + tid;
+		});
+
+		db.getObjectsFields(keys, ['tid', 'cid'], function(err, topics) {
+			if (err) {
+				return callback(err);
+			}
+			topics = topics.filter(function(topic) {
+				return topic && ignoredCids.indexOf(topic.cid.toString()) === -1;
+			}).map(function(topic) {
+				return topic.tid;
+			});
+
+			callback(null, topics);
+		});
+	}
 
 	Topics.pushUnreadCount = function(uids, callback) {
 		var	websockets = require('./../socket.io');

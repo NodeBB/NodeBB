@@ -5,6 +5,7 @@ var	async = require('async'),
 	categories = require('../categories'),
 	privileges = require('../privileges'),
 	user = require('../user'),
+	topics = require('../topics'),
 	websockets = require('./index'),
 
 	SocketCategories = {};
@@ -81,6 +82,24 @@ SocketCategories.getUsersInCategory = function(socket, cid, callback) {
 
 SocketCategories.getCategoriesByPrivilege = function(socket, privilege, callback) {
 	categories.getCategoriesByPrivilege(socket.uid, privilege, callback);
+};
+
+SocketCategories.watch = function(socket, cid, callback) {
+	user.watchCategory(socket.uid, cid, function(err) {
+		if (err) {
+			return callback(err);
+		}
+		topics.pushUnreadCount(socket.uid, callback);
+	});
+};
+
+SocketCategories.ignore = function(socket, cid, callback) {
+	user.ignoreCategory(socket.uid, cid, function(err) {
+		if (err) {
+			return callback(err);
+		}
+		topics.pushUnreadCount(socket.uid, callback);
+	});
 };
 
 module.exports = SocketCategories;

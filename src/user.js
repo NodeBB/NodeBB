@@ -438,5 +438,17 @@ var
 		});
 	};
 
+	User.getIgnoredCategories = function(uid, callback) {
+		db.getSortedSetRange('uid:' + uid + ':ignored:cids', 0, -1, callback);
+	};
+
+	User.ignoreCategory = function(uid, cid, callback) {
+		db.sortedSetAdd('uid:' + uid + ':ignored:cids', Date.now(), cid, callback);
+	};
+
+	User.watchCategory = function(uid, cid, callback) {
+		db.sortedSetRemove('uid:' + uid + ':ignored:cids', cid, callback);
+	};
+
 
 }(exports));

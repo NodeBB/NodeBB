@@ -48,7 +48,25 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 				}
 			});
 		});
+
+		handleIgnoreWatch(cid);
 	};
+
+	function handleIgnoreWatch(cid) {
+		$('.watch, .ignore').on('click', function() {
+			$this = $(this);
+			var command = $this.hasClass('watch') ? 'watch' : 'ignore';
+
+			socket.emit('categories.' + command, cid, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				$('.watch').toggleClass('hidden', command === 'watch');
+				$('.ignore').toggleClass('hidden', command === 'ignore');
+			});
+		})
+	}
 
 	Category.toTop = function() {
 		navigator.scrollTop(0);

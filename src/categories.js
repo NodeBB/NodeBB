@@ -83,6 +83,9 @@ var db = require('./database'),
 				},
 				pageCount: function(next) {
 					Categories.getPageCount(cid, uid, next);
+				},
+				isIgnored: function(next) {
+					Categories.isIgnored([cid], uid, next);
 				}
 			}, function(err, results) {
 				if(err) {
@@ -92,6 +95,7 @@ var db = require('./database'),
 				category.topics = results.topics.topics;
 				category.nextStart = results.topics.nextStart;
 				category.pageCount = results.pageCount;
+				category.isIgnored = results.isIgnored[0];
 				category.topic_row_size = 'col-md-9';
 
 				plugins.fireHook('filter:category.get', category, uid, callback);
@@ -139,6 +143,19 @@ var db = require('./database'),
 				});
 			}
 		], callback);
+	};
+
+	Categories.isIgnored = function(cids, uid, callback) {
+		user.getIgnoredCategories(uid, function(err, ignoredCids) {
+			if (err) {
+				return callback(err);
+			}
+
+			cids = cids.map(function(cid) {
+				return ignoredCids.indexOf(cid.toString()) !== -1;
+			});
+			callback(null, cids);
+		});
 	};
 
 	Categories.getTopicIds = function(cid, start, stop, callback) {
