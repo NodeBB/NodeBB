@@ -105,6 +105,9 @@ module.exports = function(User) {
 					db.delete('uid:' + uid + ':downvote', next);
 				},
 				function(next) {
+					db.delete('uid:' + uid + ':ignored:cids', next);
+				},
+				function(next) {
 					deleteUserFromFollowers(uid, next);
 				},
 				function(next) {
