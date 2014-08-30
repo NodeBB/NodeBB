@@ -152,7 +152,7 @@ var async = require('async'),
 					if (!data || !Array.isArray(data.posts)) {
 						return callback(null, []);
 					}
-
+					data.posts = data.posts.filter(Boolean);
 					callback(null, data.posts);
 				});
 			});
