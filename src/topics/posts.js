@@ -43,8 +43,12 @@ module.exports = function(Topics) {
 
 	Topics.addPostData = function(postData, uid, callback) {
 		var pids = postData.map(function(post) {
-			return post.pid;
-		});
+			return post && post.pid;
+		}).filter(Boolean);
+
+		if (!Array.isArray(pids) || !pids.length) {
+			return callback(null, []);
+		}
 
 		async.parallel({
 			favourites: function(next) {
