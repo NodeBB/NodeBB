@@ -39,7 +39,7 @@ module.exports = function(Topics) {
 	Topics.addPostData = function(postData, uid, callback) {
 		var pids = postData.map(function(post) {
 			return post && post.pid;
-		}).filter(Boolean);
+		});
 
 		if (!Array.isArray(pids) || !pids.length) {
 			return callback(null, []);
@@ -56,7 +56,7 @@ module.exports = function(Topics) {
 				var uids = [];
 
 				for(var i=0; i<postData.length; ++i) {
-					if (uids.indexOf(postData[i].uid) === -1) {
+					if (postData[i] && uids.indexOf(postData[i].uid) === -1) {
 						uids.push(postData[i].uid);
 					}
 				}
@@ -77,7 +77,7 @@ module.exports = function(Topics) {
 			editors: function(next) {
 				var editors = [];
 				for(var i=0; i<postData.length; ++i) {
-					if (postData[i].editor && editors.indexOf(postData[i].editor) === -1) {
+					if (postData[i] && postData[i].editor && editors.indexOf(postData[i].editor) === -1) {
 						editors.push(postData[i].editor);
 					}
 				}
@@ -89,7 +89,7 @@ module.exports = function(Topics) {
 					var editorData = {};
 					editors.forEach(function(editor) {
 						editorData[editor.uid] = editor;
-					})
+					});
 					next(null, editorData);
 				});
 			},
@@ -105,20 +105,21 @@ module.exports = function(Topics) {
 			}
 
 			for (var i = 0; i < postData.length; ++i) {
-				postData[i].index = results.indices[i];
-				postData[i].deleted = parseInt(postData[i].deleted, 10) === 1;
-				postData[i].user = results.userData[postData[i].uid];
-				postData[i].editor = postData[i].editor ? results.editors[postData[i].editor] : null;
-				postData[i].favourited = results.favourites[i];
-				postData[i].upvoted = results.voteData.upvotes[i];
-				postData[i].downvoted = results.voteData.downvotes[i];
-				postData[i].votes = postData[i].votes || 0;
-				postData[i].display_moderator_tools = results.privileges[i].editable;
-				postData[i].display_move_tools = results.privileges[i].move && postData[i].index !== 0;
-				postData[i].selfPost = parseInt(uid, 10) === parseInt(postData[i].uid, 10);
+				if (postData[i]) {
+					postData[i].deleted = parseInt(postData[i].deleted, 10) === 1;
+					postData[i].user = results.userData[postData[i].uid];
+					postData[i].editor = postData[i].editor ? results.editors[postData[i].editor] : null;
+					postData[i].favourited = results.favourites[i];
+					postData[i].upvoted = results.voteData.upvotes[i];
+					postData[i].downvoted = results.voteData.downvotes[i];
+					postData[i].votes = postData[i].votes || 0;
+					postData[i].display_moderator_tools = results.privileges[i].editable;
+					postData[i].display_move_tools = results.privileges[i].move && postData[i].index !== 0;
+					postData[i].selfPost = parseInt(uid, 10) === parseInt(postData[i].uid, 10);
 
-				if(postData[i].deleted && !results.privileges[i].view_deleted) {
-					postData[i].content = '[[topic:post_is_deleted]]';
+					if(postData[i].deleted && !results.privileges[i].view_deleted) {
+						postData[i].content = '[[topic:post_is_deleted]]';
+					}
 				}
 			}
 

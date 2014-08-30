@@ -86,7 +86,7 @@ topicsController.get = function(req, res, next) {
 		function (topicData, next) {
 			var description = '';
 
-			if(topicData.posts.length) {
+			if (topicData.posts[0] && topicData.posts[0].content) {
 				description = S(topicData.posts[0].content).stripTags().decodeHTMLEntities().s;
 			}
 
@@ -99,7 +99,7 @@ topicsController.get = function(req, res, next) {
 			var ogImageUrl = '';
 			if (topicData.thumb) {
 				ogImageUrl = topicData.thumb;
-			} else if(topicData.posts.length && topicData.posts[0].user && topicData.posts[0].user.picture){
+			} else if(topicData.posts.length && topicData.posts[0] && topicData.posts[0].user && topicData.posts[0].user.picture){
 				ogImageUrl = topicData.posts[0].user.picture;
 			} else if(meta.config['brand:logo']) {
 				ogImageUrl = meta.config['brand:logo'];
