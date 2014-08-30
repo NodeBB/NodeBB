@@ -106,6 +106,7 @@ module.exports = function(Topics) {
 
 			for (var i = 0; i < postData.length; ++i) {
 				if (postData[i]) {
+					postData[i].index = results.indices[i];
 					postData[i].deleted = parseInt(postData[i].deleted, 10) === 1;
 					postData[i].user = results.userData[postData[i].uid];
 					postData[i].editor = postData[i].editor ? results.editors[postData[i].editor] : null;

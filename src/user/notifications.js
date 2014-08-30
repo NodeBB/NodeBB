@@ -12,7 +12,8 @@ var async = require('async'),
 	posts = require('../posts'),
 	postTools = require('../postTools'),
 	topics = require('../topics'),
-	privileges = require('../privileges');
+	privileges = require('../privileges'),
+	utils = require('../../public/src/utils');
 
 (function(UserNotifications) {
 
@@ -186,7 +187,8 @@ var async = require('async'),
 				var paths = [];
 				pids.forEach(function(pid, index) {
 					var slug = results.topics[index] ? results.topics[index].slug : null;
-					var postIndex = results.indices[index] ? parseInt(results.indices[index], 10) + 1 : null;
+					var postIndex = utils.isNumber(results.indices[index]) ? parseInt(results.indices[index], 10) + 1 : null;
+
 					if (slug && postIndex) {
 						paths.push(nconf.get('relative_path') + '/topic/' + slug + '/' + postIndex);
 					} else {

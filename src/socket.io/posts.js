@@ -276,16 +276,22 @@ SocketPosts.flag = function(socket, pid, callback) {
 
 	async.waterfall([
 		function(next) {
-			user.getUserField(socket.uid, 'username', next);
+			user.getUserFields(socket.uid, ['username', 'reputation'], next);
 		},
-		function(username, next) {
-			message = '[[notifications:user_flagged_post, ' + username + ']]';
+		function(userData, next) {
+			if (parseInt(userData.reputation, 10) < parseInt(meta.config['privileges:flag'] || 1, 10)) {
+				return next(new Error('[[error:not-enough-reputation-to-flag]]'));
+			}
+			message = '[[notifications:user_flagged_post, ' + userData.username + ']]';
 			posts.getPostFields(pid, ['tid', 'uid', 'content'], next);
 		},
 		function(postData, next) {
 			postTools.parse(postData.content, function(err, parsed) {
+				if (err) {
+					return next(err);
+				}
 				postData.content = parsed;
-				next(undefined, postData);
+				next(null, postData);
 			});
 		},
 		function(postData, next) {
