@@ -98,20 +98,28 @@ var async = require('async'),
 	}
 
 	Favourites.upvote = function(pid, uid, callback) {
-		if (meta.config['reputation:disabled'] === false) {
-			return callback(false);
+		if (parseInt(meta.config['reputation:disabled'], 10) === 1) {
+			return callback(new Error('[[error:reputation-system-disabled]]'));
 		}
 
 		toggleVote('upvote', pid, uid, callback);
 	};
 
 	Favourites.downvote = function(pid, uid, callback) {
-		if (meta.config['reputation:disabled'] === false) {
-			return callback(false);
+		if (parseInt(meta.config['reputation:disabled'], 10) === 1) {
+			return callback(new Error('[[error:reputation-system-disabled]]'));
+		}
+
+		if (parseInt(meta.config['downvote:disabled'], 10) === 1) {
+			return callback(new Error('[[error:downvoting-disabled]]'));
 		}
 
 		user.getUserField(uid, 'reputation', function(err, reputation) {
-			if (reputation < meta.config['privileges:downvote']) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (reputation < parseInt(meta.config['privileges:downvote'], 10)) {
 				return callback(new Error('[[error:not-enough-reputation-to-downvote]]'));
 			}
 

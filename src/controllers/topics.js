@@ -184,8 +184,9 @@ topicsController.get = function(req, res, next) {
 		}
 
 		data.privileges = userPrivileges;
-		data['reputation:disabled'] = meta.config['reputation:disabled'] === '1' ? true : false;
-		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
+		data['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
+		data['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
+		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
 		var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
 		var queryString = qs.stringify(req.query);
