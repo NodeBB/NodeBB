@@ -272,7 +272,9 @@ var async = require('async'),
 							}
 							start = parseInt(start, 10);
 							for(var i=0; i<posts.length; ++i) {
-								posts[i].index = start + i;
+								if (posts[i]) {
+									posts[i].index = start + i;
+								}
 							}
 							if (posts[0]) {
 								posts[0].index = 0;
