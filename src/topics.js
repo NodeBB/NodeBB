@@ -274,7 +274,9 @@ var async = require('async'),
 							for(var i=0; i<posts.length; ++i) {
 								posts[i].index = start + i;
 							}
-							posts[0].index = 0;
+							if (posts[0]) {
+								posts[0].index = 0;
+							}
 							Topics.addPostData(posts, uid, next);
 						});
 					});
