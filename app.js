@@ -143,7 +143,11 @@ function start() {
 					plugins.ready(function() {
 						webserver.init(function() {
 							// If this callback is called, this means that loader.js is used
-							process.on('SIGCONT', webserver.listen);
+							process.on('message', function(msg) {
+								if (msg === 'bind') {
+									webserver.listen();
+								}
+							});
 							process.send({
 								action: 'ready'
 							});

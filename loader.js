@@ -29,7 +29,7 @@ var	nconf = require('nconf'),
 					if (message && typeof message === 'object' && message.action) {
 						switch (message.action) {
 							case 'ready':
-								if (!callback) return nbb.kill('SIGCONT');
+								if (!callback) return nbb.send('bind');
 								callback();
 							break;
 							case 'restart':
@@ -63,7 +63,7 @@ var	nconf = require('nconf'),
 			nbb_restart = function() {
 				nbb_start(function() {
 					nbbOld.removeAllListeners('exit').on('exit', function() {
-						nbb.kill('SIGCONT');
+						nbb.send('bind');
 					});
 					nbbOld.kill();
 				});
