@@ -248,6 +248,9 @@ module.exports = function(Topics) {
 
 	Topics.getTopicDataByPid = function(pid, callback) {
 		posts.getPostField(pid, 'tid', function(err, tid) {
+			if (err) {
+				return callback(err);
+			}
 			Topics.getTopicData(tid, callback);
 		});
 	};
