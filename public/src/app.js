@@ -147,7 +147,7 @@ var socket,
 			app.cacheBuster = config['cache-buster'];
 
 			bootbox.setDefaults({
-				locale: config.defaultLang
+				locale: config.userLang
 			});
 		}
 	}

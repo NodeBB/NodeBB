@@ -128,9 +128,9 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 		var prevText = bodyEl.val();
 		if (parseInt(tid, 10) !== parseInt(composer.posts[uuid].tid, 10)) {
 			var link = '[' + title + '](/topic/' + topicSlug + '/' + (parseInt(postIndex, 10) + 1) + ')';
-			translator.translate('[[modules:composer.user_said_in, ' + username + ', ' + link + ']]\n', onTranslated);
+			translator.translate('[[modules:composer.user_said_in, ' + username + ', ' + link + ']]\n', config.defaultLang, onTranslated);
 		} else {
-			translator.translate('[[modules:composer.user_said, ' + username + ']]\n', onTranslated);
+			translator.translate('[[modules:composer.user_said, ' + username + ']]\n', config.defaultLang, onTranslated);
 		}
 
 		function onTranslated(translated) {
@@ -142,7 +142,7 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 	};
 
 	composer.newReply = function(tid, pid, title, text) {
-		translator.translate(text, function(translated) {
+		translator.translate(text, config.defaultLang, function(translated) {
 			push({
 				tid: tid,
 				toPid: pid,

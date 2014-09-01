@@ -42,6 +42,7 @@ apiController.getConfig = function(req, res, next) {
 	config.maximumFileSize = meta.config.maximumFileSize;
 	config['theme:id'] = meta.config['theme:id'];
 	config.defaultLang = meta.config.defaultLang || 'en_GB';
+	config.userLang = config.defaultLang;
 	config.environment = process.env.NODE_ENV;
 	config.loggedIn = !!req.user;
 	config['cache-buster'] = meta.config['cache-buster'] || '';
@@ -68,7 +69,7 @@ apiController.getConfig = function(req, res, next) {
 		config.topicsPerPage = settings.topicsPerPage;
 		config.postsPerPage = settings.postsPerPage;
 		config.notificationSounds = settings.notificationSounds;
-		config.defaultLang = settings.language || config.defaultLang;
+		config.userLang = settings.language || config.defaultLang;
 		config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
 		config.topicPostSort = settings.topicPostSort || config.topicPostSort;
 

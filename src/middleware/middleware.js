@@ -396,7 +396,7 @@ middleware.processRender = function(req, res, next) {
 				middleware.renderHeader(req, res, function(err, template) {
 					str = template + str;
 
-					translator.translate(str, res.locals.config.defaultLang, function(translated) {
+					translator.translate(str, res.locals.config.userLang, function(translated) {
 						fn(err, translated);
 					});
 				});

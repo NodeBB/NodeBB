@@ -21,10 +21,10 @@
 
 	translator.prepareDOM = function() {
 		// Load the appropriate timeago locale file
-		if (config.defaultLang !== 'en_GB' && config.defaultLang !== 'en_US') {
+		if (config.userLang !== 'en_GB' && config.userLang !== 'en_US') {
 			// Correct NodeBB language codes to timeago codes, if necessary
 			var	languageCode;
-			switch(config.defaultLang) {
+			switch(config.userLang) {
 			case 'cs':
 				languageCode = 'cz';
 				break;
@@ -46,7 +46,7 @@
 				break;
 
 			default:
-				languageCode = config.defaultLang;
+				languageCode = config.userLang;
 				break;
 			}
 
@@ -69,7 +69,7 @@
 		if (typeof language === 'function') {
 			callback = language;
 			if ('undefined' !== typeof window && config) {
-				language = config.defaultLang || 'en_GB';
+				language = config.userLang || 'en_GB';
 			} else {
 				var meta = require('../../src/meta');
 				language = meta.config.defaultLang || 'en_GB';
