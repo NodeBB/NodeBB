@@ -81,7 +81,7 @@
 			}
 
 			function createIndices() {
-				db.collection('objects').ensureIndex({_key :1}, {background:true}, function(err) {
+				db.collection('objects').ensureIndex({_key :1, score: -1}, {background:true}, function(err) {
 					if(err) {
 						winston.error('Error creating index ' + err.message);
 					}
