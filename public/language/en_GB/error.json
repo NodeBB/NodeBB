@@ -15,6 +15,7 @@
 	"invalid-title": "Invalid title",
 	"invalid-user-data": "Invalid User Data",
 	"invalid-password": "Invalid Password",
+	"invalid-username-or-password": "Please specify both a username and password",
 
 	"invalid-pagination-value": "Invalid pagination value",
 
@@ -31,7 +32,6 @@
 	"no-topic": "Topic doesn't exist",
 	"no-post": "Post doesn't exist",
 	"no-group": "Group doesn't exist",
-	"no-user": "User doesn't exist",
 	"no-teaser": "Teaser doesn't exist",
 	"no-privileges": "You don't have enough privileges for this action.",
 	"no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",

@@ -33,11 +33,17 @@
 		var continueLogin = function() {
 			passport.authenticate('local', function(err, userData, info) {
 				if (err) {
-					return res.json(403, err.message);
+					req.flash('error', info);
+					return res.redirect(nconf.get('relative_path') + '/login');
 				}
 
 				if (!userData) {
-					return res.json(403, info);
+					if (typeof info === 'object') {
+						info = '[[error:invalid-username-or-password]]';
+					}
+
+					req.flash('error', info);
+					return res.redirect(nconf.get('relative_path') + '/login');
 				}
 
 				// Alter user cookie depending on passed-in option
@@ -57,7 +63,13 @@
 						user.logIP(userData.uid, req.ip);
 					}
 
-					res.json(200, info);
+					if (!req.session.returnTo) {
+						res.redirect(nconf.get('relative_path') + '/');
+					} else {
+						var next = req.session.returnTo;
+						delete req.session.returnTo;
+						res.redirect(nconf.get('relative_path') + next);
+					}
 				});
 			})(req, res, next);
 		};
@@ -193,7 +205,8 @@
 
 	Auth.login = function(username, password, next) {
 		if (!username || !password) {
-			return next(new Error('[[error:invalid-user-data]]'));
+			next(new Error('[[error:invalid-password]]'));
+			return;
 		}
 
 		var userslug = utils.slugify(username);
@@ -203,9 +216,11 @@
 				return next(err);
 			}
 
-			if(!uid) {
-				// To-do: Even if a user doesn't exist, compare passwords anyway, so we don't immediately return
-				return next(null, false, '[[error:no-user]]');
+			if (!uid) {
+				setTimeout(function() {
+					next(null, false, '[[error:invalid-password]]');
+				}, Math.floor((Math.random() * 1000) + 1500));	// Wait between 1-2.5 seconds before returning
+				return;
 			}
 
 			user.auth.logAttempt(uid, function(err) {

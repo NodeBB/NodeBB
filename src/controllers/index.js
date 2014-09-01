@@ -125,10 +125,7 @@ Controllers.login = function(req, res, next) {
 	data.showResetLink = emailersPresent;
 	data.allowLocalLogin = meta.config.allowLocalLogin === undefined || parseInt(meta.config.allowLocalLogin, 10) === 1;
 	data.allowRegistration = meta.config.allowRegistration;
-
-	if (req.query.next) {
-		data.previousUrl = req.query.next;
-	}
+	data.error = req.flash('error')[0];
 
 	res.render('login', data);
 };
