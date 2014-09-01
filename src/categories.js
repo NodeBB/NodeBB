@@ -363,9 +363,11 @@ var db = require('./database'),
 			var hasRead = results.hasRead;
 			uid = parseInt(uid, 10);
 			for(var i=0; i<results.categories.length; ++i) {
-				categories[i]['unread-class'] = (parseInt(categories[i].topic_count, 10) === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
-				categories[i].children = results.children[i];
-				categories[i].parent = results.parents[i];
+				if (categories[i]) {
+					categories[i]['unread-class'] = (parseInt(categories[i].topic_count, 10) === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
+					categories[i].children = results.children[i];
+					categories[i].parent = results.parents[i];
+				}
 			}
 
 			callback(null, categories);
