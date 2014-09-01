@@ -43,7 +43,7 @@ define('forum/account/profile', ['forum/account/header'], function(header) {
 	};
 
 	function processPage() {
-		$('.user-recent-posts img').addClass('img-responsive');
+		$('.user-recent-posts img, .post-signature img').addClass('img-responsive');
 	}
 
 	function updateButtons() {
