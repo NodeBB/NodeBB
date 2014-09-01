@@ -142,7 +142,8 @@ middleware.checkGlobalPrivacySettings = function(req, res, next) {
 		if (res.locals.isAPI) {
 			return res.json(403, 'not-allowed');
 		} else {
-			return res.redirect('login?next=' + req.url);
+			req.session.returnTo = req.url;
+			return res.redirect('login');
 		}
 	}
 
@@ -154,7 +155,8 @@ middleware.checkAccountPermissions = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
 	if (callerUID === 0) {
-		return res.redirect('/login?next=' + req.url);
+		req.session.returnTo = req.url;
+		return res.redirect('/login');
 	}
 
 	user.getUidByUserslug(req.params.userslug, function (err, uid) {
