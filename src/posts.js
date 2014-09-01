@@ -527,6 +527,7 @@ var async = require('async'),
 	}
 
 	Posts.getPidIndex = function(pid, uid, callback) {
+		callback = callback || function() {};
 		async.parallel({
 			settings: function(next) {
 				user.getSettings(uid, next);
