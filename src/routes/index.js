@@ -90,7 +90,6 @@ function categoryRoutes(app, middleware, controllers) {
 }
 
 function accountRoutes(app, middleware, controllers) {
-
 	app.get('/user/:userslug', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.accounts.getAccount);
 	app.get('/api/user/:userslug', middleware.checkGlobalPrivacySettings, controllers.accounts.getAccount);
 
@@ -123,7 +122,7 @@ function accountRoutes(app, middleware, controllers) {
 }
 
 function userRoutes(app, middleware, controllers) {
-	app.get('/users', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
+	app.get('/user(s)?', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
 	app.get('/api/users', middleware.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
 
 	app.get('/users/online', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
