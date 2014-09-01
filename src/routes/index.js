@@ -163,7 +163,7 @@ module.exports = function(app, middleware) {
 
 	app.all(relativePath + '/api/?*', middleware.updateLastOnlineTime, middleware.prepareAPI);
 	app.all(relativePath + '/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
-	app.all(relativePath + '/admin/?*', middleware.admin.isAdmin);
+	app.all(relativePath + '/admin/?*', middleware.ensureLoggedIn, middleware.admin.isAdmin);
 
 	adminRoutes(router, middleware, controllers);
 	metaRoutes(router, middleware, controllers);

@@ -16,7 +16,9 @@ var app,
 
 middleware.isAdmin = function(req, res, next) {
 	if (!req.user) {
-		return res.redirect(nconf.get('relative_path') + '/login?next=admin');
+		return res.json(404, {
+			error: 'not-found'
+		});
 	}
 
 	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {

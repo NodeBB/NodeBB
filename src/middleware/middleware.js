@@ -15,6 +15,7 @@ var app,
 	categories = require('./../categories'),
 	topics = require('./../topics'),
 	messaging = require('../messaging'),
+	ensureLoggedIn = require('connect-ensure-login'),
 
 	controllers = {
 		api: require('./../controllers/api')
@@ -31,6 +32,8 @@ middleware.authenticate = function(req, res, next) {
 		next();
 	}
 };
+
+middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn();
 
 middleware.updateLastOnlineTime = function(req, res, next) {
 	if(req.user) {

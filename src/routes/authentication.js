@@ -177,7 +177,7 @@
 						}
 
 						app.get(strategy.callbackURL, passport.authenticate(strategy.name, {
-							successRedirect: nconf.get('relative_path') + '/',
+							successReturnToOrRedirect: nconf.get('relative_path') + '/',
 							failureRedirect: nconf.get('relative_path') + '/login'
 						}));
 					}
