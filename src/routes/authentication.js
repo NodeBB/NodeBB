@@ -216,11 +216,8 @@
 				return next(err);
 			}
 
-			if (!uid) {
-				setTimeout(function() {
-					next(null, false, '[[error:invalid-password]]');
-				}, Math.floor((Math.random() * 1000) + 1500));	// Wait between 1-2.5 seconds before returning
-				return;
+			if(!uid) {
+				return next(null, false, '[[error:no-user]]');
 			}
 
 			user.auth.logAttempt(uid, function(err) {
