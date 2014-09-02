@@ -215,7 +215,7 @@ module.exports = function(Topics) {
 			},
 			function(userInfo, next) {
 				postData.user = userInfo[0];
-				Topics.getTopicFields(tid, ['tid', 'title', 'slug'], next);
+				Topics.getTopicFields(tid, ['tid', 'title', 'slug', 'cid'], next);
 			},
 			function(topicData, next) {
 				topicData.title = validator.escape(topicData.title);

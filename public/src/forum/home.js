@@ -24,16 +24,8 @@ define('forum/home', function() {
 	};
 
 	home.onNewPost = function(data) {
-
-		if (data && data.posts && data.posts.length) {
-
-			socket.emit('posts.getCategory', data.posts[0].pid, function(err, cid) {
-				if (err) {
-					return;
-				}
-
-				renderNewPost(cid, data.posts[0]);
-			});
+		if (data && data.posts && data.posts.length && data.posts[0].topic) {
+			renderNewPost(data.posts[0].topic.cid, data.posts[0]);
 		}
 	};
 
