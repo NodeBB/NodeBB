@@ -22,12 +22,8 @@ define('forum/users', function() {
 
 		handleSearch();
 
-		socket.removeListener('user.anonDisconnect', updateAnonCount);
-		socket.removeListener('user.anonConnect', updateAnonCount);
-		socket.removeListener('user.isOnline', onUserIsOnline);
 
-		socket.on('user.anonDisconnect', updateAnonCount);
-		socket.on('user.anonConnect', updateAnonCount);
+		socket.removeListener('user.isOnline', onUserIsOnline);
 		socket.on('user.isOnline', onUserIsOnline);
 
 
@@ -158,7 +154,6 @@ define('forum/users', function() {
 		var section = getActiveSection();
 		if((section.indexOf('online') === 0 || section.indexOf('users') === 0)  && !loadingMoreUsers) {
 			updateUser(data);
-			updateAnonCount();
 		}
 	}
 
@@ -186,21 +181,6 @@ define('forum/users', function() {
 				}
 			});
 		});
-	}
-
-	function updateAnonCount() {
-		var section = getActiveSection();
-		if((section.indexOf('online') === 0 || section.indexOf('users') === 0)  && !loadingMoreUsers) {
-			socket.emit('user.getOnlineAnonCount', {} , function(err, anonCount) {
-
-				if(parseInt(anonCount, 10) > 0) {
-					$('#users-container .anon-user').removeClass('hide');
-					$('#online_anon_count').html(anonCount);
-				} else {
-					$('#users-container .anon-user').addClass('hide');
-				}
-			});
-		}
 	}
 
 	function getActiveSection() {

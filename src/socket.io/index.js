@@ -99,7 +99,6 @@ Sockets.init = function(server) {
 						});
 					});
 				} else {
-					socket.broadcast.emit('user.anonConnect');
 					socket.emit('event:connect', {
 						status: 1,
 						username: '[[global:guest]]',
@@ -118,10 +117,6 @@ Sockets.init = function(server) {
 						socket.broadcast.emit('user.isOnline', err, data);
 					});
 				});
-			}
-
-			if (!uid) {
-				socket.broadcast.emit('user.anonDisconnect');
 			}
 
 			emitOnlineUserCount();
