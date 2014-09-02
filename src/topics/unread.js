@@ -169,7 +169,7 @@ module.exports = function(Topics) {
 			return parseInt(value, 10) !== 0;
 		});
 
-		async.each(uids, function(uid, next) {
+		async.eachLimit(uids, 5, function(uid, next) {
 			Topics.getTotalUnread(uid, function(err, count) {
 				websockets.in('uid_' + uid).emit('event:unread.updateCount', null, count);
 				next();
