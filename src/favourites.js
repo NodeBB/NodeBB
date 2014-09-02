@@ -105,7 +105,7 @@ var async = require('async'),
 
 		toggleVote('upvote', pid, uid, function(err, votes) {
 			if (err) return callback(err);
-			plugins.fireHook('action:upvote.post', {
+			plugins.fireHook('action:post.upvote', {
 				pid: pid,
 				uid: uid
 			});
