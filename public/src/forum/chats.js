@@ -49,11 +49,13 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 		});
 
 		inputEl.on('keyup', function() {
-			if ($(this).val()) {
-				Chats.notifyTyping(Chats.getRecipientUid(), true);
-			} else {
-				Chats.notifyTyping(Chats.getRecipientUid(), false);
+			var val = !!$(this).val();
+			if ((val && $(this).attr('data-typing') === 'true') || (!val && $(this).attr('data-typing') === 'false')) {
+				return;
 			}
+
+			Chats.notifyTyping(Chats.getRecipientUid(), val);
+			$(this).attr('data-typing', val);
 		});
 
 		sendEl.on('click', function(e) {

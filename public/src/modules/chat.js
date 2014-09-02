@@ -289,11 +289,13 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 		});
 
 		input.off('keyup').on('keyup', function() {
-			if ($(this).val()) {
-				socket.emit('modules.chats.userStartTyping', {touid:chatModal.attr('touid'), fromUid: app.uid});
-			} else {
-				Chats.notifyTyping(chatModal.attr('touid'), false);
+			var val = !!$(this).val();
+			if ((val && $(this).attr('data-typing') === 'true') || (!val && $(this).attr('data-typing') === 'false')) {
+				return;
 			}
+
+			Chats.notifyTyping(chatModal.attr('touid'), val);
+			$(this).attr('data-typing', val);
 		});
 
 		chatModal.find('#chat-message-send-btn').off('click').on('click', function(e){
