@@ -207,7 +207,7 @@ SocketModules.chats.send = function(socket, data, callback) {
 		server.getUserSockets(touid).forEach(function(s) {
 			s.emit('event:chats.receive', {
 				withUid: socket.uid,
-				message: recipMessage,
+				message: message,
 				self: 0
 			});
 		});

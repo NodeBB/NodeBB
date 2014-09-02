@@ -92,7 +92,7 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 
 			if (Chats.isCurrentChat(data.withUid)) {
 				newMessage = data.self === 0;
-
+				data.message.self = data.self;
 				Chats.parseMessage(data.message, function(html) {
 					var newMessage = $(html);
 					newMessage.insertBefore(typingNotifEl);
