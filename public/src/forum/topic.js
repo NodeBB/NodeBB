@@ -362,7 +362,6 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 	}
 
 	function processPage(element) {
-		browsing.populateOnlineUsers();
 		app.createUserTooltips();
 		app.replaceSelfLinks(element.find('a'));
 		utils.addCommasToNumbers(element.find('.formatted-number'));

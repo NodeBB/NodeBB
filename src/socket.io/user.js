@@ -264,26 +264,6 @@ SocketUser.setTopicSort = function(socket, sort, callback) {
 	}
 };
 
-SocketUser.getOnlineUsers = function(socket, uids, callback) {
-	var returnData = {};
-	if (!uids) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-
-	user.isOnline(uids, function(err, userData) {
-		if (err) {
-			return callback(err);
-		}
-
-		userData.forEach(function(user) {
-			if (user) {
-				returnData[user.uid] = user;
-			}
-		});
-		callback(null, returnData);
-	});
-};
-
 SocketUser.getOnlineAnonCount = function(socket, data, callback) {
 	callback(null, module.parent.exports.getOnlineAnonCount());
 };

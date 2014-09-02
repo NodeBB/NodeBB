@@ -21,7 +21,8 @@ var async = require('async'),
 	categories = require('./categories'),
 	plugins = require('./plugins'),
 	meta = require('./meta'),
-	emitter = require('./emitter');
+	emitter = require('./emitter'),
+	websockets = require('./socket.io');
 
 (function(Posts) {
 	require('./posts/delete')(Posts);
@@ -227,7 +228,10 @@ var async = require('async'),
 				groups.getUserGroups(uids, next);
 			},
 			userData: function(next) {
-				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], next);
+				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status'], next);
+			},
+			online: function(next) {
+				websockets.isUsersOnline(uids, next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -237,6 +241,7 @@ var async = require('async'),
 			var userData = results.userData;
 			for(var i=0; i<userData.length; ++i) {
 				userData[i].groups = results.groups[i];
+				userData[i].status = !results.online[i] ? 'offline' : userData[i].status;
 			}
 
 			async.map(userData, function(userData, next) {

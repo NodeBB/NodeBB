@@ -375,12 +375,6 @@ var socket,
 		});
 	};
 
-	function updateOnlineStatus(uid) {
-		socket.emit('user.isOnline', uid, function(err, data) {
-			$('#logged-in-menu #user_label #user-profile-link>i').attr('class', 'fa fa-circle status ' + data.status);
-		});
-	}
-
 	function exposeConfigToTemplates() {
 		$(document).ready(function() {
 			templates.setGlobal('relative_path', RELATIVE_PATH);
@@ -492,11 +486,12 @@ var socket,
 
 	function handleStatusChange() {
 		$('#user-control-list .user-status').off('click').on('click', function(e) {
-			socket.emit('user.setStatus', $(this).attr('data-status'), function(err, data) {
+			var status = $(this).attr('data-status');
+			socket.emit('user.setStatus', status, function(err, data) {
 				if(err) {
 					return app.alertError(err.message);
 				}
-				updateOnlineStatus(data.uid);
+				$('#logged-in-menu #user_label #user-profile-link>i').attr('class', 'fa fa-circle status ' + status);
 			});
 			e.preventDefault();
 		});

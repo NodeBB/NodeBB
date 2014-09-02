@@ -18,7 +18,8 @@ var fs = require('fs'),
 	plugins = require('../plugins'),
 	languages = require('../languages'),
 	image = require('../image'),
-	file = require('../file');
+	file = require('../file'),
+	websockets = require('../socket.io');
 
 function userNotFound(res) {
 	if (res.locals.isAPI) {
@@ -116,6 +117,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
 			userData.profile_links = results.profile_links;
+			userData.status = !websockets.isUserOnline(userData.uid) ? 'offline' : userData.status;
 
 			userData.followingCount = results.followStats.followingCount;
 			userData.followerCount = results.followStats.followerCount;

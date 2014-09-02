@@ -80,32 +80,9 @@ define('forum/topic/browsing', function() {
 	};
 
 	Browsing.onUserOnline = function(err, data) {
-		updateOnlineIcon($('.username-field[data-username="' + data.username + '"'), data);
+		updateOnlineIcon($('.username-field[data-username="' + data.username + '"]'), data);
 
 		updateBrowsingUsers(data);
-	};
-
-	Browsing.populateOnlineUsers = function () {
-		var uids = [];
-
-		$('.post-row').each(function () {
-			var uid = $(this).attr('data-uid');
-			if(uids.indexOf(uid) === -1) {
-				uids.push(uid);
-			}
-		});
-
-		socket.emit('user.getOnlineUsers', uids, function (err, users) {
-
-			$('.username-field').each(function () {
-				var el = $(this),
-					uid = el.parents('li').attr('data-uid');
-
-				if (uid && users[uid]) {
-					updateOnlineIcon(el, users[uid]);
-				}
-			});
-		});
 	};
 
 	function updateOnlineIcon(el, userData) {

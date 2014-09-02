@@ -282,6 +282,22 @@ function isUserOnline(uid) {
 	return Sockets.getUserSockets(uid).length > 0;
 }
 
+Sockets.isUsersOnline = function(uids, callback) {
+	var sockets = io.sockets.clients();
+
+	if(!Array.isArray(sockets) || !sockets.length) {
+		return callback(null, []);
+	}
+
+  	sockets = sockets.map(function(s) {
+  		return s.uid;
+  	});
+
+	callback(null, uids.map(function(uid) {
+		return sockets.indexOf(parseInt(uid, 10)) !== -1;
+	}));
+};
+
 Sockets.updateRoomBrowsingText = updateRoomBrowsingText;
 function updateRoomBrowsingText(roomName) {
 

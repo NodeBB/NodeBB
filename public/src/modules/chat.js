@@ -7,7 +7,6 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 	var newMessage = false;
 
 	module.prepareDOM = function() {
-		// Chats Dropdown
 		var	chatsToggleEl = $('#chat_dropdown'),
 			chatsListEl = $('#chat-list');
 
@@ -74,7 +73,6 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 
 				if (modal.is(":visible")) {
 					module.bringModalToTop(modal);
-					checkOnlineStatus(modal);
 					taskbar.updateActive(modal.attr('UUID'));
 					Chats.scrollToBottom(modal.find('#chat-content'));
 				} else {
@@ -114,6 +112,10 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 			var modal = module.getModal(withUid);
 			modal.find('.user-typing').addClass('hide');
 		});
+
+		socket.on('user.isOnline', function(err, data) {
+			updateStatus(data.status);
+		});
 	};
 
 	module.bringModalToTop = function(chatModal) {
@@ -138,20 +140,16 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 
 	function checkStatus(chatModal) {
 		socket.emit('user.isOnline', chatModal.attr('touid'), function(err, data) {
-			translator.translate('[[global:' + data.status + ']]', function(translated) {
-				$('#chat-user-status').attr('class', 'fa fa-circle status ' + data.status)
-					.attr('title', translated)
-					.attr('data-original-title', translated);
-			});
+			updateStatus(data.status);
 		});
 	}
 
-	function checkOnlineStatus(chatModal) {
-		if(parseInt(chatModal.attr('intervalId'), 10) === 0) {
-			chatModal.attr('intervalId', setInterval(function() {
-				checkStatus(chatModal);
-			}, 1000));
-		}
+	function updateStatus(status) {
+		translator.translate('[[global:' + status + ']]', function(translated) {
+			$('#chat-user-status').attr('class', 'fa fa-circle status ' + status)
+				.attr('title', translated)
+				.attr('data-original-title', translated);
+		});
 	}
 
 	module.createModal = function(username, touid, callback) {
@@ -221,7 +219,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 				addSendHandler(chatModal);
 
 				getChatMessages(chatModal, function() {
-					checkOnlineStatus(chatModal);
+					checkStatus(chatModal);
 				});
 
 				chatModal.find('.user-typing .text').translateText('[[modules:chat.user_typing, ' + username + ']]');
@@ -259,7 +257,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 	module.load = function(uuid) {
 		var chatModal = $('div[UUID="'+uuid+'"]');
 		chatModal.removeClass('hide');
-		checkOnlineStatus(chatModal);
+		checkStatus(chatModal);
 		taskbar.updateActive(uuid);
 		Chats.scrollToBottom(chatModal.find('#chat-content'));
 		module.center(chatModal);
