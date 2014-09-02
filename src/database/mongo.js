@@ -87,6 +87,12 @@
 					}
 				});
 
+				db.collection('objects').ensureIndex({_key :1, value: -1}, {background:true}, function(err) {
+					if(err) {
+						winston.error('Error creating index ' + err.message);
+					}
+				});
+
 				db.collection('objects').ensureIndex({'expireAt':1}, {expireAfterSeconds:0, background:true}, function(err) {
 					if(err) {
 						winston.error('Error creating index ' + err.message);
