@@ -3,6 +3,7 @@ var async = require('async'),
 	db = require('./database'),
 	posts = require('./posts'),
 	user = require('./user'),
+	plugins = require('./plugins'),
 	meta = require('./meta');
 
 (function (Favourites) {
@@ -102,7 +103,14 @@ var async = require('async'),
 			return callback(new Error('[[error:reputation-system-disabled]]'));
 		}
 
-		toggleVote('upvote', pid, uid, callback);
+		toggleVote('upvote', pid, uid, function(err, votes) {
+			if (err) return callback(err);
+			plugins.fireHook('action:post.upvote', {
+				pid: pid,
+				uid: uid
+			});
+			callback(null, votes);
+		});
 	};
 
 	Favourites.downvote = function(pid, uid, callback) {
