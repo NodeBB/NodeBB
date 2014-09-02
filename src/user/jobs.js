@@ -69,6 +69,10 @@ module.exports = function(User) {
 						winston.error('[user/jobs] Could not send daily digests: ' + err.message);
 						return next(err);
 					}
+
+					// Remove expired notifications
+					notifications = notifications.filter(Boolean);
+
 					// Turn relative URLs into absolute ones
 					for(var i=0; i<notifications.length; ++i) {
 						if (notifications[i].image.indexOf('http') !== 0) {
