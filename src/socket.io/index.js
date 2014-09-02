@@ -129,10 +129,6 @@ Sockets.init = function(server) {
 		socket.on('*', function(payload, callback) {
 
 			function callMethod(method) {
-				if(socket.uid) {
-					user.updateLastOnlineTime(socket.uid);
-				}
-
 				method.call(null, socket, payload.args.length ? payload.args[0] : null, function(err, result) {
 					if (callback) {
 						callback(err?{message:err.message}:null, result);
@@ -145,7 +141,7 @@ Sockets.init = function(server) {
 			}
 
 			var parts = payload.name.toString().split('.'),
-				namespace = parts.slice(0, 1),
+				namespace = parts[0],
 				methodToCall = parts.reduce(function(prev, cur) {
 					if (prev !== null && prev[cur]) {
 						return prev[cur];
