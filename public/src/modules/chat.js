@@ -66,7 +66,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 			if (isSelf) {
 				username = data.message.toUser.username;
 			}
-			newMessage = data.message.self === 0;
+			newMessage = data.self === 0;
 			if (module.modalExists(data.withUid)) {
 				var modal = module.getModal(data.withUid);
 				module.appendChatMessage(modal, data.message);

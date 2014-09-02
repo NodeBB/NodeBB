@@ -202,16 +202,13 @@ SocketModules.chats.send = function(socket, data, callback) {
 
 		sendChatNotification(socket.uid, touid, message);
 
-		// After-the-fact fixing of the "self" property for the message that goes to the receipient
-		var recipMessage = JSON.parse(JSON.stringify(message));
-		recipMessage.self = 0;
-
 		// Recipient
 		SocketModules.chats.pushUnreadCount(touid);
 		server.getUserSockets(touid).forEach(function(s) {
 			s.emit('event:chats.receive', {
 				withUid: socket.uid,
-				message: recipMessage
+				message: recipMessage,
+				self: 0
 			});
 		});
 
@@ -220,7 +217,8 @@ SocketModules.chats.send = function(socket, data, callback) {
 		server.getUserSockets(socket.uid).forEach(function(s) {
 			s.emit('event:chats.receive', {
 				withUid: touid,
-				message: message
+				message: message,
+				self: 1
 			});
 		});
 	});

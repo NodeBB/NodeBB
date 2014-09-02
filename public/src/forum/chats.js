@@ -91,7 +91,7 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 				containerEl = $('.expanded-chat ul');
 
 			if (Chats.isCurrentChat(data.withUid)) {
-				newMessage = data.message.self === 0;
+				newMessage = data.self === 0;
 
 				Chats.parseMessage(data.message, function(html) {
 					var newMessage = $(html);
