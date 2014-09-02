@@ -77,8 +77,6 @@ define('forum/topic/browsing', function() {
 
 			getReplyingUsers();
 		}
-
-		Browsing.populateOnlineUsers();
 	};
 
 	Browsing.onUserOnline = function(err, data) {
