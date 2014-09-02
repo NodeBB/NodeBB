@@ -236,8 +236,10 @@ Sockets.getUserSockets = function(uid) {
 		return [];
 	}
 
+	uid = parseInt(uid, 10);
+
 	sockets = sockets.filter(function(s) {
-		return s.uid === parseInt(uid, 10);
+		return s.uid === uid;
 	});
 
 	return sockets;

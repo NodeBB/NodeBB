@@ -13,8 +13,8 @@ usersController.getOnlineUsers = function(req, res, next) {
 		if(err) {
 			return next(err);
 		}
-		var onlineUsers = [],
-			uid = req.user ? req.user.uid : 0;
+
+		var uid = req.user ? req.user.uid : 0;
 
 		user.isAdministrator(uid, function (err, isAdministrator) {
 			if(err) {
@@ -27,39 +27,22 @@ usersController.getOnlineUsers = function(req, res, next) {
 				});
 			}
 
-			function updateUserOnlineStatus(user, next) {
-				var online = websockets.isUserOnline(user.uid);
-				if (!online) {
-					db.sortedSetRemove('users:online', user.uid);
-					return next();
-				}
-
-				onlineUsers.push(user);
-				next();
-			}
-
 			var anonymousUserCount = websockets.getOnlineAnonCount();
 
-			async.each(users, updateUserOnlineStatus, function(err) {
+			db.sortedSetCard('users:online', function(err, count) {
 				if (err) {
 					return next(err);
 				}
 
-				db.sortedSetCard('users:online', function(err, count) {
-					if (err) {
-						return next(err);
-					}
+				var userData = {
+					search_display: 'none',
+					loadmore_display: count > 50 ? 'block' : 'hide',
+					users: users,
+					anonymousUserCount: anonymousUserCount,
+					show_anon: anonymousUserCount?'':'hide'
+				};
 
-					var userData = {
-						search_display: 'none',
-						loadmore_display: count > 50 ? 'block' : 'hide',
-						users: onlineUsers,
-						anonymousUserCount: anonymousUserCount,
-						show_anon: anonymousUserCount?'':'hide'
-					};
-
-					res.render('users', userData);
-				});
+				res.render('users', userData);
 			});
 		});
 	});
