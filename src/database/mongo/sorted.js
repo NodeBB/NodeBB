@@ -72,7 +72,15 @@ module.exports = function(db, module) {
 			count = 0;
 		}
 
-		db.collection('objects').find({_key:key, score: {$gte:min, $lte:max}}, {fields:{value:1}})
+		var scoreQuery = {};
+		if (min !== -Infinity) {
+			scoreQuery['$gte'] = min;
+		}
+		if (max !== Infinity) {
+			scoreQuery['$lte'] = max;
+		}
+
+		db.collection('objects').find({_key:key, score: scoreQuery}, {fields:{value:1}})
 			.limit(count)
 			.skip(start)
 			.sort({score: sort})
