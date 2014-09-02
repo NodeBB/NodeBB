@@ -82,7 +82,7 @@ define('forum/topic/browsing', function() {
 	};
 
 	Browsing.onUserOnline = function(err, data) {
-		Browsing.populateOnlineUsers();
+		updateOnlineIcon($('.username-field[data-username="' + data.username + '"'), data);
 
 		updateBrowsingUsers(data);
 	};
@@ -104,16 +104,20 @@ define('forum/topic/browsing', function() {
 					uid = el.parents('li').attr('data-uid');
 
 				if (uid && users[uid]) {
-					translator.translate('[[global:' + users[uid].status + ']]', function(translated) {
-						el.siblings('i')
-							.attr('class', 'fa fa-circle status ' + users[uid].status)
-							.attr('title', translated)
-							.attr('data-original-title', translated);
-					});
+					updateOnlineIcon(el, users[uid]);
 				}
 			});
 		});
 	};
+
+	function updateOnlineIcon(el, userData) {
+		translator.translate('[[global:' + userData.status + ']]', function(translated) {
+			el.siblings('i')
+				.attr('class', 'fa fa-circle status ' + userData.status)
+				.attr('title', translated)
+				.attr('data-original-title', translated);
+		});
+	}
 
 	function updateBrowsingUsers(data) {
 		var activeEl = $('.thread_active_users');
