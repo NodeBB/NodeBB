@@ -280,10 +280,6 @@ SocketUser.getActiveUsers = function(socket, data, callback) {
 	module.parent.exports.emitOnlineUserCount(callback);
 };
 
-SocketUser.debug = function(socket, data, callback) {
-	module.parent.exports.debug(callback);
-};
-
 SocketUser.loadMore = function(socket, data, callback) {
 	if(!data || !data.set || parseInt(data.after, 10) < 0) {
 		return callback(new Error('[[error:invalid-data]]'));

@@ -388,18 +388,6 @@ function emitOnlineUserCount(callback) {
 	}
 }
 
-Sockets.debug = function(callback) {
-	var uids = [];
-	//var clients = io.sockets.clients('uid_1');
-	var clients = io.sockets.clients('/');
-	for(var i=0; i<clients.length; ++i) {
-		if (clients[i].uid !== 0 && uids.indexOf(clients[i].uid) === -1) {
-			uids.push(clients[i].uid);
-		}
-	}
-	callback(null, uids);
-}
-
 
 
 /* Exporting */
