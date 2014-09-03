@@ -16,6 +16,7 @@ var topicsController = {},
 topicsController.get = function(req, res, next) {
 	var tid = req.params.topic_id,
 		page = req.query.page || 1,
+		sort = req.query.sort,
 		uid = req.user ? req.user.uid : 0,
 		userPrivileges;
 
@@ -45,7 +46,15 @@ topicsController.get = function(req, res, next) {
 			var set = 'tid:' + tid + ':posts',
 				reverse = false;
 
-			if (settings.topicPostSort === 'newest_to_oldest') {
+			// `sort` qs has priority over user setting
+			if (sort === 'oldest_to_newest') {
+				reverse = false;
+			} else if (sort === 'newest_to_oldest') {
+				reverse = true;
+			} else if (sort === 'most_votes') {
+				reverse = true;
+				set = 'tid:' + tid + ':posts:votes';
+			} else if (settings.topicPostSort === 'newest_to_oldest') {
 				reverse = true;
 			} else if (settings.topicPostSort === 'most_votes') {
 				reverse = true;

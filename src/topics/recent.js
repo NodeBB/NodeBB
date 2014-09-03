@@ -5,6 +5,12 @@
 var db = require('./../database');
 
 module.exports = function(Topics) {
+	var terms = {
+		day: 86400000,
+		week: 604800000,
+		month: 2592000000,
+		year: 31104000000
+	};
 
 	Topics.getLatestTopics = function(uid, start, end, term, callback) {
 		Topics.getLatestTids(start, end, term, function(err, tids) {
@@ -17,15 +23,8 @@ module.exports = function(Topics) {
 	};
 
 	Topics.getLatestTids = function(start, end, term, callback) {
-		var terms = {
-			day: 86400000,
-			week: 604800000,
-			month: 2592000000,
-			year: 31104000000
-		};
-
 		var since = terms.day;
-		if(terms[term]) {
+		if (terms[term]) {
 			since = terms[term];
 		}
 
