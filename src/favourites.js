@@ -3,6 +3,7 @@ var async = require('async'),
 	db = require('./database'),
 	posts = require('./posts'),
 	user = require('./user'),
+	plugins = require('./plugins'),
 	meta = require('./meta');
 
 (function (Favourites) {
@@ -115,7 +116,14 @@ var async = require('async'),
 				return callback(new Error('[[error:not-enough-reputation-to-downvote]]'));
 			}
 
-			toggleVote('downvote', pid, uid, callback);
+			toggleVote('downvote', pid, uid, function(err, votes) {
+				if (err) return callback(err);
+				plugins.fireHook('action:post.downvote', {
+					pid: pid,
+					uid: uid
+				});
+				callback(null, votes);
+			});
 		});
 	};
 
