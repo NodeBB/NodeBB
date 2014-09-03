@@ -4,6 +4,7 @@ module.exports = function(db, module) {
 	var helpers = module.helpers.mongo;
 
 	module.setAdd = function(key, value, callback) {
+		callback = callback || helpers.noop;
 		if(!Array.isArray(value)) {
 			value = [value];
 		}
@@ -23,10 +24,11 @@ module.exports = function(db, module) {
 		}, {
 			upsert: true,
 			w: 1
-		}, helpers.done(callback));
+		}, callback);
 	};
 
 	module.setRemove = function(key, value, callback) {
+		callback = callback || helpers.noop;
 		if(!Array.isArray(value)) {
 			value = [value];
 		}
@@ -35,7 +37,7 @@ module.exports = function(db, module) {
 			array[index] = helpers.valueToString(element);
 		});
 
-		db.collection('objects').update({_key: key}, {$pullAll: {members: value}}, helpers.done(callback));
+		db.collection('objects').update({_key: key}, {$pullAll: {members: value}}, callback);
 	};
 
 	module.isSetMember = function(key, value, callback) {

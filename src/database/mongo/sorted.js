@@ -6,25 +6,28 @@ module.exports = function(db, module) {
 	var helpers = module.helpers.mongo;
 
 	module.sortedSetAdd = function(key, score, value, callback) {
+		callback = callback || helpers.noop;
 		value = helpers.valueToString(value);
 		var data = {
 			score: parseInt(score, 10),
 			value: value
 		};
 
-		db.collection('objects').update({_key: key, value: value}, {$set: data}, {upsert:true, w: 1}, helpers.done(callback));
+		db.collection('objects').update({_key: key, value: value}, {$set: data}, {upsert:true, w: 1}, callback);
 	};
 
 	module.sortedSetRemove = function(key, value, callback) {
+		callback = callback || helpers.noop;
 		value = helpers.valueToString(value);
 
-		db.collection('objects').remove({_key: key, value: value}, helpers.done(callback));
+		db.collection('objects').remove({_key: key, value: value}, callback);
 	};
 
 	module.sortedSetsRemove = function(keys, value, callback) {
+		callback = callback || helpers.noop;
 		value = helpers.valueToString(value);
 
-		db.collection('objects').remove({_key: {$in: keys}, value: value}, helpers.done(callback));
+		db.collection('objects').remove({_key: {$in: keys}, value: value}, callback);
 	};
 
 	function getSortedSetRange(key, start, stop, sort, withScores, callback) {

@@ -31,12 +31,6 @@ helpers.valueToString = function(value) {
 	return value.toString();
 };
 
-helpers.done = function(cb) {
-	return function(err, result) {
-		if (typeof cb === 'function') {
-			cb(err, result);
-		}
-	};
-};
+helpers.noop = function() {};
 
 module.exports = helpers;
