@@ -97,7 +97,7 @@ nconf.argv();
 
 cluster.setupMaster({
 	exec: "app.js",
-	silent: true
+	silent: false
 });
 
 for(var x=0;x<numCPUs;x++) {

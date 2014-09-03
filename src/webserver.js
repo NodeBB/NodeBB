@@ -40,7 +40,7 @@ if(nconf.get('ssl')) {
 	auth.registerApp(app);
 	emailer.registerApp(app);
 	notifications.init();
-	
+
 	if (cluster.worker.id === 1) {
 		user.startJobs();
 	}
@@ -49,7 +49,7 @@ if(nconf.get('ssl')) {
 	plugins.ready(function() {
 		meta.js.minify(app.enabled('minification'));
 		meta.css.minify();
-		
+
 		if (cluster.worker.id === 1) {
 			meta.sounds.init();
 		}
@@ -121,11 +121,11 @@ if(nconf.get('ssl')) {
 		});
 
 		emitter.on('templates:compiled', function() {
-			//if (process.send) {
-			//	callback();
-			//} else {
+			if (process.send) {
+				callback();
+			} else {
 				module.exports.listen();
-			//}
+			}
 		});
 	};
 
