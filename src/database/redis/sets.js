@@ -2,7 +2,10 @@
 
 module.exports = function(redisClient, module) {
 	module.setAdd = function(key, value, callback) {
-		redisClient.sadd(key, value, callback);
+		callback = callback || function() {};
+		redisClient.sadd(key, value, function(err) {
+			callback(err);
+		});
 	};
 
 	module.setRemove = function(key, value, callback) {

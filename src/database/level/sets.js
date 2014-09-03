@@ -6,13 +6,15 @@ module.exports = function(db, module) {
 	var helpers = module.helpers.level;
 
 	module.setAdd = function(key, value, callback) {
+		callback = callback || function() {};
 		module.getListRange(key, 0, -1, function(err, set) {
+			if (err) {
+				return callback(err);
+			}
 			if (set.indexOf(value) === -1) {
 				module.listAppend(key, value, callback);
 			} else {
-				if (typeof callback === 'function') {
-					callback(null, []); // verify if it sends back true on redis?
-				}
+				callback(null);
 			}
 		});
 	};

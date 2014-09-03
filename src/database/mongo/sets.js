@@ -24,7 +24,9 @@ module.exports = function(db, module) {
 		}, {
 			upsert: true,
 			w: 1
-		}, callback);
+		}, function(err) {
+			callback(err);
+		});
 	};
 
 	module.setRemove = function(key, value, callback) {

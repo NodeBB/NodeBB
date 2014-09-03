@@ -38,6 +38,9 @@
 		}
 	];
 
+	module.helpers = module.helpers || {};
+	module.helpers.mongo = require('./mongo/helpers');
+
 	module.init = function(callback) {
 		try {
 			mongoClient = require('mongodb').MongoClient;
@@ -116,7 +119,5 @@
 		db.close();
 	};
 
-	module.helpers = module.helpers || {};
-	module.helpers.mongo = require('./mongo/helpers');
 }(exports));
 

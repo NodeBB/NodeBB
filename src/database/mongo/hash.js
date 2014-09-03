@@ -6,7 +6,9 @@ module.exports = function(db, module) {
 	module.setObject = function(key, data, callback) {
 		callback = callback || helpers.noop;
 		data._key = key;
-		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, callback);
+		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, function(err) {
+			callback(err);
+		});
 	};
 
 	module.setObjectField = function(key, field, value, callback) {

@@ -69,7 +69,7 @@ var async = require('async'),
 			function(postData, next) {
 				db.setObject('post:' + postData.pid, postData, next);
 			},
-			function(result, next) {
+			function(next) {
 				db.sortedSetAdd('posts:pid', timestamp, postData.pid);
 
 				db.incrObjectField('global', 'postCount');

@@ -210,7 +210,7 @@ module.exports = function(Topics) {
 			function(next) {
 				Topics.markAsRead(tid, uid, next);
 			},
-			function(result, next) {
+			function(next) {
 				posts.getUserInfoForPosts([postData.uid], next);
 			},
 			function(userInfo, next) {
