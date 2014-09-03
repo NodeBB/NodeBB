@@ -28,8 +28,8 @@ module.exports = function(User) {
 				settings.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab ? parseInt(settings.openOutgoingLinksInNewTab, 10) !== 0 : false;
 				settings.dailyDigestFreq = settings.dailyDigestFreq || 'off';
 				settings.usePagination = settings.usePagination ? parseInt(settings.usePagination, 10) === 1 : parseInt(meta.config.usePagination, 10) === 1;
-				settings.topicsPerPage = settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : parseInt(meta.config.topicsPerPage, 10) || 20;
-				settings.postsPerPage = settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : parseInt(meta.config.postsPerPage, 10) || 10;
+				settings.topicsPerPage = Math.min(settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : parseInt(meta.config.topicsPerPage, 10) || 20, 20);
+				settings.postsPerPage = Math.min(settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : parseInt(meta.config.postsPerPage, 10) || 10, 20);
 				settings.notificationSounds = settings.notificationSounds ? parseInt(settings.notificationSounds, 10) === 1 : true;
 				settings.language = settings.language || meta.config.defaultLang || 'en_GB';
 				settings.topicPostSort = settings.topicPostSort || meta.config.topicPostSort || 'oldest_to_newest';
@@ -79,8 +79,8 @@ module.exports = function(User) {
 			openOutgoingLinksInNewTab: data.openOutgoingLinksInNewTab,
 			dailyDigestFreq: data.dailyDigestFreq || 'off',
 			usePagination: data.usePagination,
-			topicsPerPage: data.topicsPerPage,
-			postsPerPage: data.postsPerPage,
+			topicsPerPage: Math.min(data.topicsPerPage, 20),
+			postsPerPage: Math.min(data.postsPerPage, 20),
 			notificationSounds: data.notificationSounds,
 			language: data.language || meta.config.defaultLang,
 			followTopicsOnCreate: data.followTopicsOnCreate,
