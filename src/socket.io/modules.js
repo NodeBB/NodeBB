@@ -266,9 +266,7 @@ function sendTypingNotification(event, socket, data, callback) {
 	if (!socket.uid || !data) {
 		return;
 	}
-	server.getUserSockets(data.touid).forEach(function(socket) {
-		socket.emit(event, data.fromUid);
-	});
+	server.in('uid_' + data.touid).emit(event, data.fromUid);
 }
 
 SocketModules.chats.list = function(socket, data, callback) {
