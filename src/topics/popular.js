@@ -7,15 +7,15 @@ var async = require('async'),
 
 
 module.exports = function(Topics) {
+	var terms = {
+		daily: 'day',
+		weekly: 'week',
+		monthly: 'month',
+		yearly: 'year'
+	};
 
 	Topics.getPopular = function(term, uid, count, callback) {
 		count = parseInt(count, 10) || 20;
-		var terms = {
-			daily: 'day',
-			weekly: 'week',
-			monthly: 'month',
-			yearly: 'year'
-		};
 
 		if (term === 'alltime') {
 			return getAllTimePopular(uid, count, callback);
