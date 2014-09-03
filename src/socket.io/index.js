@@ -27,11 +27,22 @@ var	io;
 
 
 Sockets.init = function(server) {
+	 var RedisStore = require('socket.io/lib/stores/redis'),
+		redis = require('redis'),
+		pub = redis.createClient(),
+		sub = redis.createClient(),
+		client = redis.createClient();
+
 	io = socketioWildcard(SocketIO).listen(server, {
 		log: false,
 		transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket'],
 		'browser client minification': true,
-		resource: nconf.get('relative_path') + '/socket.io'
+		resource: nconf.get('relative_path') + '/socket.io',
+		'store' : new RedisStore({
+				redisPub : pub,
+				redisSub : sub,
+				redisClient : client
+		}),
 	});
 
 	Sockets.server = io;
@@ -280,13 +291,15 @@ Sockets.isUsersOnline = function(uids, callback) {
 		return callback(null, []);
 	}
 
-  	sockets = sockets.map(function(s) {
-  		return s.uid;
-  	});
+	sockets = sockets.map(function(s) {
+		return s.uid;
+	});
 
-	callback(null, uids.map(function(uid) {
+	var data = uids.map(function(uid) {
 		return sockets.indexOf(parseInt(uid, 10)) !== -1;
-	}));
+	});
+
+	callback(null, data);
 };
 
 Sockets.updateRoomBrowsingText = updateRoomBrowsingText;
