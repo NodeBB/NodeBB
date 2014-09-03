@@ -114,11 +114,11 @@ if(nconf.get('ssl')) {
 		});
 
 		emitter.on('templates:compiled', function() {
-			if (process.send) {
-				callback();
-			} else {
+			//if (process.send) {
+			//	callback();
+			//} else {
 				module.exports.listen();
-			}
+			//}
 		});
 	};
 

@@ -103,6 +103,15 @@ function loadConfig() {
 }
 
 function start() {
+
+	var cluster = require('cluster');
+
+	if (cluster.isMaster) {
+		for(var i=0; i<2; ++i) {
+			cluster.fork();
+		}
+	} else {
+
 	loadConfig();
 
 	winston.info('Time: ' + new Date());
@@ -174,6 +183,8 @@ function start() {
 			});
 		});
 	});
+
+	}
 }
 
 function setup() {
