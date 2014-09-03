@@ -98,6 +98,8 @@ Controllers.search = function(req, res, next) {
 		return res.redirect('/404');
 	}
 
+	req.params.term = req.params.term.replace(/"/g, '/"');
+
 	search.search(req.params.term, uid, function(err, results) {
 		if (err) {
 			return next(err);
