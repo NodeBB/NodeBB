@@ -129,7 +129,7 @@ module.exports = function(app, data) {
 	routeCurrentTheme(app, data.currentThemeId, data.themesData);
 	routeThemeScreenshots(app, data.themesData);
 
-	if (cluster.worker.id === 1) {
+	if (process.env.cluster_setup === 'true') {
 		meta.templates.compile();
 	} else {
 		setTimeout(function() {

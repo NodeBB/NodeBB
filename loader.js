@@ -3,6 +3,7 @@
 var	nconf = require('nconf'),
 	fs = require('fs'),
 	cluster = require('cluster'),
+	async = require('async'),
 	numCPUs = require('os').cpus().length;
 
 	/* TODO
@@ -93,35 +94,65 @@ var	nconf = require('nconf'),
 	// },
 	// nbb, nbbOld;
 
-nconf.argv();
+var Loader = {
+	timesStarted: 0
+};
 
-cluster.setupMaster({
-	exec: "app.js",
-	silent: false
-});
+Loader.init = function() {
+	nconf.argv();
 
-for(var x=0;x<numCPUs;x++) {
-	cluster.fork();
-}
+	cluster.setupMaster({
+		exec: "app.js",
+		silent: true
+	});
 
-cluster.on('exit', function(worker, code, signal) {
-	console.log('worker ' + worker.process.pid + ' died');
-});
+	for(var x=0;x<numCPUs;x++) {
+		// Only the first worker sets up templates/sounds/jobs/etc
+		cluster.fork({ cluster_setup: x === 0 });
+	}
 
-Object.keys(cluster.workers).forEach(function(id) {
-	cluster.workers[id].on('message', function(message) {
-		if (message && typeof message === 'object' && message.action) {
-			switch (message.action) {
-				case 'ready':
-					cluster.workers[id].send('bind');
-				break;
-				// case 'restart':
-				// 	nbb_restart();
-				// break;
+	cluster.on('fork', function(worker) {
+		worker.on('message', function(message) {
+			if (message && typeof message === 'object' && message.action) {
+				switch (message.action) {
+					case 'ready':
+						console.log('[cluster] Child Process (' + worker.process.pid + ') listening for connections.');
+						worker.send('bind');
+					break;
+					case 'restart':
+						console.log('[cluster] Restarting...');
+						Loader.restart(function(err) {
+							console.log('[cluster] Restarting...');
+						});
+					break;
+				}
+			}
+		});
+	});
+
+	cluster.on('exit', function(worker, code, signal) {
+		if (code !== 0) {
+			if (Loader.timesStarted < numCPUs*3) {
+				Loader.timesStarted++;
+			} else {
+				console.log(numCPUs*3, 'restarts in 10 seconds, most likely an error on startup. Halting.');
+				process.exit();
 			}
 		}
+
+		console.log('[cluster] Child Process (' + worker.process.pid + ') has exited (code: ' + code + ')');
+		cluster.fork();
 	});
-});
+};
+
+Loader.restart = function(callback) {
+	async.eachSeries(Object.keys(cluster.workers), function(id, next) {
+		cluster.workers[id].kill();
+		next();
+	}, callback);
+}
+
+Loader.init();
 
 // Start the daemon!
 // if (nconf.get('daemon') !== false) {

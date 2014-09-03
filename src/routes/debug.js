@@ -56,6 +56,10 @@ module.exports = function(app, middleware, controllers) {
 	});
 
 	router.get('/test', function(req, res) {
-		res.redirect(404);
+		var cluster = require('cluster');
+		console.log('answered by worker', cluster.worker.id);
+		res.send(200);
+		process.exit();
+		// res.redirect(404);
 	});
 };
