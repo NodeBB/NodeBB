@@ -40,11 +40,13 @@ module.exports = function(db, module) {
 	};
 
 	module.searchRemove = function(key, id, callback) {
-		db.collection('search').remove({id:id, key:key}, helpers.done(callback));
+		callback = callback || helpers.noop;
+		db.collection('search').remove({id:id, key:key}, callback);
 	};
 
 	module.flushdb = function(callback) {
-		db.dropDatabase(helpers.done(callback));
+		callback = callback || helpers.noop;
+		db.dropDatabase(callback);
 	};
 
 	module.info = function(callback) {
@@ -68,7 +70,8 @@ module.exports = function(db, module) {
 	};
 
 	module.delete = function(key, callback) {
-		db.collection('objects').remove({_key:key}, helpers.done(callback));
+		callback = callback || helpers.noop;
+		db.collection('objects').remove({_key:key}, callback);
 	};
 
 	module.get = function(key, callback) {
@@ -81,11 +84,13 @@ module.exports = function(db, module) {
 	};
 
 	module.increment = function(key, callback) {
-		db.collection('objects').update({_key: key}, { $inc: { value: 1 } }, helpers.done(callback));
+		callback = callback || helpers.noop;
+		db.collection('objects').update({_key: key}, { $inc: { value: 1 } }, callback);
 	};
 
 	module.rename = function(oldKey, newKey, callback) {
-		db.collection('objects').update({_key: oldKey}, {$set:{_key: newKey}}, helpers.done(callback));
+		callback = callback || helpers.noop;
+		db.collection('objects').update({_key: oldKey}, {$set:{_key: newKey}}, callback);
 	};
 
 	module.expire = function(key, seconds, callback) {

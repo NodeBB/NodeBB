@@ -4,8 +4,9 @@ module.exports = function(db, module) {
 	var helpers = module.helpers.mongo;
 
 	module.setObject = function(key, data, callback) {
+		callback = callback || helpers.noop;
 		data._key = key;
-		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, helpers.done(callback));
+		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, callback);
 	};
 
 	module.setObjectField = function(key, field, value, callback) {
@@ -121,10 +122,11 @@ module.exports = function(db, module) {
 	};
 
 	module.deleteObjectField = function(key, field, callback) {
+		callback = callback || helpers.noop;
 		var data = {};
 		field = helpers.fieldToString(field);
 		data[field] = '';
-		db.collection('objects').update({_key:key}, {$unset : data}, helpers.done(callback));
+		db.collection('objects').update({_key:key}, {$unset : data}, callback);
 	};
 
 	module.incrObjectField = function(key, field, callback) {
