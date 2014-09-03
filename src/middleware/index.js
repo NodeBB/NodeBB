@@ -22,6 +22,7 @@ var utils = require('./../../public/src/utils'),
 	multipart = require('connect-multiparty'),
 	csrf = require('csurf'),
 	session = require('express-session'),
+	cluster = require('cluster'),
 
 	relativePath,
 	themesPath;
@@ -128,7 +129,13 @@ module.exports = function(app, data) {
 	routeCurrentTheme(app, data.currentThemeId, data.themesData);
 	routeThemeScreenshots(app, data.themesData);
 
-	meta.templates.compile();
+	if (cluster.worker.id === 1) {
+		meta.templates.compile();
+	} else {
+		setTimeout(function() {
+			emitter.emit('templates:compiled');
+		}, 1000);
+	}
 
 	return middleware;
 };

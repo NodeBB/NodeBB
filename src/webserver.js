@@ -6,6 +6,7 @@ var path = require('path'),
 	server,
 	winston = require('winston'),
 	async = require('async'),
+	cluster = require('cluster'),
 
 	emailer = require('./emailer'),
 	db = require('./database'),
@@ -39,13 +40,19 @@ if(nconf.get('ssl')) {
 	auth.registerApp(app);
 	emailer.registerApp(app);
 	notifications.init();
-	user.startJobs();
+	
+	if (cluster.worker.id === 1) {
+		user.startJobs();
+	}
 
 	// Preparation dependent on plugins
 	plugins.ready(function() {
 		meta.js.minify(app.enabled('minification'));
 		meta.css.minify();
-		meta.sounds.init();
+		
+		if (cluster.worker.id === 1) {
+			meta.sounds.init();
+		}
 	});
 
 	async.parallel({
