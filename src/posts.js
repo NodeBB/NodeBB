@@ -534,7 +534,7 @@ var async = require('async'),
 	Posts.getPidIndex = function(pid, uid, callback) {
 		// Making uid optional
 		if ((!uid && !callback) || typeof uid === 'function') {
-			callback = uid;
+			callback = uid || function() {};
 			uid = undefined;
 		}
 
