@@ -198,13 +198,6 @@ module.exports = function(app, middleware) {
 
 	// Add plugin routes
 	plugins.reloadRoutes();
-	// plugins.ready(function() {
-	// 	plugins.fireHook('static:app.load', pluginRouter, middleware, controllers, function() {
-
-
-
-	// 	});
-	// });
 };
 
 function handleErrors(err, req, res, next) {
