@@ -106,7 +106,7 @@ Loader.init = function() {
 		silent: true
 	});
 
-	for(var x=0;x<numCPUs;x++) {
+	for(var x=0;x<4;x++) {
 		// Only the first worker sets up templates/sounds/jobs/etc
 		cluster.fork({ cluster_setup: x === 0 });
 	}

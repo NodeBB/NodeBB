@@ -204,22 +204,18 @@ SocketModules.chats.send = function(socket, data, callback) {
 
 		// Recipient
 		SocketModules.chats.pushUnreadCount(touid);
-		server.getUserSockets(touid).forEach(function(s) {
-			s.emit('event:chats.receive', {
-				withUid: socket.uid,
-				message: message,
-				self: 0
-			});
+		server.in('uid_' + touid).emit('event:chats.receive', {
+			withUid: socket.uid,
+			message: message,
+			self: 0
 		});
 
 		// Sender
 		SocketModules.chats.pushUnreadCount(socket.uid);
-		server.getUserSockets(socket.uid).forEach(function(s) {
-			s.emit('event:chats.receive', {
-				withUid: touid,
-				message: message,
-				self: 1
-			});
+		server.in('uid_' + socket.uid).emit('event:chats.receive', {
+			withUid: touid,
+			message: message,
+			self: 1
 		});
 	});
 };
@@ -246,9 +242,7 @@ SocketModules.chats.pushUnreadCount = function(uid) {
 		if (err) {
 			return;
 		}
-		server.getUserSockets(uid).forEach(function(s) {
-			s.emit('event:unread.updateChatCount', null, unreadCount);
-		});
+		server.in('uid_' + uid).emit('event:unread.updateChatCount', null, unreadCount);
 	});
 };
 
