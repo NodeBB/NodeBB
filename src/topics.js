@@ -302,7 +302,7 @@ var async = require('async'),
 
 	Topics.getMainPost = function(tid, uid, callback) {
 		Topics.getMainPosts([tid], uid, function(err, mainPosts) {
-			calllback(err, Array.isArray(mainPosts) && mainPosts.length ? mainPosts[0] : null);
+			callback(err, Array.isArray(mainPosts) && mainPosts.length ? mainPosts[0] : null);
 		});
 	};
 
