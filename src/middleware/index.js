@@ -128,14 +128,7 @@ module.exports = function(app, data) {
 
 	routeCurrentTheme(app, data.currentThemeId, data.themesData);
 	routeThemeScreenshots(app, data.themesData);
-
-	if (process.env.cluster_setup === 'true') {
-		meta.templates.compile();
-	} else {
-		setTimeout(function() {
-			emitter.emit('templates:compiled');
-		}, 1000);
-	}
+	meta.templates.compile();
 
 	return middleware;
 };

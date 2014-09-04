@@ -95,7 +95,8 @@ var	nconf = require('nconf'),
 	// nbb, nbbOld;
 
 var Loader = {
-	timesStarted: 0
+	timesStarted: 0,
+	shutdown_queue: []
 };
 
 Loader.init = function() {
@@ -106,11 +107,6 @@ Loader.init = function() {
 		silent: process.env.NODE_ENV !== 'development' ? true : false
 	});
 
-	for(var x=0;x<numCPUs;x++) {
-		// Only the first worker sets up templates/sounds/jobs/etc
-		cluster.fork({ cluster_setup: x === 0 });
-	}
-
 	cluster.on('fork', function(worker) {
 		worker.on('message', function(message) {
 			if (message && typeof message === 'object' && message.action) {
@@ -118,12 +114,22 @@ Loader.init = function() {
 					case 'ready':
 						console.log('[cluster] Child Process (' + worker.process.pid + ') listening for connections.');
 						worker.send('bind');
+
+						// Kill an instance in the shutdown queue
+						var workerToKill = Loader.shutdown_queue.pop();
+						if (workerToKill) {
+							cluster.workers[workerToKill].kill();
+						}
 					break;
 					case 'restart':
 						console.log('[cluster] Restarting...');
 						Loader.restart(function(err) {
 							console.log('[cluster] Restarting...');
 						});
+					break;
+					case 'reload':
+						console.log('[cluster] Reloading...');
+						Loader.reload();
 					break;
 				}
 			}
@@ -147,19 +153,36 @@ Loader.init = function() {
 		}
 
 		console.log('[cluster] Child Process (' + worker.process.pid + ') has exited (code: ' + code + ')');
-		cluster.fork();
+		if (!worker.suicide) {
+			console.log('[cluster] Spinning up another process...')
+			cluster.fork();
+		}
 	});
 
 	process.on('SIGHUP', Loader.restart);
+
+	Loader.start();
 	// fs.writeFile(__dirname + '/pidfile', process.pid);
 };
 
-Loader.restart = function(callback) {
-	async.eachSeries(Object.keys(cluster.workers), function(id, next) {
-		cluster.workers[id].kill();
-		next();
-	}, callback);
+Loader.start = function() {
+	for(var x=0;x<numCPUs;x++) {
+		// Only the first worker sets up templates/sounds/jobs/etc
+		cluster.fork({ cluster_setup: x === 0 });
+	}
 }
+
+Loader.restart = function(callback) {
+	// Slate existing workers for termination -- welcome to death row.
+	Loader.shutdown_queue = Loader.shutdown_queue.concat(Object.keys(cluster.workers));
+	Loader.start();
+};
+
+Loader.reload = function() {
+	Object.keys(cluster.workers).forEach(function(worker_id) {
+		cluster.workers[worker_id].send('reload');
+	});
+};
 
 Loader.init();
 

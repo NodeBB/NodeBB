@@ -157,6 +157,13 @@ function start() {
 					process.on('SIGTERM', shutdown);
 					process.on('SIGINT', shutdown);
 					process.on('SIGHUP', restart);
+					process.on('message', function(message) {
+						switch(message) {
+							case 'reload':
+								meta.reload();
+							break;
+						}
+					})
 					process.on('uncaughtException', function(err) {
 						winston.error(err.message);
 						console.log(err.stack);

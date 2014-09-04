@@ -5,6 +5,7 @@ var mkdirp = require('mkdirp'),
 	path = require('path'),
 	fs = require('fs'),
 	nconf = require('nconf'),
+	cluster = require('cluster'),
 
 	emitter = require('../emitter'),
 	plugins = require('../plugins'),
@@ -13,6 +14,16 @@ var mkdirp = require('mkdirp'),
 	Templates = {};
 
 Templates.compile = function(callback) {
+	if (cluster.isWorker && process.env.cluster_setup !== 'true') {
+		return setTimeout(function() {
+			console.log('FAKING TEMPLATE COMPILE');
+			emitter.emit('templates:compiled');
+			if (callback) callback();
+		}, 1000);
+	} else {
+		console.log('REAL TEMPLATE COMPILE');
+	}
+
 	var baseTemplatesPath = nconf.get('base_templates_path'),
 		viewsPath = nconf.get('views_dir'),
 		themeTemplatesPath = nconf.get('theme_templates_path');
