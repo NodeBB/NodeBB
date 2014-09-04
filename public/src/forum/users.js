@@ -74,6 +74,10 @@ define('forum/users', function() {
 	}
 
 	function onUsersLoaded(users) {
+		users = users.filter(function(user) {
+			return !$('.users-box[data-uid="' + user.uid + '"]').length;
+		});
+
 		ajaxify.loadTemplate('users', function(usersTemplate) {
 			var html = templates.parse(templates.getBlock(usersTemplate, 'users'), {users: users});
 
