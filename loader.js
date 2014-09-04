@@ -9,7 +9,6 @@ var	nconf = require('nconf'),
 	/* TODO
 	    * pidFile and reset timer
 	    * logging
-	    * handling SIGHUP
 	    * restart signal from child
 	    * minifier
 	*/
@@ -150,6 +149,9 @@ Loader.init = function() {
 		console.log('[cluster] Child Process (' + worker.process.pid + ') has exited (code: ' + code + ')');
 		cluster.fork();
 	});
+
+	process.on('SIGHUP', Loader.restart);
+	// fs.writeFile(__dirname + '/pidfile', process.pid);
 };
 
 Loader.restart = function(callback) {
