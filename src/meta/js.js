@@ -7,6 +7,7 @@ var winston = require('winston'),
 	_ = require('underscore'),
 	os = require('os'),
 	nconf = require('nconf'),
+	cluster = require('cluster'),
 
 	plugins = require('../plugins'),
 	emitter = require('../emitter'),
@@ -120,70 +121,85 @@ module.exports = function(Meta) {
 	};
 
 	Meta.js.minify = function(minify, callback) {
-		var minifier = Meta.js.minifierProc = fork('minifier.js', {
-				silent: true
-			}),
-			minifiedStream = minifier.stdio[1],
-			minifiedString = '',
-			mapStream = minifier.stdio[2],
-			mapString = '',
-			step = 0,
-			onComplete = function() {
-				if (step === 0) {
-					return step++;
-				}
+		if (!cluster.isWorker || process.env.cluster_setup === 'true') {
+			var minifier = Meta.js.minifierProc = fork('minifier.js', {
+					silent: true
+				}),
+				minifiedStream = minifier.stdio[1],
+				minifiedString = '',
+				mapStream = minifier.stdio[2],
+				mapString = '',
+				step = 0,
+				onComplete = function() {
+					if (step === 0) {
+						return step++;
+					}
 
-				Meta.js.cache = minifiedString;
-				Meta.js.map = mapString;
-				winston.info('[meta/js] Compilation complete');
-				emitter.emit('meta:js.compiled');
-				minifier.kill();
-				if (typeof callback === 'function') {
-					callback();
-				}
-			};
+					Meta.js.cache = minifiedString;
+					Meta.js.map = mapString;
+					winston.info('[meta/js] Compilation complete');
+					emitter.emit('meta:js.compiled');
+					minifier.kill();
 
-		minifiedStream.on('data', function(buffer) {
-			minifiedString += buffer.toString();
-		});
-		mapStream.on('data', function(buffer) {
-			mapString += buffer.toString();
-		});
+					if (cluster.isWorker) {
+						process.send({
+							action: 'js-propagate',
+							cache: minifiedString,
+							map: mapString
+						});
+					}
 
-		minifier.on('message', function(message) {
-			switch(message.type) {
-			case 'end':
-				if (message.payload === 'script') {
-					winston.info('[meta/js] Successfully minified.');
-					onComplete();
-				} else if (message.payload === 'mapping') {
-					winston.info('[meta/js] Retrieved Mapping.');
-					onComplete();
-				}
-				break;
-			case 'hash':
-				Meta.js.hash = message.payload;
-				break;
-			case 'error':
-				winston.error('[meta/js] Could not compile client-side scripts! ' + message.payload.message);
-				minifier.kill();
-				if (typeof callback === 'function') {
-					callback(new Error(message.payload.message));
-				} else {
-					process.exit(0);
-				}
-				break;
-			}
-		});
+					if (typeof callback === 'function') {
+						callback();
+					}
+				};
 
-		Meta.js.prepare(function() {
-			minifier.send({
-				action: 'js',
-				relativePath: nconf.get('url') + '/',
-				minify: minify,
-				scripts: Meta.js.scripts.all
+			minifiedStream.on('data', function(buffer) {
+				minifiedString += buffer.toString();
 			});
-		});
+			mapStream.on('data', function(buffer) {
+				mapString += buffer.toString();
+			});
+
+			minifier.on('message', function(message) {
+				switch(message.type) {
+				case 'end':
+					if (message.payload === 'script') {
+						winston.info('[meta/js] Successfully minified.');
+						onComplete();
+					} else if (message.payload === 'mapping') {
+						winston.info('[meta/js] Retrieved Mapping.');
+						onComplete();
+					}
+					break;
+				case 'hash':
+					Meta.js.hash = message.payload;
+					break;
+				case 'error':
+					winston.error('[meta/js] Could not compile client-side scripts! ' + message.payload.message);
+					minifier.kill();
+					if (typeof callback === 'function') {
+						callback(new Error(message.payload.message));
+					} else {
+						process.exit(0);
+					}
+					break;
+				}
+			});
+
+			Meta.js.prepare(function() {
+				minifier.send({
+					action: 'js',
+					relativePath: nconf.get('url') + '/',
+					minify: minify,
+					scripts: Meta.js.scripts.all
+				});
+			});
+		} else {
+			if (typeof callback === 'function') {
+				callback();
+			}
+		}
 	};
 
 	Meta.js.killMinifier = function(callback) {

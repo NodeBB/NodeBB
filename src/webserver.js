@@ -41,7 +41,7 @@ if(nconf.get('ssl')) {
 	emailer.registerApp(app);
 	notifications.init();
 
-	if (process.env.cluster_setup === 'true') {
+	if (cluster.isWorker && process.env.cluster_setup === 'true') {
 		user.startJobs();
 	}
 
@@ -50,7 +50,7 @@ if(nconf.get('ssl')) {
 		meta.js.minify(app.enabled('minification'));
 		meta.css.minify();
 
-		if (process.env.cluster_setup === 'true') {
+		if (cluster.isWorker && process.env.cluster_setup === 'true') {
 			meta.sounds.init();
 		}
 	});

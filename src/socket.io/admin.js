@@ -14,6 +14,7 @@ var	groups = require('../groups'),
 	async = require('async'),
 	winston = require('winston'),
 	index = require('./index'),
+	cluster = require('cluster'),
 
 	SocketAdmin = {
 		user: require('./admin/user'),
@@ -39,7 +40,13 @@ SocketAdmin.before = function(socket, method, next) {
 };
 
 SocketAdmin.reload = function(socket, data, callback) {
-	meta.reload(callback);
+	if (cluster.isWorker) {
+		process.send({
+			action: 'reload'
+		});
+	} else {
+		meta.reload(callback);
+	}
 };
 
 SocketAdmin.restart = function(socket, data, callback) {

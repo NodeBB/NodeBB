@@ -28,6 +28,7 @@ var fs = require('fs'),
 	semver = require('semver'),
 	winston = require('winston'),
 	path = require('path'),
+	cluster = require('cluster'),
 	pkg = require('./package.json'),
 	utils = require('./public/src/utils.js');
 
@@ -157,6 +158,18 @@ function start() {
 					process.on('SIGTERM', shutdown);
 					process.on('SIGINT', shutdown);
 					process.on('SIGHUP', restart);
+					process.on('message', function(message) {
+						switch(message.action) {
+							case 'reload':
+								meta.reload();
+							break;
+							case 'js-propagate':
+								meta.js.cache = message.cache;
+								meta.js.map = message.map;
+								winston.info('[cluster] Client-side javascript and mapping propagated to worker ' + cluster.worker.id);
+							break;
+						}
+					})
 					process.on('uncaughtException', function(err) {
 						winston.error(err.message);
 						console.log(err.stack);
