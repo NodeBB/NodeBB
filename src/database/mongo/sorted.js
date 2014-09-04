@@ -13,14 +13,18 @@ module.exports = function(db, module) {
 			value: value
 		};
 
-		db.collection('objects').update({_key: key, value: value}, {$set: data}, {upsert:true, w: 1}, callback);
+		db.collection('objects').update({_key: key, value: value}, {$set: data}, {upsert:true, w: 1}, function(err) {
+			callback(err);
+		});
 	};
 
 	module.sortedSetRemove = function(key, value, callback) {
 		callback = callback || helpers.noop;
 		value = helpers.valueToString(value);
 
-		db.collection('objects').remove({_key: key, value: value}, callback);
+		db.collection('objects').remove({_key: key, value: value}, function(err) {
+			callback(err);
+		});
 	};
 
 	module.sortedSetsRemove = function(keys, value, callback) {

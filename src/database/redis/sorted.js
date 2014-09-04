@@ -3,11 +3,16 @@
 module.exports = function(redisClient, module) {
 	module.sortedSetAdd = function(key, score, value, callback) {
 		callback = callback || function() {};
-		redisClient.zadd(key, score, value, callback);
+		redisClient.zadd(key, score, value, function(err) {
+			callback(err);
+		});
 	};
 
 	module.sortedSetRemove = function(key, value, callback) {
-		redisClient.zrem(key, value, callback);
+		callback = callback || function() {};
+		redisClient.zrem(key, value, function(err) {
+			callback(err);
+		});
 	};
 
 	module.sortedSetsRemove = function(keys, value, callback) {

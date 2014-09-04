@@ -85,7 +85,7 @@ Sockets.init = function(server) {
 
 				if (uid) {
 
-					db.sortedSetAdd('users:online', Date.now(), uid, function(err, data) {
+					db.sortedSetAdd('users:online', Date.now(), uid, function(err) {
 						socket.join('uid_' + uid);
 
 						async.parallel({

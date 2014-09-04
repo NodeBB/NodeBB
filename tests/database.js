@@ -271,14 +271,14 @@ describe('Test database', function() {
 
 	it('should not throw err', function(done) {
 		function sortedSetAdd(callback) {
-			db.sortedSetAdd('sortedSet3', 12, 5, function(err, data) {
-				callback(err, {'sortedSetAdd': data});
+			db.sortedSetAdd('sortedSet3', 12, 5, function(err) {
+				callback(err);
 			});
 		}
 
 		function sortedSetRemove(callback) {
 			db.sortedSetRemove('sortedSet3', 12, function(err, data) {
-				callback(err, {'sortedSetRemove': data});
+				callback(err);
 			});
 		}
 

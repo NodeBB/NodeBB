@@ -189,12 +189,12 @@ var winston = require('winston'),
 				topic = topicData;
 				db.sortedSetRemove('categories:' + topicData.cid + ':tid', tid, next);
 			},
-			function(result, next) {
+			function(next) {
 				var timestamp = parseInt(topic.pinned, 10) ? Math.pow(2, 53) : topic.lastposttime;
 				db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid, next);
 			}
-		], function(err, result) {
-			if(err) {
+		], function(err) {
+			if (err) {
 				return callback(err);
 			}
 			var oldCid = topic.cid;

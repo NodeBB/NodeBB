@@ -43,7 +43,7 @@ define('forum/topic/move', function() {
 
 		renderCategories(categories);
 
-		modal.find('.category-list').on('click', 'li[data-cid]', function(e) {
+		modal.on('click', '.category-list li[data-cid]', function(e) {
 			selectCategory($(this));
 		});
 
