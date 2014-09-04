@@ -131,6 +131,18 @@ Loader.init = function() {
 						console.log('[cluster] Reloading...');
 						Loader.reload();
 					break;
+					case 'js-propagate':
+						var otherWorkers = Object.keys(cluster.workers).filter(function(worker_id) {
+								return parseInt(worker_id, 10) !== parseInt(worker.id, 10);
+							});
+						otherWorkers.forEach(function(worker_id) {
+							cluster.workers[worker_id].send({
+								action: 'js-propagate',
+								cache: message.cache,
+								map: message.map
+							});
+						});
+					break;
 				}
 			}
 		});
@@ -180,7 +192,9 @@ Loader.restart = function(callback) {
 
 Loader.reload = function() {
 	Object.keys(cluster.workers).forEach(function(worker_id) {
-		cluster.workers[worker_id].send('reload');
+		cluster.workers[worker_id].send({
+			action: 'reload'
+		});
 	});
 };
 
