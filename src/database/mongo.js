@@ -108,6 +108,12 @@
 					}
 				});
 
+				db.collection('search').ensureIndex({key: 1, id: 1}, {background: true}, function(err) {
+					if(err) {
+						winston.error('Error creating index ' + err.message);
+					}
+				});
+
 				if(typeof callback === 'function') {
 					callback();
 				}

@@ -13,7 +13,7 @@ module.exports = function(db, module) {
 			content: content
 		};
 
-		db.collection('search').update({id:id, key:key}, {$set:data}, {upsert:true, w: 1}, function(err) {
+		db.collection('search').update({key:key, id:id}, {$set:data}, {upsert:true, w: 1}, function(err) {
 			if(err) {
 				winston.error('Error indexing ' + err.message);
 			}
@@ -41,7 +41,7 @@ module.exports = function(db, module) {
 
 	module.searchRemove = function(key, id, callback) {
 		callback = callback || helpers.noop;
-		db.collection('search').remove({id:id, key:key}, callback);
+		db.collection('search').remove({key:key, id:id}, callback);
 	};
 
 	module.flushdb = function(callback) {
