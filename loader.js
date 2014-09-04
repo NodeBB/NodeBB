@@ -4,13 +4,14 @@ var	nconf = require('nconf'),
 	fs = require('fs'),
 	cluster = require('cluster'),
 	async = require('async'),
+	pidFilePath = __dirname + '/pidfile',
+	output = fs.openSync(__dirname + '/logs/output.log', 'a'),
 	numCPUs = require('os').cpus().length;
 
 	/* TODO
 	    * pidFile and reset timer
 	    * logging
 	    * restart signal from child
-	    * minifier
 	*/
 
 	// pidFilePath = __dirname + '/pidfile',
@@ -100,11 +101,9 @@ var Loader = {
 };
 
 Loader.init = function() {
-	nconf.argv();
-
 	cluster.setupMaster({
 		exec: "app.js",
-		silent: process.env.NODE_ENV !== 'development' ? true : false
+		silent: false/*process.env.NODE_ENV !== 'development' ? true : false*/
 	});
 
 	cluster.on('fork', function(worker) {
@@ -208,6 +207,26 @@ Loader.reload = function() {
 		});
 	});
 };
+
+nconf.argv();
+
+if (nconf.get('daemon') !== false) {
+	if (fs.existsSync(pidFilePath)) {
+		try {
+			var	pid = fs.readFileSync(pidFilePath, { encoding: 'utf-8' });
+			process.kill(pid, 0);
+			process.exit();
+		} catch (e) {
+			fs.unlinkSync(pidFilePath);
+		}
+	}
+
+	require('daemon')({
+		stdout: output
+	});
+
+	fs.writeFile(__dirname + '/pidfile', process.pid);
+}
 
 Loader.init();
 
