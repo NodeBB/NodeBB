@@ -456,6 +456,9 @@ SocketTopics.loadMore = function(socket, data, callback) {
 			},
 			'reputation:disabled': function(next) {
 				next(null, parseInt(meta.config['reputation:disabled'], 10) === 1);
+			},
+			'downvote:disabled': function(next) {
+				next(null, parseInt(meta.config['downvote:disabled'], 10) === 1);
 			}
 		}, callback);
 	});
