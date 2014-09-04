@@ -16,12 +16,9 @@ var mkdirp = require('mkdirp'),
 Templates.compile = function(callback) {
 	if (cluster.isWorker && process.env.cluster_setup !== 'true') {
 		return setTimeout(function() {
-			console.log('FAKING TEMPLATE COMPILE');
 			emitter.emit('templates:compiled');
 			if (callback) callback();
 		}, 1000);
-	} else {
-		console.log('REAL TEMPLATE COMPILE');
 	}
 
 	var baseTemplatesPath = nconf.get('base_templates_path'),
