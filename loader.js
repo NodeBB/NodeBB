@@ -11,6 +11,7 @@ var	nconf = require('nconf'),
 	    * logging
 	    * handling SIGHUP
 	    * restart signal from child
+	    * minifier
 	*/
 
 	// pidFilePath = __dirname + '/pidfile',
@@ -134,6 +135,12 @@ Loader.init = function() {
 		if (code !== 0) {
 			if (Loader.timesStarted < numCPUs*3) {
 				Loader.timesStarted++;
+				if (Loader.crashTimer) {
+					clearTimeout(Loader.crashTimer);
+				}
+				Loader.crashTimer = setTimeout(function() {
+					Loader.timesStarted = 0;
+				});
 			} else {
 				console.log(numCPUs*3, 'restarts in 10 seconds, most likely an error on startup. Halting.');
 				process.exit();
