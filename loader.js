@@ -103,7 +103,7 @@ Loader.init = function() {
 
 	cluster.setupMaster({
 		exec: "app.js",
-		silent: true
+		silent: process.env.NODE_ENV !== 'development' ? true : false
 	});
 
 	for(var x=0;x<numCPUs;x++) {
