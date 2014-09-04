@@ -25,6 +25,36 @@ var	SocketIO = require('socket.io'),
 
 var	io;
 
+var onlineUsersMap = {};
+var onlineUsers = [];
+
+process.on('message', function(msg) {
+	if (typeof msg !== 'object') {
+		return;
+	}
+
+	if (msg.action === 'user:connect') {
+		if (!onlineUsersMap[msg.uid]) {
+			onlineUsersMap[msg.uid] = 1;
+		} else {
+			onlineUsersMap[msg.uid]++;
+		}
+		if (msg.uid && onlineUsers.indexOf(msg.uid) === -1) {
+			onlineUsers.push(msg.uid);
+		}
+	} else if(msg.action === 'user:disconnect') {
+		var index = onlineUsers.indexOf(msg.uid);
+		if (index !== -1) {
+			onlineUsers.splice(index, 1);
+		}
+
+		if (onlineUsersMap[msg.uid]) {
+			onlineUsersMap[msg.uid] -= 1;
+			onlineUsersMap[msg.uid] = Math.max(0, onlineUsersMap[msg.uid]);
+		}
+	}
+});
+
 
 Sockets.init = function(server) {
 	 var RedisStore = require('socket.io/lib/stores/redis'),
@@ -46,6 +76,8 @@ Sockets.init = function(server) {
 	});
 
 	Sockets.server = io;
+
+	db.delete('users:online');
 
 	fs.readdir(__dirname, function(err, files) {
 		files.splice(files.indexOf('index.js'), 1);
@@ -79,7 +111,9 @@ Sockets.init = function(server) {
 				}
 
 				socket.uid = parseInt(uid, 10);
-
+				if (process.send) {
+					process.send({action: 'user:connect', uid: uid});
+				}
 				/* If meta.config.loggerIOStatus > 0, logger.io_one will hook into this socket */
 				logger.io_one(socket, uid);
 
@@ -122,12 +156,16 @@ Sockets.init = function(server) {
 
 		socket.on('disconnect', function() {
 
-			if (uid && Sockets.getUserSockets(uid).length <= 1) {
+			if (uid && (!onlineUsersMap[uid] || onlineUsersMap[uid] <= 1)) {
 				db.sortedSetRemove('users:online', uid, function(err) {
 					socketUser.isOnline(socket, uid, function(err, data) {
 						socket.broadcast.emit('user.isOnline', err, data);
 					});
 				});
+			}
+
+			if (process.send) {
+				process.send({action: 'user:disconnect', uid: uid});
 			}
 
 			emitOnlineUserCount();
@@ -214,22 +252,12 @@ Sockets.uidInRoom = function(uid, room) {
 };
 
 Sockets.getConnectedClients = function() {
-	var uids = [];
-	if (!io) {
-		return uids;
-	}
-	var clients = io.sockets.clients();
-
-	clients.forEach(function(client) {
-		if(client.uid && uids.indexOf(client.uid) === -1) {
-			uids.push(client.uid);
-		}
-	});
-	return uids;
+	return onlineUsers;
 };
 
 Sockets.getOnlineAnonCount = function () {
-	return Sockets.getUserSockets(0).length;
+	var count = parseInt(onlineUsersMap[0], 10);
+	return count ? count : 0;
 };
 
 Sockets.getUserSockets = function(uid) {
@@ -281,22 +309,12 @@ Sockets.reqFromSocket = function(socket) {
 
 Sockets.isUserOnline = isUserOnline;
 function isUserOnline(uid) {
-	return Sockets.getUserSockets(uid).length > 0;
+	return !!onlineUsersMap[uid];
 }
 
 Sockets.isUsersOnline = function(uids, callback) {
-	var sockets = io.sockets.clients();
-
-	if(!Array.isArray(sockets) || !sockets.length) {
-		return callback(null, []);
-	}
-
-	sockets = sockets.map(function(s) {
-		return s.uid;
-	});
-
 	var data = uids.map(function(uid) {
-		return sockets.indexOf(parseInt(uid, 10)) !== -1;
+		return !!onlineUsersMap[uid];
 	});
 
 	callback(null, data);
@@ -373,7 +391,7 @@ function emitTopicPostStats(callback) {
 
 Sockets.emitOnlineUserCount = emitOnlineUserCount;
 function emitOnlineUserCount(callback) {
-	var anon = Sockets.getOnlineAnonCount(0);
+	var anon = Sockets.getOnlineAnonCount();
 	var registered = Sockets.getConnectedClients().length;
 
 	var returnObj = {

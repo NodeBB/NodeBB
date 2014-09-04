@@ -125,10 +125,20 @@ Loader.init = function() {
 							console.log('[cluster] Restarting...');
 						});
 					break;
+					case 'user:connect':
+					case 'user:disconnect':
+						notifyWorkers(worker, message);
+					break;
 				}
 			}
 		});
 	});
+
+	function notifyWorkers(currentWorker, msg) {
+		Object.keys(cluster.workers).forEach(function(id) {
+			cluster.workers[id].send(msg);
+		});
+	}
 
 	cluster.on('exit', function(worker, code, signal) {
 		if (code !== 0) {
@@ -159,7 +169,7 @@ Loader.restart = function(callback) {
 		cluster.workers[id].kill();
 		next();
 	}, callback);
-}
+};
 
 Loader.init();
 

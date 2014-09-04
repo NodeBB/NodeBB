@@ -94,10 +94,12 @@ define('forum/admin/index', function() {
 
 	Admin.updateRoomUsage = function(err, data) {
 
+		var roomData = data.rooms;
+
 		function getUserCountIn(room) {
 			var count = 0;
-			for(var user in data[room]) {
-				if (data[room].hasOwnProperty(user)) {
+			for(var user in roomData[room]) {
+				if (roomData[room].hasOwnProperty(user)) {
 					++count;
 				}
 			}
@@ -114,10 +116,10 @@ define('forum/admin/index', function() {
 
 		var sortedData = [];
 
-		for (var room in data) {
+		for (var room in roomData) {
 			if (room !== '') {
-				sortedData.push({room: room, count: data[room].length});
-				total += data[room].length;
+				sortedData.push({room: room, count: roomData[room].length});
+				total += roomData[room].length;
 			}
 		}
 
@@ -130,6 +132,12 @@ define('forum/admin/index', function() {
 			usersHtml += "<div class='alert alert-success'><strong>" + sortedData[i].room + "</strong> " +
 				sortedData[i].count + " active user" + (sortedData[i].count > 1 ? "s" : "") + "</div>";
 		}
+
+		var parent = active_users.parent();
+		parent.prepend('<hr/>');
+		parent.prepend('<strong>Online Total [ ' + (data.onlineRegisteredCount + data.onlineGuestCount) + ' ]</strong>');
+		parent.prepend('<strong>Online Guests [ ' + data.onlineGuestCount + ' ]</strong><br/>');
+		parent.prepend('<strong>Online Users [ ' + data.onlineRegisteredCount + ' ]</strong><br/>');
 
 		active_users.html(usersHtml);
 		$('#connections').html(total);

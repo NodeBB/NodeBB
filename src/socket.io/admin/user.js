@@ -76,11 +76,7 @@ User.banUser = function(uid, callback) {
 				return callback(err);
 			}
 
-			var sockets = websockets.getUserSockets(uid);
-
-			for(var i=0; i<sockets.length; ++i) {
-				sockets[i].emit('event:banned');
-			}
+			websockets.in('uid_' + uid).emit('event:banned');
 
 			websockets.logoutUser(uid);
 			callback();
