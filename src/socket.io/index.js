@@ -30,7 +30,9 @@ var onlineUsers = [];
 var uidToSocketId = {};
 var socketIdToUid = {};
 
-process.on('message', function(msg) {
+process.on('message', onMessage);
+
+function onMessage(msg) {
 	if (typeof msg !== 'object') {
 		return;
 	}
@@ -41,6 +43,7 @@ process.on('message', function(msg) {
 		} else {
 			onlineUsersMap[msg.uid]++;
 		}
+
 		if (msg.uid && onlineUsers.indexOf(msg.uid) === -1) {
 			onlineUsers.push(msg.uid);
 		}
@@ -52,14 +55,16 @@ process.on('message', function(msg) {
 		}
 		socketIdToUid[msg.socketid] = msg.uid;
 	} else if(msg.action === 'user:disconnect') {
-		var index = onlineUsers.indexOf(msg.uid);
-		if (index !== -1) {
-			onlineUsers.splice(index, 1);
-		}
-
 		if (onlineUsersMap[msg.uid]) {
 			onlineUsersMap[msg.uid] -= 1;
 			onlineUsersMap[msg.uid] = Math.max(0, onlineUsersMap[msg.uid]);
+		}
+
+		if (msg.uid && onlineUsersMap[msg.uid] === 0) {
+			var index = onlineUsers.indexOf(msg.uid);
+			if (index !== -1) {
+				onlineUsers.splice(index, 1);
+			}
 		}
 
 		if (uidToSocketId[msg.uid]) {
@@ -70,8 +75,25 @@ process.on('message', function(msg) {
 		}
 		delete socketIdToUid[msg.socketid];
 	}
-});
+}
 
+function onUserConnect(uid, socketid) {
+	var msg = {action: 'user:connect', uid: uid, socketid: socketid};
+	if (process.send) {
+		process.send(msg);
+	} else {
+		onMessage(msg);
+	}
+}
+
+function onUserDisconnect(uid, socketid) {
+	var msg = {action: 'user:disconnect', uid: uid, socketid: socketid};
+	if (process.send) {
+		process.send(msg);
+	} else {
+		onMessage(msg);
+	}
+}
 
 Sockets.init = function(server) {
 	 var RedisStore = require('socket.io/lib/stores/redis'),
@@ -128,9 +150,8 @@ Sockets.init = function(server) {
 				}
 
 				socket.uid = parseInt(uid, 10);
-				if (process.send) {
-					process.send({action: 'user:connect', uid: uid, socketid: socket.id});
-				}
+				onUserConnect(uid, socket.id);
+
 				/* If meta.config.loggerIOStatus > 0, logger.io_one will hook into this socket */
 				logger.io_one(socket, uid);
 
@@ -181,9 +202,7 @@ Sockets.init = function(server) {
 				});
 			}
 
-			if (process.send) {
-				process.send({action: 'user:disconnect', uid: uid, socketid: socket.id});
-			}
+			onUserDisconnect(uid, socket.id);
 
 			emitOnlineUserCount();
 
@@ -270,6 +289,9 @@ Sockets.uidInRoom = function(uid, room) {
 	return false;
 };
 
+Sockets.getSocketCount = function() {
+	return Object.keys(socketIdToUid).length;
+}
 Sockets.getConnectedClients = function() {
 	return onlineUsers;
 };

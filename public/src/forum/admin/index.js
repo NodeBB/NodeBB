@@ -3,14 +3,18 @@
 
 define('forum/admin/index', function() {
 	var	Admin = {};
-
+	var updateIntervalId = 0;
 	Admin.init = function() {
 
 		app.enterRoom('admin');
 		socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
 
-		socket.removeListener('event:meta.rooms.update', Admin.updateRoomUsage);
-		socket.on('event:meta.rooms.update', Admin.updateRoomUsage);
+		if (updateIntervalId) {
+			clearInterval(updateIntervalId);
+		}
+		updateIntervalId = setInterval(function() {
+			socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
+		}, 2000);
 
 		$('#logout-link').on('click', function() {
 			$.post(RELATIVE_PATH + '/logout', {
@@ -93,54 +97,16 @@ define('forum/admin/index', function() {
 	};
 
 	Admin.updateRoomUsage = function(err, data) {
-
-		var roomData = data.rooms;
-
-		function getUserCountIn(room) {
-			var count = 0;
-			for(var user in roomData[room]) {
-				if (roomData[room].hasOwnProperty(user)) {
-					++count;
-				}
-			}
-			return count;
+		if (err) {
+			return app.alertError(err.message);
 		}
+console.log(data);
+		var html = '<strong>Online Users [ ' + data.onlineRegisteredCount + ' ]</strong><br/>' +
+					'<strong>Online Guests [ ' + data.onlineGuestCount + ' ]</strong><br/>'	 +
+					'<strong>Online Total [ ' + (data.onlineRegisteredCount + data.onlineGuestCount) + ' ]</strong><br/>' +
+					'<strong>Socket Connections [ ' + data.socketCount + ' ]</strong>';
 
-		var active_users = $('#active_users').html(''),
-			total = 0;
-
-		if(!active_users.length) {
-			return;
-		}
-
-
-		var sortedData = [];
-
-		for (var room in roomData) {
-			if (room !== '') {
-				sortedData.push({room: room, count: roomData[room].length});
-				total += roomData[room].length;
-			}
-		}
-
-		sortedData.sort(function(a, b) {
-			return parseInt(b.count, 10) - parseInt(a.count, 10);
-		});
-
-		var usersHtml = '';
-		for(var i=0; i<sortedData.length; ++i) {
-			usersHtml += "<div class='alert alert-success'><strong>" + sortedData[i].room + "</strong> " +
-				sortedData[i].count + " active user" + (sortedData[i].count > 1 ? "s" : "") + "</div>";
-		}
-
-		var parent = active_users.parent();
-		parent.prepend('<hr/>');
-		parent.prepend('<strong>Online Total [ ' + (data.onlineRegisteredCount + data.onlineGuestCount) + ' ]</strong>');
-		parent.prepend('<strong>Online Guests [ ' + data.onlineGuestCount + ' ]</strong><br/>');
-		parent.prepend('<strong>Online Users [ ' + data.onlineRegisteredCount + ' ]</strong><br/>');
-
-		active_users.html(usersHtml);
-		$('#connections').html(total);
+		$('#active_users').html(html);
 	};
 
 	return Admin;

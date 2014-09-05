@@ -85,7 +85,7 @@ SocketMeta.rooms.getAll = function(socket, data, callback) {
 	var userData = {
 		onlineGuestCount: websockets.getOnlineAnonCount(),
 		onlineRegisteredCount: websockets.getConnectedClients().length,
-		rooms: websockets.server.sockets.manager.rooms
+		socketCount: websockets.getSocketCount()
 	};
 
 	callback(null, userData);
