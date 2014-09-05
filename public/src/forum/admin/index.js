@@ -100,7 +100,7 @@ define('forum/admin/index', function() {
 		if (err) {
 			return app.alertError(err.message);
 		}
-console.log(data);
+
 		var html = '<strong>Online Users [ ' + data.onlineRegisteredCount + ' ]</strong><br/>' +
 					'<strong>Online Guests [ ' + data.onlineGuestCount + ' ]</strong><br/>'	 +
 					'<strong>Online Total [ ' + (data.onlineRegisteredCount + data.onlineGuestCount) + ' ]</strong><br/>' +
