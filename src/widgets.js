@@ -3,7 +3,7 @@
 var async = require('async'),
 	winston = require('winston'),
 	templates = require('templates.js'),
-	
+
 	plugins = require('./plugins'),
 	db = require('./database');
 
@@ -29,7 +29,8 @@ var async = require('async'),
 			var widgets = data.global.concat(data.local);
 
 			async.eachSeries(widgets, function(widget, next) {
-				if (!!widget.data['registered-only'] && uid === 0) {
+
+				if (!widget || !widget.data || (!!widget.data['registered-only'] && uid === 0)) {
 					return next();
 				}
 
@@ -44,7 +45,7 @@ var async = require('async'),
 							body: html
 						});
 					}
-					
+
 					rendered.push({
 						html: html
 					});
@@ -72,7 +73,7 @@ var async = require('async'),
 				error: 'Missing location and template data'
 			});
 		}
-		
+
 		db.setObjectField('widgets:' + area.template, area.location, JSON.stringify(area.widgets), function(err) {
 			callback(err);
 		});
