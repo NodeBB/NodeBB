@@ -14,7 +14,7 @@ define('forum/admin/index', function() {
 		}
 		updateIntervalId = setInterval(function() {
 			socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
-		}, 2000);
+		}, 3000);
 
 		$('#logout-link').on('click', function() {
 			$.post(RELATIVE_PATH + '/logout', {
