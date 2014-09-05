@@ -242,6 +242,9 @@ var async = require('async'),
 
 	Notifications.markReadMultiple = function(nids, uid, callback) {
 		callback = callback || function() {};
+		if (!nids) {
+			return callback(null);
+		}
 		if (!Array.isArray(nids) && parseInt(nids, 10) > 0) {
 			nids = [nids];
 		}
