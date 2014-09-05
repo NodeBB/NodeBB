@@ -190,7 +190,7 @@ SocketTopics.markAsUnreadForAll = function(socket, tids, callback) {
 						return next(err);
 					}
 
-					db.sortedSetAdd('topics:recent', Date.now(), tid, function(err) {
+					topics.updateRecent(tid, Date.now(), function(err) {
 						if(err) {
 							return next(err);
 						}

@@ -470,11 +470,6 @@ var async = require('async'),
 		});
 	};
 
-	Topics.updateTimestamp = function(tid, timestamp) {
-		db.sortedSetAdd('topics:recent', timestamp, tid);
-		Topics.setTopicField(tid, 'lastposttime', timestamp);
-	};
-
 	Topics.getUids = function(tid, callback) {
 		Topics.getPids(tid, function(err, pids) {
 			if (err) {

@@ -41,7 +41,7 @@ module.exports = function(Topics) {
 				Topics.setTopicField(tid, 'deleted', 1, next);
 			},
 			function(next) {
-				db.sortedSetRemove('topics:recent', tid, next);
+				Topics.removeRecent(tid, next);
 			},
 			function(next) {
 				db.sortedSetRemove('topics:posts', tid, next);
@@ -69,7 +69,7 @@ module.exports = function(Topics) {
 					Topics.setTopicField(tid, 'deleted', 0, next);
 				},
 				function(next) {
-					db.sortedSetAdd('topics:recent', topicData.lastposttime, tid, next);
+					Topics.updateRecent(tid, topicData.lastposttime, next);
 				},
 				function(next) {
 					db.sortedSetAdd('topics:posts', topicData.postcount, tid, next);
@@ -99,7 +99,7 @@ module.exports = function(Topics) {
 				db.sortedSetRemove('topics:tid', tid, next);
 			},
 			function(next) {
-				db.sortedSetRemove('topics:recent', tid, next);
+				Topics.removeRecent(tid, next);
 			},
 			function(next) {
 				db.sortedSetRemove('topics:posts', tid, next);

@@ -33,4 +33,17 @@ module.exports = function(Topics) {
 		db.getSortedSetRevRangeByScore('topics:recent', start, count, Infinity, Date.now() - since, callback);
 	};
 
+	Topics.updateTimestamp = function(tid, timestamp) {
+		Topics.updateRecent(tid, timestamp);
+		Topics.setTopicField(tid, 'lastposttime', timestamp);
+	};
+
+	Topics.updateRecent = function(tid, timestamp, callback) {
+		callback = callback || function() {};
+		db.sortedSetAdd('topics:recent', timestamp, tid, callback);
+	};
+
+	Topics.removeRecent = function(tid, callback) {
+		db.sortedSetRemove('topics:recent', tid, callback);
+	};
 };
