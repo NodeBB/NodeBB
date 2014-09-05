@@ -124,13 +124,11 @@ if(nconf.get('ssl')) {
 			emitter.removeAllListeners('templates:compiled').removeAllListeners('meta:js.compiled').removeAllListeners('meta:css.compiled');
 		});
 
-		emitter.on('templates:compiled', function() {
-			if (process.send) {
-				callback();
-			} else {
-				module.exports.listen();
-			}
-		});
+		if (process.send) {
+			callback();
+		} else {
+			module.exports.listen();
+		}
 	};
 
 	module.exports.listen = function() {
