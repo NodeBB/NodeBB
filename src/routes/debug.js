@@ -56,6 +56,6 @@ module.exports = function(app, middleware, controllers) {
 	});
 
 	router.get('/test', function(req, res) {
-		process.exit(0);
+		res.redirect(404);
 	});
 };
