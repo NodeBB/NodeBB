@@ -414,7 +414,11 @@ var db = require('./database'),
 	Categories.onNewPostMade = function(postData) {
 		topics.getTopicFields(postData.tid, ['cid', 'pinned'], function(err, topicData) {
 			if (err) {
-				winston.error(err.message);
+				return winston.error(err.message);
+			}
+
+			if (!topicData) {
+				return;
 			}
 
 			var cid = topicData.cid;
