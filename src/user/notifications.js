@@ -324,7 +324,7 @@ var async = require('async'),
 		var websockets = require('./../socket.io');
 		UserNotifications.getUnreadCount(uid, function(err, count) {
 			if (err) {
-				return winston.warn('[User.pushNotifCount] Count not retrieve unread notifications count to push to uid ' + uid + '\'s client(s)');
+				return winston.error(err.stack);
 			}
 
 			websockets.in('uid_' + uid).emit('event:notifications.updateCount', count);
