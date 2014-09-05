@@ -108,7 +108,11 @@ if(nconf.get('ssl')) {
 		server.on("error", function(err){
 			if (err.code === 'EADDRINUSE') {
 				winston.error('NodeBB address in use, exiting...');
-				process.exit(1);
+				if (cluster.isWorker) {
+					cluster.worker.kill();
+				} else {
+					process.exit(0);
+				}
 			} else {
 				throw err;
 			}
@@ -133,7 +137,7 @@ if(nconf.get('ssl')) {
 		var	bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
 		winston.info('NodeBB attempting to listen on: ' + bind_address);
 
-		server.listen(port, nconf.get('bind_address'), function(){
+		server.listen(port, nconf.get('bind_address'), function() {
 			winston.info('NodeBB is now listening on: ' + bind_address);
 			if (process.send) {
 				process.send({
