@@ -27,6 +27,8 @@ var	io;
 
 var onlineUsersMap = {};
 var onlineUsers = [];
+var uidToSocketId = {};
+var socketIdToUid = {};
 
 process.on('message', function(msg) {
 	if (typeof msg !== 'object') {
@@ -42,6 +44,13 @@ process.on('message', function(msg) {
 		if (msg.uid && onlineUsers.indexOf(msg.uid) === -1) {
 			onlineUsers.push(msg.uid);
 		}
+
+		if (Array.isArray(uidToSocketId[msg.uid])) {
+			uidToSocketId[msg.uid].push(msg.socketid);
+		} else {
+			uidToSocketId[msg.uid] = [msg.socketid];
+		}
+		socketIdToUid[msg.socketid] = msg.uid;
 	} else if(msg.action === 'user:disconnect') {
 		var index = onlineUsers.indexOf(msg.uid);
 		if (index !== -1) {
@@ -52,6 +61,14 @@ process.on('message', function(msg) {
 			onlineUsersMap[msg.uid] -= 1;
 			onlineUsersMap[msg.uid] = Math.max(0, onlineUsersMap[msg.uid]);
 		}
+
+		if (uidToSocketId[msg.uid]) {
+			index = uidToSocketId[msg.uid].indexOf(msg.socketid);
+			if (index !== -1) {
+				uidToSocketId[msg.uid].splice(index, 1);
+			}
+		}
+		delete socketIdToUid[msg.socketid];
 	}
 });
 
@@ -112,7 +129,7 @@ Sockets.init = function(server) {
 
 				socket.uid = parseInt(uid, 10);
 				if (process.send) {
-					process.send({action: 'user:connect', uid: uid});
+					process.send({action: 'user:connect', uid: uid, socketid: socket.id});
 				}
 				/* If meta.config.loggerIOStatus > 0, logger.io_one will hook into this socket */
 				logger.io_one(socket, uid);
@@ -165,7 +182,7 @@ Sockets.init = function(server) {
 			}
 
 			if (process.send) {
-				process.send({action: 'user:disconnect', uid: uid});
+				process.send({action: 'user:disconnect', uid: uid, socketid: socket.id});
 			}
 
 			emitOnlineUserCount();
@@ -276,14 +293,20 @@ Sockets.getUserSockets = function(uid) {
 };
 
 Sockets.getUserRooms = function(uid) {
-	var sockets = Sockets.getUserSockets(uid);
 	var rooms = {};
-	for (var i=0; i<sockets.length; ++i) {
-		var roomClients = io.sockets.manager.roomClients[sockets[i].id];
-		for (var roomName in roomClients) {
-			rooms[roomName.slice(1)] = true;
-		}
+	var uidSocketIds = uidToSocketId[uid];
+	if (!Array.isArray(uidSocketIds)) {
+		return [];
 	}
+	for (var i=0; i<uidSocketIds.length; ++i) {
+		var roomClients = io.sockets.manager.roomClients[uidSocketIds[i]];
+	 	for (var roomName in roomClients) {
+	 		if (roomName && roomClients.hasOwnProperty(roomName)) {
+	 			rooms[roomName.slice(1)] = true;
+	 		}
+	 	}
+	}
+
 	rooms = Object.keys(rooms);
 	return rooms;
 };
@@ -327,20 +350,8 @@ function updateRoomBrowsingText(roomName) {
 		return;
 	}
 
-	function getAnonymousCount() {
-		var clients = io.sockets.clients(roomName);
-		var anonCount = 0;
-
-		for (var i = 0; i < clients.length; ++i) {
-			if(clients[i].uid === 0) {
-				++anonCount;
-			}
-		}
-		return anonCount;
-	}
-
 	var	uids = Sockets.getUidsInRoom(roomName),
-		anonymousCount = getAnonymousCount();
+		anonymousCount = Sockets.getAnonCountInRoom(roomName);
 
 	user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status'], function(err, users) {
 		if(!err) {
@@ -359,15 +370,38 @@ function updateRoomBrowsingText(roomName) {
 
 Sockets.getUidsInRoom = function(roomName) {
 	var uids = [];
-	var clients = io.sockets.clients(roomName);
-	for(var i=0; i<clients.length; ++i) {
-		if (clients[i].uid !== 0 && uids.indexOf(clients[i].uid) === -1) {
-			uids.push(clients[i].uid);
+	roomName = roomName ? '/' + roomName : '';
+	var socketids = io.sockets.manager.rooms[roomName];
+	if (!Array.isArray(socketids)) {
+		return [];
+	}
+
+	for(var i=0; i<socketids.length; ++i) {
+		var uid = socketIdToUid[socketids[i]]
+		if (uid && uids.indexOf(uid) === -1) {
+			uids.push(uid);
 		}
 	}
+
 	return uids;
 };
 
+Sockets.getAnonCountInRoom = function(roomName) {
+	var count = 0;
+	roomName = roomName ? '/' + roomName : '';
+ 	var socketids = io.sockets.manager.rooms[roomName];
+	if (!Array.isArray(socketids)) {
+		return [];
+	}
+
+	for(var i=0; i<socketids.length; ++i) {
+		if (socketIdToUid[socketids[i]] === 0) {
+			++count;
+		}
+	}
+
+	return count;
+}
 
 Sockets.emitTopicPostStats = emitTopicPostStats;
 function emitTopicPostStats(callback) {
