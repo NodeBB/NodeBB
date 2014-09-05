@@ -73,9 +73,9 @@ function getMainPids(tids, callback) {
 		if (err) {
 			return callback(err);
 		}
-		topics = topics.map(function(topics) {
-			return topics.mainPid;
-		});
+		topics = topics.map(function(topic) {
+			return topic && topic.mainPid;
+		}).filter(Boolean);
 		callback(null, topics);
 	});
 }
