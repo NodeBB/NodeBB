@@ -149,8 +149,8 @@ Sockets.init = function(server) {
 						}, function(err, userData) {
 							socket.emit('event:connect', {
 								status: 1,
-								username: userData.user ? userData.user.username || 'guest',
-								userslug: userData.user ? userData.user.userslug || '',
+								username: userData.user ? userData.user.username : 'guest',
+								userslug: userData.user ? userData.user.userslug : '',
 								isAdmin: userData.isAdmin,
 								uid: uid
 							});
