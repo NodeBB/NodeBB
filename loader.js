@@ -68,6 +68,11 @@ Loader.init = function() {
 							});
 						});
 					break;
+					case 'listening':
+						if (message.primary) {
+							Loader.primaryWorker = parseInt(worker.id, 10);
+						}
+					break;
 					case 'user:connect':
 					case 'user:disconnect':
 						notifyWorkers(worker, message);
@@ -106,7 +111,11 @@ Loader.init = function() {
 		console.log('[cluster] Child Process (' + worker.process.pid + ') has exited (code: ' + code + ')');
 		if (!worker.suicide) {
 			console.log('[cluster] Spinning up another process...')
-			cluster.fork();
+
+			var wasPrimary = parseInt(worker.id, 10) === Loader.primaryWorker;
+			cluster.fork({
+				handle_jobs: wasPrimary
+			});
 		}
 	});
 
@@ -116,9 +125,14 @@ Loader.init = function() {
 };
 
 Loader.start = function() {
+	Loader.primaryWorker = 1;
+
 	for(var x=0;x<numCPUs;x++) {
 		// Only the first worker sets up templates/sounds/jobs/etc
-		cluster.fork({ cluster_setup: x === 0 });
+		cluster.fork({
+			cluster_setup: x === 0,
+			handle_jobs: x ===0
+		});
 	}
 }
 

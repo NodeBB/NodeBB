@@ -39,9 +39,9 @@ if(nconf.get('ssl')) {
 	logger.init(app);
 	auth.registerApp(app);
 	emailer.registerApp(app);
-	notifications.init();
 
-	if (cluster.isWorker && process.env.cluster_setup === 'true') {
+	if (cluster.isWorker && process.env.handle_jobs === 'true') {
+		notifications.init();
 		user.startJobs();
 	}
 
@@ -140,7 +140,8 @@ if(nconf.get('ssl')) {
 			if (process.send) {
 				process.send({
 					action: 'listening',
-					bind_address: bind_address
+					bind_address: bind_address,
+					primary: process.env.handle_jobs === 'true'
 				});
 			}
 		});
