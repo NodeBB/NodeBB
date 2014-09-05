@@ -253,19 +253,19 @@ Sockets.in = function(room) {
 };
 
 Sockets.uidInRoom = function(uid, room) {
-	var clients = io.sockets.clients(room);
+	var socketIds = io.sockets.manager.rooms[room];
+	if (!Array(socketIds) || !socketIds.length) {
+		return false;
+	}
 
 	uid = parseInt(uid, 10);
 
-	if (typeof uid === 'number' && uid > 0) {
-		clients = clients.filter(function(socketObj) {
-			return uid === socketObj.uid;
-		});
-
-		return clients.length ? true : false;
-	} else {
-		return false;
+	for (var i=0; i<socketIds.length; ++i) {
+		if (socketIdToUid[socketIds[i]] === uid) {
+			return true;
+		}
 	}
+	return false;
 };
 
 Sockets.getConnectedClients = function() {
@@ -377,7 +377,7 @@ Sockets.getUidsInRoom = function(roomName) {
 	}
 
 	for(var i=0; i<socketids.length; ++i) {
-		var uid = socketIdToUid[socketids[i]]
+		var uid = socketIdToUid[socketids[i]];
 		if (uid && uids.indexOf(uid) === -1) {
 			uids.push(uid);
 		}
@@ -401,7 +401,7 @@ Sockets.getAnonCountInRoom = function(roomName) {
 	}
 
 	return count;
-}
+};
 
 Sockets.emitTopicPostStats = emitTopicPostStats;
 function emitTopicPostStats(callback) {
