@@ -72,15 +72,13 @@ SocketMeta.rooms.enter = function(socket, data, callback) {
 
 	socket.join(data.enter);
 
-	if (data.leave && data.leave !== data.enter) {
+	if (data.leave && data.leave !== data.enter && data.leave.indexOf('topic') !== -1) {
 		module.parent.exports.updateRoomBrowsingText(data.leave);
 	}
 
-	module.parent.exports.updateRoomBrowsingText(data.enter);
-
-	//if (data.enter !== 'admin') {
-	//	websockets.in('admin').emit('event:meta.rooms.update', null, websockets.server.sockets.manager.rooms);
-	//}
+	if (data.enter.indexOf('topic') !== -1) {
+		module.parent.exports.updateRoomBrowsingText(data.enter);
+	}
 };
 
 SocketMeta.rooms.getAll = function(socket, data, callback) {
@@ -88,7 +86,7 @@ SocketMeta.rooms.getAll = function(socket, data, callback) {
 		onlineGuestCount: websockets.getOnlineAnonCount(),
 		onlineRegisteredCount: websockets.getConnectedClients().length,
 		rooms: websockets.server.sockets.manager.rooms
-	}
+	};
 
 	callback(null, userData);
 };

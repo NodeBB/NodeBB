@@ -188,7 +188,9 @@ Sockets.init = function(server) {
 			emitOnlineUserCount();
 
 			for(var roomName in io.sockets.manager.roomClients[socket.id]) {
-				updateRoomBrowsingText(roomName.slice(1));
+				if (roomName.indexOf('topic') !== -1) {
+					updateRoomBrowsingText(roomName.slice(1));
+				}
 			}
 		});
 
