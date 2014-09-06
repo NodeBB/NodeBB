@@ -3,6 +3,7 @@
 'use strict';
 
 var async = require('async'),
+	winston = require('winston'),
 
 	db = require('../database'),
 	user = require('../user'),
@@ -37,6 +38,10 @@ module.exports = function(Topics) {
 	};
 
 	Topics.addPostData = function(postData, uid, callback) {
+		if (postData && postData.length > 50) {
+			var e = new Error('too many keys');
+			winston.warn('[ADD POST DATA] ' + postData.length, e.stack);
+		}
 		var pids = postData.map(function(post) {
 			return post && post.pid;
 		});
