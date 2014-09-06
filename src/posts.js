@@ -113,7 +113,7 @@ var async = require('async'),
 	};
 
 	Posts.getPostsByPids = function(pids, callback) {
-		if (pids && pids.length) {
+		if (pids && pids.length > 100) {
 			var e = new Error('getPostsByPids');
 			winston.warn('[GET_POST_BY_PIDS ' + pids.length, e.stack);
 		}
