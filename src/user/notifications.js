@@ -269,6 +269,7 @@ var async = require('async'),
 
 
 	UserNotifications.sendPostNotificationToFollowers = function(uid, tid, pid) {
+		return;
 		db.getSetMembers('followers:' + uid, function(err, followers) {
 			if (err || !followers || !followers.length) {
 				return;

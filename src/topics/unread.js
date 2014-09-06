@@ -157,6 +157,7 @@ module.exports = function(Topics) {
 	}
 
 	Topics.pushUnreadCount = function(uids, callback) {
+		return;
 		var	websockets = require('./../socket.io');
 
 		if (!uids) {
