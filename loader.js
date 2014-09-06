@@ -6,7 +6,7 @@ var	nconf = require('nconf'),
 	async = require('async'),
 	pidFilePath = __dirname + '/pidfile',
 	output = fs.openSync(__dirname + '/logs/output.log', 'a'),
-	numCPUs = require('os').cpus().length,
+	numCPUs = 12,// require('os').cpus().length,
 	Loader = {
 		timesStarted: 0,
 		shutdown_queue: [],
