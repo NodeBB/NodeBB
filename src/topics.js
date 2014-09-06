@@ -1,6 +1,7 @@
 "use strict";
 
 var async = require('async'),
+	winston = require('winston'),
 	validator = require('validator'),
 
 	_ = require('underscore'),
@@ -243,6 +244,10 @@ var async = require('async'),
 	};
 
 	Topics.getTopicWithPosts = function(tid, set, uid, start, end, reverse, callback) {
+		if (end - start > 50) {
+			var e = new Error('TOO LARGE');
+			winston.warn('GET_TOPIC_WITH_POSTS set, start, end, uid, tid', set, start, end, uid, tid, e.stack);
+		}
 		Topics.getTopicData(tid, function(err, topicData) {
 			if (err || !topicData) {
 				return callback(err || new Error('[[error:no-topic]]'));
