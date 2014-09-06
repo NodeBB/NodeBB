@@ -15,7 +15,7 @@ var topicsController = {},
 
 topicsController.get = function(req, res, next) {
 	var tid = req.params.topic_id,
-		page = req.query.page || 1,
+		page = 1,
 		sort = req.query.sort,
 		uid = req.user ? req.user.uid : 0,
 		userPrivileges;
@@ -62,10 +62,11 @@ topicsController.get = function(req, res, next) {
 			}
 
 			var postIndex = 0;
+			page = parseInt(req.query.page, 10) || 1;
 			req.params.post_index = parseInt(req.params.post_index, 10) || 0;
 			if (!settings.usePagination) {
 				if (reverse) {
-					if (parseInt(req.params.post_index, 10) === 1) {
+					if (req.params.post_index === 1) {
 						req.params.post_index = 0;
 					}
 					postIndex = Math.max(postCount - (req.params.post_index || postCount) - (settings.postsPerPage - 1), 0);
@@ -73,7 +74,7 @@ topicsController.get = function(req, res, next) {
 					postIndex = Math.max((req.params.post_index || 1) - (settings.postsPerPage + 1), 0);
 				}
 			} else if (!req.query.page) {
-				var index = Math.max(parseInt(req.params.post_index, 10), 0);
+				var index = Math.max(req.params.post_index, 0);
 				page = Math.ceil((index + 1) / settings.postsPerPage);
 			}
 
