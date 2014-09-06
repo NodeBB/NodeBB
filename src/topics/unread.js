@@ -157,7 +157,12 @@ module.exports = function(Topics) {
 	}
 
 	Topics.pushUnreadCount = function(uids, callback) {
-		return;
+		if (typeof callback === 'function') {
+			return callback(null);
+		} else {
+		    return null;
+		}
+		
 		var	websockets = require('./../socket.io');
 
 		if (!uids) {
