@@ -78,7 +78,6 @@ define('forum/topic/browsing', function() {
 
 	function createUserIcon(uid, picture, userslug, username) {
 		if(!$('.thread_active_users').find('[data-uid="' + uid + '"]').length) {
-			console.log('are u fucking kidming', arguments);
 			return $('<div class="inline-block"><a data-uid="' + uid + '" data-count="1" href="' + config.relative_path + '/user/' + userslug + '"><img title="' + username + '" src="'+ picture +'"/></a></div>');
 		}
 	}
