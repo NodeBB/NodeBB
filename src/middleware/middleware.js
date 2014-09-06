@@ -36,6 +36,8 @@ middleware.authenticate = function(req, res, next) {
 middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn();
 
 middleware.updateLastOnlineTime = function(req, res, next) {
+	return next();
+	
 	if(req.user) {
 		user.updateLastOnlineTime(req.user.uid);
 	}
