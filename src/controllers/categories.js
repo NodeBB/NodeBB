@@ -27,10 +27,18 @@ categoriesController.recent = function(req, res, next) {
 	});
 };
 
+var anonCache = {}, lastUpdateTime = 0;
+
 categoriesController.popular = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
 
 	var term = req.params.term || 'daily';
+
+	if (uid === 0) {
+        if (anonCache[term] && (Date.now() - lastUpdateTime) < 60 * 60 * 1000) {
+            return res.render('popular', anonCache[term]);
+        }
+	}
 
 	topics.getPopular(term, uid, meta.config.topicsPerList, function(err, data) {
 		if (err) {
@@ -40,6 +48,11 @@ categoriesController.popular = function(req, res, next) {
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
 		plugins.fireHook('filter:category.get', {topics: data}, uid, function(err, data) {
+			if (uid === 0) {
+		        anonCache[term] = data;
+		        lastUpdateTime = Date.now();
+			}
+
 			res.render('popular', data);
 		});
 	});
