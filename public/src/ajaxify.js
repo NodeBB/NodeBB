@@ -46,7 +46,7 @@ $(document).ready(function() {
 
 		ajaxify.go = function (url, callback, quiet) {
 			// "quiet": If set to true, will not call pushState
-			app.enterRoom('global');
+			app.enterRoom('');
 
 			$(window).off('scroll');
 

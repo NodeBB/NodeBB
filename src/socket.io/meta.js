@@ -66,11 +66,13 @@ SocketMeta.rooms.enter = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	if (data.leave !== null) {
+	if (data.leave) {
 		socket.leave(data.leave);
 	}
 
-	socket.join(data.enter);
+	if (data.enter) {
+		socket.join(data.enter);
+	}
 
 	if (data.leave && data.leave !== data.enter && data.leave.indexOf('topic') !== -1) {
 		module.parent.exports.updateRoomBrowsingText(data.leave);

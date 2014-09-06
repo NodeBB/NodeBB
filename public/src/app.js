@@ -45,12 +45,12 @@ var socket,
 				case 'admin':
 					room = 'admin';
 				break;
-				default:
-					room = 'global';
+				case 'home':
+					room = 'home';
 				break;
 			}
-
-			app.enterRoom(room, true);
+			app.currentRoom = '';
+			app.enterRoom(room);
 
 			socket.emit('meta.reconnected');
 
@@ -198,9 +198,9 @@ var socket,
 		});
 	};
 
-	app.enterRoom = function (room, force) {
+	app.enterRoom = function (room) {
 		if (socket) {
-			if (app.currentRoom === room && !force) {
+			if (app.currentRoom === room) {
 				return;
 			}
 
