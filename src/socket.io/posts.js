@@ -36,7 +36,16 @@ SocketPosts.reply = function(socket, data, callback) {
 				'topics:reply': true
 			};
 
-			websockets.server.sockets.emit('event:new_post', {
+			callback();
+
+			socket.emit('event:new_post', {
+				posts: [postData],
+				privileges: privileges,
+				'reputation:disabled': parseInt(meta.config['reputation:disabled'], 10) === 1,
+				'downvote:disabled': parseInt(meta.config['downvote:disabled'], 10) === 1,
+			});
+
+			socket.broadcast.emit('event:new_post', {
 				posts: [postData],
 				privileges: privileges,
 				'reputation:disabled': parseInt(meta.config['reputation:disabled'], 10) === 1,
@@ -45,8 +54,6 @@ SocketPosts.reply = function(socket, data, callback) {
 
 			module.parent.exports.emitTopicPostStats();
 			topics.pushUnreadCount();
-
-			callback();
 		}
 	});
 };
