@@ -62,7 +62,7 @@ topicsController.get = function(req, res, next) {
 			}
 
 			var postIndex = 0;
-			req.params.post_index = req.params.post_index || 0;
+			req.params.post_index = parseInt(req.params.post_index, 10) || 0;
 			if (!settings.usePagination) {
 				if (reverse) {
 					if (parseInt(req.params.post_index, 10) === 1) {
