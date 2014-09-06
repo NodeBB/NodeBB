@@ -1,6 +1,7 @@
 "use strict";
 
-var helpers = {};
+var helpers = {},
+	winston = require('winston');
 
 helpers.toMap = function(data) {
 	var map = {};
@@ -32,5 +33,17 @@ helpers.valueToString = function(value) {
 };
 
 helpers.noop = function() {};
+
+helpers.checkKeys = function(keys) {
+	if (!Array.isArray(keys)) {
+		var e = new Error('invalid keys');
+		winston.warn('[INVALID_KEYS] ',  e.stack);
+		return;
+	}
+	if (keys.length >= 50) {
+		var e = new Error('too many keys');
+		winston.warn('[TOO_MANY_KEYS] ' + keys.length + ' ' + keys[0] + '  ' + keys[keys.length - 1] + '\n', e.stack);
+	}
+}
 
 module.exports = helpers;

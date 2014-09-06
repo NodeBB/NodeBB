@@ -1,5 +1,7 @@
 "use strict";
 
+var winston = require('winston');
+
 module.exports = function(db, module) {
 	var helpers = module.helpers.mongo;
 
@@ -23,6 +25,7 @@ module.exports = function(db, module) {
 	};
 
 	module.getObjects = function(keys, callback) {
+		helpers.checkKeys(keys);
 		db.collection('objects').find({_key: {$in: keys}}, {_id: 0}).toArray(function(err, data) {
 			if(err) {
 				return callback(err);
@@ -53,6 +56,7 @@ module.exports = function(db, module) {
 	};
 
 	module.getObjectsFields = function(keys, fields, callback) {
+		helpers.checkKeys(keys);
 		var _fields = {
 			_id: 0,
 			_key: 1
