@@ -303,33 +303,6 @@ $(document).ready(function() {
 				}
 			});
 
-			$(document.body).on('mouseover', 'a', function (e) {
-				if (hrefEmpty(this.href) || this.target !== '' || this.protocol === 'javascript:' || $(this).attr('data-ajaxify') === 'false') {
-					return;
-				}
-
-				if (this.host === window.location.host) {
-					// Internal link
-					var url = this.href.replace(rootUrl + '/', ''),
-						currentTime = (new Date()).getTime();
-
-					if (!ajaxify.preloader[url] || (!ajaxify.preloader[url].loading && currentTime - ajaxify.preloader[url].lastFetched > PRELOADER_RATE_LIMIT)) {
-						ajaxify.preloader[url] = {
-							loading: true
-						};
-						ajaxify.loadData(url, function(err, data) {
-							ajaxify.preloader[url] = err ? null : {
-								url: url,
-								data: data,
-								lastFetched: currentTime,
-								loading: false
-							};
-						});
-					}
-				}
-
-			});
-
 			templates.registerLoader(ajaxify.loadTemplate);
 			templatesModule.refresh(app.load);
 		});
