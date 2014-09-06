@@ -62,24 +62,23 @@ SocketMeta.getUsageStats = function(socket, data, callback) {
 /* Rooms */
 
 SocketMeta.rooms.enter = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	if (data.leave) {
 		socket.leave(data.leave);
+		if (socket.uid && data.leave.indexOf('topic') !== -1) {
+			websockets.in(data.leave).emit('event:user_leave', socket.uid);
+		}
 	}
 
 	if (data.enter) {
 		socket.join(data.enter);
-	}
-
-	if (data.leave && data.leave !== data.enter && data.leave.indexOf('topic') !== -1) {
-		module.parent.exports.updateRoomBrowsingText(data.leave);
-	}
-
-	if (data.enter.indexOf('topic') !== -1) {
-		module.parent.exports.updateRoomBrowsingText(data.enter);
+		if (socket.uid && data.enter.indexOf('topic') !== -1) {
+			data.uid = socket.uid;
+			websockets.in(data.enter).emit('event:user_enter', data);
+		}
 	}
 };
 

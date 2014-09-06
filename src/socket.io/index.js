@@ -162,16 +162,20 @@ Sockets.init = function(server) {
 
 						async.parallel({
 							user: function(next) {
-								user.getUserFields(uid, ['username', 'userslug'], next);
+								user.getUserFields(uid, ['username', 'userslug', 'picture'], next);
 							},
 							isAdmin: function(next) {
 								user.isAdministrator(uid, next);
 							}
 						}, function(err, userData) {
+							if (err || !userData.user) {
+								return;
+							}
 							socket.emit('event:connect', {
 								status: 1,
-								username: userData.user ? userData.user.username : 'guest',
-								userslug: userData.user ? userData.user.userslug : '',
+								username: userData.user.username,
+								userslug: userData.user.userslug,
+								picture: userData.user.picture,
 								isAdmin: userData.isAdmin,
 								uid: uid
 							});
@@ -208,7 +212,7 @@ Sockets.init = function(server) {
 
 			for(var roomName in io.sockets.manager.roomClients[socket.id]) {
 				if (roomName.indexOf('topic') !== -1) {
-					updateRoomBrowsingText(roomName.slice(1));
+					io.sockets.in(roomName.slice(1)).emit('event:user_leave', socket.uid);
 				}
 			}
 		});
@@ -368,15 +372,17 @@ Sockets.isUsersOnline = function(uids, callback) {
 };
 
 Sockets.updateRoomBrowsingText = updateRoomBrowsingText;
-function updateRoomBrowsingText(roomName) {
+function updateRoomBrowsingText(roomName, selfUid) {
 
 	if (!roomName) {
 		return;
 	}
 
-	var	uids = Sockets.getUidsInRoom(roomName),
-		anonymousCount = Sockets.getAnonCountInRoom(roomName);
-
+	var	uids = Sockets.getUidsInRoom(roomName);
+	uids = uids.slice(0, 9);
+	if (selfUid) {
+		uids = [selfUid].concat(uids);
+	}
 	user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status'], function(err, users) {
 		if(!err) {
 			users = users.filter(function(user) {
@@ -385,7 +391,6 @@ function updateRoomBrowsingText(roomName) {
 
 			io.sockets.in(roomName).emit('event:update_users_in_room', {
 				users: users,
-				anonymousCount: anonymousCount,
 				room: roomName
 			});
 		}

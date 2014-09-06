@@ -9,6 +9,8 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 
 	var events = {
 		'event:update_users_in_room': browsing.onUpdateUsersInRoom,
+		'event:user_enter': browsing.onUserEnter,
+		'event:user_leave': browsing.onUserLeave,
 		'user.isOnline': browsing.onUserOnline,
 		'event:voted': updatePostVotesAndUserReputation,
 		'event:favourited': updateFavouriteCount,

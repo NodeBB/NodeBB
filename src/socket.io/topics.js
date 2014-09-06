@@ -64,6 +64,7 @@ SocketTopics.enter = function(socket, tid, callback) {
 	SocketTopics.markAsRead(socket, tid);
 	topics.markTopicNotificationsRead(tid, socket.uid);
 	topics.increaseViewCount(tid);
+	websockets.updateRoomBrowsingText('topic_' + tid);
 };
 
 SocketTopics.postcount = function(socket, tid, callback) {

@@ -89,6 +89,7 @@ var socket,
 			socket.on('event:connect', function (data) {
 				app.username = data.username;
 				app.userslug = data.userslug;
+				app.picture = data.picture;
 				app.uid = data.uid;
 				app.isAdmin = data.isAdmin;
 
@@ -141,8 +142,6 @@ var socket,
 					window.location.href = RELATIVE_PATH + '/';
 				}, 1000);
 			});
-
-			app.enterRoom('global');
 
 			app.cacheBuster = config['cache-buster'];
 
@@ -205,8 +204,11 @@ var socket,
 			}
 
 			socket.emit('meta.rooms.enter', {
-				'enter': room,
-				'leave': app.currentRoom
+				enter: room,
+				leave: app.currentRoom,
+				username: app.username,
+				userslug: app.userslug,
+				picture: app.picture
 			});
 
 			app.currentRoom = room;
