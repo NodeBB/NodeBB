@@ -8,7 +8,7 @@ module.exports = function(Categories) {
 	Categories.getActiveUsers = function(cid, callback) {
 		async.waterfall([
 			function(next) {
-				db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, 49, next);
+				db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, 24, next);
 			},
 			function(pids, next) {
 				var keys = pids.map(function(pid) {
