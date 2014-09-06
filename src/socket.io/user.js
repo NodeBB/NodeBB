@@ -87,9 +87,13 @@ SocketUser.reset.commit = function(socket, data, callback) {
 	}
 };
 
+var tempCache = null; // temp, as always a false promise --psychobunny
 SocketUser.isOnline = function(socket, uid, callback) {
+	if (tempCache) return callback(null, tempCache);
+
 	user.isOnline([uid], function(err, data) {
-		callback(err, Array.isArray(data) ? data[0] : null);
+		tempCache = Array.isArray(data) ? data[0] : null;
+		callback(err, tempCache);
 	});
 };
 
