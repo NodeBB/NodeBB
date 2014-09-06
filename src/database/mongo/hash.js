@@ -1,7 +1,5 @@
 "use strict";
 
-var winston = require('winston');
-
 module.exports = function(db, module) {
 	var helpers = module.helpers.mongo;
 
