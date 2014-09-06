@@ -62,9 +62,10 @@ topicsController.get = function(req, res, next) {
 			}
 
 			var postIndex = 0;
+			req.params.post_index = req.params.post_index || 0;
 			if (!settings.usePagination) {
 				if (reverse) {
-					if (!req.params.post_index || parseInt(req.params.post_index, 10) === 1) {
+					if (parseInt(req.params.post_index, 10) === 1) {
 						req.params.post_index = 0;
 					}
 					postIndex = Math.max(postCount - (req.params.post_index || postCount) - (settings.postsPerPage - 1), 0);
