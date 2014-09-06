@@ -87,7 +87,7 @@ module.exports = function(Topics) {
 			async.whilst(function() {
 				return unreadTids.length < count && !done;
 			}, function(next) {
-				Topics.getLatestTids(start, stop, 'month', function(err, tids) {
+				Topics.getLatestTids(start, stop, 'day', function(err, tids) {
 					if (err) {
 						return next(err);
 					}
