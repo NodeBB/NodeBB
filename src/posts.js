@@ -404,15 +404,25 @@ var async = require('async'),
 
 			var tids = posts.map(function(post) {
 				return post.tid;
+			}).filter(function(tid, index, array) {
+				return array.indexOf(tid) === index;
 			});
 
 			topics.getTopicsFields(tids, ['cid'], function(err, topics) {
 				if (err) {
 					return callback(err);
 				}
-				var cids = topics.map(function(topic) {
-					return topic.cid;
+				var map = {};
+				topics.forEach(function(topic) {
+					if (topic) {
+						map[topic.tid] = topic.cid;
+					}
 				});
+
+				var cids = posts.map(function(post) {
+					return map[post.tid];
+				})
+
 				callback(null, cids);
 			});
 		});

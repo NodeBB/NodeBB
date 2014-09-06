@@ -348,7 +348,7 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			var postKeys = pids.map(function(pid) {
+			var postKeys = pids.filter(Boolean).map(function(pid) {
 				return 'post:' + pid;
 			});
 
@@ -379,14 +379,19 @@ var async = require('async'),
 					results.users.forEach(function(user) {
 						users[user.uid] = user;
 					});
-
+					var tidToPost = {};
 					postData.forEach(function(post, index) {
 						post.user = users[post.uid];
 						post.index = results.indices[index] + 1;
 						post.timestamp = utils.toISOString(post.timestamp);
+						tidToPost[post.tid] = post;
 					});
 
-					callback(null, postData);
+					var teasers = tids.map(function(tid) {
+						return tidToPost[tid];
+					});
+
+					callback(null, teasers);
 				});
 			});
 		});

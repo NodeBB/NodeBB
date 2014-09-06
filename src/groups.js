@@ -439,15 +439,13 @@
 	};
 
 	Groups.getUserGroups = function(uids, callback) {
-		var ignoredGroups = ['registered-users'];
-
 		db.getSetMembers('groups', function(err, groupNames) {
 			if (err) {
 				return callback(err);
 			}
 
 			var groupKeys = groupNames.filter(function(groupName) {
-				return ignoredGroups.indexOf(groupName) === -1;
+				return groupName !== 'registered-users' && groupName.indexOf(':privileges:') === -1;
 			}).map(function(groupName) {
 				return 'group:' + groupName;
 			});
