@@ -227,6 +227,7 @@ module.exports = function(Topics) {
 	};
 
 	function incrementFieldAndUpdateSortedSet(tid, field, by, set, callback) {
+		callback = callback || function() {};
 		db.incrObjectFieldBy('topic:' + tid, field, by, function(err, value) {
 			if(err) {
 				return callback(err);
