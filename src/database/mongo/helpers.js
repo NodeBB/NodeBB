@@ -40,7 +40,7 @@ helpers.checkKeys = function(keys) {
 		winston.warn('[INVALID_KEYS] ',  e.stack);
 		return;
 	}
-	if (keys.length >= 50) {
+	if (keys.length > 50) {
 		var e = new Error('too many keys');
 		winston.warn('[TOO_MANY_KEYS] ' + keys.length + ' ' + keys[0] + '  ' + keys[keys.length - 1] + '\n', e.stack);
 	}
