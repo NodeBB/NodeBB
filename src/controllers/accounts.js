@@ -490,7 +490,7 @@ accountsController.getNotifications = function(req, res, next) {
 accountsController.getChats = function(req, res, next) {
 	async.parallel({
 		contacts: async.apply(user.getFollowing, req.user.uid),
-		recentChats: async.apply(messaging.getRecentChats, req.user.uid, 0, -1)
+		recentChats: async.apply(messaging.getRecentChats, req.user.uid, 0, 19)
 	}, function(err, results) {
 		if (err) {
 			return next(err);
@@ -505,10 +505,6 @@ accountsController.getChats = function(req, res, next) {
 			results.recentChats = results.recentChats.filter(function(chatObj) {
 				return contactUids.indexOf(parseInt(chatObj.uid, 10)) === -1;
 			});
-		}
-
-		if (results.recentChats.length > 20) {
-			results.recentChats.length = 20;
 		}
 
 		if (!req.params.userslug) {
