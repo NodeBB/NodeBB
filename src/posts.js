@@ -113,6 +113,10 @@ var async = require('async'),
 	};
 
 	Posts.getPostsByPids = function(pids, callback) {
+		if (pids && pids.length) {
+			var e = new Error('getPostsByPids');
+			winston.warn('[GET_POST_BY_PIDS ' + pids.length, e.stack);
+		}
 		var keys = [];
 
 		for(var x=0, numPids=pids.length; x<numPids; ++x) {
