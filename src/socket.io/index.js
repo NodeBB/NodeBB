@@ -383,6 +383,9 @@ function updateRoomBrowsingText(roomName, selfUid) {
 	if (selfUid) {
 		uids = [selfUid].concat(uids);
 	}
+	if (!uids.length) {
+		return;
+	}
 	user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status'], function(err, users) {
 		if(!err) {
 			users = users.filter(function(user) {
