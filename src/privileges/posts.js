@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async'),
+	winston = require('winston'),
 
 	posts = require('../posts'),
 	topics = require('../topics'),
@@ -15,7 +16,10 @@ module.exports = function(privileges) {
 	privileges.posts = {};
 
 	privileges.posts.get = function(pids, uid, callback) {
-
+		if (pids && pids.length > 100) {
+			var e = new Error('too many keys')
+			winston.warn('[TOO_MANY_KEYS] ' + pid.length, e.stack);
+		}
 		async.parallel({
 			manage_content: function(next) {
 				helpers.hasEnoughReputationFor('privileges:manage_content', uid, next);
