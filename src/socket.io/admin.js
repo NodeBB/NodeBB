@@ -40,6 +40,7 @@ SocketAdmin.before = function(socket, method, next) {
 };
 
 SocketAdmin.reload = function(socket, data, callback) {
+	events.logWithUser(socket.uid, ' is reloading NodeBB');
 	if (cluster.isWorker) {
 		process.send({
 			action: 'reload'
@@ -50,6 +51,7 @@ SocketAdmin.reload = function(socket, data, callback) {
 };
 
 SocketAdmin.restart = function(socket, data, callback) {
+	events.logWithUser(socket.uid, ' is restarting NodeBB');
 	meta.restart();
 };
 
