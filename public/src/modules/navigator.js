@@ -24,6 +24,12 @@ define('navigator', ['forum/pagination'], function(pagination) {
 			e.stopPropagation();
 		});
 
+		$('.pagination-block').off('shown.bs.dropdown', '.dropdown').on('shown.bs.dropdown', '.dropdown', function() {
+			setTimeout(function() {
+				$('.pagination-block input').focus();
+			}, 100);
+		});
+
 		$('.pagination-block .pageup').off('click').on('click', navigator.scrollUp);
 		$('.pagination-block .pagedown').off('click').on('click', navigator.scrollDown);
 		$('.pagination-block .pagetop').off('click').on('click', toTop);
@@ -72,6 +78,11 @@ define('navigator', ['forum/pagination'], function(pagination) {
 	};
 
 	function toggle(flag) {
+		var path = ajaxify.removeRelativePath(window.location.pathname.slice(1));
+		if (flag && (!path.startsWith('topic') && !path.startsWith('category'))) {
+			return;
+		}
+
 		$('.pagination-block').toggleClass('hidden', !flag);
 	}
 

@@ -212,6 +212,10 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 	};
 
 	Topic.navigatorCallback = function(element, elementCount) {
+		var path = ajaxify.removeRelativePath(window.location.pathname.slice(1));
+		if (!path.startsWith('topic')) {
+			return 1;
+		}
 		var postIndex = parseInt(element.attr('data-index'), 10);
 		var index = postIndex + 1;
 		if (config.topicPostSort !== 'oldest_to_newest') {
