@@ -109,14 +109,13 @@ var async = require('async'),
 	};
 
 	Posts.getPidsFromSet = function(set, start, end, reverse, callback) {
+		if (isNaN(start) || isNaN(end)) {
+			return callback(null, []);
+		}
 		db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, end, callback);
 	};
 
 	Posts.getPostsByPids = function(pids, callback) {
-		if (pids && pids.length > 100) {
-			var e = new Error('getPostsByPids');
-			winston.warn('[GET_POST_BY_PIDS ' + pids.length, e.stack);
-		}
 		var keys = [];
 
 		for(var x=0, numPids=pids.length; x<numPids; ++x) {

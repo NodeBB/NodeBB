@@ -135,7 +135,7 @@ var async = require('async'),
 					return notification ? notification.pid : null;
 				});
 
-				generatePostPaths(pids, uid, function(err, paths) {
+				generatePostPaths(pids, uid, function(err, pidToPaths) {
 					if (err) {
 						return callback(err);
 					}
@@ -146,7 +146,7 @@ var async = require('async'),
 						}
 
 						notification.read = hasRead[index];
-						notification.path = paths[index] || notification.path || '';
+						notification.path = pidToPaths[notification.pid] || notification.path || '';
 						notification.datetimeISO = utils.toISOString(notification.datetime);
 						notification.readClass = !notification.read ? 'label-warning' : '';
 						return notification;
@@ -159,7 +159,7 @@ var async = require('async'),
 	};
 
 	function generatePostPaths(pids, uid, callback) {
-		var postKeys = pids.map(function(pid) {
+		var postKeys = pids.filter(Boolean).map(function(pid) {
 			return 'post:' + pid;
 		});
 
@@ -184,18 +184,16 @@ var async = require('async'),
 					return callback(err);
 				}
 
-				var paths = [];
+				var pidToPaths = {};
 				pids.forEach(function(pid, index) {
 					var slug = results.topics[index] ? results.topics[index].slug : null;
 					var postIndex = utils.isNumber(results.indices[index]) ? parseInt(results.indices[index], 10) + 1 : null;
 
 					if (slug && postIndex) {
-						paths.push(nconf.get('relative_path') + '/topic/' + slug + '/' + postIndex);
-					} else {
-						paths.push(null);
+						pidToPaths[pid] = nconf.get('relative_path') + '/topic/' + slug + '/' + postIndex;
 					}
 				});
-				callback(null, paths);
+				callback(null, pidToPaths);
 			});
 		});
 	}

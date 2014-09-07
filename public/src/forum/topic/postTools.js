@@ -14,8 +14,6 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 
 		share.addShareHandlers(topicName);
 
-		addFavouriteHandler();
-
 		addVoteHandler();
 	};
 
@@ -37,12 +35,6 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		});
 	};
 
-	function addFavouriteHandler() {
-		$('#post-container').on('mouseenter', '.favourite-tooltip', function() {
-			loadDataAndCreateTooltip($(this), 'posts.getFavouritedUsers');
-		});
-	}
-
 	function addVoteHandler() {
 		$('#post-container').on('mouseenter', '.post-row .votes', function() {
 			loadDataAndCreateTooltip($(this), 'posts.getUpvoters');
@@ -51,21 +43,21 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 
 	function loadDataAndCreateTooltip(el, method) {
 		var pid = el.parents('.post-row').attr('data-pid');
-		socket.emit(method, pid, function(err, usernames) {
+		socket.emit(method, pid, function(err, data) {
 			if (!err) {
-				createTooltip(el, usernames);
+				createTooltip(el, data);
 			}
 		});
 	}
 
-	function createTooltip(el, usernames) {
+	function createTooltip(el, data) {
+		var usernames = data.usernames;
 		if (!usernames.length) {
 			return;
 		}
-		if (usernames.length > 6) {
-			var otherCount = usernames.length - 5;
-			usernames = usernames.slice(0, 5).join(', ').replace(/,/g, '|');
-			translator.translate('[[topic:users_and_others, ' + usernames + ', ' + otherCount + ']]', function(translated) {
+		if (usernames.length + data.otherCount > 6) {
+			usernames = usernames.join(', ').replace(/,/g, '|');
+			translator.translate('[[topic:users_and_others, ' + usernames + ', ' + data.otherCount + ']]', function(translated) {
 				translated = translated.replace(/\|/g, ',');
 				el.attr('title', translated).tooltip('destroy').tooltip('show');
 			});

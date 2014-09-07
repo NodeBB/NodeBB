@@ -244,10 +244,6 @@ var async = require('async'),
 	};
 
 	Topics.getTopicWithPosts = function(tid, set, uid, start, end, reverse, callback) {
-		if (isNaN(start) || isNaN(end)) {
-			var e = new Error('TOO LARGE');
-			winston.warn('IS_NAN_CHECK set, start, end, uid, tid', set, start, end, uid, tid, e.stack);
-		}
 		Topics.getTopicData(tid, function(err, topicData) {
 			if (err || !topicData) {
 				return callback(err || new Error('[[error:no-topic]]'));
@@ -268,10 +264,7 @@ var async = require('async'),
 							if (err) {
 								return next(err);
 							}
-							if (posts.length > 100) {
-								var e = new Error('TOO LARGE');
-								winston.warn('GET_TOPIC_WITH_POSTS set, start, end, uid, tid', set, start, end, uid, tid, e.stack);
-							}
+
 							Topics.addPostData(posts, uid, next);
 						});
 					});

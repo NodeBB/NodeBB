@@ -254,23 +254,22 @@ SocketPosts.getPrivileges = function(socket, pid, callback) {
 	});
 };
 
-SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
-	favourites.getFavouritedUidsByPids([pid], function(err, data) {
-		if (err || !Array.isArray(data) || !data.length) {
-			return callback(err);
-		}
-
-		user.getUsernamesByUids(data[0], callback);
-	});
-};
-
 SocketPosts.getUpvoters = function(socket, pid, callback) {
 	favourites.getUpvotedUidsByPids([pid], function(err, data) {
 		if (err || !Array.isArray(data) || !data.length) {
 			return callback(err, []);
 		}
-
-		user.getUsernamesByUids(data[0], callback);
+		var otherCount = 0;
+		if (data[0].length > 6) {
+			otherCount = data[0].length - 5;
+			data[0] = data[0].slice(0, 5);
+		}
+		user.getUsernamesByUids(data[0], function(err, usernames) {
+			callback(err, {
+				otherCount: otherCount,
+				usernames: usernames
+			});
+		});
 	});
 };
 
