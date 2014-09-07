@@ -66,11 +66,9 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			topics.sort(function(a, b) {
-				return parseInt(b.postcount, 10) - parseInt(a.postcount, 10);
-			});
-
-			topics = topics.slice(0, count).map(function(topic) {
+			topics = topics.sort(function(a, b) {
+				return b.postcount - a.postcount;
+			}).slice(0, count).map(function(topic) {
 				return topic.tid;
 			});
 

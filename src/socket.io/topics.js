@@ -550,7 +550,7 @@ SocketTopics.searchAndLoadTags = function(socket, data, callback) {
 				tag.score = results.counts[index];
 			});
 			results.tagData.sort(function(a, b) {
-				return parseInt(b.score, 10) - parseInt(a.score, 10);
+				return b.score - a.score;
 			});
 
 			callback(null, results.tagData);

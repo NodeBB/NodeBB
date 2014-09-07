@@ -108,7 +108,7 @@ var async = require('async'),
 				}
 
 				notifs = notifs.filter(Boolean).sort(function(a, b) {
-					return parseInt(b.datetime, 10) - parseInt(a.datetime, 10);
+					return b.datetime - a.datetime;
 				});
 
 				callback(null, notifs);
