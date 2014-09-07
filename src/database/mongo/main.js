@@ -74,6 +74,11 @@ module.exports = function(db, module) {
 		db.collection('objects').remove({_key:key}, callback);
 	};
 
+	module.deleteAll = function(keys, callback) {
+		callback = callback || helpers.noop;
+		db.collection('objects').remove({_key: {$in: keys}}, callback);
+	};
+
 	module.get = function(key, callback) {
 		module.getObjectField(key, 'value', callback);
 	};

@@ -5,6 +5,7 @@ var async = require('async'),
 	cron = require('cron').CronJob,
 	nconf = require('nconf'),
 	S = require('string'),
+	_ = require('underscore'),
 
 	db = require('./database'),
 	utils = require('../public/src/utils'),
@@ -20,7 +21,7 @@ var async = require('async'),
 		if (process.env.NODE_ENV === 'development') {
 			winston.info('[notifications.init] Registering jobs.');
 		}
-		new cron('0 0 * * *', Notifications.prune, null, true);
+		new cron('0 * * * *', Notifications.prune, null, true);
 	};
 
 	Notifications.get = function(nid, callback) {
@@ -297,6 +298,8 @@ var async = require('async'),
 			if (err) {
 				return winston.error(err.message);
 			}
+			var totalNidCount = nids.length;
+			nids = _.sortBy(nids, function(num) { return parseInt(num, 10); }).slice(0, 500);
 
 			var keys = nids.map(function(nid) {
 				return 'notifications:' + nid;
@@ -307,25 +310,26 @@ var async = require('async'),
 					return winston.error(err.message);
 				}
 
-				var expiredNids = notifs.filter(function(notif) {
-					return notif && parseInt(notif.datetime, 10) < cutoffTime;
-				}).map(function(notif) {
-					return notif.nid;
+				var expiredNids = nids.filter(function(nids, index) {
+					return !notifs[index].nid || parseInt(notifs[index].datetime, 10) < cutoffTime;
+				}).filter(Boolean);
+
+				keys = expiredNids.map(function(nid) {
+					return 'notifications:' + nid;
 				});
 
-				async.eachLimit(expiredNids, 50, function(nid, next) {
-					async.parallel([
-						function(next) {
-							db.setRemove('notifications', nid, next);
-						},
-						function(next) {
-							db.delete('notifications:' + nid, next);
-						}
-					], function(err) {
-						numPruned++;
-						next(err);
-					});
-				}, function(err) {
+				numPruned = expiredNids.length;
+
+				events.log('Notification pruning. Total nids = ' + totalNidCount + '. Expired Nids = ' + numPruned);
+
+				async.parallel([
+					function(next) {
+						db.setRemove('notifications', expiredNids, next);
+					},
+					function(next) {
+						db.deleteAll(keys, next);
+					}
+				], function(err) {
 					if (err) {
 						return winston.error('Encountered error pruning notifications: ' + err.message);
 					}
