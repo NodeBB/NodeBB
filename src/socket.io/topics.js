@@ -49,7 +49,7 @@ SocketTopics.post = function(socket, data, callback) {
 				posts: result.postData
 			});
 
-			module.parent.exports.emitTopicPostStats();
+			websockets.emitTopicPostStats();
 			topics.pushUnreadCount();
 
 			callback(null, result.topicData);

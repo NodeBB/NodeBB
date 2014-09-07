@@ -52,7 +52,7 @@ SocketPosts.reply = function(socket, data, callback) {
 				'downvote:disabled': parseInt(meta.config['downvote:disabled'], 10) === 1,
 			});
 
-			module.parent.exports.emitTopicPostStats();
+			websockets.emitTopicPostStats();
 			topics.pushUnreadCount();
 		}
 	});
@@ -214,7 +214,7 @@ function deleteOrRestore(command, socket, data, callback) {
 			return callback(err);
 		}
 
-		module.parent.exports.emitTopicPostStats();
+		websockets.emitTopicPostStats();
 
 		var eventName = command === 'restore' ? 'event:post_restored' : 'event:post_deleted';
 		websockets.server.sockets.in('topic_' + data.tid).emit(eventName, postData);
@@ -232,7 +232,7 @@ SocketPosts.purge = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		module.parent.exports.emitTopicPostStats();
+		websockets.emitTopicPostStats();
 
 		websockets.server.sockets.in('topic_' + data.tid).emit('event:post_purged', data.pid);
 
