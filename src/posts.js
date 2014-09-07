@@ -408,17 +408,18 @@ var async = require('async'),
 			var tids = posts.map(function(post) {
 				return post.tid;
 			}).filter(function(tid, index, array) {
-				return array.indexOf(tid) === index;
+				return tid && array.indexOf(tid) === index;
 			});
 
 			topics.getTopicsFields(tids, ['cid'], function(err, topics) {
 				if (err) {
 					return callback(err);
 				}
+
 				var map = {};
-				topics.forEach(function(topic) {
+				topics.forEach(function(topic, index) {
 					if (topic) {
-						map[topic.tid] = topic.cid;
+						map[tids[index]] = topic.cid;
 					}
 				});
 
