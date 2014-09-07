@@ -12,7 +12,6 @@ var	SocketIO = require('socket.io'),
 
 	db = require('../database'),
 	user = require('../user'),
-	socketUser = require('./user'),
 	topics = require('../topics'),
 	logger = require('../logger'),
 	meta = require('../meta'),
@@ -59,9 +58,9 @@ function onMessage(msg) {
 			onlineUsersMap[msg.uid] -= 1;
 			onlineUsersMap[msg.uid] = Math.max(0, onlineUsersMap[msg.uid]);
 		}
-
+		var index = 0;
 		if (msg.uid && onlineUsersMap[msg.uid] === 0) {
-			var index = onlineUsers.indexOf(msg.uid);
+			index = onlineUsers.indexOf(msg.uid);
 			if (index !== -1) {
 				onlineUsers.splice(index, 1);
 			}
@@ -162,7 +161,7 @@ Sockets.init = function(server) {
 
 						async.parallel({
 							user: function(next) {
-								user.getUserFields(uid, ['username', 'userslug', 'picture'], next);
+								user.getUserFields(uid, ['username', 'userslug', 'picture', 'status'], next);
 							},
 							isAdmin: function(next) {
 								user.isAdministrator(uid, next);
@@ -180,9 +179,7 @@ Sockets.init = function(server) {
 								uid: uid
 							});
 
-							socketUser.isOnline(socket, uid, function(err, data) {
-								socket.broadcast.emit('user.isOnline', err, data);
-							});
+							socket.broadcast.emit('event:user_status_change', {uid:uid, status: userData.user.status});
 						});
 					});
 				} else {
@@ -200,9 +197,10 @@ Sockets.init = function(server) {
 
 			if (uid && (!onlineUsersMap[uid] || onlineUsersMap[uid] <= 1)) {
 				db.sortedSetRemove('users:online', uid, function(err) {
-					socketUser.isOnline(socket, uid, function(err, data) {
-						socket.broadcast.emit('user.isOnline', err, data);
-					});
+					if (err) {
+						return winston.error(err.message);
+					}
+					socket.broadcast.emit('event:user_status_change', {uid: uid, status: 'offline'});
 				});
 			}
 
@@ -295,7 +293,8 @@ Sockets.uidInRoom = function(uid, room) {
 
 Sockets.getSocketCount = function() {
 	return Object.keys(socketIdToUid).length;
-}
+};
+
 Sockets.getConnectedClients = function() {
 	return onlineUsers;
 };

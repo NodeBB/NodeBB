@@ -216,8 +216,10 @@ var db = require('./database'),
 	};
 
 	Messaging.getRecentChats = function(uid, start, end, callback) {
+		var websockets = require('./socket.io');
+
 		db.getSortedSetRevRange('uid:' + uid + ':chats', start, end, function(err, uids) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
@@ -226,20 +228,20 @@ var db = require('./database'),
 					return callback(err);
 				}
 
-				user.isOnline(uids, function(err, users) {
+				user.getMultipleUserFields(uids, ['uid', 'username', 'picture', 'status'] , function(err, users) {
 					if (err) {
 						return callback(err);
 					}
-
+					users = users.filter(function(user) {
+						return user && parseInt(user.uid, 10);
+					});
 					users.forEach(function(user, index) {
 						if (user) {
 							user.unread = unreadUids[index];
+							user.status = websockets.isUserOnline(user.uid) ? user.status : 'offline';
 						}
 					});
 
-					users = users.filter(function(user) {
-						return !!user.uid;
-					});
 					callback(null, users);
 				});
 			});

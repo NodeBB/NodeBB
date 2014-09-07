@@ -33,7 +33,8 @@ define('forum/account/profile', ['forum/account/header'], function(header) {
 			app.openChat($('.account-username').html(), theirid);
 		});
 
-		socket.on('user.isOnline', handleUserOnline);
+		socket.removeListener('event:user_status_change', onUserStatusChange);
+		socket.on('event:user_status_change', onUserStatusChange);
 
 		if (yourid !== theirid) {
 			socket.emit('user.increaseViewCount', theirid);
@@ -66,11 +67,7 @@ define('forum/account/profile', ['forum/account/header'], function(header) {
 		return false;
 	}
 
-	function handleUserOnline(err, data) {
-		if (err) {
-			return app.alertError(err.message);
-		}
-
+	function onUserStatusChange(data) {
 		var onlineStatus = $('.account-online-status');
 
 		if(parseInt(ajaxify.variables.get('theirid'), 10) !== parseInt(data.uid, 10)) {

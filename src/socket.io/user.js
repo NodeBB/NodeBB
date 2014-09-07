@@ -8,7 +8,8 @@ var	async = require('async'),
 	notifications = require('../notifications'),
 	messaging = require('../messaging'),
 	plugins = require('../plugins'),
-	utils = require('./../../public/src/utils'),
+	utils = require('../../public/src/utils'),
+	websockets = require('./index'),
 	meta = require('../meta'),
 	SocketUser = {};
 
@@ -87,13 +88,20 @@ SocketUser.reset.commit = function(socket, data, callback) {
 	}
 };
 
-var tempCache = null; // temp, as always a false promise --psychobunny
-SocketUser.isOnline = function(socket, uid, callback) {
-	if (tempCache) return callback(null, tempCache);
-
-	user.isOnline([uid], function(err, data) {
-		tempCache = Array.isArray(data) ? data[0] : null;
-		callback(err, tempCache);
+SocketUser.checkStatus = function(socket, uid, callback) {
+	if (!socket.uid) {
+		return callback('[[error:invalid-uid]]');
+	}
+	var online = websockets.isUserOnline(uid);
+	if (!online) {
+		return callback(null, 'offline');
+	}
+	user.getUserField(uid, 'status', function(err, status) {
+		if (err) {
+			return callback(err);
+		}
+		status = status || 'online';
+		callback(null, status);
 	});
 };
 
@@ -321,12 +329,19 @@ SocketUser.loadMore = function(socket, data, callback) {
 
 
 SocketUser.setStatus = function(socket, status, callback) {
-	var server = require('./index');
+	if (!socket.uid) {
+		return callback(new Error('[[invalid-uid]]'));
+	}
 	user.setUserField(socket.uid, 'status', status, function(err) {
-		SocketUser.isOnline(socket, socket.uid, function(err, data) {
-			server.server.sockets.emit('user.isOnline', err, data);
-			callback(err, data);
-		});
+		if (err) {
+			return callback(err);
+		}
+		var data = {
+			uid: socket.uid,
+			status: status
+		};
+		websockets.server.sockets.emit('event:user_status_change', data);
+		callback(null, data);
 	});
 };
 

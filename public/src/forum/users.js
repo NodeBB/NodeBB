@@ -22,10 +22,8 @@ define('forum/users', function() {
 
 		handleSearch();
 
-
-		socket.removeListener('user.isOnline', onUserIsOnline);
-		socket.on('user.isOnline', onUserIsOnline);
-
+		socket.removeListener('event:user_status_change', onUserStatusChange);
+		socket.on('event:user_status_change', onUserStatusChange);
 
 		$('#load-more-users-btn').on('click', loadMoreUsers);
 
@@ -154,37 +152,28 @@ define('forum/users', function() {
 		});
 	}
 
-	function onUserIsOnline(err, data) {
+	function onUserStatusChange(data) {
 		var section = getActiveSection();
-		if((section.indexOf('online') === 0 || section.indexOf('users') === 0)  && !loadingMoreUsers) {
+		if((section.indexOf('online') === 0 || section.indexOf('users') === 0)) {
 			updateUser(data);
 		}
 	}
 
 	function updateUser(data) {
-		var usersContainer = $('#users-container');
-		var userEl = usersContainer.find('li[data-uid="' + data.uid +'"]');
-		if (!data.online) {
-			userEl.remove();
+		if (data.status === 'offline') {
 			return;
 		}
+		var usersContainer = $('#users-container');
+		var userEl = usersContainer.find('li[data-uid="' + data.uid +'"]');
 
-		ajaxify.loadTemplate('users', function(usersTemplate) {
-			var html = templates.parse(templates.getBlock(usersTemplate, 'users'), {users: [data]});
-			translator.translate(html, function(translated) {
-				if (userEl.length) {
-					userEl.replaceWith(translated);
-					return;
-				}
-
-				var anonBox = usersContainer.find('li.anon-user');
-				if (anonBox.length) {
-					$(translated).insertBefore(anonBox);
-				} else {
-					usersContainer.append(translated);
-				}
+		if (userEl.length) {
+			var statusEl = userEl.find('.status');
+			translator.translate('[[global:' + data.status + ']]', function(translated) {
+				statusEl.attr('class', 'fa fa-circle status ' + data.status)
+					.attr('title', translated)
+					.attr('data-original-title', translated);
 			});
-		});
+		}
 	}
 
 	function getActiveSection() {

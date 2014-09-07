@@ -408,36 +408,6 @@ var
 		}
 	};
 
-	User.isOnline = function(uids, callback) {
-		if (!Array.isArray(uids)) {
-			uids = [uids];
-		}
-
-		User.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'reputation', 'postcount'] , function(err, userData) {
-			if (err) {
-				return callback(err);
-			}
-
-			var websockets = require('./socket.io');
-
-			userData = userData.map(function(user) {
-				var online = websockets.isUserOnline(user.uid);
-				user.status = online ? (user.status || 'online') : 'offline';
-
-				if (user.status === 'offline') {
-					online = false;
-				}
-
-				user.online = online;
-				user.timestamp = Date.now();
-				user.rooms = websockets.getUserRooms(user.uid);
-				return user;
-			});
-
-			callback(null, userData);
-		});
-	};
-
 	User.getIgnoredCategories = function(uid, callback) {
 		db.getSortedSetRange('uid:' + uid + ':ignored:cids', 0, -1, callback);
 	};

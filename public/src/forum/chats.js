@@ -125,6 +125,19 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 
 			$('.chats-list li[data-uid="' + withUid + '"]').removeClass('typing');
 		});
+
+		socket.on('event:user_status_change', function(data) {
+			var userEl = $('.chats-list li[data-uid="' + data.uid +'"]');
+
+			if (userEl.length) {
+				var statusEl = userEl.find('.status');
+				translator.translate('[[global:' + data.status + ']]', function(translated) {
+					statusEl.attr('class', 'fa fa-circle status ' + data.status)
+						.attr('title', translated)
+						.attr('data-original-title', translated);
+				});
+			}
+		});
 	};
 
 	Chats.resizeMainWindow = function() {

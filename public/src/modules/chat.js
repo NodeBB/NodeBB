@@ -114,7 +114,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 			modal.find('.user-typing').addClass('hide');
 		});
 
-		socket.on('user.isOnline', function(err, data) {
+		socket.on('event:user_status_change', function(data) {
 			updateStatus(data.status);
 		});
 	};
@@ -140,8 +140,11 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 	};
 
 	function checkStatus(chatModal) {
-		socket.emit('user.isOnline', chatModal.attr('touid'), function(err, data) {
-			updateStatus(data.status);
+		socket.emit('user.checkStatus', chatModal.attr('touid'), function(err, status) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+			updateStatus(status);
 		});
 	}
 

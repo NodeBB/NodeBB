@@ -39,16 +39,16 @@ define('forum/topic/browsing', function() {
 		}
 	};
 
-	Browsing.onUserOnline = function(err, data) {
-		updateOnlineIcon($('.username-field[data-username="' + data.username + '"]'), data);
+	Browsing.onUserStatusChange = function(data) {
+		updateOnlineIcon($('.username-field[data-uid="' + data.uid + '"]'), data.status);
 
 		updateBrowsingUsers(data);
 	};
 
-	function updateOnlineIcon(el, userData) {
-		translator.translate('[[global:' + userData.status + ']]', function(translated) {
+	function updateOnlineIcon(el, status) {
+		translator.translate('[[global:' + status + ']]', function(translated) {
 			el.siblings('i')
-				.attr('class', 'fa fa-circle status ' + userData.status)
+				.attr('class', 'fa fa-circle status ' + status)
 				.attr('title', translated)
 				.attr('data-original-title', translated);
 		});
@@ -57,10 +57,8 @@ define('forum/topic/browsing', function() {
 	function updateBrowsingUsers(data) {
 		var activeEl = $('.thread_active_users');
 		var user = activeEl.find('a[data-uid="'+ data.uid + '"]');
-		if (user.length && !data.online) {
+		if (user.length && data.status === 'offline') {
 			user.parent().remove();
-		} else if(!user.length && data.online && data.rooms.indexOf('topic_' + ajaxify.variables.get('topic_id')) !== -1) {
-			addUserIcon(user);
 		}
 	}
 
