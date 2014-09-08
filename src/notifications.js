@@ -277,21 +277,17 @@ var async = require('async'),
 		], callback);
 	};
 
-	Notifications.prune = function(cutoff) {
+	Notifications.prune = function() {
 		var start = process.hrtime();
 
 		if (process.env.NODE_ENV === 'development') {
 			winston.info('[notifications.prune] Removing expired notifications from the database.');
 		}
 
-		var	today = new Date(),
+		var	week = 604800000,
 			numPruned = 0;
 
-		if (!cutoff) {
-			cutoff = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
-		}
-
-		var	cutoffTime = cutoff.getTime();
+		var	cutoffTime = Date.now() - week;
 
 		db.getSetMembers('notifications', function(err, nids) {
 			if (err) {
