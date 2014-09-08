@@ -20,6 +20,14 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.sortedSetsAdd = function(keys, score, value, callback) {
+		async.each(keys, function(key, next) {
+			module.sortedSetAdd(key, score, value, next);
+		}, function(err) {
+			callback(err);
+		});
+	};
+
 	module.sortedSetRemove = function(key, value, callback) {
 		module.getListRange(key, 0, -1, function(err, set) {
 			set = set.filter(function(a) {return a.value !== value.toString();});

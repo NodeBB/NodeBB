@@ -8,6 +8,19 @@ module.exports = function(redisClient, module) {
 		});
 	};
 
+	module.sortedSetsAdd = function(keys, score, value, callback) {
+		callback = callback || function() {};
+		var multi = redisClient.multi();
+
+		for(var i=0; i<keys.length; ++i) {
+			multi.zadd(keys[i], score, value);
+		}
+
+		multi.exec(function(err, res) {
+			callback(err);
+		});
+	};
+
 	module.sortedSetRemove = function(key, value, callback) {
 		callback = callback || function() {};
 		redisClient.zrem(key, value, function(err) {

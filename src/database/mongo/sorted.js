@@ -18,6 +18,26 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.sortedSetsAdd = function(keys, score, value, callback) {
+		callback = callback || helpers.noop;
+
+		value = helpers.valueToString(value);
+		var data = {
+			score: parseInt(score, 10),
+			value: value
+		};
+
+		var bulk = db.collection('objects').initializeUnorderedBulkOp();
+
+		for(var i=0; i<keys.length; ++i) {
+			bulk.find({_key: keys[i], value: value}).upsert().updateOne({$set: data});
+		}
+
+		bulk.execute(function(err, result) {
+			callback(err);
+		});
+	};
+
 	module.sortedSetRemove = function(key, value, callback) {
 		callback = callback || helpers.noop;
 		value = helpers.valueToString(value);
@@ -33,6 +53,7 @@ module.exports = function(db, module) {
 
 		db.collection('objects').remove({_key: {$in: keys}, value: value}, callback);
 	};
+
 
 	function getSortedSetRange(key, start, stop, sort, withScores, callback) {
 		db.collection('objects').find({_key:key}, {fields: {_id: 0, value: 1, score: 1}})
