@@ -84,7 +84,6 @@ var async = require('async'),
 		var	defaults = {
 				bodyShort: '',
 				bodyLong: '',
-				path: '',
 				importance: 5,
 				datetime: Date.now(),
 				uniqueId: utils.generateUUID()
