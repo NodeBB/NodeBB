@@ -21,7 +21,7 @@ var async = require('async'),
 		if (process.env.NODE_ENV === 'development') {
 			winston.info('[notifications.init] Registering jobs.');
 		}
-		new cron('0 * * * *', Notifications.prune, null, true);
+		new cron('0/30 * * * *', Notifications.prune, null, true);
 	};
 
 	Notifications.get = function(nid, callback) {

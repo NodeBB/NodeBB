@@ -101,7 +101,7 @@ var winston = require('winston'),
 					return callback(err);
 				}
 
-				events.logPostEdit(uid, pid);
+				//events.logPostEdit(uid, pid);
 				plugins.fireHook('action:post.edit', postData);
 				callback(null, results);
 			});
