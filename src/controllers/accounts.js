@@ -480,7 +480,10 @@ accountsController.uploadPicture = function (req, res, next) {
 };
 
 accountsController.getNotifications = function(req, res, next) {
-	user.notifications.getAll(req.user.uid, 25, function(err, notifications) {
+	user.notifications.getAll(req.user.uid, 40, function(err, notifications) {
+		if (err) {
+			return next(err);
+		}
 		res.render('notifications', {
 			notifications: notifications
 		});

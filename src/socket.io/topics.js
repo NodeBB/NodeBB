@@ -353,11 +353,11 @@ SocketTopics.sendNotificationToTopicOwner = function(tid, fromuid, notification)
 		notifications.create({
 			bodyShort: '[[' + notification + ', ' + results.username + ']]',
 			path: nconf.get('relative_path') + '/topic/' + results.topicData.slug,
-			uniqueId: 'topic:' + tid + ':uid:' + fromuid,
+			nid: 'topic:' + tid + ':uid:' + fromuid,
 			from: fromuid
-		}, function(err, nid) {
-			if (!err) {
-				notifications.push(nid, [results.topicData.uid]);
+		}, function(err, notification) {
+			if (!err && notification) {
+				notifications.push(notification, [results.topicData.uid]);
 			}
 		});
 	});

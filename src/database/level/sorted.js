@@ -7,6 +7,9 @@ module.exports = function(db, module) {
 	var helpers = module.helpers.level;
 
 	module.sortedSetAdd = function(key, score, value, callback) {
+		if (Array.isArray(score) && Array.isArray(value)) {
+			return sortedSetAddMulti(key, score, value, callback);
+		}
 		module.getListRange(key, 0, -1, function(err, set) {
 			set = set.filter(function(a) {return a.value !== value.toString();});
 
@@ -20,6 +23,10 @@ module.exports = function(db, module) {
 		});
 	};
 
+	function sortedSetAddMulti(key, scores, values, callback) {
+		throw new Error('not implemented');
+	}
+
 	module.sortedSetsAdd = function(keys, score, value, callback) {
 		async.each(keys, function(key, next) {
 			module.sortedSetAdd(key, score, value, next);
@@ -29,8 +36,11 @@ module.exports = function(db, module) {
 	};
 
 	module.sortedSetRemove = function(key, value, callback) {
+		if (!Array.isArray(value)) {
+			value = [value];
+		}
 		module.getListRange(key, 0, -1, function(err, set) {
-			set = set.filter(function(a) {return a.value !== value.toString();});
+			set = set.filter(function(a) { return value.indexOf(a) === -1;});
 			module.set(key, set, callback);
 		});
 	};

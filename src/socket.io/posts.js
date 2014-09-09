@@ -135,11 +135,11 @@ SocketPosts.sendNotificationToPostOwner = function(pid, fromuid, notification) {
 				bodyShort: '[[' + notification + ', ' + results.username + ']]',
 				bodyLong: results.postContent,
 				pid: pid,
-				uniqueId: 'post:' + pid + ':uid:' + fromuid,
+				nid: 'post:' + pid + ':uid:' + fromuid,
 				from: fromuid
-			}, function(err, nid) {
-				if (!err) {
-					notifications.push(nid, [postData.uid]);
+			}, function(err, notification) {
+				if (!err && notification) {
+					notifications.push(notification, [postData.uid]);
 				}
 			});
 		});
@@ -310,13 +310,13 @@ SocketPosts.flag = function(socket, pid, callback) {
 				bodyShort: message,
 				bodyLong: post.content,
 				pid: pid,
-				uniqueId: 'post_flag:' + pid,
+				nid: 'post_flag:' + pid + ':uid:' + socket.uid,
 				from: socket.uid
-			}, function(err, nid) {
-				if (err) {
+			}, function(err, notification) {
+				if (err || !notification) {
 					return next(err);
 				}
-				notifications.push(nid, adminGroup.members, next);
+				notifications.push(notification, adminGroup.members, next);
 			});
 		},
 		function(next) {

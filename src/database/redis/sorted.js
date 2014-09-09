@@ -3,10 +3,26 @@
 module.exports = function(redisClient, module) {
 	module.sortedSetAdd = function(key, score, value, callback) {
 		callback = callback || function() {};
+		if (Array.isArray(score) && Array.isArray(value)) {
+			return sortedSetAddMulti(key, score, value, callback);
+		}
 		redisClient.zadd(key, score, value, function(err) {
 			callback(err);
 		});
 	};
+
+	function sortedSetAddMulti(key, scores, values, callback) {
+		if (scores.length !== values.length) {
+			return callback(new Error('[[error:invalid-data]]'));
+		}
+		var multi = redisClient.multi();
+		for(var i=0; i<scores.lenth; ++i) {
+			multi.zadd(key, scores[i], values[i]);
+		}
+		multi.exec(function(err, result) {
+			callback(err);
+		});
+	}
 
 	module.sortedSetsAdd = function(keys, score, value, callback) {
 		callback = callback || function() {};
@@ -23,7 +39,14 @@ module.exports = function(redisClient, module) {
 
 	module.sortedSetRemove = function(key, value, callback) {
 		callback = callback || function() {};
-		redisClient.zrem(key, value, function(err) {
+		if (!Array.isArray(value)) {
+			value = [value];
+		}
+		var multi = redisClient.multi();
+		for(var i=0; i<value.length; ++i) {
+			multi.zrem(key, value[i]);
+		}
+		multi.exec(function(err) {
 			callback(err);
 		});
 	};

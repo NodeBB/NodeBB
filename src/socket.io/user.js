@@ -181,31 +181,33 @@ SocketUser.changePicture = function(socket, data, callback) {
 };
 
 SocketUser.follow = function(socket, data, callback) {
-	if (socket.uid && data) {
-		toggleFollow('follow', socket.uid, data.uid, function(err) {
+	if (!socket.uid || !data) {
+		return;
+	}
+
+	toggleFollow('follow', socket.uid, data.uid, function(err) {
+		if (err) {
+			return callback(err);
+		}
+
+		user.getUserFields(socket.uid, ['username', 'userslug'], function(err, userData) {
 			if (err) {
 				return callback(err);
 			}
 
-			user.getUserFields(socket.uid, ['username', 'userslug'], function(err, userData) {
-				if (err) {
-					return callback(err);
+			notifications.create({
+				bodyShort: '[[notifications:user_started_following_you, ' + userData.username + ']]',
+				path: nconf.get('relative_path') + '/user/' + userData.userslug,
+				nid: 'follow:uid:' + socket.uid,
+				from: socket.uid
+			}, function(err, notification) {
+				if (!err && notification) {
+					notifications.push(notification, [data.uid]);
 				}
-
-				notifications.create({
-					bodyShort: '[[notifications:user_started_following_you, ' + userData.username + ']]',
-					path: nconf.get('relative_path') + '/user/' + userData.userslug,
-					uniqueId: 'follow:uid:' + socket.uid,
-					from: socket.uid
-				}, function(err, nid) {
-					if (!err) {
-						notifications.push(nid, [data.uid]);
-					}
-					callback(err);
-				});
+				callback(err);
 			});
 		});
-	}
+	});
 };
 
 SocketUser.unfollow = function(socket, data, callback) {

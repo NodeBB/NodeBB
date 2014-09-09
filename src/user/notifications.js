@@ -45,63 +45,61 @@ var async = require('async'),
 	};
 
 	function getNotificationsFromSet(set, uid, start, stop, max, callback) {
-		db.getSortedSetRevRange(set, start, stop, function(err, uniqueIds) {
+		db.getSortedSetRevRange(set, start, stop, function(err, nids) {
 			if (err) {
 				return callback(err);
 			}
 
-			if(!Array.isArray(uniqueIds) || !uniqueIds.length) {
+			if(!Array.isArray(nids) || !nids.length) {
 				return callback(null, []);
 			}
 
-			if (uniqueIds.length > max) {
-				uniqueIds.length = max;
+			if (nids.length > max) {
+				nids.length = max;
 			}
 
-			db.getObjectFields('uid:' + uid + ':notifications:uniqueId:nid', uniqueIds, function(err, uniqueIdToNids) {
+			UserNotifications.getNotifications(nids, uid, function(err, notifications) {
 				if (err) {
 					return callback(err);
 				}
 
-				var nidsToUniqueIds = {};
-				var nids = [];
-				uniqueIds.forEach(function(uniqueId) {
-					nidsToUniqueIds[uniqueIdToNids[uniqueId]] = uniqueId;
-					nids.push(uniqueIdToNids[uniqueId]);
-				});
+				var deletedNids = [];
 
-				UserNotifications.getNotifications(nids, uid, function(err, notifications) {
-					if (err) {
-						return callback(err);
-					}
-
-					notifications.forEach(function(notification, index) {
-						if (!notification) {
-							if (process.env.NODE_ENV === 'development') {
-								winston.info('[notifications.get] nid ' + nids[index] + ' not found. Removing.');
-							}
-
-							db.sortedSetRemove(set, nidsToUniqueIds[nids[index]]);
-							db.deleteObjectField('uid:' + uid + ':notifications:uniqueId:nid', nidsToUniqueIds[nids[index]]);
+				notifications.forEach(function(notification, index) {
+					if (!notification) {
+						if (process.env.NODE_ENV === 'development') {
+							winston.info('[notifications.get] nid ' + nids[index] + ' not found. Removing.');
 						}
-					});
 
-					callback(null, notifications);
+						if (nids[index]) {
+							deletedNids.push(nids[index]);
+						}
+					}
 				});
+
+				if (deletedNids.length) {
+					db.sortedSetRemove(set, deletedNids);
+				}
+
+				callback(null, notifications);
 			});
 		});
 	}
 
-	UserNotifications.getAll = function(uid, limit, callback) {
-		if (!limit || parseInt(limit, 10) <= 0) {
-			limit = 25;
-		}
-
-		db.getObjectValues('uid:' + uid + ':notifications:uniqueId:nid', function(err, nids) {
+	UserNotifications.getAll = function(uid, count, callback) {
+		async.parallel({
+			unread: function(next) {
+				db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, count, next);
+			},
+			read: function(next) {
+				db.getSortedSetRevRange('uid:' + uid + ':notifications:read', 0, count, next);
+			}
+		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
+			var nids = results.unread.concat(results.read);
 			UserNotifications.getNotifications(nids, uid, function(err, notifs) {
 				if (err) {
 					return callback(err);
@@ -122,11 +120,7 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			var uniqueIds = notifications.map(function(notification) {
-				return notification ? notification.uniqueId : null;
-			});
-
-			db.isSortedSetMembers('uid:' + uid + ':notifications:read', uniqueIds, function(err, hasRead) {
+			db.isSortedSetMembers('uid:' + uid + ':notifications:read', nids, function(err, hasRead) {
 				if (err) {
 					return callback(err);
 				}
@@ -159,7 +153,8 @@ var async = require('async'),
 	};
 
 	function generatePostPaths(pids, uid, callback) {
-		var postKeys = pids.filter(Boolean).map(function(pid) {
+		pids = pids.filter(Boolean);
+		var postKeys = pids.map(function(pid) {
 			return 'post:' + pid;
 		});
 
@@ -193,6 +188,7 @@ var async = require('async'),
 						pidToPaths[pid] = nconf.get('relative_path') + '/topic/' + slug + '/' + postIndex;
 					}
 				});
+
 				callback(null, pidToPaths);
 			});
 		});
@@ -202,26 +198,16 @@ var async = require('async'),
 		var	now = Date.now(),
 			yesterday = now - (1000*60*60*24);	// Approximate, can be more or less depending on time changes, makes no difference really.
 
-		db.getSortedSetRangeByScore('uid:' + uid + ':notifications:unread', 0, 20, yesterday, now, function(err, uniqueIds) {
+		db.getSortedSetRangeByScore('uid:' + uid + ':notifications:unread', 0, 20, yesterday, now, function(err, nids) {
 			if (err) {
 				return callback(err);
 			}
 
-			if (!Array.isArray(uniqueIds) || !uniqueIds.length) {
+			if (!Array.isArray(nids) || !nids.length) {
 				return callback(null, []);
 			}
 
-			db.getObjectFields('uid:' + uid + ':notifications:uniqueId:nid', uniqueIds, function(err, uniqueIdToNids) {
-				if (err) {
-					return callback(err);
-				}
-
-				var nids = Object.keys(uniqueIdToNids).map(function(uniqueId) {
-					return uniqueIdToNids[uniqueId];
-				});
-
-				UserNotifications.getNotifications(nids, uid, callback);
-			});
+			UserNotifications.getNotifications(nids, uid, callback);
 		});
 	};
 
@@ -230,46 +216,35 @@ var async = require('async'),
 	};
 
 	UserNotifications.getUnreadByField = function(uid, field, value, callback) {
-		db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, -1, function(err, uniqueIds) {
+		db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, -1, function(err, nids) {
 			if (err) {
 				return callback(err);
 			}
 
-			if (!Array.isArray(uniqueIds) || !uniqueIds.length) {
+			if (!Array.isArray(nids) || !nids.length) {
 				return callback(null, []);
 			}
 
-			db.getObjectFields('uid:' + uid + ':notifications:uniqueId:nid', uniqueIds, function(err, uniqueIdsToNids) {
+			UserNotifications.getNotifications(nids, uid, function(err, notifications) {
 				if (err) {
 					return callback(err);
 				}
 
-				var nids = Object.keys(uniqueIdsToNids).map(function(uniqueId) {
-					return uniqueIdsToNids[uniqueId];
+				nids = notifications.filter(function(notification) {
+					return notification && notification[field] !== value.toString();
+				}).map(function(notification) {
+					return notification.nid;
 				});
 
-				UserNotifications.getNotifications(nids, uid, function(err, notifications) {
-					if (err) {
-						return callback(err);
-					}
-
-					notifications = notifications.filter(function(notification) {
-						return notification && notification[field] !== value.toString();
-					}).map(function(notification) {
-						return notification.nid;
-					});
-
-					callback(null, nids);
-				});
+				callback(null, nids);
 			});
 		});
 	};
 
 
 	UserNotifications.sendPostNotificationToFollowers = function(uid, tid, pid) {
-		return;
 		db.getSetMembers('followers:' + uid, function(err, followers) {
-			if (err || !followers || !followers.length) {
+			if (err || !Array.isArray(followers) || !followers.length) {
 				return;
 			}
 
@@ -296,23 +271,30 @@ var async = require('async'),
 					return !results.topicFollowers[index];
 				});
 
-				notifications.create({
-					bodyShort: '[[notifications:user_posted_to, ' + results.username + ', ' + results.topic.title + ']]',
-					bodyLong: results.postContent,
-					pid: pid,
-					uniqueId: 'topic:' + tid + ':uid:' + uid,
-					tid: tid,
-					from: uid
-				}, function(err, nid) {
-					if (err) {
+				if (!followers.length) {
+					return;
+				}
+
+				async.filter(followers, function(uid, next) {
+					privileges.categories.can('read', results.topic.cid, uid, function(err, canRead) {
+						next(!err && canRead);
+					});
+				}, function(followers) {
+					if (!followers.length) {
 						return;
 					}
-					async.filter(followers, function(uid, next) {
-						privileges.categories.can('read', results.topic.cid, uid, function(err, canRead) {
-							next(!err && canRead);
-						});
-					}, function(followers){
-						notifications.push(nid, followers);
+
+					notifications.create({
+						bodyShort: '[[notifications:user_posted_to, ' + results.username + ', ' + results.topic.title + ']]',
+						bodyLong: results.postContent,
+						pid: pid,
+						nid: 'topic:' + tid + ':uid:' + uid,
+						tid: tid,
+						from: uid
+					}, function(err, notification) {
+						if (!err && notification) {
+							notifications.push(notification, followers);
+						}
 					});
 				});
 			});

@@ -7,6 +7,10 @@ module.exports = function(db, module) {
 
 	module.sortedSetAdd = function(key, score, value, callback) {
 		callback = callback || helpers.noop;
+		if (Array.isArray(score) && Array.isArray(value)) {
+			return sortedSetAddBulk(key, score, value, callback);
+		}
+
 		value = helpers.valueToString(value);
 		var data = {
 			score: parseInt(score, 10),
@@ -17,6 +21,24 @@ module.exports = function(db, module) {
 			callback(err);
 		});
 	};
+
+	function sortedSetAddBulk(key, scores, values, callback) {
+		if (scores.length !== values.length) {
+			return callback(new Error('[[error:invalid-data]]'));
+		}
+
+		values = values.map(helpers.valueToString);
+
+		var bulk = db.collection('objects').initializeUnorderedBulkOp();
+
+		for(var i=0; i<scores.length; ++i) {
+			bulk.find({_key: key, value: values[i]}).upsert().updateOne({$set: {score: scores[i], value: values[i]}});
+		}
+
+		bulk.execute(function(err, result) {
+			callback(err);
+		});
+	}
 
 	module.sortedSetsAdd = function(keys, score, value, callback) {
 		callback = callback || helpers.noop;
@@ -40,9 +62,12 @@ module.exports = function(db, module) {
 
 	module.sortedSetRemove = function(key, value, callback) {
 		callback = callback || helpers.noop;
-		value = helpers.valueToString(value);
+		if (!Array.isArray(value)) {
+			value = [value];
+		}
+		value = value.map(helpers.valueToString);
 
-		db.collection('objects').remove({_key: key, value: value}, function(err) {
+		db.collection('objects').remove({_key: key, value: {$in: value}}, function(err) {
 			callback(err);
 		});
 	};

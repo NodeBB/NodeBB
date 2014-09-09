@@ -56,12 +56,12 @@ module.exports = function(Topics) {
 					bodyShort: '[[notifications:user_posted_to, ' + results.username + ', ' + results.title + ']]',
 					bodyLong: results.postContent,
 					pid: pid,
-					uniqueId: 'topic:' + tid + ':uid:' + exceptUid,
+					nid: 'topic:' + tid + ':uid:' + exceptUid,
 					tid: tid,
 					from: exceptUid
-				}, function(err, nid) {
-					if (!err) {
-						notifications.push(nid, followers);
+				}, function(err, notification) {
+					if (!err && notification) {
+						notifications.push(notification, followers);
 					}
 				});
 			});

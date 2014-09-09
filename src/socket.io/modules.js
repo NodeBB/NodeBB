@@ -224,11 +224,11 @@ function sendChatNotification(fromuid, touid, messageObj) {
 			bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
 			bodyLong: messageObj.content,
 			path: nconf.get('relative_path') + '/chats/' + utils.slugify(messageObj.fromUser.username),
-			uniqueId: 'chat_' + fromuid + '_' + touid,
+			nid: 'chat_' + fromuid + '_' + touid,
 			from: fromuid
-		}, function(err, nid) {
-			if (!err) {
-				notifications.push(nid, [touid]);
+		}, function(err, notification) {
+			if (!err && notification) {
+				notifications.push(notification, [touid]);
 			}
 		});
 	}
