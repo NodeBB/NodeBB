@@ -181,12 +181,12 @@
 				return callback(null, null);
 			}
 
-			async.some(groupNames, function(groupName, next) {
-				Groups.isMember(uid, groupName, function(err, isMember) {
-					next(!err && isMember);
-				});
-			}, function(result) {
-				callback(null, result);
+			Groups.isMemberOfGroups(uid, groupNames, function(err, isMembers) {
+				if (err) {
+					return callback(err);
+				}
+
+				callback(null, isMembers.indexOf(true) !== -1)
 			});
 		});
 	};
