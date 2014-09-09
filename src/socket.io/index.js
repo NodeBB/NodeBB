@@ -25,7 +25,6 @@ var	SocketIO = require('socket.io'),
 var	io;
 
 var onlineUsers = [];
-var socketIdToUid = {};
 
 process.on('message', onMessage);
 
@@ -38,8 +37,6 @@ function onMessage(msg) {
 		if (msg.uid && onlineUsers.indexOf(msg.uid) === -1) {
 			onlineUsers.push(msg.uid);
 		}
-
-		socketIdToUid[msg.socketid] = msg.uid;
 	} else if(msg.action === 'user:disconnect') {
 		if (msg.uid && msg.socketCount <= 1) {
 			var index = onlineUsers.indexOf(msg.uid);
@@ -47,8 +44,6 @@ function onMessage(msg) {
 				onlineUsers.splice(index, 1);
 			}
 		}
-
-		delete socketIdToUid[msg.socketid];
 	}
 }
 
@@ -252,15 +247,18 @@ Sockets.in = function(room) {
 };
 
 Sockets.uidInRoom = function(uid, room) {
-	var socketIds = io.sockets.manager.rooms[room];
-	if (!Array(socketIds) || !socketIds.length) {
+	var userSocketIds = io.sockets.manager.rooms['/uid_' + uid];
+	if (!Array.isArray(userSocketIds) || !userSocketIds.length) {
 		return false;
 	}
 
-	uid = parseInt(uid, 10);
+	var roomSocketIds = io.sockets.manager.rooms['/' + room];
+	if (!Array.isArray(roomSocketIds) || !roomSocketIds.length) {
+		return false;
+	}
 
-	for (var i=0; i<socketIds.length; ++i) {
-		if (socketIdToUid[socketIds[i]] === uid) {
+	for (var i=0; i<userSocketIds.length; ++i) {
+		if (roomSocketIds.indexOf(userSocketIds[i]) !== -1) {
 			return true;
 		}
 	}
@@ -408,30 +406,17 @@ Sockets.getUidsInRoom = function(roomName) {
 	}
 
 	for(var i=0; i<socketids.length; ++i) {
-		var uid = socketIdToUid[socketids[i]];
-		if (uid && uids.indexOf(uid) === -1) {
-			uids.push(uid);
+		var socketRooms = Object.keys(io.sockets.manager.roomClients[socketids[i]]);
+		if (Array.isArray(socketRooms)) {
+			socketRooms.forEach(function(roomName) {
+				if (roomName.indexOf('/uid_') === 0 ) {
+					uids.push(roomName.split('_')[1]);
+				}
+			});
 		}
 	}
 
 	return uids;
-};
-
-Sockets.getAnonCountInRoom = function(roomName) {
-	var count = 0;
-	roomName = roomName ? '/' + roomName : '';
- 	var socketids = io.sockets.manager.rooms[roomName];
-	if (!Array.isArray(socketids)) {
-		return [];
-	}
-
-	for(var i=0; i<socketids.length; ++i) {
-		if (socketIdToUid[socketids[i]] === 0) {
-			++count;
-		}
-	}
-
-	return count;
 };
 
 Sockets.emitTopicPostStats = emitTopicPostStats;
