@@ -275,8 +275,8 @@ var async = require('async'),
 					return;
 				}
 
-				privileges.categories.filterUids('read', results.topic.cid, followers, function(followers) {
-					if (!followers.length) {
+				privileges.categories.filterUids('read', results.topic.cid, followers, function(err, followers) {
+					if (err || !followers.length) {
 						return;
 					}
 
