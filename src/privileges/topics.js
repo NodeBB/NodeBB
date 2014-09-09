@@ -23,10 +23,10 @@ module.exports = function(privileges) {
 
 			async.parallel({
 				'topics:reply': function(next) {
-					helpers.allowedTo('topics:reply', uid, [cid], next);
+					helpers.isUserAllowedTo('topics:reply', uid, [cid], next);
 				},
 				read: function(next) {
-					helpers.allowedTo('read', uid, [cid], next);
+					helpers.isUserAllowedTo('read', uid, [cid], next);
 				},
 				isOwner: function(next) {
 					topics.isOwner(tid, uid, next);
@@ -93,7 +93,7 @@ module.exports = function(privileges) {
 				return topic.cid;
 			});
 
-			privileges.categories.filter(privilege, cids, uid, function(err, cids) {
+			privileges.categories.filterCids(privilege, cids, uid, function(err, cids) {
 				if (err) {
 					return callback(err);
 				}

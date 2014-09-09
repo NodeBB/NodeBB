@@ -89,7 +89,7 @@ module.exports = function(privileges) {
 				return {pid: pid, cid: cids[index]};
 			});
 
-			privileges.categories.filter(privilege, cids, uid, function(err, cids) {
+			privileges.categories.filterCids(privilege, cids, uid, function(err, cids) {
 				if (err) {
 					return callback(err);
 				}

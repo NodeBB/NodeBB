@@ -275,11 +275,7 @@ var async = require('async'),
 					return;
 				}
 
-				async.filter(followers, function(uid, next) {
-					privileges.categories.can('read', results.topic.cid, uid, function(err, canRead) {
-						next(!err && canRead);
-					});
-				}, function(followers) {
+				privileges.categories.filterUids('read', results.topic.cid, followers, function(followers) {
 					if (!followers.length) {
 						return;
 					}

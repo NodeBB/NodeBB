@@ -216,7 +216,7 @@ var db = require('./database'),
 				return callback(null, []);
 			}
 
-			privileges.categories.filter(privilege, cids, uid, function(err, cids) {
+			privileges.categories.filterCids(privilege, cids, uid, function(err, cids) {
 				if (err) {
 					return callback(err);
 				}
@@ -402,7 +402,7 @@ var db = require('./database'),
 		async.waterfall([
 			async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
 			function(cids, next) {
-				privileges.categories.filter('find', cids, uid, next);
+				privileges.categories.filterCids('find', cids, uid, next);
 			},
 			function (cids, next) {
 				Categories.getCategoriesData(cids, next);

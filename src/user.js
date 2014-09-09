@@ -396,7 +396,11 @@ var
 			});
 			groups.isMemberOfGroups(uid, groupNames, callback);
 		} else {
-			groups.isMember(uid, 'cid:' + cid + ':privileges:mods', callback);
+			if (Array.isArray(uid)) {
+				groups.isMembers(uid, 'cid:' + cid + ':privileges:mods', callback);
+			} else {
+				groups.isMember(uid, 'cid:' + cid + ':privileges:mods', callback);
+			}
 		}
 	};
 

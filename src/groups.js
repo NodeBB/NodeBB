@@ -173,6 +173,9 @@
 
 	Groups.isMemberOfGroupList = function(uid, groupListKey, callback) {
 		db.getSetMembers('group:' + groupListKey + ':members', function(err, groupNames) {
+			if (err) {
+				return callback(err);
+			}
 			groupNames = internals.removeEphemeralGroups(groupNames);
 			if (groupNames.length === 0) {
 				return callback(null, null);
@@ -180,14 +183,42 @@
 
 			async.some(groupNames, function(groupName, next) {
 				Groups.isMember(uid, groupName, function(err, isMember) {
-					if (!err && isMember) {
-						next(true);
-					} else {
-						next(false);
-					}
+					next(!err && isMember);
 				});
 			}, function(result) {
 				callback(null, result);
+			});
+		});
+	};
+
+	Groups.isMembersOfGroupList = function(uids, groupListKey, callback) {
+		db.getSetMembers('group:' + groupListKey + ':members', function(err, groupNames) {
+			if (err) {
+				return callback(err);
+			}
+			groupNames = internals.removeEphemeralGroups(groupNames);
+			if (groupNames.length === 0) {
+				return callback(null, null);
+			}
+			var results = [];
+			uids.forEach(function() {
+				results.push(false);
+			});
+
+			async.each(groupNames, function(groupName, next) {
+				Groups.isMembers(uids, groupName, function(err, isMembers) {
+					if (err) {
+						return next(err);
+					}
+					results.forEach(function(isMember, index) {
+						if (!isMember && isMembers[index]) {
+							results[index] = true;
+						}
+					});
+					next();
+				});
+			}, function(err) {
+				callback(err, results);
 			});
 		});
 	};
