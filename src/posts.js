@@ -485,20 +485,9 @@ var async = require('async'),
 	}
 
 	Posts.getPidIndex = function(pid, uid, callback) {
-		// Making uid optional
-		if ((!uid && !callback) || typeof uid === 'function') {
-			callback = uid || function() {};
-			uid = undefined;
-		}
-
 		async.parallel({
 			settings: function(next) {
-				if (uid) {
-					user.getSettings(uid, next);
-				} else {
-					// No uid specified, so return empty object so that the check below will assume regular topic post sorting
-					next(null, {});
-				}
+				user.getSettings(uid, next);
 			},
 			tid: function(next) {
 				Posts.getPostField(pid, 'tid', next);
