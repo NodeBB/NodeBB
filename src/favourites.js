@@ -44,7 +44,7 @@ var async = require('async'),
 
 				db.sortedSetAdd('users:reputation', newreputation, postData.uid);
 
-				if (parseInt(meta.config['autoban:downvote'], 10) !== 0 && newreputation < parseInt(meta.config['autoban:downvote:threshold'], 10)) {
+				if (parseInt(meta.config['autoban:downvote'], 10) === 1 && newreputation < parseInt(meta.config['autoban:downvote:threshold'], 10)) {
 					var adminUser = require('./socket.io/admin/user');
 					adminUser.banUser(postData.uid, function() {
 						require('winston').info('uid ' + uid + ' was banned for reaching ' + newreputation + ' reputation');
