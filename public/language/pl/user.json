@@ -61,5 +61,7 @@
     "posts_per_page": "Postów na stronę",
     "notification_sounds": "Odtwórz dźwięk po otrzymaniu powiadomienia.",
     "browsing": "Ustawienia szukania",
-    "open_links_in_new_tab": "Otwierać linki zewnętrzne w nowych kartach?"
+    "open_links_in_new_tab": "Otwierać linki zewnętrzne w nowych kartach?",
+    "follow_topics_you_create": "Śledź swoje wątki",
+    "follow_topics_you_reply_to": "Śledź wątki, gdzie pisałeś"
 }
