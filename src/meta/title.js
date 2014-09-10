@@ -19,7 +19,7 @@ module.exports = function(Meta) {
 		try {
 			uri = decodeURIComponent(urlFragment);
 		} catch(e) {
-			winston.error('Invalid url fragment :' + urlFragment);
+			winston.error('Invalid url fragment : ' + urlFragment, e.message);
 			return callback(null, Meta.config.browserTitle || 'NodeBB');
 		}
 		Meta.title.parseFragment(uri, language, function(err, title) {
