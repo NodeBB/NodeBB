@@ -229,9 +229,9 @@ var async = require('async'),
 				return winston.error(err.message);
 			}
 			if (!Array.isArray(nids) || !nids.length) {
+				events.log('No notifications to prune');
 				return;
 			}
-			var totalNidCount = nids.length;
 
 			var keys = nids.map(function(nid) {
 				return 'notifications:' + nid;
@@ -242,7 +242,7 @@ var async = require('async'),
 					return winston.error(err.message);
 				}
 
-				var expiredNids = nids.filter(function(nids, index) {
+				var expiredNids = nids.filter(function(nid, index) {
 					return !notifs[index].nid || parseInt(notifs[index].datetime, 10) < cutoffTime;
 				}).filter(Boolean);
 
@@ -252,7 +252,7 @@ var async = require('async'),
 
 				numPruned = expiredNids.length;
 
-				events.log('Notification pruning. Total nids = ' + totalNidCount + '. Expired Nids = ' + numPruned);
+				events.log('Notification pruning. Expired Nids = ' + numPruned);
 
 				async.parallel([
 					function(next) {
