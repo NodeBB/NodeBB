@@ -228,54 +228,40 @@ var async = require('async'),
 
 		var	cutoffTime = Date.now() - week;
 
-		db.getSortedSetRange('notifications', 0, 499, function(err, nids) {
+		db.getSortedSetRangeByScore('notifications', 0, 500, 0, cutoffTime, function(err, nids) {
 			if (err) {
 				return winston.error(err.message);
 			}
+
 			if (!Array.isArray(nids) || !nids.length) {
-				events.log('No notifications to prune');
-				return;
+				return events.log('No notifications to prune');
 			}
 
-			var keys = nids.map(function(nid) {
+			var	keys = nids.map(function(nid) {
 				return 'notifications:' + nid;
 			});
 
-			db.getObjectsFields(keys, ['nid', 'datetime'], function(err, notifs) {
+			numPruned = nids.length;
+
+			events.log('Notification pruning. Expired Nids = ' + numPruned);
+
+			async.parallel([
+				function(next) {
+					db.sortedSetRemove('notifications', nids, next);
+				},
+				function(next) {
+					db.deleteAll(keys, next);
+				}
+			], function(err) {
 				if (err) {
-					return winston.error(err.message);
+					return winston.error('Encountered error pruning notifications: ' + err.message);
 				}
 
-				var expiredNids = nids.filter(function(nid, index) {
-					return !notifs[index].nid || parseInt(notifs[index].datetime, 10) < cutoffTime;
-				}).filter(Boolean);
-
-				keys = expiredNids.map(function(nid) {
-					return 'notifications:' + nid;
-				});
-
-				numPruned = expiredNids.length;
-
-				events.log('Notification pruning. Expired Nids = ' + numPruned);
-
-				async.parallel([
-					function(next) {
-						db.sortedSetRemove('notifications', expiredNids, next);
-					},
-					function(next) {
-						db.deleteAll(keys, next);
-					}
-				], function(err) {
-					if (err) {
-						return winston.error('Encountered error pruning notifications: ' + err.message);
-					}
-
-					if (process.env.NODE_ENV === 'development') {
-						winston.info('[notifications.prune] Notification pruning completed. ' + numPruned + ' expired notification' + (numPruned !== 1 ? 's' : '') + ' removed.');
-					}
-					var diff = process.hrtime(start);
-					events.log('Pruning '+ numPruned + ' notifications took : ' + (diff[0] * 1e3 + diff[1] / 1e6) + ' ms');
-				});
+				if (process.env.NODE_ENV === 'development') {
+					winston.info('[notifications.prune] Notification pruning completed. ' + numPruned + ' expired notification' + (numPruned !== 1 ? 's' : '') + ' removed.');
+				}
+				var diff = process.hrtime(start);
+				events.log('Pruning '+ numPruned + ' notifications took : ' + (diff[0] * 1e3 + diff[1] / 1e6) + ' ms');
 			});
 		});
 	};
