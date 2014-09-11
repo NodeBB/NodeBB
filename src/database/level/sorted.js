@@ -51,6 +51,10 @@ module.exports = function(db, module) {
 		}, callback);
 	};
 
+	module.sortedSetsRemoveRangeByScore = function(keys, min, max, callback) {
+		throw new Error('not implemented');
+	};
+
 	function flattenSortedSet(set, callback) {
 		callback(null, !set.length ? [] : set.reduce(function(a, b) {
 			return (a.length ? a : [a.value]).concat([b.value]);

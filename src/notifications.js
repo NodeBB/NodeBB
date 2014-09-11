@@ -141,6 +141,10 @@ var async = require('async'),
 				return callback(err);
 			}
 
+			var oneWeekAgo = Date.now() - 604800000;
+			db.sortedSetsRemoveRangeByScore(unreadKeys, 0, oneWeekAgo);
+			db.sortedSetsRemoveRangeByScore(readKeys, 0, oneWeekAgo);
+
 			plugins.fireHook('action:notification.pushed', {notification: notification, uids: uids});
 
 			for(var i=0; i<uids.length; ++i) {

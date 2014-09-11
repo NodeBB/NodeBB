@@ -79,6 +79,12 @@ module.exports = function(db, module) {
 		db.collection('objects').remove({_key: {$in: keys}, value: value}, callback);
 	};
 
+	module.sortedSetsRemoveRangeByScore = function(keys, min, max, callback) {
+		callback = callback || helpers.noop;
+		db.collection('objects').remove({_key: {$in: keys}, score: {$lte: max, $gte: min}}, function(err) {
+			callback(err);
+		});
+	};
 
 	function getSortedSetRange(key, start, stop, sort, withScores, callback) {
 		db.collection('objects').find({_key:key}, {fields: {_id: 0, value: 1, score: 1}})

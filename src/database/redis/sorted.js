@@ -55,6 +55,16 @@ module.exports = function(redisClient, module) {
 		multi('zrem', keys, value, callback);
 	};
 
+	module.sortedSetsRemoveRangeByScore = function(keys, min, max, callback) {
+		var multi = redisClient.multi();
+		for(var i=0; i<keys.length; ++i) {
+			multi.zremrangebyscore(keys[i], min, max);
+		}
+		multi.exec(function(err) {
+			callback(err);
+		});
+	};
+
 	module.getSortedSetRange = function(key, start, stop, callback) {
 		redisClient.zrange(key, start, stop, callback);
 	};
