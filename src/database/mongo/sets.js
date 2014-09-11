@@ -31,6 +31,31 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.setsAdd = function(keys, value, callback) {
+		callback = callback || helpers.noop;
+		if(!Array.isArray(value)) {
+			value = [value];
+		}
+
+		value.forEach(function(element, index, array) {
+			array[index] = helpers.valueToString(element);
+		});
+
+		var bulk = db.collection('objects').initializeUnorderedBulkOp();
+
+		for(var i=0; i<keys.length; ++i) {
+			bulk.find({_key: keys[i]}).upsert().updateOne({	$addToSet: {
+				members: {
+					$each: value
+				}
+			}});
+		}
+
+		bulk.execute(function(err) {
+			return callback(err);
+		});
+	};
+
 	module.setRemove = function(key, value, callback) {
 		callback = callback || helpers.noop;
 		if(!Array.isArray(value)) {

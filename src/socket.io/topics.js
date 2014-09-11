@@ -61,8 +61,7 @@ SocketTopics.enter = function(socket, tid, callback) {
 	if (!tid || !socket.uid) {
 		return;
 	}
-	SocketTopics.markAsRead(socket, tid);
-	topics.markTopicNotificationsRead(tid, socket.uid);
+	SocketTopics.markAsRead(socket, [tid], callback);
 	topics.increaseViewCount(tid);
 	websockets.updateRoomBrowsingText('topic_' + tid);
 };
@@ -75,23 +74,17 @@ SocketTopics.increaseViewCount = function(socket, tid) {
 	topics.increaseViewCount(tid);
 };
 
-SocketTopics.markAsRead = function(socket, tid) {
-	if(!tid || !socket.uid) {
-		return;
-	}
-
-	topics.markAsRead(tid, socket.uid, function(err) {
-		topics.pushUnreadCount(socket.uid);
-	});
-};
-
-SocketTopics.markTidsRead = function(socket, tids, callback) {
-	if (!Array.isArray(tids)) {
+SocketTopics.markAsRead = function(socket, tids, callback) {
+	if(!Array.isArray(tids) || !socket.uid) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	topics.markTidsRead(socket.uid, tids, function(err) {
-		if(err) {
+	if (!tids.length) {
+		return callback();
+	}
+
+	topics.markAsRead(tids, socket.uid, function(err) {
+		if (err) {
 			return callback(err);
 		}
 
@@ -100,7 +93,6 @@ SocketTopics.markTidsRead = function(socket, tids, callback) {
 		for (var i=0; i<tids.length; ++i) {
 			topics.markTopicNotificationsRead(tids[i], socket.uid);
 		}
-
 		callback();
 	});
 };
@@ -118,7 +110,7 @@ SocketTopics.markAllRead = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		SocketTopics.markTidsRead(socket, tids, callback);
+		SocketTopics.markAsRead(socket, tids, callback);
 	});
 };
 
@@ -138,14 +130,13 @@ SocketTopics.markCategoryTopicsRead = function(socket, cid, callback) {
 			}
 
 			tids = topicData.filter(function(topic) {
-				return parseInt(topic.cid, 10) === parseInt(cid, 10);
+				return topic && parseInt(topic.cid, 10) === parseInt(cid, 10);
 			}).map(function(topic) {
 				return topic.tid;
 			});
 
-			SocketTopics.markTidsRead(socket, tids, callback);
+			SocketTopics.markAsRead(socket, tids, callback);
 		});
-
 	});
 };
 

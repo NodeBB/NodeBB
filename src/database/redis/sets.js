@@ -8,6 +8,17 @@ module.exports = function(redisClient, module) {
 		});
 	};
 
+	module.setsAdd = function(keys, value, callback) {
+		callback = callback || function() {};
+		var multi = redisClient.multi();
+		for (var i=0; i<keys.length; ++i) {
+			multi.sadd(keys[i], value);
+		}
+		multi.exec(function(err) {
+			callback(err);
+		});
+	};
+
 	module.setRemove = function(key, value, callback) {
 		redisClient.srem(key, value, callback);
 	};

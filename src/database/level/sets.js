@@ -19,6 +19,10 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.setsAdd = function(keys, value, callback) {
+		throw new Error('not-implemented');
+	};
+
 	module.setRemove = function(key, value, callback) {
 		module.getListRange(key, 0, -1, function(err, set) {
 			module.set(key, set.splice(set.indexOf(value), 1), callback);

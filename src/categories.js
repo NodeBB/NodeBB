@@ -74,7 +74,7 @@ var db = require('./database'),
 			var category = categories[0];
 
 			if (parseInt(uid, 10)) {
-				Categories.markAsRead(cid, uid);
+				Categories.markAsRead([cid], uid);
 			}
 
 			async.parallel({
@@ -250,8 +250,14 @@ var db = require('./database'),
 		});
 	};
 
-	Categories.markAsRead = function(cid, uid, callback) {
-		db.setAdd('cid:' + cid + ':read_by_uid', uid, callback);
+	Categories.markAsRead = function(cids, uid, callback) {
+		if (!Array.isArray(cids) || !cids.length) {
+			return callback();
+		}
+		var keys = cids.map(function(cid) {
+			return 'cid:' + cid + ':read_by_uid';
+		});
+		db.setsAdd(keys, uid, callback);
 	};
 
 	Categories.markAsUnreadForAll = function(cid, callback) {

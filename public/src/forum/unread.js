@@ -25,7 +25,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 			if(!tids.length) {
 				return;
 			}
-			socket.emit('topics.markTidsRead', tids, function(err) {
+			socket.emit('topics.markAsRead', tids, function(err) {
 				if(err) {
 					return app.alertError(err.message);
 				}

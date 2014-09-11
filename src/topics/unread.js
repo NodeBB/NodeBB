@@ -162,7 +162,7 @@ module.exports = function(Topics) {
 		} else {
 		    return null;
 		}
-		
+
 		var	websockets = require('./../socket.io');
 
 		if (!uids) {
@@ -200,29 +200,35 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.markTidsRead = function(uid, tids, callback) {
-		if(!tids || !tids.length) {
+	Topics.markAsRead = function(tids, uid, callback) {
+		callback = callback || function() {};
+		if (!Array.isArray(tids) || !tids.length) {
 			return callback();
 		}
+		tids = tids.filter(Boolean);
+		var keys = tids.map(function(tid) {
+			return 'tid:' + tid + ':read_by_uid';
+		});
 
-		async.each(tids, function (tid, next) {
-			Topics.markAsRead(tid, uid, next);
-		}, callback);
-	};
-
-	Topics.markAsRead = function(tid, uid, callback) {
-		db.setAdd('tid:' + tid + ':read_by_uid', uid, function(err) {
+		async.parallel({
+			markRead: function(next) {
+				db.setsAdd(keys, uid, next);
+			},
+			topicData: function(next) {
+				Topics.getTopicsFields(tids, ['cid'], next);
+			}
+		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			Topics.getTopicField(tid, 'cid', function(err, cid) {
-				if (err) {
-					return callback(err);
-				}
-
-				categories.markAsRead(cid, uid, callback);
+			var cids = results.topicData.map(function(topic) {
+				return topic && topic.cid;
+			}).filter(function(topic, index, array) {
+				return topic && array.indexOf(topic) === index;
 			});
+
+			categories.markAsRead(cids, uid, callback);
 		});
 	};
 

@@ -149,7 +149,7 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 			var postcount = $('.user_postcount_' + data.posts[i].uid);
 			postcount.html(parseInt(postcount.html(), 10) + 1);
 		}
-		socket.emit('topics.markAsRead', tid);
+		socket.emit('topics.markAsRead', [tid]);
 		createNewPosts(data);
 	}
 

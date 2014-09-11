@@ -208,7 +208,7 @@ module.exports = function(Topics) {
 				Topics.markAsUnreadForAll(tid, next);
 			},
 			function(next) {
-				Topics.markAsRead(tid, uid, next);
+				Topics.markAsRead([tid], uid, next);
 			},
 			function(next) {
 				posts.getUserInfoForPosts([postData.uid], next);
