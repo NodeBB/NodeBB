@@ -284,7 +284,7 @@ var async = require('async'),
 						bodyShort: '[[notifications:user_posted_to, ' + results.username + ', ' + results.topic.title + ']]',
 						bodyLong: results.postContent,
 						pid: pid,
-						nid: 'topic:' + tid + ':uid:' + uid,
+						nid: 'tid:' + tid + ':pid:' + pid + ':uid:' + uid,
 						tid: tid,
 						from: uid
 					}, function(err, notification) {

@@ -198,7 +198,7 @@ SocketUser.follow = function(socket, data, callback) {
 			notifications.create({
 				bodyShort: '[[notifications:user_started_following_you, ' + userData.username + ']]',
 				path: nconf.get('relative_path') + '/user/' + userData.userslug,
-				nid: 'follow:uid:' + socket.uid,
+				nid: 'follow:' + data.uid + ':uid:' + socket.uid,
 				from: socket.uid
 			}, function(err, notification) {
 				if (!err && notification) {

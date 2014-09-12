@@ -170,7 +170,32 @@ module.exports = function(db, module) {
 	};
 
 	module.sortedSetsCard = function(keys, callback) {
-		async.map(keys, module.sortedSetCard, callback);
+		var pipeline = [
+			{ $match : { _key : { $in: keys } } } ,
+			{ $group: { _id: {_key: '$_key'}, count: { $sum: 1 } } },
+			{ $project: { _id: 1, count: '$count' } }
+		];
+		db.collection('objects').aggregate(pipeline, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (!Array.isArray(results)) {
+				results = [];
+			}
+
+			var map = {};
+			results.forEach(function(item) {
+				if (item && item._id._key) {
+					map[item._id._key] = item.count;
+				}
+			});
+
+			results = keys.map(function(key) {
+				return map[key] || 0;
+			});
+			callback(null, results);
+		});
 	};
 
 	module.sortedSetRank = function(key, value, callback) {

@@ -56,7 +56,7 @@ module.exports = function(Topics) {
 					bodyShort: '[[notifications:user_posted_to, ' + results.username + ', ' + results.title + ']]',
 					bodyLong: results.postContent,
 					pid: pid,
-					nid: 'topic:' + tid + ':uid:' + exceptUid,
+					nid: 'tid:' + tid + ':pid:' + pid + ':uid:' + exceptUid,
 					tid: tid,
 					from: exceptUid
 				}, function(err, notification) {

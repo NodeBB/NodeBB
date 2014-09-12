@@ -95,7 +95,7 @@ var async = require('async'),
 
 			if (oldNotification) {
 				if (parseInt(oldNotification.pid, 10) === parseInt(data.pid, 10) && parseInt(oldNotification.importance, 10) > parseInt(data.importance, 10)) {
-					return callback(null, null);
+					return callback();
 				}
 			}
 
