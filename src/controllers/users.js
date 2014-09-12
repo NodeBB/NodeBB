@@ -65,7 +65,9 @@ function getUsers(set, res, next) {
 		if (err) {
 			return next(err);
 		}
-
+		data = data.filter(function(user) {
+			return user && parseInt(user.uid, 10);
+		});
 		db.sortedSetCard(set, function(err, count) {
 			if (err) {
 				return next(err);

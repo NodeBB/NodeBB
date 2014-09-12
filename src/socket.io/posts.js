@@ -63,7 +63,7 @@ SocketPosts.upvote = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	favouriteCommand('upvote', 'voted', socket, data, callback);
-	SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:upvoted_your_post');
+	SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:upvoted_your_post_in');
 };
 
 SocketPosts.downvote = function(socket, data, callback) {
@@ -79,7 +79,7 @@ SocketPosts.favourite = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	favouriteCommand('favourite', 'favourited', socket, data, callback);
-	SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:favourited_your_post');
+	SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:favourited_your_post_in');
 };
 
 SocketPosts.unfavourite = function(socket, data, callback) {
@@ -107,7 +107,7 @@ SocketPosts.sendNotificationToPostOwner = function(pid, fromuid, notification) {
 	if(!pid || !fromuid) {
 		return;
 	}
-	posts.getPostFields(pid, ['tid', 'uid'], function(err, postData) {
+	posts.getPostFields(pid, ['tid', 'uid', 'content'], function(err, postData) {
 		if (err) {
 			return;
 		}
@@ -118,21 +118,15 @@ SocketPosts.sendNotificationToPostOwner = function(pid, fromuid, notification) {
 
 		async.parallel({
 			username: async.apply(user.getUserField, fromuid, 'username'),
-			postContent: function(next) {
-				async.waterfall([
-					async.apply(posts.getPostField, pid, 'content'),
-					function(content, next) {
-						postTools.parse(content, next);
-					}
-				], next);
-			}
+			topicTitle: async.apply(topics.getTopicField, postData.tid, 'title'),
+			postContent: async.apply(postTools.parse, postData.content)
 		}, function(err, results) {
 			if (err) {
 				return;
 			}
 
 			notifications.create({
-				bodyShort: '[[' + notification + ', ' + results.username + ']]',
+				bodyShort: '[[' + notification + ', ' + results.username + ', ' + results.topicTitle + ']]',
 				bodyLong: results.postContent,
 				pid: pid,
 				nid: 'post:' + pid + ':uid:' + fromuid,
@@ -279,6 +273,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 	}
 
 	var message = '',
+		userName = '',
 		post;
 
 	async.waterfall([
@@ -289,20 +284,20 @@ SocketPosts.flag = function(socket, pid, callback) {
 			if (parseInt(userData.reputation, 10) < parseInt(meta.config['privileges:flag'] || 1, 10)) {
 				return next(new Error('[[error:not-enough-reputation-to-flag]]'));
 			}
-			message = '[[notifications:user_flagged_post, ' + userData.username + ']]';
+			userName = userData.username;
+
 			posts.getPostFields(pid, ['tid', 'uid', 'content'], next);
 		},
 		function(postData, next) {
-			postTools.parse(postData.content, function(err, parsed) {
-				if (err) {
-					return next(err);
-				}
-				postData.content = parsed;
-				next(null, postData);
-			});
-		},
-		function(postData, next) {
 			post = postData;
+			topics.getTopicField(postData.tid, 'title', next);
+		},
+		function(topicTitle, next) {
+			message = '[[notifications:user_flagged_post_in, ' + userName + ', ' + topicTitle + ']]';
+			postTools.parse(post.content, next);
+		},
+		function(postContent, next) {
+			post.content = postContent;
 			groups.get('administrators', {}, next);
 		},
 		function(adminGroup, next) {
