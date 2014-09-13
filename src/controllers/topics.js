@@ -74,8 +74,8 @@ topicsController.get = function(req, res, next) {
 					postIndex = Math.max((req.params.post_index || 1) - (settings.postsPerPage + 1), 0);
 				}
 			} else if (!req.query.page) {
-				var index = Math.max(req.params.post_index, 0);
-				page = Math.ceil((index + 1) / settings.postsPerPage);
+				var index = Math.max(req.params.post_index - 1, 0);
+				page = Math.max(1, Math.ceil(index / settings.postsPerPage));
 			}
 
 			var start = (page - 1) * settings.postsPerPage + postIndex,
