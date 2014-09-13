@@ -45,6 +45,8 @@ var async = require('async'),
 				if(topics[i]) {
 					topics[i].title = validator.escape(topics[i].title);
 					topics[i].relativeTime = utils.toISOString(topics[i].timestamp);
+				} else {
+					topics.slice(i, 1);	
 				}
 			}
 
