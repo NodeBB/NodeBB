@@ -19,7 +19,6 @@ var nconf = require('nconf'),
 	SocketTopics = {};
 
 SocketTopics.post = function(socket, data, callback) {
-
 	if(!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -33,27 +32,30 @@ SocketTopics.post = function(socket, data, callback) {
 		tags: data.tags,
 		req: websockets.reqFromSocket(socket)
 	}, function(err, result) {
-		if(err) {
+		if (err) {
 			return callback(err);
 		}
 
-		if (result) {
+		callback(null, result.topicData);
+		socket.emit('event:new_post', {posts: result.postData});
+		socket.emit('event:new_topic', result.topicData);
 
-			websockets.server.sockets.in('category_' + data.category_id).emit('event:new_topic', result.topicData);
-			websockets.server.sockets.in('recent_posts').emit('event:new_topic', result.topicData);
-			websockets.server.sockets.in('home').emit('event:new_topic', result.topicData);
-			websockets.server.sockets.in('home').emit('event:new_post', {
-				posts: result.postData
-			});
-			websockets.server.sockets.in('user/' + socket.uid).emit('event:new_post', {
-				posts: result.postData
-			});
+		var uids = websockets.getConnectedClients();
 
-			websockets.emitTopicPostStats();
-			topics.pushUnreadCount();
+		privileges.categories.filterUids('read', result.topicData.cid, uids, function(err, uids) {
+			if (err) {
+				return;
+			}
+			for(var i=0; i<uids.length; ++i) {
+				if (uids[i] !== socket.uid) {
+					websockets.in('uid_' + uids[i]).emit('event:new_post', result.postData);
+					websockets.in('uid_' + uids[i]).emit('event:new_topic', result.topicData);
+				}
+			}
+		});
 
-			callback(null, result.topicData);
-		}
+		websockets.emitTopicPostStats();
+		topics.pushUnreadCount();
 	});
 };
 

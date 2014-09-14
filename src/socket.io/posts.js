@@ -27,34 +27,38 @@ SocketPosts.reply = function(socket, data, callback) {
 	data.req = websockets.reqFromSocket(socket);
 
 	topics.reply(data, function(err, postData) {
-		if(err) {
+		if (err) {
 			return callback(err);
 		}
 
-		if (postData) {
-			var privileges = {
+		var result = {
+			posts: [postData],
+			privileges: {
 				'topics:reply': true
-			};
+			},
+			'reputation:disabled': parseInt(meta.config['reputation:disabled'], 10) === 1,
+			'downvote:disabled': parseInt(meta.config['downvote:disabled'], 10) === 1,
+		};
 
-			callback();
+		callback();
 
-			socket.emit('event:new_post', {
-				posts: [postData],
-				privileges: privileges,
-				'reputation:disabled': parseInt(meta.config['reputation:disabled'], 10) === 1,
-				'downvote:disabled': parseInt(meta.config['downvote:disabled'], 10) === 1,
-			});
+		socket.emit('event:new_post', result);
 
-			socket.broadcast.emit('event:new_post', {
-				posts: [postData],
-				privileges: privileges,
-				'reputation:disabled': parseInt(meta.config['reputation:disabled'], 10) === 1,
-				'downvote:disabled': parseInt(meta.config['downvote:disabled'], 10) === 1,
-			});
+		var uids = websockets.getConnectedClients();
 
-			websockets.emitTopicPostStats();
-			topics.pushUnreadCount();
-		}
+		privileges.categories.filterUids('read', postData.topic.cid, uids, function(err, uids) {
+			if (err) {
+				return;
+			}
+			for(var i=0; i<uids.length; ++i) {
+				if (uids[i] !== socket.uid) {
+					websockets.in('uid_' + uids[i]).emit('event:new_post', result);
+				}
+			}
+		});
+
+		websockets.emitTopicPostStats();
+		topics.pushUnreadCount();
 	});
 };
 
