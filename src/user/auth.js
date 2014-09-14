@@ -46,7 +46,7 @@ module.exports = function(User) {
 
 	User.auth.resetLockout = function(uid, callback) {
 		async.parallel([
-			async.apply(db.delete, 'loginAttemps:' + uid),
+			async.apply(db.delete, 'loginAttempts:' + uid),
 			async.apply(db.delete, 'lockout:' + uid)
 		], callback);
 	}
