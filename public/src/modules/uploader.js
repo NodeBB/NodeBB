@@ -58,9 +58,6 @@ define('uploader', function() {
 				return false;
 			}
 
-			$(this).find('#imageUploadCsrf').val($('#csrf_token').val());
-
-
 			$(this).ajaxSubmit({
 				error: function(xhr) {
 					xhr = maybeParse(xhr);

@@ -21,11 +21,11 @@ function mainRoutes(app, middleware, controllers) {
 	app.get('/', middleware.buildHeader, controllers.home);
 	app.get('/api', controllers.home);
 
-	app.get('/login', middleware.redirectToAccountIfLoggedIn, middleware.buildHeader, controllers.login);
-	app.get('/api/login', middleware.redirectToAccountIfLoggedIn, controllers.login);
+	app.get('/login', middleware.requireCSRF, middleware.redirectToAccountIfLoggedIn, middleware.buildHeader, controllers.login);
+	app.get('/api/login', middleware.requireCSRF, middleware.redirectToAccountIfLoggedIn, controllers.login);
 
-	app.get('/register', middleware.redirectToAccountIfLoggedIn, middleware.buildHeader, controllers.register);
-	app.get('/api/register', middleware.redirectToAccountIfLoggedIn, controllers.register);
+	app.get('/register', middleware.requireCSRF, middleware.redirectToAccountIfLoggedIn, middleware.buildHeader, controllers.register);
+	app.get('/api/register', middleware.requireCSRF, middleware.redirectToAccountIfLoggedIn, controllers.register);
 
 	app.get('/confirm/:code', middleware.buildHeader, controllers.confirmEmail);
 	app.get('/api/confirm/:code', controllers.confirmEmail);

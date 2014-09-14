@@ -9,8 +9,8 @@ function mainRoutes(app, middleware, controllers) {
 	app.get('/admin/plugins', middleware.admin.buildHeader, controllers.admin.plugins.get);
 	app.get('/api/admin/plugins', controllers.admin.plugins.get);
 
-	app.get('/admin/settings', middleware.admin.buildHeader, controllers.admin.settings.get);
-	app.get('/api/admin/settings', controllers.admin.settings.get);
+	app.get('/admin/settings', middleware.requireCSRF, middleware.admin.buildHeader, controllers.admin.settings.get);
+	app.get('/api/admin/settings', middleware.requireCSRF, controllers.admin.settings.get);
 
 	app.get('/admin/themes', middleware.admin.buildHeader, controllers.admin.themes.get);
 	app.get('/api/admin/themes', controllers.admin.themes.get);
@@ -57,10 +57,10 @@ function apiRoutes(app, middleware, controllers) {
 	// todo, needs to be in api namespace
 	app.get('/admin/users/csv', middleware.authenticate, controllers.admin.users.getCSV);
 
-	app.post('/admin/category/uploadpicture', middleware.authenticate, controllers.admin.uploads.uploadCategoryPicture);
-	app.post('/admin/uploadfavicon', middleware.authenticate, controllers.admin.uploads.uploadFavicon);
-	app.post('/admin/uploadlogo', middleware.authenticate, controllers.admin.uploads.uploadLogo);
-	app.post('/admin/uploadgravatardefault', middleware.authenticate, controllers.admin.uploads.uploadGravatarDefault);
+	app.post('/admin/category/uploadpicture', middleware.requireCSRF, middleware.authenticate, controllers.admin.uploads.uploadCategoryPicture);
+	app.post('/admin/uploadfavicon', middleware.requireCSRF, middleware.authenticate, controllers.admin.uploads.uploadFavicon);
+	app.post('/admin/uploadlogo', middleware.requireCSRF, middleware.authenticate, controllers.admin.uploads.uploadLogo);
+	app.post('/admin/uploadgravatardefault', middleware.requireCSRF, middleware.authenticate, controllers.admin.uploads.uploadGravatarDefault);
 }
 
 function miscRoutes(app, middleware, controllers) {

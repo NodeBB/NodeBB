@@ -16,6 +16,7 @@ var app,
 	topics = require('./../topics'),
 	messaging = require('../messaging'),
 	ensureLoggedIn = require('connect-ensure-login'),
+	csrf = require('csurf'),
 
 	controllers = {
 		api: require('./../controllers/api')
@@ -32,6 +33,8 @@ middleware.authenticate = function(req, res, next) {
 		next();
 	}
 };
+
+middleware.requireCSRF = csrf();
 
 middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn();
 
@@ -251,7 +254,7 @@ middleware.renderHeader = function(req, res, callback) {
 				'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 				'brand:logo': meta.config['brand:logo'] || '',
 				'brand:logo:display': meta.config['brand:logo']?'':'hide',
-				csrf: res.locals.csrf_token,
+				csrf: req.csrfToken ? req.csrfToken() : undefined,
 				navigation: custom_header.navigation,
 				allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
 				searchEnabled: plugins.hasListeners('filter:search.query')
