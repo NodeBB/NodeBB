@@ -266,8 +266,14 @@ function sendTypingNotification(event, socket, data, callback) {
 	server.in('uid_' + data.touid).emit(event, data.fromUid);
 }
 
-SocketModules.chats.list = function(socket, data, callback) {
-	Messaging.getRecentChats(socket.uid, 0, 9, callback);
+SocketModules.chats.getRecentChats = function(socket, data, callback) {
+	if (!data || !utils.isNumber(data.after)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	var start = parseInt(data.after, 10),
+		end = start + 9;
+
+	Messaging.getRecentChats(socket.uid, start, end, callback);
 };
 
 /* Notifications */

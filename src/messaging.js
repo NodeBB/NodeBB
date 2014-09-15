@@ -222,26 +222,39 @@ var db = require('./database'),
 				return callback(err);
 			}
 
-			db.isSortedSetMembers('uid:' + uid + ':chats:unread', uids, function(err, unreadUids) {
+			async.parallel({
+				unread: function(next) {
+					db.isSortedSetMembers('uid:' + uid + ':chats:unread', uids, next);
+				},
+				users: function(next) {
+					user.getMultipleUserFields(uids, ['uid', 'username', 'picture', 'status'] , next);
+				}
+			}, function(err, results) {
 				if (err) {
 					return callback(err);
 				}
 
-				user.getMultipleUserFields(uids, ['uid', 'username', 'picture', 'status'] , function(err, users) {
+				results.users = results.users.filter(function(user) {
+					return user && parseInt(user.uid, 10);
+				});
+
+				if (!results.users.length) {
+					return callback(null, {users: [], nextStart: end + 1});
+				}
+
+				results.users.forEach(function(user, index) {
+					if (user) {
+						user.unread = results.unread[index];
+						user.status = websockets.isUserOnline(user.uid) ? user.status : 'offline';
+					}
+				});
+
+				db.sortedSetRevRank('uid:' + uid + ':chats', results.users[results.users.length - 1].uid, function(err, rank) {
 					if (err) {
 						return callback(err);
 					}
-					users = users.filter(function(user) {
-						return user && parseInt(user.uid, 10);
-					});
-					users.forEach(function(user, index) {
-						if (user) {
-							user.unread = unreadUids[index];
-							user.status = websockets.isUserOnline(user.uid) ? user.status : 'offline';
-						}
-					});
 
-					callback(null, users);
+					callback(null, {users: results.users, nextStart: rank + 1});
 				});
 			});
 		});

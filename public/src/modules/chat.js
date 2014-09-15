@@ -15,11 +15,11 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 				return;
 			}
 
-			socket.emit('modules.chats.list', function(err, chats) {
+			socket.emit('modules.chats.getRecentChats', {after: 0}, function(err, chats) {
 				if (err) {
 					return app.alertError(err.message);
 				}
-
+				chats = chats.users;
 				var	userObj;
 
 				chatsListEl.empty();

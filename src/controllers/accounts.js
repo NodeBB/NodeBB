@@ -500,20 +500,21 @@ accountsController.getChats = function(req, res, next) {
 			return next(err);
 		}
 
-		// Remove entries if they were already present as a followed contact
+		//Remove entries if they were already present as a followed contact
 		if (results.contacts && results.contacts.length) {
 			var contactUids = results.contacts.map(function(contact) {
 					return parseInt(contact.uid, 10);
 				});
 
-			results.recentChats = results.recentChats.filter(function(chatObj) {
+			results.recentChats.users = results.recentChats.users.filter(function(chatObj) {
 				return contactUids.indexOf(parseInt(chatObj.uid, 10)) === -1;
 			});
 		}
 
 		if (!req.params.userslug) {
 			return res.render('chats', {
-				chats: results.recentChats,
+				chats: results.recentChats.users,
+				nextStart: results.recentChats.nextStart,
 				contacts: results.contacts
 			});
 		}
@@ -532,7 +533,8 @@ accountsController.getChats = function(req, res, next) {
 			}
 
 			res.render('chats', {
-				chats: results.recentChats,
+				chats: results.recentChats.users,
+				nextStart: results.recentChats.nextStart,
 				contacts: results.contacts,
 				meta: data.toUser,
 				messages: data.messages
