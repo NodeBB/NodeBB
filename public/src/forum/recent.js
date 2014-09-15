@@ -122,7 +122,7 @@ define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
 		});
 
 		if (!topics.length) {
-			callback();
+			return callback();
 		}
 
 		infinitescroll.parseAndTranslate(templateName, 'topics', {topics: topics, showSelect: showSelect}, function(html) {

@@ -5,6 +5,7 @@ var	async = require('async'),
 	user = require('../user'),
 	groups = require('../groups'),
 	topics = require('../topics'),
+	posts = require('../posts'),
 	notifications = require('../notifications'),
 	messaging = require('../messaging'),
 	plugins = require('../plugins'),
@@ -329,6 +330,16 @@ SocketUser.loadMore = function(socket, data, callback) {
 	});
 };
 
+SocketUser.loadMoreRecentPosts = function(socket, data, callback) {
+	if(!data || !data.uid || !utils.isNumber(data.after)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	var start = Math.max(0, parseInt(data.after, 10)),
+		end = start + 9;
+
+	posts.getPostsByUid(socket.uid, data.uid, start, end, callback);
+};
 
 SocketUser.setStatus = function(socket, status, callback) {
 	if (!socket.uid) {

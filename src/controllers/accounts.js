@@ -166,6 +166,7 @@ accountsController.getAccount = function(req, res, next) {
 				return p && parseInt(p.deleted, 10) !== 1;
 			});
 
+			userData.nextStart = results.posts.nextStart;
 			userData.isFollowing = results.isFollowing;
 
 			if (!userData.profileviews) {

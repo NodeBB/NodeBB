@@ -2,7 +2,7 @@
 
 /* globals define, ajaxify, app, utils, socket, translator*/
 
-define('forum/account/profile', ['forum/account/header'], function(header) {
+define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll'], function(header, infinitescroll) {
 	var Account = {},
 		yourid,
 		theirid,
@@ -39,6 +39,8 @@ define('forum/account/profile', ['forum/account/header'], function(header) {
 		if (yourid !== theirid) {
 			socket.emit('user.increaseViewCount', theirid);
 		}
+
+		infinitescroll.init(loadMoreTopics);
 	};
 
 	function processPage() {
@@ -80,6 +82,45 @@ define('forum/account/profile', ['forum/account/header'], function(header) {
 				.attr('data-original-title', translated);
 		});
 
+	}
+
+	function loadMoreTopics(direction) {
+		if(direction < 0 || !$('.user-recent-posts').length) {
+			return;
+		}
+
+		$('.loading-indicator').removeClass('hidden');
+
+		infinitescroll.loadMore('user.loadMoreRecentPosts', {
+			after: $('.user-recent-posts').attr('data-nextstart'),
+			uid: theirid
+		}, function(data, done) {
+			if (data.posts && data.posts.length) {
+				onPostsLoaded(data.posts, done);
+				$('.user-recent-posts').attr('data-nextstart', data.nextStart);
+			} else {
+				done();
+			}
+			$('.loading-indicator').addClass('hidden');
+		});
+	}
+
+	function onPostsLoaded(posts, callback) {
+		posts = posts.filter(function(post) {
+			return !$('.user-recent-posts div[data-pid=' + post.pid + ']').length;
+		});
+
+		if (!posts.length) {
+			return callback();
+		}
+
+		infinitescroll.parseAndTranslate('account/profile', 'posts', {posts: posts}, function(html) {
+
+			$('.user-recent-posts .loading-indicator').before(html);
+			html.find('span.timeago').timeago();
+
+			callback();
+		});
 	}
 
 	return Account;
