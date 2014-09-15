@@ -56,6 +56,7 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.sortedSetsRemoveRangeByScore = function(keys, min, max, callback) {
+		callback = callback || function() {};
 		var multi = redisClient.multi();
 		for(var i=0; i<keys.length; ++i) {
 			multi.zremrangebyscore(keys[i], min, max);

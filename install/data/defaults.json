@@ -8,6 +8,10 @@
         "value": 10
     },
     {
+        "field": "initialPostDelay",
+        "value": 10
+    },
+    {
         "field": "minimumPostLength",
         "value": 8
     },

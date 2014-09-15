@@ -151,7 +151,7 @@ var
 
 		async.parallel({
 			userData: function(next) {
-				User.getUserFields(uid, ['banned', 'lastposttime', 'email', 'email:confirmed'], next);
+				User.getUserFields(uid, ['banned', 'lastposttime', 'joindate', 'email', 'email:confirmed'], next);
 			},
 			exists: function(next) {
 				db.exists('user:' + uid, next);
@@ -181,13 +181,14 @@ var
 			if (userData.email && parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
 				return callback(new Error('[[error:email-not-confirmed]]'));
 			}
-
-			var lastposttime = userData.lastposttime;
-			if (!lastposttime) {
-				lastposttime = 0;
+			var now = Date.now();
+			if (now - parseInt(userData.joindate, 10) < parseInt(meta.config.initialPostDelay, 10) * 1000) {
+				return callback(new Error('[[error:user-too-new, ' + meta.config.initialPostDelay + ']]'));
 			}
 
-			if (Date.now() - parseInt(lastposttime, 10) < parseInt(meta.config.postDelay, 10) * 1000) {
+			var lastposttime = userData.lastposttime || 0;
+
+			if (now - parseInt(lastposttime, 10) < parseInt(meta.config.postDelay, 10) * 1000) {
 				return callback(new Error('[[error:too-many-posts, ' + meta.config.postDelay + ']]'));
 			}
 			callback();
