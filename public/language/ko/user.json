@@ -4,6 +4,8 @@
     "username": "사용자 이름",
     "email": "이메일",
     "confirm_email": "이메일 확인",
+    "delete_account": "Delete Account",
+    "delete_account_confirm": "Are you sure you want to delete your account?",
     "fullname": "이름",
     "website": "웹 사이트",
     "location": "거주지",
@@ -61,5 +63,7 @@
     "posts_per_page": "페이지 당 게시물 수",
     "notification_sounds": "알림을 수신하면 알림음을 재생",
     "browsing": "페이지 열기",
-    "open_links_in_new_tab": "외부 링크를 새 탭에서 열기"
+    "open_links_in_new_tab": "외부 링크를 새 탭에서 열기",
+    "follow_topics_you_reply_to": "Follow topics that you reply to.",
+    "follow_topics_you_create": "Follow topics you create."
 }

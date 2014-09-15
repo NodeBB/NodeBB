@@ -372,7 +372,7 @@ var db = require('./database'),
 				if (categories[i]) {
 					categories[i]['unread-class'] = (parseInt(categories[i].topic_count, 10) === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
 					categories[i].children = results.children[i];
-					categories[i].parent = results.parents[i];
+					categories[i].parent = results.parents[i] && !results.parents[i].disabled ? results.parents[i] : null;
 				}
 			}
 
@@ -408,9 +408,10 @@ var db = require('./database'),
 				Categories.getCategoriesData(cids, next);
 			},
 			function (categories, next) {
+				// Filter categories to isolate children, and remove disabled categories
 				async.map(cids, function(cid, next) {
 					next(null, categories.filter(function(category) {
-						return parseInt(category.parentCid, 10) === parseInt(cid, 10);
+						return parseInt(category.parentCid, 10) === parseInt(cid, 10) && !category.disabled;
 					}));
 				}, next);
 			}

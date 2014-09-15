@@ -9,14 +9,16 @@
     "invalid-uid": "Ongeldig Gebruikers ID",
     "invalid-username": "Ongeldig Gebruikersnaam",
     "invalid-email": "Ongeldig Email Adres",
-    "invalid-title": "Ongeldig Titel!",
+    "invalid-title": "Ongeldige Titel!",
     "invalid-user-data": "Ongeldig Gebruikersdata",
     "invalid-password": "Ongeldig wachtwoord",
+    "invalid-username-or-password": "Please specify both a username and password",
     "invalid-pagination-value": "Ongeldig pagineringswaarde",
     "username-taken": "Gebruikersnaam is al bezet",
     "email-taken": "Email adres is al gebruikt",
     "email-not-confirmed": "U email adres is niet bevestigd, Klik hier om uw email adres te bevestigen",
     "username-too-short": "Gebruikersnaam is te kort",
+    "username-too-long": "Username too long",
     "user-banned": "Gebruiker verbannen",
     "no-category": "Categorie bestaat niet",
     "no-topic": "Onderwerp bestaat niet",
@@ -52,5 +54,9 @@
     "upload-error": "Upload Fout : %1",
     "signature-too-long": "Deze handtekening kan niet groter zijn dan %1 karakters!",
     "cant-chat-with-yourself": "Je kan niet met jezelf chatten!",
-    "not-enough-reputation-to-downvote": "U heeft niet de benodigde reputatie om dit bericht te downvoten"
+    "reputation-system-disabled": "Reputation system is disabled.",
+    "downvoting-disabled": "Downvoting is disabled",
+    "not-enough-reputation-to-downvote": "U heeft niet de benodigde reputatie om dit bericht te downvoten",
+    "not-enough-reputation-to-flag": "Yo do not have enough reputation to flag this post",
+    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }

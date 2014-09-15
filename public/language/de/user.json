@@ -4,6 +4,8 @@
     "username": "Nutzername",
     "email": "E-Mail",
     "confirm_email": "E-Mail bestätigen",
+    "delete_account": "Delete Account",
+    "delete_account_confirm": "Are you sure you want to delete your account?",
     "fullname": "Kompletter Name",
     "website": "Homepage",
     "location": "Wohnort",
@@ -61,5 +63,7 @@
     "posts_per_page": "Beiträge pro Seite",
     "notification_sounds": "Ton abspielen, wenn ich eine Benachrichtigung erhalte.",
     "browsing": "Browser Einstellungen",
-    "open_links_in_new_tab": "Externe Links in neuem Tab öffnen?"
+    "open_links_in_new_tab": "Externe Links in neuem Tab öffnen?",
+    "follow_topics_you_reply_to": "Follow topics that you reply to.",
+    "follow_topics_you_create": "Follow topics you create."
 }

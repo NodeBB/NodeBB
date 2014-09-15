@@ -12,11 +12,13 @@
     "invalid-title": "Título no válido!",
     "invalid-user-data": "Datos de Usuario no válidos",
     "invalid-password": "Contraseña no válida",
+    "invalid-username-or-password": "Please specify both a username and password",
     "invalid-pagination-value": "Valor de paginación no válido.",
     "username-taken": "Nombre de usuario ya escogido",
     "email-taken": "El correo electrónico ya está escogido.",
     "email-not-confirmed": "Tu correo electrónico está sin confirmar, por favor haz click aquí para confirmar tu email.",
     "username-too-short": "El nombre de usuario es demasiado corto",
+    "username-too-long": "Username too long",
     "user-banned": "Usuario expulsado",
     "no-category": "La categoría no existe",
     "no-topic": "El tema no existe.",
@@ -25,7 +27,7 @@
     "no-user": "El usuario no existe",
     "no-teaser": "El extracto del tema no existe.",
     "no-privileges": "No tienes los privilegios necesarios para esa acción.",
-    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
+    "no-emailers-configured": "Ningún plugin para email fue cargado, así que no se pudo enviar email de prueba.",
     "category-disabled": "Categoría deshabilitada.",
     "topic-locked": "Tema bloqueado.",
     "still-uploading": "Por favor, espera a que terminen las subidas.",
@@ -52,5 +54,9 @@
     "upload-error": "Error de subida: %1",
     "signature-too-long": "Las firmas no pueden ser más largas de %1 caracteres!",
     "cant-chat-with-yourself": "No puedes conversar contigo mismo!",
-    "not-enough-reputation-to-downvote": "No tienes suficiente reputación para votar negativo este post"
+    "reputation-system-disabled": "Reputation system is disabled.",
+    "downvoting-disabled": "Downvoting is disabled",
+    "not-enough-reputation-to-downvote": "No tienes suficiente reputación para votar negativo este post",
+    "not-enough-reputation-to-flag": "Yo do not have enough reputation to flag this post",
+    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }
