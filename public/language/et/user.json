@@ -4,6 +4,8 @@
     "username": "Kasutajanimi",
     "email": "Email",
     "confirm_email": "Kinnita email",
+    "delete_account": "Delete Account",
+    "delete_account_confirm": "Are you sure you want to delete your account?",
     "fullname": "Täisnimi",
     "website": "Koduleht",
     "location": "Asukoht",
@@ -61,5 +63,7 @@
     "posts_per_page": "Postitusi ühe lehekülje kohta",
     "notification_sounds": "Tee häält, kui saabub teade.",
     "browsing": "Sirvimis sätted",
-    "open_links_in_new_tab": "Ava väljaminevad lingid uues vaheaknas?"
+    "open_links_in_new_tab": "Ava väljaminevad lingid uues vaheaknas?",
+    "follow_topics_you_reply_to": "Follow topics that you reply to.",
+    "follow_topics_you_create": "Follow topics you create."
 }

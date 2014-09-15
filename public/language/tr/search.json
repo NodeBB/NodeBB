@@ -1,3 +1,4 @@
 {
-    "results_matching": "%1 tane “%2“ bulundu (%3 saniye)"
+    "results_matching": "%1 tane “%2“ bulundu (%3 saniye)",
+    "no-matches": "No posts found"
 }

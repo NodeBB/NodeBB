@@ -12,11 +12,13 @@
     "invalid-title": "Ogiltig rubrik.",
     "invalid-user-data": "Ogiltig användardata",
     "invalid-password": "Ogiltigt lösenord",
+    "invalid-username-or-password": "Please specify both a username and password",
     "invalid-pagination-value": "Ogiltigt sidnummer",
     "username-taken": "Användarnamn upptaget",
     "email-taken": "Epostadress upptagen",
     "email-not-confirmed": "Din epostadress är ännu inte bekräftad. Klicka här för att bekräfta din epostadress.",
     "username-too-short": "Användarnamnet är för kort",
+    "username-too-long": "Username too long",
     "user-banned": "Användare bannad",
     "no-category": "Kategori hittades inte",
     "no-topic": "Ämne hittades inte",
@@ -52,5 +54,9 @@
     "upload-error": "Fel vid uppladdning: %1",
     "signature-too-long": "Signaturer kan inte vara längre än %1 tecken.",
     "cant-chat-with-yourself": "Du kan inte chatta med dig själv.",
-    "not-enough-reputation-to-downvote": "Du har inte tillräckligt förtroende för att rösta ner det här meddelandet"
+    "reputation-system-disabled": "Reputation system is disabled.",
+    "downvoting-disabled": "Downvoting is disabled",
+    "not-enough-reputation-to-downvote": "Du har inte tillräckligt förtroende för att rösta ner det här meddelandet",
+    "not-enough-reputation-to-flag": "Yo do not have enough reputation to flag this post",
+    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }

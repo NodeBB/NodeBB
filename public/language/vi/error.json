@@ -12,11 +12,13 @@
     "invalid-title": "Invalid title!",
     "invalid-user-data": "Dữ liệu tài khoản không hợp lệ",
     "invalid-password": "Mật khẩu không hợp lệ",
+    "invalid-username-or-password": "Please specify both a username and password",
     "invalid-pagination-value": "Số trang không hợp lệ",
     "username-taken": "Tên đăng nhập đã tồn tại",
     "email-taken": "Email đã tồn tại",
     "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "Username too short",
+    "username-too-long": "Username too long",
     "user-banned": "Tài khoản bị ban",
     "no-category": "Phần mục không tồn tại",
     "no-topic": "Chủ đề không tồn tại",
@@ -52,5 +54,9 @@
     "upload-error": "Upload Error : %1",
     "signature-too-long": "Chứ ký không được dài quá %1 ký tự",
     "cant-chat-with-yourself": "Bạn không thể chat với chính bạn!",
-    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post"
+    "reputation-system-disabled": "Reputation system is disabled.",
+    "downvoting-disabled": "Downvoting is disabled",
+    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post",
+    "not-enough-reputation-to-flag": "Yo do not have enough reputation to flag this post",
+    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }
