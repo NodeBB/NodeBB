@@ -25,10 +25,6 @@ module.exports = function(db, module) {
 	};
 
 	module.getObjects = function(keys, callback) {
-		if (keys.length > helpers.KEY_LIMIT) {
-			var e = new Error('too many keys');
-			winston.warn('[HASH - TOO_MANY_KEYS] ' + keys.length + ' ' + keys[0] + '  ' + keys[keys.length - 1] + '\n', e.stack);
-		}
 		db.collection('objects').find({_key: {$in: keys}}, {_id: 0}).toArray(function(err, data) {
 			if(err) {
 				return callback(err);
@@ -59,11 +55,6 @@ module.exports = function(db, module) {
 	};
 
 	module.getObjectsFields = function(keys, fields, callback) {
-		if (keys.length > helpers.KEY_LIMIT) {
-			var e = new Error('too many keys');
-			winston.warn('[HASH - TOO_MANY_KEYS] ' + keys.length + ' ' + keys[0] + '  ' + keys[keys.length - 1] + '\n', e.stack);
-		}
-
 		var _fields = {
 			_id: 0,
 			_key: 1

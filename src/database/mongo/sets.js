@@ -123,10 +123,6 @@ module.exports = function(db, module) {
 	};
 
 	module.getSetsMembers = function(keys, callback) {
-		if (keys.length > helpers.KEY_LIMIT) {
-			var e = new Error('too many keys');
-			winston.warn('[SET - TOO_MANY_KEYS] ' + keys.length + ' ' + keys[0] + '  ' + keys[keys.length - 1] + '\n', e.stack);
-		}
 		db.collection('objects').find({_key: {$in: keys}}, {_key: 1, members: 1}).toArray(function(err, data) {
 			if (err) {
 				return callback(err);

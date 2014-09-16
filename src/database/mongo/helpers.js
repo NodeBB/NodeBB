@@ -34,6 +34,4 @@ helpers.valueToString = function(value) {
 
 helpers.noop = function() {};
 
-helpers.KEY_LIMIT = 300;
-
 module.exports = helpers;
