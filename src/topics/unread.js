@@ -156,38 +156,18 @@ module.exports = function(Topics) {
 		});
 	}
 
-	Topics.pushUnreadCount = function(uids, callback) {
-		if (typeof callback === 'function') {
-			return callback(null);
-		} else {
-		    return null;
+	Topics.pushUnreadCount = function(uid, callback) {
+		callback = callback || function() {}:
+
+		if (!uid || parseInt(uid, 10) === 0) {
+			return callback();
 		}
-
-		var	websockets = require('./../socket.io');
-
-		if (!uids) {
-			uids = websockets.getConnectedClients();
-		} else if (!Array.isArray(uids)) {
-			uids = [uids];
-		}
-
-		uids = uids.filter(function(value) {
-			return parseInt(value, 10) !== 0;
-		});
-
-		async.eachLimit(uids, 5, function(uid, next) {
-			Topics.getTotalUnread(uid, function(err, count) {
-				websockets.in('uid_' + uid).emit('event:unread.updateCount', null, count);
-				next();
-			});
-		}, function(err) {
+		Topics.getTotalUnread(uid, function(err, count) {
 			if (err) {
-				winston.error(err.message);
+				return callback(err);
 			}
-
-			if (callback) {
-				callback();
-			}
+			require('../socket.io').in('uid_' + uid).emit('event:unread.updateCount', null, count);
+			callback();
 		});
 	};
 

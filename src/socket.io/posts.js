@@ -51,14 +51,13 @@ SocketPosts.reply = function(socket, data, callback) {
 				return;
 			}
 			for(var i=0; i<uids.length; ++i) {
-				if (uids[i] !== socket.uid) {
+				if (parseInt(uids[i], 10) !== socket.uid) {
 					websockets.in('uid_' + uids[i]).emit('event:new_post', result);
 				}
 			}
 		});
 
 		websockets.emitTopicPostStats();
-		topics.pushUnreadCount();
 	});
 };
 

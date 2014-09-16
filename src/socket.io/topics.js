@@ -47,7 +47,7 @@ SocketTopics.post = function(socket, data, callback) {
 				return;
 			}
 			for(var i=0; i<uids.length; ++i) {
-				if (uids[i] !== socket.uid) {
+				if (parseInt(uids[i], 10) !== socket.uid) {
 					websockets.in('uid_' + uids[i]).emit('event:new_post', result.postData);
 					websockets.in('uid_' + uids[i]).emit('event:new_topic', result.topicData);
 				}
@@ -55,7 +55,6 @@ SocketTopics.post = function(socket, data, callback) {
 		});
 
 		websockets.emitTopicPostStats();
-		topics.pushUnreadCount();
 	});
 };
 
@@ -188,7 +187,7 @@ SocketTopics.markAsUnreadForAll = function(socket, tids, callback) {
 						if(err) {
 							return next(err);
 						}
-						topics.pushUnreadCount();
+						topics.pushUnreadCount(socket.uid);
 						next();
 					});
 				});

@@ -135,8 +135,8 @@ var
 
 	User.updateLastOnlineTime = function(uid, callback) {
 		callback = callback || function() {};
-		User.getUserField(uid, 'status', function(err, status) {
-			if(err || status === 'offline') {
+		User.getUserFields(uid, ['status', 'lastonline'], function(err, userData) {
+			if(err || userData.status === 'offline' || Date.now() - parseInt(userData.lastonline, 10) < 300000) {
 				return callback(err);
 			}
 
