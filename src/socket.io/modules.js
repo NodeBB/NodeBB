@@ -71,6 +71,10 @@ SocketModules.composer.push = function(socket, pid, callback) {
 				return callback(err);
 			}
 
+			if (!results.topic) {
+				return callback(new Error('[[error:no-topic]]'));
+			}
+
 			callback(null, {
 				pid: pid,
 				body: postData.content,

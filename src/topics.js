@@ -172,9 +172,9 @@ var async = require('async'),
 		Topics.getTopicsData(tids, function(err, topics) {
 			function mapFilter(array, field) {
 				return array.map(function(topic) {
-					return topic[field];
+					return topic && topic[field];
 				}).filter(function(value, index, array) {
-					return array.indexOf(value) === index;
+					return value && array.indexOf(value) === index;
 				});
 			}
 
@@ -225,21 +225,23 @@ var async = require('async'),
 				});
 
 				for (var i=0; i<topics.length; ++i) {
-					topics[i].category = categories[topics[i].cid];
-					topics[i].category.disabled = parseInt(topics[i].category.disabled, 10) === 1;
-					topics[i].user = users[topics[i].uid];
-					topics[i].teaser = results.teasers[i];
-					topics[i].tags = results.tags[i];
+					if (topics[i]) {
+						topics[i].category = categories[topics[i].cid];
+						topics[i].category.disabled = parseInt(topics[i].category.disabled, 10) === 1;
+						topics[i].user = users[topics[i].uid];
+						topics[i].teaser = results.teasers[i];
+						topics[i].tags = results.tags[i];
 
-					topics[i].pinned = parseInt(topics[i].pinned, 10) === 1;
-					topics[i].locked = parseInt(topics[i].locked, 10) === 1;
-					topics[i].deleted = parseInt(topics[i].deleted, 10) === 1;
-					topics[i].unread = !(results.hasRead[i] && parseInt(uid, 10) !== 0);
-					topics[i].unreplied = parseInt(topics[i].postcount, 10) <= 1;
+						topics[i].pinned = parseInt(topics[i].pinned, 10) === 1;
+						topics[i].locked = parseInt(topics[i].locked, 10) === 1;
+						topics[i].deleted = parseInt(topics[i].deleted, 10) === 1;
+						topics[i].unread = !(results.hasRead[i] && parseInt(uid, 10) !== 0);
+						topics[i].unreplied = parseInt(topics[i].postcount, 10) <= 1;
+					}
 				}
 
 				topics = topics.filter(function(topic) {
-					return !topic.category.disabled &&
+					return topic &&	!topic.category.disabled &&
 						(!topic.deleted || (topic.deleted && isAdminOrMod[topic.cid]) ||
 						parseInt(topic.uid, 10) === parseInt(uid, 10));
 				});
@@ -272,9 +274,13 @@ var async = require('async'),
 							}
 							start = parseInt(start, 10);
 							for(var i=0; i<posts.length; ++i) {
-								posts[i].index = start + i;
+								if (posts[i]) {
+									posts[i].index = start + i;
+								}
 							}
-							posts[0].index = 0;
+							if (posts[0]) {
+								posts[0].index = 0;
+							}
 							Topics.addPostData(posts, uid, next);
 						});
 					});
