@@ -84,19 +84,34 @@ apiController.getConfig = function(req, res, next) {
 
 
 apiController.renderWidgets = function(req, res, next) {
-	var uid = req.user ? req.user.uid : 0,
-		area = {
+	var async = require('async'),
+		uid = req.user ? req.user.uid : 0,
+		areas = {
 			template: req.query.template,
-			location: req.query.location,
+			locations: req.query.locations,
 			url: req.query.url
-		};
+		},
+		renderedWidgets = [];
 
-	if (!area.template || !area.location) {
+	if (!areas.template || !areas.locations) {
 		return res.json(200, {});
 	}
 
-	widgets.render(uid, area, function(err, data) {
-		res.json(200, data);
+	async.each(areas.locations, function(location, next) {
+		widgets.render(uid, {
+			template: areas.template,
+			url: areas.url,
+			location: location
+		}, function(err, widgets) {
+			renderedWidgets.push({
+				location: location,
+				widgets: widgets
+			});
+
+			next();
+		});
+	}, function(err) {
+		res.json(200, renderedWidgets);
 	});
 };
 
