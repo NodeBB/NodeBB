@@ -1,7 +1,7 @@
 "use strict";
 /*global define, ajaxify, app, socket, RELATIVE_PATH*/
 
-define('forum/admin/index', function() {
+define('forum/admin/index', ['semver'], function(semver) {
 	var	Admin = {};
 	var updateIntervalId = 0;
 	Admin.init = function() {
@@ -25,6 +25,13 @@ define('forum/admin/index', function() {
 		});
 
 		$.get('https://api.github.com/repos/NodeBB/NodeBB/tags', function(releases) {
+			// Re-sort the releases, as they do not follow Semver (wrt pre-releases)
+			releases = releases.sort(function(a, b) {
+				a = a.name.replace(/^v/, '');
+				b = b.name.replace(/^v/, '');
+				return semver.lt(a, b) ? 1 : -1;
+			});
+
 			var	version = $('#version').html(),
 				latestVersion = releases[0].name.slice(1),
 				checkEl = $('.version-check');
