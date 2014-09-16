@@ -45,11 +45,6 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 				$('#topics-container').empty();
 				$('#category-no-topics').removeClass('hidden');
 				$('.markread').addClass('hidden');
-
-				$('#numUnreadBadge')
-					.removeClass('badge-important')
-					.addClass('badge-inverse')
-					.html('0');
 			});
 		});
 
