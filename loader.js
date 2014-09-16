@@ -2,11 +2,12 @@
 
 var	nconf = require('nconf'),
 	fs = require('fs'),
+	path = require('path'),
 	cluster = require('cluster'),
 	async = require('async'),
 	pidFilePath = __dirname + '/pidfile',
 	output = fs.openSync(__dirname + '/logs/output.log', 'a'),
-	numCPUs = 12,// require('os').cpus().length,
+	numCPUs,
 	Loader = {
 		timesStarted: 0,
 		shutdown_queue: [],
@@ -15,6 +16,12 @@ var	nconf = require('nconf'),
 			map: undefined
 		}
 	};
+
+nconf.argv().file({
+	file: path.join(__dirname, '/config.json')
+});
+
+numCPUs = nconf.get('cluster') || require('os').cpus().length;
 
 Loader.init = function() {
 	cluster.setupMaster({
@@ -149,8 +156,6 @@ Loader.reload = function() {
 		});
 	});
 };
-
-nconf.argv();
 
 if (nconf.get('daemon') !== false) {
 	if (fs.existsSync(pidFilePath)) {
