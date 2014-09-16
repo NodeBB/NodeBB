@@ -47,6 +47,24 @@ middleware.updateLastOnlineTime = function(req, res, next) {
 	next();
 };
 
+middleware.incrementPageViews = function(req, res, next) {
+	var nextMonth = new Date(),
+		nextDay = new Date();
+
+	nextMonth.setMonth(nextMonth.getMonth() + 1, 1);
+	nextMonth.setHours(0, 0, 0, 0);
+
+	nextDay.setDate(nextDay.getDate() + 1);
+	nextDay.setHours(0, 0, 0, 0);
+
+	db.increment('pageviews:monthly');
+	db.increment('pageviews:daily');
+	db.expireAt('pageviews:monthly', nextMonth.getTime());
+	db.expireAt('pageviews:daily', nextDay.getTime());
+
+	next();
+};
+
 middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 	if (req.user) {
 		user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
