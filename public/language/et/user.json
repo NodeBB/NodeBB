@@ -5,7 +5,7 @@
     "email": "Email",
     "confirm_email": "Kinnita email",
     "delete_account": "Delete Account",
-    "delete_account_confirm": "Are you sure you want to delete your account?",
+    "delete_account_confirm": "Are you sure you want to delete your account? <strong>This action is irreversible and you will not be able to recover any of your data</strong>",
     "fullname": "Täisnimi",
     "website": "Koduleht",
     "location": "Asukoht",

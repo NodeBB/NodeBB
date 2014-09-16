@@ -5,7 +5,7 @@
     "email": "Correo Electrónico",
     "confirm_email": "Repetir correo electrónico",
     "delete_account": "Delete Account",
-    "delete_account_confirm": "Are you sure you want to delete your account?",
+    "delete_account_confirm": "Are you sure you want to delete your account? <strong>This action is irreversible and you will not be able to recover any of your data</strong>",
     "fullname": "Nombre completo",
     "website": "Sitio Web",
     "location": "Ubicación",
