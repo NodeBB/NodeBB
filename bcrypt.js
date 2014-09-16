@@ -2,7 +2,7 @@
 'use strict';
 
 
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 
 process.on('message', function(m) {
 	if (m.type === 'hash') {
