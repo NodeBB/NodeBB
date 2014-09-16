@@ -161,7 +161,7 @@ module.exports = function(app, middleware) {
 	};
 	pluginRouter.hotswapId = 'plugins';
 
-	app.all(relativePath + '/api/?*', middleware.updateLastOnlineTime, middleware.prepareAPI);
+	app.all(relativePath + '/api/?*', middleware.prepareAPI);
 	app.all(relativePath + '/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
 	app.all(relativePath + '/admin/?*', middleware.ensureLoggedIn, middleware.admin.isAdmin);
 
@@ -181,6 +181,7 @@ module.exports = function(app, middleware) {
 	*
 	*/
 	pageRouter.use(middleware.incrementPageViews);
+	pageRouter.use(middleware.updateLastOnlineTime);
 
 	mainRoutes(pageRouter, middleware, controllers);
 	staticRoutes(pageRouter, middleware, controllers);
