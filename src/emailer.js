@@ -31,7 +31,7 @@ Emailer.send = function(template, uid, params) {
 		email: async.apply(User.getUserField, uid, 'email'),
 		settings: async.apply(User.getSettings, uid)
 	}, function(err, results) {
-		async.map([results.html, results.plaintext], function(raw, next) {
+		async.map([results.html, results.plaintext, params.subject], function(raw, next) {
 			translator.translate(raw, results.settings.language || meta.config.defaultLang || 'en_GB', function(translated) {
 				next(undefined, translated);
 			});
@@ -45,7 +45,7 @@ Emailer.send = function(template, uid, params) {
 			Plugins.fireHook('action:email.send', {
 				to: results.email,
 				from: Meta.config['email:from'] || 'no-reply@localhost.lan',
-				subject: params.subject,
+				subject: translated[2],
 				html: translated[0],
 				plaintext: translated[1],
 				template: template,

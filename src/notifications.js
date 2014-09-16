@@ -146,6 +146,7 @@ var async = require('async'),
 			db.sortedSetsRemoveRangeByScore(readKeys, 0, oneWeekAgo);
 
 			plugins.fireHook('action:notification.pushed', {notification: notification, uids: uids});
+			callback();
 
 			for(var i=0; i<uids.length; ++i) {
 				websockets.in('uid_' + uids[i]).emit('event:new_notification', notification);

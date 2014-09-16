@@ -197,7 +197,7 @@ SocketModules.chats.send = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		sendChatNotification(socket.uid, touid, message);
+		Messaging.notifyUser(socket.uid, touid, message);
 
 		// Recipient
 		SocketModules.chats.pushUnreadCount(touid);
@@ -216,23 +216,6 @@ SocketModules.chats.send = function(socket, data, callback) {
 		});
 	});
 };
-
-function sendChatNotification(fromuid, touid, messageObj) {
-	// todo #1798 -- this should check if the user is in room `chat_{uidA}_{uidB}` instead, see `Sockets.uidInRoom(uid, room);`
-	if (!module.parent.exports.isUserOnline(touid)) {
-		notifications.create({
-			bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
-			bodyLong: messageObj.content,
-			path: nconf.get('relative_path') + '/chats/' + utils.slugify(messageObj.fromUser.username),
-			nid: 'chat_' + fromuid + '_' + touid,
-			from: fromuid
-		}, function(err, notification) {
-			if (!err && notification) {
-				notifications.push(notification, [touid]);
-			}
-		});
-	}
-}
 
 SocketModules.chats.pushUnreadCount = function(uid) {
 	Messaging.getUnreadCount(uid, function(err, unreadCount) {
