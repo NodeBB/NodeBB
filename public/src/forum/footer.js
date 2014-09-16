@@ -25,19 +25,10 @@ define('forum/footer', ['notifications', 'chat'], function(Notifications, Chat) 
 	}
 
 	function onNewPost(data) {
-		if (data && data.posts && data.posts.length) {
-			var post = data.posts[0];
-			if (parseInt(post.uid, 10) !== parseInt(app.uid, 10)) {
-				increaseUnreadCount();
-			}
+		if (parseInt(app.uid, 10)) {
+			socket.emit('user.getUnreadCount', updateUnreadTopicCount);
 		}
 	}
-
-	function increaseUnreadCount() {
-		var count = parseInt($('#unread-count').attr('data-content'), 10) + 1;
-		updateUnreadTopicCount(null, count);
-	}
-
 
 	socket.on('event:new_post', onNewPost);
 
