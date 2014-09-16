@@ -26,7 +26,7 @@ numCPUs = nconf.get('cluster') || require('os').cpus().length;
 Loader.init = function() {
 	cluster.setupMaster({
 		exec: "app.js",
-		silent: false/*process.env.NODE_ENV !== 'development' ? true : false*/
+		silent: process.env.NODE_ENV !== 'development' ? true : false
 	});
 
 	cluster.on('fork', function(worker) {
