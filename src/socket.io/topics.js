@@ -46,9 +46,10 @@ SocketTopics.post = function(socket, data, callback) {
 			if (err) {
 				return;
 			}
+
 			for(var i=0; i<uids.length; ++i) {
 				if (parseInt(uids[i], 10) !== socket.uid) {
-					websockets.in('uid_' + uids[i]).emit('event:new_post', result.postData);
+					websockets.in('uid_' + uids[i]).emit('event:new_post', {posts: result.postData});
 					websockets.in('uid_' + uids[i]).emit('event:new_topic', result.topicData);
 				}
 			}

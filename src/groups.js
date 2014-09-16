@@ -196,14 +196,16 @@
 			if (err) {
 				return callback(err);
 			}
-			groupNames = internals.removeEphemeralGroups(groupNames);
-			if (groupNames.length === 0) {
-				return callback(null, null);
-			}
+
 			var results = [];
 			uids.forEach(function() {
 				results.push(false);
 			});
+
+			groupNames = internals.removeEphemeralGroups(groupNames);
+			if (groupNames.length === 0) {
+				return callback(null, results);
+			}
 
 			async.each(groupNames, function(groupName, next) {
 				Groups.isMembers(uids, groupName, function(err, isMembers) {

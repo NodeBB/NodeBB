@@ -64,77 +64,55 @@ module.exports = function(Topics) {
 	};
 
 	Topics.getUnreadTids = function(uid, start, stop, callback) {
-		var unreadTids = [],
-			done = false;
-
 		uid = parseInt(uid, 10);
 		if (uid === 0) {
-			return callback(null, unreadTids);
+			return callback(null, []);
 		}
 
-		var count = 0;
-		if (stop === -1) {
-			count = Infinity;
-		} else {
-			count = stop - start + 1;
-		}
-
-		user.getIgnoredCategories(uid, function(err, ignoredCids) {
+		async.parallel({
+			ignoredCids: function(next) {
+				user.getIgnoredCategories(uid, next);
+			},
+			recentTids: function(next) {
+				Topics.getLatestTids(0, -1, 'day', next);
+			}
+		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			async.whilst(function() {
-				return unreadTids.length < count && !done;
-			}, function(next) {
-				Topics.getLatestTids(start, stop, 'day', function(err, tids) {
-					if (err) {
-						return next(err);
-					}
+			if (results.recentTids && !results.recentTids.length) {
+				return callback(null, []);
+			}
 
-					if (tids && !tids.length) {
-						done = true;
-						return next();
-					}
+			Topics.hasReadTopics(results.recentTids, uid, function(err, read) {
+				if (err) {
+					return callback(err);
+				}
 
-					Topics.hasReadTopics(tids, uid, function(err, read) {
-						if (err) {
-							return next(err);
-						}
-
-						var newtids = tids.filter(function(tid, index) {
-							return !read[index];
-						});
-
-						privileges.topics.filter('read', newtids, uid, function(err, newtids) {
-							if (err) {
-								return next(err);
-							}
-
-							filterTopicsFromIgnoredCategories(newtids, ignoredCids, function(err, newtids) {
-								if (err) {
-									return next(err);
-								}
-
-								unreadTids.push.apply(unreadTids, newtids);
-
-								start = stop + 1;
-								stop = start + 19;
-
-								next();
-							});
-						});
-					});
+				var tids = results.recentTids.filter(function(tid, index) {
+					return !read[index];
 				});
-			}, function(err) {
-				callback(err, unreadTids.slice(0, count));
-			});
 
+				filterTopics(uid, tids, results.ignoredCids, function(err, tids) {
+					if (err) {
+						return callback(err);
+					}
+
+					if (stop === -1) {
+						tids = tids.slice(start);
+					} else {
+						tids = tids.slice(start, stop + 1);
+					}
+
+					callback(err, tids);
+				});
+			});
 		});
 	};
 
-	function filterTopicsFromIgnoredCategories(tids, ignoredCids, callback) {
-		if (!Array.isArray(ignoredCids) || !ignoredCids.length || !tids.length) {
+	function filterTopics(uid, tids, ignoredCids, callback) {
+		if (!Array.isArray(ignoredCids) || !tids.length) {
 			return callback(null, tids);
 		}
 
@@ -146,13 +124,28 @@ module.exports = function(Topics) {
 			if (err) {
 				return callback(err);
 			}
-			topics = topics.filter(function(topic) {
-				return topic && ignoredCids.indexOf(topic.cid.toString()) === -1;
-			}).map(function(topic) {
-				return topic.tid;
+
+			var topicCids = topics.map(function(topic) {
+				return topic && topic.cid.toString();
 			});
 
-			callback(null, topics);
+			topicCids = topicCids.filter(function(cid) {
+				return ignoredCids.indexOf(cid) === -1;
+			});
+
+			privileges.categories.filterCids('read', topicCids, uid, function(err, readableCids) {
+				if (err) {
+					return callback(err);
+				}
+
+				topics = topics.filter(function(topic) {
+					return topic && readableCids.indexOf(topic.cid.toString()) !== -1;
+				}).map(function(topic) {
+					return topic.tid;
+				});
+
+				callback(null, topics);
+			});
 		});
 	}
 
