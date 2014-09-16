@@ -5,7 +5,7 @@
     "email": "Epost",
     "confirm_email": "Bekräfta epostadress ",
     "delete_account": "Delete Account",
-    "delete_account_confirm": "Are you sure you want to delete your account? <strong>This action is irreversible and you will not be able to recover any of your data</strong>",
+    "delete_account_confirm": "Are you sure you want to delete your account? <br /><strong>This action is irreversible and you will not be able to recover any of your data</strong><br /><br />Enter your username to confirm that you wish to destroy this account.",
     "fullname": "Hela namnet",
     "website": "Webbsida",
     "location": "Plats",

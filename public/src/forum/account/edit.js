@@ -129,15 +129,21 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 	function handleAccountDelete() {
 		$('#deleteAccountBtn').on('click', function() {
 			translator.translate('[[user:delete_account_confirm]]', function(translated) {
-				bootbox.confirm(translated, function(confirm) {
+				bootbox.confirm(translated + '<p><input type="text" class="form-control" id="confirm-username" /></p>', function(confirm) {
 					if (!confirm) {
 						return;
 					}
-					socket.emit('user.deleteAccount', {}, function(err) {
-						if (!err) {
-							app.logout();
-						}
-					});
+
+					if ($('#confirm-username').val() !== app.username) {
+						app.alertError('[[error:invalid-username]]');
+						return false;
+					} else {
+						socket.emit('user.deleteAccount', {}, function(err) {
+							if (!err) {
+								app.logout();
+							}
+						});
+					}
 				});
 			});
 			return false;
