@@ -68,13 +68,27 @@ Controllers.home = function(req, res, next) {
 				if (err) {
 					return next(err);
 				}
+				var childCategories = [];
 
-				// Remove child categories, as they don't belong on the home page
-				categoryData = categoryData.filter(function(categoryObj) {
-					return !categoryObj.parent;
-				});
+				for(var i=categoryData.length - 1; i>=0; --i) {
 
-				categories.getRecentTopicReplies(categoryData, uid, function(err) {
+					if (Array.isArray(categoryData[i].children) && categoryData[i].children.length) {
+						childCategories.push.apply(childCategories, categoryData[i].children);
+					}
+
+					if (categoryData[i].parent) {
+						categoryData.splice(i, 1);
+					}
+				}
+
+				async.parallel([
+					function(next) {
+						categories.getRecentTopicReplies(categoryData, uid, next);
+					},
+					function(next) {
+						categories.getRecentTopicReplies(childCategories, uid, next);
+					}
+				], function(err) {
 					next(err, categoryData);
 				});
 			});
@@ -182,7 +196,7 @@ Controllers.confirmEmail = function(req, res, next) {
 
 Controllers.sitemap = function(req, res, next) {
 	if (meta.config['feeds:disableSitemap'] === '1') {
-		return res.redirect(nconf.get('relative_path') + '/404')
+		return res.redirect(nconf.get('relative_path') + '/404');
 	}
 
 	var sitemap = require('../sitemap.js');

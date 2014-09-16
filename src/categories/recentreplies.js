@@ -25,7 +25,11 @@ module.exports = function(Categories) {
 	};
 
 	Categories.getRecentTopicReplies = function(categoryData, uid, callback) {
+		if (!Array.isArray(categoryData) || !categoryData.length) {
+			return callback(null, []);
+		}
 		async.map(categoryData, getRecentTopicPids, function(err, results) {
+
 			var pids = _.flatten(results);
 
 			pids = pids.filter(function(pid, index, array) {

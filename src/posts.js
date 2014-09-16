@@ -221,6 +221,10 @@ var async = require('async'),
 		options.stripTags = options.hasOwnProperty('stripTags') ? options.stripTags : false;
 		options.parse = options.hasOwnProperty('parse') ? options.parse : true;
 
+		if (!Array.isArray(pids) || !pids.length) {
+			return callback(null, []);
+		}
+
 		var keys = pids.map(function(pid) {
 			return 'post:' + pid;
 		});
