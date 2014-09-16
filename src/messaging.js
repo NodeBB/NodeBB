@@ -376,13 +376,17 @@ var db = require('./database'),
 				}
 			});
 
-			emailer.send('notif_chat', touid, {
-				subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
-				username: messageObj.toUser.username,
-				summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
-				message: messageObj,
-				site_title: meta.config.site_title || 'NodeBB',
-				url: nconf.get('url') + '/chats/' + utils.slugify(messageObj.fromUser.username)
+			user.getSettings(messageObj.toUser.uid, function(err, settings) {
+				if (settings.sendChatNotifications && !parseInt(meta.config.disableEmailSubscriptions, 10)) {
+					emailer.send('notif_chat', touid, {
+						subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
+						username: messageObj.toUser.username,
+						summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
+						message: messageObj,
+						site_title: meta.config.site_title || 'NodeBB',
+						url: nconf.get('url') + '/chats/' + utils.slugify(messageObj.fromUser.username)
+					});
+				}
 			});
 		}
 	}
