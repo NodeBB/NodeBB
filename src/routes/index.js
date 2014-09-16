@@ -152,6 +152,7 @@ function groupRoutes(app, middleware, controllers) {
 
 module.exports = function(app, middleware) {
 	var router = express.Router(),
+		pageRouter = express.Router(),
 		pluginRouter = express.Router(),
 		relativePath = nconf.get('relative_path');
 
@@ -171,25 +172,29 @@ module.exports = function(app, middleware) {
 	pluginRoutes(router, middleware, controllers);
 	authRoutes.createRoutes(router, middleware, controllers);
 
+	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
+		maxAge: app.enabled('cache') ? 5184000000 : 0
+	}));
+
 	/**
 	* Every view has an associated API route.
 	*
 	*/
-	mainRoutes(router, middleware, controllers);
-	staticRoutes(router, middleware, controllers);
-	topicRoutes(router, middleware, controllers);
-	tagRoutes(router, middleware, controllers);
-	categoryRoutes(router, middleware, controllers);
-	accountRoutes(router, middleware, controllers);
-	userRoutes(router, middleware, controllers);
-	groupRoutes(router, middleware, controllers);
+	pageRouter.use(middleware.incrementPageViews);
 
-	// Add the routers to the application
+	mainRoutes(pageRouter, middleware, controllers);
+	staticRoutes(pageRouter, middleware, controllers);
+	topicRoutes(pageRouter, middleware, controllers);
+	tagRoutes(pageRouter, middleware, controllers);
+	categoryRoutes(pageRouter, middleware, controllers);
+	accountRoutes(pageRouter, middleware, controllers);
+	userRoutes(pageRouter, middleware, controllers);
+	groupRoutes(pageRouter, middleware, controllers);
+
 	app.use(relativePath, router);
 	app.use(relativePath, pluginRouter);
-	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
-		maxAge: app.enabled('cache') ? 5184000000 : 0
-	}));
+	app.use(relativePath, pageRouter);
+	
 	if (process.env.NODE_ENV === 'development') {
 		require('./debug')(app, middleware, controllers);
 	}
