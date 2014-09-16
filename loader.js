@@ -17,12 +17,6 @@ var	nconf = require('nconf'),
 		}
 	};
 
-nconf.argv().file({
-	file: path.join(__dirname, '/config.json')
-});
-
-numCPUs = nconf.get('cluster') || require('os').cpus().length;
-
 Loader.init = function() {
 	cluster.setupMaster({
 		exec: "app.js",
@@ -156,6 +150,16 @@ Loader.reload = function() {
 		});
 	});
 };
+
+
+
+
+nconf.argv().file({
+	file: path.join(__dirname, '/config.json')
+});
+
+numCPUs = nconf.get('cluster') || 1;
+numCPUs = (numCPUs === true) ? require('os').cpus().length : numCPUs;
 
 if (nconf.get('daemon') !== false) {
 	if (fs.existsSync(pidFilePath)) {
