@@ -295,7 +295,7 @@ var async = require('async'),
 				}
 
 				posts = posts.filter(function(post) {
-					return parseInt(results.topics[post.tid].deleted, 10) !== 1;
+					return results.topics[post.tid] && parseInt(results.topics[post.tid].deleted, 10) !== 1;
 				});
 
 				async.map(posts, function(post, next) {
