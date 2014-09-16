@@ -4,6 +4,10 @@
         "value": "NodeBB"
     },
     {
+        "field": "showSiteTitle",
+        "value": "1"
+    },
+    {
         "field": "postDelay",
         "value": 10
     },
