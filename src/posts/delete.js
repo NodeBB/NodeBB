@@ -40,17 +40,11 @@ module.exports = function(Posts) {
 				return callback(err);
 			}
 
-			async.parallel([
-				function(next) {
-					db.sortedSetRemove('tid:' + postData.tid + ':posts', pid, next);
-				},
-				function(next) {
-					db.sortedSetRemove('tid:' + postData.tid + ':posts:votes', pid, next);
-				},
-				function(next) {
-					db.sortedSetRemove('uid:' + postData.uid + ':posts', pid, next);
-				}
-			], function(err) {
+			db.sortedSetsRemove([
+				'tid:' + postData.tid + ':posts',
+				'tid:' + postData.tid + ':posts:votes',
+				'uid:' + postData.uid + ':posts'
+			], pid, function(err) {
 				if (err) {
 					return callback(err);
 				}
@@ -101,7 +95,7 @@ module.exports = function(Posts) {
 			}
 
 			var sets = uids.map(function(uid) {
-				return 'uid:' + uid + ':favourites'
+				return 'uid:' + uid + ':favourites';
 			});
 
 			db.sortedSetsRemove(sets, pid, function(err) {
@@ -143,14 +137,10 @@ module.exports = function(Posts) {
 					db.sortedSetsRemove(downvoterSets, pid, next);
 				},
 				function(next) {
-					db.delete('pid:' + pid + ':upvote', next);
-				},
-				function(next) {
-					db.delete('pid:' + pid + ':downvote', next);
+					db.deleteAll(['pid:' + pid + ':upvote', 'pid:' + pid + ':downvote'], next);
 				}
 			], callback);
 		});
 	}
-
 
 };
