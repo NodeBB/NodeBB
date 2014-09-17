@@ -7,6 +7,12 @@ define('search', ['navigator'], function(nav) {
 		};
 
 	Search.query = function(term, callback) {
+		try {
+			term = encodeURIComponent(term);
+		} catch(e) {
+			return app.alertError('[[error:invalid-search-term]]');
+		}
+
 		// Detect if a tid was specified
 		var topicSearch = term.match(/in:topic-([\d]+)/);
 
