@@ -42,8 +42,8 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 			var clickedTid = $(this).parents('li.category-item[data-tid]').attr('data-tid');
 			$('#topics-container li.category-item').each(function(index, el) {
 				if($(el).offset().top - $(window).scrollTop() > 0) {
-					localStorage.setItem('category:bookmark', $(el).attr('data-tid'));
-					localStorage.setItem('category:bookmark:clicked', clickedTid);
+					localStorage.setItem('category:' + cid + ':bookmark', $(el).attr('data-tid'));
+					localStorage.setItem('category:' + cid + ':bookmark:clicked', clickedTid);
 					return false;
 				}
 			});
@@ -84,45 +84,53 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 
 	$(window).on('action:popstate', function(ev, data) {
 		if(data.url.indexOf('category/') === 0) {
-			var bookmark = localStorage.getItem('category:bookmark');
-			var clicked = localStorage.getItem('category:bookmark:clicked');
+			var cid = data.url.match(/^category\/(\d+)/);
+			if (cid && cid[1]) {
+				cid = cid[1];
+			}
+			if (!cid) {
+				return;
+			}
 
-			if (bookmark) {
+			var bookmark = localStorage.getItem('category:' + cid + ':bookmark');
+			var clicked = localStorage.getItem('category:' + cid + ':bookmark:clicked');
 
-				if(config.usePagination) {
-					socket.emit('topics.getTidPage', bookmark, function(err, page) {
-						if(err) {
-							return;
-						}
-						if(parseInt(page, 10) !== pagination.currentPage) {
-							pagination.loadPage(page);
-						} else {
-							Category.scrollToTopic(bookmark, clicked, 400);
-						}
+			if (!bookmark) {
+				return;
+			}
+
+			if(config.usePagination) {
+				socket.emit('topics.getTidPage', bookmark, function(err, page) {
+					if (err) {
+						return;
+					}
+					if(parseInt(page, 10) !== pagination.currentPage) {
+						pagination.loadPage(page);
+					} else {
+						Category.scrollToTopic(bookmark, clicked, 400);
+					}
+				});
+			} else {
+				socket.emit('topics.getTidIndex', bookmark, function(err, index) {
+					if (err) {
+						return;
+					}
+
+					if (index === 0) {
+						Category.highlightTopic(clicked);
+						return;
+					}
+
+					if (index < 0) {
+						index = 0;
+					}
+
+					$('#topics-container').empty();
+
+					loadTopicsAfter(index, function() {
+						Category.scrollToTopic(bookmark, clicked, 0);
 					});
-				} else {
-
-					socket.emit('topics.getTidIndex', bookmark, function(err, index) {
-						if(err) {
-							return;
-						}
-
-						if(index === 0) {
-							Category.highlightTopic(clicked);
-							return;
-						}
-
-						if (index < 0) {
-							index = 0;
-						}
-
-						$('#topics-container').empty();
-
-						loadTopicsAfter(index, function() {
-							Category.scrollToTopic(bookmark, clicked, 0);
-						});
-					});
-				}
+				});
 			}
 		}
 	});
