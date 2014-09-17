@@ -197,8 +197,8 @@
 				/* End backwards compatibility block */
 
 				app.post('/logout', logout);
-				app.post('/register', middleware.requireCSRF, register);
-				app.post('/login', middleware.requireCSRF, login);
+				app.post('/register', middleware.applyCSRF, register);
+				app.post('/login', middleware.applyCSRF, login);
 			});
 		});
 	};

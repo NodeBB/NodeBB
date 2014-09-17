@@ -34,7 +34,7 @@ middleware.authenticate = function(req, res, next) {
 	}
 };
 
-middleware.requireCSRF = csrf();
+middleware.applyCSRF = csrf();
 
 middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn();
 
