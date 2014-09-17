@@ -78,7 +78,27 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, 
 				loadMoreRecentChats();
 			}
 		});
+
+		$('.expanded-chat [data-since]').on('click', function() {
+			var since = $(this).attr('data-since');
+			$('.expanded-chat [data-since]').removeClass('selected');
+			$(this).addClass('selected');
+			loadChatSince(since);
+			return false;
+		});
 	};
+
+	function loadChatSince(since) {
+		var uid = Chats.getRecipientUid();
+		if (!uid) {
+			return;
+		}
+		socket.emit('modules.chats.get', {touid: uid, since: since}, function(err, messages) {
+			var chatContent = $('.expanded-chat .chat-content');
+			chatContent.find('.chat-message').remove();
+			Chats.parseMessage(messages, onMessagesParsed);
+		});
+	}
 
 	Chats.addGlobalEventListeners = function() {
 		$(window).on('resize', Chats.resizeMainWindow);
@@ -93,6 +113,14 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, 
 		});
 	};
 
+	function onMessagesParsed(html) {
+		var newMessage = $(html);
+		newMessage.insertBefore($('.user-typing'));
+		newMessage.find('span.timeago').timeago();
+		newMessage.find('img:not(".chat-user-image")').addClass('img-responsive');
+		Chats.scrollToBottom($('.expanded-chat .chat-content'));
+	}
+
 	Chats.addSocketListeners = function() {
 		socket.on('event:chats.receive', function(data) {
 			var typingNotifEl = $('.user-typing'),
@@ -101,13 +129,7 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, 
 			if (Chats.isCurrentChat(data.withUid)) {
 				newMessage = data.self === 0;
 				data.message.self = data.self;
-				Chats.parseMessage(data.message, function(html) {
-					var newMessage = $(html);
-					newMessage.insertBefore(typingNotifEl);
-					newMessage.find('span.timeago').timeago();
-					newMessage.find('img:not(".chat-user-image")').addClass('img-responsive');
-					Chats.scrollToBottom(containerEl);
-				});
+				Chats.parseMessage(data.message, onMessagesParsed);
 			} else {
 				$('.chats-list li[data-uid="' + data.withUid + '"]').addClass('unread');
 				app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + data.message.fromUser.username + ']]');

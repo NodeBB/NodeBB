@@ -166,7 +166,7 @@ SocketModules.chats.get = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	Messaging.getMessages(socket.uid, data.touid, false, callback);
+	Messaging.getMessages(socket.uid, data.touid, data.since, false, callback);
 };
 
 SocketModules.chats.send = function(socket, data, callback) {

@@ -76,10 +76,6 @@
         "value": 128
     },
     {
-        "field": "chatMessagesToDisplay",
-        "value": 50
-    },
-    {
         "field": "requireEmailConfirmation",
         "value": 0
     }

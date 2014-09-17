@@ -88,10 +88,18 @@ var db = require('./database'),
 		});
 	}
 
-	Messaging.getMessages = function(fromuid, touid, isNew, callback) {
+	Messaging.getMessages = function(fromuid, touid, since, isNew, callback) {
 		var uids = sortUids(fromuid, touid);
 
-		db.getSortedSetRevRange('messages:uid:' + uids[0] + ':to:' + uids[1], 0, (meta.config.chatMessagesToDisplay || 50) - 1, function(err, mids) {
+		var terms = {
+			day: 86400000,
+			week: 604800000,
+			month: 2592000000,
+			threemonths: 7776000000
+		};
+		since = terms[since] || terms['day'];
+		var count = parseInt(meta.config.chatMessageInboxSize, 10) || 250;
+		db.getSortedSetRevRangeByScore('messages:uid:' + uids[0] + ':to:' + uids[1], 0, count, Infinity, Date.now() - since, function(err, mids) {
 			if (err) {
 				return callback(err);
 			}

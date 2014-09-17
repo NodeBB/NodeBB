@@ -193,9 +193,10 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 					var totalHeight = chatModal.find('.modal-content').outerHeight() - chatModal.find('.modal-header').outerHeight();
 					var padding = parseInt(chatModal.find('.modal-body').css('padding-top'), 10) + parseInt(chatModal.find('.modal-body').css('padding-bottom'), 10);
 					var contentMargin = parseInt(chatModal.find('#chat-content').css('margin-top'), 10) + parseInt(chatModal.find('#chat-content').css('margin-bottom'), 10);
+					var sinceHeight = chatModal.find('.since-bar').outerHeight(true);
 					var inputGroupHeight = chatModal.find('.input-group').outerHeight();
 
-					chatModal.find('#chat-content').css('height', totalHeight - padding - contentMargin - inputGroupHeight);
+					chatModal.find('#chat-content').css('height', totalHeight - padding - contentMargin - sinceHeight -	inputGroupHeight);
 				});
 
 				chatModal.find('#chat-with-name').html(username);
@@ -218,6 +219,14 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 						socket.emit('modules.chats.markRead', touid);
 						newMessage = false;
 					}
+				});
+
+				chatModal.find('[data-since]').on('click', function() {
+					var since = $(this).attr('data-since');
+					chatModal.find('[data-since]').removeClass('selected');
+					$(this).addClass('selected');
+					loadChatSince(chatModal, since);
+					return false;
 				});
 
 				addSendHandler(chatModal);
@@ -279,7 +288,15 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 	};
 
 	function getChatMessages(chatModal, callback) {
-		socket.emit('modules.chats.get', {touid: chatModal.attr('touid')}, function(err, messages) {
+		socket.emit('modules.chats.get', {touid: chatModal.attr('touid'), since: 'day'}, function(err, messages) {
+			module.appendChatMessage(chatModal, messages, callback);
+		});
+	}
+
+	function loadChatSince(chatModal, since, callback) {
+		socket.emit('modules.chats.get', {touid: chatModal.attr('touid'), since: since}, function(err, messages) {
+			var chatContent = chatModal.find('#chat-content');
+			chatContent.find('.chat-message').remove();
 			module.appendChatMessage(chatModal, messages, callback);
 		});
 	}

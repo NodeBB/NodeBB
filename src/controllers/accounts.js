@@ -535,7 +535,7 @@ accountsController.getChats = function(req, res, next) {
 			function(toUid, next) {
 				async.parallel({
 					toUser: async.apply(user.getUserFields, toUid, ['uid', 'username']),
-					messages: async.apply(messaging.getMessages, req.user.uid, toUid, false)
+					messages: async.apply(messaging.getMessages, req.user.uid, toUid, 'day', false)
 				}, next);
 			}
 		], function(err, data) {
