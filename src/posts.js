@@ -149,7 +149,7 @@ var async = require('async'),
 					return callback(err);
 				}
 
-				plugins.fireHook('filter:post.getPosts', {posts: posts}, function(err, data) {
+				plugins.fireHook('filter:post.getPosts', {posts: posts, uid: uid}, function(err, data) {
 					if (err) {
 						return callback(err);
 					}
