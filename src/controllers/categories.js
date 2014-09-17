@@ -131,7 +131,7 @@ categoriesController.get = function(req, res, next) {
 							return next(err);
 						}
 						categoryData.privileges = privileges;
-						next(err, categoryData);
+						next(null, categoryData);
 					});
 				});
 			});
