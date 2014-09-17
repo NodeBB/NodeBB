@@ -69,6 +69,27 @@ module.exports = function(db, module) {
 		db.collection('objects').update({_key: key}, {$pullAll: {members: value}}, callback);
 	};
 
+	module.setsRemove = function(keys, value, callback) {
+		callback = callback || helpers.noop;
+		if (!Array.isArray(keys) || !keys.length) {
+			return callback();
+		}
+		value = helpers.valueToString(value);
+
+		var bulk = db.collection('objects').initializeUnorderedBulkOp();
+
+		for(var i=0; i<keys.length; ++i) {
+			bulk.find({_key: keys[i]}).updateOne({$pull: {
+				members: value
+			}});
+		}
+
+		bulk.execute(function(err, res) {
+			callback(err);
+		});
+	};
+
+
 	module.isSetMember = function(key, value, callback) {
 		value = helpers.valueToString(value);
 

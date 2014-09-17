@@ -23,6 +23,18 @@ module.exports = function(redisClient, module) {
 		redisClient.srem(key, value, callback);
 	};
 
+	module.setsRemove = function(keys, value, callback) {
+		callback = callback || function() {};
+
+		var multi = redisClient.multi();
+		for(var i=0; i<keys.length; ++i) {
+			multi.srem(keys[i], value);
+		}
+		multi.exec(function(err, res) {
+			callback(err);
+		});
+	};
+
 	module.isSetMember = function(key, value, callback) {
 		redisClient.sismember(key, value, function(err, result) {
 			if(err) {

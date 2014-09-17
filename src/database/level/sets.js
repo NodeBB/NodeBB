@@ -29,6 +29,10 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.setsRemove = function(keys, value, callback) {
+		throw new Error('not-implemented');
+	};
+
 	module.isSetMember = function(key, value, callback) {
 		module.getListRange(key, 0, -1, function(err, set) {
 			callback(err, set.indexOf(value) !== -1);
