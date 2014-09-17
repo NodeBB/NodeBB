@@ -24,7 +24,7 @@ define('forum/footer', ['notifications', 'chat'], function(Notifications, Chat) 
 			.attr('data-content', count > 20 ? '20+' : count);
 	}
 
-	function prepareUnreadButton() {
+	function initUnreadTopics() {
 		var unreadTopics = {};
 
 		function onNewPost(data) {
@@ -33,6 +33,7 @@ define('forum/footer', ['notifications', 'chat'], function(Notifications, Chat) 
 
 				if (parseInt(post.uid, 10) !== parseInt(app.uid, 10) && !unreadTopics[post.topic.tid]) {
 					increaseUnreadCount();
+					markTopicsUnread(post.topic.tid);
 					unreadTopics[post.topic.tid] = true;
 				}
 			}
@@ -41,6 +42,10 @@ define('forum/footer', ['notifications', 'chat'], function(Notifications, Chat) 
 		function increaseUnreadCount() {
 			var count = parseInt($('#unread-count').attr('data-content'), 10) + 1;
 			updateUnreadTopicCount(null, count);
+		}
+
+		function markTopicsUnread(tid) {
+			$('[data-tid="' + tid + '"]').addClass('unread');
 		}
 
 		$(window).on('action:ajaxify.end', function(ev, data) {
@@ -60,5 +65,5 @@ define('forum/footer', ['notifications', 'chat'], function(Notifications, Chat) 
 	socket.on('event:unread.updateChatCount', updateUnreadChatCount);
 	socket.emit('user.getUnreadChatCount', updateUnreadChatCount);
 
-	prepareUnreadButton();
+	initUnreadTopics();
 });
