@@ -18,6 +18,9 @@ module.exports = function(Categories) {
 				threadTools.purge(tid, 0, next);
 			}, next);
 		}, {alwaysStartAt: 0}, function(err) {
+			if (err) {
+				return callback(err);
+			}
 			purgeCategory(cid, callback);
 		});
 	};
