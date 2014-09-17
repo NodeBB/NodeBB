@@ -24,17 +24,41 @@ define('forum/footer', ['notifications', 'chat'], function(Notifications, Chat) 
 			.attr('data-content', count > 20 ? '20+' : count);
 	}
 
-	function onNewPost(data) {
-		if (parseInt(app.uid, 10)) {
-			socket.emit('user.getUnreadCount', updateUnreadTopicCount);
-		}
-	}
+	function prepareUnreadButton() {
+		var unreadTopics = {};
 
-	socket.on('event:new_post', onNewPost);
+		function onNewPost(data) {
+			if (data && data.posts && data.posts.length) {
+				var post = data.posts[0];
+
+				if (parseInt(post.uid, 10) !== parseInt(app.uid, 10) && !unreadTopics[post.topic.tid]) {
+					increaseUnreadCount();
+					unreadTopics[post.topic.tid] = true;
+				}
+			}
+		}
+
+		function increaseUnreadCount() {
+			var count = parseInt($('#unread-count').attr('data-content'), 10) + 1;
+			updateUnreadTopicCount(null, count);
+		}
+
+		$(window).on('action:ajaxify.end', function(ev, data) {
+			var tid = data.url.match(/^topic\/(\d+)/);
+
+			if (tid && tid[1]) {
+				delete unreadTopics[tid[1]];
+			}
+		});
+
+		socket.on('event:new_post', onNewPost);
+	}
 
 	socket.on('event:unread.updateCount', updateUnreadTopicCount);
 	socket.emit('user.getUnreadCount', updateUnreadTopicCount);
 
 	socket.on('event:unread.updateChatCount', updateUnreadChatCount);
 	socket.emit('user.getUnreadChatCount', updateUnreadChatCount);
+
+	prepareUnreadButton();
 });
