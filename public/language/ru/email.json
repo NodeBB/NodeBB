@@ -13,8 +13,11 @@
     "digest.latest_topics": "Последние темы %1",
     "digest.cta": "Кликните здесь для просмотра %1",
     "digest.unsub.info": "Вам была выслана сводка новостей в соответствии с вашими настройками.",
-    "digest.unsub.cta": "Кликните здесь для изменения ваших настроек.",
     "digest.daily.no_topics": "За минувший день новых тем нет.",
+    "notif.chat.subject": "New chat message received from %1",
+    "notif.chat.cta": "Click here to continue the conversation",
+    "notif.chat.unsub.info": "This chat notification was sent to you due to your subscription settings.",
     "test.text1": "Это тестовое сообщение для проверки почтового сервиса NodeBB.",
+    "unsub.cta": "Click here to alter those settings",
     "closing": "Спасибо!"
 }

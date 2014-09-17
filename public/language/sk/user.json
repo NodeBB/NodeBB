@@ -50,6 +50,7 @@
     "digest_daily": "Denne",
     "digest_weekly": "Týždenne",
     "digest_monthly": "Mesačne",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Tohoto užívatela nikto nesleduje :(",
     "follows_no_one": "Tento užívateľ nikoho nesleduje :(",
     "has_no_posts": "Tento používateľ ešte nespravil príspevok",

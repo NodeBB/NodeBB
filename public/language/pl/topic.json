@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "Ten wątek zostanie przeniesiony do kategorii",
     "fork_topic_instruction": "Zaznacz posty, które chcesz sklonować",
     "fork_no_pids": "Nie zaznaczyłeś żadnych postów!",
-    "fork_success": "Pomyślnie sklonowano wątek",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Wpisz tytuł wątku tutaj",
     "composer.discard": "Odrzuć",
     "composer.submit": "Wyślij",

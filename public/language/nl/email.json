@@ -13,8 +13,11 @@
     "digest.latest_topics": "De laatste onderwerpen van %1",
     "digest.cta": "Klik hier om deze website te bezoeken %1 ",
     "digest.unsub.info": "Deze overzicht was verzonden naar jou vanwege je abbonement instellingen",
-    "digest.unsub.cta": "Klik hier om u instellingen te wijzigen",
-    "digest.daily.no_topics": "Er zijn geen actieve topics vandaag",
+    "digest.daily.no_topics": "Er zijn geen actieve onderwerpen vandaag",
+    "notif.chat.subject": "New chat message received from %1",
+    "notif.chat.cta": "Click here to continue the conversation",
+    "notif.chat.unsub.info": "This chat notification was sent to you due to your subscription settings.",
     "test.text1": "Dit is een test email om te verifiëren dat de email service correct is opgezet voor jou NodeBB",
+    "unsub.cta": "Click here to alter those settings",
     "closing": "Bedankt!"
 }

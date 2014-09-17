@@ -12,12 +12,15 @@
     "invalid-title": "无效标题！",
     "invalid-user-data": "无效用户数据",
     "invalid-password": "无效密码",
+    "invalid-username-or-password": "请确认用户名和密码",
     "invalid-pagination-value": "无效页码",
     "username-taken": "用户名已注册",
     "email-taken": "电子邮箱已注册",
     "email-not-confirmed": "您的电子邮箱尚未确认，请点击这里确认您的电子邮箱。",
     "username-too-short": "用户名太短",
+    "username-too-long": "用户名太长",
     "user-banned": "用户已禁止",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "版块不存在",
     "no-topic": "主题不存在",
     "no-post": "帖子不存在",
@@ -52,5 +55,9 @@
     "upload-error": "上传错误：%1",
     "signature-too-long": "签名档不能超过 %1 字！",
     "cant-chat-with-yourself": "您不能和自己聊天！",
-    "not-enough-reputation-to-downvote": "您还没有足够的威望为此帖扣分"
+    "reputation-system-disabled": "威望系统已禁用。",
+    "downvoting-disabled": "反对功能已禁用",
+    "not-enough-reputation-to-downvote": "您还没有足够的威望为此帖扣分",
+    "not-enough-reputation-to-flag": "您没有足够的威望标记此帖",
+    "reload-failed": "NodeBB 重新加载时遇到问题: \"%1\"。NodeBB 会继续给已存在的客户端组件服务，虽然您应该撤销在重新加载前执行的操作。"
 }

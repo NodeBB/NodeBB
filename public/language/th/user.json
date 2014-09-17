@@ -50,6 +50,7 @@
     "digest_daily": "Daily",
     "digest_weekly": "Weekly",
     "digest_monthly": "Monthly",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "ผู้ใช้รายนี้ไม่มีใครติดตาม :(",
     "follows_no_one": "ผู้ใช้รายนี้ไม่ติดตามใคร :(",
     "has_no_posts": "ผู้ใช้รายนี้ไม่ได้โพสต์อะไรเลย",

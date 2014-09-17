@@ -12,12 +12,15 @@
     "invalid-title": "Ungültiger Titel",
     "invalid-user-data": "Ungültige Benutzerdaten",
     "invalid-password": "Ungültiges Passwort",
+    "invalid-username-or-password": "Bitte gebe einen Benutzernamen und ein Passwort an",
     "invalid-pagination-value": "Die Nummerierung ist ungültig",
     "username-taken": "Der Benutzername ist bereits vergeben",
     "email-taken": "Die E-Mail-Adresse ist bereits vergeben",
     "email-not-confirmed": "Deine E-Mail wurde noch nicht bestätigt. Bitte klicke hier, um deine E-Mail zu bestätigen.",
     "username-too-short": "Benutzername ist zu kurz",
+    "username-too-long": "Der Benutzername ist zu lang",
     "user-banned": "Der Benutzer ist gesperrt",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "Die Kategorie existiert nicht",
     "no-topic": "Das Thema existiert nicht",
     "no-post": "Der Beitrag existiert nicht",
@@ -52,5 +55,9 @@
     "upload-error": "Upload-Fehler: %1",
     "signature-too-long": "Die Signatur darf maximal %1 Zeichen enthalten!",
     "cant-chat-with-yourself": "Du kannst nicht mit dir selber chatten!",
-    "not-enough-reputation-to-downvote": "Deine Reputation ist zu niedrig, um diesen Beitrag negativ zu bewerten."
+    "reputation-system-disabled": "Das Reputationssystem ist deaktiviert.",
+    "downvoting-disabled": "Downvotes sind deaktiviert.",
+    "not-enough-reputation-to-downvote": "Deine Reputation ist zu niedrig, um diesen Beitrag negativ zu bewerten.",
+    "not-enough-reputation-to-flag": "Deine Reputation ist nicht gut genug, um diesen Beitrag zu melden.",
+    "reload-failed": "Es ist ein Problem während des Reloads von NodeBB aufgetreten: \"%1\". NodeBB wird weiterhin clientseitige Assets bereitstellen, allerdings solltest du das, was du vor dem Reload gemacht hast, rückgängig machen."
 }

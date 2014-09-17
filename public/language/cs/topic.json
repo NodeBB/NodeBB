@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "Toto téma bude přesunuto do kategorie",
     "fork_topic_instruction": "Vyber příspěvky, které chceš oddělit",
     "fork_no_pids": "Žádné příspěvky nebyly vybrány!",
-    "fork_success": "Téma bylo úspěšně rozděleno!",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Enter your topic title here...",
     "composer.discard": "Discard",
     "composer.submit": "Submit",

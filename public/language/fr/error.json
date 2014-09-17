@@ -18,6 +18,7 @@
     "email-not-confirmed": "Votre adresse email n'est pas confirmée, cliquez ici pour la valider.",
     "username-too-short": "Nom d'utilisateur trop court",
     "user-banned": "Utilisateur banni",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "Cette catégorie n'existe pas",
     "no-topic": "Ce sujet n'existe pas",
     "no-post": "Ce message n'existe pas",

@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "Topik ini akan dipindahkan kepada kategori",
     "fork_topic_instruction": "Clik kiriman yang anda hendak salin",
     "fork_no_pids": "Tiada kiriman yang dipilih",
-    "fork_success": "Berjaya menyalin topik!",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Masukkan tajuk topik disini",
     "composer.discard": "Abaikan",
     "composer.submit": "Hantar",

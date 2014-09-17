@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "Dette emnet vil bli flyttet til kategorien",
     "fork_topic_instruction": "Trykk på innleggene du vil dele",
     "fork_no_pids": "Ingen innlegg valgt!",
-    "fork_success": "Innlegg ble delt!",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Skriv din tråd-tittel her",
     "composer.discard": "Forkast",
     "composer.submit": "Send",

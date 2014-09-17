@@ -50,6 +50,7 @@
     "digest_daily": "Daily",
     "digest_weekly": "Weekly",
     "digest_monthly": "Monthly",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Ezt a felhasználót nem követi senki :(",
     "follows_no_one": "Ez a felhasználó nem követ senkit :(",
     "has_no_posts": "Ennek a felhasználónak még nincsen hozzászólása.",

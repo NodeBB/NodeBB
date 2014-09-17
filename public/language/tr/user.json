@@ -50,6 +50,7 @@
     "digest_daily": "Günlük",
     "digest_weekly": "Haftalık",
     "digest_monthly": "Aylık",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Bu kullanıcının hiç takipçisi yok :(",
     "follows_no_one": "Bu kullanıcı kimseyi takip etmiyor :(",
     "has_no_posts": "Bu kullanıcı henüz birşey göndermedi.",

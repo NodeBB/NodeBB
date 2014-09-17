@@ -18,6 +18,7 @@
     "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "Username too short",
     "user-banned": "該使用者已被停用",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "類別並不存在",
     "no-topic": "主題並不存在",
     "no-post": "文章並不存在",

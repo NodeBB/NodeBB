@@ -50,6 +50,7 @@
     "digest_daily": "Daily",
     "digest_weekly": "Weekly",
     "digest_monthly": "Monthly",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Kukaan ei seuraa tätä käyttäjää :(",
     "follows_no_one": "Tämä käyttäjä ei seuraa ketään :(",
     "has_no_posts": "Tämä käyttäjä ei ole kirjoittanut vielä mitään.",

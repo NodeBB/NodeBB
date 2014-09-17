@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "Dit onderwerp zal verplaatst worden naar de categorie",
     "fork_topic_instruction": "Klik op de berichten die je wilt forken",
     "fork_no_pids": "Geen berichten geselecteerd!",
-    "fork_success": "Onderwerp is met succes geforkt!",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Vul de titel voor het onderwerp hier in...",
     "composer.discard": "Annuleren",
     "composer.submit": "Opslaan",

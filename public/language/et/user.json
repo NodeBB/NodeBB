@@ -50,6 +50,7 @@
     "digest_daily": "Igapäevaselt",
     "digest_weekly": "Iga nädal",
     "digest_monthly": "Iga kuu",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Sellel kasutajal pole ühtegi jälgijat :(",
     "follows_no_one": "See kasutaja ei jälgi kedagi :(",
     "has_no_posts": "See kasutaja pole midagi postitanud veel.",

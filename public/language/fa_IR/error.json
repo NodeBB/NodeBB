@@ -18,6 +18,7 @@
     "email-not-confirmed": "رایانامه شما تأیید نشده است، لطفاً برای تأیید رایانامه‌تان اینجا را بفشارید.",
     "username-too-short": "نام کاربری خیلی کوتاه است.",
     "user-banned": "کاربر محروم شد.",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "چنین دسته‌ای وجود ندارد.",
     "no-topic": "چنین جستاری وجود ندارد.",
     "no-post": "چنین دیدگاهی وجود ندارد.",

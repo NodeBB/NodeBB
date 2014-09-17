@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "هذا الموضوع سوف ينقل إلى فئة",
     "fork_topic_instruction": "إضغط على الردود لتفريعهم",
     "fork_no_pids": "لم تختار أي رد",
-    "fork_success": "تفريع الموضوع بنجاح!",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Enter your topic title here...",
     "composer.discard": "Discard",
     "composer.submit": "Submit",

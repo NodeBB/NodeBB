@@ -18,6 +18,7 @@
     "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "Username too short",
     "user-banned": "Užívateľ je zakázaný",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "Kategória neexistuje",
     "no-topic": "Téme neexistuje",
     "no-post": "Príspevok neexistuje",

@@ -18,6 +18,7 @@
     "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "שם משתמש קצר מדי",
     "user-banned": "המשתמש חסום",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "קטגוריה אינה קיימת",
     "no-topic": "נושא אינו קיים",
     "no-post": "פוסט אינו קיים",

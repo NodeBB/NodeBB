@@ -18,6 +18,7 @@
     "email-not-confirmed": "Jūsų el. paštas nepatvirtintas, prašome paspausti čia norint jį patvirtinti.",
     "username-too-short": "Slapyvardis per trumpas",
     "user-banned": "Vartotojas užblokuotas",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "Kategorija neegzistuoja",
     "no-topic": "Tema neegzistuoja",
     "no-post": "Pranešimas neegzistuoja",

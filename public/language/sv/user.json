@@ -4,6 +4,8 @@
     "username": "Användarnamn",
     "email": "Epost",
     "confirm_email": "Bekräfta epostadress ",
+    "delete_account": "Ta bort ämne",
+    "delete_account_confirm": "Are you sure you want to delete your account? <br /><strong>This action is irreversible and you will not be able to recover any of your data</strong><br /><br />Enter your username to confirm that you wish to destroy this account.",
     "fullname": "Hela namnet",
     "website": "Webbsida",
     "location": "Plats",
@@ -50,6 +52,7 @@
     "digest_daily": "Daligen",
     "digest_weekly": "Veckovis",
     "digest_monthly": "Månadsvis",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Denna användare har inga följare :(",
     "follows_no_one": "Denna användare följer ingen :(",
     "has_no_posts": "Denna användare har inte gjort några inlägg än.",
@@ -61,5 +64,7 @@
     "posts_per_page": "Inlägg per sida",
     "notification_sounds": "Spela ett ljud när du får en notis.",
     "browsing": "Inställning för bläddring",
-    "open_links_in_new_tab": "Öppna utgående länkar på ny flik?"
+    "open_links_in_new_tab": "Öppna utgående länkar på ny flik?",
+    "follow_topics_you_reply_to": "Följ ämnen so du svarat på.",
+    "follow_topics_you_create": "Följ ämnen du skapat."
 }

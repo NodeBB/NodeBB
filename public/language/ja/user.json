@@ -50,6 +50,7 @@
     "digest_daily": "デイリー",
     "digest_weekly": "ウィークリー",
     "digest_monthly": "マンスリー",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "フォロワーはまだいません :(",
     "follows_no_one": "フォロー中のユーザーはまだいません :(",
     "has_no_posts": "まだポストを投稿したことありません。",

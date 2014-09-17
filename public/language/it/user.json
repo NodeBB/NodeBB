@@ -50,6 +50,7 @@
     "digest_daily": "Daily",
     "digest_weekly": "Weekly",
     "digest_monthly": "Monthly",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Questo utente non è seguito da nessuno :(",
     "follows_no_one": "Questo utente non segue nessuno :(",
     "has_no_posts": "Questo utente non ha ancora postato nulla.",

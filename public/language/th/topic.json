@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "กระทู้นี้จะถูกย้ายไปที่หมวดหมู่",
     "fork_topic_instruction": "คลิกที่โพสที่คุณต้องการที่จะแยก",
     "fork_no_pids": "ไม่มีโพสต์ที่เลือก!",
-    "fork_success": "แยกกระทู้สำเร็จ",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "ป้อนชื่อกระทู้ของคุณที่นี่ ...",
     "composer.discard": "ยกเลิก",
     "composer.submit": "ส่ง",

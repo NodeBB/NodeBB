@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "Bu konu kategorisine taşınacak",
     "fork_topic_instruction": "Ayırmak istediğiniz iletileri tıklayın",
     "fork_no_pids": "Hiç bir ileti seçilmedi!",
-    "fork_success": "Başlık başarıyla ayrıldı!",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Başlık ismini buraya girin...",
     "composer.discard": "Vazgeç",
     "composer.submit": "Gönder",

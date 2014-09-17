@@ -50,6 +50,7 @@
     "digest_daily": "За День",
     "digest_weekly": "За Неделю",
     "digest_monthly": "За Месяц",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Этого пользователя никто не читает :(",
     "follows_no_one": "Этот пользователь никого не читает :(",
     "has_no_posts": "Это пользователь еще ничего не написал.",
