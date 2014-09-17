@@ -77,6 +77,15 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 	}
 };
 
+middleware.redirectToLoginIfGuest = function(req, res, next) {
+	if (!req.user || parseInt(req.user.uid, 10) === 0) {
+		req.session.returnTo = req.url;
+		return res.redirect('/login');
+	} else {
+		next();
+	}
+};
+
 middleware.addSlug = function(req, res, next) {
 	function redirect(method, id, name) {
 		method(id, 'slug', function(err, slug) {

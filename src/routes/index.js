@@ -117,8 +117,8 @@ function accountRoutes(app, middleware, controllers) {
 	app.get('/notifications', middleware.buildHeader, middleware.authenticate, controllers.accounts.getNotifications);
 	app.get('/api/notifications', middleware.authenticate, controllers.accounts.getNotifications);
 
-	app.get('/chats/:userslug?', middleware.buildHeader, middleware.authenticate, controllers.accounts.getChats);
-	app.get('/api/chats/:userslug?', middleware.authenticate, controllers.accounts.getChats);
+	app.get('/chats/:userslug?', middleware.buildHeader, middleware.redirectToLoginIfGuest, controllers.accounts.getChats);
+	app.get('/api/chats/:userslug?', middleware.redirectToLoginIfGuest, controllers.accounts.getChats);
 }
 
 function userRoutes(app, middleware, controllers) {
