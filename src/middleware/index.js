@@ -20,7 +20,6 @@ var utils = require('./../../public/src/utils'),
 	compression = require('compression'),
 	favicon = require('serve-favicon'),
 	multipart = require('connect-multiparty'),
-	csrf = require('csurf'),
 	session = require('express-session'),
 	cluster = require('cluster'),
 
@@ -116,10 +115,8 @@ module.exports = function(app, data) {
 	}));
 
 	app.use(multipart());
-	app.use(csrf());
 
 	app.use(function (req, res, next) {
-		res.locals.csrf_token = req.csrfToken();
 		res.setHeader('X-Powered-By', 'NodeBB');
 
 		res.setHeader('X-Frame-Options', 'SAMEORIGIN');

@@ -21,11 +21,11 @@ function mainRoutes(app, middleware, controllers) {
 	app.get('/', middleware.buildHeader, controllers.home);
 	app.get('/api', controllers.home);
 
-	app.get('/login', middleware.redirectToAccountIfLoggedIn, middleware.buildHeader, controllers.login);
-	app.get('/api/login', middleware.redirectToAccountIfLoggedIn, controllers.login);
+	app.get('/login', middleware.requireCSRF, middleware.redirectToAccountIfLoggedIn, middleware.buildHeader, controllers.login);
+	app.get('/api/login', middleware.requireCSRF, middleware.redirectToAccountIfLoggedIn, controllers.login);
 
-	app.get('/register', middleware.redirectToAccountIfLoggedIn, middleware.buildHeader, controllers.register);
-	app.get('/api/register', middleware.redirectToAccountIfLoggedIn, controllers.register);
+	app.get('/register', middleware.requireCSRF, middleware.redirectToAccountIfLoggedIn, middleware.buildHeader, controllers.register);
+	app.get('/api/register', middleware.requireCSRF, middleware.redirectToAccountIfLoggedIn, controllers.register);
 
 	app.get('/confirm/:code', middleware.buildHeader, controllers.confirmEmail);
 	app.get('/api/confirm/:code', controllers.confirmEmail);
@@ -54,11 +54,11 @@ function staticRoutes(app, middleware, controllers) {
 function topicRoutes(app, middleware, controllers) {
 	app.get('/api/topic/teaser/:topic_id', controllers.topics.teaser);
 
-	app.get('/topic/:topic_id/:slug/:post_index?', middleware.buildHeader, middleware.checkPostIndex, controllers.topics.get);
-	app.get('/api/topic/:topic_id/:slug/:post_index?', middleware.checkPostIndex, controllers.topics.get);
+	app.get('/topic/:topic_id/:slug/:post_index?', middleware.requireCSRF, middleware.buildHeader, middleware.checkPostIndex, controllers.topics.get);
+	app.get('/api/topic/:topic_id/:slug/:post_index?', middleware.requireCSRF, middleware.checkPostIndex, controllers.topics.get);
 
-	app.get('/topic/:topic_id/:slug?', middleware.buildHeader, middleware.addSlug, controllers.topics.get);
-	app.get('/api/topic/:topic_id/:slug?', middleware.addSlug, controllers.topics.get);
+	app.get('/topic/:topic_id/:slug?', middleware.requireCSRF, middleware.buildHeader, middleware.addSlug, controllers.topics.get);
+	app.get('/api/topic/:topic_id/:slug?', middleware.requireCSRF, middleware.addSlug, controllers.topics.get);
 }
 
 function tagRoutes(app, middleware, controllers) {
@@ -82,11 +82,11 @@ function categoryRoutes(app, middleware, controllers) {
 
 	app.get('/api/unread/total', middleware.authenticate, controllers.categories.unreadTotal);
 
-	app.get('/category/:category_id/:slug/:topic_index', middleware.buildHeader, middleware.checkTopicIndex, controllers.categories.get);
-	app.get('/api/category/:category_id/:slug/:topic_index', middleware.checkTopicIndex, controllers.categories.get);
+	app.get('/category/:category_id/:slug/:topic_index', middleware.requireCSRF, middleware.buildHeader, middleware.checkTopicIndex, controllers.categories.get);
+	app.get('/api/category/:category_id/:slug/:topic_index', middleware.requireCSRF, middleware.checkTopicIndex, controllers.categories.get);
 
-	app.get('/category/:category_id/:slug?', middleware.buildHeader, middleware.addSlug, controllers.categories.get);
-	app.get('/api/category/:category_id/:slug?', controllers.categories.get);
+	app.get('/category/:category_id/:slug?', middleware.requireCSRF, middleware.buildHeader, middleware.addSlug, controllers.categories.get);
+	app.get('/api/category/:category_id/:slug?', middleware.requireCSRF, controllers.categories.get);
 }
 
 function accountRoutes(app, middleware, controllers) {
@@ -108,8 +108,8 @@ function accountRoutes(app, middleware, controllers) {
 	app.get('/user/:userslug/topics', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.accounts.getTopics);
 	app.get('/api/user/:userslug/topics', middleware.checkGlobalPrivacySettings, controllers.accounts.getTopics);
 
-	app.get('/user/:userslug/edit', middleware.buildHeader, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.accountEdit);
-	app.get('/api/user/:userslug/edit', middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.accountEdit);
+	app.get('/user/:userslug/edit', middleware.requireCSRF, middleware.buildHeader, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.accountEdit);
+	app.get('/api/user/:userslug/edit', middleware.requireCSRF, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.accountEdit);
 
 	app.get('/user/:userslug/settings', middleware.buildHeader, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.accountSettings);
 	app.get('/api/user/:userslug/settings', middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.accountSettings);

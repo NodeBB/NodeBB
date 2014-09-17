@@ -143,7 +143,10 @@ function filterAndRenderCategories(req, res, next, active) {
 			return active ? !category.disabled : category.disabled;
 		});
 
-		res.render('admin/categories', {categories: categoryData});
+		res.render('admin/categories', {
+			categories: categoryData,
+			csrf: req.csrfToken()
+		});
 	});
 }
 
@@ -197,7 +200,9 @@ adminController.languages.get = function(req, res, next) {
 };
 
 adminController.settings.get = function(req, res, next) {
-	res.render('admin/settings', {});
+	res.render('admin/settings', {
+		'csrf': req.csrfToken()
+	});
 };
 
 adminController.logger.get = function(req, res, next) {

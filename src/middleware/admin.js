@@ -61,7 +61,7 @@ middleware.buildHeader = function(req, res, next) {
 					}
 				}, function(err, pluginData) {
 					var data = {
-						csrf: res.locals.csrf_token,
+						csrf: req.csrfToken ? req.csrfToken() : undefined,
 						relative_path: nconf.get('relative_path'),
 						plugins: pluginData.custom_header.plugins,
 						authentication: pluginData.custom_header.authentication,

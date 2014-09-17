@@ -17,9 +17,7 @@ define('forum/admin/index', ['semver'], function(semver) {
 		}, 3000);
 
 		$('#logout-link').on('click', function() {
-			$.post(RELATIVE_PATH + '/logout', {
-				_csrf: $('#csrf_token').val()
-			}, function() {
+			$.post(RELATIVE_PATH + '/logout', function() {
 				window.location.href = RELATIVE_PATH + '/';
 			});
 		});

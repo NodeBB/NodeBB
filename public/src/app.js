@@ -160,9 +160,7 @@ var socket,
 	};
 
 	app.logout = function() {
-		$.post(RELATIVE_PATH + '/logout', {
-			_csrf: $('#csrf_token').val()
-		}, function() {
+		$.post(RELATIVE_PATH + '/logout', function() {
 			window.location.href = RELATIVE_PATH + '/';
 		});
 	};

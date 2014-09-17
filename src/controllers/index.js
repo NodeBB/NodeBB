@@ -142,7 +142,7 @@ Controllers.login = function(req, res, next) {
 
 	data.alternate_logins = num_strategies > 0;
 	data.authentication = login_strategies;
-	data.token = res.locals.csrf_token;
+	data.token = req.csrfToken();
 	data.showResetLink = emailersPresent;
 	data.allowLocalLogin = meta.config.allowLocalLogin === undefined || parseInt(meta.config.allowLocalLogin, 10) === 1;
 	data.allowRegistration = meta.config.allowRegistration;
@@ -171,7 +171,7 @@ Controllers.register = function(req, res, next) {
 
 	data.authentication = login_strategies;
 
-	data.token = res.locals.csrf_token;
+	data.token = req.csrfToken();
 	data.minimumUsernameLength = meta.config.minimumUsernameLength;
 	data.maximumUsernameLength = meta.config.maximumUsernameLength;
 	data.minimumPasswordLength = meta.config.minimumPasswordLength;
