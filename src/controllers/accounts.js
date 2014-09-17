@@ -136,7 +136,16 @@ accountsController.getUserByUID = function(req, res, next) {
 };
 
 accountsController.getAccount = function(req, res, next) {
-	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
+	var lowercaseSlug = req.params.userslug.toLowerCase(),
+		callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
+
+	if (req.params.userslug !== lowercaseSlug) {
+		if (res.locals.isAPI) {
+			req.params.userslug = lowercaseSlug;
+		} else {
+			res.redirect(nconf.get('relative_path') + '/user/' + lowercaseSlug);
+		}
+	}
 
 	getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
 		if(err) {

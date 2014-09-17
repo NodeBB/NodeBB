@@ -25,6 +25,16 @@ module.exports = function(User) {
 		], callback);
 	};
 
+	User.deleteAccount = function(uid, callback) {
+		user.isAdministrator(uid, function(err, isAdmin) {
+			if (err || isAdmin) {
+				return callback(err || new Error('[[error:cant-ban-other-admins]]'));
+			}
+
+			deleteAccount(uid, callback);
+		});
+	};
+
 	function deletePosts(uid, callback) {
 		deleteSortedSetElements('uid:' + uid + ':posts', posts.purge, callback);
 	}
@@ -43,7 +53,7 @@ module.exports = function(User) {
 		}, {alwaysStartAt: 0}, callback);
 	}
 
-	User.deleteAccount = function(uid, callback) {
+	function deleteAccount(uid, callback) {
 		user.getUserFields(uid, ['username', 'userslug', 'email'], function(err, userData) {
 			if (err)  {
 				return callback(err);
@@ -97,7 +107,7 @@ module.exports = function(User) {
 				], callback);
 			});
 		});
-	};
+	}
 
 	function deleteUserFromFollowers(uid, callback) {
 		db.getSetMembers('followers:' + uid, function(err, uids) {
