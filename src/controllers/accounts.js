@@ -336,6 +336,8 @@ accountsController.accountEdit = function(req, res, next) {
 			return next(err);
 		}
 
+		userData.csrf = req.csrfToken();
+
 		res.render('account/edit', userData);
 	});
 };

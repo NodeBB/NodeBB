@@ -43,11 +43,11 @@ function userRoutes(app, middleware, controllers) {
 }
 
 function forumRoutes(app, middleware, controllers) {
-	app.get('/admin/categories/active', middleware.admin.buildHeader, controllers.admin.categories.active);
-	app.get('/api/admin/categories/active', controllers.admin.categories.active);
+	app.get('/admin/categories/active', middleware.requireCSRF, middleware.admin.buildHeader, controllers.admin.categories.active);
+	app.get('/api/admin/categories/active', middleware.requireCSRF, controllers.admin.categories.active);
 
-	app.get('/admin/categories/disabled', middleware.admin.buildHeader, controllers.admin.categories.disabled);
-	app.get('/api/admin/categories/disabled', controllers.admin.categories.disabled);
+	app.get('/admin/categories/disabled', middleware.requireCSRF, middleware.admin.buildHeader, controllers.admin.categories.disabled);
+	app.get('/api/admin/categories/disabled', middleware.requireCSRF, controllers.admin.categories.disabled);
 
 	app.get('/admin/tags', middleware.admin.buildHeader, controllers.admin.tags.get);
 	app.get('/api/admin/tags', controllers.admin.tags.get);

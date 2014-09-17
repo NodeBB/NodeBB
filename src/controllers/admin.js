@@ -127,7 +127,10 @@ function filterAndRenderCategories(req, res, next, active) {
 			return active ? !category.disabled : category.disabled;
 		});
 
-		res.render('admin/categories', {categories: categoryData});
+		res.render('admin/categories', {
+			categories: categoryData,
+			csrf: req.csrfToken()
+		});
 	});
 }
 

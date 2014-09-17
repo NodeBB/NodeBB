@@ -235,10 +235,10 @@ define('composer/uploads', ['composer/preview'], function(preview) {
 				textarea.val(current.replace(re, filename + '](' + text + ')'));
 			}
 
-			$(this).find('#postUploadCsrf').val($('#csrf_token').val());
+			$(this).find('#postUploadCsrf').val($('#csrf').attr('data-csrf'));
 
 			if (formData) {
-				formData.append('_csrf', $('#csrf_token').val());
+				formData.append('_csrf', $('#csrf').attr('data-csrf'));
 			}
 
 			uploads.inProgress[post_uuid] = uploads.inProgress[post_uuid] || [];
@@ -291,7 +291,7 @@ define('composer/uploads', ['composer/preview'], function(preview) {
 		thumbForm.attr('action', params.route);
 
 		thumbForm.off('submit').submit(function() {
-			var csrf = $('#csrf_token').val();
+			var csrf = $('#csrf').attr('data-csrf');
 			$(this).find('#thumbUploadCsrf').val(csrf);
 
 			if(formData) {

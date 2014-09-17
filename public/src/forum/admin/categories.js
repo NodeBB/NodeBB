@@ -203,7 +203,7 @@ define('forum/admin/categories', ['uploader', 'forum/admin/iconSelect'], functio
 				var inputEl = $(this),
 					cid = inputEl.parents('li[data-cid]').attr('data-cid');
 
-				uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', {cid: cid}, 0, function(imageUrlOnServer) {
+				uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', { cid: cid }, 0, function(imageUrlOnServer) {
 					inputEl.val(imageUrlOnServer);
 					var previewBox = inputEl.parents('li[data-cid]').find('.preview-box');
 					previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')')

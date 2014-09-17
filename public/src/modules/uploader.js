@@ -19,6 +19,7 @@ define('uploader', function() {
 		uploadForm[0].reset();
 		uploadForm.attr('action', route);
 		uploadForm.find('#params').val(JSON.stringify(params));
+		uploadForm.find('#csrfToken').val($('#csrf').attr('data-csrf'));
 
 		if(fileSize) {
 			uploadForm.find('#upload-file-size').html(fileSize);
