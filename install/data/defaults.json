@@ -36,6 +36,10 @@
         "value": 1
     },
     {
+        "field": "allowAccountDelete",
+        "value": 1,
+    },
+    {
         "field": "allowFileUploads",
         "value": 0
     },
