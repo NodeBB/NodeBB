@@ -38,6 +38,7 @@ module.exports = function(Meta) {
 				'public/vendor/xregexp/unicode/unicode-base.js',
 				'public/vendor/buzz/buzz.min.js',
 				'public/vendor/mousetrap/mousetrap.js',
+				'public/vendor/semver/semver.browser.js',
 				'./node_modules/templates.js/lib/templates.js',
 				'public/src/utils.js',
 				'public/src/app.js',
