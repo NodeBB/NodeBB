@@ -3,7 +3,9 @@
     "offline": "Offline",
     "username": "Nazwa użytkownika",
     "email": "Adres e-mail",
-    "confirm_email": "Confirm Email",
+    "confirm_email": "Potwierdź e-mail",
+    "delete_account": "Skasuj konto",
+    "delete_account_confirm": "Are you sure you want to delete your account? <br /><strong>This action is irreversible and you will not be able to recover any of your data</strong><br /><br />Enter your username to confirm that you wish to destroy this account.",
     "fullname": "Pełna nazwa",
     "website": "Strona WWW",
     "location": "Położenie",
@@ -37,7 +39,7 @@
     "change_password_success": "Twoje hasło jest zaktualizowane!",
     "confirm_password": "Potwierdź hasło",
     "password": "Hasło",
-    "username_taken_workaround": "Login jakiego chciałeś/aś użyć jest już zajęty, ale my to załatwimy. Jesteś znany/a jako <strong>%1</strong>",
+    "username_taken_workaround": "Wybrany login jest już zajęty, więc zmieniliśmy go trochę. Proponujemy  <strong>%1</strong>",
     "upload_picture": "Prześlij zdjęcie",
     "upload_a_picture": "Prześlij zdjęcie",
     "image_spec": "Możesz przesłać tylko pliki PNG, JPG lub GIF.",
@@ -50,6 +52,7 @@
     "digest_daily": "Codziennie",
     "digest_weekly": "Co tydzień",
     "digest_monthly": "Co miesiąc",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Ten użytkownik nie ma jeszcze żadnych obserwujących",
     "follows_no_one": "Użytkownik jeszcze nikogo nie obsweruje.",
     "has_no_posts": "Użytkownik nie napisał jeszcze żadnych postów.",
@@ -61,5 +64,7 @@
     "posts_per_page": "Postów na stronę",
     "notification_sounds": "Odtwórz dźwięk po otrzymaniu powiadomienia.",
     "browsing": "Ustawienia szukania",
-    "open_links_in_new_tab": "Otwierać linki zewnętrzne w nowych kartach?"
+    "open_links_in_new_tab": "Otwierać linki zewnętrzne w nowych kartach?",
+    "follow_topics_you_reply_to": "Śledź tematy, w których piszesz.",
+    "follow_topics_you_create": "Śledź swoje tematy."
 }

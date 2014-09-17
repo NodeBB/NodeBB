@@ -3,5 +3,6 @@
     "no_topics": "<strong> Bu kategoride hiç konu yok. </strong> <br /> Yeni bir konu açmak istemez misiniz?",
     "browsing": "dolaşıyor",
     "no_replies": "Kimse yanıtlamadı",
-    "share_this_category": "Bu kategoriyi paylaş"
+    "share_this_category": "Bu kategoriyi paylaş",
+    "ignore": "Ignore"
 }

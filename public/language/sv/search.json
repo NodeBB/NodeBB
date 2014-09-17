@@ -1,3 +1,4 @@
 {
-    "results_matching": "%1 resultat matchar \"%2\", (%3 sekunder)"
+    "results_matching": "%1 resultat matchar \"%2\", (%3 sekunder)",
+    "no-matches": "Inga inlägg hittades"
 }

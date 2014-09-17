@@ -4,6 +4,8 @@
     "username": "ユーザー名",
     "email": "メール",
     "confirm_email": "Confirm Email",
+    "delete_account": "Delete Account",
+    "delete_account_confirm": "Are you sure you want to delete your account?",
     "fullname": "フルネーム",
     "website": "ウェブサイト",
     "location": "ロケーション",
@@ -50,6 +52,7 @@
     "digest_daily": "デイリー",
     "digest_weekly": "ウィークリー",
     "digest_monthly": "マンスリー",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "フォロワーはまだいません :(",
     "follows_no_one": "フォロー中のユーザーはまだいません :(",
     "has_no_posts": "まだポストを投稿したことありません。",
@@ -61,5 +64,7 @@
     "posts_per_page": "ページ毎のポスト数",
     "notification_sounds": "通知が来たとき音を流す",
     "browsing": "Browsing Settings",
-    "open_links_in_new_tab": "Open outgoing links in new tab?"
+    "open_links_in_new_tab": "Open outgoing links in new tab?",
+    "follow_topics_you_reply_to": "Follow topics that you reply to.",
+    "follow_topics_you_create": "Follow topics you create."
 }

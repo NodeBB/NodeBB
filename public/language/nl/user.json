@@ -4,6 +4,8 @@
     "username": "Gebruikersnaam",
     "email": "Email",
     "confirm_email": "Bevestig uw email adres",
+    "delete_account": "Account Verwijderen",
+    "delete_account_confirm": "Are you sure you want to delete your account? <br /><strong>This action is irreversible and you will not be able to recover any of your data</strong><br /><br />Enter your username to confirm that you wish to destroy this account.",
     "fullname": "Volledige Naam",
     "website": "Website",
     "location": "Locatie",
@@ -50,6 +52,7 @@
     "digest_daily": "Dagelijks",
     "digest_weekly": "Weekelijks",
     "digest_monthly": "Maandelijks",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Deze gebruiker heeft geen volgers :(",
     "follows_no_one": "Deze gebruiker volgt niemand :(",
     "has_no_posts": "Deze gebruiker heeft nog geen berichten geplaatst",
@@ -61,5 +64,7 @@
     "posts_per_page": "Berichten per Pagina",
     "notification_sounds": "Speel een geluid af wanneer ik een notificatie ontvang.",
     "browsing": "Zoek Instellingen",
-    "open_links_in_new_tab": "Open de uitgaande links in een nieuw tabblad?"
+    "open_links_in_new_tab": "Open de uitgaande links in een nieuw tabblad?",
+    "follow_topics_you_reply_to": "Volg de onderwerpen waarop u gereageerd heeft.",
+    "follow_topics_you_create": "Volg de onderwerpen die u gecreëerd heeft."
 }

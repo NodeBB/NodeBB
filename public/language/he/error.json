@@ -12,12 +12,15 @@
     "invalid-title": "כותרת שגויה",
     "invalid-user-data": "מידע משתמש שגוי",
     "invalid-password": "סיסמא שגויה",
+    "invalid-username-or-password": "Please specify both a username and password",
     "invalid-pagination-value": "ערך דפדוף שגוי",
     "username-taken": "שם משתמש תפוס",
     "email-taken": "כתובת אימייל תפוסה",
     "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "שם משתמש קצר מדי",
+    "username-too-long": "Username too long",
     "user-banned": "המשתמש חסום",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "קטגוריה אינה קיימת",
     "no-topic": "נושא אינו קיים",
     "no-post": "פוסט אינו קיים",
@@ -52,5 +55,9 @@
     "upload-error": "שגיאה בהעלאה : %1",
     "signature-too-long": "חתימה אינה יכולה להיות ארוכה מ %1 תווים!",
     "cant-chat-with-yourself": "לא ניתן לעשות צ'אט עם עצמך!",
-    "not-enough-reputation-to-downvote": "אין לך מספיק מוניטין כדי להוריד את הדירוג של פוסט זה"
+    "reputation-system-disabled": "Reputation system is disabled.",
+    "downvoting-disabled": "Downvoting is disabled",
+    "not-enough-reputation-to-downvote": "אין לך מספיק מוניטין כדי להוריד את הדירוג של פוסט זה",
+    "not-enough-reputation-to-flag": "Yo do not have enough reputation to flag this post",
+    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }

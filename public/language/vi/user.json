@@ -3,7 +3,9 @@
     "offline": "Offline",
     "username": "Tên truy cập",
     "email": "Email",
-    "confirm_email": "Confirm Email",
+    "confirm_email": "Xác nhận email",
+    "delete_account": "Xóa tài khoản",
+    "delete_account_confirm": "Are you sure you want to delete your account? <br /><strong>This action is irreversible and you will not be able to recover any of your data</strong><br /><br />Enter your username to confirm that you wish to destroy this account.",
     "fullname": "Tên đầy đủ",
     "website": "Website",
     "location": "Địa điểm",
@@ -50,6 +52,7 @@
     "digest_daily": "Hàng ngày",
     "digest_weekly": "Hàng tuần",
     "digest_monthly": "Hàng tháng",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Người dùng này hiện chưa có ai theo dõi :(",
     "follows_no_one": "Người dùng này hiện chưa theo dõi ai :(",
     "has_no_posts": "Người dùng này chưa viết bài nào",
@@ -60,6 +63,8 @@
     "topics_per_page": "Số chủ đề trong một trang",
     "posts_per_page": "Số bài viết trong một trang",
     "notification_sounds": "Xuất hiện âm thanh khi bạn nhận được một thông báo",
-    "browsing": "Browsing Settings",
-    "open_links_in_new_tab": "Open outgoing links in new tab?"
+    "browsing": "Đang xem cài đặt",
+    "open_links_in_new_tab": "Mở liên kết trong tab mới?",
+    "follow_topics_you_reply_to": "Theo dõi chủ đề mà bạn trả lời",
+    "follow_topics_you_create": "Theo dõi chủ đề bạn tạo"
 }

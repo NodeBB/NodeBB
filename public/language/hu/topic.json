@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "Ez a téma ebbe a kategóriába lesz mozgatva",
     "fork_topic_instruction": "Klikkelj azokra a hozzászólásokra, amiket szét akarsz szedni",
     "fork_no_pids": "Nincs hozzászólás kiválasztva!",
-    "fork_success": "Sikeresen szétválasztott topik!",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Írd be a témanevet...",
     "composer.discard": "Elvet",
     "composer.submit": "Küldés",

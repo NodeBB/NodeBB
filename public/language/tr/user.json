@@ -4,6 +4,8 @@
     "username": "Kullanıcı Adı",
     "email": "E-posta",
     "confirm_email": "E-posta onayla",
+    "delete_account": "Delete Account",
+    "delete_account_confirm": "Are you sure you want to delete your account?",
     "fullname": "Tam Ad",
     "website": "Websitesi",
     "location": "Konum",
@@ -50,6 +52,7 @@
     "digest_daily": "Günlük",
     "digest_weekly": "Haftalık",
     "digest_monthly": "Aylık",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Bu kullanıcının hiç takipçisi yok :(",
     "follows_no_one": "Bu kullanıcı kimseyi takip etmiyor :(",
     "has_no_posts": "Bu kullanıcı henüz birşey göndermedi.",
@@ -61,5 +64,7 @@
     "posts_per_page": "Sayfa başına İletiler",
     "notification_sounds": "Bildirim alındığında ses çal",
     "browsing": "Tarayıcı Ayaları",
-    "open_links_in_new_tab": "Dışarı giden bağlantıları yeni sekmede aç?"
+    "open_links_in_new_tab": "Dışarı giden bağlantıları yeni sekmede aç?",
+    "follow_topics_you_reply_to": "Follow topics that you reply to.",
+    "follow_topics_you_create": "Follow topics you create."
 }

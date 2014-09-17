@@ -12,12 +12,15 @@
     "invalid-title": "Geçersiz başlık!",
     "invalid-user-data": "Geçersiz Kullancı Verisi",
     "invalid-password": "Geçersiz Şifre",
+    "invalid-username-or-password": "Please specify both a username and password",
     "invalid-pagination-value": "Geçersiz Sayfa Değeri",
     "username-taken": "Kullanıcı İsmi Alınmış",
     "email-taken": "E-posta Alınmış",
     "email-not-confirmed": "E-postanız onaylanmamış, onaylamak için lütfen buraya tıklayın.",
     "username-too-short": "Kullanıcı ismi çok kısa",
+    "username-too-long": "Username too long",
     "user-banned": "Kullanıcı Yasaklı",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "Kategori Yok",
     "no-topic": "Başlık Yok",
     "no-post": "İleti Yok",
@@ -52,5 +55,9 @@
     "upload-error": "Yükleme Hatası : %1",
     "signature-too-long": "İmza en fazla %1 karakter olabilir!",
     "cant-chat-with-yourself": "Kendinizle sohbet edemezsiniz!",
-    "not-enough-reputation-to-downvote": "Bu iletiyi aşagı oylamak için yeterince saygınlığınız yok."
+    "reputation-system-disabled": "Reputation system is disabled.",
+    "downvoting-disabled": "Downvoting is disabled",
+    "not-enough-reputation-to-downvote": "Bu iletiyi aşagı oylamak için yeterince saygınlığınız yok.",
+    "not-enough-reputation-to-flag": "Yo do not have enough reputation to flag this post",
+    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }

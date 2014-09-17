@@ -4,6 +4,8 @@
     "username": "使用者名稱",
     "email": "Email",
     "confirm_email": "Confirm Email",
+    "delete_account": "Delete Account",
+    "delete_account_confirm": "Are you sure you want to delete your account?",
     "fullname": "姓名",
     "website": "網站",
     "location": "地址",
@@ -50,6 +52,7 @@
     "digest_daily": "每日",
     "digest_weekly": "每週",
     "digest_monthly": "每月",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "該用戶還沒有被任何人關注。",
     "follows_no_one": "該用戶還沒有關注過任何人。",
     "has_no_posts": "尚未有任何貼文.",
@@ -61,5 +64,7 @@
     "posts_per_page": "每頁的文章數",
     "notification_sounds": "當收到新消息時播放提示音",
     "browsing": "瀏覽設定",
-    "open_links_in_new_tab": "在新的分頁開啟外部連結?"
+    "open_links_in_new_tab": "在新的分頁開啟外部連結?",
+    "follow_topics_you_reply_to": "Follow topics that you reply to.",
+    "follow_topics_you_create": "Follow topics you create."
 }

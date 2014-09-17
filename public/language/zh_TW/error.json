@@ -12,12 +12,15 @@
     "invalid-title": "Invalid title!",
     "invalid-user-data": "無效的使用者資料",
     "invalid-password": "無效的密碼",
+    "invalid-username-or-password": "Please specify both a username and password",
     "invalid-pagination-value": "無效的分頁數值",
     "username-taken": "該使用者名稱已被使用",
     "email-taken": "該信箱已被使用",
     "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "Username too short",
+    "username-too-long": "Username too long",
     "user-banned": "該使用者已被停用",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "類別並不存在",
     "no-topic": "主題並不存在",
     "no-post": "文章並不存在",
@@ -52,5 +55,9 @@
     "upload-error": "Upload Error : %1",
     "signature-too-long": "簽名檔長度不能超過 %1 字元！",
     "cant-chat-with-yourself": "你不能與自己聊天！",
-    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post"
+    "reputation-system-disabled": "Reputation system is disabled.",
+    "downvoting-disabled": "Downvoting is disabled",
+    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post",
+    "not-enough-reputation-to-flag": "Yo do not have enough reputation to flag this post",
+    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }

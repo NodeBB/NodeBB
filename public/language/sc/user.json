@@ -4,6 +4,8 @@
     "username": "Nùmene de Impitadore",
     "email": "Email",
     "confirm_email": "Confirm Email",
+    "delete_account": "Delete Account",
+    "delete_account_confirm": "Are you sure you want to delete your account?",
     "fullname": "Nùmene e Sambenadu",
     "website": "Giassu web",
     "location": "Logu",
@@ -50,6 +52,7 @@
     "digest_daily": "Daily",
     "digest_weekly": "Weekly",
     "digest_monthly": "Monthly",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Custu impitadore non tenet perunu sighidore :(",
     "follows_no_one": "Custu impitadore no est sighende nissunu :(",
     "has_no_posts": "Custu impitadore no at ancora publicadu nudda.",
@@ -61,5 +64,7 @@
     "posts_per_page": "Arresonos pro Pàgina",
     "notification_sounds": "Play a sound when you receive a notification.",
     "browsing": "Browsing Settings",
-    "open_links_in_new_tab": "Open outgoing links in new tab?"
+    "open_links_in_new_tab": "Open outgoing links in new tab?",
+    "follow_topics_you_reply_to": "Follow topics that you reply to.",
+    "follow_topics_you_create": "Follow topics you create."
 }

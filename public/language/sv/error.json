@@ -12,12 +12,15 @@
     "invalid-title": "Ogiltig rubrik.",
     "invalid-user-data": "Ogiltig användardata",
     "invalid-password": "Ogiltigt lösenord",
+    "invalid-username-or-password": "Specificera både användarnamn och lösenord",
     "invalid-pagination-value": "Ogiltigt sidnummer",
     "username-taken": "Användarnamn upptaget",
     "email-taken": "Epostadress upptagen",
     "email-not-confirmed": "Din epostadress är ännu inte bekräftad. Klicka här för att bekräfta din epostadress.",
     "username-too-short": "Användarnamnet är för kort",
+    "username-too-long": "Användarnamnet är för långt",
     "user-banned": "Användare bannad",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "Kategori hittades inte",
     "no-topic": "Ämne hittades inte",
     "no-post": "Inlägget hittades inte",
@@ -52,5 +55,9 @@
     "upload-error": "Fel vid uppladdning: %1",
     "signature-too-long": "Signaturer kan inte vara längre än %1 tecken.",
     "cant-chat-with-yourself": "Du kan inte chatta med dig själv.",
-    "not-enough-reputation-to-downvote": "Du har inte tillräckligt förtroende för att rösta ner det här meddelandet"
+    "reputation-system-disabled": "Ryktessystemet är inaktiverat.",
+    "downvoting-disabled": "Nedröstning är inaktiverat",
+    "not-enough-reputation-to-downvote": "Du har inte tillräckligt förtroende för att rösta ner det här meddelandet",
+    "not-enough-reputation-to-flag": "Du har inte tillräckligt förtroende för att flagga det här inlägget.",
+    "reload-failed": "NodeBB stötte på problem med att ladda om: \"%1\". NodeBB kommer fortsätta servera den befintliga resurser till klienten, men du borde återställa det du gjorde alldeles innan du försökte ladda om."
 }

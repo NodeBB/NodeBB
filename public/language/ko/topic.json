@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "이 주제를 지정한 카테고리로 이동합니다.",
     "fork_topic_instruction": "복제할 게시물을 선택하세요.",
     "fork_no_pids": "게시물이 선택되지 않았습니다.",
-    "fork_success": "성공적으로 주제를 복제했습니다.",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "여기에 제목을 입력하세요.",
     "composer.discard": "취소",
     "composer.submit": "등록",

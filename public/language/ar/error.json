@@ -12,12 +12,15 @@
     "invalid-title": "Invalid title!",
     "invalid-user-data": "Invalid User Data",
     "invalid-password": "كلمة السر غير مقبولة",
+    "invalid-username-or-password": "Please specify both a username and password",
     "invalid-pagination-value": "Invalid pagination value",
     "username-taken": "اسم المستخدم ماخوذ",
     "email-taken": "البريد الالكتروني ماخوذ",
     "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "Username too short",
+    "username-too-long": "Username too long",
     "user-banned": "المستخدم محظور",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "Category doesn't exist",
     "no-topic": "Topic doesn't exist",
     "no-post": "Post doesn't exist",
@@ -52,5 +55,9 @@
     "upload-error": "مشكلة في الرفع: 1%",
     "signature-too-long": "Signature can't be longer than %1 characters!",
     "cant-chat-with-yourself": "You can't chat with yourself!",
-    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post"
+    "reputation-system-disabled": "Reputation system is disabled.",
+    "downvoting-disabled": "Downvoting is disabled",
+    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post",
+    "not-enough-reputation-to-flag": "Yo do not have enough reputation to flag this post",
+    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }

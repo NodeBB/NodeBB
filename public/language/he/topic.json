@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "נושא זה יועבר לקטגוריה",
     "fork_topic_instruction": "לחץ על הפוסטים שברצונך לשכפל",
     "fork_no_pids": "לא בחרת אף פוסט!",
-    "fork_success": "הנושא שוכפל בהצלחה!",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "הכנס את כותרת הנושא כאן...",
     "composer.discard": "מחק",
     "composer.submit": "שלח",

@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "這個主題將會被移動到",
     "fork_topic_instruction": "點擊要作為主題的文章",
     "fork_no_pids": "尚未選擇文章！",
-    "fork_success": "成功將文章作為主題！",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "輸入標題...",
     "composer.discard": "放棄",
     "composer.submit": "發表",

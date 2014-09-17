@@ -12,12 +12,15 @@
     "invalid-title": "Titre invalide !",
     "invalid-user-data": "Données utilisateur invalides",
     "invalid-password": "Mot de passe invalide",
+    "invalid-username-or-password": "Please specify both a username and password",
     "invalid-pagination-value": "Valeur de pagination invalide",
     "username-taken": "Nom d’utilisateur déjà utilisé",
     "email-taken": "Email déjà utilisé",
     "email-not-confirmed": "Votre adresse email n'est pas confirmée, cliquez ici pour la valider.",
     "username-too-short": "Nom d'utilisateur trop court",
+    "username-too-long": "Username too long",
     "user-banned": "Utilisateur banni",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "Cette catégorie n'existe pas",
     "no-topic": "Ce sujet n'existe pas",
     "no-post": "Ce message n'existe pas",
@@ -52,5 +55,9 @@
     "upload-error": "Erreur d'envoi : %1",
     "signature-too-long": "La signature ne peut dépasser %1 caractères !",
     "cant-chat-with-yourself": "Vous ne pouvez chatter avec vous même !",
-    "not-enough-reputation-to-downvote": "Vous n'avez pas une réputation assez élevée pour noter négativement ce message"
+    "reputation-system-disabled": "Reputation system is disabled.",
+    "downvoting-disabled": "Downvoting is disabled",
+    "not-enough-reputation-to-downvote": "Vous n'avez pas une réputation assez élevée pour noter négativement ce message",
+    "not-enough-reputation-to-flag": "Yo do not have enough reputation to flag this post",
+    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }

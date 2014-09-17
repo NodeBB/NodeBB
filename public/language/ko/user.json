@@ -4,6 +4,8 @@
     "username": "사용자 이름",
     "email": "이메일",
     "confirm_email": "이메일 확인",
+    "delete_account": "Delete Account",
+    "delete_account_confirm": "Are you sure you want to delete your account?",
     "fullname": "이름",
     "website": "웹 사이트",
     "location": "거주지",
@@ -50,6 +52,7 @@
     "digest_daily": "매일",
     "digest_weekly": "매주",
     "digest_monthly": "매월",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "아무도 이 사용자를 팔로우하지 않습니다.",
     "follows_no_one": "이 사용자는 아무도 팔로우하지 않습니다.",
     "has_no_posts": "이 사용자는 게시물을 작성하지 않았습니다.",
@@ -61,5 +64,7 @@
     "posts_per_page": "페이지 당 게시물 수",
     "notification_sounds": "알림을 수신하면 알림음을 재생",
     "browsing": "페이지 열기",
-    "open_links_in_new_tab": "외부 링크를 새 탭에서 열기"
+    "open_links_in_new_tab": "외부 링크를 새 탭에서 열기",
+    "follow_topics_you_reply_to": "Follow topics that you reply to.",
+    "follow_topics_you_create": "Follow topics you create."
 }

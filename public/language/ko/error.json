@@ -12,12 +12,15 @@
     "invalid-title": "올바르지 않은 제목입니다.",
     "invalid-user-data": "올바르지 않은 사용자 정보입니다.",
     "invalid-password": "올바르지 않은 비밀번호입니다.",
+    "invalid-username-or-password": "Please specify both a username and password",
     "invalid-pagination-value": "올바르지 않은 페이지입니다.",
     "username-taken": "이미 사용 중인 사용자 이름입니다.",
     "email-taken": "이미 사용 중인 이메일입니다.",
     "email-not-confirmed": "아직 이메일이 인증되지 않았습니다. 여기를 누르면 인증 메일을 발송할 수 있습니다.",
     "username-too-short": "사용자 이름이 너무 짧습니다.",
+    "username-too-long": "Username too long",
     "user-banned": "차단된 사용자입니다.",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "존재하지 않는 카테고리입니다.",
     "no-topic": "존재하지 않는 주제입니다.",
     "no-post": "존재하지 않는 게시물입니다.",
@@ -52,5 +55,9 @@
     "upload-error": "업로드 오류가 발생했습니다. : %1",
     "signature-too-long": "서명은 최대 %1자로 제한됩니다.",
     "cant-chat-with-yourself": "자신과는 채팅할 수 없습니다.",
-    "not-enough-reputation-to-downvote": "인기도가 낮아 이 게시물에 반대할 수 없습니다."
+    "reputation-system-disabled": "Reputation system is disabled.",
+    "downvoting-disabled": "Downvoting is disabled",
+    "not-enough-reputation-to-downvote": "인기도가 낮아 이 게시물에 반대할 수 없습니다.",
+    "not-enough-reputation-to-flag": "Yo do not have enough reputation to flag this post",
+    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }

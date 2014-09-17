@@ -4,6 +4,8 @@
     "username": "Uživateľské meno",
     "email": "Email",
     "confirm_email": "Confirm Email",
+    "delete_account": "Delete Account",
+    "delete_account_confirm": "Are you sure you want to delete your account?",
     "fullname": "Meno a priezvisko",
     "website": "Webová stránka",
     "location": "Poloha",
@@ -50,6 +52,7 @@
     "digest_daily": "Denne",
     "digest_weekly": "Týždenne",
     "digest_monthly": "Mesačne",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Tohoto užívatela nikto nesleduje :(",
     "follows_no_one": "Tento užívateľ nikoho nesleduje :(",
     "has_no_posts": "Tento používateľ ešte nespravil príspevok",
@@ -61,5 +64,7 @@
     "posts_per_page": "Príspevkov na stranu",
     "notification_sounds": "Prehraj zvuk ked príde notifikácia",
     "browsing": "Hľadaj v nadstaveniach",
-    "open_links_in_new_tab": "Otvoriť tieto odkazy v novom tabe ?"
+    "open_links_in_new_tab": "Otvoriť tieto odkazy v novom tabe ?",
+    "follow_topics_you_reply_to": "Follow topics that you reply to.",
+    "follow_topics_you_create": "Follow topics you create."
 }

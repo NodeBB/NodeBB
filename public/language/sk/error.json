@@ -12,12 +12,15 @@
     "invalid-title": "Nesprávny titulok!",
     "invalid-user-data": "Neplatné užívatelské údaje",
     "invalid-password": "Nesprávne heslo",
+    "invalid-username-or-password": "Please specify both a username and password",
     "invalid-pagination-value": "Nesprávna hodnota stránkovania",
     "username-taken": "Užívateľske meno je obsadené",
     "email-taken": "Email je obsadený",
     "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "Username too short",
+    "username-too-long": "Username too long",
     "user-banned": "Užívateľ je zakázaný",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "Kategória neexistuje",
     "no-topic": "Téme neexistuje",
     "no-post": "Príspevok neexistuje",
@@ -52,5 +55,9 @@
     "upload-error": "Upload chyba: %1",
     "signature-too-long": "Podpis nesmie byť dlhší ako %1 znakov!",
     "cant-chat-with-yourself": "Nemôžete chatovat so samým sebou.",
-    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post"
+    "reputation-system-disabled": "Reputation system is disabled.",
+    "downvoting-disabled": "Downvoting is disabled",
+    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post",
+    "not-enough-reputation-to-flag": "Yo do not have enough reputation to flag this post",
+    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }

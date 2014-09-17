@@ -4,6 +4,8 @@
     "username": "Nume utilizator",
     "email": "Adresă Email",
     "confirm_email": "Confirmă Email",
+    "delete_account": "Delete Account",
+    "delete_account_confirm": "Are you sure you want to delete your account?",
     "fullname": "Nume Întreg",
     "website": "Pagină Web",
     "location": "Locație",
@@ -50,6 +52,7 @@
     "digest_daily": "Zilnic",
     "digest_weekly": "Săptămânal",
     "digest_monthly": "Lunar",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Pe acest utilizator nu îl urmărește nimeni :(",
     "follows_no_one": "Acest utilizator nu urmărește pe nimeni :(",
     "has_no_posts": "Acest utilizator nu a postat nici un mesaj până acuma.",
@@ -61,5 +64,7 @@
     "posts_per_page": "Mesaje pe pagină",
     "notification_sounds": "Redă un sunet când primești o notificare.",
     "browsing": "Setări navigare",
-    "open_links_in_new_tab": "Deschide linkurile externe intr-un tab nou?"
+    "open_links_in_new_tab": "Deschide linkurile externe intr-un tab nou?",
+    "follow_topics_you_reply_to": "Follow topics that you reply to.",
+    "follow_topics_you_create": "Follow topics you create."
 }

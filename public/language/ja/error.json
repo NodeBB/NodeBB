@@ -12,12 +12,15 @@
     "invalid-title": "Invalid title!",
     "invalid-user-data": "無効なユーザーデータ",
     "invalid-password": "無効なパスワード",
+    "invalid-username-or-password": "Please specify both a username and password",
     "invalid-pagination-value": "無効な改ページ設定値",
     "username-taken": "ユーザー名が取られた",
     "email-taken": "メールアドレスが使用された",
     "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "Username too short",
+    "username-too-long": "Username too long",
     "user-banned": "ユーザーが停止された",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "板が存在しない",
     "no-topic": "スレッドが存在しない",
     "no-post": "ポストが存在しない",
@@ -52,5 +55,9 @@
     "upload-error": "Upload Error : %1",
     "signature-too-long": "署名は最大%1文字までです！",
     "cant-chat-with-yourself": "自分にチャットすることはできません！",
-    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post"
+    "reputation-system-disabled": "Reputation system is disabled.",
+    "downvoting-disabled": "Downvoting is disabled",
+    "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post",
+    "not-enough-reputation-to-flag": "Yo do not have enough reputation to flag this post",
+    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }

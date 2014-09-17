@@ -63,7 +63,15 @@ function routeCurrentTheme(app, themeId, themesData) {
 	}
 
 	// Theme's templates path
-	nconf.set('theme_templates_path', themeObj.templates ? path.join(themesPath, themeObj.id, themeObj.templates) : nconf.get('base_templates_path'));
+	var themePath = nconf.get('base_templates_path'),
+		fallback = path.join(themesPath, themeObj.id, 'templates');
+	if (themeObj.templates) {
+		themePath = path.join(themesPath, themeObj.id, themeObj.templates);
+	} else if (fs.existsSync(fallback)) {
+		themePath = fallback;
+	}
+
+	nconf.set('theme_templates_path', themePath);
 }
 
 module.exports = function(app, data) {

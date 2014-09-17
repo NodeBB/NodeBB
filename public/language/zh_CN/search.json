@@ -1,3 +1,4 @@
 {
-    "results_matching": "%1 条结果，匹配 \"%2\"，(耗时 %3 秒)"
+    "results_matching": "共 %1 条结果匹配 \"%2\"，(耗时 %3 秒)",
+    "no-matches": "没有找到帖子"
 }

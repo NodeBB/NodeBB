@@ -12,12 +12,15 @@
     "invalid-title": "عنوان نامعتبر است!",
     "invalid-user-data": "داده‌های کاربری نامعتبر است.",
     "invalid-password": "گذرواژه نامعتبر است.",
+    "invalid-username-or-password": "Please specify both a username and password",
     "invalid-pagination-value": "عدد صفحه‌بندی نامعتبر است.",
     "username-taken": "این نام کاربری گرفته شده است.",
     "email-taken": "این رایانامه گرفته شده است.",
     "email-not-confirmed": "رایانامه شما تأیید نشده است، لطفاً برای تأیید رایانامه‌تان اینجا را بفشارید.",
     "username-too-short": "نام کاربری خیلی کوتاه است.",
+    "username-too-long": "Username too long",
     "user-banned": "کاربر محروم شد.",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "چنین دسته‌ای وجود ندارد.",
     "no-topic": "چنین جستاری وجود ندارد.",
     "no-post": "چنین دیدگاهی وجود ندارد.",
@@ -52,5 +55,9 @@
     "upload-error": "خطای بارگذاری: %1",
     "signature-too-long": "امضا نمی‌تواند بیش‌تر از %1 نویسه داشته باشد.",
     "cant-chat-with-yourself": "شما نمی‌توانید با خودتان گفتگو کنید!",
-    "not-enough-reputation-to-downvote": "شما اعتبار کافی برای دادن رای منفی به این دیدگاه را ندارید."
+    "reputation-system-disabled": "Reputation system is disabled.",
+    "downvoting-disabled": "Downvoting is disabled",
+    "not-enough-reputation-to-downvote": "شما اعتبار کافی برای دادن رای منفی به این دیدگاه را ندارید.",
+    "not-enough-reputation-to-flag": "Yo do not have enough reputation to flag this post",
+    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }

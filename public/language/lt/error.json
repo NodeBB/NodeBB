@@ -12,12 +12,15 @@
     "invalid-title": "Neteisingas pavadinimas!",
     "invalid-user-data": "Klaidingi vartotojo duomenys",
     "invalid-password": "Klaidingas slaptažodis",
+    "invalid-username-or-password": "Please specify both a username and password",
     "invalid-pagination-value": "Klaidinga puslapiavimo reikšmė",
     "username-taken": "Vartotojo vardas jau užimtas",
     "email-taken": "El. pašto adresas jau užimtas",
     "email-not-confirmed": "Jūsų el. paštas nepatvirtintas, prašome paspausti čia norint jį patvirtinti.",
     "username-too-short": "Slapyvardis per trumpas",
+    "username-too-long": "Username too long",
     "user-banned": "Vartotojas užblokuotas",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "Kategorija neegzistuoja",
     "no-topic": "Tema neegzistuoja",
     "no-post": "Pranešimas neegzistuoja",
@@ -52,5 +55,9 @@
     "upload-error": "Įkėlimo klaida: %1",
     "signature-too-long": "Parašas negali būti ilgesnis negu %1 simboliai!",
     "cant-chat-with-yourself": "Jūs negalite susirašinėti su savimi!",
-    "not-enough-reputation-to-downvote": "Jūs neturite pakankamai reputacijos balsuoti prieš šį pranešimą"
+    "reputation-system-disabled": "Reputation system is disabled.",
+    "downvoting-disabled": "Downvoting is disabled",
+    "not-enough-reputation-to-downvote": "Jūs neturite pakankamai reputacijos balsuoti prieš šį pranešimą",
+    "not-enough-reputation-to-flag": "Yo do not have enough reputation to flag this post",
+    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }

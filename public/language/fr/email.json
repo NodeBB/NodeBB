@@ -13,8 +13,11 @@
     "digest.latest_topics": "Derniers sujets de %1 :",
     "digest.cta": "Cliquez ici pour aller sur %1",
     "digest.unsub.info": "Ce message vous a été envoyé en raison de vos paramètres d'abonnement.",
-    "digest.unsub.cta": "Cliquez ici pour modifier ces paramètres",
     "digest.daily.no_topics": "Il n'y a eu aucun sujet actif ces derniers jours",
+    "notif.chat.subject": "New chat message received from %1",
+    "notif.chat.cta": "Click here to continue the conversation",
+    "notif.chat.unsub.info": "This chat notification was sent to you due to your subscription settings.",
     "test.text1": "Ceci est un email de test pour vérifier que l'emailer est correctement configuré pour NodeBB.",
+    "unsub.cta": "Click here to alter those settings",
     "closing": "Merci !"
 }

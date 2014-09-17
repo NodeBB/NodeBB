@@ -12,12 +12,15 @@
     "invalid-title": "Título inválido.",
     "invalid-user-data": "Informação de usuário inválida",
     "invalid-password": "Senha inválida",
+    "invalid-username-or-password": "Please specify both a username and password",
     "invalid-pagination-value": "Informação inválida de paginação",
     "username-taken": "Usuário já existe",
     "email-taken": "Email já foi utilizado em um cadastro",
     "email-not-confirmed": "Seu email não está confirmado, por favor, clique aqui para confirmá-lo",
     "username-too-short": "Nome de usuário muito curto",
+    "username-too-long": "Username too long",
     "user-banned": "Usuário banido",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "Categoria não existe",
     "no-topic": "Tópico não existe",
     "no-post": "Post não existe",
@@ -52,5 +55,9 @@
     "upload-error": "Erro de Upload : %1",
     "signature-too-long": "Assinatura não pode conter mais que %1 caracteres!",
     "cant-chat-with-yourself": "Impossível bater papo consigo mesmo!",
-    "not-enough-reputation-to-downvote": "Você não possui reputação suficiente para negativar este post"
+    "reputation-system-disabled": "Reputation system is disabled.",
+    "downvoting-disabled": "Downvoting is disabled",
+    "not-enough-reputation-to-downvote": "Você não possui reputação suficiente para negativar este post",
+    "not-enough-reputation-to-flag": "Yo do not have enough reputation to flag this post",
+    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }

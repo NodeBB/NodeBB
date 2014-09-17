@@ -69,6 +69,11 @@ Controllers.home = function(req, res, next) {
 					return next(err);
 				}
 
+				// Remove child categories, as they don't belong on the home page
+				categoryData = categoryData.filter(function(categoryObj) {
+					return !categoryObj.parent;
+				});
+
 				categories.getRecentTopicReplies(categoryData, uid, function(err) {
 					next(err, categoryData);
 				});

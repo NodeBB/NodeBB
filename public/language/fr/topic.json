@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "Ce sujet sera déplacé vers la catégorie",
     "fork_topic_instruction": "Cliquez sur les postes à scinder",
     "fork_no_pids": "Aucun post sélectionné !",
-    "fork_success": "Sujet scindé !",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Entrer le titre du sujet ici ...",
     "composer.discard": "Abandonner",
     "composer.submit": "Envoyer",

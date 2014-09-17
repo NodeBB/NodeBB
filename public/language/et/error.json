@@ -12,12 +12,15 @@
     "invalid-title": "Vigane pealkiri!",
     "invalid-user-data": "Vigased kasutaja andmed",
     "invalid-password": "Vigane parool",
+    "invalid-username-or-password": "Please specify both a username and password",
     "invalid-pagination-value": "Vigane lehe väärtus",
     "username-taken": "Kasutajanimi on juba võetud",
     "email-taken": "Email on võetud",
     "email-not-confirmed": "Su emaili aadress ei ole kinnitatud, vajuta siia et kinnitada.",
     "username-too-short": "Kasutajanimi on liiga lühike",
+    "username-too-long": "Username too long",
     "user-banned": "Kasutaja bannitud",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "Kategooriat ei eksisteeri",
     "no-topic": "Teemat ei eksisteeri",
     "no-post": "Postitust ei eksisteeri",
@@ -52,5 +55,9 @@
     "upload-error": "Üleslaadimise viga: %1",
     "signature-too-long": "Allkiri ei saa olla pikem kui %1 tähemärki!",
     "cant-chat-with-yourself": "Sa ei saa endaga vestelda!",
-    "not-enough-reputation-to-downvote": "Sul ei ole piisavalt reputatsiooni, et anda negatiivset hinnangut sellele postitusele."
+    "reputation-system-disabled": "Reputation system is disabled.",
+    "downvoting-disabled": "Downvoting is disabled",
+    "not-enough-reputation-to-downvote": "Sul ei ole piisavalt reputatsiooni, et anda negatiivset hinnangut sellele postitusele.",
+    "not-enough-reputation-to-flag": "Yo do not have enough reputation to flag this post",
+    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }
