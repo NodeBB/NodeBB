@@ -417,6 +417,8 @@
 	};
 
 	Groups.leave = function(groupName, uid, callback) {
+		callback = callback || function() {};
+		
 		db.setRemove('group:' + groupName + ':members', uid, function(err) {
 			if (err) {
 				return callback(err);
