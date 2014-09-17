@@ -126,8 +126,13 @@ categoriesController.get = function(req, res, next) {
 						return next(err);
 					}
 
-					categoryData.privileges = privileges;
-					next(err, categoryData);
+					categories.getRecentTopicReplies(categoryData.children, uid, function(err) {
+						if (err) {
+							return next(err);
+						}
+						categoryData.privileges = privileges;
+						next(err, categoryData);
+					});
 				});
 			});
 		},
