@@ -12,6 +12,10 @@
     "chat.message-history": "Histórico de Conversas",
     "chat.pop-out": "Minimizar o chat",
     "chat.maximize": "Maximizar",
+    "chat.yesterday": "Yesterday",
+    "chat.seven_days": "7 Days",
+    "chat.thirty_days": "30 Days",
+    "chat.three_months": "3 Months",
     "composer.user_said_in": "%1 disse em %2:",
     "composer.user_said": "%1 disse:",
     "composer.discard": "Deseja mesmo remover essa postagem?"

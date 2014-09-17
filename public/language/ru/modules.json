@@ -12,6 +12,10 @@
     "chat.message-history": "История сообщений",
     "chat.pop-out": "Покинуть диалог",
     "chat.maximize": "Развернуть",
+    "chat.yesterday": "Yesterday",
+    "chat.seven_days": "7 Days",
+    "chat.thirty_days": "30 Days",
+    "chat.three_months": "3 Months",
     "composer.user_said_in": "%1 сказал %2:",
     "composer.user_said": "%1 сказал:",
     "composer.discard": "Вы уверены, что хотите отказаться от этого поста?"

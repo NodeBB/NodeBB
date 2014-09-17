@@ -12,6 +12,10 @@
     "chat.message-history": "Žinučių istorija",
     "chat.pop-out": "Iššokančio lango pokalbiai",
     "chat.maximize": "Padininti",
+    "chat.yesterday": "Yesterday",
+    "chat.seven_days": "7 Days",
+    "chat.thirty_days": "30 Days",
+    "chat.three_months": "3 Months",
     "composer.user_said_in": "%1 parašė į %2:",
     "composer.user_said": "%1 parašė:",
     "composer.discard": "Ar tikrai norite sunaikinti šį pranešimą?"

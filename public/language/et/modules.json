@@ -12,6 +12,10 @@
     "chat.message-history": "Sõnumite ajalugu",
     "chat.pop-out": "Pop-out vestlus",
     "chat.maximize": "Suurenda",
+    "chat.yesterday": "Yesterday",
+    "chat.seven_days": "7 Days",
+    "chat.thirty_days": "30 Days",
+    "chat.three_months": "3 Months",
     "composer.user_said_in": "%1 ütles %2:",
     "composer.user_said": "%1 ütles:",
     "composer.discard": "Oled kindel, et soovid selle postituse tühistada?"

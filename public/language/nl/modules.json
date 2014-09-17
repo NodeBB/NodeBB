@@ -12,6 +12,10 @@
     "chat.message-history": "Berichten Geschiedenis",
     "chat.pop-out": "tevoorschijn halen gesprek",
     "chat.maximize": "Maximaliseren",
+    "chat.yesterday": "Yesterday",
+    "chat.seven_days": "7 Days",
+    "chat.thirty_days": "30 Days",
+    "chat.three_months": "3 Months",
     "composer.user_said_in": "%1 zegt in %2:",
     "composer.user_said": "%1 zegt:",
     "composer.discard": "Weet u het zeker dat u dit bericht niet wilt plaatsen?"
