@@ -24,7 +24,7 @@ module.exports = function(Topics) {
 
 	Topics.getTopicPosts = function(tid, set, start, end, uid, reverse, callback) {
 		callback = callback || function() {};
-		posts.getPostsByTid(tid, set, start, end, reverse, function(err, postData) {
+		posts.getPostsByTid(tid, set, start, end, uid, reverse, function(err, postData) {
 			if(err) {
 				return callback(err);
 			}

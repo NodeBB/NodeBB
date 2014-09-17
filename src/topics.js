@@ -262,7 +262,7 @@ var async = require('async'),
 						if (!pids.length) {
 							return next(null, []);
 						}
-						posts.getPostsByPids(pids, function(err, posts) {
+						posts.getPostsByPids(pids, uid, function(err, posts) {
 							if (err) {
 								return next(err);
 							}
@@ -323,7 +323,7 @@ var async = require('async'),
 				return topic ? topic.mainPid : null;
 			});
 
-			posts.getPostsByPids(mainPids, function(err, postData) {
+			posts.getPostsByPids(mainPids, uid, function(err, postData) {
 				if (err) {
 					return callback(err);
 				}

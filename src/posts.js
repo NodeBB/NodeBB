@@ -94,7 +94,7 @@ var async = require('async'),
 		], callback);
 	};
 
-	Posts.getPostsByTid = function(tid, set, start, end, reverse, callback) {
+	Posts.getPostsByTid = function(tid, set, start, end, uid, reverse, callback) {
 		Posts.getPidsFromSet(set, start, end, reverse, function(err, pids) {
 			if(err) {
 				return callback(err);
@@ -104,7 +104,7 @@ var async = require('async'),
 				return callback(null, []);
 			}
 
-			Posts.getPostsByPids(pids, callback);
+			Posts.getPostsByPids(pids, uid, callback);
 		});
 	};
 
@@ -115,7 +115,7 @@ var async = require('async'),
 		db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, end, callback);
 	};
 
-	Posts.getPostsByPids = function(pids, callback) {
+	Posts.getPostsByPids = function(pids, uid, callback) {
 		var keys = [];
 
 		for(var x=0, numPids=pids.length; x<numPids; ++x) {
