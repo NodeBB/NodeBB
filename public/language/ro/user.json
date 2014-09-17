@@ -52,6 +52,7 @@
     "digest_daily": "Zilnic",
     "digest_weekly": "Săptămânal",
     "digest_monthly": "Lunar",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Pe acest utilizator nu îl urmărește nimeni :(",
     "follows_no_one": "Acest utilizator nu urmărește pe nimeni :(",
     "has_no_posts": "Acest utilizator nu a postat nici un mesaj până acuma.",

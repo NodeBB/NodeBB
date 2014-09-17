@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "This topic will be moved to the category",
     "fork_topic_instruction": "Click the posts you want to fork",
     "fork_no_pids": "No posts selected!",
-    "fork_success": "Succesfully forked topic!",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Enter your topic title here...",
     "composer.discard": "Discard",
     "composer.submit": "Submit",

@@ -13,8 +13,11 @@
     "digest.latest_topics": "Senaste ämnen från %1",
     "digest.cta": "Klicka här för att besöka %1",
     "digest.unsub.info": "Det här meddelandet fick du på grund av dina inställningar för prenumeration. ",
-    "digest.unsub.cta": "Klicka här för att ändra dom inställningarna",
     "digest.daily.no_topics": "Det verkar inte varit några aktiva ämnen dom senaste dagarna ",
+    "notif.chat.subject": "New chat message received from %1",
+    "notif.chat.cta": "Click here to continue the conversation",
+    "notif.chat.unsub.info": "This chat notification was sent to you due to your subscription settings.",
     "test.text1": "\nDet här är ett textmeddelande som verifierar att eposten är korrekt installerat för din NodeBB. ",
+    "unsub.cta": "Click here to alter those settings",
     "closing": "Tack!"
 }

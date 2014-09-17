@@ -52,6 +52,7 @@
     "digest_daily": "Daily",
     "digest_weekly": "Weekly",
     "digest_monthly": "Monthly",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Custu impitadore non tenet perunu sighidore :(",
     "follows_no_one": "Custu impitadore no est sighende nissunu :(",
     "has_no_posts": "Custu impitadore no at ancora publicadu nudda.",

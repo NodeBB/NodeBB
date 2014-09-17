@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "スレッドはこちらのカテゴリへ移動",
     "fork_topic_instruction": "フォークしたいポストをクリックして",
     "fork_no_pids": "ポストが選択されていません！",
-    "fork_success": "スレッドをフォークできました！",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "スレッドのタイトルを入力して...",
     "composer.discard": "破棄する",
     "composer.submit": "保存する",

@@ -52,6 +52,7 @@
     "digest_daily": "Harian",
     "digest_weekly": "Mingguan",
     "digest_monthly": "Bulanan",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Pengguna ini tiada pengikut :(",
     "follows_no_one": "Pengguna ini tidak mengikuti sesiapa :(",
     "has_no_posts": "Pengguna ini masih belum mengirim sebarang pos",

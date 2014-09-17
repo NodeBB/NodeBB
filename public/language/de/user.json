@@ -4,7 +4,7 @@
     "username": "Nutzername",
     "email": "E-Mail",
     "confirm_email": "E-Mail bestätigen",
-    "delete_account": "Delete Account",
+    "delete_account": "Konto löschen",
     "delete_account_confirm": "Are you sure you want to delete your account? <br /><strong>This action is irreversible and you will not be able to recover any of your data</strong><br /><br />Enter your username to confirm that you wish to destroy this account.",
     "fullname": "Kompletter Name",
     "website": "Homepage",
@@ -52,6 +52,7 @@
     "digest_daily": "Täglich",
     "digest_weekly": "Wöchentlich",
     "digest_monthly": "Monatlich",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Dieser User hat noch keine Follower.",
     "follows_no_one": "Dieser User folgt noch niemandem :(",
     "has_no_posts": "Dieser Nutzer hat noch nichts gepostet.",
@@ -64,6 +65,6 @@
     "notification_sounds": "Ton abspielen, wenn ich eine Benachrichtigung erhalte.",
     "browsing": "Browser Einstellungen",
     "open_links_in_new_tab": "Externe Links in neuem Tab öffnen?",
-    "follow_topics_you_reply_to": "Follow topics that you reply to.",
-    "follow_topics_you_create": "Follow topics you create."
+    "follow_topics_you_reply_to": "Folge Themen, auf die du antwortest.",
+    "follow_topics_you_create": "Folge Themen, die du erstellst."
 }

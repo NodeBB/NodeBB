@@ -52,6 +52,7 @@
     "digest_daily": "매일",
     "digest_weekly": "매주",
     "digest_monthly": "매월",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "아무도 이 사용자를 팔로우하지 않습니다.",
     "follows_no_one": "이 사용자는 아무도 팔로우하지 않습니다.",
     "has_no_posts": "이 사용자는 게시물을 작성하지 않았습니다.",

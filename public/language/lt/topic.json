@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "Ši tema bus perkelta į kategoriją",
     "fork_topic_instruction": "Pažymėkite ant įrašų, kuriuos norite perkelti į naują temą",
     "fork_no_pids": "Nepasirinktas joks įrašas!",
-    "fork_success": "Tema sėkmingai išskaidyta!",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Įrašykite temos pavadinimą...",
     "composer.discard": "Atšaukti",
     "composer.submit": "Patvirtinti",

@@ -20,6 +20,7 @@
     "username-too-short": "Слишком короткое имя пользователя",
     "username-too-long": "Username too long",
     "user-banned": "Пользователь заблокирован",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "Несуществующая категория",
     "no-topic": "Несуществующая тема",
     "no-post": "Несуществующая запись",
