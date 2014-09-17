@@ -4,8 +4,8 @@
     "username": "Nombre de usuario",
     "email": "Correo Electrónico",
     "confirm_email": "Repetir correo electrónico",
-    "delete_account": "Delete Account",
-    "delete_account_confirm": "Are you sure you want to delete your account? <br /><strong>This action is irreversible and you will not be able to recover any of your data</strong><br /><br />Enter your username to confirm that you wish to destroy this account.",
+    "delete_account": "Eliminar cuenta",
+    "delete_account_confirm": "Estás seguro de que quieres eliminar tu cuenta? <br /><strong>Esta acción es irreversible y no podrás recuperar tus datos</strong><br /><br />Introduce tu nombre de usuario para confirmar la eliminación de la cuenta.",
     "fullname": "Nombre completo",
     "website": "Sitio Web",
     "location": "Ubicación",
@@ -52,7 +52,7 @@
     "digest_daily": "Diariamente",
     "digest_weekly": "Semanalmente",
     "digest_monthly": "Mensualmente",
-    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
+    "send_chat_notifications": "Envía un correo electrónico si recibes un mensaje de chat cuando no estás en línea.",
     "has_no_follower": "Este miembro no tiene seguidores. :(",
     "follows_no_one": "Este miembro no sigue a nadie. :(",
     "has_no_posts": "Este usuario aún no ha publicado nada.",
@@ -65,6 +65,6 @@
     "notification_sounds": "Reproducir un sonido al recibir una notificación",
     "browsing": "Preferencias de navegación.",
     "open_links_in_new_tab": "Abrir los enlaces externos en una nueva pestaña?",
-    "follow_topics_you_reply_to": "Follow topics that you reply to.",
-    "follow_topics_you_create": "Follow topics you create."
+    "follow_topics_you_reply_to": "Seguir publicaciones en las que respondes.",
+    "follow_topics_you_create": "Seguir publicaciones que creas."
 }

@@ -44,7 +44,7 @@
     "thread_tools.unlock": "Otwórz wątek",
     "thread_tools.move": "Przenieś wątek",
     "thread_tools.move_all": "Przenieś wszystko",
-    "thread_tools.fork": "Skopiuj wątek",
+    "thread_tools.fork": "Podziel wątek",
     "thread_tools.delete": "Usuń wątek",
     "thread_tools.delete_confirm": "Na pewno chcesz usunąć ten wątek?",
     "thread_tools.restore": "Przywróć wątek",
