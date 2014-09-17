@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "Tämä keskustelu siirretään aihealueelle",
     "fork_topic_instruction": "Napsauta viestejä, jotka haluat haaroittaa",
     "fork_no_pids": "Ei valittuja viestejä!",
-    "fork_success": "Keskustelu haaroitettu onnistuneesti!",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Syötä aiheesi otsikko tähän...",
     "composer.discard": "Hylkää",
     "composer.submit": "Lähetä",

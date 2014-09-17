@@ -20,6 +20,7 @@
     "username-too-short": "Slapyvardis per trumpas",
     "username-too-long": "Username too long",
     "user-banned": "Vartotojas užblokuotas",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "Kategorija neegzistuoja",
     "no-topic": "Tema neegzistuoja",
     "no-post": "Pranešimas neegzistuoja",

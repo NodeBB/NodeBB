@@ -20,6 +20,7 @@
     "username-too-short": "사용자 이름이 너무 짧습니다.",
     "username-too-long": "Username too long",
     "user-banned": "차단된 사용자입니다.",
+    "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "존재하지 않는 카테고리입니다.",
     "no-topic": "존재하지 않는 주제입니다.",
     "no-post": "존재하지 않는 게시물입니다.",

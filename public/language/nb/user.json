@@ -52,6 +52,7 @@
     "digest_daily": "Daglig",
     "digest_weekly": "Ukentlig",
     "digest_monthly": "Månedlig",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Denne brukeren har ingen følgere :(",
     "follows_no_one": "Denne brukeren følger ingen :(",
     "has_no_posts": "Denne brukeren har ikke skrevet noe enda.",

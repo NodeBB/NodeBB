@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "Эта тема будет перенесена в категорию",
     "fork_topic_instruction": "Отметьте сообщения для ответвления",
     "fork_no_pids": "Сообщения не отмечены!",
-    "fork_success": "Ответвление темы создано!",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Введите название темы...",
     "composer.discard": "Отменить",
     "composer.submit": "Подтвердить",

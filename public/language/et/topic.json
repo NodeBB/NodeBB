@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "See teema liigutatakse antud kategooriasse",
     "fork_topic_instruction": "Vajuta postitustele, mida soovid forkida",
     "fork_no_pids": "Sa ei ole postitusi valinud!",
-    "fork_success": "Edukalt forkisid teema!",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Sisesta teema pealkiri siia...",
     "composer.discard": "Katkesta",
     "composer.submit": "Postita",

@@ -52,6 +52,7 @@
     "digest_daily": "روزانه",
     "digest_weekly": "هفتگی",
     "digest_monthly": "ماهانه",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "این کاربر هیچ دنبال‌کننده‌ای ندارد :(",
     "follows_no_one": "این کاربر هیچ کسی را دنبال نمی‌کند :(",
     "has_no_posts": "این کاربر هنوز هیچ دیدگاهی نگذاشته است.",

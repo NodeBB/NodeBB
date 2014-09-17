@@ -71,7 +71,7 @@
     "topic_will_be_moved_to": "این جستار جابه‌جا خواهد شد به دستهٔ",
     "fork_topic_instruction": "دیدگاه‌هایی را که می‌خواهید به جستار تازه ببرید، برگزینید",
     "fork_no_pids": "هیچ دیدگاهی انتخاب نشده!",
-    "fork_success": "جستار با موفقیت منشعب شد.",
+    "fork_success": "Succesfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "سرنویس جستارتان را اینجا بنویسید...",
     "composer.discard": "دور بیانداز",
     "composer.submit": "بفرست",

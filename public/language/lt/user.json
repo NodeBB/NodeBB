@@ -52,6 +52,7 @@
     "digest_daily": "Kas dieną",
     "digest_weekly": "Kas savaitę",
     "digest_monthly": "Kas mėnesį",
+    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
     "has_no_follower": "Šis vartotojas neturi jokių sekėjų :(",
     "follows_no_one": "Šis vartotojas nieko neseka :(",
     "has_no_posts": "Šis vartotojas dar neparašė nė vieno pranešimo.",
