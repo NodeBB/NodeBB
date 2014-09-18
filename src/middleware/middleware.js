@@ -67,17 +67,20 @@ middleware.incrementPageViews = function(req, res, next) {
 };
 
 middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
-	if (req.user) {
-		user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
-			if (res.locals.isAPI) {
-				return res.json(302, '/user/' + userslug);
-			} else {
-				res.redirect('/user/' + userslug);
-			}
-		});
-	} else {
-		next();
+	if (!req.user) {
+		return next();
 	}
+	user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
+		if (err) {
+			return next(err);
+		}
+
+		if (res.locals.isAPI) {
+			res.json(302, '/user/' + userslug);
+		} else {
+			res.redirect('/user/' + userslug);
+		}
+	});
 };
 
 middleware.redirectToLoginIfGuest = function(req, res, next) {
