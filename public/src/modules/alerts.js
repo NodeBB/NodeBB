@@ -23,7 +23,11 @@ define('alerts', function() {
 	function createNew(params) {
 		templates.parse('alert', params, function(alertTpl) {
 			translator.translate(alertTpl, function(translatedHTML) {
-				var alert = $(translatedHTML);
+				var alert = $('#' + params.alert_id);
+				if (alert.length) {
+					return updateAlert(alert, params);
+				}
+				alert = $(translatedHTML);
 				alert.fadeIn(200);
 
 				$('.alert-' + params.location).prepend(alert);
