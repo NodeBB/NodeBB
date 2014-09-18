@@ -58,10 +58,19 @@ middleware.incrementPageViews = function(req, res, next) {
 	nextDay.setDate(nextDay.getDate() + 1);
 	nextDay.setHours(0, 0, 0, 0);
 
-	db.increment('pageviews:monthly');
-	db.increment('pageviews:daily');
-	db.pexpireAt('pageviews:monthly', nextMonth.getTime());
-	db.pexpireAt('pageviews:daily', nextDay.getTime());
+	db.increment('pageviews:monthly', function(err) {
+		if (err) {
+			return;
+		}
+		db.pexpireAt('pageviews:monthly', nextMonth.getTime());
+	});
+
+	db.increment('pageviews:daily', function(err) {
+		if (err) {
+			return;
+		}
+		db.pexpireAt('pageviews:daily', nextDay.getTime());
+	});
 
 	next();
 };
