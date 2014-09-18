@@ -5,6 +5,7 @@ var	async = require('async'),
 
 	db = require('../database'),
 	posts = require('../posts'),
+	plugins = require('../plugins'),
 	privileges = require('../privileges'),
 	meta = require('../meta'),
 	topics = require('../topics'),
@@ -50,11 +51,14 @@ SocketPosts.reply = function(socket, data, callback) {
 			if (err) {
 				return;
 			}
-			for(var i=0; i<uids.length; ++i) {
-				if (parseInt(uids[i], 10) !== socket.uid) {
-					websockets.in('uid_' + uids[i]).emit('event:new_post', result);
+
+			plugins.fireHook('filter:sockets.sendNewPostsToUids', {uidsTo: uids, uidFrom: data.uid}, function(err, uids) {
+				for(var i=0; i<uids.length; ++i) {
+					if (parseInt(uids[i], 10) !== socket.uid) {
+						websockets.in('uid_' + uids[i]).emit('event:new_post', result);
+					}
 				}
-			}
+			});
 		});
 
 		websockets.emitTopicPostStats();
