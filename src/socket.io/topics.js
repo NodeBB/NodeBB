@@ -47,12 +47,16 @@ SocketTopics.post = function(socket, data, callback) {
 				return;
 			}
 
-			for(var i=0; i<uids.length; ++i) {
-				if (parseInt(uids[i], 10) !== socket.uid) {
-					websockets.in('uid_' + uids[i]).emit('event:new_post', {posts: result.postData});
-					websockets.in('uid_' + uids[i]).emit('event:new_topic', result.topicData);
+			plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: data.uid, type: "newTopic"}, function(err, data) {
+				uids = data.uids;
+
+				for(var i=0; i<uids.length; ++i) {
+					if (parseInt(uids[i], 10) !== socket.uid) {
+						websockets.in('uid_' + uids[i]).emit('event:new_post', {posts: result.postData});
+						websockets.in('uid_' + uids[i]).emit('event:new_topic', result.topicData);
+					}
 				}
-			}
+			});
 		});
 
 		websockets.emitTopicPostStats();

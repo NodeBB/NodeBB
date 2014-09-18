@@ -52,7 +52,9 @@ SocketPosts.reply = function(socket, data, callback) {
 				return;
 			}
 
-			plugins.fireHook('filter:sockets.sendNewPostsToUids', {uidsTo: uids, uidFrom: data.uid}, function(err, uids) {
+			plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: data.uid, type: "newPost"}, function(err, data) {
+				uids = data.uids;
+				
 				for(var i=0; i<uids.length; ++i) {
 					if (parseInt(uids[i], 10) !== socket.uid) {
 						websockets.in('uid_' + uids[i]).emit('event:new_post', result);
