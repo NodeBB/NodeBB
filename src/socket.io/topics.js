@@ -48,7 +48,7 @@ SocketTopics.post = function(socket, data, callback) {
 			}
 
 			plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: data.uid, type: "newTopic"}, function(err, data) {
-				uids = data.uids;
+				uids = data.uidsTo;
 
 				for(var i=0; i<uids.length; ++i) {
 					if (parseInt(uids[i], 10) !== socket.uid) {
