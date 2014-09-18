@@ -60,8 +60,8 @@ middleware.incrementPageViews = function(req, res, next) {
 
 	db.increment('pageviews:monthly');
 	db.increment('pageviews:daily');
-	db.expireAt('pageviews:monthly', nextMonth.getTime());
-	db.expireAt('pageviews:daily', nextDay.getTime());
+	db.pexpireAt('pageviews:monthly', nextMonth.getTime());
+	db.pexpireAt('pageviews:daily', nextDay.getTime());
 
 	next();
 };
