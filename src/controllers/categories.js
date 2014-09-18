@@ -108,11 +108,11 @@ categoriesController.get = function(req, res, next) {
 		},
 		function(results, next) {
 			if (!results.exists || parseInt(results.disabled, 10) === 1) {
-				return notFound(req, res);
+				return categoriesController.notFound(req, res);
 			}
 
 			if (!results.privileges.read) {
-				return notAllowed(req, res);
+				return categoriesController.notAllowed(req, res);
 			}
 
 			var settings = results.userSettings;
@@ -215,11 +215,11 @@ categoriesController.get = function(req, res, next) {
 	});
 };
 
-function notFound(req, res) {
+categoriesController.notFound = function(req, res) {
 	res.locals.isAPI ? res.json(404, 'not-found') : res.redirect(nconf.get('relative_path') + '/404');
-}
+};
 
-function notAllowed(req, res) {
+categoriesController.notAllowed = function(req, res) {
 	var uid = req.user ? req.user.uid : 0;
 	if (uid) {
 		res.locals.isAPI ? res.json(403, 'not-allowed') : res.redirect(nconf.get('relative_path') + '/403');
@@ -231,6 +231,6 @@ function notAllowed(req, res) {
 			res.redirect(nconf.get('relative_path') + '/login');
 		}
 	}
-}
+};
 
 module.exports = categoriesController;

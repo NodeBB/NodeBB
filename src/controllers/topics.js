@@ -6,12 +6,13 @@ var topicsController = {},
 	validator = require('validator'),
 	nconf = require('nconf'),
 	qs = require('querystring'),
-	user = require('./../user'),
-	meta = require('./../meta'),
-	topics = require('./../topics'),
+	user = require('../user'),
+	meta = require('../meta'),
+	topics = require('../topics'),
 	posts = require('../posts'),
 	privileges = require('../privileges'),
-	utils = require('./../../public/src/utils');
+	categoriesController = require('./categories'),
+	utils = require('../../public/src/utils');
 
 topicsController.get = function(req, res, next) {
 	var tid = req.params.topic_id,
@@ -22,16 +23,10 @@ topicsController.get = function(req, res, next) {
 
 	async.waterfall([
 		function (next) {
-			privileges.topics.get(tid, uid, next);
-		},
-		function (privileges, next) {
-			if (!privileges.read || privileges.disabled) {
-				return next(new Error('[[error:no-privileges]]'));
-			}
-
-			userPrivileges = privileges;
-
 			async.parallel({
+				privileges: function(next) {
+					privileges.topics.get(tid, uid, next);
+				},
 				postCount: function(next) {
 					topics.getPostCount(tid, next);
 				},
@@ -41,6 +36,16 @@ topicsController.get = function(req, res, next) {
 			}, next);
 		},
 		function (results, next) {
+			userPrivileges = results.privileges;
+
+			if (userPrivileges.disabled) {
+				return categoriesController.notFound(req, res);
+			}
+
+			if (!userPrivileges.read) {
+				return categoriesController.notAllowed(req, res);
+			}
+
 			var settings = results.settings;
 			var postCount = parseInt(results.postCount, 10) + 1;
 			var set = 'tid:' + tid + ':posts',
@@ -82,16 +87,22 @@ topicsController.get = function(req, res, next) {
 				end = start + settings.postsPerPage - 1;
 
 			topics.getTopicWithPosts(tid, set, uid, start, end, reverse, function (err, topicData) {
-				if (topicData) {
-					if (topicData.deleted && !userPrivileges.view_deleted) {
-						return next(new Error('[[error:no-topic]]'));
-					}
-					topicData.currentPage = page;
-					if(page > 1) {
-						topicData.posts.splice(0, 1);
-					}
+				if (err && err.message === '[[error:no-topic]]' && !topicData) {
+					return categoriesController.notFound(req, res);
 				}
-				next(err, topicData);
+				if (err && !topicData) {
+					return next(err);
+				}
+				if (topicData.deleted && !userPrivileges.view_deleted) {
+					return categoriesController.notAllowed(req, res);
+				}
+
+				topicData.currentPage = page;
+				if(page > 1) {
+					topicData.posts.splice(0, 1);
+				}
+
+				next(null, topicData);
 			});
 		},
 		function (topicData, next) {
@@ -191,7 +202,7 @@ topicsController.get = function(req, res, next) {
 		}
 	], function (err, data) {
 		if (err) {
-			return res.locals.isAPI ? res.json(404, 'not-found') : res.redirect(nconf.get('relative_path') + '/404');
+			return next(err);
 		}
 
 		data.privileges = userPrivileges;
@@ -214,6 +225,7 @@ topicsController.get = function(req, res, next) {
 				active: x === parseInt(page, 10)
 			});
 		}
+
 		res.render('topic', data);
 	});
 };
