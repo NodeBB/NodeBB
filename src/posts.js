@@ -211,7 +211,8 @@ var async = require('async'),
 					}
 					userData.signature = results.signature;
 					userData.custom_profile_info = results.customProfileInfo.profile;
-					next(null, userData);
+
+					plugins.fireHook('filter:posts.modifyUserInfo', userData, next);
 				});
 			}, callback);
 		});
