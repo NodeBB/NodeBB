@@ -30,18 +30,21 @@ var async = require('async'),
 	};
 
 	Meta.reload = function(callback) {
-		plugins.reload(function() {
-			async.parallel([
-				async.apply(Meta.js.minify, false),
-				async.apply(Meta.css.minify),
-				async.apply(Meta.templates.compile)
-			], function(err) {
-				if (!err) {
-					emitter.emit('nodebb:ready');
-				}
+		async.series([
+			async.apply(plugins.reload),
+			function(next) {
+				async.parallel([
+					async.apply(Meta.js.minify, false),
+					async.apply(Meta.css.minify),
+					async.apply(Meta.templates.compile)
+				], next);
+			}
+		], function(err) {
+			if (!err) {
+				emitter.emit('nodebb:ready');
+			}
 
-				if (callback) callback.apply(null, arguments);
-			});
+			if (callback) callback.apply(null, arguments);
 		});
 	};
 
