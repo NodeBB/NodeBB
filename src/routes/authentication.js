@@ -61,6 +61,8 @@
 				}, function() {
 					if (userData.uid) {
 						user.logIP(userData.uid, req.ip);
+
+						plugins.fireHook('action:user.loggedIn', userData.uid);
 					}
 
 					if (!req.session.returnTo) {
