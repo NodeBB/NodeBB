@@ -89,7 +89,9 @@ SocketTopics.markAsRead = function(socket, tids, callback) {
 	if (!tids.length) {
 		return callback();
 	}
-
+	tids = tids.filter(function(tid) {
+		return tid && utils.isNumber(tid);
+	});
 	topics.markAsRead(tids, socket.uid, function(err) {
 		if (err) {
 			return callback(err);

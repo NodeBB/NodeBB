@@ -206,6 +206,9 @@ module.exports = function(Topics) {
 	};
 
 	Topics.markTopicNotificationsRead = function(tid, uid) {
+		if (!tid) {
+			return;
+		}
 		user.notifications.getUnreadByField(uid, 'tid', tid, function(err, nids) {
 			if (err) {
 				return winston.error(err.stack);
