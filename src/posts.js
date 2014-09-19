@@ -11,7 +11,7 @@ var async = require('async'),
 
 
 	db = require('./database'),
-	utils = require('./../public/src/utils'),
+	utils = require('../public/src/utils'),
 	user = require('./user'),
 	groups = require('./groups'),
 	topics = require('./topics'),
@@ -70,17 +70,24 @@ var async = require('async'),
 				db.setObject('post:' + postData.pid, postData, next);
 			},
 			function(next) {
-				db.sortedSetAdd('posts:pid', timestamp, postData.pid);
-
-				db.incrObjectField('global', 'postCount');
-
 				emitter.emit('event:newpost', postData);
-
-				plugins.fireHook('filter:post.get', postData, next);
+				async.parallel([
+					function(next) {
+						db.sortedSetAdd('posts:pid', timestamp, postData.pid, next);
+					},
+					function(next) {
+						db.incrObjectField('global', 'postCount', next);
+					}
+				], function(err) {
+					if (err) {
+						return next(err);
+					}
+					plugins.fireHook('filter:post.get', postData, next);
+				});
 			},
 			function(postData, next) {
 				postTools.parse(postData.content, function(err, content) {
-					if(err) {
+					if (err) {
 						return next(err);
 					}
 
@@ -430,7 +437,7 @@ var async = require('async'),
 
 				var cids = posts.map(function(post) {
 					return map[post.tid];
-				})
+				});
 
 				callback(null, cids);
 			});

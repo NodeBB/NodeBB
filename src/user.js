@@ -318,12 +318,12 @@ var
 		});
 	};
 
-	User.addPostIdToUser = function(uid, pid, timestamp) {
-		db.sortedSetAdd('uid:' + uid + ':posts', timestamp, pid);
+	User.addPostIdToUser = function(uid, pid, timestamp, callback) {
+		db.sortedSetAdd('uid:' + uid + ':posts', timestamp, pid, callback);
 	};
 
-	User.addTopicIdToUser = function(uid, tid, timestamp) {
-		db.sortedSetAdd('uid:' + uid + ':topics', timestamp, tid);
+	User.addTopicIdToUser = function(uid, tid, timestamp, callback) {
+		db.sortedSetAdd('uid:' + uid + ':topics', timestamp, tid, callback);
 	};
 
 	User.getPostIds = function(uid, start, stop, callback) {

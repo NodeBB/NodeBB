@@ -54,7 +54,7 @@ SocketPosts.reply = function(socket, data, callback) {
 
 			plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: data.uid, type: "newPost"}, function(err, data) {
 				uids = data.uidsTo;
-				
+
 				for(var i=0; i<uids.length; ++i) {
 					if (parseInt(uids[i], 10) !== socket.uid) {
 						websockets.in('uid_' + uids[i]).emit('event:new_post', result);
