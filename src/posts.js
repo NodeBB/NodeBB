@@ -70,8 +70,16 @@ var async = require('async'),
 				db.setObject('post:' + postData.pid, postData, next);
 			},
 			function(next) {
-				emitter.emit('event:newpost', postData);
 				async.parallel([
+					function(next) {
+						user.onNewPostMade(postData, next);
+					},
+					function(next) {
+						topics.onNewPostMade(postData, next);
+					},
+					function(next) {
+						categories.onNewPostMade(postData, next);
+					},
 					function(next) {
 						db.sortedSetAdd('posts:pid', timestamp, postData.pid, next);
 					},

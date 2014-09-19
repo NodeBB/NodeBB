@@ -9,7 +9,6 @@ var db = require('./database'),
 	topics = require('./topics'),
 	plugins = require('./plugins'),
 	meta = require('./meta'),
-	emitter = require('./emitter'),
 	validator = require('validator'),
 	privileges = require('./privileges'),
 
@@ -418,27 +417,35 @@ var db = require('./database'),
 		], callback);
 	};
 
-	Categories.onNewPostMade = function(postData) {
+	Categories.onNewPostMade = function(postData, callback) {
 		topics.getTopicFields(postData.tid, ['cid', 'pinned'], function(err, topicData) {
 			if (err) {
-				return winston.error(err.message);
+				return callback(err);
 			}
 
 			if (!topicData) {
-				return;
+				return callback();
 			}
 
 			var cid = topicData.cid;
 
-			db.sortedSetAdd('categories:recent_posts:cid:' + cid, postData.timestamp, postData.pid);
-			db.incrObjectField('category:' + cid, 'post_count');
-
-			if(parseInt(topicData.pinned, 10) === 0) {
-				db.sortedSetAdd('categories:' + cid + ':tid', postData.timestamp, postData.tid);
-			}
+			async.parallel([
+				function(next) {
+					db.sortedSetAdd('categories:recent_posts:cid:' + cid, postData.timestamp, postData.pid, next);
+				},
+				function(next) {
+					db.incrObjectField('category:' + cid, 'post_count', next);
+				},
+				function(next) {
+					if(parseInt(topicData.pinned, 10) === 0) {
+						db.sortedSetAdd('categories:' + cid + ':tid', postData.timestamp, postData.tid, next);
+					} else {
+						next();
+					}
+				}
+			], callback);
 		});
 	};
 
-	emitter.on('event:newpost', Categories.onNewPostMade);
 
 }(exports));

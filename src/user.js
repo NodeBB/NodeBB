@@ -1,7 +1,6 @@
 'use strict';
 
-var
-	async = require('async'),
+var	async = require('async'),
 	nconf = require('nconf'),
 	gravatar = require('gravatar'),
 
@@ -9,7 +8,6 @@ var
 	db = require('./database'),
 	meta = require('./meta'),
 	groups = require('./groups'),
-	emitter = require('./emitter'),
 	Password = require('./password');
 
 (function(User) {
@@ -298,15 +296,19 @@ var
 		Password.hash(nconf.get('bcrypt_rounds'), password, callback);
 	};
 
-	User.onNewPostMade = function(postData) {
-		User.addPostIdToUser(postData.uid, postData.pid, postData.timestamp);
-
-		User.incrementUserPostCountBy(postData.uid, 1);
-
-		User.setUserField(postData.uid, 'lastposttime', postData.timestamp);
+	User.onNewPostMade = function(postData, callback) {
+		async.parallel([
+			function(next) {
+				User.addPostIdToUser(postData.uid, postData.pid, postData.timestamp, next);
+			},
+			function(next) {
+				User.incrementUserPostCountBy(postData.uid, 1, next);
+			},
+			function(next) {
+				User.setUserField(postData.uid, 'lastposttime', postData.timestamp, next);
+			}
+		], callback);
 	};
-
-	emitter.on('event:newpost', User.onNewPostMade);
 
 	User.incrementUserPostCountBy = function(uid, value, callback) {
 		callback = callback || function() {};

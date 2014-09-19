@@ -7,20 +7,26 @@ var async = require('async'),
 
 	db = require('../database'),
 	user = require('../user'),
-	emitter = require('../emitter'),
 	favourites = require('../favourites'),
 	posts = require('../posts'),
 	privileges = require('../privileges');
 
 module.exports = function(Topics) {
 
-	Topics.onNewPostMade = function(postData) {
-		Topics.increasePostCount(postData.tid);
-		Topics.updateTimestamp(postData.tid, postData.timestamp);
-		Topics.addPostToTopic(postData.tid, postData.pid, postData.timestamp, 0);
+	Topics.onNewPostMade = function(postData, callback) {
+		async.parallel([
+			function(next) {
+				Topics.increasePostCount(postData.tid, next);
+			},
+			function(next) {
+				Topics.updateTimestamp(postData.tid, postData.timestamp, next);
+			},
+			function(next) {
+				Topics.addPostToTopic(postData.tid, postData.pid, postData.timestamp, 0, next);
+			}
+		], callback);
 	};
 
-	emitter.on('event:newpost', Topics.onNewPostMade);
 
 	Topics.getTopicPosts = function(tid, set, start, end, uid, reverse, callback) {
 		callback = callback || function() {};

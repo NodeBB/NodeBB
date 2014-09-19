@@ -211,7 +211,7 @@ var winston = require('winston'),
 				}
 
 				if (timestamp) {
-					topics.updateTimestamp(tid, timestamp);
+					return topics.updateTimestamp(tid, timestamp, callback);
 				}
 				callback();
 			});

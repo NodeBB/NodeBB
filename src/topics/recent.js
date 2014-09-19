@@ -2,7 +2,10 @@
 
 'use strict';
 
-var db = require('./../database');
+var async = require('async'),
+	db = require('../database');
+
+
 
 module.exports = function(Topics) {
 	var terms = {
@@ -33,9 +36,15 @@ module.exports = function(Topics) {
 		db.getSortedSetRevRangeByScore('topics:recent', start, count, Infinity, Date.now() - since, callback);
 	};
 
-	Topics.updateTimestamp = function(tid, timestamp) {
-		Topics.updateRecent(tid, timestamp);
-		Topics.setTopicField(tid, 'lastposttime', timestamp);
+	Topics.updateTimestamp = function(tid, timestamp, callback) {
+		async.parallel([
+			function(next) {
+				Topics.updateRecent(tid, timestamp, next);
+			},
+			function(next) {
+				Topics.setTopicField(tid, 'lastposttime', timestamp, next);
+			}
+		], callback);
 	};
 
 	Topics.updateRecent = function(tid, timestamp, callback) {
