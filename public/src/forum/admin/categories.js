@@ -89,14 +89,8 @@ define('forum/admin/categories', ['uploader', 'forum/admin/iconSelect'], functio
 					timeout: 2000
 				});
 
-				ajaxify.loadTemplate('admin/categories', function(adminCategories) {
-					var html = $(templates.parse(templates.getBlock(adminCategories, 'categories'), {categories: [data]}));
-
-					html.find('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
-
-					$('#entry-container').append(html);
-					$('#new-category-modal').modal('hide');
-				});
+				$('#new-category-modal').modal('hide');
+				ajaxify.refresh();
 			});
 		}
 
