@@ -22,7 +22,8 @@ define('composer/resize', function() {
 		}
 
 		if (env === 'sm' || env === 'xs') {
-			postContainer.css('height', $(window).height() - $('#header-menu').height());
+			app.toggleNavbar(false);
+			postContainer.css('height', $(window).height());
 		}
 
 		if (config.hasImageUploadPlugin) {

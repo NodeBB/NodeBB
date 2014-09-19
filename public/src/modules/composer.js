@@ -460,6 +460,7 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 			$('body').css({'margin-bottom': 0});
 			$('.action-bar button').removeAttr('disabled');
 
+			app.toggleNavbar(true);
 			socket.emit('modules.composer.unregister', post_uuid);
 		}
 	}

@@ -375,6 +375,13 @@ var socket,
 		});
 	};
 
+	app.toggleNavbar = function(state) {
+		var navbarEl = $('.navbar');
+		if (navbarEl) {
+			navbarEl.toggleClass('hidden', !!!state);
+		}
+	};
+
 	function exposeConfigToTemplates() {
 		$(document).ready(function() {
 			templates.setGlobal('relative_path', RELATIVE_PATH);
