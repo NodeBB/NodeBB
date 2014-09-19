@@ -76,7 +76,7 @@ Controllers.home = function(req, res, next) {
 						childCategories.push.apply(childCategories, categoryData[i].children);
 					}
 
-					if (categoryData[i].parent) {
+					if (categoryData[i].parent && categoryData[i].parent.cid) {
 						categoryData.splice(i, 1);
 					}
 				}

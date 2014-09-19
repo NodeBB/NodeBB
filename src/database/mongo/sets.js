@@ -33,6 +33,11 @@ module.exports = function(db, module) {
 
 	module.setsAdd = function(keys, value, callback) {
 		callback = callback || helpers.noop;
+
+		if (!Array.isArray(keys) || !keys.length) {
+			return callback();
+		}
+
 		if(!Array.isArray(value)) {
 			value = [value];
 		}
