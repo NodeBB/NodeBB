@@ -307,7 +307,7 @@ var db = require('./database'),
 				category.name = validator.escape(category.name);
 				category.description = validator.escape(category.description);
 				category.backgroundImage = category.image ? nconf.get('relative_path') + category.image : '';
-				category.disabled = category.disabled ? parseInt(category.disabled, 10) !== 0 : false;
+				category.disabled = parseInt(category.disabled, 10) === 1;
 
 				next(null, category);
 			}, callback);
@@ -423,7 +423,7 @@ var db = require('./database'),
 				return callback(err);
 			}
 
-			if (!topicData) {
+			if (!topicData || !topicData.cid) {
 				return callback();
 			}
 
