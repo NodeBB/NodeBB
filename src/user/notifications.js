@@ -229,9 +229,9 @@ var async = require('async'),
 				if (err) {
 					return callback(err);
 				}
-
+				value = value ? value.toString() : '';
 				nids = notifications.filter(function(notification) {
-					return notification && notification[field] !== value.toString();
+					return notification && notification[field] !== value;
 				}).map(function(notification) {
 					return notification.nid;
 				});
