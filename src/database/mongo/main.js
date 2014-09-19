@@ -56,6 +56,10 @@ module.exports = function(db, module) {
 			}
 
 			stats.avgObjSize = (stats.avgObjSize / 1024).toFixed(2);
+			stats.dataSize = (stats.dataSize / 1024).toFixed(2);
+			stats.storageSize = (stats.storageSize / 1024).toFixed(2);
+			stats.fileSize = (stats.fileSize / 1024).toFixed(2);
+			stats.indexSize = (stats.indexSize / 1024).toFixed(2);
 			stats.raw = JSON.stringify(stats, null, 4);
 			stats.mongo = true;
 
