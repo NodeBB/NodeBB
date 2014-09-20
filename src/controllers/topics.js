@@ -217,13 +217,15 @@ topicsController.get = function(req, res, next) {
 			topic_url += '?' + queryString;
 		}
 
-		// Paginator for noscript
-		data.pages = [];
-		for(var x=1; x<=data.pageCount; x++) {
-			data.pages.push({
-				page: x,
-				active: x === parseInt(page, 10)
-			});
+		if (!res.locals.isAPI) {
+			// Paginator for noscript
+			data.pages = [];
+			for(var x=1; x<=data.pageCount; x++) {
+				data.pages.push({
+					page: x,
+					active: x === parseInt(page, 10)
+				});
+			}
 		}
 
 		res.render('topic', data);

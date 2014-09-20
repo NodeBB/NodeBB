@@ -202,13 +202,15 @@ categoriesController.get = function(req, res, next) {
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 		data.csrf = req.csrfToken();
 
-		// Paginator for noscript
-		data.pages = [];
-		for(var x=1;x<=data.pageCount;x++) {
-			data.pages.push({
-				page: x,
-				active: x === parseInt(page, 10)
-			});
+		if (!res.locals.isAPI) {
+			// Paginator for noscript
+			data.pages = [];
+			for(var x=1;x<=data.pageCount;x++) {
+				data.pages.push({
+					page: x,
+					active: x === parseInt(page, 10)
+				});
+			}
 		}
 
 		res.render('category', data);
