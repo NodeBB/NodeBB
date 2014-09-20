@@ -36,6 +36,19 @@ topicsController.get = function(req, res, next) {
 			}, next);
 		},
 		function (results, next) {
+
+			var postCount = parseInt(results.postCount, 10) + 1;
+			if (utils.isNumber(req.params.post_index)) {
+				var url = '';
+				if (req.params.post_index > postCount) {
+					url = '/topic/' + req.params.topic_id + '/' + req.params.slug + '/' + postCount;
+					return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
+				} else if (req.params.post_index < 1) {
+					url = '/topic/' + req.params.topic_id + '/' + req.params.slug;
+					return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
+				}
+			}
+
 			userPrivileges = results.privileges;
 
 			if (userPrivileges.disabled) {
@@ -47,7 +60,6 @@ topicsController.get = function(req, res, next) {
 			}
 
 			var settings = results.settings;
-			var postCount = parseInt(results.postCount, 10) + 1;
 			var set = 'tid:' + tid + ':posts',
 				reverse = false;
 

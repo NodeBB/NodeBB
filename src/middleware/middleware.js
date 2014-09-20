@@ -125,25 +125,6 @@ middleware.addSlug = function(req, res, next) {
 	next();
 };
 
-middleware.checkPostIndex = function(req, res, next) {
-	topics.getPostCount(req.params.topic_id, function(err, postCount) {
-		if (err) {
-			return next(err);
-		}
-		var postIndex = parseInt(req.params.post_index, 10);
-		postCount = parseInt(postCount, 10) + 1;
-		var url = '';
-		if (postIndex > postCount) {
-			url = '/topic/' + req.params.topic_id + '/' + req.params.slug + '/' + postCount;
-			return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
-		} else if (postIndex < 1) {
-			url = '/topic/' + req.params.topic_id + '/' + req.params.slug;
-			return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
-		}
-		next();
-	});
-};
-
 middleware.checkTopicIndex = function(req, res, next) {
 	db.sortedSetCard('categories:' + req.params.category_id + ':tid', function(err, topicCount) {
 		if (err) {

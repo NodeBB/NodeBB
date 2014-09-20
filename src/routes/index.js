@@ -54,8 +54,8 @@ function staticRoutes(app, middleware, controllers) {
 function topicRoutes(app, middleware, controllers) {
 	app.get('/api/topic/teaser/:topic_id', controllers.topics.teaser);
 
-	app.get('/topic/:topic_id/:slug/:post_index?', middleware.applyCSRF, middleware.buildHeader, middleware.checkPostIndex, controllers.topics.get);
-	app.get('/api/topic/:topic_id/:slug/:post_index?', middleware.applyCSRF, middleware.checkPostIndex, controllers.topics.get);
+	app.get('/topic/:topic_id/:slug/:post_index?', middleware.applyCSRF, middleware.buildHeader, controllers.topics.get);
+	app.get('/api/topic/:topic_id/:slug/:post_index?', middleware.applyCSRF, controllers.topics.get);
 
 	app.get('/topic/:topic_id/:slug?', middleware.applyCSRF, middleware.buildHeader, middleware.addSlug, controllers.topics.get);
 	app.get('/api/topic/:topic_id/:slug?', middleware.applyCSRF, middleware.addSlug, controllers.topics.get);
