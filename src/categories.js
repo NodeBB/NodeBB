@@ -45,7 +45,7 @@ var db = require('./database'),
 				disabled: 0,
 				order: data.order,
 				link: '',
-				numRecentReplies: 2,
+				numRecentReplies: 1,
 				class: 'col-md-3 col-xs-6',
 				imageClass: 'auto'
 			};
