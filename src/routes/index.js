@@ -199,7 +199,7 @@ module.exports = function(app, middleware) {
 	app.use(relativePath, pluginRouter);
 	app.use(relativePath, pageRouter);
 	app.use(relativePath, authRouter);
-	
+
 	if (process.env.NODE_ENV === 'development') {
 		require('./debug')(app, middleware, controllers);
 	}

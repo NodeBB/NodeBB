@@ -176,7 +176,7 @@ var async = require('async'),
 				return array.map(function(topic) {
 					return topic && topic[field];
 				}).filter(function(value, index, array) {
-					return value && array.indexOf(value) === index;
+					return utils.isNumber(value) && array.indexOf(value) === index;
 				});
 			}
 
