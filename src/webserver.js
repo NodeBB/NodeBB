@@ -37,7 +37,6 @@ if(nconf.get('ssl')) {
 	var	port = nconf.get('PORT') || nconf.get('port');
 
 	logger.init(app);
-	auth.registerApp(app);
 	emailer.registerApp(app);
 
 	if (cluster.isWorker && process.env.handle_jobs === 'true') {
@@ -64,6 +63,7 @@ if(nconf.get('ssl')) {
 		middleware = middleware(app, data);
 		routes(app, middleware);
 		plugins.prepareApp(app, middleware);
+		auth.registerApp(app, middleware);
 
 		if (err) {
 			winston.error('Errors were encountered while attempting to initialise NodeBB.');

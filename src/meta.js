@@ -5,7 +5,8 @@ var async = require('async'),
 	user = require('./user'),
 	groups = require('./groups'),
 	plugins = require('./plugins'),
-	emitter = require('./emitter');
+	emitter = require('./emitter'),
+	auth = require('./routes/authentication');
 
 (function (Meta) {
 	Meta.restartRequired = false;
@@ -36,7 +37,8 @@ var async = require('async'),
 				async.parallel([
 					async.apply(Meta.js.minify, false),
 					async.apply(Meta.css.minify),
-					async.apply(Meta.templates.compile)
+					async.apply(Meta.templates.compile),
+					async.apply(auth.reloadRoutes)
 				], next);
 			}
 		], function(err) {

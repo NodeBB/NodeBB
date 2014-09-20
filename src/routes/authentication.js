@@ -7,14 +7,17 @@
 		Password = require('../password'),
 		winston = require('winston'),
 		async = require('async'),
+		express = require('express'),
 
 		meta = require('../meta'),
 		user = require('../user'),
 		plugins = require('../plugins'),
 		db = require('../database'),
+		hotswap = require('../hotswap'),
 		utils = require('../../public/src/utils'),
 
-		login_strategies = [];
+		login_strategies = [],
+		controllers = require('../controllers');
 
 	function logout(req, res) {
 		if (req.user && parseInt(req.user.uid, 10) > 0) {
@@ -140,17 +143,21 @@
 		app.use(passport.session());
 	};
 
-
 	Auth.get_login_strategies = function() {
 		return login_strategies;
 	};
 
-	Auth.registerApp = function(app) {
+	Auth.registerApp = function(app, middleware) {
 		Auth.app = app;
+		Auth.middleware = middleware;
 	};
 
-	Auth.createRoutes = function(app, middleware, controllers) {
+	Auth.reloadRoutes = function(callback) {
+		var router = express.Router();
+			router.hotswapId = 'auth';
+
 		plugins.ready(function() {
+			console.log('reloading auth routes!');
 			plugins.fireHook('filter:auth.init', login_strategies, function(err) {
 				if (err) {
 					winston.error('filter:auth.init - plugin failure');
@@ -173,12 +180,12 @@
 						/* End backwards compatibility block */
 
 						if (strategy.url) {
-							app.get(strategy.url, passport.authenticate(strategy.name, {
+							router.get(strategy.url, passport.authenticate(strategy.name, {
 								scope: strategy.scope
 							}));
 						}
 
-						app.get(strategy.callbackURL, passport.authenticate(strategy.name, {
+						router.get(strategy.callbackURL, passport.authenticate(strategy.name, {
 							successReturnToOrRedirect: nconf.get('relative_path') + '/',
 							failureRedirect: nconf.get('relative_path') + '/login'
 						}));
@@ -198,9 +205,15 @@
 				}
 				/* End backwards compatibility block */
 
-				app.post('/logout', logout);
-				app.post('/register', middleware.applyCSRF, register);
-				app.post('/login', middleware.applyCSRF, login);
+				router.post('/logout', logout);
+				router.post('/register', Auth.middleware.applyCSRF, register);
+				router.post('/login', Auth.middleware.applyCSRF, login);
+
+				hotswap.replace('auth', router);
+				console.log('now I\m here,', typeof callback);
+				if (typeof callback === 'function') {
+					callback();
+				}
 			});
 		});
 	};

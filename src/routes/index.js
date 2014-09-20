@@ -154,12 +154,16 @@ module.exports = function(app, middleware) {
 	var router = express.Router(),
 		pageRouter = express.Router(),
 		pluginRouter = express.Router(),
+		authRouter = express.Router(),
 		relativePath = nconf.get('relative_path');
 
 	pluginRouter.render = function() {
 		app.render.apply(app, arguments);
 	};
+
+	// Set-up for hotswapping (when NodeBB reloads)
 	pluginRouter.hotswapId = 'plugins';
+	authRouter.hotswapId = 'auth';
 
 	app.all(relativePath + '/api/?*', middleware.prepareAPI);
 	app.all(relativePath + '/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
@@ -170,7 +174,6 @@ module.exports = function(app, middleware) {
 	apiRoutes(router, middleware, controllers);
 	feedRoutes(router, middleware, controllers);
 	pluginRoutes(router, middleware, controllers);
-	authRoutes.createRoutes(router, middleware, controllers);
 
 	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
@@ -195,6 +198,7 @@ module.exports = function(app, middleware) {
 	app.use(relativePath, router);
 	app.use(relativePath, pluginRouter);
 	app.use(relativePath, pageRouter);
+	app.use(relativePath, authRouter);
 	
 	if (process.env.NODE_ENV === 'development') {
 		require('./debug')(app, middleware, controllers);
@@ -204,6 +208,7 @@ module.exports = function(app, middleware) {
 
 	// Add plugin routes
 	plugins.reloadRoutes();
+	authRoutes.reloadRoutes();
 };
 
 function handleErrors(err, req, res, next) {
