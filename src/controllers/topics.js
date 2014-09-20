@@ -109,6 +109,8 @@ topicsController.get = function(req, res, next) {
 					return categoriesController.notAllowed(req, res);
 				}
 
+				topicData.pageCount = Math.ceil(parseInt(postCount, 10) / settings.postsPerPage);
+
 				topicData.currentPage = page;
 				if(page > 1) {
 					topicData.posts.splice(0, 1);

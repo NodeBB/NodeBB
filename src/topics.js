@@ -26,8 +26,13 @@ var async = require('async'),
 	require('./topics/tags')(Topics);
 
 	Topics.getTopicData = function(tid, callback) {
-		Topics.getTopicsData([tid], function(err, topics) {
-			callback(err, Array.isArray(topics) && topics.length ? topics[0] : null);
+		db.getObject('topic:' + tid, function(err, topic) {
+			if (err || !topic) {
+				return callback(err);
+			}
+			topic.title = validator.escape(topic.title);
+			topic.relativeTime = utils.toISOString(topic.timestamp);
+			callback(null, topic);
 		});
 	};
 
@@ -274,9 +279,6 @@ var async = require('async'),
 				category: function(next) {
 					Topics.getCategoryData(tid, next);
 				},
-				pageCount: function(next) {
-					Topics.getPageCount(tid, uid, next);
-				},
 				threadTools: function(next) {
 					plugins.fireHook('filter:topic.thread_tools', [], next);
 				},
@@ -470,7 +472,7 @@ var async = require('async'),
 
 	Topics.isOwner = function(tid, uid, callback) {
 		uid = parseInt(uid, 10);
-		if (uid === 0) {
+		if (!uid) {
 			return callback(null, false);
 		}
 		Topics.getTopicField(tid, 'uid', function(err, author) {
