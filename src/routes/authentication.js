@@ -157,7 +157,6 @@
 			router.hotswapId = 'auth';
 
 		plugins.ready(function() {
-			console.log('reloading auth routes!');
 			plugins.fireHook('filter:auth.init', login_strategies, function(err) {
 				if (err) {
 					winston.error('filter:auth.init - plugin failure');
@@ -210,7 +209,6 @@
 				router.post('/login', Auth.middleware.applyCSRF, login);
 
 				hotswap.replace('auth', router);
-				console.log('now I\m here,', typeof callback);
 				if (typeof callback === 'function') {
 					callback();
 				}
