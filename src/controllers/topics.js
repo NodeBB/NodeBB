@@ -192,7 +192,7 @@ topicsController.get = function(req, res, next) {
 				},
 				{
 					property: 'article:section',
-					content: topicData.category.name
+					content: topicData.category ? topicData.category.name : ''
 				}
 			];
 
