@@ -9,52 +9,75 @@ var async = require('async'),
 
 
 (function(Widgets) {
+
 	Widgets.render = function(uid, area, callback) {
-		if (!area.location || !area.template) {
+		if (!area.locations || !area.template) {
 			callback({
 				error: 'Missing location and template data'
 			});
 		}
 
-		var rendered = [];
+		Widgets.getAreas(['global', area.template], area.locations, function(err, data) {
 
-		async.parallel({
-			global: function(next) {
-				Widgets.getArea('global', area.location, next);
-			},
-			local: function(next) {
-				Widgets.getArea(area.template, area.location, next);
-			}
-		}, function(err, data) {
-			var widgets = data.global.concat(data.local);
+			var widgetsByLocation = {};
 
-			async.eachSeries(widgets, function(widget, next) {
+			async.map(area.locations, function(location, done) {
+				widgetsByLocation[location] = data.global[location].concat(data[area.template][location]);
 
-				if (!widget || !widget.data || (!!widget.data['registered-only'] && uid === 0)) {
-					return next();
+				if (!widgetsByLocation[location].length) {
+					return done(null, {location: location, widgets: []});
 				}
 
-				plugins.fireHook('filter:widget.render:' + widget.widget, {
-					uid: uid,
-					area: area,
-					data: widget.data
-				}, function(err, html){
-					if (widget.data.container && widget.data.container.match('{body}')) {
-						html = templates.parse(widget.data.container, {
-							title: widget.data.title,
-							body: html
-						});
+				async.map(widgetsByLocation[location], function(widget, next) {
+
+					if (!widget || !widget.data || (!!widget.data['registered-only'] && uid === 0)) {
+						return next();
 					}
 
-					rendered.push({
-						html: html
-					});
+					plugins.fireHook('filter:widget.render:' + widget.widget, {
+						uid: uid,
+						area: area,
+						data: widget.data
+					}, function(err, html) {
+						if (widget.data.container && widget.data.container.match('{body}')) {
+							html = templates.parse(widget.data.container, {
+								title: widget.data.title,
+								body: html
+							});
+						}
 
-					next(err);
+						next(err, {html: html});
+					});
+				}, function(err, widgets) {
+					done(err, {location: location, widgets: widgets.filter(Boolean)});
 				});
-			}, function(err) {
-				callback(err, rendered);
+			}, callback);
+		});
+	};
+
+	Widgets.getAreas = function(templates, locations, callback) {
+		var keys = templates.map(function(tpl) {
+			return 'widgets:' + tpl;
+		});
+		db.getObjectsFields(keys, locations, function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			var returnData = {};
+
+			templates.forEach(function(template, index) {
+				returnData[template] = returnData[template] || {};
+				locations.forEach(function(location) {
+					if (data && data[index] && data[index][location]) {
+						returnData[template][location] = JSON.parse(data[index][location]);
+					} else {
+						returnData[template][location] = [];
+					}
+				});
 			});
+
+			callback(null, returnData);
 		});
 	};
 

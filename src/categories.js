@@ -238,6 +238,9 @@ var db = require('./database'),
 
 	Categories.getModerators = function(cid, callback) {
 		Groups.get('cid:' + cid + ':privileges:mods', {}, function(err, groupObj) {
+			if (err && err === 'group-not-found') {
+				return callback(null, []);
+			}
 			if (err) {
 				return callback(err);
 			}

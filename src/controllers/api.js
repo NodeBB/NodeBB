@@ -98,21 +98,15 @@ apiController.renderWidgets = function(req, res, next) {
 		return res.json(200, {});
 	}
 
-	async.each(areas.locations, function(location, next) {
-		widgets.render(uid, {
-			template: areas.template,
-			url: areas.url,
-			location: location
-		}, function(err, widgets) {
-			renderedWidgets.push({
-				location: location,
-				widgets: widgets
-			});
-
-			next();
-		});
-	}, function(err) {
-		res.json(200, renderedWidgets);
+	widgets.render(uid, {
+		template: areas.template,
+		url: areas.url,
+		locations: areas.locations
+	}, function(err, widgets) {
+		if (err) {
+			return next(err);
+		}
+		res.json(200, widgets);
 	});
 };
 
