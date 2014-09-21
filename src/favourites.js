@@ -111,11 +111,14 @@ var async = require('async'),
 		}
 
 		toggleVote('upvote', pid, uid, function(err, votes) {
-			if (err) return callback(err);
+			if (err) {
+				return callback(err);
+			}
 			plugins.fireHook('action:post.upvote', {
 				pid: pid,
 				uid: uid
 			});
+
 			callback(null, votes);
 		});
 	};
@@ -139,7 +142,9 @@ var async = require('async'),
 			}
 
 			toggleVote('downvote', pid, uid, function(err, votes) {
-				if (err) return callback(err);
+				if (err) {
+					return callback(err);
+				}
 				plugins.fireHook('action:post.downvote', {
 					pid: pid,
 					uid: uid
@@ -174,14 +179,13 @@ var async = require('async'),
 	};
 
 	Favourites.hasVoted = function(pid, uid, callback) {
-		async.parallel({
-			upvoted: function(next) {
-				db.isSetMember('pid:' + pid + ':upvote', uid, next);
-			},
-			downvoted: function(next) {
-				db.isSetMember('pid:' + pid + ':downvote', uid, next);
+		db.isMemberOfSets(['pid:' + pid + ':upvote', 'pid:' + pid + ':downvote'], uid, function(err, hasVoted) {
+			if (err) {
+				return callback(err);
 			}
-		}, callback);
+
+			callback (null, {upvoted: hasVoted[0], downvoted: hasVoted[1]});
+		});
 	};
 
 	Favourites.getVoteStatusByPostIDs = function(pids, uid, callback) {
