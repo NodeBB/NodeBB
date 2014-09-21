@@ -129,7 +129,7 @@ module.exports = function(app, data) {
 
 	app.use(middleware.processRender);
 
-	auth.initialize(app);
+	auth.initialize(app, middleware);
 
 	routeCurrentTheme(app, data.currentThemeId, data.themesData);
 	routeThemeScreenshots(app, data.themesData);

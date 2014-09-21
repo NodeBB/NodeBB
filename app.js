@@ -137,7 +137,6 @@ function start() {
 			upgrade.check(function(schema_ok) {
 				if (schema_ok || nconf.get('check-schema') === false) {
 					sockets.init(webserver.server);
-					plugins.init();
 
 					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
 

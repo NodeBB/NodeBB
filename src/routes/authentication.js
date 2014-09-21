@@ -138,18 +138,16 @@
 		});
 	}
 
-	Auth.initialize = function(app) {
+	Auth.initialize = function(app, middleware) {
 		app.use(passport.initialize());
 		app.use(passport.session());
+
+		Auth.app = app;
+		Auth.middleware = middleware;
 	};
 
 	Auth.get_login_strategies = function() {
 		return login_strategies;
-	};
-
-	Auth.registerApp = function(app, middleware) {
-		Auth.app = app;
-		Auth.middleware = middleware;
 	};
 
 	Auth.reloadRoutes = function(callback) {
@@ -157,6 +155,9 @@
 			router.hotswapId = 'auth';
 
 		plugins.ready(function() {
+			// Reset the registered login strategies
+			login_strategies.length = 0;
+
 			plugins.fireHook('filter:auth.init', login_strategies, function(err) {
 				if (err) {
 					winston.error('filter:auth.init - plugin failure');

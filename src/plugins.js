@@ -31,10 +31,14 @@ var fs = require('fs'),
 
 	Plugins.initialized = false;
 
-	Plugins.init = function() {
+	Plugins.init = function(nbbApp, nbbMiddleware) {
 		if (Plugins.initialized) {
 			return;
 		}
+
+		app = nbbApp;
+		middleware = nbbMiddleware;
+		hotswap.prepare(nbbApp);
 
 		if (global.env === 'development') {
 			winston.info('[plugins] Initializing plugins system');
@@ -60,12 +64,6 @@ var fs = require('fs'),
 			hook: 'static:app.load',
 			method: addLanguages
 		});
-	};
-
-	Plugins.prepareApp = function(nbbApp, nbbMiddleware) {
-		app = nbbApp;
-		middleware = nbbMiddleware;
-		hotswap.prepare(nbbApp);
 	};
 
 	Plugins.ready = function(callback) {
@@ -124,24 +122,20 @@ var fs = require('fs'),
 	};
 
 	Plugins.reloadRoutes = function(callback) {
-		if (!app || !middleware || !controllers) {
-			return;
-		} else {
-			var router = express.Router();
-			router.hotswapId = 'plugins';
-			router.render = function() {
-				app.render.apply(app, arguments);
-			};
+		var router = express.Router();
+		router.hotswapId = 'plugins';
+		router.render = function() {
+			app.render.apply(app, arguments);
+		};
 
-			// Deprecated as of v0.5.0, remove this hook call for NodeBB v0.6.0-1
-			Plugins.fireHook('action:app.load', router, middleware, controllers);
+		// Deprecated as of v0.5.0, remove this hook call for NodeBB v0.6.0-1
+		Plugins.fireHook('action:app.load', router, middleware, controllers);
 
-			Plugins.fireHook('static:app.load', router, middleware, controllers, function() {
-				hotswap.replace('plugins', router);
-				winston.info('[plugins] All plugins reloaded and rerouted');
-				callback();
-			});
-		}
+		Plugins.fireHook('static:app.load', router, middleware, controllers, function() {
+			hotswap.replace('plugins', router);
+			winston.info('[plugins] All plugins reloaded and rerouted');
+			callback();
+		});
 	};
 
 	Plugins.loadPlugin = function(pluginPath, callback) {

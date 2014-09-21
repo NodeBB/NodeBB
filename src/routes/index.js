@@ -207,7 +207,7 @@ module.exports = function(app, middleware) {
 	app.use(handleErrors);
 
 	// Add plugin routes
-	plugins.reloadRoutes();
+	plugins.init(app, middleware);
 	authRoutes.reloadRoutes();
 };
 
