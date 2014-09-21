@@ -42,9 +42,7 @@ helpers.isUserAllowedTo = function(privilege, uid, cids, callback) {
 			groups.isMemberOfGroups(uid, userKeys, next);
 		},
 		hasGroupPrivilege: function(next) {
-			async.map(groupKeys, function(groupKey, next) {
-				groups.isMemberOfGroupList(uid, groupKey, next);
-			}, next);
+			groups.isMemberOfGroupsList(uid, groupKeys, next);
 		}
 	}, function(err, results) {
 		if (err) {
@@ -55,7 +53,6 @@ helpers.isUserAllowedTo = function(privilege, uid, cids, callback) {
 		for (var i=0; i<cids.length; ++i) {
 			result.push((!results.userPrivilegeExists[i] && !results.groupPrivilegeExists[i]) || results.hasUserPrivilege[i] || results.hasGroupPrivilege[i]);
 		}
-
 
 		callback(null, result);
 	});

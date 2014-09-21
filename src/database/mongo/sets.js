@@ -57,7 +57,7 @@ module.exports = function(db, module) {
 		}
 
 		bulk.execute(function(err) {
-			return callback(err);
+			callback(err);
 		});
 	};
 
@@ -153,6 +153,7 @@ module.exports = function(db, module) {
 			if (err) {
 				return callback(err);
 			}
+
 			var sets = {};
 			data.forEach(function(set) {
 				sets[set._key] = set.members || [];

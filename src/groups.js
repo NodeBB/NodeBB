@@ -1,15 +1,18 @@
 'use strict';
 
-(function(Groups) {
-	var async = require('async'),
-		winston = require('winston'),
-		user = require('./user'),
-		meta = require('./meta'),
-		db = require('./database'),
-		posts = require('./posts'),
-		utils = require('../public/src/utils'),
+var async = require('async'),
+	winston = require('winston'),
+	_ = require('underscore'),
+	user = require('./user'),
+	meta = require('./meta'),
+	db = require('./database'),
+	posts = require('./posts'),
+	utils = require('../public/src/utils');
 
-		ephemeralGroups = ['guests'],
+
+(function(Groups) {
+
+		var ephemeralGroups = ['guests'],
 
 		internals = {
 			filterGroups: function(groups, options) {
@@ -186,7 +189,45 @@
 					return callback(err);
 				}
 
-				callback(null, isMembers.indexOf(true) !== -1)
+				callback(null, isMembers.indexOf(true) !== -1);
+			});
+		});
+	};
+
+	Groups.isMemberOfGroupsList = function(uid, groupListKeys, callback) {
+		var sets = groupListKeys.map(function(groupName) {
+			return 'group:' + groupName + ':members';
+		});
+
+		db.getSetsMembers(sets, function(err, members) {
+			if (err) {
+				return callback(err);
+			}
+
+			var uniqueGroups = _.unique(_.flatten(members));
+			uniqueGroups = internals.removeEphemeralGroups(uniqueGroups);
+
+			Groups.isMemberOfGroups(uid, uniqueGroups, function(err, isMembers) {
+				if (err) {
+					return callback(err);
+				}
+
+				var map = {};
+
+				uniqueGroups.forEach(function(groupName, index) {
+					map[groupName] = isMembers[index];
+				});
+
+				var result = members.map(function(groupNames) {
+					for (var i=0; i<groupNames.length; ++i) {
+						if (map[groupNames[i]]) {
+							return true;
+						}
+					}
+					return false;
+				});
+
+				callback(null, result);
 			});
 		});
 	};
@@ -418,7 +459,7 @@
 
 	Groups.leave = function(groupName, uid, callback) {
 		callback = callback || function() {};
-		
+
 		db.setRemove('group:' + groupName + ':members', uid, function(err) {
 			if (err) {
 				return callback(err);
