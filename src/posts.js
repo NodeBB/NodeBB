@@ -527,6 +527,9 @@ var async = require('async'),
 	};
 
 	Posts.getPostIndices = function(posts, uid, callback) {
+		if (!Array.isArray(posts) || !posts.length) {
+			return callback(null, []);
+		}
 		user.getSettings(uid, function(err, settings) {
 			if (err) {
 				return callback(err);

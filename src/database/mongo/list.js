@@ -4,7 +4,12 @@ module.exports = function(db, module) {
 	var helpers = module.helpers.mongo;
 
 	module.listPrepend = function(key, value, callback) {
-		callback = callback || function() {};
+		callback = callback || helpers.noop;
+
+		if (!key) {
+			return callback();
+		}
+
 		value = helpers.valueToString(value);
 
 		module.isObjectField(key, 'array', function(err, exists) {
@@ -22,12 +27,18 @@ module.exports = function(db, module) {
 
 	module.listAppend = function(key, value, callback) {
 		callback = callback || helpers.noop;
+		if (!key) {
+			return callback();
+		}
 		value = helpers.valueToString(value);
 		db.collection('objects').update({ _key: key }, { $push: { array: value } }, {upsert:true, w:1}, callback);
 	};
 
 	module.listRemoveLast = function(key, callback) {
-		callback = callback || function() {};
+		callback = callback || helpers.noop;
+		if (!key) {
+			return callback();
+		}
 		module.getListRange(key, -1, 0, function(err, value) {
 			if (err) {
 				return callback(err);
@@ -40,7 +51,10 @@ module.exports = function(db, module) {
 	};
 
 	module.listTrim = function(key, start, stop, callback) {
-		callback = callback || function() {};
+		callback = callback || helpers.noop;
+		if (!key) {
+			return callback();
+		}
 		module.getListRange(key, start, stop, function(err, value) {
 			if (err) {
 				return callback(err);
@@ -52,13 +66,18 @@ module.exports = function(db, module) {
 
 	module.listRemoveAll = function(key, value, callback) {
 		callback =  callback || helpers.noop;
+		if (!key) {
+			return callback();
+		}
 		value = helpers.valueToString(value);
 
 		db.collection('objects').update({_key: key }, { $pull: { array: value } }, callback);
 	};
 
 	module.getListRange = function(key, start, stop, callback) {
-
+		if (!key) {
+			return callback();
+		}
 		var skip = start,
 			limit = stop - start + 1,
 			splice = false;

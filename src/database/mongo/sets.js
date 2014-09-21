@@ -94,16 +94,21 @@ module.exports = function(db, module) {
 		});
 	};
 
-
 	module.isSetMember = function(key, value, callback) {
+		if (!key) {
+			return callback();
+		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').findOne({_key:key, members: value}, {_id: 0, members: 0},function(err, item) {
+		db.collection('objects').findOne({_key: key, members: value}, {_id: 0, members: 0},function(err, item) {
 			callback(err, item !== null && item !== undefined);
 		});
 	};
 
 	module.isSetMembers = function(key, values, callback) {
+		if (!key) {
+			return callback();
+		}
 		for (var i=0; i<values.length; ++i) {
 			values[i] = helpers.valueToString(values[i]);
 		}
@@ -122,11 +127,13 @@ module.exports = function(db, module) {
 	};
 
 	module.isMemberOfSets = function(sets, value, callback) {
-
+		if (!Array.isArray(sets) || !sets.length) {
+			return callback();
+		}
 		value = helpers.valueToString(value);
 
 		db.collection('objects').find({_key: {$in : sets}, members: value}, {_id:0, members: 0}).toArray(function(err, result) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
@@ -143,12 +150,18 @@ module.exports = function(db, module) {
 	};
 
 	module.getSetMembers = function(key, callback) {
+		if (!key) {
+			return callback();
+		}
 		db.collection('objects').findOne({_key: key}, {members: 1}, {_id: 0, _key: 0}, function(err, data) {
 			callback(err, data ? data.members : []);
 		});
 	};
 
 	module.getSetsMembers = function(keys, callback) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return callback();
+		}
 		db.collection('objects').find({_key: {$in: keys}}, {_id: 0, _key: 1, members: 1}).toArray(function(err, data) {
 			if (err) {
 				return callback(err);
@@ -168,6 +181,9 @@ module.exports = function(db, module) {
 	};
 
 	module.setCount = function(key, callback) {
+		if (!key) {
+			return callback(null, 0);
+		}
 		db.collection('objects').findOne({_key: key}, {_id: 0}, function(err, data) {
 			return callback(err, data ? data.members.length : 0);
 		});

@@ -68,32 +68,51 @@ module.exports = function(db, module) {
 	};
 
 	module.exists = function(key, callback) {
-		db.collection('objects').findOne({_key:key}, function(err, item) {
+		if (!key) {
+			return callback();
+		}
+		db.collection('objects').findOne({_key: key}, function(err, item) {
 			callback(err, item !== undefined && item !== null);
 		});
 	};
 
 	module.delete = function(key, callback) {
 		callback = callback || helpers.noop;
-		db.collection('objects').remove({_key:key}, callback);
+		if (!key) {
+			return callback();
+		}
+		db.collection('objects').remove({_key: key}, callback);
 	};
 
 	module.deleteAll = function(keys, callback) {
 		callback = callback || helpers.noop;
+		if (!Array.isArray(keys) || !keys.length) {
+			return callback();
+		}
 		db.collection('objects').remove({_key: {$in: keys}}, callback);
 	};
 
 	module.get = function(key, callback) {
+		if (!key) {
+			return callback();
+		}
 		module.getObjectField(key, 'value', callback);
 	};
 
 	module.set = function(key, value, callback) {
-		var data = {value:value};
+		callback = callback || helpers.noop;
+		if (!key) {
+			return callback();
+		}
+		var data = {value: value};
 		module.setObject(key, data, callback);
 	};
 
 	module.increment = function(key, callback) {
 		callback = callback || helpers.noop;
+		if (!key) {
+			return callback();
+		}
 		db.collection('objects').update({_key: key}, { $inc: { value: 1 } }, callback);
 	};
 
