@@ -19,14 +19,14 @@ HotSwap.find = function(id) {
 	}
 };
 
-HotSwap.replace = function(id, middleware) {
+HotSwap.replace = function(id, router) {
 	var idx = HotSwap.find(id);
 	if (idx) {
-		delete stack[idx].handle;	// Destroy the old middleware
-		stack[idx].handle = middleware;	// Replace with the new one
-		winston.info('[hotswap] Middleware with id `' + id + '` replaced successfully');
+		delete stack[idx].handle;	// Destroy the old router
+		stack[idx].handle = router;	// Replace with the new one
+		winston.info('[hotswap] Router with id `' + id + '` replaced successfully');
 	} else {
-		winston.warn('[hotswap] Could not find middleware in stack with hotswapId `' + id + '`');
+		winston.warn('[hotswap] Could not find router in stack with hotswapId `' + id + '`');
 	}
 };
 
