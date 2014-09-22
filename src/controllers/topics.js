@@ -201,16 +201,19 @@ topicsController.get = function(req, res, next) {
 					rel: 'alternate',
 					type: 'application/rss+xml',
 					href: nconf.get('url') + '/topic/' + tid + '.rss'
-				},
-				{
-					rel: 'up',
-					href: nconf.get('url') + '/category/' + topicData.category.slug
-				},
+				}
 				{
 					rel: 'canonical',
 					href: nconf.get('url') + '/topic/' + topicData.slug
 				}
 			];
+
+			if (topicData.category) {
+				res.locals.linkTags.push({
+					rel: 'up',
+					href: nconf.get('url') + '/category/' + topicData.category.slug
+				});
+			}
 
 			next(null, topicData);
 		}
