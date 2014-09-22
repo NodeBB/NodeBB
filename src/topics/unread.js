@@ -125,8 +125,10 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			var topicCids = topics.map(function(topic) {
-				return topic && topic.cid.toString();
+			var topicCids = topics.filter(function(topic) {
+				return topic && topic.cid;
+			}).map(function(topic) {
+				return topic.cid.toString();
 			});
 
 			topicCids = topicCids.filter(function(cid) {
@@ -139,7 +141,7 @@ module.exports = function(Topics) {
 				}
 
 				topics = topics.filter(function(topic) {
-					return topic && readableCids.indexOf(topic.cid.toString()) !== -1;
+					return readableCids.indexOf(topic.cid.toString()) !== -1;
 				}).map(function(topic) {
 					return topic.tid;
 				});
