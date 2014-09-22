@@ -46,7 +46,7 @@ var async = require('async'),
 
 				user.getUserField(uid, 'username', function(err, username) {
 					if (err) {
-						return winston.error(err.message);
+						return winston.error(err.stack);
 					}
 
 					var title = meta.config.title || meta.config.browserTitle || 'NodeBB';

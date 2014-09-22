@@ -75,8 +75,8 @@
 
 			if(nconf.get('mongo:password') && nconf.get('mongo:username')) {
 				db.authenticate(nconf.get('mongo:username'), nconf.get('mongo:password'), function (err) {
-					if(err) {
-						winston.error(err.message);
+					if (err) {
+						winston.error(err.stack);
 						process.exit();
 					}
 					createIndices();

@@ -83,7 +83,7 @@ Templates.compile = function(callback) {
 				fs.writeFile(path.join(viewsPath, relativePath), file, next);
 			}, function(err) {
 				if (err) {
-					winston.error(err);
+					winston.error('[themes] ' + err.stack);
 				} else {
 					winston.info('[themes] Successfully compiled templates.');
 					emitter.emit('templates:compiled');
