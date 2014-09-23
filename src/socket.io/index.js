@@ -66,23 +66,32 @@ function onUserDisconnect(uid, socketid, socketCount) {
 }
 
 Sockets.init = function(server) {
-	 var RedisStore = require('socket.io/lib/stores/redis'),
-		redis = require('redis'),
-		pub = redis.createClient(),
-		sub = redis.createClient(),
-		client = redis.createClient();
+	// Default socket.io config
+	var config = {
+			log: false,
+			transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket'],
+			'browser client minification': true,
+			resource: nconf.get('relative_path') + '/socket.io'
+		};
 
-	io = socketioWildcard(SocketIO).listen(server, {
-		log: false,
-		transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket'],
-		'browser client minification': true,
-		resource: nconf.get('relative_path') + '/socket.io',
-		'store' : new RedisStore({
-				redisPub : pub,
-				redisSub : sub,
-				redisClient : client
-		}),
-	});
+	// If a redis server is configured, use it as a socket.io store, otherwise, fall back to in-memory store
+	if (nconf.get('redis')) {
+		var RedisStore = require('socket.io/lib/stores/redis'),
+			database = require('../database/redis'),
+			pub = database.connect(),
+			sub = database.connect(),
+			client = database.connect();
+
+		config.store = new RedisStore({
+			redisPub : pub,
+			redisSub : sub,
+			redisClient : client
+		});
+	} else if (nconf.get('cluster')) {
+		winston.warn('[socket.io] Clustering detected, you are advised to configure Redis as a websocket store.')
+	}
+
+	io = socketioWildcard(SocketIO).listen(server, config);
 
 	Sockets.server = io;
 

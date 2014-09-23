@@ -47,26 +47,7 @@
 			process.exit();
 		}
 
-		var redis_socket_or_host = nconf.get('redis:host');
-
-		if (redis_socket_or_host && redis_socket_or_host.indexOf('/')>=0) {
-			/* If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock */
-			redisClient = redis.createClient(nconf.get('redis:host'));
-		} else {
-			/* Else, connect over tcp/ip */
-			redisClient = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
-		}
-
-		if (nconf.get('redis:password')) {
-			redisClient.auth(nconf.get('redis:password'));
-		} else {
-			winston.warn('You have no redis password setup!');
-		}
-
-		redisClient.on('error', function (err) {
-			winston.error(err.stack);
-			process.exit(1);
-		});
+		redisClient = module.connect();
 
 		module.client = redisClient;
 
@@ -102,6 +83,34 @@
 		if(typeof callback === 'function') {
 			callback();
 		}
+	};
+
+	module.connect = function() {
+		var redis_socket_or_host = nconf.get('redis:host'),
+			cxn;
+
+		if (!redis) redis = require('redis');
+
+		if (redis_socket_or_host && redis_socket_or_host.indexOf('/') >= 0) {
+			/* If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock */
+			cxn = redis.createClient(nconf.get('redis:host'));
+		} else {
+			/* Else, connect over tcp/ip */
+			cxn = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
+		}
+
+		if (nconf.get('redis:password')) {
+			cxn.auth(nconf.get('redis:password'));
+		} else {
+			winston.warn('You have no redis password setup!');
+		}
+
+		cxn.on('error', function (err) {
+			winston.error(err.stack);
+			process.exit(1);
+		});
+
+		return cxn;
 	};
 
 	module.close = function() {
