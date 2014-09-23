@@ -131,7 +131,9 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		}
 
 		var username = getUserName(selectionText ? $(selection.baseNode) : button);
-
+		if (getData(button, 'data-uid') === '0') {
+			username = '';
+		}
 		if (selectionText.length) {
 			composer.addQuote(tid, ajaxify.variables.get('topic_slug'), getData(button, 'data-index'), getData(button, 'data-pid'), topicName, username, selectionText);
 		} else {
@@ -201,8 +203,12 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 			post = button.parents('li[data-pid]');
 
 		if (post.length) {
-			username = '@' + post.attr('data-username').replace(/\s/g, '-');
+			username = post.attr('data-username').replace(/\s/g, '-');
 		}
+		if (post.attr('data-uid') !== '0') {
+			username = '@' + username;
+		}
+
 		return username;
 	}
 
