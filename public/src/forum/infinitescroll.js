@@ -17,9 +17,10 @@ define('forum/infinitescroll', function() {
 	};
 
 	function onScroll() {
-		var top = $(window).height() * 0.1 + topOffset;
-		var bottom = ($(document).height() - $(window).height()) * 0.9;
-		var currentScrollTop = $(window).scrollTop();
+		var originalPostEl = $('li[data-index="0"]'),
+			top = $(window).height() * 0.15 + topOffset + (originalPostEl ? originalPostEl.outerHeight() : 0),
+			bottom = ($(document).height() - $(window).height()) * 0.85,
+			currentScrollTop = $(window).scrollTop();
 
 		if(currentScrollTop < top && currentScrollTop < previousScrollTop) {
 			callback(-1);
