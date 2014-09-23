@@ -252,25 +252,40 @@ topicsController.get = function(req, res, next) {
 topicsController.teaser = function(req, res, next) {
 	var tid = req.params.topic_id;
 	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
-	topics.getLatestUndeletedPid(tid, function(err, pid) {
+
+	if (!utils.isNumber(tid)) {
+		return next(new Error('[[error:invalid-tid]]'));
+	}
+
+	privileges.topics.can('read', tid, uid, function(err, canRead) {
 		if (err) {
 			return next(err);
 		}
 
-		if (!pid) {
-			return res.json(404, 'not-found');
+		if (!canRead) {
+			return res.json(403, '[[error:no-priveges]]');
 		}
 
-		posts.getPostSummaryByPids([pid], uid, {stripTags: false}, function(err, posts) {
+		topics.getLatestUndeletedPid(tid, function(err, pid) {
 			if (err) {
 				return next(err);
 			}
 
-			if (!Array.isArray(posts) || !posts.length) {
+			if (!pid) {
 				return res.json(404, 'not-found');
 			}
 
-			res.json(posts[0]);
+			posts.getPostSummaryByPids([pid], uid, {stripTags: false}, function(err, posts) {
+				if (err) {
+					return next(err);
+				}
+
+				if (!Array.isArray(posts) || !posts.length) {
+					return res.json(404, 'not-found');
+				}
+
+				res.json(posts[0]);
+			});
 		});
 	});
 };
