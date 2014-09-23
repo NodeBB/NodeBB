@@ -205,7 +205,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		if (post.length) {
 			username = post.attr('data-username').replace(/\s/g, '-');
 		}
-		if (post.attr('data-uid') !== '0') {
+		if (post.length && post.attr('data-uid') !== '0') {
 			username = '@' + username;
 		}
 
