@@ -43,8 +43,14 @@
 
 	module.init = function(callback) {
 		try {
+			var sessionStore;
 			mongoClient = require('mongodb').MongoClient;
-			mongoStore = require('connect-mongo')({session: session});
+
+			if (!nconf.get('redis')) {
+				sessionStore = require('connect-mongo')({session: session});
+			} else {
+				sessionStore = require('connect-redis')(session);
+			}
 		} catch (err) {
 			winston.error('Unable to initialize MongoDB! Is MongoDB installed? Error :' + err.message);
 			process.exit();
@@ -60,9 +66,16 @@
 
 			module.client = db;
 
-			module.sessionStore = new mongoStore({
-				db: db
-			});
+			if (!nconf.get('redis')) {
+				module.sessionStore = new sessionStore({
+					db: db
+				});
+			} else {
+				module.sessionStore = new sessionStore({
+					client: require('./redis').connect(),
+					ttl: 60 * 60 * 24 * 14
+				});
+			}
 
 			require('./mongo/main')(db, module);
 			require('./mongo/hash')(db, module);
