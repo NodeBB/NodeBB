@@ -15,11 +15,14 @@ module.exports = function(redisClient, module) {
 		if (scores.length !== values.length) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
-		var multi = redisClient.multi();
-		for(var i=0; i<scores.lenth; ++i) {
-			multi.zadd(key, scores[i], values[i]);
+
+		var args = [key];
+
+		for(var i=0; i<scores.length; ++i) {
+			args.push(scores[i], values[i]);
 		}
-		multi.exec(function(err, result) {
+
+		redisClient.zadd(args, function(err, res) {
 			callback(err);
 		});
 	}
