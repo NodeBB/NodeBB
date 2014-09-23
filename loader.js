@@ -20,7 +20,7 @@ var	nconf = require('nconf'),
 Loader.init = function() {
 	cluster.setupMaster({
 		exec: "app.js",
-		silent: process.env.NODE_ENV !== 'development' ? true : false
+		silent: false
 	});
 
 	cluster.on('fork', function(worker) {
