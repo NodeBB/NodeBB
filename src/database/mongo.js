@@ -9,9 +9,7 @@
 		session = require('express-session'),
 		db,
 		mongoClient,
-		redis = require('redis'),
-		redisClient = redis.createClient(),
-		connectRedis;
+		mongoStore;
 
 	module.questions = [
 		{
@@ -46,7 +44,7 @@
 	module.init = function(callback) {
 		try {
 			mongoClient = require('mongodb').MongoClient;
-			connectRedis = require('connect-redis')(session);
+			mongoStore = require('connect-mongo')({session: session});
 		} catch (err) {
 			winston.error('Unable to initialize MongoDB! Is MongoDB installed? Error :' + err.message);
 			process.exit();
@@ -62,9 +60,8 @@
 
 			module.client = db;
 
-			module.sessionStore = new connectRedis({
-		        client: redisClient,
-		        ttl: 60 * 60 * 24 * 14
+			module.sessionStore = new mongoStore({
+				db: db
 			});
 
 			require('./mongo/main')(db, module);
