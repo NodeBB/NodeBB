@@ -140,6 +140,9 @@ function filterAndRenderCategories(req, res, next, active) {
 		}
 
 		categoryData = categoryData.filter(function (category) {
+			if (!category) {
+				return false;
+			}
 			return active ? !category.disabled : category.disabled;
 		});
 
