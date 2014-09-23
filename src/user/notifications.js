@@ -71,9 +71,7 @@ var async = require('async'),
 							winston.info('[notifications.get] nid ' + nids[index] + ' not found. Removing.');
 						}
 
-						if (nids[index]) {
-							deletedNids.push(nids[index]);
-						}
+						deletedNids.push(nids[index]);
 					}
 				});
 

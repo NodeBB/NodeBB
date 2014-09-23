@@ -120,6 +120,11 @@ var async = require('async'),
 
 	Notifications.push = function(notification, uids, callback) {
 		callback = callback || function() {};
+
+		if (!notification.nid) {
+			return callback();
+		}
+
 		var websockets = require('./socket.io');
 		if (!Array.isArray(uids)) {
 			uids = [uids];
@@ -183,7 +188,7 @@ var async = require('async'),
 			return callback();
 		}
 
-		var notificationKeys = nids.map(function(nid) {
+		var notificationKeys = nids.filter(Boolean).map(function(nid) {
 			return 'notifications:' + nid;
 		});
 
