@@ -343,7 +343,9 @@ var async = require('async'),
 
 						next(null, post);
 					});
-				}, callback);
+				}, function(err, posts) {
+					plugins.fireHook('filter:post.getPostSummaryByPids', {posts: posts, uid: uid}, callback);
+				});
 			});
 		});
 	};
