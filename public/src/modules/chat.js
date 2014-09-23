@@ -262,7 +262,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 	module.center = function(chatModal) {
 		chatModal.css("left", Math.max(0, (($(window).width() - $(chatModal).outerWidth()) / 2) + $(window).scrollLeft()) + "px");
 		chatModal.css("top", Math.max(0, $(window).height() / 4 - $(chatModal).outerHeight() / 2));
-		chatModal.css("zIndex", 2000);
+		chatModal.css("zIndex", 100);
 		chatModal.find('#chat-message-input').focus();
 		return chatModal;
 	};
