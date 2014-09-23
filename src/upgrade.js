@@ -1,4 +1,4 @@
-"use strict";
+﻿"use strict";
 
 var db = require('./database'),
 	async = require('async'),
@@ -75,7 +75,7 @@ Upgrade.upgrade = function(callback) {
 					{
 						"widget": "html",
 						"data": {
-							"html": Meta.config['motd'] ||  "Welcome to NodeBB, if you are an administrator of this forum visit the <a target='_blank' href='/admin/themes'>Themes</a> ACP to modify and add widgets."
+							"html": Meta.config.motd ||  "Welcome to NodeBB, if you are an administrator of this forum visit the <a target='_blank' href='/admin/themes'>Themes</a> ACP to modify and add widgets."
 						}
 					}
 				]), function(err) {
@@ -171,7 +171,7 @@ Upgrade.upgrade = function(callback) {
 					{
 						"widget": "html",
 						"data": {
-							"html": Meta.config['motd'] || "Welcome to NodeBB, if you are an administrator of this forum visit the <a target='_blank' href='/admin/themes'>Themes</a> ACP to modify and add widgets.",
+							"html": Meta.config.motd || "Welcome to NodeBB, if you are an administrator of this forum visit the <a target='_blank' href='/admin/themes'>Themes</a> ACP to modify and add widgets.",
 							"container": container,
 							"title": "MOTD"
 						}
