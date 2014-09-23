@@ -32,7 +32,7 @@ module.exports = function(db, module) {
 
 	module.getObjects = function(keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return callback(null, []);
 		}
 		db.collection('objects').find({_key: {$in: keys}}, {_id: 0}).toArray(function(err, data) {
 			if(err) {

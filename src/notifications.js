@@ -40,6 +40,10 @@ var async = require('async'),
 				return callback(err);
 			}
 
+			if (!Array.isArray(notifications) || !notifications.length) {
+				return callback(null, []);
+			}
+
 			async.map(notifications, function(notification, next) {
 				if (!notification) {
 					return next(null, null);
