@@ -144,8 +144,16 @@ var fs = require('fs'),
 				return callback(pluginPath.match('nodebb-theme') ? null : err);
 			}
 
-			var pluginData = JSON.parse(data),
-				libraryPath, staticDir;
+			try {
+				var pluginData = JSON.parse(data),
+					libraryPath, staticDir;
+			} catch (err) {
+				var pluginDir = pluginPath.split(path.sep);
+				pluginDir = pluginDir[pluginDir.length -1];
+				
+				winston.error('[plugins/' + pluginDir + '] Plugin not loaded - please check its plugin.json for errors');
+				return callback(err);
+			}
 
 			/*
 				Starting v0.5.0, `minver` is deprecated in favour of `compatibility`.
