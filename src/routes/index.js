@@ -165,6 +165,8 @@ module.exports = function(app, middleware) {
 	pluginRouter.hotswapId = 'plugins';
 	authRouter.hotswapId = 'auth';
 
+	app.use(middleware.maintenanceMode);
+
 	app.all(relativePath + '/api/?*', middleware.prepareAPI);
 	app.all(relativePath + '/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
 	app.all(relativePath + '/admin/?*', middleware.ensureLoggedIn, middleware.admin.isAdmin);

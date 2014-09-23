@@ -454,6 +454,30 @@ middleware.addExpiresHeaders = function(req, res, next) {
 	next();
 };
 
+middleware.maintenanceMode = function(req, res, next) {
+	var render = function() {
+		res.render('maintenance', {
+			site_title: meta.config.site_title || 'NodeBB'
+		});
+	}
+
+	if (meta.config.maintenanceMode === '1') {
+		if (!req.user) {
+			return render();
+		} else {
+			user.isAdministrator(req.user.uid, function(err, isAdmin) {
+				if (!isAdmin) {
+					return render();
+				} else {
+					return next();
+				}
+			});
+		}
+	} else {
+		return next();
+	}
+};
+
 module.exports = function(webserver) {
 	app = webserver;
 	middleware.admin = require('./admin')(webserver);
