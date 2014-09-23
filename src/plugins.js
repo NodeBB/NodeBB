@@ -152,7 +152,7 @@ var fs = require('fs'),
 				pluginDir = pluginDir[pluginDir.length -1];
 				
 				winston.error('[plugins/' + pluginDir + '] Plugin not loaded - please check its plugin.json for errors');
-				return callback(err);
+				return callback();
 			}
 
 			/*
