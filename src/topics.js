@@ -245,7 +245,7 @@ var async = require('async'),
 						parseInt(topic.uid, 10) === parseInt(uid, 10));
 				});
 
-				plugins.fireHook('filter:topics.get', topics, callback);
+				plugins.fireHook('filter:topics.get', {topics: topics, uid: uid}, callback);
 			});
 		});
 	};
