@@ -203,7 +203,9 @@ adminController.languages.get = function(req, res, next) {
 };
 
 adminController.settings.get = function(req, res, next) {
-	res.render('admin/settings/' + req.params.term, {
+	var term = req.params.term ? req.params.term : 'general';
+
+	res.render('admin/settings/' + term, {
 		'csrf': req.csrfToken()
 	});
 };

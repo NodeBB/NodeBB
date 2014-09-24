@@ -45,7 +45,7 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/sounds', controllers.admin.sounds.get);
 
 	//settings
-	router.get('/settings/:term', middleware.applyCSRF, controllers.admin.settings.get);
+	router.get('/settings/:term?', middleware.applyCSRF, controllers.admin.settings.get);
 
 	//user
 	router.get('/users', controllers.admin.users.search);
