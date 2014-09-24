@@ -186,6 +186,22 @@ SocketUser.changePicture = function(socket, data, callback) {
 	});
 };
 
+SocketUser.uploadProfileImageFromUrl = function(socket, url, callback) {
+	if (!socket.uid || !url) {
+		return;
+	}
+
+	plugins.fireHook('filter:uploadImage', {url: url}, function(err, image) {
+		if (err) {
+			return callback(err);
+		}
+
+		user.setUserFields(socket.uid, {uploadedpicture: image.url, picture: image.url}, function(err) {
+			callback(err, image.url);
+		});
+	});
+}
+
 SocketUser.follow = function(socket, data, callback) {
 	if (!socket.uid || !data) {
 		return;

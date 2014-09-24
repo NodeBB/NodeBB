@@ -453,8 +453,8 @@ accountsController.uploadPicture = function (req, res, next) {
 				return res.json({error: err.message});
 			}
 
-			user.setUserField(updateUid, 'uploadedpicture', image.url);
-			user.setUserField(updateUid, 'picture', image.url);
+			user.setUserFields(updateUid, {uploadedpicture: image.url, picture: image.url});
+
 			res.json({
 				path: image.url
 			});

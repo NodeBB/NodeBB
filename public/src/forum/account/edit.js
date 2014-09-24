@@ -151,6 +151,16 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 	}
 
 	function handleImageUpload() {
+		function onUploadComplete(urlOnServer) {
+			urlOnServer = urlOnServer + '?' + new Date().getTime();
+
+			$('#user-current-picture').attr('src', urlOnServer);
+			$('#user-uploaded-picture').attr('src', urlOnServer);
+			$('#user-header-picture').attr('src', urlOnServer);
+			uploadedPicture = urlOnServer;
+		}
+
+
 		$('#upload-picture-modal').on('hide', function() {
 			$('#userPhotoInput').val('');
 		});
@@ -159,15 +169,33 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 
 			$('#change-picture-modal').modal('hide');
 			uploader.open(config.relative_path + '/api/user/' + ajaxify.variables.get('userslug') + '/uploadpicture', {}, config.maximumProfileImageSize, function(imageUrlOnServer) {
-				imageUrlOnServer = imageUrlOnServer + '?' + new Date().getTime();
-
-				$('#user-current-picture').attr('src', imageUrlOnServer);
-				$('#user-uploaded-picture').attr('src', imageUrlOnServer);
-				$('#user-header-picture').attr('src', imageUrlOnServer);
-
-				uploadedPicture = imageUrlOnServer;
+				onUploadComplete(imageUrlOnServer);
 			});
 
+			return false;
+		});
+
+		$('#uploadFromUrlBtn').on('click', function() {
+			$('#change-picture-modal').modal('hide');
+			var uploadModal = $('#upload-picture-from-url-modal');
+			uploadModal.modal('show').removeClass('hide');
+
+			uploadModal.find('.upload-btn').on('click', function() {
+				var url = uploadModal.find('#uploadFromUrl').val();
+				if (!url) {
+					return;
+				}
+				socket.emit('user.uploadProfileImageFromUrl', url, function(err, imageUrlOnServer) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					onUploadComplete(imageUrlOnServer);
+
+					uploadModal.modal('hide');
+				});
+
+				return false;
+			});
 			return false;
 		});
 	}
