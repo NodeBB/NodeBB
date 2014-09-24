@@ -7,7 +7,7 @@ process.on('uncaughtException', function (err) {
 });
 
 var	assert = require('assert'),
-	db = require('../mocks/databasemock');
+	db = require('./mocks/databasemock');
 
 var User = require('../src/user');
 

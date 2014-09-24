@@ -1,7 +1,7 @@
 var	assert = require('assert'),
 	async = require('async'),
 
-	db = require('../mocks/databasemock'),
+	db = require('./mocks/databasemock'),
 	Groups = require('../src/groups'),
 	User = require('../src/user');
 

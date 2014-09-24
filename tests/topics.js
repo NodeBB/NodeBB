@@ -1,7 +1,7 @@
 'use strict';
 
 var	assert = require('assert'),
-	db = require('../mocks/databasemock'),
+	db = require('./mocks/databasemock'),
 	topics = require('../src/topics'),
 	categories = require('../src/categories'),
 	User = require('../src/user');
