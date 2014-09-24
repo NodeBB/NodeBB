@@ -11,24 +11,33 @@ var async = require('async'),
 
 module.exports = function(User) {
 
-	User.delete = function(uid, callback) {
+	User.delete = function(uid, options, callback) {
+		callback = arguments[arguments.length - 1];
+		
 		async.waterfall([
+			function(next) {
+				User.deleteAccount(uid, options, next);
+			},
 			function(next) {
 				deletePosts(uid, next);
 			},
 			function(next) {
 				deleteTopics(uid, next);
-			},
-			function(next) {
-				User.deleteAccount(uid, next);
 			}
 		], callback);
 	};
 
-	User.deleteAccount = function(uid, callback) {
+	User.deleteAccount = function(uid, options, callback) {
+		callback = arguments[arguments.length - 1];
+		options = options && typeof options === 'object' ? options : {};
+		options.force = options.force || false;
+		
 		user.isAdministrator(uid, function(err, isAdmin) {
-			if (err || isAdmin) {
-				return callback(err || new Error('[[error:cant-ban-other-admins]]'));
+			if (err) {
+				return callback(err);
+			}
+			if (isAdmin && !options.force) {
+				return callback(new Error('[[error:cant-ban-other-admins]]'));
 			}
 
 			deleteAccount(uid, callback);
