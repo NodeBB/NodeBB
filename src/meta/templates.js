@@ -93,21 +93,37 @@ Templates.compile = function(callback) {
 					}
 				}
 
+				if (relativePath.match(/^\/admin\/[\s\S]*?/)) {
+					addIndex(relativePath, file);
+				}
+
 				mkdirp.sync(path.join(viewsPath, relativePath.split('/').slice(0, -1).join('/')));
 				fs.writeFile(path.join(viewsPath, relativePath), file, next);
 			}, function(err) {
 				if (err) {
 					winston.error('[themes] ' + err.stack);
 				} else {
-					winston.info('[themes] Successfully compiled templates.');
-					emitter.emit('templates:compiled');
-					if (callback) {
-						callback();
-					}
+					compileIndex(viewsPath, function() {
+						winston.info('[themes] Successfully compiled templates.');
+						emitter.emit('templates:compiled');
+						if (callback) {
+							callback();
+						}
+					});
 				}
 			});
 		});
 	});
 };
+
+var searchIndex = {};
+
+function addIndex(path, file) {
+	searchIndex[path] = file;
+}
+
+function compileIndex(viewsPath, callback) {
+	fs.writeFile(path.join(viewsPath, '/indexed.json'), JSON.stringify(searchIndex), callback);
+}
 
 module.exports = Templates;
