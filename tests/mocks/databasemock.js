@@ -7,19 +7,19 @@
 	'use strict';
 	/*global before*/
 
-	var utils = require('./../public/src/utils.js'),
+	var utils = require('./../../public/src/utils.js'),
 		path  = require('path'),
 		nconf = require('nconf'),
 		winston = require('winston'),
 		errorText;
 
 
-	nconf.file({ file: path.join(__dirname, '../config.json') });
+	nconf.file({ file: path.join(__dirname, '../../config.json') });
 	nconf.defaults({
-		base_dir: path.join(__dirname,'..'),
-		themes_path: path.join(__dirname, '../node_modules'),
-		upload_url: path.join(path.sep, '../uploads', path.sep),
-		views_dir: path.join(__dirname, '../public/templates')
+		base_dir: path.join(__dirname,'../..'),
+		themes_path: path.join(__dirname, '../../node_modules'),
+		upload_url: path.join(path.sep, '../../uploads', path.sep),
+		views_dir: path.join(__dirname, '../../public/templates')
 	});
 
 	var dbType = nconf.get('database'),
@@ -66,8 +66,8 @@
 
 	nconf.set(dbType, testDbConfig);
 
-	var db = require('../src/database'),
-		meta = require('../src/meta');
+	var db = require('../../src/database'),
+		meta = require('../../src/meta');
 
 	before(function(done) {
 		db.init(function(err) {
@@ -82,11 +82,12 @@
 
 				meta.configs.init(function () {
 					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
+					nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
 					nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
 					nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
 
-					var	webserver = require('../src/webserver'),
-						sockets = require('../src/socket.io');
+					var	webserver = require('../../src/webserver'),
+						sockets = require('../../src/socket.io');
 						sockets.init(webserver.server);
 
 					done();
