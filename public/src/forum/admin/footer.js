@@ -45,8 +45,10 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 						}
 					}
 				}
-
-				menuItems.append('<li role="presentation" class="divider"></li>');
+				
+				if (menuItems.html() !== '') {
+					menuItems.append('<li role="presentation" class="divider"></li>');
+				}
 			}
 
 			menuItems.append('<li role="presentation"><a role="menuitem" href="' + RELATIVE_PATH + '/search/' + $input.val() + '">Search the forum for "' + $input.val() + '"</a></li>');
