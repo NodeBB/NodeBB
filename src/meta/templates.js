@@ -21,7 +21,8 @@ Templates.compile = function(callback) {
 		}, 1000);
 	}
 
-	var baseTemplatesPath = nconf.get('base_templates_path'),
+	var coreTemplatesPath = nconf.get('core_templates_path'),
+		baseTemplatesPath = nconf.get('base_templates_path'),
 		viewsPath = nconf.get('views_dir'),
 		themeTemplatesPath = nconf.get('theme_templates_path');
 
@@ -31,6 +32,9 @@ Templates.compile = function(callback) {
 		mkdirp.sync(viewsPath);
 
 		async.parallel({
+			coreTpls: function(next) {
+				utils.walk(coreTemplatesPath, next);
+			},
 			baseTpls: function(next) {
 				utils.walk(baseTemplatesPath, next);
 			},
@@ -38,7 +42,8 @@ Templates.compile = function(callback) {
 				utils.walk(themeTemplatesPath, next);
 			}
 		}, function(err, data) {
-			var baseTpls = data.baseTpls,
+			var coreTpls = data.coreTpls,
+				baseTpls = data.baseTpls,
 				themeTpls = data.themeTpls,
 				paths = {};
 
@@ -46,8 +51,13 @@ Templates.compile = function(callback) {
 				winston.warn('[meta/templates] Could not find base template files at: ' + baseTemplatesPath);
 			}
 
+			coreTpls = !coreTpls ? [] : coreTpls.map(function(tpl) { return tpl.replace(coreTemplatesPath, ''); });
 			baseTpls = !baseTpls ? [] : baseTpls.map(function(tpl) { return tpl.replace(baseTemplatesPath, ''); });
 			themeTpls = !themeTpls ? [] : themeTpls.map(function(tpl) { return tpl.replace(themeTemplatesPath, ''); });
+
+			coreTpls.forEach(function(el, i) {
+				paths[coreTpls[i]] = path.join(coreTemplatesPath, coreTpls[i]);
+			});
 
 			baseTpls.forEach(function(el, i) {
 				paths[baseTpls[i]] = path.join(baseTemplatesPath, baseTpls[i]);
