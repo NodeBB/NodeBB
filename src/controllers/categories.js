@@ -95,8 +95,8 @@ categoriesController.get = function(req, res, next) {
 				exists: function(next) {
 					categories.exists(cid, next);
 				},
-				disabled: function(next) {
-					categories.getCategoryField(cid, 'disabled', next);
+				categoryData: function(next) {
+					categories.getCategoryFields(cid, ['slug', 'disabled'], next);
 				},
 				privileges: function(next) {
 					privileges.categories.get(cid, uid, next);
@@ -107,7 +107,11 @@ categoriesController.get = function(req, res, next) {
 			}, next);
 		},
 		function(results, next) {
-			if (!results.exists || parseInt(results.disabled, 10) === 1) {
+			if (!results.exists || (results.categoryData && parseInt(results.categoryData.disabled, 10) === 1)) {
+				return categoriesController.notFound(req, res);
+			}
+
+			if (cid + '/' + req.params.slug !== results.categoryData.slug) {
 				return categoriesController.notFound(req, res);
 			}
 
@@ -218,13 +222,13 @@ categoriesController.get = function(req, res, next) {
 };
 
 categoriesController.notFound = function(req, res) {
-	res.locals.isAPI ? res.json(404, 'not-found') : res.redirect(nconf.get('relative_path') + '/404');
+	res.locals.isAPI ? res.json(404, 'not-found') : res.status(404).render('404');
 };
 
 categoriesController.notAllowed = function(req, res) {
 	var uid = req.user ? req.user.uid : 0;
 	if (uid) {
-		res.locals.isAPI ? res.json(403, 'not-allowed') : res.redirect(nconf.get('relative_path') + '/403');
+		res.locals.isAPI ? res.json(403, 'not-allowed') : res.status(403).render('403');
 	} else {
 		if (res.locals.isAPI) {
 			res.json(401, 'not-authorized');
