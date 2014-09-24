@@ -9,7 +9,7 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 			acpIndex = data;
 			for (var file in acpIndex) {
 				if (acpIndex.hasOwnProperty(file)) {
-					acpIndex[file] = $(acpIndex[file]).text();
+					acpIndex[file] = $(acpIndex[file]).text().toLowerCase();
 				}
 			}
 
@@ -22,12 +22,13 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 
 		$('#acp-search input').on('keyup focus', function() {
 			var $input = $(this),
+				value = $input.val().toLowerCase(),
 				menuItems = $('#acp-search .dropdown-menu').html('');
 
-			if ($input.val().length > 3) {
+			if (value.length > 3) {
 				for (var file in acpIndex) {
 					if (acpIndex.hasOwnProperty(file)) {
-						if (acpIndex[file].indexOf($input.val()) !== -1) {
+						if (acpIndex[file].indexOf(value) !== -1) {
 							var href = file.replace('.tpl', ''),
 								title = href.replace(/^\/admin\//, '').split('/');
 
@@ -45,13 +46,13 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 						}
 					}
 				}
-				
+
 				if (menuItems.html() !== '') {
 					menuItems.append('<li role="presentation" class="divider"></li>');
 				}
 			}
 
-			menuItems.append('<li role="presentation"><a role="menuitem" href="' + RELATIVE_PATH + '/search/' + $input.val() + '">Search the forum for "' + $input.val() + '"</a></li>');
+			menuItems.append('<li role="presentation"><a role="menuitem" href="' + RELATIVE_PATH + '/search/' + value + '">Search the forum for "' + value + '"</a></li>');
 		});
 	}
 });
