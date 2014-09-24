@@ -1,6 +1,7 @@
 'use strict';
 
 var winston = require('winston'),
+	validator = require('validator'),
 	user = require('../user'),
 	translator = require('../../public/src/translator');
 
@@ -34,6 +35,7 @@ module.exports = function(Meta) {
 	};
 
 	Meta.title.parseFragment = function (urlFragment, language, callback) {
+		urlFragment = validator.escape(urlFragment);
 		var	translated = ['', 'recent', 'unread', 'users', 'notifications'];
 		if (translated.indexOf(urlFragment) !== -1) {
 			if (!urlFragment.length) {
