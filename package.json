@@ -37,7 +37,7 @@
     "nodebb-plugin-downvote-post": "^0.1.0",
     "nodebb-plugin-upvote-post": "^1.0.0",
     "nodebb-plugin-dbsearch": "0.0.13",
-    "nodebb-plugin-markdown": "~0.5.0",
+    "nodebb-plugin-markdown": "~0.6.3",
     "nodebb-plugin-mentions": "~0.6.0",
     "nodebb-plugin-soundpack-default": "~0.1.1",
     "nodebb-theme-lavender": "~0.1.0",
