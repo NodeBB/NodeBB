@@ -71,6 +71,19 @@
 				</ul>
 
 				<ul id="logged-in-menu" class="nav navbar-nav navbar-right">
+					<form class="navbar-form navbar-left" role="search">
+						<div class="form-group" id="acp-search" >
+							<div class="dropdown" >
+								<input type="text" data-toggle="dropdown" class="form-control" placeholder="Search ACP...">
+								<ul class="dropdown-menu" role="menu">
+									<div class="found"></div>
+									<li><a href="#">Separated link</a></li>
+									<li><a href="search" id="search-main">Search the forum for</a></li>
+								</ul>
+							</div>
+						</div>
+					</form>
+
 					<li id="user_label" class="dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
 							<img src="{userpicture}"/>
