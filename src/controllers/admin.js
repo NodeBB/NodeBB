@@ -203,7 +203,7 @@ adminController.languages.get = function(req, res, next) {
 };
 
 adminController.settings.get = function(req, res, next) {
-	res.render('admin/settings', {
+	res.render('admin/settings/' + req.params.term, {
 		'csrf': req.csrfToken()
 	});
 };

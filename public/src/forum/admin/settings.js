@@ -17,6 +17,8 @@ define('forum/admin/settings', ['uploader', 'sounds'], function(uploader, sounds
 			return;
 		}
 
+		setupPills();
+
 		// Populate the fields on the page from the config
 		var fields = $('#content [data-field]'),
 			numFields = fields.length,
@@ -91,12 +93,6 @@ define('forum/admin/settings', ['uploader', 'sounds'], function(uploader, sounds
 
 		handleUploads();
 
-		$('#settings-tab a').off('click').on('click', function (e) {
-			e.preventDefault();
-			$(this).tab('show');
-			return false;
-		});
-
 		$('button[data-action="email.test"]').off('click').on('click', function() {
 			socket.emit('admin.email.test', function(err) {
 				app.alert({
@@ -130,6 +126,14 @@ define('forum/admin/settings', ['uploader', 'sounds'], function(uploader, sounds
 	Settings.remove = function(key) {
 		socket.emit('admin.config.remove', key);
 	};
+
+	function setupPills() {
+		$('.settings.nav-pills li').removeClass('active');
+
+		var slug = window.location.href.split('/');
+		slug = slug[slug.length-1];
+		$('.settings.nav-pills [data-pill="' + slug + '"]').addClass('active');
+	}
 
 	function saveField(field, callback) {
 		field = $(field);

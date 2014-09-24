@@ -39,11 +39,13 @@ function addRoutes(router, middleware, controllers) {
 	//main
 	router.get('/index', controllers.admin.home);
 	router.get('/plugins', controllers.admin.plugins.get);
-	router.get('/settings', middleware.applyCSRF, controllers.admin.settings.get);
 	router.get('/themes', controllers.admin.themes.get);
 	router.get('/languages', controllers.admin.languages.get);
 	router.get('/groups', controllers.admin.groups.get);
 	router.get('/sounds', controllers.admin.sounds.get);
+
+	//settings
+	router.get('/settings/:term', middleware.applyCSRF, controllers.admin.settings.get);
 
 	//user
 	router.get('/users', controllers.admin.users.search);
