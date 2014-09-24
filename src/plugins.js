@@ -609,15 +609,13 @@ var fs = require('fs'),
 	Plugins.getAll = function(callback) {
 		var request = require('request');
 		request('http://npm.aws.af.cm/api/v1/plugins', function(err, res, body) {
-			if (err) {
-				return callback(err);
-			}
 			var plugins = [];
+
 			try {
 				plugins = JSON.parse(body);
 			} catch(err) {
 				winston.error('Error parsing plugins : ' + err.message);
-				return callback(null, []);
+				plugins = [];
 			}
 
 			var pluginMap = {};
