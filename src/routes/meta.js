@@ -27,6 +27,10 @@ function sendStylesheet(req, res, next) {
 	res.type('text/css').send(200, meta.css.cache);
 }
 
+function sendACPStylesheet(req, res, next) {
+	res.type('text/css').send(200, meta.css.acpCache);	
+}
+
 function setupPluginSourceMapping(app) {
 	/*
 		These mappings are utilised by the source map file, as client-side
@@ -48,6 +52,7 @@ function setupPluginSourceMapping(app) {
 
 module.exports = function(app, middleware, controllers) {
 	app.get('/stylesheet.css', middleware.addExpiresHeaders, sendStylesheet);
+	app.get('/admin.css', middleware.addExpiresHeaders, sendACPStylesheet);
 	app.get('/nodebb.min.js', middleware.addExpiresHeaders, sendMinifiedJS);
 	app.get('/sitemap.xml', controllers.sitemap);
 	app.get('/robots.txt', controllers.robots);
