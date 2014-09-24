@@ -1,3 +1,5 @@
+"use strict";
+
 var mkdirp = require('mkdirp'),
 	rimraf = require('rimraf'),
 	winston = require('winston'),
@@ -17,7 +19,9 @@ Templates.compile = function(callback) {
 	if (cluster.isWorker && process.env.cluster_setup !== 'true') {
 		return setTimeout(function() {
 			emitter.emit('templates:compiled');
-			if (callback) callback();
+			if (callback) {
+				callback();
+			}
 		}, 1000);
 	}
 
@@ -97,7 +101,9 @@ Templates.compile = function(callback) {
 				} else {
 					winston.info('[themes] Successfully compiled templates.');
 					emitter.emit('templates:compiled');
-					if (callback) callback();
+					if (callback) {
+						callback();
+					}
 				}
 			});
 		});
