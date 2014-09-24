@@ -37,7 +37,7 @@
     },
     {
         "field": "allowAccountDelete",
-        "value": 1,
+        "value": 1
     },
     {
         "field": "allowFileUploads",
