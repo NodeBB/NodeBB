@@ -1,7 +1,7 @@
 
 'use strict';
 
-/* globals app, ajaxify, define, socket, translator */
+/* globals app, ajaxify, define, socket, translator, templates */
 
 define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', 'forum/topic/threadTools'], function(browsing, postTools, threadTools) {
 
@@ -9,7 +9,9 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 
 	var events = {
 		'event:update_users_in_room': browsing.onUpdateUsersInRoom,
-		'user.isOnline': browsing.onUserOnline,
+		'event:user_enter': browsing.onUserEnter,
+		'event:user_leave': browsing.onUserLeave,
+		'event:user_status_change': browsing.onUserStatusChange,
 		'event:voted': updatePostVotesAndUserReputation,
 		'event:favourited': updateFavouriteCount,
 

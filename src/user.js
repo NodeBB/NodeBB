@@ -1,7 +1,6 @@
 'use strict';
 
-var bcrypt = require('bcryptjs'),
-	async = require('async'),
+var	async = require('async'),
 	nconf = require('nconf'),
 	gravatar = require('gravatar'),
 
@@ -9,7 +8,7 @@ var bcrypt = require('bcryptjs'),
 	db = require('./database'),
 	meta = require('./meta'),
 	groups = require('./groups'),
-	emitter = require('./emitter');
+	Password = require('./password');
 
 (function(User) {
 
@@ -68,9 +67,8 @@ var bcrypt = require('bcryptjs'),
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('filter:user.removeFields', fieldsToRemove, function(err, fields) {
-				callback(err, modifyUserData(users, fields));
-			});
+
+			modifyUserData(users, fieldsToRemove, callback);
 		});
 	};
 
@@ -95,13 +93,11 @@ var bcrypt = require('bcryptjs'),
 				return callback(err);
 			}
 
-			plugins.fireHook('filter:user.removeFields', [], function(err, fields) {
-				callback(err, modifyUserData(users, fields));
-			});
+			modifyUserData(users, [], callback);
 		});
 	};
 
-	function modifyUserData(users, fieldsToRemove) {
+	function modifyUserData(users, fieldsToRemove, callback) {
 		users.forEach(function(user) {
 			if (!user) {
 				return;
@@ -113,6 +109,7 @@ var bcrypt = require('bcryptjs'),
 			}
 
 			if (!parseInt(user.uid, 10)) {
+				user.uid = 0;
 				user.username = '[[global:guest]]';
 				user.userslug = '';
 			}
@@ -131,13 +128,14 @@ var bcrypt = require('bcryptjs'),
 				user[fieldsToRemove[i]] = undefined;
 			}
 		});
-		return users;
+
+		plugins.fireHook('filter:users.get', users, callback);
 	}
 
 	User.updateLastOnlineTime = function(uid, callback) {
 		callback = callback || function() {};
-		User.getUserField(uid, 'status', function(err, status) {
-			if(err || status === 'offline') {
+		User.getUserFields(uid, ['status', 'lastonline'], function(err, userData) {
+			if(err || userData.status === 'offline' || Date.now() - parseInt(userData.lastonline, 10) < 300000) {
 				return callback(err);
 			}
 
@@ -152,7 +150,7 @@ var bcrypt = require('bcryptjs'),
 
 		async.parallel({
 			userData: function(next) {
-				User.getUserFields(uid, ['banned', 'lastposttime', 'email', 'email:confirmed'], next);
+				User.getUserFields(uid, ['banned', 'lastposttime', 'joindate', 'email', 'email:confirmed'], next);
 			},
 			exists: function(next) {
 				db.exists('user:' + uid, next);
@@ -182,13 +180,14 @@ var bcrypt = require('bcryptjs'),
 			if (userData.email && parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
 				return callback(new Error('[[error:email-not-confirmed]]'));
 			}
-
-			var lastposttime = userData.lastposttime;
-			if (!lastposttime) {
-				lastposttime = 0;
+			var now = Date.now();
+			if (now - parseInt(userData.joindate, 10) < parseInt(meta.config.initialPostDelay, 10) * 1000) {
+				return callback(new Error('[[error:user-too-new, ' + meta.config.initialPostDelay + ']]'));
 			}
 
-			if (Date.now() - parseInt(lastposttime, 10) < parseInt(meta.config.postDelay, 10) * 1000) {
+			var lastposttime = userData.lastposttime || 0;
+
+			if (now - parseInt(lastposttime, 10) < parseInt(meta.config.postDelay, 10) * 1000) {
 				return callback(new Error('[[error:too-many-posts, ' + meta.config.postDelay + ']]'));
 			}
 			callback();
@@ -278,7 +277,7 @@ var bcrypt = require('bcryptjs'),
 		}
 
 		var options = {
-			size: '128',
+			size: parseInt(meta.config.profileImageDimension, 10) || 128,
 			default: customGravatarDefaultImage || meta.config.defaultGravatarImage || 'identicon',
 			rating: 'pg'
 		};
@@ -295,42 +294,39 @@ var bcrypt = require('bcryptjs'),
 			return callback(null, password);
 		}
 
-		bcrypt.genSalt(nconf.get('bcrypt_rounds'), function(err, salt) {
-			if (err) {
-				return callback(err);
+		Password.hash(nconf.get('bcrypt_rounds'), password, callback);
+	};
+
+	User.onNewPostMade = function(postData, callback) {
+		async.parallel([
+			function(next) {
+				User.addPostIdToUser(postData.uid, postData.pid, postData.timestamp, next);
+			},
+			function(next) {
+				User.incrementUserPostCountBy(postData.uid, 1, next);
+			},
+			function(next) {
+				User.setUserField(postData.uid, 'lastposttime', postData.timestamp, next);
 			}
-			bcrypt.hash(password, salt, callback);
-		});
+		], callback);
 	};
-
-	User.onNewPostMade = function(postData) {
-		User.addPostIdToUser(postData.uid, postData.pid, postData.timestamp);
-
-		User.incrementUserPostCountBy(postData.uid, 1);
-
-		User.setUserField(postData.uid, 'lastposttime', postData.timestamp);
-	};
-
-	emitter.on('event:newpost', User.onNewPostMade);
 
 	User.incrementUserPostCountBy = function(uid, value, callback) {
+		callback = callback || function() {};
 		User.incrementUserFieldBy(uid, 'postcount', value, function(err, newpostcount) {
 			if (err) {
-				if(typeof callback === 'function') {
-					callback(err);
-				}
-				return;
+				return callback(err);
 			}
 			db.sortedSetAdd('users:postcount', newpostcount, uid, callback);
 		});
 	};
 
-	User.addPostIdToUser = function(uid, pid, timestamp) {
-		db.sortedSetAdd('uid:' + uid + ':posts', timestamp, pid);
+	User.addPostIdToUser = function(uid, pid, timestamp, callback) {
+		db.sortedSetAdd('uid:' + uid + ':posts', timestamp, pid, callback);
 	};
 
-	User.addTopicIdToUser = function(uid, tid, timestamp) {
-		db.sortedSetAdd('uid:' + uid + ':topics', timestamp, tid);
+	User.addTopicIdToUser = function(uid, tid, timestamp, callback) {
+		db.sortedSetAdd('uid:' + uid + ':topics', timestamp, tid, callback);
 	};
 
 	User.getPostIds = function(uid, start, stop, callback) {
@@ -404,7 +400,11 @@ var bcrypt = require('bcryptjs'),
 			});
 			groups.isMemberOfGroups(uid, groupNames, callback);
 		} else {
-			groups.isMember(uid, 'cid:' + cid + ':privileges:mods', callback);
+			if (Array.isArray(uid)) {
+				groups.isMembers(uid, 'cid:' + cid + ':privileges:mods', callback);
+			} else {
+				groups.isMember(uid, 'cid:' + cid + ':privileges:mods', callback);
+			}
 		}
 	};
 
@@ -416,34 +416,22 @@ var bcrypt = require('bcryptjs'),
 		}
 	};
 
-	User.isOnline = function(uids, callback) {
-		if (!Array.isArray(uids)) {
-			uids = [uids];
+	User.getIgnoredCategories = function(uid, callback) {
+		db.getSortedSetRange('uid:' + uid + ':ignored:cids', 0, -1, callback);
+	};
+
+	User.ignoreCategory = function(uid, cid, callback) {
+		if (!uid) {
+			return callback();
 		}
+		db.sortedSetAdd('uid:' + uid + ':ignored:cids', Date.now(), cid, callback);
+	};
 
-		User.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'reputation', 'postcount'] , function(err, userData) {
-			if (err) {
-				return callback(err);
-			}
-
-			var websockets = require('./socket.io');
-
-			userData = userData.map(function(user) {
-				var online = websockets.isUserOnline(user.uid);
-				user.status = online ? (user.status || 'online') : 'offline';
-
-				if (user.status === 'offline') {
-					online = false;
-				}
-
-				user.online = online;
-				user.timestamp = Date.now();
-				user.rooms = websockets.getUserRooms(user.uid);
-				return user;
-			});
-
-			callback(null, userData);
-		});
+	User.watchCategory = function(uid, cid, callback) {
+		if (!uid) {
+			return callback();
+		}
+		db.sortedSetRemove('uid:' + uid + ':ignored:cids', cid, callback);
 	};
 
 

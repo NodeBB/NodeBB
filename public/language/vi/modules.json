@@ -12,6 +12,10 @@
     "chat.message-history": "Lịch sử tin nhắn",
     "chat.pop-out": "Bật cửa sổ chat",
     "chat.maximize": "Phóng to",
+    "chat.yesterday": "Yesterday",
+    "chat.seven_days": "7 Days",
+    "chat.thirty_days": "30 Days",
+    "chat.three_months": "3 Months",
     "composer.user_said_in": "%1 đã nói trong %2:",
     "composer.user_said": "%1 đã nói:",
     "composer.discard": "Bạn có chắc chắn hủy bỏ bài viết này?"

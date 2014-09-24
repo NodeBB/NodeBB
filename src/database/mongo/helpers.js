@@ -1,6 +1,7 @@
 "use strict";
 
-var helpers = {};
+var helpers = {},
+	winston = require('winston');
 
 helpers.toMap = function(data) {
 	var map = {};
@@ -8,7 +9,7 @@ helpers.toMap = function(data) {
 		map[data[i]._key] = data[i];
 	}
 	return map;
-}
+};
 
 helpers.fieldToString = function(field) {
 	if(field === null || field === undefined) {
@@ -31,12 +32,6 @@ helpers.valueToString = function(value) {
 	return value.toString();
 };
 
-helpers.done = function(cb) {
-	return function(err, result) {
-		if (typeof cb === 'function') {
-			cb(err, result);
-		}
-	};
-};
+helpers.noop = function() {};
 
 module.exports = helpers;

@@ -1,4 +1,4 @@
-define('forum/search', function() {
+define('forum/search', ['search'], function(searchModule) {
 	var	Search = {};
 
 	Search.init = function() {
@@ -21,11 +21,13 @@ define('forum/search', function() {
 
 		$('#search-form input').val(searchQuery);
 
-		$('#mobile-search-form').off('submit').on('submit', function() {
+		$('#mobile-search-form').off('submit').on('submit', function(e) {
+			e.preventDefault();
 			var input = $(this).find('input');
-			ajaxify.go('search/' + input.val(), null, 'search');
-			input.val('');
-			return false;
+
+			searchModule.query(input.val(), function() {
+				input.val('');
+			});
 		});
 	};
 

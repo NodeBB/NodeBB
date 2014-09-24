@@ -18,7 +18,7 @@ module.exports = function(db, module) {
 			}
 		], function(err) {
 			if (typeof callback === 'function') {
-				callback(err, obj);
+				callback(err);
 			}
 		});
 	};
@@ -42,7 +42,7 @@ module.exports = function(db, module) {
 					if (typeof callback === 'function') {
 						callback(err, obj);
 					}
-				});	
+				});
 			} else {
 				if (typeof callback === 'function') {
 					callback(err, {});

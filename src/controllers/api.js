@@ -30,6 +30,7 @@ apiController.getConfig = function(req, res, next) {
 	config.allowGuestSearching = parseInt(meta.config.allowGuestSearching, 10) === 1;
 	config.allowFileUploads = parseInt(meta.config.allowFileUploads, 10) === 1;
 	config.allowTopicsThumbnail = parseInt(meta.config.allowTopicsThumbnail, 10) === 1;
+	config.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
 	config.privateUserInfo = parseInt(meta.config.privateUserInfo, 10) === 1;
 	config.usePagination = parseInt(meta.config.usePagination, 10) === 1;
 	config.disableSocialButtons = parseInt(meta.config.disableSocialButtons, 10) === 1;
@@ -42,6 +43,7 @@ apiController.getConfig = function(req, res, next) {
 	config.maximumFileSize = meta.config.maximumFileSize;
 	config['theme:id'] = meta.config['theme:id'];
 	config.defaultLang = meta.config.defaultLang || 'en_GB';
+	config.userLang = config.defaultLang;
 	config.environment = process.env.NODE_ENV;
 	config.loggedIn = !!req.user;
 	config['cache-buster'] = meta.config['cache-buster'] || '';
@@ -68,7 +70,7 @@ apiController.getConfig = function(req, res, next) {
 		config.topicsPerPage = settings.topicsPerPage;
 		config.postsPerPage = settings.postsPerPage;
 		config.notificationSounds = settings.notificationSounds;
-		config.defaultLang = settings.language || config.defaultLang;
+		config.userLang = settings.language || config.defaultLang;
 		config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
 		config.topicPostSort = settings.topicPostSort || config.topicPostSort;
 
@@ -83,19 +85,28 @@ apiController.getConfig = function(req, res, next) {
 
 
 apiController.renderWidgets = function(req, res, next) {
-	var uid = req.user ? req.user.uid : 0,
-		area = {
+	var async = require('async'),
+		uid = req.user ? req.user.uid : 0,
+		areas = {
 			template: req.query.template,
-			location: req.query.location,
+			locations: req.query.locations,
 			url: req.query.url
-		};
+		},
+		renderedWidgets = [];
 
-	if (!area.template || !area.location) {
+	if (!areas.template || !areas.locations) {
 		return res.json(200, {});
 	}
 
-	widgets.render(uid, area, function(err, data) {
-		res.json(200, data);
+	widgets.render(uid, {
+		template: areas.template,
+		url: areas.url,
+		locations: areas.locations
+	}, function(err, widgets) {
+		if (err) {
+			return next(err);
+		}
+		res.json(200, widgets);
 	});
 };
 

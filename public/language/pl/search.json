@@ -1,3 +1,4 @@
 {
-    "results_matching": "%1 result(s) matching \"%2\", (%3 seconds)"
+    "results_matching": "%1 wyników pasujących do \"%2\", (%3 sekund)",
+    "no-matches": "Nie znaleziono postów"
 }

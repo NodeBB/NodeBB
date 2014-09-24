@@ -71,6 +71,11 @@ define('notifications', ['sounds'], function(sound) {
 			Tinycon.setBubble(count);
 		};
 
+		function increaseNotifCount() {
+			var count = parseInt(notifIcon.attr('data-content'), 10) + 1;
+			updateNotifCount(count);
+		}
+
 		socket.emit('notifications.getCount', function(err, count) {
 			if (!err) {
 				updateNotifCount(count);
@@ -79,7 +84,7 @@ define('notifications', ['sounds'], function(sound) {
 			}
 		});
 
-		socket.on('event:new_notification', function(notifData, notifCount) {
+		socket.on('event:new_notification', function(notifData) {
 			app.alert({
 				alert_id: 'new_notif',
 				title: '[[notifications:new_notification]]',
@@ -93,10 +98,11 @@ define('notifications', ['sounds'], function(sound) {
 				ajaxify.refresh();
 			}
 
-			updateNotifCount(notifCount);
+			increaseNotifCount();
 
 			sound.play('notification');
 		});
+
 		socket.on('event:notifications.updateCount', function(count) {
 			updateNotifCount(count);
 		});

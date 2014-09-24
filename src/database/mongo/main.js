@@ -13,7 +13,7 @@ module.exports = function(db, module) {
 			content: content
 		};
 
-		db.collection('search').update({id:id, key:key}, {$set:data}, {upsert:true, w: 1}, function(err) {
+		db.collection('search').update({key:key, id:id}, {$set:data}, {upsert:true, w: 1}, function(err) {
 			if(err) {
 				winston.error('Error indexing ' + err.message);
 			}
@@ -40,11 +40,13 @@ module.exports = function(db, module) {
 	};
 
 	module.searchRemove = function(key, id, callback) {
-		db.collection('search').remove({id:id, key:key}, helpers.done(callback));
+		callback = callback || helpers.noop;
+		db.collection('search').remove({key:key, id:id}, callback);
 	};
 
 	module.flushdb = function(callback) {
-		db.dropDatabase(helpers.done(callback));
+		callback = callback || helpers.noop;
+		db.dropDatabase(callback);
 	};
 
 	module.info = function(callback) {
@@ -54,6 +56,10 @@ module.exports = function(db, module) {
 			}
 
 			stats.avgObjSize = (stats.avgObjSize / 1024).toFixed(2);
+			stats.dataSize = (stats.dataSize / 1024).toFixed(2);
+			stats.storageSize = (stats.storageSize / 1024).toFixed(2);
+			stats.fileSize = (stats.fileSize / 1024).toFixed(2);
+			stats.indexSize = (stats.indexSize / 1024).toFixed(2);
 			stats.raw = JSON.stringify(stats, null, 4);
 			stats.mongo = true;
 
@@ -62,30 +68,57 @@ module.exports = function(db, module) {
 	};
 
 	module.exists = function(key, callback) {
-		db.collection('objects').findOne({_key:key}, function(err, item) {
+		if (!key) {
+			return callback();
+		}
+		db.collection('objects').findOne({_key: key}, function(err, item) {
 			callback(err, item !== undefined && item !== null);
 		});
 	};
 
 	module.delete = function(key, callback) {
-		db.collection('objects').remove({_key:key}, helpers.done(callback));
+		callback = callback || helpers.noop;
+		if (!key) {
+			return callback();
+		}
+		db.collection('objects').remove({_key: key}, callback);
+	};
+
+	module.deleteAll = function(keys, callback) {
+		callback = callback || helpers.noop;
+		if (!Array.isArray(keys) || !keys.length) {
+			return callback();
+		}
+		db.collection('objects').remove({_key: {$in: keys}}, callback);
 	};
 
 	module.get = function(key, callback) {
+		if (!key) {
+			return callback();
+		}
 		module.getObjectField(key, 'value', callback);
 	};
 
 	module.set = function(key, value, callback) {
-		var data = {value:value};
+		callback = callback || helpers.noop;
+		if (!key) {
+			return callback();
+		}
+		var data = {value: value};
 		module.setObject(key, data, callback);
 	};
 
 	module.increment = function(key, callback) {
-		db.collection('objects').update({_key: key}, { $inc: { value: 1 } }, helpers.done(callback));
+		callback = callback || helpers.noop;
+		if (!key) {
+			return callback();
+		}
+		db.collection('objects').update({_key: key}, { $inc: { value: 1 } }, callback);
 	};
 
 	module.rename = function(oldKey, newKey, callback) {
-		db.collection('objects').update({_key: oldKey}, {$set:{_key: newKey}}, helpers.done(callback));
+		callback = callback || helpers.noop;
+		db.collection('objects').update({_key: oldKey}, {$set:{_key: newKey}}, callback);
 	};
 
 	module.expire = function(key, seconds, callback) {

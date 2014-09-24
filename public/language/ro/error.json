@@ -12,11 +12,13 @@
     "invalid-title": "Titlu invalid!",
     "invalid-user-data": "Date utilizator invalide",
     "invalid-password": "Parolă Invalidă",
+    "invalid-username-or-password": "Please specify both a username and password",
     "invalid-pagination-value": "Date paginație invalide",
     "username-taken": "Numele de utilizator este deja folosit",
     "email-taken": "Adresa de email este deja folostă",
     "email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
     "username-too-short": "Numele de utilizator este prea scurt",
+    "username-too-long": "Username too long",
     "user-banned": "Utilizator banat",
     "user-too-new": "You need to wait %1 seconds before making your first post!",
     "no-category": "Categoria nu există",
@@ -53,5 +55,9 @@
     "upload-error": "Eroare Upload : %1",
     "signature-too-long": "Semnătura ta nu poate fi mai lungă de %1 caractere!",
     "cant-chat-with-yourself": "Nu poți conversa cu tine!",
-    "not-enough-reputation-to-downvote": "Nu ai destulă reputație pentru a vota negativ acest post."
+    "reputation-system-disabled": "Reputation system is disabled.",
+    "downvoting-disabled": "Downvoting is disabled",
+    "not-enough-reputation-to-downvote": "Nu ai destulă reputație pentru a vota negativ acest post.",
+    "not-enough-reputation-to-flag": "Yo do not have enough reputation to flag this post",
+    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }

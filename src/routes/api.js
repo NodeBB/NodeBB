@@ -203,8 +203,8 @@ module.exports =  function(app, middleware, controllers) {
 	router.get('/categories/:cid/moderators', getModerators);
 	router.get('/recent/posts/:term?', getRecentPosts);
 
-	router.post('/post/upload', uploadPost);
-	router.post('/topic/thumb/upload', uploadThumb);
-	router.post('/user/:userslug/uploadpicture', middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.uploadPicture);
+	router.post('/post/upload', middleware.applyCSRF, uploadPost);
+	router.post('/topic/thumb/upload', middleware.applyCSRF, uploadThumb);
+	router.post('/user/:userslug/uploadpicture', middleware.applyCSRF, middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.uploadPicture);
 
 };

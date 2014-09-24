@@ -1,3 +1,4 @@
 {
-    "results_matching": "%1 result(s) matching \"%2\", (%3 seconds)"
+    "results_matching": "%1 kết quả(s) trùng với \"%2\", (%3 giây)",
+    "no-matches": "Không tìm thấy bài viết nào"
 }

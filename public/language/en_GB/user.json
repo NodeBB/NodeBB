@@ -5,6 +5,8 @@
 
 	"email": "Email",
 	"confirm_email": "Confirm Email",
+	"delete_account": "Delete Account",
+	"delete_account_confirm": "Are you sure you want to delete your account? <br /><strong>This action is irreversible and you will not be able to recover any of your data</strong><br /><br />Enter your username to confirm that you wish to destroy this account.",
 
 	"fullname": "Full Name",
 	"website": "Website",
@@ -55,6 +57,7 @@
 	"digest_daily": "Daily",
 	"digest_weekly": "Weekly",
 	"digest_monthly": "Monthly",
+	"send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
 
 	"has_no_follower": "This user doesn't have any followers :(",
 	"follows_no_one": "This user isn't following anyone :(",
@@ -71,5 +74,8 @@
 	"notification_sounds" : "Play a sound when you receive a notification.",
 
 	"browsing": "Browsing Settings",
-	"open_links_in_new_tab": "Open outgoing links in new tab?"
+	"open_links_in_new_tab": "Open outgoing links in new tab?",
+
+	"follow_topics_you_reply_to": "Follow topics that you reply to.",
+	"follow_topics_you_create": "Follow topics you create."
 }

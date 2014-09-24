@@ -1,6 +1,7 @@
 'use strict';
 
-var db = require('../database'),
+var async = require('async'),
+	db = require('../database'),
 	meta = require('../meta');
 
 module.exports = function(User) {
@@ -42,4 +43,11 @@ module.exports = function(User) {
 	User.auth.clearLoginAttempts = function(uid) {
 		db.delete('loginAttempts:' + uid);
 	};
+
+	User.auth.resetLockout = function(uid, callback) {
+		async.parallel([
+			async.apply(db.delete, 'loginAttempts:' + uid),
+			async.apply(db.delete, 'lockout:' + uid)
+		], callback);
+	}
 };

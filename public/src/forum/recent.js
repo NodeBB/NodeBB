@@ -116,6 +116,15 @@ define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
 	};
 
 	Recent.onTopicsLoaded = function(templateName, topics, showSelect, callback) {
+
+		topics = topics.filter(function(topic) {
+			return !$('#topics-container li[data-tid=' + topic.tid + ']').length;
+		});
+
+		if (!topics.length) {
+			return callback();
+		}
+
 		infinitescroll.parseAndTranslate(templateName, 'topics', {topics: topics, showSelect: showSelect}, function(html) {
 			$('#category-no-topics').remove();
 

@@ -33,8 +33,8 @@ define('composer/tags', function() {
 					}
 					if (tags) {
 						response(tags);
-						$('.ui-autocomplete a').attr('href', '#');
 					}
+					$('.ui-autocomplete a').attr('data-ajaxify', 'false');
 				});
 			},
 			select: function(event, ui) {

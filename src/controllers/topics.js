@@ -6,65 +6,117 @@ var topicsController = {},
 	validator = require('validator'),
 	nconf = require('nconf'),
 	qs = require('querystring'),
-	user = require('./../user'),
-	meta = require('./../meta'),
-	topics = require('./../topics'),
+	user = require('../user'),
+	meta = require('../meta'),
+	topics = require('../topics'),
 	posts = require('../posts'),
 	privileges = require('../privileges'),
-	utils = require('./../../public/src/utils');
+	categoriesController = require('./categories'),
+	utils = require('../../public/src/utils');
 
 topicsController.get = function(req, res, next) {
 	var tid = req.params.topic_id,
-		page = req.query.page || 1,
+		page = 1,
+		sort = req.query.sort,
 		uid = req.user ? req.user.uid : 0,
 		userPrivileges;
 
 	async.waterfall([
 		function (next) {
-			privileges.topics.get(tid, uid, next);
+			async.parallel({
+				privileges: function(next) {
+					privileges.topics.get(tid, uid, next);
+				},
+				postCount: function(next) {
+					topics.getPostCount(tid, next);
+				},
+				settings: function(next) {
+					user.getSettings(uid, next);
+				}
+			}, next);
 		},
-		function (privileges, next) {
-			if (!privileges.read || privileges.disabled) {
-				return next(new Error('[[error:no-privileges]]'));
+		function (results, next) {
+
+			var postCount = parseInt(results.postCount, 10) + 1;
+			if (utils.isNumber(req.params.post_index)) {
+				var url = '';
+				if (req.params.post_index > postCount) {
+					url = '/topic/' + req.params.topic_id + '/' + req.params.slug + '/' + postCount;
+					return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
+				} else if (req.params.post_index < 1) {
+					url = '/topic/' + req.params.topic_id + '/' + req.params.slug;
+					return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
+				}
 			}
 
-			userPrivileges = privileges;
+			userPrivileges = results.privileges;
 
-			user.getSettings(uid, next);
-		},
-		function (settings, next) {
-			var postIndex = 0;
-			if (!settings.usePagination) {
-				postIndex = Math.max((req.params.post_index || 1) - (settings.postsPerPage - 1), 0);
-			} else if (!req.query.page) {
-				var index = Math.max(parseInt((req.params.post_index || 0), 10), 0);
-				page = Math.ceil((index + 1) / settings.postsPerPage);
+			if (userPrivileges.disabled) {
+				return categoriesController.notFound(req, res);
 			}
 
-			var start = (page - 1) * settings.postsPerPage + postIndex,
-				end = start + settings.postsPerPage - 1;
+			if (!userPrivileges.read) {
+				return categoriesController.notAllowed(req, res);
+			}
 
+			var settings = results.settings;
 			var set = 'tid:' + tid + ':posts',
 				reverse = false;
 
-			if (settings.topicPostSort === 'newest_to_oldest') {
+			// `sort` qs has priority over user setting
+			if (sort === 'oldest_to_newest') {
+				reverse = false;
+			} else if (sort === 'newest_to_oldest') {
+				reverse = true;
+			} else if (sort === 'most_votes') {
+				reverse = true;
+				set = 'tid:' + tid + ':posts:votes';
+			} else if (settings.topicPostSort === 'newest_to_oldest') {
 				reverse = true;
 			} else if (settings.topicPostSort === 'most_votes') {
 				reverse = true;
 				set = 'tid:' + tid + ':posts:votes';
 			}
 
-			topics.getTopicWithPosts(tid, set, uid, start, end, reverse, function (err, topicData) {
-				if (topicData) {
-					if (topicData.deleted && !userPrivileges.view_deleted) {
-						return next(new Error('[[error:no-topic]]'));
+			var postIndex = 0;
+			page = parseInt(req.query.page, 10) || 1;
+			req.params.post_index = parseInt(req.params.post_index, 10) || 0;
+			if (!settings.usePagination) {
+				if (reverse) {
+					if (req.params.post_index === 1) {
+						req.params.post_index = 0;
 					}
-					topicData.currentPage = page;
-					if(page > 1) {
-						topicData.posts.splice(0, 1);
-					}
+					postIndex = Math.max(postCount - (req.params.post_index || postCount) - (settings.postsPerPage - 1), 0);
+				} else {
+					postIndex = Math.max((req.params.post_index || 1) - (settings.postsPerPage + 1), 0);
 				}
-				next(err, topicData);
+			} else if (!req.query.page) {
+				var index = Math.max(req.params.post_index - 1, 0) || 0;
+				page = Math.max(1, Math.ceil(index / settings.postsPerPage));
+			}
+
+			var start = (page - 1) * settings.postsPerPage + postIndex,
+				end = start + settings.postsPerPage - 1;
+
+			topics.getTopicWithPosts(tid, set, uid, start, end, reverse, function (err, topicData) {
+				if (err && err.message === '[[error:no-topic]]' && !topicData) {
+					return categoriesController.notFound(req, res);
+				}
+				if (err && !topicData) {
+					return next(err);
+				}
+				if (topicData.deleted && !userPrivileges.view_deleted) {
+					return categoriesController.notAllowed(req, res);
+				}
+
+				topicData.pageCount = Math.ceil(parseInt(postCount, 10) / settings.postsPerPage);
+
+				topicData.currentPage = page;
+				if(page > 1) {
+					topicData.posts.splice(0, 1);
+				}
+
+				next(null, topicData);
 			});
 		},
 		function (topicData, next) {
@@ -140,7 +192,7 @@ topicsController.get = function(req, res, next) {
 				},
 				{
 					property: 'article:section',
-					content: topicData.category.name
+					content: topicData.category ? topicData.category.name : ''
 				}
 			];
 
@@ -151,25 +203,30 @@ topicsController.get = function(req, res, next) {
 					href: nconf.get('url') + '/topic/' + tid + '.rss'
 				},
 				{
-					rel: 'up',
-					href: nconf.get('url') + '/category/' + topicData.category.slug
-				},
-				{
 					rel: 'canonical',
 					href: nconf.get('url') + '/topic/' + topicData.slug
 				}
 			];
 
+			if (topicData.category) {
+				res.locals.linkTags.push({
+					rel: 'up',
+					href: nconf.get('url') + '/category/' + topicData.category.slug
+				});
+			}
+
 			next(null, topicData);
 		}
 	], function (err, data) {
 		if (err) {
-			return res.locals.isAPI ? res.json(404, 'not-found') : res.redirect(nconf.get('relative_path') + '/404');
+			return next(err);
 		}
 
 		data.privileges = userPrivileges;
-		data['reputation:disabled'] = meta.config['reputation:disabled'] === '1' ? true : false;
-		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
+		data['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
+		data['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
+		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+		data.csrf = req.csrfToken();
 
 		var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
 		var queryString = qs.stringify(req.query);
@@ -177,39 +234,58 @@ topicsController.get = function(req, res, next) {
 			topic_url += '?' + queryString;
 		}
 
-		// Paginator for noscript
-		data.pages = [];
-		for(var x=1; x<=data.pageCount; x++) {
-			data.pages.push({
-				page: x,
-				active: x === parseInt(page, 10)
-			});
+		if (!res.locals.isAPI) {
+			// Paginator for noscript
+			data.pages = [];
+			for(var x=1; x<=data.pageCount; x++) {
+				data.pages.push({
+					page: x,
+					active: x === parseInt(page, 10)
+				});
+			}
 		}
+
 		res.render('topic', data);
 	});
 };
 
 topicsController.teaser = function(req, res, next) {
 	var tid = req.params.topic_id;
-	topics.getLatestUndeletedPid(tid, function(err, pid) {
+	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
+
+	if (!utils.isNumber(tid)) {
+		return next(new Error('[[error:invalid-tid]]'));
+	}
+
+	privileges.topics.can('read', tid, uid, function(err, canRead) {
 		if (err) {
 			return next(err);
 		}
 
-		if (!pid) {
-			return res.json(404, 'not-found');
+		if (!canRead) {
+			return res.json(403, '[[error:no-priveges]]');
 		}
 
-		posts.getPostSummaryByPids([pid], {stripTags: false}, function(err, posts) {
+		topics.getLatestUndeletedPid(tid, function(err, pid) {
 			if (err) {
 				return next(err);
 			}
 
-			if (!Array.isArray(posts) || !posts.length) {
+			if (!pid) {
 				return res.json(404, 'not-found');
 			}
 
-			res.json(posts[0]);
+			posts.getPostSummaryByPids([pid], uid, {stripTags: false}, function(err, posts) {
+				if (err) {
+					return next(err);
+				}
+
+				if (!Array.isArray(posts) || !posts.length) {
+					return res.json(404, 'not-found');
+				}
+
+				res.json(posts[0]);
+			});
 		});
 	});
 };

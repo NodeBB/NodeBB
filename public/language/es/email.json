@@ -14,10 +14,10 @@
     "digest.cta": "Cliquea aquí para visitar %1",
     "digest.unsub.info": "Este compendio te fue enviado debido a tus ajustes de subscripción.",
     "digest.daily.no_topics": "No han habido temas activos en el día pasado",
-    "notif.chat.subject": "New chat message received from %1",
-    "notif.chat.cta": "Click here to continue the conversation",
-    "notif.chat.unsub.info": "This chat notification was sent to you due to your subscription settings.",
+    "notif.chat.subject": "Nuevo mensaje de chat recibido de %1",
+    "notif.chat.cta": "Haz click aquí para continuar la conversación",
+    "notif.chat.unsub.info": "Esta notificación de chat se te envió debido a tus ajustes de suscripción.",
     "test.text1": "Este es un email de prueba para verificar que el envío de email está ajustado correctamente para tu NodeBB",
-    "unsub.cta": "Click here to alter those settings",
+    "unsub.cta": "Haz click aquí para modificar los ajustes.",
     "closing": "¡Gracias!"
 }

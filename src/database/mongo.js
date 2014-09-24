@@ -38,10 +38,19 @@
 		}
 	];
 
+	module.helpers = module.helpers || {};
+	module.helpers.mongo = require('./mongo/helpers');
+
 	module.init = function(callback) {
 		try {
+			var sessionStore;
 			mongoClient = require('mongodb').MongoClient;
-			mongoStore = require('connect-mongo')({session: session});
+
+			if (!nconf.get('redis')) {
+				sessionStore = require('connect-mongo')({session: session});
+			} else {
+				sessionStore = require('connect-redis')(session);
+			}
 		} catch (err) {
 			winston.error('Unable to initialize MongoDB! Is MongoDB installed? Error :' + err.message);
 			process.exit();
@@ -57,9 +66,16 @@
 
 			module.client = db;
 
-			module.sessionStore = new mongoStore({
-				db: db
-			});
+			if (!nconf.get('redis')) {
+				module.sessionStore = new sessionStore({
+					db: db
+				});
+			} else {
+				module.sessionStore = new sessionStore({
+					client: require('./redis').connect(),
+					ttl: 60 * 60 * 24 * 14
+				});
+			}
 
 			require('./mongo/main')(db, module);
 			require('./mongo/hash')(db, module);
@@ -69,8 +85,8 @@
 
 			if(nconf.get('mongo:password') && nconf.get('mongo:username')) {
 				db.authenticate(nconf.get('mongo:username'), nconf.get('mongo:password'), function (err) {
-					if(err) {
-						winston.error(err.message);
+					if (err) {
+						winston.error(err.stack);
 						process.exit();
 					}
 					createIndices();
@@ -81,7 +97,19 @@
 			}
 
 			function createIndices() {
-				db.collection('objects').ensureIndex({_key :1}, {background:true}, function(err) {
+				db.collection('objects').ensureIndex({_key :1, score: -1}, {background:true}, function(err) {
+					if(err) {
+						winston.error('Error creating index ' + err.message);
+					}
+				});
+
+				db.collection('objects').ensureIndex({_key :1, score: 1}, {background:true}, function(err) {
+					if(err) {
+						winston.error('Error creating index ' + err.message);
+					}
+				});
+
+				db.collection('objects').ensureIndex({_key :1, value: -1}, {background:true}, function(err) {
 					if(err) {
 						winston.error('Error creating index ' + err.message);
 					}
@@ -99,6 +127,12 @@
 					}
 				});
 
+				db.collection('search').ensureIndex({key: 1, id: 1}, {background: true}, function(err) {
+					if(err) {
+						winston.error('Error creating index ' + err.message);
+					}
+				});
+
 				if(typeof callback === 'function') {
 					callback();
 				}
@@ -110,7 +144,5 @@
 		db.close();
 	};
 
-	module.helpers = module.helpers || {};
-	module.helpers.mongo = require('./mongo/helpers');
 }(exports));
 

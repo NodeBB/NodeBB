@@ -5,20 +5,21 @@ var categoriesController = {},
 	qs = require('querystring'),
 	nconf = require('nconf'),
 	privileges = require('../privileges'),
-	user = require('./../user'),
-	categories = require('./../categories'),
-	topics = require('./../topics'),
-	meta = require('./../meta'),
-	plugins = require('./../plugins');
+	user = require('../user'),
+	categories = require('../categories'),
+	topics = require('../topics'),
+	meta = require('../meta'),
+	plugins = require('../plugins');
 
 categoriesController.recent = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
-	topics.getLatestTopics(uid, 0, 19, req.params.term, function (err, data) {
-		if(err) {
+	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+	topics.getLatestTopics(uid, 0, end, req.params.term, function (err, data) {
+		if (err) {
 			return next(err);
 		}
 
-		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
+		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
 		plugins.fireHook('filter:category.get', data, uid, function(err, data) {
 			res.render('recent', data);
@@ -26,19 +27,32 @@ categoriesController.recent = function(req, res, next) {
 	});
 };
 
+var anonCache = {}, lastUpdateTime = 0;
+
 categoriesController.popular = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
 
 	var term = req.params.term || 'daily';
 
-	topics.getPopular(term, uid, function(err, data) {
-		if(err) {
+	if (uid === 0) {
+        if (anonCache[term] && (Date.now() - lastUpdateTime) < 60 * 60 * 1000) {
+            return res.render('popular', anonCache[term]);
+        }
+	}
+
+	topics.getPopular(term, uid, meta.config.topicsPerList, function(err, data) {
+		if (err) {
 			return next(err);
 		}
 
-		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
+		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
 		plugins.fireHook('filter:category.get', {topics: data}, uid, function(err, data) {
+			if (uid === 0) {
+		        anonCache[term] = data;
+		        lastUpdateTime = Date.now();
+			}
+
 			res.render('popular', data);
 		});
 	});
@@ -46,9 +60,9 @@ categoriesController.popular = function(req, res, next) {
 
 categoriesController.unread = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
-
-	topics.getUnreadTopics(uid, 0, 20, function (err, data) {
-		if(err) {
+	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+	topics.getUnreadTopics(uid, 0, end, function (err, data) {
+		if (err) {
 			return next(err);
 		}
 
@@ -77,43 +91,54 @@ categoriesController.get = function(req, res, next) {
 
 	async.waterfall([
 		function(next) {
-			categories.getCategoryField(cid, 'disabled', next);
+			async.parallel({
+				exists: function(next) {
+					categories.exists(cid, next);
+				},
+				disabled: function(next) {
+					categories.getCategoryField(cid, 'disabled', next);
+				},
+				privileges: function(next) {
+					privileges.categories.get(cid, uid, next);
+				},
+				userSettings: function(next) {
+					user.getSettings(uid, next);
+				}
+			}, next);
 		},
-		function(disabled, next) {
-			if (parseInt(disabled, 10) === 1) {
-				return next(new Error('[[error:category-disabled]]'));
+		function(results, next) {
+			if (!results.exists || parseInt(results.disabled, 10) === 1) {
+				return categoriesController.notFound(req, res);
 			}
 
-			privileges.categories.get(cid, uid, next);
-		},
-		function (privileges, next) {
-			if (!privileges.read) {
-				return next(new Error('[[error:no-privileges]]'));
+			if (!results.privileges.read) {
+				return categoriesController.notAllowed(req, res);
 			}
 
-			user.getSettings(uid, function(err, settings) {
+			var settings = results.userSettings;
+
+			var topicIndex = 0;
+			if (!settings.usePagination) {
+				topicIndex = Math.max((req.params.topic_index || 1) - (settings.topicsPerPage - 1), 0);
+			} else if (!req.query.page) {
+				var index = Math.max(parseInt((req.params.topic_index || 0), 10), 0);
+				page = Math.ceil((index + 1) / settings.topicsPerPage);
+			}
+
+			var start = (page - 1) * settings.topicsPerPage + topicIndex,
+				end = start + settings.topicsPerPage - 1;
+
+			categories.getCategoryById(cid, start, end, uid, function (err, categoryData) {
 				if (err) {
 					return next(err);
 				}
 
-				var topicIndex = 0;
-				if (!settings.usePagination) {
-					topicIndex = Math.max((req.params.topic_index || 1) - (settings.topicsPerPage - 1), 0);
-				} else if (!req.query.page) {
-					var index = Math.max(parseInt((req.params.topic_index || 0), 10), 0);
-					page = Math.ceil((index + 1) / settings.topicsPerPage);
-				}
-
-				var start = (page - 1) * settings.topicsPerPage + topicIndex,
-					end = start + settings.topicsPerPage - 1;
-
-				categories.getCategoryById(cid, start, end, uid, function (err, categoryData) {
+				categories.getRecentTopicReplies(categoryData.children, uid, function(err) {
 					if (err) {
 						return next(err);
 					}
-
-					categoryData.privileges = privileges;
-					next(err, categoryData);
+					categoryData.privileges = results.privileges;
+					next(null, categoryData);
 				});
 			});
 		},
@@ -160,7 +185,7 @@ categoriesController.get = function(req, res, next) {
 		}
 	], function (err, data) {
 		if (err) {
-			return res.locals.isAPI ? res.json(404, 'not-found') : res.redirect(nconf.get('relative_path') + '/404');
+			return next(err);
 		}
 
 		if (data.link) {
@@ -174,18 +199,40 @@ categoriesController.get = function(req, res, next) {
 		}
 
 		data.currentPage = page;
-		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
+		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+		data.csrf = req.csrfToken();
 
-		// Paginator for noscript
-		data.pages = [];
-		for(var x=1;x<=data.pageCount;x++) {
-			data.pages.push({
-				page: x,
-				active: x === parseInt(page, 10)
-			});
+		if (!res.locals.isAPI) {
+			// Paginator for noscript
+			data.pages = [];
+			for(var x=1;x<=data.pageCount;x++) {
+				data.pages.push({
+					page: x,
+					active: x === parseInt(page, 10)
+				});
+			}
 		}
+
 		res.render('category', data);
 	});
+};
+
+categoriesController.notFound = function(req, res) {
+	res.locals.isAPI ? res.json(404, 'not-found') : res.redirect(nconf.get('relative_path') + '/404');
+};
+
+categoriesController.notAllowed = function(req, res) {
+	var uid = req.user ? req.user.uid : 0;
+	if (uid) {
+		res.locals.isAPI ? res.json(403, 'not-allowed') : res.redirect(nconf.get('relative_path') + '/403');
+	} else {
+		if (res.locals.isAPI) {
+			res.json(401, 'not-authorized');
+		} else {
+			req.session.returnTo = req.url;
+			res.redirect(nconf.get('relative_path') + '/login');
+		}
+	}
 };
 
 module.exports = categoriesController;

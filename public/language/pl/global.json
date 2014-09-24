@@ -18,7 +18,7 @@
     "save_changes": "Zapisz zmiany",
     "close": "Zamknij",
     "pagination": "Numerowanie stron",
-    "pagination.out_of": "%1 poza %2",
+    "pagination.out_of": "%1 z %2",
     "pagination.enter_index": "Wpisz indeks.",
     "header.admin": "Administracja",
     "header.recent": "Ostatnie",

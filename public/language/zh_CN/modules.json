@@ -12,6 +12,10 @@
     "chat.message-history": "消息历史",
     "chat.pop-out": "弹出聊天窗口",
     "chat.maximize": "最大化",
+    "chat.yesterday": "Yesterday",
+    "chat.seven_days": "7 Days",
+    "chat.thirty_days": "30 Days",
+    "chat.three_months": "3 Months",
     "composer.user_said_in": "%1 在 %2 中说：",
     "composer.user_said": "%1 说：",
     "composer.discard": "确定想要取消此帖？"

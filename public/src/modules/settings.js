@@ -448,17 +448,18 @@ define('settings', function () {
 			helper.persistSettings(hash, Settings.cfg, notify, callback);
 		},
 		load: function (hash, formEl, callback) {
+			callback = callback || function() {};
 			socket.emit('admin.settings.get', {
 				hash: hash
 			}, function (err, values) {
-				if (!err) {
-					$(formEl).deserialize(values);
-					if (typeof callback === 'function') {
-						callback();
-					}
-				} else {
+				if (err) {
 					console.log('[settings] Unable to load settings for hash: ', hash);
+					return callback(err);
 				}
+
+				$(formEl).deserialize(values);
+
+				callback(null, values);
 			});
 		},
 		save: function (hash, formEl, callback) {

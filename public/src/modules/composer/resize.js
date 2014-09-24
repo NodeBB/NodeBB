@@ -22,7 +22,8 @@ define('composer/resize', function() {
 		}
 
 		if (env === 'sm' || env === 'xs') {
-			postContainer.css('height', $(window).height() - $('#header-menu').height());
+			app.toggleNavbar(false);
+			postContainer.css('height', $(window).height());
 		}
 
 		if (config.hasImageUploadPlugin) {
@@ -137,8 +138,8 @@ define('composer/resize', function() {
 
 
 	function resizeWritePreview(postContainer) {
-		var h1 = postContainer.find('.title').outerHeight(true);
-		var h2 = postContainer.find('.tags-container').outerHeight(true);
+		var h1 = postContainer.find('.title-container').outerHeight(true);
+		var h2 = postContainer.find('.category-tag-row').outerHeight(true);
 		var h3 = postContainer.find('.formatting-bar').outerHeight(true);
 		var h4 = postContainer.find('.topic-thumb-container').outerHeight(true);
 		var h5 = $('.taskbar').height();

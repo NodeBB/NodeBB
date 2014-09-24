@@ -166,7 +166,7 @@ SocketModules.chats.get = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	Messaging.getMessages(socket.uid, data.touid, false, callback);
+	Messaging.getMessages(socket.uid, data.touid, data.since, false, callback);
 };
 
 SocketModules.chats.send = function(socket, data, callback) {
@@ -181,11 +181,8 @@ SocketModules.chats.send = function(socket, data, callback) {
 
 	Messaging.verifySpammer(socket.uid, function(err, isSpammer) {
 		if (!err && isSpammer) {
-			var sockets = server.getUserSockets(socket.uid);
 
-			for(var i = 0; i < sockets.length; ++i) {
-				sockets[i].emit('event:banned');
-			}
+			server.in('uid_' + socket.uid).emit('event:banned');
 
 			// We're just logging them out, so a "temporary ban" to prevent abuse. Revisit once we implement a way to temporarily ban users
 			server.logoutUser(socket.uid);
@@ -200,57 +197,32 @@ SocketModules.chats.send = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		sendChatNotification(socket.uid, touid, message);
-
-		// After-the-fact fixing of the "self" property for the message that goes to the receipient
-		var recipMessage = JSON.parse(JSON.stringify(message));
-		recipMessage.self = 0;
+		Messaging.notifyUser(socket.uid, touid, message);
 
 		// Recipient
 		SocketModules.chats.pushUnreadCount(touid);
-		server.getUserSockets(touid).forEach(function(s) {
-			s.emit('event:chats.receive', {
-				withUid: socket.uid,
-				message: recipMessage
-			});
+		server.in('uid_' + touid).emit('event:chats.receive', {
+			withUid: socket.uid,
+			message: message,
+			self: 0
 		});
 
 		// Sender
 		SocketModules.chats.pushUnreadCount(socket.uid);
-		server.getUserSockets(socket.uid).forEach(function(s) {
-			s.emit('event:chats.receive', {
-				withUid: touid,
-				message: message
-			});
+		server.in('uid_' + socket.uid).emit('event:chats.receive', {
+			withUid: touid,
+			message: message,
+			self: 1
 		});
 	});
 };
-
-function sendChatNotification(fromuid, touid, messageObj) {
-	// todo #1798 -- this should check if the user is in room `chat_{uidA}_{uidB}` instead, see `Sockets.uidInRoom(uid, room);`
-	if (!module.parent.exports.isUserOnline(touid)) {
-		notifications.create({
-			bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
-			bodyLong: messageObj.content,
-			path: nconf.get('relative_path') + '/chats/' + utils.slugify(messageObj.fromUser.username),
-			uniqueId: 'chat_' + fromuid + '_' + touid,
-			from: fromuid
-		}, function(err, nid) {
-			if (!err) {
-				notifications.push(nid, [touid]);
-			}
-		});
-	}
-}
 
 SocketModules.chats.pushUnreadCount = function(uid) {
 	Messaging.getUnreadCount(uid, function(err, unreadCount) {
 		if (err) {
 			return;
 		}
-		server.getUserSockets(uid).forEach(function(s) {
-			s.emit('event:unread.updateChatCount', null, unreadCount);
-		});
+		server.in('uid_' + uid).emit('event:unread.updateChatCount', null, unreadCount);
 	});
 };
 
@@ -274,13 +246,17 @@ function sendTypingNotification(event, socket, data, callback) {
 	if (!socket.uid || !data) {
 		return;
 	}
-	server.getUserSockets(data.touid).forEach(function(socket) {
-		socket.emit(event, data.fromUid);
-	});
+	server.in('uid_' + data.touid).emit(event, data.fromUid);
 }
 
-SocketModules.chats.list = function(socket, data, callback) {
-	Messaging.getRecentChats(socket.uid, 0, 9, callback);
+SocketModules.chats.getRecentChats = function(socket, data, callback) {
+	if (!data || !utils.isNumber(data.after)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	var start = parseInt(data.after, 10),
+		end = start + 9;
+
+	Messaging.getRecentChats(socket.uid, start, end, callback);
 };
 
 /* Notifications */

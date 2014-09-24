@@ -7,6 +7,9 @@ module.exports = function(db, module) {
 	var helpers = module.helpers.level;
 
 	module.sortedSetAdd = function(key, score, value, callback) {
+		if (Array.isArray(score) && Array.isArray(value)) {
+			return sortedSetAddMulti(key, score, value, callback);
+		}
 		module.getListRange(key, 0, -1, function(err, set) {
 			set = set.filter(function(a) {return a.value !== value.toString();});
 
@@ -20,9 +23,24 @@ module.exports = function(db, module) {
 		});
 	};
 
+	function sortedSetAddMulti(key, scores, values, callback) {
+		throw new Error('not implemented');
+	}
+
+	module.sortedSetsAdd = function(keys, score, value, callback) {
+		async.each(keys, function(key, next) {
+			module.sortedSetAdd(key, score, value, next);
+		}, function(err) {
+			callback(err);
+		});
+	};
+
 	module.sortedSetRemove = function(key, value, callback) {
+		if (!Array.isArray(value)) {
+			value = [value];
+		}
 		module.getListRange(key, 0, -1, function(err, set) {
-			set = set.filter(function(a) {return a.value !== value.toString();});
+			set = set.filter(function(a) { return value.indexOf(a) === -1;});
 			module.set(key, set, callback);
 		});
 	};
@@ -31,6 +49,10 @@ module.exports = function(db, module) {
 		async.each(keys, function(key, next) {
 			module.sortedSetRemove(key, value, next);
 		}, callback);
+	};
+
+	module.sortedSetsRemoveRangeByScore = function(keys, min, max, callback) {
+		throw new Error('not implemented');
 	};
 
 	function flattenSortedSet(set, callback) {
@@ -113,6 +135,10 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.sortedSetsCard = function(keys, callback) {
+		async.map(keys, module.sortedSetCard, callback);
+	};
+
 	module.sortedSetRank = function(key, value, callback) {
 		module.getListRange(key, 0, -1, function(err, list) {
 			for (var i = 0, ii=list.length; i< ii; i++) {
@@ -146,6 +172,35 @@ module.exports = function(db, module) {
 			}
 
 			callback(err, null);
+		});
+	};
+
+	module.sortedSetScores = function(key, values, callback) {
+		values = values.map(function(value) {
+			return value ? value.toString() : value;
+		});
+
+		module.getListRange(key, 0, -1, function(err, list) {
+			if (err) {
+				return callback(err);
+			}
+
+			var map = {};
+			list = list.filter(function(item) {
+				return values.indexOf(item.value) !== -1;
+			}).forEach(function(item) {
+				map[item.value] = item.score;
+			});
+
+			var	returnData = new Array(values.length),
+				score;
+
+			for(var i=0; i<values.length; ++i) {
+				score = map[values[i]];
+				returnData[i] = score ? score : null;
+			}
+
+			callback(null, returnData);
 		});
 	};
 

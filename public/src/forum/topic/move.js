@@ -43,7 +43,7 @@ define('forum/topic/move', function() {
 
 		renderCategories(categories);
 
-		modal.find('.category-list').on('click', 'li[data-cid]', function(e) {
+		modal.on('click', '.category-list li[data-cid]', function(e) {
 			selectCategory($(this));
 		});
 
@@ -90,24 +90,10 @@ define('forum/topic/move', function() {
 	}
 
 	function renderCategories(categories) {
-		var categoriesEl = modal.find('.category-list'),
-			info;
-
-		for (var x = 0; x < categories.length; ++x) {
-			info = categories[x];
-			if(parseInt(info.cid, 10) === parseInt(Move.currentCid, 10)) {
-				continue;
-			}
-
-			$('<li />')
-				.css({background: info.bgColor, color: info.color || '#fff'})
-				.toggleClass('disabled', info.disabled)
-				.attr('data-cid', info.cid)
-				.html('<i class="fa ' + info.icon + '"></i> ' + info.name)
-				.appendTo(categoriesEl);
-		}
-
-		$('#categories-loading').remove();
+		templates.parse('partials/category_list', {categories: categories}, function(html) {
+			modal.find('.modal-body').prepend(html);
+			$('#categories-loading').remove();
+		});
 	}
 
 	return Move;

@@ -4,17 +4,20 @@
 	var passport = require('passport'),
 		passportLocal = require('passport-local').Strategy,
 		nconf = require('nconf'),
-		bcrypt = require('bcryptjs'),
+		Password = require('../password'),
 		winston = require('winston'),
 		async = require('async'),
+		express = require('express'),
 
-		meta = require('./../meta'),
-		user = require('./../user'),
-		plugins = require('./../plugins'),
+		meta = require('../meta'),
+		user = require('../user'),
+		plugins = require('../plugins'),
 		db = require('../database'),
-		utils = require('./../../public/src/utils'),
+		hotswap = require('../hotswap'),
+		utils = require('../../public/src/utils'),
 
-		login_strategies = [];
+		login_strategies = [],
+		controllers = require('../controllers');
 
 	function logout(req, res) {
 		if (req.user && parseInt(req.user.uid, 10) > 0) {
@@ -33,11 +36,17 @@
 		var continueLogin = function() {
 			passport.authenticate('local', function(err, userData, info) {
 				if (err) {
-					return res.json(403, err.message);
+					req.flash('error', info);
+					return res.redirect(nconf.get('relative_path') + '/login');
 				}
 
 				if (!userData) {
-					return res.json(403, info);
+					if (typeof info === 'object') {
+						info = '[[error:invalid-username-or-password]]';
+					}
+
+					req.flash('error', info);
+					return res.redirect(nconf.get('relative_path') + '/login');
 				}
 
 				// Alter user cookie depending on passed-in option
@@ -55,9 +64,17 @@
 				}, function() {
 					if (userData.uid) {
 						user.logIP(userData.uid, req.ip);
+
+						plugins.fireHook('action:user.loggedIn', userData.uid);
 					}
 
-					res.json(200, info);
+					if (!req.session.returnTo) {
+						res.redirect(nconf.get('relative_path') + '/');
+					} else {
+						var next = req.session.returnTo;
+						delete req.session.returnTo;
+						res.redirect(nconf.get('relative_path') + next);
+					}
 				});
 			})(req, res, next);
 		};
@@ -121,22 +138,26 @@
 		});
 	}
 
-	Auth.initialize = function(app) {
+	Auth.initialize = function(app, middleware) {
 		app.use(passport.initialize());
 		app.use(passport.session());
-	};
 
+		Auth.app = app;
+		Auth.middleware = middleware;
+	};
 
 	Auth.get_login_strategies = function() {
 		return login_strategies;
 	};
 
-	Auth.registerApp = function(app) {
-		Auth.app = app;
-	};
+	Auth.reloadRoutes = function(callback) {
+		var router = express.Router();
+			router.hotswapId = 'auth';
 
-	Auth.createRoutes = function(app, middleware, controllers) {
 		plugins.ready(function() {
+			// Reset the registered login strategies
+			login_strategies.length = 0;
+
 			plugins.fireHook('filter:auth.init', login_strategies, function(err) {
 				if (err) {
 					winston.error('filter:auth.init - plugin failure');
@@ -159,13 +180,13 @@
 						/* End backwards compatibility block */
 
 						if (strategy.url) {
-							app.get(strategy.url, passport.authenticate(strategy.name, {
+							router.get(strategy.url, passport.authenticate(strategy.name, {
 								scope: strategy.scope
 							}));
 						}
 
-						app.get(strategy.callbackURL, passport.authenticate(strategy.name, {
-							successRedirect: nconf.get('relative_path') + '/',
+						router.get(strategy.callbackURL, passport.authenticate(strategy.name, {
+							successReturnToOrRedirect: nconf.get('relative_path') + '/',
 							failureRedirect: nconf.get('relative_path') + '/login'
 						}));
 					}
@@ -184,16 +205,22 @@
 				}
 				/* End backwards compatibility block */
 
-				app.post('/logout', logout);
-				app.post('/register', register);
-				app.post('/login', login);
+				router.post('/logout', logout);
+				router.post('/register', Auth.middleware.applyCSRF, register);
+				router.post('/login', Auth.middleware.applyCSRF, login);
+
+				hotswap.replace('auth', router);
+				if (typeof callback === 'function') {
+					callback();
+				}
 			});
 		});
 	};
 
 	Auth.login = function(username, password, next) {
 		if (!username || !password) {
-			return next(new Error('[[error:invalid-user-data]]'));
+			next(new Error('[[error:invalid-password]]'));
+			return;
 		}
 
 		var userslug = utils.slugify(username);
@@ -204,7 +231,6 @@
 			}
 
 			if(!uid) {
-				// To-do: Even if a user doesn't exist, compare passwords anyway, so we don't immediately return
 				return next(null, false, '[[error:no-user]]');
 			}
 
@@ -226,7 +252,7 @@
 						return next(null, false, '[[error:user-banned]]');
 					}
 
-					bcrypt.compare(password, userData.password, function(err, res) {
+					Password.compare(password, userData.password, function(err, res) {
 						if (err) {
 							return next(new Error('bcrypt compare error'));
 						}

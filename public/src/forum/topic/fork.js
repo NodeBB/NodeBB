@@ -42,18 +42,26 @@ define('forum/topic/fork', function() {
 		socket.emit('topics.createTopicFromPosts', {
 			title: forkModal.find('#fork-title').val(),
 			pids: pids
-		}, function(err) {
+		}, function(err, newTopic) {
 			function fadeOutAndRemove(pid) {
 				$('#post-container li[data-pid="' + pid + '"]').fadeOut(500, function() {
 					$(this).remove();
 				});
 			}
 
-			if(err) {
+			if (err) {
 				return app.alertError(err.message);
 			}
 
-			app.alertSuccess('[[topic:fork_success]]');
+			app.alert({
+				timeout: 5000,
+				title: '[[global:alert.success]]',
+				message: '[[topic:fork_success]]',
+				type: 'success',
+				clickfn: function() {
+					ajaxify.go('topic/' + newTopic.slug);
+				}
+			});
 
 			for(var i=0; i<pids.length; ++i) {
 				fadeOutAndRemove(pids[i]);

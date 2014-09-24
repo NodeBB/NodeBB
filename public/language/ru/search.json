@@ -1,3 +1,4 @@
 {
-    "results_matching": "%1 результатов по фразе \"%2\", (%3 секунды) "
+    "results_matching": "%1 результатов по фразе \"%2\", (%3 секунды) ",
+    "no-matches": "No posts found"
 }

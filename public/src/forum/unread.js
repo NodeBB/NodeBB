@@ -25,7 +25,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 			if(!tids.length) {
 				return;
 			}
-			socket.emit('topics.markTidsRead', tids, function(err) {
+			socket.emit('topics.markAsRead', tids, function(err) {
 				if(err) {
 					return app.alertError(err.message);
 				}
@@ -45,11 +45,6 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 				$('#topics-container').empty();
 				$('#category-no-topics').removeClass('hidden');
 				$('.markread').addClass('hidden');
-
-				$('#numUnreadBadge')
-					.removeClass('badge-important')
-					.addClass('badge-inverse')
-					.html('0');
 			});
 		});
 

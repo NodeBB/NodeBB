@@ -10,128 +10,73 @@ define('forum/topic/browsing', function() {
 
 	Browsing.onUpdateUsersInRoom = function(data) {
 		if(data && data.room.indexOf('topic_' + ajaxify.variables.get('topic_id')) !== -1) {
-			var activeEl = $('.thread_active_users');
-
-			// remove users that are no longer here
-			activeEl.find('a').each(function(index, element) {
-				if(element) {
-					var uid = $(element).attr('data-uid');
-					var absent = data.users.every(function(user) {
-						return parseInt(user.uid, 10) !== parseInt(uid, 10);
-					});
-
-					if (absent) {
-						$(element).parent().remove();
-					}
-				}
-			});
-
-			var i=0, icon;
-			// add self
-			for(i = 0; i<data.users.length; ++i) {
-				if(parseInt(data.users[i].uid, 10) === parseInt(app.uid, 10)) {
-					icon = createUserIcon(data.users[i].uid, data.users[i].picture, data.users[i].userslug, data.users[i].username);
-					activeEl.prepend(icon);
-					data.users.splice(i, 1);
-					break;
-				}
+			for(var i=0; i<data.users.length; ++i) {
+				addUserIcon(data.users[i]);
 			}
-			// add other users
-			for(i=0; i<data.users.length; ++i) {
-				icon = createUserIcon(data.users[i].uid, data.users[i].picture, data.users[i].userslug, data.users[i].username);
-				activeEl.append(icon);
-				if(activeEl.children().length > 8) {
-					break;
-				}
-			}
-
-			activeEl.find('a[data-uid] img').tooltip({
-				placement: 'top'
-			});
-
-			var remainingUsers = data.users.length - 9;
-			remainingUsers = remainingUsers < 0 ? 0 : remainingUsers;
-			var anonymousCount = parseInt(data.anonymousCount, 10);
-			activeEl.find('.anonymous-box').remove();
-			if(anonymousCount || remainingUsers) {
-
-				var anonLink = $('<div class="anonymous-box inline-block"><i class="fa fa-user"></i></div>');
-				activeEl.append(anonLink);
-
-				var title = '';
-				if(remainingUsers && anonymousCount) {
-					title = '[[topic:more_users_and_guests, ' + remainingUsers + ', ' + anonymousCount + ']]';
-				} else if(remainingUsers) {
-					title = '[[topic:more_users, ' + remainingUsers + ']]';
-				} else {
-					title = '[[topic:more_guests, ' + anonymousCount + ']]';
-				}
-
-				translator.translate(title, function(translated) {
-					$('.anonymous-box').tooltip({
-						placement: 'top',
-						title: translated
-					});
-				});
-			}
-
 			getReplyingUsers();
 		}
-
-		Browsing.populateOnlineUsers();
 	};
 
-	Browsing.onUserOnline = function(err, data) {
-		Browsing.populateOnlineUsers();
+	Browsing.onUserEnter = function(data) {
+		var activeEl = $('.thread_active_users');
+		var user = activeEl.find('a[data-uid="' + data.uid + '"]');
+		if (!user.length && activeEl.children().length < 10) {
+			addUserIcon(data);
+		} else {
+			user.attr('data-count', parseInt(user.attr('data-count'), 10) + 1);
+		}
+	};
+
+	Browsing.onUserLeave = function(uid) {
+		var activeEl = $('.thread_active_users');
+		var user = activeEl.find('a[data-uid="' + uid + '"]');
+		if (user.length) {
+			var count = Math.max(0, parseInt(user.attr('data-count'), 10) - 1);
+			user.attr('data-count', count);
+			if (count <= 0) {
+				user.remove();
+			}
+		}
+	};
+
+	Browsing.onUserStatusChange = function(data) {
+		updateOnlineIcon($('.username-field[data-uid="' + data.uid + '"]'), data.status);
 
 		updateBrowsingUsers(data);
 	};
 
-	Browsing.populateOnlineUsers = function () {
-		var uids = [];
-
-		$('.post-row').each(function () {
-			var uid = $(this).attr('data-uid');
-			if(uids.indexOf(uid) === -1) {
-				uids.push(uid);
-			}
+	function updateOnlineIcon(el, status) {
+		translator.translate('[[global:' + status + ']]', function(translated) {
+			el.siblings('i')
+				.attr('class', 'fa fa-circle status ' + status)
+				.attr('title', translated)
+				.attr('data-original-title', translated);
 		});
-
-		socket.emit('user.getOnlineUsers', uids, function (err, users) {
-
-			$('.username-field').each(function () {
-				var el = $(this),
-					uid = el.parents('li').attr('data-uid');
-
-				if (uid && users[uid]) {
-					translator.translate('[[global:' + users[uid].status + ']]', function(translated) {
-						el.siblings('i')
-							.attr('class', 'fa fa-circle status ' + users[uid].status)
-							.attr('title', translated)
-							.attr('data-original-title', translated);
-					});
-				}
-			});
-		});
-	};
+	}
 
 	function updateBrowsingUsers(data) {
 		var activeEl = $('.thread_active_users');
 		var user = activeEl.find('a[data-uid="'+ data.uid + '"]');
-		if (user.length && !data.online) {
+		if (user.length && data.status === 'offline') {
 			user.parent().remove();
-		} else if(!user.length && data.online && data.rooms.indexOf('topic_' + ajaxify.variables.get('topic_id')) !== -1) {
-			user = createUserIcon(data.uid, data.picture, data.userslug, data.username);
-			activeEl.append(user);
-			activeEl.find('a[data-uid] img').tooltip({
-				placement: 'top'
-			});
 		}
+	}
+
+	function addUserIcon(user) {
+		if (!user.userslug) {
+			return;
+		}
+		var activeEl = $('.thread_active_users');
+		var userEl = createUserIcon(user.uid, user.picture, user.userslug, user.username);
+		activeEl.append(userEl);
+		activeEl.find('a[data-uid] img').tooltip({
+			placement: 'top'
+		});
 	}
 
 	function createUserIcon(uid, picture, userslug, username) {
 		if(!$('.thread_active_users').find('[data-uid="' + uid + '"]').length) {
-			return $('<div class="inline-block"><a data-uid="' + uid + '" href="' + config.relative_path + '/user/' + userslug + '"><img title="' + username + '" src="'+ picture +'"/></a></div>');
+			return $('<div class="inline-block"><a data-uid="' + uid + '" data-count="1" href="' + config.relative_path + '/user/' + userslug + '"><img title="' + username + '" src="'+ picture +'"/></a></div>');
 		}
 	}
 

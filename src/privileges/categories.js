@@ -16,10 +16,10 @@ module.exports = function(privileges) {
 	privileges.categories.get = function(cid, uid, callback) {
 		async.parallel({
 			'topics:create': function(next) {
-				helpers.allowedTo('topics:create', uid, [cid], next);
+				helpers.isUserAllowedTo('topics:create', uid, [cid], next);
 			},
 			read: function(next) {
-				helpers.allowedTo('read', uid, [cid], next);
+				helpers.isUserAllowedTo('read', uid, [cid], next);
 			},
 			isAdministrator: function(next) {
 				user.isAdministrator(uid, next);
@@ -55,7 +55,7 @@ module.exports = function(privileges) {
 
 			helpers.some([
 				function(next) {
-					helpers.allowedTo(privilege, uid, [cid], function(err, results) {
+					helpers.isUserAllowedTo(privilege, uid, [cid], function(err, results) {
 						next(err, Array.isArray(results) && results.length ? results[0] : false);
 					});
 				},
@@ -69,7 +69,7 @@ module.exports = function(privileges) {
 		});
 	};
 
-	privileges.categories.filter = function(privilege, cids, uid, callback) {
+	privileges.categories.filterCids = function(privilege, cids, uid, callback) {
 		if (!cids.length) {
 			return callback(null, []);
 		}
@@ -80,7 +80,7 @@ module.exports = function(privileges) {
 
 		async.parallel({
 			allowedTo: function(next) {
-				helpers.allowedTo(privilege, uid, cids, next);
+				helpers.isUserAllowedTo(privilege, uid, cids, next);
 			},
 			isModerators: function(next) {
 				user.isModerator(uid, cids, next);
@@ -101,6 +101,37 @@ module.exports = function(privileges) {
 				return results.allowedTo[index] || results.isModerators[index];
 			});
 			callback(null, cids);
+		});
+	};
+
+	privileges.categories.filterUids = function(privilege, cid, uids, callback) {
+		if (!uids.length) {
+			return callback(null, []);
+		}
+
+		uids = uids.filter(function(uid, index, array) {
+			return array.indexOf(uid) === index;
+		});
+
+		async.parallel({
+			allowedTo: function(next) {
+				helpers.isUsersAllowedTo(privilege, uids, cid, next);
+			},
+			isModerators: function(next) {
+				user.isModerator(uids, cid, next);
+			},
+			isAdmin: function(next) {
+				user.isAdministrator(uids, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			uids = uids.filter(function(uid, index) {
+				return results.allowedTo[index] || results.isModerators[index] || results.isAdmin[index];
+			});
+			callback(null, uids);
 		});
 	};
 

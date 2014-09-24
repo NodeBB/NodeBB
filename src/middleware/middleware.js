@@ -15,6 +15,8 @@ var app,
 	categories = require('./../categories'),
 	topics = require('./../topics'),
 	messaging = require('../messaging'),
+	ensureLoggedIn = require('connect-ensure-login'),
+	csrf = require('csurf'),
 
 	controllers = {
 		api: require('./../controllers/api')
@@ -32,6 +34,10 @@ middleware.authenticate = function(req, res, next) {
 	}
 };
 
+middleware.applyCSRF = csrf();
+
+middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn();
+
 middleware.updateLastOnlineTime = function(req, res, next) {
 	if(req.user) {
 		user.updateLastOnlineTime(req.user.uid);
@@ -42,15 +48,54 @@ middleware.updateLastOnlineTime = function(req, res, next) {
 	next();
 };
 
+middleware.incrementPageViews = function(req, res, next) {
+	var nextMonth = new Date(),
+		nextDay = new Date();
+
+	nextMonth.setMonth(nextMonth.getMonth() + 1, 1);
+	nextMonth.setHours(0, 0, 0, 0);
+
+	nextDay.setDate(nextDay.getDate() + 1);
+	nextDay.setHours(0, 0, 0, 0);
+
+	db.increment('pageviews:monthly', function(err) {
+		if (err) {
+			return;
+		}
+		db.pexpireAt('pageviews:monthly', nextMonth.getTime());
+	});
+
+	db.increment('pageviews:daily', function(err) {
+		if (err) {
+			return;
+		}
+		db.pexpireAt('pageviews:daily', nextDay.getTime());
+	});
+
+	next();
+};
+
 middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
-	if (req.user) {
-		user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
-			if (res.locals.isAPI) {
-				return res.json(302, '/user/' + userslug);
-			} else {
-				res.redirect('/user/' + userslug);
-			}
-		});
+	if (!req.user) {
+		return next();
+	}
+	user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
+		if (err) {
+			return next(err);
+		}
+
+		if (res.locals.isAPI) {
+			res.json(302, '/user/' + userslug);
+		} else {
+			res.redirect('/user/' + userslug);
+		}
+	});
+};
+
+middleware.redirectToLoginIfGuest = function(req, res, next) {
+	if (!req.user || parseInt(req.user.uid, 10) === 0) {
+		req.session.returnTo = req.url;
+		return res.redirect('/login');
 	} else {
 		next();
 	}
@@ -78,25 +123,6 @@ middleware.addSlug = function(req, res, next) {
 		return;
 	}
 	next();
-};
-
-middleware.checkPostIndex = function(req, res, next) {
-	topics.getPostCount(req.params.topic_id, function(err, postCount) {
-		if (err) {
-			return next(err);
-		}
-		var postIndex = parseInt(req.params.post_index, 10);
-		postCount = parseInt(postCount, 10) + 1;
-		var url = '';
-		if (postIndex > postCount) {
-			url = '/topic/' + req.params.topic_id + '/' + req.params.slug + '/' + postCount;
-			return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
-		} else if (postIndex < 1) {
-			url = '/topic/' + req.params.topic_id + '/' + req.params.slug;
-			return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
-		}
-		next();
-	});
 };
 
 middleware.checkTopicIndex = function(req, res, next) {
@@ -139,7 +165,8 @@ middleware.checkGlobalPrivacySettings = function(req, res, next) {
 		if (res.locals.isAPI) {
 			return res.json(403, 'not-allowed');
 		} else {
-			return res.redirect('login?next=' + req.url);
+			req.session.returnTo = req.url;
+			return res.redirect('login');
 		}
 	}
 
@@ -151,7 +178,8 @@ middleware.checkAccountPermissions = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
 	if (callerUID === 0) {
-		return res.redirect('/login?next=' + req.url);
+		req.session.returnTo = req.url;
+		return res.redirect('/login');
 	}
 
 	user.getUidByUserslug(req.params.userslug, function (err, uid) {
@@ -246,7 +274,7 @@ middleware.renderHeader = function(req, res, callback) {
 				'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 				'brand:logo': meta.config['brand:logo'] || '',
 				'brand:logo:display': meta.config['brand:logo']?'':'hide',
-				csrf: res.locals.csrf_token,
+				csrf: req.csrfToken ? req.csrfToken() : undefined,
 				navigation: custom_header.navigation,
 				allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
 				searchEnabled: plugins.hasListeners('filter:search.query')
@@ -391,7 +419,7 @@ middleware.processRender = function(req, res, next) {
 				middleware.renderHeader(req, res, function(err, template) {
 					str = template + str;
 
-					translator.translate(str, res.locals.config.defaultLang, function(translated) {
+					translator.translate(str, res.locals.config.userLang, function(translated) {
 						fn(err, translated);
 					});
 				});
@@ -424,6 +452,30 @@ middleware.addExpiresHeaders = function(req, res, next) {
 	}
 
 	next();
+};
+
+middleware.maintenanceMode = function(req, res, next) {
+	var render = function() {
+		res.render('maintenance', {
+			site_title: meta.config.site_title || 'NodeBB'
+		});
+	}
+
+	if (meta.config.maintenanceMode === '1') {
+		if (!req.user) {
+			return render();
+		} else {
+			user.isAdministrator(req.user.uid, function(err, isAdmin) {
+				if (!isAdmin) {
+					return render();
+				} else {
+					return next();
+				}
+			});
+		}
+	} else {
+		return next();
+	}
 };
 
 module.exports = function(webserver) {

@@ -3,6 +3,7 @@
 
 var async = require('async'),
 	winston = require('winston'),
+	_ = require('underscore'),
 
 	db = require('../database'),
 	posts = require('../posts'),
@@ -19,31 +20,65 @@ module.exports = function(Categories) {
 				return callback(err, []);
 			}
 
-			posts.getPostSummaryByPids(pids, {stripTags: true}, callback);
+			posts.getPostSummaryByPids(pids, uid, {stripTags: true}, callback);
 		});
 	};
 
-	Categories.getRecentTopicReplies = function(cid, uid, count, callback) {
-		count = parseInt(count, 10);
+	Categories.getRecentTopicReplies = function(categoryData, uid, callback) {
+		if (!Array.isArray(categoryData) || !categoryData.length) {
+			return callback(null, []);
+		}
+		async.map(categoryData, getRecentTopicPids, function(err, results) {
+
+			var pids = _.flatten(results);
+
+			pids = pids.filter(function(pid, index, array) {
+				return !!pid && array.indexOf(pid) === index;
+			});
+
+			posts.getPostSummaryByPids(pids, uid, {stripTags: true}, function(err, posts) {
+				if (err) {
+					return callback(err);
+				}
+
+				async.each(categoryData, function(category, next) {
+					assignPostsToCategory(category, posts, next);
+				}, callback);
+			});
+		});
+	};
+
+	function assignPostsToCategory(category, posts, next) {
+		category.posts = posts.filter(function(post) {
+			return parseInt(post.category.cid, 10) === parseInt(category.cid, 10);
+		}).sort(function(a, b) {
+			return b.timestamp - a.timestamp;
+		}).slice(0, parseInt(category.numRecentReplies, 10));
+
+		next();
+	}
+
+	function getRecentTopicPids(category, callback) {
+		var count = parseInt(category.numRecentReplies, 10);
 		if (!count) {
 			return callback(null, []);
 		}
 
-		db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, 0, function(err, pids) {
-			if (err || !pids || !pids.length) {
+		db.getSortedSetRevRange('categories:recent_posts:cid:' + category.cid, 0, 0, function(err, pids) {
+			if (err || !Array.isArray(pids) || !pids.length) {
 				return callback(err, []);
 			}
 
 			if (count === 1) {
-				return posts.getPostSummaryByPids(pids, {stripTags: true}, callback);
+				return callback(null, pids);
 			}
 
 			async.parallel({
 				pinnedTids: function(next) {
-					db.getSortedSetRevRangeByScore('categories:' + cid + ':tid', 0, -1, Infinity, Date.now(), next);
+					db.getSortedSetRevRangeByScore('categories:' + category.cid + ':tid', 0, -1, Infinity, Date.now(), next);
 				},
 				tids: function(next) {
-					db.getSortedSetRevRangeByScore('categories:' + cid + ':tid', 0, Math.max(0, count), Date.now(), 0, next);
+					db.getSortedSetRevRangeByScore('categories:' + category.cid + ':tid', 0, Math.max(0, count), Date.now(), 0, next);
 				}
 			}, function(err, results) {
 				if (err) {
@@ -60,42 +95,21 @@ module.exports = function(Categories) {
 					pids = pids.concat(topicPids).filter(function(pid, index, array) {
 						return !!pid && array.indexOf(pid) === index;
 					});
-
-					posts.getPostSummaryByPids(pids, {stripTags: true}, function(err, posts) {
-						if (err) {
-							return callback(err);
-						}
-
-						posts = posts.sort(function(a, b) {
-							return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10);
-						}).slice(0, count);
-
-						callback(err, posts);
-					});
+					callback(null, pids);
 				});
 			});
 		});
-	};
+	}
+
 
 	Categories.moveRecentReplies = function(tid, oldCid, cid) {
-		function movePost(postData, next) {
-			async.parallel([
-				function(next) {
-					db.sortedSetRemove('categories:recent_posts:cid:' + oldCid, postData.pid, next);
-				},
-				function(next) {
-					db.sortedSetAdd('categories:recent_posts:cid:' + cid, postData.timestamp, postData.pid, next);
-				}
-			], next);
-		}
-
 		updatePostCount(tid, oldCid, cid);
 		topics.getPids(tid, function(err, pids) {
 			if (err) {
 				return winston.error(err.message);
 			}
 
-			if (pids && !pids.length) {
+			if (!Array.isArray(pids) || !pids.length) {
 				return;
 			}
 
@@ -103,12 +117,23 @@ module.exports = function(Categories) {
 				return 'post:' + pid;
 			});
 
-			db.getObjectsFields(keys, ['pid', 'timestamp'], function(err, postData) {
+			db.getObjectsFields(keys, ['timestamp'], function(err, postData) {
 				if (err) {
 					return winston.error(err.message);
 				}
 
-				async.each(postData, movePost, function(err) {
+				var timestamps = postData.map(function(post) {
+					return post && post.timestamp;
+				});
+
+				async.parallel([
+					function(next) {
+						db.sortedSetRemove('categories:recent_posts:cid:' + oldCid, pids, next);
+					},
+					function(next) {
+						db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamps, pids, next);
+					}
+				], function(err) {
 					if (err) {
 						winston.error(err.message);
 					}

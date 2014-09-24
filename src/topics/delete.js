@@ -41,13 +41,10 @@ module.exports = function(Topics) {
 				Topics.setTopicField(tid, 'deleted', 1, next);
 			},
 			function(next) {
-				db.sortedSetRemove('topics:recent', tid, next);
+				Topics.removeRecent(tid, next);
 			},
 			function(next) {
-				db.sortedSetRemove('topics:posts', tid, next);
-			},
-			function(next) {
-				db.sortedSetRemove('topics:views', tid, next);
+				db.sortedSetsRemove(['topics:posts', 'topics:views'], tid, next);
 			}
 		], function(err) {
 			if (err) {
@@ -69,7 +66,7 @@ module.exports = function(Topics) {
 					Topics.setTopicField(tid, 'deleted', 0, next);
 				},
 				function(next) {
-					db.sortedSetAdd('topics:recent', topicData.lastposttime, tid, next);
+					Topics.updateRecent(tid, topicData.lastposttime, next);
 				},
 				function(next) {
 					db.sortedSetAdd('topics:posts', topicData.postcount, tid, next);
@@ -90,22 +87,10 @@ module.exports = function(Topics) {
 	Topics.purge = function(tid, callback) {
 		async.parallel([
 			function(next) {
-				db.delete('tid:' + tid + ':followers', next);
+				db.deleteAll(['tid:' + tid + ':followers', 'tid:' + tid + ':read_by_uid'], next);
 			},
 			function(next) {
-				db.delete('tid:' + tid + ':read_by_uid', next);
-			},
-			function(next) {
-				db.sortedSetRemove('topics:tid', tid, next);
-			},
-			function(next) {
-				db.sortedSetRemove('topics:recent', tid, next);
-			},
-			function(next) {
-				db.sortedSetRemove('topics:posts', tid, next);
-			},
-			function(next) {
-				db.sortedSetRemove('topics:views', tid, next);
+				db.sortedSetsRemove(['topics:tid', 'topics:recent', 'topics:posts', 'topics:views'], tid, next);
 			},
 			function(next) {
 				deleteTopicFromCategoryAndUser(tid, next);
@@ -128,14 +113,7 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			async.parallel([
-				function(next) {
-					db.sortedSetRemove('categories:' + topicData.cid + ':tid', tid, next);
-				},
-				function(next) {
-					db.sortedSetRemove('uid:' + topicData.uid + ':topics', tid, next);
-				}
-			], function(err) {
+			db.sortedSetsRemove(['categories:' + topicData.cid + ':tid', 'uid:' + topicData.uid + ':topics'], tid, function(err) {
 				if (err) {
 					return callback(err);
 				}

@@ -14,7 +14,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 
 		share.addShareHandlers(topicName);
 
-		addFavouriteHandler();
+		addVoteHandler();
 	};
 
 	PostTools.toggle = function(pid, isDeleted) {
@@ -35,30 +35,36 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		});
 	};
 
-	function addFavouriteHandler() {
-		$('#post-container').on('mouseenter', '.favourite-tooltip', function() {
-			if (!$(this).data('users-loaded')) {
-				$(this).data('users-loaded', 'true');
-				var pid = $(this).parents('.post-row').attr('data-pid');
-				var el = $(this).attr('title', "Loading...");
-				socket.emit('posts.getFavouritedUsers', pid, function(err, usernames) {
-					if (err) {
-						return;
-					}
-					if (usernames.length > 6) {
-						var otherCount = usernames.length - 5;
-						usernames = usernames.slice(0, 5).join(', ').replace(/,/g, '|');
-						translator.translate('[[topic:users_and_others, ' + usernames + ', ' + otherCount + ']]', function(translated) {
-							translated = translated.replace(/\|/g, ',');
-							el.attr('title', translated).tooltip('show');
-						});
-					} else {
-						usernames = usernames.join(', ');
-						el.attr('title', usernames).tooltip('show');
-					}
-				});
+	function addVoteHandler() {
+		$('#post-container').on('mouseenter', '.post-row .votes', function() {
+			loadDataAndCreateTooltip($(this), 'posts.getUpvoters');
+		});
+	}
+
+	function loadDataAndCreateTooltip(el, method) {
+		var pid = el.parents('.post-row').attr('data-pid');
+		socket.emit(method, pid, function(err, data) {
+			if (!err) {
+				createTooltip(el, data);
 			}
 		});
+	}
+
+	function createTooltip(el, data) {
+		var usernames = data.usernames;
+		if (!usernames.length) {
+			return;
+		}
+		if (usernames.length + data.otherCount > 6) {
+			usernames = usernames.join(', ').replace(/,/g, '|');
+			translator.translate('[[topic:users_and_others, ' + usernames + ', ' + data.otherCount + ']]', function(translated) {
+				translated = translated.replace(/\|/g, ',');
+				el.attr('title', translated).tooltip('destroy').tooltip('show');
+			});
+		} else {
+			usernames = usernames.join(', ');
+			el.attr('title', usernames).tooltip('destroy').tooltip('show');
+		}
 	}
 
 	function addPostHandlers(tid, threadState) {
@@ -125,7 +131,9 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		}
 
 		var username = getUserName(selectionText ? $(selection.baseNode) : button);
-
+		if (getData(button, 'data-uid') === '0') {
+			username = '';
+		}
 		if (selectionText.length) {
 			composer.addQuote(tid, ajaxify.variables.get('topic_slug'), getData(button, 'data-index'), getData(button, 'data-pid'), topicName, username, selectionText);
 		} else {
@@ -195,8 +203,12 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 			post = button.parents('li[data-pid]');
 
 		if (post.length) {
-			username = '@' + post.attr('data-username').replace(/\s/g, '-');
+			username = post.attr('data-username').replace(/\s/g, '-');
 		}
+		if (post.length && post.attr('data-uid') !== '0') {
+			username = '@' + username;
+		}
+
 		return username;
 	}
 

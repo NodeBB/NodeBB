@@ -18,7 +18,8 @@ var fs = require('fs'),
 	plugins = require('../plugins'),
 	languages = require('../languages'),
 	image = require('../image'),
-	file = require('../file');
+	file = require('../file'),
+	websockets = require('../socket.io');
 
 function userNotFound(res) {
 	if (res.locals.isAPI) {
@@ -116,6 +117,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
 			userData.profile_links = results.profile_links;
+			userData.status = !websockets.isUserOnline(userData.uid) ? 'offline' : userData.status;
 
 			userData.followingCount = results.followStats.followingCount;
 			userData.followerCount = results.followStats.followerCount;
@@ -134,7 +136,16 @@ accountsController.getUserByUID = function(req, res, next) {
 };
 
 accountsController.getAccount = function(req, res, next) {
-	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
+	var lowercaseSlug = req.params.userslug.toLowerCase(),
+		callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
+
+	if (req.params.userslug !== lowercaseSlug) {
+		if (res.locals.isAPI) {
+			req.params.userslug = lowercaseSlug;
+		} else {
+			res.redirect(nconf.get('relative_path') + '/user/' + lowercaseSlug);
+		}
+	}
 
 	getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
 		if(err) {
@@ -164,6 +175,7 @@ accountsController.getAccount = function(req, res, next) {
 				return p && parseInt(p.deleted, 10) !== 1;
 			});
 
+			userData.nextStart = results.posts.nextStart;
 			userData.isFollowing = results.isFollowing;
 
 			if (!userData.profileviews) {
@@ -334,6 +346,8 @@ accountsController.accountEdit = function(req, res, next) {
 			return next(err);
 		}
 
+		userData.csrf = req.csrfToken();
+
 		res.render('account/edit', userData);
 	});
 };
@@ -398,10 +412,11 @@ accountsController.uploadPicture = function (req, res, next) {
 	}
 
 	var updateUid = req.user.uid;
+	var imageDimension = parseInt(meta.config.profileImageDimension, 10) || 128;
 
 	async.waterfall([
 		function(next) {
-			image.resizeImage(req.files.userPhoto.path, extension, 128, 128, next);
+			image.resizeImage(req.files.userPhoto.path, extension, imageDimension, imageDimension, next);
 		},
 		function(next) {
 			if (parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1) {
@@ -477,7 +492,10 @@ accountsController.uploadPicture = function (req, res, next) {
 };
 
 accountsController.getNotifications = function(req, res, next) {
-	user.notifications.getAll(req.user.uid, null, null, function(err, notifications) {
+	user.notifications.getAll(req.user.uid, 40, function(err, notifications) {
+		if (err) {
+			return next(err);
+		}
 		res.render('notifications', {
 			notifications: notifications
 		});
@@ -487,30 +505,27 @@ accountsController.getNotifications = function(req, res, next) {
 accountsController.getChats = function(req, res, next) {
 	async.parallel({
 		contacts: async.apply(user.getFollowing, req.user.uid),
-		recentChats: async.apply(messaging.getRecentChats, req.user.uid, 0, -1)
+		recentChats: async.apply(messaging.getRecentChats, req.user.uid, 0, 19)
 	}, function(err, results) {
 		if (err) {
 			return next(err);
 		}
 
-		// Remove entries if they were already present as a followed contact
+		//Remove entries if they were already present as a followed contact
 		if (results.contacts && results.contacts.length) {
 			var contactUids = results.contacts.map(function(contact) {
 					return parseInt(contact.uid, 10);
 				});
 
-			results.recentChats = results.recentChats.filter(function(chatObj) {
+			results.recentChats.users = results.recentChats.users.filter(function(chatObj) {
 				return contactUids.indexOf(parseInt(chatObj.uid, 10)) === -1;
 			});
 		}
 
-		if (results.recentChats.length > 20) {
-			results.recentChats.length = 20;
-		}
-
 		if (!req.params.userslug) {
 			return res.render('chats', {
-				chats: results.recentChats,
+				chats: results.recentChats.users,
+				nextStart: results.recentChats.nextStart,
 				contacts: results.contacts
 			});
 		}
@@ -520,7 +535,7 @@ accountsController.getChats = function(req, res, next) {
 			function(toUid, next) {
 				async.parallel({
 					toUser: async.apply(user.getUserFields, toUid, ['uid', 'username']),
-					messages: async.apply(messaging.getMessages, req.user.uid, toUid, false)
+					messages: async.apply(messaging.getMessages, req.user.uid, toUid, 'day', false)
 				}, next);
 			}
 		], function(err, data) {
@@ -529,7 +544,8 @@ accountsController.getChats = function(req, res, next) {
 			}
 
 			res.render('chats', {
-				chats: results.recentChats,
+				chats: results.recentChats.users,
+				nextStart: results.recentChats.nextStart,
 				contacts: results.contacts,
 				meta: data.toUser,
 				messages: data.messages

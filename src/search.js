@@ -50,7 +50,7 @@ search.search = function(term, uid, callback) {
 					return callback(err);
 				}
 
-				posts.getPostSummaryByPids(pids, {stripTags: true, parse: false}, function(err, posts) {
+				posts.getPostSummaryByPids(pids, uid, {stripTags: true, parse: false}, function(err, posts) {
 					if (err) {
 						return callback(err);
 					}
@@ -73,9 +73,9 @@ function getMainPids(tids, callback) {
 		if (err) {
 			return callback(err);
 		}
-		topics = topics.map(function(topics) {
-			return topics.mainPid;
-		});
+		topics = topics.map(function(topic) {
+			return topic && topic.mainPid;
+		}).filter(Boolean);
 		callback(null, topics);
 	});
 }

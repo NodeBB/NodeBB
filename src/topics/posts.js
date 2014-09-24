@@ -3,38 +3,40 @@
 'use strict';
 
 var async = require('async'),
+	winston = require('winston'),
 
 	db = require('../database'),
 	user = require('../user'),
-	emitter = require('../emitter'),
 	favourites = require('../favourites'),
 	posts = require('../posts'),
 	privileges = require('../privileges');
 
 module.exports = function(Topics) {
 
-	Topics.onNewPostMade = function(postData) {
-		Topics.increasePostCount(postData.tid);
-		Topics.updateTimestamp(postData.tid, postData.timestamp);
-		Topics.addPostToTopic(postData.tid, postData.pid, postData.timestamp, 0);
+	Topics.onNewPostMade = function(postData, callback) {
+		async.parallel([
+			function(next) {
+				Topics.increasePostCount(postData.tid, next);
+			},
+			function(next) {
+				Topics.updateTimestamp(postData.tid, postData.timestamp, next);
+			},
+			function(next) {
+				Topics.addPostToTopic(postData.tid, postData.pid, postData.timestamp, 0, next);
+			}
+		], callback);
 	};
 
-	emitter.on('event:newpost', Topics.onNewPostMade);
 
 	Topics.getTopicPosts = function(tid, set, start, end, uid, reverse, callback) {
 		callback = callback || function() {};
-		posts.getPostsByTid(tid, set, start, end, reverse, function(err, postData) {
+		posts.getPostsByTid(tid, set, start, end, uid, reverse, function(err, postData) {
 			if(err) {
 				return callback(err);
 			}
 
 			if (Array.isArray(postData) && !postData.length) {
 				return callback(null, []);
-			}
-
-			start = parseInt(start, 10);
-			for(var i=0; i<postData.length; ++i) {
-				postData[i].index = start + i + 1;
 			}
 
 			Topics.addPostData(postData, uid, callback);
@@ -72,8 +74,8 @@ module.exports = function(Topics) {
 					}
 
 					var userData = {};
-					users.forEach(function(user) {
-						userData[user.uid] = user;
+					users.forEach(function(user, index) {
+						userData[uids[index]] = user;
 					});
 
 					next(null, userData);
@@ -100,6 +102,9 @@ module.exports = function(Topics) {
 			},
 			privileges: function(next) {
 				privileges.posts.get(pids, uid, next);
+			},
+			indices: function(next) {
+				posts.getPostIndices(postData, uid, next);
 			}
 		}, function(err, results) {
 			if(err) {
@@ -108,6 +113,7 @@ module.exports = function(Topics) {
 
 			for (var i = 0; i < postData.length; ++i) {
 				if (postData[i]) {
+					postData[i].index = results.indices[i];
 					postData[i].deleted = parseInt(postData[i].deleted, 10) === 1;
 					postData[i].user = results.userData[postData[i].uid];
 					postData[i].editor = postData[i].editor ? results.editors[postData[i].editor] : null;
@@ -228,6 +234,7 @@ module.exports = function(Topics) {
 	};
 
 	function incrementFieldAndUpdateSortedSet(tid, field, by, set, callback) {
+		callback = callback || function() {};
 		db.incrObjectFieldBy('topic:' + tid, field, by, function(err, value) {
 			if(err) {
 				return callback(err);

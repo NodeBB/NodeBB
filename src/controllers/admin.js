@@ -16,9 +16,9 @@ var async = require('async'),
 	validator = require('validator');
 
 
-
 var adminController = {
 	categories: {},
+	tags: {},
 	topics: {},
 	groups: {},
 	themes: {},
@@ -38,6 +38,9 @@ adminController.home = function(req, res, next) {
 		stats: function(next) {
 			getStats(next);
 		},
+		pageviews: function(next) {
+			getPageviews(next);
+		},
 		notices: function(next) {
 			var notices = [
 				{done: !meta.restartRequired, doneText: 'Restart not required', notDoneText:'Restart required'},
@@ -53,11 +56,24 @@ adminController.home = function(req, res, next) {
 		res.render('admin/index', {
 			version: pkg.version,
 			notices: results.notices,
-			stats: results.stats
+			stats: results.stats,
+			pageviews: results.pageviews
 		});
 	});
 };
 
+function getPageviews(callback) {
+	async.parallel({
+		monthly: function(next) {
+			db.get('pageviews:monthly', next);
+		},
+		daily: function(next) {
+			db.get('pageviews:daily', next);
+		}
+	}, function(err, results) {
+		callback(null, results);
+	});
+}
 function getStats(callback) {
 	async.parallel([
 		function(next) {
@@ -117,14 +133,35 @@ adminController.categories.disabled = function(req, res, next) {
 };
 
 function filterAndRenderCategories(req, res, next, active) {
-	categories.getAllCategories(function (err, categoryData) {
+	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
+	categories.getAllCategories(uid, function (err, categoryData) {
+		if (err) {
+			return next(err);
+		}
+
 		categoryData = categoryData.filter(function (category) {
+			if (!category) {
+				return false;
+			}
 			return active ? !category.disabled : category.disabled;
 		});
 
-		res.render('admin/categories', {categories: categoryData});
+		res.render('admin/categories', {
+			categories: categoryData,
+			csrf: req.csrfToken()
+		});
 	});
 }
+
+adminController.tags.get = function(req, res, next) {
+	topics.getTags(0, 99, function(err, tags) {
+		if (err) {
+			return next(err);
+		}
+
+		res.render('admin/tags', {tags: tags});
+	});
+};
 
 adminController.database.get = function(req, res, next) {
 	db.info(function (err, data) {
@@ -166,7 +203,9 @@ adminController.languages.get = function(req, res, next) {
 };
 
 adminController.settings.get = function(req, res, next) {
-	res.render('admin/settings', {});
+	res.render('admin/settings', {
+		'csrf': req.csrfToken()
+	});
 };
 
 adminController.logger.get = function(req, res, next) {

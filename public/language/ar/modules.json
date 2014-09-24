@@ -12,6 +12,10 @@
     "chat.message-history": "Message History",
     "chat.pop-out": "Pop out chat",
     "chat.maximize": "Maximize",
+    "chat.yesterday": "Yesterday",
+    "chat.seven_days": "7 Days",
+    "chat.thirty_days": "30 Days",
+    "chat.three_months": "3 Months",
     "composer.user_said_in": "%1 said in %2:",
     "composer.user_said": "%1 said:",
     "composer.discard": "Are you sure you wish to discard this post?"

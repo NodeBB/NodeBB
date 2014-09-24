@@ -13,7 +13,7 @@ var uglifyjs = require('uglify-js'),
 	};
 
 /* Javascript */
-Minifier.js.minify = function (scripts, minify, callback) {
+Minifier.js.minify = function (scripts, relativePath, minify, callback) {
 	var options = {};
 
 	scripts = scripts.filter(function(file) {
@@ -23,6 +23,7 @@ Minifier.js.minify = function (scripts, minify, callback) {
 	if (!minify) {
 		options.sourceMapURL = '/nodebb.min.js.map';
 		options.outSourceMap = 'nodebb.min.js.map';
+		options.sourceRoot = relativePath;
 		options.mangle = false;
 		options.compress = false;
 		options.prefix = 1;
@@ -56,7 +57,7 @@ Minifier.js.minify = function (scripts, minify, callback) {
 process.on('message', function(payload) {
 	switch(payload.action) {
 	case 'js':
-		Minifier.js.minify(payload.scripts, payload.minify, function(data) {
+		Minifier.js.minify(payload.scripts, payload.relativePath, payload.minify, function(data) {
 			process.stdout.write(data.js);
 			process.send({
 				type: 'end',

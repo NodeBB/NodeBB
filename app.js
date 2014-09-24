@@ -17,7 +17,6 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 "use strict";
 /*global require, global, process*/
 
@@ -29,6 +28,7 @@ var fs = require('fs'),
 	semver = require('semver'),
 	winston = require('winston'),
 	path = require('path'),
+	cluster = require('cluster'),
 	pkg = require('./package.json'),
 	utils = require('./public/src/utils.js');
 
@@ -103,6 +103,7 @@ function loadConfig() {
 }
 
 function start() {
+
 	loadConfig();
 
 	winston.info('Time: ' + new Date());
@@ -136,17 +137,38 @@ function start() {
 			upgrade.check(function(schema_ok) {
 				if (schema_ok || nconf.get('check-schema') === false) {
 					sockets.init(webserver.server);
-					plugins.init();
 
 					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
 
 					plugins.ready(function() {
-						webserver.init();
+						webserver.init(function() {
+							// If this callback is called, this means that loader.js is used
+							process.on('message', function(msg) {
+								if (msg === 'bind') {
+									webserver.listen();
+								}
+							});
+							process.send({
+								action: 'ready'
+							});
+						});
 					});
 
 					process.on('SIGTERM', shutdown);
 					process.on('SIGINT', shutdown);
 					process.on('SIGHUP', restart);
+					process.on('message', function(message) {
+						switch(message.action) {
+							case 'reload':
+								meta.reload();
+							break;
+							case 'js-propagate':
+								meta.js.cache = message.cache;
+								meta.js.map = message.map;
+								winston.info('[cluster] Client-side javascript and mapping propagated to worker ' + cluster.worker.id);
+							break;
+						}
+					})
 					process.on('uncaughtException', function(err) {
 						winston.error(err.message);
 						console.log(err.stack);
@@ -313,6 +335,8 @@ function shutdown(code) {
 	winston.info('[app] Shutdown (SIGTERM/SIGINT) Initialised.');
 	require('./src/database').close();
 	winston.info('[app] Database connection closed.');
+	require('./src/webserver').server.close();
+	winston.info('[app] Web server closed to connections.');
 
 	winston.info('[app] Shutdown complete.');
 	process.exit(code || 0);

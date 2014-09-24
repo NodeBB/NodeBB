@@ -13,7 +13,8 @@ var winston = require('winston'),
 	meta = require('./meta'),
 	websockets = require('./socket.io'),
 	events = require('./events'),
-	plugins = require('./plugins');
+	plugins = require('./plugins'),
+	batch = require('./batch');
 
 
 (function(ThreadTools) {
@@ -71,26 +72,24 @@ var winston = require('winston'),
 	}
 
 	ThreadTools.purge = function(tid, uid, callback) {
-		async.parallel({
-			topic: function(next) {
-				topics.getTopicFields(tid, ['cid'], next);
-			},
-			pids: function(next) {
-				topics.getPids(tid, next);
-			}
-		}, function(err, results) {
+		batch.processSortedSet('tid:' + tid + ':posts', function(err, pids, next) {
+			async.eachLimit(pids, 10, posts.purge, next);
+		}, {alwaysStartAt: 0}, function(err) {
 			if (err) {
 				return callback(err);
 			}
 
-			async.parallel([
-				function(next) {
-					async.eachLimit(results.pids, 10, posts.purge, next);
-				},
-				function(next) {
-					topics.purge(tid, next);
+			topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
+				if (err) {
+					return callback(err);
 				}
-			], callback);
+				posts.purge(mainPid, function(err) {
+					if (err) {
+						return callback(err);
+					}
+					topics.purge(tid, callback);
+				});
+			});
 		});
 	};
 
@@ -189,12 +188,12 @@ var winston = require('winston'),
 				topic = topicData;
 				db.sortedSetRemove('categories:' + topicData.cid + ':tid', tid, next);
 			},
-			function(result, next) {
+			function(next) {
 				var timestamp = parseInt(topic.pinned, 10) ? Math.pow(2, 53) : topic.lastposttime;
 				db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid, next);
 			}
-		], function(err, result) {
-			if(err) {
+		], function(err) {
+			if (err) {
 				return callback(err);
 			}
 			var oldCid = topic.cid;
@@ -233,6 +232,21 @@ var winston = require('winston'),
 				db[isFollowing ? 'setRemove' : 'setAdd']('tid:' + tid + ':followers', uid, function(err) {
 					next(err, !isFollowing);
 				});
+			}
+		], callback);
+	};
+
+	ThreadTools.follow = function(tid, uid, callback) {
+		callback = callback || function() {};
+		async.waterfall([
+			function (next) {
+				ThreadTools.exists(tid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-topic]]'));
+				}
+				db.setAdd('tid:' + tid + ':followers', uid, next);
 			}
 		], callback);
 	};

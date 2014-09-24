@@ -35,7 +35,11 @@ SocketMeta.reconnected = function(socket, data, callback) {
 };
 
 emitter.on('nodebb:ready', function() {
-	websockets.server.sockets.emit('event:nodebb.ready', meta.config['cache-buster']);
+	websockets.server.sockets.emit('event:nodebb.ready', {
+		general: meta.config['cache-buster'],
+		css: meta.css.hash,
+		js: meta.js.hash
+	});
 });
 
 SocketMeta.buildTitle = function(socket, text, callback) {
@@ -58,29 +62,34 @@ SocketMeta.getUsageStats = function(socket, data, callback) {
 /* Rooms */
 
 SocketMeta.rooms.enter = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	if (data.leave !== null) {
+	if (data.leave) {
 		socket.leave(data.leave);
+		if (socket.uid && data.leave.indexOf('topic') !== -1) {
+			websockets.in(data.leave).emit('event:user_leave', socket.uid);
+		}
 	}
 
-	socket.join(data.enter);
-
-	if (data.leave && data.leave !== data.enter) {
-		module.parent.exports.updateRoomBrowsingText(data.leave);
-	}
-
-	module.parent.exports.updateRoomBrowsingText(data.enter);
-
-	if (data.enter !== 'admin') {
-		websockets.in('admin').emit('event:meta.rooms.update', null, websockets.server.sockets.manager.rooms);
+	if (data.enter) {
+		socket.join(data.enter);
+		if (socket.uid && data.enter.indexOf('topic') !== -1) {
+			data.uid = socket.uid;
+			websockets.in(data.enter).emit('event:user_enter', data);
+		}
 	}
 };
 
 SocketMeta.rooms.getAll = function(socket, data, callback) {
-	callback(null, websockets.server.sockets.manager.rooms);
+	var userData = {
+		onlineGuestCount: websockets.getOnlineAnonCount(),
+		onlineRegisteredCount: websockets.getOnlineUserCount(),
+		socketCount: websockets.getSocketCount()
+	};
+
+	callback(null, userData);
 };
 
 /* Exports */

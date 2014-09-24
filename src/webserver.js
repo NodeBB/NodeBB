@@ -6,6 +6,7 @@ var path = require('path'),
 	server,
 	winston = require('winston'),
 	async = require('async'),
+	cluster = require('cluster'),
 
 	emailer = require('./emailer'),
 	db = require('./database'),
@@ -36,16 +37,21 @@ if(nconf.get('ssl')) {
 	var	port = nconf.get('PORT') || nconf.get('port');
 
 	logger.init(app);
-	auth.registerApp(app);
 	emailer.registerApp(app);
-	notifications.init();
-	user.startJobs();
+
+	if (cluster.isWorker && process.env.handle_jobs === 'true') {
+		notifications.init();
+		user.startJobs();
+	}
 
 	// Preparation dependent on plugins
 	plugins.ready(function() {
 		meta.js.minify(app.enabled('minification'));
 		meta.css.minify();
-		meta.sounds.init();
+
+		if (cluster.isWorker && process.env.cluster_setup === 'true') {
+			meta.sounds.init();
+		}
 	});
 
 	async.parallel({
@@ -96,11 +102,15 @@ if(nconf.get('ssl')) {
 	}
 
 	module.exports.server = server;
-	module.exports.init = function () {
+	module.exports.init = function(callback) {
 		server.on("error", function(err){
 			if (err.code === 'EADDRINUSE') {
 				winston.error('NodeBB address in use, exiting...');
-				process.exit(1);
+				if (cluster.isWorker) {
+					cluster.worker.kill();
+				} else {
+					process.exit(0);
+				}
 			} else {
 				throw err;
 			}
@@ -109,21 +119,29 @@ if(nconf.get('ssl')) {
 		emitter.all(['templates:compiled', 'meta:js.compiled', 'meta:css.compiled'], function() {
 			winston.info('NodeBB Ready');
 			emitter.emit('nodebb:ready');
+			emitter.removeAllListeners('templates:compiled').removeAllListeners('meta:js.compiled').removeAllListeners('meta:css.compiled');
 		});
 
-		emitter.on('templates:compiled', function() {
-			var	bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
-			winston.info('NodeBB attempting to listen on: ' + bind_address);
+		if (process.send) {
+			callback();
+		} else {
+			module.exports.listen();
+		}
+	};
 
-			server.listen(port, nconf.get('bind_address'), function(){
-				winston.info('NodeBB is now listening on: ' + bind_address);
-				if (process.send) {
-					process.send({
-						action: 'ready',
-						bind_address: bind_address
-					});
-				}
-			});
+	module.exports.listen = function() {
+		var	bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
+		winston.info('NodeBB attempting to listen on: ' + bind_address);
+
+		server.listen(port, nconf.get('bind_address'), function() {
+			winston.info('NodeBB is now listening on: ' + bind_address);
+			if (process.send) {
+				process.send({
+					action: 'listening',
+					bind_address: bind_address,
+					primary: process.env.handle_jobs === 'true'
+				});
+			}
 		});
 	};
 

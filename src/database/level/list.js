@@ -2,7 +2,7 @@
 
 module.exports = function(db, module) {
 	var helpers = module.helpers.level;
-	
+
 	module.listPrepend = function(key, value, callback) {
 		module.getListRange(key, 0, -1, function(err, list) {
 			var arr = list || [];
@@ -17,7 +17,7 @@ module.exports = function(db, module) {
 			arr.push(value);
 			module.set(key, arr, function(err) {
 				if (typeof callback === 'function') {
-					callback(err, list);
+					callback(err);
 				}
 			});
 		});

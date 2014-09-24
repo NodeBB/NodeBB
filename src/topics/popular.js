@@ -7,14 +7,19 @@ var async = require('async'),
 
 
 module.exports = function(Topics) {
+	var terms = {
+		daily: 'day',
+		weekly: 'week',
+		monthly: 'month',
+		yearly: 'year'
+	};
 
-	Topics.getPopular = function(term, uid, callback) {
-		var terms = {
-			daily: 'day',
-			weekly: 'week',
-			monthly: 'month',
-			yearly: 'year'
-		};
+	Topics.getPopular = function(term, uid, count, callback) {
+		count = parseInt(count, 10) || 20;
+
+		if (term === 'alltime') {
+			return getAllTimePopular(uid, count, callback);
+		}
 
 		var since = terms[term] || 'day';
 
@@ -23,7 +28,7 @@ module.exports = function(Topics) {
 				Topics.getLatestTids(0, -1, since, next);
 			},
 			function(tids, next) {
-				getTopics(tids, uid, next);
+				getTopics(tids, uid, count, next);
 			},
 			function(topics, next) {
 				var tids = topics.map(function(topic) {
@@ -45,7 +50,13 @@ module.exports = function(Topics) {
 		], callback);
 	};
 
-	function getTopics(tids, uid, callback) {
+	function getAllTimePopular(uid, count, callback) {
+		Topics.getTopicsFromSet(uid, 'topics:posts', 0, count - 1, function(err, data) {
+			callback(err, data ? data.topics : null);
+		});
+	}
+
+	function getTopics(tids, uid, count, callback) {
 		var keys = tids.map(function(tid) {
 			return 'topic:' + tid;
 		});
@@ -55,11 +66,9 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			topics.sort(function(a, b) {
-				return parseInt(b.postcount, 10) - parseInt(a.postcount, 10);
-			});
-
-			topics = topics.slice(0, 20).map(function(topic) {
+			topics = topics.sort(function(a, b) {
+				return b.postcount - a.postcount;
+			}).slice(0, count).map(function(topic) {
 				return topic.tid;
 			});
 

@@ -22,14 +22,8 @@ define('forum/users', function() {
 
 		handleSearch();
 
-		socket.removeListener('user.anonDisconnect', updateAnonCount);
-		socket.removeListener('user.anonConnect', updateAnonCount);
-		socket.removeListener('user.isOnline', onUserIsOnline);
-
-		socket.on('user.anonDisconnect', updateAnonCount);
-		socket.on('user.anonConnect', updateAnonCount);
-		socket.on('user.isOnline', onUserIsOnline);
-
+		socket.removeListener('event:user_status_change', onUserStatusChange);
+		socket.on('event:user_status_change', onUserStatusChange);
 
 		$('#load-more-users-btn').on('click', loadMoreUsers);
 
@@ -78,6 +72,10 @@ define('forum/users', function() {
 	}
 
 	function onUsersLoaded(users) {
+		users = users.filter(function(user) {
+			return !$('.users-box[data-uid="' + user.uid + '"]').length;
+		});
+
 		ajaxify.loadTemplate('users', function(usersTemplate) {
 			var html = templates.parse(templates.getBlock(usersTemplate, 'users'), {users: users});
 
@@ -154,51 +152,26 @@ define('forum/users', function() {
 		});
 	}
 
-	function onUserIsOnline(err, data) {
+	function onUserStatusChange(data) {
 		var section = getActiveSection();
-		if((section.indexOf('online') === 0 || section.indexOf('users') === 0)  && !loadingMoreUsers) {
+		if((section.indexOf('online') === 0 || section.indexOf('users') === 0)) {
 			updateUser(data);
-			updateAnonCount();
 		}
 	}
 
 	function updateUser(data) {
-		var usersContainer = $('#users-container');
-		var userEl = usersContainer.find('li[data-uid="' + data.uid +'"]');
-		if (!data.online) {
-			userEl.remove();
+		if (data.status === 'offline') {
 			return;
 		}
+		var usersContainer = $('#users-container');
+		var userEl = usersContainer.find('li[data-uid="' + data.uid +'"]');
 
-		ajaxify.loadTemplate('users', function(usersTemplate) {
-			var html = templates.parse(templates.getBlock(usersTemplate, 'users'), {users: [data]});
-			translator.translate(html, function(translated) {
-				if (userEl.length) {
-					userEl.replaceWith(translated);
-					return;
-				}
-
-				var anonBox = usersContainer.find('li.anon-user');
-				if (anonBox.length) {
-					$(translated).insertBefore(anonBox);
-				} else {
-					usersContainer.append(translated);
-				}
-			});
-		});
-	}
-
-	function updateAnonCount() {
-		var section = getActiveSection();
-		if((section.indexOf('online') === 0 || section.indexOf('users') === 0)  && !loadingMoreUsers) {
-			socket.emit('user.getOnlineAnonCount', {} , function(err, anonCount) {
-
-				if(parseInt(anonCount, 10) > 0) {
-					$('#users-container .anon-user').removeClass('hide');
-					$('#online_anon_count').html(anonCount);
-				} else {
-					$('#users-container .anon-user').addClass('hide');
-				}
+		if (userEl.length) {
+			var statusEl = userEl.find('.status');
+			translator.translate('[[global:' + data.status + ']]', function(translated) {
+				statusEl.attr('class', 'fa fa-circle status ' + data.status)
+					.attr('title', translated)
+					.attr('data-original-title', translated);
 			});
 		}
 	}

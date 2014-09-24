@@ -14,11 +14,13 @@ var	groups = require('../groups'),
 	async = require('async'),
 	winston = require('winston'),
 	index = require('./index'),
+	cluster = require('cluster'),
 
 	SocketAdmin = {
 		user: require('./admin/user'),
 		categories: require('./admin/categories'),
 		groups: require('./admin/groups'),
+		tags: require('./admin/tags'),
 		themes: {},
 		plugins: {},
 		widgets: {},
@@ -37,7 +39,19 @@ SocketAdmin.before = function(socket, method, next) {
 	});
 };
 
+SocketAdmin.reload = function(socket, data, callback) {
+	events.logWithUser(socket.uid, ' is reloading NodeBB');
+	if (cluster.isWorker) {
+		process.send({
+			action: 'reload'
+		});
+	} else {
+		meta.reload(callback);
+	}
+};
+
 SocketAdmin.restart = function(socket, data, callback) {
+	events.logWithUser(socket.uid, ' is restarting NodeBB');
 	meta.restart();
 };
 

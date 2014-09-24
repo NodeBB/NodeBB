@@ -41,6 +41,10 @@ module.exports = function(db, module) {
 		db.del(key, callback);
 	};
 
+	module.deleteAll = function(keys, callback) {
+		async.each(keys, module.delete, callback);
+	};
+
 	module.get = function(key, callback) {
 		db.get(key, function(err, value) {
 			callback(false, value);

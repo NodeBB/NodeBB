@@ -17,9 +17,10 @@ define('forum/infinitescroll', function() {
 	};
 
 	function onScroll() {
-		var top = $(window).height() * 0.1 + topOffset;
-		var bottom = ($(document).height() - $(window).height()) * 0.9;
-		var currentScrollTop = $(window).scrollTop();
+		var originalPostEl = $('li[data-index="0"]'),
+			top = $(window).height() * 0.15 + topOffset + (originalPostEl ? originalPostEl.outerHeight() : 0),
+			bottom = ($(document).height() - $(window).height()) * 0.85,
+			currentScrollTop = $(window).scrollTop();
 
 		if(currentScrollTop < top && currentScrollTop < previousScrollTop) {
 			callback(-1);
@@ -55,13 +56,16 @@ define('forum/infinitescroll', function() {
 		});
 	};
 
-	scroll.calculateAfter = function(direction, selector, count, callback) {
+	scroll.calculateAfter = function(direction, selector, count, reverse, callback) {
 		var after = 0,
 			offset = 0,
 			el = direction > 0 ? $(selector).last() : $(selector).first();
 
+		var count = reverse ? -count : count;
+		var increment = reverse ? -1 : 1;
+
 		if (direction > 0) {
-			after = parseInt(el.attr('data-index'), 10) + 1;
+			after = parseInt(el.attr('data-index'), 10) + increment;
 		} else {
 			after = parseInt(el.attr('data-index'), 10);
 			if (isNaN(after)) {

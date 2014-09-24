@@ -12,6 +12,10 @@
     "chat.message-history": "Historik för meddelande",
     "chat.pop-out": "Utskjutande chatt",
     "chat.maximize": "Maximera",
+    "chat.yesterday": "Yesterday",
+    "chat.seven_days": "7 Days",
+    "chat.thirty_days": "30 Days",
+    "chat.three_months": "3 Months",
     "composer.user_said_in": "%1 sa i %2:",
     "composer.user_said": "%1 sa:",
     "composer.discard": "Är du säker på att du vill förkasta det här inlägget?"

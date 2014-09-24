@@ -2,7 +2,7 @@
 
 /* globals define, app, ajaxify, utils, socket, templates */
 
-define('forum/chats', ['string', 'sounds'], function(S, sounds) {
+define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, sounds, infinitescroll) {
 	var Chats = {
 		initialised: false
 	};
@@ -49,11 +49,13 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 		});
 
 		inputEl.on('keyup', function() {
-			if ($(this).val()) {
-				Chats.notifyTyping(Chats.getRecipientUid(), true);
-			} else {
-				Chats.notifyTyping(Chats.getRecipientUid(), false);
+			var val = !!$(this).val();
+			if ((val && $(this).attr('data-typing') === 'true') || (!val && $(this).attr('data-typing') === 'false')) {
+				return;
 			}
+
+			Chats.notifyTyping(Chats.getRecipientUid(), val);
+			$(this).attr('data-typing', val);
 		});
 
 		sendEl.on('click', function(e) {
@@ -68,7 +70,35 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 				app.openChat(username, uid);
 			}, true);
 		});
+
+		$('.recent-chats').on('scroll', function() {
+			var $this = $(this);
+			var bottom = ($this[0].scrollHeight - $this.height()) * 0.9;
+			if ($this.scrollTop() > bottom) {
+				loadMoreRecentChats();
+			}
+		});
+
+		$('.expanded-chat [data-since]').on('click', function() {
+			var since = $(this).attr('data-since');
+			$('.expanded-chat [data-since]').removeClass('selected');
+			$(this).addClass('selected');
+			loadChatSince(since);
+			return false;
+		});
 	};
+
+	function loadChatSince(since) {
+		var uid = Chats.getRecipientUid();
+		if (!uid) {
+			return;
+		}
+		socket.emit('modules.chats.get', {touid: uid, since: since}, function(err, messages) {
+			var chatContent = $('.expanded-chat .chat-content');
+			chatContent.find('.chat-message').remove();
+			Chats.parseMessage(messages, onMessagesParsed);
+		});
+	}
 
 	Chats.addGlobalEventListeners = function() {
 		$(window).on('resize', Chats.resizeMainWindow);
@@ -83,21 +113,23 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 		});
 	};
 
+	function onMessagesParsed(html) {
+		var newMessage = $(html);
+		newMessage.insertBefore($('.user-typing'));
+		newMessage.find('span.timeago').timeago();
+		newMessage.find('img:not(".chat-user-image")').addClass('img-responsive');
+		Chats.scrollToBottom($('.expanded-chat .chat-content'));
+	}
+
 	Chats.addSocketListeners = function() {
 		socket.on('event:chats.receive', function(data) {
 			var typingNotifEl = $('.user-typing'),
 				containerEl = $('.expanded-chat ul');
 
 			if (Chats.isCurrentChat(data.withUid)) {
-				newMessage = data.message.self === 0;
-
-				Chats.parseMessage(data.message, function(html) {
-					var newMessage = $(html);
-					newMessage.insertBefore(typingNotifEl);
-					newMessage.find('span.timeago').timeago();
-					newMessage.find('img:not(".chat-user-image")').addClass('img-responsive');
-					Chats.scrollToBottom(containerEl);
-				});
+				newMessage = data.self === 0;
+				data.message.self = data.self;
+				Chats.parseMessage(data.message, onMessagesParsed);
 			} else {
 				$('.chats-list li[data-uid="' + data.withUid + '"]').addClass('unread');
 				app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + data.message.fromUser.username + ']]');
@@ -122,6 +154,19 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 			}
 
 			$('.chats-list li[data-uid="' + withUid + '"]').removeClass('typing');
+		});
+
+		socket.on('event:user_status_change', function(data) {
+			var userEl = $('.chats-list li[data-uid="' + data.uid +'"]');
+
+			if (userEl.length) {
+				var statusEl = userEl.find('.status');
+				translator.translate('[[global:' + data.status + ']]', function(translated) {
+					statusEl.attr('class', 'fa fa-circle status ' + data.status)
+						.attr('title', translated)
+						.attr('data-original-title', translated);
+				});
+			}
 		});
 	};
 
@@ -170,6 +215,7 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 		var recipientUid = Chats.getRecipientUid();
 		if (recipientUid) {
 			socket.emit('modules.chats.markRead', recipientUid);
+			$('.expanded-chat input').focus();
 		}
 		$('.chats-list li').removeClass('bg-primary');
 		$('.chats-list li[data-uid="' + recipientUid + '"]').addClass('bg-primary');
@@ -180,6 +226,45 @@ define('forum/chats', ['string', 'sounds'], function(S, sounds) {
 			messages: data
 		}, callback);
 	};
+
+	function loadMoreRecentChats() {
+		var recentChats = $('.recent-chats');
+		if (recentChats.attr('loading')) {
+			return;
+		}
+		recentChats.attr('loading', 1);
+		socket.emit('modules.chats.getRecentChats', {
+			after: recentChats.attr('data-nextstart')
+		}, function(err, data) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			if (data && data.users.length) {
+				onRecentChatsLoaded(data.users, function() {
+					recentChats.removeAttr('loading');
+					recentChats.attr('data-nextstart', data.nextStart);
+				});
+			} else {
+				recentChats.removeAttr('loading');
+			}
+		});
+	}
+
+	function onRecentChatsLoaded(users, callback) {
+		users = users.filter(function(user) {
+			return !$('.recent-chats li[data-uid=' + user.uid + ']').length;
+		});
+
+		if (!users.length) {
+			return callback();
+		}
+
+		infinitescroll.parseAndTranslate('chats', 'chats', {chats: users}, function(html) {
+			$('.recent-chats').append(html);
+			callback();
+		});
+	}
 
 	return Chats;
 });

@@ -3,6 +3,7 @@ var async = require('async'),
 	db = require('./database'),
 	posts = require('./posts'),
 	user = require('./user'),
+	plugins = require('./plugins'),
 	meta = require('./meta');
 
 (function (Favourites) {
@@ -42,6 +43,13 @@ var async = require('async'),
 				}
 
 				db.sortedSetAdd('users:reputation', newreputation, postData.uid);
+
+				if (parseInt(meta.config['autoban:downvote'], 10) === 1 && newreputation < parseInt(meta.config['autoban:downvote:threshold'], 10)) {
+					var adminUser = require('./socket.io/admin/user');
+					adminUser.banUser(postData.uid, function() {
+						require('winston').info('uid ' + uid + ' was banned for reaching ' + newreputation + ' reputation');
+					});
+				}
 
 				adjustPostVotes(pid, uid, type, unvote, function(err, votes) {
 					postData.votes = votes;
@@ -98,24 +106,51 @@ var async = require('async'),
 	}
 
 	Favourites.upvote = function(pid, uid, callback) {
-		if (meta.config['reputation:disabled'] === false) {
-			return callback(false);
+		if (parseInt(meta.config['reputation:disabled'], 10) === 1) {
+			return callback(new Error('[[error:reputation-system-disabled]]'));
 		}
 
-		toggleVote('upvote', pid, uid, callback);
+		toggleVote('upvote', pid, uid, function(err, votes) {
+			if (err) {
+				return callback(err);
+			}
+			plugins.fireHook('action:post.upvote', {
+				pid: pid,
+				uid: uid
+			});
+
+			callback(null, votes);
+		});
 	};
 
 	Favourites.downvote = function(pid, uid, callback) {
-		if (meta.config['reputation:disabled'] === false) {
-			return callback(false);
+		if (parseInt(meta.config['reputation:disabled'], 10) === 1) {
+			return callback(new Error('[[error:reputation-system-disabled]]'));
+		}
+
+		if (parseInt(meta.config['downvote:disabled'], 10) === 1) {
+			return callback(new Error('[[error:downvoting-disabled]]'));
 		}
 
 		user.getUserField(uid, 'reputation', function(err, reputation) {
-			if (reputation < meta.config['privileges:downvote']) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (reputation < parseInt(meta.config['privileges:downvote'], 10)) {
 				return callback(new Error('[[error:not-enough-reputation-to-downvote]]'));
 			}
 
-			toggleVote('downvote', pid, uid, callback);
+			toggleVote('downvote', pid, uid, function(err, votes) {
+				if (err) {
+					return callback(err);
+				}
+				plugins.fireHook('action:post.downvote', {
+					pid: pid,
+					uid: uid
+				});
+				callback(null, votes);
+			});
 		});
 	};
 
@@ -144,14 +179,13 @@ var async = require('async'),
 	};
 
 	Favourites.hasVoted = function(pid, uid, callback) {
-		async.parallel({
-			upvoted: function(next) {
-				db.isSetMember('pid:' + pid + ':upvote', uid, next);
-			},
-			downvoted: function(next) {
-				db.isSetMember('pid:' + pid + ':downvote', uid, next);
+		db.isMemberOfSets(['pid:' + pid + ':upvote', 'pid:' + pid + ':downvote'], uid, function(err, hasVoted) {
+			if (err) {
+				return callback(err);
 			}
-		}, callback);
+
+			callback (null, {upvoted: hasVoted[0], downvoted: hasVoted[1]});
+		});
 	};
 
 	Favourites.getVoteStatusByPostIDs = function(pids, uid, callback) {
@@ -252,5 +286,13 @@ var async = require('async'),
 		});
 		db.getSetsMembers(sets, callback);
 	};
+
+	Favourites.getUpvotedUidsByPids = function(pids, callback) {
+		var sets = pids.map(function(pid) {
+			return 'pid:' + pid + ':upvote';
+		});
+		db.getSetsMembers(sets, callback);
+	};
+
 
 }(exports));

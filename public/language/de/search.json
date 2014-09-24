@@ -1,3 +1,4 @@
 {
-    "results_matching": "%1 Ergebniss(e) stimmen mit \"%2\" überein, (%3 Sekunden)"
+    "results_matching": "%1 Ergebniss(e) stimmen mit \"%2\" überein, (%3 Sekunden)",
+    "no-matches": "Keine Beiträge gefunden"
 }

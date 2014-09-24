@@ -20,7 +20,7 @@ helpers.some = function(tasks, callback) {
 	});
 };
 
-helpers.allowedTo = function(privilege, uid, cids, callback) {
+helpers.isUserAllowedTo = function(privilege, uid, cids, callback) {
 	if (parseInt(uid, 10) === 0) {
 		return isGuestAllowedTo(privilege, cids, callback);
 	}
@@ -42,9 +42,7 @@ helpers.allowedTo = function(privilege, uid, cids, callback) {
 			groups.isMemberOfGroups(uid, userKeys, next);
 		},
 		hasGroupPrivilege: function(next) {
-			async.map(groupKeys, function(groupKey, next) {
-				groups.isMemberOfGroupList(uid, groupKey, next);
-			}, next);
+			groups.isMemberOfGroupsList(uid, groupKeys, next);
 		}
 	}, function(err, results) {
 		if (err) {
@@ -56,6 +54,34 @@ helpers.allowedTo = function(privilege, uid, cids, callback) {
 			result.push((!results.userPrivilegeExists[i] && !results.groupPrivilegeExists[i]) || results.hasUserPrivilege[i] || results.hasGroupPrivilege[i]);
 		}
 
+		callback(null, result);
+	});
+};
+
+helpers.isUsersAllowedTo = function(privilege, uids, cid, callback) {
+	async.parallel({
+		userPrivilegeExists: function(next) {
+			groups.exists('cid:' + cid + ':privileges:' + privilege, next);
+		},
+		groupPrivilegeExists: function(next) {
+			groups.exists('cid:' + cid + ':privileges:groups:' + privilege, next);
+		},
+		hasUserPrivilege: function(next) {
+			groups.isMembers(uids, 'cid:' + cid + ':privileges:' + privilege, next);
+		},
+		hasGroupPrivilege: function(next) {
+			groups.isMembersOfGroupList(uids, 'cid:' + cid + ':privileges:groups:' + privilege, next);
+		}
+	}, function(err, results) {
+		if (err) {
+			return callback(err);
+		}
+
+		var result = [];
+
+		for(var i=0; i<uids.length; ++i) {
+			result.push((!results.userPrivilegeExists && !results.groupPrivilegeExists) || results.hasUserPrivilege[i] || results.hasGroupPrivilege[i]);
+		}
 
 		callback(null, result);
 	});

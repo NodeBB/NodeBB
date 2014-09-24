@@ -6,13 +6,18 @@ var fs = require('fs'),
 	winston = require('winston'),
 	nconf = require('nconf'),
 	semver = require('semver'),
+	express = require('express'),
 
 	db = require('./database'),
 	emitter = require('./emitter'),
 	meta = require('./meta'),
 	translator = require('../public/src/translator'),
 	utils = require('../public/src/utils'),
-	pkg = require('../package.json');
+	hotswap = require('./hotswap'),
+	pkg = require('../package.json'),
+
+	controllers = require('./controllers'),
+	app, middleware;
 
 (function(Plugins) {
 
@@ -26,10 +31,14 @@ var fs = require('fs'),
 
 	Plugins.initialized = false;
 
-	Plugins.init = function() {
+	Plugins.init = function(nbbApp, nbbMiddleware) {
 		if (Plugins.initialized) {
 			return;
 		}
+
+		app = nbbApp;
+		middleware = nbbMiddleware;
+		hotswap.prepare(nbbApp);
 
 		if (global.env === 'development') {
 			winston.info('[plugins] Initializing plugins system');
@@ -107,8 +116,26 @@ var fs = require('fs'),
 				});
 
 				next();
-			}
+			},
+			async.apply(Plugins.reloadRoutes)
 		], callback);
+	};
+
+	Plugins.reloadRoutes = function(callback) {
+		var router = express.Router();
+		router.hotswapId = 'plugins';
+		router.render = function() {
+			app.render.apply(app, arguments);
+		};
+
+		// Deprecated as of v0.5.0, remove this hook call for NodeBB v0.6.0-1
+		Plugins.fireHook('action:app.load', router, middleware, controllers);
+
+		Plugins.fireHook('static:app.load', router, middleware, controllers, function() {
+			hotswap.replace('plugins', router);
+			winston.info('[plugins] All plugins reloaded and rerouted');
+			callback();
+		});
 	};
 
 	Plugins.loadPlugin = function(pluginPath, callback) {
@@ -117,8 +144,16 @@ var fs = require('fs'),
 				return callback(pluginPath.match('nodebb-theme') ? null : err);
 			}
 
-			var pluginData = JSON.parse(data),
-				libraryPath, staticDir;
+			try {
+				var pluginData = JSON.parse(data),
+					libraryPath, staticDir;
+			} catch (err) {
+				var pluginDir = pluginPath.split(path.sep);
+				pluginDir = pluginDir[pluginDir.length -1];
+				
+				winston.error('[plugins/' + pluginDir + '] Plugin not loaded - please check its plugin.json for errors');
+				return callback();
+			}
 
 			/*
 				Starting v0.5.0, `minver` is deprecated in favour of `compatibility`.
@@ -497,7 +532,6 @@ var fs = require('fs'),
 
 				// Reload meta data
 				Plugins.reload(function() {
-
 					if(!active) {
 						Plugins.fireHook('action:plugin.activate', id);
 					}

@@ -4,6 +4,8 @@
     "username": "使用者名稱",
     "email": "Email",
     "confirm_email": "Confirm Email",
+    "delete_account": "Delete Account",
+    "delete_account_confirm": "Are you sure you want to delete your account? <br /><strong>This action is irreversible and you will not be able to recover any of your data</strong><br /><br />Enter your username to confirm that you wish to destroy this account.",
     "fullname": "姓名",
     "website": "網站",
     "location": "地址",
@@ -62,5 +64,7 @@
     "posts_per_page": "每頁的文章數",
     "notification_sounds": "當收到新消息時播放提示音",
     "browsing": "瀏覽設定",
-    "open_links_in_new_tab": "在新的分頁開啟外部連結?"
+    "open_links_in_new_tab": "在新的分頁開啟外部連結?",
+    "follow_topics_you_reply_to": "Follow topics that you reply to.",
+    "follow_topics_you_create": "Follow topics you create."
 }

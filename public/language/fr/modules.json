@@ -12,6 +12,10 @@
     "chat.message-history": "Historique des messages",
     "chat.pop-out": "Afficher la discussion",
     "chat.maximize": "Agrandir",
+    "chat.yesterday": "Yesterday",
+    "chat.seven_days": "7 Days",
+    "chat.thirty_days": "30 Days",
+    "chat.three_months": "3 Months",
     "composer.user_said_in": "%1 a dit dans %2 :",
     "composer.user_said": "%1 a dit :",
     "composer.discard": "Êtes-vous sûr de bien vouloir supprimer ce message ?"

@@ -76,16 +76,20 @@ User.banUser = function(uid, callback) {
 				return callback(err);
 			}
 
-			var sockets = websockets.getUserSockets(uid);
-
-			for(var i=0; i<sockets.length; ++i) {
-				sockets[i].emit('event:banned');
-			}
+			websockets.in('uid_' + uid).emit('event:banned');
 
 			websockets.logoutUser(uid);
 			callback();
 		});
 	});
+};
+
+User.resetLockouts = function(socket, uids, callback) {
+	if (!Array.isArray(uids)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	async.each(uids, user.auth.resetLockout, callback);
 };
 
 User.deleteUsers = function(socket, uids, callback) {
@@ -94,15 +98,21 @@ User.deleteUsers = function(socket, uids, callback) {
 	}
 
 	async.each(uids, function(uid, next) {
-		user.delete(uid, function(err) {
-			if (err) {
-				return next(err);
+		user.isAdministrator(uid, function(err, isAdmin) {
+			if (err || isAdmin) {
+				return callback(err || new Error('[[error:cant-ban-other-admins]]'));
 			}
 
-			events.logAdminUserDelete(socket.uid, uid);
+			user.delete(uid, function(err) {
+				if (err) {
+					return next(err);
+				}
 
-			websockets.logoutUser(uid);
-			next();
+				events.logAdminUserDelete(socket.uid, uid);
+
+				websockets.logoutUser(uid);
+				next();
+			});
 		});
 	}, callback);
 };

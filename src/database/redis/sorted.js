@@ -3,15 +3,70 @@
 module.exports = function(redisClient, module) {
 	module.sortedSetAdd = function(key, score, value, callback) {
 		callback = callback || function() {};
-		redisClient.zadd(key, score, value, callback);
+		if (Array.isArray(score) && Array.isArray(value)) {
+			return sortedSetAddMulti(key, score, value, callback);
+		}
+		redisClient.zadd(key, score, value, function(err) {
+			callback(err);
+		});
+	};
+
+	function sortedSetAddMulti(key, scores, values, callback) {
+		if (scores.length !== values.length) {
+			return callback(new Error('[[error:invalid-data]]'));
+		}
+
+		var args = [key];
+
+		for(var i=0; i<scores.length; ++i) {
+			args.push(scores[i], values[i]);
+		}
+
+		redisClient.zadd(args, function(err, res) {
+			callback(err);
+		});
+	}
+
+	module.sortedSetsAdd = function(keys, score, value, callback) {
+		callback = callback || function() {};
+		var multi = redisClient.multi();
+
+		for(var i=0; i<keys.length; ++i) {
+			multi.zadd(keys[i], score, value);
+		}
+
+		multi.exec(function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.sortedSetRemove = function(key, value, callback) {
-		redisClient.zrem(key, value, callback);
+		callback = callback || function() {};
+		if (!Array.isArray(value)) {
+			value = [value];
+		}
+		var multi = redisClient.multi();
+		for(var i=0; i<value.length; ++i) {
+			multi.zrem(key, value[i]);
+		}
+		multi.exec(function(err) {
+			callback(err);
+		});
 	};
 
 	module.sortedSetsRemove = function(keys, value, callback) {
 		multi('zrem', keys, value, callback);
+	};
+
+	module.sortedSetsRemoveRangeByScore = function(keys, min, max, callback) {
+		callback = callback || function() {};
+		var multi = redisClient.multi();
+		for(var i=0; i<keys.length; ++i) {
+			multi.zremrangebyscore(keys[i], min, max);
+		}
+		multi.exec(function(err) {
+			callback(err);
+		});
 	};
 
 	module.getSortedSetRange = function(key, start, stop, callback) {
@@ -51,6 +106,17 @@ module.exports = function(redisClient, module) {
 		redisClient.zcard(key, callback);
 	};
 
+	module.sortedSetsCard = function(keys, callback) {
+		if (Array.isArray(keys) && !keys.length) {
+			return callback(null, []);
+		}
+		var multi = redisClient.multi();
+		for(var i=0; i<keys.length; ++i) {
+			multi.zcard(keys[i]);
+		}
+		multi.exec(callback);
+	};
+
 	module.sortedSetRank = function(key, value, callback) {
 		redisClient.zrank(key, value, callback);
 	};
@@ -69,6 +135,18 @@ module.exports = function(redisClient, module) {
 
 	module.sortedSetScore = function(key, value, callback) {
 		redisClient.zscore(key, value, callback);
+	};
+
+	module.sortedSetsScore = function(keys, value, callback) {
+		multi('zscore', keys, value, callback);
+	};
+
+	module.sortedSetScores = function(key, values, callback) {
+		var multi = redisClient.multi();
+		for(var i=0; i<values.length; ++i) {
+			multi.zscore(key, values[i]);
+		}
+		multi.exec(callback);
 	};
 
 	module.isSortedSetMember = function(key, value, callback) {
@@ -91,10 +169,6 @@ module.exports = function(redisClient, module) {
 			});
 			callback(null, results);
 		});
-	};
-
-	module.sortedSetsScore = function(keys, value, callback) {
-		multi('zscore', keys, value, callback);
 	};
 
 	function multi(command, keys, value, callback) {

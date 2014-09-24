@@ -12,7 +12,7 @@ var fs = require('fs'),
 	var logFileName = 'logs/events.log';
 
 	events.logPasswordChange = function(uid) {
-		logWithUser(uid, 'changed password');
+		events.logWithUser(uid, 'changed password');
 	};
 
 	events.logAdminChangeUserPassword = function(adminUid, theirUid, callback) {
@@ -35,43 +35,42 @@ var fs = require('fs'),
 	}
 
 	events.logPasswordReset = function(uid) {
-		logWithUser(uid, 'reset password');
+		events.logWithUser(uid, 'reset password');
 	};
 
 	events.logEmailChange = function(uid, oldEmail, newEmail) {
-		logWithUser(uid,'changed email from "' + oldEmail + '" to "' + newEmail +'"');
+		events.logWithUser(uid,'changed email from "' + oldEmail + '" to "' + newEmail +'"');
 	};
 
 	events.logUsernameChange = function(uid, oldUsername, newUsername) {
-		logWithUser(uid,'changed username from "' + oldUsername + '" to "' + newUsername +'"');
+		events.logWithUser(uid,'changed username from "' + oldUsername + '" to "' + newUsername +'"');
 	};
 
 	events.logAdminLogin = function(uid) {
-		logWithUser(uid, 'logged into admin panel');
+		events.logWithUser(uid, 'logged into admin panel');
 	};
 
 	events.logPostEdit = function(uid, pid) {
-		logWithUser(uid, 'edited post (pid ' + pid + ')');
+		events.logWithUser(uid, 'edited post (pid ' + pid + ')');
 	};
 
 	events.logPostDelete = function(uid, pid) {
-		logWithUser(uid, 'deleted post (pid ' + pid + ')');
+		events.logWithUser(uid, 'deleted post (pid ' + pid + ')');
 	};
 
 	events.logPostRestore = function(uid, pid) {
-		logWithUser(uid, 'restored post (pid ' + pid + ')');
+		events.logWithUser(uid, 'restored post (pid ' + pid + ')');
 	};
 
 	events.logTopicDelete = function(uid, tid) {
-		logWithUser(uid, 'deleted topic (tid ' + tid + ')');
+		events.logWithUser(uid, 'deleted topic (tid ' + tid + ')');
 	};
 
 	events.logTopicRestore = function(uid, tid) {
-		logWithUser(uid, 'restored topic (tid ' + tid + ')');
+		events.logWithUser(uid, 'restored topic (tid ' + tid + ')');
 	};
 
-	function logWithUser(uid, string) {
-
+	events.logWithUser = function(uid, string) {
 		user.getUserField(uid, 'username', function(err, username) {
 			if(err) {
 				return winston.error('Error logging event. ' + err.message);

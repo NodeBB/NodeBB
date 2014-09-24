@@ -379,7 +379,7 @@ function createAdmin(callback) {
 function createCategories(next) {
 	var Categories = require('./categories');
 
-	Categories.getAllCategories(function (err, categoryData) {
+	Categories.getAllCategories(0, function (err, categoryData) {
 		if (err) {
 			return next(err);
 		}

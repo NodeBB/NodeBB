@@ -12,6 +12,10 @@
     "chat.message-history": "تاریخچه پیام‌ها",
     "chat.pop-out": "Pop out chat",
     "chat.maximize": "تمام صفحه",
+    "chat.yesterday": "Yesterday",
+    "chat.seven_days": "7 Days",
+    "chat.thirty_days": "30 Days",
+    "chat.three_months": "3 Months",
     "composer.user_said_in": "%1 در %2 گفته است:",
     "composer.user_said": "%1 گفته است:",
     "composer.discard": "آیا از دور انداختن این دیدگاه اطمینان دارید؟"

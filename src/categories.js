@@ -9,7 +9,6 @@ var db = require('./database'),
 	topics = require('./topics'),
 	plugins = require('./plugins'),
 	meta = require('./meta'),
-	emitter = require('./emitter'),
 	validator = require('validator'),
 	privileges = require('./privileges'),
 
@@ -40,12 +39,13 @@ var db = require('./database'),
 				bgColor: data.bgColor,
 				color: data.color,
 				slug: slug,
+				parentCid: 0,
 				topic_count: 0,
 				post_count: 0,
 				disabled: 0,
 				order: data.order,
 				link: '',
-				numRecentReplies: 2,
+				numRecentReplies: 1,
 				class: 'col-md-3 col-xs-6',
 				imageClass: 'auto'
 			};
@@ -67,13 +67,14 @@ var db = require('./database'),
 	};
 
 	Categories.getCategoryById = function(cid, start, end, uid, callback) {
-		Categories.getCategoryData(cid, function(err, category) {
-			if(err || !category) {
+		Categories.getCategories([cid], uid, function(err, categories) {
+			if (err || !Array.isArray(categories) || !categories[0]) {
 				return callback(err || new Error('[[error:invalid-cid]]'));
 			}
+			var category = categories[0];
 
-			if(parseInt(uid, 10)) {
-				Categories.markAsRead(cid, uid);
+			if (parseInt(uid, 10)) {
+				Categories.markAsRead([cid], uid);
 			}
 
 			async.parallel({
@@ -82,6 +83,9 @@ var db = require('./database'),
 				},
 				pageCount: function(next) {
 					Categories.getPageCount(cid, uid, next);
+				},
+				isIgnored: function(next) {
+					Categories.isIgnored([cid], uid, next);
 				}
 			}, function(err, results) {
 				if(err) {
@@ -91,6 +95,7 @@ var db = require('./database'),
 				category.topics = results.topics.topics;
 				category.nextStart = results.topics.nextStart;
 				category.pageCount = results.pageCount;
+				category.isIgnored = results.isIgnored[0];
 				category.topic_row_size = 'col-md-9';
 
 				plugins.fireHook('filter:category.get', category, uid, callback);
@@ -140,6 +145,19 @@ var db = require('./database'),
 		], callback);
 	};
 
+	Categories.isIgnored = function(cids, uid, callback) {
+		user.getIgnoredCategories(uid, function(err, ignoredCids) {
+			if (err) {
+				return callback(err);
+			}
+
+			cids = cids.map(function(cid) {
+				return ignoredCids.indexOf(cid.toString()) !== -1;
+			});
+			callback(null, cids);
+		});
+	};
+
 	Categories.getTopicIds = function(cid, start, stop, callback) {
 		db.getSortedSetRevRange('categories:' + cid + ':tid', start, stop, callback);
 	};
@@ -174,7 +192,7 @@ var db = require('./database'),
 		});
 	};
 
-	Categories.getAllCategories = function(callback) {
+	Categories.getAllCategories = function(uid, callback) {
 		db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
 			if (err) {
 				return callback(err);
@@ -184,7 +202,7 @@ var db = require('./database'),
 				return callback(null, []);
 			}
 
-			Categories.getCategoriesData(cids, callback);
+			Categories.getCategories(cids, uid, callback);
 		});
 	};
 
@@ -198,7 +216,7 @@ var db = require('./database'),
 				return callback(null, []);
 			}
 
-			privileges.categories.filter(privilege, cids, uid, function(err, cids) {
+			privileges.categories.filterCids(privilege, cids, uid, function(err, cids) {
 				if (err) {
 					return callback(err);
 				}
@@ -220,6 +238,9 @@ var db = require('./database'),
 
 	Categories.getModerators = function(cid, callback) {
 		Groups.get('cid:' + cid + ':privileges:mods', {}, function(err, groupObj) {
+			if (err && err === 'group-not-found') {
+				return callback(null, []);
+			}
 			if (err) {
 				return callback(err);
 			}
@@ -232,8 +253,14 @@ var db = require('./database'),
 		});
 	};
 
-	Categories.markAsRead = function(cid, uid, callback) {
-		db.setAdd('cid:' + cid + ':read_by_uid', uid, callback);
+	Categories.markAsRead = function(cids, uid, callback) {
+		if (!Array.isArray(cids) || !cids.length) {
+			return callback();
+		}
+		var keys = cids.map(function(cid) {
+			return 'cid:' + cid + ':read_by_uid';
+		});
+		db.setsAdd(keys, uid, callback);
 	};
 
 	Categories.markAsUnreadForAll = function(cid, callback) {
@@ -284,7 +311,8 @@ var db = require('./database'),
 				category.name = validator.escape(category.name);
 				category.description = validator.escape(category.description);
 				category.backgroundImage = category.image ? nconf.get('relative_path') + category.image : '';
-				category.disabled = category.disabled ? parseInt(category.disabled, 10) !== 0 : false;
+				category.disabled = parseInt(category.disabled, 10) === 1;
+
 				next(null, category);
 			}, callback);
 		});
@@ -326,6 +354,12 @@ var db = require('./database'),
 			categories: function(next) {
 				Categories.getCategoriesData(cids, next);
 			},
+			children: function(next) {
+				Categories.getChildren(cids, uid, next);
+			},
+			parents: function(next) {
+				Categories.getParents(cids, next);
+			},
 			hasRead: function(next) {
 				Categories.hasReadCategories(cids, uid, next);
 			}
@@ -338,30 +372,84 @@ var db = require('./database'),
 			var hasRead = results.hasRead;
 			uid = parseInt(uid, 10);
 			for(var i=0; i<results.categories.length; ++i) {
-				categories[i]['unread-class'] = (parseInt(categories[i].topic_count, 10) === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
+				if (categories[i]) {
+					categories[i]['unread-class'] = (parseInt(categories[i].topic_count, 10) === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
+					categories[i].children = results.children[i];
+					categories[i].parent = results.parents[i] && !results.parents[i].disabled ? results.parents[i] : null;
+				}
 			}
 
 			callback(null, categories);
 		});
 	};
 
-	Categories.onNewPostMade = function(postData) {
+	Categories.getParents = function(cids, callback) {
+		var keys = cids.map(function(cid) {
+			return 'category:' + cid;
+		});
+
+		db.getObjectsFields(keys, ['parentCid'], function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			var parentCids = data.map(function(category) {
+				return category && category.parentCid;
+			});
+
+			Categories.getCategoriesData(parentCids, callback);
+		});
+	};
+
+	Categories.getChildren = function(cids, uid, callback) {
+		async.waterfall([
+			async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
+			function(cids, next) {
+				privileges.categories.filterCids('find', cids, uid, next);
+			},
+			function (cids, next) {
+				Categories.getCategoriesData(cids, next);
+			},
+			function (categories, next) {
+				// Filter categories to isolate children, and remove disabled categories
+				async.map(cids, function(cid, next) {
+					next(null, categories.filter(function(category) {
+						return parseInt(category.parentCid, 10) === parseInt(cid, 10) && !category.disabled;
+					}));
+				}, next);
+			}
+		], callback);
+	};
+
+	Categories.onNewPostMade = function(postData, callback) {
 		topics.getTopicFields(postData.tid, ['cid', 'pinned'], function(err, topicData) {
 			if (err) {
-				winston.error(err.message);
+				return callback(err);
+			}
+
+			if (!topicData || !topicData.cid) {
+				return callback();
 			}
 
 			var cid = topicData.cid;
 
-			db.sortedSetAdd('categories:recent_posts:cid:' + cid, postData.timestamp, postData.pid);
-			db.incrObjectField('category:' + cid, 'post_count');
-
-			if(parseInt(topicData.pinned, 10) === 0) {
-				db.sortedSetAdd('categories:' + cid + ':tid', postData.timestamp, postData.tid);
-			}
+			async.parallel([
+				function(next) {
+					db.sortedSetAdd('categories:recent_posts:cid:' + cid, postData.timestamp, postData.pid, next);
+				},
+				function(next) {
+					db.incrObjectField('category:' + cid, 'post_count', next);
+				},
+				function(next) {
+					if(parseInt(topicData.pinned, 10) === 0) {
+						db.sortedSetAdd('categories:' + cid + ':tid', postData.timestamp, postData.tid, next);
+					} else {
+						next();
+					}
+				}
+			], callback);
 		});
 	};
 
-	emitter.on('event:newpost', Categories.onNewPostMade);
 
 }(exports));

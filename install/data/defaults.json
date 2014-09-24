@@ -12,6 +12,10 @@
         "value": 10
     },
     {
+        "field": "initialPostDelay",
+        "value": 10
+    },
+    {
         "field": "minimumPostLength",
         "value": 8
     },
@@ -30,6 +34,10 @@
     {
         "field": "allowLocalLogin",
         "value": 1
+    },
+    {
+        "field": "allowAccountDelete",
+        "value": 1,
     },
     {
         "field": "allowFileUploads",
@@ -68,8 +76,8 @@
         "value": 256
     },
     {
-        "field": "chatMessagesToDisplay",
-        "value": 50
+        "field": "profileImageDimension",
+        "value": 128
     },
     {
         "field": "requireEmailConfirmation",

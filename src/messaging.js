@@ -2,16 +2,19 @@
 
 var db = require('./database'),
 	async = require('async'),
+	nconf = require('nconf'),
 	winston = require('winston'),
 	user = require('./user'),
 	plugins = require('./plugins'),
 	meta = require('./meta'),
 	utils = require('../public/src/utils'),
 	notifications = require('./notifications'),
-	userNotifications = require('./user/notifications');
-
+	userNotifications = require('./user/notifications'),
+	websockets = require('./socket.io'),
+	emailer = require('./emailer');
 
 (function(Messaging) {
+	Messaging.notifyQueue = {};	// Only used to notify a user of a new chat message, see Messaging.notifyUser
 
 	function sortUids(fromuid, touid) {
 		return [fromuid, touid].sort();
@@ -85,10 +88,18 @@ var db = require('./database'),
 		});
 	}
 
-	Messaging.getMessages = function(fromuid, touid, isNew, callback) {
+	Messaging.getMessages = function(fromuid, touid, since, isNew, callback) {
 		var uids = sortUids(fromuid, touid);
 
-		db.getSortedSetRevRange('messages:uid:' + uids[0] + ':to:' + uids[1], 0, (meta.config.chatMessagesToDisplay || 50) - 1, function(err, mids) {
+		var terms = {
+			day: 86400000,
+			week: 604800000,
+			month: 2592000000,
+			threemonths: 7776000000
+		};
+		since = terms[since] || terms['day'];
+		var count = parseInt(meta.config.chatMessageInboxSize, 10) || 250;
+		db.getSortedSetRevRangeByScore('messages:uid:' + uids[0] + ':to:' + uids[1], 0, count, Infinity, Date.now() - since, function(err, mids) {
 			if (err) {
 				return callback(err);
 			}
@@ -102,8 +113,7 @@ var db = require('./database'),
 			getMessages(mids, fromuid, touid, isNew, callback);
 		});
 
-		// Mark any chat notifications pertaining to this chat as read
-		notifications.markReadByUniqueId(fromuid, 'chat_' + touid + '_' + fromuid, function(err) {
+		notifications.markRead('chat_' + touid + '_' + fromuid, fromuid, function(err) {
 			if (err) {
 				winston.error('[messaging] Could not mark notifications related to this chat as read: ' + err.message);
 			}
@@ -216,31 +226,46 @@ var db = require('./database'),
 	};
 
 	Messaging.getRecentChats = function(uid, start, end, callback) {
+		var websockets = require('./socket.io');
+
 		db.getSortedSetRevRange('uid:' + uid + ':chats', start, end, function(err, uids) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
-			db.isSortedSetMembers('uid:' + uid + ':chats:unread', uids, function(err, unreadUids) {
+			async.parallel({
+				unread: function(next) {
+					db.isSortedSetMembers('uid:' + uid + ':chats:unread', uids, next);
+				},
+				users: function(next) {
+					user.getMultipleUserFields(uids, ['uid', 'username', 'picture', 'status'] , next);
+				}
+			}, function(err, results) {
 				if (err) {
 					return callback(err);
 				}
 
-				user.isOnline(uids, function(err, users) {
+				results.users = results.users.filter(function(user) {
+					return user && parseInt(user.uid, 10);
+				});
+
+				if (!results.users.length) {
+					return callback(null, {users: [], nextStart: end + 1});
+				}
+
+				results.users.forEach(function(user, index) {
+					if (user) {
+						user.unread = results.unread[index];
+						user.status = websockets.isUserOnline(user.uid) ? user.status : 'offline';
+					}
+				});
+
+				db.sortedSetRevRank('uid:' + uid + ':chats', results.users[results.users.length - 1].uid, function(err, rank) {
 					if (err) {
 						return callback(err);
 					}
 
-					users.forEach(function(user, index) {
-						if (user) {
-							user.unread = unreadUids[index];
-						}
-					});
-
-					users = users.filter(function(user) {
-						return !!user.uid;
-					});
-					callback(null, users);
+					callback(null, {users: results.users, nextStart: rank + 1});
 				});
 			});
 		});
@@ -322,6 +347,56 @@ var db = require('./database'),
 		}
 
 		return (matrix[b.length][a.length] / b.length < 0.1);
+	};
+
+	Messaging.notifyUser = function(fromuid, touid, messageObj) {
+		var queueObj = Messaging.notifyQueue[fromuid + ':' + touid];
+		if (queueObj) {
+			queueObj.message.content += '\n' + messageObj.content;
+			clearTimeout(queueObj.timeout);
+		} else {
+			queueObj = Messaging.notifyQueue[fromuid + ':' + touid] = {
+				message: messageObj
+			};
+		}
+
+		queueObj.timeout = setTimeout(function() {
+			sendNotifications(fromuid, touid, queueObj.message, function(err) {
+				if (!err) {
+					delete Messaging.notifyQueue[fromuid + ':' + touid];
+				}
+			});
+		}, 1000*60);	// wait 60s before sending
+	};
+
+	function sendNotifications(fromuid, touid, messageObj, callback) {
+		// todo #1798 -- this should check if the user is in room `chat_{uidA}_{uidB}` instead, see `Sockets.uidInRoom(uid, room);`
+		if (!websockets.isUserOnline(touid)) {
+			notifications.create({
+				bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
+				bodyLong: messageObj.content,
+				path: nconf.get('relative_path') + '/chats/' + utils.slugify(messageObj.fromUser.username),
+				nid: 'chat_' + fromuid + '_' + touid,
+				from: fromuid
+			}, function(err, notification) {
+				if (!err && notification) {
+					notifications.push(notification, [touid], callback);
+				}
+			});
+
+			user.getSettings(messageObj.toUser.uid, function(err, settings) {
+				if (settings.sendChatNotifications && !parseInt(meta.config.disableEmailSubscriptions, 10)) {
+					emailer.send('notif_chat', touid, {
+						subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
+						username: messageObj.toUser.username,
+						summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
+						message: messageObj,
+						site_title: meta.config.site_title || 'NodeBB',
+						url: nconf.get('url') + '/chats/' + utils.slugify(messageObj.fromUser.username)
+					});
+				}
+			});
+		}
 	}
 
 }(exports));

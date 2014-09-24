@@ -1,4 +1,4 @@
-"use strict";
+﻿"use strict";
 
 var db = require('./database'),
 	async = require('async'),
@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 6, 24);
+	latestSchema = Date.UTC(2014, 8, 8);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -75,7 +75,7 @@ Upgrade.upgrade = function(callback) {
 					{
 						"widget": "html",
 						"data": {
-							"html": Meta.config['motd'] ||  "Welcome to NodeBB, if you are an administrator of this forum visit the <a target='_blank' href='/admin/themes'>Themes</a> ACP to modify and add widgets."
+							"html": Meta.config.motd ||  "Welcome to NodeBB, if you are an administrator of this forum visit the <a target='_blank' href='/admin/themes'>Themes</a> ACP to modify and add widgets."
 						}
 					}
 				]), function(err) {
@@ -171,7 +171,7 @@ Upgrade.upgrade = function(callback) {
 					{
 						"widget": "html",
 						"data": {
-							"html": Meta.config['motd'] || "Welcome to NodeBB, if you are an administrator of this forum visit the <a target='_blank' href='/admin/themes'>Themes</a> ACP to modify and add widgets.",
+							"html": Meta.config.motd || "Welcome to NodeBB, if you are an administrator of this forum visit the <a target='_blank' href='/admin/themes'>Themes</a> ACP to modify and add widgets.",
 							"container": container,
 							"title": "MOTD"
 						}
@@ -961,6 +961,56 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/7/24] Upgrading chats to sorted set - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 8, 8);
+
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/9/8] Deleting old notifications...');
+
+				async.parallel({
+					uids: function(next) {
+						db.getSortedSetRange('users:joindate', 0, -1, next);
+					},
+					nids: function(next) {
+						db.getSetMembers('notifications', next);
+					}
+				}, function(err, results) {
+					if (err) {
+						return next(err);
+					}
+					var uidKeys = results.uids.map(function(uid) {
+						return 'uid:' + uid + ':notifications:uniqueId:nid';
+					});
+
+					var nidKeys = results.nids.filter(Boolean).map(function(nid) {
+						return 'notifications:' + nid;
+					});
+
+					async.series([
+						function(next) {
+							db.deleteAll(nidKeys, next);
+						},
+						function(next) {
+							db.deleteAll(uidKeys, next);
+						},
+						function(next) {
+							db.delete('notifications', next);
+						}
+					], function(err, results) {
+						if (err) {
+							winston.error('[2014/9/8] Error encountered while deleting notifications');
+							return next(err);
+						}
+
+						winston.info('[2014/9/8] Deleted old notifications');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2014/9/8] Deleting old notifications skipped');
 				next();
 			}
 		}

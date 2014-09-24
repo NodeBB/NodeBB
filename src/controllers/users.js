@@ -3,65 +3,45 @@
 var usersController = {};
 
 var async = require('async'),
-	user = require('./../user'),
-	db = require('./../database');
+	user = require('../user'),
+	db = require('../database');
 
 usersController.getOnlineUsers = function(req, res, next) {
 	var	websockets = require('../socket.io');
+	var uid = req.user ? req.user.uid : 0;
 
-	user.getUsersFromSet('users:online', 0, 49, function (err, users) {
-		if(err) {
+	async.parallel({
+		users: function(next) {
+			user.getUsersFromSet('users:online', 0, 49, next);
+		},
+		count: function(next) {
+			db.sortedSetCard('users:online', next);
+		},
+		isAdministrator: function(next) {
+			user.isAdministrator(uid, next);
+		}
+	}, function(err, results) {
+		if (err) {
 			return next(err);
 		}
-		var onlineUsers = [],
-			uid = req.user ? req.user.uid : 0;
 
-		user.isAdministrator(uid, function (err, isAdministrator) {
-			if(err) {
-				return next(err);
-			}
-
-			if (!isAdministrator) {
-				users = users.filter(function(user) {
-					return user.status !== 'offline';
-				});
-			}
-
-			function updateUserOnlineStatus(user, next) {
-				var online = websockets.isUserOnline(user.uid);
-				if (!online) {
-					db.sortedSetRemove('users:online', user.uid);
-					return next();
-				}
-
-				onlineUsers.push(user);
-				next();
-			}
-
-			var anonymousUserCount = websockets.getOnlineAnonCount();
-
-			async.each(users, updateUserOnlineStatus, function(err) {
-				if (err) {
-					return next(err);
-				}
-
-				db.sortedSetCard('users:online', function(err, count) {
-					if (err) {
-						return next(err);
-					}
-
-					var userData = {
-						search_display: 'none',
-						loadmore_display: count > 50 ? 'block' : 'hide',
-						users: onlineUsers,
-						anonymousUserCount: anonymousUserCount,
-						show_anon: anonymousUserCount?'':'hide'
-					};
-
-					res.render('users', userData);
-				});
+		if (!results.isAdministrator) {
+			results.users = results.users.filter(function(user) {
+				return user && user.status !== 'offline';
 			});
-		});
+		}
+
+		var anonymousUserCount = websockets.getOnlineAnonCount();
+
+		var userData = {
+			search_display: 'none',
+			loadmore_display: results.count > 50 ? 'block' : 'hide',
+			users: results.users,
+			anonymousUserCount: anonymousUserCount,
+			show_anon: anonymousUserCount ? '' : 'hide'
+		};
+
+		res.render('users', userData);
 	});
 };
 
@@ -78,25 +58,29 @@ usersController.getUsersSortedByJoinDate = function(req, res, next) {
 };
 
 function getUsers(set, res, next) {
-	user.getUsersFromSet(set, 0, 49, function (err, data) {
+	async.parallel({
+		users: function(next) {
+			user.getUsersFromSet(set, 0, 49, next);
+		},
+		count: function(next) {
+			db.sortedSetCard(set, next);
+		}
+	}, function(err, results) {
 		if (err) {
 			return next(err);
 		}
-
-		db.sortedSetCard(set, function(err, count) {
-			if (err) {
-				return next(err);
-			}
-
-			var userData = {
-				search_display: 'none',
-				loadmore_display: count > 50 ? 'block' : 'hide',
-				users: data,
-				show_anon: 'hide'
-			};
-
-			res.render('users', userData);
+		results.users = results.users.filter(function(user) {
+			return user && parseInt(user.uid, 10);
 		});
+
+		var userData = {
+			search_display: 'none',
+			loadmore_display: results.count > 50 ? 'block' : 'hide',
+			users: results.users,
+			show_anon: 'hide'
+		};
+
+		res.render('users', userData);
 	});
 }
 

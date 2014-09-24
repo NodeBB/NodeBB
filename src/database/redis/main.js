@@ -73,6 +73,14 @@ module.exports = function(redisClient, module) {
 		redisClient.del(key, callback);
 	};
 
+	module.deleteAll = function(keys, callback) {
+		var multi = redisClient.multi();
+		for(var i=0; i<keys.length; ++i) {
+			multi.del(keys[i]);
+		}
+		multi.exec(callback);
+	};
+
 	module.get = function(key, callback) {
 		redisClient.get(key, callback);
 	};

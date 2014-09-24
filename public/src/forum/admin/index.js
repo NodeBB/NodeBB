@@ -3,19 +3,21 @@
 
 define('forum/admin/index', ['semver'], function(semver) {
 	var	Admin = {};
-
+	var updateIntervalId = 0;
 	Admin.init = function() {
 
 		app.enterRoom('admin');
 		socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
 
-		socket.removeListener('event:meta.rooms.update', Admin.updateRoomUsage);
-		socket.on('event:meta.rooms.update', Admin.updateRoomUsage);
+		if (updateIntervalId) {
+			clearInterval(updateIntervalId);
+		}
+		updateIntervalId = setInterval(function() {
+			socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
+		}, 3000);
 
 		$('#logout-link').on('click', function() {
-			$.post(RELATIVE_PATH + '/logout', {
-				_csrf: $('#csrf_token').val()
-			}, function() {
+			$.post(RELATIVE_PATH + '/logout', function() {
 				window.location.href = RELATIVE_PATH + '/';
 			});
 		});
@@ -44,62 +46,72 @@ define('forum/admin/index', ['semver'], function(semver) {
 		});
 
 		$('.restart').on('click', function() {
+			bootbox.confirm('Are you sure you wish to restart NodeBB?', function(confirm) {
+				if (confirm) {
+					app.alert({
+						alert_id: 'instance_restart',
+						type: 'info',
+						title: 'Restarting... <i class="fa fa-spin fa-refresh"></i>',
+						message: 'NodeBB is restarting.',
+						timeout: 5000
+					});
+
+					$(window).one('action:reconnected', function() {
+						app.alert({
+							alert_id: 'instance_restart',
+							type: 'success',
+							title: '<i class="fa fa-check"></i> Success',
+							message: 'NodeBB has successfully restarted.',
+							timeout: 5000
+						});
+					});
+
+					socket.emit('admin.restart');
+				}
+			});
+		});
+
+		$('.reload').on('click', function() {
 			app.alert({
-				timeout: 5000,
-				title: 'Restarting...',
-				message: 'NodeBB is restarting.',
-				type: 'info'
+				alert_id: 'instance_reload',
+				type: 'info',
+				title: 'Reloading... <i class="fa fa-spin fa-refresh"></i>',
+				message: 'NodeBB is reloading.',
+				timeout: 5000
 			});
 
-			$(window).one('action:reconnected', function() {
-				app.alertSuccess('NodeBB has successfully restarted.');
+			socket.emit('admin.reload', function(err) {
+				if (!err) {
+					app.alert({
+						alert_id: 'instance_reload',
+						type: 'success',
+						title: '<i class="fa fa-check"></i> Success',
+						message: 'NodeBB has successfully reloaded.',
+						timeout: 5000
+					});
+				} else {
+					app.alert({
+						alert_id: 'instance_reload',
+						type: 'danger',
+						title: '[[global:alert.error]]',
+						message: '[[error:reload-failed, ' + err.message + ']]'
+					});
+				}
 			});
-
-			socket.emit('admin.restart');
 		});
 	};
 
 	Admin.updateRoomUsage = function(err, data) {
-
-		function getUserCountIn(room) {
-			var count = 0;
-			for(var user in data[room]) {
-				if (data[room].hasOwnProperty(user)) {
-					++count;
-				}
-			}
-			return count;
+		if (err) {
+			return app.alertError(err.message);
 		}
 
-		var active_users = $('#active_users').html(''),
-			total = 0;
+		var html = '<strong>Online Users [ ' + data.onlineRegisteredCount + ' ]</strong><br/>' +
+					'<strong>Online Guests [ ' + data.onlineGuestCount + ' ]</strong><br/>'	 +
+					'<strong>Online Total [ ' + (data.onlineRegisteredCount + data.onlineGuestCount) + ' ]</strong><br/>' +
+					'<strong>Socket Connections [ ' + data.socketCount + ' ]</strong>';
 
-		if(!active_users.length) {
-			return;
-		}
-
-
-		var sortedData = [];
-
-		for (var room in data) {
-			if (room !== '') {
-				sortedData.push({room: room, count: data[room].length});
-				total += data[room].length;
-			}
-		}
-
-		sortedData.sort(function(a, b) {
-			return parseInt(b.count, 10) - parseInt(a.count, 10);
-		});
-
-		var usersHtml = '';
-		for(var i=0; i<sortedData.length; ++i) {
-			usersHtml += "<div class='alert alert-success'><strong>" + sortedData[i].room + "</strong> " +
-				sortedData[i].count + " active user" + (sortedData[i].count > 1 ? "s" : "") + "</div>";
-		}
-
-		active_users.html(usersHtml);
-		$('#connections').html(total);
+		$('#active_users').html(html);
 	};
 
 	return Admin;

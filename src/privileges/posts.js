@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async'),
+	winston = require('winston'),
 
 	posts = require('../posts'),
 	topics = require('../topics'),
@@ -15,7 +16,6 @@ module.exports = function(privileges) {
 	privileges.posts = {};
 
 	privileges.posts.get = function(pids, uid, callback) {
-
 		async.parallel({
 			manage_content: function(next) {
 				helpers.hasEnoughReputationFor('privileges:manage_content', uid, next);
@@ -89,7 +89,7 @@ module.exports = function(privileges) {
 				return {pid: pid, cid: cids[index]};
 			});
 
-			privileges.categories.filter(privilege, cids, uid, function(err, cids) {
+			privileges.categories.filterCids(privilege, cids, uid, function(err, cids) {
 				if (err) {
 					return callback(err);
 				}

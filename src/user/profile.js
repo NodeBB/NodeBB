@@ -1,15 +1,15 @@
 
 'use strict';
 
-var bcrypt = require('bcryptjs'),
-	async = require('async'),
+var async = require('async'),
 	validator = require('validator'),
 	S = require('string'),
 
-	utils = require('./../../public/src/utils'),
-	meta = require('./../meta'),
-	events = require('./../events'),
-	db = require('./../database');
+	utils = require('../../public/src/utils'),
+	meta = require('../meta'),
+	events = require('../events'),
+	db = require('../database'),
+	Password = require('../password');
 
 module.exports = function(User) {
 
@@ -27,6 +27,10 @@ module.exports = function(User) {
 		function isEmailAvailable(next) {
 			if (!data.email) {
 				return next();
+			}
+
+			if (!utils.isEmailValid(data.email)) {
+				return next(new Error('[[error:invalid-email]]'));
 			}
 
 			User.getUserField(uid, 'email', function(err, email) {
@@ -51,6 +55,14 @@ module.exports = function(User) {
 
 				if(userslug === userData.userslug) {
 					return next();
+				}
+
+				if (data.username.length < meta.config.minimumUsernameLength) {
+					return next(new Error('[[error:username-too-short]]'));
+				}
+
+				if (data.username.length > meta.config.maximumUsernameLength) {
+					return next(new Error('[[error:username-too-long]]'));
 				}
 
 				if(!utils.isUserNameValid(data.username) || !userslug) {
@@ -248,7 +260,7 @@ module.exports = function(User) {
 					return hashAndSetPassword(callback);
 				}
 
-				bcrypt.compare(data.currentPassword, currentPassword, function(err, res) {
+				Password.compare(data.currentPassword, currentPassword, function(err, res) {
 					if (err || !res) {
 						return callback(err || new Error('[[user:change_password_error_wrong_current]]'));
 					}

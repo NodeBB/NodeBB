@@ -14,7 +14,7 @@ module.exports = function(Meta) {
 
 		Meta.configs.list(function (err, config) {
 			if (err) {
-				winston.error(err);
+				winston.error(err.stack);
 				return callback(err);
 			}
 

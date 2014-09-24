@@ -16,7 +16,9 @@ var app,
 
 middleware.isAdmin = function(req, res, next) {
 	if (!req.user) {
-		return res.redirect(nconf.get('relative_path') + '/login?next=admin');
+		return res.json(404, {
+			error: 'not-found'
+		});
 	}
 
 	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
@@ -59,7 +61,7 @@ middleware.buildHeader = function(req, res, next) {
 					}
 				}, function(err, pluginData) {
 					var data = {
-						csrf: res.locals.csrf_token,
+						csrf: req.csrfToken ? req.csrfToken() : undefined,
 						relative_path: nconf.get('relative_path'),
 						plugins: pluginData.custom_header.plugins,
 						authentication: pluginData.custom_header.authentication,

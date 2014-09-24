@@ -2,11 +2,37 @@
 
 module.exports = function(redisClient, module) {
 	module.setAdd = function(key, value, callback) {
-		redisClient.sadd(key, value, callback);
+		callback = callback || function() {};
+		redisClient.sadd(key, value, function(err) {
+			callback(err);
+		});
+	};
+
+	module.setsAdd = function(keys, value, callback) {
+		callback = callback || function() {};
+		var multi = redisClient.multi();
+		for (var i=0; i<keys.length; ++i) {
+			multi.sadd(keys[i], value);
+		}
+		multi.exec(function(err) {
+			callback(err);
+		});
 	};
 
 	module.setRemove = function(key, value, callback) {
 		redisClient.srem(key, value, callback);
+	};
+
+	module.setsRemove = function(keys, value, callback) {
+		callback = callback || function() {};
+
+		var multi = redisClient.multi();
+		for(var i=0; i<keys.length; ++i) {
+			multi.srem(keys[i], value);
+		}
+		multi.exec(function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.isSetMember = function(key, value, callback) {

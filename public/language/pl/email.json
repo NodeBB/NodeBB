@@ -14,10 +14,10 @@
     "digest.cta": "Kliknij, by odwiedzić %1",
     "digest.unsub.info": "To podsumowanie zostało wysłane zgodnie z Twoimi ustawieniami.",
     "digest.daily.no_topics": "Wczoraj nie było żadnych aktywnych tematów",
-    "notif.chat.subject": "New chat message received from %1",
-    "notif.chat.cta": "Click here to continue the conversation",
-    "notif.chat.unsub.info": "This chat notification was sent to you due to your subscription settings.",
+    "notif.chat.subject": "Nowa wiadomość chatu od %1",
+    "notif.chat.cta": "Kliknij tutaj, by kontynuować konwersację",
+    "notif.chat.unsub.info": "To powiadomienie o chacie zostało Ci wysłane zgodnie z ustawieniami Twojego konta.",
     "test.text1": "To jest e-mail testowy, aby sprawdzić, czy poprawnie skonfigurowałeś e-mailer w swoim NodeBB.",
-    "unsub.cta": "Click here to alter those settings",
+    "unsub.cta": "Kliknij tutaj, by zmienić te ustawienia",
     "closing": "Dziękujemy!"
 }

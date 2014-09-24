@@ -54,33 +54,44 @@ var winston = require('winston'),
 						if (err) {
 							return next(err);
 						}
+
 						options.tags = options.tags || [];
-						if (isMainPost) {
-							title = title.trim();
 
-							var topicData = {
-								title: title,
-								slug: tid + '/' + utils.slugify(title)
-							};
-							if (options.topic_thumb) {
-								topicData.thumb = options.topic_thumb;
-							}
-
-							db.setObject('topic:' + tid, topicData, function(err) {
-								plugins.fireHook('action:topic.edit', tid);
+						if (!isMainPost) {
+							return next(null, {
+								tid: tid,
+								isMainPost: false
 							});
-
-							topics.updateTags(tid, options.tags);
 						}
 
-						next(null, {
-							tid: tid,
-							title: validator.escape(title),
-							isMainPost: isMainPost,
-							tags: options.tags.map(function(tag) { return {name:tag}; })
+						title = title.trim();
+
+						var topicData = {
+							title: title,
+							slug: tid + '/' + utils.slugify(title)
+						};
+						if (options.topic_thumb) {
+							topicData.thumb = options.topic_thumb;
+						}
+
+						db.setObject('topic:' + tid, topicData, function(err) {
+							plugins.fireHook('action:topic.edit', tid);
+						});
+
+						topics.updateTags(tid, options.tags, function(err) {
+							if (err) {
+								return next(err);
+							}
+							topics.getTopicTagsObjects(tid, function(err, tags) {
+								next(err, {
+									tid: tid,
+									title: validator.escape(title),
+									isMainPost: isMainPost,
+									tags: tags
+								});
+							});
 						});
 					});
-
 				},
 				content: function(next) {
 					PostTools.parse(postData.content, next);
@@ -90,7 +101,7 @@ var winston = require('winston'),
 					return callback(err);
 				}
 
-				events.logPostEdit(uid, pid);
+				//events.logPostEdit(uid, pid);
 				plugins.fireHook('action:post.edit', postData);
 				callback(null, results);
 			});
@@ -200,7 +211,7 @@ var winston = require('winston'),
 				}
 
 				if (timestamp) {
-					topics.updateTimestamp(tid, timestamp);
+					return topics.updateTimestamp(tid, timestamp, callback);
 				}
 				callback();
 			});

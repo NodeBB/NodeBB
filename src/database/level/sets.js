@@ -6,21 +6,31 @@ module.exports = function(db, module) {
 	var helpers = module.helpers.level;
 
 	module.setAdd = function(key, value, callback) {
+		callback = callback || function() {};
 		module.getListRange(key, 0, -1, function(err, set) {
+			if (err) {
+				return callback(err);
+			}
 			if (set.indexOf(value) === -1) {
 				module.listAppend(key, value, callback);
 			} else {
-				if (typeof callback === 'function') {
-					callback(null, []); // verify if it sends back true on redis?
-				}
+				callback(null);
 			}
 		});
+	};
+
+	module.setsAdd = function(keys, value, callback) {
+		throw new Error('not-implemented');
 	};
 
 	module.setRemove = function(key, value, callback) {
 		module.getListRange(key, 0, -1, function(err, set) {
 			module.set(key, set.splice(set.indexOf(value), 1), callback);
 		});
+	};
+
+	module.setsRemove = function(keys, value, callback) {
+		throw new Error('not-implemented');
 	};
 
 	module.isSetMember = function(key, value, callback) {

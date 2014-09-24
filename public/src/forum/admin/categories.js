@@ -89,14 +89,8 @@ define('forum/admin/categories', ['uploader', 'forum/admin/iconSelect'], functio
 					timeout: 2000
 				});
 
-				ajaxify.loadTemplate('admin/categories', function(adminCategories) {
-					var html = $(templates.parse(templates.getBlock(adminCategories, 'categories'), {categories: [data]}));
-
-					html.find('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
-
-					$('#entry-container').append(html);
-					$('#new-category-modal').modal('hide');
-				});
+				$('#new-category-modal').modal('hide');
+				ajaxify.refresh();
 			});
 		}
 
@@ -203,7 +197,7 @@ define('forum/admin/categories', ['uploader', 'forum/admin/iconSelect'], functio
 				var inputEl = $(this),
 					cid = inputEl.parents('li[data-cid]').attr('data-cid');
 
-				uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', {cid: cid}, 0, function(imageUrlOnServer) {
+				uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', { cid: cid }, 0, function(imageUrlOnServer) {
 					inputEl.val(imageUrlOnServer);
 					var previewBox = inputEl.parents('li[data-cid]').find('.preview-box');
 					previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')')
@@ -231,6 +225,45 @@ define('forum/admin/categories', ['uploader', 'forum/admin/iconSelect'], functio
 			});
 
 			setupEditTargets();
+
+			$('button[data-action="setParent"]').on('click', function() {
+				var cid = $(this).parents('[data-cid]').attr('data-cid'),
+					modal = $('#setParent');
+
+				modal.find('select').val($(this).attr('data-parentCid'));
+				modal.attr('data-cid', cid).modal();
+			});
+
+			$('button[data-action="removeParent"]').on('click', function() {
+				var cid = $(this).parents('[data-cid]').attr('data-cid');
+				var payload= {};
+				payload[cid] = {
+					parentCid: 0
+				};
+				socket.emit('admin.categories.update', payload, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					ajaxify.go('admin/categories/active');
+				});
+			});
+
+			$('#setParent [data-cid]').on('click', function() {
+				var modalEl = $('#setParent'),
+					parentCid = $(this).attr('data-cid'),
+					payload = {};
+
+				payload[modalEl.attr('data-cid')] = {
+					parentCid: parentCid
+				};
+
+				socket.emit('admin.categories.update', payload, function(err) {
+					modalEl.one('hidden.bs.modal', function() {
+						ajaxify.go('admin/categories/active');
+					});
+					modalEl.modal('hide');
+				});
+			});
 		});
 	};
 
