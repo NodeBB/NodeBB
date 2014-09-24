@@ -22,7 +22,12 @@ SocketUser.exists = function(socket, data, callback) {
 
 SocketUser.deleteAccount = function(socket, data, callback) {
 	if (socket.uid) {
-		user.deleteAccount(socket.uid, callback);
+		user.isAdministrator(socket.uid, function(err, isAdmin) {
+			if (err || isAdmin) {
+				return callback(err || new Error('[[error:cant-delete-admin]]'));
+			}
+			user.deleteAccount(socket.uid, callback);
+		});
 	}
 };
 
