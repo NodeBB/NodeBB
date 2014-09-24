@@ -243,17 +243,28 @@ SocketPosts.purge = function(socket, data, callback) {
 	});
 };
 
-SocketPosts.getPrivileges = function(socket, pid, callback) {
-	privileges.posts.get([pid], socket.uid, function(err, privileges) {
+SocketPosts.getPrivileges = function(socket, pids, callback) {
+	if (!Array.isArray(pids)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	if (!pids.length) {
+		return callback(null, []);
+	}
+
+	privileges.posts.get(pids, socket.uid, function(err, postPrivileges) {
 		if (err) {
 			return callback(err);
 		}
-		if (!Array.isArray(privileges) || !privileges.length) {
+		if (!Array.isArray(postPrivileges) || !postPrivileges.length) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
+		pids.forEach(function(pid, index) {
+			if (postPrivileges[index]) {
+				postPrivileges[index].pid = parseInt(pid, 10);
+			}
+		});
 
-		privileges[0].pid = parseInt(pid, 10);
-		callback(null, privileges[0]);
+		callback(null, postPrivileges);
 	});
 };
 
