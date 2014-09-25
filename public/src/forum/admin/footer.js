@@ -28,9 +28,13 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 			if (value.length > 3) {
 				for (var file in acpIndex) {
 					if (acpIndex.hasOwnProperty(file)) {
-						if (acpIndex[file].indexOf(value) !== -1) {
+						var position = acpIndex[file].indexOf(value);
+
+						if (position !== -1) {
 							var href = file.replace('.tpl', ''),
-								title = href.replace(/^\/admin\//, '').split('/');
+								title = href.replace(/^\/admin\//, '').split('/'),
+								description = acpIndex[file].substring(Math.max(0, position - 15), Math.min(acpIndex[file].length - 1, position + 15))
+									.replace(value, '<span class="search-match">' + value + '</span>');
 
 							for (var t in title) {
 								if (title.hasOwnProperty(t)) {
@@ -42,7 +46,7 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 
 							title = title.join(' > ');
 
-							menuItems.append('<li role="presentation"><a role="menuitem" href="' + RELATIVE_PATH + href + '">' + title + '</a></li>');
+							menuItems.append('<li role="presentation"><a role="menuitem" href="' + RELATIVE_PATH + href + '">' + title + '<br /><small><code>...' + description + '...</code></small></a></li>');
 						}
 					}
 				}
