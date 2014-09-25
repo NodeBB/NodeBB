@@ -9,9 +9,13 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 			acpIndex = data;
 			for (var file in acpIndex) {
 				if (acpIndex.hasOwnProperty(file)) {
+					acpIndex[file] = acpIndex[file].replace(/<script[\s\S]*?<\/script>/g, '');
 					acpIndex[file] = $(acpIndex[file]).text().toLowerCase();
 				}
 			}
+
+			delete acpIndex['/admin/header.tpl'];
+			delete acpIndex['/admin/footer.tpl'];
 
 			setupACPSearch();
 		});
@@ -25,7 +29,7 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 				value = $input.val().toLowerCase(),
 				menuItems = $('#acp-search .dropdown-menu').html('');
 
-			if (value.length > 3) {
+			if (value.length >= 3) {
 				for (var file in acpIndex) {
 					if (acpIndex.hasOwnProperty(file)) {
 						var position = acpIndex[file].indexOf(value);
@@ -56,7 +60,11 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 				}
 			}
 
-			menuItems.append('<li role="presentation"><a role="menuitem" href="' + RELATIVE_PATH + '/search/' + value + '">Search the forum for "' + value + '"</a></li>');
+			if (value.length > 0) {
+				menuItems.append('<li role="presentation"><a role="menuitem" href="' + RELATIVE_PATH + '/search/' + value + '">Search the forum for <strong>' + value + '</strong></a></li>');
+			} else {
+				menuItems.append('<li role="presentation"><a role="menuitem" href="' + RELATIVE_PATH + '/search/' + value + '">Click here for forum-wide search</a></li>');
+			}
 		});
 	}
 });
