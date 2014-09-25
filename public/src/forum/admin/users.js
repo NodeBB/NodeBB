@@ -195,105 +195,103 @@ define('forum/admin/users', function() {
 			});
 		}
 
-		$('document').ready(function() {
+		var timeoutId = 0,
+			loadingMoreUsers = false;
 
-			var timeoutId = 0,
-				loadingMoreUsers = false;
+		var url = window.location.href,
+			parts = url.split('/'),
+			active = parts[parts.length - 1];
 
-			var url = window.location.href,
-				parts = url.split('/'),
-				active = parts[parts.length - 1];
+		$('.nav-pills li').removeClass('active');
+		$('.nav-pills li a').each(function() {
+			var $this = $(this);
+			if ($this.attr('href').match(active)) {
+				$this.parent().addClass('active');
+				return false;
+			}
+		});
 
-			$('.nav-pills li').removeClass('active');
-			$('.nav-pills li a').each(function() {
-				var $this = $(this);
-				if ($this.attr('href').match(active)) {
-					$this.parent().addClass('active');
-					return false;
-				}
-			});
+		$('#search-user').on('keyup', function() {
+			if (timeoutId !== 0) {
+				clearTimeout(timeoutId);
+				timeoutId = 0;
+			}
 
-			$('#search-user').on('keyup', function() {
-				if (timeoutId !== 0) {
-					clearTimeout(timeoutId);
-					timeoutId = 0;
-				}
+			timeoutId = setTimeout(function() {
+				var username = $('#search-user').val();
 
-				timeoutId = setTimeout(function() {
-					var username = $('#search-user').val();
+				$('.fa-spinner').removeClass('hidden');
 
-					$('.fa-spinner').removeClass('none');
+				socket.emit('admin.user.search', username, function(err, data) {
+					if(err) {
+						return app.alertError(err.message);
+					}
 
-					socket.emit('admin.user.search', username, function(err, data) {
-						if(err) {
-							return app.alertError(err.message);
+					ajaxify.loadTemplate('admin/users', function(adminUsers) {
+						$('.users').html(templates.parse(templates.getBlock(adminUsers, 'users'), data));
+
+						$('.fa-spinner').addClass('hidden');
+
+						if (data && data.users.length === 0) {
+							$('#user-notfound-notify').html('User not found!')
+								.show()
+								.addClass('label-danger')
+								.removeClass('label-success');
+						} else {
+							$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.')
+								.show()
+								.addClass('label-success')
+								.removeClass('label-danger');
 						}
-
-						ajaxify.loadTemplate('admin/users', function(adminUsers) {
-							$('.users').html(templates.parse(templates.getBlock(adminUsers, 'users'), data));
-
-							$('.fa-spinner').addClass('none');
-
-							if (data && data.users.length === 0) {
-								$('#user-notfound-notify').html('User not found!')
-									.show()
-									.addClass('label-danger')
-									.removeClass('label-success');
-							} else {
-								$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.')
-									.show()
-									.addClass('label-success')
-									.removeClass('label-danger');
-							}
-						});
 					});
-				}, 250);
+				});
+			}, 250);
+		});
+
+		handleUserCreate();
+
+		function onUsersLoaded(users) {
+			ajaxify.loadTemplate('admin/users', function(adminUsers) {
+				var html = $(templates.parse(templates.getBlock(adminUsers, 'users'), {users: users}));
+				$('#users-container').append(html);
 			});
+		}
 
-			handleUserCreate();
+		function loadMoreUsers() {
+			var set = '';
+			if (active === 'latest') {
+				set = 'users:joindate';
+			} else if (active === 'sort-posts') {
+				set = 'users:postcount';
+			} else if (active === 'sort-reputation') {
+				set = 'users:reputation';
+			}
 
-			function onUsersLoaded(users) {
-				ajaxify.loadTemplate('admin/users', function(adminUsers) {
-					var html = $(templates.parse(templates.getBlock(adminUsers, 'users'), {users: users}));
-					$('#users-container').append(html);
+			if (set) {
+				loadingMoreUsers = true;
+				socket.emit('user.loadMore', {
+					set: set,
+					after: $('#users-container').children().length
+				}, function(err, data) {
+					if (data && data.users.length) {
+						onUsersLoaded(data.users);
+					}
+					loadingMoreUsers = false;
 				});
 			}
+		}
 
-			function loadMoreUsers() {
-				var set = '';
-				if (active === 'latest') {
-					set = 'users:joindate';
-				} else if (active === 'sort-posts') {
-					set = 'users:postcount';
-				} else if (active === 'sort-reputation') {
-					set = 'users:reputation';
-				}
+		$('#load-more-users-btn').on('click', loadMoreUsers);
 
-				if (set) {
-					loadingMoreUsers = true;
-					socket.emit('user.loadMore', {
-						set: set,
-						after: $('#users-container').children().length
-					}, function(err, data) {
-						if (data && data.users.length) {
-							onUsersLoaded(data.users);
-						}
-						loadingMoreUsers = false;
-					});
-				}
+		$(window).off('scroll').on('scroll', function() {
+			var bottom = ($(document).height() - $(window).height()) * 0.9;
+
+			if ($(window).scrollTop() > bottom && !loadingMoreUsers) {
+				loadMoreUsers();
 			}
-
-			$('#load-more-users-btn').on('click', loadMoreUsers);
-
-			$(window).off('scroll').on('scroll', function() {
-				var bottom = ($(document).height() - $(window).height()) * 0.9;
-
-				if ($(window).scrollTop() > bottom && !loadingMoreUsers) {
-					loadMoreUsers();
-				}
-			});
-
 		});
+
+
 	};
 
 	return Users;

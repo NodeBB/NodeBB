@@ -29,12 +29,12 @@
 
 <div class="search {search_display} well">
 	<input class="form-control" id="search-user" type="text" placeholder="Enter a username to search"/><br />
-	<i class="fa fa-spinner fa-spin none"></i>
+	<i class="fa fa-spinner fa-spin hidden"></i>
 	<span id="user-notfound-notify" class="label label-danger hide">User not found!</span><br/>
 </div>
 
 
-<ul id="users-container" class="users admin">
+<ul id="users-container" class="users">
 	<!-- BEGIN users -->
 	<div class="users-box" data-uid="{users.uid}" data-username="{users.username}">
 

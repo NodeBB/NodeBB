@@ -34,7 +34,7 @@ usersController.getOnlineUsers = function(req, res, next) {
 		var anonymousUserCount = websockets.getOnlineAnonCount();
 
 		var userData = {
-			search_display: 'none',
+			search_display: 'hidden',
 			loadmore_display: results.count > 50 ? 'block' : 'hide',
 			users: results.users,
 			anonymousUserCount: anonymousUserCount,
@@ -74,7 +74,7 @@ function getUsers(set, res, next) {
 		});
 
 		var userData = {
-			search_display: 'none',
+			search_display: 'hidden',
 			loadmore_display: results.count > 50 ? 'block' : 'hide',
 			users: results.users,
 			show_anon: 'hide'
@@ -87,7 +87,7 @@ function getUsers(set, res, next) {
 usersController.getUsersForSearch = function(req, res, next) {
 	var data = {
 		search_display: 'block',
-		loadmore_display: 'none',
+		loadmore_display: 'hidden',
 		users: [],
 		show_anon: 'hide'
 	};
