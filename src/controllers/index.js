@@ -152,6 +152,9 @@ Controllers.login = function(req, res, next) {
 };
 
 Controllers.register = function(req, res, next) {
+	if(meta.config.allowRegistration !== undefined && parseInt(meta.config.allowRegistration, 10) === 0) {
+		return res.redirect(nconf.get('relative_path') + '/403');
+	}
 
 	var data = {},
 		login_strategies = auth.get_login_strategies(),
