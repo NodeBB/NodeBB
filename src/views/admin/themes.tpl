@@ -50,16 +50,16 @@
 				</div>
 			</form>
 
-			<h3>Custom JS</h3>
+			<h3>Custom Header</h3>
 			<p>
-				You can enter custom JS here, it will be added to the head tag.
+				You can enter custom HTML here (ex. JavaScript, Meta Tags, etc.) which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup.
 			</p>
 			<textarea class="well" data-field="customJS" placeholder="Enter your custom JS here..."></textarea>
 
 			<form class="form">
 				<div class="form-group">
 					<label for="useCustomJS">
-						Use Custom JS?
+						Use Custom Header?
 						<input id="useCustomJS" type="checkbox" data-field="useCustomJS" />
 					</label>
 				</div>
