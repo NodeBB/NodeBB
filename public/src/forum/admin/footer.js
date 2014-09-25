@@ -28,11 +28,11 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 	});
 
 	function setupPills() {
-		$('.nav-pills li').removeClass('active');
+		$('.navigation.nav-pills li').removeClass('active');
 
 		var slug = window.location.href.split('/');
 		slug = slug[slug.length-1];
-		$('.nav-pills [data-pill="' + slug + '"]').addClass('active');
+		$('.navigation.nav-pills [data-pill="' + slug + '"]').addClass('active');
 	}
 	
 	function setupACPSearch() {

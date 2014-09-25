@@ -2,7 +2,7 @@
 <hr />
 
 <div class="themes">
-	<ul class="nav nav-pills">
+	<ul class="navigation nav nav-pills">
 		<li data-pill="themes"><a href="{relative_path}/admin/appearance/themes">Themes</a></li>
 		<li data-pill="skins"><a href="{relative_path}/admin/appearance/skins">Skins</a></li>
 		<li data-pill="customise"><a href="{relative_path}/admin/appearance/customise">Customise</a></li>

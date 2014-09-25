@@ -1,7 +1,7 @@
 <h1><i class="fa fa-cogs"></i> Settings</h1>
 <hr />
 
-<ul class="nav nav-pills settings">
+<ul class="navigation nav nav-pills settings">
 	<li data-pill="general"><a href="{relative_path}/admin/settings/general">General</a></li>
 	<li data-pill="reputation"><a href="{relative_path}/admin/settings/reputation">Reputation</a></li>
 	<li data-pill="email"><a href="{relative_path}/admin/settings/email">Email</a></li>
