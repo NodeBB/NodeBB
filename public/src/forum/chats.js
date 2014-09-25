@@ -66,9 +66,14 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, 
 		popoutEl.on('click', function() {
 			var	username = $('.expanded-chat').attr('data-username'),
 				uid = Chats.getRecipientUid();
-			ajaxify.go('chats', function() {
-				app.openChat(username, uid);
-			}, true);
+
+			if (app.previousUrl && app.previousUrl.match(/chats/)) {
+				ajaxify.go('chats', function() {
+					app.openChat(username, uid);
+				}, true);
+			} else {
+				window.history.go(-1);
+			}
 		});
 
 		$('.recent-chats').on('scroll', function() {
