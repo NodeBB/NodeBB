@@ -9,8 +9,10 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 			acpIndex = data;
 			for (var file in acpIndex) {
 				if (acpIndex.hasOwnProperty(file)) {
-					acpIndex[file] = acpIndex[file].replace(/<script[\s\S]*?<\/script>/g, '');
-					acpIndex[file] = $(acpIndex[file]).text().toLowerCase();
+					acpIndex[file] = $('<div class="search-container">' + acpIndex[file] + '</div>');
+					acpIndex[file].find('ul.nav, script').remove();
+
+					acpIndex[file] = acpIndex[file].text().toLowerCase().replace(/[ |\r|\n]+/g, ' ');
 				}
 			}
 
@@ -37,7 +39,7 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 						if (position !== -1) {
 							var href = file.replace('.tpl', ''),
 								title = href.replace(/^\/admin\//, '').split('/'),
-								description = acpIndex[file].substring(Math.max(0, position - 15), Math.min(acpIndex[file].length - 1, position + 15))
+								description = acpIndex[file].substring(Math.max(0, position - 25), Math.min(acpIndex[file].length - 1, position + 25))
 									.replace(value, '<span class="search-match">' + value + '</span>');
 
 							for (var t in title) {
