@@ -21,7 +21,7 @@ var adminController = {
 	tags: {},
 	topics: {},
 	groups: {},
-	themes: {},
+	appearance: {},
 	events: {},
 	database: {},
 	plugins: {},
@@ -214,7 +214,19 @@ adminController.logger.get = function(req, res, next) {
 	res.render('admin/logger', {});
 };
 
-adminController.themes.get = function(req, res, next) {
+adminController.appearance.get = function(req, res, next) {
+	var term = req.params.term ? req.params.term : 'themes';
+
+	if (term === 'widgets') {
+		renderWidgets(req, res, next);
+	} else {
+		res.render('admin/appearance/' + term, {});
+	}
+};
+
+
+// todo: move to extend
+function renderWidgets(req, res, next) {
 	async.parallel({
 		areas: function(next) {
 			var defaultAreas = [
@@ -264,14 +276,14 @@ adminController.themes.get = function(req, res, next) {
 				});
 			});
 
-			res.render('admin/themes', {
+			res.render('admin/appearance/widgets', {
 				templates: templates,
 				areas: widgetData.areas,
 				widgets: widgetData.widgets
 			});
 		});
 	});
-};
+}
 
 adminController.groups.get = function(req, res, next) {
 	groups.list({

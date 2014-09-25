@@ -21,8 +21,20 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 
 			setupACPSearch();
 		});
+
+		$(window).on('action:ajaxify.end', function() {
+			setupPills();
+		});
 	});
 
+	function setupPills() {
+		$('.nav-pills li').removeClass('active');
+
+		var slug = window.location.href.split('/');
+		slug = slug[slug.length-1];
+		$('.nav-pills [data-pill="' + slug + '"]').addClass('active');
+	}
+	
 	function setupACPSearch() {
 		var menu = $('#acp-search .dropdown-menu');
 
