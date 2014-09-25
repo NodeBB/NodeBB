@@ -5,7 +5,8 @@
 	<p>
 		You may also opt to enter your own CSS declarations here, which will be applied after all other styles.
 	</p>
-	<textarea class="well" data-field="customCSS" placeholder="Enter your custom CSS here..."></textarea>
+	<div id="customCSS"></div>
+	<input type="hidden" id="customCSS-holder" value="" data-field="customCSS" />
 
 	<form class="form">
 		<div class="form-group">
@@ -20,7 +21,9 @@
 	<p>
 		You can enter custom HTML here (ex. JavaScript, Meta Tags, etc.) which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup.
 	</p>
-	<textarea class="well" data-field="customJS" placeholder="Enter your custom JS here..."></textarea>
+
+	<div id="customHTML"></div>
+	<input type="hidden" id="customHTML-holder" value="" data-field="customJS" />
 
 	<form class="form">
 		<div class="form-group">
