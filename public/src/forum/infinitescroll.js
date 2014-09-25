@@ -63,10 +63,11 @@ define('forum/infinitescroll', function() {
 	scroll.calculateAfter = function(direction, selector, count, reverse, callback) {
 		var after = 0,
 			offset = 0,
-			el = direction > 0 ? $(selector).last() : $(selector).first();
+			el = direction > 0 ? $(selector).last() : $(selector).first(),
+			increment;
 
-		var count = reverse ? -count : count;
-		var increment = reverse ? -1 : 1;
+		count = reverse ? -count : count;
+		increment = reverse ? -1 : 1;
 
 		if (direction > 0) {
 			after = parseInt(el.attr('data-index'), 10) + increment;
