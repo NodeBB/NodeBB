@@ -66,20 +66,6 @@
 			</form>
 
 			<button class="btn btn-primary" id="save">Save</button>
-
-			<hr />
-
-			<h3>Custom Branding</h3>
-
-			<form id="branding">
-				<!-- BEGIN branding -->
-				<label>{branding.key}:</label>
-				<input type="text" class="form-control branding" data-key="{branding.key}" data-empty="{branding.value}" /><br />
-				<!-- END branding -->
-			</form>
-
-			<button class="btn btn-primary" id="save-branding">Save Branding</button>
-
 		</div>
 		<div class="tab-pane" id="widgets">
 			<h3>Widgets</h3>

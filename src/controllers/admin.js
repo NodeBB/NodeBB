@@ -244,17 +244,6 @@ adminController.themes.get = function(req, res, next) {
 				}
 			}
 
-			var branding = [];
-
-			for (var key in meta.css.branding) {
-				if (meta.css.branding.hasOwnProperty(key)) {
-					branding.push({
-						key: key,
-						value: meta.css.branding[key]
-					});
-				}
-			}
-
 			var templates = [],
 				list = {}, index = 0;
 
@@ -278,8 +267,7 @@ adminController.themes.get = function(req, res, next) {
 			res.render('admin/themes', {
 				templates: templates,
 				areas: widgetData.areas,
-				widgets: widgetData.widgets,
-				branding: branding
+				widgets: widgetData.widgets
 			});
 		});
 	});
