@@ -407,6 +407,7 @@ middleware.processRender = function(req, res, next) {
 		}
 
 		render.call(self, template, options, function(err, str) {
+			// str = str + '<input type="hidden" ajaxify-data="' + encodeURIComponent(JSON.stringify(options)) + '" />';
 			str = (res.locals.postHeader ? res.locals.postHeader : '') + str + (res.locals.preFooter ? res.locals.preFooter : '');
 
 			if (res.locals.footer) {
