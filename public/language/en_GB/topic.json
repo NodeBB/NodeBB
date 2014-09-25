@@ -43,7 +43,9 @@
 	"markAsUnreadForAll.success" : "Topic marked as unread for all.",
 
 	"watch": "Watch",
+	"unwatch": "Unwatch",
 	"watch.title": "Be notified of new replies in this topic",
+	"unwatch.title": "Stop watching this topic",
 	"share_this_post": "Share this Post",
 
 	"thread_tools.title": "Topic Tools",

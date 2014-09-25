@@ -199,7 +199,6 @@ Sockets.init = function(server) {
 		});
 
 		socket.on('*', function(payload, callback) {
-
 			function callMethod(method) {
 				method.call(null, socket, payload.args.length ? payload.args[0] : null, function(err, result) {
 					if (callback) {
@@ -279,10 +278,7 @@ Sockets.uidInRoom = function(uid, room) {
 
 Sockets.getSocketCount = function() {
 	var clients = io.sockets.manager.rooms[''];
-	if (!Array.isArray(clients)) {
-		return 0;
-	}
-	return clients.length;
+	return Array.isArray(clients) ? clients.length : 0;
 };
 
 Sockets.getConnectedClients = function() {

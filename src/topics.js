@@ -286,17 +286,21 @@ var async = require('async'),
 				},
 				tags: function(next) {
 					Topics.getTopicTagsObjects(tid, next);
+				},
+				isFollowing: function(next) {
+					Topics.isFollowing(tid, uid, next);
 				}
 			}, function(err, results) {
 				if (err) {
 					return callback(err);
 				}
 
-				topicData.category = results.category;
 				topicData.posts = results.posts;
-				topicData.tags = results.tags;
+				topicData.category = results.category;
 				topicData.thread_tools = results.threadTools;
-				topicData.pageCount = results.pageCount;
+				topicData.tags = results.tags;
+				topicData.isFollowing = results.isFollowing;
+
 				topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
 				topicData.deleted = parseInt(topicData.deleted, 10) === 1;
 				topicData.locked = parseInt(topicData.locked, 10) === 1;

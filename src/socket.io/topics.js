@@ -395,10 +395,6 @@ SocketTopics.moveAll = function(socket, data, callback) {
 	});
 };
 
-SocketTopics.followCheck = function(socket, tid, callback) {
-	topics.isFollowing(tid, socket.uid, callback);
-};
-
 SocketTopics.follow = function(socket, tid, callback) {
 	if(!socket.uid) {
 		return callback(new Error('[[error:not-logged-in]]'));
