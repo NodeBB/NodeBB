@@ -25,8 +25,6 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 				value = $input.val().toLowerCase(),
 				menuItems = $('#acp-search .dropdown-menu').html('');
 
-			$('#acp-search .dropdown').addClass('open');
-
 			if (value.length > 3) {
 				for (var file in acpIndex) {
 					if (acpIndex.hasOwnProperty(file)) {
