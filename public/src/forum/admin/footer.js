@@ -9,6 +9,7 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 			acpIndex = data;
 			for (var file in acpIndex) {
 				if (acpIndex.hasOwnProperty(file)) {
+					acpIndex[file] = acpIndex[file].replace(/<img/g, '<none'); // can't think of a better solution, see #2153
 					acpIndex[file] = $('<div class="search-container">' + acpIndex[file] + '</div>');
 					acpIndex[file].find('ul.nav, script').remove();
 
