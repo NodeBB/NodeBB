@@ -151,6 +151,9 @@ function getTemplatesListing(req, res, next) {
 		},
 		config: function(next) {
 			fs.readFile(path.join(nconf.get('views_dir'), 'config.json'), function(err, config) {
+				if (err) {
+					return next(err);
+				}
 				config = JSON.parse(config.toString());
 				plugins.fireHook('filter:templates.get_config', config, next);
 			});
@@ -159,7 +162,7 @@ function getTemplatesListing(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		
+
 		var data = [];
 		data = results.views.filter(function(value, index, self) {
 					return self.indexOf(value) === index;
