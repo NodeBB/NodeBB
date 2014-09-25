@@ -3,7 +3,6 @@ node_modules/
 sftp-config.json
 config.json
 public/src/nodebb.min.js
-public/config.json
 !src/views/config.json
 public/css/*.css
 *.sublime-project
