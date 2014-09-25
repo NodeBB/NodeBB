@@ -3,12 +3,8 @@
 
 <script>
 	var bootswatchListener = function(data) {
-		require(['forum/admin/themes'], function(t) {
+		require(['forum/admin/appearance/skins'], function(t) {
 			t.render(data);
 		});
 	};
-
-	require(['forum/admin/themes'], function(t) {
-		t.init();
-	});
 </script>

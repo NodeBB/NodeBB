@@ -1,146 +1,14 @@
 "use strict";
-/*global define, socket, app, bootbox, tabIndent, config, RELATIVE_PATH, templates */
+/* global define, app, socket */
 
-define('forum/admin/themes', ['forum/admin/settings'], function(Settings) {
-	var Themes = {};
-
-	function highlightSelectedTheme(themeId) {
-		$('.themes li[data-theme]').removeClass('btn-warning');
-		$('.themes li[data-theme="' + themeId + '"]').addClass('btn-warning');
-	}
-
-	Themes.init = function() {
-		var scriptEl = $('<script />');
-		scriptEl.attr('src', '//bootswatch.aws.af.cm/3/?callback=bootswatchListener');
-		$('body').append(scriptEl);
-
-		$('#widgets .nav-pills a').on('click', function(ev) {
-			var $this = $(this);
-			$('#widgets .nav-pills li').removeClass('active');
-			$this.parent().addClass('active');
-
-			$('#widgets .tab-pane').removeClass('active');
-			$('#widgets .tab-pane[data-template="' + $this.attr('data-template') + '"]').addClass('active');
-
-			ev.preventDefault();
-			return false;
-		});
-
-		var bootstrapThemeContainer = $('#bootstrap_themes'),
-			installedThemeContainer = $('#installed_themes');
-
-		function themeEvent(e) {
-			var target = $(e.target),
-				action = target.attr('data-action');
-
-			if (action && action === 'use') {
-				var parentEl = target.parents('li'),
-					themeType = parentEl.attr('data-type'),
-					cssSrc = parentEl.attr('data-css'),
-					themeId = parentEl.attr('data-theme');
-
-				socket.emit('admin.themes.set', {
-					type: themeType,
-					id: themeId,
-					src: cssSrc
-				}, function(err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					highlightSelectedTheme(themeId);
-
-					app.alert({
-						alert_id: 'admin:theme',
-						type: 'info',
-						title: 'Theme Changed',
-						message: 'Please restart your NodeBB to fully activate this theme',
-						timeout: 5000,
-						clickfn: function() {
-							socket.emit('admin.restart');
-						}
-					});
-				});
-			}
-		}
-
-		bootstrapThemeContainer.on('click', themeEvent);
-		installedThemeContainer.on('click', themeEvent);
-
-		$('#revert_theme').on('click', function() {
-			bootbox.confirm('Are you sure you wish to remove the custom theme and restore the NodeBB default theme?', function(confirm) {
-				if (confirm) {
-					socket.emit('admin.themes.set', {
-						type: 'local',
-						id: 'nodebb-theme-vanilla'
-					}, function(err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-						highlightSelectedTheme('nodebb-theme-vanilla');
-						app.alert({
-							alert_id: 'admin:theme',
-							type: 'success',
-							title: 'Theme Changed',
-							message: 'You have successfully reverted your NodeBB back to it\'s default theme.',
-							timeout: 3500
-						});
-					});
-				}
-			});
-		});
-
-		// Installed Themes
-		socket.emit('admin.themes.getInstalled', function(err, themes) {
-			if(err) {
-				return app.alertError(err.message);
-			}
-
-			var instListEl = $('#installed_themes');
-
-			if (!themes.length) {
-				instListEl.append($('<li/ >').addClass('no-themes').html('No installed themes found'));
-				return;
-			} else {
-				templates.parse('partials/admin/theme_list', {
-					themes: themes
-				}, function(html) {
-					instListEl.html(html);
-					highlightSelectedTheme(config['theme:id']);
-				});
-			}
-		});
-
-		// Proper tabbing for "Custom CSS" field
-		var	customCSSEl = $('textarea[data-field]')[0];
-		tabIndent.config.tab = '    ';
-		tabIndent.render(customCSSEl);
-
-		Themes.prepareWidgets();
-
-		Settings.prepare();
+define('forum/admin/appearance/widgets', function() {
+	var Widgets = {};
+	
+	Widgets.init = function() {		
+		prepareWidgets();
 	};
 
-	Themes.render = function(bootswatch) {
-		var themeContainer = $('#bootstrap_themes');
-
-		templates.parse('partials/admin/theme_list', {
-			themes: bootswatch.themes.map(function(theme) {
-				return {
-					type: 'bootswatch',
-					id: theme.name,
-					name: theme.name,
-					description: theme.description,
-					screenshot_url: theme.thumbnail,
-					url: theme.preview,
-					css: theme.cssCdn
-				};
-			})
-		}, function(html) {
-			themeContainer.html(html);
-		});
-	};
-
-	Themes.prepareWidgets = function() {
+	function prepareWidgets() {
 		$('[data-location="drafts"]').insertAfter($('[data-location="drafts"]').closest('.tab-content'));
 
 		$('#widgets .available-widgets .panel').draggable({
@@ -312,7 +180,7 @@ define('forum/admin/themes', ['forum/admin/settings'], function(Settings) {
 				.replace(/class="[a-zA-Z0-9-\s]+"/, 'class="' + container[0].className.replace(' pointer ui-draggable', '') + '"')
 			);
 		});
-	};
+	}
 
-	return Themes;
+	return Widgets;
 });
