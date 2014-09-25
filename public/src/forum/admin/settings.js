@@ -31,6 +31,7 @@ define('forum/admin/settings', ['uploader', 'sounds'], function(uploader, sounds
 				if (app.config[key]) {
 					switch (inputType) {
 					case 'text':
+					case 'hidden':
 					case 'password':
 					case 'textarea':
 					case 'number':
@@ -135,6 +136,7 @@ define('forum/admin/settings', ['uploader', 'sounds'], function(uploader, sounds
 			switch (inputType) {
 			case 'text':
 			case 'password':
+			case 'hidden':
 			case 'textarea':
 			case 'number':
 				value = field.val();
