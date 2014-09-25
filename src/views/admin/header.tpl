@@ -75,11 +75,7 @@
 						<div class="form-group" id="acp-search" >
 							<div class="dropdown" >
 								<input type="text" data-toggle="dropdown" class="form-control" placeholder="Search ACP...">
-								<ul class="dropdown-menu" role="menu">
-									<div class="found"></div>
-									<li><a href="#">Separated link</a></li>
-									<li><a href="search" id="search-main">Search the forum for</a></li>
-								</ul>
+								<ul class="dropdown-menu" role="menu"></ul>
 							</div>
 						</div>
 					</form>
