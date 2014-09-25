@@ -9,7 +9,7 @@ define('forum/admin/appearance/customise', ['forum/admin/settings'], function(Se
 			$('#customCSS').text($('#customCSS-holder').val());
 			$('#customHTML').text($('#customHTML-holder').val());
 			
-			var customCSS = ace.edit("customCSS");
+			var customCSS = ace.edit("customCSS"),
 				customHTML = ace.edit("customHTML");
 
 			customCSS.setTheme("ace/theme/twilight");
