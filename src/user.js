@@ -103,7 +103,6 @@ var	async = require('async'),
 				return;
 			}
 
-			user.hasPassword = !!user.password;
 			if (user.password) {
 				user.password = null;
 			}

@@ -8,6 +8,7 @@ var fs = require('fs'),
 	nconf = require('nconf'),
 	async= require('async'),
 
+	db = require('../database'),
 	user = require('../user'),
 	posts = require('../posts'),
 	topics = require('../topics'),
@@ -340,12 +341,21 @@ function getBaseUser(userslug, callerUID, callback) {
 
 accountsController.accountEdit = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
-
-	getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
-		if(err) {
+	var userData;
+	async.waterfall([
+		function(next) {
+			getUserDataByUserSlug(req.params.userslug, callerUID, next);
+		},
+		function(data, next) {
+			userData = data;
+			db.getObjectField('user:' + userData.uid, 'password', next);
+		}
+	], function(err, password) {
+		if (err) {
 			return next(err);
 		}
 
+		userData.hasPassword = !!password;
 		userData.csrf = req.csrfToken();
 
 		res.render('account/edit', userData);
