@@ -14,10 +14,10 @@
     "digest.cta": "点击这里访问 %1",
     "digest.unsub.info": "根据您的订阅设置，为您发送此摘要。",
     "digest.daily.no_topics": "最近几天有一些未激活的主题",
-    "notif.chat.subject": "New chat message received from %1",
-    "notif.chat.cta": "Click here to continue the conversation",
-    "notif.chat.unsub.info": "This chat notification was sent to you due to your subscription settings.",
+    "notif.chat.subject": "收到来自 %1 的新聊天消息",
+    "notif.chat.cta": "点击这里恢复会话",
+    "notif.chat.unsub.info": "根据您的订阅设置，为您发送此聊天提醒。",
     "test.text1": "这是一封测试邮件，用来验证 NodeBB 的邮件配置是否设置正确。",
-    "unsub.cta": "Click here to alter those settings",
+    "unsub.cta": "点击这里修改这些设置",
     "closing": "谢谢！"
 }

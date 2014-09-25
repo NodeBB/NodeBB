@@ -20,7 +20,7 @@
     "username-too-short": "Benutzername ist zu kurz",
     "username-too-long": "Der Benutzername ist zu lang",
     "user-banned": "Der Benutzer ist gesperrt",
-    "user-too-new": "You need to wait %1 seconds before making your first post!",
+    "user-too-new": "Du musst %1 Sekunden warten, bevor du deinen ersten Beitrag verfassen kannst!",
     "no-category": "Die Kategorie existiert nicht",
     "no-topic": "Das Thema existiert nicht",
     "no-post": "Der Beitrag existiert nicht",

@@ -20,7 +20,7 @@
     "username-too-short": "用户名太短",
     "username-too-long": "用户名太长",
     "user-banned": "用户已禁止",
-    "user-too-new": "You need to wait %1 seconds before making your first post!",
+    "user-too-new": "您需要等待 %1 秒后，才可以发帖！",
     "no-category": "版块不存在",
     "no-topic": "主题不存在",
     "no-post": "帖子不存在",

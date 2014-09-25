@@ -20,7 +20,7 @@
     "username-too-short": "Tên đăng nhập quá ngắn",
     "username-too-long": "Tên đăng nhập quá dài",
     "user-banned": "Tài khoản bị ban",
-    "user-too-new": "You need to wait %1 seconds before making your first post!",
+    "user-too-new": "Bạn cần đợi %1 giây trước khi tạo bài viết đầu tiên!",
     "no-category": "Phần mục không tồn tại",
     "no-topic": "Chủ đề không tồn tại",
     "no-post": "Bài viết không tồn tại",
