@@ -93,16 +93,10 @@
 
 		if (redis_socket_or_host && redis_socket_or_host.indexOf('/') >= 0) {
 			/* If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock */
-			cxn = redis.createClient(nconf.get('redis:host'));
+			cxn = redis.createClient(nconf.get('redis:host'), { auth_pass: nconf.get('redis:password') });
 		} else {
 			/* Else, connect over tcp/ip */
-			cxn = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
-		}
-
-		if (nconf.get('redis:password')) {
-			cxn.auth(nconf.get('redis:password'));
-		} else {
-			winston.warn('You have no redis password setup!');
+			cxn = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'), { auth_pass: nconf.get('redis:password') });
 		}
 
 		cxn.on('error', function (err) {

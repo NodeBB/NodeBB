@@ -82,7 +82,10 @@ Sockets.init = function(server) {
 			sub = database.connect(),
 			client = database.connect();
 
+		// "redis" property needs to be passed in as referenced here: https://github.com/Automattic/socket.io/issues/808
+		// Probably fixed in socket.IO 1.0
 		config.store = new RedisStore({
+			redis: require('redis'),
 			redisPub : pub,
 			redisSub : sub,
 			redisClient : client
