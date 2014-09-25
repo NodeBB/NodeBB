@@ -460,7 +460,7 @@ middleware.maintenanceMode = function(req, res, next) {
 		res.render('maintenance', {
 			site_title: meta.config.site_title || 'NodeBB'
 		});
-	}
+	};
 
 	if (meta.config.maintenanceMode === '1') {
 		if (!req.user) {
