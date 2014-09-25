@@ -22,7 +22,6 @@
 	<script type="text/javascript" src="{relative_path}/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="{relative_path}/nodebb.min.js"></script>
 	<script type="text/javascript" src="{relative_path}/vendor/colorpicker/colorpicker.js"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/tabIndent/tabIndent.js"></script>
 	<script type="text/javascript" src="{relative_path}/src/admin.js?{cache-buster}"></script>
 	<script type="text/javascript" src="{relative_path}/vendor/ace/ace.js"></script>
 
