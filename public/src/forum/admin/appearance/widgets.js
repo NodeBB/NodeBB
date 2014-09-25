@@ -6,6 +6,18 @@ define('forum/admin/appearance/widgets', function() {
 	
 	Widgets.init = function() {		
 		prepareWidgets();
+
+		$('#widgets .nav-pills a').on('click', function(ev) {
+			var $this = $(this);
+			$('#widgets .nav-pills li').removeClass('active');
+			$this.parent().addClass('active');
+
+			$('#widgets .tab-pane').removeClass('active');
+			$('#widgets .tab-pane[data-template="' + $this.attr('data-template') + '"]').addClass('active');
+
+			ev.preventDefault();
+			return false;
+		});
 	};
 
 	function prepareWidgets() {
@@ -143,7 +155,7 @@ define('forum/admin/appearance/widgets', function() {
 			return widget;
 		}
 
-		$.get(RELATIVE_PATH + '/api/admin/themes', function(data) {
+		$.get(RELATIVE_PATH + '/api/admin/appearance/widgets', function(data) {
 			var areas = data.areas;
 
 			for(var i=0; i<areas.length; ++i) {
