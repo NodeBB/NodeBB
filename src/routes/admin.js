@@ -55,6 +55,7 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/users/sort-reputation', controllers.admin.users.sortByReputation);
 
 	//forum
+	router.get('/categories', middleware.applyCSRF, controllers.admin.categories.active);
 	router.get('/categories/active', middleware.applyCSRF, controllers.admin.categories.active);
 	router.get('/categories/disabled', middleware.applyCSRF, controllers.admin.categories.disabled);
 	router.get('/tags', controllers.admin.tags.get);
