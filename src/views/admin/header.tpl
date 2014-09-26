@@ -115,6 +115,21 @@
 				</div>
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
+						<li class="nav-header"><i class="fa fa-fw fa-cogs"></i> Settings</li>
+						<li><a href="{relative_path}/admin/settings/general">General</a></li>
+						<li><a href="{relative_path}/admin/settings/reputation">Reputation</a></li>
+						<li><a href="{relative_path}/admin/settings/email">Email</a></li>
+						<li><a href="{relative_path}/admin/settings/user">User</a></li>
+						<li><a href="{relative_path}/admin/settings/post">Post</a></li>
+						<li><a href="{relative_path}/admin/settings/pagination">Pagination</a></li>
+						<li><a href="{relative_path}/admin/settings/tags">Tags</a></li>
+						<li><a href="{relative_path}/admin/settings/web-crawler">Web Crawler</a></li>
+						<li><a href="{relative_path}/admin/settings/sockets">Sockets</a></li>
+						<li><a href="{relative_path}/admin/settings/advanced">Advanced</a></li>
+					</ul>
+				</div>
+				<div class="sidebar-nav">
+					<ul class="nav nav-list">
 						<li class="nav-header"><i class="fa fa-fw fa-paint-brush"></i> Appearance</li>
 						<li><a href="{relative_path}/admin/appearance/themes">Themes</a></li>
 						<li><a href="{relative_path}/admin/appearance/skins">Skins</a></li>
