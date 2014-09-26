@@ -1,5 +1,3 @@
-<!-- IMPORT admin/settings/header.tpl -->
-
 <div class="alert alert-warning">
 	<form>
 		<label>Site Title</label>

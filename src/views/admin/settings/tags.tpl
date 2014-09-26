@@ -1,5 +1,3 @@
-<!-- IMPORT admin/settings/header.tpl -->
-
 <form>
 	<div class="alert alert-warning">
 		<strong>Tags per Topic</strong><br /> <input type="text" class="form-control" value="5" data-field="tagsPerTopic"><br />

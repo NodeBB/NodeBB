@@ -1,5 +1,3 @@
-<!-- IMPORT admin/settings/header.tpl -->
-
 <form>
 	<div class="alert alert-warning">
 		<strong>Custom Robots.txt <small>Leave blank for default</small></strong><br />

@@ -1,5 +1,3 @@
-<!-- IMPORT admin/settings/header.tpl -->
-
 <form role="form">
 	<div class="alert alert-warning">
 		<div class="checkbox">
