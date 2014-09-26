@@ -1,11 +1,39 @@
-@import "../../public/vendor/bootstrap/less/bootstrap";
+@import "./bootstrap/bootstrap";
 @import "../mixins";
 
 .admin {
 	padding-top: 70px;
-	
+	background: #f0f0f0;
+
 	.container {
-		width: 95% !important;
+		width: 100% !important;
+		padding: 0px 15px;
+	}
+
+	.box-header-font {
+		font-size: 11px;
+		text-transform: uppercase;
+		font-weight: 700;
+	}
+
+	.panel {
+		background-color: #FFF;
+		box-sizing: border-box;
+		border-radius: 3px;
+		box-shadow: 0px 1px 3px 0px rgba(165, 165, 165, 0.75);
+		margin-bottom: 20px;
+
+		&.panel-default .panel-heading {
+			background: #fefefe;
+			color: #333;
+			padding: 7px 14px;
+			border: 0;
+			.box-header-font;
+		}
+	}
+
+	.nav-header {
+		.box-header-font
 	}
 
 	#user_dropdown {
