@@ -39,6 +39,10 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 	function setupACPSearch() {
 		var menu = $('#acp-search .dropdown-menu');
 
+		$('#acp-search input').on('keyup', function() {
+			$('#acp-search .dropdown').addClass('open');
+		});
+
 		$('#acp-search input').on('keyup focus', function() {
 			var $input = $(this),
 				value = $input.val().toLowerCase(),
