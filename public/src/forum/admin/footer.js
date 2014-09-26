@@ -33,6 +33,9 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 	function setupMainMenu() {
 		$('.sidebar-nav .nav-header').on('click', function() {
 			$(this).parents('.sidebar-nav').toggleClass('open');
+			setTimeout(function() {
+				$('.nano').nanoScroller();
+			}, 500); // replace with animationend event
 		});
 
 		$('.nano').nanoScroller();
