@@ -32,7 +32,7 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 
 	function setupMainMenu() {
 		$('.sidebar-nav .nav-header').on('click', function() {
-			$(this).toggleClass('open');
+			$(this).parents('.sidebar-nav').toggleClass('open');
 		});
 	}
 
