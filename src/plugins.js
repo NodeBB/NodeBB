@@ -591,9 +591,13 @@ var fs = require('fs'),
 				if (plugin.templates && plugin.id && plugin.active) {
 					var templatesPath = path.join(__dirname, '../node_modules', plugin.id, plugin.templates);
 					utils.walk(templatesPath, function(err, pluginTemplates) {
-						pluginTemplates.forEach(function(pluginTemplate) {
-							templates["/" + pluginTemplate.replace(templatesPath, '').substring(1)] = pluginTemplate;
-						});
+						if (pluginTemplates) {
+							pluginTemplates.forEach(function(pluginTemplate) {
+								templates["/" + pluginTemplate.replace(templatesPath, '').substring(1)] = pluginTemplate;
+							});
+						} else {
+							winston.warn('[plugins/' + plugin.id + '] A templates directory was defined for this plugin, but was not found.');
+						}
 
 						next(err);
 					});
