@@ -99,56 +99,54 @@
 		</div>
 	</div>
 
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-3">
-				<div class="well sidebar-nav">
-					<ul class="nav nav-list">
-						<li class="nav-header">NodeBB</li>
-						<li class="active"><a href="{relative_path}/admin/index"><i class="fa fa-fw fa-home"></i> Home</a></li>
-						<li><a href="{relative_path}/admin/categories/active"><i class="fa fa-fw fa-folder"></i> Categories</a></li>
-						<li><a href="{relative_path}/admin/tags"><i class="fa fa-fw fa-tags"></i> Tags</a></li>
-						<li><a href="{relative_path}/admin/users/latest"><i class="fa fa-fw fa-user"></i> Users</a></li>
-						<li><a href="{relative_path}/admin/groups"><i class="fa fa-fw fa-group"></i> Groups</a></li>
-						<li><a href="{relative_path}/admin/settings/general"><i class="fa fa-fw fa-cogs"></i> Settings</a></li>
-						<li><a href="{relative_path}/admin/appearance/themes"><i class="fa fa-fw fa-th"></i> Appearance</a></li>
-						<li><a href="{relative_path}/admin/plugins"><i class="fa fa-fw fa-code-fork"></i> Plugins</a></li>
-						<li><a href="{relative_path}/admin/languages"><i class="fa fa-fw fa-language"></i> Languages</a></li>
-						<li><a href="{relative_path}/admin/sounds"><i class="fa fa-fw fa-volume-up"></i> Sounds</a></li>
-						<li><a href="{relative_path}/admin/database"><i class="fa fa-fw fa-hdd-o"></i> Database</a></li>
-						<li><a href="{relative_path}/admin/events"><i class="fa fa-fw fa-calendar-o"></i> Events</a></li>
-					</ul>
-				</div>
-				<!-- IF authentication.length -->
-				<div class="well sidebar-nav">
-					<ul class="nav nav-list">
-							<li class="nav-header">Social Authentication</li>
-							<!-- BEGIN authentication -->
-							<li>
-								<a href="{relative_path}/admin{authentication.route}"><i class="fa fa-fw {authentication.icon}"></i> {authentication.name}</a>
-							</li>
-							<!-- END authentication -->
-					</ul>
-				</div>
-				<!-- ENDIF authentication.length -->
-				<div class="well sidebar-nav">
-					<ul class="nav nav-list">
-						<li class="nav-header">Plugins</li>
-						<!-- BEGIN plugins -->
+	<div class="wrapper">
+		<div id="main-menu">
+			<div class="sidebar-nav">
+				<ul class="nav nav-list">
+					<li class="nav-header">NodeBB</li>
+					<li class="active"><a href="{relative_path}/admin/index"><i class="fa fa-fw fa-home"></i> Home</a></li>
+					<li><a href="{relative_path}/admin/categories/active"><i class="fa fa-fw fa-folder"></i> Categories</a></li>
+					<li><a href="{relative_path}/admin/tags"><i class="fa fa-fw fa-tags"></i> Tags</a></li>
+					<li><a href="{relative_path}/admin/users/latest"><i class="fa fa-fw fa-user"></i> Users</a></li>
+					<li><a href="{relative_path}/admin/groups"><i class="fa fa-fw fa-group"></i> Groups</a></li>
+					<li><a href="{relative_path}/admin/settings/general"><i class="fa fa-fw fa-cogs"></i> Settings</a></li>
+					<li><a href="{relative_path}/admin/appearance/themes"><i class="fa fa-fw fa-th"></i> Appearance</a></li>
+					<li><a href="{relative_path}/admin/plugins"><i class="fa fa-fw fa-code-fork"></i> Plugins</a></li>
+					<li><a href="{relative_path}/admin/languages"><i class="fa fa-fw fa-language"></i> Languages</a></li>
+					<li><a href="{relative_path}/admin/sounds"><i class="fa fa-fw fa-volume-up"></i> Sounds</a></li>
+					<li><a href="{relative_path}/admin/database"><i class="fa fa-fw fa-hdd-o"></i> Database</a></li>
+					<li><a href="{relative_path}/admin/events"><i class="fa fa-fw fa-calendar-o"></i> Events</a></li>
+				</ul>
+			</div>
+			<!-- IF authentication.length -->
+			<div class="sidebar-nav">
+				<ul class="nav nav-list">
+						<li class="nav-header">Social Authentication</li>
+						<!-- BEGIN authentication -->
 						<li>
-							<a href="{relative_path}/admin{plugins.route}"><i class="fa fa-fw {plugins.icon}"></i> {plugins.name}</a>
+							<a href="{relative_path}/admin{authentication.route}"><i class="fa fa-fw {authentication.icon}"></i> {authentication.name}</a>
 						</li>
-						<!-- END plugins -->
-					</ul>
-				</div>
-				<!-- IF env -->
-				<div class="well sidebar-nav">
-					<ul class="nav nav-list">
-						<li class="nav-header">Development</li>
-						<li><a href="{relative_path}/admin/logger"><i class="fa fa-fw fa-th"></i> Logger</a></li>
-					</ul>
-				</div>
-				<!-- ENDIF env -->
-			</div><!--/span-->
-
-			<div class="col-sm-9" id="content">
+						<!-- END authentication -->
+				</ul>
+			</div>
+			<!-- ENDIF authentication.length -->
+			<div class="sidebar-nav">
+				<ul class="nav nav-list">
+					<li class="nav-header">Plugins</li>
+					<!-- BEGIN plugins -->
+					<li>
+						<a href="{relative_path}/admin{plugins.route}"><i class="fa fa-fw {plugins.icon}"></i> {plugins.name}</a>
+					</li>
+					<!-- END plugins -->
+				</ul>
+			</div>
+			<!-- IF env -->
+			<div class="sidebar-nav">
+				<ul class="nav nav-list">
+					<li class="nav-header">Development</li>
+					<li><a href="{relative_path}/admin/logger"><i class="fa fa-fw fa-th"></i> Logger</a></li>
+				</ul>
+			</div>
+			<!-- ENDIF env -->
+		</div>
+		<div class="col-sm-12" id="content">

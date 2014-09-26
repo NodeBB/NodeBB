@@ -16,6 +16,55 @@
 		font-weight: 700;
 	}
 
+	#main-menu {
+		position: fixed;
+		width: 200px;
+		height: 100%;
+		padding-top: 50px;
+		top: 0px;
+		left: 0px;
+		background: #333;
+		z-index: 1;
+		overflow-y: auto;
+
+		.sidebar-nav {
+			margin-top: 1px;
+
+			.nav-header {
+				color: #fff;
+				border-top: 1px solid #32353E;
+				border-bottom: 1px solid #1A1C20;
+				background-color: #272727;
+				text-shadow: 0px 0px 2px #111;
+				padding: 10px;
+			}
+
+			.nav-list {
+				background: #232323;
+				li {
+					&:hover a {
+						background-color: #2f2f2f;
+					}					
+
+					a {
+						color: white;
+						padding: 7px 15px;
+						font-size: 14px;
+						.transition(.4s ease-in background-color);
+					}
+				}
+			}
+		}
+	}
+
+	#content {
+		padding-left: 207px;
+	}
+
+	.wrapper {
+		width: 100%;
+	}
+
 	.panel {
 		background-color: #FFF;
 		box-sizing: border-box;
