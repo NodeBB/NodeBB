@@ -1,7 +1,7 @@
 <div class="languages">
 	<div class="col-sm-9">
 		<div class="panel panel-default">
-			<div class="panel-heading">Languages</div>
+			<div class="panel-heading">Language Settings</div>
 			<div class="panel-body">
 				<p>
 					The default language determines the language settings for all users who

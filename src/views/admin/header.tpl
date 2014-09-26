@@ -100,7 +100,6 @@
 						<li class="nav-header"><i class="fa fa-fw fa-dashboard"></i> General</li>
 						<li class="active"><a href="{relative_path}/admin/index">Dashboard</a></li>
 						<li><a href="{relative_path}/admin/languages">Languages</a></li>
-						<li><a href="{relative_path}/admin/settings/general">Settings</a></li>
 						<li><a href="{relative_path}/admin/sounds">Sounds</a></li>
 					</ul>
 				</div>
