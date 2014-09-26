@@ -34,6 +34,8 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 		$('.sidebar-nav .nav-header').on('click', function() {
 			$(this).parents('.sidebar-nav').toggleClass('open');
 		});
+
+		$('.nano').nanoScroller();
 	}
 
 	function setupPills() {
