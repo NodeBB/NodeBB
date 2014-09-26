@@ -52,19 +52,10 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="{relative_path}/admin/index">NodeBB ACP</a>
+				<a class="navbar-brand nodebb-logo" href="{relative_path}/admin/index"><img src="{relative_path}/images/logo.png" alt="NodeBB ACP" /> Admin Control Panel</a>
 			</div>
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li>
-						<a href="{relative_path}/admin/index"><i class="fa fa-home" title="Home"></i><span class="visible-xs-inline"> Home</span></a>
-					</li>
-					<li>
-						<a href="{relative_path}/admin/settings/general"><i class="fa fa-cogs" title="Settings"></i><span class="visible-xs-inline"> Settings</span></a>
-					</li>
-					<li>
-						<a href="{relative_path}/" target="_top"><i class="fa fa-book" title="Forum"></i><span class="visible-xs-inline"> Forum</span></a>
-					</li>
 					<li>
 						<a href="#" id="reconnect"></a>
 					</li>

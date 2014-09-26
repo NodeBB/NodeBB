@@ -1,6 +1,12 @@
 @import "./bootstrap/bootstrap";
 @import "../mixins";
 
+.box-header-font {
+	font-size: 11px;
+	text-transform: uppercase;
+	font-weight: 700;
+}
+
 .admin {
 	padding-top: 70px;
 	background: #f0f0f0;
@@ -10,10 +16,16 @@
 		padding: 0px 15px;
 	}
 
-	.box-header-font {
-		font-size: 11px;
-		text-transform: uppercase;
-		font-weight: 700;
+	.nodebb-logo {
+		img {
+			height: 31px;
+			margin-top: -8px;
+			margin-left: -7px;
+			vertical-align: -43%;
+		}
+
+		.box-header-font;
+		color: #fff;
 	}
 
 	#main-menu {
@@ -54,7 +66,7 @@
 				li {
 					&:hover a {
 						background-color: #2f2f2f;
-					}					
+					}
 
 					a {
 						color: white;
