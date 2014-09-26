@@ -1,3 +1,4 @@
+<div class="row">
 	<div class="col-sm-6">
 		<div class="panel panel-default">
 			<div class="panel-heading">Welcome to NodeBB</div>
@@ -64,7 +65,7 @@
 	</div>
 
 
-	<div class="col-sm-6 pull-right">
+	<div class="col-sm-6">
 		<div class="panel panel-default">
 			<div class="panel-heading">Updates</div>
 			<div class="panel-body">
@@ -93,3 +94,4 @@
 		</div>
 
 	</div>
+</div>
