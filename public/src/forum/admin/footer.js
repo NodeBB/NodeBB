@@ -42,6 +42,9 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 		});
 
 		$('.nano').nanoScroller();
+
+		$('#main-menu .nav-list > li a').append('<span class="pull-right"><i class="fa fa-inverse fa-arrow-circle-right"></i>&nbsp;</span>')
+
 	}
 
 	function selectMenuItem(url) {

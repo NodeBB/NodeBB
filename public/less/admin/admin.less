@@ -67,15 +67,40 @@
 			.nav-list {
 				background: #232323;
 				li {
-					&:hover a, &.active a {
-						background-color: #2f2f2f;
+					&:hover a {
+						background-color: #3f3f3f;
+
+						span {
+							opacity: 0.8;
+						}
+					}
+
+					&.active a {
+						padding-left: 20px;
+						background-color: #3f3f3f;
+
+						span {
+							opacity: 0;
+						}
 					}
 
 					a {
 						color: white;
 						padding: 7px 15px;
-						font-size: 14px;
-						.transition(.4s ease-in background-color);
+						font-size: 13px;
+						padding-left: 11px;
+						outline: 0;
+
+						span {
+							opacity: 0;
+							margin-right: -8px;
+							.transition(.3s ease-in opacity);
+						}
+
+						-webkit-transition: background-color .3s ease-in, padding-left .3s ease-in;
+						   -moz-transition: background-color .3s ease-in, padding-left .3s ease-in;
+						     -o-transition: background-color .3s ease-in, padding-left .3s ease-in;
+						        transition: background-color .3s ease-in, padding-left .3s ease-in;
 					}
 				}
 			}
