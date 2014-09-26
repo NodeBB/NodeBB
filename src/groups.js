@@ -6,6 +6,7 @@ var async = require('async'),
 	user = require('./user'),
 	meta = require('./meta'),
 	db = require('./database'),
+	plugins = require('./plugins'),
 	posts = require('./posts'),
 	utils = require('../public/src/utils');
 
