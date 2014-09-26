@@ -10,6 +10,7 @@
 			<div id="customCSS"></div>
 			<input type="hidden" id="customCSS-holder" value="" data-field="customCSS" />
 
+			<br />
 			<form class="form">
 				<div class="form-group">
 					<label for="useCustomCSS">
@@ -31,6 +32,7 @@
 			<div id="customHTML"></div>
 			<input type="hidden" id="customHTML-holder" value="" data-field="customJS" />
 
+			<br />
 			<form class="form">
 				<div class="form-group">
 					<label for="useCustomJS">
