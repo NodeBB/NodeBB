@@ -102,6 +102,8 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 			editedPostEl.find('img').addClass('img-responsive');
 			app.replaceSelfLinks(editedPostEl.find('a'));
 			editedPostEl.fadeIn(250);
+
+			$(window).trigger('action:posts.edited');
 		});
 
 		if (data.tags && data.tags.length !== $('.tags').first().children().length) {
