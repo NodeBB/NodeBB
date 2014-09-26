@@ -97,63 +97,63 @@
 			<div class="nano-content">
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header">General</li>
-						<li class="active"><a href="{relative_path}/admin/index"><i class="fa fa-fw fa-home"></i> Home</a></li>
-						<li><a href="{relative_path}/admin/languages"><i class="fa fa-fw fa-language"></i> Languages</a></li>
-						<li><a href="{relative_path}/admin/settings/general"><i class="fa fa-fw fa-cogs"></i> Settings</a></li>
-						<li><a href="{relative_path}/admin/sounds"><i class="fa fa-fw fa-volume-up"></i> Sounds</a></li>
+						<li class="nav-header"><i class="fa fa-fw fa-dashboard"></i> General</li>
+						<li class="active"><a href="{relative_path}/admin/index">Dashboard</a></li>
+						<li><a href="{relative_path}/admin/languages">Languages</a></li>
+						<li><a href="{relative_path}/admin/settings/general">Settings</a></li>
+						<li><a href="{relative_path}/admin/sounds">Sounds</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header">Manage</li>
-						<li><a href="{relative_path}/admin/categories/active"><i class="fa fa-fw fa-folder"></i> Categories</a></li>
-						<li><a href="{relative_path}/admin/tags"><i class="fa fa-fw fa-tags"></i> Tags</a></li>
-						<li><a href="{relative_path}/admin/users/latest"><i class="fa fa-fw fa-user"></i> Users</a></li>
-						<li><a href="{relative_path}/admin/groups"><i class="fa fa-fw fa-group"></i> Groups</a></li>
+						<li class="nav-header"><i class="fa fa-fw fa-comments-o"></i> Manage</li>
+						<li><a href="{relative_path}/admin/categories/active">Categories</a></li>
+						<li><a href="{relative_path}/admin/tags">Tags</a></li>
+						<li><a href="{relative_path}/admin/users/latest">Users</a></li>
+						<li><a href="{relative_path}/admin/groups">Groups</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header">Appearance</li>
-						<li><a href="{relative_path}/admin/appearance/themes"><i class="fa fa-fw fa-th"></i> Themes</a></li>
-						<li><a href="{relative_path}/admin/appearance/skins"><i class="fa fa-fw fa-th"></i> Skins</a></li>
-						<li><a href="{relative_path}/admin/appearance/customise"><i class="fa fa-fw fa-th"></i> Custom HTML & CSS</a></li>
+						<li class="nav-header"><i class="fa fa-fw fa-paint-brush"></i> Appearance</li>
+						<li><a href="{relative_path}/admin/appearance/themes">Themes</a></li>
+						<li><a href="{relative_path}/admin/appearance/skins">Skins</a></li>
+						<li><a href="{relative_path}/admin/appearance/customise">Custom HTML & CSS</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header">Extend</li>
-						<li><a href="{relative_path}/admin/plugins"><i class="fa fa-fw fa-code-fork"></i> Plugins</a></li>
-						<li><a href="{relative_path}/admin/appearance/widgets"><i class="fa fa-fw fa-th"></i> Widgets</a></li>
+						<li class="nav-header"><i class="fa fa-fw fa-wrench"></i> Extend</li>
+						<li><a href="{relative_path}/admin/plugins">Plugins</a></li>
+						<li><a href="{relative_path}/admin/appearance/widgets">Widgets</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header">Advanced</li>
-						<li><a href="{relative_path}/admin/database"><i class="fa fa-fw fa-hdd-o"></i> Database</a></li>
-						<li><a href="{relative_path}/admin/events"><i class="fa fa-fw fa-calendar-o"></i> Events</a></li>
+						<li class="nav-header"><i class="fa fa-fw fa-hdd-o"></i> Advanced</li>
+						<li><a href="{relative_path}/admin/database">Database</a></li>
+						<li><a href="{relative_path}/admin/events">Events</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header">Social Authentication</li>
+						<li class="nav-header"><i class="fa fa-fw fa-facebook-square"></i> Social Authentication</li>
 						<!-- IF !authentication.length -->
-						<li><a href="{relative_path}/admin/plugins"><i class="fa fa-fw fa-code-fork"></i> Install SSO Plugins</a></li>
+						<li><a href="{relative_path}/admin/plugins">Install SSO Plugins</a></li>
 						<!-- ENDIF !authentication.length -->
 						<!-- BEGIN authentication -->
 						<li>
-							<a href="{relative_path}/admin{authentication.route}"><i class="fa fa-fw {authentication.icon}"></i> {authentication.name}</a>
+							<a href="{relative_path}/admin{authentication.route}">{authentication.name}</a>
 						</li>
 						<!-- END authentication -->
 					</ul>
 				</div>
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header">Plugins</li>
+						<li class="nav-header"><i class="fa fa-fw fa-th"></i> Installed Plugins</li>
 						<!-- BEGIN plugins -->
 						<li>
-							<a href="{relative_path}/admin{plugins.route}"><i class="fa fa-fw {plugins.icon}"></i> {plugins.name}</a>
+							<a href="{relative_path}/admin{plugins.route}">{plugins.name}</a>
 						</li>
 						<!-- END plugins -->
 					</ul>
@@ -161,8 +161,8 @@
 				<!-- IF env -->
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header">Development</li>
-						<li><a href="{relative_path}/admin/logger"><i class="fa fa-fw fa-th"></i> Logger</a></li>
+						<li class="nav-header"><i class="fa fa-fw fa-th"></i> Development</li>
+						<li><a href="{relative_path}/admin/logger">Logger</a></li>
 					</ul>
 				</div>
 				<!-- ENDIF env -->
