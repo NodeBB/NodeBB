@@ -31,8 +31,8 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 	});
 
 	function setupMainMenu() {
-		$('.sidebar-nav').on('click', function() {
-			$(this).toggleClass('closed');
+		$('.sidebar-nav .nav-header').on('click', function() {
+			$(this).toggleClass('open');
 		});
 	}
 

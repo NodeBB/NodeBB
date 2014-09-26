@@ -30,13 +30,13 @@
 		.sidebar-nav {
 			margin-top: 1px;
 			overflow: hidden;
-			.transition(.4s ease-in-out height);
-			height: 250px;
+			.transition(.4s ease-in-out max-height);
 			max-height: 100%;
 			cursor: pointer;
-
-			&.closed {
-				height: 38px;
+			max-height: 38px;
+			
+			&.open {
+				max-height: 500px;
 			}
 
 			.nav-header {
@@ -46,6 +46,7 @@
 				background-color: #272727;
 				text-shadow: 0px 0px 2px #111;
 				padding: 10px;
+				.user-select(none);
 			}
 
 			.nav-list {
