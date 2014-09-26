@@ -82,7 +82,7 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 			if (value.length > 0) {
 				menuItems.append('<li role="presentation"><a role="menuitem" href="' + RELATIVE_PATH + '/search/' + value + '">Search the forum for <strong>' + value + '</strong></a></li>');
 			} else {
-				menuItems.append('<li role="presentation"><a role="menuitem" href="' + RELATIVE_PATH + '/search/' + value + '">Click here for forum-wide search</a></li>');
+				menuItems.append('<li role="presentation"><a role="menuitem" href="#">Start typing to see results...</a></li>');
 			}
 		});
 	}
