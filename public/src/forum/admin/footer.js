@@ -23,8 +23,11 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 			setupACPSearch();
 		});
 
-		$(window).on('action:ajaxify.end', function() {
+		$(window).on('action:ajaxify.end', function(ev, data) {
+			var url = data.url;
+
 			setupPills();
+			selectMenuItem(data.url);
 		});
 
 		setupMainMenu();
@@ -39,6 +42,27 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 		});
 
 		$('.nano').nanoScroller();
+	}
+
+	function selectMenuItem(url) {
+		$('#main-menu .nav-list > li').removeClass('active').each(function() {
+			var menu = $(this),
+				category = menu.parents('.sidebar-nav'),
+				href = menu.children('a').attr('href');
+
+			if (href && href.slice(1).indexOf(url) !== -1) {
+				category.addClass('open');
+				menu.addClass('active');
+				modifyBreadcrumb(category.find('.nav-header').text(), menu.text());
+				return false;
+			}
+		});
+	}
+
+	function modifyBreadcrumb() {
+		var caret = ' <i class="fa fa-angle-right"></i> ';
+		
+		$('#breadcrumbs').html(caret + Array.prototype.slice.call(arguments).join(caret));
 	}
 
 	function setupPills() {

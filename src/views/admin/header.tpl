@@ -54,7 +54,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand nodebb-logo" href="{relative_path}/admin/index"><img src="{relative_path}/images/logo.png" alt="NodeBB ACP" /> Admin Control Panel</a>
+				<a class="navbar-brand nodebb-logo" href="{relative_path}/admin/index"><img src="{relative_path}/images/logo.png" alt="NodeBB ACP" /> Admin Control Panel <span id="breadcrumbs"></span></a>
 			</div>
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
