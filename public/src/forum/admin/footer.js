@@ -26,7 +26,15 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 		$(window).on('action:ajaxify.end', function() {
 			setupPills();
 		});
+
+		setupMainMenu();
 	});
+
+	function setupMainMenu() {
+		$('.sidebar-nav').on('click', function() {
+			$(this).toggleClass('closed');
+		});
+	}
 
 	function setupPills() {
 		$('.navigation.nav-pills li').removeClass('active');
