@@ -1,7 +1,7 @@
 <div class="tags">
 	<!-- IF !tags.length -->
 	<div class="alert alert-warning">
-		<strong>No Tags</strong>
+		<strong>Your forum does not have any topics with tags yet!</strong>
 	</div>
 	<!-- ENDIF !tags.length -->
 
