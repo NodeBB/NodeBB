@@ -129,7 +129,7 @@ define('forum/admin/index', ['semver'], function(semver) {
 
 		for (var i = currentHour, ii = currentHour - 12; i > ii; i--) {
 			var hour = i < 0 ? 24 + i : i;
-			labels.push(hour + ':00 PM');
+			labels.push(hour + ':00 ' + (hour >= 12 ? 'PM' : 'AM'));
 		}
 
 		labels.reverse();
