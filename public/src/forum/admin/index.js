@@ -116,12 +116,12 @@ define('forum/admin/index', ['semver'], function(semver) {
 						'<div>Guests</div>' +
 					'</div>' +
 					'<div class="text-center pull-left">' + 
-						'<div>'+ data.onlineRegisteredCount + data.onlineGuestCount +'</div>' + 
+						'<div>'+ (data.onlineRegisteredCount + data.onlineGuestCount) +'</div>' + 
 						'<div>Total</div>' +
 					'</div>' +
 					'<div class="text-center pull-left">' + 
 						'<div>'+ data.socketCount +'</div>' + 
-						'<div>Socket<br />Connections</div>' +
+						'<div>Connections</div>' +
 					'</div>';
 
 		$('#active-users').html(html);

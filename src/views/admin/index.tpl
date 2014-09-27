@@ -7,40 +7,42 @@
 			</div>
 		</div>
 
-		<div class="row col-lg-9">
-			<!-- BEGIN stats -->
-			<div class="col-lg-4 col-md-6">
-				<div class="panel panel-default">
-					<div class="panel-heading">{stats.name}</div>
-					<div class="panel-body">
-						<div id="unique-visitors">
-							<div class="text-center pull-left">
-								<div>{stats.day}</div>
-								<div>Day</div>
-							</div>
-							<div class="text-center pull-left">
-								<div>{stats.week}</div>
-								<div>Week</div>
-							</div>
-							<div class="text-center pull-left">
-								<div>{stats.month}</div>
-								<div>Month</div>
-							</div>
-							<div class="text-center pull-left">
-								<div>{stats.alltime}</div>
-								<div>All Time</div>
+		<div class="row">
+			<div class="col-lg-9">
+				<!-- BEGIN stats -->
+				<div class="col-lg-4 col-md-6">
+					<div class="panel panel-default">
+						<div class="panel-heading">{stats.name}</div>
+						<div class="panel-body">
+							<div id="unique-visitors">
+								<div class="text-center pull-left">
+									<div>{stats.day}</div>
+									<div>Day</div>
+								</div>
+								<div class="text-center pull-left">
+									<div>{stats.week}</div>
+									<div>Week</div>
+								</div>
+								<div class="text-center pull-left">
+									<div>{stats.month}</div>
+									<div>Month</div>
+								</div>
+								<div class="text-center pull-left">
+									<div>{stats.alltime}</div>
+									<div>All Time</div>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<!-- END stats -->
+				<!-- END stats -->
 
-			<div class="col-lg-4 col-md-6">
-				<div class="panel panel-default">
-					<div class="panel-heading">Active Users</div>
-					<div class="panel-body">
-						<div id="active-users"></div>
+				<div class="col-lg-4 col-md-6">
+					<div class="panel panel-default">
+						<div class="panel-heading">Active Users</div>
+						<div class="panel-body">
+							<div id="active-users"></div>
+						</div>
 					</div>
 				</div>
 			</div>
