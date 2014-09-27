@@ -26,7 +26,8 @@ var	groups = require('../groups'),
 		widgets: {},
 		config: {},
 		settings: {},
-		email: {}
+		email: {},
+		analytics: {}
 	};
 
 SocketAdmin.before = function(socket, method, next) {
@@ -148,5 +149,62 @@ SocketAdmin.email.test = function(socket, data, callback) {
 		callback(new Error('[[error:no-emailers-configured]]'));
 	}
 };
+
+SocketAdmin.analytics.get = function(socket, data, callback) {
+	data.units = 'hours'; // temp
+	data.amount = 12;
+
+	if (data && data.graph && data.units && data.amount) {
+		if (data.graph === 'traffic') {
+			async.parallel({
+				uniqueVisitors: function(next) {
+					getHourlyStatsForSet('ip:recent', data.amount, next);
+				},
+				pageviews: function(next) {
+					getHourlyStatsForSet('analytics:pageviews', data.amount, next);
+				}
+			}, callback);
+		}
+	} else {
+		callback(new Error('Invalid analytics call'));
+	}
+};
+
+function getHourlyStatsForSet(set, hours, callback) {
+	var hour = new Date(),
+		terms = {},
+		hoursArr = [];
+
+	hour.setHours(hour.getHours(), 0, 0, 0);
+
+	for (var i = 0, ii = hours; i < ii; i++) {
+		hoursArr.push(hour.getTime());
+		hour.setHours(hour.getHours() - 1, 0, 0, 0);
+	}
+
+	async.each(hoursArr, function(term, next) {
+		if (set.indexOf('analytics') !== -1) {
+			db.sortedSetScore(set, term, function(err, count) {
+				terms[term] = count || 0;
+				next(err);
+			});
+		} else {
+			db.sortedSetCount(set, term, Date.now(), function(err, count) {
+				terms[term] = count || 0;
+				next(err);
+			});
+		}
+		
+	}, function(err) {
+		var termsArr = [];
+
+		hoursArr.reverse();
+		hoursArr.forEach(function(hour, idx) {
+			termsArr.push(terms[hour]);
+		});
+
+		callback(err, termsArr);
+	});
+}
 
 module.exports = SocketAdmin;

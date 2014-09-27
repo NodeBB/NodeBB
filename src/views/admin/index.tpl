@@ -1,4 +1,15 @@
 <div class="row">
+	<div class="col-sm-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">Forum Traffic</div>
+			<div class="panel-body">
+				<canvas id="analytics-traffic" width="100%" height="400"></canvas>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
 	<div class="col-sm-6">
 		<div class="panel panel-default">
 			<div class="panel-heading">Welcome to NodeBB</div>
@@ -20,18 +31,6 @@
 					<!-- IF notices.done --><i class="fa fa-fw fa-check text-success"></i> {notices.doneText}<!-- ELSE --><i class="fa fa-fw fa-times text-danger"></i> {notices.notDoneText}<!-- ENDIF notices.done -->
 				</div>
 			<!-- END notices -->
-			</div>
-		</div>
-
-		<div class="panel panel-default">
-			<div class="panel-heading">Pageviews</div>
-			<div class="panel-body">
-				<div class="col-xs-6 text-center">
-					<h3>Monthly<br /><small>{pageviews.monthly}</small></h3>
-				</div>
-				<div class="col-xs-6 text-center">
-					<h3>Daily<br /><small>{pageviews.daily}</small></h3>
-				</div>
 			</div>
 		</div>
 

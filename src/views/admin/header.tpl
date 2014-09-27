@@ -20,6 +20,7 @@
 	    <script>__lt_ie_9__ = 1;</script>
 	<![endif]-->
 
+	<script type="text/javascript" src="{relative_path}/vendor/chart.js/chart.min.js"></script>
 	<script type="text/javascript" src="{relative_path}/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="{relative_path}/nodebb.min.js"></script>
 	<script type="text/javascript" src="{relative_path}/vendor/colorpicker/colorpicker.js"></script>

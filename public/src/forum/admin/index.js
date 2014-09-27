@@ -5,7 +5,6 @@ define('forum/admin/index', ['semver'], function(semver) {
 	var	Admin = {};
 	var updateIntervalId = 0;
 	Admin.init = function() {
-
 		app.enterRoom('admin');
 		socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
 
@@ -99,6 +98,8 @@ define('forum/admin/index', ['semver'], function(semver) {
 				}
 			});
 		});
+
+		setupGraphs();
 	};
 
 	Admin.updateRoomUsage = function(err, data) {
@@ -113,6 +114,69 @@ define('forum/admin/index', ['semver'], function(semver) {
 
 		$('#active_users').html(html);
 	};
+
+	var graphs = {
+		traffic: null
+	};
+
+	function setupGraphs() {
+		var canvas = document.getElementById('analytics-traffic'),
+			ctx = canvas.getContext('2d');
+
+
+		var currentHour = new Date().getHours(),
+			labels = [];
+
+		for (var i = currentHour, ii = currentHour - 12; i > ii; i--) {
+			var hour = i < 0 ? 24 + i : i;
+			labels.push(hour + ':00 PM');
+		}
+
+		labels.reverse();
+
+		var data = {
+				labels: labels,
+				datasets: [
+					{
+						label: "Page Views",
+						fillColor: "rgba(220,220,220,0.2)",
+						strokeColor: "rgba(220,220,220,1)",
+						pointColor: "rgba(220,220,220,1)",
+						pointStrokeColor: "#fff",
+						pointHighlightFill: "#fff",
+						pointHighlightStroke: "rgba(220,220,220,1)",
+						data: [0,0,0,0,0,0,0,0,0,0,0,0]
+					},
+					{
+						label: "Unique Visitors",
+						fillColor: "rgba(151,187,205,0.2)",
+						strokeColor: "rgba(151,187,205,1)",
+						pointColor: "rgba(151,187,205,1)",
+						pointStrokeColor: "#fff",
+						pointHighlightFill: "#fff",
+						pointHighlightStroke: "rgba(151,187,205,1)",
+						data: [0,0,0,0,0,0,0,0,0,0,0,0]
+					}
+				]
+			};
+
+		canvas.width = $(canvas).parent().width();
+		graphs.traffic = new Chart(ctx).Line(data);
+
+		setInterval(updateTrafficGraph, 15000);
+		updateTrafficGraph();
+	}
+
+	function updateTrafficGraph() {
+		socket.emit('admin.analytics.get', {graph: "traffic"}, function (err, data) {
+			for (var i = 0, ii = data.pageviews.length; i < ii;  i++) {
+				graphs.traffic.datasets[0].points[i].value = data.pageviews[i];
+				graphs.traffic.datasets[1].points[i].value = data.uniqueVisitors[i];
+			}
+
+			graphs.traffic.update();
+		});
+	}
 
 	return Admin;
 });
