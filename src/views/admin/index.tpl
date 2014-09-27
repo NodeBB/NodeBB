@@ -1,4 +1,15 @@
 <div class="row">
+	<div class="col-sm-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">Forum Traffic</div>
+			<div class="panel-body">
+				<canvas id="analytics-traffic" width="100%" height="400"></canvas>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
 	<div class="col-sm-6">
 		<div class="panel panel-default">
 			<div class="panel-heading">Welcome to NodeBB</div>
