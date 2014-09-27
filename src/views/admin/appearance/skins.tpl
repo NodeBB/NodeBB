@@ -1,7 +1,7 @@
 <!-- IMPORT admin/appearance/header.tpl -->
 
 <div id="skins" class="row">
-	<div class="col-md-9">
+	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading">Bootswatch Themes</div>
 			<div class="panel-body">
@@ -14,7 +14,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-md-3">
+	<div class="col-lg-3">
 		<div class="panel panel-default">
 			<div class="panel-heading">Revert to Default</div>
 			<div class="panel-body">

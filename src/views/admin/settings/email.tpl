@@ -1,3 +1,5 @@
+<!-- IMPORT admin/settings/header.tpl -->
+
 <div class="panel panel-default">
 	<div class="panel-heading">Email Settings</div>
 	<div class="panel-body">

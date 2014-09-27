@@ -1,3 +1,5 @@
+<!-- IMPORT admin/settings/header.tpl -->
+
 <div class="panel panel-default">
 	<div class="panel-heading">Maintenance Mode</div>
 	<div class="panel-body">
