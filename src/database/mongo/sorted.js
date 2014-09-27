@@ -104,7 +104,12 @@ module.exports = function(db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').find({_key:key}, {fields: {_id: 0, value: 1, score: 1}})
+
+		var fields = {_id: 0, value: 1};
+		if (withScores) {
+			fields['score'] = 1;
+		}
+		db.collection('objects').find({_key:key}, {fields: fields})
 			.limit(stop - start + 1)
 			.skip(start)
 			.sort({score: sort})
@@ -163,8 +168,7 @@ module.exports = function(db, module) {
 			scoreQuery['$lte'] = max;
 		}
 
-		var fields = {_id: 0};
-		fields['value'] = 1;
+		var fields = {_id: 0, value: 1};
 		if (withScores) {
 			fields['score'] = 1;
 		}
