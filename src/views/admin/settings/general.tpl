@@ -24,14 +24,6 @@
 
 			<label>Site Keywords</label>
 			<input type="text" class="form-control" placeholder="Keywords describing your community, comma-seperated" data-field="keywords" /><br />
-
-			<label>Site Logo</label>
-			<input id="logoUrl" type="text" class="form-control" placeholder="Path to a logo to display on forum header" data-field="brand:logo" /><br />
-			<input data-action="upload" data-target="logoUrl" data-route="{relative_path}/admin/uploadlogo" type="button" class="btn btn-default" value="Upload Logo"></input> <br /> <br/>
-
-			<label>Favicon</label><br />
-			<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" /><br />
-			<input data-action="upload" data-target="faviconUrl" data-route="{relative_path}/admin/uploadfavicon" type="button" class="btn btn-default" value="Upload"></input> <br /> <br/>
 		</form>
 	</div>
 </div>
