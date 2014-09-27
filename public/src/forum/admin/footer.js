@@ -26,7 +26,6 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 		$(window).on('action:ajaxify.end', function(ev, data) {
 			var url = data.url;
 
-			setupPills();
 			selectMenuItem(data.url);
 		});
 
@@ -66,14 +65,6 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 		var caret = ' <i class="fa fa-angle-right"></i> ';
 		
 		$('#breadcrumbs').html(caret + Array.prototype.slice.call(arguments).join(caret));
-	}
-
-	function setupPills() {
-		$('.navigation.nav-pills li').removeClass('active');
-
-		var slug = window.location.href.split('/');
-		slug = slug[slug.length-1];
-		$('.navigation.nav-pills [data-pill="' + slug + '"]').addClass('active');
 	}
 	
 	function setupACPSearch() {
