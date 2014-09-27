@@ -23,18 +23,6 @@
 			</div>
 		</div>
 
-		<div class="panel panel-default">
-			<div class="panel-heading">Pageviews</div>
-			<div class="panel-body">
-				<div class="col-xs-6 text-center">
-					<h3>Monthly<br /><small>{pageviews.monthly}</small></h3>
-				</div>
-				<div class="col-xs-6 text-center">
-					<h3>Daily<br /><small>{pageviews.daily}</small></h3>
-				</div>
-			</div>
-		</div>
-
 		<!-- BEGIN stats -->
 		<div class="panel panel-default">
 			<div class="panel-heading">{stats.name}</div>

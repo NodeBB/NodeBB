@@ -38,9 +38,6 @@ adminController.home = function(req, res, next) {
 		stats: function(next) {
 			getStats(next);
 		},
-		pageviews: function(next) {
-			getPageviews(next);
-		},
 		notices: function(next) {
 			var notices = [
 				{done: !meta.restartRequired, doneText: 'Restart not required', notDoneText:'Restart required'},
@@ -56,24 +53,11 @@ adminController.home = function(req, res, next) {
 		res.render('admin/index', {
 			version: pkg.version,
 			notices: results.notices,
-			stats: results.stats,
-			pageviews: results.pageviews
+			stats: results.stats
 		});
 	});
 };
 
-function getPageviews(callback) {
-	async.parallel({
-		monthly: function(next) {
-			db.get('pageviews:monthly', next);
-		},
-		daily: function(next) {
-			db.get('pageviews:daily', next);
-		}
-	}, function(err, results) {
-		callback(null, results);
-	});
-}
 function getStats(callback) {
 	async.parallel([
 		function(next) {
@@ -87,6 +71,9 @@ function getStats(callback) {
 		},
 		function(next) {
 			getStatsForSet('topics:tid', next);
+		},
+		function(next) {
+			getStatsForSet('analytics:pageviews', next);
 		}
 	], function(err, results) {
 		if (err) {
@@ -96,6 +83,7 @@ function getStats(callback) {
 		results[1].name = 'Users';
 		results[2].name = 'Posts';
 		results[3].name = 'Topics';
+		results[4].name = 'Page Views';
 
 		callback(null, results);
 	});

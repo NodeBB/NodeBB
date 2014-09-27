@@ -49,29 +49,13 @@ middleware.updateLastOnlineTime = function(req, res, next) {
 };
 
 middleware.incrementPageViews = function(req, res, next) {
-	var nextMonth = new Date(),
-		nextDay = new Date();
+	var today = new Date();
 
-	nextMonth.setMonth(nextMonth.getMonth() + 1, 1);
-	nextMonth.setHours(0, 0, 0, 0);
+	today.setDate(today.getDate());
+	today.setHours(today.getHours(), 0, 0, 0);
 
-	nextDay.setDate(nextDay.getDate() + 1);
-	nextDay.setHours(0, 0, 0, 0);
-
-	db.increment('pageviews:monthly', function(err) {
-		if (err) {
-			return;
-		}
-		db.pexpireAt('pageviews:monthly', nextMonth.getTime());
-	});
-
-	db.increment('pageviews:daily', function(err) {
-		if (err) {
-			return;
-		}
-		db.pexpireAt('pageviews:daily', nextDay.getTime());
-	});
-
+	db.sortedSetIncrBy('analytics:pageviews', 1, today.getTime());
+	
 	next();
 };
 
