@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 8, 8);
+	latestSchema = Date.UTC(2014, 8, 27);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -1011,6 +1011,35 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/9/8] Deleting old notifications skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 8, 27);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/9/27] Deleting tid:<tid>:read_by_uid...');
+
+				db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
+					if (err) {
+						return next(err);
+					}
+					tids = tids.filter(Boolean);
+					var readKeys = tids.map(function(tid) {
+						return 'tid:' + tid + ':read_by_uid';
+					});
+
+					db.deleteAll(readKeys, function(err, results) {
+						if (err) {
+							winston.error('[2014/9/27] Error encountered while deleting tid:<tid>:read_by_uid');
+							return next(err);
+						}
+
+						winston.info('[2014/9/27] Deleted tid:<tid>:read_by_uid');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2014/9/27] Deleting tid:<tid>:read_by_uid skipped');
 				next();
 			}
 		}
