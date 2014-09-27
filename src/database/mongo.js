@@ -58,7 +58,7 @@
 		var connString = 'mongodb://'+ nconf.get('mongo:host') + ':' + nconf.get('mongo:port') + '/' + nconf.get('mongo:database');
 		var connOptions = {
 			server: {
-				poolSize: 10
+				poolSize: nconf.get('mongo:poolSize') || 10
 			}
 		};
 		mongoClient.connect(connString, connOptions, function(err, _db) {
