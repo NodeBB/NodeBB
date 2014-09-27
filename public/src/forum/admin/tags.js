@@ -1,5 +1,5 @@
 "use strict";
-/*global define, socket, app, admin, utils*/
+/*global define, socket, app, admin, utils, bootbox, RELATIVE_PATH*/
 
 define('forum/admin/tags', ['forum/infinitescroll'], function(infinitescroll) {
 	var	Tags = {};
@@ -30,6 +30,45 @@ define('forum/admin/tags', ['forum/infinitescroll'], function(infinitescroll) {
 				});
 			}, 100);
 		});
+
+		$('.tag-item').on('click', function(ev) {
+			var tagName = $(this).text(),
+				tag = $(this),
+				row = tag.parents('.tag-row');
+
+			bootbox.dialog({
+				title: "Editing " + tagName + " tag",
+				message: $(this).parents('.tag-row').find('.tag-modal').html(),
+				buttons: {
+					success: {
+						label: "Save",
+						className: "btn-primary save",
+						callback: function() {
+							var modal = $('.bootbox'),
+								bgColor = modal.find('[data-name="bgColor"]').val(),
+									color = modal.find('[data-name="color"]').val();
+
+							row.find('[data-name="bgColor"]').val(bgColor);
+							row.find('[data-name="color"]').val(color);
+							row.find('.tag-item').css('background-color', bgColor).css('color', color);
+
+							save(tag);
+						}
+					},
+					info: {
+						label: "Click to view topics tagged \"" + tagName + "\"",
+						className: "btn-info",
+						callback: function() {
+							window.open(RELATIVE_PATH + '/tags/' + tagName);
+						}
+					}
+				}
+			});
+
+			setTimeout(function() {
+				handleColorPickers();
+			}, 500); // bootbox made me do it.
+		});
 	};
 
 	function handleColorPickers() {
@@ -58,7 +97,7 @@ define('forum/admin/tags', ['forum/infinitescroll'], function(infinitescroll) {
 			bgColor : tagRow.find('[data-name="bgColor"]').val(),
 			color : tagRow.find('[data-name="color"]').val()
 		};
-
+		console.log(data);
 		socket.emit('admin.tags.update', data, function(err) {
 			if (err) {
 				return app.alertError(err.message);
