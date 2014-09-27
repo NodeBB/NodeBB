@@ -21,6 +21,7 @@ define('forum/admin/settings', ['uploader', 'sounds'], function(uploader, sounds
 		var fields = $('#content [data-field]'),
 			numFields = fields.length,
 			saveBtn = $('#save'),
+			revertBtn = $('#revert'),
 			x, key, inputType, field;
 
 		for (x = 0; x < numFields; x++) {
@@ -53,6 +54,10 @@ define('forum/admin/settings', ['uploader', 'sounds'], function(uploader, sounds
 				}
 			}
 		}
+
+		revertBtn.off('click').on('click', function(e) {
+			ajaxify.refresh();
+		});
 
 		saveBtn.off('click').on('click', function(e) {
 			e.preventDefault();
