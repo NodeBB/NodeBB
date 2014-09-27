@@ -15,9 +15,9 @@ define('forum/infinitescroll', function() {
 		topOffset = _topOffest || 0;
 		$(window).off('scroll', onScroll).on('scroll', onScroll);
 
-		if ($(document).height() === $(window).height()) {
-			callback(1);
-		}
+		// if ($(document).height() === $(window).height()) {
+		// 	callback(1);
+		// }
 	};
 
 	function onScroll() {

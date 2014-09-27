@@ -69,12 +69,17 @@ module.exports = function(Topics) {
 			return callback(null, []);
 		}
 
+		var yesterday = Date.now() - 86400000;
+
 		async.parallel({
 			ignoredCids: function(next) {
 				user.getIgnoredCategories(uid, next);
 			},
 			recentTids: function(next) {
-				Topics.getLatestTids(0, -1, 'day', next);
+				db.getSortedSetRevRangeByScoreWithScores('topics:recent', 0, -1, Infinity, yesterday, next);
+			},
+			userScores: function(next) {
+				db.getSortedSetRevRangeByScoreWithScores('uid:' + uid + ':tids_read', 0, -1, Infinity, yesterday, next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -85,28 +90,30 @@ module.exports = function(Topics) {
 				return callback(null, []);
 			}
 
-			Topics.hasReadTopics(results.recentTids, uid, function(err, read) {
+			var userRead = {};
+			results.userScores.forEach(function(userItem) {
+				userRead[userItem.value] = userItem.score;
+			});
+
+
+			var tids = results.recentTids.filter(function(recentTopic, index) {
+				return !userRead[recentTopic.value] || recentTopic.score > userRead[recentTopic.value];
+			}).map(function(topic) {
+				return topic.value;
+			});
+
+			filterTopics(uid, tids, results.ignoredCids, function(err, tids) {
 				if (err) {
 					return callback(err);
 				}
 
-				var tids = results.recentTids.filter(function(tid, index) {
-					return !read[index];
-				});
+				if (stop === -1) {
+					tids = tids.slice(start);
+				} else {
+					tids = tids.slice(start, stop + 1);
+				}
 
-				filterTopics(uid, tids, results.ignoredCids, function(err, tids) {
-					if (err) {
-						return callback(err);
-					}
-
-					if (stop === -1) {
-						tids = tids.slice(start);
-					} else {
-						tids = tids.slice(start, stop + 1);
-					}
-
-					callback(err, tids);
-				});
+				callback(err, tids);
 			});
 		});
 	};
@@ -167,12 +174,7 @@ module.exports = function(Topics) {
 	};
 
 	Topics.markAsUnreadForAll = function(tid, callback) {
-		db.delete('tid:' + tid + ':read_by_uid', function(err) {
-			if(err) {
-				return callback(err);
-			}
-			Topics.markCategoryUnreadForAll(tid, callback);
-		});
+		Topics.markCategoryUnreadForAll(tid, callback);
 	};
 
 	Topics.markAsRead = function(tids, uid, callback) {
@@ -181,13 +183,15 @@ module.exports = function(Topics) {
 			return callback();
 		}
 		tids = tids.filter(Boolean);
-		var keys = tids.map(function(tid) {
-			return 'tid:' + tid + ':read_by_uid';
+
+		var now = Date.now();
+		var scores = tids.map(function(tid) {
+			return now;
 		});
 
 		async.parallel({
 			markRead: function(next) {
-				db.setsAdd(keys, uid, next);
+				db.sortedSetAdd('uid:' + uid + ':tids_read', scores, tids, next);
 			},
 			topicData: function(next) {
 				Topics.getTopicsFields(tids, ['cid'], next);
@@ -238,21 +242,29 @@ module.exports = function(Topics) {
 			}));
 		}
 
-		var sets = [];
+		async.parallel({
+			recentScores: function(next) {
+				db.sortedSetScores('topics:recent', tids, next);
+			},
+			userScores: function(next) {
+				db.sortedSetScores('uid:' + uid + ':tids_read', tids, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			var result = tids.map(function(tid, index) {
+				return !!(results.userScores[index] && results.userScores[index] >= results.recentScores[index]);
+			});
 
-		for (var i = 0, ii = tids.length; i < ii; i++) {
-			sets.push('tid:' + tids[i] + ':read_by_uid');
-		}
-
-		db.isMemberOfSets(sets, uid, callback);
+			callback(null, result);
+		});
 	};
 
 	Topics.hasReadTopic = function(tid, uid, callback) {
-		if(!parseInt(uid, 10)) {
-			return callback(null, false);
-		}
-
-		db.isSetMember('tid:' + tid + ':read_by_uid', uid, callback);
+		Topics.hasReadTopics([tid], uid, function(err, hasRead) {
+			callback(err, Array.isArray(hasRead) && hasRead.length ? hasRead[0] : false);
+		});
 	};
 
 
