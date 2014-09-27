@@ -26,6 +26,7 @@
 	<script type="text/javascript" src="{relative_path}/src/admin.js?{cache-buster}"></script>
 	<script type="text/javascript" src="{relative_path}/vendor/ace/ace.js"></script>
 	<script type="text/javascript" src="{relative_path}/vendor/nanoscroller/nanoscroller.min.js"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/charts/charts.min.js"></script>
 
 	<script>
 		require.config({
