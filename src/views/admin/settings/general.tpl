@@ -36,8 +36,31 @@
 	</div>
 </div>
 
+
 <div class="panel panel-default">
-	<div class="panel-heading">General Settings</div>
+	<div class="panel-heading">Site Logo</div>
+	<div class="panel-body">
+		<form>
+			<label>Site Logo</label>
+			<input id="logoUrl" type="text" class="form-control" placeholder="Path to a logo to display on forum header" data-field="brand:logo" /><br />
+			<input data-action="upload" data-target="logoUrl" data-route="{relative_path}/admin/uploadlogo" type="button" class="btn btn-default" value="Upload Logo"></input>
+		</form>
+	</div>
+</div>
+
+<div class="panel panel-default">
+	<div class="panel-heading">Favicon</div>
+	<div class="panel-body">
+		<form>
+			<label>Favicon</label><br />
+			<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" /><br />
+			<input data-action="upload" data-target="faviconUrl" data-route="{relative_path}/admin/uploadfavicon" type="button" class="btn btn-default" value="Upload"></input>
+		</form>
+	</div>
+</div>
+
+<div class="panel panel-default">
+	<div class="panel-heading">Miscellaneous</div>
 	<div class="panel-body">
 		<form>
 			<div class="checkbox">
