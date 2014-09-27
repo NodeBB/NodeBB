@@ -119,11 +119,7 @@ define('forum/admin/index', ['semver'], function(semver) {
 		traffic: null
 	};
 
-	function setupGraphs() {
-		var canvas = document.getElementById('analytics-traffic'),
-			ctx = canvas.getContext('2d');
-
-
+	function getHoursArray() {
 		var currentHour = new Date().getHours(),
 			labels = [];
 
@@ -132,7 +128,13 @@ define('forum/admin/index', ['semver'], function(semver) {
 			labels.push(hour + ':00 ' + (hour >= 12 ? 'PM' : 'AM'));
 		}
 
-		labels.reverse();
+		return labels.reverse();
+	}
+
+	function setupGraphs() {
+		var canvas = document.getElementById('analytics-traffic'),
+			ctx = canvas.getContext('2d'),
+			labels = getHoursArray();
 
 		var data = {
 				labels: labels,
@@ -174,6 +176,9 @@ define('forum/admin/index', ['semver'], function(semver) {
 				graphs.traffic.datasets[1].points[i].value = data.uniqueVisitors[i];
 			}
 
+			var currentHour = new Date().getHours();
+
+			graphs.traffic.scale.xLabels = getHoursArray;
 			graphs.traffic.update();
 		});
 	}
