@@ -4,6 +4,7 @@ var async = require('async'),
 	path = require('path'),
 	fs = require('fs'),
 	nconf = require('nconf'),
+	_ = require('underscore'),
 	validator = require('validator'),
 	winston = require('winston'),
 	gravatar = require('gravatar'),
@@ -534,24 +535,29 @@ var async = require('async'),
 		if (!Array.isArray(posts) || !posts.length) {
 			return callback(null, []);
 		}
+
 		user.getSettings(uid, function(err, settings) {
 			if (err) {
 				return callback(err);
 			}
+
 			var byVotes = settings.topicPostSort === 'most_votes';
 			var sets = posts.map(function(post) {
-				if (byVotes) {
-					return 'tid:' + post.tid + ':posts:votes';
-				} else {
-					return 'tid:' + post.tid + ':posts';
-				}
+				return byVotes ? 'tid:' + post.tid + ':posts:votes' : 'tid:' + post.tid + ':posts';
 			});
+
+			var uniqueSets = _.uniq(sets);
+			var method = 'sortedSetsRanks';
+			if (uniqueSets.length === 1) {
+				method = 'sortedSetRanks';
+				sets = uniqueSets[0];
+			}
 
 			var pids = posts.map(function(post) {
 				return post.pid;
 			});
 
-			db.sortedSetsRanks(sets, pids, function(err, indices) {
+			db[method](sets, pids, function(err, indices) {
 				if (err) {
 					return callback(err);
 				}

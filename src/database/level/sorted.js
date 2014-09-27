@@ -151,6 +151,14 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.sortedSetsRanks = function(keys, values, callback) {
+		throw new Error('not implemented');
+	};
+
+	module.sortedSetRanks = function(key, values, callback) {
+		throw new Error('not implemented');
+	};
+
 	module.sortedSetRevRank = function(key, value, callback) {
 		module.getListRange(key, 0, -1, function(err, list) {
 			for (var i = list.length - 1, ii=0; i > ii; i--) {

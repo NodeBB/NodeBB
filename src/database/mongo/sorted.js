@@ -264,6 +264,21 @@ module.exports = function(db, module) {
 		}, callback);
 	};
 
+	module.sortedSetRanks = function(key, values, callback) {
+		module.getSortedSetRange(key, 0, -1, function(err, sortedSet) {
+			if (err) {
+				return callback(err);
+			}
+
+			var result = values.map(function(value) {
+				var index = sortedSet.indexOf(value.toString());
+				return index !== -1 ? index : null;
+			});
+
+			callback(null, result);
+		});
+	};
+
 	module.sortedSetScore = function(key, value, callback) {
 		if (!key) {
 			return callback();

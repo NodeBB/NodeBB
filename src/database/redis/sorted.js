@@ -129,6 +129,14 @@ module.exports = function(redisClient, module) {
 		multi.exec(callback);
 	};
 
+	module.sortedSetRanks = function(key, values, callback) {
+		var multi = redisClient.multi();
+		for(var i=0; i<values.length; ++i) {
+			multi.zrank(key, values[i]);
+		}
+		multi.exec(callback);
+	};
+
 	module.sortedSetRevRank = function(key, value, callback) {
 		redisClient.zrevrank(key, value, callback);
 	};
