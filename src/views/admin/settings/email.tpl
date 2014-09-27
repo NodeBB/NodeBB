@@ -18,8 +18,6 @@
 			<p class="help-block">
 				The test email will be sent to the currently logged in user's email address.
 			</p>
-				</div>
-			</div>
 		</form>
 	</div>
 </div>
