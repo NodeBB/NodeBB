@@ -211,4 +211,8 @@ module.exports = function(redisClient, module) {
 			callback(err, results ? results[1] : null);
 		});
 	}
+
+	module.sortedSetIncrBy = function(key, increment, value, callback) {
+		redisClient.zincrby(key, increment, value, callback);
+	};
 };

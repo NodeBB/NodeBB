@@ -292,4 +292,8 @@ module.exports = function(db, module) {
 			callback(null, returnData);
 		});
 	}
+
+	module.sortedSetIncrBy = function(key, increment, value, callback) {
+		throw new Error('not implemented');
+	};
 };
