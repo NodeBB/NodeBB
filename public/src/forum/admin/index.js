@@ -178,7 +178,7 @@ define('forum/admin/index', ['semver'], function(semver) {
 
 			var currentHour = new Date().getHours();
 
-			graphs.traffic.scale.xLabels = getHoursArray;
+			graphs.traffic.scale.xLabels = getHoursArray();
 			graphs.traffic.update();
 		});
 	}
