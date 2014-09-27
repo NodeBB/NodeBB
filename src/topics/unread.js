@@ -27,7 +27,11 @@ module.exports = function(Topics) {
 			topics: []
 		};
 
-		function sendUnreadTopics(tids, callback) {
+		Topics.getUnreadTids(uid, start, stop, function(err, tids) {
+			if (err) {
+				return callback(err);
+			}
+
 			if (!tids.length) {
 				return callback(null, unreadTopics);
 			}
@@ -52,14 +56,6 @@ module.exports = function(Topics) {
 					callback(null, unreadTopics);
 				});
 			});
-		}
-
-		Topics.getUnreadTids(uid, start, stop, function(err, unreadTids) {
-			if (err) {
-				return callback(err);
-			}
-
-			sendUnreadTopics(unreadTids, callback);
 		});
 	};
 
