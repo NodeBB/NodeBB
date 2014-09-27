@@ -208,7 +208,9 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 		};
 
 		parseAndTranslate(template, data, function(composerTemplate) {
-
+			if ($('#cmp-uuid-' + post_uuid).length) {
+				return;
+			}
 			composerTemplate = $(composerTemplate);
 
 			composerTemplate.attr('id', 'cmp-uuid-' + post_uuid);
