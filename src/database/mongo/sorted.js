@@ -104,7 +104,12 @@ module.exports = function(db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').find({_key:key}, {fields: {_id: 0, value: 1, score: 1}})
+
+		var fields = {_id: 0, value: 1};
+		if (withScores) {
+			fields['score'] = 1;
+		}
+		db.collection('objects').find({_key:key}, {fields: fields})
 			.limit(stop - start + 1)
 			.skip(start)
 			.sort({score: sort})
@@ -136,14 +141,18 @@ module.exports = function(db, module) {
 	};
 
 	module.getSortedSetRangeByScore = function(key, start, count, min, max, callback) {
-		getSortedSetRangeByScore(key, start, count, min, max, 1, callback);
+		getSortedSetRangeByScore(key, start, count, min, max, 1, false, callback);
 	};
 
 	module.getSortedSetRevRangeByScore = function(key, start, count, max, min, callback) {
-		getSortedSetRangeByScore(key, start, count, min, max, -1, callback);
+		getSortedSetRangeByScore(key, start, count, min, max, -1, false, callback);
 	};
 
-	function getSortedSetRangeByScore(key, start, count, min, max, sort, callback) {
+	module.getSortedSetRevRangeByScoreWithScores = function(key, start, count, max, min, callback) {
+		getSortedSetRangeByScore(key, start, count, min, max, -1, true, callback);
+	};
+
+	function getSortedSetRangeByScore(key, start, count, min, max, sort, withScores, callback) {
 		if (!key) {
 			return callback();
 		}
@@ -159,7 +168,12 @@ module.exports = function(db, module) {
 			scoreQuery['$lte'] = max;
 		}
 
-		db.collection('objects').find({_key:key, score: scoreQuery}, {fields:{value:1}})
+		var fields = {_id: 0, value: 1};
+		if (withScores) {
+			fields['score'] = 1;
+		}
+
+		db.collection('objects').find({_key:key, score: scoreQuery}, {fields: fields})
 			.limit(count)
 			.skip(start)
 			.sort({score: sort})
@@ -168,9 +182,11 @@ module.exports = function(db, module) {
 					return callback(err);
 				}
 
-				data = data.map(function(item) {
-					return item.value;
-				});
+				if (!withScores) {
+					data = data.map(function(item) {
+						return item.value;
+					});
+				}
 
 				callback(err, data);
 			});

@@ -98,6 +98,10 @@ module.exports = function(redisClient, module) {
 		redisClient.zrevrangebyscore([key, max, min, 'LIMIT', start, count], callback);
 	};
 
+	module.getSortedSetRevRangeByScoreWithScores = function(key, start, count, max, min, callback) {
+		redisClient.zrevrangebyscore([key, max, min, 'WITHSCORES', 'LIMIT', start, count], callback);
+	};
+
 	module.sortedSetCount = function(key, min, max, callback) {
 		redisClient.zcount(key, min, max, callback);
 	};
