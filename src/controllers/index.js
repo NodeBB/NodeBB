@@ -12,6 +12,7 @@ var topicsController = require('./topics'),
 
 	async = require('async'),
 	nconf = require('nconf'),
+	validator = require('validator'),
 	winston = require('winston'),
 	auth = require('../routes/authentication'),
 	meta = require('../meta'),
@@ -117,7 +118,7 @@ Controllers.search = function(req, res, next) {
 		return res.redirect('/404');
 	}
 
-	req.params.term = req.params.term.replace(/"/g, '/"');
+	req.params.term = validator.escape(req.params.term);
 
 	search.search(req.params.term, uid, function(err, results) {
 		if (err) {
