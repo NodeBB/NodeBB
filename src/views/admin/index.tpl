@@ -1,16 +1,52 @@
 <div class="row">
-	<div class="col-sm-12">
+	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading">Forum Traffic</div>
 			<div class="panel-body">
 				<canvas id="analytics-traffic" width="100%" height="400"></canvas>
 			</div>
 		</div>
-	</div>
-</div>
 
-<div class="row">
-	<div class="col-sm-6">
+		<div class="row col-lg-9">
+			<!-- BEGIN stats -->
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">{stats.name}</div>
+					<div class="panel-body">
+						<div id="unique-visitors">
+							<div class="text-center pull-left">
+								<div>{stats.day}</div>
+								<div>Day</div>
+							</div>
+							<div class="text-center pull-left">
+								<div>{stats.week}</div>
+								<div>Week</div>
+							</div>
+							<div class="text-center pull-left">
+								<div>{stats.month}</div>
+								<div>Month</div>
+							</div>
+							<div class="text-center pull-left">
+								<div>{stats.alltime}</div>
+								<div>All Time</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- END stats -->
+
+			<div class="col-md-3">
+				<div class="panel panel-default">
+					<div class="panel-heading">Active Users</div>
+					<div class="panel-body">
+						<div id="active_users"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-3">
 		<div class="panel panel-default">
 			<div class="panel-heading">Welcome to NodeBB</div>
 			<div class="panel-body">
@@ -34,37 +70,7 @@
 			</div>
 		</div>
 
-		<!-- BEGIN stats -->
-		<div class="panel panel-default">
-			<div class="panel-heading">{stats.name}</div>
-			<div class="panel-body">
-				<div id="unique-visitors">
-					<div class="text-center pull-left">
-						<div>{stats.day}</div>
-						<div>Day</div>
-					</div>
-					<div class="text-center pull-left">
-						<div>{stats.week}</div>
-						<div>Week</div>
-					</div>
-					<div class="text-center pull-left">
-						<div>{stats.month}</div>
-						<div>Month</div>
-					</div>
-					<div class="text-center pull-left">
-						<div>{stats.alltime}</div>
-						<div>All Time</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- END stats -->
 
-
-	</div>
-
-
-	<div class="col-sm-6">
 		<div class="panel panel-default">
 			<div class="panel-heading">Updates</div>
 			<div class="panel-body">
@@ -84,13 +90,5 @@
 				</p>
 			</div>
 		</div>
-
-		<div class="panel panel-default">
-			<div class="panel-heading">Active Users</div>
-			<div class="panel-body">
-				<div id="active_users"></div>
-			</div>
-		</div>
-
 	</div>
 </div>
