@@ -141,7 +141,7 @@ module.exports = function(Topics) {
 				}
 
 				topics = topics.filter(function(topic) {
-					return readableCids.indexOf(topic.cid.toString()) !== -1;
+					return topic.cid && readableCids.indexOf(topic.cid.toString()) !== -1;
 				}).map(function(topic) {
 					return topic.tid;
 				});
