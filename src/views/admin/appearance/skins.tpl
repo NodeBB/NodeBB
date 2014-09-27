@@ -1,19 +1,28 @@
 <!-- IMPORT admin/appearance/header.tpl -->
 
-<div id="skins">
-	<h3>Bootswatch Themes</h3>
-	<p>
-		NodeBB's skins are powered by Bootswatch, a repository containing themes built
-		with Bootstrap as a base theme. Currently, the Vanilla base theme is best optimized for use with Bootswatch.
-	</p>
-	<ul class="directory" id="bootstrap_themes">
-		<li><i class="fa fa-refresh fa-spin"></i> Loading Themes</li>
-	</ul>
-
-	<h3>Revert to Default</h3>
-	<p class="alert">
-		<button class="btn btn-warning" id="revert_theme">Revert</button> This will remove any custom theme applied to your NodeBB, and restore the base theme.
-	</p>
+<div id="skins" class="row">
+	<div class="col-md-9">
+		<div class="panel panel-default">
+			<div class="panel-heading">Bootswatch Themes</div>
+			<div class="panel-body">
+				<p>
+					NodeBB's skins are powered by Bootswatch, a repository containing themes built with Bootstrap as a base theme. Currently, the Vanilla theme is best optimized for use with Bootswatch.
+				</p>
+				<ul class="directory" id="bootstrap_themes">
+					<li><i class="fa fa-refresh fa-spin"></i> Loading Themes</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-3">
+		<div class="panel panel-default">
+			<div class="panel-heading">Revert to Default</div>
+			<div class="panel-body">
+				<p>This will remove any custom Bootswatch skin applied to your NodeBB, and restore the base theme.</p>
+				<button class="btn btn-warning btn-md" id="revert_theme">Revert to Default</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- IMPORT admin/appearance/footer.tpl -->
