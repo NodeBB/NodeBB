@@ -107,12 +107,24 @@ define('forum/admin/index', ['semver'], function(semver) {
 			return app.alertError(err.message);
 		}
 
-		var html = '<strong>Online Users [ ' + data.onlineRegisteredCount + ' ]</strong><br/>' +
-					'<strong>Online Guests [ ' + data.onlineGuestCount + ' ]</strong><br/>'	 +
-					'<strong>Online Total [ ' + (data.onlineRegisteredCount + data.onlineGuestCount) + ' ]</strong><br/>' +
-					'<strong>Socket Connections [ ' + data.socketCount + ' ]</strong>';
+		var html = '<div class="text-center pull-left">' + 
+						'<div>'+ data.onlineRegisteredCount +'</div>' + 
+						'<div>Users</div>' +
+					'</div>' +
+					'<div class="text-center pull-left">' + 
+						'<div>'+ data.onlineGuestCount +'</div>' + 
+						'<div>Guests</div>' +
+					'</div>' +
+					'<div class="text-center pull-left">' + 
+						'<div>'+ data.onlineRegisteredCount + data.onlineGuestCount +'</div>' + 
+						'<div>Total</div>' +
+					'</div>' +
+					'<div class="text-center pull-left">' + 
+						'<div>'+ data.socketCount +'</div>' + 
+						'<div>Socket<br />Connections</div>' +
+					'</div>';
 
-		$('#active_users').html(html);
+		$('#active-users').html(html);
 	};
 
 	var graphs = {

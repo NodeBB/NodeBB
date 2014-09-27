@@ -9,7 +9,7 @@
 
 		<div class="row col-lg-9">
 			<!-- BEGIN stats -->
-			<div class="col-md-4">
+			<div class="col-lg-4 col-md-6">
 				<div class="panel panel-default">
 					<div class="panel-heading">{stats.name}</div>
 					<div class="panel-body">
@@ -36,11 +36,11 @@
 			</div>
 			<!-- END stats -->
 
-			<div class="col-md-3">
+			<div class="col-lg-4 col-md-6">
 				<div class="panel panel-default">
 					<div class="panel-heading">Active Users</div>
 					<div class="panel-body">
-						<div id="active_users"></div>
+						<div id="active-users"></div>
 					</div>
 				</div>
 			</div>
