@@ -3,7 +3,9 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">Forum Traffic</div>
 			<div class="panel-body">
-				<canvas id="analytics-traffic" width="100%" height="400"></canvas>
+				<div class="graph-container">
+					<canvas id="analytics-traffic" width="100%" height="400"></canvas>
+				</div>
 			</div>
 		</div>
 

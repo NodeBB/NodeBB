@@ -175,7 +175,9 @@ define('forum/admin/index', ['semver'], function(semver) {
 			};
 
 		canvas.width = $(canvas).parent().width();
-		graphs.traffic = new Chart(ctx).Line(data);
+		graphs.traffic = new Chart(ctx).Line(data, {
+			responsive: true
+		});
 
 		setInterval(updateTrafficGraph, 15000);
 		updateTrafficGraph();
