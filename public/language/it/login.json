@@ -1,9 +1,9 @@
 {
-    "username": "Username / Email",
-    "remember_me": "Memorizzami?",
+    "username": "Nome utente / Email",
+    "remember_me": "Ricordami?",
     "forgot_password": "Password dimenticata?",
     "alternative_logins": "Accessi Alternativi",
     "failed_login_attempt": "Tentativo di accesso fallito, prova ancora.",
     "login_successful": "Sei entrato con successo!",
-    "dont_have_account": "Don't have an account?"
+    "dont_have_account": "Non hai un account?"
 }
