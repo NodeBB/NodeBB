@@ -7,6 +7,7 @@ var winston = require('winston'),
 	less = require('less'),
 	crypto = require('crypto'),
 	async = require('async'),
+	cluster = require('cluster'),
 
 	plugins = require('../plugins'),
 	emitter = require('../emitter'),
@@ -117,7 +118,9 @@ module.exports = function(Meta) {
 			emitter.emit('meta:css.compiled');
 
 			// Save the compiled CSS in public/ so things like nginx can serve it
-			Meta.css.commitToFile(destination);
+			if (!cluster.isWorker || process.env.cluster_setup === 'true') {
+				Meta.css.commitToFile(destination);
+			}
 
 			if (typeof callback === 'function') {
 				callback();
