@@ -63,9 +63,20 @@ module.exports = function(Meta) {
 					minify(acpSource, paths, 'acpCache', next);
 				}
 			], callback);
-
 		});
 	};
+
+	Meta.css.commitToFile = function(filename) {
+		winston.info('[meta/css] Committing stylesheet (' + filename + ') to disk');
+		fs.writeFile(path.join(__dirname, '../../public/' + (filename === 'acpCache' ? 'admin' : 'stylesheet') + '.css'), Meta.css[filename], function(err) {
+			if (!err) {
+				winston.info('[meta/css] Stylesheet (' + filename + ') committed to disk.');
+			} else {
+				winston.error('[meta/css] ' + err.message);
+				process.exit(0);
+			}
+		});
+	}
 
 	function minify(source, paths, destination, callback) {	
 		var	parser = new (less.Parser)({
@@ -104,6 +115,10 @@ module.exports = function(Meta) {
 
 			winston.info('[meta/css] Done.');
 			emitter.emit('meta:css.compiled');
+
+			// Save the compiled CSS in public/ so things like nginx can serve it
+			Meta.css.commitToFile(destination);
+
 			if (typeof callback === 'function') {
 				callback();
 			}

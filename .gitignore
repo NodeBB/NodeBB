@@ -26,3 +26,9 @@ pidfile
 # templates
 /public/templates
 /public/sounds
+
+# compiled files
+/public/stylesheet.css
+/public/admin.css
+/public/nodebb.min.js
+/public/nodebb.min.js.map

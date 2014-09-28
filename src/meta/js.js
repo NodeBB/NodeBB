@@ -8,6 +8,7 @@ var winston = require('winston'),
 	os = require('os'),
 	nconf = require('nconf'),
 	cluster = require('cluster'),
+	fs = require('fs'),
 
 	plugins = require('../plugins'),
 	emitter = require('../emitter'),
@@ -148,6 +149,9 @@ module.exports = function(Meta) {
 							cache: minifiedString,
 							map: mapString
 						});
+
+						// Save the minfile in public/ so things like nginx can serve it
+						Meta.js.commitToFile();
 					}
 
 					if (typeof callback === 'function') {
@@ -207,6 +211,21 @@ module.exports = function(Meta) {
 		if (Meta.js.minifierProc) {
 			Meta.js.minifierProc.kill('SIGTERM');
 		}
+	};
+
+	Meta.js.commitToFile = function() {
+		winston.info('[meta/js] Committing minfile to disk');
+		async.parallel([
+			async.apply(fs.writeFile, path.join(__dirname, '../../public/nodebb.min.js'), Meta.js.cache),
+			async.apply(fs.writeFile, path.join(__dirname, '../../public/nodebb.min.js.map'), Meta.js.map)
+		], function (err) {
+			if (!err) {
+				winston.info('[meta/js] Client-side minfile and mapping committed to disk.');
+			} else {
+				winston.error('[meta/js] ' + err.message);
+				process.exit(0);
+			}
+		});
 	};
 
 	function getPluginScripts(callback) {
