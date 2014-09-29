@@ -13,7 +13,7 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 		}
 		updateIntervalId = setInterval(function() {
 			socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
-		}, 3000);
+		}, 5000);
 
 		$('#logout-link').on('click', function() {
 			$.post(RELATIVE_PATH + '/logout', function() {
