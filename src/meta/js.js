@@ -26,6 +26,7 @@ module.exports = function(Meta) {
 			base: [
 				'public/vendor/jquery/js/jquery.js',
 				'public/vendor/jquery/js/jquery-ui-1.10.4.custom.js',
+				'./node_modules/socket.io-client/dist/socket.io.js',
 				'public/vendor/jquery/timeago/jquery.timeago.min.js',
 				'public/vendor/jquery/js/jquery.form.min.js',
 				'public/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
