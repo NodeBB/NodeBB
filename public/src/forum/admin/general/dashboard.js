@@ -307,6 +307,10 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 	}
 
 	function updateTopicsGraph(topics) {
+		if (!Object.keys(topics).length) {
+			topics = {"0": 1};
+		}
+
 		var tids = Object.keys(topics),
 			segments = graphs.topics.segments;
 
@@ -338,24 +342,28 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 					continue;
 				}
 
-				do {
-					for (var i = 0, ii = topicColors.length; i < ii; i++) {
-						var chosenColor = topicColors[i];
+				if (tid === '0') {
+					color = '#4D5360';
+				} else {
+					do {
+						for (var i = 0, ii = topicColors.length; i < ii; i++) {
+							var chosenColor = topicColors[i];
 
-						if ($.inArray(chosenColor, usedTopicColors) === -1) {
-							color = chosenColor;
-							usedTopicColors.push(color);
-							break;
+							if ($.inArray(chosenColor, usedTopicColors) === -1) {
+								color = chosenColor;
+								usedTopicColors.push(color);
+								break;
+							}
 						}
-					}
-				} while (color === null && usedTopicColors.length < topicColors.length);
+					} while (color === null && usedTopicColors.length < topicColors.length);
+				}
 
 				if (color) {
 					graphs.topics.addData({
-						value: tid,
+						value: value,
 						color: color,
 						highlight: lighten(color, 10),
-						label: "tid " + tid
+						label: tid !== '0' ? "tid " + tid : "No users browsing"
 					});
 
 					segments[segments.length - 1].tid = tid;
@@ -367,12 +375,13 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 			var legend = $('#topics-legend').html('');
 
 			for (var i = 0, ii = segments.length; i < ii; i++) {
-				var topic = segments[i];
+				var topic = segments[i],
+					label = topic.tid === '0' ? topic.label : '<a href="' + RELATIVE_PATH + '/topic/' + topic.tid + '" target="_blank"> ' + topic.label + '</a>';
 
 				legend.append(
 					'<li>' +
 						'<div style="background-color: ' + topic.highlightColor + '; border-color: ' + topic.strokeColor + '"></div>' +
-						'<span><a href="' + RELATIVE_PATH + '/topic/' + topic.tid + '" target="_blank"> ' + topic.label + '</a></span>' +
+						'<span>' + label + '</span>' +
 					'</li>');
 			}
 		}
