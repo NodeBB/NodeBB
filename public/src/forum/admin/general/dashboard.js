@@ -124,7 +124,7 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 						'<div>Connections</div>' +
 					'</div>';
 
-		var idle = data.socketCount - data.users.home + data.users.topics + data.users.category;
+		var idle = data.socketCount - (data.users.home + data.users.topics + data.users.category);
 
 		updateRegisteredGraph(data.onlineRegisteredCount, data.onlineGuestCount);
 		updatePresenceGraph(data.users.home, data.users.topics, data.users.category, idle);
