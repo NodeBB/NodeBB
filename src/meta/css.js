@@ -24,47 +24,66 @@ module.exports = function(Meta) {
 	Meta.css.defaultBranding = {};
 
 	Meta.css.minify = function(callback) {
-		winston.info('[meta/css] Minifying LESS/CSS');
-		db.getObjectFields('config', ['theme:type', 'theme:id'], function(err, themeData) {
-			var themeId = (themeData['theme:id'] || 'nodebb-theme-vanilla'),
-				baseThemePath = path.join(nconf.get('themes_path'), (themeData['theme:type'] && themeData['theme:type'] === 'local' ? themeId : 'nodebb-theme-vanilla')),
-				paths = [
-					baseThemePath,
-					path.join(__dirname, '../../node_modules'),
-					path.join(__dirname, '../../public/vendor/fontawesome/less'),
-					path.join(__dirname, '../../public/vendor/bootstrap/less')
-				],
-				source = '@import "font-awesome";',
-				acpSource,
-				x;
+		if (!cluster.isWorker || process.env.cluster_setup === 'true') {
+			winston.info('[meta/css] Minifying LESS/CSS');
+			db.getObjectFields('config', ['theme:type', 'theme:id'], function(err, themeData) {
+				var themeId = (themeData['theme:id'] || 'nodebb-theme-vanilla'),
+					baseThemePath = path.join(nconf.get('themes_path'), (themeData['theme:type'] && themeData['theme:type'] === 'local' ? themeId : 'nodebb-theme-vanilla')),
+					paths = [
+						baseThemePath,
+						path.join(__dirname, '../../node_modules'),
+						path.join(__dirname, '../../public/vendor/fontawesome/less'),
+						path.join(__dirname, '../../public/vendor/bootstrap/less')
+					],
+					source = '@import "font-awesome";',
+					acpSource,
+					x;
 
 
-			plugins.lessFiles = filterMissingFiles(plugins.lessFiles);
-			for(x=0; x<plugins.lessFiles.length; ++x) {
-				source += '\n@import ".' + path.sep + plugins.lessFiles[x] + '";';
-			}
-
-			plugins.cssFiles = filterMissingFiles(plugins.cssFiles);
-			for(x=0; x<plugins.cssFiles.length; ++x) {
-				source += '\n@import (inline) ".' + path.sep + plugins.cssFiles[x] + '";';
-			}
-
-			source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css";';
-			source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";';
-
-
-			acpSource = '\n@import "..' + path.sep + 'public/less/admin/admin";\n' + source;
-			source = '@import "./theme";\n' + source;
-
-			async.parallel([
-				function(next) {
-					minify(source, paths, 'cache', next);
-				},
-				function(next) {
-					minify(acpSource, paths, 'acpCache', next);
+				plugins.lessFiles = filterMissingFiles(plugins.lessFiles);
+				for(x=0; x<plugins.lessFiles.length; ++x) {
+					source += '\n@import ".' + path.sep + plugins.lessFiles[x] + '";';
 				}
-			], callback);
-		});
+
+				plugins.cssFiles = filterMissingFiles(plugins.cssFiles);
+				for(x=0; x<plugins.cssFiles.length; ++x) {
+					source += '\n@import (inline) ".' + path.sep + plugins.cssFiles[x] + '";';
+				}
+
+				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css";';
+				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";';
+
+
+				acpSource = '\n@import "..' + path.sep + 'public/less/admin/admin";\n' + source;
+				source = '@import "./theme";\n' + source;
+
+				async.parallel([
+					function(next) {
+						minify(source, paths, 'cache', next);
+					},
+					function(next) {
+						minify(acpSource, paths, 'acpCache', next);
+					}
+				], function(err, minified) {
+					// Propagate to other workers
+					if (cluster.isWorker) {
+						process.send({
+							action: 'css-propagate',
+							cache: minified[0],
+							acpCache: minified[1]
+						});
+					}
+
+					if (typeof callback === 'function') {
+						callback();
+					}
+				});
+			});
+		} else {
+			if (typeof callback === 'function') {
+				callback();
+			}
+		}
 	};
 
 	Meta.css.commitToFile = function(filename) {
@@ -123,7 +142,7 @@ module.exports = function(Meta) {
 			}
 
 			if (typeof callback === 'function') {
-				callback();
+				callback(null, css);
 			}
 		});
 	}

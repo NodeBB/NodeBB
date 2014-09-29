@@ -168,6 +168,11 @@ function start() {
 								meta.js.map = message.map;
 								winston.info('[cluster] Client-side javascript and mapping propagated to worker ' + cluster.worker.id);
 							break;
+							case 'css-propagate':
+								meta.css.cache = message.cache;
+								meta.css.acpCache = message.acpCache;
+								winston.info('[cluster] Stylesheet propagated to worker ' + cluster.worker.id);
+							break;
 						}
 					});
 					

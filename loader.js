@@ -14,6 +14,10 @@ var	nconf = require('nconf'),
 		js: {
 			cache: undefined,
 			map: undefined
+		},
+		css: {
+			cache: undefined,
+			acpCache: undefined
 		}
 	};
 
@@ -33,6 +37,14 @@ Loader.init = function() {
 								action: 'js-propagate',
 								cache: Loader.js.cache,
 								map: Loader.js.map
+							});
+						}
+
+						if (Loader.css.cache) {
+							worker.send({
+								action: 'css-propagate',
+								cache: Loader.css.cache,
+								acpCache: Loader.css.acpCache
 							});
 						}
 
@@ -66,6 +78,21 @@ Loader.init = function() {
 								action: 'js-propagate',
 								cache: message.cache,
 								map: message.map
+							});
+						});
+					break;
+					case 'css-propagate':
+						Loader.css.cache = message.cache;
+						Loader.css.acpCache = message.acpCache;
+
+						var otherWorkers = Object.keys(cluster.workers).filter(function(worker_id) {
+								return parseInt(worker_id, 10) !== parseInt(worker.id, 10);
+							});
+						otherWorkers.forEach(function(worker_id) {
+							cluster.workers[worker_id].send({
+								action: 'css-propagate',
+								cache: message.cache,
+								acpCache: message.acpCache
 							});
 						});
 					break;
