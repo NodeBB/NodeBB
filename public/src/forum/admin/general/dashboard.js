@@ -278,7 +278,7 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 		updateTrafficGraph();
 
 		$(window).on('resize', function() {
-			$('.pie-chart.push-down').each(function() {
+			$('.pie-chart.legend-up').each(function() {
 				var $this = $(this);
 
 				if ($this.width() < 320) {
@@ -320,7 +320,10 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 
 	function updateTopicsGraph(topics) {
 		if (!Object.keys(topics).length) {
-			topics = {"0": 1};
+			topics = {"0": {
+				title: "No users browsing",
+				value: 1
+			}};
 		}
 
 		var tids = Object.keys(topics),
@@ -338,7 +341,7 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 					usedTopicColors.splice($.inArray(segments[i].color, usedTopicColors), 1);
 					graphs.topics.removeData(i);
 				} else {
-					graphs.topics.segments[i].value = topics[tid];
+					graphs.topics.segments[i].value = topics[tid].value;
 					delete topics[tid];
 				}
 			}
@@ -347,10 +350,10 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 		function assignNewTopics() {
 			while (segments.length < 10 && tids.length > 0) {
 				var tid = tids.pop(),
-					value = topics[tid],
+					data = topics[tid],
 					color = null;
 
-				if (!value) {
+				if (!data) {
 					continue;
 				}
 
@@ -372,10 +375,10 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 
 				if (color) {
 					graphs.topics.addData({
-						value: value,
+						value: data.value,
 						color: color,
 						highlight: lighten(color, 10),
-						label: tid !== '0' ? "tid " + tid : "No users browsing"
+						label: data.title
 					});
 
 					segments[segments.length - 1].tid = tid;

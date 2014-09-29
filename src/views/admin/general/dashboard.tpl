@@ -60,7 +60,7 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">Anonymous vs Registered Users</div>
 			<div class="panel-body">
-				<div class="graph-container pie-chart push-down">
+				<div class="graph-container pie-chart legend-up">
 					<ul class="graph-legend">
 						<li><div class="anonymous"></div><span>Anonymous</span></li>
 						<li><div class="registered"></div><span>Registered</span></li>
@@ -73,7 +73,7 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">User Presence</div>
 			<div class="panel-body">
-				<div class="graph-container pie-chart push-down">
+				<div class="graph-container pie-chart legend-up">
 					<ul class="graph-legend">
 						<li><div class="on-homepage"></div><span>On Homepage</span></li>
 						<li><div class="reading-posts"></div><span>Reading posts</span></li>
@@ -88,9 +88,9 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">High Presence Topics</div>
 			<div class="panel-body">
-				<div class="graph-container pie-chart">
-					<ul class="graph-legend" id="topics-legend"></ul>
+				<div class="graph-container pie-chart legend-down">
 					<canvas id="analytics-topics"></canvas>
+					<ul class="graph-legend" id="topics-legend"></ul>
 				</div>
 			</div>
 		</div>

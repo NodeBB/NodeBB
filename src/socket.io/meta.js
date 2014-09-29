@@ -10,6 +10,7 @@ var	meta = require('../meta'),
 	nconf = require('nconf'),
 	gravatar = require('gravatar'),
 	winston = require('winston'),
+	validator = require('validator'),
 	websockets = require('./'),
 
 	SocketMeta = {
@@ -124,11 +125,18 @@ SocketMeta.rooms.getAll = function(socket, data, callback) {
 		topTenTopics = topTenTopics.concat(scores[mostActive.pop()]);
 	}
 
-	topTenTopics.splice(0, 9).slice(0,9).forEach(function(tid) {
-		socketData.topics[tid] = rooms['/topic_' + tid].length;
-	});
+	topTenTopics = topTenTopics.slice(0,9);
 
-	callback(null, socketData);
+	topics.getTopicsFields(topTenTopics, ['title'], function(err, titles) {
+		topTenTopics.forEach(function(tid, id) {
+			socketData.topics[tid] = {
+				value: rooms['/topic_' + tid].length,
+				title: validator.escape(titles[id].title)
+			}
+		});
+
+		callback(null, socketData);
+	});
 };
 
 /* Exports */
