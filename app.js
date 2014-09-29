@@ -169,7 +169,8 @@ function start() {
 								winston.info('[cluster] Client-side javascript and mapping propagated to worker ' + cluster.worker.id);
 							break;
 						}
-					})
+					});
+					
 					process.on('uncaughtException', function(err) {
 						winston.error(err.message);
 						console.log(err.stack);
