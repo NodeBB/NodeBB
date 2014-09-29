@@ -128,6 +128,11 @@ var fs = require('fs'),
 			app.render.apply(app, arguments);
 		};
 
+		if (!middleware) {
+			var e = new Error('middleware undefined');
+			console.log(e.stack);
+		}
+
 		// Deprecated as of v0.5.0, remove this hook call for NodeBB v0.6.0-1
 		Plugins.fireHook('action:app.load', router, middleware, controllers);
 
@@ -150,7 +155,7 @@ var fs = require('fs'),
 			} catch (err) {
 				var pluginDir = pluginPath.split(path.sep);
 				pluginDir = pluginDir[pluginDir.length -1];
-				
+
 				winston.error('[plugins/' + pluginDir + '] Plugin not loaded - please check its plugin.json for errors');
 				return callback();
 			}
