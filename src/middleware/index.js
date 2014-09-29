@@ -69,7 +69,7 @@ module.exports = function(app, data) {
 	app.use(cookieParser());
 
 	var cookie = {
-		maxAge: 1000 * 60 * 60 * 24 * parseInt(meta.configs.loginDays || 14, 10)
+		maxAge: 1000 * 60 * 60 * 24 * parseInt(meta.config.loginDays || 14, 10)
 	};
 	if(meta.config.cookieDomain) {
 		cookie.domain = meta.config.cookieDomain;
