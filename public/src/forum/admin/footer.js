@@ -5,23 +5,9 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 	var acpIndex;
 
 	$(document).ready(function() {
-		$.getJSON(RELATIVE_PATH + '/templates/indexed.json', function (data) {
-			acpIndex = data;
-			for (var file in acpIndex) {
-				if (acpIndex.hasOwnProperty(file)) {
-					acpIndex[file] = acpIndex[file].replace(/<img/g, '<none'); // can't think of a better solution, see #2153
-					acpIndex[file] = $('<div class="search-container">' + acpIndex[file] + '</div>');
-					acpIndex[file].find('ul.nav, script').remove();
-
-					acpIndex[file] = acpIndex[file].text().toLowerCase().replace(/[ |\r|\n]+/g, ' ');
-				}
-			}
-
-			delete acpIndex['/admin/header.tpl'];
-			delete acpIndex['/admin/footer.tpl'];
-
-			setupACPSearch();
-		});
+		if(!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+			getSearchIndex();
+		}
 
 		$(window).on('action:ajaxify.end', function(ev, data) {
 			var url = data.url;
@@ -65,6 +51,26 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 		var caret = ' <i class="fa fa-angle-right"></i> ';
 		
 		$('#breadcrumbs').html(caret + Array.prototype.slice.call(arguments).join(caret));
+	}
+
+	function getSearchIndex() {
+		$.getJSON(RELATIVE_PATH + '/templates/indexed.json', function (data) {
+			acpIndex = data;
+			for (var file in acpIndex) {
+				if (acpIndex.hasOwnProperty(file)) {
+					acpIndex[file] = acpIndex[file].replace(/<img/g, '<none'); // can't think of a better solution, see #2153
+					acpIndex[file] = $('<div class="search-container">' + acpIndex[file] + '</div>');
+					acpIndex[file].find('ul.nav, script').remove();
+
+					acpIndex[file] = acpIndex[file].text().toLowerCase().replace(/[ |\r|\n]+/g, ' ');
+				}
+			}
+
+			delete acpIndex['/admin/header.tpl'];
+			delete acpIndex['/admin/footer.tpl'];
+
+			setupACPSearch();
+		});
 	}
 	
 	function setupACPSearch() {

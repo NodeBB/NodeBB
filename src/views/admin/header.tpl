@@ -64,7 +64,7 @@
 					</li>
 				</ul>
 
-				<ul id="logged-in-menu" class="nav navbar-nav navbar-right">
+				<ul id="logged-in-menu" class="nav navbar-nav navbar-right hidden-xs">
 					<form class="navbar-form navbar-left" role="search">
 						<div class="form-group" id="acp-search" >
 							<div class="dropdown" >
