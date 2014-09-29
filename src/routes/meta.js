@@ -56,6 +56,7 @@ module.exports = function(app, middleware, controllers) {
 	app.get('/nodebb.min.js', middleware.addExpiresHeaders, sendMinifiedJS);
 	app.get('/sitemap.xml', controllers.sitemap);
 	app.get('/robots.txt', controllers.robots);
+	app.get('/css/previews/:theme', controllers.admin.themes.get);
 
 	if (!minificationEnabled) {
 		app.get('/nodebb.min.js.map', middleware.addExpiresHeaders, sendSourceMap);

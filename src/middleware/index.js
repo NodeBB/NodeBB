@@ -29,27 +29,6 @@ var utils = require('./../../public/src/utils'),
 
 var middleware = {};
 
-function routeThemeScreenshots(app, themes) {
-	var	screenshotPath;
-
-	async.each(themes, function(themeObj, next) {
-		if (themeObj.screenshot) {
-			screenshotPath = path.join(themesPath, themeObj.id, themeObj.screenshot);
-			(function(id, path) {
-				fs.exists(path, function(exists) {
-					if (exists) {
-						app.get(relativePath + '/css/previews/' + id, function(req, res) {
-							res.sendfile(path);
-						});
-					}
-				});
-			})(themeObj.id, screenshotPath);
-		} else {
-			next(false);
-		}
-	});
-}
-
 function routeCurrentTheme(app, themeId, themesData) {
 	var themeId = (themeId || 'nodebb-theme-vanilla'),
 		themeObj = (function(id) {
@@ -132,7 +111,6 @@ module.exports = function(app, data) {
 	auth.initialize(app, middleware);
 
 	routeCurrentTheme(app, data.currentThemeId, data.themesData);
-	routeThemeScreenshots(app, data.themesData);
 	meta.templates.compile();
 
 	return middleware;

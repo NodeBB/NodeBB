@@ -1,6 +1,8 @@
 "use strict";
 
 var async = require('async'),
+	fs = require('fs'),
+	path = require('path'),
 
 	user = require('../user'),
 	categories = require('../categories'),
@@ -32,6 +34,7 @@ var adminController = {
 	settings: {},
 	logger: {},
 	sounds: {},
+	themes: {},
 	users: require('./admin/users'),
 	uploads: require('./admin/uploads')
 };
@@ -296,5 +299,22 @@ adminController.sounds.get = function(req, res, next) {
 		});
 	});
 };
+
+adminController.themes.get = function(req, res, next) {
+	var themeDir = path.join(__dirname, '../../node_modules/' + req.params.theme);
+	fs.exists(themeDir, function(exists) {
+		if (exists) {
+			var themeConfig = require(path.join(themeDir, 'theme.json')),
+				screenshotPath = path.join(themeDir, themeConfig.screenshot);
+			if (themeConfig.screenshot && fs.existsSync(screenshotPath)) {
+				res.sendfile(screenshotPath);
+			} else {
+				res.sendfile(path.join(__dirname, '../../public/images/themes/default.png'));
+			}
+		} else {
+			return next();
+		}
+	});
+}
 
 module.exports = adminController;
