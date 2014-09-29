@@ -32,6 +32,31 @@
 		color: #fff;
 	}
 
+	&.mobile {
+		#content {
+			padding-left: 20px;
+		}
+
+		#main-menu {
+			width: 200px;
+			height: 100%;
+
+			
+			-webkit-transform: translateX(-190px);
+    		transform: translateX(-190px);
+
+			&.transitioning {
+				.transition(.3s ease all);
+			}
+
+			&.open {
+				-webkit-transform: translateX(0);
+    			transform: translateX(0);
+			}
+		}
+	}
+
+
 	#main-menu {
 		position: fixed;
 		width: 200px;

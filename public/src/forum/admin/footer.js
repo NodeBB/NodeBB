@@ -7,6 +7,8 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 	$(document).ready(function() {
 		if(!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 			getSearchIndex();
+		} else {
+			activateMobile();
 		}
 
 		$(window).on('action:ajaxify.end', function(ev, data) {
@@ -17,6 +19,24 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 
 		setupMainMenu();
 	});
+
+	function activateMobile() {
+		$('.admin').addClass('mobile');
+		$('#main-menu').addClass('transitioning');
+
+		Hammer(document.body).on('swiperight', function(e) {
+			$('#main-menu').addClass('open');
+
+		});
+
+		Hammer(document.body).on('swipeleft', function(e) {
+			$('#main-menu').removeClass('open');
+		});
+
+		$(window).on('scroll', function() {
+			$('#main-menu').height($(window).height() + 20);
+		})
+	}
 
 	function setupMainMenu() {
 		$('.sidebar-nav .nav-header').on('click', function() {
