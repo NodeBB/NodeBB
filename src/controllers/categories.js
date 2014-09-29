@@ -11,6 +11,11 @@ var categoriesController = {},
 	meta = require('../meta'),
 	plugins = require('../plugins');
 
+// todo: This might be better placed somewhere else
+var apiToRegular = function(url) {
+	return url.replace(/^\/api/, '');
+};
+
 categoriesController.recent = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
 	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
@@ -231,6 +236,7 @@ categoriesController.notAllowed = function(req, res) {
 		res.locals.isAPI ? res.json(403, 'not-allowed') : res.status(403).render('403');
 	} else {
 		if (res.locals.isAPI) {
+			req.session.returnTo = apiToRegular(req.url);
 			res.json(401, 'not-authorized');
 		} else {
 			req.session.returnTo = req.url;
