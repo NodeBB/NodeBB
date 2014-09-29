@@ -1,6 +1,4 @@
-<!-- IMPORT admin/appearance/header.tpl -->
-
-<div id="skins" class="row">
+<div id="skins" class="row skins">
 	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading">Bootswatch Themes</div>
@@ -25,4 +23,10 @@
 	</div>
 </div>
 
-<!-- IMPORT admin/appearance/footer.tpl -->
+<script>
+	var bootswatchListener = function(data) {
+		require(['forum/admin/appearance/skins'], function(t) {
+			t.render(data);
+		});
+	};
+</script>

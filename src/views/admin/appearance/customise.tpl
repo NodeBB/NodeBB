@@ -1,6 +1,6 @@
 <!-- IMPORT admin/appearance/header.tpl -->
 
-<div id="customise">
+<div id="customise" class="customise">
 	<div class="panel panel-default">
 		<div class="panel-heading">Custom CSS</div>
 		<div class="panel-body">
@@ -46,5 +46,3 @@
 
 	<button class="btn btn-primary" id="save">Save</button>
 </div>
-
-<!-- IMPORT admin/appearance/footer.tpl -->

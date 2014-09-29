@@ -1,6 +1,4 @@
-<!-- IMPORT admin/appearance/header.tpl -->
-
-<div id="themes">
+<div id="themes" class="themes">
 	<div class="panel panel-default">
 		<div class="panel-heading">Installed Themes</div>
 		<div class="panel-body">
@@ -14,5 +12,3 @@
 		</div>
 	</div>
 </div>
-
-<!-- IMPORT admin/appearance/footer.tpl -->
