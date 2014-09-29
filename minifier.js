@@ -14,7 +14,9 @@ var uglifyjs = require('uglify-js'),
 
 /* Javascript */
 Minifier.js.minify = function (scripts, relativePath, minify, callback) {
-	var options = {};
+	var options = {
+		compress: false
+	};
 
 	scripts = scripts.filter(function(file) {
 		return fs.existsSync(file);
@@ -25,7 +27,6 @@ Minifier.js.minify = function (scripts, relativePath, minify, callback) {
 		options.outSourceMap = 'nodebb.min.js.map';
 		options.sourceRoot = relativePath;
 		options.mangle = false;
-		options.compress = false;
 		options.prefix = 1;
 	}
 
