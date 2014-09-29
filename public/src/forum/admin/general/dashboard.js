@@ -194,7 +194,9 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 		        color: "#46BFBD",
 		        highlight: "#5AD3D1",
 		        label: "Anonymous Users"
-		    }], {});
+		    }], {
+		    	responsive: true
+		    });
 
 		setInterval(updateTrafficGraph, 15000);
 		updateTrafficGraph();
