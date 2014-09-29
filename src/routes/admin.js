@@ -36,7 +36,7 @@ function apiRouter(middleware, controllers) {
 }
 
 function addRoutes(router, middleware, controllers) {
-	router.get('/general/index', controllers.admin.home);
+	router.get('/general/dashboard', controllers.admin.home);
 	router.get('/general/languages', controllers.admin.languages.get);
 	router.get('/general/sounds', controllers.admin.sounds.get);
 

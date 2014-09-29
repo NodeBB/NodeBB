@@ -53,7 +53,7 @@ adminController.home = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		res.render('admin/general/index', {
+		res.render('admin/general/dashboard', {
 			version: pkg.version,
 			notices: results.notices,
 			stats: results.stats
@@ -150,7 +150,7 @@ adminController.tags.get = function(req, res, next) {
 			return next(err);
 		}
 
-		res.render('admin/managetags', {tags: tags});
+		res.render('admin/manage/tags', {tags: tags});
 	});
 };
 

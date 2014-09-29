@@ -1,7 +1,7 @@
 {
 	"custom_mapping": {
 		"^\/?$": "home",
-		"^admin?$": "admin/index",
+		"^admin?$": "admin/general/dashboard",
 		"^users/sort-posts": "users",
 		"^users/latest": "users",
 		"^users/sort-reputation": "users",
