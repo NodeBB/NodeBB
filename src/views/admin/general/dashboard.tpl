@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row dashboard">
 	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading">Forum Traffic</div>
@@ -13,48 +13,6 @@
 			</div>
 		</div>
 
-		<div class="row">
-			<div class="col-lg-9">
-				<!-- BEGIN stats -->
-				<div class="col-lg-4 col-md-6">
-					<div class="panel panel-default">
-						<div class="panel-heading">{stats.name}</div>
-						<div class="panel-body">
-							<div id="unique-visitors">
-								<div class="text-center pull-left">
-									<div>{stats.day}</div>
-									<div>Day</div>
-								</div>
-								<div class="text-center pull-left">
-									<div>{stats.week}</div>
-									<div>Week</div>
-								</div>
-								<div class="text-center pull-left">
-									<div>{stats.month}</div>
-									<div>Month</div>
-								</div>
-								<div class="text-center pull-left">
-									<div>{stats.alltime}</div>
-									<div>All Time</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- END stats -->
-
-				<div class="col-lg-4 col-md-6">
-					<div class="panel panel-default">
-						<div class="panel-heading">Active Users</div>
-						<div class="panel-body">
-							<div id="active-users"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="col-lg-3">
 		<div class="panel panel-default">
 			<div class="panel-heading">Welcome to NodeBB</div>
 			<div class="panel-body">
@@ -95,6 +53,49 @@
 					Restarting your NodeBB will drop all existing connections. A reload is lighter and is probably
 					what you want 99% of the time.
 				</p>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-3">
+		<div class="panel panel-default">
+			<div class="panel-heading">Anonymous vs Registered Users</div>
+			<div class="panel-body">
+				<div class="graph-container">
+					<canvas id="analytics-registered"></canvas>
+				</div>
+			</div>
+		</div>
+
+		<!-- BEGIN stats -->
+		<div class="panel panel-default">
+			<div class="panel-heading">{stats.name}</div>
+			<div class="panel-body">
+				<div id="unique-visitors">
+					<div class="text-center pull-left">
+						<div>{stats.day}</div>
+						<div>Day</div>
+					</div>
+					<div class="text-center pull-left">
+						<div>{stats.week}</div>
+						<div>Week</div>
+					</div>
+					<div class="text-center pull-left">
+						<div>{stats.month}</div>
+						<div>Month</div>
+					</div>
+					<div class="text-center pull-left">
+						<div>{stats.alltime}</div>
+						<div>All Time</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END stats -->
+
+		<div class="panel panel-default">
+			<div class="panel-heading">Active Users</div>
+			<div class="panel-body">
+				<div id="active-users"></div>
 			</div>
 		</div>
 	</div>

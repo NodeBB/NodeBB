@@ -1,55 +1,61 @@
-.graph-container {
-	padding-right: 50px;
-	position: relative;
+.dashboard {
+	.panel {
+		max-width: 100% !important;
+	}
 
-	.graph-legend {
-		.box-header-font;
-		display: block;
-		position: absolute;
-		top: 20px;
-		left: 35px;
-		list-style-type: none;
-		padding: 0;
+	.graph-container {
+		padding-right: 50px;
+		position: relative;
 
-		li {			
-			div {
-				border: 1px solid;
-				width: 12px;
-				height: 12px;
-				vertical-align: -41%;
-				margin-bottom: 5px;
-				display: inline-block;
-				margin-right: 5px;
+		.graph-legend {
+			.box-header-font;
+			display: block;
+			position: absolute;
+			top: 20px;
+			left: 35px;
+			list-style-type: none;
+			padding: 0;
 
-				&.page-views {
-					border-color: rgba(220,220,220,1);
-					background-color: rgba(220,220,220,0.2);
-				}
-				&.unique-visitors {
-					border-color: rgba(151,187,205,1);
-					background-color: rgba(151,187,205,0.2);
+			li {			
+				div {
+					border: 1px solid;
+					width: 12px;
+					height: 12px;
+					vertical-align: -41%;
+					margin-bottom: 5px;
+					display: inline-block;
+					margin-right: 5px;
+
+					&.page-views {
+						border-color: rgba(220,220,220,1);
+						background-color: rgba(220,220,220,0.2);
+					}
+					&.unique-visitors {
+						border-color: rgba(151,187,205,1);
+						background-color: rgba(151,187,205,0.2);
+					}
 				}
 			}
 		}
 	}
-}
 
-.version-check {
-	-webkit-transition: background, color 500ms ease-in;
-	-moz-transition: background, color 500ms ease-in;
-	-ms-transition: background, color 500ms ease-in;
-	-o-transition: background, color 500ms ease-in;
-	transition: background, color 500ms ease-in;
-}
-
-#unique-visitors, #active-users {
-	margin-left: -15px;
-	> div {
-		width: 25%;
-		font-size: 13px;
+	.version-check {
+		-webkit-transition: background, color 500ms ease-in;
+		-moz-transition: background, color 500ms ease-in;
+		-ms-transition: background, color 500ms ease-in;
+		-o-transition: background, color 500ms ease-in;
+		transition: background, color 500ms ease-in;
 	}
-}
 
-.motd textarea {
-	width: 100%;
+	#unique-visitors, #active-users {
+		margin-left: -15px;
+		> div {
+			width: 25%;
+			font-size: 13px;
+		}
+	}
+
+	.motd textarea {
+		width: 100%;
+	}
 }

@@ -124,6 +124,8 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 						'<div>Connections</div>' +
 					'</div>';
 
+		updateRegisteredGraph(data.onlineRegisteredCount, data.onlineGuestCount);
+
 		$('#active-users').html(html);
 	};
 
@@ -144,12 +146,14 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 	}
 
 	function setupGraphs() {
-		var canvas = document.getElementById('analytics-traffic'),
-			ctx = canvas.getContext('2d'),
-			labels = getHoursArray();
+		var trafficCanvas = document.getElementById('analytics-traffic'),
+			registeredCanvas = document.getElementById('analytics-registered'),
+			trafficCtx = trafficCanvas.getContext('2d'),
+			registeredCtx = registeredCanvas.getContext('2d'),
+			trafficLabels = getHoursArray();
 
 		var data = {
-				labels: labels,
+				labels: trafficLabels,
 				datasets: [
 					{
 						label: "Page Views",
@@ -174,10 +178,23 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 				]
 			};
 
-		canvas.width = $(canvas).parent().width();
-		graphs.traffic = new Chart(ctx).Line(data, {
+		trafficCanvas.width = $(trafficCanvas).parent().width();
+		graphs.traffic = new Chart(trafficCtx).Line(data, {
 			responsive: true
 		});
+
+		graphs.registered = new Chart(registeredCtx).Doughnut([{
+		        value: 1,
+		        color:"#F7464A",
+		        highlight: "#FF5A5E",
+		        label: "Registered Users"
+		    },
+		    {
+		        value: 1,
+		        color: "#46BFBD",
+		        highlight: "#5AD3D1",
+		        label: "Anonymous Users"
+		    }], {});
 
 		setInterval(updateTrafficGraph, 15000);
 		updateTrafficGraph();
@@ -195,6 +212,12 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 			graphs.traffic.scale.xLabels = getHoursArray();
 			graphs.traffic.update();
 		});
+	}
+
+	function updateRegisteredGraph(registered, anonymous) {
+		graphs.registered.segments[0].value = registered;
+		graphs.registered.segments[1].value = anonymous;
+		graphs.registered.update();
 	}
 
 	return Admin;
