@@ -83,11 +83,27 @@ SocketMeta.rooms.enter = function(socket, data, callback) {
 };
 
 SocketMeta.rooms.getAll = function(socket, data, callback) {
-	var userData = {
-		onlineGuestCount: websockets.getOnlineAnonCount(),
-		onlineRegisteredCount: websockets.getOnlineUserCount(),
-		socketCount: websockets.getSocketCount()
-	};
+	var rooms = websockets.server.sockets.manager.rooms,
+		userData = {
+			onlineGuestCount: websockets.getOnlineAnonCount(),
+			onlineRegisteredCount: websockets.getOnlineUserCount(),
+			socketCount: websockets.getSocketCount(),
+			users: {
+				home: rooms['/home'] ? rooms['/home'].length : 0,
+				topics: 0,
+				category: 0
+			}
+		};
+
+	for (var room in rooms) {
+		if (rooms.hasOwnProperty(room)) {
+			if (room.match(/^\/topic/)) {
+				userData.users.topics += rooms[room].length
+			} else if (room.match(/^\/category/)) {
+				userData.users.category += rooms[room].length
+			}
+		}
+	}
 
 	callback(null, userData);
 };

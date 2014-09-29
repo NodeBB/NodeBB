@@ -124,13 +124,18 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 						'<div>Connections</div>' +
 					'</div>';
 
+		var idle = data.socketCount - data.users.home + data.users.topics + data.users.category;
+
 		updateRegisteredGraph(data.onlineRegisteredCount, data.onlineGuestCount);
+		updatePresenceGraph(data.users.home, data.users.topics, data.users.category, idle);
 
 		$('#active-users').html(html);
 	};
 
 	var graphs = {
-		traffic: null
+		traffic: null,
+		registered: null,
+		presence: null
 	};
 
 	function getHoursArray() {
@@ -148,8 +153,10 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 	function setupGraphs() {
 		var trafficCanvas = document.getElementById('analytics-traffic'),
 			registeredCanvas = document.getElementById('analytics-registered'),
+			presenceCanvas = document.getElementById('analytics-presence'),
 			trafficCtx = trafficCanvas.getContext('2d'),
 			registeredCtx = registeredCanvas.getContext('2d'),
+			presenceCtx = presenceCanvas.getContext('2d'),
 			trafficLabels = getHoursArray();
 
 		var data = {
@@ -198,6 +205,33 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 		    	responsive: true
 		    });
 
+		graphs.presence = new Chart(presenceCtx).Doughnut([{
+		        value: 1,
+		        color:"#F7464A",
+		        highlight: "#FF5A5E",
+		        label: "On homepage"
+		    },
+		    {
+		        value: 1,
+		        color: "#46BFBD",
+		        highlight: "#5AD3D1",
+		        label: "Reading posts"
+		    },
+		    {
+		        value: 1,
+		        color: "#FDB45C",
+		        highlight: "#FFC870",
+		        label: "Browsing topics"
+		    },
+		    {
+		        value: 1,
+		        color: "#949FB1",
+		        highlight: "#A8B3C5",
+		        label: "Idle"
+		    }], {
+		    	responsive: true
+		    });
+
 		setInterval(updateTrafficGraph, 15000);
 		updateTrafficGraph();
 	}
@@ -220,6 +254,14 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 		graphs.registered.segments[0].value = registered;
 		graphs.registered.segments[1].value = anonymous;
 		graphs.registered.update();
+	}
+
+	function updatePresenceGraph(homepage, posts, topics, idle) {
+		graphs.presence.segments[0].value = homepage;
+		graphs.presence.segments[1].value = posts;
+		graphs.presence.segments[2].value = topics;
+		graphs.presence.segments[3].value = idle;
+		graphs.presence.update();
 	}
 
 	return Admin;

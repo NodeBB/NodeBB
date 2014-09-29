@@ -66,6 +66,15 @@
 			</div>
 		</div>
 
+		<div class="panel panel-default">
+			<div class="panel-heading">User Presence</div>
+			<div class="panel-body">
+				<div class="graph-container">
+					<canvas id="analytics-presence"></canvas>
+				</div>
+			</div>
+		</div>
+
 		<!-- BEGIN stats -->
 		<div class="panel panel-default">
 			<div class="panel-heading">{stats.name}</div>
