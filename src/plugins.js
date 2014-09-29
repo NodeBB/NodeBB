@@ -82,6 +82,11 @@ var fs = require('fs'),
 		Plugins.lessFiles.length = 0;
 		Plugins.clientScripts.length = 0;
 
+		if (!middleware) {
+			var e = new Error('middleware undefined');
+			console.log(e.stack);
+		}
+
 		// Read the list of activated plugins and require their libraries
 		async.waterfall([
 			function(next) {
@@ -127,11 +132,6 @@ var fs = require('fs'),
 		router.render = function() {
 			app.render.apply(app, arguments);
 		};
-
-		if (!middleware) {
-			var e = new Error('middleware undefined');
-			console.log(e.stack);
-		}
 
 		// Deprecated as of v0.5.0, remove this hook call for NodeBB v0.6.0-1
 		Plugins.fireHook('action:app.load', router, middleware, controllers);
