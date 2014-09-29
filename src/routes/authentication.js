@@ -50,8 +50,8 @@
 				}
 
 				// Alter user cookie depending on passed-in option
-				if (req.body.remember === 'true') {
-					var duration = 1000*60*60*24*parseInt(meta.configs.loginDays || 14, 10);
+				if (req.body.remember === 'on') {
+					var duration = 1000*60*60*24*parseInt(meta.config.loginDays || 14, 10);
 					req.session.cookie.maxAge = duration;
 					req.session.cookie.expires = new Date(Date.now() + duration);
 				} else {
