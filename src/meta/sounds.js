@@ -79,7 +79,7 @@ module.exports = function(Meta) {
 				var	defaults = {
 						'notification': 'notification.mp3',
 						'chat-incoming': 'waterdrop-high.mp3',
-						'chat-outgoing': 'waterdrop-low.mp3'
+						'chat-outgoing': undefined
 					};
 
 				return callback(null, defaults);

@@ -7,9 +7,7 @@
 		async = require('async'),
 		nconf = require('nconf'),
 		session = require('express-session'),
-		db,
-		mongoClient,
-		mongoStore;
+		db, mongoClient;
 
 	module.questions = [
 		{
