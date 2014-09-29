@@ -2,6 +2,8 @@
 
 var async = require('async'),
 	winston = require('winston'),
+	templates = require('templates.js'),
+
 	user = require('./user'),
 	groups = require('./groups'),
 	plugins = require('./plugins'),
@@ -38,7 +40,8 @@ var async = require('async'),
 					async.apply(Meta.js.minify, false),
 					async.apply(Meta.css.minify),
 					async.apply(Meta.templates.compile),
-					async.apply(auth.reloadRoutes)
+					async.apply(auth.reloadRoutes),
+					async.apply(templates.flush)
 				], next);
 			}
 		], function(err) {

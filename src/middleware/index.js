@@ -42,16 +42,7 @@ function routeCurrentTheme(app, themeId, themesData) {
 		winston.info('[themes] Using theme ' + themeId);
 	}
 
-	// Theme's templates path
-	var themePath = nconf.get('base_templates_path'),
-		fallback = path.join(themesPath, themeObj.id, 'templates');
-	if (themeObj.templates) {
-		themePath = path.join(themesPath, themeObj.id, themeObj.templates);
-	} else if (fs.existsSync(fallback)) {
-		themePath = fallback;
-	}
-
-	nconf.set('theme_templates_path', themePath);
+	meta.themes.setPath(themeObj);
 }
 
 module.exports = function(app, data) {
