@@ -76,7 +76,8 @@ Loader.init = function() {
 					break;
 					case 'user:connect':
 					case 'user:disconnect':
-						notifyWorkers(worker, message);
+					case 'config:update':
+						notifyWorkers(message);
 					break;
 				}
 			}
@@ -87,7 +88,7 @@ Loader.init = function() {
 		console.log('[cluster] Child Process (' + worker.process.pid + ') listening for connections.');
 	});
 
-	function notifyWorkers(currentWorker, msg) {
+	function notifyWorkers(msg) {
 		Object.keys(cluster.workers).forEach(function(id) {
 			cluster.workers[id].send(msg);
 		});

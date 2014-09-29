@@ -74,7 +74,7 @@ SocketAdmin.themes.set = function(socket, data, callback) {
 			callback();
 		});
 	};
-	if (data.type == 'bootswatch') {
+	if (data.type === 'bootswatch') {
 		wrappedCallback();
 	} else {
 		widgets.reset(wrappedCallback);
@@ -123,6 +123,31 @@ SocketAdmin.config.set = function(socket, data, callback) {
 		});
 
 		logger.monitorConfig({io: index.server}, data);
+	});
+};
+
+SocketAdmin.config.setMultiple = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	meta.configs.setMultiple(data, function(err) {
+		if(err) {
+			return callback(err);
+		}
+
+		callback();
+		var setting;
+		for(var field in data) {
+			if (data.hasOwnProperty(field)) {
+				setting = {
+					key: field,
+					value: data[field]
+				};
+				plugins.fireHook('action:config.set', setting);
+				logger.monitorConfig({io: index.server}, setting);
+			}
+		}
 	});
 };
 
@@ -194,7 +219,7 @@ function getHourlyStatsForSet(set, hours, callback) {
 				next(err);
 			});
 		}
-		
+
 	}, function(err) {
 		var termsArr = [];
 
