@@ -74,9 +74,6 @@ function getStats(callback) {
 		},
 		function(next) {
 			getStatsForSet('topics:tid', next);
-		},
-		function(next) {
-			getStatsForSet('analytics:pageviews', next);
 		}
 	], function(err, results) {
 		if (err) {
@@ -86,7 +83,6 @@ function getStats(callback) {
 		results[1].name = 'Users';
 		results[2].name = 'Posts';
 		results[3].name = 'Topics';
-		results[4].name = 'Page Views';
 
 		callback(null, results);
 	});
