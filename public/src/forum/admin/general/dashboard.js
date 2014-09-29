@@ -128,6 +128,7 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 
 		updateRegisteredGraph(data.onlineRegisteredCount, data.onlineGuestCount);
 		updatePresenceGraph(data.users.home, data.users.topics, data.users.category, idle);
+		updateTopicsGraph(data.topics);
 
 		$('#active-users').html(html);
 	};
@@ -135,20 +136,12 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 	var graphs = {
 		traffic: null,
 		registered: null,
-		presence: null
+		presence: null,
+		topics: null
 	};
 
-	var colors = {
-		"red": "#bf616a",
-		"blue": "#5B90BF",
-		"orange": "#d08770",
-		"yellow": "#ebcb8b",
-		"green": "#a3be8c",
-		"teal": "#96b5b4",
-		"pale_blue": "#8fa1b3",
-		"purple": "#b48ead",
-		"brown": "#ab7967"
-	};
+	var topicColors = ["#bf616a","#5B90BF","#d08770","#ebcb8b","#a3be8c","#96b5b4","#8fa1b3","#b48ead","#ab7967","#46BFBD"],
+		usedTopicColors = [];
 
 	// from chartjs.org
 	function lighten(col, amt) {
@@ -195,9 +188,11 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 		var trafficCanvas = document.getElementById('analytics-traffic'),
 			registeredCanvas = document.getElementById('analytics-registered'),
 			presenceCanvas = document.getElementById('analytics-presence'),
+			topicsCanvas = document.getElementById('analytics-topics'),
 			trafficCtx = trafficCanvas.getContext('2d'),
 			registeredCtx = registeredCanvas.getContext('2d'),
 			presenceCtx = presenceCanvas.getContext('2d'),
+			topicsCtx = topicsCanvas.getContext('2d'),
 			trafficLabels = getHoursArray();
 
 		var data = {
@@ -226,7 +221,7 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 				]
 			};
 
-		trafficCanvas.width = $(trafficCanvas).parent().width();
+		trafficCanvas.width = $(trafficCanvas).parent().width(); // is this necessary
 		graphs.traffic = new Chart(trafficCtx).Line(data, {
 			responsive: true
 		});
@@ -273,6 +268,12 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 		    	responsive: true
 		    });
 
+		graphs.topics = new Chart(topicsCtx).Doughnut([], {responsive: true});
+		topicsCanvas.onclick = function(evt){
+			var activePoints = graphs.topics.getSegmentsAtEvent(evt);
+			console.log(activePoints);
+		};
+
 		setInterval(updateTrafficGraph, 15000);
 		updateTrafficGraph();
 	}
@@ -303,6 +304,57 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 		graphs.presence.segments[2].value = topics;
 		graphs.presence.segments[3].value = idle;
 		graphs.presence.update();
+	}
+
+	function updateTopicsGraph(topics) {
+		var tids = Object.keys(topics);
+
+		var segments = graphs.topics.segments;
+
+		for (var i = 0, ii = segments.length; i < ii; i++ ){
+			var tid = segments[i].tid;
+
+			if ($.inArray(tid, tids) === -1) {
+				usedTopicColors.splice($.inArray(segments[i].color, usedTopicColors), 1);
+				graphs.topics.removeData(i);
+			} else {
+				graphs.topics.segments[i].value = topics[tid];
+				delete topics[tid];
+			}
+		}
+
+		while (segments.length < 10 && tids.length > 0) {
+			var tid = tids.pop(),
+				value = topics[tid],
+				color = null;
+
+			if (!value) {
+				continue;
+			}
+
+			do {
+				for (var i = 0, ii = topicColors.length; i < ii; i++) {
+					var chosenColor = topicColors[i];
+
+					if ($.inArray(chosenColor, usedTopicColors) === -1) {
+						color = chosenColor;
+						usedTopicColors.push(color);
+						break;
+					}
+				}
+			} while (color !== null && usedTopicColors.length === topicColors.length);
+
+			graphs.topics.addData({
+				value: tid,
+				color: color,
+				highlight: lighten(color, 10),
+				label: "tid " + value
+			});
+
+			segments[segments.length - 1].tid = tid;
+		}
+
+		graphs.topics.update();
 	}
 
 	return Admin;

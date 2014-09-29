@@ -84,7 +84,7 @@ SocketMeta.rooms.enter = function(socket, data, callback) {
 
 SocketMeta.rooms.getAll = function(socket, data, callback) {
 	var rooms = websockets.server.sockets.manager.rooms,
-		userData = {
+		socketData = {
 			onlineGuestCount: websockets.getOnlineAnonCount(),
 			onlineRegisteredCount: websockets.getOnlineUserCount(),
 			socketCount: websockets.getSocketCount(),
@@ -92,20 +92,43 @@ SocketMeta.rooms.getAll = function(socket, data, callback) {
 				home: rooms['/home'] ? rooms['/home'].length : 0,
 				topics: 0,
 				category: 0
-			}
+			},
+			topics: {}
 		};
+
+	var scores = {},
+		topTenTopics = [],
+		tid;
 
 	for (var room in rooms) {
 		if (rooms.hasOwnProperty(room)) {
-			if (room.match(/^\/topic/)) {
-				userData.users.topics += rooms[room].length
+			if (tid = room.match(/^\/topic_(\d+)/)) {
+				var length = rooms[room].length;
+				socketData.users.topics += length;
+
+				if (scores[length]) {
+					scores[length].push(tid[1]);
+				} else {
+					scores[length] = [tid[1]];
+				}
 			} else if (room.match(/^\/category/)) {
-				userData.users.category += rooms[room].length
+				socketData.users.category += rooms[room].length
 			}
 		}
 	}
 
-	callback(null, userData);
+	var scoreKeys = Object.keys(scores),
+		mostActive = scoreKeys.sort();
+
+	while(topTenTopics.length < 10 && mostActive.length > 0) {
+		topTenTopics = topTenTopics.concat(scores[mostActive.pop()]);
+	}
+
+	topTenTopics.splice(0, 9).slice(0,9).forEach(function(tid) {
+		socketData.topics[tid] = rooms['/topic_' + tid].length;
+	});
+
+	callback(null, socketData);
 };
 
 /* Exports */

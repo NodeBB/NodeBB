@@ -85,6 +85,16 @@
 			</div>
 		</div>
 
+		<div class="panel panel-default">
+			<div class="panel-heading">High Presence Topics</div>
+			<div class="panel-body">
+				<div class="graph-container pie-chart">
+					<ul class="graph-legend" id="topics-legend"></ul>
+					<canvas id="analytics-topics"></canvas>
+				</div>
+			</div>
+		</div>
+
 		<!-- BEGIN stats -->
 		<div class="panel panel-default">
 			<div class="panel-heading">{stats.name}</div>
