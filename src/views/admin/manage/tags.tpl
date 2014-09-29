@@ -24,11 +24,9 @@
 								<label for="bgColor">Background Colour</label>
 								<input id="bgColor" placeholder="#ffffff" data-name="bgColor" value="{tags.bgColor}" class="form-control category_bgColor" />
 							</div>
-							<div class="col-sm-3 col-xs-12">
-								<div class="form-group">
-									<label for="color">Text Colour</label>
-									<input id="color" placeholder="#a2a2a2" data-name="color" value="{tags.color}" class="form-control category_color" />
-								</div>
+							<div class="form-group">
+								<label for="color">Text Colour</label>
+								<input id="color" placeholder="#a2a2a2" data-name="color" value="{tags.color}" class="form-control category_color" />
 							</div>
 						</div>
 					</div>
