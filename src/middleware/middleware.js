@@ -1,7 +1,9 @@
 "use strict";
 
 var app,
-	middleware = {},
+	middleware = {
+		admin: {}
+	},
 	async = require('async'),
 	path = require('path'),
 	winston = require('winston'),
