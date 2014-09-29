@@ -277,16 +277,19 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 		setInterval(updateTrafficGraph, 15000);
 		updateTrafficGraph();
 
-		$(window).on('resize', function() {
-			$('.pie-chart.legend-up').each(function() {
-				var $this = $(this);
+		$(window).on('resize', adjustPieCharts);
+		adjustPieCharts();
+	}
 
-				if ($this.width() < 320) {
-					$this.addClass('compact');
-				} else {
-					$this.removeClass('compact');
-				}
-			});
+	function adjustPieCharts() {
+		$('.pie-chart.legend-up').each(function() {
+			var $this = $(this);
+
+			if ($this.width() < 320) {
+				$this.addClass('compact');
+			} else {
+				$this.removeClass('compact');
+			}
 		});
 	}
 
