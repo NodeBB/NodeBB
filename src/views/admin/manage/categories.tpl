@@ -8,8 +8,8 @@
 	</h1>
 	<hr />
 	<ul class="nav nav-pills">
-		<li class='active'><a href='/admin/categories/active'>Active</a></li>
-		<li class=''><a href='/admin/categories/disabled'>Disabled</a></li>
+		<li class='active'><a href='/admin/manage/categories/active'>Active</a></li>
+		<li class=''><a href='/admin/manage/categories/disabled'>Disabled</a></li>
 	</ul>
 
 	<div class="row admin-categories">

@@ -1,6 +1,6 @@
 "use strict";
 /* global socket, define, templates, bootbox, app, ajaxify,  */
-define('forum/admin/users', function() {
+define('forum/admin/manage/users', function() {
 	var Users = {};
 
 	Users.init = function() {
@@ -227,7 +227,7 @@ define('forum/admin/users', function() {
 						return app.alertError(err.message);
 					}
 
-					ajaxify.loadTemplate('admin/users', function(adminUsers) {
+					ajaxify.loadTemplate('admin/manage/users', function(adminUsers) {
 						$('.users').html(templates.parse(templates.getBlock(adminUsers, 'users'), data));
 
 						$('.fa-spinner').addClass('hidden');
@@ -251,7 +251,7 @@ define('forum/admin/users', function() {
 		handleUserCreate();
 
 		function onUsersLoaded(users) {
-			ajaxify.loadTemplate('admin/users', function(adminUsers) {
+			ajaxify.loadTemplate('admin/manage/users', function(adminUsers) {
 				var html = $(templates.parse(templates.getBlock(adminUsers, 'users'), {users: users}));
 				$('#users-container').append(html);
 			});

@@ -1,7 +1,7 @@
 "use strict";
 /*global define, socket, app, bootbox, templates, ajaxify, RELATIVE_PATH*/
 
-define('forum/admin/categories', ['uploader', 'forum/admin/iconSelect'], function(uploader, iconSelect) {
+define('forum/admin/manage/categories', ['uploader', 'forum/admin/iconSelect'], function(uploader, iconSelect) {
 	var	Categories = {};
 
 	Categories.init = function() {

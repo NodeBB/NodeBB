@@ -6,7 +6,7 @@ var user = require('./../../user');
 var usersController = {};
 
 usersController.search = function(req, res, next) {
-	res.render('admin/users', {
+	res.render('admin/manage/users', {
 		search_display: '',
 		loadmore_display: 'none',
 		users: []
@@ -30,7 +30,7 @@ function getUsers(set, req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		res.render('admin/users', {
+		res.render('admin/manage/users', {
 			search_display: 'hidden',
 			loadmore_display: 'block',
 			users: users,

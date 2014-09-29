@@ -1,7 +1,7 @@
 "use strict";
 /*global define, ajaxify, app, socket, RELATIVE_PATH*/
 
-define('forum/admin/index', ['semver'], function(semver) {
+define('forum/admin/general/index', ['semver'], function(semver) {
 	var	Admin = {};
 	var updateIntervalId = 0;
 	Admin.init = function() {

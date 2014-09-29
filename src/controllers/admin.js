@@ -53,7 +53,7 @@ adminController.home = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		res.render('admin/index', {
+		res.render('admin/general/index', {
 			version: pkg.version,
 			notices: results.notices,
 			stats: results.stats
@@ -137,7 +137,7 @@ function filterAndRenderCategories(req, res, next, active) {
 			return active ? !category.disabled : category.disabled;
 		});
 
-		res.render('admin/categories', {
+		res.render('admin/manage/categories', {
 			categories: categoryData,
 			csrf: req.csrfToken()
 		});
@@ -150,13 +150,13 @@ adminController.tags.get = function(req, res, next) {
 			return next(err);
 		}
 
-		res.render('admin/tags', {tags: tags});
+		res.render('admin/managetags', {tags: tags});
 	});
 };
 
 adminController.database.get = function(req, res, next) {
 	db.info(function (err, data) {
-		res.render('admin/database', data);
+		res.render('admin/advanced/database', data);
 	});
 };
 
@@ -167,7 +167,7 @@ adminController.events.get = function(req, res, next) {
 		}
 
 		data = data.toString().split('\n').reverse().join('\n');
-		res.render('admin/events', {
+		res.render('admin/advanced/events', {
 			eventdata: data
 		});
 	});
@@ -179,7 +179,7 @@ adminController.plugins.get = function(req, res, next) {
 			plugins = [];
 		}
 
-		res.render('admin/plugins' , {
+		res.render('admin/extend/plugins' , {
 			plugins: plugins
 		});
 	})
@@ -187,7 +187,7 @@ adminController.plugins.get = function(req, res, next) {
 
 adminController.languages.get = function(req, res, next) {
 	languages.list(function(err, languages) {
-		res.render('admin/languages', {
+		res.render('admin/general/languages', {
 			languages: languages
 		});
 	});
@@ -202,7 +202,7 @@ adminController.settings.get = function(req, res, next) {
 };
 
 adminController.logger.get = function(req, res, next) {
-	res.render('admin/logger', {});
+	res.render('admin/development/logger', {});
 };
 
 adminController.appearance.get = function(req, res, next) {
@@ -280,7 +280,7 @@ adminController.groups.get = function(req, res, next) {
 		groups = groups.filter(function(group) {
 			return group.name !== 'registered-users' && group.name !== 'guests';
 		});
-		res.render('admin/groups', {
+		res.render('admin/manage/groups', {
 			groups: groups,
 			yourid: req.user.uid
 		});
@@ -295,7 +295,7 @@ adminController.sounds.get = function(req, res, next) {
 			};
 		});
 
-		res.render('admin/sounds', {
+		res.render('admin/general/sounds', {
 			sounds: sounds
 		});
 	});

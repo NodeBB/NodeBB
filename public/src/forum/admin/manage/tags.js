@@ -1,7 +1,7 @@
 "use strict";
 /*global define, socket, app, admin, utils, bootbox, RELATIVE_PATH*/
 
-define('forum/admin/tags', ['forum/infinitescroll'], function(infinitescroll) {
+define('forum/admin/manage/tags', ['forum/infinitescroll'], function(infinitescroll) {
 	var	Tags = {};
 	var timeoutId = 0;
 

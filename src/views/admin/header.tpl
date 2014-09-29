@@ -55,7 +55,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand nodebb-logo" href="{relative_path}/admin/index"><img src="{relative_path}/images/logo.png" alt="NodeBB ACP" /> Admin Control Panel <span id="breadcrumbs"></span></a>
+				<a class="navbar-brand nodebb-logo" href="{relative_path}/admin/general/index"><img src="{relative_path}/images/logo.png" alt="NodeBB ACP" /> Admin Control Panel <span id="breadcrumbs"></span></a>
 			</div>
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
@@ -99,18 +99,18 @@
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
 						<li class="nav-header"><i class="fa fa-fw fa-dashboard"></i> General</li>
-						<li class="active"><a href="{relative_path}/admin/index">Dashboard</a></li>
-						<li><a href="{relative_path}/admin/languages">Languages</a></li>
-						<li><a href="{relative_path}/admin/sounds">Sounds</a></li>
+						<li class="active"><a href="{relative_path}/admin/general/index">Dashboard</a></li>
+						<li><a href="{relative_path}/admin/general/languages">Languages</a></li>
+						<li><a href="{relative_path}/admin/general/sounds">Sounds</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
 						<li class="nav-header"><i class="fa fa-fw fa-comments-o"></i> Manage</li>
-						<li><a href="{relative_path}/admin/categories/active">Categories</a></li>
-						<li><a href="{relative_path}/admin/tags">Tags</a></li>
-						<li><a href="{relative_path}/admin/users/latest">Users</a></li>
-						<li><a href="{relative_path}/admin/groups">Groups</a></li>
+						<li><a href="{relative_path}/admin/manage/categories/active">Categories</a></li>
+						<li><a href="{relative_path}/admin/manage/tags">Tags</a></li>
+						<li><a href="{relative_path}/admin/manage/users/latest">Users</a></li>
+						<li><a href="{relative_path}/admin/manage/groups">Groups</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">
@@ -139,22 +139,22 @@
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
 						<li class="nav-header"><i class="fa fa-fw fa-wrench"></i> Extend</li>
-						<li><a href="{relative_path}/admin/plugins">Plugins</a></li>
+						<li><a href="{relative_path}/admin/extend/plugins">Plugins</a></li>
 						<li><a href="{relative_path}/admin/extend/widgets">Widgets</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
 						<li class="nav-header"><i class="fa fa-fw fa-hdd-o"></i> Advanced</li>
-						<li><a href="{relative_path}/admin/database">Database</a></li>
-						<li><a href="{relative_path}/admin/events">Events</a></li>
+						<li><a href="{relative_path}/admin/advanced/database">Database</a></li>
+						<li><a href="{relative_path}/admin/advanced/events">Events</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
 						<li class="nav-header"><i class="fa fa-fw fa-facebook-square"></i> Social Authentication</li>
 						<!-- IF !authentication.length -->
-						<li><a href="{relative_path}/admin/plugins">Install SSO Plugins</a></li>
+						<li><a href="{relative_path}/admin/extend/plugins">Install SSO Plugins</a></li>
 						<!-- ENDIF !authentication.length -->
 						<!-- BEGIN authentication -->
 						<li>
@@ -177,7 +177,7 @@
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
 						<li class="nav-header"><i class="fa fa-fw fa-th"></i> Development</li>
-						<li><a href="{relative_path}/admin/logger">Logger</a></li>
+						<li><a href="{relative_path}/admin/development/logger">Logger</a></li>
 					</ul>
 				</div>
 				<!-- ENDIF env -->
