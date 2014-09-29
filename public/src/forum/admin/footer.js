@@ -26,10 +26,17 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 
 		Hammer(document.body).on('swiperight', function(e) {
 			$('#main-menu').addClass('open');
-
 		});
 
 		Hammer(document.body).on('swipeleft', function(e) {
+			$('#main-menu').removeClass('open');
+		});
+
+		Hammer($('#main-menu')[0]).on('swiperight', function(e) {
+			$('#main-menu').addClass('open');
+		});
+
+		Hammer($('#main-menu')[0]).on('swipeleft', function(e) {
 			$('#main-menu').removeClass('open');
 		});
 
