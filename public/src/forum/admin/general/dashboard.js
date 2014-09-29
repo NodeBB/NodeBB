@@ -394,7 +394,7 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 
 			for (var i = 0, ii = segments.length; i < ii; i++) {
 				var topic = segments[i],
-					label = topic.tid === '0' ? topic.label : '<a href="' + RELATIVE_PATH + '/topic/' + topic.tid + '" target="_blank"> ' + topic.label + '</a>';
+					label = topic.tid === '0' ? topic.label : '<a title="' + topic.label + '"href="' + RELATIVE_PATH + '/topic/' + topic.tid + '" target="_blank"> ' + topic.label + '</a>';
 
 				legend.append(
 					'<li>' +
