@@ -92,6 +92,9 @@ module.exports = function(Meta) {
 					themeData['theme:src'] = '';
 
 					db.setObject('config', themeData, next);
+
+					// Re-set the themes path (for when NodeBB is reloaded)
+					Meta.themes.setPath(config);
 				}
 			], callback);
 
@@ -104,4 +107,17 @@ module.exports = function(Meta) {
 		}
 	};
 
+	Meta.themes.setPath = function(themeObj) {
+		console.log(themeObj);
+		// Theme's templates path
+		var themePath = nconf.get('base_templates_path'),
+			fallback = path.join(nconf.get('themes_path'), themeObj.id, 'templates');
+		if (themeObj.templates) {
+			themePath = path.join(nconf.get('themes_path'), themeObj.id, themeObj.templates);
+		} else if (fs.existsSync(fallback)) {
+			themePath = fallback;
+		}
+
+		nconf.set('theme_templates_path', themePath);
+	};
 };
