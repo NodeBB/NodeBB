@@ -1,5 +1,5 @@
 "use strict";
-/*global define, app, socket, RELATIVE_PATH */
+/*global define, app, socket, Hammer, RELATIVE_PATH */
 
 define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 	var acpIndex;
@@ -42,7 +42,7 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 
 		$(window).on('scroll', function() {
 			$('#main-menu').height($(window).height() + 20);
-		})
+		});
 	}
 
 	function setupMainMenu() {
@@ -55,8 +55,7 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 
 		$('.nano').nanoScroller();
 
-		$('#main-menu .nav-list > li a').append('<span class="pull-right"><i class="fa fa-inverse fa-arrow-circle-right"></i>&nbsp;</span>')
-
+		$('#main-menu .nav-list > li a').append('<span class="pull-right"><i class="fa fa-inverse fa-arrow-circle-right"></i>&nbsp;</span>');
 	}
 
 	function selectMenuItem(url) {
@@ -112,6 +111,10 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 				value = $input.val().toLowerCase(),
 				menuItems = $('#acp-search .dropdown-menu').html('');
 
+			function toUpperCase(txt){
+				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+			}
+
 			if (value.length >= 3) {
 				for (var file in acpIndex) {
 					if (acpIndex.hasOwnProperty(file)) {
@@ -127,7 +130,7 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 								if (title.hasOwnProperty(t)) {
 									title[t] = title[t]
 										.replace('-', ' ')
-										.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+										.replace(/\w\S*/g, toUpperCase);
 								}
 							}
 
