@@ -312,6 +312,10 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 
 		function reassignExistingTopics() {
 			for (var i = 0, ii = segments.length; i < ii; i++ ) {
+				if (!segments[i]) {
+					continue;
+				}
+
 				var tid = segments[i].tid;
 
 				if ($.inArray(tid, tids) === -1) {
@@ -344,21 +348,38 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 							break;
 						}
 					}
-				} while (color !== null && usedTopicColors.length === topicColors.length);
+				} while (color === null && usedTopicColors.length < topicColors.length);
 
-				graphs.topics.addData({
-					value: tid,
-					color: color,
-					highlight: lighten(color, 10),
-					label: "tid " + value
-				});
+				if (color) {
+					graphs.topics.addData({
+						value: tid,
+						color: color,
+						highlight: lighten(color, 10),
+						label: "tid " + tid
+					});
 
-				segments[segments.length - 1].tid = tid;
+					segments[segments.length - 1].tid = tid;
+				}
+			}
+		}
+
+		function buildTopicsLegend() {
+			var legend = $('#topics-legend').html('');
+
+			for (var i = 0, ii = segments.length; i < ii; i++) {
+				var topic = segments[i];
+
+				legend.append(
+					'<li>' +
+						'<div style="background-color: ' + topic.highlightColor + '; border-color: ' + topic.strokeColor + '"></div>' +
+						'<span><a href="' + RELATIVE_PATH + '/topic/' + topic.tid + '" target="_blank"> ' + topic.label + '</a></span>' +
+					'</li>');
 			}
 		}
 
 		reassignExistingTopics();
 		assignNewTopics();
+		buildTopicsLegend();
 
 		graphs.topics.update();
 	}
