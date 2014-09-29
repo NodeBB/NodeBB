@@ -307,54 +307,64 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 	}
 
 	function updateTopicsGraph(topics) {
-		var tids = Object.keys(topics);
+		var tids = Object.keys(topics),
+			segments = graphs.topics.segments;
 
-		var segments = graphs.topics.segments;
+		function reassignExistingTopics() {
+			for (var i = 0, ii = segments.length; i < ii; i++ ) {
+				var tid = segments[i].tid;
 
-		for (var i = 0, ii = segments.length; i < ii; i++ ){
-			var tid = segments[i].tid;
-
-			if ($.inArray(tid, tids) === -1) {
-				usedTopicColors.splice($.inArray(segments[i].color, usedTopicColors), 1);
-				graphs.topics.removeData(i);
-			} else {
-				graphs.topics.segments[i].value = topics[tid];
-				delete topics[tid];
-			}
-		}
-
-		while (segments.length < 10 && tids.length > 0) {
-			var tid = tids.pop(),
-				value = topics[tid],
-				color = null;
-
-			if (!value) {
-				continue;
-			}
-
-			do {
-				for (var i = 0, ii = topicColors.length; i < ii; i++) {
-					var chosenColor = topicColors[i];
-
-					if ($.inArray(chosenColor, usedTopicColors) === -1) {
-						color = chosenColor;
-						usedTopicColors.push(color);
-						break;
-					}
+				if ($.inArray(tid, tids) === -1) {
+					usedTopicColors.splice($.inArray(segments[i].color, usedTopicColors), 1);
+					graphs.topics.removeData(i);
+				} else {
+					graphs.topics.segments[i].value = topics[tid];
+					delete topics[tid];
 				}
-			} while (color !== null && usedTopicColors.length === topicColors.length);
-
-			graphs.topics.addData({
-				value: tid,
-				color: color,
-				highlight: lighten(color, 10),
-				label: "tid " + value
-			});
-
-			segments[segments.length - 1].tid = tid;
+			}
 		}
+
+		function assignNewTopics() {
+			while (segments.length < 10 && tids.length > 0) {
+				var tid = tids.pop(),
+					value = topics[tid],
+					color = null;
+
+				if (!value) {
+					continue;
+				}
+
+				do {
+					for (var i = 0, ii = topicColors.length; i < ii; i++) {
+						var chosenColor = topicColors[i];
+
+						if ($.inArray(chosenColor, usedTopicColors) === -1) {
+							color = chosenColor;
+							usedTopicColors.push(color);
+							break;
+						}
+					}
+				} while (color !== null && usedTopicColors.length === topicColors.length);
+
+				graphs.topics.addData({
+					value: tid,
+					color: color,
+					highlight: lighten(color, 10),
+					label: "tid " + value
+				});
+
+				segments[segments.length - 1].tid = tid;
+			}
+		}
+
+		reassignExistingTopics();
+		assignNewTopics();
 
 		graphs.topics.update();
+	}
+
+	function buildTopicsLegend() {
+
 	}
 
 	return Admin;
