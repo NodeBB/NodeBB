@@ -126,6 +126,8 @@
 
 					require('../socket.io').emitUserCount();
 
+					user.notifications.sendWelcomeNotification(uid);
+
 					plugins.fireHook('filter:register.complete', uid, req.body.referrer, function(err, uid, destination) {
 						if (destination) {
 							res.redirect(nconf.get('relative_path') + destination);

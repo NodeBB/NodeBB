@@ -81,6 +81,9 @@ var async = require('async'),
 					}
 
 					return next(null, notification);
+				} else {
+					notification.image = meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png';
+					return next(null, notification);
 				}
 
 			}, callback);

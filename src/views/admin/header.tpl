@@ -115,6 +115,7 @@
 						<li><a href="{relative_path}/admin/settings/post">Post</a></li>
 						<li><a href="{relative_path}/admin/settings/pagination">Pagination</a></li>
 						<li><a href="{relative_path}/admin/settings/tags">Tags</a></li>
+						<li><a href="{relative_path}/admin/settings/notifications">Notifications</a></li>
 						<li><a href="{relative_path}/admin/settings/web-crawler">Web Crawler</a></li>
 						<li><a href="{relative_path}/admin/settings/sockets">Sockets</a></li>
 						<li><a href="{relative_path}/admin/settings/advanced">Advanced</a></li>
