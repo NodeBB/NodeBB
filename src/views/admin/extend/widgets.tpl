@@ -1,5 +1,3 @@
-<!-- IMPORT admin/appearance/header.tpl -->
-
 <div id="widgets">
 	<h3>Widgets</h3>
 
@@ -101,5 +99,3 @@
 		</div>
 	</div>
 </div>
-
-<!-- IMPORT admin/appearance/footer.tpl -->

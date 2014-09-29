@@ -40,6 +40,7 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/index', controllers.admin.home);
 	router.get('/plugins', controllers.admin.plugins.get);
 	router.get('/appearance/:term?', controllers.admin.appearance.get);
+	router.get('/extend/widgets', controllers.admin.extend.widgets);
 	router.get('/languages', controllers.admin.languages.get);
 	router.get('/groups', controllers.admin.groups.get);
 	router.get('/sounds', controllers.admin.sounds.get);

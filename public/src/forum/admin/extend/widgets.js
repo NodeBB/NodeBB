@@ -155,7 +155,7 @@ define('forum/admin/extend/widgets', function() {
 			return widget;
 		}
 
-		$.get(RELATIVE_PATH + '/api/admin/appearance/widgets', function(data) {
+		$.get(RELATIVE_PATH + '/api/admin/extend/widgets', function(data) {
 			var areas = data.areas;
 
 			for(var i=0; i<areas.length; ++i) {
