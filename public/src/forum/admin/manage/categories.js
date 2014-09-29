@@ -293,7 +293,7 @@ define('forum/admin/manage/categories', ['uploader', 'forum/admin/iconSelect'], 
 						return app.alertError(err.message);
 					}
 
-					templates.parse('partials/admin/categories/users', {
+					templates.parse('admin/partials/categories/users', {
 						users: results
 					}, function(html) {
 						resultsEl.html(html);
@@ -336,7 +336,7 @@ define('forum/admin/manage/categories', ['uploader', 'forum/admin/iconSelect'], 
 				return app.alertError(err.message);
 			}
 
-			templates.parse('partials/admin/categories/groups', {
+			templates.parse('admin/partials/categories/groups', {
 				groups: results
 			}, function(html) {
 				groupsResultsEl.html(html);

@@ -134,14 +134,14 @@
 	</div>
 	<span class="hidden" id="csrf" data-csrf="{csrf}"></span>
 
-	<!-- IMPORT partials/admin/categories/new.tpl -->
-	<!-- IMPORT partials/admin/categories/permissions.tpl -->
-	<!-- IMPORT partials/admin/categories/setParent.tpl -->
+	<!-- IMPORT admin/partials/categories/new.tpl -->
+	<!-- IMPORT admin/partials/categories/permissions.tpl -->
+	<!-- IMPORT admin/partials/categories/setParent.tpl -->
 	<div id="icons" style="display:none;">
 		<div class="icon-container">
 			<div class="row fa-icons">
 				<i class="fa fa-doesnt-exist"></i>
-				<!-- IMPORT partials/fontawesome.tpl -->
+				<!-- IMPORT admin/partials/fontawesome.tpl -->
 			</div>
 		</div>
 	</div>

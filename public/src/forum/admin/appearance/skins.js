@@ -47,7 +47,7 @@ define('forum/admin/appearance/skins', function() {
 	Skins.render = function(bootswatch) {
 		var themeContainer = $('#bootstrap_themes');
 
-		templates.parse('partials/admin/theme_list', {
+		templates.parse('admin/partials/theme_list', {
 			themes: bootswatch.themes.map(function(theme) {
 				return {
 					type: 'bootswatch',

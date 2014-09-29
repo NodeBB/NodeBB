@@ -74,7 +74,7 @@ define('forum/admin/appearance/themes', function() {
 				instListEl.append($('<li/ >').addClass('no-themes').html('No installed themes found'));
 				return;
 			} else {
-				templates.parse('partials/admin/theme_list', {
+				templates.parse('admin/partials/theme_list', {
 					themes: themes
 				}, function(html) {
 					instListEl.html(html);
