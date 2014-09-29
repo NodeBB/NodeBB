@@ -138,6 +138,47 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 		presence: null
 	};
 
+	var colors = {
+		"red": "#bf616a",
+		"blue": "#5B90BF",
+		"orange": "#d08770",
+		"yellow": "#ebcb8b",
+		"green": "#a3be8c",
+		"teal": "#96b5b4",
+		"pale_blue": "#8fa1b3",
+		"purple": "#b48ead",
+		"brown": "#ab7967"
+	};
+
+	// from chartjs.org
+	function lighten(col, amt) {
+		var usePound = false;
+
+		if (col[0] == "#") {
+			col = col.slice(1);
+			usePound = true;
+		}
+
+		var num = parseInt(col,16);
+
+		var r = (num >> 16) + amt;
+
+		if (r > 255) r = 255;
+		else if  (r < 0) r = 0;
+
+		var b = ((num >> 8) & 0x00FF) + amt;
+
+		if (b > 255) b = 255;
+		else if  (b < 0) b = 0;
+
+		var g = (num & 0x0000FF) + amt;
+
+		if (g > 255) g = 255;
+		else if (g < 0) g = 0;
+
+		return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16);
+	}
+
 	function getHoursArray() {
 		var currentHour = new Date().getHours(),
 			labels = [];
