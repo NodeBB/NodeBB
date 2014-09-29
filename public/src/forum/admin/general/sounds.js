@@ -1,7 +1,7 @@
 "use strict";
 /* global define, socket */
 
-define('forum/admin/general/sounds', ['sounds', 'forum/admin/settings'], function(Sounds, Settings) {
+define('forum/admin/general/sounds', ['sounds', 'settings'], function(Sounds, Settings) {
 	var	SoundsAdmin = {};
 
 	SoundsAdmin.init = function() {
@@ -23,6 +23,7 @@ define('forum/admin/general/sounds', ['sounds', 'forum/admin/settings'], functio
 				socket.emit('admin.fireEvent', {
 					name: 'event:sounds.reloadMapping'
 				});
+				app.alertSuccess('Settings Saved');
 			});
 		});
 	};
