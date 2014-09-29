@@ -414,17 +414,7 @@ function enableDefaultPlugins(next) {
 		'nodebb-plugin-soundpack-default'
 	];
 
-	async.each(defaultEnabled, function (pluginId, next) {
-		Plugins.isActive(pluginId, function (err, active) {
-			if (!active) {
-				Plugins.toggleActive(pluginId, function () {
-					next();
-				});
-			} else {
-				next();
-			}
-		});
-	}, next);
+	db.setAdd('plugins:active', defaultEnabled, next);
 }
 
 function setCopyrightWidget(next) {
