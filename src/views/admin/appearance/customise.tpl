@@ -1,5 +1,3 @@
-<!-- IMPORT admin/appearance/header.tpl -->
-
 <div id="customise" class="customise">
 	<div class="panel panel-default">
 		<div class="panel-heading">Custom CSS</div>
