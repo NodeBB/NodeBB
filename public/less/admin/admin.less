@@ -70,7 +70,7 @@
 					i {
 						margin-right: 6px;
 					}
-					
+
 					&:hover a {
 						background-color: #3f3f3f;
 
@@ -156,6 +156,38 @@
 
 	.graph-container {
 		padding-right: 50px;
+		position: relative;
+
+		.graph-legend {
+			.box-header-font;
+			display: block;
+			position: absolute;
+			top: 20px;
+			left: 35px;
+			list-style-type: none;
+			padding: 0;
+
+			li {			
+				div {
+					border: 1px solid;
+					width: 12px;
+					height: 12px;
+					vertical-align: -41%;
+    				margin-bottom: 5px;
+    				display: inline-block;
+					margin-right: 5px;
+
+					&.page-views {
+						border-color: rgba(220,220,220,1);
+						background-color: rgba(220,220,220,0.2);
+					}
+					&.unique-visitors {
+						border-color: rgba(151,187,205,1);
+						background-color: rgba(151,187,205,0.2);
+					}
+				}
+			}
+		}
 	}
 
 	.version-check {
