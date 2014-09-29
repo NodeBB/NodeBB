@@ -1,0 +1,50 @@
+.tags {
+	.tag-list {
+		h3 {
+			min-width: 225px;
+		}
+
+		.tag-row {
+			padding: 5px;
+			float: left;
+
+			.tag-item {
+				cursor: pointer;
+				display: inline-block;
+				margin-top: 22px;
+				font-size: 11px;
+			}
+		}
+
+		.save {
+			margin-top:25px;
+		}
+	}
+
+	.tag-item {
+		border: solid 1px @gray-light;
+		border-bottom-left-radius: 5px;
+		border-top-left-radius: 5px;
+		background-color: transparent;
+		color: @gray-light;
+		padding: .2em .6em .3em;
+		font-size: 75%;
+		font-weight: 700;
+		white-space: nowrap;
+	}
+
+	.tag-topic-count {
+		border: solid 1px lighten(@brand-primary, 20%);
+		background-color: lighten(@brand-primary, 20%);
+		color: #FFFFFF;
+		padding: .2em .6em .3em;
+		font-size: 75%;
+		font-weight: 700;
+		white-space: nowrap;
+		border-left: none;
+		padding-right: 5px;
+		padding-left: 5px;
+		border-bottom-right-radius: 5px;
+		border-top-right-radius: 5px;
+	}
+}

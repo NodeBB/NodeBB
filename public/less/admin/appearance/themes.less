@@ -1,0 +1,48 @@
+.themes, .skins {
+	ul.directory {
+		margin: 0;
+		padding: 0;
+
+		li {
+			padding: 10px 16px;
+			margin: 0.25em 1em;
+			list-style-type: none;
+			.pointer;
+			-webkit-border-radius: 10px;
+			-moz-border-radius: 10px;
+			border-radius: 10px;
+			-webkit-transition: background-color 250ms linear;
+			-moz-transition: background-color 250ms linear;
+			-ms-transition: background-color 250ms linear;
+			-o-transition: background-color 250ms linear;
+			transition: background-color 250ms linear;
+
+			img {
+				max-width: 150px;
+				float: left;
+			}
+
+			h4, p {
+				margin-left: 170px;
+			}
+
+			p {
+				font-size: 0.9em;
+			}
+
+			&:hover {
+				background-color: rgba(128, 128, 128, 0.2);
+			}
+
+			&.no-themes {
+				font-style: italic;
+			}
+		}
+	}
+
+	textarea[data-field] {
+		min-height: 450px;
+		width: 100%;
+		resize: vertical;
+	}
+}
