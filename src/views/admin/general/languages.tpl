@@ -20,7 +20,16 @@
 					</div>
 				</form>
 
-				<button class="btn btn-primary" id="save">Save</button>
+				
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-3">
+		<div class="panel panel-default">
+			<div class="panel-heading">Languages Control Panel</div>
+			<div class="panel-body">
+				<button class="btn btn-primary" id="save">Save Language Settings</button>
 			</div>
 		</div>
 	</div>
