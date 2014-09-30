@@ -23,9 +23,9 @@ define('forum/admin/extend/widgets', function() {
 	function prepareWidgets() {
 		$('[data-location="drafts"]').insertAfter($('[data-location="drafts"]').closest('.tab-content'));
 
-		$('#widgets .available-widgets .panel').draggable({
+		$('#widgets .available-widgets .widget-panel').draggable({
 			helper: function(e) {
-				return $(e.target).parents('.panel').clone().addClass('block').width($(e.target.parentNode).width());
+				return $(e.target).parents('.widget-panel').clone().addClass('block').width($(e.target.parentNode).width());
 			},
 			distance: 10,
 			connectToSortable: ".widget-area"
@@ -66,9 +66,9 @@ define('forum/admin/extend/widgets', function() {
 			},
 			connectWith: "div"
 		}).on('click', '.toggle-widget', function() {
-			$(this).parents('.panel').children('.panel-body').toggleClass('hidden');
+			$(this).parents('.widget-panel').children('.panel-body').toggleClass('hidden');
 		}).on('click', '.delete-widget', function() {
-			var panel = $(this).parents('.panel');
+			var panel = $(this).parents('.widget-panel');
 
 			bootbox.confirm('Are you sure you wish to delete this widget?', function(confirm) {
 				if (confirm) {
@@ -76,7 +76,7 @@ define('forum/admin/extend/widgets', function() {
 				}
 			});
 		}).on('dblclick', '.panel-heading', function() {
-			$(this).parents('.panel').children('.panel-body').toggleClass('hidden');
+			$(this).parents('.widget-panel').children('.panel-body').toggleClass('hidden');
 		});
 
 		$('#widgets .save').on('click', saveWidgets);
@@ -92,7 +92,7 @@ define('forum/admin/extend/widgets', function() {
 					area = el.children('.widget-area'),
 					widgets = [];
 
-				area.find('.panel[data-widget]').each(function() {
+				area.find('.widget-panel[data-widget]').each(function() {
 					var widgetData = {},
 						data = $(this).find('form').serializeArray();
 
