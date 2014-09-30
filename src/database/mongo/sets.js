@@ -128,7 +128,7 @@ module.exports = function(db, module) {
 
 	module.isMemberOfSets = function(sets, value, callback) {
 		if (!Array.isArray(sets) || !sets.length) {
-			return callback();
+			return callback(null, []);
 		}
 		value = helpers.valueToString(value);
 
