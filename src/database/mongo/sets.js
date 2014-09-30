@@ -106,9 +106,10 @@ module.exports = function(db, module) {
 	};
 
 	module.isSetMembers = function(key, values, callback) {
-		if (!key) {
-			return callback();
+		if (!key || !Array.isArray(values) || !values.length) {
+			return callback(null, []);
 		}
+
 		for (var i=0; i<values.length; ++i) {
 			values[i] = helpers.valueToString(values[i]);
 		}
@@ -151,7 +152,7 @@ module.exports = function(db, module) {
 
 	module.getSetMembers = function(key, callback) {
 		if (!key) {
-			return callback();
+			return callback(null, []);
 		}
 		db.collection('objects').findOne({_key: key}, {members: 1}, {_id: 0, _key: 0}, function(err, data) {
 			callback(err, data ? data.members : []);
@@ -160,7 +161,7 @@ module.exports = function(db, module) {
 
 	module.getSetsMembers = function(keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return callback(null, []);
 		}
 		db.collection('objects').find({_key: {$in: keys}}, {_id: 0, _key: 1, members: 1}).toArray(function(err, data) {
 			if (err) {
