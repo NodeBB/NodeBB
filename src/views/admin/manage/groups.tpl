@@ -1,42 +1,54 @@
-<h1><i class="fa fa-group"></i> Groups</h1>
-
-<div>
-	<button class="btn btn-primary" id="create">New Group</button>
-</div>
-
-<hr />
-
 <div class="groups">
-	<ul id="groups-list">
-	<!-- BEGIN groups -->
-		<li data-groupname="{groups.name}">
-			<div class="row">
-				<div class="col-lg-8">
-					<h2>
-						{groups.name}
-						<!-- IF groups.system -->
-						<span class="badge">System Group</span>
-						<!-- ENDIF groups.system -->
-					</h2>
-					<p>{groups.description}</p>
+	<div class="col-sm-9">
+		<div class="panel panel-default">
+			<div class="panel-heading"><i class="fa fa-group"></i> Groups List</div>
+			<div class="panel-body">	
+				<ul id="groups-list">
+				<!-- BEGIN groups -->
+					<li data-groupname="{groups.name}">
+						<div class="row">
+							<div class="col-lg-8">
+								<h2>
+									{groups.name}
+									<!-- IF groups.system -->
+									<span class="badge">System Group</span>
+									<!-- ENDIF groups.system -->
+								</h2>
+								<p>{groups.description}</p>
 
-					<div class="btn-group">
-						<button class="btn btn-default" data-action="members">Edit</button>
-						<!-- IF groups.deletable -->
-						<button class="btn btn-danger" data-action="delete">Delete Group</button>
-						<!-- ENDIF groups.deletable -->
-					</div>
-				</div>
-				<div class="col-lg-4">
-					<ul class="pull-right members">
-					<!-- BEGIN members --><li data-uid="{groups.members.uid}" data-toggle="tooltip" title="{groups.members.username}"><img src="{groups.members.picture}" /></li><!-- END members -->
-					<!-- IF groups.truncated --><li data-toggle="tooltip" title="Total: {groups.memberCount}" class="more"><i class="fa fa-users fa-2x"></i></li><!-- ENDIF groups.truncated -->
-					</ul>
+								<div class="btn-group">
+									<button class="btn btn-default" data-action="members">Edit</button>
+									<!-- IF groups.deletable -->
+									<button class="btn btn-danger" data-action="delete">Delete Group</button>
+									<!-- ENDIF groups.deletable -->
+								</div>
+							</div>
+							<div class="col-lg-4">
+								<ul class="pull-right members">
+								<!-- BEGIN members --><li data-uid="{groups.members.uid}" data-toggle="tooltip" title="{groups.members.username}"><img src="{groups.members.picture}" /></li><!-- END members -->
+								<!-- IF groups.truncated --><li data-toggle="tooltip" title="Total: {groups.memberCount}" class="more"><i class="fa fa-users fa-2x"></i></li><!-- ENDIF groups.truncated -->
+								</ul>
+							</div>
+						</div>
+					</li>
+				<!-- END groups -->
+				</ul>				
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-3">
+		<div class="panel panel-default">
+			<div class="panel-heading">Groups Control Panel</div>
+			<div class="panel-body">
+				<div>
+					<button class="btn btn-primary" id="create">New Group</button>
 				</div>
 			</div>
-		</li>
-	<!-- END groups -->
-	</ul>
+		</div>
+	</div>
+
+
 
 	<div class="modal fade" id="create-modal">
 		<div class="modal-dialog">
