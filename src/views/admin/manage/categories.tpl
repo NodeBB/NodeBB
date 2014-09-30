@@ -1,4 +1,3 @@
-
 <div class="categories">
 	<div class="col-sm-9">
 		<div class="panel panel-default">
@@ -128,13 +127,10 @@
 						</li>
 					<!-- END categories -->
 					</ul>
-				</div>
-
-				
+				</div>				
 			</div>
 		</div>
 	</div>
-
 
 	<div class="col-lg-3">
 		<div class="panel panel-default">
