@@ -136,7 +136,9 @@ var async = require('async'),
 		var unreadKeys = [];
 		var readKeys = [];
 
-		uids.filter(Boolean).forEach(function(uid) {
+		uids.filter(function(uid) {
+			return parseInt(uid, 10);
+		}).forEach(function(uid) {
 			unreadKeys.push('uid:' + uid + ':notifications:unread');
 			readKeys.push('uid:' + uid + ':notifications:read');
 		});

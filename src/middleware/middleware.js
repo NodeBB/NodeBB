@@ -53,7 +53,7 @@ middleware.updateLastOnlineTime = function(req, res, next) {
 middleware.incrementPageViews = function(req, res, next) {
 	var today = new Date();
 	today.setHours(today.getHours(), 0, 0, 0);
-	
+
 	db.sortedSetIncrBy('analytics:pageviews', 1, today.getTime());
 	next();
 };
