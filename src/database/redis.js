@@ -94,7 +94,6 @@
 
 		dbIdx = parseInt(nconf.get('redis:database'), 10);
 		if (dbIdx) {
-			console.log('SELECTING dbIdxBBBBBB', dbIdx);
 			cxn.select(dbIdx, function(error) {
 				if(error) {
 					winston.error("NodeBB could not connect to your Redis database. Redis returned the following error: " + error.message);
