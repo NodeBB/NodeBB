@@ -63,17 +63,6 @@
 		module.postSearch = reds.createSearch('nodebbpostsearch');
 		module.topicSearch = reds.createSearch('nodebbtopicsearch');
 
-		var db = parseInt(nconf.get('redis:database'), 10);
-
-		if (db) {
-			redisClient.select(db, function(error) {
-				if(error) {
-					winston.error("NodeBB could not connect to your Redis database. Redis returned the following error: " + error.message);
-					process.exit();
-				}
-			});
-		}
-
 		require('./redis/main')(redisClient, module);
 		require('./redis/hash')(redisClient, module);
 		require('./redis/sets')(redisClient, module);
@@ -87,7 +76,7 @@
 
 	module.connect = function() {
 		var redis_socket_or_host = nconf.get('redis:host'),
-			cxn;
+			cxn, dbIdx;
 
 		if (!redis) redis = require('redis');
 
@@ -101,6 +90,17 @@
 
 		if (nconf.get('redis:password')) {
 			cxn.auth(nconf.get('redis:password'));
+		}
+
+		dbIdx = parseInt(nconf.get('redis:database'), 10);
+		if (dbIdx) {
+			console.log('SELECTING dbIdxBBBBBB', dbIdx);
+			cxn.select(dbIdx, function(error) {
+				if(error) {
+					winston.error("NodeBB could not connect to your Redis database. Redis returned the following error: " + error.message);
+					process.exit();
+				}
+			});
 		}
 
 		cxn.on('error', function (err) {
