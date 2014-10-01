@@ -172,7 +172,7 @@ topicsController.get = function(req, res, next) {
 				},
 				{
 					property: 'og:title',
-					content: topicData.title
+					content: topicData.title.replace(/&amp;/g, '&')
 				},
 				{
 					property: 'og:description',
