@@ -35,7 +35,7 @@ $(document).ready(function() {
 				} else if (data.status === 401) {
 					app.alertError('[[global:please_log_in]]');
 					return ajaxify.go('login');
-				} else if (data.statuc === 403) {
+				} else if (data.status === 403) {
 					app.alertError('[[error:no-privileges]]');
 				} else if (data.status === 302) {
 					return ajaxify.go(data.responseJSON.slice(1), callback, quiet);
