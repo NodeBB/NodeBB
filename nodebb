@@ -28,11 +28,6 @@ case "$1" in
 		echo "  \"./nodebb stop\" to stop the NodeBB server";
 		echo "  \"./nodebb log\" to view server output";
 
-		if [ -f "./logs/output.log" ];	# Preserve the last output log
-			then
-				mv ./logs/output.log ./logs/output.1.log;
-		fi;
-
 		# Start the loader daemon
 		"$node" loader -d "$@"
 		;;

@@ -5,8 +5,10 @@ var	nconf = require('nconf'),
 	path = require('path'),
 	cluster = require('cluster'),
 	async = require('async'),
+	logrotate = require('logrotate-stream'),
 	pidFilePath = __dirname + '/pidfile',
-	output = fs.openSync(__dirname + '/logs/output.log', 'a'),
+	output = logrotate({ file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true }),
+	silent = process.env.NODE_ENV !== 'development' ? true : false,
 	numCPUs,
 	Loader = {
 		timesStarted: 0,
@@ -24,8 +26,14 @@ var	nconf = require('nconf'),
 Loader.init = function() {
 	cluster.setupMaster({
 		exec: "app.js",
-		silent: false
+		silent: silent
 	});
+
+	if (silent) {
+		console.log = function(value) {
+			output.write(value + '\n');
+		};
+	}
 
 	cluster.on('fork', function(worker) {
 		worker.on('message', function(message) {
@@ -132,7 +140,7 @@ Loader.init = function() {
 					Loader.timesStarted = 0;
 				});
 			} else {
-				console.log(numCPUs*3, 'restarts in 10 seconds, most likely an error on startup. Halting.');
+				console.log(numCPUs*3 + ' restarts in 10 seconds, most likely an error on startup. Halting.');
 				process.exit();
 			}
 		}
@@ -154,14 +162,21 @@ Loader.init = function() {
 };
 
 Loader.start = function() {
+	var worker;
+
 	Loader.primaryWorker = 1;
 
 	for(var x=0;x<numCPUs;x++) {
 		// Only the first worker sets up templates/sounds/jobs/etc
-		cluster.fork({
+		worker = cluster.fork({
 			cluster_setup: x === 0,
-			handle_jobs: x ===0
+			handle_jobs: x === 0
 		});
+
+		// Logging
+		if (silent) {
+			worker.process.stdout.pipe(output);
+		}
 	}
 }
 
@@ -200,9 +215,7 @@ if (nconf.get('daemon') !== false) {
 		}
 	}
 
-	require('daemon')({
-		stdout: output
-	});
+	require('daemon')();
 
 	fs.writeFile(__dirname + '/pidfile', process.pid);
 }
