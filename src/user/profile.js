@@ -123,6 +123,8 @@ module.exports = function(User) {
 				return callback(err);
 			}
 
+			userData.email = userData.email || '';
+
 			if (userData.email === newEmail) {
 				return callback();
 			}
