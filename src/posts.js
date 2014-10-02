@@ -379,7 +379,9 @@ var async = require('async'),
 	};
 
 	Posts.getPostsFields = function(pids, fields, callback) {
-		pids = pids ? pids : [];
+		if (!Array.isArray(pids) || !pids.length) {
+			return callback(null, []);
+		}
 
 		var keys = pids.map(function(pid) {
 			return 'post:' + pid;

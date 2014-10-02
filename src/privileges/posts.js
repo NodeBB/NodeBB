@@ -16,6 +16,9 @@ module.exports = function(privileges) {
 	privileges.posts = {};
 
 	privileges.posts.get = function(pids, uid, callback) {
+		if (!Array.isArray(pids) || !pids.length) {
+			return callback(null, []);
+		}
 		async.parallel({
 			manage_content: function(next) {
 				helpers.hasEnoughReputationFor('privileges:manage_content', uid, next);
