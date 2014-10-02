@@ -32,11 +32,6 @@ SocketPosts.reply = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		if (postData) {
-			postData.display_moderator_tools = false;
-			postData.display_move_tools = false;
-		}
-
 		var result = {
 			posts: [postData],
 			privileges: {
@@ -248,8 +243,8 @@ SocketPosts.purge = function(socket, data, callback) {
 	});
 };
 
-SocketPosts.getPrivileges = function(socket, pid, callback) {
-	privileges.posts.get([pid], socket.uid, function(err, privileges) {
+SocketPosts.getPrivileges = function(socket, pids, callback) {
+	privileges.posts.get(pids, socket.uid, function(err, privileges) {
 		if (err) {
 			return callback(err);
 		}
@@ -257,8 +252,7 @@ SocketPosts.getPrivileges = function(socket, pid, callback) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
-		privileges[0].pid = parseInt(pid, 10);
-		callback(null, privileges[0]);
+		callback(null, privileges);
 	});
 };
 

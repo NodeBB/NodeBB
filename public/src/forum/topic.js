@@ -337,7 +337,7 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 				var height = $(document).height(),
 					scrollTop = $(document).scrollTop(),
 					originalPostEl = $('li[data-index="0"]');
-				
+
 				// Insert the new post
 				html.insertBefore(before);
 
@@ -361,18 +361,21 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 	}
 
 	function onNewPostsLoaded(html, posts) {
-		function getPostPrivileges(pid) {
-			socket.emit('posts.getPrivileges', pid, function(err, privileges) {
-				if(err) {
-					return app.alertError(err.message);
-				}
-				toggleModTools(html, privileges);
-			});
+
+		var pids = [];
+		for(var i=0; i<posts.length; ++i) {
+			pids.push(posts[i].pid);
 		}
 
-		for (var x = 0, numPosts = posts.length; x < numPosts; x++) {
-			getPostPrivileges(posts[x].pid);
-		}
+		socket.emit('posts.getPrivileges', pids, function(err, privileges) {
+			if(err) {
+				return app.alertError(err.message);
+			}
+
+			for(i=0; i<pids.length; ++i) {
+				toggleModTools(pids[i], privileges[i]);
+			}
+		});
 
 		processPage(html);
 	}
@@ -393,12 +396,14 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 		showBottomPostBar();
 	}
 
-	function toggleModTools(postHtml, privileges) {
-		postHtml.find('.edit, .delete').toggleClass('none', !privileges.editable);
-		postHtml.find('.move').toggleClass('none', !privileges.move);
-		postHtml.find('.reply, .quote').toggleClass('none', !$('.post_reply').length);
-		var isSelfPost = parseInt(postHtml.attr('data-uid'), 10) === parseInt(app.uid, 10);
-		postHtml.find('.chat, .flag').toggleClass('none', isSelfPost || !app.uid);
+	function toggleModTools(pid, privileges) {
+		var postEl = $('.post-row[data-pid="' + pid + '"]');
+
+		postEl.find('.edit, .delete').toggleClass('none', !privileges.editable);
+		postEl.find('.move').toggleClass('none', !privileges.move);
+		postEl.find('.reply, .quote').toggleClass('none', !$('.post_reply').length);
+		var isSelfPost = parseInt(postEl.attr('data-uid'), 10) === parseInt(app.uid, 10);
+		postEl.find('.chat, .flag').toggleClass('none', isSelfPost || !app.uid);
 	}
 
 	function loadMorePosts(direction) {
