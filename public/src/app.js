@@ -525,13 +525,13 @@ var socket,
 
 			$('#logout-link').on('click', app.logout);
 
-			$window.blur(function(){
-				app.isFocused = false;
-			});
-
-			$window.focus(function(){
-				app.isFocused = true;
-				app.alternatingTitle('');
+			Visibility.change(function(e, state){
+				if (state === 'visible') {
+					app.isFocused = true;
+					app.alternatingTitle('');
+				} else if (state === 'hidden') {
+					app.isFocused = false;
+				}
 			});
 
 			createHeaderTooltips();

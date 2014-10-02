@@ -31,6 +31,7 @@ module.exports = function(Meta) {
 				'public/vendor/jquery/js/jquery.form.min.js',
 				'public/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
 				'public/vendor/jquery/deserialize/jquery.deserialize.min.js',
+				'public/vendor/visibility/visibility.min.js',
 				'public/vendor/bootstrap/js/bootstrap.min.js',
 				'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
 				'public/vendor/requirejs/require.js',
