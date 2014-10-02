@@ -32,6 +32,11 @@ SocketPosts.reply = function(socket, data, callback) {
 			return callback(err);
 		}
 
+		if (postData) {
+			postData.display_moderator_tools = false;
+			postData.display_move_tools = false;
+		}
+
 		var result = {
 			posts: [postData],
 			privileges: {
