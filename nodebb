@@ -102,7 +102,7 @@ case "$1" in
 		echo "Launching NodeBB in \"development\" mode."
 		echo "To run the production build of NodeBB, please use \"forever\"."
 		echo "More Information: https://docs.nodebb.org/en/latest/running/index.html"
-		NODE_ENV=development supervisor -q --ignore public/templates --extensions 'node|js|tpl|less' -- app "$@"
+		NODE_ENV=development supervisor -q --ignore public/templates,public/nodebb.min.js,public/nodebb.min.js.map --extensions 'node|js|tpl|less' -- app "$@"
 		;;
 
 	*)
