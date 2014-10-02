@@ -109,7 +109,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 				$('.topic-main-buttons .post_reply').attr('disabled', isLocked).html(isLocked ? '<i class="fa fa-lock"></i> ' + translated : translated);
 			});
 
-			threadEl.find('.quote, .edit, .delete').toggleClass('none', isLocked);
+			threadEl.find('.quote, .edit, .delete').toggleClass('hidden', isLocked);
 			$('.topic-title i.fa-lock').toggleClass('hide', !data.isLocked);
 			ThreadTools.threadState.locked = data.isLocked;
 		}
@@ -125,7 +125,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 
 		threadEl.toggleClass('deleted', data.isDelete);
 		ThreadTools.threadState.deleted = data.isDelete;
-		$('.purge_thread').toggleClass('none', !data.isDelete);
+		$('.purge_thread').toggleClass('hidden', !data.isDelete);
 
 		if (data.isDelete) {
 			translator.translate('[[topic:deleted_message]]', function(translated) {

@@ -132,7 +132,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 		$('.delete_thread span').translateHtml('<i class="fa fa-fw ' + (isAnyDeleted ? 'fa-history' : 'fa-trash-o') + '"></i> [[topic:thread_tools.' + (isAnyDeleted ? 'restore' : 'delete') + ']]');
 		$('.pin_thread').translateHtml('<i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.' + (isAnyPinned ? 'unpin' : 'pin') + ']]');
 		$('.lock_thread').translateHtml('<i class="fa fa-fw fa-' + (isAnyLocked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (isAnyLocked ? 'un': '') + 'lock]]');
-		$('.purge_thread').toggleClass('none', !areAllDeleted);
+		$('.purge_thread').toggleClass('hidden', !areAllDeleted);
 	}
 
 	function isAny(method, tids) {

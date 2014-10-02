@@ -399,11 +399,11 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 	function toggleModTools(pid, privileges) {
 		var postEl = $('.post-row[data-pid="' + pid + '"]');
 
-		postEl.find('.edit, .delete').toggleClass('none', !privileges.editable);
-		postEl.find('.move').toggleClass('none', !privileges.move);
-		postEl.find('.reply, .quote').toggleClass('none', !$('.post_reply').length);
+		postEl.find('.edit, .delete').toggleClass('hidden', !privileges.editable);
+		postEl.find('.move').toggleClass('hidden', !privileges.move);
+		postEl.find('.reply, .quote').toggleClass('hidden', !$('.post_reply').length);
 		var isSelfPost = parseInt(postEl.attr('data-uid'), 10) === parseInt(app.uid, 10);
-		postEl.find('.chat, .flag').toggleClass('none', isSelfPost || !app.uid);
+		postEl.find('.chat, .flag').toggleClass('hidden', isSelfPost || !app.uid);
 	}
 
 	function loadMorePosts(direction) {
