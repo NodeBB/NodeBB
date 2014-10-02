@@ -2,11 +2,16 @@
 /*global define, ajaxify, app, socket, RELATIVE_PATH*/
 
 define('forum/admin/general/dashboard', ['semver'], function(semver) {
-	var	Admin = {};
-	var updateIntervalId = 0;
+	var	Admin = {},
+		updateIntervalId = 0,
+		isMobile = false;
+
+
 	Admin.init = function() {
 		app.enterRoom('admin');
 		socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
+
+		isMobile = !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
 		if (updateIntervalId) {
 			clearInterval(updateIntervalId);
@@ -194,6 +199,10 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 			presenceCtx = presenceCanvas.getContext('2d'),
 			topicsCtx = topicsCanvas.getContext('2d'),
 			trafficLabels = getHoursArray();
+
+		if (isMobile) {
+			Chart.defaults.global.showTooltips = false;
+		}
 
 		var data = {
 				labels: trafficLabels,
