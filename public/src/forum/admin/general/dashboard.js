@@ -17,7 +17,9 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 			clearInterval(updateIntervalId);
 		}
 		updateIntervalId = setInterval(function() {
-			socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
+			if (app.isFocused) {
+				socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
+			}
 		}, 5000);
 
 		$('#logout-link').on('click', function() {
@@ -303,6 +305,10 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 	}
 
 	function updateTrafficGraph() {
+		if (!app.isFocused) {
+			return;
+		}
+		
 		socket.emit('admin.analytics.get', {graph: "traffic"}, function (err, data) {
 			for (var i = 0, ii = data.pageviews.length; i < ii;  i++) {
 				graphs.traffic.datasets[0].points[i].value = data.pageviews[i];
