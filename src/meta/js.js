@@ -155,10 +155,10 @@ module.exports = function(Meta) {
 							cache: minifiedString,
 							map: mapString
 						});
-
-						// Save the minfile in public/ so things like nginx can serve it
-						Meta.js.commitToFile();
 					}
+
+					// Save the minfile in public/ so things like nginx can serve it
+					Meta.js.commitToFile();
 
 					if (typeof callback === 'function') {
 						callback();
