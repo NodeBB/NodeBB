@@ -192,29 +192,57 @@ var async = require('async'),
 			var uids = mapFilter(topics, 'uid');
 			var cids = mapFilter(topics, 'cid');
 
+			var total = process.hrtime();
+
 			async.parallel({
 				users: function(next) {
-					user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+					var st = process.hrtime();
+					user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, data) {
+						process.profile('users', st);
+						next(err, data);
+					});
 				},
 				categories: function(next) {
-					categories.getMultipleCategoryFields(cids, ['cid', 'name', 'slug', 'icon', 'bgColor', 'color', 'disabled'], next);
+					var st = process.hrtime();
+					categories.getMultipleCategoryFields(cids, ['cid', 'name', 'slug', 'icon', 'bgColor', 'color', 'disabled'], function(err, data) {
+						process.profile('categories', st);
+						next(err, data);
+					});
 				},
 				hasRead: function(next) {
-					Topics.hasReadTopics(tids, uid, next);
+					var st = process.hrtime();
+					Topics.hasReadTopics(tids, uid, function(err, data) {
+						process.profile('hasRead', st);
+						next(err, data);
+					});
 				},
 				isAdminOrMod: function(next) {
-					privileges.categories.isAdminOrMod(cids, uid, next);
+					var st = process.hrtime();
+					privileges.categories.isAdminOrMod(cids, uid, function(err, data) {
+						process.profile('isAdminOrMod', st);
+						next(err, data);
+					});
 				},
 				teasers: function(next) {
-					Topics.getTeasers(tids, uid, next);
+					var st = process.hrtime();
+					Topics.getTeasers(tids, uid, function(err, data) {
+						process.profile('teasers', st);
+						next(err, data);
+					});
 				},
 				tags: function(next) {
-					Topics.getTopicsTagsObjects(tids, next);
+					var st = process.hrtime();
+					Topics.getTopicsTagsObjects(tids, function(err, data) {
+						process.profile('tags', st);
+						next(err, data);
+					});
 				}
 			}, function(err, results) {
 				if (err) {
 					return callback(err);
 				}
+
+				process.profile('total', total);
 
 				var users = _.object(uids, results.users);
 				var categories = _.object(cids, results.categories);
@@ -246,7 +274,7 @@ var async = require('async'),
 				});
 
 				plugins.fireHook('filter:topics.get', {topics: topics, uid: uid}, function(err, topicData) {
-					callback(err, topicData.topics)
+					callback(err, topicData.topics);
 				});
 			});
 		});
