@@ -7,6 +7,7 @@ var socket,
 		'username': null,
 		'uid': null,
 		'isFocused': true,
+		'isConnected': false,
 		'currentRoom': null,
 		'widgets': {},
 		'cacheBuster': null
@@ -54,6 +55,7 @@ var socket,
 
 			socket.emit('meta.reconnected');
 
+			app.isConnected = true;
 			$(window).trigger('action:reconnected');
 
 			setTimeout(function() {
@@ -98,6 +100,7 @@ var socket,
 				app.showLoginMessage();
 				app.replaceSelfLinks();
 				$(window).trigger('action:connected');
+				app.isConnected = true;
 			});
 
 			socket.on('event:alert', function (data) {
@@ -108,6 +111,7 @@ var socket,
 
 			socket.on('event:disconnect', function() {
 				$(window).trigger('action:disconnected');
+				app.isConnected = false;
 				socket.socket.connect();
 			});
 
