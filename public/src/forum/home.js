@@ -55,6 +55,8 @@ define('forum/home', function() {
 			if (categoryBox.find('.post-preview').length > parseInt(numRecentReplies, 10)) {
 				recentPosts.last().remove();
 			}
+
+			$(window).trigger('action:posts.loaded');
 		});
 	}
 
