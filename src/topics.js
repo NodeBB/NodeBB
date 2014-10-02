@@ -140,34 +140,34 @@ var async = require('async'),
 			}
 
 			Topics.getTopicsByTids(tids, uid, function(err, topicData) {
-				if(err) {
+				if (err) {
 					return callback(err);
 				}
 
-				if(!topicData || !topicData.length) {
+				if(!Array.isArray(topicData) || !topicData.length) {
 					return callback(null, returnTopics);
 				}
 
-				db.sortedSetRevRank(set, topicData[topicData.length - 1].tid, function(err, rank) {
-					if(err) {
-						return callback(err);
-					}
-
-					returnTopics.nextStart = parseInt(rank, 10) + 1;
-					returnTopics.topics = topicData;
-					callback(null, returnTopics);
-				});
+				returnTopics.topics = topicData;
+				callback(null, returnTopics);
 			});
 		});
 	};
 
 	Topics.getTopicsFromSet = function(uid, set, start, end, callback) {
 		db.getSortedSetRevRange(set, start, end, function(err, tids) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
-			Topics.getTopics(set, uid, tids, callback);
+			Topics.getTopics(set, uid, tids, function(err, data) {
+				if (err) {
+					return callback(err);
+				}
+
+				data.nextStart = end + 1;
+				callback(null, data);
+			});
 		});
 	};
 

@@ -42,6 +42,7 @@ tagsController.getTag = function(req, res, next) {
 			];
 
 			data.tag = tag;
+			data.nextStart = end + 1;
 			res.render('tag', data);
 		});
 	});

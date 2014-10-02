@@ -45,16 +45,10 @@ module.exports = function(Topics) {
 					return callback(null, unreadTopics);
 				}
 
-				db.sortedSetRevRank('topics:recent', topicData[topicData.length - 1].tid, function(err, rank) {
-					if (err) {
-						return callback(err);
-					}
+				unreadTopics.topics = topicData;
+				unreadTopics.nextStart = stop + 1;
 
-					unreadTopics.topics = topicData;
-					unreadTopics.nextStart = parseInt(rank, 10) + 1;
-
-					callback(null, unreadTopics);
-				});
+				callback(null, unreadTopics);
 			});
 		});
 	};

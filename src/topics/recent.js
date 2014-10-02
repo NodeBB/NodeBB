@@ -17,11 +17,18 @@ module.exports = function(Topics) {
 
 	Topics.getLatestTopics = function(uid, start, end, term, callback) {
 		Topics.getLatestTids(start, end, term, function(err, tids) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
-			Topics.getTopics('topics:recent', uid, tids, callback);
+			Topics.getTopics('topics:recent', uid, tids, function(err, data) {
+				if (err) {
+					return callback(err);
+				}
+
+				data.nextStart = end + 1;
+				callback(null, data);
+			});
 		});
 	};
 
