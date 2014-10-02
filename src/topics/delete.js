@@ -18,7 +18,10 @@ module.exports = function(Topics) {
 					if (err) {
 						return next(err);
 					}
-					var postCountChange = incr * parseInt(topicData.postcount, 10);
+					topicData.postcount = parseInt(topicData.postcount, 10);
+					topicData.postcount = topicData.postcount || 0;
+					var postCountChange = incr * topicData.postcount;
+
 					async.parallel([
 						function(next) {
 							db.incrObjectFieldBy('global', 'postCount', postCountChange, next);
