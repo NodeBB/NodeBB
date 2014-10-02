@@ -355,6 +355,7 @@ middleware.renderHeader = function(req, res, callback) {
 			templateValues.user = results.user;
 			templateValues.customCSS = results.customCSS;
 			templateValues.customJS = results.customJS;
+			templateValues.maintenanceHeader = meta.config.maintenanceMode === '1' ^ !!results.isAdmin
 
 			app.render('header', templateValues, callback);
 		});
@@ -443,13 +444,19 @@ middleware.addExpiresHeaders = function(req, res, next) {
 };
 
 middleware.maintenanceMode = function(req, res, next) {
-	var render = function() {
-		res.render('maintenance', {
-			site_title: meta.config.site_title || 'NodeBB'
-		});
-	};
+	var allowedRoutes = [
+			'/login'
+		],
+		render = function() {
+			middleware.buildHeader(req, res, function() {
+				res.render('maintenance', {
+					site_title: meta.config.site_title || 'NodeBB',
+					message: meta.config.maintenanceModeMessage
+				});
+			});
+		};
 
-	if (meta.config.maintenanceMode === '1') {
+	if (meta.config.maintenanceMode === '1' && allowedRoutes.indexOf(req.url) === -1) {
 		if (!req.user) {
 			return render();
 		} else {
