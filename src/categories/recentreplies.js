@@ -147,7 +147,9 @@ module.exports = function(Categories) {
 			if (err) {
 				return winston.error(err.message);
 			}
-
+			if (!parseInt(postCount, 10)) {
+				return;
+			}
 			async.parallel([
 				function(next) {
 					db.incrObjectFieldBy('category:' + oldCid, 'post_count', -postCount, next);
