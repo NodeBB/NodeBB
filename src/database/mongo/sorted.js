@@ -287,6 +287,9 @@ module.exports = function(db, module) {
 			}
 
 			var result = values.map(function(value) {
+				if (!value) {
+					return null;
+				}
 				var index = sortedSet.indexOf(value.toString());
 				return index !== -1 ? index : null;
 			});
