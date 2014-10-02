@@ -133,9 +133,14 @@ module.exports = function(Meta) {
 				mapStream = minifier.stdio[2],
 				mapString = '',
 				step = 0,
-				onComplete = function() {
+				onComplete = function(err) {
 					if (step === 0) {
 						return step++;
+					}
+
+					if (err) {
+						winston.error('[meta/js] Minification failed: ' + err.message);
+						process.exit(0);
 					}
 
 					Meta.js.cache = minifiedString;
