@@ -469,7 +469,12 @@ var async = require('async'),
 				if (err) {
 					return callback(err);
 				}
-				getPostsFromSet('uid:' + uid + ':posts', pids, callerUid, callback);
+				getPosts(pids, callerUid, function(err, posts) {
+					if (err) {
+						return callback(err);
+					}
+					callback(null, {posts: posts, nextStart: end + 1});
+				});
 			});
 		});
 	};
@@ -480,13 +485,18 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			getPostsFromSet('uid:' + uid + ':favourites', pids, uid, callback);
+			getPosts(pids, uid, function(err, posts) {
+				if (err) {
+					return callback(err);
+				}
+				callback(null, {posts: posts, nextStart: end + 1});
+			});
 		});
 	};
 
-	function getPostsFromSet(set, pids, uid, callback) {
+	function getPosts(pids, uid, callback) {
 		if (!Array.isArray(pids) || !pids.length) {
-			return callback(null, {posts: [], nextStart: 0});
+			return callback(null, []);
 		}
 
 		Posts.getPostSummaryByPids(pids, uid, {stripTags: false}, function(err, posts) {
@@ -495,19 +505,10 @@ var async = require('async'),
 			}
 
 			if (!Array.isArray(posts) || !posts.length) {
-				return callback(null, {posts: [], nextStart: 0});
+				return callback(null, []);
 			}
 
-			db.sortedSetRevRank(set, posts[posts.length - 1].pid, function(err, rank) {
-				if(err) {
-					return callback(err);
-				}
-				var data = {
-					posts: posts,
-					nextStart: parseInt(rank, 10) + 1
-				};
-				callback(null, data);
-			});
+			callback(null, posts);
 		});
 	}
 

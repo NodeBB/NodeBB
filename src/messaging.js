@@ -260,13 +260,7 @@ var db = require('./database'),
 					}
 				});
 
-				db.sortedSetRevRank('uid:' + uid + ':chats', results.users[results.users.length - 1].uid, function(err, rank) {
-					if (err) {
-						return callback(err);
-					}
-
-					callback(null, {users: results.users, nextStart: rank + 1});
-				});
+				callback(null, {users: results.users, nextStart: end + 1});
 			});
 		});
 	};

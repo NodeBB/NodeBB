@@ -114,7 +114,7 @@ var db = require('./database'),
 				topics.getTopicsByTids(tids, uid, next);
 			},
 			function(topics, next) {
-				if (!topics || !topics.length) {
+				if (!Array.isArray(topics) || !topics.length) {
 					return next(null, {
 						topics: [],
 						nextStart: 1
@@ -131,15 +131,9 @@ var db = require('./database'),
 					topics[i].index = indices[topics[i].tid];
 				}
 
-				db.sortedSetRevRank('categories:' + cid + ':tid', topics[topics.length - 1].tid, function(err, rank) {
-					if(err) {
-						return next(err);
-					}
-
-					next(null, {
-						topics: topics,
-						nextStart: parseInt(rank, 10) + 1
-					});
+				next(null, {
+					topics: topics,
+					nextStart: stop + 1
 				});
 			}
 		], callback);
