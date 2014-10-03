@@ -9,9 +9,6 @@
 		<div class="panel panel-default tag-management">
 			<div class="panel-heading">Tag Management</div>
 			<div class="panel-body">
-				<input class="form-control" type="text" id="tag-search" placeholder="Search"/><br/>
-
-
 				<div class="row">
 					<div class="tag-list">
 						<!-- BEGIN tags -->
@@ -43,6 +40,13 @@
 			<div class="panel-body">
 				<p>Select tags via clicking and/or dragging, use shift to select multiple.</p>
 				<button class="btn btn-primary btn-md" id="modify">Modify Selected Tags</button>
+			</div>
+		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-heading">Search for Tags</div>
+			<div class="panel-body">
+				<input class="form-control" type="text" id="tag-search" placeholder="Search..."/><br/>
 			</div>
 		</div>
 	</div>

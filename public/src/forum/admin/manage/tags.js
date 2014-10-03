@@ -19,7 +19,7 @@ define('forum/admin/manage/tags', ['forum/infinitescroll', 'admin/selectable'], 
 					if (err) {
 						return app.alertError(err.message);
 					}
-					infinitescroll.parseAndTranslate('admin/tags', 'tags', {tags: tags}, function(html) {
+					infinitescroll.parseAndTranslate('admin/manage/tags', 'tags', {tags: tags}, function(html) {
 						$('.tag-list').html(html);
 						utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 						timeoutId = 0;
@@ -51,7 +51,7 @@ define('forum/admin/manage/tags', ['forum/infinitescroll', 'admin/selectable'], 
 
 							tagsToModify.each(function(idx, tag) {
 								tag = $(tag);
-								
+
 								tag.find('[data-name="bgColor"]').val(bgColor);
 								tag.find('[data-name="color"]').val(color);
 								tag.find('.tag-item').css('background-color', bgColor).css('color', color);
