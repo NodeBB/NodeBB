@@ -38,24 +38,15 @@
 				<ul id="users-container">
 					<!-- BEGIN users -->
 					<div class="users-box" data-uid="{users.uid}" data-username="{users.username}">
-
-						<img src="{users.picture}" class="img-thumbnail user-selectable"/>
-						<br/>
-						
-						<a href="{relative_path}/user/{users.userslug}" target="_blank">{users.username}</a>
-						<br/>
-
-						<div title="uid">
-							<i class='fa fa-user'></i>
-							<span>{users.uid}</span>
+						<div class="user-image">
+							<img src="{users.picture}" class="img-thumbnail user-selectable"/>
+							<div class="labels">
+								<span class="administrator label label-primary <!-- IF !users.administrator -->hide<!-- ENDIF !users.administrator -->">Admin</span>
+								<span class="ban label label-danger <!-- IF !users.banned -->hide<!-- ENDIF !users.banned -->">Banned</span>
+							</div>
 						</div>
-
-						<span class="administrator label label-primary <!-- IF !users.administrator -->hide<!-- ENDIF !users.administrator -->">Admin</span>
-
-						<br/>
-
-						<span class="ban label label-danger <!-- IF !users.banned -->hide<!-- ENDIF !users.banned -->">Banned</span>
-
+						
+						<a href="{relative_path}/user/{users.userslug}" target="_blank">{users.username} ({users.uid})</a>
 					</div>
 					<!-- END users -->
 				</ul>
