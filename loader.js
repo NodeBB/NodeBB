@@ -28,6 +28,7 @@ Loader.init = function() {
 		exec: "app.js",
 		silent: silent
 	});
+	Loader.primaryWorker = 1;
 
 	if (silent) {
 		console.log = function(value) {
@@ -55,8 +56,6 @@ Loader.init = function() {
 								acpCache: Loader.css.acpCache
 							});
 						}
-
-						worker.send('bind');
 
 						// Kill an instance in the shutdown queue
 						var workerToKill = Loader.shutdown_queue.pop();
@@ -162,9 +161,8 @@ Loader.init = function() {
 };
 
 Loader.start = function() {
-	var worker;
-
-	Loader.primaryWorker = 1;
+	var output = logrotate({ file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true }),
+		worker;
 
 	for(var x=0;x<numCPUs;x++) {
 		// Only the first worker sets up templates/sounds/jobs/etc

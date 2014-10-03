@@ -143,14 +143,10 @@ function start() {
 
 					plugins.ready(function() {
 						webserver.init(function() {
-							// If this callback is called, this means that loader.js is used
-							process.on('message', function(msg) {
-								if (msg === 'bind') {
-									webserver.listen();
-								}
-							});
-							process.send({
-								action: 'ready'
+							webserver.listen(function() {
+								process.send({
+									action: 'ready'
+								});
 							});
 						});
 					});
