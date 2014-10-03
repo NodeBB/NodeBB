@@ -12,5 +12,7 @@
     "user.posts": "%1 tarafından gönderilen iletiler",
     "user.topics": "%1 tarafından gönderilen başlıklar",
     "user.favourites": "%1'in Favori İletileri",
-    "user.settings": "Kullanıcı Ayarları"
+    "user.settings": "Kullanıcı Ayarları",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administator has left this message:"
 }

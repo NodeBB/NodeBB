@@ -2,5 +2,6 @@
     "no_tag_topics": "Нет топиков с таким тэгом.",
     "tags": "Тэги",
     "enter_tags_here": "Укажите тэги здесь. Нажимайте Enter после каждого тэга.",
+    "enter_tags_here_short": "Enter tags...",
     "no_tags": "Здесь еще нет тэгов."
 }

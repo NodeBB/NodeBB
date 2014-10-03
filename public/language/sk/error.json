@@ -13,6 +13,7 @@
     "invalid-user-data": "Neplatné užívatelské údaje",
     "invalid-password": "Nesprávne heslo",
     "invalid-username-or-password": "Please specify both a username and password",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "Nesprávna hodnota stránkovania",
     "username-taken": "Užívateľske meno je obsadené",
     "email-taken": "Email je obsadený",

@@ -12,5 +12,7 @@
     "user.posts": "Innlegg laget av %1",
     "user.topics": "Emner opprettet av %1",
     "user.favourites": "%1 sine favoritt-innlegg",
-    "user.settings": "Brukerinnstillinger"
+    "user.settings": "Brukerinnstillinger",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administator has left this message:"
 }

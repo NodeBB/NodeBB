@@ -12,5 +12,7 @@
     "user.posts": "Postitused, mis on tehtud kasutaja %1 poolt",
     "user.topics": "Teemad on kirjutanud %1",
     "user.favourites": "%1's lemmikud postitused",
-    "user.settings": "Kasutaja sätted"
+    "user.settings": "Kasutaja sätted",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administator has left this message:"
 }

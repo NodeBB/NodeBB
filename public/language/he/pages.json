@@ -12,5 +12,7 @@
     "user.posts": "פוסטים שהועלו על ידי %1",
     "user.topics": "נושאים שנוצרו על ידי %1",
     "user.favourites": "הפוסטים המועדפים על %1",
-    "user.settings": "הגדרות משתמש"
+    "user.settings": "הגדרות משתמש",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administator has left this message:"
 }

@@ -13,6 +13,7 @@
     "invalid-user-data": "Ongeldig Gebruikersdata",
     "invalid-password": "Ongeldig wachtwoord",
     "invalid-username-or-password": "Geef alsjeblieft een gebruikersnaam en wachtwoord op",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "Ongeldig pagineringswaarde",
     "username-taken": "Gebruikersnaam is al bezet",
     "email-taken": "Email adres is al gebruikt",

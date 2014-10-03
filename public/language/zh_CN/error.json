@@ -13,6 +13,7 @@
     "invalid-user-data": "无效用户数据",
     "invalid-password": "无效密码",
     "invalid-username-or-password": "请确认用户名和密码",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "无效页码",
     "username-taken": "用户名已注册",
     "email-taken": "电子邮箱已注册",

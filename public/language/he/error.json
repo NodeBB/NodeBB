@@ -13,6 +13,7 @@
     "invalid-user-data": "מידע משתמש שגוי",
     "invalid-password": "סיסמא שגויה",
     "invalid-username-or-password": "Please specify both a username and password",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "ערך דפדוף שגוי",
     "username-taken": "שם משתמש תפוס",
     "email-taken": "כתובת אימייל תפוסה",

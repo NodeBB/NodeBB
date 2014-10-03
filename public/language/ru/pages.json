@@ -12,5 +12,7 @@
     "user.posts": "Пост написан %1",
     "user.topics": "Темы созданы %1",
     "user.favourites": "Избранные сообщения %1",
-    "user.settings": "Настройки"
+    "user.settings": "Настройки",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administator has left this message:"
 }

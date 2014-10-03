@@ -12,5 +12,7 @@
     "user.posts": "文章由 %1 所張貼",
     "user.topics": "主題由 %1 所創建",
     "user.favourites": "%1's 最喜愛的文章",
-    "user.settings": "使用者設定"
+    "user.settings": "使用者設定",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administator has left this message:"
 }

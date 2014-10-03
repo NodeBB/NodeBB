@@ -13,6 +13,7 @@
     "invalid-user-data": "Geçersiz Kullancı Verisi",
     "invalid-password": "Geçersiz Şifre",
     "invalid-username-or-password": "Please specify both a username and password",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "Geçersiz Sayfa Değeri",
     "username-taken": "Kullanıcı İsmi Alınmış",
     "email-taken": "E-posta Alınmış",

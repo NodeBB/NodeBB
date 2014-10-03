@@ -13,6 +13,7 @@
     "invalid-user-data": "Vigased kasutaja andmed",
     "invalid-password": "Vigane parool",
     "invalid-username-or-password": "Please specify both a username and password",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "Vigane lehe väärtus",
     "username-taken": "Kasutajanimi on juba võetud",
     "email-taken": "Email on võetud",

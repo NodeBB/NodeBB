@@ -12,5 +12,7 @@
     "user.posts": "Arresonos fatos dae %1",
     "user.topics": "Topics created by %1",
     "user.favourites": "Arresonos Preferidos de %1",
-    "user.settings": "Sèberos de Impitadore"
+    "user.settings": "Sèberos de Impitadore",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administator has left this message:"
 }

@@ -13,6 +13,7 @@
     "invalid-user-data": "Invalid User Data",
     "invalid-password": "Password salah!",
     "invalid-username-or-password": "Please specify both a username and password",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "Invalid pagination value",
     "username-taken": "Username taken",
     "email-taken": "Email taken",

@@ -13,6 +13,7 @@
     "invalid-user-data": "Ogiltig användardata",
     "invalid-password": "Ogiltigt lösenord",
     "invalid-username-or-password": "Specificera både användarnamn och lösenord",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "Ogiltigt sidnummer",
     "username-taken": "Användarnamn upptaget",
     "email-taken": "Epostadress upptagen",
