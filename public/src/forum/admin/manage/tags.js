@@ -2,8 +2,8 @@
 /*global define, socket, app, admin, utils, bootbox, RELATIVE_PATH*/
 
 define('forum/admin/manage/tags', ['forum/infinitescroll', 'admin/selectable'], function(infinitescroll, selectable) {
-	var	Tags = {};
-	var timeoutId = 0;
+	var	Tags = {},
+		timeoutId = 0;
 
 	Tags.init = function() {
 		handleColorPickers();
@@ -14,11 +14,13 @@ define('forum/admin/manage/tags', ['forum/infinitescroll', 'admin/selectable'], 
 				clearTimeout(timeoutId);
 				timeoutId = 0;
 			}
+
 			timeoutId = setTimeout(function() {
 				socket.emit('topics.searchAndLoadTags', {query: $('#tag-search').val()}, function(err, tags) {
 					if (err) {
 						return app.alertError(err.message);
 					}
+
 					infinitescroll.parseAndTranslate('admin/manage/tags', 'tags', {tags: tags}, function(html) {
 						$('.tag-list').html(html);
 						utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
@@ -85,7 +87,6 @@ define('forum/admin/manage/tags', ['forum/infinitescroll', 'admin/selectable'], 
 			});
 		}
 
-
 		$('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 	}
 
@@ -100,6 +101,7 @@ define('forum/admin/manage/tags', ['forum/infinitescroll', 'admin/selectable'], 
 			if (err) {
 				return app.alertError(err.message);
 			}
+			
 			app.alertSuccess('Tag Updated!');
 		});
 	}
