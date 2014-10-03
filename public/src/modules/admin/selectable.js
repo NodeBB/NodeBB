@@ -42,7 +42,7 @@ define('admin/selectable', function() {
 
 				return $('<div class="selector" />')
 					.css('opacity', 0.65 )
-					.appendTo('.tag-list');
+					.appendTo(parentElement);
 			})
 			.drag(function(ev, dd){
 				$(dd.proxy).css({
@@ -54,7 +54,7 @@ define('admin/selectable', function() {
 			})
 			.drag('end',function(ev, dd){
 				$(dd.proxy).remove();
-			})
+			});
 
 		elementsToSelect
 			.addClass('selection')
