@@ -12,7 +12,7 @@ module.exports = function(redisClient, module) {
 	};
 
 	function sortedSetAddMulti(key, scores, values, callback) {
-		if (!score.length || !values.length) {
+		if (!scores.length || !values.length) {
 			return callback();
 		}
 
