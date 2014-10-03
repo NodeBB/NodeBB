@@ -192,27 +192,37 @@ SocketModules.chats.send = function(socket, data, callback) {
 
 	var msg = S(data.message).stripTags().s;
 
-	Messaging.addMessage(socket.uid, touid, msg, function(err, message) {
+	user.getUserField(socket.uid, 'banned', function(err, banned) {
 		if (err) {
 			return callback(err);
 		}
 
-		Messaging.notifyUser(socket.uid, touid, message);
+		if (parseInt(banned, 10) === 1) {
+			return callback(new Error('[[error:user-banned]]'));
+		}
 
-		// Recipient
-		SocketModules.chats.pushUnreadCount(touid);
-		server.in('uid_' + touid).emit('event:chats.receive', {
-			withUid: socket.uid,
-			message: message,
-			self: 0
-		});
+		Messaging.addMessage(socket.uid, touid, msg, function(err, message) {
+			if (err) {
+				return callback(err);
+			}
 
-		// Sender
-		SocketModules.chats.pushUnreadCount(socket.uid);
-		server.in('uid_' + socket.uid).emit('event:chats.receive', {
-			withUid: touid,
-			message: message,
-			self: 1
+			Messaging.notifyUser(socket.uid, touid, message);
+
+			// Recipient
+			SocketModules.chats.pushUnreadCount(touid);
+			server.in('uid_' + touid).emit('event:chats.receive', {
+				withUid: socket.uid,
+				message: message,
+				self: 0
+			});
+
+			// Sender
+			SocketModules.chats.pushUnreadCount(socket.uid);
+			server.in('uid_' + socket.uid).emit('event:chats.receive', {
+				withUid: touid,
+				message: message,
+				self: 1
+			});
 		});
 	});
 };

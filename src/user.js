@@ -111,6 +111,7 @@ var	async = require('async'),
 				user.uid = 0;
 				user.username = '[[global:guest]]';
 				user.userslug = '';
+				user.picture = User.createGravatarURLFromEmail('');
 			}
 
 			if (user.picture) {
@@ -119,8 +120,6 @@ var	async = require('async'),
 				} else {
 					user.picture = User.createGravatarURLFromEmail(user.email);
 				}
-			} else {
-				user.picture = User.createGravatarURLFromEmail('');
 			}
 
 			for(var i=0; i<fieldsToRemove.length; ++i) {
