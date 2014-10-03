@@ -36,7 +36,7 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 
 			var uids = getSelectedUids();
 			if (!uids.length) {
-				return;
+				return false;
 			}
 
 			bootbox.confirm('Do you really want to ban?', function(confirm) {
@@ -51,6 +51,7 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 					unselectAll();
 				}
 			});
+			return false;
 		});
 
 		$('.unban-user').on('click', function(ev) {
@@ -70,6 +71,7 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 
 			update('.ban', false);
 			unselectAll();
+			return false;
 		});
 
 		$('.reset-lockout').on('click', function(ev) {
@@ -88,6 +90,7 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 			});
 
 			unselectAll();
+			return false;
 		});
 
 		$('.admin-user').on('click', function(ev) {
@@ -111,6 +114,7 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 				update('.administrator', true);
 				unselectAll();
 			}
+			return false;
 		});
 
 		$('.remove-admin-user').on('click', function(ev) {
@@ -138,6 +142,7 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 					}
 				});
 			}
+			return false;
 		});
 
 		$('.delete-user').on('click', function(ev) {
@@ -161,6 +166,7 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 					});
 				}
 			});
+			return false;
 		});
 
 		function handleUserCreate() {
