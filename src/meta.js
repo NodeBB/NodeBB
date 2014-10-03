@@ -34,6 +34,7 @@ var async = require('async'),
 
 	Meta.reload = function(callback) {
 		async.series([
+			async.apply(plugins.clearRequireCache),
 			async.apply(plugins.reload),
 			function(next) {
 				async.parallel([

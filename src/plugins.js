@@ -28,6 +28,7 @@ var fs = require('fs'),
 	Plugins.lessFiles = [];
 	Plugins.clientScripts = [];
 	Plugins.customLanguages = [];
+	Plugins.libraryPaths = [];
 
 	Plugins.initialized = false;
 
@@ -76,11 +77,13 @@ var fs = require('fs'),
 
 	Plugins.reload = function(callback) {
 		// Resetting all local plugin data
+		Plugins.libraries = {};
 		Plugins.loadedHooks = {};
 		Plugins.staticDirs = {};
 		Plugins.cssFiles.length = 0;
 		Plugins.lessFiles.length = 0;
 		Plugins.clientScripts.length = 0;
+		Plugins.libraryPaths.length = 0;
 
 		// Read the list of activated plugins and require their libraries
 		async.waterfall([
@@ -186,6 +189,7 @@ var fs = require('fs'),
 							if (exists) {
 								if (!Plugins.libraries[pluginData.id]) {
 									Plugins.libraries[pluginData.id] = require(libraryPath);
+									Plugins.libraryPaths.push(libraryPath);
 								}
 
 								// Register hooks for this plugin
@@ -765,7 +769,16 @@ var fs = require('fs'),
 		});
 	};
 
+	Plugins.clearRequireCache = function(next) {
+		async.map(Plugins.libraryPaths, fs.realpath, function(err, paths) {
+			for (var x=0,numPaths=paths.length;x<numPaths;x++) {
+				delete require.cache[paths[x]];
+			}
+			winston.info('[plugins] Plugin libraries removed from Node.js cache');
 
+			next();
+		});
+	};
 
 	function addLanguages(router, middleware, controllers, callback) {
 		Plugins.customLanguages.forEach(function(lang) {
