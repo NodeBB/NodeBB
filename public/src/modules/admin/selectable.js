@@ -6,7 +6,23 @@ define('admin/selectable', function() {
 	var selectable = {};
 
 	// modified from http://threedubmedia.com/code/event/drop/demo/selection
-	selectable.enable = function(parentElement, elementsToSelect) {
+	selectable.enable = function(parentElement, elementsToSelect, events) {
+		function selected(element) {
+			var $element = $(element).addClass('dropped');
+
+			if (events && typeof events.onSelected === 'function') {
+				events.onSelected($element);
+			}
+		}
+
+		function unselected(element) {
+			var $element = $(element).removeClass('dropped');
+
+			if (events && typeof events.onUnselected === 'function') {
+				events.onUnselected($element);
+			}
+		}
+
 		parentElement = $(parentElement);
 		elementsToSelect = $(elementsToSelect);
 
@@ -16,12 +32,12 @@ define('admin/selectable', function() {
 			.addClass('selectable')
 			.on('mousedown', function(ev) {
 				if (!ev.shiftKey) {
-					elementsToSelect.removeClass('dropped');
+					unselected(elementsToSelect);
 				}
 			})
 			.drag('start',function(ev, dd) {
 				if (!ev.shiftKey) {
-					elementsToSelect.removeClass('dropped');
+					unselected(elementsToSelect);
 				}
 
 				return $('<div class="selector" />')
@@ -43,13 +59,13 @@ define('admin/selectable', function() {
 		elementsToSelect
 			.addClass('selection')
 			.on('mouseup', function(ev) {
-				$(this).addClass('dropped');
+				selected(this);
 			})
 			.drop('start',function(){
 				$(this).addClass('active');
 			})
 			.drop(function( ev, dd ){
-				$(this).addClass('dropped');
+				selected(this);
 			})
 			.drop('end',function(){
 				$(this).removeClass('active');
