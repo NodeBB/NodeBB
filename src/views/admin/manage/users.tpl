@@ -35,7 +35,7 @@
 				</div>
 
 
-				<ul id="users-container" class="users">
+				<ul id="users-container">
 					<!-- BEGIN users -->
 					<div class="users-box" data-uid="{users.uid}" data-username="{users.username}">
 

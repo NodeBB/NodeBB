@@ -223,12 +223,12 @@ define('forum/admin/manage/users', function() {
 				$('.fa-spinner').removeClass('hidden');
 
 				socket.emit('admin.user.search', username, function(err, data) {
-					if(err) {
+					if (err) {
 						return app.alertError(err.message);
 					}
 
 					ajaxify.loadTemplate('admin/manage/users', function(adminUsers) {
-						$('.users').html(templates.parse(templates.getBlock(adminUsers, 'users'), data));
+						$('#users-container').html(templates.parse(templates.getBlock(adminUsers, 'users'), data));
 
 						$('.fa-spinner').addClass('hidden');
 
