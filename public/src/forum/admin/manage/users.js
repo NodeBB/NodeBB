@@ -1,23 +1,19 @@
 "use strict";
 /* global socket, define, templates, bootbox, app, ajaxify,  */
-define('forum/admin/manage/users', function() {
+define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 	var Users = {};
 
 	Users.init = function() {
 		var yourid = ajaxify.variables.get('yourid');
 
-		$('#users-container').on('click', '.select', function() {
-			var userBox = $(this).parents('.users-box');
-			var isSelected = userBox.hasClass('selected');
-			userBox.toggleClass('selected', !isSelected);
-			$(this).toggleClass('fa-square-o', isSelected).toggleClass('fa-check-square-o', !isSelected);
-		});
+		selectable.enable('#users-container', '.user-selectable');
 
 		function getSelectedUids() {
 			var uids = [];
-			$('#users-container .users-box.selected').each(function() {
-				uids.push($(this).attr('data-uid'));
+			$('#users-container .users-box .selected').each(function() {
+				uids.push($(this).parents('[data-uid]').attr('data-uid'));
 			});
+
 			return uids;
 		}
 
@@ -29,14 +25,15 @@ define('forum/admin/manage/users', function() {
 
 		function unselectAll() {
 			$('#users-container .users-box.selected').removeClass('selected')
-				.find('.select').toggleClass('fa-square-o', true).toggleClass('fa-check-square-o', false);
 		}
 
 		function removeSelected() {
 			$('#users-container .users-box.selected').remove();
 		}
 
-		$('.ban-user').on('click', function() {
+		$('.ban-user').on('click', function(ev) {
+			ev.preventDefault();
+
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
@@ -56,7 +53,9 @@ define('forum/admin/manage/users', function() {
 			});
 		});
 
-		$('.unban-user').on('click', function() {
+		$('.unban-user').on('click', function(ev) {
+			ev.preventDefault();
+
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
@@ -73,7 +72,9 @@ define('forum/admin/manage/users', function() {
 			unselectAll();
 		});
 
-		$('.reset-lockout').on('click', function() {
+		$('.reset-lockout').on('click', function(ev) {
+			ev.preventDefault();
+
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
@@ -89,7 +90,9 @@ define('forum/admin/manage/users', function() {
 			unselectAll();
 		});
 
-		$('.admin-user').on('click', function() {
+		$('.admin-user').on('click', function(ev) {
+			ev.preventDefault();
+
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
@@ -110,7 +113,9 @@ define('forum/admin/manage/users', function() {
 			}
 		});
 
-		$('.remove-admin-user').on('click', function() {
+		$('.remove-admin-user').on('click', function(ev) {
+			ev.preventDefault();
+
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
@@ -135,7 +140,9 @@ define('forum/admin/manage/users', function() {
 			}
 		});
 
-		$('.delete-user').on('click', function() {
+		$('.delete-user').on('click', function(ev) {
+			ev.preventDefault();
+
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
