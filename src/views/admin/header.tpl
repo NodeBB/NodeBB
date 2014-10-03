@@ -142,6 +142,7 @@
 						<li class="nav-header"><i class="fa fa-fw fa-hdd-o"></i> Advanced</li>
 						<li><a href="{relative_path}/admin/advanced/database">Database</a></li>
 						<li><a href="{relative_path}/admin/advanced/events">Events</a></li>
+						<li><a href="{relative_path}/admin/advanced/logs">Logs</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">

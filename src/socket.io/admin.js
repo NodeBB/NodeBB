@@ -1,6 +1,12 @@
 "use strict";
 
-var	groups = require('../groups'),
+var	async = require('async'),
+	winston = require('winston'),
+	cluster = require('cluster'),
+	fs = require('fs'),
+	path = require('path'),
+
+	groups = require('../groups'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
 	widgets = require('../widgets'),
@@ -11,10 +17,8 @@ var	groups = require('../groups'),
 	events = require('../events'),
 	emailer = require('../emailer'),
 	db = require('../database'),
-	async = require('async'),
-	winston = require('winston'),
 	index = require('./index'),
-	cluster = require('cluster'),
+
 
 	SocketAdmin = {
 		user: require('./admin/user'),
@@ -231,5 +235,10 @@ function getHourlyStatsForSet(set, hours, callback) {
 		callback(err, termsArr);
 	});
 }
+
+SocketAdmin.clearLog = function(socket, data, callback) {
+	var logPath = path.join('logs', path.sep, 'output.log');
+	fs.truncate(logPath, callback);
+};
 
 module.exports = SocketAdmin;

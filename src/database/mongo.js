@@ -53,7 +53,13 @@
 			winston.error('Unable to initialize MongoDB! Is MongoDB installed? Error :' + err.message);
 			process.exit();
 		}
-		var connString = 'mongodb://'+ nconf.get('mongo:host') + ':' + nconf.get('mongo:port') + '/' + nconf.get('mongo:database');
+
+		var usernamePassword = '';
+		if (nconf.get('mongo:username') && nconf.get('mongo:password')) {
+			usernamePassword = nconf.get('mongo:username') + ':' + nconf.get('mongo:password') + '@';
+		}
+
+		var connString = 'mongodb://' + usernamePassword + nconf.get('mongo:host') + ':' + nconf.get('mongo:port') + '/' + nconf.get('mongo:database');
 		var connOptions = {
 			server: {
 				poolSize: nconf.get('mongo:poolSize') || 10

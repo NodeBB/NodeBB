@@ -28,6 +28,7 @@ var adminController = {
 		widgets: {}
 	},
 	events: {},
+	logs: {},
 	database: {},
 	plugins: {},
 	languages: {},
@@ -168,6 +169,19 @@ adminController.events.get = function(req, res, next) {
 		data = data.toString().split('\n').reverse().join('\n');
 		res.render('admin/advanced/events', {
 			eventdata: data
+		});
+	});
+};
+
+adminController.logs.get = function(req, res, next) {
+	var logPath = path.join('logs', path.sep, 'output.log');
+	fs.readFile(logPath, function(err, data) {
+		if (err || !data) {
+			data = '';
+		}
+
+		res.render('admin/advanced/log', {
+			data: data.toString()
 		});
 	});
 };
