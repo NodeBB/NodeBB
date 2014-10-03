@@ -1,16 +1,13 @@
 "use strict";
 /*global define, socket, app, admin, utils, bootbox, RELATIVE_PATH*/
 
-define('forum/admin/manage/tags', ['forum/infinitescroll'], function(infinitescroll) {
+define('forum/admin/manage/tags', ['forum/infinitescroll', 'admin/selectable'], function(infinitescroll, selectable) {
 	var	Tags = {};
 	var timeoutId = 0;
 
 	Tags.init = function() {
 		handleColorPickers();
-
-		$('.tag-list').on('click', '.save', function() {
-			save($(this));
-		});
+		selectable.enable('.tag-management', '.tag-row');
 
 		$('#tag-search').on('input propertychange', function() {
 			if (timeoutId) {
@@ -31,14 +28,18 @@ define('forum/admin/manage/tags', ['forum/infinitescroll'], function(infinitescr
 			}, 100);
 		});
 
-		$('.tag-item').on('click', function(ev) {
-			var tagName = $(this).text(),
-				tag = $(this),
-				row = tag.parents('.tag-row');
+		$('#modify').on('click', function(ev) {
+			var tagsToModify = $('.tag-row.dropped');
+			if (!tagsToModify.length) {
+				return;
+			}
+
+			var firstTag = $(tagsToModify[0]),
+				title = tagsToModify.length > 1 ? 'Editing multiple tags' : 'Editing ' + firstTag.find('.tag-item').text() + ' tag';
 
 			bootbox.dialog({
-				title: "Editing " + tagName + " tag",
-				message: $(this).parents('.tag-row').find('.tag-modal').html(),
+				title:  title,
+				message: firstTag.find('.tag-modal').html(),
 				buttons: {
 					success: {
 						label: "Save",
@@ -46,20 +47,17 @@ define('forum/admin/manage/tags', ['forum/infinitescroll'], function(infinitescr
 						callback: function() {
 							var modal = $('.bootbox'),
 								bgColor = modal.find('[data-name="bgColor"]').val(),
-									color = modal.find('[data-name="color"]').val();
+								color = modal.find('[data-name="color"]').val();
 
-							row.find('[data-name="bgColor"]').val(bgColor);
-							row.find('[data-name="color"]').val(color);
-							row.find('.tag-item').css('background-color', bgColor).css('color', color);
+							tagsToModify.each(function(idx, tag) {
+								tag = $(tag);
+								
+								tag.find('[data-name="bgColor"]').val(bgColor);
+								tag.find('[data-name="color"]').val(color);
+								tag.find('.tag-item').css('background-color', bgColor).css('color', color);
 
-							save(tag);
-						}
-					},
-					info: {
-						label: "Click to view topics tagged \"" + tagName + "\"",
-						className: "btn-info",
-						callback: function() {
-							window.open(RELATIVE_PATH + '/tags/' + tagName);
+								save(tag);
+							});
 						}
 					}
 				}
@@ -89,15 +87,13 @@ define('forum/admin/manage/tags', ['forum/infinitescroll'], function(infinitescr
 		$('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 	}
 
-	function save(saveBtn) {
-		var tagRow = saveBtn.parents('.tag-row');
-
+	function save(tag) {
 		var data = {
-			tag: tagRow.attr('data-tag'),
-			bgColor : tagRow.find('[data-name="bgColor"]').val(),
-			color : tagRow.find('[data-name="color"]').val()
+			tag: tag.attr('data-tag'),
+			bgColor : tag.find('[data-name="bgColor"]').val(),
+			color : tag.find('[data-name="color"]').val()
 		};
-		console.log(data);
+		
 		socket.emit('admin.tags.update', data, function(err) {
 			if (err) {
 				return app.alertError(err.message);
@@ -105,8 +101,6 @@ define('forum/admin/manage/tags', ['forum/infinitescroll'], function(infinitescr
 			app.alertSuccess('Tag Updated!');
 		});
 	}
-
-
 
 	return Tags;
 });
