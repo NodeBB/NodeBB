@@ -23,6 +23,8 @@ define('forum/admin/manage/tags', ['forum/infinitescroll', 'admin/selectable'], 
 						$('.tag-list').html(html);
 						utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 						timeoutId = 0;
+
+						selectable.enable('.tag-management', '.tag-row');
 					});
 				});
 			}, 100);
