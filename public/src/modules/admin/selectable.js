@@ -5,6 +5,7 @@
 define('admin/selectable', function() {
 	var selectable = {};
 
+	// modified from http://threedubmedia.com/code/event/drop/demo/selection
 	selectable.enable = function(parentElement, elementsToSelect) {
 		parentElement = $(parentElement);
 		elementsToSelect = $(elementsToSelect);
@@ -30,7 +31,7 @@ define('admin/selectable', function() {
 			.drag(function(ev, dd){
 				$(dd.proxy).css({
 					top: Math.min(ev.pageY - offset.top, dd.startY - offset.top),
-					left: Math.min(ev.pageX, dd.startX),
+					left: Math.min(ev.pageX  - offset.left, dd.startX - offset.left),
 					height: Math.abs(ev.pageY - dd.startY),
 					width: Math.abs(ev.pageX - dd.startX)
 				});
@@ -38,7 +39,6 @@ define('admin/selectable', function() {
 			.drag('end',function(ev, dd){
 				$(dd.proxy).remove();
 			})
-			.css('padding-bottom', '100px');
 
 		elementsToSelect
 			.addClass('selection')
