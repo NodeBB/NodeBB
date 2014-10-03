@@ -14,7 +14,7 @@ define('admin/selectable', function() {
 
 		parentElement
 			.addClass('selectable')
-			.on('click', function(ev) {
+			.on('mousedown', function(ev) {
 				if (!ev.shiftKey) {
 					elementsToSelect.removeClass('dropped');
 				}
@@ -42,6 +42,9 @@ define('admin/selectable', function() {
 
 		elementsToSelect
 			.addClass('selection')
+			.on('mouseup', function(ev) {
+				$(this).addClass('dropped');
+			})
 			.drop('start',function(){
 				$(this).addClass('active');
 			})
