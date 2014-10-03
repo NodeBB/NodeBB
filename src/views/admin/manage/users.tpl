@@ -39,10 +39,9 @@
 					<!-- BEGIN users -->
 					<div class="users-box" data-uid="{users.uid}" data-username="{users.username}">
 
-						<a href="{relative_path}/user/{users.userslug}" target="_blank"><img src="{users.picture}" class="img-thumbnail"/></a>
+						<img src="{users.picture}" class="img-thumbnail user-selectable"/>
 						<br/>
-
-						<i class="fa fa-fw fa-square-o select pointer"></i>
+						
 						<a href="{relative_path}/user/{users.userslug}" target="_blank">{users.username}</a>
 						<br/>
 
