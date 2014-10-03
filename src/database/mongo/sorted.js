@@ -203,7 +203,7 @@ module.exports = function(db, module) {
 
 	module.sortedSetCard = function(key, callback) {
 		if (!key) {
-			return callback();
+			return callback(null, 0);
 		}
 		db.collection('objects').count({_key: key}, function(err, count) {
 			count = parseInt(count, 10);
