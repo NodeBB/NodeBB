@@ -42,7 +42,10 @@ var async = require('async'),
 					async.apply(Meta.css.minify),
 					async.apply(Meta.templates.compile),
 					async.apply(auth.reloadRoutes),
-					async.apply(templates.flush)
+					function(next) {
+						templates.flush();
+						next();
+					}
 				], next);
 			}
 		], function(err) {
