@@ -250,6 +250,8 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 								.addClass('label-success')
 								.removeClass('label-danger');
 						}
+
+						selectable.enable('#users-container', '.user-selectable');
 					});
 				});
 			}, 250);
