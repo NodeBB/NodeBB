@@ -129,7 +129,7 @@ if(nconf.get('ssl')) {
 		}
 	};
 
-	module.exports.listen = function() {
+	module.exports.listen = function(callback) {
 		var	bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
 		winston.info('NodeBB attempting to listen on: ' + bind_address);
 
@@ -141,6 +141,10 @@ if(nconf.get('ssl')) {
 					bind_address: bind_address,
 					primary: process.env.handle_jobs === 'true'
 				});
+			}
+
+			if (typeof callback === 'function') {
+				callback();
 			}
 		});
 	};
