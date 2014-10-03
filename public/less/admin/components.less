@@ -33,3 +33,24 @@
 	right:20px;
 	bottom:20px;
 }
+
+.selectable {
+	.selector {
+		position: absolute;
+		border: 1px solid #89B;
+		background: #BCE;
+		background-color: #BEC;
+		border-color: #8B9;
+		z-index: 999;
+	}
+
+	.selection {
+		border: 1px solid transparent;
+		margin: 2px;
+
+		&.dropped, &.active {
+			background-color: #ECF1DB;
+			border: 1px dashed #9B8;
+		}
+	}	
+}
