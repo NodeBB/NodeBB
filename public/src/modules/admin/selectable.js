@@ -8,7 +8,7 @@ define('admin/selectable', function() {
 	// modified from http://threedubmedia.com/code/event/drop/demo/selection
 	selectable.enable = function(parentElement, elementsToSelect, events) {
 		function selected(element) {
-			var $element = $(element).addClass('dropped');
+			var $element = $(element).addClass('selected');
 
 			if (events && typeof events.onSelected === 'function') {
 				events.onSelected($element);
@@ -16,7 +16,7 @@ define('admin/selectable', function() {
 		}
 
 		function unselected(element) {
-			var $element = $(element).removeClass('dropped');
+			var $element = $(element).removeClass('selected');
 
 			if (events && typeof events.onUnselected === 'function') {
 				events.onUnselected($element);

@@ -33,7 +33,7 @@ define('forum/admin/manage/tags', ['forum/infinitescroll', 'admin/selectable'], 
 		});
 
 		$('#modify').on('click', function(ev) {
-			var tagsToModify = $('.tag-row.dropped');
+			var tagsToModify = $('.tag-row.selected');
 			if (!tagsToModify.length) {
 				return;
 			}
@@ -101,7 +101,7 @@ define('forum/admin/manage/tags', ['forum/infinitescroll', 'admin/selectable'], 
 			if (err) {
 				return app.alertError(err.message);
 			}
-			
+
 			app.alertSuccess('Tag Updated!');
 		});
 	}

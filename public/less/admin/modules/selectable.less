@@ -1,6 +1,7 @@
 .selectable {
 	.user-select(none);
-	
+	position: relative;
+
 	.selector {
 		position: absolute;
 		border: 1px solid #89B;
@@ -14,7 +15,7 @@
 		border: 1px solid transparent;
 		margin: 2px;
 
-		&.dropped, &.active {
+		&.selected, &.active {
 			background-color: #ECF1DB;
 			border: 1px dashed #9B8;
 		}
