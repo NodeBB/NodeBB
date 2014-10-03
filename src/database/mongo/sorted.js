@@ -26,6 +26,9 @@ module.exports = function(db, module) {
 	};
 
 	function sortedSetAddBulk(key, scores, values, callback) {
+		if (!scores.length || !values.length) {
+			return callback();
+		}
 		if (scores.length !== values.length) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}

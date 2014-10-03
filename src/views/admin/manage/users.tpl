@@ -2,12 +2,13 @@
 	<div class="col-sm-9">
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-user"></i> Users</div>
-			<div class="panel-body">			
+			<div class="panel-body">
 				<ul class="nav nav-pills">
 					<li class='active'><a href='{relative_path}/admin/manage/users/search'>Search</a></li>
 					<li class=''><a href='{relative_path}/admin/manage/users/latest'>Latest Users</a></li>
 					<li class=''><a href='{relative_path}/admin/manage/users/sort-posts'>Top Posters</a></li>
 					<li class=''><a href='{relative_path}/admin/manage/users/sort-reputation'>Most Reputation</a></li>
+					<li class=''><a href='{relative_path}/admin/manage/users/banned'>Banned</a></li>
 
 
 					<div class="btn-group pull-right">
@@ -105,7 +106,7 @@
 					<button id="load-more-users-btn" class="btn btn-primary">Load More</button>
 				</div>
 				<input type="hidden" template-variable="yourid" value="{yourid}" />
-				
+
 			</div>
 		</div>
 	</div>

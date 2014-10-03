@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 8, 27);
+	latestSchema = Date.UTC(2014, 9, 3);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -1040,6 +1040,49 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/9/27] Deleting tid:<tid>:read_by_uid skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 9, 3);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/10/3] Banned users sorted set');
+
+				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
+					if (err) {
+						return next(err);
+					}
+
+					async.eachLimit(uids, 50, function(uid, next) {
+						User.getMultipleUserFields(uids, ['uid', 'banned'], function(err, userData) {
+							if (err) {
+								return next(err);
+							}
+
+							var bannedUids = userData.filter(function(user) {
+								return user && parseInt(user.banned, 10) === 1;
+							}).map(function(user) {
+								return user.uid;
+							});
+							var timestamps = [];
+							var now = Date.now();
+							bannedUids.forEach(function() {
+								timestamps.push(now);
+							});
+							db.sortedSetAdd('users:banned', timestamps, bannedUids, next);
+						});
+					}, function(err) {
+						if (err) {
+							winston.error('[2014/10/3] Error encountered while updating banned users sorted set');
+							return next(err);
+						}
+
+						winston.info('[2014/10/3] Banned users added to sorted set');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2014/10/3] Banned users sorted set skipped');
 				next();
 			}
 		}
