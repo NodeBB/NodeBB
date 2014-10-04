@@ -1,5 +1,5 @@
 <div class="categories">
-	<div class="col-sm-9">
+	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-folder"></i> Categories</div>
 			<div class="panel-body">

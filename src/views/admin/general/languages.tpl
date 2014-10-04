@@ -1,5 +1,5 @@
 <div class="languages">
-	<div class="col-sm-9">
+	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading">Language Settings</div>
 			<div class="panel-body">
