@@ -18,7 +18,7 @@ module.exports = function(app, middleware, controllers) {
 			if (data) {
 				res.send(data);
 			} else {
-				res.json(404, {
+				res.status(404).json({
 					error: "User doesn't exist!"
 				});
 			}
@@ -30,7 +30,7 @@ module.exports = function(app, middleware, controllers) {
 			if (data) {
 				res.send(data);
 			} else {
-				res.send(404, "Category doesn't exist!");
+				res.status(404).send("Category doesn't exist!");
 			}
 		});
 	});
@@ -40,7 +40,7 @@ module.exports = function(app, middleware, controllers) {
 			if (data) {
 				res.send(data);
 			} else {
-				res.send(404, "Topic doesn't exist!");
+				res.status(404).send("Topic doesn't exist!");
 			}
 		});
 	});
@@ -50,7 +50,7 @@ module.exports = function(app, middleware, controllers) {
 			if (data) {
 				res.send(data);
 			} else {
-				res.send(404, "Post doesn't exist!");
+				res.status(404).send("Post doesn't exist!");
 			}
 		});
 	});

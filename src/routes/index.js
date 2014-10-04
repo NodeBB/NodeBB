@@ -183,7 +183,7 @@ function catch404(req, res, next) {
 	res.status(404);
 
 	if (isClientScript.test(req.url)) {
-		res.type('text/javascript').send(200, '');
+		res.type('text/javascript').status(200).send('');
 	} else if (isLanguage.test(req.url)) {
 		res.json(200, {});
 	} else if (req.accepts('html')) {

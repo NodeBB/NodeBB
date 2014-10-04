@@ -29,7 +29,7 @@
 			req.logout();
 		}
 
-		res.send(200);
+		res.status(200).send('');
 	}
 
 	function login(req, res, next) {
@@ -80,7 +80,7 @@
 		};
 
 		if(meta.config.allowLocalLogin !== undefined && parseInt(meta.config.allowLocalLogin, 10) === 0) {
-			return res.send(404);
+			return res.status(404).send('');
 		}
 
 		if (req.body.username && utils.isEmailValid(req.body.username)) {
@@ -98,7 +98,7 @@
 
 	function register(req, res) {
 		if(meta.config.allowRegistration !== undefined && parseInt(meta.config.allowRegistration, 10) === 0) {
-			return res.send(403);
+			return res.status(403).send('');
 		}
 
 		var userData = {};

@@ -43,12 +43,12 @@ function upload(req, res, filesIterator, next) {
 		deleteTempFiles(files);
 
 		if (err) {
-			return res.send(500, err.message);
+			return res.status(500).send(err.message);
 		}
 
 		// IE8 - send it as text/html so browser won't trigger a file download for the json response
 		// malsup.com/jquery/form/#file-upload
-		res.send(200, req.xhr ? images : JSON.stringify(images));
+		res.status(200).send(req.xhr ? images : JSON.stringify(images));
 	});
 }
 

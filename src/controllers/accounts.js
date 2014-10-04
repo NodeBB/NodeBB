@@ -24,7 +24,7 @@ var fs = require('fs'),
 
 function userNotFound(res) {
 	if (res.locals.isAPI) {
-		res.json(404, 'user-not-found');
+		res.status(404).json('user-not-found');
 	} else {
 		res.render('404', {
 			error: 'User not found!'
@@ -34,7 +34,7 @@ function userNotFound(res) {
 
 function userNotAllowed(res) {
 	if (res.locals.isAPI) {
-		res.json(403, 'not-allowed');
+		res.status(403).json('not-allowed');
 	} else {
 		res.render('403', {
 			error: 'Not allowed.'

@@ -27,7 +27,7 @@ var app,
 middleware.authenticate = function(req, res, next) {
 	if(!req.user) {
 		if (res.locals.isAPI) {
-			return res.json(403, 'not-allowed');
+			return res.status(403).json('not-allowed');
 		} else {
 			return res.redirect(nconf.get('url') + '/403');
 		}
@@ -68,7 +68,7 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 		}
 
 		if (res.locals.isAPI) {
-			res.json(302, '/user/' + userslug);
+			res.status(302).json('/user/' + userslug);
 		} else {
 			res.redirect('/user/' + userslug);
 		}
@@ -91,7 +91,7 @@ middleware.addSlug = function(req, res, next) {
 				return next(err);
 			}
 			var url = name + encodeURI(slug);
-			res.locals.isAPI ? res.json(302, url) : res.redirect(url);
+			res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
 		});
 	}
 
@@ -119,10 +119,10 @@ middleware.checkTopicIndex = function(req, res, next) {
 
 		if (topicIndex > topicCount) {
 			url = '/category/' + req.params.category_id + '/' + req.params.slug + '/' + topicCount;
-			return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
+			return res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
 		} else if (topicIndex < 1) {
 			url = '/category/' + req.params.category_id + '/' + req.params.slug;
-			return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
+			return res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
 		}
 		next();
 	});
@@ -146,7 +146,7 @@ middleware.checkGlobalPrivacySettings = function(req, res, next) {
 
 	if (!callerUID && !!parseInt(meta.config.privateUserInfo, 10)) {
 		if (res.locals.isAPI) {
-			return res.json(403, 'not-allowed');
+			return res.status(403).json('not-allowed');
 		} else {
 			req.session.returnTo = req.url;
 			return res.redirect('login');
@@ -171,7 +171,7 @@ middleware.checkAccountPermissions = function(req, res, next) {
 		}
 
 		if (!uid) {
-			return res.locals.isAPI ? res.json(404, 'not-found') : res.redirect(nconf.get('relative_path') + '/404');
+			return res.locals.isAPI ? res.status(404).json('not-found') : res.redirect(nconf.get('relative_path') + '/404');
 		}
 
 		if (parseInt(uid, 10) === callerUID) {
@@ -187,7 +187,7 @@ middleware.checkAccountPermissions = function(req, res, next) {
 				return next();
 			}
 
-			res.locals.isAPI ? res.json(403, 'not-allowed') : res.redirect(nconf.get('relative_path') + '/403');
+			res.locals.isAPI ? res.status(403).json('not-allowed') : res.redirect(nconf.get('relative_path') + '/403');
 		});
 	});
 };
