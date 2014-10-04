@@ -104,7 +104,7 @@
 						<li class="nav-header"><i class="fa fa-fw fa-comments-o"></i> Manage</li>
 						<li><a href="{relative_path}/admin/manage/categories/active">Categories</a></li>
 						<li><a href="{relative_path}/admin/manage/tags">Tags</a></li>
-						<li><a href="{relative_path}/admin/manage/users/latest">Users</a></li>
+						<li><a href="{relative_path}/admin/manage/users">Users</a></li>
 						<li><a href="{relative_path}/admin/manage/groups">Groups</a></li>
 					</ul>
 				</div>

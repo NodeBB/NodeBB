@@ -46,7 +46,7 @@ function addRoutes(router, middleware, controllers) {
 
 	router.get('/manage/tags', controllers.admin.tags.get);
 
-	router.get('/manage/users', controllers.admin.users.search);
+	router.get('/manage/users', controllers.admin.users.sortByJoinDate);
 	router.get('/manage/users/search', controllers.admin.users.search);
 	router.get('/manage/users/latest', controllers.admin.users.sortByJoinDate);
 	router.get('/manage/users/sort-posts', controllers.admin.users.sortByPosts);

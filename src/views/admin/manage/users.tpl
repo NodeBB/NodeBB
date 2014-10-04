@@ -4,11 +4,11 @@
 			<div class="panel-heading"><i class="fa fa-user"></i> Users</div>
 			<div class="panel-body">
 				<ul class="nav nav-pills">
-					<li class='active'><a href='{relative_path}/admin/manage/users/search'>Search</a></li>
-					<li class=''><a href='{relative_path}/admin/manage/users/latest'>Latest Users</a></li>
+					<li class='active'><a href='{relative_path}/admin/manage/users/latest'>Latest Users</a></li>
 					<li class=''><a href='{relative_path}/admin/manage/users/sort-posts'>Top Posters</a></li>
 					<li class=''><a href='{relative_path}/admin/manage/users/sort-reputation'>Most Reputation</a></li>
 					<li class=''><a href='{relative_path}/admin/manage/users/banned'>Banned</a></li>
+					<li class=''><a href='{relative_path}/admin/manage/users/search'>User Search</a></li>
 
 
 					<div class="btn-group pull-right">
