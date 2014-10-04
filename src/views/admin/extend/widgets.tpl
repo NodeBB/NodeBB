@@ -38,7 +38,7 @@
 				<div class="available-widgets">
 					<p>Drag and drop widgets into templates</p>
 					<!-- IF !widgets.length -->
-					<div class="alert alert-info">No widgets found! Activate the essential widgets plugin in the <a href="/admin/plugins">plugins</a> control panel.</div>
+					<div class="alert alert-info">No widgets found! Activate the essential widgets plugin in the <a href="/admin/extend/plugins">plugins</a> control panel.</div>
 					<!-- ENDIF !widgets.length -->
 					<div class="row">
 						<!-- BEGIN widgets -->
