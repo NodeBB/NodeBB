@@ -90,8 +90,14 @@ middleware.addSlug = function(req, res, next) {
 			if (err || !slug || slug === id + '/') {
 				return next(err);
 			}
+
 			var url = name + encodeURI(slug);
-			res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
+
+			if (res.locals.isAPI) {
+				res.status(302).json(url);
+			} else {
+				res.redirect(url);
+			}
 		});
 	}
 
@@ -187,7 +193,11 @@ middleware.checkAccountPermissions = function(req, res, next) {
 				return next();
 			}
 
-			res.locals.isAPI ? res.status(403).json('not-allowed') : res.redirect(nconf.get('relative_path') + '/403');
+			if (res.locals.isAPI) {
+				res.status(403).json('not-allowed');
+			} else {
+				res.redirect(nconf.get('relative_path') + '/403');
+			}
 		});
 	});
 };
@@ -355,7 +365,7 @@ middleware.renderHeader = function(req, res, callback) {
 			templateValues.user = results.user;
 			templateValues.customCSS = results.customCSS;
 			templateValues.customJS = results.customJS;
-			templateValues.maintenanceHeader = meta.config.maintenanceMode === '1' && !results.isAdmin
+			templateValues.maintenanceHeader = meta.config.maintenanceMode === '1' && !results.isAdmin;
 
 			app.render('header', templateValues, callback);
 		});
