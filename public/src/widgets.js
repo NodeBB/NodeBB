@@ -33,7 +33,7 @@
 		function renderWidgets(locations) {
 			var areaDatas = [];
 
-			$.get(RELATIVE_PATH + '/api/widgets/render', {
+			$.get(RELATIVE_PATH + '/api/widgets/render' + (config['cache-buster'] ? '?v=' + config['cache-buster'] : ''), {
 				locations: locations,
 				template: template + '.tpl',
 				url: url
