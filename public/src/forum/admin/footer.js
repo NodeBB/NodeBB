@@ -86,7 +86,7 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 				if (acpIndex.hasOwnProperty(file)) {
 					acpIndex[file] = acpIndex[file].replace(/<img/g, '<none'); // can't think of a better solution, see #2153
 					acpIndex[file] = $('<div class="search-container">' + acpIndex[file] + '</div>');
-					acpIndex[file].find('ul.nav, script').remove();
+					acpIndex[file].find('script').remove();
 
 					acpIndex[file] = acpIndex[file].text().toLowerCase().replace(/[ |\r|\n]+/g, ' ');
 				}
@@ -100,10 +100,15 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 	}
 	
 	function setupACPSearch() {
-		var menu = $('#acp-search .dropdown-menu');
+		var menu = $('#acp-search .dropdown-menu'),
+			routes = [];
 
 		$('#acp-search input').on('keyup', function() {
 			$('#acp-search .dropdown').addClass('open');
+		});
+
+		$('.sidebar-nav a').each(function(idx, link) {
+			routes.push($(link).attr('href'));
 		});
 
 		$('#acp-search input').on('keyup focus', function() {
@@ -135,8 +140,11 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 							}
 
 							title = title.join(' > ');
+							href = RELATIVE_PATH + href;
 
-							menuItems.append('<li role="presentation"><a role="menuitem" href="' + RELATIVE_PATH + href + '">' + title + '<br /><small><code>...' + description + '...</code></small></a></li>');
+							if ($.inArray(href, routes) !== -1) {
+								menuItems.append('<li role="presentation"><a role="menuitem" href="' + href + '">' + title + '<br /><small><code>...' + description + '...</code></small></a></li>');
+							}
 						}
 					}
 				}
