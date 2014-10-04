@@ -4,13 +4,13 @@ var eventEmitter = new (require('events')).EventEmitter();
 
 
 eventEmitter.all = function(events, callback) {
+	var eventList = events.slice(0);
+
 	function onEvent(event) {
 		eventEmitter.on(events[event], function() {
-			if (events.indexOf(event) !== -1) {
-				events.splice(events.indexOf(event), 1);
-			}
+			eventList.splice(eventList.indexOf(events[event]), 1);
 
-			if (events.length === 0) {
+			if (eventList.length === 0) {
 				callback();
 			}
 		});
