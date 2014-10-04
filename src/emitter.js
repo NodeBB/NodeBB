@@ -6,7 +6,9 @@ var eventEmitter = new (require('events')).EventEmitter();
 eventEmitter.all = function(events, callback) {
 	function onEvent(event) {
 		eventEmitter.on(events[event], function() {
-			events.splice(events.indexOf(event), 1);
+			if (events.indexOf(event) !== -1) {
+				events.splice(events.indexOf(event), 1);
+			}
 
 			if (events.length === 0) {
 				callback();
