@@ -18,22 +18,29 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 		}
 
 		function update(className, state) {
-			$('#users-container .users-box.selected ' + className +'.label').each(function() {
+			$('#users-container .users-box .selected').siblings('.labels').find(className).each(function() {
 				$(this).toggleClass('hide', !state);
 			});
 		}
 
 		function unselectAll() {
-			$('#users-container .users-box.selected').removeClass('selected')
+			$('#users-container .users-box .selected').removeClass('selected');
 		}
 
 		function removeSelected() {
-			$('#users-container .users-box.selected').remove();
+			$('#users-container .users-box .selected').remove();
 		}
 
-		$('.ban-user').on('click', function(ev) {
-			ev.preventDefault();
+		function done(successMessage) {
+			return function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				app.alertSuccess(successMessage);
+			};
+		}
 
+		$('.ban-user').on('click', function() {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return false;
@@ -41,12 +48,7 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 
 			bootbox.confirm('Do you really want to ban?', function(confirm) {
 				if (confirm) {
-					socket.emit('admin.user.banUsers', uids, function(err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-						app.alertSuccess('User(s) banned!');
-					});
+					socket.emit('admin.user.banUsers', uids, done('User(s) banned!'));
 					update('.ban', true);
 					unselectAll();
 				}
@@ -54,48 +56,30 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 			return false;
 		});
 
-		$('.unban-user').on('click', function(ev) {
-			ev.preventDefault();
-
+		$('.unban-user').on('click', function() {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
 			}
 
-			socket.emit('admin.user.unbanUsers', uids, function(err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				app.alertSuccess('User(s) unbanned!');
-			});
-
+			socket.emit('admin.user.unbanUsers', uids, done('User(s) unbanned!'));
 			update('.ban', false);
 			unselectAll();
 			return false;
 		});
 
-		$('.reset-lockout').on('click', function(ev) {
-			ev.preventDefault();
-
+		$('.reset-lockout').on('click', function() {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
 			}
 
-			socket.emit('admin.user.resetLockouts', uids, function(err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				app.alertSuccess('Lockout(s) reset!');
-			});
-
+			socket.emit('admin.user.resetLockouts', uids, done('Lockout(s) reset!'));
 			unselectAll();
 			return false;
 		});
 
-		$('.admin-user').on('click', function(ev) {
-			ev.preventDefault();
-
+		$('.admin-user').on('click', function() {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
@@ -104,22 +88,14 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 			if (uids.indexOf(yourid) !== -1) {
 				app.alertError('You can\'t remove yourself as Administrator!');
 			} else {
-				socket.emit('admin.user.makeAdmins', uids, function(err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					app.alertSuccess('User(s) are now administrators.');
-				});
-
+				socket.emit('admin.user.makeAdmins', uids, done('User(s) are now administrators.'));
 				update('.administrator', true);
 				unselectAll();
 			}
 			return false;
 		});
 
-		$('.remove-admin-user').on('click', function(ev) {
-			ev.preventDefault();
-
+		$('.remove-admin-user').on('click', function() {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
@@ -130,13 +106,7 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 			} else {
 				bootbox.confirm('Do you really want to remove admins?', function(confirm) {
 					if (confirm) {
-						socket.emit('admin.user.removeAdmins', uids, function(err) {
-							if (err) {
-								return app.alertError(err.message);
-							}
-							app.alertSuccess('User(s) are no longer administrators.');
-						});
-
+						socket.emit('admin.user.removeAdmins', uids, done('User(s) are no longer administrators.'));
 						update('.administrator', false);
 						unselectAll();
 					}
@@ -145,9 +115,7 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 			return false;
 		});
 
-		$('.delete-user').on('click', function(ev) {
-			ev.preventDefault();
-
+		$('.delete-user').on('click', function() {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
