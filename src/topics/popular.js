@@ -10,8 +10,7 @@ module.exports = function(Topics) {
 	var terms = {
 		daily: 'day',
 		weekly: 'week',
-		monthly: 'month',
-		yearly: 'year'
+		monthly: 'month'
 	};
 
 	Topics.getPopular = function(term, uid, count, callback) {
