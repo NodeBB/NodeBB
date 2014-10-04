@@ -101,10 +101,23 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 	
 	function setupACPSearch() {
 		var menu = $('#acp-search .dropdown-menu'),
-			routes = [];
+			routes = [],
+			firstResult = null;
 
 		$('#acp-search input').on('keyup', function() {
 			$('#acp-search .dropdown').addClass('open');
+		});
+
+		$('#acp-search').parents('form').on('submit', function(ev) {
+			var href = firstResult ? firstResult : RELATIVE_PATH + '/search/' + $(this).find('input').val();
+			ajaxify.go(href.replace(/^\//, ''));
+
+			setTimeout(function() {
+				$('#acp-search .dropdown').removeClass('open');
+			}, 150);
+
+			ev.preventDefault();
+			return false;
 		});
 
 		$('.sidebar-nav a').each(function(idx, link) {
@@ -119,6 +132,8 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 			function toUpperCase(txt){
 				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
 			}
+
+			firstResult = null;
 
 			if (value.length >= 3) {
 				for (var file in acpIndex) {
@@ -141,6 +156,7 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 
 							title = title.join(' > ');
 							href = RELATIVE_PATH + href;
+							firstResult = firstResult ? firstResult : href;
 
 							if ($.inArray(href, routes) !== -1) {
 								menuItems.append('<li role="presentation"><a role="menuitem" href="' + href + '">' + title + '<br /><small><code>...' + description + '...</code></small></a></li>');
