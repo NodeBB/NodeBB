@@ -98,7 +98,7 @@ module.exports = function(Meta) {
 				process.exit(0);
 			}
 		});
-	}
+	};
 
 	function minify(source, paths, destination, callback) {	
 		var	parser = new (less.Parser)({
@@ -114,8 +114,10 @@ module.exports = function(Meta) {
 				return;
 			}
 
+			var css;
+
 			try {
-				var css = tree.toCSS({
+				css = tree.toCSS({
 					cleancss: true
 				});
 			} catch (err) {

@@ -53,7 +53,9 @@ var async = require('async'),
 				emitter.emit('nodebb:ready');
 			}
 
-			if (callback) callback.apply(null, arguments);
+			if (callback) {
+				callback.apply(null, arguments);
+			}
 		});
 	};
 

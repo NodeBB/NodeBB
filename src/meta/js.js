@@ -113,7 +113,9 @@ module.exports = function(Meta) {
 				}, next);
 			}
 		], function(err) {
-			if (err) return callback(err);
+			if (err) {
+				return callback(err);
+			}
 
 			// Convert all scripts to paths relative to the NodeBB base directory
 			var basePath = path.resolve(__dirname, '../..');
@@ -237,7 +239,9 @@ module.exports = function(Meta) {
 
 	function getPluginScripts(callback) {
 		plugins.fireHook('filter:scripts.get', [], function(err, scripts) {
-			if (err) callback(err, []);
+			if (err) {
+				callback(err, []);
+			}
 
 			var jsPaths = scripts.map(function (jsPath) {
 					jsPath = path.normalize(jsPath);
@@ -264,5 +268,5 @@ module.exports = function(Meta) {
 			Meta.js.scripts.plugin = jsPaths.filter(Boolean);
 			callback();
 		});
-	};
+	}
 };

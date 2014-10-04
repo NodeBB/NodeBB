@@ -113,7 +113,7 @@ SocketMeta.rooms.getAll = function(socket, data, callback) {
 					scores[length] = [tid[1]];
 				}
 			} else if (room.match(/^\/category/)) {
-				socketData.users.category += rooms[room].length
+				socketData.users.category += rooms[room].length;
 			}
 		}
 	}
@@ -132,7 +132,7 @@ SocketMeta.rooms.getAll = function(socket, data, callback) {
 			socketData.topics[tid] = {
 				value: rooms['/topic_' + tid].length,
 				title: validator.escape(titles[id].title)
-			}
+			};
 		});
 
 		callback(null, socketData);
