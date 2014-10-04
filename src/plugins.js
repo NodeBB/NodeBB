@@ -147,9 +147,10 @@ var fs = require('fs'),
 				return callback(pluginPath.match('nodebb-theme') ? null : err);
 			}
 
+			var pluginData, libraryPath, staticDir;
+
 			try {
-				var pluginData = JSON.parse(data),
-					libraryPath, staticDir;
+				pluginData = JSON.parse(data);
 			} catch (err) {
 				var pluginDir = pluginPath.split(path.sep);
 				pluginDir = pluginDir[pluginDir.length -1];
