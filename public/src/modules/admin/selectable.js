@@ -8,7 +8,7 @@ define('admin/selectable', function() {
 	// modified from http://threedubmedia.com/code/event/drop/demo/selection
 	selectable.enable = function(parentElement, elementsToSelect, events) {
 		function selected(element) {
-			var $element = $(element).addClass('selected');
+			var $element = $(element).toggleClass('selected');
 
 			if (events && typeof events.onSelected === 'function') {
 				events.onSelected($element);
