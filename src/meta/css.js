@@ -74,6 +74,8 @@ module.exports = function(Meta) {
 						});
 					}
 
+					emitter.emit('meta:css.compiled');
+
 					if (typeof callback === 'function') {
 						callback();
 					}
@@ -134,7 +136,6 @@ module.exports = function(Meta) {
 			Meta.css.hash = hash;
 
 			winston.info('[meta/css] Done.');
-			emitter.emit('meta:css.compiled');
 
 			// Save the compiled CSS in public/ so things like nginx can serve it
 			if (!cluster.isWorker || process.env.cluster_setup === 'true') {
