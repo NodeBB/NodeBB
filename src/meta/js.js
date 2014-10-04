@@ -147,7 +147,6 @@ module.exports = function(Meta) {
 					Meta.js.cache = minifiedString;
 					Meta.js.map = mapString;
 					winston.info('[meta/js] Compilation complete');
-					emitter.emit('meta:js.compiled');
 					minifier.kill();
 
 					if (cluster.isWorker) {
@@ -228,6 +227,7 @@ module.exports = function(Meta) {
 		], function (err) {
 			if (!err) {
 				winston.info('[meta/js] Client-side minfile and mapping committed to disk.');
+				emitter.emit('meta:js.compiled');
 			} else {
 				winston.error('[meta/js] ' + err.message);
 				process.exit(0);
