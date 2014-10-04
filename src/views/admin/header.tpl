@@ -147,12 +147,10 @@
 						<li><a href="{relative_path}/admin/advanced/logs">Logs</a></li>
 					</ul>
 				</div>
+				<!-- IF authentication.length -->
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
 						<li class="nav-header"><i class="fa fa-fw fa-facebook-square"></i> Social Authentication</li>
-						<!-- IF !authentication.length -->
-						<li><a href="{relative_path}/admin/extend/plugins">Install SSO Plugins</a></li>
-						<!-- ENDIF !authentication.length -->
 						<!-- BEGIN authentication -->
 						<li>
 							<a href="{relative_path}/admin{authentication.route}">{authentication.name}</a>
@@ -160,6 +158,8 @@
 						<!-- END authentication -->
 					</ul>
 				</div>
+				<!-- ENDIF authentication.length -->
+				<!-- IF plugins.length -->
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
 						<li class="nav-header"><i class="fa fa-fw fa-th"></i> Installed Plugins</li>
@@ -170,6 +170,7 @@
 						<!-- END plugins -->
 					</ul>
 				</div>
+				<!-- ENDIF plugins.length -->
 				<!-- IF env -->
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
