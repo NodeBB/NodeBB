@@ -161,14 +161,14 @@ adminController.database.get = function(req, res, next) {
 };
 
 adminController.events.get = function(req, res, next) {
-	events.getLog(function(err, data) {
+	events.getLog(-1, 5000, function(err, data) {
 		if(err || !data) {
 			return next(err);
 		}
 
-		data = data.toString().split('\n').reverse().join('\n');
 		res.render('admin/advanced/events', {
-			eventdata: data
+			eventdata: data.data,
+			next: data.next
 		});
 	});
 };

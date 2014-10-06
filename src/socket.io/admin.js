@@ -241,4 +241,12 @@ SocketAdmin.clearLog = function(socket, data, callback) {
 	fs.truncate(logPath, callback);
 };
 
+SocketAdmin.getMoreEvents = function(socket, next, callback) {
+	if (parseInt(next, 10) < 0) {
+		return callback(null, {data: [], next: next});
+	}
+	events.getLog(next, 5000, callback);
+};
+
+
 module.exports = SocketAdmin;
