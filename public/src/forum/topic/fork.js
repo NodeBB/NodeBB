@@ -13,6 +13,18 @@ define('forum/topic/fork', function() {
 		$('.fork_thread').on('click', onForkThreadClicked);
 	};
 
+	function disableClicks() {
+		return false;
+	}
+
+	function disableClicksOnPosts() {
+		$('.post-row').on('click', 'button,a', disableClicks);
+	}
+
+	function enableClicksOnPosts() {
+		$('.post-row').off('click', 'button,a', disableClicks);
+	}
+
 	function onForkThreadClicked() {
 		forkModal = $('#fork-thread-modal');
 		forkCommit = forkModal.find('#fork_thread_commit');
@@ -26,6 +38,8 @@ define('forum/topic/fork', function() {
 		$('#post-container').on('click', 'li[data-pid]', function() {
 			togglePostSelection($(this));
 		});
+
+		disableClicksOnPosts();
 
 		forkCommit.on('click', createTopicFromPosts);
 	}
@@ -115,6 +129,7 @@ define('forum/topic/fork', function() {
 		}
 		forkModal.addClass('hide');
 		$('#post-container').off('click', 'li[data-pid]');
+		enableClicksOnPosts();
 	}
 
 	return Fork;
