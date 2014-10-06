@@ -54,7 +54,7 @@ define('forum/admin/extend/plugins', function() {
 						app.alert({
 							alert_id: 'plugin_toggled',
 							title: 'Plugin ' + (status.installed ? 'Installed' : 'Uninstalled'),
-							message: status.installed ? 'You still have to activate this plugin to use it!' : 'The plugin is also deactivated!',
+							message: status.installed ? 'Plugin successfully installed, please activate the plugin.' : 'The plugin has been successfully deactivated and uninstalled.',
 							type: 'info',
 							timeout: 5000
 						});
