@@ -82,7 +82,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			var self = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
 
 			userData.joindate = utils.toISOString(userData.joindate);
-			if(userData.lastonline) {
+			if (userData.lastonline) {
 				userData.lastonline = utils.toISOString(userData.lastonline);
 			} else {
 				userData.lastonline = userData.joindate;
@@ -95,13 +95,13 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			}
 
 			if (!(isAdmin || self || (userData.email && userSettings.showemail))) {
-				userData.email = "";
+				userData.email = '';
 			}
 
-			if (self && !userSettings.showemail) {
-				userData.emailClass = "";
-			} else {
-				userData.emailClass = "hide";
+			userData.emailClass = (self && !userSettings.showemail) ? '' : 'hide';
+
+			if (!self && !userSettings.showfullname) {
+				userData.fullname = '';
 			}
 
 			if (isAdmin || self) {
@@ -113,8 +113,8 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.uid = userData.uid;
 			userData.yourid = callerUID;
 			userData.theirid = userData.uid;
-			userData.isSelf = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
-			userData.showSettings = userData.isSelf || isAdmin;
+			userData.isSelf = self;
+			userData.showSettings = self || isAdmin;
 			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
 			userData.profile_links = results.profile_links;
