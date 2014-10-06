@@ -3,7 +3,10 @@
 
 define('forum/admin/general/dashboard', ['semver'], function(semver) {
 	var	Admin = {},
-		updateIntervalId = 0,
+		intervals = {
+			rooms: false,
+			graphs: false
+		},
 		isMobile = false;
 
 
@@ -13,14 +16,19 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 
 		isMobile = !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-		if (updateIntervalId) {
-			clearInterval(updateIntervalId);
-		}
-		updateIntervalId = setInterval(function() {
+		intervals.rooms = setInterval(function() {
 			if (app.isFocused && app.isConnected) {
 				socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
 			}
 		}, 5000);
+
+		$(window).on('action:ajaxify.start', function(ev, data) {
+			clearInterval(intervals.rooms);
+			clearInterval(intervals.graphs);
+
+			intervals.rooms = null;
+			intervals.graphs = null;
+		});
 
 		$('#logout-link').on('click', function() {
 			$.post(RELATIVE_PATH + '/logout', function() {
@@ -288,7 +296,7 @@ define('forum/admin/general/dashboard', ['semver'], function(semver) {
 			window.open(RELATIVE_PATH + '/topic/' + obj[0].tid);
 		};
 
-		setInterval(updateTrafficGraph, 15000);
+		intervals.graphs = setInterval(updateTrafficGraph, 15000);
 		updateTrafficGraph();
 
 		$(window).on('resize', adjustPieCharts);
