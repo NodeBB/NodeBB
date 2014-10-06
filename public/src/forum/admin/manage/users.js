@@ -110,6 +110,20 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 			return false;
 		});
 
+		$('.validate-email').on('click', function() {
+			var uids = getSelectedUids();
+			if (!uids.length) {
+				return;
+			}
+
+			bootbox.confirm('Do you want to validate email(s) of these user(s)?', function(confirm) {
+				if (confirm) {
+					socket.emit('admin.user.validateEmail', uids, done('Emails validated', '.notvalidated', false));
+				}
+			});
+			return false;
+		});
+
 		$('.delete-user').on('click', function() {
 			var uids = getSelectedUids();
 			if (!uids.length) {

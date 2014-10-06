@@ -17,6 +17,8 @@
 							<li><a href="#" class="admin-user"><i class="fa fa-fw fa-shield"></i> Make Admin</a></li>
 							<li><a href="#" class="remove-admin-user"><i class="fa fa-fw fa-ban"></i> Remove Admin</a></li>
 							<li class="divider"></li>
+							<li><a href="#" class="validate-email"><i class="fa fa-fw fa-check"></i> Validate Email</a></li>
+							<li class="divider"></li>
 							<li><a href="#" class="ban-user"><i class="fa fa-fw fa-gavel"></i> Ban User</a></li>
 							<li><a href="#" class="unban-user"><i class="fa fa-fw fa-comment-o"></i> Unban User</a></li>
 							<li><a href="#" class="reset-lockout"><i class="fa fa-fw fa-unlock"></i> Reset Lockout</a></li>
@@ -41,11 +43,16 @@
 						<div class="user-image">
 							<img src="{users.picture}" class="img-thumbnail user-selectable"/>
 							<div class="labels">
+								<!-- IF requireEmailConfirmation -->
+								<!-- IF !users.email:confirmed -->
+								<span class="notvalidated label label-danger">Not Validated</span>
+								<!-- ENDIF !users.email:confirmed -->
+								<!-- ENDIF requireEmailConfirmation -->
 								<span class="administrator label label-primary <!-- IF !users.administrator -->hide<!-- ENDIF !users.administrator -->">Admin</span>
 								<span class="ban label label-danger <!-- IF !users.banned -->hide<!-- ENDIF !users.banned -->">Banned</span>
 							</div>
 						</div>
-						
+
 						<a href="{relative_path}/user/{users.userslug}" target="_blank">{users.username} ({users.uid})</a>
 					</div>
 					<!-- END users -->

@@ -241,7 +241,7 @@ var	async = require('async'),
 	User.getUsers = function(uids, callback) {
 		async.parallel({
 			userData: function(next) {
-				User.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'postcount', 'reputation'], next);
+				User.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'postcount', 'reputation', 'email:confirmed'], next);
 			},
 			isAdmin: function(next) {
 				User.isAdministrator(uids, next);
@@ -262,6 +262,7 @@ var	async = require('async'),
 				user.status = !results.isOnline[index] ? 'offline' : user.status;
 				user.administrator = results.isAdmin[index];
 				user.banned = parseInt(user.banned, 10) === 1;
+				user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
 			});
 
 			callback(err, results.userData);

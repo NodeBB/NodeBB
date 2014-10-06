@@ -104,6 +104,20 @@ User.resetLockouts = function(socket, uids, callback) {
 	async.each(uids, user.auth.resetLockout, callback);
 };
 
+User.validateEmail = function(socket, uids, callback) {
+	if (!Array.isArray(uids)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	uids = uids.filter(function(uid) {
+		return parseInt(uid, 10);
+	});
+
+	async.each(uids, function(uid, next) {
+		user.setUserField(uid, 'email:confirmed', 1, next);
+	}, callback);
+};
+
 User.deleteUsers = function(socket, uids, callback) {
 	if(!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
