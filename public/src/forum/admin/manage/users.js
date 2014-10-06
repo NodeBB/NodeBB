@@ -31,12 +31,16 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 			$('#users-container .users-box .selected').remove();
 		}
 
-		function done(successMessage) {
+		function done(successMessage, className, flag) {
 			return function(err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 				app.alertSuccess(successMessage);
+				if (className) {
+					update(className, flag);
+				}
+				unselectAll();
 			};
 		}
 
@@ -48,9 +52,7 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 
 			bootbox.confirm('Do you really want to ban?', function(confirm) {
 				if (confirm) {
-					socket.emit('admin.user.banUsers', uids, done('User(s) banned!'));
-					update('.ban', true);
-					unselectAll();
+					socket.emit('admin.user.banUsers', uids, done('User(s) banned!', '.ban', true));
 				}
 			});
 			return false;
@@ -62,9 +64,7 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 				return;
 			}
 
-			socket.emit('admin.user.unbanUsers', uids, done('User(s) unbanned!'));
-			update('.ban', false);
-			unselectAll();
+			socket.emit('admin.user.unbanUsers', uids, done('User(s) unbanned!', '.ban', false));
 			return false;
 		});
 
@@ -75,7 +75,6 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 			}
 
 			socket.emit('admin.user.resetLockouts', uids, done('Lockout(s) reset!'));
-			unselectAll();
 			return false;
 		});
 
@@ -88,9 +87,7 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 			if (uids.indexOf(yourid) !== -1) {
 				app.alertError('You can\'t remove yourself as Administrator!');
 			} else {
-				socket.emit('admin.user.makeAdmins', uids, done('User(s) are now administrators.'));
-				update('.administrator', true);
-				unselectAll();
+				socket.emit('admin.user.makeAdmins', uids, done('User(s) are now administrators.', '.administrator', true));
 			}
 			return false;
 		});
@@ -106,9 +103,7 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 			} else {
 				bootbox.confirm('Do you really want to remove admins?', function(confirm) {
 					if (confirm) {
-						socket.emit('admin.user.removeAdmins', uids, done('User(s) are no longer administrators.'));
-						update('.administrator', false);
-						unselectAll();
+						socket.emit('admin.user.removeAdmins', uids, done('User(s) are no longer administrators.', '.administrator', false));
 					}
 				});
 			}

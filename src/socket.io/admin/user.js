@@ -14,9 +14,21 @@ User.makeAdmins = function(socket, uids, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	async.each(uids, function(uid, next) {
-		groups.join('administrators', uid, next);
-	}, callback);
+	user.getMultipleUserFields(uids, ['banned'], function(err, userData) {
+		if (err) {
+			return callback(err);
+		}
+
+		for(var i=0; i<userData.length; i++) {
+			if (userData[i] && parseInt(userData[i].banned, 10) === 1) {
+				return callback(new Error('[[error:cant-make-banned-users-admin]]'));
+			}
+		}
+
+		async.each(uids, function(uid, next) {
+			groups.join('administrators', uid, next);
+		}, callback);
+	});
 };
 
 User.removeAdmins = function(socket, uids, callback) {
