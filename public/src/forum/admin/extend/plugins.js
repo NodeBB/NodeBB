@@ -39,20 +39,17 @@ define('forum/admin/extend/plugins', function() {
 						.find('i').attr('class', 'fa fa-refresh fa-spin');
 
 					socket.emit('admin.plugins.toggleInstall', pluginID, function(err, status) {
-						var activateBtn = $('.plugins li[data-plugin-id="' + pluginID + '"] button[data-action="toggleActive"]');
+						var activateBtn = $('<button data-action="toggleActive" class="btn btn-success"><i class="fa fa-power-off"></i> Activate</button>');
 
 						if (status.installed) {
 							btn.html('<i class="fa fa-trash-o"></i> Uninstall');
+							activateBtn.insertBefore(btn);
 						} else {
 							btn.html('<i class="fa fa-download"></i> Install');
 						}
 
 						btn.toggleClass('btn-danger', status.installed).toggleClass('btn-success', !status.installed)
 							.attr('disabled', false);
-
-						activateBtn.toggleClass('hide', !status.installed);
-						activateBtn.html('<i class="fa fa-power-off"></i> Activate');
-						activateBtn.toggleClass('btn-success', true).toggleClass('btn-warning', false);
 
 						app.alert({
 							alert_id: 'plugin_toggled',
