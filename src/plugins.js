@@ -172,7 +172,7 @@ var fs = require('fs'),
 			// End backwards compatibility block (#1437)
 
 			if (pluginData.compatibility && semver.validRange(pluginData.compatibility)) {
-				if (semver.ltr(pkg.version, pluginData.compatibility)) {
+				if (!semver.gtr(pkg.version, pluginData.compatibility)) {
 					// NodeBB may not be new enough to run this plugin
 					process.stdout.write('\n');
 					winston.warn('[plugins/' + pluginData.id + '] This plugin may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing.');
