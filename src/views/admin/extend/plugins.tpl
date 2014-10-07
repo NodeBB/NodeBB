@@ -36,6 +36,7 @@
 					<!-- IF !plugins.installed -->
 					<li data-plugin-id="{plugins.id}" class="clearfix">
 						<div class="pull-right">
+							<button data-action="toggleActive" class="btn btn-success hidden"><i class="fa fa-power-off"></i> Activate</button>
 							<button data-action="toggleInstall" class="btn btn-success"><i class="fa fa-download"></i> Install</button>
 						</div>
 

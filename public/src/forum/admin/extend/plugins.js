@@ -34,19 +34,23 @@ define('forum/admin/extend/plugins', function() {
 					pluginID = $(this).parents('li').attr('data-plugin-id');
 
 					var btn = $(this);
+					var activateBtn = btn.siblings('[data-action="toggleActive"]');
 					btn.html(btn.html() + 'ing')
 						.attr('disabled', true)
 						.find('i').attr('class', 'fa fa-refresh fa-spin');
 
 					socket.emit('admin.plugins.toggleInstall', pluginID, function(err, status) {
-						var activateBtn = $('<button data-action="toggleActive" class="btn btn-success"><i class="fa fa-power-off"></i> Activate</button>');
+						if (err) {
+							return app.alertError(err.message);
+						}
 
 						if (status.installed) {
 							btn.html('<i class="fa fa-trash-o"></i> Uninstall');
-							activateBtn.insertBefore(btn);
 						} else {
 							btn.html('<i class="fa fa-download"></i> Install');
+
 						}
+						activateBtn.toggleClass('hidden', !status.installed);
 
 						btn.toggleClass('btn-danger', status.installed).toggleClass('btn-success', !status.installed)
 							.attr('disabled', false);
