@@ -244,7 +244,7 @@ define('forum/admin/manage/categories', ['uploader', 'forum/admin/iconSelect'], 
 					if (err) {
 						return app.alertError(err.message);
 					}
-					ajaxify.go('admin/categories/active');
+					ajaxify.go('admin/manage/categories/active');
 				});
 			});
 
@@ -259,7 +259,7 @@ define('forum/admin/manage/categories', ['uploader', 'forum/admin/iconSelect'], 
 
 				socket.emit('admin.categories.update', payload, function(err) {
 					modalEl.one('hidden.bs.modal', function() {
-						ajaxify.go('admin/categories/active');
+						ajaxify.go('admin/manage/categories/active');
 					});
 					modalEl.modal('hide');
 				});
