@@ -62,7 +62,7 @@
 											<input id="cid-{categories.cid}-description" data-name="description" placeholder="Category Description" value="{categories.description}" class="form-control category_description input-sm description hide"></input>
 
 											<fieldset>
-												<div class="col-sm-4 col-xs-12">
+												<div class="col-xs-12">
 													<div class="form-group">
 														<label for="cid-{categories.cid}-parentCid">Parent Category</label>
 														<!-- IF categories.parent.name -->
