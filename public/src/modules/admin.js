@@ -12,6 +12,12 @@ define('admin', ['mousetrap'], function(Mousetrap) {
 				console.log('[admin] Restarting NodeBB...');
 				socket.emit('admin.restart');
 			});
+
+			Mousetrap.bind('/', function(e) {
+				$('#acp-search input').focus();
+
+				return false;
+			});
 		}
 	};
 
