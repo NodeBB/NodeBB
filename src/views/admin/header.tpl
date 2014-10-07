@@ -65,7 +65,7 @@
 				<form class="navbar-form navbar-left hidden-xs" role="search">
 					<div class="form-group" id="acp-search" >
 						<div class="dropdown" >
-							<input type="text" data-toggle="dropdown" class="form-control" placeholder="Search ACP...">
+							<input type="text" data-toggle="dropdown" class="form-control" placeholder="/">
 							<ul class="dropdown-menu" role="menu"></ul>
 						</div>
 					</div>

@@ -102,18 +102,22 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 	function setupACPSearch() {
 		var menu = $('#acp-search .dropdown-menu'),
 			routes = [],
+			input = $('#acp-search input'),
 			firstResult = null;
 
-		$('#acp-search input').on('keyup', function() {
+		input.on('keyup', function() {
 			$('#acp-search .dropdown').addClass('open');
 		});
 
 		$('#acp-search').parents('form').on('submit', function(ev) {
-			var href = firstResult ? firstResult : RELATIVE_PATH + '/search/' + $(this).find('input').val();
+			var input = $(this).find('input'),
+				href = firstResult ? firstResult : RELATIVE_PATH + '/search/' + input.val();
+
 			ajaxify.go(href.replace(/^\//, ''));
 
 			setTimeout(function() {
 				$('#acp-search .dropdown').removeClass('open');
+				$(input).blur();
 			}, 150);
 
 			ev.preventDefault();
@@ -124,7 +128,11 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 			routes.push($(link).attr('href'));
 		});
 
-		$('#acp-search input').on('keyup focus', function() {
+		input.on('blur', function() {
+			$(this).val('').attr('placeholder', '/');
+		});
+
+		input.on('keyup focus', function() {
 			var $input = $(this),
 				value = $input.val().toLowerCase(),
 				menuItems = $('#acp-search .dropdown-menu').html('');
@@ -132,6 +140,8 @@ define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
 			function toUpperCase(txt){
 				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
 			}
+
+			$input.attr('placeholder', '');
 
 			firstResult = null;
 
