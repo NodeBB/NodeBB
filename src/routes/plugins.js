@@ -41,7 +41,7 @@ module.exports = function(app, middleware, controllers) {
 				});
 
 				if (matches.length) {
-					res.sendfile(matches[0]);
+					res.sendFile(matches[0]);
 				} else {
 					res.redirect(nconf.get('relative_path') + '/404');
 				}
