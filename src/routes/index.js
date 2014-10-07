@@ -185,7 +185,7 @@ function catch404(req, res, next) {
 	if (isClientScript.test(req.url)) {
 		res.type('text/javascript').status(200).send('');
 	} else if (isLanguage.test(req.url)) {
-		res.json(200, {});
+		res.status(200).json({});
 	} else if (req.accepts('html')) {
 		if (process.env.NODE_ENV === 'development') {
 			winston.warn('Route requested but not found: ' + req.url);
