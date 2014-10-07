@@ -1044,45 +1044,41 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = Date.UTC(2014, 9, 3);
+			thisSchemaDate = Date.UTC(2014, 9, 7);
 			if (schemaDate < thisSchemaDate) {
-				winston.info('[2014/10/3] Banned users sorted set');
+				winston.info('[2014/10/7] Banned users sorted set');
 
 				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
 					if (err) {
 						return next(err);
 					}
 
+					var now = Date.now();
+
 					async.eachLimit(uids, 50, function(uid, next) {
-						User.getMultipleUserFields(uids, ['uid', 'banned'], function(err, userData) {
+						User.getUserField(uid, 'banned', function(err, banned) {
 							if (err) {
 								return next(err);
 							}
 
-							var bannedUids = userData.filter(function(user) {
-								return user && parseInt(user.banned, 10) === 1;
-							}).map(function(user) {
-								return user.uid;
-							});
-							var timestamps = [];
-							var now = Date.now();
-							bannedUids.forEach(function() {
-								timestamps.push(now);
-							});
-							db.sortedSetAdd('users:banned', timestamps, bannedUids, next);
+							if (parseInt(banned, 10) !== 1) {
+								return next();
+							}
+
+							db.sortedSetAdd('users:banned', now, uid, next);
 						});
 					}, function(err) {
 						if (err) {
-							winston.error('[2014/10/3] Error encountered while updating banned users sorted set');
+							winston.error('[2014/10/7] Error encountered while updating banned users sorted set');
 							return next(err);
 						}
 
-						winston.info('[2014/10/3] Banned users added to sorted set');
+						winston.info('[2014/10/7] Banned users added to sorted set');
 						Upgrade.update(thisSchemaDate, next);
 					});
 				});
 			} else {
-				winston.info('[2014/10/3] Banned users sorted set skipped');
+				winston.info('[2014/10/7] Banned users sorted set skipped');
 				next();
 			}
 		}
