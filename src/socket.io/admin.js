@@ -12,6 +12,7 @@ var	async = require('async'),
 	widgets = require('../widgets'),
 	user = require('../user'),
 	topics = require('../topics'),
+	posts = require('../posts'),
 	categories = require('../categories'),
 	logger = require('../logger'),
 	events = require('../events'),
@@ -248,5 +249,23 @@ SocketAdmin.getMoreEvents = function(socket, next, callback) {
 	events.getLog(next, 5000, callback);
 };
 
+
+SocketAdmin.dismissFlag = function(socket, pid, callback) {
+	if (!pid) {
+		return callback('[[error:invalid-data]]');
+	}
+
+	posts.dismissFlag(pid, callback);
+};
+
+SocketAdmin.getMoreFlags = function(socket, after, callback) {
+	if (!parseInt(after, 10)) {
+		return callback('[[error:invalid-data]]');
+	}
+	after = parseInt(after, 10);
+	posts.getFlags(socket.uid, after, after + 19, function(err, posts) {
+		callback(err, {posts: posts, next: after + 20});
+	});
+};
 
 module.exports = SocketAdmin;

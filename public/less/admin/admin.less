@@ -5,6 +5,7 @@
 @import "./manage/categories";
 @import "./manage/groups";
 @import "./manage/tags";
+@import "./manage/flags";
 @import "./manage/users";
 @import "./appearance/customise";
 @import "./appearance/themes";
@@ -21,6 +22,11 @@
 	.container {
 		width: 100% !important;
 		padding: 0px 15px;
+	}
+
+	.user-img {
+		width:24px;
+		height:24px;
 	}
 
 	.nodebb-logo {
@@ -44,7 +50,7 @@
 			width: 200px;
 			height: 100%;
 
-			
+
 			-webkit-transform: translateX(-190px);
     		transform: translateX(-190px);
 
@@ -81,7 +87,7 @@
 			max-height: 100%;
 			cursor: pointer;
 			max-height: 38px;
-			
+
 			&.open {
 				max-height: 500px;
 			}

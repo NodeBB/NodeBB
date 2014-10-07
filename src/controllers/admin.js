@@ -6,6 +6,7 @@ var async = require('async'),
 
 	user = require('../user'),
 	categories = require('../categories'),
+	posts = require('../posts'),
 	topics = require('../topics'),
 	meta = require('../meta'),
 	db = require('../database'),
@@ -21,6 +22,7 @@ var async = require('async'),
 var adminController = {
 	categories: {},
 	tags: {},
+	flags: {},
 	topics: {},
 	groups: {},
 	appearance: {},
@@ -151,6 +153,17 @@ adminController.tags.get = function(req, res, next) {
 		}
 
 		res.render('admin/manage/tags', {tags: tags});
+	});
+};
+
+adminController.flags.get = function(req, res, next) {
+	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
+	posts.getFlags(uid, 0, 19, function(err, posts) {
+		if (err) {
+			return next(err);
+		}
+
+		res.render('admin/manage/flags', {posts: posts, next: 20});
 	});
 };
 

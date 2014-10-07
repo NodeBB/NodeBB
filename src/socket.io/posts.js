@@ -323,6 +323,9 @@ SocketPosts.flag = function(socket, pid, callback) {
 			});
 		},
 		function(next) {
+			posts.flag(pid, next);
+		},
+		function(next) {
 			if (!parseInt(post.uid, 10)) {
 				return next();
 			}

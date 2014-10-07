@@ -28,6 +28,7 @@ var async = require('async'),
 (function(Posts) {
 	require('./posts/recent')(Posts);
 	require('./posts/delete')(Posts);
+	require('./posts/flags')(Posts);
 
 	Posts.create = function(data, callback) {
 		var uid = data.uid,
@@ -237,6 +238,7 @@ var async = require('async'),
 	Posts.getPostSummaryByPids = function(pids, uid, options, callback) {
 		options.stripTags = options.hasOwnProperty('stripTags') ? options.stripTags : false;
 		options.parse = options.hasOwnProperty('parse') ? options.parse : true;
+		options.extraFields = options.hasOwnProperty('extraFields') ? options.extraFields : [];
 
 		if (!Array.isArray(pids) || !pids.length) {
 			return callback(null, []);
@@ -246,7 +248,9 @@ var async = require('async'),
 			return 'post:' + pid;
 		});
 
-		db.getObjectsFields(keys, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(err, posts) {
+		var fields = ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'].concat(options.extraFields);
+
+		db.getObjectsFields(keys, fields, function(err, posts) {
 			if (err) {
 				return callback(err);
 			}
