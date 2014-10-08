@@ -135,7 +135,7 @@ module.exports = function(Meta) {
 						process.exit(0);
 					}
 
-					winston.info('[meta/js] Compilation complete');
+					winston.info('[meta/js] Minification complete');
 					minifier.kill();
 
 					if (cluster.isWorker) {
@@ -156,9 +156,6 @@ module.exports = function(Meta) {
 			minifier.on('message', function(message) {
 				switch(message.type) {
 				case 'end':
-					winston.info('[meta/js] Successfully minified.');
-					winston.info('[meta/js] Retrieved Mapping.');
-
 					Meta.js.cache = message.data.js;
 					Meta.js.map = message.data.map;
 
@@ -202,7 +199,6 @@ module.exports = function(Meta) {
 	};
 
 	Meta.js.commitToFile = function() {
-		winston.info('[meta/js] Committing minfile to disk');
 		async.parallel([
 			async.apply(fs.writeFile, path.join(__dirname, '../../public/nodebb.min.js'), Meta.js.cache),
 			async.apply(fs.writeFile, path.join(__dirname, '../../public/nodebb.min.js.map'), Meta.js.map)

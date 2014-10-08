@@ -74,7 +74,6 @@ module.exports = function(Meta) {
 						});
 					}
 
-					winston.info('[meta/css] Done.');
 					emitter.emit('meta:css.compiled');
 
 					if (typeof callback === 'function') {
@@ -90,10 +89,11 @@ module.exports = function(Meta) {
 	};
 
 	Meta.css.commitToFile = function(filename) {
-		winston.info('[meta/css] Committing stylesheet (' + filename + ') to disk');
-		fs.writeFile(path.join(__dirname, '../../public/' + (filename === 'acpCache' ? 'admin' : 'stylesheet') + '.css'), Meta.css[filename], function(err) {
+		var file = (filename === 'acpCache' ? 'admin' : 'stylesheet') + '.css';
+
+		fs.writeFile(path.join(__dirname, '../../public/' + file), Meta.css[filename], function(err) {
 			if (!err) {
-				winston.info('[meta/css] Stylesheet (' + filename + ') committed to disk.');
+				winston.info('[meta/css] ' + file + ' committed to disk.');
 			} else {
 				winston.error('[meta/css] ' + err.message);
 				process.exit(0);
