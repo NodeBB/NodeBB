@@ -15,9 +15,7 @@ var winston = require('winston'),
 
 module.exports = function(Meta) {
 
-	Meta.css = {
-		'css-buster': +new Date()
-	};
+	Meta.css = {};
 	Meta.css.cache = undefined;
 	Meta.css.acpCache = undefined;
 	Meta.css.branding = {};
@@ -132,11 +130,10 @@ module.exports = function(Meta) {
 			Meta.css[destination] = css;
 
 			// Calculate css buster
-			var hasher = crypto.createHash('md5'),
-				hash;
+			var hasher = crypto.createHash('md5');
+
 			hasher.update(css, 'utf-8');
-			hash = hasher.digest('hex').slice(0, 8);
-			Meta.css.hash = hash;
+			Meta.css.hash = hasher.digest('hex').slice(0, 8);
 
 			// Save the compiled CSS in public/ so things like nginx can serve it
 			if (!cluster.isWorker || process.env.cluster_setup === 'true') {
