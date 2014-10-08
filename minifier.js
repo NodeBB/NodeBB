@@ -59,16 +59,9 @@ process.on('message', function(payload) {
 	switch(payload.action) {
 	case 'js':
 		Minifier.js.minify(payload.scripts, payload.relativePath, payload.minify, function(data) {
-			process.stdout.write(data.js);
 			process.send({
 				type: 'end',
-				payload: 'script'
-			});
-
-			process.stderr.write(data.map);
-			process.send({
-				type: 'end',
-				payload: 'mapping'
+				data: data
 			});
 		});
 		break;

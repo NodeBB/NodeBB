@@ -128,38 +128,24 @@ module.exports = function(Meta) {
 
 	Meta.js.minify = function(minify, callback) {
 		if (!cluster.isWorker || process.env.cluster_setup === 'true') {
-			var minifier = Meta.js.minifierProc = fork('minifier.js', {
-					silent: true
-				}),
-				minifiedStream = minifier.stdio[1],
-				minifiedString = '',
-				mapStream = minifier.stdio[2],
-				mapString = '',
-				step = 0,
+			var minifier = Meta.js.minifierProc = fork('minifier.js'),
 				onComplete = function(err) {
-					if (step === 0) {
-						return step++;
-					}
-
 					if (err) {
 						winston.error('[meta/js] Minification failed: ' + err.message);
 						process.exit(0);
 					}
 
-					Meta.js.cache = minifiedString;
-					Meta.js.map = mapString;
 					winston.info('[meta/js] Compilation complete');
 					minifier.kill();
 
 					if (cluster.isWorker) {
 						process.send({
 							action: 'js-propagate',
-							cache: minifiedString,
-							map: mapString
+							cache: Meta.js.cache,
+							map: Meta.js.map
 						});
 					}
 
-					// Save the minfile in public/ so things like nginx can serve it
 					Meta.js.commitToFile();
 
 					if (typeof callback === 'function') {
@@ -167,23 +153,17 @@ module.exports = function(Meta) {
 					}
 				};
 
-			minifiedStream.on('data', function(buffer) {
-				minifiedString += buffer.toString();
-			});
-			mapStream.on('data', function(buffer) {
-				mapString += buffer.toString();
-			});
-
 			minifier.on('message', function(message) {
 				switch(message.type) {
 				case 'end':
-					if (message.payload === 'script') {
-						winston.info('[meta/js] Successfully minified.');
-						onComplete();
-					} else if (message.payload === 'mapping') {
-						winston.info('[meta/js] Retrieved Mapping.');
-						onComplete();
-					}
+					winston.info('[meta/js] Successfully minified.');
+					winston.info('[meta/js] Retrieved Mapping.');
+
+					Meta.js.cache = message.data.js;
+					Meta.js.map = message.data.map;
+
+					onComplete();
+
 					break;
 				case 'hash':
 					Meta.js.hash = message.payload;
