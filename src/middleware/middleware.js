@@ -339,10 +339,10 @@ middleware.renderHeader = function(req, res, callback) {
 						if (err) {
 							return next(err);
 						}
-						meta.title.build(req.url.slice(1), settings.language, next);
+						meta.title.build(req.url.slice(1), settings.language, res.locals, next);
 					});
 				} else {
-					meta.title.build(req.url.slice(1), meta.config.defaultLang, next);
+					meta.title.build(req.url.slice(1), meta.config.defaultLang, res.locals, next);
 				}
 			},
 			isAdmin: function(next) {

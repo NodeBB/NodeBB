@@ -24,6 +24,8 @@ var fs = require('fs'),
 	websockets = require('../socket.io');
 
 function userNotFound(res) {
+	res.locals.notFound = true;
+	
 	if (res.locals.isAPI) {
 		res.status(404).json('no-user');
 	} else {
