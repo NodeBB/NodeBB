@@ -134,7 +134,7 @@ define('forum/users', function() {
 						translator.translate(html, function(translated) {
 							$('#users-container').html(translated);
 							if (!data.users.length) {
-								translator.translate('[[users:user-not-found]]', function(translated) {
+								translator.translate('[[error:no-user]]', function(translated) {
 									notify.html(translated);
 									notify.parent().addClass('btn-warning label-warning');
 								});
