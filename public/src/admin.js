@@ -4,7 +4,6 @@
 var admin = {};
 
 (function() {
-
 	admin.enableColorPicker = function(inputEl, callback) {
 		(inputEl instanceof jQuery ? inputEl : $(inputEl)).each(function() {
 			var $this = $(this);
@@ -48,6 +47,8 @@ var admin = {};
 				activate(parentEl);
 			}
 		});
+
+		setupKeybindings();
 	});
 
 	socket.emit('admin.config.get', function(err, config) {
@@ -63,5 +64,23 @@ var admin = {};
 
 		// move this to admin.config
 		app.config = config;
-	});
+	});	
+
+	function setupKeybindings() {
+		Mousetrap.bind('ctrl+shift+a r', function() {
+			console.log('[admin] Reloading NodeBB...');
+			socket.emit('admin.reload');
+		});
+
+		Mousetrap.bind('ctrl+shift+a R', function() {
+			console.log('[admin] Restarting NodeBB...');
+			socket.emit('admin.restart');
+		});
+
+		Mousetrap.bind('/', function(e) {
+			$('#acp-search input').focus();
+
+			return false;
+		});
+	}
 }());

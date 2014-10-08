@@ -33,6 +33,7 @@
 	<script type="text/javascript" src="{relative_path}/vendor/semver/semver.browser.js"></script>
 	<script type="text/javascript" src="{relative_path}/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js"></script>
 	<script type="text/javascript" src="{relative_path}/vendor/jquery/deserialize/jquery.deserialize.min.js"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/mousetrap/mousetrap.js"></script>
 
 	<script>
 		require.config({
