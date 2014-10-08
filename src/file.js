@@ -7,9 +7,9 @@ var fs = require('fs'),
 
 var file = {};
 
-file.saveFileToLocal = function(filename, tempPath, callback) {
+file.saveFileToLocal = function(filename, folder, tempPath, callback) {
 
-	var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
+	var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), folder, filename);
 
 	winston.info('Saving file '+ filename +' to : ' + uploadPath);
 

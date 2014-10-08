@@ -115,7 +115,7 @@ function uploadFile(file, callback) {
 		}
 
 		var filename = 'upload-' + utils.generateUUID() + path.extname(file.name);
-		require('../file').saveFileToLocal(filename, file.path, function(err, upload) {
+		require('../file').saveFileToLocal(filename, 'files', file.path, function(err, upload) {
 			if(err) {
 				return callback(err);
 			}
