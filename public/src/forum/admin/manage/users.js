@@ -217,8 +217,8 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 						return app.alertError(err.message);
 					}
 
-					ajaxify.loadTemplate('admin/manage/users', function(adminUsers) {
-						$('#users-container').html(templates.parse(templates.getBlock(adminUsers, 'users'), data));
+					templates.parse('admin/manage/users', 'users', data, function(html) {
+						$('#users-container').html(html);
 
 						$('.fa-spinner').addClass('hidden');
 
@@ -243,9 +243,8 @@ define('forum/admin/manage/users', ['admin/selectable'], function(selectable) {
 		handleUserCreate();
 
 		function onUsersLoaded(users) {
-			ajaxify.loadTemplate('admin/manage/users', function(adminUsers) {
-				var html = $(templates.parse(templates.getBlock(adminUsers, 'users'), {users: users}));
-				$('#users-container').append(html);
+			templates.parse('admin/manage/users', 'users', {users: users}, function(html) {
+				$('#users-container').append($(html));
 			});
 		}
 
