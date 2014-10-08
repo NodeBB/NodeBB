@@ -8,8 +8,7 @@ var uglifyjs = require('uglify-js'),
 	crypto = require('crypto'),
 
 	Minifier = {
-		js: {},
-		css: {}
+		js: {}
 	};
 
 /* Javascript */
