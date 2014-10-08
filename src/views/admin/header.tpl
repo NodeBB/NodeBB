@@ -37,11 +37,13 @@
 			waitSeconds: 3,
 			urlArgs: "{cache-buster}",
 			paths: {
-				'forum': '../forum',
+				'admin': '../admin',
 				'vendor': '../../vendor',
 				'buzz': '../../vendor/buzz/buzz.min'
 			}
 		});
+
+		app.inAdmin = true;
 	</script>
 
 	<!-- BEGIN scripts -->

@@ -1,7 +1,7 @@
 "use strict";
 /*global define, ajaxify, app, socket, RELATIVE_PATH*/
 
-define('forum/admin/general/dashboard', ['semver'], function(semver) {
+define('admin/general/dashboard', ['semver'], function(semver) {
 	var	Admin = {},
 		intervals = {
 			rooms: false,

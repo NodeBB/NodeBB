@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, socket */
 
-define('forum/admin/appearance/skins', function() {
+define('admin/appearance/skins', function() {
 	var Skins = {};
 	
 	Skins.init = function() {

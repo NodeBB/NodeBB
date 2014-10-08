@@ -1,7 +1,7 @@
 "use strict";
 /*global define, app, socket, ajaxify, RELATIVE_PATH */
 
-define('forum/admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
+define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 	var Settings = {};
 
 	Settings.init = function() {

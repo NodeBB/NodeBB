@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, socket */
 
-define('forum/admin/extend/plugins', function() {
+define('admin/extend/plugins', function() {
 	var Plugins = {
 		init: function() {
 			var pluginsList = $('.plugins'),

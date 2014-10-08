@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, socket */
 
-define('forum/admin/appearance/themes', function() {
+define('admin/appearance/themes', function() {
 	var Themes = {};
 	
 	Themes.init = function() {

@@ -1,7 +1,7 @@
 "use strict";
 /*global define*/
 
-define('forum/admin/general/languages', ['forum/admin/settings'], function(Settings) {
+define('admin/general/languages', ['admin/settings'], function(Settings) {
 	$(function() {
 		Settings.prepare();
 	});

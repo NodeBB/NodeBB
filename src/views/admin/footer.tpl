@@ -48,7 +48,7 @@
 	</div>
 
 <script type="text/javascript">
-	require(['forum/admin/footer']);
+	require(['admin/footer']);
 </script>
 
 </body>

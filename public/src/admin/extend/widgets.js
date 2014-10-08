@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, socket */
 
-define('forum/admin/extend/widgets', function() {
+define('admin/extend/widgets', function() {
 	var Widgets = {};
 	
 	Widgets.init = function() {		

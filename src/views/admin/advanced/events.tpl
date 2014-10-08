@@ -28,4 +28,4 @@ require(['forum/infinitescroll'], function(infinitescroll) {
 	});
 });
 
-</script
+</script>

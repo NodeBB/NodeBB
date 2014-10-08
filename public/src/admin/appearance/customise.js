@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, socket */
 
-define('forum/admin/appearance/customise', ['forum/admin/settings'], function(Settings) {
+define('admin/appearance/customise', ['admin/settings'], function(Settings) {
 	var Customise = {};
 	
 	Customise.init = function() {		

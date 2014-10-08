@@ -1,7 +1,7 @@
 "use strict";
 /*global define, app, socket, Hammer, RELATIVE_PATH */
 
-define('forum/admin/footer', ['forum/admin/settings'], function(Settings) {
+define('admin/footer', ['admin/settings'], function(Settings) {
 	var acpIndex;
 
 	$(document).ready(function() {

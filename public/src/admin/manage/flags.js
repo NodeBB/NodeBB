@@ -1,7 +1,7 @@
 "use strict";
 /*global define, socket, app, admin, utils, bootbox, RELATIVE_PATH*/
 
-define('forum/admin/manage/flags', ['forum/infinitescroll', 'admin/selectable'], function(infinitescroll, selectable) {
+define('admin/manage/flags', ['infinitescroll', 'admin/selectable'], function(infinitescroll, selectable) {
 	var	Flags = {};
 
 	Flags.init = function() {

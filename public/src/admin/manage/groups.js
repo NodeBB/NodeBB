@@ -1,7 +1,7 @@
 "use strict";
 /*global define, templates, socket, ajaxify, app, bootbox*/
 
-define('forum/admin/manage/groups', ['forum/admin/iconSelect'], function(iconSelect) {
+define('admin/manage/groups', ['admin/iconSelect'], function(iconSelect) {
 	var	Groups = {};
 
 	Groups.init = function() {
