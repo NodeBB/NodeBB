@@ -29,8 +29,6 @@ module.exports = function(Meta) {
 				'./node_modules/socket.io-client/dist/socket.io.js',
 				'public/vendor/jquery/timeago/jquery.timeago.min.js',
 				'public/vendor/jquery/js/jquery.form.min.js',
-				'public/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
-				'public/vendor/jquery/deserialize/jquery.deserialize.min.js',
 				'public/vendor/visibility/visibility.min.js',
 				'public/vendor/bootstrap/js/bootstrap.min.js',
 				'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
