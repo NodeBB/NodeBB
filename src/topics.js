@@ -394,14 +394,16 @@ var async = require('async'),
 						users[user.uid] = user;
 					});
 					var tidToPost = {};
-					postData.forEach(function(post, index) {
+					postData.forEach(function(post) {
 						post.user = users[post.uid];
-						post.index = results.counts[index] + 1;
 						post.timestamp = utils.toISOString(post.timestamp);
 						tidToPost[post.tid] = post;
 					});
 
-					var teasers = tids.map(function(tid) {
+					var teasers = tids.map(function(tid, index) {
+						if (tidToPost[tid]) {
+							tidToPost[tid].index = results.counts[index] + 1;
+						}
 						return tidToPost[tid];
 					});
 
