@@ -237,6 +237,9 @@ module.exports = function(Topics) {
 					},
 					postIndex: function(next) {
 						posts.getPidIndex(postData.pid, uid, next);
+					},
+					content: function(next) {
+						postTools.parse(postData.content, next);
 					}
 				}, next);
 			},
@@ -244,6 +247,7 @@ module.exports = function(Topics) {
 				postData.user = results.userInfo[0];
 				results.topicInfo.title = validator.escape(results.topicInfo.title);
 				postData.topic = results.topicInfo;
+				postData.content = results.content;
 
 				if (results.settings.followTopicsOnReply) {
 					threadTools.follow(postData.tid, uid);

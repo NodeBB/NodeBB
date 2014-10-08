@@ -96,17 +96,8 @@ var async = require('async'),
 				});
 			},
 			function(postData, next) {
-				postTools.parse(postData.content, function(err, content) {
-					if (err) {
-						return next(err);
-					}
-
-					plugins.fireHook('action:post.save', postData);
-
-					postData.content = content;
-
-					next(null, postData);
-				});
+				plugins.fireHook('action:post.save', postData);
+				next(null, postData);
 			}
 		], callback);
 	};
