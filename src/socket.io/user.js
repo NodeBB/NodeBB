@@ -200,7 +200,7 @@ SocketUser.uploadProfileImageFromUrl = function(socket, url, callback) {
 			callback(err, image.url);
 		});
 	});
-}
+};
 
 SocketUser.follow = function(socket, data, callback) {
 	if (!socket.uid || !data) {

@@ -208,7 +208,7 @@ adminController.plugins.get = function(req, res, next) {
 		res.render('admin/extend/plugins' , {
 			plugins: plugins
 		});
-	})
+	});
 };
 
 adminController.languages.get = function(req, res, next) {
@@ -342,6 +342,6 @@ adminController.themes.get = function(req, res, next) {
 			return next();
 		}
 	});
-}
+};
 
 module.exports = adminController;

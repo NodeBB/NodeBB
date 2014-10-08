@@ -43,7 +43,7 @@ module.exports = function(Meta) {
 								// Minor adjustments for API output
 								configObj.type = 'local';
 								if (configObj.screenshot) {
-									configObj.screenshot_url = nconf.get('relative_path') + '/css/previews/' + configObj.id
+									configObj.screenshot_url = nconf.get('relative_path') + '/css/previews/' + configObj.id;
 								} else {
 									configObj.screenshot_url = nconf.get('relative_path') + '/images/themes/default.png';
 								}

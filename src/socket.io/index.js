@@ -91,7 +91,7 @@ Sockets.init = function(server) {
 			redisClient : client
 		});
 	} else if (nconf.get('cluster')) {
-		winston.warn('[socket.io] Clustering detected, you are advised to configure Redis as a websocket store.')
+		winston.warn('[socket.io] Clustering detected, you are advised to configure Redis as a websocket store.');
 	}
 
 	io = socketioWildcard(SocketIO).listen(server, config);

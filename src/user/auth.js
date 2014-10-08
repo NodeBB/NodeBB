@@ -49,5 +49,5 @@ module.exports = function(User) {
 			async.apply(db.delete, 'loginAttempts:' + uid),
 			async.apply(db.delete, 'lockout:' + uid)
 		], callback);
-	}
+	};
 };
