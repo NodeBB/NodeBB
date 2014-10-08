@@ -37,9 +37,7 @@ function userNotAllowed(res) {
 	if (res.locals.isAPI) {
 		res.status(403).json('not-allowed');
 	} else {
-		res.render('403', {
-			error: 'Not allowed.'
-		});
+		res.render('403');
 	}
 }
 
