@@ -59,8 +59,8 @@ module.exports = function(Meta) {
 		var rjsPath = path.join(__dirname, '../../public/src');
 
 		async.parallel({
-			forum: function(next) {
-				utils.walk(path.join(rjsPath, 'forum'), next);
+			client: function(next) {
+				utils.walk(path.join(rjsPath, 'client'), next);
 			},
 			modules: function(next) {
 				utils.walk(path.join(rjsPath, 'modules'), next);
@@ -69,11 +69,9 @@ module.exports = function(Meta) {
 			if (err) {
 				return callback(err);
 			}
-			rjsFiles = rjsFiles.forum.concat(rjsFiles.modules);
+			rjsFiles = rjsFiles.client.concat(rjsFiles.modules);
 
-			rjsFiles = rjsFiles.filter(function(file) {
-				return file.match('admin') === null;
-			}).map(function(file) {
+			rjsFiles = rjsFiles.map(function(file) {
 				return path.join('public/src', file.replace(rjsPath, ''));
 			});
 
