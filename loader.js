@@ -39,6 +39,8 @@ Loader.init = function() {
 	cluster.on('fork', function(worker) {
 		worker.on('message', function(message) {
 			if (message && typeof message === 'object' && message.action) {
+				var otherWorkers;
+
 				switch (message.action) {
 					case 'ready':
 						if (Loader.js.cache) {
@@ -77,9 +79,10 @@ Loader.init = function() {
 						Loader.js.cache = message.cache;
 						Loader.js.map = message.map;
 
-						var otherWorkers = Object.keys(cluster.workers).filter(function(worker_id) {
-								return parseInt(worker_id, 10) !== parseInt(worker.id, 10);
-							});
+						otherWorkers = Object.keys(cluster.workers).filter(function(worker_id) {
+							return parseInt(worker_id, 10) !== parseInt(worker.id, 10);
+						});
+
 						otherWorkers.forEach(function(worker_id) {
 							cluster.workers[worker_id].send({
 								action: 'js-propagate',
@@ -92,9 +95,10 @@ Loader.init = function() {
 						Loader.css.cache = message.cache;
 						Loader.css.acpCache = message.acpCache;
 
-						var otherWorkers = Object.keys(cluster.workers).filter(function(worker_id) {
-								return parseInt(worker_id, 10) !== parseInt(worker.id, 10);
-							});
+						otherWorkers = Object.keys(cluster.workers).filter(function(worker_id) {
+							return parseInt(worker_id, 10) !== parseInt(worker.id, 10);
+						});
+
 						otherWorkers.forEach(function(worker_id) {
 							cluster.workers[worker_id].send({
 								action: 'css-propagate',
@@ -146,7 +150,7 @@ Loader.init = function() {
 
 		console.log('[cluster] Child Process (' + worker.process.pid + ') has exited (code: ' + code + ')');
 		if (!worker.suicide) {
-			console.log('[cluster] Spinning up another process...')
+			console.log('[cluster] Spinning up another process...');
 
 			var wasPrimary = parseInt(worker.id, 10) === Loader.primaryWorker;
 			cluster.fork({
@@ -176,7 +180,7 @@ Loader.start = function() {
 			worker.process.stdout.pipe(output);
 		}
 	}
-}
+};
 
 Loader.restart = function(callback) {
 	// Slate existing workers for termination -- welcome to death row.
