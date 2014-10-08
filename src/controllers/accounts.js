@@ -25,10 +25,10 @@ var fs = require('fs'),
 
 function userNotFound(res) {
 	if (res.locals.isAPI) {
-		res.status(404).json('user-not-found');
+		res.status(404).json('no-user');
 	} else {
 		res.render('404', {
-			error: 'User not found!'
+			error: '[[error:no-user]]'
 		});
 	}
 }
