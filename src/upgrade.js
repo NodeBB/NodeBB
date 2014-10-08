@@ -354,9 +354,11 @@ Upgrade.upgrade = function(callback) {
 						gid;
 
 					for(var groupName in mapping) {
-						gid = mapping[groupName];
-						if (mapping.hasOwnProperty(groupName) && !reverseMapping.hasOwnProperty(gid)) {
-							reverseMapping[parseInt(gid, 10)] = groupName;
+						if (mapping.hasOwnProperty(groupName)) {
+							gid = mapping[groupName];
+							if (mapping.hasOwnProperty(groupName) && !reverseMapping.hasOwnProperty(gid)) {
+								reverseMapping[parseInt(gid, 10)] = groupName;
+							}
 						}
 					}
 

@@ -79,7 +79,7 @@ var fs = require('fs'),
 			var msg = username + '(uid ' + uid + ') ' + string;
 			events.log(msg);
 		});
-	}
+	};
 
 	events.log = function(msg, callback) {
 		var logFile = path.join(nconf.get('base_dir'), logFileName);
@@ -131,7 +131,7 @@ var fs = require('fs'),
 				}
 
 				callback(null, {data: buffer, next: end - buffer.length});
-			})
+			});
 		});
 
 	};
