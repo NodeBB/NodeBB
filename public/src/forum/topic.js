@@ -84,7 +84,7 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 			if (config.topicPostSort !== 'oldest_to_newest') {
 				postCount = 1;
 			}
-			navigator.scrollBottom(postCount);
+			navigator.scrollBottom(postCount - 1);
 		});
 	};
 
