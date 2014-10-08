@@ -10,6 +10,7 @@ var async = require('async'),
 	meta = require('../meta'),
 	posts = require('../posts'),
 	threadTools = require('../threadTools'),
+	postTools = require('../postTools'),
 	privileges = require('../privileges'),
 	categories = require('../categories');
 
