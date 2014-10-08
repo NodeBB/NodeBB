@@ -110,7 +110,7 @@ module.exports = function(db, module) {
 
 		var fields = {_id: 0, value: 1};
 		if (withScores) {
-			fields['score'] = 1;
+			fields.score = 1;
 		}
 		db.collection('objects').find({_key:key}, {fields: fields})
 			.limit(stop - start + 1)
@@ -165,15 +165,15 @@ module.exports = function(db, module) {
 
 		var scoreQuery = {};
 		if (min !== -Infinity) {
-			scoreQuery['$gte'] = min;
+			scoreQuery.$gte = min;
 		}
 		if (max !== Infinity) {
-			scoreQuery['$lte'] = max;
+			scoreQuery.$lte = max;
 		}
 
 		var fields = {_id: 0, value: 1};
 		if (withScores) {
-			fields['score'] = 1;
+			fields.score = 1;
 		}
 
 		db.collection('objects').find({_key:key, score: scoreQuery}, {fields: fields})
@@ -440,7 +440,7 @@ module.exports = function(db, module) {
 		}
 		var data = {};
 		value = helpers.fieldToString(value);
-		data['score'] = parseInt(increment, 10);
+		data.score = parseInt(increment, 10);
 
 		db.collection('objects').findAndModify({_key: key, value: value}, {}, {$inc: data}, {new:true, upsert:true}, function(err, result) {
 			callback(err, result ? result[value] : null);

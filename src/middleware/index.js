@@ -30,8 +30,9 @@ var utils = require('./../../public/src/utils'),
 var middleware = {};
 
 function routeCurrentTheme(app, themeId, themesData) {
-	var themeId = (themeId || 'nodebb-theme-vanilla'),
-		themeObj = (function(id) {
+	themeId = (themeId || 'nodebb-theme-vanilla');
+	
+	var	themeObj = (function(id) {
 			return themesData.filter(function(themeObj) {
 				return themeObj.id === id;
 			})[0];
