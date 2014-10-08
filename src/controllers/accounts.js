@@ -493,7 +493,7 @@ accountsController.uploadPicture = function (req, res, next) {
 				return;
 			}
 
-			var absolutePath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), path.basename(oldpicture));
+			var absolutePath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), 'profile', path.basename(oldpicture));
 
 			fs.unlink(absolutePath, function (err) {
 				if (err) {
