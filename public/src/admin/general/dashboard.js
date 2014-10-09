@@ -1,5 +1,5 @@
 "use strict";
-/*global define, ajaxify, app, socket, RELATIVE_PATH*/
+/*global define, ajaxify, app, socket, bootbox, Chart, RELATIVE_PATH*/
 
 define('admin/general/dashboard', ['semver'], function(semver) {
 	var	Admin = {},
