@@ -191,7 +191,7 @@ var async = require('async'),
 			var userData = results.userData;
 			for(var i=0; i<userData.length; ++i) {
 				userData[i].groups = results.groups[i];
-				userData[i].status = !results.online[i] ? 'offline' : userData[i].status;
+				userData[i].status = results.online[i] ? (userData[i].status || 'online') : 'offline';
 			}
 
 			async.map(userData, function(userData, next) {
