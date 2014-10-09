@@ -649,7 +649,7 @@ var fs = require('fs'),
 					pluginMap[plugin.name].active = plugin.active;
 					pluginMap[plugin.name].version = plugin.version;
 
-					getVersion(plugin.name, function(err, version) {
+					getVersion(plugin.id, function(err, version) {
 						pluginMap[plugin.name].latest = version;
 						pluginMap[plugin.name].outdated = version !== pluginMap[plugin.name].version;
 						next();
@@ -737,28 +737,38 @@ var fs = require('fs'),
 
 					async.waterfall([
 						function(next) {
-							fs.readFile(path.join(file, 'package.json'), next);
+							async.parallel({
+								packageJSON: function(next) {
+									fs.readFile(path.join(file, 'package.json'), next);
+								},
+								pluginJSON: function(next) {
+									fs.readFile(path.join(file, 'plugin.json'), next);
+								}
+							}, next);
 						},
-						function(configJSON, next) {
-							var config;
+						function(results, next) {
+							var packageInfo, pluginInfo;
 
 							try {
-								config = JSON.parse(configJSON);
+								packageInfo = JSON.parse(results.packageJSON);
+								pluginInfo = JSON.parse(results.pluginJSON);
 							} catch (err) {
 								winston.warn("Plugin: " + file + " is corrupted or invalid. Please check plugin.json for errors.");
 								return next(err, null);
 							}
 
-							Plugins.isActive(config.name, function(err, active) {
+							Plugins.isActive(packageInfo.name, function(err, active) {
 								if (err) {
 									next(new Error('no-active-state'));
 								}
 
+								delete pluginInfo.hooks;
+								delete pluginInfo.library;
+								pluginInfo.active = active;
+								pluginInfo.installed = true;
+								pluginInfo.version = packageInfo.version;
 
-								config.active = active;
-								config.installed = true;
-
-								next(null, config);
+								next(null, pluginInfo);
 							});
 						}
 					], function(err, config) {
