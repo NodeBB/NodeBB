@@ -668,12 +668,13 @@ var fs = require('fs'),
 					}
 
 					pluginArray.sort(function(a, b) {
-						if(a.installed && !b.installed) {
-							return -1;
-						} else if(!a.installed && b.installed) {
+						if (a.name > b.name ) {
 							return 1;
+						} else if (a.name < b.name ){
+							return -1;
+						} else {
+							return 0;
 						}
-						return 0;
 					});
 
 					callback(null, pluginArray);
