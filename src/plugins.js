@@ -641,7 +641,7 @@ var fs = require('fs'),
 				async.each(installedPlugins, function(plugin, next) {
 
 					pluginMap[plugin.name] = pluginMap[plugin.name] || {};
-					pluginMap[plugin.name].id = pluginMap[plugin.name].id || plugin.name;
+					pluginMap[plugin.name].id = pluginMap[plugin.name].id || plugin.id;
 					pluginMap[plugin.name].name = pluginMap[plugin.name].name || plugin.name;
 					pluginMap[plugin.name].description = plugin.description;
 					pluginMap[plugin.name].url = pluginMap[plugin.name].url || plugin.url;
