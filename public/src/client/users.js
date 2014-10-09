@@ -76,9 +76,7 @@ define('forum/users', function() {
 			return !$('.users-box[data-uid="' + user.uid + '"]').length;
 		});
 
-		ajaxify.loadTemplate('users', function(usersTemplate) {
-			var html = templates.parse(templates.getBlock(usersTemplate, 'users'), {users: users});
-
+		templates.parse('users', 'users', {users: users}, function(html) {
 			translator.translate(html, function(translated) {
 				$('#users-container').append(translated);
 				$('#users-container .anon-user').appendTo($('#users-container'));
@@ -128,11 +126,10 @@ define('forum/users', function() {
 						return;
 					}
 
-					ajaxify.loadTemplate('users', function(usersTemplate) {
-						var html = templates.parse(templates.getBlock(usersTemplate, 'users'), data);
-
+					templates.parse('users', 'users', data, function(html) {
 						translator.translate(html, function(translated) {
 							$('#users-container').html(translated);
+							
 							if (!data.users.length) {
 								translator.translate('[[error:no-user]]', function(translated) {
 									notify.html(translated);
