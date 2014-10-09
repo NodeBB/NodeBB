@@ -1,5 +1,5 @@
 "use strict";
-/*global app, socket*/
+/*global app, socket, Mousetrap*/
 
 var admin = {};
 
@@ -50,10 +50,9 @@ var admin = {};
 			var $this = $(this);
 
 			if ($this.hasClass('nav-header')) {
-				$this.parents('.sidebar-nav').toggleClass('open');
-				setTimeout(function() {
+				$this.parents('.sidebar-nav').toggleClass('open').bind('animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd', function (ev) {
 					$('.nano').nanoScroller();
-				}, 500); // replace with animationend event
+				});
 			} else {
 				listElements.removeClass('active');
 				$this.addClass('active');
