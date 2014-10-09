@@ -107,11 +107,9 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 		});
 
 		if (data.tags && data.tags.length !== $('.tags').first().children().length) {
-			ajaxify.loadTemplate('partials/post_bar', function(postBarTemplate) {
-				var html = templates.parse(templates.getBlock(postBarTemplate, 'tags'), {
-					tags: data.tags
-				});
+			templates.parse('partials/post_bar', 'tags', {tags: data.tags}, function(html) {
 				var tags = $('.tags');
+				
 				tags.fadeOut(250, function() {
 					tags.html(html).fadeIn(250);
 				});
