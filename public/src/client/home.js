@@ -61,9 +61,7 @@ define('forum/home', function() {
 	}
 
 	function parseAndTranslate(posts, callback) {
-		ajaxify.loadTemplate('home', function(homeTemplate) {
-			var html = templates.parse(templates.getBlock(homeTemplate, 'posts'), {categories: {posts: posts}});
-
+		templates.parse('home', 'posts', {categories: {posts: posts}}, function(html) {
 			translator.translate(html, function(translatedHTML) {
 				translatedHTML = $(translatedHTML);
 				translatedHTML.find('img').addClass('img-responsive');
