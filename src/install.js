@@ -29,7 +29,7 @@ questions.main = [
 	{
 		name: 'base_url',
 		description: 'URL used to access this NodeBB',
-		'default': nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') || 'http://localhost:4567',
+		'default': nconf.get('base_url') ? (nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '')) : 'http://localhost:4567',
 		pattern: /^http(?:s)?:\/\//,
 		message: 'Base URL must begin with \'http://\' or \'https://\'',
 	},
