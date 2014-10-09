@@ -394,10 +394,28 @@ var	async = require('async'),
 
 	User.isModerator = function(uid, cid, callback) {
 		if (Array.isArray(cid)) {
-			var groupNames = cid.map(function(cid) {
+			var uniqueCids = cid.filter(function(cid, index, array) {
+				return array.indexOf(cid) === index;
+			});
+
+			var groupNames = uniqueCids.map(function(cid) {
 				return 'cid:' + cid + ':privileges:mods';
 			});
-			groups.isMemberOfGroups(uid, groupNames, callback);
+
+			groups.isMemberOfGroups(uid, groupNames, function(err, isMembers) {
+				if (err) {
+					return callback(err);
+				}
+
+				var map = {};
+				uniqueCids.forEach(function(cid, index) {
+					map[cid] = isMembers[index];
+				});
+
+				callback(null, cid.map(function(cid) {
+					return map[cid];
+				}));
+			});
 		} else {
 			if (Array.isArray(uid)) {
 				groups.isMembers(uid, 'cid:' + cid + ':privileges:mods', callback);
