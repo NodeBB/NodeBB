@@ -1,5 +1,5 @@
 "use strict";
-/* global define, app, socket */
+/* global define, app, socket, bootbox, templates, config */
 
 define('admin/appearance/themes', function() {
 	var Themes = {};
@@ -62,7 +62,6 @@ define('admin/appearance/themes', function() {
 			});
 		});
 
-		// Installed Themes
 		socket.emit('admin.themes.getInstalled', function(err, themes) {
 			if(err) {
 				return app.alertError(err.message);
