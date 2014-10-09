@@ -51,9 +51,7 @@ define('forum/infinitescroll', function() {
 	};
 
 	scroll.parseAndTranslate = function(template, blockName, data, callback) {
-		ajaxify.loadTemplate(template, function(templateHtml) {
-			var html = templates.parse(templates.getBlock(templateHtml, blockName), data);
-
+		templates.parse(template, blockName, data, function(html) {
 			translator.translate(html, function(translatedHTML) {
 				callback($(translatedHTML));
 			});
