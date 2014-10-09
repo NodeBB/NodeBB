@@ -98,6 +98,10 @@ SocketAdmin.plugins.toggleInstall = function(socket, plugin_id, callback) {
 	plugins.toggleInstall(plugin_id, callback);
 };
 
+SocketAdmin.plugins.upgrade = function(socket, plugin_id, callback) {
+	plugins.upgrade(plugin_id, callback);
+};
+
 SocketAdmin.widgets.set = function(socket, data, callback) {
 	if(!data) {
 		return callback(new Error('[[error:invalid-data]]'));

@@ -20,9 +20,9 @@
 						<!-- IF plugins.description -->
 						<p>{plugins.description}</p>
 						<!-- ENDIF plugins.description -->
-						<!-- IF plugins.outdated --><i class="fa fa-exclamation-triangle text-danger"></i> <!-- ENDIF plugins.outdated --><small>Installed <strong>{plugins.version}</strong> | Latest <strong>{plugins.latest}</strong></small>
+						<!-- IF plugins.outdated --><i class="fa fa-exclamation-triangle text-danger"></i> <!-- ENDIF plugins.outdated --><small>Installed <strong class="currentVersion">{plugins.version}</strong> | Latest <strong class="latestVersion">{plugins.latest}</strong></small>
 						<!-- IF plugins.outdated -->
-							<button data-action="upgrade" class="btn btn-success btn-xs">Upgrade</button>
+							<button data-action="upgrade" class="btn btn-success btn-xs"><i class="fa fa-download"></i> Upgrade</button>
 						<!-- ENDIF plugins.outdated -->
 						<!-- IF plugins.url -->
 						<p>For more information: <a href="{plugins.url}">{plugins.url}</a></p>

@@ -65,6 +65,24 @@ define('admin/extend/plugins', function() {
 					});
 				});
 
+				pluginsList.on('click', 'button[data-action="upgrade"]', function() {
+					var btn = $(this);
+					var parent = btn.parents('li');
+					pluginID = parent.attr('data-plugin-id');
+
+					btn.attr('disabled', true).find('i').attr('class', 'fa fa-refresh fa-spin');
+
+					socket.emit('admin.plugins.upgrade', pluginID, function(err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						parent.find('.fa-exclamation-triangle').remove();
+						parent.find('.currentVersion').text(parent.find('.latestVersion').text());
+						btn.remove();
+					});
+				});
+
+
 				$('#plugin-search').on('input propertychange', function() {
 					var term = $(this).val();
 					$('.plugins li').each(function() {

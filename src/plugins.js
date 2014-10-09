@@ -7,6 +7,7 @@ var fs = require('fs'),
 	nconf = require('nconf'),
 	semver = require('semver'),
 	express = require('express'),
+	npm = require('npm'),
 
 	db = require('./database'),
 	emitter = require('./emitter'),
@@ -555,8 +556,6 @@ var fs = require('fs'),
 				return callback(err);
 			}
 
-			var npm = require('npm');
-
 			async.waterfall([
 				function(next) {
 					Plugins.isActive(id, next);
@@ -583,6 +582,17 @@ var fs = require('fs'),
 				});
 			});
 		});
+	};
+
+	Plugins.upgrade = function(id, callback) {
+		async.waterfall([
+			function(next) {
+				npm.load({}, next);
+			},
+			function(res, next) {
+				npm.commands.install([id], next);
+			}
+		], callback);
 	};
 
 	Plugins.getTemplates = function(callback) {
@@ -684,7 +694,6 @@ var fs = require('fs'),
 	};
 
 	function getVersion(name, callback) {
-		var npm = require('npm');
 		npm.load({}, function() {
 			npm.commands.show([name, 'version'], true, function(err, version) {
 				if (err || !version) {
