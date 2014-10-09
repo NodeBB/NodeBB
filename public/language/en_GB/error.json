@@ -63,11 +63,11 @@
 	"group-already-exists": "Group already exists",
 	"group-name-change-not-allowed": "Group name change not allowed",
 
-	"post-already-deleted": "Post already deleted",
-	"post-already-restored": "Post already restored",
+	"post-already-deleted": "This post has already been deleted",
+	"post-already-restored": "This post has already been restored",
 
-	"topic-already-deleted": "Topic already deleted",
-	"topic-already-restored": "Topic already restored",
+	"topic-already-deleted": "This topic has already been deleted",
+	"topic-already-restored": "This topic has already been restored",
 
 	"topic-thumbnails-are-disabled": "Topic thumbnails are disabled.",
 	"invalid-file": "Invalid File",
