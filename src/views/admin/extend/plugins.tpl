@@ -18,6 +18,7 @@
 						<!-- IF plugins.description -->
 						<p>{plugins.description}</p>
 						<!-- ENDIF plugins.description -->
+						<!-- IF plugins.outdated --><i class="fa fa-exclamation-triangle text-danger"></i> <!-- ENDIF plugins.outdated --><small>Installed <strong>{plugins.version}</strong> | Latest <strong>{plugins.latest}</strong></small>
 						<!-- IF plugins.url -->
 						<p>For more information: <a href="{plugins.url}">{plugins.url}</a></p>
 						<!-- ENDIF plugins.url -->

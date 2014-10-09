@@ -640,19 +640,18 @@ var fs = require('fs'),
 
 				async.each(installedPlugins, function(plugin, next) {
 
-					pluginMap[plugin.id] = pluginMap[plugin.id] || {};
-					pluginMap[plugin.id].id = pluginMap[plugin.id].id || plugin.id;
-					pluginMap[plugin.id].name = pluginMap[plugin.id].name || plugin.id;
-					pluginMap[plugin.id].description = plugin.description;
-					pluginMap[plugin.id].url = pluginMap[plugin.id].url || plugin.url;
-					pluginMap[plugin.id].installed = true;
+					pluginMap[plugin.name] = pluginMap[plugin.name] || {};
+					pluginMap[plugin.name].id = pluginMap[plugin.name].id || plugin.name;
+					pluginMap[plugin.name].name = pluginMap[plugin.name].name || plugin.name;
+					pluginMap[plugin.name].description = plugin.description;
+					pluginMap[plugin.name].url = pluginMap[plugin.name].url || plugin.url;
+					pluginMap[plugin.name].installed = true;
+					pluginMap[plugin.name].active = plugin.active;
+					pluginMap[plugin.name].version = plugin.version;
 
-					Plugins.isActive(plugin.id, function(err, active) {
-						if (err) {
-							return next(err);
-						}
-
-						pluginMap[plugin.id].active = active;
+					getVersion(plugin.name, function(err, version) {
+						pluginMap[plugin.name].latest = version;
+						pluginMap[plugin.name].outdated = version !== pluginMap[plugin.name].version;
 						next();
 					});
 				}, function(err) {
@@ -682,6 +681,19 @@ var fs = require('fs'),
 			});
 		});
 	};
+
+	function getVersion(name, callback) {
+		var npm = require('npm');
+		npm.load({}, function() {
+			npm.commands.show([name, 'version'], true, function(err, version) {
+				if (err || !version) {
+					return callback(null, 'no version');
+				}
+				var obj = Object.keys(version);
+				callback(null, Array.isArray(obj) && obj.length ? obj[0] : 'no version');
+			});
+		});
+	}
 
 	Plugins.isInstalled = function(id, callback) {
 		var pluginDir = path.join(__dirname, '../node_modules', id);
@@ -725,7 +737,7 @@ var fs = require('fs'),
 
 					async.waterfall([
 						function(next) {
-							fs.readFile(path.join(file, 'plugin.json'), next);
+							fs.readFile(path.join(file, 'package.json'), next);
 						},
 						function(configJSON, next) {
 							var config;
@@ -737,13 +749,12 @@ var fs = require('fs'),
 								return next(err, null);
 							}
 
-							Plugins.isActive(config.id, function(err, active) {
+							Plugins.isActive(config.name, function(err, active) {
 								if (err) {
 									next(new Error('no-active-state'));
 								}
 
-								delete config.library;
-								delete config.hooks;
+
 								config.active = active;
 								config.installed = true;
 
