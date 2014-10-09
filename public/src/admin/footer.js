@@ -16,8 +16,6 @@ define('admin/footer', ['admin/settings'], function(Settings) {
 
 			selectMenuItem(data.url);
 		});
-
-		setupMainMenu();
 	});
 
 	function activateMobile() {
@@ -43,19 +41,6 @@ define('admin/footer', ['admin/settings'], function(Settings) {
 		$(window).on('scroll', function() {
 			$('#main-menu').height($(window).height() + 20);
 		});
-	}
-
-	function setupMainMenu() {
-		$('.sidebar-nav .nav-header').on('click', function() {
-			$(this).parents('.sidebar-nav').toggleClass('open');
-			setTimeout(function() {
-				$('.nano').nanoScroller();
-			}, 500); // replace with animationend event
-		});
-
-		$('.nano').nanoScroller();
-
-		$('#main-menu .nav-list > li a').append('<span class="pull-right"><i class="fa fa-inverse fa-arrow-circle-right"></i>&nbsp;</span>');
 	}
 
 	function selectMenuItem(url) {
