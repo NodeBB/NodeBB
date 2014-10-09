@@ -45,7 +45,18 @@ middleware.updateLastOnlineTime = function(req, res, next) {
 		user.updateLastOnlineTime(req.user.uid);
 	}
 
-	db.sortedSetAdd('ip:recent', Date.now(), req.ip || 'Unknown');
+	db.sortedSetScore('ip:recent', req.ip, function(err, score) {
+		if (err) {
+			return;
+		}
+		var today = new Date();
+		today.setHours(today.getHours(), 0, 0, 0);
+
+		if (!score || score < today.getTime()) {
+			db.sortedSetIncrBy('analytics:uniquevisitors', 1, today.getTime());
+			db.sortedSetAdd('ip:recent', Date.now(), req.ip || 'Unknown');
+		}
+	});
 
 	next();
 };

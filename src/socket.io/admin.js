@@ -188,7 +188,7 @@ SocketAdmin.analytics.get = function(socket, data, callback) {
 		if (data.graph === 'traffic') {
 			async.parallel({
 				uniqueVisitors: function(next) {
-					getHourlyStatsForSet('ip:recent', data.amount, next);
+					getHourlyStatsForSet('analytics:uniquevisitors', data.amount, next);
 				},
 				pageviews: function(next) {
 					getHourlyStatsForSet('analytics:pageviews', data.amount, next);
