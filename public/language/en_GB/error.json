@@ -52,8 +52,8 @@
 	"file-too-big": "Maximum allowed file size is %1 kbs - please upload a smaller file",
 
 	"cant-vote-self-post": "You cannot vote for your own post",
-	"already-favourited": "You already favourited this post",
-	"already-unfavourited": "You already unfavourited this post",
+	"already-favourited": "You have already favourited this post",
+	"already-unfavourited": "You have already unfavourited this post",
 
 	"cant-ban-other-admins": "You can't ban other admins!",
 
