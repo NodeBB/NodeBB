@@ -34,7 +34,7 @@ var admin = {};
 				alert_id: 'config_status',
 				timeout: 2500,
 				title: 'Error',
-				message: 'NodeBB encountered a problem getting config',
+				message: 'NodeBB encountered a problem getting config: ' + err.message,
 				type: 'danger'
 			});
 		}
