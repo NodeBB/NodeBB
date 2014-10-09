@@ -180,13 +180,11 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 
 	Category.onNewTopic = function(topic) {
 		$(window).trigger('filter:categories.new_topic', topic);
-
-		ajaxify.loadTemplate('category', function(categoryTemplate) {
-			var html = templates.parse(templates.getBlock(categoryTemplate, 'topics'), {
-				privileges: {editable: !!$('.thread-tools').length},
-				topics: [topic]
-			});
-
+		
+		templates.parse('category', 'topics', {
+			privileges: {editable: !!$('.thread-tools').length},
+			topics: [topic]
+		}, function(html) {
 			translator.translate(html, function(translatedHTML) {
 				var topic = $(translatedHTML),
 					container = $('#topics-container'),
@@ -276,9 +274,7 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 
 		findInsertionPoint();
 
-		ajaxify.loadTemplate('category', function(categoryTemplate) {
-			var html = templates.parse(templates.getBlock(categoryTemplate, 'topics'), data);
-
+		templates.parse('category', 'topics', data, function(html) {
 			translator.translate(html, function(translatedHTML) {
 				var container = $('#topics-container'),
 					html = $(translatedHTML);
