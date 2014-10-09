@@ -15,9 +15,6 @@ var async = require('async'),
 		},
 		"mongo": {
 			"dependencies": ["mongodb", "connect-mongo"]
-		},
-		"level": {
-			"dependencies": ["levelup", "leveldown", "connect-leveldb"]
 		}
 	};
 
@@ -161,8 +158,7 @@ function setupConfig(next) {
 		var	config = {},
 			redisQuestions = require('./database/redis').questions,
 			mongoQuestions = require('./database/mongo').questions,
-			levelQuestions = require('./database/level').questions,
-			question, x, numQ, allQuestions = questions.main.concat(redisQuestions).concat(mongoQuestions.concat(levelQuestions));
+			question, x, numQ, allQuestions = questions.main.concat(redisQuestions).concat(mongoQuestions);
 
 		for(x=0,numQ=allQuestions.length;x<numQ;x++) {
 			question = allQuestions[x];
