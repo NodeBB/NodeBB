@@ -62,6 +62,10 @@ var fs = require('fs'),
 		events.logWithUser(uid, 'restored post (pid ' + pid + ')');
 	};
 
+	events.logTopicMove = function(uid, tid) {
+		events.logWithUser(uid, 'moved topic (tid ' + tid + ')');
+	};
+
 	events.logTopicDelete = function(uid, tid) {
 		events.logWithUser(uid, 'deleted topic (tid ' + tid + ')');
 	};
