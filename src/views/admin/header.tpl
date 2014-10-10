@@ -4,9 +4,9 @@
 	<title>NodeBB Admin Control Panel</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link rel="stylesheet" href="{relative_path}/vendor/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css">
-	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/colorpicker/colorpicker.css">
-	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/nanoscroller/nanoscroller.css">
+	<link rel="stylesheet" href="{relative_path}/vendor/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css?{cache-buster}">
+	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/colorpicker/colorpicker.css?{cache-buster}">
+	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/nanoscroller/nanoscroller.css?{cache-buster}">
 	<link rel="stylesheet" type="text/css" href="{relative_path}/admin.css?{cache-buster}" />
 
 	<script>
@@ -20,20 +20,20 @@
 	    <script>__lt_ie_9__ = 1;</script>
 	<![endif]-->
 
-	<script type="text/javascript" src="{relative_path}/vendor/chart.js/chart.min.js"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/hammer/hammer.min.js"></script>
-	<script type="text/javascript" src="{relative_path}/socket.io/socket.io.js"></script>
-	<script type="text/javascript" src="{relative_path}/nodebb.min.js"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/colorpicker/colorpicker.js"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/chart.js/chart.min.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/hammer/hammer.min.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/socket.io/socket.io.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/nodebb.min.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/colorpicker/colorpicker.js?{cache-buster}"></script>
 	<script type="text/javascript" src="{relative_path}/src/admin/admin.js?{cache-buster}"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/ace/ace.js"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/nanoscroller/nanoscroller.min.js"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/jquery/event/jquery.event.drag.js"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/jquery/event/jquery.event.drop.js"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/semver/semver.browser.js"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/jquery/deserialize/jquery.deserialize.min.js"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/mousetrap/mousetrap.js"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/ace/ace.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/nanoscroller/nanoscroller.min.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/jquery/event/jquery.event.drag.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/jquery/event/jquery.event.drop.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/semver/semver.browser.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/jquery/deserialize/jquery.deserialize.min.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/mousetrap/mousetrap.js?{cache-buster}"></script>
 
 	<script>
 		require.config({
