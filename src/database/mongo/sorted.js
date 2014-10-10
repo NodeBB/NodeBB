@@ -15,12 +15,8 @@ module.exports = function(db, module) {
 		}
 
 		value = helpers.valueToString(value);
-		var data = {
-			score: parseInt(score, 10),
-			value: value
-		};
 
-		db.collection('objects').update({_key: key, value: value}, {$set: data}, {upsert:true, w: 1}, function(err) {
+		db.collection('objects').update({_key: key, value: value}, {$set: {score: parseInt(score, 10)}}, {upsert:true, w: 1}, function(err) {
 			callback(err);
 		});
 	};
@@ -38,7 +34,7 @@ module.exports = function(db, module) {
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
 		for(var i=0; i<scores.length; ++i) {
-			bulk.find({_key: key, value: values[i]}).upsert().updateOne({$set: {score: scores[i], value: values[i]}});
+			bulk.find({_key: key, value: values[i]}).upsert().updateOne({$set: {score: scores[i]}});
 		}
 
 		bulk.execute(function(err, result) {
@@ -52,15 +48,11 @@ module.exports = function(db, module) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		var data = {
-			score: parseInt(score, 10),
-			value: value
-		};
 
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
 		for(var i=0; i<keys.length; ++i) {
-			bulk.find({_key: keys[i], value: value}).upsert().updateOne({$set: data});
+			bulk.find({_key: keys[i], value: value}).upsert().updateOne({$set: {score: parseInt(score, 10)}});
 		}
 
 		bulk.execute(function(err, result) {
