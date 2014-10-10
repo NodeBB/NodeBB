@@ -178,7 +178,7 @@ function handleErrors(err, req, res, next) {
 function catch404(req, res, next) {
 	var relativePath = nconf.get('relative_path');
 	var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
-		isClientScript = new RegExp('^' + relativePath + '\\/src\\/forum(\\/admin)?\\/.+\\.js');
+		isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
 
 	res.status(404);
 
