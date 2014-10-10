@@ -437,9 +437,5 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		graphs.topics.update();
 	}
 
-	function buildTopicsLegend() {
-
-	}
-
 	return Admin;
 });
