@@ -1,7 +1,7 @@
 "use strict";
 /*global define, socket, app, admin, utils, bootbox, RELATIVE_PATH*/
 
-define('admin/manage/tags', ['infinitescroll', 'admin/modules/selectable'], function(infinitescroll, selectable) {
+define('admin/manage/tags', ['forum/infinitescroll', 'admin/modules/selectable'], function(infinitescroll, selectable) {
 	var	Tags = {},
 		timeoutId = 0;
 
