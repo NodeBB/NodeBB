@@ -2,7 +2,7 @@
 
 /*globals define*/
 
-define('admin/selectable', function() {
+define('admin/modules/selectable', function() {
 	var selectable = {};
 
 	// modified from http://threedubmedia.com/code/event/drop/demo/selection

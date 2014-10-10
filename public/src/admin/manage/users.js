@@ -1,6 +1,6 @@
 "use strict";
 /* global socket, define, templates, bootbox, app, ajaxify,  */
-define('admin/manage/users', ['admin/selectable'], function(selectable) {
+define('admin/manage/users', ['admin/modules/selectable'], function(selectable) {
 	var Users = {};
 
 	Users.init = function() {
