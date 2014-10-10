@@ -1,5 +1,5 @@
 "use strict";
-/*global define, socket, app, admin, utils, bootbox, RELATIVE_PATH*/
+/*global define, socket, app, admin, utils, RELATIVE_PATH*/
 
 define('admin/manage/flags', ['infinitescroll', 'admin/selectable'], function(infinitescroll, selectable) {
 	var	Flags = {};

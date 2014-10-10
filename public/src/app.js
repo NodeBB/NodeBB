@@ -1,5 +1,5 @@
 "use strict";
-/*global io, templates, translator, ajaxify, utils, RELATIVE_PATH*/
+/*global io, templates, translator, ajaxify, utils, bootbox, RELATIVE_PATH*/
 
 var socket,
 	config,

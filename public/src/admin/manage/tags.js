@@ -69,7 +69,7 @@ define('admin/manage/tags', ['infinitescroll', 'admin/selectable'], function(inf
 
 			setTimeout(function() {
 				handleColorPickers();
-			}, 500); // bootbox made me do it.
+			}, 500);
 		});
 	};
 

@@ -33,7 +33,7 @@ define(function() {
 			}
 		});
 
-		setTimeout(function() { //bootbox was rewritten for BS3 and I had to add this timeout for the previous code to work. TODO: to look into
+		setTimeout(function() {
 			$('.bootbox .fa-icons i').on('click', function() {
 				$('.bootbox .selected').removeClass('selected');
 				$(this).addClass('selected');
