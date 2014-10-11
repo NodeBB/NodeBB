@@ -435,10 +435,10 @@ var db = require('./database'),
 					db.incrObjectField('category:' + cid, 'post_count', next);
 				},
 				function(next) {
-					if(parseInt(topicData.pinned, 10) === 0) {
-						db.sortedSetAdd('categories:' + cid + ':tid', postData.timestamp, postData.tid, next);
-					} else {
+					if (parseInt(topicData.pinned, 10) === 1) {
 						next();
+					} else {
+						db.sortedSetAdd('categories:' + cid + ':tid', postData.timestamp, postData.tid, next);
 					}
 				}
 			], callback);

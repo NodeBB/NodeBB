@@ -87,7 +87,7 @@ module.exports = function(db, module) {
 			item = item || {};
 			var result = {};
 			for(i=0; i<fields.length; ++i) {
-				result[fields[i]] = item[fields[i]] || null;
+				result[fields[i]] = item[fields[i]] !== undefined ? item[fields[i]] : null;
 			}
 			callback(null, result);
 		});
