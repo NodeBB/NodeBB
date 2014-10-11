@@ -76,6 +76,9 @@
 						</div>
 					</div>
 				</form>
+				<li class="nav-home">
+					<a href="{relative_path}/" target="_blank" title="Open forum homepage"><i class="fa fa-home"></i></a>
+				</li>
 
 				<li id="user_label" class="dropdown">
 					<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">

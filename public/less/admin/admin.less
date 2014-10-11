@@ -188,8 +188,10 @@
 		padding: 6px;
 
 		img {
-			width: 35px;
-			height: 35px;
+			width: 30px;
+			height: 30px;
+			vertical-align: -88%;
+			margin-right: 5px;
 		}
 	}
 
@@ -212,15 +214,37 @@
 		}
 	}
 
+	.navbar {
+		padding: 0 5px;
+
+		.nav-home a, .nav-home a:hover {
+			width: 30px;
+			height: 30px;
+			padding: 5px;
+			text-align: center;
+			margin-top: 10px;
+			background: #DDD;
+
+			i {
+				color: black;
+				font-size: 17px;
+			}
+		}
+
+	}
+	
 	#acp-search {
 		input {
 			background: black;
 			border: 0;
 			color: white;
 			box-shadow: none;
-			width: 31px;
 			.transition(.4s ease width);
 			font-family: @font-family-monospace;
+			width: 30px;
+			height: 30px;
+			vertical-align: -30%;
+			border-radius: 0;
 
 			&:focus {
 				width: 200px;
