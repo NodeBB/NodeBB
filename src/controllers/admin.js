@@ -193,7 +193,7 @@ adminController.logs.get = function(req, res, next) {
 			data = '';
 		}
 
-		res.render('admin/advanced/log', {
+		res.render('admin/advanced/logs', {
 			data: data.toString()
 		});
 	});
