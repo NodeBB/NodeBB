@@ -68,6 +68,7 @@
 			</ul>
 
 			<ul id="logged-in-menu" class="nav navbar-nav navbar-right">
+				<li class="navbar-left"><a href="{relative_path}/" target="_top"><i class="fa fa-share"> Back to Forum</i></a></li>
 				<form class="navbar-form navbar-left hidden-xs" role="search">
 					<div class="form-group" id="acp-search" >
 						<div class="dropdown" >
