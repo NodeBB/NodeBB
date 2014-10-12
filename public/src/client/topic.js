@@ -239,7 +239,7 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 				slug = parts[2];
 			var newUrl = 'topic/' + topicId + '/' + (slug ? slug : '');
 			if (postIndex > 0) {
-				 newUrl += '/' + (postIndex + 1);
+				newUrl += '/' + (postIndex + 1);
 			}
 
 			if (newUrl !== currentUrl) {
