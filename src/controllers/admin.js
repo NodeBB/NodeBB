@@ -70,16 +70,16 @@ adminController.home = function(req, res, next) {
 function getStats(callback) {
 	async.parallel([
 		function(next) {
-			getStatsForSet('ip:recent', next);
+			getStatsForSet('ip:recent', 'uniqueIPCount', next);
 		},
 		function(next) {
-			getStatsForSet('users:joindate', next);
+			getStatsForSet('users:joindate', 'userCount', next);
 		},
 		function(next) {
-			getStatsForSet('posts:pid', next);
+			getStatsForSet('posts:pid', 'postCount', next);
 		},
 		function(next) {
-			getStatsForSet('topics:tid', next);
+			getStatsForSet('topics:tid', 'topicCount', next);
 		}
 	], function(err, results) {
 		if (err) {
@@ -94,12 +94,13 @@ function getStats(callback) {
 	});
 }
 
-function getStatsForSet(set, callback) {
+function getStatsForSet(set, field, callback) {
 	var terms = {
 		day: 86400000,
 		week: 604800000,
 		month: 2592000000
 	};
+
 	var now = Date.now();
 	async.parallel({
 		day: function(next) {
@@ -112,7 +113,7 @@ function getStatsForSet(set, callback) {
 			db.sortedSetCount(set, now - terms.month, now, next);
 		},
 		alltime: function(next) {
-			db.sortedSetCount(set, 0, now, next);
+			db.getObjectField('global', field, next);
 		}
 	}, callback);
 }

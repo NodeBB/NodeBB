@@ -51,7 +51,9 @@ middleware.updateLastOnlineTime = function(req, res, next) {
 		}
 		var today = new Date();
 		today.setHours(today.getHours(), 0, 0, 0);
-
+		if (!score) {
+			db.incrObjectField('global', 'uniqueIPCount');
+		}
 		if (!score || score < today.getTime()) {
 			db.sortedSetIncrBy('analytics:uniquevisitors', 1, today.getTime());
 			db.sortedSetAdd('ip:recent', Date.now(), req.ip || 'Unknown');
