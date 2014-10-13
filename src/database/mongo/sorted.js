@@ -298,7 +298,7 @@ module.exports = function(db, module) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').findOne({_key:key, value: value}, {fields:{score: 1}}, function(err, result) {
+		db.collection('objects').findOne({_key:key, value: value}, {fields:{_id: 0, score: 1}}, function(err, result) {
 			callback(err, result ? result.score : null);
 		});
 	};
@@ -308,7 +308,7 @@ module.exports = function(db, module) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').find({_key:{$in:keys}, value: value}).toArray(function(err, result) {
+		db.collection('objects').find({_key:{$in:keys}, value: value}, {_id:0, _key:1, score: 1}).toArray(function(err, result) {
 			if (err) {
 				return callback(err);
 			}
@@ -331,7 +331,7 @@ module.exports = function(db, module) {
 			return callback();
 		}
 		values = values.map(helpers.valueToString);
-		db.collection('objects').find({_key: key, value: {$in: values}}).toArray(function(err, result) {
+		db.collection('objects').find({_key: key, value: {$in: values}}, {_id: 0, value: 1, score: 1}).toArray(function(err, result) {
 			if (err) {
 				return callback(err);
 			}
@@ -364,7 +364,7 @@ module.exports = function(db, module) {
 			return callback();
 		}
 		values = values.map(helpers.valueToString);
-		db.collection('objects').find({_key: key, value: {$in: values}}).toArray(function(err, results) {
+		db.collection('objects').find({_key: key, value: {$in: values}}, {fields: {_id: 0, value: 1}}).toArray(function(err, results) {
 			if (err) {
 				return callback(err);
 			}
