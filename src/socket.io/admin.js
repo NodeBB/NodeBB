@@ -241,11 +241,6 @@ function getHourlyStatsForSet(set, hours, callback) {
 	});
 }
 
-SocketAdmin.clearLog = function(socket, data, callback) {
-	var logPath = path.join('logs', path.sep, 'output.log');
-	fs.truncate(logPath, callback);
-};
-
 SocketAdmin.getMoreEvents = function(socket, next, callback) {
 	if (parseInt(next, 10) < 0) {
 		return callback(null, {data: [], next: next});

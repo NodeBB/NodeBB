@@ -8,23 +8,3 @@
 		</div>
 	</div>
 </div>
-
-<div class="col-lg-3">
-	<div class="panel panel-default">
-		<div class="panel-body">
-			<button class="btn btn-primary btn-md" id="clearLog">Clear Log</button>
-		</div>
-	</div>
-</div>
-
-<script>
-$('#clearLog').on('click', function() {
-	socket.emit('admin.clearLog', {}, function(err) {
-		if (err) {
-			return app.alertError(err.message);
-		}
-
-		$('.logs .panel-body pre').text('');
-	});
-})
-</script
