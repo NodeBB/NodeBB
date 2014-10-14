@@ -14,7 +14,7 @@
 require(['forum/infinitescroll'], function(infinitescroll) {
 
 	infinitescroll.init(function(direction) {
-		if (direction < 0 && !$('.events').length) {
+		if (direction < 0 || !$('.events').length) {
 			return;
 		}
 
