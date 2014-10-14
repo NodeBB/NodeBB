@@ -230,7 +230,12 @@ var	async = require('async'),
 	User.getUsersFromSet = function(set, start, stop, callback) {
 		async.waterfall([
 			function(next) {
-				db.getSortedSetRevRange(set, start, stop, next);
+				if (set === 'users:online') {
+					var uids = require('./socket.io').getConnectedClients();
+					next(null, uids.slice(start, stop + 1));
+				} else {
+					db.getSortedSetRevRange(set, start, stop, next);
+				}
 			},
 			function(uids, next) {
 				User.getUsers(uids, next);
@@ -247,7 +252,7 @@ var	async = require('async'),
 				User.isAdministrator(uids, next);
 			},
 			isOnline: function(next) {
-				db.isSortedSetMembers('users:online', uids, next);
+				require('./socket.io').isUsersOnline(uids, next);
 			}
 		}, function(err, results) {
 			if (err) {

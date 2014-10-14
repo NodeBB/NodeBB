@@ -98,8 +98,6 @@ Sockets.init = function(server) {
 
 	Sockets.server = io;
 
-	db.delete('users:online');
-
 	fs.readdir(__dirname, function(err, files) {
 		files.splice(files.indexOf('index.js'), 1);
 
@@ -140,30 +138,30 @@ Sockets.init = function(server) {
 				if (uid) {
 					socket.join('uid_' + uid);
 					socket.join('online_users');
-					db.sortedSetAdd('users:online', Date.now(), uid, function(err) {
-						async.parallel({
-							user: function(next) {
-								user.getUserFields(uid, ['username', 'userslug', 'picture', 'status'], next);
-							},
-							isAdmin: function(next) {
-								user.isAdministrator(uid, next);
-							}
-						}, function(err, userData) {
-							if (err || !userData.user) {
-								return;
-							}
-							socket.emit('event:connect', {
-								status: 1,
-								username: userData.user.username,
-								userslug: userData.user.userslug,
-								picture: userData.user.picture,
-								isAdmin: userData.isAdmin,
-								uid: uid
-							});
 
-							socket.broadcast.emit('event:user_status_change', {uid:uid, status: userData.user.status});
+					async.parallel({
+						user: function(next) {
+							user.getUserFields(uid, ['username', 'userslug', 'picture', 'status'], next);
+						},
+						isAdmin: function(next) {
+							user.isAdministrator(uid, next);
+						}
+					}, function(err, userData) {
+						if (err || !userData.user) {
+							return;
+						}
+						socket.emit('event:connect', {
+							status: 1,
+							username: userData.user.username,
+							userslug: userData.user.userslug,
+							picture: userData.user.picture,
+							isAdmin: userData.isAdmin,
+							uid: uid
 						});
+
+						socket.broadcast.emit('event:user_status_change', {uid:uid, status: userData.user.status});
 					});
+
 				} else {
 					socket.join('online_guests');
 					socket.emit('event:connect', {
@@ -179,12 +177,7 @@ Sockets.init = function(server) {
 		socket.on('disconnect', function() {
 			var socketCount = Sockets.getUserSocketCount(uid);
 			if (uid && socketCount <= 1) {
-				db.sortedSetRemove('users:online', uid, function(err) {
-					if (err) {
-						return winston.error(err.message);
-					}
-					socket.broadcast.emit('event:user_status_change', {uid: uid, status: 'offline'});
-				});
+				socket.broadcast.emit('event:user_status_change', {uid: uid, status: 'offline'});
 			}
 
 			onUserDisconnect(uid, socket.id, socketCount);
