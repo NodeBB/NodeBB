@@ -5,6 +5,7 @@ define('admin/manage/flags', ['forum/infinitescroll', 'admin/modules/selectable'
 	var	Flags = {};
 
 	Flags.init = function() {
+		$('.post-container .content img').addClass('img-responsive')
 		handleDismiss();
 		handleDelete();
 		handleInfiniteScroll();
@@ -37,11 +38,11 @@ define('admin/manage/flags', ['forum/infinitescroll', 'admin/modules/selectable'
 			return app.alertError(err.messaage);
 		}
 		btn.parent().fadeOut(function() {
-			btn.remove();
+			$(this).remove();
+			if (!$('.flags [data-pid]').length) {
+				$('.post-container').text('No flagged posts!');
+			}
 		});
-		if (!$('.flags [data-pid]').length) {
-			$('.post-container').text('No flagged posts!');
-		}
 	}
 
 	function handleInfiniteScroll() {
