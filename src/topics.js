@@ -179,7 +179,7 @@ var async = require('async'),
 		Topics.getTopicsData(tids, function(err, topics) {
 			function mapFilter(array, field) {
 				return array.map(function(topic) {
-					return topic && topic[field].toString();
+					return topic && topic[field] && topic[field].toString();
 				}).filter(function(value, index, array) {
 					return utils.isNumber(value) && array.indexOf(value) === index;
 				});
