@@ -180,24 +180,45 @@ module.exports = function(Topics) {
 		});
 
 		async.parallel({
-			markRead: function(next) {
-				db.sortedSetAdd('uid:' + uid + ':tids_read', scores, tids, next);
+			topicScores: function(next) {
+				db.sortedSetScores('topics:recent', tids, next);
 			},
-			topicData: function(next) {
-				Topics.getTopicsFields(tids, ['cid'], next);
+			userScores: function(next) {
+				db.sortedSetScores('uid:' + uid + ':tids_read', tids, next);
 			}
 		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			var cids = results.topicData.map(function(topic) {
-				return topic && topic.cid;
-			}).filter(function(topic, index, array) {
-				return topic && array.indexOf(topic) === index;
+			tids = tids.filter(function(tid, index) {
+				return !results.userScores[index] || results.userScores[index] < results.topicScores[index];
 			});
 
-			categories.markAsRead(cids, uid, callback);
+			if (!tids.length) {
+				return callback();
+			}
+
+			async.parallel({
+				markRead: function(next) {
+					db.sortedSetAdd('uid:' + uid + ':tids_read', scores, tids, next);
+				},
+				topicData: function(next) {
+					Topics.getTopicsFields(tids, ['cid'], next);
+				}
+			}, function(err, results) {
+				if (err) {
+					return callback(err);
+				}
+
+				var cids = results.topicData.map(function(topic) {
+					return topic && topic.cid;
+				}).filter(function(topic, index, array) {
+					return topic && array.indexOf(topic) === index;
+				});
+
+				categories.markAsRead(cids, uid, callback);
+			});
 		});
 	};
 
