@@ -193,7 +193,7 @@ Loader.start = function(callback) {
 		}
 	}
 
-	callback();
+	if (callback) callback();
 };
 
 Loader.restart = function(callback) {
