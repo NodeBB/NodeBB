@@ -83,6 +83,11 @@
 			return res.status(404).send('');
 		}
 
+		// Handle returnTo data
+		if (req.body.hasOwnProperty('returnTo') && !req.session.returnTo) {
+			req.session.returnTo = req.body.returnTo;
+		}
+
 		if (req.body.username && utils.isEmailValid(req.body.username)) {
 			user.getUsernameByEmail(req.body.username, function(err, username) {
 				if (err) {

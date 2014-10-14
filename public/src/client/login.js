@@ -33,6 +33,16 @@ define('forum/login', function() {
 		});
 
 		$('#content #username').focus();
+
+		// Add "returnTo" data if present
+		if (app.previousUrl) {
+			var returnToEl = document.createElement('input');
+			returnToEl.type = 'hidden';
+			returnToEl.name = 'returnTo';
+			returnToEl.value = app.previousUrl.replace(window.location.origin + RELATIVE_PATH, '');
+			$(returnToEl).appendTo(formEl);
+			console.log('appended');
+		}
 	};
 
 	return Login;
