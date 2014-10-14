@@ -92,6 +92,8 @@ module.exports = function(Topics) {
 				return topic.value;
 			});
 
+			tids = tids.slice(0, 100);
+
 			filterTopics(uid, tids, results.ignoredCids, function(err, tids) {
 				if (err) {
 					return callback(err);
