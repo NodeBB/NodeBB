@@ -120,8 +120,8 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 	function onPostPurged(pid) {
 		$('#post-container li[data-pid="' + pid + '"]').fadeOut(500, function() {
 			$(this).remove();
-			postTools.updatePostCount();
 		});
+		postTools.updatePostCount();
 	}
 
 	function togglePostDeleteState(data) {
