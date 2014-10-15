@@ -107,7 +107,7 @@
 
 			function createIndices() {
 				createIndex('objects', {_key: 1, score: -1}, {background:true});
-				createIndex('objects', {_key: 1, value: -1}, {background:true, unique: true});
+				createIndex('objects', {_key: 1, value: -1}, {background:true});
 				createIndex('objects', {expireAt: 1}, {expireAfterSeconds:0, background:true});
 
 				createIndex('search', {content:'text'}, {background:true});
