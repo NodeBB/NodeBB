@@ -1123,7 +1123,7 @@ Upgrade.upgrade = function(callback) {
 			}
 
 			thisSchemaDate = Date.UTC(2014, 9, 14);
-			if (schemaDate < thisSchemaDate || 1) {
+			if (schemaDate < thisSchemaDate) {
 				winston.info('[2014/10/14] Topic post count migration');
 
 				async.series([
