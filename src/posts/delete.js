@@ -8,7 +8,6 @@ var async = require('async'),
 
 module.exports = function(Posts) {
 
-
 	Posts.delete = function(pid, callback) {
 		Posts.setPostField(pid, 'deleted', 1, function(err) {
 			if (err) {
@@ -144,7 +143,7 @@ module.exports = function(Posts) {
 					return callback(err);
 				}
 
-				topics.getTopicFields(postData.tid, ['cid', 'deleted'], function(err, topicData) {
+				topics.getTopicFields(postData.tid, ['cid'], function(err, topicData) {
 					if (err) {
 						return callback(err);
 					}
