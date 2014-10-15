@@ -34,7 +34,7 @@ module.exports = function(db, module) {
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
 		for(var i=0; i<scores.length; ++i) {
-			bulk.find({_key: key, value: values[i]}).upsert().updateOne({$set: {score: scores[i]}});
+			bulk.find({_key: key, value: values[i]}).upsert().updateOne({$set: {score: parseInt(scores[i], 10)}});
 		}
 
 		bulk.execute(function(err, result) {
