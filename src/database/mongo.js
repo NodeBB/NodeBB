@@ -106,39 +106,24 @@
 			}
 
 			function createIndices() {
-				db.collection('objects').ensureIndex({_key :1, score: -1}, {background:true}, function(err) {
-					if(err) {
-						winston.error('Error creating index ' + err.message);
-					}
-				});
+				createIndex('objects', {_key: 1, score: -1}, {background:true});
+				createIndex('objects', {_key: 1, value: -1}, {background:true, unique: true});
+				createIndex('objects', {expireAt: 1}, {expireAfterSeconds:0, background:true});
 
-				db.collection('objects').ensureIndex({_key :1, value: -1}, {background:true, unique: true}, function(err) {
-					if(err) {
-						winston.error('Error creating index ' + err.message);
-					}
-				});
+				createIndex('search', {content:'text'}, {background:true});
+				createIndex('search', {key: 1, id: 1}, {background:true});
 
-				db.collection('objects').ensureIndex({'expireAt':1}, {expireAfterSeconds:0, background:true}, function(err) {
-					if(err) {
-						winston.error('Error creating index ' + err.message);
-					}
-				});
-
-				db.collection('search').ensureIndex({content:'text'}, {background:true}, function(err) {
-					if(err) {
-						winston.error('Error creating index ' + err.message);
-					}
-				});
-
-				db.collection('search').ensureIndex({key: 1, id: 1}, {background: true}, function(err) {
-					if(err) {
-						winston.error('Error creating index ' + err.message);
-					}
-				});
-
-				if(typeof callback === 'function') {
+				if (typeof callback === 'function') {
 					callback();
 				}
+			}
+
+			function createIndex(collection, index, options) {
+				db.collection(collection).ensureIndex(index, options, function(err) {
+					if (err) {
+						winston.error('Error creating index ' + err.message);
+					}
+				});
 			}
 		});
 	};
