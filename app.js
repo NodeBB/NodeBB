@@ -171,9 +171,9 @@ function start() {
 							break;
 						}
 					});
-					
+
 					process.on('uncaughtException', function(err) {
-						winston.error(err.message);
+						winston.error(err.stack);
 						console.log(err.stack);
 
 						meta.js.killMinifier();
