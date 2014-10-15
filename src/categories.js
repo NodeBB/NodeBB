@@ -167,7 +167,7 @@ var db = require('./database'),
 	};
 
 	Categories.getPageCount = function(cid, uid, callback) {
-		Catgories.getCategoryField(cid, 'topic_count', function(err, topicCount) {
+		Categories.getCategoryField(cid, 'topic_count', function(err, topicCount) {
 			if (err) {
 				return callback(err);
 			}
