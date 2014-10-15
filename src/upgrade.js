@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 9, 3);
+	latestSchema = Date.UTC(2014, 9, 14);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -1081,6 +1081,68 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/10/7] Banned users sorted set skipped');
+				next();
+			}
+		},
+		function(next) {
+			function updateCategories(next) {
+				db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+					if (err) {
+						return next(err);
+					}
+
+					async.eachLimit(cids, 5, function(cid, next) {
+						db.sortedSetCard('categories:' + cid + ':tid', function(err, count) {
+							if (err) {
+								return next(err);
+							}
+							count = parseInt(count, 10) || 0;
+							db.setObjectField('category:' + cid, 'topic_count', count, next);
+						});
+					}, next);
+				});
+			}
+
+			function updateTopics(next) {
+				db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
+					if (err) {
+						return next(err);
+					}
+
+					async.eachLimit(tids, 50, function(tid, next) {
+						db.sortedSetCard('tid:' + tid + ':posts', function(err, count) {
+							if (err) {
+								return next(err);
+							}
+							count = parseInt(count, 10) || 0;
+							winston.info('updating tid ' + tid + ' count ' + count);
+							db.setObjectField('topic:' + tid, 'postcount', count, next);
+						});
+					}, next);
+				});
+			}
+
+			thisSchemaDate = Date.UTC(2014, 9, 14);
+			if (schemaDate < thisSchemaDate || 1) {
+				winston.info('[2014/10/14] Topic post count migration');
+
+				async.series([
+					function(next) {
+						updateCategories(next);
+					},
+					function(next) {
+						updateTopics(next);
+					}
+				], function(err) {
+					if (err) {
+						winston.error('[2014/10/14] Error encountered while Topic post count migration');
+						return next(err);
+					}
+					winston.info('[2014/10/14] Topic post count migration done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2014/10/14] Topic post count migration skipped');
 				next();
 			}
 		}
