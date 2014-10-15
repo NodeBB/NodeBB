@@ -166,7 +166,7 @@ var winston = require('winston'),
 			if (err || !canEdit) {
 				return callback(err || new Error('[[error:no-privileges]]'));
 			}
-
+			events.logPostPurge(uid, pid);
 			posts.purge(pid, callback);
 		});
 	};

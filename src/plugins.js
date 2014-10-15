@@ -660,8 +660,8 @@ var fs = require('fs'),
 					pluginMap[plugin.name].version = plugin.version;
 
 					getVersion(plugin.id, function(err, version) {
-						pluginMap[plugin.name].latest = version;
-						pluginMap[plugin.name].outdated = version !== pluginMap[plugin.name].version;
+						pluginMap[plugin.name].latest = version || plugin.version;
+						pluginMap[plugin.name].outdated = pluginMap[plugin.name].latest !== pluginMap[plugin.name].version;
 						next();
 					});
 				}, function(err) {
@@ -697,10 +697,10 @@ var fs = require('fs'),
 		npm.load({}, function() {
 			npm.commands.show([name, 'version'], true, function(err, version) {
 				if (err || !version) {
-					return callback(null, 'no version');
+					return callback();
 				}
 				var obj = Object.keys(version);
-				callback(null, Array.isArray(obj) && obj.length ? obj[0] : 'no version');
+				callback(null, Array.isArray(obj) && obj.length ? obj[0] : null);
 			});
 		});
 	}

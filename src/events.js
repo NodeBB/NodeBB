@@ -62,6 +62,10 @@ var fs = require('fs'),
 		events.logWithUser(uid, 'restored post (pid ' + pid + ')');
 	};
 
+	events.logPostPurge = function(uid, pid) {
+		events.logWithUser(uid, 'purged post (pid ' + pid + ')');
+	};
+
 	events.logTopicMove = function(uid, tid) {
 		events.logWithUser(uid, 'moved topic (tid ' + tid + ')');
 	};
