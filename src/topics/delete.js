@@ -60,7 +60,7 @@ module.exports = function(Topics) {
 				Topics.deleteTopicTags(tid, next);
 			},
 			function(next) {
-				updateCounters(tid, -1, next);
+				reduceCounters(tid, next);
 			}
 		], function(err) {
 			if (err) {
@@ -72,7 +72,7 @@ module.exports = function(Topics) {
 	};
 
 	function deleteTopicFromCategoryAndUser(tid, callback) {
-		Topics.getTopicFields(tid, ['cid', 'uid', 'deleted'], function(err, topicData) {
+		Topics.getTopicFields(tid, ['cid', 'uid'], function(err, topicData) {
 			if (err) {
 				return callback(err);
 			}
@@ -81,7 +81,8 @@ module.exports = function(Topics) {
 		});
 	}
 
-	function updateCounters(tid, incr, callback) {
+	function reduceCounters(tid, callback) {
+		var incr = -1;
 		async.parallel([
 			function(next) {
 				db.incrObjectFieldBy('global', 'topicCount', incr, next);
