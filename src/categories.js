@@ -167,8 +167,8 @@ var db = require('./database'),
 	};
 
 	Categories.getPageCount = function(cid, uid, callback) {
-		db.sortedSetCard('categories:' + cid + ':tid', function(err, topicCount) {
-			if(err) {
+		Catgories.getCategoryField(cid, 'topic_count', function(err, topicCount) {
+			if (err) {
 				return callback(err);
 			}
 
@@ -177,7 +177,7 @@ var db = require('./database'),
 			}
 
 			user.getSettings(uid, function(err, settings) {
-				if(err) {
+				if (err) {
 					return callback(err);
 				}
 

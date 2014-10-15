@@ -128,7 +128,7 @@ middleware.addSlug = function(req, res, next) {
 };
 
 middleware.checkTopicIndex = function(req, res, next) {
-	db.sortedSetCard('categories:' + req.params.category_id + ':tid', function(err, topicCount) {
+	categories.getCategoryField(req.params.category_id, 'topic_count', function(err, topicCount) {
 		if (err) {
 			return next(err);
 		}

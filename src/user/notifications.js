@@ -214,7 +214,9 @@ var async = require('async'),
 		if (!parseInt(uid, 10)) {
 			return callback(null, 0);
 		}
-		db.sortedSetCard('uid:' + uid + ':notifications:unread', callback);
+		db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, 20, function(err, nids) {
+			callback(err, Array.isArray(nids) ? nids.length : 0);
+		});
 	};
 
 	UserNotifications.getUnreadByField = function(uid, field, value, callback) {

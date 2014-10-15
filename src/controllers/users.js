@@ -63,7 +63,7 @@ function getUsers(set, res, next) {
 			user.getUsersFromSet(set, 0, 49, next);
 		},
 		count: function(next) {
-			db.sortedSetCard(set, next);
+			db.getObjectField('global', 'userCount', next);
 		}
 	}, function(err, results) {
 		if (err) {
