@@ -48,7 +48,6 @@ var db = require('./database'),
 				}
 
 				async.parallel([
-					async.apply(addToRecent, fromuid, message),
 					async.apply(db.sortedSetAdd, 'messages:uid:' + uids[0] + ':to:' + uids[1], timestamp, mid),
 					async.apply(Messaging.updateChatTime, fromuid, touid),
 					async.apply(Messaging.updateChatTime, touid, fromuid),
@@ -77,16 +76,6 @@ var db = require('./database'),
 			});
 		});
 	};
-
-	function addToRecent(fromuid, message, callback) {
-		db.listPrepend('messages:recent:' + fromuid, message.content, function(err) {
-			if (err) {
-				return callback(err);
-			}
-
-			db.listTrim('messages:recent:' + fromuid, 0, 9, callback);
-		});
-	}
 
 	Messaging.getMessages = function(fromuid, touid, since, isNew, callback) {
 		var uids = sortUids(fromuid, touid);
@@ -276,72 +265,6 @@ var db = require('./database'),
 	Messaging.markUnread = function(uid, toUid, callback) {
 		db.sortedSetAdd('uid:' + uid + ':chats:unread', Date.now(), toUid, callback);
 	};
-
-	/*
-	todo #1798 -- this utility method creates a room name given an array of uids.
-
-	Messaging.uidsToRoom = function(uids, callback) {
-		uid = parseInt(uid, 10);
-		if (typeof uid === 'number' && Array.isArray(roomUids)) {
-			var room = 'chat_';
-
-			room = room + roomUids.map(function(uid) {
-				return parseInt(uid, 10);
-			}).sort(function(a, b) {
-				return a-b;
-			}).join('_');
-
-			callback(null, room);
-		} else {
-			callback(new Error('invalid-uid-or-participant-uids'));
-		}
-	};*/
-
-	Messaging.verifySpammer = function(uid, callback) {
-		var messagesToCompare = 10;
-
-		db.getListRange('messages:recent:' + uid, 0, messagesToCompare - 1, function(err, msgs) {
-			var total = 0;
-
-			for (var i = 0, ii = msgs.length - 1; i < ii; ++i) {
-				total += areTooSimilar(msgs[i], msgs[i+1]) ? 1 : 0;
-			}
-
-			var isSpammer = total === messagesToCompare - 1;
-			if (isSpammer) {
-				db.delete('messages:recent:' + uid);
-			}
-
-			callback(err, isSpammer);
-		});
-	};
-
-	// modified from http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance
-	function areTooSimilar(a, b) {
-		var matrix = [];
-
-		for(var i = 0; i <= b.length; i++){
-			matrix[i] = [i];
-		}
-
-		for(var j = 0; j <= a.length; j++){
-			matrix[0][j] = j;
-		}
-
-		for(i = 1; i <= b.length; i++){
-			for(j = 1; j <= a.length; j++){
-				if(b.charAt(i-1) === a.charAt(j-1)){
-					matrix[i][j] = matrix[i-1][j-1];
-				} else {
-					matrix[i][j] = Math.min(matrix[i-1][j-1] + 1,
-					Math.min(matrix[i][j-1] + 1,
-					matrix[i-1][j] + 1));
-				}
-			}
-		}
-
-		return (matrix[b.length][a.length] / b.length < 0.1);
-	}
 
 	Messaging.notifyUser = function(fromuid, touid, messageObj) {
 		var queueObj = Messaging.notifyQueue[fromuid + ':' + touid];

@@ -143,21 +143,24 @@ var async = require('async'),
 			readKeys.push('uid:' + uid + ':notifications:read');
 		});
 
-		async.parallel([
+		var oneWeekAgo = Date.now() - 604800000;
+		async.series([
 			function(next) {
 				db.sortedSetsAdd(unreadKeys, notification.datetime, notification.nid, next);
 			},
 			function(next) {
 				db.sortedSetsRemove(readKeys, notification.nid, next);
+			},
+			function(next) {
+				db.sortedSetsRemoveRangeByScore(unreadKeys, 0, oneWeekAgo, next);
+			},
+			function(next) {
+				db.sortedSetsRemoveRangeByScore(readKeys, 0, oneWeekAgo, next);
 			}
 		], function(err) {
 			if (err) {
 				return callback(err);
 			}
-
-			var oneWeekAgo = Date.now() - 604800000;
-			db.sortedSetsRemoveRangeByScore(unreadKeys, 0, oneWeekAgo);
-			db.sortedSetsRemoveRangeByScore(readKeys, 0, oneWeekAgo);
 
 			plugins.fireHook('action:notification.pushed', {notification: notification, uids: uids});
 			callback();
