@@ -377,6 +377,7 @@ function updateRoomBrowsingText(roomName, selfUid) {
 	}
 
 	var	uids = Sockets.getUidsInRoom(roomName);
+	var total = uids.length;
 	uids = uids.slice(0, 9);
 	if (selfUid) {
 		uids = [selfUid].concat(uids);
@@ -385,16 +386,19 @@ function updateRoomBrowsingText(roomName, selfUid) {
 		return;
 	}
 	user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status'], function(err, users) {
-		if(!err) {
-			users = users.filter(function(user) {
-				return user.status !== 'offline';
-			});
-
-			io.sockets.in(roomName).emit('event:update_users_in_room', {
-				users: users,
-				room: roomName
-			});
+		if (err) {
+			return;
 		}
+
+		users = users.filter(function(user) {
+			return user && user.status !== 'offline';
+		});
+
+		io.sockets.in(roomName).emit('event:update_users_in_room', {
+			users: users,
+			room: roomName,
+			total: Math.max(0, total - uids.length)
+		});
 	});
 }
 
