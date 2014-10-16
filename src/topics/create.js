@@ -161,6 +161,10 @@ module.exports = function(Topics) {
 
 				plugins.fireHook('action:topic.post', data.topicData);
 
+				if (parseInt(uid, 10)) {
+					user.notifications.sendTopicNotificationToFollowers(uid, data.topicData, data.postData);
+				}
+
 				next(null, {
 					topicData: data.topicData,
 					postData: data.postData
@@ -262,9 +266,7 @@ module.exports = function(Topics) {
 				postData.relativeTime = utils.toISOString(postData.timestamp);
 
 				if (parseInt(uid, 10)) {
-					Topics.notifyFollowers(tid, postData.pid, uid);
-
-					user.notifications.sendPostNotificationToFollowers(uid, tid, postData.pid);
+					Topics.notifyFollowers(postData.topic, postData, uid);
 				}
 
 				next(null, postData);

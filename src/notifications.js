@@ -128,17 +128,58 @@ var async = require('async'),
 			return callback();
 		}
 
-		var websockets = require('./socket.io');
 		if (!Array.isArray(uids)) {
 			uids = [uids];
 		}
 
+		uids = uids.filter(function(uid) {
+			return parseInt(uid, 10);
+		});
+
+		if (!uids.length) {
+			return callback();
+		}
+
+		var done = false;
+		var start = 0;
+		var batchSize = 50;
+
+		setTimeout(function() {
+			async.whilst(
+				function() {
+					return !done;
+				},
+				function(next) {
+					var currentUids = uids.slice(start, start + batchSize);
+					if (!currentUids.length) {
+						done = true;
+						return next();
+					}
+					pushToUids(currentUids, notification, function(err) {
+						if (err) {
+							return next(err);
+						}
+						start = start + batchSize;
+
+						setTimeout(next, 1000);
+					});
+				},
+				function(err) {
+					if (err) {
+						winston.error(err.stack);
+					}
+				}
+			);
+		}, 1000);
+
+		callback();
+	};
+
+	function pushToUids(uids, notification, callback) {
 		var unreadKeys = [];
 		var readKeys = [];
 
-		uids.filter(function(uid) {
-			return parseInt(uid, 10);
-		}).forEach(function(uid) {
+		uids.forEach(function(uid) {
 			unreadKeys.push('uid:' + uid + ':notifications:unread');
 			readKeys.push('uid:' + uid + ':notifications:read');
 		});
@@ -163,13 +204,15 @@ var async = require('async'),
 			}
 
 			plugins.fireHook('action:notification.pushed', {notification: notification, uids: uids});
-			callback();
 
+			var websockets = require('./socket.io');
 			for(var i=0; i<uids.length; ++i) {
 				websockets.in('uid_' + uids[i]).emit('event:new_notification', notification);
 			}
+
+			callback();
 		});
-	};
+	}
 
 	Notifications.pushGroup = function(notification, groupName, callback) {
 		callback = callback || function() {};

@@ -15,6 +15,14 @@ module.exports = function(User) {
 	};
 
 	function toggleFollow(type, uid, theiruid, callback) {
+		if (!parseInt(uid, 10) || !parseInt(theiruid, 10)) {
+			return callback(new Error('[[error:invalid-uid]]'));
+		}
+
+		if (parseInt(uid, 10) === parseInt(theiruid, 10)) {
+			return callback(new Error('[[error:you-cant-follow-yourself]]'));
+		}
+
 		var command = type === 'follow' ? 'setAdd' : 'setRemove';
 		db[command]('following:' + uid, theiruid, function(err) {
 			if(err) {

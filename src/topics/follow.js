@@ -21,8 +21,8 @@ module.exports = function(Topics) {
 		db.getSetMembers('tid:' + tid + ':followers', callback);
 	};
 
-	Topics.notifyFollowers = function(tid, pid, exceptUid) {
-		Topics.getFollowers(tid, function(err, followers) {
+	Topics.notifyFollowers = function(topicData, postData, exceptUid) {
+		Topics.getFollowers(topicData.tid, function(err, followers) {
 			if (err || !Array.isArray(followers) || !followers.length) {
 				return;
 			}
@@ -36,34 +36,17 @@ module.exports = function(Topics) {
 				return;
 			}
 
-			async.parallel({
-				title: async.apply(Topics.getTopicField, tid, 'title'),
-				username: async.apply(user.getUserField, exceptUid, 'username'),
-				postContent: function(next) {
-					async.waterfall([
-						async.apply(posts.getPostField, pid, 'content'),
-						function(content, next) {
-							postTools.parse(content, next);
-						}
-					], next);
+			notifications.create({
+				bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + topicData.title + ']]',
+				bodyLong: postData.content,
+				pid: postData.pid,
+				nid: 'tid:' + topicData.tid + ':pid:' + postData.pid + ':uid:' + exceptUid,
+				tid: topicData.tid,
+				from: exceptUid
+			}, function(err, notification) {
+				if (!err && notification) {
+					notifications.push(notification, followers);
 				}
-			}, function(err, results) {
-				if (err) {
-					return;
-				}
-
-				notifications.create({
-					bodyShort: '[[notifications:user_posted_to, ' + results.username + ', ' + results.title + ']]',
-					bodyLong: results.postContent,
-					pid: pid,
-					nid: 'tid:' + tid + ':pid:' + pid + ':uid:' + exceptUid,
-					tid: tid,
-					from: exceptUid
-				}, function(err, notification) {
-					if (!err && notification) {
-						notifications.push(notification, followers);
-					}
-				});
 			});
 		});
 	};

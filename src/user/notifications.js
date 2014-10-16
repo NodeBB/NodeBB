@@ -247,56 +247,28 @@ var async = require('async'),
 	};
 
 
-	UserNotifications.sendPostNotificationToFollowers = function(uid, tid, pid) {
+	UserNotifications.sendTopicNotificationToFollowers = function(uid, topicData, postData) {
 		db.getSetMembers('followers:' + uid, function(err, followers) {
 			if (err || !Array.isArray(followers) || !followers.length) {
 				return;
 			}
 
-			async.parallel({
-				username: async.apply(user.getUserField, uid, 'username'),
-				topic: async.apply(topics.getTopicFields, tid, ['cid', 'title']),
-				postContent: function(next) {
-					async.waterfall([
-						async.apply(posts.getPostField, pid, 'content'),
-						function(content, next) {
-							postTools.parse(content, next);
-						}
-					], next);
-				},
-				topicFollowers: function(next) {
-					db.isSetMembers('tid:' + tid + ':followers', followers, next);
-				}
-			}, function(err, results) {
-				if (err) {
+			privileges.categories.filterUids('read', topicData.cid, followers, function(err, followers) {
+				if (err || !followers.length) {
 					return;
 				}
 
-				followers = followers.filter(function(value, index) {
-					return !results.topicFollowers[index];
-				});
-
-				if (!followers.length) {
-					return;
-				}
-
-				privileges.categories.filterUids('read', results.topic.cid, followers, function(err, followers) {
-					if (err || !followers.length) {
-						return;
+				notifications.create({
+					bodyShort: '[[notifications:user_posted_topic, ' + postData.user.username + ', ' + topicData.title + ']]',
+					bodyLong: postData.content,
+					pid: postData.pid,
+					nid: 'tid:' + postData.tid + ':pid:' + postData.pid + ':uid:' + uid,
+					tid: postData.tid,
+					from: uid
+				}, function(err, notification) {
+					if (!err && notification) {
+						notifications.push(notification, followers);
 					}
-
-					notifications.create({
-						bodyShort: '[[notifications:user_posted_to, ' + results.username + ', ' + results.topic.title + ']]',
-						bodyLong: results.postContent,
-						pid: pid,
-						nid: 'tid:' + tid + ':pid:' + pid + ':uid:' + uid,
-						tid: tid,
-						from: uid
-					}, function(err, notification) {
-						if (!err && notification) {
-							notifications.push(notification, followers);
-						}
-					});
 				});
 			});
 		});
