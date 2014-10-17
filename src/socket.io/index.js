@@ -287,14 +287,7 @@ Sockets.getUserSocketCount = function(uid) {
 };
 
 Sockets.getOnlineUserCount = function () {
-	var roomNames = Object.keys(io.sockets.manager.rooms);
-	if (!Array.isArray(roomNames)) {
-		return 0;
-	}
-	roomNames = roomNames.filter(function(name) {
-		return name.indexOf('/uid_') === 0;
-	});
-	return roomNames.length;
+	return onlineUsers.length;
 };
 
 Sockets.getOnlineAnonCount = function () {
