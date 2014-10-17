@@ -222,14 +222,15 @@ module.exports = function(Topics) {
 				return callback(null, tags);
 			}
 			data.query = data.query.toLowerCase();
+
 			var matches = [];
 			for(var i=0; i<tags.length; ++i) {
-				if (tags[i].toLowerCase().indexOf(data.query) === 0) {
+				if (tags[i].toLowerCase().startsWith(data.query)) {
 					matches.push(tags[i]);
 				}
 			}
 
-			matches = matches.slice(0, 10).sort(function(a, b) {
+			matches = matches.slice(0, 20).sort(function(a, b) {
 				return a > b;
 			});
 

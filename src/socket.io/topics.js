@@ -521,6 +521,12 @@ SocketTopics.search = function(socket, data, callback) {
 };
 
 SocketTopics.searchAndLoadTags = function(socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	if (!data.query || !data.query.length) {
+		return callback(null, []);
+	}
 	topics.searchTags(data, function(err, tags) {
 		if (err) {
 			return callback(err);

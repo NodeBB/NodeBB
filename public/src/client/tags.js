@@ -14,6 +14,11 @@ define('forum/tags', ['forum/infinitescroll'], function(infinitescroll) {
 				clearTimeout(timeoutId);
 				timeoutId = 0;
 			}
+
+			if (!$('#tag-search').val().length) {
+				return;
+			}
+
 			timeoutId = setTimeout(function() {
 				socket.emit('topics.searchAndLoadTags', {query: $('#tag-search').val()}, function(err, results) {
 					if (err) {
