@@ -68,6 +68,7 @@ SocketTopics.enter = function(socket, tid, callback) {
 	if (!tid || !socket.uid) {
 		return;
 	}
+
 	SocketTopics.markAsRead(socket, [tid], callback);
 	topics.increaseViewCount(tid);
 	websockets.updateRoomBrowsingText('topic_' + tid);
@@ -75,10 +76,6 @@ SocketTopics.enter = function(socket, tid, callback) {
 
 SocketTopics.postcount = function(socket, tid, callback) {
 	topics.getTopicField(tid, 'postcount', callback);
-};
-
-SocketTopics.increaseViewCount = function(socket, tid) {
-	topics.increaseViewCount(tid);
 };
 
 SocketTopics.markAsRead = function(socket, tids, callback) {
@@ -92,6 +89,7 @@ SocketTopics.markAsRead = function(socket, tids, callback) {
 	tids = tids.filter(function(tid) {
 		return tid && utils.isNumber(tid);
 	});
+
 	topics.markAsRead(tids, socket.uid, function(err) {
 		if (err) {
 			return callback(err);

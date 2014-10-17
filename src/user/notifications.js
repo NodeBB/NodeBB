@@ -220,7 +220,7 @@ var async = require('async'),
 	};
 
 	UserNotifications.getUnreadByField = function(uid, field, value, callback) {
-		db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, -1, function(err, nids) {
+		db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, 99, function(err, nids) {
 			if (err) {
 				return callback(err);
 			}
@@ -229,7 +229,11 @@ var async = require('async'),
 				return callback(null, []);
 			}
 
-			UserNotifications.getNotifications(nids, uid, function(err, notifications) {
+			var keys = nids.map(function(nid) {
+				return 'notifications:' + nid;
+			});
+
+			db.getObjectsFields(keys, [field], function(err, notifications) {
 				if (err) {
 					return callback(err);
 				}
@@ -245,7 +249,6 @@ var async = require('async'),
 			});
 		});
 	};
-
 
 	UserNotifications.sendTopicNotificationToFollowers = function(uid, topicData, postData) {
 		db.getSetMembers('followers:' + uid, function(err, followers) {
