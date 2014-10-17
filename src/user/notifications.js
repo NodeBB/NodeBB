@@ -176,7 +176,7 @@ var async = require('async'),
 		var	now = Date.now(),
 			yesterday = now - (1000*60*60*24);	// Approximate, can be more or less depending on time changes, makes no difference really.
 
-		db.getSortedSetRangeByScore('uid:' + uid + ':notifications:unread', 0, 20, yesterday, now, function(err, nids) {
+		db.getSortedSetRevRangeByScore('uid:' + uid + ':notifications:unread', 0, 20, now, yesterday, function(err, nids) {
 			if (err) {
 				return callback(err);
 			}
@@ -193,13 +193,13 @@ var async = require('async'),
 		if (!parseInt(uid, 10)) {
 			return callback(null, 0);
 		}
-		db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, 20, function(err, nids) {
+		db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 20, function(err, nids) {
 			callback(err, Array.isArray(nids) ? nids.length : 0);
 		});
 	};
 
 	UserNotifications.getUnreadByField = function(uid, field, value, callback) {
-		db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, 99, function(err, nids) {
+		db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 99, function(err, nids) {
 			if (err) {
 				return callback(err);
 			}
