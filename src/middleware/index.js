@@ -46,7 +46,7 @@ function routeCurrentTheme(app, themeId, themesData) {
 	meta.themes.setPath(themeObj);
 }
 
-function setupFavicon() {
+function setupFavicon(app) {
 	var faviconPath = path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico');
 	if (fs.existsSync(faviconPath)) {
 		app.use(favicon(faviconPath));	
@@ -69,7 +69,7 @@ module.exports = function(app, data) {
 
 	app.use(compression());
 
-	setupFavicon();
+	setupFavicon(app);
 	
 	app.use(relativePath + '/apple-touch-icon', middleware.routeTouchIcon);
 
