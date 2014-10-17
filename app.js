@@ -58,11 +58,13 @@ if(os.platform() === 'linux') {
 	});
 }
 
-// Log GNU copyright info along with server info
-winston.info('NodeBB v' + pkg.version + ' Copyright (C) 2013-2014 NodeBB Inc.');
-winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
-winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
-winston.info('');
+if (!cluster.isWorker) {
+	// If run using `node app`, log GNU copyright info along with server info
+	winston.info('NodeBB v' + pkg.version + ' Copyright (C) 2013-2014 NodeBB Inc.');
+	winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
+	winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
+	winston.info('');
+}
 
 // Alternate configuration file support
 var	configFile = path.join(__dirname, '/config.json'),
@@ -102,20 +104,20 @@ function loadConfig() {
 }
 
 function start() {
-
 	loadConfig();
 
-	winston.info('Time: ' + new Date());
-	winston.info('Initializing NodeBB v' + pkg.version);
-	winston.info('* using configuration stored in: ' + configFile);
-	var host = nconf.get(nconf.get('database') + ':host'),
-		storeLocation = host ? 'at ' + host + (host.indexOf('/') === -1 ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';
+	if (!cluster.isWorker) {
+		winston.info('Time: ' + new Date());
+		winston.info('Initializing NodeBB v' + pkg.version);
+		winston.info('* using configuration stored in: ' + configFile);
+	}
 
-	winston.info('* using ' + nconf.get('database') +' store ' + storeLocation);
-	winston.info('* using themes stored in: ' + nconf.get('themes_path'));
+	if (cluster.isWorker && process.env.cluster_setup === 'true') {
+		var host = nconf.get(nconf.get('database') + ':host'),
+			storeLocation = host ? 'at ' + host + (host.indexOf('/') === -1 ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';
 
-	if (process.env.NODE_ENV === 'development') {
-		winston.info('Base Configuration OK.');
+		winston.info('* using ' + nconf.get('database') +' store ' + storeLocation);
+		winston.info('* using themes stored in: ' + nconf.get('themes_path'));
 	}
 
 	require('./src/database').init(function(err) {
