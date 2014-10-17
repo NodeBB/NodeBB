@@ -178,11 +178,10 @@ Sockets.init = function(server) {
 			var socketCount = Sockets.getUserSocketCount(uid);
 			if (uid && socketCount <= 1) {
 				socket.broadcast.emit('event:user_status_change', {uid: uid, status: 'offline'});
+				emitOnlineUserCount();
 			}
 
 			onUserDisconnect(uid, socket.id, socketCount);
-
-			emitOnlineUserCount();
 
 			for(var roomName in io.sockets.manager.roomClients[socket.id]) {
 				if (roomName.indexOf('topic') !== -1) {
@@ -430,7 +429,7 @@ function emitTopicPostStats(callback) {
 		};
 
 		if (!callback) {
-			io.sockets.emit('meta.getUsageStats', null, stats);
+			io.sockets.in('online_users').emit('meta.getUsageStats', null, stats);
 		} else {
 			callback(null, stats);
 		}
@@ -450,7 +449,7 @@ function emitOnlineUserCount(callback) {
 	if (callback) {
 		callback(null, returnObj);
 	} else {
-		io.sockets.emit('user.getActiveUsers', null, returnObj);
+		io.sockets.in('online_users').emit('user.getActiveUsers', null, returnObj);
 	}
 }
 
