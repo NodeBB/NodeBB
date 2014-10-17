@@ -23,7 +23,7 @@ define('forum/topic/browsing', function() {
 	Browsing.onUserEnter = function(data) {
 		var activeEl = $('.thread_active_users');
 		var user = activeEl.find('a[data-uid="' + data.uid + '"]');
-		if (!user.length && activeEl.children().length < 10) {
+		if (!user.length && activeEl.first().children().length < 10) {
 			addUserIcon(data);
 		} else if (user.length) {
 			user.attr('data-count', parseInt(user.attr('data-count'), 10) + 1);
