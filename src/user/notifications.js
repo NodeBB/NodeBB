@@ -233,7 +233,7 @@ var async = require('async'),
 				return 'notifications:' + nid;
 			});
 
-			db.getObjectsFields(keys, [field], function(err, notifications) {
+			db.getObjectsFields(keys, ['nid', field], function(err, notifications) {
 				if (err) {
 					return callback(err);
 				}
