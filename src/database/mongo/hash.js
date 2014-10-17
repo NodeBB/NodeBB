@@ -10,7 +10,7 @@ module.exports = function(db, module) {
 		if (!key) {
 			return callback();
 		}
-		data._key = key;
+
 		db.collection('objects').update({_key: key}, {$set: data}, {upsert: true, w: 1}, function(err) {
 			callback(err);
 		});
