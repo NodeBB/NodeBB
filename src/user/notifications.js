@@ -19,16 +19,7 @@ var async = require('async'),
 (function(UserNotifications) {
 
 	UserNotifications.get = function(uid, callback) {
-		var maxNotifs = 15;
-
-		async.parallel({
-			unread: function(next) {
-				getNotificationsFromSet('uid:' + uid + ':notifications:unread', uid, 0, 9, maxNotifs, next);
-			},
-			read: function(next) {
-				getNotificationsFromSet('uid:' + uid + ':notifications:read', uid, 0, 9, maxNotifs, next);
-			}
-		}, function(err, notifications) {
+		getNotifications(uid, 10, function(err, notifications) {
 			if (err) {
 				return callback(err);
 			}
@@ -36,7 +27,7 @@ var async = require('async'),
 			notifications.read = notifications.read.filter(Boolean);
 			notifications.unread = notifications.unread.filter(Boolean);
 
-			// Limit the number of notifications to `maxNotifs`, prioritising unread notifications
+			var maxNotifs = 15;
 			if (notifications.read.length + notifications.unread.length > maxNotifs) {
 				notifications.read.length = maxNotifs - notifications.unread.length;
 			}
@@ -45,7 +36,18 @@ var async = require('async'),
 		});
 	};
 
-	function getNotificationsFromSet(set, uid, start, stop, max, callback) {
+	function getNotifications(uid, count, callback) {
+		async.parallel({
+			unread: function(next) {
+				getNotificationsFromSet('uid:' + uid + ':notifications:unread', false, uid, 0, count - 1, next);
+			},
+			read: function(next) {
+				getNotificationsFromSet('uid:' + uid + ':notifications:read', true, uid, 0, count - 1, next);
+			}
+		}, callback);
+	}
+
+	function getNotificationsFromSet(set, read, uid, start, stop, callback) {
 		db.getSortedSetRevRange(set, start, stop, function(err, nids) {
 			if (err) {
 				return callback(err);
@@ -53,10 +55,6 @@ var async = require('async'),
 
 			if(!Array.isArray(nids) || !nids.length) {
 				return callback(null, []);
-			}
-
-			if (nids.length > max) {
-				nids.length = max;
 			}
 
 			UserNotifications.getNotifications(nids, uid, function(err, notifications) {
@@ -73,6 +71,9 @@ var async = require('async'),
 						}
 
 						deletedNids.push(nids[index]);
+					} else {
+						notification.read = read;
+						notification.readClass = !notification.read ? 'label-warning' : '';
 					}
 				});
 
@@ -86,30 +87,16 @@ var async = require('async'),
 	}
 
 	UserNotifications.getAll = function(uid, count, callback) {
-		async.parallel({
-			unread: function(next) {
-				db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, count, next);
-			},
-			read: function(next) {
-				db.getSortedSetRevRange('uid:' + uid + ':notifications:read', 0, count, next);
-			}
-		}, function(err, results) {
+		getNotifications(uid, count, function(err, notifs) {
 			if (err) {
 				return callback(err);
 			}
-
-			var nids = results.unread.concat(results.read);
-			UserNotifications.getNotifications(nids, uid, function(err, notifs) {
-				if (err) {
-					return callback(err);
-				}
-
-				notifs = notifs.filter(Boolean).sort(function(a, b) {
-					return b.datetime - a.datetime;
-				});
-
-				callback(null, notifs);
+			notifs = notifs.unread.concat(notifs.read);
+			notifs = notifs.filter(Boolean).sort(function(a, b) {
+				return b.datetime - a.datetime;
 			});
+
+			callback(null, notifs);
 		});
 	};
 
@@ -119,34 +106,26 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			db.isSortedSetMembers('uid:' + uid + ':notifications:read', nids, function(err, hasRead) {
+			var pids = notifications.map(function(notification) {
+				return notification ? notification.pid : null;
+			});
+
+			generatePostPaths(pids, uid, function(err, pidToPaths) {
 				if (err) {
 					return callback(err);
 				}
 
-				var pids = notifications.map(function(notification) {
-					return notification ? notification.pid : null;
-				});
-
-				generatePostPaths(pids, uid, function(err, pidToPaths) {
-					if (err) {
-						return callback(err);
+				notifications = notifications.map(function(notification, index) {
+					if (!notification) {
+						return null;
 					}
 
-					notifications = notifications.map(function(notification, index) {
-						if (!notification) {
-							return null;
-						}
-
-						notification.read = hasRead[index];
-						notification.path = pidToPaths[notification.pid] || notification.path || '';
-						notification.datetimeISO = utils.toISOString(notification.datetime);
-						notification.readClass = !notification.read ? 'label-warning' : '';
-						return notification;
-					});
-
-					callback(null, notifications);
+					notification.path = pidToPaths[notification.pid] || notification.path || '';
+					notification.datetimeISO = utils.toISOString(notification.datetime);
+					return notification;
 				});
+
+				callback(null, notifications);
 			});
 		});
 	};
@@ -206,7 +185,7 @@ var async = require('async'),
 				return callback(null, []);
 			}
 
-			UserNotifications.getNotifications(nids, uid, callback);
+			UserNotifications.getNotifications(nids, uid);
 		});
 	};
 

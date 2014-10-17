@@ -264,7 +264,7 @@ var async = require('async'),
 	};
 
 	Notifications.markAllRead = function(uid, callback) {
-		db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, 99, function(err, nids) {
+		db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 99, function(err, nids) {
 			if (err) {
 				return callback(err);
 			}
