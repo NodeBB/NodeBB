@@ -14,7 +14,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		app.enterRoom('admin');
 		socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
 
-		isMobile = !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+		isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
 		intervals.rooms = setInterval(function() {
 			if (app.isFocused && app.isConnected) {
