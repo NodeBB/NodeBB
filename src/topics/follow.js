@@ -3,6 +3,7 @@
 
 var async = require('async'),
 	nconf = require('nconf'),
+	S = require('string'),
 
 	db = require('../database'),
 	user = require('../user'),
@@ -21,8 +22,8 @@ module.exports = function(Topics) {
 		db.getSetMembers('tid:' + tid + ':followers', callback);
 	};
 
-	Topics.notifyFollowers = function(topicData, postData, exceptUid) {
-		Topics.getFollowers(topicData.tid, function(err, followers) {
+	Topics.notifyFollowers = function(postData, exceptUid) {
+		Topics.getFollowers(postData.topic.tid, function(err, followers) {
 			if (err || !Array.isArray(followers) || !followers.length) {
 				return;
 			}
@@ -36,12 +37,17 @@ module.exports = function(Topics) {
 				return;
 			}
 
+			var title = postData.topic.title;
+			if (title) {
+				title = S(title).decodeHTMLEntities().s;
+			}
+
 			notifications.create({
-				bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + topicData.title + ']]',
+				bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + title + ']]',
 				bodyLong: postData.content,
 				pid: postData.pid,
-				nid: 'tid:' + topicData.tid + ':pid:' + postData.pid + ':uid:' + exceptUid,
-				tid: topicData.tid,
+				nid: 'tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + exceptUid,
+				tid: postData.topic.tid,
 				from: exceptUid
 			}, function(err, notification) {
 				if (!err && notification) {

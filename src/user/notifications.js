@@ -4,6 +4,7 @@
 var async = require('async'),
 	nconf = require('nconf'),
 	winston = require('winston'),
+	S = require('string'),
 
 	user = require('../user'),
 	utils = require('../../public/src/utils'),
@@ -240,8 +241,13 @@ var async = require('async'),
 					return;
 				}
 
+				var title = topicData.title;
+				if (title) {
+					title = S(title).decodeHTMLEntities().s;
+				}
+
 				notifications.create({
-					bodyShort: '[[notifications:user_posted_topic, ' + postData.user.username + ', ' + topicData.title + ']]',
+					bodyShort: '[[notifications:user_posted_topic, ' + postData.user.username + ', ' + title + ']]',
 					bodyLong: postData.content,
 					pid: postData.pid,
 					nid: 'tid:' + postData.tid + ':pid:' + postData.pid + ':uid:' + uid,

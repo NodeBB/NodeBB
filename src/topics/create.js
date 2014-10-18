@@ -250,7 +250,6 @@ module.exports = function(Topics) {
 			},
 			function(results, next) {
 				postData.user = results.userInfo[0];
-				results.topicInfo.title = validator.escape(results.topicInfo.title);
 				postData.topic = results.topicInfo;
 				postData.content = results.content;
 
@@ -266,9 +265,10 @@ module.exports = function(Topics) {
 				postData.relativeTime = utils.toISOString(postData.timestamp);
 
 				if (parseInt(uid, 10)) {
-					Topics.notifyFollowers(postData.topic, postData, uid);
+					Topics.notifyFollowers(postData, uid);
 				}
 
+				postData.topic.title = validator.escape(postData.topic.title);
 				next(null, postData);
 			}
 		], callback);
