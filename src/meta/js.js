@@ -29,8 +29,7 @@ module.exports = function(Meta) {
 				'./node_modules/socket.io-client/dist/socket.io.js',
 				'public/vendor/jquery/timeago/jquery.timeago.min.js',
 				'public/vendor/jquery/js/jquery.form.min.js',
-				'public/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
-				'public/vendor/jquery/deserialize/jquery.deserialize.min.js',
+				'public/vendor/visibility/visibility.min.js',
 				'public/vendor/bootstrap/js/bootstrap.min.js',
 				'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
 				'public/vendor/requirejs/require.js',
@@ -40,7 +39,6 @@ module.exports = function(Meta) {
 				'public/vendor/xregexp/unicode/unicode-base.js',
 				'public/vendor/buzz/buzz.min.js',
 				'public/vendor/mousetrap/mousetrap.js',
-				'public/vendor/semver/semver.browser.js',
 				'./node_modules/templates.js/lib/templates.js',
 				'public/src/utils.js',
 				'public/src/app.js',
@@ -58,8 +56,8 @@ module.exports = function(Meta) {
 		var rjsPath = path.join(__dirname, '../../public/src');
 
 		async.parallel({
-			forum: function(next) {
-				utils.walk(path.join(rjsPath, 'forum'), next);
+			client: function(next) {
+				utils.walk(path.join(rjsPath, 'client'), next);
 			},
 			modules: function(next) {
 				utils.walk(path.join(rjsPath, 'modules'), next);
@@ -68,11 +66,9 @@ module.exports = function(Meta) {
 			if (err) {
 				return callback(err);
 			}
-			rjsFiles = rjsFiles.forum.concat(rjsFiles.modules);
+			rjsFiles = rjsFiles.client.concat(rjsFiles.modules);
 
-			rjsFiles = rjsFiles.filter(function(file) {
-				return file.match('admin') === null;
-			}).map(function(file) {
+			rjsFiles = rjsFiles.map(function(file) {
 				return path.join('public/src', file.replace(rjsPath, ''));
 			});
 
@@ -112,7 +108,9 @@ module.exports = function(Meta) {
 				}, next);
 			}
 		], function(err) {
-			if (err) return callback(err);
+			if (err) {
+				return callback(err);
+			}
 
 			// Convert all scripts to paths relative to the NodeBB base directory
 			var basePath = path.resolve(__dirname, '../..');
@@ -125,58 +123,39 @@ module.exports = function(Meta) {
 
 	Meta.js.minify = function(minify, callback) {
 		if (!cluster.isWorker || process.env.cluster_setup === 'true') {
-			var minifier = Meta.js.minifierProc = fork('minifier.js', {
-					silent: true
-				}),
-				minifiedStream = minifier.stdio[1],
-				minifiedString = '',
-				mapStream = minifier.stdio[2],
-				mapString = '',
-				step = 0,
-				onComplete = function() {
-					if (step === 0) {
-						return step++;
+			var minifier = Meta.js.minifierProc = fork('minifier.js'),
+				onComplete = function(err) {
+					if (err) {
+						winston.error('[meta/js] Minification failed: ' + err.message);
+						process.exit(0);
 					}
 
-					Meta.js.cache = minifiedString;
-					Meta.js.map = mapString;
-					winston.info('[meta/js] Compilation complete');
-					emitter.emit('meta:js.compiled');
+					winston.info('[meta/js] Minification complete');
 					minifier.kill();
 
 					if (cluster.isWorker) {
 						process.send({
 							action: 'js-propagate',
-							cache: minifiedString,
-							map: mapString
+							cache: Meta.js.cache,
+							map: Meta.js.map
 						});
-
-						// Save the minfile in public/ so things like nginx can serve it
-						Meta.js.commitToFile();
 					}
+
+					Meta.js.commitToFile();
 
 					if (typeof callback === 'function') {
 						callback();
 					}
 				};
 
-			minifiedStream.on('data', function(buffer) {
-				minifiedString += buffer.toString();
-			});
-			mapStream.on('data', function(buffer) {
-				mapString += buffer.toString();
-			});
-
 			minifier.on('message', function(message) {
 				switch(message.type) {
 				case 'end':
-					if (message.payload === 'script') {
-						winston.info('[meta/js] Successfully minified.');
-						onComplete();
-					} else if (message.payload === 'mapping') {
-						winston.info('[meta/js] Retrieved Mapping.');
-						onComplete();
-					}
+					Meta.js.cache = message.data.js;
+					Meta.js.map = message.data.map;
+
+					onComplete();
+
 					break;
 				case 'hash':
 					Meta.js.hash = message.payload;
@@ -215,13 +194,13 @@ module.exports = function(Meta) {
 	};
 
 	Meta.js.commitToFile = function() {
-		winston.info('[meta/js] Committing minfile to disk');
 		async.parallel([
 			async.apply(fs.writeFile, path.join(__dirname, '../../public/nodebb.min.js'), Meta.js.cache),
 			async.apply(fs.writeFile, path.join(__dirname, '../../public/nodebb.min.js.map'), Meta.js.map)
 		], function (err) {
 			if (!err) {
 				winston.info('[meta/js] Client-side minfile and mapping committed to disk.');
+				emitter.emit('meta:js.compiled');
 			} else {
 				winston.error('[meta/js] ' + err.message);
 				process.exit(0);
@@ -231,7 +210,9 @@ module.exports = function(Meta) {
 
 	function getPluginScripts(callback) {
 		plugins.fireHook('filter:scripts.get', [], function(err, scripts) {
-			if (err) callback(err, []);
+			if (err) {
+				callback(err, []);
+			}
 
 			var jsPaths = scripts.map(function (jsPath) {
 					jsPath = path.normalize(jsPath);
@@ -258,5 +239,5 @@ module.exports = function(Meta) {
 			Meta.js.scripts.plugin = jsPaths.filter(Boolean);
 			callback();
 		});
-	};
+	}
 };

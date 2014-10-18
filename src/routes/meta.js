@@ -24,11 +24,11 @@ function sendSourceMap(req, res) {
 }
 
 function sendStylesheet(req, res, next) {
-	res.type('text/css').send(200, meta.css.cache);
+	res.type('text/css').status(200).send(meta.css.cache);
 }
 
 function sendACPStylesheet(req, res, next) {
-	res.type('text/css').send(200, meta.css.acpCache);	
+	res.type('text/css').status(200).send(meta.css.acpCache);	
 }
 
 function setupPluginSourceMapping(app) {

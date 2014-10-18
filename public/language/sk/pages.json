@@ -12,5 +12,7 @@
     "user.posts": "Príspevky od %1",
     "user.topics": "Téma vytvorená %1\n",
     "user.favourites": "%1's obľubených príspevkov",
-    "user.settings": "Užívatelské nadstavenie"
+    "user.settings": "Užívatelské nadstavenie",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administator has left this message:"
 }

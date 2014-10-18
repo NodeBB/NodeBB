@@ -71,10 +71,6 @@ SocketCategories.getTopicCount = function(socket, cid, callback) {
 	categories.getCategoryField(cid, 'topic_count', callback);
 };
 
-SocketCategories.lastTopicIndex = function(socket, cid, callback) {
-	db.sortedSetCard('categories:' + cid + ':tid', callback);
-};
-
 SocketCategories.getUsersInCategory = function(socket, cid, callback) {
 	var uids = websockets.getUidsInRoom('category_' + cid);
 	user.getMultipleUserFields(uids, ['uid', 'userslug', 'username', 'picture'], callback);

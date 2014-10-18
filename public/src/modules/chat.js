@@ -121,12 +121,16 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 
 	module.bringModalToTop = function(chatModal) {
 		var topZ = 0;
+		if ($('.chat-modal').length === 1) {
+			return;
+		}
 		$('.chat-modal').each(function() {
 			var thisZ = parseInt($(this).css('zIndex'), 10);
 			if (thisZ > topZ) {
 				topZ = thisZ;
 			}
 		});
+
 		chatModal.css('zIndex', topZ + 1);
 		taskbar.updateActive(chatModal.attr('UUID'));
 	};
@@ -168,7 +172,8 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 				chatModal.attr('touid', touid);
 				chatModal.attr('intervalId', 0);
 				chatModal.attr('UUID', uuid);
-				chatModal.css("position", "fixed");
+				chatModal.css('position', 'fixed');
+				chatModal.css('zIndex', 100);
 				chatModal.appendTo($('body'));
 				chatModal.draggable({
 					start:function() {
@@ -265,7 +270,6 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 	module.center = function(chatModal) {
 		chatModal.css("left", Math.max(0, (($(window).width() - $(chatModal).outerWidth()) / 2) + $(window).scrollLeft()) + "px");
 		chatModal.css("top", Math.max(0, $(window).height() / 2 - $(chatModal).outerHeight() / 2) + "px");
-		chatModal.css("zIndex", 100);
 		chatModal.find('#chat-message-input').focus();
 		return chatModal;
 	};

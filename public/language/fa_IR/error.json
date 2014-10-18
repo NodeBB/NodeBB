@@ -13,6 +13,7 @@
     "invalid-user-data": "داده‌های کاربری نامعتبر است.",
     "invalid-password": "گذرواژه نامعتبر است.",
     "invalid-username-or-password": "Please specify both a username and password",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "عدد صفحه‌بندی نامعتبر است.",
     "username-taken": "این نام کاربری گرفته شده است.",
     "email-taken": "این رایانامه گرفته شده است.",

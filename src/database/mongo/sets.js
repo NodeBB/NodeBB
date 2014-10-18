@@ -1,7 +1,5 @@
 "use strict";
 
-var winston = require('winston');
-
 module.exports = function(db, module) {
 	var helpers = module.helpers.mongo;
 
@@ -114,7 +112,7 @@ module.exports = function(db, module) {
 			values[i] = helpers.valueToString(values[i]);
 		}
 
-		db.collection('objects').findOne({_key: key, members: {$in : values}}, {_id: 0, _key: 0}, function(err, items) {
+		db.collection('objects').findOne({_key: key}, {_id: 0, _key: 0}, function(err, items) {
 			if (err) {
 				return callback(err);
 			}

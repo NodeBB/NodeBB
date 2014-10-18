@@ -77,11 +77,11 @@ var async = require('async'),
 	};
 
 	Topics.getPageCount = function(tid, uid, callback) {
-		db.sortedSetCard('tid:' + tid + ':posts', function(err, postCount) {
-			if(err) {
+		Topics.getTopicField(tid, 'postcount', function(err, postCount) {
+			if (err) {
 				return callback(err);
 			}
-			if(!parseInt(postCount, 10)) {
+			if (!parseInt(postCount, 10)) {
 				return callback(null, 1);
 			}
 			user.getSettings(uid, function(err, settings) {
@@ -140,34 +140,34 @@ var async = require('async'),
 			}
 
 			Topics.getTopicsByTids(tids, uid, function(err, topicData) {
-				if(err) {
+				if (err) {
 					return callback(err);
 				}
 
-				if(!topicData || !topicData.length) {
+				if(!Array.isArray(topicData) || !topicData.length) {
 					return callback(null, returnTopics);
 				}
 
-				db.sortedSetRevRank(set, topicData[topicData.length - 1].tid, function(err, rank) {
-					if(err) {
-						return callback(err);
-					}
-
-					returnTopics.nextStart = parseInt(rank, 10) + 1;
-					returnTopics.topics = topicData;
-					callback(null, returnTopics);
-				});
+				returnTopics.topics = topicData;
+				callback(null, returnTopics);
 			});
 		});
 	};
 
 	Topics.getTopicsFromSet = function(uid, set, start, end, callback) {
 		db.getSortedSetRevRange(set, start, end, function(err, tids) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
-			Topics.getTopics(set, uid, tids, callback);
+			Topics.getTopics(set, uid, tids, function(err, data) {
+				if (err) {
+					return callback(err);
+				}
+
+				data.nextStart = end + 1;
+				callback(null, data);
+			});
 		});
 	};
 
@@ -179,7 +179,7 @@ var async = require('async'),
 		Topics.getTopicsData(tids, function(err, topics) {
 			function mapFilter(array, field) {
 				return array.map(function(topic) {
-					return topic && topic[field];
+					return topic && topic[field] && topic[field].toString();
 				}).filter(function(value, index, array) {
 					return utils.isNumber(value) && array.indexOf(value) === index;
 				});
@@ -193,6 +193,9 @@ var async = require('async'),
 			var cids = mapFilter(topics, 'cid');
 
 			async.parallel({
+				teasers: function(next) {
+					Topics.getTeasers(tids, uid, next);
+				},
 				users: function(next) {
 					user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
 				},
@@ -204,9 +207,6 @@ var async = require('async'),
 				},
 				isAdminOrMod: function(next) {
 					privileges.categories.isAdminOrMod(cids, uid, next);
-				},
-				teasers: function(next) {
-					Topics.getTeasers(tids, uid, next);
 				},
 				tags: function(next) {
 					Topics.getTopicsTagsObjects(tids, next);
@@ -246,7 +246,7 @@ var async = require('async'),
 				});
 
 				plugins.fireHook('filter:topics.get', {topics: topics, uid: uid}, function(err, topicData) {
-					callback(err, topicData.topics)
+					callback(err, topicData.topics);
 				});
 			});
 		});
@@ -346,20 +346,36 @@ var async = require('async'),
 	};
 
 	Topics.getTeasers = function(tids, uid, callback) {
-		if(!Array.isArray(tids)) {
+		if (!Array.isArray(tids) || !tids.length) {
 			return callback(null, []);
 		}
 
-		async.map(tids, function(tid, next) {
-			db.getSortedSetRevRange('tid:' + tid + ':posts', 0, 0, function(err, data) {
-				next(err, Array.isArray(data) && data.length ? data[0] : null);
-			});
-		}, function(err, pids) {
+		async.parallel({
+			counts: function(next) {
+				Topics.getTopicsFields(tids, ['postcount'], function(err, topics) {
+					if (err) {
+						return next(err);
+					}
+					topics = topics.map(function(topic) {
+						return topic && topic.postcount;
+					});
+
+					next(null, topics);
+				});
+			},
+			pids: function(next) {
+				async.map(tids, function(tid, next) {
+					db.getSortedSetRevRange('tid:' + tid + ':posts', 0, 0, function(err, data) {
+						next(err, Array.isArray(data) && data.length ? data[0] : null);
+					});
+				}, next);
+			}
+		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			var postKeys = pids.filter(Boolean).map(function(pid) {
+			var postKeys = results.pids.filter(Boolean).map(function(pid) {
 				return 'post:' + pid;
 			});
 
@@ -374,31 +390,27 @@ var async = require('async'),
 					return array.indexOf(uid) === index;
 				});
 
-				async.parallel({
-					users: function(next) {
-						user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
-					},
-					indices: function(next) {
-						posts.getPostIndices(postData, uid, next);
-					}
-				}, function(err, results) {
+
+				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, usersData) {
 					if (err) {
 						return callback(err);
 					}
 
 					var users = {};
-					results.users.forEach(function(user) {
+					usersData.forEach(function(user) {
 						users[user.uid] = user;
 					});
 					var tidToPost = {};
-					postData.forEach(function(post, index) {
+					postData.forEach(function(post) {
 						post.user = users[post.uid];
-						post.index = results.indices[index] + 1;
 						post.timestamp = utils.toISOString(post.timestamp);
 						tidToPost[post.tid] = post;
 					});
 
-					var teasers = tids.map(function(tid) {
+					var teasers = tids.map(function(tid, index) {
+						if (tidToPost[tid]) {
+							tidToPost[tid].index = results.counts[index] + 1;
+						}
 						return tidToPost[tid];
 					});
 

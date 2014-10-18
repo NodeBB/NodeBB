@@ -1,26 +1,47 @@
 .users {
 	#users-container {
-		padding: 0;
-	}
+		border: 1px solid #eee;
+		padding: 0px 20px 20px;
 
-	.users-box{
-		display: inline-block;
-		margin-top: 20px;
-		text-align: center;
-		vertical-align: top;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		overflow: hidden;
-		height: auto;
-		max-width: 125px;
+		.users-box {
+			display: inline-block;
+			margin-top: 20px;
+			text-align: center;
+			vertical-align: top;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			height: auto;
+			max-width: 125px;
+			min-width: 125px;
 
-		img {
-			width:80px;
-			height:80px;
-		}
+			img {
+				width:80px;
+				height:80px;
+			}
 
-		a {
-			margin-bottom:5px;
+			a {
+				margin-bottom:5px;
+				font-size: 12px;
+			}
+
+			.user-image {
+				position: relative;
+
+				.labels {
+					position: absolute;
+					bottom: 0px;
+					width: 100%;
+
+					span {
+						width: 100%;
+						opacity: 0.9;
+						font-size: 10px;
+						display: block;
+						border-radius: 0;
+					}
+				}
+			}
 		}
 	}
 }

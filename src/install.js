@@ -15,9 +15,6 @@ var async = require('async'),
 		},
 		"mongo": {
 			"dependencies": ["mongodb", "connect-mongo"]
-		},
-		"level": {
-			"dependencies": ["levelup", "leveldown", "connect-leveldb"]
 		}
 	};
 
@@ -29,7 +26,7 @@ questions.main = [
 	{
 		name: 'base_url',
 		description: 'URL used to access this NodeBB',
-		'default': nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') || 'http://localhost:4567',
+		'default': nconf.get('base_url') ? (nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '')) : 'http://localhost:4567',
 		pattern: /^http(?:s)?:\/\//,
 		message: 'Base URL must begin with \'http://\' or \'https://\'',
 	},
@@ -161,8 +158,7 @@ function setupConfig(next) {
 		var	config = {},
 			redisQuestions = require('./database/redis').questions,
 			mongoQuestions = require('./database/mongo').questions,
-			levelQuestions = require('./database/level').questions,
-			question, x, numQ, allQuestions = questions.main.concat(redisQuestions).concat(mongoQuestions.concat(levelQuestions));
+			question, x, numQ, allQuestions = questions.main.concat(redisQuestions).concat(mongoQuestions);
 
 		for(x=0,numQ=allQuestions.length;x<numQ;x++) {
 			question = allQuestions[x];

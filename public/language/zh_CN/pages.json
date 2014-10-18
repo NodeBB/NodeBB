@@ -12,5 +12,7 @@
     "user.posts": "%1 发布的帖子",
     "user.topics": "%1 创建的主题",
     "user.favourites": "%1 收藏的帖子",
-    "user.settings": "用户设置"
+    "user.settings": "用户设置",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administator has left this message:"
 }

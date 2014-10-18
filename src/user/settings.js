@@ -25,6 +25,7 @@ module.exports = function(User) {
 				settings = data.settings;
 
 				settings.showemail = parseInt(settings.showemail, 10) === 1;
+				settings.showfullname = parseInt(settings.showfullname, 10) === 1;
 				settings.openOutgoingLinksInNewTab = parseInt(settings.openOutgoingLinksInNewTab, 10) === 1;
 				settings.dailyDigestFreq = settings.dailyDigestFreq || 'off';
 				settings.usePagination = (settings.usePagination === null || settings.usePagination === undefined) ? parseInt(meta.config.usePagination, 10) === 1 : parseInt(settings.usePagination, 10) === 1;
@@ -77,6 +78,7 @@ module.exports = function(User) {
 		plugins.fireHook('action:user.saveSettings', {uid: uid, settings: data});
 		db.setObject('user:' + uid + ':settings', {
 			showemail: data.showemail,
+			showfullname: data.showfullname,
 			openOutgoingLinksInNewTab: data.openOutgoingLinksInNewTab,
 			dailyDigestFreq: data.dailyDigestFreq || 'off',
 			usePagination: data.usePagination,

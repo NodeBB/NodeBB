@@ -113,31 +113,50 @@ module.exports = function(Categories) {
 				return;
 			}
 
-			var keys = pids.map(function(pid) {
-				return 'post:' + pid;
-			});
+			var start = 0,
+				done = false,
+				batch = 50;
 
-			db.getObjectsFields(keys, ['timestamp'], function(err, postData) {
-				if (err) {
-					return winston.error(err.message);
+			async.whilst(function() {
+				return !done;
+			}, function(next) {
+				var movePids = pids.slice(start, start + batch);
+				if (!movePids.length) {
+					done = true;
+					return next();
 				}
-
-				var timestamps = postData.map(function(post) {
-					return post && post.timestamp;
+				var keys = movePids.map(function(pid) {
+					return 'post:' + pid;
 				});
 
-				async.parallel([
-					function(next) {
-						db.sortedSetRemove('categories:recent_posts:cid:' + oldCid, pids, next);
-					},
-					function(next) {
-						db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamps, pids, next);
-					}
-				], function(err) {
+				db.getObjectsFields(keys, ['timestamp'], function(err, postData) {
 					if (err) {
-						winston.error(err.message);
+						return next(err);
 					}
+
+					var timestamps = postData.map(function(post) {
+						return post && post.timestamp;
+					});
+
+					async.parallel([
+						function(next) {
+							db.sortedSetRemove('categories:recent_posts:cid:' + oldCid, movePids, next);
+						},
+						function(next) {
+							db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamps, movePids, next);
+						}
+					], function(err) {
+						if (err) {
+							return next(err);
+						}
+						start += batch;
+						next();
+					});
 				});
+			}, function(err) {
+				if (err) {
+					winston.error(err.stack);
+				}
 			});
 		});
 	};
@@ -147,7 +166,9 @@ module.exports = function(Categories) {
 			if (err) {
 				return winston.error(err.message);
 			}
-
+			if (!parseInt(postCount, 10)) {
+				return;
+			}
 			async.parallel([
 				function(next) {
 					db.incrObjectFieldBy('category:' + oldCid, 'post_count', -postCount, next);

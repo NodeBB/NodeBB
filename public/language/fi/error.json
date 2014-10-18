@@ -13,6 +13,7 @@
     "invalid-user-data": "Virheellinen käyttäjätieto",
     "invalid-password": "Virheellinen salasana",
     "invalid-username-or-password": "Please specify both a username and password",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "Virheellinen taittoarvo",
     "username-taken": "Käyttäjänimi varattu",
     "email-taken": "Sähköpostiosoite varattu",

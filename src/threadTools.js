@@ -207,6 +207,8 @@ var winston = require('winston'),
 
 			topics.setTopicField(tid, 'cid', cid, callback);
 
+			events.logTopicMove(uid, tid);
+
 			plugins.fireHook('action:topic.move', {
 				tid: tid,
 				fromCid: oldCid,

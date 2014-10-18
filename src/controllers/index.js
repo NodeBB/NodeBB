@@ -145,8 +145,8 @@ Controllers.login = function(req, res, next) {
 	data.authentication = login_strategies;
 	data.token = req.csrfToken();
 	data.showResetLink = emailersPresent;
-	data.allowLocalLogin = meta.config.allowLocalLogin === undefined || parseInt(meta.config.allowLocalLogin, 10) === 1;
-	data.allowRegistration = meta.config.allowRegistration;
+	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1;
+	data.allowRegistration = parseInt(meta.config.allowRegistration, 10) === 1;
 	data.error = req.flash('error')[0];
 
 	res.render('login', data);

@@ -23,7 +23,7 @@ function validateUpload(res, req, allowedTypes) {
 
 
 
-uploadsController.uploadImage = function(filename, req, res) {
+uploadsController.uploadImage = function(filename, folder, req, res) {
 	function done(err, image) {
 		var er, rs;
 		fs.unlink(req.files.userPhoto.path);
@@ -40,7 +40,7 @@ uploadsController.uploadImage = function(filename, req, res) {
 	if(plugins.hasListeners('filter:uploadImage')) {
 		plugins.fireHook('filter:uploadImage', req.files.userPhoto, done);
 	} else {
-		file.saveFileToLocal(filename, req.files.userPhoto.path, done);
+		file.saveFileToLocal(filename, folder, req.files.userPhoto.path, done);
 	}
 };
 
@@ -59,7 +59,7 @@ uploadsController.uploadCategoryPicture = function(req, res, next) {
 
 	if (validateUpload(res, req, allowedTypes)) {
 		var filename =  'category-' + params.cid + path.extname(req.files.userPhoto.name);
-		uploadsController.uploadImage(filename, req, res);
+		uploadsController.uploadImage(filename, 'category', req, res);
 	}
 };
 
@@ -67,7 +67,7 @@ uploadsController.uploadFavicon = function(req, res, next) {
 	var allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'];
 
 	if (validateUpload(res, req, allowedTypes)) {
-		file.saveFileToLocal('favicon.ico', req.files.userPhoto.path, function(err, image) {
+		file.saveFileToLocal('favicon.ico', 'files', req.files.userPhoto.path, function(err, image) {
 			fs.unlink(req.files.userPhoto.path);
 
 			if(err) {
@@ -93,7 +93,7 @@ function upload(name, req, res, next) {
 
 	if (validateUpload(res, req, allowedTypes)) {
 		var filename = name + path.extname(req.files.userPhoto.name);
-		uploadsController.uploadImage(filename, req, res);
+		uploadsController.uploadImage(filename, 'files', req, res);
 	}
 }
 

@@ -172,20 +172,20 @@ function handleErrors(err, req, res, next) {
 
 	req.flash('errorMessage', err.message);
 
-	res.redirect(nconf.get('relative_path') + '/500')
+	res.redirect(nconf.get('relative_path') + '/500');
 }
 
 function catch404(req, res, next) {
 	var relativePath = nconf.get('relative_path');
 	var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
-		isClientScript = new RegExp('^' + relativePath + '\\/src\\/forum(\\/admin)?\\/.+\\.js');
+		isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
 
 	res.status(404);
 
 	if (isClientScript.test(req.url)) {
-		res.type('text/javascript').send(200, '');
+		res.type('text/javascript').status(200).send('');
 	} else if (isLanguage.test(req.url)) {
-		res.json(200, {});
+		res.status(200).json({});
 	} else if (req.accepts('html')) {
 		if (process.env.NODE_ENV === 'development') {
 			winston.warn('Route requested but not found: ' + req.url);

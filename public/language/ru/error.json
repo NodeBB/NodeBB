@@ -13,6 +13,7 @@
     "invalid-user-data": "Неверные Пользовательские Данные",
     "invalid-password": "Неверный Пароль",
     "invalid-username-or-password": "Please specify both a username and password",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "Неверное значение пагинации",
     "username-taken": "Имя пользователя занято",
     "email-taken": "Email занят",

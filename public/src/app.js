@@ -1,5 +1,5 @@
 "use strict";
-/*global io, templates, translator, ajaxify, utils, RELATIVE_PATH*/
+/*global io, templates, translator, ajaxify, utils, bootbox, RELATIVE_PATH*/
 
 var socket,
 	config,
@@ -7,6 +7,7 @@ var socket,
 		'username': null,
 		'uid': null,
 		'isFocused': true,
+		'isConnected': false,
 		'currentRoom': null,
 		'widgets': {},
 		'cacheBuster': null
@@ -54,6 +55,7 @@ var socket,
 
 			socket.emit('meta.reconnected');
 
+			app.isConnected = true;
 			$(window).trigger('action:reconnected');
 
 			setTimeout(function() {
@@ -98,6 +100,7 @@ var socket,
 				app.showLoginMessage();
 				app.replaceSelfLinks();
 				$(window).trigger('action:connected');
+				app.isConnected = true;
 			});
 
 			socket.on('event:alert', function (data) {
@@ -108,6 +111,7 @@ var socket,
 
 			socket.on('event:disconnect', function() {
 				$(window).trigger('action:disconnected');
+				app.isConnected = false;
 				socket.socket.connect();
 			});
 
@@ -525,13 +529,13 @@ var socket,
 
 			$('#logout-link').on('click', app.logout);
 
-			$window.blur(function(){
-				app.isFocused = false;
-			});
-
-			$window.focus(function(){
-				app.isFocused = true;
-				app.alternatingTitle('');
+			Visibility.change(function(e, state){
+				if (state === 'visible') {
+					app.isFocused = true;
+					app.alternatingTitle('');
+				} else if (state === 'hidden') {
+					app.isFocused = false;
+				}
 			});
 
 			createHeaderTooltips();
@@ -577,11 +581,6 @@ var socket,
 						type: 'warning'
 					});
 				}
-			});
-
-			// Admin keyboard shortcuts
-			require(['admin'], function(Admin) {
-				Admin.init();
 			});
 		});
 	};

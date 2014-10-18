@@ -111,6 +111,7 @@ var	async = require('async'),
 				user.uid = 0;
 				user.username = '[[global:guest]]';
 				user.userslug = '';
+				user.picture = User.createGravatarURLFromEmail('');
 			}
 
 			if (user.picture) {
@@ -119,8 +120,6 @@ var	async = require('async'),
 				} else {
 					user.picture = User.createGravatarURLFromEmail(user.email);
 				}
-			} else {
-				user.picture = User.createGravatarURLFromEmail('');
 			}
 
 			for(var i=0; i<fieldsToRemove.length; ++i) {
@@ -231,7 +230,12 @@ var	async = require('async'),
 	User.getUsersFromSet = function(set, start, stop, callback) {
 		async.waterfall([
 			function(next) {
-				db.getSortedSetRevRange(set, start, stop, next);
+				if (set === 'users:online') {
+					var uids = require('./socket.io').getConnectedClients();
+					next(null, uids.slice(start, stop + 1));
+				} else {
+					db.getSortedSetRevRange(set, start, stop, next);
+				}
 			},
 			function(uids, next) {
 				User.getUsers(uids, next);
@@ -242,13 +246,13 @@ var	async = require('async'),
 	User.getUsers = function(uids, callback) {
 		async.parallel({
 			userData: function(next) {
-				User.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'postcount', 'reputation'], next);
+				User.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'postcount', 'reputation', 'email:confirmed'], next);
 			},
 			isAdmin: function(next) {
 				User.isAdministrator(uids, next);
 			},
 			isOnline: function(next) {
-				db.isSortedSetMembers('users:online', uids, next);
+				require('./socket.io').isUsersOnline(uids, next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -263,6 +267,7 @@ var	async = require('async'),
 				user.status = !results.isOnline[index] ? 'offline' : user.status;
 				user.administrator = results.isAdmin[index];
 				user.banned = parseInt(user.banned, 10) === 1;
+				user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
 			});
 
 			callback(err, results.userData);
@@ -394,10 +399,28 @@ var	async = require('async'),
 
 	User.isModerator = function(uid, cid, callback) {
 		if (Array.isArray(cid)) {
-			var groupNames = cid.map(function(cid) {
+			var uniqueCids = cid.filter(function(cid, index, array) {
+				return array.indexOf(cid) === index;
+			});
+
+			var groupNames = uniqueCids.map(function(cid) {
 				return 'cid:' + cid + ':privileges:mods';
 			});
-			groups.isMemberOfGroups(uid, groupNames, callback);
+
+			groups.isMemberOfGroups(uid, groupNames, function(err, isMembers) {
+				if (err) {
+					return callback(err);
+				}
+
+				var map = {};
+				uniqueCids.forEach(function(cid, index) {
+					map[cid] = isMembers[index];
+				});
+
+				callback(null, cid.map(function(cid) {
+					return map[cid];
+				}));
+			});
 		} else {
 			if (Array.isArray(uid)) {
 				groups.isMembers(uid, 'cid:' + cid + ':privileges:mods', callback);

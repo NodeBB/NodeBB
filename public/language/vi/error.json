@@ -13,6 +13,7 @@
     "invalid-user-data": "Dữ liệu tài khoản không hợp lệ",
     "invalid-password": "Mật khẩu không hợp lệ",
     "invalid-username-or-password": "Xin hãy nhập cả tên đăng nhập và mật khẩu",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "Số trang không hợp lệ",
     "username-taken": "Tên đăng nhập đã tồn tại",
     "email-taken": "Email đã tồn tại",

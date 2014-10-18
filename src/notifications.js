@@ -128,43 +128,91 @@ var async = require('async'),
 			return callback();
 		}
 
-		var websockets = require('./socket.io');
 		if (!Array.isArray(uids)) {
 			uids = [uids];
 		}
 
+		uids = uids.filter(function(uid) {
+			return parseInt(uid, 10);
+		});
+
+		if (!uids.length) {
+			return callback();
+		}
+
+		var done = false;
+		var start = 0;
+		var batchSize = 50;
+
+		setTimeout(function() {
+			async.whilst(
+				function() {
+					return !done;
+				},
+				function(next) {
+					var currentUids = uids.slice(start, start + batchSize);
+					if (!currentUids.length) {
+						done = true;
+						return next();
+					}
+					pushToUids(currentUids, notification, function(err) {
+						if (err) {
+							return next(err);
+						}
+						start = start + batchSize;
+
+						setTimeout(next, 1000);
+					});
+				},
+				function(err) {
+					if (err) {
+						winston.error(err.stack);
+					}
+				}
+			);
+		}, 1000);
+
+		callback();
+	};
+
+	function pushToUids(uids, notification, callback) {
 		var unreadKeys = [];
 		var readKeys = [];
 
-		uids.filter(Boolean).forEach(function(uid) {
+		uids.forEach(function(uid) {
 			unreadKeys.push('uid:' + uid + ':notifications:unread');
 			readKeys.push('uid:' + uid + ':notifications:read');
 		});
 
-		async.parallel([
+		var oneWeekAgo = Date.now() - 604800000;
+		async.series([
 			function(next) {
 				db.sortedSetsAdd(unreadKeys, notification.datetime, notification.nid, next);
 			},
 			function(next) {
 				db.sortedSetsRemove(readKeys, notification.nid, next);
+			},
+			function(next) {
+				db.sortedSetsRemoveRangeByScore(unreadKeys, 0, oneWeekAgo, next);
+			},
+			function(next) {
+				db.sortedSetsRemoveRangeByScore(readKeys, 0, oneWeekAgo, next);
 			}
 		], function(err) {
 			if (err) {
 				return callback(err);
 			}
 
-			var oneWeekAgo = Date.now() - 604800000;
-			db.sortedSetsRemoveRangeByScore(unreadKeys, 0, oneWeekAgo);
-			db.sortedSetsRemoveRangeByScore(readKeys, 0, oneWeekAgo);
-
 			plugins.fireHook('action:notification.pushed', {notification: notification, uids: uids});
-			callback();
 
+			var websockets = require('./socket.io');
 			for(var i=0; i<uids.length; ++i) {
 				websockets.in('uid_' + uids[i]).emit('event:new_notification', notification);
 			}
+
+			callback();
 		});
-	};
+	}
 
 	Notifications.pushGroup = function(notification, groupName, callback) {
 		callback = callback || function() {};
@@ -216,7 +264,7 @@ var async = require('async'),
 	};
 
 	Notifications.markAllRead = function(uid, callback) {
-		db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, 99, function(err, nids) {
+		db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 99, function(err, nids) {
 			if (err) {
 				return callback(err);
 			}

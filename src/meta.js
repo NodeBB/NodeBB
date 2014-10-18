@@ -34,6 +34,7 @@ var async = require('async'),
 
 	Meta.reload = function(callback) {
 		async.series([
+			async.apply(plugins.clearRequireCache),
 			async.apply(plugins.reload),
 			function(next) {
 				async.parallel([
@@ -41,7 +42,10 @@ var async = require('async'),
 					async.apply(Meta.css.minify),
 					async.apply(Meta.templates.compile),
 					async.apply(auth.reloadRoutes),
-					async.apply(templates.flush)
+					function(next) {
+						templates.flush();
+						next();
+					}
 				], next);
 			}
 		], function(err) {
@@ -49,7 +53,9 @@ var async = require('async'),
 				emitter.emit('nodebb:ready');
 			}
 
-			if (callback) callback.apply(null, arguments);
+			if (callback) {
+				callback.apply(null, arguments);
+			}
 		});
 	};
 

@@ -13,6 +13,7 @@
     "invalid-user-data": "Klaidingi vartotojo duomenys",
     "invalid-password": "Klaidingas slaptažodis",
     "invalid-username-or-password": "Please specify both a username and password",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "Klaidinga puslapiavimo reikšmė",
     "username-taken": "Vartotojo vardas jau užimtas",
     "email-taken": "El. pašto adresas jau užimtas",

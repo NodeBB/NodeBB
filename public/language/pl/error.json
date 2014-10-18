@@ -13,6 +13,7 @@
     "invalid-user-data": "Błędne dane użytkownika.",
     "invalid-password": "Błędne hasło",
     "invalid-username-or-password": "Proszę podać nazwę użytkownika i hasło",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "Błędna wartość paginacji",
     "username-taken": "Login zajęty.",
     "email-taken": "E-mail zajęty.",

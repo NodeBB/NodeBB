@@ -38,7 +38,7 @@ SocketTopics.post = function(socket, data, callback) {
 		}
 
 		callback(null, result.topicData);
-		socket.emit('event:new_post', {posts: result.postData});
+		socket.emit('event:new_post', {posts: [result.postData]});
 		socket.emit('event:new_topic', result.topicData);
 
 		var uids = websockets.getConnectedClients();
@@ -53,7 +53,7 @@ SocketTopics.post = function(socket, data, callback) {
 
 				for(var i=0; i<uids.length; ++i) {
 					if (parseInt(uids[i], 10) !== socket.uid) {
-						websockets.in('uid_' + uids[i]).emit('event:new_post', {posts: result.postData});
+						websockets.in('uid_' + uids[i]).emit('event:new_post', {posts: [result.postData]});
 						websockets.in('uid_' + uids[i]).emit('event:new_topic', result.topicData);
 					}
 				}
@@ -68,6 +68,7 @@ SocketTopics.enter = function(socket, tid, callback) {
 	if (!tid || !socket.uid) {
 		return;
 	}
+
 	SocketTopics.markAsRead(socket, [tid], callback);
 	topics.increaseViewCount(tid);
 	websockets.updateRoomBrowsingText('topic_' + tid);
@@ -75,10 +76,6 @@ SocketTopics.enter = function(socket, tid, callback) {
 
 SocketTopics.postcount = function(socket, tid, callback) {
 	topics.getTopicField(tid, 'postcount', callback);
-};
-
-SocketTopics.increaseViewCount = function(socket, tid) {
-	topics.increaseViewCount(tid);
 };
 
 SocketTopics.markAsRead = function(socket, tids, callback) {
@@ -92,6 +89,7 @@ SocketTopics.markAsRead = function(socket, tids, callback) {
 	tids = tids.filter(function(tid) {
 		return tid && utils.isNumber(tid);
 	});
+
 	topics.markAsRead(tids, socket.uid, function(err) {
 		if (err) {
 			return callback(err);
@@ -404,7 +402,7 @@ SocketTopics.follow = function(socket, tid, callback) {
 };
 
 SocketTopics.loadMore = function(socket, data, callback) {
-	if(!data || !data.tid || !(parseInt(data.after, 10) >= 0))  {
+	if(!data || !data.tid || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0)  {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -523,6 +521,12 @@ SocketTopics.search = function(socket, data, callback) {
 };
 
 SocketTopics.searchAndLoadTags = function(socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	if (!data.query || !data.query.length) {
+		return callback(null, []);
+	}
 	topics.searchTags(data, function(err, tags) {
 		if (err) {
 			return callback(err);

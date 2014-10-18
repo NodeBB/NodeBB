@@ -12,5 +12,7 @@
     "user.posts": "Pranešimai, kuriuos parašė %1",
     "user.topics": "Temos, kurias sukūrė %1",
     "user.favourites": "Vartotojo %1 mėgstami pranešimai",
-    "user.settings": "Vartotojo nustatymai"
+    "user.settings": "Vartotojo nustatymai",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administator has left this message:"
 }

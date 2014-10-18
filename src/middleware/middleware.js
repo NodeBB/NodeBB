@@ -27,7 +27,7 @@ var app,
 middleware.authenticate = function(req, res, next) {
 	if(!req.user) {
 		if (res.locals.isAPI) {
-			return res.json(403, 'not-allowed');
+			return res.status(403).json('not-allowed');
 		} else {
 			return res.redirect(nconf.get('url') + '/403');
 		}
@@ -45,7 +45,20 @@ middleware.updateLastOnlineTime = function(req, res, next) {
 		user.updateLastOnlineTime(req.user.uid);
 	}
 
-	db.sortedSetAdd('ip:recent', Date.now(), req.ip || 'Unknown');
+	db.sortedSetScore('ip:recent', req.ip, function(err, score) {
+		if (err) {
+			return;
+		}
+		var today = new Date();
+		today.setHours(today.getHours(), 0, 0, 0);
+		if (!score) {
+			db.incrObjectField('global', 'uniqueIPCount');
+		}
+		if (!score || score < today.getTime()) {
+			db.sortedSetIncrBy('analytics:uniquevisitors', 1, today.getTime());
+			db.sortedSetAdd('ip:recent', Date.now(), req.ip || 'Unknown');
+		}
+	});
 
 	next();
 };
@@ -53,7 +66,7 @@ middleware.updateLastOnlineTime = function(req, res, next) {
 middleware.incrementPageViews = function(req, res, next) {
 	var today = new Date();
 	today.setHours(today.getHours(), 0, 0, 0);
-	
+
 	db.sortedSetIncrBy('analytics:pageviews', 1, today.getTime());
 	next();
 };
@@ -68,7 +81,7 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 		}
 
 		if (res.locals.isAPI) {
-			res.json(302, '/user/' + userslug);
+			res.status(302).json('/user/' + userslug);
 		} else {
 			res.redirect('/user/' + userslug);
 		}
@@ -90,8 +103,14 @@ middleware.addSlug = function(req, res, next) {
 			if (err || !slug || slug === id + '/') {
 				return next(err);
 			}
+
 			var url = name + encodeURI(slug);
-			res.locals.isAPI ? res.json(302, url) : res.redirect(url);
+
+			if (res.locals.isAPI) {
+				res.status(302).json(url);
+			} else {
+				res.redirect(url);
+			}
 		});
 	}
 
@@ -109,7 +128,7 @@ middleware.addSlug = function(req, res, next) {
 };
 
 middleware.checkTopicIndex = function(req, res, next) {
-	db.sortedSetCard('categories:' + req.params.category_id + ':tid', function(err, topicCount) {
+	categories.getCategoryField(req.params.category_id, 'topic_count', function(err, topicCount) {
 		if (err) {
 			return next(err);
 		}
@@ -119,10 +138,10 @@ middleware.checkTopicIndex = function(req, res, next) {
 
 		if (topicIndex > topicCount) {
 			url = '/category/' + req.params.category_id + '/' + req.params.slug + '/' + topicCount;
-			return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
+			return res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
 		} else if (topicIndex < 1) {
 			url = '/category/' + req.params.category_id + '/' + req.params.slug;
-			return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
+			return res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
 		}
 		next();
 	});
@@ -146,7 +165,7 @@ middleware.checkGlobalPrivacySettings = function(req, res, next) {
 
 	if (!callerUID && !!parseInt(meta.config.privateUserInfo, 10)) {
 		if (res.locals.isAPI) {
-			return res.json(403, 'not-allowed');
+			return res.status(403).json('not-allowed');
 		} else {
 			req.session.returnTo = req.url;
 			return res.redirect('login');
@@ -171,7 +190,7 @@ middleware.checkAccountPermissions = function(req, res, next) {
 		}
 
 		if (!uid) {
-			return res.locals.isAPI ? res.json(404, 'not-found') : res.redirect(nconf.get('relative_path') + '/404');
+			return res.locals.isAPI ? res.status(404).json('not-found') : res.redirect(nconf.get('relative_path') + '/404');
 		}
 
 		if (parseInt(uid, 10) === callerUID) {
@@ -187,7 +206,11 @@ middleware.checkAccountPermissions = function(req, res, next) {
 				return next();
 			}
 
-			res.locals.isAPI ? res.json(403, 'not-allowed') : res.redirect(nconf.get('relative_path') + '/403');
+			if (res.locals.isAPI) {
+				res.status(403).json('not-allowed');
+			} else {
+				res.redirect(nconf.get('relative_path') + '/403');
+			}
 		});
 	});
 };
@@ -329,10 +352,10 @@ middleware.renderHeader = function(req, res, callback) {
 						if (err) {
 							return next(err);
 						}
-						meta.title.build(req.url.slice(1), settings.language, next);
+						meta.title.build(req.url.slice(1), settings.language, res.locals, next);
 					});
 				} else {
-					meta.title.build(req.url.slice(1), meta.config.defaultLang, next);
+					meta.title.build(req.url.slice(1), meta.config.defaultLang, res.locals, next);
 				}
 			},
 			isAdmin: function(next) {
@@ -355,6 +378,7 @@ middleware.renderHeader = function(req, res, callback) {
 			templateValues.user = results.user;
 			templateValues.customCSS = results.customCSS;
 			templateValues.customJS = results.customJS;
+			templateValues.maintenanceHeader = meta.config.maintenanceMode === '1' && !results.isAdmin;
 
 			app.render('header', templateValues, callback);
 		});
@@ -443,13 +467,19 @@ middleware.addExpiresHeaders = function(req, res, next) {
 };
 
 middleware.maintenanceMode = function(req, res, next) {
-	var render = function() {
-		res.render('maintenance', {
-			site_title: meta.config.site_title || 'NodeBB'
-		});
-	};
+	var allowedRoutes = [
+			'/login'
+		],
+		render = function() {
+			middleware.buildHeader(req, res, function() {
+				res.render('maintenance', {
+					site_title: meta.config.site_title || 'NodeBB',
+					message: meta.config.maintenanceModeMessage
+				});
+			});
+		};
 
-	if (meta.config.maintenanceMode === '1') {
+	if (meta.config.maintenanceMode === '1' && allowedRoutes.indexOf(req.url) === -1) {
 		if (!req.user) {
 			return render();
 		} else {

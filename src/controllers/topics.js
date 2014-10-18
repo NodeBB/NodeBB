@@ -49,10 +49,10 @@ topicsController.get = function(req, res, next) {
 				var url = '';
 				if (req.params.post_index > postCount) {
 					url = '/topic/' + req.params.topic_id + '/' + req.params.slug + '/' + postCount;
-					return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
+					return res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
 				} else if (req.params.post_index < 1) {
 					url = '/topic/' + req.params.topic_id + '/' + req.params.slug;
-					return res.locals.isAPI ? res.json(302, url) : res.redirect(url);
+					return res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
 				}
 			}
 
@@ -172,7 +172,7 @@ topicsController.get = function(req, res, next) {
 				},
 				{
 					property: 'og:title',
-					content: topicData.title
+					content: topicData.title.replace(/&amp;/g, '&')
 				},
 				{
 					property: 'og:description',
@@ -275,7 +275,7 @@ topicsController.teaser = function(req, res, next) {
 		}
 
 		if (!canRead) {
-			return res.json(403, '[[error:no-priveges]]');
+			return res.status(403).json('[[error:no-priveges]]');
 		}
 
 		topics.getLatestUndeletedPid(tid, function(err, pid) {
@@ -284,7 +284,7 @@ topicsController.teaser = function(req, res, next) {
 			}
 
 			if (!pid) {
-				return res.json(404, 'not-found');
+				return res.status(404).json('not-found');
 			}
 
 			posts.getPostSummaryByPids([pid], uid, {stripTags: false}, function(err, posts) {
@@ -293,7 +293,7 @@ topicsController.teaser = function(req, res, next) {
 				}
 
 				if (!Array.isArray(posts) || !posts.length) {
-					return res.json(404, 'not-found');
+					return res.status(404).json('not-found');
 				}
 
 				res.json(posts[0]);

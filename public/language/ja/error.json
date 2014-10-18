@@ -13,6 +13,7 @@
     "invalid-user-data": "無効なユーザーデータ",
     "invalid-password": "無効なパスワード",
     "invalid-username-or-password": "Please specify both a username and password",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "無効な改ページ設定値",
     "username-taken": "ユーザー名が取られた",
     "email-taken": "メールアドレスが使用された",

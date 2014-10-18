@@ -12,6 +12,7 @@ var fs = require('fs'),
 	user = require('../user'),
 	posts = require('../posts'),
 	topics = require('../topics'),
+	groups = require('../groups'),
 	messaging = require('../messaging'),
 	postTools = require('../postTools'),
 	utils = require('../../public/src/utils'),
@@ -23,22 +24,22 @@ var fs = require('fs'),
 	websockets = require('../socket.io');
 
 function userNotFound(res) {
+	res.locals.notFound = true;
+
 	if (res.locals.isAPI) {
-		res.json(404, 'user-not-found');
+		res.status(404).json('no-user');
 	} else {
 		res.render('404', {
-			error: 'User not found!'
+			error: '[[error:no-user]]'
 		});
 	}
 }
 
 function userNotAllowed(res) {
 	if (res.locals.isAPI) {
-		res.json(403, 'not-allowed');
+		res.status(403).json('not-allowed');
 	} else {
-		res.render('403', {
-			error: 'Not allowed.'
-		});
+		res.render('403');
 	}
 }
 
@@ -70,6 +71,9 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			},
 			profile_links: function(next) {
 				plugins.fireHook('filter:user.profileLinks', [], next);
+			},
+			groups: function(next) {
+				groups.getUserGroups([uid], next);
 			}
 		}, function(err, results) {
 			if(err || !results.userData) {
@@ -82,7 +86,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			var self = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
 
 			userData.joindate = utils.toISOString(userData.joindate);
-			if(userData.lastonline) {
+			if (userData.lastonline) {
 				userData.lastonline = utils.toISOString(userData.lastonline);
 			} else {
 				userData.lastonline = userData.joindate;
@@ -95,30 +99,31 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			}
 
 			if (!(isAdmin || self || (userData.email && userSettings.showemail))) {
-				userData.email = "";
+				userData.email = '';
 			}
 
-			if (self && !userSettings.showemail) {
-				userData.emailClass = "";
-			} else {
-				userData.emailClass = "hide";
+			userData.emailClass = (self && !userSettings.showemail) ? '' : 'hide';
+
+			if (!self && !userSettings.showfullname) {
+				userData.fullname = '';
 			}
 
 			if (isAdmin || self) {
 				userData.ips = results.ips;
 			}
 
-			userData.websiteName = userData.website.replace('http://', '').replace('https://', '');
-			userData.banned = parseInt(userData.banned, 10) === 1;
 			userData.uid = userData.uid;
 			userData.yourid = callerUID;
 			userData.theirid = userData.uid;
-			userData.isSelf = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
-			userData.showSettings = userData.isSelf || isAdmin;
+			userData.isSelf = self;
+			userData.showSettings = self || isAdmin;
+			userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
 			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
 			userData.profile_links = results.profile_links;
-			userData.status = !websockets.isUserOnline(userData.uid) ? 'offline' : userData.status;
+			userData.status = websockets.isUserOnline(userData.uid) ? (userData.status || 'online') : 'offline';
+			userData.banned = parseInt(userData.banned, 10) === 1;
+			userData.websiteName = userData.website.replace('http://', '').replace('https://', '');
 
 			userData.followingCount = results.followStats.followingCount;
 			userData.followerCount = results.followStats.followerCount;
@@ -484,18 +489,18 @@ accountsController.uploadPicture = function (req, res, next) {
 
 		user.getUserField(updateUid, 'uploadedpicture', function (err, oldpicture) {
 			if (!oldpicture) {
-				file.saveFileToLocal(filename, req.files.userPhoto.path, done);
+				file.saveFileToLocal(filename, 'profile', req.files.userPhoto.path, done);
 				return;
 			}
 
-			var absolutePath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), path.basename(oldpicture));
+			var absolutePath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), 'profile', path.basename(oldpicture));
 
 			fs.unlink(absolutePath, function (err) {
 				if (err) {
 					winston.err(err);
 				}
 
-				file.saveFileToLocal(filename, req.files.userPhoto.path, done);
+				file.saveFileToLocal(filename, 'profile', req.files.userPhoto.path, done);
 			});
 		});
 	});

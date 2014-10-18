@@ -145,7 +145,9 @@ $(document).ready(function() {
 		};
 
 		ajaxify.loadScript = function(tpl_url, callback) {
-			require(['forum/' + tpl_url], function(script) {
+			var location = !app.inAdmin ? 'forum/' : '';
+
+			require([location + tpl_url], function(script) {
 				if (script && script.init) {
 					script.init();
 				}

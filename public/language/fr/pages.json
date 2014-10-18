@@ -12,5 +12,7 @@
     "user.posts": "Message écrit par %1",
     "user.topics": "Sujets créés par %1",
     "user.favourites": "Messages favoris de %1",
-    "user.settings": "Préférences utilisateur"
+    "user.settings": "Préférences utilisateur",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administator has left this message:"
 }

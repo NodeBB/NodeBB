@@ -46,11 +46,14 @@ function addRoutes(router, middleware, controllers) {
 
 	router.get('/manage/tags', controllers.admin.tags.get);
 
-	router.get('/manage/users', controllers.admin.users.search);
+	router.get('/manage/flags', controllers.admin.flags.get);
+
+	router.get('/manage/users', controllers.admin.users.sortByJoinDate);
 	router.get('/manage/users/search', controllers.admin.users.search);
 	router.get('/manage/users/latest', controllers.admin.users.sortByJoinDate);
 	router.get('/manage/users/sort-posts', controllers.admin.users.sortByPosts);
 	router.get('/manage/users/sort-reputation', controllers.admin.users.sortByReputation);
+	router.get('/manage/users/banned', controllers.admin.users.banned);
 
 	router.get('/manage/groups', controllers.admin.groups.get);
 
@@ -63,6 +66,7 @@ function addRoutes(router, middleware, controllers) {
 
 	router.get('/advanced/database', controllers.admin.database.get);
 	router.get('/advanced/events', controllers.admin.events.get);
+	router.get('/advanced/logs', controllers.admin.logs.get);
 
 	router.get('/development/logger', controllers.admin.logger.get);
 }

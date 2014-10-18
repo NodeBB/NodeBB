@@ -1,3 +1,5 @@
+"use strict";
+
 var HotSwap = {},
 	winston = require('winston'),
 	stack;
@@ -11,7 +13,6 @@ HotSwap.find = function(id) {
 		for(var x=0,numEntries=stack.length;x<numEntries;x++) {
 			if (stack[x].handle.hotswapId === id) {
 				return x;
-				break;
 			}
 		}
 	} else {

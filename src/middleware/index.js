@@ -30,8 +30,9 @@ var utils = require('./../../public/src/utils'),
 var middleware = {};
 
 function routeCurrentTheme(app, themeId, themesData) {
-	var themeId = (themeId || 'nodebb-theme-vanilla'),
-		themeObj = (function(id) {
+	themeId = (themeId || 'nodebb-theme-vanilla');
+	
+	var	themeObj = (function(id) {
 			return themesData.filter(function(themeObj) {
 				return themeObj.id === id;
 			})[0];
@@ -43,6 +44,13 @@ function routeCurrentTheme(app, themeId, themesData) {
 	}
 
 	meta.themes.setPath(themeObj);
+}
+
+function setupFavicon(app) {
+	var faviconPath = path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico');
+	if (fs.existsSync(faviconPath)) {
+		app.use(favicon(faviconPath));	
+	}
 }
 
 module.exports = function(app, data) {
@@ -61,7 +69,8 @@ module.exports = function(app, data) {
 
 	app.use(compression());
 
-	app.use(favicon(path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico')));
+	setupFavicon(app);
+	
 	app.use(relativePath + '/apple-touch-icon', middleware.routeTouchIcon);
 
 	app.use(bodyParser.urlencoded({extended: true}));

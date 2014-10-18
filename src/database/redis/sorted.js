@@ -12,6 +12,10 @@ module.exports = function(redisClient, module) {
 	};
 
 	function sortedSetAddMulti(key, scores, values, callback) {
+		if (!scores.length || !values.length) {
+			return callback();
+		}
+
 		if (scores.length !== values.length) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}

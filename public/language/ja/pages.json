@@ -12,5 +12,7 @@
     "user.posts": "%1が作成したポスト",
     "user.topics": "%1が作成したスレッド",
     "user.favourites": "%1のお気に入りポスト",
-    "user.settings": "ユーザー設定"
+    "user.settings": "ユーザー設定",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administator has left this message:"
 }

@@ -15,7 +15,7 @@ usersController.getOnlineUsers = function(req, res, next) {
 			user.getUsersFromSet('users:online', 0, 49, next);
 		},
 		count: function(next) {
-			db.sortedSetCard('users:online', next);
+			next(null, websockets.getConnectedClients().length);
 		},
 		isAdministrator: function(next) {
 			user.isAdministrator(uid, next);
@@ -63,7 +63,7 @@ function getUsers(set, res, next) {
 			user.getUsersFromSet(set, 0, 49, next);
 		},
 		count: function(next) {
-			db.sortedSetCard(set, next);
+			db.getObjectField('global', 'userCount', next);
 		}
 	}, function(err, results) {
 		if (err) {

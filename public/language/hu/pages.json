@@ -12,5 +12,7 @@
     "user.posts": "Hozzászólások által %1",
     "user.topics": "Topics created by %1",
     "user.favourites": "%1 Kedvenc Hozzászólásai",
-    "user.settings": "Felhasználói Beállítások"
+    "user.settings": "Felhasználói Beállítások",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administator has left this message:"
 }

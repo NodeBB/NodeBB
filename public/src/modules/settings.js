@@ -298,6 +298,7 @@ define('settings', function () {
 						app.alert({
 							title: 'Settings Saved',
 							type: 'success',
+							message: "Settings have been successfully saved",
 							timeout: 2500
 						});
 					}

@@ -1,7 +1,6 @@
 "use strict";
 
-var helpers = {},
-	winston = require('winston');
+var helpers = {};
 
 helpers.toMap = function(data) {
 	var map = {};

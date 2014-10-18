@@ -3,9 +3,103 @@
 var async = require('async'),
 	db = require('../database'),
 	topics = require('../topics'),
+	user = require('../user'),
 	plugins = require('../plugins');
 
 module.exports = function(Posts) {
+
+	Posts.delete = function(pid, callback) {
+		Posts.setPostField(pid, 'deleted', 1, function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			Posts.getPostFields(pid, ['pid', 'tid', 'uid', 'timestamp'], function(err, postData) {
+				if (err) {
+					return callback(err);
+				}
+
+				plugins.fireHook('action:post.delete', pid);
+
+				async.parallel([
+					function(next) {
+						updateTopicTimestamp(postData.tid, next);
+					},
+					function(next) {
+						removeFromCategoryRecentPosts(pid, postData.tid, next);
+					}
+				], function(err) {
+					callback(err, postData);
+				});
+			});
+		});
+	};
+
+	Posts.restore = function(pid, callback) {
+		Posts.setPostField(pid, 'deleted', 0, function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			Posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'timestamp'], function(err, postData) {
+				if (err) {
+					return callback(err);
+				}
+
+				plugins.fireHook('action:post.restore', postData);
+
+				async.parallel([
+					function(next) {
+						updateTopicTimestamp(postData.tid, next);
+					},
+					function(next) {
+						addToCategoryRecentPosts(pid, postData.tid, postData.timestamp, next);
+					}
+				], function(err) {
+					callback(err, postData);
+				});
+			});
+		});
+	};
+
+	function updateTopicTimestamp(tid, callback) {
+		topics.getLatestUndeletedPid(tid, function(err, pid) {
+			if(err || !pid) {
+				return callback(err);
+			}
+
+			Posts.getPostField(pid, 'timestamp', function(err, timestamp) {
+				if (err) {
+					return callback(err);
+				}
+
+				if (timestamp) {
+					return topics.updateTimestamp(tid, timestamp, callback);
+				}
+				callback();
+			});
+		});
+	}
+
+	function removeFromCategoryRecentPosts(pid, tid, callback) {
+		topics.getTopicField(tid, 'cid', function(err, cid) {
+			if (err) {
+				return callback(err);
+			}
+
+			db.sortedSetRemove('categories:recent_posts:cid:' + cid, pid, callback);
+		});
+	}
+
+	function addToCategoryRecentPosts(pid, tid, timestamp, callback) {
+		topics.getTopicField(tid, 'cid', function(err, cid) {
+			if (err) {
+				return callback(err);
+			}
+
+			db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid, callback);
+		});
+	}
 
 	Posts.purge = function(pid, callback) {
 		async.parallel([
@@ -23,7 +117,7 @@ module.exports = function(Posts) {
 			},
 			function(next) {
 				db.sortedSetRemove('posts:pid', pid, next);
-			}
+			},
 		], function(err) {
 			if (err) {
 				return callback(err);
@@ -35,7 +129,7 @@ module.exports = function(Posts) {
 	};
 
 	function deletePostFromTopicAndUser(pid, callback) {
-		Posts.getPostFields(pid, ['tid', 'uid', 'deleted'], function(err, postData) {
+		Posts.getPostFields(pid, ['tid', 'uid'], function(err, postData) {
 			if (err) {
 				return callback(err);
 			}
@@ -49,26 +143,25 @@ module.exports = function(Posts) {
 					return callback(err);
 				}
 
-				topics.getTopicFields(postData.tid, ['cid', 'deleted'], function(err, topicData) {
+				topics.getTopicFields(postData.tid, ['cid'], function(err, topicData) {
 					if (err) {
 						return callback(err);
 					}
 
-					if (parseInt(postData.deleted, 10) === 0 && parseInt(topicData.deleted, 10) !== 1) {
-						async.parallel([
-							function (next) {
-								db.decrObjectField('global', 'postCount', next);
-							},
-							function (next) {
-								db.decrObjectField('category:' + topicData.cid, 'post_count', next);
-							},
-							function (next) {
-								db.decrObjectField('topic:' + postData.tid, 'postcount', next);
-							}
-						], callback);
-					} else {
-						callback();
-					}
+					async.parallel([
+						function (next) {
+							db.decrObjectField('global', 'postCount', next);
+						},
+						function (next) {
+							db.decrObjectField('category:' + topicData.cid, 'post_count', next);
+						},
+						function (next) {
+							topics.decreasePostCount(postData.tid, next);
+						},
+						function(next) {
+							user.incrementUserPostCountBy(postData.uid, -1, next);
+						},
+					], callback);
 				});
 			});
 		});

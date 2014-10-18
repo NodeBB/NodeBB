@@ -1,5 +1,5 @@
 "use strict";
-/*global ajaxify, templates*/
+/*global ajaxify, templates, config, RELATIVE_PATH*/
 
 (function(ajaxify) {
 	ajaxify.widgets = {};
@@ -33,7 +33,7 @@
 		function renderWidgets(locations) {
 			var areaDatas = [];
 
-			$.get(RELATIVE_PATH + '/api/widgets/render', {
+			$.get(RELATIVE_PATH + '/api/widgets/render' + (config['cache-buster'] ? '?v=' + config['cache-buster'] : ''), {
 				locations: locations,
 				template: template + '.tpl',
 				url: url

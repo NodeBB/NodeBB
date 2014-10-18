@@ -1,13 +1,14 @@
 <div class="users">
-	<div class="col-sm-9">
+	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-user"></i> Users</div>
-			<div class="panel-body">			
+			<div class="panel-body">
 				<ul class="nav nav-pills">
-					<li class='active'><a href='{relative_path}/admin/manage/users/search'>Search</a></li>
-					<li class=''><a href='{relative_path}/admin/manage/users/latest'>Latest Users</a></li>
+					<li class='active'><a href='{relative_path}/admin/manage/users/latest'>Latest Users</a></li>
 					<li class=''><a href='{relative_path}/admin/manage/users/sort-posts'>Top Posters</a></li>
 					<li class=''><a href='{relative_path}/admin/manage/users/sort-reputation'>Most Reputation</a></li>
+					<li class=''><a href='{relative_path}/admin/manage/users/banned'>Banned</a></li>
+					<li class=''><a href='{relative_path}/admin/manage/users/search'>User Search</a></li>
 
 
 					<div class="btn-group pull-right">
@@ -15,6 +16,8 @@
 						<ul class="dropdown-menu">
 							<li><a href="#" class="admin-user"><i class="fa fa-fw fa-shield"></i> Make Admin</a></li>
 							<li><a href="#" class="remove-admin-user"><i class="fa fa-fw fa-ban"></i> Remove Admin</a></li>
+							<li class="divider"></li>
+							<li><a href="#" class="validate-email"><i class="fa fa-fw fa-check"></i> Validate Email</a></li>
 							<li class="divider"></li>
 							<li><a href="#" class="ban-user"><i class="fa fa-fw fa-gavel"></i> Ban User</a></li>
 							<li><a href="#" class="unban-user"><i class="fa fa-fw fa-comment-o"></i> Unban User</a></li>
@@ -34,28 +37,23 @@
 				</div>
 
 
-				<ul id="users-container" class="users">
+				<ul id="users-container">
 					<!-- BEGIN users -->
 					<div class="users-box" data-uid="{users.uid}" data-username="{users.username}">
-
-						<a href="{relative_path}/user/{users.userslug}" target="_blank"><img src="{users.picture}" class="img-thumbnail"/></a>
-						<br/>
-
-						<i class="fa fa-fw fa-square-o select pointer"></i>
-						<a href="{relative_path}/user/{users.userslug}" target="_blank">{users.username}</a>
-						<br/>
-
-						<div title="uid">
-							<i class='fa fa-user'></i>
-							<span>{users.uid}</span>
+						<div class="user-image">
+							<img src="{users.picture}" class="img-thumbnail user-selectable"/>
+							<div class="labels">
+								<!-- IF requireEmailConfirmation -->
+								<!-- IF !users.email:confirmed -->
+								<span class="notvalidated label label-danger">Not Validated</span>
+								<!-- ENDIF !users.email:confirmed -->
+								<!-- ENDIF requireEmailConfirmation -->
+								<span class="administrator label label-primary <!-- IF !users.administrator -->hide<!-- ENDIF !users.administrator -->">Admin</span>
+								<span class="ban label label-danger <!-- IF !users.banned -->hide<!-- ENDIF !users.banned -->">Banned</span>
+							</div>
 						</div>
 
-						<span class="administrator label label-primary <!-- IF !users.administrator -->hide<!-- ENDIF !users.administrator -->">Admin</span>
-
-						<br/>
-
-						<span class="ban label label-danger <!-- IF !users.banned -->hide<!-- ENDIF !users.banned -->">Banned</span>
-
+						<a href="{relative_path}/user/{users.userslug}" target="_blank">{users.username} ({users.uid})</a>
 					</div>
 					<!-- END users -->
 				</ul>
@@ -105,7 +103,7 @@
 					<button id="load-more-users-btn" class="btn btn-primary">Load More</button>
 				</div>
 				<input type="hidden" template-variable="yourid" value="{yourid}" />
-				
+
 			</div>
 		</div>
 	</div>

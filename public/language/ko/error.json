@@ -13,6 +13,7 @@
     "invalid-user-data": "올바르지 않은 사용자 정보입니다.",
     "invalid-password": "올바르지 않은 비밀번호입니다.",
     "invalid-username-or-password": "Please specify both a username and password",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "올바르지 않은 페이지입니다.",
     "username-taken": "이미 사용 중인 사용자 이름입니다.",
     "email-taken": "이미 사용 중인 이메일입니다.",

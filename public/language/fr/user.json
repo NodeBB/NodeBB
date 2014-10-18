@@ -29,6 +29,7 @@
     "edit": "Editer",
     "uploaded_picture": "Image envoyée",
     "upload_new_picture": "Envoyer une nouvelle image",
+    "upload_new_picture_from_url": "Upload New Picture From URL",
     "current_password": "Mot de passe actuel",
     "change_password": "Changer le mot de passe",
     "change_password_error": "Mot de passe invalide !",

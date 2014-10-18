@@ -62,6 +62,14 @@ var fs = require('fs'),
 		events.logWithUser(uid, 'restored post (pid ' + pid + ')');
 	};
 
+	events.logPostPurge = function(uid, pid) {
+		events.logWithUser(uid, 'purged post (pid ' + pid + ')');
+	};
+
+	events.logTopicMove = function(uid, tid) {
+		events.logWithUser(uid, 'moved topic (tid ' + tid + ')');
+	};
+
 	events.logTopicDelete = function(uid, tid) {
 		events.logWithUser(uid, 'deleted topic (tid ' + tid + ')');
 	};
@@ -79,7 +87,7 @@ var fs = require('fs'),
 			var msg = username + '(uid ' + uid + ') ' + string;
 			events.log(msg);
 		});
-	}
+	};
 
 	events.log = function(msg, callback) {
 		var logFile = path.join(nconf.get('base_dir'), logFileName);
@@ -101,15 +109,39 @@ var fs = require('fs'),
 		});
 	};
 
-	events.getLog = function(callback) {
+	events.getLog = function(end, len, callback) {
 		var logFile = path.join(nconf.get('base_dir'), logFileName);
 
-		fs.readFile(logFile, function(err, res) {
-			if(err) {
+		fs.stat(logFile, function(err, stat) {
+			if (err) {
 				return callback(null, 'No logs found!');
 			}
-			callback(null, res);
+
+			var buffer = '';
+			var size = stat.size;
+			if (end === -1) {
+				end = size;
+			}
+
+			end = parseInt(end, 10);
+			var start = Math.max(0, end - len);
+
+			var rs = fs.createReadStream(logFile, {start: start, end: end});
+			rs.addListener('data', function(lines) {
+				buffer += lines.toString();
+			});
+
+			rs.addListener('end', function() {
+				var firstNewline = buffer.indexOf('\n');
+				if (firstNewline !== -1) {
+					buffer = buffer.slice(firstNewline);
+					buffer = buffer.split('\n').reverse().join('\n');
+				}
+
+				callback(null, {data: buffer, next: end - buffer.length});
+			});
 		});
+
 	};
 
 }(module.exports));

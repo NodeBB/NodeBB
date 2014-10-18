@@ -78,7 +78,9 @@
 		var redis_socket_or_host = nconf.get('redis:host'),
 			cxn, dbIdx;
 
-		if (!redis) redis = require('redis');
+		if (!redis) {
+			redis = require('redis');
+		}
 
 		if (redis_socket_or_host && redis_socket_or_host.indexOf('/') >= 0) {
 			/* If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock */

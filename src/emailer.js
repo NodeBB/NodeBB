@@ -8,7 +8,7 @@ var	fs = require('fs'),
 
 	User = require('./user'),
 	Plugins = require('./plugins'),
-	Meta = require('./meta'),
+	meta = require('./meta'),
 	translator = require('../public/src/translator'),
 
 	app = {},
@@ -44,7 +44,7 @@ Emailer.send = function(template, uid, params) {
 
 			Plugins.fireHook('action:email.send', {
 				to: results.email,
-				from: Meta.config['email:from'] || 'no-reply@localhost.lan',
+				from: meta.config['email:from'] || 'no-reply@localhost.lan',
 				subject: translated[2],
 				html: translated[0],
 				plaintext: translated[1],

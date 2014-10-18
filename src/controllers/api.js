@@ -54,7 +54,7 @@ apiController.getConfig = function(req, res, next) {
 
 	if (!req.user) {
 		if (res.locals.isAPI) {
-			res.json(200, config);
+			res.status(200).json(config);
 		} else {
 			next(null, config);
 		}
@@ -75,7 +75,7 @@ apiController.getConfig = function(req, res, next) {
 		config.topicPostSort = settings.topicPostSort || config.topicPostSort;
 
 		if (res.locals.isAPI) {
-			res.json(200, config);
+			res.status(200).json(config);
 		} else {
 			next(err, config);
 		}
@@ -95,7 +95,7 @@ apiController.renderWidgets = function(req, res, next) {
 		renderedWidgets = [];
 
 	if (!areas.template || !areas.locations) {
-		return res.json(200, {});
+		return res.status(200).json({});
 	}
 
 	widgets.render(uid, {
@@ -106,7 +106,7 @@ apiController.renderWidgets = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		res.json(200, widgets);
+		res.status(200).json(widgets);
 	});
 };
 

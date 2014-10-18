@@ -6,6 +6,7 @@ var async = require('async'),
 
 	user = require('../user'),
 	categories = require('../categories'),
+	posts = require('../posts'),
 	topics = require('../topics'),
 	meta = require('../meta'),
 	db = require('../database'),
@@ -21,6 +22,7 @@ var async = require('async'),
 var adminController = {
 	categories: {},
 	tags: {},
+	flags: {},
 	topics: {},
 	groups: {},
 	appearance: {},
@@ -28,6 +30,7 @@ var adminController = {
 		widgets: {}
 	},
 	events: {},
+	logs: {},
 	database: {},
 	plugins: {},
 	languages: {},
@@ -67,16 +70,16 @@ adminController.home = function(req, res, next) {
 function getStats(callback) {
 	async.parallel([
 		function(next) {
-			getStatsForSet('ip:recent', next);
+			getStatsForSet('ip:recent', 'uniqueIPCount', next);
 		},
 		function(next) {
-			getStatsForSet('users:joindate', next);
+			getStatsForSet('users:joindate', 'userCount', next);
 		},
 		function(next) {
-			getStatsForSet('posts:pid', next);
+			getStatsForSet('posts:pid', 'postCount', next);
 		},
 		function(next) {
-			getStatsForSet('topics:tid', next);
+			getStatsForSet('topics:tid', 'topicCount', next);
 		}
 	], function(err, results) {
 		if (err) {
@@ -91,12 +94,13 @@ function getStats(callback) {
 	});
 }
 
-function getStatsForSet(set, callback) {
+function getStatsForSet(set, field, callback) {
 	var terms = {
 		day: 86400000,
 		week: 604800000,
 		month: 2592000000
 	};
+
 	var now = Date.now();
 	async.parallel({
 		day: function(next) {
@@ -109,7 +113,7 @@ function getStatsForSet(set, callback) {
 			db.sortedSetCount(set, now - terms.month, now, next);
 		},
 		alltime: function(next) {
-			db.sortedSetCount(set, 0, now, next);
+			db.getObjectField('global', field, next);
 		}
 	}, callback);
 }
@@ -153,6 +157,17 @@ adminController.tags.get = function(req, res, next) {
 	});
 };
 
+adminController.flags.get = function(req, res, next) {
+	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
+	posts.getFlags(uid, 0, 19, function(err, posts) {
+		if (err) {
+			return next(err);
+		}
+
+		res.render('admin/manage/flags', {posts: posts, next: 20});
+	});
+};
+
 adminController.database.get = function(req, res, next) {
 	db.info(function (err, data) {
 		res.render('admin/advanced/database', data);
@@ -160,14 +175,27 @@ adminController.database.get = function(req, res, next) {
 };
 
 adminController.events.get = function(req, res, next) {
-	events.getLog(function(err, data) {
+	events.getLog(-1, 5000, function(err, data) {
 		if(err || !data) {
 			return next(err);
 		}
 
-		data = data.toString().split('\n').reverse().join('\n');
 		res.render('admin/advanced/events', {
-			eventdata: data
+			eventdata: data.data,
+			next: data.next
+		});
+	});
+};
+
+adminController.logs.get = function(req, res, next) {
+	var logPath = path.join('logs', path.sep, 'output.log');
+	fs.readFile(logPath, function(err, data) {
+		if (err || !data) {
+			data = '';
+		}
+
+		res.render('admin/advanced/logs', {
+			data: data.toString()
 		});
 	});
 };
@@ -181,7 +209,7 @@ adminController.plugins.get = function(req, res, next) {
 		res.render('admin/extend/plugins' , {
 			plugins: plugins
 		});
-	})
+	});
 };
 
 adminController.languages.get = function(req, res, next) {
@@ -315,6 +343,6 @@ adminController.themes.get = function(req, res, next) {
 			return next();
 		}
 	});
-}
+};
 
 module.exports = adminController;

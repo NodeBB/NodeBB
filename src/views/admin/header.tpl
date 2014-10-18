@@ -4,9 +4,9 @@
 	<title>NodeBB Admin Control Panel</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link rel="stylesheet" href="{relative_path}/vendor/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css">
-	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/colorpicker/colorpicker.css">
-	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/nanoscroller/nanoscroller.css">
+	<link rel="stylesheet" href="{relative_path}/vendor/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css?{cache-buster}">
+	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/colorpicker/colorpicker.css?{cache-buster}">
+	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/nanoscroller/nanoscroller.css?{cache-buster}">
 	<link rel="stylesheet" type="text/css" href="{relative_path}/admin.css?{cache-buster}" />
 
 	<script>
@@ -20,14 +20,20 @@
 	    <script>__lt_ie_9__ = 1;</script>
 	<![endif]-->
 
-	<script type="text/javascript" src="{relative_path}/vendor/chart.js/chart.min.js"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/hammer/hammer.min.js"></script>
-	<script type="text/javascript" src="{relative_path}/socket.io/socket.io.js"></script>
-	<script type="text/javascript" src="{relative_path}/nodebb.min.js"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/colorpicker/colorpicker.js"></script>
-	<script type="text/javascript" src="{relative_path}/src/admin.js?{cache-buster}"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/ace/ace.js"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/nanoscroller/nanoscroller.min.js"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/chart.js/chart.min.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/hammer/hammer.min.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/socket.io/socket.io.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/nodebb.min.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/colorpicker/colorpicker.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/src/admin/admin.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/ace/ace.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/nanoscroller/nanoscroller.min.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/jquery/event/jquery.event.drag.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/jquery/event/jquery.event.drop.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/semver/semver.browser.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/jquery/deserialize/jquery.deserialize.min.js?{cache-buster}"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/mousetrap/mousetrap.js?{cache-buster}"></script>
 
 	<script>
 		require.config({
@@ -35,11 +41,13 @@
 			waitSeconds: 3,
 			urlArgs: "{cache-buster}",
 			paths: {
-				'forum': '../forum',
+				'admin': '../admin',
 				'vendor': '../../vendor',
 				'buzz': '../../vendor/buzz/buzz.min'
 			}
 		});
+
+		app.inAdmin = true;
 	</script>
 
 	<!-- BEGIN scripts -->
@@ -63,11 +71,14 @@
 				<form class="navbar-form navbar-left hidden-xs" role="search">
 					<div class="form-group" id="acp-search" >
 						<div class="dropdown" >
-							<input type="text" data-toggle="dropdown" class="form-control" placeholder="Search ACP...">
+							<input type="text" data-toggle="dropdown" class="form-control" placeholder="/">
 							<ul class="dropdown-menu" role="menu"></ul>
 						</div>
 					</div>
 				</form>
+				<li class="nav-home">
+					<a href="{relative_path}/" target="_blank" title="Open forum homepage"><i class="fa fa-home"></i></a>
+				</li>
 
 				<li id="user_label" class="dropdown">
 					<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
@@ -102,8 +113,9 @@
 						<li class="nav-header"><i class="fa fa-fw fa-comments-o"></i> Manage</li>
 						<li><a href="{relative_path}/admin/manage/categories/active">Categories</a></li>
 						<li><a href="{relative_path}/admin/manage/tags">Tags</a></li>
-						<li><a href="{relative_path}/admin/manage/users/latest">Users</a></li>
+						<li><a href="{relative_path}/admin/manage/users">Users</a></li>
 						<li><a href="{relative_path}/admin/manage/groups">Groups</a></li>
+						<li><a href="{relative_path}/admin/manage/flags">Flags</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">
@@ -142,14 +154,13 @@
 						<li class="nav-header"><i class="fa fa-fw fa-hdd-o"></i> Advanced</li>
 						<li><a href="{relative_path}/admin/advanced/database">Database</a></li>
 						<li><a href="{relative_path}/admin/advanced/events">Events</a></li>
+						<li><a href="{relative_path}/admin/advanced/logs">Logs</a></li>
 					</ul>
 				</div>
+				<!-- IF authentication.length -->
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
 						<li class="nav-header"><i class="fa fa-fw fa-facebook-square"></i> Social Authentication</li>
-						<!-- IF !authentication.length -->
-						<li><a href="{relative_path}/admin/extend/plugins">Install SSO Plugins</a></li>
-						<!-- ENDIF !authentication.length -->
 						<!-- BEGIN authentication -->
 						<li>
 							<a href="{relative_path}/admin{authentication.route}">{authentication.name}</a>
@@ -157,6 +168,8 @@
 						<!-- END authentication -->
 					</ul>
 				</div>
+				<!-- ENDIF authentication.length -->
+				<!-- IF plugins.length -->
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
 						<li class="nav-header"><i class="fa fa-fw fa-th"></i> Installed Plugins</li>
@@ -167,6 +180,7 @@
 						<!-- END plugins -->
 					</ul>
 				</div>
+				<!-- ENDIF plugins.length -->
 				<!-- IF env -->
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">

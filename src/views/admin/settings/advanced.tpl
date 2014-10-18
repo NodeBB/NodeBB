@@ -13,6 +13,10 @@
 				When the forum is in maintenance mode, all requests will be redirected to a static holding page.
 				Administrators are exempt from this redirection, and are able to access the site normally.
 			</p>
+			<div class="form-group">
+				<label for="maintenanceModeMessage">Maintenance Message</label>
+				<textarea class="form-control" data-field="maintenanceModeMessage"></textarea>
+			</div>
 		</form>
 	</div>
 </div>

@@ -2,5 +2,6 @@
     "no_tag_topics": "Il n'y a aucun sujet ayant ce mot-clé",
     "tags": "Mots-clés",
     "enter_tags_here": "Entrez les mots-clés ici. Appuyez sur entrer après chaque mot-clé.",
+    "enter_tags_here_short": "Enter tags...",
     "no_tags": "Il n'y a pas encore de mots-clés."
 }

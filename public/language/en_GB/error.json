@@ -22,21 +22,21 @@
 
 	"username-taken": "Username taken",
 	"email-taken": "Email taken",
-	"email-not-confirmed": "Your email is not confirmed, please click here to confirm your email.",
+	"email-not-confirmed": "Your email has not been confirmed yet, please click here to confirm your email.",
 
 	"username-too-short": "Username too short",
 	"username-too-long": "Username too long",
 
 	"user-banned": "User banned",
-	"user-too-new": "You need to wait %1 seconds before making your first post!",
+	"user-too-new": "Sorry, you are required to wait %1 seconds before making your first post",
 
-	"no-category": "Category doesn't exist",
-	"no-topic": "Topic doesn't exist",
-	"no-post": "Post doesn't exist",
-	"no-group": "Group doesn't exist",
-	"no-user": "User doesn't exist",
-	"no-teaser": "Teaser doesn't exist",
-	"no-privileges": "You don't have enough privileges for this action.",
+	"no-category": "Category does not exist",
+	"no-topic": "Topic does not exist",
+	"no-post": "Post does not exist",
+	"no-group": "Group does not exist",
+	"no-user": "User does not exist",
+	"no-teaser": "Teaser does not exist",
+	"no-privileges": "You do not have enough privileges for this action.",
 	"no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
 
 	"category-disabled": "Category disabled",
@@ -44,16 +44,16 @@
 	"topic-locked": "Topic Locked",
 
 	"still-uploading": "Please wait for uploads to complete.",
-	"content-too-short": "Please enter a longer post. At least %1 characters.",
-	"title-too-short": "Please enter a longer title. At least %1 characters.",
+	"content-too-short": "Please enter a longer post. Posts should contain at least %1 characters.",
+	"title-too-short": "Please enter a longer title. Titles should contain at least %1 characters.",
 	"title-too-long": "Please enter a shorter title. Titles can't be longer than %1 characters.",
 	"invalid-title": "Invalid title!",
-	"too-many-posts": "You can only post every %1 seconds.",
-	"file-too-big": "Maximum allowed file size is %1 kbs",
+	"too-many-posts": "You can only post once every %1 seconds - please wait before posting again",
+	"file-too-big": "Maximum allowed file size is %1 kbs - please upload a smaller file",
 
 	"cant-vote-self-post": "You cannot vote for your own post",
-	"already-favourited": "You already favourited this post",
-	"already-unfavourited": "You already unfavourited this post",
+	"already-favourited": "You have already favourited this post",
+	"already-unfavourited": "You have already unfavourited this post",
 
 	"cant-ban-other-admins": "You can't ban other admins!",
 
@@ -63,26 +63,25 @@
 	"group-already-exists": "Group already exists",
 	"group-name-change-not-allowed": "Group name change not allowed",
 
-	"post-already-deleted": "Post already deleted",
-	"post-already-restored": "Post already restored",
+	"post-already-deleted": "This post has already been deleted",
+	"post-already-restored": "This post has already been restored",
 
-	"topic-already-deleted": "Topic already deleted",
-	"topic-already-restored": "Topic already restored",
-
+	"topic-already-deleted": "This topic has already been deleted",
+	"topic-already-restored": "This topic has already been restored",
 
 	"topic-thumbnails-are-disabled": "Topic thumbnails are disabled.",
 	"invalid-file": "Invalid File",
 	"uploads-are-disabled": "Uploads are disabled",
 	"upload-error": "Upload Error : %1",
 
-	"signature-too-long" : "Signature can't be longer than %1 characters!",
+	"signature-too-long" : "Sorry, your signature cannot be longer than %1 characters.",
 
 	"cant-chat-with-yourself": "You can't chat with yourself!",
 
 	"reputation-system-disabled": "Reputation system is disabled.",
 	"downvoting-disabled": "Downvoting is disabled",
 	"not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post",
-	"not-enough-reputation-to-flag": "Yo do not have enough reputation to flag this post",
+	"not-enough-reputation-to-flag": "You do not have enough reputation to flag this post",
 
 	"reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
 }

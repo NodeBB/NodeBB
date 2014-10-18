@@ -12,5 +12,7 @@
     "user.posts": "Mesaje postate de %1",
     "user.topics": "Subiecte create de %1",
     "user.favourites": "Mesajele favorite ale lui %1",
-    "user.settings": "Setări Utilizator"
+    "user.settings": "Setări Utilizator",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administator has left this message:"
 }

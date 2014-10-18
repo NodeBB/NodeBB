@@ -1,5 +1,5 @@
 <div class="logger">
-	<div class="col-sm-9">
+	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading">Logger Settings</div>
 			<div class="panel-body">				
@@ -45,7 +45,7 @@
 
 
 <script>
-	require(['forum/admin/settings'], function(Settings) {
+	require(['admin/settings'], function(Settings) {
 		Settings.prepare();
 	});
 </script>

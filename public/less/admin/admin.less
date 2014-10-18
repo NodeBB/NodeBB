@@ -1,16 +1,19 @@
 @import "./bootstrap/bootstrap";
 @import "./mixins";
-@import "./components";
 
 @import "./general/dashboard";
 @import "./manage/categories";
 @import "./manage/groups";
 @import "./manage/tags";
+@import "./manage/flags";
 @import "./manage/users";
 @import "./appearance/customise";
 @import "./appearance/themes";
 @import "./extend/plugins";
 @import "./advanced/database";
+
+@import "./modules/alerts";
+@import "./modules/selectable";
 
 .admin {
 	padding-top: 70px;
@@ -19,6 +22,11 @@
 	.container {
 		width: 100% !important;
 		padding: 0px 15px;
+	}
+
+	.user-img {
+		width:24px;
+		height:24px;
 	}
 
 	.nodebb-logo {
@@ -42,7 +50,7 @@
 			width: 200px;
 			height: 100%;
 
-			
+
 			-webkit-transform: translateX(-190px);
     		transform: translateX(-190px);
 
@@ -79,7 +87,7 @@
 			max-height: 100%;
 			cursor: pointer;
 			max-height: 38px;
-			
+
 			&.open {
 				max-height: 500px;
 			}
@@ -180,8 +188,10 @@
 		padding: 6px;
 
 		img {
-			width: 35px;
-			height: 35px;
+			width: 30px;
+			height: 30px;
+			vertical-align: -88%;
+			margin-right: 5px;
 		}
 	}
 
@@ -204,7 +214,43 @@
 		}
 	}
 
+	.navbar {
+		padding: 0 5px;
+
+		.nav-home a, .nav-home a:hover {
+			width: 30px;
+			height: 30px;
+			padding: 5px;
+			text-align: center;
+			margin-top: 10px;
+			background: #DDD;
+
+			i {
+				color: black;
+				font-size: 17px;
+			}
+		}
+
+	}
+	
 	#acp-search {
+		input {
+			background: black;
+			border: 0;
+			color: white;
+			box-shadow: none;
+			.transition(.4s ease width);
+			font-family: @font-family-monospace;
+			width: 30px;
+			height: 30px;
+			vertical-align: -30%;
+			border-radius: 0;
+
+			&:focus {
+				width: 200px;
+			}
+		}
+		
 		.search-match {
 			font-weight: 700;
 			color: black;

@@ -141,51 +141,23 @@ var winston = require('winston'),
 				return callback(err);
 			}
 
-			posts.setPostField(pid, 'deleted', isDelete ? 1 : 0, function(err) {
-				if (err) {
-					return callback(err);
-				}
-
-				events[isDelete ? 'logPostDelete' : 'logPostRestore'](uid, pid);
-
-				db.incrObjectFieldBy('global', 'postCount', isDelete ? -1 : 1);
-
-				posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'timestamp'], function(err, postData) {
+			events[isDelete ? 'logPostDelete' : 'logPostRestore'](uid, pid);
+			if (isDelete) {
+				posts.delete(pid, callback);
+			} else {
+				posts.restore(pid, function(err, postData) {
 					if (err) {
 						return callback(err);
 					}
-
-					if (isDelete) {
-						plugins.fireHook('action:post.delete', pid);
-					} else {
-						plugins.fireHook('action:post.restore', postData);
-					}
-
-					async.parallel([
-						function(next) {
-							topics[isDelete ? 'decreasePostCount' : 'increasePostCount'](postData.tid, next);
-						},
-						function(next) {
-							user.incrementUserPostCountBy(postData.uid, isDelete ? -1 : 1, next);
-						},
-						function(next) {
-							updateTopicTimestamp(postData.tid, next);
-						},
-						function(next) {
-							addOrRemoveFromCategory(pid, postData.tid, postData.timestamp, isDelete, next);
+					PostTools.parse(postData.content, function(err, parsed) {
+						if (err) {
+							return callback(err);
 						}
-					], function(err) {
-						if (!isDelete) {
-							PostTools.parse(postData.content, function(err, parsed) {
-								postData.content = parsed;
-								callback(err, postData);
-							});
-							return;
-						}
-						callback(err, postData);
+						postData.content = parsed;
+						callback(null, postData);
 					});
 				});
-			});
+			}
 		});
 	}
 
@@ -194,45 +166,10 @@ var winston = require('winston'),
 			if (err || !canEdit) {
 				return callback(err || new Error('[[error:no-privileges]]'));
 			}
-
+			events.logPostPurge(uid, pid);
 			posts.purge(pid, callback);
 		});
 	};
-
-	function updateTopicTimestamp(tid, callback) {
-		topics.getLatestUndeletedPid(tid, function(err, pid) {
-			if(err || !pid) {
-				return callback(err);
-			}
-
-			posts.getPostField(pid, 'timestamp', function(err, timestamp) {
-				if (err) {
-					return callback(err);
-				}
-
-				if (timestamp) {
-					return topics.updateTimestamp(tid, timestamp, callback);
-				}
-				callback();
-			});
-		});
-	}
-
-	function addOrRemoveFromCategory(pid, tid, timestamp, isDelete, callback) {
-		topics.getTopicField(tid, 'cid', function(err, cid) {
-			if (err) {
-				return callback(err);
-			}
-
-			db.incrObjectFieldBy('category:' + cid, 'post_count', isDelete ? -1 : 1);
-
-			if (isDelete) {
-				db.sortedSetRemove('categories:recent_posts:cid:' + cid, pid, callback);
-			} else {
-				db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid, callback);
-			}
-		});
-	}
 
 	PostTools.parse = function(raw, callback) {
 		parse('filter:post.parse', raw, callback);

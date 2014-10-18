@@ -13,6 +13,7 @@
     "invalid-user-data": "Date utilizator invalide",
     "invalid-password": "Parolă Invalidă",
     "invalid-username-or-password": "Please specify both a username and password",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "Date paginație invalide",
     "username-taken": "Numele de utilizator este deja folosit",
     "email-taken": "Adresa de email este deja folostă",

@@ -1,5 +1,5 @@
 <div class="plugins">
-	<div class="col-sm-9">
+	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-code-fork"></i> Installed Plugins</div>
 			<div class="panel-body">
@@ -10,6 +10,8 @@
 						<div class="pull-right">
 							<button data-action="toggleActive" class="btn <!-- IF plugins.active --> btn-warning<!-- ELSE --> btn-success<!-- ENDIF plugins.active -->"><i class="fa fa-power-off"></i> <!-- IF plugins.active -->Deactivate<!-- ELSE -->Activate<!-- ENDIF plugins.active --></button>
 
+
+
 							<button data-action="toggleInstall" class="btn btn-danger"><i class="fa fa-trash-o"></i> Uninstall</button>
 						</div>
 
@@ -18,6 +20,10 @@
 						<!-- IF plugins.description -->
 						<p>{plugins.description}</p>
 						<!-- ENDIF plugins.description -->
+						<!-- IF plugins.outdated --><i class="fa fa-exclamation-triangle text-danger"></i> <!-- ENDIF plugins.outdated --><small>Installed <strong class="currentVersion">{plugins.version}</strong> | Latest <strong class="latestVersion">{plugins.latest}</strong></small>
+						<!-- IF plugins.outdated -->
+							<button data-action="upgrade" class="btn btn-success btn-xs"><i class="fa fa-download"></i> Upgrade</button>
+						<!-- ENDIF plugins.outdated -->
 						<!-- IF plugins.url -->
 						<p>For more information: <a href="{plugins.url}">{plugins.url}</a></p>
 						<!-- ENDIF plugins.url -->
@@ -36,6 +42,7 @@
 					<!-- IF !plugins.installed -->
 					<li data-plugin-id="{plugins.id}" class="clearfix">
 						<div class="pull-right">
+							<button data-action="toggleActive" class="btn btn-success hidden"><i class="fa fa-power-off"></i> Activate</button>
 							<button data-action="toggleInstall" class="btn btn-success"><i class="fa fa-download"></i> Install</button>
 						</div>
 

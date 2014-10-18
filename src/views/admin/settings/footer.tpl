@@ -12,7 +12,7 @@
 </div>
 
 <script>
-	require(['forum/admin/settings'], function(Settings) {
+	require(['admin/settings'], function(Settings) {
 		Settings.prepare();
 	});
 </script>

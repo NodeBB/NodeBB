@@ -12,5 +12,7 @@
     "user.posts": "%1님이 작성한 게시물",
     "user.topics": "%1님이 생성한 주제",
     "user.favourites": "%1님이 좋아하는 게시물",
-    "user.settings": "설정"
+    "user.settings": "설정",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administator has left this message:"
 }

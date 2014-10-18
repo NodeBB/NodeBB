@@ -112,13 +112,13 @@ define('navigator', ['forum/pagination'], function(pagination) {
 
 	navigator.scrollUp = function () {
 		$('body,html').animate({
-			scrollTop: $('body').scrollTop() - $(window).height()
+			scrollTop: $(window).scrollTop() - $(window).height()
 		});
 	};
 
 	navigator.scrollDown = function () {
 		$('body,html').animate({
-			scrollTop: $('body').scrollTop() + $(window).height()
+			scrollTop: $(window).scrollTop() + $(window).height()
 		});
 	};
 
@@ -131,6 +131,9 @@ define('navigator', ['forum/pagination'], function(pagination) {
 	};
 
 	navigator.scrollBottom = function(index) {
+		if (parseInt(index, 10) < 0) {
+			return;
+		}
 		if ($('li[data-index="' + index + '"]').length) {
 			navigator.scrollToPost(index, true);
 		} else {
@@ -178,6 +181,8 @@ define('navigator', ['forum/pagination'], function(pagination) {
 			}
 		} else {
 			navigator.scrollActive = false;
+			postIndex = parseInt(postIndex, 10) + 1;
+			ajaxify.go(generateUrl(postIndex));
 		}
 	};
 

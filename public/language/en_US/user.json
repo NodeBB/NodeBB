@@ -29,6 +29,7 @@
     "edit": "Edit",
     "uploaded_picture": "Uploaded Picture",
     "upload_new_picture": "Upload New Picture",
+    "upload_new_picture_from_url": "Upload New Picture From URL",
     "current_password": "Current Password",
     "change_password": "Change Password",
     "change_password_error": "Invalid Password!",

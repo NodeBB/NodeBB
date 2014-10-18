@@ -28,6 +28,7 @@ var async = require('async'),
 (function(Posts) {
 	require('./posts/recent')(Posts);
 	require('./posts/delete')(Posts);
+	require('./posts/flags')(Posts);
 
 	Posts.create = function(data, callback) {
 		var uid = data.uid,
@@ -95,17 +96,8 @@ var async = require('async'),
 				});
 			},
 			function(postData, next) {
-				postTools.parse(postData.content, function(err, content) {
-					if (err) {
-						return next(err);
-					}
-
-					plugins.fireHook('action:post.save', postData);
-
-					postData.content = content;
-
-					next(null, postData);
-				});
+				plugins.fireHook('action:post.save', postData);
+				next(null, postData);
 			}
 		], callback);
 	};
@@ -199,7 +191,7 @@ var async = require('async'),
 			var userData = results.userData;
 			for(var i=0; i<userData.length; ++i) {
 				userData[i].groups = results.groups[i];
-				userData[i].status = !results.online[i] ? 'offline' : userData[i].status;
+				userData[i].status = results.online[i] ? (userData[i].status || 'online') : 'offline';
 			}
 
 			async.map(userData, function(userData, next) {
@@ -237,6 +229,7 @@ var async = require('async'),
 	Posts.getPostSummaryByPids = function(pids, uid, options, callback) {
 		options.stripTags = options.hasOwnProperty('stripTags') ? options.stripTags : false;
 		options.parse = options.hasOwnProperty('parse') ? options.parse : true;
+		options.extraFields = options.hasOwnProperty('extraFields') ? options.extraFields : [];
 
 		if (!Array.isArray(pids) || !pids.length) {
 			return callback(null, []);
@@ -246,7 +239,9 @@ var async = require('async'),
 			return 'post:' + pid;
 		});
 
-		db.getObjectsFields(keys, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(err, posts) {
+		var fields = ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'].concat(options.extraFields);
+
+		db.getObjectsFields(keys, fields, function(err, posts) {
 			if (err) {
 				return callback(err);
 			}
@@ -379,6 +374,10 @@ var async = require('async'),
 	};
 
 	Posts.getPostsFields = function(pids, fields, callback) {
+		if (!Array.isArray(pids) || !pids.length) {
+			return callback(null, []);
+		}
+
 		var keys = pids.map(function(pid) {
 			return 'post:' + pid;
 		});
@@ -467,7 +466,12 @@ var async = require('async'),
 				if (err) {
 					return callback(err);
 				}
-				getPostsFromSet('uid:' + uid + ':posts', pids, callerUid, callback);
+				getPosts(pids, callerUid, function(err, posts) {
+					if (err) {
+						return callback(err);
+					}
+					callback(null, {posts: posts, nextStart: end + 1});
+				});
 			});
 		});
 	};
@@ -478,13 +482,18 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			getPostsFromSet('uid:' + uid + ':favourites', pids, uid, callback);
+			getPosts(pids, uid, function(err, posts) {
+				if (err) {
+					return callback(err);
+				}
+				callback(null, {posts: posts, nextStart: end + 1});
+			});
 		});
 	};
 
-	function getPostsFromSet(set, pids, uid, callback) {
+	function getPosts(pids, uid, callback) {
 		if (!Array.isArray(pids) || !pids.length) {
-			return callback(null, {posts: [], nextStart: 0});
+			return callback(null, []);
 		}
 
 		Posts.getPostSummaryByPids(pids, uid, {stripTags: false}, function(err, posts) {
@@ -493,19 +502,10 @@ var async = require('async'),
 			}
 
 			if (!Array.isArray(posts) || !posts.length) {
-				return callback(null, {posts: [], nextStart: 0});
+				return callback(null, []);
 			}
 
-			db.sortedSetRevRank(set, posts[posts.length - 1].pid, function(err, rank) {
-				if(err) {
-					return callback(err);
-				}
-				var data = {
-					posts: posts,
-					nextStart: parseInt(rank, 10) + 1
-				};
-				callback(null, data);
-			});
+			callback(null, posts);
 		});
 	}
 

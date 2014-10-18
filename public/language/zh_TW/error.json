@@ -13,6 +13,7 @@
     "invalid-user-data": "無效的使用者資料",
     "invalid-password": "無效的密碼",
     "invalid-username-or-password": "Please specify both a username and password",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "無效的分頁數值",
     "username-taken": "該使用者名稱已被使用",
     "email-taken": "該信箱已被使用",

@@ -16,7 +16,7 @@ var app,
 
 middleware.isAdmin = function(req, res, next) {
 	if (!req.user) {
-		return res.json(404, {
+		return res.status(404).json({
 			error: 'not-found'
 		});
 	}

@@ -1,20 +1,25 @@
 "use strict";
 
-var	groups = require('../groups'),
+var	async = require('async'),
+	winston = require('winston'),
+	cluster = require('cluster'),
+	fs = require('fs'),
+	path = require('path'),
+
+	groups = require('../groups'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
 	widgets = require('../widgets'),
 	user = require('../user'),
 	topics = require('../topics'),
+	posts = require('../posts'),
 	categories = require('../categories'),
 	logger = require('../logger'),
 	events = require('../events'),
 	emailer = require('../emailer'),
 	db = require('../database'),
-	async = require('async'),
-	winston = require('winston'),
 	index = require('./index'),
-	cluster = require('cluster'),
+
 
 	SocketAdmin = {
 		user: require('./admin/user'),
@@ -91,6 +96,10 @@ SocketAdmin.plugins.toggleActive = function(socket, plugin_id, callback) {
 
 SocketAdmin.plugins.toggleInstall = function(socket, plugin_id, callback) {
 	plugins.toggleInstall(plugin_id, callback);
+};
+
+SocketAdmin.plugins.upgrade = function(socket, plugin_id, callback) {
+	plugins.upgrade(plugin_id, callback);
 };
 
 SocketAdmin.widgets.set = function(socket, data, callback) {
@@ -183,7 +192,7 @@ SocketAdmin.analytics.get = function(socket, data, callback) {
 		if (data.graph === 'traffic') {
 			async.parallel({
 				uniqueVisitors: function(next) {
-					getHourlyStatsForSet('ip:recent', data.amount, next);
+					getHourlyStatsForSet('analytics:uniquevisitors', data.amount, next);
 				},
 				pageviews: function(next) {
 					getHourlyStatsForSet('analytics:pageviews', data.amount, next);
@@ -231,5 +240,31 @@ function getHourlyStatsForSet(set, hours, callback) {
 		callback(err, termsArr);
 	});
 }
+
+SocketAdmin.getMoreEvents = function(socket, next, callback) {
+	if (parseInt(next, 10) < 0) {
+		return callback(null, {data: [], next: next});
+	}
+	events.getLog(next, 5000, callback);
+};
+
+
+SocketAdmin.dismissFlag = function(socket, pid, callback) {
+	if (!pid) {
+		return callback('[[error:invalid-data]]');
+	}
+
+	posts.dismissFlag(pid, callback);
+};
+
+SocketAdmin.getMoreFlags = function(socket, after, callback) {
+	if (!parseInt(after, 10)) {
+		return callback('[[error:invalid-data]]');
+	}
+	after = parseInt(after, 10);
+	posts.getFlags(socket.uid, after, after + 19, function(err, posts) {
+		callback(err, {posts: posts, next: after + 20});
+	});
+};
 
 module.exports = SocketAdmin;

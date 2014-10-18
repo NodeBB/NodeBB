@@ -17,6 +17,11 @@ define('composer/categoryList', function() {
 				return app.alertError(err.message);
 			}
 
+			// Remove categories that are just external links
+			categories = categories.filter(function(category) {
+				return !category.link
+			});
+
 			categories.forEach(function(category) {
 				$('<option value="' + category.cid + '">' + category.name + '</option>').appendTo(listEl);
 			});

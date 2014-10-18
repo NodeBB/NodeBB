@@ -13,6 +13,7 @@
     "invalid-user-data": "Données utilisateur invalides",
     "invalid-password": "Mot de passe invalide",
     "invalid-username-or-password": "Please specify both a username and password",
+    "invalid-search-term": "Invalid search term",
     "invalid-pagination-value": "Valeur de pagination invalide",
     "username-taken": "Nom d’utilisateur déjà utilisé",
     "email-taken": "Email déjà utilisé",

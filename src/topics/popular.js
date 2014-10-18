@@ -10,8 +10,7 @@ module.exports = function(Topics) {
 	var terms = {
 		daily: 'day',
 		weekly: 'week',
-		monthly: 'month',
-		yearly: 'year'
+		monthly: 'month'
 	};
 
 	Topics.getPopular = function(term, uid, count, callback) {
@@ -29,23 +28,6 @@ module.exports = function(Topics) {
 			},
 			function(tids, next) {
 				getTopics(tids, uid, count, next);
-			},
-			function(topics, next) {
-				var tids = topics.map(function(topic) {
-					return topic.tid;
-				});
-
-				privileges.topics.filter('read', tids, uid, function(err, tids) {
-					if (err) {
-						return next(err);
-					}
-
-					topics = topics.filter(function(topic) {
-						return tids.indexOf(topic.tid) !== -1;
-					});
-
-					next(null, topics);
-				});
 			}
 		], callback);
 	};
@@ -66,13 +48,19 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			topics = topics.sort(function(a, b) {
+			tids = topics.sort(function(a, b) {
 				return b.postcount - a.postcount;
 			}).slice(0, count).map(function(topic) {
 				return topic.tid;
 			});
 
-			Topics.getTopicsByTids(topics, uid, callback);
+			privileges.topics.filter('read', tids, uid, function(err, tids) {
+				if (err) {
+					return callback(err);
+				}
+
+				Topics.getTopicsByTids(tids, uid, callback);
+			});
 		});
 	}
 };
