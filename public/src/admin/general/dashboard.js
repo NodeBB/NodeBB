@@ -125,20 +125,20 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			return app.alertError(err.message);
 		}
 
-		var html = '<div class="text-center pull-left">' + 
-						'<div>'+ data.onlineRegisteredCount +'</div>' + 
+		var html = '<div class="text-center pull-left">' +
+						'<div>'+ data.onlineRegisteredCount +'</div>' +
 						'<div>Users</div>' +
 					'</div>' +
-					'<div class="text-center pull-left">' + 
-						'<div>'+ data.onlineGuestCount +'</div>' + 
+					'<div class="text-center pull-left">' +
+						'<div>'+ data.onlineGuestCount +'</div>' +
 						'<div>Guests</div>' +
 					'</div>' +
-					'<div class="text-center pull-left">' + 
-						'<div>'+ (data.onlineRegisteredCount + data.onlineGuestCount) +'</div>' + 
+					'<div class="text-center pull-left">' +
+						'<div>'+ (data.onlineRegisteredCount + data.onlineGuestCount) +'</div>' +
 						'<div>Total</div>' +
 					'</div>' +
-					'<div class="text-center pull-left">' + 
-						'<div>'+ data.socketCount +'</div>' + 
+					'<div class="text-center pull-left">' +
+						'<div>'+ data.socketCount +'</div>' +
 						'<div>Connections</div>' +
 					'</div>';
 
@@ -359,7 +359,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			segments = graphs.topics.segments;
 
 		function reassignExistingTopics() {
-			for (var i = 0, ii = segments.length; i < ii; i++ ) {
+			for (var i = segments.length - 1; i >= 0; i--) {
 				if (!segments[i]) {
 					continue;
 				}
