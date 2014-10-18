@@ -39,7 +39,7 @@ define('forum/topic/browsing', function() {
 			var count = Math.max(0, parseInt(user.attr('data-count'), 10) - 1);
 			user.attr('data-count', count);
 			if (count <= 0) {
-				user.remove();
+				user.parent().remove();
 			}
 		} else {
 			increaseUserCount(-1);
