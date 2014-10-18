@@ -16,7 +16,7 @@ module.exports = function(User) {
 
 	User.updateProfile = function(uid, data, callback) {
 
-		plugins.fireHook('filter:user.updateProfile', {uid: uid, settings: data.settings}, function(err, data) {
+		plugins.fireHook('filter:user.updateProfile', {uid: uid, settings: data}, function(err, data) {
 			if(err) {
 				return callback(err);
 			}
