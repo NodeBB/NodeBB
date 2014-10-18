@@ -271,7 +271,6 @@ var async = require('async'),
 
 		notifications.create({
 			bodyShort: meta.config.welcomeNotification,
-			bodyLong: meta.config.welcomeNotification,
 			path: path,
 			nid: 'welcome_' + uid
 		}, function(err, notification) {
