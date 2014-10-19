@@ -125,9 +125,12 @@ SocketMeta.rooms.getAll = function(socket, data, callback) {
 		topTenTopics = topTenTopics.concat(scores[mostActive.pop()]);
 	}
 
-	topTenTopics = topTenTopics.slice(0,9);
+	topTenTopics = topTenTopics.slice(0, 10);
 
 	topics.getTopicsFields(topTenTopics, ['title'], function(err, titles) {
+		if (err) {
+			return callback(err);
+		}
 		topTenTopics.forEach(function(tid, id) {
 			socketData.topics[tid] = {
 				value: rooms['/topic_' + tid].length,

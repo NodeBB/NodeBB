@@ -367,7 +367,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 				var tid = segments[i].tid;
 
 				if ($.inArray(tid, tids) === -1) {
-					usedTopicColors.splice($.inArray(segments[i].color, usedTopicColors), 1);
+					usedTopicColors.splice($.inArray(segments[i].fillColor, usedTopicColors), 1);
 					graphs.topics.removeData(i);
 				} else {
 					graphs.topics.segments[i].value = topics[tid].value;
