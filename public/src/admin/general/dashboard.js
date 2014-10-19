@@ -20,7 +20,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			if (app.isFocused && app.isConnected) {
 				socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
 			}
-		}, 5000);
+		}, 10000);
 
 		$(window).on('action:ajaxify.start', function(ev, data) {
 			clearInterval(intervals.rooms);
