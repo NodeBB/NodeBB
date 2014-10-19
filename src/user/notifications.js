@@ -186,7 +186,7 @@ var async = require('async'),
 				return callback(null, []);
 			}
 
-			UserNotifications.getNotifications(nids, uid);
+			UserNotifications.getNotifications(nids, uid, callback);
 		});
 	};
 
