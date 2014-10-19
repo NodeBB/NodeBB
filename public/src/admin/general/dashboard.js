@@ -316,7 +316,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 	}
 
 	function updateTrafficGraph() {
-		if (!app.isFocused  || !app.isConnected) {
+		if (!app.isFocused) {
 			return;
 		}
 
