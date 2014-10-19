@@ -293,7 +293,9 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		graphs.topics = new Chart(topicsCtx).Doughnut([], {responsive: true});
 		topicsCanvas.onclick = function(evt){
 			var obj = graphs.topics.getSegmentsAtEvent(evt);
-			window.open(RELATIVE_PATH + '/topic/' + obj[0].tid);
+			if (obj && obj[0]) {
+				window.open(RELATIVE_PATH + '/topic/' + obj[0].tid);
+			}
 		};
 
 		intervals.graphs = setInterval(updateTrafficGraph, 15000);
