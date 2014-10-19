@@ -28,17 +28,17 @@ module.exports = function(privileges) {
 				user.isModerator(uid, cid, next);
 			}
 		}, function(err, results) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
-			var editable = results.isAdministrator || results.isModerator;
+			var isAdminOrMod = results.isAdministrator || results.isModerator;
 
 			callback(null, {
 				'topics:create': results['topics:create'][0],
-				editable: editable,
-				view_deleted: editable,
-				read: results.read[0]
+				editable: isAdminOrMod,
+				view_deleted: isAdminOrMod,
+				read: results.read[0] || isAdminOrMod
 			});
 		});
 	};
