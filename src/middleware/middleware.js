@@ -363,7 +363,7 @@ middleware.renderHeader = function(req, res, callback) {
 			},
 			user: function(next) {
 				if (uid) {
-					user.getUserFields(uid, ['username', 'userslug', 'picture', 'status'], next);
+					user.getUserFields(uid, ['username', 'userslug', 'picture', 'status', 'banned'], next);
 				} else {
 					next();
 				}
@@ -371,6 +371,12 @@ middleware.renderHeader = function(req, res, callback) {
 		}, function(err, results) {
 			if (err) {
 				return callback(err);
+			}
+
+			if (results.user && parseInt(results.user.banned, 10) === 1) {
+				req.logout();
+				res.redirect('/');
+				return;
 			}
 
 			templateValues.browserTitle = results.title;
