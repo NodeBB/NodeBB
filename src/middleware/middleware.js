@@ -378,7 +378,7 @@ middleware.renderHeader = function(req, res, callback) {
 			templateValues.user = results.user;
 			templateValues.customCSS = results.customCSS;
 			templateValues.customJS = results.customJS;
-			templateValues.maintenanceHeader = meta.config.maintenanceMode === '1' && !results.isAdmin;
+			templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
 
 			app.render('header', templateValues, callback);
 		});
