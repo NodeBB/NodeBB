@@ -33,6 +33,7 @@ var async = require('async'),
 	};
 
 	Meta.reload = function(callback) {
+		console.log('reloading');
 		async.series([
 			async.apply(plugins.clearRequireCache),
 			async.apply(plugins.reload),
@@ -40,6 +41,7 @@ var async = require('async'),
 				async.parallel([
 					async.apply(Meta.js.minify, false),
 					async.apply(Meta.css.minify),
+					async.apply(Meta.sounds.init),
 					async.apply(Meta.templates.compile),
 					async.apply(auth.reloadRoutes),
 					function(next) {
@@ -49,6 +51,7 @@ var async = require('async'),
 				], next);
 			}
 		], function(err) {
+			console.log('yaaa I am here', err);
 			if (!err) {
 				emitter.emit('nodebb:ready');
 			}

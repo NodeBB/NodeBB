@@ -208,6 +208,30 @@ module.exports = function(Meta) {
 		});
 	};
 
+	Meta.js.getFromFile = function(minify, callback) {
+		var scriptPath = path.join(__dirname, '../../public/nodebb.min.js'),
+			mapPath = path.join(__dirname, '../../public/nodebb.min.js.map');
+		fs.exists(scriptPath, function(exists) {
+			if (exists) {
+				if (!cluster.isWorker || process.env.cluster_setup === 'true') {
+					winston.info('[meta/js] (Experimental) Reading client-side scripts from file');
+					async.map([scriptPath, mapPath], fs.readFile, function(err, files) {
+						Meta.js.cache = files[0];
+						Meta.js.map = files[1];
+
+						emitter.emit('meta:js.compiled');
+						callback();
+					});
+				} else {
+					callback();
+				}
+			} else {
+				winston.warn('[meta/js] (Experimental) No script file found on disk, re-minifying');
+				Meta.js.minify.apply(Meta.js, arguments);
+			}
+		});
+	};
+
 	function getPluginScripts(callback) {
 		plugins.fireHook('filter:scripts.get', [], function(err, scripts) {
 			if (err) {

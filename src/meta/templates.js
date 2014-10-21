@@ -88,7 +88,7 @@ Templates.compile = function(callback) {
 					if (paths[partial] && relativePath !== partial) {
 						file = file.replace(regex, fs.readFileSync(paths[partial]).toString());
 					} else {
-						winston.warn('[themes] Partial not loaded: ' + matches[1]);
+						winston.warn('[meta/templates] Partial not loaded: ' + matches[1]);
 						file = file.replace(regex, "");
 					}
 				}
@@ -101,10 +101,10 @@ Templates.compile = function(callback) {
 				fs.writeFile(path.join(viewsPath, relativePath), file, next);
 			}, function(err) {
 				if (err) {
-					winston.error('[themes] ' + err.stack);
+					winston.error('[meta/templates] ' + err.stack);
 				} else {
 					compileIndex(viewsPath, function() {
-						winston.info('[themes] Successfully compiled templates.');
+						winston.info('[meta/templates] Successfully compiled templates.');
 						emitter.emit('templates:compiled');
 						if (callback) {
 							callback();

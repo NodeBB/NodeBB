@@ -99,6 +99,30 @@ module.exports = function(Meta) {
 		});
 	};
 
+	Meta.css.getFromFile = function(callback) {
+		var cachePath = path.join(__dirname, '../../public/stylesheet.css'),
+			acpCachePath = path.join(__dirname, '../../public/admin.css');
+		fs.exists(cachePath, function(exists) {
+			if (exists) {
+				if (!cluster.isWorker || process.env.cluster_setup === 'true') {
+					winston.info('[meta/css] (Experimental) Reading stylesheets from file');
+					async.map([cachePath, acpCachePath], fs.readFile, function(err, files) {
+						Meta.css.cache = files[0];
+						Meta.css.acpCache = files[1];
+
+						emitter.emit('meta:css.compiled');
+						callback();
+					});
+				} else {
+					callback();
+				}
+			} else {
+				winston.warn('[meta/css] (Experimental) No stylesheets found on disk, re-minifying');
+				Meta.css.minify.apply(Meta.css, arguments);
+			}
+		});
+	};
+
 	function minify(source, paths, destination, callback) {	
 		var	parser = new (less.Parser)({
 				paths: paths

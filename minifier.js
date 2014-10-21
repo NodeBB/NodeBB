@@ -14,7 +14,10 @@ var uglifyjs = require('uglify-js'),
 /* Javascript */
 Minifier.js.minify = function (scripts, relativePath, minify, callback) {
 	var options = {
-		compress: false
+		compress: false,
+		sourceMapURL: '/nodebb.min.js.map',
+		outSourceMap: 'nodebb.min.js.map',
+		sourceRoot: relativePath
 	};
 
 	scripts = scripts.filter(function(file) {
@@ -22,9 +25,6 @@ Minifier.js.minify = function (scripts, relativePath, minify, callback) {
 	});
 
 	if (!minify) {
-		options.sourceMapURL = '/nodebb.min.js.map';
-		options.outSourceMap = 'nodebb.min.js.map';
-		options.sourceRoot = relativePath;
 		options.mangle = false;
 		options.prefix = 1;
 	}
