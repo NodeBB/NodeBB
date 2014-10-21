@@ -10,7 +10,7 @@ var async = require('async'),
 	events = require('../events'),
 	db = require('../database'),
 	Password = require('../password'),
-	plugins = require('./../plugins');
+	plugins = require('../plugins');
 
 module.exports = function(User) {
 
@@ -123,8 +123,8 @@ module.exports = function(User) {
 
 				User.setUserField(uid, field, data[field], next);
 			}
-    });
-  };
+		});
+	};
 
 	function updateEmail(uid, newEmail, callback) {
 		User.getUserFields(uid, ['email', 'picture', 'uploadedpicture'], function(err, userData) {
@@ -280,5 +280,4 @@ module.exports = function(User) {
 			});
 		}
 	};
-
 };
