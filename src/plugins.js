@@ -649,19 +649,18 @@ var fs = require('fs'),
 				}
 
 				async.each(installedPlugins, function(plugin, next) {
-
-					pluginMap[plugin.name] = pluginMap[plugin.name] || {};
-					pluginMap[plugin.name].id = pluginMap[plugin.name].id || plugin.id;
-					pluginMap[plugin.name].name = pluginMap[plugin.name].name || plugin.name;
-					pluginMap[plugin.name].description = plugin.description;
-					pluginMap[plugin.name].url = pluginMap[plugin.name].url || plugin.url;
-					pluginMap[plugin.name].installed = true;
-					pluginMap[plugin.name].active = plugin.active;
-					pluginMap[plugin.name].version = plugin.version;
+					pluginMap[plugin.id] = pluginMap[plugin.id] || {};
+					pluginMap[plugin.id].id = pluginMap[plugin.id].id || plugin.id;
+					pluginMap[plugin.id].name = plugin.name || pluginMap[plugin.id].name;
+					pluginMap[plugin.id].description = plugin.description;
+					pluginMap[plugin.id].url = pluginMap[plugin.id].url || plugin.url;
+					pluginMap[plugin.id].installed = true;
+					pluginMap[plugin.id].active = plugin.active;
+					pluginMap[plugin.id].version = plugin.version;
 
 					getVersion(plugin.id, function(err, version) {
-						pluginMap[plugin.name].latest = version || plugin.version;
-						pluginMap[plugin.name].outdated = pluginMap[plugin.name].latest !== pluginMap[plugin.name].version;
+						pluginMap[plugin.id].latest = version || plugin.version;
+						pluginMap[plugin.id].outdated = pluginMap[plugin.id].latest !== pluginMap[plugin.id].version;
 						next();
 					});
 				}, function(err) {
