@@ -10,6 +10,8 @@ define('forum/groups/details', function() {
 			var	slug = this.getAttribute('data-slug');
 			ajaxify.go('user/' + slug);
 		});
+
+		$('.latest-posts .content img').addClass('img-responsive');
 	};
 
 	return Details;
