@@ -474,18 +474,29 @@ middleware.addExpiresHeaders = function(req, res, next) {
 
 middleware.maintenanceMode = function(req, res, next) {
 	var allowedRoutes = [
-			'/login'
+			'/login',
+			'/stylesheet.css',
+			'/nodebb.min.js',
+			'/vendor/fontawesome/fonts/fontawesome-webfont.woff'
 		],
 		render = function() {
 			middleware.buildHeader(req, res, function() {
-				res.render('maintenance', {
+				res.status(503).render('maintenance', {
 					site_title: meta.config.site_title || 'NodeBB',
 					message: meta.config.maintenanceModeMessage
 				});
 			});
+		},
+		isAllowed = function(url) {
+			for(var x=0,numAllowed=allowedRoutes.length,route;x<numAllowed;x++) {
+				route = new RegExp(allowedRoutes[x]);
+				if (route.test(url)) {
+					return true;
+				}
+			}
 		};
 
-	if (meta.config.maintenanceMode === '1' && allowedRoutes.indexOf(req.url) === -1) {
+	if (meta.config.maintenanceMode === '1' && !isAllowed(req.url)) {
 		if (!req.user) {
 			return render();
 		} else {
