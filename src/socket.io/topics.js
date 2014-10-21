@@ -70,7 +70,6 @@ SocketTopics.enter = function(socket, tid, callback) {
 	}
 
 	SocketTopics.markAsRead(socket, [tid], callback);
-	topics.increaseViewCount(tid);
 	websockets.updateRoomBrowsingText('topic_' + tid);
 };
 

@@ -246,6 +246,8 @@ topicsController.get = function(req, res, next) {
 			topic_url += '?' + queryString;
 		}
 
+		topics.increaseViewCount(tid);
+
 		if (!res.locals.isAPI) {
 			// Paginator for noscript
 			data.pages = [];
