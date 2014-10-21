@@ -17,6 +17,10 @@ module.exports = function(db, module) {
 	};
 
 	module.setObjectField = function(key, field, value, callback) {
+		callback = callback || helpers.noop;
+		if (!field) {
+			return callback();
+		}
 		var data = {};
 		field = helpers.fieldToString(field);
 		data[field] = value;
@@ -172,7 +176,7 @@ module.exports = function(db, module) {
 
 	module.deleteObjectField = function(key, field, callback) {
 		callback = callback || helpers.noop;
-		if (!key) {
+		if (!key || !field) {
 			return callback();
 		}
 		var data = {};
