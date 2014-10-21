@@ -54,7 +54,7 @@ module.exports = function(privileges) {
 
 				callback(null, {
 					'topics:reply': results['topics:reply'][0],
-					read: results.read[0],
+					read: results.read[0] || isAdminOrMod,
 					view_thread_tools: editable || deletable,
 					editable: editable,
 					deletable: deletable,
