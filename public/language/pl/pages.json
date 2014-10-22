@@ -13,6 +13,6 @@
     "user.topics": "Wątki stworzone przez %1",
     "user.favourites": "Ulubione posty %1",
     "user.settings": "Ustawienia użytkownika",
-    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
-    "maintenance.messageIntro": "Additionally, the administator has left this message:"
+    "maintenance.text": "Obecnie trwają prace konserwacyjne nad %1. Proszę wrócić później.",
+    "maintenance.messageIntro": "Administrator pozostawił następującą wiadomość:"
 }

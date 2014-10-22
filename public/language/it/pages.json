@@ -13,6 +13,6 @@
     "user.topics": "Discussioni create da %1",
     "user.favourites": "Post Favoriti da %1",
     "user.settings": "Impostazioni Utente",
-    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
-    "maintenance.messageIntro": "Additionally, the administator has left this message:"
+    "maintenance.text": "%1 è attualmente in manutenzione. Per favore ritorna più tardi.",
+    "maintenance.messageIntro": "Inoltre, l'amministratore ha lasciato questo messaggio:"
 }

@@ -1,8 +1,8 @@
 {
     "new_topic_button": "Novo Tópico",
-    "no_topics": "<strong>Não tem nenhum tópico nesta categoria.</strong><br />Por que não tenta postar o primeiro?",
+    "no_topics": "<strong>Não tem nenhum tópico nesta categoria.</strong><br />Por que você não tenta postar o algum?",
     "browsing": "navegando",
     "no_replies": "Ninguém respondeu",
-    "share_this_category": "Compartilhar",
-    "ignore": "Ignore"
+    "share_this_category": "Compartilhar esta categoria",
+    "ignore": "Ignorar"
 }

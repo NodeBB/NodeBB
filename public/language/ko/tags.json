@@ -1,7 +1,7 @@
 {
-    "no_tag_topics": "There are no topics with this tag.",
-    "tags": "Tags",
-    "enter_tags_here": "Enter tags here. Press enter after each tag.",
-    "enter_tags_here_short": "Enter tags...",
-    "no_tags": "There are no tags yet."
+    "no_tag_topics": "이 태그에 해당하는 주제가 없습니다.",
+    "tags": "태그",
+    "enter_tags_here": "태그를 여기에 입력하세요. 태그 한 개마다 엔터를 누르세요.",
+    "enter_tags_here_short": "태그 입력...",
+    "no_tags": "아직 아무런 태그도 없습니다."
 }

@@ -1,18 +1,18 @@
 {
     "register": "Cadastrar",
     "help.email": "Por padrão seu email ficará invisível para o publico.",
-    "help.username_restrictions": "Um usuário único com %1 a %2 caracteres. Outros poderão te mencionar digitando @<span id='yourUsername'>usuário</span>.",
+    "help.username_restrictions": "Um nome de usuário único entre %1 e %2 caracteres. Os outros poderão te mencionar digitando @<span id='yourUsername'>usuário</span>.",
     "help.minimum_password_length": "Sua senha tem que ter no mínimo %1 caracteres.",
-    "email_address": "Email",
+    "email_address": "Endereço de Email",
     "email_address_placeholder": "Digite seu Email",
-    "username": "Usuário",
-    "username_placeholder": "Digite seu Usuário",
+    "username": "Nome de Usuário",
+    "username_placeholder": "Digite seu Nome de Usuário",
     "password": "Senha",
     "password_placeholder": "Digite sua Senha",
     "confirm_password": "Confirmar Senha",
     "confirm_password_placeholder": "Confirmar Senha",
-    "register_now_button": "Cadastrar Agora",
-    "alternative_registration": "Você pode usar essas outras formas de cadastro:",
+    "register_now_button": "Registrar Agora",
+    "alternative_registration": "Cadastro Alternativo",
     "terms_of_use": "Termos de Uso",
-    "agree_to_terms_of_use": "Eu aceito o Termos de Uso"
+    "agree_to_terms_of_use": "Eu concordo com os Termos de Uso"
 }

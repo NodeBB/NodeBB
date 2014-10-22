@@ -13,6 +13,6 @@
     "user.topics": "%1 创建的主题",
     "user.favourites": "%1 收藏的帖子",
     "user.settings": "用户设置",
-    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
-    "maintenance.messageIntro": "Additionally, the administator has left this message:"
+    "maintenance.text": "%1 正在进行维护。请稍后再来。",
+    "maintenance.messageIntro": "此外，管理员留下了下面的消息："
 }

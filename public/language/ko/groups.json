@@ -1,7 +1,7 @@
 {
-    "view_group": "View Group",
-    "details.title": "Group Details",
-    "details.members": "Member List",
-    "details.has_no_posts": "This group's members have not made any posts.",
-    "details.latest_posts": "Latest Posts"
+    "view_group": "그룹 보기",
+    "details.title": "그룹 상세정보",
+    "details.members": "구성원 목록",
+    "details.has_no_posts": "이 그룹의 구성원이 작성한 게시물이 없습니다.",
+    "details.latest_posts": "최근 게시물"
 }

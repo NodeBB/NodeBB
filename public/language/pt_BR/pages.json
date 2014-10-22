@@ -5,14 +5,14 @@
     "recent": "Tópicos Recentes",
     "users": "Usuários Registrados",
     "notifications": "Notificações",
-    "tags": "Tópicos com a tag sob \"%1\"",
+    "tags": "Tópicos com a tag \"%1\"",
     "user.edit": "Editando \"%1\"",
-    "user.following": "Seguidos por %1",
-    "user.followers": "Seguidores de %1",
-    "user.posts": "Posts feito por %1",
+    "user.following": "Pessoas que %1 Segue",
+    "user.followers": "Pessoas que Seguem %1",
+    "user.posts": "Posts feitos por %1",
     "user.topics": "Tópicos criados por %1",
-    "user.favourites": "Favoritos de %1",
+    "user.favourites": "Posts Favoritos de %1",
     "user.settings": "Configurações de Usuário",
-    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
-    "maintenance.messageIntro": "Additionally, the administator has left this message:"
+    "maintenance.text": "%1 está atualmente sob manutenção. Por favor retorne em outro momento.",
+    "maintenance.messageIntro": "Além disso, o administrador deixou esta mensagem:"
 }

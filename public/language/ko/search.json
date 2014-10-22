@@ -1,4 +1,4 @@
 {
-    "results_matching": "%1 result(s) matching \"%2\", (%3 seconds)",
-    "no-matches": "No posts found"
+    "results_matching": "\"%2\"와 일치하는 %1개의 결과를 찾았습니다 (검색시간: %3초)",
+    "no-matches": "게시물이 없습니다."
 }

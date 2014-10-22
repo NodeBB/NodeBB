@@ -5,7 +5,7 @@
     "email": "Adresă Email",
     "confirm_email": "Confirmă Email",
     "delete_account": "Șterge Cont",
-    "delete_account_confirm": "Are you sure you want to delete your account? <br /><strong>This action is irreversible and you will not be able to recover any of your data</strong><br /><br />Enter your username to confirm that you wish to destroy this account.",
+    "delete_account_confirm": "Ești sigur ca vrei să îți ștergi contul? <br /><strong>Această acțiune este ireversibilă și nu o să mai fie posibil să îți recuperezi datele</strong><br /><br />Introdu numele tău de utilizator pentru a confirma că dorești să ștergi acest cont.",
     "fullname": "Nume Întreg",
     "website": "Pagină Web",
     "location": "Locație",
@@ -29,7 +29,7 @@
     "edit": "Editează",
     "uploaded_picture": "Poză uploadată",
     "upload_new_picture": "Uploadează poză nouă",
-    "upload_new_picture_from_url": "Upload New Picture From URL",
+    "upload_new_picture_from_url": "Uploadează poză nouă cu URL",
     "current_password": "Parola curentă",
     "change_password": "Schimbă Parola",
     "change_password_error": "Parola invalidă!",
@@ -53,7 +53,7 @@
     "digest_daily": "Zilnic",
     "digest_weekly": "Săptămânal",
     "digest_monthly": "Lunar",
-    "send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
+    "send_chat_notifications": "Trimite-mi un email dacă primesc un mesaj în chat si eu nu sunt online",
     "has_no_follower": "Pe acest utilizator nu îl urmărește nimeni :(",
     "follows_no_one": "Acest utilizator nu urmărește pe nimeni :(",
     "has_no_posts": "Acest utilizator nu a postat nici un mesaj până acuma.",
@@ -66,6 +66,6 @@
     "notification_sounds": "Redă un sunet când primești o notificare.",
     "browsing": "Setări navigare",
     "open_links_in_new_tab": "Deschide linkurile externe intr-un tab nou?",
-    "follow_topics_you_reply_to": "Follow topics that you reply to.",
-    "follow_topics_you_create": "Follow topics you create."
+    "follow_topics_you_reply_to": "Urmărește subiectele în care ai răspuns.",
+    "follow_topics_you_create": "Urmărește subiectele care le creezi."
 }
