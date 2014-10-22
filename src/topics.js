@@ -357,7 +357,7 @@ var async = require('async'),
 						return next(err);
 					}
 					topics = topics.map(function(topic) {
-						return topic && topic.postcount;
+						return topic && (parseInt(topic.postcount, 10) || 0);
 					});
 
 					next(null, topics);
@@ -409,7 +409,7 @@ var async = require('async'),
 
 					var teasers = tids.map(function(tid, index) {
 						if (tidToPost[tid]) {
-							tidToPost[tid].index = results.counts[index] + 1;
+							tidToPost[tid].index = results.counts[index];
 						}
 						return tidToPost[tid];
 					});

@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 9, 14);
+	latestSchema = Date.UTC(2014, 9, 22);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -1114,7 +1114,7 @@ Upgrade.upgrade = function(callback) {
 							if (err) {
 								return next(err);
 							}
-							count = parseInt(count, 10) || 0;
+							count = (parseInt(count, 10) || 0) + 1;
 							winston.info('updating tid ' + tid + ' count ' + count);
 							db.setObjectField('topic:' + tid, 'postcount', count, next);
 						});
@@ -1122,9 +1122,9 @@ Upgrade.upgrade = function(callback) {
 				});
 			}
 
-			thisSchemaDate = Date.UTC(2014, 9, 14);
+			thisSchemaDate = Date.UTC(2014, 9, 22);
 			if (schemaDate < thisSchemaDate) {
-				winston.info('[2014/10/14] Topic post count migration');
+				winston.info('[2014/10/22] Topic post count migration');
 
 				async.series([
 					function(next) {
@@ -1135,14 +1135,14 @@ Upgrade.upgrade = function(callback) {
 					}
 				], function(err) {
 					if (err) {
-						winston.error('[2014/10/14] Error encountered while Topic post count migration');
+						winston.error('[2014/10/22] Error encountered while Topic post count migration');
 						return next(err);
 					}
-					winston.info('[2014/10/14] Topic post count migration done');
+					winston.info('[2014/10/22] Topic post count migration done');
 					Upgrade.update(thisSchemaDate, next);
 				});
 			} else {
-				winston.info('[2014/10/14] Topic post count migration skipped');
+				winston.info('[2014/10/22] Topic post count migration skipped');
 				next();
 			}
 		}
