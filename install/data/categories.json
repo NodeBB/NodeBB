@@ -2,7 +2,7 @@
     {
         "name": "Announcements",
         "description": "Announcements regarding our community",
-        "bgColor": "#0059B2",
+        "bgColor": "#fda34b",
         "color": "#fff",
         "icon" : "fa-bullhorn",
         "order": 1
@@ -10,89 +10,25 @@
     {
         "name": "General Discussion",
         "description": "A place to talk about whateeeever you want",
-        "bgColor": "#0059B2",
+        "bgColor": "#59b3d0",
         "color": "#fff",
-        "icon" : "fa-comment",
+        "icon" : "fa-comments-o",
         "order": 2
-    },
-    {
-        "name": "NodeBB Development",
-        "description": "NodeBB development news and announcements",
-        "bgColor": "#0059B2",
-        "color": "#fff",
-        "icon" : "fa-github",
-        "order": 3
     },
     {
         "name": "Blogs",
         "description": "Blog posts from individual members",
-        "bgColor": "#0059B2",
+        "bgColor": "#86ba4b",
         "color": "#fff",
-        "icon" : "fa-pencil",
+        "icon" : "fa-newspaper-o",
         "order": 4
     },
     {
-        "name": "Feature Requests",
-        "description": "Got a feature request you'd like to see? Give us a shout here.",
-        "bgColor": "#ab1290",
+        "name": "Comments & Feedback",
+        "description": "Got a question? Ask away!",
+        "bgColor": "#e95c5a",
         "color": "#fff",
-        "icon" : "fa-lightbulb-o",
-        "order": 5
-    },
-    {
-        "name": "Bug Reports",
-        "description": "Having trouble with NodeBB? Let us know...",
-        "bgColor": "#ab1290",
-        "color": "#fff",
-        "icon" : "fa-cogs",
-        "order": 6
-    },
-    {
-        "name": "NodeBB Plugins",
-        "description": "Enhance your NodeBB with plugins!",
-        "bgColor": "#ab1290",
-        "color": "#fff",
-        "icon" : "fa-plus-square",
-        "order": 7
-    },
-    {
-        "name": "NodeBB Link Exchange",
-        "description": "Link exchange",
-        "bgColor": "#ab1290",
-        "color": "#fff",
-        "icon" : "fa-exchange",
-        "order": 8
-    },
-    {
-        "name": "News",
-        "description": "News from around the world",
-        "bgColor": "#004C66",
-        "color": "#fff",
-        "icon" : "fa-globe",
-        "order": 9
-    },
-    {
-        "name": "Movies",
-        "description": "Discuss the latest movies here",
-        "bgColor": "#004C66",
-        "color": "#fff",
-        "icon" : "fa-film",
-        "order": 10
-    },
-    {
-        "name": "Games",
-        "description": "Discuss the latest games here",
-        "bgColor": "#004C66",
-        "color": "#fff",
-        "icon" : "fa-crosshairs",
-        "order": 11
-    },
-    {
-        "name": "Random",
-        "description": "Anything and (almost) everything welcome!",
-        "bgColor": "#004C66",
-        "color": "#fff",
-        "icon" : "fa-beer",
-        "order": 12
+        "icon" : "fa-question",
+        "order": 3
     }
 ]

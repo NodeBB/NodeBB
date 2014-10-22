@@ -398,6 +398,24 @@ function createCategories(next) {
 	});
 }
 
+function createWelcomePost(next) {
+	var db = require('./database'),
+		Topics = require('./topics');
+
+	db.sortedSetCard('topics:tid', function(err, numTopics) {
+		if (numTopics === 0) {
+			Topics.post({
+				uid: 1,
+				cid: 2,
+				title: 'Welcome to your NodeBB!',
+				content: '# Welcome to your brand new NodeBB forum!\n\nThis is what a topic and post looks like. As an administator, you can edit the post\'s title and content.\n\nTo customise your forum, go to the [Administrator Control Panel](../../admin). You can modify all aspects of your forum there, including installation of third-party plugins.\n\n## Additional Resources\n\n* [NodeBB Documentation](https://docs.nodebb.org)\n* [Community Support Forum](https://community.nodebb.org)\n* [Project repository](https://github.com/nodebb/nodebb)'
+			}, next);
+		} else {
+			next();
+		}
+	});
+}
+
 function enableDefaultPlugins(next) {
 	var Plugins = require('./plugins');
 
@@ -424,7 +442,7 @@ function setCopyrightWidget(next) {
 }
 
 install.setup = function (callback) {
-	async.series([checkSetupFlag, checkCIFlag, setupConfig, setupDefaultConfigs, enableDefaultTheme, createAdministrator, createCategories, enableDefaultPlugins, setCopyrightWidget,
+	async.series([checkSetupFlag, checkCIFlag, setupConfig, setupDefaultConfigs, enableDefaultTheme, createAdministrator, createCategories, createWelcomePost, enableDefaultPlugins, setCopyrightWidget,
 		function (next) {
 			require('./upgrade').upgrade(next);
 		}

@@ -352,6 +352,11 @@ Sockets.reqFromSocket = function(socket) {
 
 Sockets.isUserOnline = isUserOnline;
 function isUserOnline(uid) {
+	if (!io) {
+		// Special handling for install script (socket.io not initialised)
+		return false;
+	}
+
 	return Array.isArray(io.sockets.manager.rooms['/uid_' + uid]);
 }
 
