@@ -14,6 +14,7 @@ function validateUpload(res, req, allowedTypes) {
 			error: 'Invalid image type. Allowed types are: ' + allowedTypes.join(', ')
 		};
 
+		fs.unlink(req.files.userPhoto.path);
 		res.send(req.xhr ? err : JSON.stringify(err));
 		return false;
 	}
@@ -21,14 +22,12 @@ function validateUpload(res, req, allowedTypes) {
 	return true;
 }
 
-
-
 uploadsController.uploadImage = function(filename, folder, req, res) {
 	function done(err, image) {
 		var er, rs;
 		fs.unlink(req.files.userPhoto.path);
 
-		if(err) {
+		if (err) {
 			er = {error: err.message};
 			return res.send(req.xhr ? er : JSON.stringify(er));
 		}
@@ -37,7 +36,7 @@ uploadsController.uploadImage = function(filename, folder, req, res) {
 		res.send(req.xhr ? rs : JSON.stringify(rs));
 	}
 
-	if(plugins.hasListeners('filter:uploadImage')) {
+	if (plugins.hasListeners('filter:uploadImage')) {
 		plugins.fireHook('filter:uploadImage', req.files.userPhoto, done);
 	} else {
 		file.saveFileToLocal(filename, folder, req.files.userPhoto.path, done);
@@ -54,6 +53,7 @@ uploadsController.uploadCategoryPicture = function(req, res, next) {
 		var err = {
 			error: 'Error uploading file! Error :' + e.message
 		};
+		fs.unlink(req.files.userPhoto.path);
 		return res.send(req.xhr ? err : JSON.stringify(err));
 	}
 
@@ -70,7 +70,8 @@ uploadsController.uploadFavicon = function(req, res, next) {
 		file.saveFileToLocal('favicon.ico', 'files', req.files.userPhoto.path, function(err, image) {
 			fs.unlink(req.files.userPhoto.path);
 
-			if(err) {
+			if (err) {
+				err = {error: err.message};
 				return res.send(req.xhr ? err : JSON.stringify(err));
 			}
 

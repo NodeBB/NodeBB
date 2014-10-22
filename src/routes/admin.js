@@ -7,10 +7,15 @@ function apiRoutes(app, middleware, controllers) {
 	// todo, needs to be in api namespace
 	app.get('/users/csv', middleware.authenticate, controllers.admin.users.getCSV);
 
-	app.post('/category/uploadpicture', middleware.applyCSRF, middleware.authenticate, controllers.admin.uploads.uploadCategoryPicture);
-	app.post('/uploadfavicon', middleware.applyCSRF, middleware.authenticate, controllers.admin.uploads.uploadFavicon);
-	app.post('/uploadlogo', middleware.applyCSRF, middleware.authenticate, controllers.admin.uploads.uploadLogo);
-	app.post('/uploadgravatardefault', middleware.applyCSRF, middleware.authenticate, controllers.admin.uploads.uploadGravatarDefault);
+	var multipart = require('connect-multiparty');
+	var multipartMiddleware = multipart();
+
+	var middlewares = [multipartMiddleware, middleware.applyCSRF, middleware.authenticate];
+
+	app.post('/category/uploadpicture', middlewares, controllers.admin.uploads.uploadCategoryPicture);
+	app.post('/uploadfavicon', middlewares, controllers.admin.uploads.uploadFavicon);
+	app.post('/uploadlogo', middlewares, controllers.admin.uploads.uploadLogo);
+	app.post('/uploadgravatardefault', middlewares, controllers.admin.uploads.uploadGravatarDefault);
 }
 
 function adminRouter(middleware, controllers) {
