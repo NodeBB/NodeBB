@@ -9,7 +9,7 @@
     "reset.text1": "Otrzymaliśmy żądanie przywrócenia Twojego hasła. Jeśli nie żądałeś przywrócenia hasła, zignoruj ten e-mail.",
     "reset.text2": "Aby przywrócić swoje hasło, skorzystaj z poniższego linku:",
     "reset.cta": "Kliknij tu, by przywrócić swoje hasło",
-    "digest.notifications": "Masz nieprzeczytane powiadomienia z %1:",
+    "digest.notifications": "You have unread notifications from %1:",
     "digest.latest_topics": "Ostatnie tematy z %1",
     "digest.cta": "Kliknij, by odwiedzić %1",
     "digest.unsub.info": "To podsumowanie zostało wysłane zgodnie z Twoimi ustawieniami.",

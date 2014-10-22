@@ -1,4 +1,5 @@
 {
+    "groups": "Groups",
     "view_group": "查看用户组",
     "details.title": "用户组详情",
     "details.members": "会员列表",

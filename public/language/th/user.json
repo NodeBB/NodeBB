@@ -47,6 +47,7 @@
     "max": "สูงสุด",
     "settings": "ตั้งค่า",
     "show_email": "แสดงอีเมล์",
+    "show_fullname": "Show My Full Name",
     "digest_label": "Subscribe to Digest",
     "digest_description": "Subscribe to email updates for this forum (new notifications and topics) according to a set schedule",
     "digest_off": "Off",

@@ -16,6 +16,7 @@
     "favourited_your_post_in": "<strong>%1<strong> polubił Twój post w <strong>%2<strong>.",
     "user_flagged_post_in": "<strong>%1<strong> oflagował Twój post w <strong>%2</strong>",
     "user_posted_to": "<strong>%1</strong> dodał odpowiedź do <strong>%2</strong>",
+    "user_posted_topic": "<strong>%1</strong> has posted a new topic: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> wspomniał cię w <strong>%2</strong>",
     "user_started_following_you": "<string>%1</strong> zaczął Cię śledzić.",
     "email-confirmed": "E-mail potwierdzony",

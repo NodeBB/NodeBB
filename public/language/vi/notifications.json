@@ -16,6 +16,7 @@
     "favourited_your_post_in": "<strong>%1</strong> đã thích bài của bạn trong <strong>%2</strong>.",
     "user_flagged_post_in": "<strong>%1</strong> gắn cờ 1 bài trong <strong>%2</strong>",
     "user_posted_to": "<strong>%1</strong> đã trả lời <strong>%2</strong>",
+    "user_posted_topic": "<strong>%1</strong> has posted a new topic: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> nhắc đến bạn trong <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> đã theo dõi bạn.",
     "email-confirmed": "Đã xác nhận email",

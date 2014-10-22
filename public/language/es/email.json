@@ -9,7 +9,7 @@
     "reset.text1": "Recibimos una solicitud para reiniciar tu contraseña, posiblemente porque la olvidaste. Si no es así, por favor ignora este email.",
     "reset.text2": "Para continuar con el reinicio de contraseña, por favor cliquea en el siguiente vínculo:",
     "reset.cta": "Cliquea aquí para reiniciar tu contraseña",
-    "digest.notifications": "Tienes algunas notificaciónes de %1 sin leer:",
+    "digest.notifications": "You have unread notifications from %1:",
     "digest.latest_topics": "Últimos temas de %1",
     "digest.cta": "Cliquea aquí para visitar %1",
     "digest.unsub.info": "Este compendio te fue enviado debido a tus ajustes de subscripción.",

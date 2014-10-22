@@ -16,6 +16,7 @@
     "favourited_your_post_in": "<strong>%1</strong> a adăugat mesajul tău la favorite în <strong>%2</strong>.",
     "user_flagged_post_in": "<strong>%1</strong> a semnalizat un mesaj în <strong>%2</strong>",
     "user_posted_to": "<strong>%1</strong> a postat un răspuns la: <strong>%2</strong>",
+    "user_posted_topic": "<strong>%1</strong> has posted a new topic: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> te-a menționat în <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> a început să te urmărească.",
     "email-confirmed": "Email confirmat",

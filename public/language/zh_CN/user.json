@@ -47,6 +47,7 @@
     "max": "最大",
     "settings": "设置",
     "show_email": "公开我的电子邮箱",
+    "show_fullname": "Show My Full Name",
     "digest_label": "订阅摘要",
     "digest_description": "订阅此论坛的定期电子邮件更新 (新通知和主题)",
     "digest_off": "关闭",

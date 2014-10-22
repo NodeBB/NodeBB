@@ -16,6 +16,7 @@
     "favourited_your_post_in": "<strong>%1</strong> has favourited your post in <strong>%2</strong>.",
     "user_flagged_post_in": "<strong>%1</strong> flagged a post in <strong>%2</strong>",
     "user_posted_to": "Kasutaja <strong>%1</strong> postitas vastuse teemasse <strong>%2</strong>",
+    "user_posted_topic": "<strong>%1</strong> has posted a new topic: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> mainis sind postituses <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> started following you.",
     "email-confirmed": "Emaili aadress kinnitatud",

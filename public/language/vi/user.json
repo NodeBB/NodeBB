@@ -47,6 +47,7 @@
     "max": "tối đa",
     "settings": "Thiết lập",
     "show_email": "Hiện Email của tôi",
+    "show_fullname": "Show My Full Name",
     "digest_label": "Đăng ký để digest",
     "digest_description": "Đăng ký để được forum gửi cập nhật tới email (thông báo và chủ đề mới) trong một khoảng thời gian lặp lại nhất định ",
     "digest_off": "Off",

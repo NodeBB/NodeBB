@@ -9,7 +9,7 @@
     "reset.text1": "Şifrenizi değiştirmek istediğinize dair bir ileti aldık. Eğer böyle bir istek göndermediyseniz, lütfen bu e-postayı görmezden gelin.",
     "reset.text2": "Parola değiştirme işlemine devam etmek için aşağıdaki bağlantıya tıklayın:",
     "reset.cta": "Parolanızı değiştirmek için buraya tıklayın",
-    "digest.notifications": "Okunmamış bazı bildirimleriniz var",
+    "digest.notifications": "You have unread notifications from %1:",
     "digest.latest_topics": "En güncel konular",
     "digest.cta": "Ziyaret etmek için buraya tıklayın",
     "digest.unsub.info": "Bu e-posta seçtiğiniz ayarlar nedeniyle gönderildi.",

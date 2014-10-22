@@ -47,6 +47,7 @@
     "max": "최대",
     "settings": "설정",
     "show_email": "이메일 공개",
+    "show_fullname": "Show My Full Name",
     "digest_label": "포럼 이메일 수신",
     "digest_description": "지정한 주기로 이 포럼의 새 알림과 주제를 이메일로 수신합니다.",
     "digest_off": "해제",

@@ -9,7 +9,7 @@
     "reset.text1": "We received a request to reset your password, possibly because you have forgotten it. If this is not the case, please ignore this email.",
     "reset.text2": "Pentru a continua cu resetarea parolei, te rugăm sa apeși pe următorul link:",
     "reset.cta": "Apasă aici pentru a-ți reseta parola",
-    "digest.notifications": "Ai niște notificări necitite de la %1:",
+    "digest.notifications": "You have unread notifications from %1:",
     "digest.latest_topics": "Ultimele mesaje de la %1",
     "digest.cta": "Apasă aici pentru a vizita %1",
     "digest.unsub.info": "This digest was sent to you due to your subscription settings.",

@@ -9,7 +9,7 @@
     "reset.text1": "Vi fick en förfrågan att återställa ditt lösenord, kanske för att du glömt det. Om det inte är så, så kan du ignorera det här epostmeddelandet. ",
     "reset.text2": "För att fortsätta med återställning av lösenordet så kan du klicka på följande länk:",
     "reset.cta": "Klicka här för att återställa ditt lösenord",
-    "digest.notifications": "Du har några olästa notiser från %1:",
+    "digest.notifications": "You have unread notifications from %1:",
     "digest.latest_topics": "Senaste ämnen från %1",
     "digest.cta": "Klicka här för att besöka %1",
     "digest.unsub.info": "Det här meddelandet fick du på grund av dina inställningar för prenumeration. ",

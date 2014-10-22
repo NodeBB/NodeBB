@@ -1,4 +1,5 @@
 {
+    "groups": "Groups",
     "view_group": "Просмотр группы",
     "details.title": "Информация о группе",
     "details.members": "Список пользователей",

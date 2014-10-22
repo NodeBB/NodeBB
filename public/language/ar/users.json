@@ -5,6 +5,5 @@
     "search": "بحث",
     "enter_username": "أدخل اسم مستخدم للبحث",
     "load_more": "حمل المزيد",
-    "user-not-found": "User not found!",
     "users-found-search-took": "%1 user(s) found! Search took %2 ms."
 }

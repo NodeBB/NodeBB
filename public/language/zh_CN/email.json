@@ -9,7 +9,7 @@
     "reset.text1": "我们收到了重置您密码的申请，可能因为您忘记了密码。如果不是，请忽略这封邮件。",
     "reset.text2": "如需继续重置密码，请点击下面的链接：",
     "reset.cta": "点击这里重设您的密码",
-    "digest.notifications": "您有一些来自 %1 的未读通知：",
+    "digest.notifications": "You have unread notifications from %1:",
     "digest.latest_topics": "来自 %1 的最新主题",
     "digest.cta": "点击这里访问 %1",
     "digest.unsub.info": "根据您的订阅设置，为您发送此摘要。",

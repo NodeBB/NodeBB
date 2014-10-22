@@ -16,6 +16,7 @@
     "favourited_your_post_in": "<strong>%1</strong> ha marcado como favorito su publicación en <strong>%2</strong>.",
     "user_flagged_post_in": "<strong>%1</strong> ha marcado como indebida una respuesta en <strong>%2</strong>",
     "user_posted_to": "<strong>%1</strong> ha publicado una respuesta a: <strong>%2</strong>",
+    "user_posted_topic": "<strong>%1</strong> has posted a new topic: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> te mencionó en <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> comenzó a seguirte.",
     "email-confirmed": "Correo electrónico confirmado",

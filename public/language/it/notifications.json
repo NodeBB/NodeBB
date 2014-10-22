@@ -16,6 +16,7 @@
     "favourited_your_post_in": "<strong>%1</strong> ha messo nei favoriti il tuo post in <strong>%2</strong>.",
     "user_flagged_post_in": "<strong>%1</strong> ha segnalato un post in <strong>%2</strong>",
     "user_posted_to": "<strong>%1</strong> ha postato una risposta a: <strong>%2</strong>",
+    "user_posted_topic": "<strong>%1</strong> has posted a new topic: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> ti ha menzionato in <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> ha iniziato a seguirti.",
     "email-confirmed": "Email Confermata",

@@ -71,5 +71,6 @@
     "guest": "Külaline",
     "guests": "Külalised",
     "updated.title": "Foorum on uuendatud",
-    "updated.message": "See foorum uuendati just kõige uuemale versioonile. Vajuta siia et värskendada veebilehte."
+    "updated.message": "See foorum uuendati just kõige uuemale versioonile. Vajuta siia et värskendada veebilehte.",
+    "privacy": "Privacy"
 }

@@ -9,7 +9,7 @@
     "reset.text1": "Nós recebemos um pedido para reconfigurar sua senha, possivelmente porque você a esqueceu. Se este não é o caso, por favor ignore este email.",
     "reset.text2": "Para continuar com a reconfiguração de senha, por favor clique no seguinte link:",
     "reset.cta": "Clique aqui para reconfigurar sua senha",
-    "digest.notifications": "Você tem algumas notificações não lidas de %1:",
+    "digest.notifications": "You have unread notifications from %1:",
     "digest.latest_topics": "Últimos tópicos de %1",
     "digest.cta": "Clique aqui para visitar %1",
     "digest.unsub.info": "Este resumo foi enviado para você devido às suas configurações de assinatura.",

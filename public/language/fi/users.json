@@ -5,6 +5,5 @@
     "search": "Hae",
     "enter_username": "Syötä käyttäjätunnus hakeaksesi",
     "load_more": "Lataa lisää",
-    "user-not-found": "User not found!",
     "users-found-search-took": "%1 user(s) found! Search took %2 ms."
 }

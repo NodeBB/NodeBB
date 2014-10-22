@@ -16,6 +16,7 @@
     "favourited_your_post_in": "<strong>%1</strong> har favoriserat ditt inlägg i <strong>%2</strong>.",
     "user_flagged_post_in": "<strong>%1</strong> flaggade ett inlägg i <strong>%2</strong>",
     "user_posted_to": "<strong>%1</strong> har skrivit ett svar på: <strong>%2</strong>",
+    "user_posted_topic": "<strong>%1</strong> has posted a new topic: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> nämnde dig i <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> började följa dig.",
     "email-confirmed": "Epost bekräftad",

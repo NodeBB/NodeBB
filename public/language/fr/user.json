@@ -47,6 +47,7 @@
     "max": "max.",
     "settings": "Paramètres",
     "show_email": "Afficher mon email",
+    "show_fullname": "Show My Full Name",
     "digest_label": "S’inscrire aux comptes-rendus",
     "digest_description": "S'abonner par email aux mises à jours de ce forum (nouvelles notifications et nouveaux sujets) selon le planning sélectionné.",
     "digest_off": "Désactivé",

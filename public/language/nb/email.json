@@ -9,7 +9,7 @@
     "reset.text1": "Vi har blir bedt om å tilbakestille passordet ditt, muligens fordi du har glemt det. Hvis dette ikke stemmer kan du ignorere denne eposten.",
     "reset.text2": "For å fortsette med tilbakestillingen, vennligst klikk på følgende lenke:",
     "reset.cta": "Klikk her for å tilbakestille passordet ditt",
-    "digest.notifications": "Du har uleste varsler fra %1:",
+    "digest.notifications": "You have unread notifications from %1:",
     "digest.latest_topics": "Siste emner fra %1",
     "digest.cta": "Klikk her for å besøke %1",
     "digest.unsub.info": "Dette sammendraget er sendt til deg basert på dine innstillinger for abonnering.",

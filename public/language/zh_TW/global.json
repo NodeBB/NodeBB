@@ -71,5 +71,6 @@
     "guest": "Guest",
     "guests": "Guests",
     "updated.title": "討論區更新完畢",
-    "updated.message": "這個討論區最近被更新至最新的版本. 按此來重整這個頁面"
+    "updated.message": "這個討論區最近被更新至最新的版本. 按此來重整這個頁面",
+    "privacy": "Privacy"
 }

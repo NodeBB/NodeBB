@@ -9,7 +9,7 @@
     "reset.text1": "Nous avons reçu une demande de réinitialisation de votre mot de passe, probablement parce que vous l'avez oublié. Si ce n'est pas le cas, veuillez ignorer cet email.",
     "reset.text2": "Pour confirmer la réinitialisation de votre mot de passe, veuillez cliquer sur le lien suivant :",
     "reset.cta": "Cliquez ici pour réinitialiser votre mot de passe",
-    "digest.notifications": "Vous avez des notifications non-lues de %1 :",
+    "digest.notifications": "You have unread notifications from %1:",
     "digest.latest_topics": "Derniers sujets de %1 :",
     "digest.cta": "Cliquez ici pour aller sur %1",
     "digest.unsub.info": "Ce message vous a été envoyé en raison de vos paramètres d'abonnement.",
