@@ -33,7 +33,6 @@ var async = require('async'),
 	};
 
 	Meta.reload = function(callback) {
-		console.log('reloading');
 		async.series([
 			async.apply(plugins.clearRequireCache),
 			async.apply(plugins.reload),
@@ -51,7 +50,6 @@ var async = require('async'),
 				], next);
 			}
 		], function(err) {
-			console.log('yaaa I am here', err);
 			if (!err) {
 				emitter.emit('nodebb:ready');
 			}
