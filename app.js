@@ -106,7 +106,7 @@ function loadConfig() {
 function start() {
 	loadConfig();
 
-	if (!cluster.isWorker) {
+	if (!cluster.isWorker || process.env.cluster_setup === 'true') {
 		winston.info('Time: ' + new Date());
 		winston.info('Initializing NodeBB v' + pkg.version);
 		winston.info('* using configuration stored in: ' + configFile);
