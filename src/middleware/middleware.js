@@ -482,7 +482,7 @@ middleware.maintenanceMode = function(req, res, next) {
 		render = function() {
 			middleware.buildHeader(req, res, function() {
 				res.status(503).render('maintenance', {
-					site_title: meta.config.site_title || 'NodeBB',
+					site_title: meta.config.title || 'NodeBB',
 					message: meta.config.maintenanceModeMessage
 				});
 			});

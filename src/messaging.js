@@ -308,7 +308,7 @@ var db = require('./database'),
 						username: messageObj.toUser.username,
 						summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
 						message: messageObj,
-						site_title: meta.config.site_title || 'NodeBB',
+						site_title: meta.config.title || 'NodeBB',
 						url: nconf.get('url') + '/chats/' + utils.slugify(messageObj.fromUser.username)
 					});
 				}
