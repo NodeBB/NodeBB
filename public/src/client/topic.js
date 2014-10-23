@@ -65,8 +65,7 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 
 		navigator.init('.posts > .post-row', postCount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
 
-		socket.on('event:new_post', onNewPost);
-		socket.on('event:new_notification', onNewNotification);
+		setupSocketListeners();
 
 		$(window).on('scroll', updateTopicTitle);
 
@@ -74,6 +73,13 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 
 		socket.emit('topics.enter', tid);
 	};
+
+	function setupSocketListeners() {
+		socket.removeListener('event:new_post', onNewPost);
+		socket.removeListener('event:new_notification', onNewNotification);
+		socket.on('event:new_post', onNewPost);
+		socket.on('event:new_notification', onNewNotification);
+	}
 
 	Topic.toTop = function() {
 		navigator.scrollTop(0);
