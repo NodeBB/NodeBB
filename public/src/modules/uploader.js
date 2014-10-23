@@ -13,7 +13,8 @@ define('uploader', function() {
 		};
 
 	module.open = function(route, params, fileSize, callback) {
-		$('#upload-picture-modal').modal('show').removeClass('hide');
+		var uploadModal = $('#upload-picture-modal');
+		uploadModal.modal('show').removeClass('hide');
 		module.hideAlerts();
 		var uploadForm = $('#uploadForm');
 		uploadForm[0].reset();
@@ -29,30 +30,30 @@ define('uploader', function() {
 		}
 
 		$('#pictureUploadSubmitBtn').off('click').on('click', function() {
-			$('#uploadForm').submit();
+			uploadForm.submit();
 		});
 
 		uploadForm.off('submit').submit(function() {
 
 			function status(message) {
 				module.hideAlerts();
-				$('#alert-status').text(message).removeClass('hide');
+				uploadModal.find('#alert-status').text(message).removeClass('hide');
 			}
 
 			function success(message) {
 				module.hideAlerts();
-				$('#alert-success').text(message).removeClass('hide');
+				uploadModal.find('#alert-success').text(message).removeClass('hide');
 			}
 
 			function error(message) {
 				module.hideAlerts();
-				$('#alert-error').text(message).removeClass('hide');
+				uploadModal.find('#alert-error').text(message).removeClass('hide');
 			}
 
 			status('uploading the file ...');
 
-			$('#upload-progress-bar').css('width', '0%');
-			$('#upload-progress-box').show().removeClass('hide');
+			uploadModal.find('#upload-progress-bar').css('width', '0%');
+			uploadModal.find('#upload-progress-box').show().removeClass('hide');
 
 			if (!$('#userPhotoInput').val()) {
 				error('select an image to upload!');
@@ -66,7 +67,7 @@ define('uploader', function() {
 				},
 
 				uploadProgress: function(event, position, total, percent) {
-					$('#upload-progress-bar').css('width', percent + '%');
+					uploadModal.find('#upload-progress-bar').css('width', percent + '%');
 				},
 
 				success: function(response) {
@@ -81,7 +82,7 @@ define('uploader', function() {
 					success('File uploaded successfully!');
 					setTimeout(function() {
 						module.hideAlerts();
-						$('#upload-picture-modal').modal('hide');
+						uploadModal.modal('hide');
 					}, 750);
 				}
 			});
@@ -91,10 +92,11 @@ define('uploader', function() {
 	};
 
 	module.hideAlerts = function() {
-		$('#alert-status').addClass('hide');
-		$('#alert-success').addClass('hide');
-		$('#alert-error').addClass('hide');
-		$('#upload-progress-box').addClass('hide');
+		var uploadModal = $('#upload-picture-modal');
+		uploadModal.find('#alert-status').addClass('hide');
+		uploadModal.find('#alert-success').addClass('hide');
+		uploadModal.find('#alert-error').addClass('hide');
+		uploadModal.find('#upload-progress-box').addClass('hide');
 	};
 
 	return module;
