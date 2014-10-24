@@ -5,7 +5,7 @@ Thanks for reporting an issue with NodeBB! Please follow these guidelines in ord
 In general, if we can't reproduce it, we can't fix it!
 
 > #### **Important**
-> If you believed you have identified a security vulnerability with NodeBB, report it as soon as possible via email to **security@nodebb.org**.
+> If you believe you have identified a security vulnerability with NodeBB, report it as soon as possible via email to **security@nodebb.org**.
 > A member of the NodeBB security team will respond to the issue.
 > Please do not post it to the public bug tracker.
 
