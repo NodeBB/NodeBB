@@ -4,6 +4,11 @@ Thanks for reporting an issue with NodeBB! Please follow these guidelines in ord
 
 In general, if we can't reproduce it, we can't fix it!
 
+> #### **Important**
+> If you believed you have identified a security vulnerability with NodeBB, report it as soon as possible via email to **security@nodebb.org**.
+> A member of the NodeBB security team will respond to the issue.
+> Please do not post it to the public bug tracker.
+
 ## Try the latest version of NodeBB
 
 There is a chance that the issue you are experiencing may have already been fixed.
@@ -28,3 +33,9 @@ $ git rev-parse HEAD
 ```
 
 If you have downloaded the `.zip` or `.tar.gz` packages from GitHub (or elsewhere), please let us know.
+
+## Attempt to use `git bisect`
+
+If you have installed NodeBB via GitHub clone, are familiar with utilising git, and are willing to help us narrow down the specific commit that causes a bug, consider running `git bisect`.
+
+A full guide can be found here: [Debugging with Git/Binary Search](http://git-scm.com/book/en/Git-Tools-Debugging-with-Git#Binary-Search)
