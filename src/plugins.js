@@ -624,7 +624,7 @@ var fs = require('fs'),
 
 	Plugins.getAll = function(callback) {
 		var request = require('request');
-		request('http://npm.aws.af.cm/api/v1/plugins', function(err, res, body) {
+		request('https://packages.nodebb.org/api/v1/plugins', function(err, res, body) {
 			var plugins = [];
 
 			try {
@@ -640,6 +640,7 @@ var fs = require('fs'),
 				plugins[i].installed = false;
 				plugins[i].active = false;
 				plugins[i].url = plugins[i].repository ? plugins[i].repository.url : '';
+				plugins[i].latest = getLatestVersion(plugins[i].versions);
 				pluginMap[plugins[i].name] = plugins[i];
 			}
 
@@ -657,12 +658,9 @@ var fs = require('fs'),
 					pluginMap[plugin.id].installed = true;
 					pluginMap[plugin.id].active = plugin.active;
 					pluginMap[plugin.id].version = plugin.version;
-
-					getVersion(plugin.id, function(err, version) {
-						pluginMap[plugin.id].latest = version || plugin.version;
-						pluginMap[plugin.id].outdated = pluginMap[plugin.id].latest !== pluginMap[plugin.id].version;
-						next();
-					});
+					pluginMap[plugin.id].latest = pluginMap[plugin.id].latest || plugin.version;
+					pluginMap[plugin.id].outdated = pluginMap[plugin.id].latest !== pluginMap[plugin.id].version;
+					next();
 				}, function(err) {
 					if (err) {
 						return callback(err);
@@ -692,16 +690,13 @@ var fs = require('fs'),
 		});
 	};
 
-	function getVersion(name, callback) {
-		npm.load({}, function() {
-			npm.commands.show([name, 'version'], true, function(err, version) {
-				if (err || !version) {
-					return callback();
-				}
-				var obj = Object.keys(version);
-				callback(null, Array.isArray(obj) && obj.length ? obj[0] : null);
-			});
-		});
+	function getLatestVersion(versions) {
+		for(var version in versions) {
+			if (versions.hasOwnProperty(version) && versions[version] === 'latest') {
+				return version;
+			}
+		}
+		return '';
 	}
 
 	Plugins.isInstalled = function(id, callback) {
