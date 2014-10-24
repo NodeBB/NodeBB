@@ -473,6 +473,10 @@ middleware.addExpiresHeaders = function(req, res, next) {
 };
 
 middleware.maintenanceMode = function(req, res, next) {
+	if (meta.config.maintenanceMode !== '1') {
+		return next();
+	}
+
 	var allowedRoutes = [
 			'/login',
 			'/stylesheet.css',
@@ -480,12 +484,22 @@ middleware.maintenanceMode = function(req, res, next) {
 			'/vendor/fontawesome/fonts/fontawesome-webfont.woff'
 		],
 		render = function() {
-			middleware.buildHeader(req, res, function() {
-				res.status(503).render('maintenance', {
-					site_title: meta.config.title || 'NodeBB',
-					message: meta.config.maintenanceModeMessage
+			res.status(503);
+
+			if (!isApiRoute.test(req.url)) {
+				middleware.buildHeader(req, res, function() {
+					res.render('maintenance', {
+						site_title: meta.config.title || 'NodeBB',
+						message: meta.config.maintenanceModeMessage
+					});
 				});
-			});
+			} else {
+				translator.translate('[[pages:maintenance.text, ' + meta.config.title + ']]', meta.config.defaultLang || 'en_GB', function(translated) {
+					res.json({
+						error: translated
+					});
+				});
+			}
 		},
 		isAllowed = function(url) {
 			for(var x=0,numAllowed=allowedRoutes.length,route;x<numAllowed;x++) {
@@ -494,9 +508,10 @@ middleware.maintenanceMode = function(req, res, next) {
 					return true;
 				}
 			}
-		};
+		},
+		isApiRoute = /^\/api/;
 
-	if (meta.config.maintenanceMode === '1' && !isAllowed(req.url)) {
+	if (!isAllowed(req.url)) {
 		if (!req.user) {
 			return render();
 		} else {
