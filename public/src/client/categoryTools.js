@@ -72,7 +72,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 			});
 		});
 
-
+		CategoryTools.removeListeners();
 		socket.on('event:topic_deleted', setDeleteState);
 		socket.on('event:topic_restored', setDeleteState);
 		socket.on('event:topic_purged', onTopicPurged);

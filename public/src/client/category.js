@@ -28,6 +28,7 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 			composer.newTopic(cid);
 		});
 
+		socket.removeListener('event:new_topic', Category.onNewTopic);
 		socket.on('event:new_topic', Category.onNewTopic);
 
 		categoryTools.init(cid);
