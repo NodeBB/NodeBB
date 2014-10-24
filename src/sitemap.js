@@ -30,8 +30,8 @@ var path = require('path'),
 		getDynamicUrls: function(callback) {
 			var returnUrls = [];
 
-			async.parallel([
-				function(next) {
+			async.parallel({
+				categoryUrls: function(next) {
 					var categoryUrls = [];
 					categories.getCategoriesByPrivilege(0, 'find', function(err, categoriesData) {
 						if (err) {
@@ -39,17 +39,19 @@ var path = require('path'),
 						}
 
 						categoriesData.forEach(function(category) {
-							categoryUrls.push({
-								url: path.join('/category', category.slug),
-								changefreq: 'weekly',
-								priority: '0.4'
-							});
+							if (category) {
+								categoryUrls.push({
+									url: '/category/' + category.cid + '/' + encodeURIComponent(utils.slugify(category.name)),
+									changefreq: 'weekly',
+									priority: '0.4'
+								});
+							}
 						});
 
 						next(null, categoryUrls);
 					});
 				},
-				function(next) {
+				topicUrls: function(next) {
 					var topicUrls = [];
 
 					db.getSortedSetRevRange('topics:recent', 0, 49, function(err, tids) {
@@ -61,18 +63,20 @@ var path = require('path'),
 								return next(err);
 							}
 
-							topics.getTopicsFields(tids, ['slug', 'lastposttime'], function(err, topics) {
+							topics.getTopicsFields(tids, ['tid', 'title', 'lastposttime'], function(err, topics) {
 								if (err) {
 									return next(err);
 								}
 
 								topics.forEach(function(topic) {
-									topicUrls.push({
-										url: path.join('/topic', topic.slug),
-										lastmodISO: utils.toISOString(topic.lastposttime),
-										changefreq: 'daily',
-										priority: '0.6'
-									});
+									if (topic) {
+										topicUrls.push({
+											url: '/topic/' + topic.tid + '/' + encodeURIComponent(utils.slugify(topic.title)),
+											lastmodISO: utils.toISOString(topic.lastposttime),
+											changefreq: 'daily',
+											priority: '0.6'
+										});
+									}
 								});
 
 								next(null, topicUrls);
@@ -80,9 +84,9 @@ var path = require('path'),
 						});
 					});
 				}
-			], function(err, data) {
+			}, function(err, data) {
 				if (!err) {
-					returnUrls = returnUrls.concat(data[0]).concat(data[1]);
+					returnUrls = data.categoryUrls.concat(data.topicUrls);
 				}
 
 				callback(err, returnUrls);
@@ -90,19 +94,19 @@ var path = require('path'),
 		},
 		render: function(callback) {
 			if (sitemap.obj !== undefined && sitemap.obj.cache.length) {
-				sitemap.obj.toXML(callback);
-			} else {
-				async.parallel([sitemap.getStaticUrls, sitemap.getDynamicUrls], function(err, urls) {
-					urls = urls[0].concat(urls[1]);
-					sitemap.obj = sm.createSitemap({
-						hostname: nconf.get('url'),
-						cacheTime: 1000 * 60 * 60,	// Cached for 1 hour
-						urls: urls
-					});
-
-					sitemap.obj.toXML(callback);
-				});
+				return sitemap.obj.toXML(callback);
 			}
+
+			async.parallel([sitemap.getStaticUrls, sitemap.getDynamicUrls], function(err, urls) {
+				urls = urls[0].concat(urls[1]);
+				sitemap.obj = sm.createSitemap({
+					hostname: nconf.get('url'),
+					cacheTime: 1000 * 60 * 60,	// Cached for 1 hour
+					urls: urls
+				});
+
+				sitemap.obj.toXML(callback);
+			});
 		}
 	};
 
