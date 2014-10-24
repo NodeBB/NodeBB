@@ -225,7 +225,7 @@ var async = require('async'),
 
 				for (var i=0; i<topics.length; ++i) {
 					if (topics[i]) {
-						topics[i].category = categories[topics[i].cid];
+						topics[i].category = categories[topics[i].cid] || {};
 						topics[i].category.disabled = parseInt(topics[i].category.disabled, 10) === 1;
 						topics[i].user = users[topics[i].uid];
 						topics[i].teaser = results.teasers[i];
