@@ -49,6 +49,9 @@
 						<!-- IF plugins.description -->
 						<p>{plugins.description}</p>
 						<!-- ENDIF plugins.description -->
+
+						<small>Latest <strong class="latestVersion">{plugins.latest}</strong></small>
+
 						<!-- IF plugins.url -->
 						<p>For more information: <a href="{plugins.url}">{plugins.url}</a></p>
 						<!-- ENDIF plugins.url -->
