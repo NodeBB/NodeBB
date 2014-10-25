@@ -93,10 +93,16 @@ SocketModules.composer.renderHelp = function(socket, data, callback) {
 };
 
 SocketModules.composer.notifyTyping = function(socket, data) {
+	if (!socket.uid) {
+		return;
+	}
 	server.in('topic_' + data.tid).emit('event:topic.notifyTyping', data);
 };
 
 SocketModules.composer.stopNotifyTyping = function(socket, data) {
+	if (!socket.uid) {
+		return;
+	}
 	server.in('topic_' + data.tid).emit('event:topic.stopNotifyTyping', data);
 };
 
