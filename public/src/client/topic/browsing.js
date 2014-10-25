@@ -16,7 +16,6 @@ define('forum/topic/browsing', function() {
 			}
 
 			updateUserCount(data.total);
-			getReplyingUsers();
 		}
 	};
 
@@ -91,17 +90,6 @@ define('forum/topic/browsing', function() {
 		if(!$('.thread_active_users').find('[data-uid="' + uid + '"]').length) {
 			return $('<div class="inline-block"><a data-uid="' + uid + '" data-count="1" href="' + config.relative_path + '/user/' + userslug + '"><img title="' + username + '" src="'+ picture +'"/></a></div>');
 		}
-	}
-
-	function getReplyingUsers() {
-		var activeEl = $('.thread_active_users');
-		socket.emit('modules.composer.getUsersByTid', ajaxify.variables.get('topic_id'), function(err, uids) {
-			if (uids && uids.length) {
-				for(var x=0;x<uids.length;x++) {
-					activeEl.find('[data-uid="' + uids[x] + '"]').addClass('replying');
-				}
-			}
-		});
 	}
 
 	function updateUserCount(count) {

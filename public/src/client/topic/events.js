@@ -40,7 +40,8 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 		'posts.downvote': togglePostVote,
 		'posts.unvote': togglePostVote,
 
-		'event:topic.toggleReply': toggleReply,
+		'event:topic.notifyTyping': onNotifyTyping,
+		'event:topic.stopNotifyTyping': onStopNotifyTyping
 	};
 
 	Events.init = function() {
@@ -168,8 +169,23 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 		post.find('.downvote').toggleClass('btn-primary downvoted', data.downvote);
 	}
 
-	function toggleReply(data) {
-		$('.thread_active_users [data-uid="' + data.uid + '"]').toggleClass('replying', data.isReplying);
+	function onNotifyTyping(data) {
+		var userEl = $('.thread_active_users [data-uid="' + data.uid + '"]');
+		userEl.addClass('replying');
+
+		var timeoutId = userEl.attr('timeoutId');
+		if (timeoutId) {
+			clearTimeout(timeoutId);
+			timeoutId = 0;
+		}
+		timeoutId = setTimeout(function() {
+			userEl.removeClass('replying');
+		}, 7000);
+		userEl.attr('timeoutId', timeoutId);
+	}
+
+	function onStopNotifyTyping(data) {
+		$('.thread_active_users [data-uid="' + data.uid + '"]').removeClass('replying');
 	}
 
 	return Events;

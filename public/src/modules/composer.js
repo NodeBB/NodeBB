@@ -21,12 +21,6 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 		bsEnvironment: undefined
 	};
 
-	socket.on('event:composer.ping', function(post_uuid) {
-		if (composer.active === post_uuid) {
-			socket.emit('modules.composer.pingActive', post_uuid);
-		}
-	});
-
 	$(window).off('resize', onWindowResize).on('resize', onWindowResize);
 
 	function onWindowResize() {
@@ -182,15 +176,36 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 			createNewComposer(post_uuid);
 		}
 
-		var	postData = composer.posts[post_uuid];
-		if (postData.tid) {
-			socket.emit('modules.composer.register', {
-				uuid: post_uuid,
+		startNotifyTyping(composer.posts[post_uuid]);
+	};
+
+	function startNotifyTyping(postData) {
+		function emit() {
+			socket.emit('modules.composer.notifyTyping', {
 				tid: postData.tid,
 				uid: app.uid
 			});
 		}
-	};
+
+		stopNotifyInterval(postData);
+
+		emit();
+		postData.notifyTypingIntervalId = setInterval(emit, 5000);
+	}
+
+	function stopNotifyTyping(postData) {
+		socket.emit('modules.composer.stopNotifyTyping', {
+			tid: postData.tid,
+			uid: app.uid
+		});
+	}
+
+	function stopNotifyInterval(postData) {
+		if (postData.notifyTypingIntervalId) {
+			clearInterval(postData.notifyTypingIntervalId);
+			postData.notifyTypingIntervalId = 0;
+		}
+	}
 
 	function createNewComposer(post_uuid) {
 		var allowTopicsThumbnail = config.allowTopicsThumbnail && composer.posts[post_uuid].isMain && (config.hasImageUploadPlugin || config.allowFileUploads);
@@ -456,6 +471,9 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 		if (composer.posts[post_uuid]) {
 			$('#cmp-uuid-' + post_uuid).remove();
 			drafts.removeDraft(composer.posts[post_uuid].save_id);
+			stopNotifyInterval(composer.posts[post_uuid]);
+			stopNotifyTyping(composer.posts[post_uuid]);
+
 			delete composer.posts[post_uuid];
 			composer.active = undefined;
 			taskbar.discard('composer', post_uuid);
@@ -463,7 +481,6 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 			$('.action-bar button').removeAttr('disabled');
 
 			app.toggleNavbar(true);
-			socket.emit('modules.composer.unregister', post_uuid);
 		}
 	}
 
@@ -473,7 +490,8 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 		composer.active = undefined;
 		taskbar.minimize('composer', post_uuid);
 
-		socket.emit('modules.composer.unregister', post_uuid);
+		stopNotifyInterval(composer.posts[post_uuid]);
+		stopNotifyTyping(composer.posts[post_uuid]);
 	};
 
 	return composer;
