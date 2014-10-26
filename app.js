@@ -37,7 +37,8 @@ global.env = process.env.NODE_ENV || 'production';
 
 winston.remove(winston.transports.Console);
 winston.add(winston.transports.Console, {
-	colorize: true
+	colorize: true,
+	timestamp: true
 });
 
 winston.add(winston.transports.File, {
