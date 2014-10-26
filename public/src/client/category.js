@@ -180,6 +180,11 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 	}
 
 	Category.onNewTopic = function(topic) {
+		var	cid = ajaxify.variables.get('category_id');
+		if(!topic || parseInt(topic.cid, 10) !== parseInt(cid, 10)) {
+			return;
+		}
+
 		$(window).trigger('filter:categories.new_topic', topic);
 
 		templates.parse('category', 'topics', {

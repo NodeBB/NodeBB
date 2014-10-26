@@ -143,7 +143,7 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 
 	function onNewPost(data) {
 		var tid = ajaxify.variables.get('topic_id');
-		if(data && data.posts && data.posts.length && data.posts[0].tid !== tid) {
+		if(data && data.posts && data.posts.length && parseInt(data.posts[0].tid, 10) !== parseInt(tid, 10)) {
 			return;
 		}
 
