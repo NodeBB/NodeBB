@@ -168,7 +168,7 @@ middleware.checkGlobalPrivacySettings = function(req, res, next) {
 			return res.status(403).json('not-allowed');
 		} else {
 			req.session.returnTo = req.url;
-			return res.redirect('login');
+			return res.redirect('/login');
 		}
 	}
 
