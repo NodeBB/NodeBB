@@ -149,6 +149,16 @@ module.exports = function(app, middleware) {
 		require('./debug')(app, middleware, controllers);
 	}
 
+	app.use(function(req, res, next) {
+		if (req.user || parseInt(meta.config.privateUploads, 10) !== 1) {
+			return next();
+		}
+		if (req.path.indexOf('/uploads/files') === 0) {
+			return res.status(403).json('not-allowed');
+		}
+		next();
+	});
+
 	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
 	}));
