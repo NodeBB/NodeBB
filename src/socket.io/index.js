@@ -214,7 +214,10 @@ Sockets.init = function(server) {
 				}, Namespaces);
 
 			if(!methodToCall) {
-				return winston.warn('[socket.io] Unrecognized message: ' + payload.name);
+				if (process.env.NODE_ENV === 'development') {
+					winston.warn('[socket.io] Unrecognized message: ' + payload.name);
+				}
+				return;
 			}
 
 			if (Namespaces[namespace].before) {

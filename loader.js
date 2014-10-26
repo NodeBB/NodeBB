@@ -172,6 +172,10 @@ Loader.addClusterEvents = function(callback) {
 		}
 	});
 
+	cluster.on('disconnect', function(worker) {
+		console.log('[cluster] Child Process (' + worker.process.pid + ') has disconnected');
+	});
+
 	callback();
 }
 
