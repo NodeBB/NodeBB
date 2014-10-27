@@ -50,7 +50,7 @@ function tagRoutes(app, middleware, controllers) {
 
 function categoryRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/popular/:term?', middleware, [], controllers.categories.popular);
-	setupPageRoute(app, '/recent/:term?', middleware, [], controllers.categories.recent);
+	setupPageRoute(app, '/recent', middleware, [], controllers.categories.recent);
 	setupPageRoute(app, '/unread', middleware, [middleware.authenticate], controllers.categories.unread);
 	app.get('/api/unread/total', middleware.authenticate, controllers.categories.unreadTotal);
 

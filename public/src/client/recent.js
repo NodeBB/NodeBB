@@ -8,15 +8,6 @@ define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
 	var newTopicCount = 0,
 		newPostCount = 0;
 
-	var active = '';
-
-	function getActiveSection() {
-		var url = window.location.href,
-		parts = url.split('/'),
-		active = parts[parts.length - 1];
-		return active;
-	}
-
 	$(window).on('action:ajaxify.start', function(ev, data) {
 		if(data.url.indexOf('recent') !== 0) {
 			Recent.removeListeners();
@@ -28,29 +19,11 @@ define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
 
 		Recent.watchForNewPosts();
 
-		active = Recent.selectActivePill();
-
 		$('#new-topics-alert').on('click', function() {
 			$(this).addClass('hide');
 		});
 
-
 		infinitescroll.init(Recent.loadMoreTopics);
-	};
-
-	Recent.selectActivePill = function() {
-		var active = getActiveSection();
-
-		$('.nav-pills li').removeClass('active');
-		$('.nav-pills li a').each(function() {
-			var $this = $(this);
-			if ($this.attr('href').match(active)) {
-				$this.parent().addClass('active');
-				return false;
-			}
-		});
-
-		return active;
 	};
 
 	Recent.watchForNewPosts = function () {
@@ -103,8 +76,7 @@ define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
 		}
 
 		infinitescroll.loadMore('topics.loadMoreRecentTopics', {
-			after: $('#topics-container').attr('data-nextstart'),
-			term: active
+			after: $('#topics-container').attr('data-nextstart')
 		}, function(data, done) {
 			if (data.topics && data.topics.length) {
 				Recent.onTopicsLoaded('recent', data.topics, false, done);

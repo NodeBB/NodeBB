@@ -459,14 +459,14 @@ SocketTopics.loadMore = function(socket, data, callback) {
 };
 
 SocketTopics.loadMoreRecentTopics = function(socket, data, callback) {
-	if(!data || !data.term || !data.after) {
+	if(!data || !data.after) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	var start = parseInt(data.after, 10),
 		end = start + 9;
 
-	topics.getLatestTopics(socket.uid, start, end, data.term, callback);
+	topics.getRecentTopics(socket.uid, start, end, callback);
 };
 
 SocketTopics.loadMoreUnreadTopics = function(socket, data, callback) {

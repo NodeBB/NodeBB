@@ -19,7 +19,7 @@ var apiToRegular = function(url) {
 categoriesController.recent = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
 	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
-	topics.getLatestTopics(uid, 0, end, req.params.term, function (err, data) {
+	topics.getRecentTopics(uid, 0, end, function (err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -27,6 +27,9 @@ categoriesController.recent = function(req, res, next) {
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
 		plugins.fireHook('filter:category.get', data, uid, function(err, data) {
+			if (err) {
+				return next(err);
+			}
 			res.render('recent', data);
 		});
 	});
@@ -53,6 +56,9 @@ categoriesController.popular = function(req, res, next) {
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
 		plugins.fireHook('filter:category.get', {topics: data}, uid, function(err, data) {
+			if (err) {
+				return next(err);
+			}
 			if (uid === 0) {
 		        anonCache[term] = data;
 		        lastUpdateTime = Date.now();
@@ -72,6 +78,9 @@ categoriesController.unread = function(req, res, next) {
 		}
 
 		plugins.fireHook('filter:category.get', data, uid, function(err, data) {
+			if (err) {
+				return next(err);
+			}
 			res.render('unread', data);
 		});
 	});
@@ -236,10 +245,10 @@ categoriesController.notFound = function(req, res) {
 
 categoriesController.notAllowed = function(req, res) {
 	var uid = req.user ? req.user.uid : 0;
-	
+
 	if (uid) {
 		if (res.locals.isAPI) {
-			res.status(403).json('not-allowed');	
+			res.status(403).json('not-allowed');
 		} else {
 			res.status(403).render('403');
 		}
