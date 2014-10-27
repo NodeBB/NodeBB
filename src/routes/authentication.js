@@ -225,8 +225,7 @@
 
 	Auth.login = function(username, password, next) {
 		if (!username || !password) {
-			next(new Error('[[error:invalid-password]]'));
-			return;
+			return next(new Error('[[error:invalid-password]]'));
 		}
 
 		var userslug = utils.slugify(username);
@@ -236,7 +235,7 @@
 				return next(err);
 			}
 
-			if(!uid) {
+			if (!uid) {
 				return next(null, false, '[[error:no-user]]');
 			}
 
