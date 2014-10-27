@@ -315,8 +315,8 @@ var db = require('./database'),
 			}
 
 			async.map(categories, function(category, next) {
-				if (!category) {
-					return next(null, category);
+				if (!category || !parseInt(category.cid, 10)) {
+					return next(null, null);
 				}
 				category.name = validator.escape(category.name);
 				category.description = validator.escape(category.description);
