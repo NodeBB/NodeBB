@@ -34,11 +34,7 @@ module.exports = function(User) {
 	}
 
 	function deleteSortedSetElements(set, deleteMethod, callback) {
-		batch.processSortedSet(set, function(err, ids, next) {
-			if (err) {
-				return callback(err);
-			}
-
+		batch.processSortedSet(set, function(ids, next) {
 			async.eachLimit(ids, 10, deleteMethod, next);
 		}, {alwaysStartAt: 0}, callback);
 	}

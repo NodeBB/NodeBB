@@ -72,7 +72,7 @@ var winston = require('winston'),
 	}
 
 	ThreadTools.purge = function(tid, uid, callback) {
-		batch.processSortedSet('tid:' + tid + ':posts', function(err, pids, next) {
+		batch.processSortedSet('tid:' + tid + ':posts', function(pids, next) {
 			async.eachLimit(pids, 10, posts.purge, next);
 		}, {alwaysStartAt: 0}, function(err) {
 			if (err) {

@@ -9,11 +9,7 @@ var async = require('async'),
 module.exports = function(Categories) {
 
 	Categories.purge = function(cid, callback) {
-		batch.processSortedSet('categories:' + cid + ':tid', function(err, tids, next) {
-			if (err) {
-				return callback(err);
-			}
-
+		batch.processSortedSet('categories:' + cid + ':tid', function(tids, next) {
 			async.eachLimit(tids, 10, function(tid, next) {
 				threadTools.purge(tid, 0, next);
 			}, next);

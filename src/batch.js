@@ -44,7 +44,7 @@ var async = require('async'),
 						done = true;
 						return next();
 					}
-					process(err, ids, function(err) {
+					process(ids, function(err) {
 						if (err) {
 							return next(err);
 						}
