@@ -170,7 +170,7 @@ accountsController.getAccount = function(req, res, next) {
 				posts.getPostsByUid(callerUID, userData.theirid, 0, 9, next);
 			},
 			signature: function(next) {
-				postTools.parse(userData.signature, next);
+				postTools.parseSignature(userData.signature, next);
 			}
 		}, function(err, results) {
 			if(err) {
