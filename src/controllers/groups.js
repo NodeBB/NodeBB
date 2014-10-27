@@ -5,11 +5,14 @@ var groups = require('../groups'),
 	nconf = require('nconf'),
 	groupsController = {};
 
-groupsController.list = function(req, res) {
+groupsController.list = function(req, res, next) {
 	groups.list({
 		truncateUserList: true,
 		expand: true
 	}, function(err, groups) {
+		if (err) {
+			return next(err);
+		}
 		res.render('groups/list', {
 			groups: groups
 		});

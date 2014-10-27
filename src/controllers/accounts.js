@@ -137,6 +137,9 @@ accountsController.getUserByUID = function(req, res, next) {
 	var uid = req.params.uid ? req.params.uid : 0;
 
 	user.getUserData(uid, function(err, userData) {
+		if (err) {
+			return next(err);
+		}
 		res.json(userData);
 	});
 };
