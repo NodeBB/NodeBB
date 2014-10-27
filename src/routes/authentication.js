@@ -21,7 +21,6 @@
 
 	function logout(req, res) {
 		if (req.user && parseInt(req.user.uid, 10) > 0) {
-			winston.info('[Auth] Session ' + req.sessionID + ' logout (uid: ' + req.user.uid + ')');
 
 			var ws = require('../socket.io');
 			ws.logoutUser(req.user.uid);
