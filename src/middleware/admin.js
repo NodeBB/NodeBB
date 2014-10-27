@@ -5,12 +5,12 @@ var app,
 	nconf = require('nconf'),
 	async = require('async'),
 	path = require('path'),
-	user = require('./../user'),
-	meta = require('./../meta'),
-	plugins = require('./../plugins'),
+	user = require('../user'),
+	meta = require('../meta'),
+	plugins = require('../plugins'),
 
 	controllers = {
-		api: require('./../controllers/api')
+		api: require('../controllers/api')
 	};
 
 
@@ -45,21 +45,31 @@ middleware.buildHeader = function(req, res, next) {
 			};
 
 			user.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, userData) {
+				if (err) {
+					return next(err);
+				}
+
 				async.parallel({
 					scripts: function(next) {
 						plugins.fireHook('filter:admin.scripts.get', [], function(err, scripts) {
+							if (err) {
+								return next(err);
+							}
 							var arr = [];
 							scripts.forEach(function(script) {
 								arr.push({src: nconf.get('url') + script});
 							});
 
-							next(err, arr);
+							next(null, arr);
 						});
 					},
 					custom_header: function(next) {
 						plugins.fireHook('filter:admin.header.build', custom_header, next);
 					}
 				}, function(err, pluginData) {
+					if (err) {
+						return next(err);
+					}
 					var data = {
 						csrf: req.csrfToken ? req.csrfToken() : undefined,
 						relative_path: nconf.get('relative_path'),
@@ -74,8 +84,11 @@ middleware.buildHeader = function(req, res, next) {
 					};
 
 					app.render('admin/header', data, function(err, template) {
+						if (err) {
+							return next(err);
+						}
 						res.locals.adminHeader = template;
-						next(err);
+						next();
 					});
 				});
 			});
@@ -92,9 +105,7 @@ middleware.buildHeader = function(req, res, next) {
 				next(err);
 			});
 		}
-	], function(err) {
-		next();
-	});
+	], next);
 };
 
 module.exports = function(webserver) {
