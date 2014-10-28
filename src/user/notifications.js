@@ -280,6 +280,19 @@ var async = require('async'),
 		});
 	};
 
+	UserNotifications.sendNameChangeNotification = function(uid, username) {
+		notifications.create({
+			bodyShort: '[[user:username_taken_workaround, ' + username + ']]',
+			image: 'brand:logo',
+			nid: 'username_taken:' + uid,
+			datetime: Date.now()
+		}, function(err, notification) {
+			if (!err && notification) {
+				notifications.push(notification, uid);
+			}
+		});
+	};
+
 	UserNotifications.pushCount = function(uid) {
 		var websockets = require('./../socket.io');
 		UserNotifications.getUnreadCount(uid, function(err, count) {
