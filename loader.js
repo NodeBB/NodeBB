@@ -195,6 +195,7 @@ Loader.start = function(callback) {
 		// Logging
 		if (silent) {
 			worker.process.stdout.pipe(output);
+			worker.process.stderr.pipe(output);
 		}
 	}
 
