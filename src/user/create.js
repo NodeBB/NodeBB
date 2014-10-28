@@ -28,7 +28,7 @@ module.exports = function(User) {
 			var timestamp = Date.now();
 
 			var userData = {
-				'username': data.username.trim(),
+				'username': data.username,
 				'userslug': data.userslug,
 				'email': data.email,
 				'joindate': timestamp,
