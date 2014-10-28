@@ -115,10 +115,14 @@ Sockets.init = function(server) {
 		var hs = socket.handshake,
 			sessionID, uid;
 
+		if (!hs) {
+			return;
+		}
+
 		// Validate the session, if present
 		socketCookieParser(hs, {}, function(err) {
 			if(err) {
-				winston.error(err.message);
+				return winston.error(err.message);
 			}
 
 			sessionID = socket.handshake.signedCookies['express.sid'];
