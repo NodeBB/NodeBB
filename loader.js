@@ -161,7 +161,7 @@ Loader.addClusterEvents = function(callback) {
 			}
 		}
 
-		console.log('[cluster] Child Process (' + worker.process.pid + ') has exited (code: ' + code + ')');
+		console.log('[cluster] Child Process (' + worker.process.pid + ') has exited (code: ' + code + ', signal: ' + signal +')');
 		if (!worker.suicide) {
 			console.log('[cluster] Spinning up another process...');
 
