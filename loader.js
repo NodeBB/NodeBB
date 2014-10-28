@@ -166,9 +166,7 @@ Loader.addClusterEvents = function(callback) {
 			console.log('[cluster] Spinning up another process...');
 
 			var wasPrimary = parseInt(worker.id, 10) === Loader.primaryWorker;
-			cluster.fork({
-				handle_jobs: wasPrimary
-			});
+			forkWorker(wasPrimary);
 		}
 	});
 
@@ -177,30 +175,31 @@ Loader.addClusterEvents = function(callback) {
 	});
 
 	callback();
-}
+};
 
 Loader.start = function(callback) {
-	var output = logrotate({ file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true }),
-		worker;
-
 	console.log('Clustering enabled: Spinning up ' + numProcs + ' process(es).\n');
 
-	for(var x=0;x<numProcs;x++) {
-		// Only the first worker sets up templates/sounds/jobs/etc
-		worker = cluster.fork({
-			cluster_setup: x === 0,
-			handle_jobs: x === 0
-		});
-
-		// Logging
-		if (silent) {
-			worker.process.stdout.pipe(output);
-			worker.process.stderr.pipe(output);
-		}
+	for(var x=0; x<numProcs; ++x) {
+		forkWorker(x === 0);
 	}
 
-	if (callback) callback();
+	if (callback) {
+		callback();
+	}
 };
+
+function forkWorker(isPrimary) {
+	var worker = cluster.fork({
+		cluster_setup: isPrimary,
+		handle_jobs: isPrimary
+	});
+
+	if (silent) {
+		worker.process.stdout.pipe(output);
+		worker.process.stderr.pipe(output);
+	}
+}
 
 Loader.restart = function(callback) {
 	// Slate existing workers for termination -- welcome to death row.
@@ -220,7 +219,7 @@ Loader.notifyWorkers = function (msg) {
 	Object.keys(cluster.workers).forEach(function(id) {
 		cluster.workers[id].send(msg);
 	});
-}
+};
 
 
 nconf.argv().file({
