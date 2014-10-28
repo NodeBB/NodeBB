@@ -44,7 +44,7 @@ topicsController.get = function(req, res, next) {
 		},
 		function (results, next) {
 
-			var postCount = parseInt(results.postCount, 10) + 1;
+			var postCount = parseInt(results.postCount, 10);
 			if (utils.isNumber(req.params.post_index)) {
 				var url = '';
 				if (req.params.post_index > postCount) {

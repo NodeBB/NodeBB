@@ -292,7 +292,7 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 		function findInsertionPoint() {
 			var firstPostTimestamp = parseInt(data.posts[0].timestamp, 10);
 			var firstPostVotes = parseInt(data.posts[0].votes, 10);
-			var firstPostPid = data.posts[0].pid;
+			var firstPostPid = parseInt(data.posts[0].pid, 10);
 
 			var firstReply = $('#post-container li.post-row[data-index!="0"]').first();
 			var lastReply = $('#post-container li.post-row[data-index!="0"]').last();
@@ -315,9 +315,9 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 				} else if(firstPostVotes < parseInt(firstReply.attr('data-votes'), 10)) {
 					after = lastReply;
 				} else {
-					if (firstPostPid > firstReply.attr('data-pid')) {
+					if (firstPostPid <= parseInt(firstReply.attr('data-pid'), 10)) {
 						before = firstReply;
-					} else if(firstPostPid <= firstReply.attr('data-pid')) {
+					} else if(firstPostPid > parseInt(firstReply.attr('data-pid'), 10)) {
 						after = lastReply;
 					}
 				}

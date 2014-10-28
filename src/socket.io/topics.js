@@ -428,15 +428,13 @@ SocketTopics.loadMore = function(socket, data, callback) {
 			reverse = false,
 			start = Math.max(parseInt(data.after, 10) - 1, 0);
 
-		if (results.settings.topicPostSort === 'newest_to_oldest') {
+		if (results.settings.topicPostSort === 'newest_to_oldest' || results.settings.topicPostSort === 'most_votes') {
 			reverse = true;
-			data.after = results.postCount - data.after;
+			data.after = results.postCount - 1 - data.after;
 			start = Math.max(parseInt(data.after, 10), 0);
-		} else if (results.settings.topicPostSort === 'most_votes') {
-			reverse = true;
-			data.after = results.postCount - data.after;
-			start = Math.max(parseInt(data.after, 10), 0);
-			set = 'tid:' + data.tid + ':posts:votes';
+			if (results.settings.topicPostSort === 'most_votes') {
+				set = 'tid:' + data.tid + ':posts:votes';
+			}
 		}
 
 		var end = start + results.settings.postsPerPage - 1;
