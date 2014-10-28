@@ -5,7 +5,7 @@ define('admin/manage/flags', ['forum/infinitescroll', 'admin/modules/selectable'
 	var	Flags = {};
 
 	Flags.init = function() {
-		$('.post-container .content img').addClass('img-responsive')
+		$('.post-container .content img').addClass('img-responsive');
 		handleDismiss();
 		handleDelete();
 		handleInfiniteScroll();
@@ -56,6 +56,7 @@ define('admin/manage/flags', ['forum/infinitescroll', 'admin/modules/selectable'
 					infinitescroll.parseAndTranslate('admin/manage/flags', 'posts', {posts: data.posts}, function(html) {
 						$('[data-next]').attr('data-next', data.next);
 						$('.post-container').append(html);
+						html.find('img').addClass('img-responsive');
 						done();
 					});
 				} else {
