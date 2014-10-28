@@ -103,6 +103,8 @@ if(nconf.get('ssl')) {
 	module.exports.server = server;
 	module.exports.init = function(callback) {
 		server.on("error", function(err){
+			winston.error(err.stack);
+			console.log(err.stack);
 			if (err.code === 'EADDRINUSE') {
 				winston.error('NodeBB address in use, exiting...');
 				if (cluster.isWorker) {
