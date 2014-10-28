@@ -38,12 +38,8 @@ global.env = process.env.NODE_ENV || 'production';
 winston.remove(winston.transports.Console);
 winston.add(winston.transports.Console, {
 	colorize: true,
-	timestamp: true
-});
-
-winston.add(winston.transports.File, {
-	filename: 'logs/error.log',
-	level: 'error'
+	timestamp: true,
+	level: 'info'
 });
 
 // TODO: remove once https://github.com/flatiron/winston/issues/280 is fixed

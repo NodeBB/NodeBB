@@ -60,7 +60,7 @@
     "uglify-js": "git+https://github.com/julianlam/UglifyJS2.git",
     "underscore": "~1.7.0",
     "validator": "~3.21.0",
-    "winston": "^0.8.0",
+    "winston": "^0.8.1",
     "xregexp": "~2.0.0"
   },
   "devDependencies": {
