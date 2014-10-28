@@ -659,7 +659,7 @@ var fs = require('fs'),
 					pluginMap[plugin.id].active = plugin.active;
 					pluginMap[plugin.id].version = plugin.version;
 					pluginMap[plugin.id].latest = pluginMap[plugin.id].latest || plugin.version;
-					pluginMap[plugin.id].outdated = pluginMap[plugin.id].latest !== pluginMap[plugin.id].version;
+					pluginMap[plugin.id].outdated = semver.gt(pluginMap[plugin.id].latest, pluginMap[plugin.id].version);
 					next();
 				}, function(err) {
 					if (err) {
