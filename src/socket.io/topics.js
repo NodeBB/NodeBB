@@ -65,7 +65,7 @@ SocketTopics.post = function(socket, data, callback) {
 };
 
 SocketTopics.enter = function(socket, tid, callback) {
-	if (!tid || !socket.uid) {
+	if (!parseInt(tid, 10) || !socket.uid) {
 		return;
 	}
 
