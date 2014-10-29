@@ -195,7 +195,7 @@ adminController.logs.get = function(req, res, next) {
 		}
 
 		res.render('admin/advanced/logs', {
-			data: data.toString()
+			data: validator.escape(data.toString())
 		});
 	});
 };
