@@ -3,7 +3,7 @@
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-file-text-o"></i> Logs</div>
 			<div class="panel-body">
-				<pre>{data}</pre>
+				<pre><code>{data}</code></pre>
 			</div>
 		</div>
 	</div>
