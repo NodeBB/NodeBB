@@ -187,6 +187,10 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 			});
 		}
 
+		if (!parseInt(postData.tid, 10)) {
+			return;
+		}
+
 		stopNotifyInterval(postData);
 
 		emit();
@@ -194,6 +198,9 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 	}
 
 	function stopNotifyTyping(postData) {
+		if (!parseInt(postData.tid, 10)) {
+			return;
+		}
 		socket.emit('modules.composer.stopNotifyTyping', {
 			tid: postData.tid,
 			uid: app.uid
