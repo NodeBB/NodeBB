@@ -9,7 +9,7 @@
 * [Get NodeBB](http://www.nodebb.org/ "NodeBB")
 * [Demo & Meta Discussion](http://community.nodebb.org)
 * [NodeBB Blog](http://blog.nodebb.org)
-* [Documentation](http://docs.nodebb.org) - includes setup instructions for other platforms
+* [Documentation & Installation Instructions](http://docs.nodebb.org)
 * [Join us on IRC](https://kiwiirc.com/client/irc.freenode.net/nodebb) - #nodebb on Freenode
 * [Follow us on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter")
 * [Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")
