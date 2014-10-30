@@ -172,7 +172,7 @@ var winston = require('winston'),
 	};
 
 	PostTools.parse = function(raw, callback) {
-		parse('filter:post.parse', raw, callback);
+		parse('filter:post.parse', raw + '\n', callback);
 	};
 
 	PostTools.parseSignature = function(raw, callback) {
