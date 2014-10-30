@@ -123,10 +123,12 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			// User counts
-			results.base.count = numUsers || results.users.length;
-			results.base.members = results.users;
-			results.base.memberCount = numUsers || results.users.length;
+			results.base.members = results.users.filter(function(user) {
+				return typeof user !== 'undefined';
+			});
+
+			results.base.count = numUsers || results.base.members.length;
+			results.base.memberCount = numUsers || results.base.members.length;
 
 			results.base.deleted = !!parseInt(results.base.deleted, 10);
 			results.base.hidden = !!parseInt(results.base.hidden, 10);
