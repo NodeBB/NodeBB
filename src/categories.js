@@ -314,19 +314,29 @@ var db = require('./database'),
 				return callback(null, []);
 			}
 
-			async.map(categories, function(category, next) {
-				if (!category || !parseInt(category.cid, 10)) {
-					return next(null, null);
-				}
-				category.name = validator.escape(category.name);
-				category.description = validator.escape(category.description);
-				category.backgroundImage = category.image ? nconf.get('relative_path') + category.image : '';
-				category.disabled = parseInt(category.disabled, 10) === 1;
-
-				next(null, category);
-			}, callback);
+			async.map(categories, modifyCategory, callback);
 		});
 	};
+
+	function modifyCategory(category, callback) {
+		if (!category || !parseInt(category.cid, 10)) {
+			return callback(null, null);
+		}
+
+		category.name = validator.escape(category.name);
+		category.disabled = parseInt(category.disabled, 10) === 1;
+		category.icon = category.icon || 'hidden';
+
+		if (category.description) {
+			category.description = validator.escape(category.description);
+		}
+
+		if (category.image) {
+			category.backgroundImage = category.image ? nconf.get('relative_path') + category.image : '';
+		}
+
+		callback(null, category);
+	}
 
 	Categories.getCategoryField = function(cid, field, callback) {
 		db.getObjectField('category:' + cid, field, callback);
@@ -336,7 +346,12 @@ var db = require('./database'),
 		var keys = cids.map(function(cid) {
 			return 'category:' + cid;
 		});
-		db.getObjectsFields(keys, fields, callback);
+		db.getObjectsFields(keys, fields, function(err, categories) {
+			if (err) {
+				return callback(err);
+			}
+			async.map(categories, modifyCategory, callback);
+		});
 	};
 
 	Categories.getCategoryFields = function(cid, fields, callback) {

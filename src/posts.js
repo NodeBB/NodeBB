@@ -270,13 +270,13 @@ var async = require('async'),
 							return next(err);
 						}
 
-						var cidKeys = topics.map(function(topic) {
-							return 'category:' + topic.cid;
+						var cids = topics.map(function(topic) {
+							return topic && topic.cid;
 						}).filter(function(value, index, array) {
-							return array.indexOf(value) === index;
+							return value && array.indexOf(value) === index;
 						});
 
-						db.getObjectsFields(cidKeys, ['cid', 'name', 'icon', 'slug'], function(err, categories) {
+						categories.getMultipleCategoryFields(cids, ['cid', 'name', 'icon', 'slug'], function(err, categories) {
 							next(err, {topics: topics, categories: categories});
 						});
 					});
@@ -320,9 +320,9 @@ var async = require('async'),
 				async.map(posts, function(post, next) {
 					post.user = results.users[post.uid];
 					post.topic = results.topics[post.tid];
+					post.topic.title = validator.escape(post.topic.title);
 					post.category = results.categories[post.topic.cid];
 
-					post.topic.title = validator.escape(post.topic.title);
 					post.relativeTime = utils.toISOString(post.timestamp);
 
 					if (!post.content || !options.parse) {
