@@ -553,7 +553,8 @@ accountsController.getChats = function(req, res, next) {
 			function(toUid, next) {
 				async.parallel({
 					toUser: async.apply(user.getUserFields, toUid, ['uid', 'username']),
-					messages: async.apply(messaging.getMessages, req.user.uid, toUid, 'recent', false)
+					messages: async.apply(messaging.getMessages, req.user.uid, toUid, 'recent', false),
+					allowed: async.apply(messaging.canMessage, req.user.uid, toUid)
 				}, next);
 			}
 		], function(err, data) {
@@ -566,7 +567,8 @@ accountsController.getChats = function(req, res, next) {
 				nextStart: results.recentChats.nextStart,
 				contacts: results.contacts,
 				meta: data.toUser,
-				messages: data.messages
+				messages: data.messages,
+				allowed: data.allowed
 			});
 		});
 	});
