@@ -45,10 +45,6 @@
 				'    "password": "",' + '\n' +
 				'    "database": "1"' + '\n' +
 			'}\n'+
-			" or (level):\n" +
-				'"test_database": {' + '\n' +
-				'    "database": "/path/to/database"' + '\n' +
-			'}\n'+
 			"==========================================================="
 		);
 		winston.error(errorText);
