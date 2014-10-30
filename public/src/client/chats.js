@@ -201,10 +201,15 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, 
 			socket.emit('modules.chats.send', {
 				touid:toUid,
 				message:msg
+			}, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				inputEl.val('');
+				sounds.play('chat-outgoing');
+				Chats.notifyTyping(toUid, false);
 			});
-			inputEl.val('');
-			sounds.play('chat-outgoing');
-			Chats.notifyTyping(toUid, false);
 		}
 	};
 

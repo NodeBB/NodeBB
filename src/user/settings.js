@@ -37,6 +37,7 @@ module.exports = function(User) {
 				settings.followTopicsOnCreate = (settings.followTopicsOnCreate === null || settings.followTopicsOnCreate === undefined) ? true : parseInt(settings.followTopicsOnCreate, 10) === 1;
 				settings.followTopicsOnReply = parseInt(settings.followTopicsOnReply, 10) === 1;
 				settings.sendChatNotifications = parseInt(settings.sendChatNotifications, 10) === 1;
+				settings.restrictChat = parseInt(settings.restrictChat, 10) === 1;
 
 				callback(null, settings);
 			});
@@ -88,7 +89,8 @@ module.exports = function(User) {
 			language: data.language || meta.config.defaultLang,
 			followTopicsOnCreate: data.followTopicsOnCreate,
 			followTopicsOnReply: data.followTopicsOnReply,
-			sendChatNotifications: data.sendChatNotifications
+			sendChatNotifications: data.sendChatNotifications,
+			restrictChat: data.restrictChat
 		}, callback);
 	};
 

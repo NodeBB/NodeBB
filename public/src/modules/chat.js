@@ -353,5 +353,9 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 		taskbar.toggleNew(uuid, state);
 	};
 
+	module.canMessage = function(toUid, callback) {
+		socket.emit('modules.chats.canMessage', toUid, callback);
+	};
+
 	return module;
 });
