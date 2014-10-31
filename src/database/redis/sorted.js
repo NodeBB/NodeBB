@@ -81,8 +81,16 @@ module.exports = function(redisClient, module) {
 		redisClient.zrevrange(key, start, stop, callback);
 	};
 
+	module.getSortedSetRangeWithScores = function(key, start, stop, callback) {
+		sortedSetRangeWithScores('zrange', key, start, stop, callback);
+	};
+
 	module.getSortedSetRevRangeWithScores = function(key, start, stop, callback) {
-		redisClient.zrevrange([key, start, stop, 'WITHSCORES'], function(err, data) {
+		sortedSetRangeWithScores('zrevrange', key, start, stop, callback);
+	};
+
+	function sortedSetRangeWithScores(method, key, start, stop, callback) {
+		redisClient[method]([key, start, stop, 'WITHSCORES'], function(err, data) {
 			if (err) {
 				return callback(err);
 			}
@@ -92,7 +100,7 @@ module.exports = function(redisClient, module) {
 			}
 			callback(null, objects);
 		});
-	};
+	}
 
 	module.getSortedSetRangeByScore = function(key, start, count, min, max, callback) {
 		redisClient.zrangebyscore([key, min, max, 'LIMIT', start, count], callback);
@@ -102,8 +110,16 @@ module.exports = function(redisClient, module) {
 		redisClient.zrevrangebyscore([key, max, min, 'LIMIT', start, count], callback);
 	};
 
+	module.getSortedSetRangeByScoreWithScores = function(key, start, count, min, max, callback) {
+		sortedSetRangeByScoreWithScores('zrangebyscore', key, start, count, min, max, callback);
+	};
+
 	module.getSortedSetRevRangeByScoreWithScores = function(key, start, count, max, min, callback) {
-		redisClient.zrevrangebyscore([key, max, min, 'WITHSCORES', 'LIMIT', start, count], function(err, data) {
+		sortedSetRangeByScoreWithScores('zrevrangebyscore', key, start, count, max, min, callback);
+	};
+
+	function sortedSetRangeByScoreWithScores(method, key, start, count, min, max, callback) {
+		redisClient[method]([key, min, max, 'WITHSCORES', 'LIMIT', start, count], function(err, data) {
 			if (err) {
 				return callback(err);
 			}
@@ -113,7 +129,7 @@ module.exports = function(redisClient, module) {
 			}
 			callback(null, objects);
 		});
-	};
+	}
 
 	module.sortedSetCount = function(key, min, max, callback) {
 		redisClient.zcount(key, min, max, callback);

@@ -134,6 +134,10 @@ module.exports = function(db, module) {
 		getSortedSetRange(key, start, stop, -1, false, callback);
 	};
 
+	module.getSortedSetRangeWithScores = function(key, start, stop, callback) {
+		getSortedSetRange(key, start, stop, 1, true, callback);
+	};
+
 	module.getSortedSetRevRangeWithScores = function(key, start, stop, callback) {
 		getSortedSetRange(key, start, stop, -1, true, callback);
 	};
@@ -144,6 +148,10 @@ module.exports = function(db, module) {
 
 	module.getSortedSetRevRangeByScore = function(key, start, count, max, min, callback) {
 		getSortedSetRangeByScore(key, start, count, min, max, -1, false, callback);
+	};
+
+	module.getSortedSetRangeByScoreWithScores = function(key, start, count, min, max, callback) {
+		getSortedSetRangeByScore(key, start, count, min, max, -1, true, callback);
 	};
 
 	module.getSortedSetRevRangeByScoreWithScores = function(key, start, count, max, min, callback) {
