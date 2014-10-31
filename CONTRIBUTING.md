@@ -1,3 +1,8 @@
+# Having problems installing NodeBB?
+
+Chances are somebody has run into this problem before. After consulting our [documentation](https://docs.nodebb.org/en/latest/installing/os.html), please head over to our [community support forum](https://community.nodebb.org) for advice.
+
+
 # Issues & Bugs
 
 Thanks for reporting an issue with NodeBB! Please follow these guidelines in order to streamline the debugging process. The more guidelines you follow, the easier it will be for us to reproduce your problem.
