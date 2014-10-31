@@ -5,7 +5,7 @@
     "recent": "Güncel Konular",
     "users": "Kayıtlı Kullanıcılar",
     "notifications": "Bildirimler",
-    "tags": "Topics tagged under \"%1\"",
+    "tags": "“%1“ ile etiketlenmiş konular",
     "user.edit": "\"% 1\" düzenleniyor",
     "user.following": "İnsanlar %1 Takip Ediyor",
     "user.followers": "%1 takip edenler",
@@ -13,6 +13,6 @@
     "user.topics": "%1 tarafından gönderilen başlıklar",
     "user.favourites": "%1'in Favori İletileri",
     "user.settings": "Kullanıcı Ayarları",
-    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
-    "maintenance.messageIntro": "Additionally, the administrator has left this message:"
+    "maintenance.text": "%1 şu anda bakımda. Lütfen bir süre sonra tekrar deneyin.",
+    "maintenance.messageIntro": "Ayrıca, yönetici şu mesaji bıraktı:"
 }

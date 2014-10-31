@@ -1,4 +1,4 @@
 {
-    "results_matching": "%1 result(s) matching \"%2\", (%3 seconds)",
-    "no-matches": "No posts found"
+    "results_matching": "%1 tulemus(t) mis vastavad otsingule \"%2\", (%3 sekundit)",
+    "no-matches": "Postitusi ei leitud"
 }

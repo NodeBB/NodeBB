@@ -57,7 +57,7 @@
     "replied_ago": "vastas %1",
     "user_posted_ago": "kasutaja %1 postitas %2 tagasi",
     "guest_posted_ago": "Külaline postitas %1",
-    "last_edited_by_ago": "viimati muudetud kasutaja %1 poolt %2 tagasi",
+    "last_edited_by_ago": "viimati muudetud kasutaja %1 poolt %2",
     "norecentposts": "Hiljutisi postitusi ei ole",
     "norecenttopics": "Hiljutisi teemasid ei ole",
     "recentposts": "Hiljutised postitused",
@@ -72,5 +72,5 @@
     "guests": "Külalised",
     "updated.title": "Foorum on uuendatud",
     "updated.message": "See foorum uuendati just kõige uuemale versioonile. Vajuta siia et värskendada veebilehte.",
-    "privacy": "Privacy"
+    "privacy": "Privaatsus"
 }

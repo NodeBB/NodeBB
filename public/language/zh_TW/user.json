@@ -48,6 +48,7 @@
     "settings": "設定",
     "show_email": "顯示我的郵箱",
     "show_fullname": "Show My Full Name",
+    "restrict_chats": "Only allow chat messages from users I follow",
     "digest_label": "訂閱摘要",
     "digest_description": "使用 eamil 訂閱本論壇新的訊息通知與主題 (根據您所設的時間表)",
     "digest_off": "關閉",

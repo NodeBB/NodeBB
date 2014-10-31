@@ -48,6 +48,7 @@
     "settings": "Penetapan",
     "show_email": "Tunjukkan emel saya",
     "show_fullname": "Show My Full Name",
+    "restrict_chats": "Only allow chat messages from users I follow",
     "digest_label": "Langgani berita",
     "digest_description": "Langgani berita terkini untuk forum ini melalui emel (Makluman dan topik) menurut jadual yang ditetapkan",
     "digest_off": "Tutup",

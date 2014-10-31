@@ -9,7 +9,7 @@
     "reset.text1": "Wir haben eine Anfrage auf Zurücksetzung deines Passworts erhalten, wahrscheinlich, weil du es vergessen hast. Falls dies nicht der Fall ist, ignoriere bitte diese E-Mail.",
     "reset.text2": "Klicke bitte auf den folgenden Link, um mit der Zurücksetzung deines Passworts fortzufahren:",
     "reset.cta": "Klicke hier, um dein Passwort zurückzusetzen",
-    "digest.notifications": "You have unread notifications from %1:",
+    "digest.notifications": "Du hast ungelesene Benachrichtigungen von %1:",
     "digest.latest_topics": "Aktuellste Themen vom %1",
     "digest.cta": "Klicke hier, um %1 zu besuchen",
     "digest.unsub.info": "Diese Zusammenfassung wurde dir aufgrund deiner Abonnement-Einstellungen gesendet.",

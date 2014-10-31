@@ -13,6 +13,6 @@
     "user.topics": "Emner opprettet av %1",
     "user.favourites": "%1 sine favoritt-innlegg",
     "user.settings": "Brukerinnstillinger",
-    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
-    "maintenance.messageIntro": "Additionally, the administrator has left this message:"
+    "maintenance.text": "%1 er for tiden under vedlikehold. Kom tilbake en annen gang.",
+    "maintenance.messageIntro": "I tillegg har administratoren skrevet denne meldingen:"
 }

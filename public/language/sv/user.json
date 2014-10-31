@@ -48,6 +48,7 @@
     "settings": "Inställningar",
     "show_email": "Visa min epost",
     "show_fullname": "Show My Full Name",
+    "restrict_chats": "Only allow chat messages from users I follow",
     "digest_label": "Prenumerera på sammanställt flöde",
     "digest_description": "Prenumerera på epostuppdateringar för det här forumet (notiser och ämnen) med en viss regelbundenhet",
     "digest_off": "Avslagen",

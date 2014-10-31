@@ -1,7 +1,7 @@
 {
-    "no_tag_topics": "There are no topics with this tag.",
-    "tags": "Tags",
-    "enter_tags_here": "Enter tags here. Press enter after each tag.",
-    "enter_tags_here_short": "Enter tags...",
-    "no_tags": "There are no tags yet."
+    "no_tag_topics": "Det er ingen emnet med denne taggen.",
+    "tags": "Tagger",
+    "enter_tags_here": "Skriv tagger her. Trykk enter etter hver tagg.",
+    "enter_tags_here_short": "Skriv tagger...",
+    "no_tags": "Det finnes ingen tagger enda."
 }

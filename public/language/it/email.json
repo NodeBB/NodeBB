@@ -9,7 +9,7 @@
     "reset.text1": "Abbiamo ricevuto una richiesta di reset della tua password, probabilmente perché l'hai dimenticata. Se non è così si prega di ignorare questa email.",
     "reset.text2": "Per confermare il reset della password per favore clicca il seguente link:",
     "reset.cta": "Clicca qui per resettare la tua password",
-    "digest.notifications": "You have unread notifications from %1:",
+    "digest.notifications": "Hai una notifica non letta da %1:",
     "digest.latest_topics": "Ultimi argomenti su %1",
     "digest.cta": "Clicca qui per visitare %1",
     "digest.unsub.info": "Questo sommario ti è stato inviato perché lo hai sottoscritto nelle tue impostazioni.",

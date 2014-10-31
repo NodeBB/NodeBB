@@ -1,8 +1,8 @@
 {
-    "groups": "Groups",
-    "view_group": "View Group",
-    "details.title": "Group Details",
-    "details.members": "Member List",
-    "details.has_no_posts": "This group's members have not made any posts.",
-    "details.latest_posts": "Latest Posts"
+    "groups": "Grupper",
+    "view_group": "Vis gruppe",
+    "details.title": "Gruppedetaljer",
+    "details.members": "Medlemsliste",
+    "details.has_no_posts": "Medlemmene i denne gruppen har ikke skrevet noen innlegg.",
+    "details.latest_posts": "Seneste innlegg"
 }

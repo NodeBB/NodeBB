@@ -72,7 +72,7 @@
     "topic_will_be_moved_to": "此主题将被移动到版块",
     "fork_topic_instruction": "点击将分割的帖子",
     "fork_no_pids": "未选中帖子！",
-    "fork_success": "Successfully forked topic! Click here to go to the forked topic.",
+    "fork_success": "成功分割主题! 点这里跳转到分割后的主题。",
     "composer.title_placeholder": "在此输入您主题的标题...",
     "composer.discard": "撤销",
     "composer.submit": "提交",

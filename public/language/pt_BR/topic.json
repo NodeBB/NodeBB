@@ -72,7 +72,7 @@
     "topic_will_be_moved_to": "Este tópico será movido para a categoria",
     "fork_topic_instruction": "Clique nos posts que você quer clonar",
     "fork_no_pids": "Nenhum post selecionado!",
-    "fork_success": "Successfully forked topic! Click here to go to the forked topic.",
+    "fork_success": "Tópico clonado com sucesso! Clique aqui para ir ao tópico clonado.",
     "composer.title_placeholder": "Digite aqui o título para o seu tópico...",
     "composer.discard": "Descartar",
     "composer.submit": "Enviar",

@@ -48,6 +48,7 @@
     "settings": "Paramètres",
     "show_email": "Afficher mon email",
     "show_fullname": "Afficher mon nom complet",
+    "restrict_chats": "Only allow chat messages from users I follow",
     "digest_label": "S’inscrire aux comptes-rendus",
     "digest_description": "S'abonner par email aux mises à jours de ce forum (nouvelles notifications et nouveaux sujets) selon le planning sélectionné.",
     "digest_off": "Désactivé",

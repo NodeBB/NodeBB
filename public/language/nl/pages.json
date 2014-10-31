@@ -13,6 +13,6 @@
     "user.topics": "Topics gecreëerd door %1",
     "user.favourites": "%1's Favoriete Berichten",
     "user.settings": "Gebruikersinstellingen",
-    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
-    "maintenance.messageIntro": "Additionally, the administrator has left this message:"
+    "maintenance.text": "%1 is momenteel in onderhoud modus. Probeer later opnieuw",
+    "maintenance.messageIntro": "daarnaast heeft de administrator het volgende bericht achtergelaten:"
 }

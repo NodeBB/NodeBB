@@ -48,6 +48,7 @@
     "settings": "Настройки",
     "show_email": "Показывать мой Email",
     "show_fullname": "Show My Full Name",
+    "restrict_chats": "Only allow chat messages from users I follow",
     "digest_label": "Подписаться на Дайджест",
     "digest_description": "Подписаться на Email обновления этого форума (новые уведомления и топики) согласно расписанию",
     "digest_off": "Выключить",

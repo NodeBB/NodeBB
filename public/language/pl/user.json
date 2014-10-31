@@ -48,6 +48,7 @@
     "settings": "Ustawienia",
     "show_email": "Wyświetlaj mój adres e-mail",
     "show_fullname": "Show My Full Name",
+    "restrict_chats": "Only allow chat messages from users I follow",
     "digest_label": "Przysyłaj okresowe podsumowanie wiadomości na forum",
     "digest_description": "Subskrybuj by dostawać maile z tego forum (nowe powiadomienia i tematy) zgodnie z ustalonym harmonogramem.",
     "digest_off": "Wyłączone",
