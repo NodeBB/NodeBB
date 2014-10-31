@@ -51,7 +51,7 @@
 			}
 		} catch (err) {
 			winston.error('Unable to initialize MongoDB! Is MongoDB installed? Error :' + err.message);
-			process.exit();
+			return callback(err);
 		}
 
 		var usernamePassword = '';
@@ -66,9 +66,9 @@
 			}
 		};
 		mongoClient.connect(connString, connOptions, function(err, _db) {
-			if(err) {
+			if (err) {
 				winston.error("NodeBB could not connect to your Mongo database. Mongo returned the following error: " + err.message);
-				process.exit();
+				return callback(err);
 			}
 
 			db = _db;
