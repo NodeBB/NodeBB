@@ -544,7 +544,8 @@ accountsController.getChats = function(req, res, next) {
 			return res.render('chats', {
 				chats: results.recentChats.users,
 				nextStart: results.recentChats.nextStart,
-				contacts: results.contacts
+				contacts: results.contacts,
+				allowed: true
 			});
 		}
 

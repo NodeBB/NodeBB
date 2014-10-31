@@ -25,8 +25,10 @@ var async = require('async'),
 				return callback(new Error('[[error:cant-vote-self-post]]'));
 			}
 
+			var now = Date.now();
+
 			if(type === 'upvote' && !unvote) {
-				db.sortedSetAdd('uid:' + uid + ':upvote', postData.timestamp, pid);
+				db.sortedSetAdd('uid:' + uid + ':upvote', now, pid);
 			} else {
 				db.sortedSetRemove('uid:' + uid + ':upvote', pid);
 			}
@@ -34,7 +36,7 @@ var async = require('async'),
 			if(type === 'upvote' || unvote) {
 				db.sortedSetRemove('uid:' + uid + ':downvote', pid);
 			} else {
-				db.sortedSetAdd('uid:' + uid + ':downvote', postData.timestamp, pid);
+				db.sortedSetAdd('uid:' + uid + ':downvote', now, pid);
 			}
 
 			user[type === 'upvote' ? 'incrementUserFieldBy' : 'decrementUserFieldBy'](postData.uid, 'reputation', 1, function (err, newreputation) {

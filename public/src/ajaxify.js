@@ -72,7 +72,7 @@ $(document).ready(function() {
 			if (ajaxify.isTemplateAvailable(tpl_url) && !!!templatesModule.config.force_refresh[tpl_url]) {
 				ajaxify.currentPage = url;
 
-				if (window.history && window.history.pushState) {
+				if (window.history && window.history.pushState && url !== '404') {
 					window.history[!quiet ? 'pushState' : 'replaceState']({
 						url: url + hash
 					}, url, RELATIVE_PATH + '/' + url + hash);

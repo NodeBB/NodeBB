@@ -152,7 +152,7 @@ define('navigator', ['forum/pagination'], function(pagination) {
 	}
 
 	navigator.scrollToPost = function(postIndex, highlight, duration, offset) {
-		if (!utils.isNumber(postIndex)) {
+		if (!utils.isNumber(postIndex) || !$('.post-container').length) {
 			return;
 		}
 
