@@ -17,9 +17,7 @@ provision.sh
 .DS_Store
 feeds/recent.rss
 
-# winston?
-error.log
-events.log
+logs/
 
 pidfile
 
