@@ -50,12 +50,13 @@ var db = require('./database'),
 				imageClass: 'auto'
 			};
 
-			db.setObject('category:' + cid, category, function(err) {
-				if(err) {
+			async.series([
+				async.apply(db.setObject, 'category:' + cid, category),
+				async.apply(db.sortedSetAdd, 'categories:cid', data.order, cid)
+			], function(err) {
+				if (err) {
 					return callback(err);
 				}
-
-				db.sortedSetAdd('categories:cid', data.order, cid);
 
 				callback(null, category);
 			});

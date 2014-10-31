@@ -148,7 +148,7 @@ var	async = require('async'),
 
 		async.parallel({
 			userData: function(next) {
-				User.getUserFields(uid, ['banned', 'lastposttime', 'joindate', 'email', 'email:confirmed'], next);
+				User.getUserFields(uid, ['banned', 'lastposttime', 'joindate', 'email', 'email:confirmed', 'reputation'], next);
 			},
 			exists: function(next) {
 				db.exists('user:' + uid, next);
@@ -185,9 +185,12 @@ var	async = require('async'),
 
 			var lastposttime = userData.lastposttime || 0;
 
-			if (now - parseInt(lastposttime, 10) < parseInt(meta.config.postDelay, 10) * 1000) {
+			if (parseInt(meta.config.newbiePostDelay, 10) > 0 && parseInt(meta.config.newbiePostDelayThreshold, 10) > parseInt(userData.reputation, 10) && now - parseInt(lastposttime, 10) < parseInt(meta.config.newbiePostDelay, 10) * 1000) {
+				return callback(new Error('[[error:too-many-posts-newbie, ' + meta.config.postDelay + ', ' + meta.config.newbiePostDelayThreshold + ']]'));
+			} else if (now - parseInt(lastposttime, 10) < parseInt(meta.config.postDelay, 10) * 1000) {
 				return callback(new Error('[[error:too-many-posts, ' + meta.config.postDelay + ']]'));
 			}
+
 			callback();
 		});
 	};

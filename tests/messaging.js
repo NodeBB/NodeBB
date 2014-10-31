@@ -23,6 +23,13 @@ describe("Messaging Library", function() {
 	});
 
 	describe(".canMessage()", function() {
+		it('should not error out', function(done) {
+			Messaging.canMessage(testUids[1], testUids[2], function(err, allowed) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
 		it("should allow messages to be sent to an unrestricted user", function(done) {
 			Messaging.canMessage(testUids[1], testUids[2], function(err, allowed) {
 				assert.strictEqual(allowed, true, 'should be true, received ' + allowed);

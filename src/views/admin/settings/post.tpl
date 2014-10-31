@@ -13,11 +13,34 @@
 				</select>
 			</div>
 
-			<strong>Seconds between Posts</strong><br /> <input type="text" class="form-control" value="10" data-field="postDelay"><br />
-			<strong>Seconds before new user can post</strong><br /> <input type="text" class="form-control" value="10" data-field="initialPostDelay"><br />
-			<strong>Minimum Title Length</strong><br /> <input type="text" class="form-control" value="3" data-field="minimumTitleLength"><br />
-			<strong>Maximum Title Length</strong><br /> <input type="text" class="form-control" value="255" data-field="maximumTitleLength"><br />
-			<strong>Minimum Post Length</strong><br /> <input type="text" class="form-control" value="8" data-field="minimumPostLength"><br />
+			<div class="form-group">
+				<label>Seconds between Posts</label>
+				<input type="number" class="form-control" value="10" data-field="postDelay">
+			</div>
+			<div class="form-group col-sm-6">
+				<label>Seconds between Posts for New Users</label>
+				<input type="number" class="form-control" value="120" data-field="newbiePostDelay">
+			</div>
+			<div class="form-group col-sm-6">
+				<label>Reputation threshold before this restriction is lifted</label>
+				<input type="number" class="form-control" value="3" data-field="newbiePostDelayThreshold">
+			</div>
+			<div class="form-group">
+				<label>Seconds before new user can post</label>
+				<input type="number" class="form-control" value="10" data-field="initialPostDelay">
+			</div>
+			<div class="form-group">
+				<label>Minimum Title Length</label>
+				<input type="number" class="form-control" value="3" data-field="minimumTitleLength">
+			</div>
+			<div class="form-group">
+				<label>Maximum Title Length</label>
+				<input type="number" class="form-control" value="255" data-field="maximumTitleLength">
+			</div>
+			<div class="form-group">
+				<label>Minimum Post Length</label>
+				<input type="number" class="form-control" value="8" data-field="minimumPostLength">
+			</div>
 			<div class="checkbox">
 				<label>
 					<input type="checkbox" data-field="disableSignatures"> <strong>Disable signatures</strong>

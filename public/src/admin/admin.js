@@ -89,6 +89,15 @@ var admin = {};
 			socket.emit('admin.restart');
 		});
 
+		Mousetrap.bind('ctrl+shift+a d', function() {
+			var tid = ajaxify.variables.get('topic_id'),
+				cid = ajaxify.variables.get('category_id');
+
+			if (tid && cid) {
+				socket.emit('topics.delete', { tids: [tid], cid: cid });
+			}
+		});
+
 		Mousetrap.bind('/', function(e) {
 			$('#acp-search input').focus();
 

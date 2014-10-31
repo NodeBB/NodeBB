@@ -16,6 +16,14 @@
         "value": 10
     },
     {
+        "field": "newbiePostDelay",
+        "value": 120
+    },
+    {
+        "field": "newbiePostDelayThreshold",
+        "value": 3
+    },
+    {
         "field": "minimumPostLength",
         "value": 8
     },

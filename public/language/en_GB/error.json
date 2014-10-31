@@ -49,6 +49,7 @@
 	"title-too-long": "Please enter a shorter title. Titles can't be longer than %1 characters.",
 	"invalid-title": "Invalid title!",
 	"too-many-posts": "You can only post once every %1 seconds - please wait before posting again",
+	"too-many-posts-newbie": "As a new registrant, you can only post once every %1 seconds until you have earned %2 reputation - please wait before posting again",
 	"file-too-big": "Maximum allowed file size is %1 kbs - please upload a smaller file",
 
 	"cant-vote-self-post": "You cannot vote for your own post",
