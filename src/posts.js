@@ -271,6 +271,9 @@ var async = require('async'),
 						}
 
 						var cids = topics.map(function(topic) {
+							if (topic) {
+								topic.title = validator.escape(topic.title);
+							}
 							return topic && topic.cid;
 						}).filter(function(value, index, array) {
 							return value && array.indexOf(value) === index;
@@ -320,9 +323,7 @@ var async = require('async'),
 				async.map(posts, function(post, next) {
 					post.user = results.users[post.uid];
 					post.topic = results.topics[post.tid];
-					post.topic.title = validator.escape(post.topic.title);
 					post.category = results.categories[post.topic.cid];
-
 					post.relativeTime = utils.toISOString(post.timestamp);
 
 					if (!post.content || !options.parse) {
