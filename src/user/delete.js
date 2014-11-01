@@ -56,7 +56,7 @@ module.exports = function(User) {
 					db.deleteObjectField('email:uid', userData.email.toLowerCase(), next);
 				},
 				function(next) {
-					db.sortedSetsRemove(['users:joindate', 'users:postcount', 'users:reputation'], uid, next);
+					db.sortedSetsRemove(['users:joindate', 'users:postcount', 'users:reputation', 'users:banned'], uid, next);
 				},
 				function(next) {
 					var keys = [
