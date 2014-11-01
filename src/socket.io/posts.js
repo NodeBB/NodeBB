@@ -227,7 +227,7 @@ function deleteOrRestore(command, socket, data, callback) {
 }
 
 SocketPosts.purge = function(socket, data, callback) {
-	if(!data) {
+	if(!data || !parseInt(data.pid, 10)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	postTools.purge(socket.uid, data.pid, function(err) {

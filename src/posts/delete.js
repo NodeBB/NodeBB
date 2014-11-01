@@ -102,29 +102,35 @@ module.exports = function(Posts) {
 	}
 
 	Posts.purge = function(pid, callback) {
-		async.parallel([
-			function(next) {
-				deletePostFromTopicAndUser(pid, next);
-			},
-			function(next) {
-				deletePostFromCategoryRecentPosts(pid, next);
-			},
-			function(next) {
-				deletePostFromUsersFavourites(pid, next);
-			},
-			function(next) {
-				deletePostFromUsersVotes(pid, next);
-			},
-			function(next) {
-				db.sortedSetsRemove(['posts:pid', 'posts:flagged'], pid, next);
-			},
-		], function(err) {
-			if (err) {
+		Posts.exists(pid, function(err, exists) {
+			if (err || !exists) {
 				return callback(err);
 			}
 
-			plugins.fireHook('action:post.delete', pid);
-			db.delete('post:' + pid, callback);
+			async.parallel([
+				function(next) {
+					deletePostFromTopicAndUser(pid, next);
+				},
+				function(next) {
+					deletePostFromCategoryRecentPosts(pid, next);
+				},
+				function(next) {
+					deletePostFromUsersFavourites(pid, next);
+				},
+				function(next) {
+					deletePostFromUsersVotes(pid, next);
+				},
+				function(next) {
+					db.sortedSetsRemove(['posts:pid', 'posts:flagged'], pid, next);
+				},
+			], function(err) {
+				if (err) {
+					return callback(err);
+				}
+
+				plugins.fireHook('action:post.delete', pid);
+				db.delete('post:' + pid, callback);
+			});
 		});
 	};
 

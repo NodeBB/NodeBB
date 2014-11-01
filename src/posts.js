@@ -102,6 +102,10 @@ var async = require('async'),
 		], callback);
 	};
 
+	Posts.exists = function(pid, callback) {
+		db.isSortedSetMember('posts:pid', pid, callback);
+	};
+
 	Posts.getPostsByTid = function(tid, set, start, end, uid, reverse, callback) {
 		Posts.getPidsFromSet(set, start, end, reverse, function(err, pids) {
 			if(err) {

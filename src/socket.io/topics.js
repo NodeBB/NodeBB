@@ -240,6 +240,9 @@ SocketTopics.unpin = function(socket, data, callback) {
 };
 
 function doTopicAction(action, socket, data, callback) {
+	if (!socket.uid) {
+		return;
+	}
 	if(!data || !Array.isArray(data.tids) || !data.cid) {
 		return callback(new Error('[[error:invalid-tid]]'));
 	}

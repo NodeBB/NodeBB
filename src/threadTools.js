@@ -72,22 +72,28 @@ var winston = require('winston'),
 	}
 
 	ThreadTools.purge = function(tid, uid, callback) {
-		batch.processSortedSet('tid:' + tid + ':posts', function(pids, next) {
-			async.eachLimit(pids, 10, posts.purge, next);
-		}, {alwaysStartAt: 0}, function(err) {
-			if (err) {
+		ThreadTools.exists(tid, function(err, exists) {
+			if (err || !exists) {
 				return callback(err);
 			}
 
-			topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
+			batch.processSortedSet('tid:' + tid + ':posts', function(pids, next) {
+				async.eachLimit(pids, 10, posts.purge, next);
+			}, {alwaysStartAt: 0}, function(err) {
 				if (err) {
 					return callback(err);
 				}
-				posts.purge(mainPid, function(err) {
+
+				topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
 					if (err) {
 						return callback(err);
 					}
-					topics.purge(tid, callback);
+					posts.purge(mainPid, function(err) {
+						if (err) {
+							return callback(err);
+						}
+						topics.purge(tid, callback);
+					});
 				});
 			});
 		});
