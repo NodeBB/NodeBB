@@ -36,6 +36,10 @@
 			case 'pt_BR':
 				languageCode = 'pt-br';
 				break;
+				
+			case 'nb':
+				languageCode = 'no';
+				break;
 
 			case 'zh_TW':
 				languageCode = 'zh-TW';
