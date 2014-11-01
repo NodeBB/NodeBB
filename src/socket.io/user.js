@@ -78,19 +78,19 @@ SocketUser.reset = {};
 
 SocketUser.reset.send = function(socket, email, callback) {
 	if (email) {
-		user.reset.send(socket, email, callback);
+		user.reset.send(email, callback);
 	}
 };
 
 SocketUser.reset.valid = function(socket, code, callback) {
 	if (code) {
-		user.reset.validate(socket, code, callback);
+		user.reset.validate(code, callback);
 	}
 };
 
 SocketUser.reset.commit = function(socket, data, callback) {
 	if(data && data.code && data.password) {
-		user.reset.commit(socket, data.code, data.password, callback);
+		user.reset.commit(data.code, data.password, callback);
 	}
 };
 
@@ -112,26 +112,30 @@ SocketUser.checkStatus = function(socket, uid, callback) {
 };
 
 SocketUser.changePassword = function(socket, data, callback) {
-	if(data) {
+	if (data && socket.uid) {
 		user.changePassword(socket.uid, data, callback);
 	}
 };
 
 SocketUser.updateProfile = function(socket, data, callback) {
-	if(!data || !data.uid) {
+	if (!socket.uid) {
+		return callback('[[error:invalid-uid]]');
+	}
+
+	if (!data || !data.uid) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	if(socket.uid === parseInt(data.uid, 10)) {
+	if (socket.uid === parseInt(data.uid, 10)) {
 		return user.updateProfile(socket.uid, data, callback);
 	}
 
 	user.isAdministrator(socket.uid, function(err, isAdmin) {
-		if(err) {
+		if (err) {
 			return callback(err);
 		}
 
-		if(!isAdmin) {
+		if (!isAdmin) {
 			return callback(new Error('[[error:no-privileges]]'));
 		}
 
@@ -140,7 +144,11 @@ SocketUser.updateProfile = function(socket, data, callback) {
 };
 
 SocketUser.changePicture = function(socket, data, callback) {
-	if(!data) {
+	if (!socket.uid) {
+		return callback('[[error:invalid-uid]]');
+	}
+
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -305,10 +313,16 @@ SocketUser.getOnlineAnonCount = function(socket, data, callback) {
 };
 
 SocketUser.getUnreadCount = function(socket, data, callback) {
+	if (!socket.uid) {
+		return callback(null, 0);
+	}
 	topics.getTotalUnread(socket.uid, callback);
 };
 
 SocketUser.getUnreadChatCount = function(socket, data, callback) {
+	if (!socket.uid) {
+		return callback(null, 0);
+	}
 	messaging.getUnreadCount(socket.uid, callback);
 };
 

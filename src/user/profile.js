@@ -223,7 +223,7 @@ module.exports = function(User) {
 	}
 
 	User.changePassword = function(uid, data, callback) {
-		if(!data || !data.uid) {
+		if (!uid || !data || !data.uid) {
 			return callback(new Error('[[error:invalid-uid]]'));
 		}
 
