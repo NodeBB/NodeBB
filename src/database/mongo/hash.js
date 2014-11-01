@@ -63,7 +63,7 @@ module.exports = function(db, module) {
 			_id: 0
 		};
 		_fields[field] = 1;
-		db.collection('objects').findOne({_key: key}, _fields, function(err, item) {
+		db.collection('objects').findOne({_key: key}, {fields: _fields}, function(err, item) {
 			if (err || !item) {
 				return callback(err, null);
 			}
@@ -84,7 +84,7 @@ module.exports = function(db, module) {
 			fields[i] = helpers.fieldToString(fields[i]);
 			_fields[fields[i]] = 1;
 		}
-		db.collection('objects').findOne({_key: key}, _fields, function(err, item) {
+		db.collection('objects').findOne({_key: key}, {fields: _fields}, function(err, item) {
 			if (err) {
 				return callback(err);
 			}
@@ -111,7 +111,7 @@ module.exports = function(db, module) {
 			_fields[fields[i]] = 1;
 		}
 
-		db.collection('objects').find({_key: {$in: keys}}, _fields).toArray(function(err, items) {
+		db.collection('objects').find({_key: {$in: keys}}, {fields: _fields}).toArray(function(err, items) {
 			if (err) {
 				return callback(err);
 			}
