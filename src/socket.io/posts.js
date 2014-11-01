@@ -96,7 +96,14 @@ SocketPosts.unfavourite = function(socket, data, callback) {
 };
 
 function favouriteCommand(command, eventName, socket, data, callback) {
-	if(data && data.pid && data.room_id) {
+	if(!data || !data.pid || !data.room_id) {
+		return;
+	}
+	posts.exists(data.pid, function(err, exists) {
+		if (err || !exists) {
+			return callback(err);
+		}
+
 		favourites[command](data.pid, socket.uid, function(err, result) {
 			if (err) {
 				return callback(err);
@@ -109,7 +116,7 @@ function favouriteCommand(command, eventName, socket, data, callback) {
 			}
 			callback();
 		});
-	}
+	});
 }
 
 SocketPosts.sendNotificationToPostOwner = function(pid, fromuid, notification) {
@@ -121,7 +128,7 @@ SocketPosts.sendNotificationToPostOwner = function(pid, fromuid, notification) {
 			return;
 		}
 
-		if (fromuid === parseInt(postData.uid, 10)) {
+		if (!postData.uid || fromuid === parseInt(postData.uid, 10)) {
 			return;
 		}
 
