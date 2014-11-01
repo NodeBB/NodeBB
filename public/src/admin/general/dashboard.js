@@ -28,6 +28,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 
 			intervals.rooms = null;
 			intervals.graphs = null;
+			usedTopicColors.length = 0;
 		});
 
 		$('#logout-link').on('click', function() {
