@@ -36,6 +36,9 @@ var	async = require('async'),
 	};
 
 SocketAdmin.before = function(socket, method, next) {
+	if (!socket.uid) {
+		return;
+	}
 	user.isAdministrator(socket.uid, function(err, isAdmin) {
 		if (!err && isAdmin) {
 			next();
