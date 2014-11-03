@@ -118,6 +118,28 @@ User.validateEmail = function(socket, uids, callback) {
 	}, callback);
 };
 
+User.sendPasswordResetEmail = function(socket, uids, callback) {
+	if (!Array.isArray(uids)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	uids = uids.filter(function(uid) {
+		return parseInt(uid, 10);
+	});
+
+	async.each(uids, function(uid, next) {
+		user.getUserFields(uid, ['email', 'username'], function(err, userData) {
+			if (err) {
+				return next(err);
+			}
+			if (!userData.email) {
+				return next(new Error('[[error:user-doesnt-have-email, ' + userData.username + ']]'));
+			}
+			user.reset.send(userData.email, next);
+		});
+	}, callback);
+};
+
 User.deleteUsers = function(socket, uids, callback) {
 	if(!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));

@@ -124,6 +124,20 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 			return false;
 		});
 
+		$('.password-reset-email').on('click', function() {
+			var uids = getSelectedUids();
+			if (!uids.length) {
+				return;
+			}
+
+			bootbox.confirm('Do you want to send password reset email(s) to these user(s)?', function(confirm) {
+				if (confirm) {
+					socket.emit('admin.user.sendPasswordResetEmail', uids, done('Emails sent'));
+				}
+			});
+			return false;
+		});
+
 		$('.delete-user').on('click', function() {
 			var uids = getSelectedUids();
 			if (!uids.length) {
