@@ -1,5 +1,5 @@
 "use strict";
-/*global define, socket, app, admin, utils, RELATIVE_PATH*/
+/*global define, socket, app, admin, utils, bootbox, RELATIVE_PATH*/
 
 define('admin/manage/flags', ['forum/infinitescroll', 'admin/modules/selectable'], function(infinitescroll, selectable) {
 	var	Flags = {};
@@ -25,10 +25,15 @@ define('admin/manage/flags', ['forum/infinitescroll', 'admin/modules/selectable'
 	function handleDelete() {
 		$('.flags').on('click', '.delete', function() {
 			var btn = $(this);
-			var pid = btn.siblings('[data-pid]').attr('data-pid');
-			var tid = btn.siblings('[data-pid]').attr('data-tid');
-			socket.emit('posts.delete', {pid: pid, tid: tid}, function(err) {
-				done(err, btn);
+			bootbox.confirm('Do you really want to delete this post?', function(confirm) {
+				if(!confirm) {
+					return;
+				}
+				var pid = btn.siblings('[data-pid]').attr('data-pid');
+				var tid = btn.siblings('[data-pid]').attr('data-tid');
+				socket.emit('posts.delete', {pid: pid, tid: tid}, function(err) {
+					done(err, btn);
+				});
 			});
 		});
 	}
