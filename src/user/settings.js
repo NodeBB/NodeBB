@@ -1,24 +1,16 @@
 
 'use strict';
 
-var	meta = require('./../meta'),
-	db = require('./../database'),
-	plugins = require('./../plugins');
+var	meta = require('../meta'),
+	db = require('../database'),
+	plugins = require('../plugins');
 
 module.exports = function(User) {
 
 	User.getSettings = function(uid, callback) {
-		db.getObject('user:' + uid + ':settings', function(err, settings) {
-			if(err) {
-				return callback(err);
-			}
-
-			if(!settings) {
-				settings = {};
-			}
-
+		function onSettingsLoaded(settings) {
 			plugins.fireHook('filter:user.getSettings', {uid: uid, settings: settings}, function(err, data) {
-				if(err) {
+				if (err) {
 					return callback(err);
 				}
 
@@ -41,6 +33,18 @@ module.exports = function(User) {
 
 				callback(null, settings);
 			});
+		}
+
+		if (!parseInt(uid, 10)) {
+			return onSettingsLoaded({});
+		}
+
+		db.getObject('user:' + uid + ':settings', function(err, settings) {
+			if (err) {
+				return callback(err);
+			}
+
+			onSettingsLoaded(settings ? settings : {});
 		});
 	};
 

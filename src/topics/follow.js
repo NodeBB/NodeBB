@@ -15,6 +15,9 @@ module.exports = function(Topics) {
 
 
 	Topics.isFollowing = function(tid, uid, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(null, false);
+		}
 		db.isSetMember('tid:' + tid + ':followers', uid, callback);
 	};
 
