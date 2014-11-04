@@ -123,7 +123,7 @@ function isGuestAllowedTo(privilege, cids, callback) {
 }
 
 helpers.hasEnoughReputationFor = function(privilege, uid, callback) {
-	if (parseInt(meta.config['privileges:disabled'], 10)) {
+	if (parseInt(meta.config['privileges:disabled'], 10) || !parseInt(uid, 10)) {
 		return callback(null, false);
 	}
 
@@ -131,7 +131,18 @@ helpers.hasEnoughReputationFor = function(privilege, uid, callback) {
 		if (err) {
 			return callback(null, false);
 		}
-		callback(null, parseInt(reputation, 10) >= parseInt(meta.config[privilege], 10));
+
+		reputation = parseInt(reputation, 10);
+
+		if (Array.isArray(privilege)) {
+			for(var i=0; i<privilege.length; ++i) {
+				if (reputation >= parseInt(meta.config[privilege[i]], 10)) {
+					return callback(null, true);
+				}
+			}
+		} else {
+			callback(null, reputation >= parseInt(meta.config[privilege], 10));
+		}
 	});
 };
 

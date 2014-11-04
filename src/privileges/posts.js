@@ -20,11 +20,8 @@ module.exports = function(privileges) {
 			return callback(null, []);
 		}
 		async.parallel({
-			manage_content: function(next) {
-				helpers.hasEnoughReputationFor('privileges:manage_content', uid, next);
-			},
-			manage_topic: function(next) {
-				helpers.hasEnoughReputationFor('privileges:manage_topic', uid, next);
+			manage: function(next) {
+				helpers.hasEnoughReputationFor(['privileges:manage_content', 'privileges:manage_topic'], uid, next);
 			},
 			isAdministrator: function(next) {
 				user.isAdministrator(uid, next);
@@ -34,7 +31,7 @@ module.exports = function(privileges) {
 				return callback(err);
 			}
 
-			var userPriv = userResults.isAdministrator || userResults.manage_topic || userResults.manage_content;
+			var userPriv = userResults.isAdministrator || userResults.manage;
 
 			async.parallel({
 				isOwner: function(next) {
@@ -120,10 +117,7 @@ module.exports = function(privileges) {
 							posts.isOwner(pid, uid, next);
 						},
 						function(next) {
-							helpers.hasEnoughReputationFor('privileges:manage_content', uid, next);
-						},
-						function(next) {
-							helpers.hasEnoughReputationFor('privileges:manage_topic', uid, next);
+							helpers.hasEnoughReputationFor(['privileges:manage_content', 'privileges:manage_topic'], uid, next);
 						}
 					], next);
 				});
