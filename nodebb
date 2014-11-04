@@ -29,7 +29,7 @@ case "$1" in
 		echo "  \"./nodebb log\" to view server output";
 
 		# Start the loader daemon
-		"$node" loader -d "$@"
+		"$node" loader "$@"
 		;;
 
 	stop)
