@@ -73,7 +73,6 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 				module.appendChatMessage(modal, data.message);
 
 				if (modal.is(":visible")) {
-					module.bringModalToTop(modal);
 					taskbar.updateActive(modal.attr('UUID'));
 					Chats.scrollToBottom(modal.find('#chat-content'));
 				} else {
