@@ -335,9 +335,9 @@ adminController.themes.get = function(req, res, next) {
 			var themeConfig = require(path.join(themeDir, 'theme.json')),
 				screenshotPath = path.join(themeDir, themeConfig.screenshot);
 			if (themeConfig.screenshot && fs.existsSync(screenshotPath)) {
-				res.sendfile(screenshotPath);
+				res.sendFile(screenshotPath);
 			} else {
-				res.sendfile(path.join(__dirname, '../../public/images/themes/default.png'));
+				res.sendFile(path.join(__dirname, '../../public/images/themes/default.png'));
 			}
 		} else {
 			return next();
