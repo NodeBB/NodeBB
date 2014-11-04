@@ -459,10 +459,11 @@ var async = require('async'),
 				});
 			} else {
 				Groups.create(groupName, '', function(err) {
-					if (err) {
+					if (err && err.message !== '[[error:group-already-exists]]') {
 						winston.error('[groups.join] Could not create new hidden group: ' + err.message);
 						return callback(err);
 					}
+
 					Groups.hide(groupName);
 					db.setAdd('group:' + groupName + ':members', uid, callback);
 					plugins.fireHook('action:groups.join', {
