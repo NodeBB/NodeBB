@@ -314,22 +314,16 @@ var socket,
 		}
 
 		require(['chat'], function (chat) {
-			chat.canMessage(touid, function(err) {
-				function loadAndCenter(chatModal) {
-					chat.load(chatModal.attr('UUID'));
-					chat.center(chatModal);
-				}
+			function loadAndCenter(chatModal) {
+				chat.load(chatModal.attr('UUID'));
+				chat.center(chatModal);
+			}
 
-				if (err) {
-					return app.alertError(err.message);
-				}
-
-				if (!chat.modalExists(touid)) {
-					chat.createModal(username, touid, loadAndCenter);
-				} else {
-					loadAndCenter(chat.getModal(touid));
-				}
-			});
+			if (!chat.modalExists(touid)) {
+				chat.createModal(username, touid, loadAndCenter);
+			} else {
+				loadAndCenter(chat.getModal(touid));
+			}
 		});
 	};
 

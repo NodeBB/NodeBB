@@ -244,6 +244,14 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 					checkStatus(chatModal);
 				});
 
+				module.canMessage(touid, function(err) {
+					if (err) {
+						// Disable the text input
+						chatModal.find('input[type="text"]').attr('disabled', true);
+						console.log('disabling');
+					}
+				});
+
 				chatModal.find('.user-typing .text').translateText('[[modules:chat.user_typing, ' + username + ']]');
 
 				taskbar.push('chat', chatModal.attr('UUID'), {
