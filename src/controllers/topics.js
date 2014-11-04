@@ -31,14 +31,11 @@ topicsController.get = function(req, res, next) {
 				privileges: function(next) {
 					privileges.topics.get(tid, uid, next);
 				},
-				postCount: function(next) {
-					topics.getPostCount(tid, next);
-				},
 				settings: function(next) {
 					user.getSettings(uid, next);
 				},
-				slug: function(next) {
-					topics.getTopicField(tid, 'slug', next);
+				topic: function(next) {
+					topics.getTopicFields(tid, ['slug', 'postcount'], next);
 				}
 			}, next);
 		},
@@ -50,7 +47,7 @@ topicsController.get = function(req, res, next) {
 				return categoriesController.notFound(req, res);
 			}
 
-			if (tid + '/' + req.params.slug !== results.slug) {
+			if (tid + '/' + req.params.slug !== results.topic.slug) {
 				return categoriesController.notFound(req, res);
 			}
 
@@ -59,7 +56,7 @@ topicsController.get = function(req, res, next) {
 			}
 
 			var settings = results.settings;
-			var postCount = parseInt(results.postCount, 10);
+			var postCount = parseInt(results.topic.postcount, 10);
 			var pageCount = Math.ceil((postCount - 1) / settings.postsPerPage);
 
 			if (utils.isNumber(req.params.post_index)) {
