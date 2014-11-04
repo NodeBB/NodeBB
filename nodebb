@@ -43,7 +43,7 @@ case "$1" in
 		fi
 		;;
 
-	reload|restart)
+	restart)
 		pidExists;
 		if [ 0 -eq $? ];
 			then
@@ -51,6 +51,17 @@ case "$1" in
 			else
 				echo "Restarting NodeBB.";
 				kill -1 $(cat pidfile);
+		fi
+		;;
+
+	reload)
+		pidExists;
+		if [ 0 -eq $? ];
+			then
+				echo "NodeBB could not be reloaded, as a running instance could not be found.";
+			else
+				echo "Reloading NodeBB.";
+				kill -12 $(cat pidfile);
 		fi
 		;;
 

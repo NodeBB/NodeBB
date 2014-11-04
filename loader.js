@@ -41,6 +41,7 @@ Loader.init = function(callback) {
 	}
 
 	process.on('SIGHUP', Loader.restart);
+	process.on('SIGUSR2', Loader.reload);
 	callback();
 };
 
