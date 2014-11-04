@@ -248,7 +248,6 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 					if (err) {
 						// Disable the text input
 						chatModal.find('input[type="text"]').attr('disabled', true);
-						console.log('disabling');
 					}
 				});
 
