@@ -42,19 +42,7 @@
 			</div>
 			<!-- END stats -->
 
-			<div class="col-lg-12">
-				<div class="panel panel-default">
-					<div class="panel-heading">Notices</div>
-					<div class="panel-body">
-					<!-- BEGIN notices -->
-						<div>
-							<!-- IF notices.done --><i class="fa fa-fw fa-check text-success"></i> {notices.doneText}<!-- ELSE --><i class="fa fa-fw fa-times text-danger"></i> {notices.notDoneText}<!-- ENDIF notices.done -->
-						</div>
-					<!-- END notices -->
-					</div>
-				</div>
-
-
+			<div class="col-lg-6">
 				<div class="panel panel-default">
 					<div class="panel-heading">Updates</div>
 					<div class="panel-body">
@@ -72,6 +60,19 @@
 							Restarting your NodeBB will drop all existing connections. A reload is lighter and is probably
 							what you want 99% of the time.
 						</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">Notices</div>
+					<div class="panel-body">
+					<!-- BEGIN notices -->
+						<div>
+							<!-- IF notices.done --><i class="fa fa-fw fa-check text-success"></i> {notices.doneText}<!-- ELSE --><i class="fa fa-fw fa-times text-danger"></i> {notices.notDoneText}<!-- ENDIF notices.done -->
+						</div>
+					<!-- END notices -->
 					</div>
 				</div>
 			</div>
