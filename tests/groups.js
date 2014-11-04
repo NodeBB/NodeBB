@@ -285,4 +285,8 @@ describe('Groups', function() {
 			});
 		});
 	});
+
+	after(function() {
+		db.flushdb();
+	});
 });

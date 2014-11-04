@@ -362,4 +362,8 @@ describe('Test database', function() {
 		});
 
 	});
+
+	after(function() {
+		db.flushdb();
+	});
 });
