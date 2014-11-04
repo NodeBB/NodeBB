@@ -175,7 +175,8 @@ function handleErrors(err, req, res, next) {
 	// we may use properties of the error object
 	// here and next(err) appropriately, or if
 	// we possibly recovered from the error, simply next().
-	console.error(err.stack);
+	//console.error(err.stack, req.path);
+	winston.error(req.path + '\n', err.stack);
 
 	var status = err.status || 500;
 	res.status(status);
