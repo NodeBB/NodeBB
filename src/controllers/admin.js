@@ -253,6 +253,9 @@ adminController.extend.widgets = function(req, res, next) {
 			plugins.fireHook('filter:widgets.getWidgets', [], next);
 		}
 	}, function(err, widgetData) {
+		if (err) {
+			return next(err);
+		}
 		widgetData.areas.push({ name: 'Draft Zone', template: 'global', location: 'drafts' });
 
 		async.each(widgetData.areas, function(area, next) {
@@ -261,6 +264,9 @@ adminController.extend.widgets = function(req, res, next) {
 				next(err);
 			});
 		}, function(err) {
+			if (err) {
+				return next(err);
+			}
 			for (var w in widgetData.widgets) {
 				if (widgetData.widgets.hasOwnProperty(w)) {
 					// if this gets anymore complicated, it needs to be a template

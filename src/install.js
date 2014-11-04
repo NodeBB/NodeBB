@@ -220,7 +220,7 @@ install.installDbDependencies = function(server_conf, next) {
 
 	npm.load({}, function(err) {
 		if (err) {
-			next(err);
+			return next(err);
 		}
 
 		npm.config.set('spin', false);
