@@ -115,7 +115,8 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 		});
 
 		socket.on('event:user_status_change', function(data) {
-			updateStatus(data.status);
+			var modal = module.getModal(data.uid);
+			updateStatus(modal, data.status);
 		});
 	};
 
@@ -148,13 +149,13 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 			if (err) {
 				return app.alertError(err.message);
 			}
-			updateStatus(status);
+			updateStatus(chatModal, status);
 		});
 	}
 
-	function updateStatus(status) {
+	function updateStatus(chatModal, status) {
 		translator.translate('[[global:' + status + ']]', function(translated) {
-			$('#chat-user-status').attr('class', 'fa fa-circle status ' + status)
+			chatModal.find('#chat-user-status').attr('class', 'fa fa-circle status ' + status)
 				.attr('title', translated)
 				.attr('data-original-title', translated);
 		});
@@ -175,6 +176,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 				chatModal.css('position', 'fixed');
 				chatModal.css('zIndex', 100);
 				chatModal.appendTo($('body'));
+				module.center(chatModal);
 				chatModal.draggable({
 					start:function() {
 						module.bringModalToTop(chatModal);
@@ -268,9 +270,17 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 	};
 
 	module.center = function(chatModal) {
-		chatModal.css("left", Math.max(0, (($(window).width() - $(chatModal).outerWidth()) / 2) + $(window).scrollLeft()) + "px");
-		chatModal.css("top", Math.max(0, $(window).height() / 2 - $(chatModal).outerHeight() / 2) + "px");
+		var hideAfter = false;
+		if (chatModal.hasClass('hide')) {
+			chatModal.removeClass('hide');
+			hideAfter = true;
+		}
+		chatModal.css('left', Math.max(0, (($(window).width() - $(chatModal).outerWidth()) / 2) + $(window).scrollLeft()) + 'px');
+		chatModal.css('top', Math.max(0, $(window).height() / 2 - $(chatModal).outerHeight() / 2) + 'px');
 		chatModal.find('#chat-message-input').focus();
+		if (hideAfter) {
+			chatModal.addClass('hide');
+		}
 		return chatModal;
 	};
 
@@ -280,7 +290,6 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 		checkStatus(chatModal);
 		taskbar.updateActive(uuid);
 		Chats.scrollToBottom(chatModal.find('#chat-content'));
-		module.center(chatModal);
 		module.bringModalToTop(chatModal);
 		socket.emit('modules.chats.markRead', chatModal.attr('touid'));
 	};

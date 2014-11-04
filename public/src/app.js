@@ -315,19 +315,19 @@ var socket,
 
 		require(['chat'], function (chat) {
 			chat.canMessage(touid, function(err) {
-				if (!err) {
-					if (!chat.modalExists(touid)) {
-						chat.createModal(username, touid, loadAndCenter);
-					} else {
-						loadAndCenter(chat.getModal(touid));
-					}
+				function loadAndCenter(chatModal) {
+					chat.load(chatModal.attr('UUID'));
+					chat.center(chatModal);
+				}
 
-					function loadAndCenter(chatModal) {
-						chat.load(chatModal.attr('UUID'));
-						chat.center(chatModal);
-					}
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				if (!chat.modalExists(touid)) {
+					chat.createModal(username, touid, loadAndCenter);
 				} else {
-					app.alertError(err.message);
+					loadAndCenter(chat.getModal(touid));
 				}
 			});
 		});

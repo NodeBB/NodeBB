@@ -30,10 +30,7 @@ define('taskbar', function() {
 						module.minimize(uuid);
 					}
 				});
-			});
-
-			this.taskbar.on('click', 'li a', function(e) {
-				e.preventDefault();
+				return false;
 			});
 
 			taskbar.initialized = true;
@@ -50,7 +47,6 @@ define('taskbar', function() {
 		},
 
 		discard: function(module, uuid) {
-			// Commit
 			var btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
 			btnEl.remove();
 			taskbar.update();
