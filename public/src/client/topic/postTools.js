@@ -24,7 +24,6 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		postEl.find('.purge').toggleClass('hidden', !isDeleted);
 		postEl.find('.delete .i').toggleClass('fa-trash-o', !isDeleted).toggleClass('fa-history', isDeleted);
 		postEl.find('.delete span').translateHtml(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]');
-
 	};
 
 	PostTools.updatePostCount = function() {

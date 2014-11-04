@@ -404,8 +404,12 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 	function toggleModTools(pid, privileges) {
 		var postEl = $('.post-row[data-pid="' + pid + '"]');
 
-		postEl.find('.edit, .delete').toggleClass('hidden', !privileges.editable);
-		postEl.find('.move').toggleClass('hidden', !privileges.move);
+		if (!privileges.editable) {
+			postEl.find('.edit, .delete, .purge').remove();
+		}
+		if (!privileges.move) {
+			postEl.find('.move').remove();
+		}
 		postEl.find('.reply, .quote').toggleClass('hidden', !$('.post_reply').length);
 		var isSelfPost = parseInt(postEl.attr('data-uid'), 10) === parseInt(app.uid, 10);
 		postEl.find('.chat, .flag').toggleClass('hidden', isSelfPost || !app.uid);

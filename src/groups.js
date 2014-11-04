@@ -159,6 +159,9 @@ var async = require('async'),
 	};
 
 	Groups.isMember = function(uid, groupName, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(null, false);
+		}
 		db.isSetMember('group:' + groupName + ':members', uid, callback);
 	};
 
@@ -167,6 +170,9 @@ var async = require('async'),
 	};
 
 	Groups.isMemberOfGroups = function(uid, groups, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(null, groups.map(function() {return false;}));
+		}
 		groups = groups.map(function(groupName) {
 			return 'group:' + groupName + ':members';
 		});
@@ -450,7 +456,7 @@ var async = require('async'),
 				plugins.fireHook('action:groups.join', {
 					groupName: groupName,
 					uid: uid
-				});				
+				});
 			} else {
 				Groups.create(groupName, '', function(err) {
 					if (err) {
