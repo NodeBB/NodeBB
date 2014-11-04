@@ -20,10 +20,11 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	PostTools.toggle = function(pid, isDeleted) {
 		var postEl = $('#post-container li[data-pid="' + pid + '"]');
 
-		postEl.find('.quote, .favourite, .post_reply, .chat').toggleClass('hidden', isDeleted);
+		postEl.find('.quote, .favourite, .post_reply, .chat, .flag').toggleClass('hidden', isDeleted);
 		postEl.find('.purge').toggleClass('hidden', !isDeleted);
 		postEl.find('.delete .i').toggleClass('fa-trash-o', !isDeleted).toggleClass('fa-history', isDeleted);
 		postEl.find('.delete span').translateHtml(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]');
+
 	};
 
 	PostTools.updatePostCount = function() {

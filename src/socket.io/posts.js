@@ -99,9 +99,20 @@ function favouriteCommand(command, eventName, socket, data, callback) {
 	if(!data || !data.pid || !data.room_id) {
 		return;
 	}
-	posts.exists(data.pid, function(err, exists) {
-		if (err || !exists) {
+	async.parallel({
+		exists: function(next) {
+			posts.exists(data.pid, next);
+		},
+		deleted: function(next) {
+			posts.getPostField(data.pid, 'deleted', next);
+		}
+	}, function(err, results) {
+		if (err || !results.exists) {
 			return callback(err);
+		}
+
+		if (parseInt(results.deleted, 10) === 1) {
+			return callback(new Error('[[error:post-deleted]]'));
 		}
 
 		favourites[command](data.pid, socket.uid, function(err, result) {
@@ -301,9 +312,12 @@ SocketPosts.flag = function(socket, pid, callback) {
 			}
 			userName = userData.username;
 
-			posts.getPostFields(pid, ['tid', 'uid', 'content'], next);
+			posts.getPostFields(pid, ['tid', 'uid', 'content', 'deleted'], next);
 		},
 		function(postData, next) {
+			if (parseInt(postData.deleted) === 1) {
+				return next(new Error('[[error:post-deleted]]'));
+			}
 			post = postData;
 			topics.getTopicField(postData.tid, 'title', next);
 		},
