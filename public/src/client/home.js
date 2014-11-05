@@ -31,6 +31,9 @@ define('forum/home', function() {
 
 	function renderNewPost(cid, post) {
 		var category = $('.home .category-item[data-cid="' + cid + '"]');
+		if (!category.length) {
+			return;
+		}
 		var categoryBox = category.find('.category-box');
 		var numRecentReplies = category.attr('data-numRecentReplies');
 		if (!numRecentReplies || !parseInt(numRecentReplies, 10)) {
