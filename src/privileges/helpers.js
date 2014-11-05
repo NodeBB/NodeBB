@@ -140,6 +140,9 @@ helpers.hasEnoughReputationFor = function(privilege, uid, callback) {
 					return callback(null, true);
 				}
 			}
+
+			// Does not satisfy any of those thresholds?
+			return callback(null, false);
 		} else {
 			callback(null, reputation >= parseInt(meta.config[privilege], 10));
 		}

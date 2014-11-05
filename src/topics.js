@@ -265,6 +265,7 @@ var async = require('async'),
 						}
 
 						pids = topicData.mainPid ? [topicData.mainPid].concat(pids) : pids;
+
 						if (!pids.length) {
 							return next(null, []);
 						}
@@ -277,18 +278,10 @@ var async = require('async'),
 						});
 					});
  				},
-				category: function(next) {
-					Topics.getCategoryData(tid, next);
-				},
-				threadTools: function(next) {
-					plugins.fireHook('filter:topic.thread_tools', [], next);
-				},
-				tags: function(next) {
-					Topics.getTopicTagsObjects(tid, next);
-				},
-				isFollowing: function(next) {
-					Topics.isFollowing(tid, uid, next);
-				}
+				category: async.apply(Topics.getCategoryData, tid),
+				threadTools: async.apply(plugins.fireHook, 'filter:topic.thread_tools', []),
+				tags: async.apply(Topics.getTopicTagsObjects, tid),
+				isFollowing: async.apply(Topics.isFollowing, tid, uid)
 			}, function(err, results) {
 				if (err) {
 					return callback(err);

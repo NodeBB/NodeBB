@@ -40,7 +40,6 @@ topicsController.get = function(req, res, next) {
 			}, next);
 		},
 		function (results, next) {
-
 			userPrivileges = results.privileges;
 
 			if (userPrivileges.disabled) {
