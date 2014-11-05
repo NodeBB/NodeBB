@@ -402,6 +402,9 @@ var	async = require('async'),
 
 	User.isModerator = function(uid, cid, callback) {
 		if (Array.isArray(cid)) {
+			if (!parseInt(uid, 10)) {
+				return callback(null, cid.map(function() {return false;}));
+			}
 			var uniqueCids = cid.filter(function(cid, index, array) {
 				return array.indexOf(cid) === index;
 			});

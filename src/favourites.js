@@ -195,6 +195,9 @@ var async = require('async'),
 	};
 
 	Favourites.hasVoted = function(pid, uid, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(null, {upvoted: false, downvoted: false});
+		}
 		db.isMemberOfSets(['pid:' + pid + ':upvote', 'pid:' + pid + ':downvote'], uid, function(err, hasVoted) {
 			if (err) {
 				return callback(err);
@@ -205,6 +208,10 @@ var async = require('async'),
 	};
 
 	Favourites.getVoteStatusByPostIDs = function(pids, uid, callback) {
+		if (!parseInt(uid, 10)) {
+			var data = pids.map(function() {return false;});
+			return callback(null, {upvotes: data, downvotes: data});
+		}
 		var upvoteSets = [],
 			downvoteSets = [];
 
@@ -284,10 +291,17 @@ var async = require('async'),
 	}
 
 	Favourites.hasFavourited = function(pid, uid, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(null, false);
+		}
 		db.isSetMember('pid:' + pid + ':users_favourited', uid, callback);
 	};
 
 	Favourites.getFavouritesByPostIDs = function(pids, uid, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(null, pids.map(function() {return false;}));
+		}
+
 		var sets = [];
 		for (var i=0; i<pids.length; ++i) {
 			sets.push('pid:' + pids[i] + ':users_favourited');

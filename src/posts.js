@@ -579,6 +579,9 @@ var async = require('async'),
 	Posts.isOwner = function(pid, uid, callback) {
 		uid = parseInt(uid, 10);
 		if (Array.isArray(pid)) {
+			if (!uid) {
+				return callback(null, pid.map(function() {return false;}));
+			}
 			Posts.getPostsFields(pid, ['uid'], function(err, posts) {
 				if (err) {
 					return callback(err);
@@ -589,11 +592,26 @@ var async = require('async'),
 				callback(null, posts);
 			});
 		} else {
+			if (!uid) {
+				return callback(null, false);
+			}
 			Posts.getPostField(pid, 'uid', function(err, author) {
 				callback(err, parseInt(author, 10) === uid);
 			});
 		}
 	};
+
+	Posts.isModerator = function(pids, uid, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(null, pids.map(function() {return false;}));
+		}
+		Posts.getCidsByPids(pids, function(err, cids) {
+			if (err) {
+				return callback(err);
+			}
+			user.isModerator(uid, cids, callback);
+		});
+	}
 
 	Posts.isMain = function(pid, callback) {
 		Posts.getPostField(pid, 'tid', function(err, tid) {

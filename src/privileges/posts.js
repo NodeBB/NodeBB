@@ -38,12 +38,7 @@ module.exports = function(privileges) {
 					posts.isOwner(pids, uid, next);
 				},
 				isModerator: function(next) {
-					posts.getCidsByPids(pids, function(err, cids) {
-						if (err) {
-							return next(err);
-						}
-						user.isModerator(uid, cids, next);
-					});
+					posts.isModerator(pids, uid, next);
 				}
 			}, function(err, postResults) {
 				if (err) {
