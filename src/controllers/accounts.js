@@ -173,7 +173,7 @@ accountsController.getAccount = function(req, res, next) {
 				posts.getPostsByUid(callerUID, userData.theirid, 0, 9, next);
 			},
 			signature: function(next) {
-				postTools.parseSignature(userData.signature, next);
+				postTools.parseSignature(userData, callerUID, next);
 			}
 		}, function(err, results) {
 			if(err) {
@@ -191,7 +191,6 @@ accountsController.getAccount = function(req, res, next) {
 				userData.profileviews = 1;
 			}
 
-			userData.signature = results.signature;
 			res.render('account/profile', userData);
 		});
 	});

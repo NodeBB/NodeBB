@@ -201,7 +201,7 @@ SocketPosts.edit = function(socket, data, callback) {
 	}
 
 	postTools.edit(socket.uid, data.pid, data.title, data.content, {topic_thumb: data.topic_thumb, tags: data.tags}, function(err, results) {
-		if(err) {
+		if (err) {
 			return callback(err);
 		}
 
@@ -323,10 +323,9 @@ SocketPosts.flag = function(socket, pid, callback) {
 		},
 		function(topicTitle, next) {
 			message = '[[notifications:user_flagged_post_in, ' + userName + ', ' + topicTitle + ']]';
-			postTools.parse(post.content, next);
+			postTools.parse(post, socket.uid, next);
 		},
-		function(postContent, next) {
-			post.content = postContent;
+		function(post, next) {
 			groups.get('administrators', {}, next);
 		},
 		function(adminGroup, next) {

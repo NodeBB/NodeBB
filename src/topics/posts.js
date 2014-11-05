@@ -68,7 +68,7 @@ module.exports = function(Topics) {
 					}
 				}
 
-				posts.getUserInfoForPosts(uids, function(err, users) {
+				posts.getUserInfoForPosts(uids, uid, function(err, users) {
 					if (err) {
 						return next(err);
 					}

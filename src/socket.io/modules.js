@@ -73,7 +73,7 @@ SocketModules.composer.editCheck = function(socket, pid, callback) {
 };
 
 SocketModules.composer.renderPreview = function(socket, content, callback) {
-	plugins.fireHook('filter:post.parse', content, callback);
+	plugins.fireHook('filter:parse.raw', content, callback);
 };
 
 SocketModules.composer.renderHelp = function(socket, data, callback) {
@@ -83,7 +83,7 @@ SocketModules.composer.renderHelp = function(socket, data, callback) {
 		return callback(new Error('help-hidden'));
 	}
 
-	plugins.fireHook('filter:post.parse', helpText, function(err, helpText) {
+	plugins.fireHook('filter:parse.raw', helpText, function(err, helpText) {
 		if (!meta.config['composer:allowPluginHelp'] || meta.config['composer:allowPluginHelp'] === '1') {
 			plugins.fireHook('filter:composer.help', helpText, callback);
 		} else {

@@ -146,16 +146,7 @@ var async = require('async'),
 
 				postData.relativeTime = utils.toISOString(postData.timestamp);
 				postData.relativeEditTime = parseInt(postData.edited, 10) !== 0 ? utils.toISOString(postData.edited) : '';
-
-				postTools.parse(postData.content, function(err, content) {
-					if(err) {
-						return next(err);
-					}
-
-					postData.content = content;
-					next(null, postData);
-				});
-
+				postTools.parsePost(postData, uid, next);
 			}, function(err, posts) {
 				if (err) {
 					return callback(err);
@@ -176,7 +167,7 @@ var async = require('async'),
 		});
 	};
 
-	Posts.getUserInfoForPosts = function(uids, callback) {
+	Posts.getUserInfoForPosts = function(uids, uid, callback) {
 		async.parallel({
 			groups: function(next) {
 				groups.getUserGroups(uids, next);
@@ -212,7 +203,7 @@ var async = require('async'),
 						if (parseInt(meta.config.disableSignatures, 10) === 1) {
 							return next();
 						}
-						postTools.parseSignature(userData.signature, next);
+						postTools.parseSignature(userData, uid, next);
 					},
 					customProfileInfo: function(next) {
 						plugins.fireHook('filter:posts.custom_profile_info', {profile: [], uid: userData.uid}, next);
@@ -221,7 +212,7 @@ var async = require('async'),
 					if (err) {
 						return next(err);
 					}
-					userData.signature = results.signature;
+
 					userData.custom_profile_info = results.customProfileInfo.profile;
 
 					plugins.fireHook('filter:posts.modifyUserInfo', userData, next);
@@ -335,12 +326,12 @@ var async = require('async'),
 						return next(null, post);
 					}
 
-					postTools.parse(post.content, function(err, content) {
+					postTools.parsePost(post, uid, function(err, post) {
 						if (err) {
 							return next(err);
 						}
 
-						post.content = stripTags(content);
+						post.content = stripTags(post.content);
 
 						next(null, post);
 					});

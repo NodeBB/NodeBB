@@ -93,14 +93,14 @@ var winston = require('winston'),
 						});
 					});
 				},
-				content: function(next) {
-					PostTools.parse(postData.content, next);
+				postData: function(next) {
+					PostTools.parsePost(postData, uid, next);
 				}
 			}, function(err, results) {
 				if (err) {
 					return callback(err);
 				}
-
+				results.content = results.postData.content;
 				//events.logPostEdit(uid, pid);
 				plugins.fireHook('action:post.edit', postData);
 				callback(null, results);
@@ -137,7 +137,7 @@ var winston = require('winston'),
 				next();
 			}
 		], function(err) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
@@ -149,13 +149,7 @@ var winston = require('winston'),
 					if (err) {
 						return callback(err);
 					}
-					PostTools.parse(postData.content, function(err, parsed) {
-						if (err) {
-							return callback(err);
-						}
-						postData.content = parsed;
-						callback(null, postData);
-					});
+					PostTools.parsePost(postData, uid, callback);
 				});
 			}
 		});
@@ -171,20 +165,18 @@ var winston = require('winston'),
 		});
 	};
 
-	PostTools.parse = function(raw, callback) {
-		parse('filter:post.parse', raw + '\n', callback);
-	};
+	PostTools.parsePost = function(postData, uid, callback) {
+		postData.content = postData.content || '';
 
-	PostTools.parseSignature = function(raw, callback) {
-		parse('filter:post.parseSignature', raw, callback);
-	};
-
-	function parse(hook, raw, callback) {
-		raw = raw || '';
-
-		plugins.fireHook(hook, raw, function(err, parsed) {
-			callback(null, !err ? parsed : raw);
+		plugins.fireHook('filter:parse.post', {postData: postData, uid: uid}, function(err, data) {
+			callback(err, data ? data.postData : null);
 		});
-	}
+	};
+
+	PostTools.parseSignature = function(userData, uid, callback) {
+		userData.signature = userData.signature || '';
+
+		plugins.fireHook('filter:parse.signature', {userData: userData, uid: uid}, callback);
+	};
 
 }(exports));

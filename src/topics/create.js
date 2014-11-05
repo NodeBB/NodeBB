@@ -232,7 +232,7 @@ module.exports = function(Topics) {
 			function(next) {
 				async.parallel({
 					userInfo: function(next) {
-						posts.getUserInfoForPosts([postData.uid], next);
+						posts.getUserInfoForPosts([postData.uid], uid, next);
 					},
 					topicInfo: function(next) {
 						Topics.getTopicFields(tid, ['tid', 'title', 'slug', 'cid'], next);
@@ -244,14 +244,13 @@ module.exports = function(Topics) {
 						posts.getPidIndex(postData.pid, uid, next);
 					},
 					content: function(next) {
-						postTools.parse(postData.content, next);
+						postTools.parsePost(postData, uid, next);
 					}
 				}, next);
 			},
 			function(results, next) {
 				postData.user = results.userInfo[0];
 				postData.topic = results.topicInfo;
-				postData.content = results.content;
 
 				if (results.settings.followTopicsOnReply) {
 					threadTools.follow(postData.tid, uid);

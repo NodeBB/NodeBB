@@ -163,7 +163,7 @@ var db = require('./database'),
 	}
 
 	Messaging.parse = function (message, fromuid, myuid, toUserData, myUserData, isNew, callback) {
-		plugins.fireHook('filter:post.parse', message, function(err, parsed) {
+		plugins.fireHook('filter:parse.raw', message, function(err, parsed) {
 			if (err) {
 				return callback(message);
 			}
