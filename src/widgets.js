@@ -30,7 +30,7 @@ var async = require('async'),
 
 				async.map(widgetsByLocation[location], function(widget, next) {
 
-					if (!widget || !widget.data || (!!widget.data['registered-only'] && uid === 0)) {
+					if (!widget || !widget.data || (!!widget.data['hide-registered'] && uid !== 0) || (!!widget.data['hide-guests'] && uid === 0)) {
 						return next();
 					}
 
