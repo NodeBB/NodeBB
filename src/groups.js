@@ -159,7 +159,7 @@ var async = require('async'),
 	};
 
 	Groups.isMember = function(uid, groupName, callback) {
-		if (typeof uid !== 'string' && !parseInt(uid, 10)) {
+		if (!uid || parseInt(uid, 10) <= 0) {
 			return callback(null, false);
 		}
 		db.isSetMember('group:' + groupName + ':members', uid, callback);
@@ -170,7 +170,7 @@ var async = require('async'),
 	};
 
 	Groups.isMemberOfGroups = function(uid, groups, callback) {
-		if (typeof uid !== 'string' && !parseInt(uid, 10)) {
+		if (!uid || parseInt(uid, 10) <= 0) {
 			return callback(null, groups.map(function() {return false;}));
 		}
 		groups = groups.map(function(groupName) {
