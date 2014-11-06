@@ -20,6 +20,9 @@ var async = require('async'),
 (function(UserNotifications) {
 
 	UserNotifications.get = function(uid, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(null , {read: [], unread: []});
+		}
 		getNotifications(uid, 10, function(err, notifications) {
 			if (err) {
 				return callback(err);
@@ -228,6 +231,20 @@ var async = require('async'),
 				callback(null, nids);
 			});
 		});
+	};
+
+	UserNotifications.deleteAll = function(uid, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback();
+		}
+		async.parallel([
+			function(next) {
+				db.delete('uid:' + uid + ':notifications:unread', next);
+			},
+			function(next) {
+				db.delete('uid:' + uid + ':notifications:read', next);
+			}
+		], callback);
 	};
 
 	UserNotifications.sendTopicNotificationToFollowers = function(uid, topicData, postData) {
