@@ -428,7 +428,7 @@ accountsController.uploadPicture = function (req, res, next) {
 		});
 	}
 
-	var updateUid = req.user.uid;
+	var updateUid = req.user ? req.user.uid : 0;
 	var imageDimension = parseInt(meta.config.profileImageDimension, 10) || 128;
 
 	async.waterfall([
@@ -482,8 +482,8 @@ accountsController.uploadPicture = function (req, res, next) {
 			return res.json({error:err.message});
 		}
 
-		if(plugins.hasListeners('filter:uploadImage')) {
-			return plugins.fireHook('filter:uploadImage', req.files.userPhoto, done);
+		if (plugins.hasListeners('filter:uploadImage')) {
+			return plugins.fireHook('filter:uploadImage', {image: req.files.userPhoto, uid: updateUid}, done);
 		}
 
 		var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1;

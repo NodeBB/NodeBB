@@ -2,8 +2,8 @@
 
 var fs = require('fs'),
 	path = require('path'),
-	file = require('./../../file'),
-	plugins = require('./../../plugins');
+	file = require('../../file'),
+	plugins = require('../../plugins');
 
 
 var uploadsController = {};
@@ -37,7 +37,7 @@ uploadsController.uploadImage = function(filename, folder, req, res) {
 	}
 
 	if (plugins.hasListeners('filter:uploadImage')) {
-		plugins.fireHook('filter:uploadImage', req.files.userPhoto, done);
+		plugins.fireHook('filter:uploadImage', {image: req.files.userPhoto, uid: req.user.uid}, done);
 	} else {
 		file.saveFileToLocal(filename, folder, req.files.userPhoto.path, done);
 	}
