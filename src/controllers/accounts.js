@@ -198,7 +198,12 @@ accountsController.getAccount = function(req, res, next) {
 				userData.profileviews = 1;
 			}
 
-			res.render('account/profile', userData);
+			plugins.fireHook('filter:user.account', {userData: userData, uid: callerUID}, function(err, data) {
+				if (err) {
+					return next(err);
+				}
+				res.render('account/profile', data.userData);
+			});
 		});
 	});
 };
