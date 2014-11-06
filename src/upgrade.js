@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 9, 31);
+	latestSchema = Date.UTC(2014, 10, 6, 18, 30);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -1164,6 +1164,46 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/10/31] Applying newbiePostDelay values skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 10, 6, 18, 30);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/10/31] Updating topic authorship sorted set');
+
+				async.waterfall([
+					async.apply(db.getObjectField, 'global', 'nextTid'),
+					function(nextTid, next) {
+						var tids = [];
+						for(var x=1,numTids=nextTid-1;x<numTids;x++) {
+							tids.push(x);
+						}
+						async.filter(tids, function(tid, next) {
+							db.exists('topic:' + tid, function(err, exists) {
+								next(exists);
+							});
+						}, function(tids) {
+							next(null, tids);
+						});
+					},
+					function(tids, next) {
+						async.eachLimit(tids, 100, function(tid, next) {
+							Topics.getTopicFields(tid, ['uid', 'cid', 'tid', 'timestamp'], function(err, data) {
+								db.sortedSetAdd('cid:' + data.cid + ':uid:' + data.uid + ':tid', data.timestamp, data.tid, next);
+							});
+						}, next);
+					}
+				], function(err) {
+					if (err) {
+						winston.error('[2014/10/31] Error encountered while Updating topic authorship sorted set');
+						return next(err);
+					}
+					winston.info('[2014/10/31] Updating topic authorship sorted set done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2014/10/31] Updating topic authorship sorted set skipped');
 				next();
 			}
 		}
