@@ -295,30 +295,23 @@ var db = require('./database'),
 	Messaging.canMessage = function(fromUid, toUid, callback) {
 		async.waterfall([
 			function(next) {
-				// Check if the sending user is an admin
-				user.isAdministrator(fromUid, function(err, isAdmin) {
-					next(err || isAdmin);
-				});
+				user.getSettings(toUid, next);
 			},
-			function(next) {
-				// Retrieve the recipient's user setting
-				user.getSettings(toUid, function(err, settings) {
-					next(err || !settings.restrictChat);
-				});
+			function(settings, next) {
+				if (!settings.restrictChat) {
+					return callback(null, true);
+				}
+
+				user.isAdministrator(fromUid, next);
 			},
-			function(next) {
-				// Does toUid follow fromUid?
+			function(isAdmin, next) {
+				if (isAdmin) {
+					return callback(null, true);
+				}
 				user.isFollowing(toUid, fromUid, next);
 			}
-		], function(err, allowed) {
-			// Handle premature returns
-			if (err === true) {
-				return callback(undefined, true);
-			}
-
-			callback.apply(this, arguments);
-		});
-	}
+		], callback);
+	};
 
 	function sendNotifications(fromuid, touid, messageObj, callback) {
 		// todo #1798 -- this should check if the user is in room `chat_{uidA}_{uidB}` instead, see `Sockets.uidInRoom(uid, room);`
