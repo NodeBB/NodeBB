@@ -391,7 +391,7 @@ var async = require('async'),
 						db.rename('group:' + oldName, 'group:' + newName, next);
 					},
 					function(next) {
-						Groups.exists('group:' + oldName + ':members', function(err, exists) {
+						db.exists('group:' + oldName + ':members', function(err, exists) {
 							if (err) {
 								return next(err);
 							}
