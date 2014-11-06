@@ -136,11 +136,18 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 accountsController.getUserByUID = function(req, res, next) {
 	var uid = req.params.uid ? req.params.uid : 0;
 
-	user.getUserData(uid, function(err, userData) {
+	async.parallel({
+		settings: async.apply(user.getSettings, uid),
+		userData: async.apply(user.getUserData, uid)
+	}, function(err, results) {
 		if (err) {
 			return next(err);
 		}
-		res.json(userData);
+
+		results.userData.email = results.settings.showemail ? results.userData.email : undefined;
+		results.userData.fullname = results.settings.showfullname ? results.userData.fullname : undefined;
+
+		res.json(results.userData);
 	});
 };
 
