@@ -104,7 +104,7 @@ var	async = require('async'),
 			}
 
 			if (user.password) {
-				user.password = null;
+				user.password = undefined;
 			}
 
 			if (!parseInt(user.uid, 10)) {
