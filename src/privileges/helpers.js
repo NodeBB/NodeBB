@@ -115,7 +115,7 @@ function isGuestAllowedTo(privilege, cids, callback) {
 				(!results.groupPrivilegeExists[i] || results.hasGroupPrivilege[i] !== false) :
 				(results.groupPrivilegeExists[i] && results.hasGroupPrivilege[i] === true);
 
-			result.push(!results.userPrivilegeExists[i] && groupPriv);
+			result.push((!results.userPrivilegeExists[i] && !results.groupPrivilegeExists[i]) || groupPriv);
 		}
 
 		callback(null, result);
