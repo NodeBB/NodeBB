@@ -5,8 +5,6 @@ define('admin/extend/widgets', function() {
 	var Widgets = {};
 	
 	Widgets.init = function() {		
-		prepareWidgets();
-
 		$('#widgets .nav-pills a').on('click', function(ev) {
 			var $this = $(this);
 			$('#widgets .nav-pills li').removeClass('active');
@@ -18,6 +16,8 @@ define('admin/extend/widgets', function() {
 			ev.preventDefault();
 			return false;
 		});
+
+		loadWidgetData();
 	};
 
 	function prepareWidgets() {
@@ -40,25 +40,6 @@ define('admin/extend/widgets', function() {
 			},
 			distance: 10
 		});
-
-		function appendToggle(el) {
-			if (!el.hasClass('block')) {
-				el.addClass('block')
-					.droppable({
-						accept: '[data-container-html]',
-						drop: function(event, ui) {
-							var el = $(this);
-
-							el.find('.panel-body .container-html').val(ui.draggable.attr('data-container-html'));
-							el.find('.panel-body').removeClass('hidden');
-						},
-						hoverClass: "panel-info"
-					})
-					.children('.panel-heading')
-					.append('<div class="pull-right pointer"><span class="delete-widget"><i class="fa fa-times-circle"></i></span></div><div class="pull-left pointer"><span class="toggle-widget"><i class="fa fa-chevron-circle-down"></i></span>&nbsp;</div>')
-					.children('small').html('');
-			}
-		}
 
 		$('#widgets .widget-area').sortable({
 			update: function (event, ui) {
@@ -135,6 +116,46 @@ define('admin/extend/widgets', function() {
 			});
 		}
 
+		$('.color-selector').on('click', '.btn', function() {
+			var btn = $(this),
+				selector = btn.parents('.color-selector'),
+				container = selector.parents('[data-container-html]'),
+				classList = [];
+
+			selector.children().each(function() {
+				classList.push($(this).attr('data-class'));
+			});
+
+			container
+				.removeClass(classList.join(' '))
+				.addClass(btn.attr('data-class'));
+
+			container.attr('data-container-html', container.attr('data-container-html')
+				.replace(/class="[a-zA-Z0-9-\s]+"/, 'class="' + container[0].className.replace(' pointer ui-draggable', '') + '"')
+			);
+		});
+	}
+
+	function appendToggle(el) {
+		if (!el.hasClass('block')) {
+			el.addClass('block')
+				.droppable({
+					accept: '[data-container-html]',
+					drop: function(event, ui) {
+						var el = $(this);
+
+						el.find('.panel-body .container-html').val(ui.draggable.attr('data-container-html'));
+						el.find('.panel-body').removeClass('hidden');
+					},
+					hoverClass: "panel-info"
+				})
+				.children('.panel-heading')
+				.append('<div class="pull-right pointer"><span class="delete-widget"><i class="fa fa-times-circle"></i></span></div><div class="pull-left pointer"><span class="toggle-widget"><i class="fa fa-chevron-circle-down"></i></span>&nbsp;</div>')
+				.children('small').html('');
+		}
+	}
+
+	function loadWidgetData() {
 		function populateWidget(widget, data) {
 			if (data.title) {
 				var title = widget.find('.panel-heading strong');
@@ -172,25 +193,8 @@ define('admin/extend/widgets', function() {
 					appendToggle(widgetEl);
 				}
 			}
-		});
 
-		$('.color-selector').on('click', '.btn', function() {
-			var btn = $(this),
-				selector = btn.parents('.color-selector'),
-				container = selector.parents('[data-container-html]'),
-				classList = [];
-
-			selector.children().each(function() {
-				classList.push($(this).attr('data-class'));
-			});
-
-			container
-				.removeClass(classList.join(' '))
-				.addClass(btn.attr('data-class'));
-
-			container.attr('data-container-html', container.attr('data-container-html')
-				.replace(/class="[a-zA-Z0-9-\s]+"/, 'class="' + container[0].className.replace(' pointer ui-draggable', '') + '"')
-			);
+			prepareWidgets();
 		});
 	}
 
