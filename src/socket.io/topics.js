@@ -383,7 +383,7 @@ SocketTopics.moveAll = function(socket, data, callback) {
 			return callback(err || new Error('[[error:no-privileges]]'));
 		}
 
-		categories.getTopicIds(data.currentCid, 0, -1, function(err, tids) {
+		categories.getTopicIds('categories:' + data.currentCid + ':tid', 0, -1, function(err, tids) {
 			if (err) {
 				return callback(err);
 			}

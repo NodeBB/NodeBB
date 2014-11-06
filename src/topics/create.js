@@ -62,7 +62,7 @@ module.exports = function(Topics) {
 
 				async.parallel([
 					function(next) {
-						db.sortedSetsAdd(['topics:tid', 'categories:' + cid + ':tid'], timestamp, tid, next);
+						db.sortedSetsAdd(['topics:tid', 'categories:' + cid + ':tid', 'cid:' + cid + ':uid:' + uid + ':tid'], timestamp, tid, next);
 					},
 					function(next) {
 						user.addTopicIdToUser(uid, tid, timestamp, next);

@@ -97,7 +97,12 @@ function generateForTopic(req, res, next) {
 function generateForCategory(req, res, next) {
 	var cid = req.params.category_id;
 	var uid = req.user ? req.user.uid : 0;
-	categories.getCategoryById(cid, 0, 25, uid, function (err, categoryData) {
+	categories.getCategoryById({
+		cid: cid,
+		start: 0,
+		end: 25,
+		uid: uid
+	}, function (err, categoryData) {
 		if (err) {
 			return next(err);
 		}

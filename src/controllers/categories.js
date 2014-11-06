@@ -101,7 +101,8 @@ categoriesController.unreadTotal = function(req, res, next) {
 categoriesController.get = function(req, res, next) {
 	var cid = req.params.category_id,
 		page = req.query.page || 1,
-		uid = req.user ? req.user.uid : 0;
+		uid = req.user ? req.user.uid : 0,
+		userPrivileges;
 
 	async.waterfall([
 		function(next) {
@@ -133,6 +134,7 @@ categoriesController.get = function(req, res, next) {
 				return categoriesController.notAllowed(req, res);
 			}
 
+			userPrivileges = results.privileges;
 			var settings = results.userSettings;
 
 			var topicIndex = 0;
@@ -146,21 +148,37 @@ categoriesController.get = function(req, res, next) {
 			var start = (page - 1) * settings.topicsPerPage + topicIndex,
 				end = start + settings.topicsPerPage - 1;
 
-			categories.getCategoryById(cid, start, end, uid, function (err, categoryData) {
+			next(null, {
+				cid: cid,
+				start: start,
+				end: end,
+				uid: uid
+			});
+		},
+		function(payload, next) {
+			// If a userslug was specified, add a targetUid
+			if (req.query.author) {
+				user.getUidByUserslug(req.query.author, function(err, uid) {
+					payload.targetUid = uid;
+					next(err, payload);
+				});
+			} else {
+				next(null, payload);
+			}
+		},
+		categories.getCategoryById,
+		function(categoryData, uid, next) {
+			categories.getRecentTopicReplies(categoryData.children, uid, function(err) {
 				if (err) {
 					return next(err);
 				}
 
-				categories.getRecentTopicReplies(categoryData.children, uid, function(err) {
-					if (err) {
-						return next(err);
-					}
-					categoryData.privileges = results.privileges;
-					next(null, categoryData);
-				});
+				next(null, categoryData);
 			});
 		},
 		function (categoryData, next) {
+			categoryData.privileges = userPrivileges;
+
 			res.locals.metaTags = [
 				{
 					name: 'title',

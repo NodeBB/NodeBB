@@ -52,7 +52,12 @@ SocketCategories.loadMore = function(socket, data, callback) {
 		var start = parseInt(data.after, 10),
 			end = start + results.settings.topicsPerPage - 1;
 
-		categories.getCategoryTopics(data.cid, start, end, socket.uid, function(err, data) {
+		categories.getCategoryTopics({
+			cid: data.cid,
+			start: start,
+			end: end,
+			uid: socket.uid
+		}, function(err, data) {
 			if (err) {
 				return callback(err);
 			}
