@@ -49,14 +49,6 @@ var async = require('async'),
 					return next(null, null);
 				}
 
-				// Backwards compatibility for old notification schema
-				// Remove this block when NodeBB v0.6.0 is released.
-				if (notification.hasOwnProperty('text')) {
-					notification.bodyShort = notification.text;
-					notification.bodyLong = '';
-					notification.text = S(notification.text).escapeHTML().s;
-				}
-
 				if (notification.bodyShort) {
 					notification.bodyShort = S(notification.bodyShort).escapeHTML().s;
 				}
