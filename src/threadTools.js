@@ -32,8 +32,8 @@ var winston = require('winston'),
 	};
 
 	function toggleDelete(tid, uid, isDelete, callback) {
-		topics.getTopicFields(tid, ['cid', 'deleted'], function(err, topicData) {
-			if(err) {
+		topics.getTopicFields(tid, ['tid', 'cid', 'deleted', 'title'], function(err, topicData) {
+			if (err) {
 				return callback(err);
 			}
 
@@ -49,13 +49,16 @@ var winston = require('winston'),
 						isDelete: isDelete
 					});
 				}
-				if(err) {
+				if (err) {
 					return callback(err);
 				}
 
 				ThreadTools[isDelete ? 'lock' : 'unlock'](tid);
-
-				plugins.fireHook(isDelete ? 'action:topic.delete' : 'action:topic.restore', tid);
+				if (isDelete) {
+					plugins.fireHook('action:topic.delete', tid);
+				} else {
+					plugins.fireHook('action:topic.restore', topicData);
+				}
 
 				events[isDelete ? 'logTopicDelete' : 'logTopicRestore'](uid, tid);
 

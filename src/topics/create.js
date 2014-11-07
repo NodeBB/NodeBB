@@ -84,7 +84,7 @@ module.exports = function(Topics) {
 					if (err) {
 						return callback(err);
 					}
-					plugins.fireHook('action:topic.save', tid);
+					plugins.fireHook('action:topic.save', topicData);
 					callback(null, tid);
 				});
 			});
