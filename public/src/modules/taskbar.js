@@ -95,6 +95,11 @@ define('taskbar', function() {
 			var	tasks = taskbar.tasklist.find('li');
 			tasks.removeClass('active');
 			tasks.filter('[data-uuid="' + uuid + '"]').addClass('active');
+		},
+
+		isActive: function(uuid) {
+			var taskBtn = taskbar.tasklist.find('li[data-uuid="' + uuid + '"]');
+			return taskBtn.hasClass('active');
 		}
 	};
 
@@ -107,6 +112,7 @@ define('taskbar', function() {
 		discard: taskbar.discard,
 		minimize: taskbar.minimize,
 		toggleNew: taskbar.toggleNew,
-		updateActive: taskbar.updateActive
+		updateActive: taskbar.updateActive,
+		isActive: taskbar.isActive
 	}
 });

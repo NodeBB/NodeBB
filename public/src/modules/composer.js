@@ -285,6 +285,12 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 				});
 			});
 
+			postContainer.on('click', function() {
+				if (!taskbar.isActive(post_uuid)) {
+					taskbar.updateActive(post_uuid);
+				}
+			});
+
 			bodyEl.on('input propertychange', function() {
 				preview.render(postContainer);
 			});
