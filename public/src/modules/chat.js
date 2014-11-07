@@ -121,6 +121,9 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 
 	module.bringModalToTop = function(chatModal) {
 		var topZ = 0;
+
+		taskbar.updateActive(chatModal.attr('UUID'));
+
 		if ($('.chat-modal').length === 1) {
 			return;
 		}
@@ -132,7 +135,6 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 		});
 
 		chatModal.css('zIndex', topZ + 1);
-		taskbar.updateActive(chatModal.attr('UUID'));
 	};
 
 	module.getModal = function(touid) {
@@ -166,7 +168,8 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 			translator.translate(chatTpl, function (chatTpl) {
 
 				var chatModal = $(chatTpl),
-					uuid = utils.generateUUID();
+					uuid = utils.generateUUID(),
+					dragged = false;
 
 				chatModal.attr('id', 'chat-modal-' + touid);
 				chatModal.attr('touid', touid);
@@ -221,6 +224,18 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 
 				chatModal.on('click', function(e) {
 					module.bringModalToTop(chatModal);
+
+					if (!dragged) {
+						chatModal.find('#chat-message-input').focus();
+					} else {
+						dragged = false;
+					}
+				});
+
+				chatModal.on('mousemove', function(e) {
+					if (e.which === 1) {
+						dragged = true;
+					}
 				});
 
 				chatModal.on('mousemove keypress click', function() {
