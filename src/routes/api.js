@@ -57,7 +57,7 @@ function uploadPost(req, res, next) {
 		if(file.type.match(/image./)) {
 			uploadImage(req.user.uid, file, next);
 		} else {
-			uploadFile(file, next);
+			uploadFile(req.user, file, next);
 		}
 	}, next);
 }
