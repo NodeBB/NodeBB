@@ -550,7 +550,7 @@ var fs = require('fs'),
 		});
 	};
 
-	Plugins.toggleInstall = function(id, callback) {
+	Plugins.toggleInstall = function(id, version, callback) {
 		Plugins.isInstalled(id, function(err, installed) {
 			if (err) {
 				return callback(err);
@@ -573,7 +573,7 @@ var fs = require('fs'),
 					npm.load({}, next);
 				},
 				function(res, next) {
-					npm.commands[installed ? 'uninstall' : 'install'](installed ? id : [id], next);
+					npm.commands[installed ? 'uninstall' : 'install'](installed ? id : [id + '@' + (version || 'latest')], next);
 				}
 			], function(err) {
 				callback(err, {
@@ -584,13 +584,13 @@ var fs = require('fs'),
 		});
 	};
 
-	Plugins.upgrade = function(id, callback) {
+	Plugins.upgrade = function(id, version, callback) {
 		async.waterfall([
 			function(next) {
 				npm.load({}, next);
 			},
 			function(res, next) {
-				npm.commands.install([id], next);
+				npm.commands.install([id + '@' + (version || 'latest')], next);
 			}
 		], callback);
 	};

@@ -97,12 +97,12 @@ SocketAdmin.plugins.toggleActive = function(socket, plugin_id, callback) {
 	plugins.toggleActive(plugin_id, callback);
 };
 
-SocketAdmin.plugins.toggleInstall = function(socket, plugin_id, callback) {
-	plugins.toggleInstall(plugin_id, callback);
+SocketAdmin.plugins.toggleInstall = function(socket, data, callback) {
+	plugins.toggleInstall(data.id, data.version, callback);
 };
 
-SocketAdmin.plugins.upgrade = function(socket, plugin_id, callback) {
-	plugins.upgrade(plugin_id, callback);
+SocketAdmin.plugins.upgrade = function(socket, data, callback) {
+	plugins.upgrade(data.id, data.version, callback);
 };
 
 SocketAdmin.widgets.set = function(socket, data, callback) {

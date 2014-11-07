@@ -33,35 +33,16 @@ define('admin/extend/plugins', function() {
 				pluginsList.on('click', 'button[data-action="toggleInstall"]', function() {
 					pluginID = $(this).parents('li').attr('data-plugin-id');
 
-					var btn = $(this);
-					var activateBtn = btn.siblings('[data-action="toggleActive"]');
-					btn.html(btn.html() + 'ing')
-						.attr('disabled', true)
-						.find('i').attr('class', 'fa fa-refresh fa-spin');
-
-					socket.emit('admin.plugins.toggleInstall', pluginID, function(err, status) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-
-						if (status.installed) {
-							btn.html('<i class="fa fa-trash-o"></i> Uninstall');
+					Plugins.suggest(pluginID, function(err, payload) {
+						if (!err) {
+							Plugins.toggleInstall(pluginID, payload.version);
 						} else {
-							btn.html('<i class="fa fa-download"></i> Install');
-
+							bootbox.confirm('<p>NodeBB could not reach the package manager, proceed with installation of latest version?</p><div class="alert alert-danger"><strong>Server returned (' + err.status + ')</strong>: ' + err.responseText + '</div>', function(confirm) {
+								if (confirm) {
+									Plugins.toggleInstall(pluginID, 'latest');
+								}
+							});
 						}
-						activateBtn.toggleClass('hidden', !status.installed);
-
-						btn.toggleClass('btn-danger', status.installed).toggleClass('btn-success', !status.installed)
-							.attr('disabled', false);
-
-						app.alert({
-							alert_id: 'plugin_toggled',
-							title: 'Plugin ' + (status.installed ? 'Installed' : 'Uninstalled'),
-							message: status.installed ? 'Plugin successfully installed, please activate the plugin.' : 'The plugin has been successfully deactivated and uninstalled.',
-							type: 'info',
-							timeout: 5000
-						});
 					});
 				});
 
@@ -70,15 +51,30 @@ define('admin/extend/plugins', function() {
 					var parent = btn.parents('li');
 					pluginID = parent.attr('data-plugin-id');
 
-					btn.attr('disabled', true).find('i').attr('class', 'fa fa-refresh fa-spin');
 
-					socket.emit('admin.plugins.upgrade', pluginID, function(err) {
-						if (err) {
-							return app.alertError(err.message);
+					Plugins.suggest(pluginID, function(err, payload) {
+						if (!err) {
+							require(['semver'], function(semver) {
+								if (semver.gt(payload.version, parent.find('.currentVersion').text())) {
+									btn.attr('disabled', true).find('i').attr('class', 'fa fa-refresh fa-spin');
+									socket.emit('admin.plugins.upgrade', {
+										id: pluginID,
+										version: payload.version
+									}, function(err) {
+										if (err) {
+											return app.alertError(err.message);
+										}
+										parent.find('.fa-exclamation-triangle').remove();
+										parent.find('.currentVersion').text(payload.version);
+										btn.remove();
+									});
+								} else {
+									bootbox.alert('<p>Your version of NodeBB (v' + app.config.version + ') is only cleared to upgrade to v' + payload.version + ' of this plugin. Please update your NodeBB if you wish to install a newer version of this plugin.');
+								}
+							});
+						} else {
+							bootbox.alert('<p>NodeBB could not reach the package manager, an upgrade is not suggested at this time.</p>');
 						}
-						parent.find('.fa-exclamation-triangle').remove();
-						parent.find('.currentVersion').text(parent.find('.latestVersion').text());
-						btn.remove();
 					});
 				});
 
@@ -94,6 +90,58 @@ define('admin/extend/plugins', function() {
 			} else {
 				pluginsList.append('<li><p><i>No plugins found.</i></p></li>');
 			}
+		},
+		toggleInstall: function(pluginID, version, callback) {
+			var btn = $('li[data-plugin-id="' + pluginID + '"] button[data-action="toggleInstall"]');
+			var activateBtn = btn.siblings('[data-action="toggleActive"]');
+			btn.html(btn.html() + 'ing')
+				.attr('disabled', true)
+				.find('i').attr('class', 'fa fa-refresh fa-spin');
+
+			socket.emit('admin.plugins.toggleInstall', {
+				id: pluginID,
+				version: version
+			}, function(err, status) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				if (status.installed) {
+					btn.html('<i class="fa fa-trash-o"></i> Uninstall');
+				} else {
+					btn.html('<i class="fa fa-download"></i> Install');
+
+				}
+				activateBtn.toggleClass('hidden', !status.installed);
+
+				btn.toggleClass('btn-danger', status.installed).toggleClass('btn-success', !status.installed)
+					.attr('disabled', false);
+
+				app.alert({
+					alert_id: 'plugin_toggled',
+					title: 'Plugin ' + (status.installed ? 'Installed' : 'Uninstalled'),
+					message: status.installed ? 'Plugin successfully installed, please activate the plugin.' : 'The plugin has been successfully deactivated and uninstalled.',
+					type: 'info',
+					timeout: 5000
+				});
+
+				if (typeof callback === 'function') {
+					callback.apply(this, arguments);
+				}
+			});
+		},
+		suggest: function(pluginId, callback) {
+			var nbbVersion = app.config.version;
+			$.ajax('https://packages.nodebb.org/api/v1/suggest', {
+				type: 'GET',
+				data: {
+					package: pluginId,
+					version: nbbVersion
+				},
+				dataType: 'json'
+			}).done(function(payload) {
+				callback(undefined, payload);
+			}).fail(callback);
 		}
 	};
 
