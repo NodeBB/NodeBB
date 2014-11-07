@@ -20,8 +20,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 		});
 
 		$('.purge_thread').on('click', function() {
-			var tids = topicSelect.getSelectedTids();
-			categoryCommand('purge', tids);
+			categoryCommand('purge', topicSelect.getSelectedTids());
 			return false;
 		});
 
@@ -94,7 +93,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 					return;
 				}
 
-				socket.emit('topics.' + command, {tids: tids, cid: CategoryTools.cid}, onCommandComplete);
+				socket.emit('topics.' + command, {tids: tids, cid: CategoryTools.cid}, onDeletePurgeComplete);
 			});
 		});
 	}
@@ -120,6 +119,13 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 		}
 		closeDropDown();
 		topicSelect.unselectAll();
+	}
+
+	function onDeletePurgeComplete(err) {
+		if (err) {
+			return app.alertError(err.message);
+		}
+		closeDropDown();
 	}
 
 	function onTopicSelect() {
