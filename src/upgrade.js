@@ -1190,7 +1190,12 @@ Upgrade.upgrade = function(callback) {
 					function(tids, next) {
 						async.eachLimit(tids, 100, function(tid, next) {
 							Topics.getTopicFields(tid, ['uid', 'cid', 'tid', 'timestamp'], function(err, data) {
-								db.sortedSetAdd('cid:' + data.cid + ':uid:' + data.uid + ':tid', data.timestamp, data.tid, next);
+								if (!err && (data.cid && data.uid && data.timestamp && data.tid)) {
+									db.sortedSetAdd('cid:' + data.cid + ':uid:' + data.uid + ':tid', data.timestamp, data.tid, next);
+								} else {
+									// Post was probably purged, skip record
+									next();
+								}
 							});
 						}, next);
 					}
