@@ -163,7 +163,7 @@ var winston = require('winston'),
 
 			topics.setTopicField(tid, 'pinned', pin ? 1 : 0);
 			topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
-				db.sortedSetAdd('categories:' + topicData.cid + ':tid', pin ? Math.pow(2, 53) : topicData.lastposttime, tid);
+				db.sortedSetAdd('cid:' + topicData.cid + ':tids', pin ? Math.pow(2, 53) : topicData.lastposttime, tid);
 			});
 
 			plugins.fireHook('action:topic.pin', {
@@ -192,11 +192,11 @@ var winston = require('winston'),
 			},
 			function(topicData, next) {
 				topic = topicData;
-				db.sortedSetRemove('categories:' + topicData.cid + ':tid', tid, next);
+				db.sortedSetRemove('cid:' + topicData.cid + ':tids', tid, next);
 			},
 			function(next) {
 				var timestamp = parseInt(topic.pinned, 10) ? Math.pow(2, 53) : topic.lastposttime;
-				db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid, next);
+				db.sortedSetAdd('cid:' + cid + ':tids', timestamp, tid, next);
 			}
 		], function(err) {
 			if (err) {

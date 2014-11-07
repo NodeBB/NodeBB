@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 10, 6, 18, 30);
+	latestSchema = Date.UTC(2014, 10, 7);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -1170,7 +1170,7 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			thisSchemaDate = Date.UTC(2014, 10, 6, 18, 30);
 			if (schemaDate < thisSchemaDate) {
-				winston.info('[2014/10/31] Updating topic authorship sorted set');
+				winston.info('[2014/11/6] Updating topic authorship sorted set');
 
 				async.waterfall([
 					async.apply(db.getObjectField, 'global', 'nextTid'),
@@ -1201,18 +1201,79 @@ Upgrade.upgrade = function(callback) {
 					}
 				], function(err) {
 					if (err) {
-						winston.error('[2014/10/31] Error encountered while Updating topic authorship sorted set');
+						winston.error('[2014/11/6] Error encountered while Updating topic authorship sorted set');
 						return next(err);
 					}
-					winston.info('[2014/10/31] Updating topic authorship sorted set done');
+					winston.info('[2014/11/6] Updating topic authorship sorted set done');
 					Upgrade.update(thisSchemaDate, next);
 				});
 			} else {
-				winston.info('[2014/10/31] Updating topic authorship sorted set skipped');
+				winston.info('[2014/11/6] Updating topic authorship sorted set skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 10, 7);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/11/7] Renaming sorted set names');
+
+				async.waterfall([
+					function(next) {
+						async.parallel({
+							cids: function(next) {
+								db.getSortedSetRange('categories:cid', 0, -1, next);
+							},
+							uids: function(next) {
+								db.getSortedSetRange('users:joindate', 0, -1, next);
+							}
+						}, next);
+					},
+					function(results, next) {
+						async.eachLimit(results.cids, 50, function(cid, next) {
+							async.parallel([
+								function(next) {
+									db.exists('categories:' + cid + ':tid', function(err, exists) {
+										if (err || !exists) {
+											return next(err);
+										}
+										db.rename('categories:' + cid + ':tid', 'cid:' + cid + ':tids', next);
+									});
+								},
+								function(next) {
+									db.exists('categories:recent_posts:cid:' + cid, function(err, exists) {
+										if (err || !exists) {
+											return next(err);
+										}
+										db.rename('categories:recent_posts:cid:' + cid, 'cid:' + cid + ':pids', next);
+									});
+								},
+								function(next) {
+									async.eachLimit(results.uids, 50, function(uid, next) {
+										db.exists('cid:' + cid + ':uid:' + uid + ':tid', function(err, exists) {
+											if (err || !exists) {
+												return next(err);
+											}
+											db.rename('cid:' + cid + ':uid:' + uid + ':tid', 'cid:' + cid + ':uid:' + uid + ':tids', next);
+										});
+									}, next);
+								}
+							], next);
+						}, next);
+					}
+				], function(err) {
+					if (err) {
+						winston.error('[2014/11/7] Error encountered while renaming sorted sets');
+						return next(err);
+					}
+					winston.info('[2014/11/7] Renaming sorted sets done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2014/11/7] Renaming sorted sets skipped');
 				next();
 			}
 		}
-		// Meta.configs.setOnEmpty = function (field, value, callback) {
+
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 22!!!
 	], function(err) {

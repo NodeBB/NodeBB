@@ -9,7 +9,7 @@ var async = require('async'),
 module.exports = function(Categories) {
 
 	Categories.purge = function(cid, callback) {
-		batch.processSortedSet('categories:' + cid + ':tid', function(tids, next) {
+		batch.processSortedSet('cid:' + cid + ':tids', function(tids, next) {
 			async.eachLimit(tids, 10, function(tid, next) {
 				threadTools.purge(tid, 0, next);
 			}, next);
@@ -27,7 +27,11 @@ module.exports = function(Categories) {
 				db.sortedSetRemove('categories:cid', cid, next);
 			},
 			function(next) {
-				db.deleteAll(['categories:' + cid + ':tid', 'categories:recent_posts:cid:' + cid, 'category:' + cid], next);
+				db.deleteAll([
+					'cid:' + cid + ':tids',
+					'cid:' + cid + ':pids',
+					'category:' + cid
+				], next);
 			}
 		], callback);
 	}

@@ -77,7 +77,11 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			db.sortedSetsRemove(['categories:' + topicData.cid + ':tid', 'uid:' + topicData.uid + ':topics'], tid, callback);
+			db.sortedSetsRemove([
+				'cid:' + topicData.cid + ':tids',
+				'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
+				'uid:' + topicData.uid + ':topics'
+			], tid, callback);
 		});
 	}
 

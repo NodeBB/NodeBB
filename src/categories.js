@@ -114,7 +114,7 @@ var db = require('./database'),
 		var tids;
 		async.waterfall([
 			function(next) {
-				Categories.getTopicIds(data.targetUid ? 'cid:' + data.cid + ':uid:' + data.targetUid + ':tid' : 'categories:' + data.cid + ':tid', data.start, data.stop, next);
+				Categories.getTopicIds(data.targetUid ? 'cid:' + data.cid + ':uid:' + data.targetUid + ':tids' : 'cid:' + data.cid + ':tids', data.start, data.stop, next);
 			},
 			function(topicIds, next) {
 				tids = topicIds;
@@ -169,7 +169,7 @@ var db = require('./database'),
 				return callback(err);
 			}
 
-			db.sortedSetRevRank('categories:' + cid + ':tid', tid, callback);
+			db.sortedSetRevRank('cid:' + cid + ':tids', tid, callback);
 		});
 	};
 
@@ -467,7 +467,7 @@ var db = require('./database'),
 
 			async.parallel([
 				function(next) {
-					db.sortedSetAdd('categories:recent_posts:cid:' + cid, postData.timestamp, postData.pid, next);
+					db.sortedSetAdd('cid:' + cid + ':pids', postData.timestamp, postData.pid, next);
 				},
 				function(next) {
 					db.incrObjectField('category:' + cid, 'post_count', next);
@@ -476,7 +476,7 @@ var db = require('./database'),
 					if (parseInt(topicData.pinned, 10) === 1) {
 						next();
 					} else {
-						db.sortedSetAdd('categories:' + cid + ':tid', postData.timestamp, postData.tid, next);
+						db.sortedSetAdd('cid:' + cid + ':tids', postData.timestamp, postData.tid, next);
 					}
 				}
 			], callback);

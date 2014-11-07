@@ -87,7 +87,7 @@ module.exports = function(Posts) {
 				return callback(err);
 			}
 
-			db.sortedSetRemove('categories:recent_posts:cid:' + cid, pid, callback);
+			db.sortedSetRemove('cid:' + cid + ':pids', pid, callback);
 		});
 	}
 
@@ -97,7 +97,7 @@ module.exports = function(Posts) {
 				return callback(err);
 			}
 
-			db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid, callback);
+			db.sortedSetAdd('cid:' + cid + ':pids', timestamp, pid, callback);
 		});
 	}
 
@@ -180,7 +180,7 @@ module.exports = function(Posts) {
 			}
 
 			var sets = cids.map(function(cid) {
-				return 'categories:recent_posts:cid:' + cid;
+				return 'cid:' + cid + ':pids';
 			});
 
 			db.sortedSetsRemove(sets, pid, callback);
