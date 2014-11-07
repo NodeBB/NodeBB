@@ -24,7 +24,7 @@ define('admin/modules/selectable', function() {
 		}
 
 		parentElement = $(parentElement);
-		elementsToSelect = $(elementsToSelect);
+		elementsToSelect = $(elementsToSelect).not('.selection');
 
 		var offset = parentElement.offset();
 
