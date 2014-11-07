@@ -68,6 +68,7 @@ var winston = require('winston'),
 
 						var topicData = {
 							tid: tid,
+							mainPid: pid,
 							title: title,
 							slug: tid + '/' + utils.slugify(title)
 						};

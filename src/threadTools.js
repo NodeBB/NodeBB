@@ -32,7 +32,7 @@ var winston = require('winston'),
 	};
 
 	function toggleDelete(tid, uid, isDelete, callback) {
-		topics.getTopicFields(tid, ['tid', 'cid', 'deleted', 'title'], function(err, topicData) {
+		topics.getTopicFields(tid, ['tid', 'cid', 'deleted', 'title', 'mainPid'], function(err, topicData) {
 			if (err) {
 				return callback(err);
 			}
