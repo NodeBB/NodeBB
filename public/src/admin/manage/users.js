@@ -259,6 +259,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 		function onUsersLoaded(users) {
 			templates.parse('admin/manage/users', 'users', {users: users}, function(html) {
 				$('#users-container').append($(html));
+				selectable.enable('#users-container', '.user-selectable');
 			});
 		}
 
