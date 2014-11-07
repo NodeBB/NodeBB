@@ -26,8 +26,9 @@ module.exports = function(Meta) {
 
 	Meta.configs.list = function (callback) {
 		db.getObject('config', function (err, config) {
+			config = config || {};
 			config.version = pkg.version;
-			callback(err, config || {});
+			callback(err, config);
 		});
 	};
 
