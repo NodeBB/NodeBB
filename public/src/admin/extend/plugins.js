@@ -55,7 +55,7 @@ define('admin/extend/plugins', function() {
 					Plugins.suggest(pluginID, function(err, payload) {
 						if (!err) {
 							require(['semver'], function(semver) {
-								if (semver.gt(payload.version, parent.find('.currentVersion').text())) {
+								if (payload.version === 'latest' || semver.gt(payload.version, parent.find('.currentVersion').text())) {
 									btn.attr('disabled', true).find('i').attr('class', 'fa fa-refresh fa-spin');
 									socket.emit('admin.plugins.upgrade', {
 										id: pluginID,
