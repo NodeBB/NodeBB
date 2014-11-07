@@ -156,7 +156,9 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 
 		var icon = favBtn.find('i');
 		var className = icon.attr('class');
-
+		if (!className) {
+			return;
+		}
 		if (data.isFavourited ? className.indexOf('-o') !== -1 : className.indexOf('-o') === -1) {
 			icon.attr('class', data.isFavourited ? className.replace('-o', '') : className + '-o');
 		}
