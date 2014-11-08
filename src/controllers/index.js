@@ -182,11 +182,12 @@ Controllers.register = function(req, res, next) {
 	data.termsOfUse = meta.config.termsOfUse;
 	data.regFormEntry = [];
 
-	plugins.fireHook('filter:register.build', req, res, data, function(err, req, res, data) {
+	plugins.fireHook('filter:register.build', {req: req, res: res, templateData: data}, function(err, data) {
 		if (err && process.env === 'development') {
 			winston.warn(JSON.stringify(err));
+			return next(err);
 		}
-		res.render('register', data);
+		res.render('register', data.templateData);
 	});
 };
 
