@@ -26,11 +26,11 @@ categoriesController.recent = function(req, res, next) {
 
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
-		plugins.fireHook('filter:category.get', data, uid, function(err, data) {
+		plugins.fireHook('filter:category.get', {category: data, uid: uid}, function(err, data) {
 			if (err) {
 				return next(err);
 			}
-			res.render('recent', data);
+			res.render('recent', data.category);
 		});
 	});
 };
@@ -44,6 +44,7 @@ categoriesController.popular = function(req, res, next) {
 
 	if (uid === 0) {
         if (anonCache[term] && (Date.now() - lastUpdateTime) < 60 * 60 * 1000) {
+        	console.log('returning from cache');
             return res.render('popular', anonCache[term]);
         }
 	}
@@ -55,16 +56,16 @@ categoriesController.popular = function(req, res, next) {
 
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
-		plugins.fireHook('filter:category.get', {topics: data}, uid, function(err, data) {
+		plugins.fireHook('filter:category.get', {category: {topics: data}, uid: uid}, function(err, data) {
 			if (err) {
 				return next(err);
 			}
 			if (uid === 0) {
-		        anonCache[term] = data;
+		        anonCache[term] = data.category;
 		        lastUpdateTime = Date.now();
 			}
 
-			res.render('popular', data);
+			res.render('popular', data.category);
 		});
 	});
 };
@@ -77,11 +78,11 @@ categoriesController.unread = function(req, res, next) {
 			return next(err);
 		}
 
-		plugins.fireHook('filter:category.get', data, uid, function(err, data) {
+		plugins.fireHook('filter:category.get', {category: data, uid: uid}, function(err, data) {
 			if (err) {
 				return next(err);
 			}
-			res.render('unread', data);
+			res.render('unread', data.category);
 		});
 	});
 };
@@ -167,7 +168,7 @@ categoriesController.get = function(req, res, next) {
 			}
 		},
 		categories.getCategoryById,
-		function(categoryData, uid, next) {
+		function(categoryData, next) {
 			categories.getRecentTopicReplies(categoryData.children, uid, function(err) {
 				if (err) {
 					return next(err);
