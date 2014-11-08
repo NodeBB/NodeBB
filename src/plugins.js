@@ -132,7 +132,7 @@ var fs = require('fs'),
 		// Deprecated as of v0.5.0, remove this hook call for NodeBB v0.6.0-1
 		Plugins.fireHook('action:app.load', router, middleware, controllers);
 
-		Plugins.fireHook('static:app.load', router, middleware, controllers, function() {
+		Plugins.fireHook('static:app.load', {app: app, router: router, middleware: middleware, controllers: controllers}, function() {
 			hotswap.replace('plugins', router);
 			winston.info('[plugins] All plugins reloaded and rerouted');
 			callback();
@@ -796,9 +796,9 @@ var fs = require('fs'),
 		});
 	};
 
-	function addLanguages(router, middleware, controllers, callback) {
+	function addLanguages(params, callback) {
 		Plugins.customLanguages.forEach(function(lang) {
-			router.get('/language' + lang.route, function(req, res, next) {
+			params.router.get('/language' + lang.route, function(req, res, next) {
 				res.json(lang.file);
 			});
 
