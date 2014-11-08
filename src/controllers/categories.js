@@ -9,7 +9,8 @@ var categoriesController = {},
 	categories = require('../categories'),
 	topics = require('../topics'),
 	meta = require('../meta'),
-	plugins = require('../plugins');
+	plugins = require('../plugins'),
+	utils = require('../../public/src/utils');
 
 // todo: This might be better placed somewhere else
 var apiToRegular = function(url) {
@@ -44,7 +45,6 @@ categoriesController.popular = function(req, res, next) {
 
 	if (uid === 0) {
         if (anonCache[term] && (Date.now() - lastUpdateTime) < 60 * 60 * 1000) {
-        	console.log('returning from cache');
             return res.render('popular', anonCache[term]);
         }
 	}
@@ -105,6 +105,10 @@ categoriesController.get = function(req, res, next) {
 		uid = req.user ? req.user.uid : 0,
 		userPrivileges;
 
+	if (req.params.topic_index && !utils.isNumber(req.params.topic_index)) {
+		return categoriesController.notFound(req, res);
+	}
+
 	async.waterfall([
 		function(next) {
 			async.parallel({
@@ -112,7 +116,7 @@ categoriesController.get = function(req, res, next) {
 					categories.exists(cid, next);
 				},
 				categoryData: function(next) {
-					categories.getCategoryFields(cid, ['slug', 'disabled'], next);
+					categories.getCategoryFields(cid, ['slug', 'disabled', 'topic_count'], next);
 				},
 				privileges: function(next) {
 					privileges.categories.get(cid, uid, next);
@@ -135,14 +139,21 @@ categoriesController.get = function(req, res, next) {
 				return categoriesController.notAllowed(req, res);
 			}
 
+			var topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) : 1;
+			var topicCount = parseInt(results.categoryData.topic_count, 10) + 1;
+
+			if (topicIndex < 1 || topicIndex > topicCount) {
+				var url = '/category/' + cid + '/' + req.params.slug + (topicIndex > topicCount ? '/' + topicCount : '');
+				return res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
+			}
+
 			userPrivileges = results.privileges;
 			var settings = results.userSettings;
 
-			var topicIndex = 0;
 			if (!settings.usePagination) {
-				topicIndex = Math.max((req.params.topic_index || 1) - (settings.topicsPerPage - 1), 0);
+				topicIndex = Math.max((topicIndex || 1) - (settings.topicsPerPage - 1), 0);
 			} else if (!req.query.page) {
-				var index = Math.max(parseInt((req.params.topic_index || 0), 10), 0);
+				var index = Math.max(parseInt((topicIndex || 0), 10), 0);
 				page = Math.ceil((index + 1) / settings.topicsPerPage);
 			}
 

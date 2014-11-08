@@ -60,11 +60,8 @@ topicsController.get = function(req, res, next) {
 
 			if (utils.isNumber(req.params.post_index)) {
 				var url = '';
-				if (req.params.post_index > postCount) {
-					url = '/topic/' + req.params.topic_id + '/' + req.params.slug + '/' + postCount;
-					return res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
-				} else if (req.params.post_index < 1) {
-					url = '/topic/' + req.params.topic_id + '/' + req.params.slug;
+				if (req.params.post_index < 1 || req.params.post_index > postCount) {
+					url = '/topic/' + req.params.topic_id + '/' + req.params.slug + (req.params.post_index > postCount ? '/' + postCount : '');
 					return res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
 				}
 			}
