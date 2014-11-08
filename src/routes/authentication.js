@@ -132,12 +132,11 @@
 
 					user.notifications.sendWelcomeNotification(uid);
 
-					plugins.fireHook('filter:register.complete', uid, req.body.referrer, function(err, uid, destination) {
-						if (destination) {
-							res.redirect(nconf.get('relative_path') + destination);
-						} else {
-							res.redirect(nconf.get('relative_path') + '/');
+					plugins.fireHook('filter:register.complete', {uid: uid, referrer: req.body.referrer}, function(err, data) {
+						if (err) {
+							return res.redirect(nconf.get('relative_path') + '/register');
 						}
+						res.redirect(nconf.get('relative_path') + (data.referrer ? data.referrer : '/'));
 					});
 				});
 			});
