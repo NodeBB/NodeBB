@@ -6,13 +6,15 @@ define('topicSelect', function() {
 	var TopicSelect = {};
 	var lastSelected;
 
-	TopicSelect.init = function(onSelect) {
+	var topicsContainer;
 
-		$('#topics-container').on('selectstart', function() {
+	TopicSelect.init = function(onSelect) {
+		topicsContainer = $('#topics-container');
+		topicsContainer.on('selectstart', function() {
 			return false;
 		});
 
-		$('#topics-container').on('click', '.select', function(ev) {
+		topicsContainer.on('click', '.select', function(ev) {
 			var select = $(this);
 
 			if (ev.shiftKey) {
@@ -38,15 +40,15 @@ define('topicSelect', function() {
 
 	TopicSelect.getSelectedTids = function() {
 		var tids = [];
-		$('#topics-container .category-item.selected').each(function() {
+		topicsContainer.find('.category-item.selected').each(function() {
 			tids.push($(this).attr('data-tid'));
 		});
 		return tids;
 	};
 
 	TopicSelect.unselectAll = function() {
-		$('#topics-container .category-item.selected').removeClass('selected');
-		$('#topics-container .select').toggleClass('fa-check-square-o', false).toggleClass('fa-square-o', true);
+		topicsContainer.find('.category-item.selected').removeClass('selected');
+		topicsContainer.find('.select').toggleClass('fa-check-square-o', false).toggleClass('fa-square-o', true);
 	};
 
 	function selectRange(clickedTid) {
@@ -76,7 +78,7 @@ define('topicSelect', function() {
 	}
 
 	function getIndex(tid) {
-		return $('.category-item[data-tid="' + tid + '"]').index('.category-item');
+		return $('.category-item[data-tid="' + tid + '"]').index('#topics-container .category-item');
 	}
 
 	return TopicSelect;
