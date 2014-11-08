@@ -66,10 +66,10 @@ module.exports = function(Topics) {
 				user.getIgnoredCategories(uid, next);
 			},
 			recentTids: function(next) {
-				db.getSortedSetRevRangeByScoreWithScores('topics:recent', 0, -1, Infinity, yesterday, next);
+				db.getSortedSetRevRangeByScoreWithScores('topics:recent', 0, -1, '+inf', yesterday, next);
 			},
 			userScores: function(next) {
-				db.getSortedSetRevRangeByScoreWithScores('uid:' + uid + ':tids_read', 0, -1, Infinity, yesterday, next);
+				db.getSortedSetRevRangeByScoreWithScores('uid:' + uid + ':tids_read', 0, -1, '+inf', yesterday, next);
 			}
 		}, function(err, results) {
 			if (err) {

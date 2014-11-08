@@ -167,10 +167,10 @@ module.exports = function(db, module) {
 		}
 
 		var scoreQuery = {};
-		if (min !== -Infinity) {
+		if (min !== '-inf') {
 			scoreQuery.$gte = min;
 		}
-		if (max !== Infinity) {
+		if (max !== '+inf') {
 			scoreQuery.$lte = max;
 		}
 

@@ -75,7 +75,7 @@ module.exports = function(Categories) {
 
 			async.parallel({
 				pinnedTids: function(next) {
-					db.getSortedSetRevRangeByScore('cid:' + category.cid + ':tids', 0, -1, Infinity, Date.now(), next);
+					db.getSortedSetRevRangeByScore('cid:' + category.cid + ':tids', 0, -1, '+inf', Date.now(), next);
 				},
 				tids: function(next) {
 					db.getSortedSetRevRangeByScore('cid:' + category.cid + ':tids', 0, Math.max(0, count), Date.now(), 0, next);

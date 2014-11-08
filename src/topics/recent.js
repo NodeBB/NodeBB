@@ -55,7 +55,7 @@ module.exports = function(Topics) {
 
 		var count = parseInt(end, 10) === -1 ? end : end - start + 1;
 
-		db.getSortedSetRevRangeByScore('topics:recent', start, count, Infinity, Date.now() - since, callback);
+		db.getSortedSetRevRangeByScore('topics:recent', start, count, '+inf', Date.now() - since, callback);
 	};
 
 	Topics.updateTimestamp = function(tid, timestamp, callback) {

@@ -94,7 +94,7 @@ var db = require('./database'),
 			min = 0;
 		}
 
-		db.getSortedSetRevRangeByScore('messages:uid:' + uids[0] + ':to:' + uids[1], 0, count, Infinity, min, function(err, mids) {
+		db.getSortedSetRevRangeByScore('messages:uid:' + uids[0] + ':to:' + uids[1], 0, count, '+inf', min, function(err, mids) {
 			if (err) {
 				return callback(err);
 			}

@@ -19,7 +19,7 @@ module.exports = function(Posts) {
 
 		var count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
 
-		db.getSortedSetRevRangeByScore('posts:pid', start, count, Infinity, Date.now() - since, function(err, pids) {
+		db.getSortedSetRevRangeByScore('posts:pid', start, count, '+inf', Date.now() - since, function(err, pids) {
 			if (err) {
 				return callback(err);
 			}
