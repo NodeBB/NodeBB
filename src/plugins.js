@@ -533,19 +533,12 @@ var fs = require('fs'),
 					Plugins.fireHook('action:plugin.deactivate', id);
 				}
 
-				// Reload meta data
-				Plugins.reload(function() {
-					if(!active) {
-						Plugins.fireHook('action:plugin.activate', id);
-					}
-
-					if (typeof callback === 'function') {
-						callback(null, {
-							id: id,
-							active: !active
-						});
-					}
-				});
+				if (typeof callback === 'function') {
+					callback(null, {
+						id: id,
+						active: !active
+					});
+				}
 			});
 		});
 	};
