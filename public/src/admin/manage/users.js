@@ -257,7 +257,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 		handleUserCreate();
 
 		function onUsersLoaded(users) {
-			templates.parse('admin/manage/users', 'users', {users: users}, function(html) {
+			templates.parse('admin/manage/users', 'users', {users: users, requireEmailConfirmation: config.requireEmailConfirmation}, function(html) {
 				$('#users-container').append($(html));
 				selectable.enable('#users-container', '.user-selectable');
 			});
