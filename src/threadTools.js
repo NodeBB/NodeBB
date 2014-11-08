@@ -134,12 +134,10 @@ var winston = require('winston'),
 			emitTo('topic_' + tid);
 			emitTo('category_' + cid);
 
-			if (typeof callback === 'function') {
-				callback(null, {
-					tid: tid,
-					isLocked: lock
-				});
-			}
+			callback(null, {
+				tid: tid,
+				isLocked: lock
+			});
 		});
 	}
 
@@ -152,7 +150,7 @@ var winston = require('winston'),
 	};
 
 	function togglePin(tid, uid, pin, callback) {
-		topics.getTopicField(tid, 'cid', function(err, cid) {
+		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
 			function emitTo(room) {
 				websockets.in(room).emit(pin ? 'event:topic_pinned' : 'event:topic_unpinned', {
 					tid: tid,
@@ -165,9 +163,7 @@ var winston = require('winston'),
 			}
 
 			topics.setTopicField(tid, 'pinned', pin ? 1 : 0);
-			topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
-				db.sortedSetAdd('cid:' + topicData.cid + ':tids', pin ? Math.pow(2, 53) : topicData.lastposttime, tid);
-			});
+			db.sortedSetAdd('cid:' + topicData.cid + ':tids', pin ? Math.pow(2, 53) : topicData.lastposttime, tid);
 
 			plugins.fireHook('action:topic.pin', {
 				tid: tid,
@@ -176,14 +172,12 @@ var winston = require('winston'),
 			});
 
 			emitTo('topic_' + tid);
-			emitTo('category_' + cid);
+			emitTo('category_' + topicData.cid);
 
-			if (typeof callback === 'function') {
-				callback(null, {
-					tid: tid,
-					isPinned: pin
-				});
-			}
+			callback(null, {
+				tid: tid,
+				isPinned: pin
+			});
 		});
 	}
 
