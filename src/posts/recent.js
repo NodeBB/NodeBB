@@ -43,15 +43,7 @@ module.exports = function(Posts) {
 				return callback(err);
 			}
 
-			if (!Array.isArray(pids) || !pids.length) {
-				return callback(null, []);
-			}
-
-			pids = pids.map(function(pid) {
-				return 'post:' + pid;
-			});
-
-			db.getObjectsFields(pids, ['uid'], function(err, postData) {
+			Posts.getPostsFields(pids, ['uid'], function(err, postData) {
 				if (err) {
 					return callback(err);
 				}
