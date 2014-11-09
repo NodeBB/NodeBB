@@ -16,9 +16,9 @@ var async = require('async'),
 		"mongo": {
 			"dependencies": ["mongodb", "connect-mongo"]
 		},
-                "mysql": {
-                        "dependencies": ["mysql"]
-                }
+        "mysql": {
+			"dependencies": ["mysql","bookshelf","knex"]
+        }
 	};
 
 
