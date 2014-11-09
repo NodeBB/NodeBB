@@ -102,12 +102,8 @@ var async = require('async'),
 
 	Categories.getAllCategories = function(uid, callback) {
 		db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (!Array.isArray(cids) || !cids.length) {
-				return callback(null, []);
+			if (err || !Array.isArray(cids) || !cids.length) {
+				return callback(err, []);
 			}
 
 			Categories.getCategories(cids, uid, callback);
@@ -137,7 +133,7 @@ var async = require('async'),
 	Categories.getModerators = function(cid, callback) {
 		Groups.getMembers('cid:' + cid + ':privileges:mods', function(err, uids) {
 			if (err || !Array.isArray(uids) || !uids.length) {
-				return callback(err);
+				return callback(err, []);
 			}
 
 			user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], callback);
@@ -156,12 +152,8 @@ var async = require('async'),
 		});
 
 		db.getObjects(keys, function(err, categories) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (!Array.isArray(categories) || !categories.length) {
-				return callback(null, []);
+			if (err || !Array.isArray(categories) || !categories.length) {
+				return callback(err, []);
 			}
 
 			async.map(categories, modifyCategory, callback);
