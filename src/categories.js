@@ -84,22 +84,19 @@ var async = require('async'),
 	};
 
 	Categories.getPageCount = function(cid, uid, callback) {
-		Categories.getCategoryField(cid, 'topic_count', function(err, topicCount) {
+		async.parallel({
+			topicCount: async.apply(Categories.getCategoryField, cid, 'topic_count'),
+			settings: async.apply(user.getSettings, uid)
+		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			if (parseInt(topicCount, 10) === 0) {
+			if (!parseInt(results.topicCount, 10)) {
 				return callback(null, 1);
 			}
 
-			user.getSettings(uid, function(err, settings) {
-				if (err) {
-					return callback(err);
-				}
-
-				callback(null, Math.ceil(parseInt(topicCount, 10) / settings.topicsPerPage));
-			});
+			callback(null, Math.ceil(parseInt(results.topicCount, 10) / results.settings.topicsPerPage));
 		});
 	};
 
@@ -118,49 +115,32 @@ var async = require('async'),
 	};
 
 	Categories.getCategoriesByPrivilege = function(uid, privilege, callback) {
-		db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (!Array.isArray(cids) || !cids.length) {
-				return callback(null, []);
-			}
-
-			privileges.categories.filterCids(privilege, cids, uid, function(err, cids) {
-				if (err) {
-					return callback(err);
-				}
-
-				Categories.getCategories(cids, uid, function(err, categories) {
-					if (err) {
-						return callback(err);
-					}
-
-					categories = categories.filter(function(category) {
-						return !category.disabled;
-					});
-
-					callback(null, categories);
+		async.waterfall([
+			function(next) {
+				db.getSortedSetRange('categories:cid', 0, -1, next);
+			},
+			function(cids, next) {
+				privileges.categories.filterCids(privilege, cids, uid, next);
+			},
+			function(cids, next) {
+				Categories.getCategories(cids, uid, next);
+			},
+			function(categories, next) {
+				categories = categories.filter(function(category) {
+					return !category.disabled;
 				});
-			});
-		});
+				next(null, categories);
+			}
+		], callback);
 	};
 
 	Categories.getModerators = function(cid, callback) {
-		Groups.get('cid:' + cid + ':privileges:mods', {}, function(err, groupObj) {
-			if (err && err === 'group-not-found') {
-				return callback(null, []);
-			}
-			if (err) {
+		Groups.getMembers('cid:' + cid + ':privileges:mods', function(err, uids) {
+			if (err || !Array.isArray(uids) || !uids.length) {
 				return callback(err);
 			}
 
-			if (!Array.isArray(groupObj) || !groupObj.members.length) {
-				return callback(null, []);
-			}
-
-			user.getMultipleUserFields(groupObj.members, ['uid', 'username', 'userslug', 'picture'], callback);
+			user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], callback);
 		});
 	};
 

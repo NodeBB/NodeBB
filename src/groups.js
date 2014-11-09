@@ -140,6 +140,10 @@ var async = require('async'),
 		});
 	};
 
+	Groups.getMembers = function(groupName, callback) {
+		db.getSetMembers('group:' + groupName + ':members', callback);
+	};
+
 	Groups.search = function(query, options, callback) {
 		if (!query) {
 			return callback(null, []);

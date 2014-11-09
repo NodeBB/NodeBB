@@ -70,7 +70,7 @@ module.exports = function(privileges) {
 	};
 
 	privileges.categories.filterCids = function(privilege, cids, uid, callback) {
-		if (!cids.length) {
+		if (!Array.isArray(cids) || !cids.length) {
 			return callback(null, []);
 		}
 
