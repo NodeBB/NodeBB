@@ -29,6 +29,9 @@ module.exports = function(Categories) {
 			return callback(null, []);
 		}
 		async.map(categoryData, getRecentTopicPids, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
 
 			var pids = _.flatten(results);
 
@@ -41,21 +44,21 @@ module.exports = function(Categories) {
 					return callback(err);
 				}
 
-				async.each(categoryData, function(category, next) {
-					assignPostsToCategory(category, posts, next);
-				}, callback);
+				categoryData.forEach(function(category) {
+					assignPostsToCategory(category, posts);
+				});
+
+				callback();
 			});
 		});
 	};
 
-	function assignPostsToCategory(category, posts, next) {
+	function assignPostsToCategory(category, posts) {
 		category.posts = posts.filter(function(post) {
 			return parseInt(post.category.cid, 10) === parseInt(category.cid, 10);
 		}).sort(function(a, b) {
 			return b.timestamp - a.timestamp;
 		}).slice(0, parseInt(category.numRecentReplies, 10));
-
-		next();
 	}
 
 	function getRecentTopicPids(category, callback) {

@@ -127,26 +127,6 @@ middleware.addSlug = function(req, res, next) {
 	next();
 };
 
-middleware.checkTopicIndex = function(req, res, next) {
-	categories.getCategoryField(req.params.category_id, 'topic_count', function(err, topicCount) {
-		if (err) {
-			return next(err);
-		}
-		var topicIndex = parseInt(req.params.topic_index, 10);
-		topicCount = parseInt(topicCount, 10) + 1;
-		var url = '';
-
-		if (topicIndex > topicCount) {
-			url = '/category/' + req.params.category_id + '/' + req.params.slug + '/' + topicCount;
-			return res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
-		} else if (topicIndex < 1) {
-			url = '/category/' + req.params.category_id + '/' + req.params.slug;
-			return res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
-		}
-		next();
-	});
-};
-
 middleware.prepareAPI = function(req, res, next) {
 	res.locals.isAPI = true;
 	next();

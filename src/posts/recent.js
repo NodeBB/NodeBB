@@ -1,6 +1,7 @@
 'use strict';
 
-var db = require('../database'),
+var async = require('async'),
+	db = require('../database'),
 	privileges = require('../privileges');
 
 
@@ -19,52 +20,35 @@ module.exports = function(Posts) {
 
 		var count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
 
-		db.getSortedSetRevRangeByScore('posts:pid', start, count, '+inf', Date.now() - since, function(err, pids) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function(next) {
+				db.getSortedSetRevRangeByScore('posts:pid', start, count, '+inf', Date.now() - since, next);
+			},
+			function(pids, next) {
+				privileges.posts.filter('read', pids, uid, next);
+			},
+			function(pids, next) {
+				Posts.getPostSummaryByPids(pids, uid, {stripTags: true}, next);
 			}
-
-			if (!Array.isArray(pids) || !pids.length) {
-				return callback(null, []);
-			}
-
-			privileges.posts.filter('read', pids, uid, function(err, pids) {
-				if (err) {
-					return callback(err);
-				}
-				Posts.getPostSummaryByPids(pids, uid, {stripTags: true}, callback);
-			});
-		});
+		], callback);
 	};
 
 	Posts.getRecentPosterUids = function(start, end, callback) {
-		db.getSortedSetRevRange('posts:pid', start, end, function(err, pids) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (!Array.isArray(pids) || !pids.length) {
-				return callback(null, []);
-			}
-
-			pids = pids.map(function(pid) {
-				return 'post:' + pid;
-			});
-
-			db.getObjectsFields(pids, ['uid'], function(err, postData) {
-				if (err) {
-					return callback(err);
-				}
-
+		async.waterfall([
+			function(next) {
+				db.getSortedSetRevRange('posts:pid', start, end, next);
+			},
+			function(pids, next) {
+				Posts.getPostsFields(pids, ['uid'], next);
+			},
+			function(postData, next) {
 				postData = postData.map(function(post) {
 					return post && post.uid;
 				}).filter(function(value, index, array) {
 					return value && array.indexOf(value) === index;
 				});
-
-				callback(null, postData);
-			});
-		});
-	};
-
+				next(null, postData);
+			}
+		], callback);
+ 	};
 };
