@@ -242,7 +242,7 @@ var async = require('async'),
 		}
 
 		if (!cids.length) {
-			 return callback(null, []);
+			return callback(null, []);
 		}
 
 		async.parallel({
