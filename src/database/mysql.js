@@ -31,7 +31,7 @@
 		{
 			name: "mysql:database",
 			description: "Which database to use",
-			'default': nconf.get('mysql:database') || nodebb
+			'default': nconf.get('mysql:database') || 0
 		}
 	];
 
