@@ -24,13 +24,9 @@ module.exports = function(Posts) {
 			return callback(null, []);
 		}
 
-		var keys = pids.map(function(pid) {
-			return 'post:' + pid;
-		});
-
 		var fields = ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'].concat(options.extraFields);
 
-		db.getObjectsFields(keys, fields, function(err, posts) {
+		Posts.getPostsFields(pids, fields, function(err, posts) {
 			if (err) {
 				return callback(err);
 			}
