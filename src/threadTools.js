@@ -53,7 +53,7 @@ var winston = require('winston'),
 					return callback(err);
 				}
 
-				ThreadTools[isDelete ? 'lock' : 'unlock'](tid);
+				ThreadTools[isDelete ? 'lock' : 'unlock'](tid, uid);
 				if (isDelete) {
 					plugins.fireHook('action:topic.delete', tid);
 				} else {
@@ -119,7 +119,7 @@ var winston = require('winston'),
 				});
 			}
 
-			if (err) {
+			if (err && typeof callback === 'function') {
 				return callback(err);
 			}
 
@@ -134,10 +134,12 @@ var winston = require('winston'),
 			emitTo('topic_' + tid);
 			emitTo('category_' + cid);
 
-			callback(null, {
-				tid: tid,
-				isLocked: lock
-			});
+			if (typeof callback === 'function') {
+				callback(null, {
+					tid: tid,
+					isLocked: lock
+				});
+			}
 		});
 	}
 

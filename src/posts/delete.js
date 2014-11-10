@@ -128,7 +128,7 @@ module.exports = function(Posts) {
 					return callback(err);
 				}
 
-				plugins.fireHook('action:post.delete', pid);
+				plugins.fireHook('action:post.purge', pid);
 				db.delete('post:' + pid, callback);
 			});
 		});

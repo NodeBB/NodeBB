@@ -66,7 +66,7 @@ module.exports = function(Topics) {
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('action:topic.delete', tid);
+			plugins.fireHook('action:topic.purge', tid);
 			db.delete('topic:' + tid, callback);
 		});
 	};
