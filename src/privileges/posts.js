@@ -72,7 +72,7 @@ module.exports = function(privileges) {
 	};
 
 	privileges.posts.filter = function(privilege, pids, uid, callback) {
-		if (!pids.length) {
+		if (!Array.isArray(pids) || !pids.length) {
 			return callback(null, []);
 		}
 		posts.getCidsByPids(pids, function(err, cids) {

@@ -129,9 +129,6 @@ var fs = require('fs'),
 			app.render.apply(app, arguments);
 		};
 
-		// Deprecated as of v0.5.0, remove this hook call for NodeBB v0.6.0-1
-		Plugins.fireHook('action:app.load', router, middleware, controllers);
-
 		Plugins.fireHook('static:app.load', {app: app, router: router, middleware: middleware, controllers: controllers}, function() {
 			hotswap.replace('plugins', router);
 			winston.info('[plugins] All plugins reloaded and rerouted');
@@ -391,120 +388,77 @@ var fs = require('fs'),
 		return !!(Plugins.loadedHooks[hook] && Plugins.loadedHooks[hook].length > 0);
 	};
 
-	Plugins.fireHook = function(hook) {
-		var callback = typeof arguments[arguments.length-1] === 'function' ? arguments[arguments.length-1] : null,
-			args = arguments.length ? Array.prototype.slice.call(arguments, 1) : [];
-
-		if (callback) {
-			args.pop();
-		}
+	Plugins.fireHook = function(hook, params, callback) {
+		callback = typeof callback === 'function' ? callback : function() {};
 
 		var hookList = Plugins.loadedHooks[hook];
 
-		if (Array.isArray(hookList)) {
-			// if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
-			var hookType = hook.split(':')[0];
-			switch (hookType) {
-				case 'filter':
-					async.reduce(hookList, args, function(value, hookObj, next) {
-						if (hookObj.method) {
-							if (!hookObj.hasOwnProperty('callbacked') || hookObj.callbacked === true) {
-								// omg, after 6 months I finally realised what this does...
-								// It adds the callback to the arguments passed-in, since the callback
-								// is defined in *this* file (the async cb), and not the hooks themselves.
-								value = hookObj.method.apply(Plugins, value.concat(function() {
-									next(arguments[0], Array.prototype.slice.call(arguments, 1));
-								}));
+		if (!Array.isArray(hookList) || !hookList.length) {
+			return callback(null, params);
+		}
 
-								/*
-									Backwards compatibility block for v0.5.0
-									Remove this once NodeBB enters v0.5.0-1
-								*/
-								if (value !== undefined && value !== callback) {
-									winston.warn('[plugins/' + hookObj.id + '] "callbacked" deprecated as of 0.4x. Use asynchronous method instead for hook: ' + hook);
-									next(null, [value]);
-								}
-							} else {
-								winston.warn('[plugins/' + hookObj.id + '] "callbacked" deprecated as of 0.4x. Use asynchronous method instead for hook: ' + hook);
-								value = hookObj.method.apply(Plugins, value);
-								next(null, [value]);
-							}
-							/* End backwards compatibility block */
-						} else {
-							if (global.env === 'development') {
-								winston.info('[plugins] Expected method for hook \'' + hook + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
-							}
-							next(null, [value]);
-						}
-					}, function(err, values) {
-						if (err) {
-							if (global.env === 'development') {
-								winston.info('[plugins] Problem executing hook: ' + hook + ' err: ' + JSON.stringify(err));
-							}
-						}
-
-						if (callback) {
-							callback.apply(Plugins, [err].concat(values));
-						}
-					});
-					break;
-				case 'action':
-					var deprecationWarn = [];
-					async.each(hookList, function(hookObj, next) {
-						/*
-							Backwards compatibility block for v0.5.0
-							Remove this once NodeBB enters v0.6.0-1
-						*/
-						if (hook === 'action:app.load') {
-							deprecationWarn.push(hookObj.id);
-						}
-						/* End backwards compatibility block */
-
-						if (hookObj.method) {
-							hookObj.method.apply(Plugins, args);
-						} else {
-							if (global.env === 'development') {
-								winston.info('[plugins] Expected method \'' + hookObj.method + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
-							}
-						}
-
-						next();
-					}, function() {
-						/*
-							Backwards compatibility block for v0.5.0
-							Remove this once NodeBB enters v0.6.0-1
-						*/
-						if (deprecationWarn.length) {
-							winston.warn('[plugins] The `action:app.load` hook is deprecated in favour of `static:app.load`, please notify the developers of the following plugins:');
-							for(var x=0,numDeprec=deprecationWarn.length;x<numDeprec;x++) {
-								process.stdout.write('  * ' + deprecationWarn[x] + '\n');
-							}
-						}
-						/* End backwards compatibility block */
-					});
-					break;
-				case 'static':
-					async.each(hookList, function(hookObj, next) {
-						if (hookObj.method) {
-							hookObj.method.apply(Plugins, args.concat(next));
-						}
-					}, function(err) {
-						callback(err);
-					});
-					break;
-				default:
-					// Do nothing...
-					break;
-			}
-		} else {
-			// Otherwise, this hook contains no methods
-			if (callback) {
-				callback.apply(this, [null].concat(args));
-			}
-
-			return args[0];
+		// if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
+		var hookType = hook.split(':')[0];
+		switch (hookType) {
+			case 'filter':
+				fireFilterHook(hook, hookList, params, callback);
+				break;
+			case 'action':
+				fireActionHook(hook, hookList, params, callback);
+				break;
+			case 'static':
+				fireStaticHook(hook, hookList, params, callback);
+				break;
+			default:
+				winston.warn('[plugins] Unknown hookType: ' + hookType + ', hook : ' + hook);
+				break;
 		}
 	};
+
+	function fireFilterHook(hook, hookList, params, callback) {
+		async.reduce(hookList, params, function(params, hookObj, next) {
+			if (typeof hookObj.method !== 'function') {
+				if (global.env === 'development') {
+					winston.warn('[plugins] Expected method for hook \'' + hook + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
+				}
+				return next(null, params);
+			}
+
+			hookObj.method(params, next);
+
+		}, function(err, values) {
+			if (err) {
+				winston.error('[plugins] Problem executing hook: ' + hook + ' err: ' + err.stack);
+			}
+
+			callback(err, values);
+		});
+	}
+
+	function fireActionHook(hook, hookList, params, callback) {
+		async.each(hookList, function(hookObj, next) {
+
+			if (typeof hookObj.method !== 'function') {
+				if (global.env === 'development') {
+					winston.warn('[plugins] Expected method for hook \'' + hook + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
+				}
+				return next();
+			}
+
+			hookObj.method(params);
+			next();
+		}, callback);
+	}
+
+	function fireStaticHook(hook, hookList, params,callback) {
+		async.each(hookList, function(hookObj, next) {
+			if (typeof hookObj.method === 'function') {
+				hookObj.method(params, next);
+			} else {
+				next();
+			}
+		}, callback);
+	}
 
 	Plugins.isActive = function(id, callback) {
 		db.isSetMember('plugins:active', id, callback);

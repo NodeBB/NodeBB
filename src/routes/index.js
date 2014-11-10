@@ -54,7 +54,7 @@ function categoryRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/unread', middleware, [middleware.authenticate], controllers.categories.unread);
 	app.get('/api/unread/total', middleware.authenticate, controllers.categories.unreadTotal);
 
-	setupPageRoute(app, '/category/:category_id/:slug/:topic_index', middleware, [middleware.applyCSRF, middleware.checkTopicIndex], controllers.categories.get);
+	setupPageRoute(app, '/category/:category_id/:slug/:topic_index', middleware, [middleware.applyCSRF], controllers.categories.get);
 	setupPageRoute(app, '/category/:category_id/:slug?', middleware, [middleware.applyCSRF, middleware.addSlug], controllers.categories.get);
 }
 
