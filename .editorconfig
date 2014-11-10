@@ -1,6 +1,6 @@
 root = true
 
-[*.js, *.css, *.tpl]
+[*.js, *.css, *.tpl, *.json]
 indent_style = tab
 end_of_line = lf
 charset = utf-8
