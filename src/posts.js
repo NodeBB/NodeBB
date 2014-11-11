@@ -113,7 +113,9 @@ var async = require('async'),
 
 			data.pid = pid;
 
-			plugins.fireHook('filter:post.getFields', {posts: [data], fields: fields}, callback);
+			plugins.fireHook('filter:post.getFields', {posts: [data], fields: fields}, function(err, data) {
+				callback(err, (data && Array.isArray(data.posts) && data.posts.length) ? data.posts[0] : null);
+			});
 		});
 	};
 
@@ -130,7 +132,9 @@ var async = require('async'),
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('filter:post.getFields', {posts: posts, fields: fields}, callback);
+			plugins.fireHook('filter:post.getFields', {posts: posts, fields: fields}, function(err, data) {
+				 callback(err, (data && Array.isArray(data.posts)) ? data.posts : null);
+			});
 		});
 	};
 

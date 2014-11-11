@@ -8,15 +8,21 @@ var async = require('async'),
 
 module.exports = function(Posts) {
 	Posts.flag = function(pid, callback) {
-		async.parallel([
-			function(next) {
-				db.sortedSetAdd('posts:flagged', Date.now(), pid, next);
-			},
-			function(next) {
-				db.incrObjectField('post:' + pid, 'flags', next);
+		Posts.exists(pid, function(err, exists) {
+			if (err || !exists) {
+				return callback(err || new Error('[[error:no-post]]'));
 			}
-		], function(err, results) {
-			callback(err);
+
+			async.parallel([
+				function(next) {
+					db.sortedSetAdd('posts:flagged', Date.now(), pid, next);
+				},
+				function(next) {
+					db.incrObjectField('post:' + pid, 'flags', next);
+				}
+			], function(err, results) {
+				callback(err);
+			});
 		});
 	};
 

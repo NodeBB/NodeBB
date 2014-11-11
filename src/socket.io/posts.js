@@ -304,6 +304,9 @@ SocketPosts.flag = function(socket, pid, callback) {
 
 	async.waterfall([
 		function(next) {
+			posts.flag(pid, next);
+		},
+		function(next) {
 			user.getUserFields(socket.uid, ['username', 'reputation'], next);
 		},
 		function(userData, next) {
@@ -323,7 +326,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 		},
 		function(topicTitle, next) {
 			message = '[[notifications:user_flagged_post_in, ' + userName + ', ' + topicTitle + ']]';
-			postTools.parse(post, socket.uid, next);
+			postTools.parsePost(post, socket.uid, next);
 		},
 		function(post, next) {
 			groups.get('administrators', {}, next);
@@ -341,9 +344,6 @@ SocketPosts.flag = function(socket, pid, callback) {
 				}
 				notifications.push(notification, adminGroup.members, next);
 			});
-		},
-		function(next) {
-			posts.flag(pid, next);
 		},
 		function(next) {
 			if (!parseInt(post.uid, 10)) {
