@@ -97,16 +97,13 @@ var async = require('async'),
 
 	Posts.getPostFields = function(pid, fields, callback) {
 		db.getObjectFields('post:' + pid, fields, function(err, data) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
-			// TODO: I think the plugins system needs an optional 'parameters' paramter so I don't have to do this:
-			data = data || {};
 			data.pid = pid;
-			data.fields = fields;
 
-			plugins.fireHook('filter:post.getFields', data, callback);
+			plugins.fireHook('filter:post.getFields', {post: data, fields: fields}, callback);
 		});
 	};
 
