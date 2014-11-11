@@ -1,23 +1,23 @@
 
 'use strict';
 
-var topics = require('../topics');
+var async = require('async'),
+	topics = require('../topics');
 
 module.exports = function(Posts) {
 
 	Posts.getCidByPid = function(pid, callback) {
-		Posts.getPostField(pid, 'tid', function(err, tid) {
-			if(err) {
-				return callback(err);
+		async.waterfall([
+			function(next) {
+				Posts.getPostField(pid, 'tid', next);
+			},
+			function(tid, next) {
+				topics.getTopicField(tid, 'cid', next);
+			},
+			function(cid, next) {
+				next(!cid ? new Error('[[error:invalid-cid]]') : null, cid);
 			}
-
-			topics.getTopicField(tid, 'cid', function(err, cid) {
-				if(err || !cid) {
-					return callback(err || new Error('[[error:invalid-cid]]'));
-				}
-				callback(null, cid);
-			});
-		});
+		], callback);
 	};
 
 	Posts.getCidsByPids = function(pids, callback) {
