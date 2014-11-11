@@ -130,7 +130,7 @@ var async = require('async'),
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('filter:post.getFields', {posts: [posts], fields: fields}, callback);
+			plugins.fireHook('filter:post.getFields', {posts: posts, fields: fields}, callback);
 		});
 	};
 
