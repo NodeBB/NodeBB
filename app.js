@@ -39,7 +39,7 @@ winston.remove(winston.transports.Console);
 winston.add(winston.transports.Console, {
 	colorize: true,
 	timestamp: true,
-	level: 'info'
+	level: global.env === 'production' ? 'info' : 'verbose'
 });
 
 // TODO: remove once https://github.com/flatiron/winston/issues/280 is fixed
