@@ -48,11 +48,16 @@ module.exports = function(Meta) {
 				'public/src/translator.js',
 				'public/src/helpers.js',
 				'public/src/overrides.js'
-			]
+			],
+			rjs: []
 		}
 	};
 
 	Meta.js.loadRJS = function(callback) {
+		if (global.env === 'development') {
+			return callback();
+		}
+
 		var rjsPath = path.join(__dirname, '../../public/src');
 
 		async.parallel({
