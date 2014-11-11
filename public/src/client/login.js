@@ -41,7 +41,6 @@ define('forum/login', function() {
 			returnToEl.name = 'returnTo';
 			returnToEl.value = app.previousUrl.replace(window.location.origin + RELATIVE_PATH, '');
 			$(returnToEl).appendTo(formEl);
-			console.log('appended');
 		}
 	};
 
