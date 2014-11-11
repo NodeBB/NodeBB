@@ -107,57 +107,34 @@ module.exports = function(Posts) {
 	};
 
 	Posts.getPostsByUid = function(callerUid, uid, start, end, callback) {
-		user.getPostIds(uid, start, end, function(err, pids) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function(next) {
+				user.getPostIds(uid, start, end, next);
+			},
+			function(pids, next) {
+				privileges.posts.filter('read', pids, callerUid, next);
+			},
+			function(pids, next) {
+				Posts.getPostSummaryByPids(pids, callerUid, {stripTags: false}, next);
+			},
+			function(posts, next) {
+				next(null, {posts: posts, nextStart: end + 1});
 			}
-
-			privileges.posts.filter('read', pids, callerUid, function(err, pids) {
-				if (err) {
-					return callback(err);
-				}
-				getPosts(pids, callerUid, function(err, posts) {
-					if (err) {
-						return callback(err);
-					}
-					callback(null, {posts: posts, nextStart: end + 1});
-				});
-			});
-		});
+		], callback);
 	};
 
 	Posts.getFavourites = function(uid, start, end, callback) {
-		db.getSortedSetRevRange('uid:' + uid + ':favourites', start, end, function(err, pids) {
-			if (err) {
-				return callback(err);
-			}
-
-			getPosts(pids, uid, function(err, posts) {
-				if (err) {
-					return callback(err);
-				}
+		async.waterfall([
+			function(next) {
+				db.getSortedSetRevRange('uid:' + uid + ':favourites', start, end, next);
+			},
+			function(pids, next) {
+				Posts.getPostSummaryByPids(pids, uid, {stripTags: false}, next);
+			},
+			function(posts, next) {
 				callback(null, {posts: posts, nextStart: end + 1});
-			});
-		});
+			}
+		], callback);
 	};
-
-	function getPosts(pids, uid, callback) {
-		if (!Array.isArray(pids) || !pids.length) {
-			return callback(null, []);
-		}
-
-		Posts.getPostSummaryByPids(pids, uid, {stripTags: false}, function(err, posts) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (!Array.isArray(posts) || !posts.length) {
-				return callback(null, []);
-			}
-
-			callback(null, posts);
-		});
-	}
-
 
 };

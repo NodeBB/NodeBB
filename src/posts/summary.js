@@ -20,10 +20,6 @@ module.exports = function(Posts) {
 		options.parse = options.hasOwnProperty('parse') ? options.parse : true;
 		options.extraFields = options.hasOwnProperty('extraFields') ? options.extraFields : [];
 
-		if (!Array.isArray(pids) || !pids.length) {
-			return callback(null, []);
-		}
-
 		var fields = ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'].concat(options.extraFields);
 
 		Posts.getPostsFields(pids, fields, function(err, posts) {
@@ -35,13 +31,13 @@ module.exports = function(Posts) {
 				return !!p && parseInt(p.deleted, 10) !== 1;
 			});
 
-			var uids = [], tids = [];
+			var uids = [], topicKeys = [];
 			for(var i=0; i<posts.length; ++i) {
 				if (uids.indexOf(posts[i].uid) === -1) {
 					uids.push(posts[i].uid);
 				}
-				if (tids.indexOf('topic:' + posts[i].tid) === -1) {
-					tids.push('topic:' + posts[i].tid);
+				if (topicKeys.indexOf('topic:' + posts[i].tid) === -1) {
+					topicKeys.push('topic:' + posts[i].tid);
 				}
 			}
 
@@ -50,45 +46,12 @@ module.exports = function(Posts) {
 					user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
 				},
 				topicsAndCategories: function(next) {
-					db.getObjectsFields(tids, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted'], function(err, topics) {
-						if (err) {
-							return next(err);
-						}
-
-						var cids = topics.map(function(topic) {
-							if (topic) {
-								topic.title = validator.escape(topic.title);
-							}
-							return topic && topic.cid;
-						}).filter(function(value, index, array) {
-							return value && array.indexOf(value) === index;
-						});
-
-						categories.getMultipleCategoryFields(cids, ['cid', 'name', 'icon', 'slug'], function(err, categories) {
-							next(err, {topics: topics, categories: categories});
-						});
-					});
+					getTopicAndCategories(topicKeys, next);
 				},
 				indices: function(next) {
 					Posts.getPostIndices(posts, uid, next);
 				}
 			}, function(err, results) {
-				function toObject(key, data) {
-					var obj = {};
-					for(var i=0; i<data.length; ++i) {
-						obj[data[i][key]] = data[i];
-					}
-					return obj;
-				}
-
-				function stripTags(content) {
-					if (options.stripTags && content) {
-						var s = S(content);
-						return s.stripTags.apply(s, utils.stripTags).s;
-					}
-					return content;
-				}
-
 				if (err) {
 					return callback(err);
 				}
@@ -112,7 +75,9 @@ module.exports = function(Posts) {
 					post.relativeTime = utils.toISOString(post.timestamp);
 
 					if (!post.content || !options.parse) {
-						post.content = stripTags(post.content);
+						if (options.stripTags) {
+							post.content = stripTags(post.content);
+						}
 						return next(null, post);
 					}
 
@@ -120,8 +85,9 @@ module.exports = function(Posts) {
 						if (err) {
 							return next(err);
 						}
-
-						post.content = stripTags(post.content);
+						if (options.stripTags) {
+							post.content = stripTags(post.content);
+						}
 
 						next(null, post);
 					});
@@ -133,4 +99,41 @@ module.exports = function(Posts) {
 			});
 		});
 	};
+
+	function getTopicAndCategories(topicKeys, callback) {
+		db.getObjectsFields(topicKeys, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted'], function(err, topics) {
+			if (err) {
+				return callback(err);
+			}
+
+			var cids = topics.map(function(topic) {
+				if (topic) {
+					topic.title = validator.escape(topic.title);
+				}
+				return topic && topic.cid;
+			}).filter(function(topic, index, array) {
+				return topic && array.indexOf(topic) === index;
+			});
+
+			categories.getMultipleCategoryFields(cids, ['cid', 'name', 'icon', 'slug'], function(err, categories) {
+				callback(err, {topics: topics, categories: categories});
+			});
+		});
+	}
+
+	function toObject(key, data) {
+		var obj = {};
+		for(var i=0; i<data.length; ++i) {
+			obj[data[i][key]] = data[i];
+		}
+		return obj;
+	}
+
+	function stripTags(content) {
+		if (content) {
+			var s = S(content);
+			return s.stripTags.apply(s, utils.stripTags).s;
+		}
+		return content;
+	}
 };
