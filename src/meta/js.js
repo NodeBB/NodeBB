@@ -181,7 +181,7 @@ module.exports = function(Meta) {
 				minifier.send({
 					action: 'js',
 					relativePath: nconf.get('url') + '/',
-					minify: minify,
+					minify: global.env !== 'development',
 					scripts: Meta.js.scripts.all
 				});
 			});

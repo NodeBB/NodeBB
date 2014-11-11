@@ -29,6 +29,27 @@ Minifier.js.minify = function (scripts, relativePath, minify, callback) {
 		options.prefix = 1;
 	}
 
+	if (minify) {
+		minifyScripts(scripts, options, callback);
+	} else {
+		concatenateScripts(scripts, options, callback);
+	}
+};
+
+process.on('message', function(payload) {
+	switch(payload.action) {
+	case 'js':
+		Minifier.js.minify(payload.scripts, payload.relativePath, payload.minify, function(data) {
+			process.send({
+				type: 'end',
+				data: data
+			});
+		});
+		break;
+	}
+});
+
+function minifyScripts(scripts, options, callback) {
 	try {
 		var minified = uglifyjs.minify(scripts, options),
 			hasher = crypto.createHash('md5'),
@@ -52,17 +73,22 @@ Minifier.js.minify = function (scripts, relativePath, minify, callback) {
 			payload: err
 		});
 	}
-};
+}
 
-process.on('message', function(payload) {
-	switch(payload.action) {
-	case 'js':
-		Minifier.js.minify(payload.scripts, payload.relativePath, payload.minify, function(data) {
+function concatenateScripts(scripts, options, callback) {
+	async.map(scripts, fs.readFile, function(err, scripts) {
+		if (err) {
 			process.send({
-				type: 'end',
-				data: data
+				type: 'error',
+				payload: err
 			});
+		}
+
+		scripts = scripts.join(require('os').EOL);
+
+		callback({
+			js: scripts,
+			map: ''
 		});
-		break;
-	}
-});
+	});
+}
