@@ -143,7 +143,7 @@ var async = require('async'),
 				pid: pid
 			};
 			data[field] = value;
-			plugins.fireHook('action:post.setField', data);
+			plugins.fireHook('action:post.setFields', data);
 			callback();
 		});
 	};
@@ -154,7 +154,7 @@ var async = require('async'),
 				return callback(err);
 			}
 			data.pid = pid;
-			plugins.fireHook('action:post.setField', data);
+			plugins.fireHook('action:post.setFields', data);
 			callback();
 		});
 	};
