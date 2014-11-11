@@ -146,7 +146,7 @@ SocketPosts.sendNotificationToPostOwner = function(pid, fromuid, notification) {
 		async.parallel({
 			username: async.apply(user.getUserField, fromuid, 'username'),
 			topicTitle: async.apply(topics.getTopicField, postData.tid, 'title'),
-			postContent: async.apply(postTools.parsePost, postData, postData.uid)
+			postObj: async.apply(postTools.parsePost, postData, postData.uid)
 		}, function(err, results) {
 			if (err) {
 				return;
@@ -154,7 +154,7 @@ SocketPosts.sendNotificationToPostOwner = function(pid, fromuid, notification) {
 
 			notifications.create({
 				bodyShort: '[[' + notification + ', ' + results.username + ', ' + results.topicTitle + ']]',
-				bodyLong: results.postContent,
+				bodyLong: results.postObj.content,
 				pid: pid,
 				nid: 'post:' + pid + ':uid:' + fromuid,
 				from: fromuid
