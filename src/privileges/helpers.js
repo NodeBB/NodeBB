@@ -32,12 +32,6 @@ helpers.isUserAllowedTo = function(privilege, uid, cids, callback) {
 	}
 
 	async.parallel({
-		userPrivilegeExists: function(next) {
-			groups.exists(userKeys, next);
-		},
-		groupPrivilegeExists: function(next) {
-			groups.exists(groupKeys, next);
-		},
 		hasUserPrivilege: function(next) {
 			groups.isMemberOfGroups(uid, userKeys, next);
 		},
@@ -51,7 +45,7 @@ helpers.isUserAllowedTo = function(privilege, uid, cids, callback) {
 
 		var result = [];
 		for (var i=0; i<cids.length; ++i) {
-			result.push((!results.userPrivilegeExists[i] && !results.groupPrivilegeExists[i]) || results.hasUserPrivilege[i] || results.hasGroupPrivilege[i]);
+			result.push(results.hasUserPrivilege[i] || results.hasGroupPrivilege[i]);
 		}
 
 		callback(null, result);
@@ -60,12 +54,6 @@ helpers.isUserAllowedTo = function(privilege, uid, cids, callback) {
 
 helpers.isUsersAllowedTo = function(privilege, uids, cid, callback) {
 	async.parallel({
-		userPrivilegeExists: function(next) {
-			groups.exists('cid:' + cid + ':privileges:' + privilege, next);
-		},
-		groupPrivilegeExists: function(next) {
-			groups.exists('cid:' + cid + ':privileges:groups:' + privilege, next);
-		},
 		hasUserPrivilege: function(next) {
 			groups.isMembers(uids, 'cid:' + cid + ':privileges:' + privilege, next);
 		},
@@ -78,9 +66,8 @@ helpers.isUsersAllowedTo = function(privilege, uids, cid, callback) {
 		}
 
 		var result = [];
-
 		for(var i=0; i<uids.length; ++i) {
-			result.push((!results.userPrivilegeExists && !results.groupPrivilegeExists) || results.hasUserPrivilege[i] || results.hasGroupPrivilege[i]);
+			result.push(results.hasUserPrivilege[i] || results.hasGroupPrivilege[i]);
 		}
 
 		callback(null, result);
@@ -88,38 +75,12 @@ helpers.isUsersAllowedTo = function(privilege, uids, cid, callback) {
 };
 
 function isGuestAllowedTo(privilege, cids, callback) {
-	var userKeys = [], groupKeys = [];
+	var groupKeys = [];
 	for (var i=0; i<cids.length; ++i) {
-		userKeys.push('cid:' + cids[i] + ':privileges:' + privilege);
 		groupKeys.push('cid:' + cids[i] + ':privileges:groups:' + privilege);
 	}
 
-	async.parallel({
-		userPrivilegeExists: function(next) {
-			groups.exists(userKeys, next);
-		},
-		groupPrivilegeExists: function(next) {
-			groups.exists(groupKeys, next);
-		},
-		hasGroupPrivilege: function(next) {
-			groups.isMemberOfGroups('guests', groupKeys, next);
-		}
-	}, function(err, results) {
-		if (err) {
-			return callback(err);
-		}
-
-		var result = [];
-		for (var i = 0; i<cids.length; ++i) {
-			var groupPriv = (privilege === 'find' || privilege === 'read') ?
-				(!results.groupPrivilegeExists[i] || results.hasGroupPrivilege[i] !== false) :
-				(results.groupPrivilegeExists[i] && results.hasGroupPrivilege[i] === true);
-
-			result.push((!results.userPrivilegeExists[i] && !results.groupPrivilegeExists[i]) || groupPriv);
-		}
-
-		callback(null, result);
-	});
+	groups.isMemberOfGroups('guests', groupKeys, callback);
 }
 
 helpers.hasEnoughReputationFor = function(privilege, uid, callback) {

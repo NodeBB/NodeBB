@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 10, 7);
+	latestSchema = Date.UTC(2014, 10, 11);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -1270,6 +1270,69 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/11/7] Renaming sorted sets skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 10, 11);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/11/11] Upgrading permissions');
+
+				async.waterfall([
+					function(next) {
+						db.getSortedSetRange('categories:cid', 0, -1, next);
+					},
+					function(cids, next) {
+						function upgradePrivilege(cid, privilege, groupName, next) {
+							async.parallel({
+								userPrivExists: function(next) {
+									Groups.exists('cid:' + cid + ':privileges:' + privilege, next);
+								},
+								groupPrivExists: function(next) {
+									Groups.exists('cid:' + cid + ':privileges:groups:' + privilege, next);
+								}
+							}, function(err, results) {
+								if (err || results.userPrivExists || results.groupPrivExists) {
+									return next(err);
+								}
+
+								Groups.join('cid:' + cid + ':privileges:groups:' + privilege, groupName, next);
+							});
+						}
+
+						function upgradePrivileges(cid, groupName, next) {
+							var privs = ['find', 'read', 'topics:reply', 'topics:post'];
+							async.each(privs, function(priv, next) {
+								upgradePrivilege(cid, priv, groupName, next);
+							}, next);
+						}
+
+						Groups.list({}, function(err, groups) {
+							if (err) {
+								return next(err);
+							}
+
+							async.eachLimit(cids, 50, function(cid, next) {
+								async.eachLimit(groups, 50, function(group, next) {
+									if (group && !group.hidden) {
+										upgradePrivileges(cid, group.name, next);
+									} else {
+										next();
+									}
+								}, next);
+							}, next);
+						});
+					}
+				], function(err) {
+					if (err) {
+						winston.error('[2014/11/11] Error encountered while upgrading permissions');
+						return next(err);
+					}
+					winston.info('[2014/11/11] Upgrading permissions done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2014/11/11] Upgrading permissions skipped');
 				next();
 			}
 		}

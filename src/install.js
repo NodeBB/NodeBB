@@ -398,6 +398,34 @@ function createCategories(next) {
 	});
 }
 
+function setupPrivileges(next) {
+	function givePrivileges(privileges, cid, groupName, next) {
+		async.each(privileges, function(privilege, next) {
+			Groups.join('cid:' + cid + ':privileges:groups:' + privilege, groupName, next);
+		}, next);
+	}
+
+	var Groups = require('./groups');
+	var db = require('./database');
+
+	db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+		if (err) {
+			return next(err);
+		}
+
+		async.each(cids, function(cid, next) {
+			async.parallel([
+				function(next) {
+					givePrivileges(['find', 'read', 'topics:create', 'topics:reply'], cid, 'administrators', next);
+				},
+				function(next) {
+					givePrivileges(['find', 'read', 'topics:create', 'topics:reply'], cid, 'registered-users', next);
+				}
+			], next);
+		}, next);
+	});
+}
+
 function createWelcomePost(next) {
 	var db = require('./database'),
 		Topics = require('./topics');
@@ -442,7 +470,18 @@ function setCopyrightWidget(next) {
 }
 
 install.setup = function (callback) {
-	async.series([checkSetupFlag, checkCIFlag, setupConfig, setupDefaultConfigs, enableDefaultTheme, createAdministrator, createCategories, createWelcomePost, enableDefaultPlugins, setCopyrightWidget,
+	async.series([
+		checkSetupFlag,
+		checkCIFlag,
+		setupConfig,
+		setupDefaultConfigs,
+		enableDefaultTheme,
+		createAdministrator,
+		createCategories,
+		setupPrivileges,
+		createWelcomePost,
+		enableDefaultPlugins,
+		setCopyrightWidget,
 		function (next) {
 			require('./upgrade').upgrade(next);
 		}
