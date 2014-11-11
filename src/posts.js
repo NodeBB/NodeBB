@@ -95,6 +95,16 @@ var async = require('async'),
 		});
 	};
 
+	Posts.getPostField = function(pid, field, callback) {
+		Posts.getPostFields(pid, [field], function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			callback(null, data[field]);
+		});
+	};
+
 	Posts.getPostFields = function(pid, fields, callback) {
 		db.getObjectFields('post:' + pid, fields, function(err, data) {
 			if (err) {
@@ -103,7 +113,7 @@ var async = require('async'),
 
 			data.pid = pid;
 
-			plugins.fireHook('filter:post.getFields', {post: data, fields: fields}, callback);
+			plugins.fireHook('filter:post.getFields', {posts: [data], fields: fields}, callback);
 		});
 	};
 
@@ -116,16 +126,11 @@ var async = require('async'),
 			return 'post:' + pid;
 		});
 
-		db.getObjectsFields(keys, fields, callback);
-	};
-
-	Posts.getPostField = function(pid, field, callback) {
-		Posts.getPostFields(pid, [field], function(err, data) {
-			if(err) {
+		db.getObjectsFields(keys, fields, function(err, posts) {
+			if (err) {
 				return callback(err);
 			}
-
-			callback(null, data[field]);
+			plugins.fireHook('filter:post.getFields', {posts: [posts], fields: fields}, callback);
 		});
 	};
 
