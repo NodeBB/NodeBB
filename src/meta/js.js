@@ -54,10 +54,6 @@ module.exports = function(Meta) {
 	};
 
 	Meta.js.loadRJS = function(callback) {
-		if (global.env === 'development') {
-			return callback();
-		}
-
 		var rjsPath = path.join(__dirname, '../../public/src');
 
 		async.parallel({
@@ -65,6 +61,10 @@ module.exports = function(Meta) {
 				utils.walk(path.join(rjsPath, 'client'), next);
 			},
 			modules: function(next) {
+				if (global.env === 'development') {
+					return next(null, []);
+				}
+				
 				utils.walk(path.join(rjsPath, 'modules'), next);
 			}
 		}, function(err, rjsFiles) {
