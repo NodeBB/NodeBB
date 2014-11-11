@@ -24,11 +24,6 @@ Minifier.js.minify = function (scripts, relativePath, minify, callback) {
 		return fs.existsSync(file);
 	});
 
-	if (!minify) {
-		options.mangle = false;
-		options.prefix = 1;
-	}
-
 	if (minify) {
 		minifyScripts(scripts, options, callback);
 	} else {
