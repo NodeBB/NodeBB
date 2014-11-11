@@ -118,6 +118,12 @@
 				return res.redirect(nconf.get('relative_path') + '/register' + (err.message ? '?error=' + err.message : ''));
 			}
 
+			if (userData.username.length < meta.config.minimumUsernameLength) {
+				return res.redirect(nconf.get('relative_path') + '/register?error=[[error:username-too-short]]');
+			} else if (userData.username.length > meta.config.maximumUsernameLength) {
+				return res.redirect(nconf.get('relative_path') + '/register?error=[[error:username-too-long]]');
+			}
+
 			user.create(userData, function(err, uid) {
 				if (err || !uid) {
 					return res.redirect(nconf.get('relative_path') + '/register');
