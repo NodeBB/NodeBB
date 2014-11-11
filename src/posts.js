@@ -135,16 +135,28 @@ var async = require('async'),
 	};
 
 	Posts.setPostField = function(pid, field, value, callback) {
-		db.setObjectField('post:' + pid, field, value, callback);
-		plugins.fireHook('action:post.setField', {
-			'pid': pid,
-			'field': field,
-			'value': value
+		db.setObjectField('post:' + pid, field, value, function(err) {
+			if (err) {
+				return callback(err);
+			}
+			var data = {
+				pid: pid
+			};
+			data[field] = value;
+			plugins.fireHook('action:post.setField', data);
+			callback();
 		});
 	};
 
 	Posts.setPostFields = function(pid, data, callback) {
-		db.setObject('post:' + pid, data, callback);
+		db.setObject('post:' + pid, data, function(err) {
+			if (err) {
+				return callback(err);
+			}
+			data.pid = pid;
+			plugins.fireHook('action:post.setField', data);
+			callback();
+		});
 	};
 
 	Posts.getPidIndex = function(pid, uid, callback) {
