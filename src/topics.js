@@ -69,7 +69,7 @@ var async = require('async'),
 				return callback(null, 1);
 			}
 			user.getSettings(uid, function(err, settings) {
-				if(err) {
+				if (err) {
 					return callback(err);
 				}
 
@@ -253,7 +253,7 @@ var async = require('async'),
 							Topics.addPostData(posts, uid, next);
 						});
 					});
- 				},
+				},
 				category: async.apply(Topics.getCategoryData, tid),
 				threadTools: async.apply(plugins.fireHook, 'filter:topic.thread_tools', []),
 				tags: async.apply(Topics.getTopicTagsObjects, tid),

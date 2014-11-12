@@ -103,11 +103,14 @@ module.exports = function(Topics) {
 
 		if (!title || title.length < parseInt(meta.config.minimumTitleLength, 10)) {
 			return callback(new Error('[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]'));
-		} else if(title.length > parseInt(meta.config.maximumTitleLength, 10)) {
+		} else if (title.length > parseInt(meta.config.maximumTitleLength, 10)) {
 			return callback(new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]'));
 		}
 
 		async.waterfall([
+			function(next) {
+				checkContentLength(content, next);
+			},
 			function(next) {
 				categories.exists(cid, next);
 			},
@@ -220,11 +223,10 @@ module.exports = function(Topics) {
 					content = content.trim();
 				}
 
-				if (!content || content.length < parseInt(meta.config.miminumPostLength, 10)) {
-					return callback(new Error('[[error:content-too-short, '  + meta.config.minimumPostLength + ']]'));
-				}
-
-				posts.create({uid:uid, tid:tid, content:content, toPid:toPid}, next);
+				checkContentLength(content, next);
+			},
+			function(next) {
+				posts.create({uid: uid, tid: tid, content: content, toPid: toPid}, next);
 			},
 			function(data, next) {
 				postData = data;
@@ -276,5 +278,12 @@ module.exports = function(Topics) {
 			}
 		], callback);
 	};
+
+	function checkContentLength(content, callback) {
+		if (!content || content.length < parseInt(meta.config.miminumPostLength, 10)) {
+			return callback(new Error('[[error:content-too-short, '  + meta.config.minimumPostLength + ']]'));
+		}
+		callback();
+	}
 
 };
