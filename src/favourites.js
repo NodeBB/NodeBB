@@ -1,3 +1,5 @@
+"use strict";
+
 var async = require('async'),
 	winston = require('winston'),
 	db = require('./database'),
@@ -7,7 +9,6 @@ var async = require('async'),
 	meta = require('./meta');
 
 (function (Favourites) {
-	"use strict";
 
 	function vote(type, unvote, pid, uid, callback) {
 		uid = parseInt(uid, 10);
@@ -239,54 +240,56 @@ var async = require('async'),
 	};
 
 	function toggleFavourite(type, pid, uid, callback) {
-		if (uid === 0) {
+		if (!parseInt(uid, 10)) {
 			return callback(new Error('[[error:not-logged-in]]'));
 		}
 		var isFavouriting = type === 'favourite';
-		posts.getPostFields(pid, ['pid', 'uid', 'timestamp'], function (err, postData) {
+
+		async.parallel({
+			postData: function(next) {
+				posts.getPostFields(pid, ['pid', 'uid'], next);
+			},
+			hasFavourited: function(next) {
+				Favourites.hasFavourited(pid, uid, next);
+			}
+		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			Favourites.hasFavourited(pid, uid, function (err, hasFavourited) {
-				if (err) {
-					return callback(err);
-				}
+			if (isFavouriting && results.hasFavourited) {
+				return callback(new Error('[[error:already-favourited]]'));
+			}
 
-				if (isFavouriting && hasFavourited) {
-					return callback(new Error('[[error:already-favourited]]'));
-				}
+			if (!isFavouriting && !results.hasFavourited) {
+				return callback(new Error('[[error:alrady-unfavourited]]'));
+			}
 
-				if (!isFavouriting && !hasFavourited) {
-					return callback(new Error('[[error:alrady-unfavourited]]'));
-				}
-
-				if (isFavouriting) {
-					db.sortedSetAdd('uid:' + uid + ':favourites', postData.timestamp, pid);
-				} else {
-					db.sortedSetRemove('uid:' + uid + ':favourites', pid);
-				}
-
-
-				db[isFavouriting ? 'setAdd' : 'setRemove']('pid:' + pid + ':users_favourited', uid, function(err) {
-					if (err) {
-						return callback(err);
+			async.waterfall([
+				function(next) {
+					if (isFavouriting) {
+						db.sortedSetAdd('uid:' + uid + ':favourites', Date.now(), pid, next);
+					} else {
+						db.sortedSetRemove('uid:' + uid + ':favourites', pid, next);
 					}
-
-					db.setCount('pid:' + pid + ':users_favourited', function(err, count) {
-						if (err) {
-							return callback(err);
-						}
-						postData.reputation = count;
-						posts.setPostField(pid, 'reputation', count, function(err) {
-							callback(err, {
-								post: postData,
-								isFavourited: isFavouriting
-							});
-						});
+				},
+				function(next) {
+					db[isFavouriting ? 'setAdd' : 'setRemove']('pid:' + pid + ':users_favourited', uid, next);
+				},
+				function(next) {
+					db.setCount('pid:' + pid + ':users_favourited', next);
+				},
+				function(count, next) {
+					results.postData.reputation = count;
+					posts.setPostField(pid, 'reputation', count, next);
+				},
+				function(next) {
+					next(null, {
+						post: results.postData,
+						isFavourited: isFavouriting
 					});
-				});
-			});
+				}
+			], callback);
 		});
 	}
 
@@ -308,13 +311,6 @@ var async = require('async'),
 		}
 
 		db.isMemberOfSets(sets, uid, callback);
-	};
-
-	Favourites.getFavouritedUidsByPids = function(pids, callback) {
-		var sets = pids.map(function(pid) {
-			return 'pid:' + pid + ':users_favourited';
-		});
-		db.getSetsMembers(sets, callback);
 	};
 
 	Favourites.getUpvotedUidsByPids = function(pids, callback) {
