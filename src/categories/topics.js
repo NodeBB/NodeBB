@@ -2,14 +2,16 @@
 
 var async = require('async'),
 	db = require('../database'),
-	topics = require('../topics');
+	topics = require('../topics'),
+	plugins = require('../plugins');
 
 module.exports = function(Categories) {
 
 	Categories.getCategoryTopics = function(data, callback) {
 		var tids;
 		async.waterfall([
-			function(next) {
+			async.apply(plugins.fireHook, 'filter:category.topics.get', data),
+			function(data, next) {
 				Categories.getTopicIds(data.targetUid ? 'cid:' + data.cid + ':uid:' + data.targetUid + ':tids' : 'cid:' + data.cid + ':tids', data.start, data.stop, next);
 			},
 			function(topicIds, next) {
