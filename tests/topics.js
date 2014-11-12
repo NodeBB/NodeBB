@@ -54,7 +54,7 @@ describe('Topic\'s', function() {
 
 		it('should fail to create new topic with wrong parameters', function(done) {
 			topics.post({uid: null, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
-				assert.equal(err.message, '[[error:no-user]]');
+				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
