@@ -101,6 +101,27 @@ describe('Topic\'s', function() {
 				done();
 			});
 		});
+
+		it('should fail to create new reply with invalid user id', function(done) {
+			topics.reply({uid: null, content: 'test post', tid: newTopic.tid}, function(err, result) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should fail to create new reply with empty content', function(done) {
+			topics.reply({uid: topic.userId, content: '', tid: newTopic.tid}, function(err, result) {
+				assert.ok(err);
+				done();
+			});
+		});
+
+		it('should fail to create new reply with invalid topic id', function(done) {
+			topics.reply({uid: null, content: 'test post', tid: 99}, function(err, result) {
+				assert.equal(err.message, '[[error:no-topic]]');
+				done();
+			});
+		});
 	});
 
 	describe('Get methods', function() {
