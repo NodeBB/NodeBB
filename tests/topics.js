@@ -61,21 +61,21 @@ describe('Topic\'s', function() {
 
 		it('should fail to create new topic with empty title', function(done) {
 			topics.post({uid: topic.userId, title: '', content: topic.content, cid: topic.categoryId}, function(err, result) {
-				assert.equal(err);
+				assert.ok(err);
 				done();
 			});
 		});
 
 		it('should fail to create new topic with empty content', function(done) {
 			topics.post({uid: topic.userId, title: topic.title, content: '', cid: topic.categoryId}, function(err, result) {
-				assert.equal(err);
+				assert.ok(err);
 				done();
 			});
 		});
 
 		it('should fail to create new topic with non-existant category id', function(done) {
 			topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: 99}, function(err, result) {
-				assert.equal(err,message, '[[error:no-category]]');
+				assert.equal(err, '[[error:no-category]]', 'received no error');
 				done();
 			});
 		});
