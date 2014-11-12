@@ -137,12 +137,11 @@ Controllers.reset = function(req, res, next) {
 
 Controllers.login = function(req, res, next) {
 	var data = {},
-		login_strategies = auth.get_login_strategies(),
-		num_strategies = login_strategies.length,
+		loginStrategies = auth.getLoginStrategies(),
 		emailersPresent = plugins.hasListeners('action:email.send');
 
-	data.alternate_logins = num_strategies > 0;
-	data.authentication = login_strategies;
+	data.alternate_logins = loginStrategies.length > 0;
+	data.authentication = loginStrategies;
 	data.token = req.csrfToken();
 	data.showResetLink = emailersPresent;
 	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1;
@@ -158,10 +157,9 @@ Controllers.register = function(req, res, next) {
 	}
 
 	var data = {},
-		login_strategies = auth.get_login_strategies(),
-		num_strategies = login_strategies.length;
+		loginStrategies = auth.getLoginStrategies();
 
-	if (num_strategies === 0) {
+	if (loginStrategies.length === 0) {
 		data = {
 			'register_window:spansize': 'col-md-12',
 			'alternate_logins': false
@@ -173,7 +171,7 @@ Controllers.register = function(req, res, next) {
 		};
 	}
 
-	data.authentication = login_strategies;
+	data.authentication = loginStrategies;
 
 	data.token = req.csrfToken();
 	data.minimumUsernameLength = meta.config.minimumUsernameLength;
