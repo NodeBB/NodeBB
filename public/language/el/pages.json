@@ -1,0 +1,18 @@
+{
+    "home": "Κεντρική",
+    "unread": "Μη αναγνωσμένα Θέματα",
+    "popular": "Δημοφιλή Θέματα",
+    "recent": "Πρόσφατα Θέματα",
+    "users": "Εγγεγραμμένοι Χρήστες",
+    "notifications": "Ειδοποιήσεις",
+    "tags": "Θέματα με ετικέτα \"%1\"",
+    "user.edit": "Επεξεργασία του \"%1\"",
+    "user.following": "Άτομα που ακολουθεί ο/η %1",
+    "user.followers": "Άτομα που ακολουθούν τον/την %1",
+    "user.posts": "Δημοσιεύσεις από τον/την %1",
+    "user.topics": "Θέματα από τον/την %1",
+    "user.favourites": "Οι αγαπημένες δημοσιεύσεις του/της %1",
+    "user.settings": "Επιλογές Χρήστη",
+    "maintenance.text": "Το %1 αυτή την στιγμή συντηρείται. Παρακαλώ έλα αργότερα.",
+    "maintenance.messageIntro": "Additionally, the administrator has left this message:"
+}
