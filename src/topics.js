@@ -1,7 +1,6 @@
 "use strict";
 
 var async = require('async'),
-	winston = require('winston'),
 	validator = require('validator'),
 
 	_ = require('underscore'),
@@ -20,10 +19,12 @@ var async = require('async'),
 	require('./topics/unread')(Topics);
 	require('./topics/recent')(Topics);
 	require('./topics/popular')(Topics);
+	require('./topics/user')(Topics);
 	require('./topics/fork')(Topics);
 	require('./topics/posts')(Topics);
 	require('./topics/follow')(Topics);
 	require('./topics/tags')(Topics);
+	require('./topics/teaser')(Topics);
 
 	Topics.getTopicData = function(tid, callback) {
 		db.getObject('topic:' + tid, function(err, topic) {
@@ -56,23 +57,6 @@ var async = require('async'),
 			}
 
 			callback(null, topics);
-		});
-	};
-
-	Topics.getTopicDataWithUser = function(tid, callback) {
-		Topics.getTopicData(tid, function(err, topic) {
-			if (err || !topic) {
-				return callback(err || new Error('[[error:no-topic]]'));
-			}
-
-			user.getUserFields(topic.uid, ['username', 'userslug', 'picture'], function(err, userData) {
-				if (err) {
-					return callback(err);
-				}
-
-				topic.user = userData;
-				callback(null, topic);
-			});
 		});
 	};
 
@@ -130,10 +114,6 @@ var async = require('async'),
 			nextStart: 0
 		};
 
-		if (!Array.isArray(tids) || !tids.length) {
-			return callback(null, returnTopics);
-		}
-
 		privileges.topics.filter('read', tids, uid, function(err, tids) {
 			if (err) {
 				return callback(err);
@@ -142,10 +122,6 @@ var async = require('async'),
 			Topics.getTopicsByTids(tids, uid, function(err, topicData) {
 				if (err) {
 					return callback(err);
-				}
-
-				if(!Array.isArray(topicData) || !topicData.length) {
-					return callback(null, returnTopics);
 				}
 
 				returnTopics.topics = topicData;
@@ -328,126 +304,7 @@ var async = require('async'),
 					return callback(err);
 				}
 
-				if (!Array.isArray(postData) || !postData.length) {
-					return callback(null, []);
-				}
-
 				Topics.addPostData(postData, uid, callback);
-			});
-		});
-	};
-
-	Topics.getTeasers = function(tids, uid, callback) {
-		if (!Array.isArray(tids) || !tids.length) {
-			return callback(null, []);
-		}
-
-		async.parallel({
-			counts: function(next) {
-				Topics.getTopicsFields(tids, ['postcount'], function(err, topics) {
-					if (err) {
-						return next(err);
-					}
-					topics = topics.map(function(topic) {
-						return topic && (parseInt(topic.postcount, 10) || 0);
-					});
-
-					next(null, topics);
-				});
-			},
-			pids: function(next) {
-				async.map(tids, function(tid, next) {
-					db.getSortedSetRevRange('tid:' + tid + ':posts', 0, 0, function(err, data) {
-						next(err, Array.isArray(data) && data.length ? data[0] : null);
-					});
-				}, next);
-			}
-		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			var postKeys = results.pids.filter(Boolean).map(function(pid) {
-				return 'post:' + pid;
-			});
-
-			db.getObjectsFields(postKeys, ['pid', 'uid', 'timestamp', 'tid'], function(err, postData) {
-				if (err) {
-					return callback(err);
-				}
-
-				var uids = postData.map(function(post) {
-					return post.uid;
-				}).filter(function(uid, index, array) {
-					return array.indexOf(uid) === index;
-				});
-
-
-				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, usersData) {
-					if (err) {
-						return callback(err);
-					}
-
-					var users = {};
-					usersData.forEach(function(user) {
-						users[user.uid] = user;
-					});
-					var tidToPost = {};
-					postData.forEach(function(post) {
-						post.user = users[post.uid];
-						post.timestamp = utils.toISOString(post.timestamp);
-						tidToPost[post.tid] = post;
-					});
-
-					var teasers = tids.map(function(tid, index) {
-						if (tidToPost[tid]) {
-							tidToPost[tid].index = results.counts[index];
-						}
-						return tidToPost[tid];
-					});
-
-					callback(null, teasers);
-				});
-			});
-		});
-	};
-
-	Topics.getTeaser = function(tid, uid, callback) {
-		Topics.getLatestUndeletedPid(tid, function(err, pid) {
-			if (err || !pid) {
-				return callback(err);
-			}
-
-			async.parallel({
-				postData: function(next) {
-					posts.getPostFields(pid, ['pid', 'uid', 'timestamp'], function(err, postData) {
-						if (err) {
-							return next(err);
-						} else if(!postData || !utils.isNumber(postData.uid)) {
-							return callback();
-						}
-
-						user.getUserFields(postData.uid, ['username', 'userslug', 'picture'], function(err, userData) {
-							if (err) {
-								return next(err);
-							}
-							postData.user = userData;
-							next(null, postData);
-						});
-					});
-				},
-				postIndex: function(next) {
-					posts.getPidIndex(pid, uid, next);
-				}
-			}, function(err, results) {
-				if (err) {
-					return callback(err);
-				}
-
-				results.postData.timestamp = utils.toISOString(results.postData.timestamp);
-				results.postData.index = results.postIndex;
-
-				callback(null, results.postData);
 			});
 		});
 	};
@@ -473,46 +330,7 @@ var async = require('async'),
 
 	Topics.isLocked = function(tid, callback) {
 		Topics.getTopicField(tid, 'locked', function(err, locked) {
-			if(err) {
-				return callback(err);
-			}
-			callback(null, parseInt(locked, 10) === 1);
-		});
-	};
-
-	Topics.isOwner = function(tid, uid, callback) {
-		uid = parseInt(uid, 10);
-		if (!uid) {
-			return callback(null, false);
-		}
-		Topics.getTopicField(tid, 'uid', function(err, author) {
-			callback(err, parseInt(author, 10) === uid);
-		});
-	};
-
-	Topics.getUids = function(tid, callback) {
-		Topics.getPids(tid, function(err, pids) {
-			if (err) {
-				return callback(err);
-			}
-
-			var keys = pids.map(function(pid) {
-				return 'post:' + pid;
-			});
-
-			db.getObjectsFields(keys, ['uid'], function(err, data) {
-				if (err) {
-					return callback(err);
-				}
-
-				var uids = data.map(function(data) {
-					return data.uid;
-				}).filter(function(uid, pos, array) {
-					return array.indexOf(uid) === pos;
-				});
-
-				callback(null, uids);
-			});
+			callback(err, parseInt(locked, 10) === 1);
 		});
 	};
 

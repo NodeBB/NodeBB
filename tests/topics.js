@@ -38,7 +38,7 @@ describe('Topic\'s', function() {
 			});
 		});
 
-		
+
 	});
 
 	describe('.post', function() {
@@ -75,12 +75,6 @@ describe('Topic\'s', function() {
 		describe('.getTopicData', function() {
 			it('should not receive errors', function(done) {
 				topics.getTopicData(newTopic.tid, done);
-			});
-		});
-
-		describe('.getTopicDataWithUser', function() {
-			it('should not receive errors', function(done) {
-				topics.getTopicDataWithUser(newTopic.tid, done);
 			});
 		});
 	});

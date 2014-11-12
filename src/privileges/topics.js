@@ -76,7 +76,7 @@ module.exports = function(privileges) {
 	};
 
 	privileges.topics.filter = function(privilege, tids, uid, callback) {
-		if (!tids.length) {
+		if (!Array.isArray(tids) || !tids.length) {
 			return callback(null, []);
 		}
 

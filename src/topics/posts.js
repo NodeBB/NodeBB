@@ -31,12 +31,8 @@ module.exports = function(Topics) {
 	Topics.getTopicPosts = function(tid, set, start, end, uid, reverse, callback) {
 		callback = callback || function() {};
 		posts.getPostsByTid(tid, set, start, end, uid, reverse, function(err, postData) {
-			if(err) {
+			if (err) {
 				return callback(err);
-			}
-
-			if (Array.isArray(postData) && !postData.length) {
-				return callback(null, []);
 			}
 
 			Topics.addPostData(postData, uid, callback);
@@ -44,6 +40,9 @@ module.exports = function(Topics) {
 	};
 
 	Topics.addPostData = function(postData, uid, callback) {
+		if (!Array.isArray(postData) || !postData.length) {
+			return callback(null, []);
+		}
 		var pids = postData.map(function(post) {
 			return post && post.pid;
 		});
