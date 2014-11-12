@@ -450,7 +450,7 @@ var fs = require('fs'),
 		}, callback);
 	}
 
-	function fireStaticHook(hook, hookList, params,callback) {
+	function fireStaticHook(hook, hookList, params, callback) {
 		async.each(hookList, function(hookObj, next) {
 			if (typeof hookObj.method === 'function') {
 				hookObj.method(params, next);
