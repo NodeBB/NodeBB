@@ -135,6 +135,12 @@ module.exports = function(privileges) {
 		});
 	};
 
+	privileges.categories.give = function(privileges, cid, groupName, callback) {
+		async.each(privileges, function(privilege, next) {
+			groups.join('cid:' + cid + ':privileges:groups:' + privilege, groupName, next);
+		}, callback);
+	};
+
 	privileges.categories.isAdminOrMod = function(cids, uid, callback) {
 		async.parallel({
 			isModerators: function(next) {

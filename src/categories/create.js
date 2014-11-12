@@ -2,6 +2,7 @@
 
 var async = require('async'),
 	db = require('../database'),
+	privileges = require('../privileges'),
 	utils = require('../../public/src/utils');
 
 module.exports = function(Categories) {
@@ -33,9 +34,13 @@ module.exports = function(Categories) {
 				imageClass: 'auto'
 			};
 
+			var defaultPrivileges = ['find', 'read', 'topics:create', 'topics:reply'];
+
 			async.series([
 				async.apply(db.setObject, 'category:' + cid, category),
-				async.apply(db.sortedSetAdd, 'categories:cid', data.order, cid)
+				async.apply(db.sortedSetAdd, 'categories:cid', data.order, cid),
+				async.apply(privileges.categories.give, defaultPrivileges, cid, 'administrators'),
+				async.apply(privileges.categories.give, defaultPrivileges, cid, 'registered-users')
 			], function(err) {
 				if (err) {
 					return callback(err);
