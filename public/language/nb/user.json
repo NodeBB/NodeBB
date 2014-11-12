@@ -48,7 +48,7 @@
     "settings": "Innstillinger",
     "show_email": "Vis min e-post",
     "show_fullname": "Vis mitt fulle navn",
-    "restrict_chats": "Only allow chat messages from users I follow",
+    "restrict_chats": "Bare tillat chat-meldinger fra brukere jeg følger",
     "digest_label": "Abonner på sammendrag",
     "digest_description": "Abonner på e-post-oppdateringer for dette forumet (nye varsler og emner) i samsvar med valgte tidspunkt",
     "digest_off": "Av",

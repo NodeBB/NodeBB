@@ -37,7 +37,7 @@
     "title-too-short": "Maak de titel wat langer. Op z'n minst %1 karakters",
     "title-too-long": "Maak de titel wat korter. Het kan niet langer zijn dan %1 karakters",
     "too-many-posts": "Je kan eens  in de %1 seconden een bericht aanmaken. Wacht alstublieft.",
-    "too-many-posts-newbie": "As a new user, you can only post once every %1 seconds until you have earned %2 reputation - please wait before posting again",
+    "too-many-posts-newbie": "Als een nieuwe gebruiker kan je maar om de %1 seconden een bericht plaatsen vanwege je reputatie. Uw moet deze level van reputatie verdienen %2. Wacht alstublieft met het plaatsen van uw bericht.",
     "file-too-big": "De maximale bestandsgrootte is %1 kbs",
     "cant-vote-self-post": "Je kan niet op je eigen berichten stemmen",
     "already-favourited": "U heeft al dit bericht in uw favorieten staan",

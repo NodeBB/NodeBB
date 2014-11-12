@@ -22,7 +22,7 @@
     "username-too-long": "Username too long",
     "user-banned": "کاربر محروم شد.",
     "user-too-new": "Sorry, you are required to wait %1 seconds before making your first post",
-    "no-category": "Category does not exist",
+    "no-category": "دسته بندی وجود ندارد",
     "no-topic": "Topic does not exist",
     "no-post": "Post does not exist",
     "no-group": "Group does not exist",

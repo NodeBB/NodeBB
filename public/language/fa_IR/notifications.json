@@ -17,7 +17,7 @@
     "user_flagged_post_in": "<strong>%1</strong> flagged a post in <strong>%2</strong>",
     "user_posted_to": "پاسخ دادن به <strong>%2</strong> از سوی <strong>%1</strong>",
     "user_posted_topic": "<strong>%1</strong> has posted a new topic: <strong>%2</strong>",
-    "user_mentioned_you_in": "%1 در %2 به شما اشاره کرد",
+    "user_mentioned_you_in": "<strong>%1</strong> mentioned you in <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> started following you.",
     "email-confirmed": "رایانامه تایید شد",
     "email-confirmed-message": "بابت تایید ایمیلتان سپاس‌گزاریم. حساب کاربری شما اکنون به صورت کامل فعال شده است.",

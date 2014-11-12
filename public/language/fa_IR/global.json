@@ -37,7 +37,7 @@
     "nextpage": "برگهٔ پسین",
     "alert.success": "موفقیت",
     "alert.error": "خطا",
-    "alert.banned": "مسدود",
+    "alert.banned": "Banned",
     "alert.banned.message": "دسترسی شما مسدود شد. اکنون خارج خواهید شد.",
     "alert.unfollow": "شما دیگر %1 را دنبال نمی‌کنید!",
     "alert.follow": "اکنون %1 را دنبال می‌کنید.",

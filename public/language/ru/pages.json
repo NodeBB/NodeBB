@@ -1,11 +1,11 @@
 {
     "home": "Главная",
     "unread": "Непрочитанные темы",
-    "popular": "Популярные Темы",
+    "popular": "Популярные темы",
     "recent": "Последние темы",
     "users": "Зарегистрированные пользователи",
     "notifications": "Уведомления",
-    "tags": "Topics tagged under \"%1\"",
+    "tags": "Темы с тегом \"%1\"",
     "user.edit": "Редактирование \"%1\"",
     "user.following": "%1 читает",
     "user.followers": "Читают %1",
@@ -13,6 +13,6 @@
     "user.topics": "Темы созданы %1",
     "user.favourites": "Избранные сообщения %1",
     "user.settings": "Настройки",
-    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
-    "maintenance.messageIntro": "Additionally, the administrator has left this message:"
+    "maintenance.text": "%1 в настоящее время на обслуживании. Пожалуйста, возвращайтесь позже.",
+    "maintenance.messageIntro": "Администратор оставил сообщение:"
 }

@@ -37,7 +37,7 @@
     "title-too-short": "Por favor digite um título mais longo. Títulos devem conter no mínimo %1 caracteres.",
     "title-too-long": "Por favor entre com um título mais curto; Títulos não podem ser maiores que %1 caracteres.",
     "too-many-posts": "Você pode postar apenas uma vez a cada %1 segundos - por favor aguarde antes de postar novamente",
-    "too-many-posts-newbie": "As a new user, you can only post once every %1 seconds until you have earned %2 reputation - please wait before posting again",
+    "too-many-posts-newbie": "Como novo usuário, você pode postar apenas uma vez a cada %1 segundos até que você tenha recebido reputação de %2 - por favor aguarde antes de postar novamente",
     "file-too-big": "O tamanho máximo permitido de arquivo é %1 kbs - por favor faça upload de um arquivo menor",
     "cant-vote-self-post": "Você não pode votar no seu próprio post",
     "already-favourited": "Você já adicionou este post aos favoritos",

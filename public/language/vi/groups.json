@@ -1,7 +1,7 @@
 {
-    "groups": "Groups",
+    "groups": "Nhóm",
     "view_group": "Xem nhóm",
-    "details.title": "Chi tiết nhóm",
+    "details.title": "Thông tin nhóm",
     "details.members": "Danh sách thành viên",
     "details.has_no_posts": "Nhóm thành viên này chưa viết bài viết nào.",
     "details.latest_posts": "Bài mới nhất"

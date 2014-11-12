@@ -13,6 +13,6 @@
     "user.topics": "Các chủ đề được %1 tạo",
     "user.favourites": "Các bài gửi yêu thích của %1",
     "user.settings": "Thiết lập cho người dùng",
-    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
-    "maintenance.messageIntro": "Additionally, the administrator has left this message:"
+    "maintenance.text": "%1 đang được bảo trì. Xin vui lòng quay lại sau.",
+    "maintenance.messageIntro": "Ban quản lí để lại lời nhắn sau:"
 }

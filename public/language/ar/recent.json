@@ -1,9 +1,9 @@
 {
-    "title": "Recent",
+    "title": "الحديثة",
     "day": "يوم",
     "week": "أسبوع",
     "month": "شهر",
-    "year": "Year",
-    "alltime": "All Time",
-    "no_recent_topics": "There are no recent topics."
+    "year": "سنة",
+    "alltime": "دائمًا",
+    "no_recent_topics": "لاوجود لمشاركات جديدة"
 }
