@@ -332,7 +332,8 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 		$(window).trigger('action:categories.loading');
 		infinitescroll.loadMore('categories.loadMore', {
 			cid: ajaxify.variables.get('category_id'),
-			after: after
+			after: after,
+			author: utils.getQueryParams().author
 		}, function (data, done) {
 
 			if (data.topics && data.topics.length) {

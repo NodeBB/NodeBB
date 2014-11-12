@@ -39,6 +39,13 @@ SocketCategories.loadMore = function(socket, data, callback) {
 		},
 		settings: function(next) {
 			user.getSettings(socket.uid, next);
+		},
+		targetUid: function(next) {
+			if (data.author) {
+				user.getUidByUserslug(data.author, next);
+			} else {
+				next();
+			}
 		}
 	}, function(err, results) {
 		if (err) {
@@ -55,8 +62,9 @@ SocketCategories.loadMore = function(socket, data, callback) {
 		categories.getCategoryTopics({
 			cid: data.cid,
 			start: start,
-			end: end,
-			uid: socket.uid
+			stop: end,
+			uid: socket.uid,
+			targetUid: results.targetUid
 		}, function(err, data) {
 			if (err) {
 				return callback(err);

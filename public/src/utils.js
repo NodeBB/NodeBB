@@ -305,6 +305,24 @@
 			return a;
 		},
 
+		getQueryParams: function() {
+			var search = window.location.search.slice(1),
+				data = {};
+
+			search = search.split('&');
+			for(var x=0,numParams=search.length,temp;x<numParams;x++) {
+				temp = search[x].split('=');
+				if (temp[0].substr(-2, 2) !== '[]') {
+					data[temp[0]] = temp[1];
+				} else {
+					data[temp[0].slice(0, -2)] = data[temp[0].slice(0, -2)] || [];
+					data[temp[0].slice(0, -2)].push(temp[1]);
+				}
+			}
+
+			return data;
+		},
+
 		// return boolean if string 'true' or string 'false', or if a parsable string which is a number
 		// also supports JSON object and/or arrays parsing
 		toType: function(str) {
