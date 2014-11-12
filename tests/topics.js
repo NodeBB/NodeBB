@@ -81,6 +81,28 @@ describe('Topic\'s', function() {
 		});
 	});
 
+	describe('.reply', function() {
+		var newTopic;
+		var newPost;
+
+		before(function(done) {
+			topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
+				newTopic = result.topicData;
+				newPost = result.postData;
+				done();
+			});
+		});
+
+		it('should create a new reply with proper parameters', function(done) {
+			topics.reply({uid: topic.userId, content: 'test post', tid: newTopic.tid}, function(err, result) {
+				assert.equal(err, null, 'was created with error');
+				assert.ok(result);
+
+				done();
+			});
+		});
+	});
+
 	describe('Get methods', function() {
 		var	newTopic;
 		var newPost;
