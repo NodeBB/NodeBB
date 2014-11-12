@@ -139,10 +139,10 @@ categoriesController.get = function(req, res, next) {
 				return categoriesController.notAllowed(req, res);
 			}
 
-			var topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) : 1;
-			var topicCount = parseInt(results.categoryData.topic_count, 10) + 1;
+			var topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) - 1 : 0;
+			var topicCount = parseInt(results.categoryData.topic_count, 10);
 
-			if (topicIndex < 1 || topicIndex > topicCount) {
+			if (topicIndex < 0 || topicIndex > topicCount - 1) {
 				var url = '/category/' + cid + '/' + req.params.slug + (topicIndex > topicCount ? '/' + topicCount : '');
 				return res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
 			}
@@ -151,10 +151,11 @@ categoriesController.get = function(req, res, next) {
 			var settings = results.userSettings;
 
 			if (!settings.usePagination) {
-				topicIndex = Math.max((topicIndex || 1) - (settings.topicsPerPage - 1), 0);
+				topicIndex = Math.max(topicIndex - (settings.topicsPerPage - 1), 0);
 			} else if (!req.query.page) {
 				var index = Math.max(parseInt((topicIndex || 0), 10), 0);
 				page = Math.ceil((index + 1) / settings.topicsPerPage);
+				topicIndex = 0;
 			}
 
 			var start = (page - 1) * settings.topicsPerPage + topicIndex,
