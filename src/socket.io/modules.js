@@ -151,36 +151,36 @@ SocketModules.chats.send = function(socket, data, callback) {
 		}
 
 		Messaging.canMessage(socket.uid, touid, function(err, allowed) {
-			if (allowed) {
-				Messaging.addMessage(socket.uid, touid, msg, function(err, message) {
-					if (err) {
-						return callback(err);
-					}
-
-					Messaging.notifyUser(socket.uid, touid, message);
-
-					// Recipient
-					SocketModules.chats.pushUnreadCount(touid);
-					server.in('uid_' + touid).emit('event:chats.receive', {
-						withUid: socket.uid,
-						message: message,
-						self: 0
-					});
-
-					// Sender
-					SocketModules.chats.pushUnreadCount(socket.uid);
-					server.in('uid_' + socket.uid).emit('event:chats.receive', {
-						withUid: touid,
-						message: message,
-						self: 1
-					});
-
-					callback();
-				});
-			} else {
-				callback(new Error('[[error:chat-restricted]]'))
+			if (err || !allowed) {
+				return callback(err || new Error('[[error:chat-restricted]]'));
 			}
-		})
+
+			Messaging.addMessage(socket.uid, touid, msg, function(err, message) {
+				if (err) {
+					return callback(err);
+				}
+
+				Messaging.notifyUser(socket.uid, touid, message);
+
+				// Recipient
+				SocketModules.chats.pushUnreadCount(touid);
+				server.in('uid_' + touid).emit('event:chats.receive', {
+					withUid: socket.uid,
+					message: message,
+					self: 0
+				});
+
+				// Sender
+				SocketModules.chats.pushUnreadCount(socket.uid);
+				server.in('uid_' + socket.uid).emit('event:chats.receive', {
+					withUid: touid,
+					message: message,
+					self: 1
+				});
+
+				callback();
+			});
+		});
 	});
 };
 
