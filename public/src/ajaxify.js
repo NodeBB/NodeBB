@@ -259,6 +259,7 @@ $(document).ready(function() {
 
 		$('document').ready(function () {
 			if (!window.history || !window.history.pushState) {
+				templates.registerLoader(ajaxify.loadTemplate);
 				templatesModule.refresh(app.load);
 				return; // no ajaxification for old browsers
 			}
