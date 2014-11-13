@@ -119,8 +119,8 @@ module.exports = function(Topics) {
 		db.sortedSetRemove('tags:topic:count', tag);
 	};
 
-	Topics.getTags = function(start, count, callback) {
-		db.getSortedSetRevRangeByScoreWithScores('tags:topic:count', start, count, '+inf', 1, function(err, tags) {
+	Topics.getTags = function(start, end, callback) {
+		db.getSortedSetRevRangeWithScores('tags:topic:count', start, end, function(err, tags) {
 			if (err) {
 				return callback(err);
 			}
