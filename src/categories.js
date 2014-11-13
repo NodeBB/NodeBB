@@ -174,7 +174,7 @@ var async = require('async'),
 		}
 
 		if (category.image) {
-			category.backgroundImage = category.image ? nconf.get('relative_path') + category.image : '';
+			category.backgroundImage = category.image;
 		}
 
 		callback(null, category);
