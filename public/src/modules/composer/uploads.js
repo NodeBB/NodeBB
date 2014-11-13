@@ -213,7 +213,7 @@ define('composer/uploads', ['composer/preview'], function(preview) {
 			text = textarea.val(),
 			uploadForm = postContainer.find('#fileForm');
 
-		uploadForm.attr('action', params.route);
+		uploadForm.attr('action', config.relative_path + params.route);
 
 		for(var i = 0; i < files.length; ++i) {
 			var isImage = files[i].type.match(/image./);
@@ -288,7 +288,7 @@ define('composer/uploads', ['composer/preview'], function(preview) {
 			spinner = postContainer.find('.topic-thumb-spinner'),
 			thumbForm = postContainer.find('#thumbForm');
 
-		thumbForm.attr('action', params.route);
+		thumbForm.attr('action', config.relative_path + params.route);
 
 		thumbForm.off('submit').submit(function() {
 			var csrf = $('#csrf').attr('data-csrf');

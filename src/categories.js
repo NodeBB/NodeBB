@@ -320,7 +320,7 @@ var db = require('./database'),
 				}
 				category.name = validator.escape(category.name);
 				category.description = validator.escape(category.description);
-				category.backgroundImage = category.image ? nconf.get('relative_path') + category.image : '';
+			    category.backgroundImage = category.image;
 				category.disabled = parseInt(category.disabled, 10) === 1;
 
 				next(null, category);
