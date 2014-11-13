@@ -10,7 +10,7 @@ define('notifications', ['sounds'], function(sound) {
 		var notifContainer = $('.notifications'),
 			notifTrigger = notifContainer.children('a'),
 			notifList = $('#notif-list'),
-			notifIcon = $('.notifications > a > i');
+			notifIcon = $('.notification-icon');
 
 		notifTrigger.on('click', function(e) {
 			e.preventDefault();
