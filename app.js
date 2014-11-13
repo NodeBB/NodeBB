@@ -39,7 +39,7 @@ winston.remove(winston.transports.Console);
 winston.add(winston.transports.Console, {
 	colorize: true,
 	timestamp: function() {
-		var date = new Date;
+		var date = new Date();
 		return date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.getHours() + ':' + date.getMinutes() + ' [' + global.process.pid + ']';
 	},
 	level: global.env === 'production' ? 'info' : 'verbose'
