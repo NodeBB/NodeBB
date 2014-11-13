@@ -49,7 +49,7 @@ module.exports = function(Topics) {
 		}
 		tag = tag.trim().toLowerCase();
 		tag = tag.replace(/[,\/#!$%\^\*;:{}=_`<>'"~()?\|]/g, '');
-		tag = tag.substr(0, meta.config.maximumTagLength || 15);
+		tag = tag.substr(0, meta.config.maximumTagLength || 15).trim();
 		var matches = tag.match(/^[.-]*(.+?)[.-]*$/);
 		if (matches && matches.length > 1) {
 			tag = matches[1];
