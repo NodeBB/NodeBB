@@ -117,8 +117,12 @@ SocketModules.chats.get = function(socket, data, callback) {
 };
 
 SocketModules.chats.send = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	if (parseInt(meta.config.disableChat) === 1) {
+		return callback(new Error('[[error:chat-disabled]]'));
 	}
 
 	var touid = parseInt(data.touid, 10);

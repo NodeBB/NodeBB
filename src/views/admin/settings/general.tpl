@@ -70,6 +70,11 @@
 					<input type="checkbox" data-field="disableSocialButtons"> <strong>Disable social buttons</strong>
 				</label>
 			</div>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" data-field="disableChat"> <strong>Disable chat</strong>
+				</label>
+			</div>
 		</form>
 	</div>
 </div>

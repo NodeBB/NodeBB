@@ -23,21 +23,21 @@ var fs = require('fs'),
 	file = require('../file'),
 	websockets = require('../socket.io');
 
-function userNotFound(res) {
+function notFound(res, message) {
 	res.locals.notFound = true;
 
 	if (res.locals.isAPI) {
-		res.status(404).json('no-user');
+		res.status(404).json(message);
 	} else {
 		res.render('404', {
-			error: '[[error:no-user]]'
+			error: message
 		});
 	}
 }
 
-function userNotAllowed(res) {
+function notAllowed(res, message) {
 	if (res.locals.isAPI) {
-		res.status(403).json('not-allowed');
+		res.status(403).json(message);
 	} else {
 		res.render('403');
 	}
@@ -169,7 +169,7 @@ accountsController.getAccount = function(req, res, next) {
 		}
 
 		if(!userData) {
-			return userNotFound(res);
+			return notFound(res, '[[error:no-user]]');
 		}
 
 		async.parallel({
@@ -227,7 +227,7 @@ function getFollow(route, name, req, res, next) {
 		function(data, next) {
 			userData = data;
 			if (!userData) {
-				return userNotFound(res);
+				return notFound(res, '[[error:no-user]]');
 			}
 			var method = name === 'following' ? 'getFollowing' : 'getFollowers';
 			user[method](userData.uid, next);
@@ -252,11 +252,11 @@ accountsController.getFavourites = function(req, res, next) {
 		}
 
 		if (!userData) {
-			return userNotFound(res);
+			return notFound(res, '[[error:no-user]]');
 		}
 
 		if (parseInt(userData.uid, 10) !== callerUID) {
-			return userNotAllowed(res);
+			return notAllowed(res, '[[error:not-allowed]]');
 		}
 
 		posts.getFavourites(userData.uid, 0, 9, function (err, favourites) {
@@ -281,7 +281,7 @@ accountsController.getPosts = function(req, res, next) {
 		}
 
 		if (!userData) {
-			return userNotFound(res);
+			return notFound(res, '[[error:no-user]]');
 		}
 
 		posts.getPostsByUid(callerUID, userData.uid, 0, 19, function (err, userPosts) {
@@ -306,7 +306,7 @@ accountsController.getTopics = function(req, res, next) {
 		}
 
 		if (!userData) {
-			return userNotFound(res);
+			return notFound(res, '[[error:no-user]]');
 		}
 
 		var set = 'uid:' + userData.uid + ':topics';
@@ -390,7 +390,7 @@ accountsController.accountSettings = function(req, res, next) {
 		}
 
 		if (!userData) {
-			return userNotFound(res);
+			return notFound(res, '[[error:no-user]]');
 		}
 
 		async.parallel({
@@ -408,7 +408,7 @@ accountsController.accountSettings = function(req, res, next) {
 			userData.settings = results.settings;
 			userData.languages = results.languages;
 
-			userData.disableEmailSubscriptions = meta.config.disableEmailSubscriptions !== undefined && parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
+			userData.disableEmailSubscriptions = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 
 			res.render('account/settings', userData);
 		});
@@ -468,7 +468,7 @@ accountsController.uploadPicture = function (req, res, next) {
 				}
 
 				if (!isAdmin) {
-					return userNotAllowed();
+					return notAllowed(req, '[[error:not-allowed]]');
 				}
 				updateUid = uid;
 				next();
@@ -532,6 +532,9 @@ accountsController.getNotifications = function(req, res, next) {
 };
 
 accountsController.getChats = function(req, res, next) {
+	if (parseInt(meta.config.disableChat) === 1) {
+		return notFound(res, '[[error:not-found]]');
+	}
 	async.parallel({
 		contacts: async.apply(user.getFollowing, req.user.uid),
 		recentChats: async.apply(messaging.getRecentChats, req.user.uid, 0, 19)
