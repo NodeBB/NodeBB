@@ -437,7 +437,7 @@ middleware.routeTouchIcon = function(req, res) {
 	if (meta.config['brand:logo'] && validator.isURL(meta.config['brand:logo'])) {
 		return res.redirect(meta.config['brand:logo']);
 	} else {
-		return res.sendfile(path.join(__dirname, '../../public', meta.config['brand:logo'] || '/logo.png'), {
+		return res.sendFile(path.join(__dirname, '../../public', meta.config['brand:logo'] || '/logo.png'), {
 			maxAge: app.enabled('cache') ? 5184000000 : 0
 		});
 	}

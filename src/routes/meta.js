@@ -23,7 +23,7 @@ function sendStylesheet(req, res, next) {
 }
 
 function sendACPStylesheet(req, res, next) {
-	res.type('text/css').status(200).send(meta.css.acpCache);	
+	res.type('text/css').status(200).send(meta.css.acpCache);
 }
 
 function setupPluginSourceMapping(app) {
@@ -40,7 +40,7 @@ function setupPluginSourceMapping(app) {
 	routes.forEach(function(route) {
 		mapping = '/' + route.split(path.sep).slice(prefix).join('/');
 		app.get(mapping, function(req, res) {
-			res.type('text/javascript').sendfile(route);
+			res.type('text/javascript').sendFile(route);
 		});
 	});
 }
