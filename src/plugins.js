@@ -425,14 +425,7 @@ var fs = require('fs'),
 			}
 
 			hookObj.method(params, next);
-
-		}, function(err, values) {
-			if (err) {
-				winston.error('[plugins] Problem executing hook: ' + hook + ' err: ' + err.stack);
-			}
-
-			callback(err, values);
-		});
+		}, callback);
 	}
 
 	function fireActionHook(hook, hookList, params, callback) {
