@@ -40,6 +40,7 @@
 			<div class="panel-body">
 				<p>Select tags via clicking and/or dragging, use shift to select multiple.</p>
 				<button class="btn btn-primary btn-md" id="modify">Modify Selected Tags</button>
+				<button class="btn btn-warning btn-md" id="deleteSelected">Delete Selected Tags</button>
 			</div>
 		</div>
 
@@ -50,5 +51,5 @@
 			</div>
 		</div>
 	</div>
-	
+
 </div>

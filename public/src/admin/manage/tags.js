@@ -9,6 +9,12 @@ define('admin/manage/tags', ['forum/infinitescroll', 'admin/modules/selectable']
 		handleColorPickers();
 		selectable.enable('.tag-management', '.tag-row');
 
+		handleSearch();
+		handleModify();
+		handleDeleteSelected();
+	};
+
+	function handleSearch() {
 		$('#tag-search').on('input propertychange', function() {
 			if (timeoutId) {
 				clearTimeout(timeoutId);
@@ -31,7 +37,9 @@ define('admin/manage/tags', ['forum/infinitescroll', 'admin/modules/selectable']
 				});
 			}, 100);
 		});
+	}
 
+	function handleModify() {
 		$('#modify').on('click', function(ev) {
 			var tagsToModify = $('.tag-row.selected');
 			if (!tagsToModify.length) {
@@ -71,7 +79,32 @@ define('admin/manage/tags', ['forum/infinitescroll', 'admin/modules/selectable']
 				handleColorPickers();
 			}, 500);
 		});
-	};
+	}
+
+	function handleDeleteSelected() {
+		$('#deleteSelected').on('click', function() {
+			var tagsToDelete = $('.tag-row.selected');
+			if (!tagsToDelete.length) {
+				return;
+			}
+
+			bootbox.confirm('Do you want to delete the selected tags?', function(confirm) {
+				if (!confirm) {
+					return;
+				}
+				var tags = [];
+				tagsToDelete.each(function(index, el) {
+					tags.push($(el).attr('data-tag'));
+				});
+				socket.emit('admin.tags.deleteTags', {tags: tags}, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					tagsToDelete.remove();
+				});
+			});
+		});
+	}
 
 	function handleColorPickers() {
 		function enableColorPicker(idx, inputEl) {
@@ -96,7 +129,7 @@ define('admin/manage/tags', ['forum/infinitescroll', 'admin/modules/selectable']
 			bgColor : tag.find('[data-name="bgColor"]').val(),
 			color : tag.find('[data-name="color"]').val()
 		};
-		
+
 		socket.emit('admin.tags.update', data, function(err) {
 			if (err) {
 				return app.alertError(err.message);

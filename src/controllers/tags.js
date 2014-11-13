@@ -49,7 +49,7 @@ tagsController.getTag = function(req, res, next) {
 };
 
 tagsController.getTags = function(req, res, next) {
-	topics.getTags(0, 99, function(err, tags) {
+	topics.getTags(0, 100, function(err, tags) {
 		if (err) {
 			return next(err);
 		}

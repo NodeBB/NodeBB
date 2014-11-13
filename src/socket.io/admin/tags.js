@@ -11,5 +11,9 @@ Tags.update = function(socket, data, callback) {
 	topics.updateTag(data.tag, data, callback);
 };
 
+Tags.deleteTags = function(socket, data, callback) {
+	topics.deleteTags(data.tags, callback);
+};
+
 
 module.exports = Tags;
