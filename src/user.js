@@ -175,7 +175,7 @@ var	async = require('async'),
 				return callback(new Error('[[error:user-banned]]'));
 			}
 
-			if (userData.email && parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
+			if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
 				return callback(new Error('[[error:email-not-confirmed]]'));
 			}
 			var now = Date.now();

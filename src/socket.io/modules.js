@@ -141,13 +141,17 @@ SocketModules.chats.send = function(socket, data, callback) {
 
 	socket.lastChatMessageTime = now;
 
-	user.getUserField(socket.uid, 'banned', function(err, banned) {
+	user.getUserFields(socket.uid, ['banned', 'email:confirmed'], function(err, userData) {
 		if (err) {
 			return callback(err);
 		}
 
-		if (parseInt(banned, 10) === 1) {
+		if (parseInt(userData.banned, 10) === 1) {
 			return callback(new Error('[[error:user-banned]]'));
+		}
+
+		if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
+			return callback(new Error('[[error:email-not-confirmed]]'));
 		}
 
 		Messaging.canMessage(socket.uid, touid, function(err, allowed) {
