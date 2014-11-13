@@ -65,7 +65,7 @@ define('admin/manage/groups', ['admin/modules/iconSelect'], function(iconSelect)
 					createModalError.addClass('hide');
 					createGroupName.val('');
 					createModal.on('hidden.bs.modal', function() {
-						ajaxify.go('admin/groups');
+						ajaxify.go('admin/manage/groups');
 					});
 					createModal.modal('hide');
 				}
@@ -104,7 +104,7 @@ define('admin/manage/groups', ['admin/modules/iconSelect'], function(iconSelect)
 								return app.alertError(err.message);
 							}
 
-							ajaxify.go('admin/groups');
+							ajaxify.go('admin/manage/groups');
 						});
 					}
 				});
@@ -236,7 +236,7 @@ define('admin/manage/groups', ['admin/modules/iconSelect'], function(iconSelect)
 			}, function(err) {
 				if (!err) {
 					groupDetailsModal.on('hidden.bs.modal', function() {
-						ajaxify.go('admin/groups');
+						ajaxify.go('admin/manage/groups');
 					});
 					groupDetailsModal.modal('hide');
 				}
