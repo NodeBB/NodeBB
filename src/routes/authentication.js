@@ -207,14 +207,20 @@
 			}
 		}
 
-		if (!userData.username || userData.username.length < meta.config.minimumUsernameLength) {
-			return res.redirect(nconf.get('relative_path') + '/register?error=[[error:username-too-short]]');
-		} else if (!userData.username || userData.username.length > meta.config.maximumUsernameLength) {
-			return res.redirect(nconf.get('relative_path') + '/register?error=[[error:username-too-long]]');
-		}
-
 		var uid;
 		async.waterfall([
+			function(next) {
+				if (!userData.username || userData.username.length < meta.config.minimumUsernameLength) {
+					return next(new Error('[[error:username-too-short]]'));
+				}
+				next();
+			},
+			function(next) {
+				if (!userData.username || userData.username.length > meta.config.maximumUsernameLength) {
+					return next(new Error('[[error:username-too-long'));
+				}
+				next();
+			},
 			function(next) {
 				plugins.fireHook('filter:register.check', {req: req, res: res, userData: userData}, next);
 			},
@@ -236,7 +242,8 @@
 			}
 		], function(err, data) {
 			if (err) {
-				return res.redirect(nconf.get('relative_path') + '/register?error=' + err.message);
+				req.flash('error', err.message);
+				return res.redirect(nconf.get('relative_path') + '/register');
 			}
 			res.redirect(nconf.get('relative_path') + (data.referrer ? data.referrer : '/'));
 		});

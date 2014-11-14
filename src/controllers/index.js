@@ -179,6 +179,7 @@ Controllers.register = function(req, res, next) {
 	data.minimumPasswordLength = meta.config.minimumPasswordLength;
 	data.termsOfUse = meta.config.termsOfUse;
 	data.regFormEntry = [];
+	data.error = req.flash('error')[0];
 
 	plugins.fireHook('filter:register.build', {req: req, res: res, templateData: data}, function(err, data) {
 		if (err && process.env === 'development') {
