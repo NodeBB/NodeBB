@@ -17,12 +17,10 @@ var mkdirp = require('mkdirp'),
 
 Templates.compile = function(callback) {
 	if (cluster.isWorker && process.env.cluster_setup !== 'true') {
-		return setTimeout(function() {
-			emitter.emit('templates:compiled');
-			if (callback) {
-				callback();
-			}
-		}, 1000);
+		emitter.emit('templates:compiled');
+		if (callback) {
+			callback();
+		}
 	}
 
 	var coreTemplatesPath = nconf.get('core_templates_path'),

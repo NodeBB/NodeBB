@@ -25,6 +25,7 @@ nconf.argv().env();
 
 var fs = require('fs'),
 	os = require('os'),
+	async = require('async'),
 	semver = require('semver'),
 	winston = require('winston'),
 	path = require('path'),
@@ -141,14 +142,21 @@ function start() {
 
 					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
 
-					plugins.ready(function() {
-						webserver.init(function() {
-							webserver.listen(function() {
-								process.send({
-									action: 'ready'
-								});
+					async.waterfall([
+						async.apply(plugins.ready),
+						async.apply(webserver.init),
+						async.apply(webserver.listen)
+					], function(err) {
+						if (err) {
+							winston.error(err.stack);
+							process.exit();
+						}
+
+						if (process.send) {
+							process.send({
+								action: 'ready'
 							});
-						});
+						}
 					});
 
 					process.on('SIGTERM', shutdown);

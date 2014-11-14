@@ -108,7 +108,6 @@ module.exports = function(app, data) {
 	auth.initialize(app, middleware);
 
 	routeCurrentTheme(app, data.currentThemeId, data.themesData);
-	meta.templates.compile();
 
 	return middleware;
 };
