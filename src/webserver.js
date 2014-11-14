@@ -124,10 +124,10 @@ if(nconf.get('ssl')) {
 
 	module.exports.listen = function(callback) {
 		var	bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
-		winston.info('NodeBB attempting to listen on: ' + bind_address);
-
+		
 		server.listen(port, nconf.get('bind_address'), function(err) {
 			if (err) {
+				winston.info('NodeBB was unable to listen on: ' + bind_address);
 				return callback(err);
 			}
 
