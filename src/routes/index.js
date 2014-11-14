@@ -3,9 +3,9 @@
 var nconf = require('nconf'),
 	path = require('path'),
 	winston = require('winston'),
-	controllers = require('./../controllers'),
-	meta = require('./../meta'),
-	plugins = require('./../plugins'),
+	controllers = require('../controllers'),
+	meta = require('../meta'),
+	plugins = require('../plugins'),
 	express = require('express'),
 
 	metaRoutes = require('./meta'),
@@ -28,6 +28,7 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/outgoing', middleware, [], controllers.outgoing);
 	setupPageRoute(app, '/search/:term?', middleware, [middleware.guestSearchingAllowed], controllers.search);
 	setupPageRoute(app, '/reset/:code?', middleware, [], controllers.reset);
+	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
 }
 
 function staticRoutes(app, middleware, controllers) {

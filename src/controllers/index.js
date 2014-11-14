@@ -237,4 +237,11 @@ Controllers.outgoing = function(req, res, next) {
 	}
 };
 
+Controllers.termsOfUse = function(req, res, next) {
+	if (!meta.config.termsOfUse) {
+		return categoriesController.notFound(req, res);
+	}
+	res.render('tos', {termsOfUse: meta.config.termsOfUse});
+};
+
 module.exports = Controllers;
