@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "async": "~0.9.0",
-    "bcryptjs": "~2.0.1",
+    "bcryptjs": "~2.1.0",
     "body-parser": "^1.9.0",
     "compression": "^1.1.0",
     "connect-ensure-login": "^0.1.1",
@@ -60,7 +60,7 @@
     "templates.js": "0.1.2",
     "uglify-js": "git+https://github.com/julianlam/UglifyJS2.git",
     "underscore": "~1.7.0",
-    "validator": "~3.21.0",
+    "validator": "~3.22.1",
     "winston": "^0.8.1",
     "xregexp": "~2.0.0"
   },
