@@ -10,7 +10,7 @@ module.exports = function(Categories) {
 	Categories.getCategoryTopics = function(data, callback) {
 		var tids;
 		async.waterfall([
-			async.apply(plugins.fireHook, 'filter:category.topics.get', data),
+			async.apply(plugins.fireHook, 'filter:category.topics.prepare', data),
 			function(data, next) {
 				Categories.getTopicIds(data.targetUid ? 'cid:' + data.cid + ':uid:' + data.targetUid + ':tids' : 'cid:' + data.cid + ':tids', data.start, data.stop, next);
 			},
