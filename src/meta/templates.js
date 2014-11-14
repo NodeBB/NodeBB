@@ -31,6 +31,9 @@ Templates.compile = function(callback) {
 		themeTemplatesPath = nconf.get('theme_templates_path');
 
 	plugins.getTemplates(function(err, pluginTemplates) {
+		if (err) {
+			return callback(err);
+		}
 		winston.info('[meta/templates] Compiling templates');
 		rimraf.sync(viewsPath);
 		mkdirp.sync(viewsPath);
