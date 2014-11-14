@@ -142,7 +142,7 @@ categoriesController.get = function(req, res, next) {
 			var topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) - 1 : 0;
 			var topicCount = parseInt(results.categoryData.topic_count, 10);
 
-			if (topicIndex < 0 || topicIndex > topicCount - 1) {
+			if (topicIndex < 0 || topicIndex > Math.max(topicCount - 1, 0)) {
 				var url = '/category/' + cid + '/' + req.params.slug + (topicIndex > topicCount ? '/' + topicCount : '');
 				return res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
 			}

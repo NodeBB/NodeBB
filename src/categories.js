@@ -168,6 +168,7 @@ var async = require('async'),
 		category.name = validator.escape(category.name);
 		category.disabled = parseInt(category.disabled, 10) === 1;
 		category.icon = category.icon || 'hidden';
+		category.post_count = category.post_count || 0;
 
 		if (category.description) {
 			category.description = validator.escape(category.description);
