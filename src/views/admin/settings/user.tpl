@@ -6,7 +6,7 @@
 		<form role="form">
 			<div class="checkbox">
 				<label>
-					<input type="checkbox" data-field="allowRegistration" checked> <strong>Allow registration</strong>
+					<input type="checkbox" data-field="allowRegistration" checked> <strong>Allow local registration</strong>
 				</label>
 			</div>
 			<div class="checkbox">
