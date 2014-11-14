@@ -100,8 +100,8 @@ module.exports = function(privileges) {
 					privilege: privilege,
 					uid: uid,
 					pids: pids
-				}, function(err, data) {
-					callback(null, data.pids);
+				},  function(err, data) {
+					callback(err, data ? data.pids : null);
 				});
 			});
 		});
