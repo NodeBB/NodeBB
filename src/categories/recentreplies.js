@@ -12,8 +12,11 @@ var async = require('async'),
 
 module.exports = function(Categories) {
 	Categories.getRecentReplies = function(cid, uid, count, callback) {
+		if(!parseInt(count, 10)) {
+			return callback(null, []);
+		}
 		privileges.categories.can('read', cid, uid, function(err, canRead) {
-			if (err || !canRead || !parseInt(count, 10)) {
+			if (err || !canRead) {
 				return callback(err, []);
 			}
 
