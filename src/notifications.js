@@ -241,7 +241,7 @@ var async = require('async'),
 			}
 
 			var datetimes = notificationData.map(function(notification) {
-				return notification && notification.datetime;
+				return (notification && notification.datetime) || Date.now();
 			});
 
 			async.parallel([
