@@ -7,20 +7,23 @@ var async = require('async'),
 
 	db = require('../database'),
 	posts = require('../posts'),
-	topics = require('../topics');
+	topics = require('../topics'),
+	privileges = require('../privileges');
 
 module.exports = function(Categories) {
 	Categories.getRecentReplies = function(cid, uid, count, callback) {
-		if (!parseInt(count, 10)) {
-			return callback(null, []);
-		}
-
-		db.getSortedSetRevRange('cid:' + cid + ':pids', 0, count - 1, function(err, pids) {
-			if (err || !pids || !pids.length) {
+		privileges.categories.can('read', cid, uid, function(err, canRead) {
+			if (err || !canRead || !parseInt(count, 10)) {
 				return callback(err, []);
 			}
 
-			posts.getPostSummaryByPids(pids, uid, {stripTags: true}, callback);
+			db.getSortedSetRevRange('cid:' + cid + ':pids', 0, count - 1, function(err, pids) {
+				if (err || !Array.isArray(pids) || !pids.length) {
+					return callback(err, []);
+				}
+
+				posts.getPostSummaryByPids(pids, uid, {stripTags: true}, callback);
+			});
 		});
 	};
 
@@ -28,29 +31,29 @@ module.exports = function(Categories) {
 		if (!Array.isArray(categoryData) || !categoryData.length) {
 			return callback(null, []);
 		}
-		async.map(categoryData, getRecentTopicPids, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
 
-			var pids = _.flatten(results);
+		async.waterfall([
+			function(next) {
+				async.map(categoryData, getRecentTopicPids, next);
+			},
+			function(results, next) {
+				var pids = _.flatten(results);
 
-			pids = pids.filter(function(pid, index, array) {
-				return !!pid && array.indexOf(pid) === index;
-			});
-
-			posts.getPostSummaryByPids(pids, uid, {stripTags: true}, function(err, posts) {
-				if (err) {
-					return callback(err);
-				}
-
+				pids = pids.filter(function(pid, index, array) {
+					return !!pid && array.indexOf(pid) === index;
+				});
+				privileges.posts.filter('read', pids, uid, next);
+			},
+			function(pids, next) {
+				posts.getPostSummaryByPids(pids, uid, {stripTags: true}, next);
+			},
+			function(posts, next) {
 				categoryData.forEach(function(category) {
 					assignPostsToCategory(category, posts);
 				});
-
-				callback();
-			});
-		});
+				next();
+			}
+		], callback);
 	};
 
 	function assignPostsToCategory(category, posts) {
