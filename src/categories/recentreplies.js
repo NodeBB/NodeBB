@@ -26,12 +26,12 @@ module.exports = function(Categories) {
 					return callback(err, []);
 				}
 
-				plugins.fireHook('filter:categories.recent', {
-					uid: uid,
-					pids: pids
-				}, function(err, data) {
-					posts.getPostSummaryByPids(data.pids, uid, {stripTags: true}, callback);
-				});
+				async.waterfall([
+					async.apply(privileges.posts.filter, 'read', pids, uid),
+					function(pids, next) {
+						posts.getPostSummaryByPids(pids, uid, {stripTags: true}, next);
+					}
+				], callback);
 			});
 		});
 	};
