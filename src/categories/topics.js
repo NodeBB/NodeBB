@@ -36,9 +36,11 @@ module.exports = function(Categories) {
 					topics[i].index = indices[topics[i].tid];
 				}
 
-				next(null, {
-					topics: topics,
-					nextStart: data.stop + 1
+				plugins.fireHook('filter:category.topics.get', topics, function(err, topics) {
+					next(null, {
+						topics: topics,
+						nextStart: data.stop + 1
+					});
 				});
 			}
 		], callback);
