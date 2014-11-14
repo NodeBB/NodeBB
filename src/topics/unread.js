@@ -116,6 +116,10 @@ module.exports = function(Topics) {
 		}
 
 		privileges.topics.filter('read', tids, uid, function(err, tids) {
+			if (err || !tids.length) {
+				return callback(err, []);
+			}
+
 			var keys = tids.map(function(tid) {
 				return 'topic:' + tid;
 			});
