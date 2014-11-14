@@ -117,16 +117,10 @@ if(nconf.get('ssl')) {
 
 	module.exports.server = server;
 
-	module.exports.init = function(callback) {
-
-		emitter.all(['templates:compiled', 'meta:js.compiled', 'meta:css.compiled'], function() {
-			winston.info('NodeBB Ready');
-			emitter.emit('nodebb:ready');
-			emitter.removeAllListeners('templates:compiled').removeAllListeners('meta:js.compiled').removeAllListeners('meta:css.compiled');
-		});
-
-		meta.templates.compile(callback);
-	};
+	emitter.all(['templates:compiled', 'meta:js.compiled', 'meta:css.compiled'], function() {
+		winston.info('NodeBB Ready');
+		emitter.emit('nodebb:ready');
+	});
 
 	module.exports.listen = function(callback) {
 		var	bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;

@@ -144,7 +144,7 @@ function start() {
 
 					async.waterfall([
 						async.apply(plugins.ready),
-						async.apply(webserver.init),
+						async.apply(meta.templates.compile),
 						async.apply(webserver.listen)
 					], function(err) {
 						if (err) {
