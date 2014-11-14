@@ -453,7 +453,20 @@ var fs = require('fs'),
 	function fireStaticHook(hook, hookList, params, callback) {
 		async.each(hookList, function(hookObj, next) {
 			if (typeof hookObj.method === 'function') {
-				hookObj.method(params, next);
+				var timedOut = false;
+
+				var timeoutId = setTimeout(function() {
+					winston.warn('[plugins] Callback timed out, hook \'' + hook + '\' in plugin \'' + hookObj.id + '\'');
+					timedOut = true;
+					next();
+				}, 5000);
+
+				hookObj.method(params, function() {
+					clearTimeout(timeoutId);
+					if (!timedOut) {
+						next.apply(null, arguments);
+					}
+				});
 			} else {
 				next();
 			}
