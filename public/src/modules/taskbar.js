@@ -2,38 +2,38 @@ define('taskbar', function() {
 	var taskbar = {
 		initialized: false,
 		init: function() {
-			this.taskbar = $('<div />')
-				.html('<div class="navbar-inner"><ul class="nav navbar-nav pull-right"></ul></div>')
-				.addClass('taskbar navbar navbar-default navbar-fixed-bottom')
-				.attr('id', 'taskbar');
+			var self = this;
 
-			this.tasklist = this.taskbar.find('ul');
-			$(document.body).append(this.taskbar);
+			templates.parse('modules/taskbar', {}, function(html) {
+				self.taskbar = $(html);
+				self.tasklist = self.taskbar.find('ul');
+				$(document.body).append(self.taskbar);
 
-			// Posts bar events
-			this.taskbar.on('click', 'li', function() {
-				var	$btn = $(this),
-					module = $btn.attr('data-module'),
-					uuid = $btn.attr('data-uuid');
+				// Posts bar events
+				self.taskbar.on('click', 'li', function() {
+					var	$btn = $(this),
+						module = $btn.attr('data-module'),
+						uuid = $btn.attr('data-uuid');
 
-				require([module], function(module) {
-					if (!$btn.hasClass('active')) {
-						taskbar.minimizeAll();
-						module.load(uuid);
-						taskbar.toggleNew(uuid, false);
-						app.alternatingTitle('');
+					require([module], function(module) {
+						if (!$btn.hasClass('active')) {
+							taskbar.minimizeAll();
+							module.load(uuid);
+							taskbar.toggleNew(uuid, false);
+							app.alternatingTitle('');
 
-						// Highlight the button
-						taskbar.tasklist.removeClass('active');
-						$btn.addClass('active');
-					} else {
-						module.minimize(uuid);
-					}
+							// Highlight the button
+							taskbar.tasklist.removeClass('active');
+							$btn.addClass('active');
+						} else {
+							module.minimize(uuid);
+						}
+					});
+					return false;
 				});
-				return false;
-			});
 
-			taskbar.initialized = true;
+				taskbar.initialized = true;
+			});
 		},
 
 		update: function() {
