@@ -9,7 +9,8 @@ var async = require('async'),
 	user = require('../user'),
 	helpers = require('./helpers'),
 	groups = require('../groups'),
-	categories = require('../categories');
+	categories = require('../categories'),
+	plugins = require('../plugins');
 
 module.exports = function(privileges) {
 
@@ -94,7 +95,14 @@ module.exports = function(privileges) {
 				}).map(function(post) {
 					return post.pid;
 				});
-				callback(null, pids);
+
+				plugins.fireHook('filter:privileges.posts.filter', {
+					privilege: privilege,
+					uid: uid,
+					pids: pids
+				}, function(err, data) {
+					callback(null, data.pids);
+				});
 			});
 		});
 	};

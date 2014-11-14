@@ -6,8 +6,8 @@ var async = require('async'),
 	user = require('../user'),
 	categories = require('../categories'),
 	groups = require('../groups'),
-	helpers = require('./helpers');
-
+	helpers = require('./helpers'),
+	plugins = require('../plugins');
 
 module.exports = function(privileges) {
 
@@ -34,12 +34,14 @@ module.exports = function(privileges) {
 
 			var isAdminOrMod = results.isAdministrator || results.isModerator;
 
-			callback(null, {
+			plugins.fireHook('filter:privileges.categories.get', {
+				cid: cid,
+				uid: uid,
 				'topics:create': results['topics:create'][0] || isAdminOrMod,
 				editable: isAdminOrMod,
 				view_deleted: isAdminOrMod,
 				read: results.read[0] || isAdminOrMod
-			});
+			}, callback);
 		});
 	};
 

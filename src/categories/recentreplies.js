@@ -8,7 +8,8 @@ var async = require('async'),
 	db = require('../database'),
 	posts = require('../posts'),
 	topics = require('../topics'),
-	privileges = require('../privileges');
+	privileges = require('../privileges'),
+	plugins = require('../plugins');
 
 module.exports = function(Categories) {
 	Categories.getRecentReplies = function(cid, uid, count, callback) {
@@ -25,7 +26,12 @@ module.exports = function(Categories) {
 					return callback(err, []);
 				}
 
-				posts.getPostSummaryByPids(pids, uid, {stripTags: true}, callback);
+				plugins.fireHook('filter:categories.recent', {
+					uid: uid,
+					pids: pids
+				}, function(err, data) {
+					posts.getPostSummaryByPids(data.pids, uid, {stripTags: true}, callback);
+				});
 			});
 		});
 	};

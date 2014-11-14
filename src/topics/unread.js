@@ -115,37 +115,39 @@ module.exports = function(Topics) {
 			return callback(null, tids);
 		}
 
-		var keys = tids.map(function(tid) {
-			return 'topic:' + tid;
-		});
-
-		db.getObjectsFields(keys, ['tid', 'cid'], function(err, topics) {
-			if (err) {
-				return callback(err);
-			}
-
-			var topicCids = topics.filter(function(topic) {
-				return topic && topic.cid;
-			}).map(function(topic) {
-				return topic.cid.toString();
+		privileges.topics.filter('read', tids, uid, function(err, tids) {
+			var keys = tids.map(function(tid) {
+				return 'topic:' + tid;
 			});
 
-			topicCids = topicCids.filter(function(cid) {
-				return ignoredCids.indexOf(cid) === -1;
-			});
-
-			privileges.categories.filterCids('read', topicCids, uid, function(err, readableCids) {
+			db.getObjectsFields(keys, ['tid', 'cid'], function(err, topics) {
 				if (err) {
 					return callback(err);
 				}
 
-				topics = topics.filter(function(topic) {
-					return topic.cid && readableCids.indexOf(topic.cid.toString()) !== -1;
+				var topicCids = topics.filter(function(topic) {
+					return topic && topic.cid;
 				}).map(function(topic) {
-					return topic.tid;
+					return topic.cid.toString();
 				});
 
-				callback(null, topics);
+				topicCids = topicCids.filter(function(cid) {
+					return ignoredCids.indexOf(cid) === -1;
+				});
+
+				privileges.categories.filterCids('read', topicCids, uid, function(err, readableCids) {
+					if (err) {
+						return callback(err);
+					}
+
+					topics = topics.filter(function(topic) {
+						return topic.cid && readableCids.indexOf(topic.cid.toString()) !== -1;
+					}).map(function(topic) {
+						return topic.tid;
+					});
+
+					callback(null, topics);
+				});
 			});
 		});
 	}

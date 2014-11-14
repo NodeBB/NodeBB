@@ -91,7 +91,14 @@ module.exports = function(privileges) {
 				}).map(function(topic) {
 					return topic.tid;
 				});
-				callback(null, tids);
+
+				plugins.fireHook('filter:privileges.topics.filter', {
+					privilege: privilege,
+					uid: uid,
+					tids: tids
+				}, function(err, data) {
+					callback(null, data.tids);
+				});
 			});
 		});
 	};
