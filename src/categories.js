@@ -164,7 +164,7 @@ var async = require('async'),
 	};
 
 	function modifyCategory(category, callback) {
-		if (!category || !parseInt(category.cid, 10)) {
+		if (!category) {
 			return callback(null, null);
 		}
 
