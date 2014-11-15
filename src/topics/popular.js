@@ -39,11 +39,7 @@ module.exports = function(Topics) {
 	}
 
 	function getTopics(tids, uid, count, callback) {
-		var keys = tids.map(function(tid) {
-			return 'topic:' + tid;
-		});
-
-		db.getObjectsFields(keys, ['tid', 'postcount'], function(err, topics) {
+		Topics.getTopicsFields(tids, ['tid', 'postcount'], function(err, topics) {
 			if (err) {
 				return callback(err);
 			}

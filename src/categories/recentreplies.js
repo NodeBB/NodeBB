@@ -135,11 +135,8 @@ module.exports = function(Categories) {
 					done = true;
 					return next();
 				}
-				var keys = movePids.map(function(pid) {
-					return 'post:' + pid;
-				});
 
-				db.getObjectsFields(keys, ['timestamp'], function(err, postData) {
+				posts.getPostsFields(movePids, ['timestamp'], function(err, postData) {
 					if (err) {
 						return next(err);
 					}

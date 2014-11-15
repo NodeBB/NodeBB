@@ -68,11 +68,7 @@ module.exports = function(privileges) {
 			return callback(null, []);
 		}
 
-		var keys = tids.map(function(tid) {
-			return 'topic:' + tid;
-		});
-
-		db.getObjectsFields(keys, ['tid', 'cid'], function(err, topics) {
+		topics.getTopicsFields(tids, ['tid', 'cid'], function(err, topics) {
 			if (err) {
 				return callback(err);
 			}

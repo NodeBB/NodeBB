@@ -126,11 +126,7 @@ SocketTopics.markCategoryTopicsRead = function(socket, cid, callback) {
 			return callback(err);
 		}
 
-		var keys = tids.map(function(tid) {
-			return 'topic:' + tid;
-		});
-
-		db.getObjectsFields(keys, ['tid', 'cid'], function(err, topicData) {
+		topics.getTopicsFields(tids, ['tid', 'cid'], function(err, topicData) {
 			if (err) {
 				return callback(err);
 			}

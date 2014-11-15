@@ -10,7 +10,6 @@ var async = require('async'),
 	utils = require('../../public/src/utils');
 
 
-
 module.exports = function(Topics) {
 
 	Topics.getTeasers = function(tids, uid, callback) {
@@ -43,11 +42,9 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			var postKeys = results.pids.filter(Boolean).map(function(pid) {
-				return 'post:' + pid;
-			});
+			results.pids = results.pids.filter(Boolean);
 
-			db.getObjectsFields(postKeys, ['pid', 'uid', 'timestamp', 'tid'], function(err, postData) {
+			posts.getPostsFields(results.pids, ['pid', 'uid', 'timestamp', 'tid'], function(err, postData) {
 				if (err) {
 					return callback(err);
 				}

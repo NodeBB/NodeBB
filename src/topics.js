@@ -286,11 +286,7 @@ var async = require('async'),
 	};
 
 	Topics.getMainPosts = function(tids, uid, callback) {
-		var keys = tids.map(function(tid) {
-			return 'topic:' + tid;
-		});
-
-		db.getObjectsFields(keys, ['mainPid'], function(err, topicData) {
+		Topics.getTopicsFields(tids, ['mainPid'], function(err, topicData) {
 			if (err) {
 				return callback(err);
 			}

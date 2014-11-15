@@ -2,7 +2,8 @@
 
 'use strict';
 
-var db = require('../database');
+var db = require('../database'),
+	posts = require('../posts');
 
 
 module.exports = function(Topics) {
@@ -23,19 +24,15 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			var keys = pids.map(function(pid) {
-				return 'post:' + pid;
-			});
-
-			db.getObjectsFields(keys, ['uid'], function(err, data) {
+			posts.getPostsFields(pids, ['uid'], function(err, postData) {
 				if (err) {
 					return callback(err);
 				}
 
-				var uids = data.map(function(data) {
-					return data.uid;
-				}).filter(function(uid, pos, array) {
-					return array.indexOf(uid) === pos;
+				var uids = postData.map(function(post) {
+					return post && post.uid;
+				}).filter(function(uid, index, array) {
+					return array.indexOf(uid) === index;
 				});
 
 				callback(null, uids);
