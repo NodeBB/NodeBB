@@ -30,7 +30,7 @@ define('taskbar', function() {
 						module.minimize(uuid);
 					}
 				});
-				
+
 				return false;
 			});
 		});
@@ -105,4 +105,6 @@ define('taskbar', function() {
 	function minimizeAll() {
 		taskbar.tasklist.find('.active').removeClass('active');
 	}
+
+	return taskbar;
 });
