@@ -1,3 +1,6 @@
+"use strict";
+/*global define, app, templates*/
+
 define('taskbar', function() {
 	var taskbar = {
 		initialized: false,
@@ -71,9 +74,11 @@ define('taskbar', function() {
 				})
 				.addClass(options.state !== undefined ? options.state : 'active');
 
-			if (!options.state || options.state === 'active') taskbar.minimizeAll();
-			taskbar.tasklist.append(btnEl);
+			if (!options.state || options.state === 'active') {
+				taskbar.minimizeAll();
+			}
 
+			taskbar.tasklist.append(btnEl);
 			taskbar.update();
 		},
 
@@ -111,5 +116,5 @@ define('taskbar', function() {
 		updateActive: taskbar.updateActive,
 		isActive: taskbar.isActive,
 		init: taskbar.init
-	}
+	};
 });
