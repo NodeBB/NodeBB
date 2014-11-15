@@ -3,7 +3,7 @@
     "welcome-to": "Bienvenue sur %1",
     "greeting_no_name": "Bonjour",
     "greeting_with_name": "Bonjour %1",
-    "welcome.text1": "Merci de vous être inscrit avec %1!",
+    "welcome.text1": "Merci de vous être inscrit sur %1!",
     "welcome.text2": "Pour activer totalement votre compte, nous devons vérifier que vous êtes bien propriétaire de l'adresse email que vous avez utilisé pour vous inscrire.",
     "welcome.cta": "Cliquez ici pour confirmer votre adresse email",
     "reset.text1": "Nous avons reçu une demande de réinitialisation de votre mot de passe, probablement parce que vous l'avez oublié. Si ce n'est pas le cas, veuillez ignorer cet email.",

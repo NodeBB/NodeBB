@@ -48,7 +48,7 @@
     "settings": "Einstellungen",
     "show_email": "Zeige meine E-Mail Adresse an.",
     "show_fullname": "Zeige meinen kompletten Namen an",
-    "restrict_chats": "Only allow chat messages from users I follow",
+    "restrict_chats": "Nur Chatnachrichten von Benutzern, denen ich folge, erlauben",
     "digest_label": "Auszug abonnieren",
     "digest_description": "Abonniere E-Mail-Benachrichtigungen für dieses Forum (neue Benachrichtigungen und Themen) nach einem festen Zeitplan.",
     "digest_off": "Aus",
