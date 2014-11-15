@@ -147,6 +147,9 @@ var async = require('async'),
 	};
 
 	Categories.getCategoriesData = function(cids, callback) {
+		if (!Array.isArray(cids) || !cids.length) {
+			return callback(null, []);
+		}
 		var keys = cids.map(function(cid) {
 			return 'category:' + cid;
 		});
@@ -186,9 +189,14 @@ var async = require('async'),
 	};
 
 	Categories.getMultipleCategoryFields = function(cids, fields, callback) {
+		if (!Array.isArray(cids) || !cids.length) {
+			return callback(null, []);
+		}
+
 		var keys = cids.map(function(cid) {
 			return 'category:' + cid;
 		});
+
 		db.getObjectsFields(keys, fields, function(err, categories) {
 			if (err) {
 				return callback(err);
@@ -252,11 +260,7 @@ var async = require('async'),
 	};
 
 	Categories.getParents = function(cids, callback) {
-		var keys = cids.map(function(cid) {
-			return 'category:' + cid;
-		});
-
-		db.getObjectsFields(keys, ['parentCid'], function(err, data) {
+		Categories.getMultipleCategoryFields(cids, ['parentCid'], function(err, data) {
 			if (err) {
 				return callback(err);
 			}
