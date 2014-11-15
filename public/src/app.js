@@ -585,6 +585,10 @@ var socket,
 					});
 				}
 			});
+
+			require(['taskbar'], function(taskbar) {
+				taskbar.init();
+			});
 		});
 	};
 

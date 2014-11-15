@@ -103,16 +103,13 @@ define('taskbar', function() {
 		}
 	};
 
-	if (!taskbar.initialized) {
-		taskbar.init();
-	}
-
 	return {
 		push: taskbar.push,
 		discard: taskbar.discard,
 		minimize: taskbar.minimize,
 		toggleNew: taskbar.toggleNew,
 		updateActive: taskbar.updateActive,
-		isActive: taskbar.isActive
+		isActive: taskbar.isActive,
+		init: taskbar.init
 	}
 });
