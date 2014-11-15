@@ -270,4 +270,33 @@ SocketAdmin.getMoreFlags = function(socket, after, callback) {
 	});
 };
 
+SocketAdmin.getVoters = function(socket, pid, callback) {
+	async.parallel({
+		upvoteUids: function(next) {
+			db.getSetMembers('pid:' + pid + ':upvote', next);
+		},
+		downvoteUids: function(next) {
+			db.getSetMembers('pid:' + pid + ':downvote', next);
+		}
+	}, function(err, results) {
+		if (err) {
+			return callback(err);
+		}
+		async.parallel({
+			upvoters: function(next) {
+				user.getMultipleUserFields(results.upvoteUids, ['username', 'userslug', 'picture'], next);
+			},
+			upvoteCount: function(next) {
+				next(null, results.upvoteUids.length);
+			},
+			downvoters: function(next) {
+				user.getMultipleUserFields(results.downvoteUids, ['username', 'userslug', 'picture'], next);
+			},
+			downvoteCount: function(next) {
+				next(null, results.downvoteUids.length);
+			}
+		}, callback);
+	});
+};
+
 module.exports = SocketAdmin;

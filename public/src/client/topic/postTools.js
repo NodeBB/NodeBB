@@ -94,6 +94,10 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 			return toggleVote($(this), '.downvoted', 'posts.downvote');
 		});
 
+		postContainer.on('click', '.votes', function() {
+			showVotes(getData($(this), 'data-pid'));
+		});
+
 		postContainer.on('click', '.flag', function() {
 			flagPost(getData($(this), 'data-pid'));
 		});
@@ -192,6 +196,30 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		});
 
 		return false;
+	}
+
+	function showVotes(pid) {
+		if (!app.isAdmin) {
+			return;
+		}
+		socket.emit('admin.getVoters', pid, function(err, data) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			templates.parse('partials/modals/votes_modal', data, function(html) {
+				var dialog = bootbox.dialog({
+					title: 'Voters',
+					message: html,
+					className: 'vote-modal',
+					show: true
+				});
+
+				dialog.on('click', function() {
+					dialog.modal('hide');
+				});
+			});
+		});
 	}
 
 	function getData(button, data) {
