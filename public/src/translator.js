@@ -6,6 +6,12 @@
 	var translator = {},
 		languages = {};
 
+	var regexes = {
+		match: /\[\[.*?\]\]/g,
+		split: /[,][\s]*/,
+		replace: /\]+$/
+	};
+
 	module.exports = translator;
 
 	translator.addTranslation = function(language, filename, translations) {
@@ -36,7 +42,7 @@
 			case 'pt_BR':
 				languageCode = 'pt-br';
 				break;
-				
+
 			case 'nb':
 				languageCode = 'no';
 				break;
@@ -69,7 +75,7 @@
 		}
 	};
 
-	translator.translate = function (data, language, callback) {
+	translator.translate = function (text, language, callback) {
 		if (typeof language === 'function') {
 			callback = language;
 			if ('undefined' !== typeof window && config) {
@@ -80,69 +86,70 @@
 			}
 		}
 
-		if (!data) {
-			return callback(data);
+		if (!text) {
+			return callback(text);
 		}
 
-		function insertLanguage(text, key, value, variables) {
-			if (value) {
-				for (var i = 1, ii = variables.length; i < ii; i++) {
-					var variable = variables[i].replace(']]', '');
-					value = value.replace('%' + i, variable);
-				}
-
-				text = text.replace(key, value);
-			} else {
-				var string = key.split(':');
-				text = text.replace(key, string[string.length-1].replace(/\]+$/, ''));
-			}
-
-			return text;
-		}
-
-		var keys = data.match(/\[\[.*?\]\]/g),
-			loading = 0;
+		var keys = text.match(regexes.match);
 
 		if (!keys) {
-			return callback(data);
+			return callback(text);
 		}
 
-		for (var i=0; i<keys.length; ++i) {
-			var key = keys[i];
-
-			key = '' + key;
-			var variables = key.split(/[,][\s]*/);
-
-			var parsedKey = key.replace('[[', '').replace(']]', '').split(':');
-			if (!(parsedKey[0] && parsedKey[1])) {
-				continue;
-			}
-
-			var languageFile = parsedKey[0];
-			parsedKey = ('' + parsedKey[1]).split(',')[0];
-
-			if (isLanguageFileLoaded(language, languageFile)) {
-				data = insertLanguage(data, key, languages[language].loaded[languageFile][parsedKey], variables);
-			} else {
-				loading++;
-				(function (languageKey, parsedKey, languageFile, variables) {
-					translator.load(language, languageFile, function (languageData) {
-						data = insertLanguage(data, languageKey, languageData[parsedKey], variables);
-						loading--;
-						checkComplete();
-					});
-				}(key, parsedKey, languageFile, variables));
-			}
-		}
-
-		checkComplete();
-
-		function checkComplete() {
-			if (loading === 0) {
-				callback(data);
-			}
-		}
+		translateKeys(keys, text, language, callback);
 	};
+
+	function translateKeys(keys, text, language, callback) {
+
+		var count = keys.length;
+		if (!count) {
+			return callback(text);
+		}
+
+		var data = {text: text};
+		keys.forEach(function(key) {
+			translateKey(key, data, language, function(translated) {
+				--count;
+				if (count <= 0) {
+					callback(translated.text);
+				}
+			});
+		});
+	}
+
+	function translateKey(key, data, language, callback) {
+		key = '' + key;
+		var variables = key.split(regexes.split);
+
+		var parsedKey = key.replace('[[', '').replace(']]', '').split(':');
+		if (!(parsedKey[0] && parsedKey[1])) {
+			return;
+		}
+
+		var languageFile = parsedKey[0];
+		parsedKey = ('' + parsedKey[1]).split(',')[0];
+
+		translator.load(language, languageFile, function(languageData) {
+			data.text = insertLanguage(data.text, key, languageData[parsedKey], variables);
+			callback(data);
+		});
+	}
+
+	function insertLanguage(text, key, value, variables) {
+		if (value) {
+			for (var i = 1, ii = variables.length; i < ii; i++) {
+				var variable = variables[i].replace(']]', '');
+				value = value.replace('%' + i, variable);
+			}
+
+			text = text.replace(key, value);
+		} else {
+			var string = key.split(':');
+			text = text.replace(key, string[string.length-1].replace(regexes.replace, ''));
+		}
+
+		return text;
+	}
 
 	translator.compile = function() {
 		var args = Array.prototype.slice.call(arguments, 0);
