@@ -62,5 +62,6 @@
     "downvoting-disabled": "La votación negativa está deshabilitada.",
     "not-enough-reputation-to-downvote": "No tienes suficiente reputación para votar negativo este post",
     "not-enough-reputation-to-flag": "You do not have enough reputation to flag this post",
-    "reload-failed": "NodeBB encontró un problema mientras refrescar: \"%1\". NodeBB intentará cargar el resto de contenido, aunque deberías deshacer lo que hiciste antes de refrescar."
+    "reload-failed": "NodeBB encontró un problema mientras refrescar: \"%1\". NodeBB intentará cargar el resto de contenido, aunque deberías deshacer lo que hiciste antes de refrescar.",
+    "registration-error": "Registration Error"
 }

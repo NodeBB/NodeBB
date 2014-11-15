@@ -62,5 +62,6 @@
     "downvoting-disabled": "Ocena postów jest wyłączona",
     "not-enough-reputation-to-downvote": "Masz za mało reputacji by ocenić ten post.",
     "not-enough-reputation-to-flag": "Nie masz dość reputacji, by flagować ten post",
-    "reload-failed": "NodeBB napotkał problem w czasie ładowania \"%1\". Forum będzie nadal dostarczać zasoby dostępne w kliencie, jednak powinieneś cofnąć ostatnią akcję."
+    "reload-failed": "NodeBB napotkał problem w czasie ładowania \"%1\". Forum będzie nadal dostarczać zasoby dostępne w kliencie, jednak powinieneś cofnąć ostatnią akcję.",
+    "registration-error": "Registration Error"
 }

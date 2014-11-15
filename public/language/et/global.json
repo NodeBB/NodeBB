@@ -72,5 +72,6 @@
     "guests": "Külalised",
     "updated.title": "Foorum on uuendatud",
     "updated.message": "See foorum uuendati just kõige uuemale versioonile. Vajuta siia et värskendada veebilehte.",
-    "privacy": "Privaatsus"
+    "privacy": "Privaatsus",
+    "delete_all": "Delete All"
 }

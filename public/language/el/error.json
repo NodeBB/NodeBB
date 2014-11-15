@@ -62,5 +62,6 @@
     "downvoting-disabled": "Η καταψήφιση έχει απενεργοποιηθεί",
     "not-enough-reputation-to-downvote": "Δεν έχεις αρκετή φήμη για να καταψηφίσεις αυτή την δημοσίευση",
     "not-enough-reputation-to-flag": "You do not have enough reputation to flag this post",
-    "reload-failed": "Το NodeBB συνάντησε ένα πρόβλημα καθώς γινόταν η ανανέωση: \"%1\". Το NodeBB θα συνεχίσει να προσφέρει τα στοιχεία του χρήστη, αν και θα ήταν καλή ιδέα να επαναφέρεις ότι έκανες πριν την ανανέωση."
+    "reload-failed": "Το NodeBB συνάντησε ένα πρόβλημα καθώς γινόταν η ανανέωση: \"%1\". Το NodeBB θα συνεχίσει να προσφέρει τα στοιχεία του χρήστη, αν και θα ήταν καλή ιδέα να επαναφέρεις ότι έκανες πριν την ανανέωση.",
+    "registration-error": "Registration Error"
 }

@@ -62,5 +62,6 @@
     "downvoting-disabled": "Les votes négatifs ne sont pas autorisés",
     "not-enough-reputation-to-downvote": "Vous n'avez pas une réputation assez élevée pour noter négativement ce message",
     "not-enough-reputation-to-flag": "Vous n'avez pas une réputation assez élevée pour signaler ce message",
-    "reload-failed": "NodeBB a rencontré un problème lors du rechargement : \"% 1\" . NodeBB continuera de fonctionner côté client, même si vous devez annuler ce que vous avez fait juste avant de recharger ."
+    "reload-failed": "NodeBB a rencontré un problème lors du rechargement : \"% 1\" . NodeBB continuera de fonctionner côté client, même si vous devez annuler ce que vous avez fait juste avant de recharger .",
+    "registration-error": "Registration Error"
 }

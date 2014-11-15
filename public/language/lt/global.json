@@ -72,5 +72,6 @@
     "guests": "Svečiai",
     "updated.title": "Forumas atnaujintas",
     "updated.message": "Forumas buvo atnaujintas iki naujausios versijos. Paspauskite čia norėdami perkrauti puslapį.",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "delete_all": "Delete All"
 }

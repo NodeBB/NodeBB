@@ -72,5 +72,6 @@
     "guests": "Vieraat",
     "updated.title": "Foorumi päivitetty",
     "updated.message": "Tämä foorumi on juuri päivitetty uusimpaan versioon. Paina tästä päivittääksesi sivun.",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "delete_all": "Delete All"
 }

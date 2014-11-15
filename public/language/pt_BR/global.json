@@ -72,5 +72,6 @@
     "guests": "Visitantes",
     "updated.title": "Fórum Atualizado",
     "updated.message": "Este fórum foi atualizado para sua última versão. Clique aqui para atualizar a página.",
-    "privacy": "Privacidade"
+    "privacy": "Privacidade",
+    "delete_all": "Delete All"
 }

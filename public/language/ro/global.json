@@ -72,5 +72,6 @@
     "guests": "Vizitatori",
     "updated.title": "Forumul a fost actualizat",
     "updated.message": "Acest forum a fost actualizat la ultima version. Apasă aici pentru a reîmprospăta pagina.",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "delete_all": "Delete All"
 }

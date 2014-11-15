@@ -62,5 +62,6 @@
     "downvoting-disabled": "비추천 기능을 사용하지 않습니다.",
     "not-enough-reputation-to-downvote": "인기도가 낮아 이 게시물에 반대할 수 없습니다.",
     "not-enough-reputation-to-flag": "인기도가 낮아 이 게시물을 신고할 수 없습니다.",
-    "reload-failed": "NodeBB를 다시 읽어들이는 중 다음과 같은 문제가 발생했습니다. \"%1\" 다시 읽어들이기 직전에 했던 동작은 되돌리세요. 클라이언트측 자원은 문제없이 계속 전송됩니다."
+    "reload-failed": "NodeBB를 다시 읽어들이는 중 다음과 같은 문제가 발생했습니다. \"%1\" 다시 읽어들이기 직전에 했던 동작은 되돌리세요. 클라이언트측 자원은 문제없이 계속 전송됩니다.",
+    "registration-error": "Registration Error"
 }

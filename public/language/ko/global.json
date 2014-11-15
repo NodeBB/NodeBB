@@ -72,5 +72,6 @@
     "guests": "익명 사용자",
     "updated.title": "포럼이 업데이트 되었습니다.",
     "updated.message": "이 포럼은 지금 최신 버전으로 업데이트 되었습니다. 여기를 누르면 페이지를 새로고침합니다.",
-    "privacy": "개인정보"
+    "privacy": "개인정보",
+    "delete_all": "Delete All"
 }

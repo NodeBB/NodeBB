@@ -62,5 +62,6 @@
     "downvoting-disabled": "Nedröstning är inaktiverat",
     "not-enough-reputation-to-downvote": "Du har inte tillräckligt förtroende för att rösta ner det här meddelandet",
     "not-enough-reputation-to-flag": "You do not have enough reputation to flag this post",
-    "reload-failed": "NodeBB stötte på problem med att ladda om: \"%1\". NodeBB kommer fortsätta servera den befintliga resurser till klienten, men du borde återställa det du gjorde alldeles innan du försökte ladda om."
+    "reload-failed": "NodeBB stötte på problem med att ladda om: \"%1\". NodeBB kommer fortsätta servera den befintliga resurser till klienten, men du borde återställa det du gjorde alldeles innan du försökte ladda om.",
+    "registration-error": "Registration Error"
 }

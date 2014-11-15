@@ -62,5 +62,6 @@
     "downvoting-disabled": "Nedstemming av deaktivert",
     "not-enough-reputation-to-downvote": "Du har ikke nok rykte til å nedstemme det innlegget",
     "not-enough-reputation-to-flag": "Du har ikke nok rykte til å flagge dette innlegget",
-    "reload-failed": "NodeBB støtte på et problem under lasting på nytt: \"%1\". NodeBB vil fortsette å servere eksisterende klientside ressureser, selv om du burde angre endringene du gjorde før du lastet på nytt."
+    "reload-failed": "NodeBB støtte på et problem under lasting på nytt: \"%1\". NodeBB vil fortsette å servere eksisterende klientside ressureser, selv om du burde angre endringene du gjorde før du lastet på nytt.",
+    "registration-error": "Registration Error"
 }

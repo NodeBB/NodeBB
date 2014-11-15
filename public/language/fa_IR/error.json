@@ -62,5 +62,6 @@
     "downvoting-disabled": "Downvoting is disabled",
     "not-enough-reputation-to-downvote": "شما اعتبار کافی برای دادن رای منفی به این دیدگاه را ندارید.",
     "not-enough-reputation-to-flag": "You do not have enough reputation to flag this post",
-    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading."
+    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading.",
+    "registration-error": "Registration Error"
 }
