@@ -271,6 +271,8 @@ function reset() {
 			});
 		} else {
 			winston.warn('[reset] Nothing reset.');
+			winston.warn('Use ./nodebb reset {themes|plugins|widgets|settings|all}');
+			process.exit();
 		}
 	});
 }
