@@ -241,12 +241,6 @@ categoriesController.get = function(req, res, next) {
 			return res.redirect(data.link);
 		}
 
-		var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
-		var queryString = qs.stringify(req.query);
-		if(queryString.length) {
-			category_url += '?' + queryString;
-		}
-
 		data.currentPage = page;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 		data.csrf = req.csrfToken();

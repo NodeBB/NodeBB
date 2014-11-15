@@ -239,12 +239,6 @@ topicsController.get = function(req, res, next) {
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 		data.csrf = req.csrfToken();
 
-		var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
-		var queryString = qs.stringify(req.query);
-		if(queryString.length) {
-			topic_url += '?' + queryString;
-		}
-
 		topics.increaseViewCount(tid);
 
 		if (!res.locals.isAPI) {
