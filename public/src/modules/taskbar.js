@@ -39,7 +39,8 @@ define('taskbar', function() {
 	taskbar.discard = function(module, uuid) {
 		var btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
 		btnEl.remove();
-		taskbar.update();
+		
+		update();
 	};
 
 	taskbar.push = function(module, uuid, options) {
@@ -68,7 +69,7 @@ define('taskbar', function() {
 		}
 
 		taskbar.tasklist.append(btnEl);
-		taskbar.update();
+		update();
 	};
 
 	taskbar.minimize = function(module, uuid) {
