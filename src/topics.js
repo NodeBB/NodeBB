@@ -318,6 +318,9 @@ var async = require('async'),
 	};
 
 	Topics.getTopicsFields = function(tids, fields, callback) {
+		if (!Array.isArray(tids) || !tids.length) {
+			return callback(null, []);
+		}
 		var keys = tids.map(function(tid) {
 			return 'topic:' + tid;
 		});

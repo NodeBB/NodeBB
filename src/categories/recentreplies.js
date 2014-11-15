@@ -16,23 +16,18 @@ module.exports = function(Categories) {
 		if(!parseInt(count, 10)) {
 			return callback(null, []);
 		}
-		privileges.categories.can('read', cid, uid, function(err, canRead) {
-			if (err || !canRead) {
+
+		db.getSortedSetRevRange('cid:' + cid + ':pids', 0, count - 1, function(err, pids) {
+			if (err || !Array.isArray(pids) || !pids.length) {
 				return callback(err, []);
 			}
 
-			db.getSortedSetRevRange('cid:' + cid + ':pids', 0, count - 1, function(err, pids) {
-				if (err || !Array.isArray(pids) || !pids.length) {
-					return callback(err, []);
+			async.waterfall([
+				async.apply(privileges.posts.filter, 'read', pids, uid),
+				function(pids, next) {
+					posts.getPostSummaryByPids(pids, uid, {stripTags: true}, next);
 				}
-
-				async.waterfall([
-					async.apply(privileges.posts.filter, 'read', pids, uid),
-					function(pids, next) {
-						posts.getPostSummaryByPids(pids, uid, {stripTags: true}, next);
-					}
-				], callback);
-			});
+			], callback);
 		});
 	};
 
