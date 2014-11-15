@@ -97,7 +97,7 @@ module.exports = function(privileges) {
 					uid: uid,
 					tids: tids
 				}, function(err, data) {
-					callback(null, data.tids);
+					callback(err, data ? data.tids : null);
 				});
 			});
 		});
