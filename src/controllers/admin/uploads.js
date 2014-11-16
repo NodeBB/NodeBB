@@ -24,16 +24,11 @@ function validateUpload(res, req, allowedTypes) {
 
 uploadsController.uploadImage = function(filename, folder, req, res) {
 	function done(err, image) {
-		var er, rs;
 		fs.unlink(req.files.userPhoto.path);
 
-		if (err) {
-			er = {error: err.message};
-			return res.send(req.xhr ? er : JSON.stringify(er));
-		}
+		var response = err ? {error: err.message} : {path: image.url};
 
-		rs = {path: image.url};
-		res.send(req.xhr ? rs : JSON.stringify(rs));
+		res.send(req.xhr ? response : JSON.stringify(response));
 	}
 
 	if (plugins.hasListeners('filter:uploadImage')) {
@@ -70,13 +65,9 @@ uploadsController.uploadFavicon = function(req, res, next) {
 		file.saveFileToLocal('favicon.ico', 'files', req.files.userPhoto.path, function(err, image) {
 			fs.unlink(req.files.userPhoto.path);
 
-			if (err) {
-				err = {error: err.message};
-				return res.send(req.xhr ? err : JSON.stringify(err));
-			}
+			var response = err ? {error: err.message} : {path: image.url};
 
-			var rs = {path: image.url};
-			res.send(req.xhr ? rs : JSON.stringify(rs));
+			res.send(req.xhr ? response : JSON.stringify(response));
 		});
 	}
 };
