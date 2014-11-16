@@ -207,7 +207,6 @@ var socket,
 
 			socket.emit('meta.rooms.enter', {
 				enter: room,
-				leave: app.currentRoom,
 				username: app.username,
 				userslug: app.userslug,
 				picture: app.picture

@@ -70,15 +70,17 @@ SocketMeta.rooms.enter = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	if (data.leave) {
-		socket.leave(data.leave);
-		if (data.leave.indexOf('topic') !== -1) {
-			websockets.in(data.leave).emit('event:user_leave', socket.uid);
+	if (socket.currentRoom) {
+		socket.leave(socket.currentRoom);
+		if (socket.currentRoom.indexOf('topic') !== -1) {
+			websockets.in(socket.currentRoom).emit('event:user_leave', socket.uid);
 		}
+		socket.currentRoom = '';
 	}
 
 	if (data.enter) {
 		socket.join(data.enter);
+		socket.currentRoom = data.enter;
 		if (data.enter.indexOf('topic') !== -1) {
 			data.uid = socket.uid;
 			websockets.in(data.enter).emit('event:user_enter', data);
