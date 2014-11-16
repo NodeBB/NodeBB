@@ -6,7 +6,7 @@ var fs = require('fs'),
 	path = require('path'),
 	winston = require('winston'),
 	nconf = require('nconf'),
-	async= require('async'),
+	async = require('async'),
 
 	db = require('../database'),
 	user = require('../user'),
@@ -21,27 +21,8 @@ var fs = require('fs'),
 	languages = require('../languages'),
 	image = require('../image'),
 	file = require('../file'),
+	helpers = require('./helpers'),
 	websockets = require('../socket.io');
-
-function notFound(res, message) {
-	res.locals.notFound = true;
-
-	if (res.locals.isAPI) {
-		res.status(404).json(message);
-	} else {
-		res.render('404', {
-			error: message
-		});
-	}
-}
-
-function notAllowed(res, message) {
-	if (res.locals.isAPI) {
-		res.status(403).json(message);
-	} else {
-		res.render('403');
-	}
-}
 
 function getUserDataByUserSlug(userslug, callerUID, callback) {
 	user.getUidByUserslug(userslug, function(err, uid) {
@@ -164,12 +145,12 @@ accountsController.getAccount = function(req, res, next) {
 	}
 
 	getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
-		if(err) {
+		if (err) {
 			return next(err);
 		}
 
-		if(!userData) {
-			return notFound(res, '[[error:no-user]]');
+		if (!userData) {
+			return helpers.notFound(res);
 		}
 
 		async.parallel({
@@ -227,7 +208,7 @@ function getFollow(route, name, req, res, next) {
 		function(data, next) {
 			userData = data;
 			if (!userData) {
-				return notFound(res, '[[error:no-user]]');
+				return helpers.notFound(res);
 			}
 			var method = name === 'following' ? 'getFollowing' : 'getFollowers';
 			user[method](userData.uid, next);
@@ -252,11 +233,11 @@ accountsController.getFavourites = function(req, res, next) {
 		}
 
 		if (!userData) {
-			return notFound(res, '[[error:no-user]]');
+			return helpers.notFound(res);
 		}
 
 		if (parseInt(userData.uid, 10) !== callerUID) {
-			return notAllowed(res, '[[error:not-allowed]]');
+			return helpers.notAllowed(req, res);
 		}
 
 		posts.getFavourites(userData.uid, 0, 9, function (err, favourites) {
@@ -281,7 +262,7 @@ accountsController.getPosts = function(req, res, next) {
 		}
 
 		if (!userData) {
-			return notFound(res, '[[error:no-user]]');
+			return helpers.notFound(res);
 		}
 
 		posts.getPostsByUid(callerUID, userData.uid, 0, 19, function (err, userPosts) {
@@ -306,7 +287,7 @@ accountsController.getTopics = function(req, res, next) {
 		}
 
 		if (!userData) {
-			return notFound(res, '[[error:no-user]]');
+			return helpers.notFound(res);
 		}
 
 		var set = 'uid:' + userData.uid + ':topics';
@@ -390,7 +371,7 @@ accountsController.accountSettings = function(req, res, next) {
 		}
 
 		if (!userData) {
-			return notFound(res, '[[error:no-user]]');
+			return helpers.notFound(res);
 		}
 
 		async.parallel({
@@ -468,7 +449,7 @@ accountsController.uploadPicture = function (req, res, next) {
 				}
 
 				if (!isAdmin) {
-					return notAllowed(req, '[[error:not-allowed]]');
+					return helpers.notAllowed(req, res);
 				}
 				updateUid = uid;
 				next();
@@ -533,7 +514,7 @@ accountsController.getNotifications = function(req, res, next) {
 
 accountsController.getChats = function(req, res, next) {
 	if (parseInt(meta.config.disableChat) === 1) {
-		return notFound(res, '[[error:not-found]]');
+		return helpers.notFound(res);
 	}
 	async.parallel({
 		contacts: async.apply(user.getFollowing, req.user.uid),
@@ -567,7 +548,7 @@ accountsController.getChats = function(req, res, next) {
 			async.apply(user.getUidByUserslug, req.params.userslug),
 			function(toUid, next) {
 				if (!toUid) {
-					return notFound(res, '[[error:no-user]]');
+					return helpers.notFound(res);
 				}
 				async.parallel({
 					toUser: async.apply(user.getUserFields, toUid, ['uid', 'username']),
