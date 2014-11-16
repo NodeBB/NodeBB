@@ -58,7 +58,7 @@
     "socket.io-client": "^0.9.17",
     "socket.io-wildcard": "~0.1.1",
     "string": "^2.1.0",
-    "templates.js": "0.1.2",
+    "templates.js": "0.1.9",
     "uglify-js": "git+https://github.com/julianlam/UglifyJS2.git",
     "underscore": "~1.7.0",
     "validator": "~3.22.1",
