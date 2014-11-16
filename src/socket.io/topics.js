@@ -485,7 +485,7 @@ SocketTopics.loadMoreFromSet = function(socket, data, callback) {
 	var start = parseInt(data.after, 10),
 		end = start + 9;
 
-	topics.getTopicsFromSet(socket.uid, data.set, start, end, callback);
+	topics.getTopicsFromSet(data.set, socket.uid, start, end, callback);
 };
 
 SocketTopics.loadTopics = function(socket, data, callback) {
@@ -493,7 +493,7 @@ SocketTopics.loadTopics = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	topics.getTopicsFromSet(socket.uid, data.set, data.start, data.end, callback);
+	topics.getTopicsFromSet(data.set, socket.uid, data.start, data.end, callback);
 };
 
 SocketTopics.getPageCount = function(socket, tid, callback) {

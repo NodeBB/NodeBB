@@ -33,7 +33,7 @@ module.exports = function(Topics) {
 	};
 
 	function getAllTimePopular(uid, count, callback) {
-		Topics.getTopicsFromSet(uid, 'topics:posts', 0, count - 1, function(err, data) {
+		Topics.getTopicsFromSet('topics:posts', uid, 0, count - 1, function(err, data) {
 			callback(err, data ? data.topics : null);
 		});
 	}

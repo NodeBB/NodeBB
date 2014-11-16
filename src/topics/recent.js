@@ -16,18 +16,7 @@ module.exports = function(Topics) {
 	};
 
 	Topics.getRecentTopics = function(uid, start, end, callback) {
-		async.waterfall([
-			function(next) {
-				db.getSortedSetRevRange('topics:recent', start, end, next);
-			},
-			function(tids, next) {
-				Topics.getTopics('topics:recent', uid, tids, next);
-			},
-			function(data, next) {
-				data.nextStart = end + 1;
-				next(null, data);
-			}
-		], callback);
+		Topics.getTopicsFromSet('topics:recent', uid, start, end, callback);
 	};
 
 	Topics.getLatestTopics = function(uid, start, end, term, callback) {
@@ -36,7 +25,7 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			Topics.getTopics('topics:recent', uid, tids, function(err, data) {
+			Topics.getTopics(tids, uid, function(err, data) {
 				if (err) {
 					return callback(err);
 				}

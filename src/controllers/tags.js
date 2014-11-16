@@ -11,6 +11,7 @@ tagsController.getTag = function(req, res, next) {
 	var tag = validator.escape(req.params.tag);
 	var uid = req.user ? req.user.uid : 0;
 	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+
 	topics.getTagTids(tag, 0, end, function(err, tids) {
 		if (err) {
 			return next(err);
@@ -21,7 +22,7 @@ tagsController.getTag = function(req, res, next) {
 			return res.render('tag', {topics: [], tag: tag});
 		}
 
-		topics.getTopics('tag:' + tag + ':topics', uid, tids, function(err, data) {
+		topics.getTopics(tids, uid, function(err, data) {
 			if (err) {
 				return next(err);
 			}

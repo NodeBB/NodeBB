@@ -107,7 +107,7 @@ var async = require('async'),
 		});
 	};
 
-	Topics.getTopics = function(set, uid, tids, callback) {
+	Topics.getTopics = function(tids, uid, callback) {
 		var returnTopics = {
 			topics: [],
 			nextStart: 0
@@ -129,13 +129,13 @@ var async = require('async'),
 		});
 	};
 
-	Topics.getTopicsFromSet = function(uid, set, start, end, callback) {
+	Topics.getTopicsFromSet = function(set, uid, start, end, callback) {
 		db.getSortedSetRevRange(set, start, end, function(err, tids) {
 			if (err) {
 				return callback(err);
 			}
 
-			Topics.getTopics(set, uid, tids, function(err, data) {
+			Topics.getTopics(tids, uid, function(err, data) {
 				if (err) {
 					return callback(err);
 				}

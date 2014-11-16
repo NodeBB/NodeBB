@@ -281,7 +281,7 @@ accountsController.getTopics = function(req, res, next) {
 		}
 
 		var set = 'uid:' + userData.uid + ':topics';
-		topics.getTopicsFromSet(callerUID, set, 0, 19, function(err, userTopics) {
+		topics.getTopicsFromSet(set, callerUID, 0, 19, function(err, userTopics) {
 			if(err) {
 				return next(err);
 			}

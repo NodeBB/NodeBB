@@ -146,7 +146,7 @@ function disabledRSS(req, res, next) {
 
 function generateForTopics(options, set, req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
-	topics.getTopicsFromSet(uid, set, 0, 19, function (err, data) {
+	topics.getTopicsFromSet(set, uid, 0, 19, function (err, data) {
 		if (err) {
 			return next(err);
 		}
