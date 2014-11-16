@@ -43,7 +43,7 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, 
 		});
 
 		inputEl.on('keypress', function(e) {
-			if(e.which === 13) {
+			if(e.which === 13 && !e.shiftKey) {
 				Chats.sendMessage(Chats.getRecipientUid(), inputEl);
 			}
 		});

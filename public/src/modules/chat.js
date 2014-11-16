@@ -353,8 +353,8 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 	function addSendHandler(chatModal) {
 		var input = chatModal.find('#chat-message-input');
 		input.off('keypress').on('keypress', function(e) {
-			if(e.which === 13) {
-				Chats.sendMessage(chatModal.attr('touid'), chatModal.find('#chat-message-input'));
+			if (e.which === 13 && !e.shiftKey) {
+				Chats.sendMessage(chatModal.attr('touid'), input);
 			}
 		});
 
@@ -369,7 +369,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 		});
 
 		chatModal.find('#chat-message-send-btn').off('click').on('click', function(e){
-			Chats.sendMessage(chatModal.attr('touid'), chatModal.find('#chat-message-input'));
+			Chats.sendMessage(chatModal.attr('touid'), input);
 			return false;
 		});
 	}
