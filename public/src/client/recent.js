@@ -75,8 +75,9 @@ define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
 			return;
 		}
 
-		infinitescroll.loadMore('topics.loadMoreRecentTopics', {
-			after: $('#topics-container').attr('data-nextstart')
+		infinitescroll.loadMore('topics.loadMoreFromSet', {
+			after: $('#topics-container').attr('data-nextstart'),
+			set: 'topics:recent'
 		}, function(data, done) {
 			if (data.topics && data.topics.length) {
 				Recent.onTopicsLoaded('recent', data.topics, false, done);

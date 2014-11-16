@@ -15,10 +15,6 @@ module.exports = function(Topics) {
 		year: 31104000000
 	};
 
-	Topics.getRecentTopics = function(uid, start, end, callback) {
-		Topics.getTopicsFromSet('topics:recent', uid, start, end, callback);
-	};
-
 	Topics.getLatestTopics = function(uid, start, end, term, callback) {
 		async.waterfall([
 			function (next) {

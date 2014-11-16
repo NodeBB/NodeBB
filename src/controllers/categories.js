@@ -16,7 +16,7 @@ var categoriesController = {},
 categoriesController.recent = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
 	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
-	topics.getRecentTopics(uid, 0, end, function (err, data) {
+	topics.getTopicsFromSet('topics:recent', uid, 0, end, function(err, data) {
 		if (err) {
 			return next(err);
 		}
