@@ -566,6 +566,9 @@ accountsController.getChats = function(req, res, next) {
 		async.waterfall([
 			async.apply(user.getUidByUserslug, req.params.userslug),
 			function(toUid, next) {
+				if (!toUid) {
+					return notFound(res, '[[error:no-user]]');
+				}
 				async.parallel({
 					toUser: async.apply(user.getUserFields, toUid, ['uid', 'username']),
 					messages: async.apply(messaging.getMessages, req.user.uid, toUid, 'recent', false),

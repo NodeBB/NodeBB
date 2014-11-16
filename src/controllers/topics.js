@@ -11,7 +11,7 @@ var topicsController = {},
 	topics = require('../topics'),
 	posts = require('../posts'),
 	privileges = require('../privileges'),
-	categoriesController = require('./categories'),
+	helpers = require('./helpers'),
 	utils = require('../../public/src/utils');
 
 topicsController.get = function(req, res, next) {
@@ -22,7 +22,7 @@ topicsController.get = function(req, res, next) {
 		userPrivileges;
 
 	if (req.params.post_index && !utils.isNumber(req.params.post_index)) {
-		return categoriesController.notFound(req, res);
+		return helpers.notFound(res);
 	}
 
 	async.waterfall([
@@ -43,15 +43,15 @@ topicsController.get = function(req, res, next) {
 			userPrivileges = results.privileges;
 
 			if (userPrivileges.disabled) {
-				return categoriesController.notFound(req, res);
+				return helpers.notFound(res);
 			}
 
 			if (tid + '/' + req.params.slug !== results.topic.slug) {
-				return categoriesController.notFound(req, res);
+				return helpers.notFound(res);
 			}
 
 			if (!userPrivileges.read) {
-				return categoriesController.notAllowed(req, res);
+				return helpers.notAllowed(req, res);
 			}
 
 			var settings = results.settings;
@@ -67,7 +67,7 @@ topicsController.get = function(req, res, next) {
 			}
 
 			if (settings.usePagination && (req.query.page < 1 || req.query.page > pageCount)) {
-				return categoriesController.notFound(req, res);
+				return helpers.notFound(res);
 			}
 
 			var set = 'tid:' + tid + ':posts',
@@ -110,13 +110,13 @@ topicsController.get = function(req, res, next) {
 
 			topics.getTopicWithPosts(tid, set, uid, start, end, reverse, function (err, topicData) {
 				if (err && err.message === '[[error:no-topic]]' && !topicData) {
-					return categoriesController.notFound(req, res);
+					return helpers.notFound(res);
 				}
 				if (err && !topicData) {
 					return next(err);
 				}
 				if (topicData.deleted && !userPrivileges.view_deleted) {
-					return categoriesController.notAllowed(req, res);
+					return helpers.notAllowed(req, res);
 				}
 
 				topicData.pageCount = pageCount;

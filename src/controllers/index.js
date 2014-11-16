@@ -9,6 +9,7 @@ var topicsController = require('./topics'),
 	staticController = require('./static'),
 	apiController = require('./api'),
 	adminController = require('./admin'),
+	helpers = require('./helpers'),
 
 	async = require('async'),
 	nconf = require('nconf'),
@@ -240,7 +241,7 @@ Controllers.outgoing = function(req, res, next) {
 
 Controllers.termsOfUse = function(req, res, next) {
 	if (!meta.config.termsOfUse) {
-		return categoriesController.notFound(req, res);
+		return helpers.notFound(res);
 	}
 	res.render('tos', {termsOfUse: meta.config.termsOfUse});
 };

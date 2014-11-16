@@ -10,12 +10,8 @@ var categoriesController = {},
 	topics = require('../topics'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
+	helpers = require('./helpers'),
 	utils = require('../../public/src/utils');
-
-// todo: This might be better placed somewhere else
-var apiToRegular = function(url) {
-	return url.replace(/^\/api/, '');
-};
 
 categoriesController.recent = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
@@ -106,7 +102,7 @@ categoriesController.get = function(req, res, next) {
 		userPrivileges;
 
 	if (req.params.topic_index && !utils.isNumber(req.params.topic_index)) {
-		return categoriesController.notFound(req, res);
+		return helpers.notFound(res);
 	}
 
 	async.waterfall([
@@ -128,15 +124,15 @@ categoriesController.get = function(req, res, next) {
 		},
 		function(results, next) {
 			if (!results.exists || (results.categoryData && parseInt(results.categoryData.disabled, 10) === 1)) {
-				return categoriesController.notFound(req, res);
+				return helpers.notFound(res);
 			}
 
 			if (cid + '/' + req.params.slug !== results.categoryData.slug) {
-				return categoriesController.notFound(req, res);
+				return helpers.notFound(res);
 			}
 
 			if (!results.privileges.read) {
-				return categoriesController.notAllowed(req, res);
+				return helpers.notAllowed(req, res);
 			}
 
 			var topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) - 1 : 0;
@@ -260,32 +256,6 @@ categoriesController.get = function(req, res, next) {
 	});
 };
 
-categoriesController.notFound = function(req, res) {
-	if (res.locals.isAPI) {
-		res.status(404).json('not-found');
-	} else {
-		res.status(404).render('404');
-	}
-};
 
-categoriesController.notAllowed = function(req, res) {
-	var uid = req.user ? req.user.uid : 0;
-
-	if (uid) {
-		if (res.locals.isAPI) {
-			res.status(403).json('not-allowed');
-		} else {
-			res.status(403).render('403');
-		}
-	} else {
-		if (res.locals.isAPI) {
-			req.session.returnTo = apiToRegular(req.url);
-			res.status(401).json('not-authorized');
-		} else {
-			req.session.returnTo = req.url;
-			res.redirect(nconf.get('relative_path') + '/login');
-		}
-	}
-};
 
 module.exports = categoriesController;
