@@ -14,10 +14,7 @@ module.exports = function(Topics) {
 				Topics.setTopicField(tid, 'deleted', 1, next);
 			},
 			function(next) {
-				Topics.removeRecent(tid, next);
-			},
-			function(next) {
-				db.sortedSetsRemove(['topics:posts', 'topics:views'], tid, next);
+				db.sortedSetsRemove(['topics:recent', 'topics:posts', 'topics:views'], tid, next);
 			}
 		], callback);
 	};

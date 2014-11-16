@@ -62,8 +62,4 @@ module.exports = function(Topics) {
 		callback = callback || function() {};
 		db.sortedSetAdd('topics:recent', timestamp, tid, callback);
 	};
-
-	Topics.removeRecent = function(tid, callback) {
-		db.sortedSetRemove('topics:recent', tid, callback);
-	};
 };
