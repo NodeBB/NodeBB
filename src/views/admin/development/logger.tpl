@@ -2,7 +2,7 @@
 	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading">Logger Settings</div>
-			<div class="panel-body">				
+			<div class="panel-body">
 				<p>
 					By enabling the check boxes, you will receive logs to your terminal. If you specify a path, logs will then be saved to a file instead. HTTP logging is useful for collecting statistics about who, when, and what people access on your forum. In addition to logging HTTP requests, we can also log socket.io events. Socket.io logging, in combination with redis-cli monitor, can be very helpful for learning NodeBB's internals.
 				</p>
@@ -31,6 +31,13 @@
 				</form>
 			</div>
 		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-heading">Heap Snapshot</div>
+			<div class="panel-body">
+				<button class="btn btn-primary" id="heap-snapshot">Take Heap Snapshot</button>
+			</div>
+		</div>
 	</div>
 
 	<div class="col-lg-3">
@@ -47,5 +54,14 @@
 <script>
 	require(['admin/settings'], function(Settings) {
 		Settings.prepare();
+
+		$('#heap-snapshot').on('click', function() {
+			socket.emit('admin.takeHeapSnapshot', function(err, filename) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				app.alertSuccess('Heap Snapshot saved! ' + filename);
+			});
+		})
 	});
 </script>

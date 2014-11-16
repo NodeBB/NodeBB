@@ -299,4 +299,8 @@ SocketAdmin.getVoters = function(socket, pid, callback) {
 	});
 };
 
+SocketAdmin.takeHeapSnapshot = function(socket, data, callback) {
+	require('heapdump').writeSnapshot(callback);
+};
+
 module.exports = SocketAdmin;
