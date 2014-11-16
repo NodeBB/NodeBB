@@ -99,7 +99,7 @@ var async = require('async'),
 
 	Topics.getCategoryData = function(tid, callback) {
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
-			if(err) {
+			if (err) {
 				callback(err);
 			}
 
@@ -107,43 +107,29 @@ var async = require('async'),
 		});
 	};
 
-	Topics.getTopics = function(tids, uid, callback) {
-		var returnTopics = {
-			topics: [],
-			nextStart: 0
-		};
-
-		privileges.topics.filter('read', tids, uid, function(err, tids) {
-			if (err) {
-				return callback(err);
+	Topics.getTopicsFromSet = function(set, uid, start, end, callback) {
+		async.waterfall([
+			function(next) {
+				db.getSortedSetRevRange(set, start, end, next);
+			},
+			function(tids, next) {
+				Topics.getTopics(tids, uid, next);
+			},
+			function(topics, next) {
+				next(null, {topics: topics, nextStart: end + 1});
 			}
-
-			Topics.getTopicsByTids(tids, uid, function(err, topicData) {
-				if (err) {
-					return callback(err);
-				}
-
-				returnTopics.topics = topicData;
-				callback(null, returnTopics);
-			});
-		});
+		], callback);
 	};
 
-	Topics.getTopicsFromSet = function(set, uid, start, end, callback) {
-		db.getSortedSetRevRange(set, start, end, function(err, tids) {
-			if (err) {
-				return callback(err);
+	Topics.getTopics = function(tids, uid, callback) {
+		async.waterfall([
+			function(next) {
+				privileges.topics.filter('read', tids, uid, next);
+			},
+			function(tids, next) {
+				Topics.getTopicsByTids(tids, uid, next);
 			}
-
-			Topics.getTopics(tids, uid, function(err, data) {
-				if (err) {
-					return callback(err);
-				}
-
-				data.nextStart = end + 1;
-				callback(null, data);
-			});
-		});
+		], callback);
 	};
 
 	Topics.getTopicsByTids = function(tids, uid, callback) {
@@ -169,7 +155,7 @@ var async = require('async'),
 
 			async.parallel({
 				teasers: function(next) {
-					Topics.getTeasers(tids, uid, next);
+					Topics.getTeasers(tids, next);
 				},
 				users: function(next) {
 					user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
@@ -179,9 +165,6 @@ var async = require('async'),
 				},
 				hasRead: function(next) {
 					Topics.hasReadTopics(tids, uid, next);
-				},
-				isAdminOrMod: function(next) {
-					privileges.categories.isAdminOrMod(cids, uid, next);
 				},
 				tags: function(next) {
 					Topics.getTopicsTagsObjects(tids, next);
@@ -193,30 +176,25 @@ var async = require('async'),
 
 				var users = _.object(uids, results.users);
 				var categories = _.object(cids, results.categories);
-				var isAdminOrMod = {};
-				cids.forEach(function(cid, index) {
-					isAdminOrMod[cid] = results.isAdminOrMod[index];
-				});
 
 				for (var i=0; i<topics.length; ++i) {
 					if (topics[i]) {
-						topics[i].category = categories[topics[i].cid] || {};
+						topics[i].category = categories[topics[i].cid];
 						topics[i].user = users[topics[i].uid];
 						topics[i].teaser = results.teasers[i];
 						topics[i].tags = results.tags[i];
 
+						topics[i].isOwner = parseInt(topics[i].uid, 10) === parseInt(uid, 10);
 						topics[i].pinned = parseInt(topics[i].pinned, 10) === 1;
 						topics[i].locked = parseInt(topics[i].locked, 10) === 1;
 						topics[i].deleted = parseInt(topics[i].deleted, 10) === 1;
-						topics[i].unread = !(results.hasRead[i] && parseInt(uid, 10) !== 0);
+						topics[i].unread = !results.hasRead[i];
 						topics[i].unreplied = parseInt(topics[i].postcount, 10) <= 1;
 					}
 				}
 
 				topics = topics.filter(function(topic) {
-					return topic &&	!topic.category.disabled &&
-						(!topic.deleted || (topic.deleted && isAdminOrMod[topic.cid]) ||
-						parseInt(topic.uid, 10) === parseInt(uid, 10));
+					return topic &&	topic.category && !topic.category.disabled;
 				});
 
 				plugins.fireHook('filter:topics.get', {topics: topics, uid: uid}, function(err, topicData) {

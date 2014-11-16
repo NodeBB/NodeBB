@@ -2,48 +2,57 @@
 
 var async = require('async'),
 	db = require('../database'),
+	user = require('../user'),
 	topics = require('../topics'),
 	plugins = require('../plugins');
 
 module.exports = function(Categories) {
 
 	Categories.getCategoryTopics = function(data, callback) {
-		var tids;
-		async.waterfall([
-			async.apply(plugins.fireHook, 'filter:category.topics.prepare', data),
-			function(data, next) {
-				Categories.getTopicIds(data.targetUid ? 'cid:' + data.cid + ':uid:' + data.targetUid + ':tids' : 'cid:' + data.cid + ':tids', data.start, data.stop, next);
+		async.parallel({
+			isAdmin: function(next) {
+				user.isAdministrator(data.uid, next);
 			},
-			function(topicIds, next) {
-				tids = topicIds;
-				topics.getTopicsByTids(tids, data.uid, next);
+			isModerator: function(next) {
+				user.isModerator(data.uid, data.cid, next);
 			},
-			function(topics, next) {
-				if (!Array.isArray(topics) || !topics.length) {
-					return next(null, {
-						topics: [],
-						nextStart: 1
-					});
-				}
+			topics: function(next) {
+				async.waterfall([
+					function(next) {
+						plugins.fireHook('filter:category.topics.prepare', data, next);
+					},
+					function(data, next) {
+						Categories.getTopicIds(data.targetUid ? 'cid:' + data.cid + ':uid:' + data.targetUid + ':tids' : 'cid:' + data.cid + ':tids', data.start, data.stop, next);
+					},
+					function(tids, next) {
+						topics.getTopicsByTids(tids, data.uid, next);
+					},
+					function(topics, next) {
+						if (!Array.isArray(topics) || !topics.length) {
+							return next(null, []);
+						}
 
-				var indices = {},
-					i = 0;
-				for(i=0; i<tids.length; ++i) {
-					indices[tids[i]] = data.start + i;
-				}
+						for (var i=0; i<topics.length; ++i) {
+							topics[i].index = data.start + i;
+						}
 
-				for(i=0; i<topics.length; ++i) {
-					topics[i].index = indices[topics[i].tid];
-				}
-
-				plugins.fireHook('filter:category.topics.get', {topics: topics, uid: data.uid}, function(err, params) {
-					next(null, {
-						topics: params.topics,
-						nextStart: data.stop + 1
-					});
-				});
+						plugins.fireHook('filter:category.topics.get', {topics: topics, uid: data.uid}, function(err, params) {
+							next(null, params.topics);
+						});
+					}
+				], next);
 			}
-		], callback);
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			var isAdminOrMod = results.isAdmin || results.isModerator;
+			results.topics = results.topics.filter(function(topic) {
+				return (!topic.deleted || isAdminOrMod || topic.isOwner);
+			});
+
+			callback(null, {topics: results.topics, nextStart: data.stop + 1});
+		});
 	};
 
 	Categories.getTopicIds = function(set, start, stop, callback) {

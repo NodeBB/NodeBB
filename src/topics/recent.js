@@ -20,20 +20,17 @@ module.exports = function(Topics) {
 	};
 
 	Topics.getLatestTopics = function(uid, start, end, term, callback) {
-		Topics.getLatestTids(start, end, term, function(err, tids) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				Topics.getLatestTids(start, end, term, next);
+			},
+			function(tids, next) {
+				Topics.getTopics(tids, uid, next);
+			},
+			function(topics, next) {
+				next(null, {topics: topics, nextStart: end + 1});
 			}
-
-			Topics.getTopics(tids, uid, function(err, data) {
-				if (err) {
-					return callback(err);
-				}
-
-				data.nextStart = end + 1;
-				callback(null, data);
-			});
-		});
+		], callback);
 	};
 
 	Topics.getLatestTids = function(start, end, term, callback) {

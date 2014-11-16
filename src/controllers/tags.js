@@ -22,7 +22,7 @@ tagsController.getTag = function(req, res, next) {
 			return res.render('tag', {topics: [], tag: tag});
 		}
 
-		topics.getTopics(tids, uid, function(err, data) {
+		topics.getTopics(tids, uid, function(err, topics) {
 			if (err) {
 				return next(err);
 			}
@@ -42,9 +42,7 @@ tagsController.getTag = function(req, res, next) {
 				}
 			];
 
-			data.tag = tag;
-			data.nextStart = end + 1;
-			res.render('tag', data);
+			res.render('tag', {topics: topics, tag: tag, nextStart: end + 1});
 		});
 	});
 };

@@ -12,7 +12,7 @@ var async = require('async'),
 
 module.exports = function(Topics) {
 
-	Topics.getTeasers = function(tids, uid, callback) {
+	Topics.getTeasers = function(tids, callback) {
 		if (!Array.isArray(tids) || !tids.length) {
 			return callback(null, []);
 		}
@@ -85,7 +85,7 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.getTeaser = function(tid, uid, callback) {
+	Topics.getTeaser = function(tid, callback) {
 		Topics.getLatestUndeletedPid(tid, function(err, pid) {
 			if (err || !pid) {
 				return callback(err);
@@ -109,8 +109,8 @@ module.exports = function(Topics) {
 						});
 					});
 				},
-				postIndex: function(next) {
-					posts.getPidIndex(pid, uid, next);
+				postCount: function(next) {
+					Topics.getTopicField(tid, 'post_count', next);
 				}
 			}, function(err, results) {
 				if (err) {
@@ -118,7 +118,7 @@ module.exports = function(Topics) {
 				}
 
 				results.postData.timestamp = utils.toISOString(results.postData.timestamp);
-				results.postData.index = results.postIndex;
+				results.postData.index = results.postCount;
 
 				callback(null, results.postData);
 			});
