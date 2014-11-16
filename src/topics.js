@@ -31,9 +31,7 @@ var async = require('async'),
 			if (err || !topic) {
 				return callback(err);
 			}
-			topic.title = validator.escape(topic.title);
-			topic.relativeTime = utils.toISOString(topic.timestamp);
-			callback(null, topic);
+			modifyTopic(topic, callback);
 		});
 	};
 
@@ -48,17 +46,18 @@ var async = require('async'),
 			if (err) {
 				return callback(err);
 			}
-
-			for (var i=0; i<tids.length; ++i) {
-				if(topics[i]) {
-					topics[i].title = validator.escape(topics[i].title);
-					topics[i].relativeTime = utils.toISOString(topics[i].timestamp);
-				}
-			}
-
-			callback(null, topics);
+			async.map(topics, modifyTopic, callback);
 		});
 	};
+
+	function modifyTopic(topic, callback) {
+		if (!topic) {
+			return callback(null, topic);
+		}
+		topic.title = validator.escape(topic.title);
+		topic.relativeTime = utils.toISOString(topic.timestamp);
+		callback(null, topic);
+	}
 
 	Topics.getPageCount = function(tid, uid, callback) {
 		Topics.getTopicField(tid, 'postcount', function(err, postCount) {
