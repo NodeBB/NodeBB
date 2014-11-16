@@ -35,7 +35,7 @@ topicsController.get = function(req, res, next) {
 					user.getSettings(uid, next);
 				},
 				topic: function(next) {
-					topics.getTopicFields(tid, ['slug', 'postcount'], next);
+					topics.getTopicFields(tid, ['slug', 'postcount', 'deleted'], next);
 				}
 			}, next);
 		},
@@ -51,6 +51,10 @@ topicsController.get = function(req, res, next) {
 			}
 
 			if (!userPrivileges.read) {
+				return helpers.notAllowed(req, res);
+			}
+
+			if (parseInt(results.topic.deleted, 10) && !userPrivileges.view_deleted) {
 				return helpers.notAllowed(req, res);
 			}
 
@@ -112,11 +116,9 @@ topicsController.get = function(req, res, next) {
 				if (err && err.message === '[[error:no-topic]]' && !topicData) {
 					return helpers.notFound(res);
 				}
+
 				if (err && !topicData) {
 					return next(err);
-				}
-				if (topicData.deleted && !userPrivileges.view_deleted) {
-					return helpers.notAllowed(req, res);
 				}
 
 				topicData.pageCount = pageCount;
