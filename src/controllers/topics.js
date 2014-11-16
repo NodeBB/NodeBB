@@ -272,7 +272,7 @@ topicsController.teaser = function(req, res, next) {
 		}
 
 		if (!canRead) {
-			return res.status(403).json('[[error:no-priveges]]');
+			return res.status(403).json('[[error:no-privileges]]');
 		}
 
 		topics.getLatestUndeletedPid(tid, function(err, pid) {
