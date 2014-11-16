@@ -81,7 +81,9 @@ module.exports = function(db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').remove({_key: key}, callback);
+		db.collection('objects').remove({_key: key}, function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.deleteAll = function(keys, callback) {

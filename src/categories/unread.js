@@ -34,9 +34,7 @@ module.exports = function(Categories) {
 
 	Categories.markAsUnreadForAll = function(cid, callback) {
 		callback = callback || function() {};
-		db.delete('cid:' + cid + ':read_by_uid', function(err) {
-			callback(err);
-		});
+		db.delete('cid:' + cid + ':read_by_uid', callback);
 	};
 
 	Categories.hasReadCategories = function(cids, uid, callback) {
