@@ -18,7 +18,7 @@ tagsController.getTag = function(req, res, next) {
 
 		if (Array.isArray(tids) && !tids.length) {
 			topics.deleteTag(tag);
-			return res.render('tag', {topics: [], tag:tag});
+			return res.render('tag', {topics: [], tag: tag});
 		}
 
 		topics.getTopics('tag:' + tag + ':topics', uid, tids, function(err, data) {
@@ -28,7 +28,7 @@ tagsController.getTag = function(req, res, next) {
 
 			res.locals.metaTags = [
 				{
-					name: "title",
+					name: 'title',
 					content: tag
 				},
 				{
@@ -36,7 +36,7 @@ tagsController.getTag = function(req, res, next) {
 					content: tag
 				},
 				{
-					property: "og:url",
+					property: 'og:url',
 					content: nconf.get('url') + '/tags/' + tag
 				}
 			];

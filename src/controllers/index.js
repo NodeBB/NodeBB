@@ -234,8 +234,7 @@ Controllers.outgoing = function(req, res, next) {
 	if (url) {
 		res.render('outgoing', data);
 	} else {
-		res.status(404);
-		res.redirect(nconf.get('relative_path') + '/404');
+		res.status(404).redirect(nconf.get('relative_path') + '/404');
 	}
 };
 
