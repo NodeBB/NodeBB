@@ -67,17 +67,8 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			var self = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
 
 			userData.joindate = utils.toISOString(userData.joindate);
-			if (userData.lastonline) {
-				userData.lastonline = utils.toISOString(userData.lastonline);
-			} else {
-				userData.lastonline = userData.joindate;
-			}
-
-			if (!userData.birthday) {
-				userData.age = '';
-			} else {
-				userData.age = Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000);
-			}
+			userData.lastonline = userData.lastonline ? utils.toISOString(userData.lastonline) : userData.joindate;
+			userData.age = userData.birthday ? Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000) : '';
 
 			if (!(isAdmin || self || (userData.email && userSettings.showemail))) {
 				userData.email = '';
@@ -105,7 +96,6 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.status = websockets.isUserOnline(userData.uid) ? (userData.status || 'online') : 'offline';
 			userData.banned = parseInt(userData.banned, 10) === 1;
 			userData.websiteName = userData.website.replace('http://', '').replace('https://', '');
-
 			userData.followingCount = results.followStats.followingCount;
 			userData.followerCount = results.followStats.followerCount;
 
