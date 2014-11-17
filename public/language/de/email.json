@@ -13,7 +13,7 @@
     "digest.latest_topics": "Aktuellste Themen vom %1",
     "digest.cta": "Klicke hier, um %1 zu besuchen",
     "digest.unsub.info": "Diese Zusammenfassung wurde dir aufgrund deiner Abonnement-Einstellungen gesendet.",
-    "digest.daily.no_topics": "Es gab heute keine aktiven Themen",
+    "digest.no_topics": "There have been no active topics in the past %1",
     "notif.chat.subject": "Neue Chatnachricht von %1 erhalten",
     "notif.chat.cta": "Klicke hier, um die Unterhaltung fortzusetzen",
     "notif.chat.unsub.info": "Diese Chat-Benachrichtigung wurde dir aufgrund deiner Abonnement-Einstellungen gesendet.",

@@ -13,7 +13,7 @@
     "digest.latest_topics": "Derniers sujets de %1 :",
     "digest.cta": "Cliquez ici pour aller sur %1",
     "digest.unsub.info": "Ce message vous a été envoyé en raison de vos paramètres d'abonnement.",
-    "digest.daily.no_topics": "Il n'y a eu aucun sujet actif ces derniers jours",
+    "digest.no_topics": "There have been no active topics in the past %1",
     "notif.chat.subject": "Nouveau message de chat reçu de %1",
     "notif.chat.cta": "Cliquez ici pour continuer la conversation",
     "notif.chat.unsub.info": "Cette notification de chat a été envoyé en raison de vos paramètres d'abonnement.",

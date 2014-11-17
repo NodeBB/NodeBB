@@ -37,7 +37,7 @@
     "title-too-short": "Bitte gib einen längeren Titel ein. Titel sollten mindestens %1 Zeichen enthalten.",
     "title-too-long": "Der Titel darf maximal %1 Zeichen enthalten.",
     "too-many-posts": "Du kannst maximal alle %1 Sekunden einen Beitrag erstellen - bitte warte, bevor du einen neuen Beitrag erstellst",
-    "too-many-posts-newbie": "As a new user, you can only post once every %1 seconds until you have earned %2 reputation - please wait before posting again",
+    "too-many-posts-newbie": "Als neuer Benutzer kannst du nur alle %1 Sekunden einen Beitrag verfassen, bis du %2 Reputationspunkte hast - Bitte warte etwas, bevor du erneut einen Beitrag verfasst",
     "file-too-big": "Die maximale Dateigröße beträgt %1 kbs - bitte lade eine kleinere Datei hoch",
     "cant-vote-self-post": "Du kannst deinen eigenen Beitrag nicht bewerten.",
     "already-favourited": "Dieser Beitrag ist bereits in deinen Favoriten enthalten",
@@ -57,11 +57,11 @@
     "upload-error": "Upload-Fehler: %1",
     "signature-too-long": "Entschuldigung, deine Signatur darf maximal %1 Zeichen enthalten.",
     "cant-chat-with-yourself": "Du kannst nicht mit dir selber chatten!",
-    "chat-restricted": "This user has restricted their chat messages. They must follow you before you can chat with them",
+    "chat-restricted": "Dieser Benutzer hat seine Chatfunktion eingeschränkt. Du kannst nur mit diesem Benutzer chatten, wenn er dir folgt.",
     "reputation-system-disabled": "Das Reputationssystem ist deaktiviert.",
     "downvoting-disabled": "Downvotes sind deaktiviert.",
     "not-enough-reputation-to-downvote": "Deine Reputation ist zu niedrig, um diesen Beitrag negativ zu bewerten.",
     "not-enough-reputation-to-flag": "Deine Reputation ist nicht gut genug, um diesen Beitrag zu melden",
     "reload-failed": "Es ist ein Problem während des Reloads von NodeBB aufgetreten: \"%1\". NodeBB wird weiterhin clientseitige Assets bereitstellen, allerdings solltest du das, was du vor dem Reload gemacht hast, rückgängig machen.",
-    "registration-error": "Registration Error"
+    "registration-error": "Registrierungsfehler"
 }
