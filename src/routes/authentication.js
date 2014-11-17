@@ -82,7 +82,7 @@
 			},
 			function(_uid, next) {
 				if (!_uid) {
-					return next(null, false, '[[error:no-user]]');
+					return next(new Error('[[error:no-user]]'));
 				}
 				uid = _uid;
 				user.auth.logAttempt(uid, next);
@@ -95,13 +95,13 @@
 					return next(new Error('[[error:invalid-user-data]]'));
 				}
 				if (userData.banned && parseInt(userData.banned, 10) === 1) {
-					return next(null, false, '[[error:user-banned]]');
+					return next(new Error('[[error:user-banned]]'));
 				}
 				Password.compare(password, userData.password, next);
 			},
 			function(passwordMatch, next) {
 				if (!passwordMatch) {
-					return next(null, false, '[[error:invalid-password]]');
+					return next(new Error('[[error:invalid-password]]'));
 				}
 				user.auth.clearLoginAttempts(uid);
 				next(null, {uid: uid}, '[[success:authentication-successful]]');
@@ -147,7 +147,7 @@
 	function continueLogin(req, res, next) {
 		passport.authenticate('local', function(err, userData, info) {
 			if (err) {
-				req.flash('error', info);
+				req.flash('error', err.message);
 				return res.redirect(nconf.get('relative_path') + '/login');
 			}
 
