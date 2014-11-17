@@ -15,6 +15,7 @@ var	async = require('async'),
 	User.email = require('./user/email');
 	User.notifications = require('./user/notifications');
 	User.reset = require('./user/reset');
+	User.digest = require('./user/digest');
 
 	require('./user/auth')(User);
 	require('./user/create')(User);

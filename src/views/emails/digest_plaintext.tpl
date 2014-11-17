@@ -17,7 +17,7 @@
 * {recent.title} ({url}/topic/{recent.slug})
 <!-- END recent -->
 <!-- ELSE -->
-* [[email:digest.daily.no_topics]]
+* [[email:digest.no_topics, {interval}]]
 <!-- ENDIF recent.length -->
 
 [[email:digest.cta, {site_title}]]: {url}
