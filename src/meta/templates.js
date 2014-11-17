@@ -21,6 +21,7 @@ Templates.compile = function(callback) {
 		if (callback) {
 			callback();
 		}
+		return;
 	}
 
 	var coreTemplatesPath = nconf.get('core_templates_path'),
