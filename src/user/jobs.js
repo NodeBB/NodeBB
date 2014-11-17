@@ -15,7 +15,7 @@ var db = require('../database'),
 
 module.exports = function(User) {
 	User.startJobs = function() {
-		winston.info('[user.startJobs] Registering User Jobs');
+		winston.verbose('[user.startJobs] Registering User Jobs');
 
 		new cronJob('0 0 17 * * *', function() {
 			User.sendDailyDigests();
@@ -25,7 +25,7 @@ module.exports = function(User) {
 	User.sendDailyDigests = function() {
 		var digestsDisabled = meta.config.disableEmailSubscriptions !== undefined && parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 		if (digestsDisabled) {
-			return winston.log('[user/jobs] Did not send daily digests because subscription system is disabled.');
+			return winston.verbose('[user/jobs] Did not send daily digests because subscription system is disabled.');
 		}
 
 		topics.getLatestTopics(0, 0, 9, 'day', function(err, data) {
@@ -55,7 +55,7 @@ module.exports = function(User) {
 				if (err) {
 					winston.error('[user/jobs] Could not send daily digests: ' + err.message);
 				} else {
-					winston.info('[user/jobs] Daily Digests sent!');
+					winston.verbose('[user/jobs] Daily Digests sent!');
 				}
 			});
 		});
