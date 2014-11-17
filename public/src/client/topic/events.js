@@ -107,7 +107,7 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 			$(window).trigger('action:posts.edited');
 		});
 
-		if (data.tags && data.tags.length !== $('.tags').first().children().length) {
+		if (data.tags && tagsUpdated(data.tags)) {
 			templates.parse('partials/post_bar', 'tags', {tags: data.tags}, function(html) {
 				var tags = $('.tags');
 
@@ -116,6 +116,19 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 				});
 			});
 		}
+	}
+
+	function tagsUpdated(tags) {
+		if (tags.length !== $('.tags').first().children().length) {
+			return true;
+		}
+
+		for (var i=0; i<tags.length; ++i) {
+			if (!$('.tags .tag-item[data-tag="' + tags[i].value + '"]').length) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	function onPostPurged(pid) {
