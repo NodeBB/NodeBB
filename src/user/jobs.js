@@ -28,7 +28,7 @@ module.exports = function(User) {
 			return winston.log('[user/jobs] Did not send daily digests because subscription system is disabled.');
 		}
 
-		topics.getLatestTopics(0, 0, 10, 'day', function(err, data) {
+		topics.getLatestTopics(0, 0, 9, 'day', function(err, data) {
 			if (err) {
 				return winston.error('[user/jobs] Could not send daily digests: ' + err.message);
 			}
