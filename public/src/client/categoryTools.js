@@ -11,7 +11,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 	CategoryTools.init = function(cid) {
 		CategoryTools.cid = cid;
 
-		topicSelect.init(onTopicSelect);
+		topicSelect.init(updateDropdownOptions);
 
 		$('.delete_thread').on('click', function(e) {
 			var tids = topicSelect.getSelectedTids();
@@ -126,9 +126,10 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 			return app.alertError(err.message);
 		}
 		closeDropDown();
+		updateDropdownOptions();
 	}
 
-	function onTopicSelect() {
+	function updateDropdownOptions() {
 		var tids = topicSelect.getSelectedTids();
 		var isAnyDeleted = isAny(isTopicDeleted, tids);
 		var areAllDeleted = areAll(isTopicDeleted, tids);
