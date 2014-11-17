@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 10, 11);
+	latestSchema = Date.UTC(2014, 10, 17, 13);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -1333,6 +1333,40 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/11/11] Upgrading permissions skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 10, 17, 13);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/11/11] Updating user email digest settings');
+
+				async.waterfall([
+					async.apply(db.getSortedSetRange, 'users:joindate', 0, -1),
+					function(uids, next) {
+						async.filter(uids, function(uid, next) {
+							db.getObjectField('user:' + uid + ':settings', 'dailyDigestFreq', function(err, freq) {
+								next(freq === 'daily');
+							});
+						}, function(uids) {
+							next(null, uids);
+						});
+					},
+					function(uids, next) {
+						async.each(uids, function(uid, next) {
+							db.setObjectField('user:' + uid + ':settings', 'dailyDigestFreq', 'day', next);
+						}, next);
+					}
+				], function(err) {
+					if (err) {
+						winston.error('[2014/11/11] Error encountered while updating user email digest settings');
+						return next(err);
+					}
+					winston.info('[2014/11/11] Updating user email digest settings done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2014/11/11] Updating user email digest settings skipped');
 				next();
 			}
 		}
