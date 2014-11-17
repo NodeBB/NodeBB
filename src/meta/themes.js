@@ -98,7 +98,7 @@ module.exports = function(Meta) {
 				}
 			], callback);
 
-			Meta.restartRequired = true;
+			Meta.reloadRequired = true;
 			break;
 
 		case 'bootswatch':

@@ -49,7 +49,7 @@ adminController.home = function(req, res, next) {
 		},
 		notices: function(next) {
 			var notices = [
-				{done: !meta.restartRequired, doneText: 'Restart not required', notDoneText:'Restart required'},
+				{done: !meta.reloadRequired, doneText: 'Reload not required', notDoneText:'Reload required'},
 				{done: plugins.hasListeners('action:email.send'), doneText: 'Emailer Installed', notDoneText:'Emailer not installed'},
 				{done: plugins.hasListeners('filter:search.query'), doneText: 'Search Plugin Installed', notDoneText:'Search Plugin not installed'}
 			];

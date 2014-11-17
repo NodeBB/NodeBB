@@ -11,7 +11,7 @@ var async = require('async'),
 	auth = require('./routes/authentication');
 
 (function (Meta) {
-	Meta.restartRequired = false;
+	Meta.reloadRequired = false;
 
 	require('./meta/configs')(Meta);
 	require('./meta/themes')(Meta);

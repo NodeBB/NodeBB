@@ -494,7 +494,7 @@ var fs = require('fs'),
 					return callback(err);
 				}
 
-				meta.restartRequired = true;
+				meta.reloadRequired = true;
 
 				if (active) {
 					Plugins.fireHook('action:plugin.deactivate', id);
