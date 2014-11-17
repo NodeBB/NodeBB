@@ -12,10 +12,11 @@ fi
 function pidExists() {
 	if [ -e "pidfile" ];
 		then
-			kill -s 0 $(cat pidfile);
-			if [ !$? ];
+			if ps -p $(cat pidfile) > /dev/null
 				then return 1;
-				else return 0;
+				else
+					rm ./pidfile;
+					return 0;
 			fi
 		else
 			return 0;

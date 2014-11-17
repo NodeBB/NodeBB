@@ -42,6 +42,7 @@ Loader.init = function(callback) {
 
 	process.on('SIGHUP', Loader.restart);
 	process.on('SIGUSR2', Loader.reload);
+	process.on('SIGTERM', Loader.stop);
 	callback();
 };
 
@@ -215,6 +216,16 @@ Loader.reload = function() {
 			action: 'reload'
 		});
 	});
+};
+
+Loader.stop = function() {
+	Object.keys(cluster.workers).forEach(function(id) {
+		// Gracefully close workers
+		cluster.workers[id].kill();
+	});
+
+	// Clean up the pidfile
+	fs.unlinkSync(__dirname + '/pidfile');
 };
 
 Loader.notifyWorkers = function (msg) {
