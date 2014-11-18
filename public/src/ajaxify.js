@@ -251,9 +251,10 @@ $(document).ready(function() {
 		};
 
 		$('document').ready(function () {
+			templates.registerLoader(ajaxify.loadTemplate);
+			templatesModule.refresh(app.load);
+
 			if (!window.history || !window.history.pushState) {
-				templates.registerLoader(ajaxify.loadTemplate);
-				templatesModule.refresh(app.load);
 				return; // no ajaxification for old browsers
 			}
 
@@ -267,11 +268,11 @@ $(document).ready(function() {
 					return;
 				}
 
-				if(!window.location.pathname.match(/\/(403|404)$/g)) {
+				if (!window.location.pathname.match(/\/(403|404)$/g)) {
 					app.previousUrl = window.location.href;
 				}
 
-				if ((!e.ctrlKey && !e.shiftKey && !e.metaKey) && e.which === 1) {
+				if (!e.ctrlKey && !e.shiftKey && !e.metaKey && e.which === 1) {
 					if (this.host === '' || this.host === window.location.host) {
 						// Internal link
 						var url = this.href.replace(rootUrl + '/', '');
@@ -301,8 +302,6 @@ $(document).ready(function() {
 				}
 			});
 
-			templates.registerLoader(ajaxify.loadTemplate);
-			templatesModule.refresh(app.load);
 		});
 
 	});
