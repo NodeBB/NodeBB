@@ -76,9 +76,8 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 
 	function setupSocketListeners() {
 		socket.removeListener('event:new_post', onNewPost);
-		socket.removeListener('event:new_notification', onNewNotification);
+
 		socket.on('event:new_post', onNewPost);
-		socket.on('event:new_notification', onNewNotification);
 	}
 
 	Topic.toTop = function() {
@@ -159,12 +158,6 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 		createNewPosts(data);
 	}
 
-	function onNewNotification(data) {
-		var tid = ajaxify.variables.get('topic_id');
-		if (data && data.tid && parseInt(data.tid, 10) === parseInt(tid, 10)) {
-			socket.emit('topics.markTopicNotificationsRead', tid);
-		}
-	}
 
 	function addBlockQuoteHandler() {
 		$('#post-container').on('click', 'blockquote .toggle', function() {

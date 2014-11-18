@@ -40,6 +40,8 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 		'posts.downvote': togglePostVote,
 		'posts.unvote': togglePostVote,
 
+		'event:new_notification': onNewNotification,
+
 		'event:topic.notifyTyping': onNotifyTyping,
 		'event:topic.stopNotifyTyping': onStopNotifyTyping
 	};
@@ -182,6 +184,14 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 
 		post.find('.upvote').toggleClass('btn-primary upvoted', data.upvote);
 		post.find('.downvote').toggleClass('btn-primary downvoted', data.downvote);
+	}
+
+
+	function onNewNotification(data) {
+		var tid = ajaxify.variables.get('topic_id');
+		if (data && data.tid && parseInt(data.tid, 10) === parseInt(tid, 10)) {
+			socket.emit('topics.markTopicNotificationsRead', tid);
+		}
 	}
 
 	function onNotifyTyping(data) {
