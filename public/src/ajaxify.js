@@ -8,9 +8,8 @@ $(document).ready(function() {
 
 		var location = document.location || window.location,
 			rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : ''),
-			apiXHR = null,
+			apiXHR = null;
 
-			PRELOADER_RATE_LIMIT = 10000;
 
 		window.onpopstate = function (event) {
 			if (event !== null && event.state && event.state.url !== undefined && !ajaxify.initialLoad) {
@@ -22,7 +21,7 @@ $(document).ready(function() {
 
 		ajaxify.currentPage = null;
 		ajaxify.initialLoad = false;
-		ajaxify.preloader = {};
+
 
 		function onAjaxError(err, url, callback, quiet) {
 			var data = err.data, textStatus = err.textStatus;
@@ -202,12 +201,6 @@ $(document).ready(function() {
 			url = ajaxify.removeRelativePath(url);
 
 			$(window).trigger('action:ajaxify.loadingData', {url: url});
-
-			if (ajaxify.preloader && ajaxify.preloader[url] && !ajaxify.preloader[url].loading) {
-				callback(null, ajaxify.preloader[url].data);
-				ajaxify.preloader = {};
-				return;
-			}
 
 			var location = document.location || window.location,
 				tpl_url = ajaxify.getCustomTemplateMapping(url.split('?')[0]);
