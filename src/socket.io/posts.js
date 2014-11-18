@@ -314,7 +314,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 			posts.getPostFields(pid, ['tid', 'uid', 'content', 'deleted'], next);
 		},
 		function(postData, next) {
-			if (parseInt(postData.deleted) === 1) {
+			if (parseInt(postData.deleted, 10) === 1) {
 				return next(new Error('[[error:post-deleted]]'));
 			}
 			post = postData;
