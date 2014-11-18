@@ -27,6 +27,9 @@ module.exports = function(Posts) {
 					},
 					function(next) {
 						removeFromCategoryRecentPosts(pid, postData.tid, next);
+					},
+					function(next) {
+						db.sortedSetRemove('posts:flagged', pid, next);
 					}
 				], function(err) {
 					callback(err, postData);

@@ -41,6 +41,16 @@
 			</div>
 		</div>
 	</div>
+	<div class="col-lg-3">
+		<div class="panel panel-default">
+			<div class="panel-heading">Flags Control Panel</div>
+			<div class="panel-body">
+				<div>
+					<button class="btn btn-primary" id="dismissAll">Dismiss All</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 

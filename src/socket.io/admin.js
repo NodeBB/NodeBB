@@ -260,6 +260,10 @@ SocketAdmin.dismissFlag = function(socket, pid, callback) {
 	posts.dismissFlag(pid, callback);
 };
 
+SocketAdmin.dismissAllFlags = function(socket, data, callback) {
+	posts.dismissAllFlags(callback);
+};
+
 SocketAdmin.getMoreFlags = function(socket, after, callback) {
 	if (!parseInt(after, 10)) {
 		return callback('[[error:invalid-data]]');

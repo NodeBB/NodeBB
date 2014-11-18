@@ -3,7 +3,12 @@
 
 /* globals app, ajaxify, define, socket, translator, templates */
 
-define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', 'forum/topic/threadTools'], function(browsing, postTools, threadTools) {
+define('forum/topic/events', [
+	'forum/topic/browsing',
+	'forum/topic/postTools',
+	'forum/topic/threadTools',
+	'forum/topic/posts'
+], function(browsing, postTools, threadTools, posts) {
 
 	var Events = {};
 
@@ -41,6 +46,7 @@ define('forum/topic/events', ['forum/topic/browsing', 'forum/topic/postTools', '
 		'posts.unvote': togglePostVote,
 
 		'event:new_notification': onNewNotification,
+		'event:new_post': posts.onNewPost,
 
 		'event:topic.notifyTyping': onNotifyTyping,
 		'event:topic.stopNotifyTyping': onStopNotifyTyping
