@@ -465,10 +465,12 @@ middleware.maintenanceMode = function(req, res, next) {
 			res.status(503);
 
 			if (!isApiRoute.test(req.url)) {
-				middleware.buildHeader(req, res, function() {
-					res.render('maintenance', {
-						site_title: meta.config.title || 'NodeBB',
-						message: meta.config.maintenanceModeMessage
+				middleware.applyCSRF(req, res, function() {
+					middleware.buildHeader(req, res, function() {
+						res.render('maintenance', {
+							site_title: meta.config.title || 'NodeBB',
+							message: meta.config.maintenanceModeMessage
+						});
 					});
 				});
 			} else {
