@@ -72,7 +72,7 @@ var async = require('async'),
 					return callback(err);
 				}
 
-				callback(null, Math.ceil(parseInt(postCount, 10) / settings.postsPerPage));
+				callback(null, Math.ceil((parseInt(postCount, 10) - 1) / settings.postsPerPage));
 			});
 		});
 	};
