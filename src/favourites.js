@@ -122,7 +122,7 @@ var async = require('async'),
 		});
 	}
 
-	Favourites.upvote = function(pid, uid, commmand, callback) {
+	Favourites.upvote = function(pid, uid, callback) {
 		if (parseInt(meta.config['reputation:disabled'], 10) === 1) {
 			return callback(new Error('[[error:reputation-system-disabled]]'));
 		}
@@ -136,7 +136,7 @@ var async = require('async'),
 		});
 	};
 
-	Favourites.downvote = function(pid, uid, command, callback) {
+	Favourites.downvote = function(pid, uid, callback) {
 		if (parseInt(meta.config['reputation:disabled'], 10) === 1) {
 			return callback(new Error('[[error:reputation-system-disabled]]'));
 		}
@@ -158,14 +158,14 @@ var async = require('async'),
 				if (err) {
 					return callback(err);
 				}
-				
+
 				callback(null, votes);
 			});
 		});
 	};
 
 	function toggleVote(type, pid, uid, callback) {
-		Favourites.unvote(pid, uid, type, function(err) {
+		unvote(pid, uid, type, function(err) {
 			if (err) {
 				return callback(err);
 			}
@@ -174,7 +174,11 @@ var async = require('async'),
 		});
 	}
 
-	Favourites.unvote = function(pid, uid, command, callback) {
+	Favourites.unvote = function(pid, uid, callback) {
+		unvote(pid, uid, 'unvote', callback);
+	};
+
+	function unvote(pid, uid, command, callback) {
 		Favourites.hasVoted(pid, uid, function(err, voteStatus) {
 			if (err) {
 				return callback(err);
@@ -243,11 +247,11 @@ var async = require('async'),
 		}, callback);
 	};
 
-	Favourites.favourite = function (pid, uid, command, callback) {
+	Favourites.favourite = function (pid, uid, callback) {
 		toggleFavourite('favourite', pid, uid, callback);
 	};
 
-	Favourites.unfavourite = function(pid, uid, command, callback) {
+	Favourites.unfavourite = function(pid, uid, callback) {
 		toggleFavourite('unfavourite', pid, uid, callback);
 	};
 

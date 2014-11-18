@@ -115,7 +115,7 @@ function favouriteCommand(command, eventName, socket, data, callback) {
 			return callback(new Error('[[error:post-deleted]]'));
 		}
 
-		favourites[command](data.pid, socket.uid, command, function(err, result) {
+		favourites[command](data.pid, socket.uid, function(err, result) {
 			if (err) {
 				return callback(err);
 			}
