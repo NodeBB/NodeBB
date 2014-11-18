@@ -120,7 +120,7 @@ module.exports = function(db, module) {
 
 	module.rename = function(oldKey, newKey, callback) {
 		callback = callback || helpers.noop;
-		db.collection('objects').update({_key: oldKey}, {$set:{_key: newKey}}, callback);
+		db.collection('objects').update({_key: oldKey}, {$set:{_key: newKey}}, {multi: true}, callback);
 	};
 
 	module.expire = function(key, seconds, callback) {
