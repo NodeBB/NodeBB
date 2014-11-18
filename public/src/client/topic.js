@@ -32,8 +32,7 @@ define('forum/topic', [
 				locked: ajaxify.variables.get('locked'),
 				deleted: ajaxify.variables.get('deleted'),
 				pinned: ajaxify.variables.get('pinned')
-			},
-			postCount = ajaxify.variables.get('postcount');
+			};
 
 		$(window).trigger('action:topic.loading');
 
@@ -53,7 +52,7 @@ define('forum/topic', [
 
 		handleBookmark(tid);
 
-		navigator.init('.posts > .post-row', postCount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
+		navigator.init('.posts > .post-row', ajaxify.variables.get('postcount'), Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
 
 		$(window).on('scroll', updateTopicTitle);
 
