@@ -21,6 +21,7 @@ function apiRoutes(app, middleware, controllers) {
 function adminRouter(middleware, controllers) {
 	var router = express.Router();
 
+	router.use(middleware.applyCSRF);
 	router.use(middleware.admin.buildHeader);
 
 	router.get('/', controllers.admin.home);
@@ -45,9 +46,9 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/general/languages', controllers.admin.languages.get);
 	router.get('/general/sounds', controllers.admin.sounds.get);
 
-	router.get('/manage/categories', middleware.applyCSRF, controllers.admin.categories.active);
-	router.get('/manage/categories/active', middleware.applyCSRF, controllers.admin.categories.active);
-	router.get('/manage/categories/disabled', middleware.applyCSRF, controllers.admin.categories.disabled);
+	router.get('/manage/categories', controllers.admin.categories.active);
+	router.get('/manage/categories/active', controllers.admin.categories.active);
+	router.get('/manage/categories/disabled', controllers.admin.categories.disabled);
 
 	router.get('/manage/tags', controllers.admin.tags.get);
 
@@ -62,7 +63,7 @@ function addRoutes(router, middleware, controllers) {
 
 	router.get('/manage/groups', controllers.admin.groups.get);
 
-	router.get('/settings/:term?', middleware.applyCSRF, controllers.admin.settings.get);
+	router.get('/settings/:term?', controllers.admin.settings.get);
 
 	router.get('/appearance/:term?', controllers.admin.appearance.get);
 

@@ -1,4 +1,4 @@
-define('uploader', function() {
+define('uploader', ['csrf'], function(csrf) {
 
 	var module = {},
 		maybeParse = function(response) {
@@ -20,7 +20,7 @@ define('uploader', function() {
 		uploadForm[0].reset();
 		uploadForm.attr('action', route);
 		uploadForm.find('#params').val(JSON.stringify(params));
-		uploadForm.find('#csrfToken').val($('#csrf').attr('data-csrf'));
+		// uploadForm.find('#csrfToken').val(csrf.get());
 
 		if(fileSize) {
 			uploadForm.find('#upload-file-size').html(fileSize);
@@ -61,6 +61,9 @@ define('uploader', function() {
 			}
 
 			$(this).ajaxSubmit({
+				headers: {
+					'x-csrf-token': csrf.get()
+				},
 				error: function(xhr) {
 					xhr = maybeParse(xhr);
 					error('Error: ' + xhr.status);

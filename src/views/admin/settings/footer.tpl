@@ -1,5 +1,4 @@
 </div>
-<span class="hidden" id="csrf" data-csrf="{csrf}"></span>
 
 <div class="col-lg-3">
 	<div class="panel panel-default">

@@ -52,6 +52,7 @@ apiController.getConfig = function(req, res, next) {
 	config['css-buster'] = meta.css.hash;
 	config.requireEmailConfirmation = parseInt(meta.config.requireEmailConfirmation, 10) === 1;
 	config.topicPostSort = meta.config.topicPostSort || 'oldest_to_newest';
+	config.csrf_token = req.csrfToken();
 
 	if (!req.user) {
 		if (res.locals.isAPI) {

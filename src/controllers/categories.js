@@ -239,7 +239,6 @@ categoriesController.get = function(req, res, next) {
 
 		data.currentPage = page;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
-		data.csrf = req.csrfToken();
 
 		if (!res.locals.isAPI) {
 			// Paginator for noscript

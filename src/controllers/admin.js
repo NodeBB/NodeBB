@@ -141,8 +141,7 @@ function filterAndRenderCategories(req, res, next, active) {
 		});
 
 		res.render('admin/manage/categories', {
-			categories: categoryData,
-			csrf: req.csrfToken()
+			categories: categoryData
 		});
 	});
 }
@@ -223,9 +222,7 @@ adminController.languages.get = function(req, res, next) {
 adminController.settings.get = function(req, res, next) {
 	var term = req.params.term ? req.params.term : 'general';
 
-	res.render('admin/settings/' + term, {
-		'csrf': req.csrfToken()
-	});
+	res.render('admin/settings/' + term);
 };
 
 adminController.logger.get = function(req, res, next) {

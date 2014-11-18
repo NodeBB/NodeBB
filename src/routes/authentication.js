@@ -56,7 +56,7 @@
 					}));
 				});
 
-				router.post('/logout', logout);
+				router.post('/logout', Auth.middleware.applyCSRF, logout);
 				router.post('/register', Auth.middleware.applyCSRF, register);
 				router.post('/login', Auth.middleware.applyCSRF, login);
 
@@ -147,8 +147,7 @@
 	function continueLogin(req, res, next) {
 		passport.authenticate('local', function(err, userData, info) {
 			if (err) {
-				req.flash('error', err.message);
-				return res.redirect(nconf.get('relative_path') + '/login');
+				return res.status(403).send(err.message);
 			}
 
 			if (!userData) {
@@ -156,8 +155,7 @@
 					info = '[[error:invalid-username-or-password]]';
 				}
 
-				req.flash('error', info);
-				return res.redirect(nconf.get('relative_path') + '/login');
+				return res.status(403).send(info);
 			}
 
 			// Alter user cookie depending on passed-in option
@@ -174,8 +172,7 @@
 				uid: userData.uid
 			}, function(err) {
 				if (err) {
-					req.flash('error', err.message);
-					return res.redirect(nconf.get('relative_path') + '/login');
+					return res.status(403).send(err.message);
 				}
 				if (userData.uid) {
 					user.logIP(userData.uid, req.ip);
@@ -184,11 +181,12 @@
 				}
 
 				if (!req.session.returnTo) {
-					res.redirect(nconf.get('relative_path') + '/');
+					res.status(200).send(nconf.get('relative_path') + '/');
 				} else {
 					var next = req.session.returnTo;
 					delete req.session.returnTo;
-					res.redirect(nconf.get('relative_path') + next);
+
+					res.status(200).send(nconf.get('relative_path') + next);
 				}
 			});
 		})(req, res, next);
@@ -196,7 +194,7 @@
 
 	function register(req, res) {
 		if (parseInt(meta.config.allowRegistration, 10) === 0) {
-			return res.status(403).send('');
+			return res.sendStatus(403);
 		}
 
 		var userData = {};
@@ -242,10 +240,10 @@
 			}
 		], function(err, data) {
 			if (err) {
-				req.flash('error', err.message);
-				return res.redirect(nconf.get('relative_path') + '/register');
+				return res.status(400).send(err.message);
 			}
-			res.redirect(nconf.get('relative_path') + (data.referrer ? data.referrer : '/'));
+
+			res.status(200).send(nconf.get('relative_path') + (data.referrer ? data.referrer : '/'));
 		});
 	}
 

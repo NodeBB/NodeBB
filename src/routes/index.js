@@ -20,7 +20,7 @@ var nconf = require('nconf'),
 function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/', middleware, [], controllers.home);
 
-	var loginRegisterMiddleware = [middleware.applyCSRF, middleware.redirectToAccountIfLoggedIn];
+	var loginRegisterMiddleware = [middleware.redirectToAccountIfLoggedIn];
 
 	setupPageRoute(app, '/login', middleware, loginRegisterMiddleware, controllers.login);
 	setupPageRoute(app, '/register', middleware, loginRegisterMiddleware, controllers.register);
@@ -40,8 +40,8 @@ function staticRoutes(app, middleware, controllers) {
 function topicRoutes(app, middleware, controllers) {
 	app.get('/api/topic/teaser/:topic_id', controllers.topics.teaser);
 
-	setupPageRoute(app, '/topic/:topic_id/:slug/:post_index?', middleware, [middleware.applyCSRF], controllers.topics.get);
-	setupPageRoute(app, '/topic/:topic_id/:slug?', middleware, [middleware.applyCSRF, middleware.addSlug], controllers.topics.get);
+	setupPageRoute(app, '/topic/:topic_id/:slug/:post_index?', middleware, [], controllers.topics.get);
+	setupPageRoute(app, '/topic/:topic_id/:slug?', middleware, [middleware.addSlug], controllers.topics.get);
 }
 
 function tagRoutes(app, middleware, controllers) {
@@ -55,8 +55,8 @@ function categoryRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/unread', middleware, [middleware.authenticate], controllers.categories.unread);
 	app.get('/api/unread/total', middleware.authenticate, controllers.categories.unreadTotal);
 
-	setupPageRoute(app, '/category/:category_id/:slug/:topic_index', middleware, [middleware.applyCSRF], controllers.categories.get);
-	setupPageRoute(app, '/category/:category_id/:slug?', middleware, [middleware.applyCSRF, middleware.addSlug], controllers.categories.get);
+	setupPageRoute(app, '/category/:category_id/:slug/:topic_index', middleware, [], controllers.categories.get);
+	setupPageRoute(app, '/category/:category_id/:slug?', middleware, [middleware.addSlug], controllers.categories.get);
 }
 
 function accountRoutes(app, middleware, controllers) {
@@ -70,7 +70,7 @@ function accountRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/user/:userslug/topics', middleware, middlewares, controllers.accounts.getTopics);
 
 	setupPageRoute(app, '/user/:userslug/favourites', middleware, accountMiddlewares, controllers.accounts.getFavourites);
-	setupPageRoute(app, '/user/:userslug/edit', middleware, [middleware.applyCSRF].concat(accountMiddlewares), controllers.accounts.accountEdit);
+	setupPageRoute(app, '/user/:userslug/edit', middleware, accountMiddlewares, controllers.accounts.accountEdit);
 	setupPageRoute(app, '/user/:userslug/settings', middleware, accountMiddlewares, controllers.accounts.accountSettings);
 
 	setupPageRoute(app, '/notifications', middleware, [middleware.authenticate], controllers.accounts.getNotifications);
@@ -98,7 +98,7 @@ function groupRoutes(app, middleware, controllers) {
 function setupPageRoute(router, name, middleware, middlewares, controller) {
 	middlewares = middlewares.concat([middleware.incrementPageViews, middleware.updateLastOnlineTime]);
 
-	router.get(name, middleware.buildHeader, middlewares, controller);
+	router.get(name, middleware.applyCSRF, middleware.buildHeader, middlewares, controller);
 	router.get('/api' + name, middlewares, controller);
 }
 
@@ -178,6 +178,10 @@ function handleErrors(err, req, res, next) {
 	// we possibly recovered from the error, simply next().
 	//console.error(err.stack, req.path);
 	winston.error(req.path + '\n', err.stack);
+
+	if (err.code === 'EBADCSRFTOKEN') {
+		return res.sendStatus(403);
+	}
 
 	var status = err.status || 500;
 	res.status(status);

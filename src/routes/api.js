@@ -198,7 +198,7 @@ module.exports =  function(app, middleware, controllers) {
 	var router = express.Router();
 	app.use('/api', router);
 
-	router.get('/config', controllers.api.getConfig);
+	router.get('/config', middleware.applyCSRF, controllers.api.getConfig);
 	router.get('/widgets/render', controllers.api.renderWidgets);
 
 	router.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);

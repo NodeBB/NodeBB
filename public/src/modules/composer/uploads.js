@@ -2,7 +2,7 @@
 
 /* globals define, utils, config, app */
 
-define('composer/uploads', ['composer/preview'], function(preview) {
+define('composer/uploads', ['composer/preview', 'csrf'], function(preview, csrf) {
 	var uploads = {
 		inProgress: {}
 	};
@@ -235,16 +235,13 @@ define('composer/uploads', ['composer/preview'], function(preview) {
 				textarea.val(current.replace(re, filename + '](' + text + ')'));
 			}
 
-			$(this).find('#postUploadCsrf').val($('#csrf').attr('data-csrf'));
-
-			if (formData) {
-				formData.append('_csrf', $('#csrf').attr('data-csrf'));
-			}
-
 			uploads.inProgress[post_uuid] = uploads.inProgress[post_uuid] || [];
 			uploads.inProgress[post_uuid].push(1);
 
 			$(this).ajaxSubmit({
+				headers: {
+					'x-csrf-token': csrf.get()
+				},
 				resetForm: true,
 				clearForm: true,
 				formData: formData,
@@ -291,19 +288,15 @@ define('composer/uploads', ['composer/preview'], function(preview) {
 		thumbForm.attr('action', config.relative_path + params.route);
 
 		thumbForm.off('submit').submit(function() {
-			var csrf = $('#csrf').attr('data-csrf');
-			$(this).find('#thumbUploadCsrf').val(csrf);
-
-			if(formData) {
-				formData.append('_csrf', csrf);
-			}
-
 			spinner.removeClass('hide');
 
 			uploads.inProgress[post_uuid] = uploads.inProgress[post_uuid] || [];
 			uploads.inProgress[post_uuid].push(1);
 
 			$(this).ajaxSubmit({
+				headers: {
+					'x-csrf-token': csrf.get()
+				},
 				formData: formData,
 				error: onUploadError,
 				success: function(uploads) {

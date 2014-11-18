@@ -142,8 +142,6 @@
 		</div>
 	</div>
 	
-	<span class="hidden" id="csrf" data-csrf="{csrf}"></span>
-
 	<!-- IMPORT admin/partials/categories/new.tpl -->
 	<!-- IMPORT admin/partials/categories/permissions.tpl -->
 	<!-- IMPORT admin/partials/categories/setParent.tpl -->

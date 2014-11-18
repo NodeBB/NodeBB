@@ -3,7 +3,7 @@
 /* globals define, app, utils, socket, config */
 
 
-define('forum/register', function() {
+define('forum/register', ['csrf'], function(csrf) {
 	var Register = {},
 		validationError = false,
 		successIcon = '<i class="fa fa-check"></i>';
@@ -176,7 +176,24 @@ define('forum/register', function() {
 			e.preventDefault();
 			validateForm(function() {
 				if (!validationError) {
-					registerBtn.parents('form').trigger('submit');
+					registerBtn.addClass('disabled');
+
+					registerBtn.parents('form').ajaxSubmit({
+						headers: {
+							'x-csrf-token': csrf.get()
+						},
+						success: function(data, status) {
+							window.location.href = data;
+						},
+						error: function(data, status) {
+							var errorEl = $('#register-error-notify');
+							translator.translate(data.responseText, config.defaultLang, function(translated) {
+								errorEl.find('p').text(translated)
+								errorEl.show();
+								registerBtn.removeClass('disabled');
+							});
+						}
+					});
 				}
 			});
 		});

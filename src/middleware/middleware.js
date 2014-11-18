@@ -260,7 +260,6 @@ middleware.renderHeader = function(req, res, callback) {
 				'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 				'brand:logo': meta.config['brand:logo'] || '',
 				'brand:logo:display': meta.config['brand:logo']?'':'hide',
-				csrf: req.csrfToken ? req.csrfToken() : undefined,
 				navigation: custom_header.navigation,
 				allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
 				searchEnabled: plugins.hasListeners('filter:search.query')

@@ -149,6 +149,10 @@ var socket,
 
 			app.cacheBuster = config['cache-buster'];
 
+			require(['csrf'], function(csrf) {
+				csrf.set(data.csrf_token);
+			});
+
 			bootbox.setDefaults({
 				locale: config.userLang
 			});
@@ -164,8 +168,16 @@ var socket,
 	};
 
 	app.logout = function() {
-		$.post(RELATIVE_PATH + '/logout', function() {
-			window.location.href = RELATIVE_PATH + '/';
+		require(['csrf'], function(csrf) {
+			$.ajax(RELATIVE_PATH + '/logout', {
+				type: 'POST',
+				headers: {
+					'x-csrf-token': csrf.get()
+				},
+				success: function() {
+					window.location.href = RELATIVE_PATH + '/';
+				}
+			});
 		});
 	};
 

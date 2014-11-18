@@ -239,7 +239,6 @@ topicsController.get = function(req, res, next) {
 		data['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 		data['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
-		data.csrf = req.csrfToken();
 
 		topics.increaseViewCount(tid);
 

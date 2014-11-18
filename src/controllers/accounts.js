@@ -345,7 +345,6 @@ accountsController.accountEdit = function(req, res, next) {
 		}
 
 		userData.hasPassword = !!password;
-		userData.csrf = req.csrfToken();
 
 		res.render('account/edit', userData);
 	});
