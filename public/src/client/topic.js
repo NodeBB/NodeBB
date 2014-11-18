@@ -26,7 +26,6 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 			events.removeListeners();
 
 			socket.removeListener('event:new_post', onNewPost);
-			socket.removeListener('event:new_notification', onNewNotification);
 		}
 	});
 
