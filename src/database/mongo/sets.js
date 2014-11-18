@@ -24,7 +24,7 @@ module.exports = function(db, module) {
 		}, {
 			upsert: true,
 			w: 1
-		}, function(err) {
+		}, function(err, res) {
 			callback(err);
 		});
 	};
@@ -54,7 +54,7 @@ module.exports = function(db, module) {
 			}});
 		}
 
-		bulk.execute(function(err) {
+		bulk.execute(function(err, res) {
 			callback(err);
 		});
 	};
@@ -69,7 +69,9 @@ module.exports = function(db, module) {
 			array[index] = helpers.valueToString(element);
 		});
 
-		db.collection('objects').update({_key: key}, {$pullAll: {members: value}}, callback);
+		db.collection('objects').update({_key: key}, {$pullAll: {members: value}}, function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.setsRemove = function(keys, value, callback) {

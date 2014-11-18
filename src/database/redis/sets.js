@@ -3,7 +3,7 @@
 module.exports = function(redisClient, module) {
 	module.setAdd = function(key, value, callback) {
 		callback = callback || function() {};
-		redisClient.sadd(key, value, function(err) {
+		redisClient.sadd(key, value, function(err, res) {
 			callback(err);
 		});
 	};
@@ -14,13 +14,15 @@ module.exports = function(redisClient, module) {
 		for (var i=0; i<keys.length; ++i) {
 			multi.sadd(keys[i], value);
 		}
-		multi.exec(function(err) {
+		multi.exec(function(err, res) {
 			callback(err);
 		});
 	};
 
 	module.setRemove = function(key, value, callback) {
-		redisClient.srem(key, value, callback);
+		redisClient.srem(key, value, function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.setsRemove = function(keys, value, callback) {

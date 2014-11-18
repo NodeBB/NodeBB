@@ -68,36 +68,28 @@ SocketPosts.reply = function(socket, data, callback) {
 };
 
 SocketPosts.upvote = function(socket, data, callback) {
-	if (!data || !data.pid) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-	favouriteCommand('upvote', 'voted', socket, data, callback);
-	SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:upvoted_your_post_in');
+	favouriteCommand(socket, 'upvote', 'voted', 'notifications:upvoted_your_post_in', data, callback);
 };
 
 SocketPosts.downvote = function(socket, data, callback) {
-	favouriteCommand('downvote', 'voted', socket, data, callback);
+	favouriteCommand(socket, 'downvote', 'voted', '', data, callback);
 };
 
 SocketPosts.unvote = function(socket, data, callback) {
-	favouriteCommand('unvote', 'voted', socket, data, callback);
+	favouriteCommand(socket, 'unvote', 'voted', '', data, callback);
 };
 
 SocketPosts.favourite = function(socket, data, callback) {
-	if (!data || !data.pid) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-	favouriteCommand('favourite', 'favourited', socket, data, callback);
-	SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:favourited_your_post_in');
+	favouriteCommand(socket, 'favourite', 'favourited', 'notifications:favourited_your_post_in', data, callback);
 };
 
 SocketPosts.unfavourite = function(socket, data, callback) {
-	favouriteCommand('unfavourite', 'favourited', socket, data, callback);
+	favouriteCommand(socket, 'unfavourite', 'favourited', '', data, callback);
 };
 
-function favouriteCommand(command, eventName, socket, data, callback) {
+function favouriteCommand(socket, command, eventName, notification, data, callback) {
 	if(!data || !data.pid || !data.room_id) {
-		return;
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 	async.parallel({
 		exists: function(next) {
@@ -108,7 +100,7 @@ function favouriteCommand(command, eventName, socket, data, callback) {
 		}
 	}, function(err, results) {
 		if (err || !results.exists) {
-			return callback(err);
+			return callback(err || new Error('[[error:invalid-pid]]'));
 		}
 
 		if (parseInt(results.deleted, 10) === 1) {
@@ -122,8 +114,12 @@ function favouriteCommand(command, eventName, socket, data, callback) {
 
 			socket.emit('posts.' + command, result);
 
-			if(data.room_id && result && eventName) {
+			if (result && eventName) {
 				websockets.in(data.room_id).emit('event:' + eventName, result);
+			}
+
+			if (notification) {
+				SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, notification);
 			}
 			callback();
 		});
@@ -131,7 +127,7 @@ function favouriteCommand(command, eventName, socket, data, callback) {
 }
 
 SocketPosts.sendNotificationToPostOwner = function(pid, fromuid, notification) {
-	if(!pid || !fromuid) {
+	if(!pid || !fromuid || !notification) {
 		return;
 	}
 	posts.getPostFields(pid, ['tid', 'uid', 'content'], function(err, postData) {
