@@ -91,7 +91,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll']
 
 		$('.loading-indicator').removeClass('hidden');
 
-		infinitescroll.loadMore('user.loadMoreRecentPosts', {
+		infinitescroll.loadMore('posts.loadMoreUserPosts', {
 			after: $('.user-recent-posts').attr('data-nextstart'),
 			uid: theirid
 		}, function(data, done) {

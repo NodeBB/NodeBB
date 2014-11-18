@@ -148,7 +148,7 @@ accountsController.getAccount = function(req, res, next) {
 				user.isFollowing(callerUID, userData.theirid, next);
 			},
 			posts: function(next) {
-				posts.getPostsByUid(callerUID, userData.theirid, 0, 9, next);
+				posts.getPostsFromSet('uid:' + userData.theirid + ':posts', callerUID, 0, 9, next);
 			},
 			signature: function(next) {
 				postTools.parseSignature(userData, callerUID, next);
@@ -230,7 +230,7 @@ accountsController.getFavourites = function(req, res, next) {
 			return helpers.notAllowed(req, res);
 		}
 
-		posts.getFavourites(userData.uid, 0, 9, function (err, favourites) {
+		posts.getPostsFromSet('uid:' + userData.uid + ':favourites', callerUID, 0, 9, function(err, favourites) {
 			if (err) {
 				return next(err);
 			}
@@ -254,8 +254,7 @@ accountsController.getPosts = function(req, res, next) {
 		if (!userData) {
 			return helpers.notFound(res);
 		}
-
-		posts.getPostsByUid(callerUID, userData.uid, 0, 19, function (err, userPosts) {
+		posts.getPostsFromSet('uid:' + userData.uid + ':posts', callerUID, 0, 19, function(err, userPosts) {
 			if (err) {
 				return next(err);
 			}

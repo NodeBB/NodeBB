@@ -15,6 +15,7 @@ var	async = require('async'),
 	groups = require('../groups'),
 	user = require('../user'),
 	websockets = require('./index'),
+	utils = require('../../public/src/utils'),
 
 	SocketPosts = {};
 
@@ -375,18 +376,18 @@ SocketPosts.loadMoreFavourites = function(socket, data, callback) {
 	var start = parseInt(data.after, 10),
 		end = start + 9;
 
-	posts.getFavourites(socket.uid, start, end, callback);
+	posts.getPostsFromSet('uid:' + socket.uid + ':posts', socket.uid, start, end, callback);
 };
 
 SocketPosts.loadMoreUserPosts = function(socket, data, callback) {
-	if(!data || !data.after || !data.uid) {
+	if(!data || !data.uid || !utils.isNumber(data.after)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	var start = parseInt(data.after, 10),
+	var start = Math.max(0, parseInt(data.after, 10)),
 		end = start + 9;
 
-	posts.getPostsByUid(socket.uid, data.uid, start, end, callback);
+	posts.getPostsFromSet('uid:' + data.uid + ':posts', socket.uid, start, end, callback);
 };
 
 
