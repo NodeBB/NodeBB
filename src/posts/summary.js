@@ -16,7 +16,7 @@ var async = require('async'),
 module.exports = function(Posts) {
 
 	Posts.getPostSummaryByPids = function(pids, uid, options, callback) {
-		if (!pids || !Array.isArray(pids) || !pids.length) {
+		if (!Array.isArray(pids) || !pids.length) {
 			return callback(null, []);
 		}
 

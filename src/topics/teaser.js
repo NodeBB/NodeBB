@@ -18,17 +18,8 @@ module.exports = function(Topics) {
 		}
 
 		async.parallel({
-			counts: function(next) {
-				Topics.getTopicsFields(tids, ['postcount'], function(err, topics) {
-					if (err) {
-						return next(err);
-					}
-					topics = topics.map(function(topic) {
-						return topic && (parseInt(topic.postcount, 10) || 0);
-					});
-
-					next(null, topics);
-				});
+			topics: function(next) {
+				Topics.getTopicsFields(tids, ['postcount'], next);
 			},
 			pids: function(next) {
 				async.map(tids, function(tid, next) {
@@ -41,6 +32,10 @@ module.exports = function(Topics) {
 			if (err) {
 				return callback(err);
 			}
+
+			var counts = results.topics.map(function(topic) {
+				return topic && (parseInt(topic.postcount, 10) || 0);
+			});
 
 			results.pids = results.pids.filter(Boolean);
 
@@ -74,7 +69,7 @@ module.exports = function(Topics) {
 
 					var teasers = tids.map(function(tid, index) {
 						if (tidToPost[tid]) {
-							tidToPost[tid].index = results.counts[index];
+							tidToPost[tid].index = counts[index];
 						}
 						return tidToPost[tid];
 					});
