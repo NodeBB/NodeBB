@@ -2,28 +2,40 @@
 'use strict';
 
 var bcrypt = require('bcryptjs'),
-	async = require('async'),
-	action = process.argv[2];
+	async = require('async');
 
-switch(action) {
-	case 'compare':
-			bcrypt.compare(process.argv[3], process.argv[4], function(err, res) {
-				process.stdout.write(res ? 'true' : 'false');
-			});
-		break;
 
-	case 'hash':
-			async.waterfall([
-				async.apply(bcrypt.genSalt, parseInt(process.argv[3], 10)),
-				function(salt, next) {
-					bcrypt.hash(process.argv[4], salt, next);
-				}
-			], function(err, hash) {
-				if (!err) {
-					process.stdout.write(hash);
-				} else {
-					process.stderr.write(err.message);
-				}
-			});
-		break;
+process.on('message', function(msg) {
+	if (msg.type === 'hash') {
+		hashPassword(msg.password, msg.rounds);
+	} else if (msg.type === 'compare') {
+		compare(msg.password, msg.hash);
+	}
+});
+
+function hashPassword(password, rounds) {
+	async.waterfall([
+		function(next) {
+			bcrypt.genSalt(parseInt(rounds, 10), next);
+		},
+		function(salt, next) {
+			bcrypt.hash(password, salt, next);
+		}
+	], function(err, hash) {
+		if (err) {
+			return process.send({err: err.message});
+		}
+		process.send({result: hash});
+		process.disconnect();
+	});
+}
+
+function compare(password, hash) {
+	bcrypt.compare(password, hash, function(err, res) {
+		if (err) {
+			return process.send({err: err.message});
+		}
+		process.send({result: res});
+		process.disconnect();
+ 	});
 }
