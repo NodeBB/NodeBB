@@ -130,7 +130,7 @@ accountsController.getAccount = function(req, res, next) {
 		if (res.locals.isAPI) {
 			req.params.userslug = lowercaseSlug;
 		} else {
-			res.redirect(nconf.get('relative_path') + '/user/' + lowercaseSlug);
+			return res.redirect(nconf.get('relative_path') + '/user/' + lowercaseSlug);
 		}
 	}
 
