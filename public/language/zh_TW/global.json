@@ -19,7 +19,7 @@
     "close": "關閉",
     "pagination": "分頁",
     "pagination.out_of": "%1 out of %2",
-    "pagination.enter_index": "Enter index",
+    "pagination.enter_index": "輸入Index",
     "header.admin": "管理",
     "header.recent": "最近",
     "header.unread": "未讀",
@@ -72,6 +72,6 @@
     "guests": "Guests",
     "updated.title": "討論區更新完畢",
     "updated.message": "這個討論區最近被更新至最新的版本. 按此來重整這個頁面",
-    "privacy": "Privacy",
-    "delete_all": "Delete All"
+    "privacy": "隱私",
+    "delete_all": "全部刪除"
 }

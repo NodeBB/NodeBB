@@ -13,7 +13,7 @@
     "digest.latest_topics": "Последние темы %1",
     "digest.cta": "Кликните здесь для просмотра %1",
     "digest.unsub.info": "Вам была выслана сводка новостей в соответствии с Вашими настройками.",
-    "digest.no_topics": "There have been no active topics in the past %1",
+    "digest.no_topics": "Нет активных тем за указанный период времени: %1",
     "notif.chat.subject": "Новое сообщение от %1",
     "notif.chat.cta": "Нажмите для продолжения диалога",
     "notif.chat.unsub.info": "Вы получили это уведомление в соответствии с настройками подписок.",
