@@ -15,6 +15,7 @@ var	SocketIO = require('socket.io'),
 	topics = require('../topics'),
 	logger = require('../logger'),
 	meta = require('../meta'),
+	ratelimit = require('../middleware/ratelimit'),
 
 	Sockets = {},
 	Namespaces = {};
@@ -195,16 +196,13 @@ Sockets.init = function(server) {
 		});
 
 		socket.on('*', function(payload, callback) {
-			function callMethod(method) {
-				method.call(null, socket, payload.args.length ? payload.args[0] : null, function(err, result) {
-					if (callback) {
-						callback(err?{message:err.message}:null, result);
-					}
-				});
+			if (!payload.name) {
+				return winston.warn('[socket.io] Empty method name');
 			}
 
-			if(!payload.name) {
-				return winston.warn('[socket.io] Empty method name');
+			if (ratelimit.isFlooding(socket)) {
+				winston.warn('[socket.io] Too many emits! Disconnecting ' + socket.uid);
+				return socket.disconnect();
 			}
 
 			var parts = payload.name.toString().split('.'),
@@ -226,14 +224,22 @@ Sockets.init = function(server) {
 
 			if (Namespaces[namespace].before) {
 				Namespaces[namespace].before(socket, payload.name, function() {
-					callMethod(methodToCall);
+					callMethod(methodToCall, socket, payload, callback);
 				});
 			} else {
-				callMethod(methodToCall);
+				callMethod(methodToCall, socket, payload, callback);
 			}
 		});
 	});
 };
+
+function callMethod(method, socket, payload, callback) {
+	method.call(null, socket, payload.args.length ? payload.args[0] : null, function(err, result) {
+		if (callback) {
+			callback(err ? {message: err.message} : null, result);
+		}
+	});
+}
 
 Sockets.logoutUser = function(uid) {
 	Sockets.getUserSockets(uid).forEach(function(socket) {

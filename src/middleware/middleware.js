@@ -6,9 +6,11 @@ var app,
 	},
 	async = require('async'),
 	path = require('path'),
+	csrf = require('csurf'),
 	winston = require('winston'),
 	validator = require('validator'),
 	nconf = require('nconf'),
+
 	plugins = require('./../plugins'),
 	meta = require('./../meta'),
 	translator = require('./../../public/src/translator'),
@@ -18,7 +20,6 @@ var app,
 	topics = require('./../topics'),
 	messaging = require('../messaging'),
 	ensureLoggedIn = require('connect-ensure-login'),
-	csrf = require('csurf'),
 
 	controllers = {
 		api: require('./../controllers/api')
