@@ -57,7 +57,9 @@ var	async = require('async'),
 			return 'user:' + uid;
 		});
 
-		addField('uid');
+		if (fields.indexOf('uid') === -1) {
+			fields.push('uid');
+		}
 
 		if (fields.indexOf('picture') !== -1) {
 			addField('email');
