@@ -199,13 +199,13 @@ SocketUser.uploadProfileImageFromUrl = function(socket, url, callback) {
 		return;
 	}
 
-	plugins.fireHook('filter:uploadImage', {image: {url: url}, uid: socket.uid}, function(err, image) {
+	plugins.fireHook('filter:uploadImage', {image: {url: url}, uid: socket.uid}, function(err, data) {
 		if (err) {
 			return callback(err);
 		}
 
-		user.setUserFields(socket.uid, {uploadedpicture: image.url, picture: image.url}, function(err) {
-			callback(err, image.url);
+		user.setUserFields(socket.uid, {uploadedpicture: data.image.url, picture: data.image.url}, function(err) {
+			callback(err, data.image.url);
 		});
 	});
 };
