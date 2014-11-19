@@ -8,8 +8,7 @@ var async = require('async'),
 	meta = require('../meta'),
 	websockets = require('../socket.io'),
 	postTools = require('../postTools'),
-	plugins = require('../plugins'),
-	privileges = require('../privileges');
+	plugins = require('../plugins')
 
 
 module.exports = function(Posts) {
@@ -104,22 +103,5 @@ module.exports = function(Posts) {
 			}
 			user.isModerator(uid, cids, callback);
 		});
-	};
-
-	Posts.getPostsFromSet = function(set, uid, start, end, callback) {
-		async.waterfall([
-			function(next) {
-				db.getSortedSetRevRange(set, start, end, next);
-			},
-			function(pids, next) {
-				privileges.posts.filter('read', pids, uid, next);
-			},
-			function(pids, next) {
-				Posts.getPostSummaryByPids(pids, uid, {stripTags: false}, next);
-			},
-			function(posts, next) {
-				next(null, {posts: posts, nextStart: end + 1});
-			}
-		], callback);
 	};
 };

@@ -8,6 +8,7 @@ var async = require('async'),
 	user = require('./user'),
 	topics = require('./topics'),
 	postTools = require('./postTools'),
+	privileges = require('./privileges'),
 	plugins = require('./plugins');
 
 (function(Posts) {
@@ -83,6 +84,23 @@ var async = require('async'),
 				});
 			});
 		});
+	};
+
+	Posts.getPostsFromSet = function(set, uid, start, end, callback) {
+		async.waterfall([
+			function(next) {
+				db.getSortedSetRevRange(set, start, end, next);
+			},
+			function(pids, next) {
+				privileges.posts.filter('read', pids, uid, next);
+			},
+			function(pids, next) {
+				Posts.getPostSummaryByPids(pids, uid, {stripTags: false}, next);
+			},
+			function(posts, next) {
+				next(null, {posts: posts, nextStart: end + 1});
+			}
+		], callback);
 	};
 
 	Posts.getPostData = function(pid, callback) {

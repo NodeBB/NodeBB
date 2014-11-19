@@ -178,7 +178,7 @@ var	async = require('async'),
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('action:user.set', {field: field, value: value,  type: 'decrement'});
+			plugins.fireHook('action:user.set', {field: field, value: value, type: 'decrement'});
 
 			callback(null, value);
 		});
