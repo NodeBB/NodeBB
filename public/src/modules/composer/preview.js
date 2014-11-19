@@ -24,6 +24,7 @@ define('composer/preview', function() {
 				preview = $(preview);
 				preview.find('img').addClass('img-responsive');
 				postContainer.find('.preview').html(preview);
+				$(window).trigger('action:composer.preview');
 				callback();
 			});
 		}, 250);
