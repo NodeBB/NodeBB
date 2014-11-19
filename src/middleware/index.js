@@ -1,17 +1,12 @@
 "use strict";
 
-var utils = require('../../public/src/utils'),
-	meta = require('../meta'),
-	plugins = require('../plugins'),
+var meta = require('../meta'),
 	db = require('../database'),
 	auth = require('../routes/authentication'),
-	emitter = require('../emitter'),
 
-	async = require('async'),
 	path = require('path'),
 	fs = require('fs'),
 	nconf = require('nconf'),
-	express = require('express'),
 	winston = require('winston'),
 	flash = require('connect-flash'),
 	templates = require('templates.js'),
@@ -19,11 +14,7 @@ var utils = require('../../public/src/utils'),
 	cookieParser = require('cookie-parser'),
 	compression = require('compression'),
 	favicon = require('serve-favicon'),
-	session = require('express-session'),
-	cluster = require('cluster'),
-
-	relativePath,
-	themesPath;
+	session = require('express-session');
 
 
 var middleware = {};
@@ -32,12 +23,11 @@ function routeCurrentTheme(app, themeId, themesData) {
 	themeId = (themeId || 'nodebb-theme-vanilla');
 
 	var	themeObj = (function(id) {
-			return themesData.filter(function(themeObj) {
-				return themeObj.id === id;
-			})[0];
-		})(themeId);
+		return themesData.filter(function(themeObj) {
+			return themeObj.id === id;
+		})[0];
+	})(themeId);
 
-	// Detect if a theme has been selected, and handle appropriately
 	if (process.env.NODE_ENV === 'development') {
 		winston.info('[themes] Using theme ' + themeId);
 	}
@@ -53,6 +43,8 @@ function setupFavicon(app) {
 }
 
 module.exports = function(app, data) {
+	var relativePath, themesPath;
+
 	middleware = require('./middleware')(app);
 
 	relativePath = nconf.get('relative_path');
@@ -79,6 +71,7 @@ module.exports = function(app, data) {
 	var cookie = {
 		maxAge: 1000 * 60 * 60 * 24 * parseInt(meta.config.loginDays || 14, 10)
 	};
+
 	if(meta.config.cookieDomain) {
 		cookie.domain = meta.config.cookieDomain;
 	}
@@ -94,8 +87,8 @@ module.exports = function(app, data) {
 
 	app.use(function (req, res, next) {
 		res.setHeader('X-Powered-By', 'NodeBB');
-
 		res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+
 		if (meta.config['allow-from-uri']) {
 			res.setHeader('ALLOW-FROM', meta.config['allow-from-uri']);
 		}
@@ -104,9 +97,7 @@ module.exports = function(app, data) {
 	});
 
 	app.use(middleware.processRender);
-
 	auth.initialize(app, middleware);
-
 	routeCurrentTheme(app, data.currentThemeId, data.themesData);
 
 	return middleware;
