@@ -19,7 +19,7 @@
 	<!-- IF recent.length -->
 	<!-- BEGIN recent -->
 	<li style="text-decoration: none; list-style-type: none; padding-bottom: 0.5em;">
-		<a href="{url}/topic/{recent.slug}"><img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="{recent.teaser.user.picture}" title="{recent.teaser.user.username}" />{recent.title}</a>
+		<a href="{url}/topic/{recent.slug}"><img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="<!-- IF recent.teaser -->{recent.teaser.user.picture}<!-- ELSE -->{recent.user.picture}<!-- ENDIF recent.teaser -->" title="<!-- IF recent.teaser -->{recent.teaser.user.username}<!-- ELSE -->{recent.user.username}<!-- ENDIF recent.teaser -->" />{recent.title}</a>
 	</li>
 	<!-- END recent -->
 	<!-- ELSE -->
