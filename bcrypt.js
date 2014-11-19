@@ -23,7 +23,8 @@ function hashPassword(password, rounds) {
 		}
 	], function(err, hash) {
 		if (err) {
-			return process.send({err: err.message});
+			process.send({err: err.message});
+			return process.disconnect();
 		}
 		process.send({result: hash});
 		process.disconnect();
@@ -33,7 +34,8 @@ function hashPassword(password, rounds) {
 function compare(password, hash) {
 	bcrypt.compare(password, hash, function(err, res) {
 		if (err) {
-			return process.send({err: err.message});
+			process.send({err: err.message});
+			return process.disconnect();
 		}
 		process.send({result: res});
 		process.disconnect();
