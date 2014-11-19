@@ -269,8 +269,8 @@ var socket,
 		selector = selector || $('a');
 		selector.each(function() {
 			var href = $(this).attr('href');
-			if (href && app.userslug) {
-				$(this).attr('href', href.replace(/\[self\]/g, app.userslug));
+			if (href && app.userslug && href.indexOf('_') !== -1) {
+				$(this).attr('href', href.replace(/_/g, app.userslug));
 			}
 		});
 	};

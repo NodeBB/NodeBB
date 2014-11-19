@@ -17,9 +17,17 @@ module.exports = function(Categories) {
 			return callback(null, []);
 		}
 
-		posts.getPostsFromSet('cid:' + cid + ':pids', uid, 0, count - 1, function(err, data) {
-			callback(err, data ? data.posts : []);
-		});
+		async.waterfall([
+			function(next) {
+				db.getSortedSetRevRange('cid:' + cid + ':pids', 0, count - 1, next);
+			},
+			function(pids, next) {
+				privileges.posts.filter('read', pids, uid, next);
+			},
+			function(pids, next) {
+				posts.getPostSummaryByPids(pids, uid, {stripTags: true}, next);
+			}
+		], callback);
 	};
 
 	Categories.getRecentTopicReplies = function(categoryData, uid, callback) {
