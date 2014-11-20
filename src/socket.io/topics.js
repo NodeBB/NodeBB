@@ -59,8 +59,6 @@ SocketTopics.post = function(socket, data, callback) {
 				}
 			});
 		});
-
-		websockets.emitTopicPostStats();
 	});
 };
 
@@ -210,7 +208,7 @@ SocketTopics.purge = function(socket, data, callback) {
 		if (err) {
 			return callback(err);
 		}
-		websockets.emitTopicPostStats();
+
 		websockets.in('category_' + data.cid).emit('event:topic_purged', data.tids);
 		async.each(data.tids, function(tid, next) {
 			websockets.in('topic_' + tid).emit('event:topic_purged', tid);

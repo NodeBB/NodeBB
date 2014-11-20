@@ -14,7 +14,6 @@ var	SocketIO = require('socket.io'),
 	user = require('../user'),
 	topics = require('../topics'),
 	logger = require('../logger'),
-	meta = require('../meta'),
 	ratelimit = require('../middleware/ratelimit'),
 
 	Sockets = {},
@@ -183,7 +182,6 @@ Sockets.init = function(server) {
 			var socketCount = Sockets.getUserSocketCount(uid);
 			if (uid && socketCount <= 1) {
 				socket.broadcast.emit('event:user_status_change', {uid: uid, status: 'offline'});
-				emitOnlineUserCount();
 			}
 
 			onUserDisconnect(uid, socket.id, socketCount);
@@ -249,12 +247,6 @@ Sockets.logoutUser = function(uid) {
 
 		socket.emit('event:disconnect');
 		socket.disconnect();
-	});
-};
-
-Sockets.emitUserCount = function() {
-	user.count(function(err, count) {
-		io.sockets.emit('user.count', err ? {message:err.message} : null, count);
 	});
 };
 
@@ -344,9 +336,6 @@ Sockets.getUserRooms = function(uid) {
 	return rooms;
 };
 
-
-/* Helpers */
-
 Sockets.reqFromSocket = function(socket) {
 	var headers = socket.handshake.headers,
 		host = headers.host,
@@ -363,25 +352,22 @@ Sockets.reqFromSocket = function(socket) {
 	};
 };
 
-Sockets.isUserOnline = isUserOnline;
-function isUserOnline(uid) {
+Sockets.isUserOnline = function(uid) {
 	if (!io) {
 		// Special handling for install script (socket.io not initialised)
 		return false;
 	}
 
 	return Array.isArray(io.sockets.manager.rooms['/uid_' + uid]);
-}
+};
 
 Sockets.isUsersOnline = function(uids, callback) {
-	var data = uids.map(isUserOnline);
+	var data = uids.map(Sockets.isUserOnline);
 
 	callback(null, data);
 };
 
-Sockets.updateRoomBrowsingText = updateRoomBrowsingText;
-function updateRoomBrowsingText(roomName, selfUid) {
-
+Sockets.updateRoomBrowsingText = function (roomName, selfUid) {
 	if (!roomName) {
 		return;
 	}
@@ -410,7 +396,7 @@ function updateRoomBrowsingText(roomName, selfUid) {
 			total: Math.max(0, total - uids.length)
 		});
 	});
-}
+};
 
 Sockets.getUidsInRoom = function(roomName) {
 	var uids = [];
@@ -433,44 +419,6 @@ Sockets.getUidsInRoom = function(roomName) {
 
 	return uids;
 };
-
-Sockets.emitTopicPostStats = emitTopicPostStats;
-function emitTopicPostStats(callback) {
-	db.getObjectFields('global', ['topicCount', 'postCount'], function(err, data) {
-		if (err) {
-			return winston.err(err);
-		}
-
-		var stats = {
-			topics: data.topicCount ? data.topicCount : 0,
-			posts: data.postCount ? data.postCount : 0
-		};
-
-		if (!callback) {
-			io.sockets.in('online_users').emit('meta.getUsageStats', null, stats);
-		} else {
-			callback(null, stats);
-		}
-	});
-}
-
-Sockets.emitOnlineUserCount = emitOnlineUserCount;
-function emitOnlineUserCount(callback) {
-	var anon = Sockets.getOnlineAnonCount();
-	var registered = Sockets.getOnlineUserCount();
-
-	var returnObj = {
-		users: registered + anon,
-		anon: anon
-	};
-
-	if (callback) {
-		callback(null, returnObj);
-	} else {
-		io.sockets.in('online_users').emit('user.getActiveUsers', null, returnObj);
-	}
-}
-
 
 
 /* Exporting */

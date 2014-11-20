@@ -1,16 +1,17 @@
 'use strict';
 
-var	meta = require('../meta'),
+var	nconf = require('nconf'),
+	gravatar = require('gravatar'),
+	winston = require('winston'),
+	validator = require('validator'),
+
+	meta = require('../meta'),
 	user = require('../user'),
 	topics = require('../topics'),
 	logger = require('../logger'),
 	plugins = require('../plugins'),
 	emitter = require('../emitter'),
 
-	nconf = require('nconf'),
-	gravatar = require('gravatar'),
-	winston = require('winston'),
-	validator = require('validator'),
 	websockets = require('./'),
 
 	SocketMeta = {
@@ -54,10 +55,6 @@ SocketMeta.buildTitle = function(socket, text, callback) {
 	} else {
 		meta.title.build(text, meta.config.defaultLang, {}, callback);
 	}
-};
-
-SocketMeta.getUsageStats = function(socket, data, callback) {
-	module.parent.exports.emitTopicPostStats(callback);
 };
 
 /* Rooms */

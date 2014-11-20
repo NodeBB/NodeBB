@@ -63,8 +63,6 @@ SocketPosts.reply = function(socket, data, callback) {
 				}
 			});
 		});
-
-		websockets.emitTopicPostStats();
 	});
 };
 
@@ -223,16 +221,14 @@ SocketPosts.restore = function(socket, data, callback) {
 };
 
 function deleteOrRestore(command, socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	postTools[command](socket.uid, data.pid, function(err, postData) {
-		if(err) {
+		if (err) {
 			return callback(err);
 		}
-
-		websockets.emitTopicPostStats();
 
 		var eventName = command === 'restore' ? 'event:post_restored' : 'event:post_deleted';
 		websockets.server.sockets.in('topic_' + data.tid).emit(eventName, postData);
@@ -249,8 +245,6 @@ SocketPosts.purge = function(socket, data, callback) {
 		if(err) {
 			return callback(err);
 		}
-
-		websockets.emitTopicPostStats();
 
 		websockets.server.sockets.in('topic_' + data.tid).emit('event:post_purged', data.pid);
 

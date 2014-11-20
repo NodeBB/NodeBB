@@ -62,8 +62,6 @@ var winston = require('winston'),
 
 				events[isDelete ? 'logTopicDelete' : 'logTopicRestore'](uid, tid);
 
-				websockets.emitTopicPostStats();
-
 				emitTo('topic_' + tid);
 				emitTo('category_' + topicData.cid);
 

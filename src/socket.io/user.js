@@ -31,10 +31,6 @@ SocketUser.deleteAccount = function(socket, data, callback) {
 	}
 };
 
-SocketUser.count = function(socket, data, callback) {
-	user.count(callback);
-};
-
 SocketUser.emailExists = function(socket, data, callback) {
 	if(data && data.email) {
 		user.email.exists(data.email, callback);
@@ -324,10 +320,6 @@ SocketUser.getUnreadChatCount = function(socket, data, callback) {
 		return callback(null, 0);
 	}
 	messaging.getUnreadCount(socket.uid, callback);
-};
-
-SocketUser.getActiveUsers = function(socket, data, callback) {
-	module.parent.exports.emitOnlineUserCount(callback);
 };
 
 SocketUser.loadMore = function(socket, data, callback) {

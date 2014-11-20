@@ -232,8 +232,6 @@
 			function(next) {
 				user.logIP(uid, req.ip);
 
-				require('../socket.io').emitUserCount();
-
 				user.notifications.sendWelcomeNotification(uid);
 
 				plugins.fireHook('filter:register.complete', {uid: uid, referrer: req.body.referrer}, next);

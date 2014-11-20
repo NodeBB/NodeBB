@@ -268,12 +268,6 @@ var	async = require('async'),
 		});
 	};
 
-	User.count = function(callback) {
-		db.getObjectField('global', 'userCount', function(err, count) {
-			callback(err, count ? count : 0);
-		});
-	};
-
 	User.getUidByUsername = function(username, callback) {
 		db.getObjectField('username:uid', username, callback);
 	};
