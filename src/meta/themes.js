@@ -111,6 +111,7 @@ module.exports = function(Meta) {
 		// Theme's templates path
 		var themePath = nconf.get('base_templates_path'),
 			fallback = path.join(nconf.get('themes_path'), themeObj.id, 'templates');
+
 		if (themeObj.templates) {
 			themePath = path.join(nconf.get('themes_path'), themeObj.id, themeObj.templates);
 		} else if (fs.existsSync(fallback)) {
@@ -118,5 +119,6 @@ module.exports = function(Meta) {
 		}
 
 		nconf.set('theme_templates_path', themePath);
+		nconf.set('theme_config', path.join(nconf.get('themes_path'), themeObj.id, 'theme.json'));
 	};
 };
