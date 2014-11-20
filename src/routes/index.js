@@ -98,7 +98,7 @@ function groupRoutes(app, middleware, controllers) {
 function setupPageRoute(router, name, middleware, middlewares, controller) {
 	middlewares = middlewares.concat([middleware.incrementPageViews, middleware.updateLastOnlineTime]);
 
-	router.get(name, middleware.applyCSRF, middleware.buildHeader, middlewares, controller);
+	router.get(name, middleware.buildHeader, middlewares, controller);
 	router.get('/api' + name, middlewares, controller);
 }
 

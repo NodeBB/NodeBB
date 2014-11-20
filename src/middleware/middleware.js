@@ -198,23 +198,26 @@ middleware.checkAccountPermissions = function(req, res, next) {
 
 middleware.buildHeader = function(req, res, next) {
 	res.locals.renderHeader = true;
-	async.parallel({
-		config: function(next) {
-			controllers.api.getConfig(req, res, next);
-		},
-		footer: function(next) {
-			app.render('footer', {}, next);
-		}
-	}, function(err, results) {
-		if (err) {
-			return next(err);
-		}
+	
+	middleware.applyCSRF(req, res, function() {
+		async.parallel({
+			config: function(next) {
+				controllers.api.getConfig(req, res, next);
+			},
+			footer: function(next) {
+				app.render('footer', {}, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return next(err);
+			}
 
-		res.locals.config = results.config;
+			res.locals.config = results.config;
 
-		translator.translate(results.footer, results.config.defaultLang, function(parsedTemplate) {
-			res.locals.footer = parsedTemplate;
-			next();
+			translator.translate(results.footer, results.config.defaultLang, function(parsedTemplate) {
+				res.locals.footer = parsedTemplate;
+				next();
+			});
 		});
 	});
 };
@@ -468,12 +471,10 @@ middleware.maintenanceMode = function(req, res, next) {
 			res.status(503);
 
 			if (!isApiRoute.test(req.url)) {
-				middleware.applyCSRF(req, res, function() {
-					middleware.buildHeader(req, res, function() {
-						res.render('maintenance', {
-							site_title: meta.config.title || 'NodeBB',
-							message: meta.config.maintenanceModeMessage
-						});
+				middleware.buildHeader(req, res, function() {
+					res.render('maintenance', {
+						site_title: meta.config.title || 'NodeBB',
+						message: meta.config.maintenanceModeMessage
 					});
 				});
 			} else {
