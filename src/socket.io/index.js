@@ -68,7 +68,8 @@ function onUserDisconnect(uid, socketid, socketCount) {
 Sockets.init = function(server) {
 	// Default socket.io config
 	var config = {
-			log: false,
+			log: true,
+			'log level': process.env.NODE_ENV === 'development' ? 2 : 1,
 			transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket'],
 			'browser client minification': true,
 			resource: nconf.get('relative_path') + '/socket.io'
