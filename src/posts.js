@@ -151,7 +151,7 @@ var async = require('async'),
 				return callback(err);
 			}
 			plugins.fireHook('filter:post.getFields', {posts: posts, fields: fields}, function(err, data) {
-				 callback(err, (data && Array.isArray(data.posts)) ? data.posts : null);
+				callback(err, (data && Array.isArray(data.posts)) ? data.posts : null);
 			});
 		});
 	};
