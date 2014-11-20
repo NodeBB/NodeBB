@@ -201,7 +201,7 @@ Sockets.init = function(server) {
 			}
 
 			if (ratelimit.isFlooding(socket)) {
-				winston.warn('[socket.io] Too many emits! Disconnecting ' + socket.uid);
+				winston.warn('[socket.io] Too many emits! Disconnecting uid : ' + socket.uid + '. Message : ' + payload.name);
 				return socket.disconnect();
 			}
 
