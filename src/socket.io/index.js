@@ -1,7 +1,7 @@
 "use strict";
 
 var	SocketIO = require('socket.io'),
-	socketioWildcard = require('socket.io-wildcard'),
+	socketioWildcard = require('socketio-wildcard'),
 	util = require('util'),
 	async = require('async'),
 	path = require('path'),
@@ -22,7 +22,7 @@ var	SocketIO = require('socket.io'),
 /* === */
 
 
-var	io;
+var io;
 
 var onlineUsers = [];
 
@@ -76,26 +76,29 @@ Sockets.init = function(server) {
 		};
 
 	// If a redis server is configured, use it as a socket.io store, otherwise, fall back to in-memory store
-	if (nconf.get('redis')) {
-		var RedisStore = require('socket.io/lib/stores/redis'),
-			database = require('../database/redis'),
-			pub = database.connect(),
-			sub = database.connect(),
-			client = database.connect();
+	// if (nconf.get('redis')) {
+	// 	var RedisStore = require('socket.io/lib/stores/redis'),
+	// 		database = require('../database/redis'),
+	// 		pub = database.connect(),
+	// 		sub = database.connect(),
+	// 		client = database.connect();
 
-		// "redis" property needs to be passed in as referenced here: https://github.com/Automattic/socket.io/issues/808
-		// Probably fixed in socket.IO 1.0
-		config.store = new RedisStore({
-			redis: require('redis'),
-			redisPub : pub,
-			redisSub : sub,
-			redisClient : client
-		});
-	} else if (nconf.get('cluster')) {
-		winston.warn('[socket.io] Clustering detected, you are advised to configure Redis as a websocket store.');
-	}
+	// 	// "redis" property needs to be passed in as referenced here: https://github.com/Automattic/socket.io/issues/808
+	// 	// Probably fixed in socket.IO 1.0
+	// 	config.store = new RedisStore({
+	// 		redis: require('redis'),
+	// 		redisPub : pub,
+	// 		redisSub : sub,
+	// 		redisClient : client
+	// 	});
+	// } else if (nconf.get('cluster')) {
+	// 	winston.warn('[socket.io] Clustering detected, you are advised to configure Redis as a websocket store.');
+	// }
+	io = new SocketIO();
+	io.use(socketioWildcard);
 
-	io = socketioWildcard(SocketIO).listen(server, config);
+	//io = socketioWildcard(SocketIO).listen(server, config);
+	io.listen(server, config);
 
 	Sockets.server = io;
 
@@ -112,7 +115,8 @@ Sockets.init = function(server) {
 		});
 	});
 
-	io.sockets.on('connection', function(socket) {
+	io.on('connection', function(socket) {
+		console.log('connection', socket.id);
 		var hs = socket.handshake,
 			sessionID, uid;
 
@@ -256,6 +260,8 @@ Sockets.in = function(room) {
 };
 
 Sockets.uidInRoom = function(uid, room) {
+	return false;
+
 	var userSocketIds = io.sockets.manager.rooms['/uid_' + uid];
 	if (!Array.isArray(userSocketIds) || !userSocketIds.length) {
 		return false;
@@ -275,6 +281,8 @@ Sockets.uidInRoom = function(uid, room) {
 };
 
 Sockets.getSocketCount = function() {
+	return false;
+
 	var clients = io.sockets.manager.rooms[''];
 	return Array.isArray(clients) ? clients.length : 0;
 };
@@ -284,6 +292,8 @@ Sockets.getConnectedClients = function() {
 };
 
 Sockets.getUserSocketCount = function(uid) {
+	return 0;
+
 	var roomClients = io.sockets.manager.rooms['/uid_' + uid];
 	if(!Array.isArray(roomClients)) {
 		return 0;
@@ -296,6 +306,8 @@ Sockets.getOnlineUserCount = function () {
 };
 
 Sockets.getOnlineAnonCount = function () {
+	return 0;
+
 	var guestRoom = io.sockets.manager.rooms['/online_guests'];
 	if (!Array.isArray(guestRoom)) {
 		return 0;
@@ -304,6 +316,8 @@ Sockets.getOnlineAnonCount = function () {
 };
 
 Sockets.getUserSockets = function(uid) {
+	return [];
+
 	var sockets = io.sockets.clients();
 	if(!sockets || !sockets.length) {
 		return [];
@@ -319,6 +333,8 @@ Sockets.getUserSockets = function(uid) {
 };
 
 Sockets.getUserRooms = function(uid) {
+	return {};
+
 	var rooms = {};
 	var uidSocketIds = io.sockets.manager.rooms['/uid_' + uid];
 	if (!Array.isArray(uidSocketIds)) {
@@ -338,22 +354,25 @@ Sockets.getUserRooms = function(uid) {
 };
 
 Sockets.reqFromSocket = function(socket) {
-	var headers = socket.handshake.headers,
-		host = headers.host,
-		referer = headers.referer || '';
+	console.log('socket.request', socket.request);
+	return socket.request;
+	// var headers = socket.handshake.headers,
+	// 	host = headers.host,
+	// 	referer = headers.referer || '';
 
-	return {
-		ip: headers['x-forwarded-for'] || (socket.handshake.address || {}).address,
-		host: host,
-		protocol: headers.secure ? 'https' : 'http',
-		secure: !!headers.secure,
-		url: referer,
-		path: referer.substr(referer.indexOf(host) + host.length),
-		headers: headers
-	};
+	// return {
+	// 	ip: headers['x-forwarded-for'] || (socket.handshake.address || {}).address,
+	// 	host: host,
+	// 	protocol: headers.secure ? 'https' : 'http',
+	// 	secure: !!headers.secure,
+	// 	url: referer,
+	// 	path: referer.substr(referer.indexOf(host) + host.length),
+	// 	headers: headers
+	// };
 };
 
 Sockets.isUserOnline = function(uid) {
+	return false;
 	if (!io) {
 		// Special handling for install script (socket.io not initialised)
 		return false;
@@ -400,6 +419,7 @@ Sockets.updateRoomBrowsingText = function (roomName, selfUid) {
 };
 
 Sockets.getUidsInRoom = function(roomName) {
+	return [];
 	var uids = [];
 	roomName = roomName ? '/' + roomName : '';
 	var socketids = io.sockets.manager.rooms[roomName];
