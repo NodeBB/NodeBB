@@ -34,18 +34,22 @@ define('search', ['navigator'], function(nav) {
 			tid: tid,
 			term: term
 		}, function(err, pids) {
-			callback(err);
+			if (err) {
+				return callback(err);
+			}
 
-			// Sort pids numerically & store
-			Search.current = {
-				results: pids.sort(function(a, b) {
-					return a-b;
-				}),
-				tid: tid,
-				term: term
-			};
+			if (Array.isArray(pids)) {
+				// Sort pids numerically & store
+				Search.current = {
+					results: pids.sort(function(a, b) {
+						return a-b;
+					}),
+					tid: tid,
+					term: term
+				};
 
-			Search.topicDOM.update(0);
+				Search.topicDOM.update(0);
+			}
 		});
 	};
 
@@ -57,7 +61,10 @@ define('search', ['navigator'], function(nav) {
 		}
 	};
 
-	Search.topicDOM = {};
+	Search.topicDOM = {
+		active: false
+	};
+
 	Search.topicDOM.prev = function() {
 		Search.topicDOM.update((Search.current.index === 0) ? Search.current.results.length-1 : Search.current.index-1);
 	};
@@ -70,24 +77,44 @@ define('search', ['navigator'], function(nav) {
 		var topicSearchEl = $('.topic-search');
 		Search.current.index = index;
 
-		if (Search.current.results.length > 0) {
-			topicSearchEl.find('.count').html((index+1) + ' / ' + Search.current.results.length);
-			topicSearchEl.removeClass('hidden').find('.prev, .next').removeAttr('disabled');
-			Search.checkPagePresence(Search.current.tid, function() {
+		Search.topicDOM.start();
+
+		Search.checkPagePresence(Search.current.tid, function() {
+			if (Search.current.results.length > 0) {
+				topicSearchEl.find('.count').html((index+1) + ' / ' + Search.current.results.length);
+				topicSearchEl.find('.prev, .next').removeAttr('disabled');
 				socket.emit('posts.getPidIndex', Search.current.results[index], function(err, postIndex) {
 					nav.scrollToPost(postIndex-1, true);	// why -1? Ask @barisusakli
 				});
-			});
-		} else {
-			translator.translate('[[search:no-matches]]', function(text) {
-				topicSearchEl.find('.count').html(text);
-			});
-			topicSearchEl.removeClass('hidden').find('.prev, .next').attr('disabled', 'disabled');
-		}
+			} else {
+				translator.translate('[[search:no-matches]]', function(text) {
+					topicSearchEl.find('.count').html(text);
+				});
+				topicSearchEl.removeClass('hidden').find('.prev, .next').attr('disabled', 'disabled');
+			}
+		});
 	};
 
+	Search.topicDOM.start = function() {
+		$('.topic-search').removeClass('hidden');
+		if (!Search.topicDOM.active) {
+			Search.topicDOM.active = true;
+
+			// Bind to esc
+			require(['mousetrap'], function(Mousetrap) {
+				Mousetrap.bind('esc', Search.topicDOM.end);
+			});
+		}
+	}
+
 	Search.topicDOM.end = function() {
-		$('.topic-search').addClass('hidden');
+		$('.topic-search').addClass('hidden').find('.prev, .next').attr('disabled', 'disabled');
+		Search.topicDOM.active = false;
+
+		// Unbind esc
+		require(['mousetrap'], function(Mousetrap) {
+			Mousetrap.unbind('esc', Search.topicDOM.end);
+		});
 	};
 
 	return Search;
