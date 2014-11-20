@@ -79,7 +79,7 @@ function concatenateScripts(scripts, options, callback) {
 			});
 		}
 
-		scripts = scripts.join(require('os').EOL);
+		scripts = scripts.join(require('os').EOL + ';');
 
 		callback({
 			js: scripts,
