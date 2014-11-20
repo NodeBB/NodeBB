@@ -1283,43 +1283,53 @@ Upgrade.upgrade = function(callback) {
 						db.getSortedSetRange('categories:cid', 0, -1, next);
 					},
 					function(cids, next) {
-						function upgradePrivilege(cid, privilege, groupName, next) {
+						function categoryHasPrivilegesSet(cid, privilege, next) {
 							async.parallel({
 								userPrivExists: function(next) {
-									Groups.exists('cid:' + cid + ':privileges:' + privilege, next);
+									Groups.getMemberCount('cid:' + cid + ':privileges:' + privilege, next);
 								},
 								groupPrivExists: function(next) {
-									Groups.exists('cid:' + cid + ':privileges:groups:' + privilege, next);
+									Groups.getMemberCount('cid:' + cid + ':privileges:groups:' + privilege, next);
 								}
 							}, function(err, results) {
-								if (err || results.userPrivExists || results.groupPrivExists) {
+								if (err) {
 									return next(err);
 								}
-
-								Groups.join('cid:' + cid + ':privileges:groups:' + privilege, groupName, next);
+								next(null, results.userPrivExists || results.groupPrivExists);
 							});
 						}
 
-						function upgradePrivileges(cid, groupName, next) {
-							var privs = ['find', 'read', 'topics:reply', 'topics:post'];
+						function upgradePrivileges(cid, groups, next) {
+							var privs = ['find', 'read', 'topics:reply', 'topics:create'];
+
 							async.each(privs, function(priv, next) {
-								upgradePrivilege(cid, priv, groupName, next);
+
+								categoryHasPrivilegesSet(cid, priv, function(err, privilegesSet) {
+									if (err || privilegesSet) {
+										return next(err);
+									}
+
+									async.eachLimit(groups, 50, function(group, next) {
+										if (group && !group.hidden) {
+											if (group.name === 'guests' && (priv === 'topics:reply' || priv === 'topics:create')) {
+												return next();
+											}
+											Groups.join('cid:' + cid + ':privileges:groups:' + priv, group.name, next);
+										} else {
+											next();
+										}
+									}, next);
+								});
 							}, next);
 						}
 
-						Groups.list({}, function(err, groups) {
+						Groups.list({showSystemGroups: true}, function(err, groups) {
 							if (err) {
 								return next(err);
 							}
 
 							async.eachLimit(cids, 50, function(cid, next) {
-								async.eachLimit(groups, 50, function(group, next) {
-									if (group && !group.hidden) {
-										upgradePrivileges(cid, group.name, next);
-									} else {
-										next();
-									}
-								}, next);
+								upgradePrivileges(cid, groups, next);
 							}, next);
 						});
 					}
