@@ -27,7 +27,7 @@ middleware.isAdmin = function(req, res, next) {
 		}
 
 		if (!isAdmin) {
-			res.status(403).redirect('/403');
+			res.status(403).redirect(nconf.get('relative_path') + '/403');
 		} else {
 			next();
 		}
