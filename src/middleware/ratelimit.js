@@ -5,7 +5,7 @@ var winston = require('winston');
 
 var ratelimit = {};
 
-var allowedCallsPerSecond = 10;
+var allowedCallsPerSecond = 20;
 
 
 ratelimit.isFlooding = function(socket) {
