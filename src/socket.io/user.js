@@ -201,7 +201,7 @@ SocketUser.uploadProfileImageFromUrl = function(socket, url, callback) {
 		}
 
 		user.setUserFields(socket.uid, {uploadedpicture: data.url, picture: data.url}, function(err) {
-			callback(err, data.image.url);
+			callback(err, data.url);
 		});
 	});
 };
