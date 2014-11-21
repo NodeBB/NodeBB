@@ -27,7 +27,17 @@ Templates.compile = function(callback) {
 	var coreTemplatesPath = nconf.get('core_templates_path'),
 		baseTemplatesPath = nconf.get('base_templates_path'),
 		viewsPath = nconf.get('views_dir'),
-		themeTemplatesPath = nconf.get('theme_templates_path');
+		themeTemplatesPath = nconf.get('theme_templates_path'),
+		themeConfig = require(nconf.get('theme_config'));
+
+	if (themeConfig.baseTheme) {
+		var pathToBaseTheme = path.join(nconf.get('themes_path'), themeConfig.baseTheme),
+			baseTemplatesPath = require(path.join(pathToBaseTheme, 'theme.json')).templates;
+
+		if (!baseTemplatesPath){
+			baseTemplatesPath = path.join(pathToBaseTheme, 'templates');
+		}
+	}
 
 	plugins.getTemplates(function(err, pluginTemplates) {
 		if (err) {
