@@ -26,7 +26,7 @@ module.exports = function(Meta) {
 			base: [
 				'public/vendor/jquery/js/jquery.js',
 				'public/vendor/jquery/js/jquery-ui-1.10.4.custom.js',
-				'./node_modules/socket.io-client/dist/socket.io.js',
+				'./node_modules/socket.io-client/socket.io.js',
 				'public/vendor/jquery/timeago/jquery.timeago.min.js',
 				'public/vendor/jquery/js/jquery.form.min.js',
 				'public/vendor/visibility/visibility.min.js',
@@ -64,7 +64,7 @@ module.exports = function(Meta) {
 				if (global.env === 'development') {
 					return next(null, []);
 				}
-				
+
 				utils.walk(path.join(rjsPath, 'modules'), next);
 			}
 		}, function(err, rjsFiles) {

@@ -1,13 +1,13 @@
 "use strict";
 
 var	SocketIO = require('socket.io'),
-	socketioWildcard = require('socketio-wildcard'),
+	socketioWildcard = require('socketio-wildcard')(),
 	util = require('util'),
 	async = require('async'),
 	path = require('path'),
 	fs = require('fs'),
 	nconf = require('nconf'),
-	socketCookieParser = require('cookie-parser')(nconf.get('secret')),
+	cookieParser = require('cookie-parser')(nconf.get('secret')),
 	winston = require('winston'),
 
 	db = require('../database'),
@@ -66,38 +66,17 @@ function onUserDisconnect(uid, socketid, socketCount) {
 }
 
 Sockets.init = function(server) {
-	// Default socket.io config
 	var config = {
-			log: true,
-			'log level': process.env.NODE_ENV === 'development' ? 2 : 1,
-			transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket'],
-			'browser client minification': true,
-			resource: nconf.get('relative_path') + '/socket.io'
-		};
+		transports: ['polling', 'websocket'],
+		path: nconf.get('relative_path') + '/socket.io'
+	};
 
-	// If a redis server is configured, use it as a socket.io store, otherwise, fall back to in-memory store
-	// if (nconf.get('redis')) {
-	// 	var RedisStore = require('socket.io/lib/stores/redis'),
-	// 		database = require('../database/redis'),
-	// 		pub = database.connect(),
-	// 		sub = database.connect(),
-	// 		client = database.connect();
-
-	// 	// "redis" property needs to be passed in as referenced here: https://github.com/Automattic/socket.io/issues/808
-	// 	// Probably fixed in socket.IO 1.0
-	// 	config.store = new RedisStore({
-	// 		redis: require('redis'),
-	// 		redisPub : pub,
-	// 		redisSub : sub,
-	// 		redisClient : client
-	// 	});
-	// } else if (nconf.get('cluster')) {
-	// 	winston.warn('[socket.io] Clustering detected, you are advised to configure Redis as a websocket store.');
-	// }
 	io = new SocketIO();
+
+	addRedisAdapter(io);
+
 	io.use(socketioWildcard);
 
-	//io = socketioWildcard(SocketIO).listen(server, config);
 	io.listen(server, config);
 
 	Sockets.server = io;
@@ -115,91 +94,105 @@ Sockets.init = function(server) {
 		});
 	});
 
-	io.on('connection', function(socket) {
-		console.log('connection', socket.id);
-		var hs = socket.handshake,
-			sessionID, uid;
+	io.use(function(socket, next) {
+		console.log('AUTH');
 
-		if (!hs) {
-			return;
+		var handshake = socket.request,
+		 	sessionID;
+
+		if (!handshake) {
+		 	return next(new Error('[[error:not-authorized]]'));
 		}
 
-		// Validate the session, if present
-		socketCookieParser(hs, {}, function(err) {
-			if(err) {
-				return winston.error(err.message);
+		cookieParser(handshake, {}, function(err) {
+			if (err) {
+				return next(err);
 			}
 
-			sessionID = socket.handshake.signedCookies['express.sid'];
+			var sessionID = handshake.signedCookies['express.sid'];
+
 			db.sessionStore.get(sessionID, function(err, sessionData) {
-				if (!err && sessionData && sessionData.passport && sessionData.passport.user) {
-					uid = parseInt(sessionData.passport.user, 10);
-				} else {
-					uid = 0;
+				if (err) {
+					return next(err);
 				}
-
-				socket.uid = parseInt(uid, 10);
-				onUserConnect(uid, socket.id);
-
-				/* If meta.config.loggerIOStatus > 0, logger.io_one will hook into this socket */
-				logger.io_one(socket, uid);
-
-				if (uid) {
-					socket.join('uid_' + uid);
-					socket.join('online_users');
-
-					async.parallel({
-						user: function(next) {
-							user.getUserFields(uid, ['username', 'userslug', 'picture', 'status'], next);
-						},
-						isAdmin: function(next) {
-							user.isAdministrator(uid, next);
-						}
-					}, function(err, userData) {
-						if (err || !userData.user) {
-							return;
-						}
-						socket.emit('event:connect', {
-							status: 1,
-							username: userData.user.username,
-							userslug: userData.user.userslug,
-							picture: userData.user.picture,
-							isAdmin: userData.isAdmin,
-							uid: uid
-						});
-
-						socket.broadcast.emit('event:user_status_change', {uid:uid, status: userData.user.status});
-					});
-
+				if (sessionData && sessionData.passport && sessionData.passport.user) {
+					socket.uid = parseInt(sessionData.passport.user, 10);
 				} else {
-					socket.join('online_guests');
-					socket.emit('event:connect', {
-						status: 1,
-						username: '[[global:guest]]',
-						isAdmin: false,
-						uid: 0
-					});
+					socket.uid = 0;
 				}
+				next();
 			});
 		});
+	});
+
+	io.on('connection', function(socket) {
+		console.log('CONNECTED', socket.uid, socket.id);
+
+		logger.io_one(socket, socket.uid);
+
+		if (socket.uid) {
+			onUserConnect(socket.uid, socket.id);
+			socket.join('uid_' + socket.uid);
+			socket.join('online_users');
+
+			async.parallel({
+				user: function(next) {
+					user.getUserFields(socket.uid, ['username', 'userslug', 'picture', 'status'], next);
+				},
+				isAdmin: function(next) {
+					user.isAdministrator(socket.uid, next);
+				}
+			}, function(err, userData) {
+				if (err || !userData.user) {
+					return;
+				}
+				socket.emit('event:connect', {
+					status: 1,
+					username: userData.user.username,
+					userslug: userData.user.userslug,
+					picture: userData.user.picture,
+					isAdmin: userData.isAdmin,
+					uid: socket.uid
+				});
+
+				socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: userData.user.status});
+			});
+		} else {
+			socket.join('online_guests');
+			socket.emit('event:connect', {
+				status: 1,
+				username: '[[global:guest]]',
+				isAdmin: false,
+				uid: 0
+			});
+		}
 
 		socket.on('disconnect', function() {
-			var socketCount = Sockets.getUserSocketCount(uid);
-			if (uid && socketCount <= 1) {
-				socket.broadcast.emit('event:user_status_change', {uid: uid, status: 'offline'});
+			var socketCount = Sockets.getUserSocketCount(socket.uid);
+			console.log('DISCONNECT', socket.uid, socket.id);
+			if (socket.uid && socketCount <= 1) {
+				socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
 			}
 
-			onUserDisconnect(uid, socket.id, socketCount);
+			onUserDisconnect(socket.uid, socket.id, socketCount);
 
-			for(var roomName in io.sockets.manager.roomClients[socket.id]) {
-				if (roomName.indexOf('topic') !== -1) {
-					io.sockets.in(roomName.slice(1)).emit('event:user_leave', socket.uid);
-				}
-			}
+			// for(var roomName in io.sockets.manager.roomClients[socket.id]) {
+			// 	if (roomName.indexOf('topic') !== -1) {
+			// 		io.sockets.in(roomName.slice(1)).emit('event:user_leave', socket.uid);
+			// 	}
+			// }
 		});
 
-		socket.on('*', function(payload, callback) {
-			if (!payload.name) {
+		socket.on('*', function(payload) {
+			if (!payload.data.length) {
+				return winston.warn('[socket.io] Empty payload');
+			}
+
+			var eventName = payload.data[0];
+			var params = payload.data[1];
+			var callback = typeof payload.data[payload.data.length - 1] === 'function' ? payload.data[payload.data.length - 1] : function() {};
+
+			if (!eventName) {
 				return winston.warn('[socket.io] Empty method name');
 			}
 
@@ -208,7 +201,7 @@ Sockets.init = function(server) {
 				return socket.disconnect();
 			}
 
-			var parts = payload.name.toString().split('.'),
+			var parts = eventName.toString().split('.'),
 				namespace = parts[0],
 				methodToCall = parts.reduce(function(prev, cur) {
 					if (prev !== null && prev[cur]) {
@@ -220,27 +213,38 @@ Sockets.init = function(server) {
 
 			if(!methodToCall) {
 				if (process.env.NODE_ENV === 'development') {
-					winston.warn('[socket.io] Unrecognized message: ' + payload.name);
+					winston.warn('[socket.io] Unrecognized message: ' + eventName);
 				}
 				return;
 			}
 
 			if (Namespaces[namespace].before) {
-				Namespaces[namespace].before(socket, payload.name, function() {
-					callMethod(methodToCall, socket, payload, callback);
+				Namespaces[namespace].before(socket, eventName, function() {
+					callMethod(methodToCall, socket, params, callback);
 				});
 			} else {
-				callMethod(methodToCall, socket, payload, callback);
+				callMethod(methodToCall, socket, params, callback);
 			}
 		});
 	});
 };
 
-function callMethod(method, socket, payload, callback) {
-	method.call(null, socket, payload.args.length ? payload.args[0] : null, function(err, result) {
-		if (callback) {
-			callback(err ? {message: err.message} : null, result);
-		}
+function addRedisAdapter(io) {
+	if (nconf.get('redis')) {
+		var redisAdapter = require('socket.io-redis');
+		var redis = require('../database/redis');
+		var pub = redis.connect();
+		var sub = redis.connect();
+
+		io.adapter(redisAdapter({pubClient: pub, subClient: sub}));
+	} else {
+		winston.warn('[socket.io] Clustering detected, you are advised to configure Redis as a websocket store.');
+	}
+}
+
+function callMethod(method, socket, params, callback) {
+	method.call(null, socket, params, function(err, result) {
+		callback(err ? {message: err.message} : null, result);
 	});
 }
 

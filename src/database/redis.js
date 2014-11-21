@@ -90,6 +90,11 @@
 			cxn = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
 		}
 
+		cxn.on('error', function (err) {
+			winston.error(err.stack);
+			process.exit(1);
+		});
+
 		if (nconf.get('redis:password')) {
 			cxn.auth(nconf.get('redis:password'));
 		}
@@ -103,11 +108,6 @@
 				}
 			});
 		}
-
-		cxn.on('error', function (err) {
-			winston.error(err.stack);
-			process.exit(1);
-		});
 
 		return cxn;
 	};
