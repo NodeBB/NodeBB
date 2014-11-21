@@ -1,0 +1,23 @@
+{
+    "password-reset-requested": "Reconfiguração de Senha Solicitada - %1!",
+    "welcome-to": "Bem vindo a %1",
+    "greeting_no_name": "Olá",
+    "greeting_with_name": "Olà %1",
+    "welcome.text1": "Obrigado por se registrar com %1!",
+    "welcome.text2": "Para terminar de ativar sua conta, nós precisamos verificar que você é o dono do endereço de email com o que você se registrou.",
+    "welcome.cta": "Clique aqui para confirmar seu endereço de email",
+    "reset.text1": "Nós recebemos um pedido para reconfigurar sua senha, possivelmente porque você a esqueceu. Se este não é o caso, por favor ignore este email.",
+    "reset.text2": "Para continuar com a reconfiguração de senha, por favor clique no seguinte link:",
+    "reset.cta": "Clique aqui para reconfigurar sua senha",
+    "digest.notifications": "Você tem notificações não lidas de %1:",
+    "digest.latest_topics": "Últimos tópicos de %1",
+    "digest.cta": "Clique aqui para visitar %1",
+    "digest.unsub.info": "Este resumo foi enviado para você devido às suas configurações de assinatura.",
+    "digest.no_topics": "Não tem tido tópicos ativos nos últimos %1",
+    "notif.chat.subject": "Nova mensagem de chat recebida de %1",
+    "notif.chat.cta": "Clique aqui para continuar a conversa",
+    "notif.chat.unsub.info": "Esta notificação de chat foi enviada a você devido às suas configurações de assinatura.",
+    "test.text1": "Este é um e-mail de teste, para verificar que o enviador de emails está corretamente configurado no seu NodeBB.",
+    "unsub.cta": "Clique aqui para alterar estas configurações",
+    "closing": "Obrigado!"
+}

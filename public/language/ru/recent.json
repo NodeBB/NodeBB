@@ -3,6 +3,7 @@
     "day": "День",
     "week": "Неделя",
     "month": "Месяц",
-    "year": "Year",
+    "year": "Год",
+    "alltime": "За всё время",
     "no_recent_topics": "Нет свежих тем."
 }

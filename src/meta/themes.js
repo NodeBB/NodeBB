@@ -39,6 +39,15 @@ module.exports = function(Meta) {
 								return next();
 							} else {
 								var configObj = JSON.parse(file.toString());
+
+								// Minor adjustments for API output
+								configObj.type = 'local';
+								if (configObj.screenshot) {
+									configObj.screenshot_url = nconf.get('relative_path') + '/css/previews/' + configObj.id;
+								} else {
+									configObj.screenshot_url = nconf.get('relative_path') + '/images/themes/default.png';
+								}
+
 								next(err, configObj);
 							}
 						});
@@ -83,10 +92,13 @@ module.exports = function(Meta) {
 					themeData['theme:src'] = '';
 
 					db.setObject('config', themeData, next);
+
+					// Re-set the themes path (for when NodeBB is reloaded)
+					Meta.themes.setPath(config);
 				}
 			], callback);
 
-			Meta.restartRequired = true;
+			Meta.reloadRequired = true;
 			break;
 
 		case 'bootswatch':
@@ -95,4 +107,18 @@ module.exports = function(Meta) {
 		}
 	};
 
+	Meta.themes.setPath = function(themeObj) {
+		// Theme's templates path
+		var themePath = nconf.get('base_templates_path'),
+			fallback = path.join(nconf.get('themes_path'), themeObj.id, 'templates');
+
+		if (themeObj.templates) {
+			themePath = path.join(nconf.get('themes_path'), themeObj.id, themeObj.templates);
+		} else if (fs.existsSync(fallback)) {
+			themePath = fallback;
+		}
+
+		nconf.set('theme_templates_path', themePath);
+		nconf.set('theme_config', path.join(nconf.get('themes_path'), themeObj.id, 'theme.json'));
+	};
 };

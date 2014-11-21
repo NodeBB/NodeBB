@@ -6,71 +6,135 @@ var topicsController = {},
 	validator = require('validator'),
 	nconf = require('nconf'),
 	qs = require('querystring'),
-	user = require('./../user'),
-	meta = require('./../meta'),
-	topics = require('./../topics'),
+	user = require('../user'),
+	meta = require('../meta'),
+	topics = require('../topics'),
 	posts = require('../posts'),
 	privileges = require('../privileges'),
-	utils = require('./../../public/src/utils');
+	helpers = require('./helpers'),
+	utils = require('../../public/src/utils');
 
 topicsController.get = function(req, res, next) {
 	var tid = req.params.topic_id,
-		page = req.query.page || 1,
+		page = 1,
+		sort = req.query.sort,
 		uid = req.user ? req.user.uid : 0,
 		userPrivileges;
 
+	if (req.params.post_index && !utils.isNumber(req.params.post_index)) {
+		return helpers.notFound(res);
+	}
+
 	async.waterfall([
 		function (next) {
-			privileges.topics.get(tid, uid, next);
+			async.parallel({
+				privileges: function(next) {
+					privileges.topics.get(tid, uid, next);
+				},
+				settings: function(next) {
+					user.getSettings(uid, next);
+				},
+				topic: function(next) {
+					topics.getTopicFields(tid, ['slug', 'postcount', 'deleted'], next);
+				}
+			}, next);
 		},
-		function (privileges, next) {
-			if (!privileges.read) {
-				return next(new Error('[[error:no-privileges]]'));
+		function (results, next) {
+			userPrivileges = results.privileges;
+
+			if (userPrivileges.disabled) {
+				return helpers.notFound(res);
 			}
 
-			userPrivileges = privileges;
-
-			user.getSettings(uid, next);
-		},
-		function (settings, next) {
-			var postIndex = 0;
-			if (!settings.usePagination) {
-				postIndex = Math.max((req.params.post_index || 1) - (settings.postsPerPage - 1), 0);
-			} else if (!req.query.page) {
-				var index = Math.max(parseInt((req.params.post_index || 0), 10), 0);
-				page = Math.ceil((index + 1) / settings.postsPerPage);
+			if (tid + '/' + req.params.slug !== results.topic.slug) {
+				return helpers.notFound(res);
 			}
 
-			var start = (page - 1) * settings.postsPerPage + postIndex,
-				end = start + settings.postsPerPage - 1;
+			if (!userPrivileges.read) {
+				return helpers.notAllowed(req, res);
+			}
+
+			if (parseInt(results.topic.deleted, 10) && !userPrivileges.view_deleted) {
+				return helpers.notAllowed(req, res);
+			}
+
+			var settings = results.settings;
+			var postCount = parseInt(results.topic.postcount, 10);
+			var pageCount = Math.ceil((postCount - 1) / settings.postsPerPage);
+
+			if (utils.isNumber(req.params.post_index)) {
+				var url = '';
+				if (req.params.post_index < 1 || req.params.post_index > postCount) {
+					url = '/topic/' + req.params.topic_id + '/' + req.params.slug + (req.params.post_index > postCount ? '/' + postCount : '');
+					return res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
+				}
+			}
+
+			if (settings.usePagination && (req.query.page < 1 || req.query.page > pageCount)) {
+				return helpers.notFound(res);
+			}
 
 			var set = 'tid:' + tid + ':posts',
 				reverse = false;
 
-			if (settings.topicPostSort === 'newest_to_oldest') {
+			// `sort` qs has priority over user setting
+			if (sort === 'oldest_to_newest') {
+				reverse = false;
+			} else if (sort === 'newest_to_oldest') {
+				reverse = true;
+			} else if (sort === 'most_votes') {
+				reverse = true;
+				set = 'tid:' + tid + ':posts:votes';
+			} else if (settings.topicPostSort === 'newest_to_oldest') {
 				reverse = true;
 			} else if (settings.topicPostSort === 'most_votes') {
 				reverse = true;
 				set = 'tid:' + tid + ':posts:votes';
 			}
 
-			topics.getTopicWithPosts(tid, set, uid, start, end, reverse, function (err, topicData) {
-				if (topicData) {
-					if (topicData.deleted && !userPrivileges.view_deleted) {
-						return next(new Error('[[error:no-topic]]'));
+			var postIndex = 0;
+			page = parseInt(req.query.page, 10) || 1;
+			req.params.post_index = parseInt(req.params.post_index, 10) || 0;
+			if (!settings.usePagination) {
+				if (reverse) {
+					if (req.params.post_index === 1) {
+						req.params.post_index = 0;
 					}
-					topicData.currentPage = page;
-					if(page > 1) {
-						topicData.posts.splice(0, 1);
-					}
+					postIndex = Math.max(postCount - (req.params.post_index || postCount) - (settings.postsPerPage - 1), 0);
+				} else {
+					postIndex = Math.max((req.params.post_index || 1) - (settings.postsPerPage + 1), 0);
 				}
-				next(err, topicData);
+			} else if (!req.query.page) {
+				var index = Math.max(req.params.post_index - 1, 0) || 0;
+				page = Math.max(1, Math.ceil(index / settings.postsPerPage));
+			}
+
+			var start = (page - 1) * settings.postsPerPage + postIndex,
+				end = start + settings.postsPerPage - 1;
+
+			topics.getTopicWithPosts(tid, set, uid, start, end, reverse, function (err, topicData) {
+				if (err && err.message === '[[error:no-topic]]' && !topicData) {
+					return helpers.notFound(res);
+				}
+
+				if (err && !topicData) {
+					return next(err);
+				}
+
+				topicData.pageCount = pageCount;
+
+				topicData.currentPage = page;
+				if(page > 1) {
+					topicData.posts.splice(0, 1);
+				}
+
+				next(null, topicData);
 			});
 		},
 		function (topicData, next) {
 			var description = '';
 
-			if(topicData.posts.length) {
+			if (topicData.posts[0] && topicData.posts[0].content) {
 				description = S(topicData.posts[0].content).stripTags().decodeHTMLEntities().s;
 			}
 
@@ -79,11 +143,12 @@ topicsController.get = function(req, res, next) {
 			}
 
 			description = validator.escape(description);
+			description = description.replace(/&apos;/g, '&#x27;');
 
 			var ogImageUrl = '';
 			if (topicData.thumb) {
 				ogImageUrl = topicData.thumb;
-			} else if(topicData.posts.length && topicData.posts[0].user && topicData.posts[0].user.picture){
+			} else if(topicData.posts.length && topicData.posts[0] && topicData.posts[0].user && topicData.posts[0].user.picture){
 				ogImageUrl = topicData.posts[0].user.picture;
 			} else if(meta.config['brand:logo']) {
 				ogImageUrl = meta.config['brand:logo'];
@@ -108,7 +173,7 @@ topicsController.get = function(req, res, next) {
 				},
 				{
 					property: 'og:title',
-					content: topicData.title
+					content: topicData.title.replace(/&amp;/g, '&')
 				},
 				{
 					property: 'og:description',
@@ -140,7 +205,7 @@ topicsController.get = function(req, res, next) {
 				},
 				{
 					property: 'article:section',
-					content: topicData.category.name
+					content: topicData.category ? topicData.category.name : ''
 				}
 			];
 
@@ -151,69 +216,84 @@ topicsController.get = function(req, res, next) {
 					href: nconf.get('url') + '/topic/' + tid + '.rss'
 				},
 				{
-					rel: 'up',
-					href: nconf.get('url') + '/category/' + topicData.category.slug
-				},
-				{
 					rel: 'canonical',
 					href: nconf.get('url') + '/topic/' + topicData.slug
 				}
 			];
 
+			if (topicData.category) {
+				res.locals.linkTags.push({
+					rel: 'up',
+					href: nconf.get('url') + '/category/' + topicData.category.slug
+				});
+			}
+
 			next(null, topicData);
 		}
 	], function (err, data) {
 		if (err) {
-			if (err.message === '[[error:no-privileges]]') {
-				return res.locals.isAPI ? res.json(403, err.message) : res.redirect('403');
-			} else {
-				return res.locals.isAPI ? res.json(404, 'not-found') : res.redirect('404');
-			}
+			return next(err);
 		}
 
 		data.privileges = userPrivileges;
-		data['reputation:disabled'] = meta.config['reputation:disabled'] === '1' ? true : false;
-		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
+		data['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
+		data['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
+		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
-		var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
-		var queryString = qs.stringify(req.query);
-		if(queryString.length) {
-			topic_url += '?' + queryString;
+		topics.increaseViewCount(tid);
+
+		if (!res.locals.isAPI) {
+			// Paginator for noscript
+			data.pages = [];
+			for(var x=1; x<=data.pageCount; x++) {
+				data.pages.push({
+					page: x,
+					active: x === parseInt(page, 10)
+				});
+			}
 		}
 
-		// Paginator for noscript
-		data.pages = [];
-		for(var x=1; x<=data.pageCount; x++) {
-			data.pages.push({
-				page: x,
-				active: x === parseInt(page, 10)
-			});
-		}
 		res.render('topic', data);
 	});
 };
 
 topicsController.teaser = function(req, res, next) {
 	var tid = req.params.topic_id;
-	topics.getLatestUndeletedPid(tid, function(err, pid) {
+	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
+
+	if (!utils.isNumber(tid)) {
+		return next(new Error('[[error:invalid-tid]]'));
+	}
+
+	privileges.topics.can('read', tid, uid, function(err, canRead) {
 		if (err) {
 			return next(err);
 		}
 
-		if (!pid) {
-			return res.json(404, 'not-found');
+		if (!canRead) {
+			return res.status(403).json('[[error:no-privileges]]');
 		}
 
-		posts.getPostSummaryByPids([pid], {stripTags: false}, function(err, posts) {
+		topics.getLatestUndeletedPid(tid, function(err, pid) {
 			if (err) {
 				return next(err);
 			}
 
-			if (!Array.isArray(posts) || !posts.length) {
-				return res.json(404, 'not-found');
+			if (!pid) {
+				return res.status(404).json('not-found');
 			}
 
-			res.json(posts[0]);
+			posts.getPostSummaryByPids([pid], uid, {stripTags: false}, function(err, posts) {
+				if (err) {
+					return next(err);
+				}
+
+				if (!Array.isArray(posts) || !posts.length) {
+					return res.status(404).json('not-found');
+				}
+
+				res.json(posts[0]);
+			});
 		});
 	});
 };

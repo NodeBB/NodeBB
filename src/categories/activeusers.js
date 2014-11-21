@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async'),
+	posts = require('../posts'),
 	db = require('../database');
 
 module.exports = function(Categories) {
@@ -8,23 +9,19 @@ module.exports = function(Categories) {
 	Categories.getActiveUsers = function(cid, callback) {
 		async.waterfall([
 			function(next) {
-				db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, 99, next);
+				db.getSortedSetRevRange('cid:' + cid + ':pids', 0, 24, next);
 			},
 			function(pids, next) {
-				var keys = pids.map(function(pid) {
-					return 'post:' + pid;
-				});
-
-				db.getObjectsFields(keys, ['uid'], next);
+				posts.getPostsFields(pids, ['uid'], next);
 			},
-			function(users, next) {
-				var uids = users.map(function(user) {
-					return user.uid;
-				}).filter(function(value, index, array) {
-					return parseInt(value, 10) !== 0 && array.indexOf(value) === index;
+			function(posts, next) {
+				var uids = posts.map(function(post) {
+					return post.uid;
+				}).filter(function(uid, index, array) {
+					return parseInt(uid, 10) !== 0 && array.indexOf(uid) === index;
 				}).slice(0, 24);
 
-				callback(null, uids);
+				next(null, uids);
 			}
 		], callback);
 	};

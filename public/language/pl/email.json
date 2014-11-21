@@ -1,0 +1,23 @@
+{
+    "password-reset-requested": "Wybrano przywrócenie hasła - %1",
+    "welcome-to": "Witaj w %1",
+    "greeting_no_name": "Witaj",
+    "greeting_with_name": "Witaj %1",
+    "welcome.text1": "Dziękujemy za rejestrację w %1",
+    "welcome.text2": "Aby aktywować swoje konto, musisz potwierdzić, że skorzystałeś z własnego adresu e-mail.",
+    "welcome.cta": "Kliknij tutaj, by potwierdzić swój adres",
+    "reset.text1": "Otrzymaliśmy żądanie przywrócenia Twojego hasła. Jeśli nie żądałeś przywrócenia hasła, zignoruj ten e-mail.",
+    "reset.text2": "Aby przywrócić swoje hasło, skorzystaj z poniższego linku:",
+    "reset.cta": "Kliknij tu, by przywrócić swoje hasło",
+    "digest.notifications": "Masz nowe powiadomienia od %1:",
+    "digest.latest_topics": "Ostatnie tematy z %1",
+    "digest.cta": "Kliknij, by odwiedzić %1",
+    "digest.unsub.info": "To podsumowanie zostało wysłane zgodnie z Twoimi ustawieniami.",
+    "digest.no_topics": "There have been no active topics in the past %1",
+    "notif.chat.subject": "Nowa wiadomość chatu od %1",
+    "notif.chat.cta": "Kliknij tutaj, by kontynuować konwersację",
+    "notif.chat.unsub.info": "To powiadomienie o chacie zostało Ci wysłane zgodnie z ustawieniami Twojego konta.",
+    "test.text1": "To jest e-mail testowy, aby sprawdzić, czy poprawnie skonfigurowałeś e-mailer w swoim NodeBB.",
+    "unsub.cta": "Kliknij tutaj, by zmienić te ustawienia",
+    "closing": "Dziękujemy!"
+}

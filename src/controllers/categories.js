@@ -5,49 +5,81 @@ var categoriesController = {},
 	qs = require('querystring'),
 	nconf = require('nconf'),
 	privileges = require('../privileges'),
-	user = require('./../user'),
-	categories = require('./../categories'),
-	topics = require('./../topics'),
-	meta = require('./../meta');
+	user = require('../user'),
+	categories = require('../categories'),
+	topics = require('../topics'),
+	meta = require('../meta'),
+	plugins = require('../plugins'),
+	helpers = require('./helpers'),
+	utils = require('../../public/src/utils');
 
 categoriesController.recent = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
-	topics.getLatestTopics(uid, 0, 19, req.params.term, function (err, data) {
-		if(err) {
+	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+	topics.getTopicsFromSet('topics:recent', uid, 0, end, function(err, data) {
+		if (err) {
 			return next(err);
 		}
 
-		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
+		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
-		res.render('recent', data);
+		plugins.fireHook('filter:category.get', {category: data, uid: uid}, function(err, data) {
+			if (err) {
+				return next(err);
+			}
+			res.render('recent', data.category);
+		});
 	});
 };
+
+var anonCache = {}, lastUpdateTime = 0;
 
 categoriesController.popular = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
 
 	var term = req.params.term || 'daily';
 
-	topics.getPopular(term, uid, function(err, data) {
-		if(err) {
+	if (uid === 0) {
+        if (anonCache[term] && (Date.now() - lastUpdateTime) < 60 * 60 * 1000) {
+            return res.render('popular', anonCache[term]);
+        }
+	}
+
+	topics.getPopular(term, uid, meta.config.topicsPerList, function(err, data) {
+		if (err) {
 			return next(err);
 		}
 
-		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
+		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
-		res.render('popular', {topics: data});
+		plugins.fireHook('filter:category.get', {category: {topics: data}, uid: uid}, function(err, data) {
+			if (err) {
+				return next(err);
+			}
+			if (uid === 0) {
+		        anonCache[term] = data.category;
+		        lastUpdateTime = Date.now();
+			}
+
+			res.render('popular', data.category);
+		});
 	});
 };
 
 categoriesController.unread = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
-
-	topics.getUnreadTopics(uid, 0, 20, function (err, data) {
-		if(err) {
+	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+	topics.getUnreadTopics(uid, 0, end, function (err, data) {
+		if (err) {
 			return next(err);
 		}
 
-		res.render('unread', data);
+		plugins.fireHook('filter:category.get', {category: data, uid: uid}, function(err, data) {
+			if (err) {
+				return next(err);
+			}
+			res.render('unread', data.category);
+		});
 	});
 };
 
@@ -66,61 +98,96 @@ categoriesController.unreadTotal = function(req, res, next) {
 categoriesController.get = function(req, res, next) {
 	var cid = req.params.category_id,
 		page = req.query.page || 1,
-		uid = req.user ? req.user.uid : 0;
+		uid = req.user ? req.user.uid : 0,
+		userPrivileges;
+
+	if (req.params.topic_index && !utils.isNumber(req.params.topic_index)) {
+		return helpers.notFound(res);
+	}
 
 	async.waterfall([
 		function(next) {
-			categories.getCategoryField(cid, 'disabled', function(err, disabled) {
-				next(disabled === '1' ? new Error('category-disabled') : undefined);
+			async.parallel({
+				exists: function(next) {
+					categories.exists(cid, next);
+				},
+				categoryData: function(next) {
+					categories.getCategoryFields(cid, ['slug', 'disabled', 'topic_count'], next);
+				},
+				privileges: function(next) {
+					privileges.categories.get(cid, uid, next);
+				},
+				userSettings: function(next) {
+					user.getSettings(uid, next);
+				}
+			}, next);
+		},
+		function(results, next) {
+			if (!results.exists || (results.categoryData && parseInt(results.categoryData.disabled, 10) === 1)) {
+				return helpers.notFound(res);
+			}
+
+			if (cid + '/' + req.params.slug !== results.categoryData.slug) {
+				return helpers.notFound(res);
+			}
+
+			if (!results.privileges.read) {
+				return helpers.notAllowed(req, res);
+			}
+
+			var topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) - 1 : 0;
+			var topicCount = parseInt(results.categoryData.topic_count, 10);
+
+			if (topicIndex < 0 || topicIndex > Math.max(topicCount - 1, 0)) {
+				var url = '/category/' + cid + '/' + req.params.slug + (topicIndex > topicCount ? '/' + topicCount : '');
+				return res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
+			}
+
+			userPrivileges = results.privileges;
+			var settings = results.userSettings;
+
+			if (!settings.usePagination) {
+				topicIndex = Math.max(topicIndex - (settings.topicsPerPage - 1), 0);
+			} else if (!req.query.page) {
+				var index = Math.max(parseInt((topicIndex || 0), 10), 0);
+				page = Math.ceil((index + 1) / settings.topicsPerPage);
+				topicIndex = 0;
+			}
+
+			var start = (page - 1) * settings.topicsPerPage + topicIndex,
+				end = start + settings.topicsPerPage - 1;
+
+			next(null, {
+				cid: cid,
+				start: start,
+				end: end,
+				uid: uid
 			});
 		},
-		function(next) {
-			privileges.categories.get(cid, uid, function(err, categoryPrivileges) {
-				if (err) {
-					return next(err);
-				}
-
-				if (!categoryPrivileges.read) {
-					return next(new Error('[[error:no-privileges]]'));
-				}
-
-				next(null, categoryPrivileges);
-			});
-		},
-		function (privileges, next) {
-			user.getSettings(uid, function(err, settings) {
-				if (err) {
-					return next(err);
-				}
-
-				var topicIndex = 0;
-				if (!settings.usePagination) {
-					topicIndex = Math.max((req.params.topic_index || 1) - (settings.topicsPerPage - 1), 0);
-				} else if (!req.query.page) {
-					var index = Math.max(parseInt((req.params.topic_index || 0), 10), 0);
-					page = Math.ceil((index + 1) / settings.topicsPerPage);
-				}
-
-				var start = (page - 1) * settings.topicsPerPage + topicIndex,
-					end = start + settings.topicsPerPage - 1;
-
-				categories.getCategoryById(cid, start, end, uid, function (err, categoryData) {
-					if (err) {
-						return next(err);
-					}
-
-					if (categoryData) {
-						if (parseInt(categoryData.disabled, 10) === 1) {
-							return next(new Error('[[error:category-disabled]]'));
-						}
-					}
-
-					categoryData.privileges = privileges;
-					next(err, categoryData);
+		function(payload, next) {
+			// If a userslug was specified, add a targetUid
+			if (req.query.author) {
+				user.getUidByUserslug(req.query.author, function(err, uid) {
+					payload.targetUid = uid;
+					next(err, payload);
 				});
+			} else {
+				next(null, payload);
+			}
+		},
+		categories.getCategoryById,
+		function(categoryData, next) {
+			categories.getRecentTopicReplies(categoryData.children, uid, function(err) {
+				if (err) {
+					return next(err);
+				}
+
+				next(null, categoryData);
 			});
 		},
 		function (categoryData, next) {
+			categoryData.privileges = userPrivileges;
+
 			res.locals.metaTags = [
 				{
 					name: 'title',
@@ -163,37 +230,31 @@ categoriesController.get = function(req, res, next) {
 		}
 	], function (err, data) {
 		if (err) {
-			if (err.message === '[[error:no-privileges]]') {
-				return res.locals.isAPI ? res.json(403, err.message) : res.redirect('403');
-			} else {
-				return res.locals.isAPI ? res.json(404, 'not-found') : res.redirect('404');
-			}
+			return next(err);
 		}
 
 		if (data.link) {
 			return res.redirect(data.link);
 		}
 
-		var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
-		var queryString = qs.stringify(req.query);
-		if(queryString.length) {
-			category_url += '?' + queryString;
-		}
-
 		data.currentPage = page;
-		data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] === '1' ? true : false;
+		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
-		// Paginator for noscript
-		data.pages = [];
-		for(var x=1;x<=data.pageCount;x++) {
-			data.pages.push({
-				page: x,
-				active: x === parseInt(page, 10)
-			});
+		if (!res.locals.isAPI) {
+			// Paginator for noscript
+			data.pages = [];
+			for(var x=1;x<=data.pageCount;x++) {
+				data.pages.push({
+					page: x,
+					active: x === parseInt(page, 10)
+				});
+			}
 		}
 
 		res.render('category', data);
 	});
 };
+
+
 
 module.exports = categoriesController;

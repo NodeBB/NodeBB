@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 6, 24);
+	latestSchema = Date.UTC(2014, 10, 17, 13);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -75,7 +75,7 @@ Upgrade.upgrade = function(callback) {
 					{
 						"widget": "html",
 						"data": {
-							"html": Meta.config['motd'] ||  "Welcome to NodeBB, if you are an administrator of this forum visit the <a target='_blank' href='/admin/themes'>Themes</a> ACP to modify and add widgets."
+							"html": Meta.config.motd ||  "Welcome to NodeBB, if you are an administrator of this forum visit the <a target='_blank' href='/admin/themes'>Themes</a> ACP to modify and add widgets."
 						}
 					}
 				]), function(err) {
@@ -171,7 +171,7 @@ Upgrade.upgrade = function(callback) {
 					{
 						"widget": "html",
 						"data": {
-							"html": Meta.config['motd'] || "Welcome to NodeBB, if you are an administrator of this forum visit the <a target='_blank' href='/admin/themes'>Themes</a> ACP to modify and add widgets.",
+							"html": Meta.config.motd || "Welcome to NodeBB, if you are an administrator of this forum visit the <a target='_blank' href='/admin/themes'>Themes</a> ACP to modify and add widgets.",
 							"container": container,
 							"title": "MOTD"
 						}
@@ -354,9 +354,11 @@ Upgrade.upgrade = function(callback) {
 						gid;
 
 					for(var groupName in mapping) {
-						gid = mapping[groupName];
-						if (mapping.hasOwnProperty(groupName) && !reverseMapping.hasOwnProperty(gid)) {
-							reverseMapping[parseInt(gid, 10)] = groupName;
+						if (mapping.hasOwnProperty(groupName)) {
+							gid = mapping[groupName];
+							if (mapping.hasOwnProperty(groupName) && !reverseMapping.hasOwnProperty(gid)) {
+								reverseMapping[parseInt(gid, 10)] = groupName;
+							}
 						}
 					}
 
@@ -521,7 +523,7 @@ Upgrade.upgrade = function(callback) {
 			thisSchemaDate = Date.UTC(2014, 3, 31, 12, 30);
 
 			if (schemaDate < thisSchemaDate) {
-				db.setObjectField('widgets:global', 'footer', "[{\"widget\":\"html\",\"data\":{\"html\":\"<footer id=\\\"footer\\\" class=\\\"container footer\\\">\\r\\n\\t<div class=\\\"copyright\\\">\\r\\n\\t\\tCopyright © 2014 <a target=\\\"_blank\\\" href=\\\"https://www.nodebb.com\\\">NodeBB Forums</a> | <a target=\\\"_blank\\\" href=\\\"//github.com/NodeBB/NodeBB/graphs/contributors\\\">Contributors</a>\\r\\n\\t</div>\\r\\n</footer>\",\"title\":\"\",\"container\":\"\"}}]", function(err) {
+				db.setObjectField('widgets:global', 'footer', "[{\"widget\":\"html\",\"data\":{\"html\":\"<footer id=\\\"footer\\\" class=\\\"container footer\\\">\\r\\n\\t<div class=\\\"copyright\\\">\\r\\n\\t\\tCopyright © 2014 <a target=\\\"_blank\\\" href=\\\"https://nodebb.org\\\">NodeBB Forums</a> | <a target=\\\"_blank\\\" href=\\\"//github.com/NodeBB/NodeBB/graphs/contributors\\\">Contributors</a>\\r\\n\\t</div>\\r\\n</footer>\",\"title\":\"\",\"container\":\"\"}}]", function(err) {
 					if (err) {
 						winston.error('[2014/3/31] Problem re-adding copyright message into global footer widget');
 						next();
@@ -963,7 +965,422 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2014/7/24] Upgrading chats to sorted set - skipped');
 				next();
 			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 8, 8);
+
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/9/8] Deleting old notifications...');
+
+				async.parallel({
+					uids: function(next) {
+						db.getSortedSetRange('users:joindate', 0, -1, next);
+					},
+					nids: function(next) {
+						db.getSetMembers('notifications', next);
+					}
+				}, function(err, results) {
+					if (err) {
+						return next(err);
+					}
+					var uidKeys = results.uids.map(function(uid) {
+						return 'uid:' + uid + ':notifications:uniqueId:nid';
+					});
+
+					var nidKeys = results.nids.filter(Boolean).map(function(nid) {
+						return 'notifications:' + nid;
+					});
+
+					async.series([
+						function(next) {
+							db.deleteAll(nidKeys, next);
+						},
+						function(next) {
+							db.deleteAll(uidKeys, next);
+						},
+						function(next) {
+							db.delete('notifications', next);
+						}
+					], function(err, results) {
+						if (err) {
+							winston.error('[2014/9/8] Error encountered while deleting notifications');
+							return next(err);
+						}
+
+						winston.info('[2014/9/8] Deleted old notifications');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2014/9/8] Deleting old notifications skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 8, 27);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/9/27] Deleting tid:<tid>:read_by_uid...');
+
+				db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
+					if (err) {
+						return next(err);
+					}
+					tids = tids.filter(Boolean);
+					var readKeys = tids.map(function(tid) {
+						return 'tid:' + tid + ':read_by_uid';
+					});
+
+					db.deleteAll(readKeys, function(err, results) {
+						if (err) {
+							winston.error('[2014/9/27] Error encountered while deleting tid:<tid>:read_by_uid');
+							return next(err);
+						}
+
+						winston.info('[2014/9/27] Deleted tid:<tid>:read_by_uid');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2014/9/27] Deleting tid:<tid>:read_by_uid skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 9, 7);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/10/7] Banned users sorted set');
+
+				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
+					if (err) {
+						return next(err);
+					}
+
+					var now = Date.now();
+
+					async.eachLimit(uids, 50, function(uid, next) {
+						User.getUserField(uid, 'banned', function(err, banned) {
+							if (err) {
+								return next(err);
+							}
+
+							if (parseInt(banned, 10) !== 1) {
+								return next();
+							}
+
+							db.sortedSetAdd('users:banned', now, uid, next);
+						});
+					}, function(err) {
+						if (err) {
+							winston.error('[2014/10/7] Error encountered while updating banned users sorted set');
+							return next(err);
+						}
+
+						winston.info('[2014/10/7] Banned users added to sorted set');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2014/10/7] Banned users sorted set skipped');
+				next();
+			}
+		},
+		function(next) {
+			function updateCategories(next) {
+				db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+					if (err) {
+						return next(err);
+					}
+
+					async.eachLimit(cids, 5, function(cid, next) {
+						db.sortedSetCard('categories:' + cid + ':tid', function(err, count) {
+							if (err) {
+								return next(err);
+							}
+							count = parseInt(count, 10) || 0;
+							db.setObjectField('category:' + cid, 'topic_count', count, next);
+						});
+					}, next);
+				});
+			}
+
+			function updateTopics(next) {
+				db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
+					if (err) {
+						return next(err);
+					}
+
+					async.eachLimit(tids, 50, function(tid, next) {
+						db.sortedSetCard('tid:' + tid + ':posts', function(err, count) {
+							if (err) {
+								return next(err);
+							}
+							count = (parseInt(count, 10) || 0) + 1;
+							winston.info('updating tid ' + tid + ' count ' + count);
+							db.setObjectField('topic:' + tid, 'postcount', count, next);
+						});
+					}, next);
+				});
+			}
+
+			thisSchemaDate = Date.UTC(2014, 9, 22);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/10/22] Topic post count migration');
+
+				async.series([
+					function(next) {
+						updateCategories(next);
+					},
+					function(next) {
+						updateTopics(next);
+					}
+				], function(err) {
+					if (err) {
+						winston.error('[2014/10/22] Error encountered while Topic post count migration');
+						return next(err);
+					}
+					winston.info('[2014/10/22] Topic post count migration done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2014/10/22] Topic post count migration skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 9, 31);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/10/31] Applying newbiePostDelay values');
+
+				async.series([
+					async.apply(Meta.configs.setOnEmpty, 'newbiePostDelay', '120'),
+					async.apply(Meta.configs.setOnEmpty, 'newbiePostDelayThreshold', '3')
+				], function(err) {
+					if (err) {
+						winston.error('[2014/10/31] Error encountered while Applying newbiePostDelay values');
+						return next(err);
+					}
+					winston.info('[2014/10/31] Applying newbiePostDelay values done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2014/10/31] Applying newbiePostDelay values skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 10, 6, 18, 30);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/11/6] Updating topic authorship sorted set');
+
+				async.waterfall([
+					async.apply(db.getObjectField, 'global', 'nextTid'),
+					function(nextTid, next) {
+						var tids = [];
+						for(var x=1,numTids=nextTid-1;x<numTids;x++) {
+							tids.push(x);
+						}
+						async.filter(tids, function(tid, next) {
+							db.exists('topic:' + tid, function(err, exists) {
+								next(exists);
+							});
+						}, function(tids) {
+							next(null, tids);
+						});
+					},
+					function(tids, next) {
+						async.eachLimit(tids, 100, function(tid, next) {
+							Topics.getTopicFields(tid, ['uid', 'cid', 'tid', 'timestamp'], function(err, data) {
+								if (!err && (data.cid && data.uid && data.timestamp && data.tid)) {
+									db.sortedSetAdd('cid:' + data.cid + ':uid:' + data.uid + ':tid', data.timestamp, data.tid, next);
+								} else {
+									// Post was probably purged, skip record
+									next();
+								}
+							});
+						}, next);
+					}
+				], function(err) {
+					if (err) {
+						winston.error('[2014/11/6] Error encountered while Updating topic authorship sorted set');
+						return next(err);
+					}
+					winston.info('[2014/11/6] Updating topic authorship sorted set done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2014/11/6] Updating topic authorship sorted set skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 10, 7);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/11/7] Renaming sorted set names');
+
+				async.waterfall([
+					function(next) {
+						async.parallel({
+							cids: function(next) {
+								db.getSortedSetRange('categories:cid', 0, -1, next);
+							},
+							uids: function(next) {
+								db.getSortedSetRange('users:joindate', 0, -1, next);
+							}
+						}, next);
+					},
+					function(results, next) {
+						async.eachLimit(results.cids, 50, function(cid, next) {
+							async.parallel([
+								function(next) {
+									db.exists('categories:' + cid + ':tid', function(err, exists) {
+										if (err || !exists) {
+											return next(err);
+										}
+										db.rename('categories:' + cid + ':tid', 'cid:' + cid + ':tids', next);
+									});
+								},
+								function(next) {
+									db.exists('categories:recent_posts:cid:' + cid, function(err, exists) {
+										if (err || !exists) {
+											return next(err);
+										}
+										db.rename('categories:recent_posts:cid:' + cid, 'cid:' + cid + ':pids', next);
+									});
+								},
+								function(next) {
+									async.eachLimit(results.uids, 50, function(uid, next) {
+										db.exists('cid:' + cid + ':uid:' + uid + ':tid', function(err, exists) {
+											if (err || !exists) {
+												return next(err);
+											}
+											db.rename('cid:' + cid + ':uid:' + uid + ':tid', 'cid:' + cid + ':uid:' + uid + ':tids', next);
+										});
+									}, next);
+								}
+							], next);
+						}, next);
+					}
+				], function(err) {
+					if (err) {
+						winston.error('[2014/11/7] Error encountered while renaming sorted sets');
+						return next(err);
+					}
+					winston.info('[2014/11/7] Renaming sorted sets done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2014/11/7] Renaming sorted sets skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 10, 11);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/11/11] Upgrading permissions');
+
+				async.waterfall([
+					function(next) {
+						db.getSortedSetRange('categories:cid', 0, -1, next);
+					},
+					function(cids, next) {
+						function categoryHasPrivilegesSet(cid, privilege, next) {
+							async.parallel({
+								userPrivExists: function(next) {
+									Groups.getMemberCount('cid:' + cid + ':privileges:' + privilege, next);
+								},
+								groupPrivExists: function(next) {
+									Groups.getMemberCount('cid:' + cid + ':privileges:groups:' + privilege, next);
+								}
+							}, function(err, results) {
+								if (err) {
+									return next(err);
+								}
+								next(null, results.userPrivExists || results.groupPrivExists);
+							});
+						}
+
+						function upgradePrivileges(cid, groups, next) {
+							var privs = ['find', 'read', 'topics:reply', 'topics:create'];
+
+							async.each(privs, function(priv, next) {
+
+								categoryHasPrivilegesSet(cid, priv, function(err, privilegesSet) {
+									if (err || privilegesSet) {
+										return next(err);
+									}
+
+									async.eachLimit(groups, 50, function(group, next) {
+										if (group && !group.hidden) {
+											if (group.name === 'guests' && (priv === 'topics:reply' || priv === 'topics:create')) {
+												return next();
+											}
+											Groups.join('cid:' + cid + ':privileges:groups:' + priv, group.name, next);
+										} else {
+											next();
+										}
+									}, next);
+								});
+							}, next);
+						}
+
+						Groups.list({showSystemGroups: true}, function(err, groups) {
+							if (err) {
+								return next(err);
+							}
+
+							async.eachLimit(cids, 50, function(cid, next) {
+								upgradePrivileges(cid, groups, next);
+							}, next);
+						});
+					}
+				], function(err) {
+					if (err) {
+						winston.error('[2014/11/11] Error encountered while upgrading permissions');
+						return next(err);
+					}
+					winston.info('[2014/11/11] Upgrading permissions done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2014/11/11] Upgrading permissions skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 10, 17, 13);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/11/11] Updating user email digest settings');
+
+				async.waterfall([
+					async.apply(db.getSortedSetRange, 'users:joindate', 0, -1),
+					function(uids, next) {
+						async.filter(uids, function(uid, next) {
+							db.getObjectField('user:' + uid + ':settings', 'dailyDigestFreq', function(err, freq) {
+								next(freq === 'daily');
+							});
+						}, function(uids) {
+							next(null, uids);
+						});
+					},
+					function(uids, next) {
+						async.each(uids, function(uid, next) {
+							db.setObjectField('user:' + uid + ':settings', 'dailyDigestFreq', 'day', next);
+						}, next);
+					}
+				], function(err) {
+					if (err) {
+						winston.error('[2014/11/11] Error encountered while updating user email digest settings');
+						return next(err);
+					}
+					winston.info('[2014/11/11] Updating user email digest settings done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2014/11/11] Updating user email digest settings skipped');
+				next();
+			}
 		}
+
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 22!!!
 	], function(err) {

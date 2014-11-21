@@ -1,5 +1,5 @@
 "use strict";
-/*global io, templates, translator, ajaxify, utils, RELATIVE_PATH*/
+/*global io, templates, translator, ajaxify, utils, bootbox, RELATIVE_PATH*/
 
 var socket,
 	config,
@@ -7,6 +7,7 @@ var socket,
 		'username': null,
 		'uid': null,
 		'isFocused': true,
+		'isConnected': false,
 		'currentRoom': null,
 		'widgets': {},
 		'cacheBuster': null
@@ -45,32 +46,16 @@ var socket,
 				case 'admin':
 					room = 'admin';
 				break;
-				default:
-					room = 'global';
+				case 'home':
+					room = 'home';
 				break;
 			}
-
-			app.enterRoom(room, true);
+			app.currentRoom = '';
+			app.enterRoom(room);
 
 			socket.emit('meta.reconnected');
 
-			socket.removeAllListeners('event:nodebb.ready');
-			socket.on('event:nodebb.ready', function(cacheBuster) {
-				if (app.cacheBuster !== cacheBuster) {
-					app.cacheBuster = cacheBuster;
-
-					app.alert({
-						alert_id: 'forum_updated',
-						title: '[[global:updated.title]]',
-						message: '[[global:updated.message]]',
-						clickfn: function() {
-							window.location.reload();
-						},
-						type: 'warning'
-					});
-				}
-			});
-
+			app.isConnected = true;
 			$(window).trigger('action:reconnected');
 
 			setTimeout(function() {
@@ -100,12 +85,13 @@ var socket,
 				ioParams.transports = ['xhr-polling'];
 			}
 
-			socket = io.connect('', ioParams);
+			socket = io.connect(config.websocketAddress, ioParams);
 			reconnecting = false;
 
 			socket.on('event:connect', function (data) {
 				app.username = data.username;
 				app.userslug = data.userslug;
+				app.picture = data.picture;
 				app.uid = data.uid;
 				app.isAdmin = data.isAdmin;
 
@@ -114,6 +100,7 @@ var socket,
 				app.showLoginMessage();
 				app.replaceSelfLinks();
 				$(window).trigger('action:connected');
+				app.isConnected = true;
 			});
 
 			socket.on('event:alert', function (data) {
@@ -124,6 +111,7 @@ var socket,
 
 			socket.on('event:disconnect', function() {
 				$(window).trigger('action:disconnected');
+				app.isConnected = false;
 				socket.socket.connect();
 			});
 
@@ -154,15 +142,19 @@ var socket,
 					timeout: 1000
 				});
 
-				setTimeout(app.logout, 1000);
+				setTimeout(function() {
+					window.location.href = RELATIVE_PATH + '/';
+				}, 1000);
 			});
-
-			app.enterRoom('global');
 
 			app.cacheBuster = config['cache-buster'];
 
+			require(['csrf'], function(csrf) {
+				csrf.set(data.csrf_token);
+			});
+
 			bootbox.setDefaults({
-				locale: config.defaultLang
+				locale: config.userLang
 			});
 		}
 	}
@@ -176,10 +168,16 @@ var socket,
 	};
 
 	app.logout = function() {
-		$.post(RELATIVE_PATH + '/logout', {
-			_csrf: $('#csrf_token').val()
-		}, function() {
-			window.location.href = RELATIVE_PATH + '/';
+		require(['csrf'], function(csrf) {
+			$.ajax(RELATIVE_PATH + '/logout', {
+				type: 'POST',
+				headers: {
+					'x-csrf-token': csrf.get()
+				},
+				success: function() {
+					window.location.href = RELATIVE_PATH + '/';
+				}
+			});
 		});
 	};
 
@@ -213,15 +211,17 @@ var socket,
 		});
 	};
 
-	app.enterRoom = function (room, force) {
+	app.enterRoom = function (room) {
 		if (socket) {
-			if (app.currentRoom === room && !force) {
+			if (app.currentRoom === room) {
 				return;
 			}
 
 			socket.emit('meta.rooms.enter', {
-				'enter': room,
-				'leave': app.currentRoom
+				enter: room,
+				username: app.username,
+				userslug: app.userslug,
+				picture: app.picture
 			});
 
 			app.currentRoom = room;
@@ -269,8 +269,8 @@ var socket,
 		selector = selector || $('a');
 		selector.each(function() {
 			var href = $(this).attr('href');
-			if (href && app.userslug) {
-				$(this).attr('href', href.replace(/\[self\]/g, app.userslug));
+			if (href && app.userslug && href.indexOf('_') !== -1) {
+				$(this).attr('href', href.replace(/_/g, app.userslug));
 			}
 		});
 	};
@@ -325,15 +325,15 @@ var socket,
 		}
 
 		require(['chat'], function (chat) {
+			function loadAndCenter(chatModal) {
+				chat.load(chatModal.attr('UUID'));
+				chat.center(chatModal);
+			}
+
 			if (!chat.modalExists(touid)) {
 				chat.createModal(username, touid, loadAndCenter);
 			} else {
 				loadAndCenter(chat.getModal(touid));
-			}
-
-			function loadAndCenter(chatModal) {
-				chat.load(chatModal.attr('UUID'));
-				chat.center(chatModal);
 			}
 		});
 	};
@@ -363,7 +363,7 @@ var socket,
 				titleObj.interval = setInterval(function() {
 					var title = titleObj.titles[titleObj.titles.indexOf(window.document.title) ^ 1];
 					if (title) {
-						window.document.title = title;
+						window.document.title = $('<div/>').html(title).text();
 					}
 				}, 2000);
 			});
@@ -372,7 +372,7 @@ var socket,
 				clearInterval(titleObj.interval);
 			}
 			if (titleObj.titles[0]) {
-				window.document.title = titleObj.titles[0];
+				window.document.title = $('<div/>').html(titleObj.titles[0]).text();
 			}
 		}
 	};
@@ -385,16 +385,20 @@ var socket,
 		}
 
 		socket.emit('meta.buildTitle', url, function(err, title, numNotifications) {
+			if (err) {
+				return;
+			}
 			titleObj.titles[0] = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') + title;
 			app.alternatingTitle('');
 		});
 	};
 
-	function updateOnlineStatus(uid) {
-		socket.emit('user.isOnline', uid, function(err, data) {
-			$('#logged-in-menu #user_label #user-profile-link>i').attr('class', 'fa fa-circle status ' + data.status);
-		});
-	}
+	app.toggleNavbar = function(state) {
+		var navbarEl = $('.navbar');
+		if (navbarEl) {
+			navbarEl.toggleClass('hidden', !!!state);
+		}
+	};
 
 	function exposeConfigToTemplates() {
 		$(document).ready(function() {
@@ -411,8 +415,8 @@ var socket,
 		if (utils.findBootstrapEnvironment() === 'xs') {
 			return;
 		}
-		$('#header-menu li i[title]').each(function() {
-			$(this).parents('a').tooltip({
+		$('#header-menu li [title]').each(function() {
+			$(this).tooltip({
 				placement: 'bottom',
 				title: $(this).attr('title')
 			});
@@ -434,12 +438,21 @@ var socket,
 			searchFields = $("#search-fields"),
 			searchInput = $('#search-fields input');
 
+		$('#search-form').on('submit', dismissSearch);
+		searchInput.on('blur', dismissSearch);
+
 		function dismissSearch(){
 			searchFields.hide();
 			searchButton.show();
 		}
 
-		searchButton.off().on('click', function(e) {
+		function prepareSearch() {
+			searchFields.removeClass('hide').show();
+			searchButton.hide();
+			searchInput.focus();
+		}
+
+		searchButton.on('click', function(e) {
 			if (!config.loggedIn && !config.allowGuestSearching) {
 				app.alert({
 					message:'[[error:search-requires-login]]',
@@ -450,21 +463,41 @@ var socket,
 			}
 			e.stopPropagation();
 
-			searchFields.removeClass('hide').show();
-			$(this).hide();
-
-			searchInput.focus();
-
-			$('#search-form').on('submit', dismissSearch);
-			searchInput.on('blur', dismissSearch);
+			prepareSearch();
 			return false;
 		});
 
-		$('#search-form').on('submit', function () {
-			var input = $(this).find('input');
-			ajaxify.go('search/' + input.val().replace(/^[ ?#]*/, ''));
-			input.val('');
-			return false;
+		require(['search', 'mousetrap'], function(search, Mousetrap) {
+			$('#search-form').on('submit', function (e) {
+				e.preventDefault();
+				var input = $(this).find('input'),
+					term = input.val();
+
+
+				search.query(term, function() {
+					input.val('');
+				});
+			});
+
+			$('.topic-search')
+				.on('click', '.prev', function() {
+					search.topicDOM.prev();
+				})
+				.on('click', '.next', function() {
+					search.topicDOM.next();
+				});
+
+			Mousetrap.bind('ctrl+f', function(e) {
+				// If in topic, open search window and populate, otherwise regular behaviour
+				var match = ajaxify.currentPage.match(/^topic\/([\d]+)/),
+					tid;
+				if (match) {
+					e.preventDefault();
+					tid = match[1];
+					searchInput.val('in:topic-' + tid + ' ');
+					prepareSearch();
+				}
+			});
 		});
 	}
 
@@ -478,11 +511,12 @@ var socket,
 
 	function handleStatusChange() {
 		$('#user-control-list .user-status').off('click').on('click', function(e) {
-			socket.emit('user.setStatus', $(this).attr('data-status'), function(err, data) {
+			var status = $(this).attr('data-status');
+			socket.emit('user.setStatus', status, function(err, data) {
 				if(err) {
 					return app.alertError(err.message);
 				}
-				updateOnlineStatus(data.uid);
+				$('#logged-in-menu #user_label #user-profile-link>i').attr('class', 'fa fa-circle status ' + status);
 			});
 			e.preventDefault();
 		});
@@ -509,13 +543,13 @@ var socket,
 
 			$('#logout-link').on('click', app.logout);
 
-			$window.blur(function(){
-				app.isFocused = false;
-			});
-
-			$window.focus(function(){
-				app.isFocused = true;
-				app.alternatingTitle('');
+			Visibility.change(function(e, state){
+				if (state === 'visible') {
+					app.isFocused = true;
+					app.alternatingTitle('');
+				} else if (state === 'hidden') {
+					app.isFocused = false;
+				}
 			});
 
 			createHeaderTooltips();
@@ -539,6 +573,32 @@ var socket,
 						url: url
 					});
 				});
+			});
+
+			socket.removeAllListeners('event:nodebb.ready');
+			socket.on('event:nodebb.ready', function(cacheBusters) {
+				if (
+					!app.cacheBusters ||
+					app.cacheBusters.general !== cacheBusters.general ||
+					app.cacheBusters.css !== cacheBusters.css ||
+					app.cacheBusters.js !== cacheBusters.js
+				) {
+					app.cacheBusters = cacheBusters;
+
+					app.alert({
+						alert_id: 'forum_updated',
+						title: '[[global:updated.title]]',
+						message: '[[global:updated.message]]',
+						clickfn: function() {
+							window.location.reload();
+						},
+						type: 'warning'
+					});
+				}
+			});
+
+			require(['taskbar'], function(taskbar) {
+				taskbar.init();
 			});
 		});
 	};

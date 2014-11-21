@@ -1,0 +1,8 @@
+{
+    "groups": "Groups",
+    "view_group": "Ver Grupo",
+    "details.title": "Detalles de Grupo",
+    "details.members": "Lista de Miembros",
+    "details.has_no_posts": "Los miembros de este grupo no han hecho ninguna publicación.",
+    "details.latest_posts": "Últimas Publicaciones"
+}

@@ -139,7 +139,7 @@
 		},
 
 		isPasswordValid: function(password) {
-			return typeof password === 'string' && password.length && password.indexOf(' ') === -1;
+			return typeof password === 'string' && password.length;
 		},
 
 		isNumber: function(n) {
@@ -233,16 +233,11 @@
 		},
 
 		toISOString: function(timestamp) {
-			if(!timestamp) {
+			if (!timestamp || !Date.prototype.toISOString) {
 				return '';
 			}
 
-			try {
-				return new Date(parseInt(timestamp, 10)).toISOString();
-			} catch(e){
-				console.log(timestamp, e.stack);
-			}
-			return '';
+			return Date.prototype.toISOString ? new Date(parseInt(timestamp, 10)).toISOString() : timestamp;
 		},
 
 		tags : ['a', 'abbr', 'acronym', 'address', 'applet', 'area', 'article', 'aside', 'audio', 'b', 'base', 'basefont', 'bdi', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'command', 'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'dir', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'frame', 'frameset', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'map', 'mark', 'menu', 'meta', 'meter', 'nav', 'noframes', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'param', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strike', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'tt', 'u', 'ul', 'var', 'video', 'wbr'],
@@ -310,6 +305,24 @@
 			return a;
 		},
 
+		getQueryParams: function() {
+			var search = window.location.search.slice(1),
+				data = {};
+
+			search = search.split('&');
+			for(var x=0,numParams=search.length,temp;x<numParams;x++) {
+				temp = search[x].split('=');
+				if (temp[0].substr(-2, 2) !== '[]') {
+					data[temp[0]] = temp[1];
+				} else {
+					data[temp[0].slice(0, -2)] = data[temp[0].slice(0, -2)] || [];
+					data[temp[0].slice(0, -2)].push(temp[1]);
+				}
+			}
+
+			return data;
+		},
+
 		// return boolean if string 'true' or string 'false', or if a parsable string which is a number
 		// also supports JSON object and/or arrays parsing
 		toType: function(str) {
@@ -358,6 +371,16 @@
 			return utils.props(obj[prop], newProps, value);
 		}
 	};
+
+	if (typeof String.prototype.startsWith != 'function') {
+		String.prototype.startsWith = function (prefix){
+			if (this.length < prefix.length)
+				return false;
+			for (var i = prefix.length - 1; (i >= 0) && (this[i] === prefix[i]); --i)
+				continue;
+			return i < 0;
+		};
+	}
 
 	if ('undefined' !== typeof window) {
 		window.utils = module.exports;

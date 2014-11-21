@@ -54,43 +54,56 @@ var winston = require('winston'),
 						if (err) {
 							return next(err);
 						}
+
 						options.tags = options.tags || [];
-						if (isMainPost) {
-							title = title.trim();
 
-							var topicData = {
-								title: title,
-								slug: tid + '/' + utils.slugify(title)
-							};
-							if (options.topic_thumb) {
-								topicData.thumb = options.topic_thumb;
-							}
-
-							db.setObject('topic:' + tid, topicData, function(err) {
-								plugins.fireHook('action:topic.edit', tid);
+						if (!isMainPost) {
+							return next(null, {
+								tid: tid,
+								isMainPost: false
 							});
-
-							topics.updateTags(tid, options.tags);
 						}
 
-						next(null, {
+						title = title.trim();
+
+						var topicData = {
 							tid: tid,
-							title: validator.escape(title),
-							isMainPost: isMainPost,
-							tags: options.tags.map(function(tag) { return {name:tag}; })
+							mainPid: pid,
+							title: title,
+							slug: tid + '/' + utils.slugify(title)
+						};
+						if (options.topic_thumb) {
+							topicData.thumb = options.topic_thumb;
+						}
+
+						db.setObject('topic:' + tid, topicData, function(err) {
+							plugins.fireHook('action:topic.edit', topicData);
+						});
+
+						topics.updateTags(tid, options.tags, function(err) {
+							if (err) {
+								return next(err);
+							}
+							topics.getTopicTagsObjects(tid, function(err, tags) {
+								next(err, {
+									tid: tid,
+									title: validator.escape(title),
+									isMainPost: isMainPost,
+									tags: tags
+								});
+							});
 						});
 					});
-
 				},
-				content: function(next) {
-					PostTools.parse(postData.content, next);
+				postData: function(next) {
+					PostTools.parsePost(postData, uid, next);
 				}
 			}, function(err, results) {
 				if (err) {
 					return callback(err);
 				}
-
-				events.logPostEdit(uid, pid);
+				results.content = results.postData.content;
+				//events.logPostEdit(uid, pid);
 				plugins.fireHook('action:post.edit', postData);
 				callback(null, results);
 			});
@@ -126,55 +139,21 @@ var winston = require('winston'),
 				next();
 			}
 		], function(err) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
-			posts.setPostField(pid, 'deleted', isDelete ? 1 : 0, function(err) {
-				if (err) {
-					return callback(err);
-				}
-
-				events[isDelete ? 'logPostDelete' : 'logPostRestore'](uid, pid);
-
-				db.incrObjectFieldBy('global', 'postCount', isDelete ? -1 : 1);
-
-				posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'timestamp'], function(err, postData) {
+			events[isDelete ? 'logPostDelete' : 'logPostRestore'](uid, pid);
+			if (isDelete) {
+				posts.delete(pid, callback);
+			} else {
+				posts.restore(pid, function(err, postData) {
 					if (err) {
 						return callback(err);
 					}
-
-					if (isDelete) {
-						plugins.fireHook('action:post.delete', pid);
-					} else {
-						plugins.fireHook('action:post.restore', postData);
-					}
-
-					async.parallel([
-						function(next) {
-							topics[isDelete ? 'decreasePostCount' : 'increasePostCount'](postData.tid, next);
-						},
-						function(next) {
-							user.incrementUserPostCountBy(postData.uid, isDelete ? -1 : 1, next);
-						},
-						function(next) {
-							updateTopicTimestamp(postData.tid, next);
-						},
-						function(next) {
-							addOrRemoveFromCategory(pid, postData.tid, postData.timestamp, isDelete, next);
-						}
-					], function(err) {
-						if (!isDelete) {
-							PostTools.parse(postData.content, function(err, parsed) {
-								postData.content = parsed;
-								callback(err, postData);
-							});
-							return;
-						}
-						callback(err, postData);
-					});
+					PostTools.parsePost(postData, uid, callback);
 				});
-			});
+			}
 		});
 	}
 
@@ -183,60 +162,23 @@ var winston = require('winston'),
 			if (err || !canEdit) {
 				return callback(err || new Error('[[error:no-privileges]]'));
 			}
-
+			events.logPostPurge(uid, pid);
 			posts.purge(pid, callback);
 		});
 	};
 
-	function updateTopicTimestamp(tid, callback) {
-		topics.getLatestUndeletedPid(tid, function(err, pid) {
-			if(err || !pid) {
-				return callback(err);
-			}
+	PostTools.parsePost = function(postData, uid, callback) {
+		postData.content = postData.content || '';
 
-			posts.getPostField(pid, 'timestamp', function(err, timestamp) {
-				if (err) {
-					return callback(err);
-				}
-
-				if (timestamp) {
-					topics.updateTimestamp(tid, timestamp);
-				}
-				callback();
-			});
+		plugins.fireHook('filter:parse.post', {postData: postData, uid: uid}, function(err, data) {
+			callback(err, data ? data.postData : null);
 		});
-	}
-
-	function addOrRemoveFromCategory(pid, tid, timestamp, isDelete, callback) {
-		topics.getTopicField(tid, 'cid', function(err, cid) {
-			if (err) {
-				return callback(err);
-			}
-
-			db.incrObjectFieldBy('category:' + cid, 'post_count', isDelete ? -1 : 1);
-
-			if (isDelete) {
-				db.sortedSetRemove('categories:recent_posts:cid:' + cid, pid, callback);
-			} else {
-				db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid, callback);
-			}
-		});
-	}
-
-	PostTools.parse = function(raw, callback) {
-		parse('filter:post.parse', raw, callback);
 	};
 
-	PostTools.parseSignature = function(raw, callback) {
-		parse('filter:post.parseSignature', raw, callback);
+	PostTools.parseSignature = function(userData, uid, callback) {
+		userData.signature = userData.signature || '';
+
+		plugins.fireHook('filter:parse.signature', {userData: userData, uid: uid}, callback);
 	};
-
-	function parse(hook, raw, callback) {
-		raw = raw || '';
-
-		plugins.fireHook(hook, raw, function(err, parsed) {
-			callback(null, !err ? parsed : raw);
-		});
-	}
 
 }(exports));

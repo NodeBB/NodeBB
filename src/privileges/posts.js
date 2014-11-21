@@ -2,26 +2,27 @@
 'use strict';
 
 var async = require('async'),
+	winston = require('winston'),
 
 	posts = require('../posts'),
 	topics = require('../topics'),
 	user = require('../user'),
 	helpers = require('./helpers'),
 	groups = require('../groups'),
-	categories = require('../categories');
+	categories = require('../categories'),
+	plugins = require('../plugins');
 
 module.exports = function(privileges) {
 
 	privileges.posts = {};
 
 	privileges.posts.get = function(pids, uid, callback) {
-
+		if (!Array.isArray(pids) || !pids.length) {
+			return callback(null, []);
+		}
 		async.parallel({
-			manage_content: function(next) {
-				helpers.hasEnoughReputationFor('privileges:manage_content', uid, next);
-			},
-			manage_topic: function(next) {
-				helpers.hasEnoughReputationFor('privileges:manage_topic', uid, next);
+			manage: function(next) {
+				helpers.hasEnoughReputationFor(['privileges:manage_content', 'privileges:manage_topic'], uid, next);
 			},
 			isAdministrator: function(next) {
 				user.isAdministrator(uid, next);
@@ -31,19 +32,14 @@ module.exports = function(privileges) {
 				return callback(err);
 			}
 
-			var userPriv = userResults.isAdministrator || userResults.manage_topic || userResults.manage_content;
+			var userPriv = userResults.isAdministrator || userResults.manage;
 
 			async.parallel({
 				isOwner: function(next) {
 					posts.isOwner(pids, uid, next);
 				},
 				isModerator: function(next) {
-					posts.getCidsByPids(pids, function(err, cids) {
-						if (err) {
-							return next(err);
-						}
-						user.isModerator(uid, cids, next);
-					});
+					posts.isModerator(pids, uid, next);
 				}
 			}, function(err, postResults) {
 				if (err) {
@@ -76,6 +72,41 @@ module.exports = function(privileges) {
 		});
 	};
 
+	privileges.posts.filter = function(privilege, pids, uid, callback) {
+		if (!Array.isArray(pids) || !pids.length) {
+			return callback(null, []);
+		}
+		posts.getCidsByPids(pids, function(err, cids) {
+			if (err) {
+				return callback(err);
+			}
+
+			pids = pids.map(function(pid, index) {
+				return {pid: pid, cid: cids[index]};
+			});
+
+			privileges.categories.filterCids(privilege, cids, uid, function(err, cids) {
+				if (err) {
+					return callback(err);
+				}
+
+				pids = pids.filter(function(post) {
+					return cids.indexOf(post.cid) !== -1;
+				}).map(function(post) {
+					return post.pid;
+				});
+
+				plugins.fireHook('filter:privileges.posts.filter', {
+					privilege: privilege,
+					uid: uid,
+					pids: pids
+				},  function(err, data) {
+					callback(err, data ? data.pids : null);
+				});
+			});
+		});
+	};
+
 	privileges.posts.canEdit = function(pid, uid, callback) {
 		helpers.some([
 			function(next) {
@@ -89,10 +120,7 @@ module.exports = function(privileges) {
 							posts.isOwner(pid, uid, next);
 						},
 						function(next) {
-							helpers.hasEnoughReputationFor('privileges:manage_content', uid, next);
-						},
-						function(next) {
-							helpers.hasEnoughReputationFor('privileges:manage_topic', uid, next);
+							helpers.hasEnoughReputationFor(['privileges:manage_content', 'privileges:manage_topic'], uid, next);
 						}
 					], next);
 				});

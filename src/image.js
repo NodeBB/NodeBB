@@ -1,8 +1,7 @@
 'use strict';
 
 var fs = require('fs'),
-	gm = require('gm').subClass({imageMagick: true}),
-	meta = require('./meta');
+	gm = require('gm').subClass({imageMagick: true});
 
 var image = {};
 
@@ -28,8 +27,7 @@ image.resizeImage = function(path, extension, width, height, callback) {
 };
 
 image.convertImageToPng = function(path, extension, callback) {
-	var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10);
-	if(convertToPNG && extension !== '.png') {
+	if(extension !== '.png') {
 		gm(path).toBuffer('png', function(err, buffer) {
 			if (err) {
 				return callback(err);

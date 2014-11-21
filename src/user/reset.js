@@ -11,12 +11,11 @@ var async = require('async'),
 	db = require('../database'),
 	meta = require('../meta'),
 	events = require('../events'),
-	emailer = require('../emailer'),
-	tran;
+	emailer = require('../emailer');
 
 (function(UserReset) {
 
-	UserReset.validate = function(socket, code, callback) {
+	UserReset.validate = function(code, callback) {
 		db.getObjectField('reset:uid', code, function(err, uid) {
 			if (err || !uid) {
 				return callback(err, false);
@@ -39,7 +38,7 @@ var async = require('async'),
 		});
 	};
 
-	UserReset.send = function(socket, email, callback) {
+	UserReset.send = function(email, callback) {
 		user.getUidByEmail(email, function(err, uid) {
 			if (err || !uid) {
 				return callback(err || new Error('[[error:invalid-email]]'));
@@ -64,29 +63,34 @@ var async = require('async'),
 		});
 	};
 
-	UserReset.commit = function(socket, code, password, callback) {
-		UserReset.validate(socket, code, function(err, validated) {
+	UserReset.commit = function(code, password, callback) {
+		UserReset.validate(code, function(err, validated) {
 			if(err) {
 				return callback(err);
 			}
 
-			if (validated) {
-				db.getObjectField('reset:uid', code, function(err, uid) {
+			if (!validated) {
+				return;
+			}
+
+			db.getObjectField('reset:uid', code, function(err, uid) {
+				if (err) {
+					return callback(err);
+				}
+
+				user.hashPassword(password, function(err, hash) {
 					if (err) {
 						return callback(err);
 					}
-
-					user.hashPassword(password, function(err, hash) {
-						user.setUserField(uid, 'password', hash);
-						events.logPasswordReset(uid);
-					});
+					user.setUserField(uid, 'password', hash);
+					events.logPasswordReset(uid);
 
 					db.deleteObjectField('reset:uid', code);
 					db.deleteObjectField('reset:expiry', code);
 
-					callback(null);
+					user.auth.resetLockout(uid, callback);
 				});
-			}
+			});
 		});
 	};
 

@@ -1,12 +1,12 @@
 var	assert = require('assert'),
-	db = require('../mocks/databasemock'),
+	db = require('./mocks/databasemock'),
 	async = require('async');
 
 
 describe('Test database', function() {
 	it('should work', function(){
 		assert.doesNotThrow(function(){
-			var db = require('../mocks/databasemock');
+			var db = require('./mocks/databasemock');
 		});
 	});
 
@@ -271,14 +271,14 @@ describe('Test database', function() {
 
 	it('should not throw err', function(done) {
 		function sortedSetAdd(callback) {
-			db.sortedSetAdd('sortedSet3', 12, 5, function(err, data) {
-				callback(err, {'sortedSetAdd': data});
+			db.sortedSetAdd('sortedSet3', 12, 5, function(err) {
+				callback(err);
 			});
 		}
 
 		function sortedSetRemove(callback) {
 			db.sortedSetRemove('sortedSet3', 12, function(err, data) {
-				callback(err, {'sortedSetRemove': data});
+				callback(err);
 			});
 		}
 
@@ -361,5 +361,9 @@ describe('Test database', function() {
 			done();
 		});
 
+	});
+
+	after(function() {
+		db.flushdb();
 	});
 });

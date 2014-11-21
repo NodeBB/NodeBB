@@ -6,13 +6,19 @@ var fs = require('fs'),
 	winston = require('winston'),
 	nconf = require('nconf'),
 	semver = require('semver'),
+	express = require('express'),
+	npm = require('npm'),
 
 	db = require('./database'),
 	emitter = require('./emitter'),
 	meta = require('./meta'),
 	translator = require('../public/src/translator'),
 	utils = require('../public/src/utils'),
-	pkg = require('../package.json');
+	hotswap = require('./hotswap'),
+	pkg = require('../package.json'),
+
+	controllers = require('./controllers'),
+	app, middleware;
 
 (function(Plugins) {
 
@@ -23,13 +29,18 @@ var fs = require('fs'),
 	Plugins.lessFiles = [];
 	Plugins.clientScripts = [];
 	Plugins.customLanguages = [];
+	Plugins.libraryPaths = [];
 
 	Plugins.initialized = false;
 
-	Plugins.init = function() {
+	Plugins.init = function(nbbApp, nbbMiddleware) {
 		if (Plugins.initialized) {
 			return;
 		}
+
+		app = nbbApp;
+		middleware = nbbMiddleware;
+		hotswap.prepare(nbbApp);
 
 		if (global.env === 'development') {
 			winston.info('[plugins] Initializing plugins system');
@@ -67,11 +78,13 @@ var fs = require('fs'),
 
 	Plugins.reload = function(callback) {
 		// Resetting all local plugin data
+		Plugins.libraries = {};
 		Plugins.loadedHooks = {};
 		Plugins.staticDirs = {};
 		Plugins.cssFiles.length = 0;
 		Plugins.lessFiles.length = 0;
 		Plugins.clientScripts.length = 0;
+		Plugins.libraryPaths.length = 0;
 
 		// Read the list of activated plugins and require their libraries
 		async.waterfall([
@@ -96,9 +109,6 @@ var fs = require('fs'),
 				});
 			},
 			function(next) {
-				if (global.env === 'development') {
-					winston.info('[plugins] Sorting hooks to fire in priority sequence');
-				}
 				Object.keys(Plugins.loadedHooks).forEach(function(hook) {
 					var hooks = Plugins.loadedHooks[hook];
 					hooks = hooks.sort(function(a, b) {
@@ -107,8 +117,23 @@ var fs = require('fs'),
 				});
 
 				next();
-			}
+			},
+			async.apply(Plugins.reloadRoutes)
 		], callback);
+	};
+
+	Plugins.reloadRoutes = function(callback) {
+		var router = express.Router();
+		router.hotswapId = 'plugins';
+		router.render = function() {
+			app.render.apply(app, arguments);
+		};
+
+		Plugins.fireHook('static:app.load', {app: app, router: router, middleware: middleware, controllers: controllers}, function() {
+			hotswap.replace('plugins', router);
+			winston.info('[plugins] All plugins reloaded and rerouted');
+			callback();
+		});
 	};
 
 	Plugins.loadPlugin = function(pluginPath, callback) {
@@ -117,8 +142,17 @@ var fs = require('fs'),
 				return callback(pluginPath.match('nodebb-theme') ? null : err);
 			}
 
-			var pluginData = JSON.parse(data),
-				libraryPath, staticDir;
+			var pluginData, libraryPath, staticDir;
+
+			try {
+				pluginData = JSON.parse(data);
+			} catch (err) {
+				var pluginDir = pluginPath.split(path.sep);
+				pluginDir = pluginDir[pluginDir.length -1];
+
+				winston.error('[plugins/' + pluginDir + '] Plugin not loaded - please check its plugin.json for errors');
+				return callback();
+			}
 
 			/*
 				Starting v0.5.0, `minver` is deprecated in favour of `compatibility`.
@@ -133,7 +167,7 @@ var fs = require('fs'),
 			// End backwards compatibility block (#1437)
 
 			if (pluginData.compatibility && semver.validRange(pluginData.compatibility)) {
-				if (semver.ltr(pkg.version, pluginData.compatibility)) {
+				if (!semver.gtr(pkg.version, pluginData.compatibility)) {
 					// NodeBB may not be new enough to run this plugin
 					process.stdout.write('\n');
 					winston.warn('[plugins/' + pluginData.id + '] This plugin may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing.');
@@ -151,6 +185,7 @@ var fs = require('fs'),
 							if (exists) {
 								if (!Plugins.libraries[pluginData.id]) {
 									Plugins.libraries[pluginData.id] = require(libraryPath);
+									Plugins.libraryPaths.push(libraryPath);
 								}
 
 								// Register hooks for this plugin
@@ -184,29 +219,31 @@ var fs = require('fs'),
 						Plugins.staticDirs[pluginData.id] = path.join(pluginPath, pluginData.staticDir);
 					}
 
-					for(var key in pluginData.staticDirs) {
-						(function(mappedPath) {
-							if (pluginData.staticDirs.hasOwnProperty(mappedPath)) {
-								if (Plugins.staticDirs[mappedPath]) {
-									winston.warn('[plugins/' + pluginData.id + '] Mapped path (' + mappedPath + ') already specified!');
-								} else if (!validMappedPath.test(mappedPath)) {
-									winston.warn('[plugins/' + pluginData.id + '] Invalid mapped path specified: ' + mappedPath + '. Path must adhere to: ' + validMappedPath.toString());
-								} else {
-									realPath = pluginData.staticDirs[mappedPath];
-									staticDir = path.join(pluginPath, realPath);
+					function mapStaticDirs(mappedPath) {
+						if (Plugins.staticDirs[mappedPath]) {
+							winston.warn('[plugins/' + pluginData.id + '] Mapped path (' + mappedPath + ') already specified!');
+						} else if (!validMappedPath.test(mappedPath)) {
+							winston.warn('[plugins/' + pluginData.id + '] Invalid mapped path specified: ' + mappedPath + '. Path must adhere to: ' + validMappedPath.toString());
+						} else {
+							realPath = pluginData.staticDirs[mappedPath];
+							staticDir = path.join(pluginPath, realPath);
 
-									(function(staticDir) {
-										fs.exists(staticDir, function(exists) {
-											if (exists) {
-												Plugins.staticDirs[pluginData.id + '/' + mappedPath] = staticDir;
-											} else {
-												winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' + mappedPath + ' => ' + staticDir + '\' not found.');
-											}
-										});
-									}(staticDir));
-								}
-							}
-						}(key));
+							(function(staticDir) {
+								fs.exists(staticDir, function(exists) {
+									if (exists) {
+										Plugins.staticDirs[pluginData.id + '/' + mappedPath] = staticDir;
+									} else {
+										winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' + mappedPath + ' => ' + staticDir + '\' not found.');
+									}
+								});
+							}(staticDir));
+						}
+					}
+
+					for(var key in pluginData.staticDirs) {
+						if (pluginData.staticDirs.hasOwnProperty(key)) {
+							mapStaticDirs(key);
+						}
 					}
 
 					next();
@@ -262,8 +299,17 @@ var fs = require('fs'),
 
 							async.each(languages, function(pathToLang, next) {
 								fs.readFile(pathToLang, function(err, file) {
+									var json;
+
+									try {
+										json = JSON.parse(file.toString());
+									} catch (err) {
+										winston.error('[plugins] Unable to parse custom language file: ' + pathToLang + '\r\n' + err.stack);
+										return next(err);
+									}
+
 									arr.push({
-										file: JSON.parse(file.toString()),
+										file: json,
 										route: pathToLang.replace(pathToFolder, '')
 									});
 
@@ -342,120 +388,90 @@ var fs = require('fs'),
 		return !!(Plugins.loadedHooks[hook] && Plugins.loadedHooks[hook].length > 0);
 	};
 
-	Plugins.fireHook = function(hook) {
-		var callback = typeof arguments[arguments.length-1] === 'function' ? arguments[arguments.length-1] : null,
-			args = arguments.length ? Array.prototype.slice.call(arguments, 1) : [];
-
-		if (callback) {
-			args.pop();
-		}
+	Plugins.fireHook = function(hook, params, callback) {
+		callback = typeof callback === 'function' ? callback : function() {};
 
 		var hookList = Plugins.loadedHooks[hook];
 
-		if (Array.isArray(hookList)) {
-			// if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
-			var hookType = hook.split(':')[0];
-			switch (hookType) {
-				case 'filter':
-					async.reduce(hookList, args, function(value, hookObj, next) {
-						if (hookObj.method) {
-							if (!hookObj.hasOwnProperty('callbacked') || hookObj.callbacked === true) {
-								// omg, after 6 months I finally realised what this does...
-								// It adds the callback to the arguments passed-in, since the callback
-								// is defined in *this* file (the async cb), and not the hooks themselves.
-								var	value = hookObj.method.apply(Plugins, value.concat(function() {
-									next(arguments[0], Array.prototype.slice.call(arguments, 1));
-								}));
+		if (!Array.isArray(hookList) || !hookList.length) {
+			return callback(null, params);
+		}
 
-								/*
-									Backwards compatibility block for v0.5.0
-									Remove this once NodeBB enters v0.5.0-1
-								*/
-								if (value !== undefined && value !== callback) {
-									winston.warn('[plugins/' + hookObj.id + '] "callbacked" deprecated as of 0.4x. Use asynchronous method instead for hook: ' + hook);
-									next(null, [value]);
-								}
-							} else {
-								winston.warn('[plugins/' + hookObj.id + '] "callbacked" deprecated as of 0.4x. Use asynchronous method instead for hook: ' + hook);
-								value = hookObj.method.apply(Plugins, value);
-								next(null, [value]);
-							}
-							/* End backwards compatibility block */
-						} else {
-							if (global.env === 'development') {
-								winston.info('[plugins] Expected method for hook \'' + hook + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
-							}
-							next(null, [value]);
-						}
-					}, function(err, values) {
-						if (err) {
-							if (global.env === 'development') {
-								winston.info('[plugins] Problem executing hook: ' + hook + ' err: ' + JSON.stringify(err));
-							}
-						}
-
-						if (callback) {
-							callback.apply(Plugins, [err].concat(values));
-						}
-					});
-					break;
-				case 'action':
-					var deprecationWarn = [];
-					async.each(hookList, function(hookObj, next) {
-						/*
-							Backwards compatibility block for v0.5.0
-							Remove this once NodeBB enters v0.6.0-1
-						*/
-						if (hook === 'action:app.load') {
-							deprecationWarn.push(hookObj.id);
-						}
-						/* End backwards compatibility block */
-
-						if (hookObj.method) {
-							hookObj.method.apply(Plugins, args);
-						} else {
-							if (global.env === 'development') {
-								winston.info('[plugins] Expected method \'' + hookObj.method + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
-							}
-						}
-
-						next();
-					}, function() {
-						/*
-							Backwards compatibility block for v0.5.0
-							Remove this once NodeBB enters v0.6.0-1
-						*/
-						if (deprecationWarn.length) {
-							winston.warn('[plugins] The `action:app.load` hook is deprecated in favour of `static:app.load`, please notify the developers of the following plugins:');
-							for(var x=0,numDeprec=deprecationWarn.length;x<numDeprec;x++) {
-								process.stdout.write('  * ' + deprecationWarn[x] + '\n');
-							}
-						}
-						/* End backwards compatibility block */
-					});
-					break;
-				case 'static':
-					async.each(hookList, function(hookObj, next) {
-						if (hookObj.method) {
-							hookObj.method.apply(Plugins, args.concat(next));
-						}
-					}, function(err) {
-						callback(err);
-					});
-					break;
-				default:
-					// Do nothing...
-					break;
-			}
-		} else {
-			// Otherwise, this hook contains no methods
-			if (callback) {
-				callback.apply(this, [null].concat(args));
-			}
-
-			return args[0];
+		// if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
+		var hookType = hook.split(':')[0];
+		switch (hookType) {
+			case 'filter':
+				fireFilterHook(hook, hookList, params, callback);
+				break;
+			case 'action':
+				fireActionHook(hook, hookList, params, callback);
+				break;
+			case 'static':
+				fireStaticHook(hook, hookList, params, callback);
+				break;
+			default:
+				winston.warn('[plugins] Unknown hookType: ' + hookType + ', hook : ' + hook);
+				break;
 		}
 	};
+
+	function fireFilterHook(hook, hookList, params, callback) {
+		async.reduce(hookList, params, function(params, hookObj, next) {
+			if (typeof hookObj.method !== 'function') {
+				if (global.env === 'development') {
+					winston.warn('[plugins] Expected method for hook \'' + hook + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
+				}
+				return next(null, params);
+			}
+
+			hookObj.method(params, next);
+
+		}, function(err, values) {
+			if (err) {
+				winston.error('[plugins] Problem executing hook: ' + hook + ' err: ' + err.stack);
+			}
+
+			callback(err, values);
+		});
+	}
+
+	function fireActionHook(hook, hookList, params, callback) {
+		async.each(hookList, function(hookObj, next) {
+
+			if (typeof hookObj.method !== 'function') {
+				if (global.env === 'development') {
+					winston.warn('[plugins] Expected method for hook \'' + hook + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
+				}
+				return next();
+			}
+
+			hookObj.method(params);
+			next();
+		}, callback);
+	}
+
+	function fireStaticHook(hook, hookList, params, callback) {
+		async.each(hookList, function(hookObj, next) {
+			if (typeof hookObj.method === 'function') {
+				var timedOut = false;
+
+				var timeoutId = setTimeout(function() {
+					winston.warn('[plugins] Callback timed out, hook \'' + hook + '\' in plugin \'' + hookObj.id + '\'');
+					timedOut = true;
+					next();
+				}, 5000);
+
+				hookObj.method(params, function() {
+					clearTimeout(timeoutId);
+					if (!timedOut) {
+						next.apply(null, arguments);
+					}
+				});
+			} else {
+				next();
+			}
+		}, callback);
+	}
 
 	Plugins.isActive = function(id, callback) {
 		db.isSetMember('plugins:active', id, callback);
@@ -478,37 +494,27 @@ var fs = require('fs'),
 					return callback(err);
 				}
 
-				meta.restartRequired = true;
+				meta.reloadRequired = true;
 
 				if (active) {
 					Plugins.fireHook('action:plugin.deactivate', id);
 				}
 
-				// Reload meta data
-				Plugins.reload(function() {
-
-					if(!active) {
-						Plugins.fireHook('action:plugin.activate', id);
-					}
-
-					if (typeof callback === 'function') {
-						callback(null, {
-							id: id,
-							active: !active
-						});
-					}
-				});
+				if (typeof callback === 'function') {
+					callback(null, {
+						id: id,
+						active: !active
+					});
+				}
 			});
 		});
 	};
 
-	Plugins.toggleInstall = function(id, callback) {
+	Plugins.toggleInstall = function(id, version, callback) {
 		Plugins.isInstalled(id, function(err, installed) {
 			if (err) {
 				return callback(err);
 			}
-
-			var npm = require('npm');
 
 			async.waterfall([
 				function(next) {
@@ -527,7 +533,7 @@ var fs = require('fs'),
 					npm.load({}, next);
 				},
 				function(res, next) {
-					npm.commands[installed ? 'uninstall' : 'install'](installed ? id : [id], next);
+					npm.commands[installed ? 'uninstall' : 'install'](installed ? id : [id + '@' + (version || 'latest')], next);
 				}
 			], function(err) {
 				callback(err, {
@@ -538,6 +544,17 @@ var fs = require('fs'),
 		});
 	};
 
+	Plugins.upgrade = function(id, version, callback) {
+		async.waterfall([
+			function(next) {
+				npm.load({}, next);
+			},
+			function(res, next) {
+				npm.commands.install([id + '@' + (version || 'latest')], next);
+			}
+		], callback);
+	};
+
 	Plugins.getTemplates = function(callback) {
 		var templates = {};
 
@@ -546,9 +563,13 @@ var fs = require('fs'),
 				if (plugin.templates && plugin.id && plugin.active) {
 					var templatesPath = path.join(__dirname, '../node_modules', plugin.id, plugin.templates);
 					utils.walk(templatesPath, function(err, pluginTemplates) {
-						pluginTemplates.forEach(function(pluginTemplate) {
-							templates["/" + pluginTemplate.replace(templatesPath, '').substring(1)] = pluginTemplate;
-						});
+						if (pluginTemplates) {
+							pluginTemplates.forEach(function(pluginTemplate) {
+								templates["/" + pluginTemplate.replace(templatesPath, '').substring(1)] = pluginTemplate;
+							});
+						} else {
+							winston.warn('[plugins/' + plugin.id + '] A templates directory was defined for this plugin, but was not found.');
+						}
 
 						next(err);
 					});
@@ -563,16 +584,14 @@ var fs = require('fs'),
 
 	Plugins.getAll = function(callback) {
 		var request = require('request');
-		request('http://npm.aws.af.cm/api/v1/plugins', function(err, res, body) {
-			if (err) {
-				return callback(err);
-			}
+		request('https://packages.nodebb.org/api/v1/plugins', function(err, res, body) {
 			var plugins = [];
+
 			try {
 				plugins = JSON.parse(body);
 			} catch(err) {
 				winston.error('Error parsing plugins : ' + err.message);
-				return callback(null, []);
+				plugins = [];
 			}
 
 			var pluginMap = {};
@@ -580,6 +599,8 @@ var fs = require('fs'),
 				plugins[i].id = plugins[i].name;
 				plugins[i].installed = false;
 				plugins[i].active = false;
+				plugins[i].url = plugins[i].repository ? plugins[i].repository.url : '';
+				plugins[i].latest = getLatestVersion(plugins[i].versions);
 				pluginMap[plugins[i].name] = plugins[i];
 			}
 
@@ -589,22 +610,17 @@ var fs = require('fs'),
 				}
 
 				async.each(installedPlugins, function(plugin, next) {
-
 					pluginMap[plugin.id] = pluginMap[plugin.id] || {};
 					pluginMap[plugin.id].id = pluginMap[plugin.id].id || plugin.id;
-					pluginMap[plugin.id].name = pluginMap[plugin.id].name || plugin.id;
+					pluginMap[plugin.id].name = plugin.name || pluginMap[plugin.id].name;
 					pluginMap[plugin.id].description = plugin.description;
-					pluginMap[plugin.id].url = plugin.url;
+					pluginMap[plugin.id].url = pluginMap[plugin.id].url || plugin.url;
 					pluginMap[plugin.id].installed = true;
-
-					Plugins.isActive(plugin.id, function(err, active) {
-						if (err) {
-							return next(err);
-						}
-
-						pluginMap[plugin.id].active = active;
-						next();
-					});
+					pluginMap[plugin.id].active = plugin.active;
+					pluginMap[plugin.id].version = plugin.version;
+					pluginMap[plugin.id].latest = pluginMap[plugin.id].latest || plugin.version;
+					pluginMap[plugin.id].outdated = semver.gt(pluginMap[plugin.id].latest, pluginMap[plugin.id].version);
+					next();
 				}, function(err) {
 					if (err) {
 						return callback(err);
@@ -619,12 +635,13 @@ var fs = require('fs'),
 					}
 
 					pluginArray.sort(function(a, b) {
-						if(a.installed && !b.installed) {
-							return -1;
-						} else if(!a.installed && b.installed) {
+						if (a.name > b.name ) {
 							return 1;
+						} else if (a.name < b.name ){
+							return -1;
+						} else {
+							return 0;
 						}
-						return 0;
 					});
 
 					callback(null, pluginArray);
@@ -632,6 +649,15 @@ var fs = require('fs'),
 			});
 		});
 	};
+
+	function getLatestVersion(versions) {
+		for(var version in versions) {
+			if (versions.hasOwnProperty(version) && versions[version] === 'latest') {
+				return version;
+			}
+		}
+		return '';
+	}
 
 	Plugins.isInstalled = function(id, callback) {
 		var pluginDir = path.join(__dirname, '../node_modules', id);
@@ -675,27 +701,38 @@ var fs = require('fs'),
 
 					async.waterfall([
 						function(next) {
-							fs.readFile(path.join(file, 'plugin.json'), next);
+							async.parallel({
+								packageJSON: function(next) {
+									fs.readFile(path.join(file, 'package.json'), next);
+								},
+								pluginJSON: function(next) {
+									fs.readFile(path.join(file, 'plugin.json'), next);
+								}
+							}, next);
 						},
-						function(configJSON, next) {
+						function(results, next) {
+							var packageInfo, pluginInfo;
+
 							try {
-								var config = JSON.parse(configJSON);
+								packageInfo = JSON.parse(results.packageJSON);
+								pluginInfo = JSON.parse(results.pluginJSON);
 							} catch (err) {
 								winston.warn("Plugin: " + file + " is corrupted or invalid. Please check plugin.json for errors.");
 								return next(err, null);
 							}
 
-							Plugins.isActive(config.id, function(err, active) {
+							Plugins.isActive(packageInfo.name, function(err, active) {
 								if (err) {
 									next(new Error('no-active-state'));
 								}
 
-								delete config.library;
-								delete config.hooks;
-								config.active = active;
-								config.installed = true;
+								delete pluginInfo.hooks;
+								delete pluginInfo.library;
+								pluginInfo.active = active;
+								pluginInfo.installed = true;
+								pluginInfo.version = packageInfo.version;
 
-								next(null, config);
+								next(null, pluginInfo);
 							});
 						}
 					], function(err, config) {
@@ -715,11 +752,20 @@ var fs = require('fs'),
 		});
 	};
 
+	Plugins.clearRequireCache = function(next) {
+		async.map(Plugins.libraryPaths, fs.realpath, function(err, paths) {
+			for (var x=0,numPaths=paths.length;x<numPaths;x++) {
+				delete require.cache[paths[x]];
+			}
+			winston.info('[plugins] Plugin libraries removed from Node.js cache');
 
+			next();
+		});
+	};
 
-	function addLanguages(router, middleware, controllers, callback) {
+	function addLanguages(params, callback) {
 		Plugins.customLanguages.forEach(function(lang) {
-			router.get('/language' + lang.route, function(req, res, next) {
+			params.router.get('/language' + lang.route, function(req, res, next) {
 				res.json(lang.file);
 			});
 

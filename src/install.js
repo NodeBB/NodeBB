@@ -15,9 +15,6 @@ var async = require('async'),
 		},
 		"mongo": {
 			"dependencies": ["mongodb", "connect-mongo"]
-		},
-		"level": {
-			"dependencies": ["levelup", "leveldown", "connect-leveldb"]
 		}
 	};
 
@@ -29,7 +26,7 @@ questions.main = [
 	{
 		name: 'base_url',
 		description: 'URL used to access this NodeBB',
-		'default': nconf.get('base_url') || 'http://localhost:4567',
+		'default': nconf.get('base_url') ? (nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '')) : 'http://localhost:4567',
 		pattern: /^http(?:s)?:\/\//,
 		message: 'Base URL must begin with \'http://\' or \'https://\'',
 	},
@@ -161,8 +158,7 @@ function setupConfig(next) {
 		var	config = {},
 			redisQuestions = require('./database/redis').questions,
 			mongoQuestions = require('./database/mongo').questions,
-			levelQuestions = require('./database/level').questions,
-			question, x, numQ, allQuestions = questions.main.concat(redisQuestions).concat(mongoQuestions.concat(levelQuestions));
+			question, x, numQ, allQuestions = questions.main.concat(redisQuestions).concat(mongoQuestions);
 
 		for(x=0,numQ=allQuestions.length;x<numQ;x++) {
 			question = allQuestions[x];
@@ -176,6 +172,9 @@ function setupConfig(next) {
 }
 
 function completeConfigSetup(err, config, next) {
+	if (err) {
+		return next(err);
+	}
 	// Add CI object
 	if (install.ciVals) {
 		config.test_database = {};
@@ -221,7 +220,7 @@ install.installDbDependencies = function(server_conf, next) {
 
 	npm.load({}, function(err) {
 		if (err) {
-			next(err);
+			return next(err);
 		}
 
 		npm.config.set('spin', false);
@@ -263,12 +262,19 @@ function setOnEmpty(key1, key2) {
 
 function enableDefaultTheme(next) {
 	var	meta = require('./meta');
-	winston.info('Enabling default theme: Lavender');
 
-	meta.themes.set({
-		type: 'local',
-		id: 'nodebb-theme-lavender'
-	}, next);
+	meta.configs.get('theme:id', function(err, id) {
+		if (err || id) {
+			winston.info('Previous theme detected, skipping enabling default theme');
+			return next(err);
+		}
+
+		winston.info('Enabling default theme: Lavender');
+		meta.themes.set({
+			type: 'local',
+			id: 'nodebb-theme-lavender'
+		}, next);
+	});
 }
 
 function createAdministrator(next) {
@@ -369,7 +375,7 @@ function createAdmin(callback) {
 function createCategories(next) {
 	var Categories = require('./categories');
 
-	Categories.getAllCategories(function (err, categoryData) {
+	Categories.getAllCategories(0, function (err, categoryData) {
 		if (err) {
 			return next(err);
 		}
@@ -392,6 +398,24 @@ function createCategories(next) {
 	});
 }
 
+function createWelcomePost(next) {
+	var db = require('./database'),
+		Topics = require('./topics');
+
+	db.sortedSetCard('topics:tid', function(err, numTopics) {
+		if (numTopics === 0) {
+			Topics.post({
+				uid: 1,
+				cid: 2,
+				title: 'Welcome to your NodeBB!',
+				content: '# Welcome to your brand new NodeBB forum!\n\nThis is what a topic and post looks like. As an administator, you can edit the post\'s title and content.\n\nTo customise your forum, go to the [Administrator Control Panel](../../admin). You can modify all aspects of your forum there, including installation of third-party plugins.\n\n## Additional Resources\n\n* [NodeBB Documentation](https://docs.nodebb.org)\n* [Community Support Forum](https://community.nodebb.org)\n* [Project repository](https://github.com/nodebb/nodebb)'
+			}, next);
+		} else {
+			next();
+		}
+	});
+}
+
 function enableDefaultPlugins(next) {
 	var Plugins = require('./plugins');
 
@@ -403,32 +427,32 @@ function enableDefaultPlugins(next) {
 		'nodebb-widget-essentials',
 		'nodebb-plugin-soundpack-default'
 	];
-
-	async.each(defaultEnabled, function (pluginId, next) {
-		Plugins.isActive(pluginId, function (err, active) {
-			if (!active) {
-				Plugins.toggleActive(pluginId, function () {
-					next();
-				});
-			} else {
-				next();
-			}
-		});
-	}, next);
+	var	db = require('./database');
+	db.setAdd('plugins:active', defaultEnabled, next);
 }
 
 function setCopyrightWidget(next) {
-	var	db = require('./database.js');
+	var	db = require('./database');
 
 	db.init(function(err) {
 		if (!err) {
-			db.setObjectField('widgets:global', 'footer', "[{\"widget\":\"html\",\"data\":{\"html\":\"<footer id=\\\"footer\\\" class=\\\"container footer\\\">\\r\\n\\t<div class=\\\"copyright\\\">\\r\\n\\t\\tCopyright © 2014 <a target=\\\"_blank\\\" href=\\\"https://www.nodebb.com\\\">NodeBB Forums</a> | <a target=\\\"_blank\\\" href=\\\"//github.com/NodeBB/NodeBB/graphs/contributors\\\">Contributors</a>\\r\\n\\t</div>\\r\\n</footer>\",\"title\":\"\",\"container\":\"\"}}]", next);
+			db.setObjectField('widgets:global', 'footer', "[{\"widget\":\"html\",\"data\":{\"html\":\"<footer id=\\\"footer\\\" class=\\\"container footer\\\">\\r\\n\\t<div class=\\\"copyright\\\">\\r\\n\\t\\tCopyright © 2014 <a target=\\\"_blank\\\" href=\\\"https://nodebb.org\\\">NodeBB Forums</a> | <a target=\\\"_blank\\\" href=\\\"//github.com/NodeBB/NodeBB/graphs/contributors\\\">Contributors</a>\\r\\n\\t</div>\\r\\n</footer>\",\"title\":\"\",\"container\":\"\"}}]", next);
 		}
 	});
 }
 
 install.setup = function (callback) {
-	async.series([checkSetupFlag, checkCIFlag, setupConfig, setupDefaultConfigs, enableDefaultTheme, createAdministrator, createCategories, enableDefaultPlugins, setCopyrightWidget,
+	async.series([
+		checkSetupFlag,
+		checkCIFlag,
+		setupConfig,
+		setupDefaultConfigs,
+		enableDefaultTheme,
+		createAdministrator,
+		createCategories,
+		createWelcomePost,
+		enableDefaultPlugins,
+		setCopyrightWidget,
 		function (next) {
 			require('./upgrade').upgrade(next);
 		}

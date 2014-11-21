@@ -12,6 +12,9 @@
     "chat.message-history": "Nachrichtenverlauf",
     "chat.pop-out": "Chat als Pop-out anzeigen",
     "chat.maximize": "Maximieren",
+    "chat.seven_days": "7 Tage",
+    "chat.thirty_days": "30 Tage",
+    "chat.three_months": "3 Monate",
     "composer.user_said_in": "%1 sagte in %2:",
     "composer.user_said": "%1 sagte:",
     "composer.discard": "Bist du sicher, dass du diesen Post verwerfen möchtest?"

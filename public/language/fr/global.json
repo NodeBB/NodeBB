@@ -71,5 +71,7 @@
     "guest": "Invité",
     "guests": "Invités",
     "updated.title": "Forum mis à jour",
-    "updated.message": "Ce forum a été mis à jour à la dernière version. Cliquez ici pour recharger la page."
+    "updated.message": "Ce forum a été mis à jour à la dernière version. Cliquez ici pour recharger la page.",
+    "privacy": "Vie privée",
+    "delete_all": "Delete All"
 }

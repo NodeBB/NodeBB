@@ -1,0 +1,8 @@
+{
+    "groups": "群組",
+    "view_group": "查看群組",
+    "details.title": "群組詳細信息",
+    "details.members": "成員列表",
+    "details.has_no_posts": "這個群組的成員還未發出任何帖子。",
+    "details.latest_posts": "最新帖子"
+}

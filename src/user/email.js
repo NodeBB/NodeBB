@@ -46,12 +46,13 @@ var async = require('async'),
 
 				user.getUserField(uid, 'username', function(err, username) {
 					if (err) {
-						return winston.error(err.message);
+						return winston.error(err.stack);
 					}
 
-					translator.translate('[[email:welcome-to, ' + (meta.config.title || 'NodeBB') + ']]', meta.config.defaultLang, function(subject) {
+					var title = meta.config.title || meta.config.browserTitle || 'NodeBB';
+					translator.translate('[[email:welcome-to, ' + title + ']]', meta.config.defaultLang, function(subject) {
 						var data = {
-							site_title: (meta.config.title || 'NodeBB'),
+							site_title: title,
 							username: username,
 							confirm_link: confirm_link,
 							confirm_code: confirm_code,
@@ -62,7 +63,7 @@ var async = require('async'),
 						};
 
 						if (plugins.hasListeners('action:user.verify')) {
-							plugins.fireHook('action:user.verify', uid, data);
+							plugins.fireHook('action:user.verify', {uid: uid, data: data});
 						} else if (plugins.hasListeners('action:email.send')) {
 							emailer.send('welcome', uid, data);
 						}

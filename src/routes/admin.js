@@ -1,80 +1,83 @@
 "use strict";
 
+var express = require('express');
 
-function mainRoutes(app, middleware, controllers) {
-	app.get('/admin', middleware.admin.buildHeader, controllers.admin.home);
-	app.get('/admin/index', middleware.admin.buildHeader, controllers.admin.home);
-	app.get('/api/admin/index', controllers.admin.home);
-
-	app.get('/admin/plugins', middleware.admin.buildHeader, controllers.admin.plugins.get);
-	app.get('/api/admin/plugins', controllers.admin.plugins.get);
-
-	app.get('/admin/settings', middleware.admin.buildHeader, controllers.admin.settings.get);
-	app.get('/api/admin/settings', controllers.admin.settings.get);
-
-	app.get('/admin/themes', middleware.admin.buildHeader, controllers.admin.themes.get);
-	app.get('/api/admin/themes', controllers.admin.themes.get);
-
-	app.get('/admin/languages', middleware.admin.buildHeader, controllers.admin.languages.get);
-	app.get('/api/admin/languages', controllers.admin.languages.get);
-
-	app.get('/admin/groups', middleware.admin.buildHeader, controllers.admin.groups.get);
-	app.get('/api/admin/groups', controllers.admin.groups.get);
-
-	app.get('/admin/sounds', middleware.admin.buildHeader, controllers.admin.sounds.get);
-	app.get('/api/admin/sounds', controllers.admin.sounds.get);
-}
-
-function userRoutes(app, middleware, controllers) {
-	app.get('/admin/users/search', middleware.admin.buildHeader, controllers.admin.users.search);
-	app.get('/api/admin/users/search', controllers.admin.users.search);
-
-	app.get('/admin/users/latest', middleware.admin.buildHeader, controllers.admin.users.sortByJoinDate);
-	app.get('/api/admin/users/latest', controllers.admin.users.sortByJoinDate);
-
-	app.get('/admin/users/sort-posts', middleware.admin.buildHeader, controllers.admin.users.sortByPosts);
-	app.get('/api/admin/users/sort-posts', controllers.admin.users.sortByPosts);
-
-	app.get('/admin/users/sort-reputation', middleware.admin.buildHeader, controllers.admin.users.sortByReputation);
-	app.get('/api/admin/users/sort-reputation', controllers.admin.users.sortByReputation);
-
-	app.get('/admin/users', middleware.admin.buildHeader, controllers.admin.users.search);
-	app.get('/api/admin/users', controllers.admin.users.search);
-}
-
-function forumRoutes(app, middleware, controllers) {
-	app.get('/admin/categories/active', middleware.admin.buildHeader, controllers.admin.categories.active);
-	app.get('/api/admin/categories/active', controllers.admin.categories.active);
-
-	app.get('/admin/categories/disabled', middleware.admin.buildHeader, controllers.admin.categories.disabled);
-	app.get('/api/admin/categories/disabled', controllers.admin.categories.disabled);
-}
 
 function apiRoutes(app, middleware, controllers) {
 	// todo, needs to be in api namespace
-	app.get('/admin/users/csv', middleware.authenticate, controllers.admin.users.getCSV);
+	app.get('/users/csv', middleware.authenticate, controllers.admin.users.getCSV);
 
-	app.post('/admin/category/uploadpicture', middleware.authenticate, controllers.admin.uploads.uploadCategoryPicture);
-	app.post('/admin/uploadfavicon', middleware.authenticate, controllers.admin.uploads.uploadFavicon);
-	app.post('/admin/uploadlogo', middleware.authenticate, controllers.admin.uploads.uploadLogo);
-	app.post('/admin/uploadgravatardefault', middleware.authenticate, controllers.admin.uploads.uploadGravatarDefault);
+	var multipart = require('connect-multiparty');
+	var multipartMiddleware = multipart();
+
+	var middlewares = [multipartMiddleware, middleware.applyCSRF, middleware.authenticate];
+
+	app.post('/category/uploadpicture', middlewares, controllers.admin.uploads.uploadCategoryPicture);
+	app.post('/uploadfavicon', middlewares, controllers.admin.uploads.uploadFavicon);
+	app.post('/uploadlogo', middlewares, controllers.admin.uploads.uploadLogo);
+	app.post('/uploadgravatardefault', middlewares, controllers.admin.uploads.uploadGravatarDefault);
 }
 
-function miscRoutes(app, middleware, controllers) {
-	app.get('/admin/database', middleware.admin.buildHeader, controllers.admin.database.get);
-	app.get('/api/admin/database', controllers.admin.database.get);
+function adminRouter(middleware, controllers) {
+	var router = express.Router();
 
-	app.get('/admin/events', middleware.admin.buildHeader, controllers.admin.events.get);
-	app.get('/api/admin/events', controllers.admin.events.get);
+	router.use(middleware.applyCSRF);
+	router.use(middleware.admin.buildHeader);
 
-	app.get('/admin/logger', middleware.admin.buildHeader, controllers.admin.logger.get);
-	app.get('/api/admin/logger', controllers.admin.logger.get);
+	router.get('/', controllers.admin.home);
+
+	addRoutes(router, middleware, controllers);
+
+	apiRoutes(router, middleware, controllers);
+
+	return router;
+}
+
+function apiRouter(middleware, controllers) {
+	var router = express.Router();
+
+	addRoutes(router, middleware, controllers);
+
+	return router;
+}
+
+function addRoutes(router, middleware, controllers) {
+	router.get('/general/dashboard', controllers.admin.home);
+	router.get('/general/languages', controllers.admin.languages.get);
+	router.get('/general/sounds', controllers.admin.sounds.get);
+
+	router.get('/manage/categories', controllers.admin.categories.active);
+	router.get('/manage/categories/active', controllers.admin.categories.active);
+	router.get('/manage/categories/disabled', controllers.admin.categories.disabled);
+
+	router.get('/manage/tags', controllers.admin.tags.get);
+
+	router.get('/manage/flags', controllers.admin.flags.get);
+
+	router.get('/manage/users', controllers.admin.users.sortByJoinDate);
+	router.get('/manage/users/search', controllers.admin.users.search);
+	router.get('/manage/users/latest', controllers.admin.users.sortByJoinDate);
+	router.get('/manage/users/sort-posts', controllers.admin.users.sortByPosts);
+	router.get('/manage/users/sort-reputation', controllers.admin.users.sortByReputation);
+	router.get('/manage/users/banned', controllers.admin.users.banned);
+
+	router.get('/manage/groups', controllers.admin.groups.get);
+
+	router.get('/settings/:term?', controllers.admin.settings.get);
+
+	router.get('/appearance/:term?', controllers.admin.appearance.get);
+
+	router.get('/extend/plugins', controllers.admin.plugins.get);
+	router.get('/extend/widgets', controllers.admin.extend.widgets);
+
+	router.get('/advanced/database', controllers.admin.database.get);
+	router.get('/advanced/events', controllers.admin.events.get);
+	router.get('/advanced/logs', controllers.admin.logs.get);
+
+	router.get('/development/logger', controllers.admin.logger.get);
 }
 
 module.exports = function(app, middleware, controllers) {
-	mainRoutes(app, middleware, controllers);
-	userRoutes(app, middleware, controllers);
-	forumRoutes(app, middleware, controllers);
-	apiRoutes(app, middleware, controllers);
-	miscRoutes(app, middleware, controllers);
+	app.use('/admin/', adminRouter(middleware, controllers));
+	app.use('/api/admin/', apiRouter(middleware, controllers));
 };

@@ -50,14 +50,14 @@
     "read_more": "loe veel",
     "posted_ago_by_guest": "postitatud %1 tagasi külalise poolt",
     "posted_ago_by": "postitatud %1 tagasi kasutaja %2 poolt",
-    "posted_ago": "postitatud %1 tagasi",
+    "posted_ago": "postitatud %1",
     "posted_in_ago_by_guest": "postitatud kategooriasse %1 %2 tagasi külalise poolt",
-    "posted_in_ago_by": "postitatud kategooriasse %1 %2 aega tagasi kasutaja %3 poolt",
+    "posted_in_ago_by": "postitatud kategooriasse %1 %2 kasutaja %3 poolt",
     "posted_in_ago": "postitatud kategooriasse %1 %2 tagasi",
     "replied_ago": "vastas %1",
     "user_posted_ago": "kasutaja %1 postitas %2 tagasi",
     "guest_posted_ago": "Külaline postitas %1",
-    "last_edited_by_ago": "viimati muudetud kasutaja %1 poolt %2 tagasi",
+    "last_edited_by_ago": "viimati muudetud kasutaja %1 poolt %2",
     "norecentposts": "Hiljutisi postitusi ei ole",
     "norecenttopics": "Hiljutisi teemasid ei ole",
     "recentposts": "Hiljutised postitused",
@@ -71,5 +71,7 @@
     "guest": "Külaline",
     "guests": "Külalised",
     "updated.title": "Foorum on uuendatud",
-    "updated.message": "See foorum uuendati just kõige uuemale versioonile. Vajuta siia et värskendada veebilehte."
+    "updated.message": "See foorum uuendati just kõige uuemale versioonile. Vajuta siia et värskendada veebilehte.",
+    "privacy": "Privaatsus",
+    "delete_all": "Delete All"
 }

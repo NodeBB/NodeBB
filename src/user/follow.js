@@ -15,6 +15,14 @@ module.exports = function(User) {
 	};
 
 	function toggleFollow(type, uid, theiruid, callback) {
+		if (!parseInt(uid, 10) || !parseInt(theiruid, 10)) {
+			return callback(new Error('[[error:invalid-uid]]'));
+		}
+
+		if (parseInt(uid, 10) === parseInt(theiruid, 10)) {
+			return callback(new Error('[[error:you-cant-follow-yourself]]'));
+		}
+
 		var command = type === 'follow' ? 'setAdd' : 'setRemove';
 		db[command]('following:' + uid, theiruid, function(err) {
 			if(err) {
@@ -25,16 +33,20 @@ module.exports = function(User) {
 	}
 
 	User.getFollowing = function(uid, callback) {
-		getFollow('following:' + uid, callback);
+		getFollow(uid, 'following:' + uid, callback);
 	};
 
 	User.getFollowers = function(uid, callback) {
-		getFollow('followers:' + uid, callback);
+		getFollow(uid, 'followers:' + uid, callback);
 	};
 
-	function getFollow(set, callback) {
+	function getFollow(uid, set, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(null, []);
+		}
+
 		db.getSetMembers(set, function(err, uids) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
@@ -43,10 +55,16 @@ module.exports = function(User) {
 	}
 
 	User.getFollowingCount = function(uid, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(null, 0);
+		}
 		db.setCount('following:' + uid, callback);
 	};
 
 	User.getFollowerCount = function(uid, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(null, 0);
+		}
 		db.setCount('followers:' + uid, callback);
 	};
 
@@ -62,6 +80,9 @@ module.exports = function(User) {
 	};
 
 	User.isFollowing = function(uid, theirid, callback) {
+		if (!parseInt(uid, 10) || !parseInt(theirid, 10)) {
+			return callback(null, false);
+		}
 		db.isSetMember('following:' + uid, theirid, callback);
 	};
 

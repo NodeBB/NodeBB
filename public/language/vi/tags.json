@@ -1,6 +1,7 @@
 {
-    "no_tag_topics": "There are no topics with this tag.",
-    "tags": "Tags",
-    "enter_tags_here": "Enter tags here. Press enter after each tag.",
-    "no_tags": "There are no tags yet."
+    "no_tag_topics": "Không có bài viết nào với thẻ này.",
+    "tags": "Thẻ",
+    "enter_tags_here": "Nhập tên thẻ ở đây. Nhấn enter sau mỗi thẻ.",
+    "enter_tags_here_short": "Tên thẻ...",
+    "no_tags": "Chưa có thẻ nào."
 }

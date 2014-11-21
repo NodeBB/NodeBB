@@ -1,0 +1,129 @@
+.dashboard {
+	max-width: 1680px;
+	
+	.panel {
+		max-width: 100% !important;
+	}
+
+	.graph-container {
+		padding-right: 50px;
+		position: relative;
+
+
+		&.pie-chart {
+			padding-right: 0px;
+			padding-left: 50px;
+			min-height: 180px;
+			
+			.graph-legend {
+				top: -10px;
+				left: 0px;
+			}
+
+			&.compact {
+				padding-left: 0px;
+				padding-top: 60px;
+			}
+
+			&.legend-down {
+				padding-left: 0px;
+				padding-top: 0px;
+				
+				canvas {
+					margin-bottom: 25px;
+				}
+
+				.graph-legend {
+					position: relative;
+
+					li {
+						float: left;
+						width: 48%;
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
+
+						&:nth-child(odd) {
+							margin-right: 2%;
+						}
+					}
+				}
+			}
+		}
+
+		.graph-legend {
+			.box-header-font;
+			display: block;
+			position: absolute;
+			top: 20px;
+			left: 35px;
+			list-style-type: none;
+			padding: 0;
+
+			li {			
+				div {
+					border: 1px solid;
+					width: 12px;
+					height: 12px;
+					vertical-align: -41%;
+					margin-bottom: 5px;
+					display: inline-block;
+					margin-right: 5px;
+
+					&.page-views {
+						border-color: rgba(220,220,220,1);
+						background-color: rgba(220,220,220,0.2);
+					}
+					&.unique-visitors {
+						border-color: rgba(151,187,205,1);
+						background-color: rgba(151,187,205,0.2);
+					}
+					&.anonymous {
+						border-color: #46BFBD;
+						background-color: #5AD3D1;
+					}
+					&.registered {
+						border-color: #F7464A;
+						background-color: #FF5A5E;
+					}
+					&.reading-posts {
+						border-color: #46BFBD;
+						background-color: #5AD3D1;
+					}
+					&.on-homepage {
+						border-color: #F7464A;
+						background-color: #FF5A5E;
+					}
+					&.browsing-topics {
+						border-color: #FDB45C;
+						background-color: #FFC870;
+					}
+					&.idle {
+						border-color: #949FB1;
+						background-color: #A8B3C5;
+					}
+				}
+			}
+		}
+	}
+
+	.version-check {
+		-webkit-transition: background, color 500ms ease-in;
+		-moz-transition: background, color 500ms ease-in;
+		-ms-transition: background, color 500ms ease-in;
+		-o-transition: background, color 500ms ease-in;
+		transition: background, color 500ms ease-in;
+	}
+
+	#unique-visitors, #active-users {
+		margin-left: -15px;
+		> div {
+			width: 25%;
+			font-size: 13px;
+		}
+	}
+
+	.motd textarea {
+		width: 100%;
+	}
+}

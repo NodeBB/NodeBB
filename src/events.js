@@ -12,7 +12,7 @@ var fs = require('fs'),
 	var logFileName = 'logs/events.log';
 
 	events.logPasswordChange = function(uid) {
-		logWithUser(uid, 'changed password');
+		events.logWithUser(uid, 'changed password');
 	};
 
 	events.logAdminChangeUserPassword = function(adminUid, theirUid, callback) {
@@ -35,43 +35,50 @@ var fs = require('fs'),
 	}
 
 	events.logPasswordReset = function(uid) {
-		logWithUser(uid, 'reset password');
+		events.logWithUser(uid, 'reset password');
 	};
 
 	events.logEmailChange = function(uid, oldEmail, newEmail) {
-		logWithUser(uid,'changed email from "' + oldEmail + '" to "' + newEmail +'"');
+		events.logWithUser(uid,'changed email from "' + oldEmail + '" to "' + newEmail +'"');
 	};
 
 	events.logUsernameChange = function(uid, oldUsername, newUsername) {
-		logWithUser(uid,'changed username from "' + oldUsername + '" to "' + newUsername +'"');
+		events.logWithUser(uid,'changed username from "' + oldUsername + '" to "' + newUsername +'"');
 	};
 
 	events.logAdminLogin = function(uid) {
-		logWithUser(uid, 'logged into admin panel');
+		events.logWithUser(uid, 'logged into admin panel');
 	};
 
 	events.logPostEdit = function(uid, pid) {
-		logWithUser(uid, 'edited post (pid ' + pid + ')');
+		events.logWithUser(uid, 'edited post (pid ' + pid + ')');
 	};
 
 	events.logPostDelete = function(uid, pid) {
-		logWithUser(uid, 'deleted post (pid ' + pid + ')');
+		events.logWithUser(uid, 'deleted post (pid ' + pid + ')');
 	};
 
 	events.logPostRestore = function(uid, pid) {
-		logWithUser(uid, 'restored post (pid ' + pid + ')');
+		events.logWithUser(uid, 'restored post (pid ' + pid + ')');
+	};
+
+	events.logPostPurge = function(uid, pid) {
+		events.logWithUser(uid, 'purged post (pid ' + pid + ')');
+	};
+
+	events.logTopicMove = function(uid, tid) {
+		events.logWithUser(uid, 'moved topic (tid ' + tid + ')');
 	};
 
 	events.logTopicDelete = function(uid, tid) {
-		logWithUser(uid, 'deleted topic (tid ' + tid + ')');
+		events.logWithUser(uid, 'deleted topic (tid ' + tid + ')');
 	};
 
 	events.logTopicRestore = function(uid, tid) {
-		logWithUser(uid, 'restored topic (tid ' + tid + ')');
+		events.logWithUser(uid, 'restored topic (tid ' + tid + ')');
 	};
 
-	function logWithUser(uid, string) {
-
+	events.logWithUser = function(uid, string) {
 		user.getUserField(uid, 'username', function(err, username) {
 			if(err) {
 				return winston.error('Error logging event. ' + err.message);
@@ -80,7 +87,7 @@ var fs = require('fs'),
 			var msg = username + '(uid ' + uid + ') ' + string;
 			events.log(msg);
 		});
-	}
+	};
 
 	events.log = function(msg, callback) {
 		var logFile = path.join(nconf.get('base_dir'), logFileName);
@@ -102,15 +109,39 @@ var fs = require('fs'),
 		});
 	};
 
-	events.getLog = function(callback) {
+	events.getLog = function(end, len, callback) {
 		var logFile = path.join(nconf.get('base_dir'), logFileName);
 
-		fs.readFile(logFile, function(err, res) {
-			if(err) {
+		fs.stat(logFile, function(err, stat) {
+			if (err) {
 				return callback(null, 'No logs found!');
 			}
-			callback(null, res);
+
+			var buffer = '';
+			var size = stat.size;
+			if (end === -1) {
+				end = size;
+			}
+
+			end = parseInt(end, 10);
+			var start = Math.max(0, end - len);
+
+			var rs = fs.createReadStream(logFile, {start: start, end: end});
+			rs.addListener('data', function(lines) {
+				buffer += lines.toString();
+			});
+
+			rs.addListener('end', function() {
+				var firstNewline = buffer.indexOf('\n');
+				if (firstNewline !== -1) {
+					buffer = buffer.slice(firstNewline);
+					buffer = buffer.split('\n').reverse().join('\n');
+				}
+
+				callback(null, {data: buffer, next: end - buffer.length});
+			});
 		});
+
 	};
 
 }(module.exports));

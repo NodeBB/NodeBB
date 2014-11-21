@@ -6,7 +6,7 @@ process.on('uncaughtException', function (err) {
 });
 
 var	assert = require('assert'),
-	db = require('../mocks/databasemock');
+	db = require('./mocks/databasemock');
 
 var Categories = require('../src/categories');
 
@@ -31,7 +31,12 @@ describe('Categories', function() {
 
 	describe('.getCategoryById', function() {
 		it('should retrieve a newly created category by its ID', function(done) {
-			Categories.getCategoryById(categoryObj.cid, 0, -1, 0, function(err, categoryData) {
+			Categories.getCategoryById({
+				cid: categoryObj.cid,
+				start: 0,
+				end: -1,
+				uid: 0
+			}, function(err, categoryData) {
 				assert(categoryData);
 				assert.equal(categoryObj.name, categoryData.name);
 				assert.equal(categoryObj.description, categoryData.description);
@@ -43,7 +48,12 @@ describe('Categories', function() {
 
 	describe('.getCategoryTopics', function() {
 		it('should return a list of topics', function(done) {
-			Categories.getCategoryTopics(categoryObj.cid, 0, 10, 0, function(err, result) {
+			Categories.getCategoryTopics({
+				cid: categoryObj.cid,
+				start: 0,
+				stop: 10,
+				uid: 0
+			}, function(err, result) {
 				assert(Array.isArray(result.topics));
 				assert(result.topics.every(function(topic) {
 					return topic instanceof Object;
@@ -52,10 +62,26 @@ describe('Categories', function() {
 				done();
 			});
 		});
+
+		it('should return a list of topics by a specific user', function(done) {
+			Categories.getCategoryTopics({
+				cid: categoryObj.cid,
+				start: 0,
+				stop: 10,
+				uid: 0,
+				targetUid: 1
+			}, function(err, result) {
+				assert(Array.isArray(result.topics));
+				assert(result.topics.every(function(topic) {
+					return topic instanceof Object && topic.uid === '1';
+				}));
+
+				done();
+			});
+		});
 	});
 
 	after(function() {
-		db.delete('category:' + categoryObj.cid);
-		db.sortedSetRemove('categories:cid', categoryObj.cid);
+		db.flushdb();
 	});
 });

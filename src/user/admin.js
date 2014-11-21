@@ -46,11 +46,21 @@ module.exports = function(User) {
 	};
 
 	User.ban = function(uid, callback) {
-		User.setUserField(uid, 'banned', 1, callback);
+		User.setUserField(uid, 'banned', 1, function(err) {
+			if (err) {
+				return callback();
+			}
+			db.sortedSetAdd('users:banned', Date.now(), uid, callback);
+		});
 	};
 
 	User.unban = function(uid, callback) {
 		db.delete('uid:' + uid + ':flagged_by');
-		User.setUserField(uid, 'banned', 0, callback);
+		User.setUserField(uid, 'banned', 0, function(err) {
+			if (err) {
+				return callback(err);
+			}
+			db.sortedSetRemove('users:banned', uid, callback);
+		});
 	};
 };

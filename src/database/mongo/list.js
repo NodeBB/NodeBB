@@ -4,17 +4,21 @@ module.exports = function(db, module) {
 	var helpers = module.helpers.mongo;
 
 	module.listPrepend = function(key, value, callback) {
+		callback = callback || helpers.noop;
+
+		if (!key) {
+			return callback();
+		}
+
 		value = helpers.valueToString(value);
 
 		module.isObjectField(key, 'array', function(err, exists) {
-			if(err) {
-				if(typeof callback === 'function') {
-					return callback(err);
-				}
+			if (err) {
+				return callback(err);
 			}
 
-			if(exists) {
-				db.collection('objects').update({_key:key}, {'$set': {'array.-1': value}}, {upsert:true, w:1 }, helpers.done(callback));
+			if (exists) {
+				db.collection('objects').update({_key:key}, {$push: {array: {$each: [value], $position: 0}}}, {upsert:true, w:1 }, callback);
 			} else {
 				module.listAppend(key, value, callback);
 			}
@@ -22,35 +26,58 @@ module.exports = function(db, module) {
 	};
 
 	module.listAppend = function(key, value, callback) {
+		callback = callback || helpers.noop;
+		if (!key) {
+			return callback();
+		}
 		value = helpers.valueToString(value);
-		db.collection('objects').update({ _key: key }, { $push: { array: value } }, {upsert:true, w:1}, helpers.done(callback));
+		db.collection('objects').update({ _key: key }, { $push: { array: value } }, {upsert:true, w:1}, callback);
 	};
 
 	module.listRemoveLast = function(key, callback) {
+		callback = callback || helpers.noop;
+		if (!key) {
+			return callback();
+		}
 		module.getListRange(key, -1, 0, function(err, value) {
-			if(err) {
-				if(typeof callback === 'function') {
-					return callback(err);
-				}
-				return;
+			if (err) {
+				return callback(err);
 			}
 
 			db.collection('objects').update({_key: key }, { $pop: { array: 1 } }, function(err, result) {
-				if(typeof callback === 'function') {
-					callback(err, (value && value.length) ? value[0] : null);
-				}
+				callback(err, (value && value.length) ? value[0] : null);
 			});
 		});
 	};
 
+	module.listTrim = function(key, start, stop, callback) {
+		callback = callback || helpers.noop;
+		if (!key) {
+			return callback();
+		}
+		module.getListRange(key, start, stop, function(err, value) {
+			if (err) {
+				return callback(err);
+			}
+
+			db.collection('objects').update({_key: key}, {$set: {array: value}}, callback);
+		});
+	};
+
 	module.listRemoveAll = function(key, value, callback) {
+		callback =  callback || helpers.noop;
+		if (!key) {
+			return callback();
+		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').update({_key: key }, { $pull: { array: value } }, helpers.done(callback));
+		db.collection('objects').update({_key: key }, { $pull: { array: value } }, callback);
 	};
 
 	module.getListRange = function(key, start, stop, callback) {
-
+		if (!key) {
+			return callback();
+		}
 		var skip = start,
 			limit = stop - start + 1,
 			splice = false;

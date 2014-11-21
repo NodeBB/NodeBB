@@ -59,6 +59,10 @@ define('composer/formatting', ['composer/controls', 'composer/preview'], functio
 
 		'fa fa-upload': function(){
 			$('#files').click();
+		},
+
+		'fa fa-tags': function() {
+			$('.tags-container').toggleClass('hidden');
 		}
 	};
 

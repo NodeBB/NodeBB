@@ -5,12 +5,16 @@
 
 define('composer/resize', function() {
 	var resize = {};
-
 	var env = utils.findBootstrapEnvironment();
+	var oldPercentage = 0;
 
 	resize.reposition = function(postContainer) {
 		var	percentage = localStorage.getItem('composer:resizePercentage');
 
+		doResize(postContainer, percentage);
+	};
+
+	function doResize(postContainer, percentage) {
 		if (percentage) {
 			if (env === 'md' || env === 'lg') {
 				postContainer.css('height', Math.floor($(window).height() * percentage) + 'px');
@@ -18,7 +22,8 @@ define('composer/resize', function() {
 		}
 
 		if (env === 'sm' || env === 'xs') {
-			postContainer.css('height', $(window).height() - $('#header-menu').height());
+			app.toggleNavbar(false);
+			postContainer.css('height', $(window).height());
 		}
 
 		if (config.hasImageUploadPlugin) {
@@ -36,7 +41,7 @@ define('composer/resize', function() {
 		$('body').css({'margin-bottom': postContainer.css('height')});
 
 		resizeWritePreview(postContainer);
-	};
+	}
 
 	resize.handleResize = function(postContainer) {
 		function resizeStart(e) {
@@ -64,14 +69,14 @@ define('composer/resize', function() {
 		function toggleHeight(e) {
 			var triggerIconEl = $('.resizer i');
 			if (e.clientY - resizeDown === 0){
-				var max = $(window).height() - $('#header-menu').height() - 20;
-				if (max !== postContainer.height()){
-					postContainer.css('height', max);
-					$('body').css({'margin-bottom': max});
-					resizeWritePreview(postContainer);
+				var newPercentage = ($(window).height() - $('#header-menu').height() - 20) / $(window).height();
+
+				if (triggerIconEl.hasClass('fa-chevron-up')) {
+					oldPercentage = getPercentage(postContainer);
+					doResize(postContainer, newPercentage);
 					triggerIconEl.addClass('fa-chevron-down').removeClass('fa-chevron-up');
 				} else {
-					resize.reposition(postContainer);
+					doResize(postContainer, oldPercentage);
 					triggerIconEl.addClass('fa-chevron-up').removeClass('fa-chevron-down');
 				}
 			} else {
@@ -109,6 +114,10 @@ define('composer/resize', function() {
 			localStorage.setItem('composer:resizePercentage', percentage);
 		}
 
+		function getPercentage(postContainer) {
+			return postContainer.height() / $(window).height();
+		}
+
 		var	resizeActive = false,
 			resizeOffset = 0,
             resizeDown = 0,
@@ -129,8 +138,8 @@ define('composer/resize', function() {
 
 
 	function resizeWritePreview(postContainer) {
-		var h1 = postContainer.find('.title').outerHeight(true);
-		var h2 = postContainer.find('.tags-container').outerHeight(true);
+		var h1 = postContainer.find('.title-container').outerHeight(true);
+		var h2 = postContainer.find('.category-tag-row').outerHeight(true);
 		var h3 = postContainer.find('.formatting-bar').outerHeight(true);
 		var h4 = postContainer.find('.topic-thumb-container').outerHeight(true);
 		var h5 = $('.taskbar').height();

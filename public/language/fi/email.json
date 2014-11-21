@@ -1,0 +1,23 @@
+{
+    "password-reset-requested": "Password Reset Requested - %1!",
+    "welcome-to": "Welcome to %1",
+    "greeting_no_name": "Hello",
+    "greeting_with_name": "Hello %1",
+    "welcome.text1": "Thank you for registering with %1!",
+    "welcome.text2": "To fully activate your account, we need to verify that you own the email address you registered with.",
+    "welcome.cta": "Click here to confirm your email address",
+    "reset.text1": "We received a request to reset your password, possibly because you have forgotten it. If this is not the case, please ignore this email.",
+    "reset.text2": "To continue with the password reset, please click on the following link:",
+    "reset.cta": "Click here to reset your password",
+    "digest.notifications": "You have unread notifications from %1:",
+    "digest.latest_topics": "Latest topics from %1",
+    "digest.cta": "Click here to visit %1",
+    "digest.unsub.info": "This digest was sent to you due to your subscription settings.",
+    "digest.no_topics": "There have been no active topics in the past %1",
+    "notif.chat.subject": "New chat message received from %1",
+    "notif.chat.cta": "Click here to continue the conversation",
+    "notif.chat.unsub.info": "This chat notification was sent to you due to your subscription settings.",
+    "test.text1": "This is a test email to verify that the emailer is set up correctly for your NodeBB.",
+    "unsub.cta": "Click here to alter those settings",
+    "closing": "Thanks!"
+}

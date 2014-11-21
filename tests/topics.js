@@ -1,7 +1,7 @@
 'use strict';
 
 var	assert = require('assert'),
-	db = require('../mocks/databasemock'),
+	db = require('./mocks/databasemock'),
 	topics = require('../src/topics'),
 	categories = require('../src/categories'),
 	User = require('../src/user');
@@ -38,7 +38,7 @@ describe('Topic\'s', function() {
 			});
 		});
 
-		
+
 	});
 
 	describe('.post', function() {
@@ -52,9 +52,73 @@ describe('Topic\'s', function() {
 			});
 		});
 
-		it('should fail to create new topic with wrong parameters', function(done) {
+		it('should fail to create new topic with invalid user id', function(done) {
 			topics.post({uid: null, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
-				assert.equal(err.message, '[[error:no-user]]');
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should fail to create new topic with empty title', function(done) {
+			topics.post({uid: topic.userId, title: '', content: topic.content, cid: topic.categoryId}, function(err, result) {
+				assert.ok(err);
+				done();
+			});
+		});
+
+		it('should fail to create new topic with empty content', function(done) {
+			topics.post({uid: topic.userId, title: topic.title, content: '', cid: topic.categoryId}, function(err, result) {
+				assert.ok(err);
+				done();
+			});
+		});
+
+		it('should fail to create new topic with non-existant category id', function(done) {
+			topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: 99}, function(err, result) {
+				assert.equal(err.message, '[[error:no-category]]', 'received no error');
+				done();
+			});
+		});
+	});
+
+	describe('.reply', function() {
+		var newTopic;
+		var newPost;
+
+		before(function(done) {
+			topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
+				newTopic = result.topicData;
+				newPost = result.postData;
+				done();
+			});
+		});
+
+		it('should create a new reply with proper parameters', function(done) {
+			topics.reply({uid: topic.userId, content: 'test post', tid: newTopic.tid}, function(err, result) {
+				assert.equal(err, null, 'was created with error');
+				assert.ok(result);
+
+				done();
+			});
+		});
+
+		it('should fail to create new reply with invalid user id', function(done) {
+			topics.reply({uid: null, content: 'test post', tid: newTopic.tid}, function(err, result) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should fail to create new reply with empty content', function(done) {
+			topics.reply({uid: topic.userId, content: '', tid: newTopic.tid}, function(err, result) {
+				assert.ok(err);
+				done();
+			});
+		});
+
+		it('should fail to create new reply with invalid topic id', function(done) {
+			topics.reply({uid: null, content: 'test post', tid: 99}, function(err, result) {
+				assert.equal(err.message, '[[error:no-topic]]');
 				done();
 			});
 		});
@@ -75,12 +139,6 @@ describe('Topic\'s', function() {
 		describe('.getTopicData', function() {
 			it('should not receive errors', function(done) {
 				topics.getTopicData(newTopic.tid, done);
-			});
-		});
-
-		describe('.getTopicDataWithUser', function() {
-			it('should not receive errors', function(done) {
-				topics.getTopicDataWithUser(newTopic.tid, done);
 			});
 		});
 	});

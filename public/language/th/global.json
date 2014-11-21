@@ -13,7 +13,7 @@
     "please_log_in": "กรุณาเข้าสู่ระบบ",
     "logout": "ออกจากระบบ",
     "posting_restriction_info": "คุณต้องต้องเป็นสมาชิกเพื่อทำการโพสต์ คลิกที่นี่เพื่อเข้าสู่ระบบ",
-    "welcome_back": "ยินดีต้อนรับ",
+    "welcome_back": "Welcome Back",
     "you_have_successfully_logged_in": "คุณได้เข้าสู่ระบบแล้ว",
     "save_changes": "บันทึกการเปลี่ยนแปลง",
     "close": "ปิด",
@@ -71,5 +71,7 @@
     "guest": "Guest",
     "guests": "Guests",
     "updated.title": "Forum Updated",
-    "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page."
+    "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page.",
+    "privacy": "Privacy",
+    "delete_all": "Delete All"
 }

@@ -2,7 +2,7 @@
 'use strict';
 
 var async = require('async'),
-
+	db = require('../database'),
 	meta = require('../meta'),
 	user = require('../user'),
 	groups = require('../groups'),
@@ -20,70 +20,71 @@ helpers.some = function(tasks, callback) {
 	});
 };
 
-helpers.allowedTo = function(privilege, uid, cid, callback) {
-	categories.getCategoryField(cid, 'disabled', function(err, disabled) {
+helpers.isUserAllowedTo = function(privilege, uid, cids, callback) {
+	if (parseInt(uid, 10) === 0) {
+		return isGuestAllowedTo(privilege, cids, callback);
+	}
+
+	var userKeys = [], groupKeys = [];
+	for (var i=0; i<cids.length; ++i) {
+		userKeys.push('cid:' + cids[i] + ':privileges:' + privilege);
+		groupKeys.push('cid:' + cids[i] + ':privileges:groups:' + privilege);
+	}
+
+	async.parallel({
+		hasUserPrivilege: function(next) {
+			groups.isMemberOfGroups(uid, userKeys, next);
+		},
+		hasGroupPrivilege: function(next) {
+			groups.isMemberOfGroupsList(uid, groupKeys, next);
+		}
+	}, function(err, results) {
 		if (err) {
 			return callback(err);
 		}
 
-		if (parseInt(disabled, 10) === 1) {
-			return callback(null, false);
+		var result = [];
+		for (var i=0; i<cids.length; ++i) {
+			result.push(results.hasUserPrivilege[i] || results.hasGroupPrivilege[i]);
 		}
 
-		if (parseInt(uid, 10) === 0) {
-			return isGuestAllowedTo(privilege, cid, callback);
-		}
-
-		async.parallel({
-			hasUserPrivilege: function(next) {
-				helpers.isMember(groups.isMember, 'cid:' + cid + ':privileges:' + privilege, uid, next);
-			},
-			hasGroupPrivilege: function(next) {
-				helpers.isMember(groups.isMemberOfGroupList, 'cid:' + cid + ':privileges:groups:' + privilege, uid, next);
-			}
-		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, (results.hasUserPrivilege === null && results.hasGroupPrivilege === null) || results.hasUserPrivilege || results.hasGroupPrivilege);
-		});
+		callback(null, result);
 	});
 };
 
-function isGuestAllowedTo(privilege, cid, callback) {
-	async.parallel([
-		function(next) {
-			groups.exists('cid:' + cid + ':privileges:' + privilege, function(err, exists) {
-				next(err, !err ? !exists : false);
-			});
+helpers.isUsersAllowedTo = function(privilege, uids, cid, callback) {
+	async.parallel({
+		hasUserPrivilege: function(next) {
+			groups.isMembers(uids, 'cid:' + cid + ':privileges:' + privilege, next);
 		},
-		function(next) {
-			helpers.isMember(groups.isMember, 'cid:' + cid + ':privileges:groups:' + privilege, 'guests', function(err, isMember) {
-				next(err, privilege !== 'find' && privilege !== 'read' ? isMember === true : isMember !== false);
-			});
+		hasGroupPrivilege: function(next) {
+			groups.isMembersOfGroupList(uids, 'cid:' + cid + ':privileges:groups:' + privilege, next);
 		}
-	], function(err, results) {
-		callback(err, results[0] && (results[1] || results[1] === null));
+	}, function(err, results) {
+		if (err) {
+			return callback(err);
+		}
+
+		var result = [];
+		for(var i=0; i<uids.length; ++i) {
+			result.push(results.hasUserPrivilege[i] || results.hasGroupPrivilege[i]);
+		}
+
+		callback(null, result);
 	});
+};
+
+function isGuestAllowedTo(privilege, cids, callback) {
+	var groupKeys = [];
+	for (var i=0; i<cids.length; ++i) {
+		groupKeys.push('cid:' + cids[i] + ':privileges:groups:' + privilege);
+	}
+
+	groups.isMemberOfGroups('guests', groupKeys, callback);
 }
 
-helpers.isMember = function(method, group, uid, callback) {
-	groups.exists(group, function(err, exists) {
-		if (err) {
-			return callback(err);
-		}
-
-		if (!exists) {
-			return callback(null, null);
-		}
-
-		method(uid, group, callback);
-	});
-};
-
 helpers.hasEnoughReputationFor = function(privilege, uid, callback) {
-	if (parseInt(meta.config['privileges:disabled'], 10)) {
+	if (parseInt(meta.config['privileges:disabled'], 10) || !parseInt(uid, 10)) {
 		return callback(null, false);
 	}
 
@@ -91,7 +92,20 @@ helpers.hasEnoughReputationFor = function(privilege, uid, callback) {
 		if (err) {
 			return callback(null, false);
 		}
-		callback(null, parseInt(reputation, 10) >= parseInt(meta.config[privilege], 10));
+
+		reputation = parseInt(reputation, 10);
+
+		if (Array.isArray(privilege)) {
+			for(var i=0; i<privilege.length; ++i) {
+				if (reputation >= parseInt(meta.config[privilege[i]], 10)) {
+					return callback(null, true);
+				}
+			}
+
+			callback(null, false);
+		} else {
+			callback(null, reputation >= parseInt(meta.config[privilege], 10));
+		}
 	});
 };
 

@@ -1,0 +1,23 @@
+{
+    "password-reset-requested": "Zurücksetzung des Passworts beantragt - %1!",
+    "welcome-to": "Willkommen zu %1",
+    "greeting_no_name": "Hallo",
+    "greeting_with_name": "Hallo %1",
+    "welcome.text1": "Vielen Dank für die Registrierung mit %1!",
+    "welcome.text2": "Um dein Konto vollständig zu aktivieren, müssen wir überprüfen, ob du Besitzer der E-Mail-Adresse bist, mit der du dich registriert hast.",
+    "welcome.cta": "Klicke hier, um deine E-Mail-Adresse zu bestätigen.",
+    "reset.text1": "Wir haben eine Anfrage auf Zurücksetzung deines Passworts erhalten, wahrscheinlich, weil du es vergessen hast. Falls dies nicht der Fall ist, ignoriere bitte diese E-Mail.",
+    "reset.text2": "Klicke bitte auf den folgenden Link, um mit der Zurücksetzung deines Passworts fortzufahren:",
+    "reset.cta": "Klicke hier, um dein Passwort zurückzusetzen",
+    "digest.notifications": "Du hast ungelesene Benachrichtigungen von %1:",
+    "digest.latest_topics": "Aktuellste Themen vom %1",
+    "digest.cta": "Klicke hier, um %1 zu besuchen",
+    "digest.unsub.info": "Diese Zusammenfassung wurde dir aufgrund deiner Abonnement-Einstellungen gesendet.",
+    "digest.no_topics": "Es gab keine aktiven Themen in den letzten %1",
+    "notif.chat.subject": "Neue Chatnachricht von %1 erhalten",
+    "notif.chat.cta": "Klicke hier, um die Unterhaltung fortzusetzen",
+    "notif.chat.unsub.info": "Diese Chat-Benachrichtigung wurde dir aufgrund deiner Abonnement-Einstellungen gesendet.",
+    "test.text1": "Dies ist eine Test-E-Mail, um zu überprüfen, ob der E-Mailer deines NodeBB korrekt eingestellt wurde.",
+    "unsub.cta": "Klicke hier, um diese Einstellungen zu ändern.",
+    "closing": "Danke!"
+}

@@ -5,18 +5,20 @@ var app,
 	nconf = require('nconf'),
 	async = require('async'),
 	path = require('path'),
-	user = require('./../user'),
-	meta = require('./../meta'),
-	plugins = require('./../plugins'),
+	user = require('../user'),
+	meta = require('../meta'),
+	plugins = require('../plugins'),
 
 	controllers = {
-		api: require('./../controllers/api')
+		api: require('../controllers/api')
 	};
 
 
 middleware.isAdmin = function(req, res, next) {
 	if (!req.user) {
-		return res.redirect('/login?next=admin');
+		return res.status(404).json({
+			error: 'not-found'
+		});
 	}
 
 	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
@@ -25,8 +27,7 @@ middleware.isAdmin = function(req, res, next) {
 		}
 
 		if (!isAdmin) {
-			res.status(403);
-			res.redirect('/403');
+			res.status(403).redirect(nconf.get('relative_path') + '/403');
 		} else {
 			next();
 		}
@@ -43,23 +44,32 @@ middleware.buildHeader = function(req, res, next) {
 			};
 
 			user.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, userData) {
+				if (err) {
+					return next(err);
+				}
+
 				async.parallel({
 					scripts: function(next) {
 						plugins.fireHook('filter:admin.scripts.get', [], function(err, scripts) {
+							if (err) {
+								return next(err);
+							}
 							var arr = [];
 							scripts.forEach(function(script) {
 								arr.push({src: nconf.get('url') + script});
 							});
 
-							next(err, arr);
+							next(null, arr);
 						});
 					},
 					custom_header: function(next) {
 						plugins.fireHook('filter:admin.header.build', custom_header, next);
 					}
 				}, function(err, pluginData) {
+					if (err) {
+						return next(err);
+					}
 					var data = {
-						csrf: res.locals.csrf_token,
 						relative_path: nconf.get('relative_path'),
 						plugins: pluginData.custom_header.plugins,
 						authentication: pluginData.custom_header.authentication,
@@ -72,8 +82,11 @@ middleware.buildHeader = function(req, res, next) {
 					};
 
 					app.render('admin/header', data, function(err, template) {
+						if (err) {
+							return next(err);
+						}
 						res.locals.adminHeader = template;
-						next(err);
+						next();
 					});
 				});
 			});
@@ -90,9 +103,7 @@ middleware.buildHeader = function(req, res, next) {
 				next(err);
 			});
 		}
-	], function(err) {
-		next();
-	});
+	], next);
 };
 
 module.exports = function(webserver) {

@@ -70,7 +70,18 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.delete = function(key, callback) {
-		redisClient.del(key, callback);
+		callback = callback || function() {};
+		redisClient.del(key, function(err, res) {
+			callback(err);
+		});
+	};
+
+	module.deleteAll = function(keys, callback) {
+		var multi = redisClient.multi();
+		for(var i=0; i<keys.length; ++i) {
+			multi.del(keys[i]);
+		}
+		multi.exec(callback);
 	};
 
 	module.get = function(key, callback) {

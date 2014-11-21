@@ -13,7 +13,7 @@
     "please_log_in": "Kérjük, jelentkezzen be",
     "logout": "Kijelentkezés",
     "posting_restriction_info": "Posting is currently restricted to registered members only, click here to log in.",
-    "welcome_back": "Welcome Back ",
+    "welcome_back": "Welcome Back",
     "you_have_successfully_logged_in": "Sikeresen bejelentkeztél",
     "save_changes": "Változások mentése",
     "close": "Bezár",
@@ -71,5 +71,7 @@
     "guest": "Guest",
     "guests": "Guests",
     "updated.title": "Forum Updated",
-    "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page."
+    "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page.",
+    "privacy": "Privacy",
+    "delete_all": "Delete All"
 }

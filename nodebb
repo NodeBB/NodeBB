@@ -12,10 +12,11 @@ fi
 function pidExists() {
 	if [ -e "pidfile" ];
 		then
-			kill -s 0 $(cat pidfile);
-			if [ !$? ];
+			if ps -p $(cat pidfile) > /dev/null
 				then return 1;
-				else return 0;
+				else
+					rm ./pidfile;
+					return 0;
 			fi
 		else
 			return 0;
@@ -28,13 +29,8 @@ case "$1" in
 		echo "  \"./nodebb stop\" to stop the NodeBB server";
 		echo "  \"./nodebb log\" to view server output";
 
-		if [ -f "./logs/output.log" ];	# Preserve the last output log
-			then
-				mv ./logs/output.log ./logs/output.1.log;
-		fi;
-
 		# Start the loader daemon
-		"$node" loader -d "$@"
+		"$node" loader "$@"
 		;;
 
 	stop)
@@ -48,7 +44,7 @@ case "$1" in
 		fi
 		;;
 
-	reload|restart)
+	restart)
 		pidExists;
 		if [ 0 -eq $? ];
 			then
@@ -56,6 +52,17 @@ case "$1" in
 			else
 				echo "Restarting NodeBB.";
 				kill -1 $(cat pidfile);
+		fi
+		;;
+
+	reload)
+		pidExists;
+		if [ 0 -eq $? ];
+			then
+				echo "NodeBB could not be reloaded, as a running instance could not be found.";
+			else
+				echo "Reloading NodeBB.";
+				kill -12 $(cat pidfile);
 		fi
 		;;
 
@@ -107,7 +114,7 @@ case "$1" in
 		echo "Launching NodeBB in \"development\" mode."
 		echo "To run the production build of NodeBB, please use \"forever\"."
 		echo "More Information: https://docs.nodebb.org/en/latest/running/index.html"
-		NODE_ENV=development supervisor -q --ignore public/templates --extensions 'node|js|tpl|less' -- app "$@"
+		NODE_ENV=development supervisor -q --ignore public/templates,public/nodebb.min.js,public/nodebb.min.js.map --extensions 'node|js|tpl|less' -- app "$@"
 		;;
 
 	*)

@@ -6,6 +6,9 @@ var winston = require('winston'),
 	async = require('async'),
 	_ = require('underscore'),
 	os = require('os'),
+	nconf = require('nconf'),
+	cluster = require('cluster'),
+	fs = require('fs'),
 
 	plugins = require('../plugins'),
 	emitter = require('../emitter'),
@@ -14,154 +17,179 @@ var winston = require('winston'),
 module.exports = function(Meta) {
 
 	Meta.js = {
-		cache: undefined,
+		cache: '',
+		map: '',
+		hash: +new Date(),
 		prepared: false,
 		minFile: 'nodebb.min.js',
-		scripts: [
-			'vendor/jquery/js/jquery.js',
-			'vendor/jquery/js/jquery-ui-1.10.4.custom.js',
-			'vendor/jquery/timeago/jquery.timeago.min.js',
-			'vendor/jquery/js/jquery.form.min.js',
-			'vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
-			'vendor/jquery/deserialize/jquery.deserialize.min.js',
-			'vendor/bootstrap/js/bootstrap.min.js',
-			'vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
-			'vendor/requirejs/require.js',
-			'vendor/bootbox/bootbox.min.js',
-			'vendor/tinycon/tinycon.js',
-			'vendor/xregexp/xregexp.js',
-			'vendor/xregexp/unicode/unicode-base.js',
-			'vendor/buzz/buzz.min.js',
-			'../node_modules/templates.js/lib/templates.js',
-			'src/utils.js',
-			'src/app.js',
-			'src/ajaxify.js',
-			'src/variables.js',
-			'src/widgets.js',
-			'src/translator.js',
-			'src/helpers.js',
-			'src/overrides.js'
-		]
+		scripts: {
+			base: [
+				'public/vendor/jquery/js/jquery.js',
+				'public/vendor/jquery/js/jquery-ui-1.10.4.custom.js',
+				'./node_modules/socket.io-client/dist/socket.io.js',
+				'public/vendor/jquery/timeago/jquery.timeago.min.js',
+				'public/vendor/jquery/js/jquery.form.min.js',
+				'public/vendor/visibility/visibility.min.js',
+				'public/vendor/bootstrap/js/bootstrap.min.js',
+				'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
+				'public/vendor/requirejs/require.js',
+				'public/vendor/bootbox/bootbox.min.js',
+				'public/vendor/tinycon/tinycon.js',
+				'public/vendor/xregexp/xregexp.js',
+				'public/vendor/xregexp/unicode/unicode-base.js',
+				'public/vendor/buzz/buzz.min.js',
+				'public/vendor/mousetrap/mousetrap.js',
+				'./node_modules/templates.js/lib/templates.js',
+				'public/src/utils.js',
+				'public/src/app.js',
+				'public/src/ajaxify.js',
+				'public/src/variables.js',
+				'public/src/widgets.js',
+				'public/src/translator.js',
+				'public/src/helpers.js',
+				'public/src/overrides.js'
+			],
+			rjs: []
+		}
 	};
 
 	Meta.js.loadRJS = function(callback) {
-		var rjsPath = path.join(__dirname, '../..', '/public/src');
+		var rjsPath = path.join(__dirname, '../../public/src');
 
 		async.parallel({
-			forum: function(next) {
-				utils.walk(path.join(rjsPath, 'forum'), next);
+			client: function(next) {
+				utils.walk(path.join(rjsPath, 'client'), next);
 			},
 			modules: function(next) {
+				if (global.env === 'development') {
+					return next(null, []);
+				}
+				
 				utils.walk(path.join(rjsPath, 'modules'), next);
 			}
 		}, function(err, rjsFiles) {
 			if (err) {
 				return callback(err);
 			}
-			rjsFiles = rjsFiles.forum.concat(rjsFiles.modules);
+			rjsFiles = rjsFiles.client.concat(rjsFiles.modules);
 
-			rjsFiles = rjsFiles.filter(function(file) {
-				return file.match('admin') === null;
-			}).map(function(file) {
-				return path.join('src', file.replace(rjsPath, ''));
+			rjsFiles = rjsFiles.map(function(file) {
+				return path.join('public/src', file.replace(rjsPath, ''));
 			});
 
-			Meta.js.scripts = Meta.js.scripts.concat(rjsFiles);
+			Meta.js.scripts.rjs = rjsFiles;
 
 			callback();
 		});
 	};
 
 	Meta.js.prepare = function (callback) {
-		plugins.fireHook('filter:scripts.get', Meta.js.scripts, function(err, scripts) {
-			var jsPaths = scripts.map(function (jsPath) {
-					jsPath = path.normalize(jsPath);
+		async.parallel([
+			async.apply(Meta.js.loadRJS),	// Require.js scripts
+			async.apply(getPluginScripts),	// plugin scripts via filter:scripts.get
+			function(next) {	// client scripts via "scripts" config in plugin.json
+				var pluginsScripts = [],
+					pluginDirectories = [],
+					clientScripts = [];
 
-					if (jsPath.substring(0, 7) === 'plugins') {
-						var	matches = _.map(plugins.staticDirs, function(realPath, mappedPath) {
-							if (jsPath.match(mappedPath)) {
-								return mappedPath;
-							} else {
-								return null;
-							}
-						}).filter(function(a) { return a; });
-
-						if (matches.length) {
-							var	relPath = jsPath.slice(('plugins/' + matches[0]).length),
-								pluginId = matches[0].split(path.sep)[0];
-
-							return plugins.staticDirs[matches[0]] + relPath;
-						} else {
-							winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + jsPath + '. Are you sure it is defined by a plugin?');
-							return null;
-						}
+				pluginsScripts = plugins.clientScripts.filter(function(path) {
+					if (path.indexOf('.js') !== -1) {
+						return true;
 					} else {
-						return path.join(__dirname, '../..', '/public', jsPath);
+						pluginDirectories.push(path);
+						return false;
 					}
 				});
 
-			Meta.js.scripts = jsPaths.filter(function(path) {
-				return path !== null;
+				// Add plugin scripts
+				Meta.js.scripts.client = pluginsScripts;
+
+				// Add plugin script directories
+				async.each(pluginDirectories, function(directory, next) {
+					utils.walk(directory, function(err, scripts) {
+						Meta.js.scripts.client = Meta.js.scripts.client.concat(scripts);
+						next(err);
+					});
+				}, next);
+			}
+		], function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			// Convert all scripts to paths relative to the NodeBB base directory
+			var basePath = path.resolve(__dirname, '../..');
+			Meta.js.scripts.all = Meta.js.scripts.base.concat(Meta.js.scripts.rjs, Meta.js.scripts.plugin, Meta.js.scripts.client).map(function(script) {
+				return path.relative(basePath, script).replace(/\\/g, '/');
 			});
-
-			var pluginDirectories = [];
-
-			plugins.clientScripts = plugins.clientScripts.filter(function(path) {
-				if (path.indexOf('.js') !== -1) {
-					return true;
-				} else {
-					pluginDirectories.push(path);
-					return false;
-				}
-			});
-
-			// Add plugin scripts
-			Meta.js.scripts = Meta.js.scripts.concat(plugins.clientScripts);
-
-			async.each(pluginDirectories, function(directory, next) {
-				utils.walk(directory, function(err, scripts) {
-					Meta.js.scripts = Meta.js.scripts.concat(scripts);
-					next(err);
-				});
-			}, function(err) {
-				// Translate into relative paths
-				Meta.js.scripts = Meta.js.scripts.map(function(script) {
-					return path.relative(path.resolve(__dirname, '../..'), script).replace(/\\/g, '/');
-				});
-
-				Meta.js.prepared = true;
-				callback(err);
-			});
+			callback();
 		});
 	};
 
-	Meta.js.minify = function(minify) {
-		var minifier = Meta.js.minifierProc = fork('minifier.js');
+	Meta.js.minify = function(minify, callback) {
+		if (!cluster.isWorker || process.env.cluster_setup === 'true') {
+			var minifier = Meta.js.minifierProc = fork('minifier.js'),
+				onComplete = function(err) {
+					if (err) {
+						winston.error('[meta/js] Minification failed: ' + err.message);
+						process.exit(0);
+					}
 
-		minifier.on('message', function(payload) {
-			if (payload.action !== 'error') {
-				winston.info('[meta/js] Compilation complete');
-				Meta.js.cache = payload.data.js;
-				Meta.js.map = payload.data.map;
-				minifier.kill();
+					winston.info('[meta/js] Minification complete');
+					minifier.kill();
 
-				emitter.emit('meta:js.compiled');
-			} else {
-				winston.error('[meta/js] Could not compile client-side scripts! ' + payload.error.message);
-				minifier.kill();
-				process.exit();
-			}
-		});
+					if (cluster.isWorker) {
+						process.send({
+							action: 'js-propagate',
+							cache: Meta.js.cache,
+							map: Meta.js.map
+						});
+					}
 
-		Meta.js.loadRJS(function() {
+					Meta.js.commitToFile();
+
+					if (typeof callback === 'function') {
+						callback();
+					}
+				};
+
+			minifier.on('message', function(message) {
+				switch(message.type) {
+				case 'end':
+					Meta.js.cache = message.data.js;
+					Meta.js.map = message.data.map;
+
+					onComplete();
+
+					break;
+				case 'hash':
+					Meta.js.hash = message.payload;
+					break;
+				case 'error':
+					winston.error('[meta/js] Could not compile client-side scripts! ' + message.payload.message);
+					minifier.kill();
+					if (typeof callback === 'function') {
+						callback(new Error(message.payload.message));
+					} else {
+						process.exit(0);
+					}
+					break;
+				}
+			});
+
 			Meta.js.prepare(function() {
 				minifier.send({
 					action: 'js',
-					minify: minify,
-					scripts: Meta.js.scripts
+					relativePath: nconf.get('url') + '/',
+					minify: global.env !== 'development',
+					scripts: Meta.js.scripts.all
 				});
 			});
-		});
+		} else {
+			if (typeof callback === 'function') {
+				callback();
+			}
+		}
 	};
 
 	Meta.js.killMinifier = function(callback) {
@@ -170,10 +198,75 @@ module.exports = function(Meta) {
 		}
 	};
 
-	// OS detection and handling
-	// if (os.platform() === 'win32') {
-	// 	Meta.js.scripts = Meta.js.scripts.map(function(script) {
-	// 		return script.replace(/\//g, '\\');
-	// 	});
-	// }
+	Meta.js.commitToFile = function() {
+		async.parallel([
+			async.apply(fs.writeFile, path.join(__dirname, '../../public/nodebb.min.js'), Meta.js.cache),
+			async.apply(fs.writeFile, path.join(__dirname, '../../public/nodebb.min.js.map'), Meta.js.map)
+		], function (err) {
+			if (!err) {
+				winston.info('[meta/js] Client-side minfile and mapping committed to disk.');
+				emitter.emit('meta:js.compiled');
+			} else {
+				winston.error('[meta/js] ' + err.message);
+				process.exit(0);
+			}
+		});
+	};
+
+	Meta.js.getFromFile = function(minify, callback) {
+		var scriptPath = path.join(__dirname, '../../public/nodebb.min.js'),
+			mapPath = path.join(__dirname, '../../public/nodebb.min.js.map');
+		fs.exists(scriptPath, function(exists) {
+			if (exists) {
+				if (!cluster.isWorker || process.env.cluster_setup === 'true') {
+					winston.info('[meta/js] (Experimental) Reading client-side scripts from file');
+					async.map([scriptPath, mapPath], fs.readFile, function(err, files) {
+						Meta.js.cache = files[0];
+						Meta.js.map = files[1];
+
+						emitter.emit('meta:js.compiled');
+						callback();
+					});
+				} else {
+					callback();
+				}
+			} else {
+				winston.warn('[meta/js] (Experimental) No script file found on disk, re-minifying');
+				Meta.js.minify.apply(Meta.js, arguments);
+			}
+		});
+	};
+
+	function getPluginScripts(callback) {
+		plugins.fireHook('filter:scripts.get', [], function(err, scripts) {
+			if (err) {
+				callback(err, []);
+			}
+
+			var jsPaths = scripts.map(function (jsPath) {
+					jsPath = path.normalize(jsPath);
+
+					var	matches = _.map(plugins.staticDirs, function(realPath, mappedPath) {
+						if (jsPath.match(mappedPath)) {
+							return mappedPath;
+						} else {
+							return null;
+						}
+					}).filter(function(a) { return a; });
+
+					if (matches.length) {
+						var	relPath = jsPath.slice(('plugins/' + matches[0]).length),
+							pluginId = matches[0].split(path.sep)[0];
+
+						return plugins.staticDirs[matches[0]] + relPath;
+					} else {
+						winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + jsPath + '. Are you sure it is defined by a plugin?');
+						return null;
+					}
+				});
+
+			Meta.js.scripts.plugin = jsPaths.filter(Boolean);
+			callback();
+		});
+	}
 };

@@ -3,10 +3,13 @@
 
 var async = require('async'),
 	winston = require('winston'),
+	_ = require('underscore'),
 
 	db = require('../database'),
 	posts = require('../posts'),
-	topics = require('../topics');
+	topics = require('../topics'),
+	privileges = require('../privileges'),
+	plugins = require('../plugins');
 
 module.exports = function(Categories) {
 	Categories.getRecentReplies = function(cid, uid, count, callback) {
@@ -14,36 +17,77 @@ module.exports = function(Categories) {
 			return callback(null, []);
 		}
 
-		db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, count - 1, function(err, pids) {
-			if (err || !pids || !pids.length) {
-				return callback(err, []);
+		async.waterfall([
+			function(next) {
+				db.getSortedSetRevRange('cid:' + cid + ':pids', 0, count - 1, next);
+			},
+			function(pids, next) {
+				privileges.posts.filter('read', pids, uid, next);
+			},
+			function(pids, next) {
+				posts.getPostSummaryByPids(pids, uid, {stripTags: true}, next);
 			}
-
-			posts.getPostSummaryByPids(pids, {stripTags: true}, callback);
-		});
+		], callback);
 	};
 
-	Categories.getRecentTopicReplies = function(cid, uid, count, callback) {
-		count = parseInt(count, 10);
+	Categories.getRecentTopicReplies = function(categoryData, uid, callback) {
+		if (!Array.isArray(categoryData) || !categoryData.length) {
+			return callback(null, []);
+		}
+
+		async.waterfall([
+			function(next) {
+				async.map(categoryData, getRecentTopicPids, next);
+			},
+			function(results, next) {
+				var pids = _.flatten(results);
+
+				pids = pids.filter(function(pid, index, array) {
+					return !!pid && array.indexOf(pid) === index;
+				});
+				privileges.posts.filter('read', pids, uid, next);
+			},
+			function(pids, next) {
+				posts.getPostSummaryByPids(pids, uid, {stripTags: true}, next);
+			},
+			function(posts, next) {
+				categoryData.forEach(function(category) {
+					assignPostsToCategory(category, posts);
+				});
+				next();
+			}
+		], callback);
+	};
+
+	function assignPostsToCategory(category, posts) {
+		category.posts = posts.filter(function(post) {
+			return parseInt(post.category.cid, 10) === parseInt(category.cid, 10);
+		}).sort(function(a, b) {
+			return b.timestamp - a.timestamp;
+		}).slice(0, parseInt(category.numRecentReplies, 10));
+	}
+
+	function getRecentTopicPids(category, callback) {
+		var count = parseInt(category.numRecentReplies, 10);
 		if (!count) {
 			return callback(null, []);
 		}
 
-		db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, 0, function(err, pids) {
-			if (err || !pids || !pids.length) {
+		db.getSortedSetRevRange('cid:' + category.cid + ':pids', 0, 0, function(err, pids) {
+			if (err || !Array.isArray(pids) || !pids.length) {
 				return callback(err, []);
 			}
 
 			if (count === 1) {
-				return posts.getPostSummaryByPids(pids, {stripTags: true}, callback);
+				return callback(null, pids);
 			}
 
 			async.parallel({
 				pinnedTids: function(next) {
-					db.getSortedSetRevRangeByScore('categories:' + cid + ':tid', 0, -1, Infinity, Date.now(), next);
+					db.getSortedSetRevRangeByScore('cid:' + category.cid + ':tids', 0, -1, '+inf', Date.now(), next);
 				},
 				tids: function(next) {
-					db.getSortedSetRevRangeByScore('categories:' + cid + ':tid', 0, Math.max(0, count), Date.now(), 0, next);
+					db.getSortedSetRevRangeByScore('cid:' + category.cid + ':tids', 0, Math.max(0, count), Date.now(), 0, next);
 				}
 			}, function(err, results) {
 				if (err) {
@@ -60,59 +104,65 @@ module.exports = function(Categories) {
 					pids = pids.concat(topicPids).filter(function(pid, index, array) {
 						return !!pid && array.indexOf(pid) === index;
 					});
-
-					posts.getPostSummaryByPids(pids, {stripTags: true}, function(err, posts) {
-						if (err) {
-							return callback(err);
-						}
-
-						posts = posts.sort(function(a, b) {
-							return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10);
-						}).slice(0, count);
-
-						callback(err, posts);
-					});
+					callback(null, pids);
 				});
 			});
 		});
-	};
+	}
+
 
 	Categories.moveRecentReplies = function(tid, oldCid, cid) {
-		function movePost(postData, next) {
-			async.parallel([
-				function(next) {
-					db.sortedSetRemove('categories:recent_posts:cid:' + oldCid, postData.pid, next);
-				},
-				function(next) {
-					db.sortedSetAdd('categories:recent_posts:cid:' + cid, postData.timestamp, postData.pid, next);
-				}
-			], next);
-		}
-
 		updatePostCount(tid, oldCid, cid);
 		topics.getPids(tid, function(err, pids) {
 			if (err) {
 				return winston.error(err.message);
 			}
 
-			if (pids && !pids.length) {
+			if (!Array.isArray(pids) || !pids.length) {
 				return;
 			}
 
-			var keys = pids.map(function(pid) {
-				return 'post:' + pid;
-			});
+			var start = 0,
+				done = false,
+				batch = 50;
 
-			db.getObjectsFields(keys, ['pid', 'timestamp'], function(err, postData) {
-				if (err) {
-					return winston.error(err.message);
+			async.whilst(function() {
+				return !done;
+			}, function(next) {
+				var movePids = pids.slice(start, start + batch);
+				if (!movePids.length) {
+					done = true;
+					return next();
 				}
 
-				async.each(postData, movePost, function(err) {
+				posts.getPostsFields(movePids, ['timestamp'], function(err, postData) {
 					if (err) {
-						winston.error(err.message);
+						return next(err);
 					}
+
+					var timestamps = postData.map(function(post) {
+						return post && post.timestamp;
+					});
+
+					async.parallel([
+						function(next) {
+							db.sortedSetRemove('cid:' + oldCid + ':pids', movePids, next);
+						},
+						function(next) {
+							db.sortedSetAdd('cid:' + cid + ':pids', timestamps, movePids, next);
+						}
+					], function(err) {
+						if (err) {
+							return next(err);
+						}
+						start += batch;
+						next();
+					});
 				});
+			}, function(err) {
+				if (err) {
+					winston.error(err.stack);
+				}
 			});
 		});
 	};
@@ -122,7 +172,9 @@ module.exports = function(Categories) {
 			if (err) {
 				return winston.error(err.message);
 			}
-
+			if (!parseInt(postCount, 10)) {
+				return;
+			}
 			async.parallel([
 				function(next) {
 					db.incrObjectFieldBy('category:' + oldCid, 'post_count', -postCount, next);

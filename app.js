@@ -17,7 +17,6 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 "use strict";
 /*global require, global, process*/
 
@@ -26,9 +25,11 @@ nconf.argv().env();
 
 var fs = require('fs'),
 	os = require('os'),
+	async = require('async'),
 	semver = require('semver'),
 	winston = require('winston'),
 	path = require('path'),
+	cluster = require('cluster'),
 	pkg = require('./package.json'),
 	utils = require('./public/src/utils.js');
 
@@ -37,12 +38,12 @@ global.env = process.env.NODE_ENV || 'production';
 
 winston.remove(winston.transports.Console);
 winston.add(winston.transports.Console, {
-	colorize: true
-});
-
-winston.add(winston.transports.File, {
-	filename: 'logs/error.log',
-	level: 'error'
+	colorize: true,
+	timestamp: function() {
+		var date = new Date();
+		return date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0,5) + ' [' + global.process.pid + ']';
+	},
+	level: global.env === 'production' ? 'info' : 'verbose'
 });
 
 // TODO: remove once https://github.com/flatiron/winston/issues/280 is fixed
@@ -58,11 +59,13 @@ if(os.platform() === 'linux') {
 	});
 }
 
-// Log GNU copyright info along with server info
-winston.info('NodeBB v' + pkg.version + ' Copyright (C) 2013-2014 NodeBB Inc.');
-winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
-winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
-winston.info('');
+if (!cluster.isWorker) {
+	// If run using `node app`, log GNU copyright info along with server info
+	winston.info('NodeBB v' + pkg.version + ' Copyright (C) 2013-2014 NodeBB Inc.');
+	winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
+	winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
+	winston.info('');
+}
 
 // Alternate configuration file support
 var	configFile = path.join(__dirname, '/config.json'),
@@ -73,7 +76,7 @@ if (nconf.get('config')) {
 }
 configExists = fs.existsSync(configFile);
 
-if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf.get('upgrade') && !nconf.get('reset') && configExists) {
+if (!nconf.get('setup') && !nconf.get('install') && !nconf.get('upgrade') && !nconf.get('reset') && configExists) {
 	start();
 } else if (nconf.get('setup') || nconf.get('install') || !configExists) {
 	setup();
@@ -81,8 +84,6 @@ if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf
 	upgrade();
 } else if (nconf.get('reset')) {
 	reset();
-} else {
-	displayHelp();
 }
 
 function loadConfig() {
@@ -93,29 +94,31 @@ function loadConfig() {
 	nconf.defaults({
 		base_dir: __dirname,
 		themes_path: path.join(__dirname, 'node_modules'),
-		upload_url: '/uploads/',
+		upload_url: nconf.get('relative_path') + '/uploads/',
 		views_dir: path.join(__dirname, 'public/templates')
 	});
 
 	// Ensure themes_path is a full filepath
 	nconf.set('themes_path', path.resolve(__dirname, nconf.get('themes_path')));
+	nconf.set('core_templates_path', path.join(__dirname, 'src/views'));
 	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
 }
 
 function start() {
 	loadConfig();
 
-	winston.info('Time: ' + new Date());
-	winston.info('Initializing NodeBB v' + pkg.version);
-	winston.info('* using configuration stored in: ' + configFile);
-	var host = nconf.get(nconf.get('database') + ':host'),
-		storeLocation = host ? 'at ' + host + (host.indexOf('/') === -1 ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';
+	if (!cluster.isWorker || process.env.cluster_setup === 'true') {
+		winston.info('Time: ' + new Date());
+		winston.info('Initializing NodeBB v' + pkg.version);
+		winston.info('* using configuration stored in: ' + configFile);
+	}
 
-	winston.info('* using ' + nconf.get('database') +' store ' + storeLocation);
-	winston.info('* using themes stored in: ' + nconf.get('themes_path'));
+	if (cluster.isWorker && process.env.cluster_setup === 'true') {
+		var host = nconf.get(nconf.get('database') + ':host'),
+			storeLocation = host ? 'at ' + host + (host.indexOf('/') === -1 ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';
 
-	if (process.env.NODE_ENV === 'development') {
-		winston.info('Base Configuration OK.');
+		winston.info('* using ' + nconf.get('database') +' store ' + storeLocation);
+		winston.info('* using themes stored in: ' + nconf.get('themes_path'));
 	}
 
 	require('./src/database').init(function(err) {
@@ -136,19 +139,49 @@ function start() {
 			upgrade.check(function(schema_ok) {
 				if (schema_ok || nconf.get('check-schema') === false) {
 					sockets.init(webserver.server);
-					plugins.init();
 
 					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
 
-					plugins.ready(function() {
-						webserver.init();
+					async.waterfall([
+						async.apply(plugins.ready),
+						async.apply(meta.templates.compile),
+						async.apply(webserver.listen)
+					], function(err) {
+						if (err) {
+							winston.error(err.stack);
+							process.exit();
+						}
+
+						if (process.send) {
+							process.send({
+								action: 'ready'
+							});
+						}
 					});
 
 					process.on('SIGTERM', shutdown);
 					process.on('SIGINT', shutdown);
 					process.on('SIGHUP', restart);
+					process.on('message', function(message) {
+						switch(message.action) {
+							case 'reload':
+								meta.reload();
+							break;
+							case 'js-propagate':
+								meta.js.cache = message.cache;
+								meta.js.map = message.map;
+								winston.info('[cluster] Client-side javascript and mapping propagated to worker ' + cluster.worker.id);
+							break;
+							case 'css-propagate':
+								meta.css.cache = message.cache;
+								meta.css.acpCache = message.acpCache;
+								winston.info('[cluster] Stylesheets propagated to worker ' + cluster.worker.id);
+							break;
+						}
+					});
+
 					process.on('uncaughtException', function(err) {
-						winston.error(err.message);
+						winston.error(err.stack);
 						console.log(err.stack);
 
 						meta.js.killMinifier();
@@ -156,10 +189,12 @@ function start() {
 					});
 				} else {
 					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
-					winston.warn('    node app --upgrade');
-					winston.warn('To ignore this error (not recommended):');
-					winston.warn('    node app --no-check-schema');
-					process.exit();
+					winston.warn('    ./nodebb upgrade');
+					if (cluster.isWorker) {
+						cluster.worker.kill();
+					} else {
+						process.exit();
+					}
 				}
 			});
 		});
@@ -236,6 +271,10 @@ function reset() {
 			});
 		} else {
 			winston.warn('[reset] Nothing reset.');
+			winston.info('Use ./nodebb reset {themes|plugins|widgets|settings|all}');
+			winston.info(' or');
+			winston.info('Use ./nodebb reset plugin="nodebb-plugin-pluginName"');
+			process.exit();
 		}
 	});
 }
@@ -313,6 +352,8 @@ function shutdown(code) {
 	winston.info('[app] Shutdown (SIGTERM/SIGINT) Initialised.');
 	require('./src/database').close();
 	winston.info('[app] Database connection closed.');
+	require('./src/webserver').server.close();
+	winston.info('[app] Web server closed to connections.');
 
 	winston.info('[app] Shutdown complete.');
 	process.exit(code || 0);
@@ -328,16 +369,4 @@ function restart() {
 		winston.error('[app] Could not restart server. Shutting down.');
 		shutdown(1);
 	}
-}
-
-function displayHelp() {
-	winston.info('Usage: node app [options] [arguments]');
-	winston.info('       [NODE_ENV=development | NODE_ENV=production] node app [--start] [arguments]');
-	winston.info('');
-	winston.info('Options:');
-	winston.info('  --help              displays this usage information');
-	winston.info('  --setup             configure your environment and setup NodeBB');
-	winston.info('  --upgrade           upgrade NodeBB, first read: https://docs.nodebb.org/en/latest/upgrading/');
-	winston.info('  --reset             soft resets NodeBB; disables all plugins and restores selected theme to Vanilla');
-	winston.info('  --start             manually start NodeBB (default when no options are given)');
 }

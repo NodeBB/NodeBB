@@ -1,3 +1,4 @@
 {
-	"results_matching": "%1 result(s) matching \"%2\", (%3 seconds)"
+	"results_matching": "%1 result(s) matching \"%2\", (%3 seconds)",
+	"no-matches": "No posts found"
 }

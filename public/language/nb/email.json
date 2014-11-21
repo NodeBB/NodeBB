@@ -1,0 +1,23 @@
+{
+    "password-reset-requested": "Tilbakestilling av passord - %1!",
+    "welcome-to": "Velkommen til %1",
+    "greeting_no_name": "Hallo",
+    "greeting_with_name": "Hallo, %1",
+    "welcome.text1": "Takk for at du registrerte deg hos %1!",
+    "welcome.text2": "For å aktivere kontoen din må vi verifisere at du eier epost-adressen du registrerte med.",
+    "welcome.cta": "Klikk her for å verifisere epost-adressen din",
+    "reset.text1": "Vi har blir bedt om å tilbakestille passordet ditt, muligens fordi du har glemt det. Hvis dette ikke stemmer kan du ignorere denne eposten.",
+    "reset.text2": "For å fortsette med tilbakestillingen, vennligst klikk på følgende lenke:",
+    "reset.cta": "Klikk her for å tilbakestille passordet ditt",
+    "digest.notifications": "Du har uleste varsler fra %1:",
+    "digest.latest_topics": "Siste emner fra %1",
+    "digest.cta": "Klikk her for å besøke %1",
+    "digest.unsub.info": "Dette sammendraget er sendt til deg basert på dine innstillinger for abonnering.",
+    "digest.no_topics": "There have been no active topics in the past %1",
+    "notif.chat.subject": "Ny chat-melding mottatt fra %1",
+    "notif.chat.cta": "Klikk her for å fortsette samtalen",
+    "notif.chat.unsub.info": "Denne chat-varselen er sendt til deg basert på dine innstillinger for abonnering.",
+    "test.text1": "Dette er en test-epost for å verifisere at epostsystemet i NodeBB fungerer som det skal.",
+    "unsub.cta": "Klikk her for å endre disse innstillingene",
+    "closing": "Takk!"
+}

@@ -5,11 +5,14 @@
     "recent": "جستارهای تازه",
     "users": "کاربران نام‌نویسی شده",
     "notifications": "آگاه‌سازی‌ها",
+    "tags": "Topics tagged under \"%1\"",
     "user.edit": "ویرایش \"%1\"",
     "user.following": "%1 کاربر دنبال می‌کنند",
     "user.followers": "کاربرانی که %1 را دنبال می‌کنند",
     "user.posts": "دیدگاه‌های %1",
     "user.topics": "%1 این جستار را ساخت.",
     "user.favourites": "دیدگاه‌های پسندیدهٔ %1",
-    "user.settings": "تنظیمات کاربر"
+    "user.settings": "تنظیمات کاربر",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administrator has left this message:"
 }

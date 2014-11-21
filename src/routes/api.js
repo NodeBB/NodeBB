@@ -43,21 +43,21 @@ function upload(req, res, filesIterator, next) {
 		deleteTempFiles(files);
 
 		if (err) {
-			return res.send(500, err.message);
+			return res.status(500).send(err.message);
 		}
 
 		// IE8 - send it as text/html so browser won't trigger a file download for the json response
 		// malsup.com/jquery/form/#file-upload
-		res.send(200, req.xhr ? images : JSON.stringify(images));
+		res.status(200).send(req.xhr ? images : JSON.stringify(images));
 	});
 }
 
 function uploadPost(req, res, next) {
 	upload(req, res, function(file, next) {
 		if(file.type.match(/image./)) {
-			uploadImage(file, next);
+			uploadImage(req.user.uid, file, next);
 		} else {
-			uploadFile(file, next);
+			uploadFile(req.user.uid, file, next);
 		}
 	}, next);
 }
@@ -75,7 +75,7 @@ function uploadThumb(req, res, next) {
 				if (err) {
 					return next(err);
 				}
-				uploadImage(file, next);
+				uploadImage(req.user.uid, file, next);
 			});
 		} else {
 			next(new Error('[[error:invalid-file]]'));
@@ -84,22 +84,22 @@ function uploadThumb(req, res, next) {
 }
 
 
-function uploadImage(image, callback) {
-	if(plugins.hasListeners('filter:uploadImage')) {
-		plugins.fireHook('filter:uploadImage', image, callback);
+function uploadImage(uid, image, callback) {
+	if (plugins.hasListeners('filter:uploadImage')) {
+		plugins.fireHook('filter:uploadImage', {image: image, uid: uid}, callback);
 	} else {
 
 		if (parseInt(meta.config.allowFileUploads, 10)) {
-			uploadFile(image, callback);
+			uploadFile(uid, image, callback);
 		} else {
 			callback(new Error('[[error:uploads-are-disabled]]'));
 		}
 	}
 }
 
-function uploadFile(file, callback) {
-	if(plugins.hasListeners('filter:uploadFile')) {
-		plugins.fireHook('filter:uploadFile', file, callback);
+function uploadFile(uid, file, callback) {
+	if (plugins.hasListeners('filter:uploadFile')) {
+		plugins.fireHook('filter:uploadFile', {file: file, uid: uid}, callback);
 	} else {
 
 		if(parseInt(meta.config.allowFileUploads, 10) !== 1) {
@@ -115,7 +115,7 @@ function uploadFile(file, callback) {
 		}
 
 		var filename = 'upload-' + utils.generateUUID() + path.extname(file.name);
-		require('../file').saveFileToLocal(filename, file.path, function(err, upload) {
+		require('../file').saveFileToLocal(filename, 'files', file.path, function(err, upload) {
 			if(err) {
 				return callback(err);
 			}
@@ -135,10 +135,10 @@ function getModerators(req, res, next) {
 	});
 }
 
-var templatesListingCache = [];
+var templatesListingCache = {};
 
 function getTemplatesListing(req, res, next) {
-	if (templatesListingCache.length) {
+	if (templatesListingCache.availableTemplates && templatesListingCache.templatesConfig) {
 		return res.json(templatesListingCache);
 	}
 
@@ -148,11 +148,21 @@ function getTemplatesListing(req, res, next) {
 		},
 		extended: function(next) {
 			plugins.fireHook('filter:templates.get_virtual', [], next);
-		}
+		},
+		config: function(next) {
+			fs.readFile(path.join(nconf.get('views_dir'), 'config.json'), function(err, config) {
+				if (err) {
+					return next(err);
+				}
+				config = JSON.parse(config.toString());
+				plugins.fireHook('filter:templates.get_config', config, next);
+			});
+		},
 	}, function(err, results) {
 		if (err) {
 			return next(err);
 		}
+
 		var data = [];
 		data = results.views.filter(function(value, index, self) {
 					return self.indexOf(value) === index;
@@ -161,8 +171,13 @@ function getTemplatesListing(req, res, next) {
 				});
 
 		data = data.concat(results.extended);
-		templatesListingCache = data;
-		res.json(data);
+
+		templatesListingCache = {
+			availableTemplates: data,
+			templatesConfig: results.config
+		};
+
+		res.json(templatesListingCache);
 	});
 }
 
@@ -183,7 +198,7 @@ module.exports =  function(app, middleware, controllers) {
 	var router = express.Router();
 	app.use('/api', router);
 
-	router.get('/config', controllers.api.getConfig);
+	router.get('/config', middleware.applyCSRF, controllers.api.getConfig);
 	router.get('/widgets/render', controllers.api.renderWidgets);
 
 	router.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
@@ -191,8 +206,11 @@ module.exports =  function(app, middleware, controllers) {
 	router.get('/categories/:cid/moderators', getModerators);
 	router.get('/recent/posts/:term?', getRecentPosts);
 
-	router.post('/post/upload', uploadPost);
-	router.post('/topic/thumb/upload', uploadThumb);
-	router.post('/user/:userslug/uploadpicture', middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.uploadPicture);
+	var multipart = require('connect-multiparty');
+	var multipartMiddleware = multipart();
+
+	router.post('/post/upload', multipartMiddleware, middleware.applyCSRF, uploadPost);
+	router.post('/topic/thumb/upload', multipartMiddleware, middleware.applyCSRF, uploadThumb);
+	router.post('/user/:userslug/uploadpicture', multipartMiddleware, middleware.applyCSRF, middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.uploadPicture);
 
 };

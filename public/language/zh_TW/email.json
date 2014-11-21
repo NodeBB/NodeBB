@@ -1,0 +1,23 @@
+{
+    "password-reset-requested": "已要求重設密碼 - %1!",
+    "welcome-to": "歡迎來到%1",
+    "greeting_no_name": "您好",
+    "greeting_with_name": "您好，%1",
+    "welcome.text1": "多謝登記%1!",
+    "welcome.text2": "要啟用你的帳戶，我們先要驗證你用作登記的電郵地址",
+    "welcome.cta": "請點擊此處確認您的電郵地址",
+    "reset.text1": "我們收到一個重設密碼的請求，你忘掉了密碼嗎？如果不是，請忽略這封郵件。",
+    "reset.text2": "要繼續重置密碼，請點擊以下鏈接：",
+    "reset.cta": "點擊這裡重置密碼",
+    "digest.notifications": "你有來自$1的未讀通知：",
+    "digest.latest_topics": "來自%1的最新話題",
+    "digest.cta": "點擊這裡訪問%1",
+    "digest.unsub.info": "本摘要按您的訂閱設置發送給您。",
+    "digest.no_topics": "在過去%1沒有活躍的話題",
+    "notif.chat.subject": "收到來自$1的聊天消息",
+    "notif.chat.cta": "點擊此處繼續對話",
+    "notif.chat.unsub.info": "本聊天通知按您的訂閱設置發送給您。",
+    "test.text1": "這是一個測試電郵，以確認您的NodeBB郵件器設置正確。",
+    "unsub.cta": "點擊這裡更改這些設置",
+    "closing": "謝謝！"
+}

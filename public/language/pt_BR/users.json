@@ -1,10 +1,9 @@
 {
-    "latest_users": "Usuários recentes",
-    "top_posters": "Quem mais posta",
-    "most_reputation": "Com mais reputação",
+    "latest_users": "Últimos Usuários",
+    "top_posters": "Principais Participantes",
+    "most_reputation": "Maior Reputação",
     "search": "Procurar",
-    "enter_username": "Digite um usuário para buscar",
-    "load_more": "Carregar mais",
-    "user-not-found": "Usuário não encontrado!",
+    "enter_username": "Digite um nome de usuário para procurar",
+    "load_more": "Carregar Mais",
     "users-found-search-took": "%1 usuário(s) encontrado(s)! A pesquisa demorou %2 ms."
 }

@@ -1,7 +1,6 @@
 'use strict';
 
-var bcrypt = require('bcryptjs'),
-	async = require('async'),
+var	async = require('async'),
 	nconf = require('nconf'),
 	gravatar = require('gravatar'),
 
@@ -9,16 +8,18 @@ var bcrypt = require('bcryptjs'),
 	db = require('./database'),
 	meta = require('./meta'),
 	groups = require('./groups'),
-	emitter = require('./emitter');
+	Password = require('./password');
 
 (function(User) {
 
 	User.email = require('./user/email');
 	User.notifications = require('./user/notifications');
 	User.reset = require('./user/reset');
+	User.digest = require('./user/digest');
 
 	require('./user/auth')(User);
 	require('./user/create')(User);
+	require('./user/posts')(User);
 	require('./user/follow')(User);
 	require('./user/profile')(User);
 	require('./user/admin')(User);
@@ -56,7 +57,9 @@ var bcrypt = require('bcryptjs'),
 			return 'user:' + uid;
 		});
 
-		addField('uid');
+		if (fields.indexOf('uid') === -1) {
+			fields.push('uid');
+		}
 
 		if (fields.indexOf('picture') !== -1) {
 			addField('email');
@@ -69,7 +72,7 @@ var bcrypt = require('bcryptjs'),
 				return callback(err);
 			}
 
-			callback(null, modifyUserData(users, fieldsToRemove));
+			modifyUserData(users, fieldsToRemove, callback);
 		});
 	};
 
@@ -94,24 +97,25 @@ var bcrypt = require('bcryptjs'),
 				return callback(err);
 			}
 
-			callback(null, modifyUserData(users, []));
+			modifyUserData(users, [], callback);
 		});
 	};
 
-	function modifyUserData(users, fieldsToRemove) {
+	function modifyUserData(users, fieldsToRemove, callback) {
 		users.forEach(function(user) {
 			if (!user) {
 				return;
 			}
 
-			user.hasPassword = !!user.password;
 			if (user.password) {
-				user.password = null;
+				user.password = undefined;
 			}
 
 			if (!parseInt(user.uid, 10)) {
+				user.uid = 0;
 				user.username = '[[global:guest]]';
 				user.userslug = '';
+				user.picture = User.createGravatarURLFromEmail('');
 			}
 
 			if (user.picture) {
@@ -120,21 +124,20 @@ var bcrypt = require('bcryptjs'),
 				} else {
 					user.picture = User.createGravatarURLFromEmail(user.email);
 				}
-			} else {
-				user.picture = User.createGravatarURLFromEmail('');
 			}
 
 			for(var i=0; i<fieldsToRemove.length; ++i) {
 				user[fieldsToRemove[i]] = undefined;
 			}
 		});
-		return users;
+
+		plugins.fireHook('filter:users.get', users, callback);
 	}
 
 	User.updateLastOnlineTime = function(uid, callback) {
 		callback = callback || function() {};
-		User.getUserField(uid, 'status', function(err, status) {
-			if(err || status === 'offline') {
+		User.getUserFields(uid, ['status', 'lastonline'], function(err, userData) {
+			if(err || userData.status === 'offline' || Date.now() - parseInt(userData.lastonline, 10) < 300000) {
 				return callback(err);
 			}
 
@@ -142,65 +145,15 @@ var bcrypt = require('bcryptjs'),
 		});
 	};
 
-	User.isReadyToPost = function(uid, callback) {
-		if (parseInt(uid, 10) === 0) {
-			return callback();
-		}
-
-		async.parallel({
-			userData: function(next) {
-				User.getUserFields(uid, ['banned', 'lastposttime', 'email', 'email:confirmed'], next);
-			},
-			exists: function(next) {
-				db.exists('user:' + uid, next);
-			},
-			isAdmin: function(next) {
-				User.isAdministrator(uid, next);
-			}
-		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (!results.exists) {
-				return callback(new Error('[[error:no-user]]'));
-			}
-
-			if (results.isAdmin) {
-				return callback();
-			}
-
-			var userData = results.userData;
-
-			if (parseInt(userData.banned, 10) === 1) {
-				return callback(new Error('[[error:user-banned]]'));
-			}
-
-			if (userData.email && parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
-				return callback(new Error('[[error:email-not-confirmed]]'));
-			}
-
-			var lastposttime = userData.lastposttime;
-			if (!lastposttime) {
-				lastposttime = 0;
-			}
-
-			if (Date.now() - parseInt(lastposttime, 10) < parseInt(meta.config.postDelay, 10) * 1000) {
-				return callback(new Error('[[error:too-many-posts, ' + meta.config.postDelay + ']]'));
-			}
-			callback();
-		});
-	};
-
 	User.setUserField = function(uid, field, value, callback) {
-		plugins.fireHook('action:user.set', field, value, 'set');
+		plugins.fireHook('action:user.set', {field: field, value: value, type: 'set'});
 		db.setObjectField('user:' + uid, field, value, callback);
 	};
 
 	User.setUserFields = function(uid, data, callback) {
 		for (var field in data) {
 			if (data.hasOwnProperty(field)) {
-				plugins.fireHook('action:user.set', field, data[field], 'set');
+				plugins.fireHook('action:user.set', {field: field, value: data[field], type: 'set'});
 			}
 		}
 
@@ -208,29 +161,38 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.incrementUserFieldBy = function(uid, field, value, callback) {
+		callback = callback || function() {};
 		db.incrObjectFieldBy('user:' + uid, field, value, function(err, value) {
-			plugins.fireHook('action:user.set', field, value, 'increment');
-
-			if (typeof callback === 'function') {
-				callback(err, value);
+			if (err) {
+				return callback(err);
 			}
+			plugins.fireHook('action:user.set', {field: field, value: value, type: 'increment'});
+
+			callback(null, value);
 		});
 	};
 
 	User.decrementUserFieldBy = function(uid, field, value, callback) {
+		callback = callback || function() {};
 		db.incrObjectFieldBy('user:' + uid, field, -value, function(err, value) {
-			plugins.fireHook('action:user.set', field, value, 'decrement');
-
-			if (typeof callback === 'function') {
-				callback(err, value);
+			if (err) {
+				return callback(err);
 			}
+			plugins.fireHook('action:user.set', {field: field, value: value, type: 'decrement'});
+
+			callback(null, value);
 		});
 	};
 
 	User.getUsersFromSet = function(set, start, stop, callback) {
 		async.waterfall([
 			function(next) {
-				db.getSortedSetRevRange(set, start, stop, next);
+				if (set === 'users:online') {
+					var uids = require('./socket.io').getConnectedClients();
+					next(null, uids.slice(start, stop + 1));
+				} else {
+					db.getSortedSetRevRange(set, start, stop, next);
+				}
 			},
 			function(uids, next) {
 				User.getUsers(uids, next);
@@ -239,36 +201,33 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.getUsers = function(uids, callback) {
-		function loadUserInfo(user, callback) {
-			if (!user) {
-				return callback(null, user);
+		async.parallel({
+			userData: function(next) {
+				User.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'postcount', 'reputation', 'email:confirmed'], next);
+			},
+			isAdmin: function(next) {
+				User.isAdministrator(uids, next);
+			},
+			isOnline: function(next) {
+				require('./socket.io').isUsersOnline(uids, next);
 			}
-
-			async.waterfall([
-				function(next) {
-					User.isAdministrator(user.uid, next);
-				},
-				function(isAdmin, next) {
-					user.status = !user.status ? 'online' : user.status;
-					user.administrator = isAdmin;
-					user.banned = parseInt(user.banned, 10) === 1;
-					db.isSortedSetMember('users:online', user.uid, next);
-				},
-				function(isMember, next) {
-					if (!isMember) {
-						user.status = 'offline';
-					}
-					next(null, user);
-				}
-			], callback);
-		}
-
-		User.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'postcount', 'reputation'], function(err, usersData) {
+		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			async.map(usersData, loadUserInfo, callback);
+			results.userData.forEach(function(user, index) {
+				if (!user) {
+					return;
+				}
+				user.status = !user.status ? 'online' : user.status;
+				user.status = !results.isOnline[index] ? 'offline' : user.status;
+				user.administrator = results.isAdmin[index];
+				user.banned = parseInt(user.banned, 10) === 1;
+				user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
+			});
+
+			callback(err, results.userData);
 		});
 	};
 
@@ -279,7 +238,7 @@ var bcrypt = require('bcryptjs'),
 		}
 
 		var options = {
-			size: '128',
+			size: parseInt(meta.config.profileImageDimension, 10) || 128,
 			default: customGravatarDefaultImage || meta.config.defaultGravatarImage || 'identicon',
 			rating: 'pg'
 		};
@@ -296,59 +255,16 @@ var bcrypt = require('bcryptjs'),
 			return callback(null, password);
 		}
 
-		bcrypt.genSalt(nconf.get('bcrypt_rounds'), function(err, salt) {
-			if (err) {
-				return callback(err);
-			}
-			bcrypt.hash(password, salt, callback);
-		});
+		Password.hash(nconf.get('bcrypt_rounds'), password, callback);
 	};
 
-	User.onNewPostMade = function(postData) {
-		User.addPostIdToUser(postData.uid, postData.pid, postData.timestamp);
-
-		User.incrementUserPostCountBy(postData.uid, 1);
-
-		User.setUserField(postData.uid, 'lastposttime', postData.timestamp);
-	};
-
-	emitter.on('event:newpost', User.onNewPostMade);
-
-	User.incrementUserPostCountBy = function(uid, value, callback) {
-		User.incrementUserFieldBy(uid, 'postcount', value, function(err, newpostcount) {
-			if (err) {
-				if(typeof callback === 'function') {
-					callback(err);
-				}
-				return;
-			}
-			db.sortedSetAdd('users:postcount', newpostcount, uid, callback);
-		});
-	};
-
-	User.addPostIdToUser = function(uid, pid, timestamp) {
-		db.sortedSetAdd('uid:' + uid + ':posts', timestamp, pid);
-	};
-
-	User.addTopicIdToUser = function(uid, tid, timestamp) {
-		db.sortedSetAdd('uid:' + uid + ':topics', timestamp, tid);
-	};
-
-	User.getPostIds = function(uid, start, stop, callback) {
-		db.getSortedSetRevRange('uid:' + uid + ':posts', start, stop, function(err, pids) {
-			callback(err, Array.isArray(pids) ? pids : []);
-		});
+	User.addTopicIdToUser = function(uid, tid, timestamp, callback) {
+		db.sortedSetAdd('uid:' + uid + ':topics', timestamp, tid, callback);
 	};
 
 	User.exists = function(userslug, callback) {
 		User.getUidByUserslug(userslug, function(err, exists) {
 			callback(err, !! exists);
-		});
-	};
-
-	User.count = function(callback) {
-		db.getObjectField('global', 'userCount', function(err, count) {
-			callback(err, count ? count : 0);
 		});
 	};
 
@@ -400,40 +316,64 @@ var bcrypt = require('bcryptjs'),
 
 	User.isModerator = function(uid, cid, callback) {
 		if (Array.isArray(cid)) {
-			var groupNames = cid.map(function(cid) {
+			if (!parseInt(uid, 10)) {
+				return callback(null, cid.map(function() {return false;}));
+			}
+			var uniqueCids = cid.filter(function(cid, index, array) {
+				return array.indexOf(cid) === index;
+			});
+
+			var groupNames = uniqueCids.map(function(cid) {
 				return 'cid:' + cid + ':privileges:mods';
 			});
-			groups.isMemberOfGroups(uid, groupNames, callback);
+
+			groups.isMemberOfGroups(uid, groupNames, function(err, isMembers) {
+				if (err) {
+					return callback(err);
+				}
+
+				var map = {};
+				uniqueCids.forEach(function(cid, index) {
+					map[cid] = isMembers[index];
+				});
+
+				callback(null, cid.map(function(cid) {
+					return map[cid];
+				}));
+			});
 		} else {
-			groups.isMember(uid, 'cid:' + cid + ':privileges:mods', callback);
+			if (Array.isArray(uid)) {
+				groups.isMembers(uid, 'cid:' + cid + ':privileges:mods', callback);
+			} else {
+				groups.isMember(uid, 'cid:' + cid + ':privileges:mods', callback);
+			}
 		}
 	};
 
 	User.isAdministrator = function(uid, callback) {
-		groups.isMember(uid, 'administrators', callback);
+		if (Array.isArray(uid)) {
+			groups.isMembers(uid, 'administrators', callback);
+		} else {
+			groups.isMember(uid, 'administrators', callback);
+		}
 	};
 
-	User.isOnline = function(uid, callback) {
-		User.getUserFields(uid, ['username', 'userslug', 'picture', 'status'] , function(err, data) {
-			if(err) {
-				return callback(err);
-			}
-			var websockets = require('./socket.io');
-			var online = websockets.isUserOnline(uid);
+	User.getIgnoredCategories = function(uid, callback) {
+		db.getSortedSetRange('uid:' + uid + ':ignored:cids', 0, -1, callback);
+	};
 
-			data.status = online ? (data.status || 'online') : 'offline';
+	User.ignoreCategory = function(uid, cid, callback) {
+		if (!uid) {
+			return callback();
+		}
+		db.sortedSetAdd('uid:' + uid + ':ignored:cids', Date.now(), cid, callback);
+	};
 
-			if(data.status === 'offline') {
-				online = false;
-			}
-
-			data.online = online;
-			data.uid = uid;
-			data.timestamp = Date.now();
-			data.rooms = websockets.getUserRooms(uid);
-
-			callback(null, data);
-		});
+	User.watchCategory = function(uid, cid, callback) {
+		if (!uid) {
+			return callback();
+		}
+		db.sortedSetRemove('uid:' + uid + ':ignored:cids', cid, callback);
 	};
 
 

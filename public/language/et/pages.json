@@ -5,11 +5,14 @@
     "recent": "Hiljutised teemad",
     "users": "Registreeritud kasutajad",
     "notifications": "Teated",
+    "tags": "Teemad märksõnadega \"%1\"",
     "user.edit": "Muudan \"%1\"",
     "user.following": "Kasutaja %1 jälgib",
     "user.followers": "Kasutajad, kes jälgivad %1",
     "user.posts": "Postitused, mis on tehtud kasutaja %1 poolt",
     "user.topics": "Teemad on kirjutanud %1",
     "user.favourites": "%1's lemmikud postitused",
-    "user.settings": "Kasutaja sätted"
+    "user.settings": "Kasutaja sätted",
+    "maintenance.text": "%1 foorumil on käimas hooldustööd. Palun külastage meid mõne aja pärast uuesti.",
+    "maintenance.messageIntro": "Administraator on jätnud ka omaltpoolt sõnumi:"
 }

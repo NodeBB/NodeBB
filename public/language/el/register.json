@@ -1,0 +1,18 @@
+{
+    "register": "Εγγραφή",
+    "help.email": "Από προεπιλογή, το email σου θα είναι κρυμμένο από την κοινή θέα.",
+    "help.username_restrictions": "Ένα μοναδικό όνομα χρήστη μεταξύ %1 και %2 χαρακτήρων. Άλλα άτομα μπορούν να σε αναφέρουν με το @<span id='yourUsername'>username</span> σου.",
+    "help.minimum_password_length": "Το μήκος του κωδικού σου πρέπει να είναι τουλάχιστον %1 χαρακτήρες.",
+    "email_address": "Διεύθυνση Email",
+    "email_address_placeholder": "Εισαγωγή Διεύθυνσης Email",
+    "username": "Όνομα Χρήστη",
+    "username_placeholder": "Εισαγωγή Ονόματος Χρήστη",
+    "password": "Κωδικός",
+    "password_placeholder": "Εισαγωγή Κωδικού",
+    "confirm_password": "Επιβεβαίωση Κωδικού",
+    "confirm_password_placeholder": "Επιβεβαίωση Κωδικού",
+    "register_now_button": "Εγγραφή Τώρα",
+    "alternative_registration": "Εναλλακτική Εγγραφή",
+    "terms_of_use": "Όροι Χρήσης",
+    "agree_to_terms_of_use": "Συμφωνώ με τους Όρους Χρήσης"
+}

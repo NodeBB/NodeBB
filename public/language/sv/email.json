@@ -1,0 +1,23 @@
+{
+    "password-reset-requested": "Återställning av lösenord efterfrågat - %1!",
+    "welcome-to": "Välkommen till %1",
+    "greeting_no_name": "Hej",
+    "greeting_with_name": "Hej %1",
+    "welcome.text1": "Tack för att du registerar dig på %1!",
+    "welcome.text2": "För att slutföra aktivering av ditt konto, behöver vi verifiera att du har tillgång till epostadressen du registererade.",
+    "welcome.cta": "Klicka här för att bekräfta din epostadress ",
+    "reset.text1": "Vi fick en förfrågan att återställa ditt lösenord, kanske för att du glömt det. Om det inte är så, så kan du ignorera det här epostmeddelandet. ",
+    "reset.text2": "För att fortsätta med återställning av lösenordet så kan du klicka på följande länk:",
+    "reset.cta": "Klicka här för att återställa ditt lösenord",
+    "digest.notifications": "You have unread notifications from %1:",
+    "digest.latest_topics": "Senaste ämnen från %1",
+    "digest.cta": "Klicka här för att besöka %1",
+    "digest.unsub.info": "Det här meddelandet fick du på grund av dina inställningar för prenumeration. ",
+    "digest.no_topics": "There have been no active topics in the past %1",
+    "notif.chat.subject": "New chat message received from %1",
+    "notif.chat.cta": "Click here to continue the conversation",
+    "notif.chat.unsub.info": "This chat notification was sent to you due to your subscription settings.",
+    "test.text1": "\nDet här är ett textmeddelande som verifierar att eposten är korrekt installerat för din NodeBB. ",
+    "unsub.cta": "Click here to alter those settings",
+    "closing": "Tack!"
+}

@@ -1,0 +1,263 @@
+@import "./bootstrap/bootstrap";
+@import "./mixins";
+
+@import "./general/dashboard";
+@import "./manage/categories";
+@import "./manage/groups";
+@import "./manage/tags";
+@import "./manage/flags";
+@import "./manage/users";
+@import "./appearance/customise";
+@import "./appearance/themes";
+@import "./extend/plugins";
+@import "./advanced/database";
+
+@import "./modules/alerts";
+@import "./modules/selectable";
+
+.admin {
+	padding-top: 70px;
+	background: #f0f0f0;
+
+	.container {
+		width: 100% !important;
+		padding: 0px 15px;
+	}
+
+	.user-img {
+		width:24px;
+		height:24px;
+	}
+
+	.nodebb-logo {
+		img {
+			height: 31px;
+			margin-top: -8px;
+			margin-left: -7px;
+			vertical-align: -43%;
+		}
+
+		.box-header-font;
+		color: #fff;
+	}
+
+	&.mobile {
+		#content {
+			padding-left: 20px;
+		}
+
+		#main-menu {
+			width: 200px;
+			height: 100%;
+
+
+			-webkit-transform: translateX(-190px);
+    		transform: translateX(-190px);
+
+			&.transitioning {
+				.transition(.3s ease all);
+			}
+
+			&.open {
+				-webkit-transform: translateX(0);
+    			transform: translateX(0);
+			}
+		}
+	}
+
+
+	#main-menu {
+		position: fixed;
+		width: 200px;
+		height: 100%;
+		padding-top: 50px;
+		top: 0px;
+		left: 0px;
+		background: url('../images/admin/connect-tile.png');
+		z-index: 1;
+		overflow-y: auto;
+
+		.nano-content {
+			top: 51px !important;
+		}
+
+		.sidebar-nav {
+			overflow: hidden;
+			.transition(.4s ease-in-out max-height);
+			max-height: 100%;
+			cursor: pointer;
+			max-height: 38px;
+
+			&.open {
+				max-height: 500px;
+			}
+
+			.nav-header {
+				color: #fff;
+				border-top: 1px solid #32353E;
+				border-bottom: 1px solid #1A1C20;
+				background-color: #272727;
+				text-shadow: 0px 0px 2px #111;
+				padding: 10px;
+				.user-select(none);
+			}
+
+			.nav-list {
+				background: #232323;
+				li {
+					i {
+						margin-right: 6px;
+					}
+
+					&:hover a {
+						background-color: #3f3f3f;
+
+						span {
+							opacity: 0.8;
+						}
+					}
+
+					&.active a {
+						padding-left: 20px;
+						background-color: #3f3f3f;
+
+						span {
+							opacity: 0;
+						}
+					}
+
+					a {
+						color: white;
+						padding: 7px 15px;
+						font-size: 13px;
+						padding-left: 11px;
+						outline: 0;
+
+						span {
+							opacity: 0;
+							margin-right: -8px;
+							.transition(.3s ease-in opacity);
+						}
+
+						-webkit-transition: background-color .3s ease-in, padding-left .3s ease-in;
+						   -moz-transition: background-color .3s ease-in, padding-left .3s ease-in;
+						     -o-transition: background-color .3s ease-in, padding-left .3s ease-in;
+						        transition: background-color .3s ease-in, padding-left .3s ease-in;
+					}
+				}
+			}
+		}
+	}
+
+	#content {
+		padding-left: 215px;
+		padding-right: 15px;
+	}
+
+	#breadcrumbs {
+		cursor: default;
+	}
+
+	.wrapper {
+		width: 100%;
+		overflow-y: hidden;
+	}
+
+	.panel {
+		background-color: #FFF;
+		box-sizing: border-box;
+		border-radius: 3px;
+		box-shadow: 0px 1px 3px 0px rgba(165, 165, 165, 0.75);
+		margin-bottom: 20px;
+		max-width: 1000px;
+
+		&.panel-default .panel-heading {
+			background: #fefefe;
+			color: #333;
+			padding: 7px 14px;
+			border: 0;
+			.box-header-font;
+		}
+	}
+
+	.nav-header {
+		.box-header-font
+	}
+
+	#user_dropdown {
+		padding: 6px;
+
+		img {
+			width: 30px;
+			height: 30px;
+			vertical-align: -88%;
+			margin-right: 5px;
+		}
+	}
+
+	.icon-container {
+		.row {
+			margin: 0;
+			i {
+				width:20px;
+				height:20px;
+				margin: 1px;
+				.pointer;
+				line-height: 20px;
+				text-align: center;
+
+				&:hover, &.selected {
+					background: black;
+					color: white;
+				}
+			}
+		}
+	}
+
+	.navbar {
+		padding: 0 5px;
+
+		.nav-home a, .nav-home a:hover {
+			width: 30px;
+			height: 30px;
+			padding: 5px;
+			text-align: center;
+			margin-top: 10px;
+			background: #DDD;
+
+			i {
+				color: black;
+				font-size: 17px;
+			}
+		}
+
+	}
+	
+	#acp-search {
+		input {
+			background: black;
+			border: 0;
+			color: white;
+			box-shadow: none;
+			.transition(.4s ease width);
+			font-family: @font-family-monospace;
+			width: 30px;
+			height: 30px;
+			vertical-align: -30%;
+			border-radius: 0;
+
+			&:focus {
+				width: 200px;
+			}
+		}
+		
+		.search-match {
+			font-weight: 700;
+			color: black;
+		}
+	}
+
+	#taskbar {
+		display: none; /* not sure why I have to do this, but it only seems to show up on prod */
+	}
+}

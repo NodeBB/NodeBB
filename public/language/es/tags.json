@@ -1,6 +1,7 @@
 {
-    "no_tag_topics": "There are no topics with this tag.",
-    "tags": "Tags",
-    "enter_tags_here": "Enter tags here. Press enter after each tag.",
-    "no_tags": "There are no tags yet."
+    "no_tag_topics": "No hay temas con esta etiqueta.",
+    "tags": "Etiquetas",
+    "enter_tags_here": "Introduce las etiquetas aquí. Pulsa intro desde de cada una.",
+    "enter_tags_here_short": "Enter tags...",
+    "no_tags": "Aún no hay etiquetas."
 }

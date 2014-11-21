@@ -13,13 +13,13 @@
     "please_log_in": "Proszę się zalogować",
     "logout": "Wyloguj się",
     "posting_restriction_info": "Pisanie jest dostępne tylko dla zarejestrowanych członków forum, kliknij tutaj aby się zalogować.",
-    "welcome_back": "Witaj z powrotem!",
+    "welcome_back": "Witamy ponownie!",
     "you_have_successfully_logged_in": "Zostałeś pomyślnie zalogowany.",
     "save_changes": "Zapisz zmiany",
     "close": "Zamknij",
     "pagination": "Numerowanie stron",
-    "pagination.out_of": "%1 poza %2",
-    "pagination.enter_index": "Enter index",
+    "pagination.out_of": "%1 z %2",
+    "pagination.enter_index": "Wpisz indeks.",
     "header.admin": "Administracja",
     "header.recent": "Ostatnie",
     "header.unread": "Nieprzeczytane",
@@ -71,5 +71,7 @@
     "guest": "Gość",
     "guests": "Goście",
     "updated.title": "Forum zaktualizowane",
-    "updated.message": "To forum zostało zaktualizowane do najnowszej wersji. Kliknij tutaj by odświeżyć stronę"
+    "updated.message": "To forum zostało zaktualizowane do najnowszej wersji. Kliknij tutaj by odświeżyć stronę",
+    "privacy": "Prywatność",
+    "delete_all": "Delete All"
 }

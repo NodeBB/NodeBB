@@ -14,7 +14,7 @@
 			property = tag.property ? 'property="' + tag.property + '" ' : '',
 			content = tag.content ? 'content="' + tag.content.replace(/\n/g, ' ') + '" ' : '';
 
-		return '<meta ' + name + property + content + ' />';
+		return '<meta ' + name + property + content + '/>';
 	};
 
 	if ('undefined' !== typeof window) {

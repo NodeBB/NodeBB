@@ -3,6 +3,7 @@
 
 var async = require('async'),
 	nconf = require('nconf'),
+	S = require('string'),
 
 	db = require('../database'),
 	user = require('../user'),
@@ -14,6 +15,9 @@ module.exports = function(Topics) {
 
 
 	Topics.isFollowing = function(tid, uid, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(null, false);
+		}
 		db.isSetMember('tid:' + tid + ':followers', uid, callback);
 	};
 
@@ -21,51 +25,38 @@ module.exports = function(Topics) {
 		db.getSetMembers('tid:' + tid + ':followers', callback);
 	};
 
-	Topics.notifyFollowers = function(tid, pid, exceptUid) {
-		async.parallel({
-			nid: function(next) {
-				async.parallel({
-					topicData: async.apply(Topics.getTopicFields, tid, ['title', 'slug']),
-					username: async.apply(user.getUserField, exceptUid, 'username'),
-					postIndex: async.apply(posts.getPidIndex, pid),
-					postContent: function(next) {
-						async.waterfall([
-							async.apply(posts.getPostField, pid, 'content'),
-							function(content, next) {
-								postTools.parse(content, next);
-							}
-						], next);
-					}
-				}, function(err, results) {
-					if (err) {
-						return next(err);
-					}
-
-					notifications.create({
-						bodyShort: '[[notifications:user_posted_to, ' + results.username + ', ' + results.topicData.title + ']]',
-						bodyLong: results.postContent,
-						path: nconf.get('relative_path') + '/topic/' + results.topicData.slug + '/' + results.postIndex,
-						uniqueId: 'topic:' + tid,
-						from: exceptUid
-					}, function(nid) {
-						next(null, nid);
-					});
-				});
-			},
-			followers: function(next) {
-				Topics.getFollowers(tid, next);
+	Topics.notifyFollowers = function(postData, exceptUid) {
+		Topics.getFollowers(postData.topic.tid, function(err, followers) {
+			if (err || !Array.isArray(followers) || !followers.length) {
+				return;
 			}
-		}, function(err, results) {
-			if (!err && results.followers.length) {
 
-				var index = results.followers.indexOf(exceptUid.toString());
-				if (index !== -1) {
-					results.followers.splice(index, 1);
+			var index = followers.indexOf(exceptUid.toString());
+			if (index !== -1) {
+				followers.splice(index, 1);
+			}
+
+			if (!followers.length) {
+				return;
+			}
+
+			var title = postData.topic.title;
+			if (title) {
+				title = S(title).decodeHTMLEntities().s;
+			}
+
+			notifications.create({
+				bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + title + ']]',
+				bodyLong: postData.content,
+				pid: postData.pid,
+				nid: 'tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + exceptUid,
+				tid: postData.topic.tid,
+				from: exceptUid
+			}, function(err, notification) {
+				if (!err && notification) {
+					notifications.push(notification, followers);
 				}
-
-				notifications.push(results.nid, results.followers);
-			}
+			});
 		});
 	};
-
 };

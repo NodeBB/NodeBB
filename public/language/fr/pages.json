@@ -5,11 +5,14 @@
     "recent": "Sujets récents",
     "users": "Utilisateurs enregistrés",
     "notifications": "Notifications",
+    "tags": "Sujets contenant le mot-clé \"%1\"",
     "user.edit": "Edite \"%1\"",
     "user.following": "Personnes que %1 suit",
     "user.followers": "Personnes qui suivent %1",
     "user.posts": "Message écrit par %1",
     "user.topics": "Sujets créés par %1",
     "user.favourites": "Messages favoris de %1",
-    "user.settings": "Préférences utilisateur"
+    "user.settings": "Préférences utilisateur",
+    "maintenance.text": "%1 est en maintenance. Veuillez revenir un peu plus tard.",
+    "maintenance.messageIntro": "De plus, l'administrateur a laissé ce message:"
 }

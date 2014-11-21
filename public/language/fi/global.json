@@ -13,7 +13,7 @@
     "please_log_in": "Kirjaudu, ole hyvä",
     "logout": "Kirjaudu ulos",
     "posting_restriction_info": "Kirjoittaminen on tällä hetkellä rajattu vain rekisteröityneille käyttäjille. Napsauta tätä kirjautuaksesi.",
-    "welcome_back": "Tervetuloa takaisin",
+    "welcome_back": "Welcome Back",
     "you_have_successfully_logged_in": "Olet onnistuneesti kirjautunut sisään",
     "save_changes": "Tallenna muutokset",
     "close": "Sulje",
@@ -71,5 +71,7 @@
     "guest": "Vieras",
     "guests": "Vieraat",
     "updated.title": "Foorumi päivitetty",
-    "updated.message": "Tämä foorumi on juuri päivitetty uusimpaan versioon. Paina tästä päivittääksesi sivun."
+    "updated.message": "Tämä foorumi on juuri päivitetty uusimpaan versioon. Paina tästä päivittääksesi sivun.",
+    "privacy": "Privacy",
+    "delete_all": "Delete All"
 }

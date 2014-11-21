@@ -3,6 +3,7 @@
     "day": "Dzień",
     "week": "Tydzień",
     "month": "Miesiąc",
-    "year": "Year",
+    "year": "Rok",
+    "alltime": "Od początku",
     "no_recent_topics": "Brak ostatnich wątków."
 }

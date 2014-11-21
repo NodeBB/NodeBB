@@ -1,6 +1,7 @@
 {
-    "no_tag_topics": "There are no topics with this tag.",
-    "tags": "Tags",
-    "enter_tags_here": "Enter tags here. Press enter after each tag.",
-    "no_tags": "There are no tags yet."
+    "no_tag_topics": "ไม่มีหัวข้อสนทนาที่เกี่ยวข้องกับป้ายคำศัพท์นี้",
+    "tags": "ป้ายคำศัพท์",
+    "enter_tags_here": "ใส่ป้ายคำศัพท์ตรงนี้. โปรดกด 'Enter' หลังทุกป้ายคำศัพท์",
+    "enter_tags_here_short": "ใส่ป้ายคำศัพท์ ...",
+    "no_tags": "ยังไม่มีป้ายคำศัพท์"
 }

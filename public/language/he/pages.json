@@ -5,11 +5,14 @@
     "recent": "נושאים אחרונים",
     "users": "משתמשים רשומים",
     "notifications": "התראות",
+    "tags": "Topics tagged under \"%1\"",
     "user.edit": "עורך את %1",
     "user.following": "אנשים ש%1 עוקב אחריהם",
     "user.followers": "אנשים שעוקבים אחרי %1",
     "user.posts": "פוסטים שהועלו על ידי %1",
     "user.topics": "נושאים שנוצרו על ידי %1",
     "user.favourites": "הפוסטים המועדפים על %1",
-    "user.settings": "הגדרות משתמש"
+    "user.settings": "הגדרות משתמש",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administrator has left this message:"
 }

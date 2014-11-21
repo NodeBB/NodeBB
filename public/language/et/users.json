@@ -5,6 +5,5 @@
     "search": "Otsi",
     "enter_username": "Sisesta kasutajanimi, keda soovid otsida",
     "load_more": "Lae veel",
-    "user-not-found": "Kasutajat ei leitud!",
     "users-found-search-took": "%1kasutaja(t) leiti! Otsing kestis %2 ms."
 }

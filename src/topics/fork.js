@@ -48,8 +48,12 @@ module.exports = function(Topics) {
 						return callback(err);
 					}
 
-					Topics.updateTimestamp(tid, Date.now());
-					Topics.getTopicData(tid, callback);
+					Topics.updateTimestamp(tid, Date.now(), function(err) {
+						if (err) {
+							return callback(err);
+						}
+						Topics.getTopicData(tid, callback);
+					});
 				});
 
 				function move(pid, next) {
@@ -67,31 +71,38 @@ module.exports = function(Topics) {
 
 	Topics.movePostToTopic = function(pid, tid, callback) {
 		threadTools.exists(tid, function(err, exists) {
-			if(err || !exists) {
+			if (err || !exists) {
 				return callback(err || new Error('[[error:no-topic]]'));
 			}
 
-			posts.getPostFields(pid, ['deleted', 'tid', 'timestamp', 'votes'], function(err, postData) {
-				if(err) {
+			posts.getPostFields(pid, ['tid', 'timestamp', 'votes'], function(err, postData) {
+				if (err) {
 					return callback(err);
 				}
 
-				if(!postData || !postData.tid) {
+				if (!postData || !postData.tid) {
 					return callback(new Error('[[error:no-post]]'));
 				}
 
 				Topics.removePostFromTopic(postData.tid, pid, function(err) {
-					if(err) {
+					if (err) {
 						return callback(err);
 					}
 
-					if(!parseInt(postData.deleted, 10)) {
-						Topics.decreasePostCount(postData.tid);
-						Topics.increasePostCount(tid);
-					}
-
-					posts.setPostField(pid, 'tid', tid);
-					Topics.addPostToTopic(tid, pid, postData.timestamp, postData.votes, callback);
+					async.parallel([
+						function(next) {
+							Topics.decreasePostCount(postData.tid, next);
+						},
+						function(next) {
+							Topics.increasePostCount(tid, next);
+						},
+						function(next) {
+							posts.setPostField(pid, 'tid', tid, next);
+						},
+						function(next) {
+							Topics.addPostToTopic(tid, pid, postData.timestamp, postData.votes, next);
+						}
+					], callback);
 				});
 			});
 		});

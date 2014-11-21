@@ -125,7 +125,7 @@ var opts = {
 		/*
 		 * Always initialize "ofn" (original function) with the original logger function
 		 */
-		opts.express.ofn = morgan({stream : opts.streams.log.f});
+		opts.express.ofn = morgan('combined', {stream : opts.streams.log.f});
 	};
 
 	Logger.expressLogger = function(req,res,next) {

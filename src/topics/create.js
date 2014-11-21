@@ -10,6 +10,7 @@ var async = require('async'),
 	meta = require('../meta'),
 	posts = require('../posts'),
 	threadTools = require('../threadTools'),
+	postTools = require('../postTools'),
 	privileges = require('../privileges'),
 	categories = require('../categories');
 
@@ -59,17 +60,32 @@ module.exports = function(Topics) {
 					return callback(err);
 				}
 
-				db.sortedSetAdd('topics:tid', timestamp, tid);
-				plugins.fireHook('action:topic.save', tid);
-
-				user.addTopicIdToUser(uid, tid, timestamp);
-
-				db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid);
-				db.incrObjectField('category:' + cid, 'topic_count');
-				db.incrObjectField('global', 'topicCount');
-
-				Topics.createTags(data.tags, tid, timestamp, function(err) {
-					callback(err, tid);
+				async.parallel([
+					function(next) {
+						db.sortedSetsAdd([
+							'topics:tid',
+							'cid:' + cid + ':tids',
+							'cid:' + cid + ':uid:' + uid + ':tids'
+						], timestamp, tid, next);
+					},
+					function(next) {
+						user.addTopicIdToUser(uid, tid, timestamp, next);
+					},
+					function(next) {
+						db.incrObjectField('category:' + cid, 'topic_count', next);
+					},
+					function(next) {
+						db.incrObjectField('global', 'topicCount', next);
+					},
+					function(next) {
+						Topics.createTags(data.tags, tid, timestamp, next);
+					}
+				], function(err) {
+					if (err) {
+						return callback(err);
+					}
+					plugins.fireHook('action:topic.save', topicData);
+					callback(null, tid);
 				});
 			});
 		});
@@ -87,20 +103,13 @@ module.exports = function(Topics) {
 
 		if (!title || title.length < parseInt(meta.config.minimumTitleLength, 10)) {
 			return callback(new Error('[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]'));
-		} else if(title.length > parseInt(meta.config.maximumTitleLength, 10)) {
+		} else if (title.length > parseInt(meta.config.maximumTitleLength, 10)) {
 			return callback(new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]'));
 		}
 
 		async.waterfall([
 			function(next) {
-				plugins.fireHook('filter:topic.post', data, function(err, filteredData) {
-					if (err) {
-						return next(err);
-					}
-
-					content = filteredData.content || data.content;
-					next();
-				});
+				checkContentLength(content, next);
 			},
 			function(next) {
 				categories.exists(cid, next);
@@ -115,38 +124,57 @@ module.exports = function(Topics) {
 				if(!canCreate) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
-				next();
-			},
-			function(next) {
 				user.isReadyToPost(uid, next);
 			},
 			function(next) {
+				plugins.fireHook('filter:topic.post', data, next);
+			},
+			function(filteredData, next) {
+				content = filteredData.content || data.content;
 				Topics.create({uid: uid, title: title, cid: cid, thumb: data.thumb, tags: data.tags}, next);
 			},
 			function(tid, next) {
 				Topics.reply({uid:uid, tid:tid, content:content, req: data.req}, next);
 			},
 			function(postData, next) {
-				threadTools.toggleFollow(postData.tid, uid);
-				next(null, postData);
+				async.parallel({
+					postData: function(next) {
+						next(null, postData);
+					},
+					settings: function(next) {
+						user.getSettings(uid, function(err, settings) {
+							if (err) {
+								return next(err);
+							}
+							if (settings.followTopicsOnCreate) {
+								threadTools.follow(postData.tid, uid, next);
+							} else {
+								next();
+							}
+						});
+					},
+					topicData: function(next) {
+						Topics.getTopicsByTids([postData.tid], 0, next);
+					}
+				}, next);
 			},
-			function(postData, next) {
-				Topics.getTopicsByTids([postData.tid], 0, function(err, topicData) {
-					if(err) {
-						return next(err);
-					}
-					if(!topicData || !topicData.length) {
-						return next(new Error('[[error:no-topic]]'));
-					}
-					topicData = topicData[0];
-					topicData.unreplied = 1;
+			function(data, next) {
+				if(!Array.isArray(data.topicData) || !data.topicData.length) {
+					return next(new Error('[[error:no-topic]]'));
+				}
 
-					plugins.fireHook('action:topic.post', topicData);
+				data.topicData = data.topicData[0];
+				data.topicData.unreplied = 1;
 
-					next(null, {
-						topicData: topicData,
-						postData: postData
-					});
+				plugins.fireHook('action:topic.post', data.topicData);
+
+				if (parseInt(uid, 10)) {
+					user.notifications.sendTopicNotificationToFollowers(uid, data.topicData, data.postData);
+				}
+
+				next(null, {
+					topicData: data.topicData,
+					postData: data.postData
 				});
 			}
 		], callback);
@@ -161,80 +189,79 @@ module.exports = function(Topics) {
 
 		async.waterfall([
 			function(next) {
+				async.parallel({
+					exists: function(next) {
+						threadTools.exists(tid, next);
+					},
+					locked: function(next) {
+						Topics.isLocked(tid, next);
+					},
+					canReply: function(next) {
+						privileges.topics.can('topics:reply', tid, uid, next);
+					}
+				}, next);
+			},
+			function(results, next) {
+				if (!results.exists) {
+					return next(new Error('[[error:no-topic]]'));
+				}
+				if (results.locked) {
+					return next(new Error('[[error:topic-locked]]'));
+				}
+				if (!results.canReply) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
+
+				user.isReadyToPost(uid, next);
+			},
+			function(next) {
 				plugins.fireHook('filter:topic.reply', data, next);
 			},
 			function(filteredData, next) {
 				content = filteredData.content || data.content;
-				threadTools.exists(tid, next);
-			},
-			function(topicExists, next) {
-				if (!topicExists) {
-					return next(new Error('[[error:no-topic]]'));
-				}
-
-				Topics.isLocked(tid, next);
-			},
-			function(locked, next) {
-				if (locked) {
-					return next(new Error('[[error:topic-locked]]'));
-				}
-
-				privileges.topics.can('topics:reply', tid, uid, next);
-			},
-			function(canReply, next) {
-				if (!canReply) {
-					return next(new Error('[[error:no-privileges]]'));
-				}
-				next();
-			},
-			function(next) {
-				user.isReadyToPost(uid, next);
-			},
-			function(next) {
 				if (content) {
 					content = content.trim();
 				}
 
-				if (!content || content.length < parseInt(meta.config.miminumPostLength, 10)) {
-					return callback(new Error('[[error:content-too-short, '  + meta.config.minimumPostLength + ']]'));
-				}
-
-				posts.create({uid:uid, tid:tid, content:content, toPid:toPid}, next);
+				checkContentLength(content, next);
+			},
+			function(next) {
+				posts.create({uid: uid, tid: tid, content: content, toPid: toPid}, next);
 			},
 			function(data, next) {
 				postData = data;
-
-				if (parseInt(uid, 10)) {
-					Topics.notifyFollowers(tid, postData.pid, uid);
-
-					user.notifications.sendPostNotificationToFollowers(uid, tid, postData.pid);
-				}
-
-				next();
-			},
-			function(next) {
 				Topics.markAsUnreadForAll(tid, next);
 			},
 			function(next) {
-				Topics.markAsRead(tid, uid, next);
-			},
-			function(result, next) {
-				posts.getUserInfoForPosts([postData.uid], next);
-			},
-			function(userInfo, next) {
-				postData.user = userInfo[0];
-				Topics.getTopicFields(tid, ['tid', 'title', 'slug'], next);
-			},
-			function(topicData, next) {
-				topicData.title = validator.escape(topicData.title);
-				postData.topic = topicData;
-				next();
+				Topics.markAsRead([tid], uid, next);
 			},
 			function(next) {
-				posts.getPidIndex(postData.pid, next);
+				async.parallel({
+					userInfo: function(next) {
+						posts.getUserInfoForPosts([postData.uid], uid, next);
+					},
+					topicInfo: function(next) {
+						Topics.getTopicFields(tid, ['tid', 'title', 'slug', 'cid'], next);
+					},
+					settings: function(next) {
+						user.getSettings(uid, next);
+					},
+					postIndex: function(next) {
+						posts.getPidIndex(postData.pid, uid, next);
+					},
+					content: function(next) {
+						postTools.parsePost(postData, uid, next);
+					}
+				}, next);
 			},
-			function(index, next) {
-				postData.index = index - 1;
+			function(results, next) {
+				postData.user = results.userInfo[0];
+				postData.topic = results.topicInfo;
+
+				if (results.settings.followTopicsOnReply) {
+					threadTools.follow(postData.tid, uid);
+				}
+				postData.index = results.postIndex - 1;
 				postData.favourited = false;
 				postData.votes = 0;
 				postData.display_moderator_tools = true;
@@ -242,9 +269,21 @@ module.exports = function(Topics) {
 				postData.selfPost = false;
 				postData.relativeTime = utils.toISOString(postData.timestamp);
 
+				if (parseInt(uid, 10)) {
+					Topics.notifyFollowers(postData, uid);
+				}
+
+				postData.topic.title = validator.escape(postData.topic.title);
 				next(null, postData);
 			}
 		], callback);
 	};
+
+	function checkContentLength(content, callback) {
+		if (!content || content.length < parseInt(meta.config.miminumPostLength, 10)) {
+			return callback(new Error('[[error:content-too-short, '  + meta.config.minimumPostLength + ']]'));
+		}
+		callback();
+	}
 
 };

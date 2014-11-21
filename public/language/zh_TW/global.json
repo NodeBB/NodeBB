@@ -13,13 +13,13 @@
     "please_log_in": "請登入",
     "logout": "退出",
     "posting_restriction_info": "發表文章目前僅限於註冊的會員，點擊此處進行登錄。",
-    "welcome_back": "歡迎回來 ~",
+    "welcome_back": "歡迎回來！",
     "you_have_successfully_logged_in": "您已經成功登錄！",
     "save_changes": "保存修改",
     "close": "關閉",
     "pagination": "分頁",
     "pagination.out_of": "%1 out of %2",
-    "pagination.enter_index": "Enter index",
+    "pagination.enter_index": "輸入Index",
     "header.admin": "管理",
     "header.recent": "最近",
     "header.unread": "未讀",
@@ -71,5 +71,7 @@
     "guest": "Guest",
     "guests": "Guests",
     "updated.title": "討論區更新完畢",
-    "updated.message": "這個討論區最近被更新至最新的版本. 按此來重整這個頁面"
+    "updated.message": "這個討論區最近被更新至最新的版本. 按此來重整這個頁面",
+    "privacy": "隱私",
+    "delete_all": "全部刪除"
 }

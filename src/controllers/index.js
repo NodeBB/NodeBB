@@ -9,9 +9,11 @@ var topicsController = require('./topics'),
 	staticController = require('./static'),
 	apiController = require('./api'),
 	adminController = require('./admin'),
+	helpers = require('./helpers'),
 
 	async = require('async'),
 	nconf = require('nconf'),
+	validator = require('validator'),
 	winston = require('winston'),
 	auth = require('../routes/authentication'),
 	meta = require('../meta'),
@@ -64,22 +66,31 @@ Controllers.home = function(req, res, next) {
 		},
 		categories: function (next) {
 			var uid = req.user ? req.user.uid : 0;
-			categories.getVisibleCategories(uid, function (err, categoryData) {
+			categories.getCategoriesByPrivilege(uid, 'find', function (err, categoryData) {
 				if (err) {
 					return next(err);
 				}
+				var childCategories = [];
 
-				function getRecentReplies(category, callback) {
-					categories.getRecentTopicReplies(category.cid, uid, parseInt(category.numRecentReplies, 10), function (err, posts) {
-						if (err) {
-							return callback(err);
-						}
-						category.posts = posts;
-						callback();
-					});
+				for(var i=categoryData.length - 1; i>=0; --i) {
+
+					if (Array.isArray(categoryData[i].children) && categoryData[i].children.length) {
+						childCategories.push.apply(childCategories, categoryData[i].children);
+					}
+
+					if (categoryData[i].parent && categoryData[i].parent.cid) {
+						categoryData.splice(i, 1);
+					}
 				}
 
-				async.each(categoryData, getRecentReplies, function (err) {
+				async.parallel([
+					function(next) {
+						categories.getRecentTopicReplies(categoryData, uid, next);
+					},
+					function(next) {
+						categories.getRecentTopicReplies(childCategories, uid, next);
+					}
+				], function(err) {
 					next(err, categoryData);
 				});
 			});
@@ -108,6 +119,8 @@ Controllers.search = function(req, res, next) {
 		return res.redirect('/404');
 	}
 
+	req.params.term = validator.escape(req.params.term);
+
 	search.search(req.params.term, uid, function(err, results) {
 		if (err) {
 			return next(err);
@@ -125,31 +138,28 @@ Controllers.reset = function(req, res, next) {
 
 Controllers.login = function(req, res, next) {
 	var data = {},
-		login_strategies = auth.get_login_strategies(),
-		num_strategies = login_strategies.length,
+		loginStrategies = auth.getLoginStrategies(),
 		emailersPresent = plugins.hasListeners('action:email.send');
 
-	data.alternate_logins = num_strategies > 0;
-	data.authentication = login_strategies;
-	data.token = res.locals.csrf_token;
+	data.alternate_logins = loginStrategies.length > 0;
+	data.authentication = loginStrategies;
 	data.showResetLink = emailersPresent;
-	data.allowLocalLogin = meta.config.allowLocalLogin === undefined || parseInt(meta.config.allowLocalLogin, 10) === 1;
-	data.allowRegistration = meta.config.allowRegistration;
-
-	if (req.query.next) {
-		data.previousUrl = req.query.next;
-	}
+	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1;
+	data.allowRegistration = parseInt(meta.config.allowRegistration, 10) === 1;
+	data.error = req.flash('error')[0];
 
 	res.render('login', data);
 };
 
 Controllers.register = function(req, res, next) {
+	if(meta.config.allowRegistration !== undefined && parseInt(meta.config.allowRegistration, 10) === 0) {
+		return res.redirect(nconf.get('relative_path') + '/403');
+	}
 
 	var data = {},
-		login_strategies = auth.get_login_strategies(),
-		num_strategies = login_strategies.length;
+		loginStrategies = auth.getLoginStrategies();
 
-	if (num_strategies === 0) {
+	if (loginStrategies.length === 0) {
 		data = {
 			'register_window:spansize': 'col-md-12',
 			'alternate_logins': false
@@ -161,20 +171,21 @@ Controllers.register = function(req, res, next) {
 		};
 	}
 
-	data.authentication = login_strategies;
+	data.authentication = loginStrategies;
 
-	data.token = res.locals.csrf_token;
 	data.minimumUsernameLength = meta.config.minimumUsernameLength;
 	data.maximumUsernameLength = meta.config.maximumUsernameLength;
 	data.minimumPasswordLength = meta.config.minimumPasswordLength;
 	data.termsOfUse = meta.config.termsOfUse;
 	data.regFormEntry = [];
+	data.error = req.flash('error')[0];
 
-	plugins.fireHook('filter:register.build', req, res, data, function(err, req, res, data) {
+	plugins.fireHook('filter:register.build', {req: req, res: res, templateData: data}, function(err, data) {
 		if (err && process.env === 'development') {
 			winston.warn(JSON.stringify(err));
+			return next(err);
 		}
-		res.render('register', data);
+		res.render('register', data.templateData);
 	});
 };
 
@@ -188,7 +199,7 @@ Controllers.confirmEmail = function(req, res, next) {
 
 Controllers.sitemap = function(req, res, next) {
 	if (meta.config['feeds:disableSitemap'] === '1') {
-		return res.redirect('404');
+		return res.redirect(nconf.get('relative_path') + '/404');
 	}
 
 	var sitemap = require('../sitemap.js');
@@ -221,9 +232,15 @@ Controllers.outgoing = function(req, res, next) {
 	if (url) {
 		res.render('outgoing', data);
 	} else {
-		res.status(404);
-		res.redirect(nconf.get('relative_path') + '/404');
+		res.status(404).redirect(nconf.get('relative_path') + '/404');
 	}
+};
+
+Controllers.termsOfUse = function(req, res, next) {
+	if (!meta.config.termsOfUse) {
+		return helpers.notFound(res);
+	}
+	res.render('tos', {termsOfUse: meta.config.termsOfUse});
 };
 
 module.exports = Controllers;

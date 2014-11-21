@@ -5,11 +5,14 @@
     "recent": "Neueste Themen",
     "users": "Registrierte User",
     "notifications": "Benachrichtigungen",
+    "tags": "Themen markiert unter \"%1\"",
     "user.edit": "Bearbeite \"%1\"",
     "user.following": "Nutzer, die %1 folgt",
     "user.followers": "Nutzer, die %1 folgen",
     "user.posts": "Beiträge von %1",
     "user.topics": "Themen von %1",
     "user.favourites": "Von %1 favorisierte Beiträge",
-    "user.settings": "Benutzer-Einstellungen"
+    "user.settings": "Benutzer-Einstellungen",
+    "maintenance.text": "%1 befindet sich derzeit in der Wartung. Bitte komm später wieder.",
+    "maintenance.messageIntro": "Zusätzlich hat der Administrator diese Nachricht hinterlassen:"
 }

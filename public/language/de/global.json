@@ -71,5 +71,7 @@
     "guest": "Gast",
     "guests": "Gäste",
     "updated.title": "Forum aktualisiert",
-    "updated.message": "Dieses Forum wurde gerade auf die neueste Version aktualisiert. Klicke hier, um die Seite  neuzuladen."
+    "updated.message": "Dieses Forum wurde gerade auf die neueste Version aktualisiert. Klicke hier, um die Seite  neuzuladen.",
+    "privacy": "Privatsphäre",
+    "delete_all": "Alles löschen"
 }

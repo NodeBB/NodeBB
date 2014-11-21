@@ -1,0 +1,23 @@
+{
+    "password-reset-requested": "密码重设申请 - %1!",
+    "welcome-to": "欢迎来到 %1",
+    "greeting_no_name": "您好",
+    "greeting_with_name": "%1，您好",
+    "welcome.text1": "谢谢您使用 %1 注册帐户！",
+    "welcome.text2": "如需完全激活您的帐户，我们需要校验您注册的电子邮箱地址。",
+    "welcome.cta": "点击这里确认您的电子邮箱地址",
+    "reset.text1": "我们收到了重置您密码的申请，可能因为您忘记了密码。如果不是，请忽略这封邮件。",
+    "reset.text2": "如需继续重置密码，请点击下面的链接：",
+    "reset.cta": "点击这里重设您的密码",
+    "digest.notifications": "您有来自 %1 的未读通知：",
+    "digest.latest_topics": "来自 %1 的最新主题",
+    "digest.cta": "点击这里访问 %1",
+    "digest.unsub.info": "根据您的订阅设置，为您发送此摘要。",
+    "digest.no_topics": "There have been no active topics in the past %1",
+    "notif.chat.subject": "收到来自 %1 的新聊天消息",
+    "notif.chat.cta": "点击这里恢复会话",
+    "notif.chat.unsub.info": "根据您的订阅设置，为您发送此聊天提醒。",
+    "test.text1": "这是一封测试邮件，用来验证 NodeBB 的邮件配置是否设置正确。",
+    "unsub.cta": "点击这里修改这些设置",
+    "closing": "谢谢！"
+}

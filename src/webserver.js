@@ -6,6 +6,7 @@ var path = require('path'),
 	server,
 	winston = require('winston'),
 	async = require('async'),
+	cluster = require('cluster'),
 
 	emailer = require('./emailer'),
 	db = require('./database'),
@@ -36,16 +37,20 @@ if(nconf.get('ssl')) {
 	var	port = nconf.get('PORT') || nconf.get('port');
 
 	logger.init(app);
-	auth.registerApp(app);
 	emailer.registerApp(app);
-	notifications.init();
-	user.startJobs();
+
+	if (cluster.isWorker && process.env.handle_jobs === 'true') {
+		notifications.init();
+		user.startJobs();
+	}
 
 	// Preparation dependent on plugins
 	plugins.ready(function() {
-		meta.js.minify(app.enabled('minification'));
-		meta.css.minify();
-		meta.sounds.init();
+		async.parallel([
+			async.apply(!nconf.get('from-file') ? meta.js.minify : meta.js.getFromFile, app.enabled('minification')),
+			async.apply(!nconf.get('from-file') ? meta.css.minify : meta.css.getFromFile),
+			async.apply(meta.sounds.init)
+		]);
 	});
 
 	async.parallel({
@@ -95,35 +100,47 @@ if(nconf.get('ssl')) {
 		winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
 	}
 
-	module.exports.server = server;
-	module.exports.init = function () {
-		server.on("error", function(err){
-			if (err.code === 'EADDRINUSE') {
-				winston.error('NodeBB address in use, exiting...');
-				process.exit(1);
+	server.on('error', function(err) {
+		winston.error(err.stack);
+		console.log(err.stack);
+		if (err.code === 'EADDRINUSE') {
+			winston.error('NodeBB address in use, exiting...');
+			if (cluster.isWorker) {
+				cluster.worker.kill();
 			} else {
-				throw err;
+				process.exit(0);
 			}
-		});
+		} else {
+			throw err;
+		}
+	});
 
-		emitter.all(['templates:compiled', 'meta:js.compiled', 'meta:css.compiled'], function() {
-			winston.info('NodeBB Ready');
-			emitter.emit('nodebb:ready');
-		});
+	module.exports.server = server;
 
-		emitter.on('templates:compiled', function() {
-			var	bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
-			winston.info('NodeBB attempting to listen on: ' + bind_address);
+	emitter.all(['templates:compiled', 'meta:js.compiled', 'meta:css.compiled'], function() {
+		winston.info('NodeBB Ready');
+		emitter.emit('nodebb:ready');
+	});
 
-			server.listen(port, nconf.get('bind_address'), function(){
-				winston.info('NodeBB is now listening on: ' + bind_address);
-				if (process.send) {
-					process.send({
-						action: 'ready',
-						bind_address: bind_address
-					});
-				}
-			});
+	module.exports.listen = function(callback) {
+		var	bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
+		
+		server.listen(port, nconf.get('bind_address'), function(err) {
+			if (err) {
+				winston.info('NodeBB was unable to listen on: ' + bind_address);
+				return callback(err);
+			}
+
+			winston.info('NodeBB is now listening on: ' + bind_address);
+			if (process.send) {
+				process.send({
+					action: 'listening',
+					bind_address: bind_address,
+					primary: process.env.handle_jobs === 'true'
+				});
+			}
+
+			callback();
 		});
 	};
 

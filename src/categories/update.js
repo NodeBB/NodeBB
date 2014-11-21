@@ -2,8 +2,8 @@
 'use strict';
 
 var async = require('async'),
-	db = require('./../database'),
-	utils = require('./../../public/src/utils');
+	db = require('../database'),
+	utils = require('../../public/src/utils');
 
 
 module.exports = function(Categories) {
@@ -19,28 +19,28 @@ module.exports = function(Categories) {
 			}, next);
 		}
 
-		function updateCategoryField(cid, key, value, next) {
-			db.setObjectField('category:' + cid, key, value, function(err) {
-				if(err) {
-					return next(err);
-				}
-
-				if (key === 'name') {
-					var slug = cid + '/' + utils.slugify(value);
-					db.setObjectField('category:' + cid, 'slug', slug, next);
-				} else if (key === 'order') {
-					db.sortedSetAdd('categories:cid', value, cid, next);
-				} else {
-					next();
-				}
-			});
-		}
-
 		var cids = Object.keys(modified);
 
 		async.each(cids, updateCategory, function(err) {
 			callback(err, cids);
 		});
 	};
+
+	function updateCategoryField(cid, key, value, callback) {
+		db.setObjectField('category:' + cid, key, value, function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (key === 'name') {
+				var slug = cid + '/' + utils.slugify(value);
+				db.setObjectField('category:' + cid, 'slug', slug, callback);
+			} else if (key === 'order') {
+				db.sortedSetAdd('categories:cid', value, cid, callback);
+			} else {
+				callback();
+			}
+		});
+	}
 
 };

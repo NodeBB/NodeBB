@@ -71,5 +71,7 @@
     "guest": "Invitado",
     "guests": "Invitados",
     "updated.title": "Foro actualizado",
-    "updated.message": "El foro acaba de ser actualizado a la última versión. Haz click aquí para refrescar la página."
+    "updated.message": "El foro acaba de ser actualizado a la última versión. Haz click aquí para refrescar la página.",
+    "privacy": "Privacy",
+    "delete_all": "Delete All"
 }

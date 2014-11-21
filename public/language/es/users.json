@@ -5,6 +5,5 @@
     "search": "Buscar",
     "enter_username": "Ingresa el nombre de usuario que quieres buscar",
     "load_more": "Cargar más",
-    "user-not-found": "¡Usuario no encontrado!",
     "users-found-search-took": "¡%1 usuario(s) encontrados! La búsqueda tardó %2 ms."
 }

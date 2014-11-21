@@ -1,0 +1,23 @@
+{
+    "password-reset-requested": "Richiesta di reset della password - %1!",
+    "welcome-to": "Benvenuto in %1",
+    "greeting_no_name": "Ciao",
+    "greeting_with_name": "Ciao %1",
+    "welcome.text1": "Grazie per esserti registrato su %1!",
+    "welcome.text2": "Per attivare completamente il tuo account dobbiamo verificare che sei il proprietario dell'indiritto email con cui ti sei registrato.",
+    "welcome.cta": "Clicca qui per confermare il tuo indirizzo email",
+    "reset.text1": "Abbiamo ricevuto una richiesta di reset della tua password, probabilmente perché l'hai dimenticata. Se non è così si prega di ignorare questa email.",
+    "reset.text2": "Per confermare il reset della password per favore clicca il seguente link:",
+    "reset.cta": "Clicca qui per resettare la tua password",
+    "digest.notifications": "Hai una notifica non letta da %1:",
+    "digest.latest_topics": "Ultimi argomenti su %1",
+    "digest.cta": "Clicca qui per visitare %1",
+    "digest.unsub.info": "Questo sommario ti è stato inviato perché lo hai sottoscritto nelle tue impostazioni.",
+    "digest.no_topics": "There have been no active topics in the past %1",
+    "notif.chat.subject": "Nuovo messaggio in chat da %1",
+    "notif.chat.cta": "Clicca qui per continuare la conversazione",
+    "notif.chat.unsub.info": "Questa notifica di chat ti è stata inviata perché l'hai scelta nelle impostazioni.",
+    "test.text1": "Questa è una email di test per verificare che il servizio di invio email è configurato correttamente sul tuo NodeBB.",
+    "unsub.cta": "Clicca qui per modificare queste impostazioni",
+    "closing": "Grazie!"
+}

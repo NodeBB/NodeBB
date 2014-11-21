@@ -1,22 +1,25 @@
 
 'use strict';
 
-var topics = require('../topics'),
+var nconf = require('nconf'),
+	async = require('async'),
+
+	topics = require('../topics'),
 	categories = require('../categories'),
 	privileges = require('../privileges'),
+	plugins = require('../plugins'),
+	notifications = require('../notifications'),
 	threadTools = require('../threadTools'),
 	websockets = require('./index'),
 	user = require('../user'),
-	db = require('./../database'),
-	meta = require('./../meta'),
+	db = require('../database'),
+	meta = require('../meta'),
 	utils = require('../../public/src/utils'),
-
-	async = require('async'),
+	SocketPosts = require('./posts'),
 
 	SocketTopics = {};
 
 SocketTopics.post = function(socket, data, callback) {
-
 	if(!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -30,61 +33,62 @@ SocketTopics.post = function(socket, data, callback) {
 		tags: data.tags,
 		req: websockets.reqFromSocket(socket)
 	}, function(err, result) {
-		if(err) {
+		if (err) {
 			return callback(err);
 		}
 
-		if (result) {
+		callback(null, result.topicData);
+		socket.emit('event:new_post', {posts: [result.postData]});
+		socket.emit('event:new_topic', result.topicData);
 
-			websockets.server.sockets.in('category_' + data.category_id).emit('event:new_topic', result.topicData);
-			websockets.server.sockets.in('recent_posts').emit('event:new_topic', result.topicData);
-			websockets.server.sockets.in('home').emit('event:new_topic', result.topicData);
-			websockets.server.sockets.in('home').emit('event:new_post', {
-				posts: result.postData
+		var uids = websockets.getConnectedClients();
+
+		privileges.categories.filterUids('read', result.topicData.cid, uids, function(err, uids) {
+			if (err) {
+				return;
+			}
+
+			plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: data.uid, type: "newTopic"}, function(err, data) {
+				uids = data.uidsTo;
+
+				for(var i=0; i<uids.length; ++i) {
+					if (parseInt(uids[i], 10) !== socket.uid) {
+						websockets.in('uid_' + uids[i]).emit('event:new_post', {posts: [result.postData]});
+						websockets.in('uid_' + uids[i]).emit('event:new_topic', result.topicData);
+					}
+				}
 			});
-			websockets.server.sockets.in('user/' + socket.uid).emit('event:new_post', {
-				posts: result.postData
-			});
-
-			module.parent.exports.emitTopicPostStats();
-			topics.pushUnreadCount();
-
-			callback(null, result.topicData);
-		}
+		});
 	});
+};
+
+SocketTopics.enter = function(socket, tid, callback) {
+	if (!parseInt(tid, 10) || !socket.uid) {
+		return;
+	}
+
+	SocketTopics.markAsRead(socket, [tid], callback);
+	websockets.updateRoomBrowsingText('topic_' + tid);
 };
 
 SocketTopics.postcount = function(socket, tid, callback) {
 	topics.getTopicField(tid, 'postcount', callback);
 };
 
-SocketTopics.lastPostIndex = function(socket, tid, callback) {
-	db.sortedSetCard('tid:' + tid + ':posts', callback);
-};
-
-SocketTopics.increaseViewCount = function(socket, tid) {
-	topics.increaseViewCount(tid);
-};
-
-SocketTopics.markAsRead = function(socket, tid) {
-	if(!tid || !socket.uid) {
-		return;
-	}
-
-	topics.markAsRead(tid, socket.uid, function(err) {
-		topics.pushUnreadCount(socket.uid);
-		topics.markTopicNotificationsRead(tid, socket.uid);
-	});
-};
-
-SocketTopics.markTidsRead = function(socket, tids, callback) {
-
-	if (!Array.isArray(tids)) {
+SocketTopics.markAsRead = function(socket, tids, callback) {
+	if(!Array.isArray(tids) || !socket.uid) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	topics.markTidsRead(socket.uid, tids, function(err) {
-		if(err) {
+	if (!tids.length) {
+		return callback();
+	}
+	tids = tids.filter(function(tid) {
+		return tid && utils.isNumber(tid);
+	});
+
+	topics.markAsRead(tids, socket.uid, function(err) {
+		if (err) {
 			return callback(err);
 		}
 
@@ -93,9 +97,15 @@ SocketTopics.markTidsRead = function(socket, tids, callback) {
 		for (var i=0; i<tids.length; ++i) {
 			topics.markTopicNotificationsRead(tids[i], socket.uid);
 		}
-
 		callback();
 	});
+};
+
+SocketTopics.markTopicNotificationsRead = function(socket, tid, callback) {
+	if(!tid || !socket.uid) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	topics.markTopicNotificationsRead(tid, socket.uid);
 };
 
 SocketTopics.markAllRead = function(socket, data, callback) {
@@ -104,7 +114,7 @@ SocketTopics.markAllRead = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		SocketTopics.markTidsRead(socket, tids, callback);
+		SocketTopics.markAsRead(socket, tids, callback);
 	});
 };
 
@@ -114,47 +124,75 @@ SocketTopics.markCategoryTopicsRead = function(socket, cid, callback) {
 			return callback(err);
 		}
 
-		var keys = tids.map(function(tid) {
-			return 'topic:' + tid;
-		});
-
-		db.getObjectsFields(keys, ['tid', 'cid'], function(err, topicData) {
+		topics.getTopicsFields(tids, ['tid', 'cid'], function(err, topicData) {
 			if (err) {
 				return callback(err);
 			}
 
 			tids = topicData.filter(function(topic) {
-				return parseInt(topic.cid, 10) === parseInt(cid, 10);
+				return topic && parseInt(topic.cid, 10) === parseInt(cid, 10);
 			}).map(function(topic) {
 				return topic.tid;
 			});
 
-			SocketTopics.markTidsRead(socket, tids, callback);
+			SocketTopics.markAsRead(socket, tids, callback);
 		});
-
 	});
 };
 
 SocketTopics.markAsUnreadForAll = function(socket, tids, callback) {
-	if(!Array.isArray(tids)) {
+	if (!Array.isArray(tids)) {
 		return callback(new Error('[[error:invalid-tid]]'));
 	}
 
-	async.each(tids, function(tid, next) {
-		topics.markAsUnreadForAll(tid, function(err) {
-			if(err) {
-				return next(err);
-			}
+	if (!socket.uid) {
+		return callback(new Error('[[error:no-privileges]]'));
+	}
 
-			db.sortedSetAdd('topics:recent', Date.now(), tid, function(err) {
-				if(err) {
+	user.isAdministrator(socket.uid, function(err, isAdmin) {
+		if (err) {
+			return callback(err);
+		}
+
+		async.each(tids, function(tid, next) {
+			async.waterfall([
+				function(next) {
+					threadTools.exists(tid, next);
+				},
+				function(exists, next) {
+					if (!exists) {
+						return next(new Error('[[error:invalid-tid]]'));
+					}
+					topics.getTopicField(tid, 'cid', next);
+				},
+				function(cid, next) {
+					user.isModerator(socket.uid, cid, next);
+				}
+			], function(err, isMod) {
+				if (err) {
 					return next(err);
 				}
-				topics.pushUnreadCount();
-				next();
+
+				if (!isAdmin && !isMod) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
+
+				topics.markAsUnreadForAll(tid, function(err) {
+					if(err) {
+						return next(err);
+					}
+
+					topics.updateRecent(tid, Date.now(), function(err) {
+						if(err) {
+							return next(err);
+						}
+						topics.pushUnreadCount(socket.uid);
+						next();
+					});
+				});
 			});
-		});
-	}, callback);
+		}, callback);
+	});
 };
 
 SocketTopics.delete = function(socket, data, callback) {
@@ -170,7 +208,7 @@ SocketTopics.purge = function(socket, data, callback) {
 		if (err) {
 			return callback(err);
 		}
-		websockets.emitTopicPostStats();
+
 		websockets.in('category_' + data.cid).emit('event:topic_purged', data.tids);
 		async.each(data.tids, function(tid, next) {
 			websockets.in('topic_' + tid).emit('event:topic_purged', tid);
@@ -196,6 +234,9 @@ SocketTopics.unpin = function(socket, data, callback) {
 };
 
 function doTopicAction(action, socket, data, callback) {
+	if (!socket.uid) {
+		return;
+	}
 	if(!data || !Array.isArray(data.tids) || !data.cid) {
 		return callback(new Error('[[error:invalid-tid]]'));
 	}
@@ -243,7 +284,14 @@ SocketTopics.movePost = function(socket, data, callback) {
 			return callback(err || new Error('[[error:no-privileges]]'));
 		}
 
-		topics.movePostToTopic(data.pid, data.tid, callback);
+		topics.movePostToTopic(data.pid, data.tid, function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:moved_your_post');
+			callback();
+		});
 	});
 };
 
@@ -252,7 +300,7 @@ SocketTopics.move = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	async.each(data.tids, function(tid, next) {
+	async.eachLimit(data.tids, 10, function(tid, next) {
 		var oldCid;
 		async.waterfall([
 			function(next) {
@@ -284,10 +332,40 @@ SocketTopics.move = function(socket, data, callback) {
 				tid: tid
 			});
 
+			SocketTopics.sendNotificationToTopicOwner(tid, socket.uid, 'notifications:moved_your_topic');
+
 			next();
 		});
 	}, callback);
 };
+
+
+SocketTopics.sendNotificationToTopicOwner = function(tid, fromuid, notification) {
+	if(!tid || !fromuid) {
+		return;
+	}
+
+	async.parallel({
+		username: async.apply(user.getUserField, fromuid, 'username'),
+		topicData: async.apply(topics.getTopicFields, tid, ['uid', 'slug']),
+	}, function(err, results) {
+		if (err || fromuid === parseInt(results.topicData.uid, 10)) {
+			return;
+		}
+
+		notifications.create({
+			bodyShort: '[[' + notification + ', ' + results.username + ']]',
+			path: nconf.get('relative_path') + '/topic/' + results.topicData.slug,
+			nid: 'tid:' + tid + ':uid:' + fromuid,
+			from: fromuid
+		}, function(err, notification) {
+			if (!err && notification) {
+				notifications.push(notification, [results.topicData.uid]);
+			}
+		});
+	});
+};
+
 
 SocketTopics.moveAll = function(socket, data, callback) {
 	if(!data || !data.cid || !data.currentCid) {
@@ -299,20 +377,16 @@ SocketTopics.moveAll = function(socket, data, callback) {
 			return callback(err || new Error('[[error:no-privileges]]'));
 		}
 
-		categories.getTopicIds(data.currentCid, 0, -1, function(err, tids) {
+		categories.getTopicIds('cid:' + data.currentCid + ':tids', 0, -1, function(err, tids) {
 			if (err) {
 				return callback(err);
 			}
 
-			async.each(tids, function(tid, next) {
+			async.eachLimit(tids, 10, function(tid, next) {
 				threadTools.move(tid, data.cid, socket.uid, next);
 			}, callback);
 		});
 	});
-};
-
-SocketTopics.followCheck = function(socket, tid, callback) {
-	topics.isFollowing(tid, socket.uid, callback);
 };
 
 SocketTopics.follow = function(socket, tid, callback) {
@@ -324,51 +398,59 @@ SocketTopics.follow = function(socket, tid, callback) {
 };
 
 SocketTopics.loadMore = function(socket, data, callback) {
-	if(!data || !data.tid || !(parseInt(data.after, 10) >= 0))  {
+	if(!data || !data.tid || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0)  {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	user.getSettings(socket.uid, function(err, settings) {
-		if(err) {
+	async.parallel({
+		settings: function(next) {
+			user.getSettings(socket.uid, next);
+		},
+		privileges: function(next) {
+			privileges.topics.get(data.tid, socket.uid, next);
+		},
+		postCount: function(next) {
+			topics.getPostCount(data.tid, next);
+		}
+	}, function(err, results) {
+		if (err) {
 			return callback(err);
 		}
 
-		var start = Math.max(parseInt(data.after, 10) - 1, 0),
-			end = start + settings.postsPerPage - 1;
+		if (!results.privileges.read) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
 
 		var set = 'tid:' + data.tid + ':posts',
-			reverse = false;
+			reverse = false,
+			start = Math.max(parseInt(data.after, 10) - 1, 0);
 
-		if (settings.topicPostSort === 'newest_to_oldest') {
+		if (results.settings.topicPostSort === 'newest_to_oldest' || results.settings.topicPostSort === 'most_votes') {
 			reverse = true;
-		} else if (settings.topicPostSort === 'most_votes') {
-			reverse = true;
-			set = 'tid:' + data.tid + ':posts:votes';
+			data.after = results.postCount - 1 - data.after;
+			start = Math.max(parseInt(data.after, 10), 0);
+			if (results.settings.topicPostSort === 'most_votes') {
+				set = 'tid:' + data.tid + ':posts:votes';
+			}
 		}
+
+		var end = start + results.settings.postsPerPage - 1;
 
 		async.parallel({
 			posts: function(next) {
 				topics.getTopicPosts(data.tid, set, start, end, socket.uid, reverse, next);
 			},
 			privileges: function(next) {
-				privileges.topics.get(data.tid, socket.uid, next);
+				next(null, results.privileges);
 			},
 			'reputation:disabled': function(next) {
 				next(null, parseInt(meta.config['reputation:disabled'], 10) === 1);
+			},
+			'downvote:disabled': function(next) {
+				next(null, parseInt(meta.config['downvote:disabled'], 10) === 1);
 			}
 		}, callback);
 	});
-};
-
-SocketTopics.loadMoreRecentTopics = function(socket, data, callback) {
-	if(!data || !data.term || !data.after) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-
-	var start = parseInt(data.after, 10),
-		end = start + 9;
-
-	topics.getLatestTopics(socket.uid, start, end, data.term, callback);
 };
 
 SocketTopics.loadMoreUnreadTopics = function(socket, data, callback) {
@@ -390,7 +472,7 @@ SocketTopics.loadMoreFromSet = function(socket, data, callback) {
 	var start = parseInt(data.after, 10),
 		end = start + 9;
 
-	topics.getTopicsFromSet(socket.uid, data.set, start, end, callback);
+	topics.getTopicsFromSet(data.set, socket.uid, start, end, callback);
 };
 
 SocketTopics.loadTopics = function(socket, data, callback) {
@@ -398,7 +480,7 @@ SocketTopics.loadTopics = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	topics.getTopicsFromSet(socket.uid, data.set, data.start, data.end, callback);
+	topics.getTopicsFromSet(data.set, socket.uid, data.start, data.end, callback);
 };
 
 SocketTopics.getPageCount = function(socket, tid, callback) {
@@ -415,6 +497,65 @@ SocketTopics.getTidIndex = function(socket, tid, callback) {
 
 SocketTopics.searchTags = function(socket, data, callback) {
 	topics.searchTags(data, callback);
+};
+
+SocketTopics.search = function(socket, data, callback) {
+	topics.search(data.tid, data.term, callback);
+};
+
+SocketTopics.searchAndLoadTags = function(socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	if (!data.query || !data.query.length) {
+		return callback(null, []);
+	}
+	topics.searchTags(data, function(err, tags) {
+		if (err) {
+			return callback(err);
+		}
+		async.parallel({
+			counts: function(next) {
+				db.sortedSetScores('tags:topic:count', tags, next);
+			},
+			tagData: function(next) {
+				tags = tags.map(function(tag) {
+					return {value: tag};
+				});
+
+				topics.getTagData(tags, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			results.tagData.forEach(function(tag, index) {
+				tag.score = results.counts[index];
+			});
+			results.tagData.sort(function(a, b) {
+				return b.score - a.score;
+			});
+
+			callback(null, results.tagData);
+		});
+	});
+};
+
+SocketTopics.loadMoreTags = function(socket, data, callback) {
+	if(!data || !data.after) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	var start = parseInt(data.after, 10),
+		end = start + 99;
+
+	topics.getTags(start, end, function(err, tags) {
+		if (err) {
+			return callback(err);
+		}
+
+		callback(null, {tags: tags, nextStart: end + 1});
+	});
 };
 
 module.exports = SocketTopics;

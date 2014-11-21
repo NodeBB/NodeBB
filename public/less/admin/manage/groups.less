@@ -1,0 +1,54 @@
+.groups {
+	#groups-list {
+		padding-left: 0;
+
+		> li {
+			list-style-type: none;
+			margin-bottom: 1em;
+			padding: 1em;
+			.zebra;
+
+			h2 {
+				margin-top: 0;
+				font-size: 26px;
+			}
+		}
+	}
+
+	.members {
+		padding: 1em;
+
+		&.current_members {
+			li {
+				margin-right: 1em;
+			}
+		}
+
+		li {
+			display: inline-block;
+			border: 1px solid rgb(200, 200, 200);
+
+			img {
+				width: 32px;
+			}
+
+			span {
+				padding: 0 1em;
+			}
+
+			&:hover {
+				.pointer;
+				background: rgba(192, 192, 192, 0.2);
+			}
+
+			&.more {
+				width: 34px;
+				height: 34px;
+				vertical-align: top;
+				padding-top: 3px;
+				position: relative;
+				left: -4px;
+			}
+		}
+	}
+}

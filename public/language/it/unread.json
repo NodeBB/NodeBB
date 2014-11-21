@@ -1,9 +1,9 @@
 {
     "title": "Non letto",
-    "no_unread_topics": "Non ci sono discussioni non lette.",
+    "no_unread_topics": "Non ci sono discussioni nuove.",
     "load_more": "Carica Altro",
-    "mark_as_read": "Mark as Read",
-    "selected": "Selected",
-    "all": "All",
-    "topics_marked_as_read.success": "Topics marked as read!"
+    "mark_as_read": "Segna come Letto",
+    "selected": "Selezionati",
+    "all": "Tutti",
+    "topics_marked_as_read.success": "Discussione marcata come letta!"
 }

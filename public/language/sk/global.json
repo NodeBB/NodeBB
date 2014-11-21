@@ -13,7 +13,7 @@
     "please_log_in": "Prosím, prihláste sa",
     "logout": "Odhlásiť sa",
     "posting_restriction_info": "Prispievanie je obmedzené len pre registrovaných, kliknite pre prihlásenie sa ",
-    "welcome_back": "Vitaj naspäť",
+    "welcome_back": "Welcome Back",
     "you_have_successfully_logged_in": "Úspešne si sa prihlásil",
     "save_changes": "Uložiť zmeny",
     "close": "Zrušiť",
@@ -71,5 +71,7 @@
     "guest": "Hosť",
     "guests": "Hostia",
     "updated.title": "fórum bolo aktualizované",
-    "updated.message": "Toto fórum bolo práve aktualizované k najnovšej verzii. Tu kliknite na aktualizáciu tejto stránky."
+    "updated.message": "Toto fórum bolo práve aktualizované k najnovšej verzii. Tu kliknite na aktualizáciu tejto stránky.",
+    "privacy": "Privacy",
+    "delete_all": "Delete All"
 }

@@ -2,7 +2,7 @@
 
 /* globals define, utils, config, app */
 
-define('composer/uploads', ['composer/preview'], function(preview) {
+define('composer/uploads', ['composer/preview', 'csrf'], function(preview, csrf) {
 	var uploads = {
 		inProgress: {}
 	};
@@ -213,7 +213,7 @@ define('composer/uploads', ['composer/preview'], function(preview) {
 			text = textarea.val(),
 			uploadForm = postContainer.find('#fileForm');
 
-		uploadForm.attr('action', params.route);
+		uploadForm.attr('action', config.relative_path + params.route);
 
 		for(var i = 0; i < files.length; ++i) {
 			var isImage = files[i].type.match(/image./);
@@ -235,16 +235,13 @@ define('composer/uploads', ['composer/preview'], function(preview) {
 				textarea.val(current.replace(re, filename + '](' + text + ')'));
 			}
 
-			$(this).find('#postUploadCsrf').val($('#csrf_token').val());
-
-			if (formData) {
-				formData.append('_csrf', $('#csrf_token').val());
-			}
-
 			uploads.inProgress[post_uuid] = uploads.inProgress[post_uuid] || [];
 			uploads.inProgress[post_uuid].push(1);
 
 			$(this).ajaxSubmit({
+				headers: {
+					'x-csrf-token': csrf.get()
+				},
 				resetForm: true,
 				clearForm: true,
 				formData: formData,
@@ -288,22 +285,18 @@ define('composer/uploads', ['composer/preview'], function(preview) {
 			spinner = postContainer.find('.topic-thumb-spinner'),
 			thumbForm = postContainer.find('#thumbForm');
 
-		thumbForm.attr('action', params.route);
+		thumbForm.attr('action', config.relative_path + params.route);
 
 		thumbForm.off('submit').submit(function() {
-			var csrf = $('#csrf_token').val();
-			$(this).find('#thumbUploadCsrf').val(csrf);
-
-			if(formData) {
-				formData.append('_csrf', csrf);
-			}
-
 			spinner.removeClass('hide');
 
 			uploads.inProgress[post_uuid] = uploads.inProgress[post_uuid] || [];
 			uploads.inProgress[post_uuid].push(1);
 
 			$(this).ajaxSubmit({
+				headers: {
+					'x-csrf-token': csrf.get()
+				},
 				formData: formData,
 				error: onUploadError,
 				success: function(uploads) {

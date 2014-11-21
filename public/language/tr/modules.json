@@ -12,6 +12,9 @@
     "chat.message-history": "Mesaj Geçmişi",
     "chat.pop-out": "Sohbeti Pencereye Çevir",
     "chat.maximize": "Büyüt",
+    "chat.seven_days": "7 Gün",
+    "chat.thirty_days": "30 Gün",
+    "chat.three_months": "3 Ay",
     "composer.user_said_in": "%1 %2 içinde söyledi:",
     "composer.user_said": "%1 söyledi:",
     "composer.discard": "Bu iletiyi iptal etmek istediğinizden eminmisiniz?"

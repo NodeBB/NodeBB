@@ -5,11 +5,14 @@
     "recent": "近期的主題",
     "users": "已註冊的使用者",
     "notifications": "新訊息通知",
+    "tags": "符合\"%1\"標籤的主題",
     "user.edit": "編輯中 \"%1\"",
     "user.following": "People %1 Follows",
     "user.followers": "People who Follow %1",
     "user.posts": "文章由 %1 所張貼",
     "user.topics": "主題由 %1 所創建",
     "user.favourites": "%1's 最喜愛的文章",
-    "user.settings": "使用者設定"
+    "user.settings": "使用者設定",
+    "maintenance.text": "%1目前正在進行維修。請稍後再來。",
+    "maintenance.messageIntro": "此外，管理員有以下信息："
 }

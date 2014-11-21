@@ -1,6 +1,8 @@
 'use strict';
 
-var user = require('../user'),
+var winston = require('winston'),
+	validator = require('validator'),
+	user = require('../user'),
 	translator = require('../../public/src/translator');
 
 module.exports = function(Meta) {
@@ -9,14 +11,26 @@ module.exports = function(Meta) {
 	var tests = {
 		isCategory: /^category\/\d+\/?/,
 		isTopic: /^topic\/\d+\/?/,
+		isTag: /^tags\/[\s\S]+\/?/,
 		isUserPage: /^user\/[^\/]+(\/[\w]+)?/
 	};
 
-	Meta.title.build = function (urlFragment, language, callback) {
-		Meta.title.parseFragment(decodeURIComponent(urlFragment), language, function(err, title) {
+	Meta.title.build = function (urlFragment, language, locals, callback) {
+		var uri = '';
+		try {
+			uri = decodeURIComponent(urlFragment);
+		} catch(e) {
+			winston.error('Invalid url fragment : ' + urlFragment, e.stack);
+			return callback(null, Meta.config.browserTitle || 'NodeBB');
+		}
+
+		Meta.title.parseFragment(uri, language, locals, function(err, title) {
 			if (err) {
 				title = Meta.config.browserTitle || 'NodeBB';
 			} else {
+				if (title) {
+					title = validator.escape(title);
+				}
 				title = (title ? title + ' | ' : '') + (Meta.config.browserTitle || 'NodeBB');
 			}
 
@@ -24,7 +38,8 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.title.parseFragment = function (urlFragment, language, callback) {
+	Meta.title.parseFragment = function (urlFragment, language, locals, callback) {
+		urlFragment = validator.escape(urlFragment);
 		var	translated = ['', 'recent', 'unread', 'users', 'notifications'];
 		if (translated.indexOf(urlFragment) !== -1) {
 			if (!urlFragment.length) {
@@ -42,6 +57,12 @@ module.exports = function(Meta) {
 			var tid = urlFragment.match(/topic\/(\d+)/)[1];
 
 			require('../topics').getTopicField(tid, 'title', callback);
+		} else if (tests.isTag.test(urlFragment)) {
+			var tag = urlFragment.match(/tags\/([\s\S]+)/)[1];
+
+			translator.translate('[[pages:tags, ' + tag + ']]', language, function(translated) {
+				callback(null, translated);
+			});
 		} else if (tests.isUserPage.test(urlFragment)) {
 			var	matches = urlFragment.match(/user\/([^\/]+)\/?([\w]+)?/),
 				userslug = matches[1],
@@ -50,6 +71,10 @@ module.exports = function(Meta) {
 			user.getUsernameByUserslug(userslug, function(err, username) {
 				if (err) {
 					return callback(err);
+				}
+
+				if (locals.notFound) {
+					username = '[[error:no-user]]';
 				}
 
 				if (!subpage) {

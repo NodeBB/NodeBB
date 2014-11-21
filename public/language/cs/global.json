@@ -13,7 +13,7 @@
     "please_log_in": "Please Log In",
     "logout": "Odhlásit se",
     "posting_restriction_info": "Posting is currently restricted to registered members only, click here to log in.",
-    "welcome_back": "Welcome Back ",
+    "welcome_back": "Welcome Back",
     "you_have_successfully_logged_in": "You have successfully logged in",
     "save_changes": "Uložit změny",
     "close": "Zrušit",
@@ -71,5 +71,7 @@
     "guest": "Guest",
     "guests": "Guests",
     "updated.title": "Forum Updated",
-    "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page."
+    "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page.",
+    "privacy": "Privacy",
+    "delete_all": "Delete All"
 }

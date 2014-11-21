@@ -1,37 +1,42 @@
 "use strict";
 
-var events = require('events'),
-	eventEmitter = new events.EventEmitter();
+var eventEmitter = new (require('events')).EventEmitter();
 
 
 eventEmitter.all = function(events, callback) {
+	var eventList = events.slice(0);
+
+	function onEvent(event) {
+		eventEmitter.on(events[event], function() {
+			eventList.splice(eventList.indexOf(events[event]), 1);
+
+			if (eventList.length === 0) {
+				callback();
+			}
+		});
+	}
+
 	for (var ev in events) {
 		if (events.hasOwnProperty(ev)) {
-			(function(ev) {
-				eventEmitter.on(events[ev], function() {
-					events.splice(events.indexOf(ev), 1);
-
-					if (events.length === 0) {
-						callback();
-					}
-				});
-			}(ev));
+			onEvent(ev);
 		}
 	}
 };
 
 eventEmitter.any = function(events, callback) {
+	function onEvent(event) {
+		eventEmitter.on(events[event], function() {
+			if (events !== null) {
+				callback();
+			}
+
+			events = null;
+		});
+	}
+
 	for (var ev in events) {
 		if (events.hasOwnProperty(ev)) {
-			(function(ev) {
-				eventEmitter.on(events[ev], function() {
-					if (events !== null) {
-						callback();
-					}
-
-					events = null;
-				});
-			}(ev));
+			onEvent(ev);
 		}
 	}
 };
