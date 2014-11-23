@@ -76,7 +76,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 				$('#confirm-email').removeClass('hide');
 			}
 
-			updateHeader(data.picture, data.username, data.userslug);
+			updateHeader(data.picture, userData.username, data.userslug);
 		});
 
 		return false;
