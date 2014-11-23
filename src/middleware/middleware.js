@@ -315,7 +315,9 @@ middleware.renderHeader = function(req, res, callback) {
 
 				var less = require('less');
 
-				less.render(meta.config.customCSS, function(err, lessObject) {
+				less.render(meta.config.customCSS, {
+					compress: true
+				}, function(err, lessObject) {
 					if (err) {
 						winston.error('[less] Could not convert custom LESS to CSS! Please check your syntax.');
 						return next(null, '');
