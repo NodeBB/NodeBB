@@ -76,6 +76,7 @@ apiController.getConfig = function(req, res, next) {
 		config.userLang = settings.language || config.defaultLang;
 		config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
 		config.topicPostSort = settings.topicPostSort || config.topicPostSort;
+		config.topicSearchEnabled = settings.topicSearchEnabled || false;
 
 		if (res.locals.isAPI) {
 			res.status(200).json(config);
