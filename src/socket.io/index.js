@@ -233,8 +233,8 @@ function addRedisAdapter(io) {
 	if (nconf.get('redis')) {
 		var redisAdapter = require('socket.io-redis');
 		var redis = require('../database/redis');
-		var pub = redis.connect();
-		var sub = redis.connect();
+		var pub = redis.connect({return_buffers: true});
+		var sub = redis.connect({return_buffers: true});
 
 		io.adapter(redisAdapter({pubClient: pub, subClient: sub}));
 	} else {
