@@ -35,7 +35,22 @@ define('admin/extend/plugins', function() {
 
 					Plugins.suggest(pluginID, function(err, payload) {
 						if (!err) {
-							Plugins.toggleInstall(pluginID, payload.version);
+							require(['semver'], function(semver) {
+								if (payload.version !== 'latest') {
+									Plugins.toggleInstall(pluginID, payload.version);
+								} else if (payload.version === 'latest') {
+									bootbox.confirm(
+										'<div class="alert alert-warning"><p><strong>No Compatibility Infomation Found</strong></p><p>This plugin did not specify a specific version for installation given your NodeBB version. Full compatibility cannot be guaranteed, and may cause your NodeBB to no longer start properly.</p></div>' +
+										'<p>In the event that NodeBB cannot boot properly:</p>' +
+										'<pre><code>$ ./nodebb reset plugin="' + pluginID + '"</code></pre>' +
+										'<p>Continue installation of latest version of this plugin?</p>'
+									, function(confirm) {
+										if (confirm) {
+											Plugins.toggleInstall(pluginID, 'latest');
+										}
+									});
+								}
+							});
 						} else {
 							bootbox.confirm('<p>NodeBB could not reach the package manager, proceed with installation of latest version?</p><div class="alert alert-danger"><strong>Server returned (' + err.status + ')</strong>: ' + err.responseText + '</div>', function(confirm) {
 								if (confirm) {
@@ -55,7 +70,7 @@ define('admin/extend/plugins', function() {
 					Plugins.suggest(pluginID, function(err, payload) {
 						if (!err) {
 							require(['semver'], function(semver) {
-								if (payload.version === 'latest' || semver.gt(payload.version, parent.find('.currentVersion').text())) {
+								if (payload.version !== 'latest' && semver.gt(payload.version, parent.find('.currentVersion').text())) {
 									btn.attr('disabled', true).find('i').attr('class', 'fa fa-refresh fa-spin');
 									socket.emit('admin.plugins.upgrade', {
 										id: pluginID,
@@ -67,6 +82,27 @@ define('admin/extend/plugins', function() {
 										parent.find('.fa-exclamation-triangle').remove();
 										parent.find('.currentVersion').text(payload.version);
 										btn.remove();
+									});
+								} else if (payload.version === 'latest') {
+									bootbox.confirm(
+										'<div class="alert alert-warning"><p><strong>No Compatibility Infomation Found</strong></p><p>This plugin did not specify a specific version for installation given your NodeBB version. Full compatibility cannot be guaranteed, and may cause your NodeBB to no longer start properly.</p></div>' +
+										'<p>In the event that NodeBB cannot boot properly:</p>' +
+										'<pre><code>$ ./nodebb reset plugin="' + pluginID + '"</code></pre>' +
+										'<p>Continue installation of latest version of this plugin?</p>'
+									, function(confirm) {
+										if (confirm) {
+											socket.emit('admin.plugins.upgrade', {
+												id: pluginID,
+												version: payload.version
+											}, function(err) {
+												if (err) {
+													return app.alertError(err.message);
+												}
+												parent.find('.fa-exclamation-triangle').remove();
+												parent.find('.currentVersion').text(payload.version);
+												btn.remove();
+											});
+										}
 									});
 								} else {
 									bootbox.alert('<p>Your version of NodeBB (v' + app.config.version + ') is only cleared to upgrade to v' + payload.version + ' of this plugin. Please update your NodeBB if you wish to install a newer version of this plugin.');

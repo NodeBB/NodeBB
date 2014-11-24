@@ -488,14 +488,16 @@ var socket,
 				});
 
 			Mousetrap.bind('ctrl+f', function(e) {
-				// If in topic, open search window and populate, otherwise regular behaviour
-				var match = ajaxify.currentPage.match(/^topic\/([\d]+)/),
-					tid;
-				if (match) {
-					e.preventDefault();
-					tid = match[1];
-					searchInput.val('in:topic-' + tid + ' ');
-					prepareSearch();
+				if (config.topicSearchEnabled) {
+					// If in topic, open search window and populate, otherwise regular behaviour
+					var match = ajaxify.currentPage.match(/^topic\/([\d]+)/),
+						tid;
+					if (match) {
+						e.preventDefault();
+						tid = match[1];
+						searchInput.val('in:topic-' + tid + ' ');
+						prepareSearch();
+					}
 				}
 			});
 		});
@@ -539,7 +541,9 @@ var socket,
 
 			handleStatusChange();
 
-			handleSearch();
+			if (config.searchEnabled) {
+				handleSearch();
+			}
 
 			$('#logout-link').on('click', app.logout);
 

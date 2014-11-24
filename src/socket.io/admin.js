@@ -32,7 +32,8 @@ var	async = require('async'),
 		config: {},
 		settings: {},
 		email: {},
-		analytics: {}
+		analytics: {},
+		logs: {}
 	};
 
 SocketAdmin.before = function(socket, method, next) {
@@ -205,6 +206,14 @@ SocketAdmin.analytics.get = function(socket, data, callback) {
 	} else {
 		callback(new Error('Invalid analytics call'));
 	}
+};
+
+SocketAdmin.logs.get = function(socket, data, callback) {
+	meta.logs.get(callback);
+};
+
+SocketAdmin.logs.clear = function(socket, data, callback) {
+	meta.logs.clear(callback);
 };
 
 function getHourlyStatsForSet(set, hours, callback) {

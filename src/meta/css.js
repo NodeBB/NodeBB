@@ -126,7 +126,8 @@ module.exports = function(Meta) {
 
 	function minify(source, paths, destination, callback) {	
 		less.render(source, {
-			paths: paths
+			paths: paths,
+			compress: true
 		}, function(err, lessOutput) {
 			if (err) {
 				winston.error('[meta/css] Could not minify LESS/CSS: ' + err.message);

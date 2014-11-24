@@ -198,7 +198,7 @@ middleware.checkAccountPermissions = function(req, res, next) {
 
 middleware.buildHeader = function(req, res, next) {
 	res.locals.renderHeader = true;
-	
+
 	middleware.applyCSRF(req, res, function() {
 		async.parallel({
 			config: function(next) {
@@ -305,24 +305,10 @@ middleware.renderHeader = function(req, res, callback) {
 		async.parallel({
 			customCSS: function(next) {
 				templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1;
-				if (!templateValues.useCustomCSS) {
+				if (!templateValues.useCustomCSS || !meta.config.customCSS || !meta.config.renderedCustomCSS) {
 					return next(null, '');
 				}
-
-				if (!meta.config.customCSS) {
-					return next(null, '');
-				}
-
-				var less = require('less');
-
-				less.render(meta.config.customCSS, function(err, lessObject) {
-					if (err) {
-						winston.error('[less] Could not convert custom LESS to CSS! Please check your syntax.');
-						return next(null, '');
-					}
-
-					next(null, lessObject.css);
-				});
+				next(null, meta.config.renderedCustomCSS);
 			},
 			customJS: function(next) {
 				templateValues.useCustomJS = parseInt(meta.config.useCustomJS, 10) === 1;
