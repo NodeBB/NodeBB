@@ -53,6 +53,7 @@ apiController.getConfig = function(req, res, next) {
 	config.requireEmailConfirmation = parseInt(meta.config.requireEmailConfirmation, 10) === 1;
 	config.topicPostSort = meta.config.topicPostSort || 'oldest_to_newest';
 	config.csrf_token = req.csrfToken();
+	config.searchEnabled = plugins.hasListeners('filter:search.query');
 
 	if (!req.user) {
 		if (res.locals.isAPI) {

@@ -539,7 +539,9 @@ var socket,
 
 			handleStatusChange();
 
-			handleSearch();
+			if (config.searchEnabled) {
+				handleSearch();
+			}
 
 			$('#logout-link').on('click', app.logout);
 
