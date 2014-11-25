@@ -1,6 +1,7 @@
 "use strict";
 
 var express = require('express'),
+	nconf = require('nconf'),
 	user = require('./../user'),
 	categories = require('./../categories'),
 	topics = require('./../topics'),
@@ -8,7 +9,7 @@ var express = require('express'),
 
 module.exports = function(app, middleware, controllers) {
 	var router = express.Router();
-	app.use('/debug', router);
+	app.use(nconf.get('relative_path') + '/debug', router);
 	router.get('/uid/:uid', function (req, res) {
 		if (!req.params.uid) {
 			return res.redirect('/404');
