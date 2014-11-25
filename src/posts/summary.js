@@ -105,7 +105,7 @@ module.exports = function(Posts) {
 	};
 
 	function getTopicAndCategories(topicKeys, callback) {
-		db.getObjectsFields(topicKeys, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted'], function(err, topics) {
+		db.getObjectsFields(topicKeys, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted', 'postcount'], function(err, topics) {
 			if (err) {
 				return callback(err);
 			}
