@@ -86,8 +86,9 @@ SocketMeta.rooms.enter = function(socket, data, callback) {
 };
 
 SocketMeta.rooms.getAll = function(socket, data, callback) {
-	var rooms = websockets.server.sockets.manager.rooms,
-		socketData = {
+	var rooms = {}; //websockets.server.sockets.manager.rooms; doesnt work in socket.io 1.x
+
+	var socketData = {
 			onlineGuestCount: websockets.getOnlineAnonCount(),
 			onlineRegisteredCount: websockets.getOnlineUserCount(),
 			socketCount: websockets.getSocketCount(),

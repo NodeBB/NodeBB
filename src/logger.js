@@ -159,7 +159,7 @@ var opts = {
 		/*
 		 * Restore all hijacked sockets to their original emit/on functions
 		 */
-		var clients = socket.io.sockets.clients();
+		var clients = []; //socket.io.sockets.clients(); doesn't work in socket.io 1.x
 		clients.forEach(function(client) {
 			if(client.oEmit && client.oEmit !== client.emit) {
 				client.emit = client.oEmit;
@@ -179,7 +179,7 @@ var opts = {
 			return;
 		}
 
-		var clients = socket.io.sockets.clients();
+		var clients = []; //socket.io.sockets.clients(); doesn't work in socket.io 1.x
 
 		clients.forEach(function(client) {
 			Logger.io_one(client, client.uid);

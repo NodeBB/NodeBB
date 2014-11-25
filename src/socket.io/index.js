@@ -285,7 +285,7 @@ Sockets.uidInRoom = function(uid, room) {
 };
 
 Sockets.getSocketCount = function() {
-	return false;
+	return 0;
 
 	var clients = io.sockets.manager.rooms[''];
 	return Array.isArray(clients) ? clients.length : 0;
