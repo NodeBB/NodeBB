@@ -43,7 +43,7 @@ Templates.compile = function(callback) {
 		if (err) {
 			return callback(err);
 		}
-		winston.info('[meta/templates] Compiling templates');
+		winston.verbose('[meta/templates] Compiling templates');
 		rimraf.sync(viewsPath);
 		mkdirp.sync(viewsPath);
 
@@ -116,7 +116,7 @@ Templates.compile = function(callback) {
 					winston.error('[meta/templates] ' + err.stack);
 				} else {
 					compileIndex(viewsPath, function() {
-						winston.info('[meta/templates] Successfully compiled templates.');
+						winston.verbose('[meta/templates] Successfully compiled templates.');
 						emitter.emit('templates:compiled');
 						if (callback) {
 							callback();

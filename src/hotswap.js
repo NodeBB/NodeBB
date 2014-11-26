@@ -25,7 +25,7 @@ HotSwap.replace = function(id, router) {
 	if (idx) {
 		delete stack[idx].handle;	// Destroy the old router
 		stack[idx].handle = router;	// Replace with the new one
-		winston.info('[hotswap] Router with id `' + id + '` replaced successfully');
+		winston.verbose('[hotswap] Router with id `' + id + '` replaced successfully');
 	} else {
 		winston.warn('[hotswap] Could not find router in stack with hotswapId `' + id + '`');
 	}

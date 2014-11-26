@@ -43,14 +43,12 @@ var fs = require('fs'),
 		hotswap.prepare(nbbApp);
 
 		if (global.env === 'development') {
-			winston.info('[plugins] Initializing plugins system');
+			winston.verbose('[plugins] Initializing plugins system');
 		}
 
 		Plugins.reload(function(err) {
 			if (err) {
-				if (global.env === 'development') {
-					winston.info('[plugins] NodeBB encountered a problem while loading plugins', err.message);
-				}
+				winston.error('[plugins] NodeBB encountered a problem while loading plugins', err.message);
 				return;
 			}
 
@@ -131,7 +129,7 @@ var fs = require('fs'),
 
 		Plugins.fireHook('static:app.load', {app: app, router: router, middleware: middleware, controllers: controllers}, function() {
 			hotswap.replace('plugins', router);
-			winston.info('[plugins] All plugins reloaded and rerouted');
+			winston.verbose('[plugins] All plugins reloaded and rerouted');
 			callback();
 		});
 	};
@@ -252,7 +250,7 @@ var fs = require('fs'),
 					// CSS Files for plugins
 					if (pluginData.css && pluginData.css instanceof Array) {
 						if (global.env === 'development') {
-							winston.info('[plugins] Found ' + pluginData.css.length + ' CSS file(s) for plugin ' + pluginData.id);
+							winston.verbose('[plugins] Found ' + pluginData.css.length + ' CSS file(s) for plugin ' + pluginData.id);
 						}
 
 						Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
@@ -266,7 +264,7 @@ var fs = require('fs'),
 					// LESS files for plugins
 					if (pluginData.less && pluginData.less instanceof Array) {
 						if (global.env === 'development') {
-							winston.info('[plugins] Found ' + pluginData.less.length + ' LESS file(s) for plugin ' + pluginData.id);
+							winston.verbose('[plugins] Found ' + pluginData.less.length + ' LESS file(s) for plugin ' + pluginData.id);
 						}
 
 						Plugins.lessFiles = Plugins.lessFiles.concat(pluginData.less.map(function(file) {
@@ -280,7 +278,7 @@ var fs = require('fs'),
 					// Client-side scripts
 					if (pluginData.scripts && pluginData.scripts instanceof Array) {
 						if (global.env === 'development') {
-							winston.info('[plugins] Found ' + pluginData.scripts.length + ' js file(s) for plugin ' + pluginData.id);
+							winston.verbose('[plugins] Found ' + pluginData.scripts.length + ' js file(s) for plugin ' + pluginData.id);
 						}
 
 						Plugins.clientScripts = Plugins.clientScripts.concat(pluginData.scripts.map(function(file) {
@@ -327,7 +325,7 @@ var fs = require('fs'),
 			], function(err) {
 				if (!err) {
 					if (global.env === 'development') {
-						winston.info('[plugins] Loaded plugin: ' + pluginData.id);
+						winston.verbose('[plugins] Loaded plugin: ' + pluginData.id);
 					}
 					callback();
 				} else {
@@ -397,7 +395,6 @@ var fs = require('fs'),
 			return callback(null, params);
 		}
 
-		// if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
 		var hookType = hook.split(':')[0];
 		switch (hookType) {
 			case 'filter':
@@ -480,17 +477,13 @@ var fs = require('fs'),
 	Plugins.toggleActive = function(id, callback) {
 		Plugins.isActive(id, function(err, active) {
 			if (err) {
-				if (global.env === 'development') {
-					winston.info('[plugins] Could not toggle active state on plugin \'' + id + '\'');
-				}
+				winston.warn('[plugins] Could not toggle active state on plugin \'' + id + '\'');
 				return callback(err);
 			}
 
 			db[(active ? 'setRemove' : 'setAdd')]('plugins:active', id, function(err, success) {
 				if (err) {
-					if (global.env === 'development') {
-						winston.info('[plugins] Could not toggle active state on plugin \'' + id + '\'');
-					}
+					winston.warn('[plugins] Could not toggle active state on plugin \'' + id + '\'');
 					return callback(err);
 				}
 
@@ -757,7 +750,7 @@ var fs = require('fs'),
 			for (var x=0,numPaths=paths.length;x<numPaths;x++) {
 				delete require.cache[paths[x]];
 			}
-			winston.info('[plugins] Plugin libraries removed from Node.js cache');
+			winston.verbose('[plugins] Plugin libraries removed from Node.js cache');
 
 			next();
 		});
