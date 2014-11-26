@@ -1,0 +1,9 @@
+{
+    "latest_users": "Latest Users",
+    "top_posters": "Top Posters",
+    "most_reputation": "Most Reputation",
+    "search": "Search",
+    "enter_username": "Enter a username to search",
+    "load_more": "Load More",
+    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
+}
