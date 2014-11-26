@@ -1,6 +1,7 @@
 "use strict";
 
 var	nconf = require('nconf'),
+	net = require('net'),
 	fs = require('fs'),
 	path = require('path'),
 	cluster = require('cluster'),
@@ -13,6 +14,8 @@ var	nconf = require('nconf'),
 	output = logrotate({ file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true }),
 	silent = process.env.NODE_ENV !== 'development' ? true : false,
 	numProcs,
+	handles = [],
+	handleIndex = 0,
 
 	Loader = {
 		timesStarted: 0,
@@ -138,6 +141,15 @@ Loader.addClusterEvents = function(callback) {
 					case 'config:update':
 						Loader.notifyWorkers(message);
 					break;
+					case 'sticky-session:accept':
+						var _handle = handles[message.handleIndex];
+
+						if (_handle) {
+							_handle.close();
+
+							delete handles[message.handleIndex];
+						}
+					break;
 				}
 			}
 		});
@@ -186,6 +198,21 @@ Loader.start = function(callback) {
 		forkWorker(x === 0);
 	}
 
+	var	port = nconf.get('PORT') || nconf.get('port');
+
+	var server = net.createServer(function(connection) {
+		// remove this once node 0.12.x ships, see https://github.com/elad/node-cluster-socket.io/issues/4
+		connection._handle.readStop();
+
+		handles[handleIndex] = connection._handle;
+		var workers = clusterWorkers();
+
+		var worker = workers[workerIndex(connection.remoteAddress, numProcs)];
+		worker.send({action: 'sticky-session:connection', handleIndex: handleIndex}, connection);
+		handleIndex ++;
+
+	}).listen(port);
+
 	if (callback) {
 		callback();
 	}
@@ -202,6 +229,26 @@ function forkWorker(isPrimary) {
 		worker.process.stdout.pipe(output);
 		worker.process.stderr.pipe(output);
 	}
+}
+
+function workerIndex(ip, numProcs) {
+	var s = '';
+	for (var i = 0, _len = ip.length; i < _len; i++) {
+		if (ip[i] !== '.') {
+			s += ip[i];
+		}
+	}
+	return Number(s) % numProcs;
+}
+
+function clusterWorkers() {
+	var workers = [];
+
+	for(var i in cluster.workers) {
+		workers.push(cluster.workers[i]);
+	}
+
+	return workers;
 }
 
 Loader.restart = function(callback) {
