@@ -1,6 +1,12 @@
 "use strict";
 
-var	posts = require('../posts'),
+var	nconf = require('nconf'),
+	async = require('async'),
+	S = require('string'),
+	winston = require('winston'),
+	_ = require('underscore'),
+
+	posts = require('../posts'),
 	postTools = require('../postTools'),
 	topics = require('../topics'),
 	meta = require('../meta'),
@@ -9,13 +15,10 @@ var	posts = require('../posts'),
 	notifications = require('../notifications'),
 	plugins = require('../plugins'),
 	utils = require('../../public/src/utils'),
+	privileges = require('../privileges'),
 
-	async = require('async'),
-	S = require('string'),
-	winston = require('winston'),
-	_ = require('underscore'),
 	server = require('./'),
-	nconf = require('nconf'),
+
 
 	SocketModules = {
 		composer: {},
@@ -28,37 +31,42 @@ var	posts = require('../posts'),
 /* Posts Composer */
 
 SocketModules.composer.push = function(socket, pid, callback) {
-	posts.getPostFields(pid, ['content', 'tid'], function(err, postData) {
-		if(err || (!postData && !postData.content)) {
-			return callback(err || new Error('[[error:invalid-pid]]'));
+	privileges.posts.can('read', pid, socket.uid, function(err, canRead) {
+		if (err || !canRead) {
+			return callback(err || new Error('[[error:no-privileges]]'));
 		}
-
-		async.parallel({
-			topic: function(next) {
-				topics.getTopicDataByPid(pid, next);
-			},
-			tags: function(next) {
-				topics.getTopicTags(postData.tid, next);
-			},
-			isMain: function(next) {
-				posts.isMain(pid, next);
-			}
-		}, function(err, results) {
-			if(err) {
-				return callback(err);
+		posts.getPostFields(pid, ['content', 'tid'], function(err, postData) {
+			if(err || (!postData && !postData.content)) {
+				return callback(err || new Error('[[error:invalid-pid]]'));
 			}
 
-			if (!results.topic) {
-				return callback(new Error('[[error:no-topic]]'));
-			}
+			async.parallel({
+				topic: function(next) {
+					topics.getTopicDataByPid(pid, next);
+				},
+				tags: function(next) {
+					topics.getTopicTags(postData.tid, next);
+				},
+				isMain: function(next) {
+					posts.isMain(pid, next);
+				}
+			}, function(err, results) {
+				if(err) {
+					return callback(err);
+				}
 
-			callback(null, {
-				pid: pid,
-				body: postData.content,
-				title: results.topic.title,
-				topic_thumb: results.topic.thumb,
-				tags: results.tags,
-				isMain: results.isMain
+				if (!results.topic) {
+					return callback(new Error('[[error:no-topic]]'));
+				}
+
+				callback(null, {
+					pid: pid,
+					body: postData.content,
+					title: results.topic.title,
+					topic_thumb: results.topic.thumb,
+					tags: results.tags,
+					isMain: results.isMain
+				});
 			});
 		});
 	});
