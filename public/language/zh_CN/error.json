@@ -63,5 +63,5 @@
     "not-enough-reputation-to-downvote": "您还没有足够的威望为此帖扣分",
     "not-enough-reputation-to-flag": "您没有足够的威望标记此帖",
     "reload-failed": "NodeBB 重新加载时遇到问题: \"%1\"。NodeBB 会继续给已存在的客户端组件服务，虽然您应该撤销在重新加载前执行的操作。",
-    "registration-error": "Registration Error"
+    "registration-error": "注册错误"
 }

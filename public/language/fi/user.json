@@ -68,6 +68,8 @@
     "notification_sounds": "Soita merkkiääni ilmoituksen saapuessa.",
     "browsing": "Browsing Settings",
     "open_links_in_new_tab": "Open outgoing links in new tab?",
+    "enable_topic_searching": "Enable In-Topic Searching",
+    "topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen.",
     "follow_topics_you_reply_to": "Follow topics that you reply to.",
     "follow_topics_you_create": "Follow topics you create."
 }

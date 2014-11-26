@@ -63,5 +63,5 @@
     "not-enough-reputation-to-downvote": "U heeft niet de benodigde reputatie om dit bericht te downvoten",
     "not-enough-reputation-to-flag": "U heeft niet de benodigde reputatie om dit bericht te melden aan de admins",
     "reload-failed": "NodeBB heeft een probleem geconstateerd tijdens het laden van: \"%1\".\nNodeBB blijft verder draaien. Het is wel verstandig om de actie wat u daarvoor heeft gedaan ongedaan te maken door te herladen.",
-    "registration-error": "Registration Error"
+    "registration-error": "Registratie fout"
 }

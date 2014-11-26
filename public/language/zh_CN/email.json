@@ -13,7 +13,7 @@
     "digest.latest_topics": "来自 %1 的最新主题",
     "digest.cta": "点击这里访问 %1",
     "digest.unsub.info": "根据您的订阅设置，为您发送此摘要。",
-    "digest.no_topics": "There have been no active topics in the past %1",
+    "digest.no_topics": "最近 %1，有一些未激活的主题",
     "notif.chat.subject": "收到来自 %1 的新聊天消息",
     "notif.chat.cta": "点击这里恢复会话",
     "notif.chat.unsub.info": "根据您的订阅设置，为您发送此聊天提醒。",

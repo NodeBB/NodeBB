@@ -13,7 +13,7 @@
     "joined": "Liitunud",
     "lastonline": "Viimati online",
     "profile": "Profiil",
-    "profile_views": "Profiili vaatamisi",
+    "profile_views": "Vaatamisi",
     "reputation": "Reputatsioon",
     "favourites": "Lemmikud",
     "followers": "Jälgijad",
@@ -48,7 +48,7 @@
     "settings": "Seaded",
     "show_email": "Näita minu emaili",
     "show_fullname": "Näita minu täisnime",
-    "restrict_chats": "Only allow chat messages from users I follow",
+    "restrict_chats": "Luba sõnumeid ainult kasutajatelt, keda järgin",
     "digest_label": "Telli",
     "digest_description": "Telli kõik teated emaili teel (uued teated ja teemad).",
     "digest_off": "Väljas",
@@ -68,6 +68,8 @@
     "notification_sounds": "Tee häält, kui saabub teade.",
     "browsing": "Sirvimis sätted",
     "open_links_in_new_tab": "Ava väljaminevad lingid uues vaheaknas?",
+    "enable_topic_searching": "Enable In-Topic Searching",
+    "topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen.",
     "follow_topics_you_reply_to": "Järgi teemasid millele vastuse kirjutad.",
     "follow_topics_you_create": "Järgi teemasid, mis on sinu loodud."
 }
