@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, translator, ajaxify, socket, bootbox */
+/* globals define, app, utils, templates, translator, ajaxify, socket, bootbox */
 
 define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(composer, share, navigator) {
 
@@ -29,7 +29,9 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	PostTools.updatePostCount = function() {
 		socket.emit('topics.postcount', ajaxify.variables.get('topic_id'), function(err, postCount) {
 			if (!err) {
-				$('.topic-post-count').html(postCount);
+				var postCountEl = $('.topic-post-count');
+				postCountEl.html(postCount).attr('title', postCount);
+				utils.makeNumbersHumanReadable(postCountEl);
 				navigator.setCount(postCount);
 			}
 		});
