@@ -68,6 +68,8 @@
     "notification_sounds": "Émettre un son lors de la réception de notifications.",
     "browsing": "Paramètres de navigation",
     "open_links_in_new_tab": "Ouvrir les liens externes dans un nouvel onglet ?",
+    "enable_topic_searching": "Activer la recherche dans les sujets",
+    "topic_search_help": "Une fois activé, la recherche dans les sujets va remplacer la recherche de page du navigateur et vous permettra de rechercher dans l'intégralité d'un sujet au lieu des seuls posts chargés.",
     "follow_topics_you_reply_to": "Suivre les sujets auxquels vous répondez.",
     "follow_topics_you_create": "Suivre les sujets que vous créez."
 }

@@ -1,0 +1,18 @@
+{
+    "home": "নীড়পাতা",
+    "unread": "অপঠিত টপিক",
+    "popular": "জনপ্রিয় টপিক",
+    "recent": "সাম্প্রতিক টপিক",
+    "users": "নিবন্ধিত সদস্যগণ",
+    "notifications": "বিজ্ঞপ্তি",
+    "tags": "Topics tagged under \"%1\"",
+    "user.edit": "সম্পাদনা \"%1\"",
+    "user.following": "%1 যাদের অনুসরণ করেন",
+    "user.followers": "যারা %1 কে অনুসরণ করেন",
+    "user.posts": "%1 এর পোস্ট সমুহ",
+    "user.topics": "%1 এর টপিক সমুহ",
+    "user.favourites": "%1'র প্রিয় পোস্টগুলো",
+    "user.settings": "সদস্য সেটিংস",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administrator has left this message:"
+}

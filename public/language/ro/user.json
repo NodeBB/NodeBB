@@ -68,6 +68,8 @@
     "notification_sounds": "Redă un sunet când primești o notificare.",
     "browsing": "Setări navigare",
     "open_links_in_new_tab": "Deschide linkurile externe intr-un tab nou?",
+    "enable_topic_searching": "Enable In-Topic Searching",
+    "topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen.",
     "follow_topics_you_reply_to": "Urmărește subiectele în care ai răspuns.",
     "follow_topics_you_create": "Urmărește subiectele care le creezi."
 }

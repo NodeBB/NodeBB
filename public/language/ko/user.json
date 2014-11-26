@@ -68,6 +68,8 @@
     "notification_sounds": "알림을 수신하면 알림음을 재생",
     "browsing": "페이지 열기",
     "open_links_in_new_tab": "외부 링크를 새 탭에서 열기",
+    "enable_topic_searching": "Enable In-Topic Searching",
+    "topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen.",
     "follow_topics_you_reply_to": "답글을 작성한 주제를 팔로우합니다.",
     "follow_topics_you_create": "직접 작성한 주제를 팔로우합니다."
 }

@@ -63,5 +63,5 @@
     "not-enough-reputation-to-downvote": "ليس لديك سمعة تكفي لإضافة صوت سلبي لهذا الموضوع",
     "not-enough-reputation-to-flag": "ليس لديك سمعة تكفي للإشعار بموضوع مخل",
     "reload-failed": "المنتدى واجه مشكلة أثناء إعادة التحميل: \"%1\".  سيواصل المنتدى خدمة العملاء السابقين لكن يجب عليك إلغاء أي تغيير قمت به قبل إعادة التحميل.",
-    "registration-error": "Registration Error"
+    "registration-error": "حدث خطأ أثناء التسجيل"
 }

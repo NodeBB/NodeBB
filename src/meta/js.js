@@ -135,7 +135,7 @@ module.exports = function(Meta) {
 						process.exit(0);
 					}
 
-					winston.info('[meta/js] Minification complete');
+					winston.verbose('[meta/js] Minification complete');
 					minifier.kill();
 
 					if (cluster.isWorker) {
@@ -204,7 +204,7 @@ module.exports = function(Meta) {
 			async.apply(fs.writeFile, path.join(__dirname, '../../public/nodebb.min.js.map'), Meta.js.map)
 		], function (err) {
 			if (!err) {
-				winston.info('[meta/js] Client-side minfile and mapping committed to disk.');
+				winston.verbose('[meta/js] Client-side minfile and mapping committed to disk.');
 				emitter.emit('meta:js.compiled');
 			} else {
 				winston.error('[meta/js] ' + err.message);
@@ -219,7 +219,7 @@ module.exports = function(Meta) {
 		fs.exists(scriptPath, function(exists) {
 			if (exists) {
 				if (!cluster.isWorker || process.env.cluster_setup === 'true') {
-					winston.info('[meta/js] (Experimental) Reading client-side scripts from file');
+					winston.verbose('[meta/js] (Experimental) Reading client-side scripts from file');
 					async.map([scriptPath, mapPath], fs.readFile, function(err, files) {
 						Meta.js.cache = files[0];
 						Meta.js.map = files[1];

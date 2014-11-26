@@ -110,15 +110,15 @@ function start() {
 	if (!cluster.isWorker || process.env.cluster_setup === 'true') {
 		winston.info('Time: %s', (new Date()).toString());
 		winston.info('Initializing NodeBB v%s', pkg.version);
-		winston.info('* using configuration stored in: %s', configFile);
+		winston.verbose('* using configuration stored in: %s', configFile);
 	}
 
 	if (cluster.isWorker && process.env.cluster_setup === 'true') {
 		var host = nconf.get(nconf.get('database') + ':host'),
 			storeLocation = host ? 'at ' + host + (host.indexOf('/') === -1 ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';
 
-		winston.info('* using %s store %s', nconf.get('database'), storeLocation);
-		winston.info('* using themes stored in: %s', nconf.get('themes_path'));
+		winston.verbose('* using %s store %s', nconf.get('database'), storeLocation);
+		winston.verbose('* using themes stored in: %s', nconf.get('themes_path'));
 	}
 
 	require('./src/database').init(function(err) {
@@ -170,12 +170,12 @@ function start() {
 							case 'js-propagate':
 								meta.js.cache = message.cache;
 								meta.js.map = message.map;
-								winston.info('[cluster] Client-side javascript and mapping propagated to worker %s', cluster.worker.id);
+								winston.verbose('[cluster] Client-side javascript and mapping propagated to worker %s', cluster.worker.id);
 							break;
 							case 'css-propagate':
 								meta.css.cache = message.cache;
 								meta.css.acpCache = message.acpCache;
-								winston.info('[cluster] Stylesheets propagated to worker %s', cluster.worker.id);
+								winston.verbose('[cluster] Stylesheets propagated to worker %s', cluster.worker.id);
 							break;
 						}
 					});

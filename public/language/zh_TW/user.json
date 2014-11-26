@@ -68,6 +68,8 @@
     "notification_sounds": "當收到新消息時播放提示音",
     "browsing": "瀏覽設定",
     "open_links_in_new_tab": "在新的分頁開啟外部連結?",
+    "enable_topic_searching": "Enable In-Topic Searching",
+    "topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen.",
     "follow_topics_you_reply_to": "關注您回复的主題。",
     "follow_topics_you_create": "關注您創建的主題。"
 }

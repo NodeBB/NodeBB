@@ -68,6 +68,8 @@
     "notification_sounds": "Αναπαραγωγή ήχου όταν λαμβάνεις μια ειδοποίηση.",
     "browsing": "Επιλογές Περιήγησης",
     "open_links_in_new_tab": "Άνοιγμα εξερχόμενων συνδέσμων σε νέα καρτέλα;",
+    "enable_topic_searching": "Enable In-Topic Searching",
+    "topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen.",
     "follow_topics_you_reply_to": "Ακολούθα τα θέματα στα οποία απαντάς.",
     "follow_topics_you_create": "Ακολούθα τα θέματα που δημιουργείς."
 }

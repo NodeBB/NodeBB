@@ -68,6 +68,8 @@
     "notification_sounds": "Spela ett ljud när du får en notis.",
     "browsing": "Inställning för bläddring",
     "open_links_in_new_tab": "Öppna utgående länkar på ny flik?",
+    "enable_topic_searching": "Enable In-Topic Searching",
+    "topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen.",
     "follow_topics_you_reply_to": "Följ ämnen so du svarat på.",
     "follow_topics_you_create": "Följ ämnen du skapat."
 }
