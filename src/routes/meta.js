@@ -14,35 +14,12 @@ function sendMinifiedJS(req, res, next) {
 	return res.type('text/javascript').send(meta.js.cache);
 }
 
-function sendSourceMap(req, res) {
-	return res.type('application/json').send(meta.js.map);
-}
-
 function sendStylesheet(req, res, next) {
 	res.type('text/css').status(200).send(meta.css.cache);
 }
 
 function sendACPStylesheet(req, res, next) {
 	res.type('text/css').status(200).send(meta.css.acpCache);
-}
-
-function setupPluginSourceMapping(app) {
-	/*
-		These mappings are utilised by the source map file, as client-side
-		scripts defined in `scripts` in plugin.json are not normally
-		served to the end-user. These mappings are only accessible via
-		development mode (`./nodebb dev`)
-	*/
-	var	routes = plugins.clientScripts,
-		prefix = __dirname.split(path.sep).length - 1,
-		mapping;
-
-	routes.forEach(function(route) {
-		mapping = '/' + route.split(path.sep).slice(prefix).join('/');
-		app.get(mapping, function(req, res) {
-			res.type('text/javascript').sendFile(route);
-		});
-	});
 }
 
 module.exports = function(app, middleware, controllers) {
@@ -52,7 +29,4 @@ module.exports = function(app, middleware, controllers) {
 	app.get('/sitemap.xml', controllers.sitemap);
 	app.get('/robots.txt', controllers.robots);
 	app.get('/css/previews/:theme', controllers.admin.themes.get);
-
-	app.get('/nodebb.min.js.map', middleware.addExpiresHeaders, sendSourceMap);
-	setupPluginSourceMapping(app);
 };
