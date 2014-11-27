@@ -151,8 +151,8 @@ if(nconf.get('ssl')) {
 			return;
 		}
 
-		server.emit('connection', connection);
 		process.send({action: 'sticky-session:accept', handleIndex: message.handleIndex});
+		server.emit('connection', connection);
 	});
 
 }(WebServer));

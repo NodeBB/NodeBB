@@ -141,15 +141,6 @@ Loader.addClusterEvents = function(callback) {
 					case 'config:update':
 						Loader.notifyWorkers(message);
 					break;
-					case 'sticky-session:accept':
-						var _handle = handles[message.handleIndex];
-
-						if (_handle) {
-							_handle.close();
-
-							delete handles[message.handleIndex];
-						}
-					break;
 				}
 			}
 		});
@@ -229,6 +220,19 @@ function forkWorker(isPrimary) {
 		worker.process.stdout.pipe(output);
 		worker.process.stderr.pipe(output);
 	}
+
+	worker.on('message', function(message) {
+		if (!message || message.action !== 'sticky-session:accept') {
+			return;
+		}
+		var _handle = handles[message.handleIndex];
+
+		if (_handle) {
+			_handle.close();
+
+			delete handles[message.handleIndex];
+		}
+	});
 }
 
 function workerIndex(ip, numProcs) {
