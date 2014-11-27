@@ -14,8 +14,9 @@ var	nconf = require('nconf'),
 	output = logrotate({ file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true }),
 	silent = process.env.NODE_ENV !== 'development' ? true : false,
 	numProcs,
-	handles = [],
+	handles = {},
 	handleIndex = 0,
+	server,
 
 	Loader = {
 		timesStarted: 0,
@@ -191,10 +192,9 @@ Loader.start = function(callback) {
 
 	var	port = nconf.get('PORT') || nconf.get('port');
 
-	var server = net.createServer(function(connection) {
+	server = net.createServer(function(connection) {
 		// remove this once node 0.12.x ships, see https://github.com/elad/node-cluster-socket.io/issues/4
 		connection._handle.readStop();
-
 		handles[handleIndex] = connection._handle;
 		var workers = clusterWorkers();
 
@@ -277,6 +277,8 @@ Loader.stop = function() {
 
 	// Clean up the pidfile
 	fs.unlinkSync(__dirname + '/pidfile');
+
+	server.close();
 };
 
 Loader.notifyWorkers = function (msg) {

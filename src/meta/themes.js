@@ -2,6 +2,7 @@
 'use strict';
 
 var nconf = require('nconf'),
+	winston = require('winston'),
 	fs = require('fs'),
 	path = require('path'),
 	async = require('async'),
@@ -107,6 +108,32 @@ module.exports = function(Meta) {
 		}
 	};
 
+	Meta.themes.setupPaths = function() {
+		async.parallel({
+			themesData: Meta.themes.get,
+			currentThemeId: function(next) {
+				db.getObjectField('config', 'theme:id', next);
+			}
+		}, function(err, data) {
+			if (err) {
+				return winston.error(err.stack);
+			}
+
+			var themeId = data.currentThemeId || 'nodebb-theme-vanilla';
+
+			var	themeObj = data.themesData.filter(function(themeObj) {
+					return themeObj.id === themeId;
+				})[0];
+
+
+			if (process.env.NODE_ENV === 'development') {
+				winston.info('[themes] Using theme ' + themeId);
+			}
+
+			Meta.themes.setPath(themeObj);
+		});
+	};
+
 	Meta.themes.setPath = function(themeObj) {
 		// Theme's templates path
 		var themePath = nconf.get('base_templates_path'),
@@ -121,4 +148,6 @@ module.exports = function(Meta) {
 		nconf.set('theme_templates_path', themePath);
 		nconf.set('theme_config', path.join(nconf.get('themes_path'), themeObj.id, 'theme.json'));
 	};
+
+
 };

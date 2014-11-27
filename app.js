@@ -121,6 +121,9 @@ function start() {
 		winston.verbose('* using themes stored in: %s', nconf.get('themes_path'));
 	}
 
+
+	var webserver = require('./src/webserver');
+
 	require('./src/database').init(function(err) {
 		if (err) {
 			winston.error(err.stack);
@@ -129,16 +132,23 @@ function start() {
 		var meta = require('./src/meta');
 		meta.configs.init(function () {
 			var templates = require('templates.js'),
-				webserver = require('./src/webserver'),
 				sockets = require('./src/socket.io'),
 				plugins = require('./src/plugins'),
 				upgrade = require('./src/upgrade');
+
+			meta.themes.setupPaths();
 
 			templates.setGlobal('relative_path', nconf.get('relative_path'));
 
 			upgrade.check(function(schema_ok) {
 				if (schema_ok || nconf.get('check-schema') === false) {
+					webserver.init();
 					sockets.init(webserver.server);
+
+					if (cluster.isWorker && process.env.handle_jobs === 'true') {
+						require('./src/notifications').init();
+						require('./src/user').startJobs();
+					}
 
 					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
 
