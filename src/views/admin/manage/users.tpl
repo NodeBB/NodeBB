@@ -1,4 +1,4 @@
-<div class="users">
+<div class="manage-users">
 	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-user"></i> Users</div>
