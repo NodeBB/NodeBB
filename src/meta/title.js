@@ -17,21 +17,23 @@ module.exports = function(Meta) {
 
 	Meta.title.build = function (urlFragment, language, locals, callback) {
 		var uri = '';
+		var fallbackTitle = Meta.config.browserTitle || Meta.config.title || 'NodeBB';
 		try {
 			uri = decodeURIComponent(urlFragment);
 		} catch(e) {
 			winston.error('Invalid url fragment : ' + urlFragment, e.stack);
-			return callback(null, Meta.config.browserTitle || 'NodeBB');
+			return callback(null, fallbackTitle);
 		}
 
 		Meta.title.parseFragment(uri, language, locals, function(err, title) {
+
 			if (err) {
-				title = Meta.config.browserTitle || 'NodeBB';
+				title = fallbackTitle;
 			} else {
 				if (title) {
 					title = validator.escape(title);
 				}
-				title = (title ? title + ' | ' : '') + (Meta.config.browserTitle || 'NodeBB');
+				title = (title ? title + ' | ' : '') + fallbackTitle;
 			}
 
 			callback(null, title);

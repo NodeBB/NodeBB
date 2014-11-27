@@ -12,41 +12,38 @@ var uglifyjs = require('uglify-js'),
 	};
 
 /* Javascript */
-Minifier.js.minify = function (scripts, relativePath, minify, callback) {
-	var options = {
-		compress: false,
-		sourceMapURL: '/nodebb.min.js.map',
-		outSourceMap: 'nodebb.min.js.map',
-		sourceRoot: relativePath
-	};
-
+Minifier.js.minify = function (scripts, minify, callback) {
 	scripts = scripts.filter(function(file) {
 		return fs.existsSync(file);
 	});
 
 	if (minify) {
-		minifyScripts(scripts, options, callback);
+		minifyScripts(scripts, function() {
+			callback.apply(this, arguments);
+		});
 	} else {
-		concatenateScripts(scripts, options, callback);
+		concatenateScripts(scripts, callback);
 	}
 };
 
 process.on('message', function(payload) {
 	switch(payload.action) {
 	case 'js':
-		Minifier.js.minify(payload.scripts, payload.relativePath, payload.minify, function(data) {
+		Minifier.js.minify(payload.scripts, payload.minify, function(minified) {
 			process.send({
 				type: 'end',
-				data: data
+				minified: minified
 			});
 		});
 		break;
 	}
 });
 
-function minifyScripts(scripts, options, callback) {
+function minifyScripts(scripts, callback) {
 	try {
-		var minified = uglifyjs.minify(scripts, options),
+		var minified = uglifyjs.minify(scripts, {
+				compress: false
+			}),
 			hasher = crypto.createHash('md5'),
 			hash;
 
@@ -58,19 +55,16 @@ function minifyScripts(scripts, options, callback) {
 			payload: hash.slice(0, 8)
 		});
 
-		callback({
-			js: minified.code,
-			map: minified.map
-		});
+		callback(minified.code);
 	} catch(err) {
 		process.send({
 			type: 'error',
-			payload: err
+			payload: err.message
 		});
 	}
 }
 
-function concatenateScripts(scripts, options, callback) {
+function concatenateScripts(scripts, callback) {
 	async.map(scripts, fs.readFile, function(err, scripts) {
 		if (err) {
 			process.send({
@@ -81,9 +75,6 @@ function concatenateScripts(scripts, options, callback) {
 
 		scripts = scripts.join(require('os').EOL + ';');
 
-		callback({
-			js: scripts,
-			map: ''
-		});
+		callback(scripts);
 	});
 }
