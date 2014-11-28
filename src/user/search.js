@@ -4,6 +4,49 @@
 var db = require('./../database');
 
 module.exports = function(User) {
+	
+	User.searchByEmail = function(query, callback){
+		if (!query || query.length === 0) {
+			return callback(null, {timing:0, users:[]});
+		}
+		var start = process.hrtime();
+
+		db.getObject('email:uid', function(err,emailHash ) {
+			if (err) {
+				return callback(null, {timing: 0, users:[]});
+			}
+
+			query = query.toLowerCase();
+
+			var	emails = Object.keys(emailHash);
+			var uids = [];
+
+			for(var i=0; i<emails.length; ++i) {
+				if (emails[i].toLowerCase().indexOf(query) > -1) {
+					uids.push(emails[i]);
+				}
+			}
+
+			uids = uids.slice(0, 10)
+				.sort(function(a, b) {
+					return a > b;
+				})
+				.map(function(emails) {
+					return emailHash[username];
+				});
+
+			User.getUsers(uids, function(err, userdata) {
+				if (err) {
+					return callback(err);
+				}
+
+				var diff = process.hrtime(start);
+				var timing = (diff[0] * 1e3 + diff[1] / 1e6).toFixed(1);
+				callback(null, {timing: timing, users: userdata});
+			});
+		});
+	};
+	
 	User.search = function(query, callback) {
 		if (!query || query.length === 0) {
 			return callback(null, {timing:0, users:[]});
