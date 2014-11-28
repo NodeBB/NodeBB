@@ -165,15 +165,15 @@ User.deleteUsers = function(socket, uids, callback) {
 	}, callback);
 };
 
-User.search = function(socket, username, callback) {
-	user.search(username, function(err, data) {
-		function isAdmin(userData, next) {
-			user.isAdministrator(userData.uid, function(err, isAdmin) {
-				if(err) {
+User.search = function(socket, data, callback) {
+	user.search(data.query, data.type, function(err, data) {
+		function getEmail(userData, next) {
+			user.getUserField(userData.uid, 'email', function(err, email) {
+				if (err) {
 					return next(err);
 				}
 
-				userData.administrator = isAdmin;
+				userData.email = email;
 				next();
 			});
 		}
@@ -182,7 +182,7 @@ User.search = function(socket, username, callback) {
 			return callback(err);
 		}
 
-		async.each(data.users, isAdmin, function(err) {
+		async.each(data.users, getEmail, function(err) {
 			callback(err, data);
 		});
 	});

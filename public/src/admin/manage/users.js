@@ -215,18 +215,18 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 			}
 		});
 
-		$('#search-user').on('keyup', function() {
+		$('#search-user-name, #search-user-email').on('keyup', function() {
 			if (timeoutId !== 0) {
 				clearTimeout(timeoutId);
 				timeoutId = 0;
 			}
+			var $this = $(this);
+			var type =  $this.attr('id') === 'search-user-name' ? 'username' : 'email';
 
 			timeoutId = setTimeout(function() {
-				var username = $('#search-user').val();
-
 				$('.fa-spinner').removeClass('hidden');
 
-				socket.emit('admin.user.search', username, function(err, data) {
+				socket.emit('admin.user.search', {type: type, query: $this.val()}, function(err, data) {
 					if (err) {
 						return app.alertError(err.message);
 					}
