@@ -26,43 +26,68 @@ var	io;
 
 var onlineUsers = [];
 
-process.on('message', onMessage);
+// process.on('message', onMessage);
 
-function onMessage(msg) {
-	if (typeof msg !== 'object') {
-		return;
-	}
+// function onMessage(msg) {
+// 	if (typeof msg !== 'object') {
+// 		return;
+// 	}
 
-	if (msg.action === 'user:connect') {
-		if (msg.uid && onlineUsers.indexOf(msg.uid) === -1) {
-			onlineUsers.push(msg.uid);
-		}
-	} else if(msg.action === 'user:disconnect') {
-		if (msg.uid && msg.socketCount <= 1) {
-			var index = onlineUsers.indexOf(msg.uid);
-			if (index !== -1) {
-				onlineUsers.splice(index, 1);
-			}
-		}
-	}
-}
+// 	if (msg.action === 'user:connect') {
+// 		if (msg.uid && onlineUsers.indexOf(msg.uid) === -1) {
+// 			onlineUsers.push(msg.uid);
+// 		}
+// 	} else if(msg.action === 'user:disconnect') {
+// 		if (msg.uid && msg.socketCount <= 1) {
+// 			var index = onlineUsers.indexOf(msg.uid);
+// 			if (index !== -1) {
+// 				onlineUsers.splice(index, 1);
+// 			}
+// 		}
+// 	}
+// }
 
 function onUserConnect(uid, socketid) {
-	var msg = {action: 'user:connect', uid: uid, socketid: socketid};
-	if (process.send) {
-		process.send(msg);
-	} else {
-		onMessage(msg);
-	}
+	db.sortedSetIncrBy('onlineUsers', 1, uid, function(err, score) {
+		if (err) {
+			 return winston.error('[socket.io] Could not add socket id ' + socketid + ' (uid ' + uid + ') to the online users list.');
+		}
+
+		winston.verbose('[socket.io] Socket id ' + socketid + ' (uid ' + uid + ') connect');
+	});
+	// var msg = {action: 'user:connect', uid: uid, socketid: socketid};
+	// if (process.send) {
+	// 	process.send(msg);
+	// } else {
+	// 	onMessage(msg);
+	// }
 }
 
 function onUserDisconnect(uid, socketid, socketCount) {
-	var msg = {action: 'user:disconnect', uid: uid, socketid: socketid, socketCount: socketCount};
-	if (process.send) {
-		process.send(msg);
-	} else {
-		onMessage(msg);
-	}
+	// baris, I no longer use socketCount here, since the zset score is the # of connections, just FYI.
+	db.sortedSetIncrBy('onlineUsers', -1, uid, function(err, score) {
+		if (err) {
+			 return winston.error('[socket.io] Could not remove socket id ' + socketid + ' (uid ' + uid + ') from the online users list.');
+		}
+
+		if (parseInt(score, 10) === 0) {
+			db.sortedSetRemove('onlineUsers', uid, function(err) {
+				if (err) {
+					winston.error('[socket.io] Could not remove uid ' + uid + ' from the online users list')
+				} else {
+					winston.verbose('[socket.io] Removed uid ' + uid + ' from the online users list, user is now considered offline');
+				}
+			});
+		}
+
+		winston.verbose('[socket.io] Socket id ' + socketid + ' (uid ' + uid + ') disconnect');
+	});
+	// var msg = {action: 'user:disconnect', uid: uid, socketid: socketid, socketCount: socketCount};
+	// if (process.send) {
+	// 	process.send(msg);
+	// } else {
+	// 	onMessage(msg);
+	// }
 }
 
 Sockets.init = function(server) {
@@ -111,6 +136,9 @@ Sockets.init = function(server) {
 			next();
 		});
 	});
+
+	// Clearing the online users sorted set
+	db.delete('onlineUsers');
 
 	io.sockets.on('connection', function(socket) {
 		var hs = socket.handshake,
