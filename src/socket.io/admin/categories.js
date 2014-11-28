@@ -36,7 +36,7 @@ Categories.search = function(socket, data, callback) {
 	var	username = data.username,
 		cid = data.cid;
 
-	user.search(username, function(err, data) {
+	user.search(username, 'username', function(err, data) {
 		if (err) {
 			return callback(err);
 		}
