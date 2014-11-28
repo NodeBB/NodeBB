@@ -137,11 +137,14 @@ var	async = require('async'),
 	User.updateLastOnlineTime = function(uid, callback) {
 		callback = callback || function() {};
 		User.getUserFields(uid, ['status', 'lastonline'], function(err, userData) {
-			if(err || userData.status === 'offline' || Date.now() - parseInt(userData.lastonline, 10) < 300000) {
+			var now = Date.now();
+			if(err || userData.status === 'offline' || now - parseInt(userData.lastonline, 10) < 300000) {
 				return callback(err);
 			}
 
-			User.setUserField(uid, 'lastonline', Date.now(), callback);
+			db.sortedSetAdd('users:online', now, uid);
+
+			User.setUserField(uid, 'lastonline', now, callback);
 		});
 	};
 
@@ -184,15 +187,20 @@ var	async = require('async'),
 		});
 	};
 
+	User.getUidsFromSet = function(set, start, stop, callback) {
+		if (set === 'users:online') {
+			var count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
+			var now = Date.now();
+			db.getSortedSetRevRangeByScore(set, start, count, now, now - 300000, next);
+		} else {
+			db.getSortedSetRevRange(set, start, stop, next);
+		}
+	};
+
 	User.getUsersFromSet = function(set, start, stop, callback) {
 		async.waterfall([
 			function(next) {
-				if (set === 'users:online') {
-					var uids = require('./socket.io').getConnectedClients();
-					next(null, uids.slice(start, stop + 1));
-				} else {
-					db.getSortedSetRevRange(set, start, stop, next);
-				}
+				User.getUidsFromSet(set, start, stop, next);
 			},
 			function(uids, next) {
 				User.getUsers(uids, next);

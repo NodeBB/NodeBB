@@ -24,47 +24,6 @@ var	SocketIO = require('socket.io'),
 
 var io;
 
-var onlineUsers = [];
-
-process.on('message', onMessage);
-
-function onMessage(msg) {
-	if (typeof msg !== 'object') {
-		return;
-	}
-
-	if (msg.action === 'user:connect') {
-		if (msg.uid && onlineUsers.indexOf(msg.uid) === -1) {
-			onlineUsers.push(msg.uid);
-		}
-	} else if(msg.action === 'user:disconnect') {
-		if (msg.uid && msg.socketCount <= 1) {
-			var index = onlineUsers.indexOf(msg.uid);
-			if (index !== -1) {
-				onlineUsers.splice(index, 1);
-			}
-		}
-	}
-}
-
-function onUserConnect(uid, socketid) {
-	var msg = {action: 'user:connect', uid: uid, socketid: socketid};
-	if (process.send) {
-		process.send(msg);
-	} else {
-		onMessage(msg);
-	}
-}
-
-function onUserDisconnect(uid, socketid, socketCount) {
-	var msg = {action: 'user:disconnect', uid: uid, socketid: socketid, socketCount: socketCount};
-	if (process.send) {
-		process.send(msg);
-	} else {
-		onMessage(msg);
-	}
-}
-
 Sockets.init = function(server) {
 	var config = {
 		transports: ['polling', 'websocket'],
@@ -131,7 +90,6 @@ Sockets.init = function(server) {
 		logger.io_one(socket, socket.uid);
 
 		if (socket.uid) {
-			onUserConnect(socket.uid, socket.id);
 			socket.join('uid_' + socket.uid);
 			socket.join('online_users');
 
@@ -173,8 +131,6 @@ Sockets.init = function(server) {
 			if (socket.uid && socketCount <= 1) {
 				socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
 			}
-
-			onUserDisconnect(socket.uid, socket.id, socketCount);
 
 			// for(var roomName in io.sockets.manager.roomClients[socket.id]) {
 			// 	if (roomName.indexOf('topic') !== -1) {
@@ -291,10 +247,6 @@ Sockets.getSocketCount = function() {
 	return Array.isArray(clients) ? clients.length : 0;
 };
 
-Sockets.getConnectedClients = function() {
-	return onlineUsers;
-};
-
 Sockets.getUserSocketCount = function(uid) {
 	return 0;
 
@@ -303,10 +255,6 @@ Sockets.getUserSocketCount = function(uid) {
 		return 0;
 	}
 	return roomClients.length;
-};
-
-Sockets.getOnlineUserCount = function () {
-	return onlineUsers.length;
 };
 
 Sockets.getOnlineAnonCount = function () {
