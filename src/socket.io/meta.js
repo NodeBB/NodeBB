@@ -4,7 +4,8 @@ var	nconf = require('nconf'),
 	gravatar = require('gravatar'),
 	winston = require('winston'),
 	validator = require('validator'),
-
+	
+	db = require('../database'),
 	meta = require('../meta'),
 	user = require('../user'),
 	topics = require('../topics'),
