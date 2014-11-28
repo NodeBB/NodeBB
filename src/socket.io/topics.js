@@ -41,22 +41,26 @@ SocketTopics.post = function(socket, data, callback) {
 		socket.emit('event:new_post', {posts: [result.postData]});
 		socket.emit('event:new_topic', result.topicData);
 
-		var uids = websockets.getConnectedClients();
-
-		privileges.categories.filterUids('read', result.topicData.cid, uids, function(err, uids) {
+		user.getUidsFromSet('users:online', 0, -1, function(err, uids) {
 			if (err) {
 				return;
 			}
 
-			plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: data.uid, type: "newTopic"}, function(err, data) {
-				uids = data.uidsTo;
-
-				for(var i=0; i<uids.length; ++i) {
-					if (parseInt(uids[i], 10) !== socket.uid) {
-						websockets.in('uid_' + uids[i]).emit('event:new_post', {posts: [result.postData]});
-						websockets.in('uid_' + uids[i]).emit('event:new_topic', result.topicData);
-					}
+			privileges.categories.filterUids('read', result.topicData.cid, uids, function(err, uids) {
+				if (err) {
+					return;
 				}
+
+				plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: data.uid, type: "newTopic"}, function(err, data) {
+					uids = data.uidsTo;
+
+					for(var i=0; i<uids.length; ++i) {
+						if (parseInt(uids[i], 10) !== socket.uid) {
+							websockets.in('uid_' + uids[i]).emit('event:new_post', {posts: [result.postData]});
+							websockets.in('uid_' + uids[i]).emit('event:new_topic', result.topicData);
+						}
+					}
+				});
 			});
 		});
 	});

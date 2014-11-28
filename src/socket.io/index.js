@@ -24,52 +24,11 @@ var	SocketIO = require('socket.io'),
 
 var	io;
 
-var onlineUsers = [];
-
-process.on('message', onMessage);
-
-function onMessage(msg) {
-	if (typeof msg !== 'object') {
-		return;
-	}
-
-	if (msg.action === 'user:connect') {
-		if (msg.uid && onlineUsers.indexOf(msg.uid) === -1) {
-			onlineUsers.push(msg.uid);
-		}
-	} else if(msg.action === 'user:disconnect') {
-		if (msg.uid && msg.socketCount <= 1) {
-			var index = onlineUsers.indexOf(msg.uid);
-			if (index !== -1) {
-				onlineUsers.splice(index, 1);
-			}
-		}
-	}
-}
-
-function onUserConnect(uid, socketid) {
-	var msg = {action: 'user:connect', uid: uid, socketid: socketid};
-	if (process.send) {
-		process.send(msg);
-	} else {
-		onMessage(msg);
-	}
-}
-
-function onUserDisconnect(uid, socketid, socketCount) {
-	var msg = {action: 'user:disconnect', uid: uid, socketid: socketid, socketCount: socketCount};
-	if (process.send) {
-		process.send(msg);
-	} else {
-		onMessage(msg);
-	}
-}
-
 Sockets.init = function(server) {
 	// Default socket.io config
 	var config = {
 			log: true,
-			'log level': process.env.NODE_ENV === 'development' ? 2 : 1,
+			'log level': process.env.NODE_ENV === 'development' ? 2 : 0,
 			transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket'],
 			'browser client minification': true,
 			resource: nconf.get('relative_path') + '/socket.io'
@@ -135,7 +94,6 @@ Sockets.init = function(server) {
 				}
 
 				socket.uid = parseInt(uid, 10);
-				onUserConnect(uid, socket.id);
 
 				/* If meta.config.loggerIOStatus > 0, logger.io_one will hook into this socket */
 				logger.io_one(socket, uid);
@@ -184,8 +142,6 @@ Sockets.init = function(server) {
 			if (uid && socketCount <= 1) {
 				socket.broadcast.emit('event:user_status_change', {uid: uid, status: 'offline'});
 			}
-
-			onUserDisconnect(uid, socket.id, socketCount);
 
 			for(var roomName in io.sockets.manager.roomClients[socket.id]) {
 				if (roomName.indexOf('topic') !== -1) {
@@ -279,20 +235,12 @@ Sockets.getSocketCount = function() {
 	return Array.isArray(clients) ? clients.length : 0;
 };
 
-Sockets.getConnectedClients = function() {
-	return onlineUsers;
-};
-
 Sockets.getUserSocketCount = function(uid) {
 	var roomClients = io.sockets.manager.rooms['/uid_' + uid];
 	if(!Array.isArray(roomClients)) {
 		return 0;
 	}
 	return roomClients.length;
-};
-
-Sockets.getOnlineUserCount = function () {
-	return onlineUsers.length;
 };
 
 Sockets.getOnlineAnonCount = function () {

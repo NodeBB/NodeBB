@@ -32,9 +32,16 @@
 				<br />
 
 				<div class="search {search_display} well">
-					<input class="form-control" id="search-user" type="text" placeholder="Enter a username to search"/><br />
+					<label>By User Name</label>
+					<input class="form-control" id="search-user-name" type="text" placeholder="Enter a username to search"/><br />
+
+					<label>By Email </label>
+					<input class="form-control" id="search-user-email" type="text" placeholder="Enter a email to search"/><br />
+
 					<i class="fa fa-spinner fa-spin hidden"></i>
 					<span id="user-notfound-notify" class="label label-danger hide">User not found!</span><br/>
+
+
 				</div>
 
 
@@ -54,7 +61,10 @@
 							</div>
 						</div>
 
-						<a href="{relative_path}/user/{users.userslug}" target="_blank">{users.username} ({users.uid})</a>
+						<a href="{relative_path}/user/{users.userslug}" target="_blank">{users.username} ({users.uid})</a><br/>
+						<!-- IF users.email -->
+						<small><span title="{users.email}">{users.email}</span></small>
+						<!-- ENDIF users.email -->
 					</div>
 					<!-- END users -->
 				</ul>

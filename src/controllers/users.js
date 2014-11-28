@@ -15,7 +15,8 @@ usersController.getOnlineUsers = function(req, res, next) {
 			user.getUsersFromSet('users:online', 0, 49, next);
 		},
 		count: function(next) {
-			next(null, websockets.getConnectedClients().length);
+			var now = Date.now();
+			db.sortedSetCount('users:online', now - 300000, now, next);
 		},
 		isAdministrator: function(next) {
 			user.isAdministrator(uid, next);
