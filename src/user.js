@@ -191,9 +191,9 @@ var	async = require('async'),
 		if (set === 'users:online') {
 			var count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
 			var now = Date.now();
-			db.getSortedSetRevRangeByScore(set, start, count, now, now - 300000, next);
+			db.getSortedSetRevRangeByScore(set, start, count, now, now - 300000, callback);
 		} else {
-			db.getSortedSetRevRange(set, start, stop, next);
+			db.getSortedSetRevRange(set, start, stop, callback);
 		}
 	};
 
