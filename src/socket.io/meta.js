@@ -87,6 +87,7 @@ SocketMeta.rooms.enter = function(socket, data, callback) {
 };
 
 SocketMeta.rooms.getAll = function(socket, data, callback) {
+	var now = Date.now();
 	db.sortedSetCount('users:online', now - 300000, now, function(err, onlineRegisteredCount) {
 		if (err) {
 			return callback(err);
