@@ -24,76 +24,6 @@ var	SocketIO = require('socket.io'),
 
 var	io;
 
-var onlineUsers = [];
-
-// process.on('message', onMessage);
-
-// function onMessage(msg) {
-// 	if (typeof msg !== 'object') {
-// 		return;
-// 	}
-
-// 	if (msg.action === 'user:connect') {
-// 		if (msg.uid && onlineUsers.indexOf(msg.uid) === -1) {
-// 			onlineUsers.push(msg.uid);
-// 		}
-// 	} else if(msg.action === 'user:disconnect') {
-// 		if (msg.uid && msg.socketCount <= 1) {
-// 			var index = onlineUsers.indexOf(msg.uid);
-// 			if (index !== -1) {
-// 				onlineUsers.splice(index, 1);
-// 			}
-// 		}
-// 	}
-// }
-
-function onUserConnect(uid, socketid) {
-	var database = Sockets.redisDB ? Sockets.redisDB : db;
-
-	database.sortedSetIncrBy('onlineUsers', 1, uid, function(err, score) {
-		if (err) {
-			 return winston.error('[socket.io] Could not add socket id ' + socketid + ' (uid ' + uid + ') to the online users list.');
-		}
-
-		winston.verbose('[socket.io] Socket id ' + socketid + ' (uid ' + uid + ') connect');
-	});
-	// var msg = {action: 'user:connect', uid: uid, socketid: socketid};
-	// if (process.send) {
-	// 	process.send(msg);
-	// } else {
-	// 	onMessage(msg);
-	// }
-}
-
-function onUserDisconnect(uid, socketid, socketCount) {
-	// baris, I no longer use socketCount here, since the zset score is the # of connections, just FYI.
-	var database = Sockets.redisDB ? Sockets.redisDB : db;
-
-	database.sortedSetIncrBy('onlineUsers', -1, uid, function(err, score) {
-		if (err) {
-			 return winston.error('[socket.io] Could not remove socket id ' + socketid + ' (uid ' + uid + ') from the online users list.');
-		}
-
-		if (parseInt(score, 10) === 0) {
-			database.sortedSetRemove('onlineUsers', uid, function(err) {
-				if (err) {
-					winston.error('[socket.io] Could not remove uid ' + uid + ' from the online users list')
-				} else {
-					winston.verbose('[socket.io] Removed uid ' + uid + ' from the online users list, user is now considered offline');
-				}
-			});
-		}
-
-		winston.verbose('[socket.io] Socket id ' + socketid + ' (uid ' + uid + ') disconnect');
-	});
-	// var msg = {action: 'user:disconnect', uid: uid, socketid: socketid, socketCount: socketCount};
-	// if (process.send) {
-	// 	process.send(msg);
-	// } else {
-	// 	onMessage(msg);
-	// }
-}
-
 Sockets.init = function(server) {
 	// Default socket.io config
 	var config = {
@@ -106,14 +36,11 @@ Sockets.init = function(server) {
 
 	// If a redis server is configured, use it as a socket.io store, otherwise, fall back to in-memory store
 	if (nconf.get('redis')) {
-		var RedisStore = require('socket.io/lib/stores/redis');
-
-		Sockets.redisDB = require('../database/redis');
-		Sockets.redisDB.init();
-
-		var pub = Sockets.redisDB.connect(),
-			sub = Sockets.redisDB.connect(),
-			client = Sockets.redisDB.connect();
+		var RedisStore = require('socket.io/lib/stores/redis'),
+			database = require('../database/redis'),
+			pub = database.connect(),
+			sub = database.connect(),
+			client = database.connect();
 
 		// "redis" property needs to be passed in as referenced here: https://github.com/Automattic/socket.io/issues/808
 		// Probably fixed in socket.IO 1.0
@@ -144,9 +71,6 @@ Sockets.init = function(server) {
 		});
 	});
 
-	// Clearing the online users sorted set
-	(Sockets.redisDB ? Sockets.redisDB : db)['delete']('onlineUsers');
-
 	io.sockets.on('connection', function(socket) {
 		var hs = socket.handshake,
 			sessionID, uid;
@@ -170,7 +94,6 @@ Sockets.init = function(server) {
 				}
 
 				socket.uid = parseInt(uid, 10);
-				onUserConnect(uid, socket.id);
 
 				/* If meta.config.loggerIOStatus > 0, logger.io_one will hook into this socket */
 				logger.io_one(socket, uid);
@@ -219,8 +142,6 @@ Sockets.init = function(server) {
 			if (uid && socketCount <= 1) {
 				socket.broadcast.emit('event:user_status_change', {uid: uid, status: 'offline'});
 			}
-
-			onUserDisconnect(uid, socket.id, socketCount);
 
 			for(var roomName in io.sockets.manager.roomClients[socket.id]) {
 				if (roomName.indexOf('topic') !== -1) {
@@ -314,20 +235,12 @@ Sockets.getSocketCount = function() {
 	return Array.isArray(clients) ? clients.length : 0;
 };
 
-Sockets.getConnectedClients = function() {
-	return onlineUsers;
-};
-
 Sockets.getUserSocketCount = function(uid) {
 	var roomClients = io.sockets.manager.rooms['/uid_' + uid];
 	if(!Array.isArray(roomClients)) {
 		return 0;
 	}
 	return roomClients.length;
-};
-
-Sockets.getOnlineUserCount = function () {
-	return onlineUsers.length;
 };
 
 Sockets.getOnlineAnonCount = function () {

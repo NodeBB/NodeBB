@@ -46,21 +46,24 @@ SocketPosts.reply = function(socket, data, callback) {
 
 		socket.emit('event:new_post', result);
 
-		var uids = websockets.getConnectedClients();
-
-		privileges.categories.filterUids('read', postData.topic.cid, uids, function(err, uids) {
+		user.getUidsFromSet('users:online', 0, -1, function(err, uids) {
 			if (err) {
 				return;
 			}
-
-			plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: data.uid, type: "newPost"}, function(err, data) {
-				uids = data.uidsTo;
-
-				for(var i=0; i<uids.length; ++i) {
-					if (parseInt(uids[i], 10) !== socket.uid) {
-						websockets.in('uid_' + uids[i]).emit('event:new_post', result);
-					}
+			privileges.categories.filterUids('read', postData.topic.cid, uids, function(err, uids) {
+				if (err) {
+					return;
 				}
+
+				plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: data.uid, type: "newPost"}, function(err, data) {
+					uids = data.uidsTo;
+
+					for(var i=0; i<uids.length; ++i) {
+						if (parseInt(uids[i], 10) !== socket.uid) {
+							websockets.in('uid_' + uids[i]).emit('event:new_post', result);
+						}
+					}
+				});
 			});
 		});
 	});

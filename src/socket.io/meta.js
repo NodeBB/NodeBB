@@ -86,61 +86,67 @@ SocketMeta.rooms.enter = function(socket, data, callback) {
 };
 
 SocketMeta.rooms.getAll = function(socket, data, callback) {
-	var rooms = websockets.server.sockets.manager.rooms,
-		socketData = {
-			onlineGuestCount: websockets.getOnlineAnonCount(),
-			onlineRegisteredCount: websockets.getOnlineUserCount(),
-			socketCount: websockets.getSocketCount(),
-			users: {
-				home: rooms['/home'] ? rooms['/home'].length : 0,
-				topics: 0,
-				category: 0
-			},
-			topics: {}
-		};
-
-	var scores = {},
-		topTenTopics = [],
-		tid;
-
-	for (var room in rooms) {
-		if (rooms.hasOwnProperty(room)) {
-			if (tid = room.match(/^\/topic_(\d+)/)) {
-				var length = rooms[room].length;
-				socketData.users.topics += length;
-
-				if (scores[length]) {
-					scores[length].push(tid[1]);
-				} else {
-					scores[length] = [tid[1]];
-				}
-			} else if (room.match(/^\/category/)) {
-				socketData.users.category += rooms[room].length;
-			}
-		}
-	}
-
-	var scoreKeys = Object.keys(scores),
-		mostActive = scoreKeys.sort();
-
-	while(topTenTopics.length < 10 && mostActive.length > 0) {
-		topTenTopics = topTenTopics.concat(scores[mostActive.pop()]);
-	}
-
-	topTenTopics = topTenTopics.slice(0, 10);
-
-	topics.getTopicsFields(topTenTopics, ['title'], function(err, titles) {
+	db.sortedSetCount('users:online', now - 300000, now, function(err, onlineRegisteredCount) {
 		if (err) {
 			return callback(err);
 		}
-		topTenTopics.forEach(function(tid, id) {
-			socketData.topics[tid] = {
-				value: rooms['/topic_' + tid].length,
-				title: validator.escape(titles[id].title)
-			};
-		});
 
-		callback(null, socketData);
+		var rooms = websockets.server.sockets.manager.rooms,
+			socketData = {
+				onlineGuestCount: websockets.getOnlineAnonCount(),
+				onlineRegisteredCount: onlineRegisteredCount,
+				socketCount: websockets.getSocketCount(),
+				users: {
+					home: rooms['/home'] ? rooms['/home'].length : 0,
+					topics: 0,
+					category: 0
+				},
+				topics: {}
+			};
+
+		var scores = {},
+			topTenTopics = [],
+			tid;
+
+		for (var room in rooms) {
+			if (rooms.hasOwnProperty(room)) {
+				if (tid = room.match(/^\/topic_(\d+)/)) {
+					var length = rooms[room].length;
+					socketData.users.topics += length;
+
+					if (scores[length]) {
+						scores[length].push(tid[1]);
+					} else {
+						scores[length] = [tid[1]];
+					}
+				} else if (room.match(/^\/category/)) {
+					socketData.users.category += rooms[room].length;
+				}
+			}
+		}
+
+		var scoreKeys = Object.keys(scores),
+			mostActive = scoreKeys.sort();
+
+		while(topTenTopics.length < 10 && mostActive.length > 0) {
+			topTenTopics = topTenTopics.concat(scores[mostActive.pop()]);
+		}
+
+		topTenTopics = topTenTopics.slice(0, 10);
+
+		topics.getTopicsFields(topTenTopics, ['title'], function(err, titles) {
+			if (err) {
+				return callback(err);
+			}
+			topTenTopics.forEach(function(tid, id) {
+				socketData.topics[tid] = {
+					value: rooms['/topic_' + tid].length,
+					title: validator.escape(titles[id].title)
+				};
+			});
+
+			callback(null, socketData);
+		});
 	});
 };
 
