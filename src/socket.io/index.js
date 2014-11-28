@@ -98,7 +98,7 @@ Sockets.init = function(server) {
 	// Default socket.io config
 	var config = {
 			log: true,
-			'log level': process.env.NODE_ENV === 'development' ? 2 : 1,
+			'log level': process.env.NODE_ENV === 'development' ? 2 : 0,
 			transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket'],
 			'browser client minification': true,
 			resource: nconf.get('relative_path') + '/socket.io'
