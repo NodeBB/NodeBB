@@ -48,7 +48,9 @@ var onlineUsers = [];
 // }
 
 function onUserConnect(uid, socketid) {
-	db.sortedSetIncrBy('onlineUsers', 1, uid, function(err, score) {
+	var database = Sockets.redisDB ? Sockets.redisDB : db;
+
+	database.sortedSetIncrBy('onlineUsers', 1, uid, function(err, score) {
 		if (err) {
 			 return winston.error('[socket.io] Could not add socket id ' + socketid + ' (uid ' + uid + ') to the online users list.');
 		}
@@ -65,13 +67,15 @@ function onUserConnect(uid, socketid) {
 
 function onUserDisconnect(uid, socketid, socketCount) {
 	// baris, I no longer use socketCount here, since the zset score is the # of connections, just FYI.
-	db.sortedSetIncrBy('onlineUsers', -1, uid, function(err, score) {
+	var database = Sockets.redisDB ? Sockets.redisDB : db;
+
+	database.sortedSetIncrBy('onlineUsers', -1, uid, function(err, score) {
 		if (err) {
 			 return winston.error('[socket.io] Could not remove socket id ' + socketid + ' (uid ' + uid + ') from the online users list.');
 		}
 
 		if (parseInt(score, 10) === 0) {
-			db.sortedSetRemove('onlineUsers', uid, function(err) {
+			database.sortedSetRemove('onlineUsers', uid, function(err) {
 				if (err) {
 					winston.error('[socket.io] Could not remove uid ' + uid + ' from the online users list')
 				} else {
@@ -102,11 +106,14 @@ Sockets.init = function(server) {
 
 	// If a redis server is configured, use it as a socket.io store, otherwise, fall back to in-memory store
 	if (nconf.get('redis')) {
-		var RedisStore = require('socket.io/lib/stores/redis'),
-			database = require('../database/redis'),
-			pub = database.connect(),
-			sub = database.connect(),
-			client = database.connect();
+		var RedisStore = require('socket.io/lib/stores/redis');
+
+		Sockets.redisDB = require('../database/redis');
+		Sockets.redisDB.init();
+
+		var pub = Sockets.redisDB.connect(),
+			sub = Sockets.redisDB.connect(),
+			client = Sockets.redisDB.connect();
 
 		// "redis" property needs to be passed in as referenced here: https://github.com/Automattic/socket.io/issues/808
 		// Probably fixed in socket.IO 1.0
@@ -138,7 +145,7 @@ Sockets.init = function(server) {
 	});
 
 	// Clearing the online users sorted set
-	db.delete('onlineUsers');
+	(Sockets.redisDB ? Sockets.redisDB : db)['delete']('onlineUsers');
 
 	io.sockets.on('connection', function(socket) {
 		var hs = socket.handshake,
