@@ -269,8 +269,8 @@ var socket,
 		selector = selector || $('a');
 		selector.each(function() {
 			var href = $(this).attr('href');
-			if (href && app.userslug && href.indexOf('_') !== -1) {
-				$(this).attr('href', href.replace(/_/g, app.userslug));
+			if (href && app.userslug && href.indexOf('user/_self_') !== -1) {
+				$(this).attr('href', href.replace(/user\/_self_/g, 'user/' + app.userslug));
 			}
 		});
 	};
@@ -488,14 +488,16 @@ var socket,
 				});
 
 			Mousetrap.bind('ctrl+f', function(e) {
-				// If in topic, open search window and populate, otherwise regular behaviour
-				var match = ajaxify.currentPage.match(/^topic\/([\d]+)/),
-					tid;
-				if (match) {
-					e.preventDefault();
-					tid = match[1];
-					searchInput.val('in:topic-' + tid + ' ');
-					prepareSearch();
+				if (config.topicSearchEnabled) {
+					// If in topic, open search window and populate, otherwise regular behaviour
+					var match = ajaxify.currentPage.match(/^topic\/([\d]+)/),
+						tid;
+					if (match) {
+						e.preventDefault();
+						tid = match[1];
+						searchInput.val('in:topic-' + tid + ' ');
+						prepareSearch();
+					}
 				}
 			});
 		});
@@ -539,7 +541,9 @@ var socket,
 
 			handleStatusChange();
 
-			handleSearch();
+			if (config.searchEnabled) {
+				handleSearch();
+			}
 
 			$('#logout-link').on('click', app.logout);
 

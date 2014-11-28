@@ -45,7 +45,7 @@ module.exports = function(Meta) {
 						fs[process.platform !== 'win32' ? 'symlink' : 'link'](filePath, path.join(soundsPath, path.basename(filePath)), 'file', next);
 					}, function(err) {
 						if (!err) {
-							winston.info('[sounds] Sounds OK');
+							winston.verbose('[sounds] Sounds OK');
 						} else {
 							winston.error('[sounds] Could not initialise sounds: ' + err.message);
 						}

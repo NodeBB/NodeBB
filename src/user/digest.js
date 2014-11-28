@@ -84,6 +84,11 @@ module.exports = (function(Digest) {
 
 					notifications = notifications.filter(Boolean);
 
+					// If there are no notifications and no new topics, don't bother sending a digest
+					if (!notifications.length && !data.topics.topics.length) {
+						return next();
+					}
+
 					for(var i=0; i<notifications.length; ++i) {
 						if (notifications[i].image.indexOf('http') !== 0) {
 							notifications[i].image = nconf.get('url') + notifications[i].image;

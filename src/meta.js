@@ -20,6 +20,7 @@ var async = require('async'),
 	require('./meta/css')(Meta);
 	require('./meta/sounds')(Meta);
 	require('./meta/settings')(Meta);
+	require('./meta/logs')(Meta);
 	Meta.templates = require('./meta/templates');
 
 	/* Assorted */

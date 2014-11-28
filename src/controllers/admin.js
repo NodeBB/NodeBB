@@ -187,14 +187,9 @@ adminController.events.get = function(req, res, next) {
 };
 
 adminController.logs.get = function(req, res, next) {
-	var logPath = path.join('logs', path.sep, 'output.log');
-	fs.readFile(logPath, function(err, data) {
-		if (err || !data) {
-			data = '';
-		}
-
+	meta.logs.get(function(err, logs) {
 		res.render('admin/advanced/logs', {
-			data: validator.escape(data.toString())
+			data: validator.escape(logs)
 		});
 	});
 };

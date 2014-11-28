@@ -68,6 +68,8 @@
     "notification_sounds": "Riproduci un suono quando ricevi una notifica.",
     "browsing": "Impostazioni di Navigazione",
     "open_links_in_new_tab": "Aprire i link esterni in una nuova tab?",
+    "enable_topic_searching": "Enable In-Topic Searching",
+    "topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen.",
     "follow_topics_you_reply_to": "Segui le discussioni in cui rispondi.",
     "follow_topics_you_create": "Segui le discussioni che crei."
 }

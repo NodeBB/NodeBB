@@ -7,4 +7,13 @@
 			</div>
 		</div>
 	</div>
+	<div class="col-lg-3">
+		<div class="panel panel-default affix">
+			<div class="panel-heading">Logs Control Panel</div>
+			<div class="panel-body">
+				<button class="btn btn-primary" data-action="reload"><i class="fa fa-refresh"></i> Reload Logs</button>
+				<button class="btn btn-warning" data-action="clear"><i class="fa fa-eraser"></i> Clear Logs</button>
+			</div>
+		</div>
+	</div>
 </div>

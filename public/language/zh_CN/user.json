@@ -68,6 +68,8 @@
     "notification_sounds": "收到通知时播放提示音。",
     "browsing": "浏览设置",
     "open_links_in_new_tab": "在新标签中打开外部链接？",
+    "enable_topic_searching": "启用主题内搜索",
+    "topic_search_help": "启用后，主题内搜索会替代浏览器默认的页面搜索，你可以在整个主题的全部内容进行搜索，而不是仅限于屏幕显示的内容。",
     "follow_topics_you_reply_to": "关注您回复的主题。",
     "follow_topics_you_create": "关注您创建的主题。"
 }

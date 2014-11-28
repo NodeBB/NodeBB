@@ -68,6 +68,8 @@
     "notification_sounds": "Tocar um som quando você recebe notificação.",
     "browsing": "Configurações de Navegação",
     "open_links_in_new_tab": "Abrir links externos em nova aba?",
+    "enable_topic_searching": "Habilitar Pesquisa dentro de Tópico",
+    "topic_search_help": "Se habilitado, a pesquisa dentro de tópico irá substituir o funcionamento padrão de pesquisa de página do navegador e permitir que você pesquise pelo tópico todo, ao invés de apenas o que é mostrado na tela.",
     "follow_topics_you_reply_to": "Seguir tópicos que você responde.",
     "follow_topics_you_create": "Seguir tópicos que você cria."
 }

@@ -135,7 +135,7 @@ module.exports = function(Meta) {
 						process.exit(0);
 					}
 
-					winston.info('[meta/js] Minification complete');
+					winston.verbose('[meta/js] Minification complete');
 					minifier.kill();
 
 					if (cluster.isWorker) {
@@ -156,11 +156,8 @@ module.exports = function(Meta) {
 			minifier.on('message', function(message) {
 				switch(message.type) {
 				case 'end':
-					Meta.js.cache = message.data.js;
-					Meta.js.map = message.data.map;
-
+					Meta.js.cache = message.minified;
 					onComplete();
-
 					break;
 				case 'hash':
 					Meta.js.hash = message.payload;
@@ -180,7 +177,6 @@ module.exports = function(Meta) {
 			Meta.js.prepare(function() {
 				minifier.send({
 					action: 'js',
-					relativePath: nconf.get('url') + '/',
 					minify: global.env !== 'development',
 					scripts: Meta.js.scripts.all
 				});
@@ -200,11 +196,10 @@ module.exports = function(Meta) {
 
 	Meta.js.commitToFile = function() {
 		async.parallel([
-			async.apply(fs.writeFile, path.join(__dirname, '../../public/nodebb.min.js'), Meta.js.cache),
-			async.apply(fs.writeFile, path.join(__dirname, '../../public/nodebb.min.js.map'), Meta.js.map)
+			async.apply(fs.writeFile, path.join(__dirname, '../../public/nodebb.min.js'), Meta.js.cache)
 		], function (err) {
 			if (!err) {
-				winston.info('[meta/js] Client-side minfile and mapping committed to disk.');
+				winston.verbose('[meta/js] Client-side minfile committed to disk.');
 				emitter.emit('meta:js.compiled');
 			} else {
 				winston.error('[meta/js] ' + err.message);
@@ -219,7 +214,7 @@ module.exports = function(Meta) {
 		fs.exists(scriptPath, function(exists) {
 			if (exists) {
 				if (!cluster.isWorker || process.env.cluster_setup === 'true') {
-					winston.info('[meta/js] (Experimental) Reading client-side scripts from file');
+					winston.verbose('[meta/js] (Experimental) Reading client-side scripts from file');
 					async.map([scriptPath, mapPath], fs.readFile, function(err, files) {
 						Meta.js.cache = files[0];
 						Meta.js.map = files[1];

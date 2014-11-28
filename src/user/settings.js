@@ -30,6 +30,7 @@ module.exports = function(User) {
 				settings.followTopicsOnReply = parseInt(settings.followTopicsOnReply, 10) === 1;
 				settings.sendChatNotifications = parseInt(settings.sendChatNotifications, 10) === 1;
 				settings.restrictChat = parseInt(settings.restrictChat, 10) === 1;
+				settings.topicSearchEnabled = parseInt(settings.topicSearchEnabled, 10) === 1;
 
 				callback(null, settings);
 			});
@@ -94,7 +95,8 @@ module.exports = function(User) {
 			followTopicsOnCreate: data.followTopicsOnCreate,
 			followTopicsOnReply: data.followTopicsOnReply,
 			sendChatNotifications: data.sendChatNotifications,
-			restrictChat: data.restrictChat
+			restrictChat: data.restrictChat,
+			topicSearchEnabled: data.topicSearchEnabled
 		}, callback);
 	};
 

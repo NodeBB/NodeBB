@@ -59,15 +59,42 @@ module.exports = function(Meta) {
 	};
 
 	Meta.configs.setMultiple = function(data, callback) {
-		db.setObject('config', data, function(err) {
+		processConfig(data, function(err) {
 			if (err) {
 				return callback(err);
 			}
+			db.setObject('config', data, function(err) {
+				if (err) {
+					return callback(err);
+				}
 
-			updateConfig(data);
-			callback();
+				updateConfig(data);
+				callback();
+			});
 		});
 	};
+
+	function processConfig(data, callback) {
+		if (data.customCSS) {
+			saveRenderedCss(data, callback);
+			return;
+		}
+		callback();
+	}
+
+	function saveRenderedCss(data, callback) {
+		var less = require('less');
+		less.render(data.customCSS, {
+			compress: true
+		}, function(err, lessObject) {
+			if (err) {
+				winston.error('[less] Could not convert custom LESS to CSS! Please check your syntax.');
+				return callback(null, '');
+			}
+			data.renderedCustomCSS = lessObject.css;
+			callback(null, lessObject.css);
+		});
+	}
 
 	function updateConfig(data) {
 		var msg = {action: 'config:update', data: data};

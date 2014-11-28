@@ -55,7 +55,6 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 
 			if (data.picture) {
 				$('#user-current-picture').attr('src', data.picture);
-				$('#user_label img').attr('src', data.picture);
 			}
 
 			if (data.gravatarpicture) {
@@ -70,18 +69,32 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 				});
 
 				$('.account-username-box').attr('data-userslug', data.userslug);
-
-				$('#user-profile-link').attr('href', config.relative_path + '/user/' + data.userslug);
-				$('#user-header-name').text(userData.username);
 			}
 
 			if (currentEmail !== data.email) {
 				currentEmail = data.email;
 				$('#confirm-email').removeClass('hide');
 			}
+
+			updateHeader(data.picture, userData.username, data.userslug);
 		});
 
 		return false;
+	}
+
+	function updateHeader(picture, username, userslug) {
+		if (parseInt(ajaxify.variables.get('theirid'), 10) !== parseInt(ajaxify.variables.get('yourid'), 10)) {
+			return;
+		}
+
+		if (picture) {
+			$('#user-header-picture').attr('src', picture);
+		}
+
+		if (username && userslug) {
+			$('#user-profile-link').attr('href', config.relative_path + '/user/' + userslug);
+			$('#user-header-name').text(username);
+		}
 	}
 
 	function handleImageChange() {
@@ -117,10 +130,10 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 
 				if (selectedImageType === 'gravatar') {
 					$('#user-current-picture').attr('src', gravatarPicture);
-					$('#user-header-picture').attr('src', gravatarPicture);
+					updateHeader(gravatarPicture);
 				} else if (selectedImageType === 'uploaded') {
 					$('#user-current-picture').attr('src', uploadedPicture);
-					$('#user-header-picture').attr('src', uploadedPicture);
+					updateHeader(uploadedPicture);
 				}
 			}
 		});
@@ -156,7 +169,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 
 			$('#user-current-picture').attr('src', urlOnServer);
 			$('#user-uploaded-picture').attr('src', urlOnServer);
-			$('#user-header-picture').attr('src', urlOnServer);
+			updateHeader(urlOnServer);
 			uploadedPicture = urlOnServer;
 		}
 
