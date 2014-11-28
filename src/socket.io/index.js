@@ -87,6 +87,8 @@ Sockets.init = function(server) {
 	io.on('connection', function(socket) {
 		console.log('CONNECTED', socket.uid, socket.id);
 
+		socket.ip = socket.request.connection.remoteAddress;
+
 		logger.io_one(socket, socket.uid);
 
 		if (socket.uid) {
@@ -306,21 +308,19 @@ Sockets.getUserRooms = function(uid) {
 };
 
 Sockets.reqFromSocket = function(socket) {
-	console.log('socket.request', socket.request);
-	return socket.request;
-	// var headers = socket.handshake.headers,
-	// 	host = headers.host,
-	// 	referer = headers.referer || '';
+	var headers = socket.request.headers,
+	  	host = headers.host,
+	  	referer = headers.referer || '';
 
-	// return {
-	// 	ip: headers['x-forwarded-for'] || (socket.handshake.address || {}).address,
-	// 	host: host,
-	// 	protocol: headers.secure ? 'https' : 'http',
-	// 	secure: !!headers.secure,
-	// 	url: referer,
-	// 	path: referer.substr(referer.indexOf(host) + host.length),
-	// 	headers: headers
-	// };
+	return {
+	 	ip: socket.ip,
+	 	host: host,
+	 	protocol: socket.request.connection.encrypted ? 'https' : 'http',
+	 	secure: !!socket.request.connection.encrypted,
+	 	url: referer,
+	 	path: referer.substr(referer.indexOf(host) + host.length),
+	 	headers: headers
+	 };
 };
 
 Sockets.isUserOnline = function(uid) {
