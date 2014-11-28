@@ -133,8 +133,6 @@ Loader.addClusterEvents = function(callback) {
 							Loader.primaryWorker = parseInt(worker.id, 10);
 						}
 					break;
-					// case 'user:connect':
-					// case 'user:disconnect':
 					case 'config:update':
 						Loader.notifyWorkers(message);
 					break;
