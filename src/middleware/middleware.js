@@ -42,8 +42,9 @@ middleware.applyCSRF = csrf();
 middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn();
 
 middleware.updateLastOnlineTime = function(req, res, next) {
-	if(req.user) {
+	if (req.user) {
 		user.updateLastOnlineTime(req.user.uid);
+		user.updateOnlineUsers(req.user.uid);
 	}
 
 	db.sortedSetScore('ip:recent', req.ip, function(err, score) {

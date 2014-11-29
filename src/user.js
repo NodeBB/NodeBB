@@ -138,15 +138,24 @@ var	async = require('async'),
 		callback = callback || function() {};
 		User.getUserFields(uid, ['status', 'lastonline'], function(err, userData) {
 			var now = Date.now();
-			if(err || userData.status === 'offline' || now - parseInt(userData.lastonline, 10) < 300000) {
+			if (err || userData.status === 'offline' || now - parseInt(userData.lastonline, 10) < 300000) {
 				return callback(err);
 			}
-
-			db.sortedSetAdd('users:online', now, uid);
 
 			User.setUserField(uid, 'lastonline', now, callback);
 		});
 	};
+
+	User.updateOnlineUsers = function(uid, callback) {
+		callback = callback || function() {};
+		db.sortedSetScore('users:online', uid, function(err, score) {
+			var now = Date.now();
+			if (err || now - parseInt(score, 10) < 300000) {
+				return callback(err);
+			}
+			db.sortedSetAdd('users:online', now, uid, callback);
+		});
+	}
 
 	User.setUserField = function(uid, field, value, callback) {
 		plugins.fireHook('action:user.set', {field: field, value: value, type: 'set'});
