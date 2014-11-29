@@ -264,35 +264,6 @@ Sockets.getUserSockets = function(uid) {
 	return sockets;
 };
 
-Sockets.getUserRooms = function(uid) {
-	// TODO:
-	// io.sockets.adapter.rooms is local to this worker
-	// io.sockets.adapter.sids is local to this worker
-	// use .clients('uid_' + uid, fn)
-	// user .roomClients(socketId, fn)
-
-	var rooms = {};
-
-	if (!io.sockets.adapter.rooms['uid_' + uid]) {
-		return [];
-	}
-	var uidSocketIds = Object.keys(io.sockets.adapter.rooms['uid_' + uid]);
-	if (!Array.isArray(uidSocketIds)) {
-		return [];
-	}
-	for (var i=0; i<uidSocketIds.length; ++i) {
-		var roomClients = io.sockets.adapter.sids[uidSocketIds[i]];
-	 	for (var roomName in roomClients) {
-	 		if (roomName && roomClients.hasOwnProperty(roomName)) {
-	 			rooms[roomName] = true;
-	 		}
-	 	}
-	}
-
-	rooms = Object.keys(rooms);
-	return rooms;
-};
-
 Sockets.reqFromSocket = function(socket) {
 	var headers = socket.request.headers,
 	  	host = headers.host,
