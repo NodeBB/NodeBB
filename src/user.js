@@ -155,7 +155,7 @@ var	async = require('async'),
 			}
 			db.sortedSetAdd('users:online', now, uid, callback);
 		});
-	}
+	};
 
 	User.setUserField = function(uid, field, value, callback) {
 		plugins.fireHook('action:user.set', {field: field, value: value, type: 'set'});
