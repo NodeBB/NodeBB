@@ -202,7 +202,9 @@ define('forum/topic/posts', [
 					done();
 				});
 			} else {
-				socket.emit('topics.markAsRead', [tid]);
+				if (app.uid) {
+					socket.emit('topics.markAsRead', [tid]);
+				}
 				navigator.update();
 				done();
 			}
