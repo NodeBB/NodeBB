@@ -96,19 +96,16 @@ function onConnect(socket) {
 }
 
 function onDisconnect(socket) {
-	var socketCount = Sockets.getUserSocketCount(socket.uid);
+	if (socket.uid) {
+		var socketCount = Sockets.getUserSocketCount(socket.uid);
+		if (socketCount <= 0) {
+			socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
+		}
 
-	if (socket.uid && socketCount <= 0) {
-		socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
+		// TODO: if we can get socket.rooms here this can be made more efficient,
+		// see https://github.com/Automattic/socket.io/issues/1897
+		io.sockets.in('online_users').emit('event:user_leave', socket.uid);
 	}
-
-	// TODO : needs fixing for cluster
-
-	// for(var roomName in io.sockets.manager.roomClients[socket.id]) {
-	// 	if (roomName.indexOf('topic') !== -1) {
-	// 		io.sockets.in(roomName.slice(1)).emit('event:user_leave', socket.uid);
-	// 	}
-	// }
 }
 
 function onMessage(socket, payload) {
@@ -242,7 +239,7 @@ Sockets.getSocketCount = function() {
 };
 
 Sockets.getUserSocketCount = function(uid) {
-	// TODO: io.sockets.adapter.sids is local to this worker
+	// TODO: io.sockets.adapter.rooms is local to this worker
 	// use .clients('uid_' + uid, fn)
 
 	var roomClients = Object.keys(io.sockets.adapter.rooms['uid_' + uid] || {});
