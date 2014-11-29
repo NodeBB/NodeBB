@@ -35,6 +35,9 @@ var	fs = require('fs'),
 			email: async.apply(User.getUserField, uid, 'email'),
 			settings: async.apply(User.getSettings, uid)
 		}, function(err, results) {
+			if (err) {
+				return winston.error('[emailer] Error sending digest : ' + err.stack);
+			}
 			async.map([results.html, results.plaintext, params.subject], function(raw, next) {
 				translator.translate(raw, results.settings.language || meta.config.defaultLang || 'en_GB', function(translated) {
 					next(undefined, translated);
