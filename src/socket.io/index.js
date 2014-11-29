@@ -19,27 +19,143 @@ var	SocketIO = require('socket.io'),
 	Sockets = {},
 	Namespaces = {};
 
-/* === */
-
-
 var io;
 
 Sockets.init = function(server) {
 	var config = {
-		transports: ['polling', 'websocket'],
+		transports: ['websocket', 'polling'],
 		path: nconf.get('relative_path') + '/socket.io'
 	};
+
+	requireModules();
 
 	io = new SocketIO();
 
 	addRedisAdapter(io);
 
 	io.use(socketioWildcard);
+	io.use(authorize);
+
+	io.on('connection', onConnection);
 
 	io.listen(server, config);
 
 	Sockets.server = io;
+};
 
+function onConnection(socket) {
+	socket.ip = socket.request.connection.remoteAddress;
+
+	logger.io_one(socket, socket.uid);
+
+	onConnect(socket);
+
+	socket.on('disconnect', function() {
+		onDisconnect(socket);
+	});
+
+	socket.on('*', function(payload) {
+		onMessage(socket, payload);
+	});
+}
+
+function onConnect(socket) {
+	if (socket.uid) {
+		socket.join('uid_' + socket.uid);
+		socket.join('online_users');
+
+		async.parallel({
+			user: function(next) {
+				user.getUserFields(socket.uid, ['username', 'userslug', 'picture', 'status'], next);
+			},
+			isAdmin: function(next) {
+				user.isAdministrator(socket.uid, next);
+			}
+		}, function(err, userData) {
+			if (err || !userData.user) {
+				return;
+			}
+			socket.emit('event:connect', {
+				username: userData.user.username,
+				userslug: userData.user.userslug,
+				picture: userData.user.picture,
+				isAdmin: userData.isAdmin,
+				uid: socket.uid
+			});
+
+			socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: userData.user.status});
+		});
+	} else {
+		socket.join('online_guests');
+		socket.emit('event:connect', {
+			username: '[[global:guest]]',
+			isAdmin: false,
+			uid: 0
+		});
+	}
+}
+
+function onDisconnect(socket) {
+	var socketCount = Sockets.getUserSocketCount(socket.uid);
+
+	if (socket.uid && socketCount <= 0) {
+		socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
+	}
+
+	// TODO : needs fixing for cluster
+
+	// for(var roomName in io.sockets.manager.roomClients[socket.id]) {
+	// 	if (roomName.indexOf('topic') !== -1) {
+	// 		io.sockets.in(roomName.slice(1)).emit('event:user_leave', socket.uid);
+	// 	}
+	// }
+}
+
+function onMessage(socket, payload) {
+	if (!payload.data.length) {
+		return winston.warn('[socket.io] Empty payload');
+	}
+
+	var eventName = payload.data[0];
+	var params = payload.data[1];
+	var callback = typeof payload.data[payload.data.length - 1] === 'function' ? payload.data[payload.data.length - 1] : function() {};
+
+	if (!eventName) {
+		return winston.warn('[socket.io] Empty method name');
+	}
+
+	if (ratelimit.isFlooding(socket)) {
+		winston.warn('[socket.io] Too many emits! Disconnecting uid : ' + socket.uid + '. Message : ' + payload.name);
+		return socket.disconnect();
+	}
+
+	var parts = eventName.toString().split('.'),
+		namespace = parts[0],
+		methodToCall = parts.reduce(function(prev, cur) {
+			if (prev !== null && prev[cur]) {
+				return prev[cur];
+			} else {
+				return null;
+			}
+		}, Namespaces);
+
+	if(!methodToCall) {
+		if (process.env.NODE_ENV === 'development') {
+			winston.warn('[socket.io] Unrecognized message: ' + eventName);
+		}
+		return;
+	}
+
+	if (Namespaces[namespace].before) {
+		Namespaces[namespace].before(socket, eventName, function() {
+			callMethod(methodToCall, socket, params, callback);
+		});
+	} else {
+		callMethod(methodToCall, socket, params, callback);
+	}
+}
+
+function requireModules() {
 	fs.readdir(__dirname, function(err, files) {
 		files.splice(files.indexOf('index.js'), 1);
 
@@ -52,140 +168,36 @@ Sockets.init = function(server) {
 			next();
 		});
 	});
+}
 
-	io.use(function(socket, next) {
-		console.log('AUTH');
+function authorize(socket, next) {
+	var handshake = socket.request,
+	 	sessionID;
 
-		var handshake = socket.request,
-		 	sessionID;
+	if (!handshake) {
+	 	return next(new Error('[[error:not-authorized]]'));
+	}
 
-		if (!handshake) {
-		 	return next(new Error('[[error:not-authorized]]'));
+	cookieParser(handshake, {}, function(err) {
+		if (err) {
+			return next(err);
 		}
 
-		cookieParser(handshake, {}, function(err) {
+		var sessionID = handshake.signedCookies['express.sid'];
+
+		db.sessionStore.get(sessionID, function(err, sessionData) {
 			if (err) {
 				return next(err);
 			}
-
-			var sessionID = handshake.signedCookies['express.sid'];
-
-			db.sessionStore.get(sessionID, function(err, sessionData) {
-				if (err) {
-					return next(err);
-				}
-				if (sessionData && sessionData.passport && sessionData.passport.user) {
-					socket.uid = parseInt(sessionData.passport.user, 10);
-				} else {
-					socket.uid = 0;
-				}
-				next();
-			});
-		});
-	});
-
-	io.on('connection', function(socket) {
-		console.log('CONNECTED', socket.uid, socket.id);
-
-		socket.ip = socket.request.connection.remoteAddress;
-
-		logger.io_one(socket, socket.uid);
-
-		if (socket.uid) {
-			socket.join('uid_' + socket.uid);
-			socket.join('online_users');
-
-			async.parallel({
-				user: function(next) {
-					user.getUserFields(socket.uid, ['username', 'userslug', 'picture', 'status'], next);
-				},
-				isAdmin: function(next) {
-					user.isAdministrator(socket.uid, next);
-				}
-			}, function(err, userData) {
-				if (err || !userData.user) {
-					return;
-				}
-				socket.emit('event:connect', {
-					status: 1,
-					username: userData.user.username,
-					userslug: userData.user.userslug,
-					picture: userData.user.picture,
-					isAdmin: userData.isAdmin,
-					uid: socket.uid
-				});
-
-				socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: userData.user.status});
-			});
-		} else {
-			socket.join('online_guests');
-			socket.emit('event:connect', {
-				status: 1,
-				username: '[[global:guest]]',
-				isAdmin: false,
-				uid: 0
-			});
-		}
-
-		socket.on('disconnect', function() {
-			var socketCount = Sockets.getUserSocketCount(socket.uid);
-			console.log('DISCONNECT', socket.uid, socket.id);
-			if (socket.uid && socketCount <= 0) {
-				socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
-			}
-
-			// for(var roomName in io.sockets.manager.roomClients[socket.id]) {
-			// 	if (roomName.indexOf('topic') !== -1) {
-			// 		io.sockets.in(roomName.slice(1)).emit('event:user_leave', socket.uid);
-			// 	}
-			// }
-		});
-
-		socket.on('*', function(payload) {
-			if (!payload.data.length) {
-				return winston.warn('[socket.io] Empty payload');
-			}
-
-			var eventName = payload.data[0];
-			var params = payload.data[1];
-			var callback = typeof payload.data[payload.data.length - 1] === 'function' ? payload.data[payload.data.length - 1] : function() {};
-
-			if (!eventName) {
-				return winston.warn('[socket.io] Empty method name');
-			}
-
-			if (ratelimit.isFlooding(socket)) {
-				winston.warn('[socket.io] Too many emits! Disconnecting uid : ' + socket.uid + '. Message : ' + payload.name);
-				return socket.disconnect();
-			}
-
-			var parts = eventName.toString().split('.'),
-				namespace = parts[0],
-				methodToCall = parts.reduce(function(prev, cur) {
-					if (prev !== null && prev[cur]) {
-						return prev[cur];
-					} else {
-						return null;
-					}
-				}, Namespaces);
-
-			if(!methodToCall) {
-				if (process.env.NODE_ENV === 'development') {
-					winston.warn('[socket.io] Unrecognized message: ' + eventName);
-				}
-				return;
-			}
-
-			if (Namespaces[namespace].before) {
-				Namespaces[namespace].before(socket, eventName, function() {
-					callMethod(methodToCall, socket, params, callback);
-				});
+			if (sessionData && sessionData.passport && sessionData.passport.user) {
+				socket.uid = parseInt(sessionData.passport.user, 10);
 			} else {
-				callMethod(methodToCall, socket, params, callback);
+				socket.uid = 0;
 			}
+			next();
 		});
 	});
-};
+}
 
 function addRedisAdapter(io) {
 	if (nconf.get('redis')) {
