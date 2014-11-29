@@ -11,7 +11,7 @@ var	async = require('async'),
 	batch = require('../batch'),
 	emailer = require('../emailer');
 
-module.exports = (function(Digest) {
+(function(Digest) {
 	Digest.execute = function(interval) {
 		var digestsDisabled = meta.config.disableEmailSubscriptions !== undefined && parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 		if (digestsDisabled) {
@@ -71,14 +71,14 @@ module.exports = (function(Digest) {
 
 		user.getMultipleUserFields(data.subscribers, ['uid', 'username', 'lastonline'], function(err, users) {
 			if (err) {
-				winston.error('[user/jobs] Could not send digests (' + interval + '): ' + err.message);
+				winston.error('[user/jobs] Could not send digests (' + data.interval + '): ' + err.message);
 				return callback(err);
 			}
 
 			async.eachLimit(users, 100, function(userObj, next) {
 				user.notifications.getDailyUnread(userObj.uid, function(err, notifications) {
 					if (err) {
-						winston.error('[user/jobs] Could not send digests (' + interval + '): ' + err.message);
+						winston.error('[user/jobs] Could not send digests (' + data.interval + '): ' + err.message);
 						return next(err);
 					}
 
@@ -109,7 +109,6 @@ module.exports = (function(Digest) {
 				});
 			}, callback);
 		});
-	}
+	};
 
-	return Digest;
-})({});
+}(module.exports));
