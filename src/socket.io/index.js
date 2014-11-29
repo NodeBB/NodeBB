@@ -250,18 +250,18 @@ Sockets.getOnlineAnonCount = function () {
 
 Sockets.reqFromSocket = function(socket) {
 	var headers = socket.request.headers,
-	  	host = headers.host,
-	  	referer = headers.referer || '';
+		host = headers.host,
+		referer = headers.referer || '';
 
 	return {
-	 	ip: socket.ip,
-	 	host: host,
-	 	protocol: socket.request.connection.encrypted ? 'https' : 'http',
-	 	secure: !!socket.request.connection.encrypted,
-	 	url: referer,
-	 	path: referer.substr(referer.indexOf(host) + host.length),
-	 	headers: headers
-	 };
+		ip: socket.ip,
+		host: host,
+		protocol: socket.request.connection.encrypted ? 'https' : 'http',
+		secure: !!socket.request.connection.encrypted,
+		url: referer,
+		path: referer.substr(referer.indexOf(host) + host.length),
+		headers: headers
+	};
 };
 
 Sockets.isUserOnline = function(uid) {
