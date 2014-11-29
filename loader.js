@@ -193,12 +193,18 @@ Loader.start = function(callback) {
 	server = net.createServer(function(connection) {
 		// remove this once node 0.12.x ships, see https://github.com/elad/node-cluster-socket.io/issues/4
 		connection._handle.readStop();
-		handles[handleIndex] = connection._handle;
-		var workers = clusterWorkers();
 
+		var workers = clusterWorkers();
 		var worker = workers[workerIndex(connection.remoteAddress, numProcs)];
-		worker.send({action: 'sticky-session:connection', handleIndex: handleIndex}, connection);
-		handleIndex ++;
+
+		if (worker) {
+			handles[handleIndex] = connection._handle;
+
+			worker.send({action: 'sticky-session:connection', handleIndex: handleIndex}, connection);
+			handleIndex ++;
+		} else {
+			console.log('Cant find worker! Worker count : ' + workers.length);
+		}
 
 	}).listen(port);
 
