@@ -169,10 +169,10 @@ function requireModules() {
 
 function authorize(socket, next) {
 	var handshake = socket.request,
-	 	sessionID;
+		sessionID;
 
 	if (!handshake) {
-	 	return next(new Error('[[error:not-authorized]]'));
+		return next(new Error('[[error:not-authorized]]'));
 	}
 
 	cookieParser(handshake, {}, function(err) {
@@ -186,6 +186,7 @@ function authorize(socket, next) {
 			if (err) {
 				return next(err);
 			}
+
 			if (sessionData && sessionData.passport && sessionData.passport.user) {
 				socket.uid = parseInt(sessionData.passport.user, 10);
 			} else {
