@@ -203,7 +203,7 @@ SocketPosts.edit = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		websockets.server.sockets.in('topic_' + results.topic.tid).emit('event:post_edited', {
+		websockets.in('topic_' + results.topic.tid).emit('event:post_edited', {
 			pid: data.pid,
 			title: results.topic.title,
 			isMainPost: results.topic.isMainPost,
@@ -234,7 +234,7 @@ function deleteOrRestore(command, socket, data, callback) {
 		}
 
 		var eventName = command === 'restore' ? 'event:post_restored' : 'event:post_deleted';
-		websockets.server.sockets.in('topic_' + data.tid).emit(eventName, postData);
+		websockets.in('topic_' + data.tid).emit(eventName, postData);
 
 		callback();
 	});
@@ -249,7 +249,7 @@ SocketPosts.purge = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		websockets.server.sockets.in('topic_' + data.tid).emit('event:post_purged', data.pid);
+		websockets.in('topic_' + data.tid).emit('event:post_purged', data.pid);
 
 		callback();
 	});

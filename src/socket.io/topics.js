@@ -328,11 +328,11 @@ SocketTopics.move = function(socket, data, callback) {
 				return next(err);
 			}
 
-			websockets.server.sockets.in('topic_' + tid).emit('event:topic_moved', {
+			websockets.in('topic_' + tid).emit('event:topic_moved', {
 				tid: tid
 			});
 
-			websockets.server.sockets.in('category_' + oldCid).emit('event:topic_moved', {
+			websockets.in('category_' + oldCid).emit('event:topic_moved', {
 				tid: tid
 			});
 
