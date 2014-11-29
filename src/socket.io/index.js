@@ -216,14 +216,7 @@ function callMethod(method, socket, params, callback) {
 }
 
 Sockets.logoutUser = function(uid) {
-	Sockets.getUserSockets(uid).forEach(function(socket) {
-		if (socket.handshake && socket.handshake.signedCookies && socket.handshake.signedCookies['express.sid']) {
-			db.sessionStore.destroy(socket.handshake.signedCookies['express.sid']);
-		}
-
-		socket.emit('event:disconnect');
-		socket.disconnect();
-	});
+	io.sockets.in('uid_' + uid).emit('event:disconnect');
 };
 
 Sockets.in = function(room) {
@@ -252,25 +245,6 @@ Sockets.getOnlineAnonCount = function () {
 
 	var guestSocketIds = Object.keys(io.sockets.adapter.rooms.online_guests || {});
 	return Array.isArray(guestSocketIds) ? guestSocketIds.length : 0;
-};
-
-Sockets.getUserSockets = function(uid) {
-	// TODO: doesn't work in cluster
-
-	var userSocketIds = Object.keys(io.sockets.adapter.rooms['uid_' + uid] || {});
-	if (!Array.isArray(userSocketIds) || !userSocketIds.length) {
-		return [];
-	}
-	uid = parseInt(uid, 10);
-
-	var sockets = [];
-	userSocketIds.forEach(function(sid) {
-		if (io.sockets.connected[sid] && io.sockets.connected[sid].uid === uid) {
-			sockets.push(io.sockets.connected[sid])	;
-		}
-	});
-
-	return sockets;
 };
 
 Sockets.reqFromSocket = function(socket) {

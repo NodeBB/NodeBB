@@ -246,10 +246,10 @@
 	}
 
 	function logout(req, res) {
-		if (req.user && parseInt(req.user.uid, 10) > 0) {
+		if (req.user && parseInt(req.user.uid, 10) > 0 && req.sessionID) {
 
 			require('../socket.io').logoutUser(req.user.uid);
-
+			db.sessionStore.destroy(req.sessionID);
 			req.logout();
 		}
 
