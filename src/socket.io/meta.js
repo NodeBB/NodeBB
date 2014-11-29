@@ -4,7 +4,7 @@ var	nconf = require('nconf'),
 	gravatar = require('gravatar'),
 	winston = require('winston'),
 	validator = require('validator'),
-	
+
 	db = require('../database'),
 	meta = require('../meta'),
 	user = require('../user'),
@@ -93,7 +93,7 @@ SocketMeta.rooms.getAll = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		var rooms = {}; //websockets.server.sockets.manager.rooms; doesnt work in socket.io 1.x
+		var rooms = {}; // TODO: websockets.server.sockets.manager.rooms; doesnt work in socket.io 1.x
 		var socketData = {
 				onlineGuestCount: websockets.getOnlineAnonCount(),
 				onlineRegisteredCount: onlineRegisteredCount,
