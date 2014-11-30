@@ -31,7 +31,7 @@ if(nconf.get('ssl')) {
 }
 
 (function (app) {
-	var	port = nconf.get('PORT') || nconf.get('port');
+	var	port = nconf.get('port');
 
 	module.exports.init = function() {
 		emailer.registerApp(app);

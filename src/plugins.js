@@ -746,7 +746,22 @@ var fs = require('fs'),
 	};
 
 	Plugins.clearRequireCache = function(next) {
-		async.map(Plugins.libraryPaths, fs.realpath, function(err, paths) {
+		var cached = Object.keys(require.cache);
+		async.waterfall([
+			async.apply(async.map, Plugins.libraryPaths, fs.realpath),
+			function(paths, next) {
+				paths = paths.map(function(pluginLib) {
+					var parent = path.dirname(pluginLib);
+					return cached.filter(function(libPath) {
+						return libPath.indexOf(parent) !== -1;
+					});
+				}).reduce(function(prev, cur) {
+					return prev.concat(cur);
+				});
+				next(null, paths);
+			}
+		], function(err, paths) {
+			console.log(paths);
 			for (var x=0,numPaths=paths.length;x<numPaths;x++) {
 				delete require.cache[paths[x]];
 			}
