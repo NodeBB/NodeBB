@@ -3,6 +3,8 @@
 var db = require('./database'),
 	async = require('async'),
 	winston = require('winston'),
+	fs = require('fs'),
+	path = require('path'),
 
 	User = require('./user'),
 	Topics = require('./topics'),
@@ -19,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 10, 17, 13);
+	latestSchema = Date.UTC(2014, 10, 29, 22);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -270,7 +272,7 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			thisSchemaDate = Date.UTC(2014, 10, 17, 13);
 			if (schemaDate < thisSchemaDate) {
-				winston.info('[2014/11/11] Updating user email digest settings');
+				winston.info('[2014/11/17] Updating user email digest settings');
 
 				async.waterfall([
 					async.apply(db.getSortedSetRange, 'users:joindate', 0, -1),
@@ -290,14 +292,52 @@ Upgrade.upgrade = function(callback) {
 					}
 				], function(err) {
 					if (err) {
-						winston.error('[2014/11/11] Error encountered while updating user email digest settings');
+						winston.error('[2014/11/17] Error encountered while updating user email digest settings');
 						return next(err);
 					}
-					winston.info('[2014/11/11] Updating user email digest settings done');
+					winston.info('[2014/11/17] Updating user email digest settings done');
 					Upgrade.update(thisSchemaDate, next);
 				});
 			} else {
-				winston.info('[2014/11/11] Updating user email digest settings skipped');
+				winston.info('[2014/11/17] Updating user email digest settings skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 10, 29, 22);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/11/29] Updating config.json to new format');
+				var configPath = path.join(__dirname, '../config.json');
+
+				async.waterfall([
+					async.apply(fs.readFile, configPath, { encoding: 'utf-8' }),
+					function(config, next) {
+						try {
+							config = JSON.parse(config);
+							config.url = config.base_url + (config.use_port ? ':' + config.port : '') + config.relative_path;
+							if (config.port == '4567') delete config.port;
+							if (config.bcrypt_rounds == 12) delete config.bcrypt_rounds;
+							if (config.upload_path === '/public/uploads') delete config.upload_path;
+							if (config.bind_address === '0.0.0.0') delete config.bind_address;
+							delete config.base_url;
+							delete config.use_port;
+							delete config.relative_path;
+
+							fs.writeFile(configPath, JSON.stringify(config, null, 4), next);
+						} catch (err) {
+							return next(err);
+						}
+					}
+				], function(err) {
+					if (err) {
+						winston.error('[2014/11/29] Error encountered while updating config.json to new format');
+						return next(err);
+					}
+					winston.info('[2014/11/29] Updating config.json to new format done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2014/11/29] Updating config.json to new format skipped');
 				next();
 			}
 		}

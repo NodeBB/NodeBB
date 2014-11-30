@@ -38,11 +38,6 @@ questions.main = [
 		'default': nconf.get('secret') || utils.generateUUID()
 	},
 	{
-		name: 'bind_address',
-		description: 'IP or Hostname to bind to',
-		'default': nconf.get('bind_address') || '0.0.0.0'
-	},
-	{
 		name: 'database',
 		description: 'Which database to use',
 		'default': nconf.get('database') || 'redis'

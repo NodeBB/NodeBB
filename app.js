@@ -111,6 +111,11 @@ function start() {
 	// nconf defaults, if not set in config
 	if (!nconf.get('upload_path')) nconf.set('upload_path', '/public/uploads');
 	if (!nconf.get('bcrypt_rounds')) nconf.set('bcrypt_rounds', 12);
+	// Parse out the relative_url and other goodies from the configured URL
+	var urlObject = url.parse(nconf.get('url'));
+	nconf.set('use_port', !!urlObject.port);
+	nconf.set('relative_path', urlObject.pathname !== '/' ? urlObject.pathname : '');
+	nconf.set('port', nconf.get('port') || nconf.get('PORT') || 4567);
 
 	if (!cluster.isWorker || process.env.cluster_setup === 'true') {
 		winston.info('Time: %s', (new Date()).toString());
@@ -144,12 +149,6 @@ function start() {
 			upgrade.check(function(schema_ok) {
 				if (schema_ok || nconf.get('check-schema') === false) {
 					sockets.init(webserver.server);
-
-					// Parse out the relative_url and other goodies from the configured URL
-					var urlObject = url.parse(nconf.get('url'));
-					nconf.set('use_port', !!urlObject.port);
-					nconf.set('relative_path', urlObject.pathname);
-					nconf.set('port', nconf.get('port') || nconf.get('PORT') || 4567);
 
 					async.waterfall([
 						async.apply(plugins.ready),
