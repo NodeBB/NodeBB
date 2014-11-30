@@ -2,7 +2,6 @@
 
 var async = require('async'),
 	fs = require('fs'),
-	url = require('url'),
 	path = require('path'),
 	prompt = require('prompt'),
 	winston = require('winston'),
@@ -24,18 +23,14 @@ var install = {},
 
 questions.main = [
 	{
-		name: 'base_url',
+		name: 'url',
 		description: 'URL used to access this NodeBB',
-		'default': nconf.get('base_url') ? (nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '')) : 'http://localhost:4567',
+		'default':
+			nconf.get('url') ||
+			(nconf.get('base_url') ? (nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '')) : null) ||	// backwards compatibility (remove for v0.7.0)
+			'http://localhost:4567',
 		pattern: /^http(?:s)?:\/\//,
 		message: 'Base URL must begin with \'http://\' or \'https://\'',
-	},
-	{
-		name: 'port',
-		description: 'Port number of your NodeBB',
-		'default': nconf.get('port') || 4567,
-		pattern: /[0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]/,
-		message: 'Please enter a value betweeen 1 and 65535'
 	},
 	{
 		name: 'secret',
@@ -175,6 +170,7 @@ function completeConfigSetup(err, config, next) {
 	if (err) {
 		return next(err);
 	}
+
 	// Add CI object
 	if (install.ciVals) {
 		config.test_database = {};
@@ -185,22 +181,12 @@ function completeConfigSetup(err, config, next) {
 		}
 	}
 
-	config.bcrypt_rounds = 12;
-	config.upload_path = '/public/uploads';
-
-	var urlObject = url.parse(config.base_url),
-		server_conf = config;
-
-	server_conf.base_url = urlObject.protocol + '//' + urlObject.hostname;
-	server_conf.use_port = urlObject.port !== null ? true : false;
-	server_conf.relative_path = (urlObject.pathname && urlObject.pathname.length > 1) ? urlObject.pathname : '';
-
-	install.save(server_conf, function(err) {
+	install.save(config, function(err) {
 		if (err) {
 			return next(err);
 		}
 
-		setupDatabase(server_conf, next);
+		setupDatabase(config, next);
 	});
 }
 
@@ -329,7 +315,6 @@ function createAdmin(callback) {
 				return retryPassword(results);
 			}
 
-			nconf.set('bcrypt_rounds', 12);
 			User.create({username: results.username, password: results.password, email: results.email}, function (err, uid) {
 				if (err) {
 					winston.warn(err.message + ' Please try again.');

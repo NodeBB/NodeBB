@@ -34,7 +34,7 @@ if(nconf.get('ssl')) {
 (function (app) {
 	"use strict";
 
-	var	port = nconf.get('PORT') || nconf.get('port');
+	var	port = nconf.get('port') || nconf.get('PORT') || 4567;
 
 	logger.init(app);
 	emailer.registerApp(app);

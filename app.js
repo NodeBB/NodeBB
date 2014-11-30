@@ -25,6 +25,7 @@ nconf.argv().env();
 
 var fs = require('fs'),
 	os = require('os'),
+	url = require('url'),
 	async = require('async'),
 	semver = require('semver'),
 	winston = require('winston'),
@@ -107,6 +108,10 @@ function loadConfig() {
 function start() {
 	loadConfig();
 
+	// nconf defaults, if not set in config
+	if (!nconf.get('upload_path')) nconf.set('upload_path', '/public/uploads');
+	if (!nconf.get('bcrypt_rounds')) nconf.set('bcrypt_rounds', 12);
+
 	if (!cluster.isWorker || process.env.cluster_setup === 'true') {
 		winston.info('Time: %s', (new Date()).toString());
 		winston.info('Initializing NodeBB v%s', pkg.version);
@@ -140,7 +145,10 @@ function start() {
 				if (schema_ok || nconf.get('check-schema') === false) {
 					sockets.init(webserver.server);
 
-					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
+					// Parse out the relative_url and other goodies from the configured URL
+					var urlObject = url.parse(nconf.get('url'));
+					nconf.set('use_port', !!urlObject.port);
+					nconf.set('relative_path', urlObject.pathname);
 
 					async.waterfall([
 						async.apply(plugins.ready),
