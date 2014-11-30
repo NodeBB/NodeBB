@@ -149,6 +149,7 @@ function start() {
 					var urlObject = url.parse(nconf.get('url'));
 					nconf.set('use_port', !!urlObject.port);
 					nconf.set('relative_path', urlObject.pathname);
+					nconf.set('port', nconf.get('port') || nconf.get('PORT') || 4567);
 
 					async.waterfall([
 						async.apply(plugins.ready),
