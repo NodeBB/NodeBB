@@ -115,7 +115,7 @@ function start() {
 	var urlObject = url.parse(nconf.get('url'));
 	nconf.set('use_port', !!urlObject.port);
 	nconf.set('relative_path', urlObject.pathname !== '/' ? urlObject.pathname : '');
-	nconf.set('port', nconf.get('port') || nconf.get('PORT') || 4567);
+	nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || 4567);
 
 	if (!cluster.isWorker || process.env.cluster_setup === 'true') {
 		winston.info('Time: %s', (new Date()).toString());
