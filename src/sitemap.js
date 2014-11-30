@@ -55,7 +55,6 @@ var path = require('path'),
 					var topicUrls = [];
 
 					async.waterfall([
-						async.apply(db.getSortedSetRevRange, 'topics:recent', 0, -1),
 						function(tids, next) {
 							db.getSortedSetRevRange('topics:recent', 0, -1, next);
 						},
