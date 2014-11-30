@@ -263,7 +263,7 @@ var	async = require('async'),
 			return callback(null, password);
 		}
 
-		Password.hash(nconf.get('bcrypt_rounds'), password, callback);
+		Password.hash(nconf.get('bcrypt_rounds') || 12, password, callback);
 	};
 
 	User.addTopicIdToUser = function(uid, tid, timestamp, callback) {
