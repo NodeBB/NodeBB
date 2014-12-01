@@ -6,11 +6,11 @@
 				<ul>
 					<!-- BEGIN plugins -->
 					<!-- IF plugins.installed -->
-					<li data-plugin-id="{plugins.id}" class="clearfix">
+					<li data-plugin-id="{plugins.id}" data-version="{plugins.version}" class="clearfix">
 						<div class="pull-right">
 							<button data-action="toggleActive" class="btn <!-- IF plugins.active --> btn-warning<!-- ELSE --> btn-success<!-- ENDIF plugins.active -->"><i class="fa fa-power-off"></i> <!-- IF plugins.active -->Deactivate<!-- ELSE -->Activate<!-- ENDIF plugins.active --></button>
 
-							<button data-action="toggleInstall" class="btn btn-danger"><i class="fa fa-trash-o"></i> Uninstall</button>
+							<button data-action="toggleInstall" data-installed="1" class="btn btn-danger"><i class="fa fa-trash-o"></i> Uninstall</button>
 						</div>
 
 						<h2><strong>{plugins.name}</strong></h2>
@@ -41,7 +41,7 @@
 					<li data-plugin-id="{plugins.id}" class="clearfix">
 						<div class="pull-right">
 							<button data-action="toggleActive" class="btn btn-success hidden"><i class="fa fa-power-off"></i> Activate</button>
-							<button data-action="toggleInstall" class="btn btn-success"><i class="fa fa-download"></i> Install</button>
+							<button data-action="toggleInstall" data-installed="0" class="btn btn-success"><i class="fa fa-download"></i> Install</button>
 						</div>
 
 						<h2><strong>{plugins.name}</strong></h2>
