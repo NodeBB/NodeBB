@@ -134,10 +134,6 @@
 				<input type="text" class="form-control" value="6" data-field="minimumPasswordLength">
 			</div>
 			<div class="form-group">
-				<label>Maximum Signature Length</label>
-				<input type="text" class="form-control" value="255" data-field="maximumSignatureLength">
-			</div>
-			<div class="form-group">
 				<label>Forum Terms of Use <small>(Leave blank to disable)</small></label>
 				<textarea class="form-control" data-field="termsOfUse"></textarea>
 			</div>
