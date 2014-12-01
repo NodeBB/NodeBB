@@ -208,7 +208,7 @@ middleware.buildBreadcrumbs = function(req, res, next) {
 
 					breadcrumbs.unshift({
 						text: data.name,
-						url: nconf.get('relative_path') + 'category/' + data.slug
+						url: nconf.get('relative_path') + '/category/' + data.slug
 					});
 
 					currentCategory = data;
@@ -238,7 +238,7 @@ middleware.buildBreadcrumbs = function(req, res, next) {
 		topics.getTopicFields(parseInt(req.params.topic_id, 10), ['cid', 'title', 'slug'], function(err, data) {
 			breadcrumbs.unshift({
 				text: data.title,
-				url: nconf.get('relative_path') + 'topic/' + data.slug
+				url: nconf.get('relative_path') + '/topic/' + data.slug
 			});
 
 			findParents(parseInt(data.cid, 10));
