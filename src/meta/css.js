@@ -146,7 +146,6 @@ module.exports = function(Meta) {
 
 				hasher.update(lessOutput.css, 'utf-8');
 				Meta.css.hash = hasher.digest('hex').slice(0, 8);
-				console.log('the hash is now', Meta.css.hash);
 			}
 
 			// Save the compiled CSS in public/ so things like nginx can serve it
