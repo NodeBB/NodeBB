@@ -196,6 +196,58 @@ middleware.checkAccountPermissions = function(req, res, next) {
 	});
 };
 
+middleware.buildBreadcrumbs = function(req, res, next) {
+	var breadcrumbs = [],
+		findParents = function(cid) {
+			var currentCategory;
+			async.doWhilst(function(next) {
+				categories.getCategoryFields(currentCategory ? currentCategory.parentCid : cid, ['name', 'slug', 'parentCid'], function(err, data) {
+					if (err) {
+						return next(err);
+					}
+
+					breadcrumbs.unshift({
+						text: data.name,
+						url: nconf.get('relative_path') + 'category/' + data.slug
+					});
+
+					currentCategory = data;
+					next();
+				});
+			}, function() {
+				return !!currentCategory.parentCid && currentCategory.parentCid !== '0';
+			}, function(err) {
+				if (err) {
+					winston.warn('[buildBreadcrumb] Could not build breadcrumbs: ' + err.message);
+				}
+
+				// Home breadcrumb
+				translator.translate('[[global:home]]', meta.config.defaultLang || 'en_GB', function(translated) {
+					breadcrumbs.unshift({
+						text: translated,
+						url: nconf.get('relative_path')
+					});
+
+					res.locals.breadcrumbs = breadcrumbs || [];
+					next();
+				});
+			});
+		};
+
+	if (req.params.topic_id) {
+		topics.getTopicFields(parseInt(req.params.topic_id, 10), ['cid', 'title', 'slug'], function(err, data) {
+			breadcrumbs.unshift({
+				text: data.title,
+				url: nconf.get('relative_path') + 'topic/' + data.slug
+			});
+
+			findParents(parseInt(data.cid, 10));
+		});
+	} else {
+		findParents(parseInt(req.params.category_id, 10));
+	}
+};
+
 middleware.buildHeader = function(req, res, next) {
 	res.locals.renderHeader = true;
 
