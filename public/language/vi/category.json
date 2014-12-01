@@ -1,8 +1,8 @@
 {
     "new_topic_button": "Chủ đề mới",
     "no_topics": "<strong>Không có bài viết trong danh mục.</strong><br />Hãy đăng một bài viết mới?",
-    "browsing": "đang duyệt",
-    "no_replies": "Chưa có ai bình luận",
-    "share_this_category": "Chia sẻ phần mục này",
+    "browsing": "đang xem",
+    "no_replies": "Chưa có bình luận nào",
+    "share_this_category": "Chia sẻ thư mục này",
     "ignore": "Bỏ qua"
 }

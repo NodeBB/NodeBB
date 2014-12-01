@@ -1,9 +1,9 @@
 {
-    "title": "Recent",
+    "title": "সাম্প্রতিক",
     "day": "দিন",
     "week": "সপ্তাহ",
     "month": "মাস",
-    "year": "Year",
-    "alltime": "All Time",
-    "no_recent_topics": "There are no recent topics."
+    "year": "বছর",
+    "alltime": "সবসময় ",
+    "no_recent_topics": "কোন সাম্প্রতিক টপিক নেই। "
 }

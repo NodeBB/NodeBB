@@ -1,9 +1,9 @@
 {
-    "latest_users": "Latest Users",
-    "top_posters": "Top Posters",
-    "most_reputation": "Most Reputation",
-    "search": "Search",
-    "enter_username": "Enter a username to search",
-    "load_more": "Load More",
-    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
+    "latest_users": "সর্বশেষ নিবন্ধিত সদস্যরা:",
+    "top_posters": "সর্বোচ্চ পোষ্টকারী",
+    "most_reputation": "সর্বোচ্চ সম্মাননাধারী",
+    "search": "খুঁজুন",
+    "enter_username": "ইউজারনেম এর ভিত্তিতে সার্চ করুন",
+    "load_more": "আরো লোড করুন",
+    "users-found-search-took": "%1 সদস্য(দের) খুঁজে পাওয়া গিয়েছে! সময় লেগেছে %2 ms."
 }

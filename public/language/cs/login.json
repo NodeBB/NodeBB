@@ -1,9 +1,9 @@
 {
-    "username": "Username / Email",
+    "username": "Uživatelské jméno / Email",
     "remember_me": "Zapamatovat si mě?",
     "forgot_password": "Zapomněli jste heslo?",
     "alternative_logins": "Další způsoby přihlášení",
     "failed_login_attempt": "Přihlášení se nezdařilo, zkuste to prosím znovu.",
     "login_successful": "Přihlášení proběhlo úspěšně!",
-    "dont_have_account": "Don't have an account?"
+    "dont_have_account": "Nemáte účet?"
 }

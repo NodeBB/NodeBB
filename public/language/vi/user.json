@@ -68,8 +68,8 @@
     "notification_sounds": "Xuất hiện âm thanh khi bạn nhận được một thông báo",
     "browsing": "Đang xem cài đặt",
     "open_links_in_new_tab": "Mở liên kết trong tab mới?",
-    "enable_topic_searching": "Enable In-Topic Searching",
-    "topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen.",
+    "enable_topic_searching": "Bật In-topic Searching",
+    "topic_search_help": "Nếu được bật, in-topic searching sẽ thay thế tính năng tìm kiếu mặc định của trình duyệt và giúp bạn tìm trong toàn bộ nội dung bài viết, thay vì chỉ tìm trong những gì đang có trên màn hình.",
     "follow_topics_you_reply_to": "Theo dõi chủ đề mà bạn trả lời",
     "follow_topics_you_create": "Theo dõi chủ đề bạn tạo"
 }

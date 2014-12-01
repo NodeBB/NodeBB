@@ -48,7 +48,7 @@
     "settings": "Ayarlar",
     "show_email": "E-postamı göster",
     "show_fullname": "Tam ismimi göster",
-    "restrict_chats": "Only allow chat messages from users I follow",
+    "restrict_chats": "Sadece takip ettiğim kişilerden sohbetleri kabul et",
     "digest_label": "Özet e-postalarına kaydol",
     "digest_description": "Bu forum için e-posta güncellemelerine kaydol.",
     "digest_off": "Kapalı",
@@ -68,8 +68,8 @@
     "notification_sounds": "Bildirim alındığında ses çal",
     "browsing": "Tarayıcı Ayaları",
     "open_links_in_new_tab": "Dışarı giden bağlantıları yeni sekmede aç?",
-    "enable_topic_searching": "Enable In-Topic Searching",
-    "topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen.",
+    "enable_topic_searching": "Konu içi aramayı aktive et",
+    "topic_search_help": "Aktive edilirse, konu içi arama tarayıcının normal arama davranışını değiştirerek tüm konuyu aramanızı sağlar.",
     "follow_topics_you_reply_to": "İleti gönderdiğim konuları takip et.",
     "follow_topics_you_create": "Kendi yarattığım konuları takip et."
 }

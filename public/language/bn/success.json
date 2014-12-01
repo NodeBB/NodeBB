@@ -1,6 +1,6 @@
 {
-    "success": "Success",
-    "topic-post": "You have successfully posted.",
+    "success": "সফল হয়েছে",
+    "topic-post": "আপনি সফলভাবে পোষ্ট করেছেন। ",
     "authentication-successful": "Authentication Successful",
-    "settings-saved": "Settings saved!"
+    "settings-saved": "সেটিংস সেভ করা হয়েছে। "
 }

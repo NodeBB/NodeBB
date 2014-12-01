@@ -63,5 +63,5 @@
     "not-enough-reputation-to-downvote": "Bạn không có đủ phiếu tín nhiệm để downvote bài này",
     "not-enough-reputation-to-flag": "Bạn không đủ tín nhiệm để đánh dấu bài viết này",
     "reload-failed": "NodeBB gặp lỗi trong khi tải lại: \"%1\". NodeBB sẽ tiếp tục hoạt động với dữ liệu trước đó, tuy nhiên bạn nên tháo gỡ những gì bạn vừa thực hiện trước khi tải lại.",
-    "registration-error": "Registration Error"
+    "registration-error": "Quá trình đăng kí bị lỗi"
 }
