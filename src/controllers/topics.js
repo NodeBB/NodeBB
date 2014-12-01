@@ -253,6 +253,7 @@ topicsController.get = function(req, res, next) {
 			}
 		}
 
+		data.breadcrumbs = res.locals.breadcrumbs;
 		res.render('topic', data);
 	});
 };

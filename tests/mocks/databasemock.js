@@ -19,7 +19,8 @@
 		base_dir: path.join(__dirname,'../..'),
 		themes_path: path.join(__dirname, '../../node_modules'),
 		upload_url: path.join(path.sep, '../../uploads', path.sep),
-		views_dir: path.join(__dirname, '../../public/templates')
+		views_dir: path.join(__dirname, '../../public/templates'),
+		relative_path: ''
 	});
 
 	var dbType = nconf.get('database'),

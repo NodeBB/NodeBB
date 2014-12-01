@@ -251,6 +251,7 @@ categoriesController.get = function(req, res, next) {
 			}
 		}
 
+		data.breadcrumbs = res.locals.breadcrumbs;
 		res.render('category', data);
 	});
 };
