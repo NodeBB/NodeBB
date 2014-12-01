@@ -251,11 +251,11 @@ function forkWorker(isPrimary) {
 function workerIndex(ip, numProcs) {
 	var s = '';
 	for (var i = 0, _len = ip.length; i < _len; i++) {
-		if (ip[i] !== '.') {
+		if (parseInt(ip[i], 10)) {
 			s += ip[i];
 		}
 	}
-	return Number(s) % numProcs;
+	return Number(s) % numProcs || 0;
 }
 
 function clusterWorkers() {
