@@ -760,7 +760,6 @@ var fs = require('fs'),
 				next(null, paths);
 			}
 		], function(err, paths) {
-			console.log(paths);
 			for (var x=0,numPaths=paths.length;x<numPaths;x++) {
 				delete require.cache[paths[x]];
 			}
