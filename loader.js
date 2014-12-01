@@ -81,7 +81,8 @@ Loader.addClusterEvents = function(callback) {
 							worker.send({
 								action: 'css-propagate',
 								cache: Loader.css.cache,
-								acpCache: Loader.css.acpCache
+								acpCache: Loader.css.acpCache,
+								hash: Loader.css.hash
 							});
 						}
 
@@ -120,6 +121,7 @@ Loader.addClusterEvents = function(callback) {
 					case 'css-propagate':
 						Loader.css.cache = message.cache;
 						Loader.css.acpCache = message.acpCache;
+						Loader.css.hash = message.hash;
 
 						otherWorkers = Object.keys(cluster.workers).filter(function(worker_id) {
 							return parseInt(worker_id, 10) !== parseInt(worker.id, 10);

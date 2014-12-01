@@ -68,7 +68,8 @@ module.exports = function(Meta) {
 						process.send({
 							action: 'css-propagate',
 							cache: minified[0],
-							acpCache: minified[1]
+							acpCache: minified[1],
+							hash: Meta.css.hash
 						});
 					}
 
@@ -139,11 +140,14 @@ module.exports = function(Meta) {
 
 			Meta.css[destination] = lessOutput.css;
 
-			// Calculate css buster
-			var hasher = crypto.createHash('md5');
+			if (destination === 'cache') {
+				// Calculate css buster
+				var hasher = crypto.createHash('md5');
 
-			hasher.update(lessOutput.css, 'utf-8');
-			Meta.css.hash = hasher.digest('hex').slice(0, 8);
+				hasher.update(lessOutput.css, 'utf-8');
+				Meta.css.hash = hasher.digest('hex').slice(0, 8);
+				console.log('the hash is now', Meta.css.hash);
+			}
 
 			// Save the compiled CSS in public/ so things like nginx can serve it
 			if (!cluster.isWorker || process.env.cluster_setup === 'true') {
