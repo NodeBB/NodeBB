@@ -1,5 +1,5 @@
 "use strict";
-/*global define, templates, socket, ajaxify, app, bootbox*/
+/*global define, templates, socket, ajaxify, app, admin, bootbox*/
 
 define('admin/manage/groups', ['admin/modules/iconSelect'], function(iconSelect) {
 	var	Groups = {};
