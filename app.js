@@ -189,11 +189,13 @@ function start() {
 							case 'js-propagate':
 								meta.js.cache = message.cache;
 								meta.js.map = message.map;
+								meta.js.hash = message.hash;
 								winston.verbose('[cluster] Client-side javascript and mapping propagated to worker %s', cluster.worker.id);
 							break;
 							case 'css-propagate':
 								meta.css.cache = message.cache;
 								meta.css.acpCache = message.acpCache;
+								meta.css.hash = message.hash;
 								winston.verbose('[cluster] Stylesheets propagated to worker %s', cluster.worker.id);
 							break;
 						}

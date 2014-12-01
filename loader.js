@@ -73,7 +73,8 @@ Loader.addClusterEvents = function(callback) {
 							worker.send({
 								action: 'js-propagate',
 								cache: Loader.js.cache,
-								map: Loader.js.map
+								map: Loader.js.map,
+								hash: Loader.js.hash
 							});
 						}
 
@@ -105,6 +106,7 @@ Loader.addClusterEvents = function(callback) {
 					case 'js-propagate':
 						Loader.js.cache = message.cache;
 						Loader.js.map = message.map;
+						Loader.js.hash = message.hash;
 
 						otherWorkers = Object.keys(cluster.workers).filter(function(worker_id) {
 							return parseInt(worker_id, 10) !== parseInt(worker.id, 10);
@@ -114,7 +116,8 @@ Loader.addClusterEvents = function(callback) {
 							cluster.workers[worker_id].send({
 								action: 'js-propagate',
 								cache: message.cache,
-								map: message.map
+								map: message.map,
+								hash: message.hash
 							});
 						});
 					break;
