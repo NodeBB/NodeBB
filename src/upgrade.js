@@ -314,11 +314,25 @@ Upgrade.upgrade = function(callback) {
 					function(config, next) {
 						try {
 							config = JSON.parse(config);
+
+							// If the config contains "url", it has already been updated, abort.
+							if (config.hasOwnProperty('url')) {
+								return next();
+							}
+
 							config.url = config.base_url + (config.use_port ? ':' + config.port : '') + config.relative_path;
-							if (config.port == '4567') delete config.port;
-							if (config.bcrypt_rounds == 12) delete config.bcrypt_rounds;
-							if (config.upload_path === '/public/uploads') delete config.upload_path;
-							if (config.bind_address === '0.0.0.0') delete config.bind_address;
+							if (config.port == '4567') {
+								delete config.port;
+							}
+							if (config.bcrypt_rounds == 12) {
+								delete config.bcrypt_rounds;
+							}
+							if (config.upload_path === '/public/uploads') {
+								delete config.upload_path;
+							}
+							if (config.bind_address === '0.0.0.0') {
+								delete config.bind_address;
+							}
 							delete config.base_url;
 							delete config.use_port;
 							delete config.relative_path;
