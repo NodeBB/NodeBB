@@ -165,24 +165,21 @@ categoriesController.get = function(req, res, next) {
 			});
 		},
 		function(payload, next) {
-			// If a userslug was specified, add a targetUid
-			if (req.query.author) {
-				user.getUidByUserslug(req.query.author, function(err, uid) {
-					payload.targetUid = uid;
-					next(err, payload);
-				});
-			} else {
-				next(null, payload);
-			}
+			user.getUidByUserslug(req.query.author, function(err, uid) {
+				payload.targetUid = uid;
+				next(err, payload);
+			});
 		},
-		categories.getCategoryById,
+		function(payload, next) {
+			categories.getCategoryById(payload, next);
+		},
 		function(categoryData, next) {
-			categories.getRecentTopicReplies(categoryData.children, uid, function(err) {
-				if (err) {
-					return next(err);
-				}
+			if (categoryData.link) {
+				return res.redirect(categoryData.link);
+			}
 
-				next(null, categoryData);
+			categories.getRecentTopicReplies(categoryData.children, uid, function(err) {
+				next(err, categoryData);
 			});
 		},
 		function (categoryData, next) {
@@ -231,10 +228,6 @@ categoriesController.get = function(req, res, next) {
 	], function (err, data) {
 		if (err) {
 			return next(err);
-		}
-
-		if (data.link) {
-			return res.redirect(data.link);
 		}
 
 		data.currentPage = page;

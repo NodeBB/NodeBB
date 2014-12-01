@@ -286,10 +286,16 @@ var	async = require('async'),
 	};
 
 	User.getUidByUsername = function(username, callback) {
+		if (!username) {
+			return callback();
+		}
 		db.getObjectField('username:uid', username, callback);
 	};
 
 	User.getUidByUserslug = function(userslug, callback) {
+		if (!userslug) {
+			return callback();
+		}
 		db.getObjectField('userslug:uid', userslug, callback);
 	};
 
