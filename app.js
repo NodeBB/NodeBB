@@ -159,8 +159,6 @@ function start() {
 						require('./src/user').startJobs();
 					}
 
-					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
-
 					async.waterfall([
 						async.apply(plugins.ready),
 						async.apply(meta.templates.compile),
