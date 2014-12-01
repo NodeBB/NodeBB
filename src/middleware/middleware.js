@@ -489,6 +489,9 @@ middleware.addExpiresHeaders = function(req, res, next) {
 	if (app.enabled('cache')) {
 		res.setHeader("Cache-Control", "public, max-age=5184000");
 		res.setHeader("Expires", new Date(Date.now() + 5184000000).toUTCString());
+	} else {
+		res.setHeader("Cache-Control", "public, max-age=0");
+		res.setHeader("Expires", new Date().toUTCString());
 	}
 
 	next();
