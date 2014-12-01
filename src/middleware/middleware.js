@@ -226,7 +226,7 @@ middleware.buildBreadcrumbs = function(req, res, next) {
 				translator.translate('[[global:home]]', meta.config.defaultLang || 'en_GB', function(translated) {
 					breadcrumbs.unshift({
 						text: translated,
-						url: nconf.get('relative_path')
+						url: nconf.get('relative_path') + '/'
 					});
 
 					res.locals.breadcrumbs = breadcrumbs || [];
