@@ -78,7 +78,7 @@ var socket,
 			var ioParams = {
 				'max reconnection attempts': config.maxReconnectionAttempts,
 				'reconnection delay': config.reconnectionDelay,
-				resource: RELATIVE_PATH.length ? RELATIVE_PATH.slice(1) + '/socket.io' : 'socket.io'
+				path: RELATIVE_PATH + '/socket.io'
 			};
 
 			if (utils.isAndroidBrowser()) {

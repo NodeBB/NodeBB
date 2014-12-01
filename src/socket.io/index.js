@@ -23,8 +23,7 @@ var io;
 
 Sockets.init = function(server) {
 	var config = {
-		transports: ['websocket', 'polling'],
-		path: nconf.get('relative_path') + '/socket.io'
+		transports: ['websocket', 'polling']
 	};
 
 	requireModules();
