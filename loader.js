@@ -3,6 +3,7 @@
 var	nconf = require('nconf'),
 	net = require('net'),
 	fs = require('fs'),
+	url = require('url'),
 	path = require('path'),
 	cluster = require('cluster'),
 	async = require('async'),
@@ -188,7 +189,9 @@ Loader.start = function(callback) {
 		forkWorker(x === 0);
 	}
 
-	var	port = nconf.get('PORT') || nconf.get('port');
+	var urlObject = url.parse(nconf.get('url'));
+	var port = urlObject.port || nconf.get('port') || nconf.get('PORT') || 4567;
+ 	nconf.set('port', port);
 
 	server = net.createServer(function(connection) {
 		// remove this once node 0.12.x ships, see https://github.com/elad/node-cluster-socket.io/issues/4
