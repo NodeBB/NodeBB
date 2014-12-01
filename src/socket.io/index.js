@@ -22,13 +22,11 @@ var	SocketIO = require('socket.io'),
 var io;
 
 Sockets.init = function(server) {
-	var config = {
-		transports: ['websocket', 'polling']
-	};
-
 	requireModules();
 
-	io = new SocketIO();
+	io = new SocketIO({
+		path: nconf.get('relative_path') + '/socket.io'
+	});
 
 	addRedisAdapter(io);
 
@@ -37,7 +35,9 @@ Sockets.init = function(server) {
 
 	io.on('connection', onConnection);
 
-	io.listen(server, config);
+	io.listen(server, {
+		transports: ['websocket', 'polling']
+	});
 
 	Sockets.server = io;
 };
