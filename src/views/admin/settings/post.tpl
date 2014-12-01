@@ -46,6 +46,16 @@
 					<input type="checkbox" data-field="disableSignatures"> <strong>Disable signatures</strong>
 				</label>
 			</div>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" data-field="signatures:disableLinks"> <strong>Disable links in signatures</strong>
+				</label>
+			</div>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" data-field="signatures:disableImages"> <strong>Disable images in signatures</strong>
+				</label>
+			</div>
 		</form>
 	</div>
 </div>
