@@ -131,7 +131,8 @@ Loader.addClusterEvents = function(callback) {
 							cluster.workers[worker_id].send({
 								action: 'css-propagate',
 								cache: message.cache,
-								acpCache: message.acpCache
+								acpCache: message.acpCache,
+								hash: message.hash
 							});
 						});
 					break;
