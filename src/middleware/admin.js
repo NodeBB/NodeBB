@@ -5,6 +5,7 @@ var app,
 	nconf = require('nconf'),
 	async = require('async'),
 	path = require('path'),
+	winston = require('winston'),
 	user = require('../user'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
@@ -13,6 +14,22 @@ var app,
 		api: require('../controllers/api'),
 		helpers: require('../controllers/helpers')
 	};
+
+middleware.isAdmin = function(req, res, next) {
+	winston.warn('[middleware.isAdmin] deprecation warning, no need to use this from plugins!');
+
+	if (!req.user) {
+		controllers.helpers.notAllowed(req, res);
+	}
+
+	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
+		if (err || isAdmin) {
+			return next(err);
+		}
+
+		controllers.helpers.notAllowed(req, res);
+	});
+};
 
 middleware.buildHeader = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
