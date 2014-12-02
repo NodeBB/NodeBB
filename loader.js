@@ -301,8 +301,8 @@ function closeHandles() {
 	for(var h in handles) {
 		var handle = handles[h];
 		if (handle) {
-			h.close();
-			delete handles[handle];
+			handle.close();
+			delete handles[h];
 		}
 	}
 }
