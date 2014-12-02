@@ -60,14 +60,14 @@ describe('User', function() {
 	});
 
 	describe('.isModerator()', function() {
-		it('should return', function(done) {
+		it('should return false', function(done) {
 			User.isModerator(testUid, testCid, function(err, isModerator) {
 				assert.equal(isModerator, false);
 				done();
 			});
 		});
 
-		it('should return', function(done) {
+		it('should return two false results', function(done) {
 			User.isModerator([testUid, testUid], testCid, function(err, isModerator) {
 				assert.equal(isModerator[0], false);
 				assert.equal(isModerator[1], false);
@@ -75,7 +75,7 @@ describe('User', function() {
 			});
 		});
 
-		it('should return', function(done) {
+		it('should return two false results', function(done) {
 			User.isModerator(testUid, [testCid, testCid], function(err, isModerator) {
 				assert.equal(isModerator[0], false);
 				assert.equal(isModerator[1], false);
