@@ -164,59 +164,62 @@ module.exports = function(app, middleware) {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
 	}));
 
-	app.use(catch404);
-	app.use(handleErrors);
+	handle404(app, middleware);
+	handleErrors(app, middleware);
+
 
 	// Add plugin routes
 	plugins.init(app, middleware);
 	authRoutes.reloadRoutes();
 };
 
-function handleErrors(err, req, res, next) {
-	// we may use properties of the error object
-	// here and next(err) appropriately, or if
-	// we possibly recovered from the error, simply next().
-	//console.error(err.stack, req.path);
-	winston.error(req.path + '\n', err.stack);
+function handle404(app, middleware) {
+	app.use(function(req, res, next) {
+		var relativePath = nconf.get('relative_path');
+		var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
+			isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
 
-	if (err.code === 'EBADCSRFTOKEN') {
-		return res.sendStatus(403);
-	}
+		if (isClientScript.test(req.url)) {
+			res.type('text/javascript').status(200).send('');
+		} else if (isLanguage.test(req.url)) {
+			res.status(200).json({});
+		} else if (req.accepts('html')) {
+			if (process.env.NODE_ENV === 'development') {
+				winston.warn('Route requested but not found: ' + req.url);
+			}
 
-	var status = err.status || 500;
-	res.status(status);
+			res.status(404);
 
-	req.flash('errorMessage', err.message);
+			if (res.locals.isAPI) {
+				return res.json({path: req.path, error: 'not-found'});
+			}
 
-	res.redirect(nconf.get('relative_path') + '/500');
+			middleware.buildHeader(req, res, function() {
+				res.render('404', {path: req.path});
+			});
+		} else {
+			res.status(404).type('txt').send('Not found');
+		}
+	});
 }
 
-function catch404(req, res, next) {
-	var relativePath = nconf.get('relative_path');
-	var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
-		isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
+function handleErrors(app, middleware) {
+	app.use(function(err, req, res, next) {
+		winston.error(req.path + '\n', err.stack);
 
-	res.status(404);
-
-	if (isClientScript.test(req.url)) {
-		res.type('text/javascript').status(200).send('');
-	} else if (isLanguage.test(req.url)) {
-		res.status(200).json({});
-	} else if (req.accepts('html')) {
-		if (process.env.NODE_ENV === 'development') {
-			winston.warn('Route requested but not found: ' + req.url);
+		if (err.code === 'EBADCSRFTOKEN') {
+			return res.sendStatus(403);
 		}
 
-		res.redirect(relativePath + '/404');
-	} else if (req.accepts('json')) {
-		if (process.env.NODE_ENV === 'development') {
-			winston.warn('Route requested but not found: ' + req.url);
-		}
+		res.status(err.status || 500);
 
-		res.json({
-			error: 'Not found'
-		});
-	} else {
-		res.type('txt').send('Not found');
-	}
+		if (res.locals.isAPI) {
+			return res.json({path: req.path, error: err.message});
+		} else {
+			middleware.buildHeader(req, res, function() {
+				res.render('500', {path: req.path, error: err.message});
+			});
+		}
+	});
 }
+

@@ -22,7 +22,7 @@ topicsController.get = function(req, res, next) {
 		userPrivileges;
 
 	if (req.params.post_index && !utils.isNumber(req.params.post_index)) {
-		return helpers.notFound(res);
+		return helpers.notFound(req, res);
 	}
 
 	async.waterfall([
@@ -42,19 +42,11 @@ topicsController.get = function(req, res, next) {
 		function (results, next) {
 			userPrivileges = results.privileges;
 
-			if (userPrivileges.disabled) {
-				return helpers.notFound(res);
+			if (userPrivileges.disabled || tid + '/' + req.params.slug !== results.topic.slug) {
+				return helpers.notFound(req, res);
 			}
 
-			if (tid + '/' + req.params.slug !== results.topic.slug) {
-				return helpers.notFound(res);
-			}
-
-			if (!userPrivileges.read) {
-				return helpers.notAllowed(req, res);
-			}
-
-			if (parseInt(results.topic.deleted, 10) && !userPrivileges.view_deleted) {
+			if (!userPrivileges.read || (parseInt(results.topic.deleted, 10) && !userPrivileges.view_deleted)) {
 				return helpers.notAllowed(req, res);
 			}
 
@@ -71,7 +63,7 @@ topicsController.get = function(req, res, next) {
 			}
 
 			if (settings.usePagination && (req.query.page < 1 || req.query.page > pageCount)) {
-				return helpers.notFound(res);
+				return helpers.notFound(req, res);
 			}
 
 			var set = 'tid:' + tid + ':posts',
@@ -114,7 +106,7 @@ topicsController.get = function(req, res, next) {
 
 			topics.getTopicWithPosts(tid, set, uid, start, end, reverse, function (err, topicData) {
 				if (err && err.message === '[[error:no-topic]]' && !topicData) {
-					return helpers.notFound(res);
+					return helpers.notFound(req, res);
 				}
 
 				if (err && !topicData) {

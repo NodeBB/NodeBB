@@ -22,19 +22,16 @@ var app,
 	ensureLoggedIn = require('connect-ensure-login'),
 
 	controllers = {
-		api: require('./../controllers/api')
+		api: require('./../controllers/api'),
+		helpers: require('../controllers/helpers')
 	};
 
 middleware.authenticate = function(req, res, next) {
-	if(!req.user) {
-		if (res.locals.isAPI) {
-			return res.status(403).json('not-allowed');
-		} else {
-			return res.redirect(nconf.get('url') + '/403');
-		}
-	} else {
-		next();
+	if (req.user) {
+		return next();
 	}
+
+	helpers.notAllowed(req, res);
 };
 
 middleware.applyCSRF = csrf();
@@ -135,23 +132,16 @@ middleware.prepareAPI = function(req, res, next) {
 };
 
 middleware.guestSearchingAllowed = function(req, res, next) {
-	if (!req.user && meta.config.allowGuestSearching !== '1') {
-		return res.redirect('/403');
+	if (!req.user && parseInt(meta.config.allowGuestSearching, 10) !== 1) {
+		return controllers.helpers.notAllowed(req, res);
 	}
 
 	next();
 };
 
 middleware.checkGlobalPrivacySettings = function(req, res, next) {
-	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
-
-	if (!callerUID && !!parseInt(meta.config.privateUserInfo, 10)) {
-		if (res.locals.isAPI) {
-			return res.status(403).json('not-allowed');
-		} else {
-			req.session.returnTo = req.url;
-			return res.redirect('/login');
-		}
+	if (!req.user && !!parseInt(meta.config.privateUserInfo, 10)) {
+		return controllers.helpers.notAllowed(req, res);
 	}
 
 	next();
@@ -162,8 +152,7 @@ middleware.checkAccountPermissions = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
 	if (callerUID === 0) {
-		req.session.returnTo = req.url;
-		return res.redirect('/login');
+		return controllers.helpers.notAllowed(req, res);
 	}
 
 	user.getUidByUserslug(req.params.userslug, function (err, uid) {
@@ -172,7 +161,7 @@ middleware.checkAccountPermissions = function(req, res, next) {
 		}
 
 		if (!uid) {
-			return res.locals.isAPI ? res.status(404).json('not-found') : res.redirect(nconf.get('relative_path') + '/404');
+			return controllers.helpers.notFound(req, res);
 		}
 
 		if (parseInt(uid, 10) === callerUID) {
@@ -180,19 +169,11 @@ middleware.checkAccountPermissions = function(req, res, next) {
 		}
 
 		user.isAdministrator(callerUID, function(err, isAdmin) {
-			if(err) {
+			if (err || isAdmin) {
 				return next(err);
 			}
 
-			if(isAdmin) {
-				return next();
-			}
-
-			if (res.locals.isAPI) {
-				res.status(403).json('not-allowed');
-			} else {
-				res.redirect(nconf.get('relative_path') + '/403');
-			}
+			controllers.helpers.notAllowed(req, res);
 		});
 	});
 };

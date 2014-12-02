@@ -1,5 +1,5 @@
 <div class="alert alert-danger">
-	<strong>[[global:404.title]]</strong>
+	<strong>{path} [[global:404.title]]</strong>
 	<!-- IF error -->
 	<p>{error}</p>
 	<!-- ELSE -->

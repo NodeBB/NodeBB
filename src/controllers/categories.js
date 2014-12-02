@@ -102,7 +102,7 @@ categoriesController.get = function(req, res, next) {
 		userPrivileges;
 
 	if (req.params.topic_index && !utils.isNumber(req.params.topic_index)) {
-		return helpers.notFound(res);
+		return helpers.notFound(req, res);
 	}
 
 	async.waterfall([
@@ -124,11 +124,11 @@ categoriesController.get = function(req, res, next) {
 		},
 		function(results, next) {
 			if (!results.exists || (results.categoryData && parseInt(results.categoryData.disabled, 10) === 1)) {
-				return helpers.notFound(res);
+				return helpers.notFound(req, res);
 			}
 
 			if (cid + '/' + req.params.slug !== results.categoryData.slug) {
-				return helpers.notFound(res);
+				return helpers.notFound(req, res);
 			}
 
 			if (!results.privileges.read) {

@@ -4,11 +4,11 @@ var nconf = require('nconf');
 
 var helpers = {};
 
-helpers.notFound = function(res) {
+helpers.notFound = function(req, res, error) {
 	if (res.locals.isAPI) {
-		res.status(404).json('not-found');
+		res.status(404).json({path: req.path.replace(/^\/api/, ''), error: error});
 	} else {
-		res.status(404).render('404');
+		res.status(404).render('404', {path: req.path, error: error});
 	}
 };
 

@@ -85,15 +85,7 @@ var async = require('async'),
 		async.parallel({
 			base: function (next) {
 				if (ephemeralGroups.indexOf(groupName) === -1) {
-					db.getObject('group:' + groupName, function(err, groupObj) {
-						if (err) {
-							next(err);
-						} else if (!groupObj) {
-							next('group-not-found');
-						} else {
-							next(err, groupObj);
-						}
-					});
+					db.getObject('group:' + groupName, next);
 				} else {
 					internals.getEphemeralGroup(groupName, options, next);
 				}
@@ -120,7 +112,7 @@ var async = require('async'),
 				});
 			}
 		}, function (err, results) {
-			if (err) {
+			if (err || !results.base) {
 				return callback(err);
 			}
 
@@ -498,7 +490,7 @@ var async = require('async'),
 
 			// If this is a hidden group, and it is now empty, delete it
 			Groups.get(groupName, {}, function(err, group) {
-				if (err) {
+				if (err || !group) {
 					return callback(err);
 				}
 

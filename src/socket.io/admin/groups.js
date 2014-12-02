@@ -20,9 +20,7 @@ Groups.delete = function(socket, groupName, callback) {
 Groups.get = function(socket, groupName, callback) {
 	groups.get(groupName, {
 		expand: true
-	}, function(err, groupObj) {
-		callback(err, groupObj || undefined);
-	});
+	}, callback);
 };
 
 Groups.join = function(socket, data, callback) {

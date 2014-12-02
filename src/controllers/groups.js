@@ -3,6 +3,7 @@
 var groups = require('../groups'),
 	async = require('async'),
 	nconf = require('nconf'),
+	helpers = require('./helpers'),
 	groupsController = {};
 
 groupsController.list = function(req, res, next) {
@@ -19,7 +20,7 @@ groupsController.list = function(req, res, next) {
 	});
 };
 
-groupsController.details = function(req, res) {
+groupsController.details = function(req, res, next) {
 	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
 	async.parallel({
 		group: function(next) {
@@ -31,11 +32,15 @@ groupsController.details = function(req, res) {
 			groups.getLatestMemberPosts(req.params.name, 10, uid, next);
 		}
 	}, function(err, results) {
-		if (!err) {
-			res.render('groups/details', results);
-		} else {
-			res.redirect(nconf.get('relative_path') + '/404');
+		if (err) {
+			return next(err);
 		}
+
+		if (!results.group) {
+			return helpers.notFound(req, res);
+		}
+
+		res.render('groups/details', results);
 	});
 };
 
