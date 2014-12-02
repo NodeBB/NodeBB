@@ -69,6 +69,55 @@ SocketPosts.reply = function(socket, data, callback) {
 	});
 };
 
+SocketPosts.getVoters = function(socket, data, callback) {
+	var pid = data.pid,
+		cid = data.cid,
+		uid = socket.uid;
+
+	async.parallel([
+		function(next) {
+			user.isAdministrator(uid, next);
+		},
+		function(next) {
+			user.isModerator(uid, cid, next);
+		}
+	], function(err, tests) {
+		if (tests[0] || tests[1]) {
+			getVoters(pid, callback);
+		}
+	})
+	
+};
+
+function getVoters(pid, callback) {
+	async.parallel({
+		upvoteUids: function(next) {
+			db.getSetMembers('pid:' + pid + ':upvote', next);
+		},
+		downvoteUids: function(next) {
+			db.getSetMembers('pid:' + pid + ':downvote', next);
+		}
+	}, function(err, results) {
+		if (err) {
+			return callback(err);
+		}
+		async.parallel({
+			upvoters: function(next) {
+				user.getMultipleUserFields(results.upvoteUids, ['username', 'userslug', 'picture'], next);
+			},
+			upvoteCount: function(next) {
+				next(null, results.upvoteUids.length);
+			},
+			downvoters: function(next) {
+				user.getMultipleUserFields(results.downvoteUids, ['username', 'userslug', 'picture'], next);
+			},
+			downvoteCount: function(next) {
+				next(null, results.downvoteUids.length);
+			}
+		}, callback);
+	});
+}
+
 SocketPosts.upvote = function(socket, data, callback) {
 	favouriteCommand(socket, 'upvote', 'voted', 'notifications:upvoted_your_post_in', data, callback);
 };
