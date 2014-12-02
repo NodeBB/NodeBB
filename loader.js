@@ -21,7 +21,6 @@ var	nconf = require('nconf'),
 
 	Loader = {
 		timesStarted: 0,
-		shutdown_queue: [],
 		js: {
 			cache: undefined,
 			map: undefined
@@ -85,12 +84,6 @@ Loader.addClusterEvents = function(callback) {
 								acpCache: Loader.css.acpCache,
 								hash: Loader.css.hash
 							});
-						}
-
-						// Kill an instance in the shutdown queue
-						var workerToKill = Loader.shutdown_queue.pop();
-						if (workerToKill) {
-							cluster.workers[workerToKill].kill();
 						}
 					break;
 					case 'restart':
@@ -269,9 +262,16 @@ function clusterWorkers() {
 }
 
 Loader.restart = function(callback) {
-	// Slate existing workers for termination -- welcome to death row.
-	Loader.shutdown_queue = Loader.shutdown_queue.concat(Object.keys(cluster.workers));
-	Loader.start();
+	console.log('[cluster] closing server');
+
+	killWorkers();
+
+	closeHandles();
+
+	server.close(function() {
+		console.log('[cluster] server closed');
+		Loader.start();
+	});
 };
 
 Loader.reload = function() {
@@ -283,16 +283,29 @@ Loader.reload = function() {
 };
 
 Loader.stop = function() {
-	Object.keys(cluster.workers).forEach(function(id) {
-		// Gracefully close workers
-		cluster.workers[id].kill();
-	});
+	killWorkers();
 
 	// Clean up the pidfile
 	fs.unlinkSync(__dirname + '/pidfile');
 
 	server.close();
 };
+
+function killWorkers() {
+	Object.keys(cluster.workers).forEach(function(id) {
+		cluster.workers[id].kill();
+	});
+}
+
+function closeHandles() {
+	for(var h in handles) {
+		var handle = handles[h];
+		if (handle) {
+			h.close();
+			delete handles[handle];
+		}
+	}
+}
 
 Loader.notifyWorkers = function (msg) {
 	Object.keys(cluster.workers).forEach(function(id) {
