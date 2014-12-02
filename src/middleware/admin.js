@@ -14,21 +14,6 @@ var app,
 		helpers: require('../controllers/helpers')
 	};
 
-
-middleware.isAdmin = function(req, res, next) {
-	if (!req.user) {
-		return controllers.helpers.notAllowed(req, res);
-	}
-
-	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
-		if (err || isAdmin) {
-			return next(err);
-		}
-
-		controllers.helpers.notAllowed(req, res);
-	});
-};
-
 middleware.buildHeader = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
 	async.parallel([

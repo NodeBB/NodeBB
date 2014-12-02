@@ -31,7 +31,7 @@ middleware.authenticate = function(req, res, next) {
 		return next();
 	}
 
-	helpers.notAllowed(req, res);
+	controllers.helpers.notAllowed(req, res);
 };
 
 middleware.applyCSRF = csrf();
@@ -175,6 +175,29 @@ middleware.checkAccountPermissions = function(req, res, next) {
 
 			controllers.helpers.notAllowed(req, res);
 		});
+	});
+};
+
+middleware.isAdmin = function(req, res, next) {
+	function render() {
+		if (res.locals.isAPI) {
+			return controllers.helpers.notAllowed(req, res);
+		}
+
+		middleware.buildHeader(req, res, function() {
+			controllers.helpers.notAllowed(req, res);
+		});
+	}
+	if (!req.user) {
+		render();
+	}
+
+	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
+		if (err || isAdmin) {
+			return next(err);
+		}
+
+		render();
 	});
 };
 

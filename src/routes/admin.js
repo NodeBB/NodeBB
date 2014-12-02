@@ -21,7 +21,7 @@ function apiRoutes(app, middleware, controllers) {
 function adminRouter(middleware, controllers) {
 	var router = express.Router();
 
-	router.use(middleware.applyCSRF);
+	router.use(middleware.admin.buildHeader);
 
 	addRoutes(router, middleware, controllers);
 
