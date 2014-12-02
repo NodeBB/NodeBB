@@ -338,9 +338,15 @@ var	async = require('async'),
 	};
 
 	User.isModerator = function(uid, cid, callback) {
+		function filterIsModerator(err, isModerator) {
+			plugins.fireHook('filter:users.isModerator', {uid: uid, cid:cid, isModerator: isModerator}, function(err, data) {
+				callback(err, data.isModerator);
+			});
+		}
+
 		if (Array.isArray(cid)) {
 			if (!parseInt(uid, 10)) {
-				return callback(null, cid.map(function() {return false;}));
+				return filterIsModerator(null, cid.map(function() {return false;}));
 			}
 			var uniqueCids = cid.filter(function(cid, index, array) {
 				return array.indexOf(cid) === index;
@@ -360,15 +366,15 @@ var	async = require('async'),
 					map[cid] = isMembers[index];
 				});
 
-				callback(null, cid.map(function(cid) {
+				filterIsModerator(null, cid.map(function(cid) {
 					return map[cid];
 				}));
 			});
 		} else {
 			if (Array.isArray(uid)) {
-				groups.isMembers(uid, 'cid:' + cid + ':privileges:mods', callback);
+				groups.isMembers(uid, 'cid:' + cid + ':privileges:mods', filterIsModerator);
 			} else {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:mods', callback);
+				groups.isMember(uid, 'cid:' + cid + ':privileges:mods', filterIsModerator);
 			}
 		}
 	};
