@@ -215,7 +215,7 @@ describe('Groups', function() {
 				if (err) return done(err);
 
 				Groups.get('foo', {}, function(err, groupObj) {
-					assert(err);
+					if (err) return done(err);
 					assert.strictEqual(undefined, groupObj);
 
 					done();
