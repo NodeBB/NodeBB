@@ -342,7 +342,12 @@ var	async = require('async'),
 			if (err) {
 				return callback(err);
 			}
+
 			plugins.fireHook('filter:user.isModerator', {uid: uid, cid:cid, isModerator: isModerator}, function(err, data) {
+				if (Array.isArray(uid) && !Array.isArray(data.isModerator) || Array.isArray(cid) && !Array.isArray(data.isModerator)) {
+					return callback(new Error('filter:user.isModerator - i/o mismatch'));
+				}
+
 				callback(err, data.isModerator);
 			});
 		}
