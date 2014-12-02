@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var	nconf = require('nconf'),
 	net = require('net'),
@@ -13,7 +13,7 @@ var	nconf = require('nconf'),
 
 	pidFilePath = __dirname + '/pidfile',
 	output = logrotate({ file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true }),
-	silent = process.env.NODE_ENV !== 'development' ? true : false,
+	silent = process.env.NODE_ENV !== 'development',
 	numProcs,
 	handles = {},
 	handleIndex = 0,
@@ -101,36 +101,24 @@ Loader.addClusterEvents = function(callback) {
 						Loader.js.map = message.map;
 						Loader.js.hash = message.hash;
 
-						otherWorkers = Object.keys(cluster.workers).filter(function(worker_id) {
-							return parseInt(worker_id, 10) !== parseInt(worker.id, 10);
-						});
-
-						otherWorkers.forEach(function(worker_id) {
-							cluster.workers[worker_id].send({
-								action: 'js-propagate',
-								cache: message.cache,
-								map: message.map,
-								hash: message.hash
-							});
-						});
+						Loader.notifyWorkers({
+							action: 'js-propagate',
+							cache: message.cache,
+							map: message.map,
+							hash: message.hash
+						}, worker.id);
 					break;
 					case 'css-propagate':
 						Loader.css.cache = message.cache;
 						Loader.css.acpCache = message.acpCache;
 						Loader.css.hash = message.hash;
 
-						otherWorkers = Object.keys(cluster.workers).filter(function(worker_id) {
-							return parseInt(worker_id, 10) !== parseInt(worker.id, 10);
-						});
-
-						otherWorkers.forEach(function(worker_id) {
-							cluster.workers[worker_id].send({
-								action: 'css-propagate',
-								cache: message.cache,
-								acpCache: message.acpCache,
-								hash: message.hash
-							});
-						});
+						Loader.notifyWorkers({
+							action: 'css-propagate',
+							cache: message.cache,
+							acpCache: message.acpCache,
+							hash: message.hash
+						}, worker.id);
 					break;
 					case 'listening':
 						if (message.primary) {
@@ -307,12 +295,14 @@ function closeHandles() {
 	}
 }
 
-Loader.notifyWorkers = function (msg) {
+Loader.notifyWorkers = function (msg, worker_id) {
+	worker_id = parseInt(worker_id, 10);
 	Object.keys(cluster.workers).forEach(function(id) {
-		cluster.workers[id].send(msg);
+		if (parseInt(id, 10) !== worker_id) {
+			cluster.workers[id].send(msg);
+		}
 	});
 };
-
 
 nconf.argv().file({
 	file: path.join(__dirname, '/config.json')
