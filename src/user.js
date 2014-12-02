@@ -339,6 +339,9 @@ var	async = require('async'),
 
 	User.isModerator = function(uid, cid, callback) {
 		function filterIsModerator(err, isModerator) {
+			if (err) {
+				return callback(err);
+			}
 			plugins.fireHook('filter:user.isModerator', {uid: uid, cid:cid, isModerator: isModerator}, function(err, data) {
 				callback(err, data.isModerator);
 			});
