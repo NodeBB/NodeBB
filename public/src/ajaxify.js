@@ -28,15 +28,12 @@ $(document).ready(function() {
 				textStatus = err.textStatus;
 
 			if (data) {
-				if (data.status === 404 || data.status === 500) {
+				if (data.status === 403 || data.status === 404 || data.status === 500) {
 					$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 					return renderTemplate(url, data.status.toString(), data.responseJSON, (new Date()).getTime(), callback);
 				} else if (data.status === 401) {
 					app.alertError('[[global:please_log_in]]');
 					return ajaxify.go('login');
-				} else if (data.status === 403) {
-					$('#content, #footer').removeClass('ajaxifying');
-					app.alertError('[[error:no-privileges]]');
 				} else if (data.status === 302) {
 					return ajaxify.go(data.responseJSON.slice(1), callback, quiet);
 				}
@@ -70,7 +67,7 @@ $(document).ready(function() {
 			if (ajaxify.isTemplateAvailable(tpl_url) && !!!templatesModule.config.force_refresh[tpl_url]) {
 				ajaxify.currentPage = url;
 
-				if (window.history && window.history.pushState && url !== '404') {
+				if (window.history && window.history.pushState) {
 					window.history[!quiet ? 'pushState' : 'replaceState']({
 						url: url + hash
 					}, url, RELATIVE_PATH + '/' + url + hash);
@@ -219,7 +216,6 @@ $(document).ready(function() {
 				cache: false,
 				success: function(data) {
 					if (!data) {
-						ajaxify.go('404');
 						return;
 					}
 

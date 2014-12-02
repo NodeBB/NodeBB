@@ -10,27 +10,22 @@ var app,
 	plugins = require('../plugins'),
 
 	controllers = {
-		api: require('../controllers/api')
+		api: require('../controllers/api'),
+		helpers: require('../controllers/helpers')
 	};
 
 
 middleware.isAdmin = function(req, res, next) {
 	if (!req.user) {
-		return res.status(404).json({
-			error: 'not-found'
-		});
+		return controllers.helpers.notAllowed(req, res);
 	}
 
 	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
-		if (err) {
+		if (err || isAdmin) {
 			return next(err);
 		}
 
-		if (!isAdmin) {
-			res.status(403).redirect(nconf.get('relative_path') + '/403');
-		} else {
-			next();
-		}
+		controllers.helpers.notAllowed(req, res);
 	});
 };
 

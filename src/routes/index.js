@@ -119,8 +119,8 @@ module.exports = function(app, middleware) {
 	app.use(middleware.maintenanceMode);
 
 	app.all(relativePath + '/api/?*', middleware.prepareAPI);
-	app.all(relativePath + '/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
-	app.all(relativePath + '/admin/?*', middleware.ensureLoggedIn, middleware.admin.isAdmin);
+	app.all(relativePath + '/api/admin/?*', middleware.admin.isAdmin, middleware.prepareAPI);
+	app.all(relativePath + '/admin/?*', middleware.ensureLoggedIn, middleware.buildHeader, middleware.admin.isAdmin);
 
 	adminRoutes(router, middleware, controllers);
 	metaRoutes(router, middleware, controllers);

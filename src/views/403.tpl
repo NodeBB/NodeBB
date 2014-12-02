@@ -5,4 +5,8 @@
 	<!-- ELSE -->
 	<p>[[global:403.message]]</p>
 	<!-- ENDIF error -->
+
+	<!-- IF !loggedIn -->
+	<p>[[global:403.login]]</p>
+	<!-- ENDIF !loggedIn -->
 </div>
