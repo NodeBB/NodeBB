@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 10, 29, 22);
+	latestSchema = Date.UTC(2014, 11, 2);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -352,6 +352,41 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/11/29] Updating config.json to new format skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 11, 2);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/12/2] Removing register user fields');
+
+				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
+					if (err) {
+						return next(err);
+					}
+					var fieldsToDelete = [
+						'password-confirm',
+						'recaptcha_challenge_field',
+						'_csrf',
+						'recaptcha_response_field',
+						'referrer'
+					];
+
+					async.eachLimit(uids, 50, function(uid, next) {
+						async.each(fieldsToDelete, function(field, next) {
+							db.deleteObjectField('user:' + uid, field, next);
+						}, next);
+					}, function(err) {
+						if (err) {
+							winston.error('[2014/12/2] Error encountered while deleting user fields');
+							return next(err);
+						}
+						winston.info('[2014/12/2] Removing register user fields done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2014/12/2] Removing register user fields skipped');
 				next();
 			}
 		}
