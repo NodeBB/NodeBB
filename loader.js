@@ -169,13 +169,13 @@ function forkWorker(index, isPrimary) {
 		return console.log('[cluster] invalid port for worker : ' + index + ' ports: ' + ports.length);
 	}
 
+	process.env.isPrimary = isPrimary;
+	process.env.isCluster = true;
+	process.env.port = ports[index];
+
 	var worker = fork('app.js', [], {
 		silent: silent,
-		env: {
-			isPrimary: isPrimary,
-			isCluster: true,
-			port: ports[index]
-		}
+		env: process.env
 	});
 
 	worker.index = index;
