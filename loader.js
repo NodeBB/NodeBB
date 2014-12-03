@@ -1,7 +1,6 @@
 'use strict';
 
 var	nconf = require('nconf'),
-	net = require('net'),
 	fs = require('fs'),
 	url = require('url'),
 	path = require('path'),
@@ -16,7 +15,6 @@ var	nconf = require('nconf'),
 	output = logrotate({ file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true }),
 	silent = process.env.NODE_ENV !== 'development',
 	numProcs,
-
 	workers = [],
 
 	Loader = {
@@ -153,6 +151,7 @@ Loader.addWorkerEvents = function(worker) {
 };
 
 Loader.start = function(callback) {
+	numProcs = getPorts().length;
 	console.log('Clustering enabled: Spinning up ' + numProcs + ' process(es).\n');
 
 	for (var x=0; x<numProcs; ++x) {
@@ -165,15 +164,18 @@ Loader.start = function(callback) {
 };
 
 function forkWorker(index, isPrimary) {
-	var urlObject = url.parse(nconf.get('url'));
-	var port = urlObject.port || nconf.get('port') || nconf.get('PORT') || 4567;
+	var ports = getPorts();
+
+	if(!ports[index]) {
+		return console.log('[cluster] invalid port for worker : ' + index + ' ports: ' + ports.length);
+	}
 
 	var worker = fork('app.js', [], {
 		silent: silent,
 		env: {
 			isPrimary: isPrimary,
 			isCluster: true,
-			port: parseInt(port, 10) + index
+			port: ports[index]
 		}
 	});
 
@@ -190,6 +192,15 @@ function forkWorker(index, isPrimary) {
 		worker.stdout.pipe(output);
 		worker.stderr.pipe(output);
 	}
+}
+
+function getPorts() {
+	var urlObject = url.parse(nconf.get('url'));
+	var port = nconf.get('port') || nconf.get('PORT') || urlObject.port || 4567;
+	if (!Array.isArray(port)) {
+		port = [port];
+	}
+	return port;
 }
 
 Loader.restart = function(callback) {
@@ -232,9 +243,6 @@ Loader.notifyWorkers = function (msg, worker_pid) {
 nconf.argv().file({
 	file: path.join(__dirname, '/config.json')
 });
-
-numProcs = nconf.get('cluster') || 1;
-numProcs = (numProcs === true) ? require('os').cpus().length : numProcs;
 
 if (nconf.get('daemon') !== false) {
 	if (fs.existsSync(pidFilePath)) {
