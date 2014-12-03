@@ -9,7 +9,6 @@ var path = require('path'),
 	server,
 	winston = require('winston'),
 	async = require('async'),
-	cluster = require('cluster'),
 
 	emailer = require('./emailer'),
 	meta = require('./meta'),
@@ -82,11 +81,7 @@ if(nconf.get('ssl')) {
 		console.log(err.stack);
 		if (err.code === 'EADDRINUSE') {
 			winston.error('NodeBB address in use, exiting...');
-			if (cluster.isWorker) {
-				cluster.worker.kill();
-			} else {
-				process.exit(0);
-			}
+			process.exit(0);
 		} else {
 			throw err;
 		}
@@ -103,9 +98,7 @@ if(nconf.get('ssl')) {
 		logger.init(app);
 
 		var	bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
-		if (cluster.isWorker) {
-			port = 0;
-		}
+
 		server.listen(port, nconf.get('bind_address'), function(err) {
 			if (err) {
 				winston.info('NodeBB was unable to listen on: ' + bind_address);
@@ -117,21 +110,12 @@ if(nconf.get('ssl')) {
 				process.send({
 					action: 'listening',
 					bind_address: bind_address,
-					primary: process.env.handle_jobs === 'true'
+					primary: nconf.get('isPrimary') === 'true'
 				});
 			}
 
 			callback();
 		});
 	};
-
-	process.on('message', function(message, connection) {
-		if (!message || message.action !== 'sticky-session:connection') {
-			return;
-		}
-
-		process.send({action: 'sticky-session:accept', handleIndex: message.handleIndex});
-		server.emit('connection', connection);
-	});
 
 }(WebServer));
