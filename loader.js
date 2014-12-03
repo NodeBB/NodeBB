@@ -255,7 +255,10 @@ if (nconf.get('daemon') !== false) {
 		}
 	}
 
-	require('daemon')();
+	require('daemon')({
+		stdout: process.stdout,
+		stderr: process.stderr
+	});
 
 	fs.writeFile(__dirname + '/pidfile', process.pid);
 }
