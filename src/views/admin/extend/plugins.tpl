@@ -6,6 +6,7 @@
 				<ul>
 					<!-- BEGIN plugins -->
 					<!-- IF plugins.installed -->
+					<!-- IF !plugins.error -->
 					<li data-plugin-id="{plugins.id}" data-version="{plugins.version}" class="clearfix">
 						<div class="pull-right">
 							<button data-action="toggleActive" class="btn <!-- IF plugins.active --> btn-warning<!-- ELSE --> btn-success<!-- ENDIF plugins.active -->"><i class="fa fa-power-off"></i> <!-- IF plugins.active -->Deactivate<!-- ELSE -->Activate<!-- ENDIF plugins.active --></button>
@@ -26,6 +27,21 @@
 						<p>For more information: <a href="{plugins.url}">{plugins.url}</a></p>
 						<!-- ENDIF plugins.url -->
 					</li>
+					<!-- ENDIF !plugins.error -->
+					<!-- IF plugins.error -->
+					<li data-plugin-id="{plugins.id}" class="clearfix">
+						<div class="pull-right">
+							<button class="btn btn-default disabled"><i class="fa fa-exclamation-triangle"></i> Unknown</button>
+
+							<button data-action="toggleInstall" data-installed="1" class="btn btn-danger"><i class="fa fa-trash-o"></i> Uninstall</button>
+						</div>
+
+						<h2><strong>{plugins.id}</strong></h2>
+						<p>
+							The state of this plugin could not be determined, possibly due to a misconfiguration error.
+						</p>
+					</li>
+					<!-- ENDIF plugins.error -->
 					<!-- ENDIF plugins.installed -->
 					<!-- END plugins -->
 				</ul>

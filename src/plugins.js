@@ -591,6 +591,7 @@ var fs = require('fs'),
 				plugins[i].id = plugins[i].name;
 				plugins[i].installed = false;
 				plugins[i].active = false;
+				plugins[i].error = false;
 				plugins[i].url = plugins[i].repository ? plugins[i].repository.url : '';
 				plugins[i].latest = getLatestVersion(plugins[i].versions);
 				pluginMap[plugins[i].name] = plugins[i];
@@ -602,6 +603,13 @@ var fs = require('fs'),
 				}
 
 				async.each(installedPlugins, function(plugin, next) {
+					// If it errored out because a package.json or plugin.json couldn't be read, no need to do this stuff
+					if (plugin.error) {
+						pluginMap[plugin.id].installed = true;
+						pluginMap[plugin.id].error = true;
+						return next();
+					}
+
 					pluginMap[plugin.id] = pluginMap[plugin.id] || {};
 					pluginMap[plugin.id].id = pluginMap[plugin.id].id || plugin.id;
 					pluginMap[plugin.id].name = plugin.name || pluginMap[plugin.id].name;
@@ -703,14 +711,20 @@ var fs = require('fs'),
 							}, next);
 						},
 						function(results, next) {
-							var packageInfo, pluginInfo;
+							var packageName = path.basename(file),
+								packageInfo, pluginInfo;
 
 							try {
 								packageInfo = JSON.parse(results.packageJSON);
 								pluginInfo = JSON.parse(results.pluginJSON);
 							} catch (err) {
-								winston.warn("Plugin: " + file + " is corrupted or invalid. Please check package.json and plugin.json for errors.");
-								return next(err, null);
+								winston.warn("Plugin `" + packageName + "` is corrupted or invalid. Please check either package.json or plugin.json for errors.");
+								return next(null, {
+									id: packageName,
+									installed: true,
+									error: true,
+									active: null
+								});
 							}
 
 							Plugins.isActive(packageInfo.name, function(err, active) {
