@@ -709,7 +709,7 @@ var fs = require('fs'),
 								packageInfo = JSON.parse(results.packageJSON);
 								pluginInfo = JSON.parse(results.pluginJSON);
 							} catch (err) {
-								winston.warn("Plugin: " + file + " is corrupted or invalid. Please check plugin.json for errors.");
+								winston.warn("Plugin: " + file + " is corrupted or invalid. Please check package.json and plugin.json for errors.");
 								return next(err, null);
 							}
 
