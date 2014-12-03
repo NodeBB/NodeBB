@@ -37,7 +37,7 @@ module.exports = function(User) {
 				}
 			}
 
-			uids = uids.slice(0, 10)
+			uids = uids.slice(0, 20)
 				.sort(function(a, b) {
 					return a > b;
 				})
