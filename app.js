@@ -95,9 +95,21 @@ function loadConfig() {
 	nconf.defaults({
 		base_dir: __dirname,
 		themes_path: path.join(__dirname, 'node_modules'),
-		upload_url: nconf.get('relative_path') + '/uploads/',
 		views_dir: path.join(__dirname, 'public/templates')
 	});
+
+	// nconf defaults, if not set in config
+	if (!nconf.get('upload_path')) {
+		nconf.set('upload_path', '/public/uploads');
+	}
+	// Parse out the relative_url and other goodies from the configured URL
+	var urlObject = url.parse(nconf.get('url'));
+	var relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
+	nconf.set('use_port', !!urlObject.port);
+	nconf.set('relative_path', relativePath);
+	nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || 4567);
+	nconf.set('upload_url', relativePath + '/uploads/');
+
 
 	// Ensure themes_path is a full filepath
 	nconf.set('themes_path', path.resolve(__dirname, nconf.get('themes_path')));
@@ -107,14 +119,6 @@ function loadConfig() {
 
 function start() {
 	loadConfig();
-
-	// nconf defaults, if not set in config
-	if (!nconf.get('upload_path')) nconf.set('upload_path', '/public/uploads');
-	// Parse out the relative_url and other goodies from the configured URL
-	var urlObject = url.parse(nconf.get('url'));
-	nconf.set('use_port', !!urlObject.port);
-	nconf.set('relative_path', urlObject.pathname !== '/' ? urlObject.pathname : '');
-	nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || 4567);
 
 	if (!cluster.isWorker || process.env.cluster_setup === 'true') {
 		winston.info('Time: %s', (new Date()).toString());
