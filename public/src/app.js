@@ -81,10 +81,6 @@ var socket,
 				path: RELATIVE_PATH + '/socket.io'
 			};
 
-			if (utils.isAndroidBrowser()) {
-				ioParams.transports = ['xhr-polling'];
-			}
-
 			socket = io.connect(config.websocketAddress, ioParams);
 			reconnecting = false;
 
