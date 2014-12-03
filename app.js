@@ -98,6 +98,15 @@ function loadConfig() {
 		views_dir: path.join(__dirname, 'public/templates')
 	});
 
+	// Ensure themes_path is a full filepath
+	nconf.set('themes_path', path.resolve(__dirname, nconf.get('themes_path')));
+	nconf.set('core_templates_path', path.join(__dirname, 'src/views'));
+	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
+}
+
+function start() {
+	loadConfig();
+
 	// nconf defaults, if not set in config
 	if (!nconf.get('upload_path')) {
 		nconf.set('upload_path', '/public/uploads');
@@ -109,16 +118,6 @@ function loadConfig() {
 	nconf.set('relative_path', relativePath);
 	nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || 4567);
 	nconf.set('upload_url', relativePath + '/uploads/');
-
-
-	// Ensure themes_path is a full filepath
-	nconf.set('themes_path', path.resolve(__dirname, nconf.get('themes_path')));
-	nconf.set('core_templates_path', path.join(__dirname, 'src/views'));
-	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
-}
-
-function start() {
-	loadConfig();
 
 	if (!cluster.isWorker || process.env.cluster_setup === 'true') {
 		winston.info('Time: %s', (new Date()).toString());
