@@ -30,7 +30,6 @@ var	nconf = require('nconf'),
 	};
 
 Loader.init = function(callback) {
-
 	if (silent) {
 		console.log = function(value) {
 			output.write(value + '\n');
@@ -186,9 +185,8 @@ function forkWorker(index, isPrimary) {
 
 	Loader.addWorkerEvents(worker);
 
-	var output = logrotate({ file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true });
-
 	if (silent) {
+		var output = logrotate({ file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true });
 		worker.stdout.pipe(output);
 		worker.stderr.pipe(output);
 	}
