@@ -7,6 +7,6 @@
 	<!-- ENDIF error -->
 
 	<!-- IF !loggedIn -->
-	<p>[[global:403.login]]</p>
+	<p>[[global:403.login, {relative_path}]]</p>
 	<!-- ENDIF !loggedIn -->
 </div>
