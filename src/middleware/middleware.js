@@ -36,7 +36,7 @@ middleware.authenticate = function(req, res, next) {
 
 middleware.applyCSRF = csrf();
 
-middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn();
+middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login');
 
 middleware.updateLastOnlineTime = function(req, res, next) {
 	if (req.user) {
@@ -189,7 +189,7 @@ middleware.isAdmin = function(req, res, next) {
 		});
 	}
 	if (!req.user) {
-		render();
+		return render();
 	}
 
 	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
