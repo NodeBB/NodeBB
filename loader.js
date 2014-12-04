@@ -80,8 +80,6 @@ Loader.addWorkerEvents = function(worker) {
 
 	worker.on('message', function(message) {
 		if (message && typeof message === 'object' && message.action) {
-			var otherWorkers;
-
 			switch (message.action) {
 				case 'ready':
 					if (Loader.js.cache) {
