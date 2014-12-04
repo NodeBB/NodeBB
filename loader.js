@@ -132,11 +132,6 @@ Loader.addWorkerEvents = function(worker) {
 						hash: message.hash
 					}, worker.pid);
 				break;
-				case 'listening':
-					if (message.primary) {
-						Loader.primaryWorker = parseInt(worker.pid, 10);
-					}
-				break;
 				case 'config:update':
 					Loader.notifyWorkers(message);
 				break;

@@ -106,13 +106,6 @@ if(nconf.get('ssl')) {
 			}
 
 			winston.info('NodeBB is now listening on: ' + bind_address);
-			if (process.send) {
-				process.send({
-					action: 'listening',
-					bind_address: bind_address,
-					primary: nconf.get('isPrimary') === 'true'
-				});
-			}
 
 			callback();
 		});
