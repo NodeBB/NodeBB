@@ -94,6 +94,8 @@ if(nconf.get('ssl')) {
 		emitter.emit('nodebb:ready');
 	});
 
+	server.setTimeout(10000);
+
 	module.exports.listen = function(callback) {
 		logger.init(app);
 
