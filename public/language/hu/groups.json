@@ -1,8 +1,8 @@
 {
-    "groups": "Groups",
-    "view_group": "View Group",
-    "details.title": "Group Details",
-    "details.members": "Member List",
-    "details.has_no_posts": "This group's members have not made any posts.",
-    "details.latest_posts": "Latest Posts"
+    "groups": "Csoportok",
+    "view_group": "Csoport megtekintés",
+    "details.title": "Csoport részletek",
+    "details.members": "Felhasználók",
+    "details.has_no_posts": "A csoport felhasználói nem tettek még közzé bejegyzést.",
+    "details.latest_posts": "Legújabb bejegyzések"
 }

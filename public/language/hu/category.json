@@ -1,8 +1,8 @@
 {
-    "new_topic_button": "Új Topik",
-    "no_topics": "<strong>Még nincs nyitva egy téma sem ebben a kategóriában.</strong>Miért nem hozol létre egyet?",
-    "browsing": "jelenlévők",
-    "no_replies": "Senki sem válaszolt még",
-    "share_this_category": "Hozzászólás megosztása",
-    "ignore": "Ignore"
+    "new_topic_button": "Új témakör",
+    "no_topics": "<strong>Nincs nyitva egy téma sem ebben a kategóriában.</strong>Hozzunk létre egyet.",
+    "browsing": "böngészés",
+    "no_replies": "Nem érkezett válasz",
+    "share_this_category": "Kategória megosztása",
+    "ignore": "Figyelmen kívül hagyás"
 }

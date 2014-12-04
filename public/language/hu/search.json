@@ -1,4 +1,4 @@
 {
-    "results_matching": "%1 result(s) matching \"%2\", (%3 seconds)",
-    "no-matches": "No posts found"
+    "results_matching": "%1 eredmény(ek) erre \"%2\" (%3 másodperc alatt)",
+    "no-matches": "Nincs bejegyzés"
 }

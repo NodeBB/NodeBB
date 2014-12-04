@@ -1,6 +1,6 @@
 {
-    "register": "Regisztrálás",
-    "help.email": "Az e-mail címed rejtve lesz a profilodban, míg meg nem változtatod.",
+    "register": "Regisztráció",
+    "help.email": "Az e-mail cím nem lesz közzétéve.",
     "help.username_restrictions": "Egyedi felhasználói név %1 és %2 karakterek között. A többiek megemlíthetnek az alábbi módon @<span id='yourUsername'>nicknév</span>.",
     "help.minimum_password_length": "A jelszónak legalább %1 karakter hosszúnak kell lennie.",
     "email_address": "E-mail cím",
