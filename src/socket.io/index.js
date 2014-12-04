@@ -65,7 +65,7 @@ function onConnect(socket) {
 
 		async.parallel({
 			user: function(next) {
-				user.getUserFields(socket.uid, ['username', 'userslug', 'picture', 'status'], next);
+				user.getUserFields(socket.uid, ['username', 'userslug', 'picture', 'status', 'email:confirmed'], next);
 			},
 			isAdmin: function(next) {
 				user.isAdministrator(socket.uid, next);
@@ -74,13 +74,10 @@ function onConnect(socket) {
 			if (err || !userData.user) {
 				return;
 			}
-			socket.emit('event:connect', {
-				username: userData.user.username,
-				userslug: userData.user.userslug,
-				picture: userData.user.picture,
-				isAdmin: userData.isAdmin,
-				uid: socket.uid
-			});
+			userData.user.uid = socket.uid;
+			userData.user.isAdmin = userData.isAdmin;
+			userData.user['email:confirmed'] = parseInt(userData.user['email:confirmed'], 10) === 1;
+			socket.emit('event:connect', userData.user);
 
 			socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: userData.user.status});
 		});

@@ -85,11 +85,14 @@ var socket,
 			reconnecting = false;
 
 			socket.on('event:connect', function (data) {
+				// TODO : deprecate in 0.7.0, use app.user
 				app.username = data.username;
 				app.userslug = data.userslug;
 				app.picture = data.picture;
 				app.uid = data.uid;
 				app.isAdmin = data.isAdmin;
+
+				app.user = data;
 
 				templates.setGlobal('loggedIn', parseInt(data.uid, 10) !== 0);
 

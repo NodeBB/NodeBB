@@ -463,7 +463,7 @@ define('composer', dependencies, function(taskbar, controls, uploads, formatting
 
 	function showEmailConfirmAlert(err) {
 		app.alert({
-			id: 'email_confirm',
+			alert_id: 'email_confirm',
 			title: '[[global:alert.error]]',
 			message: err.message,
 			type: 'danger',
