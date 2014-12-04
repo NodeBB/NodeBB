@@ -20,21 +20,10 @@ var	nconf = require('nconf'),
 	};
 
 SocketMeta.reconnected = function(socket, data, callback) {
-	var	uid = socket.uid,
-		sessionID = socket.id;
-
-	if (uid) {
-		topics.pushUnreadCount(uid);
-		user.notifications.pushCount(uid);
+	if (socket.uid) {
+		topics.pushUnreadCount(socket.uid);
+		user.notifications.pushCount(socket.uid);
 	}
-
-	/*if (process.env.NODE_ENV === 'development') {
-		if (uid) {
-			winston.info('[socket] uid ' + uid + ' (' + sessionID + ') has successfully reconnected.');
-		} else {
-			winston.info('[socket] An anonymous user (' + sessionID + ') has successfully reconnected.');
-		}
-	}*/
 };
 
 emitter.on('nodebb:ready', function() {
