@@ -102,9 +102,7 @@ Loader.addWorkerEvents = function(worker) {
 				break;
 				case 'restart':
 					console.log('[cluster] Restarting...');
-					Loader.restart(function(err) {
-						console.log('[cluster] Restarting...');
-					});
+					Loader.restart();
 				break;
 				case 'reload':
 					console.log('[cluster] Reloading...');
@@ -199,7 +197,7 @@ function getPorts() {
 	return port;
 }
 
-Loader.restart = function(callback) {
+Loader.restart = function() {
 	killWorkers();
 
 	Loader.start();
