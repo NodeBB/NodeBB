@@ -250,7 +250,7 @@ Sockets.reqFromSocket = function(socket) {
 		referer = headers.referer || '';
 
 	return {
-		ip: socket.ip,
+		ip: headers['x-forwarded-for'] || socket.ip,
 		host: host,
 		protocol: socket.request.connection.encrypted ? 'https' : 'http',
 		secure: !!socket.request.connection.encrypted,

@@ -2,6 +2,7 @@
 
 var async = require('async'),
 
+	meta = require('../meta'),
 	db = require('../database'),
 	plugins = require('../plugins'),
 	user = require('../user'),
@@ -44,6 +45,10 @@ module.exports = function(Posts) {
 
 				if (data.toPid) {
 					postData.toPid = data.toPid;
+				}
+
+				if (data.ip && parseInt(meta.config.trackIpPerPost, 10) === 1) {
+					postData.ip = data.ip;
 				}
 
 				plugins.fireHook('filter:post.save', postData, next);
