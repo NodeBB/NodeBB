@@ -59,7 +59,7 @@ var socket,
 			$(window).trigger('action:reconnected');
 
 			setTimeout(function() {
-				reconnectEl.removeClass('active').addClass("hide");
+				reconnectEl.removeClass('active').addClass('hide');
 			}, 3000);
 		}
 	}
@@ -72,7 +72,7 @@ var socket,
 		if(socket) {
 			socket.disconnect();
 			setTimeout(function() {
-				socket.socket.connect();
+				socket.connect();
 			}, 200);
 		} else {
 			var ioParams = {
