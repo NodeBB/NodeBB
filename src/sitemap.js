@@ -9,6 +9,7 @@ var path = require('path'),
 	categories = require('./categories'),
 	topics = require('./topics'),
 	privileges = require('./privileges'),
+	meta = require('./meta'),
 	utils = require('../public/src/utils'),
 	sitemap = {
 		obj: undefined,
@@ -56,7 +57,7 @@ var path = require('path'),
 
 					async.waterfall([
 						function(next) {
-							db.getSortedSetRevRange('topics:recent', 0, -1, next);
+							db.getSortedSetRevRange('topics:recent', 0, parseInt(meta.config.sitemapTopics, 10) || -1, next);
 						},
 						function(tids, next) {
 							privileges.topics.filter('read', tids, 0, next);
