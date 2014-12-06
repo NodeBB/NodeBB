@@ -86,7 +86,7 @@ SocketPosts.getVoters = function(socket, data, callback) {
 			getVoters(pid, callback);
 		}
 	})
-	
+
 };
 
 function getVoters(pid, callback) {
@@ -422,7 +422,7 @@ SocketPosts.loadMoreFavourites = function(socket, data, callback) {
 	var start = parseInt(data.after, 10),
 		end = start + 9;
 
-	posts.getPostsFromSet('uid:' + socket.uid + ':posts', socket.uid, start, end, callback);
+	posts.getPostsFromSet('uid:' + socket.uid + ':favourites', socket.uid, start, end, callback);
 };
 
 SocketPosts.loadMoreUserPosts = function(socket, data, callback) {
