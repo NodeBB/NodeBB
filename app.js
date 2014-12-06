@@ -150,8 +150,6 @@ function start() {
 				plugins = require('./src/plugins'),
 				upgrade = require('./src/upgrade');
 
-			meta.themes.setupPaths();
-
 			templates.setGlobal('relative_path', nconf.get('relative_path'));
 
 			upgrade.check(function(schema_ok) {
@@ -159,12 +157,13 @@ function start() {
 					webserver.init();
 					sockets.init(webserver.server);
 
-					if (nconf.get('isPrimary')) {
+					if (nconf.get('isPrimary') === 'true') {
 						require('./src/notifications').init();
 						require('./src/user').startJobs();
 					}
 
 					async.waterfall([
+						async.apply(meta.themes.setupPaths),
 						async.apply(plugins.ready),
 						async.apply(meta.templates.compile),
 						async.apply(webserver.listen)

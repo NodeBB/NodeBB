@@ -108,7 +108,7 @@ module.exports = function(Meta) {
 		}
 	};
 
-	Meta.themes.setupPaths = function() {
+	Meta.themes.setupPaths = function(callback) {
 		async.parallel({
 			themesData: Meta.themes.get,
 			currentThemeId: function(next) {
@@ -116,7 +116,7 @@ module.exports = function(Meta) {
 			}
 		}, function(err, data) {
 			if (err) {
-				return winston.error(err.stack);
+				return callback(err);
 			}
 
 			var themeId = data.currentThemeId || 'nodebb-theme-vanilla';
@@ -125,12 +125,16 @@ module.exports = function(Meta) {
 					return themeObj.id === themeId;
 				})[0];
 
-
 			if (process.env.NODE_ENV === 'development') {
 				winston.info('[themes] Using theme ' + themeId);
 			}
 
+			if (!themeObj) {
+				return callback(new Error('[[error:theme-not-found]]'));
+			}
+
 			Meta.themes.setPath(themeObj);
+			callback();
 		});
 	};
 
