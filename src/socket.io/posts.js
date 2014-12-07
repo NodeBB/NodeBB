@@ -70,23 +70,29 @@ SocketPosts.reply = function(socket, data, callback) {
 };
 
 SocketPosts.getVoters = function(socket, data, callback) {
-	var pid = data.pid,
-		cid = data.cid,
-		uid = socket.uid;
+	if (!data || !data.pid || !data.cid) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
 
-	async.parallel([
-		function(next) {
-			user.isAdministrator(uid, next);
+	var pid = data.pid,
+		cid = data.cid;
+
+	async.parallel({
+		isAdmin: function(next) {
+			user.isAdministrator(socket.uid, next);
 		},
-		function(next) {
-			user.isModerator(uid, cid, next);
+		isModerator: function(next) {
+			user.isModerator(socket.uid, cid, next);
 		}
-	], function(err, tests) {
-		if (tests[0] || tests[1]) {
+	}, function(err, tests) {
+		if (err) {
+			return callback(err);
+		}
+
+		if (tests.isAdmin || tests.isModerator) {
 			getVoters(pid, callback);
 		}
-	})
-
+	});
 };
 
 function getVoters(pid, callback) {
