@@ -19,10 +19,10 @@ middleware.isAdmin = function(req, res, next) {
 	winston.warn('[middleware.admin.isAdmin] deprecation warning, no need to use this from plugins!');
 
 	if (!req.user) {
-		controllers.helpers.notAllowed(req, res);
+		return controllers.helpers.notAllowed(req, res);
 	}
 
-	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
+	user.isAdministrator(req.user.uid, function (err, isAdmin) {
 		if (err || isAdmin) {
 			return next(err);
 		}
