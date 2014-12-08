@@ -1,4 +1,20 @@
 <div class="plugins">
+	<div class="col-lg-3">
+		<div class="panel panel-default">
+			<div class="panel-heading">Interested in writing plugins for NodeBB?</div>
+			<div class="panel-body">
+				<p>
+					Full documentation regarding plugin authoring can be found in the <a target="_blank" href="https://docs.nodebb.org/en/latest/plugins/create.html">NodeBB Wiki</a>.
+				</p>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">Plugin Search</div>
+			<div class="panel-body">
+				<input class="form-control" type="text" id="plugin-search" placeholder="Search for plugin..."/>
+			</div>
+		</div>
+	</div>
 	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-code-fork"></i> Installed Plugins</div>
@@ -75,24 +91,6 @@
 					<!-- ENDIF !plugins.installed -->
 					<!-- END plugins -->
 				</ul>
-			</div>
-		</div>
-	</div>
-
-	<div class="col-lg-3">
-		<div class="panel panel-default">
-			<div class="panel-heading">Plugin Search</div>
-			<div class="panel-body">
-				<input class="form-control" type="text" id="plugin-search" placeholder="Search for plugin..."/>
-			</div>
-		</div>
-
-		<div class="panel panel-default">
-			<div class="panel-heading">Interested in writing plugins for NodeBB?</div>
-			<div class="panel-body">
-				<p>
-					Full documentation regarding plugin authoring can be found in the <a target="_blank" href="https://docs.nodebb.org/en/latest/plugins/create.html">NodeBB Wiki</a>.
-				</p>
 			</div>
 		</div>
 	</div>
