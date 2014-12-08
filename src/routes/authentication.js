@@ -209,15 +209,22 @@
 		var uid;
 		async.waterfall([
 			function(next) {
+				if (!userData.email) {
+					return next(new Error('[[error:invalid-email]]'));
+				}
+
 				if (!userData.username || userData.username.length < meta.config.minimumUsernameLength) {
 					return next(new Error('[[error:username-too-short]]'));
 				}
-				next();
-			},
-			function(next) {
-				if (!userData.username || userData.username.length > meta.config.maximumUsernameLength) {
+
+				if (userData.username.length > meta.config.maximumUsernameLength) {
 					return next(new Error('[[error:username-too-long'));
 				}
+
+				if (!userData.password || userData.password.length < meta.config.minimumPasswordLength) {
+					return next(new Error('[[user:change_password_error_length]]'));
+				}
+
 				next();
 			},
 			function(next) {

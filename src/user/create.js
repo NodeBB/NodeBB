@@ -112,7 +112,7 @@ module.exports = function(User) {
 							groups.join('registered-users', userData.uid, next);
 						},
 						function(next) {
-							if (userData.email !== undefined) {
+							if (userData.email) {
 								db.setObjectField('email:uid', userData.email.toLowerCase(), userData.uid, next);
 								if (parseInt(userData.uid, 10) !== 1 && parseInt(meta.config.requireEmailConfirmation, 10) === 1) {
 									User.email.verify(userData.uid, userData.email);
