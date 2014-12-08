@@ -19,22 +19,6 @@ var meta = require('../meta'),
 
 var middleware = {};
 
-function routeCurrentTheme(app, themeId, themesData) {
-	themeId = (themeId || 'nodebb-theme-vanilla');
-
-	var	themeObj = (function(id) {
-		return themesData.filter(function(themeObj) {
-			return themeObj.id === id;
-		})[0];
-	})(themeId);
-
-	if (process.env.NODE_ENV === 'development') {
-		winston.info('[themes] Using theme ' + themeId);
-	}
-
-	meta.themes.setPath(themeObj);
-}
-
 function setupFavicon(app) {
 	var faviconPath = path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico');
 	if (fs.existsSync(faviconPath)) {
@@ -42,13 +26,10 @@ function setupFavicon(app) {
 	}
 }
 
-module.exports = function(app, data) {
-	var relativePath, themesPath;
+module.exports = function(app) {
+	var relativePath = nconf.get('relative_path');
 
 	middleware = require('./middleware')(app);
-
-	relativePath = nconf.get('relative_path');
-	themesPath = nconf.get('themes_path');
 
 	app.engine('tpl', templates.__express);
 	app.set('view engine', 'tpl');
@@ -72,7 +53,7 @@ module.exports = function(app, data) {
 		maxAge: 1000 * 60 * 60 * 24 * parseInt(meta.config.loginDays || 14, 10)
 	};
 
-	if(meta.config.cookieDomain) {
+	if (meta.config.cookieDomain) {
 		cookie.domain = meta.config.cookieDomain;
 	}
 
@@ -98,7 +79,6 @@ module.exports = function(app, data) {
 
 	app.use(middleware.processRender);
 	auth.initialize(app, middleware);
-	routeCurrentTheme(app, data.currentThemeId, data.themesData);
 
 	return middleware;
 };

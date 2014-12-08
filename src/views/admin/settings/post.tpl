@@ -43,8 +43,35 @@
 			</div>
 			<div class="checkbox">
 				<label>
+					<input type="checkbox" data-field="trackIpPerPost"> <strong>Track IP Address for each post</strong>
+				</label>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="panel panel-default">
+	<div class="panel-heading">Signature Settings</div>
+	<div class="panel-body">
+		<form>
+			<div class="checkbox">
+				<label>
 					<input type="checkbox" data-field="disableSignatures"> <strong>Disable signatures</strong>
 				</label>
+			</div>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" data-field="signatures:disableLinks"> <strong>Disable links in signatures</strong>
+				</label>
+			</div>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" data-field="signatures:disableImages"> <strong>Disable images in signatures</strong>
+				</label>
+			</div>
+			<div class="form-group">
+				<label>Maximum Signature Length</label>
+				<input type="text" class="form-control" value="255" data-field="maximumSignatureLength">
 			</div>
 		</form>
 	</div>

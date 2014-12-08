@@ -7,7 +7,6 @@ var mkdirp = require('mkdirp'),
 	path = require('path'),
 	fs = require('fs'),
 	nconf = require('nconf'),
-	cluster = require('cluster'),
 
 	emitter = require('../emitter'),
 	plugins = require('../plugins'),
@@ -16,7 +15,7 @@ var mkdirp = require('mkdirp'),
 	Templates = {};
 
 Templates.compile = function(callback) {
-	if (cluster.isWorker && process.env.cluster_setup !== 'true') {
+	if (nconf.get('isPrimary') === 'false') {
 		emitter.emit('templates:compiled');
 		if (callback) {
 			callback();
@@ -31,8 +30,8 @@ Templates.compile = function(callback) {
 		themeConfig = require(nconf.get('theme_config'));
 
 	if (themeConfig.baseTheme) {
-		var pathToBaseTheme = path.join(nconf.get('themes_path'), themeConfig.baseTheme),
-			baseTemplatesPath = require(path.join(pathToBaseTheme, 'theme.json')).templates;
+		var pathToBaseTheme = path.join(nconf.get('themes_path'), themeConfig.baseTheme);
+		baseTemplatesPath = require(path.join(pathToBaseTheme, 'theme.json')).templates;
 
 		if (!baseTemplatesPath){
 			baseTemplatesPath = path.join(pathToBaseTheme, 'templates');

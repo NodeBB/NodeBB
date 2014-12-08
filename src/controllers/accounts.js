@@ -140,7 +140,7 @@ accountsController.getAccount = function(req, res, next) {
 		}
 
 		if (!userData) {
-			return helpers.notFound(res);
+			return helpers.notFound(req, res);
 		}
 
 		async.parallel({
@@ -198,7 +198,7 @@ function getFollow(route, name, req, res, next) {
 		function(data, next) {
 			userData = data;
 			if (!userData) {
-				return helpers.notFound(res);
+				return helpers.notFound(req, res);
 			}
 			var method = name === 'following' ? 'getFollowing' : 'getFollowers';
 			user[method](userData.uid, next);
@@ -223,7 +223,7 @@ accountsController.getFavourites = function(req, res, next) {
 		}
 
 		if (!userData) {
-			return helpers.notFound(res);
+			return helpers.notFound(req, res);
 		}
 
 		if (parseInt(userData.uid, 10) !== callerUID) {
@@ -252,7 +252,7 @@ accountsController.getPosts = function(req, res, next) {
 		}
 
 		if (!userData) {
-			return helpers.notFound(res);
+			return helpers.notFound(req, res);
 		}
 		posts.getPostsFromSet('uid:' + userData.uid + ':posts', callerUID, 0, 19, function(err, userPosts) {
 			if (err) {
@@ -276,7 +276,7 @@ accountsController.getTopics = function(req, res, next) {
 		}
 
 		if (!userData) {
-			return helpers.notFound(res);
+			return helpers.notFound(req, res);
 		}
 
 		var set = 'uid:' + userData.uid + ':topics';
@@ -359,7 +359,7 @@ accountsController.accountSettings = function(req, res, next) {
 		}
 
 		if (!userData) {
-			return helpers.notFound(res);
+			return helpers.notFound(req, res);
 		}
 
 		async.parallel({
@@ -502,7 +502,7 @@ accountsController.getNotifications = function(req, res, next) {
 
 accountsController.getChats = function(req, res, next) {
 	if (parseInt(meta.config.disableChat) === 1) {
-		return helpers.notFound(res);
+		return helpers.notFound(req, res);
 	}
 	async.parallel({
 		contacts: async.apply(user.getFollowing, req.user.uid),
@@ -536,7 +536,7 @@ accountsController.getChats = function(req, res, next) {
 			async.apply(user.getUidByUserslug, req.params.userslug),
 			function(toUid, next) {
 				if (!toUid) {
-					return helpers.notFound(res);
+					return helpers.notFound(req, res);
 				}
 				async.parallel({
 					toUser: async.apply(user.getUserFields, toUid, ['uid', 'username']),

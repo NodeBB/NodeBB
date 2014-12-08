@@ -7,7 +7,6 @@ var path = require('path'),
 	rimraf = require('rimraf'),
 	mkdirp = require('mkdirp'),
 	async = require('async'),
-	cluster = require('cluster'),
 
 	plugins = require('../plugins'),
 	db = require('../database');
@@ -17,7 +16,7 @@ module.exports = function(Meta) {
 	Meta.sounds = {};
 
 	Meta.sounds.init = function(callback) {
-		if (cluster.isWorker && process.env.cluster_setup === 'true') {
+		if (nconf.get('isPrimary') === 'true') {
 			var	soundsPath = path.join(__dirname, '../../public/sounds');
 
 			plugins.fireHook('filter:sounds.get', [], function(err, filePaths) {

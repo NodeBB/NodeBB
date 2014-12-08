@@ -24,18 +24,16 @@ $(document).ready(function() {
 
 
 		function onAjaxError(err, url, callback, quiet) {
-			var data = err.data, textStatus = err.textStatus;
-
-			$('#content, #footer').removeClass('ajaxifying');
+			var data = err.data,
+				textStatus = err.textStatus;
 
 			if (data) {
-				if (data.status === 404) {
-					return ajaxify.go('404');
+				if (data.status === 403 || data.status === 404 || data.status === 500) {
+					$('#footer, #content').removeClass('hide').addClass('ajaxifying');
+					return renderTemplate(url, data.status.toString(), data.responseJSON, (new Date()).getTime(), callback);
 				} else if (data.status === 401) {
 					app.alertError('[[global:please_log_in]]');
 					return ajaxify.go('login');
-				} else if (data.status === 403) {
-					app.alertError('[[error:no-privileges]]');
 				} else if (data.status === 302) {
 					return ajaxify.go(data.responseJSON.slice(1), callback, quiet);
 				}
@@ -56,10 +54,8 @@ $(document).ready(function() {
 				apiXHR.abort();
 			}
 
-			// Remove trailing slash
-			url = url.replace(/\/$/, "");
-
-			url = ajaxify.removeRelativePath(url);
+			// Remove relative path and trailing slash
+			url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
 
 			var tpl_url = ajaxify.getTemplateMapping(url);
 
@@ -71,7 +67,7 @@ $(document).ready(function() {
 			if (ajaxify.isTemplateAvailable(tpl_url) && !!!templatesModule.config.force_refresh[tpl_url]) {
 				ajaxify.currentPage = url;
 
-				if (window.history && window.history.pushState && url !== '404') {
+				if (window.history && window.history.pushState) {
 					window.history[!quiet ? 'pushState' : 'replaceState']({
 						url: url + hash
 					}, url, RELATIVE_PATH + '/' + url + hash);
@@ -80,8 +76,8 @@ $(document).ready(function() {
 				translator.load(config.defaultLang, tpl_url);
 
 				$('#footer, #content').removeClass('hide').addClass('ajaxifying');
-				var animationDuration = parseFloat($('#content').css('transition-duration')) || 0.2,
-					startTime = (new Date()).getTime();
+
+				var	startTime = (new Date()).getTime();
 
 				ajaxify.variables.flush();
 				ajaxify.loadData(url, function(err, data) {
@@ -89,37 +85,7 @@ $(document).ready(function() {
 						return onAjaxError(err, url, callback, quiet);
 					}
 
-					$(window).trigger('action:ajaxify.loadingTemplates', {});
-
-					templates.parse(tpl_url, data, function(template) {
-						translator.translate(template, function(translatedTemplate) {
-							setTimeout(function() {
-								$('#content').html(translatedTemplate);
-
-								ajaxify.variables.parse();
-
-								ajaxify.widgets.render(tpl_url, url, function() {
-									$(window).trigger('action:ajaxify.end', {url: url});
-								});
-
-								$(window).trigger('action:ajaxify.contentLoaded', {url: url});
-
-								ajaxify.loadScript(tpl_url);
-
-								if (typeof callback === 'function') {
-									callback();
-								}
-
-								app.processPage();
-
-								$('#content, #footer').removeClass('ajaxifying');
-								ajaxify.initialLoad = false;
-
-								app.refreshTitle(url);
-							}, animationDuration * 1000 - ((new Date()).getTime() - startTime));
-
-						});
-					});
+					renderTemplate(url, tpl_url, data, startTime, callback);
 
 					require(['search'], function(search) {
 						search.topicDOM.end();
@@ -131,6 +97,42 @@ $(document).ready(function() {
 
 			return false;
 		};
+
+		function renderTemplate(url, tpl_url, data, startTime, callback) {
+			var animationDuration = parseFloat($('#content').css('transition-duration')) || 0.2;
+			$(window).trigger('action:ajaxify.loadingTemplates', {});
+
+			templates.parse(tpl_url, data, function(template) {
+				translator.translate(template, function(translatedTemplate) {
+					setTimeout(function() {
+						$('#content').html(translatedTemplate);
+
+						ajaxify.variables.parse();
+
+						ajaxify.widgets.render(tpl_url, url, function() {
+							$(window).trigger('action:ajaxify.end', {url: url});
+						});
+
+						$(window).trigger('action:ajaxify.contentLoaded', {url: url});
+
+						ajaxify.loadScript(tpl_url);
+
+						if (typeof callback === 'function') {
+							callback();
+						}
+
+						app.processPage();
+
+						$('#content, #footer').removeClass('ajaxifying');
+						ajaxify.initialLoad = false;
+
+						app.refreshTitle(url);
+					}, animationDuration * 1000 - ((new Date()).getTime() - startTime));
+
+				});
+			});
+
+		}
 
 		ajaxify.removeRelativePath = function(url) {
 			if (url.indexOf(RELATIVE_PATH.slice(1)) === 0) {
@@ -214,7 +216,6 @@ $(document).ready(function() {
 				cache: false,
 				success: function(data) {
 					if (!data) {
-						ajaxify.go('404');
 						return;
 					}
 

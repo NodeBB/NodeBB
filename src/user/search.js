@@ -1,7 +1,8 @@
 
 'use strict';
 
-var db = require('../database');
+var async = require('async'),
+	db = require('../database');
 
 module.exports = function(User) {
 
@@ -9,14 +10,18 @@ module.exports = function(User) {
 		if (!query || query.length === 0) {
 			return callback(null, {timing:0, users:[]});
 		}
-		var start = process.hrtime();
 
-		var set = 'username:uid';
-		if (type === 'email') {
-			 set = 'email:uid';
+		if (type === 'ip') {
+			return searchByIP(query, callback);
 		}
 
-		db.getObject(set, function(err, hash) {
+		var start = process.hrtime();
+		var key = 'username:uid';
+		if (type === 'email') {
+			 key = 'email:uid';
+		}
+
+		db.getObject(key, function(err, hash) {
 			if (err) {
 				return callback(null, {timing: 0, users:[]});
 			}
@@ -32,7 +37,7 @@ module.exports = function(User) {
 				}
 			}
 
-			uids = uids.slice(0, 10)
+			uids = uids.slice(0, 20)
 				.sort(function(a, b) {
 					return a > b;
 				})
@@ -51,4 +56,21 @@ module.exports = function(User) {
 			});
 		});
 	};
+
+	function searchByIP(ip, callback) {
+		var start = process.hrtime();
+		async.waterfall([
+			function(next) {
+				db.getSortedSetRevRange('ip:' + ip + ':uid', 0, -1, next);
+			},
+			function(uids, next) {
+				User.getUsers(uids, next);
+			},
+			function(users, next) {
+				var diff = process.hrtime(start);
+				var timing = (diff[0] * 1e3 + diff[1] / 1e6).toFixed(1);
+				next(null, {timing: timing, users: users});
+			}
+		], callback);
+	}
 };

@@ -66,6 +66,8 @@ var async = require('async'),
 							plugins.fireHook('action:user.verify', {uid: uid, data: data});
 						} else if (plugins.hasListeners('action:email.send')) {
 							emailer.send('welcome', uid, data);
+						} else {
+							winston.warn('No emailer to send verification email!');
 						}
 					});
 				});

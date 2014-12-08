@@ -5,32 +5,29 @@ var app,
 	nconf = require('nconf'),
 	async = require('async'),
 	path = require('path'),
+	winston = require('winston'),
 	user = require('../user'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
 
 	controllers = {
-		api: require('../controllers/api')
+		api: require('../controllers/api'),
+		helpers: require('../controllers/helpers')
 	};
 
-
 middleware.isAdmin = function(req, res, next) {
+	winston.warn('[middleware.admin.isAdmin] deprecation warning, no need to use this from plugins!');
+
 	if (!req.user) {
-		return res.status(404).json({
-			error: 'not-found'
-		});
+		return controllers.helpers.notAllowed(req, res);
 	}
 
-	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
-		if (err) {
+	user.isAdministrator(req.user.uid, function (err, isAdmin) {
+		if (err || isAdmin) {
 			return next(err);
 		}
 
-		if (!isAdmin) {
-			res.status(403).redirect(nconf.get('relative_path') + '/403');
-		} else {
-			next();
-		}
+		controllers.helpers.notAllowed(req, res);
 	});
 };
 

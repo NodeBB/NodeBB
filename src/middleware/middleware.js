@@ -22,28 +22,26 @@ var app,
 	ensureLoggedIn = require('connect-ensure-login'),
 
 	controllers = {
-		api: require('./../controllers/api')
+		api: require('./../controllers/api'),
+		helpers: require('../controllers/helpers')
 	};
 
 middleware.authenticate = function(req, res, next) {
-	if(!req.user) {
-		if (res.locals.isAPI) {
-			return res.status(403).json('not-allowed');
-		} else {
-			return res.redirect(nconf.get('url') + '/403');
-		}
-	} else {
-		next();
+	if (req.user) {
+		return next();
 	}
+
+	controllers.helpers.notAllowed(req, res);
 };
 
 middleware.applyCSRF = csrf();
 
-middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn();
+middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login');
 
 middleware.updateLastOnlineTime = function(req, res, next) {
-	if(req.user) {
+	if (req.user) {
 		user.updateLastOnlineTime(req.user.uid);
+		user.updateOnlineUsers(req.user.uid);
 	}
 
 	db.sortedSetScore('ip:recent', req.ip, function(err, score) {
@@ -134,23 +132,16 @@ middleware.prepareAPI = function(req, res, next) {
 };
 
 middleware.guestSearchingAllowed = function(req, res, next) {
-	if (!req.user && meta.config.allowGuestSearching !== '1') {
-		return res.redirect('/403');
+	if (!req.user && parseInt(meta.config.allowGuestSearching, 10) !== 1) {
+		return controllers.helpers.notAllowed(req, res);
 	}
 
 	next();
 };
 
 middleware.checkGlobalPrivacySettings = function(req, res, next) {
-	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
-
-	if (!callerUID && !!parseInt(meta.config.privateUserInfo, 10)) {
-		if (res.locals.isAPI) {
-			return res.status(403).json('not-allowed');
-		} else {
-			req.session.returnTo = req.url;
-			return res.redirect('/login');
-		}
+	if (!req.user && !!parseInt(meta.config.privateUserInfo, 10)) {
+		return controllers.helpers.notAllowed(req, res);
 	}
 
 	next();
@@ -161,8 +152,7 @@ middleware.checkAccountPermissions = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
 	if (callerUID === 0) {
-		req.session.returnTo = req.url;
-		return res.redirect('/login');
+		return controllers.helpers.notAllowed(req, res);
 	}
 
 	user.getUidByUserslug(req.params.userslug, function (err, uid) {
@@ -171,7 +161,7 @@ middleware.checkAccountPermissions = function(req, res, next) {
 		}
 
 		if (!uid) {
-			return res.locals.isAPI ? res.status(404).json('not-found') : res.redirect(nconf.get('relative_path') + '/404');
+			return controllers.helpers.notFound(req, res);
 		}
 
 		if (parseInt(uid, 10) === callerUID) {
@@ -179,21 +169,88 @@ middleware.checkAccountPermissions = function(req, res, next) {
 		}
 
 		user.isAdministrator(callerUID, function(err, isAdmin) {
-			if(err) {
+			if (err || isAdmin) {
 				return next(err);
 			}
 
-			if(isAdmin) {
-				return next();
-			}
-
-			if (res.locals.isAPI) {
-				res.status(403).json('not-allowed');
-			} else {
-				res.redirect(nconf.get('relative_path') + '/403');
-			}
+			controllers.helpers.notAllowed(req, res);
 		});
 	});
+};
+
+middleware.isAdmin = function(req, res, next) {
+	function render() {
+		if (res.locals.isAPI) {
+			return controllers.helpers.notAllowed(req, res);
+		}
+
+		middleware.buildHeader(req, res, function() {
+			controllers.helpers.notAllowed(req, res);
+		});
+	}
+	if (!req.user) {
+		return render();
+	}
+
+	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
+		if (err || isAdmin) {
+			return next(err);
+		}
+
+		render();
+	});
+};
+
+middleware.buildBreadcrumbs = function(req, res, next) {
+	var breadcrumbs = [],
+		findParents = function(cid) {
+			var currentCategory;
+			async.doWhilst(function(next) {
+				categories.getCategoryFields(currentCategory ? currentCategory.parentCid : cid, ['name', 'slug', 'parentCid'], function(err, data) {
+					if (err) {
+						return next(err);
+					}
+
+					breadcrumbs.unshift({
+						text: data.name,
+						url: nconf.get('relative_path') + '/category/' + data.slug
+					});
+
+					currentCategory = data;
+					next();
+				});
+			}, function() {
+				return !!currentCategory.parentCid && currentCategory.parentCid !== '0';
+			}, function(err) {
+				if (err) {
+					winston.warn('[buildBreadcrumb] Could not build breadcrumbs: ' + err.message);
+				}
+
+				// Home breadcrumb
+				translator.translate('[[global:home]]', meta.config.defaultLang || 'en_GB', function(translated) {
+					breadcrumbs.unshift({
+						text: translated,
+						url: nconf.get('relative_path') + '/'
+					});
+
+					res.locals.breadcrumbs = breadcrumbs || [];
+					next();
+				});
+			});
+		};
+
+	if (req.params.topic_id) {
+		topics.getTopicFields(parseInt(req.params.topic_id, 10), ['cid', 'title', 'slug'], function(err, data) {
+			breadcrumbs.unshift({
+				text: data.title,
+				url: nconf.get('relative_path') + '/topic/' + data.slug
+			});
+
+			findParents(parseInt(data.cid, 10));
+		});
+	} else {
+		findParents(parseInt(req.params.category_id, 10));
+	}
 };
 
 middleware.buildHeader = function(req, res, next) {
@@ -437,6 +494,9 @@ middleware.addExpiresHeaders = function(req, res, next) {
 	if (app.enabled('cache')) {
 		res.setHeader("Cache-Control", "public, max-age=5184000");
 		res.setHeader("Expires", new Date(Date.now() + 5184000000).toUTCString());
+	} else {
+		res.setHeader("Cache-Control", "public, max-age=0");
+		res.setHeader("Expires", new Date().toUTCString());
 	}
 
 	next();

@@ -76,6 +76,7 @@ describe('Groups', function() {
 	describe('.search()', function() {
 		it('should return the "Test" group when searched for', function(done) {
 			Groups.search('test', {}, function(err, groups) {
+				if (err) return done(err);
 				assert.equal(1, groups.length);
 				assert.strictEqual('Test', groups[0].name);
 				done();
@@ -86,6 +87,7 @@ describe('Groups', function() {
 			Groups.search('hidden', {
 				showAllGroups: true
 			}, function(err, groups) {
+				if (err) return done(err);
 				assert.equal(1, groups.length);
 				assert.strictEqual('Hidden', groups[0].name);
 				done();
@@ -213,7 +215,7 @@ describe('Groups', function() {
 				if (err) return done(err);
 
 				Groups.get('foo', {}, function(err, groupObj) {
-					assert(err);
+					if (err) return done(err);
 					assert.strictEqual(undefined, groupObj);
 
 					done();

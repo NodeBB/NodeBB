@@ -104,6 +104,10 @@ Controllers.home = function(req, res, next) {
 };
 
 Controllers.search = function(req, res, next) {
+	if (!plugins.hasListeners('filter:search.query')) {
+		return helpers.notFound(req, res);
+	}
+
 	if (!req.params.term) {
 		return res.render('search', {
 			time: 0,
@@ -114,10 +118,6 @@ Controllers.search = function(req, res, next) {
 	}
 
 	var uid = req.user ? req.user.uid : 0;
-
-	if (!plugins.hasListeners('filter:search.query')) {
-		return res.redirect('/404');
-	}
 
 	req.params.term = validator.escape(req.params.term);
 
@@ -198,8 +198,8 @@ Controllers.confirmEmail = function(req, res, next) {
 };
 
 Controllers.sitemap = function(req, res, next) {
-	if (meta.config['feeds:disableSitemap'] === '1') {
-		return res.redirect(nconf.get('relative_path') + '/404');
+	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
+		return helpers.notFound(req, res);
 	}
 
 	var sitemap = require('../sitemap.js');
@@ -238,7 +238,7 @@ Controllers.outgoing = function(req, res, next) {
 
 Controllers.termsOfUse = function(req, res, next) {
 	if (!meta.config.termsOfUse) {
-		return helpers.notFound(res);
+		return helpers.notFound(req, res);
 	}
 	res.render('tos', {termsOfUse: meta.config.termsOfUse});
 };

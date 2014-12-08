@@ -33,10 +33,13 @@
 
 				<div class="search {search_display} well">
 					<label>By User Name</label>
-					<input class="form-control" id="search-user-name" type="text" placeholder="Enter a username to search"/><br />
+					<input class="form-control" id="search-user-name" data-search-type="username" type="text" placeholder="Enter a username to search"/><br />
 
 					<label>By Email </label>
-					<input class="form-control" id="search-user-email" type="text" placeholder="Enter a email to search"/><br />
+					<input class="form-control" id="search-user-email" data-search-type="email" type="text" placeholder="Enter a email to search"/><br />
+
+					<label>By IP Address </label>
+					<input class="form-control" id="search-user-ip" data-search-type="ip" type="text" placeholder="Enter an IP Address to search"/><br />
 
 					<i class="fa fa-spinner fa-spin hidden"></i>
 					<span id="user-notfound-notify" class="label label-danger hide">User not found!</span><br/>

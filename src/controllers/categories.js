@@ -102,7 +102,7 @@ categoriesController.get = function(req, res, next) {
 		userPrivileges;
 
 	if (req.params.topic_index && !utils.isNumber(req.params.topic_index)) {
-		return helpers.notFound(res);
+		return helpers.notFound(req, res);
 	}
 
 	async.waterfall([
@@ -124,11 +124,11 @@ categoriesController.get = function(req, res, next) {
 		},
 		function(results, next) {
 			if (!results.exists || (results.categoryData && parseInt(results.categoryData.disabled, 10) === 1)) {
-				return helpers.notFound(res);
+				return helpers.notFound(req, res);
 			}
 
 			if (cid + '/' + req.params.slug !== results.categoryData.slug) {
-				return helpers.notFound(res);
+				return helpers.notFound(req, res);
 			}
 
 			if (!results.privileges.read) {
@@ -165,24 +165,21 @@ categoriesController.get = function(req, res, next) {
 			});
 		},
 		function(payload, next) {
-			// If a userslug was specified, add a targetUid
-			if (req.query.author) {
-				user.getUidByUserslug(req.query.author, function(err, uid) {
-					payload.targetUid = uid;
-					next(err, payload);
-				});
-			} else {
-				next(null, payload);
-			}
+			user.getUidByUserslug(req.query.author, function(err, uid) {
+				payload.targetUid = uid;
+				next(err, payload);
+			});
 		},
-		categories.getCategoryById,
+		function(payload, next) {
+			categories.getCategoryById(payload, next);
+		},
 		function(categoryData, next) {
-			categories.getRecentTopicReplies(categoryData.children, uid, function(err) {
-				if (err) {
-					return next(err);
-				}
+			if (categoryData.link) {
+				return res.redirect(categoryData.link);
+			}
 
-				next(null, categoryData);
+			categories.getRecentTopicReplies(categoryData.children, uid, function(err) {
+				next(err, categoryData);
 			});
 		},
 		function (categoryData, next) {
@@ -233,10 +230,6 @@ categoriesController.get = function(req, res, next) {
 			return next(err);
 		}
 
-		if (data.link) {
-			return res.redirect(data.link);
-		}
-
 		data.currentPage = page;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
@@ -251,6 +244,7 @@ categoriesController.get = function(req, res, next) {
 			}
 		}
 
+		data.breadcrumbs = res.locals.breadcrumbs;
 		res.render('category', data);
 	});
 };

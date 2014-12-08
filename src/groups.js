@@ -8,6 +8,7 @@ var async = require('async'),
 	db = require('./database'),
 	plugins = require('./plugins'),
 	posts = require('./posts'),
+	privileges = require('./privileges'),
 	utils = require('../public/src/utils');
 
 
@@ -84,15 +85,7 @@ var async = require('async'),
 		async.parallel({
 			base: function (next) {
 				if (ephemeralGroups.indexOf(groupName) === -1) {
-					db.getObject('group:' + groupName, function(err, groupObj) {
-						if (err) {
-							next(err);
-						} else if (!groupObj) {
-							next('group-not-found');
-						} else {
-							next(err, groupObj);
-						}
-					});
+					db.getObject('group:' + groupName, next);
 				} else {
 					internals.getEphemeralGroup(groupName, options, next);
 				}
@@ -119,7 +112,7 @@ var async = require('async'),
 				});
 			}
 		}, function (err, results) {
-			if (err) {
+			if (err || !results.base) {
 				return callback(err);
 			}
 
@@ -497,7 +490,7 @@ var async = require('async'),
 
 			// If this is a hidden group, and it is now empty, delete it
 			Groups.get(groupName, {}, function(err, group) {
-				if (err) {
+				if (err || !group) {
 					return callback(err);
 				}
 
@@ -525,23 +518,26 @@ var async = require('async'),
 	};
 
 	Groups.getLatestMemberPosts = function(groupName, max, uid, callback) {
-		Groups.get(groupName, {}, function(err, groupObj) {
-			if (err || parseInt(groupObj.memberCount, 10) === 0) {
-				return callback(null, []);
-			}
-
-			var	keys = groupObj.members.map(function(uid) {
-				return 'uid:' + uid + ':posts';
-			});
-
-			db.getSortedSetRevUnion(keys, 0, max-1, function(err, pids) {
-				if (err) {
-					return callback(err);
+		async.waterfall([
+			function(next) {
+				Groups.getMembers(groupName, next);
+			},
+			function(uids, next) {
+				if (!Array.isArray(uids) || !uids.length) {
+					return callback(null, []);
 				}
-
-				posts.getPostSummaryByPids(pids, uid, {stripTags: false}, callback);
-			});
-		});
+				var keys = uids.map(function(uid) {
+					return 'uid:' + uid + ':posts';
+				});
+				db.getSortedSetRevUnion(keys, 0, max - 1, next);
+			},
+			function(pids, next) {
+				privileges.posts.filter('read', pids, uid, next);
+			},
+			function(pids, next) {
+				posts.getPostSummaryByPids(pids, uid, {stripTags: false}, next);
+			}
+		], callback);
 	};
 
 	Groups.getUserGroups = function(uids, callback) {

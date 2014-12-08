@@ -9,6 +9,7 @@ var path = require('path'),
 	categories = require('./categories'),
 	topics = require('./topics'),
 	privileges = require('./privileges'),
+	meta = require('./meta'),
 	utils = require('../public/src/utils'),
 	sitemap = {
 		obj: undefined,
@@ -54,34 +55,33 @@ var path = require('path'),
 				topicUrls: function(next) {
 					var topicUrls = [];
 
-					db.getSortedSetRevRange('topics:recent', 0, 49, function(err, tids) {
+					async.waterfall([
+						function(next) {
+							db.getSortedSetRevRange('topics:recent', 0, parseInt(meta.config.sitemapTopics, 10) || -1, next);
+						},
+						function(tids, next) {
+							privileges.topics.filter('read', tids, 0, next);
+						},
+						function(tids, next) {
+							topics.getTopicsFields(tids, ['tid', 'title', 'lastposttime'], next);
+						}
+					], function(err, topics) {
 						if (err) {
 							return next(err);
 						}
-						privileges.topics.filter('read', tids, 0, function(err, tids) {
-							if (err) {
-								return next(err);
-							}
 
-							topics.getTopicsFields(tids, ['tid', 'title', 'lastposttime'], function(err, topics) {
-								if (err) {
-									return next(err);
-								}
-
-								topics.forEach(function(topic) {
-									if (topic) {
-										topicUrls.push({
-											url: '/topic/' + topic.tid + '/' + encodeURIComponent(utils.slugify(topic.title)),
-											lastmodISO: utils.toISOString(topic.lastposttime),
-											changefreq: 'daily',
-											priority: '0.6'
-										});
-									}
+						topics.forEach(function(topic) {
+							if (topic) {
+								topicUrls.push({
+									url: '/topic/' + topic.tid + '/' + encodeURIComponent(utils.slugify(topic.title)),
+									lastmodISO: utils.toISOString(topic.lastposttime),
+									changefreq: 'daily',
+									priority: '0.6'
 								});
-
-								next(null, topicUrls);
-							});
+							}
 						});
+
+						next(null, topicUrls);
 					});
 				}
 			}, function(err, data) {

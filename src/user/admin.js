@@ -8,7 +8,11 @@ var async = require('async'),
 module.exports = function(User) {
 
 	User.logIP = function(uid, ip) {
-		db.sortedSetAdd('uid:' + uid + ':ip', Date.now(), ip || 'Unknown');
+		var now = Date.now();
+		db.sortedSetAdd('uid:' + uid + ':ip', now, ip || 'Unknown');
+		if (ip) {
+			db.sortedSetAdd('ip:' + ip + ':uid', now, uid);
+		}
 	};
 
 	User.getIPs = function(uid, end, callback) {

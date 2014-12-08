@@ -314,7 +314,6 @@ var db = require('./database'),
 	};
 
 	function sendNotifications(fromuid, touid, messageObj, callback) {
-		// todo #1798 -- this should check if the user is in room `chat_{uidA}_{uidB}` instead, see `Sockets.uidInRoom(uid, room);`
 		if (!websockets.isUserOnline(touid)) {
 			notifications.create({
 				bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',

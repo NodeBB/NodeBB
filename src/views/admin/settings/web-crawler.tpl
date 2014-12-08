@@ -25,6 +25,10 @@
 					<input type="checkbox" data-field="feeds:disableSitemap"> <strong>Disable Sitemap.xml</strong>
 				</label>
 			</div>
+
+			<label>Number of Topic to Display in Sitemap</label>
+			<input class="form-control" type="text" placeholder="" data-field="sitemapTopics" />
+
 		</form>
 	</div>
 </div>

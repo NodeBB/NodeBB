@@ -53,7 +53,7 @@ define('forum/login', ['csrf'], function(csrf) {
 			var returnToEl = document.createElement('input');
 			returnToEl.type = 'hidden';
 			returnToEl.name = 'returnTo';
-			returnToEl.value = app.previousUrl.replace(window.location.origin + RELATIVE_PATH, '');
+			returnToEl.value = app.previousUrl;
 			$(returnToEl).appendTo(formEl);
 		}
 	};

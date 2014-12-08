@@ -1,6 +1,6 @@
 {
-    "success": "Success",
-    "topic-post": "You have successfully posted.",
-    "authentication-successful": "Authentication Successful",
-    "settings-saved": "Settings saved!"
+    "success": "Sikeres",
+    "topic-post": "A bejegyzés sikeresen beküldésre került.",
+    "authentication-successful": "Sikeres hitelesítés",
+    "settings-saved": "Beállítások mentve!"
 }

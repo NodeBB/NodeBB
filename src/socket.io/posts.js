@@ -69,6 +69,61 @@ SocketPosts.reply = function(socket, data, callback) {
 	});
 };
 
+SocketPosts.getVoters = function(socket, data, callback) {
+	if (!data || !data.pid || !data.cid) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	var pid = data.pid,
+		cid = data.cid;
+
+	async.parallel({
+		isAdmin: function(next) {
+			user.isAdministrator(socket.uid, next);
+		},
+		isModerator: function(next) {
+			user.isModerator(socket.uid, cid, next);
+		}
+	}, function(err, tests) {
+		if (err) {
+			return callback(err);
+		}
+
+		if (tests.isAdmin || tests.isModerator) {
+			getVoters(pid, callback);
+		}
+	});
+};
+
+function getVoters(pid, callback) {
+	async.parallel({
+		upvoteUids: function(next) {
+			db.getSetMembers('pid:' + pid + ':upvote', next);
+		},
+		downvoteUids: function(next) {
+			db.getSetMembers('pid:' + pid + ':downvote', next);
+		}
+	}, function(err, results) {
+		if (err) {
+			return callback(err);
+		}
+		async.parallel({
+			upvoters: function(next) {
+				user.getMultipleUserFields(results.upvoteUids, ['username', 'userslug', 'picture'], next);
+			},
+			upvoteCount: function(next) {
+				next(null, results.upvoteUids.length);
+			},
+			downvoters: function(next) {
+				user.getMultipleUserFields(results.downvoteUids, ['username', 'userslug', 'picture'], next);
+			},
+			downvoteCount: function(next) {
+				next(null, results.downvoteUids.length);
+			}
+		}, callback);
+	});
+}
+
 SocketPosts.upvote = function(socket, data, callback) {
 	favouriteCommand(socket, 'upvote', 'voted', 'notifications:upvoted_your_post_in', data, callback);
 };
@@ -203,7 +258,7 @@ SocketPosts.edit = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		websockets.server.sockets.in('topic_' + results.topic.tid).emit('event:post_edited', {
+		websockets.in('topic_' + results.topic.tid).emit('event:post_edited', {
 			pid: data.pid,
 			title: results.topic.title,
 			isMainPost: results.topic.isMainPost,
@@ -234,7 +289,7 @@ function deleteOrRestore(command, socket, data, callback) {
 		}
 
 		var eventName = command === 'restore' ? 'event:post_restored' : 'event:post_deleted';
-		websockets.server.sockets.in('topic_' + data.tid).emit(eventName, postData);
+		websockets.in('topic_' + data.tid).emit(eventName, postData);
 
 		callback();
 	});
@@ -249,7 +304,7 @@ SocketPosts.purge = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		websockets.server.sockets.in('topic_' + data.tid).emit('event:post_purged', data.pid);
+		websockets.in('topic_' + data.tid).emit('event:post_purged', data.pid);
 
 		callback();
 	});
@@ -373,7 +428,7 @@ SocketPosts.loadMoreFavourites = function(socket, data, callback) {
 	var start = parseInt(data.after, 10),
 		end = start + 9;
 
-	posts.getPostsFromSet('uid:' + socket.uid + ':posts', socket.uid, start, end, callback);
+	posts.getPostsFromSet('uid:' + socket.uid + ':favourites', socket.uid, start, end, callback);
 };
 
 SocketPosts.loadMoreUserPosts = function(socket, data, callback) {

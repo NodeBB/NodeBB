@@ -226,7 +226,7 @@ module.exports = function(Topics) {
 				checkContentLength(content, next);
 			},
 			function(next) {
-				posts.create({uid: uid, tid: tid, content: content, toPid: toPid}, next);
+				posts.create({uid: uid, tid: tid, content: content, toPid: toPid, ip: data.req ? data.req.ip : null}, next);
 			},
 			function(data, next) {
 				postData = data;

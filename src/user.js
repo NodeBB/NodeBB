@@ -138,13 +138,22 @@ var	async = require('async'),
 		callback = callback || function() {};
 		User.getUserFields(uid, ['status', 'lastonline'], function(err, userData) {
 			var now = Date.now();
-			if(err || userData.status === 'offline' || now - parseInt(userData.lastonline, 10) < 300000) {
+			if (err || userData.status === 'offline' || now - parseInt(userData.lastonline, 10) < 300000) {
 				return callback(err);
 			}
 
-			db.sortedSetAdd('users:online', now, uid);
-
 			User.setUserField(uid, 'lastonline', now, callback);
+		});
+	};
+
+	User.updateOnlineUsers = function(uid, callback) {
+		callback = callback || function() {};
+		db.sortedSetScore('users:online', uid, function(err, score) {
+			var now = Date.now();
+			if (err || now - parseInt(score, 10) < 300000) {
+				return callback(err);
+			}
+			db.sortedSetAdd('users:online', now, uid, callback);
 		});
 	};
 
@@ -263,7 +272,7 @@ var	async = require('async'),
 			return callback(null, password);
 		}
 
-		Password.hash(nconf.get('bcrypt_rounds'), password, callback);
+		Password.hash(nconf.get('bcrypt_rounds') || 12, password, callback);
 	};
 
 	User.addTopicIdToUser = function(uid, tid, timestamp, callback) {
@@ -277,10 +286,16 @@ var	async = require('async'),
 	};
 
 	User.getUidByUsername = function(username, callback) {
+		if (!username) {
+			return callback();
+		}
 		db.getObjectField('username:uid', username, callback);
 	};
 
 	User.getUidByUserslug = function(userslug, callback) {
+		if (!userslug) {
+			return callback();
+		}
 		db.getObjectField('userslug:uid', userslug, callback);
 	};
 
@@ -323,9 +338,23 @@ var	async = require('async'),
 	};
 
 	User.isModerator = function(uid, cid, callback) {
+		function filterIsModerator(err, isModerator) {
+			if (err) {
+				return callback(err);
+			}
+
+			plugins.fireHook('filter:user.isModerator', {uid: uid, cid:cid, isModerator: isModerator}, function(err, data) {
+				if (Array.isArray(uid) && !Array.isArray(data.isModerator) || Array.isArray(cid) && !Array.isArray(data.isModerator)) {
+					return callback(new Error('filter:user.isModerator - i/o mismatch'));
+				}
+
+				callback(err, data.isModerator);
+			});
+		}
+
 		if (Array.isArray(cid)) {
 			if (!parseInt(uid, 10)) {
-				return callback(null, cid.map(function() {return false;}));
+				return filterIsModerator(null, cid.map(function() {return false;}));
 			}
 			var uniqueCids = cid.filter(function(cid, index, array) {
 				return array.indexOf(cid) === index;
@@ -345,15 +374,15 @@ var	async = require('async'),
 					map[cid] = isMembers[index];
 				});
 
-				callback(null, cid.map(function(cid) {
+				filterIsModerator(null, cid.map(function(cid) {
 					return map[cid];
 				}));
 			});
 		} else {
 			if (Array.isArray(uid)) {
-				groups.isMembers(uid, 'cid:' + cid + ':privileges:mods', callback);
+				groups.isMembers(uid, 'cid:' + cid + ':privileges:mods', filterIsModerator);
 			} else {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:mods', callback);
+				groups.isMember(uid, 'cid:' + cid + ':privileges:mods', filterIsModerator);
 			}
 		}
 	};

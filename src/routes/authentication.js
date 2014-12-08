@@ -183,10 +183,11 @@
 				if (!req.session.returnTo) {
 					res.status(200).send(nconf.get('relative_path') + '/');
 				} else {
+
 					var next = req.session.returnTo;
 					delete req.session.returnTo;
 
-					res.status(200).send(nconf.get('relative_path') + next);
+					res.status(200).send(next);
 				}
 			});
 		})(req, res, next);
@@ -241,15 +242,15 @@
 				return res.status(400).send(err.message);
 			}
 
-			res.status(200).send(nconf.get('relative_path') + (data.referrer ? data.referrer : '/'));
+			res.status(200).send(data.referrer ? data.referrer : '/');
 		});
 	}
 
 	function logout(req, res) {
-		if (req.user && parseInt(req.user.uid, 10) > 0) {
+		if (req.user && parseInt(req.user.uid, 10) > 0 && req.sessionID) {
 
 			require('../socket.io').logoutUser(req.user.uid);
-
+			db.sessionStore.destroy(req.sessionID);
 			req.logout();
 		}
 

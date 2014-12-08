@@ -201,10 +201,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	}
 
 	function showVotes(pid) {
-		if (!app.isAdmin) {
-			return;
-		}
-		socket.emit('admin.getVoters', pid, function(err, data) {
+		socket.emit('posts.getVoters', {pid: pid, cid: ajaxify.variables.get('category_id')}, function(err, data) {
 			if (err) {
 				return app.alertError(err.message);
 			}

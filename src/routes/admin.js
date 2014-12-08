@@ -21,10 +21,7 @@ function apiRoutes(app, middleware, controllers) {
 function adminRouter(middleware, controllers) {
 	var router = express.Router();
 
-	router.use(middleware.applyCSRF);
 	router.use(middleware.admin.buildHeader);
-
-	router.get('/', controllers.admin.home);
 
 	addRoutes(router, middleware, controllers);
 
@@ -42,6 +39,7 @@ function apiRouter(middleware, controllers) {
 }
 
 function addRoutes(router, middleware, controllers) {
+	router.get('/', controllers.admin.home);
 	router.get('/general/dashboard', controllers.admin.home);
 	router.get('/general/languages', controllers.admin.languages.get);
 	router.get('/general/sounds', controllers.admin.sounds.get);

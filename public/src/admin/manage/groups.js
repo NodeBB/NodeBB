@@ -1,5 +1,5 @@
 "use strict";
-/*global define, templates, socket, ajaxify, app, bootbox*/
+/*global define, templates, socket, ajaxify, app, admin, bootbox*/
 
 define('admin/manage/groups', ['admin/modules/iconSelect'], function(iconSelect) {
 	var	Groups = {};
@@ -147,7 +147,7 @@ define('admin/manage/groups', ['admin/modules/iconSelect'], function(iconSelect)
 				var searchText = groupDetailsSearch.val(),
 					foundUser;
 
-				socket.emit('admin.user.search', searchText, function(err, results) {
+				socket.emit('admin.user.search', {type: 'username', query:searchText}, function(err, results) {
 					if (!err && results && results.users.length > 0) {
 						var numResults = results.users.length, x;
 						if (numResults > 4) {

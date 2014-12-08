@@ -1,8 +1,8 @@
 {
     "new_topic_button": "নতুন টপিক",
-    "no_topics": "<strong>There are no topics in this category.</strong><br />Why don't you try posting one?",
+    "no_topics": "<strong>এই বিভাগে কোন টপিক নেই! </strong><br /> আপনি চাইলে একটি পোষ্ট করতে পারেন।",
     "browsing": "browsing",
     "no_replies": "কোন রিপ্লাই নেই",
-    "share_this_category": "এই বিভাগটি ভাগ করুন",
-    "ignore": "Ignore"
+    "share_this_category": "এই বিভাগটি অন্যের সাথে ভাগাভাগি করুন",
+    "ignore": "উপেক্ষা করুন"
 }

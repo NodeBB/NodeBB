@@ -7,7 +7,6 @@ var winston = require('winston'),
 	less = require('less'),
 	crypto = require('crypto'),
 	async = require('async'),
-	cluster = require('cluster'),
 
 	plugins = require('../plugins'),
 	emitter = require('../emitter'),
@@ -22,7 +21,7 @@ module.exports = function(Meta) {
 	Meta.css.defaultBranding = {};
 
 	Meta.css.minify = function(callback) {
-		if (!cluster.isWorker || process.env.cluster_setup === 'true') {
+		if (nconf.get('isPrimary') === 'true') {
 			winston.verbose('[meta/css] Minifying LESS/CSS');
 			db.getObjectFields('config', ['theme:type', 'theme:id'], function(err, themeData) {
 				var themeId = (themeData['theme:id'] || 'nodebb-theme-vanilla'),
@@ -64,11 +63,12 @@ module.exports = function(Meta) {
 					}
 				], function(err, minified) {
 					// Propagate to other workers
-					if (cluster.isWorker) {
+					if (process.send) {
 						process.send({
 							action: 'css-propagate',
 							cache: minified[0],
-							acpCache: minified[1]
+							acpCache: minified[1],
+							hash: Meta.css.hash
 						});
 					}
 
@@ -80,7 +80,7 @@ module.exports = function(Meta) {
 				});
 			});
 		} else {
-			winston.verbose('[meta/css] Cluster worker ' + cluster.worker.id + ' skipping LESS/CSS compilation');
+			winston.verbose('[meta/css] Cluster worker ' + process.pid + ' skipping LESS/CSS compilation');
 			if (typeof callback === 'function') {
 				callback();
 			}
@@ -105,7 +105,7 @@ module.exports = function(Meta) {
 			acpCachePath = path.join(__dirname, '../../public/admin.css');
 		fs.exists(cachePath, function(exists) {
 			if (exists) {
-				if (!cluster.isWorker || process.env.cluster_setup === 'true') {
+				if (nconf.get('isPrimary') === 'true') {
 					winston.verbose('[meta/css] (Experimental) Reading stylesheets from file');
 					async.map([cachePath, acpCachePath], fs.readFile, function(err, files) {
 						Meta.css.cache = files[0];
@@ -124,7 +124,7 @@ module.exports = function(Meta) {
 		});
 	};
 
-	function minify(source, paths, destination, callback) {	
+	function minify(source, paths, destination, callback) {
 		less.render(source, {
 			paths: paths,
 			compress: true
@@ -139,14 +139,16 @@ module.exports = function(Meta) {
 
 			Meta.css[destination] = lessOutput.css;
 
-			// Calculate css buster
-			var hasher = crypto.createHash('md5');
+			if (destination === 'cache') {
+				// Calculate css buster
+				var hasher = crypto.createHash('md5');
 
-			hasher.update(lessOutput.css, 'utf-8');
-			Meta.css.hash = hasher.digest('hex').slice(0, 8);
+				hasher.update(lessOutput.css, 'utf-8');
+				Meta.css.hash = hasher.digest('hex').slice(0, 8);
+			}
 
 			// Save the compiled CSS in public/ so things like nginx can serve it
-			if (!cluster.isWorker || process.env.cluster_setup === 'true') {
+			if (nconf.get('isPrimary') === 'true') {
 				Meta.css.commitToFile(destination);
 			}
 

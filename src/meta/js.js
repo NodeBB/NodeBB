@@ -7,7 +7,6 @@ var winston = require('winston'),
 	_ = require('underscore'),
 	os = require('os'),
 	nconf = require('nconf'),
-	cluster = require('cluster'),
 	fs = require('fs'),
 
 	plugins = require('../plugins'),
@@ -26,7 +25,7 @@ module.exports = function(Meta) {
 			base: [
 				'public/vendor/jquery/js/jquery.js',
 				'public/vendor/jquery/js/jquery-ui-1.10.4.custom.js',
-				'./node_modules/socket.io-client/dist/socket.io.js',
+				'./node_modules/socket.io-client/socket.io.js',
 				'public/vendor/jquery/timeago/jquery.timeago.min.js',
 				'public/vendor/jquery/js/jquery.form.min.js',
 				'public/vendor/visibility/visibility.min.js',
@@ -64,7 +63,7 @@ module.exports = function(Meta) {
 				if (global.env === 'development') {
 					return next(null, []);
 				}
-				
+
 				utils.walk(path.join(rjsPath, 'modules'), next);
 			}
 		}, function(err, rjsFiles) {
@@ -127,7 +126,7 @@ module.exports = function(Meta) {
 	};
 
 	Meta.js.minify = function(minify, callback) {
-		if (!cluster.isWorker || process.env.cluster_setup === 'true') {
+		if (nconf.get('isPrimary') === 'true') {
 			var minifier = Meta.js.minifierProc = fork('minifier.js'),
 				onComplete = function(err) {
 					if (err) {
@@ -138,11 +137,12 @@ module.exports = function(Meta) {
 					winston.verbose('[meta/js] Minification complete');
 					minifier.kill();
 
-					if (cluster.isWorker) {
+					if (process.send) {
 						process.send({
 							action: 'js-propagate',
 							cache: Meta.js.cache,
-							map: Meta.js.map
+							map: Meta.js.map,
+							hash: Meta.js.hash
 						});
 					}
 
@@ -213,7 +213,7 @@ module.exports = function(Meta) {
 			mapPath = path.join(__dirname, '../../public/nodebb.min.js.map');
 		fs.exists(scriptPath, function(exists) {
 			if (exists) {
-				if (!cluster.isWorker || process.env.cluster_setup === 'true') {
+				if (nconf.get('isPrimary') === 'true') {
 					winston.verbose('[meta/js] (Experimental) Reading client-side scripts from file');
 					async.map([scriptPath, mapPath], fs.readFile, function(err, files) {
 						Meta.js.cache = files[0];

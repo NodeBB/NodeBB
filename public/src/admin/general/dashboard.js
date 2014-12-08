@@ -32,9 +32,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		});
 
 		$('#logout-link').on('click', function() {
-			$.post(RELATIVE_PATH + '/logout', function() {
-				window.location.href = RELATIVE_PATH + '/';
-			});
+			app.logout();
 		});
 
 		$.get('https://api.github.com/repos/NodeBB/NodeBB/tags', function(releases) {

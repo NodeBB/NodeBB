@@ -59,7 +59,7 @@ var socket,
 			$(window).trigger('action:reconnected');
 
 			setTimeout(function() {
-				reconnectEl.removeClass('active').addClass("hide");
+				reconnectEl.removeClass('active').addClass('hide');
 			}, 3000);
 		}
 	}
@@ -72,28 +72,27 @@ var socket,
 		if(socket) {
 			socket.disconnect();
 			setTimeout(function() {
-				socket.socket.connect();
+				socket.connect();
 			}, 200);
 		} else {
 			var ioParams = {
 				'max reconnection attempts': config.maxReconnectionAttempts,
-				'reconnection delay': config.reconnectionDelay,
-				resource: RELATIVE_PATH.length ? RELATIVE_PATH.slice(1) + '/socket.io' : 'socket.io'
+				reconnectionDelay : config.reconnectionDelay,
+				path: RELATIVE_PATH + '/socket.io'
 			};
-
-			if (utils.isAndroidBrowser()) {
-				ioParams.transports = ['xhr-polling'];
-			}
 
 			socket = io.connect(config.websocketAddress, ioParams);
 			reconnecting = false;
 
 			socket.on('event:connect', function (data) {
+				// TODO : deprecate in 0.7.0, use app.user
 				app.username = data.username;
 				app.userslug = data.userslug;
 				app.picture = data.picture;
 				app.uid = data.uid;
 				app.isAdmin = data.isAdmin;
+
+				app.user = data;
 
 				templates.setGlobal('loggedIn', parseInt(data.uid, 10) !== 0);
 

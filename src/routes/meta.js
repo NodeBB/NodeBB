@@ -10,7 +10,6 @@ var path = require('path'),
 
 
 function sendMinifiedJS(req, res, next) {
-	res.set('X-SourceMap', '/nodebb.min.js.map');
 	return res.type('text/javascript').send(meta.js.cache);
 }
 

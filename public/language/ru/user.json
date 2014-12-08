@@ -68,8 +68,8 @@
     "notification_sounds": "Звук при получении уведомления",
     "browsing": "Настройки просмотра",
     "open_links_in_new_tab": "Открывать ссылки, ведущие на другие сайты, в новой вкладке?",
-    "enable_topic_searching": "Enable In-Topic Searching",
-    "topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen.",
+    "enable_topic_searching": "Включить Поиск по всей теме",
+    "topic_search_help": "Если включено, то стандартный \"Поиск на странице\" Вашего браузера будет осуществлять поиск по всей теме вместо одной её страницы.",
     "follow_topics_you_reply_to": "Следить за темами, в которых Вы отвечали.",
     "follow_topics_you_create": "Следить за темами, которые Вы создали."
 }

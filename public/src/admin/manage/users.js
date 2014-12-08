@@ -215,13 +215,14 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 			}
 		});
 
-		$('#search-user-name, #search-user-email').on('keyup', function() {
+		$('#search-user-name, #search-user-email, #search-user-ip').on('keyup', function() {
 			if (timeoutId !== 0) {
 				clearTimeout(timeoutId);
 				timeoutId = 0;
 			}
+
 			var $this = $(this);
-			var type =  $this.attr('id') === 'search-user-name' ? 'username' : 'email';
+			var type =  $this.attr('data-search-type');
 
 			timeoutId = setTimeout(function() {
 				$('.fa-spinner').removeClass('hidden');

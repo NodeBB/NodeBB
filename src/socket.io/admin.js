@@ -2,7 +2,6 @@
 
 var	async = require('async'),
 	winston = require('winston'),
-	cluster = require('cluster'),
 	fs = require('fs'),
 	path = require('path'),
 
@@ -51,7 +50,7 @@ SocketAdmin.before = function(socket, method, next) {
 
 SocketAdmin.reload = function(socket, data, callback) {
 	events.logWithUser(socket.uid, ' is reloading NodeBB');
-	if (cluster.isWorker) {
+	if (process.send) {
 		process.send({
 			action: 'reload'
 		});
@@ -280,35 +279,6 @@ SocketAdmin.getMoreFlags = function(socket, after, callback) {
 	after = parseInt(after, 10);
 	posts.getFlags(socket.uid, after, after + 19, function(err, posts) {
 		callback(err, {posts: posts, next: after + 20});
-	});
-};
-
-SocketAdmin.getVoters = function(socket, pid, callback) {
-	async.parallel({
-		upvoteUids: function(next) {
-			db.getSetMembers('pid:' + pid + ':upvote', next);
-		},
-		downvoteUids: function(next) {
-			db.getSetMembers('pid:' + pid + ':downvote', next);
-		}
-	}, function(err, results) {
-		if (err) {
-			return callback(err);
-		}
-		async.parallel({
-			upvoters: function(next) {
-				user.getMultipleUserFields(results.upvoteUids, ['username', 'userslug', 'picture'], next);
-			},
-			upvoteCount: function(next) {
-				next(null, results.upvoteUids.length);
-			},
-			downvoters: function(next) {
-				user.getMultipleUserFields(results.downvoteUids, ['username', 'userslug', 'picture'], next);
-			},
-			downvoteCount: function(next) {
-				next(null, results.downvoteUids.length);
-			}
-		}, callback);
 	});
 };
 

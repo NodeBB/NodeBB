@@ -67,13 +67,18 @@ Categories.getPrivilegeSettings = function(socket, cid, callback) {
 
 	async.reduce(privileges, [], function(members, privilege, next) {
 		groups.get('cid:' + cid + ':privileges:' + privilege, { expand: true }, function(err, groupObj) {
-			if (!err) {
-				members = members.concat(groupObj.members);
+			if (err || !groupObj) {
+				return next(err, members);
 			}
+
+			members = members.concat(groupObj.members);
 
 			next(null, members);
 		});
 	}, function(err, members) {
+		if (err) {
+			return callback(err);
+		}
 		// Remove duplicates
 		var	present = [],
 			x = members.length,

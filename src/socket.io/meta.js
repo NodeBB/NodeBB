@@ -4,7 +4,7 @@ var	nconf = require('nconf'),
 	gravatar = require('gravatar'),
 	winston = require('winston'),
 	validator = require('validator'),
-	
+
 	db = require('../database'),
 	meta = require('../meta'),
 	user = require('../user'),
@@ -20,21 +20,10 @@ var	nconf = require('nconf'),
 	};
 
 SocketMeta.reconnected = function(socket, data, callback) {
-	var	uid = socket.uid,
-		sessionID = socket.id;
-
-	if (uid) {
-		topics.pushUnreadCount(uid);
-		user.notifications.pushCount(uid);
+	if (socket.uid) {
+		topics.pushUnreadCount(socket.uid);
+		user.notifications.pushCount(socket.uid);
 	}
-
-	/*if (process.env.NODE_ENV === 'development') {
-		if (uid) {
-			winston.info('[socket] uid ' + uid + ' (' + sessionID + ') has successfully reconnected.');
-		} else {
-			winston.info('[socket] An anonymous user (' + sessionID + ') has successfully reconnected.');
-		}
-	}*/
 };
 
 emitter.on('nodebb:ready', function() {
@@ -93,8 +82,8 @@ SocketMeta.rooms.getAll = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		var rooms = websockets.server.sockets.manager.rooms,
-			socketData = {
+		var rooms = {}; // TODO: websockets.server.sockets.manager.rooms; doesnt work in socket.io 1.x
+		var socketData = {
 				onlineGuestCount: websockets.getOnlineAnonCount(),
 				onlineRegisteredCount: onlineRegisteredCount,
 				socketCount: websockets.getSocketCount(),
