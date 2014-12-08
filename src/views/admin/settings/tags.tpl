@@ -4,9 +4,23 @@
 	<div class="panel-heading">Tag Settings</div>
 	<div class="panel-body">
 		<form>
-			<strong>Tags per Topic</strong><br /> <input type="text" class="form-control" value="5" data-field="tagsPerTopic"><br />
-			<strong>Minimum Tag Length</strong><br /> <input type="text" class="form-control" value="3" data-field="minimumTagLength"><br />
-			<strong>Maximum Tag Length</strong><br /> <input type="text" class="form-control" value="15" data-field="maximumTagLength"><br />
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" data-field="publicTagListing"> Make the tags list publically viewable
+				</label>
+			</div>
+			<div class="form-group">
+				<label for="tagsPerTopics">Tags per Topic</label>
+				<input id="tagsPerTopics" type="text" class="form-control" value="5" data-field="tagsPerTopic">
+			</div>
+			<div class="form-group">
+				<label for="minimumTagLength">Minimum Tag Length</label>
+				<input id="minimumTagLength" type="text" class="form-control" value="3" data-field="minimumTagLength">
+			</div>
+			<div class="form-group">
+				<label for="maximumTagLength">Maximum Tag Length</label>
+				<input id="maximumTagLength" type="text" class="form-control" value="15" data-field="maximumTagLength">
+			</div>
 		</form>
 	</div>
 </div>

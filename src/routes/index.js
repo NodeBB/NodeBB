@@ -45,8 +45,8 @@ function topicRoutes(app, middleware, controllers) {
 }
 
 function tagRoutes(app, middleware, controllers) {
-	setupPageRoute(app, '/tags/:tag', middleware, [], controllers.tags.getTag);
-	setupPageRoute(app, '/tags', middleware, [], controllers.tags.getTags);
+	setupPageRoute(app, '/tags/:tag', middleware, [middleware.publicTagListing], controllers.tags.getTag);
+	setupPageRoute(app, '/tags', middleware, [middleware.publicTagListing], controllers.tags.getTags);
 }
 
 function categoryRoutes(app, middleware, controllers) {

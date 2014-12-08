@@ -558,6 +558,18 @@ middleware.maintenanceMode = function(req, res, next) {
 	}
 };
 
+middleware.publicTagListing = function(req, res, next) {
+	if ((!meta.config.hasOwnProperty('publicTagListing') || parseInt(meta.config.publicTagListing, 10) === 1)) {
+		next();
+	} else {
+		if (res.locals.isAPI) {
+			res.sendStatus(401);
+		} else {
+			middleware.ensureLoggedIn(req, res, next);
+		}
+	}
+}
+
 module.exports = function(webserver) {
 	app = webserver;
 	middleware.admin = require('./admin')(webserver);

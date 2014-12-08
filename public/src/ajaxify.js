@@ -33,6 +33,7 @@ $(document).ready(function() {
 					return renderTemplate(url, data.status.toString(), data.responseJSON, (new Date()).getTime(), callback);
 				} else if (data.status === 401) {
 					app.alertError('[[global:please_log_in]]');
+					app.previousUrl = url;
 					return ajaxify.go('login');
 				} else if (data.status === 302) {
 					return ajaxify.go(data.responseJSON.slice(1), callback, quiet);
