@@ -729,7 +729,7 @@ var fs = require('fs'),
 
 							Plugins.isActive(packageInfo.name, function(err, active) {
 								if (err) {
-									next(new Error('no-active-state'));
+									return next(new Error('no-active-state'));
 								}
 
 								delete pluginInfo.hooks;
