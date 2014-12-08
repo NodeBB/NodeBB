@@ -1,5 +1,5 @@
 "use strict";
-/*global define, socket, app, Mousetrap, Hammer, RELATIVE_PATH*/
+/*global define, socket, app, ajaxify, utils, Mousetrap, Hammer, RELATIVE_PATH*/
 
 var admin = {};
 
