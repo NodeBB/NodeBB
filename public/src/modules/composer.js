@@ -2,7 +2,7 @@
 
 /* globals define, socket, app, config, ajaxify, utils, translator, templates, bootbox */
 
-var dependencies = [
+define('composer', [
 	'taskbar',
 	'composer/controls',
 	'composer/uploads',
@@ -12,9 +12,7 @@ var dependencies = [
 	'composer/categoryList',
 	'composer/preview',
 	'composer/resize'
-];
-
-define('composer', dependencies, function(taskbar, controls, uploads, formatting, drafts, tags, categoryList, preview, resize) {
+], function(taskbar, controls, uploads, formatting, drafts, tags, categoryList, preview, resize) {
 	var composer = {
 		active: undefined,
 		posts: {},
