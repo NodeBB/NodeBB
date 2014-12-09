@@ -615,6 +615,7 @@ var fs = require('fs'),
 					pluginMap[plugin.id].description = plugin.description;
 					pluginMap[plugin.id].url = pluginMap[plugin.id].url || plugin.url;
 					pluginMap[plugin.id].installed = true;
+					pluginMap[plugin.id].error = plugin.error;
 					pluginMap[plugin.id].active = plugin.active;
 					pluginMap[plugin.id].error = pluginMap[plugin.id].error || false;
 					pluginMap[plugin.id].version = plugin.version;

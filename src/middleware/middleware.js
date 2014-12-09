@@ -463,8 +463,8 @@ middleware.processRender = function(req, res, next) {
 			if (res.locals.renderHeader) {
 				middleware.renderHeader(req, res, function(err, template) {
 					str = template + str;
-
-					translator.translate(str, res.locals.config.userLang, function(translated) {
+					var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
+					translator.translate(str, language, function(translated) {
 						fn(err, translated);
 					});
 				});
@@ -568,7 +568,7 @@ middleware.publicTagListing = function(req, res, next) {
 			middleware.ensureLoggedIn(req, res, next);
 		}
 	}
-}
+};
 
 module.exports = function(webserver) {
 	app = webserver;
