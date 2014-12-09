@@ -736,6 +736,7 @@ var fs = require('fs'),
 								delete pluginInfo.library;
 								pluginInfo.active = active;
 								pluginInfo.installed = true;
+								pluginInfo.error = false;
 								pluginInfo.version = packageInfo.version;
 
 								next(null, pluginInfo);
