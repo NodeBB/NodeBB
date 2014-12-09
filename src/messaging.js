@@ -67,8 +67,14 @@ var db = require('./database'),
 								if (err) {
 									return next(err);
 								}
+
+								if (!messages || !messages[0]) {
+									return next(null, null);
+								}
+								
 								messages[0].newSet = isNewSet;
-								next(null, messages ? messages[0] : null);
+								messages[0].mid = mid;
+								next(null, messages[0]);
 							});
 						}
 					], callback);
