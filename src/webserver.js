@@ -99,18 +99,26 @@ if(nconf.get('ssl')) {
 	module.exports.listen = function(callback) {
 		logger.init(app);
 
-		var	bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
+		var isSocket = isNaN(port),
+			args = isSocket ? [port] : [port, nconf.get('bind_address')],
+			bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
 
-		server.listen(port, nconf.get('bind_address'), function(err) {
+		// Alter umask if necessary
+		if (isSocket) {
+			process.umask('0000');
+		}
+
+		args.push(function(err) {
 			if (err) {
 				winston.info('NodeBB was unable to listen on: ' + bind_address);
 				return callback(err);
 			}
 
-			winston.info('NodeBB is now listening on: ' + bind_address);
-
+			winston.info('NodeBB is now listening on: ' + (isSocket ? port : bind_address));
 			callback();
 		});
+
+		server.listen.apply(server, args);
 	};
 
 }(WebServer));
