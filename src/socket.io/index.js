@@ -118,7 +118,7 @@ function onMessage(socket, payload) {
 	}
 
 	if (ratelimit.isFlooding(socket)) {
-		winston.warn('[socket.io] Too many emits! Disconnecting uid : ' + socket.uid + '. Message : ' + payload.name);
+		winston.warn('[socket.io] Too many emits! Disconnecting uid : ' + socket.uid + '. Message : ' + eventName);
 		return socket.disconnect();
 	}
 
