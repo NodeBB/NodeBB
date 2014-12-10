@@ -13,7 +13,6 @@ define('forum/topic/events', [
 	var Events = {};
 
 	var events = {
-		'event:update_users_in_room': browsing.onUpdateUsersInRoom,
 		'event:user_enter': browsing.onUserEnter,
 		'event:user_leave': browsing.onUserLeave,
 		'event:user_status_change': browsing.onUserStatusChange,

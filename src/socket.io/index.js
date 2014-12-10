@@ -270,7 +270,7 @@ Sockets.isUsersOnline = function(uids, callback) {
 	callback(null, uids.map(Sockets.isUserOnline));
 };
 
-Sockets.updateRoomBrowsingText = function (roomName, selfUid) {
+Sockets.getUsersInRoom = function (uid, roomName, callback) {
 	if (!roomName) {
 		return;
 	}
@@ -278,22 +278,22 @@ Sockets.updateRoomBrowsingText = function (roomName, selfUid) {
 	var	uids = Sockets.getUidsInRoom(roomName);
 	var total = uids.length;
 	uids = uids.slice(0, 9);
-	if (selfUid) {
-		uids = [selfUid].concat(uids);
+	if (uid) {
+		uids = [uid].concat(uids);
 	}
 	if (!uids.length) {
-		return;
+		return callback(null, {users: [], total: 0 , room: roomName});
 	}
 	user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status'], function(err, users) {
 		if (err) {
-			return;
+			return callback(err);
 		}
 
 		users = users.filter(function(user) {
 			return user && user.status !== 'offline';
 		});
 
-		io.sockets.in(roomName).emit('event:update_users_in_room', {
+		callback(null, {
 			users: users,
 			room: roomName,
 			total: Math.max(0, total - uids.length)

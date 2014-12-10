@@ -58,7 +58,14 @@ define('forum/topic', [
 
 		$(window).trigger('action:topic.loaded');
 
-		socket.emit('topics.enter', tid);
+		if (app.user.uid) {
+			socket.emit('topics.enter', tid, function(err, data) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				browsing.onUpdateUsersInRoom(data);
+			});
+		}
 	};
 
 	Topic.toTop = function() {

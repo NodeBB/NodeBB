@@ -70,9 +70,16 @@ SocketTopics.enter = function(socket, tid, callback) {
 	if (!parseInt(tid, 10) || !socket.uid) {
 		return;
 	}
-
-	SocketTopics.markAsRead(socket, [tid], callback);
-	websockets.updateRoomBrowsingText('topic_' + tid);
+	async.parallel({
+		markAsRead: function(next) {
+			SocketTopics.markAsRead(socket, [tid], next);
+		},
+		users: function(next) {
+			websockets.getUsersInRoom(socket.uid, 'topic_' + tid, next);
+		}
+	}, function(err, result) {
+		callback(err, result ? result.users : null);
+	});
 };
 
 SocketTopics.postcount = function(socket, tid, callback) {
