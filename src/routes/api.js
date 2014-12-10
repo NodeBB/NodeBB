@@ -28,11 +28,11 @@ function upload(req, res, filesIterator, next) {
 
 	if (!req.user) {
 		deleteTempFiles(files);
-		return res.json(403, 'not allowed');
+		return res.status(403).json('not allowed');
 	}
 
 	if (!Array.isArray(files)) {
-		return res.json(500, 'invalid files');
+		return res.status(500).json('invalid files');
 	}
 
 	if (Array.isArray(files[0])) {
