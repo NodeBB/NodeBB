@@ -2,7 +2,6 @@
 
 var categoriesController = {},
 	async = require('async'),
-	qs = require('querystring'),
 	nconf = require('nconf'),
 	privileges = require('../privileges'),
 	user = require('../user'),
@@ -40,9 +39,9 @@ categoriesController.popular = function(req, res, next) {
 	var term = req.params.term || 'daily';
 
 	if (uid === 0) {
-        if (anonCache[term] && (Date.now() - lastUpdateTime) < 60 * 60 * 1000) {
-            return res.render('popular', anonCache[term]);
-        }
+		if (anonCache[term] && (Date.now() - lastUpdateTime) < 60 * 60 * 1000) {
+			return res.render('popular', anonCache[term]);
+		}
 	}
 
 	topics.getPopular(term, uid, meta.config.topicsPerList, function(err, data) {
@@ -57,8 +56,8 @@ categoriesController.popular = function(req, res, next) {
 				return next(err);
 			}
 			if (uid === 0) {
-		        anonCache[term] = data.category;
-		        lastUpdateTime = Date.now();
+				anonCache[term] = data.category;
+				lastUpdateTime = Date.now();
 			}
 
 			res.render('popular', data.category);
