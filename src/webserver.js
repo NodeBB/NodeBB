@@ -101,11 +101,12 @@ if(nconf.get('ssl')) {
 
 		var isSocket = isNaN(port),
 			args = isSocket ? [port] : [port, nconf.get('bind_address')],
-			bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
+			bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port,
+			oldUmask;
 
 		// Alter umask if necessary
 		if (isSocket) {
-			process.umask('0000');
+			oldUmask = process.umask('0000');
 		}
 
 		args.push(function(err) {
@@ -115,6 +116,10 @@ if(nconf.get('ssl')) {
 			}
 
 			winston.info('NodeBB is now listening on: ' + (isSocket ? port : bind_address));
+			if (oldUmask) {
+				process.umask(oldUmask);
+			}
+
 			callback();
 		});
 
