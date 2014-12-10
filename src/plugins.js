@@ -604,6 +604,7 @@ var fs = require('fs'),
 				async.each(installedPlugins, function(plugin, next) {
 					// If it errored out because a package.json or plugin.json couldn't be read, no need to do this stuff
 					if (plugin.error) {
+						pluginMap[plugin.id] = pluginMap[plugin.id] || {};
 						pluginMap[plugin.id].installed = true;
 						pluginMap[plugin.id].error = true;
 						return next();
