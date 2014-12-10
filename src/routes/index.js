@@ -142,8 +142,8 @@ module.exports = function(app, middleware) {
 	userRoutes(router, middleware, controllers);
 	groupRoutes(router, middleware, controllers);
 
-	app.use(relativePath, router);
 	app.use(relativePath, pluginRouter);
+	app.use(relativePath, router);
 	app.use(relativePath, authRouter);
 
 	if (process.env.NODE_ENV === 'development') {
@@ -222,4 +222,3 @@ function handleErrors(app, middleware) {
 		}
 	});
 }
-
