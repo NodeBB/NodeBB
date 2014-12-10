@@ -71,7 +71,7 @@ Loader.addWorkerEvents = function(worker) {
 		}
 
 		console.log('[cluster] Child Process (' + worker.pid + ') has exited (code: ' + code + ', signal: ' + signal +')');
-		if (!worker.suicide) {
+		if (!(worker.suicide || code === 0)) {
 			console.log('[cluster] Spinning up another process...');
 
 			forkWorker(worker.index, worker.isPrimary);
