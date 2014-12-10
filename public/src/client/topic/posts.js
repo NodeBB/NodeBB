@@ -140,15 +140,21 @@ define('forum/topic/posts', [
 			pids.push(posts[i].pid);
 		}
 
-		socket.emit('posts.getPrivileges', pids, function(err, privileges) {
-			if(err) {
-				return app.alertError(err.message);
-			}
+		if (app.user.uid) {
+			socket.emit('posts.getPrivileges', pids, function(err, privileges) {
+				if(err) {
+					return app.alertError(err.message);
+				}
 
+				for(i=0; i<pids.length; ++i) {
+					toggleModTools(pids[i], privileges[i]);
+				}
+			});
+		} else {
 			for(i=0; i<pids.length; ++i) {
-				toggleModTools(pids[i], privileges[i]);
+				toggleModTools(pids[i], {editable:false, move: false});
 			}
-		});
+		}
 
 		Posts.processPage(html);
 	}
