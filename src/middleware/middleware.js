@@ -212,7 +212,7 @@ middleware.buildBreadcrumbs = function(req, res, next) {
 					}
 
 					breadcrumbs.unshift({
-						text: data.name,
+						text: validator.escape(data.name),
 						url: nconf.get('relative_path') + '/category/' + data.slug
 					});
 
@@ -242,7 +242,7 @@ middleware.buildBreadcrumbs = function(req, res, next) {
 	if (req.params.topic_id) {
 		topics.getTopicFields(parseInt(req.params.topic_id, 10), ['cid', 'title', 'slug'], function(err, data) {
 			breadcrumbs.unshift({
-				text: data.title,
+				text: validator.escape(data.title),
 				url: nconf.get('relative_path') + '/topic/' + data.slug
 			});
 
