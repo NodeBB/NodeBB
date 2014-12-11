@@ -220,11 +220,15 @@ function killWorkers() {
 	});
 }
 
-Loader.notifyWorkers = function (msg, worker_pid) {
+Loader.notifyWorkers = function(msg, worker_pid) {
 	worker_pid = parseInt(worker_pid, 10);
 	workers.forEach(function(worker) {
 		if (parseInt(worker.pid, 10) !== worker_pid) {
-			worker.send(msg);
+			try {
+				worker.send(msg);
+			} catch (e) {
+				console.log('[cluster/notifyWorkers] Failed to reach pid ' + worker_pid);
+			}
 		}
 	});
 };
