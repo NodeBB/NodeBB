@@ -78,6 +78,13 @@ var fs = require('fs'),
 		events.logWithUser(uid, 'restored topic (tid ' + tid + ')');
 	};
 
+	events.logAccountLock = function(uid, until) {
+		var date = new Date();
+		date.setTime(date.getTime() + until);
+
+		events.logWithUser(uid, 'locked out until ' + date.toString());
+	};
+
 	events.logWithUser = function(uid, string) {
 		user.getUserField(uid, 'username', function(err, username) {
 			if(err) {
