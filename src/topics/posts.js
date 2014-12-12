@@ -23,7 +23,7 @@ module.exports = function(Topics) {
 			},
 			function(next) {
 				Topics.addPostToTopic(postData.tid, postData.pid, postData.timestamp, 0, next);
-			}
+			},
 		], callback);
 	};
 
@@ -134,43 +134,55 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.getLatestUndeletedPost = function(tid, callback) {
-		Topics.getLatestUndeletedPid(tid, function(err, pid) {
-			if(err) {
+	Topics.getLatestUndeletedPid = function(tid, callback) {
+		Topics.getLatestUndeletedReply(tid, function(err, pid) {
+			if (err) {
 				return callback(err);
 			}
-
-			posts.getPostData(pid, callback);
+			if (parseInt(pid, 10)) {
+				return callback(null, pid.toString());
+			}
+			Topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
+				callback(err, parseInt(mainPid, 10) ? mainPid.toString() : null);
+			});
 		});
 	};
 
-	Topics.getLatestUndeletedPid = function(tid, callback) {
-		async.parallel({
-			mainPid: function(next) {
-				Topics.getTopicField(tid, 'mainPid', next);
-			},
-			pids: function(next) {
-				db.getSortedSetRevRange('tid:' + tid + ':posts', 0, -1, next);
-			}
-		}, function(err, results) {
-			if(err) {
-				return callback(err);
-			}
+	Topics.getLatestUndeletedReply = function(tid, callback) {
+		var isDeleted = false;
+		var done = false;
+		var latestPid = null;
+		var index = 0;
+		async.doWhilst(
+			function(next) {
+				db.getSortedSetRevRange('tid:' + tid + ':posts', index, index, function(err, pids) {
+					if (err) {
+						return next(err);
+					}
 
-			if (!results.mainPid && (!Array.isArray(results.pids) || !results.pids.length)) {
-				return callback(null, null);
-			}
+					if (!Array.isArray(pids) || !pids.length) {
+						done = true;
+						return next();
+					}
 
-			results.pids.push(results.mainPid);
-
-			async.detectSeries(results.pids, function(pid, next) {
-				posts.getPostField(pid, 'deleted', function(err, deleted) {
-					next(parseInt(deleted, 10) === 0);
+					posts.getPostField(pids[0], 'deleted', function(err, deleted) {
+						if (err) {
+							return next(err);
+						}
+						latestPid = pids[0];
+						isDeleted = deleted;
+						++index;
+						next();
+					});
 				});
-			}, function(pid) {
-				callback(null, pid ? pid.toString() : null);
-			});
-		});
+			},
+			function() {
+				return isDeleted && !done;
+			},
+			function(err) {
+				callback(err, latestPid);
+			}
+		);
 	};
 
 	Topics.addPostToTopic = function(tid, pid, timestamp, votes, callback) {
@@ -188,7 +200,12 @@ module.exports = function(Topics) {
 					function(next) {
 						db.sortedSetAdd('tid:' + tid + ':posts:votes', votes, pid, next);
 					}
-				], callback);
+				], function(err) {
+					if (err) {
+						return callback(err);
+					}
+					Topics.updateTeaser(tid, callback);
+				});
 			}
 		});
 	};
@@ -202,7 +219,10 @@ module.exports = function(Topics) {
 				db.sortedSetRemove('tid:' + tid + ':posts:votes', pid, next);
 			}
 		], function(err, results) {
-			callback(err);
+			if (err) {
+				return callback(err);
+			}
+			Topics.updateTeaser(tid, callback);
 		});
 	};
 

@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 11, 2);
+	latestSchema = Date.UTC(2014, 11, 12);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -387,6 +387,32 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/12/2] Removing register user fields skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 11, 12);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/12/12] Updating teasers');
+
+				db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
+					if (err) {
+						return next(err);
+					}
+
+					async.eachLimit(tids, 50, function(tid, next) {
+						Topics.updateTeaser(tid, next);
+					}, function(err) {
+						if (err) {
+							winston.error('[2014/12/12] Error encountered while updating teasers');
+							return next(err);
+						}
+						winston.info('[2014/12/12] Updating teasers done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2014/12/12] Updating teasers skipped skipped');
 				next();
 			}
 		}

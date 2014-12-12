@@ -168,6 +168,9 @@ module.exports = function(Posts) {
 							topics.decreasePostCount(postData.tid, next);
 						},
 						function(next) {
+							topics.updateTeaser(postData.tid, next);
+						},
+						function(next) {
 							user.incrementUserPostCountBy(postData.uid, -1, next);
 						},
 					], callback);
