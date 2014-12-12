@@ -86,6 +86,11 @@ module.exports = function(Topics) {
 				if (!post || !post.tid) {
 					return next(new Error('[[error:no-post]]'));
 				}
+
+				if (parseInt(post.tid, 10) === parseInt(tid, 10)) {
+					return next(new Error('[[error:cant-move-to-same-topic]]'))
+				}
+
 				postData = post;
 				postData.pid = pid;
 
