@@ -124,6 +124,26 @@ topicsController.get = function(req, res, next) {
 			});
 		},
 		function (topicData, next) {
+			var breadcrumbs = [
+				{
+					text: topicData.category.name,
+					url: nconf.get('relative_path') + '/category/' + topicData.category.slug
+				},
+				{
+					text: topicData.title,
+					url: nconf.get('relative_path') + '/topic/' + topicData.slug
+				}
+			];
+
+			helpers.buildBreadcrumbs(topicData.category.parentCid, function(err, crumbs) {
+				if (err) {
+					return next(err);
+				}
+				topicData.breadcrumbs = crumbs.concat(breadcrumbs);
+				next(null, topicData);
+			});
+		},
+		function (topicData, next) {
 			var description = '';
 
 			if (topicData.posts[0] && topicData.posts[0].content) {
@@ -245,7 +265,6 @@ topicsController.get = function(req, res, next) {
 			}
 		}
 
-		data.breadcrumbs = res.locals.breadcrumbs;
 		res.render('topic', data);
 	});
 };
