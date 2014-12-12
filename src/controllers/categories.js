@@ -173,6 +173,21 @@ categoriesController.get = function(req, res, next) {
 			categories.getCategoryById(payload, next);
 		},
 		function(categoryData, next) {
+			var breadcrumbs = [
+				{
+					text: categoryData.name,
+					url: nconf.get('relative_path') + '/category/' + categoryData.slug
+				}
+			];
+			helpers.buildBreadcrumbs(categoryData.parentCid, function(err, crumbs) {
+				if (err) {
+					return next(err);
+				}
+				categoryData.breadcrumbs = crumbs.concat(breadcrumbs);
+				next(null, categoryData);
+			});
+		},
+		function(categoryData, next) {
 			if (categoryData.link) {
 				return res.redirect(categoryData.link);
 			}
@@ -243,7 +258,6 @@ categoriesController.get = function(req, res, next) {
 			}
 		}
 
-		data.breadcrumbs = res.locals.breadcrumbs;
 		res.render('category', data);
 	});
 };

@@ -1,6 +1,12 @@
 'use strict';
 
-var nconf = require('nconf');
+var nconf = require('nconf'),
+	async = require('async'),
+	validator = require('validator'),
+
+	translator = require('../../public/src/translator'),
+	categories = require('../categories'),
+	meta = require('../meta');
 
 var helpers = {};
 
@@ -32,5 +38,39 @@ helpers.notAllowed = function(req, res, error) {
 	}
 };
 
+helpers.buildBreadcrumbs = function(cid, callback) {
+	var breadcrumbs = [];
+
+	async.whilst(function() {
+		return parseInt(cid, 10);
+	}, function(next) {
+		categories.getCategoryFields(cid, ['name', 'slug', 'parentCid'], function(err, data) {
+			if (err) {
+				return next(err);
+			}
+
+			breadcrumbs.unshift({
+				text: validator.escape(data.name),
+				url: nconf.get('relative_path') + '/category/' + data.slug
+			});
+
+			cid = data.parentCid;
+			next();
+		});
+	}, function(err) {
+		if (err) {
+			return callback(err);
+		}
+
+		translator.translate('[[global:home]]', meta.config.defaultLang || 'en_GB', function(translated) {
+			breadcrumbs.unshift({
+				text: translated,
+				url: nconf.get('relative_path') + '/'
+			});
+
+			callback(null, breadcrumbs);
+		});
+	});
+};
 
 module.exports = helpers;
