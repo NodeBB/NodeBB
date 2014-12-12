@@ -175,6 +175,9 @@ module.exports = function(Topics) {
 
 	Topics.addPostToTopic = function(tid, pid, timestamp, votes, callback) {
 		Topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
+			if (err) {
+				return callback(err);
+			}
 			if (!parseInt(mainPid, 10)) {
 				Topics.setTopicField(tid, 'mainPid', pid, callback);
 			} else {
