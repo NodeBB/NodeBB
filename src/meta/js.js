@@ -177,11 +177,14 @@ module.exports = function(Meta) {
 			});
 
 			Meta.js.prepare(function() {
-				minifier.send({
-					action: 'js',
-					minify: global.env !== 'development',
-					scripts: Meta.js.scripts.all
-				});
+				setTimeout(
+					function() {
+						minifier.send({
+							action: 'js',
+							minify: global.env !== 'development',
+							scripts: Meta.js.scripts.all
+						});
+					}, 100);
 			});
 		} else {
 			if (typeof callback === 'function') {
