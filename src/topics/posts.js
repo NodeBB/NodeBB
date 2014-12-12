@@ -201,7 +201,9 @@ module.exports = function(Topics) {
 			function (next) {
 				db.sortedSetRemove('tid:' + tid + ':posts:votes', pid, next);
 			}
-		], callback);
+		], function(err, results) {
+			callback(err);
+		});
 	};
 
 	Topics.getPids = function(tid, callback) {

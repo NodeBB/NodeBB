@@ -4,12 +4,13 @@
 var async = require('async'),
 	winston = require('winston'),
 
-	db = require('./../database'),
+	db = require('../database'),
 
-	posts = require('./../posts'),
+	posts = require('../posts'),
 	privileges = require('../privileges'),
-	postTools = require('./../postTools'),
-	threadTools = require('./../threadTools');
+	postTools = require('../postTools'),
+	plugins = require('../plugins'),
+	threadTools = require('../threadTools');
 
 
 module.exports = function(Topics) {
@@ -70,41 +71,48 @@ module.exports = function(Topics) {
 	};
 
 	Topics.movePostToTopic = function(pid, tid, callback) {
-		threadTools.exists(tid, function(err, exists) {
-			if (err || !exists) {
-				return callback(err || new Error('[[error:no-topic]]'));
-			}
-
-			posts.getPostFields(pid, ['tid', 'timestamp', 'votes'], function(err, postData) {
-				if (err) {
-					return callback(err);
+		var postData;
+		async.waterfall([
+			function(next) {
+				threadTools.exists(tid, next);
+			},
+			function(exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-topic]]'));
 				}
-
-				if (!postData || !postData.tid) {
-					return callback(new Error('[[error:no-post]]'));
+				posts.getPostFields(pid, ['tid', 'timestamp', 'votes'], next);
+			},
+			function(post, next) {
+				if (!post || !post.tid) {
+					return next(new Error('[[error:no-post]]'));
 				}
+				postData = post;
+				postData.pid = pid;
 
-				Topics.removePostFromTopic(postData.tid, pid, function(err) {
-					if (err) {
-						return callback(err);
+				Topics.removePostFromTopic(postData.tid, pid, next);
+			},
+			function(next) {
+				async.parallel([
+					function(next) {
+						Topics.decreasePostCount(postData.tid, next);
+					},
+					function(next) {
+						Topics.increasePostCount(tid, next);
+					},
+					function(next) {
+						posts.setPostField(pid, 'tid', tid, next);
+					},
+					function(next) {
+						Topics.addPostToTopic(tid, pid, postData.timestamp, postData.votes, next);
 					}
-
-					async.parallel([
-						function(next) {
-							Topics.decreasePostCount(postData.tid, next);
-						},
-						function(next) {
-							Topics.increasePostCount(tid, next);
-						},
-						function(next) {
-							posts.setPostField(pid, 'tid', tid, next);
-						},
-						function(next) {
-							Topics.addPostToTopic(tid, pid, postData.timestamp, postData.votes, next);
-						}
-					], callback);
-				});
-			});
+				], next);
+			}
+		], function(err) {
+			if (err) {
+				return callback(err);
+			}
+			plugins.fireHook('action:post.move', {post: postData, tid: tid});
+			callback(null);
 		});
 	};
 };
