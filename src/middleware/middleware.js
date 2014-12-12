@@ -60,9 +60,9 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 		}
 
 		if (res.locals.isAPI) {
-			res.status(302).json('/user/' + userslug);
+			res.status(302).json(nconf.get('relative_path') + '/user/' + userslug);
 		} else {
-			res.redirect('/user/' + userslug);
+			res.redirect(nconf.get('relative_path') + '/user/' + userslug);
 		}
 	});
 };
@@ -70,7 +70,7 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 middleware.redirectToLoginIfGuest = function(req, res, next) {
 	if (!req.user || parseInt(req.user.uid, 10) === 0) {
 		req.session.returnTo = req.url;
-		return res.redirect('/login');
+		return res.redirect(nconf.get('relative_path') + '/login');
 	} else {
 		next();
 	}
