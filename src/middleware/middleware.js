@@ -69,7 +69,7 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 
 middleware.redirectToLoginIfGuest = function(req, res, next) {
 	if (!req.user || parseInt(req.user.uid, 10) === 0) {
-		req.session.returnTo = req.url;
+		req.session.returnTo = nconf.get('relative_path') + req.url;
 		return res.redirect(nconf.get('relative_path') + '/login');
 	} else {
 		next();
