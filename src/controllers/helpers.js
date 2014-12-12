@@ -23,10 +23,10 @@ helpers.notAllowed = function(req, res, error) {
 		}
 	} else {
 		if (res.locals.isAPI) {
-			req.session.returnTo = req.url.replace(/^\/api/, '');
+			req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
 			res.status(401).json('not-authorized');
 		} else {
-			req.session.returnTo = req.url;
+			req.session.returnTo = nconf.get('relative_path') + req.url;
 			res.redirect(nconf.get('relative_path') + '/login');
 		}
 	}
