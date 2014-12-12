@@ -96,7 +96,7 @@ function groupRoutes(app, middleware, controllers) {
 }
 
 function setupPageRoute(router, name, middleware, middlewares, controller) {
-	middlewares = middlewares.concat([middleware.incrementPageViews, middleware.updateLastOnlineTime]);
+	middlewares = middlewares.concat([middleware.pageView]);
 
 	router.get(name, middleware.buildHeader, middlewares, controller);
 	router.get('/api' + name, middlewares, controller);
