@@ -23,7 +23,7 @@ module.exports = function(Topics) {
 			},
 			function(next) {
 				Topics.addPostToTopic(postData.tid, postData.pid, postData.timestamp, 0, next);
-			},
+			}
 		], callback);
 	};
 
