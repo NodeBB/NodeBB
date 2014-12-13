@@ -125,7 +125,7 @@ module.exports = function(Posts) {
 				},
 				function(next) {
 					db.sortedSetsRemove(['posts:pid', 'posts:flagged'], pid, next);
-				},
+				}
 			], function(err) {
 				if (err) {
 					return callback(err);
