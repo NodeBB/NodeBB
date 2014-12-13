@@ -36,7 +36,6 @@ Sockets.init = function(server) {
 	io.on('connection', onConnection);
 
 	io.listen(server, {
-		pingTimeout: 30,
 		transports: ['websocket', 'polling']
 	});
 
