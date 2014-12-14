@@ -424,7 +424,7 @@ var fs = require('fs'),
 
 		}, function(err, values) {
 			if (err) {
-				winston.error('[plugins] Problem executing hook: ' + hook + ' err: ' + err.stack);
+				winston.error('[plugins] ' + hook + ',  ' + err.message);
 			}
 
 			callback(err, values);
