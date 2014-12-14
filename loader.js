@@ -1,6 +1,7 @@
 'use strict';
 
 var	nconf = require('nconf'),
+	net = require('net'),
 	fs = require('fs'),
 	url = require('url'),
 	path = require('path'),
@@ -15,6 +16,7 @@ var	nconf = require('nconf'),
 	output = logrotate({ file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true }),
 	silent = process.env.NODE_ENV !== 'development',
 	numProcs,
+
 	workers = [],
 
 	Loader = {
@@ -30,6 +32,7 @@ var	nconf = require('nconf'),
 	};
 
 Loader.init = function(callback) {
+
 	if (silent) {
 		console.log = function(value) {
 			output.write(value + '\n');
@@ -80,6 +83,8 @@ Loader.addWorkerEvents = function(worker) {
 
 	worker.on('message', function(message) {
 		if (message && typeof message === 'object' && message.action) {
+			var otherWorkers;
+
 			switch (message.action) {
 				case 'ready':
 					if (Loader.js.cache) {
@@ -132,6 +137,11 @@ Loader.addWorkerEvents = function(worker) {
 						hash: message.hash
 					}, worker.pid);
 				break;
+				case 'listening':
+					if (message.primary) {
+						Loader.primaryWorker = parseInt(worker.pid, 10);
+					}
+				break;
 				case 'config:update':
 					Loader.notifyWorkers(message);
 				break;
@@ -141,7 +151,6 @@ Loader.addWorkerEvents = function(worker) {
 };
 
 Loader.start = function(callback) {
-	numProcs = getPorts().length;
 	console.log('Clustering enabled: Spinning up ' + numProcs + ' process(es).\n');
 
 	for (var x=0; x<numProcs; ++x) {
@@ -154,19 +163,16 @@ Loader.start = function(callback) {
 };
 
 function forkWorker(index, isPrimary) {
-	var ports = getPorts();
-
-	if(!ports[index]) {
-		return console.log('[cluster] invalid port for worker : ' + index + ' ports: ' + ports.length);
-	}
-
-	process.env.isPrimary = isPrimary;
-	process.env.isCluster = true;
-	process.env.port = ports[index];
+	var urlObject = url.parse(nconf.get('url'));
+	var port = urlObject.port || nconf.get('port') || nconf.get('PORT') || 4567;
 
 	var worker = fork('app.js', [], {
 		silent: silent,
-		env: process.env
+		env: {
+			isPrimary: isPrimary,
+			isCluster: true,
+			port: parseInt(port, 10) + index
+		}
 	});
 
 	worker.index = index;
@@ -181,15 +187,6 @@ function forkWorker(index, isPrimary) {
 		worker.stdout.pipe(output);
 		worker.stderr.pipe(output);
 	}
-}
-
-function getPorts() {
-	var urlObject = url.parse(nconf.get('url'));
-	var port = nconf.get('port') || nconf.get('PORT') || urlObject.port || 4567;
-	if (!Array.isArray(port)) {
-		port = [port];
-	}
-	return port;
 }
 
 Loader.restart = function() {
@@ -220,15 +217,11 @@ function killWorkers() {
 	});
 }
 
-Loader.notifyWorkers = function(msg, worker_pid) {
+Loader.notifyWorkers = function (msg, worker_pid) {
 	worker_pid = parseInt(worker_pid, 10);
 	workers.forEach(function(worker) {
 		if (parseInt(worker.pid, 10) !== worker_pid) {
-			try {
-				worker.send(msg);
-			} catch (e) {
-				console.log('[cluster/notifyWorkers] Failed to reach pid ' + worker_pid);
-			}
+			worker.send(msg);
 		}
 	});
 };
@@ -236,6 +229,9 @@ Loader.notifyWorkers = function(msg, worker_pid) {
 nconf.argv().file({
 	file: path.join(__dirname, '/config.json')
 });
+
+numProcs = nconf.get('cluster') || 1;
+numProcs = (numProcs === true) ? require('os').cpus().length : numProcs;
 
 if (nconf.get('daemon') !== false) {
 	if (fs.existsSync(pidFilePath)) {
@@ -248,10 +244,7 @@ if (nconf.get('daemon') !== false) {
 		}
 	}
 
-	require('daemon')({
-		stdout: process.stdout,
-		stderr: process.stderr
-	});
+	require('daemon')();
 
 	fs.writeFile(__dirname + '/pidfile', process.pid);
 }
