@@ -1,7 +1,10 @@
 "use strict";
 /*global define, templates, socket, ajaxify, app, admin, bootbox*/
 
-define('admin/manage/groups', ['admin/modules/iconSelect'], function(iconSelect) {
+define('admin/manage/groups', [
+	'admin/modules/iconSelect',
+	'admin/modules/colorpicker'
+], function(iconSelect, colorpicker) {
 	var	Groups = {};
 
 	Groups.init = function() {
@@ -219,7 +222,7 @@ define('admin/manage/groups', ['admin/modules/iconSelect'], function(iconSelect)
 			iconSelect.init(groupIcon);
 		});
 
-		admin.enableColorPicker(changeGroupLabelColor, function(hsb, hex) {
+		colorpicker.enable(changeGroupLabelColor, function(hsb, hex) {
 			groupLabelPreview.css('background-color', '#' + hex);
 		});
 

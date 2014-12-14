@@ -1,28 +1,7 @@
 "use strict";
 /*global define, socket, app, ajaxify, utils, Mousetrap, Hammer, RELATIVE_PATH*/
 
-var admin = {};
-
 (function() {
-	admin.enableColorPicker = function(inputEl, callback) {
-		(inputEl instanceof jQuery ? inputEl : $(inputEl)).each(function() {
-			var $this = $(this);
-
-			$this.ColorPicker({
-				color: $this.val() || '#000',
-				onChange: function(hsb, hex) {
-					$this.val('#' + hex);
-					if (typeof callback === 'function') {
-						callback(hsb, hex);
-					}
-				},
-				onShow: function(colpkr) {
-					$(colpkr).css('z-index', 1051);
-				}
-			});
-		});
-	};
-
 	$(document).ready(function() {
 		setupMenu();
 		setupKeybindings();
@@ -151,7 +130,7 @@ var admin = {};
 
 	function modifyBreadcrumb() {
 		var caret = ' <i class="fa fa-angle-right"></i> ';
-		
+
 		$('#breadcrumbs').html(caret + Array.prototype.slice.call(arguments).join(caret));
 	}
 
