@@ -1,7 +1,11 @@
 "use strict";
 /*global define, socket, app, bootbox, templates, ajaxify, RELATIVE_PATH*/
 
-define('admin/manage/categories', ['uploader', 'admin/modules/iconSelect'], function(uploader, iconSelect) {
+define('admin/manage/categories', [
+	'uploader',
+	'admin/modules/iconSelect',
+	'admin/modules/colorpicker'
+], function(uploader, iconSelect, colorpicker) {
 	var	Categories = {};
 
 	Categories.init = function() {
@@ -98,7 +102,7 @@ define('admin/manage/categories', ['uploader', 'admin/modules/iconSelect'], func
 			var $inputEl = $(inputEl),
 				previewEl = $inputEl.parents('[data-cid]').find('.preview-box');
 
-			admin.enableColorPicker($inputEl, function(hsb, hex) {
+			colorpicker.enable($inputEl, function(hsb, hex) {
 				if ($inputEl.attr('data-name') === 'bgColor') {
 					previewEl.css('background', '#' + hex);
 				} else if ($inputEl.attr('data-name') === 'color') {
