@@ -123,7 +123,9 @@ function start() {
 		winston.info('Time: %s', (new Date()).toString());
 		winston.info('Initializing NodeBB v%s', pkg.version);
 		winston.verbose('* using configuration stored in: %s', configFile);
+	}
 
+	if (cluster.isWorker && process.env.cluster_setup === 'true') {
 		var host = nconf.get(nconf.get('database') + ':host'),
 			storeLocation = host ? 'at ' + host + (host.indexOf('/') === -1 ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';
 
@@ -179,7 +181,7 @@ function start() {
 					process.on('SIGTERM', shutdown);
 					process.on('SIGINT', shutdown);
 					process.on('SIGHUP', restart);
-					process.on('message', function(message) {
+					process.on('message', function(message, connection) {
 						switch(message.action) {
 							case 'reload':
 								meta.reload();
@@ -196,6 +198,54 @@ function start() {
 								meta.css.hash = message.hash;
 								winston.verbose('[cluster] Stylesheets propagated to worker %s', cluster.worker.id);
 							break;
+
+							case 'sticky-session:sync':
+						        /**
+						          * Reading data once from file descriptor and extract ip from the header.
+						          */
+						        connection.once( 'data', function( data )
+						        {
+							        var strData = data.toString().toLowerCase();
+							        var searchPos = strData.indexOf( process.env.proxy_header );
+							        var endPos = 0;
+
+							        /**
+							          * If the header was not found return, probably unwanted behavior.
+							          */
+							        if( searchPos === -1 )
+							          return;            
+
+							        searchPos = strData.indexOf( ':', searchPos ) + 1;
+
+							        strData = strData.substr( searchPos );
+
+							        endPos = strData.search( /\r\n|\r|\n/, searchPos );
+							        strData = strData.substr( 0, endPos ).trim().split( ':', 1 );
+							        strData = strData[ 0 ];
+
+						          	//Send ackknownledge + data and real ip adress back to master
+						        	process.send( { action: 'sticky-session:ack', realIP: strData, data: data }, connection );
+
+						        } ); 
+						    break;
+
+					        case 'sticky-session:syncconnection':
+
+						        webserver.server.emit('connection', connection );
+
+						        /**
+						          * We're going to push the packet back to the net controller,
+						          * to let this node complete the original request.
+						          */
+
+						          //node96 to node1113 only method
+						          connection._handle.onread( Buffer( message.data ), 0, message.data.length );
+					        break;
+
+					        case 'sticky-session:connection':
+					        	webserver.server.emit( 'connection', connection );
+					        break;
+
 						}
 					});
 

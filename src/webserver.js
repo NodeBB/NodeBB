@@ -99,18 +99,25 @@ if(nconf.get('ssl')) {
 		emitter.emit('nodebb:ready');
 	});
 
-	server.setTimeout(10000);
-
 	module.exports.listen = function(callback) {
 		logger.init(app);
 
 		var	bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
 		if (cluster.isWorker) {
 			port = 0;
+			// Monkey patch server to do not bind to port
+		    var oldListen = server.listen;
+		    server.listen = function listen() {
+		      var lastArg = arguments[arguments.length - 1];
+
+		      if (typeof lastArg === 'function') lastArg();
+
+		      return oldListen.call(this, null);
+		    };
 		}
 		server.listen(port, nconf.get('bind_address'), function(err) {
 			if (err) {
-				winston.info('[startup] NodeBB was unable to listen on: ' + bind_address);
+				winston.info('NodeBB was unable to listen on: ' + bind_address);
 				return callback(err);
 			}
 
@@ -126,14 +133,5 @@ if(nconf.get('ssl')) {
 			callback();
 		});
 	};
-
-	process.on('message', function(message, connection) {
-		if (!message || message.action !== 'sticky-session:connection') {
-			return;
-		}
-
-		process.send({action: 'sticky-session:accept', handleIndex: message.handleIndex});
-		server.emit('connection', connection);
-	});
 
 }(WebServer));

@@ -48,6 +48,7 @@
     "passport": "^0.2.1",
     "passport-local": "1.0.0",
     "prompt": "^0.2.14",
+    "random-js": "^1.0.4",
     "request": "^2.44.0",
     "rimraf": "~2.2.6",
     "rss": "^1.0.0",
