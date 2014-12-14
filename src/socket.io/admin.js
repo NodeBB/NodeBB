@@ -2,6 +2,7 @@
 
 var	async = require('async'),
 	winston = require('winston'),
+	cluster = require('cluster'),
 	fs = require('fs'),
 	path = require('path'),
 
@@ -50,7 +51,7 @@ SocketAdmin.before = function(socket, method, next) {
 
 SocketAdmin.reload = function(socket, data, callback) {
 	events.logWithUser(socket.uid, ' is reloading NodeBB');
-	if (process.send) {
+	if (cluster.isWorker) {
 		process.send({
 			action: 'reload'
 		});

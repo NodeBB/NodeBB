@@ -9,6 +9,7 @@ var path = require('path'),
 	server,
 	winston = require('winston'),
 	async = require('async'),
+	cluster = require('cluster'),
 
 	emailer = require('./emailer'),
 	meta = require('./meta'),
@@ -18,8 +19,7 @@ var path = require('path'),
 	routes = require('./routes'),
 	emitter = require('./emitter'),
 
-	helpers = require('./../public/src/helpers')(),
-	net;
+	helpers = require('./../public/src/helpers')();
 
 if(nconf.get('ssl')) {
 	server = require('https').createServer({
@@ -82,7 +82,11 @@ if(nconf.get('ssl')) {
 		console.log(err.stack);
 		if (err.code === 'EADDRINUSE') {
 			winston.error('NodeBB address in use, exiting...');
-			process.exit(0);
+			if (cluster.isWorker) {
+				cluster.worker.kill();
+			} else {
+				process.exit(0);
+			}
 		} else {
 			throw err;
 		}
@@ -100,66 +104,36 @@ if(nconf.get('ssl')) {
 	module.exports.listen = function(callback) {
 		logger.init(app);
 
-		var isSocket = isNaN(port),
-			args = isSocket ? [port] : [port, nconf.get('bind_address')],
-			bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port,
-			oldUmask;
-
-		args.push(function(err) {
+		var	bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
+		if (cluster.isWorker) {
+			port = 0;
+		}
+		server.listen(port, nconf.get('bind_address'), function(err) {
 			if (err) {
 				winston.info('[startup] NodeBB was unable to listen on: ' + bind_address);
 				return callback(err);
 			}
 
-			winston.info('NodeBB is now listening on: ' + (isSocket ? port : bind_address));
-			if (oldUmask) {
-				process.umask(oldUmask);
+			winston.info('NodeBB is now listening on: ' + bind_address);
+			if (process.send) {
+				process.send({
+					action: 'listening',
+					bind_address: bind_address,
+					primary: process.env.handle_jobs === 'true'
+				});
 			}
 
 			callback();
 		});
+	};
 
-		// Alter umask if necessary
-		if (isSocket) {
-			oldUmask = process.umask('0000');
-			net = require('net');
-			module.exports.testSocket(port, function(err) {
-				if (!err) {
-					server.listen.apply(server, args);
-				} else {
-					winston.error('[startup] NodeBB was unable to secure domain socket access (' + port + ')');
-					winston.error('[startup] ' + err.message);
-					process.exit();
-				}
-			});
-		} else {
-			server.listen.apply(server, args);
+	process.on('message', function(message, connection) {
+		if (!message || message.action !== 'sticky-session:connection') {
+			return;
 		}
-	};
 
-	module.exports.testSocket = function(socketPath, callback) {
-		async.series([
-			function(next) {
-				fs.exists(socketPath, function(exists) {
-					if (exists) {
-						next();
-					} else {
-						callback();
-					}
-				});
-			},
-			function(next) {
-				var testSocket = new net.Socket();
-				testSocket.on('error', function(err) {
-					next(err.code !== 'ECONNREFUSED' ? err : null);
-				});
-				testSocket.connect({ path: socketPath }, function() {
-					// Something's listening here, abort
-					callback(new Error('port-in-use'));
-				});
-			},
-			async.apply(fs.unlink, socketPath),	// The socket was stale, kick it out of the way
-		], callback);
-	};
+		process.send({action: 'sticky-session:accept', handleIndex: message.handleIndex});
+		server.emit('connection', connection);
+	});
 
 }(WebServer));

@@ -30,6 +30,7 @@ var fs = require('fs'),
 	semver = require('semver'),
 	winston = require('winston'),
 	path = require('path'),
+	cluster = require('cluster'),
 	pkg = require('./package.json'),
 	utils = require('./public/src/utils.js');
 
@@ -59,7 +60,7 @@ if(os.platform() === 'linux') {
 	});
 }
 
-if (!process.send) {
+if (!cluster.isWorker) {
 	// If run using `node app`, log GNU copyright info along with server info
 	winston.info('NodeBB v' + pkg.version + ' Copyright (C) 2013-2014 NodeBB Inc.');
 	winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
@@ -97,11 +98,6 @@ function loadConfig() {
 		views_dir: path.join(__dirname, 'public/templates')
 	});
 
-	if (!nconf.get('isCluster')) {
-		nconf.set('isPrimary', 'true');
-		nconf.set('isCluster', 'false');
-	}
-
 	// Ensure themes_path is a full filepath
 	nconf.set('themes_path', path.resolve(__dirname, nconf.get('themes_path')));
 	nconf.set('core_templates_path', path.join(__dirname, 'src/views'));
@@ -123,7 +119,7 @@ function start() {
 	nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || 4567);
 	nconf.set('upload_url', relativePath + '/uploads/');
 
-	if (nconf.get('isPrimary') === 'true') {
+	if (!cluster.isWorker || process.env.cluster_setup === 'true') {
 		winston.info('Time: %s', (new Date()).toString());
 		winston.info('Initializing NodeBB v%s', pkg.version);
 		winston.verbose('* using configuration stored in: %s', configFile);
@@ -157,7 +153,7 @@ function start() {
 					webserver.init();
 					sockets.init(webserver.server);
 
-					if (nconf.get('isPrimary') === 'true') {
+					if (cluster.isWorker && process.env.handle_jobs === 'true') {
 						require('./src/notifications').init();
 						require('./src/user').startJobs();
 					}
@@ -192,13 +188,13 @@ function start() {
 								meta.js.cache = message.cache;
 								meta.js.map = message.map;
 								meta.js.hash = message.hash;
-								winston.verbose('[cluster] Client-side javascript and mapping propagated to worker %s', process.pid);
+								winston.verbose('[cluster] Client-side javascript and mapping propagated to worker %s', cluster.worker.id);
 							break;
 							case 'css-propagate':
 								meta.css.cache = message.cache;
 								meta.css.acpCache = message.acpCache;
 								meta.css.hash = message.hash;
-								winston.verbose('[cluster] Stylesheets propagated to worker %s', process.pid);
+								winston.verbose('[cluster] Stylesheets propagated to worker %s', cluster.worker.id);
 							break;
 						}
 					});
@@ -213,7 +209,11 @@ function start() {
 				} else {
 					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
 					winston.warn('    ./nodebb upgrade');
-					process.exit();
+					if (cluster.isWorker) {
+						cluster.worker.kill();
+					} else {
+						process.exit();
+					}
 				}
 			});
 		});

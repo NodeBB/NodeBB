@@ -7,6 +7,7 @@ var winston = require('winston'),
 	_ = require('underscore'),
 	os = require('os'),
 	nconf = require('nconf'),
+	cluster = require('cluster'),
 	fs = require('fs'),
 
 	plugins = require('../plugins'),
@@ -126,7 +127,7 @@ module.exports = function(Meta) {
 	};
 
 	Meta.js.minify = function(minify, callback) {
-		if (nconf.get('isPrimary') === 'true') {
+		if (!cluster.isWorker || process.env.cluster_setup === 'true') {
 			var minifier = Meta.js.minifierProc = fork('minifier.js'),
 				onComplete = function(err) {
 					if (err) {
@@ -137,7 +138,7 @@ module.exports = function(Meta) {
 					winston.verbose('[meta/js] Minification complete');
 					minifier.kill();
 
-					if (process.send) {
+					if (cluster.isWorker) {
 						process.send({
 							action: 'js-propagate',
 							cache: Meta.js.cache,
@@ -213,7 +214,7 @@ module.exports = function(Meta) {
 			mapPath = path.join(__dirname, '../../public/nodebb.min.js.map');
 		fs.exists(scriptPath, function(exists) {
 			if (exists) {
-				if (nconf.get('isPrimary') === 'true') {
+				if (!cluster.isWorker || process.env.cluster_setup === 'true') {
 					winston.verbose('[meta/js] (Experimental) Reading client-side scripts from file');
 					async.map([scriptPath, mapPath], fs.readFile, function(err, files) {
 						Meta.js.cache = files[0];
