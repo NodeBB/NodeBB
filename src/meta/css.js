@@ -7,6 +7,7 @@ var winston = require('winston'),
 	less = require('less'),
 	crypto = require('crypto'),
 	async = require('async'),
+	cluster = require('cluster'),
 
 	plugins = require('../plugins'),
 	emitter = require('../emitter'),
@@ -21,7 +22,7 @@ module.exports = function(Meta) {
 	Meta.css.defaultBranding = {};
 
 	Meta.css.minify = function(callback) {
-		if (nconf.get('isPrimary') === 'true') {
+		if (!cluster.isWorker || process.env.cluster_setup === 'true') {
 			winston.verbose('[meta/css] Minifying LESS/CSS');
 			db.getObjectFields('config', ['theme:type', 'theme:id'], function(err, themeData) {
 				var themeId = (themeData['theme:id'] || 'nodebb-theme-vanilla'),
@@ -63,7 +64,7 @@ module.exports = function(Meta) {
 					}
 				], function(err, minified) {
 					// Propagate to other workers
-					if (process.send) {
+					if (cluster.isWorker) {
 						process.send({
 							action: 'css-propagate',
 							cache: minified[0],
@@ -80,7 +81,7 @@ module.exports = function(Meta) {
 				});
 			});
 		} else {
-			winston.verbose('[meta/css] Cluster worker ' + process.pid + ' skipping LESS/CSS compilation');
+			winston.verbose('[meta/css] Cluster worker ' + cluster.worker.id + ' skipping LESS/CSS compilation');
 			if (typeof callback === 'function') {
 				callback();
 			}
@@ -105,7 +106,7 @@ module.exports = function(Meta) {
 			acpCachePath = path.join(__dirname, '../../public/admin.css');
 		fs.exists(cachePath, function(exists) {
 			if (exists) {
-				if (nconf.get('isPrimary') === 'true') {
+				if (!cluster.isWorker || process.env.cluster_setup === 'true') {
 					winston.verbose('[meta/css] (Experimental) Reading stylesheets from file');
 					async.map([cachePath, acpCachePath], fs.readFile, function(err, files) {
 						Meta.css.cache = files[0];
@@ -124,7 +125,7 @@ module.exports = function(Meta) {
 		});
 	};
 
-	function minify(source, paths, destination, callback) {
+	function minify(source, paths, destination, callback) {	
 		less.render(source, {
 			paths: paths,
 			compress: true
@@ -148,7 +149,7 @@ module.exports = function(Meta) {
 			}
 
 			// Save the compiled CSS in public/ so things like nginx can serve it
-			if (nconf.get('isPrimary') === 'true') {
+			if (!cluster.isWorker || process.env.cluster_setup === 'true') {
 				Meta.css.commitToFile(destination);
 			}
 
