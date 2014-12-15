@@ -58,7 +58,7 @@ define('forum/topic', [
 
 		$(window).trigger('action:topic.loaded');
 
-		if (app.user.uid) {
+		if (app.uid) {
 			socket.emit('topics.enter', tid, function(err, data) {
 				if (err) {
 					return app.alertError(err.message);

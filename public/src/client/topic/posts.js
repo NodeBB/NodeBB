@@ -140,7 +140,7 @@ define('forum/topic/posts', [
 			pids.push(posts[i].pid);
 		}
 
-		if (app.user.uid) {
+		if (app.uid) {
 			socket.emit('posts.getPrivileges', pids, function(err, privileges) {
 				if(err) {
 					return app.alertError(err.message);
