@@ -76,7 +76,7 @@ var socket,
 			}, 200);
 		} else {
 			var ioParams = {
-				'max reconnection attempts': config.maxReconnectionAttempts,
+				reconnectionAttempts: config.maxReconnectionAttempts,
 				reconnectionDelay : config.reconnectionDelay,
 				path: RELATIVE_PATH + '/socket.io'
 			};
