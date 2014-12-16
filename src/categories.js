@@ -288,7 +288,7 @@ var async = require('async'),
 				// Filter categories to isolate children, and remove disabled categories
 				async.map(cids, function(cid, next) {
 					next(null, categories.filter(function(category) {
-						return parseInt(category.parentCid, 10) === parseInt(cid, 10) && !category.disabled;
+						return category && parseInt(category.parentCid, 10) === parseInt(cid, 10) && !category.disabled;
 					}));
 				}, next);
 			}
