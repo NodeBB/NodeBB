@@ -371,16 +371,24 @@ SocketPosts.flag = function(socket, pid, callback) {
 				return next(new Error('[[error:post-deleted]]'));
 			}
 			post = postData;
-			topics.getTopicField(postData.tid, 'title', next);
+			topics.getTopicFields(postData.tid, ['title', 'cid'], next);
 		},
-		function(topicTitle, next) {
-			message = '[[notifications:user_flagged_post_in, ' + userName + ', ' + topicTitle + ']]';
+		function(topic, next) {
+			post.topic = topic;
+			message = '[[notifications:user_flagged_post_in, ' + userName + ', ' + topic.title + ']]';
 			postTools.parsePost(post, socket.uid, next);
 		},
 		function(post, next) {
-			groups.get('administrators', {}, next);
+			async.parallel({
+				admins: function(next) {
+					groups.getMembers('administrators', next);
+				},
+				moderators: function(next) {
+					groups.getMembers('cid:' + post.topic.cid + ':privileges:mods', next);
+				}
+			}, next);
 		},
-		function(adminGroup, next) {
+		function(results, next) {
 			notifications.create({
 				bodyShort: message,
 				bodyLong: post.content,
@@ -391,7 +399,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 				if (err || !notification) {
 					return next(err);
 				}
-				notifications.push(notification, adminGroup.members, next);
+				notifications.push(notification, results.admins.concat(results.moderators), next);
 			});
 		},
 		function(next) {
