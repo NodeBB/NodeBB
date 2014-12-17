@@ -49,8 +49,14 @@ function onConnection(socket) {
 
 	onConnect(socket);
 
-	socket.on('disconnect', function() {
-		onDisconnect(socket);
+	// see https://github.com/Automattic/socket.io/issues/1814 and
+	// http://stackoverflow.com/questions/25830415/get-the-list-of-rooms-the-client-is-currently-in-on-disconnect-event
+	socket.onclose = function(reason) {
+		Object.getPrototypeOf(this).onclose.call(this, {reason: reason, rooms: socket.rooms.slice()});
+	};
+
+	socket.on('disconnect', function(data) {
+		onDisconnect(socket, data);
 	});
 
 	socket.on('*', function(payload) {
@@ -91,16 +97,19 @@ function onConnect(socket) {
 	}
 }
 
-function onDisconnect(socket) {
+function onDisconnect(socket, data) {
 	if (socket.uid) {
 		var socketCount = Sockets.getUserSocketCount(socket.uid);
 		if (socketCount <= 0) {
 			socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
 		}
 
-		// TODO: if we can get socket.rooms here this can be made more efficient,
-		// see https://github.com/Automattic/socket.io/issues/1897
-		io.sockets.in('online_users').emit('event:user_leave', socket.uid);
+		// see https://github.com/Automattic/socket.io/issues/1814
+		data.rooms.forEach(function(roomName) {
+			if (roomName.startsWith('topic')) {
+				io.sockets.in(roomName).emit('event:user_leave', socket.uid);
+			}
+		});
 	}
 }
 
