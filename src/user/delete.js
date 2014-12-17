@@ -3,7 +3,6 @@
 var async = require('async'),
 	db = require('../database'),
 	posts = require('../posts'),
-	user = require('../user'),
 	topics = require('../topics'),
 	groups = require('../groups'),
 	plugins = require('../plugins'),
@@ -40,7 +39,7 @@ module.exports = function(User) {
 	}
 
 	User.deleteAccount = function(uid, callback) {
-		user.getUserFields(uid, ['username', 'userslug', 'email'], function(err, userData) {
+		User.getUserFields(uid, ['username', 'userslug', 'email'], function(err, userData) {
 			if (err)  {
 				return callback(err);
 			}
