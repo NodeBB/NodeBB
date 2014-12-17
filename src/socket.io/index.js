@@ -36,7 +36,7 @@ Sockets.init = function(server) {
 	io.on('connection', onConnection);
 
 	io.listen(server, {
-		transports: ['websocket', 'polling']
+		transports: nconf.get('socketioTransports') || ['websocket', 'polling']
 	});
 
 	Sockets.server = io;

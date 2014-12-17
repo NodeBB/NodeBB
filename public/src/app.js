@@ -78,6 +78,7 @@ var socket,
 			var ioParams = {
 				reconnectionAttempts: config.maxReconnectionAttempts,
 				reconnectionDelay : config.reconnectionDelay,
+				transports: config.socketioTransports,
 				path: RELATIVE_PATH + '/socket.io'
 			};
 
