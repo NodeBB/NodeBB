@@ -216,6 +216,10 @@ middleware.renderHeader = function(req, res, callback) {
 	};
 
 	plugins.fireHook('filter:header.build', custom_header, function(err, custom_header) {
+		if (err) {
+			return next(err);
+		}
+
 		var defaultMetaTags = [{
 				name: 'viewport',
 				content: 'width=device-width, initial-scale=1.0, user-scalable=no'
@@ -259,6 +263,8 @@ middleware.renderHeader = function(req, res, callback) {
 				templateValues[key] = res.locals.config[key];
 			}
 		}
+
+		templateValues.config = JSON.stringify(res.locals.config);
 
 		templateValues.metaTags = defaultMetaTags.concat(res.locals.metaTags || []).map(function(tag) {
 			if(!tag || typeof tag.content !== 'string') {

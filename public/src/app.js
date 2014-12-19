@@ -1,8 +1,7 @@
 "use strict";
-/*global io, templates, translator, ajaxify, utils, bootbox, RELATIVE_PATH*/
+/*global io, templates, translator, ajaxify, utils, bootbox, RELATIVE_PATH, config*/
 
-var socket,
-	config,
+var	socket,
 	app = {
 		'username': null,
 		'uid': null,
@@ -16,6 +15,74 @@ var socket,
 (function () {
 	var showWelcomeMessage = false;
 	var reconnecting = false;
+
+	function socketIOConnect() {
+		var ioParams = {
+			reconnectionAttempts: config.maxReconnectionAttempts,
+			reconnectionDelay : config.reconnectionDelay,
+			transports: config.socketioTransports,
+			path: config.relative_path + '/socket.io'
+		};
+
+		socket = io.connect(config.websocketAddress, ioParams);
+		reconnecting = false;
+
+		socket.on('event:connect', function (data) {
+			// TODO : deprecate in 0.7.0, use app.user
+			app.username = data.username;
+			app.userslug = data.userslug;
+			app.picture = data.picture;
+			app.uid = data.uid;
+			app.isAdmin = data.isAdmin;
+
+			app.user = data;
+
+			app.showLoginMessage();
+			app.replaceSelfLinks();
+			$(window).trigger('action:connected');
+			app.isConnected = true;
+		});
+
+		socket.on('connect', onSocketConnect);
+
+		socket.on('event:disconnect', function() {
+			$(window).trigger('action:disconnected');
+			app.isConnected = false;
+			socket.socket.connect();
+		});
+
+		socket.on('reconnecting', function (data, attempt) {
+			if(attempt === parseInt(config.maxReconnectionAttempts, 10)) {
+				socket.socket.reconnectionAttempts = 0;
+				socket.socket.reconnectionDelay = config.reconnectionDelay;
+				return;
+			}
+
+			reconnecting = true;
+			var reconnectEl = $('#reconnect');
+
+			if (!reconnectEl.hasClass('active')) {
+				reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
+			}
+
+			reconnectEl.addClass('active').removeClass("hide").tooltip({
+				placement: 'bottom'
+			});
+		});
+
+		socket.on('event:banned', function() {
+			app.alert({
+				title: '[[global:alert.banned]]',
+				message: '[[global:alert.banned.message]]',
+				type: 'danger',
+				timeout: 1000
+			});
+
+			setTimeout(function() {
+				window.location.href = config.relative_path + '/';
+			}, 1000);
+		});
+	}
 
 	function onSocketConnect(data) {
 		if (reconnecting) {
@@ -63,109 +130,6 @@ var socket,
 			}, 3000);
 		}
 	}
-
-	function onConfigLoad(data) {
-		config = data;
-
-		exposeConfigToTemplates();
-
-		if(socket) {
-			socket.disconnect();
-			setTimeout(function() {
-				socket.connect();
-			}, 200);
-		} else {
-			var ioParams = {
-				reconnectionAttempts: config.maxReconnectionAttempts,
-				reconnectionDelay : config.reconnectionDelay,
-				transports: config.socketioTransports,
-				path: RELATIVE_PATH + '/socket.io'
-			};
-
-			socket = io.connect(config.websocketAddress, ioParams);
-			reconnecting = false;
-
-			socket.on('event:connect', function (data) {
-				// TODO : deprecate in 0.7.0, use app.user
-				app.username = data.username;
-				app.userslug = data.userslug;
-				app.picture = data.picture;
-				app.uid = data.uid;
-				app.isAdmin = data.isAdmin;
-
-				app.user = data;
-
-				templates.setGlobal('loggedIn', parseInt(data.uid, 10) !== 0);
-
-				app.showLoginMessage();
-				app.replaceSelfLinks();
-				$(window).trigger('action:connected');
-				app.isConnected = true;
-			});
-
-			socket.on('event:alert', function (data) {
-				app.alert(data);
-			});
-
-			socket.on('connect', onSocketConnect);
-
-			socket.on('event:disconnect', function() {
-				$(window).trigger('action:disconnected');
-				app.isConnected = false;
-				socket.socket.connect();
-			});
-
-			socket.on('reconnecting', function (data, attempt) {
-				if(attempt === parseInt(config.maxReconnectionAttempts, 10)) {
-					socket.socket.reconnectionAttempts = 0;
-					socket.socket.reconnectionDelay = config.reconnectionDelay;
-					return;
-				}
-
-				reconnecting = true;
-				var reconnectEl = $('#reconnect');
-
-				if (!reconnectEl.hasClass('active')) {
-					reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
-				}
-
-				reconnectEl.addClass('active').removeClass("hide").tooltip({
-					placement: 'bottom'
-				});
-			});
-
-			socket.on('event:banned', function() {
-				app.alert({
-					title: '[[global:alert.banned]]',
-					message: '[[global:alert.banned.message]]',
-					type: 'danger',
-					timeout: 1000
-				});
-
-				setTimeout(function() {
-					window.location.href = RELATIVE_PATH + '/';
-				}, 1000);
-			});
-
-			app.cacheBuster = config['cache-buster'];
-
-			require(['csrf'], function(csrf) {
-				csrf.set(data.csrf_token);
-			});
-
-			bootbox.setDefaults({
-				locale: config.userLang
-			});
-		}
-	}
-
-	app.loadConfig = function() {
-		$.ajax({
-			url: RELATIVE_PATH + '/api/config',
-			success: onConfigLoad,
-			async: false
-		});
-	};
 
 	app.logout = function() {
 		require(['csrf'], function(csrf) {
@@ -402,6 +366,7 @@ var socket,
 
 	function exposeConfigToTemplates() {
 		$(document).ready(function() {
+			templates.setGlobal('loggedIn', config.loggedIn);
 			templates.setGlobal('relative_path', RELATIVE_PATH);
 			for(var key in config) {
 				if (config.hasOwnProperty(key)) {
@@ -609,7 +574,20 @@ var socket,
 
 	showWelcomeMessage = window.location.href.indexOf('loggedin') !== -1;
 
-	app.loadConfig();
+	exposeConfigToTemplates();
+
+	socketIOConnect();
+
+	app.cacheBuster = config['cache-buster'];
+
+	require(['csrf'], function(csrf) {
+		csrf.set(config.csrf_token);
+	});
+
+	bootbox.setDefaults({
+		locale: config.userLang
+	});
+
 	app.alternatingTitle('');
 
 }());

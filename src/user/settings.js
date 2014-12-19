@@ -1,7 +1,8 @@
 
 'use strict';
 
-var	meta = require('../meta'),
+var	async = require('async'),
+	meta = require('../meta'),
 	db = require('../database'),
 	plugins = require('../plugins');
 
@@ -82,22 +83,30 @@ module.exports = function(User) {
 		data.language = data.language || meta.config.defaultLang;
 
 		plugins.fireHook('action:user.saveSettings', {uid: uid, settings: data});
-		db.setObject('user:' + uid + ':settings', {
-			showemail: data.showemail,
-			showfullname: data.showfullname,
-			openOutgoingLinksInNewTab: data.openOutgoingLinksInNewTab,
-			dailyDigestFreq: data.dailyDigestFreq || 'off',
-			usePagination: data.usePagination,
-			topicsPerPage: Math.min(data.topicsPerPage, 20),
-			postsPerPage: Math.min(data.postsPerPage, 20),
-			notificationSounds: data.notificationSounds,
-			language: data.language || meta.config.defaultLang,
-			followTopicsOnCreate: data.followTopicsOnCreate,
-			followTopicsOnReply: data.followTopicsOnReply,
-			sendChatNotifications: data.sendChatNotifications,
-			restrictChat: data.restrictChat,
-			topicSearchEnabled: data.topicSearchEnabled
-		}, callback);
+
+		async.waterfall([
+			function(next) {
+				db.setObject('user:' + uid + ':settings', {
+					showemail: data.showemail,
+					showfullname: data.showfullname,
+					openOutgoingLinksInNewTab: data.openOutgoingLinksInNewTab,
+					dailyDigestFreq: data.dailyDigestFreq || 'off',
+					usePagination: data.usePagination,
+					topicsPerPage: Math.min(data.topicsPerPage, 20),
+					postsPerPage: Math.min(data.postsPerPage, 20),
+					notificationSounds: data.notificationSounds,
+					language: data.language || meta.config.defaultLang,
+					followTopicsOnCreate: data.followTopicsOnCreate,
+					followTopicsOnReply: data.followTopicsOnReply,
+					sendChatNotifications: data.sendChatNotifications,
+					restrictChat: data.restrictChat,
+					topicSearchEnabled: data.topicSearchEnabled
+				}, next);
+			},
+			function(next) {
+				User.getSettings(uid, next);
+			}
+		], callback);
 	};
 
 	User.setSetting = function(uid, key, value, callback) {
