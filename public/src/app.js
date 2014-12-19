@@ -48,13 +48,12 @@ app.uid = null;
 		socket.on('event:disconnect', function() {
 			$(window).trigger('action:disconnected');
 			app.isConnected = false;
-			socket.socket.connect();
+			socket.connect();
 		});
 
-		socket.on('reconnecting', function (data, attempt) {
+		socket.on('reconnecting', function (attempt) {
 			if(attempt === parseInt(config.maxReconnectionAttempts, 10)) {
-				socket.socket.reconnectionAttempts = 0;
-				socket.socket.reconnectionDelay = config.reconnectionDelay;
+				socket.io.attempts = 0;
 				return;
 			}
 
