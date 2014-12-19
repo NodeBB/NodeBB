@@ -252,13 +252,6 @@ middleware.renderHeader = function(req, res, callback) {
 				navigation: custom_header.navigation,
 				allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
 				searchEnabled: plugins.hasListeners('filter:search.query')
-			},
-			escapeList = {
-				'&': '&amp;',
-				'<': '&lt;',
-				'>': '&gt;',
-				"'": '&apos;',
-				'"': '&quot;'
 			};
 
 		for (var key in res.locals.config) {
@@ -273,9 +266,7 @@ middleware.renderHeader = function(req, res, callback) {
 				return tag;
 			}
 
-			tag.content = tag.content.replace(/[&<>'"]/g, function(tag) {
-				return escapeList[tag] || tag;
-			});
+			tag.content = validator.escape(tag.content);
 			return tag;
 		});
 
