@@ -6,6 +6,7 @@ var async = require('async'),
 
 	posts = require('../posts'),
 	topics = require('../topics'),
+	user = require('../user'),
 	categories = require('../categories'),
 	meta = require('../meta'),
 	helpers = require('../controllers/helpers'),
@@ -92,6 +93,30 @@ function generateForTopic(req, res, next) {
 
 			sendFeed(feed, res);
 		});
+	});
+}
+
+function generateForUserTopics(req, res, next) {
+	var userslug = req.params.userslug;
+
+	async.waterfall([
+		function(next) {
+			user.getUidByUserslug(userslug, next);
+		},
+		function(uid, next) {
+			user.getUserFields(uid, ['uid', 'username'], next);
+		}
+	], function(err, userData) {
+		if (err) {
+			return next(err);
+		}
+
+		generateForTopics({
+			title: 'Topics by ' + userData.username,
+			description: 'A list of topics that are posted by ' + userData.username,
+			feed_url: '/user/' + userslug + '/topics.rss',
+			site_url: '/user/' + userslug + '/topics'
+		}, 'uid:' + userData.uid + ':topics', req, res, next);
 	});
 }
 
@@ -266,4 +291,5 @@ module.exports = function(app, middleware, controllers){
 	app.get('/popular.rss', disabledRSS, generateForPopular);
 	app.get('/recentposts.rss', disabledRSS, generateForRecentPosts);
 	app.get('/category/:category_id/recentposts.rss', hasCategoryPrivileges, disabledRSS, generateForCategoryRecentPosts);
+	app.get('/user/:userslug/topics.rss', disabledRSS, generateForUserTopics);
 };
