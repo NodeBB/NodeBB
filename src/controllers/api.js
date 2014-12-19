@@ -13,7 +13,7 @@ var apiController = {};
 apiController.getConfig = function(req, res, next) {
 	var config = {};
 	config.relative_path = nconf.get('relative_path');
-	config.socketioTransports = nconf.get('socketioTransports') || ['websocket', 'polling'];
+	config.socketioTransports = nconf.get('socket.io:transports') || ['websocket', 'polling'];
 	config.version = pkg.version;
 	config.siteTitle = meta.config.title || meta.config.browserTitle || 'NodeBB';
 	config.showSiteTitle = parseInt(meta.config.showSiteTitle, 10) === 1;
