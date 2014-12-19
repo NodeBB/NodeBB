@@ -154,7 +154,13 @@ function getTemplatesListing(req, res, next) {
 				if (err) {
 					return next(err);
 				}
-				config = JSON.parse(config.toString());
+
+				try {
+					config = JSON.parse(config.toString());
+				} catch (err) {
+					return next(err);
+				}
+
 				plugins.fireHook('filter:templates.get_config', config, next);
 			});
 		},
