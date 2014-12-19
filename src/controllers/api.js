@@ -14,6 +14,7 @@ apiController.getConfig = function(req, res, next) {
 	var config = {};
 	config.relative_path = nconf.get('relative_path');
 	config.socketioTransports = nconf.get('socket.io:transports') || ['websocket', 'polling'];
+	config.websocketAddress = nconf.get('socket.io:address') || '';
 	config.version = pkg.version;
 	config.siteTitle = meta.config.title || meta.config.browserTitle || 'NodeBB';
 	config.showSiteTitle = parseInt(meta.config.showSiteTitle, 10) === 1;
@@ -38,7 +39,6 @@ apiController.getConfig = function(req, res, next) {
 	config.disableChat = parseInt(meta.config.disableChat, 10) === 1;
 	config.maxReconnectionAttempts = meta.config.maxReconnectionAttempts || 5;
 	config.reconnectionDelay = meta.config.reconnectionDelay || 200;
-	config.websocketAddress = meta.config.websocketAddress || '';
 	config.tagsPerTopic = meta.config.tagsPerTopic || 5;
 	config.topicsPerPage = meta.config.topicsPerPage || 20;
 	config.postsPerPage = meta.config.postsPerPage || 20;
