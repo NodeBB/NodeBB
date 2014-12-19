@@ -2,15 +2,17 @@
 /*global io, templates, translator, ajaxify, utils, bootbox, RELATIVE_PATH, config*/
 
 var	socket,
-	app = {
-		'username': null,
-		'uid': null,
-		'isFocused': true,
-		'isConnected': false,
-		'currentRoom': null,
-		'widgets': {},
-		'cacheBuster': null
-	};
+	app = app || {};
+
+app.isFocused = true;
+app.isConnected = false;
+app.currentRoom = null;
+app.widgets = {};
+app.cacheBuster = null;
+
+// TODO: deprecate in 0.7.0, use app.user
+app.username = null;
+app.uid = null;
 
 (function () {
 	var showWelcomeMessage = false;
@@ -34,8 +36,6 @@ var	socket,
 			app.picture = data.picture;
 			app.uid = data.uid;
 			app.isAdmin = data.isAdmin;
-
-			app.user = data;
 
 			app.showLoginMessage();
 			app.replaceSelfLinks();

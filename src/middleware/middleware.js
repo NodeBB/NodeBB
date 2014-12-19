@@ -264,7 +264,7 @@ middleware.renderHeader = function(req, res, callback) {
 			}
 		}
 
-		templateValues.config = JSON.stringify(res.locals.config);
+		templateValues.configJSON = JSON.stringify(res.locals.config);
 
 		templateValues.metaTags = defaultMetaTags.concat(res.locals.metaTags || []).map(function(tag) {
 			if(!tag || typeof tag.content !== 'string') {
@@ -315,7 +315,14 @@ middleware.renderHeader = function(req, res, callback) {
 				if (uid) {
 					user.getUserFields(uid, ['username', 'userslug', 'picture', 'status', 'banned'], next);
 				} else {
-					next();
+					next(null, {
+						username: '[[global:guest]]',
+						userslug: '',
+						picture: user.createGravatarURLFromEmail(''),
+						status: 'offline',
+						banned: false,
+						uid: 0
+					});
 				}
 			}
 		}, function(err, results) {
@@ -328,10 +335,12 @@ middleware.renderHeader = function(req, res, callback) {
 				res.redirect('/');
 				return;
 			}
+			results.user.isAdmin = results.isAdmin || false;
 
 			templateValues.browserTitle = results.title;
-			templateValues.isAdmin = results.isAdmin || false;
+			templateValues.isAdmin = results.user.isAdmin;
 			templateValues.user = results.user;
+			templateValues.userJSON = JSON.stringify(results.user);
 			templateValues.customCSS = results.customCSS;
 			templateValues.customJS = results.customJS;
 			templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
