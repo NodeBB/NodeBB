@@ -223,7 +223,7 @@ var async = require('async'),
 
 				value = value ? value.toString() : '';
 				nids = notifications.filter(function(notification) {
-					return notification && notification[field] === value;
+					return notification && notification[field] && notification[field].toString() === value;
 				}).map(function(notification) {
 					return notification.nid;
 				});
