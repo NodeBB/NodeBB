@@ -11,6 +11,9 @@
 
 	<script>
 		var RELATIVE_PATH = "{relative_path}";
+		var config = JSON.parse('{configJSON}');
+		var app = {};
+		app.user = JSON.parse('{userJSON}');
 	</script>
 
 	<!--[if lt IE 9]>
