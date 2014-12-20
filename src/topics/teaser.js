@@ -12,68 +12,76 @@ var async = require('async'),
 
 module.exports = function(Topics) {
 
-	Topics.getTeasers = function(tids, callback) {
-		if (!Array.isArray(tids) || !tids.length) {
+	Topics.getTeasers = function(topics, callback) {
+		if (!Array.isArray(topics) || !topics.length) {
 			return callback(null, []);
 		}
 
-		Topics.getTopicsFields(tids, ['postcount', 'teaserPid'], function(err, topics) {
+		var counts = [];
+		var teaserPids = [];
+
+		topics.forEach(function(topic) {
+			counts.push(topic && (parseInt(topic.postcount, 10) || 0));
+			if (topic && topic.teaserPid) {
+				teaserPids.push(topic.teaserPid);
+			}
+		});
+
+		posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid'], function(err, postData) {
 			if (err) {
 				return callback(err);
 			}
-			var counts = [];
-			var teaserPids = [];
 
-			topics.forEach(function(topic) {
-				counts.push(topic && (parseInt(topic.postcount, 10) || 0));
-				if (topic && topic.teaserPid) {
-					teaserPids.push(topic.teaserPid);
-				}
+			var uids = postData.map(function(post) {
+				return post.uid;
+			}).filter(function(uid, index, array) {
+				return array.indexOf(uid) === index;
 			});
 
-			posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid'], function(err, postData) {
+			user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, usersData) {
 				if (err) {
 					return callback(err);
 				}
 
-				var uids = postData.map(function(post) {
-					return post.uid;
-				}).filter(function(uid, index, array) {
-					return array.indexOf(uid) === index;
+				var users = {};
+				usersData.forEach(function(user) {
+					users[user.uid] = user;
+				});
+				var tidToPost = {};
+				postData.forEach(function(post) {
+					post.user = users[post.uid];
+					post.timestamp = utils.toISOString(post.timestamp);
+					tidToPost[post.tid] = post;
 				});
 
-
-				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, usersData) {
-					if (err) {
-						return callback(err);
+				var teasers = topics.map(function(topic, index) {
+					if (tidToPost[topic.tid]) {
+						tidToPost[topic.tid].index = counts[index];
 					}
-
-					var users = {};
-					usersData.forEach(function(user) {
-						users[user.uid] = user;
-					});
-					var tidToPost = {};
-					postData.forEach(function(post) {
-						post.user = users[post.uid];
-						post.timestamp = utils.toISOString(post.timestamp);
-						tidToPost[post.tid] = post;
-					});
-
-					var teasers = tids.map(function(tid, index) {
-						if (tidToPost[tid]) {
-							tidToPost[tid].index = counts[index];
-						}
-						return tidToPost[tid];
-					});
-
-					callback(null, teasers);
+					return tidToPost[topic.tid];
 				});
+
+				callback(null, teasers);
 			});
 		});
 	};
 
+	Topics.getTeasersByTids = function(tids, callback) {
+		if (!Array.isArray(tids) || !tids.length) {
+			return callback(null, []);
+		}
+		async.waterfall([
+			function(next) {
+				Topics.getTopicsFields(tids, ['tid', 'postcount', 'teaserPid'], next);
+			},
+			function(topics, next) {
+				Topics.getTeasers(topics, next);
+			}
+		], callback);
+	};
+
 	Topics.getTeaser = function(tid, callback) {
-		Topics.getTeasers([tid], function(err, teasers) {
+		Topics.getTeasersByTids([tid], function(err, teasers) {
 			callback(err, Array.isArray(teasers) && teasers.length ? teasers[0] : null);
 		});
 	};

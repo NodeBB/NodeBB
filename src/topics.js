@@ -155,7 +155,7 @@ var async = require('async'),
 
 			async.parallel({
 				teasers: function(next) {
-					Topics.getTeasers(tids, next);
+					Topics.getTeasers(topics, next);
 				},
 				users: function(next) {
 					user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
