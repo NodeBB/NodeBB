@@ -85,7 +85,9 @@ module.exports = function(db, module) {
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').remove({_key: {$in: keys}, value: value}, callback);
+		db.collection('objects').remove({_key: {$in: keys}, value: value}, function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.sortedSetsRemoveRangeByScore = function(keys, min, max, callback) {

@@ -48,22 +48,7 @@ var	async = require('async'),
 	};
 
 	Digest.getSubscribers = function(interval, callback) {
-		async.waterfall([
-			async.apply(db.getSortedSetRange, 'users:joindate', 0, -1),
-			async.apply(user.getMultipleUserSettings)
-		], function(err, userSettings) {
-			if (err) {
-				return callback(err);
-			}
-
-			var subscribed = userSettings.filter(function(setting) {
-				return setting.dailyDigestFreq === interval;
-			}).map(function(setting) {
-				return setting.uid;
-			});
-
-			callback(null, subscribed);
-		});
+		db.getSortedSetRange('digest:' + interval + ':uids', 0, -1, callback);
 	};
 
 	Digest.send = function(data, callback) {

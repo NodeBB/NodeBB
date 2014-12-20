@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 11, 12);
+	latestSchema = Date.UTC(2014, 11, 20);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -412,7 +412,43 @@ Upgrade.upgrade = function(callback) {
 					});
 				});
 			} else {
-				winston.info('[2014/12/12] Updating teasers skipped skipped');
+				winston.info('[2014/12/12] Updating teasers skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 11, 20);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2014/12/20] Updating digest settings');
+
+				async.waterfall([
+					async.apply(db.getSortedSetRange, 'users:joindate', 0, -1),
+					async.apply(User.getMultipleUserSettings)
+				], function(err, userSettings) {
+					if (err) {
+						winston.error('[2014/12/20] Error encountered while updating digest settings');
+						return next(err);
+					}
+
+					var now = Date.now();
+
+					async.eachLimit(userSettings, 50, function(setting, next) {
+						if (setting.dailyDigestFreq !== 'off') {
+							db.sortedSetAdd('digest:' + setting.dailyDigestFreq + ':uids', now, setting.uid, next);
+						} else {
+							next();
+						}
+					}, function(err) {
+						if (err) {
+							winston.error('[2014/12/20] Error encountered while updating digest settings');
+							return next(err);
+						}
+						winston.info('[2014/12/20] Updating digest settings done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2014/12/20] Updating digest settings skipped');
 				next();
 			}
 		}
