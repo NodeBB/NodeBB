@@ -45,6 +45,10 @@ var cronJob = require('cron').CronJob,
 
 		if (pageViews > 0) {
 			db.sortedSetIncrBy('analytics:pageviews', pageViews, today.getTime());
+			var month = new Date();
+			month.setMonth(month.getMonth(), 1);
+			month.setHours(0, 0, 0, 0);
+			db.sortedSetIncrBy('analytics:pageviews:month', pageViews, month.getTime());
 			pageViews = 0;
 		}
 

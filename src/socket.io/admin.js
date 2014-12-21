@@ -199,6 +199,9 @@ SocketAdmin.analytics.get = function(socket, data, callback) {
 				},
 				pageviews: function(next) {
 					getHourlyStatsForSet('analytics:pageviews', data.amount, next);
+				},
+				monthlyPageViews: function(next) {
+					getMonthlyPageViews(next);
 				}
 			}, callback);
 		}
@@ -227,20 +230,15 @@ function getHourlyStatsForSet(set, hours, callback) {
 		hour.setHours(hour.getHours() - 1, 0, 0, 0);
 	}
 
-	async.each(hoursArr, function(term, next) {
-		if (set.indexOf('analytics') !== -1) {
-			db.sortedSetScore(set, term, function(err, count) {
-				terms[term] = count || 0;
-				next(err);
-			});
-		} else {
-			db.sortedSetCount(set, term, Date.now(), function(err, count) {
-				terms[term] = count || 0;
-				next(err);
-			});
+	db.sortedSetScores(set, hoursArr, function(err, counts) {
+		if (err) {
+			return callback(err);
 		}
 
-	}, function(err) {
+		hoursArr.forEach(function(term, index) {
+			terms[term] = counts[index] || 0;
+		});
+
 		var termsArr = [];
 
 		hoursArr.reverse();
@@ -248,7 +246,25 @@ function getHourlyStatsForSet(set, hours, callback) {
 			termsArr.push(terms[hour]);
 		});
 
-		callback(err, termsArr);
+		callback(null, termsArr);
+	});
+}
+
+function getMonthlyPageViews(callback) {
+	var thisMonth = new Date();
+	var lastMonth = new Date();
+	thisMonth.setMonth(thisMonth.getMonth(), 1);
+	thisMonth.setHours(0, 0, 0, 0);
+	lastMonth.setMonth(thisMonth.getMonth() - 1, 1);
+	lastMonth.setHours(0, 0, 0, 0);
+
+	var values = [thisMonth.getTime(), lastMonth.getTime()];
+
+	db.sortedSetScores('analytics:pageviews:month', values, function(err, scores) {
+		if (err) {
+			return callback(err);
+		}
+		callback(null, {thisMonth: scores[0] || 0, lastMonth: scores[1] || 0});
 	});
 }
 
@@ -258,7 +274,6 @@ SocketAdmin.getMoreEvents = function(socket, next, callback) {
 	}
 	events.getLog(next, 5000, callback);
 };
-
 
 SocketAdmin.dismissFlag = function(socket, pid, callback) {
 	if (!pid) {

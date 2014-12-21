@@ -331,6 +331,11 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 
 			graphs.traffic.scale.xLabels = getHoursArray();
 			graphs.traffic.update();
+
+			$('#pageViewsThisMonth').html(data.monthlyPageViews.thisMonth);
+			$('#pageViewsLastMonth').html(data.monthlyPageViews.lastMonth);
+			utils.addCommasToNumbers($('#pageViewsThisMonth'));
+			utils.addCommasToNumbers($('#pageViewsLastMonth'));
 		});
 	}
 
