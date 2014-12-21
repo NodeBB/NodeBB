@@ -522,6 +522,8 @@ app.uid = null;
 			});
 
 			createHeaderTooltips();
+			showEmailConfirmWarning();
+
 			ajaxify.variables.parse();
 			ajaxify.currentPage = url;
 
@@ -571,6 +573,26 @@ app.uid = null;
 			});
 		});
 	};
+
+	function showEmailConfirmWarning() {
+		if (config.requireEmailConfirmation && app.user.uid && !app.user['email:confirmed']) {
+			app.alert({
+				alert_id: 'email_confirm',
+				message: '[[error:email-not-confirmed]]',
+				type: 'warning',
+				timeout: 0,
+				clickfn: function() {
+					app.removeAlert('email_confirm');
+					socket.emit('user.emailConfirm', {}, function(err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						app.alertSuccess('[[notifications:email-confirm-sent]]');
+					});
+				}
+			});
+		}
+	}
 
 	showWelcomeMessage = window.location.href.indexOf('loggedin') !== -1;
 
