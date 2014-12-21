@@ -189,7 +189,7 @@ SocketAdmin.email.test = function(socket, data, callback) {
 
 SocketAdmin.analytics.get = function(socket, data, callback) {
 	data.units = 'hours'; // temp
-	data.amount = 12;
+	data.amount = 24;
 
 	if (data && data.graph && data.units && data.amount) {
 		if (data.graph === 'traffic') {
