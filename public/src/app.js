@@ -170,7 +170,7 @@ app.uid = null;
 			title: '[[global:alert.error]]',
 			message: message,
 			type: 'danger',
-			timeout: timeout ? timeout : 2000
+			timeout: timeout ? timeout : 5000
 		});
 	};
 

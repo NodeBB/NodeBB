@@ -159,7 +159,7 @@ SocketModules.chats.send = function(socket, data, callback) {
 		}
 
 		if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
-			return callback(new Error('[[error:email-not-confirmed]]'));
+			return callback(new Error('[[error:email-not-confirmed-chat]]'));
 		}
 
 		Messaging.canMessage(socket.uid, touid, function(err, allowed) {
