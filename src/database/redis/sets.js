@@ -94,6 +94,14 @@ module.exports = function(redisClient, module) {
 		redisClient.scard(key, callback);
 	};
 
+	module.setsCount = function(keys, callback) {
+		var multi = redisClient.multi();
+		for (var i=0; i<keys.length; ++i) {
+			multi.scard(keys[i]);
+		}
+		multi.exec(callback);
+	};
+
 	module.setRemoveRandom = function(key, callback) {
 		redisClient.spop(key, callback);
 	};

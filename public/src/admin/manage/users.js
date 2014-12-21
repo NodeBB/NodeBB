@@ -78,6 +78,16 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 			return false;
 		});
 
+		$('.reset-flags').on('click', function() {
+			var uids = getSelectedUids();
+			if (!uids.length) {
+				return;
+			}
+
+			socket.emit('admin.user.resetFlags', uids, done('Flags(s) reset!'));
+			return false;
+		});
+
 		$('.admin-user').on('click', function() {
 			var uids = getSelectedUids();
 			if (!uids.length) {

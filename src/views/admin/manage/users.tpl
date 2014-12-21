@@ -23,6 +23,7 @@
 							<li><a href="#" class="ban-user"><i class="fa fa-fw fa-gavel"></i> Ban User</a></li>
 							<li><a href="#" class="unban-user"><i class="fa fa-fw fa-comment-o"></i> Unban User</a></li>
 							<li><a href="#" class="reset-lockout"><i class="fa fa-fw fa-unlock"></i> Reset Lockout</a></li>
+							<li><a href="#" class="reset-flags"><i class="fa fa-fw fa-flag"></i> Reset Flags</a></li>
 							<li class="divider"></li>
 							<li><a href="#" class="delete-user"><i class="fa fa-fw fa-trash-o"></i> Delete User</a></li>
 						</ul>
@@ -43,10 +44,7 @@
 
 					<i class="fa fa-spinner fa-spin hidden"></i>
 					<span id="user-notfound-notify" class="label label-danger hide">User not found!</span><br/>
-
-
 				</div>
-
 
 				<ul id="users-container">
 					<!-- BEGIN users -->
@@ -54,11 +52,11 @@
 						<div class="user-image">
 							<img src="{users.picture}" class="img-thumbnail user-selectable"/>
 							<div class="labels">
-								<!-- IF requireEmailConfirmation -->
+								<!-- IF config.requireEmailConfirmation -->
 								<!-- IF !users.email:confirmed -->
 								<span class="notvalidated label label-danger">Not Validated</span>
 								<!-- ENDIF !users.email:confirmed -->
-								<!-- ENDIF requireEmailConfirmation -->
+								<!-- ENDIF config.requireEmailConfirmation -->
 								<span class="administrator label label-primary <!-- IF !users.administrator -->hide<!-- ENDIF !users.administrator -->">Admin</span>
 								<span class="ban label label-danger <!-- IF !users.banned -->hide<!-- ENDIF !users.banned -->">Banned</span>
 							</div>
@@ -68,6 +66,9 @@
 						<!-- IF users.email -->
 						<small><span title="{users.email}">{users.email}</span></small>
 						<!-- ENDIF users.email -->
+						<!-- IF users.flags -->
+						<div><small><span><i class="fa fa-flag"></i> {users.flags}</span></small></div>
+						<!-- ENDIF users.flags -->
 					</div>
 					<!-- END users -->
 				</ul>

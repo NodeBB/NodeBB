@@ -67,4 +67,14 @@ module.exports = function(User) {
 			db.sortedSetRemove('users:banned', uid, callback);
 		});
 	};
+
+	User.resetFlags = function(uids, callback) {
+		if (!Array.isArray(uids) || !uids.length) {
+			return callback();
+		}
+		var keys = uids.map(function(uid) {
+			return 'uid:' + uid + ':flagged_by';
+		});
+		db.deleteAll(keys, callback);
+	};
 };

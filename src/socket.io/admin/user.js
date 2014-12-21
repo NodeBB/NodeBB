@@ -1,7 +1,8 @@
 "use strict";
 
 
-var groups = require('../../groups'),
+var db = require('../../database'),
+	groups = require('../../groups'),
 	user = require('../../user'),
 	events = require('../../events'),
 	websockets = require('../index'),
@@ -104,6 +105,14 @@ User.resetLockouts = function(socket, uids, callback) {
 	async.each(uids, user.auth.resetLockout, callback);
 };
 
+User.resetFlags = function(socket, uids, callback) {
+	if (!Array.isArray(uids)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	user.resetFlags(uids, callback);
+};
+
 User.validateEmail = function(socket, uids, callback) {
 	if (!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
@@ -166,24 +175,42 @@ User.deleteUsers = function(socket, uids, callback) {
 };
 
 User.search = function(socket, data, callback) {
-	user.search(data.query, data.type, function(err, data) {
-		function getEmail(userData, next) {
-			user.getUserField(userData.uid, 'email', function(err, email) {
-				if (err) {
-					return next(err);
-				}
-
-				userData.email = email;
-				next();
-			});
-		}
-
+	user.search(data.query, data.type, function(err, searchData) {
 		if (err) {
 			return callback(err);
 		}
+		if (!searchData.users.length) {
+			return callback(null, searchData);
+		}
 
-		async.each(data.users, getEmail, function(err) {
-			callback(err, data);
+		var userData = searchData.users;
+		var uids = userData.map(function(user) {
+			return user && user.uid;
+		});
+
+		async.parallel({
+			users: function(next) {
+				user.getMultipleUserFields(uids, ['email'], next);
+			},
+			flagCounts: function(next) {
+				var sets = uids.map(function(uid) {
+					return 'uid:' + uid + ':flagged_by';
+				});
+				db.setsCount(sets, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			userData.forEach(function(user, index) {
+				if (user) {
+					user.email = (results.users[index] && results.users[index].email) || '';
+					user.flags = results.flagCounts[index] || 0;
+				}
+			});
+
+			callback(null, searchData);
 		});
 	});
 };
