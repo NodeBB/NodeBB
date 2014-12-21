@@ -291,6 +291,7 @@ app.uid = null;
 			function loadAndCenter(chatModal) {
 				chat.load(chatModal.attr('UUID'));
 				chat.center(chatModal);
+				chat.focusInput(chatModal);
 			}
 
 			if (!chat.modalExists(touid)) {

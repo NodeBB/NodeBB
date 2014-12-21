@@ -293,6 +293,10 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 		});
 	};
 
+	module.focusInput = function(chatModal) {
+		chatModal.find('#chat-message-input').focus();
+	};
+
 	module.close = function(chatModal) {
 		clearInterval(chatModal.attr('intervalId'));
 		chatModal.attr('intervalId', 0);
@@ -310,7 +314,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 		}
 		chatModal.css('left', Math.max(0, (($(window).width() - $(chatModal).outerWidth()) / 2) + $(window).scrollLeft()) + 'px');
 		chatModal.css('top', Math.max(0, $(window).height() / 2 - $(chatModal).outerHeight() / 2) + 'px');
-		chatModal.find('#chat-message-input').focus();
+
 		if (hideAfter) {
 			chatModal.addClass('hide');
 		}
@@ -324,6 +328,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 		taskbar.updateActive(uuid);
 		Chats.scrollToBottom(chatModal.find('#chat-content'));
 		module.bringModalToTop(chatModal);
+		module.focusInput(chatModal);
 		socket.emit('modules.chats.markRead', chatModal.attr('touid'));
 	};
 
