@@ -436,7 +436,7 @@ Upgrade.upgrade = function(callback) {
 						if (setting.dailyDigestFreq !== 'off') {
 							db.sortedSetAdd('digest:' + setting.dailyDigestFreq + ':uids', now, setting.uid, next);
 						} else {
-							next();
+							next(false);
 						}
 					}, function(err) {
 						if (err) {
