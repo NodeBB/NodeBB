@@ -359,12 +359,12 @@ SocketUser.loadMore = function(socket, data, callback) {
 
 SocketUser.setStatus = function(socket, status, callback) {
 	if (!socket.uid) {
-		return callback(new Error('[[invalid-uid]]'));
+		return callback(new Error('[[error:invalid-uid]]'));
 	}
 
 	var allowedStatus = ['online', 'offline', 'dnd', 'away'];
 	if (allowedStatus.indexOf(status) === -1) {
-		return callback(new Error('[[invalid-user-status]]'));
+		return callback(new Error('[[error:invalid-user-status]]'));
 	}
 	user.setUserField(socket.uid, 'status', status, function(err) {
 		if (err) {
