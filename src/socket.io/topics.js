@@ -3,6 +3,7 @@
 
 var nconf = require('nconf'),
 	async = require('async'),
+	winston = require('winston'),
 
 	topics = require('../topics'),
 	categories = require('../categories'),
@@ -41,27 +42,29 @@ SocketTopics.post = function(socket, data, callback) {
 		socket.emit('event:new_post', {posts: [result.postData]});
 		socket.emit('event:new_topic', result.topicData);
 
-		user.getUidsFromSet('users:online', 0, -1, function(err, uids) {
+		async.waterfall([
+			function(next) {
+				user.getUidsFromSet('users:online', 0, -1, next);
+			},
+			function(uids, next) {
+				privileges.categories.filterUids('read', result.topicData.cid, uids, next);
+			},
+			function(uids, next) {
+				plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: data.uid, type: 'newTopic'}, next);
+			}
+		], function(err, data) {
 			if (err) {
-				return;
+				return winston.error(err.stack);
 			}
 
-			privileges.categories.filterUids('read', result.topicData.cid, uids, function(err, uids) {
-				if (err) {
-					return;
+			var uids = data.uidsTo;
+
+			for(var i=0; i<uids.length; ++i) {
+				if (parseInt(uids[i], 10) !== socket.uid) {
+					websockets.in('uid_' + uids[i]).emit('event:new_post', {posts: [result.postData]});
+					websockets.in('uid_' + uids[i]).emit('event:new_topic', result.topicData);
 				}
-
-				plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: data.uid, type: "newTopic"}, function(err, data) {
-					uids = data.uidsTo;
-
-					for(var i=0; i<uids.length; ++i) {
-						if (parseInt(uids[i], 10) !== socket.uid) {
-							websockets.in('uid_' + uids[i]).emit('event:new_post', {posts: [result.postData]});
-							websockets.in('uid_' + uids[i]).emit('event:new_topic', result.topicData);
-						}
-					}
-				});
-			});
+			}
 		});
 	});
 };
