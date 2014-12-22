@@ -3,6 +3,7 @@
 
 var winston = require('winston'),
 	db = require('../database'),
+	pubsub = require('../pubsub'),
 	pkg = require('../../package.json');
 
 module.exports = function(Meta) {
@@ -92,34 +93,25 @@ module.exports = function(Meta) {
 				return callback(null, '');
 			}
 			data.renderedCustomCSS = lessObject.css;
-			callback(null, lessObject.css);
+			callback();
 		});
 	}
 
-	function updateConfig(data) {
-		var msg = {action: 'config:update', data: data};
-		if (process.send) {
-			process.send(msg);
-		} else {
-			onMessage(msg);
-		}
+	function updateConfig(config) {
+		pubsub.publish('config:update', config);
 	}
 
-	process.on('message', onMessage);
-
-	function onMessage(msg) {
-		if (typeof msg !== 'object') {
+	pubsub.on('config:update', function onConfigReceived(config) {
+		if (typeof config !== 'object' || !Meta.config) {
 			return;
 		}
 
-		if (msg.action === 'config:update' && Meta.config) {
-			for(var field in msg.data) {
-				if(msg.data.hasOwnProperty(field)) {
-					Meta.config[field] = msg.data[field];
-				}
+		for(var field in config) {
+			if(config.hasOwnProperty(field)) {
+				Meta.config[field] = config[field];
 			}
 		}
-	}
+	});
 
 	Meta.configs.setOnEmpty = function (field, value, callback) {
 		Meta.configs.get(field, function (err, curValue) {

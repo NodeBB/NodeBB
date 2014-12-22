@@ -132,9 +132,6 @@ Loader.addWorkerEvents = function(worker) {
 						hash: message.hash
 					}, worker.pid);
 				break;
-				case 'config:update':
-					Loader.notifyWorkers(message);
-				break;
 			}
 		}
 	});
