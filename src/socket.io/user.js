@@ -152,7 +152,7 @@ SocketUser.changePicture = function(socket, data, callback) {
 
 	function changePicture(uid, callback) {
 		user.getUserField(uid, type, function(err, picture) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
@@ -168,22 +168,13 @@ SocketUser.changePicture = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-image-type]]'));
 	}
 
-	if(socket.uid === parseInt(data.uid, 10)) {
-		changePicture(socket.uid, function(err) {
-			if(err) {
-				return callback(err);
-			}
-		});
-		return;
+	if (socket.uid === parseInt(data.uid, 10)) {
+		return changePicture(socket.uid, callback);
 	}
 
 	user.isAdministrator(socket.uid, function(err, isAdmin) {
-		if(err) {
-			return callback(err);
-		}
-
-		if(!isAdmin) {
-			return callback(new Error('[[error:no-privileges]]'));
+		if (err || !isAdmin) {
+			return callback(err || new Error('[[error:no-privileges]]'));
 		}
 
 		changePicture(data.uid, callback);

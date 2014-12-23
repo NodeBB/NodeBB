@@ -125,8 +125,13 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 		$('#savePictureChangesBtn').on('click', function() {
 			$('#change-picture-modal').modal('hide');
 
-			if (selectedImageType) {
-				changeUserPicture(selectedImageType);
+			if (!selectedImageType) {
+				return;
+			}
+			changeUserPicture(selectedImageType, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
 
 				if (selectedImageType === 'gravatar') {
 					$('#user-current-picture').attr('src', gravatarPicture);
@@ -135,7 +140,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 					$('#user-current-picture').attr('src', uploadedPicture);
 					updateHeader(uploadedPicture);
 				}
-			}
+			});
 		});
 	}
 
@@ -284,15 +289,11 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 		});
 	}
 
-	function changeUserPicture(type) {
+	function changeUserPicture(type, callback) {
 		socket.emit('user.changePicture', {
 			type: type,
 			uid: ajaxify.variables.get('theirid')
-		}, function(err) {
-			if(err) {
-				app.alertError(err.message);
-			}
-		});
+		}, callback);
 	}
 
 	function updateImages() {
