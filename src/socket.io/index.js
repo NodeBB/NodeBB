@@ -81,8 +81,9 @@ function onConnect(socket) {
 			userData.user.isAdmin = userData.isAdmin;
 			userData.user['email:confirmed'] = parseInt(userData.user['email:confirmed'], 10) === 1;
 			socket.emit('event:connect', userData.user);
-
-			socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: userData.user.status});
+			if (userData.user.status !== 'offline') {
+				socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: userData.user.status || 'online'});
+			}
 		});
 	} else {
 		socket.join('online_guests');
