@@ -117,7 +117,7 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 			plugins.fireHook('action:post.move', {post: postData, tid: tid});
-			callback(null);
+			callback();
 		});
 	};
 };
