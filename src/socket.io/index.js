@@ -2,9 +2,7 @@
 
 var	SocketIO = require('socket.io'),
 	socketioWildcard = require('socketio-wildcard')(),
-	util = require('util'),
 	async = require('async'),
-	path = require('path'),
 	fs = require('fs'),
 	nconf = require('nconf'),
 	cookieParser = require('cookie-parser')(nconf.get('secret')),
@@ -12,7 +10,6 @@ var	SocketIO = require('socket.io'),
 
 	db = require('../database'),
 	user = require('../user'),
-	topics = require('../topics'),
 	logger = require('../logger'),
 	ratelimit = require('../middleware/ratelimit'),
 
