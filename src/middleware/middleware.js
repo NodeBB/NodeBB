@@ -217,7 +217,7 @@ middleware.renderHeader = function(req, res, callback) {
 
 	plugins.fireHook('filter:header.build', custom_header, function(err, custom_header) {
 		if (err) {
-			return next(err);
+			return callback(err);
 		}
 
 		var defaultMetaTags = [{
