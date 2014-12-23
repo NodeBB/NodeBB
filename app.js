@@ -269,7 +269,7 @@ function reset() {
 			process.exit();
 		}
 
-		if (nconf.get('themes')) {
+		if (nconf.get('theme')) {
 			resetThemes();
 		} else if (nconf.get('plugin')) {
 			resetPlugin(nconf.get('plugin'));
@@ -290,7 +290,7 @@ function reset() {
 			});
 		} else {
 			winston.warn('[reset] Nothing reset.');
-			winston.info('Use ./nodebb reset {themes|plugins|widgets|settings|all}');
+			winston.info('Use ./nodebb reset {theme|plugins|widgets|settings|all}');
 			winston.info(' or');
 			winston.info('Use ./nodebb reset plugin="nodebb-plugin-pluginName"');
 			process.exit();
