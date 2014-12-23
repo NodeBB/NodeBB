@@ -10,7 +10,9 @@ module.exports = function(redisClient, module) {
 
 	module.setObjectField = function(key, field, value, callback) {
 		callback = callback || function() {};
-		redisClient.hset(key, field, value, callback);
+		redisClient.hset(key, field, value, function(err) {
+			callback(err);
+		});
 	};
 
 	module.getObject = function(key, callback) {
