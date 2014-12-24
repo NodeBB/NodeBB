@@ -127,13 +127,7 @@ var async = require('async'),
 			return callback(new Error('[[error:reputation-system-disabled]]'));
 		}
 
-		toggleVote('upvote', pid, uid, function(err, votes) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, votes);
-		});
+		toggleVote('upvote', pid, uid, callback);
 	};
 
 	Favourites.downvote = function(pid, uid, callback) {
@@ -154,13 +148,7 @@ var async = require('async'),
 				return callback(new Error('[[error:not-enough-reputation-to-downvote]]'));
 			}
 
-			toggleVote('downvote', pid, uid, function(err, votes) {
-				if (err) {
-					return callback(err);
-				}
-
-				callback(null, votes);
-			});
+			toggleVote('downvote', pid, uid, callback);
 		});
 	};
 
