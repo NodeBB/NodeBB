@@ -52,7 +52,7 @@ module.exports = function(User) {
 	User.ban = function(uid, callback) {
 		User.setUserField(uid, 'banned', 1, function(err) {
 			if (err) {
-				return callback();
+				return callback(err);
 			}
 			db.sortedSetAdd('users:banned', Date.now(), uid, callback);
 		});
