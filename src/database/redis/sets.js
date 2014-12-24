@@ -20,6 +20,7 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.setRemove = function(key, value, callback) {
+		callback = callback || function() {};
 		redisClient.srem(key, value, function(err, res) {
 			callback(err);
 		});
