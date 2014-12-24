@@ -59,7 +59,9 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.sortedSetsRemove = function(keys, value, callback) {
-		multi('zrem', keys, value, callback);
+		multi('zrem', keys, value, function(err) {
+			callback(err);
+		});
 	};
 
 	module.sortedSetsRemoveRangeByScore = function(keys, min, max, callback) {
