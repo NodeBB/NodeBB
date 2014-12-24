@@ -40,7 +40,7 @@ middleware.buildHeader = function(req, res, next) {
 				'authentication': []
 			};
 
-			user.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, userData) {
+			user.getUserFields(uid, ['username', 'userslug', 'picture', 'email:confirmed'], function(err, userData) {
 				if (err) {
 					return next(err);
 				}
