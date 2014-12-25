@@ -10,6 +10,7 @@ describe('Test database', function() {
 		});
 	});
 
+	require('./database/keys');
 
 	it('should not throw err', function(done) {
 		var objectKey = 'testObj';
