@@ -29,7 +29,7 @@ module.exports = function(Categories) {
 					},
 					function(topics, next) {
 						if (!Array.isArray(topics) || !topics.length) {
-							return next(null, []);
+							return next(null, {topics: [], uid: data.uid});
 						}
 
 						for (var i=0; i<topics.length; ++i) {
