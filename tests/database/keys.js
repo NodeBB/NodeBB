@@ -1,7 +1,7 @@
 
 var	async = require('async'),
 	assert = require('assert'),
-	db = require('./mocks/databasemock');
+	db = require('../mocks/databasemock');
 
 describe('Key methods', function() {
 
