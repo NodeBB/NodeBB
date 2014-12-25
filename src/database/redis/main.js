@@ -81,7 +81,9 @@ module.exports = function(redisClient, module) {
 		for(var i=0; i<keys.length; ++i) {
 			multi.del(keys[i]);
 		}
-		multi.exec(callback);
+		multi.exec(function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.get = function(key, callback) {
