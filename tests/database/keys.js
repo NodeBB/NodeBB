@@ -39,7 +39,7 @@ describe('Key methods', function() {
 
 			db.get('testKey', function(err, value) {
 				assert.equal(err, null, 'db.get error');
-				assert.equal(value, false, 'db.get deleted key is not falsy');
+				assert.equal(false, !!value, 'db.get deleted key is not falsy');
 				done();
 			});
 		});

@@ -91,7 +91,9 @@ module.exports = function(db, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
 		}
-		db.collection('objects').remove({_key: {$in: keys}}, callback);
+		db.collection('objects').remove({_key: {$in: keys}}, function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.get = function(key, callback) {
