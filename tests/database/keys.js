@@ -8,8 +8,8 @@ describe('Key methods', function() {
 
 	it('should set a key without error', function(done) {
 		db.set('testKey', 'testValue', function(err) {
-			assert(err, null, 'db.set error');
-			assert(arguments.length, 1, 'db.set too many parameters returned');
+			assert.equal(err, null, 'db.set error');
+			assert.equal(arguments.length, 1, 'db.set too many parameters returned');
 			done();
 		});
 	});
