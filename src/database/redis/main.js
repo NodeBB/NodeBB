@@ -99,7 +99,9 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.rename = function(oldKey, newKey, callback) {
-		redisClient.rename(oldKey, newKey, callback);
+		redisClient.rename(oldKey, newKey, function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.expire = function(key, seconds, callback) {

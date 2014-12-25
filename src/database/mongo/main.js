@@ -117,12 +117,16 @@ module.exports = function(db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').update({_key: key}, { $inc: { value: 1 } }, callback);
+		db.collection('objects').findAndModify({_key: key}, {}, {$inc: {value: 1}}, {new: true, upsert: true}, function(err, result) {
+			callback(err, result ? result.value : null);
+		});
 	};
 
 	module.rename = function(oldKey, newKey, callback) {
 		callback = callback || helpers.noop;
-		db.collection('objects').update({_key: oldKey}, {$set:{_key: newKey}}, {multi: true}, callback);
+		db.collection('objects').update({_key: oldKey}, {$set:{_key: newKey}}, {multi: true}, function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.expire = function(key, seconds, callback) {
