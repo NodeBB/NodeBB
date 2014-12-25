@@ -89,7 +89,9 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.set = function(key, value, callback) {
-		redisClient.set(key, value, callback);
+		redisClient.set(key, value, function(err) {
+			callback(err);
+		});
 	};
 
 	module.increment = function(key, callback) {

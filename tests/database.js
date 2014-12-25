@@ -12,52 +12,6 @@ describe('Test database', function() {
 
 
 	it('should not throw err', function(done) {
-
-		function get(callback) {
-			db.get('testingStr', function(err, data) {
-				callback(err, {'get': data});
-			});
-		}
-
-		function set(callback) {
-			db.set('testingStr', 'oppa gangnam style', function(err, data) {
-				callback(err, {'set': data});
-			});
-		}
-
-		function deleteKey(callback) {
-			db.delete('testingStr', function(err, data) {
-				callback(err, {'delete': data});
-			});
-		}
-
-		function exists(callback) {
-			db.exists('testingStr', function(err, data) {
-				callback(err, {'exists': data});
-			});
-		}
-
-		var keyTasks = [
-			get,
-			set,
-			get,
-			exists,
-			deleteKey,
-			deleteKey,
-			get,
-			exists
-		];
-
-		async.series(keyTasks, function(err, results) {
-			assert.equal(err, null, 'error in key methods');
-			assert.ok(results);
-
-			done();
-		});
-
-	});
-
-	it('should not throw err', function(done) {
 		var objectKey = 'testObj';
 
 		function setObject(callback) {
