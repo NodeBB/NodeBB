@@ -260,7 +260,7 @@ module.exports = function(Topics) {
 	function incrementFieldAndUpdateSortedSet(tid, field, by, set, callback) {
 		callback = callback || function() {};
 		db.incrObjectFieldBy('topic:' + tid, field, by, function(err, value) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 			db.sortedSetAdd(set, value, tid, callback);
@@ -273,6 +273,9 @@ module.exports = function(Topics) {
 
 	Topics.getTopicFieldByPid = function(field, pid, callback) {
 		posts.getPostField(pid, 'tid', function(err, tid) {
+			if (err) {
+				return callback(err);
+			}
 			Topics.getTopicField(tid, field, callback);
 		});
 	};
