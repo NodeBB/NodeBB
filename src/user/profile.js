@@ -116,8 +116,8 @@ module.exports = function(User) {
 				} else if (field === 'signature') {
 					data[field] = S(data[field]).stripTags().s;
 				} else if (field === 'website') {
-					if(data[field].substr(0, 7) !== 'http://' && data[field].substr(0, 8) !== 'https://') {
-						data[field] = 'http://' + data[field];
+					if (!data[field].startsWith(validator.escape('http://')) && !data[field].startsWith(validator.escape('https://'))) {
+						data[field] = validator.escape('http://') + data[field];
 					}
 				}
 

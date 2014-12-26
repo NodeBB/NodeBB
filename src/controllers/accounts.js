@@ -7,6 +7,7 @@ var fs = require('fs'),
 	winston = require('winston'),
 	nconf = require('nconf'),
 	async = require('async'),
+	validator = require('validator'),
 
 	db = require('../database'),
 	user = require('../user'),
@@ -95,7 +96,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.profile_links = results.profile_links;
 			userData.status = websockets.isUserOnline(userData.uid) ? (userData.status || 'online') : 'offline';
 			userData.banned = parseInt(userData.banned, 10) === 1;
-			userData.websiteName = userData.website.replace('http://', '').replace('https://', '');
+			userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
 			userData.followingCount = results.followStats.followingCount;
 			userData.followerCount = results.followStats.followerCount;
 
