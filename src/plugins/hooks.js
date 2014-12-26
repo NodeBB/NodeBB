@@ -5,6 +5,12 @@ var winston = require('winston'),
 
 module.exports = function(Plugins) {
 
+	/*
+		`data` is an object consisting of (* is required):
+			`data.hook`*, the name of the NodeBB hook
+			`data.method`*, the method called in that plugin
+			`data.priority`, the relative priority of the method when it is eventually called (default: 10)
+	*/
 	Plugins.registerHook = function(id, data, callback) {
 		function register() {
 			Plugins.loadedHooks[data.hook] = Plugins.loadedHooks[data.hook] || [];
@@ -14,12 +20,6 @@ module.exports = function(Plugins) {
 				callback();
 			}
 		}
-		/*
-			`data` is an object consisting of (* is required):
-				`data.hook`*, the name of the NodeBB hook
-				`data.method`*, the method called in that plugin
-				`data.priority`, the relative priority of the method when it is eventually called (default: 10)
-		*/
 
 		var method;
 
