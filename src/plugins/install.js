@@ -5,6 +5,8 @@ var winston = require('winston'),
 	npm = require('npm'),
 	path = require('path'),
 	fs = require('fs'),
+	nconf = require('nconf'),
+	os = require('os'),
 
 	db = require('../database'),
 	meta = require('../meta'),
@@ -12,6 +14,20 @@ var winston = require('winston'),
 
 
 module.exports = function(Plugins) {
+
+	if (nconf.get('isPrimary') === 'true') {
+		pubsub.on('plugins:toggleInstall', function(data) {
+			if (data.hostname !== os.hostname()) {
+				toggleInstall(data.id, data.version);
+			}
+		});
+
+		pubsub.on('plugins:upgrade', function(data) {
+			if (data.hostname !== os.hostname()) {
+				upgrade(data.id, data.version);
+			}
+		});
+	}
 
 	Plugins.toggleActive = function(id, callback) {
 		callback = callback || function() {};
@@ -39,6 +55,11 @@ module.exports = function(Plugins) {
 	};
 
 	Plugins.toggleInstall = function(id, version, callback) {
+		pubsub.publish('plugins:toggleInstall', {hostname: os.hostname(), id: id, version: version});
+		toggleInstall(id, version, callback);
+	};
+
+	function toggleInstall(id, version, callback) {
 		Plugins.isInstalled(id, function(err, installed) {
 			if (err) {
 				return callback(err);
@@ -64,15 +85,17 @@ module.exports = function(Plugins) {
 					npm.commands[installed ? 'uninstall' : 'install'](installed ? id : [id + '@' + (version || 'latest')], next);
 				}
 			], function(err) {
-				callback(err, {
-					id: id,
-					installed: !installed
-				});
+				callback(err, {id: id, installed: !installed});
 			});
 		});
-	};
+	}
 
 	Plugins.upgrade = function(id, version, callback) {
+		pubsub.publish('plugins:upgrade', {hostname: os.hostname(), id: id, version: version});
+		upgrade(id, version, callback);
+	};
+
+	function upgrade(id, version, callback) {
 		async.waterfall([
 			function(next) {
 				npm.load({}, next);
@@ -81,10 +104,10 @@ module.exports = function(Plugins) {
 				npm.commands.install([id + '@' + (version || 'latest')], next);
 			}
 		], callback);
-	};
+	}
 
 	Plugins.isInstalled = function(id, callback) {
-		var pluginDir = path.join(__dirname, '../node_modules', id);
+		var pluginDir = path.join(__dirname, '../../node_modules', id);
 
 		fs.stat(pluginDir, function(err, stats) {
 			callback(null, err ? false : stats.isDirectory());
