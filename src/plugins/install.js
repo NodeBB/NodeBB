@@ -14,31 +14,27 @@ var winston = require('winston'),
 module.exports = function(Plugins) {
 
 	Plugins.toggleActive = function(id, callback) {
-		Plugins.isActive(id, function(err, active) {
+		callback = callback || function() {};
+		var isActive;
+		async.waterfall([
+			function(next) {
+				Plugins.isActive(id, next);
+			},
+			function(_isActive, next) {
+				isActive = _isActive;
+				db[isActive ? 'setRemove' : 'setAdd']('plugins:active', id, next);
+			},
+			function(next) {
+				meta.reloadRequired = true;
+				Plugins.fireHook(isActive ? 'action:plugin.deactivate' : 'action:plugin.activate', id);
+				next();
+			}
+		], function(err) {
 			if (err) {
 				winston.warn('[plugins] Could not toggle active state on plugin \'' + id + '\'');
 				return callback(err);
 			}
-
-			db[(active ? 'setRemove' : 'setAdd')]('plugins:active', id, function(err, success) {
-				if (err) {
-					winston.warn('[plugins] Could not toggle active state on plugin \'' + id + '\'');
-					return callback(err);
-				}
-
-				meta.reloadRequired = true;
-
-				if (active) {
-					Plugins.fireHook('action:plugin.deactivate', id);
-				}
-
-				if (typeof callback === 'function') {
-					callback(null, {
-						id: id,
-						active: !active
-					});
-				}
-			});
+			callback(null, {id: id, active: !isActive});
 		});
 	};
 
