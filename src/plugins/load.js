@@ -47,10 +47,10 @@ module.exports = function(Plugins) {
 					mapStaticDirectories(pluginData, pluginPath, next);
 				},
 				function(next) {
-					mapCssFiles(pluginData, next);
+					mapFiles(pluginData, 'css', 'cssFiles', next);
 				},
 				function(next) {
-					mapLessFiles(pluginData, next);
+					mapFiles(pluginData, 'less', 'lessFiles', next);
 				},
 				function(next) {
 					mapClientSideScripts(pluginData, next);
@@ -132,31 +132,16 @@ module.exports = function(Plugins) {
 		async.each(dirs, mapStaticDirs, callback);
 	}
 
-	function mapCssFiles(pluginData, callback) {
-		if (Array.isArray(pluginData.css)) {
+	function mapFiles(pluginData, type, globalArray, callback) {
+		if (Array.isArray(pluginData[type])) {
 			if (global.env === 'development') {
-				winston.verbose('[plugins] Found ' + pluginData.css.length + ' CSS file(s) for plugin ' + pluginData.id);
+				winston.verbose('[plugins] Found ' + pluginData[type].length + ' ' + type + ' file(s) for plugin ' + pluginData.id);
 			}
 
-			Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
+			Plugins[globalArray] = Plugins[globalArray].concat(pluginData[type].map(function(file) {
 				return path.join(pluginData.id, file);
 			}));
 		}
-
-		callback();
-	}
-
-	function mapLessFiles(pluginData, callback) {
-		if (Array.isArray(pluginData.less)) {
-			if (global.env === 'development') {
-				winston.verbose('[plugins] Found ' + pluginData.less.length + ' LESS file(s) for plugin ' + pluginData.id);
-			}
-
-			Plugins.lessFiles = Plugins.lessFiles.concat(pluginData.less.map(function(file) {
-				return path.join(pluginData.id, file);
-			}));
-		}
-
 		callback();
 	}
 
