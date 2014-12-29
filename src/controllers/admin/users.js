@@ -35,6 +35,11 @@ function getUsers(set, req, res, next) {
 		if (err) {
 			return next(err);
 		}
+
+		users = users.filter(function(user) {
+			return user && parseInt(user.uid, 10);
+		});
+
 		res.render('admin/manage/users', {
 			search_display: 'hidden',
 			loadmore_display: 'block',

@@ -11,6 +11,9 @@ var async = require('async'),
 module.exports = function(User) {
 
 	User.delete = function(uid, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(new Error('[[error:invalid-uid]]'));
+		}
 		async.waterfall([
 			function(next) {
 				deletePosts(uid, next);
@@ -52,7 +55,11 @@ module.exports = function(User) {
 					db.deleteObjectField('userslug:uid', userData.userslug, next);
 				},
 				function(next) {
-					db.deleteObjectField('email:uid', userData.email.toLowerCase(), next);
+					if (userData.email) {
+						db.deleteObjectField('email:uid', userData.email.toLowerCase(), next);
+					} else {
+						next();
+					}
 				},
 				function(next) {
 					db.sortedSetsRemove([

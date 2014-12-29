@@ -244,7 +244,7 @@ var	async = require('async'),
 				user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
 			});
 
-			callback(err, results.userData);
+			callback(null, results.userData);
 		});
 	};
 
