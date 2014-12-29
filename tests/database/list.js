@@ -102,16 +102,16 @@ describe('List methods', function() {
 		it('should trim list to a certain range', function(done) {
 			var list = ['1', '2', '3', '4', '5'];
 			async.eachSeries(list, function(value, next) {
-				db.listAppend('testList2', value, next);
+				db.listAppend('testList3', value, next);
 			}, function(err) {
 				if (err) {
 					return done(err);
 				}
 
-				db.listTrim('testList2', 0, 2, function(err) {
+				db.listTrim('testList3', 0, 2, function(err) {
 					assert.equal(err, null, 'db.listTrim error');
 					assert.equal(arguments.length, 1, 'arguments.length error');
-					db.getListRange('testList2', 0, -1, function(err, list) {
+					db.getListRange('testList3', 0, -1, function(err, list) {
 						assert.equal(list.length, 3, 'list length is not 3');
 						assert.deepEqual(list, ['1', '2', '3'], 'list not properly trimmed');
 					});
