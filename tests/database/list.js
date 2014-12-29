@@ -114,6 +114,7 @@ describe('List methods', function() {
 					db.getListRange('testList3', 0, -1, function(err, list) {
 						assert.equal(list.length, 3, 'list length is not 3');
 						assert.deepEqual(list, ['1', '2', '3'], 'list not properly trimmed');
+						done();
 					});
 				});
 			});
