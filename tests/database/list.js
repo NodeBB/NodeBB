@@ -88,7 +88,7 @@ describe('List methods', function() {
 				assert.equal(err, null, 'db.listRemoveAll error');
 				assert.equal(arguments.length, 1, 'arguments.length error');
 
-				db.getListRange('testList2', function(err, list) {
+				db.getListRange('testList2', 0, -1, function(err, list) {
 					assert.equal(Array.isArray(list), true, 'list is not an array');
 					assert.equal(list.length, 0, 'list is not empty');
 					done();
@@ -112,7 +112,7 @@ describe('List methods', function() {
 					assert.equal(arguments.length, 1, 'arguments.length error');
 					db.getListRange('testList2', 0, -1, function(err, list) {
 						assert.equal(list.length, 3, 'list length is not 3');
-						assert.deepEqual(list, ['1', '2', '3'], 'lists not properly trimmed');
+						assert.deepEqual(list, ['1', '2', '3'], 'list not properly trimmed');
 					});
 				});
 			});
