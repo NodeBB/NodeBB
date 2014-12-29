@@ -9,7 +9,7 @@ describe('Set methods', function() {
 	describe('setAdd()', function() {
 		it('should add to a set', function(done) {
 			db.setAdd('testSet', 5, function(err) {
-				assert.equal(err, null, 'db.setAdd error');
+				assert.equal(err, null);
 				assert.equal(arguments.length, 1, 'arguments.length error');
 				done();
 			});
@@ -17,7 +17,7 @@ describe('Set methods', function() {
 
 		it('should add an array to a set', function(done) {
 			db.setAdd('testSet', [1, 2, 3, 4], function(err) {
-				assert.equal(err, null, 'db.setAdd error');
+				assert.equal(err, null);
 				assert.equal(arguments.length, 1, 'arguments.length error');
 				done();
 			});
@@ -27,7 +27,7 @@ describe('Set methods', function() {
 	describe('getSetMembers()', function() {
 		it('should return an empty set', function(done) {
 			db.getSetMembers('doesnotexist', function(err, set) {
-				assert.equal(err, null, 'db.getSetMembers error');
+				assert.equal(err, null);
 				assert.equal(arguments.length, 2, 'arguments.length error');
 				assert.equal(Array.isArray(set), true, 'set is not an array');
 				assert.equal(set.length, 0, 'set not empty');
@@ -37,7 +37,7 @@ describe('Set methods', function() {
 
 		it('should return a set with all elements', function(done) {
 			db.getSetMembers('testSet', function(err, set) {
-				assert.equal(err, null, 'db.getSetMembers error');
+				assert.equal(err, null);
 				assert.equal(set.length, 5, 'set is empty');
 				set.forEach(function(value) {
 					assert.notEqual(['1', '2', '3', '4', '5'].indexOf(value), -1, 'set does not have correct elements');
@@ -51,17 +51,17 @@ describe('Set methods', function() {
 	describe('setsAdd()', function() {
 		it('should add to multiple sets', function(done) {
 			db.setsAdd(['set1', 'set2'], 'value', function(err) {
-				assert.equal(err, null, 'db.setsAdd error');
+				assert.equal(err, null);
 				assert.equal(arguments.length, 1, 'arguments.length error');
 				done();
 			});
 		});
 	});
 
-	describe('getSetsMembers', function() {
+	describe('getSetsMembers()', function() {
 		it('should return members of two sets', function(done) {
 			db.getSetsMembers(['set1', 'set2'], function(err, sets) {
-				assert.equal(err, null, 'db.setsAdd error');
+				assert.equal(err, null);
 				assert.equal(Array.isArray(sets), true, 'sets is not an array');
 				assert.equal(arguments.length, 2, 'arguments.length error');
 				assert.equal(Array.isArray(sets[0]) && Array.isArray(sets[1]), true, 'sets not arrays');
@@ -72,10 +72,10 @@ describe('Set methods', function() {
 		});
 	});
 
-	describe('isSetMember', function() {
+	describe('isSetMember()', function() {
 		it('should return false if element is not member of set', function(done) {
 			db.isSetMember('testSet', 10, function(err, isMember) {
-				assert.equal(err, null, 'db.isSetMember error');
+				assert.equal(err, null);
 				assert.equal(arguments.length, 2, 'arguments.length error');
 				assert.equal(isMember, false);
 				done();
@@ -84,7 +84,7 @@ describe('Set methods', function() {
 
 		it('should return true if element is a member of set', function(done) {
 			db.isSetMember('testSet', 5, function(err, isMember) {
-				assert.equal(err, null, 'db.isSetMember error');
+				assert.equal(err, null);
 				assert.equal(arguments.length, 2, 'arguments.length error');
 				assert.equal(isMember, true);
 				done();
@@ -92,10 +92,10 @@ describe('Set methods', function() {
 		});
 	});
 
-	describe('isSetMembers', function() {
+	describe('isSetMembers()', function() {
 		it('should return an array of booleans', function(done) {
 			db.isSetMembers('testSet', ['1', '2', '10', '3'], function(err, members) {
-				assert.equal(err, null, 'db.isSetMembers error');
+				assert.equal(err, null);
 				assert.equal(arguments.length, 2, 'arguments.length error');
 				assert.equal(Array.isArray(members), true);
 				assert.deepEqual(members, [true, true, false, true]);
@@ -104,10 +104,10 @@ describe('Set methods', function() {
 		});
 	});
 
-	describe('isMemberOfSets', function() {
+	describe('isMemberOfSets()', function() {
 		it('should return an array of booleans', function(done) {
 			db.isMemberOfSets(['set1', 'testSet', 'set2', 'doesnotexist'], 'value', function(err, members) {
-				assert.equal(err, null, 'db.isMemberOfSets error');
+				assert.equal(err, null);
 				assert.equal(arguments.length, 2, 'arguments.length error');
 				assert.equal(Array.isArray(members), true);
 				assert.deepEqual(members, [true, false, true, false]);
@@ -116,6 +116,28 @@ describe('Set methods', function() {
 		});
 	});
 
+	describe('setCount()', function() {
+		it('should return the element count of set', function(done) {
+			db.isMemberOfSets('testSet', function(err, count) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2, 'arguments.length error');
+				assert.strictEqual(count, 5);
+				done();
+			});
+		});
+	});
+
+	describe('setsCount()', function() {
+		it('should return the element count of sets', function(done) {
+			db.isMemberOfSets(['testSet', 'set1', 'set2', 'doesnotexist'], function(err, counts) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2, 'arguments.length error');
+				assert.equal(Array.isArray(counts), true);
+				assert.deepEqual(counts, [5, 1, 1, 0]);
+				done();
+			});
+		});
+	});
 
 
 	after(function() {
