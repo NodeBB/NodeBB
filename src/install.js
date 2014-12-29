@@ -117,6 +117,7 @@ function setupConfig(next) {
 	prompt.start();
 	prompt.message = '';
 	prompt.delimiter = '';
+	prompt.colors = false;
 
 	if (!install.values) {
 		prompt.get(questions.main, function(err, config) {
