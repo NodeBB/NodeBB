@@ -11,6 +11,7 @@ describe('Test database', function() {
 	});
 
 	require('./database/keys');
+	require('./database/list');
 
 	it('should not throw err', function(done) {
 		var objectKey = 'testObj';
@@ -108,49 +109,6 @@ describe('Test database', function() {
 		});
 	});
 
-	it('should not throw err', function(done) {
-		function listAppend(callback) {
-			db.listAppend('myList5', 5, function(err, data) {
-				callback(err, {'listAppend': data});
-			});
-		}
-
-		function listPrepend(callback) {
-			db.listPrepend('myList5', 4, function(err, data) {
-				callback(err, {'listPrepend': data});
-			});
-		}
-
-
-		function listRemoveLast(callback) {
-			db.listRemoveLast('myList5', function(err, data) {
-				callback(err, {'listRemoveLast': data});
-			});
-		}
-
-
-		function getListRange(callback) {
-			db.getListRange('myList5', 0, -1, function(err, data) {
-				callback(err, {'getListRange': data});
-			});
-		}
-
-		var listTasks = [
-			listAppend,
-			listPrepend,
-			getListRange,
-			listRemoveLast,
-			getListRange
-		];
-
-		async.series(listTasks, function(err, results) {
-			assert.equal(err, null, 'error in list methods: ' + err);
-			assert.ok(results);
-
-			done();
-		});
-
-	});
 
 	it('should not throw err', function(done) {
 		function setAdd(callback) {

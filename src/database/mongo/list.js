@@ -18,7 +18,9 @@ module.exports = function(db, module) {
 			}
 
 			if (exists) {
-				db.collection('objects').update({_key:key}, {$push: {array: {$each: [value], $position: 0}}}, {upsert:true, w:1 }, callback);
+				db.collection('objects').update({_key:key}, {$push: {array: {$each: [value], $position: 0}}}, {upsert:true, w:1 }, function(err, res) {
+					callback(err);
+				});
 			} else {
 				module.listAppend(key, value, callback);
 			}
@@ -31,7 +33,9 @@ module.exports = function(db, module) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').update({ _key: key }, { $push: { array: value } }, {upsert:true, w:1}, callback);
+		db.collection('objects').update({ _key: key }, { $push: { array: value } }, {upsert:true, w:1}, function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.listRemoveLast = function(key, callback) {
@@ -50,6 +54,18 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.listRemoveAll = function(key, value, callback) {
+		callback =  callback || helpers.noop;
+		if (!key) {
+			return callback();
+		}
+		value = helpers.valueToString(value);
+
+		db.collection('objects').update({_key: key }, { $pull: { array: value } }, function(err, res) {
+			callback(err);
+		});
+	};
+
 	module.listTrim = function(key, start, stop, callback) {
 		callback = callback || helpers.noop;
 		if (!key) {
@@ -60,18 +76,10 @@ module.exports = function(db, module) {
 				return callback(err);
 			}
 
-			db.collection('objects').update({_key: key}, {$set: {array: value}}, callback);
+			db.collection('objects').update({_key: key}, {$set: {array: value}}, function(err, res) {
+				callback(err);
+			});
 		});
-	};
-
-	module.listRemoveAll = function(key, value, callback) {
-		callback =  callback || helpers.noop;
-		if (!key) {
-			return callback();
-		}
-		value = helpers.valueToString(value);
-
-		db.collection('objects').update({_key: key }, { $pull: { array: value } }, callback);
 	};
 
 	module.getListRange = function(key, start, stop, callback) {

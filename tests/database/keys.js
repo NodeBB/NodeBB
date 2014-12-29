@@ -1,3 +1,4 @@
+'use strict';
 
 var	async = require('async'),
 	assert = require('assert'),
