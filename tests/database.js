@@ -12,6 +12,7 @@ describe('Test database', function() {
 
 	require('./database/keys');
 	require('./database/list');
+	require('./database/sets');
 
 	it('should not throw err', function(done) {
 		var objectKey = 'testObj';
@@ -103,78 +104,6 @@ describe('Test database', function() {
 
 		async.series(objectTasks, function(err, results) {
 			assert.equal(err, null, 'error in object methods');
-			assert.ok(results);
-
-			done();
-		});
-	});
-
-
-	it('should not throw err', function(done) {
-		function setAdd(callback) {
-			db.setAdd('myTestSet', 15, function(err, data) {
-				callback(err, {'setAdd': data});
-			});
-		}
-
-		function setRemove(callback) {
-			db.setRemove('myTestSet', 15, function(err, data) {
-				callback(err, {'setRemove': data});
-			});
-		}
-
-		function getSetMembers(callback) {
-			db.getSetMembers('myTestSet', function(err, data) {
-				callback(err, {'getSetMembers': data});
-			});
-		}
-
-		function isSetMember(callback) {
-			db.isSetMember('myTestSet', 15, function(err, data) {
-				callback(err, {'isSetMember': data});
-			});
-		}
-
-		function isMemberOfSets(callback) {
-			db.isMemberOfSets(['doesntexist', 'myTestSet', 'nonexistingSet'], 15, function(err, data) {
-				callback(err, {'isMemberOfSets': data});
-			});
-		}
-
-		function setRemoveRandom(callback) {
-			db.setRemoveRandom('myTestSet', function(err, data) {
-				callback(err, {'setRemoveRandom': data});
-			});
-		}
-
-		function setCount(callback) {
-			db.setCount('myTestSet', function(err, data) {
-				callback(err, {'setCount': data});
-			});
-		}
-
-
-		var setTasks = [
-			getSetMembers,
-			setAdd,
-			setAdd,
-			setAdd,
-			getSetMembers,
-			setRemove,
-			getSetMembers,
-			isSetMember,
-			setAdd,
-			getSetMembers,
-			isSetMember,
-			setRemoveRandom,
-			getSetMembers,
-			setCount,
-			isMemberOfSets
-		];
-
-
-		require('async').series(setTasks, function(err, results) {
-			assert.equal(err, null, 'error in set methods');
 			assert.ok(results);
 
 			done();
