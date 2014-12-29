@@ -40,10 +40,6 @@ define('admin/manage/categories', [
 			return false;
 		}
 
-		function update_blockclass(el) {
-			el.parentNode.parentNode.className = 'entry-row ' + el.value;
-		}
-
 		function updateCategoryOrders() {
 			var categories = $('.admin-categories #entry-container').children();
 			for(var i = 0; i<categories.length; ++i) {

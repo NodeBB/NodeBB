@@ -118,33 +118,26 @@ function getStatsForSet(set, field, callback) {
 	}, callback);
 }
 
-adminController.categories.active = function(req, res, next) {
-	filterAndRenderCategories(req, res, next, true);
-};
+adminController.categories.get = function(req, res, next) {
+	var uid = req.user ? parseInt(req.user.uid, 10) : 0,
+		active = [],
+		disabled = [];
 
-adminController.categories.disabled = function(req, res, next) {
-	filterAndRenderCategories(req, res, next, false);
-};
-
-function filterAndRenderCategories(req, res, next, active) {
-	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
 	categories.getAllCategories(uid, function (err, categoryData) {
 		if (err) {
 			return next(err);
 		}
 
-		categoryData = categoryData.filter(function (category) {
-			if (!category) {
-				return false;
-			}
-			return active ? !category.disabled : category.disabled;
+		categoryData.filter(Boolean).forEach(function(category) {
+			(category.disabled ? disabled : active).push(category);
 		});
 
 		res.render('admin/manage/categories', {
-			categories: categoryData
+			active: active,
+			disabled: disabled
 		});
 	});
-}
+};
 
 adminController.tags.get = function(req, res, next) {
 	topics.getTags(0, 199, function(err, tags) {
