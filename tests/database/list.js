@@ -83,14 +83,15 @@ describe('List methods', function() {
 	});
 
 	describe('listRemoveAll()', function() {
-		it('should remove all the elements of list', function(done) {
-			db.listRemoveAll('testList2', function(err) {
+		it('should remove all the matching elements of list', function(done) {
+			db.listRemoveAll('testList2', '1', function(err) {
 				assert.equal(err, null, 'db.listRemoveAll error');
 				assert.equal(arguments.length, 1, 'arguments.length error');
 
 				db.getListRange('testList2', 0, -1, function(err, list) {
 					assert.equal(Array.isArray(list), true, 'list is not an array');
-					assert.equal(list.length, 0, 'list is not empty');
+					assert.equal(list.length, 1, 'element not removed');
+					assert.equal(list.indexOf('1'), -1, 'element not removed');
 					done();
 				});
 			});

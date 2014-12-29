@@ -43,7 +43,7 @@ module.exports = function(db, module) {
 		if (!key) {
 			return callback();
 		}
-		module.getListRange(key, -1, 0, function(err, value) {
+		module.getListRange(key, -1, -1, function(err, value) {
 			if (err) {
 				return callback(err);
 			}
@@ -86,43 +86,17 @@ module.exports = function(db, module) {
 		if (!key) {
 			return callback();
 		}
-		var skip = start,
-			limit = stop - start + 1,
-			splice = false;
 
-		if((start < 0 && stop >= 0) || (start >= 0 && stop < 0)) {
-			skip = 0;
-			limit = Math.pow(2, 31) - 2;
-			splice = true;
-		} else if (start > stop) {
-			return callback(null, []);
-		}
-
-		db.collection('objects').findOne({_key:key}, { array: { $slice: [skip, limit] }}, function(err, data) {
+		db.collection('objects').findOne({_key:key}, { array: 1}, function(err, data) {
 			if(err || !(data && data.array)) {
 				return callback(err, []);
 			}
 
-			if(splice) {
-
-				if(start < 0) {
-					start = data.array.length - Math.abs(start);
-				}
-
-				if(stop < 0) {
-					stop = data.array.length - Math.abs(stop);
-				}
-
-				if(start > stop) {
-					return callback(null, []);
-				}
-
-				var howMany = stop - start + 1;
-				if(start !== 0 || howMany !== data.array.length) {
-					data.array = data.array.splice(start, howMany);
-				}
+			if (stop === -1) {
+				data.array = data.array.slice(start);
+			} else {
+				data.array = data.array.slice(start, stop + 1);
 			}
-
 			callback(null, data.array);
 		});
 	};
