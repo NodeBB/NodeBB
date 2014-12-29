@@ -57,12 +57,6 @@ module.exports = function(app, middleware, controllers) {
 	});
 
 	router.get('/test', function(req, res) {
-		//res.redirect(404);
-		var db = require('../database');
-		db.increment('someDerpKey', function(err, value) {
-			console.log(err, value);
-			db.delete('someDerpKey');
-			res.json('ok');
-		})
+		res.redirect(404);
 	});
 };

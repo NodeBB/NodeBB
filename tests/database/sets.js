@@ -139,6 +139,50 @@ describe('Set methods', function() {
 		});
 	});
 
+	describe('setRemove()', function() {
+		it('should remove a element from set', function(done) {
+			db.setRemove('testSet', '2', function(err) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 1, 'arguments.length error');
+
+				db.isSetMember('testSet', '2', function(err, isMember) {
+					assert.equal(err, null);
+					assert.equal(isMember, false);
+					done();
+				});
+			});
+		});
+	});
+
+	describe('setsRemove()', function() {
+		it('should remove a element from multiple sets', function(done) {
+			db.setsRemove(['set1', 'set2'], 'value', function(err) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 1, 'arguments.length error');
+				db.isMemberOfSets(['set1', 'set2'], 'value', function(err, members) {
+					assert.equal(err, null);
+					assert.deepEqual(members, [false, false]);
+					done();
+				});
+			});
+		});
+	});
+
+	describe('setRemoveRandom()', function() {
+		it('should remove a random element from set', function(done) {
+			db.setRemoveRandom('testSet', function(err, element) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2, 'arguments.length error');
+
+				db.isSetMember('testSet', element, function(err, ismember) {
+					assert.equal(err, null);
+					assert.equal(ismember, false);
+					done();
+				});
+			});
+		});
+	});
+
 
 	after(function() {
 		db.flushdb();
