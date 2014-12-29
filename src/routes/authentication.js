@@ -253,15 +253,20 @@
 		});
 	}
 
-	function logout(req, res) {
+	function logout(req, res, next) {
 		if (req.user && parseInt(req.user.uid, 10) > 0 && req.sessionID) {
 
 			require('../socket.io').logoutUser(req.user.uid);
-			db.sessionStore.destroy(req.sessionID);
-			req.logout();
+			db.sessionStore.destroy(req.sessionID, function(err) {
+				if (err) {
+					return next(err);
+				}
+				req.logout();
+				res.status(200).send('');
+			});
+		} else {
+			res.status(200).send('');
 		}
-
-		res.status(200).send('');
 	}
 
 }(exports));
