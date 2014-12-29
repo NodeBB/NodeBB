@@ -104,6 +104,19 @@ describe('Set methods', function() {
 		});
 	});
 
+	describe('isMemberOfSets', function() {
+		it('should return an array of booleans', function(done) {
+			db.isMemberOfSets(['set1', 'testSet', 'set2', 'doesnotexist'], 'value', function(err, members) {
+				assert.equal(err, null, 'db.isMemberOfSets error');
+				assert.equal(arguments.length, 2, 'arguments.length error');
+				assert.equal(Array.isArray(members), true);
+				assert.deepEqual(members, [true, false, true, false]);
+				done();
+			});
+		});
+	});
+
+
 
 	after(function() {
 		db.flushdb();
