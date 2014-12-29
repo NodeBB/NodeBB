@@ -64,7 +64,7 @@ describe('Set methods', function() {
 				assert.equal(err, null, 'db.setsAdd error');
 				assert.equal(Array.isArray(sets), true, 'sets is not an array');
 				assert.equal(arguments.length, 2, 'arguments.length error');
-				assert.equal(Array.isArray(sets[0]) && Array.isAray(sets[1]), true, 'sets not arrays');
+				assert.equal(Array.isArray(sets[0]) && Array.isArray(sets[1]), true, 'sets not arrays');
 				assert.strictEqual(sets[0][0], 'value', 'set value not correct');
 				assert.strictEqual(sets[1][0], 'value', 'set value not correct');
 				done();
