@@ -556,7 +556,7 @@ SocketTopics.searchAndLoadTags = function(socket, data, callback) {
 };
 
 SocketTopics.loadMoreTags = function(socket, data, callback) {
-	if(!data || !data.after) {
+	if(!data || !utils.isNumber(data.after)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
