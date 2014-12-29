@@ -14,6 +14,14 @@ describe('Set methods', function() {
 				done();
 			});
 		});
+
+		it('should add an array to a set', function(done) {
+			db.setAdd('testSet', [1, 2, 3, 4], function(err) {
+				assert.equal(err, null, 'db.setAdd error');
+				assert.equal(arguments.length, 1, 'arguments.length error');
+				done();
+			});
+		});
 	});
 
 	describe('getSetMembers()', function() {
@@ -27,11 +35,14 @@ describe('Set methods', function() {
 			});
 		});
 
-		it('should return a set with one element', function(done) {
+		it('should return a set with all elements', function(done) {
 			db.getSetMembers('testSet', function(err, set) {
 				assert.equal(err, null, 'db.getSetMembers error');
-				assert.equal(set.length, 1, 'set is empty');
-				assert.strictEqual(set[0], '5' , 'set not empty');
+				assert.equal(set.length, 5, 'set is empty');
+				set.forEach(function(value) {
+					assert.notEqual(['1', '2', '3', '4', '5'].indexOf(value), -1, 'set does not have correct elements');
+				});
+
 				done();
 			});
 		});
@@ -61,6 +72,37 @@ describe('Set methods', function() {
 		});
 	});
 
+	describe('isSetMember', function() {
+		it('should return false if element is not member of set', function(done) {
+			db.isSetMember('testSet', 10, function(err, isMember) {
+				assert.equal(err, null, 'db.isSetMember error');
+				assert.equal(arguments.length, 2, 'arguments.length error');
+				assert.equal(isMember, false);
+				done();
+			});
+		});
+
+		it('should return true if element is a member of set', function(done) {
+			db.isSetMember('testSet', 5, function(err, isMember) {
+				assert.equal(err, null, 'db.isSetMember error');
+				assert.equal(arguments.length, 2, 'arguments.length error');
+				assert.equal(isMember, true);
+				done();
+			});
+		});
+	});
+
+	describe('isSetMembers', function() {
+		it('should return an array of booleans', function(done) {
+			db.isSetMembers('testSet', ['1', '2', '10', '3'], function(err, members) {
+				assert.equal(err, null, 'db.isSetMembers error');
+				assert.equal(arguments.length, 2, 'arguments.length error');
+				assert.equal(Array.isArray(members), true);
+				assert.deepEqual(members, [true, true, false, true]);
+				done();
+			});
+		});
+	});
 
 
 	after(function() {
