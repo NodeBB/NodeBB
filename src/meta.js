@@ -4,6 +4,7 @@ var async = require('async'),
 	winston = require('winston'),
 	templates = require('templates.js'),
 	os = require('os'),
+	nconf = require('nconf'),
 
 	user = require('./user'),
 	groups = require('./groups'),
@@ -36,6 +37,18 @@ var async = require('async'),
 	};
 
 	Meta.reload = function(callback) {
+		pubsub.publish('meta:reload', {hostname: os.hostname()});
+		reload(callback);
+	};
+
+	pubsub.on('meta:reload', function(data) {
+		if (data.hostname !== os.hostname()) {
+			reload();
+		}
+	});
+
+	function reload(callback) {
+		callback = callback || function() {};
 		async.series([
 			async.apply(plugins.clearRequireCache),
 			async.apply(plugins.reload),
@@ -57,11 +70,9 @@ var async = require('async'),
 				emitter.emit('nodebb:ready');
 			}
 
-			if (callback) {
-				callback.apply(null, arguments);
-			}
+			callback(err);
 		});
-	};
+	}
 
 	Meta.restart = function() {
 		pubsub.publish('meta:restart', {hostname: os.hostname()});
