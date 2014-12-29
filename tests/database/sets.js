@@ -118,7 +118,7 @@ describe('Set methods', function() {
 
 	describe('setCount()', function() {
 		it('should return the element count of set', function(done) {
-			db.isMemberOfSets('testSet', function(err, count) {
+			db.setCount('testSet', function(err, count) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2, 'arguments.length error');
 				assert.strictEqual(count, 5);
@@ -129,7 +129,7 @@ describe('Set methods', function() {
 
 	describe('setsCount()', function() {
 		it('should return the element count of sets', function(done) {
-			db.isMemberOfSets(['testSet', 'set1', 'set2', 'doesnotexist'], function(err, counts) {
+			db.setsCount(['testSet', 'set1', 'set2', 'doesnotexist'], function(err, counts) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2, 'arguments.length error');
 				assert.equal(Array.isArray(counts), true);
