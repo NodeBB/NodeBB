@@ -73,6 +73,99 @@ describe('Hash methods', function() {
 		});
 	});
 
+	describe('getObjectField()', function() {
+		it('should return falsy if object does not exist', function(done) {
+			db.getObjectField('doesnotexist', 'fieldName', function(err, value) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(!!value, false);
+				done();
+			});
+		});
+
+		it('should return falsy if field does not exist', function(done) {
+			db.getObjectField('testObject1', 'fieldName', function(err, value) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(!!value, false);
+				done();
+			});
+		});
+
+		it('should get an objects field', function(done) {
+			db.getObjectField('testObject1', 'lastname', function(err, value) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(value, 'usakli');
+				done();
+			});
+		});
+	});
+
+	describe('getObjectFields()', function() {
+		it('should return an object with falsy values', function(done) {
+			db.getObjectFields('doesnotexist', ['field1', 'field2'], function(err, object) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(typeof object, 'object');
+				assert.equal(!!object.field1, false);
+				assert.equal(!!object.field2, false);
+				done();
+			});
+		});
+
+		it('should return an object with correct fields', function(done) {
+			db.getObjectFields('testObject1', ['lastname', 'age', 'field1'], function(err, object) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(typeof object, 'object');
+				assert.equal(object.lastname, 'usakli');
+				assert.equal(object.age, 99);
+				assert.equal(!!object.field1, false);
+				done();
+			});
+		});
+	});
+
+	describe('getObjectsFields()', function() {
+		it('should return an array of objects with correct values', function(done) {
+			db.getObjectsFields(['testObject1', 'testObject2', 'doesnotexist'], ['name', 'age'], function(err, objects) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(Array.isArray(objects), true);
+				assert.equal(objects.length, 3);
+				assert.equal(objects[0].name, 'baris');
+				assert.equal(objects[0].age, 99);
+				assert.equal(objects[1].name, 'ginger');
+				assert.equal(!!objects[2].name, false);
+				done();
+			});
+		});
+	});
+
+	describe('getObjectKeys()', function() {
+		it('should return an empty array for a object that does not exist', function(done) {
+			db.getObjectKeys('doesnotexist', function(err, keys) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(Array.isArray(keys) && keys.length === 0);
+				done();
+			});
+		});
+
+		it('should return an array of keys for the object\'s fields', function(done) {
+			db.getObjectKeys('testObject1', function(err, keys) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(Array.isArray(keys) && keys.length === 3, true);
+				keys.forEach(function(key) {
+					assert.notEqual(['name', 'lastname', 'age'].indexOf(key), -1);
+				});
+
+				done();
+			});
+		});
+	});
 
 
 	after(function() {
