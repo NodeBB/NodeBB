@@ -107,13 +107,4 @@
 	
 	<!-- IMPORT admin/partials/categories/new.tpl -->
 	<!-- IMPORT admin/partials/categories/permissions.tpl -->
-	<!-- IMPORT admin/partials/categories/setParent.tpl -->
-	<div id="icons" style="display:none;">
-		<div class="icon-container">
-			<div class="row fa-icons">
-				<i class="fa fa-doesnt-exist"></i>
-				<!-- IMPORT admin/partials/fontawesome.tpl -->
-			</div>
-		</div>
-	</div>
 </div>
