@@ -285,7 +285,7 @@ describe('Hash methods', function() {
 		});
 
 		it('should increment an object fields by passed in value and return it', function(done) {
-			db.decrObjectField('testObject1', 'age', 11, function(err, newValue) {
+			db.incrObjectFieldBy('testObject1', 'age', 11, function(err, newValue) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(newValue, 110);
@@ -293,7 +293,6 @@ describe('Hash methods', function() {
 			});
 		});
 	});
-
 
 
 
