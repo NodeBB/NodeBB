@@ -211,7 +211,7 @@ describe('Hash methods', function() {
 		});
 
 		it('should return true if field exists', function(done) {
-			db.isObjectField('testObject1', function(err, value) {
+			db.isObjectField('testObject1', 'lastname', function(err, value) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(value, true);
