@@ -15,7 +15,7 @@
 								<th></th>
 							</tr>
 						</thead>
-						<tbody id="entry-container">
+						<tbody id="active-categories">
 							<!-- BEGIN active -->
 							<tr data-cid="{active.cid}">
 								<td>
@@ -32,7 +32,12 @@
 								<td>{active.description}</td>
 								<td class="text-center">{active.topic_count}</td>
 								<td class="text-center">{active.post_count}</td>
-								<td><a href="./categories/{active.cid}" class="btn btn-default btn-block btn-xs">Edit</a></td>
+								<td>
+									<div class="btn-group">
+										<a href="./categories/{active.cid}" class="btn btn-default btn-xs">Edit</a>
+										<button data-action="toggle" data-disabled="{active.disabled}" class="btn btn-default btn-xs">Disable</button>
+									</div>
+								</td>
 							</tr>
 							<!-- END active -->
 						</tbody>
@@ -68,7 +73,7 @@
 								<th></th>
 							</tr>
 						</thead>
-						<tbody id="entry-container">
+						<tbody id="disabled-categories">
 							<!-- BEGIN disabled -->
 							<tr data-cid="{disabled.cid}">
 								<td>
@@ -85,7 +90,12 @@
 								<td>{disabled.description}</td>
 								<td class="text-center">{disabled.topic_count}</td>
 								<td class="text-center">{disabled.post_count}</td>
-								<td><a href="./categories/{active.cid}" class="btn btn-default btn-block btn-xs">Edit</a></td>
+								<td>
+									<div class="btn-group">
+										<a href="./categories/{disabled.cid}" class="btn btn-default btn-xs">Edit</a>
+										<button data-action="toggle" data-disabled="{disabled.disabled}" class="btn btn-default btn-xs">Enable</button>
+									</div>
+								</td>
 							</tr>
 							<!-- END disabled -->
 						</tbody>

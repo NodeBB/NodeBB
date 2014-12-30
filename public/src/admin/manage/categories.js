@@ -9,6 +9,8 @@ define('admin/manage/categories', [
 	var	Categories = {};
 
 	Categories.init = function() {
+		var bothEl = $('#active-categories, #disabled-categories');
+
 		var modified_categories = {};
 
 		function modified(el) {
@@ -55,9 +57,29 @@ define('admin/manage/categories', [
 			socket.emit('admin.categories.update', modified);
 		}
 
-		$('#entry-container').sortable({
+		bothEl.sortable({
 			stop: updateCategoryOrders,
-			distance: 10
+			distance: 15
+		});
+
+		// Category enable/disable
+		bothEl.on('click', '[data-action="toggle"]', function(ev) {
+			var btnEl = $(this),
+				cid = btnEl.parents('tr').attr('data-cid'),
+				disabled = btnEl.attr('data-disabled') === 'false' ? '1' : '0',
+				payload = {};
+
+			payload[cid] = {
+				disabled: disabled
+			};
+
+			socket.emit('admin.categories.update', payload, function(err, result) {
+				if (err) {
+					return app.alertError(err.message);
+				} else {
+					ajaxify.refresh();
+				}
+			});
 		});
 
 		$('.blockclass, .admin-categories form select').each(function() {
@@ -76,7 +98,7 @@ define('admin/manage/categories', [
 				icon: $('#new-category-modal i').attr('value'),
 				bgColor: '#0059b2',
 				color: '#fff',
-				order: $('.admin-categories #entry-container').children().length + 1
+				order: $('#disabled-categories').children().length + 1
 			};
 
 			socket.emit('admin.categories.create', category, function(err, data) {
@@ -145,26 +167,12 @@ define('admin/manage/categories', [
 			$('#addNew').on('click', showCreateCategoryModal);
 			$('#create-category-btn').on('click', createNewCategory);
 
-			$('#entry-container, #new-category-modal').on('click', '.icon', function(ev) {
+			$('#active-categories, #disabled-categories, #new-category-modal').on('click', '.icon', function(ev) {
 				iconSelect.init($(this).find('i'), modified);
 			});
 
 			$('.admin-categories form input, .admin-categories form select').on('change', function(ev) {
 				modified(ev.target);
-			});
-
-			$('.dropdown').on('click', '[data-disabled]', function(ev) {
-				var btn = $(this),
-					categoryRow = btn.parents('li'),
-					cid = categoryRow.attr('data-cid'),
-					disabled = btn.attr('data-disabled') === 'false' ? '1' : '0';
-
-				categoryRow.remove();
-				modified_categories[cid] = modified_categories[cid] || {};
-				modified_categories[cid].disabled = disabled;
-
-				save();
-				return false;
 			});
 
 			// Colour Picker
