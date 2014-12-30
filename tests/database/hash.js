@@ -167,6 +167,93 @@ describe('Hash methods', function() {
 		});
 	});
 
+	describe('getObjectValues()', function() {
+		it('should return an empty array for a object that does not exist', function(done) {
+			db.getObjectKeys('doesnotexist', function(err, values) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(Array.isArray(values) && values.length === 0, true);
+				done();
+			});
+		});
+
+		it('should return an array of values for the object\'s fields', function(done) {
+			db.getObjectKeys('testObject1', function(err, values) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(Array.isArray(values) && values.length === 3, true);
+				values.forEach(function(value) {
+					assert.notEqual(['baris', 'usakli', 99].indexOf(value), -1);
+				});
+
+				done();
+			});
+		});
+	});
+
+	describe('isObjectField()', function() {
+		it('should return false if object does not exist', function(done) {
+			db.isObjectField('doesnotexist', 'field1', function(err, value) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(value, false);
+				done();
+			});
+		});
+
+		it('should return false if field does not exist', function(done) {
+			db.getObjectKeys('testObject1', 'field1', function(err, value) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(value, false);
+				done();
+			});
+		});
+
+		it('should return true if field exists', function(done) {
+			db.getObjectKeys('testObject1', function(err, value) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(value, true);
+				done();
+			});
+		});
+	});
+
+	describe('deleteObjectField()', function() {
+		it('should delete an objects field', function(done) {
+			db.deleteObjectField('testObject1', 'lastname', function(err) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 1);
+				db.isObjectField('testObject1', 'lastname', function(err, isField) {
+					assert.equal(err, null);
+					assert.equal(isField, false);
+					done();
+				});
+			});
+		});
+	});
+
+	describe('incrObjectField()', function() {
+		it('should set an objects field to 1 if object does not exist', function(done) {
+			db.incrObjectField('testObject3', 'field1', function(err, newValue) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(newValue, 1);
+				done();
+			});
+		});
+
+		it('should increment an object fields by 1 and return it', function(done) {
+			db.incrObjectField('testObject1', 'age', function(err, newValue) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(newValue, 100);
+				done();
+			});
+		});
+	});
+
 
 	after(function() {
 		db.flushdb();
