@@ -119,6 +119,10 @@ function getStatsForSet(set, field, callback) {
 }
 
 adminController.categories.get = function(req, res, next) {
+
+};
+
+adminController.categories.getAll = function(req, res, next) {
 	var uid = req.user ? parseInt(req.user.uid, 10) : 0,
 		active = [],
 		disabled = [];

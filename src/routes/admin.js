@@ -44,7 +44,8 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/general/languages', controllers.admin.languages.get);
 	router.get('/general/sounds', controllers.admin.sounds.get);
 
-	router.get('/manage/categories', controllers.admin.categories.get);
+	router.get('/manage/categories', controllers.admin.categories.getAll);
+	router.get('/manage/categories/:category_id', controllers.admin.categories.get);
 
 	router.get('/manage/tags', controllers.admin.tags.get);
 

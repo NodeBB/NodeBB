@@ -40,20 +40,23 @@ define('admin/manage/categories', [
 			return false;
 		}
 
-		function updateCategoryOrders() {
-			var categories = $('.admin-categories #entry-container').children();
-			for(var i = 0; i<categories.length; ++i) {
-				var input = $(categories[i]).find('input[data-name="order"]');
+		function updateCategoryOrders(evt, ui) {
+			var categories = $(evt.target).children(),
+				modified = {},
+				cid;
 
-				input.val(i+1).attr('data-value', i+1);
-				modified(input);
+			for(var i=0;i<categories.length;i++) {
+				cid = $(categories[i]).attr('data-cid');
+				modified[cid] = {
+					order: i+1
+				};
 			}
+
+			socket.emit('admin.categories.update', modified);
 		}
 
 		$('#entry-container').sortable({
-			stop: function(event, ui) {
-				updateCategoryOrders();
-			},
+			stop: updateCategoryOrders,
 			distance: 10
 		});
 

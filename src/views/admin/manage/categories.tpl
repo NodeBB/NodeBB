@@ -4,7 +4,7 @@
 			<div class="panel-heading"><i class="fa fa-folder"></i> Categories</div>
 			<div class="panel-body">
 				<div class="row">
-					<table class="table table-striped table-hover">
+					<table class="table table-striped table-hover table-reordering">
 						<thead>
 							<tr>
 								<th></th>
@@ -12,6 +12,7 @@
 								<th>Description</th>
 								<th class="text-center">Topics</th>
 								<th class="text-center">Posts</th>
+								<th></th>
 							</tr>
 						</thead>
 						<tbody id="entry-container">
@@ -31,6 +32,7 @@
 								<td>{active.description}</td>
 								<td class="text-center">{active.topic_count}</td>
 								<td class="text-center">{active.post_count}</td>
+								<td><a href="./categories/{active.cid}" class="btn btn-default btn-block btn-xs">Edit</a></td>
 							</tr>
 							<!-- END active -->
 						</tbody>
@@ -55,7 +57,7 @@
 			<div class="panel-heading"><i class="fa fa-folder"></i> Categories</div>
 			<div class="panel-body">
 				<div class="row">
-					<table class="table table-striped table-hover">
+					<table class="table table-striped table-hover table-reordering">
 						<thead>
 							<tr>
 								<th></th>
@@ -63,6 +65,7 @@
 								<th>Description</th>
 								<th class="text-center">Topics</th>
 								<th class="text-center">Posts</th>
+								<th></th>
 							</tr>
 						</thead>
 						<tbody id="entry-container">
@@ -82,6 +85,7 @@
 								<td>{disabled.description}</td>
 								<td class="text-center">{disabled.topic_count}</td>
 								<td class="text-center">{disabled.post_count}</td>
+								<td><a href="./categories/{active.cid}" class="btn btn-default btn-block btn-xs">Edit</a></td>
 							</tr>
 							<!-- END disabled -->
 						</tbody>
