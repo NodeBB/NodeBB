@@ -148,7 +148,7 @@ describe('Hash methods', function() {
 			db.getObjectKeys('doesnotexist', function(err, keys) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.equal(Array.isArray(keys) && keys.length === 0);
+				assert.equal(Array.isArray(keys) && keys.length === 0, true);
 				done();
 			});
 		});
