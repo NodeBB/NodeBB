@@ -61,7 +61,7 @@ describe('Hash methods', function() {
 
 	describe('getObjects()', function() {
 		it('should return 3 objects with correct data', function(done) {
-			db.getObjects(['testObject1' 'testObject2', 'doesnotexist'], function(err, objects) {
+			db.getObjects(['testObject1', 'testObject2', 'doesnotexist'], function(err, objects) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(Array.isArray(objects) && objects.length === 3, true);
