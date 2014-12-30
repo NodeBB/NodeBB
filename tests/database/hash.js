@@ -254,6 +254,48 @@ describe('Hash methods', function() {
 		});
 	});
 
+	describe('decrObjectField()', function() {
+		it('should set an objects field to -1 if object does not exist', function(done) {
+			db.decrObjectField('testObject4', 'field1', function(err, newValue) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(newValue, -1);
+				done();
+			});
+		});
+
+		it('should decrement an object fields by 1 and return it', function(done) {
+			db.decrObjectField('testObject1', 'age', function(err, newValue) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(newValue, 99);
+				done();
+			});
+		});
+	});
+
+	describe('incrObjectFieldBy()', function() {
+		it('should set an objects field to 5 if object does not exist', function(done) {
+			db.incrObjectFieldBy('testObject5', 'field1', 5, function(err, newValue) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(newValue, 5);
+				done();
+			});
+		});
+
+		it('should increment an object fields by passed in value and return it', function(done) {
+			db.decrObjectField('testObject1', 'age', 11, function(err, newValue) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(newValue, 110);
+				done();
+			});
+		});
+	});
+
+
+
 
 	after(function() {
 		db.flushdb();
