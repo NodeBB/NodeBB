@@ -119,7 +119,15 @@ function getStatsForSet(set, field, callback) {
 }
 
 adminController.categories.get = function(req, res, next) {
+	categories.getCategoryData(req.params.category_id, function(err, category) {
+		if (err) {
+			return next(err);
+		}
 
+		res.render('admin/manage/category', {
+			category: category
+		});
+	});
 };
 
 adminController.categories.getAll = function(req, res, next) {
