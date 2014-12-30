@@ -169,7 +169,7 @@ describe('Hash methods', function() {
 
 	describe('getObjectValues()', function() {
 		it('should return an empty array for a object that does not exist', function(done) {
-			db.getObjectKeys('doesnotexist', function(err, values) {
+			db.getObjectValues('doesnotexist', function(err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(Array.isArray(values) && values.length === 0, true);
@@ -178,7 +178,7 @@ describe('Hash methods', function() {
 		});
 
 		it('should return an array of values for the object\'s fields', function(done) {
-			db.getObjectKeys('testObject1', function(err, values) {
+			db.getObjectValues('testObject1', function(err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(Array.isArray(values) && values.length === 3, true);
@@ -202,7 +202,7 @@ describe('Hash methods', function() {
 		});
 
 		it('should return false if field does not exist', function(done) {
-			db.getObjectKeys('testObject1', 'field1', function(err, value) {
+			db.isObjectField('testObject1', 'field1', function(err, value) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(value, false);
@@ -211,7 +211,7 @@ describe('Hash methods', function() {
 		});
 
 		it('should return true if field exists', function(done) {
-			db.getObjectKeys('testObject1', function(err, value) {
+			db.isObjectField('testObject1', function(err, value) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(value, true);
