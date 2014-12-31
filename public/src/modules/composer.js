@@ -224,7 +224,8 @@ define('composer', [
 		var data = {
 			allowTopicsThumbnail: allowTopicsThumbnail,
 			showTags: isTopic || isMain,
-			isTopic: isTopic
+			isTopic: isTopic,
+			allowGuestHandles: config.allowGuestHandles
 		};
 
 		parseAndTranslate(template, data, function(composerTemplate) {
