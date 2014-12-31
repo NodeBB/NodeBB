@@ -378,6 +378,7 @@ define('composer', [
 	function post(post_uuid) {
 		var postData = composer.posts[post_uuid],
 			postContainer = $('#cmp-uuid-' + post_uuid),
+			handleEl = postContainer.find('.handle'),
 			titleEl = postContainer.find('.title'),
 			bodyEl = postContainer.find('textarea'),
 			thumbEl = postContainer.find('input#topic-thumb-url');
@@ -406,6 +407,7 @@ define('composer', [
 
 		if (parseInt(postData.cid, 10) > 0) {
 			composerData = {
+				handle: handleEl ? handleEl.val() : undefined,
 				title: titleEl.val(),
 				content: bodyEl.val(),
 				topic_thumb: thumbEl.val() || '',
@@ -424,6 +426,7 @@ define('composer', [
 		} else if (parseInt(postData.tid, 10) > 0) {
 			composerData = {
 				tid: postData.tid,
+				handle: handleEl ? handleEl.val() : undefined,
 				content: bodyEl.val(),
 				toPid: postData.toPid
 			};
@@ -433,6 +436,7 @@ define('composer', [
 		} else if (parseInt(postData.pid, 10) > 0) {
 			composerData = {
 				pid: postData.pid,
+				handle: handleEl ? handleEl.val() : undefined,
 				content: bodyEl.val(),
 				title: titleEl.val(),
 				topic_thumb: thumbEl.val() || '',

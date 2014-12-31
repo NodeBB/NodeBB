@@ -4,6 +4,7 @@
 
 var async = require('async'),
 	winston = require('winston'),
+	_ = require('underscore'),
 
 	db = require('../database'),
 	user = require('../user'),
@@ -110,25 +111,32 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			for (var i = 0; i < postData.length; ++i) {
-				if (postData[i]) {
-					postData[i].index = results.indices[i];
-					postData[i].deleted = parseInt(postData[i].deleted, 10) === 1;
-					postData[i].user = results.userData[postData[i].uid];
-					postData[i].editor = postData[i].editor ? results.editors[postData[i].editor] : null;
-					postData[i].favourited = results.favourites[i];
-					postData[i].upvoted = results.voteData.upvotes[i];
-					postData[i].downvoted = results.voteData.downvotes[i];
-					postData[i].votes = postData[i].votes || 0;
-					postData[i].display_moderator_tools = results.privileges[i].editable;
-					postData[i].display_move_tools = results.privileges[i].move && postData[i].index !== 0;
-					postData[i].selfPost = parseInt(uid, 10) === parseInt(postData[i].uid, 10);
+			postData = postData.map(function(postObj, i) {
+				if (postObj) {
+					postObj.index = results.indices[i];
+					postObj.deleted = parseInt(postObj.deleted, 10) === 1;
+					postObj.user = _.clone(results.userData[postObj.uid]);
+					postObj.editor = postObj.editor ? results.editors[postObj.editor] : null;
+					postObj.favourited = results.favourites[i];
+					postObj.upvoted = results.voteData.upvotes[i];
+					postObj.downvoted = results.voteData.downvotes[i];
+					postObj.votes = postObj.votes || 0;
+					postObj.display_moderator_tools = results.privileges[i].editable;
+					postObj.display_move_tools = results.privileges[i].move && postObj.index !== 0;
+					postObj.selfPost = parseInt(uid, 10) === parseInt(postObj.uid, 10);
 
-					if(postData[i].deleted && !results.privileges[i].view_deleted) {
-						postData[i].content = '[[topic:post_is_deleted]]';
+					if(postObj.deleted && !results.privileges[i].view_deleted) {
+						postObj.content = '[[topic:post_is_deleted]]';
+					}
+
+					// Username override for guests, if enabled
+					if (parseInt(postObj.uid, 10) === 0 && postObj.handle) {
+						postObj.user.username = postObj.handle;
 					}
 				}
-			}
+
+				return postObj;
+			}).filter(Boolean);
 
 			callback(null, postData);
 		});

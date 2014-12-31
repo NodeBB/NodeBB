@@ -93,6 +93,7 @@ module.exports = function(Topics) {
 
 	Topics.post = function(data, callback) {
 		var uid = data.uid,
+			handle = data.handle,
 			title = data.title,
 			content = data.content,
 			cid = data.cid;
@@ -134,7 +135,7 @@ module.exports = function(Topics) {
 				Topics.create({uid: uid, title: title, cid: cid, thumb: data.thumb, tags: data.tags}, next);
 			},
 			function(tid, next) {
-				Topics.reply({uid:uid, tid:tid, content:content, req: data.req}, next);
+				Topics.reply({uid:uid, tid:tid, handle: handle, content:content, req: data.req}, next);
 			},
 			function(postData, next) {
 				async.parallel({
@@ -184,6 +185,7 @@ module.exports = function(Topics) {
 		var tid = data.tid,
 			uid = data.uid,
 			toPid = data.toPid,
+			handle = data.handle,
 			content = data.content,
 			postData;
 
@@ -226,7 +228,7 @@ module.exports = function(Topics) {
 				checkContentLength(content, next);
 			},
 			function(next) {
-				posts.create({uid: uid, tid: tid, content: content, toPid: toPid, ip: data.req ? data.req.ip : null}, next);
+				posts.create({uid: uid, tid: tid, handle: handle, content: content, toPid: toPid, ip: data.req ? data.req.ip : null}, next);
 			},
 			function(data, next) {
 				postData = data;
