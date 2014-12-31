@@ -6,18 +6,22 @@ var async = require('async'),
 
 module.exports = function(User) {
 
-	User.search = function(query, type, callback) {
+	User.search = function(data, callback) {
+		var query = data.query;
+		var by = data.by || 'username';
+		var startsWith = data.hasOwnProperty('startsWith') ? data.startsWith : true;
+
 		if (!query || query.length === 0) {
 			return callback(null, {timing:0, users:[]});
 		}
 
-		if (type === 'ip') {
+		if (by === 'ip') {
 			return searchByIP(query, callback);
 		}
 
 		var start = process.hrtime();
 		var key = 'username:uid';
-		if (type === 'email') {
+		if (by === 'email') {
 			 key = 'email:uid';
 		}
 
@@ -32,7 +36,11 @@ module.exports = function(User) {
 			var uids = [];
 
 			for(var i=0; i<values.length; ++i) {
-				if (values[i].toLowerCase().indexOf(query) === 0) {
+				if (startsWith) {
+					if (values[i].toLowerCase().indexOf(query) === 0) {
+						uids.push(values[i]);
+					}
+				} else if (values[i].toLowerCase().indexOf(query) !== -1) {
 					uids.push(values[i]);
 				}
 			}

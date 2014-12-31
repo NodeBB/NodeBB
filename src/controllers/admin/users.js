@@ -9,7 +9,7 @@ var usersController = {};
 usersController.search = function(req, res, next) {
 	res.render('admin/manage/users', {
 		search_display: '',
-		loadmore_display: 'none',
+		loadmore_display: 'hide',
 		users: []
 	});
 };
@@ -52,6 +52,9 @@ function getUsers(set, req, res, next) {
 
 usersController.getCSV = function(req, res, next) {
 	user.getUsersCSV(function(err, data) {
+		if (err) {
+			return next(err);
+		}
 		res.attachment('users.csv');
 		res.setHeader('Content-Type', 'text/csv');
 		res.end(data);
