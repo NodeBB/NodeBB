@@ -157,6 +157,17 @@ describe('User', function() {
 		});
 	});
 
+	describe('.search()', function() {
+		it('should return an object containing an array of matching users', function(done) {
+			User.search({query: 'john'}, function(err, searchData) {
+				assert.ifError(err);
+				assert.equal(Array.isArray(searchData.users) && searchData.users.length > 0, true);
+				assert.equal(searchData.users[0].username, 'John Smith');
+				done();
+			});
+		});
+	});
+
 	after(function() {
 		db.flushdb();
 	});
