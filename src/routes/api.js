@@ -169,12 +169,11 @@ function getTemplatesListing(req, res, next) {
 			return next(err);
 		}
 
-		var data = [];
-		data = results.views.filter(function(value, index, self) {
-					return self.indexOf(value) === index;
-				}).map(function(el) {
-					return el.replace(nconf.get('views_dir') + '/', '');
-				});
+		var data = results.views.filter(function(value, index, self) {
+			return value && self.indexOf(value) === index;
+		}).map(function(el) {
+			return el && el.replace(nconf.get('views_dir') + '/', '');
+		});
 
 		data = data.concat(results.extended);
 
