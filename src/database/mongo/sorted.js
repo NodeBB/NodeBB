@@ -454,8 +454,8 @@ module.exports = function(db, module) {
 		value = helpers.fieldToString(value);
 		data.score = parseInt(increment, 10);
 
-		db.collection('objects').findAndModify({_key: key, value: value}, {}, {$inc: data}, {new:true, upsert:true}, function(err, result) {
-			callback(err, result ? result[value] : null);
+		db.collection('objects').findAndModify({_key: key, value: value}, {}, {$inc: data}, {new: true, upsert: true}, function(err, result) {
+			callback(err, result ? result.score : null);
 		});
 	};
 };
