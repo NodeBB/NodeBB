@@ -272,7 +272,7 @@ describe('Sorted Set methods', function() {
 
 	describe('sortedSetRanks()', function() {
 		it('should return the ranks of values in a sorted set', function(done) {
-			db.sortedSetsRanks('sorted2', ['value2', 'value1', 'value3', 'value4'], function(err, ranks) {
+			db.sortedSetRanks('sorted2', ['value2', 'value1', 'value3', 'value4'], function(err, ranks) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(ranks, [1, 0, 2, null]);
@@ -315,7 +315,7 @@ describe('Sorted Set methods', function() {
 			db.sortedSetsScore(['sorted1', 'sorted2', 'doesnotexist'], 'value2', function(err, scores) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepEqual(scores, [2, 2, null]);
+				assert.deepEqual(scores, [null, 2, null]);
 				done();
 			});
 		});
