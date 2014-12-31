@@ -9,7 +9,8 @@ var categoriesController = {},
 	categories = require('../categories'),
 	topics = require('../topics'),
 	meta = require('../meta'),
-	plugins = require('../plugins');
+	plugins = require('../plugins'),
+	winston = require('winston');
 
 // todo: This might be better placed somewhere else
 var apiToRegular = function(url) {
@@ -156,6 +157,7 @@ categoriesController.get = function(req, res, next) {
 						return next(err);
 					}
 					categoryData.privileges = results.privileges;
+					categoryData.topicsPerPage = settings.topicsPerPage || 20;
 					next(null, categoryData);
 				});
 			});
@@ -219,18 +221,41 @@ categoriesController.get = function(req, res, next) {
 		data.currentPage = page;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 		data.csrf = req.csrfToken();
+		
+		/* 
+		 * Pagination logic
+		 */
+		 var itemsPerPage = data.topicsPerPage || 20;
+		 var pageCount    = Math.ceil(data.topic_count / itemsPerPage);
+		 // generic pagination logic 
+		 var show_p  = Math.min(pageCount, 10); /* don't render more than 10 page links at once, paginate */
+		 var curr_p  = parseInt(page, 10);  // 1-based
+		 var start_p = 1 + Math.floor((curr_p - 1) / show_p) * show_p;
+		 var last_p  = Math.min(start_p + show_p, pageCount+1); // last page is just beyong current chapter
+		 
+		 winston.info("[pag.cat]: ", curr_p,"/", pageCount, " shown=", show_p," [",start_p, ":", last_p,"]");
 
-		if (!res.locals.isAPI) {
-			// Paginator for noscript
-			data.pages = [];
-			for(var x=1;x<=data.pageCount;x++) {
-				data.pages.push({
-					page: x,
-					active: x === parseInt(page, 10)
-				});
-			}
+		data.paginate= {
+		 	prev: { // prev chapter link
+				 	page: Math.max(1, start_p-1),
+				 	active: start_p > 1
+				},
+			next: { // next chapter link
+				 	page:   last_p,
+				 	active: last_p <= pageCount
+				},
+		 };
+
+		data.pages = [];
+		for(var x=start_p; x < last_p; x++) {
+			data.pages.push({
+				page:   x,
+				active: x == curr_p
+			});
 		}
-
+	
+		winston.info("[pag.cat]: pages=%j, paginate=%j", data.pages, data.paginate);
+		/* end pagination */
 		res.render('category', data);
 	});
 };
