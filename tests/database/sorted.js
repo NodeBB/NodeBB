@@ -374,10 +374,10 @@ describe('Sorted Set methods', function() {
 
 	describe('getSortedSetUnion()', function() {
 		it('should return an array of values from both sorted sets sorted by scores lowest to highest', function(done) {
-			db.getSortedSetUnion(['sorted2', 'sorted3'], 0, -1, function(err, values) {
+			db.getSortedSetUnion(['sorted1', 'sorted3'], 0, -1, function(err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepEqual(values, ['value1', 'value2', 'value3', 'value4', 'value5']);
+				assert.deepEqual(values, ['value1', 'value2', 'value4', 'value5', 'value3']);
 				done();
 			});
 		});
@@ -385,10 +385,10 @@ describe('Sorted Set methods', function() {
 
 	describe('getSortedSetRevUnion()', function() {
 		it('should return an array of values from both sorted sets sorted by scores highest to lowest', function(done) {
-			db.getSortedSetRevUnion(['sorted2', 'sorted3'], 0, -1, function(err, values) {
+			db.getSortedSetRevUnion(['sorted1', 'sorted3'], 0, -1, function(err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepEqual(values, ['value5', 'value4', 'value3', 'value2', 'value1']);
+				assert.deepEqual(values, ['value3', 'value5', 'value4', 'value2', 'value1']);
 				done();
 			});
 		});
@@ -396,7 +396,7 @@ describe('Sorted Set methods', function() {
 
 	describe('sortedSetIncrBy()', function() {
 		it('should create a sorted set with a field set to 1', function(done) {
-			db.sortedSetIncrBy('sortedIncr', 'field1', 1, function(err, newValue) {
+			db.sortedSetIncrBy('sortedIncr', 1, 'field1', function(err, newValue) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(newValue, 1);
@@ -409,7 +409,7 @@ describe('Sorted Set methods', function() {
 		});
 
 		it('should increment a field of a sorted set by 5', function(done) {
-			db.sortedSetIncrBy('sortedIncr', 'field1', 5, function(err, newValue) {
+			db.sortedSetIncrBy('sortedIncr', 5, 'field1', function(err, newValue) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(newValue, 6);
