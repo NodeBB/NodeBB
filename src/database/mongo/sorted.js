@@ -100,6 +100,22 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.getSortedSetRange = function(key, start, stop, callback) {
+		getSortedSetRange(key, start, stop, 1, false, callback);
+	};
+
+	module.getSortedSetRevRange = function(key, start, stop, callback) {
+		getSortedSetRange(key, start, stop, -1, false, callback);
+	};
+
+	module.getSortedSetRangeWithScores = function(key, start, stop, callback) {
+		getSortedSetRange(key, start, stop, 1, true, callback);
+	};
+
+	module.getSortedSetRevRangeWithScores = function(key, start, stop, callback) {
+		getSortedSetRange(key, start, stop, -1, true, callback);
+	};
+
 	function getSortedSetRange(key, start, stop, sort, withScores, callback) {
 		if (!key) {
 			return callback();
@@ -127,22 +143,6 @@ module.exports = function(db, module) {
 				callback(null, data);
 			});
 	}
-
-	module.getSortedSetRange = function(key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, 1, false, callback);
-	};
-
-	module.getSortedSetRevRange = function(key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, -1, false, callback);
-	};
-
-	module.getSortedSetRangeWithScores = function(key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, 1, true, callback);
-	};
-
-	module.getSortedSetRevRangeWithScores = function(key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, -1, true, callback);
-	};
 
 	module.getSortedSetRangeByScore = function(key, start, count, min, max, callback) {
 		getSortedSetRangeByScore(key, start, count, min, max, 1, false, callback);
