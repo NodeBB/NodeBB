@@ -26,7 +26,7 @@ describe('Sorted Set methods', function() {
 
 	describe('sortedSetsAdd()', function() {
 		it('should add an element to two sorted sets', function(done) {
-			db.sortedSetsAdd(['sorted1, sorted2'], 3, 'value3', function(err) {
+			db.sortedSetsAdd(['sorted1', 'sorted2'], 3, 'value3', function(err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
 				done();
