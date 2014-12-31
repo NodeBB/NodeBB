@@ -153,7 +153,7 @@ module.exports = function(db, module) {
 	};
 
 	module.getSortedSetRangeByScoreWithScores = function(key, start, count, min, max, callback) {
-		getSortedSetRangeByScore(key, start, count, min, max, -1, true, callback);
+		getSortedSetRangeByScore(key, start, count, min, max, 1, true, callback);
 	};
 
 	module.getSortedSetRevRangeByScoreWithScores = function(key, start, count, max, min, callback) {
