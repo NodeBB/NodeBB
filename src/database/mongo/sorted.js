@@ -204,7 +204,14 @@ module.exports = function(db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').count({_key: key, score: {$gte: min, $lte: max}}, function(err, count) {
+		var scoreQuery = {};
+		if (min !== '-inf') {
+			scoreQuery.$gte = min;
+		}
+		if (max !== '+inf') {
+			scoreQuery.$lte = max;
+		}
+		db.collection('objects').count({_key: key, score: scoreQuery}, function(err, count) {
 			callback(err, count ? count : 0);
 		});
 	};

@@ -141,7 +141,7 @@ describe('Sorted Set methods', function() {
 
 	describe('getSortedSetRevRangeByScoreWithScores()', function() {
 		it('should get count elements with score between max min sorted by score highest to lowest', function(done) {
-			db.getSortedSetRevRangeByScoreWithScores('sorted2', 0, -1, '+inf', 1, function(err, values) {
+			db.getSortedSetRevRangeByScoreWithScores('sorted2', 0, -1, '+inf', 2, function(err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(values, [{value: 'value3', score: 3}, {value: 'value2', score: 2}]);
