@@ -328,14 +328,9 @@ function resetThemes(callback) {
 
 function resetPlugin(pluginId) {
 	var db = require('./src/database');
-	db.setRemove('plugins:active', pluginId, function(err, result) {
-		if (err || result !== 1) {
-			winston.error('[reset] Could not disable plugin: %s', pluginId);
-			if (err) {
-				winston.error('[reset] Encountered error: %s', err.message);
-			} else {
-				winston.info('[reset] Perhaps it has already been disabled?');
-			}
+	db.setRemove('plugins:active', pluginId, function(err) {
+		if (err) {
+			winston.error('[reset] Could not disable plugin: %s encountered error %s', pluginId, err.message);
 		} else {
 			winston.info('[reset] Plugin `%s` disabled', pluginId);
 		}
