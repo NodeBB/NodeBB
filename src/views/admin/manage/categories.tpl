@@ -47,16 +47,6 @@
 		</div>
 	</div>
 
-	<div class="col-lg-3">
-		<div class="panel panel-default">
-			<div class="panel-heading">Categories Control Panel</div>
-			<div class="panel-body">
-				<button class="btn btn-primary" id="addNew">Create New Category</button>
-				<button class="btn btn-default" id="revertChanges">Revert Changes</button>
-			</div>
-		</div>
-	</div>
-
 	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-folder"></i> Categories</div>
@@ -106,5 +96,4 @@
 	</div>
 	
 	<!-- IMPORT admin/partials/categories/new.tpl -->
-	<!-- IMPORT admin/partials/categories/permissions.tpl -->
 </div>

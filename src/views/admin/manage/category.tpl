@@ -1,5 +1,5 @@
 <div class="row">
-	<div class="col-lg-9">
+	<div class="col-md-9">
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-folder"></i> Categories</div>
 			<div class="panel-body">
@@ -81,9 +81,31 @@
 				</form>
 			</div>
 		</div>
+
+		<!-- IMPORT admin/partials/categories/permissions.tpl -->
 	</div>
 
-	<div class="col-lg-3 options">
+	<div class="col-md-3 options">
+		<div class="panel panel-default hidden-sm">
+			<div class="panel-heading">Preview</div>
+			<div class="panel-body">
+				<div class="category-preview" style="
+					<!-- IF category.backgroundImage -->background-image: url({category.backgroundImage});<!-- ENDIF category.backgroundImage -->
+					<!-- IF category.bgColor -->background-color: {category.bgColor};<!-- ENDIF category.bgColor -->
+					color: {category.color};
+					background-size:cover;
+				">
+					<div class="icon">
+						<i data-name="icon" value="{category.icon}" class="fa {category.icon} fa-2x"></i>
+					</div>
+				</div>
+				<button type="button" data-cid="{category.cid}" data-name="image" data-value="{categories.image}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Upload Image</button>
+				<!-- IF categories.image -->
+				<small class="pointer delete-image"><i data-name="icon" value="fa-times" class="fa fa-times"></i></small>
+				<!-- ENDIF categories.image -->
+			</div>
+		</div>
+
 		<div class="panel panel-default">
 			<div class="panel-heading">Categories Control Panel</div>
 			<div class="panel-body">

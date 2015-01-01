@@ -11,9 +11,12 @@ define('admin/manage/category', [
 	Category.init = function() {
 		var modified_categories = {};
 
-		function modified(el) {
-			var cid = $(el).parents('form').attr('data-cid');
-			if(cid) {
+		function modified(el, cid) {
+			if (!cid) {
+				cid = $(el).parents('form').attr('data-cid');
+			}
+
+			if (cid) {
 				modified_categories[cid] = modified_categories[cid] || {};
 				modified_categories[cid][$(el).attr('data-name')] = $(el).val();
 			}
@@ -75,42 +78,52 @@ define('admin/manage/category', [
 			});
 		}
 
-		$(function() {
-			var url = window.location.href,
-				parts = url.split('/'),
-				active = parts[parts.length - 1],
-				optionsEl = $('.options');
+		// If any inputs have changed, prepare it for saving
+		$('form.category input, form.category select').on('change', function(ev) {
+			modified(ev.target);
+		});
 
-			$('#new-category-modal').on('click', '.icon', function(ev) {
-				iconSelect.init($(this).find('i'), modified);
-			});
+		// Colour Picker
+		$('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 
-			$('form.category input, form.category select').on('change', function(ev) {
-				modified(ev.target);
-			});
+		// Options menu events
+		var optionsEl = $('.options');
+		optionsEl.on('click', '.save', save);
+		optionsEl.on('click', '.revert', ajaxify.refresh);
+		optionsEl.on('click', '.purge', function() {
+			var categoryRow = $(this).parents('li[data-cid]');
+			var	cid = categoryRow.attr('data-cid');
 
-			// Colour Picker
-			$('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
-
-			optionsEl.on('click', '.save', save);
-			optionsEl.on('click', '.revert', ajaxify.refresh);
-			optionsEl.on('click', '.purge', function() {
-				var categoryRow = $(this).parents('li[data-cid]');
-				var	cid = categoryRow.attr('data-cid');
-
-				bootbox.confirm('<p class="lead">Do you really want to purge this category "' + $('form.category').find('input[data-name="name"]').val() + '"?</p><p><strong class="text-danger">Warning!</strong> All topics and posts in this category will be purged!</p>', function(confirm) {
-					if (!confirm) {
-						return;
+			bootbox.confirm('<p class="lead">Do you really want to purge this category "' + $('form.category').find('input[data-name="name"]').val() + '"?</p><p><strong class="text-danger">Warning!</strong> All topics and posts in this category will be purged!</p>', function(confirm) {
+				if (!confirm) {
+					return;
+				}
+				socket.emit('admin.categories.purge', cid, function(err) {
+					if (err) {
+						return app.alertError(err.message);
 					}
-					socket.emit('admin.categories.purge', cid, function(err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-						app.alertSuccess('Category purged!');
-						categoryRow.remove();
-					});
+					app.alertSuccess('Category purged!');
+					categoryRow.remove();
 				});
 			});
+		});
+
+		// Image Uploader
+		$('.upload-button').on('click', function() {
+			var inputEl = $(this),
+				cid = inputEl.attr('data-cid');
+
+			uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', { cid: cid }, 0, function(imageUrlOnServer) {
+				inputEl.val(imageUrlOnServer);
+				var previewBox = inputEl.siblings('.category-preview');
+				previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')')
+					.css('background-size', 'cover');
+				modified(inputEl[0], cid);
+			});
+		});
+
+		$(function() {
+			
 
 			// $('.admin-categories').on('click', '.permissions', function() {
 			// 	var	cid = $(this).parents('li[data-cid]').attr('data-cid');
@@ -119,32 +132,19 @@ define('admin/manage/category', [
 			// });
 
 
-			$('.admin-categories').on('click', '.upload-button', function() {
-				var inputEl = $(this),
-					cid = inputEl.parents('li[data-cid]').attr('data-cid');
+			// $('.admin-categories').on('click', '.delete-image', function() {
+			// 	var parent = $(this).parents('li[data-cid]'),
+			// 		inputEl = parent.find('.upload-button'),
+			// 		preview = parent.find('.preview-box'),
+			// 		bgColor = parent.find('.category_bgColor').val();
 
-				uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', { cid: cid }, 0, function(imageUrlOnServer) {
-					inputEl.val(imageUrlOnServer);
-					var previewBox = inputEl.parents('li[data-cid]').find('.preview-box');
-					previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')')
-						.css('background-size', 'cover');
-					modified(inputEl[0]);
-				});
-			});
+			// 	inputEl.val('');
+			// 	modified(inputEl[0]);
 
-			$('.admin-categories').on('click', '.delete-image', function() {
-				var parent = $(this).parents('li[data-cid]'),
-					inputEl = parent.find('.upload-button'),
-					preview = parent.find('.preview-box'),
-					bgColor = parent.find('.category_bgColor').val();
+			// 	preview.css('background', bgColor);
 
-				inputEl.val('');
-				modified(inputEl[0]);
-
-				preview.css('background', bgColor);
-
-				$(this).addClass('hide').hide();
-			});
+			// 	$(this).addClass('hide').hide();
+			// });
 
 			setupEditTargets();
 
