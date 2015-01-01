@@ -1,5 +1,5 @@
 "use strict";
-/*global define */
+/*global define, app, socket, ajaxify, RELATIVE_PATH, bootbox */
 
 define('admin/manage/category', [
 	'uploader',
@@ -11,10 +11,8 @@ define('admin/manage/category', [
 	Category.init = function() {
 		var modified_categories = {};
 
-		function modified(el, cid) {
-			if (!cid) {
-				cid = $(el).parents('form').attr('data-cid');
-			}
+		function modified(el) {
+			var cid = $(el).parents('form').attr('data-cid');
 
 			if (cid) {
 				modified_categories[cid] = modified_categories[cid] || {};
@@ -115,11 +113,16 @@ define('admin/manage/category', [
 
 			uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', { cid: cid }, 0, function(imageUrlOnServer) {
 				inputEl.val(imageUrlOnServer);
-				var previewBox = inputEl.siblings('.category-preview');
+				var previewBox = inputEl.parent().siblings('.category-preview');
 				previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')')
 					.css('background-size', 'cover');
-				modified(inputEl[0], cid);
+				modified(inputEl[0]);
 			});
+		});
+
+		// Icon selection
+		$('.category-preview').on('click', function(ev) {
+			iconSelect.init($(this).find('i'), modified);
 		});
 
 		$(function() {

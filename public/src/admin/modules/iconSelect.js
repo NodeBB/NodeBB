@@ -14,7 +14,7 @@ define(function() {
 			selected = 'fa-doesnt-exist';
 		}
 		if (selected) {
-			$('#icons .fa-icons .fa.' + selected).parent().addClass('selected');
+			$('#icons .fa-icons .fa.' + selected).addClass('selected');
 		}
 
 		bootbox.confirm('<h2>Select an icon.</h2>' + $('#icons').html(), function(confirm) {
@@ -29,6 +29,7 @@ define(function() {
 				el.val(categoryIconClass);
 				el.attr('value', categoryIconClass);
 
+				console.log(el);
 				onModified(el);
 			}
 		});
