@@ -154,6 +154,7 @@ define('composer', [
 
 			push({
 				pid: pid,
+				uid: threadData.uid,
 				title: $('<div/>').html(threadData.title).text(),
 				body: threadData.body,
 				modified: false,
@@ -213,9 +214,11 @@ define('composer', [
 	}
 
 	function createNewComposer(post_uuid) {
-		var allowTopicsThumbnail = config.allowTopicsThumbnail && composer.posts[post_uuid].isMain && (config.hasImageUploadPlugin || config.allowFileUploads);
-		var isTopic = composer.posts[post_uuid] ? !!composer.posts[post_uuid].cid : false;
-		var isMain = composer.posts[post_uuid] ? !!composer.posts[post_uuid].isMain : false;
+		var allowTopicsThumbnail = config.allowTopicsThumbnail && composer.posts[post_uuid].isMain && (config.hasImageUploadPlugin || config.allowFileUploads),
+			isTopic = composer.posts[post_uuid] ? !!composer.posts[post_uuid].cid : false,
+			isMain = composer.posts[post_uuid] ? !!composer.posts[post_uuid].isMain : false,
+			isEditing = composer.posts[post_uuid] ? !!composer.posts[post_uuid].pid : false,
+			isGuestPost = composer.posts[post_uuid] ? composer.posts[post_uuid].uid === '0' : null;
 
 		composer.bsEnvironment = utils.findBootstrapEnvironment();
 
@@ -225,7 +228,7 @@ define('composer', [
 			allowTopicsThumbnail: allowTopicsThumbnail,
 			showTags: isTopic || isMain,
 			isTopic: isTopic,
-			allowGuestHandles: config.allowGuestHandles
+			showHandleInput: (app.user.uid === 0 || (isEditing && isGuestPost && app.user.isAdmin)) && config.allowGuestHandles
 		};
 
 		parseAndTranslate(template, data, function(composerTemplate) {

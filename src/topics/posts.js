@@ -10,7 +10,8 @@ var async = require('async'),
 	user = require('../user'),
 	favourites = require('../favourites'),
 	posts = require('../posts'),
-	privileges = require('../privileges');
+	privileges = require('../privileges'),
+	meta = require('../meta');
 
 module.exports = function(Topics) {
 
@@ -130,7 +131,7 @@ module.exports = function(Topics) {
 					}
 
 					// Username override for guests, if enabled
-					if (parseInt(postObj.uid, 10) === 0 && postObj.handle) {
+					if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(postObj.uid, 10) === 0 && postObj.handle) {
 						postObj.user.username = postObj.handle;
 					}
 				}
