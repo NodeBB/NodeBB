@@ -155,6 +155,7 @@ define('composer', [
 			push({
 				pid: pid,
 				uid: threadData.uid,
+				handle: threadData.handle,
 				title: $('<div/>').html(threadData.title).text(),
 				body: threadData.body,
 				modified: false,
@@ -228,7 +229,8 @@ define('composer', [
 			allowTopicsThumbnail: allowTopicsThumbnail,
 			showTags: isTopic || isMain,
 			isTopic: isTopic,
-			showHandleInput: (app.user.uid === 0 || (isEditing && isGuestPost && app.user.isAdmin)) && config.allowGuestHandles
+			showHandleInput: (app.user.uid === 0 || (isEditing && isGuestPost && app.user.isAdmin)) && config.allowGuestHandles,
+			handle: composer.posts[post_uuid] ? composer.posts[post_uuid].handle || '' : undefined
 		};
 
 		parseAndTranslate(template, data, function(composerTemplate) {

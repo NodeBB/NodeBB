@@ -260,6 +260,7 @@ SocketPosts.edit = function(socket, data, callback) {
 	// uid, pid, title, content, options
 	postTools.edit({
 		uid: socket.uid,
+		handle: data.handle,
 		pid: data.pid,
 		title: data.title,
 		content: data.content,
@@ -274,6 +275,7 @@ SocketPosts.edit = function(socket, data, callback) {
 
 		websockets.in('topic_' + results.topic.tid).emit('event:post_edited', {
 			pid: data.pid,
+			handle: data.handle,
 			title: results.topic.title,
 			isMainPost: results.topic.isMainPost,
 			tags: results.topic.tags,

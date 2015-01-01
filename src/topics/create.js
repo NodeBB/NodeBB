@@ -260,6 +260,11 @@ module.exports = function(Topics) {
 				postData.user = results.userInfo[0];
 				postData.topic = results.topicInfo;
 
+				// Username override for guests, if enabled
+				if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(postData.uid, 10) === 0 && data.handle) {
+					postData.user.username = data.handle;
+				}
+
 				if (results.settings.followTopicsOnReply) {
 					threadTools.follow(postData.tid, uid);
 				}

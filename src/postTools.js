@@ -46,6 +46,7 @@ var winston = require('winston'),
 					posts.setPostFields(data.pid, {
 						edited: Date.now(),
 						editor: data.uid,
+						handle: data.handle,
 						content: postData.content
 					}, next);
 				},
