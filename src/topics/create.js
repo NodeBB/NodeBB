@@ -155,7 +155,7 @@ module.exports = function(Topics) {
 						});
 					},
 					topicData: function(next) {
-						Topics.getTopicsByTids([postData.tid], 0, next);
+						Topics.getTopicsByTids([postData.tid], uid, next);
 					}
 				}, next);
 			},

@@ -108,15 +108,15 @@ module.exports = function(Topics) {
 				posts.getPostIndices(postData, uid, next);
 			}
 		}, function(err, results) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
-			postData = postData.map(function(postObj, i) {
+			postData.forEach(function(postObj, i) {
 				if (postObj) {
 					postObj.index = results.indices[i];
 					postObj.deleted = parseInt(postObj.deleted, 10) === 1;
-					postObj.user = _.clone(results.userData[postObj.uid]);
+					postObj.user = parseInt(postObj.uid, 10) ? results.userData[postObj.uid] : _.clone(results.userData[postObj.uid]);
 					postObj.editor = postObj.editor ? results.editors[postObj.editor] : null;
 					postObj.favourited = results.favourites[i];
 					postObj.upvoted = results.voteData.upvotes[i];
@@ -135,9 +135,7 @@ module.exports = function(Topics) {
 						postObj.user.username = postObj.handle;
 					}
 				}
-
-				return postObj;
-			}).filter(Boolean);
+			});
 
 			callback(null, postData);
 		});

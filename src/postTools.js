@@ -43,12 +43,15 @@ var winston = require('winston'),
 
 			async.parallel({
 				post: function(next) {
-					posts.setPostFields(data.pid, {
+					var d = {
 						edited: Date.now(),
 						editor: data.uid,
-						handle: data.handle,
 						content: postData.content
-					}, next);
+					};
+					if (data.handle) {
+						d.handle = data.handle;
+					}
+					posts.setPostFields(data.pid, d, next);
 				},
 				topic: function(next) {
 					var tid = postData.tid;

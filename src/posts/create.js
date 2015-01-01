@@ -14,7 +14,6 @@ module.exports = function(Posts) {
 	Posts.create = function(data, callback) {
 		var uid = data.uid,
 			tid = data.tid,
-			handle = data.uid ? null : data.handle,	// Only guests have handles!
 			content = data.content,
 			timestamp = data.timestamp || Date.now();
 
@@ -51,8 +50,8 @@ module.exports = function(Posts) {
 					postData.ip = data.ip;
 				}
 
-				if (handle) {
-					postData.handle = handle;
+				if (parseInt(uid, 10) === 0 && data.handle) {
+					postData.handle = data.handle;
 				}
 
 				plugins.fireHook('filter:post.save', postData, next);
