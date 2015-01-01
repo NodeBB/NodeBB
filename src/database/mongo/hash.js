@@ -182,7 +182,9 @@ module.exports = function(db, module) {
 		var data = {};
 		field = helpers.fieldToString(field);
 		data[field] = '';
-		db.collection('objects').update({_key: key}, {$unset : data}, callback);
+		db.collection('objects').update({_key: key}, {$unset : data}, function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.incrObjectField = function(key, field, callback) {

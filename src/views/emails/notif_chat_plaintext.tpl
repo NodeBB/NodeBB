@@ -4,7 +4,7 @@
 
 {message.content}
 
-[[email:notif.chat.cta]]: {url}
+[[email:notif.chat.cta]]: {url}/chats/{fromUserslug}
 
 
 [[email:closing]]

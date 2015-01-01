@@ -90,6 +90,7 @@
 	"fork_success": "Successfully forked topic! Click here to go to the forked topic.",
 
 	"composer.title_placeholder": "Enter your topic title here...",
+	"composer.handle_placeholder": "Name",
 	"composer.discard": "Discard",
 	"composer.submit": "Submit",
 	"composer.replying_to": "Replying to %1",

@@ -35,7 +35,7 @@ SocketModules.composer.push = function(socket, pid, callback) {
 		if (err || !canRead) {
 			return callback(err || new Error('[[error:no-privileges]]'));
 		}
-		posts.getPostFields(pid, ['content', 'tid'], function(err, postData) {
+		posts.getPostFields(pid, ['content', 'tid', 'uid', 'handle'], function(err, postData) {
 			if(err || (!postData && !postData.content)) {
 				return callback(err || new Error('[[error:invalid-pid]]'));
 			}
@@ -61,6 +61,8 @@ SocketModules.composer.push = function(socket, pid, callback) {
 
 				callback(null, {
 					pid: pid,
+					uid: postData.uid,
+					handle: parseInt(meta.config.allowGuestHandles, 10) ? postData.handle : undefined,
 					body: postData.content,
 					title: results.topic.title,
 					topic_thumb: results.topic.thumb,

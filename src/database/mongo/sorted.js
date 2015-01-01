@@ -100,6 +100,22 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.getSortedSetRange = function(key, start, stop, callback) {
+		getSortedSetRange(key, start, stop, 1, false, callback);
+	};
+
+	module.getSortedSetRevRange = function(key, start, stop, callback) {
+		getSortedSetRange(key, start, stop, -1, false, callback);
+	};
+
+	module.getSortedSetRangeWithScores = function(key, start, stop, callback) {
+		getSortedSetRange(key, start, stop, 1, true, callback);
+	};
+
+	module.getSortedSetRevRangeWithScores = function(key, start, stop, callback) {
+		getSortedSetRange(key, start, stop, -1, true, callback);
+	};
+
 	function getSortedSetRange(key, start, stop, sort, withScores, callback) {
 		if (!key) {
 			return callback();
@@ -128,22 +144,6 @@ module.exports = function(db, module) {
 			});
 	}
 
-	module.getSortedSetRange = function(key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, 1, false, callback);
-	};
-
-	module.getSortedSetRevRange = function(key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, -1, false, callback);
-	};
-
-	module.getSortedSetRangeWithScores = function(key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, 1, true, callback);
-	};
-
-	module.getSortedSetRevRangeWithScores = function(key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, -1, true, callback);
-	};
-
 	module.getSortedSetRangeByScore = function(key, start, count, min, max, callback) {
 		getSortedSetRangeByScore(key, start, count, min, max, 1, false, callback);
 	};
@@ -153,7 +153,7 @@ module.exports = function(db, module) {
 	};
 
 	module.getSortedSetRangeByScoreWithScores = function(key, start, count, min, max, callback) {
-		getSortedSetRangeByScore(key, start, count, min, max, -1, true, callback);
+		getSortedSetRangeByScore(key, start, count, min, max, 1, true, callback);
 	};
 
 	module.getSortedSetRevRangeByScoreWithScores = function(key, start, count, max, min, callback) {
@@ -204,7 +204,14 @@ module.exports = function(db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').count({_key: key, score: {$gte: min, $lte: max}}, function(err, count) {
+		var scoreQuery = {};
+		if (min !== '-inf') {
+			scoreQuery.$gte = min;
+		}
+		if (max !== '+inf') {
+			scoreQuery.$lte = max;
+		}
+		db.collection('objects').count({_key: key, score: scoreQuery}, function(err, count) {
 			callback(err, count ? count : 0);
 		});
 	};
@@ -447,8 +454,8 @@ module.exports = function(db, module) {
 		value = helpers.fieldToString(value);
 		data.score = parseInt(increment, 10);
 
-		db.collection('objects').findAndModify({_key: key, value: value}, {}, {$inc: data}, {new:true, upsert:true}, function(err, result) {
-			callback(err, result ? result[value] : null);
+		db.collection('objects').findAndModify({_key: key, value: value}, {}, {$inc: data}, {new: true, upsert: true}, function(err, result) {
+			callback(err, result ? result.score : null);
 		});
 	};
 };

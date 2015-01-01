@@ -154,6 +154,8 @@ define('composer', [
 
 			push({
 				pid: pid,
+				uid: threadData.uid,
+				handle: threadData.handle,
 				title: $('<div/>').html(threadData.title).text(),
 				body: threadData.body,
 				modified: false,
@@ -213,9 +215,11 @@ define('composer', [
 	}
 
 	function createNewComposer(post_uuid) {
-		var allowTopicsThumbnail = config.allowTopicsThumbnail && composer.posts[post_uuid].isMain && (config.hasImageUploadPlugin || config.allowFileUploads);
-		var isTopic = composer.posts[post_uuid] ? !!composer.posts[post_uuid].cid : false;
-		var isMain = composer.posts[post_uuid] ? !!composer.posts[post_uuid].isMain : false;
+		var allowTopicsThumbnail = config.allowTopicsThumbnail && composer.posts[post_uuid].isMain && (config.hasImageUploadPlugin || config.allowFileUploads),
+			isTopic = composer.posts[post_uuid] ? !!composer.posts[post_uuid].cid : false,
+			isMain = composer.posts[post_uuid] ? !!composer.posts[post_uuid].isMain : false,
+			isEditing = composer.posts[post_uuid] ? !!composer.posts[post_uuid].pid : false,
+			isGuestPost = composer.posts[post_uuid] ? composer.posts[post_uuid].uid === '0' : null;
 
 		composer.bsEnvironment = utils.findBootstrapEnvironment();
 
@@ -224,7 +228,9 @@ define('composer', [
 		var data = {
 			allowTopicsThumbnail: allowTopicsThumbnail,
 			showTags: isTopic || isMain,
-			isTopic: isTopic
+			isTopic: isTopic,
+			showHandleInput: (app.user.uid === 0 || (isEditing && isGuestPost && app.user.isAdmin)) && config.allowGuestHandles,
+			handle: composer.posts[post_uuid] ? composer.posts[post_uuid].handle || '' : undefined
 		};
 
 		parseAndTranslate(template, data, function(composerTemplate) {
@@ -377,6 +383,7 @@ define('composer', [
 	function post(post_uuid) {
 		var postData = composer.posts[post_uuid],
 			postContainer = $('#cmp-uuid-' + post_uuid),
+			handleEl = postContainer.find('.handle'),
 			titleEl = postContainer.find('.title'),
 			bodyEl = postContainer.find('textarea'),
 			thumbEl = postContainer.find('input#topic-thumb-url');
@@ -405,6 +412,7 @@ define('composer', [
 
 		if (parseInt(postData.cid, 10) > 0) {
 			composerData = {
+				handle: handleEl ? handleEl.val() : undefined,
 				title: titleEl.val(),
 				content: bodyEl.val(),
 				topic_thumb: thumbEl.val() || '',
@@ -423,6 +431,7 @@ define('composer', [
 		} else if (parseInt(postData.tid, 10) > 0) {
 			composerData = {
 				tid: postData.tid,
+				handle: handleEl ? handleEl.val() : undefined,
 				content: bodyEl.val(),
 				toPid: postData.toPid
 			};
@@ -432,6 +441,7 @@ define('composer', [
 		} else if (parseInt(postData.pid, 10) > 0) {
 			composerData = {
 				pid: postData.pid,
+				handle: handleEl ? handleEl.val() : undefined,
 				content: bodyEl.val(),
 				title: titleEl.val(),
 				topic_thumb: thumbEl.val() || '',

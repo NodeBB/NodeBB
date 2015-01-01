@@ -27,6 +27,7 @@ SocketTopics.post = function(socket, data, callback) {
 
 	topics.post({
 		uid: socket.uid,
+		handle: data.handle,
 		title: data.title,
 		content: data.content,
 		cid: data.category_id,
