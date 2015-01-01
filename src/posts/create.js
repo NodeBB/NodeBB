@@ -14,9 +14,9 @@ module.exports = function(Posts) {
 	Posts.create = function(data, callback) {
 		var uid = data.uid,
 			tid = data.tid,
+			handle = data.uid ? null : data.handle,	// Only guests have handles!
 			content = data.content,
 			timestamp = data.timestamp || Date.now();
-
 
 		if (!uid && parseInt(uid, 10) !== 0) {
 			return callback(new Error('[[error:invalid-uid]]'));
@@ -49,6 +49,10 @@ module.exports = function(Posts) {
 
 				if (data.ip && parseInt(meta.config.trackIpPerPost, 10) === 1) {
 					postData.ip = data.ip;
+				}
+
+				if (handle) {
+					postData.handle = handle;
 				}
 
 				plugins.fireHook('filter:post.save', postData, next);

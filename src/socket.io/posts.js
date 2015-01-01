@@ -257,13 +257,25 @@ SocketPosts.edit = function(socket, data, callback) {
 		return callback(new Error('[[error:content-too-short, ' + meta.config.minimumPostLength + ']]'));
 	}
 
-	postTools.edit(socket.uid, data.pid, data.title, data.content, {topic_thumb: data.topic_thumb, tags: data.tags}, function(err, results) {
+	// uid, pid, title, content, options
+	postTools.edit({
+		uid: socket.uid,
+		handle: data.handle,
+		pid: data.pid,
+		title: data.title,
+		content: data.content,
+		options: {
+			topic_thumb: data.topic_thumb,
+			tags: data.tags
+		}
+	}, function(err, results) {
 		if (err) {
 			return callback(err);
 		}
 
 		websockets.in('topic_' + results.topic.tid).emit('event:post_edited', {
 			pid: data.pid,
+			handle: data.handle,
 			title: results.topic.title,
 			isMainPost: results.topic.isMainPost,
 			tags: results.topic.tags,

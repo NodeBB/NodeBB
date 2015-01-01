@@ -18,21 +18,22 @@ var winston = require('winston'),
 
 (function(PostTools) {
 
-	PostTools.edit = function(uid, pid, title, content, options, callback) {
-		options = options || {};
+	PostTools.edit = function(data, callback) {
+		var options = data.options || {},
+			title = data.title.trim();
 
 		async.waterfall([
 			function (next) {
-				privileges.posts.canEdit(pid, uid, next);
+				privileges.posts.canEdit(data.pid, data.uid, next);
 			},
 			function(canEdit, next) {
 				if (!canEdit) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
-				posts.getPostData(pid, next);
+				posts.getPostData(data.pid, next);
 			},
 			function(postData, next) {
-				postData.content = content;
+				postData.content = data.content;
 				plugins.fireHook('filter:post.save', postData, next);
 			}
 		], function(err, postData) {
@@ -42,15 +43,16 @@ var winston = require('winston'),
 
 			async.parallel({
 				post: function(next) {
-					posts.setPostFields(pid, {
+					posts.setPostFields(data.pid, {
 						edited: Date.now(),
-						editor: uid,
+						editor: data.uid,
+						handle: data.handle,
 						content: postData.content
 					}, next);
 				},
 				topic: function(next) {
 					var tid = postData.tid;
-					posts.isMain(pid, function(err, isMainPost) {
+					posts.isMain(data.pid, function(err, isMainPost) {
 						if (err) {
 							return next(err);
 						}
@@ -64,11 +66,9 @@ var winston = require('winston'),
 							});
 						}
 
-						title = title.trim();
-
 						var topicData = {
 							tid: tid,
-							mainPid: pid,
+							mainPid: data.pid,
 							title: title,
 							slug: tid + '/' + utils.slugify(title)
 						};
@@ -96,7 +96,7 @@ var winston = require('winston'),
 					});
 				},
 				postData: function(next) {
-					PostTools.parsePost(postData, uid, next);
+					PostTools.parsePost(postData, data.uid, next);
 				}
 			}, function(err, results) {
 				if (err) {
