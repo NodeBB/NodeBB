@@ -1,3 +1,6 @@
+'use strict';
+/*global require, before, after*/
+
 var	assert = require('assert'),
 	async = require('async'),
 
@@ -14,7 +17,7 @@ describe('Groups', function() {
 			},
 			function(next) {
 				// Create a new user
-					User.create({
+				User.create({
 					username: 'testuser',
 					email: 'b@c.com'
 				}, done);

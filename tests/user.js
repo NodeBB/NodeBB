@@ -1,3 +1,6 @@
+'use strict';
+/*global require, process, before, beforeEach, after*/
+
 var winston = require('winston');
 
 process.on('uncaughtException', function (err) {

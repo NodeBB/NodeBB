@@ -1,6 +1,8 @@
+'use strict';
+/*global require*/
+
 var	assert = require('assert'),
-	db = require('./mocks/databasemock'),
-	async = require('async');
+	db = require('./mocks/databasemock');
 
 
 describe('Test database', function() {
