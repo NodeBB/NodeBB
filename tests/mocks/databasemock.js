@@ -5,10 +5,9 @@
 
 (function(module) {
 	'use strict';
-	/*global before*/
+	/*global require, before*/
 
-	var utils = require('./../../public/src/utils.js'),
-		path  = require('path'),
+	var path  = require('path'),
 		nconf = require('nconf'),
 		winston = require('winston'),
 		errorText;
@@ -30,23 +29,23 @@
 	if(!testDbConfig){
 		errorText = 'test_database is not defined';
 		winston.info(
-			"\n===========================================================\n"+
-			"Please, add parameters for test database in config.json\n"+
-			"For example (redis):\n"+
+			'\n===========================================================\n'+
+			'Please, add parameters for test database in config.json\n'+
+			'For example (redis):\n'+
 				'"test_database": {' + '\n' +
 				'    "host": "127.0.0.1",' + '\n' +
 				'    "port": "6379",' + '\n' +
 				'    "password": "",' + '\n' +
 				'    "database": "1"' + '\n' +
 			'}\n'+
-			" or (mongo):\n" +
+			' or (mongo):\n' +
 				'"test_database": {' + '\n' +
 				'    "host": "127.0.0.1",' + '\n' +
 				'    "port": "27017",' + '\n' +
 				'    "password": "",' + '\n' +
 				'    "database": "1"' + '\n' +
 			'}\n'+
-			"==========================================================="
+			'==========================================================='
 		);
 		winston.error(errorText);
 		throw new Error(errorText);
