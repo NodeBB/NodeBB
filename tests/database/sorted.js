@@ -1,7 +1,7 @@
 'use strict';
+/*global require, after*/
 
-var	async = require('async'),
-	assert = require('assert'),
+var	assert = require('assert'),
 	db = require('../mocks/databasemock');
 
 describe('Sorted Set methods', function() {
