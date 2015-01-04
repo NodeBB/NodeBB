@@ -190,7 +190,7 @@ middleware.buildHeader = function(req, res, next) {
 				controllers.api.getConfig(req, res, next);
 			},
 			footer: function(next) {
-				app.render('footer', {}, next);
+				app.render('footer', {loggedIn: (req.user ? parseInt(req.user.uid, 10) !== 0 : false)}, next);
 			}
 		}, function(err, results) {
 			if (err) {
