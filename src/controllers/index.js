@@ -43,13 +43,13 @@ Controllers.home = function(req, res, next) {
 		header: function (next) {
 			res.locals.metaTags = [{
 				name: "title",
-				content: meta.config.title || 'NodeBB'
+				content: validator.escape(meta.config.title || 'NodeBB')
 			}, {
 				name: "description",
-				content: meta.config.description || ''
+				content: validator.escape(meta.config.description || '')
 			}, {
 				property: 'og:title',
-				content: 'Index | ' + (meta.config.title || 'NodeBB')
+				content: 'Index | ' + validator.escape(meta.config.title || 'NodeBB')
 			}, {
 				property: 'og:type',
 				content: 'website'

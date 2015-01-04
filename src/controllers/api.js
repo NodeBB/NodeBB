@@ -6,6 +6,7 @@ var pkg = require('./../../package.json'),
 	plugins = require('./../plugins'),
 	widgets = require('../widgets'),
 
+	validator = require('validator'),
 	nconf = require('nconf');
 
 var apiController = {};
@@ -16,7 +17,7 @@ apiController.getConfig = function(req, res, next) {
 	config.socketioTransports = nconf.get('socket.io:transports') || ['polling', 'websocket'];
 	config.websocketAddress = nconf.get('socket.io:address') || '';
 	config.version = pkg.version;
-	config.siteTitle = meta.config.title || meta.config.browserTitle || 'NodeBB';
+	config.siteTitle = validator.escape(meta.config.title || meta.config.browserTitle || 'NodeBB');
 	config.showSiteTitle = parseInt(meta.config.showSiteTitle, 10) === 1;
 	config.postDelay = meta.config.postDelay;
 	config.minimumTitleLength = meta.config.minimumTitleLength;

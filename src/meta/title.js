@@ -17,7 +17,7 @@ module.exports = function(Meta) {
 
 	Meta.title.build = function (urlFragment, language, locals, callback) {
 		var uri = '';
-		var fallbackTitle = Meta.config.browserTitle || Meta.config.title || 'NodeBB';
+		var fallbackTitle = validator.escape(Meta.config.browserTitle || Meta.config.title || 'NodeBB');
 		try {
 			uri = decodeURIComponent(urlFragment);
 		} catch(e) {
