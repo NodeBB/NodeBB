@@ -1,0 +1,9 @@
+{
+    "latest_users": "Pengguna Terakhir",
+    "top_posters": "Posting Terbanyak",
+    "most_reputation": "Reputasi Terbanyak",
+    "search": "Pencarian",
+    "enter_username": "Masukkan nama pengguna untuk mencari",
+    "load_more": "Tampilkan Lebih Banyak",
+    "users-found-search-took": "%1 pengguna ditemukan! Pencarian butuh waktu %2 ms."
+}

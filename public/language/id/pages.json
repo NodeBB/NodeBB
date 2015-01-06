@@ -1,0 +1,18 @@
+{
+    "home": "Beranda",
+    "unread": "Topik belum Dibaca",
+    "popular": "Topik Populer",
+    "recent": "Topik Terkini",
+    "users": "Pengguna Terdaftar",
+    "notifications": "Pemberitahuan",
+    "tags": "Topik ditag dalam \"%1\"",
+    "user.edit": "Sedang merubah \"%1\"",
+    "user.following": "Mengikuti Pengguna %1",
+    "user.followers": "Pengguna yang mengikuti %1",
+    "user.posts": "Posting dibuat oleh %1",
+    "user.topics": "Topik dibuat oleh %1",
+    "user.favourites": "Posting Favorit %1",
+    "user.settings": "Pengaturan Pengguna",
+    "maintenance.text": "%1 saat ini sedang dalam masa pemeliharaan. Silahkan kembali lain waktu.",
+    "maintenance.messageIntro": "Tambahan, Administrator meninggalkan pesan ini:"
+}

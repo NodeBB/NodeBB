@@ -1,0 +1,18 @@
+{
+    "register": "Daftar",
+    "help.email": "Secara default, emailmu akan disembunyikan dari publik.",
+    "help.username_restrictions": "Nama Pengguna yang unik antara %1 dan %2 karakter. Pengguna lain dapat menyebutmu dengan menggunakan @<span id='Nama Pengguna mu'>nama pengguna</span>.",
+    "help.minimum_password_length": "Panjang passwordmu harus memuat setidaknya %1 karakter.",
+    "email_address": "Alamat Email",
+    "email_address_placeholder": "Masukkan Alamat Email",
+    "username": "Nama Pengguna",
+    "username_placeholder": "Masukkan Nama Pengguna",
+    "password": "Kata Sandi",
+    "password_placeholder": "Masukkan Kata Sandi",
+    "confirm_password": "Konfirmasi Kata Sandi",
+    "confirm_password_placeholder": "Konfirmasi Kata Sandi",
+    "register_now_button": "Daftar Sekarang",
+    "alternative_registration": "Pendaftaran Alternatif",
+    "terms_of_use": "Aturan Penggunaan",
+    "agree_to_terms_of_use": "Saya menyetujui Aturan Penggunaan"
+}
