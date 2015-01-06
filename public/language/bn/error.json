@@ -62,6 +62,6 @@
     "downvoting-disabled": "ঋণাত্মক ভোট নিস্ক্রীয় রাখা হয়েছে।",
     "not-enough-reputation-to-downvote": "আপনার এই পোস্ট downvote করার জন্য পর্যাপ্ত সম্মাননা নেই",
     "not-enough-reputation-to-flag": "এই পোষ্টকে ফ্লাগ করার জন্য আপনার পর্যাপ্ত সম্মাননা নেই",
-    "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading.",
+    "reload-failed": "\"%1\" রিলোড করতে সমস্যা হয়েছে। রিলোডের পূর্বে যা করা হয়েছিল সেটি আনডু করা সমীচীন। ",
     "registration-error": "নিবন্ধন এরর!"
 }

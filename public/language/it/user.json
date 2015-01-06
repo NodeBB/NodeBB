@@ -48,7 +48,7 @@
     "settings": "Impostazioni",
     "show_email": "Mostra la mia Email",
     "show_fullname": "Vedi il Mio Nome Completo",
-    "restrict_chats": "Only allow chat messages from users I follow",
+    "restrict_chats": "Abilita messaggi in chat soltanto dagli utenti che seguo",
     "digest_label": "Iscriviti al Sommario",
     "digest_description": "Abbonati agli aggiornamenti via email di questo forum (nuove notifiche e argomenti) secondo una pianificazione impostata",
     "digest_off": "Spento",
@@ -68,8 +68,8 @@
     "notification_sounds": "Riproduci un suono quando ricevi una notifica.",
     "browsing": "Impostazioni di Navigazione",
     "open_links_in_new_tab": "Aprire i link esterni in una nuova tab?",
-    "enable_topic_searching": "Enable In-Topic Searching",
-    "topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen.",
+    "enable_topic_searching": "Abilita la ricerca negli argomenti",
+    "topic_search_help": "Se abilitata, la ricerca negli argomenti sovrascriverà la pagina di ricerca preimpostata del browser per consentirti di cercare all'interno delle discussioni, anziché soltanto nel contenuto visibile a schermo.",
     "follow_topics_you_reply_to": "Segui le discussioni in cui rispondi.",
     "follow_topics_you_create": "Segui le discussioni che crei."
 }

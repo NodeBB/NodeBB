@@ -37,7 +37,7 @@
     "title-too-short": "Inserisci un titolo più lungo. I titoli devono contenere almeno %1 caratteri.",
     "title-too-long": "Per favore inserire un titolo più corto, non può essere più lungo di %1 caratteri.",
     "too-many-posts": "È possibile inserire un Post ogni %1 secondi - si prega di attendere prima di postare di nuovo",
-    "too-many-posts-newbie": "As a new user, you can only post once every %1 seconds until you have earned %2 reputation - please wait before posting again",
+    "too-many-posts-newbie": "Come nuovo utente puoi postare solamente una volta ogni %1 secondi finché non hai raggiunto un livello di reputazione %2 - per favore attendi prima di inviare ancora",
     "file-too-big": "La dimensione massima del file consentita è di % 1 kbs - si prega di caricare un file più piccolo",
     "cant-vote-self-post": "Non puoi votare il tuo stesso post",
     "already-favourited": "Hai già inserito tra i preferiti questo post",
@@ -57,11 +57,11 @@
     "upload-error": "Errore upload: %1",
     "signature-too-long": "Spiacenti, la tua firma non può essere lunga %1 caratteri.",
     "cant-chat-with-yourself": "Non puoi chattare con te stesso!",
-    "chat-restricted": "This user has restricted their chat messages. They must follow you before you can chat with them",
+    "chat-restricted": "Questo utente ha ristretto i suoi messaggi in chat alle persone che segue. Per poter chattare con te ti deve prima seguire.",
     "reputation-system-disabled": "Il sistema di reputazione è disabilitato.",
     "downvoting-disabled": "Il Downvoting è disabilitato",
     "not-enough-reputation-to-downvote": "Non hai i privilegi per votare negativamente questo post",
     "not-enough-reputation-to-flag": "Tu non hai abbastanza reputazione per segnalare questo Post",
     "reload-failed": "NodeBB ha incontrato un problema durante il ricaricamento: \"%1\". NodeBB continuerà a servire gli assets esistenti lato client, così puoi annullare quello che hai fatto prima di ricaricare.",
-    "registration-error": "Registration Error"
+    "registration-error": "Errore nella registrazione"
 }

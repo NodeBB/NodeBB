@@ -1,9 +1,9 @@
 {
     "username": "Felhasználónév / Email",
-    "remember_me": "Emlékezz rám",
+    "remember_me": "Megjegyzés",
     "forgot_password": "Elfelejtett Jelszó?",
-    "alternative_logins": "Alternatív Belépések",
-    "failed_login_attempt": "Sikertelen belépési kísérlet, kérlek próbálkozz újra.",
-    "login_successful": "Sikeresen beléptél!",
-    "dont_have_account": "Nincs fiókod?"
+    "alternative_logins": "Alternatív belépés",
+    "failed_login_attempt": "Sikertelen belépési kísérlet, kérlek próbálkozzunk újra.",
+    "login_successful": "Sikeres belépés",
+    "dont_have_account": "Nincs még fiók?"
 }

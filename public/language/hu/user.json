@@ -1,6 +1,6 @@
 {
-    "banned": "Tiltva",
-    "offline": "offline",
+    "banned": "Kitíltva",
+    "offline": "Nem elérhető",
     "username": "Felhasználónév",
     "email": "E-mail",
     "confirm_email": "E-mail megerősítése",
