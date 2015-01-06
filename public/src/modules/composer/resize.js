@@ -1,7 +1,7 @@
 
 'use strict';
 
-/* globals define, config, utils*/
+/* globals app, define, config, utils*/
 
 define('composer/resize', function() {
 	var resize = {};
@@ -38,6 +38,7 @@ define('composer/resize', function() {
 
 		postContainer.css('visibility', 'visible').css('z-index', 2);
 
+		// Add some extra space at the bottom of the body so that the user can still scroll to the last post w/ composer open
 		$('body').css({'margin-bottom': postContainer.css('height')});
 
 		resizeWritePreview(postContainer);

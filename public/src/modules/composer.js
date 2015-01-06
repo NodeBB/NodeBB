@@ -253,7 +253,6 @@ define('composer', [
 			updateTitle(postData, postContainer);
 
 			activate(post_uuid);
-			resize.reposition(postContainer);
 
 			if (config.allowFileUploads || config.hasImageUploadPlugin) {
 				uploads.initialize(post_uuid);
@@ -319,6 +318,7 @@ define('composer', [
 
 			formatting.addComposerButtons();
 			focusElements(postContainer);
+			resize.reposition(postContainer);
 		});
 	}
 
