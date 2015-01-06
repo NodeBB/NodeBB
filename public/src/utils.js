@@ -256,22 +256,20 @@
 
 		findBootstrapEnvironment: function() {
 			//http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
-			$(document).ready(function() {
-				var envs = ['xs', 'sm', 'md', 'lg'],
-					$el = $('<div>');
+			var envs = ['xs', 'sm', 'md', 'lg'],
+				$el = $('<div>');
 
-				$el.appendTo($('body'));
+			$el.appendTo($('body'));
 
-				for (var i = envs.length - 1; i >= 0; i--) {
-					var env = envs[i];
+			for (var i = envs.length - 1; i >= 0; i--) {
+				var env = envs[i];
 
-					$el.addClass('hidden-'+env);
-					if ($el.is(':hidden')) {
-						$el.remove();
-						return env;
-					}
+				$el.addClass('hidden-'+env);
+				if ($el.is(':hidden')) {
+					$el.remove();
+					return env;
 				}
-			});
+			}
 		},
 
 		// get all the url params in a single key/value hash
