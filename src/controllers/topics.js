@@ -13,7 +13,8 @@ var topicsController = {},
 	privileges = require('../privileges'),
 	categoriesController = require('./categories'),
 	utils = require('../../public/src/utils'),
-	winston = require('winston');
+	winston = require('winston'),
+	util = require('util');
 
 topicsController.get = function(req, res, next) {
 	var tid = req.params.topic_id,
@@ -280,6 +281,19 @@ topicsController.get = function(req, res, next) {
 			});
 		}
 	
+		/* pagination rel tags  <link rel={prev|next} /> */
+		if(curr_p < pageCount)
+			res.locals.linkTags.push({
+				rel: 'next',
+				href: util.format('?page=%s', curr_p+1)
+			});
+
+		if(curr_p > 1)
+			res.locals.linkTags.push({
+				rel: 'prev',
+				href: util.format('?page=%s', curr_p-1)
+			});
+
 		winston.info("[pag.topic]: pages=%j, paginate=%j", data.pages, data.paginate);
 		/* end pagination */
 		res.render('topic', data);

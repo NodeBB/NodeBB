@@ -10,7 +10,8 @@ var categoriesController = {},
 	topics = require('../topics'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
-	winston = require('winston');
+	winston = require('winston'),
+	util = require('util');
 
 // todo: This might be better placed somewhere else
 var apiToRegular = function(url) {
@@ -246,6 +247,7 @@ categoriesController.get = function(req, res, next) {
 				},
 		 };
 
+	
 		data.pages = [];
 		for(var x=start_p; x < last_p; x++) {
 			data.pages.push({
@@ -253,8 +255,21 @@ categoriesController.get = function(req, res, next) {
 				active: x == curr_p
 			});
 		}
-	
-		winston.info("[pag.cat]: pages=%j, paginate=%j", data.pages, data.paginate);
+		/* pagination rel tags  <link rel={prev|next} /> */
+		if(curr_p < pageCount)
+			res.locals.linkTags.push({
+				rel: 'next',
+				href: util.format('?page=%s', curr_p+1)
+			});
+
+		if(curr_p > 1)
+			res.locals.linkTags.push({
+				rel: 'prev',
+				href: util.format('?page=%s', curr_p-1)
+			});
+
+		winston.info("[pag.cat] pages=%j", data.pages);
+		winston.info("[pag.cat]", "%j", data.paginate);
 		/* end pagination */
 		res.render('category', data);
 	});
