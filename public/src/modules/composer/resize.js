@@ -4,9 +4,9 @@
 /* globals app, define, config, utils*/
 
 define('composer/resize', function() {
-	var resize = {};
-	var env = utils.findBootstrapEnvironment();
-	var oldPercentage = 0;
+	var resize = {},
+		oldPercentage = 0,
+		env;
 
 	resize.reposition = function(postContainer) {
 		var	percentage = localStorage.getItem('composer:resizePercentage');
@@ -15,6 +15,10 @@ define('composer/resize', function() {
 	};
 
 	function doResize(postContainer, percentage) {
+		if (!env) {
+			env = utils.findBootstrapEnvironment();
+		}
+
 		if (percentage) {
 			if (env === 'md' || env === 'lg') {
 				postContainer.css('height', Math.floor($(window).height() * percentage) + 'px');
