@@ -45,7 +45,6 @@ module.exports = function(Meta) {
 				'public/src/variables.js',
 				'public/src/widgets.js',
 				'public/src/translator.js',
-				'public/src/helpers.js',
 				'public/src/overrides.js'
 			],
 			rjs: []

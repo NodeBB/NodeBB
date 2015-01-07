@@ -568,8 +568,11 @@ app.uid = null;
 				}
 			});
 
-			require(['taskbar'], function(taskbar) {
+			require(['taskbar', 'helpers'], function(taskbar, helpers) {
 				taskbar.init();
+
+				// templates.js helpers
+				helpers.register();
 			});
 		});
 	};

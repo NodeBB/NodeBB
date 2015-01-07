@@ -18,7 +18,7 @@ var path = require('path'),
 	routes = require('./routes'),
 	emitter = require('./emitter'),
 
-	helpers = require('./../public/src/helpers')(),
+	helpers = require('./../public/src/modules/helpers'),
 	net;
 
 if(nconf.get('ssl')) {
@@ -47,6 +47,9 @@ if(nconf.get('ssl')) {
 
 		middleware = middleware(app);
 		routes(app, middleware);
+
+		// Load server-side template helpers
+		helpers.register();
 
 		// Cache static files on production
 		if (global.env !== 'development') {

@@ -1,8 +1,12 @@
-"use strict";
-/*global templates*/
+;(function(exports) {
+	"use strict";
+	/* globals define */
 
+	// export the class if we are in a Node-like system.
+	if (typeof module === 'object' && module.exports === exports) {
+	  exports = module.exports/* = SemVer*/;
+	}
 
-(function(module) {
 	var helpers = {};
 
 	helpers.displayUsersLink = function(config) {
@@ -30,20 +34,27 @@
 		}
 	};
 
-	if ('undefined' !== typeof window) {
-		$(document).ready(module.exports);
-	}
+	exports.register = function() {
+		var templates;
 
-	module.exports = function() {
-		var templates = templates || require('templates.js');
+		if (typeof module === 'object') {
+			templates = require('templates.js');
+		} else {
+			templates = window.templates;
+		}
 
 		templates.registerHelper('displayUsersLink', helpers.displayUsersLink);
 		templates.registerHelper('buildMetaTag', helpers.buildMetaTag);
 		templates.registerHelper('membershipBtn', helpers.membershipBtn);
 	};
 
-})('undefined' === typeof module ? {
-	module: {
-		exports: {}
+	// Use the define() function if we're in AMD land
+	if (typeof define === 'function' && define.amd) {
+	  define('helpers', exports);
 	}
-} : module);
+
+})(
+	typeof exports === 'object' ? exports :
+	typeof define === 'function' && define.amd ? {} :
+	helpers = {}
+);
