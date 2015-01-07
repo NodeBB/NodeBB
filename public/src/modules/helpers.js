@@ -43,8 +43,9 @@
 			templates = window.templates;
 		}
 
-		templates.registerHelper('displayUsersLink', helpers.displayUsersLink);
-		templates.registerHelper('buildMetaTag', helpers.buildMetaTag);
+		Object.keys(helpers).forEach(function(helperName) {
+			templates.registerHelper(helperName, helpers[helperName]);
+		});
 	};
 
 	// Use the define() function if we're in AMD land
