@@ -1,12 +1,13 @@
+"use strict";
+/* globals socket, ajaxify, translator, app, define */
+
 define('search', ['navigator'], function(nav) {
-	"use strict";
-	/* globals socket, ajaxify */
 
 	var Search = {
 			current: {}
 		};
 
-	Search.query = function(term, callback) {
+	Search.query = function(term, searchIn, callback) {
 		// Detect if a tid was specified
 		var topicSearch = term.match(/in:topic-([\d]+)/);
 
@@ -19,7 +20,7 @@ define('search', ['navigator'], function(nav) {
 				return app.alertError('[[error:invalid-search-term]]');
 			}
 
-			ajaxify.go('search/' + term);
+			ajaxify.go('search/' + term + (searchIn ? '?in=' + searchIn : ''));
 			callback();
 		} else {
 			var cleanedTerm = term.replace(topicSearch[0], ''),
@@ -105,7 +106,7 @@ define('search', ['navigator'], function(nav) {
 				Mousetrap.bind('esc', Search.topicDOM.end);
 			});
 		}
-	}
+	};
 
 	Search.topicDOM.end = function() {
 		$('.topic-search').addClass('hidden').find('.prev, .next').attr('disabled', 'disabled');

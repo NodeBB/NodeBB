@@ -522,38 +522,7 @@ SocketTopics.searchAndLoadTags = function(socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-	if (!data.query || !data.query.length) {
-		return callback(null, []);
-	}
-	topics.searchTags(data, function(err, tags) {
-		if (err) {
-			return callback(err);
-		}
-		async.parallel({
-			counts: function(next) {
-				db.sortedSetScores('tags:topic:count', tags, next);
-			},
-			tagData: function(next) {
-				tags = tags.map(function(tag) {
-					return {value: tag};
-				});
-
-				topics.getTagData(tags, next);
-			}
-		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-			results.tagData.forEach(function(tag, index) {
-				tag.score = results.counts[index];
-			});
-			results.tagData.sort(function(a, b) {
-				return b.score - a.score;
-			});
-
-			callback(null, results.tagData);
-		});
-	});
+	topics.searchAndLoadTags(data, callback);
 };
 
 SocketTopics.loadMoreTags = function(socket, data, callback) {

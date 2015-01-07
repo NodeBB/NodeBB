@@ -2,9 +2,17 @@ define('forum/search', ['search'], function(searchModule) {
 	var	Search = {};
 
 	Search.init = function() {
-		var searchQuery = $('#post-results').attr('data-search-query');
+		var searchQuery = $('#results').attr('data-search-query');
 		var regexes = [];
 		var searchTerms = searchQuery.split(' ');
+
+		$('#advanced-search input').val(searchQuery);
+		var params = utils.params();
+		if (params && params.in) {
+			$('#advanced-search select').val(params.in);
+		}
+
+
 		for (var i=0; i<searchTerms.length; ++i) {
 			var regex = new RegExp(searchTerms[i], 'gi');
 			regexes.push({regex: regex, term: searchTerms[i]});
@@ -19,13 +27,13 @@ define('forum/search', ['search'], function(searchModule) {
 			result.html(text).find('img').addClass('img-responsive');
 		});
 
-		$('#search-form input').val(searchQuery);
 
-		$('#mobile-search-form').off('submit').on('submit', function(e) {
+		$('#advanced-search').off('submit').on('submit', function(e) {
 			e.preventDefault();
 			var input = $(this).find('input');
+			var searchIn = $(this).find('select');
 
-			searchModule.query(input.val(), function() {
+			searchModule.query(input.val(), searchIn.val(), function() {
 				input.val('');
 			});
 		});

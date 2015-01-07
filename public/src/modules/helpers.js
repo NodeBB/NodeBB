@@ -45,7 +45,6 @@
 
 		templates.registerHelper('displayUsersLink', helpers.displayUsersLink);
 		templates.registerHelper('buildMetaTag', helpers.buildMetaTag);
-		templates.registerHelper('membershipBtn', helpers.membershipBtn);
 	};
 
 	// Use the define() function if we're in AMD land

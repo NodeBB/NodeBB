@@ -3,9 +3,8 @@
 'use strict';
 
 var async = require('async'),
+	winston = require('winston'),
 	db = require('../database');
-
-
 
 module.exports = function(Topics) {
 	var terms = {
@@ -18,7 +17,7 @@ module.exports = function(Topics) {
 	Topics.getLatestTopics = function(uid, start, end, term, callback) {
 		async.waterfall([
 			function (next) {
-				Topics.getLatestTids(start, end, term, next);
+				Topics.getLatestTidsFromSet('topics:recent', start, end, term, next);
 			},
 			function(tids, next) {
 				Topics.getTopics(tids, uid, next);
@@ -30,6 +29,11 @@ module.exports = function(Topics) {
 	};
 
 	Topics.getLatestTids = function(start, end, term, callback) {
+		winston.warn('[deprecation warning] please use Topics.getLatestTidsFromSet("topics:recent")');
+		Topics.getLatestTidsFromSet('topics:recent', start, end, term, callback);
+	};
+
+	Topics.getLatestTidsFromSet = function(set, start, end, term, callback) {
 		var since = terms.day;
 		if (terms[term]) {
 			since = terms[term];
@@ -37,7 +41,7 @@ module.exports = function(Topics) {
 
 		var count = parseInt(end, 10) === -1 ? end : end - start + 1;
 
-		db.getSortedSetRevRangeByScore('topics:recent', start, count, '+inf', Date.now() - since, callback);
+		db.getSortedSetRevRangeByScore(set, start, count, '+inf', Date.now() - since, callback);
 	};
 
 	Topics.updateTimestamp = function(tid, timestamp, callback) {

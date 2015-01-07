@@ -3,6 +3,7 @@
 var topicsController = require('./topics'),
 	categoriesController = require('./categories'),
 	tagsController = require('./tags'),
+	searchController = require('./search'),
 	usersController = require('./users'),
 	groupsController = require('./groups'),
 	accountsController = require('./accounts'),
@@ -20,7 +21,6 @@ var topicsController = require('./topics'),
 	user = require('../user'),
 	posts = require('../posts'),
 	topics = require('../topics'),
-	search = require('../search'),
 	plugins = require('../plugins'),
 	categories = require('../categories'),
 	privileges = require('../privileges');
@@ -29,6 +29,7 @@ var Controllers = {
 	topics: topicsController,
 	categories: categoriesController,
 	tags: tagsController,
+	search: searchController,
 	users: usersController,
 	groups: groupsController,
 	accounts: accountsController,
@@ -100,33 +101,6 @@ Controllers.home = function(req, res, next) {
 			return next(err);
 		}
 		res.render('home', data);
-	});
-};
-
-Controllers.search = function(req, res, next) {
-	if (!plugins.hasListeners('filter:search.query')) {
-		return helpers.notFound(req, res);
-	}
-
-	if (!req.params.term) {
-		return res.render('search', {
-			time: 0,
-			search_query: '',
-			posts: [],
-			topics: []
-		});
-	}
-
-	var uid = req.user ? req.user.uid : 0;
-
-	req.params.term = validator.escape(req.params.term);
-
-	search.search(req.params.term, uid, function(err, results) {
-		if (err) {
-			return next(err);
-		}
-
-		return res.render('search', results);
 	});
 };
 
