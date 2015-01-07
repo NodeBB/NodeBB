@@ -35,8 +35,13 @@ var anonCache = {}, lastUpdateTime = 0;
 
 categoriesController.popular = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
-
-	var term = req.params.term || 'daily';
+	var terms = {
+		daily: 'day',
+		weekly: 'week',
+		monthly: 'month',
+		alltime: 'alltime'
+	};
+	var term = terms[req.params.term] || 'day';
 
 	if (uid === 0) {
 		if (anonCache[term] && (Date.now() - lastUpdateTime) < 60 * 60 * 1000) {

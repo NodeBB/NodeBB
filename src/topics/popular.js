@@ -7,11 +7,6 @@ var async = require('async'),
 
 
 module.exports = function(Topics) {
-	var terms = {
-		daily: 'day',
-		weekly: 'week',
-		monthly: 'month'
-	};
 
 	Topics.getPopular = function(term, uid, count, callback) {
 		count = parseInt(count, 10) || 20;
@@ -20,11 +15,9 @@ module.exports = function(Topics) {
 			return getAllTimePopular(uid, count, callback);
 		}
 
-		var since = terms[term] || 'day';
-
 		async.waterfall([
 			function(next) {
-				Topics.getLatestTids(0, -1, since, next);
+				Topics.getLatestTidsFromSet('topics:tid', 0, -1, term, next);
 			},
 			function(tids, next) {
 				getTopics(tids, uid, count, next);
