@@ -44,6 +44,12 @@ questions.main = [
 	}
 ];
 
+questions.optional = [
+	{
+		name: 'port',
+		default: 4567
+	}
+];
 
 function checkSetupFlag(next) {
 	var	setupVal;
@@ -149,11 +155,11 @@ function setupConfig(next) {
 		var	config = {},
 			redisQuestions = require('./database/redis').questions,
 			mongoQuestions = require('./database/mongo').questions,
-			question, x, numQ, allQuestions = questions.main.concat(redisQuestions).concat(mongoQuestions);
+			question, x, numQ, allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions);
 
 		for(x=0,numQ=allQuestions.length;x<numQ;x++) {
 			question = allQuestions[x];
-			config[question.name] = install.values[question.name] || question['default'] || '';
+			config[question.name] = install.values[question.name] || question['default'] || undefined;
 		}
 
 		configureDatabases(null, config, DATABASES, function(err, config) {
