@@ -28,15 +28,19 @@ $(document).ready(function() {
 				textStatus = err.textStatus;
 
 			if (data) {
-				if (data.status === 403 || data.status === 404 || data.status === 500) {
+				var status = parseInt(data.status, 10);
+
+				if (status === 403 || status === 404 || status === 500) {
 					$('#footer, #content').removeClass('hide').addClass('ajaxifying');
-					return renderTemplate(url, data.status.toString(), data.responseJSON, (new Date()).getTime(), callback);
-				} else if (data.status === 401) {
+					return renderTemplate(url, status.toString(), data.responseJSON, (new Date()).getTime(), callback);
+				} else if (status === 401) {
 					app.alertError('[[global:please_log_in]]');
 					app.previousUrl = url;
 					return ajaxify.go('login');
-				} else if (data.status === 302) {
-					return ajaxify.go(data.responseJSON.slice(1), callback, quiet);
+				} else if (status === 302) {
+					if (!ajaxify.go(data.responseJSON.path, callback, quiet)) {
+						window.location.href = data.responseJSON.path;
+					}
 				}
 			} else if (textStatus !== "abort") {
 				app.alertError(data.responseJSON.error);
