@@ -156,7 +156,7 @@ var fs = require('fs'),
 							winston.warn('[plugins/' + plugin.id + '] A templates directory was defined for this plugin, but was not found.');
 						}
 
-						next(err);
+						next(false);
 					});
 				} else {
 					next(false);
