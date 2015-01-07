@@ -1,5 +1,5 @@
 'use strict';
-/*global define, utils, ajaxify, bootbox*/
+/*global define, utils, ajaxify, bootbox, config*/
 
 define('forum/pagination', function() {
 	var pagination = {};
@@ -11,6 +11,20 @@ define('forum/pagination', function() {
 		pagination.currentPage = parseInt(currentPage, 10);
 		pagination.pageCount = parseInt(pageCount, 10);
 
+		if(!config.usePagination){ // only if pagination is disabled
+			pagination.recreatePaginationLinks(pageCount);
+			$('.pagination')
+			      .on('click', '.previous', function() {
+			              return pagination.loadPage(pagination.currentPage - 1);
+			      }).on('click', '.next', function() {
+			              return pagination.loadPage(pagination.currentPage + 1);
+			      }).on('click', '.select_page', function(e) {
+			              e.preventDefault();
+			              bootbox.prompt('Enter page number:', function(pageNum) {
+			                      pagination.loadPage(pageNum);
+			              });
+			      });
+    	}
 	};
 
 	pagination.recreatePaginationLinks = function(newPageCount) {
