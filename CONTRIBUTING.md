@@ -44,3 +44,8 @@ If you have downloaded the `.zip` or `.tar.gz` packages from GitHub (or elsewher
 If you have installed NodeBB via GitHub clone, are familiar with utilising git, and are willing to help us narrow down the specific commit that causes a bug, consider running `git bisect`.
 
 A full guide can be found here: [Debugging with Git/Binary Search](http://git-scm.com/book/en/Git-Tools-Debugging-with-Git#Binary-Search)
+
+
+# Submitting a Pull Request to NodeBB?
+
+First of all, thank you! Please consider this [style guide](https://docs.nodebb.org/en/latest/contributing/style-guide.html) when submitting your changes. Also, please join our [community](https://community.nodebb.org) to meet other NodeBB developers and designers :) 
