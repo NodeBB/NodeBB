@@ -62,11 +62,14 @@ SocketUser.increaseViewCount = function(socket, uid, callback) {
 	}
 };
 
-SocketUser.search = function(socket, username, callback) {
+SocketUser.search = function(socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'))
+	}
 	if (!socket.uid) {
 		return callback(new Error('[[error:not-logged-in]]'));
 	}
-	user.search({query: username}, callback);
+	user.search({query: data.query}, callback);
 };
 
 // Password Reset

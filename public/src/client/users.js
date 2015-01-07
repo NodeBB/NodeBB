@@ -115,21 +115,20 @@ define('forum/users', function() {
 
 				notify.html('<i class="fa fa-spinner fa-spin"></i>');
 
-				socket.emit('user.search', username, function(err, data) {
+				socket.emit('user.search', {query: username}, function(err, data) {
 					if (err) {
 						reset();
 						return app.alertError(err.message);
 					}
 
 					if (!data) {
-						reset();
-						return;
+						return reset();
 					}
 
 					templates.parse('users', 'users', data, function(html) {
 						translator.translate(html, function(translated) {
 							$('#users-container').html(translated);
-							
+
 							if (!data.users.length) {
 								translator.translate('[[error:no-user]]', function(translated) {
 									notify.html(translated);

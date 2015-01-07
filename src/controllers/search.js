@@ -28,7 +28,12 @@ searchController.search = function(req, res, next) {
 
 	req.params.term = validator.escape(req.params.term);
 
-	search.search(req.params.term, req.query.in, uid, function(err, results) {
+	search.search({
+		query: req.params.term,
+		searchIn: req.query.in,
+		postedBy: req.query.by,
+		uid: uid
+	}, function(err, results) {
 		if (err) {
 			return next(err);
 		}

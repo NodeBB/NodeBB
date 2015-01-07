@@ -7,7 +7,11 @@ define('search', ['navigator'], function(nav) {
 			current: {}
 		};
 
-	Search.query = function(term, searchIn, callback) {
+	Search.query = function(data, callback) {
+		var term = data.term;
+		var searchIn = data.in || 'posts';
+		var postedBy = data.by || '';
+
 		// Detect if a tid was specified
 		var topicSearch = term.match(/in:topic-([\d]+)/);
 
@@ -19,8 +23,11 @@ define('search', ['navigator'], function(nav) {
 			} catch(e) {
 				return app.alertError('[[error:invalid-search-term]]');
 			}
-
-			ajaxify.go('search/' + term + (searchIn ? '?in=' + searchIn : ''));
+			var query = {in: searchIn};
+			if (postedBy && searchIn === 'posts') {
+				query.by = postedBy;
+			}
+			ajaxify.go('search/' + term + '?' + decodeURIComponent($.param(query)));
 			callback();
 		} else {
 			var cleanedTerm = term.replace(topicSearch[0], ''),
