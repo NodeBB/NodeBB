@@ -110,7 +110,7 @@ topicsController.get = function(req, res, next) {
 
 			var start = (page - 1) * settings.postsPerPage + postIndex,
 				end = start + settings.postsPerPage - 1;
-			winston.info("topics", start, end);
+
 			topics.getTopicWithPosts(tid, set, uid, start, end, reverse, function (err, topicData) {
 				if (err && err.message === '[[error:no-topic]]' && !topicData) {
 					return categoriesController.notFound(req, res);
@@ -282,18 +282,18 @@ topicsController.get = function(req, res, next) {
 		}
 	
 		/* pagination rel tags  <link rel={prev|next} /> */
-		if(curr_p < pageCount)
+		if(curr_p < pageCount){
 			res.locals.linkTags.push({
 				rel: 'next',
 				href: util.format('?page=%s', curr_p+1)
 			});
-
-		if(curr_p > 1)
+		}
+		if(curr_p > 1){
 			res.locals.linkTags.push({
 				rel: 'prev',
 				href: util.format('?page=%s', curr_p-1)
 			});
-
+		}
 		winston.info("[pag.topic]: pages=%j, paginate=%j", data.pages, data.paginate);
 		/* end pagination */
 		res.render('topic', data);

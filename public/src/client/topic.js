@@ -63,10 +63,12 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 
 		handleBookmark(tid);
 		
-		if(config.usePagination)
+		if(config.usePagination){
 			navigator.hide();
-		else
+		}
+		else{
 			navigator.init('.posts > .post-row', postCount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
+		}
 
 		setupSocketListeners();
 
@@ -451,8 +453,9 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 				hidePostToolsForDeletedPosts();
 			} else {
 				socket.emit('topics.markAsRead', [tid]);
-				if(!config.usePagination)
+				if(!config.usePagination){
 					navigator.update();
+				}
 				done();
 			}
 		});

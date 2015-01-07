@@ -256,18 +256,18 @@ categoriesController.get = function(req, res, next) {
 			});
 		}
 		/* pagination rel tags  <link rel={prev|next} /> */
-		if(curr_p < pageCount)
+		if(curr_p < pageCount){
 			res.locals.linkTags.push({
 				rel: 'next',
 				href: util.format('?page=%s', curr_p+1)
 			});
-
-		if(curr_p > 1)
+		}
+		if(curr_p > 1){
 			res.locals.linkTags.push({
 				rel: 'prev',
 				href: util.format('?page=%s', curr_p-1)
 			});
-
+		}
 		winston.info("[pag.cat] pages=%j", data.pages);
 		winston.info("[pag.cat]", "%j", data.paginate);
 		/* end pagination */
