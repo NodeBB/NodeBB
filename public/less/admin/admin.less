@@ -261,3 +261,9 @@
 		display: none; /* not sure why I have to do this, but it only seems to show up on prod */
 	}
 }
+
+// Allowing text to the right of an image-type brand
+// See: https://github.com/twbs/bootstrap/commit/8e2348e9eda51296eb680192379ab37f10355ca3
+.navbar-brand > img {
+  display: inline-block;
+}
