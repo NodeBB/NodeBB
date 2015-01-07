@@ -12,20 +12,13 @@ var fs = require('fs'),
 module.exports = function(Plugins) {
 
 	Plugins.loadPlugin = function(pluginPath, callback) {
-		fs.readFile(path.join(pluginPath, 'plugin.json'), function(err, data) {
+		Plugins.loadPluginInfo(pluginPath, function(err, pluginData) {
 			if (err) {
 				return callback(pluginPath.match('nodebb-theme') ? null : err);
 			}
 
-			var pluginData, staticDir;
-
-			try {
-				pluginData = JSON.parse(data);
-			} catch (err) {
-				var pluginDir = pluginPath.split(path.sep);
-				pluginDir = pluginDir[pluginDir.length -1];
-
-				winston.error('[plugins/' + pluginDir + '] Plugin not loaded - please check its plugin.json for errors');
+			var staticDir;
+			if (!pluginData) {
 				return callback();
 			}
 
@@ -88,7 +81,7 @@ module.exports = function(Plugins) {
 			}
 
 			if (!Plugins.libraries[pluginData.id]) {
-				Plugins.requireLibrary(pluginData, libraryPath);
+				Plugins.requireLibrary(pluginData.id, libraryPath);
 			}
 
 			if (Array.isArray(pluginData.hooks) && pluginData.hooks.length > 0) {
@@ -198,7 +191,35 @@ module.exports = function(Plugins) {
 				callback();
 			});
 		});
-
 	}
 
+	Plugins.loadPluginInfo = function(pluginPath, callback) {
+		async.parallel({
+			package: function(next) {
+				fs.readFile(path.join(pluginPath, 'package.json'), next);
+			},
+			plugin: function(next) {
+				fs.readFile(path.join(pluginPath, 'plugin.json'), next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			try {
+				var pluginData = JSON.parse(results.plugin);
+				var packageData = JSON.parse(results.package);
+
+				var obj = utils.merge(pluginData, packageData);
+				obj.id = packageData.name;
+				callback(null, obj);
+			} catch(err) {
+				var pluginDir = pluginPath.split(path.sep);
+				pluginDir = pluginDir[pluginDir.length -1];
+
+				winston.error('[plugins/' + pluginDir + '] Error in plugin.json/package.json! ' + err.message);
+
+				callback();
+			}
+		});
+	};
 };

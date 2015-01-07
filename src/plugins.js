@@ -34,8 +34,8 @@ var fs = require('fs'),
 
 	Plugins.initialized = false;
 
-	Plugins.requireLibrary = function(pluginData, libraryPath) {
-		Plugins.libraries[pluginData.id] = require(libraryPath);
+	Plugins.requireLibrary = function(pluginID, libraryPath) {
+		Plugins.libraries[pluginID] = require(libraryPath);
 		Plugins.libraryPaths.push(libraryPath);
 	};
 
@@ -287,45 +287,32 @@ var fs = require('fs'),
 
 					async.waterfall([
 						function(next) {
-							async.parallel({
-								packageJSON: function(next) {
-									fs.readFile(path.join(file, 'package.json'), next);
-								},
-								pluginJSON: function(next) {
-									fs.readFile(path.join(file, 'plugin.json'), next);
-								}
-							}, next);
+							Plugins.loadPluginInfo(file, next);
 						},
-						function(results, next) {
-							var packageName = path.basename(file),
-								packageInfo, pluginInfo;
+						function(pluginData, next) {
+							var packageName = path.basename(file);
 
-							try {
-								packageInfo = JSON.parse(results.packageJSON);
-								pluginInfo = JSON.parse(results.pluginJSON);
-							} catch (err) {
+							if (!pluginData) {
 								winston.warn("Plugin `" + packageName + "` is corrupted or invalid. Please check either package.json or plugin.json for errors.");
-								return next(null, {
-									id: packageName,
-									installed: true,
-									error: true,
-									active: null
-								});
+							 	return next(null, {
+							 		id: packageName,
+							 		installed: true,
+							 		error: true,
+							 		active: null
+							 	});
 							}
 
-							Plugins.isActive(packageInfo.name, function(err, active) {
+							Plugins.isActive(pluginData.name, function(err, active) {
 								if (err) {
 									return next(new Error('no-active-state'));
 								}
 
-								delete pluginInfo.hooks;
-								delete pluginInfo.library;
-								pluginInfo.active = active;
-								pluginInfo.installed = true;
-								pluginInfo.error = false;
-								pluginInfo.version = packageInfo.version;
-
-								next(null, pluginInfo);
+								delete pluginData.hooks;
+								delete pluginData.library;
+								pluginData.active = active;
+								pluginData.installed = true;
+								pluginData.error = false;
+								next(null, pluginData);
 							});
 						}
 					], function(err, config) {
