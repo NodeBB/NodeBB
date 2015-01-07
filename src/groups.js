@@ -71,7 +71,25 @@ var async = require('async'),
 			groupNames = groupNames.concat(ephemeralGroups);
 
 			async.map(groupNames, function (groupName, next) {
-				Groups.get(groupName, options, next);
+				async.waterfall([
+					async.apply(Groups.get, groupName, options),
+					function(groupObj, next) {
+						// Retrieve group membership state, if uid is passed in
+						if (!options.uid) {
+							return next(null, groupObj);
+						}
+
+						Groups.isMember(options.uid, groupName, function(err, isMember) {
+							if (err) {
+								winston.warn('[groups.list] Could not determine membership in group `' + groupName + '` for uid `' + options.uid + '`: ' + err.message);
+								return next(null, groupObj);
+							}
+
+							groupObj.isMember = isMember;
+							next(null, groupObj);
+						});
+					}
+				], next);
 			}, function (err, groups) {
 				callback(err, internals.filterGroups(groups, options));
 			});

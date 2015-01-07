@@ -9,7 +9,8 @@ var groups = require('../groups'),
 groupsController.list = function(req, res, next) {
 	groups.list({
 		truncateUserList: true,
-		expand: true
+		expand: true,
+		uid: req.user ? req.user.uid : 0
 	}, function(err, groups) {
 		if (err) {
 			return next(err);
