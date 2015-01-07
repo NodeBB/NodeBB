@@ -294,12 +294,12 @@ var fs = require('fs'),
 
 							if (!pluginData) {
 								winston.warn("Plugin `" + packageName + "` is corrupted or invalid. Please check either package.json or plugin.json for errors.");
-							 	return next(null, {
-							 		id: packageName,
-							 		installed: true,
-							 		error: true,
-							 		active: null
-							 	});
+								return next(null, {
+									id: packageName,
+									installed: true,
+									error: true,
+									active: null
+								});
 							}
 
 							Plugins.isActive(pluginData.name, function(err, active) {
