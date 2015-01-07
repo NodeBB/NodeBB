@@ -23,6 +23,7 @@
 						<li><a href="{relative_path}/admin/settings/reputation">Reputation</a></li>
 						<li><a href="{relative_path}/admin/settings/email">Email</a></li>
 						<li><a href="{relative_path}/admin/settings/user">User</a></li>
+						<li><a href="{relative_path}/admin/settings/group">Group</a></li>
 						<li><a href="{relative_path}/admin/settings/guest">Guest</a></li>
 						<li><a href="{relative_path}/admin/settings/post">Post</a></li>
 						<li><a href="{relative_path}/admin/settings/pagination">Pagination</a></li>
