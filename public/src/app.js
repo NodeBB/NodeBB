@@ -435,11 +435,9 @@ app.uid = null;
 		require(['search', 'mousetrap'], function(search, Mousetrap) {
 			$('#search-form').on('submit', function (e) {
 				e.preventDefault();
-				var input = $(this).find('input'),
-					term = input.val();
+				var input = $(this).find('input');
 
-
-				search.query(term, function() {
+				search.query(input.val(), 'posts', function() {
 					input.val('');
 				});
 			});

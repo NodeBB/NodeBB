@@ -26,7 +26,7 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/register', middleware, loginRegisterMiddleware, controllers.register);
 	setupPageRoute(app, '/confirm/:code', middleware, [], controllers.confirmEmail);
 	setupPageRoute(app, '/outgoing', middleware, [], controllers.outgoing);
-	setupPageRoute(app, '/search/:term?', middleware, [middleware.guestSearchingAllowed], controllers.search);
+	setupPageRoute(app, '/search/:term?', middleware, [middleware.guestSearchingAllowed], controllers.search.search);
 	setupPageRoute(app, '/reset/:code?', middleware, [], controllers.reset);
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
 }
