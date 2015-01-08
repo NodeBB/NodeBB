@@ -11,8 +11,9 @@ define('forum/topic', [
 	'forum/topic/events',
 	'forum/topic/browsing',
 	'forum/topic/posts',
-	'navigator'
-], function(pagination, infinitescroll, threadTools, postTools, events, browsing, posts, navigator) {
+	'navigator',
+	'sort'
+], function(pagination, infinitescroll, threadTools, postTools, events, browsing, posts, navigator, sort) {
 	var	Topic = {},
 		currentUrl = '';
 
@@ -44,7 +45,7 @@ define('forum/topic', [
 		threadTools.init(tid, thread_state);
 		events.init();
 
-		handleSorting();
+		sort.handleSort('topicPostSort', 'user.setTopicSort', 'topic/' + ajaxify.variables.get('topic_slug'));
 
 		enableInfiniteLoadingOrPagination();
 
@@ -105,21 +106,6 @@ define('forum/topic', [
 	function getPostIndex() {
 		var parts = window.location.pathname.split('/');
 		return parts[parts.length - 1] ? parseInt(parts[parts.length - 1], 10) : 0;
-	}
-
-	function handleSorting() {
-		var threadSort = $('.thread-sort');
-		threadSort.find('i').removeClass('fa-check');
-		var currentSetting = threadSort.find('a[data-sort="' + config.topicPostSort + '"]');
-		currentSetting.find('i').addClass('fa-check');
-
-		$('.thread-sort').on('click', 'a', function() {
-			var newSetting = $(this).attr('data-sort');
-			socket.emit('user.setTopicSort', newSetting, function(err) {
-				config.topicPostSort = newSetting;
-				ajaxify.go('topic/' + ajaxify.variables.get('topic_slug'));
-			});
-		});
 	}
 
 	function addBlockQuoteHandler() {

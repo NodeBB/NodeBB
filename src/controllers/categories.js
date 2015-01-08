@@ -158,11 +158,23 @@ categoriesController.get = function(req, res, next) {
 				topicIndex = 0;
 			}
 
+			var set = 'cid:' + cid + ':tids',
+				reverse = false;
+
+			if (settings.categoryTopicSort === 'newest_to_oldest') {
+				reverse = true;
+			} else if (settings.categoryTopicSort === 'most_posts') {
+				reverse = true;
+				set = 'cid:' + cid + ':tids:posts';
+			}
+
 			var start = (page - 1) * settings.topicsPerPage + topicIndex,
 				end = start + settings.topicsPerPage - 1;
 
 			next(null, {
 				cid: cid,
+				set: set,
+				reverse: reverse,
 				start: start,
 				end: end,
 				uid: uid
@@ -171,6 +183,9 @@ categoriesController.get = function(req, res, next) {
 		function(payload, next) {
 			user.getUidByUserslug(req.query.author, function(err, uid) {
 				payload.targetUid = uid;
+				if (uid) {
+					payload.set = 'cid:' + cid + ':uid:' + uid + ':tids';
+				}
 				next(err, payload);
 			});
 		},

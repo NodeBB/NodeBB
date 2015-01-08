@@ -298,6 +298,12 @@ SocketUser.setTopicSort = function(socket, sort, callback) {
 	}
 };
 
+SocketUser.setCategorySort = function(socket, sort, callback) {
+	if (socket.uid) {
+		user.setSetting(socket.uid, 'categoryTopicSort', sort, callback);
+	}
+};
+
 SocketUser.getOnlineAnonCount = function(socket, data, callback) {
 	callback(null, module.parent.exports.getOnlineAnonCount());
 };

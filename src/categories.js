@@ -40,10 +40,11 @@ var async = require('async'),
 				topics: function(next) {
 					Categories.getCategoryTopics({
 						cid: data.cid,
+						set: data.set,
+						reverse: data.reverse,
 						start: data.start,
 						stop: data.end,
-						uid: data.uid,
-						targetUid: data.targetUid
+						uid: data.uid
 					}, next);
 				},
 				pageCount: function(next) {

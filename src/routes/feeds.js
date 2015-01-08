@@ -125,6 +125,8 @@ function generateForCategory(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
 	categories.getCategoryById({
 		cid: cid,
+		set: 'cid:' + cid + ':tids',
+		reverse: true,
 		start: 0,
 		end: 25,
 		uid: uid
