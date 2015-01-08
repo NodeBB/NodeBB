@@ -13,7 +13,7 @@ define('forum/groups/details', function() {
 			var btnEl = $(this),
 				userRow = btnEl.parents('tr'),
 				ownerFlagEl = userRow.find('.member-name i'),
-				isOwner = !ownerFlagEl.hasClass('hidden') ? true : false,
+				isOwner = !ownerFlagEl.hasClass('invisible') ? true : false,
 				uid = userRow.attr('data-uid'),
 				action = btnEl.attr('data-action');
 
@@ -24,7 +24,7 @@ define('forum/groups/details', function() {
 						groupName: ajaxify.variables.get('group_name')
 					}, function(err) {
 						if (!err) {
-							ownerFlagEl.toggleClass('hidden');
+							ownerFlagEl.toggleClass('invisible');
 						}
 					});
 					break;
