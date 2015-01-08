@@ -20,13 +20,10 @@ module.exports = function(User) {
 		}
 
 		var start = process.hrtime();
-		var key = 'username:uid';
-		if (by === 'email') {
-			 key = 'email:uid';
-		}
+		var key = by + ':uid';
 
 		db.getObject(key, function(err, hash) {
-			if (err) {
+			if (err || !hash) {
 				return callback(null, {timing: 0, users:[]});
 			}
 

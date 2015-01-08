@@ -69,7 +69,7 @@ SocketUser.search = function(socket, data, callback) {
 	if (!socket.uid) {
 		return callback(new Error('[[error:not-logged-in]]'));
 	}
-	user.search({query: data.query}, callback);
+	user.search({query: data.query, by: data.by}, callback);
 };
 
 // Password Reset
