@@ -172,6 +172,10 @@ var async = require('async'),
 				return callback(err);
 			}
 
+			if (!voteStatus || (!voteStatus.upvoted && !voteStatus.downvoted)) {
+				return callback();
+			}
+
 			var hook,
 				current = voteStatus.upvoted ? 'upvote' : 'downvote';
 
@@ -184,17 +188,17 @@ var async = require('async'),
 				current = 'unvote';
 			}
 
-			plugins.fireHook('action:post.' + hook, {
-				pid: pid,
-				uid: uid,
-				current: current
+			vote(voteStatus.upvoted ? 'downvote' : 'upvote', true, pid, uid, function(err, data) {
+				if (err) {
+					return callback(err);
+				}
+				plugins.fireHook('action:post.' + hook, {
+					pid: pid,
+					uid: uid,
+					current: current
+				});
+				callback(null, data);
 			});
-
-			if (!voteStatus || (!voteStatus.upvoted && !voteStatus.downvoted)) {
-				return callback();
-			}
-
-			vote(voteStatus.upvoted ? 'downvote' : 'upvote', true, pid, uid, callback);
 		});
 	}
 
