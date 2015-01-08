@@ -1,6 +1,7 @@
 {
 	"groups": "Groups",
 	"view_group": "View Group",
+	"owner": "Group Owner",
 
 	"details.title": "Group Details",
 	"details.members": "Member List",

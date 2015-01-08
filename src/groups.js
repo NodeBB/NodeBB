@@ -123,7 +123,22 @@ var async = require('async'),
 					}
 
 					if (options.expand) {
-						async.map(uids, user.getUserData, next);
+						async.waterfall([
+							async.apply(async.map, uids, user.getUserData),
+							function(users, next) {
+								async.mapLimit(users, 10, function(userObj, next) {
+									Groups.ownership.isOwner(userObj.uid, groupName, function(err, isOwner) {
+										if (err) {
+											winston.warn('[groups.get] Could not determine ownership in group `' + groupName + '` for uid `' + userObj.uid + '`: ' + err.message);
+											return next(null, userObj);
+										}
+
+										userObj.isOwner = isOwner;
+										next(null, userObj);
+									});
+								}, next);
+							}
+						], next);
 					} else {
 						next(err, uids);
 					}
@@ -134,13 +149,9 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			results.base.members = results.users.filter(function(user) {
-				return typeof user !== 'undefined';
-			});
-
+			results.base.members = results.users.filter(Boolean);
 			results.base.count = numUsers || results.base.members.length;
 			results.base.memberCount = numUsers || results.base.members.length;
-
 			results.base.deleted = !!parseInt(results.base.deleted, 10);
 			results.base.hidden = !!parseInt(results.base.hidden, 10);
 			results.base.system = !!parseInt(results.base.system, 10);
@@ -603,4 +614,31 @@ var async = require('async'),
 			});
 		});
 	};
+
+	Groups.ownership = {};
+
+	Groups.ownership.isOwner = function(uid, groupName, callback) {
+		// Note: All admins are also owners
+		async.waterfall([
+			async.apply(db.isSetMember, 'group:' + groupName + ':owners', uid),
+			function(isOwner, next) {
+				if (isOwner) {
+					return next(null, isOwner);
+				}
+
+				user.isAdministrator(uid, next);
+			}
+		], callback);
+	};
+
+	Groups.ownership.grant = function(toUid, groupName, callback) {
+		// Note: No ownership checking is done here on purpose!
+		db.setAdd('group:' + groupName + ':owners', toUid, callback);
+	};
+
+	Groups.ownership.rescind = function(toUid, groupName, callback) {
+		// Note: No ownership checking is done here on purpose!
+		db.setRemove('group:' + groupName + ':owners', toUid, callback);
+	};
+
 }(module.exports));
