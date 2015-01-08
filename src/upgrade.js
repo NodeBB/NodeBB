@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 11, 20);
+	latestSchema = Date.UTC(2015, 0, 8);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -451,7 +451,47 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2014/12/20] Updating digest settings skipped');
 				next();
 			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 0, 8);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2015/01/08] Updating category topics sorted sets');
+
+				db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
+					if (err) {
+						winston.error('[2014/12/20] Error encountered while updating digest settings');
+						return next(err);
+					}
+
+					var now = Date.now();
+
+					async.eachLimit(tids, 50, function(tid, next) {
+						db.getObjectFields('topic:' + tid, ['cid', 'postcount'], function(err, topicData) {
+							if (err) {
+								return next(err);
+							}
+
+							if (Utils.isNumber(topicData.postcount) && topicData.cid) {
+								db.sortedSetAdd('cid:' + topicData.cid + ':tids:posts', topicData.postcount, tid, next);
+							} else {
+								next();
+							}
+						});
+					}, function(err) {
+						if (err) {
+							winston.error('[2015/01/08] Error encountered while Updating category topics sorted sets');
+							return next(err);
+						}
+						winston.info('[2015/01/08] Updating category topics sorted sets done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2015/01/08] Updating category topics sorted sets skipped');
+				next();
+			}
 		}
+
 
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 22!!!

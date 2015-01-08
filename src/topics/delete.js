@@ -76,6 +76,7 @@ module.exports = function(Topics) {
 
 			db.sortedSetsRemove([
 				'cid:' + topicData.cid + ':tids',
+				'cid:' + topicData.cid + ':tids:posts',
 				'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
 				'uid:' + topicData.uid + ':topics'
 			], tid, callback);

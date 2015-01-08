@@ -11,7 +11,7 @@ var search = {};
 
 module.exports = search;
 
-search.search = function(query, searchIn, uid, callback) {
+search.search = function(data, callback) {
 	function done(err, data) {
 		if (err) {
 			return callback(err);
@@ -20,12 +20,16 @@ search.search = function(query, searchIn, uid, callback) {
 		result.search_query = query;
 		result[searchIn] = data;
 		result.matchCount = data.length;
+		result.hidePostedBy = searchIn !== 'posts';
 		result.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);
 		callback(null, result);
 	}
 
 	var start = process.hrtime();
-	searchIn = searchIn || 'posts';
+
+	var query = data.query;
+	var searchIn = data.searchIn || 'posts';
+	var uid = data.uid || 0;
 
 	var result = {
 		posts: [],
@@ -34,7 +38,7 @@ search.search = function(query, searchIn, uid, callback) {
 	};
 
 	if (searchIn === 'posts') {
-		searchInPosts(query, uid, done);
+		searchInPosts(query, data.postedBy, uid, done);
 	} else if (searchIn === 'users') {
 		searchInUsers(query, done);
 	} else if (searchIn === 'tags') {
@@ -44,13 +48,20 @@ search.search = function(query, searchIn, uid, callback) {
 	}
 };
 
-function searchInPosts(query, uid, callback) {
+function searchInPosts(query, postedBy, uid, callback) {
 	async.parallel({
 		pids: function(next) {
 			searchQuery('post', query, next);
 		},
 		tids: function(next) {
 			searchQuery('topic', query, next);
+		},
+		postedByUid: function(next) {
+			if (postedBy) {
+				user.getUidByUsername(postedBy, next);
+			} else {
+				next(null, 0);
+			}
 		}
 	}, function (err, results) {
 		if (err) {
@@ -75,6 +86,14 @@ function searchInPosts(query, uid, callback) {
 			},
 			function(pids, next) {
 				posts.getPostSummaryByPids(pids, uid, {stripTags: true, parse: false}, next);
+			},
+			function(posts, next) {
+				if (postedBy) {
+					posts = posts.filter(function(post) {
+						return post && parseInt(post.uid, 10) === parseInt(results.postedByUid, 10);
+					});
+				}
+				next(null, posts);
 			}
 		], callback);
 	});

@@ -21,6 +21,16 @@
 		languages[language].loading = languages[language].loading || {};
 	};
 
+	translator.getTranslations = function(language, filename, callback) {
+		if (languages[language] && languages[language].loaded[filename]) {
+			callback(languages[language].loaded[filename]);
+		} else {
+			translator.load(language, filename, function() {
+				callback(languages[language].loaded[filename]);
+			});
+		}
+	}
+
 	translator.getLanguage = function() {
 		return config.defaultLang;
 	};
@@ -180,7 +190,7 @@
 					callback(translations);
 				}
 
-				while (languages[language].callbacks[filename] && languages[language].callbacks[filename].length) {
+				while (languages[language].callbacks && languages[language].callbacks[filename] && languages[language].callbacks[filename].length) {
 					languages[language].callbacks[filename].pop()(translations);
 				}
 

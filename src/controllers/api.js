@@ -55,6 +55,7 @@ apiController.getConfig = function(req, res, next) {
 	config['css-buster'] = meta.css.hash;
 	config.requireEmailConfirmation = parseInt(meta.config.requireEmailConfirmation, 10) === 1;
 	config.topicPostSort = meta.config.topicPostSort || 'oldest_to_newest';
+	config.categoryTopicSort = meta.config.categoryTopicSort || 'newest_to_oldest';
 	config.csrf_token = req.csrfToken();
 	config.searchEnabled = plugins.hasListeners('filter:search.query');
 
@@ -79,6 +80,7 @@ apiController.getConfig = function(req, res, next) {
 		config.userLang = settings.language || config.defaultLang;
 		config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
 		config.topicPostSort = settings.topicPostSort || config.topicPostSort;
+		config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
 		config.topicSearchEnabled = settings.topicSearchEnabled || false;
 
 		if (res.locals.isAPI) {

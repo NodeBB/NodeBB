@@ -29,6 +29,7 @@ module.exports = function(Categories) {
 			function(next) {
 				db.deleteAll([
 					'cid:' + cid + ':tids',
+					'cid:' + cid + ':tids:posts',
 					'cid:' + cid + ':pids',
 					'category:' + cid
 				], next);

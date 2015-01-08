@@ -12,6 +12,14 @@
 					<option value="most_votes">Most Votes</option>
 				</select>
 			</div>
+			<div class="form-group">
+				<label>Default Topic Sorting</label>
+				<select class="form-control" data-field="categoryTopicSort">
+					<option value="newest_to_oldest">Newest to Oldest</option>
+					<option value="oldest_to_newest">Oldest to Newest</option>
+					<option value="most_posts">Most Posts</option>
+				</select>
+			</div>
 
 			<div class="form-group">
 				<label>Seconds between Posts</label>

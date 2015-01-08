@@ -171,8 +171,11 @@ module.exports = function(Posts) {
 							topics.updateTeaser(postData.tid, next);
 						},
 						function(next) {
-							user.incrementUserPostCountBy(postData.uid, -1, next);
+							db.sortedSetIncrBy('cid:' + topicData.cid + ':tids:posts', -1, postData.tid, next);
 						},
+						function(next) {
+							user.incrementUserPostCountBy(postData.uid, -1, next);
+						}
 					], callback);
 				});
 			});

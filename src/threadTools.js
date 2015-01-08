@@ -185,15 +185,26 @@ var winston = require('winston'),
 		var topic;
 		async.waterfall([
 			function(next) {
-				topics.getTopicFields(tid, ['cid', 'lastposttime', 'pinned', 'deleted'], next);
+				topics.getTopicFields(tid, ['cid', 'lastposttime', 'pinned', 'deleted', 'postcount'], next);
 			},
 			function(topicData, next) {
 				topic = topicData;
-				db.sortedSetRemove('cid:' + topicData.cid + ':tids', tid, next);
+				db.sortedSetsRemove([
+					'cid:' + topicData.cid + ':tids',
+					'cid:' + topicData.cid + ':tids:posts'
+				], tid, next);
 			},
 			function(next) {
 				var timestamp = parseInt(topic.pinned, 10) ? Math.pow(2, 53) : topic.lastposttime;
-				db.sortedSetAdd('cid:' + cid + ':tids', timestamp, tid, next);
+				async.parallel([
+					function(next) {
+						db.sortedSetAdd('cid:' + cid + ':tids', timestamp, tid, next);
+					},
+					function(next) {
+						topic.postcount = topic.postcount || 0;
+						db.sortedSetAdd('cid:' + cid + ':tids:posts', topic.postcount, tid, next);
+					}
+				], next);
 			}
 		], function(err) {
 			if (err) {
