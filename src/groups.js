@@ -144,6 +144,14 @@ var async = require('async'),
 					next(null, isMember);
 				});
 			},
+			isPending: function(next) {
+				// Retrieve group membership state, if uid is passed in
+				if (!options.uid) {
+					return next();
+				}
+
+				db.isSetMember('group:' + groupName + ':pending', options.uid, next);
+			},
 			isOwner: function(next) {
 				// Retrieve group ownership state, if uid is passed in
 				if (!options.uid) {
@@ -173,9 +181,16 @@ var async = require('async'),
 			results.base.deletable = !results.base.system;
 			results.base.truncated = truncated;
 			results.base.isMember = results.isMember;
+			results.base.isPending = results.isPending;
 			results.base.isOwner = results.isOwner;
 
 			callback(err, results.base);
+		});
+	};
+
+	Groups.isPrivate = function(groupName, callback) {
+		db.getObjectField('group:' + groupName, 'private', function(err, isPrivate) {
+			callback(err, isPrivate || isPrivate === null);	// Private, if not set at all
 		});
 	};
 
@@ -519,6 +534,20 @@ var async = require('async'),
 				});
 			}
 		});
+	};
+
+	Groups.requestMembership = function(groupName, uid, callback) {
+		db.setAdd('group:' + groupName + ':pending', uid, callback);
+		plugins.fireHook('action:groups.requestMembership', {
+			groupName: groupName,
+			uid: uid
+		});
+	};
+
+	Groups.approveMembership = function(groupName, uid, callback) {
+		// Note: For simplicity, this method intentially doesn't check the caller uid for ownership!
+		db.setRemove('group:' + groupName + ':pending', uid, callback);
+		Groups.join.apply(Groups, arguments);
 	};
 
 	Groups.leave = function(groupName, uid, callback) {

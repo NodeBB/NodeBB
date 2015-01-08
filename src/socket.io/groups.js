@@ -1,6 +1,7 @@
 "use strict";
 
 var	groups = require('../groups'),
+	meta = require('../meta'),
 
 	SocketGroups = {};
 
@@ -9,7 +10,17 @@ SocketGroups.join = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	groups.join(data.groupName, socket.uid, callback);
+	if (meta.config.allowPrivateGroups) {
+		groups.isPrivate(data.groupName, function(err, isPrivate) {
+			if (isPrivate) {
+				groups.requestMembership(data.groupName, socket.uid, callback);
+			} else {
+				groups.join(data.groupName, socket.uid, callback);
+			}
+		});
+	} else {
+		groups.join(data.groupName, socket.uid, callback);
+	}
 };
 
 SocketGroups.leave = function(socket, data, callback) {
