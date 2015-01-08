@@ -5,6 +5,7 @@
 
 	"details.title": "Group Details",
 	"details.members": "Member List",
+	"details.pending": "Pending Members",
 	"details.has_no_posts": "This group's members have not made any posts.",
 	"details.latest_posts": "Latest Posts"
 }

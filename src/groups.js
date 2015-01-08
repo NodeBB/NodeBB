@@ -129,6 +129,19 @@ var async = require('async'),
 					}
 				});
 			},
+			pending: function (next) {
+				db.getSetMembers('group:' + groupName + ':pending', function (err, uids) {
+					if (err) {
+						return next(err);
+					}
+
+					if (options.expand) {
+						async.map(uids, user.getUserData, next);
+					} else {
+						next(err, uids);
+					}
+				});
+			},
 			isMember: function(next) {
 				// Retrieve group membership state, if uid is passed in
 				if (!options.uid) {
@@ -173,6 +186,7 @@ var async = require('async'),
 			}
 
 			results.base.members = results.users.filter(Boolean);
+			results.base.pending = results.pending.filter(Boolean);
 			results.base.count = numUsers || results.base.members.length;
 			results.base.memberCount = numUsers || results.base.members.length;
 			results.base.deleted = !!parseInt(results.base.deleted, 10);
