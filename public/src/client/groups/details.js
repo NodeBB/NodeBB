@@ -1,15 +1,15 @@
 "use strict";
-/* globals socket, ajaxify */
+/* globals define, socket, ajaxify, app */
 
 define('forum/groups/details', function() {
 	var Details = {};
 
 	Details.init = function() {
-		var memberList = $('.groups .members');
+		var detailsPage = $('.groups');
 
 		$('.latest-posts .content img').addClass('img-responsive');
 
-		memberList.on('click', '[data-action]', function() {
+		detailsPage.on('click', '[data-action]', function() {
 			var btnEl = $(this),
 				userRow = btnEl.parents('tr'),
 				ownerFlagEl = userRow.find('.member-name i'),
@@ -25,6 +25,24 @@ define('forum/groups/details', function() {
 					}, function(err) {
 						if (!err) {
 							ownerFlagEl.toggleClass('invisible');
+						} else {
+							app.alertError(err);
+						}
+					});
+					break;
+
+				case 'join':	// intentional fall-throughs!
+				case 'leave':
+				case 'accept':
+				case 'reject':
+					socket.emit('groups.' + action, {
+						toUid: uid,
+						groupName: ajaxify.variables.get('group_name')
+					}, function(err) {
+						if (!err) {
+							ajaxify.refresh();
+						} else {
+							app.alertError(err);
 						}
 					});
 					break;

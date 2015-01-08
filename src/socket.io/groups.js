@@ -59,4 +59,32 @@ SocketGroups.rescind = function(socket, data, callback) {
 	});
 };
 
+SocketGroups.accept = function(socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	groups.ownership.isOwner(socket.uid, data.groupName, function(err, isOwner) {
+		if (!isOwner) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+
+		groups.acceptMembership(data.groupName, data.toUid, callback);
+	});
+};
+
+SocketGroups.reject = function(socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	groups.ownership.isOwner(socket.uid, data.groupName, function(err, isOwner) {
+		if (!isOwner) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+
+		groups.rejectMembership(data.groupName, data.toUid, callback);
+	});
+};
+
 module.exports = SocketGroups;

@@ -558,10 +558,15 @@ var async = require('async'),
 		});
 	};
 
-	Groups.approveMembership = function(groupName, uid, callback) {
+	Groups.acceptMembership = function(groupName, uid, callback) {
 		// Note: For simplicity, this method intentially doesn't check the caller uid for ownership!
 		db.setRemove('group:' + groupName + ':pending', uid, callback);
 		Groups.join.apply(Groups, arguments);
+	};
+
+	Groups.rejectMembership = function(groupName, uid, callback) {
+		// Note: For simplicity, this method intentially doesn't check the caller uid for ownership!
+		db.setRemove('group:' + groupName + ':pending', uid, callback);
 	};
 
 	Groups.leave = function(groupName, uid, callback) {
