@@ -20,4 +20,32 @@ SocketGroups.leave = function(socket, data, callback) {
 	groups.leave(data.groupName, socket.uid, callback);
 };
 
+SocketGroups.grant = function(socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	groups.ownership.isOwner(socket.uid, data.groupName, function(err, isOwner) {
+		if (!isOwner) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+
+		groups.ownership.grant(data.toUid, data.groupName, callback);
+	});
+};
+
+SocketGroups.rescind = function(socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	groups.ownership.isOwner(socket.uid, data.groupName, function(err, isOwner) {
+		if (!isOwner) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+
+		groups.ownership.rescind(data.toUid, data.groupName, callback);
+	});
+};
+
 module.exports = SocketGroups;

@@ -71,25 +71,7 @@ var async = require('async'),
 			groupNames = groupNames.concat(ephemeralGroups);
 
 			async.map(groupNames, function (groupName, next) {
-				async.waterfall([
-					async.apply(Groups.get, groupName, options),
-					function(groupObj, next) {
-						// Retrieve group membership state, if uid is passed in
-						if (!options.uid) {
-							return next(null, groupObj);
-						}
-
-						Groups.isMember(options.uid, groupName, function(err, isMember) {
-							if (err) {
-								winston.warn('[groups.list] Could not determine membership in group `' + groupName + '` for uid `' + options.uid + '`: ' + err.message);
-								return next(null, groupObj);
-							}
-
-							groupObj.isMember = isMember;
-							next(null, groupObj);
-						});
-					}
-				], next);
+				Groups.get(groupName, options, next);
 			}, function (err, groups) {
 				callback(err, internals.filterGroups(groups, options));
 			});
@@ -126,6 +108,9 @@ var async = require('async'),
 						async.waterfall([
 							async.apply(async.map, uids, user.getUserData),
 							function(users, next) {
+								// Filter out non-matches
+								users = users.filter(Boolean);
+
 								async.mapLimit(users, 10, function(userObj, next) {
 									Groups.ownership.isOwner(userObj.uid, groupName, function(err, isOwner) {
 										if (err) {
@@ -143,6 +128,36 @@ var async = require('async'),
 						next(err, uids);
 					}
 				});
+			},
+			isMember: function(next) {
+				// Retrieve group membership state, if uid is passed in
+				if (!options.uid) {
+					return next();
+				}
+
+				Groups.isMember(options.uid, groupName, function(err, isMember) {
+					if (err) {
+						winston.warn('[groups.get] Could not determine membership in group `' + groupName + '` for uid `' + options.uid + '`: ' + err.message);
+						return next();
+					}
+
+					next(null, isMember);
+				});
+			},
+			isOwner: function(next) {
+				// Retrieve group ownership state, if uid is passed in
+				if (!options.uid) {
+					return next();
+				}
+
+				Groups.ownership.isOwner(options.uid, groupName, function(err, isOwner) {
+					if (err) {
+						winston.warn('[groups.get] Could not determine ownership in group `' + groupName + '` for uid `' + options.uid + '`: ' + err.message);
+						return next();
+					}
+
+					next(null, isOwner);
+				});
 			}
 		}, function (err, results) {
 			if (err || !results.base) {
@@ -157,6 +172,8 @@ var async = require('async'),
 			results.base.system = !!parseInt(results.base.system, 10);
 			results.base.deletable = !results.base.system;
 			results.base.truncated = truncated;
+			results.base.isMember = results.isMember;
+			results.base.isOwner = results.isOwner;
 
 			callback(err, results.base);
 		});

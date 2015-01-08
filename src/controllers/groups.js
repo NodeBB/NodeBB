@@ -23,10 +23,12 @@ groupsController.list = function(req, res, next) {
 
 groupsController.details = function(req, res, next) {
 	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
+
 	async.parallel({
 		group: function(next) {
 			groups.get(req.params.name, {
-				expand: true
+				expand: true,
+				uid: uid
 			}, next);
 		},
 		posts: function(next) {

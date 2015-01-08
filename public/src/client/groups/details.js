@@ -1,17 +1,35 @@
 "use strict";
+/* globals socket, ajaxify */
 
 define('forum/groups/details', function() {
 	var Details = {};
 
 	Details.init = function() {
-		var	memberListEl = $('.groups.details .members');
-
-		memberListEl.on('click', '[data-slug]', function() {
-			var	slug = this.getAttribute('data-slug');
-			ajaxify.go('user/' + slug);
-		});
+		var memberList = $('.groups .members');
 
 		$('.latest-posts .content img').addClass('img-responsive');
+
+		memberList.on('click', '[data-action]', function() {
+			var btnEl = $(this),
+				userRow = btnEl.parents('tr'),
+				ownerFlagEl = userRow.find('.member-name i'),
+				isOwner = !ownerFlagEl.hasClass('hidden') ? true : false,
+				uid = userRow.attr('data-uid'),
+				action = btnEl.attr('data-action');
+
+			switch(action) {
+				case 'toggleOwnership':
+					socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
+						toUid: uid,
+						groupName: ajaxify.variables.get('group_name')
+					}, function(err) {
+						if (!err) {
+							ownerFlagEl.toggleClass('hidden');
+						}
+					});
+					break;
+			}
+		});
 	};
 
 	return Details;
