@@ -14,7 +14,7 @@ exit /B
     echo   "nodebb.bat stop" to stop the NodeBB server
     echo   "nodebb.bat log" to view server output
 
-    # Start the loader daemon
+    rem Start the loader daemon
     node loader %*
 
     goto END_CASE
