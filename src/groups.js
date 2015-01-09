@@ -192,6 +192,7 @@ var async = require('async'),
 			results.base.deleted = !!parseInt(results.base.deleted, 10);
 			results.base.hidden = !!parseInt(results.base.hidden, 10);
 			results.base.system = !!parseInt(results.base.system, 10);
+			results.base.private = results.base.private ? !!parseInt(results.base.private, 10) : true;
 			results.base.deletable = !results.base.system;
 			results.base.truncated = truncated;
 			results.base.isMember = results.isMember;
