@@ -66,7 +66,6 @@ define('forum/groups/details', function() {
 		if (settingsFormEl.length) {
 			// Add color picker to settings form
 			require(['vendor/colorpicker/colorpicker'], function() {
-				console.log(colorBtn, colorBtn.ColorPicker);
 				colorBtn.ColorPicker({
 					color: colorValueEl.val() || '#000',
 					onChange: function(hsb, hex) {
