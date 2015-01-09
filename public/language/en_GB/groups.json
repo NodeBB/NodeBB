@@ -9,5 +9,7 @@
 	"details.has_no_posts": "This group's members have not made any posts.",
 	"details.latest_posts": "Latest Posts",
 	"details.private": "Private Group",
-	"details.public": "Public Group"
+	"details.public": "Public Group",
+
+	"details.owner_options": "Group Administration"
 }

@@ -41,6 +41,7 @@ Groups.leave = function(socket, data, callback) {
 	groups.leave(data.groupName, data.uid, callback);
 };
 
+// Possibly remove this and call SocketGroups.update instead
 Groups.update = function(socket, data, callback) {
 	if(!data) {
 		return callback(new Error('[[error:invalid-data]]'));

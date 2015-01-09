@@ -87,4 +87,18 @@ SocketGroups.reject = function(socket, data, callback) {
 	});
 };
 
+SocketGroups.update = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	groups.ownership.isOwner(socket.uid, data.groupName, function(err, isOwner) {
+		if (!isOwner) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+
+		groups.update(data.groupName, data.values, callback);
+	});
+};
+
 module.exports = SocketGroups;
