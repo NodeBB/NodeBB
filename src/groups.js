@@ -500,15 +500,11 @@ var async = require('async'),
 
 	Groups.destroy = function(groupName, callback) {
 		async.parallel([
-			function(next) {
-				db.delete('group:' + groupName, next);
-			},
-			function(next) {
-				db.setRemove('groups', groupName, next);
-			},
-			function(next) {
-				db.delete('group:' + groupName + ':members', next);
-			},
+			async.apply(db.delete, 'group:' + groupName),
+			async.apply(db.setRemove, 'groups', groupName),
+			async.apply(db.delete, 'group:' + groupName + ':members'),
+			async.apply(db.delete, 'group:' + groupName + ':pending'),
+			async.apply(db.delete, 'group:' + groupName + ':owners'),
 			function(next) {
 				db.getSetMembers('groups', function(err, groups) {
 					if (err) {
