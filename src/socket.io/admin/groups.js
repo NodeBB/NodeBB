@@ -8,9 +8,11 @@ Groups.create = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	groups.create(data.name, data.description, function(err, groupObj) {
-		callback(err, groupObj || undefined);
-	});
+	groups.create({
+		name: data.name, 
+		description: data.description,
+		ownerUid: socket.uid
+	}, callback);
 };
 
 Groups.delete = function(socket, groupName, callback) {

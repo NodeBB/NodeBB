@@ -204,7 +204,13 @@ var async = require('async'),
 
 	Groups.isPrivate = function(groupName, callback) {
 		db.getObjectField('group:' + groupName, 'private', function(err, isPrivate) {
-			callback(err, isPrivate || isPrivate === null);	// Private, if not set at all
+			isPrivate = isPrivate || isPrivate === null;
+
+			if (typeof isPrivate === 'string') {
+				isPrivate = (isPrivate === '0' ? false : true);
+			}
+
+			callback(err, isPrivate);	// Private, if not set at all
 		});
 	};
 
@@ -358,16 +364,16 @@ var async = require('async'),
 		}
 	};
 
-	Groups.create = function(name, description, callback) {
-		if (name.length === 0) {
+	Groups.create = function(data, callback) {
+		if (data.name.length === 0) {
 			return callback(new Error('[[error:group-name-too-short]]'));
 		}
 
-		if (name === 'administrators' || name === 'registered-users') {
+		if (data.name === 'administrators' || data.name === 'registered-users') {
 			var system = true;
 		}
 
-		meta.userOrGroupExists(name, function (err, exists) {
+		meta.userOrGroupExists(data.name, function (err, exists) {
 			if (err) {
 				return callback(err);
 			}
@@ -377,24 +383,25 @@ var async = require('async'),
 			}
 
 			var groupData = {
-				name: name,
-				userTitle: name,
-				description: description,
-				deleted: '0',
-				hidden: '0',
-				system: system ? '1' : '0'
-			};
-
-			async.parallel([
-				function(next) {
-					db.setAdd('groups', name, next);
+					name: data.name,
+					userTitle: data.name,
+					description: data.description,
+					deleted: '0',
+					hidden: '0',
+					system: system ? '1' : '0',
+					'private': data.private || '1'
 				},
-				function(next) {
-					db.setObject('group:' + name, groupData, function(err) {
-						Groups.get(name, {}, next);
-					});
-				}
-			], callback);
+				tasks = [
+					async.apply(db.setAdd, 'groups', data.name),
+					async.apply(db.setObject, 'group:' + data.name, groupData)
+				];
+
+			if (data.hasOwnProperty('ownerUid')) {
+				tasks.push(async.apply(db.setAdd, 'group:' + data.name + ':owners', data.ownerUid));
+				tasks.push(async.apply(db.setAdd, 'group:' + data.name + ':members', data.ownerUid));
+			}
+
+			async.parallel(tasks, callback);
 		});
 	};
 
@@ -529,7 +536,10 @@ var async = require('async'),
 					uid: uid
 				});
 			} else {
-				Groups.create(groupName, '', function(err) {
+				Groups.create({
+					name: groupName,
+					description: ''
+				}, function(err) {
 					if (err && err.message !== '[[error:group-already-exists]]') {
 						winston.error('[groups.join] Could not create new hidden group: ' + err.message);
 						return callback(err);

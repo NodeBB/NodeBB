@@ -49,7 +49,7 @@ define('admin/manage/groups', [
 				},
 				errorText;
 
-			socket.emit('admin.groups.create', submitObj, function(err, data) {
+			socket.emit('admin.groups.create', submitObj, function(err) {
 				if (err) {
 					switch (err) {
 						case 'group-exists':
@@ -68,7 +68,7 @@ define('admin/manage/groups', [
 					createModalError.addClass('hide');
 					createGroupName.val('');
 					createModal.on('hidden.bs.modal', function() {
-						ajaxify.go('admin/manage/groups');
+						ajaxify.refresh();
 					});
 					createModal.modal('hide');
 				}
