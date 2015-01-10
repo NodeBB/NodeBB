@@ -106,6 +106,13 @@ middleware.addSlug = function(req, res, next) {
 	next();
 };
 
+middleware.validateFiles = function(req, res, next) {
+	if (!Array.isArray(req.files.files) || !req.files.files.length) {
+		return next(new Error(['[[error:invalid-files]]']));
+	}
+	next();
+};
+
 middleware.prepareAPI = function(req, res, next) {
 	res.locals.isAPI = true;
 	next();

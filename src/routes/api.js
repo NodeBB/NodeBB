@@ -28,10 +28,10 @@ module.exports =  function(app, middleware, controllers) {
 
 	var multipart = require('connect-multiparty');
 	var multipartMiddleware = multipart();
-
-	router.post('/post/upload', multipartMiddleware, middleware.applyCSRF, uploadsController.uploadPost);
-	router.post('/topic/thumb/upload', multipartMiddleware, middleware.applyCSRF, uploadsController.uploadThumb);
-	router.post('/user/:userslug/uploadpicture', multipartMiddleware, middleware.applyCSRF, middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.uploadPicture);
+	var middlewares = [multipartMiddleware, middleware.validateFiles, middleware.applyCSRF];
+	router.post('/post/upload', middlewares, uploadsController.uploadPost);
+	router.post('/topic/thumb/upload', middlewares, uploadsController.uploadThumb);
+	router.post('/user/:userslug/uploadpicture', middlewares.concat([middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions]), controllers.accounts.uploadPicture);
 };
 
 function getModerators(req, res, next) {

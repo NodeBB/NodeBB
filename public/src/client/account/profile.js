@@ -36,11 +36,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll']
 		socket.removeListener('event:user_status_change', onUserStatusChange);
 		socket.on('event:user_status_change', onUserStatusChange);
 
-		if (yourid !== theirid) {
-			socket.emit('user.increaseViewCount', theirid);
-		}
-
-		infinitescroll.init(loadMoreTopics);
+		infinitescroll.init(loadMorePosts);
 	};
 
 	function processPage() {
@@ -84,7 +80,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll']
 
 	}
 
-	function loadMoreTopics(direction) {
+	function loadMorePosts(direction) {
 		if(direction < 0 || !$('.user-recent-posts').length) {
 			return;
 		}

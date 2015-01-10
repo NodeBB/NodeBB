@@ -13,7 +13,7 @@
 					<form id="uploadForm" action="" method="post" enctype="multipart/form-data">
 						<div class="form-group">
 							<label for="userPhoto">Upload a picture</label>
-							<input type="file" id="userPhotoInput"  name="userPhoto">
+							<input type="file" id="userPhotoInput" name="files[]">
 							<p class="help-block"></p>
 						</div>
 						<input type="hidden" id="params" name="params">

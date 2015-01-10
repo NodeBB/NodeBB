@@ -20,9 +20,8 @@ define('uploader', ['csrf'], function(csrf) {
 		uploadForm[0].reset();
 		uploadForm.attr('action', route);
 		uploadForm.find('#params').val(JSON.stringify(params));
-		// uploadForm.find('#csrfToken').val(csrf.get());
 
-		if(fileSize) {
+		if (fileSize) {
 			uploadForm.find('#upload-file-size').html(fileSize);
 			uploadForm.find('#file-size-block').removeClass('hide');
 		} else {

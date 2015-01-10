@@ -10,7 +10,7 @@ function apiRoutes(app, middleware, controllers) {
 	var multipart = require('connect-multiparty');
 	var multipartMiddleware = multipart();
 
-	var middlewares = [multipartMiddleware, middleware.applyCSRF, middleware.authenticate];
+	var middlewares = [multipartMiddleware, middleware.validateFiles, middleware.applyCSRF, middleware.authenticate];
 
 	app.post('/category/uploadpicture', middlewares, controllers.admin.uploads.uploadCategoryPicture);
 	app.post('/uploadfavicon', middlewares, controllers.admin.uploads.uploadFavicon);
