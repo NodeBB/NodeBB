@@ -45,7 +45,11 @@ module.exports = function(Topics) {
 	Topics.purge = function(tid, callback) {
 		async.parallel([
 			function(next) {
-				db.deleteAll(['tid:' + tid + ':followers', 'tid:' + tid + ':read_by_uid'], next);
+				db.deleteAll([
+					'tid:' + tid + ':followers',
+					'tid:' + tid + ':posts',
+					'tid:' + tid + ':posts:votes'
+				], next);
 			},
 			function(next) {
 				db.sortedSetsRemove(['topics:tid', 'topics:recent', 'topics:posts', 'topics:views'], tid, next);
