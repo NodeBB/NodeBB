@@ -28,7 +28,9 @@ module.exports = function(Topics) {
 			return callback(new Error('[[error:invalid-pid]]'));
 		}
 
-		pids.sort();
+		pids.sort(function(a, b) {
+			return a - b;
+		});
 		var mainPid = pids[0];
 
 		async.parallel({
