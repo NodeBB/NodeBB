@@ -3,7 +3,7 @@
 
 define('admin/manage/categories', [
 	'uploader',
-	'admin/modules/iconSelect',
+	'iconSelect',
 	'admin/modules/colorpicker'
 ], function(uploader, iconSelect, colorpicker) {
 	var	Categories = {};

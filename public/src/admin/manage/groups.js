@@ -2,7 +2,7 @@
 /*global define, templates, socket, ajaxify, app, admin, bootbox*/
 
 define('admin/manage/groups', [
-	'admin/modules/iconSelect',
+	'iconSelect',
 	'admin/modules/colorpicker'
 ], function(iconSelect, colorpicker) {
 	var	Groups = {};

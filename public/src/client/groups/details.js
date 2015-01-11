@@ -1,7 +1,7 @@
 "use strict";
 /* globals define, socket, ajaxify, app */
 
-define('forum/groups/details', function() {
+define('forum/groups/details', ['iconSelect'], function(iconSelect) {
 	var Details = {};
 
 	Details.init = function() {
@@ -61,7 +61,9 @@ define('forum/groups/details', function() {
 		var settingsFormEl = $('.groups form'),
 			colorBtn = settingsFormEl.find('[data-action="color-select"]'),
 			colorValueEl = settingsFormEl.find('[name="labelColor"]'),
-			previewEl = settingsFormEl.find('.label');
+			iconBtn = settingsFormEl.find('[data-action="icon-select"]'),
+			previewEl = settingsFormEl.find('.label'),
+			previewIcon = previewEl.find('i');
 
 		if (settingsFormEl.length) {
 			// Add color picker to settings form
@@ -76,6 +78,11 @@ define('forum/groups/details', function() {
 						$(colpkr).css('z-index', 1051);
 					}
 				});
+			});
+
+			// Add icon selection interface
+			iconSelect.init(previewIcon, function() {
+				console.log(arguments);
 			});
 		}
 	};
