@@ -102,12 +102,14 @@ define('admin/manage/groups', [
 			case 'delete':
 				bootbox.confirm('Are you sure you wish to delete this group?', function(confirm) {
 					if (confirm) {
-						socket.emit('admin.groups.delete', groupName, function(err, data) {
+						socket.emit('groups.delete', {
+							groupName: groupName
+						}, function(err, data) {
 							if(err) {
 								return app.alertError(err.message);
 							}
 
-							ajaxify.go('admin/manage/groups');
+							ajaxify.refresh();
 						});
 					}
 				});

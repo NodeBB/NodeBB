@@ -15,10 +15,6 @@ Groups.create = function(socket, data, callback) {
 	}, callback);
 };
 
-Groups.delete = function(socket, groupName, callback) {
-	groups.destroy(groupName, callback);
-};
-
 Groups.get = function(socket, groupName, callback) {
 	groups.get(groupName, {
 		expand: true

@@ -101,4 +101,18 @@ SocketGroups.update = function(socket, data, callback) {
 	});
 };
 
+SocketGroups.delete = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	groups.ownership.isOwner(socket.uid, data.groupName, function(err, isOwner) {
+		if (!isOwner) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+
+		groups.destroy(data.groupName, callback);
+	});
+};
+
 module.exports = SocketGroups;
