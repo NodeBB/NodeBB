@@ -10,7 +10,7 @@ SocketGroups.join = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	if (meta.config.allowPrivateGroups) {
+	if (meta.config.allowPrivateGroups !== '0') {
 		groups.isPrivate(data.groupName, function(err, isPrivate) {
 			if (isPrivate) {
 				groups.requestMembership(data.groupName, socket.uid, callback);

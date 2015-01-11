@@ -1,7 +1,7 @@
 "use strict";
 /* globals define, socket, ajaxify, app */
 
-define('forum/groups/details', ['iconSelect'], function(iconSelect) {
+define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker'], function(iconSelect) {
 	var Details = {};
 
 	Details.init = function() {
@@ -63,26 +63,27 @@ define('forum/groups/details', ['iconSelect'], function(iconSelect) {
 			colorValueEl = settingsFormEl.find('[name="labelColor"]'),
 			iconBtn = settingsFormEl.find('[data-action="icon-select"]'),
 			previewEl = settingsFormEl.find('.label'),
-			previewIcon = previewEl.find('i');
+			previewIcon = previewEl.find('i'),
+			previewValueEl = settingsFormEl.find('[name="icon"]');
 
 		if (settingsFormEl.length) {
 			// Add color picker to settings form
-			require(['vendor/colorpicker/colorpicker'], function() {
-				colorBtn.ColorPicker({
-					color: colorValueEl.val() || '#000',
-					onChange: function(hsb, hex) {
-						colorValueEl.val('#' + hex);
-						previewEl.css('background-color', '#' + hex);
-					},
-					onShow: function(colpkr) {
-						$(colpkr).css('z-index', 1051);
-					}
-				});
+			colorBtn.ColorPicker({
+				color: colorValueEl.val() || '#000',
+				onChange: function(hsb, hex) {
+					colorValueEl.val('#' + hex);
+					previewEl.css('background-color', '#' + hex);
+				},
+				onShow: function(colpkr) {
+					$(colpkr).css('z-index', 1051);
+				}
 			});
 
 			// Add icon selection interface
-			iconSelect.init(previewIcon, function() {
-				console.log(arguments);
+			iconBtn.on('click', function() {
+				iconSelect.init(previewIcon, function() {
+					previewValueEl.val(previewIcon.val());
+				});
 			});
 		}
 	};
