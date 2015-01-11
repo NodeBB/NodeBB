@@ -22,7 +22,7 @@ categoriesController.recent = function(req, res, next) {
 
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
-		plugins.fireHook('filter:category.get', {category: data, uid: uid}, function(err, data) {
+		plugins.fireHook('filter:category.get', {category: data, uid: uid, 'feeds:disableRSS': data['feeds:disableRSS']}, function(err, data) {
 			if (err) {
 				return next(err);
 			}
