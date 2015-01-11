@@ -37,7 +37,7 @@ uploadsController.uploadFavicon = function(req, res, next) {
 		file.saveFileToLocal('favicon.ico', 'files', uploadedFile.path, function(err, image) {
 			fs.unlink(uploadedFile.path);
 
-			var response = err ? {error: err.message} : {path: image.url};
+			var response = err ? {error: err.message} : [{name: uploadedFile.name, url: image.url}];
 
 			res.send(req.xhr ? response : JSON.stringify(response));
 		});
@@ -76,10 +76,10 @@ function validateUpload(req, res, uploadedFile, allowedTypes) {
 }
 
 function uploadImage(filename, folder, uploadedFile, req, res) {
-	function done(err, uploadedImage) {
+	function done(err, image) {
 		fs.unlink(uploadedFile.path);
 
-		var response = err ? {error: err.message} : {path: uploadedImage.url};
+		var response = err ? {error: err.message} : [{name: uploadedFile.name, url: image.url}];
 
 		res.send(req.xhr ? response : JSON.stringify(response));
 	}

@@ -1,16 +1,10 @@
+'use strict';
+
+/* globals define */
+
 define('uploader', ['csrf'], function(csrf) {
 
-	var module = {},
-		maybeParse = function(response) {
-			if (typeof response == 'string')  {
-				try {
-					return $.parseJSON(response);
-				} catch (e) {
-					return {error: 'Something went wrong while parsing server response'};
-				}
-			}
-			return response;
-		};
+	var module = {};
 
 	module.open = function(route, params, fileSize, callback) {
 		var uploadModal = $('#upload-picture-modal');
@@ -34,28 +28,18 @@ define('uploader', ['csrf'], function(csrf) {
 
 		uploadForm.off('submit').submit(function() {
 
-			function status(message) {
+			function showAlert(type, message) {
 				module.hideAlerts();
-				uploadModal.find('#alert-status').text(message).removeClass('hide');
+				uploadModal.find('#alert-' + type).text(message).removeClass('hide');
 			}
 
-			function success(message) {
-				module.hideAlerts();
-				uploadModal.find('#alert-success').text(message).removeClass('hide');
-			}
-
-			function error(message) {
-				module.hideAlerts();
-				uploadModal.find('#alert-error').text(message).removeClass('hide');
-			}
-
-			status('uploading the file ...');
+			showAlert('status', 'uploading the file ...');
 
 			uploadModal.find('#upload-progress-bar').css('width', '0%');
 			uploadModal.find('#upload-progress-box').show().removeClass('hide');
 
 			if (!$('#userPhotoInput').val()) {
-				error('select an image to upload!');
+				showAlert('error', 'select an image to upload!');
 				return false;
 			}
 
@@ -65,7 +49,7 @@ define('uploader', ['csrf'], function(csrf) {
 				},
 				error: function(xhr) {
 					xhr = maybeParse(xhr);
-					error('Error: ' + xhr.status);
+					showAlert('error', 'Error: ' + xhr.status);
 				},
 
 				uploadProgress: function(event, position, total, percent) {
@@ -76,12 +60,13 @@ define('uploader', ['csrf'], function(csrf) {
 					response = maybeParse(response);
 
 					if (response.error) {
-						error(response.error);
+						showAlert('error', response.error);
 						return;
 					}
-					callback(response.path);
 
-					success('File uploaded successfully!');
+					callback(response[0].url);
+
+					showAlert('success', 'File uploaded successfully!');
 					setTimeout(function() {
 						module.hideAlerts();
 						uploadModal.modal('hide');
@@ -93,12 +78,19 @@ define('uploader', ['csrf'], function(csrf) {
 		});
 	};
 
+	function maybeParse(response) {
+		if (typeof response === 'string') {
+			try {
+				return $.parseJSON(response);
+			} catch (e) {
+				return {error: 'Something went wrong while parsing server response'};
+			}
+		}
+		return response;
+	}
+
 	module.hideAlerts = function() {
-		var uploadModal = $('#upload-picture-modal');
-		uploadModal.find('#alert-status').addClass('hide');
-		uploadModal.find('#alert-success').addClass('hide');
-		uploadModal.find('#alert-error').addClass('hide');
-		uploadModal.find('#upload-progress-box').addClass('hide');
+		$('#upload-picture-modal').find('#alert-status, #alert-success, #alert-error, #upload-progress-box').addClass('hide');
 	};
 
 	return module;

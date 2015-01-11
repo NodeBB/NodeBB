@@ -454,15 +454,13 @@ accountsController.uploadPicture = function (req, res, next) {
 
 		function done(err, image) {
 			fs.unlink(userPhoto.path);
-			if(err) {
+			if (err) {
 				return res.json({error: err.message});
 			}
 
 			user.setUserFields(updateUid, {uploadedpicture: image.url, picture: image.url});
 
-			res.json({
-				path: image.url
-			});
+			res.json([{name: userPhoto.name, url: image.url}]);
 		}
 
 		if (err) {
