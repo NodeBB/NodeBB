@@ -16,11 +16,11 @@ describe('Hash methods', function() {
 			assert.equal(arguments.length, 1);
 			done();
 		});
-	})
+	});
 
 	describe('setObject()', function() {
 		it('should create a object', function(done) {
-			db.setObject('testObject2', testData, function(err) {
+			db.setObject('testObject10', testData, function(err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
 				done();

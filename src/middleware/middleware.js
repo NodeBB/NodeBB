@@ -83,7 +83,7 @@ middleware.addSlug = function(req, res, next) {
 				return next(err);
 			}
 
-			var url = name + encodeURI(slug);
+			var url = nconf.get('relative_path') + name + encodeURI(slug);
 
 			if (res.locals.isAPI) {
 				res.status(302).json(url);
@@ -95,13 +95,10 @@ middleware.addSlug = function(req, res, next) {
 
 	if (!req.params.slug) {
 		if (req.params.category_id) {
-			redirect(categories.getCategoryField, req.params.category_id, '/category/');
+			return redirect(categories.getCategoryField, req.params.category_id, '/category/');
 		} else if (req.params.topic_id) {
-			redirect(topics.getTopicField, req.params.topic_id, '/topic/');
-		} else {
-			return next();
+			return redirect(topics.getTopicField, req.params.topic_id, '/topic/');
 		}
-		return;
 	}
 	next();
 };
