@@ -115,7 +115,7 @@ $(document).ready(function() {
 						ajaxify.variables.parse();
 
 						ajaxify.widgets.render(tpl_url, url, function() {
-							$(window).trigger('action:ajaxify.end', {url: url});
+							$(window).trigger('action:ajaxify.end', {url: url, tpl_url: tpl_url});
 						});
 
 						$(window).trigger('action:ajaxify.contentLoaded', {url: url});

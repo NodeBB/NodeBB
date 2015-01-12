@@ -239,11 +239,11 @@ var winston = require('winston'),
 				if (!exists) {
 					return next(new Error('[[error:no-topic]]'));
 				}
-				topics.isFollowing(tid, uid, next);
+				topics.isFollowing([tid], uid, next);
 			},
 			function (isFollowing, next) {
-				db[isFollowing ? 'setRemove' : 'setAdd']('tid:' + tid + ':followers', uid, function(err) {
-					next(err, !isFollowing);
+				db[isFollowing[0] ? 'setRemove' : 'setAdd']('tid:' + tid + ':followers', uid, function(err) {
+					next(err, !isFollowing[0]);
 				});
 			}
 		], callback);

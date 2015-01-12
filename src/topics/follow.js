@@ -14,11 +14,17 @@ var async = require('async'),
 module.exports = function(Topics) {
 
 
-	Topics.isFollowing = function(tid, uid, callback) {
-		if (!parseInt(uid, 10)) {
-			return callback(null, false);
+	Topics.isFollowing = function(tids, uid, callback) {
+		if (!Array.isArray(tids)) {
+			return callback();
 		}
-		db.isSetMember('tid:' + tid + ':followers', uid, callback);
+		if (!parseInt(uid, 10)) {
+			return callback(null, tids.map(function() { return false; }));
+		}
+		var keys = tids.map(function(tid) {
+			return 'tid:' + tid + ':followers';
+		})
+		db.isMemberOfSets(keys, uid, callback);
 	};
 
 	Topics.getFollowers = function(tid, callback) {

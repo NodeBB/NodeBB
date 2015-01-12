@@ -234,7 +234,7 @@ var async = require('async'),
 				category: async.apply(Topics.getCategoryData, tid),
 				threadTools: async.apply(plugins.fireHook, 'filter:topic.thread_tools', []),
 				tags: async.apply(Topics.getTopicTagsObjects, tid),
-				isFollowing: async.apply(Topics.isFollowing, tid, uid)
+				isFollowing: async.apply(Topics.isFollowing, [tid], uid)
 			}, function(err, results) {
 				if (err) {
 					return callback(err);
@@ -244,7 +244,7 @@ var async = require('async'),
 				topicData.category = results.category;
 				topicData.thread_tools = results.threadTools;
 				topicData.tags = results.tags;
-				topicData.isFollowing = results.isFollowing;
+				topicData.isFollowing = results.isFollowing[0];
 
 				topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
 				topicData.deleted = parseInt(topicData.deleted, 10) === 1;

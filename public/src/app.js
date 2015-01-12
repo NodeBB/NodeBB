@@ -539,7 +539,8 @@ app.uid = null;
 				ajaxify.widgets.render(tpl_url, url, function() {
 					app.processPage();
 					$window.trigger('action:ajaxify.end', {
-						url: url
+						url: url,
+						tpl_url: tpl_url
 					});
 				});
 			});
