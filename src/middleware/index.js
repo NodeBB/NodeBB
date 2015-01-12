@@ -68,10 +68,11 @@ module.exports = function(app) {
 
 	app.use(function (req, res, next) {
 		res.setHeader('X-Powered-By', 'NodeBB');
-		res.setHeader('X-Frame-Options', 'SAMEORIGIN');
 
 		if (meta.config['allow-from-uri']) {
-			res.setHeader('ALLOW-FROM', meta.config['allow-from-uri']);
+			res.setHeader('X-Frame-Options', 'ALLOW-FROM ' + meta.config['allow-from-uri']);
+		} else {
+			res.setHeader('X-Frame-Options', 'SAMEORIGIN');
 		}
 
 		next();
