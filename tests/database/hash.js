@@ -10,9 +10,17 @@ describe('Hash methods', function() {
 		age: 99
 	};
 
+	before(function(done) {
+		db.setObject('testObject1', testData, function(err) {
+			assert.equal(err, null);
+			assert.equal(arguments.length, 1);
+			done();
+		});
+	})
+
 	describe('setObject()', function() {
 		it('should create a object', function(done) {
-			db.setObject('testObject1', testData, function(err) {
+			db.setObject('testObject2', testData, function(err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
 				done();
