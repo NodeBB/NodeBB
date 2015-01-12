@@ -1,5 +1,5 @@
 "use strict";
-/* globals define, ajaxify, socket */
+/* globals app, define, ajaxify, socket, bootbox */
 
 define('forum/groups/list', function() {
 	var Groups = {};
@@ -17,6 +17,23 @@ define('forum/groups/list', function() {
 			}, function(err) {
 				if (!err) {
 					ajaxify.refresh();
+				}
+			});
+		});
+
+		// Group creation
+		$('button[data-action="new"]').on('click', function() {
+			bootbox.prompt('Group Name:', function(name) {
+				if (name && name.length) {
+					socket.emit('groups.create', {
+						name: name
+					}, function(err) {
+						if (!err) {
+							ajaxify.go('groups/' + name);
+						} else {
+							app.alertError(err.message);
+						}
+					});
 				}
 			});
 		});

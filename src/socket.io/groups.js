@@ -101,6 +101,17 @@ SocketGroups.update = function(socket, data, callback) {
 	});
 };
 
+SocketGroups.create = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	} else if (socket.uid === 0) {
+		return callback(new Error('[[error:no-privileges]]'));
+	}
+
+	data.ownerUid = socket.uid;
+	groups.create(data, callback);
+};
+
 SocketGroups.delete = function(socket, data, callback) {
 	if(!data) {
 		return callback(new Error('[[error:invalid-data]]'));

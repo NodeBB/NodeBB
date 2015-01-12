@@ -386,7 +386,7 @@ var async = require('async'),
 			var groupData = {
 					name: data.name,
 					userTitle: data.name,
-					description: data.description,
+					description: data.description || '',
 					deleted: '0',
 					hidden: '0',
 					system: system ? '1' : '0',

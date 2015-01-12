@@ -1,5 +1,5 @@
 "use strict";
-/* globals define, socket, ajaxify, app */
+/* globals define, socket, ajaxify, app, bootbox */
 
 define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker'], function(iconSelect) {
 	var Details = {};
@@ -36,6 +36,10 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker'],
 
 				case 'update':
 					Details.update();
+					break;
+
+				case 'delete':
+					Details.deleteGroup();
 					break;
 
 				case 'join':	// intentional fall-throughs!
@@ -118,9 +122,32 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker'],
 					} else {
 						ajaxify.refresh();
 					}
+
+					app.alertSuccess('[[groups:event.updated');
 				});
 			});
 		}
+	};
+
+	Details.deleteGroup = function() {
+		bootbox.confirm('Are you sure you want to delete the group: ' + ajaxify.variables.get('group_name'), function(confirm) {
+			if (confirm) {
+				bootbox.prompt('Please enter the name of this group in order to delete it:', function(response) {
+					if (response === ajaxify.variables.get('group_name')) {
+						socket.emit('groups.delete', {
+							groupName: ajaxify.variables.get('group_name')
+						}, function(err) {
+							if (!err) {
+								app.alertSuccess('[[groups:event.deleted, ' + ajaxify.variables.get('group_name') + ']]');
+								ajaxify.go('groups');
+							} else {
+								app.alertError(err.message);
+							}
+						});
+					}
+				});
+			}
+		});
 	};
 
 	return Details;

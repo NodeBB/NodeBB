@@ -2,6 +2,8 @@
 	"groups": "Groups",
 	"view_group": "View Group",
 	"owner": "Group Owner",
+	"new_group": "Create New Group",
+	"no_groups_found": "There are no groups to see",
 
 	"details.title": "Group Details",
 	"details.members": "Member List",
@@ -11,5 +13,8 @@
 	"details.private": "Private Group",
 	"details.public": "Public Group",
 
-	"details.owner_options": "Group Administration"
+	"details.owner_options": "Group Administration",
+
+	"event.updated": "Group details have been updated",
+	"event.deleted": "The group \"%1\" has been deleted"
 }
