@@ -445,7 +445,7 @@ middleware.addExpiresHeaders = function(req, res, next) {
 };
 
 middleware.maintenanceMode = function(req, res, next) {
-	if (meta.config.maintenanceMode !== '1') {
+	if (parseInt(meta.config.maintenanceMode, 10) !== 1) {
 		return next();
 	}
 
@@ -480,35 +480,35 @@ middleware.maintenanceMode = function(req, res, next) {
 					return true;
 				}
 			}
+			return false;
 		},
 		isApiRoute = /^\/api/;
 
-	if (!isAllowed(req.url)) {
-		if (!req.user) {
-			return render();
-		} else {
-			user.isAdministrator(req.user.uid, function(err, isAdmin) {
-				if (!isAdmin) {
-					return render();
-				} else {
-					return next();
-				}
-			});
-		}
-	} else {
+	if (isAllowed(req.url)) {
 		return next();
 	}
+
+	if (!req.user) {
+		return render();
+	}
+
+	user.isAdministrator(req.user.uid, function(err, isAdmin) {
+		if (err) {
+			return next(err);
+		}
+		if (!isAdmin) {
+			render();
+		} else {
+			next();
+		}
+	});
 };
 
 middleware.publicTagListing = function(req, res, next) {
-	if ((!meta.config.hasOwnProperty('publicTagListing') || parseInt(meta.config.publicTagListing, 10) === 1)) {
+	if (req.user || (!meta.config.hasOwnProperty('publicTagListing') || parseInt(meta.config.publicTagListing, 10) === 1)) {
 		next();
 	} else {
-		if (res.locals.isAPI) {
-			res.sendStatus(401);
-		} else {
-			middleware.ensureLoggedIn(req, res, next);
-		}
+		controllers.helpers.notAllowed(req, res);
 	}
 };
 
