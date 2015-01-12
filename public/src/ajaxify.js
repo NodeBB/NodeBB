@@ -53,8 +53,6 @@ $(document).ready(function() {
 
 			$(window).off('scroll');
 
-			$(window).trigger('action:ajaxify.start', {url: url});
-
 			if ($('#content').hasClass('ajaxifying') && apiXHR) {
 				apiXHR.abort();
 			}
@@ -63,6 +61,8 @@ $(document).ready(function() {
 			url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
 
 			var tpl_url = ajaxify.getTemplateMapping(url);
+
+			$(window).trigger('action:ajaxify.start', {url: url, tpl_url: tpl_url});
 
 			var hash = '';
 			if(ajaxify.initialLoad) {

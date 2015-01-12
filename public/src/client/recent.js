@@ -9,7 +9,7 @@ define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
 		newPostCount = 0;
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
-		if(data.url.indexOf('recent') !== 0) {
+		if (data.tpl_url !== 'recent') {
 			Recent.removeListeners();
 		}
 	});

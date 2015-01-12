@@ -105,7 +105,10 @@ define('forum/topic', [
 
 	function getPostIndex() {
 		var parts = window.location.pathname.split('/');
-		return parts[parts.length - 1] ? parseInt(parts[parts.length - 1], 10) : 0;
+		if (parts[parts.length - 1] && utils.isNumber(parts[parts.length - 1])) {
+			return parseInt(parts[parts.length - 1], 10)
+		}
+		return 0;
 	}
 
 	function addBlockQuoteHandler() {

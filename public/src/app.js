@@ -497,7 +497,8 @@ app.uid = null;
 
 
 			$window.trigger('action:ajaxify.start', {
-				url: url
+				url: url,
+				tpl_url: tpl_url
 			});
 
 			collapseNavigationOnClick();
