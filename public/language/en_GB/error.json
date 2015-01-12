@@ -59,7 +59,8 @@
 
 	"cant-ban-other-admins": "You can't ban other admins!",
 
-	"invalid-image-type": "Invalid image type",
+	"invalid-image-type": "Invalid image type. Allowed types are: %1",
+	"invalid-image-extension": "Invalid image extension",
 
 	"group-name-too-short": "Group name too short",
 	"group-already-exists": "Group already exists",
@@ -88,5 +89,6 @@
 
 	"reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading.",
 
-	"registration-error": "Registration Error"
+	"registration-error": "Registration Error",
+	"parse-error": "Something went wrong while parsing server response"
 }

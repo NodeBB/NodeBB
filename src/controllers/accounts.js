@@ -395,25 +395,19 @@ accountsController.uploadPicture = function (req, res, next) {
 
 	if (userPhoto.size > uploadSize * 1024) {
 		fs.unlink(userPhoto.path);
-		return res.json({
-			error: 'Images must be smaller than ' + uploadSize + ' kb!'
-		});
+		return next(new Error('[[error:file-too-big, ' + uploadSize + ']]'));
 	}
 
 	var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
 	if (allowedTypes.indexOf(userPhoto.type) === -1) {
 		fs.unlink(userPhoto.path);
-		return res.json({
-			error: 'Allowed image types are png, jpg and gif!'
-		});
+		return next(new Error('[[error:invalid-image-type, ' + allowedTypes.join(', ') + ']]'));
 	}
 
 	var extension = path.extname(userPhoto.name);
 	if (!extension) {
 		fs.unlink(userPhoto.path);
-		return res.json({
-			error: 'Error uploading file! Error : Invalid extension!'
-		});
+		return next(new Error('[[error:invalid-image-extension]]'));
 	}
 
 	var updateUid = req.user ? req.user.uid : 0;
@@ -465,7 +459,7 @@ accountsController.uploadPicture = function (req, res, next) {
 
 		if (err) {
 			fs.unlink(userPhoto.path);
-			return res.json({error:err.message});
+			return next(err);
 		}
 
 		if (plugins.hasListeners('filter:uploadImage')) {
@@ -476,6 +470,9 @@ accountsController.uploadPicture = function (req, res, next) {
 		var filename = updateUid + '-profileimg' + (convertToPNG ? '.png' : extension);
 
 		user.getUserField(updateUid, 'uploadedpicture', function (err, oldpicture) {
+			if (err) {
+				return next(err);
+			}
 			if (!oldpicture) {
 				file.saveFileToLocal(filename, 'profile', userPhoto.path, done);
 				return;

@@ -166,7 +166,7 @@ SocketUser.changePicture = function(socket, data, callback) {
 	} else if (type === 'uploaded') {
 		type = 'uploadedpicture';
 	} else {
-		return callback(new Error('[[error:invalid-image-type]]'));
+		return callback(new Error('[[error:invalid-image-type, ' + ['gravatar', 'uploadedpicture'].join(', ') + ']]'));
 	}
 
 	if (socket.uid === parseInt(data.uid, 10)) {

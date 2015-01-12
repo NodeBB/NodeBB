@@ -30,16 +30,16 @@ define('uploader', ['csrf'], function(csrf) {
 
 			function showAlert(type, message) {
 				module.hideAlerts();
-				uploadModal.find('#alert-' + type).text(message).removeClass('hide');
+				uploadModal.find('#alert-' + type).translateText(message).removeClass('hide');
 			}
 
-			showAlert('status', 'uploading the file ...');
+			showAlert('status', '[[uploads:uploading-file]]');
 
 			uploadModal.find('#upload-progress-bar').css('width', '0%');
 			uploadModal.find('#upload-progress-box').show().removeClass('hide');
 
 			if (!$('#userPhotoInput').val()) {
-				showAlert('error', 'select an image to upload!');
+				showAlert('error', '[[uploads:select-file-to-upload]]');
 				return false;
 			}
 
@@ -49,7 +49,7 @@ define('uploader', ['csrf'], function(csrf) {
 				},
 				error: function(xhr) {
 					xhr = maybeParse(xhr);
-					showAlert('error', 'Error: ' + xhr.status);
+					showAlert('error', xhr.responseJSON.error);
 				},
 
 				uploadProgress: function(event, position, total, percent) {
@@ -66,7 +66,7 @@ define('uploader', ['csrf'], function(csrf) {
 
 					callback(response[0].url);
 
-					showAlert('success', 'File uploaded successfully!');
+					showAlert('success', '[[uploads:upload-success]]');
 					setTimeout(function() {
 						module.hideAlerts();
 						uploadModal.modal('hide');
@@ -83,7 +83,7 @@ define('uploader', ['csrf'], function(csrf) {
 			try {
 				return $.parseJSON(response);
 			} catch (e) {
-				return {error: 'Something went wrong while parsing server response'};
+				return {error: '[[error:parse-error]]'};
 			}
 		}
 		return response;
