@@ -71,7 +71,7 @@
     "guest": "Anonym",
     "guests": "Anonyma",
     "updated.title": "Forum uppdaterades",
-    "updated.message": "Det här forumet har nu uppdaterats till senaste versionen. Klicka här för att åter hämta sidan.",
-    "privacy": "Privacy",
-    "delete_all": "Delete All"
+    "updated.message": "Det här forumet har nu uppdaterats till senaste versionen. Klicka här för att ladda om sidan.",
+    "privacy": "Integritet",
+    "delete_all": "Ta bort Alla"
 }
