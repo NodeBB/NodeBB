@@ -38,11 +38,15 @@ $(document).ready(function() {
 					app.previousUrl = url;
 					return ajaxify.go('login');
 				} else if (status === 302) {
-					if (!ajaxify.go(data.responseJSON.path, callback, quiet)) {
-						window.location.href = data.responseJSON.path;
+					if (data.responseJSON.path) {
+						if (!ajaxify.go(data.responseJSON.path, callback, quiet)) {
+							window.location.href = data.responseJSON.path;
+						}
+					} else if (data.responseJSON) {
+						ajaxify.go(data.responseJSON.slice(1), callback, quiet);
 					}
 				}
-			} else if (textStatus !== "abort") {
+			} else if (textStatus !== 'abort') {
 				app.alertError(data.responseJSON.error);
 			}
 		}

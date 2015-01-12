@@ -137,7 +137,7 @@ define('navigator', ['forum/pagination'], function(pagination) {
 		if ($('li[data-index="' + index + '"]').length) {
 			navigator.scrollToPost(index, true);
 		} else {
-			index = parseInt(index, 10) + 1;
+			index = parseInt(index, 10);
 			ajaxify.go(generateUrl(index));
 		}
 	};

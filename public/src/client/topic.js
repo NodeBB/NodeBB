@@ -76,9 +76,9 @@ define('forum/topic', [
 	Topic.toBottom = function() {
 		socket.emit('topics.postcount', ajaxify.variables.get('topic_id'), function(err, postCount) {
 			if (config.topicPostSort !== 'oldest_to_newest') {
-				postCount = 1;
+				postCount = 2;
 			}
-			navigator.scrollBottom(postCount - 1);
+			navigator.scrollBottom(postCount);
 		});
 	};
 
