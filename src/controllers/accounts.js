@@ -144,6 +144,10 @@ accountsController.getAccount = function(req, res, next) {
 			return helpers.notFound(req, res);
 		}
 
+		if (callerUID !== parseInt(userData.uid, 10)) {
+			user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
+		}
+
 		async.parallel({
 			isFollowing: function(next) {
 				user.isFollowing(callerUID, userData.theirid, next);
@@ -386,25 +390,27 @@ accountsController.accountSettings = function(req, res, next) {
 };
 
 accountsController.uploadPicture = function (req, res, next) {
+	var userPhoto = req.files.files[0];
 	var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
-	if (req.files.userPhoto.size > uploadSize * 1024) {
-		fs.unlink(req.files.userPhoto.path);
+
+	if (userPhoto.size > uploadSize * 1024) {
+		fs.unlink(userPhoto.path);
 		return res.json({
 			error: 'Images must be smaller than ' + uploadSize + ' kb!'
 		});
 	}
 
 	var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
-	if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
-		fs.unlink(req.files.userPhoto.path);
+	if (allowedTypes.indexOf(userPhoto.type) === -1) {
+		fs.unlink(userPhoto.path);
 		return res.json({
 			error: 'Allowed image types are png, jpg and gif!'
 		});
 	}
 
-	var extension = path.extname(req.files.userPhoto.name);
+	var extension = path.extname(userPhoto.name);
 	if (!extension) {
-		fs.unlink(req.files.userPhoto.path);
+		fs.unlink(userPhoto.path);
 		return res.json({
 			error: 'Error uploading file! Error : Invalid extension!'
 		});
@@ -415,11 +421,11 @@ accountsController.uploadPicture = function (req, res, next) {
 
 	async.waterfall([
 		function(next) {
-			image.resizeImage(req.files.userPhoto.path, extension, imageDimension, imageDimension, next);
+			image.resizeImage(userPhoto.path, extension, imageDimension, imageDimension, next);
 		},
 		function(next) {
 			if (parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1) {
-				image.convertImageToPng(req.files.userPhoto.path, extension, next);
+				image.convertImageToPng(userPhoto.path, extension, next);
 			} else {
 				next();
 			}
@@ -447,25 +453,23 @@ accountsController.uploadPicture = function (req, res, next) {
 	], function(err, result) {
 
 		function done(err, image) {
-			fs.unlink(req.files.userPhoto.path);
-			if(err) {
+			fs.unlink(userPhoto.path);
+			if (err) {
 				return res.json({error: err.message});
 			}
 
 			user.setUserFields(updateUid, {uploadedpicture: image.url, picture: image.url});
 
-			res.json({
-				path: image.url
-			});
+			res.json([{name: userPhoto.name, url: image.url}]);
 		}
 
 		if (err) {
-			fs.unlink(req.files.userPhoto.path);
+			fs.unlink(userPhoto.path);
 			return res.json({error:err.message});
 		}
 
 		if (plugins.hasListeners('filter:uploadImage')) {
-			return plugins.fireHook('filter:uploadImage', {image: req.files.userPhoto, uid: updateUid}, done);
+			return plugins.fireHook('filter:uploadImage', {image: userPhoto, uid: updateUid}, done);
 		}
 
 		var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1;
@@ -473,7 +477,7 @@ accountsController.uploadPicture = function (req, res, next) {
 
 		user.getUserField(updateUid, 'uploadedpicture', function (err, oldpicture) {
 			if (!oldpicture) {
-				file.saveFileToLocal(filename, 'profile', req.files.userPhoto.path, done);
+				file.saveFileToLocal(filename, 'profile', userPhoto.path, done);
 				return;
 			}
 
@@ -484,7 +488,7 @@ accountsController.uploadPicture = function (req, res, next) {
 					winston.err(err);
 				}
 
-				file.saveFileToLocal(filename, 'profile', req.files.userPhoto.path, done);
+				file.saveFileToLocal(filename, 'profile', userPhoto.path, done);
 			});
 		});
 	});

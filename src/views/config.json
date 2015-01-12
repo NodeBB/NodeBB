@@ -13,7 +13,7 @@
 		"^user/.*/favourites": "account/favourites",
 		"^user/.*/posts": "account/posts",
 		"^user/.*/topics": "account/topics",
-		"^user/.*": "account/profile",
+		"^user/[^\/]+": "account/profile",
 		"^reset/.*": "reset_code",
 		"^tags/.*": "tag",
 		"^groups/?$": "groups/list",

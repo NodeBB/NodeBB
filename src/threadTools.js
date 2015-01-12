@@ -73,31 +73,28 @@ var winston = require('winston'),
 	}
 
 	ThreadTools.purge = function(tid, uid, callback) {
-		ThreadTools.exists(tid, function(err, exists) {
-			if (err || !exists) {
-				return callback(err);
-			}
-
-			batch.processSortedSet('tid:' + tid + ':posts', function(pids, next) {
-				async.eachLimit(pids, 10, posts.purge, next);
-			}, {alwaysStartAt: 0}, function(err) {
-				if (err) {
-					return callback(err);
+		async.waterfall([
+			function(next) {
+				ThreadTools.exists(tid, next);
+			},
+			function(exists, next) {
+				if (!exists) {
+					return callback();
 				}
-
-				topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
-					if (err) {
-						return callback(err);
-					}
-					posts.purge(mainPid, function(err) {
-						if (err) {
-							return callback(err);
-						}
-						topics.purge(tid, callback);
-					});
-				});
-			});
-		});
+				batch.processSortedSet('tid:' + tid + ':posts', function(pids, next) {
+					async.eachLimit(pids, 10, posts.purge, next);
+				}, {alwaysStartAt: 0}, next);
+			},
+			function(next) {
+				topics.getTopicField(tid, 'mainPid', next);
+			},
+			function(mainPid, next) {
+				posts.purge(mainPid, next);
+			},
+			function(next) {
+				topics.purge(tid, next);
+			}
+		], callback);
 	};
 
 	ThreadTools.lock = function(tid, uid, callback) {

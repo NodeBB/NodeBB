@@ -6,128 +6,33 @@ var path = require('path'),
 	nconf = require('nconf'),
 	express = require('express'),
 
-	user = require('../user'),
-	topics = require('../topics'),
 	posts = require('../posts'),
 	categories = require('../categories'),
-	meta = require('../meta'),
 	plugins = require('../plugins'),
 	utils = require('../../public/src/utils'),
-	image = require('../image'),
-	pkg = require('../../package.json');
+	uploadsController = require('../controllers/uploads');
 
 
-function deleteTempFiles(files) {
-	for(var i=0; i<files.length; ++i) {
-		fs.unlink(files[i].path);
-	}
-}
+module.exports =  function(app, middleware, controllers) {
 
-function upload(req, res, filesIterator, next) {
-	var files = req.files.files;
+	var router = express.Router();
+	app.use('/api', router);
 
-	if (!req.user) {
-		deleteTempFiles(files);
-		return res.status(403).json('not allowed');
-	}
+	router.get('/config', middleware.applyCSRF, controllers.api.getConfig);
+	router.get('/widgets/render', controllers.api.renderWidgets);
 
-	if (!Array.isArray(files)) {
-		return res.status(500).json('invalid files');
-	}
+	router.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
+	router.get('/get_templates_listing', getTemplatesListing);
+	router.get('/categories/:cid/moderators', getModerators);
+	router.get('/recent/posts/:term?', getRecentPosts);
 
-	if (Array.isArray(files[0])) {
-		files = files[0];
-	}
-
-	async.map(files, filesIterator, function(err, images) {
-		deleteTempFiles(files);
-
-		if (err) {
-			return res.status(500).send(err.message);
-		}
-
-		// IE8 - send it as text/html so browser won't trigger a file download for the json response
-		// malsup.com/jquery/form/#file-upload
-		res.status(200).send(req.xhr ? images : JSON.stringify(images));
-	});
-}
-
-function uploadPost(req, res, next) {
-	upload(req, res, function(file, next) {
-		if(file.type.match(/image./)) {
-			uploadImage(req.user.uid, file, next);
-		} else {
-			uploadFile(req.user.uid, file, next);
-		}
-	}, next);
-}
-
-function uploadThumb(req, res, next) {
-	if (parseInt(meta.config.allowTopicsThumbnail, 10) !== 1) {
-		deleteTempFiles(req.files.files);
-		return next(new Error('[[error:topic-thumbnails-are-disabled]]'));
-	}
-
-	upload(req, res, function(file, next) {
-		if(file.type.match(/image./)) {
-			var size = meta.config.topicThumbSize || 120;
-			image.resizeImage(file.path, path.extname(file.name), size, size, function(err) {
-				if (err) {
-					return next(err);
-				}
-				uploadImage(req.user.uid, file, next);
-			});
-		} else {
-			next(new Error('[[error:invalid-file]]'));
-		}
-	}, next);
-}
-
-
-function uploadImage(uid, image, callback) {
-	if (plugins.hasListeners('filter:uploadImage')) {
-		plugins.fireHook('filter:uploadImage', {image: image, uid: uid}, callback);
-	} else {
-
-		if (parseInt(meta.config.allowFileUploads, 10)) {
-			uploadFile(uid, image, callback);
-		} else {
-			callback(new Error('[[error:uploads-are-disabled]]'));
-		}
-	}
-}
-
-function uploadFile(uid, file, callback) {
-	if (plugins.hasListeners('filter:uploadFile')) {
-		plugins.fireHook('filter:uploadFile', {file: file, uid: uid}, callback);
-	} else {
-
-		if(parseInt(meta.config.allowFileUploads, 10) !== 1) {
-			return callback(new Error('[[error:uploads-are-disabled]]'));
-		}
-
-		if(!file) {
-			return callback(new Error('[[error:invalid-file]]'));
-		}
-
-		if(file.size > parseInt(meta.config.maximumFileSize, 10) * 1024) {
-			return callback(new Error('[[error:file-too-big, ' + meta.config.maximumFileSize + ']]'));
-		}
-
-		var filename = 'upload-' + utils.generateUUID() + path.extname(file.name);
-		require('../file').saveFileToLocal(filename, 'files', file.path, function(err, upload) {
-			if(err) {
-				return callback(err);
-			}
-
-			callback(null, {
-				url: upload.url,
-				name: file.name
-			});
-		});
-	}
-}
-
+	var multipart = require('connect-multiparty');
+	var multipartMiddleware = multipart();
+	var middlewares = [multipartMiddleware, middleware.validateFiles, middleware.applyCSRF];
+	router.post('/post/upload', middlewares, uploadsController.uploadPost);
+	router.post('/topic/thumb/upload', middlewares, uploadsController.uploadThumb);
+	router.post('/user/:userslug/uploadpicture', middlewares.concat([middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions]), controllers.accounts.uploadPicture);
+};
 
 function getModerators(req, res, next) {
 	categories.getModerators(req.params.cid, function(err, moderators) {
@@ -197,25 +102,3 @@ function getRecentPosts(req, res, next) {
 		res.json(data);
 	});
 }
-
-module.exports =  function(app, middleware, controllers) {
-
-	var router = express.Router();
-	app.use('/api', router);
-
-	router.get('/config', middleware.applyCSRF, controllers.api.getConfig);
-	router.get('/widgets/render', controllers.api.renderWidgets);
-
-	router.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
-	router.get('/get_templates_listing', getTemplatesListing);
-	router.get('/categories/:cid/moderators', getModerators);
-	router.get('/recent/posts/:term?', getRecentPosts);
-
-	var multipart = require('connect-multiparty');
-	var multipartMiddleware = multipart();
-
-	router.post('/post/upload', multipartMiddleware, middleware.applyCSRF, uploadPost);
-	router.post('/topic/thumb/upload', multipartMiddleware, middleware.applyCSRF, uploadThumb);
-	router.post('/user/:userslug/uploadpicture', multipartMiddleware, middleware.applyCSRF, middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.uploadPicture);
-
-};

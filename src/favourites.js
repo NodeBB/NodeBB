@@ -17,13 +17,9 @@ var async = require('async'),
 			return callback(new Error('[[error:not-logged-in]]'));
 		}
 
-		posts.getPostFields(pid, ['pid', 'uid', 'timestamp'], function (err, postData) {
+		posts.getPostFields(pid, ['pid', 'uid'], function (err, postData) {
 			if (err) {
 				return callback(err);
-			}
-
-			if (uid === parseInt(postData.uid, 10)) {
-				return callback(new Error('[[error:cant-vote-self-post]]'));
 			}
 
 			var now = Date.now();
@@ -167,12 +163,24 @@ var async = require('async'),
 	};
 
 	function unvote(pid, uid, command, callback) {
-		Favourites.hasVoted(pid, uid, function(err, voteStatus) {
+		async.parallel({
+			owner: function(next) {
+				posts.getPostField(pid, 'uid', next);
+			},
+			voteStatus: function(next) {
+				Favourites.hasVoted(pid, uid, next);
+			}
+		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			var hook,
+			if (parseInt(uid, 10) === parseInt(results.owner, 10)) {
+				return callback(new Error('[[error:cant-vote-self-post]]'));
+			}
+
+			var voteStatus = results.voteStatus,
+				hook,
 				current = voteStatus.upvoted ? 'upvote' : 'downvote';
 
 			if (voteStatus.upvoted && command === 'downvote' || voteStatus.downvoted && command === 'upvote') {

@@ -42,7 +42,7 @@ module.exports = function(User) {
 	}
 
 	User.deleteAccount = function(uid, callback) {
-		User.getUserFields(uid, ['username', 'userslug', 'email'], function(err, userData) {
+		User.getUserFields(uid, ['username', 'userslug', 'fullname', 'email'], function(err, userData) {
 			if (err)  {
 				return callback(err);
 			}
@@ -53,6 +53,9 @@ module.exports = function(User) {
 				},
 				function(next) {
 					db.deleteObjectField('userslug:uid', userData.userslug, next);
+				},
+				function(next) {
+					db.deleteObjectField('fullname:uid', userData.fullname, next);
 				},
 				function(next) {
 					if (userData.email) {

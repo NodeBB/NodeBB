@@ -113,6 +113,8 @@ module.exports = function(User) {
 					return updateEmail(uid, data.email, next);
 				} else if (field === 'username') {
 					return updateUsername(uid, data.username, next);
+				} else if (field === 'fullname') {
+					return updateFullname(uid, data.fullname, next);
 				} else if (field === 'signature') {
 					data[field] = S(data[field]).stripTags().s;
 				} else if (field === 'website') {
@@ -220,6 +222,30 @@ module.exports = function(User) {
 				}
 			], callback);
 		});
+	}
+
+	function updateFullname(uid, newFullname, callback) {
+		async.waterfall([
+			function(next) {
+				User.getUserField(uid, 'fullname', next);
+			},
+			function(fullname, next) {
+				if (newFullname === fullname) {
+					return callback();
+				}
+				db.deleteObjectField('fullname:uid', fullname, next);
+			},
+			function(next) {
+				User.setUserField(uid, 'fullname', newFullname, next);
+			},
+			function(next) {
+				if (newFullname) {
+					db.setObjectField('fullname:uid', newFullname, uid, next);
+				} else {
+					next();
+				}
+			}
+		], callback);
 	}
 
 	User.changePassword = function(uid, data, callback) {

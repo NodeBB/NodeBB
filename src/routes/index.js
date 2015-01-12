@@ -211,6 +211,10 @@ function handleErrors(app, middleware) {
 			return res.sendStatus(403);
 		}
 
+		if (parseInt(err.status, 10) === 302 && err.path) {
+			return res.locals.isAPI ? res.status(302).json(err) : res.redirect(err.path);
+		}
+
 		res.status(err.status || 500);
 
 		if (res.locals.isAPI) {

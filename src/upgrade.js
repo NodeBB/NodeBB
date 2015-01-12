@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 0, 8);
+	latestSchema = Date.UTC(2015, 0, 9);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -459,7 +459,7 @@ Upgrade.upgrade = function(callback) {
 
 				db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
 					if (err) {
-						winston.error('[2014/12/20] Error encountered while updating digest settings');
+						winston.error('[2015/01/08] Error encountered while Updating category topics sorted sets');
 						return next(err);
 					}
 
@@ -488,6 +488,41 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2015/01/08] Updating category topics sorted sets skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 0, 9);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2015/01/09] Creating fullname:uid hash');
+
+				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
+					if (err) {
+						winston.error('[2014/01/09] Error encountered while Creating fullname:uid hash');
+						return next(err);
+					}
+
+					var now = Date.now();
+
+					async.eachLimit(uids, 50, function(uid, next) {
+						db.getObjectFields('user:' + uid, ['fullname'], function(err, userData) {
+							if (err || !userData || !userData.fullname) {
+								return next(err);
+							}
+
+							db.setObjectField('fullname:uid', userData.fullname, uid, next);
+						});
+					}, function(err) {
+						if (err) {
+							winston.error('[2015/01/09] Error encountered while Creating fullname:uid hash');
+							return next(err);
+						}
+						winston.info('[2015/01/09] Creating fullname:uid hash done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2015/01/09] Creating fullname:uid hash skipped');
 				next();
 			}
 		}

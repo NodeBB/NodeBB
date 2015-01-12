@@ -218,14 +218,7 @@ module.exports = function(Topics) {
 	};
 
 	Topics.removePostFromTopic = function(tid, pid, callback) {
-		async.parallel([
-			function (next) {
-				db.sortedSetRemove('tid:' + tid + ':posts', pid, next);
-			},
-			function (next) {
-				db.sortedSetRemove('tid:' + tid + ':posts:votes', pid, next);
-			}
-		], function(err, results) {
+		db.sortedSetsRemove(['tid:' + tid + ':posts', 'tid:' + tid + ':posts:votes'], pid, function(err) {
 			if (err) {
 				return callback(err);
 			}
