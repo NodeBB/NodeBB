@@ -54,14 +54,6 @@ SocketUser.emailConfirm = function(socket, data, callback) {
 	}
 };
 
-SocketUser.increaseViewCount = function(socket, uid, callback) {
-	if (uid) {
-		if (socket.uid !== parseInt(uid, 10)) {
-			user.incrementUserFieldBy(uid, 'profileviews', 1, callback);
-		}
-	}
-};
-
 SocketUser.search = function(socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'))
@@ -69,7 +61,13 @@ SocketUser.search = function(socket, data, callback) {
 	if (!socket.uid) {
 		return callback(new Error('[[error:not-logged-in]]'));
 	}
-	user.search({query: data.query, by: data.by}, callback);
+	user.search({
+		query: data.query,
+		page: data.page,
+		searchBy: data.searchBy,
+		sortBy: data.sortBy,
+		filterBy: data.filterBy
+	}, callback);
 };
 
 // Password Reset

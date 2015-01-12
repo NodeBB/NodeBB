@@ -150,7 +150,7 @@ define('admin/manage/groups', [
 				var searchText = groupDetailsSearch.val(),
 					foundUser;
 
-				socket.emit('admin.user.search', {type: 'username', query:searchText}, function(err, results) {
+				socket.emit('admin.user.search', {query: searchText}, function(err, results) {
 					if (!err && results && results.users.length > 0) {
 						var numResults = results.users.length, x;
 						if (numResults > 4) {

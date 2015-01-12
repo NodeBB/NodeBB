@@ -4,6 +4,7 @@ var usersController = {};
 
 var async = require('async'),
 	user = require('../user'),
+	meta = require('../meta'),
 	db = require('../database');
 
 usersController.getOnlineUsers = function(req, res, next) {
@@ -59,25 +60,14 @@ usersController.getUsersSortedByJoinDate = function(req, res, next) {
 };
 
 function getUsers(set, res, next) {
-	async.parallel({
-		users: function(next) {
-			user.getUsersFromSet(set, 0, 49, next);
-		},
-		count: function(next) {
-			db.getObjectField('global', 'userCount', next);
-		}
-	}, function(err, results) {
+	getUsersAndCount(set, 50, function(err, data) {
 		if (err) {
 			return next(err);
 		}
-		results.users = results.users.filter(function(user) {
-			return user && parseInt(user.uid, 10);
-		});
-
 		var userData = {
 			search_display: 'hidden',
-			loadmore_display: results.count > 50 ? 'block' : 'hide',
-			users: results.users,
+			loadmore_display: data.count > 50 ? 'block' : 'hide',
+			users: data.users,
 			show_anon: 'hide'
 		};
 
@@ -85,15 +75,42 @@ function getUsers(set, res, next) {
 	});
 }
 
-usersController.getUsersForSearch = function(req, res, next) {
-	var data = {
-		search_display: 'block',
-		loadmore_display: 'hidden',
-		users: [],
-		show_anon: 'hide'
-	};
+function getUsersAndCount(set, count, callback) {
+	async.parallel({
+		users: function(next) {
+			user.getUsersFromSet(set, 0, count - 1, next);
+		},
+		count: function(next) {
+			db.getObjectField('global', 'userCount', next);
+		}
+	}, function(err, results) {
+		if (err) {
+			return callback(err);
+		}
+		results.users = results.users.filter(function(user) {
+			return user && parseInt(user.uid, 10);
+		});
 
-	res.render('users', data);
+		callback(null, {users: results.users, count: results.count});
+	});
+}
+
+usersController.getUsersForSearch = function(req, res, next) {
+	var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
+	getUsersAndCount('users:joindate', resultsPerPage, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		var result = {
+			search_display: 'block',
+			loadmore_display: 'hidden',
+			users: data.users,
+			show_anon: 'hide'
+		};
+
+		res.render('users', result);
+	});
 };
 
 

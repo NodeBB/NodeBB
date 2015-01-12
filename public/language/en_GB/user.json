@@ -2,6 +2,8 @@
 	"banned": "Banned",
 	"offline": "Offline",
 	"username": "User Name",
+	"joindate": "Join Date",
+	"postcount": "Post Count",
 
 	"email": "Email",
 	"confirm_email": "Confirm Email",

@@ -141,4 +141,17 @@
 	</div>
 </div>
 
+<div class="panel panel-default">
+	<div class="panel-heading">User Search</div>
+	<div class="panel-body">
+		<form>
+			<div class="form-group">
+				<label>Number of results to display</label>
+				<input type="text" class="form-control" value="24" data-field="userSearchResultsPerPage">
+			</div>
+
+		</form>
+	</div>
+</div>
+
 <!-- IMPORT admin/settings/footer.tpl -->

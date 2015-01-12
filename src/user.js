@@ -83,7 +83,6 @@ var	async = require('async'),
 	};
 
 	User.getUsersData = function(uids, callback) {
-
 		if (!Array.isArray(uids) || !uids.length) {
 			return callback(null, []);
 		}
@@ -237,8 +236,7 @@ var	async = require('async'),
 				if (!user) {
 					return;
 				}
-				user.status = !user.status ? 'online' : user.status;
-				user.status = !results.isOnline[index] ? 'offline' : user.status;
+				user.status = User.getStatus(user.status, results.isOnline[index]);
 				user.administrator = results.isAdmin[index];
 				user.banned = parseInt(user.banned, 10) === 1;
 				user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
@@ -246,6 +244,10 @@ var	async = require('async'),
 
 			callback(null, results.userData);
 		});
+	};
+
+	User.getStatus = function(status, isOnline) {
+		return isOnline ? (status || 'online') : 'offline';
 	};
 
 	User.createGravatarURLFromEmail = function(email) {

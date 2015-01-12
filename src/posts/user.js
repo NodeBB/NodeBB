@@ -32,7 +32,7 @@ module.exports = function(Posts) {
 			var userData = results.userData;
 			for(var i=0; i<userData.length; ++i) {
 				userData[i].groups = results.groups[i];
-				userData[i].status = results.online[i] ? (userData[i].status || 'online') : 'offline';
+				userData[i].status = user.getStatus(userData[i].status, results.online[i]);
 			}
 
 			async.map(userData, function(userData, next) {
