@@ -8,8 +8,7 @@ define('admin/manage/groups', [
 	var	Groups = {};
 
 	Groups.init = function() {
-		var yourid = ajaxify.variables.get('yourid'),
-			createModal = $('#create-modal'),
+		var	createModal = $('#create-modal'),
 			createGroupName = $('#create-group-name'),
 			createModalGo = $('#create-modal-go'),
 			createModalError = $('#create-modal-error'),
