@@ -20,6 +20,7 @@
 	"profile_views": "Profile views",
 	"reputation": "Reputation",
 	"favourites":"Favourites",
+	"watched": "Watched",
 	"followers": "Followers",
 	"following": "Following",
 	"signature": "Signature",
@@ -68,6 +69,7 @@
 	"follows_no_one": "This user isn't following anyone :(",
 	"has_no_posts": "This user didn't post anything yet.",
 	"has_no_topics": "This user didn't post any topics yet.",
+	"has_no_watched_topics": "This user didn't watch any topics yet.",
 
 	"email_hidden": "Email Hidden",
 	"hidden": "hidden",

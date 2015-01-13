@@ -76,7 +76,7 @@ module.exports = function(Topics) {
 		var postData;
 		async.waterfall([
 			function(next) {
-				threadTools.exists(tid, next);
+				Topics.exists(tid, next);
 			},
 			function(exists, next) {
 				if (!exists) {

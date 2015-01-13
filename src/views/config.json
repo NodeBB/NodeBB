@@ -11,6 +11,7 @@
 		"^user/.*/followers": "account/followers",
 		"^user/.*/settings": "account/settings",
 		"^user/.*/favourites": "account/favourites",
+		"^user/.*/watched": "account/watched",
 		"^user/.*/posts": "account/posts",
 		"^user/.*/topics": "account/topics",
 		"^user/[^\/]+": "account/profile",

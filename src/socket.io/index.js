@@ -214,7 +214,7 @@ function addRedisAdapter(io) {
 }
 
 function callMethod(method, socket, params, callback) {
-	method(socket, params || {}, function(err, result) {
+	method(socket, params, function(err, result) {
 		callback(err ? {message: err.message} : null, result);
 	});
 }

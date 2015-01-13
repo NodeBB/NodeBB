@@ -83,6 +83,7 @@ SocketModules.composer.editCheck = function(socket, pid, callback) {
 };
 
 SocketModules.composer.renderPreview = function(socket, content, callback) {
+	console.log(content);
 	plugins.fireHook('filter:parse.raw', content, callback);
 };
 

@@ -89,7 +89,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.yourid = callerUID;
 			userData.theirid = userData.uid;
 			userData.isSelf = self;
-			userData.showSettings = self || isAdmin;
+			userData.showHidden = self || isAdmin;
 			userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
 			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
@@ -192,7 +192,7 @@ accountsController.getFollowers = function(req, res, next) {
 	getFollow('account/followers', 'followers', req, res, next);
 };
 
-function getFollow(route, name, req, res, next) {
+function getFollow(tpl, name, req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 	var userData;
 
@@ -215,40 +215,28 @@ function getFollow(route, name, req, res, next) {
 		userData[name] = users;
 		userData[name + 'Count'] = users.length;
 
-		res.render(route, userData);
+		res.render(tpl, userData);
 	});
 }
 
 accountsController.getFavourites = function(req, res, next) {
-	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
-
-	getBaseUser(req.params.userslug, callerUID, function(err, userData) {
-		if (err) {
-			return next(err);
-		}
-
-		if (!userData) {
-			return helpers.notFound(req, res);
-		}
-
-		if (parseInt(userData.uid, 10) !== callerUID) {
-			return helpers.notAllowed(req, res);
-		}
-
-		posts.getPostsFromSet('uid:' + userData.uid + ':favourites', callerUID, 0, 9, function(err, favourites) {
-			if (err) {
-				return next(err);
-			}
-
-			userData.posts = favourites.posts;
-			userData.nextStart = favourites.nextStart;
-
-			res.render('account/favourites', userData);
-		});
-	});
+	getFromUserSet('account/favourites', 'favourites', posts.getPostsFromSet, 'posts', req, res, next);
 };
 
 accountsController.getPosts = function(req, res, next) {
+	getFromUserSet('account/posts', 'posts', posts.getPostsFromSet, 'posts', req, res, next);
+};
+
+accountsController.getWatchedTopics = function(req, res, next) {
+	getFromUserSet('account/watched', 'followed_tids', topics.getTopicsFromSet, 'topics', req, res, next);
+};
+
+accountsController.getTopics = function(req, res, next) {
+	getFromUserSet('account/topics', 'topics', topics.getTopicsFromSet, 'topics', req, res, next);
+};
+
+
+function getFromUserSet(tpl, set, method, type, req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
 	getBaseUser(req.params.userslug, callerUID, function(err, userData) {
@@ -259,44 +247,19 @@ accountsController.getPosts = function(req, res, next) {
 		if (!userData) {
 			return helpers.notFound(req, res);
 		}
-		posts.getPostsFromSet('uid:' + userData.uid + ':posts', callerUID, 0, 19, function(err, userPosts) {
+
+		method('uid:' + userData.uid + ':' + set, callerUID, 0, 19, function(err, data) {
 			if (err) {
 				return next(err);
 			}
 
-			userData.posts = userPosts.posts;
-			userData.nextStart = userPosts.nextStart;
+			userData[type] = data[type];
+			userData.nextStart = data.nextStart;
 
-			res.render('account/posts', userData);
+			res.render(tpl, userData);
 		});
 	});
-};
-
-accountsController.getTopics = function(req, res, next) {
-	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
-
-	getBaseUser(req.params.userslug, callerUID, function(err, userData) {
-		if (err) {
-			return next(err);
-		}
-
-		if (!userData) {
-			return helpers.notFound(req, res);
-		}
-
-		var set = 'uid:' + userData.uid + ':topics';
-		topics.getTopicsFromSet(set, callerUID, 0, 19, function(err, userTopics) {
-			if(err) {
-				return next(err);
-			}
-
-			userData.topics = userTopics.topics;
-			userData.nextStart = userTopics.nextStart;
-
-			res.render('account/topics', userData);
-		});
-	});
-};
+}
 
 function getBaseUser(userslug, callerUID, callback) {
 	user.getUidByUserslug(userslug, function (err, uid) {
@@ -326,7 +289,7 @@ function getBaseUser(userslug, callerUID, callback) {
 			results.user.yourid = callerUID;
 			results.user.theirid = uid;
 			results.user.isSelf = parseInt(callerUID, 10) === parseInt(uid, 10);
-			results.user.showSettings = results.user.isSelf || results.isAdmin;
+			results.user.showHidden = results.user.isSelf || results.isAdmin;
 			results.user.profile_links = results.profile_links;
 			callback(null, results.user);
 		});

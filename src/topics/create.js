@@ -148,7 +148,7 @@ module.exports = function(Topics) {
 								return next(err);
 							}
 							if (settings.followTopicsOnCreate) {
-								threadTools.follow(postData.tid, uid, next);
+								Topics.follow(postData.tid, uid, next);
 							} else {
 								next();
 							}
@@ -193,7 +193,7 @@ module.exports = function(Topics) {
 			function(next) {
 				async.parallel({
 					exists: function(next) {
-						threadTools.exists(tid, next);
+						Topics.exists(tid, next);
 					},
 					locked: function(next) {
 						Topics.isLocked(tid, next);
@@ -266,7 +266,7 @@ module.exports = function(Topics) {
 				}
 
 				if (results.settings.followTopicsOnReply) {
-					threadTools.follow(postData.tid, uid);
+					Topics.follow(postData.tid, uid);
 				}
 				postData.index = results.postIndex - 1;
 				postData.favourited = false;

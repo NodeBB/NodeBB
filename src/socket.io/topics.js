@@ -172,7 +172,7 @@ SocketTopics.markAsUnreadForAll = function(socket, tids, callback) {
 		async.each(tids, function(tid, next) {
 			async.waterfall([
 				function(next) {
-					threadTools.exists(tid, next);
+					topics.exists(tid, next);
 				},
 				function(exists, next) {
 					if (!exists) {
@@ -409,7 +409,7 @@ SocketTopics.follow = function(socket, tid, callback) {
 		return callback(new Error('[[error:not-logged-in]]'));
 	}
 
-	threadTools.toggleFollow(tid, socket.uid, callback);
+	topics.toggleFollow(tid, socket.uid, callback);
 };
 
 SocketTopics.loadMore = function(socket, data, callback) {

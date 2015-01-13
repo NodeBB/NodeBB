@@ -7,17 +7,10 @@ define('forum/account/header', function() {
 	};
 
 	function displayAccountMenus() {
-		var yourid = ajaxify.variables.get('yourid'),
-			theirid = ajaxify.variables.get('theirid');
-
-		if (parseInt(yourid, 10) !== 0 && parseInt(yourid, 10) === parseInt(theirid, 10)) {
-			$('#editLink, #settingsLink, #favouritesLink').removeClass('hide');
-		} else {
-			$('.account-sub-links .plugin-link').each(function() {
-				var $this = $(this);
-				$this.toggleClass('hide', $this.hasClass('private'));
-			});
-		}
+		$('.account-sub-links .plugin-link').each(function() {
+			var $this = $(this);
+			$this.toggleClass('hide', $this.hasClass('private'));
+		});
 	}
 
 	function selectActivePill() {

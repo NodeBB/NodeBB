@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 0, 9);
+	latestSchema = Date.UTC(2015, 0, 13);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -525,8 +525,48 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2015/01/09] Creating fullname:uid hash skipped');
 				next();
 			}
-		}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 0, 13);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2015/01/13] Creating uid:followed_tids sorted set');
 
+				db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
+					if (err) {
+						winston.error('[2014/01/13] Error encountered while Creating uid:followed_tids sorted set');
+						return next(err);
+					}
+
+					var now = Date.now();
+
+					async.eachLimit(tids, 50, function(tid, next) {
+						db.getSetMembers('tid:' + tid + ':followers', function(err, uids) {
+							if (err) {
+								return next(err);
+							}
+
+							async.eachLimit(uids, 50, function(uid, next) {
+								if (parseInt(uid, 10)) {
+									db.sortedSetAdd('uid:' + uid + ':followed_tids', now, tid, next);
+								} else {
+									next();
+								}
+							}, next);
+						});
+					}, function(err) {
+						if (err) {
+							winston.error('[2015/01/13] Error encountered while Creating uid:followed_tids sorted set');
+							return next(err);
+						}
+						winston.info('[2015/01/13] Creating uid:followed_tids sorted set done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2015/01/13] Creating uid:followed_tids sorted set skipped');
+				next();
+			}
+		}
 
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 22!!!

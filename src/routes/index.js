@@ -70,6 +70,7 @@ function accountRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/user/:userslug/topics', middleware, middlewares, controllers.accounts.getTopics);
 
 	setupPageRoute(app, '/user/:userslug/favourites', middleware, accountMiddlewares, controllers.accounts.getFavourites);
+	setupPageRoute(app, '/user/:userslug/watched', middleware, accountMiddlewares, controllers.accounts.getWatchedTopics);
 	setupPageRoute(app, '/user/:userslug/edit', middleware, accountMiddlewares, controllers.accounts.accountEdit);
 	setupPageRoute(app, '/user/:userslug/settings', middleware, accountMiddlewares, controllers.accounts.accountSettings);
 

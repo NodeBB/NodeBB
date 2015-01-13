@@ -19,10 +19,6 @@ var winston = require('winston'),
 
 (function(ThreadTools) {
 
-	ThreadTools.exists = function(tid, callback) {
-		db.isSortedSetMember('topics:tid', tid, callback);
-	};
-
 	ThreadTools.delete = function(tid, uid, callback) {
 		toggleDelete(tid, uid, true, callback);
 	};
@@ -75,7 +71,7 @@ var winston = require('winston'),
 	ThreadTools.purge = function(tid, uid, callback) {
 		async.waterfall([
 			function(next) {
-				ThreadTools.exists(tid, next);
+				topics.exists(tid, next);
 			},
 			function(exists, next) {
 				if (!exists) {
@@ -229,39 +225,5 @@ var winston = require('winston'),
 		});
 	};
 
-	ThreadTools.toggleFollow = function(tid, uid, callback) {
-		callback = callback || function() {};
-		async.waterfall([
-			function (next) {
-				ThreadTools.exists(tid, next);
-			},
-			function (exists, next) {
-				if (!exists) {
-					return next(new Error('[[error:no-topic]]'));
-				}
-				topics.isFollowing([tid], uid, next);
-			},
-			function (isFollowing, next) {
-				db[isFollowing[0] ? 'setRemove' : 'setAdd']('tid:' + tid + ':followers', uid, function(err) {
-					next(err, !isFollowing[0]);
-				});
-			}
-		], callback);
-	};
-
-	ThreadTools.follow = function(tid, uid, callback) {
-		callback = callback || function() {};
-		async.waterfall([
-			function (next) {
-				ThreadTools.exists(tid, next);
-			},
-			function (exists, next) {
-				if (!exists) {
-					return next(new Error('[[error:no-topic]]'));
-				}
-				db.setAdd('tid:' + tid + ':followers', uid, next);
-			}
-		], callback);
-	};
 
 }(exports));

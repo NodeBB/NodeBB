@@ -13,6 +13,68 @@ var async = require('async'),
 
 module.exports = function(Topics) {
 
+	Topics.toggleFollow = function(tid, uid, callback) {
+		callback = callback || function() {};
+		var isFollowing;
+		async.waterfall([
+			function (next) {
+				Topics.exists(tid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-topic]]'));
+				}
+				Topics.isFollowing([tid], uid, next);
+			},
+			function (_isFollowing, next) {
+				isFollowing = _isFollowing[0];
+				if (isFollowing) {
+					Topics.unfollow(tid, uid, next);
+				} else {
+					Topics.follow(tid, uid, next);
+				}
+			},
+			function(next) {
+				next(null, !isFollowing);
+			}
+		], callback);
+	};
+
+	Topics.follow = function(tid, uid, callback) {
+		callback = callback || function() {};
+		async.waterfall([
+			function (next) {
+				Topics.exists(tid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-topic]]'));
+				}
+				db.setAdd('tid:' + tid + ':followers', uid, next);
+			},
+			function(next) {
+				db.sortedSetAdd('uid:' + uid + ':followed_tids', Date.now(), tid, next);
+			}
+		], callback);
+	};
+
+	Topics.unfollow = function(tid, uid, callback) {
+		callback = callback || function() {};
+		async.waterfall([
+			function (next) {
+				Topics.exists(tid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-topic]]'));
+				}
+				db.setRemove('tid:' + tid + ':followers', uid, next);
+			},
+			function(next) {
+				db.sortedSetRemove('uid:' + uid + ':followed_tids', tid, next);
+			}
+		], callback);
+	};
 
 	Topics.isFollowing = function(tids, uid, callback) {
 		if (!Array.isArray(tids)) {
@@ -23,7 +85,7 @@ module.exports = function(Topics) {
 		}
 		var keys = tids.map(function(tid) {
 			return 'tid:' + tid + ':followers';
-		})
+		});
 		db.isMemberOfSets(keys, uid, callback);
 	};
 

@@ -26,6 +26,10 @@ var async = require('async'),
 	require('./topics/tags')(Topics);
 	require('./topics/teaser')(Topics);
 
+	Topics.exists = function(tid, callback) {
+		db.isSortedSetMember('topics:tid', tid, callback);
+	};
+
 	Topics.getTopicData = function(tid, callback) {
 		db.getObject('topic:' + tid, function(err, topic) {
 			if (err || !topic) {
