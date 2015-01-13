@@ -13,8 +13,7 @@ var async = require('async'),
 	posts = require('../posts'),
 	postTools = require('../postTools'),
 	topics = require('../topics'),
-	privileges = require('../privileges'),
-	utils = require('../../public/src/utils');
+	privileges = require('../privileges');
 
 (function(UserNotifications) {
 
