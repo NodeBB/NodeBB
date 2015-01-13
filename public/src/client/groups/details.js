@@ -96,19 +96,18 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 	};
 
 	Details.update = function() {
-		var settingsFormEl = $('.groups form');
+		var settingsFormEl = $('.groups form'),
+			checkboxes = settingsFormEl.find('input[type="checkbox"][name]');
 
 		if (settingsFormEl.length) {
 			require(['vendor/jquery/serializeObject/jquery.ba-serializeobject.min'], function() {
-				var settings = settingsFormEl.serializeObject(),
-					keys = Object.keys(settings),
-					inputEl;
+				var settings = settingsFormEl.serializeObject();
 
 				// Fix checkbox values
-				keys.forEach(function(key) {
-					inputEl = settingsFormEl.find('input[type="checkbox"][name="' + key + '"]');
+				checkboxes.each(function(idx, inputEl) {
+					inputEl = $(inputEl);
 					if (inputEl.length) {
-						settings[key] = settings[key] === 'on' ? true : false;
+						settings[inputEl.attr('name')] = inputEl.prop('checked');
 					}
 				});
 
@@ -126,7 +125,7 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 						ajaxify.refresh();
 					}
 
-					app.alertSuccess('[[groups:event.updated');
+					app.alertSuccess('[[groups:event.updated]]');
 				});
 			});
 		}
@@ -153,6 +152,8 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 		});
 	};
 
+	// Cover Photo Handling Code
+
 	Details.initialiseCover = function() {
 		var coverEl = $('.group-cover');
 		coverEl.find('.change').on('click', function() {
@@ -165,10 +166,8 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 		});
 
 		coverEl.find('.save').on('click', Details.cover.save);
-		coverEl.addClass('initialised')
+		coverEl.addClass('initialised');
 	};
-
-	// Cover Photo Handling Code
 
 	Details.cover.load = function() {
 		socket.emit('groups.cover.get', {
