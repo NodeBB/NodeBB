@@ -217,32 +217,41 @@ var	async = require('async'),
 	};
 
 	User.getUsers = function(uids, callback) {
-		async.parallel({
-			userData: function(next) {
-				User.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'postcount', 'reputation', 'email:confirmed'], next);
-			},
-			isAdmin: function(next) {
-				User.isAdministrator(uids, next);
-			},
-			isOnline: function(next) {
-				require('./socket.io').isUsersOnline(uids, next);
-			}
-		}, function(err, results) {
+		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'postcount', 'reputation', 'email:confirmed'];
+		plugins.fireHook('filter:users.addFields', {fields: fields}, function(err, data) {
 			if (err) {
 				return callback(err);
 			}
-
-			results.userData.forEach(function(user, index) {
-				if (!user) {
-					return;
-				}
-				user.status = User.getStatus(user.status, results.isOnline[index]);
-				user.administrator = results.isAdmin[index];
-				user.banned = parseInt(user.banned, 10) === 1;
-				user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
+			data.fields = data.fields.filter(function(field, index, array) {
+				return array.indexOf(field) === index;
 			});
+			async.parallel({
+				userData: function(next) {
+					User.getMultipleUserFields(uids, data.fields, next);
+				},
+				isAdmin: function(next) {
+					User.isAdministrator(uids, next);
+				},
+				isOnline: function(next) {
+					require('./socket.io').isUsersOnline(uids, next);
+				}
+			}, function(err, results) {
+				if (err) {
+					return callback(err);
+				}
 
-			callback(null, results.userData);
+				results.userData.forEach(function(user, index) {
+					if (!user) {
+						return;
+					}
+					user.status = User.getStatus(user.status, results.isOnline[index]);
+					user.administrator = results.isAdmin[index];
+					user.banned = parseInt(user.banned, 10) === 1;
+					user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
+				});
+
+				callback(null, results.userData);
+			});
 		});
 	};
 
