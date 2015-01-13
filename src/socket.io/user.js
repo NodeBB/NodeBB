@@ -329,27 +329,28 @@ SocketUser.loadMore = function(socket, data, callback) {
 		return callback(new Error('[[error:no-privileges]]'));
 	}
 
-	var start = data.after,
+	var start = parseInt(data.after, 10),
 		end = start + 19;
 
 	user.getUsersFromSet(data.set, start, end, function(err, userData) {
-		if(err) {
+		if (err) {
 			return callback(err);
 		}
 
 		user.isAdministrator(socket.uid, function (err, isAdministrator) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
-			if(!isAdministrator && data.set === 'users:online') {
+			if (!isAdministrator && data.set === 'users:online') {
 				userData = userData.filter(function(item) {
 					return item.status !== 'offline';
 				});
 			}
 
 			callback(null, {
-				users: userData
+				users: userData,
+				nextStart: end + 1
 			});
 		});
 	});

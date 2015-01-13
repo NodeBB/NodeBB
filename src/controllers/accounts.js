@@ -45,9 +45,6 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			isAdmin : function(next) {
 				user.isAdministrator(callerUID, next);
 			},
-			followStats: function(next) {
-				user.getFollowStats(uid, next);
-			},
 			ips: function(next) {
 				user.getIPs(uid, 4, next);
 			},
@@ -97,8 +94,8 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.status = websockets.isUserOnline(userData.uid) ? (userData.status || 'online') : 'offline';
 			userData.banned = parseInt(userData.banned, 10) === 1;
 			userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
-			userData.followingCount = results.followStats.followingCount;
-			userData.followerCount = results.followStats.followerCount;
+			userData.followingCount = parseInt(userData.followingCount, 10) || 0;
+			userData.followerCount = parseInt(userData.followerCount, 10) || 0;
 
 			callback(null, userData);
 		});
@@ -206,14 +203,15 @@ function getFollow(tpl, name, req, res, next) {
 				return helpers.notFound(req, res);
 			}
 			var method = name === 'following' ? 'getFollowing' : 'getFollowers';
-			user[method](userData.uid, next);
+			user[method](userData.uid, 0, 49, next);
 		}
 	], function(err, users) {
 		if(err) {
 			return next(err);
 		}
-		userData[name] = users;
-		userData[name + 'Count'] = users.length;
+
+		userData.users = users;
+		userData.nextStart = 50;
 
 		res.render(tpl, userData);
 	});

@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 0, 13);
+	latestSchema = Date.UTC(2015, 0, 14);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -564,6 +564,70 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2015/01/13] Creating uid:followed_tids sorted set skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 0, 14);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2015/01/14] Upgrading follow sets to sorted sets');
+
+				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
+					if (err) {
+						winston.error('[2014/01/14] Error encountered while Upgrading follow sets to sorted sets');
+						return next(err);
+					}
+
+					var now = Date.now();
+
+					async.eachLimit(uids, 50, function(uid, next) {
+						async.parallel({
+							following: function(next) {
+								db.getSetMembers('following:' + uid, next);
+							},
+							followers: function(next) {
+								db.getSetMembers('followers:' + uid, next);
+							}
+						}, function(err, results) {
+							function updateToSortedSet(set, uids, callback) {
+								async.eachLimit(uids, 50, function(uid, next) {
+									if (parseInt(uid, 10)) {
+										db.sortedSetAdd(set, now, uid, next);
+									} else {
+										next();
+									}
+								}, callback);
+							}
+							if (err) {
+								return next(err);
+							}
+
+							async.parallel([
+								async.apply(db.delete, 'following:' + uid),
+								async.apply(db.delete, 'followers:' + uid)
+							], function(err) {
+								if (err) {
+									return next(err);
+								}
+								async.parallel([
+									async.apply(updateToSortedSet, 'following:' + uid, results.following),
+									async.apply(updateToSortedSet, 'followers:' + uid, results.followers),
+									async.apply(db.setObjectField, 'user:' + uid, 'followingCount', results.following.length),
+									async.apply(db.setObjectField, 'user:' + uid, 'followerCount', results.followers.length),
+								], next);
+							});
+						});
+					}, function(err) {
+						if (err) {
+							winston.error('[2015/01/14] Error encountered while Upgrading follow sets to sorted sets');
+							return next(err);
+						}
+						winston.info('[2015/01/14] Upgrading follow sets to sorted sets done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2015/01/14] Upgrading follow sets to sorted sets skipped');
 				next();
 			}
 		}
