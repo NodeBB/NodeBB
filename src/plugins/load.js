@@ -209,9 +209,14 @@ module.exports = function(Plugins) {
 				var pluginData = JSON.parse(results.plugin);
 				var packageData = JSON.parse(results.package);
 
-				var obj = utils.merge(pluginData, packageData);
-				obj.id = packageData.name;
-				callback(null, obj);
+				pluginData.id = packageData.name;
+				pluginData.name = packageData.name;
+				pluginData.description = packageData.description;
+				pluginData.version = packageData.version;
+				pluginData.repository = packageData.repository;
+				pluginData.nbbpm = packageData.nbbpm;
+
+				callback(null, pluginData);
 			} catch(err) {
 				var pluginDir = pluginPath.split(path.sep);
 				pluginDir = pluginDir[pluginDir.length -1];
