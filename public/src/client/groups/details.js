@@ -157,7 +157,9 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 		var coverEl = $('.group-cover');
 		coverEl.find('.change').on('click', function() {
 			coverEl.toggleClass('active', 1);
-			coverEl.backgroundDraggable();
+			coverEl.backgroundDraggable({
+				axis: 'y'
+			});
 			coverEl.on('dragover', Details.cover.onDragOver);
 			coverEl.on('drop', Details.cover.onDrop);
 		});
@@ -168,11 +170,13 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 	// Cover Photo Handling Code
 
 	Details.cover.load = function() {
-		socket.emit('groups.cover.get', function(err, data) {
+		socket.emit('groups.cover.get', {
+			groupName: ajaxify.variables.get('group_name')
+		}, function(err, data) {
 			if (!err) {
 				var coverEl = $('.group-cover');
 				if (data['cover:url']) {
-					coverEl.css('background-image', 'url(' + RELATIVE_PATH + '/theme-rocket/cover/' + data['cover:url'] + ')');
+					coverEl.css('background-image', 'url(' + data['cover:url'] + ')');
 				}
 
 				if (data['cover:position']) {
