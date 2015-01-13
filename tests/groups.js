@@ -13,14 +13,17 @@ describe('Groups', function() {
 		async.parallel([
 			function(next) {
 				// Create a group to play around with
-				Groups.create('Test', 'Foobar!', next);
+				Groups.create({
+					name: 'Test',
+					description: 'Foobar!'
+				}, next);
 			},
 			function(next) {
 				// Create a new user
 				User.create({
 					username: 'testuser',
 					email: 'b@c.com'
-				}, done);
+				}, next);
 			},
 			function(next) {
 				// Also create a hidden group
@@ -166,7 +169,10 @@ describe('Groups', function() {
 
 	describe('.create()', function() {
 		it('should create another group', function(done) {
-			Groups.create('foo', 'bar', function(err) {
+			Groups.create({
+				name: 'foo',
+				description: 'bar'
+			}, function(err) {
 				if (err) return done(err);
 
 				Groups.get('foo', {}, done);
