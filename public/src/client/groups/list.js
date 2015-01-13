@@ -7,18 +7,10 @@ define('forum/groups/list', function() {
 	Groups.init = function() {
 		var groupsEl = $('.groups.row');
 
-		// Group joining and leaving
-		groupsEl.on('click', '[data-action]', function() {
-			var action = $(this).attr('data-action'),
-				groupName = $(this).parents('[data-group]').attr('data-group');
+		groupsEl.on('click', '.list-cover', function() {
+			var groupName = $(this).parents('[data-group]').attr('data-group');
 
-			socket.emit('groups.' + action, {
-				groupName: groupName
-			}, function(err) {
-				if (!err) {
-					ajaxify.refresh();
-				}
-			});
+			ajaxify.go('groups/' + groupName);
 		});
 
 		// Group creation
