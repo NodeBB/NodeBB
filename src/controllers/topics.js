@@ -11,6 +11,7 @@ var topicsController = {},
 	topics = require('../topics'),
 	posts = require('../posts'),
 	privileges = require('../privileges'),
+	plugins = require('../plugins'),
 	helpers = require('./helpers'),
 	utils = require('../../public/src/utils');
 
@@ -120,7 +121,9 @@ topicsController.get = function(req, res, next) {
 					topicData.posts.splice(0, 1);
 				}
 
-				next(null, topicData);
+				plugins.fireHook('filter:controllers.topic.get', topicData, function(err, topicData) {
+					next(null, topicData);
+				});
 			});
 		},
 		function (topicData, next) {
