@@ -196,7 +196,12 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			// results.base.image = internals.fixImageUrl(results.base.image);
+			// Default image
+			if (!results.base['cover:url']) {
+				results.base['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';
+				results.base['cover:position'] = '50% 50%';
+			}
+
 			results.base.members = results.users.filter(Boolean);
 			results.base.pending = results.pending.filter(Boolean);
 			results.base.count = numUsers || results.base.members.length;
