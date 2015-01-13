@@ -126,4 +126,26 @@ SocketGroups.delete = function(socket, data, callback) {
 	});
 };
 
+SocketGroups.cover = {};
+
+SocketGroups.cover.get = function(socket, data, callback) {
+	groups.getGroupFields(data.groupName, ['cover:url', 'cover:position'], callback);
+};
+
+SocketGroups.cover.update = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	} else if (socket.uid === 0) {
+		return callback(new Error('[[error:no-privileges]]'));
+	}
+
+	groups.ownership.isOwner(socket.uid, data.groupName, function(err, isOwner) {
+		if (!isOwner) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+
+		groups.updateCover(data, callback);
+	});
+};
+
 module.exports = SocketGroups;

@@ -5,6 +5,11 @@
 	"new_group": "Create New Group",
 	"no_groups_found": "There are no groups to see",
 
+	"cover-instructions": "Drag and Drop a photo, drag to position, and hit <strong>Save</strong>",
+	"cover-change": "Change",
+	"cover-save": "Save",
+	"cover-saving": "Saving",
+
 	"details.title": "Group Details",
 	"details.members": "Member List",
 	"details.pending": "Pending Members",

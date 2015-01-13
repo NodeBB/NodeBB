@@ -3,14 +3,20 @@
 var async = require('async'),
 	winston = require('winston'),
 	_ = require('underscore'),
+	crypto = require('crypto'),
+	path = require('path'),
+	nconf = require('nconf'),
+	fs = require('fs'),
+
 	user = require('./user'),
 	meta = require('./meta'),
 	db = require('./database'),
 	plugins = require('./plugins'),
 	posts = require('./posts'),
 	privileges = require('./privileges'),
-	utils = require('../public/src/utils');
+	utils = require('../public/src/utils'),
 
+	uploadsController = require('./controllers/uploads');
 
 (function(Groups) {
 
@@ -60,7 +66,12 @@ var async = require('async'),
 				}
 
 				return groups;
-			}
+			}/*,
+			fixImageUrl: function(url) {
+				if (url) {
+					return url.indexOf('http') === -1 ? nconf.get('relative_path') + url : url;
+				}
+			}*/
 		};
 
 	Groups.list = function(options, callback) {
@@ -185,6 +196,7 @@ var async = require('async'),
 				return callback(err);
 			}
 
+			// results.base.image = internals.fixImageUrl(results.base.image);
 			results.base.members = results.users.filter(Boolean);
 			results.base.pending = results.pending.filter(Boolean);
 			results.base.count = numUsers || results.base.members.length;
@@ -201,6 +213,15 @@ var async = require('async'),
 
 			callback(err, results.base);
 		});
+	};
+
+	Groups.getGroupFields = function(groupName, fields, callback) {
+		db.getObjectFields('group:' + groupName, fields, callback);
+	};
+
+	Groups.setGroupField = function(groupName, field, value, callback) {
+		plugins.fireHook('action:group.set', {field: field, value: value, type: 'set'});
+		db.setObjectField('group:' + groupName, field, value, callback);
 	};
 
 	Groups.isPrivate = function(groupName, callback) {
@@ -687,6 +708,63 @@ var async = require('async'),
 			});
 		});
 	};
+
+	Groups.updateCoverPosition = function(groupName, position, callback) {
+		Groups.setGroupField(groupName, 'cover:position', position, callback);
+	};
+
+	Groups.updateCover = function(data, callback) {
+		var tempPath, md5sum, url;
+
+		// Position only? That's fine
+		if (!data.imageData && data.position) {
+			return Groups.updateCoverPosition(data.groupName, data.position, callback);
+		}
+
+		async.series([
+			function(next) {
+				// Calculate md5sum of image
+				// This is required because user data can be private
+				md5sum = crypto.createHash('md5');
+				md5sum.update(data.imageData);
+				md5sum = md5sum.digest('hex');
+				next();
+			},
+			function(next) {
+				// Save image
+				tempPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), md5sum);
+				var buffer = new Buffer(data.imageData.slice(data.imageData.indexOf('base64') + 7), 'base64');
+
+				fs.writeFile(tempPath, buffer, {
+					encoding: 'base64'
+				}, next);
+			},
+			function(next) {
+				uploadsController.uploadGroupCover({
+					path: tempPath
+				}, function(err, uploadData) {
+					if (err) {
+						return next(err);
+					}
+
+					url = uploadData.url;
+					next();
+				});
+			},
+			function(next) {
+				Groups.setGroupField(data.groupName, 'cover:url', url, next);
+			},
+			function(next) {
+				fs.unlink(tempPath, next);	// Delete temporary file
+			}
+		], function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			Groups.updateCoverPosition(data.groupName, data.position, callback);
+		});
+	}
 
 	Groups.ownership = {};
 
