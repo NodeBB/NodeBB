@@ -237,6 +237,9 @@ adminController.extend.widgets = function(req, res, next) {
 				{ name: 'Global Sidebar', template: 'global', location: 'sidebar' },
 				{ name: 'Global Header', template: 'global', location: 'header' },
 				{ name: 'Global Footer', template: 'global', location: 'footer' },
+
+				{ name: 'Group Page (Left)', template: 'groups/details.tpl', location: 'left'},
+				{ name: 'Group Page (Right)', template: 'groups/details.tpl', location: 'right'}
 			];
 
 			plugins.fireHook('filter:widgets.getAreas', defaultAreas, next);

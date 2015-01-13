@@ -72,6 +72,10 @@ uploadsController.uploadThumb = function(req, res, next) {
 	}, next);
 };
 
+uploadsController.uploadGroupCover = function(data, next) {
+	uploadImage(0/*req.user.uid*/, data, next);
+};
+
 function uploadImage(uid, image, callback) {
 	if (plugins.hasListeners('filter:uploadImage')) {
 		return plugins.fireHook('filter:uploadImage', {image: image, uid: uid}, callback);

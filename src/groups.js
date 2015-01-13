@@ -3,14 +3,20 @@
 var async = require('async'),
 	winston = require('winston'),
 	_ = require('underscore'),
+	crypto = require('crypto'),
+	path = require('path'),
+	nconf = require('nconf'),
+	fs = require('fs'),
+
 	user = require('./user'),
 	meta = require('./meta'),
 	db = require('./database'),
 	plugins = require('./plugins'),
 	posts = require('./posts'),
 	privileges = require('./privileges'),
-	utils = require('../public/src/utils');
+	utils = require('../public/src/utils'),
 
+	uploadsController = require('./controllers/uploads');
 
 (function(Groups) {
 
@@ -60,7 +66,12 @@ var async = require('async'),
 				}
 
 				return groups;
-			}
+			}/*,
+			fixImageUrl: function(url) {
+				if (url) {
+					return url.indexOf('http') === -1 ? nconf.get('relative_path') + url : url;
+				}
+			}*/
 		};
 
 	Groups.list = function(options, callback) {
@@ -105,10 +116,79 @@ var async = require('async'),
 					}
 
 					if (options.expand) {
+						async.waterfall([
+							async.apply(async.map, uids, user.getUserData),
+							function(users, next) {
+								// Filter out non-matches
+								users = users.filter(Boolean);
+
+								async.mapLimit(users, 10, function(userObj, next) {
+									Groups.ownership.isOwner(userObj.uid, groupName, function(err, isOwner) {
+										if (err) {
+											winston.warn('[groups.get] Could not determine ownership in group `' + groupName + '` for uid `' + userObj.uid + '`: ' + err.message);
+											return next(null, userObj);
+										}
+
+										userObj.isOwner = isOwner;
+										next(null, userObj);
+									});
+								}, next);
+							}
+						], next);
+					} else {
+						next(err, uids);
+					}
+				});
+			},
+			pending: function (next) {
+				db.getSetMembers('group:' + groupName + ':pending', function (err, uids) {
+					if (err) {
+						return next(err);
+					}
+
+					if (options.expand) {
 						async.map(uids, user.getUserData, next);
 					} else {
 						next(err, uids);
 					}
+				});
+			},
+			isMember: function(next) {
+				// Retrieve group membership state, if uid is passed in
+				if (!options.uid) {
+					return next();
+				}
+
+				Groups.isMember(options.uid, groupName, function(err, isMember) {
+					if (err) {
+						winston.warn('[groups.get] Could not determine membership in group `' + groupName + '` for uid `' + options.uid + '`: ' + err.message);
+						return next();
+					}
+
+					next(null, isMember);
+				});
+			},
+			isPending: function(next) {
+				// Retrieve group membership state, if uid is passed in
+				if (!options.uid) {
+					return next();
+				}
+
+				db.isSetMember('group:' + groupName + ':pending', options.uid, next);
+			},
+			isOwner: function(next) {
+				// Retrieve group ownership state, if uid is passed in
+				if (!options.uid) {
+					return next();
+				}
+
+				Groups.ownership.isOwner(options.uid, groupName, function(err, isOwner) {
+					if (err) {
+						winston.warn('[groups.get] Could not determine ownership in group `' + groupName + '` for uid `' + options.uid + '`: ' + err.message);
+						return next();
+					}
+
+					next(null, isOwner);
 				});
 			}
 		}, function (err, results) {
@@ -116,20 +196,48 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			results.base.members = results.users.filter(function(user) {
-				return typeof user !== 'undefined';
-			});
+			// Default image
+			if (!results.base['cover:url']) {
+				results.base['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';
+				results.base['cover:position'] = '50% 50%';
+			}
 
+			results.base.members = results.users.filter(Boolean);
+			results.base.pending = results.pending.filter(Boolean);
 			results.base.count = numUsers || results.base.members.length;
 			results.base.memberCount = numUsers || results.base.members.length;
-
 			results.base.deleted = !!parseInt(results.base.deleted, 10);
 			results.base.hidden = !!parseInt(results.base.hidden, 10);
 			results.base.system = !!parseInt(results.base.system, 10);
+			results.base.private = results.base.private ? !!parseInt(results.base.private, 10) : true;
 			results.base.deletable = !results.base.system;
 			results.base.truncated = truncated;
+			results.base.isMember = results.isMember;
+			results.base.isPending = results.isPending;
+			results.base.isOwner = results.isOwner;
 
 			callback(err, results.base);
+		});
+	};
+
+	Groups.getGroupFields = function(groupName, fields, callback) {
+		db.getObjectFields('group:' + groupName, fields, callback);
+	};
+
+	Groups.setGroupField = function(groupName, field, value, callback) {
+		plugins.fireHook('action:group.set', {field: field, value: value, type: 'set'});
+		db.setObjectField('group:' + groupName, field, value, callback);
+	};
+
+	Groups.isPrivate = function(groupName, callback) {
+		db.getObjectField('group:' + groupName, 'private', function(err, isPrivate) {
+			isPrivate = isPrivate || isPrivate === null;
+
+			if (typeof isPrivate === 'string') {
+				isPrivate = (isPrivate === '0' ? false : true);
+			}
+
+			callback(err, isPrivate);	// Private, if not set at all
 		});
 	};
 
@@ -283,16 +391,16 @@ var async = require('async'),
 		}
 	};
 
-	Groups.create = function(name, description, callback) {
-		if (name.length === 0) {
+	Groups.create = function(data, callback) {
+		if (data.name.length === 0) {
 			return callback(new Error('[[error:group-name-too-short]]'));
 		}
 
-		if (name === 'administrators' || name === 'registered-users') {
+		if (data.name === 'administrators' || data.name === 'registered-users') {
 			var system = true;
 		}
 
-		meta.userOrGroupExists(name, function (err, exists) {
+		meta.userOrGroupExists(data.name, function (err, exists) {
 			if (err) {
 				return callback(err);
 			}
@@ -302,24 +410,25 @@ var async = require('async'),
 			}
 
 			var groupData = {
-				name: name,
-				userTitle: name,
-				description: description,
-				deleted: '0',
-				hidden: '0',
-				system: system ? '1' : '0'
-			};
-
-			async.parallel([
-				function(next) {
-					db.setAdd('groups', name, next);
+					name: data.name,
+					userTitle: data.name,
+					description: data.description || '',
+					deleted: '0',
+					hidden: '0',
+					system: system ? '1' : '0',
+					'private': data.private || '1'
 				},
-				function(next) {
-					db.setObject('group:' + name, groupData, function(err) {
-						Groups.get(name, {}, next);
-					});
-				}
-			], callback);
+				tasks = [
+					async.apply(db.setAdd, 'groups', data.name),
+					async.apply(db.setObject, 'group:' + data.name, groupData)
+				];
+
+			if (data.hasOwnProperty('ownerUid')) {
+				tasks.push(async.apply(db.setAdd, 'group:' + data.name + ':owners', data.ownerUid));
+				tasks.push(async.apply(db.setAdd, 'group:' + data.name + ':members', data.ownerUid));
+			}
+
+			async.parallel(tasks, callback);
 		});
 	};
 
@@ -340,7 +449,8 @@ var async = require('async'),
 				description: values.description || '',
 				icon: values.icon || '',
 				labelColor: values.labelColor || '#000000',
-				hidden: values.hidden || '0'
+				hidden: values.hidden || '0',
+				'private': values.private === false ? '0' : '1'
 			}, function(err) {
 				if (err) {
 					return callback(err);
@@ -425,15 +535,11 @@ var async = require('async'),
 
 	Groups.destroy = function(groupName, callback) {
 		async.parallel([
-			function(next) {
-				db.delete('group:' + groupName, next);
-			},
-			function(next) {
-				db.setRemove('groups', groupName, next);
-			},
-			function(next) {
-				db.delete('group:' + groupName + ':members', next);
-			},
+			async.apply(db.delete, 'group:' + groupName),
+			async.apply(db.setRemove, 'groups', groupName),
+			async.apply(db.delete, 'group:' + groupName + ':members'),
+			async.apply(db.delete, 'group:' + groupName + ':pending'),
+			async.apply(db.delete, 'group:' + groupName + ':owners'),
 			function(next) {
 				db.getSetMembers('groups', function(err, groups) {
 					if (err) {
@@ -458,7 +564,10 @@ var async = require('async'),
 					uid: uid
 				});
 			} else {
-				Groups.create(groupName, '', function(err) {
+				Groups.create({
+					name: groupName,
+					description: ''
+				}, function(err) {
 					if (err && err.message !== '[[error:group-already-exists]]') {
 						winston.error('[groups.join] Could not create new hidden group: ' + err.message);
 						return callback(err);
@@ -473,6 +582,25 @@ var async = require('async'),
 				});
 			}
 		});
+	};
+
+	Groups.requestMembership = function(groupName, uid, callback) {
+		db.setAdd('group:' + groupName + ':pending', uid, callback);
+		plugins.fireHook('action:groups.requestMembership', {
+			groupName: groupName,
+			uid: uid
+		});
+	};
+
+	Groups.acceptMembership = function(groupName, uid, callback) {
+		// Note: For simplicity, this method intentially doesn't check the caller uid for ownership!
+		db.setRemove('group:' + groupName + ':pending', uid, callback);
+		Groups.join.apply(Groups, arguments);
+	};
+
+	Groups.rejectMembership = function(groupName, uid, callback) {
+		// Note: For simplicity, this method intentially doesn't check the caller uid for ownership!
+		db.setRemove('group:' + groupName + ':pending', uid, callback);
 	};
 
 	Groups.leave = function(groupName, uid, callback) {
@@ -585,4 +713,88 @@ var async = require('async'),
 			});
 		});
 	};
+
+	Groups.updateCoverPosition = function(groupName, position, callback) {
+		Groups.setGroupField(groupName, 'cover:position', position, callback);
+	};
+
+	Groups.updateCover = function(data, callback) {
+		var tempPath, md5sum, url;
+
+		// Position only? That's fine
+		if (!data.imageData && data.position) {
+			return Groups.updateCoverPosition(data.groupName, data.position, callback);
+		}
+
+		async.series([
+			function(next) {
+				// Calculate md5sum of image
+				// This is required because user data can be private
+				md5sum = crypto.createHash('md5');
+				md5sum.update(data.imageData);
+				md5sum = md5sum.digest('hex');
+				next();
+			},
+			function(next) {
+				// Save image
+				tempPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), md5sum);
+				var buffer = new Buffer(data.imageData.slice(data.imageData.indexOf('base64') + 7), 'base64');
+
+				fs.writeFile(tempPath, buffer, {
+					encoding: 'base64'
+				}, next);
+			},
+			function(next) {
+				uploadsController.uploadGroupCover({
+					path: tempPath
+				}, function(err, uploadData) {
+					if (err) {
+						return next(err);
+					}
+
+					url = uploadData.url;
+					next();
+				});
+			},
+			function(next) {
+				Groups.setGroupField(data.groupName, 'cover:url', url, next);
+			},
+			function(next) {
+				fs.unlink(tempPath, next);	// Delete temporary file
+			}
+		], function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			Groups.updateCoverPosition(data.groupName, data.position, callback);
+		});
+	}
+
+	Groups.ownership = {};
+
+	Groups.ownership.isOwner = function(uid, groupName, callback) {
+		// Note: All admins are also owners
+		async.waterfall([
+			async.apply(db.isSetMember, 'group:' + groupName + ':owners', uid),
+			function(isOwner, next) {
+				if (isOwner) {
+					return next(null, isOwner);
+				}
+
+				user.isAdministrator(uid, next);
+			}
+		], callback);
+	};
+
+	Groups.ownership.grant = function(toUid, groupName, callback) {
+		// Note: No ownership checking is done here on purpose!
+		db.setAdd('group:' + groupName + ':owners', toUid, callback);
+	};
+
+	Groups.ownership.rescind = function(toUid, groupName, callback) {
+		// Note: No ownership checking is done here on purpose!
+		db.setRemove('group:' + groupName + ':owners', toUid, callback);
+	};
+
 }(module.exports));

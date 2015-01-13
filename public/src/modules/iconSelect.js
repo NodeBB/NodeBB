@@ -7,7 +7,9 @@ define(function() {
 
 	iconSelect.init = function(el, onModified) {
 		onModified = onModified || function() {};
-		var selected = el.attr('class').replace('fa-2x', '').replace('fa', '').replace(/\s+/g, '');
+		var doubleSize = el.hasClass('fa-2x'),
+			selected = el.attr('class').replace('fa-2x', '').replace('fa', '').replace(/\s+/g, '');
+
 		$('#icons .selected').removeClass('selected');
 
 		if (selected === '') {
@@ -25,7 +27,7 @@ define(function() {
 					categoryIconClass = '';
 				}
 
-				el.attr('class', 'fa fa-2x ' + categoryIconClass);
+				el.attr('class', 'fa ' + (doubleSize ? 'fa-2x ' : '') + categoryIconClass);
 				el.val(categoryIconClass);
 				el.attr('value', categoryIconClass);
 

@@ -10,7 +10,7 @@
 					<!-- END templates -->
 					</ul>
 
-					<div class="tab-content">
+					<div class="tab-content col-xs-12">
 					<!-- BEGIN templates -->
 						<div class="tab-pane <!-- IF @first -->active<!-- ENDIF @first -->" data-template="{templates.template}">
 						<!-- BEGIN areas -->

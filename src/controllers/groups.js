@@ -9,7 +9,8 @@ var groups = require('../groups'),
 groupsController.list = function(req, res, next) {
 	groups.list({
 		truncateUserList: true,
-		expand: true
+		expand: true,
+		uid: req.user ? req.user.uid : 0
 	}, function(err, groups) {
 		if (err) {
 			return next(err);
@@ -22,10 +23,12 @@ groupsController.list = function(req, res, next) {
 
 groupsController.details = function(req, res, next) {
 	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
+
 	async.parallel({
 		group: function(next) {
 			groups.get(req.params.name, {
-				expand: true
+				expand: true,
+				uid: uid
 			}, next);
 		},
 		posts: function(next) {
