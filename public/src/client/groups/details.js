@@ -10,8 +10,10 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 		var detailsPage = $('.groups'),
 			settingsFormEl = detailsPage.find('form');
 
-		Details.prepareSettings();
-		Details.initialiseCover();
+		if (ajaxify.variables.get('is_owner') === 'true') {
+			Details.prepareSettings();
+			Details.initialiseCover();
+		}
 
 		$('.latest-posts .content img').addClass('img-responsive');
 
@@ -73,26 +75,24 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 			previewIcon = previewEl.find('i'),
 			previewValueEl = settingsFormEl.find('[name="icon"]');
 
-		if (settingsFormEl.length) {
-			// Add color picker to settings form
-			colorBtn.ColorPicker({
-				color: colorValueEl.val() || '#000',
-				onChange: function(hsb, hex) {
-					colorValueEl.val('#' + hex);
-					previewEl.css('background-color', '#' + hex);
-				},
-				onShow: function(colpkr) {
-					$(colpkr).css('z-index', 1051);
-				}
-			});
+		// Add color picker to settings form
+		colorBtn.ColorPicker({
+			color: colorValueEl.val() || '#000',
+			onChange: function(hsb, hex) {
+				colorValueEl.val('#' + hex);
+				previewEl.css('background-color', '#' + hex);
+			},
+			onShow: function(colpkr) {
+				$(colpkr).css('z-index', 1051);
+			}
+		});
 
-			// Add icon selection interface
-			iconBtn.on('click', function() {
-				iconSelect.init(previewIcon, function() {
-					previewValueEl.val(previewIcon.val());
-				});
+		// Add icon selection interface
+		iconBtn.on('click', function() {
+			iconSelect.init(previewIcon, function() {
+				previewValueEl.val(previewIcon.val());
 			});
-		}
+		});
 	};
 
 	Details.update = function() {
@@ -165,6 +165,7 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 		});
 
 		coverEl.find('.save').on('click', Details.cover.save);
+		coverEl.addClass('initialised')
 	};
 
 	// Cover Photo Handling Code
