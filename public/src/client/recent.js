@@ -50,23 +50,36 @@ define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
 	};
 
 	Recent.updateAlertText = function() {
-		var text = 'There';
+		var text = '';
 
-		if (newTopicCount > 1) {
-			text += ' are ' + newTopicCount + ' new topics';
-		} else if (newTopicCount === 1) {
-			text += ' is a new topic';
+		if (newTopicCount === 0) {
+			if (newPostCount === 1) {
+				text = '[[recent:there-is-a-new-post]]';
+			} else if (newPostCount > 1) {
+				text = '[[recent:there-are-new-posts, ' + newPostCount + ']]';
+			}
+		}
+		else if (newTopicCount === 1) {
+			if (newPostCount === 0) {
+				text = '[[recent:there-is-a-new-topic]]';
+			} else if (newPostCount === 1) {
+				text = '[[recent:there-is-a-new-topic-and-a-new-post]]';
+			} else if (newPostCount > 1) {
+				text = '[[recent:there-is-a-new-topic-and-new-posts, ' + newPostCount +']]';
+			}
+		} else if (newTopicCount > 1) {
+			if (newPostCount === 0) {
+				text = '[[recent:there-are-new-topics, ' + newTopicCount + ']]';
+			} else if (newPostCount === 1) {
+				text = '[[recent:there-are-new-topics-and-a-new-post, ' + newTopicCount + ']]';
+			} else if (newPostCount > 1) {
+				text = '[[recent:there-are-new-topics-and-new-posts, ' + newTopicCount + ', ' + newPostCount +']]';
+			}
 		}
 
-		if (newPostCount > 1) {
-			text += (newTopicCount?' and ':' are ') + newPostCount + ' new posts';
-		} else if(newPostCount === 1) {
-			text += (newTopicCount?' and ':' is ') + ' a new post';
-		}
+		text += ' [[recent:click-here-to-reload]]';
 
-		text += '. Click here to reload.';
-
-		$('#new-topics-alert').html(text).removeClass('hide').fadeIn('slow');
+		$('#new-topics-alert').translateText(text).removeClass('hide').fadeIn('slow');
 		$('#category-no-topics').addClass('hide');
 	};
 
