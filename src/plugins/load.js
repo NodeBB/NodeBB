@@ -75,11 +75,7 @@ module.exports = function(Plugins) {
 
 		var libraryPath = path.join(pluginPath, pluginData.library);
 
-		fs.exists(libraryPath, function(exists) {
-			if (!exists) {
-				return libraryNotFound();
-			}
-
+		try {
 			if (!Plugins.libraries[pluginData.id]) {
 				Plugins.requireLibrary(pluginData.id, libraryPath);
 			}
@@ -91,7 +87,10 @@ module.exports = function(Plugins) {
 			} else {
 				callback();
 			}
-		});
+		} catch(err) {
+			winston.error(err.stack);
+			libraryNotFound();
+		}
 	}
 
 	function mapStaticDirectories(pluginData, pluginPath, callback) {
