@@ -58,8 +58,7 @@ define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
 			} else if (newPostCount > 1) {
 				text = '[[recent:there-are-new-posts, ' + newPostCount + ']]';
 			}
-		}
-		else if (newTopicCount === 1) {
+		} else if (newTopicCount === 1) {
 			if (newPostCount === 0) {
 				text = '[[recent:there-is-a-new-topic]]';
 			} else if (newPostCount === 1) {
