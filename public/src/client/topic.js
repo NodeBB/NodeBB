@@ -62,8 +62,13 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 		addBlockquoteEllipses($('.topic .post-content > blockquote'));
 
 		handleBookmark(tid);
-
-		navigator.init('.posts > .post-row', postCount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
+		
+		if(config.usePagination){
+			navigator.hide();
+		}
+		else{
+			navigator.init('.posts > .post-row', postCount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
+		}
 
 		setupSocketListeners();
 
@@ -448,7 +453,9 @@ define('forum/topic', dependencies, function(pagination, infinitescroll, threadT
 				hidePostToolsForDeletedPosts();
 			} else {
 				socket.emit('topics.markAsRead', [tid]);
-				navigator.update();
+				if(!config.usePagination){
+					navigator.update();
+				}
 				done();
 			}
 		});

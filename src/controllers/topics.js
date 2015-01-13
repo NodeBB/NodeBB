@@ -12,7 +12,9 @@ var topicsController = {},
 	posts = require('../posts'),
 	privileges = require('../privileges'),
 	categoriesController = require('./categories'),
-	utils = require('../../public/src/utils');
+	utils = require('../../public/src/utils'),
+	winston = require('winston'),
+	util = require('util');
 
 topicsController.get = function(req, res, next) {
 	var tid = req.params.topic_id,
@@ -248,17 +250,52 @@ topicsController.get = function(req, res, next) {
 
 		topics.increaseViewCount(tid);
 
-		if (!res.locals.isAPI) {
-			// Paginator for noscript
-			data.pages = [];
-			for(var x=1; x<=data.pageCount; x++) {
-				data.pages.push({
-					page: x,
-					active: x === parseInt(page, 10)
-				});
-			}
-		}
+        /* 
+		 * Pagination logic
+		 */
+		 var pageCount    = data.pageCount;
+		 // generic pagination logic
+		 var show_p  = Math.min(pageCount, 10); /* don't render more than 10 page links */
+		 var curr_p  = parseInt(page, 10);  // 1-based
+		 var start_p = 1 + Math.floor((curr_p - 1) / show_p) * show_p;
+		 var last_p  = Math.min(start_p + show_p, pageCount+1); // last page is just beyong current chapter
+		 
+		 winston.info("[pag.topic]: ", curr_p,"/", pageCount, "/", show_p," [",start_p, ":", last_p,"]");
 
+		data.paginate= {
+		 	prev: { // prev chapter link
+				 	page: Math.max(1, start_p-1),
+				 	active: start_p > 1
+				},
+			next: { // next chapter link
+				 	page:   last_p,
+				 	active: last_p <= pageCount
+				},
+		 };
+
+		data.pages = [];
+		for(var x=start_p; x < last_p; x++) {
+			data.pages.push({
+				page:   x,
+				active: x == curr_p
+			});
+		}
+	
+		/* pagination rel tags  <link rel={prev|next} /> */
+		if(curr_p < pageCount){
+			res.locals.linkTags.push({
+				rel: 'next',
+				href: util.format('?page=%s', curr_p+1)
+			});
+		}
+		if(curr_p > 1){
+			res.locals.linkTags.push({
+				rel: 'prev',
+				href: util.format('?page=%s', curr_p-1)
+			});
+		}
+		winston.info("[pag.topic]: pages=%j, paginate=%j", data.pages, data.paginate);
+		/* end pagination */
 		res.render('topic', data);
 	});
 };
