@@ -2,9 +2,9 @@
 
 /* globals define, app, socket, utils */
 define('forum/account/watched', ['forum/account/header', 'forum/infinitescroll'], function(header, infinitescroll) {
-	var AccountTopics = {};
+	var AccountWatched = {};
 
-	AccountTopics.init = function() {
+	AccountWatched.init = function() {
 		header.init();
 
 		infinitescroll.init(loadMore);
@@ -20,7 +20,6 @@ define('forum/account/watched', ['forum/account/header', 'forum/infinitescroll']
 			set: 'uid:' + $('.account-username-box').attr('data-uid') + ':followed_tids',
 			after: $('.user-topics').attr('data-nextstart')
 		}, function(data, done) {
-console.log(data);
 			if (data.topics && data.topics.length) {
 				onTopicsLoaded(data.topics, done);
 				$('.user-topics').attr('data-nextstart', data.nextStart);
@@ -41,5 +40,5 @@ console.log(data);
 		});
 	}
 
-	return AccountTopics;
+	return AccountWatched;
 });
