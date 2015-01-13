@@ -223,54 +223,14 @@ categoriesController.get = function(req, res, next) {
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 		data.csrf = req.csrfToken();
 		
-		/* 
-		 * Pagination logic
-		 */
-		 var itemsPerPage = data.topicsPerPage || 20;
-		 var pageCount    = Math.ceil(data.topic_count / itemsPerPage);
-		 // generic pagination logic 
-		 var show_p  = Math.min(pageCount, 10); /* don't render more than 10 page links at once, paginate */
-		 var curr_p  = parseInt(page, 10);  // 1-based
-		 var start_p = 1 + Math.floor((curr_p - 1) / show_p) * show_p;
-		 var last_p  = Math.min(start_p + show_p, pageCount+1); // last page is just beyong current chapter
-		 
-		 winston.info("[pag.cat]: ", curr_p,"/", pageCount, " shown=", show_p," [",start_p, ":", last_p,"]");
+		var pageCount = Math.ceil(data.topic_count / (data.topicsPerPage || 20));		 
+		addPagination(parseInt(page, 10) || 1, pageCount, data, "cat");
 
-		data.paginate= {
-		 	prev: { // prev chapter link
-				 	page: Math.max(1, start_p-1),
-				 	active: start_p > 1
-				},
-			next: { // next chapter link
-				 	page:   last_p,
-				 	active: last_p <= pageCount
-				},
-		 };
+		/* pass pagination rel tags */
+		for(var r in data.paginate.rel){
+			res.locals.linkTags.push(r);
+		}
 
-	
-		data.pages = [];
-		for(var x=start_p; x < last_p; x++) {
-			data.pages.push({
-				page:   x,
-				active: x == curr_p
-			});
-		}
-		/* pagination rel tags  <link rel={prev|next} /> */
-		if(curr_p < pageCount){
-			res.locals.linkTags.push({
-				rel: 'next',
-				href: util.format('?page=%s', curr_p+1)
-			});
-		}
-		if(curr_p > 1){
-			res.locals.linkTags.push({
-				rel: 'prev',
-				href: util.format('?page=%s', curr_p-1)
-			});
-		}
-		winston.info("[pag.cat] pages=%j", data.pages);
-		winston.info("[pag.cat]", "%j", data.paginate);
-		/* end pagination */
 		res.render('category', data);
 	});
 };
@@ -302,5 +262,57 @@ categoriesController.notAllowed = function(req, res) {
 		}
 	}
 };
+
+function addPagination(
+	currentPage, // 1-based integer
+	pageCount,   // total number of pages
+	data,        // object where to put results
+	traceLabel){ // optional short winston label
+	/* 
+	 * Generic Pagination logic
+	 */
+	 var show_p  = Math.min(pageCount, 10); /* don't render more than 10 page links at once, paginate */
+	 var curr_p  = currentPage;  // 1-based
+	 var start_p = 1 + Math.floor((curr_p - 1) / show_p) * show_p;
+	 var last_p  = Math.min(start_p + show_p, pageCount+1); // last page is just beyong current chapter
+	 
+	 winston.debug("[pag.%s]: ", traceLabel, curr_p,"/", pageCount, " shown=", show_p," [",start_p, ":", last_p,"]");
+
+	data.paginate= {
+	 	prev: { // prev chapter link
+			 	page: Math.max(1, start_p-1),
+			 	active: start_p > 1
+			},
+		next: { // next chapter link
+			 	page:   last_p,
+			 	active: last_p <= pageCount
+			},
+		rel: []
+	 };
+
+
+	data.pages = [];
+	for(var x=start_p; x < last_p; x++) {
+		data.pages.push({
+			page:   x,
+			active: x == curr_p
+		});
+	}
+	/* pagination rel tags  <link rel={prev|next} /> */
+	if(curr_p < pageCount){
+		data.paginate.rel.push({
+			rel: 'next',
+			href: util.format('?page=%s', curr_p+1)
+		});
+	}
+	if(curr_p > 1){
+		data.paginate.rel.push({
+			rel: 'prev',
+			href: util.format('?page=%s', curr_p-1)
+		});
+	}
+	winston.info("[pag.%s] pages=%j", traceLabel, data.pages);
+	winston.info("[pag.%s] paginate=%j", traceLabel, data.paginate);
+}
 
 module.exports = categoriesController;
