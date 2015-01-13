@@ -23,16 +23,14 @@ module.exports = function(User) {
 			return callback(new Error('[[error:you-cant-follow-yourself]]'));
 		}
 
-		var now = Date.now();
-
 		if (type === 'follow') {
+			var now = Date.now();
 			async.parallel([
 				async.apply(db.sortedSetAdd, 'following:' + uid, now, theiruid),
 				async.apply(db.sortedSetAdd, 'followers:' + theiruid, now, uid),
 				async.apply(User.incrementUserFieldBy, uid, 'followingCount', 1),
 				async.apply(User.incrementUserFieldBy, theiruid, 'followerCount', 1)
 			], callback);
-
 		} else {
 			async.parallel([
 				async.apply(db.sortedSetRemove, 'following:' + uid, theiruid),

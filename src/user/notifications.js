@@ -7,7 +7,6 @@ var async = require('async'),
 	S = require('string'),
 
 	user = require('../user'),
-	utils = require('../../public/src/utils'),
 	db = require('../database'),
 	meta = require('../meta'),
 	notifications = require('../notifications'),
