@@ -42,7 +42,7 @@
 					<!-- ENDIF !widgets.length -->
 					<div class="row">
 						<!-- BEGIN widgets -->
-						<div class="col-lg-3 col-md-12">
+						<div class="col-md-6 col-sm-12">
 							<div data-widget="{widgets.widget}" class="panel widget-panel panel-default pointer">
 								<div class="panel-heading">
 									<strong>{widgets.name}</strong>
