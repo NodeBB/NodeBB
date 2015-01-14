@@ -3,6 +3,7 @@
 var async = require('async'),
 	db = require('../database'),
 
+	user = require('../user'),
 	plugins = require('../plugins');
 
 
@@ -77,13 +78,19 @@ module.exports = function(Topics) {
 			if (err) {
 				return callback(err);
 			}
-
-			db.sortedSetsRemove([
-				'cid:' + topicData.cid + ':tids',
-				'cid:' + topicData.cid + ':tids:posts',
-				'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
-				'uid:' + topicData.uid + ':topics'
-			], tid, callback);
+			async.parallel([
+				function(next) {
+					db.sortedSetsRemove([
+						'cid:' + topicData.cid + ':tids',
+						'cid:' + topicData.cid + ':tids:posts',
+						'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
+						'uid:' + topicData.uid + ':topics'
+					], tid, next);
+				},
+				function(next) {
+					user.decrementUserFieldBy(topicData.uid, 'topiccount', 1, next);
+				}
+			], callback);
 		});
 	}
 

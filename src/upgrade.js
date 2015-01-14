@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 0, 14);
+	latestSchema = Date.UTC(2015, 0, 15);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -630,7 +630,44 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2015/01/14] Upgrading follow sets to sorted sets skipped');
 				next();
 			}
-		}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 0, 15);
+			if (schemaDate < thisSchemaDate) {
+				winston.info('[2015/01/15] Creating topiccount for users');
+
+				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
+					if (err) {
+						winston.error('[2014/01/15] Error encountered while Creating topiccount for users');
+						return next(err);
+					}
+
+					async.eachLimit(uids, 50, function(uid, next) {
+						db.sortedSetCard('uid:' + uid + ':topics', function(err, count) {
+							if (err) {
+								return next(err);
+							}
+
+							if (parseInt(count, 10)) {
+								db.setObjectField('user:' + uid, 'topiccount', count, next);
+							} else {
+								next();
+							}
+						});
+					}, function(err) {
+						if (err) {
+							winston.error('[2015/01/15] Error encountered while Creating topiccount for users');
+							return next(err);
+						}
+						winston.info('[2015/01/15] Creating topiccount for users done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2015/01/15] Creating topiccount for users skipped');
+				next();
+			}
+		},
 
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 22!!!

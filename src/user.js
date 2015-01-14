@@ -287,7 +287,10 @@ var	async = require('async'),
 	};
 
 	User.addTopicIdToUser = function(uid, tid, timestamp, callback) {
-		db.sortedSetAdd('uid:' + uid + ':topics', timestamp, tid, callback);
+		async.parallel([
+			async.apply(db.sortedSetAdd, 'uid:' + uid + ':topics', timestamp, tid),
+			async.apply(User.incrementUserFieldBy, uid, 'topiccount', 1)
+		], callback);
 	};
 
 	User.exists = function(userslug, callback) {
