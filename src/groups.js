@@ -462,7 +462,7 @@ var async = require('async'),
 					name: groupName,
 					values: payload
 				});
-				renameGroup(groupName, payload.name, callback);
+				renameGroup(groupName, values.name, callback);
 			});
 		});
 	};
