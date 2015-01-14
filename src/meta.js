@@ -69,6 +69,7 @@ var async = require('async'),
 			if (!err) {
 				emitter.emit('nodebb:ready');
 			}
+			Meta.reloadRequired = false;
 
 			callback(err);
 		});
