@@ -22,12 +22,7 @@ categoriesController.recent = function(req, res, next) {
 
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
-		plugins.fireHook('filter:category.get', {category: data, uid: uid}, function(err, data) {
-			if (err) {
-				return next(err);
-			}
-			res.render('recent', data.category);
-		});
+		res.render('recent', data);
 	});
 };
 
@@ -49,24 +44,22 @@ categoriesController.popular = function(req, res, next) {
 		}
 	}
 
-	topics.getPopular(term, uid, meta.config.topicsPerList, function(err, data) {
+	topics.getPopular(term, uid, meta.config.topicsPerList, function(err, topics) {
 		if (err) {
 			return next(err);
 		}
 
-		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+		var data = {
+			topics: topics,
+			'feeds:disableRSS': parseInt(meta.config['feeds:disableRSS'], 10) === 1
+		};
 
-		plugins.fireHook('filter:category.get', {category: {topics: data}, uid: uid}, function(err, data) {
-			if (err) {
-				return next(err);
-			}
-			if (uid === 0) {
-				anonCache[term] = data.category;
-				lastUpdateTime = Date.now();
-			}
+		if (uid === 0) {
+			anonCache[term] = data;
+			lastUpdateTime = Date.now();
+		}
 
-			res.render('popular', data.category);
-		});
+		res.render('popular', data);
 	});
 };
 
@@ -78,12 +71,7 @@ categoriesController.unread = function(req, res, next) {
 			return next(err);
 		}
 
-		plugins.fireHook('filter:category.get', {category: data, uid: uid}, function(err, data) {
-			if (err) {
-				return next(err);
-			}
-			res.render('unread', data.category);
-		});
+		res.render('unread', data);
 	});
 };
 

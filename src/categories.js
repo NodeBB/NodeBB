@@ -64,9 +64,7 @@ var async = require('async'),
 				category.isIgnored = results.isIgnored[0];
 				category.topic_row_size = 'col-md-9';
 
-				plugins.fireHook('filter:category.get', {category: category, uid: data.uid}, function(err, data) {
-					callback(err, data ? data.category : null);
-				});
+				callback(null, category);
 			});
 		});
 	};

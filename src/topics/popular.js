@@ -32,24 +32,21 @@ module.exports = function(Topics) {
 	}
 
 	function getTopics(tids, uid, count, callback) {
-		Topics.getTopicsFields(tids, ['tid', 'postcount'], function(err, topics) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function(next) {
+				Topics.getTopicsFields(tids, ['tid', 'postcount'], next);
+			},
+			function(topics, next) {
+				tids = topics.sort(function(a, b) {
+					return b.postcount - a.postcount;
+				}).slice(0, count).map(function(topic) {
+					return topic.tid;
+				});
+				privileges.topics.filter('read', tids, uid, next);
+			},
+			function(tids, next) {
+				Topics.getTopicsByTids(tids, uid, next);
 			}
-
-			tids = topics.sort(function(a, b) {
-				return b.postcount - a.postcount;
-			}).slice(0, count).map(function(topic) {
-				return topic.tid;
-			});
-
-			privileges.topics.filter('read', tids, uid, function(err, tids) {
-				if (err) {
-					return callback(err);
-				}
-
-				Topics.getTopicsByTids(tids, uid, callback);
-			});
-		});
+		], callback);
 	}
 };
