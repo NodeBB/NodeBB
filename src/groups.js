@@ -444,18 +444,24 @@ var async = require('async'),
 				return callback(err || new Error('[[error:no-group]]'));
 			}
 
-			db.setObject('group:' + groupName, {
-				userTitle: values.userTitle || '',
-				description: values.description || '',
-				icon: values.icon || '',
-				labelColor: values.labelColor || '#000000',
-				hidden: values.hidden || '0',
-				'private': values.private === false ? '0' : '1'
-			}, function(err) {
+			var values = {
+					userTitle: values.userTitle || '',
+					description: values.description || '',
+					icon: values.icon || '',
+					labelColor: values.labelColor || '#000000',
+					hidden: values.hidden || '0',
+					'private': values.private === false ? '0' : '1'
+				};
+
+			db.setObject('group:' + groupName, values, function(err) {
 				if (err) {
 					return callback(err);
 				}
 
+				plugins.fireHook('action:group.updated', {
+					name: 'group:' + groupName,
+					values: values
+				});
 				renameGroup(groupName, values.name, callback);
 			});
 		});
@@ -511,6 +517,14 @@ var async = require('async'),
 					},
 					function(next) {
 						renameGroupMember('groups', oldName, newName, next);
+					},
+					function(next) {
+						plugins.fireHook('action:group.rename', {
+							old: oldName,
+							new: newName
+						});
+
+						next();
 					}
 				], callback);
 			});
