@@ -131,7 +131,7 @@ var async = require('async'),
 			async.each(areas, function(area, next) {
 				Widgets.getArea(area.template, area.location, function(err, areaData) {
 					if (err) {
-						return callback(err);
+						return next(err);
 					}
 
 					drafts = drafts.concat(areaData);
@@ -139,6 +139,9 @@ var async = require('async'),
 					Widgets.setArea(area, next);
 				});
 			}, function(err) {
+				if (err) {
+					return callback(err);
+				}
 				Widgets.setArea({
 					template: 'global',
 					location: 'drafts',
