@@ -183,11 +183,11 @@ var async = require('async'),
 				hook,
 				current = voteStatus.upvoted ? 'upvote' : 'downvote';
 
-			if (voteStatus.upvoted && command === 'downvote' || voteStatus.downvoted && command === 'upvote') {
+			if (voteStatus.upvoted && command === 'downvote' || voteStatus.downvoted && command === 'upvote') {	// e.g. User *has* upvoted, and clicks downvote
 				hook = command;
-			} else if (voteStatus.upvoted || voteStatus.downvoted) {
+			} else if (voteStatus.upvoted || voteStatus.downvoted) {	// e.g. User *has* upvotes, clicks upvote (so we "unvote")
 				hook = 'unvote';
-			} else {
+			} else {	// e.g. User *has not* voted, clicks upvote
 				hook = command;
 				current = 'unvote';
 			}
