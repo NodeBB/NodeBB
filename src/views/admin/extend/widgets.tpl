@@ -76,7 +76,7 @@
 						<div class="jumbotron pointer" data-container-html='<div class="jumbotron">{body}</div>'>
 							Jumbotron
 						</div>
-						<div class="panel" data-container-html='<div class="panel"><div class="panel-body">{body}</div></div>'>
+						<div class="panel" data-container-html='<div class="panel panel-default"><div class="panel-body">{body}</div></div>'>
 							<div class="panel-body pointer">
 								Panel
 							</div>
