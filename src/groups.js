@@ -444,7 +444,7 @@ var async = require('async'),
 				return callback(err || new Error('[[error:no-group]]'));
 			}
 
-			var values = {
+			var payload = {
 					userTitle: values.userTitle || '',
 					description: values.description || '',
 					icon: values.icon || '',
@@ -453,16 +453,16 @@ var async = require('async'),
 					'private': values.private === false ? '0' : '1'
 				};
 
-			db.setObject('group:' + groupName, values, function(err) {
+			db.setObject('group:' + groupName, payload, function(err) {
 				if (err) {
 					return callback(err);
 				}
 
 				plugins.fireHook('action:group.updated', {
 					name: groupName,
-					values: values
+					values: payload
 				});
-				renameGroup(groupName, values.name, callback);
+				renameGroup(groupName, payload.name, callback);
 			});
 		});
 	};
