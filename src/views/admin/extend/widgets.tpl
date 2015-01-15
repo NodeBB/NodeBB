@@ -3,29 +3,31 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">Widget Areas</div>
 			<div class="panel-body">
+
+				<ul class="nav nav-pills">
+				<!-- BEGIN templates -->
+					<li class="<!-- IF @first -->active<!-- ENDIF @first -->"><a href="#" data-template="{templates.template}" data-toggle="pill">{templates.template}</a></li>
+				<!-- END templates -->
+				</ul>
+
 				<div class="row">
-					<ul class="nav nav-pills">
-					<!-- BEGIN templates -->
-						<li class="<!-- IF @first -->active<!-- ENDIF @first -->"><a href="#" data-template="{templates.template}" data-toggle="pill">{templates.template}</a></li>
-					<!-- END templates -->
-					</ul>
+					<div class="col-xs-12">
+						<div class="tab-content">
+						<!-- BEGIN templates -->
+							<div class="tab-pane <!-- IF @first -->active<!-- ENDIF @first -->" data-template="{templates.template}">
+							<!-- BEGIN areas -->
+								<div class="area" data-template="{templates.template}" data-location="{templates.areas.location}">
+									<h4>{templates.areas.name} <small>{templates.template} / {templates.areas.location}</small></h4>
+									<div class="well widget-area">
 
-					<div class="tab-content col-xs-12">
-					<!-- BEGIN templates -->
-						<div class="tab-pane <!-- IF @first -->active<!-- ENDIF @first -->" data-template="{templates.template}">
-						<!-- BEGIN areas -->
-							<div class="area" data-template="{templates.template}" data-location="{templates.areas.location}">
-								<h4>{templates.areas.name} <small>{templates.template} / {templates.areas.location}</small></h4>
-								<div class="well widget-area">
-
+									</div>
 								</div>
+							<!-- END areas -->
 							</div>
-						<!-- END areas -->
+						<!-- END templates -->
 						</div>
-					<!-- END templates -->
+						<button class="btn btn-success save pull-right">Save</button>
 					</div>
-
-					<button class="btn btn-success save pull-right">Save</button>
 				</div>
 			</div>
 		</div>
