@@ -414,7 +414,7 @@ var async = require('async'),
 					userTitle: data.name,
 					description: data.description || '',
 					deleted: '0',
-					hidden: '0',
+					hidden: data.hidden || '0',
 					system: system ? '1' : '0',
 					'private': data.private || '1'
 				},
@@ -596,14 +596,14 @@ var async = require('async'),
 			} else {
 				Groups.create({
 					name: groupName,
-					description: ''
+					description: '',
+					hidden: 1
 				}, function(err) {
 					if (err && err.message !== '[[error:group-already-exists]]') {
 						winston.error('[groups.join] Could not create new hidden group: ' + err.message);
 						return callback(err);
 					}
 
-					Groups.hide(groupName);
 					db.setAdd('group:' + groupName + ':members', uid, callback);
 					plugins.fireHook('action:group.join', {
 						groupName: groupName,
