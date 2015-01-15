@@ -67,7 +67,7 @@ describe('Hash methods', function() {
 
 	describe('getObjects()', function() {
 		before(function(done) {
-			async([
+			async.parallel([
 				async.apply(db.setObject, 'testObject4', {name: 'baris'}),
 				async.apply(db.setObjectField, 'testObject5', 'name', 'ginger')
 			], done);

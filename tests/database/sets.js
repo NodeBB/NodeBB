@@ -143,7 +143,7 @@ describe('Set methods', function() {
 		});
 
 		it('should return the element count of set', function(done) {
-			db.setCount('testSet', function(err, count) {
+			db.setCount('testSet5', function(err, count) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.strictEqual(count, 5);
@@ -155,14 +155,14 @@ describe('Set methods', function() {
 	describe('setsCount()', function() {
 		before(function(done) {
 			async.parallel([
-				async.apply(db.setAdd, 'set4', [1,2,3,4,5]),
-				async.apply(db.setAdd, 'set5', 1),
-				async.apply(db.setAdd, 'set6', 2)
+				async.apply(db.setAdd, 'set5', [1,2,3,4,5]),
+				async.apply(db.setAdd, 'set6', 1),
+				async.apply(db.setAdd, 'set7', 2)
 			], done);
 		});
 
 		it('should return the element count of sets', function(done) {
-			db.setsCount(['set4', 'set5', 'set6', 'doesnotexist'], function(err, counts) {
+			db.setsCount(['set5', 'set6', 'set7', 'doesnotexist'], function(err, counts) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(Array.isArray(counts), true);

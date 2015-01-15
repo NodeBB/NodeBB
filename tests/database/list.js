@@ -144,7 +144,7 @@ describe('List methods', function() {
 					return done(err);
 				}
 
-				db.listTrim('testList6testList6', 0, 2, function(err) {
+				db.listTrim('testList6', 0, 2, function(err) {
 					assert.equal(err, null);
 					assert.equal(arguments.length, 1);
 					db.getListRange('testList6', 0, -1, function(err, list) {
