@@ -629,7 +629,7 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			plugins.fireHook('action:groups.leave', {
+			plugins.fireHook('action:group.leave', {
 				groupName: groupName,
 				uid: uid
 			});
