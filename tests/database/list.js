@@ -1,5 +1,5 @@
 'use strict';
-/*global require, after*/
+/*global require, after, before*/
 
 var	async = require('async'),
 	assert = require('assert'),
@@ -69,7 +69,7 @@ describe('List methods', function() {
 		it('should return a list with one element', function(done) {
 			db.getListRange('testList4', 0, 0, function(err, list) {
 				assert.equal(err, null);
-				assert.equal(Array.isArray(list), true,);
+				assert.equal(Array.isArray(list), true);
 				assert.equal(list[0], 5);
 				done();
 			});
