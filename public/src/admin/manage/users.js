@@ -28,7 +28,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 		}
 
 		function removeSelected() {
-			$('#users-container .users-box .selected').remove();
+			$('#users-container .users-box .selected').parents('.users-box').remove();
 		}
 
 		function done(successMessage, className, flag) {
