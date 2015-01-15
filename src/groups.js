@@ -428,7 +428,15 @@ var async = require('async'),
 				tasks.push(async.apply(db.setAdd, 'group:' + data.name + ':members', data.ownerUid));
 			}
 
-			async.parallel(tasks, callback);
+			async.parallel(tasks, function(err) {
+				if (!err) {
+					plugins.fireHook('action:group.create', {
+						name: data.name
+					});
+				}
+
+				callback(err);
+			});
 		});
 	};
 
@@ -458,7 +466,7 @@ var async = require('async'),
 					return callback(err);
 				}
 
-				plugins.fireHook('action:group.updated', {
+				plugins.fireHook('action:group.update', {
 					name: groupName,
 					values: payload
 				});
@@ -564,7 +572,15 @@ var async = require('async'),
 					}, next);
 				});
 			}
-		], callback);
+		], function(err) {
+			if (!err) {
+				plugins.fireHook('action:group.destroy', {
+					name: groupName
+				});
+			}
+
+			callback(err);
+		});
 	};
 
 	Groups.join = function(groupName, uid, callback) {
