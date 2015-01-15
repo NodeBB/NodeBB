@@ -79,14 +79,14 @@ describe('Key methods', function() {
 			db.deleteAll(['key1', 'key2'], function(err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
-				async.parallel([
+				async.parallel({
 					key1exists: function(next) {
 						db.exists('key1', next);
 					},
 					key2exists: function(next) {
 						db.exists('key2', next);
 					}
-				], function(err, results) {
+				}, function(err, results) {
 					assert.equal(err, null);
 					assert.equal(results.key1exists, false);
 					assert.equal(results.key2exists, false);
