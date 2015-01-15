@@ -58,7 +58,7 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 						if (!err) {
 							ajaxify.refresh();
 						} else {
-							app.alertError(err);
+							app.alertError(err.message);
 						}
 					});
 					break;

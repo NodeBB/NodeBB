@@ -599,11 +599,15 @@ var async = require('async'),
 	};
 
 	Groups.requestMembership = function(groupName, uid, callback) {
-		db.setAdd('group:' + groupName + ':pending', uid, callback);
-		plugins.fireHook('action:groups.requestMembership', {
-			groupName: groupName,
-			uid: uid
-		});
+		if (parseInt(uid, 10) > 0) {
+			db.setAdd('group:' + groupName + ':pending', uid, callback);
+			plugins.fireHook('action:groups.requestMembership', {
+				groupName: groupName,
+				uid: uid
+			});
+		} else {
+			callback(new Error('[[error:not-logged-in]]'));
+		}
 	};
 
 	Groups.acceptMembership = function(groupName, uid, callback) {
