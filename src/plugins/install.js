@@ -88,7 +88,7 @@ module.exports = function(Plugins) {
 				if (err) {
 					return callback(err);
 				}
-				plugins.fireHook('action:plugin.' + type, id);
+				Plugins.fireHook('action:plugin.' + type, id);
 				callback(null, {id: id, installed: !installed});
 			});
 		});
