@@ -64,7 +64,7 @@ module.exports = function(Plugins) {
 			if (err) {
 				return callback(err);
 			}
-
+			var type = installed ? 'uninstall' : 'install';
 			async.waterfall([
 				function(next) {
 					Plugins.isActive(id, next);
@@ -82,10 +82,14 @@ module.exports = function(Plugins) {
 					npm.load({}, next);
 				},
 				function(res, next) {
-					npm.commands[installed ? 'uninstall' : 'install'](installed ? id : [id + '@' + (version || 'latest')], next);
+					npm.commands[type](installed ? id : [id + '@' + (version || 'latest')], next);
 				}
 			], function(err) {
-				callback(err, {id: id, installed: !installed});
+				if (err) {
+					return callback(err);
+				}
+				plugins.fireHook('action:plugin.' + type, id);
+				callback(null, {id: id, installed: !installed});
 			});
 		});
 	}
