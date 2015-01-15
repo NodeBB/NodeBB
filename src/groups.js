@@ -556,31 +556,27 @@ var async = require('async'),
 	}
 
 	Groups.destroy = function(groupName, callback) {
-		async.parallel([
-			async.apply(db.delete, 'group:' + groupName),
-			async.apply(db.setRemove, 'groups', groupName),
-			async.apply(db.delete, 'group:' + groupName + ':members'),
-			async.apply(db.delete, 'group:' + groupName + ':pending'),
-			async.apply(db.delete, 'group:' + groupName + ':owners'),
-			function(next) {
-				db.getSetMembers('groups', function(err, groups) {
-					if (err) {
-						return next(err);
-					}
-					async.each(groups, function(group, next) {
-						db.setRemove('group:' + group + ':members', groupName, next);
-					}, next);
-				});
-			}
-		], function(err) {
-			if (!err) {
-				plugins.fireHook('action:group.destroy', {
-					name: groupName
-				});
-			}
+		Groups.get(groupName, {}, function(err, groupObj) {
+			plugins.fireHook('action:group.destroy', groupObj);
 
-			callback(err);
-		});
+			async.parallel([
+				async.apply(db.delete, 'group:' + groupName),
+				async.apply(db.setRemove, 'groups', groupName),
+				async.apply(db.delete, 'group:' + groupName + ':members'),
+				async.apply(db.delete, 'group:' + groupName + ':pending'),
+				async.apply(db.delete, 'group:' + groupName + ':owners'),
+				function(next) {
+					db.getSetMembers('groups', function(err, groups) {
+						if (err) {
+							return next(err);
+						}
+						async.each(groups, function(group, next) {
+							db.setRemove('group:' + group + ':members', groupName, next);
+						}, next);
+					});
+				}
+			], callback);
+		})
 	};
 
 	Groups.join = function(groupName, uid, callback) {
