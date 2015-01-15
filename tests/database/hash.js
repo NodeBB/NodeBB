@@ -1,26 +1,24 @@
 'use strict';
-/*global require, after*/
+/*global require, after, before*/
 
-var	assert = require('assert'),
+var	async = require('async'),
+	assert = require('assert'),
 	db = require('../mocks/databasemock');
 
 describe('Hash methods', function() {
 	var testData = {
 		name: 'baris',
+		lastname: 'usakli',
 		age: 99
 	};
 
 	before(function(done) {
-		db.setObject('testObject1', testData, function(err) {
-			assert.equal(err, null);
-			assert.equal(arguments.length, 1);
-			done();
-		});
+		db.setObject('hashTestObject', testData, done);
 	});
 
 	describe('setObject()', function() {
 		it('should create a object', function(done) {
-			db.setObject('testObject10', testData, function(err) {
+			db.setObject('testObject1', {foo: 'baris', bar: 99}, function(err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
 				done();
@@ -29,16 +27,16 @@ describe('Hash methods', function() {
 	});
 
 	describe('setObjectField()', function() {
-		it('should add a new field to an object', function(done) {
-			db.setObjectField('testObject1', 'lastname', 'usakli', function(err) {
+		it('should create a new object with field', function(done) {
+			db.setObjectField('testObject2', 'name', 'ginger', function(err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
 				done();
 			});
 		});
 
-		it('should create a new object with field', function(done) {
-			db.setObjectField('testObject2', 'name', 'ginger', function(err) {
+		it('should add a new field to an object', function(done) {
+			db.setObjectField('testObject2', 'type', 'cat', function(err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
 				done();
@@ -57,7 +55,7 @@ describe('Hash methods', function() {
 		});
 
 		it('should retrieve an object', function(done) {
-			db.getObject('testObject1', function(err, data) {
+			db.getObject('hashTestObject', function(err, data) {
 				assert.equal(err, null);
 				assert.equal(data.name, testData.name);
 				assert.equal(data.age, testData.age);
@@ -68,6 +66,13 @@ describe('Hash methods', function() {
 	});
 
 	describe('getObjects()', function() {
+		before(function(done) {
+			async([
+				async.apply(db.setObject, 'testObject4', {name: 'baris'}),
+				async.apply(db.setObjectField, 'testObject5', 'name', 'ginger')
+			], done);
+		});
+
 		it('should return 3 objects with correct data', function(done) {
 			db.getObjects(['testObject1', 'testObject2', 'doesnotexist'], function(err, objects) {
 				assert.equal(err, null);
@@ -92,7 +97,7 @@ describe('Hash methods', function() {
 		});
 
 		it('should return falsy if field does not exist', function(done) {
-			db.getObjectField('testObject1', 'fieldName', function(err, value) {
+			db.getObjectField('hashTestObject', 'fieldName', function(err, value) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(!!value, false);
@@ -101,7 +106,7 @@ describe('Hash methods', function() {
 		});
 
 		it('should get an objects field', function(done) {
-			db.getObjectField('testObject1', 'lastname', function(err, value) {
+			db.getObjectField('hashTestObject', 'lastname', function(err, value) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(value, 'usakli');
@@ -123,7 +128,7 @@ describe('Hash methods', function() {
 		});
 
 		it('should return an object with correct fields', function(done) {
-			db.getObjectFields('testObject1', ['lastname', 'age', 'field1'], function(err, object) {
+			db.getObjectFields('hashTestObject', ['lastname', 'age', 'field1'], function(err, object) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(typeof object, 'object');
@@ -136,8 +141,15 @@ describe('Hash methods', function() {
 	});
 
 	describe('getObjectsFields()', function() {
+		before(function(done) {
+			async([
+				async.apply(db.setObject, 'testObject8', {name: 'baris', age:99}),
+				async.apply(db.setObject, 'testObject9', {name: 'ginger', age: 3})
+			], done);
+		});
+
 		it('should return an array of objects with correct values', function(done) {
-			db.getObjectsFields(['testObject1', 'testObject2', 'doesnotexist'], ['name', 'age'], function(err, objects) {
+			db.getObjectsFields(['testObject8', 'testObject9', 'doesnotexist'], ['name', 'age'], function(err, objects) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(Array.isArray(objects), true);
@@ -145,6 +157,7 @@ describe('Hash methods', function() {
 				assert.equal(objects[0].name, 'baris');
 				assert.equal(objects[0].age, 99);
 				assert.equal(objects[1].name, 'ginger');
+				assert.equal(objects[1].age, 3);
 				assert.equal(!!objects[2].name, false);
 				done();
 			});
@@ -162,14 +175,13 @@ describe('Hash methods', function() {
 		});
 
 		it('should return an array of keys for the object\'s fields', function(done) {
-			db.getObjectKeys('testObject1', function(err, keys) {
+			db.getObjectKeys('hashTestObject', function(err, keys) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(Array.isArray(keys) && keys.length === 3, true);
 				keys.forEach(function(key) {
 					assert.notEqual(['name', 'lastname', 'age'].indexOf(key), -1);
 				});
-
 				done();
 			});
 		});
@@ -186,7 +198,7 @@ describe('Hash methods', function() {
 		});
 
 		it('should return an array of values for the object\'s fields', function(done) {
-			db.getObjectValues('testObject1', function(err, values) {
+			db.getObjectValues('hashTestObject', function(err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(Array.isArray(values) && values.length === 3, true);
@@ -219,7 +231,7 @@ describe('Hash methods', function() {
 		});
 
 		it('should return true if field exists', function(done) {
-			db.isObjectField('testObject1', 'lastname', function(err, value) {
+			db.isObjectField('hashTestObject', 'name', function(err, value) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(value, true);
@@ -229,11 +241,15 @@ describe('Hash methods', function() {
 	});
 
 	describe('deleteObjectField()', function() {
+		before(function(done) {
+			db.setObject('testObject10', {foo: 'bar', delete: 'this'}, done);
+		});
+
 		it('should delete an objects field', function(done) {
-			db.deleteObjectField('testObject1', 'lastname', function(err) {
+			db.deleteObjectField('testObject10', 'delete', function(err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
-				db.isObjectField('testObject1', 'lastname', function(err, isField) {
+				db.isObjectField('testObject10', 'delete', function(err, isField) {
 					assert.equal(err, null);
 					assert.equal(isField, false);
 					done();
@@ -243,8 +259,12 @@ describe('Hash methods', function() {
 	});
 
 	describe('incrObjectField()', function() {
+		before(function(done) {
+			db.setObject('testObject11', {age: 99}, done);
+		});
+
 		it('should set an objects field to 1 if object does not exist', function(done) {
-			db.incrObjectField('testObject3', 'field1', function(err, newValue) {
+			db.incrObjectField('testObject12', 'field1', function(err, newValue) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(newValue, 1);
@@ -253,7 +273,7 @@ describe('Hash methods', function() {
 		});
 
 		it('should increment an object fields by 1 and return it', function(done) {
-			db.incrObjectField('testObject1', 'age', function(err, newValue) {
+			db.incrObjectField('testObject11', 'age', function(err, newValue) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(newValue, 100);
@@ -263,8 +283,12 @@ describe('Hash methods', function() {
 	});
 
 	describe('decrObjectField()', function() {
+		before(function(done) {
+			db.setObject('testObject13', {age: 99}, done);
+		});
+
 		it('should set an objects field to -1 if object does not exist', function(done) {
-			db.decrObjectField('testObject4', 'field1', function(err, newValue) {
+			db.decrObjectField('testObject14', 'field1', function(err, newValue) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(newValue, -1);
@@ -273,18 +297,22 @@ describe('Hash methods', function() {
 		});
 
 		it('should decrement an object fields by 1 and return it', function(done) {
-			db.decrObjectField('testObject1', 'age', function(err, newValue) {
+			db.decrObjectField('testObject13', 'age', function(err, newValue) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.equal(newValue, 99);
+				assert.equal(newValue, 98);
 				done();
 			});
 		});
 	});
 
 	describe('incrObjectFieldBy()', function() {
+		before(function(done) {
+			db.setObject('testObject15', {age: 100}, done);
+		});
+
 		it('should set an objects field to 5 if object does not exist', function(done) {
-			db.incrObjectFieldBy('testObject5', 'field1', 5, function(err, newValue) {
+			db.incrObjectFieldBy('testObject16', 'field1', 5, function(err, newValue) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(newValue, 5);
@@ -293,10 +321,10 @@ describe('Hash methods', function() {
 		});
 
 		it('should increment an object fields by passed in value and return it', function(done) {
-			db.incrObjectFieldBy('testObject1', 'age', 11, function(err, newValue) {
+			db.incrObjectFieldBy('testObject15', 'age', 11, function(err, newValue) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.equal(newValue, 110);
+				assert.equal(newValue, 111);
 				done();
 			});
 		});
