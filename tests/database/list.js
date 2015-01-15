@@ -99,7 +99,7 @@ describe('List methods', function() {
 		});
 
 		it('should remove the last element of list and return it', function(done) {
-			db.listRemoveLast('testList2', function(err, lastElement) {
+			db.listRemoveLast('testList4', function(err, lastElement) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(lastElement, '12');

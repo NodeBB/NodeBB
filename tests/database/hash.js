@@ -74,7 +74,7 @@ describe('Hash methods', function() {
 		});
 
 		it('should return 3 objects with correct data', function(done) {
-			db.getObjects(['testObject1', 'testObject2', 'doesnotexist'], function(err, objects) {
+			db.getObjects(['testObject4', 'testObject5', 'doesnotexist'], function(err, objects) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(Array.isArray(objects) && objects.length === 3, true);
@@ -142,7 +142,7 @@ describe('Hash methods', function() {
 
 	describe('getObjectsFields()', function() {
 		before(function(done) {
-			async([
+			async.parallel([
 				async.apply(db.setObject, 'testObject8', {name: 'baris', age:99}),
 				async.apply(db.setObject, 'testObject9', {name: 'ginger', age: 3})
 			], done);
