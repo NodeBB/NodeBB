@@ -573,7 +573,7 @@ var async = require('async'),
 		Groups.exists(groupName, function(err, exists) {
 			if (exists) {
 				db.setAdd('group:' + groupName + ':members', uid, callback);
-				plugins.fireHook('action:groups.join', {
+				plugins.fireHook('action:group.join', {
 					groupName: groupName,
 					uid: uid
 				});
@@ -589,7 +589,7 @@ var async = require('async'),
 
 					Groups.hide(groupName);
 					db.setAdd('group:' + groupName + ':members', uid, callback);
-					plugins.fireHook('action:groups.join', {
+					plugins.fireHook('action:group.join', {
 						groupName: groupName,
 						uid: uid
 					});
@@ -601,7 +601,7 @@ var async = require('async'),
 	Groups.requestMembership = function(groupName, uid, callback) {
 		if (parseInt(uid, 10) > 0) {
 			db.setAdd('group:' + groupName + ':pending', uid, callback);
-			plugins.fireHook('action:groups.requestMembership', {
+			plugins.fireHook('action:group.requestMembership', {
 				groupName: groupName,
 				uid: uid
 			});
