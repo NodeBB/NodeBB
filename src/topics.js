@@ -256,7 +256,7 @@ var async = require('async'),
 				topicData.pinned = parseInt(topicData.pinned, 10) === 1;
 
 				plugins.fireHook('filter:topic.get', {topic: topicData, uid: uid}, function(err, data) {
-					callback(err, data ? data.topics : null);
+					callback(err, data ? data.topic : null);
 				});
 			});
 		});
