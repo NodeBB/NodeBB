@@ -7,6 +7,7 @@ var async = require('async'),
 	path = require('path'),
 	nconf = require('nconf'),
 	fs = require('fs'),
+	validator = require('validator'),
 
 	user = require('./user'),
 	meta = require('./meta'),
@@ -202,6 +203,9 @@ var async = require('async'),
 				results.base['cover:position'] = '50% 50%';
 			}
 
+			results.base.name = validator.escape(results.base.name);
+			results.base.description = validator.escape(results.base.description);
+			results.base.userTitle = validator.escape(results.base.userTitle);
 			results.base.members = results.users.filter(Boolean);
 			results.base.pending = results.pending.filter(Boolean);
 			results.base.count = numUsers || results.base.members.length;
