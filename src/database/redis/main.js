@@ -77,6 +77,7 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.deleteAll = function(keys, callback) {
+		callback = callback || function() {};
 		var multi = redisClient.multi();
 		for(var i=0; i<keys.length; ++i) {
 			multi.del(keys[i]);
@@ -91,16 +92,19 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.set = function(key, value, callback) {
+		callback = callback || function() {};
 		redisClient.set(key, value, function(err) {
 			callback(err);
 		});
 	};
 
 	module.increment = function(key, callback) {
+		callback = callback || function() {};
 		redisClient.incr(key, callback);
 	};
 
 	module.rename = function(oldKey, newKey, callback) {
+		callback = callback || function() {};
 		redisClient.rename(oldKey, newKey, function(err, res) {
 			callback(err);
 		});
