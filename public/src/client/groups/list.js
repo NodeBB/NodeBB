@@ -10,7 +10,7 @@ define('forum/groups/list', function() {
 		groupsEl.on('click', '.list-cover', function() {
 			var groupName = $(this).parents('[data-group]').attr('data-group');
 
-			ajaxify.go('groups/' + groupName);
+			ajaxify.go('groups/' + encodeURIComponent(groupName));
 		});
 
 		// Group creation

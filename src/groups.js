@@ -7,6 +7,7 @@ var async = require('async'),
 	path = require('path'),
 	nconf = require('nconf'),
 	fs = require('fs'),
+	validator = require('validator'),
 
 	user = require('./user'),
 	meta = require('./meta'),
@@ -202,6 +203,9 @@ var async = require('async'),
 				results.base['cover:position'] = '50% 50%';
 			}
 
+			results.base.name = validator.escape(results.base.name);
+			results.base.description = validator.escape(results.base.description);
+			results.base.userTitle = validator.escape(results.base.userTitle);
 			results.base.members = results.users.filter(Boolean);
 			results.base.pending = results.pending.filter(Boolean);
 			results.base.count = numUsers || results.base.members.length;
@@ -611,15 +615,26 @@ var async = require('async'),
 	};
 
 	Groups.requestMembership = function(groupName, uid, callback) {
-		if (parseInt(uid, 10) > 0) {
-			db.setAdd('group:' + groupName + ':pending', uid, callback);
-			plugins.fireHook('action:group.requestMembership', {
-				groupName: groupName,
-				uid: uid
-			});
-		} else {
-			callback(new Error('[[error:not-logged-in]]'));
-		}
+		async.parallel({
+			exists: async.apply(Groups.isMember, uid, groupName),
+			isMember: async.apply(Groups.exists, groupName)
+		}, function(err, checks) {
+			if (!checks.exists) {
+				return callback(new Error('[[error:no-group]]'));
+			} else if (checks.isMember) {
+				return callback(new Error('[[error:group-already-member]]'));
+			}
+
+			if (parseInt(uid, 10) > 0) {
+				db.setAdd('group:' + groupName + ':pending', uid, callback);
+				plugins.fireHook('action:group.requestMembership', {
+					groupName: groupName,
+					uid: uid
+				});
+			} else {
+				callback(new Error('[[error:not-logged-in]]'));
+			}
+		});
 	};
 
 	Groups.acceptMembership = function(groupName, uid, callback) {
