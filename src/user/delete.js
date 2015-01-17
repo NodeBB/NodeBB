@@ -79,10 +79,13 @@ module.exports = function(User) {
 						'uid:' + uid + ':favourites', 'uid:' + uid + ':followed_tids', 'user:' + uid + ':settings',
 						'uid:' + uid + ':topics', 'uid:' + uid + ':posts',
 						'uid:' + uid + ':chats', 'uid:' + uid + ':chats:unread',
-						'uid:' + uid + ':ip', 'uid:' + uid + ':upvote', 'uid:' + uid + ':downvote',
+						'uid:' + uid + ':upvote', 'uid:' + uid + ':downvote',
 						'uid:' + uid + ':ignored:cids'
 					];
 					db.deleteAll(keys, next);
+				},
+				function(next) {
+					deleteUserIps(uids, next);
 				},
 				function(next) {
 					deleteUserFromFollowers(uid, next);
@@ -109,6 +112,23 @@ module.exports = function(User) {
 			});
 		});
 	};
+
+	function deleteUserIps(uid, callback) {
+		db.getSortedSetRange('uid:' + uid + ':ip', 0, -1, function(err, ips) {
+			if (err) {
+				return callback(err);
+			}
+
+			async.each(ips, function(ip, next) {
+				db.sortedSetRemove('ip:' + ip + ':uid', uid, next);
+			}, function(err) {
+				if (err) {
+					return callback(err);
+				}
+				db.delete('uid:' + uid + ':ip', callback);
+			});
+		})
+	}
 
 	function deleteUserFromFollowers(uid, callback) {
 		db.getSetMembers('followers:' + uid, function(err, uids) {

@@ -18,7 +18,7 @@ module.exports = function(User) {
 			return callback(null, {timing: 0, users: [], matchCount: 0, pages: []});
 		}
 
-		if (searchBy === 'ip') {
+		if (searchBy.indexOf('ip') !== -1) {
 			return searchByIP(query, callback);
 		}
 
