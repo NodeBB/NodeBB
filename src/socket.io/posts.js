@@ -181,7 +181,7 @@ function favouriteCommand(socket, command, eventName, notification, data, callba
 				return callback(err);
 			}
 
-			executeFavouriteCommand(socket, command, eventName, notification, filteredData, callback);
+			executeFavouriteCommand(socket, command, eventName, notification, filteredData.data, callback);
 		});
 	});
 }
