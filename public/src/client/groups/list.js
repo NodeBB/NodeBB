@@ -21,7 +21,7 @@ define('forum/groups/list', function() {
 						name: name
 					}, function(err) {
 						if (!err) {
-							ajaxify.go('groups/' + name);
+							ajaxify.go('groups/' + encodeURIComponent(name));
 						} else {
 							app.alertError(err.message);
 						}
