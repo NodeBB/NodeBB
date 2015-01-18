@@ -222,7 +222,9 @@ var async = require('async'),
 			results.base.isPending = results.isPending;
 			results.base.isOwner = results.isOwner;
 
-			callback(err, results.base);
+			plugins.fireHook('filter:groups.get', {group: results.base}, function(err, data) {
+				callback(err, data ? data.group : null);
+			});
 		});
 	};
 
