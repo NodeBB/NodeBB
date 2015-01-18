@@ -193,8 +193,10 @@ var async = require('async'),
 				});
 			}
 		}, function (err, results) {
-			if (err || !results.base) {
+			if (err) {
 				return callback(err);
+			} else if (!results.base) {
+				return callback(new Error('[[error:no-group]]'));
 			}
 
 			// Default image
@@ -221,6 +223,18 @@ var async = require('async'),
 			results.base.isOwner = results.isOwner;
 
 			callback(err, results.base);
+		});
+	};
+
+	Groups.getByGroupslug = function(slug, options, callback) {
+		db.getObjectField('groupslug:groupname', slug, function(err, groupName) {
+			if (err) {
+				return callback(err);
+			} else if (!groupName) {
+				return callback(new Error('[[error:no-group]]'));
+			}
+
+			Groups.get.call(Groups, groupName, options, callback);
 		});
 	};
 
@@ -413,8 +427,10 @@ var async = require('async'),
 				return callback(new Error('[[error:group-already-exists]]'));
 			}
 
-			var groupData = {
+			var slug = utils.slugify(data.name),
+				groupData = {
 					name: data.name,
+					slug: slug,
 					userTitle: data.name,
 					description: data.description || '',
 					deleted: '0',
@@ -430,6 +446,10 @@ var async = require('async'),
 			if (data.hasOwnProperty('ownerUid')) {
 				tasks.push(async.apply(db.setAdd, 'group:' + data.name + ':owners', data.ownerUid));
 				tasks.push(async.apply(db.setAdd, 'group:' + data.name + ':members', data.ownerUid));
+			}
+
+			if (!data.hidden) {
+				tasks.push(async.apply(db.setObjectField, 'groupslug:groupname', slug, data.name));
 			}
 
 			async.parallel(tasks, function(err) {
@@ -567,6 +587,7 @@ var async = require('async'),
 				async.apply(db.delete, 'group:' + groupName + ':members'),
 				async.apply(db.delete, 'group:' + groupName + ':pending'),
 				async.apply(db.delete, 'group:' + groupName + ':owners'),
+				async.apply(db.deleteObjectField, 'groupslug:groupname', utils.slugify(groupName)),
 				function(next) {
 					db.getSetMembers('groups', function(err, groups) {
 						if (err) {
@@ -578,7 +599,7 @@ var async = require('async'),
 					});
 				}
 			], callback);
-		})
+		});
 	};
 
 	Groups.join = function(groupName, uid, callback) {

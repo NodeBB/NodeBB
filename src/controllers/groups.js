@@ -26,7 +26,7 @@ groupsController.details = function(req, res, next) {
 
 	async.parallel({
 		group: function(next) {
-			groups.get(req.params.name, {
+			groups.getByGroupslug(req.params.slug, {
 				expand: true,
 				uid: uid
 			}, next);
