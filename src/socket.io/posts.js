@@ -176,7 +176,7 @@ function favouriteCommand(socket, command, eventName, notification, data, callba
 			filter.post.favourite
 			filter.post.unfavourite
 		 */
-		plugins.fireHook('filter:post.' + command, data, function(err, filteredData) {
+		plugins.fireHook('filter:post.' + command, {data: data, uid: socket.uid}, function(err, filteredData) {
 			if (err) {
 				return callback(err);
 			}
