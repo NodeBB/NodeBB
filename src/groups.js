@@ -434,9 +434,7 @@ var async = require('async'),
 
 			async.parallel(tasks, function(err) {
 				if (!err) {
-					plugins.fireHook('action:group.create', {
-						name: data.name
-					});
+					plugins.fireHook('action:group.create', groupData);
 				}
 
 				callback(err);
