@@ -223,9 +223,8 @@ describe('Groups', function() {
 			Groups.destroy('foo', function(err) {
 				if (err) return done(err);
 
-				Groups.get('foo', {}, function(err, groupObj) {
-					if (err) return done(err);
-					assert.strictEqual(undefined, groupObj);
+				Groups.get('foo', {}, function(err) {
+					assert(err, 'Group still exists!');
 
 					done();
 				});
