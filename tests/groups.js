@@ -212,18 +212,35 @@ describe('Groups', function() {
 				});
 			});
 		});
+
+		it('should rename a group if the name was updated', function(done) {
+			Groups.update('foo', {
+				name: 'foobar?'
+			}, function(err) {
+				if (err) return done(err);
+
+				Groups.get('foobar?', {}, function(err, groupObj) {
+					if (err) return done(err);
+
+					assert.strictEqual('foobar?', groupObj.name);
+					assert.strictEqual('foobar', groupObj.slug);
+
+					done();
+				});
+			});
+		});
 	});
 
 	describe('.destroy()', function() {
 		before(function(done) {
-			Groups.join('foo', 1, done);
+			Groups.join('foobar?', 1, done);
 		});
 
 		it('should destroy a group', function(done) {
-			Groups.destroy('foo', function(err) {
+			Groups.destroy('foobar?', function(err) {
 				if (err) return done(err);
 
-				Groups.get('foo', {}, function(err) {
+				Groups.get('foobar?', {}, function(err) {
 					assert(err, 'Group still exists!');
 
 					done();
