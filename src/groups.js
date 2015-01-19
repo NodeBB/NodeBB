@@ -543,6 +543,15 @@ var async = require('async'),
 						db.setObjectField('group:' + oldName, 'name', newName, next);
 					},
 					function(next) {
+						db.setObjectField('group:' + oldName, 'slug', utils.slugify(newName), next);
+					},
+					function(next) {
+						db.deleteObjectField('groupslug:groupname', group.slug, next);
+					},
+					function(next) {
+						db.setObjectField('groupslug:groupname', utils.slugify(newName), newName, next);
+					},
+					function(next) {
 						db.getSetMembers('groups', function(err, groups) {
 							if (err) {
 								return next(err);
