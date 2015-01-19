@@ -512,7 +512,7 @@ var async = require('async'),
 
 				plugins.fireHook('action:group.update', {
 					name: groupName,
-					values: payload
+					values: values
 				});
 				renameGroup(groupName, values.name, callback);
 			});
