@@ -122,7 +122,7 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 					if (settings.name) {
 						var pathname = window.location.pathname;
 						pathname = pathname.substr(1, pathname.lastIndexOf('/'));
-						ajaxify.go(pathname + encodeURIComponent(settings.name));
+						ajaxify.go(pathname + utils.slugify(settings.name));
 					} else {
 						ajaxify.refresh();
 					}
