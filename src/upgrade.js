@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 0, 15);
+	latestSchema = Date.UTC(2015, 0, 19);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -72,6 +72,7 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			thisSchemaDate = Date.UTC(2014, 9, 31);
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				winston.info('[2014/10/31] Applying newbiePostDelay values');
 
 				async.series([
@@ -93,6 +94,7 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			thisSchemaDate = Date.UTC(2014, 10, 6, 18, 30);
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				winston.info('[2014/11/6] Updating topic authorship sorted set');
 
 				async.waterfall([
@@ -138,6 +140,7 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			thisSchemaDate = Date.UTC(2014, 10, 7);
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				winston.info('[2014/11/7] Renaming sorted set names');
 
 				async.waterfall([
@@ -199,6 +202,7 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			thisSchemaDate = Date.UTC(2014, 10, 11);
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				winston.info('[2014/11/11] Upgrading permissions');
 
 				async.waterfall([
@@ -272,6 +276,7 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			thisSchemaDate = Date.UTC(2014, 10, 17, 13);
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				winston.info('[2014/11/17] Updating user email digest settings');
 
 				async.waterfall([
@@ -306,6 +311,7 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			thisSchemaDate = Date.UTC(2014, 10, 29, 22);
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				winston.info('[2014/11/29] Updating config.json to new format');
 				var configPath = path.join(__dirname, '../config.json');
 
@@ -358,6 +364,7 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			thisSchemaDate = Date.UTC(2014, 11, 2);
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				winston.info('[2014/12/2] Removing register user fields');
 
 				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
@@ -393,6 +400,7 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			thisSchemaDate = Date.UTC(2014, 11, 12);
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				winston.info('[2014/12/12] Updating teasers');
 
 				db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
@@ -419,6 +427,7 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			thisSchemaDate = Date.UTC(2014, 11, 20);
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				winston.info('[2014/12/20] Updating digest settings');
 
 				async.waterfall([
@@ -455,6 +464,7 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			thisSchemaDate = Date.UTC(2015, 0, 8);
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				winston.info('[2015/01/08] Updating category topics sorted sets');
 
 				db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
@@ -494,6 +504,7 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			thisSchemaDate = Date.UTC(2015, 0, 9);
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				winston.info('[2015/01/09] Creating fullname:uid hash');
 
 				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
@@ -529,6 +540,7 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			thisSchemaDate = Date.UTC(2015, 0, 13);
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				winston.info('[2015/01/13] Creating uid:followed_tids sorted set');
 
 				db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
@@ -570,6 +582,7 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			thisSchemaDate = Date.UTC(2015, 0, 14);
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				winston.info('[2015/01/14] Upgrading follow sets to sorted sets');
 
 				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
@@ -634,11 +647,12 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			thisSchemaDate = Date.UTC(2015, 0, 15);
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				winston.info('[2015/01/15] Creating topiccount for users');
 
 				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
 					if (err) {
-						winston.error('[2014/01/15] Error encountered while Creating topiccount for users');
+						winston.error('[2015/01/15] Error encountered while Creating topiccount for users');
 						return next(err);
 					}
 
@@ -668,6 +682,34 @@ Upgrade.upgrade = function(callback) {
 				next();
 			}
 		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 0, 19);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/01/19] Generating group slugs');
+
+				Groups.list({}, function(err, groups) {
+					var tasks = [];
+					groups.forEach(function(groupObj) {
+						tasks.push(async.apply(db.setObjectField, 'group:' + groupObj.name, 'slug', Utils.slugify(groupObj.name)));
+						tasks.push(async.apply(db.setObjectField, 'groupslug:groupname', Utils.slugify(groupObj.name), groupObj.name));
+					});
+
+					async.parallel(tasks, function(err) {
+						if (err) {
+							winston.error('[2015/01/19] Error encountered while Generating group slugs');
+							return next(err);
+						}
+
+						winston.info('[2015/01/19] Generating group slugs done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2015/01/19] Generating group slugs skipped');
+				next();
+			}
+		}
 
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 22!!!
