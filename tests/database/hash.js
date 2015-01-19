@@ -222,7 +222,7 @@ describe('Hash methods', function() {
 		});
 
 		it('should return false if field does not exist', function(done) {
-			db.isObjectField('testObject1', 'field1', function(err, value) {
+			db.isObjectField('hashTestObject', 'field1', function(err, value) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(value, false);
@@ -235,6 +235,27 @@ describe('Hash methods', function() {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(value, true);
+				done();
+			});
+		});
+	});
+
+
+	describe('isObjectFields()', function() {
+		it('should return an array of false if object does not exist', function(done) {
+			db.isObjectFields('doesnotexist', ['field1', 'field2'], function(err, values) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(values, [false, false]);
+				done();
+			});
+		});
+
+		it('should return false if field does not exist', function(done) {
+			db.isObjectFields('hashTestObject', ['name', 'age', 'field1'], function(err, values) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(values, [true, true, false]);
 				done();
 			});
 		});
