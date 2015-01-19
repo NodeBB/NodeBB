@@ -147,7 +147,7 @@ var async = require('async'),
 						return next(err);
 					}
 
-					if (options.expand) {
+					if (options.expand && uids.length) {
 						async.map(uids, user.getUserData, next);
 					} else {
 						next(err, uids);
@@ -405,9 +405,29 @@ var async = require('async'),
 
 	Groups.exists = function(name, callback) {
 		if (Array.isArray(name)) {
-			db.isSetMembers('groups', name, callback);
+			var slugs = name.map(function(groupName) {
+					return utils.slugify(groupName);
+				});
+			async.parallel([
+				async.apply(db.isObjectFields, 'groupslug:groupname', slugs),
+				async.apply(db.isSetMembers, 'groups', name)
+			], function(err, results) {
+				if (err) {
+					return callback(err);
+				}
+
+				callback(null, results.map(function(pair) {
+					return pair[0] || pair[1];
+				}));
+			});
 		} else {
-			db.isSetMember('groups', name, callback);
+			var slug = utils.slugify(name);
+			async.parallel([
+				async.apply(db.isObjectField, 'groupslug:groupname', slug),
+				async.apply(db.isSetMember, 'groups', name)
+			], function(err, results) {
+				callback(err, !err ? (results[0] || results[1]) : null);
+			});
 		}
 	};
 

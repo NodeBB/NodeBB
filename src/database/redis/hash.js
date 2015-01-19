@@ -88,6 +88,24 @@ module.exports = function(redisClient, module) {
 		});
 	};
 
+	module.isObjectFields = function(key, fields, callback) {
+		var multi = redisClient.multi();
+		for (var i=0; i<fields.length; ++i) {
+			multi.hexists(key, fields[i]);
+		}
+
+		multi.exec(function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			for (var i=0; i<results.length; ++i) {
+				results[i] = results[i] === 1;
+			}
+			callback(null, results);
+		});
+	};
+
 	module.deleteObjectField = function(key, field, callback) {
 		redisClient.hdel(key, field, function(err, res) {
 			callback(err);
