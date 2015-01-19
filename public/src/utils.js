@@ -119,7 +119,7 @@
 				str = XRegExp.replace(str, utils.invalidUnicodeChars, '-');
 			}
 			str = str.toLocaleLowerCase();
-			str = str.replace(utils.collapseWhitespace, '-')
+			str = str.replace(utils.collapseWhitespace, '-');
 			str = str.replace(utils.collapseDash, '-');
 			str = str.replace(utils.trimTrailingDash, '');
 			str = str.replace(utils.trimLeadingDash, '');
@@ -193,7 +193,7 @@
 			return function (path) {
 				var extension = utils.fileExtension(path);
 				return map[extension] || '*';
-			}
+			};
 		})(),
 
 		isRelativeUrl: function(url) {
@@ -293,8 +293,9 @@
 					key = decodeURI(val[0]),
 					value = options.skipToType[key] ? decodeURI(val[1]) : utils.toType(decodeURI(val[1]));
 
-				if (key)
+				if (key) {
 					hash[key] = value;
+				}
 			});
 			return hash;
 		},
@@ -335,12 +336,15 @@
 				return str;
 			} else {
 				var nb = parseFloat(str);
-				if (!isNaN(nb) && isFinite(str))
+				if (!isNaN(nb) && isFinite(str)) {
 					return nb;
-				if (str === 'false')
+				}
+				if (str === 'false') {
 					return false;
-				if (str === 'true')
+				}
+				if (str === 'true') {
 					return true;
+				}
 
 				try {
 					str = JSON.parse(str);
@@ -356,21 +360,25 @@
 		// get example: utils.props(A, 'a.b.c.foo.bar') // returns undefined without throwing a TypeError
 		// credits to github.com/gkindel
 		props: function(obj, props, value) {
-			if(obj === undefined)
+			if(obj === undefined) {
 				obj = window;
-			if(props == null)
+			}
+			if(props == null) {
 				return undefined;
+			}
 			var i = props.indexOf('.');
 			if( i == -1 ) {
-				if(value !== undefined)
+				if(value !== undefined) {
 					obj[props] = value;
+				}
 				return obj[props];
 			}
 			var prop = props.slice(0, i),
 				newProps = props.slice(i + 1);
 
-			if(props !== undefined && !(obj[prop] instanceof Object) )
+			if(props !== undefined && !(obj[prop] instanceof Object) ) {
 				obj[prop] = {};
+			}
 
 			return utils.props(obj[prop], newProps, value);
 		}
@@ -378,10 +386,12 @@
 
 	if (typeof String.prototype.startsWith != 'function') {
 		String.prototype.startsWith = function (prefix){
-			if (this.length < prefix.length)
+			if (this.length < prefix.length) {
 				return false;
-			for (var i = prefix.length - 1; (i >= 0) && (this[i] === prefix[i]); --i)
+			}
+			for (var i = prefix.length - 1; (i >= 0) && (this[i] === prefix[i]); --i) {
 				continue;
+			}
 			return i < 0;
 		};
 	}
