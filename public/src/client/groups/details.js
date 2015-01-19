@@ -1,5 +1,5 @@
 "use strict";
-/* globals define, socket, ajaxify, app, bootbox, RELATIVE_PATH */
+/* globals define, socket, ajaxify, app, bootbox, RELATIVE_PATH, utils */
 
 define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 'vendor/jquery/draggable-background/backgroundDraggable'], function(iconSelect) {
 	var Details = {
