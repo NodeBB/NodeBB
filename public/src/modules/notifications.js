@@ -25,10 +25,13 @@ define('notifications', ['sounds'], function(sound) {
 							image = '';
 						}
 
-						return '<li class="' + (notification.readClass || '') + '"><a href="' + (notification.path || '#') + '">' + image + '<span class="pull-right relTime">' + utils.relativeTime(notification.datetime, true) + '</span><span class="text">' + notification.bodyShort + '</span></a></li>';
+						return '<li class="' + (notification.readClass || '') + '"><a href="' + (notification.path || '#') + '">' + image + '<span class="pull-right relTime">' + $.timeago(new Date(parseInt(notification.datetime, 10))) + '</span><span class="text">' + notification.bodyShort + '</span></a></li>';
 					}
 
 					var	x, html = '';
+
+					// Switch to shorthand
+					translator.toggleTimeagoShorthand();
 
 					if (!err && (data.read.length + data.unread.length) > 0) {
 						var	image = '';
@@ -42,6 +45,9 @@ define('notifications', ['sounds'], function(sound) {
 					} else {
 						html += '<li class="no-notifs"><a>[[notifications:no_notifs]]</a></li>';
 					}
+
+					// Switch back to original timeago strings
+					translator.toggleTimeagoShorthand();
 
 					html += '<li class="pagelink"><a href="' + config.relative_path + '/notifications">[[notifications:see_all]]</a></li>';
 

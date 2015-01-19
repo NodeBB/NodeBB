@@ -85,6 +85,34 @@
 		}
 	};
 
+	translator.toggleTimeagoShorthand = function() {
+		if (!translator.timeagoStrings) {
+			translator.timeagoStrings = $.extend({}, jQuery.timeago.settings.strings);
+			jQuery.timeago.settings.strings = {
+				prefixAgo: null,
+				prefixFromNow: null,
+				suffixAgo: "",
+				suffixFromNow: "",
+				seconds: "1m",
+				minute: "1m",
+				minutes: "%dm",
+				hour: "1h",
+				hours: "%dh",
+				day: "1d",
+				days: "%dd",
+				month: "1mo",
+				months: "%dmo",
+				year: "1yr",
+				years: "%dyr",
+				wordSeparator: " ",
+				numbers: []
+			};
+		} else {
+			jQuery.timeago.settings.strings = $.extend({}, translator.timeagoStrings);
+			delete translator.timeagoStrings;
+		}
+	};
+
 	translator.translate = function (text, language, callback) {
 		if (typeof language === 'function') {
 			callback = language;

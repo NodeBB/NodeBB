@@ -63,44 +63,6 @@
 			});
 		},
 
-		relativeTime: function(timestamp, min) {
-			var now = +new Date(),
-				difference = now - Math.floor(parseFloat(timestamp));
-
-			if(difference < 0) {
-				difference = 0;
-			}
-
-			difference = Math.floor(difference / 1000);
-
-			if (difference < 60) {
-				return difference + (min ? 's' : ' second') + (difference !== 1 && !min ? 's' : '');
-			}
-
-			difference = Math.floor(difference / 60);
-			if (difference < 60) {
-				return difference + (min ? 'm' : ' minute') + (difference !== 1 && !min ? 's' : '');
-			}
-
-			difference = Math.floor(difference / 60);
-			if (difference < 24) {
-				return difference + (min ? 'h' : ' hour') + (difference !== 1 && !min ? 's' : '');
-			}
-
-			difference = Math.floor(difference / 24);
-			if (difference < 30) {
-				return difference + (min ? 'd' : ' day') + (difference !== 1 && !min ? 's' : '');
-			}
-
-			difference = Math.floor(difference / 30);
-			if (difference < 12) {
-				return difference + (min ? 'mon' : ' month') + (difference !== 1 && !min ? 's' : '');
-			}
-
-			difference = Math.floor(difference / 12);
-			return difference + (min ? 'y' : ' year') + (difference !== 1 && !min ? 's' : '');
-		},
-
 		invalidUnicodeChars: XRegExp('[^\\p{L}\\s\\d\\-_]', 'g'),
 		invalidLatinChars: /[^\w\s\d\-_]/g,
 		trimRegex: /^\s+|\s+$/g,
