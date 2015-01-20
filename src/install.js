@@ -268,11 +268,7 @@ function enableDefaultTheme(next) {
 function createAdministrator(next) {
 	var Groups = require('./groups');
 	Groups.get('administrators', {}, function (err, groupObj) {
-		if (err) {
-			return next(err);
-		}
-
-		if (groupObj && groupObj.memberCount > 0) {
+		if (!err && groupObj && groupObj.memberCount > 0) {
 			winston.info('Administrator found, skipping Admin setup');
 			next();
 		} else {
