@@ -107,6 +107,7 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.deleteObjectField = function(key, field, callback) {
+		callback = callback || function() {};
 		redisClient.hdel(key, field, function(err, res) {
 			callback(err);
 		});
