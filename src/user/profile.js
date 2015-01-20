@@ -96,7 +96,7 @@ module.exports = function(User) {
 					if (err) {
 						return callback(err);
 					}
-
+					plugins.fireHook('action:user.updateProfile', {data: data, uid: uid});
 					User.getUserFields(uid, ['email', 'userslug', 'picture', 'gravatarpicture'], callback);
 				});
 			});
