@@ -775,7 +775,7 @@ var async = require('async'),
 				return 'group:' + groupName;
 			});
 
-			db.getObjectsFields(groupKeys, ['name', 'hidden', 'userTitle', 'icon', 'labelColor'], function(err, groupData) {
+			db.getObjectsFields(groupKeys, ['name', 'slug', 'hidden', 'userTitle', 'icon', 'labelColor'], function(err, groupData) {
 				if (err) {
 					return callback(err);
 				}
