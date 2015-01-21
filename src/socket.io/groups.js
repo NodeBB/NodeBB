@@ -127,11 +127,11 @@ SocketGroups.delete = function(socket, data, callback) {
 };
 
 SocketGroups.search = function(socket, data, callback) {
-	if (!data || !data.query) {
+	if (!data) {
 		return callback(null, []);
 	}
 
-	groups.search(data.query, data.options || {}, callback);
+	groups.search(data.query || '', data.options || {}, callback);
 };
 
 SocketGroups.cover = {};

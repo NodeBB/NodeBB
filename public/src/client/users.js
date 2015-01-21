@@ -96,13 +96,11 @@ define('forum/users', function() {
 			timeoutId = setTimeout(doSearch, 250);
 		});
 
-		$('.search select, .search .checkbox input').on('change', function() {
-			console.log('doing search');
+		$('.search select, .search input[type="checkbox"]').on('change', function() {
 			doSearch();
 		});
 
 		$('.pagination').on('click', 'a', function() {
-			console.log('loading page', $(this).attr('data-page'));
 			doSearch($(this).attr('data-page'));
 			return false;
 		})
