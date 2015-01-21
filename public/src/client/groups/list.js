@@ -5,7 +5,7 @@ define('forum/groups/list', function() {
 	var Groups = {};
 
 	Groups.init = function() {
-		var groupsEl = $('.groups.row');
+		var groupsEl = $('#groups-list');
 
 		groupsEl.on('click', '.list-cover', function() {
 			var groupName = $(this).parents('[data-group]').attr('data-group');
@@ -41,7 +41,7 @@ define('forum/groups/list', function() {
 	};
 
 	Groups.search = function(query) {
-		var groupsEl = $('.groups.row');
+		var groupsEl = $('#groups-list');
 
 		socket.emit('groups.search', {
 			query: query,
