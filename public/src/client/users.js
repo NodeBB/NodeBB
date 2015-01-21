@@ -96,7 +96,7 @@ define('forum/users', function() {
 			timeoutId = setTimeout(doSearch, 250);
 		});
 
-		$('.search select, .search .checkbox input').on('change', function() {
+		$('.search select, .search input[type="checkbox"]').on('change', function() {
 			doSearch();
 		});
 
