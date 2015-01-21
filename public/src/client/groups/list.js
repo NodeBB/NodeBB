@@ -1,5 +1,5 @@
 "use strict";
-/* globals app, define, ajaxify, socket, bootbox, utils */
+/* globals app, define, ajaxify, socket, bootbox, utils, templates */
 
 define('forum/groups/list', function() {
 	var Groups = {};
@@ -27,6 +27,32 @@ define('forum/groups/list', function() {
 						}
 					});
 				}
+			});
+		});
+
+		// Group searching
+		$('#search-text').on('keydown', function(e) {
+			if (e.keyCode === 13) { Groups.search($(this).val()); }
+		});
+
+		$('#search-button').on('click', function() {
+			Groups.search($(this).siblings('input').val());
+		});
+	};
+
+	Groups.search = function(query) {
+		var groupsEl = $('.groups.row');
+
+		socket.emit('groups.search', {
+			query: query,
+			options: {
+				expand: true
+			}
+		}, function(err, groups) {
+			templates.parse('partials/group_list', {
+				groups: groups
+			}, function(html) {
+				groupsEl.empty().append(html);
 			});
 		});
 	};

@@ -695,6 +695,10 @@ Upgrade.upgrade = function(callback) {
 						tasks.push(async.apply(db.setObjectField, 'groupslug:groupname', Utils.slugify(groupObj.name), groupObj.name));
 					});
 
+					// Administrator group
+					tasks.push(async.apply(db.setObjectField, 'group:administrators', 'slug', 'administrators'));
+					tasks.push(async.apply(db.setObjectField, 'groupslug:groupname', 'administrators', 'administrators'));
+
 					async.parallel(tasks, function(err) {
 						if (err) {
 							winston.error('[2015/01/19] Error encountered while Generating group slugs');

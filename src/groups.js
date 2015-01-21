@@ -775,7 +775,7 @@ var async = require('async'),
 				return 'group:' + groupName;
 			});
 
-			db.getObjectsFields(groupKeys, ['name', 'slug', 'hidden', 'userTitle', 'icon', 'labelColor'], function(err, groupData) {
+			db.getObjects(groupKeys, function(err, groupData) {
 				if (err) {
 					return callback(err);
 				}
@@ -786,6 +786,12 @@ var async = require('async'),
 
 				var groupSets = groupData.map(function(group) {
 					group.labelColor = group.labelColor || '#000000';
+
+					if (!group['cover:url']) {
+						group['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';
+						group['cover:position'] = '50% 50%';
+					}
+
 					return 'group:' + group.name + ':members';
 				});
 
@@ -890,6 +896,25 @@ var async = require('async'),
 	Groups.ownership.rescind = function(toUid, groupName, callback) {
 		// Note: No ownership checking is done here on purpose!
 		db.setRemove('group:' + groupName + ':owners', toUid, callback);
+	};
+
+	Groups.search = function(query, options, callback) {
+		if (!query || !query.length) {
+			return callback(null, []);
+		}
+
+		async.waterfall([
+			async.apply(db.getObjectValues, 'groupslug:groupname'),
+			function(groupNames, next) {
+				groupNames = groupNames.filter(function(name) {
+					return name.match(new RegExp(query, 'i'));
+				});
+
+				async.mapLimit(groupNames, 5, function(groupName, next) {
+					Groups.get(groupName, options || {}, next);
+				}, next);
+			}
+		], callback);
 	};
 
 }(module.exports));
