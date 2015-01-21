@@ -42,6 +42,7 @@ define('forum/account/settings', ['forum/account/header'], function(header) {
 						config[key] = newSettings[key];
 					}
 				}
+				app.exposeConfigToTemplates();
 
 				if (parseInt(app.uid, 10) === parseInt(ajaxify.variables.get('theirid'), 10)) {
 					ajaxify.refresh();

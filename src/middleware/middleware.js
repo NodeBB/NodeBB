@@ -450,7 +450,12 @@ middleware.maintenanceMode = function(req, res, next) {
 			'/login',
 			'/stylesheet.css',
 			'/nodebb.min.js',
-			'/vendor/fontawesome/fonts/fontawesome-webfont.woff'
+			'/vendor/fontawesome/fonts/fontawesome-webfont.woff',
+			'/src/modules/[\\w]+\.js',
+			'/api/get_templates_listing',
+			'/api/login',
+			'/api/?',
+			'/language/.+'
 		],
 		render = function() {
 			res.status(503);

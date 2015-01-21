@@ -63,44 +63,6 @@
 			});
 		},
 
-		relativeTime: function(timestamp, min) {
-			var now = +new Date(),
-				difference = now - Math.floor(parseFloat(timestamp));
-
-			if(difference < 0) {
-				difference = 0;
-			}
-
-			difference = Math.floor(difference / 1000);
-
-			if (difference < 60) {
-				return difference + (min ? 's' : ' second') + (difference !== 1 && !min ? 's' : '');
-			}
-
-			difference = Math.floor(difference / 60);
-			if (difference < 60) {
-				return difference + (min ? 'm' : ' minute') + (difference !== 1 && !min ? 's' : '');
-			}
-
-			difference = Math.floor(difference / 60);
-			if (difference < 24) {
-				return difference + (min ? 'h' : ' hour') + (difference !== 1 && !min ? 's' : '');
-			}
-
-			difference = Math.floor(difference / 24);
-			if (difference < 30) {
-				return difference + (min ? 'd' : ' day') + (difference !== 1 && !min ? 's' : '');
-			}
-
-			difference = Math.floor(difference / 30);
-			if (difference < 12) {
-				return difference + (min ? 'mon' : ' month') + (difference !== 1 && !min ? 's' : '');
-			}
-
-			difference = Math.floor(difference / 12);
-			return difference + (min ? 'y' : ' year') + (difference !== 1 && !min ? 's' : '');
-		},
-
 		invalidUnicodeChars: XRegExp('[^\\p{L}\\s\\d\\-_]', 'g'),
 		invalidLatinChars: /[^\w\s\d\-_]/g,
 		trimRegex: /^\s+|\s+$/g,
@@ -119,7 +81,7 @@
 				str = XRegExp.replace(str, utils.invalidUnicodeChars, '-');
 			}
 			str = str.toLocaleLowerCase();
-			str = str.replace(utils.collapseWhitespace, '-')
+			str = str.replace(utils.collapseWhitespace, '-');
 			str = str.replace(utils.collapseDash, '-');
 			str = str.replace(utils.trimTrailingDash, '');
 			str = str.replace(utils.trimLeadingDash, '');
@@ -193,7 +155,7 @@
 			return function (path) {
 				var extension = utils.fileExtension(path);
 				return map[extension] || '*';
-			}
+			};
 		})(),
 
 		isRelativeUrl: function(url) {
@@ -248,6 +210,10 @@
 			return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 		},
 
+		escapeHTML: function(raw) {
+			return raw.replace(/&/gm,"&amp;").replace(/</gm,"&lt;").replace(/>/gm,"&gt;");
+		},
+
 		isAndroidBrowser: function() {
 			// http://stackoverflow.com/questions/9286355/how-to-detect-only-the-native-android-browser
 			var nua = navigator.userAgent;
@@ -289,8 +255,9 @@
 					key = decodeURI(val[0]),
 					value = options.skipToType[key] ? decodeURI(val[1]) : utils.toType(decodeURI(val[1]));
 
-				if (key)
+				if (key) {
 					hash[key] = value;
+				}
 			});
 			return hash;
 		},
@@ -331,12 +298,15 @@
 				return str;
 			} else {
 				var nb = parseFloat(str);
-				if (!isNaN(nb) && isFinite(str))
+				if (!isNaN(nb) && isFinite(str)) {
 					return nb;
-				if (str === 'false')
+				}
+				if (str === 'false') {
 					return false;
-				if (str === 'true')
+				}
+				if (str === 'true') {
 					return true;
+				}
 
 				try {
 					str = JSON.parse(str);
@@ -352,21 +322,25 @@
 		// get example: utils.props(A, 'a.b.c.foo.bar') // returns undefined without throwing a TypeError
 		// credits to github.com/gkindel
 		props: function(obj, props, value) {
-			if(obj === undefined)
+			if(obj === undefined) {
 				obj = window;
-			if(props == null)
+			}
+			if(props == null) {
 				return undefined;
+			}
 			var i = props.indexOf('.');
 			if( i == -1 ) {
-				if(value !== undefined)
+				if(value !== undefined) {
 					obj[props] = value;
+				}
 				return obj[props];
 			}
 			var prop = props.slice(0, i),
 				newProps = props.slice(i + 1);
 
-			if(props !== undefined && !(obj[prop] instanceof Object) )
+			if(props !== undefined && !(obj[prop] instanceof Object) ) {
 				obj[prop] = {};
+			}
 
 			return utils.props(obj[prop], newProps, value);
 		}
@@ -374,10 +348,12 @@
 
 	if (typeof String.prototype.startsWith != 'function') {
 		String.prototype.startsWith = function (prefix){
-			if (this.length < prefix.length)
+			if (this.length < prefix.length) {
 				return false;
-			for (var i = prefix.length - 1; (i >= 0) && (this[i] === prefix[i]); --i)
+			}
+			for (var i = prefix.length - 1; (i >= 0) && (this[i] === prefix[i]); --i) {
 				continue;
+			}
 			return i < 0;
 		};
 	}

@@ -339,8 +339,11 @@ SocketPosts.getPrivileges = function(socket, pids, callback) {
 	});
 };
 
-SocketPosts.getUpvoters = function(socket, pid, callback) {
-	favourites.getUpvotedUidsByPids([pid], function(err, data) {
+SocketPosts.getUpvoters = function(socket, pids, callback) {
+	if (!Array.isArray(pids)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	favourites.getUpvotedUidsByPids(pids, function(err, data) {
 		if (err || !Array.isArray(data) || !data.length) {
 			return callback(err, []);
 		}

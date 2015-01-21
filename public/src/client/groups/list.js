@@ -1,5 +1,5 @@
 "use strict";
-/* globals app, define, ajaxify, socket, bootbox */
+/* globals app, define, ajaxify, socket, bootbox, utils */
 
 define('forum/groups/list', function() {
 	var Groups = {};
@@ -10,7 +10,7 @@ define('forum/groups/list', function() {
 		groupsEl.on('click', '.list-cover', function() {
 			var groupName = $(this).parents('[data-group]').attr('data-group');
 
-			ajaxify.go('groups/' + encodeURIComponent(groupName));
+			ajaxify.go('groups/' + utils.slugify(groupName));
 		});
 
 		// Group creation
@@ -21,7 +21,7 @@ define('forum/groups/list', function() {
 						name: name
 					}, function(err) {
 						if (!err) {
-							ajaxify.go('groups/' + name);
+							ajaxify.go('groups/' + utils.slugify(name));
 						} else {
 							app.alertError(err.message);
 						}

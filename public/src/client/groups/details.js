@@ -1,5 +1,5 @@
 "use strict";
-/* globals define, socket, ajaxify, app, bootbox, RELATIVE_PATH */
+/* globals define, socket, ajaxify, app, bootbox, RELATIVE_PATH, utils */
 
 define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 'vendor/jquery/draggable-background/backgroundDraggable'], function(iconSelect) {
 	var Details = {
@@ -122,7 +122,7 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 					if (settings.name) {
 						var pathname = window.location.pathname;
 						pathname = pathname.substr(1, pathname.lastIndexOf('/'));
-						ajaxify.go(pathname + encodeURIComponent(settings.name));
+						ajaxify.go(pathname + utils.slugify(settings.name));
 					} else {
 						ajaxify.refresh();
 					}
@@ -134,7 +134,7 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 	};
 
 	Details.deleteGroup = function() {
-		bootbox.confirm('Are you sure you want to delete the group: ' + ajaxify.variables.get('group_name'), function(confirm) {
+		bootbox.confirm('Are you sure you want to delete the group: ' + utils.escapeHTML(ajaxify.variables.get('group_name')), function(confirm) {
 			if (confirm) {
 				bootbox.prompt('Please enter the name of this group in order to delete it:', function(response) {
 					if (response === ajaxify.variables.get('group_name')) {
@@ -142,7 +142,7 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 							groupName: ajaxify.variables.get('group_name')
 						}, function(err) {
 							if (!err) {
-								app.alertSuccess('[[groups:event.deleted, ' + ajaxify.variables.get('group_name') + ']]');
+								app.alertSuccess('[[groups:event.deleted, ' + utils.escapeHTML(ajaxify.variables.get('group_name')) + ']]');
 								ajaxify.go('groups');
 							} else {
 								app.alertError(err.message);

@@ -147,7 +147,7 @@ var async = require('async'),
 						return next(err);
 					}
 
-					if (options.expand) {
+					if (options.expand && uids.length) {
 						async.map(uids, user.getUserData, next);
 					} else {
 						next(err, uids);
@@ -193,8 +193,10 @@ var async = require('async'),
 				});
 			}
 		}, function (err, results) {
-			if (err || !results.base) {
+			if (err) {
 				return callback(err);
+			} else if (!results.base) {
+				return callback(new Error('[[error:no-group]]'));
 			}
 
 			// Default image
@@ -220,7 +222,21 @@ var async = require('async'),
 			results.base.isPending = results.isPending;
 			results.base.isOwner = results.isOwner;
 
-			callback(err, results.base);
+			plugins.fireHook('filter:group.get', {group: results.base}, function(err, data) {
+				callback(err, data ? data.group : null);
+			});
+		});
+	};
+
+	Groups.getByGroupslug = function(slug, options, callback) {
+		db.getObjectField('groupslug:groupname', slug, function(err, groupName) {
+			if (err) {
+				return callback(err);
+			} else if (!groupName) {
+				return callback(new Error('[[error:no-group]]'));
+			}
+
+			Groups.get.call(Groups, groupName, options, callback);
 		});
 	};
 
@@ -389,9 +405,29 @@ var async = require('async'),
 
 	Groups.exists = function(name, callback) {
 		if (Array.isArray(name)) {
-			db.isSetMembers('groups', name, callback);
+			var slugs = name.map(function(groupName) {
+					return utils.slugify(groupName);
+				});
+			async.parallel([
+				async.apply(db.isObjectFields, 'groupslug:groupname', slugs),
+				async.apply(db.isSetMembers, 'groups', name)
+			], function(err, results) {
+				if (err) {
+					return callback(err);
+				}
+
+				callback(null, results.map(function(pair) {
+					return pair[0] || pair[1];
+				}));
+			});
 		} else {
-			db.isSetMember('groups', name, callback);
+			var slug = utils.slugify(name);
+			async.parallel([
+				async.apply(db.isObjectField, 'groupslug:groupname', slug),
+				async.apply(db.isSetMember, 'groups', name)
+			], function(err, results) {
+				callback(err, !err ? (results[0] || results[1]) : null);
+			});
 		}
 	};
 
@@ -413,8 +449,10 @@ var async = require('async'),
 				return callback(new Error('[[error:group-already-exists]]'));
 			}
 
-			var groupData = {
+			var slug = utils.slugify(data.name),
+				groupData = {
 					name: data.name,
+					slug: slug,
 					userTitle: data.name,
 					description: data.description || '',
 					deleted: '0',
@@ -432,11 +470,13 @@ var async = require('async'),
 				tasks.push(async.apply(db.setAdd, 'group:' + data.name + ':members', data.ownerUid));
 			}
 
+			if (!data.hidden) {
+				tasks.push(async.apply(db.setObjectField, 'groupslug:groupname', slug, data.name));
+			}
+
 			async.parallel(tasks, function(err) {
 				if (!err) {
-					plugins.fireHook('action:group.create', {
-						name: data.name
-					});
+					plugins.fireHook('action:group.create', groupData);
 				}
 
 				callback(err);
@@ -472,7 +512,7 @@ var async = require('async'),
 
 				plugins.fireHook('action:group.update', {
 					name: groupName,
-					values: payload
+					values: values
 				});
 				renameGroup(groupName, values.name, callback);
 			});
@@ -501,6 +541,15 @@ var async = require('async'),
 				async.series([
 					function(next) {
 						db.setObjectField('group:' + oldName, 'name', newName, next);
+					},
+					function(next) {
+						db.setObjectField('group:' + oldName, 'slug', utils.slugify(newName), next);
+					},
+					function(next) {
+						db.deleteObjectField('groupslug:groupname', group.slug, next);
+					},
+					function(next) {
+						db.setObjectField('groupslug:groupname', utils.slugify(newName), newName, next);
 					},
 					function(next) {
 						db.getSetMembers('groups', function(err, groups) {
@@ -569,6 +618,7 @@ var async = require('async'),
 				async.apply(db.delete, 'group:' + groupName + ':members'),
 				async.apply(db.delete, 'group:' + groupName + ':pending'),
 				async.apply(db.delete, 'group:' + groupName + ':owners'),
+				async.apply(db.deleteObjectField, 'groupslug:groupname', utils.slugify(groupName)),
 				function(next) {
 					db.getSetMembers('groups', function(err, groups) {
 						if (err) {
@@ -580,7 +630,7 @@ var async = require('async'),
 					});
 				}
 			], callback);
-		})
+		});
 	};
 
 	Groups.join = function(groupName, uid, callback) {
@@ -725,7 +775,7 @@ var async = require('async'),
 				return 'group:' + groupName;
 			});
 
-			db.getObjectsFields(groupKeys, ['name', 'hidden', 'userTitle', 'icon', 'labelColor'], function(err, groupData) {
+			db.getObjectsFields(groupKeys, ['name', 'slug', 'hidden', 'userTitle', 'icon', 'labelColor'], function(err, groupData) {
 				if (err) {
 					return callback(err);
 				}

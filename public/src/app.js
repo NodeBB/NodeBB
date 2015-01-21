@@ -364,7 +364,7 @@ app.uid = null;
 		}
 	};
 
-	function exposeConfigToTemplates() {
+	app.exposeConfigToTemplates = function() {
 		$(document).ready(function() {
 			templates.setGlobal('loggedIn', config.loggedIn);
 			templates.setGlobal('relative_path', RELATIVE_PATH);
@@ -599,7 +599,7 @@ app.uid = null;
 
 	showWelcomeMessage = window.location.href.indexOf('loggedin') !== -1;
 
-	exposeConfigToTemplates();
+	app.exposeConfigToTemplates();
 
 	socketIOConnect();
 

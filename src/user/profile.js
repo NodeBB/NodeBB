@@ -57,6 +57,9 @@ module.exports = function(User) {
 			}
 
 			function isUsernameAvailable(next) {
+				if (!data.username) {
+					return next();
+				}
 				User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
 
 					var userslug = utils.slugify(data.username);
@@ -96,7 +99,7 @@ module.exports = function(User) {
 					if (err) {
 						return callback(err);
 					}
-
+					plugins.fireHook('action:user.updateProfile', {data: data, uid: uid});
 					User.getUserFields(uid, ['email', 'userslug', 'picture', 'gravatarpicture'], callback);
 				});
 			});
@@ -177,6 +180,9 @@ module.exports = function(User) {
 	}
 
 	function updateUsername(uid, newUsername, callback) {
+		if (!newUsername) {
+			return callback();
+		}
 		User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
 			function update(field, object, value, callback) {
 				async.parallel([

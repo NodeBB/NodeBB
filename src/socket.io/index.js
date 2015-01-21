@@ -124,11 +124,6 @@ function onMessage(socket, payload) {
 		return winston.warn('[socket.io] Empty method name');
 	}
 
-	if (ratelimit.isFlooding(socket)) {
-		winston.warn('[socket.io] Too many emits! Disconnecting uid : ' + socket.uid + '. Message : ' + eventName);
-		return socket.disconnect();
-	}
-
 	var parts = eventName.toString().split('.'),
 		namespace = parts[0],
 		methodToCall = parts.reduce(function(prev, cur) {
@@ -144,6 +139,17 @@ function onMessage(socket, payload) {
 			winston.warn('[socket.io] Unrecognized message: ' + eventName);
 		}
 		return;
+	}
+
+	socket.previousEvents = socket.previousEvents || [];
+	socket.previousEvents.push(eventName);
+	if (socket.previousEvents.length > 20) {
+		socket.previousEvents.shift();
+	}
+
+	if (ratelimit.isFlooding(socket)) {
+		winston.warn('[socket.io] Too many emits! Disconnecting uid : ' + socket.uid + '. Events : ' + socket.previousEvents);
+		return socket.disconnect();
 	}
 
 	if (Namespaces[namespace].before) {
