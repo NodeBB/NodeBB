@@ -49,7 +49,7 @@ define('forum/groups/list', function() {
 				expand: true
 			}
 		}, function(err, groups) {
-			templates.parse('partials/group_list', {
+			templates.parse('partials/groups/list', {
 				groups: groups
 			}, function(html) {
 				groupsEl.empty().append(html);
