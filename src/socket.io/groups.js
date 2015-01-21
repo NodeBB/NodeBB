@@ -126,6 +126,14 @@ SocketGroups.delete = function(socket, data, callback) {
 	});
 };
 
+SocketGroups.search = function(socket, data, callback) {
+	if (!data || !data.query) {
+		return callback(null, []);
+	}
+
+	groups.search(data.query, data.options || {}, callback);
+};
+
 SocketGroups.cover = {};
 
 SocketGroups.cover.get = function(socket, data, callback) {

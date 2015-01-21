@@ -898,4 +898,23 @@ var async = require('async'),
 		db.setRemove('group:' + groupName + ':owners', toUid, callback);
 	};
 
+	Groups.search = function(query, options, callback) {
+		if (!query || !query.length) {
+			return callback(null, []);
+		}
+
+		async.waterfall([
+			async.apply(db.getObjectValues, 'groupslug:groupname'),
+			function(groupNames, next) {
+				groupNames = groupNames.filter(function(name) {
+					return name.match(new RegExp(query, 'i'));
+				});
+
+				async.mapLimit(groupNames, 5, function(groupName, next) {
+					Groups.get(groupName, options || {}, next);
+				}, next);
+			}
+		], callback);
+	};
+
 }(module.exports));
