@@ -878,8 +878,8 @@ var async = require('async'),
 	};
 
 	Groups.search = function(query, options, callback) {
-		if (!query || !query.length) {
-			return callback(null, []);
+		if (!query) {
+			query = '';
 		}
 
 		async.waterfall([
