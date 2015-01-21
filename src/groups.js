@@ -265,27 +265,6 @@ var async = require('async'),
 		db.getSetMembers('group:' + groupName + ':members', callback);
 	};
 
-	Groups.search = function(query, options, callback) {
-		if (!query) {
-			return callback(null, []);
-		}
-
-		db.getSetMembers('groups', function(err, groups) {
-			if (err) {
-				return callback(err);
-			}
-			groups = groups.filter(function(groupName) {
-				return groupName.match(new RegExp(utils.escapeRegexChars(query), 'i'));
-			});
-
-			async.map(groups, function(groupName, next) {
-				Groups.get(groupName, options, next);
-			}, function(err, groups) {
-				callback(err, internals.filterGroups(groups, options));
-			});
-		});
-	};
-
 	Groups.isMember = function(uid, groupName, callback) {
 		if (!uid || parseInt(uid, 10) <= 0) {
 			return callback(null, false);
