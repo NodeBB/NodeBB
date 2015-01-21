@@ -97,12 +97,10 @@ define('forum/users', function() {
 		});
 
 		$('.search select, .search .checkbox input').on('change', function() {
-			console.log('doing search');
 			doSearch();
 		});
 
 		$('.pagination').on('click', 'a', function() {
-			console.log('loading page', $(this).attr('data-page'));
 			doSearch($(this).attr('data-page'));
 			return false;
 		})
