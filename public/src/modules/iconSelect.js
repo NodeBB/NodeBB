@@ -2,7 +2,7 @@
 
 /* globals define, bootbox */
 
-define(function() {
+define('iconSelect', function() {
 	var iconSelect = {};
 
 	iconSelect.init = function(el, onModified) {
