@@ -32,19 +32,17 @@ define('forum/groups/list', function() {
 
 		// Group searching
 		$('#search-text').on('keydown', function(e) {
-			if (e.keyCode === 13) { Groups.search($(this).val()); }
+			if (e.keyCode === 13) { Groups.search(); }
 		});
-
-		$('#search-button').on('click', function() {
-			Groups.search($(this).siblings('input').val());
-		});
+		$('#search-button').on('click', Groups.search);
 	};
 
-	Groups.search = function(query) {
-		var groupsEl = $('#groups-list');
+	Groups.search = function() {
+		var groupsEl = $('#groups-list'),
+			queryEl = $('#search-text');
 
 		socket.emit('groups.search', {
-			query: query,
+			query: queryEl.val(),
 			options: {
 				expand: true
 			}
