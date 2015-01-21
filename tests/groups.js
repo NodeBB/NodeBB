@@ -88,17 +88,6 @@ describe('Groups', function() {
 				done();
 			});
 		});
-
-		it('should return the "Hidden" group when "showAllGroups" option is passed in', function(done) {
-			Groups.search('hidden', {
-				showAllGroups: true
-			}, function(err, groups) {
-				if (err) return done(err);
-				assert.equal(1, groups.length);
-				assert.strictEqual('Hidden', groups[0].name);
-				done();
-			});
-		});
 	});
 
 	describe('.isMember()', function() {
