@@ -39,12 +39,14 @@ define('forum/groups/list', function() {
 
 	Groups.search = function() {
 		var groupsEl = $('#groups-list'),
-			queryEl = $('#search-text');
+			queryEl = $('#search-text'),
+			sortEl = $('#search-sort');
 
 		socket.emit('groups.search', {
 			query: queryEl.val(),
 			options: {
-				expand: true
+				expand: true,
+				sort: sortEl.val()
 			}
 		}, function(err, groups) {
 			templates.parse('partials/groups/list', {

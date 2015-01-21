@@ -892,8 +892,29 @@ var async = require('async'),
 				async.mapLimit(groupNames, 5, function(groupName, next) {
 					Groups.get(groupName, options || {}, next);
 				}, next);
-			}
+			},
+			async.apply(Groups.sort, options.sort)
 		], callback);
+	};
+
+	Groups.sort = function(strategy, groups, next) {
+		switch(strategy) {
+			case 'count':
+				groups = groups.sort(function(a, b) {
+					return a.slug > b.slug;
+				}).sort(function(a, b) {
+					return a.memberCount < b.memberCount;
+				});
+				break;
+
+			case 'alpha':	// intentional fall-through
+			default:
+				groups = groups.sort(function(a, b) {
+					return a.slug > b.slug;
+				});
+		}
+
+		next(null, groups);
 	};
 
 }(module.exports));
