@@ -775,7 +775,7 @@ var async = require('async'),
 				return 'group:' + groupName;
 			});
 
-			db.getObjectsFields(groupKeys, ['name', 'slug', 'hidden', 'userTitle', 'icon', 'labelColor'], function(err, groupData) {
+			db.getObjects(groupKeys, function(err, groupData) {
 				if (err) {
 					return callback(err);
 				}
@@ -786,6 +786,12 @@ var async = require('async'),
 
 				var groupSets = groupData.map(function(group) {
 					group.labelColor = group.labelColor || '#000000';
+
+					if (!group['cover:url']) {
+						group['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';
+						group['cover:position'] = '50% 50%';
+					}
+
 					return 'group:' + group.name + ':members';
 				});
 
