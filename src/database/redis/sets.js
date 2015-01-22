@@ -11,6 +11,7 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.setsAdd = function(keys, value, callback) {
+		callback = callback || function() {};
 		helpers.multiKeysValue(redisClient, 'sadd', keys, value, function(err, res) {
 			callback(err);
 		});
@@ -65,6 +66,7 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.setRemoveRandom = function(key, callback) {
+		callback = callback || function() {};
 		redisClient.spop(key, callback);
 	};
 
