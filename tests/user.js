@@ -171,6 +171,28 @@ describe('User', function() {
 		});
 	});
 
+	describe('.delete()', function() {
+		var uid;
+		before(function(done) {
+			User.create({username: 'userToDelete', password: '123456', email: 'delete@me.com'}, function(err, newUid) {
+				assert.ifError(err);
+				uid = newUid;
+				done();
+			});
+		});
+
+		it('should delete a user account', function(done) {
+			User.delete(uid, function(err) {
+				assert.ifError(err);
+				User.exists('userToDelete', function(err, exists) {
+					assert.ifError(err);
+					assert.equal(exists, false);
+					done();
+				});
+			});
+		});
+	});
+
 	after(function() {
 		db.flushdb();
 	});
