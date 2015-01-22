@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 0, 19);
+	latestSchema = Date.UTC(2015, 0, 21);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -711,6 +711,55 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2015/01/19] Generating group slugs skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 0, 21);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/01/21] Upgrading groups to sorted set');
+
+				db.getSetMembers('groups', function(err, groupNames) {
+					if (err) {
+						return next(err);
+					}
+
+					var now = Date.now();
+					async.each(groupNames, function(groupName, next) {
+						db.getSetMembers('group:' + groupName + ':members', function(err, members) {
+							if (err) {
+								return next(err);
+							}
+
+							async.series([
+								function(next) {
+									if (members && members.length) {
+										db.delete('group:' + groupName + ':members', function(err) {
+											if (err) {
+												return next(err);
+											}
+											var scores = members.map(function() {
+												return now;
+											});
+											db.sortedSetAdd('group:' + groupName + ':members', scores, members, next);
+										});
+									} else {
+										next();
+									}
+								},
+								async.apply(db.sortedSetAdd, 'groups:createtime', now, groupName),
+								async.apply(db.setObjectField, 'group:' + groupName, 'createtime', now)
+							], next);
+						});
+
+					}, function(err) {
+						winston.info('[2015/01/21] Upgrading groups to sorted set done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2015/01/21] Upgrading groups to sorted set skipped');
 				next();
 			}
 		}
