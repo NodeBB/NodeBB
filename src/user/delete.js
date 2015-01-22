@@ -85,7 +85,7 @@ module.exports = function(User) {
 					db.deleteAll(keys, next);
 				},
 				function(next) {
-					deleteUserIps(uids, next);
+					deleteUserIps(uid, next);
 				},
 				function(next) {
 					deleteUserFromFollowers(uid, next);
