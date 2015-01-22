@@ -884,22 +884,13 @@ var async = require('async'),
 
 			Groups.updateCoverPosition(data.groupName, data.position, callback);
 		});
-	}
+	};
 
 	Groups.ownership = {};
 
 	Groups.ownership.isOwner = function(uid, groupName, callback) {
-		// Note: All admins are also owners
-		async.waterfall([
-			async.apply(db.isSetMember, 'group:' + groupName + ':owners', uid),
-			function(isOwner, next) {
-				if (isOwner) {
-					return next(null, isOwner);
-				}
-
-				user.isAdministrator(uid, next);
-			}
-		], callback);
+		// Note: All admins automatically become owners upon joining
+		db.isSetMember('group:' + groupName + ':owners', uid, callback);
 	};
 
 	Groups.ownership.grant = function(toUid, groupName, callback) {
