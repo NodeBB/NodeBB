@@ -920,6 +920,12 @@ var async = require('async'),
 				});
 				break;
 
+			case 'date':
+				groups = groups.sort(function(a, b) {
+					return a.createtime < b.createtime;
+				});
+				break;
+
 			case 'alpha':	// intentional fall-through
 			default:
 				groups = groups.sort(function(a, b) {
