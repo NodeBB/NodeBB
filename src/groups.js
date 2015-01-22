@@ -76,7 +76,7 @@ var async = require('async'),
 		};
 
 	Groups.list = function(options, callback) {
-		db.getSetMembers('groups', function (err, groupNames) {
+		db.getSortedSetRevRange('groups:createtime', 0, -1, function (err, groupNames) {
 			if (err) {
 				return callback(err);
 			}
@@ -103,7 +103,7 @@ var async = require('async'),
 				}
 			},
 			users: function (next) {
-				db.getSetMembers('group:' + groupName + ':members', function (err, uids) {
+				db.getSortedSetRevRange('group:' + groupName + ':members', 0, -1, function (err, uids) {
 					if (err) {
 						return next(err);
 					}
@@ -208,6 +208,7 @@ var async = require('async'),
 			results.base.name = validator.escape(results.base.name);
 			results.base.description = validator.escape(results.base.description);
 			results.base.userTitle = validator.escape(results.base.userTitle);
+			results.base.createtimeISO = utils.toISOString(results.base.createtime);
 			results.base.members = results.users.filter(Boolean);
 			results.base.pending = results.pending.filter(Boolean);
 			results.base.count = numUsers || results.base.members.length;
@@ -221,6 +222,7 @@ var async = require('async'),
 			results.base.isMember = results.isMember;
 			results.base.isPending = results.isPending;
 			results.base.isOwner = results.isOwner;
+
 
 			plugins.fireHook('filter:group.get', {group: results.base}, function(err, data) {
 				callback(err, data ? data.group : null);
@@ -262,18 +264,18 @@ var async = require('async'),
 	};
 
 	Groups.getMembers = function(groupName, callback) {
-		db.getSetMembers('group:' + groupName + ':members', callback);
+		db.getSortedSetRevRange('group:' + groupName + ':members', 0, -1, callback);
 	};
 
 	Groups.isMember = function(uid, groupName, callback) {
 		if (!uid || parseInt(uid, 10) <= 0) {
 			return callback(null, false);
 		}
-		db.isSetMember('group:' + groupName + ':members', uid, callback);
+		db.isSortedSetMember('group:' + groupName + ':members', uid, callback);
 	};
 
 	Groups.isMembers = function(uids, groupName, callback) {
-		db.isSetMembers('group:' + groupName + ':members', uids, callback);
+		db.isSortedSetMembers('group:' + groupName + ':members', uids, callback);
 	};
 
 	Groups.isMemberOfGroups = function(uid, groups, callback) {
@@ -283,15 +285,16 @@ var async = require('async'),
 		groups = groups.map(function(groupName) {
 			return 'group:' + groupName + ':members';
 		});
-		db.isMemberOfSets(groups, uid, callback);
+
+		db.isMemberOfSortedSets(groups, uid, callback);
 	};
 
 	Groups.getMemberCount = function(groupName, callback) {
-		db.setCount('group:' + groupName + ':members', callback);
+		db.sortedSetCard('group:' + groupName + ':members', callback);
 	};
 
 	Groups.isMemberOfGroupList = function(uid, groupListKey, callback) {
-		db.getSetMembers('group:' + groupListKey + ':members', function(err, groupNames) {
+		db.getSortedSetRange('group:' + groupListKey + ':members', 0, -1, function(err, groupNames) {
 			if (err) {
 				return callback(err);
 			}
@@ -315,7 +318,7 @@ var async = require('async'),
 			return 'group:' + groupName + ':members';
 		});
 
-		db.getSetsMembers(sets, function(err, members) {
+		db.getSortedSetsMembers(sets, function(err, members) {
 			if (err) {
 				return callback(err);
 			}
@@ -349,7 +352,7 @@ var async = require('async'),
 	};
 
 	Groups.isMembersOfGroupList = function(uids, groupListKey, callback) {
-		db.getSetMembers('group:' + groupListKey + ':members', function(err, groupNames) {
+		db.getSortedSetRange('group:' + groupListKey + ':members', 0, -1, function(err, groupNames) {
 			if (err) {
 				return callback(err);
 			}
@@ -389,7 +392,7 @@ var async = require('async'),
 				});
 			async.parallel([
 				async.apply(db.isObjectFields, 'groupslug:groupname', slugs),
-				async.apply(db.isSetMembers, 'groups', name)
+				async.apply(db.isSortedSetMember, 'groups:createtime', name)
 			], function(err, results) {
 				if (err) {
 					return callback(err);
@@ -403,7 +406,7 @@ var async = require('async'),
 			var slug = utils.slugify(name);
 			async.parallel([
 				async.apply(db.isObjectField, 'groupslug:groupname', slug),
-				async.apply(db.isSetMember, 'groups', name)
+				async.apply(db.isSortedSetMember, 'groups:createtime', name)
 			], function(err, results) {
 				callback(err, !err ? (results[0] || results[1]) : null);
 			});
@@ -427,11 +430,13 @@ var async = require('async'),
 			if (exists) {
 				return callback(new Error('[[error:group-already-exists]]'));
 			}
+			var now = Date.now();
 
 			var slug = utils.slugify(data.name),
 				groupData = {
 					name: data.name,
 					slug: slug,
+					createtime: now,
 					userTitle: data.name,
 					description: data.description || '',
 					deleted: '0',
@@ -440,13 +445,13 @@ var async = require('async'),
 					'private': data.private || '1'
 				},
 				tasks = [
-					async.apply(db.setAdd, 'groups', data.name),
+					async.apply(db.sortedSetAdd, 'groups:createtime', now, data.name),
 					async.apply(db.setObject, 'group:' + data.name, groupData)
 				];
 
 			if (data.hasOwnProperty('ownerUid')) {
 				tasks.push(async.apply(db.setAdd, 'group:' + data.name + ':owners', data.ownerUid));
-				tasks.push(async.apply(db.setAdd, 'group:' + data.name + ':members', data.ownerUid));
+				tasks.push(async.apply(db.sortedSetAdd, 'group:' + data.name + ':members', now, data.ownerUid));
 			}
 
 			if (!data.hidden) {
@@ -531,7 +536,7 @@ var async = require('async'),
 						db.setObjectField('groupslug:groupname', utils.slugify(newName), newName, next);
 					},
 					function(next) {
-						db.getSetMembers('groups', function(err, groups) {
+						db.getSortedSetRange('groups:createtime', 0, -1, function(err, groups) {
 							if (err) {
 								return next(err);
 							}
@@ -556,7 +561,7 @@ var async = require('async'),
 						});
 					},
 					function(next) {
-						renameGroupMember('groups', oldName, newName, next);
+						renameGroupMember('groups:createtime', oldName, newName, next);
 					},
 					function(next) {
 						plugins.fireHook('action:group.rename', {
@@ -572,16 +577,21 @@ var async = require('async'),
 	}
 
 	function renameGroupMember(group, oldName, newName, callback) {
-		db.isSetMember(group, oldName, function(err, isMember) {
+		db.isSortedSetMember(group, oldName, function(err, isMember) {
 			if (err || !isMember) {
 				return callback(err);
 			}
-			async.series([
+			var score;
+			async.waterfall([
 				function (next) {
-					db.setRemove(group, oldName, next);
+					db.sortedSetScore(group, oldName, next);
+				},
+				function (_score, next) {
+					score = _score;
+					db.sortedSetRemove(group, oldName, next);
 				},
 				function (next) {
-					db.setAdd(group, newName, next);
+					db.sortedSetAdd(group, score, newName, next);
 				}
 			], callback);
 		});
@@ -593,18 +603,18 @@ var async = require('async'),
 
 			async.parallel([
 				async.apply(db.delete, 'group:' + groupName),
-				async.apply(db.setRemove, 'groups', groupName),
+				async.apply(db.sortedSetRemove, 'groups:createtime', groupName),
 				async.apply(db.delete, 'group:' + groupName + ':members'),
 				async.apply(db.delete, 'group:' + groupName + ':pending'),
 				async.apply(db.delete, 'group:' + groupName + ':owners'),
 				async.apply(db.deleteObjectField, 'groupslug:groupname', utils.slugify(groupName)),
 				function(next) {
-					db.getSetMembers('groups', function(err, groups) {
+					db.getSortedSetRange('groups:createtime', 0, -1, function(err, groups) {
 						if (err) {
 							return next(err);
 						}
 						async.each(groups, function(group, next) {
-							db.setRemove('group:' + group + ':members', groupName, next);
+							db.sortedSetRemove('group:' + group + ':members', groupName, next);
 						}, next);
 					});
 				}
@@ -617,7 +627,7 @@ var async = require('async'),
 
 		Groups.exists(groupName, function(err, exists) {
 			if (exists) {
-				db.setAdd('group:' + groupName + ':members', uid, callback);
+				db.sortedSetAdd('group:' + groupName + ':members', Date.now(), uid, callback);
 				plugins.fireHook('action:group.join', {
 					groupName: groupName,
 					uid: uid
@@ -633,7 +643,7 @@ var async = require('async'),
 						return callback(err);
 					}
 
-					db.setAdd('group:' + groupName + ':members', uid, callback);
+					db.sortedSetAdd('group:' + groupName + ':members', Date.now(), uid, callback);
 					plugins.fireHook('action:group.join', {
 						groupName: groupName,
 						uid: uid
@@ -680,7 +690,7 @@ var async = require('async'),
 	Groups.leave = function(groupName, uid, callback) {
 		callback = callback || function() {};
 
-		db.setRemove('group:' + groupName + ':members', uid, function(err) {
+		db.sortedSetRemove('group:' + groupName + ':members', uid, function(err) {
 			if (err) {
 				return callback(err);
 			}
@@ -706,7 +716,10 @@ var async = require('async'),
 	};
 
 	Groups.leaveAllGroups = function(uid, callback) {
-		db.getSetMembers('groups', function(err, groups) {
+		db.getSortedSetRange('groups:createtime', 0, -1, function(err, groups) {
+			if (err) {
+				return callback(err);
+			}
 			async.each(groups, function(groupName, next) {
 				Groups.isMember(uid, groupName, function(err, isMember) {
 					if (!err && isMember) {
@@ -743,7 +756,7 @@ var async = require('async'),
 	};
 
 	Groups.getUserGroups = function(uids, callback) {
-		db.getSetMembers('groups', function(err, groupNames) {
+		db.getSortedSetRevRange('groups:createtime', 0, -1, function(err, groupNames) {
 			if (err) {
 				return callback(err);
 			}
@@ -775,7 +788,7 @@ var async = require('async'),
 				});
 
 				async.map(uids, function(uid, next) {
-					db.isMemberOfSets(groupSets, uid, function(err, isMembers) {
+					db.isMemberOfSortedSets(groupSets, uid, function(err, isMembers) {
 						if (err) {
 							return next(err);
 						}

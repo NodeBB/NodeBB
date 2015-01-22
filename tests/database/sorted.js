@@ -377,6 +377,32 @@ describe('Sorted Set methods', function() {
 		});
 	});
 
+	describe('isMemberOfSortedSets', function() {
+		it('should return true for members false for non members', function(done) {
+			db.isMemberOfSortedSets(['doesnotexist', 'sortedSetTest1', 'sortedSetTest2'], 'value2', function(err, isMembers) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(isMembers, [false, true, false]);
+				done();
+			});
+		});
+	});
+
+	describe('getSortedSetsMembers', function() {
+		it('should return members of multiple sorted sets', function(done) {
+			db.getSortedSetMembers(['doesnotexist', 'sortedSetTest1'], function(err, sortedSets) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(sortedSets[0], []);
+				sortedSets[0].forEach(function(element) {
+					assert.notEqual(['value1', 'value2', 'value3'].indexOf(element), -1);
+				});
+
+				done();
+			});
+		});
+	});
+
 	describe('getSortedSetUnion()', function() {
 		it('should return an array of values from both sorted sets sorted by scores lowest to highest', function(done) {
 			db.getSortedSetUnion(['sortedSetTest2', 'sortedSetTest3'], 0, -1, function(err, values) {
