@@ -400,6 +400,50 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.isMemberOfSortedSets = function(keys, value, callback) {
+		if (!Array.isArray(keys)) {
+			return callback();
+		}
+		value = helpers.valueToString(value);
+		db.collection('objects').find({_key: {$in: keys}, value: value}, {fields: {_id: 0, _key: 1, value: 1}}).toArray(function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			results = results.map(function(item) {
+				return item._key;
+			});
+
+			results = keys.map(function(key) {
+				return results.indexOf(key) !== -1;
+			});
+			callback(null, results);
+		});
+	};
+
+	module.getSortedSetsMembers = function(keys, callback) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return callback(null, []);
+		}
+		db.collection('objects').find({_key: {$in: keys}}, {_id: 0, _key: 1, value: 1}).toArray(function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			var sets = {};
+			data.forEach(function(set) {
+			 	sets[set._key] = sets[set._key] || [];
+			 	sets[set._key].push(set.value);
+			});
+
+			var returnData = new Array(keys.length);
+			for(var i=0; i<keys.length; ++i) {
+			 	returnData[i] = sets[keys[i]] || [];
+			}
+			callback(null, returnData);
+		});
+	};
+
 	module.getSortedSetUnion = function(sets, start, stop, callback) {
 		getSortedSetUnion(sets, 1, start, stop, callback);
 	};

@@ -214,6 +214,32 @@ module.exports = function(redisClient, module) {
 		});
 	};
 
+	module.isMemberOfSortedSets = function(keys, value, callback) {
+		var multi = redisClient.multi();
+		for (var i=0; i<keys.length; ++i) {
+			multi.zscore(keys[i], value);
+		}
+		multi.exec(function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			results = results.map(function(score) {
+				return !!score;
+			});
+			callback(null, results);
+		});
+	};
+
+	module.getSortedSetsMembers = function(keys, callback) {
+		var multi = redisClient.multi();
+		for (var i=0; i<keys.length; ++i) {
+			multi.zrange(keys[i], 0, -1);
+		}
+		multi.exec(function(err, results) {
+			callback(err, results);
+		});
+	};
+
 	function multi(command, keys, value, callback) {
 		var	m = redisClient.multi();
 
