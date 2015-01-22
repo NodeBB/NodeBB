@@ -390,7 +390,7 @@ describe('Sorted Set methods', function() {
 
 	describe('getSortedSetsMembers', function() {
 		it('should return members of multiple sorted sets', function(done) {
-			db.getSortedSetMembers(['doesnotexist', 'sortedSetTest1'], function(err, sortedSets) {
+			db.getSortedSetsMembers(['doesnotexist', 'sortedSetTest1'], function(err, sortedSets) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(sortedSets[0], []);
