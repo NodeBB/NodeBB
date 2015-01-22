@@ -631,10 +631,23 @@ var async = require('async'),
 
 		Groups.exists(groupName, function(err, exists) {
 			if (exists) {
-				db.sortedSetAdd('group:' + groupName + ':members', Date.now(), uid, callback);
-				plugins.fireHook('action:group.join', {
-					groupName: groupName,
-					uid: uid
+				var tasks = [
+						async.apply(db.sortedSetAdd, 'group:' + groupName + ':members', Date.now(), uid)
+					];
+
+				user.isAdministrator(uid, function(err, isAdmin) {
+					if (isAdmin) {
+						tasks.push(async.apply(db.setAdd, 'group:' + groupName + ':owners', uid));
+					}
+
+					async.parallel(tasks, function(err) {
+						plugins.fireHook('action:group.join', {
+							groupName: groupName,
+							uid: uid
+						});
+
+						callback();
+					});
 				});
 			} else {
 				Groups.create({

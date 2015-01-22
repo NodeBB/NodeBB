@@ -2,6 +2,9 @@
 
 var	groups = require('../groups'),
 	meta = require('../meta'),
+	user = require('../user'),
+
+	async = require('async'),
 
 	SocketGroups = {};
 
@@ -11,8 +14,11 @@ SocketGroups.join = function(socket, data, callback) {
 	}
 
 	if (meta.config.allowPrivateGroups !== '0') {
-		groups.isPrivate(data.groupName, function(err, isPrivate) {
-			if (isPrivate) {
+		async.parallel({
+			isAdmin: async.apply(user.isAdministrator, socket.uid),
+			isPrivate: async.apply(groups.isPrivate, data.groupName)
+		}, function(err, checks) {
+			if (checks.isPrivate && !checks.isAdmin) {
 				groups.requestMembership(data.groupName, socket.uid, callback);
 			} else {
 				groups.join(data.groupName, socket.uid, callback);

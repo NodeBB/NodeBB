@@ -254,7 +254,9 @@ app.uid = null;
 		app.replaceSelfLinks();
 
 		setTimeout(function () {
-			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.
+			if (window.scrollY === 0) {
+				window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.
+			}
 		}, 100);
 	};
 
