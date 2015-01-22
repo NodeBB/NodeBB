@@ -90,6 +90,10 @@ var async = require('async'),
 		});
 	};
 
+	Groups.getGroups = function(start, end, callback) {
+		db.getSortedSetRevRange('groups:createtime', start, end, callback);
+	};
+
 	Groups.get = function(groupName, options, callback) {
 		var	truncated = false,
 			numUsers;
