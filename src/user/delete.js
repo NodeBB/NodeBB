@@ -127,7 +127,7 @@ module.exports = function(User) {
 				}
 				db.delete('uid:' + uid + ':ip', callback);
 			});
-		})
+		});
 	}
 
 	function deleteUserFromFollowers(uid, callback) {
