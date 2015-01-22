@@ -34,7 +34,7 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 						if (!err) {
 							ownerFlagEl.toggleClass('invisible');
 						} else {
-							app.alertError(err);
+							app.alertError(err.message);
 						}
 					});
 					break;
