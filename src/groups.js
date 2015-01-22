@@ -659,8 +659,8 @@ var async = require('async'),
 
 	Groups.requestMembership = function(groupName, uid, callback) {
 		async.parallel({
-			exists: async.apply(Groups.isMember, uid, groupName),
-			isMember: async.apply(Groups.exists, groupName)
+			exists: async.apply(Groups.exists, groupName),
+			isMember: async.apply(Groups.isMember, uid, groupName)
 		}, function(err, checks) {
 			if (!checks.exists) {
 				return callback(new Error('[[error:no-group]]'));
@@ -694,7 +694,12 @@ var async = require('async'),
 	Groups.leave = function(groupName, uid, callback) {
 		callback = callback || function() {};
 
-		db.sortedSetRemove('group:' + groupName + ':members', uid, function(err) {
+		var tasks = [
+				async.apply(db.sortedSetRemove, 'group:' + groupName + ':members', uid),
+				async.apply(db.setRemove, 'group:' + groupName + ':owners', uid)
+			];
+
+		async.parallel(tasks, function(err) {
 			if (err) {
 				return callback(err);
 			}
@@ -891,7 +896,15 @@ var async = require('async'),
 
 	Groups.ownership.rescind = function(toUid, groupName, callback) {
 		// Note: No ownership checking is done here on purpose!
-		db.setRemove('group:' + groupName + ':owners', toUid, callback);
+
+		// If the owners set only contains one member, error out!
+		db.setCount('group:' + groupName + ':owners', function(err, numOwners) {
+			if (numOwners <= 1) {
+				return callback(new Error('[[error:group-needs-owner]]'));
+			}
+
+			db.setRemove('group:' + groupName + ':owners', toUid, callback);
+		});
 	};
 
 	Groups.search = function(query, options, callback) {

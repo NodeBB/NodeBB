@@ -66,6 +66,7 @@
 	"group-already-exists": "Group already exists",
 	"group-name-change-not-allowed": "Group name change not allowed",
 	"group-already-member": "You are already part of this group",
+	"group-needs-owner": "This group requires at least one owner",
 
 	"post-already-deleted": "This post has already been deleted",
 	"post-already-restored": "This post has already been restored",
