@@ -83,7 +83,7 @@
 								Panel
 							</div>
 						</div>
-						<div class="panel panel-default pointer" data-container-html='<div class="panel panel-default"><div class="panel-heading">{title}</div><div class="panel-body">{body}</div></div>'>
+						<div class="panel panel-default pointer" data-container-html='<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">{title}</h3></div><div class="panel-body">{body}</div></div>'>
 							<div class="panel-heading">
 								Panel Header
 								<div class="pull-right color-selector">
