@@ -314,13 +314,15 @@ Sockets.getUsersInRoom = function (uid, roomName, callback) {
 	});
 };
 
-Sockets.getUidsInRoom = function(roomName) {
+Sockets.getUidsInRoom = function(roomName, callback) {
+	callback = callback || function() {};
 	// TODO : doesnt work in cluster
 
 	var uids = [];
 
 	var socketids = Object.keys(io.sockets.adapter.rooms[roomName] || {});
 	if (!Array.isArray(socketids) || !socketids.length) {
+		callback(null, []);
 		return [];
 	}
 
@@ -334,7 +336,7 @@ Sockets.getUidsInRoom = function(roomName) {
 			});
 		}
 	}
-
+	callback(null, uids);
 	return uids;
 };
 
