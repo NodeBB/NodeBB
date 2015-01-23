@@ -27,30 +27,26 @@ module.exports = function(Topics) {
 			topics: []
 		};
 
-		Topics.getUnreadTids(uid, start, stop, function(err, tids) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (!tids.length) {
-				return callback(null, unreadTopics);
-			}
-
-			Topics.getTopicsByTids(tids, uid, function(err, topicData) {
-				if (err) {
-					return callback(err);
+		async.waterfall([
+			function(next) {
+				Topics.getUnreadTids(uid, start, stop, next);
+			},
+			function(tids, next) {
+				if (!tids.length) {
+					return next(null, []);
 				}
-
+				Topics.getTopicsByTids(tids, uid, next);
+			},
+			function(topicData, next) {
 				if (!Array.isArray(topicData) || !topicData.length) {
-					return callback(null, unreadTopics);
+					return next(null, unreadTopics);
 				}
 
 				unreadTopics.topics = topicData;
 				unreadTopics.nextStart = stop + 1;
-
-				callback(null, unreadTopics);
-			});
-		});
+				next(null, unreadTopics);
+			}
+		], callback);
 	};
 
 	Topics.getUnreadTids = function(uid, start, stop, callback) {
