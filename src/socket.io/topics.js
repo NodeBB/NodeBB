@@ -124,7 +124,7 @@ SocketTopics.markTopicNotificationsRead = function(socket, tid, callback) {
 };
 
 SocketTopics.markAllRead = function(socket, data, callback) {
-	topics.getUnreadTids(socket.uid, 0, -1, function(err, tids) {
+	topics.getLatestTidsFromSet('topics:recent', 0, -1, 'day', function(err, tids) {
 		if (err) {
 			return callback(err);
 		}
@@ -182,31 +182,23 @@ SocketTopics.markAsUnreadForAll = function(socket, tids, callback) {
 				},
 				function(cid, next) {
 					user.isModerator(socket.uid, cid, next);
-				}
-			], function(err, isMod) {
-				if (err) {
-					return next(err);
-				}
-
-				if (!isAdmin && !isMod) {
-					return next(new Error('[[error:no-privileges]]'));
-				}
-
-				topics.markAsUnreadForAll(tid, function(err) {
-					if(err) {
-						return next(err);
+				},
+				function(isMod, next) {
+					if (!isAdmin && !isMod) {
+						return next(new Error('[[error:no-privileges]]'));
 					}
-
-					topics.updateRecent(tid, Date.now(), function(err) {
-						if(err) {
-							return next(err);
-						}
-						topics.pushUnreadCount(socket.uid);
-						next();
-					});
-				});
-			});
-		}, callback);
+					topics.markAsUnreadForAll(tid, next);
+				},
+				function(next) {
+					topics.updateRecent(tid, Date.now(), next);
+				}
+			], next);
+		}, function(err) {
+			if (err) {
+				return callback(err);
+			}
+			topics.pushUnreadCount(socket.uid);
+		});
 	});
 };
 
