@@ -123,8 +123,13 @@ SocketGroups.delete = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	groups.ownership.isOwner(socket.uid, data.groupName, function(err, isOwner) {
-		if (!isOwner) {
+	var tasks = {
+			isOwner: async.apply(groups.ownership.isOwner, socket.uid, data.groupName),
+			isAdmin: async.apply(user.isAdministrator, socket.uid)
+		};
+
+	async.parallel(tasks, function(err, checks) {
+		if (!checks.isOwner && !checks.isAdmin) {
 			return callback(new Error('[[error:no-privileges]]'));
 		}
 
