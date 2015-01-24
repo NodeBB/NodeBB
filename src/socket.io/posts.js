@@ -347,17 +347,20 @@ SocketPosts.getUpvoters = function(socket, pids, callback) {
 		if (err || !Array.isArray(data) || !data.length) {
 			return callback(err, []);
 		}
-		var otherCount = 0;
-		if (data[0].length > 6) {
-			otherCount = data[0].length - 5;
-			data[0] = data[0].slice(0, 5);
-		}
-		user.getUsernamesByUids(data[0], function(err, usernames) {
-			callback(err, {
-				otherCount: otherCount,
-				usernames: usernames
+
+		async.map(data, function(uids, next)  {
+			var otherCount = 0;
+			if (uids.length > 6) {
+				otherCount = uids.length - 5;
+				uids = uids.slice(0, 5);
+			}
+			user.getUsernamesByUids(uids, function(err, usernames) {
+				next(err, {
+					otherCount: otherCount,
+					usernames: usernames
+				});
 			});
-		});
+		}, callback);
 	});
 };
 
