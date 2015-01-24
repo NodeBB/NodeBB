@@ -64,6 +64,7 @@
 	"digest_weekly": "Weekly",
 	"digest_monthly": "Monthly",
 	"send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
+	"send_post_notifications": "Send an email when replies are made to topics I am subscribed to",
 
 	"has_no_follower": "This user doesn't have any followers :(",
 	"follows_no_one": "This user isn't following anyone :(",
