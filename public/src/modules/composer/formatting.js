@@ -69,29 +69,64 @@ define('composer/formatting', ['composer/controls', 'composer/preview'], functio
 	var customButtons = [];
 
 	formatting.addComposerButtons = function() {
-		for (var button in customButtons) {
-			if (customButtons.hasOwnProperty(button)) {
-				$('.formatting-bar .btn-group form').before('<span class="btn btn-link" tabindex="-1"><i class="' + customButtons[button].iconClass + '"></i></span>');
+		var $toolbar = $('.formatting-bar .btn-group');
+		customButtons.forEach(function (button) {
+			var $btn = $('<span class="btn btn-link" tabindex="-1"><i class="' + button.icon + '"></i></span>');
+
+			if (button.id) {
+				$btn.attr('data-btn-id', button.id);
 			}
+
+			if (button.title) {
+				if (button.title.match(/\[\[.*?\]\]/)) {
+					//Translate the button title
+					translator.translate(button.title, function (translated) {
+						$btn.attr('data-original-title', translated);
+						$btn.tooltip({placement: 'bottom', container: '.formatting-bar'});
+					});
+				} else {
+					$btn.attr('data-original-title', button.title);
+				}
+			}
+
+			var sibling;
+			if (button.after && (sibling = getButton(button.after)).length) {
+				//Add just after this button
+				sibling.after($btn);
+			} else if (button.before && (sibling = getButton(button.before)).length) {
+				//Add just before this button
+				sibling.before($btn);
+			} else {
+				//Add at the end of the toolbar (just before the help button, or file upload form if there isn't a help button)
+				$toolbar.find('.help, form').first().before($btn);
+			}
+		});
+		
+		$toolbar.find('[data-original-title]').tooltip({placement: 'bottom', container: '.formatting-bar'});
+	};
+	
+	function getButton(id) {
+		var $toolbar = $('.formatting-bar .btn-group');
+		var btn = $toolbar.find('[data-btn-id=' + id + ']');
+		if (!btn.length) {
+			//Backward compatibility
+			btn = $toolbar.find('i.fa-' + id).parent();
 		}
+		return btn;
 	}
 
-	formatting.addButton = function(iconClass, onClick) {
-		formattingDispatchTable[iconClass] = onClick;
-		customButtons.push({
-			iconClass: iconClass
-		});
-	}
+	formatting.addButton = function(button) {
+		formattingDispatchTable[button.id] = button.handler;
+		customButtons.push(button);
+	};
 
 	formatting.addHandler = function(postContainer) {
 		postContainer.on('click', '.formatting-bar span', function () {
-			var iconClass = $(this).find('i').attr('class');
+			var id = $(this).data('btn-id') || $(this).find('i').attr('class');
 			var textarea = $(this).parents('.composer').find('textarea')[0];
 
-			if(formattingDispatchTable.hasOwnProperty(iconClass)){
-				formattingDispatchTable[iconClass](textarea, textarea.selectionStart, textarea.selectionEnd);
-				preview.render(postContainer);
-			}
+			formattingDispatchTable[id](textarea, textarea.selectionStart, textarea.selectionEnd);
+			preview.render(postContainer);
 		});
 	};
 
