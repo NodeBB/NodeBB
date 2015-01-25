@@ -396,12 +396,20 @@ SocketTopics.moveAll = function(socket, data, callback) {
 	});
 };
 
-SocketTopics.follow = function(socket, tid, callback) {
+SocketTopics.toggleFollow = function(socket, tid, callback) {
 	if(!socket.uid) {
 		return callback(new Error('[[error:not-logged-in]]'));
 	}
 
 	topics.toggleFollow(tid, socket.uid, callback);
+};
+
+SocketTopics.follow = function(socket, tid, callback) {
+	if(!socket.uid) {
+		return callback(new Error('[[error:not-logged-in]]'));
+	}
+
+	topics.follow(tid, socket.uid, callback);
 };
 
 SocketTopics.loadMore = function(socket, data, callback) {
