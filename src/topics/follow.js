@@ -4,6 +4,7 @@
 var async = require('async'),
 	nconf = require('nconf'),
 	S = require('string'),
+	winston = require('winston'),
 
 	db = require('../database'),
 	user = require('../user'),
@@ -133,16 +134,20 @@ module.exports = function(Topics) {
 					userData: async.apply(user.getUserFields, toUid, ['username']),
 					userSettings: async.apply(user.getSettings, toUid)
 				}, function(err, data) {
-					emailer.send('notif_post', toUid, {
-						pid: postData.pid,
-						subject: '[' + (meta.config.title || 'NodeBB') + '] ' + title,
-						intro: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + title + ']]',
-						postBody: postData.content,
-						site_title: meta.config.title || 'NodeBB',
-						username: data.userData.username,
-						url: nconf.get('url') + '/topics/' + postData.topic.tid,
-						base_url: nconf.get('url')
-					}, next);
+					if (data.userSettings.hasOwnProperty('sendPostNotifications') && data.userSettings.sendPostNotifications) {
+						emailer.send('notif_post', toUid, {
+							pid: postData.pid,
+							subject: '[' + (meta.config.title || 'NodeBB') + '] ' + title,
+							intro: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + title + ']]',
+							postBody: postData.content,
+							site_title: meta.config.title || 'NodeBB',
+							username: data.userData.username,
+							url: nconf.get('url') + '/topics/' + postData.topic.tid,
+							base_url: nconf.get('url')
+						}, next);
+					} else {
+						winston.debug('[topics.notifyFollowers] uid ' + toUid + ' does not have post notifications enabled, skipping.');
+					}
 				});
 			});
 		});
