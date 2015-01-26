@@ -4,12 +4,15 @@
 var async = require('async'),
 	nconf = require('nconf'),
 	S = require('string'),
+	winston = require('winston'),
 
 	db = require('../database'),
 	user = require('../user'),
 	posts = require('../posts'),
 	postTools = require('../postTools'),
-	notifications = require('../notifications');
+	notifications = require('../notifications'),
+	meta = require('../meta'),
+	emailer = require('../emailer');
 
 module.exports = function(Topics) {
 
@@ -124,6 +127,28 @@ module.exports = function(Topics) {
 				if (!err && notification) {
 					notifications.push(notification, followers);
 				}
+			});
+
+			async.eachLimit(followers, 3, function(toUid, next) {
+				async.parallel({
+					userData: async.apply(user.getUserFields, toUid, ['username']),
+					userSettings: async.apply(user.getSettings, toUid)
+				}, function(err, data) {
+					if (data.userSettings.hasOwnProperty('sendPostNotifications') && data.userSettings.sendPostNotifications) {
+						emailer.send('notif_post', toUid, {
+							pid: postData.pid,
+							subject: '[' + (meta.config.title || 'NodeBB') + '] ' + title,
+							intro: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + title + ']]',
+							postBody: postData.content,
+							site_title: meta.config.title || 'NodeBB',
+							username: data.userData.username,
+							url: nconf.get('url') + '/topics/' + postData.topic.tid,
+							base_url: nconf.get('url')
+						}, next);
+					} else {
+						winston.debug('[topics.notifyFollowers] uid ' + toUid + ' does not have post notifications enabled, skipping.');
+					}
+				});
 			});
 		});
 	};

@@ -69,6 +69,7 @@ module.exports = function(User) {
 			settings.followTopicsOnCreate = (settings.followTopicsOnCreate === null || settings.followTopicsOnCreate === undefined) ? true : parseInt(settings.followTopicsOnCreate, 10) === 1;
 			settings.followTopicsOnReply = parseInt(settings.followTopicsOnReply, 10) === 1;
 			settings.sendChatNotifications = parseInt(settings.sendChatNotifications, 10) === 1;
+			settings.sendPostNotifications = parseInt(settings.sendPostNotifications, 10) === 1;
 			settings.restrictChat = parseInt(settings.restrictChat, 10) === 1;
 			settings.topicSearchEnabled = parseInt(settings.topicSearchEnabled, 10) === 1;
 

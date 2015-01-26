@@ -127,32 +127,31 @@ define('forum/topic/posts', [
 
 			html.hide().fadeIn('slow');
 
-			$(window).trigger('action:posts.loaded');
-			onNewPostsLoaded(html, data.posts);
+			var pids = [];
+			for(var i=0; i<data.posts.length; ++i) {
+				pids.push(data.posts[i].pid);
+			}
+
+			$(window).trigger('action:posts.loaded', pids);
+			onNewPostsLoaded(html, pids);
 			callback(true);
 		});
 	}
 
-	function onNewPostsLoaded(html, posts) {
-
-		var pids = [];
-		for(var i=0; i<posts.length; ++i) {
-			pids.push(posts[i].pid);
-		}
-
+	function onNewPostsLoaded(html, pids) {
 		if (app.uid) {
 			socket.emit('posts.getPrivileges', pids, function(err, privileges) {
 				if(err) {
 					return app.alertError(err.message);
 				}
 
-				for(i=0; i<pids.length; ++i) {
+				for(var i=0; i<pids.length; ++i) {
 					toggleModTools(pids[i], privileges[i]);
 				}
 			});
 		} else {
-			for(i=0; i<pids.length; ++i) {
-				toggleModTools(pids[i], {editable:false, move: false});
+			for(var i=0; i<pids.length; ++i) {
+				toggleModTools(pids[i], {editable: false, move: false});
 			}
 		}
 
