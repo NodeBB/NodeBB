@@ -4,7 +4,7 @@ First of all, thank you! Please consider this [style guide](https://docs.nodebb.
 
 ## Contributor License Agreement
 
-Thank you for considering contributing to NodeBB. Before we can accept any pull requests, please take a moment to read and sign our [license agreement](https://www.clahub.com/agreements/NodeBB/NodeBB). In summary, signing this document means that 1) you own the code that you are contributing and 2) you give permission to NodeBB Inc. to license the code to others. This agreement applies to any repository under the NodeBB organization.
+Thank you for considering contributing to NodeBB. **Before we can accept any pull requests, please take a moment to read and sign our [license agreement](https://www.clahub.com/agreements/NodeBB/NodeBB)**. In summary, signing this document means that 1) you own the code that you are contributing and 2) you give permission to NodeBB Inc. to license the code to others. This agreement applies to any repository under the NodeBB organization.
 
 If you are writing contributions as part of employment from another company / individual, then your employer will need to sign a separate agreement. Please [contact us](mailto:accounts@nodebb.org) so that we can send this additional agreement to your employer.
 
