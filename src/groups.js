@@ -400,7 +400,7 @@ var async = require('async'),
 				});
 			async.parallel([
 				async.apply(db.isObjectFields, 'groupslug:groupname', slugs),
-				async.apply(db.isSortedSetMember, 'groups:createtime', name)
+				async.apply(db.isSortedSetMembers, 'groups:createtime', name)
 			], function(err, results) {
 				if (err) {
 					return callback(err);
