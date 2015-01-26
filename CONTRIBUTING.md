@@ -1,3 +1,14 @@
+# Submitting a Pull Request to NodeBB?
+
+First of all, thank you! Please consider this [style guide](https://docs.nodebb.org/en/latest/contributing/style-guide.html) when submitting your changes. Also, please join our [community](https://community.nodebb.org) to meet other NodeBB developers and designers :) 
+
+## Contributor License Agreement
+
+Thank you for considering contributing to NodeBB. Before we can accept any pull requests, please take a moment to read and sign our [license agreement](https://www.clahub.com/agreements/NodeBB/NodeBB). In summary, signing this document means that 1) you own the code that you are contributing and 2) you give permission to NodeBB Inc. to license the code to others. This agreement applies to any repository under the NodeBB organization.
+
+If you are writing contributions as part of employment from another company / individual, then your employer will need to sign a separate agreement. Please [contact us](mailto:accounts@nodebb.org) so that we can send this additional agreement to your employer.
+
+
 # Having problems installing NodeBB?
 
 Chances are somebody has run into this problem before. After consulting our [documentation](https://docs.nodebb.org/en/latest/installing/os.html), please head over to our [community support forum](https://community.nodebb.org) for advice.
@@ -44,8 +55,3 @@ If you have downloaded the `.zip` or `.tar.gz` packages from GitHub (or elsewher
 If you have installed NodeBB via GitHub clone, are familiar with utilising git, and are willing to help us narrow down the specific commit that causes a bug, consider running `git bisect`.
 
 A full guide can be found here: [Debugging with Git/Binary Search](http://git-scm.com/book/en/Git-Tools-Debugging-with-Git#Binary-Search)
-
-
-# Submitting a Pull Request to NodeBB?
-
-First of all, thank you! Please consider this [style guide](https://docs.nodebb.org/en/latest/contributing/style-guide.html) when submitting your changes. Also, please join our [community](https://community.nodebb.org) to meet other NodeBB developers and designers :) 
