@@ -246,6 +246,10 @@ var async = require('async'),
 		});
 	};
 
+	Groups.getGroupNameByGroupSlug = function(slug, callback) {
+		db.getObjectField('groupslug:groupname', slug, callback);
+	};
+
 	Groups.getGroupFields = function(groupName, fields, callback) {
 		db.getObjectFields('group:' + groupName, fields, callback);
 	};
