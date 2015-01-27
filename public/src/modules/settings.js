@@ -482,14 +482,14 @@ define('settings', function () {
 				formEl.find('input[type="checkbox"]').each(function (idx, inputEl) {
 					inputEl = $(inputEl);
 					if (!inputEl.is(':checked')) {
-						values[inputEl.attr('id')] = 'off';
+						values[inputEl.attr('name')] = 'off';
 					}
 				});
 
 				// Normalizing value of multiple selects
 				formEl.find('select[multiple]').each(function(idx, selectEl) {
 					selectEl = $(selectEl);
-					values[selectEl.attr('id')] = JSON.stringify(selectEl.val());
+					values[selectEl.attr('name')] = JSON.stringify(selectEl.val());
 				});
 
 				socket.emit('admin.settings.set', {
