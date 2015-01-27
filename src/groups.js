@@ -758,11 +758,10 @@ var async = require('async'),
 		});
 	};
 
-	Groups.getLatestMemberPosts = function(groupName, max, uid, callback) {
+	Groups.getLatestMemberPosts = function(groupSlug, max, uid, callback) {
 		async.waterfall([
-			function(next) {
-				Groups.getMembers(groupName, next);
-			},
+			async.apply(Groups.getGroupNameByGroupSlug, groupSlug),
+			Groups.getMembers,
 			function(uids, next) {
 				if (!Array.isArray(uids) || !uids.length) {
 					return callback(null, []);

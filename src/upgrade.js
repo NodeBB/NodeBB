@@ -688,11 +688,22 @@ Upgrade.upgrade = function(callback) {
 				updatesMade = true;
 				winston.info('[2015/01/19] Generating group slugs');
 
-				Groups.list({}, function(err, groups) {
+				async.waterfall([
+					async.apply(db.getSetMembers, 'groups'),
+					function(groups, next) {
+						async.filter(groups, function(groupName, next) {
+							db.getObjectField('group:' + groupName, 'hidden', function(err, hidden) {
+								next((err || parseInt(hidden, 10)) ? false : true);
+							});
+						}, function(groups) {
+							next(null, groups);
+						});
+					}
+				], function(err, groups) {
 					var tasks = [];
-					groups.forEach(function(groupObj) {
-						tasks.push(async.apply(db.setObjectField, 'group:' + groupObj.name, 'slug', Utils.slugify(groupObj.name)));
-						tasks.push(async.apply(db.setObjectField, 'groupslug:groupname', Utils.slugify(groupObj.name), groupObj.name));
+					groups.forEach(function(groupName) {
+						tasks.push(async.apply(db.setObjectField, 'group:' + groupName, 'slug', Utils.slugify(groupName)));
+						tasks.push(async.apply(db.setObjectField, 'groupslug:groupname', Utils.slugify(groupName), groupName));
 					});
 
 					// Administrator group

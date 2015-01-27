@@ -253,11 +253,8 @@ app.uid = null;
 
 		app.replaceSelfLinks();
 
-		setTimeout(function () {
-			if (window.scrollY === 0) {
-				window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.
-			}
-		}, 100);
+		// Scroll back to top of page
+		window.scrollTo(0, 0);
 	};
 
 	app.showLoginMessage = function () {

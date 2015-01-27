@@ -154,11 +154,9 @@ module.exports = function(Topics) {
 			return callback();
 		}
 		tids = tids.filter(Boolean);
-
-		var now = Date.now();
-		var scores = tids.map(function(tid) {
-			return now;
-		});
+		if (!tids.length) {
+			return callback();
+		}
 
 		async.parallel({
 			topicScores: function(next) {
@@ -179,6 +177,11 @@ module.exports = function(Topics) {
 			if (!tids.length) {
 				return callback();
 			}
+
+			var now = Date.now();
+			var scores = tids.map(function(tid) {
+				return now;
+			});
 
 			async.parallel({
 				markRead: function(next) {
