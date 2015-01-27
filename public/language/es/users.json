@@ -5,5 +5,7 @@
     "search": "Buscar",
     "enter_username": "Ingresa el nombre de usuario que quieres buscar",
     "load_more": "Cargar más",
-    "users-found-search-took": "¡%1 usuario(s) encontrados! La búsqueda tardó %2 ms."
+    "users-found-search-took": "¡%1 usuario(s) encontrados! La búsqueda tardó %2 ms.",
+    "reputation": "Reputación", //reputation
+    "post_count": "Número de mensajes", //post count
 }
