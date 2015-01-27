@@ -32,7 +32,7 @@ groupsController.details = function(req, res, next) {
 			}, next);
 		},
 		posts: function(next) {
-			groups.getLatestMemberPosts(req.params.name, 10, uid, next);
+			groups.getLatestMemberPosts(req.params.slug, 10, uid, next);
 		}
 	}, function(err, results) {
 		if (err) {
