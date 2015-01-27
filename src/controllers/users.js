@@ -45,7 +45,7 @@ usersController.getOnlineUsers = function(req, res, next) {
 		};
 
 		plugins.fireHook('filter:userlist.get', {data: userData, uid: uid}, function(err, userData) {
-			res.render('users', userData);
+			res.render('users', userData.data);
 		});
 	});
 };
@@ -77,7 +77,7 @@ usersController.getUsers = function(set, count, req, res, next) {
 		};
 
 		plugins.fireHook('filter:userlist.get', {data: userData, uid: uid}, function(err, userData) {
-			res.render('users', userData);
+			res.render('users', userData.data);
 		});
 	});
 };
@@ -119,7 +119,7 @@ usersController.getUsersForSearch = function(req, res, next) {
 		};
 
 		plugins.fireHook('filter:userlist.get', {data: userData, uid: uid}, function(err, userData) {
-			res.render('users', userData);
+			res.render('users', userData.data);
 		});
 	});
 };
