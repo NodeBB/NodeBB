@@ -5,6 +5,7 @@ var usersController = {};
 var async = require('async'),
 	user = require('../user'),
 	meta = require('../meta'),
+	plugins = require('../plugins'),
 	db = require('../database');
 
 usersController.getOnlineUsers = function(req, res, next) {
@@ -43,23 +44,27 @@ usersController.getOnlineUsers = function(req, res, next) {
 			show_anon: anonymousUserCount ? '' : 'hide'
 		};
 
-		res.render('users', userData);
+		plugins.fireHook('filter:users.get', {data: userData, uid: uid}, function(err, userData) {
+			res.render('users', userData);
+		});
 	});
 };
 
 usersController.getUsersSortedByPosts = function(req, res, next) {
-	usersController.getUsers('users:postcount', 50, res, next);
+	usersController.getUsers('users:postcount', 50, req, res, next);
 };
 
 usersController.getUsersSortedByReputation = function(req, res, next) {
-	usersController.getUsers('users:reputation', 50, res, next);
+	usersController.getUsers('users:reputation', 50, req, res, next);
 };
 
 usersController.getUsersSortedByJoinDate = function(req, res, next) {
-	usersController.getUsers('users:joindate', 50, res, next);
+	usersController.getUsers('users:joindate', 50, req, res, next);
 };
 
-usersController.getUsers = function(set, count, res, next) {
+usersController.getUsers = function(set, count, req, res, next) {
+	var uid = req.user ? req.user.uid : 0;
+
 	getUsersAndCount(set, count, function(err, data) {
 		if (err) {
 			return next(err);
@@ -71,7 +76,9 @@ usersController.getUsers = function(set, count, res, next) {
 			show_anon: 'hide'
 		};
 
-		res.render('users', userData);
+		plugins.fireHook('filter:users.get', {data: userData, uid: uid}, function(err, userData) {
+			res.render('users', userData);
+		});
 	});
 };
 
@@ -96,20 +103,24 @@ function getUsersAndCount(set, count, callback) {
 }
 
 usersController.getUsersForSearch = function(req, res, next) {
-	var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
+	var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20,
+		uid = req.user ? req.user.uid : 0;
+		
 	getUsersAndCount('users:joindate', resultsPerPage, function(err, data) {
 		if (err) {
 			return next(err);
 		}
 
-		var result = {
+		var userData = {
 			search_display: 'block',
 			loadmore_display: 'hidden',
 			users: data.users,
 			show_anon: 'hide'
 		};
 
-		res.render('users', result);
+		plugins.fireHook('filter:users.get', {data: userData, uid: uid}, function(err, userData) {
+			res.render('users', userData);
+		});
 	});
 };
 
