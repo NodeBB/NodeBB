@@ -48,32 +48,32 @@ usersController.getOnlineUsers = function(req, res, next) {
 };
 
 usersController.getUsersSortedByPosts = function(req, res, next) {
-	getUsers('users:postcount', res, next);
+	usersController.getUsers('users:postcount', 50, res, next);
 };
 
 usersController.getUsersSortedByReputation = function(req, res, next) {
-	getUsers('users:reputation', res, next);
+	usersController.getUsers('users:reputation', 50, res, next);
 };
 
 usersController.getUsersSortedByJoinDate = function(req, res, next) {
-	getUsers('users:joindate', res, next);
+	usersController.getUsers('users:joindate', 50, res, next);
 };
 
-function getUsers(set, res, next) {
-	getUsersAndCount(set, 50, function(err, data) {
+usersController.getUsers = function(set, count, res, next) {
+	getUsersAndCount(set, count, function(err, data) {
 		if (err) {
 			return next(err);
 		}
 		var userData = {
 			search_display: 'hidden',
-			loadmore_display: data.count > 50 ? 'block' : 'hide',
+			loadmore_display: data.count > count ? 'block' : 'hide',
 			users: data.users,
 			show_anon: 'hide'
 		};
 
 		res.render('users', userData);
 	});
-}
+};
 
 function getUsersAndCount(set, count, callback) {
 	async.parallel({
