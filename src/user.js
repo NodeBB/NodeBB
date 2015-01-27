@@ -249,8 +249,12 @@ var	async = require('async'),
 					user.banned = parseInt(user.banned, 10) === 1;
 					user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
 				});
-
-				callback(null, results.userData);
+				plugins.fireHook('filter:userlist.get', {users: results.userData}, function(err, data) {
+					if (err) {
+						return callback(err);
+					}
+					callback(null, data.users);
+				});
 			});
 		});
 	};
