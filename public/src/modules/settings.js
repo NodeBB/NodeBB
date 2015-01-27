@@ -457,6 +457,17 @@ define('settings', function () {
 					console.log('[settings] Unable to load settings for hash: ', hash);
 					return callback(err);
 				}
+				
+				// Parse all values. If they are json, return json
+				for(var key in values) {
+					if (values.hasOwnProperty(key)) {
+						try {
+							values[key] = JSON.parse(values[key]);
+						} catch (e) {
+							// Leave the value as is
+						}
+					}
+				}
 
 				$(formEl).deserialize(values);
 
@@ -474,6 +485,13 @@ define('settings', function () {
 						values[inputEl.attr('id')] = 'off';
 					}
 				});
+
+				// Normalizing value of multiple selects
+				formEl.find('select[multiple]').each(function(idx, selectEl) {
+					selectEl = $(selectEl);
+					values[selectEl.attr('id')] = JSON.stringify(selectEl.val());
+				});
+
 				socket.emit('admin.settings.set', {
 					hash: hash,
 					values: values
