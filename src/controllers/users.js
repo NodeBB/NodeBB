@@ -44,7 +44,7 @@ usersController.getOnlineUsers = function(req, res, next) {
 			show_anon: anonymousUserCount ? '' : 'hide'
 		};
 
-		plugins.fireHook('filter:users.get', {data: userData, uid: uid}, function(err, userData) {
+		plugins.fireHook('filter:userlist.get', {data: userData, uid: uid}, function(err, userData) {
 			res.render('users', userData);
 		});
 	});
@@ -76,7 +76,7 @@ usersController.getUsers = function(set, count, req, res, next) {
 			show_anon: 'hide'
 		};
 
-		plugins.fireHook('filter:users.get', {data: userData, uid: uid}, function(err, userData) {
+		plugins.fireHook('filter:userlist.get', {data: userData, uid: uid}, function(err, userData) {
 			res.render('users', userData);
 		});
 	});
@@ -105,7 +105,7 @@ function getUsersAndCount(set, count, callback) {
 usersController.getUsersForSearch = function(req, res, next) {
 	var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20,
 		uid = req.user ? req.user.uid : 0;
-		
+
 	getUsersAndCount('users:joindate', resultsPerPage, function(err, data) {
 		if (err) {
 			return next(err);
@@ -118,7 +118,7 @@ usersController.getUsersForSearch = function(req, res, next) {
 			show_anon: 'hide'
 		};
 
-		plugins.fireHook('filter:users.get', {data: userData, uid: uid}, function(err, userData) {
+		plugins.fireHook('filter:userlist.get', {data: userData, uid: uid}, function(err, userData) {
 			res.render('users', userData);
 		});
 	});
