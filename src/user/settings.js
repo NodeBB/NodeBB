@@ -101,6 +101,7 @@ module.exports = function(User) {
 					followTopicsOnCreate: data.followTopicsOnCreate,
 					followTopicsOnReply: data.followTopicsOnReply,
 					sendChatNotifications: data.sendChatNotifications,
+					sendPostNotifications: data.sendPostNotifications,
 					restrictChat: data.restrictChat,
 					topicSearchEnabled: data.topicSearchEnabled
 				}, next);
