@@ -233,10 +233,6 @@ define('forum/category', [
 
 				topic.hide().fadeIn('slow');
 
-				socket.emit('categories.getPageCount', ajaxify.variables.get('category_id'), function(err, newPageCount) {
-					pagination.recreatePaginationLinks(newPageCount);
-				});
-
 				topic.find('span.timeago').timeago();
 				app.createUserTooltips();
 				updateTopicCount();
