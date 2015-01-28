@@ -52,7 +52,7 @@ define('forum/topic/posts', [
 
 		function removeAlreadyAddedPosts() {
 			data.posts = data.posts.filter(function(post) {
-				return $('#post-container li[data-pid="' + post.pid +'"]').length === 0;
+				return $('#post-container [data-pid="' + post.pid +'"]').length === 0;
 			});
 		}
 
@@ -64,8 +64,8 @@ define('forum/topic/posts', [
 			var firstPostVotes = parseInt(data.posts[0].votes, 10);
 			var firstPostIndex = parseInt(data.posts[0].index, 10);
 
-			var firstReply = $('#post-container li.post-row[data-index!="0"]').first();
-			var lastReply = $('#post-container li.post-row[data-index!="0"]').last();
+			var firstReply = $('#post-container .post-row[data-index!="0"]').first();
+			var lastReply = $('#post-container .post-row[data-index!="0"]').last();
 
 			if (config.topicPostSort === 'oldest_to_newest') {
 				if (firstPostTimestamp < parseInt(firstReply.attr('data-timestamp'), 10)) {
@@ -111,7 +111,7 @@ define('forum/topic/posts', [
 				// Save document height and position for future reference (about 5 lines down)
 				var height = $(document).height(),
 					scrollTop = $(document).scrollTop(),
-					originalPostEl = $('li[data-index="0"]');
+					originalPostEl = $('.post-row[data-index="0"]');
 
 				// Insert the new post
 				html.insertBefore(before);
@@ -186,7 +186,7 @@ define('forum/topic/posts', [
 
 	function loadPostsAfter(after) {
 		var tid = ajaxify.variables.get('topic_id');
-		if (!utils.isNumber(tid) || !utils.isNumber(after) || (after === 0 && $('#post-container li.post-row[data-index="1"]').length)) {
+		if (!utils.isNumber(tid) || !utils.isNumber(after) || (after === 0 && $('#post-container .post-row[data-index="1"]').length)) {
 			return;
 		}
 
@@ -235,13 +235,13 @@ define('forum/topic/posts', [
 	};
 
 	function showBottomPostBar() {
-		if($('#post-container .post-row').length > 1 || !$('#post-container li[data-index="0"]').length) {
+		if($('#post-container .post-row').length > 1 || !$('#post-container [data-index="0"]').length) {
 			$('.bottom-post-bar').removeClass('hide');
 		}
 	}
 
 	function hidePostToolsForDeletedPosts(element) {
-		element.find('li.deleted').each(function() {
+		element.find('.post-row.deleted').each(function() {
 			postTools.toggle($(this).attr('data-pid'), true);
 		});
 	}
