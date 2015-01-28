@@ -32,15 +32,17 @@ define('forum/groups/list', function() {
 
 		// Group searching
 		$('#search-text').on('keydown', function(e) {
-			if (e.keyCode === 13) { Groups.search(); }
+			if (e.keyCode === 13) { Groups.search(e); }
 		});
 		$('#search-button').on('click', Groups.search);
 	};
 
-	Groups.search = function() {
+	Groups.search = function(event) {
 		var groupsEl = $('#groups-list'),
 			queryEl = $('#search-text'),
 			sortEl = $('#search-sort');
+
+		event.preventDefault();
 
 		socket.emit('groups.search', {
 			query: queryEl.val(),
