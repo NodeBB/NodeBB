@@ -69,7 +69,7 @@ define('forum/topic/events', [
 	};
 
 	function updatePostVotesAndUserReputation(data) {
-		var votes = $('li[data-pid="' + data.post.pid + '"] .votes'),
+		var votes = $('[data-pid="' + data.post.pid + '"] .votes'),
 			reputationElements = $('.reputation[data-uid="' + data.post.uid + '"]');
 
 		votes.html(data.post.votes).attr('data-votes', data.post.votes);
@@ -77,7 +77,7 @@ define('forum/topic/events', [
 	}
 
 	function updateFavouriteCount(data) {
-		$('li[data-pid="' + data.post.pid + '"] .favouriteCount').html(data.post.reputation).attr('data-favourites', data.post.reputation);
+		$('[data-pid="' + data.post.pid + '"] .favouriteCount').html(data.post.reputation).attr('data-favourites', data.post.reputation);
 	}
 
 	function toggleTopicDeleteState(data) {
@@ -139,14 +139,14 @@ define('forum/topic/events', [
 	}
 
 	function onPostPurged(pid) {
-		$('#post-container li[data-pid="' + pid + '"]').fadeOut(500, function() {
+		$('#post-container [data-pid="' + pid + '"]').fadeOut(500, function() {
 			$(this).remove();
 		});
 		postTools.updatePostCount();
 	}
 
 	function togglePostDeleteState(data) {
-		var postEl = $('#post-container li[data-pid="' + data.pid + '"]');
+		var postEl = $('#post-container [data-pid="' + data.pid + '"]');
 
 		if (!postEl.length) {
 			return;
@@ -166,7 +166,7 @@ define('forum/topic/events', [
 	}
 
 	function togglePostFavourite(data) {
-		var favBtn = $('li[data-pid="' + data.post.pid + '"] .favourite');
+		var favBtn = $('[data-pid="' + data.post.pid + '"] .favourite');
 		if (!favBtn.length) {
 			return;
 		}
@@ -185,7 +185,7 @@ define('forum/topic/events', [
 	}
 
 	function togglePostVote(data) {
-		var post = $('li[data-pid="' + data.post.pid + '"]');
+		var post = $('[data-pid="' + data.post.pid + '"]');
 
 		post.find('.upvote').toggleClass('btn-primary upvoted', data.upvote);
 		post.find('.downvote').toggleClass('btn-primary downvoted', data.downvote);
