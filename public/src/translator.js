@@ -123,7 +123,7 @@
 
 		var parsedKey = key.replace('[[', '').replace(']]', '').split(':');
 		if (!(parsedKey[0] && parsedKey[1])) {
-			return;
+			return callback(data);
 		}
 
 		var languageFile = parsedKey[0];
