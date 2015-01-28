@@ -44,9 +44,7 @@ usersController.getOnlineUsers = function(req, res, next) {
 			show_anon: anonymousUserCount ? '' : 'hide'
 		};
 
-		plugins.fireHook('filter:userlist.get', {data: userData, uid: uid}, function(err, userData) {
-			res.render('users', userData.data);
-		});
+		res.render('users', userData);
 	});
 };
 
@@ -76,9 +74,7 @@ usersController.getUsers = function(set, count, req, res, next) {
 			show_anon: 'hide'
 		};
 
-		plugins.fireHook('filter:userlist.get', {data: userData, uid: uid}, function(err, userData) {
-			res.render('users', userData.data);
-		});
+		res.render('users', userData);
 	});
 };
 
@@ -118,9 +114,7 @@ usersController.getUsersForSearch = function(req, res, next) {
 			show_anon: 'hide'
 		};
 
-		plugins.fireHook('filter:userlist.get', {data: userData, uid: uid}, function(err, userData) {
-			res.render('users', userData.data);
-		});
+		res.render('users', userData);
 	});
 };
 
