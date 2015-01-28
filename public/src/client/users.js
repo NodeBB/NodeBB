@@ -100,7 +100,7 @@ define('forum/users', function() {
 			doSearch();
 		});
 
-		$('.pagination').on('click', 'a', function() {
+		$('.users').on('click', '.pagination a', function() {
 			doSearch($(this).attr('data-page'));
 			return false;
 		})
@@ -150,9 +150,9 @@ define('forum/users', function() {
 				return reset();
 			}
 
-			templates.parse('users', 'pages', data, function(html) {
-				$('.pagination').html(html);
-			});
+			templates.parse('partials/paginator', {pagination: data.pagination}, function(html) {
+				$('.pagination-container').replaceWith(html);
+			})
 
 			templates.parse('users', 'users', data, function(html) {
 				translator.translate(html, function(translated) {
