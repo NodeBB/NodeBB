@@ -274,7 +274,7 @@ var async = require('async'),
 			}
 
 			if (!isFavouriting && !results.hasFavourited) {
-				return callback(new Error('[[error:alrady-unfavourited]]'));
+				return callback(new Error('[[error:already-unfavourited]]'));
 			}
 
 			async.waterfall([
