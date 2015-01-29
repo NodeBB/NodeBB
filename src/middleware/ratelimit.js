@@ -5,8 +5,8 @@ var winston = require('winston');
 
 var ratelimit = {};
 
-var allowedCallsPerSecond = 20;
-
+var allowedCalls = 100;
+var timeframe = 10000;
 
 ratelimit.isFlooding = function(socket) {
 	socket.callsPerSecond = socket.callsPerSecond || 0;
@@ -18,12 +18,12 @@ ratelimit.isFlooding = function(socket) {
 	var now = Date.now();
 	socket.elapsedTime += now - socket.lastCallTime;
 
-	if (socket.callsPerSecond > allowedCallsPerSecond && socket.elapsedTime < 1000) {
+	if (socket.callsPerSecond > allowedCalls && socket.elapsedTime < timeframe) {
 		winston.warn('Flooding detected! Calls : ' + socket.callsPerSecond + ', Duration : ' + socket.elapsedTime);
 		return true;
 	}
 
-	if (socket.elapsedTime >= 1000) {
+	if (socket.elapsedTime >= timeframe) {
 		socket.elapsedTime = 0;
 		socket.callsPerSecond = 0;
 	}

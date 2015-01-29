@@ -13,6 +13,7 @@ var topicsController = {},
 	privileges = require('../privileges'),
 	plugins = require('../plugins'),
 	helpers = require('./helpers'),
+	pagination = require('../pagination'),
 	utils = require('../../public/src/utils');
 
 topicsController.get = function(req, res, next) {
@@ -257,16 +258,11 @@ topicsController.get = function(req, res, next) {
 
 		topics.increaseViewCount(tid);
 
-		if (!res.locals.isAPI) {
-			// Paginator for noscript
-			data.pages = [];
-			for(var x=1; x<=data.pageCount; x++) {
-				data.pages.push({
-					page: x,
-					active: x === parseInt(page, 10)
-				});
-			}
-		}
+		pagination.create(data.currentPage, data.pageCount, data);
+
+		data.pagination.rel.forEach(function(rel) {
+			res.locals.linkTags.push(rel);
+		});
 
 		res.render('topic', data);
 	});

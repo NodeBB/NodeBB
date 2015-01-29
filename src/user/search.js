@@ -4,6 +4,7 @@
 var async = require('async'),
 	meta = require('../meta'),
 	user = require('../user'),
+	pagination = require('../pagination'),
 	db = require('../database');
 
 module.exports = function(User) {
@@ -49,23 +50,19 @@ module.exports = function(User) {
 			},
 			function(userData, next) {
 
-				var pages = [];
-				if (matchCount > resultsPerPage) {
-					pageCount = Math.ceil(matchCount / resultsPerPage);
-					var currentPage = Math.max(1, Math.ceil((start + 1) / resultsPerPage));
-					for(var i=1; i<=pageCount; ++i) {
-						pages.push({page: i, active: i === currentPage});
-					}
-				}
-
 				var diff = process.hrtime(startTime);
 				var timing = (diff[0] * 1e3 + diff[1] / 1e6).toFixed(1);
-				next(null, {
+				var data = {
 					timing: timing,
 					users: userData,
-					matchCount: matchCount,
-					pages: pages
-				});
+					matchCount: matchCount
+				};
+
+				var currentPage = Math.max(1, Math.ceil((start + 1) / resultsPerPage));
+				pageCount = Math.ceil(matchCount / resultsPerPage);
+				pagination.create(currentPage, pageCount, data);
+
+				next(null, data);
 			}
 		], callback);
 	};

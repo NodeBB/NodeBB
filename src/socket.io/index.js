@@ -147,7 +147,7 @@ function onMessage(socket, payload) {
 		socket.previousEvents.shift();
 	}
 
-	if (ratelimit.isFlooding(socket)) {
+	if (!eventName.startsWith('admin.') && ratelimit.isFlooding(socket)) {
 		winston.warn('[socket.io] Too many emits! Disconnecting uid : ' + socket.uid + '. Events : ' + socket.previousEvents);
 		return socket.disconnect();
 	}

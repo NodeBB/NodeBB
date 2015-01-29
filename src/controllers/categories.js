@@ -9,6 +9,7 @@ var categoriesController = {},
 	topics = require('../topics'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
+	pagination = require('../pagination'),
 	helpers = require('./helpers'),
 	utils = require('../../public/src/utils');
 
@@ -255,16 +256,11 @@ categoriesController.get = function(req, res, next) {
 		data.currentPage = page;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 
-		if (!res.locals.isAPI) {
-			// Paginator for noscript
-			data.pages = [];
-			for(var x=1;x<=data.pageCount;x++) {
-				data.pages.push({
-					page: x,
-					active: x === parseInt(page, 10)
-				});
-			}
-		}
+		pagination.create(data.currentPage, data.pageCount, data);
+
+		data.pagination.rel.forEach(function(rel) {
+			res.locals.linkTags.push(rel);
+		});
 
 		res.render('category', data);
 	});
