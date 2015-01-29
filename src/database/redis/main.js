@@ -105,7 +105,7 @@ module.exports = function(redisClient, module) {
 
 	module.rename = function(oldKey, newKey, callback) {
 		callback = callback || function() {};
-		redisClient.exist(oldKey, function(err, exists) {
+		redisClient.exists(oldKey, function(err, exists) {
 			if (err || !exists) {
 				return callback(err);
 			}
