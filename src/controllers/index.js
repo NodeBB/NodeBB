@@ -105,9 +105,18 @@ Controllers.home = function(req, res, next) {
 };
 
 Controllers.reset = function(req, res, next) {
-	res.render(req.params.code ? 'reset_code' : 'reset', {
-		reset_code: req.params.code ? req.params.code : null
-	});
+	if (req.params.code) {
+		res.render('reset_code', {
+			reset_code: req.params.code ? req.params.code : null,
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]', url: '/reset'}, {text: '[[reset_password:update_password]]'}])
+		});
+	} else {
+		res.render('reset', {
+			reset_code: req.params.code ? req.params.code : null,
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]'}])
+		});
+	}
+
 };
 
 Controllers.login = function(req, res, next) {
@@ -120,6 +129,7 @@ Controllers.login = function(req, res, next) {
 	data.showResetLink = emailersPresent;
 	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1;
 	data.allowRegistration = parseInt(meta.config.allowRegistration, 10) === 1;
+	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:login]]'}]);
 	data.error = req.flash('error')[0];
 
 	res.render('login', data);
@@ -151,6 +161,7 @@ Controllers.register = function(req, res, next) {
 	data.maximumUsernameLength = meta.config.maximumUsernameLength;
 	data.minimumPasswordLength = meta.config.minimumPasswordLength;
 	data.termsOfUse = meta.config.termsOfUse;
+	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[register:register]]'}]);
 	data.regFormEntry = [];
 	data.error = req.flash('error')[0];
 
@@ -200,7 +211,8 @@ Controllers.outgoing = function(req, res, next) {
 	var url = req.query.url,
 		data = {
 			url: url,
-			title: meta.config.title
+			title: meta.config.title,
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[notifications:outgoing_link]]'}])
 		};
 
 	if (url) {

@@ -34,8 +34,6 @@ define('forum/topic/posts', [
 		var posts = data.posts;
 		socket.emit('topics.getPageCount', ajaxify.variables.get('topic_id'), function(err, newPageCount) {
 
-			pagination.recreatePaginationLinks(newPageCount);
-
 			if (pagination.currentPage === pagination.pageCount) {
 				createNewPosts(data);
 			} else if(data.posts && data.posts.length && parseInt(data.posts[0].uid, 10) === parseInt(app.uid, 10)) {
