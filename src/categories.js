@@ -130,7 +130,7 @@ var async = require('async'),
 	};
 
 	Categories.getModerators = function(cid, callback) {
-		Groups.getMembers('cid:' + cid + ':privileges:mods', function(err, uids) {
+		Groups.getMembers('cid:' + cid + ':privileges:mods', 0, -1, function(err, uids) {
 			if (err || !Array.isArray(uids) || !uids.length) {
 				return callback(err, []);
 			}

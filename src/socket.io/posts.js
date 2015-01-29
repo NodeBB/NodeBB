@@ -403,10 +403,10 @@ SocketPosts.flag = function(socket, pid, callback) {
 		function(post, next) {
 			async.parallel({
 				admins: function(next) {
-					groups.getMembers('administrators', next);
+					groups.getMembers('administrators', 0, -1, next);
 				},
 				moderators: function(next) {
-					groups.getMembers('cid:' + post.topic.cid + ':privileges:mods', next);
+					groups.getMembers('cid:' + post.topic.cid + ':privileges:mods', 0, -1, next);
 				}
 			}, next);
 		},
