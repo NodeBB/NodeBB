@@ -66,7 +66,8 @@ SocketUser.search = function(socket, data, callback) {
 		page: data.page,
 		searchBy: data.searchBy,
 		sortBy: data.sortBy,
-		filterBy: data.filterBy
+		filterBy: data.filterBy,
+		uid: socket.uid
 	}, callback);
 };
 
@@ -332,7 +333,7 @@ SocketUser.loadMore = function(socket, data, callback) {
 	var start = parseInt(data.after, 10),
 		end = start + 19;
 
-	user.getUsersFromSet(data.set, start, end, function(err, userData) {
+	user.getUsersFromSet(data.set, socket.uid, start, end, function(err, userData) {
 		if (err) {
 			return callback(err);
 		}

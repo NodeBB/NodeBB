@@ -40,7 +40,7 @@ search.search = function(data, callback) {
 	if (searchIn === 'posts') {
 		searchInPosts(query, data.postedBy, uid, done);
 	} else if (searchIn === 'users') {
-		searchInUsers(query, done);
+		searchInUsers(query, uid, done);
 	} else if (searchIn === 'tags') {
 		searchInTags(query, done);
 	} else {
@@ -99,8 +99,8 @@ function searchInPosts(query, postedBy, uid, callback) {
 	});
 }
 
-function searchInUsers(query, callback) {
-	user.search({query: query}, function(err, results) {
+function searchInUsers(query, uid, callback) {
+	user.search({query: query, uid: uid}, function(err, results) {
 		callback(err, results ? results.users : null);
 	});
 }

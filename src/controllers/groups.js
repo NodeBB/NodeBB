@@ -49,12 +49,13 @@ groupsController.details = function(req, res, next) {
 };
 
 groupsController.members = function(req, res, next) {
+	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
 	async.waterfall([
 		function(next) {
 			groups.getGroupNameByGroupSlug(req.params.slug, next);
 		},
 		function(groupName, next) {
-			user.getUsersFromSet('group:' + groupName + ':members', 0, 49, next);
+			user.getUsersFromSet('group:' + groupName + ':members', uid, 0, 49, next);
 		},
 	], function(err, users) {
 		if (err) {
