@@ -5,5 +5,8 @@
     "search": "חיפוש",
     "enter_username": "הכנס שם משתמש לחיפוש",
     "load_more": "טען עוד",
-    "users-found-search-took": "נמצאו %1 משתמש(ים)! החיפוש ארך %2 מילי שניות."
+    "users-found-search-took": "נמצאו %1 משתמש(ים)! החיפוש ארך %2 מילי שניות.",
+    "filter-by": "Filter By",
+    "online-only": "Online only",
+    "picture-only": "Picture only"
 }

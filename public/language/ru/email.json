@@ -17,6 +17,8 @@
     "notif.chat.subject": "Новое сообщение от %1",
     "notif.chat.cta": "Нажмите для продолжения диалога",
     "notif.chat.unsub.info": "Вы получили это уведомление в соответствии с настройками подписок.",
+    "notif.post.cta": "Click here to read the full topic",
+    "notif.post.unsub.info": "This post notification was sent to you due to your subscription settings.",
     "test.text1": "Это тестовое сообщение для проверки почтового сервиса NodeBB.",
     "unsub.cta": "Изменить настройки",
     "closing": "Спасибо!"

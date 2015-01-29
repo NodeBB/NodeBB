@@ -1,4 +1,7 @@
 {
     "results_matching": "%1 نتيجة (نتائج) موافقة ل \"%2\", (%3 ثواني)",
-    "no-matches": "لم يتم إيجاد أية مشاركات"
+    "no-matches": "No matches found",
+    "in": "In",
+    "by": "By",
+    "posted-by": "Posted by"
 }

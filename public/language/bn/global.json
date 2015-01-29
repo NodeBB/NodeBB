@@ -3,9 +3,10 @@
     "search": "অনুসন্ধান",
     "buttons.close": "বন্ধ",
     "403.title": "প্রবেশাধিকার প্রত্যাখ্যাত",
-    "403.message": "আপনি এমন একটি পাতায় যাওয়ার চেষ্টা করছেন যেখানে আপনার প্রবেশাধিকার নেই। আপনি কি <a href='/login'>প্রবেশ করে</a> আবার চেষ্টা করবেন?",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "পাওয়া যায়নি",
-    "404.message": "আপনি এমন একটি পাতায় যাওয়ার চেষ্টা করছেন যার অস্তিত্ব নেই। <a href='/'>নীড়পাতায়</a> ফিরে যান। ",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "অভ্যন্তরীণ ত্রুটি।",
     "500.message": "ওহো! কিছু ভুল হয়েছে মনে হচ্ছে!",
     "register": "নিবন্ধন",
@@ -26,6 +27,7 @@
     "header.tags": "ট্যাগ",
     "header.popular": "জনপ্রিয়",
     "header.users": "ব্যবহারকারীগণ",
+    "header.groups": "Groups",
     "header.chats": "কথোপকথন",
     "header.notifications": "বিজ্ঞপ্তি",
     "header.search": "অনুসন্ধান",
@@ -73,5 +75,7 @@
     "updated.title": "ফোরাম আপডেট করা হয়েছে",
     "updated.message": "এই ফোরামে এইমাত্র সর্বশেষ সংস্করণে আপডেট করা হয়েছে। পৃষ্ঠাটি রিফ্রেশ করতে এখানে ক্লিক করুন।",
     "privacy": "নিরাপত্তা",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "সব মুছে ফেলুন"
 }

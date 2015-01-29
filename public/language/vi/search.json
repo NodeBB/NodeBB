@@ -1,4 +1,7 @@
 {
     "results_matching": "%1 kết quả(s) trùng với \"%2\", (%3 giây)",
-    "no-matches": "Không tìm thấy bài viết nào"
+    "no-matches": "No matches found",
+    "in": "In",
+    "by": "By",
+    "posted-by": "Posted by"
 }

@@ -5,5 +5,8 @@
     "search": "Cerca",
     "enter_username": "Inserisci il nome utente da cercare",
     "load_more": "Carica altri",
-    "users-found-search-took": "%1 utente(i) trovati! La ricerca ha impiegato %2 ms."
+    "users-found-search-took": "%1 utente(i) trovati! La ricerca ha impiegato %2 ms.",
+    "filter-by": "Filter By",
+    "online-only": "Online only",
+    "picture-only": "Picture only"
 }

@@ -18,6 +18,7 @@
     "username-taken": "Username sudah terdaftar",
     "email-taken": "Email sudah terdaftar",
     "email-not-confirmed": "Email kamu belum dikonfirmasi, klik disini untuk mengkonfirmasi email.",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
     "username-too-short": "Username terlalu pendek",
     "username-too-long": "Username terlalu panjang",
     "user-banned": "Pengguna dibanned",
@@ -43,10 +44,13 @@
     "already-favourited": "Post ini sudah kamu favorit",
     "already-unfavourited": "Postingan ini sudah kamu unfavorit",
     "cant-ban-other-admins": "Kamu tidak dapat ban admin lainnya!",
-    "invalid-image-type": "Tipe gambar salah",
+    "invalid-image-type": "Invalid image type. Allowed types are: %1",
+    "invalid-image-extension": "Invalid image extension",
     "group-name-too-short": "Nama grup terlalu pendek",
     "group-already-exists": "Grup sudah ada",
     "group-name-change-not-allowed": "Perubahan nama grup tidak dibolehkan",
+    "group-already-member": "You are already part of this group",
+    "group-needs-owner": "This group requires at least one owner",
     "post-already-deleted": "Postingan ini sudah dihapus",
     "post-already-restored": "Postingan ini sudah direstore",
     "topic-already-deleted": "Topik ini sudah dihapus",
@@ -63,5 +67,6 @@
     "not-enough-reputation-to-downvote": "Tidak cukup reputation untuk downvote post ini",
     "not-enough-reputation-to-flag": "Tidak cukup reputation untuk flag post ini",
     "reload-failed": "NodeBB mengalami masalah saat memuat \"%1\". NodeBB akan melanjutkan pemuatan, kamu harus membatalkan tindakanmu sebelum pemuatan kembali dilakukan.",
-    "registration-error": "Registrasti Error"
+    "registration-error": "Registrasti Error",
+    "parse-error": "Something went wrong while parsing server response"
 }

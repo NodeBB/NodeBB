@@ -1,4 +1,7 @@
 {
     "results_matching": "%1 resulta(a)ten was een match \"%2\", (%3 seconds)",
-    "no-matches": "Geen berichten gevonden"
+    "no-matches": "No matches found",
+    "in": "In",
+    "by": "By",
+    "posted-by": "Posted by"
 }

@@ -18,6 +18,7 @@
     "username-taken": "Имя пользователя занято",
     "email-taken": "Email занят",
     "email-not-confirmed": "Ваш email не подтвержден, нажмите для подтверждения.",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
     "username-too-short": "Слишком короткое имя пользователя",
     "username-too-long": "Имя пользователя слишком длинное",
     "user-banned": "Пользователь заблокирован",
@@ -43,10 +44,13 @@
     "already-favourited": "Вы уже добавили этот пост в избранное",
     "already-unfavourited": "Вы уже удалили этот пост из избранного",
     "cant-ban-other-admins": "Вы не можете забанить других администраторов!",
-    "invalid-image-type": "Неверный формат изображения",
+    "invalid-image-type": "Invalid image type. Allowed types are: %1",
+    "invalid-image-extension": "Invalid image extension",
     "group-name-too-short": "Название группы слишком короткое",
     "group-already-exists": "Группа уже существует",
     "group-name-change-not-allowed": "Изменение названия группы запрещено",
+    "group-already-member": "You are already part of this group",
+    "group-needs-owner": "This group requires at least one owner",
     "post-already-deleted": "Этот пост уже удалён",
     "post-already-restored": "Этот пост уже восстановлен.",
     "topic-already-deleted": "Тема уже удалена",
@@ -63,5 +67,6 @@
     "not-enough-reputation-to-downvote": "У Вас недостаточно репутации для понижения оценки поста",
     "not-enough-reputation-to-flag": "У Вас недостаточно репутации, чтобы пометить этот пост.",
     "reload-failed": "NodeBB обнаружил проблему при перезагрузке: \"%1\". NodeBB продолжит работать с существующими ресурсами клиента, но Вы должны отменить то, что сделали перед перезагрузкой.",
-    "registration-error": "Ошибка при регистрации"
+    "registration-error": "Ошибка при регистрации",
+    "parse-error": "Something went wrong while parsing server response"
 }

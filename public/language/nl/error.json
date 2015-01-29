@@ -18,6 +18,7 @@
     "username-taken": "Gebruikersnaam is al bezet",
     "email-taken": "Email adres is al gebruikt",
     "email-not-confirmed": "U email adres is niet bevestigd, Klik hier om uw email adres te bevestigen",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
     "username-too-short": "Gebruikersnaam is te kort",
     "username-too-long": "Gebruikersnaam is te lang",
     "user-banned": "Gebruiker verbannen",
@@ -43,10 +44,13 @@
     "already-favourited": "U heeft al dit bericht in uw favorieten staan",
     "already-unfavourited": "U heeft al dit bericht uit uw favorieten gehaald",
     "cant-ban-other-admins": "U kunt niet de andere admins bannen!",
-    "invalid-image-type": "Ongeldig foto type",
+    "invalid-image-type": "Invalid image type. Allowed types are: %1",
+    "invalid-image-extension": "Invalid image extension",
     "group-name-too-short": "De groepsnaam is te kort",
     "group-already-exists": "Deze groep bestaat al",
     "group-name-change-not-allowed": "Het veranderen van de groepsnaam is niet toegestaan!",
+    "group-already-member": "You are already part of this group",
+    "group-needs-owner": "This group requires at least one owner",
     "post-already-deleted": "Dit bericht is al verwijderd",
     "post-already-restored": "Dit bericht is al hersteld",
     "topic-already-deleted": "Deze topic is al verwijderd",
@@ -63,5 +67,6 @@
     "not-enough-reputation-to-downvote": "U heeft niet de benodigde reputatie om dit bericht te downvoten",
     "not-enough-reputation-to-flag": "U heeft niet de benodigde reputatie om dit bericht te melden aan de admins",
     "reload-failed": "NodeBB heeft een probleem geconstateerd tijdens het laden van: \"%1\".\nNodeBB blijft verder draaien. Het is wel verstandig om de actie wat u daarvoor heeft gedaan ongedaan te maken door te herladen.",
-    "registration-error": "Registratie fout"
+    "registration-error": "Registratie fout",
+    "parse-error": "Something went wrong while parsing server response"
 }

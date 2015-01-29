@@ -18,6 +18,7 @@
     "username-taken": "Nome utente già preso",
     "email-taken": "Email già esistente",
     "email-not-confirmed": "La tua Email deve essere ancora confermata, per favore clicca qui per confermare la tua Email.",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
     "username-too-short": "Nome utente troppo corto",
     "username-too-long": "Nome utente troppo lungo",
     "user-banned": "Utente bannato",
@@ -43,10 +44,13 @@
     "already-favourited": "Hai già inserito tra i preferiti questo post",
     "already-unfavourited": "Hai già inserito tra i Non Preferiti questo post",
     "cant-ban-other-admins": "Non puoi bannare altri amministratori!",
-    "invalid-image-type": "Tipo di immagine invalido",
+    "invalid-image-type": "Invalid image type. Allowed types are: %1",
+    "invalid-image-extension": "Invalid image extension",
     "group-name-too-short": "Nome del Gruppo troppo corto",
     "group-already-exists": "Il Gruppo esiste già",
     "group-name-change-not-allowed": "Il cambio di nome al Gruppo non è consentito",
+    "group-already-member": "You are already part of this group",
+    "group-needs-owner": "This group requires at least one owner",
     "post-already-deleted": "Questo Post è già stato cancellato",
     "post-already-restored": "Questo Post è già stato ripristinato",
     "topic-already-deleted": "Questo Topic è già stato cancellato",
@@ -63,5 +67,6 @@
     "not-enough-reputation-to-downvote": "Non hai i privilegi per votare negativamente questo post",
     "not-enough-reputation-to-flag": "Tu non hai abbastanza reputazione per segnalare questo Post",
     "reload-failed": "NodeBB ha incontrato un problema durante il ricaricamento: \"%1\". NodeBB continuerà a servire gli assets esistenti lato client, così puoi annullare quello che hai fatto prima di ricaricare.",
-    "registration-error": "Errore nella registrazione"
+    "registration-error": "Errore nella registrazione",
+    "parse-error": "Something went wrong while parsing server response"
 }

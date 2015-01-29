@@ -74,6 +74,7 @@
     "fork_no_pids": "Tidak ada posting yang dipilih!",
     "fork_success": "Topik berhasil dicabangkan! Klik disini untuk menuju topik yang telah dicabangkan.",
     "composer.title_placeholder": "Masukkan judul topik di sini...",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "Buang",
     "composer.submit": "Kirim",
     "composer.replying_to": "Membalas ke %1",
@@ -92,5 +93,6 @@
     "sort_by": "Urutkan berdasakan",
     "oldest_to_newest": "Terlama ke Terbaru",
     "newest_to_oldest": "Terbaru ke Terlama",
-    "most_votes": "Vote terbanyak"
+    "most_votes": "Vote terbanyak",
+    "most_posts": "Most posts"
 }

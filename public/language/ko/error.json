@@ -18,6 +18,7 @@
     "username-taken": "이미 사용 중인 사용자 이름입니다.",
     "email-taken": "이미 사용 중인 이메일입니다.",
     "email-not-confirmed": "아직 이메일이 인증되지 않았습니다. 여기를 누르면 인증 메일을 발송할 수 있습니다.",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
     "username-too-short": "사용자 이름이 너무 짧습니다.",
     "username-too-long": "사용자 이름이 너무 깁니다.",
     "user-banned": "차단된 사용자입니다.",
@@ -43,10 +44,13 @@
     "already-favourited": "You have already favourited this post",
     "already-unfavourited": "You have already unfavourited this post",
     "cant-ban-other-admins": "다른 관리자를 차단할 수 없습니다.",
-    "invalid-image-type": "올바르지 않은 이미지입니다.",
+    "invalid-image-type": "Invalid image type. Allowed types are: %1",
+    "invalid-image-extension": "Invalid image extension",
     "group-name-too-short": "그룹 이름이 너무 짧습니다.",
     "group-already-exists": "이미 존재하는 그룹입니다.",
     "group-name-change-not-allowed": "금지된 그룹 이름입니다.",
+    "group-already-member": "You are already part of this group",
+    "group-needs-owner": "This group requires at least one owner",
     "post-already-deleted": "이미 삭제된 게시물입니다.",
     "post-already-restored": "이미 복원된 게시물입니다.",
     "topic-already-deleted": "이미 삭제된 주제입니다.",
@@ -63,5 +67,6 @@
     "not-enough-reputation-to-downvote": "인기도가 낮아 이 게시물에 반대할 수 없습니다.",
     "not-enough-reputation-to-flag": "인기도가 낮아 이 게시물을 신고할 수 없습니다.",
     "reload-failed": "NodeBB를 다시 읽어들이는 중 다음과 같은 문제가 발생했습니다. \"%1\" 다시 읽어들이기 직전에 했던 동작은 되돌리세요. 클라이언트측 자원은 문제없이 계속 전송됩니다.",
-    "registration-error": "Registration Error"
+    "registration-error": "Registration Error",
+    "parse-error": "Something went wrong while parsing server response"
 }

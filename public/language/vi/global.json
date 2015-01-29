@@ -3,9 +3,10 @@
     "search": "Tìm kiếm",
     "buttons.close": "Đóng lại",
     "403.title": "Từ chối truy cập",
-    "403.message": "Có vẻ như bạn đang cố vào một trang mà bạn không có quyền truy cập. Bạn nên thử đăng nhập để truy cập ",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "Không tìm thấy",
-    "404.message": "Có vẻ bạn đang cố vào một trang không tồn tại. Hãy trở lại trang chủ",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "Lỗi nội bộ",
     "500.message": "Úi chà! Có vẻ như có trục trặc rồi!",
     "register": "Đăng ký",
@@ -26,6 +27,7 @@
     "header.tags": "Tags",
     "header.popular": "Nổi bật",
     "header.users": "Số người dùng",
+    "header.groups": "Groups",
     "header.chats": "Phần Chat",
     "header.notifications": "Thông báo",
     "header.search": "Tìm kiếm",
@@ -73,5 +75,7 @@
     "updated.title": "Cập nhật diễn đàn",
     "updated.message": "Diễn đàn đã được cập nhật bản mới nhất. Click vào đây để tải lại trang.",
     "privacy": "Quyền riêng tư",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "Xóa hết"
 }

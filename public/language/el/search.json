@@ -1,4 +1,7 @@
 {
     "results_matching": "%1 αποτελεσμα(τα) για \"%2\", (%3 δευτερόλεπτα)",
-    "no-matches": "Δεν βρέθηκαν δημοσιεύσεις"
+    "no-matches": "No matches found",
+    "in": "In",
+    "by": "By",
+    "posted-by": "Posted by"
 }

@@ -17,6 +17,8 @@
     "notif.chat.subject": "%1님이 채팅 메시지를 보냈습니다.",
     "notif.chat.cta": "대화를 계속하려면 여기를 클릭하세요.",
     "notif.chat.unsub.info": "이 채팅 알림은 사용자 설정에 따라 전송되었습니다.",
+    "notif.post.cta": "Click here to read the full topic",
+    "notif.post.unsub.info": "This post notification was sent to you due to your subscription settings.",
     "test.text1": "이 메일은 NodeBB에 메일러가 정상적으로 설치되었는지 확인할 테스트 용도로 발송되었습니다.",
     "unsub.cta": "설정을 변경하려면 여기를 클릭하세요.",
     "closing": "감사합니다!"

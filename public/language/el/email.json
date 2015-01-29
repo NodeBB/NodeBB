@@ -17,6 +17,8 @@
     "notif.chat.subject": "Νέο μήνυμα συνομιλίας από τον/την %1",
     "notif.chat.cta": "Κάνε κλικ εδώ για να πας στην συνομιλία",
     "notif.chat.unsub.info": "Αυτή η ειδοποίηση για συνομιλία σου στάλθηκε λόγω των ρυθμίσεών σου. ",
+    "notif.post.cta": "Click here to read the full topic",
+    "notif.post.unsub.info": "This post notification was sent to you due to your subscription settings.",
     "test.text1": "Αυτό είναι ένα δοκιμαστικό email για να επιβεβαιώσουμε ότι ο emailer έχει στηθεί σωστά για το NodeBB.",
     "unsub.cta": "Κάνε κλικ εδώ για να αλλάξεις αυτές τις ρυθμίσεις",
     "closing": "Ευχαριστούμε!"

@@ -74,6 +74,7 @@
     "fork_no_pids": "Nepasirinktas joks įrašas!",
     "fork_success": "Successfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Įrašykite temos pavadinimą...",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "Atšaukti",
     "composer.submit": "Patvirtinti",
     "composer.replying_to": "Atsakymas %1",
@@ -92,5 +93,6 @@
     "sort_by": "Rūšiuoti pagal",
     "oldest_to_newest": "Nuo seniausių iki naujausių",
     "newest_to_oldest": "Nuo naujausių iki seniausių",
-    "most_votes": "Daugiausiai balsų"
+    "most_votes": "Daugiausiai balsų",
+    "most_posts": "Most posts"
 }

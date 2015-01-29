@@ -1,4 +1,7 @@
 {
     "results_matching": "%1 результатов по фразе \"%2\", (%3 секунды) ",
-    "no-matches": "Ничего не найдено"
+    "no-matches": "No matches found",
+    "in": "In",
+    "by": "By",
+    "posted-by": "Posted by"
 }

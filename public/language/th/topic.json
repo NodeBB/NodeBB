@@ -74,6 +74,7 @@
     "fork_no_pids": "ไม่มีโพสต์ที่เลือก!",
     "fork_success": "Successfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "ป้อนชื่อกระทู้ของคุณที่นี่ ...",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "ยกเลิก",
     "composer.submit": "ส่ง",
     "composer.replying_to": "Replying to %1",
@@ -92,5 +93,6 @@
     "sort_by": "Sort by",
     "oldest_to_newest": "Oldest to Newest",
     "newest_to_oldest": "Newest to Oldest",
-    "most_votes": "Most votes"
+    "most_votes": "Most votes",
+    "most_posts": "Most posts"
 }

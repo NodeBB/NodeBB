@@ -74,6 +74,7 @@
     "fork_no_pids": "কোন পোষ্ট সিলেক্ট করা হয় নি",
     "fork_success": "টপিক ফর্ক করা হয়েছে। ফর্ক করা টপিকে যেতে এখানে ক্লিক করুন",
     "composer.title_placeholder": "আপনার টপিকের শিরোনাম দিন",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "বাতিল",
     "composer.submit": "সাবমিট",
     "composer.replying_to": "%1 এর উত্তরে:",
@@ -92,5 +93,6 @@
     "sort_by": "সাজানোর ভিত্তি:",
     "oldest_to_newest": "পুরাতন থেকে নতুন",
     "newest_to_oldest": "নতুন থেকে পুরাতন",
-    "most_votes": "সর্বোচ্চ ভোট"
+    "most_votes": "সর্বোচ্চ ভোট",
+    "most_posts": "Most posts"
 }

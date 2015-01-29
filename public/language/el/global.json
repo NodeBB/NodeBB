@@ -3,9 +3,10 @@
     "search": "Αναζήτηση",
     "buttons.close": "Κλείσιμο",
     "403.title": "Δεν επιτρέπεται η πρόσβαση",
-    "403.message": "Φαίνεται πως βρέθηκες σε κάποια σελίδα στην οποία δεν έχεις πρόσβαση. Ίσως πρέπει να <a href='/login'>συνδεθείς</a>;",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "Δεν βρέθηκε",
-    "404.message": "Φαίνεται πως βρέθηκες σε κάποια σελίδα στην οποία δεν έχεις πρόσβαση. Επιστροφή στην <a href='/'>κεντρική σελίδα</a>.",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "Εσωτερικό σφάλμα.",
     "500.message": "Ουπς! Φαίνεται πως κάτι πήγε στραβά!",
     "register": "Εγγραφή",
@@ -26,6 +27,7 @@
     "header.tags": "Ετικέτες",
     "header.popular": "Δημοφιλή",
     "header.users": "Χρήστες",
+    "header.groups": "Groups",
     "header.chats": "Συνομιλίες",
     "header.notifications": "Ειδοποιήσεις",
     "header.search": "Αναζήτηση",
@@ -73,5 +75,7 @@
     "updated.title": "Το φόρουμ αναβαθμίστηκε",
     "updated.message": "Το φόρουμ μόλις αναβαθμίστηκε στην πιο πρόσφατη έκδοση. Κάνε κλικ εδώ για να ανανεώσεις την σελίδα.",
     "privacy": "Privacy",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "Delete All"
 }

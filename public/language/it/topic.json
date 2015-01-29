@@ -74,6 +74,7 @@
     "fork_no_pids": "Nessun post selezionato!",
     "fork_success": "Topic Diviso con successo ! Clicca qui per andare al Topic Diviso.",
     "composer.title_placeholder": "Inserisci qui il titolo della discussione...",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "Annulla",
     "composer.submit": "Invia",
     "composer.replying_to": "Rispondendo a %1",
@@ -92,5 +93,6 @@
     "sort_by": "Ordina per",
     "oldest_to_newest": "Da Vecchi a Nuovi",
     "newest_to_oldest": "Da Nuovi a Vecchi",
-    "most_votes": "Più votati"
+    "most_votes": "Più votati",
+    "most_posts": "Most posts"
 }

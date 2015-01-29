@@ -5,5 +5,8 @@
     "search": "Search",
     "enter_username": "Enter a username to search",
     "load_more": "Load More",
-    "users-found-search-took": "%1 user(s) found! Search took %2 ms."
+    "users-found-search-took": "%1 user(s) found! Search took %2 ms.",
+    "filter-by": "Filter By",
+    "online-only": "Online only",
+    "picture-only": "Picture only"
 }

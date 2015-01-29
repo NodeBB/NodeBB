@@ -3,9 +3,10 @@
     "search": "搜索",
     "buttons.close": "关闭",
     "403.title": "禁止访问",
-    "403.message": "您无权访问此页。也许您应该<a href='/login'>试试登录帐户</a>？",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "未找到",
-    "404.message": "您似乎打开了一个不存在的页面。返回<a href='/'>主页</a>。",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "内部错误。",
     "500.message": "哎呀！看来是哪里出错了！",
     "register": "注册",
@@ -26,6 +27,7 @@
     "header.tags": "话题",
     "header.popular": "热门",
     "header.users": "会员",
+    "header.groups": "Groups",
     "header.chats": "聊天",
     "header.notifications": "通知",
     "header.search": "搜索",
@@ -73,5 +75,7 @@
     "updated.title": "论坛已更新",
     "updated.message": "论坛已更新到最新版本。点这里刷新页面。",
     "privacy": "隐私",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "全部删除"
 }

@@ -3,9 +3,10 @@
     "search": "Chirca",
     "buttons.close": "Serra",
     "403.title": "Intrada Blocada",
-    "403.message": "Paret chi ses incapitadu in una pàgina in ue tue non podes intrare. Forsis dias a dèpere <a href='/login'>provare a intrare</a>?",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "No Agatadu",
-    "404.message": "Paret chi ses imbruchinadu in una pàgina chi non s'agatat. Torra a sa <a href='/'>domo</a>.",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "Faddina interna.",
     "500.message": "Oops! Paret chi carchi cosa est andada male!",
     "register": "Registra·ti",
@@ -26,6 +27,7 @@
     "header.tags": "Tags",
     "header.popular": "Populare",
     "header.users": "Impitadores",
+    "header.groups": "Groups",
     "header.chats": "Tzarras",
     "header.notifications": "Notìficas",
     "header.search": "Chirca",
@@ -73,5 +75,7 @@
     "updated.title": "Forum Updated",
     "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page.",
     "privacy": "Privacy",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "Delete All"
 }
