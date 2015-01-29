@@ -113,9 +113,10 @@ var async = require('async'),
 					}
 
 					if (options.truncateUserList) {
-						if (uids.length > 4) {
+						var userListCount = parseInt(options.userListCount, 10) || 4;
+						if (uids.length > userListCount) {
 							numUsers = uids.length;
-							uids.length = 4;
+							uids.length = userListCount;
 							truncated = true;
 						}
 					}
@@ -271,8 +272,8 @@ var async = require('async'),
 		});
 	};
 
-	Groups.getMembers = function(groupName, callback) {
-		db.getSortedSetRevRange('group:' + groupName + ':members', 0, -1, callback);
+	Groups.getMembers = function(groupName, start, end, callback) {
+		db.getSortedSetRevRange('group:' + groupName + ':members', start, end, callback);
 	};
 
 	Groups.isMember = function(uid, groupName, callback) {
@@ -761,7 +762,9 @@ var async = require('async'),
 	Groups.getLatestMemberPosts = function(groupSlug, max, uid, callback) {
 		async.waterfall([
 			async.apply(Groups.getGroupNameByGroupSlug, groupSlug),
-			Groups.getMembers,
+			function(groupName, next) {
+				Groups.getMembers(groupName, 0, -1, next);
+			},
 			function(uids, next) {
 				if (!Array.isArray(uids) || !uids.length) {
 					return callback(null, []);

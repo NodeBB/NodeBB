@@ -1,8 +1,9 @@
 "use strict";
 
-var groups = require('../groups'),
-	async = require('async'),
+var async = require('async'),
 	nconf = require('nconf'),
+	groups = require('../groups'),
+	user = require('../user'),
 	helpers = require('./helpers'),
 	groupsController = {};
 
@@ -44,6 +45,27 @@ groupsController.details = function(req, res, next) {
 		}
 
 		res.render('groups/details', results);
+	});
+};
+
+groupsController.members = function(req, res, next) {
+	async.waterfall([
+		function(next) {
+			groups.getGroupNameByGroupSlug(req.params.slug, next);
+		},
+		function(groupName, next) {
+			user.getUsersFromSet('group:' + groupName + ':members', 0, 49, next);
+		},
+	], function(err, users) {
+		if (err) {
+			return next(err);
+		}
+
+		res.render('groups/members', {
+			users: users,
+			nextStart: 50,
+			loadmore_display: users.length > 50 ? 'block' : 'hide',
+		});
 	});
 };
 
