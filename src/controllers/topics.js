@@ -139,7 +139,7 @@ topicsController.get = function(req, res, next) {
 				}
 			];
 
-			helpers.buildBreadcrumbs(topicData.category.parentCid, function(err, crumbs) {
+			helpers.buildCategoryBreadcrumbs(topicData.category.parentCid, function(err, crumbs) {
 				if (err) {
 					return next(err);
 				}
@@ -255,6 +255,7 @@ topicsController.get = function(req, res, next) {
 		data['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 		data['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+		data['rssFeedUrl'] = nconf.get('relative_path') + '/topic/' + data.tid + '.rss';
 
 		topics.increaseViewCount(tid);
 

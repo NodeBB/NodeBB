@@ -12,7 +12,7 @@ searchController.search = function(req, res, next) {
 	if (!plugins.hasListeners('filter:search.query')) {
 		return helpers.notFound(req, res);
 	}
-
+	var breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:search]]'}]);
 	if (!req.params.term) {
 		return res.render('search', {
 			time: 0,
@@ -20,7 +20,8 @@ searchController.search = function(req, res, next) {
 			posts: [],
 			topics: [],
 			users: [],
-			tags: []
+			tags: [],
+			breadcrumbs: breadcrumbs
 		});
 	}
 
@@ -38,6 +39,7 @@ searchController.search = function(req, res, next) {
 			return next(err);
 		}
 
+		results.breadcrumbs = breadcrumbs;
 		res.render('search', results);
 	});
 };

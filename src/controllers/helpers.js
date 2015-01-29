@@ -38,7 +38,7 @@ helpers.notAllowed = function(req, res, error) {
 	}
 };
 
-helpers.buildBreadcrumbs = function(cid, callback) {
+helpers.buildCategoryBreadcrumbs = function(cid, callback) {
 	var breadcrumbs = [];
 
 	async.whilst(function() {
@@ -62,15 +62,33 @@ helpers.buildBreadcrumbs = function(cid, callback) {
 			return callback(err);
 		}
 
-		translator.translate('[[global:home]]', meta.config.defaultLang || 'en_GB', function(translated) {
-			breadcrumbs.unshift({
-				text: translated,
-				url: nconf.get('relative_path') + '/'
-			});
-
-			callback(null, breadcrumbs);
+		breadcrumbs.unshift({
+			text: '[[global:home]]',
+			url: nconf.get('relative_path') + '/'
 		});
+
+		callback(null, breadcrumbs);
 	});
+};
+
+helpers.buildBreadcrumbs = function(crumbs) {
+	var breadcrumbs = [
+		{
+			text: '[[global:home]]',
+			url: nconf.get('relative_path') + '/'
+		}
+	];
+
+	crumbs.forEach(function(crumb) {
+		if (crumb) {
+			if (crumb.url) {
+				crumb.url = nconf.get('relative_path') + crumb.url;
+			}
+			breadcrumbs.push(crumb);
+		}
+	});
+
+	return breadcrumbs;
 };
 
 module.exports = helpers;
