@@ -178,18 +178,20 @@ module.exports = function(User) {
 	}
 
 	function sortUsers(userData, sortBy) {
-		userData.sort(function(user1, user2) {
-			if (sortBy === 'joindate' || sortBy === 'postcount') {
-				return user2[sortBy] - user1[sortBy];
-			} else {
-				if(user1[sortBy] < user2[sortBy]) {
+		if (sortBy === 'joindate' || sortBy === 'postcount') {
+			userData.sort(function(u1, u2) {
+				return u2[sortBy] - u1[sortBy];
+			});
+		} else {
+			userData.sort(function(u1, u2) {
+				if(u1[sortBy] < u2[sortBy]) {
 					return -1;
-				} else if(user1[sortBy] > user2[sortBy]) {
+				} else if(u1[sortBy] > u2[sortBy]) {
 					return 1;
 				}
 				return 0;
-			}
-		});
+			});
+		}
 	}
 
 	function searchByIP(ip, callback) {
