@@ -31,9 +31,7 @@ define('forum/groups/list', function() {
 		});
 
 		// Group searching
-		$('#search-text').on('keydown', function(e) {
-			if (e.keyCode === 13) { Groups.search(e); }
-		});
+		$('#search-text').on('keyup', Groups.search);
 		$('#search-button').on('click', Groups.search);
 	};
 
