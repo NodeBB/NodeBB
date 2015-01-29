@@ -152,23 +152,37 @@ var	async = require('async'),
 			if (err || now - parseInt(score, 10) < 300000) {
 				return callback(err);
 			}
-			db.sortedSetAdd('users:online', now, uid, callback);
+			db.sortedSetAdd('users:online', now, uid, function(err) {
+				if (err) {
+					return callback(err);
+				}
+				plugins.fireHook('action:user.online', {uid: uid, timestamp: now});
+			});
 		});
 	};
 
 	User.setUserField = function(uid, field, value, callback) {
-		plugins.fireHook('action:user.set', {field: field, value: value, type: 'set'});
-		db.setObjectField('user:' + uid, field, value, callback);
+		db.setObjectField('user:' + uid, field, value, function(err) {
+			if (err) {
+				return callback(err)
+			}
+			plugins.fireHook('action:user.set', {uid: uid, field: field, value: value, type: 'set'});
+			callback();
+		});
 	};
 
 	User.setUserFields = function(uid, data, callback) {
-		for (var field in data) {
-			if (data.hasOwnProperty(field)) {
-				plugins.fireHook('action:user.set', {field: field, value: data[field], type: 'set'});
+		db.setObject('user:' + uid, data, function(err) {
+			if (err) {
+				return callback(err);
 			}
-		}
-
-		db.setObject('user:' + uid, data, callback);
+			for (var field in data) {
+				if (data.hasOwnProperty(field)) {
+					plugins.fireHook('action:user.set', {uid: uid, field: field, value: data[field], type: 'set'});
+				}
+			}
+			callback();
+		});
 	};
 
 	User.incrementUserFieldBy = function(uid, field, value, callback) {
@@ -177,7 +191,7 @@ var	async = require('async'),
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('action:user.set', {field: field, value: value, type: 'increment'});
+			plugins.fireHook('action:user.set', {uid: uid, field: field, value: value, type: 'increment'});
 
 			callback(null, value);
 		});
@@ -189,7 +203,7 @@ var	async = require('async'),
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('action:user.set', {field: field, value: value, type: 'decrement'});
+			plugins.fireHook('action:user.set', {uid: uid, field: field, value: value, type: 'decrement'});
 
 			callback(null, value);
 		});
