@@ -67,7 +67,10 @@
     "xregexp": "~2.0.0"
   },
   "devDependencies": {
-    "mocha": "~1.13.0"
+    "mocha": "~1.13.0",
+    "grunt": "~0.4.5",
+    "grunt-supervisor": "^0.2.4",
+    "grunt-express-server": "^0.4.19"
   },
   "bugs": {
     "url": "https://github.com/NodeBB/NodeBB/issues"
