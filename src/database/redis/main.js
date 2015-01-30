@@ -106,7 +106,7 @@ module.exports = function(redisClient, module) {
 	module.rename = function(oldKey, newKey, callback) {
 		callback = callback || function() {};
 		redisClient.rename(oldKey, newKey, function(err, res) {
-			callback(err);
+			callback(err && err.message !== 'ERR no such key' ? err : null);
 		});
 	};
 
