@@ -61,7 +61,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 		fork.init();
 
 		$('.posts').on('click', '.follow', function() {
-			socket.emit('topics.follow', tid, function(err, state) {
+			socket.emit('topics.toggleFollow', tid, function(err, state) {
 				if(err) {
 					return app.alert({
 						type: 'danger',
