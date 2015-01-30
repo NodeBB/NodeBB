@@ -926,7 +926,7 @@ var async = require('async'),
 			async.apply(db.getObjectValues, 'groupslug:groupname'),
 			function(groupNames, next) {
 				groupNames = groupNames.filter(function(name) {
-					return name.match(new RegExp(query, 'i'));
+					return name.match(new RegExp(query, 'i')) && name !== 'administrators';
 				});
 
 				async.mapLimit(groupNames, 5, function(groupName, next) {
