@@ -3,9 +3,10 @@
     "search": "Hae",
     "buttons.close": "Sulje",
     "403.title": "Pääsy kielletty",
-    "403.message": "Olet päätynyt sivulle, johon sinulla ei ole tarvittavia oikeuksia. Sinun pitäisi kai <a href='/login'>kirjautua sisään</a>.",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "Ei löydy",
-    "404.message": "Olet päätynyt sivulle, jota ei ole olemassa. Palaa <a href='/'>etusivulle</a>.",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "Sisäinen virhe.",
     "500.message": "Oho! Jotain meni pieleen!",
     "register": "Rekisteröidy",
@@ -26,6 +27,7 @@
     "header.tags": "Tags",
     "header.popular": "Suositut",
     "header.users": "Käyttäjät",
+    "header.groups": "Groups",
     "header.chats": "Keskustelut",
     "header.notifications": "Ilmoitukset",
     "header.search": "Hae",
@@ -73,5 +75,7 @@
     "updated.title": "Foorumi päivitetty",
     "updated.message": "Tämä foorumi on juuri päivitetty uusimpaan versioon. Paina tästä päivittääksesi sivun.",
     "privacy": "Privacy",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "Delete All"
 }

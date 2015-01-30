@@ -3,9 +3,10 @@
     "search": "Поиск",
     "buttons.close": "Закрыть",
     "403.title": "Доступ запрещен",
-    "403.message": "Похоже, вы наткнулись на страницу, к которой у вас нет доступа. Возможно, вам стоит <a href='/login'>попробовать войти</a>?",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "Страница не найдена",
-    "404.message": "Похоже, вы наткнулись на несуществующую страницу. Вернитесь на <a href='/'>главную</a>.",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "Внутренняя ошибка.",
     "500.message": "Упс! Похоже, что-то пошло не так!",
     "register": "Зарегистрироваться",
@@ -26,6 +27,7 @@
     "header.tags": "Тэги",
     "header.popular": "Популярные",
     "header.users": "Пользователи",
+    "header.groups": "Groups",
     "header.chats": "Чаты",
     "header.notifications": "Уведомления",
     "header.search": "Поиск",
@@ -73,5 +75,7 @@
     "updated.title": "Форум обновлен",
     "updated.message": "Форум был обновлен до последней версии. Нажмите здесь, чтобы обновить страницу.",
     "privacy": "Безопасность",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "Удалить все"
 }

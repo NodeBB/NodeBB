@@ -74,6 +74,7 @@
     "fork_no_pids": "Inga inlägg valda!",
     "fork_success": "Ämnet har blivit förgrenat. Klicka här för att gå till det förgrenade ämnet.",
     "composer.title_placeholder": "Skriv in ämnets titel här...",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "Avbryt",
     "composer.submit": "Spara",
     "composer.replying_to": "Svarar till %1",
@@ -92,5 +93,6 @@
     "sort_by": "Sortera på",
     "oldest_to_newest": "Äldst till nyaste",
     "newest_to_oldest": "Nyaste till äldst",
-    "most_votes": "Mest röster"
+    "most_votes": "Mest röster",
+    "most_posts": "Most posts"
 }

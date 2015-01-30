@@ -17,6 +17,8 @@
     "notif.chat.subject": "Nová zpráva z chatu od %1",
     "notif.chat.cta": "Chcete-li pokračovat v konverzaci, klikněte zde.",
     "notif.chat.unsub.info": "Toto oznámení z chatu vám bylo zasláno, protože jste si to nastavili ve vašich odběrech.",
+    "notif.post.cta": "Click here to read the full topic",
+    "notif.post.unsub.info": "This post notification was sent to you due to your subscription settings.",
     "test.text1": "Tento testovací email  slouží k ověření, že mailer je správně nastaven. NodeBB.",
     "unsub.cta": "Chcete-li změnit tyto nastavení, klikněte zde.",
     "closing": "Díky!"

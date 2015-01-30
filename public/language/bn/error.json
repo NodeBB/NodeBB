@@ -18,6 +18,7 @@
     "username-taken": "ইউজারনেম আগেই ব্যবহৃত",
     "email-taken": "ইমেইল আগেই ব্যবহৃত",
     "email-not-confirmed": "আপনার ইমেইল এড্রেস নিশ্চিত করা হয় নি, নিশ্চিত করতে এখানে ক্লিক করুন।",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
     "username-too-short": "খুব ছোট ইউজারনেম",
     "username-too-long": "ইউজারনেম বড় হয়ে গিয়েছে",
     "user-banned": "ব্যবহারকারী নিষিদ্ধ",
@@ -43,10 +44,13 @@
     "already-favourited": "আপনি ইতিমধ্যে এই পোষ্টটি পছন্দের তালিকায় যোগ করেছেন",
     "already-unfavourited": "আপনি ইতিমধ্যে এই পোষ্টটি আপনার পছন্দের তালিকা থেকে সরিয়ে ফেলেছেন",
     "cant-ban-other-admins": "আপনি অন্য এ্যাডমিনদের নিষিদ্ধ করতে পারেন না!",
-    "invalid-image-type": "ভুল ছবির টাইপ",
+    "invalid-image-type": "Invalid image type. Allowed types are: %1",
+    "invalid-image-extension": "Invalid image extension",
     "group-name-too-short": "গ্রুপের নাম খুব ছোট",
     "group-already-exists": "গ্রুপ ইতিমধ্যেই বিদ্যমান",
     "group-name-change-not-allowed": "গ্রুপের নাম পরিবর্তনের অনুমতি নেই",
+    "group-already-member": "You are already part of this group",
+    "group-needs-owner": "This group requires at least one owner",
     "post-already-deleted": "এই পোস্টটি ইতিমধ্যে ডিলিট করা হয়ে গিয়েছে",
     "post-already-restored": "এই পোষ্টটি ইতিমধ্যে পুনরোদ্ধার করা হয়েছে",
     "topic-already-deleted": "এই টপিকটি ইতিমধ্যে ডিলিট করা হয়েছে",
@@ -63,5 +67,6 @@
     "not-enough-reputation-to-downvote": "আপনার এই পোস্ট downvote করার জন্য পর্যাপ্ত সম্মাননা নেই",
     "not-enough-reputation-to-flag": "এই পোষ্টকে ফ্লাগ করার জন্য আপনার পর্যাপ্ত সম্মাননা নেই",
     "reload-failed": "\"%1\" রিলোড করতে সমস্যা হয়েছে। রিলোডের পূর্বে যা করা হয়েছিল সেটি আনডু করা সমীচীন। ",
-    "registration-error": "নিবন্ধন এরর!"
+    "registration-error": "নিবন্ধন এরর!",
+    "parse-error": "Something went wrong while parsing server response"
 }

@@ -1,4 +1,7 @@
 {
     "results_matching": "\"%2\" এর সাথে মিলিয়ে %1 ফলাফল পাওয়া গেছে,  ( %3 seconds সময় লেগেছে )",
-    "no-matches": "কোন পোষ্ট খুঁজে পাওয়া যায় নি"
+    "no-matches": "No matches found",
+    "in": "In",
+    "by": "By",
+    "posted-by": "Posted by"
 }

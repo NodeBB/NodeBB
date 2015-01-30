@@ -17,6 +17,8 @@
     "notif.chat.subject": "U heeft een chatbericht ontvangen van %1",
     "notif.chat.cta": "Klik hier om het gesprek te hervatten",
     "notif.chat.unsub.info": "Deze chat notificatie was verzonden naar jou vanwege je abbonement instellingen",
+    "notif.post.cta": "Click here to read the full topic",
+    "notif.post.unsub.info": "This post notification was sent to you due to your subscription settings.",
     "test.text1": "Dit is een test email om te verifiëren dat de email service correct is opgezet voor jou NodeBB",
     "unsub.cta": "Klik hier om u instellingen te wijzigen",
     "closing": "Bedankt!"

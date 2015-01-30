@@ -17,6 +17,8 @@
     "notif.chat.subject": "Pesan yang baru diterima dari %1",
     "notif.chat.cta": "Klik di sini untuk melanjutkan percakapan",
     "notif.chat.unsub.info": "Sesuai pengaturan langganan anda, notifikasi obrolan ini dikirmkan kepada anda",
+    "notif.post.cta": "Click here to read the full topic",
+    "notif.post.unsub.info": "This post notification was sent to you due to your subscription settings.",
     "test.text1": "Ini hanya email percobaan untuk menverifkasi pengiriman email telah diatur oleh  NodeBB secara benar",
     "unsub.cta": "Klik di sini untuk mengubah pengaturan-pengaturan tersebut.",
     "closing": "Terima kasih!"

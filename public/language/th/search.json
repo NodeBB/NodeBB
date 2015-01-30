@@ -1,4 +1,7 @@
 {
     "results_matching": "%1 ผลลัพธ์ ตรงตามที่ระบุ \"%2\", (%3 วินาที)",
-    "no-matches": "No posts found"
+    "no-matches": "No matches found",
+    "in": "In",
+    "by": "By",
+    "posted-by": "Posted by"
 }

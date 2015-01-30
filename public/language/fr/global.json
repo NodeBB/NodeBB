@@ -3,9 +3,10 @@
     "search": "Recherche",
     "buttons.close": "Fermer",
     "403.title": "Accès refusé",
-    "403.message": "Il semble que vous vous soyez retrouvé sur une page à laquelle vous n'avez pas accès. Vous devriez peut-être <a href='/login'>essayer de vous connecter</a> ?",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "Introuvable",
-    "404.message": "Il semble que vous vous soyez retrouvés sur une page qui n'existe pas. Retourner à <a href='/'>l'accueil</a>.",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "Erreur interne.",
     "500.message": "Oops ! Il semblerait que quelque chose se soit mal passé !",
     "register": "S'inscrire",
@@ -26,6 +27,7 @@
     "header.tags": "Tags",
     "header.popular": "Populaire",
     "header.users": "Utilisateurs",
+    "header.groups": "Groups",
     "header.chats": "Chats",
     "header.notifications": "Notifications",
     "header.search": "Recherche",
@@ -73,5 +75,7 @@
     "updated.title": "Forum mis à jour",
     "updated.message": "Ce forum a été mis à jour à la dernière version. Cliquez ici pour recharger la page.",
     "privacy": "Vie privée",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "Supprimer Tout"
 }

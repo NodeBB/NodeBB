@@ -1,4 +1,7 @@
 {
     "results_matching": "%1 tane “%2“ bulundu (%3 saniye)",
-    "no-matches": "İleti bulunamadı"
+    "no-matches": "No matches found",
+    "in": "In",
+    "by": "By",
+    "posted-by": "Posted by"
 }

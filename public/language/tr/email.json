@@ -17,6 +17,8 @@
     "notif.chat.subject": "Okunmamış bazı iletileriniz var",
     "notif.chat.cta": "Sohbete devam etmek için buraya tıklayın",
     "notif.chat.unsub.info": "Bu bildirim şectiğiniz ayarlar yüzünden gönderildi.",
+    "notif.post.cta": "Click here to read the full topic",
+    "notif.post.unsub.info": "This post notification was sent to you due to your subscription settings.",
     "test.text1": "Bu ileti NodeBB e-posta ayarlarınızın doğru çalışıp çalışmadığını kontrol etmek için gönderildi.",
     "unsub.cta": "Buraya tıklayarak ayarlarınızı değiştirebilirsiniz.",
     "closing": "Teşekkürler!"

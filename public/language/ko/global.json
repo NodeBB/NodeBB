@@ -3,9 +3,10 @@
     "search": "검색",
     "buttons.close": "닫기",
     "403.title": "접근이 거부되었습니다.",
-    "403.message": "접근 권한이 없는 페이지에 접근하였습니다. <a href='/login'>로그인</a>되어 있는지 확인해 주세요.",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "페이지를 찾을 수 없습니다.",
-    "404.message": "존재하지 않는 페이지에 접근하였습니다. <a href='/'>홈으로</a> 돌아갈 수 있습니다.",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "내부 오류가 발생했습니다.",
     "500.message": "알 수 없는 오류가 발생했습니다.",
     "register": "회원가입",
@@ -26,6 +27,7 @@
     "header.tags": "태그",
     "header.popular": "인기 주제",
     "header.users": "사용자",
+    "header.groups": "Groups",
     "header.chats": "채팅",
     "header.notifications": "알림",
     "header.search": "검색",
@@ -73,5 +75,7 @@
     "updated.title": "포럼이 업데이트 되었습니다.",
     "updated.message": "이 포럼은 지금 최신 버전으로 업데이트 되었습니다. 여기를 누르면 페이지를 새로고침합니다.",
     "privacy": "개인정보",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "Delete All"
 }

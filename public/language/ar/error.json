@@ -18,6 +18,7 @@
     "username-taken": "اسم المستخدم مأخوذ",
     "email-taken": "البريد الالكتروني مأخوذ",
     "email-not-confirmed": "عنوان بريدك الإلكتروني غير مفعل بعد. انقر هنا لتفعيله من فضلك.",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
     "username-too-short": "اسم المستخدم قصير.",
     "username-too-long": "اسم المستخدم طويل",
     "user-banned": "المستخدم محظور",
@@ -43,10 +44,13 @@
     "already-favourited": "لقد سبق وأضفت هذا الرد إلى المفضلة",
     "already-unfavourited": "لقد سبق وحذفت هذا الرد من المفضلة",
     "cant-ban-other-admins": "لايمكن حظر مدبر نظام آخر.",
-    "invalid-image-type": "نوع الصورة ممنوع",
+    "invalid-image-type": "Invalid image type. Allowed types are: %1",
+    "invalid-image-extension": "Invalid image extension",
     "group-name-too-short": "اسم المجموعة قصير",
     "group-already-exists": "المجموعة موجودة مسبقا",
     "group-name-change-not-allowed": "لايسمح بتغيير أسماء المجموعات",
+    "group-already-member": "You are already part of this group",
+    "group-needs-owner": "This group requires at least one owner",
     "post-already-deleted": "سبق وتم حذف هذا الرد",
     "post-already-restored": "سبق وتم إلغاء حذف هذا الرد",
     "topic-already-deleted": "سبق وتم حذف هذا الموضوع",
@@ -63,5 +67,6 @@
     "not-enough-reputation-to-downvote": "ليس لديك سمعة تكفي لإضافة صوت سلبي لهذا الموضوع",
     "not-enough-reputation-to-flag": "ليس لديك سمعة تكفي للإشعار بموضوع مخل",
     "reload-failed": "المنتدى واجه مشكلة أثناء إعادة التحميل: \"%1\".  سيواصل المنتدى خدمة العملاء السابقين لكن يجب عليك إلغاء أي تغيير قمت به قبل إعادة التحميل.",
-    "registration-error": "حدث خطأ أثناء التسجيل"
+    "registration-error": "حدث خطأ أثناء التسجيل",
+    "parse-error": "Something went wrong while parsing server response"
 }

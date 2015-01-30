@@ -5,5 +5,8 @@
     "search": "검색",
     "enter_username": "검색할 사용자 이름을 입력하세요.",
     "load_more": "더 보기",
-    "users-found-search-took": "%1명의 사용자를 찾았습니다! 검색에 %2 ms가 소요되었습니다."
+    "users-found-search-took": "%1명의 사용자를 찾았습니다! 검색에 %2 ms가 소요되었습니다.",
+    "filter-by": "Filter By",
+    "online-only": "Online only",
+    "picture-only": "Picture only"
 }

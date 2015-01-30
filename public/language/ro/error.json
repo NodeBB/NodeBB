@@ -18,6 +18,7 @@
     "username-taken": "Numele de utilizator este deja folosit",
     "email-taken": "Adresa de email este deja folostă",
     "email-not-confirmed": "Your email has not been confirmed yet, please click here to confirm your email.",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
     "username-too-short": "Numele de utilizator este prea scurt",
     "username-too-long": "Numele de utilizator este prea lung",
     "user-banned": "Utilizator banat",
@@ -43,10 +44,13 @@
     "already-favourited": "You have already favourited this post",
     "already-unfavourited": "You have already unfavourited this post",
     "cant-ban-other-admins": "Nu poți bana alți administratori!",
-    "invalid-image-type": "Tip de imagine invalid",
+    "invalid-image-type": "Invalid image type. Allowed types are: %1",
+    "invalid-image-extension": "Invalid image extension",
     "group-name-too-short": "Numele grupului este prea scurt",
     "group-already-exists": "Grupul deja există",
     "group-name-change-not-allowed": "Schimbarea numelui grupului este interzisă",
+    "group-already-member": "You are already part of this group",
+    "group-needs-owner": "This group requires at least one owner",
     "post-already-deleted": "This post has already been deleted",
     "post-already-restored": "This post has already been restored",
     "topic-already-deleted": "This topic has already been deleted",
@@ -63,5 +67,6 @@
     "not-enough-reputation-to-downvote": "Nu ai destulă reputație pentru a vota negativ acest post.",
     "not-enough-reputation-to-flag": "You do not have enough reputation to flag this post",
     "reload-failed": "NodeBB a întâmpinat o problemă la reîncarcare: \"%1\". NodeBB va continua să servească fișierele existente pentru partea-client, dar tu va trebuie să refaci modificările pe care le-ai facut înainte de reîncarcare.",
-    "registration-error": "Registration Error"
+    "registration-error": "Registration Error",
+    "parse-error": "Something went wrong while parsing server response"
 }

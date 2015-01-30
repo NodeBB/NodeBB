@@ -18,6 +18,7 @@
     "username-taken": "Kullanıcı İsmi Alınmış",
     "email-taken": "E-posta Alınmış",
     "email-not-confirmed": "E-postanız onaylanmamış, onaylamak için lütfen buraya tıklayın.",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
     "username-too-short": "Kullanıcı ismi çok kısa",
     "username-too-long": "Kullanıcı ismi çok uzun.",
     "user-banned": "Kullanıcı Yasaklı",
@@ -43,10 +44,13 @@
     "already-favourited": "Bu iletiyi zaten favorilerinize eklediniz",
     "already-unfavourited": "Bu iletiyi zaten favorilerinizden çıkardınız",
     "cant-ban-other-admins": "Başka yöneticileri yasaklayamazsınız!",
-    "invalid-image-type": "Geçersiz resim türü",
+    "invalid-image-type": "Invalid image type. Allowed types are: %1",
+    "invalid-image-extension": "Invalid image extension",
     "group-name-too-short": "Grup ismi çok kısa",
     "group-already-exists": "Grup zaten var",
     "group-name-change-not-allowed": "Grup ismini değiştiremezsiniz",
+    "group-already-member": "You are already part of this group",
+    "group-needs-owner": "This group requires at least one owner",
     "post-already-deleted": "İleti zaten silinmiş",
     "post-already-restored": "İleti zaten geri getirilmiş",
     "topic-already-deleted": "Başlık zaten silinmiş",
@@ -63,5 +67,6 @@
     "not-enough-reputation-to-downvote": "Bu iletiyi aşagı oylamak için yeterince saygınlığınız yok.",
     "not-enough-reputation-to-flag": "Bu iletiyi bayraklamak için yeterince saygınlığınız yok",
     "reload-failed": "NodeBB tekrar yüklenirken bir sorunla karşılaştı: “%1“. NodeBB varolan dosyaları servis etmeye devam edecek.",
-    "registration-error": "Kayıt Hatası"
+    "registration-error": "Kayıt Hatası",
+    "parse-error": "Something went wrong while parsing server response"
 }

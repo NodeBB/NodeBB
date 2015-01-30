@@ -3,9 +3,10 @@
     "search": "Søk",
     "buttons.close": "Steng",
     "403.title": "Adgang nektet",
-    "403.message": "Du har funnet en side du ikke har tilgang til. Kanskje du skal <a href='/login'>prøve å logge inn</a>?",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "Ikke funnet",
-    "404.message": "Du har funnet en side som ikke eksisterer. Returner til <a href='/'>startsiden</a>?",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "Intern feil.",
     "500.message": "Oops! Ser ut som noe gikk galt!",
     "register": "Registrer",
@@ -26,6 +27,7 @@
     "header.tags": "Tagger",
     "header.popular": "Populære",
     "header.users": "Brukere",
+    "header.groups": "Groups",
     "header.chats": "Chatter",
     "header.notifications": "Varsler",
     "header.search": "Søk",
@@ -73,5 +75,7 @@
     "updated.title": "Forum oppdatert",
     "updated.message": "Dette forumet har nettopp blitt oppdatert til den nyeste versjonen. Klikk her for å laste siden på nytt.",
     "privacy": "Personvern",
-    "delete_all": "Delete All"
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "delete_all": "Slett alle"
 }

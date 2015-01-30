@@ -17,6 +17,8 @@
     "notif.chat.subject": "New chat message received from %1",
     "notif.chat.cta": "กดตรงนี้เพื่อกลับไปยังบทสนทนา",
     "notif.chat.unsub.info": "This chat notification was sent to you due to your subscription settings.",
+    "notif.post.cta": "Click here to read the full topic",
+    "notif.post.unsub.info": "This post notification was sent to you due to your subscription settings.",
     "test.text1": "นี่คืออีเมลทดสอบเพื่อยืนยันว่าระบบอีเมลมีการตั้งค่าที่ถูกต้องสำหรับ NodeBB ของคุณ",
     "unsub.cta": "กดตรงนี้เพื่อเปลี่ยนแปลงการตั้งค่า",
     "closing": "ขอบคุณ!"

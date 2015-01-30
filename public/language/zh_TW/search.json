@@ -1,4 +1,7 @@
 {
     "results_matching": "有%1個跟\"%2\"匹配的結果（%3秒）",
-    "no-matches": "沒有發現帖子"
+    "no-matches": "No matches found",
+    "in": "In",
+    "by": "By",
+    "posted-by": "Posted by"
 }

@@ -74,6 +74,7 @@
     "fork_no_pids": "Δεν έχουν επιλεχθεί δημοσιεύσεις!",
     "fork_success": "Successfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Εισαγωγή του τίτλου του θέματος εδώ...",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "Πέταγμα",
     "composer.submit": "Υποβολή",
     "composer.replying_to": "Απάντηση στο %1",
@@ -92,5 +93,6 @@
     "sort_by": "Ταξινόμηση κατά",
     "oldest_to_newest": "Παλαιότερο προς Νεότερο",
     "newest_to_oldest": "Νεότερο προς Παλαιότερο",
-    "most_votes": "Περισσότερες ψήφοι"
+    "most_votes": "Περισσότερες ψήφοι",
+    "most_posts": "Most posts"
 }

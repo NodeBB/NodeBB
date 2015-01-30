@@ -17,6 +17,8 @@
     "notif.chat.subject": "收到來自$1的聊天消息",
     "notif.chat.cta": "點擊此處繼續對話",
     "notif.chat.unsub.info": "本聊天通知按您的訂閱設置發送給您。",
+    "notif.post.cta": "Click here to read the full topic",
+    "notif.post.unsub.info": "This post notification was sent to you due to your subscription settings.",
     "test.text1": "這是一個測試電郵，以確認您的NodeBB郵件器設置正確。",
     "unsub.cta": "點擊這裡更改這些設置",
     "closing": "謝謝！"

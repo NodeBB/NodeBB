@@ -18,6 +18,7 @@
     "username-taken": "Užívateľske meno je obsadené",
     "email-taken": "Email je obsadený",
     "email-not-confirmed": "Your email has not been confirmed yet, please click here to confirm your email.",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
     "username-too-short": "Username too short",
     "username-too-long": "Username too long",
     "user-banned": "Užívateľ je zakázaný",
@@ -43,10 +44,13 @@
     "already-favourited": "You have already favourited this post",
     "already-unfavourited": "You have already unfavourited this post",
     "cant-ban-other-admins": "Nemožte zakázať druhých adminov.",
-    "invalid-image-type": "Neplatný typ obrázku ",
+    "invalid-image-type": "Invalid image type. Allowed types are: %1",
+    "invalid-image-extension": "Invalid image extension",
     "group-name-too-short": "Názov skupiny je príliš krátky",
     "group-already-exists": "Skupina už existuje",
     "group-name-change-not-allowed": "Nepovolená zmena mena skupiny",
+    "group-already-member": "You are already part of this group",
+    "group-needs-owner": "This group requires at least one owner",
     "post-already-deleted": "This post has already been deleted",
     "post-already-restored": "This post has already been restored",
     "topic-already-deleted": "This topic has already been deleted",
@@ -63,5 +67,6 @@
     "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post",
     "not-enough-reputation-to-flag": "You do not have enough reputation to flag this post",
     "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading.",
-    "registration-error": "Registration Error"
+    "registration-error": "Registration Error",
+    "parse-error": "Something went wrong while parsing server response"
 }

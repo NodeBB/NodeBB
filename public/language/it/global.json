@@ -3,9 +3,10 @@
     "search": "Cerca",
     "buttons.close": "Chiudi",
     "403.title": "Accesso Proibito",
-    "403.message": "Non hai accesso alla pagina che stavi cercando di aprire. Probabilmente devi <a href='/login'>effettuare il log in</a>?",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "Non trovato",
-    "404.message": "La pagina che stavi cercando di aprire non esiste. Ritorna alla <a href='/'>pagina iniziale</a>.",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "Errore interno.",
     "500.message": "Oops! Qualcosa non funziona come si deve!",
     "register": "Registrazione",
@@ -26,6 +27,7 @@
     "header.tags": "Tags",
     "header.popular": "Popolare",
     "header.users": "Utenti",
+    "header.groups": "Groups",
     "header.chats": "Messaggi",
     "header.notifications": "Notifiche",
     "header.search": "Cerca",
@@ -73,5 +75,7 @@
     "updated.title": "Forum Aggiornato",
     "updated.message": "Questo forum è stato aggiornato all'ultima versione. Clicca qui per ricaricare la pagina.",
     "privacy": "Privacy",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "Elimina Tutto"
 }

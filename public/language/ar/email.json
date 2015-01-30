@@ -17,6 +17,8 @@
     "notif.chat.subject": "هناك محادثة جديدة من %1",
     "notif.chat.cta": "انقر هنا لمتابعة المحادثة",
     "notif.chat.unsub.info": "تم إرسال هذا الإشعار بوجودة محادثة جديدة وفقا لخيارات تسجيلك.",
+    "notif.post.cta": "Click here to read the full topic",
+    "notif.post.unsub.info": "This post notification was sent to you due to your subscription settings.",
     "test.text1": "هذه رسالة تجريبية للتأكد من صحة إعدادت الرسائل الإلكترونية في منتدى NodeBB خاصتك.",
     "unsub.cta": "انقر هنا لتغيير تلك الإعدادات",
     "closing": "شكرًا لك!"

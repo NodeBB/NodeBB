@@ -3,9 +3,10 @@
     "search": "Keresés",
     "buttons.close": "Mégsem",
     "403.title": "Hozzáférés megtagadva",
-    "403.message": "Úgy tűnik egy olyan oldalt szeretnénk elérni, amihez nincs hozzáférés. Talán be kellene <a href='/login'>jelentkezni</a>",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "Nincs találat",
-    "404.message": "Úgy tűnik egy olyan oldalt szeretnénk elérni, ami nem létezik. Visszatérés a <a href='/login'>kezdőlapra</a>.",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "Belső hiba.",
     "500.message": "Hoppá! Úgy tűnik valami hiba történt!",
     "register": "Regisztráció",
@@ -26,6 +27,7 @@
     "header.tags": "Tags",
     "header.popular": "Népszerű",
     "header.users": "Felhasználók",
+    "header.groups": "Groups",
     "header.chats": "Chat",
     "header.notifications": "Értesítések",
     "header.search": "Keresés",
@@ -73,5 +75,7 @@
     "updated.title": "Forum Updated",
     "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page.",
     "privacy": "Privacy",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "Delete All"
 }

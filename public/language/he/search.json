@@ -1,4 +1,7 @@
 {
     "results_matching": "%1 result(s) matching \"%2\", (%3 seconds)",
-    "no-matches": "No posts found"
+    "no-matches": "No matches found",
+    "in": "In",
+    "by": "By",
+    "posted-by": "Posted by"
 }

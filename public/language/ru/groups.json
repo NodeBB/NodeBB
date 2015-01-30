@@ -1,8 +1,21 @@
 {
     "groups": "Группы",
     "view_group": "Просмотр группы",
+    "owner": "Group Owner",
+    "new_group": "Create New Group",
+    "no_groups_found": "There are no groups to see",
+    "cover-instructions": "Drag and Drop a photo, drag to position, and hit <strong>Save</strong>",
+    "cover-change": "Change",
+    "cover-save": "Save",
+    "cover-saving": "Saving",
     "details.title": "Информация о группе",
     "details.members": "Список пользователей",
+    "details.pending": "Pending Members",
     "details.has_no_posts": "Пользователями этой группы не публиковали никаких записей",
-    "details.latest_posts": "Последние записи"
+    "details.latest_posts": "Последние записи",
+    "details.private": "Private Group",
+    "details.public": "Public Group",
+    "details.owner_options": "Group Administration",
+    "event.updated": "Group details have been updated",
+    "event.deleted": "The group \"%1\" has been deleted"
 }

@@ -18,6 +18,7 @@
     "username-taken": "Tên đăng nhập đã tồn tại",
     "email-taken": "Email đã được đăng kí",
     "email-not-confirmed": "Email của bạn chưa được xác nhận, xin hãy nhấn vào đây để xác nhận địa chỉ này là của bạn",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
     "username-too-short": "Tên đăng nhập quá ngắn",
     "username-too-long": "Tên đăng nhập quá dài",
     "user-banned": "Tài khoản bị ban",
@@ -43,10 +44,13 @@
     "already-favourited": "Bạn đã bấm yêu thích cho bài viết này rồi",
     "already-unfavourited": "Bạn đã bỏ thích bài này rồi",
     "cant-ban-other-admins": "Bạn không thể ban được các admin khác",
-    "invalid-image-type": "Kiểu hình ảnh không hợp lệ",
+    "invalid-image-type": "Invalid image type. Allowed types are: %1",
+    "invalid-image-extension": "Invalid image extension",
     "group-name-too-short": "Tên nhóm quá ngắn",
     "group-already-exists": "Nhóm đã tồn tại",
     "group-name-change-not-allowed": "Không cho phép đổi tên nhóm",
+    "group-already-member": "You are already part of this group",
+    "group-needs-owner": "This group requires at least one owner",
     "post-already-deleted": "Bài viết này đã bị xóa",
     "post-already-restored": "Bài viết này đã được phục hồi",
     "topic-already-deleted": "Chủ đề này đã bị xóa",
@@ -63,5 +67,6 @@
     "not-enough-reputation-to-downvote": "Bạn không có đủ phiếu tín nhiệm để downvote bài này",
     "not-enough-reputation-to-flag": "Bạn không đủ tín nhiệm để đánh dấu bài viết này",
     "reload-failed": "NodeBB gặp lỗi trong khi tải lại: \"%1\". NodeBB sẽ tiếp tục hoạt động với dữ liệu trước đó, tuy nhiên bạn nên tháo gỡ những gì bạn vừa thực hiện trước khi tải lại.",
-    "registration-error": "Quá trình đăng kí bị lỗi"
+    "registration-error": "Lỗi đăng kí",
+    "parse-error": "Something went wrong while parsing server response"
 }

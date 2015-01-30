@@ -74,6 +74,7 @@
     "fork_no_pids": "هیچ دیدگاهی انتخاب نشده!",
     "fork_success": "Successfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "سرنویس جستارتان را اینجا بنویسید...",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "دور بیانداز",
     "composer.submit": "بفرست",
     "composer.replying_to": "پاسخ به %1",
@@ -92,5 +93,6 @@
     "sort_by": "مرتب‌سازی بر اساس",
     "oldest_to_newest": "قدیمی‌ترین به جدید‌ترین",
     "newest_to_oldest": "جدید‌ترین به قدیمی‌ترین",
-    "most_votes": "بیشترین رای‌ها"
+    "most_votes": "بیشترین رای‌ها",
+    "most_posts": "Most posts"
 }

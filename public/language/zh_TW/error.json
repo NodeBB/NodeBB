@@ -18,6 +18,7 @@
     "username-taken": "該使用者名稱已被使用",
     "email-taken": "該信箱已被使用",
     "email-not-confirmed": "您的電郵尚未得到確認，請點擊此處確認您的電子郵件。",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
     "username-too-short": "用戶名太短",
     "username-too-long": "用戶名太長",
     "user-banned": "該使用者已被停用",
@@ -43,10 +44,13 @@
     "already-favourited": "你已經收藏了這篇文章",
     "already-unfavourited": "你已放棄收藏這篇文章",
     "cant-ban-other-admins": "你不能禁用其他管理員！",
-    "invalid-image-type": "無效的圖像類型",
+    "invalid-image-type": "Invalid image type. Allowed types are: %1",
+    "invalid-image-extension": "Invalid image extension",
     "group-name-too-short": "群組名稱太短了",
     "group-already-exists": "群組名稱已存在",
     "group-name-change-not-allowed": "變更群組名稱不被允許",
+    "group-already-member": "You are already part of this group",
+    "group-needs-owner": "This group requires at least one owner",
     "post-already-deleted": "此文章已經被刪除",
     "post-already-restored": "此文章已還原",
     "topic-already-deleted": "此主題已經被刪除",
@@ -63,5 +67,6 @@
     "not-enough-reputation-to-downvote": "你沒有足夠的信譽downvote這個帖子",
     "not-enough-reputation-to-flag": "你沒有足夠的信譽來舉報這個帖子",
     "reload-failed": "NodeBB重載\"%1\"時遇到了問題。 NodeBB將繼續提供現有的客戶端資源，但請你撤消重載前的動作。",
-    "registration-error": "註冊錯誤"
+    "registration-error": "註冊錯誤",
+    "parse-error": "Something went wrong while parsing server response"
 }

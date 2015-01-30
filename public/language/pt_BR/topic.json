@@ -74,6 +74,7 @@
     "fork_no_pids": "Nenhum post selecionado!",
     "fork_success": "Tópico clonado com sucesso! Clique aqui para ir ao tópico clonado.",
     "composer.title_placeholder": "Digite aqui o título para o seu tópico...",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "Descartar",
     "composer.submit": "Enviar",
     "composer.replying_to": "Respondendo para %1",
@@ -92,5 +93,6 @@
     "sort_by": "Ordenar por",
     "oldest_to_newest": "Mais Antigo para Mais Recente",
     "newest_to_oldest": "Mais Recente para Mais Antigo",
-    "most_votes": "Mais votados"
+    "most_votes": "Mais votados",
+    "most_posts": "Most posts"
 }

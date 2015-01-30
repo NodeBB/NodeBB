@@ -18,6 +18,7 @@
     "username-taken": "Nome de usuário já existe",
     "email-taken": "Email já cadastrado",
     "email-not-confirmed": "O seu email ainda não foi confirmado, por favor clique aqui para confirmar seu email.",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
     "username-too-short": "Nome de usuário muito curto",
     "username-too-long": "Nome de usuário muito longo",
     "user-banned": "Usuário banido",
@@ -43,10 +44,13 @@
     "already-favourited": "Você já adicionou este post aos favoritos",
     "already-unfavourited": "Você já removeu este post dos favoritos",
     "cant-ban-other-admins": "Você não pode banir outros administradores!",
-    "invalid-image-type": "Formato inválido de imagem",
+    "invalid-image-type": "Invalid image type. Allowed types are: %1",
+    "invalid-image-extension": "Invalid image extension",
     "group-name-too-short": "Nome do grupo é muito curto",
     "group-already-exists": "O grupo já existe",
     "group-name-change-not-allowed": "Sem permissão para alterar nome do grupo",
+    "group-already-member": "You are already part of this group",
+    "group-needs-owner": "This group requires at least one owner",
     "post-already-deleted": "Este post já foi deletado",
     "post-already-restored": "Este post já foi restaurado",
     "topic-already-deleted": "Esté tópico já foi deletado",
@@ -63,5 +67,6 @@
     "not-enough-reputation-to-downvote": "Você não possui reputação suficiente para negativar este post",
     "not-enough-reputation-to-flag": "Você não possui reputação suficiente para sinalizar este post",
     "reload-failed": "O NodeBB encontrou um problema ao recarregar: \"%1\". O NodeBB continuará a servir os assets existentes no lado do cliente, apesar de que você deve desfazer o que você fez antes de recarregar.",
-    "registration-error": "Erro de Cadastro"
+    "registration-error": "Erro de Cadastro",
+    "parse-error": "Something went wrong while parsing server response"
 }

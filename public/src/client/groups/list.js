@@ -33,6 +33,7 @@ define('forum/groups/list', function() {
 		// Group searching
 		$('#search-text').on('keyup', Groups.search);
 		$('#search-button').on('click', Groups.search);
+		$('#search-sort').on('change', Groups.search);
 	};
 
 	Groups.search = function(event) {

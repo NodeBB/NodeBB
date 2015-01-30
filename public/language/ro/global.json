@@ -3,9 +3,10 @@
     "search": "Căutare",
     "buttons.close": "Închide",
     "403.title": "Acces Interzis",
-    "403.message": "Se pare că ai ajuns pe o pagină la care nu ai acces. Poate ar trebui să te <a href='/login'>autentifici</a>?",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "Nu a fost găsit",
-    "404.message": "Se pare că ai ajuns pe o pagină care nu există. Întoarce-te la <a href='/'>prima pagină</a>.",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "Eroare internă.",
     "500.message": "Oops! Se pare că ceva a mers greșit!",
     "register": "Înregistrare",
@@ -26,6 +27,7 @@
     "header.tags": "Taguri",
     "header.popular": "Populare",
     "header.users": "Utilizatori",
+    "header.groups": "Groups",
     "header.chats": "Conversații",
     "header.notifications": "Notificări",
     "header.search": "Căutare",
@@ -73,5 +75,7 @@
     "updated.title": "Forumul a fost actualizat",
     "updated.message": "Acest forum a fost actualizat la ultima version. Apasă aici pentru a reîmprospăta pagina.",
     "privacy": "Privacy",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "Delete All"
 }

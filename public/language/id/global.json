@@ -3,9 +3,10 @@
     "search": "Cari",
     "buttons.close": "Tutup",
     "403.title": "Akses ditolak",
-    "403.message": "Kamu terlihat masuk ke halaman yang kamu tidak punya akses untuk melakukannya. Coba <a href='/login'>login</a> terlebih dulu.",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "Tidak ditemukan",
-    "404.message": "Kamu terlihat masuk ke halaman yang sudah tidak ada. Silakan kembali ke <a href='/'>Halaman Depan</a>.",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "Kesalahan internal",
     "500.message": "Oops! Terjadi kesalahan",
     "register": "Daftar",
@@ -26,6 +27,7 @@
     "header.tags": "Tag",
     "header.popular": "Populer",
     "header.users": "Pengguna",
+    "header.groups": "Groups",
     "header.chats": "Chat",
     "header.notifications": "Pemberitahuan",
     "header.search": "Cari",
@@ -73,5 +75,7 @@
     "updated.title": "Forum telah diupdate",
     "updated.message": "Forum ini telah diupdate ke versi terbaru. Klik disini untuk memuat halaman.",
     "privacy": "Privasi",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "Hapus Semua"
 }

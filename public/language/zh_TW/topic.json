@@ -74,6 +74,7 @@
     "fork_no_pids": "尚未選擇文章！",
     "fork_success": "成功分叉成新的主題！點擊這裡進入新的主題。",
     "composer.title_placeholder": "輸入標題...",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "放棄",
     "composer.submit": "發表",
     "composer.replying_to": "回覆給 %1",
@@ -92,5 +93,6 @@
     "sort_by": "排序方式",
     "oldest_to_newest": "從舊到新",
     "newest_to_oldest": "從新到舊",
-    "most_votes": "得票最多"
+    "most_votes": "得票最多",
+    "most_posts": "Most posts"
 }

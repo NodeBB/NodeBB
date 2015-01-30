@@ -18,6 +18,7 @@
     "username-taken": "Foglalt felhasználónév",
     "email-taken": "Foglalt e-mail",
     "email-not-confirmed": "Az e-mail címed még nem lett ellenőrizve, kérlek kattints ide az e-mail címed ellenőrzéséhez!",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
     "username-too-short": "Túl rövid felhasználónév",
     "username-too-long": "Túl hosszú felhasználónév",
     "user-banned": "Kitiltott felhasználó",
@@ -43,10 +44,13 @@
     "already-favourited": "You have already favourited this post",
     "already-unfavourited": "You have already unfavourited this post",
     "cant-ban-other-admins": "You can't ban other admins!",
-    "invalid-image-type": "Érvénytelen kép típus",
+    "invalid-image-type": "Invalid image type. Allowed types are: %1",
+    "invalid-image-extension": "Invalid image extension",
     "group-name-too-short": "A csoport név túl rövid",
     "group-already-exists": "A csoport nem létezik",
     "group-name-change-not-allowed": "A csoport névváltoztatás nem engedélyezett",
+    "group-already-member": "You are already part of this group",
+    "group-needs-owner": "This group requires at least one owner",
     "post-already-deleted": "Ez a bejegyzés mát törlésre került",
     "post-already-restored": "Ez a bejegyzés már visszaállításra került",
     "topic-already-deleted": "Ezt a témakör már törlésre került",
@@ -63,5 +67,6 @@
     "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post",
     "not-enough-reputation-to-flag": "You do not have enough reputation to flag this post",
     "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading.",
-    "registration-error": "Regisztrációs hiba"
+    "registration-error": "Regisztrációs hiba",
+    "parse-error": "Something went wrong while parsing server response"
 }

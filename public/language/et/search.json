@@ -1,4 +1,7 @@
 {
     "results_matching": "%1 tulemus(t) mis vastavad otsingule \"%2\", (%3 sekundit)",
-    "no-matches": "Postitusi ei leitud"
+    "no-matches": "No matches found",
+    "in": "In",
+    "by": "By",
+    "posted-by": "Posted by"
 }
