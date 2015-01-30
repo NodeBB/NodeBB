@@ -233,6 +233,29 @@ accountsController.getTopics = function(req, res, next) {
 	getFromUserSet('account/topics', 'topics', topics.getTopicsFromSet, 'topics', req, res, next);
 };
 
+accountsController.getGroups = function(req, res, next) {
+	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
+
+	getBaseUser(req.params.userslug, callerUID, function(err, userData) {
+		if (err) {
+			return next(err);
+		}
+
+		if (!userData) {
+			return helpers.notFound(req, res);
+		}
+
+		groups.getUserGroups([userData.uid], function(err, groups) {
+			if (err) {
+				return next(err);
+			}
+
+			userData.groups = groups[0];
+
+			res.render('account/groups', userData);
+		});
+	});
+};
 
 function getFromUserSet(tpl, set, method, type, req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;

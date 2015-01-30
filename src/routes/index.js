@@ -68,6 +68,7 @@ function accountRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/user/:userslug/followers', middleware, middlewares, controllers.accounts.getFollowers);
 	setupPageRoute(app, '/user/:userslug/posts', middleware, middlewares, controllers.accounts.getPosts);
 	setupPageRoute(app, '/user/:userslug/topics', middleware, middlewares, controllers.accounts.getTopics);
+	setupPageRoute(app, '/user/:userslug/groups', middleware, middlewares, controllers.accounts.getGroups);
 
 	setupPageRoute(app, '/user/:userslug/favourites', middleware, accountMiddlewares, controllers.accounts.getFavourites);
 	setupPageRoute(app, '/user/:userslug/watched', middleware, accountMiddlewares, controllers.accounts.getWatchedTopics);
