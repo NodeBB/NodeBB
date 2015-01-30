@@ -781,35 +781,51 @@ var async = require('async'),
 
 				groupData = groupData.filter(function(group) {
 					return parseInt(group.hidden, 10) !== 1 && !!group.userTitle;
+				}).map(function(group) {
+					group.createtimeISO = utils.toISOString(group.createtime);
+					return group;
 				});
 
-				var groupSets = groupData.map(function(group) {
-					group.labelColor = group.labelColor || '#000000';
+				async.map(groupData, function(groupObj, next) {
+					Groups.getMemberCount(groupObj.name, function(err, memberCount) {
+						if (err) { return next(err); }
 
-					if (!group['cover:url']) {
-						group['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';
-						group['cover:position'] = '50% 50%';
+						groupObj.memberCount = memberCount;
+						next(err, groupObj);
+					});
+				}, function(err, groupData) {
+					if (err) {
+						return callback(err);
 					}
 
-					return 'group:' + group.name + ':members';
-				});
+					var groupSets = groupData.map(function(group) {
+						group.labelColor = group.labelColor || '#000000';
 
-				async.map(uids, function(uid, next) {
-					db.isMemberOfSortedSets(groupSets, uid, function(err, isMembers) {
-						if (err) {
-							return next(err);
+						if (!group['cover:url']) {
+							group['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';
+							group['cover:position'] = '50% 50%';
 						}
 
-						var memberOf = [];
-						isMembers.forEach(function(isMember, index) {
-							if (isMember) {
-								memberOf.push(groupData[index]);
-							}
-						});
-
-						next(null, memberOf);
+						return 'group:' + group.name + ':members';
 					});
-				}, callback);
+
+					async.map(uids, function(uid, next) {
+						db.isMemberOfSortedSets(groupSets, uid, function(err, isMembers) {
+							if (err) {
+								return next(err);
+							}
+
+							var memberOf = [];
+							isMembers.forEach(function(isMember, index) {
+								if (isMember) {
+									memberOf.push(groupData[index]);
+								}
+							});
+
+							next(null, memberOf);
+						});
+					}, callback);
+				});
 			});
 		});
 	};
