@@ -16,10 +16,6 @@ module.exports = function(User) {
 		var page = data.page || 1;
 		var uid = data.uid || 0;
 
-		if (!query) {
-			return callback(null, {timing: 0, users: [], matchCount: 0, pages: []});
-		}
-
 		if (searchBy.indexOf('ip') !== -1) {
 			return searchByIP(query, uid, callback);
 		}
