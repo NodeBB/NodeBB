@@ -532,18 +532,10 @@ var async = require('async'),
 				}
 
 				async.series([
-					function(next) {
-						db.setObjectField('group:' + oldName, 'name', newName, next);
-					},
-					function(next) {
-						db.setObjectField('group:' + oldName, 'slug', utils.slugify(newName), next);
-					},
-					function(next) {
-						db.deleteObjectField('groupslug:groupname', group.slug, next);
-					},
-					function(next) {
-						db.setObjectField('groupslug:groupname', utils.slugify(newName), newName, next);
-					},
+					async.apply(db.setObjectField, 'group:' + oldName, 'name', newName),
+					async.apply(db.setObjectField, 'group:' + oldName, 'slug', utils.slugify(newName)),
+					async.apply(db.deleteObjectField, 'groupslug:groupname', group.slug),
+					async.apply(db.setObjectField, 'groupslug:groupname', utils.slugify(newName), newName),
 					function(next) {
 						db.getSortedSetRange('groups:createtime', 0, -1, function(err, groups) {
 							if (err) {
@@ -554,24 +546,11 @@ var async = require('async'),
 							}, next);
 						});
 					},
-					function(next) {
-						db.rename('group:' + oldName, 'group:' + newName, next);
-					},
-					function(next) {
-						db.exists('group:' + oldName + ':members', function(err, exists) {
-							if (err) {
-								return next(err);
-							}
-							if (exists) {
-								db.rename('group:' + oldName + ':members', 'group:' + newName + ':members', next);
-							} else {
-								next();
-							}
-						});
-					},
-					function(next) {
-						renameGroupMember('groups:createtime', oldName, newName, next);
-					},
+					async.apply(db.rename, 'group:' + oldName, 'group:' + newName),
+					async.apply(db.rename, 'group:' + oldName + ':members', 'group:' + newName + ':members'),
+					async.apply(db.rename, 'group:' + oldName + ':owners', 'group:' + newName + ':owners'),
+					async.apply(db.rename, 'group:' + oldName + ':pending', 'group:' + newName + ':pending'),
+					async.apply(renameGroupMember, 'groups:createtime', oldName, newName),
 					function(next) {
 						plugins.fireHook('action:group.rename', {
 							old: oldName,
