@@ -299,7 +299,7 @@ var async = require('async'),
 	};
 
 	Groups.getMemberCount = function(groupName, callback) {
-		db.sortedSetCard('group:' + groupName + ':members', callback);
+		db.getObjectField('group:' + groupName, 'memberCount', callback);
 	};
 
 	Groups.isMemberOfGroupList = function(uid, groupListKey, callback) {
@@ -611,46 +611,56 @@ var async = require('async'),
 	};
 
 	Groups.join = function(groupName, uid, callback) {
-		callback = callback || function() {};
+		function join() {
+			var tasks = [
+				async.apply(db.sortedSetAdd, 'group:' + groupName + ':members', Date.now(), uid),
+				async.apply(db.incrObjectField, 'group:' + groupName, 'memberCount')
+			];
 
-		Groups.exists(groupName, function(err, exists) {
-			if (exists) {
-				var tasks = [
-						async.apply(db.sortedSetAdd, 'group:' + groupName + ':members', Date.now(), uid)
-					];
-
-				user.isAdministrator(uid, function(err, isAdmin) {
+			async.waterfall([
+				function(next) {
+					user.isAdministrator(uid, next);
+				},
+				function(isAdmin, next) {
 					if (isAdmin) {
 						tasks.push(async.apply(db.setAdd, 'group:' + groupName + ':owners', uid));
 					}
-
-					async.parallel(tasks, function(err) {
-						plugins.fireHook('action:group.join', {
-							groupName: groupName,
-							uid: uid
-						});
-
-						callback();
-					});
+					async.parallel(tasks, next);
+				}
+			], function(err, results) {
+				if (err) {
+					return callback(err);
+				}
+				plugins.fireHook('action:group.join', {
+					groupName: groupName,
+					uid: uid
 				});
-			} else {
-				Groups.create({
-					name: groupName,
-					description: '',
-					hidden: 1
-				}, function(err) {
-					if (err && err.message !== '[[error:group-already-exists]]') {
-						winston.error('[groups.join] Could not create new hidden group: ' + err.message);
-						return callback(err);
-					}
+				callback();
+			});
+		}
 
-					db.sortedSetAdd('group:' + groupName + ':members', Date.now(), uid, callback);
-					plugins.fireHook('action:group.join', {
-						groupName: groupName,
-						uid: uid
-					});
-				});
+		callback = callback || function() {};
+
+		Groups.exists(groupName, function(err, exists) {
+			if (err) {
+				return callback(err);
 			}
+
+			if (exists) {
+				return join();
+			}
+
+			Groups.create({
+				name: groupName,
+				description: '',
+				hidden: 1
+			}, function(err) {
+				if (err && err.message !== '[[error:group-already-exists]]') {
+					winston.error('[groups.join] Could not create new hidden group: ' + err.message);
+					return callback(err);
+				}
+				join();
+			});
 		});
 	};
 
@@ -692,9 +702,10 @@ var async = require('async'),
 		callback = callback || function() {};
 
 		var tasks = [
-				async.apply(db.sortedSetRemove, 'group:' + groupName + ':members', uid),
-				async.apply(db.setRemove, 'group:' + groupName + ':owners', uid)
-			];
+			async.apply(db.sortedSetRemove, 'group:' + groupName + ':members', uid),
+			async.apply(db.setRemove, 'group:' + groupName + ':owners', uid),
+			async.apply(db.decrObjectField, 'group:' + groupName, 'memberCount')
+		];
 
 		async.parallel(tasks, function(err) {
 			if (err) {
@@ -715,7 +726,7 @@ var async = require('async'),
 				if (group.hidden && group.memberCount === 0) {
 					Groups.destroy(groupName, callback);
 				} else {
-					return callback();
+					callback();
 				}
 			});
 		});
@@ -786,46 +797,35 @@ var async = require('async'),
 					return group;
 				});
 
-				async.map(groupData, function(groupObj, next) {
-					Groups.getMemberCount(groupObj.name, function(err, memberCount) {
-						if (err) { return next(err); }
 
-						groupObj.memberCount = memberCount;
-						next(err, groupObj);
-					});
-				}, function(err, groupData) {
-					if (err) {
-						return callback(err);
+				var groupSets = groupData.map(function(group) {
+					group.labelColor = group.labelColor || '#000000';
+					group.createtimeISO = utils.toISOString(group.createtime);
+
+					if (!group['cover:url']) {
+						group['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';
+						group['cover:position'] = '50% 50%';
 					}
 
-					var groupSets = groupData.map(function(group) {
-						group.labelColor = group.labelColor || '#000000';
+					return 'group:' + group.name + ':members';
+				});
 
-						if (!group['cover:url']) {
-							group['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';
-							group['cover:position'] = '50% 50%';
+				async.map(uids, function(uid, next) {
+					db.isMemberOfSortedSets(groupSets, uid, function(err, isMembers) {
+						if (err) {
+							return next(err);
 						}
 
-						return 'group:' + group.name + ':members';
-					});
-
-					async.map(uids, function(uid, next) {
-						db.isMemberOfSortedSets(groupSets, uid, function(err, isMembers) {
-							if (err) {
-								return next(err);
+						var memberOf = [];
+						isMembers.forEach(function(isMember, index) {
+							if (isMember) {
+								memberOf.push(groupData[index]);
 							}
-
-							var memberOf = [];
-							isMembers.forEach(function(isMember, index) {
-								if (isMember) {
-									memberOf.push(groupData[index]);
-								}
-							});
-
-							next(null, memberOf);
 						});
-					}, callback);
-				});
+
+						next(null, memberOf);
+					});
+				}, callback);
 			});
 		});
 	};

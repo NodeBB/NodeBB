@@ -11,7 +11,6 @@ define('forum/account/watched', ['forum/account/header', 'forum/infinitescroll']
 	};
 
 	function loadMore(direction) {
-		console.log(direction);
 		if (direction < 0) {
 			return;
 		}
