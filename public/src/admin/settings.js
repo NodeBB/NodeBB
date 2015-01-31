@@ -86,14 +86,19 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 
 		$('button[data-action="email.test"]').off('click').on('click', function() {
 			socket.emit('admin.email.test', function(err) {
-				app.alert({
-					alert_id: 'test_email_sent',
-					type: !err ? 'info' : 'danger',
-					title: 'Test Email Sent',
-					message: err ? err.message : '',
-					timeout: 2500
-				});
+				if (err) {
+					return app.alertError(err.message);
+				}
+				app.alertSuccess('Test Email Sent');
 			});
+			return false;
+		});
+
+		$('#clear-sitemap-cache').off('click').on('click', function() {
+			socket.emit('admin.settings.clearSitemapCache', function() {
+				app.alertSuccess('Sitemap Cache Cleared!');
+			});
+			return false;
 		});
 
 		if (typeof callback === 'function') {

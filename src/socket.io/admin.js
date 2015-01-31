@@ -175,6 +175,11 @@ SocketAdmin.settings.set = function(socket, data, callback) {
 	meta.settings.set(data.hash, data.values, callback);
 };
 
+SocketAdmin.settings.clearSitemapCache = function(socket, data, callback) {
+	require('../sitemap').clearCache();
+	callback();
+};
+
 SocketAdmin.email.test = function(socket, data, callback) {
 	if (plugins.hasListeners('action:email.send')) {
 		emailer.send('test', socket.uid, {

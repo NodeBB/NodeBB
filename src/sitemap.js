@@ -107,6 +107,11 @@ var path = require('path'),
 
 				sitemap.obj.toXML(callback);
 			});
+		},
+		clearCache: function() {
+			if (sitemap.obj) {
+				sitemap.obj.clearCache();
+			}
 		}
 	};
 
