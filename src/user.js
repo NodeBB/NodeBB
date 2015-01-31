@@ -162,6 +162,7 @@ var	async = require('async'),
 	};
 
 	User.setUserField = function(uid, field, value, callback) {
+		callback = callback || function() {};
 		db.setObjectField('user:' + uid, field, value, function(err) {
 			if (err) {
 				return callback(err)
@@ -172,6 +173,7 @@ var	async = require('async'),
 	};
 
 	User.setUserFields = function(uid, data, callback) {
+		callback = callback || function() {};
 		db.setObject('user:' + uid, data, function(err) {
 			if (err) {
 				return callback(err);
