@@ -111,7 +111,7 @@ define('forum/topic/events', [
 			app.replaceSelfLinks(editedPostEl.find('a'));
 			editedPostEl.fadeIn(250);
 
-			$(window).trigger('action:posts.edited', data.pid);
+			$(window).trigger('action:posts.edited', data);
 		});
 
 		if (data.tags && tagsUpdated(data.tags)) {
