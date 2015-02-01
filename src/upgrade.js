@@ -788,7 +788,6 @@ Upgrade.upgrade = function(callback) {
 					var now = Date.now();
 					async.each(groupNames, function(groupName, next) {
 						db.sortedSetCard('group:' + groupName + ':members', function(err, memberCount) {
-							console.log(groupName, memberCount);
 							if (err) {
 								return next(err);
 							}
