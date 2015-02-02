@@ -15,6 +15,7 @@ var nconf = require('nconf'),
 	user = require('../user'),
 	db = require('../database'),
 	meta = require('../meta'),
+	events = require('../events'),
 	utils = require('../../public/src/utils'),
 	SocketPosts = require('./posts'),
 
@@ -259,7 +260,21 @@ function doTopicAction(action, socket, data, callback) {
 			}
 
 			if(typeof threadTools[action] === 'function') {
-				threadTools[action](tid, socket.uid, next);
+				threadTools[action](tid, socket.uid, function(err) {
+					if (err) {
+						return next(err);
+					}
+
+					if (action === 'delete' || action === 'restore' || action === 'purge') {
+						events.log({
+							type: 'topic-' + action,
+							uid: socket.uid,
+							ip: socket.ip,
+							tid: tid
+						});
+					}
+					next();
+				});
 			}
 		});
 	}, callback);

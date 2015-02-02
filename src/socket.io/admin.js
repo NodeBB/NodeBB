@@ -49,7 +49,11 @@ SocketAdmin.before = function(socket, method, next) {
 };
 
 SocketAdmin.reload = function(socket, data, callback) {
-	events.logWithUser(socket.uid, ' is reloading NodeBB');
+	events.log({
+		type: 'reload',
+		uid: socket.uid,
+		ip: socket.ip
+	});
 	if (process.send) {
 		process.send({
 			action: 'reload'
@@ -60,7 +64,11 @@ SocketAdmin.reload = function(socket, data, callback) {
 };
 
 SocketAdmin.restart = function(socket, data, callback) {
-	events.logWithUser(socket.uid, ' is restarting NodeBB');
+	events.log({
+		type: 'restart',
+		uid: socket.uid,
+		ip: socket.ip
+	});
 	meta.restart();
 };
 
@@ -274,10 +282,21 @@ function getMonthlyPageViews(callback) {
 }
 
 SocketAdmin.getMoreEvents = function(socket, next, callback) {
-	if (parseInt(next, 10) < 0) {
+	var start = parseInt(next, 10);
+	if (start < 0) {
 		return callback(null, {data: [], next: next});
 	}
-	events.getLog(next, 5000, callback);
+	var end = next + 10;
+	events.getEvents(start, end, function(err, events) {
+		if (err) {
+			return callback(err);
+		}
+		callback(null, {events: events, next: end + 1});
+	});
+};
+
+SocketAdmin.deleteAllEvents = function(socket, data, callback) {
+	events.deleteAll(callback);
 };
 
 SocketAdmin.dismissFlag = function(socket, pid, callback) {

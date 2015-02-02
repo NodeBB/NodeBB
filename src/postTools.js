@@ -106,7 +106,7 @@ var winston = require('winston'),
 					return callback(err);
 				}
 				results.content = results.postData.content;
-				//events.logPostEdit(uid, pid);
+
 				plugins.fireHook('action:post.edit', postData);
 				callback(null, results);
 			});
@@ -146,7 +146,6 @@ var winston = require('winston'),
 				return callback(err);
 			}
 
-			events[isDelete ? 'logPostDelete' : 'logPostRestore'](uid, pid);
 			if (isDelete) {
 				posts.delete(pid, callback);
 			} else {
@@ -165,7 +164,7 @@ var winston = require('winston'),
 			if (err || !canEdit) {
 				return callback(err || new Error('[[error:no-privileges]]'));
 			}
-			events.logPostPurge(uid, pid);
+
 			posts.purge(pid, callback);
 		});
 	};

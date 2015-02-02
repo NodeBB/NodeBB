@@ -16,6 +16,7 @@ var	async = require('async'),
 	groups = require('../groups'),
 	user = require('../user'),
 	websockets = require('./index'),
+	events = require('../events'),
 	utils = require('../../public/src/utils'),
 
 	SocketPosts = {};
@@ -138,7 +139,38 @@ SocketPosts.upvote = function(socket, data, callback) {
 };
 
 SocketPosts.downvote = function(socket, data, callback) {
-	favouriteCommand(socket, 'downvote', 'voted', '', data, callback);
+	function banUserForLowReputation(uid, callback) {
+		if (parseInt(meta.config['autoban:downvote'], 10) === 1) {
+			user.getUserFields(uid, ['reputation', 'banned'], function(err, userData) {
+				if (err || parseInt(userData.banned, 10) === 1 || parseInt(userData.reputation) >= parseInt(meta.config['autoban:downvote:threshold'], 10)) {
+					return callback(err);
+				}
+
+				var adminUser = require('./admin/user');
+				adminUser.banUser(uid, function(err) {
+					if (err) {
+						return callback(err);
+					}
+					events.log({
+						type: 'banned',
+						reason: 'low-reputation',
+						uid: socket.uid,
+						ip: socket.ip,
+						targetUid: data.uid,
+						reputation: userData.reputation
+					});
+					callback();
+				});
+			});
+		}
+	}
+
+	favouriteCommand(socket, 'downvote', 'voted', '', data, function(err) {
+		if (err) {
+			return callback(err);
+		}
+		banUserForLowReputation(data.uid, callback);
+	});
 };
 
 SocketPosts.unvote = function(socket, data, callback) {
@@ -309,8 +341,15 @@ function deleteOrRestore(command, socket, data, callback) {
 			return callback(err);
 		}
 
-		var eventName = command === 'restore' ? 'event:post_restored' : 'event:post_deleted';
+		var eventName = command === 'delete' ? 'event:post_deleted' : 'event:post_restored';
 		websockets.in('topic_' + data.tid).emit(eventName, postData);
+
+		events.log({
+			type: command === 'delete' ? 'post-delete' : 'post-restore',
+			uid: socket.uid,
+			pid: data.pid,
+			ip: socket.ip
+		});
 
 		callback();
 	});
@@ -326,6 +365,13 @@ SocketPosts.purge = function(socket, data, callback) {
 		}
 
 		websockets.in('topic_' + data.tid).emit('event:post_purged', data.pid);
+
+		events.log({
+			type: 'post-purge',
+			uid: socket.uid,
+			pid: data.pid,
+			ip: socket.ip
+		});
 
 		callback();
 	});

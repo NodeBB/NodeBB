@@ -56,8 +56,6 @@ var winston = require('winston'),
 					plugins.fireHook('action:topic.restore', topicData);
 				}
 
-				events[isDelete ? 'logTopicDelete' : 'logTopicRestore'](uid, tid);
-
 				emitTo('topic_' + tid);
 				emitTo('category_' + topicData.cid);
 
@@ -213,8 +211,6 @@ var winston = require('winston'),
 			categories.moveRecentReplies(tid, oldCid, cid);
 
 			topics.setTopicField(tid, 'cid', cid, callback);
-
-			events.logTopicMove(uid, tid);
 
 			plugins.fireHook('action:topic.move', {
 				tid: tid,

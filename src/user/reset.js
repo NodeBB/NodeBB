@@ -83,7 +83,6 @@ var async = require('async'),
 						return callback(err);
 					}
 					user.setUserField(uid, 'password', hash);
-					events.logPasswordReset(uid);
 
 					db.deleteObjectField('reset:uid', code);
 					db.deleteObjectField('reset:expiry', code);

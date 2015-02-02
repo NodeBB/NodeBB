@@ -157,7 +157,7 @@ User.deleteUsers = function(socket, uids, callback) {
 	async.each(uids, function(uid, next) {
 		user.isAdministrator(uid, function(err, isAdmin) {
 			if (err || isAdmin) {
-				return callback(err || new Error('[[error:cant-ban-other-admins]]'));
+				return callback(err || new Error('[[error:cant-delete-other-admins]]'));
 			}
 
 			user.delete(uid, function(err) {
@@ -165,7 +165,12 @@ User.deleteUsers = function(socket, uids, callback) {
 					return next(err);
 				}
 
-				events.logAdminUserDelete(socket.uid, uid);
+				events.log({
+					type: 'user-delete',
+					uid: socket.uid,
+					targetUid: uid,
+					ip: socket.ip
+				});
 
 				websockets.logoutUser(uid);
 				next();
