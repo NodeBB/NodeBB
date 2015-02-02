@@ -14,11 +14,11 @@ define('forum/topic/posts', [
 
 	Posts.onNewPost = function(data) {
 		var tid = ajaxify.variables.get('topic_id');
-		if(data && data.posts && data.posts.length && parseInt(data.posts[0].tid, 10) !== parseInt(tid, 10)) {
+		if (data && data.posts && data.posts.length && parseInt(data.posts[0].tid, 10) !== parseInt(tid, 10)) {
 			return;
 		}
 
-		if(config.usePagination) {
+		if (config.usePagination) {
 			return onNewPostPagination(data);
 		}
 
@@ -32,14 +32,11 @@ define('forum/topic/posts', [
 
 	function onNewPostPagination(data) {
 		var posts = data.posts;
-		socket.emit('topics.getPageCount', ajaxify.variables.get('topic_id'), function(err, newPageCount) {
-
-			if (pagination.currentPage === pagination.pageCount) {
-				createNewPosts(data);
-			} else if(data.posts && data.posts.length && parseInt(data.posts[0].uid, 10) === parseInt(app.uid, 10)) {
-				pagination.loadPage(pagination.pageCount);
-			}
-		});
+		if (pagination.currentPage === pagination.pageCount) {
+			createNewPosts(data);
+		} else if(data.posts && data.posts.length && parseInt(data.posts[0].uid, 10) === parseInt(app.uid, 10)) {
+			pagination.loadPage(pagination.pageCount);
+		}
 	}
 
 	function createNewPosts(data, callback) {
