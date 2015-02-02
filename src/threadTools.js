@@ -1,17 +1,11 @@
 'use strict';
 
-var winston = require('winston'),
-	nconf = require('nconf'),
-	async = require('async'),
+var async = require('async'),
 
 	db = require('./database'),
 	topics = require('./topics'),
 	categories = require('./categories'),
-	user = require('./user'),
-	notifications = require('./notifications'),
 	posts = require('./posts'),
-	meta = require('./meta'),
-	events = require('./events'),
 	plugins = require('./plugins'),
 	batch = require('./batch');
 
