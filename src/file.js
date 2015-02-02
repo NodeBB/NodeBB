@@ -18,7 +18,7 @@ file.saveFileToLocal = function(filename, folder, tempPath, callback) {
 
 	is.on('end', function () {
 		callback(null, {
-			url: nconf.get('url') + '/uploads/' + folder + '/' + filename
+			url: nconf.get('upload_url') + folder + '/' + filename
 		});
 	});
 
