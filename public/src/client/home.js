@@ -59,7 +59,7 @@ define('forum/home', function() {
 				recentPosts.last().remove();
 			}
 
-			$(window).trigger('action:posts.loaded');
+			$(window).trigger('action:posts.loaded', {pids: [post.pid]});
 		});
 	}
 

@@ -130,7 +130,7 @@ define('forum/topic/posts', [
 				pids.push(data.posts[i].pid);
 			}
 
-			$(window).trigger('action:posts.loaded', pids);
+			$(window).trigger('action:posts.loaded', {pids: pids});
 			onNewPostsLoaded(html, pids);
 			callback(true);
 		});
