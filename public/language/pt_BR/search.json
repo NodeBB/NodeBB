@@ -1,7 +1,7 @@
 {
     "results_matching": "%1 resultado(s) contendo \"%2\", (%3 segundos)",
-    "no-matches": "No matches found",
-    "in": "In",
-    "by": "By",
-    "posted-by": "Posted by"
+    "no-matches": "Nenhum resultado encontrado",
+    "in": "Em",
+    "by": "Por",
+    "posted-by": "Postado por"
 }

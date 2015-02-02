@@ -62,6 +62,7 @@
     "signature-too-long": "Signaturer kan tyvärr inte vara längre än %1 tecken.",
     "cant-chat-with-yourself": "Du kan inte chatta med dig själv.",
     "chat-restricted": "Denna användaren har begränsat sina chatt-meddelanden. Användaren måste följa dig innan ni kan chatta med varann",
+    "too-many-messages": "You have sent too many messages, please wait awhile.",
     "reputation-system-disabled": "Ryktessystemet är inaktiverat.",
     "downvoting-disabled": "Nedröstning är inaktiverat",
     "not-enough-reputation-to-downvote": "Du har inte tillräckligt förtroende för att rösta ner det här meddelandet",

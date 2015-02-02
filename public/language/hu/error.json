@@ -62,6 +62,7 @@
     "signature-too-long": "Sajnáljuk, az aláírás nem lehet hosszabb %1 karakternél.",
     "cant-chat-with-yourself": "You can't chat with yourself!",
     "chat-restricted": "This user has restricted their chat messages. They must follow you before you can chat with them",
+    "too-many-messages": "You have sent too many messages, please wait awhile.",
     "reputation-system-disabled": "Reputation system is disabled.",
     "downvoting-disabled": "Downvoting is disabled",
     "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post",

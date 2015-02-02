@@ -62,6 +62,7 @@
     "signature-too-long": "Pardon, ale váš podpis nemůže být delší, než-li %1 znaků.",
     "cant-chat-with-yourself": "Nemůžete chatovat sami se sebou!",
     "chat-restricted": "This user has restricted their chat messages. They must follow you before you can chat with them",
+    "too-many-messages": "You have sent too many messages, please wait awhile.",
     "reputation-system-disabled": "Systém reputací je zakázán.",
     "downvoting-disabled": "Downvoting is disabled",
     "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post",

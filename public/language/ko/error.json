@@ -62,6 +62,7 @@
     "signature-too-long": "죄송합니다. 서명은 최대 %1자로 제한됩니다.",
     "cant-chat-with-yourself": "자신과는 채팅할 수 없습니다.",
     "chat-restricted": "This user has restricted their chat messages. They must follow you before you can chat with them",
+    "too-many-messages": "You have sent too many messages, please wait awhile.",
     "reputation-system-disabled": "인기도 시스템을 사용하지 않습니다.",
     "downvoting-disabled": "비추천 기능을 사용하지 않습니다.",
     "not-enough-reputation-to-downvote": "인기도가 낮아 이 게시물에 반대할 수 없습니다.",

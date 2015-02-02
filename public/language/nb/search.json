@@ -1,7 +1,7 @@
 {
     "results_matching": "%1 resultat(er) samsvarer med \"%2\", (%3 sekunder)",
-    "no-matches": "No matches found",
-    "in": "In",
-    "by": "By",
-    "posted-by": "Posted by"
+    "no-matches": "Ingen matcher funnet",
+    "in": "I",
+    "by": "Av",
+    "posted-by": "Skapt av"
 }

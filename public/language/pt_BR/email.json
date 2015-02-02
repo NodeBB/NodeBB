@@ -17,8 +17,8 @@
     "notif.chat.subject": "Nova mensagem de chat recebida de %1",
     "notif.chat.cta": "Clique aqui para continuar a conversa",
     "notif.chat.unsub.info": "Esta notificação de chat foi enviada a você devido às suas configurações de assinatura.",
-    "notif.post.cta": "Click here to read the full topic",
-    "notif.post.unsub.info": "This post notification was sent to you due to your subscription settings.",
+    "notif.post.cta": "Clique aqui para ler o tópico completo",
+    "notif.post.unsub.info": "Esta notificação de postagem foi enviada para você devido as suas configurações de assinatura.",
     "test.text1": "Este é um e-mail de teste, para verificar que o enviador de emails está corretamente configurado no seu NodeBB.",
     "unsub.cta": "Clique aqui para alterar estas configurações",
     "closing": "Obrigado!"

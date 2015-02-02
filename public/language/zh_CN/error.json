@@ -62,6 +62,7 @@
     "signature-too-long": "抱歉，您的签名不能超过 %1 个字符。",
     "cant-chat-with-yourself": "您不能和自己聊天！",
     "chat-restricted": "此用户限制了他的聊天消息。必须他先关注您，您才能和他聊天。",
+    "too-many-messages": "You have sent too many messages, please wait awhile.",
     "reputation-system-disabled": "威望系统已禁用。",
     "downvoting-disabled": "反对功能已禁用",
     "not-enough-reputation-to-downvote": "您还没有足够的威望为此帖扣分",

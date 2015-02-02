@@ -62,6 +62,7 @@
     "signature-too-long": "Maaf, tanda pengenalmu tidak dapat melebihi %1 karakter.",
     "cant-chat-with-yourself": "Kamu tidak dapat chat dengan akun sendiri",
     "chat-restricted": "Pengguna ini telah membatasi percakapa mereka. Mereka harus mengikutimu sebelum kamu dapat melakukan percakapan dengan mereka ",
+    "too-many-messages": "You have sent too many messages, please wait awhile.",
     "reputation-system-disabled": "Sistem reputasi ditiadakan.",
     "downvoting-disabled": "Downvoting ditiadakan",
     "not-enough-reputation-to-downvote": "Tidak cukup reputation untuk downvote post ini",

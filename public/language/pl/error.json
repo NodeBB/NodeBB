@@ -62,6 +62,7 @@
     "signature-too-long": "Przepraszamy, ale podpis nie może być dłuższy niż %1 znaków.",
     "cant-chat-with-yourself": "Nie możesz rozmawiać ze sobą",
     "chat-restricted": "Ten użytkownik ograniczył swoje czaty. Musi Cię śledzić, zanim będziesz mógł z nim czatować.",
+    "too-many-messages": "You have sent too many messages, please wait awhile.",
     "reputation-system-disabled": "System reputacji został wyłączony",
     "downvoting-disabled": "Ocena postów jest wyłączona",
     "not-enough-reputation-to-downvote": "Masz za mało reputacji by ocenić ten post.",

@@ -62,6 +62,7 @@
     "signature-too-long": "Sorry, your signature cannot be longer than %1 characters.",
     "cant-chat-with-yourself": "Nu poți conversa cu tine!",
     "chat-restricted": "This user has restricted their chat messages. They must follow you before you can chat with them",
+    "too-many-messages": "You have sent too many messages, please wait awhile.",
     "reputation-system-disabled": "Sistemul de reputație este dezactivat.",
     "downvoting-disabled": "Votarea negativă este dezactivată",
     "not-enough-reputation-to-downvote": "Nu ai destulă reputație pentru a vota negativ acest post.",

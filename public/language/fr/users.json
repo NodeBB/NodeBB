@@ -6,7 +6,7 @@
     "enter_username": "Entrer un nom d'utilisateur pour rechercher",
     "load_more": "Charger la suite",
     "users-found-search-took": "%1 utilisateur(s) trouvé(s) ! Recherche effectuée en %2 ms.",
-    "filter-by": "Filter By",
-    "online-only": "Online only",
-    "picture-only": "Picture only"
+    "filter-by": "Filtrer Par",
+    "online-only": "En Ligne uniquement",
+    "picture-only": "Avec Image uniquement"
 }

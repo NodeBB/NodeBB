@@ -74,7 +74,7 @@
     "fork_no_pids": "Aucun post sélectionné !",
     "fork_success": "Sujet copié avec succès! Cliquez ici pour aller au sujet copié.",
     "composer.title_placeholder": "Entrer le titre du sujet ici ...",
-    "composer.handle_placeholder": "Name",
+    "composer.handle_placeholder": "Nom",
     "composer.discard": "Abandonner",
     "composer.submit": "Envoyer",
     "composer.replying_to": "Réponse à %1",
@@ -94,5 +94,5 @@
     "oldest_to_newest": "Du plus ancien au plus récent",
     "newest_to_oldest": "Du plus récent au plus ancien",
     "most_votes": "Les mieux notés",
-    "most_posts": "Most posts"
+    "most_posts": "Nombre de messages"
 }

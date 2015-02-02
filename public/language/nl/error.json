@@ -62,6 +62,7 @@
     "signature-too-long": "Sorry, maar deze handtekening kan niet groter zijn dan %1 karakters!",
     "cant-chat-with-yourself": "Je kan niet met jezelf chatten!",
     "chat-restricted": "Deze gebruiker heeft beperkingen gelegd op chatfunctie. Hun moeten jouw volgen voordat je met hun kan chatten",
+    "too-many-messages": "You have sent too many messages, please wait awhile.",
     "reputation-system-disabled": "Reputatie systeem is uitgeschakeld",
     "downvoting-disabled": "Downvoten is uitgeschakeld",
     "not-enough-reputation-to-downvote": "U heeft niet de benodigde reputatie om dit bericht te downvoten",

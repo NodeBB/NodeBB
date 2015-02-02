@@ -17,8 +17,8 @@
     "notif.chat.subject": "Neue Chatnachricht von %1 erhalten",
     "notif.chat.cta": "Klicke hier, um die Unterhaltung fortzusetzen",
     "notif.chat.unsub.info": "Diese Chat-Benachrichtigung wurde dir aufgrund deiner Abonnement-Einstellungen gesendet.",
-    "notif.post.cta": "Click here to read the full topic",
-    "notif.post.unsub.info": "This post notification was sent to you due to your subscription settings.",
+    "notif.post.cta": "Hier klicken, um das gesamte Thema zu lesen",
+    "notif.post.unsub.info": "Diese Mitteilung wurde wegen ihrer Abonnement-Einstellung gesendet.",
     "test.text1": "Dies ist eine Test-E-Mail, um zu überprüfen, ob der E-Mailer deines NodeBB korrekt eingestellt wurde.",
     "unsub.cta": "Klicke hier, um diese Einstellungen zu ändern.",
     "closing": "Danke!"

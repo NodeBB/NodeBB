@@ -62,6 +62,7 @@
     "signature-too-long": "Spiacenti, la tua firma non può essere lunga %1 caratteri.",
     "cant-chat-with-yourself": "Non puoi chattare con te stesso!",
     "chat-restricted": "Questo utente ha ristretto i suoi messaggi in chat alle persone che segue. Per poter chattare con te ti deve prima seguire.",
+    "too-many-messages": "You have sent too many messages, please wait awhile.",
     "reputation-system-disabled": "Il sistema di reputazione è disabilitato.",
     "downvoting-disabled": "Il Downvoting è disabilitato",
     "not-enough-reputation-to-downvote": "Non hai i privilegi per votare negativamente questo post",

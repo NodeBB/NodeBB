@@ -74,7 +74,7 @@
     "fork_no_pids": "Geen berichten geselecteerd!",
     "fork_success": "Met succes het onderwerp gesplitst. klik hier om naar het nieuwe onderwerp te gaan.",
     "composer.title_placeholder": "Vul de titel voor het onderwerp hier in...",
-    "composer.handle_placeholder": "Name",
+    "composer.handle_placeholder": "Naam",
     "composer.discard": "Annuleren",
     "composer.submit": "Opslaan",
     "composer.replying_to": "Reageren op %1",
@@ -94,5 +94,5 @@
     "oldest_to_newest": "Oud naar Nieuw",
     "newest_to_oldest": "Nieuw naar Oud",
     "most_votes": "Meeste stemmen",
-    "most_posts": "Most posts"
+    "most_posts": "Meeste berichten"
 }

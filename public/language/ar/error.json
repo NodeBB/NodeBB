@@ -62,6 +62,7 @@
     "signature-too-long": "عذرا، توقيعك يجب ألا يتجاوز %1 حرفًا",
     "cant-chat-with-yourself": "لايمكنك فتح محادثة مع نفسك",
     "chat-restricted": "هذا المستخدم عطل المحادثات الواردة عليه. يجب أن يتبعك حتى تتمكن من فتح محادثة معه.",
+    "too-many-messages": "You have sent too many messages, please wait awhile.",
     "reputation-system-disabled": "نظام السمعة معطل",
     "downvoting-disabled": "التصويتات السلبية معطلة",
     "not-enough-reputation-to-downvote": "ليس لديك سمعة تكفي لإضافة صوت سلبي لهذا الموضوع",

@@ -6,7 +6,7 @@
     "enter_username": "Skriv ett brukernavn for å søke",
     "load_more": "Last flere",
     "users-found-search-took": "%1 bruker(e) funnet! Søk tok %2 ms.",
-    "filter-by": "Filter By",
-    "online-only": "Online only",
-    "picture-only": "Picture only"
+    "filter-by": "Filtrer etter",
+    "online-only": "Bare påloggede",
+    "picture-only": "Bare bilde"
 }
