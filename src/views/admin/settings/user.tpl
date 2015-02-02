@@ -98,26 +98,6 @@
 </div>
 
 <div class="panel panel-default">
-	<div class="panel-heading">User Bans</div>
-	<div class="panel-body">
-		<form>
-			<div class="form-group">
-				<label>Number of flags to ban user</label>
-				<input type="text" class="form-control" value="3" placeholder="" data-field="flagsForBan" />
-			</div>
-			<hr />
-			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="autoban:downvote"> <strong>Enable automatic banning for reaching below a reputation threshold</strong>
-				</label>
-			</div>
-			<label>Reputation threshold before receiving an automatic ban</label>
-			<input type="text" class="form-control" value="" placeholder="-50" data-field="autoban:downvote:threshold" />
-		</form>
-	</div>
-</div>
-
-<div class="panel panel-default">
 	<div class="panel-heading">User Registration</div>
 	<div class="panel-body">
 		<form>

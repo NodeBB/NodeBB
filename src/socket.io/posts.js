@@ -139,38 +139,7 @@ SocketPosts.upvote = function(socket, data, callback) {
 };
 
 SocketPosts.downvote = function(socket, data, callback) {
-	function banUserForLowReputation(uid, callback) {
-		if (parseInt(meta.config['autoban:downvote'], 10) === 1) {
-			user.getUserFields(uid, ['reputation', 'banned'], function(err, userData) {
-				if (err || parseInt(userData.banned, 10) === 1 || parseInt(userData.reputation) >= parseInt(meta.config['autoban:downvote:threshold'], 10)) {
-					return callback(err);
-				}
-
-				var adminUser = require('./admin/user');
-				adminUser.banUser(uid, function(err) {
-					if (err) {
-						return callback(err);
-					}
-					events.log({
-						type: 'banned',
-						reason: 'low-reputation',
-						uid: socket.uid,
-						ip: socket.ip,
-						targetUid: data.uid,
-						reputation: userData.reputation
-					});
-					callback();
-				});
-			});
-		}
-	}
-
-	favouriteCommand(socket, 'downvote', 'voted', '', data, function(err) {
-		if (err) {
-			return callback(err);
-		}
-		banUserForLowReputation(data.uid, callback);
-	});
+	favouriteCommand(socket, 'downvote', 'voted', '', data, callback);
 };
 
 SocketPosts.unvote = function(socket, data, callback) {
@@ -480,23 +449,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 				return next();
 			}
 
-			db.setAdd('uid:' + post.uid + ':flagged_by', socket.uid, function(err) {
-				if (err) {
-					return next(err);
-				}
-				db.setCount('uid:' + post.uid + ':flagged_by', function(err, count) {
-					if (err) {
-						return next(err);
-					}
-
-					if (count >= (meta.config.flagsForBan || 3) && parseInt(meta.config.flagsForBan, 10) !== 0) {
-						var adminUser = require('./admin/user');
-						adminUser.banUser(post.uid, next);
-						return;
-					}
-					next();
-				});
-			});
+			db.setAdd('uid:' + post.uid + ':flagged_by', socket.uid, next);
 		}
 	], callback);
 };

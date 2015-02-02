@@ -85,7 +85,7 @@ define('forum/topic/events', [
 		threadTools.setDeleteState(data);
 	}
 
-	function onTopicPurged(tid) {
+	function onTopicPurged(data) {
 		ajaxify.go('category/' + ajaxify.variables.get('category_id'));
 	}
 
