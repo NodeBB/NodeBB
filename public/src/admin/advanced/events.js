@@ -22,10 +22,8 @@ define('admin/advanced/events', ['forum/infinitescroll'], function(infinitescrol
 			}
 
 			infinitescroll.loadMore('admin.getMoreEvents', $('[data-next]').attr('data-next'), function(data, done) {
-				console.log(data.events);
 				if (data.events && data.events.length) {
 					templates.parse('admin/advanced/events', 'events', {events: data.events}, function(html) {
-						console.log(html);
 						$('.events-list').append(html);
 						done();
 					});
