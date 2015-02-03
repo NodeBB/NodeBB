@@ -406,6 +406,8 @@ define('composer', [
 			return composerAlert('[[error:invalid-title]]');
 		} else if (bodyEl.val().length < parseInt(config.minimumPostLength, 10)) {
 			return composerAlert('[[error:content-too-short, ' + config.minimumPostLength + ']]');
+		} else if (bodyEl.val().length > parseInt(config.maximumPostLength, 10)) {
+			return composerAlert('[[error:content-too-long, ' + config.maximumPostLength + ']]');
 		}
 
 		var composerData = {}, action;

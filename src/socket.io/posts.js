@@ -261,6 +261,8 @@ SocketPosts.edit = function(socket, data, callback) {
 		return callback(new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]'));
 	} else if (!data.content || data.content.length < parseInt(meta.config.minimumPostLength, 10)) {
 		return callback(new Error('[[error:content-too-short, ' + meta.config.minimumPostLength + ']]'));
+	} else if (data.content.length > parseInt(meta.config.maximumPostLength, 10)) {
+		return callback(new Error('[[error:content-too-long, ' + meta.config.maximumPostLength + ']]'));
 	}
 
 	// uid, pid, title, content, options

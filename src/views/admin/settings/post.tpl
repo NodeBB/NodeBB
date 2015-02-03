@@ -49,6 +49,10 @@
 				<label>Minimum Post Length</label>
 				<input type="number" class="form-control" value="8" data-field="minimumPostLength">
 			</div>
+			<div class="form-group">
+				<label>Minimum Post Length</label>
+				<input type="number" class="form-control" value="32767" data-field="maximumPostLength">
+			</div>
 			<div class="checkbox">
 				<label>
 					<input type="checkbox" data-field="trackIpPerPost"> <strong>Track IP Address for each post</strong>
