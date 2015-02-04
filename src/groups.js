@@ -227,6 +227,9 @@ var async = require('async'),
 			results.base.isMember = results.isMember;
 			results.base.isPending = results.isPending;
 			results.base.isOwner = results.isOwner;
+			if (void 0 != options.uid) {
+				results.base.uid = options.uid;
+			}
 
 
 			plugins.fireHook('filter:group.get', {group: results.base}, function(err, data) {
