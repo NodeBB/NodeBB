@@ -642,6 +642,10 @@ var async = require('async'),
 
 		callback = callback || function() {};
 
+		if (!parseInt(uid, 10)) {
+			return callback(new Error('[[error:invalid-uid]]'));
+		}
+
 		Groups.exists(groupName, function(err, exists) {
 			if (err) {
 				return callback(err);
