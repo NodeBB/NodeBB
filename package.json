@@ -62,8 +62,8 @@
     "templates.js": "^0.1.15",
     "uglify-js": "git+https://github.com/julianlam/UglifyJS2.git",
     "underscore": "~1.7.0",
-    "validator": "~3.26.0",
-    "winston": "^0.8.1",
+    "validator": "~3.28.0",
+    "winston": "^0.9.0",
     "xregexp": "~2.0.0"
   },
   "devDependencies": {
