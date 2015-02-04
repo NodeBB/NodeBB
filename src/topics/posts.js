@@ -177,7 +177,7 @@ module.exports = function(Topics) {
 							return next(err);
 						}
 						latestPid = pids[0];
-						isDeleted = deleted;
+						isDeleted = parseInt(deleted, 10) === 1;
 						++index;
 						next();
 					});

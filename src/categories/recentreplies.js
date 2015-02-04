@@ -103,7 +103,10 @@ module.exports = function(Categories) {
 
 					pids = pids.concat(topicPids).filter(function(pid, index, array) {
 						return !!pid && array.indexOf(pid) === index;
-					});
+					}).sort(function(a, b) {
+						return b - a;
+					}).slice(0, count);
+
 					callback(null, pids);
 				});
 			});
