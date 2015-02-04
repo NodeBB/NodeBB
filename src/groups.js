@@ -694,8 +694,14 @@ var async = require('async'),
 
 	Groups.acceptMembership = function(groupName, uid, callback) {
 		// Note: For simplicity, this method intentially doesn't check the caller uid for ownership!
-		db.setRemove('group:' + groupName + ':pending', uid, callback);
-		Groups.join.apply(Groups, arguments);
+		async.waterfall([
+			function(next) {
+				db.setRemove('group:' + groupName + ':pending', uid, next);
+			},
+			function(next) {
+				Groups.join(groupName, uid, next);
+			}
+		], callback);
 	};
 
 	Groups.rejectMembership = function(groupName, uid, callback) {
