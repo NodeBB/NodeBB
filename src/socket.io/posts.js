@@ -397,9 +397,6 @@ SocketPosts.flag = function(socket, pid, callback) {
 
 	async.waterfall([
 		function(next) {
-			posts.flag(pid, next);
-		},
-		function(next) {
 			user.getUserFields(socket.uid, ['username', 'reputation'], next);
 		},
 		function(userData, next) {
@@ -407,7 +404,6 @@ SocketPosts.flag = function(socket, pid, callback) {
 				return next(new Error('[[error:not-enough-reputation-to-flag]]'));
 			}
 			userName = userData.username;
-
 			posts.getPostFields(pid, ['tid', 'uid', 'content', 'deleted'], next);
 		},
 		function(postData, next) {
@@ -415,7 +411,10 @@ SocketPosts.flag = function(socket, pid, callback) {
 				return next(new Error('[[error:post-deleted]]'));
 			}
 			post = postData;
-			topics.getTopicFields(postData.tid, ['title', 'cid'], next);
+			posts.flag(pid, next);
+		},
+		function(next) {
+			topics.getTopicFields(post.tid, ['title', 'cid'], next);
 		},
 		function(topic, next) {
 			post.topic = topic;
