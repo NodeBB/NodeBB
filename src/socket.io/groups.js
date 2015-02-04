@@ -38,6 +38,10 @@ SocketGroups.leave = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
+	if (!parseInt(socket.uid, 10)) {
+		return callback(new Error('[[error:invalid-uid]]'));
+	}
+
 	groups.leave(data.groupName, socket.uid, callback);
 };
 
