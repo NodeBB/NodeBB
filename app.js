@@ -46,11 +46,6 @@ winston.add(winston.transports.Console, {
 	level: global.env === 'production' ? 'info' : 'verbose'
 });
 
-// TODO: remove once https://github.com/flatiron/winston/issues/280 is fixed
-winston.err = function (err) {
-	winston.error(err.stack);
-};
-
 if(os.platform() === 'linux') {
 	require('child_process').exec('/usr/bin/which convert', function(err, stdout, stderr) {
 		if(err || !stdout) {
