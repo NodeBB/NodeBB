@@ -50,7 +50,6 @@ search.search = function(data, callback) {
 
 function searchInPosts(query, data, callback) {
 	data.uid = data.uid || 0;
-	var postedBy = data.postedBy || '';
 	async.parallel({
 		pids: function(next) {
 			searchQuery('post', query, next);
@@ -86,18 +85,26 @@ function searchInPosts(query, data, callback) {
 				posts.getPostSummaryByPids(pids, data.uid, {stripTags: true, parse: false}, next);
 			},
 			function(posts, next) {
-				var searchCategories = results.searchCategories;
-				if (postedBy || searchCategories.length) {
-					posts = posts.filter(function(post) {
-						return post &&
-							(postedBy ? post.user.username === postedBy : true) &&
-							(searchCategories.length ? searchCategories.indexOf(post.category.cid) !== -1 : true);
-					});
-				}
+				posts = filterPosts(data, results.searchCategories, posts);
 				next(null, posts);
 			}
 		], callback);
 	});
+}
+
+function filterPosts(data, searchCategories, posts) {
+	var postedBy = data.postedBy;
+	var isAtLeast = data.repliesFilter === 'atleast';
+	data.replies = parseInt(data.replies, 10);
+	if (postedBy || searchCategories.length || data.replies) {
+		posts = posts.filter(function(post) {
+			return post &&
+				(postedBy ? post.user.username === postedBy : true) &&
+				(searchCategories.length ? searchCategories.indexOf(post.category.cid) !== -1 : true) &&
+				(data.replies ? (isAtLeast ? post.topic.postcount >= data.replies : post.topic.postcount <= data.replies) : true);
+		});
+	}
+	return posts;
 }
 
 function getSearchCategories(data, callback) {

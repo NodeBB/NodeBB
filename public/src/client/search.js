@@ -16,7 +16,7 @@ define('forum/search', ['search'], function(searchModule) {
 		}
 
 		if (params && params.by) {
-			$('.by-container #posted-by-user').val(params.by);
+			$('#posted-by-user').val(params.by);
 		}
 
 		if (params && params['categories[]']) {
@@ -27,8 +27,14 @@ define('forum/search', ['search'], function(searchModule) {
 			$('#search-children').prop('checked', true);
 		}
 
+		if (params && params.replies) {
+			$('#reply-count').val(params.replies);
+			$('#reply-count-filter').val(params.repliesFilter);
+		}
+
 		searchIn.on('change', function() {
-			$('.by-container').toggleClass('hide', searchIn.val() !== 'posts');
+			$('.post-search-item').toggleClass('hide', searchIn.val() !== 'posts');
+
 		});
 
 		highlightMatches(searchQuery);
@@ -42,7 +48,9 @@ define('forum/search', ['search'], function(searchModule) {
 				in: $(this).find('#search-in').val(),
 				by: $(this).find('#posted-by-user').val(),
 				categories: $(this).find('#posted-in-categories').val(),
-				searchChildren: $(this).find('#search-children').is(':checked')
+				searchChildren: $(this).find('#search-children').is(':checked'),
+				replies: $(this).find('#reply-count').val(),
+				repliesFilter: $(this).find('#reply-count-filter').val()
 			}, function() {
 				input.val('');
 			});
@@ -71,7 +79,7 @@ define('forum/search', ['search'], function(searchModule) {
 
 
 	function enableAutoComplete() {
-		var input = $('.by-container #posted-by-user');
+		var input = $('#posted-by-user');
 		input.autocomplete({
 			delay: 100,
 			source: function(request, response) {

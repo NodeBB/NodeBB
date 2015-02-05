@@ -34,6 +34,12 @@ define('search', ['navigator'], function(nav) {
 					query.searchChildren = data.searchChildren;
 				}
 			}
+
+			if (parseInt(data.replies, 10) > 0) {
+				query.replies = data.replies;
+				query.repliesFilter = data.repliesFilter || 'atleast';
+			}
+
 			ajaxify.go('search/' + term + '?' + decodeURIComponent($.param(query)));
 			callback();
 		} else {

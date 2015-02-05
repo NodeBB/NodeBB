@@ -5,5 +5,8 @@
 	"by": "By",
 	"posted-by": "Posted by",
 	"in-categories": "In Categories",
-	"search-child-categories": "Search child categories"
+	"search-child-categories": "Search child categories",
+	"reply-count": "Reply Count",
+	"at-least": "At least",
+	"at-most": "At most"
 }

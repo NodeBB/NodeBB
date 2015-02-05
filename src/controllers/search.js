@@ -43,6 +43,8 @@ searchController.search = function(req, res, next) {
 			postedBy: req.query.by,
 			categories: req.query.categories,
 			searchChildren: req.query.searchChildren,
+			replies: req.query.replies,
+			repliesFilter: req.query.repliesFilter,
 			uid: uid
 		}, function(err, results) {
 			if (err) {
