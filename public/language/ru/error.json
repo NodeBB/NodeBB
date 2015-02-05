@@ -62,7 +62,7 @@
     "signature-too-long": "Ваша подпись не может быть длиннее %1 симв.",
     "cant-chat-with-yourself": "Вы не можете общаться с самим собой",
     "chat-restricted": "Пользователь ограничил прием сообщений. Он должен подписаться на Вас, чтобы Вы могли вести переписку с ним.",
-    "too-many-messages": "You have sent too many messages, please wait awhile.",
+    "too-many-messages": "Вы отправили слишком много сообщений, подождите немного.",
     "reputation-system-disabled": "Система репутации отключена.",
     "downvoting-disabled": "Понижение оценки отключено",
     "not-enough-reputation-to-downvote": "У Вас недостаточно репутации для понижения оценки поста",

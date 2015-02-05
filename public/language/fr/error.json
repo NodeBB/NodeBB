@@ -62,7 +62,7 @@
     "signature-too-long": "La signature ne peut dépasser %1 caractères !",
     "cant-chat-with-yourself": "Vous ne pouvez chatter avec vous même !",
     "chat-restricted": "Cet utilisateur a restreint les ses messages de chat. Il doit d'abord vous suivre avant de pouvoir discuter avec lui.",
-    "too-many-messages": "You have sent too many messages, please wait awhile.",
+    "too-many-messages": "Vous avez envoyé trop de messages, veuillez patienter un instant.",
     "reputation-system-disabled": "Le système de réputation est désactivé",
     "downvoting-disabled": "Les votes négatifs ne sont pas autorisés",
     "not-enough-reputation-to-downvote": "Vous n'avez pas une réputation assez élevée pour noter négativement ce message",

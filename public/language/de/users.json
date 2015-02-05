@@ -6,7 +6,7 @@
     "enter_username": "Benutzer durchsuchen",
     "load_more": "mehr laden",
     "users-found-search-took": "%1 Benutzer gefunden! Die Suche dauerte %2 ms.",
-    "filter-by": "Filter By",
-    "online-only": "Online only",
-    "picture-only": "Picture only"
+    "filter-by": "Filtern nach",
+    "online-only": "Nur Online",
+    "picture-only": "Nur mit Bildern"
 }
