@@ -99,8 +99,8 @@ function filterPosts(data, searchCategories, posts) {
 	if (postedBy || searchCategories.length || data.replies) {
 		posts = posts.filter(function(post) {
 			return post &&
-				(postedBy ? (post.user && post.user.username) === postedBy : true) &&
-				(searchCategories.length ? searchCategories.indexOf(post.category.cid) !== -1 : true) &&
+				(postedBy ? post.user && (post.user.username === postedBy) : true) &&
+				(searchCategories.length ? (post.category && searchCategories.indexOf(post.category.cid) !== -1) : true) &&
 				(data.replies ? (isAtLeast ? post.topic.postcount >= data.replies : post.topic.postcount <= data.replies) : true);
 		});
 	}
