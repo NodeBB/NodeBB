@@ -27,6 +27,13 @@ define('search', ['navigator'], function(nav) {
 			if (postedBy && searchIn === 'posts') {
 				query.by = postedBy;
 			}
+
+			if (data.categories && data.categories.length) {
+				query.categories = data.categories;
+				if (data.searchChildren) {
+					query.searchChildren = data.searchChildren;
+				}
+			}
 			ajaxify.go('search/' + term + '?' + decodeURIComponent($.param(query)));
 			callback();
 		} else {

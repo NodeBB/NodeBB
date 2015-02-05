@@ -10,17 +10,25 @@ define('forum/search', ['search'], function(searchModule) {
 
 		$('#advanced-search #search-input').val(searchQuery);
 		var params = utils.params();
-		var select = $('#advanced-search select');
+		var searchIn = $('#advanced-search #search-in');
 		if (params && params.in) {
-			select.val(params.in);
+			searchIn.val(params.in);
 		}
 
 		if (params && params.by) {
-			$('.by-container #posted-by-input').val(params.by);
+			$('.by-container #posted-by-user').val(params.by);
 		}
 
-		select.on('change', function() {
-			$('.by-container').toggleClass('hide', select.val() !== 'posts');
+		if (params && params['categories[]']) {
+			$('#posted-in-categories').val(params['categories[]']);
+		}
+
+		if (params && params.searchChildren) {
+			$('#search-children').prop('checked', true);
+		}
+
+		searchIn.on('change', function() {
+			$('.by-container').toggleClass('hide', searchIn.val() !== 'posts');
 		});
 
 		highlightMatches(searchQuery);
@@ -28,13 +36,13 @@ define('forum/search', ['search'], function(searchModule) {
 		$('#advanced-search').off('submit').on('submit', function(e) {
 			e.preventDefault();
 			var input = $(this).find('#search-input');
-			var searchIn = $(this).find('select');
-			var postedBy = $(this).find('#posted-by-input');
 
 			searchModule.query({
 				term: input.val(),
-				in: searchIn.val(),
-				by: postedBy.val()
+				in: $(this).find('#search-in').val(),
+				by: $(this).find('#posted-by-user').val(),
+				categories: $(this).find('#posted-in-categories').val(),
+				searchChildren: $(this).find('#search-children').is(':checked')
 			}, function() {
 				input.val('');
 			});
@@ -63,7 +71,7 @@ define('forum/search', ['search'], function(searchModule) {
 
 
 	function enableAutoComplete() {
-		var input = $('.by-container #posted-by-input');
+		var input = $('.by-container #posted-by-user');
 		input.autocomplete({
 			delay: 100,
 			source: function(request, response) {

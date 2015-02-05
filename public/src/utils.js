@@ -256,7 +256,14 @@
 					value = options.skipToType[key] ? decodeURI(val[1]) : utils.toType(decodeURI(val[1]));
 
 				if (key) {
-					hash[key] = value;
+					if (!hash[key]) {
+						hash[key] = value;
+					} else {
+						if (!$.isArray(hash[key])) {
+							hash[key] = [hash[key]];
+						}
+						hash[key].push(value);
+					}
 				}
 			});
 			return hash;

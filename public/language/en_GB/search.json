@@ -3,5 +3,7 @@
 	"no-matches": "No matches found",
 	"in": "In",
 	"by": "By",
-	"posted-by": "Posted by"
+	"posted-by": "Posted by",
+	"in-categories": "In Categories",
+	"search-child-categories": "Search child categories"
 }
