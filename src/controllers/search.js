@@ -6,6 +6,7 @@ var searchController = {},
 	plugins = require('../plugins'),
 	search = require('../search'),
 	categories = require('../categories'),
+	pagination = require('../pagination'),
 	helpers = require('./helpers');
 
 
@@ -50,6 +51,13 @@ searchController.search = function(req, res, next) {
 			if (err) {
 				return next(err);
 			}
+			var currentPage = Math.max(1, parseInt(req.query.page, 10)) || 1;
+			var pageCount = Math.max(1, Math.ceil(results.matchCount / 10));
+			var searchIn = req.query.in || 'posts';
+			var start = Math.max(0, (currentPage - 1)) * 10;
+			results[searchIn] = results[searchIn].slice(start, start + 10);
+
+			pagination.create(currentPage, pageCount, results, req.query);
 
 			results.breadcrumbs = breadcrumbs;
 			results.categories = categories;

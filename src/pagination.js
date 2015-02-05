@@ -1,9 +1,10 @@
 'use strict';
 
+var qs = require('querystring');
+
 var pagination = {};
 
-pagination.create = function(currentPage, pageCount, data) {
-
+pagination.create = function(currentPage, pageCount, data, queryObj) {
 	if (pageCount <= 1) {
 		data.pagination = {
 			prev: {page: 1, active: currentPage > 1},
@@ -35,8 +36,11 @@ pagination.create = function(currentPage, pageCount, data) {
 		return a - b;
 	});
 
+	queryObj = queryObj || {};
+
 	var pages = pagesToShow.map(function(page) {
-		return {page: page, active: page === currentPage};
+		queryObj.page = page;
+		return {page: page, active: page === currentPage, qs: qs.stringify(queryObj)};
 	});
 
 	data.pagination = {
