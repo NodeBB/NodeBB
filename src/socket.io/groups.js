@@ -13,6 +13,10 @@ SocketGroups.join = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
+	if (!parseInt(socket.uid, 10)) {
+		return callback(new Error('[[error:invalid-uid]]'));
+	}
+
 	if (meta.config.allowPrivateGroups !== '0') {
 		async.parallel({
 			isAdmin: async.apply(user.isAdministrator, socket.uid),
@@ -32,6 +36,10 @@ SocketGroups.join = function(socket, data, callback) {
 SocketGroups.leave = function(socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	if (!parseInt(socket.uid, 10)) {
+		return callback(new Error('[[error:invalid-uid]]'));
 	}
 
 	groups.leave(data.groupName, socket.uid, callback);

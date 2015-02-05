@@ -35,7 +35,7 @@ define('forum/topic/fork', function() {
 
 		forkModal.find('.close,#fork_thread_cancel').on('click', closeForkModal);
 		forkModal.find('#fork-title').on('change', checkForkButtonEnable);
-		$('#post-container').on('click', 'li[data-pid]', function() {
+		$('#post-container').on('click', '[data-pid]', function() {
 			togglePostSelection($(this));
 		});
 
@@ -58,7 +58,7 @@ define('forum/topic/fork', function() {
 			pids: pids
 		}, function(err, newTopic) {
 			function fadeOutAndRemove(pid) {
-				$('#post-container li[data-pid="' + pid + '"]').fadeOut(500, function() {
+				$('#post-container [data-pid="' + pid + '"]').fadeOut(500, function() {
 					$(this).remove();
 				});
 			}
@@ -125,10 +125,10 @@ define('forum/topic/fork', function() {
 
 	function closeForkModal() {
 		for(var i=0; i<pids.length; ++i) {
-			$('#post-container li[data-pid="' + pids[i] + '"]').css('opacity', 1);
+			$('#post-container [data-pid="' + pids[i] + '"]').css('opacity', 1);
 		}
 		forkModal.addClass('hide');
-		$('#post-container').off('click', 'li[data-pid]');
+		$('#post-container').off('click', '[data-pid]');
 		enableClicksOnPosts();
 	}
 

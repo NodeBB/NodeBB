@@ -51,12 +51,12 @@
 
 					if (!area.length && window.location.pathname.indexOf('/admin') === -1 && renderedWidgets.length) {
 						if (location === 'footer' && !$('#content [widget-area="footer"]').length) {
-							$('#content').append($('<div class="col-xs-12"><div widget-area="footer"></div></div>'));
+							$('#content').append($('<div class="row"><div widget-area="footer" class="col-xs-12"></div></div>'));
 						} else if (location === 'sidebar' && !$('#content [widget-area="sidebar"]').length) {
-							$('#content > *').wrapAll($('<div class="col-lg-9 col-xs-12"></div>'));
-							$('#content').append($('<div class="col-lg-3 col-xs-12"><div widget-area="sidebar"></div></div>'));
+							$('#content > *').wrapAll($('<div class="row"><div class="col-lg-9 col-xs-12"></div></div>'));
+							$('#content').append($('<div class="row"><div widget-area="sidebar" class="col-lg-3 col-xs-12"></div></div>'));
 						} else if (location === 'header' && !$('#content [widget-area="header"]').length) {
-							$('#content').prepend($('<div class="col-xs-12"><div widget-area="header"></div></div>'));
+							$('#content').prepend($('<div class="row"><div widget-area="header" class="col-xs-12"></div></div>'));
 						}
 
 						area = $('#content [widget-area="' + location + '"]');

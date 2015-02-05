@@ -466,7 +466,7 @@ accountsController.uploadPicture = function (req, res, next) {
 
 			fs.unlink(absolutePath, function (err) {
 				if (err) {
-					winston.err(err);
+					winston.error(err);
 				}
 
 				file.saveFileToLocal(filename, 'profile', userPhoto.path, done);

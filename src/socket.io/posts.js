@@ -261,6 +261,8 @@ SocketPosts.edit = function(socket, data, callback) {
 		return callback(new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]'));
 	} else if (!data.content || data.content.length < parseInt(meta.config.minimumPostLength, 10)) {
 		return callback(new Error('[[error:content-too-short, ' + meta.config.minimumPostLength + ']]'));
+	} else if (data.content.length > parseInt(meta.config.maximumPostLength, 10)) {
+		return callback(new Error('[[error:content-too-long, ' + meta.config.maximumPostLength + ']]'));
 	}
 
 	// uid, pid, title, content, options
@@ -395,9 +397,6 @@ SocketPosts.flag = function(socket, pid, callback) {
 
 	async.waterfall([
 		function(next) {
-			posts.flag(pid, next);
-		},
-		function(next) {
 			user.getUserFields(socket.uid, ['username', 'reputation'], next);
 		},
 		function(userData, next) {
@@ -405,7 +404,6 @@ SocketPosts.flag = function(socket, pid, callback) {
 				return next(new Error('[[error:not-enough-reputation-to-flag]]'));
 			}
 			userName = userData.username;
-
 			posts.getPostFields(pid, ['tid', 'uid', 'content', 'deleted'], next);
 		},
 		function(postData, next) {
@@ -413,7 +411,10 @@ SocketPosts.flag = function(socket, pid, callback) {
 				return next(new Error('[[error:post-deleted]]'));
 			}
 			post = postData;
-			topics.getTopicFields(postData.tid, ['title', 'cid'], next);
+			posts.flag(pid, next);
+		},
+		function(next) {
+			topics.getTopicFields(post.tid, ['title', 'cid'], next);
 		},
 		function(topic, next) {
 			post.topic = topic;

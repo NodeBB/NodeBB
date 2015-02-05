@@ -113,9 +113,15 @@ function getStatsForSet(set, field, callback) {
 			db.sortedSetCount(set, now - terms.month, now, next);
 		},
 		alltime: function(next) {
-			db.getObjectField('global', field, next);
+			getGlobalField(field, next);
 		}
 	}, callback);
+}
+
+function getGlobalField(field, callback) {
+	db.getObjectField('global', field, function(err, count) {
+		callback(err, parseInt(count, 10) || 0);
+	});
 }
 
 adminController.categories.active = function(req, res, next) {
