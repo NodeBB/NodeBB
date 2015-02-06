@@ -13,6 +13,7 @@ define('forum/search', ['search'], function(searchModule) {
 		var searchIn = $('#advanced-search #search-in');
 		if (params && params.in) {
 			searchIn.val(params.in);
+			$('.post-search-item').toggleClass('hide', params.in !== 'posts');
 		}
 
 		if (params && params.by) {
@@ -20,7 +21,7 @@ define('forum/search', ['search'], function(searchModule) {
 		}
 
 		if (params && (params['categories[]'] || params.categories)) {
-			$('#posted-in-categories').val((params['categories[]'] || params.categories));
+			$('#posted-in-categories').val(params['categories[]'] || params.categories);
 		}
 
 		if (params && params.searchChildren) {
@@ -34,7 +35,6 @@ define('forum/search', ['search'], function(searchModule) {
 
 		searchIn.on('change', function() {
 			$('.post-search-item').toggleClass('hide', searchIn.val() !== 'posts');
-
 		});
 
 		highlightMatches(searchQuery);
