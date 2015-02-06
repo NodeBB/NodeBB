@@ -123,17 +123,26 @@ module.exports = function(Plugins) {
 					next();
 				}, 5000);
 
-				try {
+				if (global.env === 'development') {
 					hookObj.method(params, function() {
 						clearTimeout(timeoutId);
 						if (!timedOut) {
 							next.apply(null, arguments);
 						}
 					});
-				} catch(err) {
-					winston.error('[plugins] Error executing \'' + hook + '\' in plugin \'' + hookObj.id + '\'');
-					clearTimeout(timeoutId);
-					next();
+				} else {
+					try {
+						hookObj.method(params, function() {
+							clearTimeout(timeoutId);
+							if (!timedOut) {
+								next.apply(null, arguments);
+							}
+						});
+					} catch(err) {
+						winston.error('[plugins] Error executing \'' + hook + '\' in plugin \'' + hookObj.id + '\'');
+						clearTimeout(timeoutId);
+						next();
+					}
 				}
 			} else {
 				next();
