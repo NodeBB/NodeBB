@@ -2,6 +2,7 @@
 
 var async = require('async'),
 	nconf = require('nconf'),
+	meta = require('../meta'),
 	groups = require('../groups'),
 	user = require('../user'),
 	helpers = require('./helpers'),
@@ -17,7 +18,8 @@ groupsController.list = function(req, res, next) {
 			return next(err);
 		}
 		res.render('groups/list', {
-			groups: groups
+			groups: groups,
+			allowGroupCreation: parseInt(meta.config.allowGroupCreation, 10) === 1
 		});
 	});
 };

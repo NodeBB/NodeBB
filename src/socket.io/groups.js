@@ -116,11 +116,14 @@ SocketGroups.update = function(socket, data, callback) {
 };
 
 SocketGroups.create = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	} else if (socket.uid === 0) {
 		return callback(new Error('[[error:no-privileges]]'));
+	} else if (parseInt(meta.config.allowGroupCreation, 10) !== 1) {
+		return callback(new Error('[[error:group-creation-disabled]]'));
 	}
+
 
 	data.ownerUid = socket.uid;
 	groups.create(data, callback);

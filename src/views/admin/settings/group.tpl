@@ -15,6 +15,15 @@
 					</p>
 				</label>
 			</div>
+
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" data-field="allowGroupCreation"> <strong>Allow Group Creation</strong>
+					<p class="help-block">
+						If enabled, users can create groups <em>(Default: disabled)</em>
+					</p>
+				</label>
+			</div>
 		</form>
 	</div>
 </div>
