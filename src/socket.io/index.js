@@ -40,7 +40,7 @@ Sockets.init = function(server) {
 };
 
 function onConnection(socket) {
-	socket.ip = socket.request.connection.remoteAddress;
+	socket.ip = socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
 
 	logger.io_one(socket, socket.uid);
 
