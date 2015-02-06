@@ -19,8 +19,8 @@ define('forum/search', ['search'], function(searchModule) {
 			$('#posted-by-user').val(params.by);
 		}
 
-		if (params && params['categories[]']) {
-			$('#posted-in-categories').val(params['categories[]']);
+		if (params && (params['categories[]'] || params.categories)) {
+			$('#posted-in-categories').val((params['categories[]'] || params.categories));
 		}
 
 		if (params && params.searchChildren) {
