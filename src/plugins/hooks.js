@@ -132,6 +132,7 @@ module.exports = function(Plugins) {
 					});
 				} catch(err) {
 					winston.error('[plugins] Error executing \'' + hook + '\' in plugin \'' + hookObj.id + '\'');
+					winston.error(err);
 					clearTimeout(timeoutId);
 					next();
 				}
