@@ -174,22 +174,40 @@ function favouriteCommand(socket, command, eventName, notification, data, callba
 			return callback(new Error('[[error:post-deleted]]'));
 		}
 
-		favourites[command](data.pid, socket.uid, function(err, result) {
+		/*
+		hooks:
+			filter.post.upvote
+			filter.post.downvote
+			filter.post.unvote
+			filter.post.favourite
+			filter.post.unfavourite
+		 */
+		plugins.fireHook('filter:post.' + command, {data: data, uid: socket.uid}, function(err, filteredData) {
 			if (err) {
 				return callback(err);
 			}
 
-			socket.emit('posts.' + command, result);
-
-			if (result && eventName) {
-				websockets.in(data.room_id).emit('event:' + eventName, result);
-			}
-
-			if (notification) {
-				SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, notification);
-			}
-			callback();
+			executeFavouriteCommand(socket, command, eventName, notification, filteredData.data, callback);
 		});
+	});
+}
+
+function executeFavouriteCommand(socket, command, eventName, notification, data, callback) {
+	favourites[command](data.pid, socket.uid, function(err, result) {
+		if (err) {
+			return callback(err);
+		}
+
+		socket.emit('posts.' + command, result);
+
+		if (result && eventName) {
+			websockets.in(data.room_id).emit('event:' + eventName, result);
+		}
+
+		if (notification) {
+			SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, notification);
+		}
+		callback();
 	});
 }
 
