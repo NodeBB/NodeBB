@@ -116,15 +116,13 @@ topicsController.get = function(req, res, next) {
 				}
 
 				topicData.pageCount = pageCount;
-
 				topicData.currentPage = page;
-				if(page > 1) {
+
+				if (page > 1) {
 					topicData.posts.splice(0, 1);
 				}
 
-				plugins.fireHook('filter:controllers.topic.get', topicData, function(err, topicData) {
-					next(null, topicData);
-				});
+				plugins.fireHook('filter:controllers.topic.get', topicData, next);
 			});
 		},
 		function (topicData, next) {
