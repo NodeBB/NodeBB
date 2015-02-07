@@ -14,7 +14,7 @@ usersController.getOnlineUsers = function(req, res, next) {
 
 	async.parallel({
 		users: function(next) {
-			user.getUsersFromSet('users:online', 0, 49, next);
+			user.getUsersFromSet('users:online', uid, 0, 49, next);
 		},
 		count: function(next) {
 			var now = Date.now();
@@ -63,7 +63,7 @@ usersController.getUsersSortedByJoinDate = function(req, res, next) {
 usersController.getUsers = function(set, count, req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
 
-	getUsersAndCount(set, count, function(err, data) {
+	getUsersAndCount(set, uid, count, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -78,10 +78,10 @@ usersController.getUsers = function(set, count, req, res, next) {
 	});
 };
 
-function getUsersAndCount(set, count, callback) {
+function getUsersAndCount(set, uid, count, callback) {
 	async.parallel({
 		users: function(next) {
-			user.getUsersFromSet(set, 0, count - 1, next);
+			user.getUsersFromSet(set, uid, 0, count - 1, next);
 		},
 		count: function(next) {
 			db.getObjectField('global', 'userCount', next);
@@ -102,7 +102,7 @@ usersController.getUsersForSearch = function(req, res, next) {
 	var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20,
 		uid = req.user ? req.user.uid : 0;
 
-	getUsersAndCount('users:joindate', resultsPerPage, function(err, data) {
+	getUsersAndCount('users:joindate', uid, resultsPerPage, function(err, data) {
 		if (err) {
 			return next(err);
 		}

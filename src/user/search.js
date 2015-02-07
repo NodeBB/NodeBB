@@ -14,13 +14,10 @@ module.exports = function(User) {
 		var searchBy = data.searchBy || ['username'];
 		var startsWith = data.hasOwnProperty('startsWith') ? data.startsWith : true;
 		var page = data.page || 1;
-
-		if (!query) {
-			return callback(null, {timing: 0, users: [], matchCount: 0, pages: []});
-		}
+		var uid = data.uid || 0;
 
 		if (searchBy.indexOf('ip') !== -1) {
-			return searchByIP(query, callback);
+			return searchByIP(query, uid, callback);
 		}
 
 		var startTime = process.hrtime();
@@ -46,7 +43,7 @@ module.exports = function(User) {
 				matchCount = uids.length;
 				uids = uids.slice(start, end);
 
-				User.getUsers(uids, next);
+				User.getUsers(uids, uid, next);
 			},
 			function(userData, next) {
 
@@ -194,14 +191,14 @@ module.exports = function(User) {
 		}
 	}
 
-	function searchByIP(ip, callback) {
+	function searchByIP(ip, uid, callback) {
 		var start = process.hrtime();
 		async.waterfall([
 			function(next) {
 				db.getSortedSetRevRange('ip:' + ip + ':uid', 0, -1, next);
 			},
 			function(uids, next) {
-				User.getUsers(uids, next);
+				User.getUsers(uids, uid, next);
 			},
 			function(users, next) {
 				var diff = process.hrtime(start);

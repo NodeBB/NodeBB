@@ -49,7 +49,7 @@ define('uploader', ['csrf'], function(csrf) {
 				},
 				error: function(xhr) {
 					xhr = maybeParse(xhr);
-					showAlert('error', xhr.responseJSON.error);
+					showAlert('error', xhr.responseJSON ? xhr.responseJSON.error : 'error uploading, code : ' + xhr.status);
 				},
 
 				uploadProgress: function(event, position, total, percent) {

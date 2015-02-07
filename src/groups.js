@@ -803,7 +803,11 @@ var async = require('async'),
 
 				groupData = groupData.filter(function(group) {
 					return parseInt(group.hidden, 10) !== 1 && !!group.userTitle;
+				}).map(function(group) {
+					group.createtimeISO = utils.toISOString(group.createtime);
+					return group;
 				});
+
 
 				var groupSets = groupData.map(function(group) {
 					group.labelColor = group.labelColor || '#000000';

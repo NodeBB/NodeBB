@@ -42,7 +42,7 @@ search.search = function(data, callback) {
 	if (searchIn === 'posts') {
 		searchInPosts(query, data, done);
 	} else if (searchIn === 'users') {
-		searchInUsers(query, done);
+		searchInUsers(query, data.uid, done);
 	} else if (searchIn === 'tags') {
 		searchInTags(query, done);
 	} else {
@@ -291,8 +291,8 @@ function getChildrenCids(cids, uid, callback) {
 	});
 }
 
-function searchInUsers(query, callback) {
-	user.search({query: query}, function(err, results) {
+function searchInUsers(query, uid, callback) {
+	user.search({query: query, uid: uid}, function(err, results) {
 		if (err) {
 			return callback(err);
 		}
