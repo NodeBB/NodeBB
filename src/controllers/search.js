@@ -37,6 +37,7 @@ searchController.search = function(req, res, next) {
 		}
 
 		req.params.term = validator.escape(req.params.term);
+		var page = Math.max(1, parseInt(req.query.page, 10)) || 1;
 
 		search.search({
 			query: req.params.term,
@@ -46,18 +47,17 @@ searchController.search = function(req, res, next) {
 			searchChildren: req.query.searchChildren,
 			replies: req.query.replies,
 			repliesFilter: req.query.repliesFilter,
+			timeRange: req.query.timeRange,
+			timeFilter: req.query.timeFilter,
+			page: page,
 			uid: uid
 		}, function(err, results) {
 			if (err) {
 				return next(err);
 			}
-			var currentPage = Math.max(1, parseInt(req.query.page, 10)) || 1;
-			var pageCount = Math.max(1, Math.ceil(results.matchCount / 10));
-			var searchIn = req.query.in || 'posts';
-			var start = Math.max(0, (currentPage - 1)) * 10;
-			results[searchIn] = results[searchIn].slice(start, start + 10);
 
-			pagination.create(currentPage, pageCount, results, req.query);
+			var pageCount = Math.max(1, Math.ceil(results.matchCount / 10));
+			results.pagination = pagination.create(page, pageCount, req.query);
 
 			results.breadcrumbs = breadcrumbs;
 			results.categories = categories;

@@ -60,7 +60,7 @@ module.exports = function(User) {
 
 				var currentPage = Math.max(1, Math.ceil((start + 1) / resultsPerPage));
 				pageCount = Math.ceil(matchCount / resultsPerPage);
-				pagination.create(currentPage, pageCount, data);
+				data.pagination = pagination.create(currentPage, pageCount);
 
 				next(null, data);
 			}

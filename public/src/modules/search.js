@@ -40,6 +40,11 @@ define('search', ['navigator'], function(nav) {
 				query.repliesFilter = data.repliesFilter || 'atleast';
 			}
 
+			if (data.timeRange) {
+				query.timeRange = data.timeRange;
+				query.timeFilter = data.timeFilter || 'newer';
+			}
+
 			ajaxify.go('search/' + term + '?' + decodeURIComponent($.param(query)));
 			callback();
 		} else {

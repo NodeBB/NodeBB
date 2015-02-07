@@ -256,15 +256,12 @@ topicsController.get = function(req, res, next) {
 		data['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 		data['rssFeedUrl'] = nconf.get('relative_path') + '/topic/' + data.tid + '.rss';
-
-		topics.increaseViewCount(tid);
-
-		pagination.create(data.currentPage, data.pageCount, data);
-
+		data.pagination = pagination.create(data.currentPage, data.pageCount);
 		data.pagination.rel.forEach(function(rel) {
 			res.locals.linkTags.push(rel);
 		});
 
+		topics.increaseViewCount(tid);
 		res.render('topic', data);
 	});
 };
