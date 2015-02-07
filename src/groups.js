@@ -422,6 +422,10 @@ var async = require('async'),
 		}
 	};
 
+	Groups.existsBySlug = function(slug, callback) {
+		db.isObjectField('groupslug:groupname', slug, callback);
+	};
+
 	Groups.create = function(data, callback) {
 		if (data.name.length === 0) {
 			return callback(new Error('[[error:group-name-too-short]]'));
