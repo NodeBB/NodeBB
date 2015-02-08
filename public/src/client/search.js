@@ -15,26 +15,31 @@ define('forum/search', ['search'], function(searchModule) {
 		fillOutFormFromQueryParams();
 
 		searchIn.on('change', function() {
-			$('.post-search-item').toggleClass('hide', searchIn.val() !== 'posts');
+			updateFormItemVisiblity(searchIn.val());
 		});
 
 		highlightMatches(searchQuery);
 
 		$('#advanced-search').off('submit').on('submit', function(e) {
 			e.preventDefault();
-			var input = $(this).find('#search-input');
+			var $this = $(this)
+			var input = $this.find('#search-input');
 
-			searchModule.query({
+			var searchData = {
 				term: input.val(),
-				in: $(this).find('#search-in').val(),
-				by: $(this).find('#posted-by-user').val(),
-				categories: $(this).find('#posted-in-categories').val(),
-				searchChildren: $(this).find('#search-children').is(':checked'),
-				replies: $(this).find('#reply-count').val(),
-				repliesFilter: $(this).find('#reply-count-filter').val(),
-				timeFilter: $(this).find('#post-time-filter').val(),
-				timeRange: $(this).find('#post-time-range').val()
-			}, function() {
+				in: $this.find('#search-in').val(),
+				by: $this.find('#posted-by-user').val(),
+				categories: $this.find('#posted-in-categories').val(),
+				searchChildren: $this.find('#search-children').is(':checked'),
+				replies: $this.find('#reply-count').val(),
+				repliesFilter: $this.find('#reply-count-filter').val(),
+				timeFilter: $this.find('#post-time-filter').val(),
+				timeRange: $this.find('#post-time-range').val(),
+				sortBy: $this.find('#post-sort-by').val(),
+				sortDirection: $this.find('#post-sort-direction').val()
+			};
+
+			searchModule.query(searchData, function() {
 				input.val('');
 			});
 		});
@@ -42,12 +47,17 @@ define('forum/search', ['search'], function(searchModule) {
 		enableAutoComplete();
 	};
 
+	function updateFormItemVisiblity(searchIn) {
+		var hide = searchIn.indexOf('posts') === -1 && searchIn.indexOf('titles') === -1;
+		$('.post-search-item').toggleClass('hide', hide);
+	}
+
 	function fillOutFormFromQueryParams() {
 		var params = utils.params();
 		if (params) {
 			if (params.in) {
 				$('#search-in').val(params.in);
-				$('.post-search-item').toggleClass('hide', params.in !== 'posts');
+				updateFormItemVisiblity(params.in);
 			}
 
 			if (params.by) {
@@ -70,6 +80,11 @@ define('forum/search', ['search'], function(searchModule) {
 			if (params.timeRange) {
 				$('#post-time-range').val(params.timeRange);
 				$('#post-time-filter').val(params.timeFilter);
+			}
+
+			if (params.sortBy) {
+				$('#post-sort-by').val(params.sortBy);
+				$('#post-sort-direction').val(params.sortDirection);
 			}
 		}
 	}

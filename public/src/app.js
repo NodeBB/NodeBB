@@ -436,7 +436,7 @@ app.uid = null;
 				e.preventDefault();
 				var input = $(this).find('input');
 
-				search.query({term: input.val(), in: 'posts'}, function() {
+				search.query({term: input.val()}, function() {
 					input.val('');
 				});
 			});

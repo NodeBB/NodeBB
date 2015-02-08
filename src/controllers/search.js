@@ -28,7 +28,6 @@ searchController.search = function(req, res, next) {
 				time: 0,
 				search_query: '',
 				posts: [],
-				topics: [],
 				users: [],
 				tags: [],
 				categories: categories,
@@ -49,6 +48,8 @@ searchController.search = function(req, res, next) {
 			repliesFilter: req.query.repliesFilter,
 			timeRange: req.query.timeRange,
 			timeFilter: req.query.timeFilter,
+			sortBy: req.query.sortBy,
+			sortDirection: req.query.sortDirection,
 			page: page,
 			uid: uid
 		}, function(err, results) {
