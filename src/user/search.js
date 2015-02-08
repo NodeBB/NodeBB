@@ -46,11 +46,8 @@ module.exports = function(User) {
 				User.getUsers(uids, uid, next);
 			},
 			function(userData, next) {
-
-				var diff = process.hrtime(startTime);
-				var timing = (diff[0] * 1e3 + diff[1] / 1e6).toFixed(1);
 				var data = {
-					timing: timing,
+					timing: (process.elapsedTimeSince(startTime) / 1000).toFixed(2),
 					users: userData,
 					matchCount: matchCount
 				};

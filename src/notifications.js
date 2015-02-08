@@ -270,12 +270,6 @@ var async = require('async'),
 	};
 
 	Notifications.prune = function() {
-		var start = process.hrtime();
-
-		if (process.env.NODE_ENV === 'development') {
-			winston.info('[notifications.prune] Removing expired notifications from the database.');
-		}
-
 		var	week = 604800000,
 			numPruned = 0;
 
@@ -306,10 +300,6 @@ var async = require('async'),
 			], function(err) {
 				if (err) {
 					return winston.error('Encountered error pruning notifications: ' + err.message);
-				}
-
-				if (process.env.NODE_ENV === 'development') {
-					winston.info('[notifications.prune] Notification pruning completed. ' + numPruned + ' expired notification' + (numPruned !== 1 ? 's' : '') + ' removed.');
 				}
 			});
 		});
