@@ -266,7 +266,14 @@ topicsController.get = function(req, res, next) {
 		});
 
 		topics.increaseViewCount(tid);
-		res.render('topic', data);
+		
+		plugins.fireHook('filter:topic.build', {req: req, res: res, templateData: data}, function(err, data) {
+			if (err && process.env === 'development') {
+				winston.warn(JSON.stringify(err));
+				return next(err);
+			}
+			res.render('topic', data.templateData);
+		});
 	});
 };
 
