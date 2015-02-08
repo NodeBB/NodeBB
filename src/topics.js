@@ -222,7 +222,7 @@ var async = require('async'),
 					Topics.getTopicPosts(tid, set, start, end, uid, reverse, next);
 				},
 				category: async.apply(Topics.getCategoryData, tid),
-				threadTools: async.apply(plugins.fireHook, 'filter:topic.thread_tools', []),
+				threadTools: async.apply(plugins.fireHook, 'filter:topic.thread_tools', {topic: topicData, uid: uid, tools: []}),
 				tags: async.apply(Topics.getTopicTagsObjects, tid),
 				isFollowing: async.apply(Topics.isFollowing, [tid], uid)
 			}, function(err, results) {
@@ -232,7 +232,7 @@ var async = require('async'),
 
 				topicData.posts = Array.isArray(results.mainPost) && results.mainPost.length ? [results.mainPost[0]].concat(results.posts) : results.posts;
 				topicData.category = results.category;
-				topicData.thread_tools = results.threadTools;
+				topicData.thread_tools = results.threadTools.tools;
 				topicData.tags = results.tags;
 				topicData.isFollowing = results.isFollowing[0];
 
