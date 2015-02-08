@@ -22,7 +22,7 @@ define('forum/search', ['search'], function(searchModule) {
 
 		$('#advanced-search').off('submit').on('submit', function(e) {
 			e.preventDefault();
-			var $this = $(this)
+			var $this = $(this);
 			var input = $this.find('#search-input');
 
 			var searchData = {
