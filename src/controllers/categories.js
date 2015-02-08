@@ -266,7 +266,13 @@ categoriesController.get = function(req, res, next) {
 			res.locals.linkTags.push(rel);
 		});
 
-		res.render('category', data);
+		plugins.fireHook('filter:category.build', {req: req, res: res, templateData: data}, function(err, data) {
+			if (err && process.env === 'development') {
+				winston.warn(JSON.stringify(err));
+				return next(err);
+			}
+			res.render('category', data.templateData);
+		});
 	});
 };
 
