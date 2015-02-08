@@ -340,6 +340,7 @@ middleware.renderHeader = function(req, res, callback) {
 				return;
 			}
 			results.user.isAdmin = results.isAdmin || false;
+			results.user.uid = parseInt(results.user.uid, 10);
 			results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
 
 			templateValues.browserTitle = results.title;
