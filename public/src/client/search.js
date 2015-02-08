@@ -90,6 +90,9 @@ define('forum/search', ['search'], function(searchModule) {
 	}
 
 	function highlightMatches(searchQuery) {
+		if (!searchQuery) {
+			return;
+		}
 		var searchTerms = searchQuery.split(' ');
 		var regexes = [];
 		for (var i=0; i<searchTerms.length; ++i) {
