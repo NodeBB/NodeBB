@@ -27,7 +27,6 @@ search.search = function(data, callback) {
 		}
 		result[searchIn] = data.matches;
 		result.matchCount = data.matchCount;
-		result.hidePostedBy = searchIn !== 'posts';
 		result.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);
 		callback(null, result);
 	}
