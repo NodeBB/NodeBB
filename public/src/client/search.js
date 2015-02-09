@@ -12,7 +12,7 @@ define('forum/search', ['search'], function(searchModule) {
 
 		var searchIn = $('#advanced-search #search-in');
 
-		fillOutFormFromQueryParams();
+		fillOutForm();
 
 		searchIn.on('change', function() {
 			updateFormItemVisiblity(searchIn.val());
@@ -22,38 +22,49 @@ define('forum/search', ['search'], function(searchModule) {
 
 		$('#advanced-search').off('submit').on('submit', function(e) {
 			e.preventDefault();
-			var $this = $(this);
-			var input = $this.find('#search-input');
+			
+			var input = $(this).find('#search-input');
 
-			var searchData = {
-				term: input.val(),
-				in: $this.find('#search-in').val(),
-				by: $this.find('#posted-by-user').val(),
-				categories: $this.find('#posted-in-categories').val(),
-				searchChildren: $this.find('#search-children').is(':checked'),
-				replies: $this.find('#reply-count').val(),
-				repliesFilter: $this.find('#reply-count-filter').val(),
-				timeFilter: $this.find('#post-time-filter').val(),
-				timeRange: $this.find('#post-time-range').val(),
-				sortBy: $this.find('#post-sort-by').val(),
-				sortDirection: $this.find('#post-sort-direction').val()
-			};
+			var searchData = getSearchData();
+			searchData.term = input.val();
 
 			searchModule.query(searchData, function() {
 				input.val('');
 			});
 		});
 
+		handleSavePreferences();
+
 		enableAutoComplete();
 	};
+
+	function getSearchData() {
+		var form = $('#advanced-search');
+		var searchData = {
+			in: form.find('#search-in').val(),
+			by: form.find('#posted-by-user').val(),
+			categories: form.find('#posted-in-categories').val(),
+			searchChildren: form.find('#search-children').is(':checked'),
+			replies: form.find('#reply-count').val(),
+			repliesFilter: form.find('#reply-count-filter').val(),
+			timeFilter: form.find('#post-time-filter').val(),
+			timeRange: form.find('#post-time-range').val(),
+			sortBy: form.find('#post-sort-by').val(),
+			sortDirection: form.find('#post-sort-direction').val()
+		};
+		return searchData;
+	}
 
 	function updateFormItemVisiblity(searchIn) {
 		var hide = searchIn.indexOf('posts') === -1 && searchIn.indexOf('titles') === -1;
 		$('.post-search-item').toggleClass('hide', hide);
 	}
 
-	function fillOutFormFromQueryParams() {
+	function fillOutForm() {
 		var params = utils.params();
+		var searchData = getSearchPreferences();
+		params = utils.merge(searchData, params);
+		
 		if (params) {
 			if (params.in) {
 				$('#search-in').val(params.in);
@@ -110,6 +121,27 @@ define('forum/search', ['search'], function(searchModule) {
 		});
 	}
 
+	function handleSavePreferences() {
+		$('#save-preferences').on('click', function() {			
+			localStorage.setItem('search-preferences', JSON.stringify(getSearchData()));
+			app.alertSuccess('[[search:search-preferences-saved]]');
+			return false;
+		});
+
+		$('#clear-preferences').on('click', function() {
+			localStorage.removeItem('search-preferences');
+			app.alertSuccess('[[search:search-preferences-cleared]]');
+			return false;
+		});
+	}
+
+	function getSearchPreferences() {
+		try {
+			return JSON.parse(localStorage.getItem('search-preferences'));
+		} catch(e) {
+			return {};
+		}
+	}
 
 	function enableAutoComplete() {
 		var input = $('#posted-by-user');
