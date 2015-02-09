@@ -36,5 +36,6 @@
 	"save-preferences": "Save preferences",
 	"clear-preferences": "Clear preferences",
 	"search-preferences-saved": "Search preferences saved",
-	"search-preferences-cleared": "Search preferences cleared"
+	"search-preferences-cleared": "Search preferences cleared",
+	"show-results-as": "Show results as"
 }

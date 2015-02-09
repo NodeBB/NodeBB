@@ -62,6 +62,10 @@ define('search', ['navigator'], function(nav) {
 			query.sortBy = data.sortBy;
 			query.sortDirection = data.sortDirection;
 		}
+
+		if (data.showAs) {
+			query.showAs = data.showAs;
+		}
 		return decodeURIComponent($.param(query));
 	}
 

@@ -50,7 +50,8 @@ define('forum/search', ['search'], function(searchModule) {
 			timeFilter: form.find('#post-time-filter').val(),
 			timeRange: form.find('#post-time-range').val(),
 			sortBy: form.find('#post-sort-by').val(),
-			sortDirection: form.find('#post-sort-direction').val()
+			sortDirection: form.find('#post-sort-direction').val(),
+			showAs: form.find('#show-as-topics').is(':checked') ? 'topics' : 'posts'
 		};
 		return searchData;
 	}
@@ -96,6 +97,13 @@ define('forum/search', ['search'], function(searchModule) {
 			if (params.sortBy) {
 				$('#post-sort-by').val(params.sortBy);
 				$('#post-sort-direction').val(params.sortDirection);
+			}
+
+			if (params.showAs) {
+				var isTopic = params.showAs === 'topics';
+				var ispost = params.showAs === 'posts';
+				$('#show-as-topics').prop('checked', isTopic).parent().toggleClass('active', isTopic);	
+				$('#show-as-posts').prop('checked', isPost).parent().toggleClass('active', isPost);
 			}
 		}
 	}

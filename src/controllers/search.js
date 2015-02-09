@@ -62,7 +62,8 @@ searchController.search = function(req, res, next) {
 
 			var pageCount = Math.max(1, Math.ceil(results.matchCount / 10));
 			results.pagination = pagination.create(page, pageCount, req.query);
-
+			results.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
+			results.showAsTopics = req.query.showAs === 'topics';
 			results.breadcrumbs = breadcrumbs;
 			results.categories = categories;
 			res.render('search', results);
