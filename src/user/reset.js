@@ -1,4 +1,3 @@
-
 'use strict';
 
 var async = require('async'),
@@ -21,19 +20,13 @@ var async = require('async'),
 				return callback(err, false);
 			}
 
-			db.getObjectField('reset:expiry', code, function(err, expiry) {
+			db.sortedSetScore('reset:issueDate', code, function(err, issueDate) {
+				// db.getObjectField('reset:expiry', code, function(err, expiry) {
 				if (err) {
 					return callback(err);
 				}
 
-				if (parseInt(expiry, 10) >= Date.now() / 1000) {
-					callback(null, true);
-				} else {
-					// Expired, delete from db
-					db.deleteObjectField('reset:uid', code);
-					db.deleteObjectField('reset:expiry', code);
-					callback(null, false);
-				}
+				callback(null, parseInt(issueDate, 10) > (Date.now() - (1000*60*120)));
 			});
 		});
 	};
@@ -46,7 +39,7 @@ var async = require('async'),
 
 			var reset_code = utils.generateUUID();
 			db.setObjectField('reset:uid', reset_code, uid);
-			db.setObjectField('reset:expiry', reset_code, (60 * 60) + Math.floor(Date.now() / 1000));
+			db.sortedSetAdd('reset:issueDate', Date.now(), reset_code);
 
 			var reset_link = nconf.get('url') + '/reset/' + reset_code;
 
@@ -85,7 +78,7 @@ var async = require('async'),
 					user.setUserField(uid, 'password', hash);
 
 					db.deleteObjectField('reset:uid', code);
-					db.deleteObjectField('reset:expiry', code);
+					db.sortedSetRemove('reset:issueDate', code);
 
 					user.auth.resetLockout(uid, callback);
 				});

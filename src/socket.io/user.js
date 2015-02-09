@@ -13,6 +13,8 @@ var	async = require('async'),
 	websockets = require('./index'),
 	meta = require('../meta'),
 	events = require('../events'),
+	emailer = require('../emailer'),
+	db = require('../database'),
 	SocketUser = {};
 
 SocketUser.exists = function(socket, data, callback) {
@@ -81,23 +83,34 @@ SocketUser.reset.send = function(socket, email, callback) {
 	}
 };
 
-SocketUser.reset.valid = function(socket, code, callback) {
-	if (code) {
-		user.reset.validate(code, callback);
-	}
-};
-
 SocketUser.reset.commit = function(socket, data, callback) {
 	if(data && data.code && data.password) {
-		user.reset.commit(data.code, data.password, function(err) {
+		async.series([
+			async.apply(db.getObjectField, 'reset:uid', data.code),
+			async.apply(user.reset.commit, data.code, data.password)
+		], function(err, data) {
 			if (err) {
 				return callback(err);
 			}
+
+			var uid = data[0],
+				now = new Date(),
+				parsedDate = now.getFullYear() + '/' + (now.getMonth()+1) + '/' + now.getDate();
+
+			user.getUserField(uid, 'username', function(err, username) {
+				emailer.send('reset_notify', uid, {
+					username: username,
+					date: parsedDate,
+					site_title: meta.config.title || 'NodeBB',
+					subject: '[[email:reset.notify.subject]]'
+				});
+			});
 			events.log({
 				type: 'password-reset',
 				uid: socket.uid,
 				ip: socket.ip
 			});
+			callback();
 		});
 	}
 };
