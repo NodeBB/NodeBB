@@ -2,6 +2,7 @@
 
 var async = require('async'),
 	nconf = require('nconf'),
+	winston = require('winston'),
 
 	user = require('../user'),
 	utils = require('../../public/src/utils'),
@@ -13,7 +14,6 @@ var async = require('async'),
 	emailer = require('../emailer');
 
 (function(UserReset) {
-
 	UserReset.validate = function(code, callback) {
 		db.getObjectField('reset:uid', code, function(err, uid) {
 			if (err || !uid) {
@@ -84,6 +84,22 @@ var async = require('async'),
 				});
 			});
 		});
+	};
+
+	UserReset.clean = function(callback) {
+		// Locate all codes that have expired, and remove them from the set/hash
+		async.waterfall([
+			async.apply(db.getSortedSetRangeByScore, 'reset:issueDate', 0, -1, -1, +new Date()-(1000*60*120)),
+			function(tokens, next) {
+				if (!tokens.length) { return next(); }
+
+				winston.verbose('[UserReset.clean] Removing ' + tokens.length + ' reset tokens from database');
+				async.parallel([
+					async.apply(db.deleteObjectField, 'reset:uid', tokens),
+					async.apply(db.sortedSetRemove, 'reset:issueDate', tokens)
+				], next);
+			}
+		], callback);
 	};
 
 }(exports));
