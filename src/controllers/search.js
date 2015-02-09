@@ -41,6 +41,7 @@ searchController.search = function(req, res, next) {
 			req.query.categories = [req.query.categories];
 		}
 
+		req.query.in = req.query.in || 'posts';
 		search.search({
 			query: req.params.term,
 			searchIn: req.query.in,
