@@ -22,7 +22,7 @@ define('forum/search', ['search'], function(searchModule) {
 
 		$('#advanced-search').off('submit').on('submit', function(e) {
 			e.preventDefault();
-			
+
 			var input = $(this).find('#search-input');
 
 			var searchData = getSearchData();
@@ -41,18 +41,22 @@ define('forum/search', ['search'], function(searchModule) {
 	function getSearchData() {
 		var form = $('#advanced-search');
 		var searchData = {
-			in: form.find('#search-in').val(),
-			by: form.find('#posted-by-user').val(),
-			categories: form.find('#posted-in-categories').val(),
-			searchChildren: form.find('#search-children').is(':checked'),
-			replies: form.find('#reply-count').val(),
-			repliesFilter: form.find('#reply-count-filter').val(),
-			timeFilter: form.find('#post-time-filter').val(),
-			timeRange: form.find('#post-time-range').val(),
-			sortBy: form.find('#post-sort-by').val(),
-			sortDirection: form.find('#post-sort-direction').val(),
-			showAs: form.find('#show-as-topics').is(':checked') ? 'topics' : 'posts'
+			in: form.find('#search-in').val()
 		};
+
+		if (searchData.in === 'posts' || searchData.in === 'titlespost' || searchData.in === 'titles') {
+			searchData.by = form.find('#posted-by-user').val();
+			searchData.categories = form.find('#posted-in-categories').val();
+			searchData.searchChildren = form.find('#search-children').is(':checked');
+			searchData.replies = form.find('#reply-count').val();
+			searchData.repliesFilter = form.find('#reply-count-filter').val();
+			searchData.timeFilter = form.find('#post-time-filter').val();
+			searchData.timeRange = form.find('#post-time-range').val();
+			searchData.sortBy = form.find('#post-sort-by').val();
+			searchData.sortDirection = form.find('#post-sort-direction').val();
+			searchData.showAs = form.find('#show-as-topics').is(':checked') ? 'topics' : 'posts';
+		}
+
 		return searchData;
 	}
 
@@ -65,7 +69,7 @@ define('forum/search', ['search'], function(searchModule) {
 		var params = utils.params();
 		var searchData = getSearchPreferences();
 		params = utils.merge(searchData, params);
-		
+
 		if (params) {
 			if (params.in) {
 				$('#search-in').val(params.in);
@@ -101,8 +105,8 @@ define('forum/search', ['search'], function(searchModule) {
 
 			if (params.showAs) {
 				var isTopic = params.showAs === 'topics';
-				var ispost = params.showAs === 'posts';
-				$('#show-as-topics').prop('checked', isTopic).parent().toggleClass('active', isTopic);	
+				var isPost = params.showAs === 'posts';
+				$('#show-as-topics').prop('checked', isTopic).parent().toggleClass('active', isTopic);
 				$('#show-as-posts').prop('checked', isPost).parent().toggleClass('active', isPost);
 			}
 		}
@@ -130,7 +134,7 @@ define('forum/search', ['search'], function(searchModule) {
 	}
 
 	function handleSavePreferences() {
-		$('#save-preferences').on('click', function() {			
+		$('#save-preferences').on('click', function() {
 			localStorage.setItem('search-preferences', JSON.stringify(getSearchData()));
 			app.alertSuccess('[[search:search-preferences-saved]]');
 			return false;
