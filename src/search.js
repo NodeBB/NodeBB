@@ -89,7 +89,7 @@ function searchInContent(query, data, callback) {
 			},
 			function(mainPids, next) {
 				results.pids.forEach(function(pid) {
-					if (mainPids.indexOf(pid) === -1) {
+					if (mainPids.indexOf(pid.toString()) === -1) {
 						mainPids.push(pid);
 					}
 				});
@@ -485,7 +485,7 @@ function getMainPids(tids, callback) {
 			return callback(err);
 		}
 		topics = topics.map(function(topic) {
-			return topic && topic.mainPid;
+			return topic && topic.mainPid && topic.mainPid.toString();
 		}).filter(Boolean);
 		callback(null, topics);
 	});
