@@ -15,6 +15,8 @@
     "details.latest_posts": "Legújabb bejegyzések",
     "details.private": "Private Group",
     "details.public": "Public Group",
+    "details.grant": "Grant/Rescind Ownership",
+    "details.kick": "Kick",
     "details.owner_options": "Group Administration",
     "event.updated": "Group details have been updated",
     "event.deleted": "The group \"%1\" has been deleted"

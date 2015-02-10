@@ -15,6 +15,8 @@
     "details.latest_posts": "Derniers messages",
     "details.private": "Groupe Privé",
     "details.public": "Groupe Public",
+    "details.grant": "Grant/Rescind Ownership",
+    "details.kick": "Kick",
     "details.owner_options": "Administration du Groupe",
     "event.updated": "Les détails du groupe ont été mis à jour",
     "event.deleted": "Le groupe é%1\" a été supprimé"

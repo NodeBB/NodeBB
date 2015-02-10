@@ -15,6 +15,8 @@
     "details.latest_posts": "En son iletiler",
     "details.private": "Özel Grup",
     "details.public": "Herkese Açık Grup",
+    "details.grant": "Grant/Rescind Ownership",
+    "details.kick": "Kick",
     "details.owner_options": "Grup Yöneticisi",
     "event.updated": "Grup detayları güncellenmiştir",
     "event.deleted": "\"%1\" grubu silinmiş"

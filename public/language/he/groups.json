@@ -15,6 +15,8 @@
     "details.latest_posts": "פוסטים אחרונים",
     "details.private": "קבוצה פרטית",
     "details.public": "קבוצה פומבית",
+    "details.grant": "Grant/Rescind Ownership",
+    "details.kick": "Kick",
     "details.owner_options": "ניהול הקבוצה",
     "event.updated": "פרטי הקבוצה עודכנו",
     "event.deleted": "קבוצת \"%1\" נמחקה"
