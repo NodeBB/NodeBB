@@ -438,7 +438,7 @@ accountsController.uploadPicture = function (req, res, next) {
 
 			user.setUserFields(updateUid, {uploadedpicture: image.url, picture: image.url});
 
-			res.json([{name: userPhoto.name, url: image.url}]);
+			res.json([{name: userPhoto.name, url: nconf.get('relative_path') + image.url}]);
 		}
 
 		if (err) {

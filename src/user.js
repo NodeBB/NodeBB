@@ -119,7 +119,7 @@ var	async = require('async'),
 
 			if (user.picture) {
 				if (user.picture === user.uploadedpicture) {
-					user.picture = user.picture.indexOf('http') === -1 ? nconf.get('relative_path') + user.picture : user.picture;
+					user.picture = user.uploadedpicture = user.picture.indexOf('http') === -1 ? nconf.get('relative_path') + user.picture : user.picture;
 				} else {
 					user.picture = User.createGravatarURLFromEmail(user.email);
 				}
