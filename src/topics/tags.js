@@ -271,8 +271,10 @@ module.exports = function(Topics) {
 			matches = matches.slice(0, 20).sort(function(a, b) {
 				return a > b;
 			});
-
-			callback(null, matches);
+			
+			plugins.fireHook('filter:tags.search', {data: data, matches: matches}, function(err, data) {
+				callback(err, data ? data.matches : []);
+			});
 		});
 	};
 
