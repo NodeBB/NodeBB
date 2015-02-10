@@ -17,6 +17,8 @@
 	"details.latest_posts": "Latest Posts",
 	"details.private": "Private Group",
 	"details.public": "Public Group",
+	"details.grant": "Grant/Rescind Ownership",
+	"details.kick": "Kick",
 
 	"details.owner_options": "Group Administration",
 
