@@ -41,10 +41,9 @@ searchController.search = function(req, res, next) {
 			req.query.categories = [req.query.categories];
 		}
 
-		req.query.in = req.query.in || 'posts';
-		search.search({
+		var data = {
 			query: req.params.term,
-			searchIn: req.query.in,
+			searchIn: req.query.in || 'posts',
 			postedBy: req.query.by,
 			categories: req.query.categories,
 			searchChildren: req.query.searchChildren,
@@ -56,7 +55,9 @@ searchController.search = function(req, res, next) {
 			sortDirection: req.query.sortDirection,
 			page: page,
 			uid: uid
-		}, function(err, results) {
+		};
+
+		search.search(data, function(err, results) {
 			if (err) {
 				return next(err);
 			}
@@ -67,7 +68,13 @@ searchController.search = function(req, res, next) {
 			results.showAsTopics = req.query.showAs === 'topics';
 			results.breadcrumbs = breadcrumbs;
 			results.categories = categories;
-			res.render('search', results);
+			
+			plugins.fireHook('filter:search.build', {data: data, results: results}, function(err, data) {
+				if (err) {
+					return next(err);
+				}
+				res.render('search', data.results);
+			});
 		});
 	});
 };
