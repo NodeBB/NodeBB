@@ -276,7 +276,7 @@ $(document).ready(function() {
 			// Enhancing all anchors to ajaxify...
 			$(document.body).on('click', 'a', function (e) {
 				if (hrefEmpty(this.href) || this.target !== '' || this.protocol === 'javascript:' || $(this).attr('data-ajaxify') === 'false') {
-					return;
+					return e.preventDefault();
 				}
 
 				if (!window.location.pathname.match(/\/(403|404)$/g)) {
