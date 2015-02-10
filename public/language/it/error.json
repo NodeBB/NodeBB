@@ -35,6 +35,7 @@
     "topic-locked": "Discussione Bloccata",
     "still-uploading": "Per favore attendere il completamento degli uploads.",
     "content-too-short": "Inserisci un post più lungo. Il Messaggio deve contenere almeno %1 caratteri.",
+    "content-too-long": "Please enter a shorter post. Posts can't be longer than %1 characters.",
     "title-too-short": "Inserisci un titolo più lungo. I titoli devono contenere almeno %1 caratteri.",
     "title-too-long": "Per favore inserire un titolo più corto, non può essere più lungo di %1 caratteri.",
     "too-many-posts": "È possibile inserire un Post ogni %1 secondi - si prega di attendere prima di postare di nuovo",

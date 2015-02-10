@@ -35,6 +35,7 @@
     "topic-locked": "Тема закрыта",
     "still-uploading": "Пожалуйста, подождите завершения загрузки.",
     "content-too-short": "Пост должен содержать минимум %1 симв.",
+    "content-too-long": "Please enter a shorter post. Posts can't be longer than %1 characters.",
     "title-too-short": "Заголовок должен содержать минимум %1 симв.",
     "title-too-long": "Заголовок не может быть длиннее %1 символов.",
     "too-many-posts": "Вы можете делать пост один раз в %1 сек.",

@@ -35,6 +35,7 @@
     "topic-locked": "Emne låst",
     "still-uploading": "Vennligst vent til opplastingene blir fullført.",
     "content-too-short": "Vennligst skriv et lengere innlegg. Innlegg må inneholde minst %1 tegn.",
+    "content-too-long": "Please enter a shorter post. Posts can't be longer than %1 characters.",
     "title-too-short": "Vennligst skriv en lengere tittel. Titler må inneholde minst %1 tegn.",
     "title-too-long": "Vennligst skriv en kortere tittel. Titler må inneholde minst %1 tegn.",
     "too-many-posts": "Du kan bare poste et innlegg hvert %1 sekund  - vennligst vent før du poster igjen",

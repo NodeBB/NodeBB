@@ -35,6 +35,7 @@
     "topic-locked": "スレッドがロックされた",
     "still-uploading": "アップロードが完成するまでお待ちください。",
     "content-too-short": "Please enter a longer post. Posts should contain at least %1 characters.",
+    "content-too-long": "Please enter a shorter post. Posts can't be longer than %1 characters.",
     "title-too-short": "Please enter a longer title. Titles should contain at least %1 characters.",
     "title-too-long": "タイトルに最大 %1 文字の制限があります。",
     "too-many-posts": "You can only post once every %1 seconds - please wait before posting again",

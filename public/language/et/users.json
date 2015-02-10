@@ -5,7 +5,7 @@
     "search": "Otsi",
     "enter_username": "Sisesta kasutajanimi, keda soovid otsida",
     "load_more": "Lae veel",
-    "users-found-search-took": "%1kasutaja(t) leiti! Otsing kestis %2 ms.",
+    "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
     "filter-by": "Filter By",
     "online-only": "Online only",
     "picture-only": "Picture only"

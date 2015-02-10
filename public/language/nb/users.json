@@ -5,7 +5,7 @@
     "search": "Søk",
     "enter_username": "Skriv ett brukernavn for å søke",
     "load_more": "Last flere",
-    "users-found-search-took": "%1 bruker(e) funnet! Søk tok %2 ms.",
+    "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
     "filter-by": "Filtrer etter",
     "online-only": "Bare påloggede",
     "picture-only": "Bare bilde"
