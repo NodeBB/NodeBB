@@ -39,6 +39,19 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 					});
 					break;
 
+				case 'kick':
+					socket.emit('groups.kick', {
+						uid: uid,
+						groupName: ajaxify.variables.get('group_name')
+					}, function(err) {
+						if (!err) {
+							userRow.slideUp().remove();
+						} else {
+							app.alertError(err.message);
+						}
+					});
+					break;
+
 				case 'update':
 					Details.update();
 					break;
