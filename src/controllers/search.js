@@ -24,7 +24,7 @@ searchController.search = function(req, res, next) {
 		}
 
 		if (!req.params.term) {
-			return res.render('search', {
+			var results = {
 				time: 0,
 				search_query: '',
 				posts: [],
@@ -32,7 +32,14 @@ searchController.search = function(req, res, next) {
 				tags: [],
 				categories: categories,
 				breadcrumbs: breadcrumbs
+			};
+			plugins.fireHook('filter:search.build', {data: {}, results: results}, function(err, data) {
+				if (err) {
+					return next(err);
+				}
+				res.render('search', data.results);	
 			});
+			return;			
 		}
 
 		req.params.term = validator.escape(req.params.term);
