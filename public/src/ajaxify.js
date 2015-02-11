@@ -275,7 +275,9 @@ $(document).ready(function() {
 
 			// Enhancing all anchors to ajaxify...
 			$(document.body).on('click', 'a', function (e) {
-				if (hrefEmpty(this.href) || this.target !== '' || this.protocol === 'javascript:' || $(this).attr('data-ajaxify') === 'false') {
+				if (this.target !== '') {
+					return;
+				} else if (hrefEmpty(this.href) || this.protocol === 'javascript:' || $(this).attr('data-ajaxify') === 'false') {
 					return e.preventDefault();
 				}
 
