@@ -41,6 +41,9 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll']
 
 	function processPage() {
 		$('.user-recent-posts img, .post-signature img').addClass('img-responsive');
+
+		$('.user-recent-posts blockquote').prev('p').remove();
+		$('.user-recent-posts blockquote').remove();
 	}
 
 	function updateButtons() {
