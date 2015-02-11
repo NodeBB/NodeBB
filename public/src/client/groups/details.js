@@ -19,7 +19,7 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 
 		detailsPage.on('click', '[data-action]', function() {
 			var btnEl = $(this),
-				userRow = btnEl.parents('tr'),
+				userRow = btnEl.parents('[data-uid]'),
 				ownerFlagEl = userRow.find('.member-name i'),
 				isOwner = !ownerFlagEl.hasClass('invisible') ? true : false,
 				uid = userRow.attr('data-uid'),
