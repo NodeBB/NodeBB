@@ -34,7 +34,7 @@ define('forum/topic/posts', [
 		var posts = data.posts;
 		if (pagination.currentPage === pagination.pageCount) {
 			createNewPosts(data);
-		} else if(data.posts && data.posts.length && parseInt(data.posts[0].uid, 10) === parseInt(app.uid, 10)) {
+		} else if(data.posts && data.posts.length && parseInt(data.posts[0].uid, 10) === parseInt(app.user.uid, 10)) {
 			pagination.loadPage(pagination.pageCount);
 		}
 	}
@@ -134,7 +134,7 @@ define('forum/topic/posts', [
 	}
 
 	function onNewPostsLoaded(html, pids) {
-		if (app.uid) {
+		if (app.user.uid) {
 			socket.emit('posts.getPrivileges', pids, function(err, privileges) {
 				if(err) {
 					return app.alertError(err.message);
@@ -163,8 +163,8 @@ define('forum/topic/posts', [
 			postEl.find('.move').remove();
 		}
 		postEl.find('.reply, .quote').toggleClass('hidden', !$('.post_reply').length);
-		var isSelfPost = parseInt(postEl.attr('data-uid'), 10) === parseInt(app.uid, 10);
-		postEl.find('.chat, .flag').toggleClass('hidden', isSelfPost || !app.uid);
+		var isSelfPost = parseInt(postEl.attr('data-uid'), 10) === parseInt(app.user.uid, 10);
+		postEl.find('.chat, .flag').toggleClass('hidden', isSelfPost || !app.user.uid);
 	}
 
 	Posts.loadMorePosts = function(direction) {
@@ -202,7 +202,7 @@ define('forum/topic/posts', [
 					done();
 				});
 			} else {
-				if (app.uid) {
+				if (app.user.uid) {
 					socket.emit('topics.markAsRead', [tid]);
 				}
 				navigator.update();

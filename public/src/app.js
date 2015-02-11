@@ -10,10 +10,6 @@ app.currentRoom = null;
 app.widgets = {};
 app.cacheBuster = null;
 
-// TODO: deprecate in 0.7.0, use app.user
-app.username = null;
-app.uid = null;
-
 (function () {
 	var showWelcomeMessage = false;
 	var reconnecting = false;
@@ -29,14 +25,7 @@ app.uid = null;
 		socket = io.connect(config.websocketAddress, ioParams);
 		reconnecting = false;
 
-		socket.on('event:connect', function (data) {
-			// TODO : deprecate in 0.7.0, use app.user
-			app.username = data.username;
-			app.userslug = data.userslug;
-			app.picture = data.picture;
-			app.uid = data.uid;
-			app.isAdmin = data.isAdmin;
-
+		socket.on('event:connect', function () {
 			app.showLoginMessage();
 			app.replaceSelfLinks();
 			$(window).trigger('action:connected');
@@ -182,9 +171,9 @@ app.uid = null;
 
 			socket.emit('meta.rooms.enter', {
 				enter: room,
-				username: app.username,
-				userslug: app.userslug,
-				picture: app.picture
+				username: app.user.username,
+				userslug: app.user.userslug,
+				picture: app.user.picture
 			});
 
 			app.currentRoom = room;
@@ -232,8 +221,8 @@ app.uid = null;
 		selector = selector || $('a');
 		selector.each(function() {
 			var href = $(this).attr('href');
-			if (href && app.userslug && href.indexOf('user/_self_') !== -1) {
-				$(this).attr('href', href.replace(/user\/_self_/g, 'user/' + app.userslug));
+			if (href && app.user.userslug && href.indexOf('user/_self_') !== -1) {
+				$(this).attr('href', href.replace(/user\/_self_/g, 'user/' + app.user.userslug));
 			}
 		});
 	};
@@ -261,7 +250,7 @@ app.uid = null;
 		function showAlert() {
 			app.alert({
 				type: 'success',
-				title: '[[global:welcome_back]] ' + app.username + '!',
+				title: '[[global:welcome_back]] ' + app.user.username + '!',
 				message: '[[global:you_have_successfully_logged_in]]',
 				timeout: 5000
 			});
@@ -278,11 +267,11 @@ app.uid = null;
 	};
 
 	app.openChat = function (username, touid) {
-		if (username === app.username) {
+		if (username === app.user.username) {
 			return app.alertError('[[error:cant-chat-with-yourself]]');
 		}
 
-		if (!app.uid) {
+		if (!app.user.uid) {
 			return app.alertError('[[error:not-logged-in]]');
 		}
 

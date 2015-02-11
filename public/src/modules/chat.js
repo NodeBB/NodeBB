@@ -74,7 +74,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 			}
 
 			var username = data.message.fromUser.username;
-			var isSelf = parseInt(data.message.fromUser.uid, 10) === parseInt(app.uid, 10);
+			var isSelf = parseInt(data.message.fromUser.uid, 10) === parseInt(app.user.uid, 10);
 			data.message.self = data.self;
 			if (isSelf) {
 				username = data.message.toUser.username;

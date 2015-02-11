@@ -156,7 +156,7 @@ define('forum/topic/events', [
 		var isDeleted = postEl.hasClass('deleted');
 		postTools.toggle(data.pid, isDeleted);
 
-		if (!app.isAdmin && parseInt(data.uid, 10) !== parseInt(app.uid, 10)) {
+		if (!app.user.isAdmin && parseInt(data.uid, 10) !== parseInt(app.user.uid, 10)) {
 			if (isDeleted) {
 				postEl.find('.post-content').translateHtml('[[topic:post_is_deleted]]');
 			} else {
