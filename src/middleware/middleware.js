@@ -409,7 +409,10 @@ middleware.processRender = function(req, res, next) {
 				});
 			} else if (res.locals.adminHeader) {
 				str = res.locals.adminHeader + str;
-				fn(err, str);
+				var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
+				translator.translate(str, language, function(translated) {
+					fn(err, translated);
+				});
 			} else {
 				fn(err, str);
 			}
