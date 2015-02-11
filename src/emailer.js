@@ -64,6 +64,7 @@ var	fs = require('fs'),
 						uid: uid,
 						pid: params.pid
 					});
+					callback();
 				} else {
 					winston.warn('[emailer] No active email plugin found!');
 					callback();
