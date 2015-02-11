@@ -12,7 +12,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-lg-3">
+	<div class="col-lg-3 acp-sidebar">
 		<div class="panel panel-default">
 			<div class="panel-heading">Revert to Default</div>
 			<div class="panel-body">

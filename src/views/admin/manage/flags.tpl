@@ -41,7 +41,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-lg-3">
+	<div class="col-lg-3 acp-sidebar">
 		<div class="panel panel-default">
 			<div class="panel-heading">Flags Control Panel</div>
 			<div class="panel-body">
@@ -52,5 +52,3 @@
 		</div>
 	</div>
 </div>
-
-
