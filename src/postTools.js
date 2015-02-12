@@ -34,7 +34,7 @@ var winston = require('winston'),
 			},
 			function(postData, next) {
 				postData.content = data.content;
-				plugins.fireHook('filter:post.save', postData, next);
+				plugins.fireHook('filter:post.edit', {post: postData, uid: data.uid}, next);
 			}
 		], function(err, postData) {
 			if (err) {
