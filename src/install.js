@@ -389,13 +389,23 @@ function createWelcomePost(next) {
 	var db = require('./database'),
 		Topics = require('./topics');
 
-	db.sortedSetCard('topics:tid', function(err, numTopics) {
+	async.parallel([
+		function(next) {
+			fs.readFile(path.join(__dirname, '../', 'install/data/welcome.md'), next);
+		},
+		function(next) {
+			db.sortedSetCard('topics:tid', next);
+		}
+	], function(err, results) {
+		var content = results[0],
+			numTopics = results[1];
+
 		if (numTopics === 0) {
 			Topics.post({
 				uid: 1,
 				cid: 2,
 				title: 'Welcome to your NodeBB!',
-				content: '# Welcome to your brand new NodeBB forum!\n\nThis is what a topic and post looks like. As an administator, you can edit the post\'s title and content.\n\nTo customise your forum, go to the [Administrator Control Panel](../../admin). You can modify all aspects of your forum there, including installation of third-party plugins.\n\n## Additional Resources\n\n* [NodeBB Documentation](https://docs.nodebb.org)\n* [Community Support Forum](https://community.nodebb.org)\n* [Project repository](https://github.com/nodebb/nodebb)'
+				content: content.toString()
 			}, next);
 		} else {
 			next();
