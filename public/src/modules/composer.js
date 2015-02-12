@@ -228,6 +228,8 @@ define('composer', [
 		var data = {
 			allowTopicsThumbnail: allowTopicsThumbnail,
 			showTags: isTopic || isMain,
+			minimumTagLength: config.minimumTagLength,
+			maximumTagLength: config.maximumTagLength,
 			isTopic: isTopic,
 			showHandleInput: (app.user.uid === 0 || (isEditing && isGuestPost && app.user.isAdmin)) && config.allowGuestHandles,
 			handle: composer.posts[post_uuid] ? composer.posts[post_uuid].handle || '' : undefined
