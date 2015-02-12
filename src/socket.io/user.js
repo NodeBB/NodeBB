@@ -97,6 +97,7 @@ SocketUser.reset.commit = function(socket, data, callback) {
 				uid: socket.uid,
 				ip: socket.ip
 			});
+			callback();
 		});
 	}
 };
@@ -137,6 +138,7 @@ SocketUser.changePassword = function(socket, data, callback) {
 			targetUid: data.uid,
 			ip: socket.ip
 		});
+		callback();
 	});
 };
 
