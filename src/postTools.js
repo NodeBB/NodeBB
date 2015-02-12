@@ -36,11 +36,11 @@ var winston = require('winston'),
 				postData.content = data.content;
 				plugins.fireHook('filter:post.edit', {post: postData, uid: data.uid}, next);
 			}
-		], function(err, postData) {
+		], function(err, data) {
 			if (err) {
 				return callback(err);
 			}
-
+			var postData = data.post;
 			async.parallel({
 				post: function(next) {
 					var d = {
