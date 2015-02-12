@@ -151,6 +151,7 @@ SocketUser.changePassword = function(socket, data, callback) {
 			targetUid: data.uid,
 			ip: socket.ip
 		});
+		callback();
 	});
 };
 
