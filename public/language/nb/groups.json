@@ -15,6 +15,8 @@
     "details.latest_posts": "Seneste innlegg",
     "details.private": "Privat grup",
     "details.public": "Offentlig grup",
+    "details.grant": "Grant/Rescind Ownership",
+    "details.kick": "Kick",
     "details.owner_options": "Gruppeadministrasjon",
     "event.updated": "Gruppedetaljer har blitt oppgradert",
     "event.deleted": "Gruppen \"%1\" har blitt slettet"

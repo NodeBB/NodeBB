@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 0, 30);
+	latestSchema = Date.UTC(2015, 1, 8);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -805,6 +805,26 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2015/01/30] Adding group member counts skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 1, 8);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/02/08] Clearing reset tokens');
+
+				db.deleteAll(['reset:expiry', 'reset:uid'], function(err) {
+					if (err) {
+						winston.error('[2015/02/08] Error encountered while Clearing reset tokens');
+						return next(err);
+					}
+
+					winston.info('[2015/02/08] Clearing reset tokens done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2015/02/08] Clearing reset tokens skipped');
 				next();
 			}
 		}

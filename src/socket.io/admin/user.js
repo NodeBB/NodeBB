@@ -1,12 +1,13 @@
 "use strict";
 
 
-var db = require('../../database'),
+var async = require('async'),	
+	db = require('../../database'),
 	groups = require('../../groups'),
 	user = require('../../user'),
 	events = require('../../events'),
+	meta = require('../../meta'),
 	websockets = require('../index'),
-	async = require('async'),
 	User = {};
 
 
@@ -127,6 +128,30 @@ User.validateEmail = function(socket, uids, callback) {
 	}, callback);
 };
 
+User.sendValidationEmail = function(socket, uids, callback) {
+	if (!Array.isArray(uids)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	
+	if (parseInt(meta.config.requireEmailConfirmation, 10) !== 1) {
+		return callback(new Error('[[error:email-confirmations-are-disabled]]'));
+	}
+
+	user.getMultipleUserFields(uids, ['uid', 'email'], function(err, usersData) {
+		if (err) {
+			return callback(err);
+		}
+
+		async.eachLimit(usersData, 50, function(userData, next) {
+			if (userData.email && userData.uid) {
+				user.email.verify(userData.uid, userData.email, next);		
+			} else {
+				next();
+			}
+		}, callback);
+	});
+};
+
 User.sendPasswordResetEmail = function(socket, uids, callback) {
 	if (!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
@@ -180,7 +205,7 @@ User.deleteUsers = function(socket, uids, callback) {
 };
 
 User.search = function(socket, data, callback) {
-	user.search({query: data.query, searchBy: data.searchBy, startsWith: false}, function(err, searchData) {
+	user.search({query: data.query, searchBy: data.searchBy, startsWith: false, uid: socket.uid}, function(err, searchData) {
 		if (err) {
 			return callback(err);
 		}

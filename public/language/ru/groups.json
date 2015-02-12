@@ -15,6 +15,8 @@
     "details.latest_posts": "Последние записи",
     "details.private": "Приватная группа",
     "details.public": "Открытая группа",
+    "details.grant": "Grant/Rescind Ownership",
+    "details.kick": "Kick",
     "details.owner_options": "Настройки группы",
     "event.updated": "Настройки группы обновлены",
     "event.deleted": "Группа \"%1\" удалена"

@@ -35,6 +35,7 @@
     "topic-locked": "Topik dikunci",
     "still-uploading": "Tunggu proses upload sampai selesai",
     "content-too-short": "Mohon masukkan posting yang lebih panjang. Posting harus memuat setidaknya %1 karakter.",
+    "content-too-long": "Please enter a shorter post. Posts can't be longer than %1 characters.",
     "title-too-short": "Mohon masukkan judul yang lebih panjang. Judul harus memuat setidaknya %1 karakter.",
     "title-too-long": "Mohon masukkan judul yang lebih pendek. Judul tidak dapat melebihi %1 karakter.",
     "too-many-posts": "Kamu hanya dapat melakukan posting satu kali setiap %1 detik - mohon tunggu beberapa saat sebelum melakukan posting kembali",

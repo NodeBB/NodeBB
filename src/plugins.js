@@ -343,16 +343,18 @@ var fs = require('fs'),
 				}).reduce(function(prev, cur) {
 					return prev.concat(cur);
 				});
-				next(null, paths);
-			}
-		], function(err, paths) {
-			for (var x=0,numPaths=paths.length;x<numPaths;x++) {
-				delete require.cache[paths[x]];
-			}
-			winston.verbose('[plugins] Plugin libraries removed from Node.js cache');
 
-			next();
-		});
+				Plugins.fireHook('filter:plugins.clearRequireCache', {paths: paths}, next);
+			},
+			function(data, next) {
+				for (var x=0,numPaths=data.paths.length;x<numPaths;x++) {
+					delete require.cache[data.paths[x]];
+				}
+				winston.verbose('[plugins] Plugin libraries removed from Node.js cache');
+
+				next();
+			},
+		], next);
 	};
 
 	function addLanguages(params, callback) {

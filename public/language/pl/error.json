@@ -35,6 +35,7 @@
     "topic-locked": "Temat zamknięty",
     "still-uploading": "Poczekaj na pełne załadowanie",
     "content-too-short": "Proszę wpisać dłuższy post. Posty powinny zawierać co najmniej %1 znaków.",
+    "content-too-long": "Please enter a shorter post. Posts can't be longer than %1 characters.",
     "title-too-short": "Proszę podać dłuższy tytuł. Tytuły powinny zawierać co najmniej %1 znaków.",
     "title-too-long": "Wpisz krótszy tytuł, nie może być dłuższy niż %1 znaków.",
     "too-many-posts": "Możesz wysyłać posty co %1 sekund - proszę poczekać",

@@ -35,6 +35,7 @@
     "topic-locked": "Onderwerp gesloten",
     "still-uploading": "Heb even geduld totdat de alle bestanden geüpload zijn",
     "content-too-short": "Maak de bericht alsjeblieft wat langer. Op z'n minst %1 karakters",
+    "content-too-long": "Please enter a shorter post. Posts can't be longer than %1 characters.",
     "title-too-short": "Maak de titel wat langer. Op z'n minst %1 karakters",
     "title-too-long": "Maak de titel wat korter. Het kan niet langer zijn dan %1 karakters",
     "too-many-posts": "Je kan eens  in de %1 seconden een bericht aanmaken. Wacht alstublieft.",

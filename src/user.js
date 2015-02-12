@@ -119,7 +119,7 @@ var	async = require('async'),
 
 			if (user.picture) {
 				if (user.picture === user.uploadedpicture) {
-					user.picture = user.picture.indexOf('http') === -1 ? nconf.get('relative_path') + user.picture : user.picture;
+					user.picture = user.uploadedpicture = user.picture.indexOf('http') === -1 ? nconf.get('relative_path') + user.picture : user.picture;
 				} else {
 					user.picture = User.createGravatarURLFromEmail(user.email);
 				}
@@ -221,18 +221,18 @@ var	async = require('async'),
 		}
 	};
 
-	User.getUsersFromSet = function(set, start, stop, callback) {
+	User.getUsersFromSet = function(set, uid, start, stop, callback) {
 		async.waterfall([
 			function(next) {
 				User.getUidsFromSet(set, start, stop, next);
 			},
 			function(uids, next) {
-				User.getUsers(uids, next);
+				User.getUsers(uids, uid, next);
 			}
 		], callback);
 	};
 
-	User.getUsers = function(uids, callback) {
+	User.getUsers = function(uids, uid, callback) {
 		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'postcount', 'reputation', 'email:confirmed'];
 		plugins.fireHook('filter:users.addFields', {fields: fields}, function(err, data) {
 			if (err) {
@@ -266,11 +266,10 @@ var	async = require('async'),
 					user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
 				});
 
-				plugins.fireHook('filter:userlist.get', {users: results.userData}, function(err, data) {
+				plugins.fireHook('filter:userlist.get', {users: results.userData, uid: uid}, function(err, data) {
 					if (err) {
 						return callback(err);
 					}
-
 					callback(null, data.users);
 				});
 			});

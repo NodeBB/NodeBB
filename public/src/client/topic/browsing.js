@@ -74,7 +74,7 @@ define('forum/topic/browsing', function() {
 		}
 		var activeEl = $('.thread_active_users');
 		var userEl = createUserIcon(user.uid, user.picture, user.userslug, user.username);
-		var isSelf = parseInt(user.uid, 10) === parseInt(app.uid, 10);
+		var isSelf = parseInt(user.uid, 10) === parseInt(app.user.uid, 10);
 		if (isSelf) {
 			activeEl.prepend(userEl);
 		} else {

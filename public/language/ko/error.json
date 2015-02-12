@@ -35,6 +35,7 @@
     "topic-locked": "잠긴 주제입니다.",
     "still-uploading": "업로드가 끝날 때까지 기다려 주세요.",
     "content-too-short": "게시물의 내용이 너무 짧습니다. 최소 %1자 이상이어야 합니다.",
+    "content-too-long": "Please enter a shorter post. Posts can't be longer than %1 characters.",
     "title-too-short": "제목이 너무 짧습니다. 최소 %1자 이상이어야 합니다.",
     "title-too-long": "제목은 최대 %1자로 제한됩니다.",
     "too-many-posts": "새 게시물 작성은 %1초 간격으로 제한됩니다 - 잠시 기다렸다가 작성해주세요.",

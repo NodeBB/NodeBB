@@ -134,6 +134,19 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 			return false;
 		});
 
+		$('.send-validation-email').on('click', function() {
+			var uids = getSelectedUids();
+			if (!uids.length) {
+				return;
+			}
+			socket.emit('admin.user.sendValidationEmail', uids, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				app.alertSuccess('[[notifications:email-confirm-sent]]');
+			});
+		})
+
 		$('.password-reset-email').on('click', function() {
 			var uids = getSelectedUids();
 			if (!uids.length) {

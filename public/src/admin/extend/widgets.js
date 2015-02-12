@@ -46,8 +46,6 @@ define('admin/extend/widgets', function() {
 				appendToggle(ui.item);
 			},
 			connectWith: "div"
-		}).on('click', '.toggle-widget', function() {
-			$(this).parents('.widget-panel').children('.panel-body').toggleClass('hidden');
 		}).on('click', '.delete-widget', function() {
 			var panel = $(this).parents('.widget-panel');
 
@@ -56,8 +54,10 @@ define('admin/extend/widgets', function() {
 					panel.remove();
 				}
 			});
-		}).on('dblclick', '.panel-heading', function() {
-			$(this).parents('.widget-panel').children('.panel-body').toggleClass('hidden');
+		}).on('mouseup', '.panel-heading', function(evt) {
+			if ( !( $(this).parents('.widget-panel').is('.ui-sortable-helper') || $(evt.target).closest('.delete-widget').length ) ) {
+				$(this).parents('.widget-panel').children('.panel-body').toggleClass('hidden');
+			}
 		});
 
 		$('#widgets .save').on('click', saveWidgets);

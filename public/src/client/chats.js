@@ -193,7 +193,7 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, 
 	Chats.notifyTyping = function(toUid, typing) {
 		socket.emit('modules.chats.user' + (typing ? 'Start' : 'Stop') + 'Typing', {
 			touid: toUid,
-			fromUid: app.uid
+			fromUid: app.user.uid
 		});
 	};
 

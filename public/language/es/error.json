@@ -35,6 +35,7 @@
     "topic-locked": "Tema bloqueado",
     "still-uploading": "Por favor, espera a que terminen las subidas.",
     "content-too-short": "Por favor introduzca una publicación más larga. Las publicaciones deben contener al menos %1 caracteres.",
+    "content-too-long": "Por favor introduzca un mensaje más corto. Los mensajes no pueden exceder los %1 caracteres.",
     "title-too-short": "Por favor introduzca un título más largo. Los títulos deben contener al menos %1 caracteres.",
     "title-too-long": "Por favor, introduce un título más corto, que no sobrepase los %1 caracteres.",
     "too-many-posts": "Solo puedes publicar una vez cada %1 segundos - por favor espere antes de volver a publicar",

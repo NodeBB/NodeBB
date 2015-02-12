@@ -503,7 +503,11 @@ var async = require('async'),
 					'private': values.private === false ? '0' : '1'
 				};
 
-			db.setObject('group:' + groupName, payload, function(err) {
+			async.series([
+				async.apply(updatePrivacy, groupName, values.private),
+				async.apply(db.setObject, 'group:' + groupName, payload),
+				async.apply(renameGroup, groupName, values.name)
+			], function(err) {
 				if (err) {
 					return callback(err);
 				}
@@ -512,10 +516,36 @@ var async = require('async'),
 					name: groupName,
 					values: values
 				});
-				renameGroup(groupName, values.name, callback);
+				callback();
 			});
 		});
 	};
+
+	function updatePrivacy(groupName, newValue, callback) {
+		// Grab the group's current privacy value
+		Groups.getGroupFields(groupName, ['private'], function(err, currentValue) {
+			currentValue = currentValue.private === '1';	// Now a Boolean
+
+			if (currentValue !== newValue && currentValue === true) {
+				// Group is now public, so all pending users are automatically considered members
+				db.getSetMembers('group:' + groupName + ':pending', function(err, uids) {
+					if (err) { return callback(err); }
+					else if (!uids) { return callback(); }	// No pending users, we're good to go
+
+					var now = Date.now(),
+						scores = uids.map(function() { return now; });	// There's probably a better way to initialise an Array of size x with the same value...
+
+					winston.verbose('[groups.update] Group is now public, automatically adding ' + uids.length + ' new members, who were pending prior.');
+					async.series([
+						async.apply(db.sortedSetAdd, 'group:' + groupName + ':members', scores, uids),
+						async.apply(db.delete, 'group:' + groupName + ':pending')
+					], callback);
+				});
+			} else {
+				callback();
+			}
+		});
+	}
 
 	function renameGroup(oldName, newName, callback) {
 		if (oldName === newName || !newName || newName.length === 0) {
@@ -803,7 +833,11 @@ var async = require('async'),
 
 				groupData = groupData.filter(function(group) {
 					return parseInt(group.hidden, 10) !== 1 && !!group.userTitle;
+				}).map(function(group) {
+					group.createtimeISO = utils.toISOString(group.createtime);
+					return group;
 				});
+
 
 				var groupSets = groupData.map(function(group) {
 					group.labelColor = group.labelColor || '#000000';

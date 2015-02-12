@@ -74,7 +74,7 @@
     "fork_no_pids": "Hiç bir ileti seçilmedi!",
     "fork_success": "Başlık başarıyla ayrıldı!",
     "composer.title_placeholder": "Başlık ismini buraya girin...",
-    "composer.handle_placeholder": "Name",
+    "composer.handle_placeholder": "İsim",
     "composer.discard": "Vazgeç",
     "composer.submit": "Gönder",
     "composer.replying_to": "Yanıtlanan Konu %1",
@@ -94,5 +94,5 @@
     "oldest_to_newest": "En eskiden en yeniye",
     "newest_to_oldest": "En yeniden en eskiye",
     "most_votes": "En çok oy",
-    "most_posts": "Most posts"
+    "most_posts": "En sık yayın"
 }

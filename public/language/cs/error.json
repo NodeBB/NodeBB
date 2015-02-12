@@ -35,6 +35,7 @@
     "topic-locked": "Téma uzamčeno",
     "still-uploading": "Vyčkejte, prosím, nežli se vše kompletně nahraje.",
     "content-too-short": "Vložte, prosím, delší příspěvek. Příspěvky by měly obsahovat nejméně %1 znaků.",
+    "content-too-long": "Please enter a shorter post. Posts can't be longer than %1 characters.",
     "title-too-short": "Vložte, prosím, delší titulek. Titulky by měly obsahovat nejméně %1 znaků.",
     "title-too-long": "Vložte, prosím, kratší titulek. Titulky by neměly být delší, než-li %1 znaků.",
     "too-many-posts": "Své příspěvky můžete odesílat po %1 sekundách - vyčkejte, prosím, před dalším odesláním",

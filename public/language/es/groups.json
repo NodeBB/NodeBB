@@ -15,6 +15,8 @@
     "details.latest_posts": "Últimas Publicaciones",
     "details.private": "Grupo Privado",
     "details.public": "Grupo Público",
+    "details.grant": "Grant/Rescind Ownership",
+    "details.kick": "Kick",
     "details.owner_options": "Administración De Grupo",
     "event.updated": "Los detalles del grupo han sido actualizados",
     "event.deleted": "El grupo \"%1\" ha sido eliminado"

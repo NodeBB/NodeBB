@@ -5,7 +5,7 @@
     "search": "Procurar",
     "enter_username": "Digite um nome de usuário para procurar",
     "load_more": "Carregar Mais",
-    "users-found-search-took": "%1 usuário(s) encontrado(s)! A pesquisa demorou %2 ms.",
+    "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
     "filter-by": "Filtrar Por",
     "online-only": "Apenas Online",
     "picture-only": "Apenas foto"

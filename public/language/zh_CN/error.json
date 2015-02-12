@@ -35,6 +35,7 @@
     "topic-locked": "主题已锁定",
     "still-uploading": "请等待上传完成",
     "content-too-short": "请再输入一些内容，帖子至少要有 %1 个字符。",
+    "content-too-long": "Please enter a shorter post. Posts can't be longer than %1 characters.",
     "title-too-short": "请再输入一些内容，标题至少要有 %1 个字符。",
     "title-too-long": "请输入更短的标题。不超过 %1 字。",
     "too-many-posts": "发帖间隔至少要 %1 秒 - 请稍候再发帖",

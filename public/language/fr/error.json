@@ -35,6 +35,7 @@
     "topic-locked": "Sujet verrouillé",
     "still-uploading": "Veuillez patienter pendant le téléchargement.",
     "content-too-short": "Veuillez entrer un message plus long. %1 caractères minimum.",
+    "content-too-long": "Veuillez poster un message plus cours. Les messages ne peuvent être plus long que %1 caractères.",
     "title-too-short": "Veuillez entrer un titre plus long. %1 caractères minimum.",
     "title-too-long": "Veuillez entrer un titre plus court. Les titres ne peuvent excéder %1 caractères.",
     "too-many-posts": "Vous ne pouvez poster que toutes les %1 secondes.",

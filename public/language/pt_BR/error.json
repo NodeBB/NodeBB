@@ -35,6 +35,7 @@
     "topic-locked": "Tópico Trancado",
     "still-uploading": "Aguarde a conclusão dos uploads.",
     "content-too-short": "Por favor digite um post mais longo. Posts devem conter no mínimo %1 caracteres.",
+    "content-too-long": "Please enter a shorter post. Posts can't be longer than %1 characters.",
     "title-too-short": "Por favor digite um título mais longo. Títulos devem conter no mínimo %1 caracteres.",
     "title-too-long": "Por favor entre com um título mais curto; Títulos não podem ser maiores que %1 caracteres.",
     "too-many-posts": "Você pode postar apenas uma vez a cada %1 segundos - por favor aguarde antes de postar novamente",

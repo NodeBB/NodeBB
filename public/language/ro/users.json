@@ -5,7 +5,7 @@
     "search": "Căutare",
     "enter_username": "Introdu un nume de utilizator pentru a căuta",
     "load_more": "Încarcă mai multe",
-    "users-found-search-took": "%1 utilizator(i) găsit! Căutarea a durat %2 ms.",
+    "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
     "filter-by": "Filter By",
     "online-only": "Online only",
     "picture-only": "Picture only"

@@ -438,7 +438,7 @@ accountsController.uploadPicture = function (req, res, next) {
 
 			user.setUserFields(updateUid, {uploadedpicture: image.url, picture: image.url});
 
-			res.json([{name: userPhoto.name, url: image.url}]);
+			res.json([{name: userPhoto.name, url: nconf.get('relative_path') + image.url}]);
 		}
 
 		if (err) {
@@ -521,9 +521,10 @@ accountsController.getChats = function(req, res, next) {
 		async.waterfall([
 			async.apply(user.getUidByUserslug, req.params.userslug),
 			function(toUid, next) {
-				if (!toUid) {
+				if (!toUid || parseInt(toUid, 10) === parseInt(req.user.uid, 10)) {
 					return helpers.notFound(req, res);
 				}
+				
 				async.parallel({
 					toUser: async.apply(user.getUserFields, toUid, ['uid', 'username']),
 					messages: async.apply(messaging.getMessages, req.user.uid, toUid, 'recent', false),

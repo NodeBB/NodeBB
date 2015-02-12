@@ -24,24 +24,33 @@ searchController.search = function(req, res, next) {
 		}
 
 		if (!req.params.term) {
-			return res.render('search', {
+			var results = {
 				time: 0,
 				search_query: '',
 				posts: [],
-				topics: [],
 				users: [],
 				tags: [],
 				categories: categories,
 				breadcrumbs: breadcrumbs
+			};
+			plugins.fireHook('filter:search.build', {data: {}, results: results}, function(err, data) {
+				if (err) {
+					return next(err);
+				}
+				res.render('search', data.results);	
 			});
+			return;			
 		}
 
 		req.params.term = validator.escape(req.params.term);
 		var page = Math.max(1, parseInt(req.query.page, 10)) || 1;
+		if (req.query.categories && !Array.isArray(req.query.categories)) {
+			req.query.categories = [req.query.categories];
+		}
 
-		search.search({
+		var data = {
 			query: req.params.term,
-			searchIn: req.query.in,
+			searchIn: req.query.in || 'posts',
 			postedBy: req.query.by,
 			categories: req.query.categories,
 			searchChildren: req.query.searchChildren,
@@ -49,19 +58,30 @@ searchController.search = function(req, res, next) {
 			repliesFilter: req.query.repliesFilter,
 			timeRange: req.query.timeRange,
 			timeFilter: req.query.timeFilter,
+			sortBy: req.query.sortBy,
+			sortDirection: req.query.sortDirection,
 			page: page,
 			uid: uid
-		}, function(err, results) {
+		};
+
+		search.search(data, function(err, results) {
 			if (err) {
 				return next(err);
 			}
 
 			var pageCount = Math.max(1, Math.ceil(results.matchCount / 10));
 			results.pagination = pagination.create(page, pageCount, req.query);
-
+			results.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
+			results.showAsTopics = req.query.showAs === 'topics';
 			results.breadcrumbs = breadcrumbs;
 			results.categories = categories;
-			res.render('search', results);
+			
+			plugins.fireHook('filter:search.build', {data: data, results: results}, function(err, data) {
+				if (err) {
+					return next(err);
+				}
+				res.render('search', data.results);
+			});
 		});
 	});
 };

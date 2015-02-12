@@ -35,6 +35,7 @@
     "topic-locked": "該主題已被鎖定",
     "still-uploading": "請等待上傳完成。",
     "content-too-short": "請輸入一個較長的帖子。 帖子需至少有 %1 個字。",
+    "content-too-long": "Please enter a shorter post. Posts can't be longer than %1 characters.",
     "title-too-short": "請輸入一個較長的標題。 標題需至少有 %1 個字。",
     "title-too-long": "請輸入一個較短的主題名稱。 標題不能超過 %1 個字元。",
     "too-many-posts": "你必須間隔 %1 秒後才能發表文章－請稍後",

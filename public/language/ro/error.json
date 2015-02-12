@@ -35,6 +35,7 @@
     "topic-locked": "Subiect Închis",
     "still-uploading": "Te rugăm să aștepți până se termină uploadul.",
     "content-too-short": "Please enter a longer post. Posts should contain at least %1 characters.",
+    "content-too-long": "Please enter a shorter post. Posts can't be longer than %1 characters.",
     "title-too-short": "Please enter a longer title. Titles should contain at least %1 characters.",
     "title-too-long": "Te rugăm să introduci un titlu mai scurt. Titlurile nu pot fi mai lungi de %1 caractere.",
     "too-many-posts": "You can only post once every %1 seconds - please wait before posting again",
