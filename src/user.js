@@ -7,6 +7,7 @@ var	async = require('async'),
 	plugins = require('./plugins'),
 	db = require('./database'),
 	meta = require('./meta'),
+	topics = require('./topics'),
 	groups = require('./groups'),
 	Password = require('./password');
 
@@ -147,25 +148,31 @@ var	async = require('async'),
 
 	User.updateOnlineUsers = function(uid, callback) {
 		callback = callback || function() {};
-		db.sortedSetScore('users:online', uid, function(err, score) {
-			var now = Date.now();
-			if (err || now - parseInt(score, 10) < 300000) {
-				return callback(err);
-			}
-			db.sortedSetAdd('users:online', now, uid, function(err) {
-				if (err) {
-					return callback(err);
+
+		var now = Date.now();
+		async.waterfall([
+			function(next) {
+				db.sortedSetScore('users:online', uid, next);
+			},
+			function(userOnlineTime, next) {
+				if (now - parseInt(userOnlineTime, 10) < 300000) {
+					return callback();
 				}
+				db.sortedSetAdd('users:online', now, uid, next);	
+			},
+			function(next) {
+				topics.pushUnreadCount(uid);
 				plugins.fireHook('action:user.online', {uid: uid, timestamp: now});
-			});
-		});
+				next();
+			}
+		], callback);
 	};
 
 	User.setUserField = function(uid, field, value, callback) {
 		callback = callback || function() {};
 		db.setObjectField('user:' + uid, field, value, function(err) {
 			if (err) {
-				return callback(err)
+				return callback(err);
 			}
 			plugins.fireHook('action:user.set', {uid: uid, field: field, value: value, type: 'set'});
 			callback();
