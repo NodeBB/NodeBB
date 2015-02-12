@@ -394,13 +394,13 @@ function createWelcomePost(next) {
 			fs.readFile(path.join(__dirname, '../', 'install/data/welcome.md'), next);
 		},
 		function(next) {
-			db.sortedSetCard('topics:tid', next);
+			db.getObjectField('global', 'topicCount', next);
 		}
 	], function(err, results) {
 		var content = results[0],
 			numTopics = results[1];
 
-		if (numTopics === 0) {
+		if (!parseInt(numTopics, 10)) {
 			Topics.post({
 				uid: 1,
 				cid: 2,
@@ -430,12 +430,24 @@ function enableDefaultPlugins(next) {
 
 function setCopyrightWidget(next) {
 	var	db = require('./database');
-
-	db.init(function(err) {
-		if (!err) {
-			db.setObjectField('widgets:global', 'footer', "[{\"widget\":\"html\",\"data\":{\"html\":\"<footer id=\\\"footer\\\" class=\\\"container footer\\\">\\r\\n\\t<div class=\\\"copyright\\\">\\r\\n\\t\\tCopyright © 2014 <a target=\\\"_blank\\\" href=\\\"https://nodebb.org\\\">NodeBB Forums</a> | <a target=\\\"_blank\\\" href=\\\"//github.com/NodeBB/NodeBB/graphs/contributors\\\">Contributors</a>\\r\\n\\t</div>\\r\\n</footer>\",\"title\":\"\",\"container\":\"\"}}]", next);
+	async.parallel({
+		footerJSON: function(next) {
+			fs.readFile(path.join(__dirname, '../', 'install/data/footer.json'), next);
+		},
+		footer: function(next) {
+			db.getObjectField('widgets:global', 'footer', next);
 		}
-	});
+	}, function(err, results) {
+		if (err) {
+			return next(err);
+		}
+		
+		if (!results.footer && results.footerJSON) {
+			db.setObjectField('widgets:global', 'footer', results.footerJSON.toString(), next);	
+		} else {
+			next();
+		}
+	});	
 }
 
 install.setup = function (callback) {
