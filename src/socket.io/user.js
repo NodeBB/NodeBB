@@ -107,7 +107,7 @@ SocketUser.reset.commit = function(socket, data, callback) {
 			});
 			events.log({
 				type: 'password-reset',
-				uid: socket.uid,
+				uid: uid,
 				ip: socket.ip
 			});
 			callback();
