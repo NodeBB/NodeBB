@@ -17,13 +17,9 @@ var async = require('async'),
 			return callback(new Error('[[error:not-logged-in]]'));
 		}
 
-		posts.getPostFields(pid, ['pid', 'uid', 'timestamp'], function (err, postData) {
+		posts.getPostFields(pid, ['pid', 'uid'], function (err, postData) {
 			if (err) {
 				return callback(err);
-			}
-
-			if (uid === parseInt(postData.uid, 10)) {
-				return callback(new Error('[[error:cant-vote-self-post]]'));
 			}
 
 			var now = Date.now();
@@ -47,10 +43,6 @@ var async = require('async'),
 
 				db.sortedSetAdd('users:reputation', newreputation, postData.uid);
 
-				if (type === 'downvote') {
-					banUserForLowReputation(postData.uid, newreputation);
-				}
-
 				adjustPostVotes(pid, uid, type, unvote, function(err, votes) {
 					postData.votes = votes;
 					callback(err, {
@@ -64,23 +56,6 @@ var async = require('async'),
 				});
 			});
 		});
-	}
-
-	function banUserForLowReputation(uid, newreputation) {
-		if (parseInt(meta.config['autoban:downvote'], 10) === 1 && newreputation < parseInt(meta.config['autoban:downvote:threshold'], 10)) {
-			user.getUserField(uid, 'banned', function(err, banned) {
-				if (err || parseInt(banned, 10) === 1) {
-					return;
-				}
-				var adminUser = require('./socket.io/admin/user');
-				adminUser.banUser(uid, function(err) {
-					if (err) {
-						return winston.error(err.message);
-					}
-					winston.info('uid ' + uid + ' was banned for reaching ' + newreputation + ' reputation');
-				});
-			});
-		}
 	}
 
 	function adjustPostVotes(pid, uid, type, unvote, callback) {
@@ -127,13 +102,7 @@ var async = require('async'),
 			return callback(new Error('[[error:reputation-system-disabled]]'));
 		}
 
-		toggleVote('upvote', pid, uid, function(err, votes) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, votes);
-		});
+		toggleVote('upvote', pid, uid, callback);
 	};
 
 	Favourites.downvote = function(pid, uid, callback) {
@@ -154,13 +123,7 @@ var async = require('async'),
 				return callback(new Error('[[error:not-enough-reputation-to-downvote]]'));
 			}
 
-			toggleVote('downvote', pid, uid, function(err, votes) {
-				if (err) {
-					return callback(err);
-				}
-
-				callback(null, votes);
-			});
+			toggleVote('downvote', pid, uid, callback);
 		});
 	};
 
@@ -179,19 +142,31 @@ var async = require('async'),
 	};
 
 	function unvote(pid, uid, command, callback) {
-		Favourites.hasVoted(pid, uid, function(err, voteStatus) {
+		async.parallel({
+			owner: function(next) {
+				posts.getPostField(pid, 'uid', next);
+			},
+			voteStatus: function(next) {
+				Favourites.hasVoted(pid, uid, next);
+			}
+		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			var hook,
+			if (parseInt(uid, 10) === parseInt(results.owner, 10)) {
+				return callback(new Error('[[error:cant-vote-self-post]]'));
+			}
+
+			var voteStatus = results.voteStatus,
+				hook,
 				current = voteStatus.upvoted ? 'upvote' : 'downvote';
 
-			if (voteStatus.upvoted && command === 'downvote' || voteStatus.downvoted && command === 'upvote') {
+			if (voteStatus.upvoted && command === 'downvote' || voteStatus.downvoted && command === 'upvote') {	// e.g. User *has* upvoted, and clicks downvote
 				hook = command;
-			} else if (voteStatus.upvoted || voteStatus.downvoted) {
+			} else if (voteStatus.upvoted || voteStatus.downvoted) {	// e.g. User *has* upvotes, clicks upvote (so we "unvote")
 				hook = 'unvote';
-			} else {
+			} else {	// e.g. User *has not* voted, clicks upvote
 				hook = command;
 				current = 'unvote';
 			}
@@ -278,7 +253,7 @@ var async = require('async'),
 			}
 
 			if (!isFavouriting && !results.hasFavourited) {
-				return callback(new Error('[[error:alrady-unfavourited]]'));
+				return callback(new Error('[[error:already-unfavourited]]'));
 			}
 
 			async.waterfall([

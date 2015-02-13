@@ -68,7 +68,7 @@
 		});
 	};
 
-	Auth.login = function(username, password, next) {
+	Auth.login = function(req, username, password, next) {
 		if (!username || !password) {
 			return next(new Error('[[error:invalid-password]]'));
 		}
@@ -85,7 +85,7 @@
 					return next(new Error('[[error:no-user]]'));
 				}
 				uid = _uid;
-				user.auth.logAttempt(uid, next);
+				user.auth.logAttempt(uid, req.ip, next);
 			},
 			function(next) {
 				db.getObjectFields('user:' + uid, ['password', 'banned'], next);
@@ -109,7 +109,7 @@
 		], next);
 	};
 
-	passport.use(new passportLocal(Auth.login));
+	passport.use(new passportLocal({passReqToCallback: true}, Auth.login));
 
 	passport.serializeUser(function(user, done) {
 		done(null, user.uid);
@@ -209,15 +209,22 @@
 		var uid;
 		async.waterfall([
 			function(next) {
+				if (!userData.email) {
+					return next(new Error('[[error:invalid-email]]'));
+				}
+
 				if (!userData.username || userData.username.length < meta.config.minimumUsernameLength) {
 					return next(new Error('[[error:username-too-short]]'));
 				}
-				next();
-			},
-			function(next) {
-				if (!userData.username || userData.username.length > meta.config.maximumUsernameLength) {
+
+				if (userData.username.length > meta.config.maximumUsernameLength) {
 					return next(new Error('[[error:username-too-long'));
 				}
+
+				if (!userData.password || userData.password.length < meta.config.minimumPasswordLength) {
+					return next(new Error('[[user:change_password_error_length]]'));
+				}
+
 				next();
 			},
 			function(next) {
@@ -242,19 +249,24 @@
 				return res.status(400).send(err.message);
 			}
 
-			res.status(200).send(data.referrer ? data.referrer : '/');
+			res.status(200).send(data.referrer ? data.referrer : nconf.get('relative_path') + '/');
 		});
 	}
 
-	function logout(req, res) {
+	function logout(req, res, next) {
 		if (req.user && parseInt(req.user.uid, 10) > 0 && req.sessionID) {
 
 			require('../socket.io').logoutUser(req.user.uid);
-			db.sessionStore.destroy(req.sessionID);
-			req.logout();
+			db.sessionStore.destroy(req.sessionID, function(err) {
+				if (err) {
+					return next(err);
+				}
+				req.logout();
+				res.status(200).send('');
+			});
+		} else {
+			res.status(200).send('');
 		}
-
-		res.status(200).send('');
 	}
 
 }(exports));

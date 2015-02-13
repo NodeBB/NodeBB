@@ -77,11 +77,14 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.deleteAll = function(keys, callback) {
+		callback = callback || function() {};
 		var multi = redisClient.multi();
 		for(var i=0; i<keys.length; ++i) {
 			multi.del(keys[i]);
 		}
-		multi.exec(callback);
+		multi.exec(function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.get = function(key, callback) {
@@ -89,15 +92,22 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.set = function(key, value, callback) {
-		redisClient.set(key, value, callback);
+		callback = callback || function() {};
+		redisClient.set(key, value, function(err) {
+			callback(err);
+		});
 	};
 
 	module.increment = function(key, callback) {
+		callback = callback || function() {};
 		redisClient.incr(key, callback);
 	};
 
 	module.rename = function(oldKey, newKey, callback) {
-		redisClient.rename(oldKey, newKey, callback);
+		callback = callback || function() {};
+		redisClient.rename(oldKey, newKey, function(err, res) {
+			callback(err && err.message !== 'ERR no such key' ? err : null);
+		});
 	};
 
 	module.expire = function(key, seconds, callback) {

@@ -1,11 +1,19 @@
 "use strict";
 /* global define, config, templates, app, utils, ajaxify, socket, translator */
 
-define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll', 'share', 'navigator', 'forum/categoryTools'], function(composer, pagination, infinitescroll, share, navigator, categoryTools) {
+define('forum/category', [
+	'composer',
+	'forum/pagination',
+	'forum/infinitescroll',
+	'share',
+	'navigator',
+	'forum/categoryTools',
+	'sort'
+], function(composer, pagination, infinitescroll, share, navigator, categoryTools, sort) {
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
-		if(data && data.url.indexOf('category') !== 0) {
+		if(data && data.tpl_url !== 'category') {
 			navigator.hide();
 
 			removeListeners();
@@ -32,6 +40,8 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 		socket.on('event:new_topic', Category.onNewTopic);
 
 		categoryTools.init(cid);
+
+		sort.handleSort('categoryTopicSort', 'user.setCategorySort', 'category/' + ajaxify.variables.get('category_slug'));
 
 		enableInfiniteLoadingOrPagination();
 
@@ -222,10 +232,6 @@ define('forum/category', ['composer', 'forum/pagination', 'forum/infinitescroll'
 				}
 
 				topic.hide().fadeIn('slow');
-
-				socket.emit('categories.getPageCount', ajaxify.variables.get('category_id'), function(err, newPageCount) {
-					pagination.recreatePaginationLinks(newPageCount);
-				});
 
 				topic.find('span.timeago').timeago();
 				app.createUserTooltips();

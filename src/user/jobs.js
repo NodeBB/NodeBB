@@ -4,7 +4,6 @@
 var winston = require('winston'),
 	cronJob = require('cron').CronJob,
 
-	user = require('../user'),
 	meta = require('../meta');
 
 module.exports = function(User) {
@@ -23,6 +22,8 @@ module.exports = function(User) {
 			winston.verbose('[user.startJobs] Digest job (monthly) started.');
 			User.digest.execute('month');
 		}, null, true);
+
+		new cronJob('0 0 0 * * *', User.reset.clean, null, true);
 	};
 };
 

@@ -143,6 +143,12 @@ module.exports = function(privileges) {
 		}, callback);
 	};
 
+	privileges.categories.rescind = function(privileges, cid, groupName, callback) {
+		async.each(privileges, function(privilege, next) {
+			groups.leave('cid:' + cid + ':privileges:groups:' + privilege, groupName, next);
+		}, callback);
+	};
+
 	privileges.categories.canMoveAllTopics = function(currentCid, targetCid, uid, callback) {
 		async.parallel({
 			isAdministrator: function(next) {

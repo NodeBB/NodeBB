@@ -132,7 +132,7 @@
 		</div>
 	</div>
 
-	<div class="col-lg-3">
+	<div class="col-lg-3  acp-sidebar">
 		<div class="panel panel-default">
 			<div class="panel-heading">Categories Control Panel</div>
 			<div class="panel-body">
@@ -149,7 +149,7 @@
 		<div class="icon-container">
 			<div class="row fa-icons">
 				<i class="fa fa-doesnt-exist"></i>
-				<!-- IMPORT admin/partials/fontawesome.tpl -->
+				<!-- IMPORT partials/fontawesome.tpl -->
 			</div>
 		</div>
 	</div>

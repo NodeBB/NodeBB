@@ -9,6 +9,9 @@
     "reset.text1": "We received a request to reset your password, possibly because you have forgotten it. If this is not the case, please ignore this email.",
     "reset.text2": "เพื่อดำเนินการตั้งรหัสผ่านใหม่ต่อไป, โปรดกดที่ลิ้งค์นี้:",
     "reset.cta": "กดตรงนี้เพื่อตั้งรหัสผ่านใหม่",
+    "reset.notify.subject": "Password successfully changed",
+    "reset.notify.text1": "We are notifying you that on %1, your password was changed successfully.",
+    "reset.notify.text2": "If you did not authorise this, please notify an administrator immediately.",
     "digest.notifications": "คุณมีข้อความแจ้งเตือนที่ยังไม่ได้อ่านจาก %1:",
     "digest.latest_topics": "หัวข้อสนทนาล่าสุดจาก %1",
     "digest.cta": "กดตรงนี้เพื่อเข้าดู %1",
@@ -17,6 +20,8 @@
     "notif.chat.subject": "New chat message received from %1",
     "notif.chat.cta": "กดตรงนี้เพื่อกลับไปยังบทสนทนา",
     "notif.chat.unsub.info": "This chat notification was sent to you due to your subscription settings.",
+    "notif.post.cta": "Click here to read the full topic",
+    "notif.post.unsub.info": "This post notification was sent to you due to your subscription settings.",
     "test.text1": "นี่คืออีเมลทดสอบเพื่อยืนยันว่าระบบอีเมลมีการตั้งค่าที่ถูกต้องสำหรับ NodeBB ของคุณ",
     "unsub.cta": "กดตรงนี้เพื่อเปลี่ยนแปลงการตั้งค่า",
     "closing": "ขอบคุณ!"

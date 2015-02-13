@@ -74,6 +74,7 @@
     "fork_no_pids": "未选中帖子！",
     "fork_success": "成功分割主题! 点这里跳转到分割后的主题。",
     "composer.title_placeholder": "在此输入您主题的标题...",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "撤销",
     "composer.submit": "提交",
     "composer.replying_to": "正在回复 %1",
@@ -92,5 +93,6 @@
     "sort_by": "排序",
     "oldest_to_newest": "从旧到新",
     "newest_to_oldest": "从新到旧",
-    "most_votes": "最多投票"
+    "most_votes": "最多投票",
+    "most_posts": "Most posts"
 }

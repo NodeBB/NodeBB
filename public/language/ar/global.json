@@ -3,9 +3,10 @@
     "search": "بحث",
     "buttons.close": "أغلق",
     "403.title": "غير مسموح بالدخول",
-    "403.message": "يبدو أنك قد تعثر على الصفحة التي لم يكن لديك الوصول إليها. ربما يجب عليك <a href='/login'> تسجيل الدخول </a> ",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "لم يتم العثور",
-    "404.message": "يبدو أنك قد تعثرت على صفحة غير موجودة. عودة إلى الصفحة الرئيسية.",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "خطأ داخلي.",
     "500.message": "عفوا! يبدو وكأنه شيء ذهب على نحو خاطئ!",
     "register": "تسجيل",
@@ -26,6 +27,7 @@
     "header.tags": "وسم",
     "header.popular": "الأكثر شهرة",
     "header.users": "المستخدمين",
+    "header.groups": "Groups",
     "header.chats": "المحادثات",
     "header.notifications": "التنبيهات",
     "header.search": "بحث",
@@ -73,5 +75,7 @@
     "updated.title": "تم تحديث المنتدى",
     "updated.message": "لقد تم تحديث المنتدى إلى آخر نسخة للتو. المرجو إعادة تحميل الصفحة.",
     "privacy": "الخصوصية",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "حذف الكل"
 }

@@ -1,8 +1,23 @@
 {
     "groups": "Guruplar",
     "view_group": "Grubu Gör",
+    "owner": "Grup Kurucusu",
+    "new_group": "Yeni Grup Oluştur",
+    "no_groups_found": "Henüz hiç grup yok",
+    "cover-instructions": "Bir fotoğrafı Sürükleyin ve Bırakın, uygun yere sürükleyip <strong>Kaydet</strong>'e tıklayın.",
+    "cover-change": "Değiştir",
+    "cover-save": "Kaydet",
+    "cover-saving": "Kaydediliyor",
     "details.title": "Grup Detayları",
     "details.members": "Üye Listesi",
+    "details.pending": "Üyeler bekleniyor",
     "details.has_no_posts": "Bu grubun üyeleri henüz bir ileti göndermedi.",
-    "details.latest_posts": "En son iletiler"
+    "details.latest_posts": "En son iletiler",
+    "details.private": "Özel Grup",
+    "details.public": "Herkese Açık Grup",
+    "details.grant": "Grant/Rescind Ownership",
+    "details.kick": "Kick",
+    "details.owner_options": "Grup Yöneticisi",
+    "event.updated": "Grup detayları güncellenmiştir",
+    "event.deleted": "\"%1\" grubu silinmiş"
 }

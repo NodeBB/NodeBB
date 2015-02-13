@@ -74,6 +74,7 @@
     "fork_no_pids": "게시물이 선택되지 않았습니다.",
     "fork_success": "주제가 분리되었습니다! 분리된 주제를 보려면 여기를 클릭하세요.",
     "composer.title_placeholder": "여기에 제목을 입력하세요.",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "취소",
     "composer.submit": "등록",
     "composer.replying_to": "'%1'에 대한 답글",
@@ -92,5 +93,6 @@
     "sort_by": "정렬",
     "oldest_to_newest": "오래된 순으로 정렬",
     "newest_to_oldest": "최신 순으로 정렬",
-    "most_votes": "추천수 순으로 정렬"
+    "most_votes": "추천수 순으로 정렬",
+    "most_posts": "Most posts"
 }

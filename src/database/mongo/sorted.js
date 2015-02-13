@@ -85,7 +85,9 @@ module.exports = function(db, module) {
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').remove({_key: {$in: keys}, value: value}, callback);
+		db.collection('objects').remove({_key: {$in: keys}, value: value}, function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.sortedSetsRemoveRangeByScore = function(keys, min, max, callback) {
@@ -96,6 +98,22 @@ module.exports = function(db, module) {
 		db.collection('objects').remove({_key: {$in: keys}, score: {$lte: max, $gte: min}}, function(err) {
 			callback(err);
 		});
+	};
+
+	module.getSortedSetRange = function(key, start, stop, callback) {
+		getSortedSetRange(key, start, stop, 1, false, callback);
+	};
+
+	module.getSortedSetRevRange = function(key, start, stop, callback) {
+		getSortedSetRange(key, start, stop, -1, false, callback);
+	};
+
+	module.getSortedSetRangeWithScores = function(key, start, stop, callback) {
+		getSortedSetRange(key, start, stop, 1, true, callback);
+	};
+
+	module.getSortedSetRevRangeWithScores = function(key, start, stop, callback) {
+		getSortedSetRange(key, start, stop, -1, true, callback);
 	};
 
 	function getSortedSetRange(key, start, stop, sort, withScores, callback) {
@@ -126,22 +144,6 @@ module.exports = function(db, module) {
 			});
 	}
 
-	module.getSortedSetRange = function(key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, 1, false, callback);
-	};
-
-	module.getSortedSetRevRange = function(key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, -1, false, callback);
-	};
-
-	module.getSortedSetRangeWithScores = function(key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, 1, true, callback);
-	};
-
-	module.getSortedSetRevRangeWithScores = function(key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, -1, true, callback);
-	};
-
 	module.getSortedSetRangeByScore = function(key, start, count, min, max, callback) {
 		getSortedSetRangeByScore(key, start, count, min, max, 1, false, callback);
 	};
@@ -151,7 +153,7 @@ module.exports = function(db, module) {
 	};
 
 	module.getSortedSetRangeByScoreWithScores = function(key, start, count, min, max, callback) {
-		getSortedSetRangeByScore(key, start, count, min, max, -1, true, callback);
+		getSortedSetRangeByScore(key, start, count, min, max, 1, true, callback);
 	};
 
 	module.getSortedSetRevRangeByScoreWithScores = function(key, start, count, max, min, callback) {
@@ -202,7 +204,14 @@ module.exports = function(db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').count({_key: key, score: {$gte: min, $lte: max}}, function(err, count) {
+		var scoreQuery = {};
+		if (min !== '-inf') {
+			scoreQuery.$gte = min;
+		}
+		if (max !== '+inf') {
+			scoreQuery.$lte = max;
+		}
+		db.collection('objects').count({_key: key, score: scoreQuery}, function(err, count) {
 			callback(err, count ? count : 0);
 		});
 	};
@@ -391,6 +400,50 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.isMemberOfSortedSets = function(keys, value, callback) {
+		if (!Array.isArray(keys)) {
+			return callback();
+		}
+		value = helpers.valueToString(value);
+		db.collection('objects').find({_key: {$in: keys}, value: value}, {fields: {_id: 0, _key: 1, value: 1}}).toArray(function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			results = results.map(function(item) {
+				return item._key;
+			});
+
+			results = keys.map(function(key) {
+				return results.indexOf(key) !== -1;
+			});
+			callback(null, results);
+		});
+	};
+
+	module.getSortedSetsMembers = function(keys, callback) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return callback(null, []);
+		}
+		db.collection('objects').find({_key: {$in: keys}}, {_id: 0, _key: 1, value: 1}).toArray(function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			var sets = {};
+			data.forEach(function(set) {
+			 	sets[set._key] = sets[set._key] || [];
+			 	sets[set._key].push(set.value);
+			});
+
+			var returnData = new Array(keys.length);
+			for(var i=0; i<keys.length; ++i) {
+			 	returnData[i] = sets[keys[i]] || [];
+			}
+			callback(null, returnData);
+		});
+	};
+
 	module.getSortedSetUnion = function(sets, start, stop, callback) {
 		getSortedSetUnion(sets, 1, start, stop, callback);
 	};
@@ -445,8 +498,8 @@ module.exports = function(db, module) {
 		value = helpers.fieldToString(value);
 		data.score = parseInt(increment, 10);
 
-		db.collection('objects').findAndModify({_key: key, value: value}, {}, {$inc: data}, {new:true, upsert:true}, function(err, result) {
-			callback(err, result ? result[value] : null);
+		db.collection('objects').findAndModify({_key: key, value: value}, {}, {$inc: data}, {new: true, upsert: true}, function(err, result) {
+			callback(err, result ? result.score : null);
 		});
 	};
 };

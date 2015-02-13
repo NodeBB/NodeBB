@@ -17,16 +17,18 @@ module.exports = function(privileges) {
 
 	privileges.topics.get = function(tid, uid, callback) {
 		async.waterfall([
-			async.apply(topics.getTopicField, tid, 'cid'),
-			function(cid, next) {
+			async.apply(topics.getTopicFields, tid, ['cid', 'uid']),
+			function(topic, next) {
 				async.parallel({
-					'topics:reply': async.apply(helpers.isUserAllowedTo, 'topics:reply', uid, [cid]),
-					read: async.apply(helpers.isUserAllowedTo, 'read', uid, [cid]),
-					isOwner: async.apply(topics.isOwner, tid, uid),
+					'topics:reply': async.apply(helpers.isUserAllowedTo, 'topics:reply', uid, [topic.cid]),
+					read: async.apply(helpers.isUserAllowedTo, 'read', uid, [topic.cid]),
+					isOwner: function(next) {
+						next(null, parseInt(uid, 10) === parseInt(topic.uid, 10));
+					},
 					manage_topic: async.apply(helpers.hasEnoughReputationFor, 'privileges:manage_topic', uid),
 					isAdministrator: async.apply(user.isAdministrator, uid),
-					isModerator: async.apply(user.isModerator, uid, cid),
-					disabled: async.apply(categories.getCategoryField, cid, 'disabled')
+					isModerator: async.apply(user.isModerator, uid, topic.cid),
+					disabled: async.apply(categories.getCategoryField, topic.cid, 'disabled')
 				}, next);
 			}
 		], function(err, results) {

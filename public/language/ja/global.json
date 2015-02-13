@@ -3,9 +3,10 @@
     "search": "検索",
     "buttons.close": "閉じる",
     "403.title": "アクセス拒否",
-    "403.message": "アクセスが拒否されました.<a href='/login'>ログインしますか</a>？",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "見つかりません",
-    "404.message": "アクセスしようとしていたページは存在しません.<a href='/'>ホーム</a>へ",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "内部エラー",
     "500.message": "何とも言えない障害が発生しているようです.m(_ _)m",
     "register": "登録",
@@ -26,6 +27,7 @@
     "header.tags": "Tags",
     "header.popular": "人気",
     "header.users": "ユーザー",
+    "header.groups": "Groups",
     "header.chats": "チャット",
     "header.notifications": "通知",
     "header.search": "検索",
@@ -73,5 +75,7 @@
     "updated.title": "Forum Updated",
     "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page.",
     "privacy": "Privacy",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "Delete All"
 }

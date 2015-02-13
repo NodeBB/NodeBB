@@ -199,13 +199,8 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 		getTopicEl(data.tid).remove();
 	}
 
-	function onTopicPurged(tids) {
-		if (!tids) {
-			return;
-		}
-		for(var i=0; i<tids.length; ++i) {
-			getTopicEl(tids[i]).remove();
-		}
+	function onTopicPurged(data) {
+		getTopicEl(data.tid).remove();
 	}
 
 	return CategoryTools;

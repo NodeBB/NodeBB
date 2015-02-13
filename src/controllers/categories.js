@@ -2,7 +2,6 @@
 
 var categoriesController = {},
 	async = require('async'),
-	qs = require('querystring'),
 	nconf = require('nconf'),
 	privileges = require('../privileges'),
 	user = require('../user'),
@@ -10,6 +9,7 @@ var categoriesController = {},
 	topics = require('../topics'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
+	pagination = require('../pagination'),
 	helpers = require('./helpers'),
 	utils = require('../../public/src/utils');
 
@@ -22,13 +22,9 @@ categoriesController.recent = function(req, res, next) {
 		}
 
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
-
-		plugins.fireHook('filter:category.get', {category: data, uid: uid}, function(err, data) {
-			if (err) {
-				return next(err);
-			}
-			res.render('recent', data.category);
-		});
+		data['rssFeedUrl'] = nconf.get('relative_path') + '/recent.rss';
+		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[recent:title]]'}]);
+		res.render('recent', data);
 	});
 };
 
@@ -36,33 +32,38 @@ var anonCache = {}, lastUpdateTime = 0;
 
 categoriesController.popular = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
-
-	var term = req.params.term || 'daily';
+	var terms = {
+		daily: 'day',
+		weekly: 'week',
+		monthly: 'month',
+		alltime: 'alltime'
+	};
+	var term = terms[req.params.term] || 'day';
 
 	if (uid === 0) {
-        if (anonCache[term] && (Date.now() - lastUpdateTime) < 60 * 60 * 1000) {
-            return res.render('popular', anonCache[term]);
-        }
+		if (anonCache[term] && (Date.now() - lastUpdateTime) < 60 * 60 * 1000) {
+			return res.render('popular', anonCache[term]);
+		}
 	}
 
-	topics.getPopular(term, uid, meta.config.topicsPerList, function(err, data) {
+	topics.getPopular(term, uid, meta.config.topicsPerList, function(err, topics) {
 		if (err) {
 			return next(err);
 		}
 
-		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+		var data = {
+			topics: topics,
+			'feeds:disableRSS': parseInt(meta.config['feeds:disableRSS'], 10) === 1,
+			rssFeedUrl: nconf.get('relative_path') + '/popular.rss',
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[global:header.popular]]'}])
+		};
 
-		plugins.fireHook('filter:category.get', {category: {topics: data}, uid: uid}, function(err, data) {
-			if (err) {
-				return next(err);
-			}
-			if (uid === 0) {
-		        anonCache[term] = data.category;
-		        lastUpdateTime = Date.now();
-			}
+		if (uid === 0) {
+			anonCache[term] = data;
+			lastUpdateTime = Date.now();
+		}
 
-			res.render('popular', data.category);
-		});
+		res.render('popular', data);
 	});
 };
 
@@ -74,12 +75,8 @@ categoriesController.unread = function(req, res, next) {
 			return next(err);
 		}
 
-		plugins.fireHook('filter:category.get', {category: data, uid: uid}, function(err, data) {
-			if (err) {
-				return next(err);
-			}
-			res.render('unread', data.category);
-		});
+		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[unread:title]]'}]);
+		res.render('unread', data);
 	});
 };
 
@@ -154,11 +151,23 @@ categoriesController.get = function(req, res, next) {
 				topicIndex = 0;
 			}
 
+			var set = 'cid:' + cid + ':tids',
+				reverse = false;
+
+			if (settings.categoryTopicSort === 'newest_to_oldest') {
+				reverse = true;
+			} else if (settings.categoryTopicSort === 'most_posts') {
+				reverse = true;
+				set = 'cid:' + cid + ':tids:posts';
+			}
+
 			var start = (page - 1) * settings.topicsPerPage + topicIndex,
 				end = start + settings.topicsPerPage - 1;
 
 			next(null, {
 				cid: cid,
+				set: set,
+				reverse: reverse,
 				start: start,
 				end: end,
 				uid: uid
@@ -167,11 +176,29 @@ categoriesController.get = function(req, res, next) {
 		function(payload, next) {
 			user.getUidByUserslug(req.query.author, function(err, uid) {
 				payload.targetUid = uid;
+				if (uid) {
+					payload.set = 'cid:' + cid + ':uid:' + uid + ':tids';
+				}
 				next(err, payload);
 			});
 		},
 		function(payload, next) {
 			categories.getCategoryById(payload, next);
+		},
+		function(categoryData, next) {
+			var breadcrumbs = [
+				{
+					text: categoryData.name,
+					url: nconf.get('relative_path') + '/category/' + categoryData.slug
+				}
+			];
+			helpers.buildCategoryBreadcrumbs(categoryData.parentCid, function(err, crumbs) {
+				if (err) {
+					return next(err);
+				}
+				categoryData.breadcrumbs = crumbs.concat(breadcrumbs);
+				next(null, categoryData);
+			});
 		},
 		function(categoryData, next) {
 			if (categoryData.link) {
@@ -232,19 +259,13 @@ categoriesController.get = function(req, res, next) {
 
 		data.currentPage = page;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+		data['rssFeedUrl'] = nconf.get('relative_path') + '/category/' + data.cid + '.rss';
+		data.pagination = pagination.create(data.currentPage, data.pageCount);
 
-		if (!res.locals.isAPI) {
-			// Paginator for noscript
-			data.pages = [];
-			for(var x=1;x<=data.pageCount;x++) {
-				data.pages.push({
-					page: x,
-					active: x === parseInt(page, 10)
-				});
-			}
-		}
+		data.pagination.rel.forEach(function(rel) {
+			res.locals.linkTags.push(rel);
+		});
 
-		data.breadcrumbs = res.locals.breadcrumbs;
 		res.render('category', data);
 	});
 };

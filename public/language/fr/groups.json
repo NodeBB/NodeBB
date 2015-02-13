@@ -1,8 +1,23 @@
 {
     "groups": "Groupes",
     "view_group": "Voir le groupe",
+    "owner": "Propriétaire du Groupe",
+    "new_group": "Créer un Nouveau Groupe",
+    "no_groups_found": "Il n'y a aucun groupe",
+    "cover-instructions": "Glisser et Coller une image, ajuster la position, et cliquer sur <strong>Enregistrer</strong>",
+    "cover-change": "Modifier",
+    "cover-save": "Enregistrer",
+    "cover-saving": "Enregistrement",
     "details.title": "Informations du groupe",
     "details.members": "Liste des membres",
-    "details.has_no_posts": "Ce membre du groupe n'a envoyé aucun message.",
-    "details.latest_posts": "Derniers messages"
+    "details.pending": "Membres en attente",
+    "details.has_no_posts": "Les membres de ce groupe n'ont envoyé aucun message.",
+    "details.latest_posts": "Derniers messages",
+    "details.private": "Groupe Privé",
+    "details.public": "Groupe Public",
+    "details.grant": "Grant/Rescind Ownership",
+    "details.kick": "Kick",
+    "details.owner_options": "Administration du Groupe",
+    "event.updated": "Les détails du groupe ont été mis à jour",
+    "event.deleted": "Le groupe é%1\" a été supprimé"
 }

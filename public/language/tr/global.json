@@ -3,9 +3,10 @@
     "search": "Arama",
     "buttons.close": "Kapat",
     "403.title": "Erişim Engellendi",
-    "403.message": "Erişiminiz olmayan bir sayfaya ulaşmaya çalıştınız. Belki de  href='/login'> < giriş yapmayı denemelisiniz </ a> ?",
+    "403.message": "Erişim izniniz olmayan bir sayfaya denk gelmiş gibisiniz.",
+    "403.login": "Belki de tekrar <a href='%1/login'>giriş</a> yapmayı denersiniz?",
     "404.title": "Bulunamadı",
-    "404.message": "Olmayan bir sayfayı ziyaret etmeye çalıştınız.  <a href='/'> Ana sayfa </ a> .",
+    "404.message": "Erişim izniniz olmayan bir sayfaya denk gelmiş gibisiniz.<a href='%1/'>Anasayfa</a>ya geri dönün.",
     "500.title": "Dahili hata.",
     "500.message": "Ups! Bir şeyler ters gitti sanki!",
     "register": "Kayıt Ol",
@@ -26,6 +27,7 @@
     "header.tags": "Etiketler",
     "header.popular": "Popüler",
     "header.users": "Kullanıcılar",
+    "header.groups": "Gruplar",
     "header.chats": "Sohbetler",
     "header.notifications": "Bildirimler",
     "header.search": "Arama",
@@ -73,5 +75,7 @@
     "updated.title": "Forum güncellendi",
     "updated.message": "Bu forum şu anda güncellendi. Sayfayı tekrar yüklemek için buraya tıklayın.",
     "privacy": "Gizlilik",
+    "follow": "Takip et",
+    "unfollow": "Takip etmeyi bırak",
     "delete_all": "Hepsini Sil"
 }

@@ -6,7 +6,7 @@ define('forum/home', function() {
 	var	home = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
-		if (data.url !== '') {
+		if (data.tpl_url !== 'home') {
 			socket.removeListener('event:new_post', home.onNewPost);
 		}
 	});

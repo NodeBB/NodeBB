@@ -60,7 +60,8 @@ define('navigator', ['forum/pagination'], function(pagination) {
 	};
 
 	function generateUrl(index) {
-		var parts = window.location.pathname.split('/');
+		var pathname = window.location.pathname.replace(config.relative_path, '');
+		var parts = pathname.split('/');
 		return parts[1] + '/' + parts[2] + '/' + parts[3] + (index ? '/' + index : '');
 	}
 
@@ -137,7 +138,7 @@ define('navigator', ['forum/pagination'], function(pagination) {
 		if ($('li[data-index="' + index + '"]').length) {
 			navigator.scrollToPost(index, true);
 		} else {
-			index = parseInt(index, 10) + 1;
+			index = parseInt(index, 10);
 			ajaxify.go(generateUrl(index));
 		}
 	};

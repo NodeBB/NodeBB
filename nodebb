@@ -92,7 +92,6 @@ case "$1" in
 		npm i nodebb-theme-vanilla nodebb-theme-lavender nodebb-widget-essentials
 		"$node" app --upgrade
 		touch package.json
-		echo -e "\n\e[00;32mNodeBB Dependencies up-to-date!\e[00;00m";
 		;;
 
 	setup)

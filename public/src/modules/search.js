@@ -1,12 +1,15 @@
+"use strict";
+/* globals socket, ajaxify, translator, app, define */
+
 define('search', ['navigator'], function(nav) {
-	"use strict";
-	/* globals socket, ajaxify */
 
 	var Search = {
 			current: {}
 		};
 
-	Search.query = function(term, callback) {
+	Search.query = function(data, callback) {
+		var term = data.term;
+
 		// Detect if a tid was specified
 		var topicSearch = term.match(/in:topic-([\d]+)/);
 
@@ -19,7 +22,7 @@ define('search', ['navigator'], function(nav) {
 				return app.alertError('[[error:invalid-search-term]]');
 			}
 
-			ajaxify.go('search/' + term);
+			ajaxify.go('search/' + term + '?' + createQueryString(data));
 			callback();
 		} else {
 			var cleanedTerm = term.replace(topicSearch[0], ''),
@@ -28,6 +31,43 @@ define('search', ['navigator'], function(nav) {
 			Search.queryTopic(tid, cleanedTerm, callback);
 		}
 	};
+
+	function createQueryString(data) {
+		var searchIn = data.in || 'titlesposts';
+		var postedBy = data.by || '';
+		var query = {in: searchIn};
+
+		if (postedBy && (searchIn === 'posts' || searchIn === 'titles' || searchIn === 'titlesposts')) {
+			query.by = postedBy;
+		}
+
+		if (data.categories && data.categories.length) {
+			query.categories = data.categories;
+			if (data.searchChildren) {
+				query.searchChildren = data.searchChildren;
+			}
+		}
+
+		if (parseInt(data.replies, 10) > 0) {
+			query.replies = data.replies;
+			query.repliesFilter = data.repliesFilter || 'atleast';
+		}
+
+		if (data.timeRange) {
+			query.timeRange = data.timeRange;
+			query.timeFilter = data.timeFilter || 'newer';
+		}
+
+		if (data.sortBy) {
+			query.sortBy = data.sortBy;
+			query.sortDirection = data.sortDirection;
+		}
+
+		if (data.showAs) {
+			query.showAs = data.showAs;
+		}
+		return decodeURIComponent($.param(query));
+	}
 
 	Search.queryTopic = function(tid, term, callback) {
 		socket.emit('topics.search', {
@@ -105,7 +145,7 @@ define('search', ['navigator'], function(nav) {
 				Mousetrap.bind('esc', Search.topicDOM.end);
 			});
 		}
-	}
+	};
 
 	Search.topicDOM.end = function() {
 		$('.topic-search').addClass('hidden').find('.prev, .next').attr('disabled', 'disabled');

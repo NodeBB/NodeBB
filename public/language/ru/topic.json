@@ -74,6 +74,7 @@
     "fork_no_pids": "Сообщения не отмечены!",
     "fork_success": "Готово! Нажмите для перехода в отделённую тему.",
     "composer.title_placeholder": "Введите название темы...",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "Отменить",
     "composer.submit": "Подтвердить",
     "composer.replying_to": "Ответ %1",
@@ -92,5 +93,6 @@
     "sort_by": "Сортировать",
     "oldest_to_newest": "От Старых к Новым",
     "newest_to_oldest": "От Новых к Старым",
-    "most_votes": "По голосам"
+    "most_votes": "По голосам",
+    "most_posts": "Most posts"
 }

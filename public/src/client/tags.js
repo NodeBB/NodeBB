@@ -16,7 +16,7 @@ define('forum/tags', ['forum/infinitescroll'], function(infinitescroll) {
 			}
 
 			if (!$('#tag-search').val().length) {
-				return;
+				return resetSearch();
 			}
 
 			timeoutId = setTimeout(function() {
@@ -50,6 +50,17 @@ define('forum/tags', ['forum/infinitescroll'], function(infinitescroll) {
 			}
 		});
 	};
+
+	function resetSearch() {
+		socket.emit('topics.loadMoreTags', {
+			after: 0
+		}, function(err, data) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+			onTagsLoaded(data.tags, true);
+		});
+	}
 
 	function onTagsLoaded(tags, replace, callback) {
 		callback = callback || function() {};

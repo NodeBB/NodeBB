@@ -11,12 +11,18 @@ module.exports = function(Categories) {
 	Categories.update = function(modified, callback) {
 
 		function updateCategory(cid, next) {
-			var category = modified[cid];
-			var fields = Object.keys(category);
+			Categories.exists(cid, function(err, exists) {
+				if (err || !exists) {
+					return next(err);
+				}
 
-			async.each(fields, function(key, next) {
-				updateCategoryField(cid, key, category[key], next);
-			}, next);
+				var category = modified[cid];
+				var fields = Object.keys(category);
+
+				async.each(fields, function(key, next) {
+					updateCategoryField(cid, key, category[key], next);
+				}, next);
+			});
 		}
 
 		var cids = Object.keys(modified);

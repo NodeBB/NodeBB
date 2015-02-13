@@ -17,7 +17,7 @@ module.exports = function(Meta) {
 
 	Meta.title.build = function (urlFragment, language, locals, callback) {
 		var uri = '';
-		var fallbackTitle = Meta.config.browserTitle || Meta.config.title || 'NodeBB';
+		var fallbackTitle = validator.escape(Meta.config.browserTitle || Meta.config.title || 'NodeBB');
 		try {
 			uri = decodeURIComponent(urlFragment);
 		} catch(e) {
@@ -26,7 +26,6 @@ module.exports = function(Meta) {
 		}
 
 		Meta.title.parseFragment(uri, language, locals, function(err, title) {
-
 			if (err) {
 				title = fallbackTitle;
 			} else {
@@ -41,7 +40,6 @@ module.exports = function(Meta) {
 	};
 
 	Meta.title.parseFragment = function (urlFragment, language, locals, callback) {
-		urlFragment = validator.escape(urlFragment);
 		var	translated = ['', 'recent', 'unread', 'users', 'notifications'];
 		if (translated.indexOf(urlFragment) !== -1) {
 			if (!urlFragment.length) {
@@ -75,7 +73,7 @@ module.exports = function(Meta) {
 					return callback(err);
 				}
 
-				if (locals.notFound) {
+				if (!username) {
 					username = '[[error:no-user]]';
 				}
 

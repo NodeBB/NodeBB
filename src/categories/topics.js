@@ -22,23 +22,24 @@ module.exports = function(Categories) {
 						plugins.fireHook('filter:category.topics.prepare', data, next);
 					},
 					function(data, next) {
-						Categories.getTopicIds(data.targetUid ? 'cid:' + data.cid + ':uid:' + data.targetUid + ':tids' : 'cid:' + data.cid + ':tids', data.start, data.stop, next);
+						Categories.getTopicIds(data.set, data.reverse, data.start, data.stop, next);
 					},
 					function(tids, next) {
 						topics.getTopicsByTids(tids, data.uid, next);
 					},
 					function(topics, next) {
 						if (!Array.isArray(topics) || !topics.length) {
-							return next(null, []);
+							return next(null, {topics: [], uid: data.uid});
 						}
 
 						for (var i=0; i<topics.length; ++i) {
 							topics[i].index = data.start + i;
 						}
 
-						plugins.fireHook('filter:category.topics.get', {topics: topics, uid: data.uid}, function(err, params) {
-							next(null, params.topics);
-						});
+						plugins.fireHook('filter:category.topics.get', {topics: topics, uid: data.uid}, next);
+					},
+					function(results, next) {
+						next(null, results.topics);
 					}
 				], next);
 			}
@@ -55,8 +56,12 @@ module.exports = function(Categories) {
 		});
 	};
 
-	Categories.getTopicIds = function(set, start, stop, callback) {
-		db.getSortedSetRevRange(set, start, stop, callback);
+	Categories.getTopicIds = function(set, reverse, start, stop, callback) {
+		if (reverse) {
+			db.getSortedSetRevRange(set, start, stop, callback);
+		} else {
+			db.getSortedSetRange(set, start, stop, callback);
+		}
 	};
 
 	Categories.getTopicIndex = function(tid, callback) {
@@ -94,6 +99,9 @@ module.exports = function(Categories) {
 					} else {
 						db.sortedSetAdd('cid:' + cid + ':tids', postData.timestamp, postData.tid, next);
 					}
+				},
+				function(next) {
+					db.sortedSetIncrBy('cid:' + cid + ':tids:posts', 1, postData.tid, next);
 				}
 			], callback);
 		});

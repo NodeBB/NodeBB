@@ -17,7 +17,6 @@ module.exports = function(Posts) {
 			content = data.content,
 			timestamp = data.timestamp || Date.now();
 
-
 		if (!uid && parseInt(uid, 10) !== 0) {
 			return callback(new Error('[[error:invalid-uid]]'));
 		}
@@ -49,6 +48,10 @@ module.exports = function(Posts) {
 
 				if (data.ip && parseInt(meta.config.trackIpPerPost, 10) === 1) {
 					postData.ip = data.ip;
+				}
+
+				if (parseInt(uid, 10) === 0 && data.handle) {
+					postData.handle = data.handle;
 				}
 
 				plugins.fireHook('filter:post.save', postData, next);

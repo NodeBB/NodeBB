@@ -1,3 +1,5 @@
+'use strict';
+/*global require, process, after*/
 
 var winston = require('winston');
 
@@ -33,6 +35,8 @@ describe('Categories', function() {
 		it('should retrieve a newly created category by its ID', function(done) {
 			Categories.getCategoryById({
 				cid: categoryObj.cid,
+				set: 'cid:' + categoryObj.cid + ':tids',
+				reverse: true,
 				start: 0,
 				end: -1,
 				uid: 0
@@ -50,6 +54,8 @@ describe('Categories', function() {
 		it('should return a list of topics', function(done) {
 			Categories.getCategoryTopics({
 				cid: categoryObj.cid,
+				set: 'cid:' + categoryObj.cid + ':tids',
+				reverse: true,
 				start: 0,
 				stop: 10,
 				uid: 0
@@ -66,6 +72,8 @@ describe('Categories', function() {
 		it('should return a list of topics by a specific user', function(done) {
 			Categories.getCategoryTopics({
 				cid: categoryObj.cid,
+				set: 'cid:' + categoryObj.cid + ':uid:' + 1 + ':tids',
+				reverse: true,
 				start: 0,
 				stop: 10,
 				uid: 0,

@@ -3,9 +3,10 @@
     "search": "Ieškoti",
     "buttons.close": "Uždaryti",
     "403.title": "Prieiga negalima",
-    "403.message": "Atrodo, kad jūs bandote patekti į puslapį, kuriame jūsų prieiga negalima. Gal pabandykite <a href=\"/login\">prisijungti</a>?",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "Nerasta",
-    "404.message": "Atrodo, kad jūs patekote į puslapį, kuris neegzistuoja. Grįžkite į <a href='/'>namų puslapį</a>",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "Vidinė klaida.",
     "500.message": "Oops! Atrodo, kad kažkas nutiko!",
     "register": "Registruotis",
@@ -26,6 +27,7 @@
     "header.tags": "Žymos",
     "header.popular": "Populiarūs",
     "header.users": "Vartotojai",
+    "header.groups": "Groups",
     "header.chats": "Susirašinėjimai",
     "header.notifications": "Pranešimai",
     "header.search": "Ieškoti",
@@ -73,5 +75,7 @@
     "updated.title": "Forumas atnaujintas",
     "updated.message": "Forumas buvo atnaujintas iki naujausios versijos. Paspauskite čia norėdami perkrauti puslapį.",
     "privacy": "Privacy",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "Delete All"
 }

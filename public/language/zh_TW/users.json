@@ -5,5 +5,8 @@
     "search": "搜尋",
     "enter_username": "輸入想找的使用者帳號",
     "load_more": "載入更多",
-    "users-found-search-took": "找到%1個用戶！搜索時間%2毫秒。"
+    "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
+    "filter-by": "Filter By",
+    "online-only": "Online only",
+    "picture-only": "Picture only"
 }

@@ -186,9 +186,22 @@ module.exports = function(db, module) {
 			return callback(null, 0);
 		}
 		db.collection('objects').findOne({_key: key}, {_id: 0}, function(err, data) {
-			return callback(err, data ? data.members.length : 0);
+			callback(err, data ? data.members.length : 0);
 		});
 	};
+
+	module.setsCount = function(keys, callback) {
+		module.getSetsMembers(keys, function(err, setsMembers) {
+			if (err) {
+				return callback(err);
+			}
+
+			var counts = setsMembers.map(function(members) {
+				return (members && members.length) || 0;
+			});
+			callback(null, counts);
+		});
+	}
 
 	module.setRemoveRandom = function(key, callback) {
 		callback = callback || function() {};

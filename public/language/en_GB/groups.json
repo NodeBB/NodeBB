@@ -1,9 +1,27 @@
 {
 	"groups": "Groups",
 	"view_group": "View Group",
+	"owner": "Group Owner",
+	"new_group": "Create New Group",
+	"no_groups_found": "There are no groups to see",
+
+	"cover-instructions": "Drag and Drop a photo, drag to position, and hit <strong>Save</strong>",
+	"cover-change": "Change",
+	"cover-save": "Save",
+	"cover-saving": "Saving",
 
 	"details.title": "Group Details",
 	"details.members": "Member List",
+	"details.pending": "Pending Members",
 	"details.has_no_posts": "This group's members have not made any posts.",
-	"details.latest_posts": "Latest Posts"
+	"details.latest_posts": "Latest Posts",
+	"details.private": "Private Group",
+	"details.public": "Public Group",
+	"details.grant": "Grant/Rescind Ownership",
+	"details.kick": "Kick",
+
+	"details.owner_options": "Group Administration",
+
+	"event.updated": "Group details have been updated",
+	"event.deleted": "The group \"%1\" has been deleted"
 }

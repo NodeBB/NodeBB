@@ -9,6 +9,9 @@
     "reset.text1": "Λάβαμε ένα αίτημα για επαναφορά του κωδικού σου, πιθανότατα γιατί τον ξέχασες. Αν δεν έκανες εσύ αυτό το αίτημα, αγνόησε αυτό το email.",
     "reset.text2": "Για να κάνεις την επαναφορά του κωδικού σου, παρακαλώ πάτα στο παρακάτω σύνδεσμο:",
     "reset.cta": "Κάνε κλικ εδώ για να επαναφέρεις τον κωδικό σου",
+    "reset.notify.subject": "Password successfully changed",
+    "reset.notify.text1": "We are notifying you that on %1, your password was changed successfully.",
+    "reset.notify.text2": "If you did not authorise this, please notify an administrator immediately.",
     "digest.notifications": "You have unread notifications from %1:",
     "digest.latest_topics": "Πρόσφατα θέματα στο %1",
     "digest.cta": "Κάνε κλικ εδώ για να επισκεφτείς το %1",
@@ -17,6 +20,8 @@
     "notif.chat.subject": "Νέο μήνυμα συνομιλίας από τον/την %1",
     "notif.chat.cta": "Κάνε κλικ εδώ για να πας στην συνομιλία",
     "notif.chat.unsub.info": "Αυτή η ειδοποίηση για συνομιλία σου στάλθηκε λόγω των ρυθμίσεών σου. ",
+    "notif.post.cta": "Click here to read the full topic",
+    "notif.post.unsub.info": "This post notification was sent to you due to your subscription settings.",
     "test.text1": "Αυτό είναι ένα δοκιμαστικό email για να επιβεβαιώσουμε ότι ο emailer έχει στηθεί σωστά για το NodeBB.",
     "unsub.cta": "Κάνε κλικ εδώ για να αλλάξεις αυτές τις ρυθμίσεις",
     "closing": "Ευχαριστούμε!"

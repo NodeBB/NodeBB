@@ -26,7 +26,7 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/register', middleware, loginRegisterMiddleware, controllers.register);
 	setupPageRoute(app, '/confirm/:code', middleware, [], controllers.confirmEmail);
 	setupPageRoute(app, '/outgoing', middleware, [], controllers.outgoing);
-	setupPageRoute(app, '/search/:term?', middleware, [middleware.guestSearchingAllowed], controllers.search);
+	setupPageRoute(app, '/search/:term?', middleware, [middleware.guestSearchingAllowed], controllers.search.search);
 	setupPageRoute(app, '/reset/:code?', middleware, [], controllers.reset);
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
 }
@@ -40,13 +40,13 @@ function staticRoutes(app, middleware, controllers) {
 function topicRoutes(app, middleware, controllers) {
 	app.get('/api/topic/teaser/:topic_id', controllers.topics.teaser);
 
-	setupPageRoute(app, '/topic/:topic_id/:slug/:post_index?', middleware, [middleware.buildBreadcrumbs], controllers.topics.get);
-	setupPageRoute(app, '/topic/:topic_id/:slug?', middleware, [middleware.buildBreadcrumbs, middleware.addSlug], controllers.topics.get);
+	setupPageRoute(app, '/topic/:topic_id/:slug/:post_index?', middleware, [], controllers.topics.get);
+	setupPageRoute(app, '/topic/:topic_id/:slug?', middleware, [middleware.addSlug], controllers.topics.get);
 }
 
 function tagRoutes(app, middleware, controllers) {
-	setupPageRoute(app, '/tags/:tag', middleware, [], controllers.tags.getTag);
-	setupPageRoute(app, '/tags', middleware, [], controllers.tags.getTags);
+	setupPageRoute(app, '/tags/:tag', middleware, [middleware.publicTagListing], controllers.tags.getTag);
+	setupPageRoute(app, '/tags', middleware, [middleware.publicTagListing], controllers.tags.getTags);
 }
 
 function categoryRoutes(app, middleware, controllers) {
@@ -55,8 +55,8 @@ function categoryRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/unread', middleware, [middleware.authenticate], controllers.categories.unread);
 	app.get('/api/unread/total', middleware.authenticate, controllers.categories.unreadTotal);
 
-	setupPageRoute(app, '/category/:category_id/:slug/:topic_index', middleware, [middleware.buildBreadcrumbs], controllers.categories.get);
-	setupPageRoute(app, '/category/:category_id/:slug?', middleware, [middleware.buildBreadcrumbs, middleware.addSlug], controllers.categories.get);
+	setupPageRoute(app, '/category/:category_id/:slug/:topic_index', middleware, [], controllers.categories.get);
+	setupPageRoute(app, '/category/:category_id/:slug?', middleware, [middleware.addSlug], controllers.categories.get);
 }
 
 function accountRoutes(app, middleware, controllers) {
@@ -68,8 +68,10 @@ function accountRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/user/:userslug/followers', middleware, middlewares, controllers.accounts.getFollowers);
 	setupPageRoute(app, '/user/:userslug/posts', middleware, middlewares, controllers.accounts.getPosts);
 	setupPageRoute(app, '/user/:userslug/topics', middleware, middlewares, controllers.accounts.getTopics);
+	setupPageRoute(app, '/user/:userslug/groups', middleware, middlewares, controllers.accounts.getGroups);
 
 	setupPageRoute(app, '/user/:userslug/favourites', middleware, accountMiddlewares, controllers.accounts.getFavourites);
+	setupPageRoute(app, '/user/:userslug/watched', middleware, accountMiddlewares, controllers.accounts.getWatchedTopics);
 	setupPageRoute(app, '/user/:userslug/edit', middleware, accountMiddlewares, controllers.accounts.accountEdit);
 	setupPageRoute(app, '/user/:userslug/settings', middleware, accountMiddlewares, controllers.accounts.accountSettings);
 
@@ -92,11 +94,12 @@ function groupRoutes(app, middleware, controllers) {
 	var middlewares = [middleware.checkGlobalPrivacySettings];
 
 	setupPageRoute(app, '/groups', middleware, middlewares, controllers.groups.list);
-	setupPageRoute(app, '/groups/:name', middleware, middlewares, controllers.groups.details);
+	setupPageRoute(app, '/groups/:slug', middleware, middlewares, controllers.groups.details);
+	setupPageRoute(app, '/groups/:slug/members', middleware, middlewares, controllers.groups.members);
 }
 
 function setupPageRoute(router, name, middleware, middlewares, controller) {
-	middlewares = middlewares.concat([middleware.incrementPageViews, middleware.updateLastOnlineTime]);
+	middlewares = middlewares.concat([middleware.pageView]);
 
 	router.get(name, middleware.buildHeader, middlewares, controller);
 	router.get('/api' + name, middlewares, controller);
@@ -142,8 +145,8 @@ module.exports = function(app, middleware) {
 	userRoutes(router, middleware, controllers);
 	groupRoutes(router, middleware, controllers);
 
-	app.use(relativePath, router);
 	app.use(relativePath, pluginRouter);
+	app.use(relativePath, router);
 	app.use(relativePath, authRouter);
 
 	if (process.env.NODE_ENV === 'development') {
@@ -209,6 +212,10 @@ function handleErrors(app, middleware) {
 
 		if (err.code === 'EBADCSRFTOKEN') {
 			return res.sendStatus(403);
+		}
+
+		if (parseInt(err.status, 10) === 302 && err.path) {
+			return res.locals.isAPI ? res.status(302).json(err) : res.redirect(err.path);
 		}
 
 		res.status(err.status || 500);

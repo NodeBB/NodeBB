@@ -11,13 +11,14 @@ define('forum/topic', [
 	'forum/topic/events',
 	'forum/topic/browsing',
 	'forum/topic/posts',
-	'navigator'
-], function(pagination, infinitescroll, threadTools, postTools, events, browsing, posts, navigator) {
+	'navigator',
+	'sort'
+], function(pagination, infinitescroll, threadTools, postTools, events, browsing, posts, navigator, sort) {
 	var	Topic = {},
 		currentUrl = '';
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
-		if(data.url.indexOf('topic') !== 0) {
+		if(data.tpl_url !== 'topic') {
 			navigator.hide();
 			$('.header-topic-title').find('span').text('').hide();
 			app.removeAlert('bookmark');
@@ -44,7 +45,7 @@ define('forum/topic', [
 		threadTools.init(tid, thread_state);
 		events.init();
 
-		handleSorting();
+		sort.handleSort('topicPostSort', 'user.setTopicSort', 'topic/' + ajaxify.variables.get('topic_slug'));
 
 		enableInfiniteLoadingOrPagination();
 
@@ -58,7 +59,14 @@ define('forum/topic', [
 
 		$(window).trigger('action:topic.loaded');
 
-		socket.emit('topics.enter', tid);
+		if (app.user.uid) {
+			socket.emit('topics.enter', tid, function(err, data) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				browsing.onUpdateUsersInRoom(data);
+			});
+		}
 	};
 
 	Topic.toTop = function() {
@@ -68,9 +76,9 @@ define('forum/topic', [
 	Topic.toBottom = function() {
 		socket.emit('topics.postcount', ajaxify.variables.get('topic_id'), function(err, postCount) {
 			if (config.topicPostSort !== 'oldest_to_newest') {
-				postCount = 1;
+				postCount = 2;
 			}
-			navigator.scrollBottom(postCount - 1);
+			navigator.scrollBottom(postCount);
 		});
 	};
 
@@ -97,22 +105,10 @@ define('forum/topic', [
 
 	function getPostIndex() {
 		var parts = window.location.pathname.split('/');
-		return parts[4] ? parseInt(parts[4], 10) : 0;
-	}
-
-	function handleSorting() {
-		var threadSort = $('.thread-sort');
-		threadSort.find('i').removeClass('fa-check');
-		var currentSetting = threadSort.find('a[data-sort="' + config.topicPostSort + '"]');
-		currentSetting.find('i').addClass('fa-check');
-
-		$('.thread-sort').on('click', 'a', function() {
-			var newSetting = $(this).attr('data-sort');
-			socket.emit('user.setTopicSort', newSetting, function(err) {
-				config.topicPostSort = newSetting;
-				ajaxify.go('topic/' + ajaxify.variables.get('topic_slug'));
-			});
-		});
+		if (parts[parts.length - 1] && utils.isNumber(parts[parts.length - 1])) {
+			return parseInt(parts[parts.length - 1], 10)
+		}
+		return 0;
 	}
 
 	function addBlockQuoteHandler() {

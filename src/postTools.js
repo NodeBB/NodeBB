@@ -18,39 +18,44 @@ var winston = require('winston'),
 
 (function(PostTools) {
 
-	PostTools.edit = function(uid, pid, title, content, options, callback) {
-		options = options || {};
+	PostTools.edit = function(data, callback) {
+		var options = data.options || {},
+			title = data.title.trim();
 
 		async.waterfall([
 			function (next) {
-				privileges.posts.canEdit(pid, uid, next);
+				privileges.posts.canEdit(data.pid, data.uid, next);
 			},
 			function(canEdit, next) {
 				if (!canEdit) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
-				posts.getPostData(pid, next);
+				posts.getPostData(data.pid, next);
 			},
 			function(postData, next) {
-				postData.content = content;
-				plugins.fireHook('filter:post.save', postData, next);
+				postData.content = data.content;
+				plugins.fireHook('filter:post.edit', {post: postData, uid: data.uid}, next);
 			}
-		], function(err, postData) {
+		], function(err, data) {
 			if (err) {
 				return callback(err);
 			}
-
+			var postData = data.post;
 			async.parallel({
 				post: function(next) {
-					posts.setPostFields(pid, {
+					var d = {
 						edited: Date.now(),
-						editor: uid,
+						editor: data.uid,
 						content: postData.content
-					}, next);
+					};
+					if (data.handle) {
+						d.handle = data.handle;
+					}
+					posts.setPostFields(data.pid, d, next);
 				},
 				topic: function(next) {
 					var tid = postData.tid;
-					posts.isMain(pid, function(err, isMainPost) {
+					posts.isMain(data.pid, function(err, isMainPost) {
 						if (err) {
 							return next(err);
 						}
@@ -64,11 +69,9 @@ var winston = require('winston'),
 							});
 						}
 
-						title = title.trim();
-
 						var topicData = {
 							tid: tid,
-							mainPid: pid,
+							mainPid: data.pid,
 							title: title,
 							slug: tid + '/' + utils.slugify(title)
 						};
@@ -96,14 +99,14 @@ var winston = require('winston'),
 					});
 				},
 				postData: function(next) {
-					PostTools.parsePost(postData, uid, next);
+					PostTools.parsePost(postData, data.uid, next);
 				}
 			}, function(err, results) {
 				if (err) {
 					return callback(err);
 				}
 				results.content = results.postData.content;
-				//events.logPostEdit(uid, pid);
+
 				plugins.fireHook('action:post.edit', postData);
 				callback(null, results);
 			});
@@ -143,7 +146,6 @@ var winston = require('winston'),
 				return callback(err);
 			}
 
-			events[isDelete ? 'logPostDelete' : 'logPostRestore'](uid, pid);
 			if (isDelete) {
 				posts.delete(pid, callback);
 			} else {
@@ -162,7 +164,7 @@ var winston = require('winston'),
 			if (err || !canEdit) {
 				return callback(err || new Error('[[error:no-privileges]]'));
 			}
-			events.logPostPurge(uid, pid);
+
 			posts.purge(pid, callback);
 		});
 	};

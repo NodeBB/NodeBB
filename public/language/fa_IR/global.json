@@ -3,9 +3,10 @@
     "search": "جستجو",
     "buttons.close": "بستن",
     "403.title": "دسترسی ندارید",
-    "403.message": "شما برگه‌ای را فراخوانده‌اید که دسترسی به آن ندارید. شاید باید <a href='/login'>به درون بیایید</a>؟",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "یافت نشد",
-    "404.message": "شما برگه‌ای را فراخوانده‌اید که وجود ندارد. به <a href='/'>برگهٔ خانه</a> برگردید.",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "خطای درونی.",
     "500.message": "اوه! گویا اشتباهی رخ داده!",
     "register": "نام‌نویسی",
@@ -26,6 +27,7 @@
     "header.tags": "برچسب‌ها",
     "header.popular": "دوست‌داشتنی‌ها",
     "header.users": "کاربران",
+    "header.groups": "Groups",
     "header.chats": "گفتگوها",
     "header.notifications": "آگاه‌سازی‌ها",
     "header.search": "جستجو",
@@ -73,5 +75,7 @@
     "updated.title": "انجمن بروزرسانی شد",
     "updated.message": "این انجمن به آخرین نسخه بروزرسانی شد. برای بارگزاری مجدد صفحه اینجا کلیک کنید.",
     "privacy": "Privacy",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "Delete All"
 }

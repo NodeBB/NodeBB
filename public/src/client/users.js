@@ -86,66 +86,86 @@ define('forum/users', function() {
 
 	function handleSearch() {
 		var timeoutId = 0;
-		var lastSearch = null;
 
 		$('#search-user').on('keyup', function() {
-			if (timeoutId !== 0) {
+			if (timeoutId) {
 				clearTimeout(timeoutId);
 				timeoutId = 0;
 			}
 
-			timeoutId = setTimeout(function() {
-				function reset() {
-					notify.html('<i class="fa fa-search"></i>');
-					notify.parent().removeClass('btn-warning label-warning btn-success label-success');
-				}
-				var username = $('#search-user').val();
-				var notify = $('#user-notfound-notify');
+			timeoutId = setTimeout(doSearch, 250);
+		});
 
-				if (username === '') {
-					notify.html('<i class="fa fa-circle-o"></i>');
-					notify.parent().removeClass('btn-warning label-warning btn-success label-success');
-					return;
-				}
+		$('.search select, .search input[type="checkbox"]').on('change', function() {
+			doSearch();
+		});
 
-				if (lastSearch === username) {
-					return;
-				}
-				lastSearch = username;
+		$('.users').on('click', '.pagination a', function() {
+			doSearch($(this).attr('data-page'));
+			return false;
+		})
+	}
 
-				notify.html('<i class="fa fa-spinner fa-spin"></i>');
+	function doSearch(page) {
+		function reset() {
+			notify.html('<i class="fa fa-search"></i>');
+			notify.parent().removeClass('btn-warning label-warning btn-success label-success');
+		}
 
-				socket.emit('user.search', username, function(err, data) {
-					if (err) {
-						reset();
-						return app.alertError(err.message);
-					}
+		var username = $('#search-user').val();
+		var notify = $('#user-notfound-notify');
+		page = page || 1;
 
-					if (!data) {
-						reset();
-						return;
-					}
-
-					templates.parse('users', 'users', data, function(html) {
-						translator.translate(html, function(translated) {
-							$('#users-container').html(translated);
-							
-							if (!data.users.length) {
-								translator.translate('[[error:no-user]]', function(translated) {
-									notify.html(translated);
-									notify.parent().addClass('btn-warning label-warning');
-								});
-							} else {
-								translator.translate('[[users:users-found-search-took, ' + data.users.length + ', ' + data.timing + ']]', function(translated) {
-									notify.html(translated);
-									notify.parent().addClass('btn-success label-success');
-								});
-							}
-						});
-					});
+		notify.html('<i class="fa fa-spinner fa-spin"></i>');
+		var filters = [];
+		$('.user-filter').each(function() {
+			var $this = $(this);
+			if($this.is(':checked')) {
+				filters.push({
+					field:$this.attr('data-filter-field'),
+					type: $this.attr('data-filter-type'),
+					value: $this.attr('data-filter-value')
 				});
+			}
+		});
 
-			}, 250);
+		socket.emit('user.search', {
+			query: username,
+			page: page,
+			searchBy: ['username', 'fullname'],
+			sortBy: $('.search select').val(),
+			filterBy: filters
+		}, function(err, data) {
+			if (err) {
+				reset();
+				return app.alertError(err.message);
+			}
+
+			if (!data) {
+				return reset();
+			}
+
+			templates.parse('partials/paginator', {pagination: data.pagination}, function(html) {
+				$('.pagination-container').replaceWith(html);
+			})
+
+			templates.parse('users', 'users', data, function(html) {
+				translator.translate(html, function(translated) {
+					$('#users-container').html(translated);
+
+					if (!data.users.length) {
+						translator.translate('[[error:no-user]]', function(translated) {
+							notify.html(translated);
+							notify.parent().removeClass('btn-success label-success').addClass('btn-warning label-warning');
+						});
+					} else {
+						translator.translate('[[users:users-found-search-took, ' + data.matchCount + ', ' + data.timing + ']]', function(translated) {
+							notify.html(translated);
+							notify.parent().removeClass('btn-warning label-warning').addClass('btn-success label-success');
+						});
+					}
+				});
+			});
 		});
 	}
 

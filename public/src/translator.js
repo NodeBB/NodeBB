@@ -21,6 +21,16 @@
 		languages[language].loading = languages[language].loading || {};
 	};
 
+	translator.getTranslations = function(language, filename, callback) {
+		if (languages[language] && languages[language].loaded[filename]) {
+			callback(languages[language].loaded[filename]);
+		} else {
+			translator.load(language, filename, function() {
+				callback(languages[language].loaded[filename]);
+			});
+		}
+	}
+
 	translator.getLanguage = function() {
 		return config.defaultLang;
 	};
@@ -75,6 +85,34 @@
 		}
 	};
 
+	translator.toggleTimeagoShorthand = function() {
+		if (!translator.timeagoStrings) {
+			translator.timeagoStrings = $.extend({}, jQuery.timeago.settings.strings);
+			jQuery.timeago.settings.strings = {
+				prefixAgo: null,
+				prefixFromNow: null,
+				suffixAgo: "",
+				suffixFromNow: "",
+				seconds: "1m",
+				minute: "1m",
+				minutes: "%dm",
+				hour: "1h",
+				hours: "%dh",
+				day: "1d",
+				days: "%dd",
+				month: "1mo",
+				months: "%dmo",
+				year: "1yr",
+				years: "%dyr",
+				wordSeparator: " ",
+				numbers: []
+			};
+		} else {
+			jQuery.timeago.settings.strings = $.extend({}, translator.timeagoStrings);
+			delete translator.timeagoStrings;
+		}
+	};
+
 	translator.translate = function (text, language, callback) {
 		if (typeof language === 'function') {
 			callback = language;
@@ -123,7 +161,7 @@
 
 		var parsedKey = key.replace('[[', '').replace(']]', '').split(':');
 		if (!(parsedKey[0] && parsedKey[1])) {
-			return;
+			return callback(data);
 		}
 
 		var languageFile = parsedKey[0];
@@ -180,7 +218,7 @@
 					callback(translations);
 				}
 
-				while (languages[language].callbacks[filename] && languages[language].callbacks[filename].length) {
+				while (languages[language].callbacks && languages[language].callbacks[filename] && languages[language].callbacks[filename].length) {
 					languages[language].callbacks[filename].pop()(translations);
 				}
 

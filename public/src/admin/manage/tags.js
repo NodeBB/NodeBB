@@ -1,7 +1,11 @@
 "use strict";
 /*global define, socket, app, admin, utils, bootbox, RELATIVE_PATH*/
 
-define('admin/manage/tags', ['forum/infinitescroll', 'admin/modules/selectable'], function(infinitescroll, selectable) {
+define('admin/manage/tags', [
+	'forum/infinitescroll',
+	'admin/modules/selectable',
+	'admin/modules/colorpicker'
+], function(infinitescroll, selectable, colorpicker) {
 	var	Tags = {},
 		timeoutId = 0;
 
@@ -111,7 +115,7 @@ define('admin/manage/tags', ['forum/infinitescroll', 'admin/modules/selectable']
 			var $inputEl = $(inputEl),
 				previewEl = $inputEl.parents('.tag-row').find('.tag-item');
 
-			admin.enableColorPicker($inputEl, function(hsb, hex) {
+			colorpicker.enable($inputEl, function(hsb, hex) {
 				if ($inputEl.attr('data-name') === 'bgColor') {
 					previewEl.css('background-color', '#' + hex);
 				} else if ($inputEl.attr('data-name') === 'color') {

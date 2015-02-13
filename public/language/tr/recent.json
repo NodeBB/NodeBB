@@ -5,5 +5,14 @@
     "month": "Ay",
     "year": "Yıl",
     "alltime": "Hepsi",
-    "no_recent_topics": "Güncel konular yok."
+    "no_recent_topics": "Güncel konular yok.",
+    "there-is-a-new-topic": "Yeni bir konu mevcut.",
+    "there-is-a-new-topic-and-a-new-post": "Yeni bir konu ve yayın mevcut.",
+    "there-is-a-new-topic-and-new-posts": "Bir adet yeni konu ve %1 adet yeni yayın var.",
+    "there-are-new-topics": "%1 adet yeni konu mevcut.",
+    "there-are-new-topics-and-a-new-post": "%1 adet yeni konu ve bir adet yeni yayın mevcut.",
+    "there-are-new-topics-and-new-posts": "%1 adet yeni konu %2 adet yeni yayın mevcut.",
+    "there-is-a-new-post": "Yeni bir yayın mevcut.",
+    "there-are-new-posts": "%1 adet yeni yayın mevcut.",
+    "click-here-to-reload": "Yenilemek için buraya tıklayın."
 }

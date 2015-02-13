@@ -2,12 +2,13 @@
 
 var async = require('async'),
 	db = require('../database'),
-	meta = require('../meta');
+	meta = require('../meta'),
+	events = require('../events');
 
 module.exports = function(User) {
 	User.auth = {};
 
-	User.auth.logAttempt = function(uid, callback) {
+	User.auth.logAttempt = function(uid, ip, callback) {
 		db.exists('lockout:' + uid, function(err, exists) {
 			if (err) {
 				return callback(err);
@@ -28,9 +29,16 @@ module.exports = function(User) {
 						if (err) {
 							return callback(err);
 						}
+						var duration = 1000 * 60 * (meta.config.lockoutDuration || 60);
+
 						db.delete('loginAttempts:' + uid);
-						db.pexpire('lockout:' + uid, 1000 * 60 * (meta.config.lockoutDuration || 60));
-						callback(new Error('account-locked'));
+						db.pexpire('lockout:' + uid, duration);
+						events.log({
+							type: 'account-locked',
+							uid: uid,
+							ip: ip
+						});
+						callback(new Error('[[error:account-locked]]'));
 					});
 				} else {
 					db.pexpire('loginAttempts:' + uid, 1000 * 60 * 60);

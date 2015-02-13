@@ -39,15 +39,15 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 
 	function addVoteHandler() {
 		$('#post-container').on('mouseenter', '.post-row .votes', function() {
-			loadDataAndCreateTooltip($(this), 'posts.getUpvoters');
+			loadDataAndCreateTooltip($(this));
 		});
 	}
 
-	function loadDataAndCreateTooltip(el, method) {
+	function loadDataAndCreateTooltip(el) {
 		var pid = el.parents('.post-row').attr('data-pid');
-		socket.emit(method, pid, function(err, data) {
-			if (!err) {
-				createTooltip(el, data);
+		socket.emit('posts.getUpvoters', [pid], function(err, data) {
+			if (!err && data.length) {
+				createTooltip(el, data[0]);
 			}
 		});
 	}

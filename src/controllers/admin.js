@@ -113,9 +113,15 @@ function getStatsForSet(set, field, callback) {
 			db.sortedSetCount(set, now - terms.month, now, next);
 		},
 		alltime: function(next) {
-			db.getObjectField('global', field, next);
+			getGlobalField(field, next);
 		}
 	}, callback);
+}
+
+function getGlobalField(field, callback) {
+	db.getObjectField('global', field, function(err, count) {
+		callback(err, parseInt(count, 10) || 0);
+	});
 }
 
 adminController.categories.active = function(req, res, next) {
@@ -174,14 +180,14 @@ adminController.database.get = function(req, res, next) {
 };
 
 adminController.events.get = function(req, res, next) {
-	events.getLog(-1, 5000, function(err, data) {
-		if(err || !data) {
+	events.getEvents(0, 19, function(err, events) {
+		if(err || !events) {
 			return next(err);
 		}
 
 		res.render('admin/advanced/events', {
-			eventdata: data.data,
-			next: data.next
+			events: events,
+			next: 20
 		});
 	});
 };
@@ -237,6 +243,9 @@ adminController.extend.widgets = function(req, res, next) {
 				{ name: 'Global Sidebar', template: 'global', location: 'sidebar' },
 				{ name: 'Global Header', template: 'global', location: 'header' },
 				{ name: 'Global Footer', template: 'global', location: 'footer' },
+
+				{ name: 'Group Page (Left)', template: 'groups/details.tpl', location: 'left'},
+				{ name: 'Group Page (Right)', template: 'groups/details.tpl', location: 'right'}
 			];
 
 			plugins.fireHook('filter:widgets.getAreas', defaultAreas, next);

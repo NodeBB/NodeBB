@@ -1,12 +1,14 @@
 "use strict";
 /*global define, templates, socket, ajaxify, app, admin, bootbox*/
 
-define('admin/manage/groups', ['admin/modules/iconSelect'], function(iconSelect) {
+define('admin/manage/groups', [
+	'iconSelect',
+	'admin/modules/colorpicker'
+], function(iconSelect, colorpicker) {
 	var	Groups = {};
 
 	Groups.init = function() {
-		var yourid = ajaxify.variables.get('yourid'),
-			createModal = $('#create-modal'),
+		var	createModal = $('#create-modal'),
 			createGroupName = $('#create-group-name'),
 			createModalGo = $('#create-modal-go'),
 			createModalError = $('#create-modal-error'),
@@ -46,7 +48,7 @@ define('admin/manage/groups', ['admin/modules/iconSelect'], function(iconSelect)
 				},
 				errorText;
 
-			socket.emit('admin.groups.create', submitObj, function(err, data) {
+			socket.emit('admin.groups.create', submitObj, function(err) {
 				if (err) {
 					switch (err) {
 						case 'group-exists':
@@ -65,7 +67,7 @@ define('admin/manage/groups', ['admin/modules/iconSelect'], function(iconSelect)
 					createModalError.addClass('hide');
 					createGroupName.val('');
 					createModal.on('hidden.bs.modal', function() {
-						ajaxify.go('admin/manage/groups');
+						ajaxify.refresh();
 					});
 					createModal.modal('hide');
 				}
@@ -99,12 +101,14 @@ define('admin/manage/groups', ['admin/modules/iconSelect'], function(iconSelect)
 			case 'delete':
 				bootbox.confirm('Are you sure you wish to delete this group?', function(confirm) {
 					if (confirm) {
-						socket.emit('admin.groups.delete', groupName, function(err, data) {
+						socket.emit('groups.delete', {
+							groupName: groupName
+						}, function(err, data) {
 							if(err) {
 								return app.alertError(err.message);
 							}
 
-							ajaxify.go('admin/manage/groups');
+							ajaxify.refresh();
 						});
 					}
 				});
@@ -147,7 +151,7 @@ define('admin/manage/groups', ['admin/modules/iconSelect'], function(iconSelect)
 				var searchText = groupDetailsSearch.val(),
 					foundUser;
 
-				socket.emit('admin.user.search', {type: 'username', query:searchText}, function(err, results) {
+				socket.emit('admin.user.search', {query: searchText}, function(err, results) {
 					if (!err && results && results.users.length > 0) {
 						var numResults = results.users.length, x;
 						if (numResults > 4) {
@@ -219,7 +223,7 @@ define('admin/manage/groups', ['admin/modules/iconSelect'], function(iconSelect)
 			iconSelect.init(groupIcon);
 		});
 
-		admin.enableColorPicker(changeGroupLabelColor, function(hsb, hex) {
+		colorpicker.enable(changeGroupLabelColor, function(hsb, hex) {
 			groupLabelPreview.css('background-color', '#' + hex);
 		});
 

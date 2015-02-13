@@ -271,8 +271,45 @@ module.exports = function(Topics) {
 			matches = matches.slice(0, 20).sort(function(a, b) {
 				return a > b;
 			});
+			
+			plugins.fireHook('filter:tags.search', {data: data, matches: matches}, function(err, data) {
+				callback(err, data ? data.matches : []);
+			});
+		});
+	};
 
-			callback(null, matches);
+	Topics.searchAndLoadTags = function(data, callback) {
+		if (!data.query || !data.query.length) {
+			return callback(null, []);
+		}
+		Topics.searchTags(data, function(err, tags) {
+			if (err) {
+				return callback(err);
+			}
+			async.parallel({
+				counts: function(next) {
+					db.sortedSetScores('tags:topic:count', tags, next);
+				},
+				tagData: function(next) {
+					tags = tags.map(function(tag) {
+						return {value: tag};
+					});
+
+					Topics.getTagData(tags, next);
+				}
+			}, function(err, results) {
+				if (err) {
+					return callback(err);
+				}
+				results.tagData.forEach(function(tag, index) {
+					tag.score = results.counts[index];
+				});
+				results.tagData.sort(function(a, b) {
+					return b.score - a.score;
+				});
+
+				callback(null, results.tagData);
+			});
 		});
 	};
 

@@ -19,10 +19,11 @@ var	fs = require('fs'),
 		return Emailer;
 	};
 
-	Emailer.send = function(template, uid, params) {
+	Emailer.send = function(template, uid, params, callback) {
+		if (!callback) { callback = function() {}; }
 		if (!app) {
 			winston.warn('[emailer] App not ready!');
-			return;
+			return callback();
 		}
 
 		async.parallel({
@@ -36,7 +37,8 @@ var	fs = require('fs'),
 			settings: async.apply(User.getSettings, uid)
 		}, function(err, results) {
 			if (err) {
-				return winston.error('[emailer] Error sending digest : ' + err.stack);
+				winston.error('[emailer] Error sending digest : ' + err.stack);
+				return callback(err);
 			}
 			async.map([results.html, results.plaintext, params.subject], function(raw, next) {
 				translator.translate(raw, results.settings.language || meta.config.defaultLang || 'en_GB', function(translated) {
@@ -44,9 +46,11 @@ var	fs = require('fs'),
 				});
 			}, function(err, translated) {
 				if (err) {
-					return winston.error(err.message);
+					winston.error(err.message);
+					return callback(err);
 				} else if (!results.email) {
-					return winston.warn('uid : ' + uid + ' has no email, not sending.');
+					winston.warn('uid : ' + uid + ' has no email, not sending.');
+					return callback();
 				}
 
 				if (Plugins.hasListeners('action:email.send')) {
@@ -57,10 +61,13 @@ var	fs = require('fs'),
 						html: translated[0],
 						plaintext: translated[1],
 						template: template,
-						uid: uid
+						uid: uid,
+						pid: params.pid
 					});
+					callback();
 				} else {
 					winston.warn('[emailer] No active email plugin found!');
+					callback();
 				}
 			});
 		});

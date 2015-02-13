@@ -1,12 +1,12 @@
 
 'use strict';
 
-/* globals define, config, utils*/
+/* globals app, define, config, utils*/
 
 define('composer/resize', function() {
-	var resize = {};
-	var env = utils.findBootstrapEnvironment();
-	var oldPercentage = 0;
+	var resize = {},
+		oldPercentage = 0,
+		env;
 
 	resize.reposition = function(postContainer) {
 		var	percentage = localStorage.getItem('composer:resizePercentage');
@@ -15,6 +15,10 @@ define('composer/resize', function() {
 	};
 
 	function doResize(postContainer, percentage) {
+		if (!env) {
+			env = utils.findBootstrapEnvironment();
+		}
+
 		if (percentage) {
 			if (env === 'md' || env === 'lg') {
 				postContainer.css('height', Math.floor($(window).height() * percentage) + 'px');
@@ -38,6 +42,7 @@ define('composer/resize', function() {
 
 		postContainer.css('visibility', 'visible').css('z-index', 2);
 
+		// Add some extra space at the bottom of the body so that the user can still scroll to the last post w/ composer open
 		$('body').css({'margin-bottom': postContainer.css('height')});
 
 		resizeWritePreview(postContainer);

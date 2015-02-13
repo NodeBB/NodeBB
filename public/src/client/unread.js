@@ -6,7 +6,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 	var Unread = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
-		if(data.url.indexOf('unread') !== 0) {
+		if (data.tpl_url !== 'unread') {
 			recent.removeListeners();
 		}
 	});

@@ -1,4 +1,5 @@
 'use strict';
+/*global require, before, beforeEach, after*/
 
 var	assert = require('assert'),
 	db = require('./mocks/databasemock'),

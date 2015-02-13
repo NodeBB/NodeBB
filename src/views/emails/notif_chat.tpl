@@ -3,7 +3,7 @@
 <p>{summary}:</p>
 <blockquote>{message.content}</blockquote>
 
-<a href="{url}">[[email:notif.chat.cta]]</a>
+<a href="{url}/chats/{fromUserslug}">[[email:notif.chat.cta]]</a>
 
 <p>
 	[[email:closing]]<br />

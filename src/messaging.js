@@ -74,8 +74,14 @@ var db = require('./database'),
 								if (err) {
 									return next(err);
 								}
+
+								if (!messages || !messages[0]) {
+									return next(null, null);
+								}
+
 								messages[0].newSet = isNewSet;
-								next(null, messages ? messages[0] : null);
+								messages[0].mid = mid;
+								next(null, messages[0]);
 							});
 						}
 					], callback);
@@ -335,7 +341,8 @@ var db = require('./database'),
 						summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
 						message: messageObj,
 						site_title: meta.config.title || 'NodeBB',
-						url: nconf.get('url') + '/chats/' + utils.slugify(messageObj.fromUser.username)
+						url: nconf.get('url'),
+						fromUserslug: utils.slugify(messageObj.fromUser.username)
 					});
 				}
 			});

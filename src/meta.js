@@ -3,11 +3,14 @@
 var async = require('async'),
 	winston = require('winston'),
 	templates = require('templates.js'),
+	os = require('os'),
+	nconf = require('nconf'),
 
 	user = require('./user'),
 	groups = require('./groups'),
 	plugins = require('./plugins'),
 	emitter = require('./emitter'),
+	pubsub = require('./pubsub'),
 	auth = require('./routes/authentication');
 
 (function (Meta) {
@@ -34,6 +37,18 @@ var async = require('async'),
 	};
 
 	Meta.reload = function(callback) {
+		pubsub.publish('meta:reload', {hostname: os.hostname()});
+		reload(callback);
+	};
+
+	pubsub.on('meta:reload', function(data) {
+		if (data.hostname !== os.hostname()) {
+			reload();
+		}
+	});
+
+	function reload(callback) {
+		callback = callback || function() {};
 		async.series([
 			async.apply(plugins.clearRequireCache),
 			async.apply(plugins.reload),
@@ -54,14 +69,26 @@ var async = require('async'),
 			if (!err) {
 				emitter.emit('nodebb:ready');
 			}
+			Meta.reloadRequired = false;
 
-			if (callback) {
-				callback.apply(null, arguments);
-			}
+			callback(err);
 		});
-	};
+	}
 
 	Meta.restart = function() {
+		pubsub.publish('meta:restart', {hostname: os.hostname()});
+		restart();
+	};
+
+	if (nconf.get('isPrimary') === 'true') {
+		pubsub.on('meta:restart', function(data) {
+			if (data.hostname !== os.hostname()) {
+				restart();
+			}
+		});
+	}
+
+	function restart() {
 		if (process.send) {
 			process.send({
 				action: 'restart'
@@ -69,5 +96,5 @@ var async = require('async'),
 		} else {
 			winston.error('[meta.restart] Could not restart, are you sure NodeBB was started with `./nodebb start`?');
 		}
-	};
+	}
 }(exports));

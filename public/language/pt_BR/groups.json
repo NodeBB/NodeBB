@@ -1,8 +1,23 @@
 {
     "groups": "Grupos",
     "view_group": "Ver Grupo",
+    "owner": "Dono do Grupo",
+    "new_group": "Criar Novo Grupo",
+    "no_groups_found": "Não há grupos para ver",
+    "cover-instructions": "Arraste uma foto, arraste para a posição correta e clique em <strong>Salvar</strong>",
+    "cover-change": "Alterar",
+    "cover-save": "Salvar",
+    "cover-saving": "Salvando",
     "details.title": "Detalhes do Grupo",
     "details.members": "Lista de Membros",
+    "details.pending": "Membros Pendentes",
     "details.has_no_posts": "Os membros deste grupo não fizeram quaisquer posts.",
-    "details.latest_posts": "Últimos Posts"
+    "details.latest_posts": "Últimos Posts",
+    "details.private": "Grupo Privado",
+    "details.public": "Grupo Público.",
+    "details.grant": "Grant/Rescind Ownership",
+    "details.kick": "Kick",
+    "details.owner_options": "Administração do Grupo",
+    "event.updated": "Os detalhes do grupo foram atualizados",
+    "event.deleted": "O grupo \"%1\" foi deletado"
 }

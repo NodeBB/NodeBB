@@ -61,7 +61,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 		fork.init();
 
 		$('.posts').on('click', '.follow', function() {
-			socket.emit('topics.follow', tid, function(err, state) {
+			socket.emit('topics.toggleFollow', tid, function(err, state) {
 				if(err) {
 					return app.alert({
 						type: 'danger',
@@ -99,7 +99,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 	ThreadTools.setLockedState = function(data) {
 		var threadEl = $('#post-container');
 		if (parseInt(data.tid, 10) === parseInt(threadEl.attr('data-tid'), 10)) {
-			var isLocked = data.isLocked && !app.isAdmin;
+			var isLocked = data.isLocked && !app.user.isAdmin;
 
 			$('.lock_thread').translateHtml('<i class="fa fa-fw fa-' + (data.isLocked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (data.isLocked ? 'un': '') + 'lock]]');
 

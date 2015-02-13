@@ -11,7 +11,9 @@ var topicsController = {},
 	topics = require('../topics'),
 	posts = require('../posts'),
 	privileges = require('../privileges'),
+	plugins = require('../plugins'),
 	helpers = require('./helpers'),
+	pagination = require('../pagination'),
 	utils = require('../../public/src/utils');
 
 topicsController.get = function(req, res, next) {
@@ -52,7 +54,7 @@ topicsController.get = function(req, res, next) {
 
 			var settings = results.settings;
 			var postCount = parseInt(results.topic.postcount, 10);
-			var pageCount = Math.ceil((postCount - 1) / settings.postsPerPage);
+			var pageCount = Math.max(1, Math.ceil((postCount - 1) / settings.postsPerPage));
 
 			if (utils.isNumber(req.params.post_index)) {
 				var url = '';
@@ -87,17 +89,23 @@ topicsController.get = function(req, res, next) {
 			var postIndex = 0;
 			page = parseInt(req.query.page, 10) || 1;
 			req.params.post_index = parseInt(req.params.post_index, 10) || 0;
+			if (reverse && req.params.post_index === 1) {
+				req.params.post_index = 0;
+			}
 			if (!settings.usePagination) {
 				if (reverse) {
-					if (req.params.post_index === 1) {
-						req.params.post_index = 0;
-					}
-					postIndex = Math.max(postCount - (req.params.post_index || postCount) - (settings.postsPerPage - 1), 0);
+					postIndex = Math.max(0, postCount - (req.params.post_index || postCount) - (settings.postsPerPage - 1));
 				} else {
-					postIndex = Math.max((req.params.post_index || 1) - (settings.postsPerPage + 1), 0);
+					postIndex = Math.max(0, (req.params.post_index || 1) - (settings.postsPerPage + 1));
 				}
 			} else if (!req.query.page) {
-				var index = Math.max(req.params.post_index - 1, 0) || 0;
+				var index = 0;
+				if (reverse) {
+					index = Math.max(0, postCount - (req.params.post_index || postCount));
+				} else {
+					index = Math.max(0, req.params.post_index - 1) || 0;
+				}
+
 				page = Math.max(1, Math.ceil(index / settings.postsPerPage));
 			}
 
@@ -114,12 +122,32 @@ topicsController.get = function(req, res, next) {
 				}
 
 				topicData.pageCount = pageCount;
-
 				topicData.currentPage = page;
-				if(page > 1) {
+
+				if (page > 1) {
 					topicData.posts.splice(0, 1);
 				}
 
+				plugins.fireHook('filter:controllers.topic.get', topicData, next);
+			});
+		},
+		function (topicData, next) {
+			var breadcrumbs = [
+				{
+					text: topicData.category.name,
+					url: nconf.get('relative_path') + '/category/' + topicData.category.slug
+				},
+				{
+					text: topicData.title,
+					url: nconf.get('relative_path') + '/topic/' + topicData.slug
+				}
+			];
+
+			helpers.buildCategoryBreadcrumbs(topicData.category.parentCid, function(err, crumbs) {
+				if (err) {
+					return next(err);
+				}
+				topicData.breadcrumbs = crumbs.concat(breadcrumbs);
 				next(null, topicData);
 			});
 		},
@@ -231,21 +259,13 @@ topicsController.get = function(req, res, next) {
 		data['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 		data['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+		data['rssFeedUrl'] = nconf.get('relative_path') + '/topic/' + data.tid + '.rss';
+		data.pagination = pagination.create(data.currentPage, data.pageCount);
+		data.pagination.rel.forEach(function(rel) {
+			res.locals.linkTags.push(rel);
+		});
 
 		topics.increaseViewCount(tid);
-
-		if (!res.locals.isAPI) {
-			// Paginator for noscript
-			data.pages = [];
-			for(var x=1; x<=data.pageCount; x++) {
-				data.pages.push({
-					page: x,
-					active: x === parseInt(page, 10)
-				});
-			}
-		}
-
-		data.breadcrumbs = res.locals.breadcrumbs;
 		res.render('topic', data);
 	});
 };

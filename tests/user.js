@@ -1,3 +1,6 @@
+'use strict';
+/*global require, process, before, beforeEach, after*/
+
 var winston = require('winston');
 
 process.on('uncaughtException', function (err) {
@@ -151,6 +154,39 @@ describe('User', function() {
 					cid: testCid
 				}, function(err) {
 					assert.ifError(err);
+					done();
+				});
+			});
+		});
+	});
+
+	describe('.search()', function() {
+		it('should return an object containing an array of matching users', function(done) {
+			User.search({query: 'john'}, function(err, searchData) {
+				assert.ifError(err);
+				assert.equal(Array.isArray(searchData.users) && searchData.users.length > 0, true);
+				assert.equal(searchData.users[0].username, 'John Smith');
+				done();
+			});
+		});
+	});
+
+	describe('.delete()', function() {
+		var uid;
+		before(function(done) {
+			User.create({username: 'usertodelete', password: '123456', email: 'delete@me.com'}, function(err, newUid) {
+				assert.ifError(err);
+				uid = newUid;
+				done();
+			});
+		});
+
+		it('should delete a user account', function(done) {
+			User.delete(uid, function(err) {
+				assert.ifError(err);
+				User.exists('usertodelete', function(err, exists) {
+					assert.ifError(err);
+					assert.equal(exists, false);
 					done();
 				});
 			});

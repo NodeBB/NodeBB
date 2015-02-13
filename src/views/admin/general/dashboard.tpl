@@ -10,6 +10,15 @@
 					</ul>
 					<canvas id="analytics-traffic" width="100%" height="400"></canvas>
 				</div>
+				<hr/>
+				<div class="text-center pull-left monthly-pageviews">
+					<div><strong id="pageViewsLastMonth"></strong></div>
+					<div>Page views Last Month</div>
+				</div>
+				<div class="text-center pull-left monthly-pageviews">
+					<div><strong id="pageViewsThisMonth"></strong></div>
+					<div>Page views This Month</div>
+				</div>
 			</div>
 		</div>
 

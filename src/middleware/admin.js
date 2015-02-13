@@ -19,10 +19,10 @@ middleware.isAdmin = function(req, res, next) {
 	winston.warn('[middleware.admin.isAdmin] deprecation warning, no need to use this from plugins!');
 
 	if (!req.user) {
-		controllers.helpers.notAllowed(req, res);
+		return controllers.helpers.notAllowed(req, res);
 	}
 
-	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
+	user.isAdministrator(req.user.uid, function (err, isAdmin) {
 		if (err || isAdmin) {
 			return next(err);
 		}
@@ -40,10 +40,12 @@ middleware.buildHeader = function(req, res, next) {
 				'authentication': []
 			};
 
-			user.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, userData) {
+			user.getUserFields(uid, ['username', 'userslug', 'picture', 'email:confirmed'], function(err, userData) {
 				if (err) {
 					return next(err);
 				}
+
+				userData.uid = uid;
 
 				async.parallel({
 					scripts: function(next) {
@@ -61,16 +63,22 @@ middleware.buildHeader = function(req, res, next) {
 					},
 					custom_header: function(next) {
 						plugins.fireHook('filter:admin.header.build', custom_header, next);
+					},
+					config: function(next) {
+						controllers.api.getConfig(req, res, next);
 					}
-				}, function(err, pluginData) {
+				}, function(err, results) {
 					if (err) {
 						return next(err);
 					}
+					res.locals.config = results.config;
 					var data = {
 						relative_path: nconf.get('relative_path'),
-						plugins: pluginData.custom_header.plugins,
-						authentication: pluginData.custom_header.authentication,
-						scripts: pluginData.scripts,
+						configJSON: JSON.stringify(results.config),
+						userJSON: JSON.stringify(userData),
+						plugins: results.custom_header.plugins,
+						authentication: results.custom_header.authentication,
+						scripts: results.scripts,
 						userpicture: userData.picture,
 						username: userData.username,
 						userslug: userData.userslug,
@@ -86,12 +94,6 @@ middleware.buildHeader = function(req, res, next) {
 						next();
 					});
 				});
-			});
-		},
-		function(next) {
-			controllers.api.getConfig(req, res, function(err, config) {
-				res.locals.config = config;
-				next(err);
 			});
 		},
 		function(next) {

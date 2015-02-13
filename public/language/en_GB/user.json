@@ -2,6 +2,8 @@
 	"banned": "Banned",
 	"offline": "Offline",
 	"username": "User Name",
+	"joindate": "Join Date",
+	"postcount": "Post Count",
 
 	"email": "Email",
 	"confirm_email": "Confirm Email",
@@ -18,6 +20,7 @@
 	"profile_views": "Profile views",
 	"reputation": "Reputation",
 	"favourites":"Favourites",
+	"watched": "Watched",
 	"followers": "Followers",
 	"following": "Following",
 	"signature": "Signature",
@@ -61,11 +64,13 @@
 	"digest_weekly": "Weekly",
 	"digest_monthly": "Monthly",
 	"send_chat_notifications": "Send an email if a new chat message arrives and I am not online",
+	"send_post_notifications": "Send an email when replies are made to topics I am subscribed to",
 
 	"has_no_follower": "This user doesn't have any followers :(",
 	"follows_no_one": "This user isn't following anyone :(",
 	"has_no_posts": "This user didn't post anything yet.",
 	"has_no_topics": "This user didn't post any topics yet.",
+	"has_no_watched_topics": "This user didn't watch any topics yet.",
 
 	"email_hidden": "Email Hidden",
 	"hidden": "hidden",

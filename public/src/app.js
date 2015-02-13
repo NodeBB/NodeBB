@@ -1,21 +1,76 @@
 "use strict";
-/*global io, templates, translator, ajaxify, utils, bootbox, RELATIVE_PATH*/
+/*global io, templates, translator, ajaxify, utils, bootbox, RELATIVE_PATH, config*/
 
-var socket,
-	config,
-	app = {
-		'username': null,
-		'uid': null,
-		'isFocused': true,
-		'isConnected': false,
-		'currentRoom': null,
-		'widgets': {},
-		'cacheBuster': null
-	};
+var	socket,
+	app = app || {};
+
+app.isFocused = true;
+app.isConnected = false;
+app.currentRoom = null;
+app.widgets = {};
+app.cacheBuster = null;
 
 (function () {
 	var showWelcomeMessage = false;
 	var reconnecting = false;
+
+	function socketIOConnect() {
+		var ioParams = {
+			reconnectionAttempts: config.maxReconnectionAttempts,
+			reconnectionDelay : config.reconnectionDelay,
+			transports: config.socketioTransports,
+			path: config.relative_path + '/socket.io'
+		};
+
+		socket = io.connect(config.websocketAddress, ioParams);
+		reconnecting = false;
+
+		socket.on('event:connect', function () {
+			app.showLoginMessage();
+			app.replaceSelfLinks();
+			$(window).trigger('action:connected');
+			app.isConnected = true;
+		});
+
+		socket.on('connect', onSocketConnect);
+
+		socket.on('event:disconnect', function() {
+			$(window).trigger('action:disconnected');
+			app.isConnected = false;
+			socket.connect();
+		});
+
+		socket.on('reconnecting', function (attempt) {
+			if(attempt === parseInt(config.maxReconnectionAttempts, 10)) {
+				socket.io.attempts = 0;
+				return;
+			}
+
+			reconnecting = true;
+			var reconnectEl = $('#reconnect');
+
+			if (!reconnectEl.hasClass('active')) {
+				reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
+			}
+
+			reconnectEl.addClass('active').removeClass("hide").tooltip({
+				placement: 'bottom'
+			});
+		});
+
+		socket.on('event:banned', function() {
+			app.alert({
+				title: '[[global:alert.banned]]',
+				message: '[[global:alert.banned.message]]',
+				type: 'danger',
+				timeout: 1000
+			});
+
+			setTimeout(function() {
+				window.location.href = config.relative_path + '/';
+			}, 1000);
+		});
+	}
 
 	function onSocketConnect(data) {
 		if (reconnecting) {
@@ -64,108 +119,6 @@ var socket,
 		}
 	}
 
-	function onConfigLoad(data) {
-		config = data;
-
-		exposeConfigToTemplates();
-
-		if(socket) {
-			socket.disconnect();
-			setTimeout(function() {
-				socket.connect();
-			}, 200);
-		} else {
-			var ioParams = {
-				'max reconnection attempts': config.maxReconnectionAttempts,
-				reconnectionDelay : config.reconnectionDelay,
-				path: RELATIVE_PATH + '/socket.io'
-			};
-
-			socket = io.connect(config.websocketAddress, ioParams);
-			reconnecting = false;
-
-			socket.on('event:connect', function (data) {
-				// TODO : deprecate in 0.7.0, use app.user
-				app.username = data.username;
-				app.userslug = data.userslug;
-				app.picture = data.picture;
-				app.uid = data.uid;
-				app.isAdmin = data.isAdmin;
-
-				app.user = data;
-
-				templates.setGlobal('loggedIn', parseInt(data.uid, 10) !== 0);
-
-				app.showLoginMessage();
-				app.replaceSelfLinks();
-				$(window).trigger('action:connected');
-				app.isConnected = true;
-			});
-
-			socket.on('event:alert', function (data) {
-				app.alert(data);
-			});
-
-			socket.on('connect', onSocketConnect);
-
-			socket.on('event:disconnect', function() {
-				$(window).trigger('action:disconnected');
-				app.isConnected = false;
-				socket.socket.connect();
-			});
-
-			socket.on('reconnecting', function (data, attempt) {
-				if(attempt === parseInt(config.maxReconnectionAttempts, 10)) {
-					socket.socket.reconnectionAttempts = 0;
-					socket.socket.reconnectionDelay = config.reconnectionDelay;
-					return;
-				}
-
-				reconnecting = true;
-				var reconnectEl = $('#reconnect');
-
-				if (!reconnectEl.hasClass('active')) {
-					reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
-				}
-
-				reconnectEl.addClass('active').removeClass("hide").tooltip({
-					placement: 'bottom'
-				});
-			});
-
-			socket.on('event:banned', function() {
-				app.alert({
-					title: '[[global:alert.banned]]',
-					message: '[[global:alert.banned.message]]',
-					type: 'danger',
-					timeout: 1000
-				});
-
-				setTimeout(function() {
-					window.location.href = RELATIVE_PATH + '/';
-				}, 1000);
-			});
-
-			app.cacheBuster = config['cache-buster'];
-
-			require(['csrf'], function(csrf) {
-				csrf.set(data.csrf_token);
-			});
-
-			bootbox.setDefaults({
-				locale: config.userLang
-			});
-		}
-	}
-
-	app.loadConfig = function() {
-		$.ajax({
-			url: RELATIVE_PATH + '/api/config',
-			success: onConfigLoad,
-			async: false
-		});
-	};
-
 	app.logout = function() {
 		require(['csrf'], function(csrf) {
 			$.ajax(RELATIVE_PATH + '/logout', {
@@ -206,7 +159,7 @@ var socket,
 			title: '[[global:alert.error]]',
 			message: message,
 			type: 'danger',
-			timeout: timeout ? timeout : 2000
+			timeout: timeout ? timeout : 5000
 		});
 	};
 
@@ -218,9 +171,9 @@ var socket,
 
 			socket.emit('meta.rooms.enter', {
 				enter: room,
-				username: app.username,
-				userslug: app.userslug,
-				picture: app.picture
+				username: app.user.username,
+				userslug: app.user.userslug,
+				picture: app.user.picture
 			});
 
 			app.currentRoom = room;
@@ -268,8 +221,8 @@ var socket,
 		selector = selector || $('a');
 		selector.each(function() {
 			var href = $(this).attr('href');
-			if (href && app.userslug && href.indexOf('user/_self_') !== -1) {
-				$(this).attr('href', href.replace(/user\/_self_/g, 'user/' + app.userslug));
+			if (href && app.user.userslug && href.indexOf('user/_self_') !== -1) {
+				$(this).attr('href', href.replace(/user\/_self_/g, 'user/' + app.user.userslug));
 			}
 		});
 	};
@@ -289,16 +242,15 @@ var socket,
 
 		app.replaceSelfLinks();
 
-		setTimeout(function () {
-			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.
-		}, 100);
+		// Scroll back to top of page
+		window.scrollTo(0, 0);
 	};
 
 	app.showLoginMessage = function () {
 		function showAlert() {
 			app.alert({
 				type: 'success',
-				title: '[[global:welcome_back]] ' + app.username + '!',
+				title: '[[global:welcome_back]] ' + app.user.username + '!',
 				message: '[[global:you_have_successfully_logged_in]]',
 				timeout: 5000
 			});
@@ -315,11 +267,11 @@ var socket,
 	};
 
 	app.openChat = function (username, touid) {
-		if (username === app.username) {
+		if (username === app.user.username) {
 			return app.alertError('[[error:cant-chat-with-yourself]]');
 		}
 
-		if (!app.uid) {
+		if (!app.user.uid) {
 			return app.alertError('[[error:not-logged-in]]');
 		}
 
@@ -327,6 +279,7 @@ var socket,
 			function loadAndCenter(chatModal) {
 				chat.load(chatModal.attr('UUID'));
 				chat.center(chatModal);
+				chat.focusInput(chatModal);
 			}
 
 			if (!chat.modalExists(touid)) {
@@ -399,8 +352,9 @@ var socket,
 		}
 	};
 
-	function exposeConfigToTemplates() {
+	app.exposeConfigToTemplates = function() {
 		$(document).ready(function() {
+			templates.setGlobal('loggedIn', config.loggedIn);
 			templates.setGlobal('relative_path', RELATIVE_PATH);
 			for(var key in config) {
 				if (config.hasOwnProperty(key)) {
@@ -469,11 +423,9 @@ var socket,
 		require(['search', 'mousetrap'], function(search, Mousetrap) {
 			$('#search-form').on('submit', function (e) {
 				e.preventDefault();
-				var input = $(this).find('input'),
-					term = input.val();
+				var input = $(this).find('input');
 
-
-				search.query(term, function() {
+				search.query({term: input.val()}, function() {
 					input.val('');
 				});
 			});
@@ -533,7 +485,8 @@ var socket,
 
 
 			$window.trigger('action:ajaxify.start', {
-				url: url
+				url: url,
+				tpl_url: tpl_url
 			});
 
 			collapseNavigationOnClick();
@@ -556,6 +509,8 @@ var socket,
 			});
 
 			createHeaderTooltips();
+			showEmailConfirmWarning();
+
 			ajaxify.variables.parse();
 			ajaxify.currentPage = url;
 
@@ -573,7 +528,8 @@ var socket,
 				ajaxify.widgets.render(tpl_url, url, function() {
 					app.processPage();
 					$window.trigger('action:ajaxify.end', {
-						url: url
+						url: url,
+						tpl_url: tpl_url
 					});
 				});
 			});
@@ -600,15 +556,51 @@ var socket,
 				}
 			});
 
-			require(['taskbar'], function(taskbar) {
+			require(['taskbar', 'helpers'], function(taskbar, helpers) {
 				taskbar.init();
+
+				// templates.js helpers
+				helpers.register();
 			});
 		});
 	};
 
+	function showEmailConfirmWarning() {
+		if (config.requireEmailConfirmation && app.user.uid && !app.user['email:confirmed']) {
+			app.alert({
+				alert_id: 'email_confirm',
+				message: '[[error:email-not-confirmed]]',
+				type: 'warning',
+				timeout: 0,
+				clickfn: function() {
+					app.removeAlert('email_confirm');
+					socket.emit('user.emailConfirm', {}, function(err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						app.alertSuccess('[[notifications:email-confirm-sent]]');
+					});
+				}
+			});
+		}
+	}
+
 	showWelcomeMessage = window.location.href.indexOf('loggedin') !== -1;
 
-	app.loadConfig();
+	app.exposeConfigToTemplates();
+
+	socketIOConnect();
+
+	app.cacheBuster = config['cache-buster'];
+
+	require(['csrf'], function(csrf) {
+		csrf.set(config.csrf_token);
+	});
+
+	bootbox.setDefaults({
+		locale: config.userLang
+	});
+
 	app.alternatingTitle('');
 
 }());

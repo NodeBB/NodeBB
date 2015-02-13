@@ -3,9 +3,10 @@
     "search": "חיפוש",
     "buttons.close": "סגור",
     "403.title": "גישה נדחתה",
-    "403.message": "נראה שהגעת לעמוד שאין לך הרשאה לצפות בו. נסה  <a href='/login'>להתחבר</a>?",
+    "403.message": "נראה שהגעת לעמוד שאין לך הרשאה לצפות בו",
+    "403.login": "נסה <a href='1%/login'>להתחבר</a>.",
     "404.title": "לא נמצא",
-    "404.message": "נראה שהגעת לעמוד שאינו קיים. חזור <a href='/'>לדף הבית</a>.",
+    "404.message": "נראה שהגעת לעמוד שלא קיים. חזור <a href=\"%1/\">לעמוד הבית</a>",
     "500.title": "שגיאה פנימית.",
     "500.message": "אופס! נראה שמשהו השתבש!",
     "register": "הרשמה",
@@ -26,6 +27,7 @@
     "header.tags": "תגיות",
     "header.popular": "פופולרי",
     "header.users": "משתמשים",
+    "header.groups": "קבוצות",
     "header.chats": "צ'אטים",
     "header.notifications": "התראות",
     "header.search": "חיפוש",
@@ -72,6 +74,8 @@
     "guests": "אורחים",
     "updated.title": "הפורום עודכן",
     "updated.message": "הפורום עודכן לגרסא האחרונה. נא ללחוץ כאן לעדכון הדף.",
-    "privacy": "Privacy",
-    "delete_all": "Delete All"
+    "privacy": "פרטיות",
+    "follow": "עקוב",
+    "unfollow": "הפסק לעקוב",
+    "delete_all": "מחק הכל"
 }

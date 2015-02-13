@@ -5,5 +5,8 @@
     "search": "Sök",
     "enter_username": "Ange ett användarnamn för att söka",
     "load_more": "Ladda fler",
-    "users-found-search-took": "%1 användare hittades! Sökningen tog %2 ms."
+    "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
+    "filter-by": "Filter By",
+    "online-only": "Online only",
+    "picture-only": "Picture only"
 }

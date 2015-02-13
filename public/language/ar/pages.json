@@ -11,6 +11,7 @@
     "user.followers": "المستخدمون الذين يتبعون %1",
     "user.posts": "ردود  %1",
     "user.topics": "مواضيع %1",
+    "user.groups": "%1's Groups",
     "user.favourites": "مفضلات %1",
     "user.settings": "خيارات المستخدم",
     "maintenance.text": "جاري صيانة %1. المرجو العودة لاحقًا.",

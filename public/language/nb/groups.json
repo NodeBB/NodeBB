@@ -1,8 +1,23 @@
 {
     "groups": "Grupper",
     "view_group": "Vis gruppe",
+    "owner": "Gruppe-eier",
+    "new_group": "Opprett ny gruppe",
+    "no_groups_found": "Det er ingen grupper å se",
+    "cover-instructions": "Dra og slipp et bilde, dra til posisjon, og trykk <strong>Lagre</strong>",
+    "cover-change": "Endre",
+    "cover-save": "Lagre",
+    "cover-saving": "Lagrer",
     "details.title": "Gruppedetaljer",
     "details.members": "Medlemsliste",
+    "details.pending": "Ventende meldemmer",
     "details.has_no_posts": "Medlemmene i denne gruppen har ikke skrevet noen innlegg.",
-    "details.latest_posts": "Seneste innlegg"
+    "details.latest_posts": "Seneste innlegg",
+    "details.private": "Privat grup",
+    "details.public": "Offentlig grup",
+    "details.grant": "Grant/Rescind Ownership",
+    "details.kick": "Kick",
+    "details.owner_options": "Gruppeadministrasjon",
+    "event.updated": "Gruppedetaljer har blitt oppgradert",
+    "event.deleted": "Gruppen \"%1\" har blitt slettet"
 }

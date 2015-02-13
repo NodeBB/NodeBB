@@ -174,6 +174,31 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.isObjectFields = function(key, fields, callback) {
+		if (!key) {
+			return callback();
+		}
+
+		var data = {};
+		fields.forEach(function(field) {
+			field = helpers.fieldToString(field);
+			data[field] = '';
+		});
+
+		db.collection('objects').findOne({_key: key}, {fields: data}, function(err, item) {
+			if (err) {
+				return callback(err);
+			}
+			var results = [];
+
+			fields.forEach(function(field, index) {
+				results[index] = !!item && item[field] !== undefined && item[field] !== null;
+			});
+
+			callback(null, results);
+		});
+	};
+
 	module.deleteObjectField = function(key, field, callback) {
 		callback = callback || helpers.noop;
 		if (!key || !field) {
@@ -182,7 +207,9 @@ module.exports = function(db, module) {
 		var data = {};
 		field = helpers.fieldToString(field);
 		data[field] = '';
-		db.collection('objects').update({_key: key}, {$unset : data}, callback);
+		db.collection('objects').update({_key: key}, {$unset : data}, function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.incrObjectField = function(key, field, callback) {

@@ -7,7 +7,6 @@ var async = require('async'),
 	S = require('string'),
 
 	user = require('../user'),
-	utils = require('../../public/src/utils'),
 	db = require('../database'),
 	meta = require('../meta'),
 	notifications = require('../notifications'),
@@ -223,7 +222,7 @@ var async = require('async'),
 
 				value = value ? value.toString() : '';
 				nids = notifications.filter(function(notification) {
-					return notification && notification[field] === value;
+					return notification && notification[field] && notification[field].toString() === value;
 				}).map(function(notification) {
 					return notification.nid;
 				});

@@ -1,18 +1,19 @@
 {
     "home": "Inicio",
-    "unread": "Temas No Leídos",
-    "popular": "Temas Populares",
-    "recent": "Temas Recientes",
-    "users": "Usuarios Registrado",
+    "unread": "Temas no leídos",
+    "popular": "Temas populares",
+    "recent": "Temas recientes",
+    "users": "Usuarios registrados",
     "notifications": "Notificaciones",
     "tags": "Temas etiquetados bajo \"%1\"",
     "user.edit": "Editando \"%1\"",
     "user.following": "Gente que sigue %1 ",
     "user.followers": "Seguidores de %1",
-    "user.posts": "Posteos de %1",
+    "user.posts": "Mensajes de %1",
     "user.topics": "Temas creados por %1",
+    "user.groups": "%1's Grupos",
     "user.favourites": "Publicaciones favoritas de %1 ",
-    "user.settings": "Preferencias del Usuario",
-    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
-    "maintenance.messageIntro": "Additionally, the administrator has left this message:"
+    "user.settings": "Preferencias de usuario",
+    "maintenance.text": "%1 está en mantenimiento actualmente. Por favor vuelva en otro momento.",
+    "maintenance.messageIntro": "Adicionalmente, la administración ha dejado este mensaje:"
 }

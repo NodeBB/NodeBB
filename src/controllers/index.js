@@ -3,6 +3,7 @@
 var topicsController = require('./topics'),
 	categoriesController = require('./categories'),
 	tagsController = require('./tags'),
+	searchController = require('./search'),
 	usersController = require('./users'),
 	groupsController = require('./groups'),
 	accountsController = require('./accounts'),
@@ -20,7 +21,6 @@ var topicsController = require('./topics'),
 	user = require('../user'),
 	posts = require('../posts'),
 	topics = require('../topics'),
-	search = require('../search'),
 	plugins = require('../plugins'),
 	categories = require('../categories'),
 	privileges = require('../privileges');
@@ -29,6 +29,7 @@ var Controllers = {
 	topics: topicsController,
 	categories: categoriesController,
 	tags: tagsController,
+	search: searchController,
 	users: usersController,
 	groups: groupsController,
 	accounts: accountsController,
@@ -43,13 +44,13 @@ Controllers.home = function(req, res, next) {
 		header: function (next) {
 			res.locals.metaTags = [{
 				name: "title",
-				content: meta.config.title || 'NodeBB'
+				content: validator.escape(meta.config.title || 'NodeBB')
 			}, {
 				name: "description",
-				content: meta.config.description || ''
+				content: validator.escape(meta.config.description || '')
 			}, {
 				property: 'og:title',
-				content: 'Index | ' + (meta.config.title || 'NodeBB')
+				content: 'Index | ' + validator.escape(meta.config.title || 'NodeBB')
 			}, {
 				property: 'og:type',
 				content: 'website'
@@ -103,37 +104,22 @@ Controllers.home = function(req, res, next) {
 	});
 };
 
-Controllers.search = function(req, res, next) {
-	if (!plugins.hasListeners('filter:search.query')) {
-		return helpers.notFound(req, res);
-	}
-
-	if (!req.params.term) {
-		return res.render('search', {
-			time: 0,
-			search_query: '',
-			posts: [],
-			topics: []
+Controllers.reset = function(req, res, next) {
+	if (req.params.code) {
+		user.reset.validate(req.params.code, function(err, valid) {
+			res.render('reset_code', {
+				valid: valid,
+				reset_code: req.params.code ? req.params.code : null,
+				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]', url: '/reset'}, {text: '[[reset_password:update_password]]'}])
+			});
+		});
+	} else {
+		res.render('reset', {
+			reset_code: req.params.code ? req.params.code : null,
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]'}])
 		});
 	}
 
-	var uid = req.user ? req.user.uid : 0;
-
-	req.params.term = validator.escape(req.params.term);
-
-	search.search(req.params.term, uid, function(err, results) {
-		if (err) {
-			return next(err);
-		}
-
-		return res.render('search', results);
-	});
-};
-
-Controllers.reset = function(req, res, next) {
-	res.render(req.params.code ? 'reset_code' : 'reset', {
-		reset_code: req.params.code ? req.params.code : null
-	});
 };
 
 Controllers.login = function(req, res, next) {
@@ -146,6 +132,7 @@ Controllers.login = function(req, res, next) {
 	data.showResetLink = emailersPresent;
 	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1;
 	data.allowRegistration = parseInt(meta.config.allowRegistration, 10) === 1;
+	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:login]]'}]);
 	data.error = req.flash('error')[0];
 
 	res.render('login', data);
@@ -177,6 +164,7 @@ Controllers.register = function(req, res, next) {
 	data.maximumUsernameLength = meta.config.maximumUsernameLength;
 	data.minimumPasswordLength = meta.config.minimumPasswordLength;
 	data.termsOfUse = meta.config.termsOfUse;
+	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[register:register]]'}]);
 	data.regFormEntry = [];
 	data.error = req.flash('error')[0];
 
@@ -226,7 +214,8 @@ Controllers.outgoing = function(req, res, next) {
 	var url = req.query.url,
 		data = {
 			url: url,
-			title: meta.config.title
+			title: meta.config.title,
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[notifications:outgoing_link]]'}])
 		};
 
 	if (url) {

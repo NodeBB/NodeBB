@@ -28,16 +28,25 @@ $(document).ready(function() {
 				textStatus = err.textStatus;
 
 			if (data) {
-				if (data.status === 403 || data.status === 404 || data.status === 500) {
+				var status = parseInt(data.status, 10);
+
+				if (status === 403 || status === 404 || status === 500) {
 					$('#footer, #content').removeClass('hide').addClass('ajaxifying');
-					return renderTemplate(url, data.status.toString(), data.responseJSON, (new Date()).getTime(), callback);
-				} else if (data.status === 401) {
+					return renderTemplate(url, status.toString(), data.responseJSON, (new Date()).getTime(), callback);
+				} else if (status === 401) {
 					app.alertError('[[global:please_log_in]]');
+					app.previousUrl = url;
 					return ajaxify.go('login');
-				} else if (data.status === 302) {
-					return ajaxify.go(data.responseJSON.slice(1), callback, quiet);
+				} else if (status === 302) {
+					if (data.responseJSON.path) {
+						if (!ajaxify.go(data.responseJSON.path, callback, quiet)) {
+							window.location.href = data.responseJSON.path;
+						}
+					} else if (data.responseJSON) {
+						ajaxify.go(data.responseJSON.slice(1), callback, quiet);
+					}
 				}
-			} else if (textStatus !== "abort") {
+			} else if (textStatus !== 'abort') {
 				app.alertError(data.responseJSON.error);
 			}
 		}
@@ -48,8 +57,6 @@ $(document).ready(function() {
 
 			$(window).off('scroll');
 
-			$(window).trigger('action:ajaxify.start', {url: url});
-
 			if ($('#content').hasClass('ajaxifying') && apiXHR) {
 				apiXHR.abort();
 			}
@@ -58,6 +65,8 @@ $(document).ready(function() {
 			url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
 
 			var tpl_url = ajaxify.getTemplateMapping(url);
+
+			$(window).trigger('action:ajaxify.start', {url: url, tpl_url: tpl_url});
 
 			var hash = '';
 			if(ajaxify.initialLoad) {
@@ -110,7 +119,7 @@ $(document).ready(function() {
 						ajaxify.variables.parse();
 
 						ajaxify.widgets.render(tpl_url, url, function() {
-							$(window).trigger('action:ajaxify.end', {url: url});
+							$(window).trigger('action:ajaxify.end', {url: url, tpl_url: tpl_url});
 						});
 
 						$(window).trigger('action:ajaxify.contentLoaded', {url: url});
@@ -190,7 +199,8 @@ $(document).ready(function() {
 		ajaxify.getCustomTemplateMapping = function(tpl) {
 			if (templatesModule.config && templatesModule.config.custom_mapping && tpl !== undefined) {
 				for (var pattern in templatesModule.config.custom_mapping) {
-					if (tpl.match(pattern)) {
+					var match = tpl.match(pattern);
+					if (match && match[0] === tpl) {
 						return (templatesModule.config.custom_mapping[pattern]);
 					}
 				}
@@ -265,8 +275,10 @@ $(document).ready(function() {
 
 			// Enhancing all anchors to ajaxify...
 			$(document.body).on('click', 'a', function (e) {
-				if (hrefEmpty(this.href) || this.target !== '' || this.protocol === 'javascript:' || $(this).attr('data-ajaxify') === 'false') {
+				if (this.target !== '') {
 					return;
+				} else if (hrefEmpty(this.href) || this.protocol === 'javascript:' || $(this).attr('data-ajaxify') === 'false') {
+					return e.preventDefault();
 				}
 
 				if (!window.location.pathname.match(/\/(403|404)$/g)) {

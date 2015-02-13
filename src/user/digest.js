@@ -9,7 +9,8 @@ var	async = require('async'),
 	user = require('../user'),
 	topics = require('../topics'),
 	batch = require('../batch'),
-	emailer = require('../emailer');
+	emailer = require('../emailer'),
+	utils = require('../../public/src/utils');
 
 (function(Digest) {
 	Digest.execute = function(interval) {
@@ -31,6 +32,22 @@ var	async = require('async'),
 				return winston.error('[user/jobs] Could not send digests (' + interval + '): ' + err.message);
 			}
 
+			// Fix relative paths in topic data
+			data.topics.topics = data.topics.topics.map(function(topicObj) {
+				if (topicObj.hasOwnProperty('teaser') && topicObj.teaser !== undefined) {
+					if (utils.isRelativeUrl(topicObj.teaser.user.picture)) {
+						topicObj.teaser.user.picture = nconf.get('url') + topicObj.teaser.user.picture;
+					}
+				} else {
+					if (utils.isRelativeUrl(topicObj.user.picture)) {
+						topicObj.user.picture = nconf.get('url') + topicObj.user.picture;
+					}
+				}
+
+				return topicObj;
+			});
+			return;
+
 			data.interval = interval;
 
 			if (data.subscribers.length) {
@@ -48,22 +65,7 @@ var	async = require('async'),
 	};
 
 	Digest.getSubscribers = function(interval, callback) {
-		async.waterfall([
-			async.apply(db.getSortedSetRange, 'users:joindate', 0, -1),
-			async.apply(user.getMultipleUserSettings)
-		], function(err, userSettings) {
-			if (err) {
-				return callback(err);
-			}
-
-			var subscribed = userSettings.filter(function(setting) {
-				return setting.dailyDigestFreq === interval;
-			}).map(function(setting) {
-				return setting.uid;
-			});
-
-			callback(null, subscribed);
-		});
+		db.getSortedSetRange('digest:' + interval + ':uids', 0, -1, callback);
 	};
 
 	Digest.send = function(data, callback) {

@@ -1,0 +1,21 @@
+{
+    "chat.chatting_with": "Gunakan <span id=\"chat-with-name\"></span> untuk melakukan percakapan",
+    "chat.placeholder": "Tulis pesan percakapan di sini, tekan enter untuk mengirim",
+    "chat.send": "Kirim",
+    "chat.no_active": "Kamu tidak memiliki percakapan yang aktif.",
+    "chat.user_typing": "%1 sedang menulis ...",
+    "chat.user_has_messaged_you": "%1 telah mengirimkan pesan untukmu.",
+    "chat.see_all": "Lihat seluruh Percakapan",
+    "chat.no-messages": "Mohon pilih satu penerima untuk melihat riwayat pesan percakapan",
+    "chat.recent-chats": "Percakapan terbaru",
+    "chat.contacts": "Kontak",
+    "chat.message-history": "Riwayat Pesan",
+    "chat.pop-out": "Munculkan pesan",
+    "chat.maximize": "Maksimalkan",
+    "chat.seven_days": "7 Hari",
+    "chat.thirty_days": "30 Hari",
+    "chat.three_months": "3 Bulan",
+    "composer.user_said_in": "%1 berkata di %2: ",
+    "composer.user_said": "%1 berkata:",
+    "composer.discard": "Kamu yakin akan membuang posting ini?"
+}

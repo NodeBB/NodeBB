@@ -71,7 +71,7 @@ Loader.addWorkerEvents = function(worker) {
 		}
 
 		console.log('[cluster] Child Process (' + worker.pid + ') has exited (code: ' + code + ', signal: ' + signal +')');
-		if (!worker.suicide) {
+		if (!(worker.suicide || code === 0)) {
 			console.log('[cluster] Spinning up another process...');
 
 			forkWorker(worker.index, worker.isPrimary);
@@ -131,9 +131,6 @@ Loader.addWorkerEvents = function(worker) {
 						acpCache: message.acpCache,
 						hash: message.hash
 					}, worker.pid);
-				break;
-				case 'config:update':
-					Loader.notifyWorkers(message);
 				break;
 			}
 		}
@@ -220,11 +217,15 @@ function killWorkers() {
 	});
 }
 
-Loader.notifyWorkers = function (msg, worker_pid) {
+Loader.notifyWorkers = function(msg, worker_pid) {
 	worker_pid = parseInt(worker_pid, 10);
 	workers.forEach(function(worker) {
 		if (parseInt(worker.pid, 10) !== worker_pid) {
-			worker.send(msg);
+			try {
+				worker.send(msg);
+			} catch (e) {
+				console.log('[cluster/notifyWorkers] Failed to reach pid ' + worker_pid);
+			}
 		}
 	});
 };

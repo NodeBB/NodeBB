@@ -6,6 +6,7 @@ var pkg = require('./../../package.json'),
 	plugins = require('./../plugins'),
 	widgets = require('../widgets'),
 
+	validator = require('validator'),
 	nconf = require('nconf');
 
 var apiController = {};
@@ -13,13 +14,16 @@ var apiController = {};
 apiController.getConfig = function(req, res, next) {
 	var config = {};
 	config.relative_path = nconf.get('relative_path');
+	config.socketioTransports = nconf.get('socket.io:transports') || ['polling', 'websocket'];
+	config.websocketAddress = nconf.get('socket.io:address') || '';
 	config.version = pkg.version;
-	config.siteTitle = meta.config.title || meta.config.browserTitle || 'NodeBB';
+	config.siteTitle = validator.escape(meta.config.title || meta.config.browserTitle || 'NodeBB');
 	config.showSiteTitle = parseInt(meta.config.showSiteTitle, 10) === 1;
 	config.postDelay = meta.config.postDelay;
 	config.minimumTitleLength = meta.config.minimumTitleLength;
 	config.maximumTitleLength = meta.config.maximumTitleLength;
 	config.minimumPostLength = meta.config.minimumPostLength;
+	config.maximumPostLength = meta.config.maximumPostLength;
 	config.hasImageUploadPlugin = plugins.hasListeners('filter:uploadImage');
 	config.maximumProfileImageSize = meta.config.maximumProfileImageSize;
 	config.minimumUsernameLength = meta.config.minimumUsernameLength;
@@ -28,6 +32,7 @@ apiController.getConfig = function(req, res, next) {
 	config.maximumSignatureLength = meta.config.maximumSignatureLength;
 	config.useOutgoingLinksPage = parseInt(meta.config.useOutgoingLinksPage, 10) === 1;
 	config.allowGuestSearching = parseInt(meta.config.allowGuestSearching, 10) === 1;
+	config.allowGuestHandles = parseInt(meta.config.allowGuestHandles, 10) === 1;
 	config.allowFileUploads = parseInt(meta.config.allowFileUploads, 10) === 1;
 	config.allowTopicsThumbnail = parseInt(meta.config.allowTopicsThumbnail, 10) === 1;
 	config.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
@@ -37,8 +42,9 @@ apiController.getConfig = function(req, res, next) {
 	config.disableChat = parseInt(meta.config.disableChat, 10) === 1;
 	config.maxReconnectionAttempts = meta.config.maxReconnectionAttempts || 5;
 	config.reconnectionDelay = meta.config.reconnectionDelay || 200;
-	config.websocketAddress = meta.config.websocketAddress || '';
 	config.tagsPerTopic = meta.config.tagsPerTopic || 5;
+	config.minimumTagLength = meta.config.minimumTagLength || 3;
+	config.maximumTagLength = meta.config.maximumTagLength || 15;
 	config.topicsPerPage = meta.config.topicsPerPage || 20;
 	config.postsPerPage = meta.config.postsPerPage || 20;
 	config.maximumFileSize = meta.config.maximumFileSize;
@@ -52,6 +58,7 @@ apiController.getConfig = function(req, res, next) {
 	config['css-buster'] = meta.css.hash;
 	config.requireEmailConfirmation = parseInt(meta.config.requireEmailConfirmation, 10) === 1;
 	config.topicPostSort = meta.config.topicPostSort || 'oldest_to_newest';
+	config.categoryTopicSort = meta.config.categoryTopicSort || 'newest_to_oldest';
 	config.csrf_token = req.csrfToken();
 	config.searchEnabled = plugins.hasListeners('filter:search.query');
 
@@ -76,6 +83,7 @@ apiController.getConfig = function(req, res, next) {
 		config.userLang = settings.language || config.defaultLang;
 		config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
 		config.topicPostSort = settings.topicPostSort || config.topicPostSort;
+		config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
 		config.topicSearchEnabled = settings.topicSearchEnabled || false;
 
 		if (res.locals.isAPI) {

@@ -125,8 +125,13 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 		$('#savePictureChangesBtn').on('click', function() {
 			$('#change-picture-modal').modal('hide');
 
-			if (selectedImageType) {
-				changeUserPicture(selectedImageType);
+			if (!selectedImageType) {
+				return;
+			}
+			changeUserPicture(selectedImageType, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
 
 				if (selectedImageType === 'gravatar') {
 					$('#user-current-picture').attr('src', gravatarPicture);
@@ -135,7 +140,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 					$('#user-current-picture').attr('src', uploadedPicture);
 					updateHeader(uploadedPicture);
 				}
-			}
+			});
 		});
 	}
 
@@ -147,7 +152,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 						return;
 					}
 
-					if ($('#confirm-username').val() !== app.username) {
+					if ($('#confirm-username').val() !== app.user.username) {
 						app.alertError('[[error:invalid-username]]');
 						return false;
 					} else {
@@ -261,12 +266,15 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 		password_confirm.on('blur', onPasswordConfirmChanged);
 
 		$('#changePasswordBtn').on('click', function() {
-			if ((passwordvalid && passwordsmatch) || app.isAdmin) {
+			var btn = $(this);
+			if ((passwordvalid && passwordsmatch) || app.user.isAdmin) {
+				btn.addClass('disabled').find('i').removeClass('hide');
 				socket.emit('user.changePassword', {
 					'currentPassword': currentPassword.val(),
 					'newPassword': password.val(),
 					'uid': ajaxify.variables.get('theirid')
 				}, function(err) {
+					btn.removeClass('disabled').find('i').addClass('hide');
 					currentPassword.val('');
 					password.val('');
 					password_confirm.val('');
@@ -284,15 +292,11 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 		});
 	}
 
-	function changeUserPicture(type) {
+	function changeUserPicture(type, callback) {
 		socket.emit('user.changePicture', {
 			type: type,
 			uid: ajaxify.variables.get('theirid')
-		}, function(err) {
-			if(err) {
-				app.alertError(err.message);
-			}
-		});
+		}, callback);
 	}
 
 	function updateImages() {

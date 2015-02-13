@@ -25,8 +25,8 @@
 							</div>
 							<small>
 								<span class="pull-right footer">
-									Posted in <a href="{relative_path}/category/{posts.category.slug}"><i class="fa {posts.category.icon}"></i> {posts.category.name}</a>, <span class="timeago" title="{posts.relativeTime}"></span> &bull;
-									<a href="{relative_path}/topic/{posts.topic.slug}/{posts.index}">Read More</a>
+									Posted in <a href="{relative_path}/category/{posts.category.slug}" target="_blank"><i class="fa {posts.category.icon}"></i> {posts.category.name}</a>, <span class="timeago" title="{posts.relativeTime}"></span> &bull;
+									<a href="{relative_path}/topic/{posts.topic.slug}/{posts.index}" target="_blank">Read More</a>
 								</span>
 							</small>
 						</div>
@@ -41,7 +41,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-lg-3">
+	<div class="col-lg-3 acp-sidebar">
 		<div class="panel panel-default">
 			<div class="panel-heading">Flags Control Panel</div>
 			<div class="panel-body">
@@ -52,5 +52,3 @@
 		</div>
 	</div>
 </div>
-
-

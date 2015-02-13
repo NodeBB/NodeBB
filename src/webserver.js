@@ -18,7 +18,8 @@ var path = require('path'),
 	routes = require('./routes'),
 	emitter = require('./emitter'),
 
-	helpers = require('./../public/src/helpers')();
+	helpers = require('./../public/src/modules/helpers'),
+	net;
 
 if(nconf.get('ssl')) {
 	server = require('https').createServer({
@@ -46,6 +47,9 @@ if(nconf.get('ssl')) {
 
 		middleware = middleware(app);
 		routes(app, middleware);
+
+		// Load server-side template helpers
+		helpers.register();
 
 		// Cache static files on production
 		if (global.env !== 'development') {
@@ -99,18 +103,66 @@ if(nconf.get('ssl')) {
 	module.exports.listen = function(callback) {
 		logger.init(app);
 
-		var	bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
+		var isSocket = isNaN(port),
+			args = isSocket ? [port] : [port, nconf.get('bind_address')],
+			bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port,
+			oldUmask;
 
-		server.listen(port, nconf.get('bind_address'), function(err) {
+		args.push(function(err) {
 			if (err) {
-				winston.info('NodeBB was unable to listen on: ' + bind_address);
+				winston.info('[startup] NodeBB was unable to listen on: ' + bind_address);
 				return callback(err);
 			}
 
-			winston.info('NodeBB is now listening on: ' + bind_address);
+			winston.info('NodeBB is now listening on: ' + (isSocket ? port : bind_address));
+			if (oldUmask) {
+				process.umask(oldUmask);
+			}
 
 			callback();
 		});
+
+		// Alter umask if necessary
+		if (isSocket) {
+			oldUmask = process.umask('0000');
+			net = require('net');
+			module.exports.testSocket(port, function(err) {
+				if (!err) {
+					server.listen.apply(server, args);
+				} else {
+					winston.error('[startup] NodeBB was unable to secure domain socket access (' + port + ')');
+					winston.error('[startup] ' + err.message);
+					process.exit();
+				}
+			});
+		} else {
+			server.listen.apply(server, args);
+		}
+	};
+
+	module.exports.testSocket = function(socketPath, callback) {
+		async.series([
+			function(next) {
+				fs.exists(socketPath, function(exists) {
+					if (exists) {
+						next();
+					} else {
+						callback();
+					}
+				});
+			},
+			function(next) {
+				var testSocket = new net.Socket();
+				testSocket.on('error', function(err) {
+					next(err.code !== 'ECONNREFUSED' ? err : null);
+				});
+				testSocket.connect({ path: socketPath }, function() {
+					// Something's listening here, abort
+					callback(new Error('port-in-use'));
+				});
+			},
+			async.apply(fs.unlink, socketPath),	// The socket was stale, kick it out of the way
+		], callback);
 	};
 
 }(WebServer));

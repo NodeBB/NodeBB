@@ -1,147 +1,128 @@
 
 'use strict';
 
-var fs = require('fs'),
-	winston = require('winston'),
-	path = require('path'),
-	nconf = require('nconf'),
-	user = require('./user');
+var async = require('async'),
+
+	db =  require('./database'),
+	batch = require('./batch'),
+	user = require('./user'),
+	utils = require('../public/src/utils');
 
 
 (function(events) {
-	var logFileName = 'logs/events.log';
+	events.log = function(data, callback) {
+		callback = callback || function() {};
 
-	events.logPasswordChange = function(uid) {
-		events.logWithUser(uid, 'changed password');
+		async.waterfall([
+			function(next) {
+				db.incrObjectField('global', 'nextEid', next);
+			},
+			function(eid, next) {
+				data.timestamp = Date.now();
+				data.eid = eid;
+
+				async.parallel([
+					function(next) {
+						db.sortedSetAdd('events:time', data.timestamp, eid, next);
+					},
+					function(next) {
+						db.setObject('event:' + eid, data, next);
+					}
+				], next);
+			}
+		], function(err, result) {
+			callback(err);
+		});
 	};
 
-	events.logAdminChangeUserPassword = function(adminUid, theirUid, callback) {
-		logAdminEvent(adminUid, theirUid, 'changed password of', callback);
+	events.getEvents = function(start, stop, callback) {
+		async.waterfall([
+			function(next) {
+				db.getSortedSetRevRange('events:time', start, stop, next);
+			},
+			function(eids, next) {
+				var keys = eids.map(function(eid) {
+					return 'event:' + eid;
+				});
+				db.getObjects(keys, next);
+			},
+			function(eventsData, next) {
+				eventsData.forEach(function(event) {
+					var e = utils.merge(event);
+					e.eid = e.uid = e.type = e.ip = undefined;
+					event.jsonString = JSON.stringify(e, null, 4);
+					event.timestampISO = new Date(parseInt(event.timestamp, 10)).toUTCString();
+				});
+				addUserData(eventsData, 'uid', 'user', next);
+			},
+			function(eventsData, next) {
+				addUserData(eventsData, 'targetUid', 'targetUser', next);
+			}
+		], callback);
 	};
 
-	events.logAdminUserDelete = function(adminUid, theirUid, callback) {
-		logAdminEvent(adminUid, theirUid, 'deleted', callback);
-	};
+	function addUserData(eventsData, field, objectName, callback) {
+		var uids = eventsData.map(function(event) {
+			return event && event[field];
+		}).filter(function(uid, index, array) {
+			return uid && array.indexOf(uid) === index;
+		});
 
-	function logAdminEvent(adminUid, theirUid, message, callback) {
-		user.getMultipleUserFields([adminUid, theirUid], ['username'], function(err, userData) {
-			if(err) {
-				return winston.error('Error logging event. ' + err.message);
+		if (!uids.length) {
+			return callback(null, eventsData);
+		}
+
+		async.parallel({
+			isAdmin: function(next) {
+				user.isAdministrator(uids, next);
+			},
+			userData: function(next) {
+				user.getMultipleUserFields(uids, ['username', 'userslug', 'picture'], next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
 			}
 
-			var msg = userData[0].username + '(uid ' + adminUid + ') ' + message + ' ' +  userData[1].username + '(uid ' + theirUid + ')';
-			events.log(msg, callback);
+			var userData = results.userData;
+
+			var map = {};
+			userData.forEach(function(user, index) {
+				user.isAdmin = results.isAdmin[index];
+				map[user.uid] = user;
+			});
+
+			eventsData.forEach(function(event) {
+				if (map[event[field]]) {
+					event[objectName] = map[event[field]];
+				}
+			});
+			callback(null, eventsData);
 		});
 	}
 
-	events.logPasswordReset = function(uid) {
-		events.logWithUser(uid, 'reset password');
-	};
-
-	events.logEmailChange = function(uid, oldEmail, newEmail) {
-		events.logWithUser(uid,'changed email from "' + oldEmail + '" to "' + newEmail +'"');
-	};
-
-	events.logUsernameChange = function(uid, oldUsername, newUsername) {
-		events.logWithUser(uid,'changed username from "' + oldUsername + '" to "' + newUsername +'"');
-	};
-
-	events.logAdminLogin = function(uid) {
-		events.logWithUser(uid, 'logged into admin panel');
-	};
-
-	events.logPostEdit = function(uid, pid) {
-		events.logWithUser(uid, 'edited post (pid ' + pid + ')');
-	};
-
-	events.logPostDelete = function(uid, pid) {
-		events.logWithUser(uid, 'deleted post (pid ' + pid + ')');
-	};
-
-	events.logPostRestore = function(uid, pid) {
-		events.logWithUser(uid, 'restored post (pid ' + pid + ')');
-	};
-
-	events.logPostPurge = function(uid, pid) {
-		events.logWithUser(uid, 'purged post (pid ' + pid + ')');
-	};
-
-	events.logTopicMove = function(uid, tid) {
-		events.logWithUser(uid, 'moved topic (tid ' + tid + ')');
-	};
-
-	events.logTopicDelete = function(uid, tid) {
-		events.logWithUser(uid, 'deleted topic (tid ' + tid + ')');
-	};
-
-	events.logTopicRestore = function(uid, tid) {
-		events.logWithUser(uid, 'restored topic (tid ' + tid + ')');
-	};
-
-	events.logWithUser = function(uid, string) {
-		user.getUserField(uid, 'username', function(err, username) {
-			if(err) {
-				return winston.error('Error logging event. ' + err.message);
+	events.deleteEvents = function(eids, callback) {
+		callback = callback || function() {};
+		async.parallel([
+			function(next) {
+				var keys = eids.map(function(eid) {
+					return 'event:' + eid;
+				});
+				db.deleteAll(keys, next);
+			},
+			function(next) {
+				db.sortedSetRemove('events:time', eids, next);
 			}
-
-			var msg = username + '(uid ' + uid + ') ' + string;
-			events.log(msg);
-		});
+		], callback);
 	};
 
-	events.log = function(msg, callback) {
-		var logFile = path.join(nconf.get('base_dir'), logFileName);
+	events.deleteAll = function(callback) {
+		callback = callback || function() {};
 
-		msg = '[' + new Date().toUTCString() + '] - ' + msg;
-
-		fs.appendFile(logFile, msg + '\n', function(err) {
-			if(err) {
-				winston.error('Error logging event. ' + err.message);
-				if (typeof callback === 'function') {
-					callback(err);
-				}
-				return;
-			}
-
-			if (typeof callback === 'function') {
-				callback();
-			}
-		});
+		batch.processSortedSet('events:time', function(eids, next) {
+			events.deleteEvents(eids, callback);
+		}, {alwaysStartAt: 0}, callback);
 	};
 
-	events.getLog = function(end, len, callback) {
-		var logFile = path.join(nconf.get('base_dir'), logFileName);
-
-		fs.stat(logFile, function(err, stat) {
-			if (err) {
-				return callback(null, 'No logs found!');
-			}
-
-			var buffer = '';
-			var size = stat.size;
-			if (end === -1) {
-				end = size;
-			}
-
-			end = parseInt(end, 10);
-			var start = Math.max(0, end - len);
-
-			var rs = fs.createReadStream(logFile, {start: start, end: end});
-			rs.addListener('data', function(lines) {
-				buffer += lines.toString();
-			});
-
-			rs.addListener('end', function() {
-				var firstNewline = buffer.indexOf('\n');
-				if (firstNewline !== -1) {
-					buffer = buffer.slice(firstNewline);
-					buffer = buffer.split('\n').reverse().join('\n');
-				}
-
-				callback(null, {data: buffer, next: end - buffer.length});
-			});
-		});
-
-	};
 
 }(module.exports));
