@@ -1,21 +1,10 @@
 "use strict";
 
-var topicsController = require('./topics'),
-	categoriesController = require('./categories'),
-	tagsController = require('./tags'),
-	searchController = require('./search'),
-	usersController = require('./users'),
-	groupsController = require('./groups'),
-	accountsController = require('./accounts'),
-	staticController = require('./static'),
-	apiController = require('./api'),
-	adminController = require('./admin'),
-	helpers = require('./helpers'),
-
-	async = require('async'),
+var async = require('async'),
 	nconf = require('nconf'),
 	validator = require('validator'),
 	winston = require('winston'),
+
 	auth = require('../routes/authentication'),
 	meta = require('../meta'),
 	user = require('../user'),
@@ -23,85 +12,32 @@ var topicsController = require('./topics'),
 	topics = require('../topics'),
 	plugins = require('../plugins'),
 	categories = require('../categories'),
-	privileges = require('../privileges');
+	privileges = require('../privileges'),
+	helpers = require('./helpers');
 
 var Controllers = {
-	topics: topicsController,
-	categories: categoriesController,
-	tags: tagsController,
-	search: searchController,
-	users: usersController,
-	groups: groupsController,
-	accounts: accountsController,
-	static: staticController,
-	api: apiController,
-	admin: adminController
+	topics: require('./topics'),
+	categories: require('./categories'),
+	tags: require('./tags'),
+	search: require('./search'),
+	users: require('./users'),
+	groups: require('./groups'),
+	accounts: require('./accounts'),
+	static: require('./static'),
+	api: require('./api'),
+	admin: require('./admin'),
 };
 
 
 Controllers.home = function(req, res, next) {
-	async.parallel({
-		header: function (next) {
-			res.locals.metaTags = [{
-				name: "title",
-				content: validator.escape(meta.config.title || 'NodeBB')
-			}, {
-				name: "description",
-				content: validator.escape(meta.config.description || '')
-			}, {
-				property: 'og:title',
-				content: 'Index | ' + validator.escape(meta.config.title || 'NodeBB')
-			}, {
-				property: 'og:type',
-				content: 'website'
-			}];
-
-			if(meta.config['brand:logo']) {
-				res.locals.metaTags.push({
-					property: 'og:image',
-					content: meta.config['brand:logo']
-				});
-			}
-
-			next(null);
-		},
-		categories: function (next) {
-			var uid = req.user ? req.user.uid : 0;
-			categories.getCategoriesByPrivilege(uid, 'find', function (err, categoryData) {
-				if (err) {
-					return next(err);
-				}
-				var childCategories = [];
-
-				for(var i=categoryData.length - 1; i>=0; --i) {
-
-					if (Array.isArray(categoryData[i].children) && categoryData[i].children.length) {
-						childCategories.push.apply(childCategories, categoryData[i].children);
-					}
-
-					if (categoryData[i].parent && categoryData[i].parent.cid) {
-						categoryData.splice(i, 1);
-					}
-				}
-
-				async.parallel([
-					function(next) {
-						categories.getRecentTopicReplies(categoryData, uid, next);
-					},
-					function(next) {
-						categories.getRecentTopicReplies(childCategories, uid, next);
-					}
-				], function(err) {
-					next(err, categoryData);
-				});
-			});
-		}
-	}, function (err, data) {
-		if (err) {
-			return next(err);
-		}
-		res.render('home', data);
-	});
+	var route = meta.config.homePageRoute || 'home';
+	if (route === 'home') {
+		return Controllers.categories.list(req, res, next);
+	} else if (route === 'recent') {
+		Controllers.categories.recent(req, res, next);
+	} else if (route === 'popular') {
+		Controllers.categories.popular(req, res, next);
+	}
 };
 
 Controllers.reset = function(req, res, next) {
