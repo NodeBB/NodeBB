@@ -55,8 +55,20 @@ define('admin/extend/widgets', function() {
 				}
 			});
 		}).on('mouseup', '.panel-heading', function(evt) {
-			if ( !( $(this).parents('.widget-panel').is('.ui-sortable-helper') || $(evt.target).closest('.delete-widget').length ) ) {
+			if ( !( $(this).parents('.widget-panel').is('.ui-sortable-helper') || $(evt.target).closest('.widget-button').length ) ) {
 				$(this).parents('.widget-panel').children('.panel-body').toggleClass('hidden');
+			}
+		}).on('click', '.widget-button-up', function() {
+			var panel = $(this).parents('.widget-panel');
+
+			if ( $(panel).prev().is('.ui-droppable') ) {
+				$(panel).insertBefore($(panel).prev());
+			}
+		}).on('click', '.widget-button-down', function() {
+			var panel = $(this).parents('.widget-panel');
+
+			if ( $(panel).next().is('.ui-droppable') ) {
+				$(panel).insertAfter($(panel).next());
 			}
 		});
 
@@ -150,7 +162,7 @@ define('admin/extend/widgets', function() {
 					hoverClass: "panel-info"
 				})
 				.children('.panel-heading')
-				.append('<div class="pull-right pointer"><span class="delete-widget"><i class="fa fa-times-circle"></i></span></div><div class="pull-left pointer"><span class="toggle-widget"><i class="fa fa-chevron-circle-down"></i></span>&nbsp;</div>')
+				.append('<button type="button" class="btn btn-danger widget-button pull-right delete-widget"><span class="fa fa-times-circle"></span></button><button type="button" class="btn btn-default widget-button pull-right widget-button-down"><span class="fa fa-arrow-circle-down"></span></button><button type="button" class="btn btn-default widget-button pull-right widget-button-up"><span class="fa fa-arrow-circle-up"></span></button><div class="pull-left pointer"><span class="toggle-widget"><i class="fa fa-chevron-circle-down"></i></span>&nbsp;</div>')
 				.children('small').html('');
 		}
 	}
