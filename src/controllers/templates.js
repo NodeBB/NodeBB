@@ -79,8 +79,8 @@ function getAvailableTemplates(callback) {
 			return el && el.replace(nconf.get('views_dir') + '/', '');
 		});
 
-		availableTemplatesCache = availableTemplates = availableTemplates.concat(results.extended);
-		callback(null, availableTemplates)
+		availableTemplatesCache = availableTemplates.concat(results.extended);
+		callback(null, availableTemplatesCache);
 	});
 
 }
