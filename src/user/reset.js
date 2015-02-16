@@ -63,7 +63,7 @@ var async = require('async'),
 			}
 
 			if (!validated) {
-				return;
+				return callback(new Error('[[error:reset-code-not-valid]]'));
 			}
 
 			db.getObjectField('reset:uid', code, function(err, uid) {

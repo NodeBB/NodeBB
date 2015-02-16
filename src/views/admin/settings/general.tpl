@@ -28,6 +28,20 @@
 	</div>
 </div>
 
+<div class="panel panel-default">
+	<div class="panel-heading">Home Page</div>
+	<div class="panel-body">
+		<form>
+			<label>Home Page Route</label>
+			<select class="form-control" data-field="homePageRoute">
+				<option value="home">Categories</option>
+				<option value="recent">Recent</option>
+				<option value="popular">Popular</option>
+			</select>
+		</form>
+	</div>
+</div>
+
 
 <div class="panel panel-default">
 	<div class="panel-heading">Site Logo</div>

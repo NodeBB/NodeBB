@@ -6,6 +6,7 @@ var fs = require('fs'),
 	winston = require('winston'),
 	semver = require('semver'),
 	express = require('express'),
+	nconf = require('nconf'),
 
 	db = require('./database'),
 	emitter = require('./emitter'),
@@ -13,6 +14,7 @@ var fs = require('fs'),
 	translator = require('../public/src/translator'),
 	utils = require('../public/src/utils'),
 	hotswap = require('./hotswap'),
+	pkg = require('../package.json'),
 
 	controllers = require('./controllers'),
 	app, middleware;
@@ -169,7 +171,7 @@ var fs = require('fs'),
 
 	Plugins.getAll = function(callback) {
 		var request = require('request');
-		request('https://packages.nodebb.org/api/v1/plugins', function(err, res, body) {
+		request((nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins/' + pkg.version, function(err, res, body) {
 			var plugins = [];
 
 			try {
@@ -184,8 +186,9 @@ var fs = require('fs'),
 				plugins[i].id = plugins[i].name;
 				plugins[i].installed = false;
 				plugins[i].active = false;
-				plugins[i].url = plugins[i].repository ? plugins[i].repository.url : '';
+				plugins[i].url = plugins[i].url ? plugins[i].url : plugins[i].repository ? plugins[i].repository.url : '';
 				plugins[i].latest = getLatestVersion(plugins[i].versions);
+				// plugins[i].latest = plugins[i].latest;
 				pluginMap[plugins[i].name] = plugins[i];
 			}
 
@@ -261,7 +264,7 @@ var fs = require('fs'),
 
 			function(dirs, next) {
 				dirs = dirs.filter(function(dir){
-					return dir.substr(0, 14) === 'nodebb-plugin-' || dir.substr(0, 14) === 'nodebb-widget-';
+					return dir.startsWith('nodebb-plugin-') || dir.startsWith('nodebb-widget-') || dir.startsWith('nodebb-theme-')
 				}).map(function(dir){
 					return path.join(npmPluginPath, dir);
 				});
