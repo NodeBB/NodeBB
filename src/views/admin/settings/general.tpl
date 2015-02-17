@@ -34,7 +34,7 @@
 		<form>
 			<label>Home Page Route</label>
 			<select class="form-control" data-field="homePageRoute">
-				<option value="home">Categories</option>
+				<option value="categories">Categories</option>
 				<option value="recent">Recent</option>
 				<option value="popular">Popular</option>
 			</select>

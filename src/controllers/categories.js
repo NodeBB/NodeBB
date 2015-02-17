@@ -154,8 +154,8 @@ categoriesController.list = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		// TODO: template should be called categories.tpl
-		res.render('home', data);
+		
+		res.render('categories', data);
 	});
 };
 

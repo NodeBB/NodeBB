@@ -1,6 +1,6 @@
 {
 	"custom_mapping": {
-		"^\/?$": "home",
+		"^\/?$": "categories",
 		"^admin?$": "admin/general/dashboard",
 		"^users/sort-posts": "users",
 		"^users/latest": "users",
