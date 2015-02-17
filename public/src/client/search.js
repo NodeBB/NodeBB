@@ -44,7 +44,7 @@ define('forum/search', ['search'], function(searchModule) {
 			in: form.find('#search-in').val()
 		};
 
-		if (searchData.in === 'posts' || searchData.in === 'titlespost' || searchData.in === 'titles') {
+		if (searchData.in === 'posts' || searchData.in === 'titlesposts' || searchData.in === 'titles') {
 			searchData.by = form.find('#posted-by-user').val();
 			searchData.categories = form.find('#posted-in-categories').val();
 			searchData.searchChildren = form.find('#search-children').is(':checked');
