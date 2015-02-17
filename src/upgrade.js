@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 1, 8);
+	latestSchema = Date.UTC(2015, 1, 17);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -825,6 +825,25 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2015/02/08] Clearing reset tokens skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 1, 17);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/02/17] renaming home.tpl to categories.tpl');
+
+				db.rename('widgets:home.tpl', 'widgets:categories.tpl', function(err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2015/02/17] renaming home.tpl to categories.tpl done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2015/02/17] renaming home.tpl to categories.tpl skipped');
 				next();
 			}
 		}
