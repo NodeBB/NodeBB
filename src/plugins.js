@@ -171,7 +171,7 @@ var fs = require('fs'),
 
 	Plugins.getAll = function(callback) {
 		var request = require('request');
-		request((nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins/' + pkg.version, function(err, res, body) {
+		request((nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins?version=' + pkg.version, function(err, res, body) {
 			var plugins = [];
 
 			try {
