@@ -51,7 +51,7 @@ var async = require('async'),
 					template: 'reset',
 					uid: uid
 				});
-				callback();
+				callback(null, reset_code);
 			});
 		});
 	};
