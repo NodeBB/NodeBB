@@ -187,8 +187,7 @@ var fs = require('fs'),
 				plugins[i].installed = false;
 				plugins[i].active = false;
 				plugins[i].url = plugins[i].url ? plugins[i].url : plugins[i].repository ? plugins[i].repository.url : '';
-				plugins[i].latest = getLatestVersion(plugins[i].versions);
-				// plugins[i].latest = plugins[i].latest;
+				plugins[i].latest = plugins[i].latest;
 				pluginMap[plugins[i].name] = plugins[i];
 			}
 
