@@ -31,11 +31,18 @@ define('forum/topic/posts', [
 	};
 
 	function onNewPostPagination(data) {
+		function scrollToPost() {
+			navigator.scrollBottom(data.posts[0].index);
+		}
+
 		var posts = data.posts;
+
+		pagination.pageCount = Math.max(1, Math.ceil((posts[0].topic.postcount - 1) / config.postsPerPage));
+
 		if (pagination.currentPage === pagination.pageCount) {
-			createNewPosts(data);
-		} else if(data.posts && data.posts.length && parseInt(data.posts[0].uid, 10) === parseInt(app.user.uid, 10)) {
-			pagination.loadPage(pagination.pageCount);
+			createNewPosts(data, scrollToPost);
+		} else if (parseInt(posts[0].uid, 10) === parseInt(app.user.uid, 10)) {
+			pagination.loadPage(pagination.pageCount, scrollToPost);
 		}
 	}
 
