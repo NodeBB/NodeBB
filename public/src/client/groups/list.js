@@ -8,9 +8,9 @@ define('forum/groups/list', function() {
 		var groupsEl = $('#groups-list');
 
 		groupsEl.on('click', '.list-cover', function() {
-			var groupName = $(this).parents('[data-group]').attr('data-group');
+			var groupSlug = $(this).parents('[data-slug]').attr('data-slug');
 
-			ajaxify.go('groups/' + utils.slugify(groupName));
+			ajaxify.go('groups/' + groupSlug);
 		});
 
 		// Group creation

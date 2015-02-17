@@ -46,11 +46,14 @@
 
 	"still-uploading": "Please wait for uploads to complete.",
 	"content-too-short": "Please enter a longer post. Posts should contain at least %1 characters.",
+	"content-too-long": "Please enter a shorter post. Posts can't be longer than %1 characters.",
 	"title-too-short": "Please enter a longer title. Titles should contain at least %1 characters.",
 	"title-too-long": "Please enter a shorter title. Titles can't be longer than %1 characters.",
 	"invalid-title": "Invalid title!",
 	"too-many-posts": "You can only post once every %1 seconds - please wait before posting again",
 	"too-many-posts-newbie": "As a new user, you can only post once every %1 seconds until you have earned %2 reputation - please wait before posting again",
+	"tag-too-short": "Please enter a longer tag. Tags should contain at least %1 characters",
+	"tag-too-long": "Please enter a shorter tag. Tags can't be longer than %1 characters",
 	"file-too-big": "Maximum allowed file size is %1 kbs - please upload a smaller file",
 
 	"cant-vote-self-post": "You cannot vote for your own post",
@@ -83,6 +86,7 @@
 
 	"cant-chat-with-yourself": "You can't chat with yourself!",
 	"chat-restricted": "This user has restricted their chat messages. They must follow you before you can chat with them",
+	"too-many-messages": "You have sent too many messages, please wait awhile.",
 
 	"reputation-system-disabled": "Reputation system is disabled.",
 	"downvoting-disabled": "Downvoting is disabled",

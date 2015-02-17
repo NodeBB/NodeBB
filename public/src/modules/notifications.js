@@ -2,7 +2,6 @@
 
 /* globals define, socket, translator, utils, config, app, ajaxify, Tinycon*/
 
-
 define('notifications', ['sounds'], function(sound) {
 	var Notifications = {};
 
@@ -14,54 +13,44 @@ define('notifications', ['sounds'], function(sound) {
 
 		notifTrigger.on('click', function(e) {
 			e.preventDefault();
-			if (!notifContainer.hasClass('open')) {
-
-				socket.emit('notifications.get', null, function(err, data) {
-
-					function createNotification(notification, callback) {
-						if (notification.image) {
-							image = '<img class="image" src="' + notification.image + '" />';
-						} else {
-							image = '';
-						}
-
-						return '<li class="' + (notification.readClass || '') + '"><a href="' + (notification.path || '#') + '">' + image + '<span class="pull-right relTime">' + $.timeago(new Date(parseInt(notification.datetime, 10))) + '</span><span class="text">' + notification.bodyShort + '</span></a></li>';
-					}
-
-					var	x, html = '';
-
-					// Switch to shorthand
-					translator.toggleTimeagoShorthand();
-
-					if (!err && (data.read.length + data.unread.length) > 0) {
-						var	image = '';
-						for (x = 0; x < data.unread.length; x++) {
-							html += createNotification(data.unread[x]);
-						}
-
-						for (x = 0; x < data.read.length; x++) {
-							html += createNotification(data.read[x]);
-						}
-					} else {
-						html += '<li class="no-notifs"><a>[[notifications:no_notifs]]</a></li>';
-					}
-
-					// Switch back to original timeago strings
-					translator.toggleTimeagoShorthand();
-
-					html += '<li class="pagelink"><a href="' + config.relative_path + '/notifications">[[notifications:see_all]]</a></li>';
-
-					notifList.translateHtml(html);
-
-					updateNotifCount(data.unread.length);
-
-					socket.emit('modules.notifications.markAllRead', null, function(err) {
-						if (!err) {
-							updateNotifCount(0);
-						}
-					});
-				});
+			if (notifContainer.hasClass('open')) {
+				return;
 			}
+
+			socket.emit('notifications.get', null, function(err, data) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				
+				var notifs = data.unread.concat(data.read);
+
+				translator.toggleTimeagoShorthand();
+				for(var i=0; i<notifs.length; ++i) {
+					notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
+				}
+				translator.toggleTimeagoShorthand();
+				
+				templates.parse('partials/notifications_list', {notifications: notifs}, function(html) {
+					notifList.translateHtml(html);
+				});
+			});			
+		});
+
+		notifList.on('click', '[data-nid]', function() {
+			socket.emit('notifications.markRead', nid, function(err) {
+				if (err) {
+					app.alertError(err.message);
+				}
+			});
+		});
+
+		notifList.on('click', '.mark-all-read', function() {
+			socket.emit('notifications.markAllRead', function(err) {
+				if (err) {
+					app.alertError(err.message);
+				}
+				updateNotifCount(0);
+			});
 		});
 
 		function updateNotifCount(count) {

@@ -1,17 +1,11 @@
 "use strict";
 
-var path = require('path'),
-	async = require('async'),
-	fs = require('fs'),
-	nconf = require('nconf'),
-	express = require('express'),
+var express = require('express'),
 
 	posts = require('../posts'),
 	categories = require('../categories'),
-	plugins = require('../plugins'),
-	utils = require('../../public/src/utils'),
-	uploadsController = require('../controllers/uploads');
-
+	uploadsController = require('../controllers/uploads'),
+	templatesController = require('../controllers/templates');
 
 module.exports =  function(app, middleware, controllers) {
 
@@ -22,7 +16,7 @@ module.exports =  function(app, middleware, controllers) {
 	router.get('/widgets/render', controllers.api.renderWidgets);
 
 	router.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
-	router.get('/get_templates_listing', getTemplatesListing);
+	router.get('/get_templates_listing', templatesController.getTemplatesListing);
 	router.get('/categories/:cid/moderators', getModerators);
 	router.get('/recent/posts/:term?', getRecentPosts);
 
@@ -40,56 +34,6 @@ function getModerators(req, res, next) {
 	});
 }
 
-var templatesListingCache = {};
-
-function getTemplatesListing(req, res, next) {
-	if (templatesListingCache.availableTemplates && templatesListingCache.templatesConfig) {
-		return res.json(templatesListingCache);
-	}
-
-	async.parallel({
-		views: function(next) {
-			utils.walk(nconf.get('views_dir'), next);
-		},
-		extended: function(next) {
-			plugins.fireHook('filter:templates.get_virtual', [], next);
-		},
-		config: function(next) {
-			fs.readFile(path.join(nconf.get('views_dir'), 'config.json'), function(err, config) {
-				if (err) {
-					return next(err);
-				}
-
-				try {
-					config = JSON.parse(config.toString());
-				} catch (err) {
-					return next(err);
-				}
-
-				plugins.fireHook('filter:templates.get_config', config, next);
-			});
-		},
-	}, function(err, results) {
-		if (err) {
-			return next(err);
-		}
-
-		var data = results.views.filter(function(value, index, self) {
-			return value && self.indexOf(value) === index;
-		}).map(function(el) {
-			return el && el.replace(nconf.get('views_dir') + '/', '');
-		});
-
-		data = data.concat(results.extended);
-
-		templatesListingCache = {
-			availableTemplates: data,
-			templatesConfig: results.config
-		};
-
-		res.json(templatesListingCache);
-	});
-}
 
 function getRecentPosts(req, res, next) {
 	var uid = (req.user) ? req.user.uid : 0;

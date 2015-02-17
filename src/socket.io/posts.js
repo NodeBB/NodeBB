@@ -16,6 +16,7 @@ var	async = require('async'),
 	groups = require('../groups'),
 	user = require('../user'),
 	websockets = require('./index'),
+	events = require('../events'),
 	utils = require('../../public/src/utils'),
 
 	SocketPosts = {};
@@ -47,29 +48,34 @@ SocketPosts.reply = function(socket, data, callback) {
 
 		socket.emit('event:new_post', result);
 
-		async.waterfall([
-			function(next) {
-				user.getUidsFromSet('users:online', 0, -1, next);
-			},
-			function(uids, next) {
-				privileges.categories.filterUids('read', postData.topic.cid, uids, next);
-			},
-			function(uids, next) {
-				plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: data.uid, type: 'newPost'}, next);
-			}
-		], function(err, data) {
-			if (err) {
-				return winston.error(err.stack);
-			}
+		SocketPosts.notifyOnlineUsers(socket.uid, result);
+	});
+};
 
-			var uids = data.uidsTo;
+SocketPosts.notifyOnlineUsers = function(uid, result) {
+	var cid = result.posts[0].topic.cid;
+	async.waterfall([
+		function(next) {
+			user.getUidsFromSet('users:online', 0, -1, next);
+		},
+		function(uids, next) {
+			privileges.categories.filterUids('read', cid, uids, next);
+		},
+		function(uids, next) {
+			plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: uid, type: 'newPost'}, next);
+		}
+	], function(err, data) {
+		if (err) {
+			return winston.error(err.stack);
+		}
 
-			for(var i=0; i<uids.length; ++i) {
-				if (parseInt(uids[i], 10) !== socket.uid) {
-					websockets.in('uid_' + uids[i]).emit('event:new_post', result);
-				}
+		var uids = data.uidsTo;
+
+		for(var i=0; i<uids.length; ++i) {
+			if (parseInt(uids[i], 10) !== uid) {
+				websockets.in('uid_' + uids[i]).emit('event:new_post', result);
 			}
-		});
+		}
 	});
 };
 
@@ -168,22 +174,40 @@ function favouriteCommand(socket, command, eventName, notification, data, callba
 			return callback(new Error('[[error:post-deleted]]'));
 		}
 
-		favourites[command](data.pid, socket.uid, function(err, result) {
+		/*
+		hooks:
+			filter.post.upvote
+			filter.post.downvote
+			filter.post.unvote
+			filter.post.favourite
+			filter.post.unfavourite
+		 */
+		plugins.fireHook('filter:post.' + command, {data: data, uid: socket.uid}, function(err, filteredData) {
 			if (err) {
 				return callback(err);
 			}
 
-			socket.emit('posts.' + command, result);
-
-			if (result && eventName) {
-				websockets.in(data.room_id).emit('event:' + eventName, result);
-			}
-
-			if (notification) {
-				SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, notification);
-			}
-			callback();
+			executeFavouriteCommand(socket, command, eventName, notification, filteredData.data, callback);
 		});
+	});
+}
+
+function executeFavouriteCommand(socket, command, eventName, notification, data, callback) {
+	favourites[command](data.pid, socket.uid, function(err, result) {
+		if (err) {
+			return callback(err);
+		}
+
+		socket.emit('posts.' + command, result);
+
+		if (result && eventName) {
+			websockets.in(data.room_id).emit('event:' + eventName, result);
+		}
+
+		if (notification) {
+			SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, notification);
+		}
+		callback();
 	});
 }
 
@@ -255,6 +279,8 @@ SocketPosts.edit = function(socket, data, callback) {
 		return callback(new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]'));
 	} else if (!data.content || data.content.length < parseInt(meta.config.minimumPostLength, 10)) {
 		return callback(new Error('[[error:content-too-short, ' + meta.config.minimumPostLength + ']]'));
+	} else if (data.content.length > parseInt(meta.config.maximumPostLength, 10)) {
+		return callback(new Error('[[error:content-too-long, ' + meta.config.maximumPostLength + ']]'));
 	}
 
 	// uid, pid, title, content, options
@@ -304,8 +330,15 @@ function deleteOrRestore(command, socket, data, callback) {
 			return callback(err);
 		}
 
-		var eventName = command === 'restore' ? 'event:post_restored' : 'event:post_deleted';
+		var eventName = command === 'delete' ? 'event:post_deleted' : 'event:post_restored';
 		websockets.in('topic_' + data.tid).emit(eventName, postData);
+
+		events.log({
+			type: command === 'delete' ? 'post-delete' : 'post-restore',
+			uid: socket.uid,
+			pid: data.pid,
+			ip: socket.ip
+		});
 
 		callback();
 	});
@@ -321,6 +354,13 @@ SocketPosts.purge = function(socket, data, callback) {
 		}
 
 		websockets.in('topic_' + data.tid).emit('event:post_purged', data.pid);
+
+		events.log({
+			type: 'post-purge',
+			uid: socket.uid,
+			pid: data.pid,
+			ip: socket.ip
+		});
 
 		callback();
 	});
@@ -375,9 +415,6 @@ SocketPosts.flag = function(socket, pid, callback) {
 
 	async.waterfall([
 		function(next) {
-			posts.flag(pid, next);
-		},
-		function(next) {
 			user.getUserFields(socket.uid, ['username', 'reputation'], next);
 		},
 		function(userData, next) {
@@ -385,7 +422,6 @@ SocketPosts.flag = function(socket, pid, callback) {
 				return next(new Error('[[error:not-enough-reputation-to-flag]]'));
 			}
 			userName = userData.username;
-
 			posts.getPostFields(pid, ['tid', 'uid', 'content', 'deleted'], next);
 		},
 		function(postData, next) {
@@ -393,7 +429,10 @@ SocketPosts.flag = function(socket, pid, callback) {
 				return next(new Error('[[error:post-deleted]]'));
 			}
 			post = postData;
-			topics.getTopicFields(postData.tid, ['title', 'cid'], next);
+			posts.flag(pid, next);
+		},
+		function(next) {
+			topics.getTopicFields(post.tid, ['title', 'cid'], next);
 		},
 		function(topic, next) {
 			post.topic = topic;
@@ -429,23 +468,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 				return next();
 			}
 
-			db.setAdd('uid:' + post.uid + ':flagged_by', socket.uid, function(err) {
-				if (err) {
-					return next(err);
-				}
-				db.setCount('uid:' + post.uid + ':flagged_by', function(err, count) {
-					if (err) {
-						return next(err);
-					}
-
-					if (count >= (meta.config.flagsForBan || 3) && parseInt(meta.config.flagsForBan, 10) !== 0) {
-						var adminUser = require('./admin/user');
-						adminUser.banUser(post.uid, next);
-						return;
-					}
-					next();
-				});
-			});
+			db.setAdd('uid:' + post.uid + ':flagged_by', socket.uid, next);
 		}
 	], callback);
 };

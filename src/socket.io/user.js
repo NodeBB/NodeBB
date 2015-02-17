@@ -12,6 +12,9 @@ var	async = require('async'),
 	utils = require('../../public/src/utils'),
 	websockets = require('./index'),
 	meta = require('../meta'),
+	events = require('../events'),
+	emailer = require('../emailer'),
+	db = require('../database'),
 	SocketUser = {};
 
 SocketUser.exists = function(socket, data, callback) {
@@ -56,7 +59,7 @@ SocketUser.emailConfirm = function(socket, data, callback) {
 
 SocketUser.search = function(socket, data, callback) {
 	if (!data) {
-		return callback(new Error('[[error:invalid-data]]'))
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 	if (!socket.uid) {
 		return callback(new Error('[[error:not-logged-in]]'));
@@ -66,7 +69,8 @@ SocketUser.search = function(socket, data, callback) {
 		page: data.page,
 		searchBy: data.searchBy,
 		sortBy: data.sortBy,
-		filterBy: data.filterBy
+		filterBy: data.filterBy,
+		uid: socket.uid
 	}, callback);
 };
 
@@ -79,16 +83,39 @@ SocketUser.reset.send = function(socket, email, callback) {
 	}
 };
 
-SocketUser.reset.valid = function(socket, code, callback) {
-	if (code) {
-		user.reset.validate(code, callback);
-	}
-};
-
 SocketUser.reset.commit = function(socket, data, callback) {
-	if(data && data.code && data.password) {
-		user.reset.commit(data.code, data.password, callback);
+	if (!data || !data.code || !data.password) {
+		return callback(new Error('[[error:invalid-data]]'));
 	}
+
+	async.parallel({
+		uid: async.apply(db.getObjectField, 'reset:uid', data.code),
+		reset: async.apply(user.reset.commit, data.code, data.password)
+	}, function(err, results) {
+		if (err) {
+			return callback(err);
+		}
+
+		var uid = results.uid,
+			now = new Date(),
+			parsedDate = now.getFullYear() + '/' + (now.getMonth()+1) + '/' + now.getDate();
+
+		user.getUserField(uid, 'username', function(err, username) {
+			emailer.send('reset_notify', uid, {
+				username: username,
+				date: parsedDate,
+				site_title: meta.config.title || 'NodeBB',
+				subject: '[[email:reset.notify.subject]]'
+			});
+		});
+
+		events.log({
+			type: 'password-reset',
+			uid: uid,
+			ip: socket.ip
+		});
+		callback();
+	});
 };
 
 SocketUser.checkStatus = function(socket, uid, callback) {
@@ -109,12 +136,72 @@ SocketUser.checkStatus = function(socket, uid, callback) {
 };
 
 SocketUser.changePassword = function(socket, data, callback) {
-	if (data && socket.uid) {
-		user.changePassword(socket.uid, data, callback);
+	if (!data || !data.uid) {
+		return callback(new Error('[[error:invalid-data]]'));
 	}
+	if (!socket.uid) {
+		return callback('[[error:invalid-uid]]');
+	}
+
+	user.changePassword(socket.uid, data, function(err) {
+		if (err) {
+			return callback(err);
+		}
+
+		events.log({
+			type: 'password-change',
+			uid: socket.uid,
+			targetUid: data.uid,
+			ip: socket.ip
+		});
+		callback();
+	});
 };
 
 SocketUser.updateProfile = function(socket, data, callback) {
+	function update(oldUserData) {
+		function done(err, userData) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (userData.email !== oldUserData.email) {
+				events.log({
+					type: 'email-change',
+					uid: socket.uid,
+					targetUid: data.uid,
+					ip: socket.ip,
+					oldEmail: oldUserData.email,
+					newEmail: userData.email
+				});
+			}
+
+			if (userData.username !== oldUserData.username) {
+				events.log({
+					type: 'username-change',
+					uid: socket.uid,
+					targetUid: data.uid,
+					ip: socket.ip,
+					oldUsername: oldUserData.username,
+					newUsername: userData.username
+				});
+			}
+			callback(null, userData);
+		}
+
+		if (socket.uid === parseInt(data.uid, 10)) {
+			return user.updateProfile(socket.uid, data, done);
+		}
+
+		user.isAdministrator(socket.uid, function(err, isAdmin) {
+			if (err || !isAdmin) {
+				return callback(err || new Error('[[error:no-privileges]]'));
+			}
+
+			user.updateProfile(data.uid, data, done);
+		});
+	}
+
 	if (!socket.uid) {
 		return callback('[[error:invalid-uid]]');
 	}
@@ -123,20 +210,12 @@ SocketUser.updateProfile = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	if (socket.uid === parseInt(data.uid, 10)) {
-		return user.updateProfile(socket.uid, data, callback);
-	}
-
-	user.isAdministrator(socket.uid, function(err, isAdmin) {
+	user.getUserFields(data.uid, ['email', 'username'], function(err, oldUserData) {
 		if (err) {
 			return callback(err);
 		}
 
-		if (!isAdmin) {
-			return callback(new Error('[[error:no-privileges]]'));
-		}
-
-		user.updateProfile(data.uid, data, callback);
+		update(oldUserData, callback);
 	});
 };
 
@@ -332,7 +411,7 @@ SocketUser.loadMore = function(socket, data, callback) {
 	var start = parseInt(data.after, 10),
 		end = start + 19;
 
-	user.getUsersFromSet(data.set, start, end, function(err, userData) {
+	user.getUsersFromSet(data.set, socket.uid, start, end, function(err, userData) {
 		if (err) {
 			return callback(err);
 		}

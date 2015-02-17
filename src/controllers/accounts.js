@@ -233,6 +233,29 @@ accountsController.getTopics = function(req, res, next) {
 	getFromUserSet('account/topics', 'topics', topics.getTopicsFromSet, 'topics', req, res, next);
 };
 
+accountsController.getGroups = function(req, res, next) {
+	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
+
+	getBaseUser(req.params.userslug, callerUID, function(err, userData) {
+		if (err) {
+			return next(err);
+		}
+
+		if (!userData) {
+			return helpers.notFound(req, res);
+		}
+
+		groups.getUserGroups([userData.uid], function(err, groups) {
+			if (err) {
+				return next(err);
+			}
+
+			userData.groups = groups[0];
+
+			res.render('account/groups', userData);
+		});
+	});
+};
 
 function getFromUserSet(tpl, set, method, type, req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
@@ -415,7 +438,7 @@ accountsController.uploadPicture = function (req, res, next) {
 
 			user.setUserFields(updateUid, {uploadedpicture: image.url, picture: image.url});
 
-			res.json([{name: userPhoto.name, url: image.url}]);
+			res.json([{name: userPhoto.name, url: nconf.get('relative_path') + image.url}]);
 		}
 
 		if (err) {
@@ -443,7 +466,7 @@ accountsController.uploadPicture = function (req, res, next) {
 
 			fs.unlink(absolutePath, function (err) {
 				if (err) {
-					winston.err(err);
+					winston.error(err);
 				}
 
 				file.saveFileToLocal(filename, 'profile', userPhoto.path, done);
@@ -498,9 +521,10 @@ accountsController.getChats = function(req, res, next) {
 		async.waterfall([
 			async.apply(user.getUidByUserslug, req.params.userslug),
 			function(toUid, next) {
-				if (!toUid) {
+				if (!toUid || parseInt(toUid, 10) === parseInt(req.user.uid, 10)) {
 					return helpers.notFound(req, res);
 				}
+				
 				async.parallel({
 					toUser: async.apply(user.getUserFields, toUid, ['uid', 'username']),
 					messages: async.apply(messaging.getMessages, req.user.uid, toUid, 'recent', false),

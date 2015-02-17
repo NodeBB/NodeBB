@@ -299,7 +299,7 @@ var async = require('async'),
 	};
 
 	Groups.getMemberCount = function(groupName, callback) {
-		db.sortedSetCard('group:' + groupName + ':members', callback);
+		db.getObjectField('group:' + groupName, 'memberCount', callback);
 	};
 
 	Groups.isMemberOfGroupList = function(uid, groupListKey, callback) {
@@ -422,6 +422,10 @@ var async = require('async'),
 		}
 	};
 
+	Groups.existsBySlug = function(slug, callback) {
+		db.isObjectField('groupslug:groupname', slug, callback);
+	};
+
 	Groups.create = function(data, callback) {
 		if (data.name.length === 0) {
 			return callback(new Error('[[error:group-name-too-short]]'));
@@ -448,6 +452,7 @@ var async = require('async'),
 					createtime: now,
 					userTitle: data.name,
 					description: data.description || '',
+					memberCount: 0,
 					deleted: '0',
 					hidden: data.hidden || '0',
 					system: system ? '1' : '0',
@@ -498,7 +503,11 @@ var async = require('async'),
 					'private': values.private === false ? '0' : '1'
 				};
 
-			db.setObject('group:' + groupName, payload, function(err) {
+			async.series([
+				async.apply(updatePrivacy, groupName, values.private),
+				async.apply(db.setObject, 'group:' + groupName, payload),
+				async.apply(renameGroup, groupName, values.name)
+			], function(err) {
 				if (err) {
 					return callback(err);
 				}
@@ -507,10 +516,36 @@ var async = require('async'),
 					name: groupName,
 					values: values
 				});
-				renameGroup(groupName, values.name, callback);
+				callback();
 			});
 		});
 	};
+
+	function updatePrivacy(groupName, newValue, callback) {
+		// Grab the group's current privacy value
+		Groups.getGroupFields(groupName, ['private'], function(err, currentValue) {
+			currentValue = currentValue.private === '1';	// Now a Boolean
+
+			if (currentValue !== newValue && currentValue === true) {
+				// Group is now public, so all pending users are automatically considered members
+				db.getSetMembers('group:' + groupName + ':pending', function(err, uids) {
+					if (err) { return callback(err); }
+					else if (!uids) { return callback(); }	// No pending users, we're good to go
+
+					var now = Date.now(),
+						scores = uids.map(function() { return now; });	// There's probably a better way to initialise an Array of size x with the same value...
+
+					winston.verbose('[groups.update] Group is now public, automatically adding ' + uids.length + ' new members, who were pending prior.');
+					async.series([
+						async.apply(db.sortedSetAdd, 'group:' + groupName + ':members', scores, uids),
+						async.apply(db.delete, 'group:' + groupName + ':pending')
+					], callback);
+				});
+			} else {
+				callback();
+			}
+		});
+	}
 
 	function renameGroup(oldName, newName, callback) {
 		if (oldName === newName || !newName || newName.length === 0) {
@@ -611,46 +646,56 @@ var async = require('async'),
 	};
 
 	Groups.join = function(groupName, uid, callback) {
-		callback = callback || function() {};
+		function join() {
+			var tasks = [
+				async.apply(db.sortedSetAdd, 'group:' + groupName + ':members', Date.now(), uid),
+				async.apply(db.incrObjectField, 'group:' + groupName, 'memberCount')
+			];
 
-		Groups.exists(groupName, function(err, exists) {
-			if (exists) {
-				var tasks = [
-						async.apply(db.sortedSetAdd, 'group:' + groupName + ':members', Date.now(), uid)
-					];
-
-				user.isAdministrator(uid, function(err, isAdmin) {
+			async.waterfall([
+				function(next) {
+					user.isAdministrator(uid, next);
+				},
+				function(isAdmin, next) {
 					if (isAdmin) {
 						tasks.push(async.apply(db.setAdd, 'group:' + groupName + ':owners', uid));
 					}
-
-					async.parallel(tasks, function(err) {
-						plugins.fireHook('action:group.join', {
-							groupName: groupName,
-							uid: uid
-						});
-
-						callback();
-					});
+					async.parallel(tasks, next);
+				}
+			], function(err, results) {
+				if (err) {
+					return callback(err);
+				}
+				plugins.fireHook('action:group.join', {
+					groupName: groupName,
+					uid: uid
 				});
-			} else {
-				Groups.create({
-					name: groupName,
-					description: '',
-					hidden: 1
-				}, function(err) {
-					if (err && err.message !== '[[error:group-already-exists]]') {
-						winston.error('[groups.join] Could not create new hidden group: ' + err.message);
-						return callback(err);
-					}
+				callback();
+			});
+		}
 
-					db.sortedSetAdd('group:' + groupName + ':members', Date.now(), uid, callback);
-					plugins.fireHook('action:group.join', {
-						groupName: groupName,
-						uid: uid
-					});
-				});
+		callback = callback || function() {};
+
+		Groups.exists(groupName, function(err, exists) {
+			if (err) {
+				return callback(err);
 			}
+
+			if (exists) {
+				return join();
+			}
+
+			Groups.create({
+				name: groupName,
+				description: '',
+				hidden: 1
+			}, function(err) {
+				if (err && err.message !== '[[error:group-already-exists]]') {
+					winston.error('[groups.join] Could not create new hidden group: ' + err.message);
+					return callback(err);
+				}
+				join();
+			});
 		});
 	};
 
@@ -679,8 +724,14 @@ var async = require('async'),
 
 	Groups.acceptMembership = function(groupName, uid, callback) {
 		// Note: For simplicity, this method intentially doesn't check the caller uid for ownership!
-		db.setRemove('group:' + groupName + ':pending', uid, callback);
-		Groups.join.apply(Groups, arguments);
+		async.waterfall([
+			function(next) {
+				db.setRemove('group:' + groupName + ':pending', uid, next);
+			},
+			function(next) {
+				Groups.join(groupName, uid, next);
+			}
+		], callback);
 	};
 
 	Groups.rejectMembership = function(groupName, uid, callback) {
@@ -692,9 +743,10 @@ var async = require('async'),
 		callback = callback || function() {};
 
 		var tasks = [
-				async.apply(db.sortedSetRemove, 'group:' + groupName + ':members', uid),
-				async.apply(db.setRemove, 'group:' + groupName + ':owners', uid)
-			];
+			async.apply(db.sortedSetRemove, 'group:' + groupName + ':members', uid),
+			async.apply(db.setRemove, 'group:' + groupName + ':owners', uid),
+			async.apply(db.decrObjectField, 'group:' + groupName, 'memberCount')
+		];
 
 		async.parallel(tasks, function(err) {
 			if (err) {
@@ -715,7 +767,7 @@ var async = require('async'),
 				if (group.hidden && group.memberCount === 0) {
 					Groups.destroy(groupName, callback);
 				} else {
-					return callback();
+					callback();
 				}
 			});
 		});
@@ -781,10 +833,15 @@ var async = require('async'),
 
 				groupData = groupData.filter(function(group) {
 					return parseInt(group.hidden, 10) !== 1 && !!group.userTitle;
+				}).map(function(group) {
+					group.createtimeISO = utils.toISOString(group.createtime);
+					return group;
 				});
+
 
 				var groupSets = groupData.map(function(group) {
 					group.labelColor = group.labelColor || '#000000';
+					group.createtimeISO = utils.toISOString(group.createtime);
 
 					if (!group['cover:url']) {
 						group['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';

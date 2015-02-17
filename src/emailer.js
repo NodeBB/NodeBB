@@ -20,6 +20,7 @@ var	fs = require('fs'),
 	};
 
 	Emailer.send = function(template, uid, params, callback) {
+		if (!callback) { callback = function() {}; }
 		if (!app) {
 			winston.warn('[emailer] App not ready!');
 			return callback();
@@ -63,6 +64,7 @@ var	fs = require('fs'),
 						uid: uid,
 						pid: params.pid
 					});
+					callback();
 				} else {
 					winston.warn('[emailer] No active email plugin found!');
 					callback();

@@ -9,7 +9,8 @@ var	async = require('async'),
 	user = require('../user'),
 	topics = require('../topics'),
 	batch = require('../batch'),
-	emailer = require('../emailer');
+	emailer = require('../emailer'),
+	utils = require('../../public/src/utils');
 
 (function(Digest) {
 	Digest.execute = function(interval) {
@@ -30,6 +31,22 @@ var	async = require('async'),
 			if (err) {
 				return winston.error('[user/jobs] Could not send digests (' + interval + '): ' + err.message);
 			}
+
+			// Fix relative paths in topic data
+			data.topics.topics = data.topics.topics.map(function(topicObj) {
+				if (topicObj.hasOwnProperty('teaser') && topicObj.teaser !== undefined) {
+					if (utils.isRelativeUrl(topicObj.teaser.user.picture)) {
+						topicObj.teaser.user.picture = nconf.get('url') + topicObj.teaser.user.picture;
+					}
+				} else {
+					if (utils.isRelativeUrl(topicObj.user.picture)) {
+						topicObj.user.picture = nconf.get('url') + topicObj.user.picture;
+					}
+				}
+
+				return topicObj;
+			});
+			return;
 
 			data.interval = interval;
 

@@ -59,7 +59,7 @@ module.exports = function(User) {
 				return callback(err);
 			}
 
-			User.getUsers(uids, callback);
+			User.getUsers(uids, uid, callback);
 		});
 	}
 

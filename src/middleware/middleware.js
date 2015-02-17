@@ -340,6 +340,7 @@ middleware.renderHeader = function(req, res, callback) {
 				return;
 			}
 			results.user.isAdmin = results.isAdmin || false;
+			results.user.uid = parseInt(results.user.uid, 10);
 			results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
 
 			templateValues.browserTitle = results.title;
@@ -409,7 +410,10 @@ middleware.processRender = function(req, res, next) {
 				});
 			} else if (res.locals.adminHeader) {
 				str = res.locals.adminHeader + str;
-				fn(err, str);
+				var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
+				translator.translate(str, language, function(translated) {
+					fn(err, translated);
+				});
 			} else {
 				fn(err, str);
 			}

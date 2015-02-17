@@ -7,6 +7,7 @@ var	async = require('async'),
 	plugins = require('./plugins'),
 	db = require('./database'),
 	meta = require('./meta'),
+	topics = require('./topics'),
 	groups = require('./groups'),
 	Password = require('./password');
 
@@ -119,7 +120,7 @@ var	async = require('async'),
 
 			if (user.picture) {
 				if (user.picture === user.uploadedpicture) {
-					user.picture = user.picture.indexOf('http') === -1 ? nconf.get('relative_path') + user.picture : user.picture;
+					user.picture = user.uploadedpicture = user.picture.indexOf('http') === -1 ? nconf.get('relative_path') + user.picture : user.picture;
 				} else {
 					user.picture = User.createGravatarURLFromEmail(user.email);
 				}
@@ -147,24 +148,31 @@ var	async = require('async'),
 
 	User.updateOnlineUsers = function(uid, callback) {
 		callback = callback || function() {};
-		db.sortedSetScore('users:online', uid, function(err, score) {
-			var now = Date.now();
-			if (err || now - parseInt(score, 10) < 300000) {
-				return callback(err);
-			}
-			db.sortedSetAdd('users:online', now, uid, function(err) {
-				if (err) {
-					return callback(err);
+
+		var now = Date.now();
+		async.waterfall([
+			function(next) {
+				db.sortedSetScore('users:online', uid, next);
+			},
+			function(userOnlineTime, next) {
+				if (now - parseInt(userOnlineTime, 10) < 300000) {
+					return callback();
 				}
+				db.sortedSetAdd('users:online', now, uid, next);	
+			},
+			function(next) {
+				topics.pushUnreadCount(uid);
 				plugins.fireHook('action:user.online', {uid: uid, timestamp: now});
-			});
-		});
+				next();
+			}
+		], callback);
 	};
 
 	User.setUserField = function(uid, field, value, callback) {
+		callback = callback || function() {};
 		db.setObjectField('user:' + uid, field, value, function(err) {
 			if (err) {
-				return callback(err)
+				return callback(err);
 			}
 			plugins.fireHook('action:user.set', {uid: uid, field: field, value: value, type: 'set'});
 			callback();
@@ -172,6 +180,7 @@ var	async = require('async'),
 	};
 
 	User.setUserFields = function(uid, data, callback) {
+		callback = callback || function() {};
 		db.setObject('user:' + uid, data, function(err) {
 			if (err) {
 				return callback(err);
@@ -219,18 +228,18 @@ var	async = require('async'),
 		}
 	};
 
-	User.getUsersFromSet = function(set, start, stop, callback) {
+	User.getUsersFromSet = function(set, uid, start, stop, callback) {
 		async.waterfall([
 			function(next) {
 				User.getUidsFromSet(set, start, stop, next);
 			},
 			function(uids, next) {
-				User.getUsers(uids, next);
+				User.getUsers(uids, uid, next);
 			}
 		], callback);
 	};
 
-	User.getUsers = function(uids, callback) {
+	User.getUsers = function(uids, uid, callback) {
 		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'postcount', 'reputation', 'email:confirmed'];
 		plugins.fireHook('filter:users.addFields', {fields: fields}, function(err, data) {
 			if (err) {
@@ -264,11 +273,10 @@ var	async = require('async'),
 					user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
 				});
 
-				plugins.fireHook('filter:userlist.get', {users: results.userData}, function(err, data) {
+				plugins.fireHook('filter:userlist.get', {users: results.userData, uid: uid}, function(err, data) {
 					if (err) {
 						return callback(err);
 					}
-
 					callback(null, data.users);
 				});
 			});
@@ -431,6 +439,26 @@ var	async = require('async'),
 
 	User.getIgnoredCategories = function(uid, callback) {
 		db.getSortedSetRange('uid:' + uid + ':ignored:cids', 0, -1, callback);
+	};
+
+	User.getWatchedCategories = function(uid, callback) {
+		async.parallel({
+			ignored: function(next) {
+				User.getIgnoredCategories(uid, next);
+			},
+			all: function(next) {
+				db.getSortedSetRange('categories:cid', 0, -1, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			var watched = results.all.filter(function(cid) {
+				return cid && results.ignored.indexOf(cid) === -1;
+			});
+			callback(null, watched);
+		});
 	};
 
 	User.ignoreCategory = function(uid, cid, callback) {

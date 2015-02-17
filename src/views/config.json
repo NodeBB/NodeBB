@@ -1,6 +1,6 @@
 {
 	"custom_mapping": {
-		"^\/?$": "home",
+		"^\/?$": "categories",
 		"^admin?$": "admin/general/dashboard",
 		"^users/sort-posts": "users",
 		"^users/latest": "users",
@@ -14,6 +14,7 @@
 		"^user/.*/watched": "account/watched",
 		"^user/.*/posts": "account/posts",
 		"^user/.*/topics": "account/topics",
+		"^user/.*/groups": "account/groups",
 		"^user/[^\/]+": "account/profile",
 		"^reset/.*": "reset_code",
 		"^tags/.*": "tag",

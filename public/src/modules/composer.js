@@ -68,13 +68,13 @@ define('composer', [
 		});
 
 		// Construct a save_id
-		if (0 !== parseInt(app.uid, 10)) {
+		if (0 !== parseInt(app.user.uid, 10)) {
 			if (post.hasOwnProperty('cid')) {
-				post.save_id = ['composer', app.uid, 'cid', post.cid].join(':');
+				post.save_id = ['composer', app.user.uid, 'cid', post.cid].join(':');
 			} else if (post.hasOwnProperty('tid')) {
-				post.save_id = ['composer', app.uid, 'tid', post.tid].join(':');
+				post.save_id = ['composer', app.user.uid, 'tid', post.tid].join(':');
 			} else if (post.hasOwnProperty('pid')) {
-				post.save_id = ['composer', app.uid, 'pid', post.pid].join(':');
+				post.save_id = ['composer', app.user.uid, 'pid', post.pid].join(':');
 			}
 		}
 
@@ -183,7 +183,7 @@ define('composer', [
 		function emit() {
 			socket.emit('modules.composer.notifyTyping', {
 				tid: postData.tid,
-				uid: app.uid
+				uid: app.user.uid
 			});
 		}
 
@@ -203,7 +203,7 @@ define('composer', [
 		}
 		socket.emit('modules.composer.stopNotifyTyping', {
 			tid: postData.tid,
-			uid: app.uid
+			uid: app.user.uid
 		});
 	}
 
@@ -219,7 +219,7 @@ define('composer', [
 			isTopic = composer.posts[post_uuid] ? !!composer.posts[post_uuid].cid : false,
 			isMain = composer.posts[post_uuid] ? !!composer.posts[post_uuid].isMain : false,
 			isEditing = composer.posts[post_uuid] ? !!composer.posts[post_uuid].pid : false,
-			isGuestPost = composer.posts[post_uuid] ? composer.posts[post_uuid].uid === '0' : null;
+			isGuestPost = composer.posts[post_uuid] ? parseInt(composer.posts[post_uuid].uid, 10) === 0 : null;
 
 		composer.bsEnvironment = utils.findBootstrapEnvironment();
 
@@ -228,6 +228,8 @@ define('composer', [
 		var data = {
 			allowTopicsThumbnail: allowTopicsThumbnail,
 			showTags: isTopic || isMain,
+			minimumTagLength: config.minimumTagLength,
+			maximumTagLength: config.maximumTagLength,
 			isTopic: isTopic,
 			showHandleInput: (app.user.uid === 0 || (isEditing && isGuestPost && app.user.isAdmin)) && config.allowGuestHandles,
 			handle: composer.posts[post_uuid] ? composer.posts[post_uuid].handle || '' : undefined
@@ -406,6 +408,8 @@ define('composer', [
 			return composerAlert('[[error:invalid-title]]');
 		} else if (bodyEl.val().length < parseInt(config.minimumPostLength, 10)) {
 			return composerAlert('[[error:content-too-short, ' + config.minimumPostLength + ']]');
+		} else if (bodyEl.val().length > parseInt(config.maximumPostLength, 10)) {
+			return composerAlert('[[error:content-too-long, ' + config.maximumPostLength + ']]');
 		}
 
 		var composerData = {}, action;

@@ -19,7 +19,7 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 
 		detailsPage.on('click', '[data-action]', function() {
 			var btnEl = $(this),
-				userRow = btnEl.parents('tr'),
+				userRow = btnEl.parents('[data-uid]'),
 				ownerFlagEl = userRow.find('.member-name i'),
 				isOwner = !ownerFlagEl.hasClass('invisible') ? true : false,
 				uid = userRow.attr('data-uid'),
@@ -33,6 +33,19 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 					}, function(err) {
 						if (!err) {
 							ownerFlagEl.toggleClass('invisible');
+						} else {
+							app.alertError(err.message);
+						}
+					});
+					break;
+
+				case 'kick':
+					socket.emit('groups.kick', {
+						uid: uid,
+						groupName: ajaxify.variables.get('group_name')
+					}, function(err) {
+						if (!err) {
+							userRow.slideUp().remove();
 						} else {
 							app.alertError(err.message);
 						}

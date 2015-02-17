@@ -34,13 +34,14 @@ var winston = require('winston'),
 			},
 			function(postData, next) {
 				postData.content = data.content;
-				plugins.fireHook('filter:post.save', postData, next);
+				plugins.fireHook('filter:post.edit', {post: postData, uid: data.uid}, next);
 			}
-		], function(err, postData) {
+		], function(err, result) {
 			if (err) {
 				return callback(err);
 			}
 
+			var postData = result.post;
 			async.parallel({
 				post: function(next) {
 					var d = {
@@ -106,7 +107,7 @@ var winston = require('winston'),
 					return callback(err);
 				}
 				results.content = results.postData.content;
-				//events.logPostEdit(uid, pid);
+
 				plugins.fireHook('action:post.edit', postData);
 				callback(null, results);
 			});
@@ -146,7 +147,6 @@ var winston = require('winston'),
 				return callback(err);
 			}
 
-			events[isDelete ? 'logPostDelete' : 'logPostRestore'](uid, pid);
 			if (isDelete) {
 				posts.delete(pid, callback);
 			} else {
@@ -165,7 +165,7 @@ var winston = require('winston'),
 			if (err || !canEdit) {
 				return callback(err || new Error('[[error:no-privileges]]'));
 			}
-			events.logPostPurge(uid, pid);
+
 			posts.purge(pid, callback);
 		});
 	};

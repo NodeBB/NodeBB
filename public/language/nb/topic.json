@@ -74,7 +74,7 @@
     "fork_no_pids": "Ingen innlegg valgt!",
     "fork_success": "Dette emnet ble delt! Klikk for å gå til delt emne.",
     "composer.title_placeholder": "Skriv din tråd-tittel her",
-    "composer.handle_placeholder": "Name",
+    "composer.handle_placeholder": "Navn",
     "composer.discard": "Forkast",
     "composer.submit": "Send",
     "composer.replying_to": "Svarer i %1",
@@ -94,5 +94,5 @@
     "oldest_to_newest": "Eldste til nyeste",
     "newest_to_oldest": "Nyeste til eldste",
     "most_votes": "Flest stemmer",
-    "most_posts": "Most posts"
+    "most_posts": "Flest innlegg"
 }

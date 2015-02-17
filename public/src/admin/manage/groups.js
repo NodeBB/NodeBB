@@ -154,8 +154,8 @@ define('admin/manage/groups', [
 				socket.emit('admin.user.search', {query: searchText}, function(err, results) {
 					if (!err && results && results.users.length > 0) {
 						var numResults = results.users.length, x;
-						if (numResults > 4) {
-							numResults = 4;
+						if (numResults > 20) {
+							numResults = 20;
 						}
 
 						groupDetailsSearchResults.empty();

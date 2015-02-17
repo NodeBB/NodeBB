@@ -10,7 +10,7 @@ define('forum/notifications', function() {
 		$('span.timeago').timeago();
 
 		$('.notifications .delete').on('click', function() {
-			socket.emit('notifications.deleteAll', function(err) {
+			socket.emit('notifications.markAllRead', function(err) {
 				if (err) {
 					return app.alertError(err.message);
 				}

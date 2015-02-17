@@ -115,11 +115,6 @@ define('forum/users', function() {
 		var username = $('#search-user').val();
 		var notify = $('#user-notfound-notify');
 		page = page || 1;
-		if (!username) {
-			notify.html('<i class="fa fa-circle-o"></i>');
-			notify.parent().removeClass('btn-warning label-warning btn-success label-success');
-			return;
-		}
 
 		notify.html('<i class="fa fa-spinner fa-spin"></i>');
 		var filters = [];

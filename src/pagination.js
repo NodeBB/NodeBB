@@ -1,17 +1,17 @@
 'use strict';
 
+var qs = require('querystring');
+
 var pagination = {};
 
-pagination.create = function(currentPage, pageCount, data) {
-
+pagination.create = function(currentPage, pageCount, queryObj) {
 	if (pageCount <= 1) {
-		data.pagination = {
+		return {
 			prev: {page: 1, active: currentPage > 1},
 			next: {page: 1, active: currentPage < pageCount},
 			rel: [],
 			pages: []
 		};
-		return;
 	}
 
 	var pagesToShow = [1];
@@ -35,11 +35,14 @@ pagination.create = function(currentPage, pageCount, data) {
 		return a - b;
 	});
 
+	queryObj = queryObj || {};
+
 	var pages = pagesToShow.map(function(page) {
-		return {page: page, active: page === currentPage};
+		queryObj.page = page;
+		return {page: page, active: page === currentPage, qs: qs.stringify(queryObj)};
 	});
 
-	data.pagination = {
+	var data = {
 		prev: {page: previous, active: currentPage > 1},
 		next: {page: next, active: currentPage < pageCount},
 		rel: [],
@@ -47,19 +50,19 @@ pagination.create = function(currentPage, pageCount, data) {
 	};
 
 	if (currentPage < pageCount) {
-		data.pagination.rel.push({
+		data.rel.push({
 			rel: 'next',
 			href: '?page=' + next
 		});
 	}
 
 	if (currentPage > 1) {
-		data.pagination.rel.push({
+		data.rel.push({
 			rel: 'prev',
 			href: '?page=' + previous
 		});
 	}
-
+	return data;
 };
 
 

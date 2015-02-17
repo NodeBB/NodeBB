@@ -4,7 +4,7 @@
 
 	// export the class if we are in a Node-like system.
 	if (typeof module === 'object' && module.exports === exports) {
-	  exports = module.exports/* = SemVer*/;
+		exports = module.exports/* = SemVer*/;
 	}
 
 	var helpers = {};
@@ -19,6 +19,11 @@
 			content = tag.content ? 'content="' + tag.content.replace(/\n/g, ' ') + '" ' : '';
 
 		return '<meta ' + name + property + content + '/>';
+	};
+
+	helpers.stringify = function(obj) {
+		// Turns the incoming object into a JSON string
+		return JSON.stringify(obj).replace(/&/gm,"&amp;").replace(/</gm,"&lt;").replace(/>/gm,"&gt;").replace(/"/g, '&quot;');
 	};
 
 	// Groups helpers

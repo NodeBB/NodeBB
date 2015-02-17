@@ -31,7 +31,7 @@ define('forum/footer', ['notifications', 'chat'], function(Notifications, Chat) 
 			if (data && data.posts && data.posts.length) {
 				var post = data.posts[0];
 
-				if (parseInt(post.uid, 10) !== parseInt(app.uid, 10) && !unreadTopics[post.topic.tid]) {
+				if (parseInt(post.uid, 10) !== parseInt(app.user.uid, 10) && !unreadTopics[post.topic.tid]) {
 					increaseUnreadCount();
 					markTopicsUnread(post.topic.tid);
 					unreadTopics[post.topic.tid] = true;

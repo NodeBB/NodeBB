@@ -44,6 +44,10 @@ var async = require('async'),
 							return next(err);
 						}
 
+						if (typeof html !== 'string') {
+							html = '';
+						}
+
 						if (widget.data.container && widget.data.container.match('{body}')) {
 							html = templates.parse(widget.data.container, {
 								title: widget.data.title,

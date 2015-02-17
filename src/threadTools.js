@@ -1,18 +1,11 @@
 'use strict';
 
-var winston = require('winston'),
-	nconf = require('nconf'),
-	async = require('async'),
+var async = require('async'),
 
 	db = require('./database'),
 	topics = require('./topics'),
 	categories = require('./categories'),
-	user = require('./user'),
-	notifications = require('./notifications'),
 	posts = require('./posts'),
-	meta = require('./meta'),
-	websockets = require('./socket.io'),
-	events = require('./events'),
 	plugins = require('./plugins'),
 	batch = require('./batch');
 
@@ -39,12 +32,6 @@ var winston = require('winston'),
 			}
 
 			topics[isDelete ? 'delete' : 'restore'](tid, function(err) {
-				function emitTo(room) {
-					websockets.in(room).emit(isDelete ? 'event:topic_deleted' : 'event:topic_restored', {
-						tid: tid,
-						isDelete: isDelete
-					});
-				}
 				if (err) {
 					return callback(err);
 				}
@@ -56,19 +43,20 @@ var winston = require('winston'),
 					plugins.fireHook('action:topic.restore', topicData);
 				}
 
-				events[isDelete ? 'logTopicDelete' : 'logTopicRestore'](uid, tid);
+				var data = {
+					tid: tid,
+					cid: topicData.cid,
+					isDelete: isDelete,
+					uid: uid
+				};
 
-				emitTo('topic_' + tid);
-				emitTo('category_' + topicData.cid);
-
-				callback(null, {
-					tid: tid
-				});
+				callback(null, data);
 			});
 		});
 	}
 
 	ThreadTools.purge = function(tid, uid, callback) {
+		var topic;
 		async.waterfall([
 			function(next) {
 				topics.exists(tid, next);
@@ -82,13 +70,17 @@ var winston = require('winston'),
 				}, {alwaysStartAt: 0}, next);
 			},
 			function(next) {
-				topics.getTopicField(tid, 'mainPid', next);
+				topics.getTopicFields(tid, ['mainPid', 'cid'], next);
 			},
-			function(mainPid, next) {
-				posts.purge(mainPid, next);
+			function(_topic, next) {
+				topic = _topic;
+				posts.purge(topic.mainPid, next);
 			},
 			function(next) {
 				topics.purge(tid, next);
+			},
+			function(next) {
+				next(null, {tid: tid, cid: topic.cid, uid: uid});
 			}
 		], callback);
 	};
@@ -102,35 +94,24 @@ var winston = require('winston'),
 	};
 
 	function toggleLock(tid, uid, lock, callback) {
+		callback = callback || function() {};
 		topics.getTopicField(tid, 'cid', function(err, cid) {
-			function emitTo(room) {
-				websockets.in(room).emit(lock ? 'event:topic_locked' : 'event:topic_unlocked', {
-					tid: tid,
-					isLocked: lock
-				});
-			}
-
-			if (err && typeof callback === 'function') {
+			if (err) {
 				return callback(err);
 			}
 
 			topics.setTopicField(tid, 'locked', lock ? 1 : 0);
 
-			plugins.fireHook('action:topic.lock', {
+			var data = {
 				tid: tid,
 				isLocked: lock,
-				uid: uid
-			});
+				uid: uid,
+				cid: cid
+			};
 
-			emitTo('topic_' + tid);
-			emitTo('category_' + cid);
+			plugins.fireHook('action:topic.lock', data);
 
-			if (typeof callback === 'function') {
-				callback(null, {
-					tid: tid,
-					isLocked: lock
-				});
-			}
+			callback(null, data);
 		});
 	}
 
@@ -144,13 +125,6 @@ var winston = require('winston'),
 
 	function togglePin(tid, uid, pin, callback) {
 		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
-			function emitTo(room) {
-				websockets.in(room).emit(pin ? 'event:topic_pinned' : 'event:topic_unpinned', {
-					tid: tid,
-					isPinned: pin
-				});
-			}
-
 			if (err) {
 				return callback(err);
 			}
@@ -158,19 +132,16 @@ var winston = require('winston'),
 			topics.setTopicField(tid, 'pinned', pin ? 1 : 0);
 			db.sortedSetAdd('cid:' + topicData.cid + ':tids', pin ? Math.pow(2, 53) : topicData.lastposttime, tid);
 
-			plugins.fireHook('action:topic.pin', {
+			var data = {
 				tid: tid,
 				isPinned: pin,
-				uid: uid
-			});
+				uid: uid,
+				cid: topicData.cid
+			};
 
-			emitTo('topic_' + tid);
-			emitTo('category_' + topicData.cid);
+			plugins.fireHook('action:topic.pin', data);
 
-			callback(null, {
-				tid: tid,
-				isPinned: pin
-			});
+			callback(null, data);
 		});
 	}
 
@@ -213,8 +184,6 @@ var winston = require('winston'),
 			categories.moveRecentReplies(tid, oldCid, cid);
 
 			topics.setTopicField(tid, 'cid', cid, callback);
-
-			events.logTopicMove(uid, tid);
 
 			plugins.fireHook('action:topic.move', {
 				tid: tid,

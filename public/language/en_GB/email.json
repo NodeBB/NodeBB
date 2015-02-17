@@ -13,6 +13,10 @@
 	"reset.text2": "To continue with the password reset, please click on the following link:",
 	"reset.cta": "Click here to reset your password",
 
+	"reset.notify.subject": "Password successfully changed",
+	"reset.notify.text1": "We are notifying you that on %1, your password was changed successfully.",
+	"reset.notify.text2": "If you did not authorise this, please notify an administrator immediately.",
+
 	"digest.notifications": "You have unread notifications from %1:",
 	"digest.latest_topics": "Latest topics from %1",
 	"digest.cta": "Click here to visit %1",

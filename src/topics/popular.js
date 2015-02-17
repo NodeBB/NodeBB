@@ -34,10 +34,12 @@ module.exports = function(Topics) {
 	function getTopics(tids, uid, count, callback) {
 		async.waterfall([
 			function(next) {
-				Topics.getTopicsFields(tids, ['tid', 'postcount'], next);
+				Topics.getTopicsFields(tids, ['tid', 'postcount', 'deleted'], next);
 			},
 			function(topics, next) {
-				tids = topics.sort(function(a, b) {
+				tids = topics.filter(function(topic) {
+					return topic && parseInt(topic.deleted, 10) !== 1;
+				}).sort(function(a, b) {
 					return b.postcount - a.postcount;
 				}).slice(0, count).map(function(topic) {
 					return topic.tid;

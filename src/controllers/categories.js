@@ -3,6 +3,7 @@
 var categoriesController = {},
 	async = require('async'),
 	nconf = require('nconf'),
+	validator = require('validator'),
 	privileges = require('../privileges'),
 	user = require('../user'),
 	categories = require('../categories'),
@@ -22,7 +23,7 @@ categoriesController.recent = function(req, res, next) {
 		}
 
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
-		data['rssFeedUrl'] = nconf.get('relative_path') + '/recent.rss';
+		data.rssFeedUrl = nconf.get('relative_path') + '/recent.rss';
 		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[recent:title]]'}]);
 		res.render('recent', data);
 	});
@@ -89,6 +90,72 @@ categoriesController.unreadTotal = function(req, res, next) {
 		}
 
 		res.json(data);
+	});
+};
+
+categoriesController.list = function(req, res, next) {
+	async.parallel({
+		header: function (next) {
+			res.locals.metaTags = [{
+				name: "title",
+				content: validator.escape(meta.config.title || 'NodeBB')
+			}, {
+				name: "description",
+				content: validator.escape(meta.config.description || '')
+			}, {
+				property: 'og:title',
+				content: 'Index | ' + validator.escape(meta.config.title || 'NodeBB')
+			}, {
+				property: 'og:type',
+				content: 'website'
+			}];
+
+			if(meta.config['brand:logo']) {
+				res.locals.metaTags.push({
+					property: 'og:image',
+					content: meta.config['brand:logo']
+				});
+			}
+
+			next(null);
+		},
+		categories: function (next) {
+			var uid = req.user ? req.user.uid : 0;
+			categories.getCategoriesByPrivilege(uid, 'find', function (err, categoryData) {
+				if (err) {
+					return next(err);
+				}
+				var childCategories = [];
+
+				for(var i=categoryData.length - 1; i>=0; --i) {
+
+					if (Array.isArray(categoryData[i].children) && categoryData[i].children.length) {
+						childCategories.push.apply(childCategories, categoryData[i].children);
+					}
+
+					if (categoryData[i].parent && categoryData[i].parent.cid) {
+						categoryData.splice(i, 1);
+					}
+				}
+
+				async.parallel([
+					function(next) {
+						categories.getRecentTopicReplies(categoryData, uid, next);
+					},
+					function(next) {
+						categories.getRecentTopicReplies(childCategories, uid, next);
+					}
+				], function(err) {
+					next(err, categoryData);
+				});
+			});
+		}
+	}, function (err, data) {
+		if (err) {
+			return next(err);
+		}
+		
+		res.render('categories', data);
 	});
 };
 
@@ -259,9 +326,8 @@ categoriesController.get = function(req, res, next) {
 
 		data.currentPage = page;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
-		data['rssFeedUrl'] = nconf.get('relative_path') + '/category/' + data.cid + '.rss';
-
-		pagination.create(data.currentPage, data.pageCount, data);
+		data.rssFeedUrl = nconf.get('relative_path') + '/category/' + data.cid + '.rss';
+		data.pagination = pagination.create(data.currentPage, data.pageCount);
 
 		data.pagination.rel.forEach(function(rel) {
 			res.locals.linkTags.push(rel);

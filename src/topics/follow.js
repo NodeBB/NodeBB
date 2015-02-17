@@ -142,7 +142,7 @@ module.exports = function(Topics) {
 							postBody: postData.content,
 							site_title: meta.config.title || 'NodeBB',
 							username: data.userData.username,
-							url: nconf.get('url') + '/topics/' + postData.topic.tid,
+							url: nconf.get('url') + '/topic/' + postData.topic.tid,
 							base_url: nconf.get('url')
 						}, next);
 					} else {

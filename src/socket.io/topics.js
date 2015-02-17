@@ -15,10 +15,12 @@ var nconf = require('nconf'),
 	user = require('../user'),
 	db = require('../database'),
 	meta = require('../meta'),
+	events = require('../events'),
 	utils = require('../../public/src/utils'),
 	SocketPosts = require('./posts'),
 
 	SocketTopics = {};
+
 
 SocketTopics.post = function(socket, data, callback) {
 	if(!data) {
@@ -203,44 +205,34 @@ SocketTopics.markAsUnreadForAll = function(socket, tids, callback) {
 };
 
 SocketTopics.delete = function(socket, data, callback) {
-	doTopicAction('delete', socket, data, callback);
+	doTopicAction('delete', 'event:topic_deleted', socket, data, callback);
 };
 
 SocketTopics.restore = function(socket, data, callback) {
-	doTopicAction('restore', socket, data, callback);
+	doTopicAction('restore', 'event:topic_restored', socket, data, callback);
 };
 
 SocketTopics.purge = function(socket, data, callback) {
-	doTopicAction('purge', socket, data, function(err) {
-		if (err) {
-			return callback(err);
-		}
-
-		websockets.in('category_' + data.cid).emit('event:topic_purged', data.tids);
-		async.each(data.tids, function(tid, next) {
-			websockets.in('topic_' + tid).emit('event:topic_purged', tid);
-			next();
-		}, callback);
-	});
+	doTopicAction('purge', 'event:topic_purged', socket, data, callback);
 };
 
 SocketTopics.lock = function(socket, data, callback) {
-	doTopicAction('lock', socket, data, callback);
+	doTopicAction('lock', 'event:topic_locked', socket, data, callback);
 };
 
 SocketTopics.unlock = function(socket, data, callback) {
-	doTopicAction('unlock', socket, data, callback);
+	doTopicAction('unlock', 'event:topic_unlocked', socket, data, callback);
 };
 
 SocketTopics.pin = function(socket, data, callback) {
-	doTopicAction('pin', socket, data, callback);
+	doTopicAction('pin', 'event:topic_pinned', socket, data, callback);
 };
 
 SocketTopics.unpin = function(socket, data, callback) {
-	doTopicAction('unpin', socket, data, callback);
+	doTopicAction('unpin', 'event:topic_unpinned', socket, data, callback);
 };
 
-function doTopicAction(action, socket, data, callback) {
+function doTopicAction(action, event, socket, data, callback) {
 	if (!socket.uid) {
 		return;
 	}
@@ -250,19 +242,43 @@ function doTopicAction(action, socket, data, callback) {
 
 	async.each(data.tids, function(tid, next) {
 		privileges.topics.canEdit(tid, socket.uid, function(err, canEdit) {
-			if(err) {
+			if (err) {
 				return next(err);
 			}
 
-			if(!canEdit) {
+			if (!canEdit) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
 
-			if(typeof threadTools[action] === 'function') {
-				threadTools[action](tid, socket.uid, next);
+			if (typeof threadTools[action] !== 'function') {
+				return next();
 			}
+
+			threadTools[action](tid, socket.uid, function(err, data) {
+				if (err) {
+					return next(err);
+				}
+
+				emitToTopicAndCategory(event, data);
+
+				if (action === 'delete' || action === 'restore' || action === 'purge') {
+					events.log({
+						type: 'topic-' + action,
+						uid: socket.uid,
+						ip: socket.ip,
+						tid: tid
+					});
+				}
+
+				next();
+			});
 		});
 	}, callback);
+}
+
+function emitToTopicAndCategory(event, data) {
+	websockets.in('topic_' + data.tid).emit(event, data);
+	websockets.in('category_' + data.cid).emit(event, data);
 }
 
 SocketTopics.createTopicFromPosts = function(socket, data, callback) {

@@ -28,6 +28,10 @@
         "value": 8
     },
     {
+        "field": "maximumPostLength",
+        "value": 32767
+    },
+    {
         "field": "allowGuestSearching",
         "value": 0
     },

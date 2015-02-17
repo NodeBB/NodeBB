@@ -289,6 +289,8 @@ module.exports = function(Topics) {
 	function checkContentLength(content, callback) {
 		if (!content || content.length < parseInt(meta.config.miminumPostLength, 10)) {
 			return callback(new Error('[[error:content-too-short, '  + meta.config.minimumPostLength + ']]'));
+		} else if (content.length > parseInt(meta.config.maximumPostLength, 10)) {
+			return callback(new Error('[[error:content-too-long, '  + meta.config.maximumPostLength + ']]'));
 		}
 		callback();
 	}

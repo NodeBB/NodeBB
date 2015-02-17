@@ -68,7 +68,7 @@
 		});
 	};
 
-	Auth.login = function(username, password, next) {
+	Auth.login = function(req, username, password, next) {
 		if (!username || !password) {
 			return next(new Error('[[error:invalid-password]]'));
 		}
@@ -85,7 +85,7 @@
 					return next(new Error('[[error:no-user]]'));
 				}
 				uid = _uid;
-				user.auth.logAttempt(uid, next);
+				user.auth.logAttempt(uid, req.ip, next);
 			},
 			function(next) {
 				db.getObjectFields('user:' + uid, ['password', 'banned'], next);
@@ -109,7 +109,7 @@
 		], next);
 	};
 
-	passport.use(new passportLocal(Auth.login));
+	passport.use(new passportLocal({passReqToCallback: true}, Auth.login));
 
 	passport.serializeUser(function(user, done) {
 		done(null, user.uid);

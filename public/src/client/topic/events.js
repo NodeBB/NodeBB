@@ -69,7 +69,7 @@ define('forum/topic/events', [
 	};
 
 	function updatePostVotesAndUserReputation(data) {
-		var votes = $('li[data-pid="' + data.post.pid + '"] .votes'),
+		var votes = $('[data-pid="' + data.post.pid + '"] .votes'),
 			reputationElements = $('.reputation[data-uid="' + data.post.uid + '"]');
 
 		votes.html(data.post.votes).attr('data-votes', data.post.votes);
@@ -77,7 +77,7 @@ define('forum/topic/events', [
 	}
 
 	function updateFavouriteCount(data) {
-		$('li[data-pid="' + data.post.pid + '"] .favouriteCount').html(data.post.reputation).attr('data-favourites', data.post.reputation);
+		$('[data-pid="' + data.post.pid + '"] .favouriteCount').html(data.post.reputation).attr('data-favourites', data.post.reputation);
 	}
 
 	function toggleTopicDeleteState(data) {
@@ -85,7 +85,7 @@ define('forum/topic/events', [
 		threadTools.setDeleteState(data);
 	}
 
-	function onTopicPurged(tid) {
+	function onTopicPurged(data) {
 		ajaxify.go('category/' + ajaxify.variables.get('category_id'));
 	}
 
@@ -111,7 +111,7 @@ define('forum/topic/events', [
 			app.replaceSelfLinks(editedPostEl.find('a'));
 			editedPostEl.fadeIn(250);
 
-			$(window).trigger('action:posts.edited');
+			$(window).trigger('action:posts.edited', data);
 		});
 
 		if (data.tags && tagsUpdated(data.tags)) {
@@ -139,14 +139,14 @@ define('forum/topic/events', [
 	}
 
 	function onPostPurged(pid) {
-		$('#post-container li[data-pid="' + pid + '"]').fadeOut(500, function() {
+		$('#post-container [data-pid="' + pid + '"]').fadeOut(500, function() {
 			$(this).remove();
 		});
 		postTools.updatePostCount();
 	}
 
 	function togglePostDeleteState(data) {
-		var postEl = $('#post-container li[data-pid="' + data.pid + '"]');
+		var postEl = $('#post-container [data-pid="' + data.pid + '"]');
 
 		if (!postEl.length) {
 			return;
@@ -156,7 +156,7 @@ define('forum/topic/events', [
 		var isDeleted = postEl.hasClass('deleted');
 		postTools.toggle(data.pid, isDeleted);
 
-		if (!app.isAdmin && parseInt(data.uid, 10) !== parseInt(app.uid, 10)) {
+		if (!app.user.isAdmin && parseInt(data.uid, 10) !== parseInt(app.user.uid, 10)) {
 			if (isDeleted) {
 				postEl.find('.post-content').translateHtml('[[topic:post_is_deleted]]');
 			} else {
@@ -166,7 +166,7 @@ define('forum/topic/events', [
 	}
 
 	function togglePostFavourite(data) {
-		var favBtn = $('li[data-pid="' + data.post.pid + '"] .favourite');
+		var favBtn = $('[data-pid="' + data.post.pid + '"] .favourite');
 		if (!favBtn.length) {
 			return;
 		}
@@ -185,7 +185,7 @@ define('forum/topic/events', [
 	}
 
 	function togglePostVote(data) {
-		var post = $('li[data-pid="' + data.post.pid + '"]');
+		var post = $('[data-pid="' + data.post.pid + '"]');
 
 		post.find('.upvote').toggleClass('btn-primary upvoted', data.upvote);
 		post.find('.downvote').toggleClass('btn-primary downvoted', data.downvote);

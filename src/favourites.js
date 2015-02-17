@@ -43,10 +43,6 @@ var async = require('async'),
 
 				db.sortedSetAdd('users:reputation', newreputation, postData.uid);
 
-				if (type === 'downvote') {
-					banUserForLowReputation(postData.uid, newreputation);
-				}
-
 				adjustPostVotes(pid, uid, type, unvote, function(err, votes) {
 					postData.votes = votes;
 					callback(err, {
@@ -60,23 +56,6 @@ var async = require('async'),
 				});
 			});
 		});
-	}
-
-	function banUserForLowReputation(uid, newreputation) {
-		if (parseInt(meta.config['autoban:downvote'], 10) === 1 && newreputation < parseInt(meta.config['autoban:downvote:threshold'], 10)) {
-			user.getUserField(uid, 'banned', function(err, banned) {
-				if (err || parseInt(banned, 10) === 1) {
-					return;
-				}
-				var adminUser = require('./socket.io/admin/user');
-				adminUser.banUser(uid, function(err) {
-					if (err) {
-						return winston.error(err.message);
-					}
-					winston.info('uid ' + uid + ' was banned for reaching ' + newreputation + ' reputation');
-				});
-			});
-		}
 	}
 
 	function adjustPostVotes(pid, uid, type, unvote, callback) {
@@ -274,7 +253,7 @@ var async = require('async'),
 			}
 
 			if (!isFavouriting && !results.hasFavourited) {
-				return callback(new Error('[[error:alrady-unfavourited]]'));
+				return callback(new Error('[[error:already-unfavourited]]'));
 			}
 
 			async.waterfall([

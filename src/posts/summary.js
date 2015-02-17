@@ -82,6 +82,7 @@ module.exports = function(Posts) {
 						if (options.stripTags) {
 							post.content = stripTags(post.content);
 						}
+						post.content = post.content ? validator.escape(post.content) : post.content;
 						return next(null, post);
 					}
 

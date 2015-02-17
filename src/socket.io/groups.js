@@ -13,6 +13,10 @@ SocketGroups.join = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
+	if (!parseInt(socket.uid, 10)) {
+		return callback(new Error('[[error:invalid-uid]]'));
+	}
+
 	if (meta.config.allowPrivateGroups !== '0') {
 		async.parallel({
 			isAdmin: async.apply(user.isAdministrator, socket.uid),
@@ -32,6 +36,10 @@ SocketGroups.join = function(socket, data, callback) {
 SocketGroups.leave = function(socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	if (!parseInt(socket.uid, 10)) {
+		return callback(new Error('[[error:invalid-uid]]'));
 	}
 
 	groups.leave(data.groupName, socket.uid, callback);
@@ -94,7 +102,7 @@ SocketGroups.reject = function(socket, data, callback) {
 };
 
 SocketGroups.update = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -108,18 +116,21 @@ SocketGroups.update = function(socket, data, callback) {
 };
 
 SocketGroups.create = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	} else if (socket.uid === 0) {
 		return callback(new Error('[[error:no-privileges]]'));
+	} else if (parseInt(meta.config.allowGroupCreation, 10) !== 1) {
+		return callback(new Error('[[error:group-creation-disabled]]'));
 	}
+
 
 	data.ownerUid = socket.uid;
 	groups.create(data, callback);
 };
 
 SocketGroups.delete = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -145,6 +156,20 @@ SocketGroups.search = function(socket, data, callback) {
 	groups.search(data.query || '', data.options || {}, callback);
 };
 
+SocketGroups.kick = function(socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	groups.ownership.isOwner(socket.uid, data.groupName, function(err, isOwner) {
+		if (!isOwner) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+
+		groups.leave(data.groupName, data.uid, callback);
+	});
+};
+
 SocketGroups.cover = {};
 
 SocketGroups.cover.get = function(socket, data, callback) {
@@ -152,7 +177,7 @@ SocketGroups.cover.get = function(socket, data, callback) {
 };
 
 SocketGroups.cover.update = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	} else if (socket.uid === 0) {
 		return callback(new Error('[[error:no-privileges]]'));

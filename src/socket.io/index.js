@@ -40,7 +40,7 @@ Sockets.init = function(server) {
 };
 
 function onConnection(socket) {
-	socket.ip = socket.request.connection.remoteAddress;
+	socket.ip = socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
 
 	logger.io_one(socket, socket.uid);
 
@@ -66,32 +66,19 @@ function onConnect(socket) {
 		socket.join('uid_' + socket.uid);
 		socket.join('online_users');
 
-		async.parallel({
-			user: function(next) {
-				user.getUserFields(socket.uid, ['username', 'userslug', 'picture', 'status', 'email:confirmed'], next);
-			},
-			isAdmin: function(next) {
-				user.isAdministrator(socket.uid, next);
-			}
-		}, function(err, userData) {
-			if (err || !userData.user) {
+		user.getUserFields(socket.uid, ['status'], function(err, userData) {
+			if (err || !userData) {
 				return;
 			}
-			userData.user.uid = socket.uid;
-			userData.user.isAdmin = userData.isAdmin;
-			userData.user['email:confirmed'] = parseInt(userData.user['email:confirmed'], 10) === 1;
-			socket.emit('event:connect', userData.user);
-			if (userData.user.status !== 'offline') {
-				socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: userData.user.status || 'online'});
+		
+			socket.emit('event:connect');
+			if (userData.status !== 'offline') {
+				socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: userData.status || 'online'});
 			}
 		});
 	} else {
 		socket.join('online_guests');
-		socket.emit('event:connect', {
-			username: '[[global:guest]]',
-			isAdmin: false,
-			uid: 0
-		});
+		socket.emit('event:connect');
 	}
 }
 

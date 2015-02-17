@@ -5,8 +5,8 @@
     "search": "Zoeken",
     "enter_username": "Vul een gebruikersnaam in om te zoeken",
     "load_more": "Meer Laden",
-    "users-found-search-took": "%1 gebruiker(s) gevonden! Zoekactie duurde %2 ms.",
-    "filter-by": "Filter By",
-    "online-only": "Online only",
-    "picture-only": "Picture only"
+    "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
+    "filter-by": "Filter op",
+    "online-only": "Online ",
+    "picture-only": "Alleen een afbeelding"
 }

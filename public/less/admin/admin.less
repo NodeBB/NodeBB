@@ -169,7 +169,6 @@
 		border-radius: 3px;
 		box-shadow: 0px 1px 3px 0px rgba(165, 165, 165, 0.75);
 		margin-bottom: 20px;
-		max-width: 1000px;
 
 		&.panel-default .panel-heading {
 			background: #fefefe;
@@ -232,7 +231,7 @@
 		}
 
 	}
-	
+
 	#acp-search {
 		input {
 			background: black;
@@ -250,7 +249,7 @@
 				width: 200px;
 			}
 		}
-		
+
 		.search-match {
 			font-weight: 700;
 			color: black;
@@ -266,4 +265,14 @@
 // See: https://github.com/twbs/bootstrap/commit/8e2348e9eda51296eb680192379ab37f10355ca3
 .navbar-brand > img {
   display: inline-block;
+}
+
+@media (min-width: 1200px) {
+	.acp-sidebar {
+		position: fixed;
+		top: 70px;
+		right: 15px;
+		width: initial;
+		max-width: calc( ~"(100% - 200px)/4" );
+	}
 }
