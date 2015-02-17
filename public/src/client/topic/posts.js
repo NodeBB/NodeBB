@@ -127,7 +127,7 @@ define('forum/topic/posts', [
 				pids.push(data.posts[i].pid);
 			}
 
-			$(window).trigger('action:posts.loaded', pids);
+			$(window).trigger('action:posts.loaded', {posts: data.posts});
 			onNewPostsLoaded(html, pids);
 			callback(true);
 		});
