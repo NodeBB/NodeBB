@@ -21,7 +21,6 @@ var async = require('async'),
 			}
 
 			db.sortedSetScore('reset:issueDate', code, function(err, issueDate) {
-				// db.getObjectField('reset:expiry', code, function(err, expiry) {
 				if (err) {
 					return callback(err);
 				}
