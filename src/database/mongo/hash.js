@@ -208,12 +208,15 @@ module.exports = function(db, module) {
 		if (!key || !Array.isArray(fields) || !fields.length) {
 			return callback();
 		}
+		fields = fields.filter(Boolean);
+		if (!fields.length) {
+			return callback();
+		}
+
 		var data = {};
 		fields.forEach(function(field) {
-			if (field) {
-				field = helpers.fieldToString(field);
-				data[field] = '';
-			}
+			field = helpers.fieldToString(field);
+			data[field] = '';
 		});
 
 		db.collection('objects').update({_key: key}, {$unset : data}, function(err, res) {
