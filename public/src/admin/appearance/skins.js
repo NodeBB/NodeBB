@@ -58,7 +58,8 @@ define('admin/appearance/skins', function() {
 					url: theme.preview,
 					css: theme.cssCdn
 				};
-			})
+			}),
+			showRevert: true
 		}, function(html) {
 			themeContainer.html(html);
 		});
