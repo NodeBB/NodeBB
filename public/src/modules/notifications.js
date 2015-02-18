@@ -21,7 +21,7 @@ define('notifications', ['sounds'], function(sound) {
 				if (err) {
 					return app.alertError(err.message);
 				}
-				
+
 				var notifs = data.unread.concat(data.read);
 
 				translator.toggleTimeagoShorthand();
@@ -29,14 +29,15 @@ define('notifications', ['sounds'], function(sound) {
 					notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
 				}
 				translator.toggleTimeagoShorthand();
-				
+
 				templates.parse('partials/notifications_list', {notifications: notifs}, function(html) {
 					notifList.translateHtml(html);
 				});
-			});			
+			});
 		});
 
 		notifList.on('click', '[data-nid]', function() {
+			var nid = $(this).attr('data-nid');
 			socket.emit('notifications.markRead', nid, function(err) {
 				if (err) {
 					app.alertError(err.message);
