@@ -210,8 +210,10 @@ module.exports = function(db, module) {
 		}
 		var data = {};
 		fields.forEach(function(field) {
-			field = helpers.fieldToString(field);
-			data[field] = '';
+			if (field) {
+				field = helpers.fieldToString(field);
+				data[field] = '';
+			}
 		});
 
 		db.collection('objects').update({_key: key}, {$unset : data}, function(err, res) {
