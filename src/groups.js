@@ -43,20 +43,14 @@ var async = require('async'),
 					return groups;
 				}
 			},
-			getEphemeralGroup: function(groupName, options, callback) {
-				Groups.exists(groupName, function(err, exists) {
-					if (!err && exists) {
-						Groups.get.apply(null, arguments);
-					} else {
-						callback(null, {
-							name: groupName,
-							description: '',
-							deleted: '0',
-							hidden: '0',
-							system: '1'
-						});
-					}
-				});
+			getEphemeralGroup: function(groupName) {
+				return {
+					name: groupName,
+					description: '',
+					deleted: '0',
+					hidden: '0',
+					system: '1'
+				};
 			},
 			removeEphemeralGroups: function(groups) {
 				var x = groups.length;
@@ -95,6 +89,9 @@ var async = require('async'),
 	};
 
 	Groups.get = function(groupName, options, callback) {
+		if (!arguments[0]) {
+			console.log(new Error.stack);
+		}
 		var	truncated = false,
 			numUsers;
 
@@ -103,7 +100,7 @@ var async = require('async'),
 				if (ephemeralGroups.indexOf(groupName) === -1) {
 					db.getObject('group:' + groupName, next);
 				} else {
-					internals.getEphemeralGroup(groupName, options, next);
+					next(null, internals.getEphemeralGroup(groupName));
 				}
 			},
 			users: function (next) {
@@ -400,6 +397,11 @@ var async = require('async'),
 					return utils.slugify(groupName);
 				});
 			async.parallel([
+				function(next) {
+					callback(null, slugs.map(function(slug) {
+						return ephemeralGroups.indexOf(slug) !== -1;
+					}));
+				},
 				async.apply(db.isObjectFields, 'groupslug:groupname', slugs),
 				async.apply(db.isSortedSetMembers, 'groups:createtime', name)
 			], function(err, results) {
@@ -407,17 +409,20 @@ var async = require('async'),
 					return callback(err);
 				}
 
-				callback(null, results.map(function(pair) {
-					return pair[0] || pair[1];
+				callback(null, results.map(function(result) {
+					return result[0] || result[1] || result[2];
 				}));
 			});
 		} else {
 			var slug = utils.slugify(name);
 			async.parallel([
+				function(next) {
+					next(null, ephemeralGroups.indexOf(slug) !== -1);
+				},
 				async.apply(db.isObjectField, 'groupslug:groupname', slug),
 				async.apply(db.isSortedSetMember, 'groups:createtime', name)
 			], function(err, results) {
-				callback(err, !err ? (results[0] || results[1]) : null);
+				callback(err, !err ? (results[0] || results[1] || results[2]) : null);
 			});
 		}
 	};

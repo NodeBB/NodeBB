@@ -71,6 +71,7 @@
 		trimTrailingDash: /-$/g,
 		trimLeadingDash: /^-/g,
 		isLatin: /^[\w]+$/,
+		languageKeyRegex: /\[\[[\w]+:.+\]\]/,
 
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
 		slugify: function(str) {
@@ -106,6 +107,10 @@
 
 		isNumber: function(n) {
 			return !isNaN(parseFloat(n)) && isFinite(n);
+		},
+
+		hasLanguageKey: function(input) {
+			return utils.languageKeyRegex.test(input);
 		},
 
 		// shallow objects merge
