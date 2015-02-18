@@ -268,8 +268,7 @@ topicsController.get = function(req, res, next) {
 		topics.increaseViewCount(tid);
 		
 		plugins.fireHook('filter:topic.build', {req: req, res: res, templateData: data}, function(err, data) {
-			if (err && process.env === 'development') {
-				winston.warn(JSON.stringify(err));
+			if (err) {
 				return next(err);
 			}
 			res.render('topic', data.templateData);
