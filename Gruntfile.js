@@ -1,53 +1,56 @@
 module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
-		execute: {
+		express: {
 			dev: {
-				src: 'a.js',
 				options: {
-					args: ['arg']
+					script: 'app.js',
+					node_env: 'development',
+					args: ['dev', 'from-file'],
+					output: "NodeBB Ready"
 				}
 			},
 			minifyJS: {
-				src: 'app.js',
 				options: {
-					args: ['from-file']
+					script: 'app.js',
+					node_env: 'development',
+					args: ['dev', 'minify-js'],
+					output: "NodeBB Ready"
 				}
 			},
-			minifyCSS: {
-				src: 'app.js',
+			compileLESS: {
 				options: {
-					args: ['from-file']
+					script: 'app.js',
+					node_env: 'development',
+					args: ['dev', 'compile-less'],
+					output: "NodeBB Ready"
 				}
-			},
+			}
+		},
+		less: {
+			development: {
+				files: {
+					"public/bin/manifest.css": "source/manifest.less"
+				}
+			}
 		},
 		watch: {
-			clientScripts: {
-				files:  ['public/src/**/*.js'],
-				tasks:  ['execute:minifyJS'],
+			compileLESS: {
+				files: "**/*.less",
+				tasks: ['express:compileLESS'],
 				options: {
-					spawn: false
-				}
-			},
-			serverScripts: {
-				files:  ['*.js', 'src/**/*.js', 'node_modules/**/*.js'],
-				tasks:  ['execute:minifyCSS'],
-				options: {
-					spawn: false
-				}
-			},
-			less: {
-				files:  ['**/*.less'],
-				tasks:  ['execute:minifyCSS'],
-				options: {
-					spawn: false
+					livereload: true,
 				}
 			}
 		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-execute');
+	grunt.loadNpmTasks('grunt-express-server');
 
-	grunt.registerTask('default', ['watch', 'execute:minifyCSS']);
+	grunt.registerTask('default', ['express:dev', 'watch']);
+
+	grunt.event.on('watch', function(action, filepath, target) {
+		grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
+	});
 };

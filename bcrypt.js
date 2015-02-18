@@ -13,6 +13,7 @@ process.on('message', function(msg) {
 	}
 });
 
+
 function hashPassword(password, rounds) {
 	async.waterfall([
 		function(next) {
