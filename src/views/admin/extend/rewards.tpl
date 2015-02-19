@@ -7,25 +7,31 @@
 					<ul>
 						<!-- BEGIN active -->
 						<li>
-							If User's
-							<select name="condition" data-selected="{active.condition}">
-								<!-- BEGIN conditions -->
-								<option value="{conditions.condition}">{conditions.name}</option>
-								<!-- END conditions -->
-							</select>
-							Is
-							<select name="conditional" data-selected="{active.conditional}">
-								<!-- BEGIN conditionals -->
-								<option value="{conditionals.conditional}">{conditionals.name}</option>
-								<!-- END conditionals -->
-							</select>
-							<input type="text" value="{active.value}" />
-							Then
-							<select name="reward" data-selected="{active.rewardID}">
-								<!-- BEGIN rewards -->
-								<option value="{rewards.rewardID}">{rewards.name}</option>
-								<!-- END rewards -->
-							</select>
+							<div class="well inline-block">
+								<label for="condition">If User's</label><br />
+								<select name="condition" data-selected="{active.condition}">
+									<!-- BEGIN conditions -->
+									<option value="{conditions.condition}">{conditions.name}</option>
+									<!-- END conditions -->
+								</select>
+							</div>
+							<div class="well inline-block">
+								<label for="condition">Is:</label><br />
+								<select name="conditional" data-selected="{active.conditional}">
+									<!-- BEGIN conditionals -->
+									<option value="{conditionals.conditional}">{conditionals.name}</option>
+									<!-- END conditionals -->
+								</select>
+								<input type="text" value="{active.value}" />
+							</div>
+							<div class="well inline-block">
+								<label for="condition">Then:</label><br />
+								<select name="reward" data-selected="{active.rewardID}">
+									<!-- BEGIN rewards -->
+									<option value="{rewards.rewardID}">{rewards.name}</option>
+									<!-- END rewards -->
+								</select>
+							</div>
 							<div class="inputs well inline-block"></div>
 						</li>
 						<!-- END active -->

@@ -40,7 +40,7 @@ define('admin/extend/rewards', function() {
 	}
 
 	function selectReward(el) {
-		var div = el.parent().find('.inputs'),
+		var div = el.parents('li').find('.inputs'),
 			inputs,
 			html = '';
 
