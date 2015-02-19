@@ -76,7 +76,7 @@ var async = require('async'),
 						deletedNids.push(nids[index]);
 					} else {
 						notification.read = read;
-						notification.readClass = !notification.read ? 'label-warning' : '';
+						notification.readClass = !notification.read ? 'unread' : '';
 					}
 				});
 

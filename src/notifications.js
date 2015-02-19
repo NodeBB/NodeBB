@@ -223,6 +223,22 @@ var async = require('async'),
 		Notifications.markReadMultiple([nid], uid, callback);
 	};
 
+	Notifications.markUnread = function(nid, uid, callback) {
+		callback = callback || function() {};
+		if (!parseInt(uid, 10) || !nid) {
+			return callback();
+		}
+
+		db.getObjectField(nid, 'datetime', function(err, datetime) {
+			datetime = datetime || Date.now();
+
+			async.parallel([
+				async.apply(db.sortedSetRemove, 'uid:' + uid + ':notifications:read', nid),
+				async.apply(db.sortedSetAdd, 'uid:' + uid + ':notifications:unread', datetime, nid)
+			], callback);
+		});
+	};
+
 	Notifications.markReadMultiple = function(nids, uid, callback) {
 		callback = callback || function() {};
 		if (!Array.isArray(nids) || !nids.length) {
