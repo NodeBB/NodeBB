@@ -26,12 +26,13 @@
 								<option value="{rewards.rewardID}">{rewards.name}</option>
 								<!-- END rewards -->
 							</select>
+							<div class="inputs well inline-block"></div>
 						</li>
 						<!-- END active -->
 					</ul>
 				</form>
-				<input type="hidden" name="rewards" value="{function.stringify, rewards}" />
-				<input type="hidden" name="active" value="{function.stringify, active}" />
+				<input type="hidden" template-variable="rewards" value="{function.stringify, rewards}" />
+				<input type="hidden" template-variable="active" value="{function.stringify, active}" />
 			</div>
 		</div>
 	</div>

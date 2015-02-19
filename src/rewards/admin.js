@@ -37,8 +37,8 @@ rewards.get = function(callback) {
 				"conditional": "lesserorequalthan"
 			},
 			{
-				"name": "is string:",
-				"conditional": "isstring"
+				"name": "string:",
+				"conditional": "string"
 			}
 		],
 		active: [
@@ -65,7 +65,21 @@ rewards.get = function(callback) {
 					{
 						"type": "select",
 						"name": "groupname",
-						"values": ["Group 1", "Group 2", "Group 3"],
+						"label": "Group Name:",
+						"values": [
+							{
+								"name": "Group 1",
+								"value": "group1"
+							},
+							{
+								"name": "Group 2",
+								"value": "group2"
+							},
+							{
+								"name": "Group 3",
+								"value": "group3"
+							}
+						],
 					}
 				]
 			},
@@ -76,10 +90,12 @@ rewards.get = function(callback) {
 					{
 						"type": "text",
 						"name": "title",
+						"label": "Title:"
 					},
 					{
 						"type": "text",
 						"name": "message",
+						"label": "Message:"
 					}
 				]
 			}
