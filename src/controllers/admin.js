@@ -163,14 +163,24 @@ adminController.tags.get = function(req, res, next) {
 };
 
 adminController.flags.get = function(req, res, next) {
-	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
-	posts.getFlags(uid, 0, 19, function(err, posts) {
+	function done(err, posts) {
 		if (err) {
 			return next(err);
 		}
+		res.render('admin/manage/flags', {posts: posts, next: end + 1, byUsername: byUsername});
+	}
+	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
+	var sortBy = req.query.sortBy || 'count';
+	var byUsername = req.query.byUsername || '';
+	var start = 0;
+	var end = 19;
 
-		res.render('admin/manage/flags', {posts: posts, next: 20});
-	});
+	if (byUsername) {
+		posts.getUserFlags(byUsername, sortBy, uid, start, end, done);
+	} else {
+		var set = sortBy === 'count' ? 'posts:flags:count' : 'posts:flagged';
+		posts.getFlags(set, uid, start, end, done);	
+	}	
 };
 
 adminController.database.get = function(req, res, next) {
