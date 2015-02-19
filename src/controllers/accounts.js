@@ -376,33 +376,26 @@ accountsController.accountSettings = function(req, res, next) {
 accountsController.uploadPicture = function (req, res, next) {
 	var userPhoto = req.files.files[0];
 	var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
-
-	if (userPhoto.size > uploadSize * 1024) {
-		fs.unlink(userPhoto.path);
-		return next(new Error('[[error:file-too-big, ' + uploadSize + ']]'));
-	}
-
-	var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
-	if (allowedTypes.indexOf(userPhoto.type) === -1) {
-		fs.unlink(userPhoto.path);
-		return next(new Error('[[error:invalid-image-type, ' + allowedTypes.join(', ') + ']]'));
-	}
-
 	var extension = path.extname(userPhoto.name);
-	if (!extension) {
-		fs.unlink(userPhoto.path);
-		return next(new Error('[[error:invalid-image-extension]]'));
-	}
-
 	var updateUid = req.user ? req.user.uid : 0;
 	var imageDimension = parseInt(meta.config.profileImageDimension, 10) || 128;
+	var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1;
 
 	async.waterfall([
+		function(next) {
+			next(userPhoto.size > uploadSize * 1024 ? new Error('[[error:file-too-big, ' + uploadSize + ']]') : null);
+		},
+		function(next) {
+			next(!extension ? new Error('[[error:invalid-image-extension]]') : null);
+		},
+		function(next) {
+			file.isFileTypeAllowed(userPhoto.path, ['png', 'jpeg', 'jpg', 'gif'], next);
+		},
 		function(next) {
 			image.resizeImage(userPhoto.path, extension, imageDimension, imageDimension, next);
 		},
 		function(next) {
-			if (parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1) {
+			if (convertToPNG) {
 				image.convertImageToPng(userPhoto.path, extension, next);
 			} else {
 				next();
@@ -412,7 +405,7 @@ accountsController.uploadPicture = function (req, res, next) {
 			user.getUidByUserslug(req.params.userslug, next);
 		},
 		function(uid, next) {
-			if(parseInt(updateUid, 10) === parseInt(uid, 10)) {
+			if (parseInt(updateUid, 10) === parseInt(uid, 10)) {
 				return next();
 			}
 
@@ -450,7 +443,6 @@ accountsController.uploadPicture = function (req, res, next) {
 			return plugins.fireHook('filter:uploadImage', {image: userPhoto, uid: updateUid}, done);
 		}
 
-		var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1;
 		var filename = updateUid + '-profileimg' + (convertToPNG ? '.png' : extension);
 
 		user.getUserField(updateUid, 'uploadedpicture', function (err, oldpicture) {
@@ -524,7 +516,7 @@ accountsController.getChats = function(req, res, next) {
 				if (!toUid || parseInt(toUid, 10) === parseInt(req.user.uid, 10)) {
 					return helpers.notFound(req, res);
 				}
-				
+
 				async.parallel({
 					toUser: async.apply(user.getUserFields, toUid, ['uid', 'username']),
 					messages: async.apply(messaging.getMessages, req.user.uid, toUid, 'recent', false),

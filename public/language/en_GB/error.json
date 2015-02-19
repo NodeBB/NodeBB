@@ -64,6 +64,7 @@
 
 	"invalid-image-type": "Invalid image type. Allowed types are: %1",
 	"invalid-image-extension": "Invalid image extension",
+	"invalid-file-type": "Invalid file type. Allowed types are: %1",
 
 	"group-name-too-short": "Group name too short",
 	"group-already-exists": "Group already exists",
@@ -80,7 +81,6 @@
 	"topic-thumbnails-are-disabled": "Topic thumbnails are disabled.",
 	"invalid-file": "Invalid File",
 	"uploads-are-disabled": "Uploads are disabled",
-	"upload-error": "Upload Error : %1",
 
 	"signature-too-long" : "Sorry, your signature cannot be longer than %1 characters.",
 

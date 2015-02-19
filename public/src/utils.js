@@ -130,38 +130,39 @@
 			return ('' + path).split('.').pop();
 		},
 
-		fileMimeType: (function () {
-			// we only care about images, for now
-			var map = {
-				"bmp": "image/bmp",
-				"cmx": "image/x-cmx",
-				"cod": "image/cis-cod",
-				"gif": "image/gif",
-				"ico": "image/x-icon",
-				"ief": "image/ief",
-				"jfif": "image/pipeg",
-				"jpe": "image/jpeg",
-				"jpeg": "image/jpeg",
-				"jpg": "image/jpeg",
-				"pbm": "image/x-portable-bitmap",
-				"pgm": "image/x-portable-graymap",
-				"pnm": "image/x-portable-anymap",
-				"ppm": "image/x-portable-pixmap",
-				"ras": "image/x-cmu-raster",
-				"rgb": "image/x-rgb",
-				"svg": "image/svg+xml",
-				"tif": "image/tiff",
-				"tiff": "image/tiff",
-				"xbm": "image/x-xbitmap",
-				"xpm": "image/x-xpixmap",
-				"xwd": "image/x-xwindowdump"
-			};
+		extensionMimeTypeMap: {
+			"bmp": "image/bmp",
+			"cmx": "image/x-cmx",
+			"cod": "image/cis-cod",
+			"gif": "image/gif",
+			"ico": "image/x-icon",
+			"ief": "image/ief",
+			"jfif": "image/pipeg",
+			"jpe": "image/jpeg",
+			"jpeg": "image/jpeg",
+			"jpg": "image/jpeg",
+			"png": "image/png",
+			"pbm": "image/x-portable-bitmap",
+			"pgm": "image/x-portable-graymap",
+			"pnm": "image/x-portable-anymap",
+			"ppm": "image/x-portable-pixmap",
+			"ras": "image/x-cmu-raster",
+			"rgb": "image/x-rgb",
+			"svg": "image/svg+xml",
+			"tif": "image/tiff",
+			"tiff": "image/tiff",
+			"xbm": "image/x-xbitmap",
+			"xpm": "image/x-xpixmap",
+			"xwd": "image/x-xwindowdump"
+		},
 
-			return function (path) {
-				var extension = utils.fileExtension(path);
-				return map[extension] || '*';
-			};
-		})(),
+		fileMimeType: function (path) {
+			utils.extensionToMimeType(utils.fileExtension(path));
+		},
+
+		extensionToMimeType: function(extension) {
+			return utils.extensionMimeTypeMap[extension] || '*';
+		},
 
 		isRelativeUrl: function(url) {
 			var firstChar = url.slice(0, 1);
