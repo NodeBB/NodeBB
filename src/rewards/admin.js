@@ -43,7 +43,7 @@ rewards.get = function(callback) {
 		],
 		active: [
 			{
-				"rewardID": 0,
+				"rewardID": 1,
 				"condition": "postcount",
 				"conditional": "greaterthan",
 				"value": 100,

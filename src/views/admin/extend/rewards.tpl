@@ -8,9 +8,9 @@
 						<!-- BEGIN active -->
 						<li>
 							If User's
-							<select name="condition">
+							<select name="condition" data-selected="{active.condition}">
 								<!-- BEGIN conditions -->
-								<option value="{conditions.condition}" data-selected="{active.condition}">{conditions.name}</option>
+								<option value="{conditions.condition}">{conditions.name}</option>
 								<!-- END conditions -->
 							</select>
 							Is
@@ -30,8 +30,8 @@
 						<!-- END active -->
 					</ul>
 				</form>
-				<input type="hidden" id="rewards" value="{function.stringify, rewards}" />
-				<input type="hidden" id="active" value="{function.stringify, active}" />
+				<input type="hidden" name="rewards" value="{function.stringify, rewards}" />
+				<input type="hidden" name="active" value="{function.stringify, active}" />
 			</div>
 		</div>
 	</div>

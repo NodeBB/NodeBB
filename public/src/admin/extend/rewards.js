@@ -9,11 +9,15 @@ define('admin/extend/rewards', function() {
 		active;
 
 	rewards.init = function() {
-		available = JSON.parse($('#rewards').val());
-		active = JSON.parse($('#active').val());
+		//available = JSON.parse($('#rewards').val());
+		//active = JSON.parse($('#active').val());
 
-		$('[data-selected]').each(function() {
-			$(this).val($(this).attr('data-selected'));
+
+		$(window).on('action:ajaxify.end', function() {
+			$('[data-selected]').each(function() {
+				console.log($(this).attr('data-selected'));
+				$(this).val($(this).attr('data-selected'));
+			});
 		});
 	};
 
