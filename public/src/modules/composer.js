@@ -94,8 +94,12 @@ define('composer', [
 		});
 	}
 
-	composer.addButton = function(iconClass, onClick) {
-		formatting.addButton(iconClass, onClick);
+	composer.addButton = function(button, onClick) {
+		if (typeof button !== 'object') {
+			/* Backward compatibility */
+			button = {id: button.replace('fa fa-', ''), icon: button, handler: onClick};
+		}
+		formatting.addButton(button);
 	};
 
 	composer.newTopic = function(cid) {
