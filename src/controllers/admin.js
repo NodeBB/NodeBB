@@ -304,6 +304,15 @@ adminController.extend.widgets = function(req, res, next) {
 	});
 };
 
+adminController.extend.rewards = function(req, res, next) {
+	require('../rewards/admin').get(function(err, data) {
+		if (err) {
+			return next(err);
+		}
+		
+		res.render('admin/extend/rewards', data);
+	});
+};
 
 adminController.groups.get = function(req, res, next) {
 	groups.list({

@@ -67,6 +67,7 @@ function addRoutes(router, middleware, controllers) {
 
 	router.get('/extend/plugins', controllers.admin.plugins.get);
 	router.get('/extend/widgets', controllers.admin.extend.widgets);
+	router.get('/extend/rewards', controllers.admin.extend.rewards);
 
 	router.get('/advanced/database', controllers.admin.database.get);
 	router.get('/advanced/events', controllers.admin.events.get);
