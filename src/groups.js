@@ -207,28 +207,34 @@ var async = require('async'),
 				results.base['cover:position'] = '50% 50%';
 			}
 
-			results.base.name = validator.escape(results.base.name);
-			results.base.description = validator.escape(results.base.description);
-			results.base.userTitle = validator.escape(results.base.userTitle);
-			results.base.createtimeISO = utils.toISOString(results.base.createtime);
-			results.base.members = results.users.filter(Boolean);
-			results.base.pending = results.pending.filter(Boolean);
-			results.base.count = numUsers || results.base.members.length;
-			results.base.memberCount = numUsers || results.base.members.length;
-			results.base.deleted = !!parseInt(results.base.deleted, 10);
-			results.base.hidden = !!parseInt(results.base.hidden, 10);
-			results.base.system = !!parseInt(results.base.system, 10);
-			results.base.private = results.base.private ? !!parseInt(results.base.private, 10) : true;
-			results.base.deletable = !results.base.system;
-			results.base.truncated = truncated;
-			results.base.isMember = results.isMember;
-			results.base.isPending = results.isPending;
-			results.base.isOwner = results.isOwner;
+			plugins.fireHook('filter:parse.raw', results.base.description, function(err, descriptionParsed) {
+				if (err) {
+					return callback(err);
+				}
+				results.base.name = validator.escape(results.base.name);
+				results.base.description = validator.escape(results.base.description);
+				results.base.descriptionParsed = descriptionParsed;
+				results.base.userTitle = validator.escape(results.base.userTitle);
+				results.base.createtimeISO = utils.toISOString(results.base.createtime);
+				results.base.members = results.users.filter(Boolean);
+				results.base.pending = results.pending.filter(Boolean);
+				results.base.count = numUsers || results.base.members.length;
+				results.base.memberCount = numUsers || results.base.members.length;
+				results.base.deleted = !!parseInt(results.base.deleted, 10);
+				results.base.hidden = !!parseInt(results.base.hidden, 10);
+				results.base.system = !!parseInt(results.base.system, 10);
+				results.base.private = results.base.private ? !!parseInt(results.base.private, 10) : true;
+				results.base.deletable = !results.base.system;
+				results.base.truncated = truncated;
+				results.base.isMember = results.isMember;
+				results.base.isPending = results.isPending;
+				results.base.isOwner = results.isOwner;
 
 
-			plugins.fireHook('filter:group.get', {group: results.base}, function(err, data) {
-				callback(err, data ? data.group : null);
-			});
+				plugins.fireHook('filter:group.get', {group: results.base}, function(err, data) {
+					callback(err, data ? data.group : null);
+				});	
+			});			
 		});
 	};
 
