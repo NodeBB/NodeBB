@@ -58,7 +58,7 @@ define('admin/extend/rewards', function() {
 		}
 
 		inputs.forEach(function(input) {
-			html += '<label for="' + input.name + '">' + input.label;
+			html += '<label for="' + input.name + '">' + input.label + '<br />';
 			switch (input.type) {
 				case 'select': 
 						html += '<select name="' + input.name + '">';
@@ -70,7 +70,7 @@ define('admin/extend/rewards', function() {
 						html += '<input type="text" name="' + input.name +'" />';
 					break;
 			}
-			html += '</label>';
+			html += '</label><br />';
 		});
 
 		div.html(html);
