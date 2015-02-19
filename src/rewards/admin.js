@@ -51,7 +51,7 @@ rewards.get = function(callback) {
 					"message": "here is a message"
 				},
 				"value": 100,
-				"disabled": 0
+				"disabled": false
 			},
 			{
 				"rewardID": 0,
@@ -61,7 +61,7 @@ rewards.get = function(callback) {
 					"groupname": "group2"
 				},
 				"value": 10,
-				"disabled": 0
+				"disabled": true
 			}
 		],
 		rewards: [

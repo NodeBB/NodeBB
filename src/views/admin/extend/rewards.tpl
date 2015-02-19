@@ -33,6 +33,15 @@
 								</select>
 							</div>
 							<div class="inputs well inline-block"></div>
+							<div class="well inline-block pull-right">
+								<button class="btn btn-danger">Delete</button>
+								<!-- IF active.disabled -->
+								<button class="btn btn-success">Enabled</button>
+								<!-- ELSE -->
+								<button class="btn btn-warning">Disabled</button>
+								<!-- ENDIF active.disabled -->
+							</div>
+							<div class="clearfix"></div>
 						</li>
 						<!-- END active -->
 					</ul>
