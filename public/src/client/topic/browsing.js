@@ -9,10 +9,10 @@ define('forum/topic/browsing', function() {
 	var Browsing = {};
 
 	Browsing.onUpdateUsersInRoom = function(data) {
-		if(data && data.room.indexOf('topic_' + ajaxify.variables.get('topic_id')) !== -1) {
+		if (data && data.room.indexOf('topic_' + ajaxify.variables.get('topic_id')) !== -1) {
 			$('.browsing-users').toggleClass('hidden', !data.users.length);
 			for(var i=0; i<data.users.length; ++i) {
-				addUserIcon(data.users[i]);
+				addUserIcon(data.users[i]);	
 			}
 
 			updateUserCount(data.total);
@@ -32,8 +32,10 @@ define('forum/topic/browsing', function() {
 	};
 
 	Browsing.onUserLeave = function(uid) {
-		var activeEl = $('.thread_active_users');
-		var user = activeEl.find('a[data-uid="' + uid + '"]');
+		if (app.user.uid === parseInt(uid, 10)) {
+			return;
+		}
+		var user = $('.thread_active_users').find('a[data-uid="' + uid + '"]');
 		if (user.length) {
 			var count = Math.max(0, parseInt(user.attr('data-count'), 10) - 1);
 			user.attr('data-count', count);
