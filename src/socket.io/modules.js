@@ -114,6 +114,16 @@ SocketModules.composer.stopNotifyTyping = function(socket, data) {
 	server.in('topic_' + data.tid).emit('event:topic.stopNotifyTyping', data);
 };
 
+SocketModules.composer.getFormattingOptions = function(socket, data, callback) {
+	plugins.fireHook('filter:composer.formatting', {
+		options: [
+			// { className: 'fa fa-bold' }    Just an example of what needs to be set via plugins
+		]
+	}, function(err, payload) {
+		callback(err, payload.options);
+	});
+};
+
 /* Chat */
 
 SocketModules.chats.get = function(socket, data, callback) {

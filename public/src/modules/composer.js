@@ -16,10 +16,16 @@ define('composer', [
 	var composer = {
 		active: undefined,
 		posts: {},
-		bsEnvironment: undefined
+		bsEnvironment: undefined,
+		formatting: []
 	};
 
 	$(window).off('resize', onWindowResize).on('resize', onWindowResize);
+
+	// Query server for formatting options
+	socket.emit('modules.composer.getFormattingOptions', function(err, options) {
+		composer.formatting = options;
+	});
 
 	function onWindowResize() {
 		if (composer.active !== undefined) {
@@ -232,8 +238,10 @@ define('composer', [
 			maximumTagLength: config.maximumTagLength,
 			isTopic: isTopic,
 			showHandleInput: (app.user.uid === 0 || (isEditing && isGuestPost && app.user.isAdmin)) && config.allowGuestHandles,
-			handle: composer.posts[post_uuid] ? composer.posts[post_uuid].handle || '' : undefined
+			handle: composer.posts[post_uuid] ? composer.posts[post_uuid].handle || '' : undefined,
+			formatting: composer.formatting
 		};
+		console.log(composer.formatting);
 
 		parseAndTranslate(template, data, function(composerTemplate) {
 			if ($('#cmp-uuid-' + post_uuid).length) {
