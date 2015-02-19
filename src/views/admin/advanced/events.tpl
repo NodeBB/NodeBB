@@ -21,7 +21,7 @@
 		</div>
 	</div>
 	<div class="col-lg-3 acp-sidebar">
-		<div class="panel panel-default affix">
+		<div class="panel panel-default">
 			<div class="panel-heading">Events Control Panel</div>
 			<div class="panel-body">
 				<button class="btn btn-warning" data-action="clear"><i class="fa fa-eraser"></i> Delete Events</button>
