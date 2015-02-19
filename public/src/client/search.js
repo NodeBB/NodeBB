@@ -80,8 +80,8 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 				$('#posted-by-user').val(params.by);
 			}
 
-			if ((params['categories[]'] || params.categories)) {
-				$('#posted-in-categories').val(params['categories[]'] || params.categories);
+			if (params.categories) {
+				$('#posted-in-categories').val(params.categories);
 			}
 
 			if (params.searchChildren) {
