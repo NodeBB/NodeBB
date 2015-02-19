@@ -4,9 +4,61 @@ var rewards = {};
 
 
 rewards.get = function(callback) {
-	callback({
-		conditions: ["Reputation", "Post Count", "Last Logged in Time"],
-		conditionals: [">", ">=", "<", "<=", "is string:"],
+	callback(false, {
+		conditions: [
+			{
+				"name": "Reputation",
+				"condition": "reputation"
+			},
+			{
+				"name": "Post Count",
+				"condition": "postcount"
+			},
+			{
+				"name": "Last Logged in Time",
+				"condition": "lastLoggedIn"
+			}
+		],
+		conditionals: [
+			{
+				"name": ">",
+				"conditional": "greaterthan"
+			},
+			{
+				"name": ">=",
+				"conditional": "greaterorequalthan"
+			},
+			{
+				"name": "<",
+				"conditional": "smallerthan"
+			},
+			{
+				"name": "<=",
+				"conditional": "smallerorequalthan"
+			},
+			{
+				"name": "is string:",
+				"conditional": "isstring"
+			}
+		],
+		active: [
+			{
+				"rewardID": 0,
+				"conditional": {
+					"condition": ">",
+					"value": 100
+				},
+				"disabled": 0
+			},
+			{
+				"rewardID": 1,
+				"conditional": {
+					"condition": ">",
+					"value": 100
+				},
+				"disabled": 0
+			}
+		],
 		rewards: [
 			{
 				"rewardID": 0,
@@ -17,11 +69,10 @@ rewards.get = function(callback) {
 						"name": "groupname",
 						"values": ["Group 1", "Group 2", "Group 3"],
 					}
-				],
-				"disabled": 0
+				]
 			},
 			{
-				"rewardID": 0,
+				"rewardID": 1,
 				"name": "Send alert message",
 				"inputs": [
 					{
@@ -32,11 +83,10 @@ rewards.get = function(callback) {
 						"type": "text",
 						"name": "message",
 					}
-				],
-				"disabled": 0
+				]
 			}
 		]
-	})
+	});
 };
 
 function getConditions() {

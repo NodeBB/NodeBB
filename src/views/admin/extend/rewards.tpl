@@ -5,11 +5,23 @@
 			<div class="panel-body">
 				<form>
 					<ul>
-						<!-- BEGIN rewards -->
+						<!-- BEGIN active -->
 						<li>
-
+							If User's
+							<select name="condition" class="form-control">
+								<!-- BEGIN conditions -->
+								<option value="{conditions.condition}">{conditions.name}</option>
+								<!-- END conditions -->
+							</select>
+							Is
+							<select name="conditional" class="form-control">
+								<!-- BEGIN conditionals -->
+								<option value="{conditionals.conditional}">{conditionals.name}</option>
+								<!-- END conditionals -->
+							</select>
+							<input type="text" class="form-control" value="{active.conditional.value}" />
 						</li>
-						<!-- END rewards -->
+						<!-- END active -->
 					</ul>
 				</form>
 			</div>
