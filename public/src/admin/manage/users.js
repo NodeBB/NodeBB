@@ -214,7 +214,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 					}
 					$('#create-modal').modal('hide');
 					$('#create-modal').on('hidden.bs.modal', function() {
-						ajaxify.go('admin/users');
+						ajaxify.refresh();
 					});
 					app.alertSuccess('User created!');
 				});
