@@ -119,8 +119,9 @@ function uploadFile(uid, uploadedFile, callback) {
 		return callback(new Error('[[error:file-too-big, ' + meta.config.maximumFileSize + ']]'));
 	}
 	
-	var filename = uploadFile.name || 'upload';
-	filename = validator.escape(filename).substr(0, 255) + '-' + Date.now();
+	var filename = uploadedFile.name || 'upload';
+
+	filename = Date.now() + '-' + validator.escape(filename).substr(0, 255);
 	file.saveFileToLocal(filename, 'files', uploadedFile.path, function(err, upload) {
 		if (err) {
 			return callback(err);
