@@ -6,7 +6,7 @@
 				<form>
 					<ul>
 						<!-- BEGIN active -->
-						<li data-rewardID="{active.rewardID}">
+						<li data-rewardID="{active.rewardID}" data-index="@index">
 							<div class="well inline-block">
 								<label for="condition">If User's</label><br />
 								<select name="condition" data-selected="{active.condition}">
@@ -34,11 +34,11 @@
 							</div>
 							<div class="inputs well inline-block"></div>
 							<div class="well inline-block pull-right">
-								<button class="btn btn-danger">Delete</button>
+								<button class="btn btn-danger delete">Delete</button>
 								<!-- IF active.disabled -->
-								<button class="btn btn-success">Enabled</button>
+								<button class="btn btn-success toggle">Enabled</button>
 								<!-- ELSE -->
-								<button class="btn btn-warning">Disabled</button>
+								<button class="btn btn-warning toggle">Disabled</button>
 								<!-- ENDIF active.disabled -->
 							</div>
 							<div class="clearfix"></div>

@@ -18,6 +18,22 @@ define('admin/extend/rewards', function() {
 			}).on('change', function() {
 				update($(this));
 			});
+
+			$('.delete').on('click', function() {
+				var id = $(this).parents('[data-index]');
+
+				delete active[id];
+				// send delete api call
+			});
+
+			$('.toggle').on('click', function() {
+				var btn = $(this),
+					disabled = btn.html() === 'Disabled',
+					id = $(this).parents('[data-index]');
+
+				btn.toggleClass('btn-warning').toggleClass('btn-success').html(disabled ? 'Enabled' : 'Disabled');
+				// send disable api call
+			});
 		});
 	};
 
