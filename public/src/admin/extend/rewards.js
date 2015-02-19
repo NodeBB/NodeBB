@@ -40,7 +40,8 @@ define('admin/extend/rewards', function() {
 	}
 
 	function selectReward(el) {
-		var div = el.parents('li').find('.inputs'),
+		var parent = el.parents('[data-rewardID]'),
+			div = parent.find('.inputs'),
 			inputs,
 			html = '';
 
@@ -48,6 +49,7 @@ define('admin/extend/rewards', function() {
 			if (available.hasOwnProperty(reward)) {
 				if (parseInt(available[reward].rewardID, 10) === parseInt(el.attr('data-selected'), 10)) {
 					inputs = available[reward].inputs;
+					parent.attr('data-rewardID', available[reward].rewardID);
 					break;
 				}
 			}
@@ -74,6 +76,17 @@ define('admin/extend/rewards', function() {
 		});
 
 		div.html(html);
+
+		$('[data-rewardID]').each(function(i) {
+			var div = $(this).find('.inputs'),
+				rewards = active[i].rewards;
+
+			for (var reward in rewards) {
+				if (rewards.hasOwnProperty(reward)) {
+					div.find('[name="' + reward + '"]').val(rewards[reward]);	
+				}
+			}
+		});
 	}
 
 	return rewards;

@@ -6,7 +6,7 @@
 				<form>
 					<ul>
 						<!-- BEGIN active -->
-						<li>
+						<li data-rewardID="{active.rewardID}">
 							<div class="well inline-block">
 								<label for="condition">If User's</label><br />
 								<select name="condition" data-selected="{active.condition}">
