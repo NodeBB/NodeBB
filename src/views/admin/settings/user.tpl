@@ -29,6 +29,15 @@
 					<input type="checkbox" data-field="requireEmailConfirmation"> <strong>Require Email Confirmation</strong>
 				</label>
 			</div>
+
+			<div class="form-group">
+				<label>Allow login with</label>
+				<select class="form-control" data-field="allowLoginWith">
+					<option value="username-email">Username or Email</option>
+					<option value="username">Username Only</option>
+					<option value="email">Email Only</option>
+				</select>
+			</div>
 		</form>
 	</div>
 </div>

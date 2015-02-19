@@ -70,6 +70,7 @@ Controllers.login = function(req, res, next) {
 	data.showResetLink = emailersPresent;
 	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1;
 	data.allowRegistration = parseInt(meta.config.allowRegistration, 10) === 1;
+	data.allowLoginWith = '[[login:' + (meta.config.allowLoginWith || 'username-email') + ']]';
 	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:login]]'}]);
 	data.error = req.flash('error')[0];
 

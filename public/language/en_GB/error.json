@@ -96,5 +96,7 @@
 	"reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading.",
 
 	"registration-error": "Registration Error",
-	"parse-error": "Something went wrong while parsing server response"
+	"parse-error": "Something went wrong while parsing server response",
+	"wrong-login-type-email": "Please use your email to login",
+	"wrong-login-type-username": "Please use your username to login"
 }

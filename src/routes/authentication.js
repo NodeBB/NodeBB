@@ -4,11 +4,12 @@
 	var passport = require('passport'),
 		passportLocal = require('passport-local').Strategy,
 		nconf = require('nconf'),
-		Password = require('../password'),
 		winston = require('winston'),
 		async = require('async'),
+		validator = require('validator'),
 		express = require('express'),
 
+		Password = require('../password'),
 		meta = require('../meta'),
 		user = require('../user'),
 		plugins = require('../plugins'),
@@ -131,7 +132,9 @@
 			req.session.returnTo = req.body.returnTo;
 		}
 
-		if (req.body.username && utils.isEmailValid(req.body.username)) {
+		var loginWith = meta.config.allowLoginWith || 'username-email';
+
+		if (req.body.username && utils.isEmailValid(req.body.username) && loginWith.indexOf('email') !== -1) {
 			user.getUsernameByEmail(req.body.username, function(err, username) {
 				if (err) {
 					return next(err);
@@ -139,8 +142,10 @@
 				req.body.username = username ? username : req.body.username;
 				continueLogin(req, res, next);
 			});
-		} else {
+		} else if (loginWith.indexOf('username') !== -1 && !validator.isEmail(req.body.username)) {
 			continueLogin(req, res, next);
+		} else {
+			res.status(500).send('[[error:wrong-login-type-' + loginWith + ']]');
 		}
 	}
 
