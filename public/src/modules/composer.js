@@ -241,7 +241,6 @@ define('composer', [
 			handle: composer.posts[post_uuid] ? composer.posts[post_uuid].handle || '' : undefined,
 			formatting: composer.formatting
 		};
-		console.log(composer.formatting);
 
 		parseAndTranslate(template, data, function(composerTemplate) {
 			if ($('#cmp-uuid-' + post_uuid).length) {

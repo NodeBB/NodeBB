@@ -46,9 +46,6 @@ define('composer/formatting', ['composer/controls', 'composer/preview'], functio
 		postContainer.on('click', '.formatting-bar span', function () {
 			var format = $(this).attr('data-format'),
 				textarea = $(this).parents('.composer').find('textarea')[0];
-			console.log('handling', format);
-
-			console.log(formattingDispatchTable);
 
 			if(formattingDispatchTable.hasOwnProperty(format)){
 				formattingDispatchTable[format](textarea, textarea.selectionStart, textarea.selectionEnd);
