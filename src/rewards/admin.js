@@ -30,11 +30,11 @@ rewards.get = function(callback) {
 			},
 			{
 				"name": "<",
-				"conditional": "smallerthan"
+				"conditional": "lesserthan"
 			},
 			{
 				"name": "<=",
-				"conditional": "smallerorequalthan"
+				"conditional": "lesserorequalthan"
 			},
 			{
 				"name": "is string:",
@@ -44,18 +44,16 @@ rewards.get = function(callback) {
 		active: [
 			{
 				"rewardID": 0,
-				"conditional": {
-					"condition": ">",
-					"value": 100
-				},
+				"condition": "postcount",
+				"conditional": "greaterthan",
+				"value": 100,
 				"disabled": 0
 			},
 			{
-				"rewardID": 1,
-				"conditional": {
-					"condition": ">",
-					"value": 100
-				},
+				"rewardID": 0,
+				"condition": "lastLoggedIn",
+				"conditional": "lesserthan",
+				"value": 10,
 				"disabled": 0
 			}
 		],

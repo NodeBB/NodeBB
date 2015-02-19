@@ -8,22 +8,30 @@
 						<!-- BEGIN active -->
 						<li>
 							If User's
-							<select name="condition" class="form-control">
+							<select name="condition">
 								<!-- BEGIN conditions -->
-								<option value="{conditions.condition}">{conditions.name}</option>
+								<option value="{conditions.condition}" data-selected="{active.condition}">{conditions.name}</option>
 								<!-- END conditions -->
 							</select>
 							Is
-							<select name="conditional" class="form-control">
+							<select name="conditional" data-selected="{active.conditional}">
 								<!-- BEGIN conditionals -->
 								<option value="{conditionals.conditional}">{conditionals.name}</option>
 								<!-- END conditionals -->
 							</select>
-							<input type="text" class="form-control" value="{active.conditional.value}" />
+							<input type="text" value="{active.value}" />
+							Then
+							<select name="reward" data-selected="{active.rewardID}">
+								<!-- BEGIN rewards -->
+								<option value="{rewards.rewardID}">{rewards.name}</option>
+								<!-- END rewards -->
+							</select>
 						</li>
 						<!-- END active -->
 					</ul>
 				</form>
+				<input type="hidden" id="rewards" value="{function.stringify, rewards}" />
+				<input type="hidden" id="active" value="{function.stringify, active}" />
 			</div>
 		</div>
 	</div>
