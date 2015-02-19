@@ -46,6 +46,10 @@ rewards.get = function(callback) {
 				"rewardID": 1,
 				"condition": "postcount",
 				"conditional": "greaterthan",
+				"rewards": {
+					"title": "Here is a title",
+					"message": "here is a message"
+				},
 				"value": 100,
 				"disabled": 0
 			},
@@ -53,6 +57,9 @@ rewards.get = function(callback) {
 				"rewardID": 0,
 				"condition": "lastLoggedIn",
 				"conditional": "lesserthan",
+				"rewards": {
+					"groupname": "group2"
+				},
 				"value": 10,
 				"disabled": 0
 			}
