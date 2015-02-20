@@ -36,9 +36,9 @@
 							<div class="well inline-block pull-right">
 								<button class="btn btn-danger delete">Delete</button>
 								<!-- IF active.disabled -->
-								<button class="btn btn-success toggle">Enabled</button>
+								<button class="btn btn-success toggle">Enable</button>
 								<!-- ELSE -->
-								<button class="btn btn-warning toggle">Disabled</button>
+								<button class="btn btn-warning toggle">Disable</button>
 								<!-- ENDIF active.disabled -->
 							</div>
 							<div class="clearfix"></div>
@@ -56,7 +56,7 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">Rewards Control</div>
 			<div class="panel-body">
-				<button class="btn btn-success btn-md" id="new">New Reward</button><br />
+				<button class="btn btn-success btn-md" id="new">New Reward</button>
 				<button class="btn btn-primary btn-md" id="save">Save Changes</button>
 			</div>
 		</div>
