@@ -23,16 +23,16 @@ rewards.checkConditionAndRewardUser = function(uid, condition, method, callback)
 			});
 		},
 		function(ids, next) {
-			filterIncompleteIDs(uid, ids, function(err, filtered) {
+			getRewardDataByIDs(ids, next);
+		},
+		function(rewards, next) {
+			filterCompletedRewards(uid, rewards, function(err, filtered) {
 				if (!filtered || !filtered.length) {
 					return back(err);
 				}
 
 				next(err, filtered);
 			});
-		},
-		function(ids, next) {
-			getRewardDataByIDs(ids, next);
 		},
 		function(rewards, next) {
 			async.filter(rewards, function(reward, next) {
@@ -67,9 +67,26 @@ function getIDsByCondition(condition, callback) {
 	db.getSetMembers('condition:' + condition + ':rewards', callback);
 }
 
-function filterIncompleteIDs(uid, ids, callback) {
-	// todo
-	callback(false, ids);
+function filterCompletedRewards(uid, rewards, callback) {
+	db.getSortedSetRangeByScoreWithScores('uid:' + uid + ':rewards', 0, -1, 1, Infinity, function(err, data) {
+		var userRewards = {};
+
+		data.forEach(function(obj) {
+			userRewards[obj.value] = parseInt(obj.score, 10);
+		});
+
+		rewards = rewards.filter(function(reward) {
+			var claimable = parseInt(reward.claimable, 10);
+
+			if (claimable === 0) {
+				return true;
+			}
+
+			return (userRewards[reward.id] > reward.claimable) ? false : true;
+		});
+
+		callback(false, rewards);
+	});
 }
 
 function getRewardDataByIDs(ids, callback) {
@@ -96,7 +113,8 @@ function giveRewards(uid, rewards, callback) {
 	getRewardsByRewardData(rewards, function(err, rewardData) {
 		async.each(rewards, function(reward, next) {
 			plugins.fireHook('action:rewards.award:' + reward.rid, {uid: uid, reward: rewardData[rewards.indexOf(reward)]});
-		});
+			db.sortedSetIncrBy('uid:' + uid + ':rewards', 1, reward.id, next);
+		}, callback);
 	});
 }
 
