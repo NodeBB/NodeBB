@@ -22,7 +22,7 @@ define('composer/uploads', ['composer/preview', 'csrf'], function(preview, csrf)
 		postContainer.find('#files').on('change', function(e) {
 			var files = (e.target || {}).files || ($(this).val() ? [{name: $(this).val(), type: utils.fileMimeType($(this).val())}] : null);
 			if(files) {
-				uploadContentFiles({files: files, post_uuid: post_uuid, route: '/api/post/upload'});
+				uploadContentFiles({files: files, post_uuid: post_uuid, route: config.relative_path + '/api/post/upload'});
 			}
 		});
 
@@ -37,7 +37,7 @@ define('composer/uploads', ['composer/preview', 'csrf'], function(preview, csrf)
 						fd.append('files[]', files[i], files[i].name);
 					}
 				}
-				uploadTopicThumb({files: files, post_uuid: post_uuid, route: '/api/topic/thumb/upload', formData: fd});
+				uploadTopicThumb({files: files, post_uuid: post_uuid, route:'/api/topic/thumb/upload', formData: fd});
 			}
 		});
 	}
@@ -120,7 +120,7 @@ define('composer/uploads', ['composer/preview', 'csrf'], function(preview, csrf)
 				uploadContentFiles({
 					files: files,
 					post_uuid: post_uuid,
-					route: '/api/post/upload',
+					route: config.relative_path + '/api/post/upload',
 					formData: fd
 				});
 			}
@@ -177,7 +177,7 @@ define('composer/uploads', ['composer/preview', 'csrf'], function(preview, csrf)
 					uploadContentFiles({
 						files: [blob],
 						post_uuid: post_uuid,
-						route: '/api/post/upload',
+						route:config.relative_path +  '/api/post/upload',
 						formData: fd
 					});
 				}
