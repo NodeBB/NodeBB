@@ -135,11 +135,12 @@ define('admin/extend/rewards', function() {
 			active: [{
 				id: id ? parseInt(id, 10) + 1 : 0,
 				disabled: true,
-				value: ''
+				value: '',
+				claimable: 1
 			}],
 			conditions: conditions,
 			conditionals: conditionals,
-			rewards: available
+			rewards: available,
 		};
 
 		templates.parse('admin/extend/rewards', 'active', data, function(li) {

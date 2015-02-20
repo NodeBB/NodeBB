@@ -37,14 +37,24 @@
 						<form class="rewards inline-block">
 							<div class="inputs well inline-block"></div>
 						</form>
+						<div class="clearfix"></div>
 
-						<div class="well inline-block pull-right">
-							<button class="btn btn-danger delete">Delete</button>
-							<!-- IF active.disabled -->
-							<button class="btn btn-success toggle">Enable</button>
-							<!-- ELSE -->
-							<button class="btn btn-warning toggle">Disable</button>
-							<!-- ENDIF active.disabled -->
+						<div class="pull-right">
+							<div class="panel-body inline-block">
+								<form class="main">
+									<label for="claimable">Amount of times reward is claimable</label><br />
+									<input type="text" name="claimable" value="{active.claimable}" placeholder="1" />
+									<small>Enter 0 for infinite</small>
+								</form>
+							</div>
+							<div class="panel-body inline-block">
+								<button class="btn btn-danger delete">Delete</button>
+								<!-- IF active.disabled -->
+								<button class="btn btn-success toggle">Enable</button>
+								<!-- ELSE -->
+								<button class="btn btn-warning toggle">Disable</button>
+								<!-- ENDIF active.disabled -->
+							</div>
 						</div>
 						<div class="clearfix"></div>
 					</li>
