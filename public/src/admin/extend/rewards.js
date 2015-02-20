@@ -20,8 +20,8 @@ define('admin/extend/rewards', function() {
 			});
 
 			$('.delete').on('click', function() {
-				var parent = $(this).parents('[data-index]'),
-					id = parent.attr('data-index');
+				var parent = $(this).parents('[data-id]'),
+					id = parent.attr('data-id');
 
 				delete active[id];
 				// send delete api call
@@ -33,7 +33,7 @@ define('admin/extend/rewards', function() {
 			$('.toggle').on('click', function() {
 				var btn = $(this),
 					disabled = btn.html() === 'Enable',
-					id = $(this).parents('[data-index]').attr('data-index');
+					id = $(this).parents('[data-id]').attr('data-id');
 
 				btn.toggleClass('btn-warning').toggleClass('btn-success').html(disabled ? 'Enable' : 'Disable');
 				// send disable api call
@@ -48,7 +48,7 @@ define('admin/extend/rewards', function() {
 	function select(el) {
 		el.val(el.attr('data-selected'));
 		switch (el.attr('name')) {
-			case 'id':
+			case 'rid':
 					selectReward(el);
 				break;
 		}
@@ -57,23 +57,23 @@ define('admin/extend/rewards', function() {
 	function update(el) {
 		el.attr('data-selected', el.val());
 		switch (el.attr('name')) {
-			case 'id':
+			case 'rid':
 					selectReward(el);
 				break;
 		}
 	}
 
 	function selectReward(el) {
-		var parent = el.parents('[data-id]'),
+		var parent = el.parents('[data-rid]'),
 			div = parent.find('.inputs'),
 			inputs,
 			html = '';
 
 		for (var reward in available) {
 			if (available.hasOwnProperty(reward)) {
-				if (available[reward].id === el.attr('data-selected')) {
+				if (available[reward].rid === el.attr('data-selected')) {
 					inputs = available[reward].inputs;
-					parent.attr('data-id', available[reward].id);
+					parent.attr('data-rid', available[reward].rid);
 					break;
 				}
 			}
@@ -105,7 +105,7 @@ define('admin/extend/rewards', function() {
 	}
 
 	function populateInputs() {
-		$('[data-id]').each(function(i) {
+		$('[data-rid]').each(function(i) {
 			var div = $(this).find('.inputs'),
 				rewards = active[i].rewards;
 
@@ -121,8 +121,8 @@ define('admin/extend/rewards', function() {
 		var ul = $('#active'),
 			li = $('#active li').last().clone(true);
 
-		li.attr('data-index', parseInt(li.attr('data-index') + 1, 10))
-			.attr('data-id', '');
+		li.attr('data-id', parseInt(li.attr('data-id') + 1, 10))
+			.attr('data-rid', '');
 		
 		li.find('.inputs').html('');
 		li.find('[name="reward"]').val('');
@@ -147,6 +147,7 @@ define('admin/extend/rewards', function() {
 				data.rewards[obj.name] = obj.value;
 			});
 
+			data.id = $(this).attr('data-id');
 			data.disabled = $(this).find('.toggle').html() === 'Enable';
 
 			activeRewards.push(data);

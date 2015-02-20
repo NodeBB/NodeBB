@@ -5,7 +5,7 @@
 			<div class="panel-body">
 				<ul id="active">
 					<!-- BEGIN active -->
-					<li data-id="{active.id}" data-index="@index">
+					<li data-rid="{active.rid}" data-id="{active.id}">
 						<form class="main inline-block">
 							<div class="well inline-block">
 								<label for="condition">If User's</label><br />
@@ -26,9 +26,9 @@
 							</div>
 							<div class="well inline-block">
 								<label for="condition">Then:</label><br />
-								<select name="id" data-selected="{active.id}">
+								<select name="rid" data-selected="{active.rid}">
 									<!-- BEGIN rewards -->
-									<option value="{rewards.id}">{rewards.name}</option>
+									<option value="{rewards.rid}">{rewards.name}</option>
 									<!-- END rewards -->
 								</select>
 							</div>

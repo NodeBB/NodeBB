@@ -31,7 +31,11 @@ var defaults = {
 };
 
 rewards.save = function(data, callback) {
-	
+	data.forEach(function(reward) {
+		if (reward.disabled) {
+			//db.setAdd
+		}
+	});
 };
 
 rewards.get = function(callback) {
@@ -59,7 +63,7 @@ rewards.get = function(callback) {
 		rewards: function(next) {
 			plugins.fireHook('filter:rewards.rewards', [
 				{
-					"id": "core:add-to-group",
+					"rid": "core:add-to-group",
 					"name": "Add to Group",
 					"inputs": [
 						{
@@ -84,7 +88,7 @@ rewards.get = function(callback) {
 					]
 				},
 				{
-					"id": "core:alert-user",
+					"rid": "core:alert-user",
 					"name": "Send alert message",
 					"inputs": [
 						{
@@ -111,7 +115,8 @@ function getConditions() {
 function getActiveRewards(callback) {
 	callback(false, [
 		{
-			"id": "core:alert-user",
+			"id": 0,
+			"rid": "core:alert-user",
 			"condition": "postcount",
 			"conditional": "greaterthan",
 			"rewards": {
@@ -122,7 +127,8 @@ function getActiveRewards(callback) {
 			"disabled": false
 		},
 		{
-			"id": "core:add-to-group",
+			"id": 1,
+			"rid": "core:add-to-group",
 			"condition": "lastLoggedIn",
 			"conditional": "lesserthan",
 			"rewards": {
