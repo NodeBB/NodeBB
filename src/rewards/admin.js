@@ -12,10 +12,13 @@ rewards.save = function(data, callback) {
 			return next();
 		}
 
-		var rewards = data.rewards;
+		var rewardsData = data.rewards;
 		delete data.rewards;
 
 		async.parallel([
+			function(next) {
+				rewards.delete(data, next);
+			},
 			function(next) {
 				db.setAdd('rewards:list', data.id, next);
 			},
@@ -23,7 +26,7 @@ rewards.save = function(data, callback) {
 				db.setObject('rewards:id:' + data.id, data, next);
 			},
 			function(next) {
-				db.setObject('rewards:id:' + data.id + ':rewards', rewards, next);
+				db.setObject('rewards:id:' + data.id + ':rewards', rewardsData, next);
 			}
 		], next);
 	}
