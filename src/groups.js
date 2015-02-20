@@ -825,40 +825,58 @@ var async = require('async'),
 		], callback);
 	};
 
+	Groups.getGroupsData = function(groupNames, callback) {
+		if (!Array.isArray(groupNames) || !groupNames.length) {
+			return callback(null, []);
+		}
+		var keys = groupNames.map(function(groupName) {
+			return 'group:' + groupName;
+		});
+
+		db.getObjects(keys, function(err, groupData) {
+			if (err) {
+				return callback(err);
+			}
+			groupData = groupData.map(function(group) {
+				if (group) {
+					group.labelColor = group.labelColor || '#000000';
+					group.createtimeISO = utils.toISOString(group.createtime);
+					group.hidden = parseInt(group.hidden, 10) === 1;
+
+					if (!group['cover:url']) {
+						group['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';
+						group['cover:position'] = '50% 50%';
+					}
+				}
+				return group;
+			});
+			
+			plugins.fireHook('filter:groups.get', {groups: groupData}, function(err, data) {
+				callback(err, data ? data.groups : null);	
+			});			
+		});
+	};
+
 	Groups.getUserGroups = function(uids, callback) {
 		db.getSortedSetRevRange('groups:createtime', 0, -1, function(err, groupNames) {
 			if (err) {
 				return callback(err);
 			}
 
-			var groupKeys = groupNames.filter(function(groupName) {
+			groupNames = groupNames.filter(function(groupName) {
 				return groupName !== 'registered-users' && groupName.indexOf(':privileges:') === -1;
-			}).map(function(groupName) {
-				return 'group:' + groupName;
 			});
 
-			db.getObjects(groupKeys, function(err, groupData) {
+			Groups.getGroupsData(groupNames, function(err, groupData) {
 				if (err) {
 					return callback(err);
 				}
 
 				groupData = groupData.filter(function(group) {
-					return parseInt(group.hidden, 10) !== 1 && !!group.userTitle;
-				}).map(function(group) {
-					group.createtimeISO = utils.toISOString(group.createtime);
-					return group;
+					return group && parseInt(group.hidden, 10) !== 1 && !!group.userTitle;
 				});
 
-
 				var groupSets = groupData.map(function(group) {
-					group.labelColor = group.labelColor || '#000000';
-					group.createtimeISO = utils.toISOString(group.createtime);
-
-					if (!group['cover:url']) {
-						group['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';
-						group['cover:position'] = '50% 50%';
-					}
-
 					return 'group:' + group.name + ':members';
 				});
 
