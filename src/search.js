@@ -365,45 +365,29 @@ function sortPosts(posts, data) {
 
 	if (isNumeric) {
 		if (data.sortDirection === 'desc') {
-			sortDescendingNumeric(posts, fields);
+			posts.sort(function(p1, p2) {
+				return p2[fields[0]][fields[1]] - p1[fields[0]][fields[1]];
+			});
 		} else {
-			sortAscendingNumeric(posts, fields);
+			posts.sort(function(p1, p2) {
+				return p1[fields[0]][fields[1]] - p2[fields[0]][fields[1]];
+			});
 		}
 	} else {
 		if (data.sortDirection === 'desc') {
-			sortDescendingAlpha(posts, fields);
+			posts.sort(function(p1, p2) {
+				if (p1[fields[0]][fields[1]] < p2[fields[0]][fields[1]]) return -1;
+				if (p1[fields[0]][fields[1]] > p2[fields[0]][fields[1]]) return 1;
+				return 0;
+			});
 		} else {
-			sortAscendingAlpha(posts, fields);
+			posts.sort(function(p1, p2) {
+				if (p1[fields[0]][fields[1]] > p2[fields[0]][fields[1]]) return -1;
+				if (p1[fields[0]][fields[1]] < p2[fields[0]][fields[1]]) return 1;
+				return 0;
+			});
 		}
 	}
-}
-
-function sortAscendingNumeric(posts, fields) {
-	posts.sort(function(p1, p2) {
-		return p1[fields[0]][fields[1]] - p2[fields[0]][fields[1]];
-	});
-}
-
-function sortDescendingNumeric(posts, fields) {
-	posts.sort(function(p1, p2) {
-		return p2[fields[0]][fields[1]] - p1[fields[0]][fields[1]];
-	});
-}
-
-function sortAscendingAlpha(posts, fields) {
-	posts.sort(function(p1, p2) {
-		if (p1[fields[0]][fields[1]] > p2[fields[0]][fields[1]]) return -1;
-		if (p1[fields[0]][fields[1]] < p2[fields[0]][fields[1]]) return 1;
-		return 0;
-	});
-}
-
-function sortDescendingAlpha(posts, fields) {
-	posts.sort(function(p1, p2) {
-		if (p1[fields[0]][fields[1]] < p2[fields[0]][fields[1]]) return -1;
-		if (p1[fields[0]][fields[1]] > p2[fields[0]][fields[1]]) return 1;
-		return 0;
-	});
 }
 
 function getSearchCategories(data, callback) {
