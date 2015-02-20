@@ -106,12 +106,14 @@ define('admin/extend/rewards', function() {
 
 	function populateInputs() {
 		$('[data-rid]').each(function(i) {
-			var div = $(this).find('.inputs'),
-				rewards = active[i].rewards;
+			if (active[i]) {
+				var div = $(this).find('.inputs'),
+					rewards = active[i].rewards;
 
-			for (var reward in rewards) {
-				if (rewards.hasOwnProperty(reward)) {
-					div.find('[name="' + reward + '"]').val(rewards[reward]);	
+				for (var reward in rewards) {
+					if (rewards.hasOwnProperty(reward)) {
+						div.find('[name="' + reward + '"]').val(rewards[reward]);	
+					}
 				}
 			}
 		});
@@ -121,7 +123,7 @@ define('admin/extend/rewards', function() {
 		var ul = $('#active'),
 			li = $('#active li').last().clone(true);
 
-		li.attr('data-id', parseInt(li.attr('data-id') + 1, 10))
+		li.attr('data-id', parseInt(li.attr('data-id'), 10) + 1)
 			.attr('data-rid', '');
 		
 		li.find('.inputs').html('');

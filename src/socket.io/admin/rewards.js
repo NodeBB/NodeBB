@@ -1,13 +1,11 @@
 "use strict";
 
-var rewards = require('../../rewards'),
-	rewards = {};
+var rewardsAdmin = require('../../rewards/admin'),
+	SocketRewards = {};
 
-rewards.save = function(socket, data, callback) {
-	console.log(data);
-	callback(new Error('derp'));
-	//callback(err ? err.message : null);
+SocketRewards.save = function(socket, data, callback) {
+	rewardsAdmin.save(data, callback);
 };
 
 
-module.exports = rewards;
+module.exports = SocketRewards;

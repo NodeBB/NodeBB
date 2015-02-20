@@ -31,11 +31,24 @@ var defaults = {
 };
 
 rewards.save = function(data, callback) {
-	data.forEach(function(reward) {
-		if (reward.disabled) {
-			//db.setAdd
-		}
-	});
+	function save(data, next) {
+		var rewards = data.rewards;
+		delete data.rewards;
+
+		async.parallel([
+			function(next) {
+				db.setAdd('rewards:list', data.id, next);
+			},
+			function(next) {
+				db.setObject('rewards:id:' + data.id, data, next);
+			},
+			function(next) {
+				db.setObject('rewards:id:' + data.id + ':rewards', rewards, next);
+			}
+		], next);
+	}
+
+	async.each(data, save, callback);
 };
 
 rewards.get = function(callback) {
@@ -113,6 +126,31 @@ function getConditions() {
 }
 
 function getActiveRewards(callback) {
+	var activeRewards = [];
+
+	function load(id, next) {
+		async.parallel({
+			main: function(next) {
+				db.getObject('rewards:id:' + id, next);
+			},
+			rewards: function(next) {
+				db.getObject('rewards:id:' + id + ':rewards', next);
+			}
+		}, function(err, data) {
+			data.main.rewards = data.rewards;
+			activeRewards.push(data.main);
+
+			next(err);
+		});
+	}
+
+	db.getSetMembers('rewards:list', function(err, rewards) {
+		async.eachSeries(rewards, load, function(err) {
+			callback(err, activeRewards);
+		});
+	});
+
+/*
 	callback(false, [
 		{
 			"id": 0,
@@ -137,7 +175,7 @@ function getActiveRewards(callback) {
 			"value": 10,
 			"disabled": true
 		}
-	]);
+	]);*/
 }
 
 module.exports = rewards;
