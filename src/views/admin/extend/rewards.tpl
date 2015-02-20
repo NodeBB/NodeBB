@@ -6,7 +6,7 @@
 				<ul id="active">
 					<!-- BEGIN active -->
 					<li data-id="{active.id}" data-index="@index">
-						<form class="main">
+						<form class="main inline-block">
 							<div class="well inline-block">
 								<label for="condition">If User's</label><br />
 								<select name="condition" data-selected="{active.condition}">
@@ -33,8 +33,8 @@
 								</select>
 							</div>
 						</form>
-						
-						<form class="rewards">
+
+						<form class="rewards inline-block">
 							<div class="inputs well inline-block"></div>
 						</form>
 

@@ -135,11 +135,20 @@ define('admin/extend/rewards', function() {
 		var activeRewards = [];
 
 		$('#active li').each(function() {
-			var data = $(this).find('form.main').serializeArray();
-
-			data.rewards = $(this).find('form.rewards').serializeArray();
-			data.disabled = $(this).find('.toggle').html() === 'Enable';
+			var data = {rewards: {}},
+				main = $(this).find('form.main').serializeArray(),
+				rewards = $(this).find('form.rewards').serializeArray();
 			
+			main.forEach(function(obj) {
+				data[obj.name] = obj.value;
+			});
+
+			rewards.forEach(function(obj) {
+				data.rewards[obj.name] = obj.value;
+			});
+
+			data.disabled = $(this).find('.toggle').html() === 'Enable';
+
 			activeRewards.push(data);
 		});
 

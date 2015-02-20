@@ -2,7 +2,8 @@
 
 var rewards = {},
 	async = require('async'),
-	plugins = require('../plugins');
+	plugins = require('../plugins'),
+	db = require('../database');
 
 var defaults = {
 	conditionals: [
@@ -29,6 +30,9 @@ var defaults = {
 	]
 };
 
+rewards.save = function(data, callback) {
+	
+};
 
 rewards.get = function(callback) {
 	async.parallel({
