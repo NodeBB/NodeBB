@@ -15,20 +15,24 @@ rewards.save = function(data, callback) {
 		var rewardsData = data.rewards;
 		delete data.rewards;
 
-		async.parallel([
-			function(next) {
-				rewards.delete(data, next);
-			},
-			function(next) {
-				db.setAdd('rewards:list', data.id, next);
-			},
-			function(next) {
-				db.setObject('rewards:id:' + data.id, data, next);
-			},
-			function(next) {
-				db.setObject('rewards:id:' + data.id + ':rewards', rewardsData, next);
-			}
-		], next);
+		db.incrObjectField('global', 'nextRid', function(err, id) {
+			data.id = id;
+			
+			async.parallel([
+				function(next) {
+					rewards.delete(data, next);
+				},
+				function(next) {
+					db.setAdd('rewards:list', data.id, next);
+				},
+				function(next) {
+					db.setObject('rewards:id:' + data.id, data, next);
+				},
+				function(next) {
+					db.setObject('rewards:id:' + data.id + ':rewards', rewardsData, next);
+				}
+			], next);
+		});
 	}
 
 	async.each(data, save, function(err) {

@@ -128,12 +128,10 @@ define('admin/extend/rewards', function() {
 	}
 
 	function newReward() {
-		var ul = $('#active'),
-			id = $('#active li').last().attr('data-id');
+		var ul = $('#active');
 
 		var data = {
 			active: [{
-				id: id ? parseInt(id, 10) + 1 : 0,
 				disabled: true,
 				value: '',
 				claimable: 1
