@@ -70,6 +70,10 @@ app.cacheBuster = null;
 				window.location.href = config.relative_path + '/';
 			}, 1000);
 		});
+
+		socket.on('event:alert', function(data) {
+			app.alert(data);
+		});
 	}
 
 	function onSocketConnect(data) {
