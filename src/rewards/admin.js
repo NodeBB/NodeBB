@@ -52,7 +52,9 @@ rewards.save = function(data, callback) {
 		], next);
 	}
 
-	async.each(data, save, callback);
+	async.each(data, save, function(err) {
+		saveConditions(data, callback);
+	});
 };
 
 rewards.delete = function(data, callback) {
@@ -76,15 +78,15 @@ rewards.get = function(callback) {
 			plugins.fireHook('filter:rewards.conditions', [
 				{
 					"name": "Reputation",
-					"condition": "reputation"
+					"condition": "core:user.reputation"
 				},
 				{
 					"name": "Post Count",
-					"condition": "postcount"
+					"condition": "core:user.postcount"
 				},
 				{
 					"name": "Last Logged in Time",
-					"condition": "lastLoggedIn"
+					"condition": "core:user.lastonline"
 				}
 			], next);
 		},
@@ -139,8 +141,27 @@ rewards.get = function(callback) {
 	}, callback);
 };
 
-function getConditions() {
+function saveConditions(data, callback) {
+	db.delete('conditions:active', function(err) {
+		if (err) {
+			return callback(err);
+		}
 
+		var conditions = [],
+			rewardsPerCondition = {};
+
+		data.forEach(function(reward) {
+			conditions.push(reward.condition);
+			rewardsPerCondition[reward.condition] = rewardsPerCondition[reward.condition] || [];
+			rewardsPerCondition[reward.condition].push(reward.rid);
+		});
+
+		db.setAdd('conditions:active', conditions, callback);
+
+		async.each(Object.keys(rewardsPerCondition), function(condition, next) {
+			db.setAdd('condition:' + condition + ':rewards', rewardsPerCondition[condition]);
+		}, callback);
+	});
 }
 
 function getActiveRewards(callback) {
