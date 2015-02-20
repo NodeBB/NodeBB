@@ -37,9 +37,13 @@ define(function() {
 
 		$('#acp-search').parents('form').on('submit', function(ev) {
 			var input = $(this).find('input'),
-				href = firstResult ? firstResult : RELATIVE_PATH + '/search/' + input.val();
+				href = firstResult;
 
-			ajaxify.go(href.replace(/^\//, ''));
+			if (href) {
+				ajaxify.go(href.replace(/^\//, ''));
+			}else{
+				if (input.val()) window.open(RELATIVE_PATH + '/search/' + input.val());
+			}
 
 			setTimeout(function() {
 				$('#acp-search .dropdown').removeClass('open');
@@ -107,7 +111,7 @@ define(function() {
 			}
 
 			if (value.length > 0) {
-				menuItems.append('<li role="presentation"><a role="menuitem" href="' + RELATIVE_PATH + '/search/' + value + '">Search the forum for <strong>' + value + '</strong></a></li>');
+				menuItems.append('<li role="presentation"><a role="menuitem" href="' + RELATIVE_PATH + '/search/' + value + '" target="_blank">Search the forum for <strong>' + value + '</strong></a></li>');
 			} else {
 				menuItems.append('<li role="presentation"><a role="menuitem" href="#">Start typing to see results...</a></li>');
 			}
