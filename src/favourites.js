@@ -174,7 +174,7 @@ var async = require('async'),
 			plugins.fireHook('action:post.' + hook, {
 				pid: pid,
 				uid: uid,
-				owner: owner,
+				owner: results.owner,
 				current: current
 			});
 
