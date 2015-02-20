@@ -19,12 +19,19 @@ define('admin/extend/rewards', function() {
 				update($(this));
 			});
 
+			populateInputs();
+
 			$('.delete').on('click', function() {
 				var parent = $(this).parents('[data-id]'),
 					id = parent.attr('data-id');
 
-				delete active[id];
-				// send delete api call
+				socket.emit('admin.rewards.delete', {id: id}, function(err) {
+					if (err) {
+						app.alertError(err.message);
+					} else {
+						app.alertSuccess('Successfully deleted reward');
+					}
+				});
 
 				parent.remove();
 				return false;
@@ -100,20 +107,16 @@ define('admin/extend/rewards', function() {
 		});
 
 		div.html(html);
-
-		populateInputs();
 	}
 
 	function populateInputs() {
 		$('[data-rid]').each(function(i) {
-			if (active[i]) {
-				var div = $(this).find('.inputs'),
-					rewards = active[i].rewards;
+			var div = $(this).find('.inputs'),
+				rewards = active[i].rewards;
 
-				for (var reward in rewards) {
-					if (rewards.hasOwnProperty(reward)) {
-						div.find('[name="' + reward + '"]').val(rewards[reward]);	
-					}
+			for (var reward in rewards) {
+				if (rewards.hasOwnProperty(reward)) {
+					div.find('[name="' + reward + '"]').val(rewards[reward]);	
 				}
 			}
 		});

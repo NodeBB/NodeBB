@@ -32,7 +32,7 @@ var defaults = {
 
 rewards.save = function(data, callback) {
 	function save(data, next) {
-		var rewards = data.rewards;
+		var rewards = data.rewards || {};
 		delete data.rewards;
 
 		async.parallel([
@@ -49,6 +49,20 @@ rewards.save = function(data, callback) {
 	}
 
 	async.each(data, save, callback);
+};
+
+rewards.delete = function(data, callback) {
+	async.parallel([
+		function(next) {
+			db.setRemove('rewards:list', data.id, next);
+		},
+		function(next) {
+			db.delete('rewards:id:' + data.id, next);
+		},
+		function(next) {
+			db.delete('rewards:id:' + data.id + ':rewards', next);
+		}
+	], callback);
 };
 
 rewards.get = function(callback) {
