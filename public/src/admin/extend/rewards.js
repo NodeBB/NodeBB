@@ -39,6 +39,8 @@ define('admin/extend/rewards', function() {
 				// send disable api call
 				return false;
 			});
+
+			$('#new').on('click', newReward);
 		});
 	};
 
@@ -77,7 +79,7 @@ define('admin/extend/rewards', function() {
 		}
 
 		if (!inputs) {
-			app.alertError('Illegal reward - no inputs found! ' + el.attr('data-selected'));
+			return app.alertError('Illegal reward - no inputs found! ' + el.attr('data-selected'));
 		}
 
 		inputs.forEach(function(input) {
@@ -112,6 +114,20 @@ define('admin/extend/rewards', function() {
 				}
 			}
 		});
+	}
+
+	function newReward() {
+		var ul = $('#active'),
+			li = $('#active li').last().clone(true);
+
+		li.attr('data-index', parseInt(li.attr('data-index') + 1, 10))
+			.attr('data-rewardID', '');
+		
+		li.find('.inputs').html('');
+		li.find('[name="reward"]').val('');
+
+		
+		ul.append(li);
 	}
 
 	return rewards;

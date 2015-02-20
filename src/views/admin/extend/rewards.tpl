@@ -4,7 +4,7 @@
 			<div class="panel-heading">Rewards</div>
 			<div class="panel-body">
 				<form>
-					<ul>
+					<ul id="active">
 						<!-- BEGIN active -->
 						<li data-rewardID="{active.rewardID}" data-index="@index">
 							<div class="well inline-block">
@@ -54,8 +54,9 @@
 
 	<div class="col-lg-3 acp-sidebar">
 		<div class="panel panel-default">
-			<div class="panel-heading">Save Settings</div>
+			<div class="panel-heading">Rewards Control</div>
 			<div class="panel-body">
+				<button class="btn btn-success btn-md" id="new">New Reward</button><br />
 				<button class="btn btn-primary btn-md" id="save">Save Changes</button>
 			</div>
 		</div>
