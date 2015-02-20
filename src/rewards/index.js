@@ -22,7 +22,7 @@ rewards.checkConditionAndRewardUser = function(uid, condition, method, callback)
 				next(err, ids);
 			});
 		},
-		function(next, ids) {
+		function(ids, next) {
 			filterIncompleteIDs(uid, ids, function(err, filtered) {
 				if (!filtered || !filtered.length) {
 					return back(err);
@@ -31,13 +31,21 @@ rewards.checkConditionAndRewardUser = function(uid, condition, method, callback)
 				next(err, filtered);
 			});
 		},
-		function(next, ids) {
+		function(ids, next) {
 			getRewardDataByIDs(ids, next);
 		},
-		function(next, rewards) {
+		function(rewards, next) {
 			async.filter(rewards, function(reward, next) {
+				if (!reward) {
+					return next(false);
+				}
+
 				checkCondition(reward, method, next);
 			}, function(err, eligible) {
+				if (!eligible) {
+					return next(false);
+				}
+
 				giveRewards(uid, eligible, next);
 			});
 		}
@@ -56,24 +64,26 @@ function isConditionActive(condition, callback) {
 }
 
 function getIDsByCondition(condition, callback) {
-	db.getObject('condition:' + condition + ':rewards', callback);
+	db.getSetMembers('condition:' + condition + ':rewards', callback);
 }
 
-function filterIncompleteIDs(ids, callback) {
+function filterIncompleteIDs(uid, ids, callback) {
 	// todo
 	callback(false, ids);
 }
 
 function getRewardDataByIDs(ids, callback) {
-	ids.map(function(id) {
+	ids = ids.map(function(id) {
 		return 'rewards:id:' + id;
 	});
 
-	db.getObjects(ids, callback);
+	db.getObjects(ids, function(err, objs) {
+		callback(err, objs);
+	});
 }
 
 function getRewardsByRewardData(rewards, callback) {
-	rewards.map(function(reward) {
+	rewards = rewards.map(function(reward) {
 		return 'rewards:id:' + reward.id + ':rewards';
 	});
 
