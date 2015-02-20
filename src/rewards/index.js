@@ -41,7 +41,7 @@ rewards.checkConditionAndRewardUser = function(uid, condition, method, callback)
 				}
 
 				checkCondition(reward, method, next);
-			}, function(err, eligible) {
+			}, function(eligible) {
 				if (!eligible) {
 					return next(false);
 				}
@@ -73,35 +73,29 @@ function filterIncompleteIDs(uid, ids, callback) {
 }
 
 function getRewardDataByIDs(ids, callback) {
-	ids = ids.map(function(id) {
+	db.getObjects(ids.map(function(id) {
 		return 'rewards:id:' + id;
-	});
-
-	db.getObjects(ids, function(err, objs) {
-		callback(err, objs);
-	});
+	}), callback);
 }
 
 function getRewardsByRewardData(rewards, callback) {
-	rewards = rewards.map(function(reward) {
+	db.getObjects(rewards.map(function(reward) {
 		return 'rewards:id:' + reward.id + ':rewards';
-	});
-
-	db.getObjects(rewards, callback);
+	}), callback);
 }
 
 function checkCondition(reward, method, callback) {
 	method(function(err, value) {
-		plugins.fireHook('filter:rewards.checkConditional:' + reward.conditional, {left: value, right: reward.value}, callback);
+		plugins.fireHook('filter:rewards.checkConditional:' + reward.conditional, {left: value, right: reward.value}, function(err, bool) {
+			callback(bool);
+		});
 	});
 }
 
 function giveRewards(uid, rewards, callback) {
 	getRewardsByRewardData(rewards, function(err, rewardData) {
 		async.each(rewards, function(reward, next) {
-			var index = rewards.indexOf(reward);
-
-			plugins.fireHook('action:rewards.award:' + reward.rid, {uid: uid, reward: rewardData[index]});
+			plugins.fireHook('action:rewards.award:' + reward.rid, {uid: uid, reward: rewardData[rewards.indexOf(reward)]});
 		});
 	});
 }
