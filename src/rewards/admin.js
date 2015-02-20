@@ -149,33 +149,6 @@ function getActiveRewards(callback) {
 			callback(err, activeRewards);
 		});
 	});
-
-/*
-	callback(false, [
-		{
-			"id": 0,
-			"rid": "core:alert-user",
-			"condition": "postcount",
-			"conditional": "greaterthan",
-			"rewards": {
-				"title": "Here is a title",
-				"message": "here is a message"
-			},
-			"value": 100,
-			"disabled": false
-		},
-		{
-			"id": 1,
-			"rid": "core:add-to-group",
-			"condition": "lastLoggedIn",
-			"conditional": "lesserthan",
-			"rewards": {
-				"groupname": "group2"
-			},
-			"value": 10,
-			"disabled": true
-		}
-	]);*/
 }
 
 module.exports = rewards;

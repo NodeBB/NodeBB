@@ -127,7 +127,7 @@ define('admin/extend/rewards', function() {
 			.attr('data-rid', '');
 		
 		li.find('.inputs').html('');
-		li.find('[name="reward"]').val('');
+		li.find('[name="rid"]').val('');
 		li.find('.toggle').removeClass('btn-warning').addClass('btn-success').html('Enable');
 		
 		ul.append(li);
