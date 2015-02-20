@@ -6,7 +6,7 @@
 				<form>
 					<ul id="active">
 						<!-- BEGIN active -->
-						<li data-rewardID="{active.rewardID}" data-index="@index">
+						<li data-id="{active.id}" data-index="@index">
 							<div class="well inline-block">
 								<label for="condition">If User's</label><br />
 								<select name="condition" data-selected="{active.condition}">
@@ -26,9 +26,9 @@
 							</div>
 							<div class="well inline-block">
 								<label for="condition">Then:</label><br />
-								<select name="reward" data-selected="{active.rewardID}">
+								<select name="reward" data-selected="{active.id}">
 									<!-- BEGIN rewards -->
-									<option value="{rewards.rewardID}">{rewards.name}</option>
+									<option value="{rewards.id}">{rewards.name}</option>
 									<!-- END rewards -->
 								</select>
 							</div>

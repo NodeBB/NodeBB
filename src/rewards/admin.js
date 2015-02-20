@@ -55,7 +55,7 @@ rewards.get = function(callback) {
 		rewards: function(next) {
 			plugins.fireHook('filter:rewards.rewards', [
 				{
-					"rewardID": 0,
+					"id": "core:add-to-group",
 					"name": "Add to Group",
 					"inputs": [
 						{
@@ -80,7 +80,7 @@ rewards.get = function(callback) {
 					]
 				},
 				{
-					"rewardID": 1,
+					"id": "core:alert-user",
 					"name": "Send alert message",
 					"inputs": [
 						{
@@ -107,7 +107,7 @@ function getConditions() {
 function getActiveRewards(callback) {
 	callback(false, [
 		{
-			"rewardID": 1,
+			"id": "core:alert-user",
 			"condition": "postcount",
 			"conditional": "greaterthan",
 			"rewards": {
@@ -118,7 +118,7 @@ function getActiveRewards(callback) {
 			"disabled": false
 		},
 		{
-			"rewardID": 0,
+			"id": "core:add-to-group",
 			"condition": "lastLoggedIn",
 			"conditional": "lesserthan",
 			"rewards": {

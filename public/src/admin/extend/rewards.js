@@ -63,16 +63,16 @@ define('admin/extend/rewards', function() {
 	}
 
 	function selectReward(el) {
-		var parent = el.parents('[data-rewardID]'),
+		var parent = el.parents('[data-id]'),
 			div = parent.find('.inputs'),
 			inputs,
 			html = '';
 
 		for (var reward in available) {
 			if (available.hasOwnProperty(reward)) {
-				if (parseInt(available[reward].rewardID, 10) === parseInt(el.attr('data-selected'), 10)) {
+				if (available[reward].id === el.attr('data-selected')) {
 					inputs = available[reward].inputs;
-					parent.attr('data-rewardID', available[reward].rewardID);
+					parent.attr('data-id', available[reward].id);
 					break;
 				}
 			}
@@ -104,7 +104,7 @@ define('admin/extend/rewards', function() {
 	}
 
 	function populateInputs() {
-		$('[data-rewardID]').each(function(i) {
+		$('[data-id]').each(function(i) {
 			var div = $(this).find('.inputs'),
 				rewards = active[i].rewards;
 
@@ -121,7 +121,7 @@ define('admin/extend/rewards', function() {
 			li = $('#active li').last().clone(true);
 
 		li.attr('data-index', parseInt(li.attr('data-index') + 1, 10))
-			.attr('data-rewardID', '');
+			.attr('data-id', '');
 		
 		li.find('.inputs').html('');
 		li.find('[name="reward"]').val('');
