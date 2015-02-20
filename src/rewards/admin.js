@@ -32,7 +32,11 @@ var defaults = {
 
 rewards.save = function(data, callback) {
 	function save(data, next) {
-		var rewards = data.rewards || {};
+		if (!Object.keys(data.rewards).length) {
+			return next();
+		}
+
+		var rewards = data.rewards;
 		delete data.rewards;
 
 		async.parallel([
