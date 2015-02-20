@@ -41,13 +41,14 @@ define('admin/extend/rewards', function() {
 			});
 
 			$('#new').on('click', newReward);
+			$('#save').on('click', saveRewards);
 		});
 	};
 
 	function select(el) {
 		el.val(el.attr('data-selected'));
 		switch (el.attr('name')) {
-			case 'reward':
+			case 'id':
 					selectReward(el);
 				break;
 		}
@@ -56,7 +57,7 @@ define('admin/extend/rewards', function() {
 	function update(el) {
 		el.attr('data-selected', el.val());
 		switch (el.attr('name')) {
-			case 'reward':
+			case 'id':
 					selectReward(el);
 				break;
 		}
@@ -128,6 +129,27 @@ define('admin/extend/rewards', function() {
 		li.find('.toggle').removeClass('btn-warning').addClass('btn-success').html('Enable');
 		
 		ul.append(li);
+	}
+
+	function saveRewards() {
+		var activeRewards = [];
+
+		$('#active li').each(function() {
+			var data = $(this).find('form.main').serializeArray();
+
+			data.rewards = $(this).find('form.rewards').serializeArray();
+			data.disabled = $(this).find('.toggle').html() === 'Enable';
+			
+			activeRewards.push(data);
+		});
+
+		socket.emit('admin.rewards.save', activeRewards, function(err) {
+			if (err) {
+				app.alertError(err.message);
+			} else {
+				app.alertSuccess('Successfully saved rewards');
+			}
+		});
 	}
 
 	return rewards;

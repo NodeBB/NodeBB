@@ -3,10 +3,10 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">Rewards</div>
 			<div class="panel-body">
-				<form>
-					<ul id="active">
-						<!-- BEGIN active -->
-						<li data-id="{active.id}" data-index="@index">
+				<ul id="active">
+					<!-- BEGIN active -->
+					<li data-id="{active.id}" data-index="@index">
+						<form class="main">
 							<div class="well inline-block">
 								<label for="condition">If User's</label><br />
 								<select name="condition" data-selected="{active.condition}">
@@ -22,30 +22,34 @@
 									<option value="{conditionals.conditional}">{conditionals.name}</option>
 									<!-- END conditionals -->
 								</select>
-								<input type="text" value="{active.value}" />
+								<input type="text" name="value" value="{active.value}" />
 							</div>
 							<div class="well inline-block">
 								<label for="condition">Then:</label><br />
-								<select name="reward" data-selected="{active.id}">
+								<select name="id" data-selected="{active.id}">
 									<!-- BEGIN rewards -->
 									<option value="{rewards.id}">{rewards.name}</option>
 									<!-- END rewards -->
 								</select>
 							</div>
+						</form>
+						
+						<form class="rewards">
 							<div class="inputs well inline-block"></div>
-							<div class="well inline-block pull-right">
-								<button class="btn btn-danger delete">Delete</button>
-								<!-- IF active.disabled -->
-								<button class="btn btn-success toggle">Enable</button>
-								<!-- ELSE -->
-								<button class="btn btn-warning toggle">Disable</button>
-								<!-- ENDIF active.disabled -->
-							</div>
-							<div class="clearfix"></div>
-						</li>
-						<!-- END active -->
-					</ul>
-				</form>
+						</form>
+
+						<div class="well inline-block pull-right">
+							<button class="btn btn-danger delete">Delete</button>
+							<!-- IF active.disabled -->
+							<button class="btn btn-success toggle">Enable</button>
+							<!-- ELSE -->
+							<button class="btn btn-warning toggle">Disable</button>
+							<!-- ENDIF active.disabled -->
+						</div>
+						<div class="clearfix"></div>
+					</li>
+					<!-- END active -->
+				</ul>
 				<input type="hidden" template-variable="rewards" value="{function.stringify, rewards}" />
 				<input type="hidden" template-variable="active" value="{function.stringify, active}" />
 			</div>
