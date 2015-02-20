@@ -22,10 +22,10 @@ define('admin/extend/rewards', function() {
 			});
 
 			$('#active')
-				.on('[data-selected]', 'change', function() {
+				.on('change', '[data-selected]', function() {
 					update($(this));
 				})
-				.on('.delete', 'click', function() {
+				.on('click', '.delete', function() {
 					var parent = $(this).parents('[data-id]'),
 						id = parent.attr('data-id');
 
@@ -40,7 +40,7 @@ define('admin/extend/rewards', function() {
 					parent.remove();
 					return false;
 				})
-				.on('.toggle', 'click', function() {
+				.on('click', '.toggle', function() {
 					var btn = $(this),
 						disabled = btn.html() === 'Enable',
 						id = $(this).parents('[data-id]').attr('data-id');
@@ -141,8 +141,6 @@ define('admin/extend/rewards', function() {
 			conditionals: conditionals,
 			rewards: available
 		};
-
-		var ul = $('#active');
 
 		templates.parse('admin/extend/rewards', 'active', data, function(li) {
 			li = $(li);
