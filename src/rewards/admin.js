@@ -74,7 +74,7 @@ function saveConditions(data, callback) {
 		data.forEach(function(reward) {
 			conditions.push(reward.condition);
 			rewardsPerCondition[reward.condition] = rewardsPerCondition[reward.condition] || [];
-			rewardsPerCondition[reward.condition].push(reward.rid);
+			rewardsPerCondition[reward.condition].push(reward.id);
 		});
 
 		db.setAdd('conditions:active', conditions, callback);
