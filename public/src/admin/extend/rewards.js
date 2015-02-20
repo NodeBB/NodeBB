@@ -6,49 +6,54 @@ define('admin/extend/rewards', function() {
 
 
 	var available,
-		active;
+		active,
+		conditions,
+		conditionals;
 
 	rewards.init = function() {
 		$(window).on('action:ajaxify.end', function() {
 			available = JSON.parse(ajaxify.variables.get('rewards'));
 			active = JSON.parse(ajaxify.variables.get('active'));
+			conditions = JSON.parse(ajaxify.variables.get('conditions'));
+			conditionals = JSON.parse(ajaxify.variables.get('conditionals'));
 
 			$('[data-selected]').each(function() {
 				select($(this));
-			}).on('change', function() {
-				update($(this));
 			});
 
-			populateInputs();
+			$('#active')
+				.on('[data-selected]', 'change', function() {
+					update($(this));
+				})
+				.on('.delete', 'click', function() {
+					var parent = $(this).parents('[data-id]'),
+						id = parent.attr('data-id');
 
-			$('.delete').on('click', function() {
-				var parent = $(this).parents('[data-id]'),
-					id = parent.attr('data-id');
+					socket.emit('admin.rewards.delete', {id: id}, function(err) {
+						if (err) {
+							app.alertError(err.message);
+						} else {
+							app.alertSuccess('Successfully deleted reward');
+						}
+					});
 
-				socket.emit('admin.rewards.delete', {id: id}, function(err) {
-					if (err) {
-						app.alertError(err.message);
-					} else {
-						app.alertSuccess('Successfully deleted reward');
-					}
+					parent.remove();
+					return false;
+				})
+				.on('.toggle', 'click', function() {
+					var btn = $(this),
+						disabled = btn.html() === 'Enable',
+						id = $(this).parents('[data-id]').attr('data-id');
+
+					btn.toggleClass('btn-warning').toggleClass('btn-success').html(disabled ? 'Enable' : 'Disable');
+					// send disable api call
+					return false;
 				});
-
-				parent.remove();
-				return false;
-			});
-
-			$('.toggle').on('click', function() {
-				var btn = $(this),
-					disabled = btn.html() === 'Enable',
-					id = $(this).parents('[data-id]').attr('data-id');
-
-				btn.toggleClass('btn-warning').toggleClass('btn-success').html(disabled ? 'Enable' : 'Disable');
-				// send disable api call
-				return false;
-			});
 
 			$('#new').on('click', newReward);
 			$('#save').on('click', saveRewards);
+
+			populateInputs();
 		});
 	};
 
@@ -124,16 +129,26 @@ define('admin/extend/rewards', function() {
 
 	function newReward() {
 		var ul = $('#active'),
-			li = $('#active li').last().clone(true);
+			id = parseInt($('#active li').last().attr('data-id'), 10);
 
-		li.attr('data-id', parseInt(li.attr('data-id'), 10) + 1)
-			.attr('data-rid', '');
-		
-		li.find('.inputs').html('');
-		li.find('[name="rid"]').val('');
-		li.find('.toggle').removeClass('btn-warning').addClass('btn-success').html('Enable');
-		
-		ul.append(li);
+		var data = {
+			active: [{
+				id: id ? id + 1 : 0,
+				disabled: true,
+				value: ''
+			}],
+			conditions: conditions,
+			conditionals: conditionals,
+			rewards: available
+		};
+
+		var ul = $('#active');
+
+		templates.parse('admin/extend/rewards', 'active', data, function(li) {
+			li = $(li);
+			li.find('[name="rid"]').val('');
+			ul.append(li);
+		});
 	}
 
 	function saveRewards() {
