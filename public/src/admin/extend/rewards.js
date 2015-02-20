@@ -20,19 +20,24 @@ define('admin/extend/rewards', function() {
 			});
 
 			$('.delete').on('click', function() {
-				var id = $(this).parents('[data-index]');
+				var parent = $(this).parents('[data-index]'),
+					id = parent.attr('data-index');
 
 				delete active[id];
 				// send delete api call
+
+				parent.remove();
+				return false;
 			});
 
 			$('.toggle').on('click', function() {
 				var btn = $(this),
 					disabled = btn.html() === 'Disabled',
-					id = $(this).parents('[data-index]');
+					id = $(this).parents('[data-index]').attr('data-index');
 
 				btn.toggleClass('btn-warning').toggleClass('btn-success').html(disabled ? 'Enabled' : 'Disabled');
 				// send disable api call
+				return false;
 			});
 		});
 	};
@@ -93,6 +98,10 @@ define('admin/extend/rewards', function() {
 
 		div.html(html);
 
+		populateInputs();
+	}
+
+	function populateInputs() {
 		$('[data-rewardID]').each(function(i) {
 			var div = $(this).find('.inputs'),
 				rewards = active[i].rewards;
