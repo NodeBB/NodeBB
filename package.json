@@ -47,6 +47,7 @@
     "nodebb-theme-lavender": "^1.0.4",
     "nodebb-theme-vanilla": "^1.0.5",
     "nodebb-widget-essentials": "~0.2.11",
+    "nodebb-rewards-essentials": "^0.0.1",
     "npm": "^2.1.4",
     "passport": "^0.2.1",
     "passport-local": "1.0.0",

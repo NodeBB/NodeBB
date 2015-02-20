@@ -422,6 +422,7 @@ function enableDefaultPlugins(next) {
 		'nodebb-plugin-markdown',
 		'nodebb-plugin-mentions',
 		'nodebb-widget-essentials',
+		'nodebb-rewards-essentials',
 		'nodebb-plugin-soundpack-default'
 	];
 	var	db = require('./database');
