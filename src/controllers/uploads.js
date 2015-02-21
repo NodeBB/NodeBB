@@ -5,6 +5,7 @@ var uploadsController = {},
 	fs = require('fs'),
 	path = require('path'),
 	async = require('async'),
+	validator = require('validator'),
 
 	meta = require('../meta'),
 	file = require('../file'),
@@ -117,8 +118,10 @@ function uploadFile(uid, uploadedFile, callback) {
 	if (uploadedFile.size > parseInt(meta.config.maximumFileSize, 10) * 1024) {
 		return callback(new Error('[[error:file-too-big, ' + meta.config.maximumFileSize + ']]'));
 	}
+	
+	var filename = uploadedFile.name || 'upload';
 
-	var filename = 'upload-' + utils.generateUUID() + path.extname(uploadedFile.name);
+	filename = Date.now() + '-' + validator.escape(filename).substr(0, 255);
 	file.saveFileToLocal(filename, 'files', uploadedFile.path, function(err, upload) {
 		if (err) {
 			return callback(err);

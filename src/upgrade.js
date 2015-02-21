@@ -250,10 +250,23 @@ Upgrade.upgrade = function(callback) {
 							}, next);
 						}
 
-						Groups.list({showSystemGroups: true}, function(err, groups) {
+						async.waterfall([
+							async.apply(db.getSetMembers, 'groups'),
+							function(groups, next) {
+								async.filter(groups, function(group, next) {
+									db.getObjectField('group:' + group, 'hidden', function(err, hidden) {
+										next(!parseInt(hidden, 10));
+									}, next);
+								}, function(groups) {
+									next(null, groups);
+								});
+							}
+						], function(err, groups) {
 							if (err) {
 								return next(err);
 							}
+
+							groups.push('administrators', 'registered-users');
 
 							async.eachLimit(cids, 50, function(cid, next) {
 								upgradePrivileges(cid, groups, next);
@@ -445,7 +458,7 @@ Upgrade.upgrade = function(callback) {
 						if (setting.dailyDigestFreq !== 'off') {
 							db.sortedSetAdd('digest:' + setting.dailyDigestFreq + ':uids', now, setting.uid, next);
 						} else {
-							next(false);
+							setImmediate(next);
 						}
 					}, function(err) {
 						if (err) {

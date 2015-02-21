@@ -124,6 +124,13 @@ var async = require('async'),
 					}
 
 					notification.path = pidToPaths[notification.pid] || notification.path || '';
+
+					if (notification.nid.startsWith('chat')) {
+						notification.path = nconf.get('relative_path') + '/chats/' + notification.user.userslug;
+					} else if (notification.nid.startsWith('follow')) {
+						notification.path = nconf.get('relative_path') + '/user/' + notification.user.userslug;
+					}
+
 					notification.datetimeISO = utils.toISOString(notification.datetime);
 					return notification;
 				});

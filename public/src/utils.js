@@ -270,9 +270,12 @@
 					value = options.skipToType[key] ? decodeURI(val[1]) : utils.toType(decodeURI(val[1]));
 
 				if (key) {
+					if (key.substr(-2, 2) === '[]') {
+						key = key.slice(0, -2);
+					}
 					if (!hash[key]) {
 						hash[key] = value;
-					} else {
+					} else {						
 						if (!$.isArray(hash[key])) {
 							hash[key] = [hash[key]];
 						}
@@ -291,24 +294,6 @@
 			var a = document.createElement('a');
 			a.href = url;
 			return a;
-		},
-
-		getQueryParams: function() {
-			var search = window.location.search.slice(1),
-				data = {};
-
-			search = search.split('&');
-			for(var x=0,numParams=search.length,temp;x<numParams;x++) {
-				temp = search[x].split('=');
-				if (temp[0].substr(-2, 2) !== '[]') {
-					data[temp[0]] = temp[1];
-				} else {
-					data[temp[0].slice(0, -2)] = data[temp[0].slice(0, -2)] || [];
-					data[temp[0].slice(0, -2)].push(temp[1]);
-				}
-			}
-
-			return data;
 		},
 
 		// return boolean if string 'true' or string 'false', or if a parsable string which is a number

@@ -312,14 +312,24 @@ SocketAdmin.dismissAllFlags = function(socket, data, callback) {
 	posts.dismissAllFlags(callback);
 };
 
-SocketAdmin.getMoreFlags = function(socket, after, callback) {
-	if (!parseInt(after, 10)) {
+SocketAdmin.getMoreFlags = function(socket, data, callback) {
+	if (!data || !parseInt(data.after, 10)) {
 		return callback('[[error:invalid-data]]');
 	}
-	after = parseInt(after, 10);
-	posts.getFlags(socket.uid, after, after + 19, function(err, posts) {
-		callback(err, {posts: posts, next: after + 20});
-	});
+	var sortBy = data.sortBy || 'count';
+	var byUsername = data.byUsername ||  '';
+	var start = parseInt(data.after, 10);
+	var end = start + 19;
+	if (byUsername) {
+		posts.getUserFlags(byUsername, sortBy, socket.uid, start, end, function(err, posts) {
+			callback(err, {posts: posts, next: end + 1});
+		});
+	} else {		
+		var set = sortBy === 'count' ? 'posts:flags:count' : 'posts:flagged';
+		posts.getFlags(set, socket.uid, start, end, function(err, posts) {
+			callback(err, {posts: posts, next: end + 1});
+		});
+	}	
 };
 
 SocketAdmin.takeHeapSnapshot = function(socket, data, callback) {

@@ -422,14 +422,14 @@ SocketPosts.flag = function(socket, pid, callback) {
 				return next(new Error('[[error:not-enough-reputation-to-flag]]'));
 			}
 			userName = userData.username;
-			posts.getPostFields(pid, ['tid', 'uid', 'content', 'deleted'], next);
+			posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'deleted'], next);
 		},
 		function(postData, next) {
 			if (parseInt(postData.deleted, 10) === 1) {
 				return next(new Error('[[error:post-deleted]]'));
 			}
 			post = postData;
-			posts.flag(pid, next);
+			posts.flag(post, socket.uid, next);
 		},
 		function(next) {
 			topics.getTopicFields(post.tid, ['title', 'cid'], next);
@@ -462,14 +462,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 				}
 				notifications.push(notification, results.admins.concat(results.moderators), next);
 			});
-		},
-		function(next) {
-			if (!parseInt(post.uid, 10)) {
-				return next();
-			}
-
-			db.setAdd('uid:' + post.uid + ':flagged_by', socket.uid, next);
-		}
+		}		
 	], callback);
 };
 
