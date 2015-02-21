@@ -134,7 +134,9 @@ define('admin/extend/rewards', function() {
 			active: [{
 				disabled: true,
 				value: '',
-				claimable: 1
+				claimable: 1,
+				rid: null,
+				id: null
 			}],
 			conditions: conditions,
 			conditionals: conditionals,

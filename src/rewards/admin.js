@@ -8,14 +8,11 @@ var rewards = {},
 
 rewards.save = function(data, callback) {
 	function save(data, next) {
-		if (!Object.keys(data.rewards).length) {
-			return next();
-		}
+		function commit(err, id) {
+			if (err) {
+				return callback(err);
+			}
 
-		var rewardsData = data.rewards;
-		delete data.rewards;
-
-		db.incrObjectField('global', 'nextRid', function(err, id) {
 			data.id = id;
 			
 			async.parallel([
@@ -32,7 +29,20 @@ rewards.save = function(data, callback) {
 					db.setObject('rewards:id:' + data.id + ':rewards', rewardsData, next);
 				}
 			], next);
-		});
+		}
+
+		if (!Object.keys(data.rewards).length) {
+			return next();
+		}
+
+		var rewardsData = data.rewards;
+		delete data.rewards;
+
+		if (!parseInt(data.id, 10)) {
+			db.incrObjectField('global', 'rewards:id', commit);
+		} else {
+			commit(false, data.id);
+		}
 	}
 
 	async.each(data, save, function(err) {
