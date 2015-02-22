@@ -19,7 +19,7 @@
     "user_posted_topic": "<strong>%1</strong> открыл новую тему: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> упомянул Вас в <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> подписался на Вас.",
-    "email-confirmed": "Email Подтвержден",
+    "email-confirmed": "Email подтвержден",
     "email-confirmed-message": "Спасибо за подтверждение Вашего Email-адреса. Ваш аккаунт активирован.",
     "email-confirm-error": "Произошла ошибка...",
     "email-confirm-error-message": "Ошибка проверки Email-адреса. Возможно, код неверен, либо у него истек срок действия.",
