@@ -29,7 +29,7 @@ module.exports = function(Posts) {
 						removeFromCategoryRecentPosts(pid, postData.tid, next);
 					},
 					function(next) {
-						Posts.dismissFlags(pid, next);
+						Posts.dismissFlag(pid, next);
 					}
 				], function(err) {
 					callback(err, postData);
@@ -127,7 +127,7 @@ module.exports = function(Posts) {
 					db.sortedSetsRemove(['posts:pid', 'posts:flagged'], pid, next);
 				},
 				function(next) {
-					Posts.dismissFlags(pid, next);
+					Posts.dismissFlag(pid, next);
 				}
 			], function(err) {
 				if (err) {
