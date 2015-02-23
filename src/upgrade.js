@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 1, 17);
+	latestSchema = Date.UTC(2015, 1, 23);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -857,6 +857,43 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2015/02/17] renaming home.tpl to categories.tpl skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 1, 23);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/02/23] Upgrading plugins:active to sorted set');
+
+				db.getSetMembers('plugins:active', function(err, activePlugins) {
+					if (err) {
+						return next(err);
+					}
+					if (!Array.isArray(activePlugins) || !activePlugins.length) {
+						winston.info('[2015/02/23] Upgrading plugins:active to sorted set done');
+						Upgrade.update(thisSchemaDate, next);
+					}
+
+					db.delete('plugins:active', function(err) {
+						if (err) {
+							return next(err);
+						}
+						var order = -1;
+						async.eachSeries(activePlugins, function(plugin, next) {
+							++order;
+							db.sortedSetAdd('plugins:active', order, plugin, next);
+						}, function(err) {
+							if (err) {
+								return next(err);
+							}
+							winston.info('[2015/02/23] Upgrading plugins:active to sorted set done');
+							Upgrade.update(thisSchemaDate, next);
+						});
+					});
+				});
+			} else {
+				winston.info('[2015/02/23] Upgrading plugins:active to sorted set skipped');
 				next();
 			}
 		}

@@ -323,7 +323,7 @@ function resetThemes(callback) {
 
 function resetPlugin(pluginId) {
 	var db = require('./src/database');
-	db.setRemove('plugins:active', pluginId, function(err) {
+	db.sortedSetRemove('plugins:active', pluginId, function(err) {
 		if (err) {
 			winston.error('[reset] Could not disable plugin: %s encountered error %s', pluginId, err.message);
 		} else {

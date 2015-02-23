@@ -38,7 +38,16 @@ module.exports = function(Plugins) {
 			},
 			function(_isActive, next) {
 				isActive = _isActive;
-				db[isActive ? 'setRemove' : 'setAdd']('plugins:active', id, next);
+				if (isActive) {
+					db.sortedSetRemove('plugins:active', id, next);
+				} else {
+					db.sortedSetCard('plugins:active', function(err, count) {
+						if (err) {
+							return next(err);
+						}
+						db.sortedSetAdd('plugins:active', count, id, next);	
+					});				
+				}
 			},
 			function(next) {
 				meta.reloadRequired = true;
@@ -119,6 +128,6 @@ module.exports = function(Plugins) {
 	};
 
 	Plugins.isActive = function(id, callback) {
-		db.isSetMember('plugins:active', id, callback);
+		db.isSortedSetMember('plugins:active', id, callback);
 	};
 };
