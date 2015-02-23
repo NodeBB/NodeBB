@@ -92,13 +92,12 @@ var fs = require('fs'),
 		Plugins.clientScripts.length = 0;
 		Plugins.libraryPaths.length = 0;
 
-		// Read the list of activated plugins and require their libraries
 		async.waterfall([
 			function(next) {
-				db.getSetMembers('plugins:active', next);
+				db.getSortedSetRange('plugins:active', 0, -1, next);
 			},
 			function(plugins, next) {
-				if (!plugins || !Array.isArray(plugins)) {
+				if (!Array.isArray(plugins)) {
 					return next();
 				}
 
