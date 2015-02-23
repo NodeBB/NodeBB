@@ -1,5 +1,6 @@
 'use strict';
 
+var start = process.hrtime();
 var fs = require('fs'),
 	path = require('path'),
 	async = require('async'),
@@ -18,10 +19,12 @@ var fs = require('fs'),
 
 	controllers = require('./controllers'),
 	app, middleware;
+process.profile('requiring modules', start);
 
 (function(Plugins) {
-
+var start = process.hrtime();
 	require('./plugins/install')(Plugins);
+process.profile('requiring modules 2', start);
 	require('./plugins/load')(Plugins);
 	require('./plugins/hooks')(Plugins);
 

@@ -2,7 +2,6 @@
 
 var winston = require('winston'),
 	async = require('async'),
-	npm = require('npm'),
 	path = require('path'),
 	fs = require('fs'),
 	nconf = require('nconf'),
@@ -88,10 +87,10 @@ module.exports = function(Plugins) {
 					next();
 				},
 				function(next) {
-					npm.load({}, next);
+					require('npm').load({}, next);
 				},
 				function(res, next) {
-					npm.commands[type](installed ? id : [id + '@' + (version || 'latest')], next);
+					require('npm').commands[type](installed ? id : [id + '@' + (version || 'latest')], next);
 				}
 			], function(err) {
 				if (err) {
@@ -111,10 +110,10 @@ module.exports = function(Plugins) {
 	function upgrade(id, version, callback) {
 		async.waterfall([
 			function(next) {
-				npm.load({}, next);
+				require('npm').load({}, next);
 			},
 			function(res, next) {
-				npm.commands.install([id + '@' + (version || 'latest')], next);
+				require('npm').commands.install([id + '@' + (version || 'latest')], next);
 			}
 		], callback);
 	}
