@@ -31,7 +31,7 @@ var async = require('async'),
 						if (!group) {
 							return false;
 						}
-						if (group.deleted || (group.hidden && !group.system) || (!options.showSystemGroups && group.system)) {
+						if (group.deleted || (group.hidden && !group.system && !group.isMember) || (!options.showSystemGroups && group.system)) {
 							return false;
 						} else if (options.removeEphemeralGroups && ephemeralGroups.indexOf(group.name) !== -1) {
 							return false;
@@ -61,12 +61,16 @@ var async = require('async'),
 				}
 
 				return groups;
-			}/*,
-			fixImageUrl: function(url) {
-				if (url) {
-					return url.indexOf('http') === -1 ? nconf.get('relative_path') + url : url;
-				}
-			}*/
+			},
+			applyWithName: function(method, args) {
+				// This method takes a slug and reapplies the passed-in call with the proper group name
+				Groups.getGroupNameByGroupSlug(args[0], function(err, groupName) {	// Assuming slug is the first argument
+					// As there is no good way of determining whether the last argument is the callback,
+					// if getGroupNameByGroupSlug fails, we continue assuming the group name is the same as the slug
+					if (!err) { Array.prototype.splice.call(args, 0, 1, groupName); }
+					method.apply(Groups, args);
+				});
+			}
 		};
 
 	Groups.list = function(options, callback) {
@@ -89,9 +93,6 @@ var async = require('async'),
 	};
 
 	Groups.get = function(groupName, options, callback) {
-		if (!arguments[0]) {
-			console.log(new Error.stack);
-		}
 		var	truncated = false,
 			numUsers;
 
@@ -272,6 +273,17 @@ var async = require('async'),
 			}
 
 			callback(err, isPrivate);	// Private, if not set at all
+		});
+	};
+
+	Groups.isHidden = function(groupName, callback) {
+		Groups.getGroupFields(groupName, ['hidden'], function(err, values) {
+			if (err) {
+				winston.warn('[groups.isHidden] Could not determine group hidden state (group: ' + groupName + ')');
+				return callback(null, true);	// Default true
+			}
+
+			callback(null, parseInt(values.hidden, 10));
 		});
 	};
 
@@ -801,12 +813,9 @@ var async = require('async'),
 		});
 	};
 
-	Groups.getLatestMemberPosts = function(groupSlug, max, uid, callback) {
+	Groups.getLatestMemberPosts = function(groupName, max, uid, callback) {
 		async.waterfall([
-			async.apply(Groups.getGroupNameByGroupSlug, groupSlug),
-			function(groupName, next) {
-				Groups.getMembers(groupName, 0, -1, next);
-			},
+			async.apply(Groups.getMembers, groupName, 0, -1),
 			function(uids, next) {
 				if (!Array.isArray(uids) || !uids.length) {
 					return callback(null, []);

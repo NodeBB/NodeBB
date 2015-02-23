@@ -15,6 +15,7 @@ var app,
 	meta = require('./../meta'),
 	translator = require('./../../public/src/translator'),
 	user = require('./../user'),
+	groups = require('./../groups'),
 	db = require('./../database'),
 	categories = require('./../categories'),
 	topics = require('./../topics'),
@@ -516,6 +517,17 @@ middleware.publicTagListing = function(req, res, next) {
 	} else {
 		controllers.helpers.notAllowed(req, res);
 	}
+};
+
+middleware.exposeGroupName = function(req, res, next) {
+	if (!req.params.hasOwnProperty('slug')) { return next(); }
+
+	groups.getGroupNameByGroupSlug(req.params.slug, function(err, groupName) {
+		if (err) { return next(err); }
+
+		res.locals.groupName = groupName;
+		next();
+	});
 };
 
 module.exports = function(webserver) {

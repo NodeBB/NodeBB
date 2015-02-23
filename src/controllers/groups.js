@@ -12,7 +12,7 @@ groupsController.list = function(req, res, next) {
 	groups.list({
 		truncateUserList: true,
 		expand: true,
-		uid: req.user ? req.user.uid : 0
+		uid: req.user ? parseInt(req.user.uid, 10) : 0
 	}, function(err, groups) {
 		if (err) {
 			return next(err);
@@ -27,17 +27,35 @@ groupsController.list = function(req, res, next) {
 groupsController.details = function(req, res, next) {
 	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
 
-	groups.existsBySlug(req.params.slug, function(err, exists) {
-		if (exists) {
+	async.waterfall([
+		async.apply(groups.exists, res.locals.groupName),
+		function(exists, next) {
+			if (!exists) { return next(undefined, null); }
+
+			// Ensure the group isn't hidden either
+			groups.isHidden(res.locals.groupName, next);
+		},
+		function(hidden, next) {
+			if (hidden === null) { return next(undefined, false); }		// Group didn't exist, not ok
+
+			if (!hidden) {
+				next(null, true);
+			} else {
+				// If not, only members are granted access
+				groups.isMember(uid, res.locals.groupName, next);
+			}
+		}
+	], function(err, ok) {
+		if (ok) {
 			async.parallel({
 				group: function(next) {
-					groups.getByGroupslug(req.params.slug, {
+					groups.get(res.locals.groupName, {
 						expand: true,
 						uid: uid
 					}, next);
 				},
 				posts: function(next) {
-					groups.getLatestMemberPosts(req.params.slug, 10, uid, next);
+					groups.getLatestMemberPosts(res.locals.groupName, 10, uid, next);
 				}
 			}, function(err, results) {
 				if (err) {
