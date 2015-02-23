@@ -67,9 +67,11 @@
 						area.addClass('hidden');
 						ajaxify.widgets.reposition(location);
 					}
-
-					$('#content [widget-area] img:not(.user-img)').addClass('img-responsive');
 				}
+				
+				var widgetAreas = $('#content [widget-area]');
+				widgetAreas.find('img:not(.user-img)').addClass('img-responsive');
+				widgetAreas.find('span.timeago').timeago();
 
 				$(window).trigger('action:widgets.loaded', {});
 
