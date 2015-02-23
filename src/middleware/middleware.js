@@ -317,7 +317,7 @@ middleware.renderHeader = function(req, res, callback) {
 			},
 			user: function(next) {
 				if (uid) {
-					user.getUserFields(uid, ['username', 'userslug', 'picture', 'status', 'email:confirmed', 'banned'], next);
+					user.getUserFields(uid, ['username', 'userslug', 'email', 'picture', 'status', 'email:confirmed', 'banned'], next);
 				} else {
 					next(null, {
 						username: '[[global:guest]]',
@@ -342,7 +342,7 @@ middleware.renderHeader = function(req, res, callback) {
 			results.user.isAdmin = results.isAdmin || false;
 			results.user.uid = parseInt(results.user.uid, 10);
 			results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
-
+			
 			templateValues.browserTitle = results.title;
 			templateValues.isAdmin = results.user.isAdmin;
 			templateValues.user = results.user;
