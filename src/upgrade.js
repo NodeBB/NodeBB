@@ -880,7 +880,7 @@ Upgrade.upgrade = function(callback) {
 		}
 
 		// Add new schema updates here
-		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 22!!!
+		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 24!!!
 	], function(err) {
 		if (!err) {
 			if(updatesMade) {
