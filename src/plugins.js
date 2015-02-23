@@ -110,7 +110,7 @@ var fs = require('fs'),
 				});
 
 				async.filter(plugins, fs.exists, function(plugins){
-					async.each(plugins, Plugins.loadPlugin, next);
+					async.eachSeries(plugins, Plugins.loadPlugin, next);
 				});
 			},
 			function(next) {
@@ -262,7 +262,10 @@ var fs = require('fs'),
 
 			function(dirs, next) {
 				dirs = dirs.filter(function(dir){
-					return dir.startsWith('nodebb-plugin-') || dir.startsWith('nodebb-widget-') || dir.startsWith('nodebb-rewards-') || dir.startsWith('nodebb-theme-')
+					return dir.startsWith('nodebb-plugin-') || 
+						dir.startsWith('nodebb-widget-') || 
+						dir.startsWith('nodebb-rewards-') || 
+						dir.startsWith('nodebb-theme-');
 				}).map(function(dir){
 					return path.join(npmPluginPath, dir);
 				});

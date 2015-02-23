@@ -83,7 +83,8 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">Plugin Search</div>
 			<div class="panel-body">
-				<input class="form-control" type="text" id="plugin-search" placeholder="Search for plugin..."/>
+				<input class="form-control" type="text" id="plugin-search" placeholder="Search for plugin..."/><br/>
+				<button class="btn btn-default" id="plugin-order">Order Active Plugins</button>
 			</div>
 		</div>
 
@@ -96,4 +97,30 @@
 			</div>
 		</div>
 	</div>
+
+
+	<div class="modal fade" id="order-active-plugins-modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Order Active Plugins</h4>
+				</div>
+				<div class="modal-body">
+					<p>Plugins load in the order specified here, from top to bottom</p>
+					<ul class="plugin-list">
+
+					</ul>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary" id="save-plugin-order">Save</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
 </div>
+
+

@@ -130,4 +130,8 @@ module.exports = function(Plugins) {
 	Plugins.isActive = function(id, callback) {
 		db.isSortedSetMember('plugins:active', id, callback);
 	};
+
+	Plugins.getActive = function(callback) {
+		db.getSortedSetRange('plugins:active', 0, -1, callback);
+	};
 };
