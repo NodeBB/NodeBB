@@ -60,11 +60,8 @@ $(document).ready(function() {
 			app.enterRoom('');
 
 			// If the url is in the cache, load from cache instead
-			if (cache.get(url)) { return true; }
-			else {
-				cache.url = ajaxify.currentPage;
-				ajaxify.isPopState = false;
-			}
+			if (cache.get(url, callback)) { return true; }
+			else { cache.url = ajaxify.currentPage; }
 
 			$(window).off('scroll');
 
