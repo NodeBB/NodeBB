@@ -510,7 +510,7 @@ var async = require('async'),
 					description: values.description || '',
 					icon: values.icon || '',
 					labelColor: values.labelColor || '#000000',
-					hidden: values.hidden || '0',
+					hidden: values.hidden === true ? '1' : '0',
 					'private': values.private === false ? '0' : '1'
 				};
 
