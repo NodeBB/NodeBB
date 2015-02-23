@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 1, 23);
+	latestSchema = Date.UTC(2015, 1, 24);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -863,15 +863,33 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			thisSchemaDate = Date.UTC(2015, 1, 23);
 			if (schemaDate < thisSchemaDate) {
+				db.setAdd('plugins:active', 'nodebb-rewards-essentials', function(err) {
+					winston.info('[2015/2/23] Activating NodeBB Essential Rewards');
+					Plugins.reload(function() {
+						if (err) {
+							next(err);
+						} else {
+							Upgrade.update(thisSchemaDate, next);
+						}
+					});
+				});
+			} else {
+				winston.info('[2015/2/23] Activating NodeBB Essential Rewards - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 1, 24);
+			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
-				winston.info('[2015/02/23] Upgrading plugins:active to sorted set');
+				winston.info('[2015/02/24] Upgrading plugins:active to sorted set');
 
 				db.getSetMembers('plugins:active', function(err, activePlugins) {
 					if (err) {
 						return next(err);
 					}
 					if (!Array.isArray(activePlugins) || !activePlugins.length) {
-						winston.info('[2015/02/23] Upgrading plugins:active to sorted set done');
+						winston.info('[2015/02/24] Upgrading plugins:active to sorted set done');
 						Upgrade.update(thisSchemaDate, next);
 					}
 
@@ -887,19 +905,19 @@ Upgrade.upgrade = function(callback) {
 							if (err) {
 								return next(err);
 							}
-							winston.info('[2015/02/23] Upgrading plugins:active to sorted set done');
+							winston.info('[2015/02/24] Upgrading plugins:active to sorted set done');
 							Upgrade.update(thisSchemaDate, next);
 						});
 					});
 				});
 			} else {
-				winston.info('[2015/02/23] Upgrading plugins:active to sorted set skipped');
+				winston.info('[2015/02/24] Upgrading plugins:active to sorted set skipped');
 				next();
 			}
 		}
 
 		// Add new schema updates here
-		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 22!!!
+		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 24!!!
 	], function(err) {
 		if (!err) {
 			if(updatesMade) {

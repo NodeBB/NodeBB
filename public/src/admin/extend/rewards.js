@@ -11,50 +11,48 @@ define('admin/extend/rewards', function() {
 		conditionals;
 
 	rewards.init = function() {
-		$(window).on('action:ajaxify.end', function() {
-			available = JSON.parse(ajaxify.variables.get('rewards'));
-			active = JSON.parse(ajaxify.variables.get('active'));
-			conditions = JSON.parse(ajaxify.variables.get('conditions'));
-			conditionals = JSON.parse(ajaxify.variables.get('conditionals'));
+		available = JSON.parse(ajaxify.variables.get('rewards'));
+		active = JSON.parse(ajaxify.variables.get('active'));
+		conditions = JSON.parse(ajaxify.variables.get('conditions'));
+		conditionals = JSON.parse(ajaxify.variables.get('conditionals'));
 
-			$('[data-selected]').each(function() {
-				select($(this));
-			});
+		$('[data-selected]').each(function() {
+			select($(this));
+		});
 
-			$('#active')
-				.on('change', '[data-selected]', function() {
-					update($(this));
-				})
-				.on('click', '.delete', function() {
-					var parent = $(this).parents('[data-id]'),
-						id = parent.attr('data-id');
+		$('#active')
+			.on('change', '[data-selected]', function() {
+				update($(this));
+			})
+			.on('click', '.delete', function() {
+				var parent = $(this).parents('[data-id]'),
+					id = parent.attr('data-id');
 
-					socket.emit('admin.rewards.delete', {id: id}, function(err) {
-						if (err) {
-							app.alertError(err.message);
-						} else {
-							app.alertSuccess('Successfully deleted reward');
-						}
-					});
-
-					parent.remove();
-					return false;
-				})
-				.on('click', '.toggle', function() {
-					var btn = $(this),
-						disabled = btn.html() === 'Enable',
-						id = $(this).parents('[data-id]').attr('data-id');
-
-					btn.toggleClass('btn-warning').toggleClass('btn-success').html(disabled ? 'Enable' : 'Disable');
-					// send disable api call
-					return false;
+				socket.emit('admin.rewards.delete', {id: id}, function(err) {
+					if (err) {
+						app.alertError(err.message);
+					} else {
+						app.alertSuccess('Successfully deleted reward');
+					}
 				});
 
-			$('#new').on('click', newReward);
-			$('#save').on('click', saveRewards);
+				parent.remove();
+				return false;
+			})
+			.on('click', '.toggle', function() {
+				var btn = $(this),
+					disabled = btn.html() === 'Enable',
+					id = $(this).parents('[data-id]').attr('data-id');
 
-			populateInputs();
-		});
+				btn.toggleClass('btn-warning').toggleClass('btn-success').html(disabled ? 'Enable' : 'Disable');
+				// send disable api call
+				return false;
+			});
+
+		$('#new').on('click', newReward);
+		$('#save').on('click', saveRewards);
+
+		populateInputs();
 	};
 
 	function select(el) {
