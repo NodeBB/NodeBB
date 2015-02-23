@@ -85,11 +85,11 @@
                     </li>
                     <li id="user_label" class="dropdown pull-right">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
-                            <img src="{userpicture}"/>
+                            <img src="{user.picture}"/>
                         </a>
                         <ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
                             <li>
-                                <a id="user-profile-link" href="{relative_path}/user/{userslug}" target="_top"><span>Profile</span></a>
+                                <a id="user-profile-link" href="{relative_path}/user/{user.userslug}" target="_top"><span>Profile</span></a>
                             </li>
                             <li id="logout-link">
                                 <a href="#">Log out</a>
