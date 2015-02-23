@@ -10,7 +10,6 @@ var db = require('./database'),
 	utils = require('../public/src/utils'),
 	notifications = require('./notifications'),
 	userNotifications = require('./user/notifications'),
-	websockets = require('./socket.io'),
 	emailer = require('./emailer');
 
 (function(Messaging) {
@@ -257,7 +256,7 @@ var db = require('./database'),
 				results.users.forEach(function(user, index) {
 					if (user) {
 						user.unread = results.unread[index];
-						user.status = websockets.isUserOnline(user.uid) ? user.status : 'offline';
+						user.status = require('./socket.io').isUserOnline(user.uid) ? user.status : 'offline';
 					}
 				});
 
@@ -320,7 +319,7 @@ var db = require('./database'),
 	};
 
 	function sendNotifications(fromuid, touid, messageObj, callback) {
-		if (websockets.isUserOnline(touid)) {
+		if (require('./socket.io').isUserOnline(touid)) {
 			return callback();
 		}
 

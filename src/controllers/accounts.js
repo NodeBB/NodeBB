@@ -22,8 +22,7 @@ var fs = require('fs'),
 	languages = require('../languages'),
 	image = require('../image'),
 	file = require('../file'),
-	helpers = require('./helpers'),
-	websockets = require('../socket.io');
+	helpers = require('./helpers');
 
 function getUserDataByUserSlug(userslug, callerUID, callback) {
 	user.getUidByUserslug(userslug, function(err, uid) {
@@ -91,7 +90,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
 			userData.profile_links = results.profile_links;
-			userData.status = websockets.isUserOnline(userData.uid) ? (userData.status || 'online') : 'offline';
+			userData.status = require('../socket.io').isUserOnline(userData.uid) ? (userData.status || 'online') : 'offline';
 			userData.banned = parseInt(userData.banned, 10) === 1;
 			userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
 			userData.followingCount = parseInt(userData.followingCount, 10) || 0;
