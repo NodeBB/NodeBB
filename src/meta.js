@@ -8,7 +8,6 @@ var async = require('async'),
 
 	user = require('./user'),
 	groups = require('./groups'),
-	plugins = require('./plugins'),
 	emitter = require('./emitter'),
 	pubsub = require('./pubsub'),
 	auth = require('./routes/authentication');
@@ -49,6 +48,8 @@ var async = require('async'),
 
 	function reload(callback) {
 		callback = callback || function() {};
+
+		var	plugins = require('./plugins');
 		async.series([
 			async.apply(plugins.clearRequireCache),
 			async.apply(plugins.reload),
