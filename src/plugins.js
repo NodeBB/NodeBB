@@ -14,7 +14,6 @@ var fs = require('fs'),
 	translator = require('../public/src/translator'),
 	utils = require('../public/src/utils'),
 	hotswap = require('./hotswap'),
-	pkg = require('../package.json'),
 
 	controllers = require('./controllers'),
 	app, middleware;
@@ -168,8 +167,9 @@ var fs = require('fs'),
 	};
 
 	Plugins.getAll = function(callback) {
-		var request = require('request');
-		request((nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins?version=' + pkg.version, function(err, res, body) {
+		var url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins?version=' + require('../package.json').version;
+		
+		require('request')(url, function(err, res, body) {
 			var plugins = [];
 
 			try {
