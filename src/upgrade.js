@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 1, 17);
+	latestSchema = Date.UTC(2015, 1, 23);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -857,6 +857,24 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2015/02/17] renaming home.tpl to categories.tpl skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 1, 23);
+			if (schemaDate < thisSchemaDate) {
+				db.setAdd('plugins:active', 'nodebb-rewards-essentials', function(err) {
+					winston.info('[2015/2/23] Activating NodeBB Essential Rewards');
+					Plugins.reload(function() {
+						if (err) {
+							next(err);
+						} else {
+							Upgrade.update(thisSchemaDate, next);
+						}
+					});
+				});
+			} else {
+				winston.info('[2015/2/23] Activating NodeBB Essential Rewards - skipped');
 				next();
 			}
 		}
