@@ -31,7 +31,7 @@ var async = require('async'),
 						if (!group) {
 							return false;
 						}
-						if (group.deleted || (group.hidden && !group.system && !group.isMember && !options.isAdmin) || (!options.showSystemGroups && group.system)) {
+						if (group.deleted || (group.hidden && !(group.system || group.isMember || options.isAdmin || group.isInvited)) || (!options.showSystemGroups && group.system)) {
 							return false;
 						} else if (options.removeEphemeralGroups && ephemeralGroups.indexOf(group.name) !== -1) {
 							return false;
@@ -179,6 +179,7 @@ var async = require('async'),
 
 				db.isSetMember('group:' + groupName + ':pending', options.uid, next);
 			},
+			isInvited: async.apply(Groups.isInvited, options.uid, groupName),
 			isOwner: function(next) {
 				// Retrieve group ownership state, if uid is passed in
 				if (!options.uid) {
@@ -228,6 +229,7 @@ var async = require('async'),
 				results.base.truncated = truncated;
 				results.base.isMember = results.isMember;
 				results.base.isPending = results.isPending;
+				results.base.isInvited = results.isInvited;
 				results.base.isOwner = results.isOwner;
 
 
@@ -406,6 +408,11 @@ var async = require('async'),
 				callback(err, results);
 			});
 		});
+	};
+
+	Groups.isInvited = function(uid, groupName, callback) {
+		if (!uid) { return callback(null, false); }
+		db.isSetMember('group:' + groupName + ':invited', uid, callback);
 	};
 
 	Groups.exists = function(name, callback) {
@@ -607,6 +614,7 @@ var async = require('async'),
 					async.apply(db.rename, 'group:' + oldName + ':members', 'group:' + newName + ':members'),
 					async.apply(db.rename, 'group:' + oldName + ':owners', 'group:' + newName + ':owners'),
 					async.apply(db.rename, 'group:' + oldName + ':pending', 'group:' + newName + ':pending'),
+					async.apply(db.rename, 'group:' + oldName + ':invited', 'group:' + newName + ':invited'),
 					async.apply(renameGroupMember, 'groups:createtime', oldName, newName),
 					function(next) {
 						plugins.fireHook('action:group.rename', {
@@ -651,6 +659,7 @@ var async = require('async'),
 				async.apply(db.sortedSetRemove, 'groups:createtime', groupName),
 				async.apply(db.delete, 'group:' + groupName + ':members'),
 				async.apply(db.delete, 'group:' + groupName + ':pending'),
+				async.apply(db.delete, 'group:' + groupName + ':invited'),
 				async.apply(db.delete, 'group:' + groupName + ':owners'),
 				async.apply(db.deleteObjectField, 'groupslug:groupname', utils.slugify(groupName)),
 				function(next) {
@@ -747,18 +756,41 @@ var async = require('async'),
 	Groups.acceptMembership = function(groupName, uid, callback) {
 		// Note: For simplicity, this method intentially doesn't check the caller uid for ownership!
 		async.waterfall([
-			function(next) {
-				db.setRemove('group:' + groupName + ':pending', uid, next);
-			},
-			function(next) {
-				Groups.join(groupName, uid, next);
-			}
+			async.apply(db.setRemove, 'group:' + groupName + ':pending', uid),
+			async.apply(db.setRemove, 'group:' + groupName + ':invited', uid),
+			async.apply(Groups.join, groupName, uid)
 		], callback);
 	};
 
 	Groups.rejectMembership = function(groupName, uid, callback) {
 		// Note: For simplicity, this method intentially doesn't check the caller uid for ownership!
-		db.setRemove('group:' + groupName + ':pending', uid, callback);
+		async.parallel([
+			async.apply(db.setRemove, 'group:' + groupName + ':pending', uid),
+			async.apply(db.setRemove, 'group:' + groupName + ':invited', uid)
+		], callback);
+	};
+
+	Groups.invite = function(groupName, uid, callback) {
+		async.parallel({
+			exists: async.apply(Groups.exists, groupName),
+			isMember: async.apply(Groups.isMember, uid, groupName)
+		}, function(err, checks) {
+			if (!checks.exists) {
+				return callback(new Error('[[error:no-group]]'));
+			} else if (checks.isMember) {
+				return callback(new Error('[[error:group-already-member]]'));
+			}
+
+			if (parseInt(uid, 10) > 0) {
+				db.setAdd('group:' + groupName + ':invited', uid, callback);
+				plugins.fireHook('action:group.inviteMember', {
+					groupName: groupName,
+					uid: uid
+				});
+			} else {
+				callback(new Error('[[error:not-logged-in]]'));
+			}
+		});
 	};
 
 	Groups.leave = function(groupName, uid, callback) {

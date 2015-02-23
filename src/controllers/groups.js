@@ -42,7 +42,12 @@ groupsController.details = function(req, res, next) {
 				next(null, true);
 			} else {
 				// If not, only members are granted access
-				groups.isMember(uid, res.locals.groupName, next);
+				async.parallel([
+					async.apply(groups.isMember, uid, res.locals.groupName),
+					async.apply(groups.isInvited, uid, res.locals.groupName)
+				], function(err, checks) {
+					next(err, checks[0] || checks[1]);
+				});
 			}
 		}
 	], function(err, ok) {
