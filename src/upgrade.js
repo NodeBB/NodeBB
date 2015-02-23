@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 1, 24);
+	latestSchema = Date.UTC(2015, 1, 24, 1);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -912,6 +912,33 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2015/02/24] Upgrading plugins:active to sorted set skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 1, 24, 1);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/02/24] Upgrading privilege groups to system groups');
+
+				var isPrivilegeGroup = /^cid:\d+:privileges:[\w:]+$/;
+				db.getSortedSetRange('groups:createtime', 0, -1, function (err, groupNames) {
+					groupNames = groupNames.filter(function(name) {
+						return isPrivilegeGroup.test(name);
+					});
+
+					async.eachLimit(groupNames, 5, function(groupName, next) {
+						db.setObjectField('group:' + groupName, 'system', '1', next);
+					}, function(err) {
+						if (err) {
+							return next(err);
+						}
+						winston.info('[2015/02/24] Upgrading privilege groups to system groups done');
+						Upgrade.update(thisSchemaDate, next);
+					})
+				});
+			} else {
+				winston.info('[2015/02/24] Upgrading privilege groups to system groups skipped');
 				next();
 			}
 		}

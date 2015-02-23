@@ -327,8 +327,8 @@ adminController.extend.rewards = function(req, res, next) {
 adminController.groups.get = function(req, res, next) {
 	groups.list({
 		expand: true,
-		showSystemGroups: true,
-		truncateUserList: true
+		truncateUserList: true,
+		isAdmin: true
 	}, function(err, groups) {
 		groups = groups.filter(function(group) {
 			return group.name !== 'registered-users' && group.name !== 'guests';

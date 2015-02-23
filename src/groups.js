@@ -31,7 +31,7 @@ var async = require('async'),
 						if (!group) {
 							return false;
 						}
-						if (group.deleted || (group.hidden && !group.system && !group.isMember) || (!options.showSystemGroups && group.system)) {
+						if (group.deleted || (group.hidden && !group.system && !group.isMember && !options.isAdmin) || (!options.showSystemGroups && group.system)) {
 							return false;
 						} else if (options.removeEphemeralGroups && ephemeralGroups.indexOf(group.name) !== -1) {
 							return false;
@@ -62,15 +62,7 @@ var async = require('async'),
 
 				return groups;
 			},
-			applyWithName: function(method, args) {
-				// This method takes a slug and reapplies the passed-in call with the proper group name
-				Groups.getGroupNameByGroupSlug(args[0], function(err, groupName) {	// Assuming slug is the first argument
-					// As there is no good way of determining whether the last argument is the callback,
-					// if getGroupNameByGroupSlug fails, we continue assuming the group name is the same as the slug
-					if (!err) { Array.prototype.splice.call(args, 0, 1, groupName); }
-					method.apply(Groups, args);
-				});
-			}
+			isPrivilegeGroup: /^cid:\d+:privileges:[\w:]+$/
 		};
 
 	Groups.list = function(options, callback) {
@@ -80,10 +72,17 @@ var async = require('async'),
 			}
 			groupNames = groupNames.concat(ephemeralGroups);
 
-			async.map(groupNames, function (groupName, next) {
-				Groups.get(groupName, options, next);
-			}, function (err, groups) {
-				callback(err, internals.filterGroups(groups, options));
+			async.parallel({
+				groups: async.apply(async.map, groupNames, function (groupName, next) {
+					Groups.get(groupName, options, next);
+				}),
+				isAdmin: function(next) {
+					if (!options.uid || parseInt(options.uid, 10) === 0) { return next(null, false); }
+					user.isAdministrator(parseInt(options.uid, 10), next);
+				}
+			}, function (err, data) {
+				options.isAdmin = options.isAdmin || data.isAdmin;
+				callback(err, internals.filterGroups(data.groups, options));
 			});
 		});
 	};
@@ -454,7 +453,7 @@ var async = require('async'),
 			return callback(new Error('[[error:group-name-too-short]]'));
 		}
 
-		if (data.name === 'administrators' || data.name === 'registered-users') {
+		if (data.name === 'administrators' || data.name === 'registered-users' || internals.isPrivilegeGroup.test(data.name)) {
 			var system = true;
 		}
 
