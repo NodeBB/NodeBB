@@ -15,11 +15,11 @@ define('ajaxifyCache', function() {
 	Cache.get = function(url) {
 		if (url === Cache.url && ajaxify.isPopState) {
 			// Swap DOM elements
-			setTimeout(function() {
+			// setTimeout(function() {
 				Cache.tempDOM = $('#content > *').detach();
 				$('#content').append(Cache.DOM);
 				Cache.DOM = Cache.tempDOM;
-			}, 100);	// 100ms for realism! :sunglasses:
+			// }, 100);	// 100ms for realism! :sunglasses:
 
 			// Set the values that normally get set on ajaxify
 			Cache.url = ajaxify.currentPage;

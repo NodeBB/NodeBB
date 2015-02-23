@@ -63,6 +63,7 @@ $(document).ready(function() {
 			if (cache.get(url)) { return true; }
 			else {
 				cache.url = ajaxify.currentPage;
+				ajaxify.isPopState = false;
 			}
 
 			$(window).off('scroll');

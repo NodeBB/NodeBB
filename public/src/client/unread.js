@@ -12,6 +12,8 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 	});
 
 	Unread.init = function() {
+		var topicsContainer = $('#topics-container');
+
 		app.enterRoom('recent_posts');
 
 		$('#new-topics-alert').on('click', function() {
@@ -42,7 +44,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 
 				app.alertSuccess('[[unread:topics_marked_as_read.success]]');
 
-				$('#topics-container').empty();
+				topicsContainer.empty();
 				$('#category-no-topics').removeClass('hidden');
 				$('.markread').addClass('hidden');
 			});
@@ -68,11 +70,22 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 			});
 		});
 
+		topicsContainer.on('click', '.topic-title, .replies a', function(e) {
+			var tid = $(e.target).parents('[data-tid]').attr('data-tid');
+			socket.emit('topics.markAsRead', [tid], function(err) {
+				if(err) {
+					return app.alertError(err.message);
+				}
+
+				doneRemovingTids([tid]);
+			});
+		});
+
 		socket.emit('categories.get', onCategoriesLoaded);
 
 		topicSelect.init();
 
-		if ($("body").height() <= $(window).height() && $('#topics-container').children().length >= 20) {
+		if ($("body").height() <= $(window).height() && topicsContainer.children().length >= 20) {
 			$('#load-more-btn').show();
 		}
 
@@ -83,16 +96,16 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 		infinitescroll.init(loadMoreTopics);
 
 		function loadMoreTopics(direction) {
-			if(direction < 0 || !$('#topics-container').length) {
+			if(direction < 0 || !topicsContainer.length) {
 				return;
 			}
 
 			infinitescroll.loadMore('topics.loadMoreUnreadTopics', {
-				after: $('#topics-container').attr('data-nextstart')
+				after: topicsContainer.attr('data-nextstart')
 			}, function(data, done) {
 				if (data.topics && data.topics.length) {
 					recent.onTopicsLoaded('unread', data.topics, true, done);
-					$('#topics-container').attr('data-nextstart', data.nextStart);
+					topicsContainer.attr('data-nextstart', data.nextStart);
 				} else {
 					done();
 					$('#load-more-btn').hide();
@@ -101,10 +114,10 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 		}
 	};
 
-	function doneRemovingTids(tids) {
+	function doneRemovingTids(tids, quiet) {
 		removeTids(tids);
 
-		app.alertSuccess('[[unread:topics_marked_as_read.success]]');
+		if (!quiet) { app.alertSuccess('[[unread:topics_marked_as_read.success]]'); }
 
 		if (!$('#topics-container').children().length) {
 			$('#category-no-topics').removeClass('hidden');
