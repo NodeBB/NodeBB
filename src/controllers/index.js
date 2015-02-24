@@ -16,6 +16,7 @@ var async = require('async'),
 	helpers = require('./helpers');
 
 var Controllers = {
+	posts: require('./posts'),
 	topics: require('./topics'),
 	categories: require('./categories'),
 	tags: require('./tags'),

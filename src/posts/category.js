@@ -13,10 +13,7 @@ module.exports = function(Posts) {
 			},
 			function(tid, next) {
 				topics.getTopicField(tid, 'cid', next);
-			},
-			function(cid, next) {
-				next(!cid ? new Error('[[error:invalid-cid]]') : null, cid);
-			}
+			}			
 		], callback);
 	};
 

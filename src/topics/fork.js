@@ -41,6 +41,10 @@ module.exports = function(Topics) {
 				posts.getCidByPid(mainPid, callback);
 			}
 		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			
 			Topics.create({uid: results.postData.uid, title: title, cid: results.cid}, function(err, tid) {
 				if (err) {
 					return callback(err);
