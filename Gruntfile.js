@@ -7,7 +7,10 @@ module.exports = function(grunt) {
 					script: 'app.js',
 					node_env: 'development',
 					args: ['dev', 'from-file'],
-					output: "NodeBB Ready"
+					output: "NodeBB Ready",
+					interrupt: true,
+					spawn: false,
+					interval: 100
 				}
 			},
 			minifyJS: {
@@ -15,7 +18,10 @@ module.exports = function(grunt) {
 					script: 'app.js',
 					node_env: 'development',
 					args: ['dev', 'minify-js'],
-					output: "NodeBB Ready"
+					output: "NodeBB Ready",
+					interrupt: true,
+					spawn: false,
+					interval: 100
 				}
 			},
 			compileLESS: {
@@ -23,7 +29,10 @@ module.exports = function(grunt) {
 					script: 'app.js',
 					node_env: 'development',
 					args: ['dev', 'compile-less'],
-					output: "NodeBB Ready"
+					output: "NodeBB Ready",
+					interrupt: true,
+					spawn: false,
+					interval: 100
 				}
 			}
 		},
