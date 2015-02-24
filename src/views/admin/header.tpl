@@ -16,100 +16,100 @@
 	</script>
 
 	<!--[if lt IE 9]>
-  		<script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/2.3.0/es5-shim.min.js"></script>
-  		<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
-  		<script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
-	    <script>__lt_ie_9__ = 1;</script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/2.3.0/es5-shim.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
+		<script>__lt_ie_9__ = 1;</script>
 	<![endif]-->
 
-	<script type="text/javascript" src="{relative_path}/vendor/chart.js/chart.min.js?{cache-buster}"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/hammer/hammer.min.js?{cache-buster}"></script>
-	<script type="text/javascript" src="{relative_path}/nodebb.min.js?{cache-buster}"></script>
-	<script>
-		require.config({
-			baseUrl: "{relative_path}/src/modules",
-			waitSeconds: 3,
-			urlArgs: "{cache-buster}",
-			paths: {
-				'admin': '../admin',
-				'vendor': '../../vendor',
-				'buzz': '../../vendor/buzz/buzz.min'
-			}
-		});
+		<script type="text/javascript" src="{relative_path}/vendor/chart.js/chart.min.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/vendor/hammer/hammer.min.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/nodebb.min.js?{cache-buster}"></script>
+		<script>
+			require.config({
+				baseUrl: "{relative_path}/src/modules",
+				waitSeconds: 3,
+				urlArgs: "{cache-buster}",
+				paths: {
+					'admin': '../admin',
+					'vendor': '../../vendor',
+					'buzz': '../../vendor/buzz/buzz.min'
+				}
+			});
 
-		app.inAdmin = true;
-	</script>
-	<script type="text/javascript" src="{relative_path}/vendor/colorpicker/colorpicker.js?{cache-buster}"></script>
-	<script type="text/javascript" src="{relative_path}/src/admin/admin.js?{cache-buster}"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/ace/ace.js?{cache-buster}"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/nanoscroller/nanoscroller.min.js?{cache-buster}"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/jquery/event/jquery.event.drag.js?{cache-buster}"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/jquery/event/jquery.event.drop.js?{cache-buster}"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/semver/semver.browser.js?{cache-buster}"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js?{cache-buster}"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/jquery/deserialize/jquery.deserialize.min.js?{cache-buster}"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/mousetrap/mousetrap.js?{cache-buster}"></script>
+			app.inAdmin = true;
+		</script>
+		<script type="text/javascript" src="{relative_path}/vendor/colorpicker/colorpicker.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/src/admin/admin.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/vendor/ace/ace.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/vendor/nanoscroller/nanoscroller.min.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/vendor/jquery/event/jquery.event.drag.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/vendor/jquery/event/jquery.event.drop.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/vendor/semver/semver.browser.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/vendor/jquery/deserialize/jquery.deserialize.min.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/vendor/mousetrap/mousetrap.js?{cache-buster}"></script>
 
-	<!-- BEGIN scripts -->
-	<script type="text/javascript" src="{scripts.src}"></script>
-	<!-- END scripts -->
-</head>
+		<!-- BEGIN scripts -->
+		<script type="text/javascript" src="{scripts.src}"></script>
+		<!-- END scripts -->
+	</head>
 
-<body class="admin">
-	<nav class="navbar navbar-inverse navbar-fixed-top header">
-		<div class="container">
-			<div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand nodebb-logo" href="{relative_path}/admin/general/dashboard"><img src="{relative_path}/images/logo.png" alt="NodeBB ACP" /> Admin Control Panel <span id="breadcrumbs" class="hidden-xs"></span></a>
-                <ul class="nav navbar-nav pull-left">
-                    <li>
-                        <a href="#" id="reconnect"></a>
-                    </li>
-                </ul>
+	<body class="admin">
+		<nav class="navbar navbar-inverse navbar-fixed-top header">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand nodebb-logo" href="{relative_path}/admin/general/dashboard"><img src="{relative_path}/images/logo.png" alt="NodeBB ACP" /> Admin Control Panel <span id="breadcrumbs" class="hidden-xs"></span></a>
+					<ul class="nav navbar-nav pull-left">
+						<li>
+							<a href="#" id="reconnect"></a>
+						</li>
+					</ul>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul id="logged-in-menu" class="navbar-nav nav navbar-right pull-right">
+						<li style="float:left;">
+							<form class="navbar-form hidden-xs" role="search">
+								<div class="form-group" id="acp-search" >
+									<div class="dropdown" >
+										<input type="text" data-toggle="dropdown" class="form-control" placeholder="/">
+										<ul class="dropdown-menu" role="menu"></ul>
+									</div>
+								</div>
+							</form>
+						</li>
+						<li id="user_label" class="dropdown pull-right">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
+								<img src="{user.picture}"/>
+							</a>
+							<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
+								<li>
+									<a id="user-profile-link" href="{relative_path}/user/{user.userslug}" target="_top"><span>Profile</span></a>
+								</li>
+								<li id="logout-link">
+									<a href="#">Log out</a>
+								</li>
+							</ul>
+						</li>
+						<li class="nav-home pull-right">
+							<a href="{relative_path}/" target="_blank" title="Open forum homepage" data-original-title="Open forum homepage">
+								<i class="fa fa-home fa-fw"></i>
+							</a>
+						</li>
+					</ul>
+				</div>
 			</div>
-            <div class="navbar-collapse collapse">
-                <ul id="logged-in-menu" class="navbar-nav nav navbar-right pull-right">
-                    <li style="float:left;">
-                        <form class="navbar-form hidden-xs" role="search">
-                            <div class="form-group" id="acp-search" >
-                                <div class="dropdown" >
-                                    <input type="text" data-toggle="dropdown" class="form-control" placeholder="/">
-                                    <ul class="dropdown-menu" role="menu"></ul>
-                                </div>
-                            </div>
-                        </form>
-                    </li>
-                    <li id="user_label" class="dropdown pull-right">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
-                            <img src="{user.picture}"/>
-                        </a>
-                        <ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
-                            <li>
-                                <a id="user-profile-link" href="{relative_path}/user/{user.userslug}" target="_top"><span>Profile</span></a>
-                            </li>
-                            <li id="logout-link">
-                                <a href="#">Log out</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-home pull-right">
-                        <a href="{relative_path}/" target="_blank" title="Open forum homepage" data-original-title="Open forum homepage">
-                            <i class="fa fa-home fa-fw"></i>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-		</div>
-	</nav>
+		</nav>
 
-	<div class="wrapper">
-		<div id="main-menu" class="nano">
-			<div class="nano-content">
-			<!-- IMPORT admin/partials/menu.tpl -->
+		<div class="wrapper">
+			<div id="main-menu" class="nano">
+				<div class="nano-content">
+					<!-- IMPORT admin/partials/menu.tpl -->
+				</div>
 			</div>
-		</div>
-		<div class="col-sm-12" id="content">
+			<div class="col-sm-12" id="content">
