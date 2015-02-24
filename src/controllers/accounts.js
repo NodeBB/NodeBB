@@ -22,8 +22,7 @@ var fs = require('fs'),
 	languages = require('../languages'),
 	image = require('../image'),
 	file = require('../file'),
-	helpers = require('./helpers'),
-	websockets = require('../socket.io');
+	helpers = require('./helpers');
 
 function getUserDataByUserSlug(userslug, callerUID, callback) {
 	user.getUidByUserslug(userslug, function(err, uid) {
@@ -91,7 +90,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
 			userData.profile_links = results.profile_links;
-			userData.status = websockets.isUserOnline(userData.uid) ? (userData.status || 'online') : 'offline';
+			userData.status = require('../socket.io').isUserOnline(userData.uid) ? (userData.status || 'online') : 'offline';
 			userData.banned = parseInt(userData.banned, 10) === 1;
 			userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
 			userData.followingCount = parseInt(userData.followingCount, 10) || 0;
@@ -376,33 +375,26 @@ accountsController.accountSettings = function(req, res, next) {
 accountsController.uploadPicture = function (req, res, next) {
 	var userPhoto = req.files.files[0];
 	var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
-
-	if (userPhoto.size > uploadSize * 1024) {
-		fs.unlink(userPhoto.path);
-		return next(new Error('[[error:file-too-big, ' + uploadSize + ']]'));
-	}
-
-	var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
-	if (allowedTypes.indexOf(userPhoto.type) === -1) {
-		fs.unlink(userPhoto.path);
-		return next(new Error('[[error:invalid-image-type, ' + allowedTypes.join(', ') + ']]'));
-	}
-
 	var extension = path.extname(userPhoto.name);
-	if (!extension) {
-		fs.unlink(userPhoto.path);
-		return next(new Error('[[error:invalid-image-extension]]'));
-	}
-
 	var updateUid = req.user ? req.user.uid : 0;
 	var imageDimension = parseInt(meta.config.profileImageDimension, 10) || 128;
+	var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1;
 
 	async.waterfall([
+		function(next) {
+			next(userPhoto.size > uploadSize * 1024 ? new Error('[[error:file-too-big, ' + uploadSize + ']]') : null);
+		},
+		function(next) {
+			next(!extension ? new Error('[[error:invalid-image-extension]]') : null);
+		},
+		function(next) {
+			file.isFileTypeAllowed(userPhoto.path, ['png', 'jpeg', 'jpg', 'gif'], next);
+		},
 		function(next) {
 			image.resizeImage(userPhoto.path, extension, imageDimension, imageDimension, next);
 		},
 		function(next) {
-			if (parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1) {
+			if (convertToPNG) {
 				image.convertImageToPng(userPhoto.path, extension, next);
 			} else {
 				next();
@@ -412,7 +404,7 @@ accountsController.uploadPicture = function (req, res, next) {
 			user.getUidByUserslug(req.params.userslug, next);
 		},
 		function(uid, next) {
-			if(parseInt(updateUid, 10) === parseInt(uid, 10)) {
+			if (parseInt(updateUid, 10) === parseInt(uid, 10)) {
 				return next();
 			}
 
@@ -450,7 +442,6 @@ accountsController.uploadPicture = function (req, res, next) {
 			return plugins.fireHook('filter:uploadImage', {image: userPhoto, uid: updateUid}, done);
 		}
 
-		var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1;
 		var filename = updateUid + '-profileimg' + (convertToPNG ? '.png' : extension);
 
 		user.getUserField(updateUid, 'uploadedpicture', function (err, oldpicture) {
@@ -524,7 +515,7 @@ accountsController.getChats = function(req, res, next) {
 				if (!toUid || parseInt(toUid, 10) === parseInt(req.user.uid, 10)) {
 					return helpers.notFound(req, res);
 				}
-				
+
 				async.parallel({
 					toUser: async.apply(user.getUserFields, toUid, ['uid', 'username']),
 					messages: async.apply(messaging.getMessages, req.user.uid, toUid, 'recent', false),

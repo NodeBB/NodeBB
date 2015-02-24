@@ -422,10 +422,14 @@ function enableDefaultPlugins(next) {
 		'nodebb-plugin-markdown',
 		'nodebb-plugin-mentions',
 		'nodebb-widget-essentials',
+		'nodebb-rewards-essentials',
 		'nodebb-plugin-soundpack-default'
 	];
 	var	db = require('./database');
-	db.setAdd('plugins:active', defaultEnabled, next);
+	var order = defaultEnabled.map(function(plugin, index) {
+		return index;
+	});
+	db.sortedSetAdd('plugins:active', order, defaultEnabled, next);
 }
 
 function setCopyrightWidget(next) {

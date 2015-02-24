@@ -2,7 +2,6 @@
 
 var winston = require('winston'),
 	async = require('async'),
-	npm = require('npm'),
 	path = require('path'),
 	fs = require('fs'),
 	nconf = require('nconf'),
@@ -38,7 +37,16 @@ module.exports = function(Plugins) {
 			},
 			function(_isActive, next) {
 				isActive = _isActive;
-				db[isActive ? 'setRemove' : 'setAdd']('plugins:active', id, next);
+				if (isActive) {
+					db.sortedSetRemove('plugins:active', id, next);
+				} else {
+					db.sortedSetCard('plugins:active', function(err, count) {
+						if (err) {
+							return next(err);
+						}
+						db.sortedSetAdd('plugins:active', count, id, next);	
+					});				
+				}
 			},
 			function(next) {
 				meta.reloadRequired = true;
@@ -79,10 +87,10 @@ module.exports = function(Plugins) {
 					next();
 				},
 				function(next) {
-					npm.load({}, next);
+					require('npm').load({}, next);
 				},
 				function(res, next) {
-					npm.commands[type](installed ? id : [id + '@' + (version || 'latest')], next);
+					require('npm').commands[type](installed ? id : [id + '@' + (version || 'latest')], next);
 				}
 			], function(err) {
 				if (err) {
@@ -102,10 +110,10 @@ module.exports = function(Plugins) {
 	function upgrade(id, version, callback) {
 		async.waterfall([
 			function(next) {
-				npm.load({}, next);
+				require('npm').load({}, next);
 			},
 			function(res, next) {
-				npm.commands.install([id + '@' + (version || 'latest')], next);
+				require('npm').commands.install([id + '@' + (version || 'latest')], next);
 			}
 		], callback);
 	}
@@ -119,6 +127,10 @@ module.exports = function(Plugins) {
 	};
 
 	Plugins.isActive = function(id, callback) {
-		db.isSetMember('plugins:active', id, callback);
+		db.isSortedSetMember('plugins:active', id, callback);
+	};
+
+	Plugins.getActive = function(callback) {
+		db.getSortedSetRange('plugins:active', 0, -1, callback);
 	};
 };

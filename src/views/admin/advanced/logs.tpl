@@ -8,7 +8,7 @@
 		</div>
 	</div>
 	<div class="col-lg-3 acp-sidebar">
-		<div class="panel panel-default affix">
+		<div class="panel panel-default">
 			<div class="panel-heading">Logs Control Panel</div>
 			<div class="panel-body">
 				<button class="btn btn-primary" data-action="reload"><i class="fa fa-refresh"></i> Reload Logs</button>

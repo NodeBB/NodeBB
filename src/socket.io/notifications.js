@@ -24,6 +24,10 @@ SocketNotifs.markRead = function(socket, nid, callback) {
 	notifications.markRead(nid, socket.uid, callback);
 };
 
+SocketNotifs.markUnread = function(socket, nid, callback) {
+	notifications.markUnread(nid, socket.uid, callback);
+};
+
 SocketNotifs.markAllRead = function(socket, data, callback) {
 	notifications.markAllRead(socket.uid, callback);
 };

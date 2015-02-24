@@ -70,6 +70,10 @@ app.cacheBuster = null;
 				window.location.href = config.relative_path + '/';
 			}, 1000);
 		});
+
+		socket.on('event:alert', function(data) {
+			app.alert(data);
+		});
 	}
 
 	function onSocketConnect(data) {
@@ -566,7 +570,21 @@ app.cacheBuster = null;
 	};
 
 	function showEmailConfirmWarning() {
-		if (config.requireEmailConfirmation && app.user.uid && !app.user['email:confirmed']) {
+		if (!config.requireEmailConfirmation || !app.user.uid) {
+			return;
+		}
+		if (!app.user.email) {
+			app.alert({
+				alert_id: 'email_confirm',
+				message: '[[error:no-email-to-confirm]]',
+				type: 'warning',
+				timeout: 0,
+				clickfn: function() {
+					app.removeAlert('email_confirm');
+					ajaxify.go('user/' + app.user.userslug + '/edit');
+				}
+			});
+		} else if (!app.user['email:confirmed']) {
 			app.alert({
 				alert_id: 'email_confirm',
 				message: '[[error:email-not-confirmed]]',

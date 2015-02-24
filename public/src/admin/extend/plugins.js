@@ -93,6 +93,38 @@ define('admin/extend/plugins', function() {
 				$(this).toggleClass('hide', pluginId && pluginId.indexOf(term) === -1);
 			});
 		});
+
+		$('#plugin-order').on('click', function() {
+			$('#order-active-plugins-modal').modal('show');
+			socket.emit('admin.plugins.getActive', function(err, activePlugins) {
+				if (err) {
+					return app.alertError(err);
+				}
+				var html = '';
+				activePlugins.forEach(function(plugin) {
+					html += '<li class="">' + plugin + '</li>';
+				});
+				if (!activePlugins.length) {
+					html = 'No Active Plugins';
+				}
+				$('#order-active-plugins-modal .plugin-list').html(html).sortable();
+			});
+		});
+
+		$('#save-plugin-order').on('click', function() {
+			var plugins = $('#order-active-plugins-modal .plugin-list').children();
+			var data = [];
+			plugins.each(function(index, el) {
+				data.push({name: $(el).text(), order: index});
+			});
+
+			socket.emit('admin.plugins.orderActivePlugins', data, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				$('#order-active-plugins-modal').modal('hide');
+			});
+		});
 	};
 
 	function confirmInstall(pluginID, callback) {

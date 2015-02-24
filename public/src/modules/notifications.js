@@ -21,7 +21,7 @@ define('notifications', ['sounds'], function(sound) {
 				if (err) {
 					return app.alertError(err.message);
 				}
-				
+
 				var notifs = data.unread.concat(data.read);
 
 				translator.toggleTimeagoShorthand();
@@ -29,14 +29,16 @@ define('notifications', ['sounds'], function(sound) {
 					notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
 				}
 				translator.toggleTimeagoShorthand();
-				
+
 				templates.parse('partials/notifications_list', {notifications: notifs}, function(html) {
 					notifList.translateHtml(html);
 				});
-			});			
+			});
 		});
 
 		notifList.on('click', '[data-nid]', function() {
+			var nid = this.getAttribute('data-nid');
+
 			socket.emit('notifications.markRead', nid, function(err) {
 				if (err) {
 					app.alertError(err.message);
@@ -53,6 +55,25 @@ define('notifications', ['sounds'], function(sound) {
 			});
 		});
 
+		notifList.on('click', '.mark-read', function(e) {
+			var anchorEl = $(this.parentNode),
+				parentEl = anchorEl.parent(),
+				nid = anchorEl.attr('data-nid'),
+				unread = parentEl.hasClass('unread');
+
+			e.preventDefault();
+			e.stopPropagation();
+
+			socket.emit('notifications.mark' + (unread ? 'Read' : 'Unread'), nid, function(err) {
+				if (err) {
+					app.alertError(err.message);
+				}
+
+				parentEl.toggleClass('unread');
+				increaseNotifCount(unread ? -1 : 1);
+			});
+		});
+
 		function updateNotifCount(count) {
 			if (count > 0) {
 				notifIcon.removeClass('fa-bell-o').addClass('fa-bell');
@@ -66,8 +87,8 @@ define('notifications', ['sounds'], function(sound) {
 			Tinycon.setBubble(count);
 		};
 
-		function increaseNotifCount() {
-			var count = parseInt(notifIcon.attr('data-content'), 10) + 1;
+		function increaseNotifCount(delta) {
+			var count = parseInt(notifIcon.attr('data-content'), 10) + delta;
 			updateNotifCount(count);
 		}
 
@@ -93,7 +114,7 @@ define('notifications', ['sounds'], function(sound) {
 				ajaxify.refresh();
 			}
 
-			increaseNotifCount();
+			increaseNotifCount(1);
 
 			sound.play('notification');
 		});

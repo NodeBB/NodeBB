@@ -278,9 +278,10 @@ Sockets.getUsersInRoom = function (uid, roomName, callback) {
 	var	uids = Sockets.getUidsInRoom(roomName);
 	var total = uids.length;
 	uids = uids.slice(0, 9);
-	if (uid) {
+	if (uid && uids.indexOf(uid.toString()) === -1) {
 		uids = [uid].concat(uids);
 	}
+
 	if (!uids.length) {
 		return callback(null, {users: [], total: 0 , room: roomName});
 	}

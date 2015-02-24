@@ -40,13 +40,14 @@ middleware.buildHeader = function(req, res, next) {
 				'authentication': []
 			};
 
-			user.getUserFields(uid, ['username', 'userslug', 'picture', 'email:confirmed'], function(err, userData) {
+			user.getUserFields(uid, ['username', 'userslug', 'email', 'picture', 'email:confirmed'], function(err, userData) {
 				if (err) {
 					return next(err);
 				}
 
 				userData.uid = uid;
-
+				userData['email:confirmed'] = parseInt(userData['email:confirmed'], 10) === 1;
+				
 				async.parallel({
 					scripts: function(next) {
 						plugins.fireHook('filter:admin.scripts.get', [], function(err, scripts) {
@@ -72,16 +73,15 @@ middleware.buildHeader = function(req, res, next) {
 						return next(err);
 					}
 					res.locals.config = results.config;
+
 					var data = {
 						relative_path: nconf.get('relative_path'),
 						configJSON: JSON.stringify(results.config),
+						user: userData,
 						userJSON: JSON.stringify(userData),
 						plugins: results.custom_header.plugins,
 						authentication: results.custom_header.authentication,
 						scripts: results.scripts,
-						userpicture: userData.picture,
-						username: userData.username,
-						userslug: userData.userslug,
 						'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 						env: process.env.NODE_ENV ? true : false
 					};

@@ -94,6 +94,12 @@ module.exports = function(redisClient, module) {
 		});
 	};
 
+	module.deleteObjectFields = function(key, fields, callback) {
+		helpers.multiKeyValues(redisClient, 'hdel', key, fields, function(err, results) {
+			callback(err);
+		});
+	};
+
 	module.incrObjectField = function(key, field, callback) {
 		redisClient.hincrby(key, field, 1, callback);
 	};

@@ -1,11 +1,20 @@
 "use strict";
 /*global define, socket, app, admin, utils, bootbox, RELATIVE_PATH*/
 
-define('admin/manage/flags', ['forum/infinitescroll', 'admin/modules/selectable'], function(infinitescroll, selectable) {
+define('admin/manage/flags', [
+	'forum/infinitescroll', 
+	'admin/modules/selectable', 
+	'autocomplete'
+], function(infinitescroll, selectable, autocomplete) {
+
 	var	Flags = {};
 
 	Flags.init = function() {
 		$('.post-container .content img').addClass('img-responsive');
+
+		var params = utils.params();
+		$('#flag-sort-by').val(params.sortBy);
+		autocomplete.user($('#byUsername'));
 
 		handleDismiss();
 		handleDismissAll();
@@ -69,8 +78,15 @@ define('admin/manage/flags', ['forum/infinitescroll', 'admin/modules/selectable'
 			if (direction < 0 && !$('.flags').length) {
 				return;
 			}
+			var params = utils.params();
+			var sortBy = params.sortBy || 'count';
+			var byUsername = params.byUsername || '';
 
-			infinitescroll.loadMore('admin.getMoreFlags', $('[data-next]').attr('data-next'), function(data, done) {
+			infinitescroll.loadMore('admin.getMoreFlags', {
+				byUsername: byUsername,
+				sortBy: sortBy,
+				after: $('[data-next]').attr('data-next')
+			}, function(data, done) {
 				if (data.posts && data.posts.length) {
 					infinitescroll.parseAndTranslate('admin/manage/flags', 'posts', {posts: data.posts}, function(html) {
 						$('[data-next]').attr('data-next', data.next);

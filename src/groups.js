@@ -31,7 +31,7 @@ var async = require('async'),
 						if (!group) {
 							return false;
 						}
-						if (group.deleted || (group.hidden && !group.system) || (!options.showSystemGroups && group.system)) {
+						if (group.deleted || (group.hidden && !(group.system || group.isMember || options.isAdmin || group.isInvited)) || (!options.showSystemGroups && group.system)) {
 							return false;
 						} else if (options.removeEphemeralGroups && ephemeralGroups.indexOf(group.name) !== -1) {
 							return false;
@@ -43,20 +43,14 @@ var async = require('async'),
 					return groups;
 				}
 			},
-			getEphemeralGroup: function(groupName, options, callback) {
-				Groups.exists(groupName, function(err, exists) {
-					if (!err && exists) {
-						Groups.get.apply(null, arguments);
-					} else {
-						callback(null, {
-							name: groupName,
-							description: '',
-							deleted: '0',
-							hidden: '0',
-							system: '1'
-						});
-					}
-				});
+			getEphemeralGroup: function(groupName) {
+				return {
+					name: groupName,
+					description: '',
+					deleted: '0',
+					hidden: '0',
+					system: '1'
+				};
 			},
 			removeEphemeralGroups: function(groups) {
 				var x = groups.length;
@@ -67,12 +61,8 @@ var async = require('async'),
 				}
 
 				return groups;
-			}/*,
-			fixImageUrl: function(url) {
-				if (url) {
-					return url.indexOf('http') === -1 ? nconf.get('relative_path') + url : url;
-				}
-			}*/
+			},
+			isPrivilegeGroup: /^cid:\d+:privileges:[\w:]+$/
 		};
 
 	Groups.list = function(options, callback) {
@@ -82,10 +72,17 @@ var async = require('async'),
 			}
 			groupNames = groupNames.concat(ephemeralGroups);
 
-			async.map(groupNames, function (groupName, next) {
-				Groups.get(groupName, options, next);
-			}, function (err, groups) {
-				callback(err, internals.filterGroups(groups, options));
+			async.parallel({
+				groups: async.apply(async.map, groupNames, function (groupName, next) {
+					Groups.get(groupName, options, next);
+				}),
+				isAdmin: function(next) {
+					if (!options.uid || parseInt(options.uid, 10) === 0) { return next(null, false); }
+					user.isAdministrator(parseInt(options.uid, 10), next);
+				}
+			}, function (err, data) {
+				options.isAdmin = options.isAdmin || data.isAdmin;
+				callback(err, internals.filterGroups(data.groups, options));
 			});
 		});
 	};
@@ -103,7 +100,7 @@ var async = require('async'),
 				if (ephemeralGroups.indexOf(groupName) === -1) {
 					db.getObject('group:' + groupName, next);
 				} else {
-					internals.getEphemeralGroup(groupName, options, next);
+					next(null, internals.getEphemeralGroup(groupName));
 				}
 			},
 			users: function (next) {
@@ -182,6 +179,7 @@ var async = require('async'),
 
 				db.isSetMember('group:' + groupName + ':pending', options.uid, next);
 			},
+			isInvited: async.apply(Groups.isInvited, options.uid, groupName),
 			isOwner: function(next) {
 				// Retrieve group ownership state, if uid is passed in
 				if (!options.uid) {
@@ -210,28 +208,35 @@ var async = require('async'),
 				results.base['cover:position'] = '50% 50%';
 			}
 
-			results.base.name = validator.escape(results.base.name);
-			results.base.description = validator.escape(results.base.description);
-			results.base.userTitle = validator.escape(results.base.userTitle);
-			results.base.createtimeISO = utils.toISOString(results.base.createtime);
-			results.base.members = results.users.filter(Boolean);
-			results.base.pending = results.pending.filter(Boolean);
-			results.base.count = numUsers || results.base.members.length;
-			results.base.memberCount = numUsers || results.base.members.length;
-			results.base.deleted = !!parseInt(results.base.deleted, 10);
-			results.base.hidden = !!parseInt(results.base.hidden, 10);
-			results.base.system = !!parseInt(results.base.system, 10);
-			results.base.private = results.base.private ? !!parseInt(results.base.private, 10) : true;
-			results.base.deletable = !results.base.system;
-			results.base.truncated = truncated;
-			results.base.isMember = results.isMember;
-			results.base.isPending = results.isPending;
-			results.base.isOwner = results.isOwner;
+			plugins.fireHook('filter:parse.raw', results.base.description, function(err, descriptionParsed) {
+				if (err) {
+					return callback(err);
+				}
+				results.base.name = validator.escape(results.base.name);
+				results.base.description = validator.escape(results.base.description);
+				results.base.descriptionParsed = descriptionParsed;
+				results.base.userTitle = validator.escape(results.base.userTitle);
+				results.base.createtimeISO = utils.toISOString(results.base.createtime);
+				results.base.members = results.users.filter(Boolean);
+				results.base.pending = results.pending.filter(Boolean);
+				results.base.count = numUsers || results.base.members.length;
+				results.base.memberCount = numUsers || results.base.members.length;
+				results.base.deleted = !!parseInt(results.base.deleted, 10);
+				results.base.hidden = !!parseInt(results.base.hidden, 10);
+				results.base.system = !!parseInt(results.base.system, 10);
+				results.base.private = results.base.private ? !!parseInt(results.base.private, 10) : true;
+				results.base.deletable = !results.base.system;
+				results.base.truncated = truncated;
+				results.base.isMember = results.isMember;
+				results.base.isPending = results.isPending;
+				results.base.isInvited = results.isInvited;
+				results.base.isOwner = results.isOwner;
 
 
-			plugins.fireHook('filter:group.get', {group: results.base}, function(err, data) {
-				callback(err, data ? data.group : null);
-			});
+				plugins.fireHook('filter:group.get', {group: results.base}, function(err, data) {
+					callback(err, data ? data.group : null);
+				});	
+			});			
 		});
 	};
 
@@ -269,6 +274,17 @@ var async = require('async'),
 			}
 
 			callback(err, isPrivate);	// Private, if not set at all
+		});
+	};
+
+	Groups.isHidden = function(groupName, callback) {
+		Groups.getGroupFields(groupName, ['hidden'], function(err, values) {
+			if (err) {
+				winston.warn('[groups.isHidden] Could not determine group hidden state (group: ' + groupName + ')');
+				return callback(null, true);	// Default true
+			}
+
+			callback(null, parseInt(values.hidden, 10));
 		});
 	};
 
@@ -394,12 +410,22 @@ var async = require('async'),
 		});
 	};
 
+	Groups.isInvited = function(uid, groupName, callback) {
+		if (!uid) { return callback(null, false); }
+		db.isSetMember('group:' + groupName + ':invited', uid, callback);
+	};
+
 	Groups.exists = function(name, callback) {
 		if (Array.isArray(name)) {
 			var slugs = name.map(function(groupName) {
 					return utils.slugify(groupName);
 				});
 			async.parallel([
+				function(next) {
+					callback(null, slugs.map(function(slug) {
+						return ephemeralGroups.indexOf(slug) !== -1;
+					}));
+				},
 				async.apply(db.isObjectFields, 'groupslug:groupname', slugs),
 				async.apply(db.isSortedSetMembers, 'groups:createtime', name)
 			], function(err, results) {
@@ -407,17 +433,20 @@ var async = require('async'),
 					return callback(err);
 				}
 
-				callback(null, results.map(function(pair) {
-					return pair[0] || pair[1];
+				callback(null, results.map(function(result) {
+					return result[0] || result[1] || result[2];
 				}));
 			});
 		} else {
 			var slug = utils.slugify(name);
 			async.parallel([
+				function(next) {
+					next(null, ephemeralGroups.indexOf(slug) !== -1);
+				},
 				async.apply(db.isObjectField, 'groupslug:groupname', slug),
 				async.apply(db.isSortedSetMember, 'groups:createtime', name)
 			], function(err, results) {
-				callback(err, !err ? (results[0] || results[1]) : null);
+				callback(err, !err ? (results[0] || results[1] || results[2]) : null);
 			});
 		}
 	};
@@ -431,7 +460,7 @@ var async = require('async'),
 			return callback(new Error('[[error:group-name-too-short]]'));
 		}
 
-		if (data.name === 'administrators' || data.name === 'registered-users') {
+		if (data.name === 'administrators' || data.name === 'registered-users' || internals.isPrivilegeGroup.test(data.name)) {
 			var system = true;
 		}
 
@@ -499,7 +528,7 @@ var async = require('async'),
 					description: values.description || '',
 					icon: values.icon || '',
 					labelColor: values.labelColor || '#000000',
-					hidden: values.hidden || '0',
+					hidden: values.hidden === true ? '1' : '0',
 					'private': values.private === false ? '0' : '1'
 				};
 
@@ -585,6 +614,7 @@ var async = require('async'),
 					async.apply(db.rename, 'group:' + oldName + ':members', 'group:' + newName + ':members'),
 					async.apply(db.rename, 'group:' + oldName + ':owners', 'group:' + newName + ':owners'),
 					async.apply(db.rename, 'group:' + oldName + ':pending', 'group:' + newName + ':pending'),
+					async.apply(db.rename, 'group:' + oldName + ':invited', 'group:' + newName + ':invited'),
 					async.apply(renameGroupMember, 'groups:createtime', oldName, newName),
 					function(next) {
 						plugins.fireHook('action:group.rename', {
@@ -629,6 +659,7 @@ var async = require('async'),
 				async.apply(db.sortedSetRemove, 'groups:createtime', groupName),
 				async.apply(db.delete, 'group:' + groupName + ':members'),
 				async.apply(db.delete, 'group:' + groupName + ':pending'),
+				async.apply(db.delete, 'group:' + groupName + ':invited'),
 				async.apply(db.delete, 'group:' + groupName + ':owners'),
 				async.apply(db.deleteObjectField, 'groupslug:groupname', utils.slugify(groupName)),
 				function(next) {
@@ -725,18 +756,41 @@ var async = require('async'),
 	Groups.acceptMembership = function(groupName, uid, callback) {
 		// Note: For simplicity, this method intentially doesn't check the caller uid for ownership!
 		async.waterfall([
-			function(next) {
-				db.setRemove('group:' + groupName + ':pending', uid, next);
-			},
-			function(next) {
-				Groups.join(groupName, uid, next);
-			}
+			async.apply(db.setRemove, 'group:' + groupName + ':pending', uid),
+			async.apply(db.setRemove, 'group:' + groupName + ':invited', uid),
+			async.apply(Groups.join, groupName, uid)
 		], callback);
 	};
 
 	Groups.rejectMembership = function(groupName, uid, callback) {
 		// Note: For simplicity, this method intentially doesn't check the caller uid for ownership!
-		db.setRemove('group:' + groupName + ':pending', uid, callback);
+		async.parallel([
+			async.apply(db.setRemove, 'group:' + groupName + ':pending', uid),
+			async.apply(db.setRemove, 'group:' + groupName + ':invited', uid)
+		], callback);
+	};
+
+	Groups.invite = function(groupName, uid, callback) {
+		async.parallel({
+			exists: async.apply(Groups.exists, groupName),
+			isMember: async.apply(Groups.isMember, uid, groupName)
+		}, function(err, checks) {
+			if (!checks.exists) {
+				return callback(new Error('[[error:no-group]]'));
+			} else if (checks.isMember) {
+				return callback(new Error('[[error:group-already-member]]'));
+			}
+
+			if (parseInt(uid, 10) > 0) {
+				db.setAdd('group:' + groupName + ':invited', uid, callback);
+				plugins.fireHook('action:group.inviteMember', {
+					groupName: groupName,
+					uid: uid
+				});
+			} else {
+				callback(new Error('[[error:not-logged-in]]'));
+			}
+		});
 	};
 
 	Groups.leave = function(groupName, uid, callback) {
@@ -790,12 +844,9 @@ var async = require('async'),
 		});
 	};
 
-	Groups.getLatestMemberPosts = function(groupSlug, max, uid, callback) {
+	Groups.getLatestMemberPosts = function(groupName, max, uid, callback) {
 		async.waterfall([
-			async.apply(Groups.getGroupNameByGroupSlug, groupSlug),
-			function(groupName, next) {
-				Groups.getMembers(groupName, 0, -1, next);
-			},
+			async.apply(Groups.getMembers, groupName, 0, -1),
 			function(uids, next) {
 				if (!Array.isArray(uids) || !uids.length) {
 					return callback(null, []);
@@ -814,40 +865,58 @@ var async = require('async'),
 		], callback);
 	};
 
+	Groups.getGroupsData = function(groupNames, callback) {
+		if (!Array.isArray(groupNames) || !groupNames.length) {
+			return callback(null, []);
+		}
+		var keys = groupNames.map(function(groupName) {
+			return 'group:' + groupName;
+		});
+
+		db.getObjects(keys, function(err, groupData) {
+			if (err) {
+				return callback(err);
+			}
+			groupData = groupData.map(function(group) {
+				if (group) {
+					group.labelColor = group.labelColor || '#000000';
+					group.createtimeISO = utils.toISOString(group.createtime);
+					group.hidden = parseInt(group.hidden, 10) === 1;
+
+					if (!group['cover:url']) {
+						group['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';
+						group['cover:position'] = '50% 50%';
+					}
+				}
+				return group;
+			});
+			
+			plugins.fireHook('filter:groups.get', {groups: groupData}, function(err, data) {
+				callback(err, data ? data.groups : null);	
+			});			
+		});
+	};
+
 	Groups.getUserGroups = function(uids, callback) {
 		db.getSortedSetRevRange('groups:createtime', 0, -1, function(err, groupNames) {
 			if (err) {
 				return callback(err);
 			}
 
-			var groupKeys = groupNames.filter(function(groupName) {
+			groupNames = groupNames.filter(function(groupName) {
 				return groupName !== 'registered-users' && groupName.indexOf(':privileges:') === -1;
-			}).map(function(groupName) {
-				return 'group:' + groupName;
 			});
 
-			db.getObjects(groupKeys, function(err, groupData) {
+			Groups.getGroupsData(groupNames, function(err, groupData) {
 				if (err) {
 					return callback(err);
 				}
 
 				groupData = groupData.filter(function(group) {
-					return parseInt(group.hidden, 10) !== 1 && !!group.userTitle;
-				}).map(function(group) {
-					group.createtimeISO = utils.toISOString(group.createtime);
-					return group;
+					return group && parseInt(group.hidden, 10) !== 1 && !!group.userTitle;
 				});
 
-
 				var groupSets = groupData.map(function(group) {
-					group.labelColor = group.labelColor || '#000000';
-					group.createtimeISO = utils.toISOString(group.createtime);
-
-					if (!group['cover:url']) {
-						group['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';
-						group['cover:position'] = '50% 50%';
-					}
-
 					return 'group:' + group.name + ':members';
 				});
 

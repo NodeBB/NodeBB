@@ -6,7 +6,6 @@ var async = require('async'),
 	user = require('../user'),
 	groups = require('../groups'),
 	meta = require('../meta'),
-	websockets = require('../socket.io'),
 	postTools = require('../postTools'),
 	plugins = require('../plugins');
 
@@ -22,7 +21,7 @@ module.exports = function(Posts) {
 				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status'], next);
 			},
 			online: function(next) {
-				websockets.isUsersOnline(uids, next);
+				require('../socket.io').isUsersOnline(uids, next);
 			}
 		}, function(err, results) {
 			if (err) {

@@ -10,7 +10,6 @@ var db = require('./database'),
 	utils = require('../public/src/utils'),
 	notifications = require('./notifications'),
 	userNotifications = require('./user/notifications'),
-	websockets = require('./socket.io'),
 	emailer = require('./emailer');
 
 (function(Messaging) {
@@ -257,7 +256,7 @@ var db = require('./database'),
 				results.users.forEach(function(user, index) {
 					if (user) {
 						user.unread = results.unread[index];
-						user.status = websockets.isUserOnline(user.uid) ? user.status : 'offline';
+						user.status = require('./socket.io').isUserOnline(user.uid) ? user.status : 'offline';
 					}
 				});
 
@@ -320,33 +319,34 @@ var db = require('./database'),
 	};
 
 	function sendNotifications(fromuid, touid, messageObj, callback) {
-		if (!websockets.isUserOnline(touid)) {
-			notifications.create({
-				bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
-				bodyLong: messageObj.content,
-				path: nconf.get('relative_path') + '/chats/' + utils.slugify(messageObj.fromUser.username),
-				nid: 'chat_' + fromuid + '_' + touid,
-				from: fromuid
-			}, function(err, notification) {
-				if (!err && notification) {
-					notifications.push(notification, [touid], callback);
-				}
-			});
-
-			user.getSettings(messageObj.toUser.uid, function(err, settings) {
-				if (settings.sendChatNotifications && !parseInt(meta.config.disableEmailSubscriptions, 10)) {
-					emailer.send('notif_chat', touid, {
-						subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
-						username: messageObj.toUser.username,
-						summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
-						message: messageObj,
-						site_title: meta.config.title || 'NodeBB',
-						url: nconf.get('url'),
-						fromUserslug: utils.slugify(messageObj.fromUser.username)
-					});
-				}
-			});
+		if (require('./socket.io').isUserOnline(touid)) {
+			return callback();
 		}
+
+		notifications.create({
+			bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
+			bodyLong: messageObj.content,
+			nid: 'chat_' + fromuid + '_' + touid,
+			from: fromuid
+		}, function(err, notification) {
+			if (!err && notification) {
+				notifications.push(notification, [touid], callback);
+			}
+		});
+
+		user.getSettings(messageObj.toUser.uid, function(err, settings) {
+			if (settings.sendChatNotifications && !parseInt(meta.config.disableEmailSubscriptions, 10)) {
+				emailer.send('notif_chat', touid, {
+					subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
+					username: messageObj.toUser.username,
+					summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
+					message: messageObj,
+					site_title: meta.config.title || 'NodeBB',
+					url: nconf.get('url'),
+					fromUserslug: utils.slugify(messageObj.fromUser.username)
+				});
+			}
+		});
 	}
 
 }(exports));

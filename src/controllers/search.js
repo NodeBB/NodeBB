@@ -31,7 +31,8 @@ searchController.search = function(req, res, next) {
 				users: [],
 				tags: [],
 				categories: categories,
-				breadcrumbs: breadcrumbs
+				breadcrumbs: breadcrumbs,
+				expandSearch: true
 			};
 			plugins.fireHook('filter:search.build', {data: {}, results: results}, function(err, data) {
 				if (err) {
@@ -75,6 +76,7 @@ searchController.search = function(req, res, next) {
 			results.showAsTopics = req.query.showAs === 'topics';
 			results.breadcrumbs = breadcrumbs;
 			results.categories = categories;
+			results.expandSearch = false;
 			
 			plugins.fireHook('filter:search.build', {data: data, results: results}, function(err, data) {
 				if (err) {

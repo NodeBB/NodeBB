@@ -119,7 +119,10 @@
 					<input type="checkbox" data-field="allowTopicsThumbnail"> <strong>Allow users to upload topic thumbnails</strong>
 				</label>
 			</div>
-			<strong>Topic Thumb Size</strong><br /> <input type="text" class="form-control" value="120" data-field="topicThumbSize">
+			<strong>Topic Thumb Size</strong><br /> <input type="text" class="form-control" value="120" data-field="topicThumbSize"> <br />
+
+			<strong>Allowed file types, (ie png, pdf, zip). Leave empty to allow all.</strong><br /> <input type="text" class="form-control" value="" data-field="allowedFileExtensions"><br />
+
 		</form>
 	</div>
 </div>

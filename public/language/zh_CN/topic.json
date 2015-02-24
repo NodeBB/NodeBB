@@ -12,6 +12,7 @@
     "notify_me": "此主题有新回复时通知我",
     "quote": "引用",
     "reply": "回复",
+    "guest-login-reply": "Log in to reply",
     "edit": "编辑",
     "delete": "删除",
     "purge": "清除",
@@ -74,7 +75,7 @@
     "fork_no_pids": "未选中帖子！",
     "fork_success": "成功分割主题! 点这里跳转到分割后的主题。",
     "composer.title_placeholder": "在此输入您主题的标题...",
-    "composer.handle_placeholder": "Name",
+    "composer.handle_placeholder": "姓名",
     "composer.discard": "撤销",
     "composer.submit": "提交",
     "composer.replying_to": "正在回复 %1",
@@ -94,5 +95,5 @@
     "oldest_to_newest": "从旧到新",
     "newest_to_oldest": "从新到旧",
     "most_votes": "最多投票",
-    "most_posts": "Most posts"
+    "most_posts": "最多发表"
 }

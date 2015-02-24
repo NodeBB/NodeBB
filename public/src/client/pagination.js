@@ -20,16 +20,14 @@ define('forum/pagination', function() {
 	};
 
 	pagination.loadPage = function(page, callback) {
+		callback = callback || function() {};
 		page = parseInt(page, 10);
-		if(!utils.isNumber(page) || page < 1 || page > pagination.pageCount) {
+		if (!utils.isNumber(page) || page < 1 || page > pagination.pageCount) {
+			callback(false);
 			return false;
 		}
-
-		ajaxify.go(window.location.pathname.slice(1) + '?page=' + page, function() {
-			if (typeof callback === 'function') {
-				callback();
-			}
-		});
+		var url = window.location.pathname.slice(1).split('/').slice(0, 3).join('/') + '?page=' + page;
+		ajaxify.go(url, callback);
 		return true;
 	};
 
