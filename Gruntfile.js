@@ -9,16 +9,16 @@ module.exports = function(grunt) {
 		},
 		watch: {
 			lessUpdated: {
-				files: 'public/**/*.less',
-				/*tasks: ['express:lessUpdated']*/
+				files: 'public/**/*.less'
 			},
 			clientUpdated: {
-				files: 'public/src/**/*.js',
-				/*tasks: ['express:clientUpdated']*/
+				files: 'public/src/**/*.js'
 			},
 			serverUpdated: {
-				files: ['*.js', 'src/**/*.js'],
-				/*tasks: ['express:serverUpdated']*/
+				files: ['*.js', 'src/**/*.js']
+			},
+			templatesUpdated: {
+				files: ['src/views/**/*.tpl', 'node_modules/nodebb-*/**/*.tpl']
 			}
 		}
 	});
@@ -34,7 +34,7 @@ module.exports = function(grunt) {
 
 	var worker = fork('app.js', ['--log-level=info'], {
 		env: env,
-		silent: true
+		silent: false
 	});
 
 
@@ -42,11 +42,13 @@ module.exports = function(grunt) {
 		var args = [];
 		
 		if (target === 'lessUpdated') {
-			args.push('--from-file=js');
+			args.push('--from-file=js,tpl');
 		} else if (target === 'clientUpdated') {
-			args.push('--from-file=less');
+			args.push('--from-file=less,tpl');
+		} else if (target === 'templatesUpdated') {
+			args.push('--from-file=js,less');
 		} else if (target === 'serverUpdated') {
-			args.push('--from-file=less,js');
+			args.push('--from-file=less,js,tpl');
 		}
 
 		args.push('--log-level=info');
@@ -54,7 +56,7 @@ module.exports = function(grunt) {
 		worker.kill();
 		worker = fork('app.js', args, {
 			env: env,
-			silent: true
+			silent: false
 		});
 	});
 
