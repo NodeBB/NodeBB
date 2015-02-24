@@ -8,10 +8,14 @@ var fork = require('child_process').fork,
 
 module.exports = function(grunt) {
 	function update(action, filepath, target) {
-		var args = ['--log-level=info'],
+		var args = [],
 			fromFile = '',
 			compiling = '',
 			time = Date.now();
+
+		if (grunt.option('verbose')) {
+			args.push('--log-level=info');
+		}
 		
 		if (target === 'lessUpdated') {
 			fromFile = ['js','tpl'];
@@ -39,7 +43,10 @@ module.exports = function(grunt) {
 		worker.on('message', function() {
 			if (incomplete.length) {
 				incomplete = [];
-				grunt.log.writeln('NodeBB restarted in ' + (Date.now() - time) + ' ms');
+
+				if (grunt.option('verbose')) {
+					grunt.log.writeln('NodeBB restarted in ' + (Date.now() - time) + ' ms');
+				}
 			}
 		});
 	}
