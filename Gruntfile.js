@@ -43,7 +43,8 @@ module.exports = function(grunt) {
 	grunt.event.on('watch', function(action, filepath, target) {
 		var args = ['--log-level=info'],
 			fromFile = '',
-			compiling = '';
+			compiling = '',
+			time = Date.now();
 		
 		if (target === 'lessUpdated') {
 			fromFile = ['js','tpl'];
@@ -69,7 +70,10 @@ module.exports = function(grunt) {
 		worker = fork('app.js', args, { env: env });
 
 		worker.on('message', function() {
-			incomplete = [];
+			if (incomplete.length) {
+				incomplete = [];
+				grunt.log.writeln('NodeBB restarted in ' + (Date.now() - time) + ' ms');
+			}
 		});
 	});
 };
