@@ -9,10 +9,10 @@ module.exports = function(grunt) {
 		},
 		watch: {
 			lessUpdated: {
-				files: 'public/**/*.less'
+				files: ['public/**/*.less', 'node_modules/nodebb-*/**/*.less']
 			},
 			clientUpdated: {
-				files: 'public/src/**/*.js'
+				files: ['public/src/**/*.js', 'node_modules/nodebb-*/**/*.js']
 			},
 			serverUpdated: {
 				files: ['*.js', 'src/**/*.js']
