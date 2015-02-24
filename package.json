@@ -73,10 +73,7 @@
   "devDependencies": {
     "mocha": "~1.13.0",
     "grunt": "~0.4.5",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-execute": "^0.2.2",
-    "grunt-express-server": "^0.4.19",
-    "grunt-contrib-less": "^1.0.0"
+    "grunt-contrib-watch": "^0.6.1"
   },
   "bugs": {
     "url": "https://github.com/NodeBB/NodeBB/issues"
