@@ -1,3 +1,11 @@
+"use strict";
+
+var fork = require('child_process').fork,
+	env = process.env,
+	worker;
+
+process.env.NODE_ENV = 'development';
+
 module.exports = function(grunt) {
 	grunt.initConfig({
 		less: {
@@ -9,34 +17,27 @@ module.exports = function(grunt) {
 		},
 		watch: {
 			lessUpdated: {
-				files: ['public/**/*.less', 'node_modules/nodebb-*/**/*.less']
+				files: ['public/**/*.less', 'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/*/*.less', 'node_modules/nodebb-*/*/*/*.less', 'node_modules/nodebb-*/*/*/*/*.less']
 			},
 			clientUpdated: {
-				files: ['public/src/**/*.js', 'node_modules/nodebb-*/**/*.js']
+				files: ['public/src/**/*.js', 'node_modules/nodebb-*/*.js', 'node_modules/nodebb-*/*/*.js', 'node_modules/nodebb-*/*/*/*.js', 'node_modules/nodebb-*/*/*/*/*.js']
 			},
 			serverUpdated: {
 				files: ['*.js', 'src/**/*.js']
 			},
 			templatesUpdated: {
-				files: ['src/views/**/*.tpl', 'node_modules/nodebb-*/**/*.tpl']
+				files: ['src/views/**/*.tpl', 'node_modules/nodebb-*/*.tpl', 'node_modules/nodebb-*/*/*.tpl', 'node_modules/nodebb-*/*/*/*.tpl', 'node_modules/nodebb-*/*/*/*/*.tpl']
 			}
 		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-watch');
-
 	grunt.registerTask('default', ['watch']);
 
-	var fork = require('child_process').fork,
-		env = process.env;
-
-	process.env.NODE_ENV = 'development'
-
-	var worker = fork('app.js', ['--log-level=info'], {
+	worker = fork('app.js', [], {
 		env: env,
 		silent: false
 	});
-
 
 	grunt.event.on('watch', function(action, filepath, target) {
 		var args = [];
@@ -59,5 +60,4 @@ module.exports = function(grunt) {
 			silent: false
 		});
 	});
-
 };
