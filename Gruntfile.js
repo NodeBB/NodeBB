@@ -13,7 +13,7 @@ module.exports = function(grunt) {
 			compiling = '',
 			time = Date.now();
 
-		if (grunt.option('verbose')) {
+		if (!grunt.option('verbose')) {
 			args.push('--log-level=info');
 		}
 		
