@@ -1,10 +1,19 @@
+'use strict';
+
+/* globals define, socket, app */
+
 define('forum/notifications', function() {
 	var Notifications = {};
 
 	Notifications.init = function() {
 		var listEl = $('.notifications-list');
-		listEl.on('click', 'li', function(e) {
-			this.querySelector('a').click();
+		listEl.on('click', 'a', function(e) {
+			var nid = $(this).parents('[data-nid]').attr('data-nid');
+			socket.emit('notifications.markRead', nid, function(err) {
+				if (err) {
+					return app.alertError(err);
+				}
+			});
 		});
 
 		$('span.timeago').timeago();
@@ -20,8 +29,7 @@ define('forum/notifications', function() {
 				listEl.empty();
 			});
 		});
-
-	}
+	};
 
 	return Notifications;
 });
