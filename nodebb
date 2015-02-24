@@ -110,9 +110,10 @@ case "$1" in
 		;;
 
 	watch)
-		echo "Launching NodeBB in \"development\" mode."
-		echo "To run the production build of NodeBB, please use \"forever\"."
-		echo "More Information: https://docs.nodebb.org/en/latest/running/index.html"
+		echo "***************************************************************************"
+		echo "WARNING: ./nodebb watch will be deprecated soon. Please use grunt: "
+		echo "https://docs.nodebb.org/en/latest/running/index.html#grunt-development"
+		echo "***************************************************************************"
 		NODE_ENV=development supervisor -q --ignore public/templates,public/nodebb.min.js,public/nodebb.min.js.map --extensions 'node|js|tpl|less' -- app "$@"
 		;;
 
