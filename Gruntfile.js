@@ -6,30 +6,41 @@ module.exports = function(grunt) {
 				options: {
 					script: 'app.js',
 					node_env: 'development',
-					args: ['dev', 'from-file'],
-					output: "NodeBB Ready",
+					args: ['--log-level=info'],
+					output: 'NodeBB Ready',
 					interrupt: true,
 					spawn: false,
 					interval: 100
 				}
 			},
-			minifyJS: {
+			serverUpdated: {
 				options: {
 					script: 'app.js',
 					node_env: 'development',
-					args: ['dev', 'minify-js'],
-					output: "NodeBB Ready",
+					args: ['--from-file=less,js', '--log-level=info'],
+					output: 'NodeBB Ready',
 					interrupt: true,
 					spawn: false,
 					interval: 100
 				}
 			},
-			compileLESS: {
+			clientUpdated: {
 				options: {
 					script: 'app.js',
 					node_env: 'development',
-					args: ['dev', 'compile-less'],
-					output: "NodeBB Ready",
+					args: ['--from-file=less', '--log-level=info'],
+					output: 'NodeBB Ready',
+					interrupt: true,
+					spawn: false,
+					interval: 100
+				}
+			},
+			lessUpdated: {
+				options: {
+					script: 'app.js',
+					node_env: 'development',
+					args: ['--from-file=js', '--log-level=info'],
+					output: 'NodeBB Ready',
 					interrupt: true,
 					spawn: false,
 					interval: 100
@@ -39,17 +50,22 @@ module.exports = function(grunt) {
 		less: {
 			development: {
 				files: {
-					"public/bin/manifest.css": "source/manifest.less"
+					'public/bin/manifest.css': 'source/manifest.less'
 				}
 			}
 		},
 		watch: {
-			compileLESS: {
-				files: "**/*.less",
-				tasks: ['express:compileLESS'],
-				options: {
-					livereload: true,
-				}
+			lessUpdated: {
+				files: 'public/**/*.less',
+				tasks: ['express:lessUpdated']
+			},
+			clientUpdated: {
+				files: 'public/src/**/*.js',
+				tasks: ['express:clientUpdated']
+			},
+			serverUpdated: {
+				files: ['*.js', 'src/**/*.js'],
+				tasks: ['express:serverUpdated']
 			}
 		}
 	});
@@ -58,8 +74,4 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-express-server');
 
 	grunt.registerTask('default', ['express:dev', 'watch']);
-
-	grunt.event.on('watch', function(action, filepath, target) {
-		grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
-	});
 };

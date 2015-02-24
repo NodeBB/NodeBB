@@ -39,8 +39,8 @@ if(nconf.get('ssl')) {
 		// Preparation dependent on plugins
 		plugins.ready(function() {
 			async.parallel([
-				async.apply((!nconf.get('minify-js') && !nconf.get('from-file')) ? meta.js.minify : meta.js.getFromFile, app.enabled('minification')),
-				async.apply((!nconf.get('compile-less') && !nconf.get('from-file')) ? meta.css.minify : meta.css.getFromFile),
+				async.apply(!nconf.get('from-file') ? meta.js.minify : meta.js.getFromFile, app.enabled('minification')),
+				async.apply(!nconf.get('from-file') ? meta.css.minify : meta.css.getFromFile),
 				async.apply(meta.sounds.init)
 			]);
 		});
