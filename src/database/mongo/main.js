@@ -138,7 +138,7 @@ module.exports = function(db, module) {
 	};
 
 	module.pexpire = function(key, ms, callback) {
-		module.expireAt(key, Date.now() + parseInt(ms, 10), callback);
+		module.setObjectField(key, 'expireAt', new Date(Date.now() + parseInt(ms, 10)), callback);
 	};
 
 	module.pexpireAt = function(key, timestamp, callback) {
