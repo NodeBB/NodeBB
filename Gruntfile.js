@@ -34,30 +34,42 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.registerTask('default', ['watch']);
 
-	worker = fork('app.js', [], {
-		env: env,
-		silent: false
-	});
+
+	
+	worker = fork('app.js', [], { env: env });
+
+	var incomplete = [];
 
 	grunt.event.on('watch', function(action, filepath, target) {
-		var args = [];
+		var args = ['--log-level=info'],
+			fromFile = '',
+			compiling = '';
 		
 		if (target === 'lessUpdated') {
-			args.push('--from-file=js,tpl');
+			fromFile = ['js','tpl'];
+			compiling = 'less';
 		} else if (target === 'clientUpdated') {
-			args.push('--from-file=less,tpl');
+			fromFile = ['less','tpl'];
+			compiling = 'js';
 		} else if (target === 'templatesUpdated') {
-			args.push('--from-file=js,less');
+			fromFile = ['js','less'];
+			compiling = 'tpl';
 		} else if (target === 'serverUpdated') {
-			args.push('--from-file=less,js,tpl');
+			fromFile = ['less','js','tpl'];
 		}
 
-		args.push('--log-level=info');
+		fromFile = fromFile.filter(function(ext) {
+			return incomplete.indexOf(ext) === -1;
+		});
+
+		args.push('--from-file=' + fromFile.join(','));
+		incomplete.push(compiling);
 
 		worker.kill();
-		worker = fork('app.js', args, {
-			env: env,
-			silent: false
+		worker = fork('app.js', args, { env: env });
+
+		worker.on('message', function() {
+			incomplete = [];
 		});
 	});
 };
