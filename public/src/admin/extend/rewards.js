@@ -143,8 +143,8 @@ define('admin/extend/rewards', function() {
 
 		templates.parse('admin/extend/rewards', 'active', data, function(li) {
 			li = $(li);
-			li.find('[name="rid"]').val('');
 			ul.append(li);
+			li.find('select').val('');
 		});
 	}
 
