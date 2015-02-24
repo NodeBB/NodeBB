@@ -2,45 +2,12 @@
 
 var fork = require('child_process').fork,
 	env = process.env,
-	worker;
+	worker,
+	incomplete = [];
 
-process.env.NODE_ENV = 'development';
 
 module.exports = function(grunt) {
-	grunt.initConfig({
-		less: {
-			development: {
-				files: {
-					'public/bin/manifest.css': 'source/manifest.less'
-				}
-			}
-		},
-		watch: {
-			lessUpdated: {
-				files: ['public/**/*.less', 'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/*/*.less', 'node_modules/nodebb-*/*/*/*.less', 'node_modules/nodebb-*/*/*/*/*.less']
-			},
-			clientUpdated: {
-				files: ['public/src/**/*.js', 'node_modules/nodebb-*/*.js', 'node_modules/nodebb-*/*/*.js', 'node_modules/nodebb-*/*/*/*.js', 'node_modules/nodebb-*/*/*/*/*.js']
-			},
-			serverUpdated: {
-				files: ['*.js', 'src/**/*.js']
-			},
-			templatesUpdated: {
-				files: ['src/views/**/*.tpl', 'node_modules/nodebb-*/*.tpl', 'node_modules/nodebb-*/*/*.tpl', 'node_modules/nodebb-*/*/*/*.tpl', 'node_modules/nodebb-*/*/*/*/*.tpl']
-			}
-		}
-	});
-
-	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.registerTask('default', ['watch']);
-
-
-	
-	worker = fork('app.js', [], { env: env });
-
-	var incomplete = [];
-
-	grunt.event.on('watch', function(action, filepath, target) {
+	function update(action, filepath, target) {
 		var args = ['--log-level=info'],
 			fromFile = '',
 			compiling = '',
@@ -75,5 +42,30 @@ module.exports = function(grunt) {
 				grunt.log.writeln('NodeBB restarted in ' + (Date.now() - time) + ' ms');
 			}
 		});
+	}
+
+	grunt.initConfig({
+		watch: {
+			lessUpdated: {
+				files: ['public/**/*.less', 'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/*/*.less', 'node_modules/nodebb-*/*/*/*.less', 'node_modules/nodebb-*/*/*/*/*.less']
+			},
+			clientUpdated: {
+				files: ['public/src/**/*.js', 'node_modules/nodebb-*/*.js', 'node_modules/nodebb-*/*/*.js', 'node_modules/nodebb-*/*/*/*.js', 'node_modules/nodebb-*/*/*/*/*.js']
+			},
+			serverUpdated: {
+				files: ['*.js', 'src/**/*.js']
+			},
+			templatesUpdated: {
+				files: ['src/views/**/*.tpl', 'node_modules/nodebb-*/*.tpl', 'node_modules/nodebb-*/*/*.tpl', 'node_modules/nodebb-*/*/*/*.tpl', 'node_modules/nodebb-*/*/*/*/*.tpl']
+			}
+		}
 	});
+
+	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.registerTask('default', ['watch']);
+
+	env.NODE_ENV = 'development';
+
+	worker = fork('app.js', [], { env: env });
+	grunt.event.on('watch', update);
 };
