@@ -25,7 +25,7 @@ define('composer/resize', function() {
 			}
 		}
 
-		if (env === 'sm' || env === 'xs') {
+		if (env === 'sm' || env === 'xs' || window.innerHeight < 480) {
 			app.toggleNavbar(false);
 			postContainer.css('height', $(window).height());
 		}
