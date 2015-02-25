@@ -12,6 +12,7 @@ var app,
 	nconf = require('nconf'),
 
 	plugins = require('./../plugins'),
+	navigation = require('./../navigation'),
 	meta = require('./../meta'),
 	translator = require('./../../public/src/translator'),
 	user = require('./../user'),
@@ -215,98 +216,7 @@ middleware.buildHeader = function(req, res, next) {
 middleware.renderHeader = function(req, res, callback) {
 	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
 
-	var custom_header = {
-		uid: uid,
-		'navigation': [
-			{
-				id: "unread-count",
-				route: "/unread",
-				title: "[[global:header.unread]]",
-				iconClass: "fa-inbox",
-				textClass: "visible-xs-inline",
-				text: "[[global:header.unread]]",
-				properties: {
-					loggedIn: true
-				}
-			},
-			{
-				route: "/recent",
-				title: "[[global:header.recent]]",
-				iconClass: "fa-clock-o",
-				textClass: "visible-xs-inline",
-				text: "[[global:]]",
-				properties: {
-					
-				}
-			},
-			{
-				route: "/tags",
-				title: "[[global:header.tags]]",
-				iconClass: "fa-tags",
-				textClass: "visible-xs-inline",
-				text: "[[global:header.tags]]",
-				properties: {
-					
-				}
-			},
-			{
-				route: "/popular",
-				title: "[[global:header.popular]]",
-				iconClass: "fa-fire",
-				textClass: "visible-xs-inline",
-				text: "[[global:header.popular]]",
-				properties: {
-					
-				}
-			},
-			{
-				route: "/users",
-				title: "[[global:header.users]]",
-				iconClass: "fa-user",
-				textClass: "visible-xs-inline",
-				text: "[[global:header.users]]",
-				properties: {
-					loggedIn: true,
-					hideIfPrivate: true
-				}
-			},
-			{
-				route: "/groups",
-				title: "[[global:header.groups]]",
-				iconClass: "fa-group",
-				textClass: "visible-xs-inline",
-				text: "[[global:header.groups]]",
-				properties: {
-					
-				}
-			},
-			{
-				route: "/admin",
-				target: "_top",
-				title: "[[global:header.admin]]",
-				iconClass: "fa-cogs",
-				textClass: "visible-xs-inline",
-				text: "[[global:header.admin]]",
-				properties: {
-					adminOnly: true
-				}
-			},
-			{
-				route: "/search",
-				title: "[[global:header.search]]",
-				iconClass: "fa-search",
-				textClass: "visible-xs-inline",
-				text: "[[global:header.search]]",
-				properties: {
-					installed: {
-						search: true
-					}
-				}
-			}
-		]
-	};
-
-	plugins.fireHook('filter:header.build', custom_header, function(err, custom_header) {
+	navigation.get(function(err, menuItems) {
 		if (err) {
 			return callback(err);
 		}
@@ -344,7 +254,7 @@ middleware.renderHeader = function(req, res, callback) {
 				'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 				'brand:logo': meta.config['brand:logo'] || '',
 				'brand:logo:display': meta.config['brand:logo']?'':'hide',
-				navigation: custom_header.navigation,
+				navigation: menuItems,
 				allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
 				searchEnabled: plugins.hasListeners('filter:search.query')
 			};
