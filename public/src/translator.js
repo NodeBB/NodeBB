@@ -29,7 +29,11 @@
 				callback(languages[language].loaded[filename]);
 			});
 		}
-	}
+	};
+
+	translator.escape = function(text) {
+		return text.replace(/\[\[([\S]*?)\]\]/g, '\\[\\[$1\\]\\]');
+	};
 
 	translator.getLanguage = function() {
 		return config.defaultLang;
