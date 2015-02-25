@@ -204,6 +204,9 @@ define('admin/manage/categories', [
 						case 'icon':
 							data[name] = $(this).attr('value');
 							break;
+						case 'name':
+							data[name] = $(this).val() + ' (copy)';
+							break;
 						default: 
 							data[name] = $(this).val();
 					}
