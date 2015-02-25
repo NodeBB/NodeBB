@@ -59,11 +59,6 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 						});
 					})(userObj);
 				}
-
-				var seeAll = '<li class="pagelink"><a href="' + config.relative_path + '/chats">[[modules:chat.see_all]]</a></li>';
-				translator.translate(seeAll, function(translated) {
-					$(translated).appendTo(chatsListEl);
-				});
 			});
 		});
 

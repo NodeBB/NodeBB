@@ -58,10 +58,9 @@ define('notifications', ['sounds'], function(sound) {
 		});
 
 		notifList.on('click', '.mark-read', function(e) {
-			var anchorEl = $(this.parentNode),
-				parentEl = anchorEl.parent(),
-				nid = anchorEl.attr('data-nid'),
-				unread = parentEl.hasClass('unread');
+			var liEl = $(this.parentNode),
+				nid = liEl.siblings('a').attr('data-nid'),
+				unread = liEl.hasClass('unread');
 
 			e.preventDefault();
 			e.stopPropagation();
@@ -71,7 +70,7 @@ define('notifications', ['sounds'], function(sound) {
 					app.alertError(err.message);
 				}
 
-				parentEl.toggleClass('unread');
+				liEl.toggleClass('unread');
 				increaseNotifCount(unread ? -1 : 1);
 			});
 		});

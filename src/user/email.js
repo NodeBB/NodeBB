@@ -87,21 +87,18 @@ var async = require('async'),
 	UserEmail.confirm = function(code, callback) {
 		db.getObject('confirm:' + code, function(err, confirmObj) {
 			if (err) {
-				return callback({
-					status:'error'
-				});
+				return callback(new Error('[[error:parse-error]]'));
 			}
 
 			if (confirmObj && confirmObj.uid && confirmObj.email) {
-				user.setUserField(confirmObj.uid, 'email:confirmed', 1, function() {
-					callback({
-						status: 'ok'
-					});
+				async.series([
+					async.apply(user.setUserField, confirmObj.uid, 'email:confirmed', 1),
+					async.apply(db.delete, 'confirm:' + code)
+				], function(err) {
+					callback(err ? new Error('[[error:email-confirm-failed]]') : null);
 				});
 			} else {
-				callback({
-					status: 'not_ok'
-				});
+				callback(new Error('[[error:invalid-data]]'));
 			}
 		});
 	};
