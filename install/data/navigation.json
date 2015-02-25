@@ -3,6 +3,7 @@
 		"id": "unread-count",
 		"route": "/unread",
 		"title": "[[global:header.unread]]",
+		"enabled": true,
 		"iconClass": "fa-inbox",
 		"textClass": "visible-xs-inline",
 		"text": "[[global:header.unread]]",
@@ -13,6 +14,7 @@
 	{
 		"route": "/recent",
 		"title": "[[global:header.recent]]",
+		"enabled": true,
 		"iconClass": "fa-clock-o",
 		"textClass": "visible-xs-inline",
 		"text": "[[global:]]"
@@ -20,6 +22,7 @@
 	{
 		"route": "/tags",
 		"title": "[[global:header.tags]]",
+		"enabled": true,
 		"iconClass": "fa-tags",
 		"textClass": "visible-xs-inline",
 		"text": "[[global:header.tags]]"
@@ -27,6 +30,7 @@
 	{
 		"route": "/popular",
 		"title": "[[global:header.popular]]",
+		"enabled": true,
 		"iconClass": "fa-fire",
 		"textClass": "visible-xs-inline",
 		"text": "[[global:header.popular]]"
@@ -34,6 +38,7 @@
 	{
 		"route": "/users",
 		"title": "[[global:header.users]]",
+		"enabled": true,
 		"iconClass": "fa-user",
 		"textClass": "visible-xs-inline",
 		"text": "[[global:header.users]]",
@@ -45,6 +50,7 @@
 	{
 		"route": "/groups",
 		"title": "[[global:header.groups]]",
+		"enabled": true,
 		"iconClass": "fa-group",
 		"textClass": "visible-xs-inline",
 		"text": "[[global:header.groups]]"
@@ -53,6 +59,7 @@
 		"route": "/admin",
 		"target": "_top",
 		"title": "[[global:header.admin]]",
+		"enabled": true,
 		"iconClass": "fa-cogs",
 		"textClass": "visible-xs-inline",
 		"text": "[[global:header.admin]]",
@@ -63,6 +70,7 @@
 	{
 		"route": "/search",
 		"title": "[[global:header.search]]",
+		"enabled": true,
 		"iconClass": "fa-search",
 		"textClass": "visible-xs-inline",
 		"text": "[[global:header.search]]",
