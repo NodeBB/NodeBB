@@ -22,7 +22,9 @@ define('notifications', ['sounds'], function(sound) {
 					return app.alertError(err.message);
 				}
 
-				var notifs = data.unread.concat(data.read);
+				var notifs = data.unread.concat(data.read).sort(function(a, b) {
+					return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
+				});
 
 				translator.toggleTimeagoShorthand();
 				for(var i=0; i<notifs.length; ++i) {
