@@ -89,20 +89,6 @@ var async = require('async'),
 		});
 	}
 
-	UserNotifications.getAll = function(uid, count, callback) {
-		getNotifications(uid, count, function(err, notifs) {
-			if (err) {
-				return callback(err);
-			}
-			notifs = notifs.unread.concat(notifs.read);
-			notifs = notifs.filter(Boolean).sort(function(a, b) {
-				return b.datetime - a.datetime;
-			});
-
-			callback(null, notifs);
-		});
-	};
-
 	UserNotifications.getNotifications = function(nids, uid, callback) {
 		notifications.getMultiple(nids, function(err, notifications) {
 			if (err) {
