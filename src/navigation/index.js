@@ -15,10 +15,8 @@ navigation.get = function(callback) {
 				return item.enabled;
 			})
 			.map(function(item) {
-				console.log(item);
 				for (var i in item) {
 					if (item.hasOwnProperty(i)) {
-						console.log(item[i]);
 						item[i] = translator.unescape(item[i]);
 					}
 				}
