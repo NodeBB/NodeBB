@@ -75,6 +75,7 @@
 
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
 		slugify: function(str) {
+			if (!str) { str = ''; }
 			str = str.replace(utils.trimRegex, '');
 			if(utils.isLatin.test(str)) {
 				str = str.replace(utils.invalidLatinChars, '-');
