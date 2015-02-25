@@ -199,7 +199,14 @@ define('admin/manage/categories', [
 					data = {};
 
 				inputs.each(function() {
-					data[$(this).attr('data-name')] = $(this).val();
+					var name = $(this).attr('data-name');
+					switch (name) {
+						case 'icon':
+							data[name] = $(this).attr('value');
+							break;
+						default: 
+							data[name] = $(this).val();
+					}
 				});
 
 				saveNew(data);
