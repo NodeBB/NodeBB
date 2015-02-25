@@ -2,57 +2,44 @@
 /* global define, app, ajaxify, socket, templates, bootbox */
 
 define('admin/general/navigation', function() {
-	var navigation = {};
-
-
-	var available;
+	var navigation = {},
+		available;
 
 	navigation.init = function() {
 		available = JSON.parse(ajaxify.variables.get('available'));
 
-		$('.delete').on('click', function() {
-			$(this).parents('li').remove();
-		});
-
-		$('.toggle').on('click', function() {
-			var btn = $(this),
-				disabled = btn.html() === 'Enable';
-
-			btn.toggleClass('btn-warning').toggleClass('btn-success').html(!disabled ? 'Enable' : 'Disable');
-			btn.parents('li').find('[name="enabled"]').val(disabled);
-			return false;
-		});
-
-		$('#save').on('click', saveNavigation);
+		$('#save').on('click', save);
+		$('.delete').on('click', remove);
+		$('.toggle').on('click', toggle);
 
 		$('#enabled')
 			.sortable()
 			.droppable({
 				accept: $('#available li')
-			})
-			.disableSelection();
+			});
 
 		$('#available li')
 			.draggable({
 				connectToSortable: '#enabled',
 				helper: 'clone',
 				distance: 10,
-				stop: function(ev, ui) {
-					var id = ui.helper.attr('data-id'),
-						el = $('#enabled [data-id="' + id + '"]'),
-						data = id === 'custom' ? {} : available[id];
-
-					templates.parse('admin/general/navigation', 'enabled', {enabled: [data]}, function(li) {
-						li = $(li);
-						el.after(li);
-						el.remove();
-					});
-				}
-			})
-			.disableSelection();
+				stop: drop
+			});
 	};
 
-	function saveNavigation() {
+	function drop(ev, ui) {
+		var id = ui.helper.attr('data-id'),
+			el = $('#enabled [data-id="' + id + '"]'),
+			data = id === 'custom' ? {} : available[id];
+
+		templates.parse('admin/general/navigation', 'enabled', {enabled: [data]}, function(li) {
+			li = $(li);
+			el.after(li);
+			el.remove();
+		});
+	}
+
+	function save() {
 		var nav = [];
 
 		$('#enabled li').each(function() {
@@ -81,12 +68,17 @@ define('admin/general/navigation', function() {
 		});
 	}
 
-	function getDefaultsByRoute(route) {
-		available.forEach(function(item) {
-			if (item.route.match(route)) {
-				return item;
-			}
-		});
+	function remove() {
+		$(this).parents('li').remove();
+	}
+
+	function toggle() {
+		var btn = $(this),
+			disabled = btn.html() === 'Enable';
+
+		btn.toggleClass('btn-warning').toggleClass('btn-success').html(!disabled ? 'Enable' : 'Disable');
+		btn.parents('li').find('[name="enabled"]').val(disabled);
+		return false;
 	}
 
 	return navigation;

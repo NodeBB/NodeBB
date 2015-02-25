@@ -9,8 +9,10 @@ var admin = {},
 
 admin.save = function(data, callback) {
 	var order = Object.keys(data),
-		items = data.map(function(item) {
-			return JSON.stringify(item);
+		items = data.map(function(item, idx) {
+			var data = {};
+			data[idx] = item;
+			return JSON.stringify(data);
 		});
 
 	async.waterfall([
