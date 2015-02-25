@@ -1,5 +1,5 @@
 "use strict";
-/* global define, app, ajaxify, socket, templates, bootbox */
+/* global define, app, ajaxify, socket, templates, bootbox, translator */
 
 define('admin/general/navigation', function() {
 	var navigation = {},
@@ -7,6 +7,12 @@ define('admin/general/navigation', function() {
 
 	navigation.init = function() {
 		available = JSON.parse(ajaxify.variables.get('available'));
+
+		$('#enabled').html(translator.unescape($('#enabled').html()));
+		translator.translate(translator.unescape($('#available').html()), function(html) {
+			$('#available').html(html);	
+		});
+		
 
 		$('#enabled')
 			.on('click', '.delete', remove)
@@ -33,7 +39,7 @@ define('admin/general/navigation', function() {
 			data = id === 'custom' ? {} : available[id];
 
 		templates.parse('admin/general/navigation', 'enabled', {enabled: [data]}, function(li) {
-			li = $(li);
+			li = $(translator.unescape(li));
 			el.after(li);
 			el.remove();
 		});
@@ -47,7 +53,7 @@ define('admin/general/navigation', function() {
 				data = {};
 
 			form.forEach(function(input) {
-				data[input.name] = input.value;
+				data[input.name] = translator.escape(input.value);
 			});
 
 			available.forEach(function(item) {

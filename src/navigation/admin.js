@@ -4,13 +4,21 @@
 var admin = {},
 	async = require('async'),
 	plugins = require('../plugins'),
-	db = require('../database');
+	db = require('../database'),
+	translator = require('../../public/src/translator');
 
 
 admin.save = function(data, callback) {
 	var order = Object.keys(data),
 		items = data.map(function(item, idx) {
 			var data = {};
+
+			for (var i in item) {
+				if (item.hasOwnProperty(i)) {
+					item[i] = typeof item[i] === 'string' ? translator.escape(item[i]) : item[i];
+				}
+			}
+
 			data[idx] = item;
 			return JSON.stringify(data);
 		});

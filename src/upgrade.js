@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 1, 25, 4);
+	latestSchema = Date.UTC(2015, 1, 25, 6);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -943,7 +943,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = Date.UTC(2015, 1, 25, 4);
+			thisSchemaDate = Date.UTC(2015, 1, 25, 6);
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 				winston.info('[2015/02/25] Upgrading menu items to dynamic navigation system');
