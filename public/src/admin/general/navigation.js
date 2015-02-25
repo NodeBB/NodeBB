@@ -31,7 +31,7 @@ define('admin/general/navigation', function() {
 			nav.push(data);
 		});
 
-		socket.emit('admin.navigation.save', activeRewards, function(err) {
+		socket.emit('admin.navigation.save', nav, function(err) {
 			if (err) {
 				app.alertError(err.message);
 			} else {
