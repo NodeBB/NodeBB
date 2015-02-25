@@ -8,11 +8,9 @@ define('admin/general/navigation', function() {
 	navigation.init = function() {
 		available = JSON.parse(ajaxify.variables.get('available'));
 
-		$('#save').on('click', save);
-		$('.delete').on('click', remove);
-		$('.toggle').on('click', toggle);
-
 		$('#enabled')
+			.on('click', '.delete', remove)
+			.on('click', '.toggle', toggle)
 			.sortable()
 			.droppable({
 				accept: $('#available li')
@@ -25,6 +23,8 @@ define('admin/general/navigation', function() {
 				distance: 10,
 				stop: drop
 			});
+
+		$('#save').on('click', save);
 	};
 
 	function drop(ev, ui) {
