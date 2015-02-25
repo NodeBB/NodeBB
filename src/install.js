@@ -385,6 +385,13 @@ function createCategories(next) {
 	});
 }
 
+function createMenuItems(next) {
+	var navigation = require('./navigation/admin'),
+		data = require('../install/data/navigation.json');
+
+	navigation.save(data, next);
+}
+
 function createWelcomePost(next) {
 	var db = require('./database'),
 		Topics = require('./topics');
@@ -463,6 +470,7 @@ install.setup = function (callback) {
 		enableDefaultTheme,
 		createAdministrator,
 		createCategories,
+		createMenuItems,
 		createWelcomePost,
 		enableDefaultPlugins,
 		setCopyrightWidget,
