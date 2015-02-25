@@ -33,11 +33,19 @@ admin.save = function(data, callback) {
 	], callback);
 };
 
-admin.get = function(callback) {
+admin.getAdmin = function(callback) {
 	async.parallel({
-		enabled: require('./index').get,
+		enabled: admin.get,
 		available: getAvailable
 	}, callback);
+};
+
+admin.get = function(callback) {
+	db.getSortedSetRange('navigation:enabled', 0, -1, function(err, data) {
+		callback(err, data.map(function(item, idx) {
+			return JSON.parse(item)[idx];
+		}));
+	});
 };
 
 function getAvailable(callback) {

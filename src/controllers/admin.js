@@ -246,7 +246,7 @@ adminController.sounds.get = function(req, res, next) {
 };
 
 adminController.navigation.get = function(req, res, next) {
-	require('../navigation/admin').get(function(err, data) {
+	require('../navigation/admin').getAdmin(function(err, data) {
 		if (err) {
 			return next(err);
 		}

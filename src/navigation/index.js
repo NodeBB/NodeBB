@@ -3,15 +3,29 @@
 
 var navigation = {},
 	plugins = require('../plugins'),
-	db = require('../database');
+	db = require('../database'),
+	admin = require('./admin'),
+	translator = require('../../public/src/translator');
 
 
 navigation.get = function(callback) {
-	db.getSortedSetRange('navigation:enabled', 0, -1, function(err, data) {
-		callback(err, data.map(function(item, idx) {
-			return JSON.parse(item)[idx];
-		}));
-	});
+	admin.get(function(err, data) {
+		callback(err, data
+			.filter(function(item) {
+				return item.enabled;
+			})
+			.map(function(item) {
+				console.log(item);
+				for (var i in item) {
+					if (item.hasOwnProperty(i)) {
+						console.log(item[i]);
+						item[i] = translator.unescape(item[i]);
+					}
+				}
+
+				return item;
+			}));
+	})
 };
 
 

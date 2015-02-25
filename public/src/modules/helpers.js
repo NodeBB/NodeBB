@@ -17,10 +17,6 @@
 		var item = data.navigation[index],
 			properties = item.properties;
 
-		if (!item.enabled) {
-			return false;
-		}
-
 		if (properties) {
 			if (properties.loggedIn && !data.loggedIn ||
 				properties.adminOnly && !data.isAdmin ||
