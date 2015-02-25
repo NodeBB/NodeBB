@@ -40,6 +40,12 @@ define('admin/general/navigation', function() {
 				data[input.name] = input.value;
 			});
 
+			available.forEach(function(item) {
+				if (item.route.match(data.route)) {
+					data.properties = item.properties;
+				}
+			});
+
 			nav.push(data);
 		});
 
