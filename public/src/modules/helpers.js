@@ -13,6 +13,18 @@
 		return (config.loggedIn || !config.privateUserInfo);
 	};
 
+	helpers.displayMenuItem = function(data, index) {
+		var properties = data.navigation[index].properties;
+
+		if (properties.loggedIn && !ldata.oggedIn ||
+			properties.adminOnly && !data.isAdmin ||
+			properties.installed && properties.installed.search && !data.searchEnabled) {
+			return false;
+		}
+
+		return true;
+	};
+
 	helpers.buildMetaTag = function(tag) {
 		var name = tag.name ? 'name="' + tag.name + '" ' : '',
 			property = tag.property ? 'property="' + tag.property + '" ' : '',
