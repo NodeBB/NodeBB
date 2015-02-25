@@ -10,24 +10,21 @@ define('admin/general/navigation', function() {
 
 		$('#enabled').html(translator.unescape($('#enabled').html()));
 		translator.translate(translator.unescape($('#available').html()), function(html) {
-			$('#available').html(html);	
+			$('#available').html(html)
+				.find('li').draggable({
+					connectToSortable: '#enabled',
+					helper: 'clone',
+					distance: 10,
+					stop: drop
+				});
 		});
 		
-
 		$('#enabled')
 			.on('click', '.delete', remove)
 			.on('click', '.toggle', toggle)
 			.sortable()
 			.droppable({
 				accept: $('#available li')
-			});
-
-		$('#available li')
-			.draggable({
-				connectToSortable: '#enabled',
-				helper: 'clone',
-				distance: 10,
-				stop: drop
 			});
 
 		$('#save').on('click', save);
@@ -37,6 +34,8 @@ define('admin/general/navigation', function() {
 		var id = ui.helper.attr('data-id'),
 			el = $('#enabled [data-id="' + id + '"]'),
 			data = id === 'custom' ? {} : available[id];
+
+		data.enabled = false;
 
 		templates.parse('admin/general/navigation', 'enabled', {enabled: [data]}, function(li) {
 			li = $(translator.unescape(li));
