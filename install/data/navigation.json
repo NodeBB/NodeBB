@@ -17,7 +17,7 @@
 		"enabled": true,
 		"iconClass": "fa-clock-o",
 		"textClass": "visible-xs-inline",
-		"text": "\\[\\[global:header.recen\\t\\]]"
+		"text": "\\[\\[global:header.recent\\]\\]"
 	},
 	{
 		"route": "/tags",
@@ -25,7 +25,7 @@
 		"enabled": true,
 		"iconClass": "fa-tags",
 		"textClass": "visible-xs-inline",
-		"text": "\\[\\[global:header.tag\\s\\]]"
+		"text": "\\[\\[global:header.tags\\]\\]"
 	},
 	{
 		"route": "/popular",
@@ -33,7 +33,7 @@
 		"enabled": true,
 		"iconClass": "fa-fire",
 		"textClass": "visible-xs-inline",
-		"text": "\\[\\[global:header.popula\\r\\]]"
+		"text": "\\[\\[global:header.popular\\]\\]"
 	},
 	{
 		"route": "/users",
@@ -53,7 +53,7 @@
 		"enabled": true,
 		"iconClass": "fa-group",
 		"textClass": "visible-xs-inline",
-		"text": "\\[\\[global:header.group\\s\\]]"
+		"text": "\\[\\[global:header.groups\\]\\]"
 	},
 	{
 		"route": "/admin",
