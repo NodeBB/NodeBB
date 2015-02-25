@@ -220,7 +220,6 @@ middleware.renderHeader = function(req, res, callback) {
 		'navigation': [
 			{
 				id: "unread-count",
-				class: "",
 				route: "/unread",
 				title: "[[global:header.unread]]",
 				iconClass: "fa-inbox",
@@ -231,8 +230,6 @@ middleware.renderHeader = function(req, res, callback) {
 				}
 			},
 			{
-				id: "",
-				class: "",
 				route: "/recent",
 				title: "[[global:header.recent]]",
 				iconClass: "fa-clock-o",
@@ -243,8 +240,6 @@ middleware.renderHeader = function(req, res, callback) {
 				}
 			},
 			{
-				id: "",
-				class: "",
 				route: "/tags",
 				title: "[[global:header.tags]]",
 				iconClass: "fa-tags",
@@ -255,8 +250,6 @@ middleware.renderHeader = function(req, res, callback) {
 				}
 			},
 			{
-				id: "",
-				class: "",
 				route: "/popular",
 				title: "[[global:header.popular]]",
 				iconClass: "fa-fire",
@@ -267,8 +260,6 @@ middleware.renderHeader = function(req, res, callback) {
 				}
 			},
 			{
-				id: "",
-				class: "",
 				route: "/users",
 				title: "[[global:header.users]]",
 				iconClass: "fa-user",
@@ -280,8 +271,6 @@ middleware.renderHeader = function(req, res, callback) {
 				}
 			},
 			{
-				id: "",
-				class: "",
 				route: "/groups",
 				title: "[[global:header.groups]]",
 				iconClass: "fa-group",
@@ -292,8 +281,6 @@ middleware.renderHeader = function(req, res, callback) {
 				}
 			},
 			{
-				id: "",
-				class: "",
 				route: "/admin",
 				target: "_top",
 				title: "[[global:header.admin]]",
@@ -305,8 +292,6 @@ middleware.renderHeader = function(req, res, callback) {
 				}
 			},
 			{
-				id: "",
-				class: "",
 				route: "/search",
 				title: "[[global:header.search]]",
 				iconClass: "fa-search",
