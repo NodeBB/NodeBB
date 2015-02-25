@@ -24,7 +24,7 @@ templatesController.getTemplatesListing = function(req, res, next) {
 					readConfigFile(next);
 				},
 				function(config, next) {
-					config.custom_mapping['^/?$'] = meta.config.homePageRoute || 'home';
+					config.custom_mapping['^/?$'] = meta.config.homePageRoute || 'categories';
 
 				 	plugins.fireHook('filter:templates.get_config', config, next);
 				}

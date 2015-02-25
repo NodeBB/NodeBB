@@ -1,5 +1,6 @@
 'use strict';
 
+
 if ('undefined' !== typeof window) {
 
 	(function ($, undefined) {

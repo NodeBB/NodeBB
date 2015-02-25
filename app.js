@@ -43,7 +43,7 @@ winston.add(winston.transports.Console, {
 		var date = new Date();
 		return date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0,5) + ' [' + global.process.pid + ']';
 	},
-	level: global.env === 'production' ? 'info' : 'verbose'
+	level: (global.env === 'production' || nconf.get('log-level') === 'info') ? 'info' : 'verbose'
 });
 
 if(os.platform() === 'linux') {
@@ -323,7 +323,7 @@ function resetThemes(callback) {
 
 function resetPlugin(pluginId) {
 	var db = require('./src/database');
-	db.setRemove('plugins:active', pluginId, function(err) {
+	db.sortedSetRemove('plugins:active', pluginId, function(err) {
 		if (err) {
 			winston.error('[reset] Could not disable plugin: %s encountered error %s', pluginId, err.message);
 		} else {

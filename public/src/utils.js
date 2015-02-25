@@ -71,9 +71,11 @@
 		trimTrailingDash: /-$/g,
 		trimLeadingDash: /^-/g,
 		isLatin: /^[\w]+$/,
+		languageKeyRegex: /\[\[[\w]+:.+\]\]/,
 
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
 		slugify: function(str) {
+			if (!str) { str = ''; }
 			str = str.replace(utils.trimRegex, '');
 			if(utils.isLatin.test(str)) {
 				str = str.replace(utils.invalidLatinChars, '-');
@@ -108,6 +110,10 @@
 			return !isNaN(parseFloat(n)) && isFinite(n);
 		},
 
+		hasLanguageKey: function(input) {
+			return utils.languageKeyRegex.test(input);
+		},
+
 		// shallow objects merge
 		merge: function() {
 			var result = {}, obj, keys;
@@ -125,38 +131,39 @@
 			return ('' + path).split('.').pop();
 		},
 
-		fileMimeType: (function () {
-			// we only care about images, for now
-			var map = {
-				"bmp": "image/bmp",
-				"cmx": "image/x-cmx",
-				"cod": "image/cis-cod",
-				"gif": "image/gif",
-				"ico": "image/x-icon",
-				"ief": "image/ief",
-				"jfif": "image/pipeg",
-				"jpe": "image/jpeg",
-				"jpeg": "image/jpeg",
-				"jpg": "image/jpeg",
-				"pbm": "image/x-portable-bitmap",
-				"pgm": "image/x-portable-graymap",
-				"pnm": "image/x-portable-anymap",
-				"ppm": "image/x-portable-pixmap",
-				"ras": "image/x-cmu-raster",
-				"rgb": "image/x-rgb",
-				"svg": "image/svg+xml",
-				"tif": "image/tiff",
-				"tiff": "image/tiff",
-				"xbm": "image/x-xbitmap",
-				"xpm": "image/x-xpixmap",
-				"xwd": "image/x-xwindowdump"
-			};
+		extensionMimeTypeMap: {
+			"bmp": "image/bmp",
+			"cmx": "image/x-cmx",
+			"cod": "image/cis-cod",
+			"gif": "image/gif",
+			"ico": "image/x-icon",
+			"ief": "image/ief",
+			"jfif": "image/pipeg",
+			"jpe": "image/jpeg",
+			"jpeg": "image/jpeg",
+			"jpg": "image/jpeg",
+			"png": "image/png",
+			"pbm": "image/x-portable-bitmap",
+			"pgm": "image/x-portable-graymap",
+			"pnm": "image/x-portable-anymap",
+			"ppm": "image/x-portable-pixmap",
+			"ras": "image/x-cmu-raster",
+			"rgb": "image/x-rgb",
+			"svg": "image/svg+xml",
+			"tif": "image/tiff",
+			"tiff": "image/tiff",
+			"xbm": "image/x-xbitmap",
+			"xpm": "image/x-xpixmap",
+			"xwd": "image/x-xwindowdump"
+		},
 
-			return function (path) {
-				var extension = utils.fileExtension(path);
-				return map[extension] || '*';
-			};
-		})(),
+		fileMimeType: function (path) {
+			utils.extensionToMimeType(utils.fileExtension(path));
+		},
+
+		extensionToMimeType: function(extension) {
+			return utils.extensionMimeTypeMap[extension] || '*';
+		},
 
 		isRelativeUrl: function(url) {
 			var firstChar = url.slice(0, 1);
@@ -264,9 +271,12 @@
 					value = options.skipToType[key] ? decodeURI(val[1]) : utils.toType(decodeURI(val[1]));
 
 				if (key) {
+					if (key.substr(-2, 2) === '[]') {
+						key = key.slice(0, -2);
+					}
 					if (!hash[key]) {
 						hash[key] = value;
-					} else {
+					} else {						
 						if (!$.isArray(hash[key])) {
 							hash[key] = [hash[key]];
 						}
@@ -285,24 +295,6 @@
 			var a = document.createElement('a');
 			a.href = url;
 			return a;
-		},
-
-		getQueryParams: function() {
-			var search = window.location.search.slice(1),
-				data = {};
-
-			search = search.split('&');
-			for(var x=0,numParams=search.length,temp;x<numParams;x++) {
-				temp = search[x].split('=');
-				if (temp[0].substr(-2, 2) !== '[]') {
-					data[temp[0]] = temp[1];
-				} else {
-					data[temp[0].slice(0, -2)] = data[temp[0].slice(0, -2)] || [];
-					data[temp[0].slice(0, -2)].push(temp[1]);
-				}
-			}
-
-			return data;
 		},
 
 		// return boolean if string 'true' or string 'false', or if a parsable string which is a number

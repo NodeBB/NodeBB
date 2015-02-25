@@ -2,7 +2,7 @@
 
 /* globals app, define, utils, socket*/
 
-define('forum/search', ['search'], function(searchModule) {
+define('forum/search', ['search', 'autocomplete'], function(searchModule, autocomplete) {
 	var	Search = {};
 
 	Search.init = function() {
@@ -44,7 +44,7 @@ define('forum/search', ['search'], function(searchModule) {
 			in: form.find('#search-in').val()
 		};
 
-		if (searchData.in === 'posts' || searchData.in === 'titlespost' || searchData.in === 'titles') {
+		if (searchData.in === 'posts' || searchData.in === 'titlesposts' || searchData.in === 'titles') {
 			searchData.by = form.find('#posted-by-user').val();
 			searchData.categories = form.find('#posted-in-categories').val();
 			searchData.searchChildren = form.find('#search-children').is(':checked');
@@ -80,8 +80,8 @@ define('forum/search', ['search'], function(searchModule) {
 				$('#posted-by-user').val(params.by);
 			}
 
-			if ((params['categories[]'] || params.categories)) {
-				$('#posted-in-categories').val(params['categories[]'] || params.categories);
+			if (params.categories) {
+				$('#posted-in-categories').val(params.categories);
 			}
 
 			if (params.searchChildren) {
@@ -156,25 +156,7 @@ define('forum/search', ['search'], function(searchModule) {
 	}
 
 	function enableAutoComplete() {
-		var input = $('#posted-by-user');
-		input.autocomplete({
-			delay: 100,
-			source: function(request, response) {
-				socket.emit('user.search', {query: request.term}, function(err, result) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-
-					if (result && result.users) {
-						var names = result.users.map(function(user) {
-							return user && user.username;
-						});
-						response(names);
-					}
-					$('.ui-autocomplete a').attr('data-ajaxify', 'false');
-				});
-			}
-		});
+		autocomplete.user($('#posted-by-user'));
 	}
 
 	return Search;

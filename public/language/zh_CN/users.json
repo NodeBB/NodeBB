@@ -5,8 +5,8 @@
     "search": "搜索",
     "enter_username": "输入用户名搜索",
     "load_more": "加载更多",
-    "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
-    "filter-by": "Filter By",
-    "online-only": "Online only",
-    "picture-only": "Picture only"
+    "users-found-search-took": "找到 %1 位用户！搜索耗时 %2 毫秒。",
+    "filter-by": "过滤选项",
+    "online-only": "只看在线",
+    "picture-only": "只看图片"
 }

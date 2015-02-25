@@ -5,8 +5,10 @@ var uploadsController = {},
 	fs = require('fs'),
 	path = require('path'),
 	async = require('async'),
+	validator = require('validator'),
 
 	meta = require('../meta'),
+	file = require('../file'),
 	plugins = require('../plugins'),
 	utils = require('../../public/src/utils'),
 	image = require('../image');
@@ -42,12 +44,18 @@ uploadsController.upload = function(req, res, filesIterator, next) {
 };
 
 uploadsController.uploadPost = function(req, res, next) {
-	uploadsController.upload(req, res, function(file, next) {
-		if (file.type.match(/image./)) {
-			uploadImage(req.user.uid, file, next);
-		} else {
-			uploadFile(req.user.uid, file, next);
-		}
+	uploadsController.upload(req, res, function(uploadedFile, next) {
+		file.isFileTypeAllowed(uploadedFile.path, file.allowedExtensions(), function(err) {
+			if (err) {
+				return next(err);
+			}
+
+			if (uploadedFile.type.match(/image./)) {
+				uploadImage(req.user.uid, uploadedFile, next);
+			} else {
+				uploadFile(req.user.uid, uploadedFile, next);
+			}
+		});
 	}, next);
 };
 
@@ -57,18 +65,24 @@ uploadsController.uploadThumb = function(req, res, next) {
 		return next(new Error('[[error:topic-thumbnails-are-disabled]]'));
 	}
 
-	uploadsController.upload(req, res, function(file, next) {
-		if(file.type.match(/image./)) {
-			var size = meta.config.topicThumbSize || 120;
-			image.resizeImage(file.path, path.extname(file.name), size, size, function(err) {
-				if (err) {
-					return next(err);
-				}
-				uploadImage(req.user.uid, file, next);
-			});
-		} else {
-			next(new Error('[[error:invalid-file]]'));
-		}
+	uploadsController.upload(req, res, function(uploadedFile, next) {
+		file.isFileTypeAllowed(uploadedFile.path, file.allowedExtensions(), function(err) {
+			if (err) {
+				return next(err);
+			}
+
+			if (uploadedFile.type.match(/image./)) {
+				var size = meta.config.topicThumbSize || 120;
+				image.resizeImage(uploadedFile.path, path.extname(uploadedFile.name), size, size, function(err) {
+					if (err) {
+						return next(err);
+					}
+					uploadImage(req.user.uid, uploadedFile, next);
+				});
+			} else {
+				next(new Error('[[error:invalid-file]]'));
+			}
+		});
 	}, next);
 };
 
@@ -88,32 +102,34 @@ function uploadImage(uid, image, callback) {
 	}
 }
 
-function uploadFile(uid, file, callback) {
+function uploadFile(uid, uploadedFile, callback) {
 	if (plugins.hasListeners('filter:uploadFile')) {
-		return plugins.fireHook('filter:uploadFile', {file: file, uid: uid}, callback);
+		return plugins.fireHook('filter:uploadFile', {file: uploadedFile, uid: uid}, callback);
 	}
 
 	if (parseInt(meta.config.allowFileUploads, 10) !== 1) {
 		return callback(new Error('[[error:uploads-are-disabled]]'));
 	}
 
-	if (!file) {
+	if (!uploadedFile) {
 		return callback(new Error('[[error:invalid-file]]'));
 	}
 
-	if (file.size > parseInt(meta.config.maximumFileSize, 10) * 1024) {
+	if (uploadedFile.size > parseInt(meta.config.maximumFileSize, 10) * 1024) {
 		return callback(new Error('[[error:file-too-big, ' + meta.config.maximumFileSize + ']]'));
 	}
+	
+	var filename = uploadedFile.name || 'upload';
 
-	var filename = 'upload-' + utils.generateUUID() + path.extname(file.name);
-	require('../file').saveFileToLocal(filename, 'files', file.path, function(err, upload) {
+	filename = Date.now() + '-' + validator.escape(filename).substr(0, 255);
+	file.saveFileToLocal(filename, 'files', uploadedFile.path, function(err, upload) {
 		if (err) {
 			return callback(err);
 		}
 
 		callback(null, {
 			url: upload.url,
-			name: file.name
+			name: uploadedFile.name
 		});
 	});
 }

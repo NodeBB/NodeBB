@@ -153,9 +153,10 @@ module.exports = function(privileges) {
 		helpers.some([
 			function(next) {
 				posts.getCidByPid(pid, function(err, cid) {
-					if (err) {
-						return next(err);
+					if (err || !cid) {
+						return next(err, false);
 					}
+					
 					user.isModerator(uid, cid, next);
 				});
 			},

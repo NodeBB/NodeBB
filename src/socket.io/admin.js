@@ -25,6 +25,7 @@ var	async = require('async'),
 		categories: require('./admin/categories'),
 		groups: require('./admin/groups'),
 		tags: require('./admin/tags'),
+		rewards: require('./admin/rewards'),
 		themes: {},
 		plugins: {},
 		widgets: {},
@@ -107,6 +108,20 @@ SocketAdmin.plugins.toggleActive = function(socket, plugin_id, callback) {
 
 SocketAdmin.plugins.toggleInstall = function(socket, data, callback) {
 	plugins.toggleInstall(data.id, data.version, callback);
+};
+
+SocketAdmin.plugins.getActive = function(socket, data, callback) {
+	plugins.getActive(callback);
+};
+
+SocketAdmin.plugins.orderActivePlugins = function(socket, data, callback) {
+	async.each(data, function(plugin, next) {
+		if (plugin && plugin.name) {
+			db.sortedSetAdd('plugins:active', plugin.order || 0, plugin.name, next);
+		} else {
+			next();
+		}		
+	}, callback);
 };
 
 SocketAdmin.plugins.upgrade = function(socket, data, callback) {
@@ -311,14 +326,24 @@ SocketAdmin.dismissAllFlags = function(socket, data, callback) {
 	posts.dismissAllFlags(callback);
 };
 
-SocketAdmin.getMoreFlags = function(socket, after, callback) {
-	if (!parseInt(after, 10)) {
+SocketAdmin.getMoreFlags = function(socket, data, callback) {
+	if (!data || !parseInt(data.after, 10)) {
 		return callback('[[error:invalid-data]]');
 	}
-	after = parseInt(after, 10);
-	posts.getFlags(socket.uid, after, after + 19, function(err, posts) {
-		callback(err, {posts: posts, next: after + 20});
-	});
+	var sortBy = data.sortBy || 'count';
+	var byUsername = data.byUsername ||  '';
+	var start = parseInt(data.after, 10);
+	var end = start + 19;
+	if (byUsername) {
+		posts.getUserFlags(byUsername, sortBy, socket.uid, start, end, function(err, posts) {
+			callback(err, {posts: posts, next: end + 1});
+		});
+	} else {		
+		var set = sortBy === 'count' ? 'posts:flags:count' : 'posts:flagged';
+		posts.getFlags(set, socket.uid, start, end, function(err, posts) {
+			callback(err, {posts: posts, next: end + 1});
+		});
+	}	
 };
 
 SocketAdmin.takeHeapSnapshot = function(socket, data, callback) {

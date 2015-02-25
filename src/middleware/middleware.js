@@ -15,6 +15,7 @@ var app,
 	meta = require('./../meta'),
 	translator = require('./../../public/src/translator'),
 	user = require('./../user'),
+	groups = require('./../groups'),
 	db = require('./../database'),
 	categories = require('./../categories'),
 	topics = require('./../topics'),
@@ -317,7 +318,7 @@ middleware.renderHeader = function(req, res, callback) {
 			},
 			user: function(next) {
 				if (uid) {
-					user.getUserFields(uid, ['username', 'userslug', 'picture', 'status', 'email:confirmed', 'banned'], next);
+					user.getUserFields(uid, ['username', 'userslug', 'email', 'picture', 'status', 'email:confirmed', 'banned'], next);
 				} else {
 					next(null, {
 						username: '[[global:guest]]',
@@ -342,7 +343,7 @@ middleware.renderHeader = function(req, res, callback) {
 			results.user.isAdmin = results.isAdmin || false;
 			results.user.uid = parseInt(results.user.uid, 10);
 			results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
-
+			
 			templateValues.browserTitle = results.title;
 			templateValues.isAdmin = results.user.isAdmin;
 			templateValues.user = results.user;
@@ -516,6 +517,17 @@ middleware.publicTagListing = function(req, res, next) {
 	} else {
 		controllers.helpers.notAllowed(req, res);
 	}
+};
+
+middleware.exposeGroupName = function(req, res, next) {
+	if (!req.params.hasOwnProperty('slug')) { return next(); }
+
+	groups.getGroupNameByGroupSlug(req.params.slug, function(err, groupName) {
+		if (err) { return next(err); }
+
+		res.locals.groupName = groupName;
+		next();
+	});
 };
 
 module.exports = function(webserver) {

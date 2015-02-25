@@ -263,7 +263,7 @@ describe('Hash methods', function() {
 
 	describe('deleteObjectField()', function() {
 		before(function(done) {
-			db.setObject('testObject10', {foo: 'bar', delete: 'this'}, done);
+			db.setObject('testObject10', {foo: 'bar', delete: 'this', delete1: 'this', delete2: 'this'}, done);
 		});
 
 		it('should delete an objects field', function(done) {
@@ -273,6 +273,22 @@ describe('Hash methods', function() {
 				db.isObjectField('testObject10', 'delete', function(err, isField) {
 					assert.equal(err, null);
 					assert.equal(isField, false);
+					done();
+				});
+			});
+		});
+
+		it('should delete multiple fields of the object', function(done) {
+			db.deleteObjectFields('testObject10', ['delete1', 'delete2'], function(err) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 1);
+				async.parallel({
+					delete1: async.apply(db.isObjectField, 'testObject10', 'delete1'),
+					delete2: async.apply(db.isObjectField, 'testObject10', 'delete2')
+				}, function(err, results) {
+					assert.ifError(err);
+					assert.equal(results.delete1, false);
+					assert.equal(results.delete2, false);
 					done();
 				});
 			});

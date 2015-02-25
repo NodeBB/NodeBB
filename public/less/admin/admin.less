@@ -10,6 +10,7 @@
 @import "./appearance/customise";
 @import "./appearance/themes";
 @import "./extend/plugins";
+@import "./extend/rewards";
 @import "./advanced/database";
 
 @import "./modules/alerts";
@@ -183,15 +184,18 @@
 		.box-header-font
 	}
 
-	#user_dropdown {
-		padding: 6px;
+	#user_label {
+        a {
+            padding-top: 13px;
+            padding-bottom: 13px;
 
-		img {
-			width: 30px;
-			height: 30px;
-			vertical-align: -88%;
-			margin-right: 5px;
-		}
+            img {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                border: 1px solid #454;
+            }
+        }
 	}
 
 	.icon-container {
@@ -213,24 +217,39 @@
 		}
 	}
 
-	.navbar {
-		padding: 0 5px;
+    .navbar-static-top, .navbar-fixed-top {
+        box-shadow: 0px -3px 12px rgba(0, 0, 0, 0.5);
+    }
 
-		.nav-home a, .nav-home a:hover {
-			width: 30px;
-			height: 30px;
-			padding: 5px;
-			text-align: center;
-			margin-top: 10px;
-			background: #DDD;
+    .navbar-header > .navbar-toggle {
+        margin-right: 8px;
+    }
 
-			i {
-				color: black;
-				font-size: 17px;
-			}
-		}
+    .navbar-nav {
+        margin-top: 0;
+        margin-bottom: 0;
 
-	}
+        >li {
+            >a {
+                padding-top: 15px;
+                padding-bottom: 15px;
+            }
+
+            >a:hover, >a:focus {
+                color: @gray-dark;
+                background-color: @gray-light;
+            }
+
+            >#reconnect {
+                color: @gray-light;
+            }
+
+            >#reconnect:focus, >#reconnect:hover {
+                color: @gray-light;
+                background-color: transparent;
+            }
+        }
+    }
 
 	#acp-search {
 		input {

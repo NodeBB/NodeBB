@@ -12,6 +12,7 @@
     "notify_me": "このスレッドに新しいポストが投稿された際に通知する",
     "quote": "引用",
     "reply": "返答",
+    "guest-login-reply": "Log in to reply",
     "edit": "編集",
     "delete": "削除",
     "purge": "Purge",

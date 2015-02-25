@@ -16,6 +16,7 @@ var async = require('async'),
 	helpers = require('./helpers');
 
 var Controllers = {
+	posts: require('./posts'),
 	topics: require('./topics'),
 	categories: require('./categories'),
 	tags: require('./tags'),
@@ -30,13 +31,15 @@ var Controllers = {
 
 
 Controllers.home = function(req, res, next) {
-	var route = meta.config.homePageRoute || 'home';
-	if (route === 'home') {
+	var route = meta.config.homePageRoute || 'categories';
+	if (route === 'categories') {
 		return Controllers.categories.list(req, res, next);
 	} else if (route === 'recent') {
 		Controllers.categories.recent(req, res, next);
 	} else if (route === 'popular') {
 		Controllers.categories.popular(req, res, next);
+	} else {
+		next();
 	}
 };
 
@@ -68,6 +71,7 @@ Controllers.login = function(req, res, next) {
 	data.showResetLink = emailersPresent;
 	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1;
 	data.allowRegistration = parseInt(meta.config.allowRegistration, 10) === 1;
+	data.allowLoginWith = '[[login:' + (meta.config.allowLoginWith || 'username-email') + ']]';
 	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:login]]'}]);
 	data.error = req.flash('error')[0];
 

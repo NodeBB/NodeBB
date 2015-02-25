@@ -47,6 +47,7 @@
 						<li class="nav-header"><i class="fa fa-fw fa-wrench"></i> Extend</li>
 						<li><a href="{relative_path}/admin/extend/plugins">Plugins</a></li>
 						<li><a href="{relative_path}/admin/extend/widgets">Widgets</a></li>
+						<li><a href="{relative_path}/admin/extend/rewards">Rewards</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">

@@ -101,6 +101,34 @@ SocketGroups.reject = function(socket, data, callback) {
 	});
 };
 
+SocketGroups.acceptInvite = function(socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	groups.isInvited(socket.uid, data.groupName, function(err, invited) {
+		if (!invited) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+
+		groups.acceptMembership(data.groupName, socket.uid, callback);
+	});
+};
+
+SocketGroups.rejectInvite = function(socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	groups.isInvited(socket.uid, data.groupName, function(err, invited) {
+		if (!invited) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+
+		groups.rejectMembership(data.groupName, socket.uid, callback);
+	});
+};
+
 SocketGroups.update = function(socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));

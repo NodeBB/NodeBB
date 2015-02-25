@@ -316,8 +316,7 @@ define('composer/uploads', ['composer/preview', 'csrf'], function(preview, csrf)
 
 	function onUploadError(xhr) {
 		xhr = maybeParse(xhr);
-
-		app.alertError('[[error:upload-error, ' + xhr.responseText + ']]');
+		app.alertError(xhr.responseText);
 	}
 
 	return uploads;

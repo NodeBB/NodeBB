@@ -108,7 +108,7 @@ module.exports = function(Meta) {
 		fs.exists(cachePath, function(exists) {
 			if (exists) {
 				if (nconf.get('isPrimary') === 'true') {
-					winston.verbose('[meta/css] (Experimental) Reading stylesheets from file');
+					winston.verbose('[meta/css] Reading stylesheets from file');
 					async.map([cachePath, acpCachePath], fs.readFile, function(err, files) {
 						Meta.css.cache = files[0];
 						Meta.css.acpCache = files[1];
@@ -120,7 +120,7 @@ module.exports = function(Meta) {
 					callback();
 				}
 			} else {
-				winston.warn('[meta/css] (Experimental) No stylesheets found on disk, re-minifying');
+				winston.warn('[meta/css] No stylesheets found on disk, re-minifying');
 				Meta.css.minify.apply(Meta.css, arguments);
 			}
 		});

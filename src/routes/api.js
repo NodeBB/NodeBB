@@ -16,6 +16,7 @@ module.exports =  function(app, middleware, controllers) {
 	router.get('/widgets/render', controllers.api.renderWidgets);
 
 	router.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
+	router.get('/post/:pid', controllers.posts.getPost);
 	router.get('/get_templates_listing', templatesController.getTemplatesListing);
 	router.get('/categories/:cid/moderators', getModerators);
 	router.get('/recent/posts/:term?', getRecentPosts);

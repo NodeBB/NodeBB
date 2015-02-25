@@ -1,5 +1,5 @@
 "use strict";
-/*global define, templates, socket, ajaxify, app, admin, bootbox*/
+/*global define, templates, socket, ajaxify, app, admin, bootbox, utils, config, translator */
 
 define('admin/manage/groups', [
 	'iconSelect',
@@ -50,19 +50,13 @@ define('admin/manage/groups', [
 
 			socket.emit('admin.groups.create', submitObj, function(err) {
 				if (err) {
-					switch (err) {
-						case 'group-exists':
-							errorText = '<strong>Please choose another name</strong><p>There seems to be a group with this name already.</p>';
-							break;
-						case 'name-too-short':
-							errorText = '<strong>Please specify a group name</strong><p>A group name is required for administrative purposes.</p>';
-							break;
-						default:
-							errorText = '<strong>Uh-Oh</strong><p>There was a problem creating your group. Please try again later!</p>';
-							break;
+					if (err.hasOwnProperty('message') && utils.hasLanguageKey(err.message)) {
+						translator.translate(err.message, config.defaultLang, function(translated) {
+							createModalError.html(translated).removeClass('hide');
+						});
+					} else {
+						createModalError.html('<strong>Uh-Oh</strong><p>There was a problem creating your group. Please try again later!</p>').removeClass('hide');
 					}
-
-					createModalError.html(errorText).removeClass('hide');
 				} else {
 					createModalError.addClass('hide');
 					createGroupName.val('');

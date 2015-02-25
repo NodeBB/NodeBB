@@ -10,7 +10,7 @@ var async = require('async'),
 module.exports = function(User) {
 
 	User.search = function(data, callback) {
-		var query = data.query;
+		var query = data.query || '';
 		var searchBy = data.searchBy || ['username'];
 		var startsWith = data.hasOwnProperty('startsWith') ? data.startsWith : true;
 		var page = data.page || 1;

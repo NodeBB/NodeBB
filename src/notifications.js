@@ -55,11 +55,12 @@ var async = require('async'),
 				}
 
 				if (notification.from && !notification.image) {
-					User.getUserField(notification.from, 'picture', function(err, picture) {
+					User.getUserFields(notification.from, ['username', 'userslug', 'picture'], function(err, userData) {
 						if (err) {
 							return next(err);
 						}
-						notification.image = picture;
+						notification.image = userData.picture;
+						notification.user = userData;
 						next(null, notification);
 					});
 					return;
@@ -221,6 +222,22 @@ var async = require('async'),
 			return callback();
 		}
 		Notifications.markReadMultiple([nid], uid, callback);
+	};
+
+	Notifications.markUnread = function(nid, uid, callback) {
+		callback = callback || function() {};
+		if (!parseInt(uid, 10) || !nid) {
+			return callback();
+		}
+
+		db.getObjectField(nid, 'datetime', function(err, datetime) {
+			datetime = datetime || Date.now();
+
+			async.parallel([
+				async.apply(db.sortedSetRemove, 'uid:' + uid + ':notifications:read', nid),
+				async.apply(db.sortedSetAdd, 'uid:' + uid + ':notifications:unread', datetime, nid)
+			], callback);
+		});
 	};
 
 	Notifications.markReadMultiple = function(nids, uid, callback) {

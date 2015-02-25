@@ -12,6 +12,7 @@
     "notify_me": "Powiadamiaj mnie o nowych odpowiedziach w tym wątku",
     "quote": "Cytuj",
     "reply": "Odpowiedz",
+    "guest-login-reply": "Log in to reply",
     "edit": "Edytuj",
     "delete": "Usuń",
     "purge": "Wymaż",
@@ -74,7 +75,7 @@
     "fork_no_pids": "Nie zaznaczyłeś żadnych postów!",
     "fork_success": "Udało się skopiować wątek. Kliknij tutaj, aby do niego przejść.",
     "composer.title_placeholder": "Wpisz tytuł wątku tutaj",
-    "composer.handle_placeholder": "Name",
+    "composer.handle_placeholder": "Nazwa",
     "composer.discard": "Odrzuć",
     "composer.submit": "Wyślij",
     "composer.replying_to": "Odpowiadanie na %1",
@@ -94,5 +95,5 @@
     "oldest_to_newest": "Najpierw najstarsze",
     "newest_to_oldest": "Najpierw najnowsze",
     "most_votes": "Najwięcej głosów",
-    "most_posts": "Most posts"
+    "most_posts": "Najwięcej postów"
 }

@@ -200,13 +200,25 @@ module.exports = function(db, module) {
 	};
 
 	module.deleteObjectField = function(key, field, callback) {
+		module.deleteObjectFields(key, [field], callback);
+	};
+
+	module.deleteObjectFields = function(key, fields, callback) {
 		callback = callback || helpers.noop;
-		if (!key || !field) {
+		if (!key || !Array.isArray(fields) || !fields.length) {
 			return callback();
 		}
+		fields = fields.filter(Boolean);
+		if (!fields.length) {
+			return callback();
+		}
+
 		var data = {};
-		field = helpers.fieldToString(field);
-		data[field] = '';
+		fields.forEach(function(field) {
+			field = helpers.fieldToString(field);
+			data[field] = '';
+		});
+
 		db.collection('objects').update({_key: key}, {$unset : data}, function(err, res) {
 			callback(err);
 		});

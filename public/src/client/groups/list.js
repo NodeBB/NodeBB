@@ -47,6 +47,7 @@ define('forum/groups/list', function() {
 			query: queryEl.val(),
 			options: {
 				expand: true,
+				truncateUserList: true,
 				sort: sortEl.val()
 			}
 		}, function(err, groups) {

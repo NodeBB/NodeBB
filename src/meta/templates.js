@@ -15,7 +15,13 @@ var mkdirp = require('mkdirp'),
 	Templates = {};
 
 Templates.compile = function(callback) {
-	if (nconf.get('isPrimary') === 'false') {
+	var fromFile = nconf.get('from-file') || '';
+
+	if (nconf.get('isPrimary') === 'false' || fromFile.match('tpl')) {
+		if (fromFile.match('tpl')) {
+			winston.info('[minifier] Compiling templates skipped');
+		}
+
 		emitter.emit('templates:compiled');
 		if (callback) {
 			callback();

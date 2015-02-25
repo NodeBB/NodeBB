@@ -1,11 +1,11 @@
 {
     "chat.chatting_with": "Discuter avec <span id=\"chat-with-name\"></span>",
-    "chat.placeholder": "Taper votre message ici, appuyer sur Entrer pour envoyer",
+    "chat.placeholder": "Tapez votre message ici, appuyez sur Entrer pour envoyer",
     "chat.send": "Envoyer",
     "chat.no_active": "Vous n'avez aucune discussion en cours.",
     "chat.user_typing": "%1 est en train d'écrire ...",
     "chat.user_has_messaged_you": "%1 vous a envoyé un message.",
-    "chat.see_all": "Voir toutes les Discussions",
+    "chat.see_all": "Voir toutes les discussions",
     "chat.no-messages": "Veuillez sélectionner un destinataire pour voir l'historique des discussions",
     "chat.recent-chats": "Discussions récentes",
     "chat.contacts": "Contacts",

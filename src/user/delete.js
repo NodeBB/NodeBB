@@ -80,7 +80,7 @@ module.exports = function(User) {
 						'uid:' + uid + ':topics', 'uid:' + uid + ':posts',
 						'uid:' + uid + ':chats', 'uid:' + uid + ':chats:unread',
 						'uid:' + uid + ':upvote', 'uid:' + uid + ':downvote',
-						'uid:' + uid + ':ignored:cids'
+						'uid:' + uid + ':ignored:cids', 'uid:' + uid + ':flag:pids'
 					];
 					db.deleteAll(keys, next);
 				},

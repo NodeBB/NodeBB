@@ -339,7 +339,7 @@ define('forum/category', [
 		infinitescroll.loadMore('categories.loadMore', {
 			cid: ajaxify.variables.get('category_id'),
 			after: after,
-			author: utils.getQueryParams().author
+			author: utils.params().author
 		}, function (data, done) {
 
 			if (data.topics && data.topics.length) {

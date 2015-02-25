@@ -23,7 +23,7 @@ define('topicSelect', function() {
 				return false;
 			}
 
-			var isSelected = select.hasClass('fa-check-square-o');
+			var isSelected = select.parents('[data-tid]').hasClass('selected');
 			toggleSelect(select, !isSelected);
 			lastSelected = select;
 			if (typeof onSelect === 'function') {

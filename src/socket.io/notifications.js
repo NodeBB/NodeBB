@@ -1,7 +1,7 @@
 "use strict";
 
 var	user = require('../user'),
-
+	notifications = require('../notifications'),
 	SocketNotifs = {};
 
 SocketNotifs.get = function(socket, data, callback) {
@@ -18,6 +18,18 @@ SocketNotifs.deleteAll = function(socket, data, callback) {
 	}
 
 	user.notifications.deleteAll(socket.uid, callback);
+};
+
+SocketNotifs.markRead = function(socket, nid, callback) {
+	notifications.markRead(nid, socket.uid, callback);
+};
+
+SocketNotifs.markUnread = function(socket, nid, callback) {
+	notifications.markUnread(nid, socket.uid, callback);
+};
+
+SocketNotifs.markAllRead = function(socket, data, callback) {
+	notifications.markAllRead(socket.uid, callback);
 };
 
 module.exports = SocketNotifs;

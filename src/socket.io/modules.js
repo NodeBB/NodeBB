@@ -12,7 +12,6 @@ var	nconf = require('nconf'),
 	meta = require('../meta'),
 	Messaging = require('../messaging'),
 	user = require('../user'),
-	notifications = require('../notifications'),
 	plugins = require('../plugins'),
 	utils = require('../../public/src/utils'),
 	privileges = require('../privileges'),
@@ -23,7 +22,6 @@ var	nconf = require('nconf'),
 	SocketModules = {
 		composer: {},
 		chats: {},
-		notifications: {},
 		sounds: {},
 		settings: {}
 	};
@@ -114,6 +112,16 @@ SocketModules.composer.stopNotifyTyping = function(socket, data) {
 		return;
 	}
 	server.in('topic_' + data.tid).emit('event:topic.stopNotifyTyping', data);
+};
+
+SocketModules.composer.getFormattingOptions = function(socket, data, callback) {
+	plugins.fireHook('filter:composer.formatting', {
+		options: [
+			// { className: 'fa fa-bold' }    Just an example of what needs to be set via plugins
+		]
+	}, function(err, payload) {
+		callback(err, payload.options);
+	});
 };
 
 /* Chat */
@@ -246,14 +254,6 @@ SocketModules.chats.getRecentChats = function(socket, data, callback) {
 	Messaging.getRecentChats(socket.uid, start, end, callback);
 };
 
-/* Notifications */
-SocketModules.notifications.markRead = function(socket, nid) {
-	notifications.markRead(nid, socket.uid);
-};
-
-SocketModules.notifications.markAllRead = function(socket, data, callback) {
-	notifications.markAllRead(socket.uid, callback);
-};
 
 /* Sounds */
 SocketModules.sounds.getSounds = function(socket, data, callback) {

@@ -80,7 +80,14 @@ define('admin/extend/widgets', function() {
 					for (var d in data) {
 						if (data.hasOwnProperty(d)) {
 							if (data[d].name) {
-								widgetData[data[d].name] = data[d].value;
+								if (widgetData[data[d].name]) {
+									if(!Array.isArray(widgetData[data[d].name])) {
+										widgetData[data[d].name] = [ widgetData[data[d].name] ];
+									}
+									widgetData[data[d].name].push(data[d].value);
+								}else{
+									widgetData[data[d].name] = data[d].value;
+								}
 							}
 						}
 					}
@@ -162,7 +169,7 @@ define('admin/extend/widgets', function() {
 				title.text(title.text() + ' - ' + data.title);
 			}
 
-			widget.find('input, textarea').each(function() {
+			widget.find('input, textarea, select').each(function() {
 				var input = $(this),
 					value = data[input.attr('name')];
 

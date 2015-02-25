@@ -30,7 +30,7 @@ uploadsController.uploadFavicon = function(req, res, next) {
 	var uploadedFile = req.files.files[0];
 	var allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'];
 
-	if (validateUpload(res, req, next, uploadedFile, allowedTypes)) {
+	if (validateUpload(req, res, next, uploadedFile, allowedTypes)) {
 		file.saveFileToLocal('favicon.ico', 'files', uploadedFile.path, function(err, image) {
 			fs.unlink(uploadedFile.path);
 			if (err) {
@@ -63,7 +63,7 @@ function validateUpload(req, res, next, uploadedFile, allowedTypes) {
 	if (allowedTypes.indexOf(uploadedFile.type) === -1) {
 		fs.unlink(uploadedFile.path);
 
-		next(new Error('[[error:invalid-image-type, ' + allowedTypes.join(', ') + ']]'));
+		res.json({error: '[[error:invalid-image-type, ' + allowedTypes.join(', ') + ']]'});
 		return false;
 	}
 

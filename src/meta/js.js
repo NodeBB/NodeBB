@@ -213,7 +213,7 @@ module.exports = function(Meta) {
 		fs.exists(scriptPath, function(exists) {
 			if (exists) {
 				if (nconf.get('isPrimary') === 'true') {
-					winston.verbose('[meta/js] (Experimental) Reading client-side scripts from file');
+					winston.verbose('[meta/js] Reading client-side scripts from file');
 					async.map([scriptPath, mapPath], fs.readFile, function(err, files) {
 						Meta.js.cache = files[0];
 						Meta.js.map = files[1];
@@ -225,7 +225,7 @@ module.exports = function(Meta) {
 					callback();
 				}
 			} else {
-				winston.warn('[meta/js] (Experimental) No script file found on disk, re-minifying');
+				winston.warn('[meta/js] No script file found on disk, re-minifying');
 				Meta.js.minify.apply(Meta.js, arguments);
 			}
 		});

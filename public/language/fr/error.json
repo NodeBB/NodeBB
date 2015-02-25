@@ -17,7 +17,7 @@
     "invalid-pagination-value": "Valeur de pagination invalide",
     "username-taken": "Nom d’utilisateur déjà utilisé",
     "email-taken": "Email déjà utilisé",
-    "email-not-confirmed": "Votre adresse email n'est pas confirmée, cliquer ici pour la valider.",
+    "email-not-confirmed": "Votre adresse email n'est pas confirmée, cliquez ici pour la valider.",
     "email-not-confirmed-chat": "Vous ne pouver discuter tant que votre email n'est pas confirmé",
     "username-too-short": "Nom d'utilisateur trop court",
     "username-too-long": "Nom d'utilisateur trop long",
