@@ -77,7 +77,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 					return app.alertError(err.message);
 				}
 
-				doneRemovingTids([tid]);
+				doneRemovingTids([tid], true);
 			});
 		});
 
