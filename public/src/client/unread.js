@@ -123,24 +123,19 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 	}
 
 	function createCategoryLinks(categories) {
-		categories = categories.filter(function(category) {
-			return !category.disabled;
-		});
-
-		for(var i=0; i<categories.length; ++i) {
+		for (var i=0; i<categories.length; ++i) {
 			createCategoryLink(categories[i]);
 		}
 	}
 
 	function createCategoryLink(category) {
-
 		var link = $('<a role="menuitem" href="#"></a>');
+		
 		if (category.icon) {
 			link.append('<i class="fa fa-fw ' + category.icon + '"></i> ' + category.name);
 		} else {
 			link.append(category.name);
 		}
-
 
 		$('<li role="presentation" class="category" data-cid="' + category.cid + '"></li>')
 			.append(link)
