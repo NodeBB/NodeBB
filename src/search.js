@@ -58,14 +58,14 @@ function searchInContent(query, data, callback) {
 	async.parallel({
 		pids: function(next) {
 			if (data.searchIn === 'posts' || data.searchIn === 'titlesposts') {
-				searchQuery('post', query, next);
+				search.searchQuery('post', query, next);
 			} else {
 				next(null, []);
 			}
 		},
 		tids: function(next) {
 			if (data.searchIn === 'titles' || data.searchIn === 'titlesposts') {
-				searchQuery('topic', query, next);
+				search.searchQuery('topic', query, next);
 			} else {
 				next(null, []);
 			}
@@ -93,6 +93,7 @@ function searchInContent(query, data, callback) {
 						mainPids.push(pid);
 					}
 				});
+				
 				privileges.posts.filter('read', mainPids, data.uid, next);
 			},
 			function(pids, next) {
@@ -475,10 +476,10 @@ function getMainPids(tids, callback) {
 	});
 }
 
-function searchQuery(index, query, callback) {
+search.searchQuery = function(index, query, callback) {
 	plugins.fireHook('filter:search.query', {
 		index: index,
 		query: query
 	}, callback);
-}
+};
 

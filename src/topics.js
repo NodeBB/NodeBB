@@ -25,6 +25,7 @@ var async = require('async'),
 	require('./topics/follow')(Topics);
 	require('./topics/tags')(Topics);
 	require('./topics/teaser')(Topics);
+	require('./topics/suggested')(Topics);
 
 	Topics.exists = function(tid, callback) {
 		db.isSortedSetMember('topics:tid', tid, callback);
