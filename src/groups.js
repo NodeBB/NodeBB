@@ -135,7 +135,19 @@ var async = require('async'),
 										userObj.isOwner = isOwner;
 										next(null, userObj);
 									});
-								}, next);
+								}, function(err, users) {
+									if (err) {
+										return next();
+									}
+
+									next(null, users.sort(function(a, b) {
+										if (a.isOwner === b.isOwner) {
+											return 0;
+										} else {
+											return a.isOwner && !b.isOwner ? -1 : 1;
+										}
+									}));
+								});
 							}
 						], next);
 					} else {
