@@ -48,6 +48,7 @@
 																<!-- ENDIF categories.disabled -->
 															</li>
 															<li><a href="#" class="purge"><i class="fa fa-eraser"></i> Purge</a></li>
+															<li><a href="#" class="duplicate"><i class="fa fa-copy"></i> Duplicate</a></li>
 														</ul>
 
 
