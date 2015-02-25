@@ -4,9 +4,9 @@
 			<div class="panel-heading">Active Navigation</div>
 			<div class="panel-body">
 				<ul id="enabled">
-					<form class="main inline-block">
-						<!-- BEGIN enabled -->
-						<li class="well">
+					<!-- BEGIN enabled -->
+					<li class="well">
+						<form>
 							<label>ID: <small>optional</small>
 								<input class="form-control" type="text" name="id" value="{enabled.id}" />
 							</label>
@@ -26,12 +26,13 @@
 								<input class="form-control" type="text" name="textClass" value="{enabled.textClass}" />
 							</label>
 							<hr />
+							<button class="btn btn-danger delete">Delete</button>
 							<label>Enabled
 								<input type="checkbox" name="enabled" <!-- IF enabled --> checked<!-- ENDIF enabled --> />
 							</label>
-						</li>
-						<!-- END enabled -->
-					</form>
+						</form>
+					</li>
+					<!-- END enabled -->
 				</ul>
 			</div>
 		</div>
@@ -51,6 +52,7 @@
 						<span class="pull-right badge"><!-- IF available.core -->core<!-- ELSE -->plugin<!-- ENDIF available.core --></span>
 					</li>
 					<!-- END available -->
+					<input type="hidden" template-variable="available" value="{function.stringify, available}" />
 				</ul>
 			</div>
 		</div>
