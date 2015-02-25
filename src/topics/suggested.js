@@ -17,7 +17,7 @@ module.exports = function(Topics) {
 				getTidsWithSameTags(tid, next);
 			},
 			searchTids: function(next) {
-				getSearchTids(tid, uid, next);
+				getSearchTids(tid, next);
 			},
 			categoryTids: function(next) {
 				getCategoryTids(tid, next);
@@ -51,7 +51,7 @@ module.exports = function(Topics) {
 		], callback);	
 	}	
 
-	function getSearchTids(tid, uid, callback) {
+	function getSearchTids(tid, callback) {
 		async.waterfall([
 			function(next) {
 				Topics.getTopicField(tid, 'title', next);		
