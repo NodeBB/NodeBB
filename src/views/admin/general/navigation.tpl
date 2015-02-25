@@ -13,11 +13,11 @@
 							<label>Route: <small>ex. /unread</small>
 								<input class="form-control" type="text" name="route" value="{enabled.route}" />
 							</label>
-							<label>Title: <small>text shown upon mouseover</small>
+							<label>Title: <small>shown upon mouseover</small>
 								<input class="form-control" type="text" name="title" value="{enabled.title}" />
 							</label>
 							<label>Text:
-								<input class="form-control" type="text" name="textClass" value="{enabled.text}" />
+								<input class="form-control" type="text" name="text" value="{enabled.text}" />
 							</label>
 							<label>Icon Class: <small><a href="http://fortawesome.github.io/Font-Awesome/cheatsheet/" target="_blank">pick one</a></small>
 								<input class="form-control" type="text" name="iconClass" value="{enabled.iconClass}" />
@@ -27,9 +27,12 @@
 							</label>
 							<hr />
 							<button class="btn btn-danger delete">Delete</button>
-							<label>Enabled
-								<input type="checkbox" name="enabled" <!-- IF enabled --> checked<!-- ENDIF enabled --> />
-							</label>
+							<!-- IF enabled.enabled -->
+							<button class="btn btn-warning toggle">Disable</button>
+							<!-- ELSE -->
+							<button class="btn btn-success toggle">Enable</button>
+							<!-- ENDIF enabled.enabled -->
+							<input type="hidden" name="enabled" value="{enabled.enabled}" />
 						</form>
 					</li>
 					<!-- END enabled -->

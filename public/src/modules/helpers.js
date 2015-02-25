@@ -14,7 +14,12 @@
 	};
 
 	helpers.displayMenuItem = function(data, index) {
-		var properties = data.navigation[index].properties;
+		var item = data.navigation[index],
+			properites = item.properties;
+
+		if (!item.enabled) {
+			return false;
+		}
 
 		if (properties) {
 			if (properties.loggedIn && !data.loggedIn ||

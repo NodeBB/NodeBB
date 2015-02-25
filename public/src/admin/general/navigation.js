@@ -14,6 +14,15 @@ define('admin/general/navigation', function() {
 			$(this).parents('li').remove();
 		});
 
+		$('.toggle').on('click', function() {
+			var btn = $(this),
+				disabled = btn.html() === 'Enable';
+
+			btn.toggleClass('btn-warning').toggleClass('btn-success').html(!disabled ? 'Enable' : 'Disable');
+			btn.parents('li').find('[name="enabled"]').val(disabled);
+			return false;
+		});
+
 		$('#save').on('click', saveNavigation);
 	};
 
