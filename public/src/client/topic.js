@@ -78,7 +78,7 @@ define('forum/topic', [
 			if (config.topicPostSort !== 'oldest_to_newest') {
 				postCount = 2;
 			}
-			navigator.scrollBottom(postCount);
+			navigator.scrollBottom(postCount - 1);
 		});
 	};
 

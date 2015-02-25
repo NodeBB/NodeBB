@@ -84,8 +84,8 @@ define('forum/category', [
 	};
 
 	Category.toBottom = function() {
-		socket.emit('categories.getTopicCount', ajaxify.variables.get('category_id'), function(err, index) {
-			navigator.scrollBottom(index);
+		socket.emit('categories.getTopicCount', ajaxify.variables.get('category_id'), function(err, count) {
+			navigator.scrollBottom(count - 1);
 		});
 	};
 
