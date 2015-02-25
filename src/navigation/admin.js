@@ -23,9 +23,20 @@ admin.save = function(data, callback) {
 	], callback);
 };
 
-admin.getAvailable = function(data, callback) {
-	var core = require('../../install/data/navigation.json');
-	plugins.fireHook('filter:navigation.available', core, callback);
+admin.get = function(callback) {
+	async.parallel({
+		enabled: require('./index').get,
+		available: getAvailable
+	}, callback);
 };
+
+function getAvailable(callback) {
+	var core = require('../../install/data/navigation.json').map(function(item) {
+		item.core = true;
+		return item;
+	});
+
+	plugins.fireHook('filter:navigation.available', core, callback);
+}
 
 module.exports = admin;

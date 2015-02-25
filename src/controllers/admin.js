@@ -37,6 +37,7 @@ var adminController = {
 	settings: {},
 	logger: {},
 	sounds: {},
+	navigation: {},
 	themes: {},
 	users: require('./admin/users'),
 	uploads: require('./admin/uploads')
@@ -230,6 +231,30 @@ adminController.languages.get = function(req, res, next) {
 	});
 };
 
+adminController.sounds.get = function(req, res, next) {
+	meta.sounds.getFiles(function(err, sounds) {
+		sounds = Object.keys(sounds).map(function(name) {
+			return {
+				name: name
+			};
+		});
+
+		res.render('admin/general/sounds', {
+			sounds: sounds
+		});
+	});
+};
+
+adminController.navigation.get = function(req, res, next) {
+	require('../navigation/admin').get(function(err, data) {
+		if (err) {
+			return next(err);
+		}
+		
+		res.render('admin/general/navigation', data);
+	});
+};
+
 adminController.settings.get = function(req, res, next) {
 	var term = req.params.term ? req.params.term : 'general';
 
@@ -336,20 +361,6 @@ adminController.groups.get = function(req, res, next) {
 		res.render('admin/manage/groups', {
 			groups: groups,
 			yourid: req.user.uid
-		});
-	});
-};
-
-adminController.sounds.get = function(req, res, next) {
-	meta.sounds.getFiles(function(err, sounds) {
-		sounds = Object.keys(sounds).map(function(name) {
-			return {
-				name: name
-			};
-		});
-
-		res.render('admin/general/sounds', {
-			sounds: sounds
 		});
 	});
 };

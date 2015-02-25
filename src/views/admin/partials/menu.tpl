@@ -4,6 +4,7 @@
 						<li class="active"><a href="{relative_path}/admin/general/dashboard">Dashboard</a></li>
 						<li><a href="{relative_path}/admin/general/languages">Languages</a></li>
 						<li><a href="{relative_path}/admin/general/sounds">Sounds</a></li>
+						<li><a href="{relative_path}/admin/general/navigation">Navigation</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">

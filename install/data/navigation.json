@@ -17,7 +17,7 @@
 		"enabled": true,
 		"iconClass": "fa-clock-o",
 		"textClass": "visible-xs-inline",
-		"text": "[[global:]]"
+		"text": "[[global:header.recent]]"
 	},
 	{
 		"route": "/tags",
