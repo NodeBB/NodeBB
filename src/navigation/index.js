@@ -25,7 +25,7 @@ navigation.get = function(callback) {
 
 				return item;
 			}));
-	})
+	});
 };
 
 
