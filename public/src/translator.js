@@ -32,11 +32,11 @@
 	};
 
 	translator.escape = function(text) {
-		return text.replace(/\[\[([\S]*?)\]\]/g, '\\[\\[$1\\]\\]');
+		return typeof text === 'string' ? text.replace(/\[\[([\S]*?)\]\]/g, '\\[\\[$1\\]\\]') : text;
 	};
 
 	translator.unescape = function(text) {
-		return text.replace(/\\\[\\\[([\S]*?)\\\]\\\]/g, '[[$1]]');
+		return typeof text === 'string' ? text.replace(/\\\[\\\[([\S]*?)\\\]\\\]/g, '[[$1]]') : text;
 	};
 
 	translator.getLanguage = function() {
