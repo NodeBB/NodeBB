@@ -24,6 +24,9 @@ define('admin/general/navigation', function() {
 		});
 
 		$('#save').on('click', saveNavigation);
+
+		$('#enabled').sortable();
+		$('#enabled').disableSelection();
 	};
 
 	function saveNavigation() {

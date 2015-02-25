@@ -15,7 +15,7 @@
 
 	helpers.displayMenuItem = function(data, index) {
 		var item = data.navigation[index],
-			properites = item.properties;
+			properties = item.properties;
 
 		if (!item.enabled) {
 			return false;
