@@ -25,8 +25,31 @@ define('admin/general/navigation', function() {
 
 		$('#save').on('click', saveNavigation);
 
-		$('#enabled').sortable();
-		$('#enabled').disableSelection();
+		$('#enabled')
+			.sortable()
+			.droppable({
+				accept: $('#available li')
+			})
+			.disableSelection();
+
+		$('#available li')
+			.draggable({
+				connectToSortable: '#enabled',
+				helper: 'clone',
+				distance: 10,
+				stop: function(ev, ui) {
+					var id = ui.helper.attr('data-id'),
+						el = $('#enabled [data-id="' + id + '"]'),
+						data = id === 'custom' ? {} : available[id];
+
+					templates.parse('admin/general/navigation', 'enabled', {enabled: [data]}, function(li) {
+						li = $(li);
+						el.after(li);
+						el.remove();
+					});
+				}
+			})
+			.disableSelection();
 	};
 
 	function saveNavigation() {
@@ -54,6 +77,14 @@ define('admin/general/navigation', function() {
 				app.alertError(err.message);
 			} else {
 				app.alertSuccess('Successfully saved navigation');
+			}
+		});
+	}
+
+	function getDefaultsByRoute(route) {
+		available.forEach(function(item) {
+			if (item.route.match(route)) {
+				return item;
 			}
 		});
 	}

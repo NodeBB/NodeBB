@@ -45,8 +45,8 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">Available Menu Items</div>
 			<div class="panel-body">
-				<ul id="active">
-					<li data-id="Custom" class="alert alert-warning">
+				<ul id="available">
+					<li data-id="custom" class="alert alert-warning">
 						<strong>Custom Route</strong>
 					</li>
 					<!-- BEGIN available -->
