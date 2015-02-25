@@ -15,7 +15,7 @@ rewards.save = function(data, callback) {
 
 			data.id = id;
 			
-			async.parallel([
+			async.waterfall([
 				function(next) {
 					rewards.delete(data, next);
 				},
