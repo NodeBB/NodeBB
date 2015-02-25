@@ -88,7 +88,9 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 			iconBtn = settingsFormEl.find('[data-action="icon-select"]'),
 			previewEl = settingsFormEl.find('.label'),
 			previewIcon = previewEl.find('i'),
-			previewValueEl = settingsFormEl.find('[name="icon"]');
+			userTitleEl = settingsFormEl.find('[name="userTitle"]'),
+			userTitleEnabledEl = settingsFormEl.find('[name="userTitleEnabled"]'),
+			iconValueEl = settingsFormEl.find('[name="icon"]');
 
 		// Add color picker to settings form
 		colorBtn.ColorPicker({
@@ -105,8 +107,28 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 		// Add icon selection interface
 		iconBtn.on('click', function() {
 			iconSelect.init(previewIcon, function() {
-				previewValueEl.val(previewIcon.val());
+				iconValueEl.val(previewIcon.val());
 			});
+		});
+
+		// If the user title changes, update that too
+		userTitleEl.on('keyup', function() {
+			var icon = previewIcon.detach();
+			previewEl.text(' ' + (this.value || settingsFormEl.find('#name').val()));
+			previewEl.prepend(icon);
+		});
+
+		// Disable user title customisation options if the the user title itself is disabled
+		userTitleEnabledEl.on('change', function() {
+			var customOpts = $('.user-title-option input, .user-title-option button');
+
+			if (this.checked) {
+				customOpts.removeAttr('disabled');
+				previewEl.removeClass('hide');
+			} else {
+				customOpts.attr('disabled', 'disabled');
+				previewEl.addClass('hide');
+			}
 		});
 	};
 

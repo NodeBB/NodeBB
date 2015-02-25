@@ -228,6 +228,7 @@ var async = require('async'),
 				results.base.description = validator.escape(results.base.description);
 				results.base.descriptionParsed = descriptionParsed;
 				results.base.userTitle = validator.escape(results.base.userTitle);
+				results.base.userTitleEnabled = results.base.userTitleEnabled ? !!parseInt(results.base.userTitleEnabled, 10) : true;
 				results.base.createtimeISO = utils.toISOString(results.base.createtime);
 				results.base.members = results.users.filter(Boolean);
 				results.base.pending = results.pending.filter(Boolean);
@@ -537,6 +538,7 @@ var async = require('async'),
 
 			var payload = {
 					userTitle: values.userTitle || '',
+					userTitleEnabled: values.userTitleEnabled === true ? '1' : '0',
 					description: values.description || '',
 					icon: values.icon || '',
 					labelColor: values.labelColor || '#000000',
@@ -891,6 +893,8 @@ var async = require('async'),
 			}
 			groupData = groupData.map(function(group) {
 				if (group) {
+					group.userTitle = validator.escape(group.userTitle) || validator.escape(group.name);
+					group.userTitleEnabled = group.userTitleEnabled ? parseInt(group.userTitleEnabled, 10) === 1 : true;
 					group.labelColor = group.labelColor || '#000000';
 					group.createtimeISO = utils.toISOString(group.createtime);
 					group.hidden = parseInt(group.hidden, 10) === 1;
@@ -925,7 +929,7 @@ var async = require('async'),
 				}
 
 				groupData = groupData.filter(function(group) {
-					return group && parseInt(group.hidden, 10) !== 1 && !!group.userTitle;
+					return group && parseInt(group.hidden, 10) !== 1;
 				});
 
 				var groupSets = groupData.map(function(group) {
