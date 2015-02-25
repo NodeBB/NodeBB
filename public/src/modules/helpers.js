@@ -16,9 +16,10 @@
 	helpers.displayMenuItem = function(data, index) {
 		var properties = data.navigation[index].properties;
 
-		if (properties.loggedIn && !ldata.oggedIn ||
+		if (properties.loggedIn && !data.loggedIn ||
 			properties.adminOnly && !data.isAdmin ||
-			properties.installed && properties.installed.search && !data.searchEnabled) {
+			properties.installed && properties.installed.search && !data.searchEnabled ||
+			properties.hideIfPrivate && data.privateUserInfo) {
 			return false;
 		}
 

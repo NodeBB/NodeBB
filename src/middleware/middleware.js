@@ -217,7 +217,108 @@ middleware.renderHeader = function(req, res, callback) {
 
 	var custom_header = {
 		uid: uid,
-		'navigation': []
+		'navigation': [
+			{
+				id: "unread-count",
+				class: "",
+				route: "/unread",
+				title: "[[global:header.unread]]",
+				iconClass: "fa-inbox",
+				textClass: "visible-xs-inline",
+				text: "[[global:header.unread]]",
+				properties: {
+					loggedIn: true
+				}
+			},
+			{
+				id: "",
+				class: "",
+				route: "/recent",
+				title: "[[global:header.recent]]",
+				iconClass: "fa-clock-o",
+				textClass: "visible-xs-inline",
+				text: "[[global:]]",
+				properties: {
+					
+				}
+			},
+			{
+				id: "",
+				class: "",
+				route: "/tags",
+				title: "[[global:header.tags]]",
+				iconClass: "fa-tags",
+				textClass: "visible-xs-inline",
+				text: "[[global:header.tags]]",
+				properties: {
+					
+				}
+			},
+			{
+				id: "",
+				class: "",
+				route: "/popular",
+				title: "[[global:header.popular]]",
+				iconClass: "fa-fire",
+				textClass: "visible-xs-inline",
+				text: "[[global:header.popular]]",
+				properties: {
+					
+				}
+			},
+			{
+				id: "",
+				class: "",
+				route: "/users",
+				title: "[[global:header.users]]",
+				iconClass: "fa-user",
+				textClass: "visible-xs-inline",
+				text: "[[global:header.users]]",
+				properties: {
+					loggedIn: true,
+					hideIfPrivate: true
+				}
+			},
+			{
+				id: "",
+				class: "",
+				route: "/groups",
+				title: "[[global:header.groups]]",
+				iconClass: "fa-group",
+				textClass: "visible-xs-inline",
+				text: "[[global:header.groups]]",
+				properties: {
+					
+				}
+			},
+			{
+				id: "",
+				class: "",
+				route: "/admin",
+				target: "_top",
+				title: "[[global:header.admin]]",
+				iconClass: "fa-cogs",
+				textClass: "visible-xs-inline",
+				text: "[[global:header.admin]]",
+				properties: {
+					adminOnly: true
+				}
+			},
+			{
+				id: "",
+				class: "",
+				route: "/search",
+				title: "[[global:header.search]]",
+				iconClass: "fa-search",
+				textClass: "visible-xs-inline",
+				text: "[[global:header.search]]",
+				properties: {
+					installed: {
+						search: true
+					}
+				}
+			}
+		]
 	};
 
 	plugins.fireHook('filter:header.build', custom_header, function(err, custom_header) {
