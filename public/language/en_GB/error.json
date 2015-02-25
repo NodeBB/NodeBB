@@ -45,6 +45,7 @@
 	"category-disabled": "Category disabled",
 
 	"topic-locked": "Topic Locked",
+	"post-edit-duration-expired": "You are only allowed to edit posts for %1 seconds after posting",
 
 	"still-uploading": "Please wait for uploads to complete.",
 	"content-too-short": "Please enter a longer post. Posts should contain at least %1 characters.",
