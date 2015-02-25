@@ -57,13 +57,13 @@
 	},
 	{
 		"route": "/admin",
-		"target": "_top",
 		"title": "\\[\\[global:header.admin\\]\\]",
 		"enabled": true,
 		"iconClass": "fa-cogs",
 		"textClass": "visible-xs-inline",
 		"text": "\\[\\[global:header.admin\\]\\]",
 		"properties": {
+			"target": "_top",
 			"adminOnly": true
 		}
 	},
