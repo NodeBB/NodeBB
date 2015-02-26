@@ -33,7 +33,7 @@ var Controllers = {
 Controllers.home = function(req, res, next) {
 	var route = meta.config.homePageRoute || 'categories';
 	if (route === 'categories') {
-		return Controllers.categories.list(req, res, next);
+		Controllers.categories.list(req, res, next);
 	} else if (route === 'recent') {
 		Controllers.categories.recent(req, res, next);
 	} else if (route === 'popular') {
