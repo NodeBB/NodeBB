@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "Er zijn geen onderwerpen met deze tag",
     "tags": "Tags",
-    "enter_tags_here": "Voer hier uw tags in. Druk op enter na elke tag ingevoerd te hebben",
+    "enter_tags_here": "Enter tags here. %1-%2 characters. Press enter after each tag.",
     "enter_tags_here_short": "Voer uw tags in...",
     "no_tags": "Er zijn nog geen tags te vinden"
 }

@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "Bu etiketli başlık yok.",
     "tags": "Etiketler",
-    "enter_tags_here": "Etiketleri buraya girin.",
+    "enter_tags_here": "Enter tags here. %1-%2 characters. Press enter after each tag.",
     "enter_tags_here_short": "Etiketleri gir...",
     "no_tags": "Henüz etiket yok."
 }

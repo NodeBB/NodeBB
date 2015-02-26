@@ -1,5 +1,7 @@
 {
-    "username": "Käyttäjätunnus tai sähköpostiosoite",
+    "username-email": "Username / Email",
+    "username": "Username",
+    "email": "Email",
     "remember_me": "Muista minut?",
     "forgot_password": "Unohditko salasanasi?",
     "alternative_logins": "Vaihtoehtoiset kirjautumistavat",

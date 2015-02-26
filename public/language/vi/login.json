@@ -1,5 +1,7 @@
 {
-    "username": "Tên người dùng / Email",
+    "username-email": "Username / Email",
+    "username": "Username",
+    "email": "Email",
     "remember_me": "Ghi nhớ tôi?",
     "forgot_password": "Quên mật khẩu?",
     "alternative_logins": "Đăng nhập bằng tên khác",

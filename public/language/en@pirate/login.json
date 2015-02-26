@@ -1,5 +1,7 @@
 {
-    "username": "Yer handle or email",
+    "username-email": "Username / Email",
+    "username": "Username",
+    "email": "Email",
     "remember_me": "Remember Me?",
     "forgot_password": "My mind be a scatt'rbrain, help a matey out!",
     "alternative_logins": "Oth'r gangplanks",

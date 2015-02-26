@@ -2,6 +2,7 @@
     "title": "Notifications",
     "no_notifs": "Vous n'avez aucune notification",
     "see_all": "Voir toutes les notifications.",
+    "mark_all_read": "Mark all notifications read",
     "back_to_home": "Revenir à %1",
     "outgoing_link": "Lien sortant",
     "outgoing_link_message": "Vous quittez %1.",
@@ -21,7 +22,6 @@
     "user_started_following_you": "<strong>%1</strong> vous suit.",
     "email-confirmed": "Email vérifié",
     "email-confirmed-message": "Merci pour la validation de votre adresse email. Votre compte est désormais activé.",
-    "email-confirm-error": "Un erreur est survenue ...",
     "email-confirm-error-message": "Il y a un un problème dans la vérification de votre adresse email. Le code est peut être invalide ou a expiré.",
     "email-confirm-sent": "Email de vérification envoyé."
 }

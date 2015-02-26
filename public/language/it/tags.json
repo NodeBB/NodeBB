@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "Non ci sono discussioni con questo tag.",
     "tags": "Tags",
-    "enter_tags_here": "Inserire qui i tags. Premere invio dopo ogni tag.",
+    "enter_tags_here": "Enter tags here. %1-%2 characters. Press enter after each tag.",
     "enter_tags_here_short": "Inserisci i tags...",
     "no_tags": "Non ci sono ancora tags."
 }

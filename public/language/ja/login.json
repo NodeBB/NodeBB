@@ -1,5 +1,7 @@
 {
-    "username": "ユーザー名 / メール",
+    "username-email": "Username / Email",
+    "username": "Username",
+    "email": "Email",
     "remember_me": "ログイン情報を記憶",
     "forgot_password": "パスワードがわからない？",
     "alternative_logins": "ほかのログイン方法",

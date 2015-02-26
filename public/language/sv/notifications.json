@@ -2,6 +2,7 @@
     "title": "Notiser",
     "no_notifs": "Du har inga nya notiser",
     "see_all": "Visa alla notiser",
+    "mark_all_read": "Mark all notifications read",
     "back_to_home": "Tillbaka till %1",
     "outgoing_link": "Utgående länk",
     "outgoing_link_message": "Du lämnar nu %1. ",
@@ -21,7 +22,6 @@
     "user_started_following_you": "<strong>%1</strong> började följa dig.",
     "email-confirmed": "Epost bekräftad",
     "email-confirmed-message": "Tack för att du bekräftat din epostadress. Ditt konto är nu fullt ut aktiverat.",
-    "email-confirm-error": "Ett fel uppstod...",
     "email-confirm-error-message": "Det uppstod ett fel med att bekräfta din epostadress. Kanske var koden ogiltig eller har gått ut.",
     "email-confirm-sent": "Bekräftelseepost skickat."
 }

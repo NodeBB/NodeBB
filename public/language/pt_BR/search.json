@@ -31,5 +31,10 @@
     "username": "Nome de usuário",
     "category": "Categoria",
     "descending": "Em ordem descendente",
-    "ascending": "Em ordem ascendente"
+    "ascending": "Em ordem ascendente",
+    "save-preferences": "Save preferences",
+    "clear-preferences": "Clear preferences",
+    "search-preferences-saved": "Search preferences saved",
+    "search-preferences-cleared": "Search preferences cleared",
+    "show-results-as": "Show results as"
 }

@@ -2,6 +2,7 @@
     "title": "Varsler",
     "no_notifs": "Du har ingen nye varsler",
     "see_all": "Se alle varsler",
+    "mark_all_read": "Mark all notifications read",
     "back_to_home": "Tilbake til %1",
     "outgoing_link": "Utgående link",
     "outgoing_link_message": "Du forlater nå %1.",
@@ -21,7 +22,6 @@
     "user_started_following_you": "<strong>%1</strong> begynte å følge deg.",
     "email-confirmed": "E-post bekreftet",
     "email-confirmed-message": "Thank for at du har validert din e-post. Kontoen din er nå fullstendig aktivert.",
-    "email-confirm-error": "En feil oppsto...",
     "email-confirm-error-message": "Det oppsto et problem under valdiering av din e-post. Koden kan ha vært ugyldig eller ha utløpt.",
     "email-confirm-sent": "Bekreftelsesepost sendt."
 }

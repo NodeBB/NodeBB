@@ -2,6 +2,7 @@
     "title": "通知",
     "no_notifs": "您没有新的通知",
     "see_all": "查看全部通知",
+    "mark_all_read": "Mark all notifications read",
     "back_to_home": "返回 %1",
     "outgoing_link": "站外链接",
     "outgoing_link_message": "您正在离开 %1。",
@@ -21,7 +22,6 @@
     "user_started_following_you": "<strong>%1</strong>关注了您。",
     "email-confirmed": "电子邮箱已确认",
     "email-confirmed-message": "感谢您验证您的电子邮箱。您的帐户现已全面激活。",
-    "email-confirm-error": "出错了.……",
     "email-confirm-error-message": "验证您电子邮箱地址时出现了问题。可能是因为验证码无效或已过期。",
     "email-confirm-sent": "确认邮件已发送。"
 }

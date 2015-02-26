@@ -1,5 +1,7 @@
 {
-    "username": "使用者名稱 / 電郵",
+    "username-email": "Username / Email",
+    "username": "Username",
+    "email": "Email",
     "remember_me": "記住我？",
     "forgot_password": "忘記密碼？",
     "alternative_logins": "其他登錄方式",

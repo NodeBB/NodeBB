@@ -2,6 +2,7 @@
     "title": "تنبيهات",
     "no_notifs": "ليس لديك أية تنبيهات جديدة",
     "see_all": "معاينة كل التنبيهات",
+    "mark_all_read": "Mark all notifications read",
     "back_to_home": "عودة إلى %1",
     "outgoing_link": "رابط خارجي",
     "outgoing_link_message": "أنت تغادر %1 حاليا.",
@@ -21,7 +22,6 @@
     "user_started_following_you": "<strong>%1</strong> صار يتابعك.",
     "email-confirmed": "تم التحقق من عنوان البريد الإلكتروني",
     "email-confirmed-message": "شكرًا على إثبات صحة عنوان بريدك الإلكتروني. صار حسابك مفعلًا بالكامل.",
-    "email-confirm-error": "حدث خطأ ما...",
     "email-confirm-error-message": "حدث خطأ أثناء التحقق من عنوان بريدك الإلكتروني. ربما رمز التفعيل خاطئ أو انتهت صلاحيته.",
     "email-confirm-sent": "تم إرسال بريد التفعيل."
 }

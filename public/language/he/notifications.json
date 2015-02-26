@@ -2,6 +2,7 @@
     "title": "התראות",
     "no_notifs": "אין התראות",
     "see_all": "צפה בכל ההתראות",
+    "mark_all_read": "Mark all notifications read",
     "back_to_home": "חזרה ל%1",
     "outgoing_link": "לינק",
     "outgoing_link_message": "אתה כעת עוזב את %1.",
@@ -21,7 +22,6 @@
     "user_started_following_you": "<strong>%1</strong> התחיל לעקוב אחריך.",
     "email-confirmed": "כתובת המייל אושרה",
     "email-confirmed-message": "תודה שאישרת את כתובת המייל שלך. החשבון שלך פעיל כעת.",
-    "email-confirm-error": "אירעה שגיאה...",
     "email-confirm-error-message": "אירעה שגיאה בעת אישור המייל שלך. ייתכן כי הקוד היה שגוי או פג תוקף.",
     "email-confirm-sent": "מייל אישור נשלח."
 }

@@ -1,5 +1,7 @@
 {
-    "username": "ইউজারনেম / ইমেইল",
+    "username-email": "Username / Email",
+    "username": "Username",
+    "email": "Email",
     "remember_me": "মনে রাখুন",
     "forgot_password": "পাসওয়ার্ড ভুলে গিয়েছেন?",
     "alternative_logins": "বিকল্প প্রবেশ",

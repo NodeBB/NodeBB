@@ -1,5 +1,7 @@
 {
-    "username": "Uživatelské jméno / Email",
+    "username-email": "Username / Email",
+    "username": "Username",
+    "email": "Email",
     "remember_me": "Zapamatovat si mě?",
     "forgot_password": "Zapomněli jste heslo?",
     "alternative_logins": "Další způsoby přihlášení",

@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "Δεν υπάρχουν θέματα με αυτή την ετικέτα.",
     "tags": "Ετικέτες",
-    "enter_tags_here": "Εισαγωγή ετικετών εδώ. Πάτα enter μετά από κάθε ετικέτα.",
+    "enter_tags_here": "Enter tags here. %1-%2 characters. Press enter after each tag.",
     "enter_tags_here_short": "Εισαγωγή ετικετών...",
     "no_tags": "Δεν υπάρχουν ακόμα ετικέτες."
 }
