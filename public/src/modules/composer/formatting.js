@@ -7,7 +7,7 @@ define('composer/formatting', ['composer/controls', 'composer/preview'], functio
 	var formatting = {};
 
 	var formattingDispatchTable = {
-		'picture-o': function(){
+		'picture': function(){
 			$('#files').click();
 		},
 
