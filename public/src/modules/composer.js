@@ -432,13 +432,7 @@ define('composer', [
 			};
 
 			action = 'topics.post';
-			socket.emit(action, composerData, function(err, topic) {
-				done(err);
-
-				if (!err) {
-					ajaxify.go('topic/' + topic.slug);
-				}
-			});
+			socket.emit(action, composerData, done);
 		} else if (parseInt(postData.tid, 10) > 0) {
 			composerData = {
 				tid: postData.tid,
@@ -463,7 +457,7 @@ define('composer', [
 			socket.emit(action, composerData, done);
 		}
 
-		function done(err) {
+		function done(err, data) {
 			$('.action-bar button').removeAttr('disabled');
 			if (err) {
 				if (err.message === '[[error:email-not-confirmed]]') {
@@ -476,7 +470,7 @@ define('composer', [
 			discard(post_uuid);
 			drafts.removeDraft(postData.save_id);
 
-			$(window).trigger('action:composer.' + action, composerData);
+			$(window).trigger('action:composer.' + action, {composerData: composerData, data: data});
 		}
 	}
 

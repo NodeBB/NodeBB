@@ -3,11 +3,11 @@
 
 var async = require('async'),
 	_ = require('underscore'),
-	
+
 	categories = require('../categories'),
 	search = require('../search'),
-	db = require('../database');	
-	
+	db = require('../database');
+
 
 module.exports = function(Topics) {
 
@@ -21,7 +21,7 @@ module.exports = function(Topics) {
 			},
 			categoryTids: function(next) {
 				getCategoryTids(tid, next);
-			}		
+			}
 		}, function(err, results) {
 			if (err) {
 				return callback(err);
@@ -29,8 +29,8 @@ module.exports = function(Topics) {
 			var tids = results.tagTids.concat(results.searchTids).concat(results.categoryTids);
 			tids = tids.filter(function(_tid, index, array) {
 				return parseInt(_tid, 10) !== parseInt(tid, 10) && array.indexOf(_tid) === index;
-			}).slice(start, end + 1);			
-			
+			}).slice(start, end + 1);
+
 			Topics.getTopics(tids, uid, callback);
 		});
 	};
@@ -48,18 +48,18 @@ module.exports = function(Topics) {
 			function(data, next) {
 				next(null, _.unique(_.flatten(data)));
 			}
-		], callback);	
-	}	
+		], callback);
+	}
 
 	function getSearchTids(tid, callback) {
 		async.waterfall([
 			function(next) {
-				Topics.getTopicField(tid, 'title', next);		
+				Topics.getTopicField(tid, 'title', next);
 			},
 			function(title, next) {
 				search.searchQuery('topic', title, next);
 			}
-		], callback);		
+		], callback);
 	}
 
 	function getCategoryTids(tid, callback) {
@@ -68,7 +68,7 @@ module.exports = function(Topics) {
 				return callback(err, []);
 			}
 			categories.getTopicIds('cid:' + cid + ':tids', true, 0, 9, callback);
-		});		
+		});
 	}
-	
+
 };

@@ -248,8 +248,8 @@ var async = require('async'),
 
 				plugins.fireHook('filter:group.get', {group: results.base}, function(err, data) {
 					callback(err, data ? data.group : null);
-				});	
-			});			
+				});
+			});
 		});
 	};
 
@@ -906,10 +906,10 @@ var async = require('async'),
 				}
 				return group;
 			});
-			
+
 			plugins.fireHook('filter:groups.get', {groups: groupData}, function(err, data) {
-				callback(err, data ? data.groups : null);	
-			});			
+				callback(err, data ? data.groups : null);
+			});
 		});
 	};
 
