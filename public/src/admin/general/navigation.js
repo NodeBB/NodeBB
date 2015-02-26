@@ -82,7 +82,7 @@ define('admin/general/navigation', function() {
 			disabled = btn.html() === 'Enable';
 
 		btn.toggleClass('btn-warning').toggleClass('btn-success').html(!disabled ? 'Enable' : 'Disable');
-		btn.parents('li').find('[name="enabled"]').val(disabled);
+		btn.parents('li').find('[name="enabled"]').val(!disabled ? '' : 'on');
 		return false;
 	}
 
