@@ -21,7 +21,7 @@
 /*global require, global, process*/
 
 var nconf = require('nconf');
-nconf.argv().env();
+nconf.argv().env('__');
 
 var fs = require('fs'),
 	os = require('os'),
