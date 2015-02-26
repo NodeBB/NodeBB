@@ -9,10 +9,6 @@
 
 	var helpers = {};
 
-	helpers.displayUsersLink = function(config) {
-		return (config.loggedIn || !config.privateUserInfo);
-	};
-
 	helpers.displayMenuItem = function(data, index) {
 		var item = data.navigation[index],
 			properties = item.properties;
