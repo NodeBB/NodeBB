@@ -1,5 +1,5 @@
 'use strict';
-/* globals define, translator, templates */
+/* globals define, config, socket, app, ajaxify, translator, templates */
 
 define('sort', function() {
 	var module = {};

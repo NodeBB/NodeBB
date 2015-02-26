@@ -1,3 +1,7 @@
+"use strict";
+
+/*globals define, RELATIVE_PATH*/
+
 define('templates', function() {
 	var Templates = {};
 
@@ -6,7 +10,9 @@ define('templates', function() {
 			Templates.config = data.templatesConfig;
 			Templates.available = data.availableTemplates;
 
-			if (callback) callback();
+			if (callback) {
+				callback();
+			}
 		});
 	};
 

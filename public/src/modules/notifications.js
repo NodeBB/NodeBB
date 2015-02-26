@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, socket, translator, utils, config, app, ajaxify, Tinycon*/
+/* globals define, socket, translator, utils, config, app, ajaxify, templates, Tinycon*/
 
 define('notifications', ['sounds'], function(sound) {
 	var Notifications = {};
@@ -86,7 +86,7 @@ define('notifications', ['sounds'], function(sound) {
 			notifIcon.attr('data-content', count > 20 ? '20+' : count);
 
 			Tinycon.setBubble(count);
-		};
+		}
 
 		function increaseNotifCount(delta) {
 			var count = parseInt(notifIcon.attr('data-content'), 10) + delta;
