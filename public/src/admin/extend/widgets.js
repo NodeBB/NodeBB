@@ -31,15 +31,19 @@ define('admin/extend/widgets', function() {
 			connectToSortable: ".widget-area"
 		});
 
-		$('#widgets .available-containers .containers > [data-container-html]').draggable({
-			helper: function(e) {
-				var target = $(e.target);
-				target = target.attr('data-container-html') ? target : target.parents('[data-container-html]');
+		$('#widgets .available-containers .containers > [data-container-html]')
+			.draggable({
+				helper: function(e) {
+					var target = $(e.target);
+					target = target.attr('data-container-html') ? target : target.parents('[data-container-html]');
 
-				return target.clone().addClass('block').width(target.width()).css('opacity', '0.5');
-			},
-			distance: 10
-		});
+					return target.clone().addClass('block').width(target.width()).css('opacity', '0.5');
+				},
+				distance: 10
+			})
+			.each(function() {
+				$(this).attr('data-container-html', $(this).attr('data-container-html').replace(/\\\{([\s\S]*?)\\\}/, '{$1}'));
+			});
 
 		$('#widgets .widget-area').sortable({
 			update: function (event, ui) {
