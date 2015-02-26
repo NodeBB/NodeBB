@@ -52,10 +52,6 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 							} else {
 								ajaxify.go('chats/' + utils.slugify(userObj.username));
 							}
-							/*javascript:app.openChat(\'' +
-								userObj.username +
-								'\', ' + userObj.uid +
-								');*/
 						});
 					})(userObj);
 				}

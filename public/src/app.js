@@ -459,7 +459,7 @@ app.cacheBuster = null;
 	}
 
 	function collapseNavigationOnClick() {
-		$('#main-nav a, #user-control-list a, #logged-out-menu li a, #logged-in-menu .visible-xs').off('click').on('click', function() {
+		$('#nav-dropdown').off('click').on('click', '#main-nav a, #user-control-list a, #logged-out-menu li a, #logged-in-menu .visible-xs, #chat-list a', function() {
 			if($('.navbar .navbar-collapse').hasClass('in')) {
 				$('.navbar-header button').click();
 			}
