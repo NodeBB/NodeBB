@@ -1,5 +1,5 @@
 "use strict";
-/*global io, templates, translator, ajaxify, utils, bootbox, RELATIVE_PATH, config*/
+/*global io, templates, translator, ajaxify, utils, bootbox, RELATIVE_PATH, config, Visibility*/
 
 var	socket,
 	app = app || {};
@@ -366,7 +366,7 @@ app.cacheBuster = null;
 				}
 			}
 		});
-	}
+	};
 
 	function createHeaderTooltips() {
 		if (utils.findBootstrapEnvironment() === 'xs') {

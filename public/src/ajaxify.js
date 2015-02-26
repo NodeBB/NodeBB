@@ -208,9 +208,11 @@ $(document).ready(function() {
 		ajaxify.getCustomTemplateMapping = function(tpl) {
 			if (templatesModule.config && templatesModule.config.custom_mapping && tpl !== undefined) {
 				for (var pattern in templatesModule.config.custom_mapping) {
-					var match = tpl.match(pattern);
-					if (match && match[0] === tpl) {
-						return (templatesModule.config.custom_mapping[pattern]);
+					if (templatesModule.config.custom_mapping.hasOwnProperty(pattern)) {
+						var match = tpl.match(pattern);
+						if (match && match[0] === tpl) {
+							return (templatesModule.config.custom_mapping[pattern]);
+						}
 					}
 				}
 			}
