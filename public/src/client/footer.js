@@ -12,7 +12,7 @@ define('forum/footer', ['notifications', 'chat'], function(Notifications, Chat) 
 			return console.warn('Error updating unread count', err);
 		}
 
-		$('#unread-count')
+		$('#unread-count i')
 			.toggleClass('unread-count', count > 0)
 			.attr('data-content', count > 20 ? '20+' : count);
 	}
@@ -43,7 +43,7 @@ define('forum/footer', ['notifications', 'chat'], function(Notifications, Chat) 
 		}
 
 		function increaseUnreadCount() {
-			var count = parseInt($('#unread-count').attr('data-content'), 10) + 1;
+			var count = parseInt($('#unread-count i').attr('data-content'), 10) + 1;
 			updateUnreadTopicCount(null, count);
 		}
 
