@@ -84,7 +84,16 @@
 			<div class="panel-heading">Plugin Search</div>
 			<div class="panel-body">
 				<input class="form-control" type="text" id="plugin-search" placeholder="Search for plugin..."/><br/>
-				<button class="btn btn-default" id="plugin-order">Order Active Plugins</button>
+			</div>
+		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-heading">Re-order Plugins</div>
+			<div class="panel-body">
+				<button class="btn btn-default btn-block" id="plugin-order"><i class="fa fa-exchange"></i> Order Active Plugins</button>
+				<p class="help-block">
+					Certain plugins work ideally when they are initialised before/after other plugins. You can alter this loading behaviour here.
+				</p>
 			</div>
 		</div>
 
