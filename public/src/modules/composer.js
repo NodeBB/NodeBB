@@ -22,6 +22,14 @@ define('composer', [
 
 	$(window).off('resize', onWindowResize).on('resize', onWindowResize);
 
+	$(window).on('action:popstate', function(ev, data) {
+		var env = utils.findBootstrapEnvironment();
+
+		if (composer.active && (env === 'xs' || env ==='sm')) {
+			discard(composer.active);
+		}
+	});
+
 	// Query server for formatting options
 	socket.emit('modules.composer.getFormattingOptions', function(err, options) {
 		composer.formatting = options;
