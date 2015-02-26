@@ -37,6 +37,7 @@ var adminController = {
 	settings: {},
 	logger: {},
 	sounds: {},
+	homepage: {},
 	navigation: {},
 	themes: {},
 	users: require('./admin/users'),
@@ -253,6 +254,10 @@ adminController.navigation.get = function(req, res, next) {
 		
 		res.render('admin/general/navigation', data);
 	});
+};
+
+adminController.homepage.get = function(req, res, next) {
+	res.render('admin/general/homepage', {});
 };
 
 adminController.settings.get = function(req, res, next) {
