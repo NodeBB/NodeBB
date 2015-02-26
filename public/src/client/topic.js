@@ -106,7 +106,7 @@ define('forum/topic', [
 	function getPostIndex() {
 		var parts = window.location.pathname.split('/');
 		if (parts[parts.length - 1] && utils.isNumber(parts[parts.length - 1])) {
-			return parseInt(parts[parts.length - 1], 10)
+			return parseInt(parts[parts.length - 1], 10);
 		}
 		return 0;
 	}

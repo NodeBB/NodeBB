@@ -1,4 +1,3 @@
-
 'use strict';
 
 /* globals config, app, ajaxify, define, socket, utils */

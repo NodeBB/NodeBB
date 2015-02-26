@@ -1,3 +1,6 @@
+"use strict";
+/*globals define, app, translator, socket*/
+
 define('forum/footer', ['notifications', 'chat'], function(Notifications, Chat) {
 
 	Notifications.prepareDOM();
