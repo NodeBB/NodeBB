@@ -353,10 +353,11 @@ adminController.groups.get = function(req, res, next) {
 	groups.list({
 		expand: true,
 		truncateUserList: true,
-		isAdmin: true
+		isAdmin: true,
+		showSystemGroups: true
 	}, function(err, groups) {
 		groups = groups.filter(function(group) {
-			return group.name !== 'registered-users' && group.name !== 'guests';
+			return group.name !== 'registered-users' && group.name !== 'guests' && group.name.indexOf(':privileges:') === -1;
 		});
 		res.render('admin/manage/groups', {
 			groups: groups,
