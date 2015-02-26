@@ -1,11 +1,9 @@
 "use strict";
 
-var ajaxify = ajaxify || {
-	isPopState: false
-};
+var ajaxify = ajaxify || {};
 
 $(document).ready(function() {
-	require(['templates', 'ajaxifyCache'], function (templatesModule, cache) {
+	require(['templates'], function (templatesModule) {
 		/*global app, templates, utils, socket, translator, config, RELATIVE_PATH*/
 
 		var location = document.location || window.location,
@@ -15,9 +13,7 @@ $(document).ready(function() {
 
 		window.onpopstate = function (event) {
 			if (event !== null && event.state && event.state.url !== undefined && !ajaxify.initialLoad) {
-				ajaxify.isPopState = true;
 				ajaxify.go(event.state.url, function() {
-					ajaxify.isPopState = false;
 					$(window).trigger('action:popstate', {url: event.state.url});
 				}, true);
 			}
@@ -58,10 +54,6 @@ $(document).ready(function() {
 		ajaxify.go = function (url, callback, quiet) {
 			// "quiet": If set to true, will not call pushState
 			app.enterRoom('');
-
-			// If the url is in the cache, load from cache instead
-			if (cache.get(url, callback)) { return true; }
-			else { cache.url = ajaxify.currentPage; }
 
 			$(window).off('scroll');
 
@@ -122,7 +114,6 @@ $(document).ready(function() {
 			templates.parse(tpl_url, data, function(template) {
 				translator.translate(template, function(translatedTemplate) {
 					setTimeout(function() {
-						cache.set();
 						$('#content').html(translatedTemplate);
 
 						ajaxify.variables.parse();
