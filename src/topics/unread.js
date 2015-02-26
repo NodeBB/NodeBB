@@ -6,7 +6,6 @@ var async = require('async'),
 
 	db = require('../database'),
 	user = require('../user'),
-	meta = require('../meta'),
 	notifications = require('../notifications'),
 	categories = require('../categories'),
 	privileges = require('../privileges');
