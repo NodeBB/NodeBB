@@ -1,5 +1,5 @@
 "use strict";
-/* global define, socket */
+/* global define, socket, app */
 
 define('admin/advanced/logs', function() {
 	var	Logs = {};
@@ -28,7 +28,7 @@ define('admin/advanced/logs', function() {
 				case 'clear':
 					socket.emit('admin.logs.clear', function(err) {
 						if (!err) {
-							app.alertSuccess('Logs Cleared!')
+							app.alertSuccess('Logs Cleared!');
 							btnEl.prev().click();
 						}
 					});
