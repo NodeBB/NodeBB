@@ -59,7 +59,7 @@ define('notifications', ['sounds'], function(sound) {
 
 		notifList.on('click', '.mark-read', function(e) {
 			var liEl = $(this.parentNode),
-				nid = liEl.siblings('a').attr('data-nid'),
+				nid = liEl.attr('data-nid'),
 				unread = liEl.hasClass('unread');
 
 			e.preventDefault();
