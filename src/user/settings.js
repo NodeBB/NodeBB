@@ -63,7 +63,7 @@ module.exports = function(User) {
 			settings.topicsPerPage = Math.min(settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : parseInt(meta.config.topicsPerPage, 10) || 20, 20);
 			settings.postsPerPage = Math.min(settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : parseInt(meta.config.postsPerPage, 10) || 10, 20);
 			settings.notificationSounds = parseInt(settings.notificationSounds, 10) === 1;
-			settings.language = settings.language || meta.config.defaultLang || 'en_GB';
+			settings.userLang = settings.userLang || meta.config.defaultLang || 'en_GB';
 			settings.topicPostSort = settings.topicPostSort || meta.config.topicPostSort || 'oldest_to_newest';
 			settings.categoryTopicSort = settings.categoryTopicSort || meta.config.categoryTopicSort || 'newest_to_oldest';
 			settings.followTopicsOnCreate = (settings.followTopicsOnCreate === null || settings.followTopicsOnCreate === undefined) ? true : parseInt(settings.followTopicsOnCreate, 10) === 1;
@@ -82,7 +82,7 @@ module.exports = function(User) {
 			return callback(new Error('[[error:invalid-pagination-value]]'));
 		}
 
-		data.language = data.language || meta.config.defaultLang;
+		data.userLang = data.userLang || meta.config.defaultLang;
 
 		plugins.fireHook('action:user.saveSettings', {uid: uid, settings: data});
 
@@ -97,7 +97,7 @@ module.exports = function(User) {
 					topicsPerPage: Math.min(data.topicsPerPage, 20),
 					postsPerPage: Math.min(data.postsPerPage, 20),
 					notificationSounds: data.notificationSounds,
-					language: data.language || meta.config.defaultLang,
+					userLang: data.userLang || meta.config.defaultLang,
 					followTopicsOnCreate: data.followTopicsOnCreate,
 					followTopicsOnReply: data.followTopicsOnReply,
 					sendChatNotifications: data.sendChatNotifications,
