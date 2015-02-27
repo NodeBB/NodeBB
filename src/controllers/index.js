@@ -32,7 +32,7 @@ var Controllers = {
 
 Controllers.home = function(req, res, next) {
 	var route = meta.config.homePageRoute || 'categories',
-		hook = 'action:navigation.get:' + route;
+		hook = 'action:homepage.get:' + route;
 
 	if (plugins.hasListeners(hook)) {
 		plugins.fireHook(hook, {req: req, res: res, next: next});
