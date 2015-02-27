@@ -354,6 +354,9 @@ accountsController.accountSettings = function(req, res, next) {
 			settings: function(next) {
 				plugins.fireHook('filter:user.settings', [], next);
 			},
+			userGroups: function(next) {
+				groups.getUserGroups([userData.uid], next);
+			},			
 			languages: function(next) {
 				languages.list(next);
 			}
@@ -364,6 +367,7 @@ accountsController.accountSettings = function(req, res, next) {
 
 			userData.settings = results.settings;
 			userData.languages = results.languages;
+			userData.userGroups = results.userGroups[0];
 
 			userData.disableEmailSubscriptions = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 

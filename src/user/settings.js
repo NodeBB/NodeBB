@@ -103,7 +103,8 @@ module.exports = function(User) {
 					sendChatNotifications: data.sendChatNotifications,
 					sendPostNotifications: data.sendPostNotifications,
 					restrictChat: data.restrictChat,
-					topicSearchEnabled: data.topicSearchEnabled
+					topicSearchEnabled: data.topicSearchEnabled,
+					groupTitle: data.groupTitle
 				}, next);
 			},
 			function(next) {
