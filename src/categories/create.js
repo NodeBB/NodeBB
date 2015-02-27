@@ -13,7 +13,8 @@ module.exports = function(Categories) {
 				return callback(err);
 			}
 
-			var slug = cid + '/' + utils.slugify(data.name);
+			var slug = cid + '/' + utils.slugify(data.name),
+				order = data.order || cid;	// If no order provided, place it at the end
 
 			var category = {
 				cid: cid,
@@ -27,7 +28,7 @@ module.exports = function(Categories) {
 				topic_count: 0,
 				post_count: 0,
 				disabled: 0,
-				order: data.order,
+				order: order,
 				link: '',
 				numRecentReplies: 1,
 				class: 'col-md-3 col-xs-6',
@@ -38,7 +39,7 @@ module.exports = function(Categories) {
 
 			async.series([
 				async.apply(db.setObject, 'category:' + cid, category),
-				async.apply(db.sortedSetAdd, 'categories:cid', data.order, cid),
+				async.apply(db.sortedSetAdd, 'categories:cid', order, cid),
 				async.apply(privileges.categories.give, defaultPrivileges, cid, 'administrators'),
 				async.apply(privileges.categories.give, defaultPrivileges, cid, 'registered-users'),
 				async.apply(privileges.categories.give, ['find', 'read'], cid, 'guests')
