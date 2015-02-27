@@ -86,11 +86,13 @@ apiController.getConfig = function(req, res, next) {
 		config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
 		config.topicSearchEnabled = settings.topicSearchEnabled || false;
 
-		if (res.locals.isAPI) {
-			res.status(200).json(config);
-		} else {
-			next(err, config);
-		}
+		plugins.fireHook('filter:config.get', config, function(err, config) {
+			if (res.locals.isAPI) {
+				res.status(200).json(config);
+			} else {
+				next(err, config);
+			}
+		});
 	});
 
 };
