@@ -26,7 +26,7 @@ define('forum/topic/posts', [
 			postcount.html(parseInt(postcount.html(), 10) + 1);
 		}
 
-		createNewPosts(data, function(html) {
+		createNewPosts(data, '.post-row[data-index!="0"]', function(html) {
 			if (html) {
 				html.addClass('new');
 			}
@@ -43,13 +43,13 @@ define('forum/topic/posts', [
 		pagination.pageCount = Math.max(1, Math.ceil((posts[0].topic.postcount - 1) / config.postsPerPage));
 
 		if (pagination.currentPage === pagination.pageCount) {
-			createNewPosts(data, scrollToPost);
+			createNewPosts(data, '.post-row[data-index!="0"]', scrollToPost);
 		} else if (parseInt(posts[0].uid, 10) === parseInt(app.user.uid, 10)) {
 			pagination.loadPage(pagination.pageCount, scrollToPost);
 		}
 	}
 
-	function createNewPosts(data, callback) {
+	function createNewPosts(data, repliesSelector, callback) {
 		callback = callback || function() {};
 		if(!data || (data.posts && !data.posts.length)) {
 			return callback();
@@ -68,7 +68,7 @@ define('forum/topic/posts', [
 			var firstPostTimestamp = parseInt(data.posts[0].timestamp, 10);
 			var firstPostVotes = parseInt(data.posts[0].votes, 10);
 			var firstPostIndex = parseInt(data.posts[0].index, 10);
-			var replies = $('#post-container .post-row[data-index!="0"]:not(.new)');
+			var replies = $(repliesSelector);
 			var firstReply = replies.first();
 			var lastReply = replies.last();
 
@@ -208,7 +208,7 @@ define('forum/topic/posts', [
 			indicatorEl.fadeOut();
 
 			if (data && data.posts && data.posts.length) {
-				createNewPosts(data, done);
+				createNewPosts(data, '.post-row[data-index!="0"]:not(.new)', done);
 			} else {
 				if (app.user.uid) {
 					socket.emit('topics.markAsRead', [tid]);
