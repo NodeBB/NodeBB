@@ -5,9 +5,9 @@
 			<form>
 				<label>Home Page Route</label>
 				<select class="form-control" data-field="homePageRoute">
-					<option value="categories">Categories</option>
-					<option value="recent">Recent</option>
-					<option value="popular">Popular</option>
+					<!-- BEGIN routes -->
+					<option value="{routes.route}">{routes.name}</option>
+					<!-- END routes -->
 				</select>
 			</form>
 		</div>

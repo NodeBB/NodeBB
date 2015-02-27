@@ -257,7 +257,22 @@ adminController.navigation.get = function(req, res, next) {
 };
 
 adminController.homepage.get = function(req, res, next) {
-	res.render('admin/general/homepage', {});
+	plugins.fireHook('filter:homepage.get', {routes: [
+		{
+			route: 'categories',
+			name: 'Categories'
+		},
+		{
+			route: 'recent',
+			name: 'Recent'
+		},
+		{
+			route: 'popular',
+			name: 'Popular'
+		}
+	]}, function(err, data) {
+		res.render('admin/general/homepage', data);
+	});
 };
 
 adminController.settings.get = function(req, res, next) {
