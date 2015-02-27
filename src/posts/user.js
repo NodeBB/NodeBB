@@ -45,7 +45,7 @@ module.exports = function(Posts) {
 
 				async.parallel({
 					signature: function(next) {
-						if (parseInt(meta.config.disableSignatures, 10) === 1) {
+						if (!userData.signature || parseInt(meta.config.disableSignatures, 10) === 1) {
 							userData.signature = '';
 							return next();
 						}
