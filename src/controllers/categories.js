@@ -121,40 +121,37 @@ categoriesController.list = function(req, res, next) {
 		},
 		categories: function (next) {
 			var uid = req.user ? req.user.uid : 0;
-			categories.getCategoriesByPrivilege(uid, 'find', function (err, categoryData) {
-				if (err) {
-					return next(err);
+			var categoryData;
+			async.waterfall([
+				function(next) {
+					categories.getCategoriesByPrivilege(uid, 'find', next);
+				},
+				function(_categoryData, next) {
+					categoryData = _categoryData;
+					var allCategories = [];
+
+					categoryData = categoryData.filter(function(category) {
+						if (!category.parent) {
+							allCategories.push(category);
+						}
+
+						if (Array.isArray(category.children) && category.children.length) {
+							allCategories.push.apply(allCategories, category.children);
+						}
+						return category && !category.parent;
+					});
+
+					categories.getRecentTopicReplies(allCategories, uid, next);
 				}
-				var childCategories = [];
-
-				for(var i=categoryData.length - 1; i>=0; --i) {
-
-					if (Array.isArray(categoryData[i].children) && categoryData[i].children.length) {
-						childCategories.push.apply(childCategories, categoryData[i].children);
-					}
-
-					if (categoryData[i].parent && categoryData[i].parent.cid) {
-						categoryData.splice(i, 1);
-					}
-				}
-
-				async.parallel([
-					function(next) {
-						categories.getRecentTopicReplies(categoryData, uid, next);
-					},
-					function(next) {
-						categories.getRecentTopicReplies(childCategories, uid, next);
-					}
-				], function(err) {
-					next(err, categoryData);
-				});
+			], function(err) {
+				next(err, categoryData);
 			});
 		}
 	}, function (err, data) {
 		if (err) {
 			return next(err);
 		}
-		
+
 		res.render('categories', data);
 	});
 };
