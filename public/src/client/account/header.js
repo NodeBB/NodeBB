@@ -7,10 +7,11 @@ define('forum/account/header', function() {
 	};
 
 	function displayAccountMenus() {
-		$('.account-sub-links .plugin-link').each(function() {
-			var $this = $(this);
-			$this.toggleClass('hide', $this.hasClass('private'));
-		});
+		if (!app.user.uid || app.user.uid !== parseInt(ajaxify.variables.get('theirid'), 10)) {
+			$('.account-sub-links .plugin-link.private').each(function() {
+				$(this).addClass('hide');
+			});
+		}
 	}
 
 	function selectActivePill() {
