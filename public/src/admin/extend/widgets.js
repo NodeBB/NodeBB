@@ -42,7 +42,7 @@ define('admin/extend/widgets', function() {
 				distance: 10
 			})
 			.each(function() {
-				$(this).attr('data-container-html', $(this).attr('data-container-html').replace(/\\\{([\s\S]*?)\\\}/, '{$1}'));
+				$(this).attr('data-container-html', $(this).attr('data-container-html').replace(/\\\{([\s\S]*?)\\\}/g, '{$1}'));
 			});
 
 		$('#widgets .widget-area').sortable({
