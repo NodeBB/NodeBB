@@ -12,7 +12,7 @@ describe('Hash methods', function() {
 		age: 99
 	};
 
-	before(function(done) {
+	beforeAll(function(done) {
 		db.setObject('hashTestObject', testData, done);
 	});
 
