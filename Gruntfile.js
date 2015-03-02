@@ -63,7 +63,7 @@ module.exports = function(grunt) {
 				files: ['*.js', 'src/**/*.js']
 			},
 			templatesUpdated: {
-				files: ['src/views/**/*.tpl', 'node_modules/nodebb-*/*.tpl', 'node_modules/nodebb-*/*/*.tpl', 'node_modules/nodebb-*/*/*/*.tpl', 'node_modules/nodebb-*/*/*/*/*.tpl']
+				files: ['src/views/**/*.tpl', 'node_modules/nodebb-*/*.tpl', 'node_modules/nodebb-*/*/*.tpl', 'node_modules/nodebb-*/*/*/*.tpl', 'node_modules/nodebb-*/*/*/*/*.tpl', 'node_modules/nodebb-*/*/*/*/*/*.tpl']
 			}
 		}
 	});
