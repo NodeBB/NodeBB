@@ -665,7 +665,14 @@ var async = require('async'),
 	}
 
 	Groups.destroy = function(groupName, callback) {
-		Groups.get(groupName, {}, function(err, groupObj) {
+		Groups.getGroupsData([groupName], function(err, groupsData) {
+			if (err) {
+				return callback(err);
+			}
+			if (!Array.isArray(groupsData) || !groupsData[0]) {
+				return callback();
+			}
+			var groupObj = groupsData[0];
 			plugins.fireHook('action:group.destroy', groupObj);
 
 			async.parallel([
