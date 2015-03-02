@@ -13,9 +13,10 @@ var nconf = require('nconf'),
 	adminRoutes = require('./admin'),
 	feedRoutes = require('./feeds'),
 	pluginRoutes = require('./plugins'),
-	authRoutes = require('./authentication');
+	authRoutes = require('./authentication'),
+	helpers = require('./helpers');
 
-
+var setupPageRoute = helpers.setupPageRoute;
 
 function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/', middleware, [], controllers.home);
@@ -97,13 +98,6 @@ function groupRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/groups', middleware, middlewares, controllers.groups.list);
 	setupPageRoute(app, '/groups/:slug', middleware, middlewares, controllers.groups.details);
 	setupPageRoute(app, '/groups/:slug/members', middleware, middlewares, controllers.groups.members);
-}
-
-function setupPageRoute(router, name, middleware, middlewares, controller) {
-	middlewares = middlewares.concat([middleware.pageView]);
-
-	router.get(name, middleware.buildHeader, middlewares, controller);
-	router.get('/api' + name, middlewares, controller);
 }
 
 module.exports = function(app, middleware) {
