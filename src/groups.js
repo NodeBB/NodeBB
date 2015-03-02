@@ -936,7 +936,7 @@ var async = require('async'),
 				}
 
 				groupData = groupData.filter(function(group) {
-					return group && parseInt(group.hidden, 10) !== 1;
+					return group && !group.hidden;
 				});
 
 				var groupSets = groupData.map(function(group) {
