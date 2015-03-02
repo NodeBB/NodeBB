@@ -235,7 +235,7 @@ accountsController.getTopics = function(req, res, next) {
 accountsController.getGroups = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
-	getBaseUser(req.params.userslug, callerUID, function(err, userData) {
+	accountsController.getBaseUser(req.params.userslug, callerUID, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -259,7 +259,7 @@ accountsController.getGroups = function(req, res, next) {
 function getFromUserSet(tpl, set, method, type, req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
-	getBaseUser(req.params.userslug, callerUID, function(err, userData) {
+	accountsController.getBaseUser(req.params.userslug, callerUID, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -281,7 +281,7 @@ function getFromUserSet(tpl, set, method, type, req, res, next) {
 	});
 }
 
-function getBaseUser(userslug, callerUID, callback) {
+accountsController.getBaseUser = function(userslug, callerUID, callback) {
 	user.getUidByUserslug(userslug, function (err, uid) {
 		if (err || !uid) {
 			return callback(err);
@@ -314,7 +314,7 @@ function getBaseUser(userslug, callerUID, callback) {
 			callback(null, results.user);
 		});
 	});
-}
+};
 
 accountsController.accountEdit = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
@@ -341,7 +341,7 @@ accountsController.accountEdit = function(req, res, next) {
 accountsController.accountSettings = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
-	getBaseUser(req.params.userslug, callerUID, function(err, userData) {
+	accountsController.getBaseUser(req.params.userslug, callerUID, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
