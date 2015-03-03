@@ -209,6 +209,7 @@ var fs = require('fs'),
 					pluginMap[plugin.id].description = plugin.description;
 					pluginMap[plugin.id].url = pluginMap[plugin.id].url || plugin.url;
 					pluginMap[plugin.id].installed = true;
+					pluginMap[plugin.id].isTheme = !!plugin.id.match('nodebb-theme-');
 					pluginMap[plugin.id].error = plugin.error || false;
 					pluginMap[plugin.id].active = plugin.active;
 					pluginMap[plugin.id].version = plugin.version;
