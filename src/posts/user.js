@@ -34,9 +34,7 @@ module.exports = function(Posts) {
 			var userData = results.userData;
 			userData.forEach(function(userData, i) {
 				userData.groups = results.groups[i];
-				if (!results.userSettings[i].groupTitle) {
-					results.userSettings[i].groupTitle = results.groups[i][0] ? results.groups[i][0].name : '';
-				}
+				
 				results.groups[i].forEach(function(group, index) {
 					group.selected = group.name === results.userSettings[i].groupTitle;
 				});
