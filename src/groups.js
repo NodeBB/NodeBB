@@ -224,10 +224,10 @@ var async = require('async'),
 				if (err) {
 					return callback(err);
 				}
-				results.base.name = validator.escape(results.base.name);
-				results.base.description = validator.escape(results.base.description);
+				results.base.name = !options.unescape ? validator.escape(results.base.name) : results.base.name;
+				results.base.description = options.unescape ? validator.escape(results.base.description) : results.base.description;
 				results.base.descriptionParsed = descriptionParsed;
-				results.base.userTitle = validator.escape(results.base.userTitle);
+				results.base.userTitle = options.unescape ? validator.escape(results.base.userTitle) : results.base.userTitle;
 				results.base.userTitleEnabled = results.base.userTitleEnabled ? !!parseInt(results.base.userTitleEnabled, 10) : true;
 				results.base.createtimeISO = utils.toISOString(results.base.createtime);
 				results.base.members = results.users.filter(Boolean);
