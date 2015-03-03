@@ -45,7 +45,7 @@
 			mongoClient = require('mongodb').MongoClient;
 
 			if (!nconf.get('redis')) {
-				sessionStore = require('connect-mongo')({session: session});
+				sessionStore = require('connect-mongo')(session);
 			} else {
 				sessionStore = require('connect-redis')(session);
 			}
