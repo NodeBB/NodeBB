@@ -74,8 +74,10 @@
 			db = _db;
 
 			module.client = db;
-
+			
 			if (!nconf.get('redis')) {
+				// TEMP: to fix connect-mongo, see https://github.com/kcbanner/connect-mongo/issues/161
+				db.openCalled = true
 				module.sessionStore = new sessionStore({
 					db: db
 				});

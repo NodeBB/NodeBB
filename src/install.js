@@ -435,8 +435,8 @@ install.setup = function (callback) {
 		setupConfig,
 		setupDefaultConfigs,
 		enableDefaultTheme,
-		createAdministrator,
 		createCategories,
+		createAdministrator,
 		createWelcomePost,
 		enableDefaultPlugins,
 		setCopyrightWidget,
@@ -445,7 +445,7 @@ install.setup = function (callback) {
 		}
 	], function (err) {
 		if (err) {
-			winston.warn('NodeBB Setup Aborted. ' + err.message);
+			winston.warn('NodeBB Setup Aborted.\n ' + err.stack);
 			process.exit();
 		} else {
 			callback();

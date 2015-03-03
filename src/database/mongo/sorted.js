@@ -499,7 +499,7 @@ module.exports = function(db, module) {
 		data.score = parseInt(increment, 10);
 
 		db.collection('objects').findAndModify({_key: key, value: value}, {}, {$inc: data}, {new: true, upsert: true}, function(err, result) {
-			callback(err, result ? result.score : null);
+			callback(err, result && result.value ? result.value.score : null);
 		});
 	};
 };
