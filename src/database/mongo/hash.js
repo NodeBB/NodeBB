@@ -242,7 +242,7 @@ module.exports = function(db, module) {
 		data[field] = value;
 
 		db.collection('objects').findAndModify({_key: key}, {}, {$inc: data}, {new: true, upsert: true}, function(err, result) {
-			callback(err, result ? result[field] : null);
+			callback(err, result && result.value ? result.value[field] : null);
 		});
 	};
 };
