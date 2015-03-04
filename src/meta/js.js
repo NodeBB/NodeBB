@@ -209,17 +209,24 @@ module.exports = function(Meta) {
 
 	Meta.js.getFromFile = function(minify, callback) {
 		var scriptPath = path.join(__dirname, '../../public/nodebb.min.js'),
-			mapPath = path.join(__dirname, '../../public/nodebb.min.js.map');
+			mapPath = path.join(__dirname, '../../public/nodebb.min.js.map'),
+			paths = [scriptPath];
 		fs.exists(scriptPath, function(exists) {
 			if (exists) {
 				if (nconf.get('isPrimary') === 'true') {
-					winston.verbose('[meta/js] Reading client-side scripts from file');
-					async.map([scriptPath, mapPath], fs.readFile, function(err, files) {
-						Meta.js.cache = files[0];
-						Meta.js.map = files[1];
+					fs.exists(mapPath, function(exists) {
+						if (exists) {
+							paths.push(mapPath);
+						}
 
-						emitter.emit('meta:js.compiled');
-						callback();
+						winston.verbose('[meta/js] Reading client-side scripts from file');
+						async.map(paths, fs.readFile, function(err, files) {
+							Meta.js.cache = files[0];
+							Meta.js.map = files[1] || '';
+
+							emitter.emit('meta:js.compiled');
+							callback();
+						});
 					});
 				} else {
 					callback();
