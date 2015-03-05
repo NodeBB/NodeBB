@@ -163,34 +163,32 @@ function requireModules() {
 	});
 }
 
-function authorize(socket, next) {
+function authorize(socket, callback) {
 	var handshake = socket.request,
 		sessionID;
 
 	if (!handshake) {
-		return next(new Error('[[error:not-authorized]]'));
+		return callback(new Error('[[error:not-authorized]]'));
 	}
-
-	cookieParser(handshake, {}, function(err) {
-		if (err) {
-			return next(err);
-		}
-
-		var sessionID = handshake.signedCookies['express.sid'];
-
-		db.sessionStore.get(sessionID, function(err, sessionData) {
-			if (err) {
-				return next(err);
-			}
-
+	
+	async.waterfall([
+		function(next) {
+			cookieParser(handshake, {}, next);
+		},
+		function(next) {
+			var sessionID = handshake.signedCookies['express.sid'];
+			console.log(next, sessionID)
+			db.sessionStore.get(sessionID, next);
+		},
+		function(sessionData, next) {
 			if (sessionData && sessionData.passport && sessionData.passport.user) {
 				socket.uid = parseInt(sessionData.passport.user, 10);
 			} else {
 				socket.uid = 0;
 			}
 			next();
-		});
-	});
+		}
+	], callback);
 }
 
 function addRedisAdapter(io) {
@@ -201,7 +199,7 @@ function addRedisAdapter(io) {
 		var sub = redis.connect({return_buffers: true});
 
 		io.adapter(redisAdapter({pubClient: pub, subClient: sub}));
-	} else {
+	} else if (nconf.get('isCluster') === 'true') {
 		winston.warn('[socket.io] Clustering detected, you are advised to configure Redis as a websocket store.');
 	}
 }
