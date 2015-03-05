@@ -43,8 +43,7 @@
 		"textClass": "visible-xs-inline",
 		"text": "\\[\\[global:header.users\\]\\]",
 		"properties": {
-			"loggedIn": true,
-			"hideIfPrivate": true
+			"loggedIn": true
 		}
 	},
 	{
