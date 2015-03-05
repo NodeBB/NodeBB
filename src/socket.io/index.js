@@ -70,7 +70,7 @@ function onConnect(socket) {
 			if (err || !userData) {
 				return;
 			}
-		
+
 			socket.emit('event:connect');
 			if (userData.status !== 'offline') {
 				socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: userData.status || 'online'});
@@ -164,21 +164,18 @@ function requireModules() {
 }
 
 function authorize(socket, callback) {
-	var handshake = socket.request,
-		sessionID;
+	var handshake = socket.request;
 
 	if (!handshake) {
 		return callback(new Error('[[error:not-authorized]]'));
 	}
-	
+
 	async.waterfall([
 		function(next) {
 			cookieParser(handshake, {}, next);
 		},
 		function(next) {
-			var sessionID = handshake.signedCookies['express.sid'];
-			console.log(next, sessionID)
-			db.sessionStore.get(sessionID, next);
+			db.sessionStore.get(handshake.signedCookies['express.sid'], next);
 		},
 		function(sessionData, next) {
 			if (sessionData && sessionData.passport && sessionData.passport.user) {
