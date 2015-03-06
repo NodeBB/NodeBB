@@ -82,6 +82,7 @@ middleware.buildHeader = function(req, res, next) {
 						plugins: results.custom_header.plugins,
 						authentication: results.custom_header.authentication,
 						scripts: results.scripts,
+						searchEnabled: plugins.hasListeners('filter:search.query'),
 						'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 						env: process.env.NODE_ENV ? true : false
 					};

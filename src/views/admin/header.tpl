@@ -73,16 +73,18 @@
 				</div>
 				<div class="navbar-collapse collapse">
 					<ul id="logged-in-menu" class="navbar-nav nav navbar-right pull-right">
-						<li style="float:left;">
+						<!-- IF searchEnabled -->
+						<li class="pull-left">
 							<form class="navbar-form hidden-xs" role="search">
-								<div class="form-group" id="acp-search" >
-									<div class="dropdown" >
+								<div class="form-group" id="acp-search">
+									<div class="dropdown">
 										<input type="text" data-toggle="dropdown" class="form-control" placeholder="/">
 										<ul class="dropdown-menu" role="menu"></ul>
 									</div>
 								</div>
 							</form>
 						</li>
+						<!-- ENDIF searchEnabled -->
 						<li id="user_label" class="dropdown pull-right">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
 								<img src="{user.picture}"/>
@@ -105,7 +107,6 @@
 				</div>
 			</div>
 		</nav>
-
 		<div class="wrapper">
 			<div id="main-menu" class="nano">
 				<div class="nano-content">
