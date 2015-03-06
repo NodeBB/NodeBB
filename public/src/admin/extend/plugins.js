@@ -144,7 +144,7 @@ define('admin/extend/plugins', function() {
 		socket.emit('admin.plugins.upgrade', {
 			id: pluginID,
 			version: version
-		}, function(err) {
+		}, function(err, isActive) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -152,6 +152,18 @@ define('admin/extend/plugins', function() {
 			parent.find('.fa-exclamation-triangle').remove();
 			parent.find('.currentVersion').text(version);
 			btn.remove();
+			if (isActive) {
+				app.alert({
+					alert_id: 'plugin_upgraded',
+					title: 'Plugin Upgraded',
+					message: 'Please reload your NodeBB to fully upgrade this plugin',
+					type: 'warning',
+					timeout: 5000,
+					clickfn: function() {
+						socket.emit('admin.reload');
+					}
+				});
+			}
 		});
 	}
 
