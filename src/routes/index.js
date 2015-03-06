@@ -173,30 +173,38 @@ module.exports = function(app, middleware) {
 
 function handle404(app, middleware) {
 	app.use(function(req, res, next) {
-		var relativePath = nconf.get('relative_path');
-		var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
-			isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
+		if (!plugins.hasListeners('action:meta.override404')) {
+			var relativePath = nconf.get('relative_path');
+			var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
+				isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
 
-		if (isClientScript.test(req.url)) {
-			res.type('text/javascript').status(200).send('');
-		} else if (isLanguage.test(req.url)) {
-			res.status(200).json({});
-		} else if (req.accepts('html')) {
-			if (process.env.NODE_ENV === 'development') {
-				winston.warn('Route requested but not found: ' + req.url);
+			if (isClientScript.test(req.url)) {
+				res.type('text/javascript').status(200).send('');
+			} else if (isLanguage.test(req.url)) {
+				res.status(200).json({});
+			} else if (req.accepts('html')) {
+				if (process.env.NODE_ENV === 'development') {
+					winston.warn('Route requested but not found: ' + req.url);
+				}
+
+				res.status(404);
+
+				if (res.locals.isAPI) {
+					return res.json({path: req.path, error: 'not-found'});
+				}
+
+				middleware.buildHeader(req, res, function() {
+					res.render('404', {path: req.path});
+				});
+			} else {
+				res.status(404).type('txt').send('Not found');
 			}
-
-			res.status(404);
-
-			if (res.locals.isAPI) {
-				return res.json({path: req.path, error: 'not-found'});
-			}
-
-			middleware.buildHeader(req, res, function() {
-				res.render('404', {path: req.path});
-			});
 		} else {
-			res.status(404).type('txt').send('Not found');
+			plugins.fireHook('action:meta.override404', {
+				req: req,
+				res: res,
+				error: {}
+			});
 		}
 	});
 }
