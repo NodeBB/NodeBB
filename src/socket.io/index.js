@@ -175,15 +175,17 @@ function authorize(socket, callback) {
 			cookieParser(handshake, {}, next);
 		},
 		function(next) {
-			db.sessionStore.get(handshake.signedCookies['express.sid'], next);
-		},
-		function(sessionData, next) {
-			if (sessionData && sessionData.passport && sessionData.passport.user) {
-				socket.uid = parseInt(sessionData.passport.user, 10);
-			} else {
-				socket.uid = 0;
-			}
-			next();
+			db.sessionStore.get(handshake.signedCookies['express.sid'], function(err, sessionData) {
+				if (err) {
+					return next(err);
+				}
+				if (sessionData && sessionData.passport && sessionData.passport.user) {
+					socket.uid = parseInt(sessionData.passport.user, 10);
+				} else {
+					socket.uid = 0;
+				}	
+				next();
+			});
 		}
 	], callback);
 }
