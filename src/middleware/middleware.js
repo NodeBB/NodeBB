@@ -339,7 +339,7 @@ middleware.renderHeader = function(req, res, callback) {
 			results.user.isAdmin = results.isAdmin || false;
 			results.user.uid = parseInt(results.user.uid, 10);
 			results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
-			
+
 			templateValues.browserTitle = results.title;
 			templateValues.isAdmin = results.user.isAdmin;
 			templateValues.user = results.user;
@@ -376,7 +376,7 @@ middleware.processRender = function(req, res, next) {
 		}
 
 		options.loggedIn = req.user ? parseInt(req.user.uid, 10) !== 0 : false;
-		options.template = {};
+		options.template = {name: template};
 		options.template[template] = true;
 
 		if ('function' !== typeof fn) {
