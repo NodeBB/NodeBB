@@ -172,13 +172,15 @@ describe('Sorted Set methods', function() {
 				assert.equal(count, 2);
 				done();
 			});
+		});
 
+		it('should return number of elements between scores -inf +inf inclusive', function(done) {
 			db.sortedSetCount('sortedSetTest1', '-inf', '+inf', function(err, count) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(count, 3);
 				done();
-			});	
+			});
 		});
 	});
 
