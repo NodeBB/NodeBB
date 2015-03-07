@@ -18,7 +18,7 @@ define('forum/topic', [
 		currentUrl = '';
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
-		if (ajaxify.currentPage !=== data.url) {
+		if (ajaxify.currentPage !== data.url) {
 			navigator.hide();
 			$('.header-topic-title').find('span').text('').hide();
 			app.removeAlert('bookmark');
