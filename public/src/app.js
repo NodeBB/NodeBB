@@ -482,16 +482,12 @@ app.cacheBuster = null;
 	app.load = function() {
 		$('document').ready(function () {
 			var url = ajaxify.removeRelativePath(window.location.pathname.slice(1).replace(/\/$/, "")),
-				tpl_url = ajaxify.getTemplateMapping(url),
+				tpl_url = app.template,
 				search = window.location.search,
 				hash = window.location.hash,
 				$window = $(window);
 
-
-			$window.trigger('action:ajaxify.start', {
-				url: url,
-				tpl_url: tpl_url
-			});
+			$window.trigger('action:ajaxify.start', {url: url});
 
 			collapseNavigationOnClick();
 
@@ -532,8 +528,7 @@ app.cacheBuster = null;
 				ajaxify.widgets.render(tpl_url, url, function() {
 					app.processPage();
 					$window.trigger('action:ajaxify.end', {
-						url: url,
-						tpl_url: tpl_url
+						url: url
 					});
 				});
 			});

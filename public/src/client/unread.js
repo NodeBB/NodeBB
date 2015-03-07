@@ -6,7 +6,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 	var Unread = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
-		if (data.tpl_url !== 'unread') {
+		if (ajaxify.currentPage !== data.url) {
 			recent.removeListeners();
 		}
 	});
@@ -130,7 +130,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 
 	function createCategoryLink(category) {
 		var link = $('<a role="menuitem" href="#"></a>');
-		
+
 		if (category.icon) {
 			link.append('<i class="fa fa-fw ' + category.icon + '"></i> ' + category.name);
 		} else {

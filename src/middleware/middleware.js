@@ -348,6 +348,9 @@ middleware.renderHeader = function(req, res, callback) {
 			templateValues.customJS = results.customJS;
 			templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
 
+			templateValues.template = {name: res.locals.template};
+			templateValues.template[res.locals.template] = true;
+
 			app.render('header', templateValues, callback);
 		});
 	});
@@ -378,6 +381,7 @@ middleware.processRender = function(req, res, next) {
 		options.loggedIn = req.user ? parseInt(req.user.uid, 10) !== 0 : false;
 		options.template = {name: template};
 		options.template[template] = true;
+		res.locals.template = template;
 
 		if ('function' !== typeof fn) {
 			fn = defaultFn;
@@ -453,7 +457,6 @@ middleware.maintenanceMode = function(req, res, next) {
 			'/nodebb.min.js',
 			'/vendor/fontawesome/fonts/fontawesome-webfont.woff',
 			'/src/modules/[\\w]+\.js',
-			'/api/get_templates_listing',
 			'/api/login',
 			'/api/?',
 			'/language/.+'

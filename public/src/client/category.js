@@ -13,7 +13,7 @@ define('forum/category', [
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
-		if(data && data.tpl_url !== 'category') {
+		if (ajaxify.currentPage !== data.url) {
 			navigator.hide();
 
 			removeListeners();
