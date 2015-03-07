@@ -284,7 +284,6 @@ middleware.renderHeader = function(req, res, callback) {
 			href: nconf.get('relative_path') + '/favicon.ico'
 		});
 
-
 		async.parallel({
 			customCSS: function(next) {
 				templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1;
@@ -401,19 +400,17 @@ middleware.processRender = function(req, res, next) {
 				str = str + res.locals.adminFooter;
 			}
 
-			if (res.locals.renderHeader) {
-				middleware.renderHeader(req, res, function(err, template) {
+			if (res.locals.renderHeader || res.locals.renderAdminHeader) {
+				var method = res.locals.renderHeader ? middleware.renderHeader : middleware.admin.renderHeader;
+				method(req, res, function(err, template) {
+					if (err) {
+						return fn(err);
+					}
 					str = template + str;
 					var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
 					translator.translate(str, language, function(translated) {
 						fn(err, translated);
 					});
-				});
-			} else if (res.locals.adminHeader) {
-				str = res.locals.adminHeader + str;
-				var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
-				translator.translate(str, language, function(translated) {
-					fn(err, translated);
 				});
 			} else {
 				fn(err, str);
