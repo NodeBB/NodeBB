@@ -167,8 +167,6 @@ $(document).ready(function() {
 
 		$(window).trigger('action:ajaxify.loadingData', {url: url});
 
-		var location = document.location || window.location;
-
 		apiXHR = $.ajax({
 			url: RELATIVE_PATH + '/api/' + url,
 			cache: false,
