@@ -55,11 +55,10 @@ $(document).ready(function() {
 		return true;
 	};
 
-	ajaxify.start = function(url, quiet) {
+	ajaxify.start = function(url, quiet, search) {
 		url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
 		var hash = window.location.hash;
-		var search = window.location.search;
-
+		search = search || '';
 		ajaxify.currentPage = url;
 
 		$(window).trigger('action:ajaxify.start', {url: url});

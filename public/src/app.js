@@ -481,7 +481,7 @@ app.cacheBuster = null;
 
 	app.load = function() {
 		$('document').ready(function () {
-			var url = ajaxify.start(window.location.pathname.slice(1), true);
+			var url = ajaxify.start(window.location.pathname.slice(1), true, window.location.search);
 			ajaxify.end(url, app.template);
 
 			collapseNavigationOnClick();
