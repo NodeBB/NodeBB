@@ -11,7 +11,7 @@ $(document).ready(function() {
 		apiXHR = null;
 
 	window.onpopstate = function (event) {
-		if (event !== null && event.state && event.state.url !== undefined && !ajaxify.initialLoad) {
+		if (event !== null && event.state && event.state.url !== undefined) {
 			ajaxify.go(event.state.url, function() {
 				$(window).trigger('action:popstate', {url: event.state.url});
 			}, true);
@@ -19,10 +19,8 @@ $(document).ready(function() {
 	};
 
 	ajaxify.currentPage = null;
-	ajaxify.initialLoad = false;
 
 	ajaxify.go = function (url, callback, quiet) {
-		// "quiet": If set to true, will not call pushState
 		app.enterRoom('');
 
 		$(window).off('scroll');
@@ -31,23 +29,7 @@ $(document).ready(function() {
 			apiXHR.abort();
 		}
 
-		// Remove relative path and trailing slash
-		url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
-
-		$(window).trigger('action:ajaxify.start', {url: url});
-
-		var hash = '';
-		if(ajaxify.initialLoad) {
-			hash = window.location.hash ? window.location.hash : '';
-		}
-
-		ajaxify.currentPage = url;
-
-		if (window.history && window.history.pushState) {
-			window.history[!quiet ? 'pushState' : 'replaceState']({
-				url: url + hash
-			}, url, RELATIVE_PATH + '/' + url + hash);
-		}
+		url = ajaxify.start(url, quiet);
 
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
@@ -71,6 +53,23 @@ $(document).ready(function() {
 		});
 
 		return true;
+	};
+
+	ajaxify.start = function(url, quiet) {
+		url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
+		var hash = window.location.hash;
+		var search = window.location.search;
+
+		ajaxify.currentPage = url;
+
+		$(window).trigger('action:ajaxify.start', {url: url});
+
+		if (window.history && window.history.pushState) {
+			window.history[!quiet ? 'pushState' : 'replaceState']({
+				url: url + search + hash
+			}, url, RELATIVE_PATH + '/' + url + search + hash);
+		}
+		return url;
 	};
 
 	function onAjaxError(err, url, callback, quiet) {
@@ -110,30 +109,33 @@ $(document).ready(function() {
 				setTimeout(function() {
 					$('#content').html(translatedTemplate);
 
-					ajaxify.variables.parse();
-
-					ajaxify.widgets.render(tpl_url, url, function() {
-						$(window).trigger('action:ajaxify.end', {url: url});
-					});
-
-					$(window).trigger('action:ajaxify.contentLoaded', {url: url});
-
-					ajaxify.loadScript(tpl_url);
+					ajaxify.end(url, tpl_url);
 
 					if (typeof callback === 'function') {
 						callback();
 					}
 
-					app.processPage();
-
 					$('#content, #footer').removeClass('ajaxifying');
-					ajaxify.initialLoad = false;
 
 					app.refreshTitle(url);
 				}, animationDuration * 1000 - ((new Date()).getTime() - startTime));
 			});
 		});
 	}
+
+	ajaxify.end = function(url, tpl_url) {
+		ajaxify.variables.parse();
+
+		ajaxify.loadScript(tpl_url);
+
+		ajaxify.widgets.render(tpl_url, url, function() {
+			$(window).trigger('action:ajaxify.end', {url: url});
+		});
+
+		$(window).trigger('action:ajaxify.contentLoaded', {url: url});
+
+		app.processPage();
+	};
 
 	ajaxify.removeRelativePath = function(url) {
 		if (url.indexOf(RELATIVE_PATH.slice(1)) === 0) {

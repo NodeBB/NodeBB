@@ -481,13 +481,8 @@ app.cacheBuster = null;
 
 	app.load = function() {
 		$('document').ready(function () {
-			var url = ajaxify.removeRelativePath(window.location.pathname.slice(1).replace(/\/$/, "")),
-				tpl_url = app.template,
-				search = window.location.search,
-				hash = window.location.hash,
-				$window = $(window);
-
-			$window.trigger('action:ajaxify.start', {url: url});
+			var url = ajaxify.start(window.location.pathname.slice(1), true);
+			ajaxify.end(url, app.template);
 
 			collapseNavigationOnClick();
 
@@ -510,28 +505,6 @@ app.cacheBuster = null;
 
 			createHeaderTooltips();
 			showEmailConfirmWarning();
-
-			ajaxify.variables.parse();
-			ajaxify.currentPage = url;
-
-			$window.trigger('action:ajaxify.contentLoaded', {
-				url: url
-			});
-
-			if (window.history && window.history.replaceState) {
-				window.history.replaceState({
-					url: url + search + hash
-				}, url, RELATIVE_PATH + '/' + url + search + hash);
-			}
-
-			ajaxify.loadScript(tpl_url, function() {
-				ajaxify.widgets.render(tpl_url, url, function() {
-					app.processPage();
-					$window.trigger('action:ajaxify.end', {
-						url: url
-					});
-				});
-			});
 
 			socket.removeAllListeners('event:nodebb.ready');
 			socket.on('event:nodebb.ready', function(cacheBusters) {
