@@ -131,10 +131,8 @@ $(document).ready(function() {
 
 					app.refreshTitle(url);
 				}, animationDuration * 1000 - ((new Date()).getTime() - startTime));
-
 			});
 		});
-
 	}
 
 	ajaxify.removeRelativePath = function(url) {
