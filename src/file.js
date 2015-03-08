@@ -27,10 +27,7 @@ file.saveFileToLocal = function(filename, folder, tempPath, callback) {
 		});
 	});
 
-	os.on('error', function (err) {
-		winston.error(err.message);
-		callback(err);
-	});
+	os.on('error', callback);
 
 	is.pipe(os);
 };
