@@ -59,9 +59,10 @@ $(document).ready(function() {
 		url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
 		var hash = window.location.hash;
 		search = search || '';
-		ajaxify.currentPage = url;
 
 		$(window).trigger('action:ajaxify.start', {url: url});
+
+		ajaxify.currentPage = url;
 
 		if (window.history && window.history.pushState) {
 			window.history[!quiet ? 'pushState' : 'replaceState']({
