@@ -1,5 +1,7 @@
 {
-    "username": "Kasutajanimi / Email",
+    "username-email": "Username / Email",
+    "username": "Username",
+    "email": "Email",
     "remember_me": "Mäleta mind?",
     "forgot_password": "Unustasid parooli?",
     "alternative_logins": "Alternatiivsed sisse logimise võimalused",

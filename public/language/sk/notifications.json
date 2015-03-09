@@ -2,6 +2,7 @@
     "title": "Notifikácie",
     "no_notifs": "Nemáte žiadne nové notifikácie",
     "see_all": "Pozri všetky notifikácie",
+    "mark_all_read": "Mark all notifications read",
     "back_to_home": "Back to %1",
     "outgoing_link": "Odkaz mimo fórum",
     "outgoing_link_message": "You are now leaving %1.",
@@ -21,7 +22,6 @@
     "user_started_following_you": "<strong>%1</strong> started following you.",
     "email-confirmed": "Email bol potvrdený",
     "email-confirmed-message": "Ďakujeme za potvrdenie tvojho emailu. Účet je plne aktivovaný.",
-    "email-confirm-error": "Vyskytla sa chyba...",
     "email-confirm-error-message": "Vyskytla sa chyba pri overení tvojej emailovej adresy. ",
     "email-confirm-sent": "Práve sme poslali potvrdzujúci email."
 }

@@ -1,5 +1,5 @@
 "use strict";
-/* global define, app, RELATIVE_PATH */
+/* global define, app, translator, config, RELATIVE_PATH */
 
 define('forum/login', ['csrf'], function(csrf) {
 	var	Login = {};
@@ -31,7 +31,7 @@ define('forum/login', ['csrf'], function(csrf) {
 						},
 						error: function(data, status) {
 							translator.translate(data.responseText, config.defaultLang, function(translated) {
-								errorEl.find('p').text(translated)
+								errorEl.find('p').text(translated);
 								errorEl.show();
 								submitEl.removeClass('disabled');
 							});

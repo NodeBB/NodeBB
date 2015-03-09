@@ -4,6 +4,7 @@
 var async = require('async'),
 	winston = require('winston'),
 
+	meta = require('../meta'),
 	posts = require('../posts'),
 	topics = require('../topics'),
 	user = require('../user'),
@@ -108,27 +109,24 @@ module.exports = function(privileges) {
 	};
 
 	privileges.posts.canEdit = function(pid, uid, callback) {
-		helpers.some([
-			function(next) {
-				isPostTopicLocked(pid, function(err, isLocked) {
-					if (err || isLocked) {
-						return next(err, false);
-					}
-
-					helpers.some([
-						function(next) {
-							posts.isOwner(pid, uid, next);
-						},
-						function(next) {
-							helpers.hasEnoughReputationFor(['privileges:manage_content', 'privileges:manage_topic'], uid, next);
-						}
-					], next);
-				});
-			},
-			function(next) {
-				isAdminOrMod(pid, uid, next);
+		async.parallel({
+			isEditable: async.apply(isPostEditable, pid, uid),
+			isAdminOrMod: async.apply(isAdminOrMod, pid, uid)
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
 			}
-		], callback);
+			if (results.isAdminOrMod) {
+				return callback(null, true);
+			}
+			if (results.isEditable.isLocked) {
+				return callback(new Error('[[error:topic-locked]]]'));
+			}
+			if (results.isEditable.isEditExpired) {
+				return callback(new Error('[[error:post-edit-duration-expired, ' + meta.config.postEditDuration + ']]'));
+			}
+			callback(null, results.isEditable.editable);
+		});		
 	};
 
 	privileges.posts.canMove = function(pid, uid, callback) {
@@ -139,6 +137,36 @@ module.exports = function(privileges) {
 			isAdminOrMod(pid, uid, callback);
 		});
 	};
+
+	function isPostEditable(pid, uid, callback) {
+		async.waterfall([
+			function(next) {
+				posts.getPostFields(pid, ['tid', 'timestamp'], next);
+			},
+			function(postData, next) {
+				var postEditDuration = parseInt(meta.config.postEditDuration, 10);
+				if (postEditDuration && Date.now() - parseInt(postData.timestamp, 10) > postEditDuration * 1000) {
+					return callback(null, {isEditExpired: true});
+				}
+				topics.isLocked(postData.tid, next);
+			},
+			function(isLocked, next) {
+				if (isLocked) {
+					return callback(null, {isLocked: true});
+				}
+				helpers.some([
+					function(next) {
+						posts.isOwner(pid, uid, next);
+					},
+					function(next) {
+						helpers.hasEnoughReputationFor(['privileges:manage_content', 'privileges:manage_topic'], uid, next);
+					}
+				], function(err, editable) {
+					next(err, {editable: editable});
+				});
+			}
+		], callback);
+	}
 
 	function isPostTopicLocked(pid, callback) {
 		posts.getPostField(pid, 'tid', function(err, tid) {

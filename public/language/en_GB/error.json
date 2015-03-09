@@ -25,6 +25,7 @@
 	"email-not-confirmed": "Your email has not been confirmed yet, please click here to confirm your email.",
 	"email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
 	"no-email-to-confirm": "This forum requires email confirmation, please click here to enter an email",
+	"email-confirm-failed": "We could not confirm your email, please try again later.",
 
 	"username-too-short": "Username too short",
 	"username-too-long": "Username too long",
@@ -44,6 +45,7 @@
 	"category-disabled": "Category disabled",
 
 	"topic-locked": "Topic Locked",
+	"post-edit-duration-expired": "You are only allowed to edit posts for %1 seconds after posting",
 
 	"still-uploading": "Please wait for uploads to complete.",
 	"content-too-short": "Please enter a longer post. Posts should contain at least %1 characters.",

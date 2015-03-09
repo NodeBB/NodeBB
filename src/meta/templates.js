@@ -99,7 +99,7 @@ Templates.compile = function(callback) {
 					matches = null,
 					regex = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
 
-				while(matches = file.match(regex)) {
+				while((matches = file.match(regex)) !== null) {
 					var partial = "/" + matches[1];
 
 					if (paths[partial] && relativePath !== partial) {

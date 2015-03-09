@@ -121,13 +121,7 @@ var async = require('async'),
 			},
 			function(cids, next) {
 				Categories.getCategories(cids, uid, next);
-			},
-			function(categories, next) {
-				categories = categories.filter(function(category) {
-					return !category.disabled;
-				});
-				next(null, categories);
-			}
+			}			
 		], callback);
 	};
 
@@ -286,10 +280,9 @@ var async = require('async'),
 				Categories.getCategoriesData(cids, next);
 			},
 			function (categories, next) {
-				// Filter categories to isolate children, and remove disabled categories
 				async.map(cids, function(cid, next) {
 					next(null, categories.filter(function(category) {
-						return category && parseInt(category.parentCid, 10) === parseInt(cid, 10) && !category.disabled;
+						return category && parseInt(category.parentCid, 10) === parseInt(cid, 10);
 					}));
 				}, next);
 			}

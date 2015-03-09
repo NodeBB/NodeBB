@@ -1,5 +1,7 @@
 {
-    "username": "Nama pengguna / Emel",
+    "username-email": "Username / Email",
+    "username": "Username",
+    "email": "Email",
     "remember_me": "Ingat Saya?",
     "forgot_password": "Lupa Kata Laluan?",
     "alternative_logins": "Login Alternatif",

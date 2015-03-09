@@ -2,6 +2,7 @@
     "title": "বিজ্ঞপ্তিগুলো",
     "no_notifs": "আপনার নতুন কোন বিজ্ঞপ্তি নেই",
     "see_all": "সকল বিজ্ঞপ্তিগুলো দেখুন",
+    "mark_all_read": "Mark all notifications read",
     "back_to_home": "ফিরুন %1",
     "outgoing_link": "বহির্গামী লিঙ্ক",
     "outgoing_link_message": "আপনি এখন %1 ত্যাগ করছেন",
@@ -21,7 +22,6 @@
     "user_started_following_you": "<strong>%1</strong> আপনাকে অনুসরন করা শুরু করেছেন।",
     "email-confirmed": "ইমেইল নিশ্চিত করা হয়েছে",
     "email-confirmed-message": "আপনার ইমেইল যাচাই করার জন্য আপনাকে ধন্যবাদ। আপনার অ্যাকাউন্টটি এখন সম্পূর্ণরূপে সক্রিয়।",
-    "email-confirm-error": "একটি ত্রুটি ঘটেছে...",
     "email-confirm-error-message": "আপনার ইমেল ঠিকানার বৈধতা যাচাইয়ে একটি সমস্যা হয়েছে। সম্ভবত কোডটি ভুল ছিল অথবা কোডের মেয়াদ শেষ হয়ে গিয়েছে।",
     "email-confirm-sent": "নিশ্চিতকরণ ইমেইল পাঠানো হয়েছে।"
 }

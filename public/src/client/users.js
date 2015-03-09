@@ -103,7 +103,7 @@ define('forum/users', function() {
 		$('.users').on('click', '.pagination a', function() {
 			doSearch($(this).attr('data-page'));
 			return false;
-		})
+		});
 	}
 
 	function doSearch(page) {
@@ -147,7 +147,7 @@ define('forum/users', function() {
 
 			templates.parse('partials/paginator', {pagination: data.pagination}, function(html) {
 				$('.pagination-container').replaceWith(html);
-			})
+			});
 
 			templates.parse('users', 'users', data, function(html) {
 				translator.translate(html, function(translated) {

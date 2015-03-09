@@ -31,5 +31,10 @@
     "username": "用户名",
     "category": "版面",
     "descending": "逆序",
-    "ascending": "顺序"
+    "ascending": "顺序",
+    "save-preferences": "Save preferences",
+    "clear-preferences": "Clear preferences",
+    "search-preferences-saved": "Search preferences saved",
+    "search-preferences-cleared": "Search preferences cleared",
+    "show-results-as": "Show results as"
 }

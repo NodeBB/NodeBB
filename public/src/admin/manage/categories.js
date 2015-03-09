@@ -80,6 +80,10 @@ define('admin/manage/categories', [
 				order: $('.admin-categories #entry-container').children().length + 1
 			};
 
+			saveNew(category);
+		}
+
+		function saveNew(category) {
 			socket.emit('admin.categories.create', category, function(err, data) {
 				if(err) {
 					return app.alertError(err.message);
@@ -190,6 +194,27 @@ define('admin/manage/categories', [
 				});
 			});
 
+			$('.admin-categories').on('click', '.duplicate', function() {
+				var inputs = $(this).parents('li[data-cid]').find('[data-name]'),
+					data = {};
+
+				inputs.each(function() {
+					var name = $(this).attr('data-name');
+					switch (name) {
+						case 'icon':
+							data[name] = $(this).attr('value');
+							break;
+						case 'name':
+							data[name] = $(this).val() + ' (copy)';
+							break;
+						default:
+							data[name] = $(this).val();
+					}
+				});
+
+				saveNew(data);
+			});
+
 			$('.admin-categories').on('click', '.permissions', function() {
 				var	cid = $(this).parents('li[data-cid]').attr('data-cid');
 				Categories.launchPermissionsModal(cid);
@@ -201,7 +226,7 @@ define('admin/manage/categories', [
 				var inputEl = $(this),
 					cid = inputEl.parents('li[data-cid]').attr('data-cid');
 
-				uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', { cid: cid }, 0, function(imageUrlOnServer) {
+				uploader.open(RELATIVE_PATH + '/api/admin/category/uploadpicture', { cid: cid }, 0, function(imageUrlOnServer) {
 					inputEl.val(imageUrlOnServer);
 					var previewBox = inputEl.parents('li[data-cid]').find('.preview-box');
 					previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')')

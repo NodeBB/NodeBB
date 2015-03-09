@@ -52,18 +52,9 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 							} else {
 								ajaxify.go('chats/' + utils.slugify(userObj.username));
 							}
-							/*javascript:app.openChat(\'' +
-								userObj.username +
-								'\', ' + userObj.uid +
-								');*/
 						});
 					})(userObj);
 				}
-
-				var seeAll = '<li class="pagelink"><a href="' + config.relative_path + '/chats">[[modules:chat.see_all]]</a></li>';
-				translator.translate(seeAll, function(translated) {
-					$(translated).appendTo(chatsListEl);
-				});
 			});
 		});
 
@@ -211,13 +202,8 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 					if (ui.originalSize.height === ui.size.height) {
 						return;
 					}
-					var totalHeight = chatModal.find('.modal-content').outerHeight() - chatModal.find('.modal-header').outerHeight();
-					var padding = parseInt(chatModal.find('.modal-body').css('padding-top'), 10) + parseInt(chatModal.find('.modal-body').css('padding-bottom'), 10);
-					var contentMargin = parseInt(chatModal.find('#chat-content').css('margin-top'), 10) + parseInt(chatModal.find('#chat-content').css('margin-bottom'), 10);
-					var sinceHeight = chatModal.find('.since-bar').outerHeight(true);
-					var inputGroupHeight = chatModal.find('.input-group').outerHeight();
 
-					chatModal.find('#chat-content').css('height', totalHeight - padding - contentMargin - sinceHeight -	inputGroupHeight);
+					chatModal.find('#chat-content').css('height', module.calculateChatListHeight(chatModal));
 				});
 
 				chatModal.find('#chat-with-name').html(username);
@@ -304,6 +290,10 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 		chatModal.data('modal', null);
 		taskbar.discard('chat', chatModal.attr('UUID'));
 		Chats.notifyTyping(chatModal.attr('touid'), false);
+
+		if (chatModal.attr('data-mobile')) {
+			module.disableMobileBehaviour(chatModal);
+		}
 	};
 
 	module.center = function(chatModal) {
@@ -330,6 +320,36 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 		module.bringModalToTop(chatModal);
 		module.focusInput(chatModal);
 		socket.emit('modules.chats.markRead', chatModal.attr('touid'));
+
+		var env = utils.findBootstrapEnvironment();
+		if (env === 'xs' || env === 'sm') {
+			module.enableMobileBehaviour(chatModal);
+		}
+	};
+
+	module.enableMobileBehaviour = function(modalEl) {
+		app.toggleNavbar(false);
+		modalEl.attr('data-mobile', '1');
+		var messagesEl = modalEl.find('#chat-content');
+		messagesEl.css('height', module.calculateChatListHeight(modalEl));
+
+		$(window).on('resize', function() {
+			messagesEl.css('height', module.calculateChatListHeight(modalEl));
+		});
+	};
+
+	module.disableMobileBehaviour = function(modalEl) {
+		app.toggleNavbar(true);
+	};
+
+	module.calculateChatListHeight = function(modalEl) {
+		var totalHeight = modalEl.find('.modal-content').outerHeight() - modalEl.find('.modal-header').outerHeight(),
+			padding = parseInt(modalEl.find('.modal-body').css('padding-top'), 10) + parseInt(modalEl.find('.modal-body').css('padding-bottom'), 10),
+			contentMargin = parseInt(modalEl.find('#chat-content').css('margin-top'), 10) + parseInt(modalEl.find('#chat-content').css('margin-bottom'), 10),
+			sinceHeight = modalEl.find('.since-bar').outerHeight(true),
+			inputGroupHeight = modalEl.find('.input-group').outerHeight();
+
+		return totalHeight - padding - contentMargin - sinceHeight - inputGroupHeight;
 	};
 
 	module.minimize = function(uuid) {

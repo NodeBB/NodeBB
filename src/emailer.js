@@ -41,7 +41,7 @@ var	fs = require('fs'),
 				return callback(err);
 			}
 			async.map([results.html, results.plaintext, params.subject], function(raw, next) {
-				translator.translate(raw, results.settings.language || meta.config.defaultLang || 'en_GB', function(translated) {
+				translator.translate(raw, results.settings.userLang || meta.config.defaultLang || 'en_GB', function(translated) {
 					next(undefined, translated);
 				});
 			}, function(err, translated) {

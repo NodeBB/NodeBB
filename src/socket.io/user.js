@@ -282,28 +282,24 @@ SocketUser.follow = function(socket, data, callback) {
 		return;
 	}
 
-	toggleFollow('follow', socket.uid, data.uid, function(err) {
-		if (err) {
-			return callback(err);
-		}
-
-		user.getUserFields(socket.uid, ['username', 'userslug'], function(err, userData) {
-			if (err) {
-				return callback(err);
-			}
-
+	async.waterfall([
+		function(next) {
+			toggleFollow('follow', socket.uid, data.uid, next);
+		},
+		function(next) {
+			user.getUserFields(socket.uid, ['username', 'userslug'], next);
+		},
+		function(userData, next) {
 			notifications.create({
 				bodyShort: '[[notifications:user_started_following_you, ' + userData.username + ']]',
 				nid: 'follow:' + data.uid + ':uid:' + socket.uid,
 				from: socket.uid
-			}, function(err, notification) {
-				if (!err && notification) {
-					notifications.push(notification, [data.uid]);
-				}
-				callback(err);
-			});
-		});
-	});
+			}, next);
+		},
+		function(notification, next) {
+			notifications.push(notification, [data.uid], next);
+		}
+	], callback);
 };
 
 SocketUser.unfollow = function(socket, data, callback) {

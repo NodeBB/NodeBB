@@ -38,6 +38,13 @@
 		plugins.ready(function() {
 			loginStrategies.length = 0;
 
+			if (plugins.hasListeners('action:auth.overrideLogin')) {
+				winston.warn('[authentication] Login override detected, skipping local login strategy.');
+				plugins.fireHook('action:auth.overrideLogin');
+			} else {
+				passport.use(new passportLocal({passReqToCallback: true}, Auth.login));
+			}
+
 			plugins.fireHook('filter:auth.init', loginStrategies, function(err) {
 				if (err) {
 					winston.error('filter:auth.init - plugin failure');
@@ -110,8 +117,6 @@
 		], next);
 	};
 
-	passport.use(new passportLocal({passReqToCallback: true}, Auth.login));
-
 	passport.serializeUser(function(user, done) {
 		done(null, user.uid);
 	});
@@ -132,6 +137,10 @@
 			req.session.returnTo = req.body.returnTo;
 		}
 
+		if (plugins.hasListeners('action:auth.overrideLogin')) {
+			return Auth.continueLogin(req, res, next);
+		};
+
 		var loginWith = meta.config.allowLoginWith || 'username-email';
 
 		if (req.body.username && utils.isEmailValid(req.body.username) && loginWith.indexOf('email') !== -1) {
@@ -140,16 +149,16 @@
 					return next(err);
 				}
 				req.body.username = username ? username : req.body.username;
-				continueLogin(req, res, next);
+				Auth.continueLogin(req, res, next);
 			});
 		} else if (loginWith.indexOf('username') !== -1 && !validator.isEmail(req.body.username)) {
-			continueLogin(req, res, next);
+			Auth.continueLogin(req, res, next);
 		} else {
 			res.status(500).send('[[error:wrong-login-type-' + loginWith + ']]');
 		}
 	}
 
-	function continueLogin(req, res, next) {
+	Auth.continueLogin = function(req, res, next) {
 		passport.authenticate('local', function(err, userData, info) {
 			if (err) {
 				return res.status(403).send(err.message);
@@ -196,7 +205,7 @@
 				}
 			});
 		})(req, res, next);
-	}
+	};
 
 	function register(req, res) {
 		if (parseInt(meta.config.allowRegistration, 10) === 0) {

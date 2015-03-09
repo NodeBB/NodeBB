@@ -1,5 +1,5 @@
 "use strict";
-/*global io, templates, translator, ajaxify, utils, bootbox, RELATIVE_PATH, config*/
+/*global io, templates, translator, ajaxify, utils, bootbox, RELATIVE_PATH, config, Visibility*/
 
 var	socket,
 	app = app || {};
@@ -366,7 +366,7 @@ app.cacheBuster = null;
 				}
 			}
 		});
-	}
+	};
 
 	function createHeaderTooltips() {
 		if (utils.findBootstrapEnvironment() === 'xs') {
@@ -459,7 +459,7 @@ app.cacheBuster = null;
 	}
 
 	function collapseNavigationOnClick() {
-		$('#main-nav a, #user-control-list a, #logged-out-menu li a, #logged-in-menu .visible-xs').off('click').on('click', function() {
+		$('#nav-dropdown').off('click').on('click', '#main-nav a, #user-control-list a, #logged-out-menu li a, #logged-in-menu .visible-xs, #chat-list a', function() {
 			if($('.navbar .navbar-collapse').hasClass('in')) {
 				$('.navbar-header button').click();
 			}
@@ -481,17 +481,8 @@ app.cacheBuster = null;
 
 	app.load = function() {
 		$('document').ready(function () {
-			var url = ajaxify.removeRelativePath(window.location.pathname.slice(1).replace(/\/$/, "")),
-				tpl_url = ajaxify.getTemplateMapping(url),
-				search = window.location.search,
-				hash = window.location.hash,
-				$window = $(window);
-
-
-			$window.trigger('action:ajaxify.start', {
-				url: url,
-				tpl_url: tpl_url
-			});
+			var url = ajaxify.start(window.location.pathname.slice(1), true, window.location.search);
+			ajaxify.end(url, app.template);
 
 			collapseNavigationOnClick();
 
@@ -514,29 +505,6 @@ app.cacheBuster = null;
 
 			createHeaderTooltips();
 			showEmailConfirmWarning();
-
-			ajaxify.variables.parse();
-			ajaxify.currentPage = url;
-
-			$window.trigger('action:ajaxify.contentLoaded', {
-				url: url
-			});
-
-			if (window.history && window.history.replaceState) {
-				window.history.replaceState({
-					url: url + search + hash
-				}, url, RELATIVE_PATH + '/' + url + search + hash);
-			}
-
-			ajaxify.loadScript(tpl_url, function() {
-				ajaxify.widgets.render(tpl_url, url, function() {
-					app.processPage();
-					$window.trigger('action:ajaxify.end', {
-						url: url,
-						tpl_url: tpl_url
-					});
-				});
-			});
 
 			socket.removeAllListeners('event:nodebb.ready');
 			socket.on('event:nodebb.ready', function(cacheBusters) {

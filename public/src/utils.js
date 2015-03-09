@@ -74,7 +74,7 @@
 		languageKeyRegex: /\[\[[\w]+:.+\]\]/,
 
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
-		slugify: function(str) {
+		slugify: function(str, preserveCase) {
 			if (!str) { str = ''; }
 			str = str.replace(utils.trimRegex, '');
 			if(utils.isLatin.test(str)) {
@@ -82,7 +82,7 @@
 			} else {
 				str = XRegExp.replace(str, utils.invalidUnicodeChars, '-');
 			}
-			str = str.toLocaleLowerCase();
+			str = !preserveCase ? str.toLocaleLowerCase() : str;
 			str = str.replace(utils.collapseWhitespace, '-');
 			str = str.replace(utils.collapseDash, '-');
 			str = str.replace(utils.trimTrailingDash, '');

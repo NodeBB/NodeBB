@@ -1,5 +1,5 @@
 "use strict";
-/* global socket, define, templates, bootbox, app, ajaxify,  */
+/* global config, socket, define, templates, bootbox, app, ajaxify,  */
 define('admin/manage/users', ['admin/modules/selectable'], function(selectable) {
 	var Users = {};
 
@@ -145,7 +145,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 				}
 				app.alertSuccess('[[notifications:email-confirm-sent]]');
 			});
-		})
+		});
 
 		$('.password-reset-email').on('click', function() {
 			var uids = getSelectedUids();

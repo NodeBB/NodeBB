@@ -20,9 +20,9 @@ module.exports = function(Meta) {
 
 			callback(undefined, logs || '');
 		});
-	}
+	};
 
 	Meta.logs.clear = function(callback) {
 		fs.truncate(this.path, 0, callback);
-	}
+	};
 };

@@ -12,6 +12,16 @@ var pkg = require('./../../package.json'),
 var apiController = {};
 
 apiController.getConfig = function(req, res, next) {
+	function filterConfig() {
+		plugins.fireHook('filter:config.get', config, function(err, config) {
+			if (res.locals.isAPI) {
+				res.status(200).json(config);
+			} else {
+				next(err, config);
+			}
+		});
+	}
+
 	var config = {};
 	config.relative_path = nconf.get('relative_path');
 	config.socketioTransports = nconf.get('socket.io:transports') || ['polling', 'websocket'];
@@ -63,12 +73,7 @@ apiController.getConfig = function(req, res, next) {
 	config.searchEnabled = plugins.hasListeners('filter:search.query');
 
 	if (!req.user) {
-		if (res.locals.isAPI) {
-			res.status(200).json(config);
-		} else {
-			next(null, config);
-		}
-		return;
+		return filterConfig();
 	}
 
 	user.getSettings(req.user.uid, function(err, settings) {
@@ -80,19 +85,14 @@ apiController.getConfig = function(req, res, next) {
 		config.topicsPerPage = settings.topicsPerPage;
 		config.postsPerPage = settings.postsPerPage;
 		config.notificationSounds = settings.notificationSounds;
-		config.userLang = settings.language || config.defaultLang;
+		config.userLang = settings.userLang || config.defaultLang;
 		config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
 		config.topicPostSort = settings.topicPostSort || config.topicPostSort;
 		config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
 		config.topicSearchEnabled = settings.topicSearchEnabled || false;
 
-		if (res.locals.isAPI) {
-			res.status(200).json(config);
-		} else {
-			next(err, config);
-		}
+		filterConfig();
 	});
-
 };
 
 

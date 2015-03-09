@@ -12,6 +12,7 @@ var app,
 	nconf = require('nconf'),
 
 	plugins = require('./../plugins'),
+	navigation = require('./../navigation'),
 	meta = require('./../meta'),
 	translator = require('./../../public/src/translator'),
 	user = require('./../user'),
@@ -215,12 +216,7 @@ middleware.buildHeader = function(req, res, next) {
 middleware.renderHeader = function(req, res, callback) {
 	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
 
-	var custom_header = {
-		uid: uid,
-		'navigation': []
-	};
-
-	plugins.fireHook('filter:header.build', custom_header, function(err, custom_header) {
+	navigation.get(function(err, menuItems) {
 		if (err) {
 			return callback(err);
 		}
@@ -258,7 +254,7 @@ middleware.renderHeader = function(req, res, callback) {
 				'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 				'brand:logo': meta.config['brand:logo'] || '',
 				'brand:logo:display': meta.config['brand:logo']?'':'hide',
-				navigation: custom_header.navigation,
+				navigation: menuItems,
 				allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
 				searchEnabled: plugins.hasListeners('filter:search.query')
 			};
@@ -288,7 +284,6 @@ middleware.renderHeader = function(req, res, callback) {
 			href: nconf.get('relative_path') + '/favicon.ico'
 		});
 
-
 		async.parallel({
 			customCSS: function(next) {
 				templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1;
@@ -307,7 +302,7 @@ middleware.renderHeader = function(req, res, callback) {
 						if (err) {
 							return next(err);
 						}
-						meta.title.build(req.url.slice(1), settings.language, res.locals, next);
+						meta.title.build(req.url.slice(1), settings.userLang, res.locals, next);
 					});
 				} else {
 					meta.title.build(req.url.slice(1), meta.config.defaultLang, res.locals, next);
@@ -343,7 +338,7 @@ middleware.renderHeader = function(req, res, callback) {
 			results.user.isAdmin = results.isAdmin || false;
 			results.user.uid = parseInt(results.user.uid, 10);
 			results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
-			
+
 			templateValues.browserTitle = results.title;
 			templateValues.isAdmin = results.user.isAdmin;
 			templateValues.user = results.user;
@@ -351,6 +346,9 @@ middleware.renderHeader = function(req, res, callback) {
 			templateValues.customCSS = results.customCSS;
 			templateValues.customJS = results.customJS;
 			templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
+
+			templateValues.template = {name: res.locals.template};
+			templateValues.template[res.locals.template] = true;
 
 			app.render('header', templateValues, callback);
 		});
@@ -380,8 +378,9 @@ middleware.processRender = function(req, res, next) {
 		}
 
 		options.loggedIn = req.user ? parseInt(req.user.uid, 10) !== 0 : false;
-		options.template = {};
+		options.template = {name: template};
 		options.template[template] = true;
+		res.locals.template = template;
 
 		if ('function' !== typeof fn) {
 			fn = defaultFn;
@@ -401,19 +400,17 @@ middleware.processRender = function(req, res, next) {
 				str = str + res.locals.adminFooter;
 			}
 
-			if (res.locals.renderHeader) {
-				middleware.renderHeader(req, res, function(err, template) {
+			if (res.locals.renderHeader || res.locals.renderAdminHeader) {
+				var method = res.locals.renderHeader ? middleware.renderHeader : middleware.admin.renderHeader;
+				method(req, res, function(err, template) {
+					if (err) {
+						return fn(err);
+					}
 					str = template + str;
 					var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
 					translator.translate(str, language, function(translated) {
 						fn(err, translated);
 					});
-				});
-			} else if (res.locals.adminHeader) {
-				str = res.locals.adminHeader + str;
-				var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
-				translator.translate(str, language, function(translated) {
-					fn(err, translated);
 				});
 			} else {
 				fn(err, str);
@@ -457,7 +454,6 @@ middleware.maintenanceMode = function(req, res, next) {
 			'/nodebb.min.js',
 			'/vendor/fontawesome/fonts/fontawesome-webfont.woff',
 			'/src/modules/[\\w]+\.js',
-			'/api/get_templates_listing',
 			'/api/login',
 			'/api/?',
 			'/language/.+'

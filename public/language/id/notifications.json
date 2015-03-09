@@ -2,6 +2,7 @@
     "title": "Pemberitahuan",
     "no_notifs": "Kamu tidak memiliki pemberitahuan baru",
     "see_all": "Lihat seluruh Pemberitahuan",
+    "mark_all_read": "Mark all notifications read",
     "back_to_home": "Kembali ke %1",
     "outgoing_link": "Tautan Keluar",
     "outgoing_link_message": "Saat ini kamu meninggalkan %1.",
@@ -21,7 +22,6 @@
     "user_started_following_you": "<strong>%1</strong> mulai mengikutimu.",
     "email-confirmed": "Email telah Dikonfirmasi",
     "email-confirmed-message": "Terimakasih telah melakukan validasi email. Akunmu saat ini telah aktif sepenuhnya.",
-    "email-confirm-error": "Terjadi error...",
     "email-confirm-error-message": "Terjadi masalah saat melakukan validasi emailmu. Mungkin terjadi kesalahan kode atau waktu habis.",
     "email-confirm-sent": "Email konfirmasi telah dikirim."
 }

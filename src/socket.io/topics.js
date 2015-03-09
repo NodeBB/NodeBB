@@ -518,14 +518,6 @@ SocketTopics.getPageCount = function(socket, tid, callback) {
 	topics.getPageCount(tid, socket.uid, callback);
 };
 
-SocketTopics.getTidPage = function(socket, tid, callback) {
-	topics.getTidPage(tid, socket.uid, callback);
-};
-
-SocketTopics.getTidIndex = function(socket, tid, callback) {
-	categories.getTopicIndex(tid, callback);
-};
-
 SocketTopics.searchTags = function(socket, data, callback) {
 	topics.searchTags(data, callback);
 };

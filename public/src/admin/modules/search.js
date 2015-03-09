@@ -23,7 +23,7 @@ define(function() {
 
 			setupACPSearch();
 		});
-	};;
+	};
 
 	function setupACPSearch() {
 		var menu = $('#acp-search .dropdown-menu'),

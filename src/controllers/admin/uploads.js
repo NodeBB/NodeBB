@@ -31,7 +31,7 @@ uploadsController.uploadFavicon = function(req, res, next) {
 	var allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'];
 
 	if (validateUpload(req, res, next, uploadedFile, allowedTypes)) {
-		file.saveFileToLocal('favicon.ico', 'files', uploadedFile.path, function(err, image) {
+		file.saveFileToLocal('favicon.ico', 'system', uploadedFile.path, function(err, image) {
 			fs.unlink(uploadedFile.path);
 			if (err) {
 				return next(err);
@@ -55,7 +55,7 @@ function upload(name, req, res, next) {
 	var allowedTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif'];
 	if (validateUpload(req, res, next, uploadedFile, allowedTypes)) {
 		var filename = name + path.extname(uploadedFile.name);
-		uploadImage(filename, 'files', uploadedFile, req, res, next);
+		uploadImage(filename, 'system', uploadedFile, req, res, next);
 	}
 }
 

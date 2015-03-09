@@ -37,6 +37,8 @@ var adminController = {
 	settings: {},
 	logger: {},
 	sounds: {},
+	homepage: {},
+	navigation: {},
 	themes: {},
 	users: require('./admin/users'),
 	uploads: require('./admin/uploads')
@@ -230,6 +232,49 @@ adminController.languages.get = function(req, res, next) {
 	});
 };
 
+adminController.sounds.get = function(req, res, next) {
+	meta.sounds.getFiles(function(err, sounds) {
+		sounds = Object.keys(sounds).map(function(name) {
+			return {
+				name: name
+			};
+		});
+
+		res.render('admin/general/sounds', {
+			sounds: sounds
+		});
+	});
+};
+
+adminController.navigation.get = function(req, res, next) {
+	require('../navigation/admin').getAdmin(function(err, data) {
+		if (err) {
+			return next(err);
+		}
+		
+		res.render('admin/general/navigation', data);
+	});
+};
+
+adminController.homepage.get = function(req, res, next) {
+	plugins.fireHook('filter:homepage.get', {routes: [
+		{
+			route: 'categories',
+			name: 'Categories'
+		},
+		{
+			route: 'recent',
+			name: 'Recent'
+		},
+		{
+			route: 'popular',
+			name: 'Popular'
+		}
+	]}, function(err, data) {
+		res.render('admin/general/homepage', data);
+	});
+};
+
 adminController.settings.get = function(req, res, next) {
 	var term = req.params.term ? req.params.term : 'general';
 
@@ -328,28 +373,15 @@ adminController.groups.get = function(req, res, next) {
 	groups.list({
 		expand: true,
 		truncateUserList: true,
-		isAdmin: true
+		isAdmin: true,
+		showSystemGroups: true
 	}, function(err, groups) {
 		groups = groups.filter(function(group) {
-			return group.name !== 'registered-users' && group.name !== 'guests';
+			return group.name !== 'registered-users' && group.name !== 'guests' && group.name.indexOf(':privileges:') === -1;
 		});
 		res.render('admin/manage/groups', {
 			groups: groups,
 			yourid: req.user.uid
-		});
-	});
-};
-
-adminController.sounds.get = function(req, res, next) {
-	meta.sounds.getFiles(function(err, sounds) {
-		sounds = Object.keys(sounds).map(function(name) {
-			return {
-				name: name
-			};
-		});
-
-		res.render('admin/general/sounds', {
-			sounds: sounds
 		});
 	});
 };

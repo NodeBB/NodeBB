@@ -9,7 +9,11 @@
 					<!-- IF !plugins.error -->
 					<li data-plugin-id="{plugins.id}" data-version="{plugins.version}" class="clearfix">
 						<div class="pull-right">
+							<!-- IF plugins.isTheme -->
+							<a href="{config.relative_path}/admin/appearance/themes" class="btn btn-info">Themes</a>
+							<!-- ELSE -->
 							<button data-action="toggleActive" class="btn <!-- IF plugins.active --> btn-warning<!-- ELSE --> btn-success<!-- ENDIF plugins.active -->"><i class="fa fa-power-off"></i> <!-- IF plugins.active -->Deactivate<!-- ELSE -->Activate<!-- ENDIF plugins.active --></button>
+							<!-- ENDIF plugins.isTheme -->
 
 							<button data-action="toggleInstall" data-installed="1" class="btn btn-danger"><i class="fa fa-trash-o"></i> Uninstall</button>
 						</div>
@@ -84,7 +88,16 @@
 			<div class="panel-heading">Plugin Search</div>
 			<div class="panel-body">
 				<input class="form-control" type="text" id="plugin-search" placeholder="Search for plugin..."/><br/>
-				<button class="btn btn-default" id="plugin-order">Order Active Plugins</button>
+			</div>
+		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-heading">Re-order Plugins</div>
+			<div class="panel-body">
+				<button class="btn btn-default btn-block" id="plugin-order"><i class="fa fa-exchange"></i> Order Active Plugins</button>
+				<p class="help-block">
+					Certain plugins work ideally when they are initialised before/after other plugins. You can alter this loading behaviour here.
+				</p>
 			</div>
 		</div>
 

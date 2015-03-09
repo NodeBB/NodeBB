@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "Tidak ada topik dengan tag ini.",
     "tags": "Tag",
-    "enter_tags_here": "Masukkan tag di sini. Tekan enter untuk setiap tag.",
+    "enter_tags_here": "Enter tags here. %1-%2 characters. Press enter after each tag.",
     "enter_tags_here_short": "Masukkan tag...",
     "no_tags": "Belum ada tag."
 }

@@ -2,6 +2,7 @@
     "title": "آگاه‌سازی‌ها",
     "no_notifs": "هیچ آگاه‌سازی تازه‌ای ندارید",
     "see_all": "دیدن همهٔ آگاه‌سازی‌ها",
+    "mark_all_read": "Mark all notifications read",
     "back_to_home": "بازگشت به %1",
     "outgoing_link": "پیوند برون‌رو",
     "outgoing_link_message": "You are now leaving %1.",
@@ -21,7 +22,6 @@
     "user_started_following_you": "<strong>%1</strong> started following you.",
     "email-confirmed": "رایانامه تایید شد",
     "email-confirmed-message": "بابت تایید ایمیلتان سپاس‌گزاریم. حساب کاربری شما اکنون به صورت کامل فعال شده است.",
-    "email-confirm-error": "خطایی پیش آمده است...",
     "email-confirm-error-message": "خطایی در تایید آدرس ایمیل شما پیش آمده است. ممکن است کد نا‌معتبر و یا منقضی شده باشد.",
     "email-confirm-sent": "ایمیل تایید ارسال شد."
 }

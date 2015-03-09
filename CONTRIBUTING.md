@@ -50,6 +50,15 @@ $ git rev-parse HEAD
 
 If you have downloaded the `.zip` or `.tar.gz` packages from GitHub (or elsewhere), please let us know.
 
+## Provide theme versions if issue is related to the theme/display
+
+``` bash
+$ npm ls nodebb-theme-vanilla nodebb-theme-lavender
+nodebb@0.7.0-dev /home/julian/Projects/nodebb/forum
+├── nodebb-theme-lavender@0.2.13
+└── nodebb-theme-vanilla@0.2.35
+```
+
 ## Attempt to use `git bisect`
 
 If you have installed NodeBB via GitHub clone, are familiar with utilising git, and are willing to help us narrow down the specific commit that causes a bug, consider running `git bisect`.

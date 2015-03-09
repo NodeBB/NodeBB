@@ -22,6 +22,14 @@ define('composer', [
 
 	$(window).off('resize', onWindowResize).on('resize', onWindowResize);
 
+	$(window).on('action:popstate', function(ev, data) {
+		var env = utils.findBootstrapEnvironment();
+
+		if (composer.active && (env === 'xs' || env ==='sm')) {
+			discard(composer.active);
+		}
+	});
+
 	// Query server for formatting options
 	socket.emit('modules.composer.getFormattingOptions', function(err, options) {
 		composer.formatting = options;
@@ -432,13 +440,7 @@ define('composer', [
 			};
 
 			action = 'topics.post';
-			socket.emit(action, composerData, function(err, topic) {
-				done(err);
-
-				if (!err) {
-					ajaxify.go('topic/' + topic.slug);
-				}
-			});
+			socket.emit(action, composerData, done);
 		} else if (parseInt(postData.tid, 10) > 0) {
 			composerData = {
 				tid: postData.tid,
@@ -463,7 +465,7 @@ define('composer', [
 			socket.emit(action, composerData, done);
 		}
 
-		function done(err) {
+		function done(err, data) {
 			$('.action-bar button').removeAttr('disabled');
 			if (err) {
 				if (err.message === '[[error:email-not-confirmed]]') {
@@ -476,7 +478,7 @@ define('composer', [
 			discard(post_uuid);
 			drafts.removeDraft(postData.save_id);
 
-			$(window).trigger('action:composer.' + action, composerData);
+			$(window).trigger('action:composer.' + action, {composerData: composerData, data: data});
 		}
 	}
 

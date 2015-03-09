@@ -2,6 +2,8 @@
 					<ul class="nav nav-list">
 						<li class="nav-header"><i class="fa fa-fw fa-dashboard"></i> General</li>
 						<li class="active"><a href="{relative_path}/admin/general/dashboard">Dashboard</a></li>
+						<li><a href="{relative_path}/admin/general/homepage">Home Page</a></li>
+						<li><a href="{relative_path}/admin/general/navigation">Navigation</a></li>
 						<li><a href="{relative_path}/admin/general/languages">Languages</a></li>
 						<li><a href="{relative_path}/admin/general/sounds">Sounds</a></li>
 					</ul>

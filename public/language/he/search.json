@@ -31,5 +31,10 @@
     "username": "שם משתמש",
     "category": "קטגוריה",
     "descending": "בסדר יורד",
-    "ascending": "בסדר עולה"
+    "ascending": "בסדר עולה",
+    "save-preferences": "Save preferences",
+    "clear-preferences": "Clear preferences",
+    "search-preferences-saved": "Search preferences saved",
+    "search-preferences-cleared": "Search preferences cleared",
+    "show-results-as": "Show results as"
 }

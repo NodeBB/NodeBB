@@ -34,6 +34,6 @@ helpers.resultsToBool = function(results) {
 		results[i] = results[i] === 1;
 	}
 	return results;
-}
+};
 
 module.exports = helpers;

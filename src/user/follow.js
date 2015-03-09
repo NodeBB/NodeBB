@@ -23,22 +23,34 @@ module.exports = function(User) {
 			return callback(new Error('[[error:you-cant-follow-yourself]]'));
 		}
 
-		if (type === 'follow') {
-			var now = Date.now();
-			async.parallel([
-				async.apply(db.sortedSetAdd, 'following:' + uid, now, theiruid),
-				async.apply(db.sortedSetAdd, 'followers:' + theiruid, now, uid),
-				async.apply(User.incrementUserFieldBy, uid, 'followingCount', 1),
-				async.apply(User.incrementUserFieldBy, theiruid, 'followerCount', 1)
-			], callback);
-		} else {
-			async.parallel([
-				async.apply(db.sortedSetRemove, 'following:' + uid, theiruid),
-				async.apply(db.sortedSetRemove, 'followers:' + theiruid, uid),
-				async.apply(User.decrementUserFieldBy, uid, 'followingCount', 1),
-				async.apply(User.decrementUserFieldBy, theiruid, 'followerCount', 1)
-			], callback);
-		}
+		User.isFollowing(uid, theiruid, function(err, isFollowing) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (type === 'follow') {
+				if (isFollowing) {
+					return callback(new Error('[[error:already-following]]'));
+				}
+				var now = Date.now();
+				async.parallel([
+					async.apply(db.sortedSetAdd, 'following:' + uid, now, theiruid),
+					async.apply(db.sortedSetAdd, 'followers:' + theiruid, now, uid),
+					async.apply(User.incrementUserFieldBy, uid, 'followingCount', 1),
+					async.apply(User.incrementUserFieldBy, theiruid, 'followerCount', 1)
+				], callback);
+			} else {
+				if (!isFollowing) {
+					return callback(new Error('[[error:not-following]]'));
+				}
+				async.parallel([
+					async.apply(db.sortedSetRemove, 'following:' + uid, theiruid),
+					async.apply(db.sortedSetRemove, 'followers:' + theiruid, uid),
+					async.apply(User.decrementUserFieldBy, uid, 'followingCount', 1),
+					async.apply(User.decrementUserFieldBy, theiruid, 'followerCount', 1)
+				], callback);
+			}
+		});
 	}
 
 	User.getFollowing = function(uid, start, end, callback) {

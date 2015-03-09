@@ -5,8 +5,8 @@
     "search": "Hae",
     "enter_username": "Syötä käyttäjätunnus hakeaksesi",
     "load_more": "Lataa lisää",
-    "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
-    "filter-by": "Filter By",
-    "online-only": "Online only",
+    "users-found-search-took": "%1 käyttäjä(ä) löytyi! Haku kesti %2 sekuntia.",
+    "filter-by": "Suodata",
+    "online-only": "Vain verkossa olevat",
     "picture-only": "Picture only"
 }

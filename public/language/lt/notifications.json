@@ -2,6 +2,7 @@
     "title": "Pranešimai",
     "no_notifs": "Jūs neturite naujų pranešimų",
     "see_all": "Peržiūrėti visus pranešimus",
+    "mark_all_read": "Mark all notifications read",
     "back_to_home": "Atgal į %1",
     "outgoing_link": "Išeinanti nuoroda",
     "outgoing_link_message": "You are now leaving %1.",
@@ -21,7 +22,6 @@
     "user_started_following_you": "<strong>%1</strong> started following you.",
     "email-confirmed": "El. paštas patvirtintas",
     "email-confirmed-message": "Dėkojame už el. pašto patvirtinimą. Jūsų paskyra pilnai aktyvuota.",
-    "email-confirm-error": "Įvyko klaida...",
     "email-confirm-error-message": "Įvyko klaida mėginant patvirtinti Jūsų el. pašto adresą. Galbūt kodas yra neteisingas, arba nebegalioajantis.",
     "email-confirm-sent": "Patvirtinimo laiškas išsiųstas."
 }

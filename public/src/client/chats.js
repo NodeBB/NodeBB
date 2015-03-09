@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, ajaxify, utils, socket, templates */
+/* globals define, app, ajaxify, utils, socket, templates, translator */
 
 define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, sounds, infinitescroll) {
 	var Chats = {

@@ -6,7 +6,7 @@ define('forum/categories', function() {
 	var	categories = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
-		if (data.tpl_url !== 'categories') {
+		if (ajaxify.currentPage !== data.url) {
 			socket.removeListener('event:new_post', categories.onNewPost);
 		}
 	});

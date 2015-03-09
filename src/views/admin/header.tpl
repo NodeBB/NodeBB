@@ -11,7 +11,9 @@
 	<script>
 		var RELATIVE_PATH = "{relative_path}";
 		var config = JSON.parse('{configJSON}');
-		var app = {};
+		var app = {
+			template: "{template.name}"
+		};
 		app.user = JSON.parse('{userJSON}');
 	</script>
 

@@ -67,7 +67,7 @@
 			<div class="form-group">
 				<label>Custom Gravatar Default Image</label>
 				<input id="customGravatarDefaultImage" type="text" class="form-control" placeholder="A custom image to use instead of gravatar defaults" data-field="customGravatarDefaultImage" /><br />
-				<input data-action="upload" data-target="customGravatarDefaultImage" data-route="{relative_path}/admin/uploadgravatardefault" type="button" class="btn btn-default" value="Upload"></input>
+				<input data-action="upload" data-target="customGravatarDefaultImage" data-route="{relative_path}/api/admin/uploadgravatardefault" type="button" class="btn btn-default" value="Upload"></input>
 			</div>
 
 			<div class="form-group">

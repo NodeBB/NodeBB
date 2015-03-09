@@ -9,8 +9,25 @@
 
 	var helpers = {};
 
-	helpers.displayUsersLink = function(config) {
-		return (config.loggedIn || !config.privateUserInfo);
+	helpers.displayMenuItem = function(data, index) {
+		var item = data.navigation[index],
+			properties = item.properties;
+
+		if (properties) {
+			if (properties.loggedIn && !data.loggedIn ||
+				properties.adminOnly && !data.isAdmin ||
+				properties.installed && properties.installed.search && !data.searchEnabled) {
+				return false;
+			}
+		}
+
+		if (item.route.match('/users')) {
+			if (data.privateUserInfo && !data.isAdmin) {
+				return false;
+			}
+		}
+
+		return true;
 	};
 
 	helpers.buildMetaTag = function(tag) {

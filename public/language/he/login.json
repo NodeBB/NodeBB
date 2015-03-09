@@ -1,5 +1,7 @@
 {
-    "username": "שם משתמש / אימייל",
+    "username-email": "Username / Email",
+    "username": "Username",
+    "email": "Email",
     "remember_me": "זכור אותי?",
     "forgot_password": "שכחת סיסמתך?",
     "alternative_logins": "התחבר באמצעות...",

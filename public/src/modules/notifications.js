@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, socket, translator, utils, config, app, ajaxify, Tinycon*/
+/* globals define, socket, translator, utils, config, app, ajaxify, templates, Tinycon*/
 
 define('notifications', ['sounds'], function(sound) {
 	var Notifications = {};
@@ -22,7 +22,9 @@ define('notifications', ['sounds'], function(sound) {
 					return app.alertError(err.message);
 				}
 
-				var notifs = data.unread.concat(data.read);
+				var notifs = data.unread.concat(data.read).sort(function(a, b) {
+					return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
+				});
 
 				translator.toggleTimeagoShorthand();
 				for(var i=0; i<notifs.length; ++i) {
@@ -56,10 +58,9 @@ define('notifications', ['sounds'], function(sound) {
 		});
 
 		notifList.on('click', '.mark-read', function(e) {
-			var anchorEl = $(this.parentNode),
-				parentEl = anchorEl.parent(),
-				nid = anchorEl.attr('data-nid'),
-				unread = parentEl.hasClass('unread');
+			var liEl = $(this.parentNode),
+				nid = liEl.attr('data-nid'),
+				unread = liEl.hasClass('unread');
 
 			e.preventDefault();
 			e.stopPropagation();
@@ -69,7 +70,7 @@ define('notifications', ['sounds'], function(sound) {
 					app.alertError(err.message);
 				}
 
-				parentEl.toggleClass('unread');
+				liEl.toggleClass('unread');
 				increaseNotifCount(unread ? -1 : 1);
 			});
 		});
@@ -85,7 +86,7 @@ define('notifications', ['sounds'], function(sound) {
 			notifIcon.attr('data-content', count > 20 ? '20+' : count);
 
 			Tinycon.setBubble(count);
-		};
+		}
 
 		function increaseNotifCount(delta) {
 			var count = parseInt(notifIcon.attr('data-content'), 10) + delta;

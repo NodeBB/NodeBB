@@ -1,5 +1,5 @@
 "use strict";
-/* global define, app, socket */
+/* global define, app, socket, templates */
 
 define('admin/appearance/skins', function() {
 	var Skins = {};

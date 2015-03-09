@@ -116,7 +116,7 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 		if (!searchQuery) {
 			return;
 		}
-		var searchTerms = searchQuery.split(' ');
+		var searchTerms = searchQuery.trim().split(' ');
 		var regexes = [];
 		for (var i=0; i<searchTerms.length; ++i) {
 			var regex = new RegExp(searchTerms[i], 'gi');
@@ -142,6 +142,9 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 
 		$('#clear-preferences').on('click', function() {
 			localStorage.removeItem('search-preferences');
+			var query = $('#search-input').val();
+			$('#advanced-search')[0].reset();
+			$('#search-input').val(query);
 			app.alertSuccess('[[search:search-preferences-cleared]]');
 			return false;
 		});

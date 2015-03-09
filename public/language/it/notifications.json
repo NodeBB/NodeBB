@@ -2,6 +2,7 @@
     "title": "Notifiche",
     "no_notifs": "Non hai nuove notifiche",
     "see_all": "Vedi tutte le Notifiche",
+    "mark_all_read": "Mark all notifications read",
     "back_to_home": "Indietro a %1",
     "outgoing_link": "Link in uscita",
     "outgoing_link_message": "Stai lasciando %1.",
@@ -21,7 +22,6 @@
     "user_started_following_you": "<strong>%1</strong> ha iniziato a seguirti.",
     "email-confirmed": "Email Confermata",
     "email-confirmed-message": "Grazie per aver validato la tua email. Il tuo account è ora completamente attivato.",
-    "email-confirm-error": "Si è verificato un errore...",
     "email-confirm-error-message": "C'è stato un problema nella validazione del tuo indirizzo email. Potrebbe essere il codice non valido o scaduto.",
     "email-confirm-sent": "Email di conferma inviata."
 }

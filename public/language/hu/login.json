@@ -1,5 +1,7 @@
 {
-    "username": "Felhasználónév / Email",
+    "username-email": "Username / Email",
+    "username": "Username",
+    "email": "Email",
     "remember_me": "Megjegyzés",
     "forgot_password": "Elfelejtett Jelszó?",
     "alternative_logins": "Alternatív belépés",
