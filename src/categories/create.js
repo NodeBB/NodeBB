@@ -13,7 +13,7 @@ module.exports = function(Categories) {
 				return callback(err);
 			}
 
-			var slug = cid + '/' + utils.slugify(data.name),
+			var slug = data.slug ? cid + '/' + data.slug : cid + '/' + utils.slugify(data.name),
 				order = data.order || cid;	// If no order provided, place it at the end
 
 			var category = {
