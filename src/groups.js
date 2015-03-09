@@ -1089,7 +1089,7 @@ var async = require('async'),
 			case 'alpha':	// intentional fall-through
 			default:
 				groups = groups.sort(function(a, b) {
-					return a.slug > b.slug;
+					return a.slug > b.slug ? 1 : -1;
 				});
 		}
 
