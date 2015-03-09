@@ -240,6 +240,7 @@ define('composer', [
 		var template = (composer.bsEnvironment === 'xs' || composer.bsEnvironment === 'sm') ? 'composer-mobile' : 'composer';
 
 		var data = {
+			mobile: template === 'composer-mobile',
 			allowTopicsThumbnail: allowTopicsThumbnail,
 			showTags: isTopic || isMain,
 			minimumTagLength: config.minimumTagLength,

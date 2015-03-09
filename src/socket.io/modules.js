@@ -117,7 +117,7 @@ SocketModules.composer.stopNotifyTyping = function(socket, data) {
 SocketModules.composer.getFormattingOptions = function(socket, data, callback) {
 	plugins.fireHook('filter:composer.formatting', {
 		options: [
-			// { className: 'fa fa-bold' }    Just an example of what needs to be set via plugins
+			{ name: 'tags', className: 'fa fa-tags', mobile: true }
 		]
 	}, function(err, payload) {
 		callback(err, payload.options);
