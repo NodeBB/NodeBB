@@ -89,11 +89,9 @@ $(document).ready(function() {
 				app.previousUrl = url;
 				return ajaxify.go('login');
 			} else if (status === 302) {
-				if (data.responseJSON.path) {
-					if (!ajaxify.go(data.responseJSON.path, callback, quiet)) {
-						window.location.href = data.responseJSON.path;
-					}
-				} else if (data.responseJSON) {
+				if (data.responseJSON.external && data.responseJSON.path) {
+					window.location.href = data.responseJSON.path;
+				} else if (typeof data.responseJSON === 'string') {
 					ajaxify.go(data.responseJSON.slice(1), callback, quiet);
 				}
 			}
@@ -184,6 +182,9 @@ $(document).ready(function() {
 				}
 			},
 			error: function(data, textStatus) {
+				if (data.status === 0 && textStatus === 'error') {
+					data.status = 500;
+				}
 				callback({
 					data: data,
 					textStatus: textStatus
@@ -264,5 +265,6 @@ $(document).ready(function() {
 
 	ajaxifyAnchors();
 	app.load();
+	templates.cache['500'] = $('.tpl-500').html();
 
 });
