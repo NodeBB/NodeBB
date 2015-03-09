@@ -21,7 +21,7 @@ define('composer/resize', function() {
 
 		if (percentage) {
 			if (env === 'md' || env === 'lg') {
-				postContainer.height(Math.floor($(window).height() * percentage) + 'px');
+				postContainer.height(Math.floor($(window).height() * percentage) - 1 + 'px');
 			}
 		}
 
@@ -40,7 +40,7 @@ define('composer/resize', function() {
 			postContainer.find('#files.lt-ie9').removeClass('hide');
 		}
 
-		postContainer.css('visibility', 'visible').css('z-index', 2);
+		postContainer.css('visibility', 'visible');
 
 		// Add some extra space at the bottom of the body so that the user can still scroll to the last post w/ composer open
 		$('body').css({'margin-bottom': postContainer.css('height')});
@@ -72,20 +72,20 @@ define('composer/resize', function() {
 		}
 
 		function toggleHeight(e) {
-			var resizer = $('.resizer');
+			var composer = $('.composer');
 			if (e.clientY - resizeDown === 0){
 				var newPercentage = ($(window).height() - $('#header-menu').height() - 20) / $(window).height();
 
-				if (!resizer.hasClass('maximized')) {
+				if (!composer.hasClass('maximized')) {
 					oldPercentage = getPercentage(postContainer);
 					doResize(postContainer, newPercentage);
-					resizer.addClass('maximized');
+					composer.addClass('maximized');
 				} else {
 					doResize(postContainer, oldPercentage);
-					resizer.removeClass('maximized');
+					composer.removeClass('maximized');
 				}
 			} else {
-				resizer.removeClass('maximized');
+				composer.removeClass('maximized');
 			}
 		}
 
