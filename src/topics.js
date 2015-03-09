@@ -255,7 +255,7 @@ var async = require('async'),
 		});
 	};
 
-	Topics.getMainPosts = function(tids, uid, callback) {
+	Topics.getMainPids = function(tids, callback) {
 		Topics.getTopicsFields(tids, ['mainPid'], function(err, topicData) {
 			if (err) {
 				return callback(err);
@@ -264,7 +264,15 @@ var async = require('async'),
 			var mainPids = topicData.map(function(topic) {
 				return topic ? topic.mainPid : null;
 			});
+			callback(null, mainPids);
+		});
+	};
 
+	Topics.getMainPosts = function(tids, uid, callback) {
+		Topics.getMainPids(tids, function(err, mainPids) {
+			if (err) {
+				return callback(err);
+			}
 			getMainPosts(mainPids, uid, callback);
 		});
 	};

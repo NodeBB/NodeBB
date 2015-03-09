@@ -55,7 +55,7 @@ categoriesController.popular = function(req, res, next) {
 		var data = {
 			topics: topics,
 			'feeds:disableRSS': parseInt(meta.config['feeds:disableRSS'], 10) === 1,
-			rssFeedUrl: nconf.get('relative_path') + '/popular.rss',
+			rssFeedUrl: nconf.get('relative_path') + '/popular/' + (req.params.term || 'daily') + '.rss',
 			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[global:header.popular]]'}])
 		};
 
