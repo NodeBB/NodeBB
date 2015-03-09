@@ -143,12 +143,17 @@ define('composer/resize', function() {
 
 
 	function resizeWritePreview(postContainer) {
-		var h1 = postContainer.find('.title-container').outerHeight(true);
-		var h2 = postContainer.find('.category-tag-row').outerHeight(true);
-		var h3 = postContainer.find('.formatting-bar').outerHeight(true);
-		var h4 = postContainer.find('.topic-thumb-container').outerHeight(true);
-		var h5 = $('.taskbar').height();
-		var total = h1 + h2 + h3 + h4 + h5;
+		var rows = [
+			postContainer.find('.title-container').outerHeight(true),
+			postContainer.find('.formatting-bar').outerHeight(true),
+			postContainer.find('.topic-thumb-container').outerHeight(true),
+			$('.taskbar').height()
+		];
+
+		var total = rows.reduce(function(a, b) {
+			return a + b;
+		});
+		
 		postContainer.find('.write-preview-container').css('height', postContainer.height() - total);
 	}
 
