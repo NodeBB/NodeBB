@@ -19,15 +19,23 @@ define('composer/resize', function() {
 			env = utils.findBootstrapEnvironment();
 		}
 
+		postContainer.percentage = percentage;
+
 		if (percentage) {
+			if (percentage < 0.35) {
+				// write snap to taskbar code
+			}
+
 			if (env === 'md' || env === 'lg') {
-				postContainer.height(Math.floor($(window).height() * percentage) - 1 + 'px');
+				postContainer.css('transform', 'translate(0, ' + (Math.abs(1-percentage) * 100) + '%)');
 			}
 		}
 
+		// todo, lump in browsers that don't support transform (ie8) here
+		// at this point we should use modernizr
 		if (env === 'sm' || env === 'xs' || window.innerHeight < 480) {
 			app.toggleNavbar(false);
-			postContainer.css('height', $(window).height());
+			//postContainer.css('height', $(window).height());
 		}
 
 		if (config.hasImageUploadPlugin) {
@@ -50,8 +58,9 @@ define('composer/resize', function() {
 
 	resize.handleResize = function(postContainer) {
 		function resizeStart(e) {
-			var resizeRect = resizeEl[0].getBoundingClientRect();
-			var resizeCenterY = resizeRect.top + (resizeRect.height/2);
+			var resizeRect = resizeEl[0].getBoundingClientRect(),
+				resizeCenterY = resizeRect.top + (resizeRect.height/2);
+				
 			resizeOffset = resizeCenterY - e.clientY;
 			resizeActive = true;
 			resizeDown = e.clientY;
@@ -63,29 +72,37 @@ define('composer/resize', function() {
 
 		function resizeStop(e) {
 			resizeActive = false;
-			toggleHeight(e);
 
 			postContainer.find('textarea').focus();
 			$(window).off('mousemove', resizeAction);
 			$(window).off('mouseup', resizeStop);
 			$('body').off('touchmove', resizeTouchAction);
+
+			var position = (e.clientY + resizeOffset),
+				newHeight = $(window).height() - position,
+				windowHeight = $(window).height();
+
+			if (newHeight > windowHeight - $('#header-menu').height() - (windowHeight / 15)) {
+				snapToTop = true;
+			} else {
+				snapToTop = false;
+			}
+
+			toggleMaximize(e);
 		}
 
-		function toggleHeight(e) {
-			var composer = $('.composer');
-			if (e.clientY - resizeDown === 0){
-				var newPercentage = ($(window).height() - $('#header-menu').height() - 20) / $(window).height();
+		function toggleMaximize(e) {
+			if (e.clientY - resizeDown === 0 || snapToTop) {
+				var newPercentage = ($(window).height() - $('#header-menu').height()) / $(window).height();
 
-				if (!composer.hasClass('maximized')) {
-					oldPercentage = getPercentage(postContainer);
+				if (!postContainer.hasClass('maximized') || !snapToTop) {
+					oldPercentage = postContainer.percentage;
 					doResize(postContainer, newPercentage);
-					composer.addClass('maximized');
+					postContainer.addClass('maximized');
 				} else {
 					doResize(postContainer, oldPercentage);
-					composer.removeClass('maximized');
+					postContainer.removeClass('maximized');
 				}
-			} else {
-				composer.removeClass('maximized');
 			}
 		}
 
@@ -96,20 +113,19 @@ define('composer/resize', function() {
 
 		function resizeAction(e) {
 			if (resizeActive) {
-				var position = (e.clientY + resizeOffset);
-				var newHeight = $(window).height() - position;
+				var position = (e.clientY + resizeOffset),
+					newHeight = $(window).height() - position;
 
-				if(newHeight > $(window).height() - $('#header-menu').height() - 20) {
-					newHeight = $(window).height() - $('#header-menu').height() - 20;
-				} else if (newHeight < 100) {
-					newHeight = 100;
-				}
+				doResize(postContainer, newHeight / $(window).height());
 
-				postContainer.css('height', newHeight);
-				$('body').css({'margin-bottom': newHeight});
 				resizeWritePreview(postContainer);
 				resizeSavePosition(newHeight);
+
+				if (Math.abs(e.clientY - resizeDown) > 0) {
+					postContainer.removeClass('maximized');
+				}
 			}
+
 			e.preventDefault();
 			return false;
 		}
@@ -119,13 +135,10 @@ define('composer/resize', function() {
 			localStorage.setItem('composer:resizePercentage', percentage);
 		}
 
-		function getPercentage(postContainer) {
-			return postContainer.height() / $(window).height();
-		}
-
 		var	resizeActive = false,
 			resizeOffset = 0,
             resizeDown = 0,
+            snapToTop = false,
 			resizeEl = postContainer.find('.resizer');
 
 		resizeEl.on('mousedown', resizeStart);
@@ -143,18 +156,19 @@ define('composer/resize', function() {
 
 
 	function resizeWritePreview(postContainer) {
-		var rows = [
+		var total = getFormattingHeight(postContainer);
+		postContainer.find('.write-preview-container').css('height', postContainer.percentage * $(window).height() - $('#header-menu').height() - total);
+	}
+
+	function getFormattingHeight(postContainer) {
+		return [
 			postContainer.find('.title-container').outerHeight(true),
 			postContainer.find('.formatting-bar').outerHeight(true),
 			postContainer.find('.topic-thumb-container').outerHeight(true),
 			$('.taskbar').height()
-		];
-
-		var total = rows.reduce(function(a, b) {
+		].reduce(function(a, b) {
 			return a + b;
 		});
-		
-		postContainer.find('.write-preview-container').css('height', postContainer.height() - total);
 	}
 
 
