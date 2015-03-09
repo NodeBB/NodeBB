@@ -39,7 +39,7 @@ module.exports = function(Categories) {
 
 			async.series([
 				async.apply(db.setObject, 'category:' + cid, category),
-				async.apply(db.sortedSetAdd, 'categories:cid', data.order, cid),
+				async.apply(db.sortedSetAdd, 'categories:cid', order, cid),
 				async.apply(privileges.categories.give, defaultPrivileges, cid, 'administrators'),
 				async.apply(privileges.categories.give, defaultPrivileges, cid, 'registered-users'),
 				async.apply(privileges.categories.give, ['find', 'read'], cid, 'guests')
