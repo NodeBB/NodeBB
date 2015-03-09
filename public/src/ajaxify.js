@@ -10,13 +10,15 @@ $(document).ready(function() {
 		rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : ''),
 		apiXHR = null;
 
-	window.onpopstate = function (event) {
-		if (event !== null && event.state && event.state.url !== undefined) {
-			ajaxify.go(event.state.url, function() {
-				$(window).trigger('action:popstate', {url: event.state.url});
+	$(window).on('popstate', function (ev) {
+		ev = ev.originalEvent;
+
+		if (ev !== null && ev.state && ev.state.url !== undefined) {
+			ajaxify.go(ev.state.url, function() {
+				$(window).trigger('action:popstate', {url: ev.state.url});
 			}, true);
 		}
-	};
+	});
 
 	ajaxify.currentPage = null;
 

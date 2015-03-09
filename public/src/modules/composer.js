@@ -22,7 +22,7 @@ define('composer', [
 
 	$(window).off('resize', onWindowResize).on('resize', onWindowResize);
 
-	$(window).on('action:popstate', function(ev, data) {
+	$(window).on('popstate', function(ev, data) {
 		var env = utils.findBootstrapEnvironment();
 
 		if (composer.active && (env === 'xs' || env ==='sm')) {
@@ -95,6 +95,11 @@ define('composer', [
 		composer.posts[uuid] = post;
 
 		composer.load(uuid);
+
+		var env = utils.findBootstrapEnvironment();
+		if (env === 'xs' || env ==='sm') {
+			history.pushState({}, '',  '#compose');
+		}
 	}
 
 	function composerAlert(message) {
