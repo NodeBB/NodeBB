@@ -28,7 +28,7 @@ module.exports = function(Categories) {
 				topic_count: 0,
 				post_count: 0,
 				disabled: 0,
-				order: ( data.order ? data.order : cid ),
+				order: order,
 				link: '',
 				numRecentReplies: 1,
 				class: ( data.class ? data.class : 'col-md-3 col-xs-6' ),
