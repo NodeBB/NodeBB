@@ -72,20 +72,20 @@ define('composer/resize', function() {
 		}
 
 		function toggleHeight(e) {
-			var triggerIconEl = $('.resizer i');
+			var resizer = $('.resizer');
 			if (e.clientY - resizeDown === 0){
 				var newPercentage = ($(window).height() - $('#header-menu').height() - 20) / $(window).height();
 
-				if (triggerIconEl.hasClass('fa-chevron-up')) {
+				if (!resizer.hasClass('maximized')) {
 					oldPercentage = getPercentage(postContainer);
 					doResize(postContainer, newPercentage);
-					triggerIconEl.addClass('fa-chevron-down').removeClass('fa-chevron-up');
+					resizer.addClass('maximized');
 				} else {
 					doResize(postContainer, oldPercentage);
-					triggerIconEl.addClass('fa-chevron-up').removeClass('fa-chevron-down');
+					resizer.removeClass('maximized');
 				}
 			} else {
-				triggerIconEl.addClass('fa-chevron-up').removeClass('fa-chevron-down');
+				resizer.removeClass('maximized');
 			}
 		}
 
