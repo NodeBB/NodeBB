@@ -21,7 +21,7 @@ module.exports = function(Categories) {
 				name: data.name,
 				description: ( data.description ? data.description : '' ),
 				icon: ( data.icon ? data.icon : '' ),
-				bgColor: ( data.bgColor ? data.bgColor : '' ),
+				bgColor: data.bgColor,
 				color: ( data.color ? data.color : '' ),
 				slug: slug,
 				parentCid: ( data.parentCid ? data.parentCid : 0 ),
