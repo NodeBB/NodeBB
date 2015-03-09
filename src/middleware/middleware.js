@@ -60,12 +60,7 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-
-		if (res.locals.isAPI) {
-			res.status(302).json(nconf.get('relative_path') + '/user/' + userslug);
-		} else {
-			res.redirect(nconf.get('relative_path') + '/user/' + userslug);
-		}
+		helpers.redirect(res, '/user/' + userslug);
 	});
 };
 
@@ -85,13 +80,7 @@ middleware.addSlug = function(req, res, next) {
 				return next(err);
 			}
 
-			var url = nconf.get('relative_path') + name + encodeURI(slug);
-
-			if (res.locals.isAPI) {
-				res.status(302).json(url);
-			} else {
-				res.redirect(url);
-			}
+			helpers.redirect(res, name + encodeURI(slug));
 		});
 	}
 
