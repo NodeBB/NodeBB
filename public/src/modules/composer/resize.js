@@ -21,7 +21,7 @@ define('composer/resize', function() {
 
 		if (percentage) {
 			if (env === 'md' || env === 'lg') {
-				postContainer.css('height', Math.floor($(window).height() * percentage) + 'px');
+				postContainer.height(Math.floor($(window).height() * percentage) + 'px');
 			}
 		}
 
