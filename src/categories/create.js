@@ -19,19 +19,19 @@ module.exports = function(Categories) {
 			var category = {
 				cid: cid,
 				name: data.name,
-				description: data.description,
-				icon: data.icon,
-				bgColor: data.bgColor,
-				color: data.color,
+				description: ( data.description ? data.description : '' ),
+				icon: ( data.icon ? data.icon : '' ),
+				bgColor: ( data.bgColor ? data.bgColor : '' ),
+				color: ( data.color ? data.color : '' ),
 				slug: slug,
-				parentCid: 0,
+				parentCid: ( data.parentCid ? data.parentCid : 0 ),
 				topic_count: 0,
 				post_count: 0,
 				disabled: 0,
-				order: order,
+				order: ( data.order ? data.order : cid ),
 				link: '',
 				numRecentReplies: 1,
-				class: 'col-md-3 col-xs-6',
+				class: ( data.class ? data.class : 'col-md-3 col-xs-6' ),
 				imageClass: 'auto'
 			};
 
@@ -39,7 +39,7 @@ module.exports = function(Categories) {
 
 			async.series([
 				async.apply(db.setObject, 'category:' + cid, category),
-				async.apply(db.sortedSetAdd, 'categories:cid', order, cid),
+				async.apply(db.sortedSetAdd, 'categories:cid', data.order, cid),
 				async.apply(privileges.categories.give, defaultPrivileges, cid, 'administrators'),
 				async.apply(privileges.categories.give, defaultPrivileges, cid, 'registered-users'),
 				async.apply(privileges.categories.give, ['find', 'read'], cid, 'guests')
