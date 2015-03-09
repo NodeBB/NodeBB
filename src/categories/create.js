@@ -19,19 +19,19 @@ module.exports = function(Categories) {
 			var category = {
 				cid: cid,
 				name: data.name,
-				description: data.description,
-				icon: data.icon,
-				bgColor: data.bgColor,
-				color: data.color,
+				description: ( data.description ? data.description : '' ),
+				icon: ( data.icon ? data.icon : '' ),
+				bgColor: ( data.bgColor ? data.bgColor : '' ),
+				color: ( data.color ? data.color : '' ),
 				slug: slug,
-				parentCid: 0,
+				parentCid: ( data.parentCid ? data.parentCid : 0 ),
 				topic_count: 0,
 				post_count: 0,
 				disabled: 0,
-				order: order,
+				order: ( data.order ? data.order : cid ),
 				link: '',
 				numRecentReplies: 1,
-				class: 'col-md-3 col-xs-6',
+				class: ( data.class ? data.class : 'col-md-3 col-xs-6' ),
 				imageClass: 'auto'
 			};
 
