@@ -56,12 +56,8 @@ topicsController.get = function(req, res, next) {
 			var postCount = parseInt(results.topic.postcount, 10);
 			var pageCount = Math.max(1, Math.ceil((postCount - 1) / settings.postsPerPage));
 
-			if (utils.isNumber(req.params.post_index)) {
-				var url = '';
-				if (req.params.post_index < 1 || req.params.post_index > postCount) {
-					url = '/topic/' + req.params.topic_id + '/' + req.params.slug + (req.params.post_index > postCount ? '/' + postCount : '');
-					return res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
-				}
+			if (utils.isNumber(req.params.post_index) && (req.params.post_index < 1 || req.params.post_index > postCount)) {
+				return helpers.redirect(res, '/topic/' + req.params.topic_id + '/' + req.params.slug + (req.params.post_index > postCount ? '/' + postCount : ''));
 			}
 
 			if (settings.usePagination && (req.query.page < 1 || req.query.page > pageCount)) {
@@ -266,7 +262,7 @@ topicsController.get = function(req, res, next) {
 		});
 
 		topics.increaseViewCount(tid);
-		
+
 		plugins.fireHook('filter:topic.build', {req: req, res: res, templateData: data}, function(err, data) {
 			if (err) {
 				return next(err);

@@ -34,8 +34,8 @@ module.exports = function(Posts) {
 			var userData = results.userData;
 			userData.forEach(function(userData, i) {
 				userData.groups = results.groups[i];
-				
-				results.groups[i].forEach(function(group, index) {
+
+				userData.groups.forEach(function(group) {
 					group.selected = group.name === results.userSettings[i].groupTitle;
 				});
 				userData.status = user.getStatus(userData.status, results.online[i]);

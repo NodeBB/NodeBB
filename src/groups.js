@@ -16,6 +16,7 @@ var async = require('async'),
 	posts = require('./posts'),
 	privileges = require('./privileges'),
 	utils = require('../public/src/utils'),
+	util = require('util'),
 
 	uploadsController = require('./controllers/uploads');
 
@@ -952,7 +953,11 @@ var async = require('async'),
 						var memberOf = [];
 						isMembers.forEach(function(isMember, index) {
 							if (isMember) {
-								memberOf.push(groupData[index]);
+								if (uids.length > 1) {
+									memberOf.push(util._extend({}, groupData[index]));
+								} else {
+									memberOf.push(groupData[index]);
+								}
 							}
 						});
 
@@ -1084,7 +1089,7 @@ var async = require('async'),
 			case 'alpha':	// intentional fall-through
 			default:
 				groups = groups.sort(function(a, b) {
-					return a.slug > b.slug;
+					return a.slug > b.slug ? 1 : -1;
 				});
 		}
 

@@ -218,7 +218,7 @@ function handleErrors(app, middleware) {
 		}
 
 		if (parseInt(err.status, 10) === 302 && err.path) {
-			return res.locals.isAPI ? res.status(302).json(err) : res.redirect(err.path);
+			return res.locals.isAPI ? res.status(302).json(err.path) : res.redirect(err.path);
 		}
 
 		res.status(err.status || 500);
