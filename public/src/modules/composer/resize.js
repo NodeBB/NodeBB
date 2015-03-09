@@ -9,7 +9,7 @@ define('composer/resize', function() {
 		env;
 
 	resize.reposition = function(postContainer) {
-		var	percentage = localStorage.getItem('composer:resizePercentage');
+		var	percentage = localStorage.getItem('composer:resizePercentage') || 0.5;
 
 		doResize(postContainer, percentage);
 	};
