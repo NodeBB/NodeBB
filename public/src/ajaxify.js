@@ -89,8 +89,8 @@ $(document).ready(function() {
 				app.previousUrl = url;
 				return ajaxify.go('login');
 			} else if (status === 302) {
-				if (data.responseJSON.external && data.responseJSON.path) {
-					window.location.href = data.responseJSON.path;
+				if (data.responseJSON.external) {
+					window.location.href = data.responseJSON.external;
 				} else if (typeof data.responseJSON === 'string') {
 					ajaxify.go(data.responseJSON.slice(1), callback, quiet);
 				}
