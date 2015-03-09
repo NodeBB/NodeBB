@@ -9,7 +9,6 @@ var async = require('async'),
 
 
 (function(Widgets) {
-
 	Widgets.render = function(uid, area, callback) {
 		if (!area.locations || !area.template) {
 			return callback(new Error('[[error:invalid-data]]'));
