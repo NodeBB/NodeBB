@@ -59,9 +59,9 @@ define('composer/resize', function() {
 	resize.handleResize = function(postContainer) {
 		function resizeStart(e) {
 			var resizeRect = resizeEl[0].getBoundingClientRect(),
-				resizeCenterY = resizeRect.top + (resizeRect.height/2);
-				
-			resizeOffset = resizeCenterY - e.clientY;
+				resizeCenterY = resizeRect.top + resizeRect.height;
+
+			resizeOffset = (resizeCenterY - e.clientY) / 2;
 			resizeActive = true;
 			resizeDown = e.clientY;
 
@@ -78,7 +78,7 @@ define('composer/resize', function() {
 			$(window).off('mouseup', resizeStop);
 			$('body').off('touchmove', resizeTouchAction);
 
-			var position = (e.clientY + resizeOffset),
+			var position = (e.clientY - resizeOffset),
 				newHeight = $(window).height() - position,
 				windowHeight = $(window).height();
 
@@ -113,7 +113,7 @@ define('composer/resize', function() {
 
 		function resizeAction(e) {
 			if (resizeActive) {
-				var position = (e.clientY + resizeOffset),
+				var position = (e.clientY - resizeOffset),
 					newHeight = $(window).height() - position;
 
 				doResize(postContainer, newHeight / $(window).height());
