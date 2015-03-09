@@ -26,7 +26,20 @@ define('composer', [
 		var env = utils.findBootstrapEnvironment();
 
 		if (composer.active && (env === 'xs' || env ==='sm')) {
-			discard(composer.active);
+			if (!composer.posts[composer.active].modified) {
+				discard(composer.active);
+				return;
+			}
+			
+			translator.translate('[[modules:composer.discard]]', function(translated) {
+				bootbox.confirm(translated, function(confirm) {
+					if (confirm) {
+						discard(composer.active);
+					} else {
+						history.pushState({}, '',  '#compose');
+					}
+				});
+			});
 		}
 	});
 
