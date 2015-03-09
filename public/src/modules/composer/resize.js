@@ -89,7 +89,7 @@ define('composer/resize', function() {
 
 		function toggleMaximize(e) {
 			if (e.clientY - resizeDown === 0 || snapToTop) {
-				var newPercentage = ($(window).height() - $('#header-menu').height()) / $(window).height();
+				var newPercentage = ($(window).height() - $('#header-menu').height() - 1) / $(window).height();
 
 				if (!postContainer.hasClass('maximized') || !snapToTop) {
 					oldPercentage = postContainer.percentage;
