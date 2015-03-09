@@ -16,6 +16,7 @@ var async = require('async'),
 	require('./posts/create')(Posts);
 	require('./posts/delete')(Posts);
 	require('./posts/user')(Posts);
+	require('./posts/topics')(Posts);
 	require('./posts/category')(Posts);
 	require('./posts/summary')(Posts);
 	require('./posts/recent')(Posts);
@@ -23,20 +24,6 @@ var async = require('async'),
 
 	Posts.exists = function(pid, callback) {
 		db.isSortedSetMember('posts:pid', pid, callback);
-	};
-
-	Posts.getPostsByTid = function(tid, set, start, end, uid, reverse, callback) {
-		Posts.getPidsFromSet(set, start, end, reverse, function(err, pids) {
-			if(err) {
-				return callback(err);
-			}
-
-			if(!Array.isArray(pids) || !pids.length) {
-				return callback(null, []);
-			}
-
-			Posts.getPostsByPids(pids, uid, callback);
-		});
 	};
 
 	Posts.getPidsFromSet = function(set, start, end, reverse, callback) {
@@ -239,17 +226,6 @@ var async = require('async'),
 				}
 
 				callback(null, indices);
-			});
-		});
-	};
-
-	Posts.isMain = function(pid, callback) {
-		Posts.getPostField(pid, 'tid', function(err, tid) {
-			if (err) {
-				return callback(err);
-			}
-			topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
-				callback(err, parseInt(pid, 10) === parseInt(mainPid, 10));
 			});
 		});
 	};
