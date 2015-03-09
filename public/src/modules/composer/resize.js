@@ -22,10 +22,6 @@ define('composer/resize', function() {
 		postContainer.percentage = percentage;
 
 		if (percentage) {
-			if (percentage < 0.35) {
-				// write snap to taskbar code
-			}
-
 			if (env === 'md' || env === 'lg') {
 				postContainer.css('transform', 'translate(0, ' + (Math.abs(1-percentage) * 100) + '%)');
 			}
@@ -35,7 +31,7 @@ define('composer/resize', function() {
 		// at this point we should use modernizr
 		if (env === 'sm' || env === 'xs' || window.innerHeight < 480) {
 			app.toggleNavbar(false);
-			//postContainer.css('height', $(window).height());
+			postContainer.find('textarea').css('height', $(window).height());
 		}
 
 		if (config.hasImageUploadPlugin) {
@@ -59,7 +55,7 @@ define('composer/resize', function() {
 	resize.handleResize = function(postContainer) {
 		function resizeStart(e) {
 			var resizeRect = resizeEl[0].getBoundingClientRect(),
-				resizeCenterY = resizeRect.top + resizeRect.height;
+				resizeCenterY = resizeRect.top + (resizeRect.height / 2);
 
 			resizeOffset = (resizeCenterY - e.clientY) / 2;
 			resizeActive = true;
