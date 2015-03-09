@@ -33,7 +33,7 @@ module.exports = function(Posts) {
 
 			var userData = results.userData;
 			userData.forEach(function(userData, i) {
-				userData.groups = results.groups[i].slice();
+				userData.groups = results.groups[i];
 
 				userData.groups.forEach(function(group) {
 					group.selected = group.name === results.userSettings[i].groupTitle;
