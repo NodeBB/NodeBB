@@ -49,7 +49,7 @@ helpers.redirect = function(res, url) {
 	if (res.locals.isAPI) {
 		res.status(302).json(url);
 	} else {
-		res.redirect(url);
+		res.redirect(nconf.get('relative_path') + url);
 	}
 };
 

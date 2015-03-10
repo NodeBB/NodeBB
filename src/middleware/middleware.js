@@ -60,14 +60,14 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		helpers.redirect(res, '/user/' + userslug);
+		controllers.helpers.redirect(res, '/user/' + userslug);
 	});
 };
 
 middleware.redirectToLoginIfGuest = function(req, res, next) {
 	if (!req.user || parseInt(req.user.uid, 10) === 0) {
 		req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
-		return res.redirect(nconf.get('relative_path') + '/login');
+		return controllers.helpers.redirect(res, '/login');
 	} else {
 		next();
 	}
@@ -80,7 +80,7 @@ middleware.addSlug = function(req, res, next) {
 				return next(err);
 			}
 
-			helpers.redirect(res, name + encodeURI(slug));
+			controllers.helpers.redirect(res, name + encodeURI(slug));
 		});
 	}
 
