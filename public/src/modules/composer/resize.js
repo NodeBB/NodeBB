@@ -22,6 +22,10 @@ define('composer/resize', function() {
 		postContainer.percentage = percentage;
 
 		if (percentage) {
+			if (percentage < 0.25) {
+				percentage = 0.25;
+			}
+
 			if (env === 'md' || env === 'lg') {
 				postContainer.css('transform', 'translate(0, ' + (Math.abs(1-percentage) * 100) + '%)');
 			}
