@@ -75,8 +75,6 @@ define('admin/manage/categories', [
 				name: $('#inputName').val(),
 				description: $('#inputDescription').val(),
 				icon: $('#new-category-modal i').attr('value'),
-				bgColor: '#0059b2',
-				color: '#fff',
 				order: $('.admin-categories #entry-container').children().length + 1
 			};
 
