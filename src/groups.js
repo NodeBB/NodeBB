@@ -1098,65 +1098,42 @@ var async = require('async'),
 
 	Groups.searchMembers = function(data, callback) {
 
-		function userInGroup(userGroups) {
-			for(var i=0; i<userGroups.length; ++i) {
-				if (userGroups[i].name === data.groupName) {
-					return true;
-				}
+		function findUids(query, searchBy, startsWith, callback) {
+			if (!query) {
+				return Groups.getMembers(data.groupName, 0, -1, callback);
 			}
-			return false;
-		}
-		var searchResult;
-		var pagination;
 
-		if (!data.query) {
 			async.waterfall([
 				function(next) {
-					user.getUidsFromSet('group:' + data.groupName + ':members', 0, -1, next);
+					Groups.getMembers(data.groupName, 0, -1, next);
 				},
-				function(uids, next) {
-					pagination = user.paginate(1, uids);
-
-					uids = pagination.data;
-					user.getUsers(uids, data.uid, next);
+				function(members, next) {
+					user.getMultipleUserFields(members, ['uid'].concat(searchBy), next);
 				},
 				function(users, next) {
-					next(null, {
-						users: users,
-						pagination: pagination.pagination
-					});
+					var uids = [];
+
+					for(var k=0; k<searchBy.length; ++k) {
+						for(var i=0; i<users.length; ++i) {
+							var field = users[i][searchBy[k]];
+							if ((startsWith && field.toLowerCase().startsWith(query)) || (!startsWith && field.toLowerCase().indexOf(query) !== -1)) {
+								uids.push(users[i].uid);
+							}
+						}
+					}
+					if (searchBy.length > 1) {
+						uids = uids.filter(function(uid, index, array) {
+							return array.indexOf(uid) === index;
+						});
+					}
+
+					next(null, uids);
 				}
 			], callback);
-			return;
 		}
 
-		async.waterfall([
-			function(next) {
-				data.paginate = false;
-				user.search(data, next);
-			},
-			function(_searchResult, next) {
-				searchResult = _searchResult;
-				var uids = searchResult.users.map(function(user) {
-					return user && user.uid;
-				});
-
-				if (!uids.length) {
-					return callback(null, searchResult);
-				}
-				Groups.getUserGroups(uids, next);
-			},
-			function(groups, next) {
-				searchResult.users = searchResult.users.filter(function(user, index) {
-					return user && userInGroup(groups[index]);
-				});
-
-				pagination = user.paginate(data.page, searchResult.users);
-				searchResult.pagination = pagination.pagination;
-				searchResult.users = pagination.data;
-				next(null, searchResult);
-			}
-		], callback);
+		data.findUids = findUids;
+		user.search(data, callback);
 	};
 
 }(module.exports));

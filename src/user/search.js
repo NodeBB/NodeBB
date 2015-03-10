@@ -26,7 +26,11 @@ module.exports = function(User) {
 		var searchResult = {};
 		async.waterfall([
 			function(next) {
-				findUids(query, searchBy, startsWith, next);
+				if (data.findUids) {
+					data.findUids(query, searchBy, startsWith, next);
+				} else {
+					findUids(query, searchBy, startsWith, next);
+				}
 			},
 			function(uids, next) {
 				var filterBy = Array.isArray(data.filterBy) ? data.filterBy : [];
