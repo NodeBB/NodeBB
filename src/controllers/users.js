@@ -5,6 +5,7 @@ var usersController = {};
 var async = require('async'),
 	user = require('../user'),
 	meta = require('../meta'),
+	pagination = require('../pagination'),
 	plugins = require('../plugins'),
 	db = require('../database');
 
@@ -67,11 +68,13 @@ usersController.getUsers = function(set, count, req, res, next) {
 		if (err) {
 			return next(err);
 		}
+		var pageCount = Math.ceil(data.count / (parseInt(meta.config.userSearchResultsPerPage, 10) || 20));
 		var userData = {
 			search_display: 'hidden',
 			loadmore_display: data.count > count ? 'block' : 'hide',
 			users: data.users,
-			show_anon: 'hide'
+			show_anon: 'hide',
+			pagination: pagination.create(1, pageCount)
 		};
 
 		res.render('users', userData);
@@ -94,7 +97,7 @@ function getUsersAndCount(set, uid, count, callback) {
 			return user && parseInt(user.uid, 10);
 		});
 
-		callback(null, {users: results.users, count: results.count});
+		callback(null, results);
 	});
 }
 

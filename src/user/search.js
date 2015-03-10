@@ -22,19 +22,14 @@ module.exports = function(User) {
 		}
 
 		var startTime = process.hrtime();
-		var keys = searchBy.map(function(searchBy) {
-			return searchBy + ':uid';
-		});
-
-		var filterBy = Array.isArray(data.filterBy) ? data.filterBy : [];
 
 		var searchResult = {};
 		async.waterfall([
 			function(next) {
-				findUids(query, keys, startsWith, next);
+				findUids(query, searchBy, startsWith, next);
 			},
 			function(uids, next) {
-
+				var filterBy = Array.isArray(data.filterBy) ? data.filterBy : [];
 				filterAndSortUids(uids, filterBy, data.sortBy, next);
 			},
 			function(uids, next) {
@@ -61,6 +56,7 @@ module.exports = function(User) {
 		var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
 		var start = Math.max(0, page - 1) * resultsPerPage;
 		var end = start + resultsPerPage;
+
 		var pageCount = Math.ceil(data.length / resultsPerPage);
 		var currentPage = Math.max(1, Math.ceil((start + 1) / resultsPerPage));
 
@@ -70,7 +66,15 @@ module.exports = function(User) {
 		};
 	};
 
-	function findUids(query, keys, startsWith, callback) {
+	function findUids(query, searchBy, startsWith, callback) {
+		if (!query) {
+			return db.getSortedSetRevRange('users:joindate', 0, -1, callback);
+		}
+
+		var keys = searchBy.map(function(searchBy) {
+			return searchBy + ':uid';
+		});
+
 		db.getObjects(keys, function(err, hashes) {
 			if (err || !hashes) {
 				return callback(err, []);
