@@ -1096,4 +1096,67 @@ var async = require('async'),
 		next(null, groups);
 	};
 
+	Groups.searchMembers = function(data, callback) {
+
+		function userInGroup(userGroups) {
+			for(var i=0; i<userGroups.length; ++i) {
+				if (userGroups[i].name === data.groupName) {
+					return true;
+				}
+			}
+			return false;
+		}
+		var searchResult;
+		var pagination;
+
+		if (!data.query) {
+			async.waterfall([
+				function(next) {
+					user.getUidsFromSet('group:' + data.groupName + ':members', 0, -1, next);
+				},
+				function(uids, next) {
+					pagination = user.paginate(1, uids);
+
+					uids = pagination.data;
+					user.getUsers(uids, data.uid, next);
+				},
+				function(users, next) {
+					next(null, {
+						users: users,
+						pagination: pagination.pagination
+					});
+				}
+			], callback);
+			return;
+		}
+
+		async.waterfall([
+			function(next) {
+				data.paginate = false;
+				user.search(data, next);
+			},
+			function(_searchResult, next) {
+				searchResult = _searchResult;
+				var uids = searchResult.users.map(function(user) {
+					return user && user.uid;
+				});
+
+				if (!uids.length) {
+					return callback(null, searchResult);
+				}
+				Groups.getUserGroups(uids, next);
+			},
+			function(groups, next) {
+				searchResult.users = searchResult.users.filter(function(user, index) {
+					return user && userInGroup(groups[index]);
+				});
+
+				pagination = user.paginate(data.page, searchResult.users);
+				searchResult.pagination = pagination.pagination;
+				searchResult.users = pagination.data;
+				next(null, searchResult);
+			}
+		], callback);
+	};
+
 }(module.exports));
