@@ -17,12 +17,12 @@ app.cacheBuster = null;
 	function socketIOConnect() {
 		var ioParams = {
 			reconnectionAttempts: config.maxReconnectionAttempts,
-			reconnectionDelay : config.reconnectionDelay,
+			reconnectionDelay: config.reconnectionDelay,
 			transports: config.socketioTransports,
 			path: config.relative_path + '/socket.io'
 		};
 
-		socket = io.connect(config.websocketAddress, ioParams);
+		socket = io(config.websocketAddress, ioParams);
 		reconnecting = false;
 
 		socket.on('event:connect', function () {
@@ -41,11 +41,6 @@ app.cacheBuster = null;
 		});
 
 		socket.on('reconnecting', function (attempt) {
-			if(attempt === parseInt(config.maxReconnectionAttempts, 10)) {
-				socket.io.attempts = 0;
-				return;
-			}
-
 			reconnecting = true;
 			var reconnectEl = $('#reconnect');
 
@@ -73,6 +68,11 @@ app.cacheBuster = null;
 
 		socket.on('event:alert', function(data) {
 			app.alert(data);
+		});
+
+		socket.on('reconnect_failed', function() {
+			// Wait ten times the reconnection delay and then start over
+			setTimeout(socket.connect.bind(socket), parseInt(config.reconnectionDelay, 10) * 10);
 		});
 	}
 
