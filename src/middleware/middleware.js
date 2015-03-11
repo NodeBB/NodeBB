@@ -154,17 +154,9 @@ middleware.checkAccountPermissions = function(req, res, next) {
 };
 
 middleware.isAdmin = function(req, res, next) {
-	function render() {
-		if (res.locals.isAPI) {
-			return controllers.helpers.notAllowed(req, res);
-		}
-
-		middleware.buildHeader(req, res, function() {
-			controllers.helpers.notAllowed(req, res);
-		});
-	}
 	if (!req.user) {
-		return render();
+		req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
+		return controllers.helpers.redirect(res, '/login');
 	}
 
 	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
@@ -172,7 +164,13 @@ middleware.isAdmin = function(req, res, next) {
 			return next(err);
 		}
 
-		render();
+		if (res.locals.isAPI) {
+			return controllers.helpers.notAllowed(req, res);
+		}
+
+		middleware.buildHeader(req, res, function() {
+			controllers.helpers.notAllowed(req, res);
+		});
 	});
 };
 
