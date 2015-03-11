@@ -504,7 +504,7 @@ app.cacheBuster = null;
 			});
 
 			createHeaderTooltips();
-			showEmailConfirmWarning();
+			app.showEmailConfirmWarning();
 
 			socket.removeAllListeners('event:nodebb.ready');
 			socket.on('event:nodebb.ready', function(cacheBusters) {
@@ -537,7 +537,7 @@ app.cacheBuster = null;
 		});
 	};
 
-	function showEmailConfirmWarning(err) {
+	app.showEmailConfirmWarning = function(err) {
 		if (!config.requireEmailConfirmation || !app.user.uid) {
 			return;
 		}
@@ -569,7 +569,7 @@ app.cacheBuster = null;
 				}
 			});
 		}
-	}
+	};
 
 	showWelcomeMessage = window.location.href.indexOf('loggedin') !== -1;
 
