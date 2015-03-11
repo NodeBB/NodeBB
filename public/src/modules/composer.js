@@ -30,7 +30,7 @@ define('composer', [
 				discard(composer.active);
 				return;
 			}
-			
+
 			translator.translate('[[modules:composer.discard]]', function(translated) {
 				bootbox.confirm(translated, function(confirm) {
 					if (confirm) {
@@ -506,7 +506,7 @@ define('composer', [
 			$('.action-bar button').removeAttr('disabled');
 			if (err) {
 				if (err.message === '[[error:email-not-confirmed]]') {
-					return showEmailConfirmAlert(err);
+					return app.showEmailConfirmWarning(err);
 				}
 
 				return app.alertError(err.message);
@@ -517,25 +517,6 @@ define('composer', [
 
 			$(window).trigger('action:composer.' + action, {composerData: composerData, data: data});
 		}
-	}
-
-	function showEmailConfirmAlert(err) {
-		app.alert({
-			alert_id: 'email_confirm',
-			title: '[[global:alert.error]]',
-			message: err.message,
-			type: 'danger',
-			timeout: 0,
-			clickfn: function() {
-				app.removeAlert('email_confirm');
-				socket.emit('user.emailConfirm', {}, function(err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					app.alertSuccess('[[notifications:email-confirm-sent]]');
-				});
-			}
-		});
 	}
 
 	function discard(post_uuid) {

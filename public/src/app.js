@@ -537,7 +537,7 @@ app.cacheBuster = null;
 		});
 	};
 
-	function showEmailConfirmWarning() {
+	function showEmailConfirmWarning(err) {
 		if (!config.requireEmailConfirmation || !app.user.uid) {
 			return;
 		}
@@ -555,7 +555,7 @@ app.cacheBuster = null;
 		} else if (!app.user['email:confirmed']) {
 			app.alert({
 				alert_id: 'email_confirm',
-				message: '[[error:email-not-confirmed]]',
+				message: err ? err.message : '[[error:email-not-confirmed]]',
 				type: 'warning',
 				timeout: 0,
 				clickfn: function() {
