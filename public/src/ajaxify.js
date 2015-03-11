@@ -23,6 +23,11 @@ $(document).ready(function() {
 	ajaxify.currentPage = null;
 
 	ajaxify.go = function (url, callback, quiet) {
+		// If ajaxifying into an admin route from regular site, do a cold load.
+		if (url.indexOf('admin') === 0 && window.location.pathname.indexOf('/admin') !== 0) {
+			return window.open(RELATIVE_PATH + '/' + url, '_blank');
+		}
+
 		app.enterRoom('');
 
 		$(window).off('scroll');
