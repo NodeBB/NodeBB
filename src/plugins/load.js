@@ -14,12 +14,10 @@ module.exports = function(Plugins) {
 	Plugins.loadPlugin = function(pluginPath, callback) {
 		Plugins.loadPluginInfo(pluginPath, function(err, pluginData) {
 			if (err) {
+				if (err.message === '[[error:parse-error]]') {
+					return callback();
+				}
 				return callback(pluginPath.match('nodebb-theme') ? null : err);
-			}
-
-			var staticDir;
-			if (!pluginData) {
-				return callback();
 			}
 
 			versionWarning(pluginData);
@@ -229,9 +227,9 @@ module.exports = function(Plugins) {
 				var pluginDir = pluginPath.split(path.sep);
 				pluginDir = pluginDir[pluginDir.length -1];
 
-				winston.error('[plugins/' + pluginDir + '] Error in plugin.json/package.json! ' + err.message);
+				winston.error('[plugins/' + pluginDir + '] Error in plugin.json or package.json! ' + err.message);
 
-				callback();
+				callback(new Error('[[error:parse-error]]'));
 			}
 		});
 	};
