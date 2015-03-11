@@ -32,9 +32,9 @@
     "category": "Kategori",
     "descending": "Azalan düzene göre",
     "ascending": "Artan düzene göre",
-    "save-preferences": "Save preferences",
-    "clear-preferences": "Clear preferences",
-    "search-preferences-saved": "Search preferences saved",
-    "search-preferences-cleared": "Search preferences cleared",
-    "show-results-as": "Show results as"
+    "save-preferences": "Tercihleri Kaydet",
+    "clear-preferences": "Tercihleri Sil",
+    "search-preferences-saved": "Kaydedilmiş Arama tercihleri",
+    "search-preferences-cleared": "Silinmiş Arama Tercihleri",
+    "show-results-as": "Sonuçları göster : "
 }

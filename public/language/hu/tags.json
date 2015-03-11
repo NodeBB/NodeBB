@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "Nem létezik témakör ezzel a címkével.",
     "tags": "Címkék",
-    "enter_tags_here": "Enter tags here, between %1 and %2 characters each.",
+    "enter_tags_here": "Enter tags here. %1-%2 characters. Press enter after each tag.",
     "enter_tags_here_short": "Címke megadása...",
     "no_tags": "Nincs címke."
 }

@@ -1,7 +1,7 @@
 {
-    "username-email": "Username / Email",
-    "username": "Username",
-    "email": "Email",
+    "username-email": "Nazwa użytkownika lub adres e-mail",
+    "username": "Nazwa użytkownika",
+    "email": "Adres e-mail",
     "remember_me": "Zapamiętaj mnie",
     "forgot_password": "Zapomniałeś hasło?",
     "alternative_logins": "Alternatywne logowanie",

@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "沒有此標籤的主題。",
     "tags": "標籤",
-    "enter_tags_here": "Enter tags here, between %1 and %2 characters each.",
+    "enter_tags_here": "Enter tags here. %1-%2 characters. Press enter after each tag.",
     "enter_tags_here_short": "輸入標籤...",
     "no_tags": "還沒有標籤呢。"
 }

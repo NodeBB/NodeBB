@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "لاوجود لمواضيع تحمل هذا الوسم.",
     "tags": "بطاقات",
-    "enter_tags_here": "Enter tags here, between %1 and %2 characters each.",
+    "enter_tags_here": "Enter tags here. %1-%2 characters. Press enter after each tag.",
     "enter_tags_here_short": "أدخل البطاقات...",
     "no_tags": "لاتوجد هناك بطاقات بعد."
 }
