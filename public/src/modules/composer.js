@@ -254,11 +254,9 @@ define('composer', [
 			isGuestPost = composer.posts[post_uuid] ? parseInt(composer.posts[post_uuid].uid, 10) === 0 : null;
 
 		composer.bsEnvironment = utils.findBootstrapEnvironment();
-
-		var template = (composer.bsEnvironment === 'xs' || composer.bsEnvironment === 'sm') ? 'composer-mobile' : 'composer';
-
+		
 		var data = {
-			mobile: template === 'composer-mobile',
+			mobile: template === (composer.bsEnvironment === 'xs' || composer.bsEnvironment === 'sm'),
 			allowTopicsThumbnail: allowTopicsThumbnail,
 			showTags: isTopic || isMain,
 			minimumTagLength: config.minimumTagLength,
@@ -269,7 +267,7 @@ define('composer', [
 			formatting: composer.formatting
 		};
 
-		parseAndTranslate(template, data, function(composerTemplate) {
+		parseAndTranslate('composer', data, function(composerTemplate) {
 			if ($('#cmp-uuid-' + post_uuid).length) {
 				return;
 			}
