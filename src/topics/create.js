@@ -166,6 +166,7 @@ module.exports = function(Topics) {
 
 				data.topicData = data.topicData[0];
 				data.topicData.unreplied = 1;
+				data.topicData.mainPost = data.postData;
 
 				plugins.fireHook('action:topic.post', data.topicData);
 
@@ -278,6 +279,10 @@ module.exports = function(Topics) {
 
 				if (parseInt(uid, 10)) {
 					Topics.notifyFollowers(postData, uid);
+				}
+
+				if (postData.index > 0) {
+					plugins.fireHook('action:topic.reply', postData);
 				}
 
 				postData.topic.title = validator.escape(postData.topic.title);
