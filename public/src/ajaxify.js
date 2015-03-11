@@ -65,8 +65,10 @@ $(document).ready(function() {
 		// If ajaxifying into an admin route from regular site, do a cold load.
 		url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
 		if (url.indexOf('admin') === 0 && window.location.pathname.indexOf('/admin') !== 0) {
-			return window.open(RELATIVE_PATH + '/' + url, '_blank');
+			window.open(RELATIVE_PATH + '/' + url, '_blank');
+			return true;
 		}
+		return false;
 	}
 
 	ajaxify.start = function(url, quiet, search) {
