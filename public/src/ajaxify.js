@@ -23,9 +23,8 @@ $(document).ready(function() {
 	ajaxify.currentPage = null;
 
 	ajaxify.go = function (url, callback, quiet) {
-		// If ajaxifying into an admin route from regular site, do a cold load.
-		if (url.indexOf('admin') === 0 && window.location.pathname.indexOf('/admin') !== 0) {
-			return window.open(RELATIVE_PATH + '/' + url, '_blank');
+		if (ajaxify.handleACPRedirect(url)) {
+			return;
 		}
 
 		app.enterRoom('');
@@ -61,6 +60,14 @@ $(document).ready(function() {
 
 		return true;
 	};
+
+	ajaxify.handleACPRedirect = function(url) {
+		// If ajaxifying into an admin route from regular site, do a cold load.
+		url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
+		if (url.indexOf('admin') === 0 && window.location.pathname.indexOf('/admin') !== 0) {
+			return window.open(RELATIVE_PATH + '/' + url, '_blank');
+		}
+	}
 
 	ajaxify.start = function(url, quiet, search) {
 		url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
