@@ -206,6 +206,9 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, 
 				message:msg
 			}, function(err) {
 				if (err) {
+					if (err.message === '[[error:email-not-confirmed-chat]]') {
+						return showEmailConfirmAlert(err);
+					}
 					return app.alertError(err.message);
 				}
 
