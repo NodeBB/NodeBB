@@ -34,8 +34,7 @@ define('composer/resize', function() {
 		// todo, lump in browsers that don't support transform (ie8) here
 		// at this point we should use modernizr
 		if (env === 'sm' || env === 'xs' || window.innerHeight < 480) {
-			app.toggleNavbar(false);
-			postContainer.find('textarea').css('height', $(window).height());
+			$('html').addClass('composing mobile');
 		}
 
 		if (config.hasImageUploadPlugin) {

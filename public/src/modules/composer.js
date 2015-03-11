@@ -254,9 +254,9 @@ define('composer', [
 			isGuestPost = composer.posts[post_uuid] ? parseInt(composer.posts[post_uuid].uid, 10) === 0 : null;
 
 		composer.bsEnvironment = utils.findBootstrapEnvironment();
-		
+
 		var data = {
-			mobile: template === (composer.bsEnvironment === 'xs' || composer.bsEnvironment === 'sm'),
+			mobile: composer.bsEnvironment === 'xs' || composer.bsEnvironment === 'sm',
 			allowTopicsThumbnail: allowTopicsThumbnail,
 			showTags: isTopic || isMain,
 			minimumTagLength: config.minimumTagLength,
