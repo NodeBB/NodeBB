@@ -372,7 +372,7 @@ app.cacheBuster = null;
 		if (utils.findBootstrapEnvironment() === 'xs') {
 			return;
 		}
-		$('#header-menu li [title]').each(function() {
+		$('#header-menu li a[title]').each(function() {
 			$(this).tooltip({
 				placement: 'bottom',
 				title: $(this).attr('title')
