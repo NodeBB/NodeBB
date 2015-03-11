@@ -3,7 +3,7 @@
 
 /* globals app, define, config, utils*/
 
-define('composer/resize', function() {
+define('composer/resize', ['autosize'], function(autosize) {
 	var resize = {},
 		oldPercentage = 0,
 		env;
@@ -35,6 +35,8 @@ define('composer/resize', function() {
 		// at this point we should use modernizr
 		if (env === 'sm' || env === 'xs' || window.innerHeight < 480) {
 			$('html').addClass('composing mobile');
+			postContainer.percentage = 1;
+			autosize(postContainer.find('textarea')[0]);
 		}
 
 		if (config.hasImageUploadPlugin) {
