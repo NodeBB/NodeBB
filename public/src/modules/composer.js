@@ -348,6 +348,7 @@ define('composer', [
 			resize.handleResize(postContainer);
 
 			handleHelp(postContainer);
+			handleToggle(postContainer);
 
 			$(window).trigger('action:composer.loaded', {
 				post_uuid: post_uuid
@@ -373,6 +374,23 @@ define('composer', [
 					bootbox.alert(html);
 				});
 			}
+		});
+	}
+
+	function handleToggle(postContainer) {
+		var showBtn = postContainer.find('.write-container .toggle-preview'),
+			hideBtn = postContainer.find('.preview-container .toggle-preview');
+
+		hideBtn.on('click', function() {
+			$('.preview-container').addClass('hide');
+			$('.write-container').addClass('maximized');
+			showBtn.removeClass('hide');
+		});
+
+		showBtn.on('click', function() {
+			$('.preview-container').removeClass('hide');
+			$('.write-container').removeClass('maximized');
+			showBtn.addClass('hide');
 		});
 	}
 
