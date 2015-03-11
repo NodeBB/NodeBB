@@ -116,7 +116,7 @@ define('composer', [
 	}
 
 	function composerAlert(message) {
-		$('.action-bar button').removeAttr('disabled');
+		$('[data-action="post"]').removeAttr('disabled');
 		app.alert({
 			type: 'danger',
 			timeout: 3000,
@@ -284,6 +284,7 @@ define('composer', [
 
 			tags.init(postContainer, composer.posts[post_uuid]);
 			categoryList.init(postContainer, composer.posts[post_uuid]);
+
 			updateTitle(postData, postContainer);
 
 			activate(post_uuid);
@@ -303,12 +304,12 @@ define('composer', [
 				composer.posts[post_uuid].modified = true;
 			});
 
-			postContainer.on('click', '.action-bar button[data-action="post"]', function() {
+			postContainer.on('click', '[data-action="post"]', function() {
 				$(this).attr('disabled', true);
 				post(post_uuid);
 			});
 
-			postContainer.on('click', '.action-bar button[data-action="discard"]', function() {
+			postContainer.on('click', '[data-action="discard"]', function() {
 				if (!composer.posts[post_uuid].modified) {
 					discard(post_uuid);
 					return;
@@ -501,7 +502,7 @@ define('composer', [
 		}
 
 		function done(err, data) {
-			$('.action-bar button').removeAttr('disabled');
+			$('[data-action="post"]').removeAttr('disabled');
 			if (err) {
 				if (err.message === '[[error:email-not-confirmed]]') {
 					return app.showEmailConfirmWarning(err);
@@ -528,7 +529,7 @@ define('composer', [
 			composer.active = undefined;
 			taskbar.discard('composer', post_uuid);
 			$('body').css({'margin-bottom': 0});
-			$('.action-bar button').removeAttr('disabled');
+			$('[data-action="post"]').removeAttr('disabled');
 
 			app.toggleNavbar(true);
 		}
