@@ -8,7 +8,7 @@
 
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as an anonymous module.
-		define([], factory);
+		define('autosize', factory);
 	} else if (typeof exports === 'object') {
 		// Node. Does not work with strict CommonJS, but
 		// only CommonJS-like environments that support module.exports,
@@ -24,6 +24,7 @@
 
 		var maxHeight;
 		var heightOffset;
+		var amountOfCR;
 
 		function init() {
 			var style = window.getComputedStyle(ta, null);
@@ -56,6 +57,7 @@
 				heightOffset = parseFloat(style.borderTopWidth)+parseFloat(style.borderBottomWidth);
 			}
 
+			amountOfCR = (ta.value.match(/\n/g) || []).length;
 			adjust();
 		}
 
@@ -63,6 +65,13 @@
 			var startHeight = ta.style.height;
 			var htmlTop = document.documentElement.scrollTop;
 			var bodyTop = document.body.scrollTop;
+
+			var newAmountOfCR = (ta.value.match(/\n/g) || []).length;
+			if (newAmountOfCR === amountOfCR) {
+				return;
+			}
+
+			amountOfCR = newAmountOfCR;
 			
 			ta.style.height = 'auto';
 
