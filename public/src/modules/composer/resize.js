@@ -19,17 +19,21 @@ define('composer/resize', ['autosize'], function(autosize) {
 			env = utils.findBootstrapEnvironment();
 		}
 
-		postContainer.percentage = percentage;
-
 		if (percentage) {
+			var max = getMaximumPercentage();
+
 			if (percentage < 0.25) {
 				percentage = 0.25;
+			} else if (percentage > max) {
+				percentage = max;
 			}
 
 			if (env === 'md' || env === 'lg') {
 				postContainer.css('transform', 'translate(0, ' + (Math.abs(1-percentage) * 100) + '%)');
 			}
 		}
+
+		postContainer.percentage = percentage;
 
 		// todo, lump in browsers that don't support transform (ie8) here
 		// at this point we should use modernizr
@@ -94,7 +98,7 @@ define('composer/resize', ['autosize'], function(autosize) {
 
 		function toggleMaximize(e) {
 			if (e.clientY - resizeDown === 0 || snapToTop) {
-				var newPercentage = ($(window).height() - $('#header-menu').height() - 1) / $(window).height();
+				var newPercentage = getMaximumPercentage();
 
 				if (!postContainer.hasClass('maximized') || !snapToTop) {
 					oldPercentage = postContainer.percentage;
@@ -132,8 +136,9 @@ define('composer/resize', ['autosize'], function(autosize) {
 		}
 
 		function resizeSavePosition(px) {
-			var	percentage = px / $(window).height();
-			localStorage.setItem('composer:resizePercentage', percentage);
+			var	percentage = px / $(window).height(),
+				max = getMaximumPercentage();
+			localStorage.setItem('composer:resizePercentage', percentage < max ? percentage : max);
 		}
 
 		var	resizeActive = false,
@@ -142,23 +147,27 @@ define('composer/resize', ['autosize'], function(autosize) {
             snapToTop = false,
 			resizeEl = postContainer.find('.resizer');
 
-		resizeEl.on('mousedown', resizeStart);
-
-		resizeEl.on('touchstart', function(e) {
-			e.preventDefault();
-			resizeStart(e.touches[0]);
-		});
-
-		resizeEl.on('touchend', function(e) {
-			e.preventDefault();
-			resizeStop();
-		});
+		resizeEl
+			.on('mousedown', resizeStart)
+			.on('touchstart', function(e) {
+				e.preventDefault();
+				resizeStart(e.touches[0]);
+			})
+			.on('touchend', function(e) {
+				e.preventDefault();
+				resizeStop();
+			});
 	};
 
+	function getMaximumPercentage() {
+		return ($(window).height() - $('#header-menu').height() - 1) / $(window).height();
+	}
 
 	function resizeWritePreview(postContainer) {
 		var total = getFormattingHeight(postContainer);
-		postContainer.find('.write-preview-container').css('height', postContainer.percentage * $(window).height() - $('#header-menu').height() - total);
+		postContainer
+			.find('.write-preview-container')
+			.css('height', postContainer.percentage * $(window).height() - $('#header-menu').height() - total);
 	}
 
 	function getFormattingHeight(postContainer) {
