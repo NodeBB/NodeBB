@@ -70,7 +70,7 @@
 		collapseDash: /-+/g,
 		trimTrailingDash: /-$/g,
 		trimLeadingDash: /^-/g,
-		isLatin: /^[\w]+$/,
+		isLatin: /^[\w\d\s.,\-@]+$/,
 		languageKeyRegex: /\[\[[\w]+:.+\]\]/,
 
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
