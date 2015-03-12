@@ -953,11 +953,7 @@ var async = require('async'),
 						var memberOf = [];
 						isMembers.forEach(function(isMember, index) {
 							if (isMember) {
-								if (uids.length > 1) {
-									memberOf.push(util._extend({}, groupData[index]));
-								} else {
-									memberOf.push(groupData[index]);
-								}
+								memberOf.push(groupData[index]);
 							}
 						});
 

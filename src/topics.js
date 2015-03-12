@@ -216,11 +216,14 @@ var async = require('async'),
 			}
 
 			async.parallel({
-				mainPost: function(next) {
-					getMainPosts([topicData.mainPid], uid, next);
-				},
+				// mainPost: function(next) {
+				// 	getMainPosts([topicData.mainPid], uid, next);
+				// },
+				// posts: function(next) {
+				// 	Topics.getTopicPosts(tid, set, start, end, uid, reverse, next);
+				// },
 				posts: function(next) {
-					Topics.getTopicPosts(tid, set, start, end, uid, reverse, next);
+					getMainPostAndReplies(topicData, set, uid, start, end, reverse, next);
 				},
 				category: async.apply(Topics.getCategoryData, tid),
 				threadTools: async.apply(plugins.fireHook, 'filter:topic.thread_tools', {topic: topicData, uid: uid, tools: []}),
@@ -231,7 +234,8 @@ var async = require('async'),
 					return callback(err);
 				}
 
-				topicData.posts = Array.isArray(results.mainPost) && results.mainPost.length ? [results.mainPost[0]].concat(results.posts) : results.posts;
+				//topicData.posts = Array.isArray(results.mainPost) && results.mainPost.length ? [results.mainPost[0]].concat(results.posts) : results.posts;
+				topicData.posts = results.posts;
 				topicData.category = results.category;
 				topicData.thread_tools = results.threadTools.tools;
 				topicData.tags = results.tags;
@@ -248,6 +252,34 @@ var async = require('async'),
 			});
 		});
 	};
+
+	function getMainPostAndReplies(topic, set, uid, start, end, reverse, callback) {
+		async.waterfall([
+			function(next) {
+				posts.getPidsFromSet(set, start, end, reverse, next);
+			},
+			function(pids, next) {
+				if ((!Array.isArray(pids) || !pids.length) && !topic.mainPid) {
+					return callback(null, []);
+				}
+
+				if (topic.mainPid) {
+					pids.unshift(topic.mainPid);
+				}
+				posts.getPostsByPids(pids, uid, next);
+			},
+			function(posts, next) {
+				var indices = Topics.calculatePostIndices(start, end, topic.postcount, reverse);
+				posts.forEach(function(post, index) {
+					if (post) {
+						post.index = indices[index] - 1;
+					}
+				});
+
+				Topics.addPostData(posts, uid, callback);
+			}
+		]);
+	}
 
 	Topics.getMainPost = function(tid, uid, callback) {
 		Topics.getMainPosts([tid], uid, function(err, mainPosts) {
