@@ -5,8 +5,7 @@
 
 define('composer/resize', ['autosize'], function(autosize) {
 	var resize = {},
-		oldPercentage = 0,
-		env;
+		oldPercentage = 0;
 
 	resize.reposition = function(postContainer) {
 		var	percentage = localStorage.getItem('composer:resizePercentage') || 0.5;
@@ -15,8 +14,17 @@ define('composer/resize', ['autosize'], function(autosize) {
 	};
 
 	function doResize(postContainer, percentage) {
-		if (!env) {
-			env = utils.findBootstrapEnvironment();
+		var env = utils.findBootstrapEnvironment();
+
+
+		// todo, lump in browsers that don't support transform (ie8) here
+		// at this point we should use modernizr
+		if (env === 'sm' || env === 'xs' || window.innerHeight < 480) {
+			$('html').addClass('composing mobile');
+			autosize(postContainer.find('textarea')[0]);
+			percentage = 1;
+		} else {
+			$('html').removeClass('composing mobile');
 		}
 
 		if (percentage) {
@@ -30,18 +38,12 @@ define('composer/resize', ['autosize'], function(autosize) {
 
 			if (env === 'md' || env === 'lg') {
 				postContainer.css('transform', 'translate(0, ' + (Math.abs(1-percentage) * 100) + '%)');
+			} else {
+				postContainer.removeAttr('style');
 			}
 		}
 
 		postContainer.percentage = percentage;
-
-		// todo, lump in browsers that don't support transform (ie8) here
-		// at this point we should use modernizr
-		if (env === 'sm' || env === 'xs' || window.innerHeight < 480) {
-			$('html').addClass('composing mobile');
-			postContainer.percentage = 1;
-			autosize(postContainer.find('textarea')[0]);
-		}
 
 		if (config.hasImageUploadPlugin) {
 			postContainer.find('.img-upload-btn').removeClass('hide');
