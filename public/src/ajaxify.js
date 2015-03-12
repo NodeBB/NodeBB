@@ -24,7 +24,7 @@ $(document).ready(function() {
 
 	ajaxify.go = function (url, callback, quiet) {
 		if (ajaxify.handleACPRedirect(url)) {
-			return;
+			return false;
 		}
 
 		app.enterRoom('');
