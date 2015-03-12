@@ -3,9 +3,9 @@
 	license: MIT
 	http://www.jacklmoore.com/autosize
 */
+'use strict';
+/*globals define*/
 (function (root, factory) {
-	'use strict';
-
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as an anonymous module.
 		define('autosize', factory);
