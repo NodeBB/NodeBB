@@ -1,11 +1,6 @@
 "use strict";
 
-var path = require('path'),
-	nconf = require('nconf'),
-
-	meta = require('../meta'),
-	db = require('../database'),
-	plugins = require('../plugins'),
+var meta = require('../meta'),
 	middleware = require('../middleware');
 
 
