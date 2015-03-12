@@ -314,12 +314,13 @@ define('composer', [
 					discard(post_uuid);
 					return;
 				}
-
+				var btn = $(this).prop('disabled', true);
 				translator.translate('[[modules:composer.discard]]', function(translated) {
 					bootbox.confirm(translated, function(confirm) {
 						if (confirm) {
 							discard(post_uuid);
 						}
+						btn.prop('disabled', false);
 					});
 				});
 			});
