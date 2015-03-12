@@ -397,7 +397,7 @@ define('composer', [
 		var titleEl = postContainer.find('.title');
 
 		if (parseInt(postData.tid, 10) > 0) {
-			titleEl.translateVal('[[topic:composer.replying_to, ' + postData.title + ']]');
+			titleEl.translateVal('[[topic:composer.replying_to, "' + postData.title + '"]]');
 			titleEl.prop('disabled', true);
 		} else if (parseInt(postData.pid, 10) > 0) {
 			titleEl.val(postData.title);
@@ -531,7 +531,7 @@ define('composer', [
 			$('body').css({'margin-bottom': 0});
 			$('[data-action="post"]').removeAttr('disabled');
 
-			
+
 			$('html').removeClass('composing mobile');
 		}
 	}
