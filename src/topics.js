@@ -260,12 +260,20 @@ var async = require('async'),
 				posts.getPostsByPids(pids, uid, next);
 			},
 			function(posts, next) {
+				if (!posts.length) {
+					return next(null, []);
+				}
+
+				if (topic.mainPid) {
+					posts[0].index = 0;
+				}
+
 				var indices = Topics.calculatePostIndices(start, end, topic.postcount, reverse);
-				posts.forEach(function(post, index) {
-					if (post) {
-						post.index = indices[index] - 1;
+				for (var i=1; i<posts.length; ++i) {
+					if (posts[i]) {
+						posts[i].index = indices[i - 1];
 					}
-				});
+				}
 
 				Topics.addPostData(posts, uid, callback);
 			}
