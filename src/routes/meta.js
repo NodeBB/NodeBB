@@ -5,7 +5,7 @@ var meta = require('../meta'),
 
 
 function sendMinifiedJS(req, res, next) {
-	return res.type('text/javascript').send(meta.js.cache);
+	res.type('text/javascript').send(meta.js.cache);
 }
 
 function sendStylesheet(req, res, next) {
