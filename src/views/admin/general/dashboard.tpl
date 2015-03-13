@@ -1,5 +1,6 @@
 <div class="row dashboard">
-	<div class="col-lg-9">
+	<!-- Override for now, until the right sidebar graphs are fixed (pending socket.io resolution) -->
+	<div class="col-lg-12">
 		<div class="panel panel-default">
 			<div class="panel-heading">Forum Traffic</div>
 			<div class="panel-body">
@@ -87,7 +88,8 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-lg-3">
+	<!-- Override for now, until the right sidebar graphs are fixed (pending socket.io resolution) -->
+	<div class="col-lg-3 hide">
 		<div class="panel panel-default">
 			<div class="panel-heading">Anonymous vs Registered Users</div>
 			<div class="panel-body">

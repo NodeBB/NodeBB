@@ -216,12 +216,7 @@ var async = require('async'),
 			}
 
 			async.parallel({
-				mainPost: function(next) {
-					getMainPosts([topicData.mainPid], uid, next);
-				},
-				posts: function(next) {
-					Topics.getTopicPosts(tid, set, start, end, uid, reverse, next);
-				},
+				posts: async.apply(getMainPostAndReplies, topicData, set, uid, start, end, reverse),
 				category: async.apply(Topics.getCategoryData, tid),
 				threadTools: async.apply(plugins.fireHook, 'filter:topic.thread_tools', {topic: topicData, uid: uid, tools: []}),
 				tags: async.apply(Topics.getTopicTagsObjects, tid),
@@ -231,7 +226,7 @@ var async = require('async'),
 					return callback(err);
 				}
 
-				topicData.posts = Array.isArray(results.mainPost) && results.mainPost.length ? [results.mainPost[0]].concat(results.posts) : results.posts;
+				topicData.posts = results.posts;
 				topicData.category = results.category;
 				topicData.thread_tools = results.threadTools.tools;
 				topicData.tags = results.tags;
@@ -249,13 +244,49 @@ var async = require('async'),
 		});
 	};
 
+	function getMainPostAndReplies(topic, set, uid, start, end, reverse, callback) {
+		async.waterfall([
+			function(next) {
+				posts.getPidsFromSet(set, start, end, reverse, next);
+			},
+			function(pids, next) {
+				if ((!Array.isArray(pids) || !pids.length) && !topic.mainPid) {
+					return callback(null, []);
+				}
+
+				if (topic.mainPid) {
+					pids.unshift(topic.mainPid);
+				}
+				posts.getPostsByPids(pids, uid, next);
+			},
+			function(posts, next) {
+				if (!posts.length) {
+					return next(null, []);
+				}
+
+				if (topic.mainPid) {
+					posts[0].index = 0;
+				}
+
+				var indices = Topics.calculatePostIndices(start, end, topic.postcount, reverse);
+				for (var i=1; i<posts.length; ++i) {
+					if (posts[i]) {
+						posts[i].index = indices[i - 1];
+					}
+				}
+
+				Topics.addPostData(posts, uid, callback);
+			}
+		]);
+	}
+
 	Topics.getMainPost = function(tid, uid, callback) {
 		Topics.getMainPosts([tid], uid, function(err, mainPosts) {
 			callback(err, Array.isArray(mainPosts) && mainPosts.length ? mainPosts[0] : null);
 		});
 	};
 
-	Topics.getMainPosts = function(tids, uid, callback) {
+	Topics.getMainPids = function(tids, callback) {
 		Topics.getTopicsFields(tids, ['mainPid'], function(err, topicData) {
 			if (err) {
 				return callback(err);
@@ -264,7 +295,15 @@ var async = require('async'),
 			var mainPids = topicData.map(function(topic) {
 				return topic ? topic.mainPid : null;
 			});
+			callback(null, mainPids);
+		});
+	};
 
+	Topics.getMainPosts = function(tids, uid, callback) {
+		Topics.getMainPids(tids, function(err, mainPids) {
+			if (err) {
+				return callback(err);
+			}
 			getMainPosts(mainPids, uid, callback);
 		});
 	};

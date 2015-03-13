@@ -20,11 +20,11 @@ define('composer/formatting', ['composer/controls', 'composer/preview'], functio
 		}
 	};
 
-	var customButtons = [];
+	var buttons = [];
 
 	formatting.addComposerButtons = function() {
-		for(var x=0,numButtons=customButtons.length;x<numButtons;x++) {
-			$('.formatting-bar .btn-group form').before('<span class="btn btn-link" tabindex="-1" data-format="' + customButtons[x].name + '"><i class="' + customButtons[x].iconClass + '"></i></span>');
+		for(var x=0,numButtons=buttons.length;x<numButtons;x++) {
+			$('.formatting-bar .btn-group form').before('<span class="btn btn-link" tabindex="-1" data-format="' + buttons[x].name + '"><i class="' + buttons[x].iconClass + '"></i></span>');
 		}
 	};
 
@@ -32,7 +32,7 @@ define('composer/formatting', ['composer/controls', 'composer/preview'], functio
 		var name = iconClass.replace('fa fa-', '');
 
 		formattingDispatchTable[name] = onClick;
-		customButtons.push({
+		buttons.push({
 			name: name,
 			iconClass: iconClass
 		});

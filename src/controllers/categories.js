@@ -55,7 +55,7 @@ categoriesController.popular = function(req, res, next) {
 		var data = {
 			topics: topics,
 			'feeds:disableRSS': parseInt(meta.config['feeds:disableRSS'], 10) === 1,
-			rssFeedUrl: nconf.get('relative_path') + '/popular.rss',
+			rssFeedUrl: nconf.get('relative_path') + '/popular/' + (req.params.term || 'daily') + '.rss',
 			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[global:header.popular]]'}])
 		};
 
@@ -200,8 +200,7 @@ categoriesController.get = function(req, res, next) {
 			var topicCount = parseInt(results.categoryData.topic_count, 10);
 
 			if (topicIndex < 0 || topicIndex > Math.max(topicCount - 1, 0)) {
-				var url = '/category/' + cid + '/' + req.params.slug + (topicIndex > topicCount ? '/' + topicCount : '');
-				return res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
+				return helpers.redirect(res, '/category/' + cid + '/' + req.params.slug + (topicIndex > topicCount ? '/' + topicCount : ''));
 			}
 
 			userPrivileges = results.privileges;

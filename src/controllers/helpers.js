@@ -45,6 +45,14 @@ helpers.notAllowed = function(req, res, error) {
 	}
 };
 
+helpers.redirect = function(res, url) {
+	if (res.locals.isAPI) {
+		res.status(302).json(url);
+	} else {
+		res.redirect(nconf.get('relative_path') + url);
+	}
+};
+
 helpers.buildCategoryBreadcrumbs = function(cid, callback) {
 	var breadcrumbs = [];
 

@@ -3,32 +3,47 @@
 
 /* globals app, define, config, utils*/
 
-define('composer/resize', function() {
+define('composer/resize', ['autosize'], function(autosize) {
 	var resize = {},
-		oldPercentage = 0,
-		env;
+		oldPercentage = 0;
 
 	resize.reposition = function(postContainer) {
-		var	percentage = localStorage.getItem('composer:resizePercentage');
+		var	percentage = localStorage.getItem('composer:resizePercentage') || 0.5;
 
 		doResize(postContainer, percentage);
 	};
 
 	function doResize(postContainer, percentage) {
-		if (!env) {
-			env = utils.findBootstrapEnvironment();
+		var env = utils.findBootstrapEnvironment();
+
+
+		// todo, lump in browsers that don't support transform (ie8) here
+		// at this point we should use modernizr
+		if (env === 'sm' || env === 'xs' || window.innerHeight < 480) {
+			$('html').addClass('composing mobile');
+			autosize(postContainer.find('textarea')[0]);
+			percentage = 1;
+		} else {
+			$('html').removeClass('composing mobile');
 		}
 
 		if (percentage) {
+			var max = getMaximumPercentage();
+
+			if (percentage < 0.25) {
+				percentage = 0.25;
+			} else if (percentage > max) {
+				percentage = max;
+			}
+
 			if (env === 'md' || env === 'lg') {
-				postContainer.css('height', Math.floor($(window).height() * percentage) + 'px');
+				postContainer.css('transform', 'translate(0, ' + (Math.abs(1-percentage) * 100) + '%)');
+			} else {
+				postContainer.removeAttr('style');
 			}
 		}
 
-		if (env === 'sm' || env === 'xs' || window.innerHeight < 480) {
-			app.toggleNavbar(false);
-			postContainer.css('height', $(window).height());
-		}
+		postContainer.percentage = percentage;
 
 		if (config.hasImageUploadPlugin) {
 			postContainer.find('.img-upload-btn').removeClass('hide');
@@ -40,7 +55,7 @@ define('composer/resize', function() {
 			postContainer.find('#files.lt-ie9').removeClass('hide');
 		}
 
-		postContainer.css('visibility', 'visible').css('z-index', 2);
+		postContainer.css('visibility', 'visible');
 
 		// Add some extra space at the bottom of the body so that the user can still scroll to the last post w/ composer open
 		$('body').css({'margin-bottom': postContainer.css('height')});
@@ -50,9 +65,10 @@ define('composer/resize', function() {
 
 	resize.handleResize = function(postContainer) {
 		function resizeStart(e) {
-			var resizeRect = resizeEl[0].getBoundingClientRect();
-			var resizeCenterY = resizeRect.top + (resizeRect.height/2);
-			resizeOffset = resizeCenterY - e.clientY;
+			var resizeRect = resizeEl[0].getBoundingClientRect(),
+				resizeCenterY = resizeRect.top + (resizeRect.height / 2);
+
+			resizeOffset = (resizeCenterY - e.clientY) / 2;
 			resizeActive = true;
 			resizeDown = e.clientY;
 
@@ -63,29 +79,37 @@ define('composer/resize', function() {
 
 		function resizeStop(e) {
 			resizeActive = false;
-			toggleHeight(e);
 
 			postContainer.find('textarea').focus();
 			$(window).off('mousemove', resizeAction);
 			$(window).off('mouseup', resizeStop);
 			$('body').off('touchmove', resizeTouchAction);
+
+			var position = (e.clientY - resizeOffset),
+				newHeight = $(window).height() - position,
+				windowHeight = $(window).height();
+
+			if (newHeight > windowHeight - $('#header-menu').height() - (windowHeight / 15)) {
+				snapToTop = true;
+			} else {
+				snapToTop = false;
+			}
+
+			toggleMaximize(e);
 		}
 
-		function toggleHeight(e) {
-			var triggerIconEl = $('.resizer i');
-			if (e.clientY - resizeDown === 0){
-				var newPercentage = ($(window).height() - $('#header-menu').height() - 20) / $(window).height();
+		function toggleMaximize(e) {
+			if (e.clientY - resizeDown === 0 || snapToTop) {
+				var newPercentage = getMaximumPercentage();
 
-				if (triggerIconEl.hasClass('fa-chevron-up')) {
-					oldPercentage = getPercentage(postContainer);
+				if (!postContainer.hasClass('maximized') || !snapToTop) {
+					oldPercentage = postContainer.percentage;
 					doResize(postContainer, newPercentage);
-					triggerIconEl.addClass('fa-chevron-down').removeClass('fa-chevron-up');
+					postContainer.addClass('maximized');
 				} else {
 					doResize(postContainer, oldPercentage);
-					triggerIconEl.addClass('fa-chevron-up').removeClass('fa-chevron-down');
+					postContainer.removeClass('maximized');
 				}
-			} else {
-				triggerIconEl.addClass('fa-chevron-up').removeClass('fa-chevron-down');
 			}
 		}
 
@@ -96,60 +120,67 @@ define('composer/resize', function() {
 
 		function resizeAction(e) {
 			if (resizeActive) {
-				var position = (e.clientY + resizeOffset);
-				var newHeight = $(window).height() - position;
+				var position = (e.clientY - resizeOffset),
+					newHeight = $(window).height() - position;
 
-				if(newHeight > $(window).height() - $('#header-menu').height() - 20) {
-					newHeight = $(window).height() - $('#header-menu').height() - 20;
-				} else if (newHeight < 100) {
-					newHeight = 100;
-				}
+				doResize(postContainer, newHeight / $(window).height());
 
-				postContainer.css('height', newHeight);
-				$('body').css({'margin-bottom': newHeight});
 				resizeWritePreview(postContainer);
 				resizeSavePosition(newHeight);
+
+				if (Math.abs(e.clientY - resizeDown) > 0) {
+					postContainer.removeClass('maximized');
+				}
 			}
+
 			e.preventDefault();
 			return false;
 		}
 
 		function resizeSavePosition(px) {
-			var	percentage = px / $(window).height();
-			localStorage.setItem('composer:resizePercentage', percentage);
-		}
-
-		function getPercentage(postContainer) {
-			return postContainer.height() / $(window).height();
+			var	percentage = px / $(window).height(),
+				max = getMaximumPercentage();
+			localStorage.setItem('composer:resizePercentage', percentage < max ? percentage : max);
 		}
 
 		var	resizeActive = false,
 			resizeOffset = 0,
             resizeDown = 0,
+            snapToTop = false,
 			resizeEl = postContainer.find('.resizer');
 
-		resizeEl.on('mousedown', resizeStart);
-
-		resizeEl.on('touchstart', function(e) {
-			e.preventDefault();
-			resizeStart(e.touches[0]);
-		});
-
-		resizeEl.on('touchend', function(e) {
-			e.preventDefault();
-			resizeStop();
-		});
+		resizeEl
+			.on('mousedown', resizeStart)
+			.on('touchstart', function(e) {
+				e.preventDefault();
+				resizeStart(e.touches[0]);
+			})
+			.on('touchend', function(e) {
+				e.preventDefault();
+				resizeStop();
+			});
 	};
 
+	function getMaximumPercentage() {
+		return ($(window).height() - $('#header-menu').height() - 1) / $(window).height();
+	}
 
 	function resizeWritePreview(postContainer) {
-		var h1 = postContainer.find('.title-container').outerHeight(true);
-		var h2 = postContainer.find('.category-tag-row').outerHeight(true);
-		var h3 = postContainer.find('.formatting-bar').outerHeight(true);
-		var h4 = postContainer.find('.topic-thumb-container').outerHeight(true);
-		var h5 = $('.taskbar').height();
-		var total = h1 + h2 + h3 + h4 + h5;
-		postContainer.find('.write-preview-container').css('height', postContainer.height() - total);
+		var total = getFormattingHeight(postContainer);
+		postContainer
+			.find('.write-preview-container')
+			.css('height', postContainer.percentage * $(window).height() - $('#header-menu').height() - total);
+	}
+
+	function getFormattingHeight(postContainer) {
+		return [
+			postContainer.find('.title-container').outerHeight(true),
+			postContainer.find('.formatting-bar').outerHeight(true),
+			postContainer.find('.topic-thumb-container').outerHeight(true),
+			$('.taskbar').height()
+		].reduce(function(a, b) {
+			return a + b;
+		});
 	}
 
 

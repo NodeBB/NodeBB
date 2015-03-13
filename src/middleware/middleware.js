@@ -60,19 +60,14 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-
-		if (res.locals.isAPI) {
-			res.status(302).json(nconf.get('relative_path') + '/user/' + userslug);
-		} else {
-			res.redirect(nconf.get('relative_path') + '/user/' + userslug);
-		}
+		controllers.helpers.redirect(res, '/user/' + userslug);
 	});
 };
 
 middleware.redirectToLoginIfGuest = function(req, res, next) {
 	if (!req.user || parseInt(req.user.uid, 10) === 0) {
 		req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
-		return res.redirect(nconf.get('relative_path') + '/login');
+		return controllers.helpers.redirect(res, '/login');
 	} else {
 		next();
 	}
@@ -85,13 +80,7 @@ middleware.addSlug = function(req, res, next) {
 				return next(err);
 			}
 
-			var url = nconf.get('relative_path') + name + encodeURI(slug);
-
-			if (res.locals.isAPI) {
-				res.status(302).json(url);
-			} else {
-				res.redirect(url);
-			}
+			controllers.helpers.redirect(res, name + encodeURI(slug));
 		});
 	}
 
@@ -165,17 +154,9 @@ middleware.checkAccountPermissions = function(req, res, next) {
 };
 
 middleware.isAdmin = function(req, res, next) {
-	function render() {
-		if (res.locals.isAPI) {
-			return controllers.helpers.notAllowed(req, res);
-		}
-
-		middleware.buildHeader(req, res, function() {
-			controllers.helpers.notAllowed(req, res);
-		});
-	}
 	if (!req.user) {
-		return render();
+		req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
+		return controllers.helpers.redirect(res, '/login');
 	}
 
 	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
@@ -183,7 +164,13 @@ middleware.isAdmin = function(req, res, next) {
 			return next(err);
 		}
 
-		render();
+		if (res.locals.isAPI) {
+			return controllers.helpers.notAllowed(req, res);
+		}
+
+		middleware.buildHeader(req, res, function() {
+			controllers.helpers.notAllowed(req, res);
+		});
 	});
 };
 

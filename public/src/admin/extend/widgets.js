@@ -3,7 +3,7 @@
 
 define('admin/extend/widgets', function() {
 	var Widgets = {};
-	
+
 	Widgets.init = function() {		
 		$('#widgets .nav-pills a').on('click', function(ev) {
 			var $this = $(this);

@@ -33,10 +33,18 @@ module.exports = function(Posts) {
 
 			var userData = results.userData;
 			userData.forEach(function(userData, i) {
-				userData.groups = results.groups[i];
-				
+				userData.groups = [];
+
 				results.groups[i].forEach(function(group, index) {
-					group.selected = group.name === results.userSettings[i].groupTitle;
+					userData.groups[index] = {
+						name: group.name,
+						slug: group.slug,
+						labelColor: group.labelColor,
+						icon: group.icon,
+						userTitle: group.userTitle,
+						userTitleEnabled: group.userTitleEnabled,
+						selected: group.name === results.userSettings[i].groupTitle
+					};
 				});
 				userData.status = user.getStatus(userData.status, results.online[i]);
 			});
