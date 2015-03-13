@@ -6,7 +6,7 @@
 
 				<ul class="nav nav-pills">
 				<!-- BEGIN templates -->
-					<li class="<!-- IF @first -->active<!-- ENDIF @first -->"><a href="#" data-template="{templates.template}" data-toggle="pill">{templates.template}</a></li>
+					<li class="<!-- IF @first -->active<!-- ENDIF @first -->"><a href="#" data-template="{template}" data-toggle="pill">{template}</a></li>
 				<!-- END templates -->
 				</ul>
 
@@ -14,10 +14,10 @@
 					<div class="col-xs-12">
 						<div class="tab-content">
 						<!-- BEGIN templates -->
-							<div class="tab-pane <!-- IF @first -->active<!-- ENDIF @first -->" data-template="{templates.template}">
+							<div class="tab-pane <!-- IF @first -->active<!-- ENDIF @first -->" data-template="{template}">
 							<!-- BEGIN areas -->
-								<div class="area" data-template="{templates.template}" data-location="{templates.areas.location}">
-									<h4>{templates.areas.name} <small>{templates.template} / {templates.areas.location}</small></h4>
+								<div class="area" data-template="{template}" data-location="{areas.location}">
+									<h4>{areas.name} <small>{template} / {areas.location}</small></h4>
 									<div class="well widget-area">
 
 									</div>

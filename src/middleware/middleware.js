@@ -60,19 +60,14 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-
-		if (res.locals.isAPI) {
-			res.status(302).json(nconf.get('relative_path') + '/user/' + userslug);
-		} else {
-			res.redirect(nconf.get('relative_path') + '/user/' + userslug);
-		}
+		controllers.helpers.redirect(res, '/user/' + userslug);
 	});
 };
 
 middleware.redirectToLoginIfGuest = function(req, res, next) {
 	if (!req.user || parseInt(req.user.uid, 10) === 0) {
 		req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
-		return res.redirect(nconf.get('relative_path') + '/login');
+		return controllers.helpers.redirect(res, '/login');
 	} else {
 		next();
 	}
@@ -85,13 +80,7 @@ middleware.addSlug = function(req, res, next) {
 				return next(err);
 			}
 
-			var url = nconf.get('relative_path') + name + encodeURI(slug);
-
-			if (res.locals.isAPI) {
-				res.status(302).json(url);
-			} else {
-				res.redirect(url);
-			}
+			controllers.helpers.redirect(res, name + encodeURI(slug));
 		});
 	}
 
@@ -165,17 +154,9 @@ middleware.checkAccountPermissions = function(req, res, next) {
 };
 
 middleware.isAdmin = function(req, res, next) {
-	function render() {
-		if (res.locals.isAPI) {
-			return controllers.helpers.notAllowed(req, res);
-		}
-
-		middleware.buildHeader(req, res, function() {
-			controllers.helpers.notAllowed(req, res);
-		});
-	}
 	if (!req.user) {
-		return render();
+		req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
+		return controllers.helpers.redirect(res, '/login');
 	}
 
 	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
@@ -183,7 +164,13 @@ middleware.isAdmin = function(req, res, next) {
 			return next(err);
 		}
 
-		render();
+		if (res.locals.isAPI) {
+			return controllers.helpers.notAllowed(req, res);
+		}
+
+		middleware.buildHeader(req, res, function() {
+			controllers.helpers.notAllowed(req, res);
+		});
 	});
 };
 
@@ -284,7 +271,6 @@ middleware.renderHeader = function(req, res, callback) {
 			href: nconf.get('relative_path') + '/favicon.ico'
 		});
 
-
 		async.parallel({
 			customCSS: function(next) {
 				templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1;
@@ -339,7 +325,7 @@ middleware.renderHeader = function(req, res, callback) {
 			results.user.isAdmin = results.isAdmin || false;
 			results.user.uid = parseInt(results.user.uid, 10);
 			results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
-			
+
 			templateValues.browserTitle = results.title;
 			templateValues.isAdmin = results.user.isAdmin;
 			templateValues.user = results.user;
@@ -347,6 +333,9 @@ middleware.renderHeader = function(req, res, callback) {
 			templateValues.customCSS = results.customCSS;
 			templateValues.customJS = results.customJS;
 			templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
+
+			templateValues.template = {name: res.locals.template};
+			templateValues.template[res.locals.template] = true;
 
 			app.render('header', templateValues, callback);
 		});
@@ -376,8 +365,9 @@ middleware.processRender = function(req, res, next) {
 		}
 
 		options.loggedIn = req.user ? parseInt(req.user.uid, 10) !== 0 : false;
-		options.template = {};
+		options.template = {name: template};
 		options.template[template] = true;
+		res.locals.template = template;
 
 		if ('function' !== typeof fn) {
 			fn = defaultFn;
@@ -402,19 +392,17 @@ middleware.processRender = function(req, res, next) {
 				str = str + res.locals.adminFooter;
 			}
 
-			if (res.locals.renderHeader) {
-				middleware.renderHeader(req, res, function(err, template) {
+			if (res.locals.renderHeader || res.locals.renderAdminHeader) {
+				var method = res.locals.renderHeader ? middleware.renderHeader : middleware.admin.renderHeader;
+				method(req, res, function(err, template) {
+					if (err) {
+						return fn(err);
+					}
 					str = template + str;
 					var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
 					translator.translate(str, language, function(translated) {
 						fn(err, translated);
 					});
-				});
-			} else if (res.locals.adminHeader) {
-				str = res.locals.adminHeader + str;
-				var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
-				translator.translate(str, language, function(translated) {
-					fn(err, translated);
 				});
 			} else {
 				fn(err, str);
@@ -458,7 +446,6 @@ middleware.maintenanceMode = function(req, res, next) {
 			'/nodebb.min.js',
 			'/vendor/fontawesome/fonts/fontawesome-webfont.woff',
 			'/src/modules/[\\w]+\.js',
-			'/api/get_templates_listing',
 			'/api/login',
 			'/api/?',
 			'/language/.+'

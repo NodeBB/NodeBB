@@ -5,7 +5,7 @@
     "search": "Ara",
     "enter_username": "Aramak için bir kullanıcı adı girin",
     "load_more": "Daha Fazla Yükle",
-    "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
+    "users-found-search-took": "%1 kullanıcı(lar) bulundu! Arama %2 saniye sürdü.",
     "filter-by": "Şu şekilde filtrele",
     "online-only": "Sadece çevrimiçi",
     "picture-only": "Sadece resim"

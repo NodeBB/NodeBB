@@ -129,7 +129,7 @@
 			<div class="panel-heading">Users Control Panel</div>
 			<div class="panel-body">
 				<button id="createUser" class="btn btn-primary">New User</button>
-				<a target="_blank" href="/admin/users/csv" class="btn btn-primary">Download CSV</a>
+				<a target="_blank" href="{relative_path}/api/admin/users/csv" class="btn btn-primary">Download CSV</a>
 			</div>
 		</div>
 	</div>

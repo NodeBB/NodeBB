@@ -35,6 +35,8 @@ define('composer/categoryList', function() {
 			if (postData.cid) {
 				postData.cid = this.value;
 			}
+
+			$('[tabindex=' + (parseInt($(this).attr('tabindex'), 10) + 1) + ']').trigger('focus');
 		});
 	};
 

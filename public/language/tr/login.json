@@ -1,7 +1,7 @@
 {
-    "username-email": "Username / Email",
-    "username": "Username",
-    "email": "Email",
+    "username-email": "Kullancı Adı / E posta adresi",
+    "username": "Kullanıcı Adı",
+    "email": "E posta Adresi",
     "remember_me": "Beni Hatırla!",
     "forgot_password": "Şifrenizi mi unuttunuz?",
     "alternative_logins": "Alternatif Girişler",

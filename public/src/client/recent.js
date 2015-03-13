@@ -2,14 +2,14 @@
 
 /* globals define, app, socket, utils */
 
-define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
+define('forum/recent', ['forum/infinitescroll', 'composer'], function(infinitescroll, composer) {
 	var	Recent = {};
 
 	var newTopicCount = 0,
 		newPostCount = 0;
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
-		if (data.tpl_url !== 'recent') {
+		if (ajaxify.currentPage !== data.url) {
 			Recent.removeListeners();
 		}
 	});
@@ -21,6 +21,17 @@ define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
 
 		$('#new-topics-alert').on('click', function() {
 			$(this).addClass('hide');
+		});
+
+		$('#new_topic').on('click', function() {
+			socket.emit('categories.getCategoriesByPrivilege', 'topics:create', function(err, categories) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				if (categories.length) {
+					composer.newTopic(categories[0].cid);
+				}
+			});
 		});
 
 		infinitescroll.init(Recent.loadMoreTopics);

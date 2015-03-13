@@ -3,19 +3,18 @@
 var express = require('express');
 
 
-function apiRoutes(app, middleware, controllers) {
-	// todo, needs to be in api namespace
-	app.get('/users/csv', middleware.authenticate, controllers.admin.users.getCSV);
+function apiRoutes(router, middleware, controllers) {
+	router.get('/users/csv', middleware.authenticate, controllers.admin.users.getCSV);
 
 	var multipart = require('connect-multiparty');
 	var multipartMiddleware = multipart();
 
 	var middlewares = [multipartMiddleware, middleware.validateFiles, middleware.applyCSRF, middleware.authenticate];
 
-	app.post('/category/uploadpicture', middlewares, controllers.admin.uploads.uploadCategoryPicture);
-	app.post('/uploadfavicon', middlewares, controllers.admin.uploads.uploadFavicon);
-	app.post('/uploadlogo', middlewares, controllers.admin.uploads.uploadLogo);
-	app.post('/uploadgravatardefault', middlewares, controllers.admin.uploads.uploadGravatarDefault);
+	router.post('/category/uploadpicture', middlewares, controllers.admin.uploads.uploadCategoryPicture);
+	router.post('/uploadfavicon', middlewares, controllers.admin.uploads.uploadFavicon);
+	router.post('/uploadlogo', middlewares, controllers.admin.uploads.uploadLogo);
+	router.post('/uploadgravatardefault', middlewares, controllers.admin.uploads.uploadGravatarDefault);
 }
 
 function adminRouter(middleware, controllers) {
@@ -25,8 +24,6 @@ function adminRouter(middleware, controllers) {
 
 	addRoutes(router, middleware, controllers);
 
-	apiRoutes(router, middleware, controllers);
-
 	return router;
 }
 
@@ -34,6 +31,8 @@ function apiRouter(middleware, controllers) {
 	var router = express.Router();
 
 	addRoutes(router, middleware, controllers);
+
+	apiRoutes(router, middleware, controllers);
 
 	return router;
 }

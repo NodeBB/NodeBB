@@ -75,8 +75,6 @@ define('admin/manage/categories', [
 				name: $('#inputName').val(),
 				description: $('#inputDescription').val(),
 				icon: $('#new-category-modal i').attr('value'),
-				bgColor: '#0059b2',
-				color: '#fff',
 				order: $('.admin-categories #entry-container').children().length + 1
 			};
 
@@ -207,7 +205,7 @@ define('admin/manage/categories', [
 						case 'name':
 							data[name] = $(this).val() + ' (copy)';
 							break;
-						default: 
+						default:
 							data[name] = $(this).val();
 					}
 				});
@@ -226,7 +224,7 @@ define('admin/manage/categories', [
 				var inputEl = $(this),
 					cid = inputEl.parents('li[data-cid]').attr('data-cid');
 
-				uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', { cid: cid }, 0, function(imageUrlOnServer) {
+				uploader.open(RELATIVE_PATH + '/api/admin/category/uploadpicture', { cid: cid }, 0, function(imageUrlOnServer) {
 					inputEl.val(imageUrlOnServer);
 					var previewBox = inputEl.parents('li[data-cid]').find('.preview-box');
 					previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')')

@@ -14,15 +14,16 @@ module.exports = function(Categories) {
 			}
 
 			var slug = cid + '/' + utils.slugify(data.name),
-				order = data.order || cid;	// If no order provided, place it at the end
+				order = data.order || cid,	// If no order provided, place it at the end
+				colours = Categories.assignColours();
 
 			var category = {
 				cid: cid,
 				name: data.name,
 				description: data.description,
 				icon: data.icon,
-				bgColor: data.bgColor,
-				color: data.color,
+				bgColor: data.bgColor || colours[0],
+				color: data.color || colours[1],
 				slug: slug,
 				parentCid: 0,
 				topic_count: 0,
@@ -51,5 +52,13 @@ module.exports = function(Categories) {
 				callback(null, category);
 			});
 		});
+	};
+
+	Categories.assignColours = function() {
+		var backgrounds = ['#AB4642', '#DC9656', '#F7CA88', '#A1B56C', '#86C1B9', '#7CAFC2', '#BA8BAF', '#A16946'],
+			text = ['#fff', '#fff', '#333', '#fff', '#333', '#fff', '#fff', '#fff'],
+			index = Math.floor(Math.random() * backgrounds.length);
+
+		return [backgrounds[index], text[index]];
 	};
 };

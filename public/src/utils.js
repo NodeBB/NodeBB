@@ -70,12 +70,14 @@
 		collapseDash: /-+/g,
 		trimTrailingDash: /-$/g,
 		trimLeadingDash: /^-/g,
-		isLatin: /^[\w]+$/,
+		isLatin: /^[\w\d\s.,\-@]+$/,
 		languageKeyRegex: /\[\[[\w]+:.+\]\]/,
 
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
 		slugify: function(str, preserveCase) {
-			if (!str) { str = ''; }
+			if (!str) {
+				return '';
+			}
 			str = str.replace(utils.trimRegex, '');
 			if(utils.isLatin.test(str)) {
 				str = str.replace(utils.invalidLatinChars, '-');
@@ -276,7 +278,7 @@
 					}
 					if (!hash[key]) {
 						hash[key] = value;
-					} else {						
+					} else {
 						if (!$.isArray(hash[key])) {
 							hash[key] = [hash[key]];
 						}

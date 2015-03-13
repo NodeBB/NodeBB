@@ -184,6 +184,15 @@ SocketGroups.search = function(socket, data, callback) {
 	groups.search(data.query || '', data.options || {}, callback);
 };
 
+SocketGroups.searchMembers = function(socket, data, callback) {
+	if (!data) {
+		return callback(null, []);
+	}
+
+	data.uid = socket.uid;
+	groups.searchMembers(data, callback);
+};
+
 SocketGroups.kick = function(socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));

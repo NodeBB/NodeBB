@@ -113,7 +113,16 @@ module.exports = function(Plugins) {
 				require('npm').load({}, next);
 			},
 			function(res, next) {
-				require('npm').commands.install([id + '@' + (version || 'latest')], next);
+				require('npm').commands.install([id + '@' + (version || 'latest')], function(err, a, b) {
+					next(err);
+				});
+			},
+			function(next) {
+				Plugins.isActive(id, next);
+			},
+			function(isActive, next) {
+				meta.reloadRequired = isActive;
+				next(null, isActive);
 			}
 		], callback);
 	}

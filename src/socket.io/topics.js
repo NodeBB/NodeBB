@@ -205,34 +205,34 @@ SocketTopics.markAsUnreadForAll = function(socket, tids, callback) {
 };
 
 SocketTopics.delete = function(socket, data, callback) {
-	doTopicAction('delete', 'event:topic_deleted', socket, data, callback);
+	SocketTopics.doTopicAction('delete', 'event:topic_deleted', socket, data, callback);
 };
 
 SocketTopics.restore = function(socket, data, callback) {
-	doTopicAction('restore', 'event:topic_restored', socket, data, callback);
+	SocketTopics.doTopicAction('restore', 'event:topic_restored', socket, data, callback);
 };
 
 SocketTopics.purge = function(socket, data, callback) {
-	doTopicAction('purge', 'event:topic_purged', socket, data, callback);
+	SocketTopics.doTopicAction('purge', 'event:topic_purged', socket, data, callback);
 };
 
 SocketTopics.lock = function(socket, data, callback) {
-	doTopicAction('lock', 'event:topic_locked', socket, data, callback);
+	SocketTopics.doTopicAction('lock', 'event:topic_locked', socket, data, callback);
 };
 
 SocketTopics.unlock = function(socket, data, callback) {
-	doTopicAction('unlock', 'event:topic_unlocked', socket, data, callback);
+	SocketTopics.doTopicAction('unlock', 'event:topic_unlocked', socket, data, callback);
 };
 
 SocketTopics.pin = function(socket, data, callback) {
-	doTopicAction('pin', 'event:topic_pinned', socket, data, callback);
+	SocketTopics.doTopicAction('pin', 'event:topic_pinned', socket, data, callback);
 };
 
 SocketTopics.unpin = function(socket, data, callback) {
-	doTopicAction('unpin', 'event:topic_unpinned', socket, data, callback);
+	SocketTopics.doTopicAction('unpin', 'event:topic_unpinned', socket, data, callback);
 };
 
-function doTopicAction(action, event, socket, data, callback) {
+SocketTopics.doTopicAction = function(action, event, socket, data, callback) {
 	if (!socket.uid) {
 		return;
 	}
@@ -274,7 +274,7 @@ function doTopicAction(action, event, socket, data, callback) {
 			});
 		});
 	}, callback);
-}
+};
 
 function emitToTopicAndCategory(event, data) {
 	websockets.in('topic_' + data.tid).emit(event, data);

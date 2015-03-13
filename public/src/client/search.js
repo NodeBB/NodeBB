@@ -116,19 +116,13 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 		if (!searchQuery) {
 			return;
 		}
-		var searchTerms = searchQuery.split(' ');
-		var regexes = [];
-		for (var i=0; i<searchTerms.length; ++i) {
-			var regex = new RegExp(searchTerms[i], 'gi');
-			regexes.push({regex: regex, term: searchTerms[i]});
-		}
+
+		var regexStr = searchQuery.trim().split(' ').join('|');
+		var regex = new RegExp('(' + regexStr + ')', 'gi');
 
 		$('.search-result-text').each(function() {
 			var result = $(this);
-			var text = result.html();
-			for(var i=0; i<regexes.length; ++i) {
-				text = text.replace(regexes[i].regex, '<strong>' + regexes[i].term + '</strong>');
-			}
+			var text = result.html().replace(regex, '<strong>$1</strong>');
 			result.html(text).find('img').addClass('img-responsive');
 		});
 	}
@@ -142,6 +136,9 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 
 		$('#clear-preferences').on('click', function() {
 			localStorage.removeItem('search-preferences');
+			var query = $('#search-input').val();
+			$('#advanced-search')[0].reset();
+			$('#search-input').val(query);
 			app.alertSuccess('[[search:search-preferences-cleared]]');
 			return false;
 		});

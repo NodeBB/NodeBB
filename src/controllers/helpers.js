@@ -6,12 +6,19 @@ var nconf = require('nconf'),
 
 	translator = require('../../public/src/translator'),
 	categories = require('../categories'),
+	plugins = require('../plugins'),
 	meta = require('../meta');
 
 var helpers = {};
 
 helpers.notFound = function(req, res, error) {
-	if (res.locals.isAPI) {
+	if (plugins.hasListeners('action:meta.override404')) {
+		plugins.fireHook('action:meta.override404', {
+			req: req,
+			res: res,
+			error: error
+		});
+	} else if (res.locals.isAPI) {
 		res.status(404).json({path: req.path.replace(/^\/api/, ''), error: error});
 	} else {
 		res.status(404).render('404', {path: req.path, error: error});
@@ -35,6 +42,14 @@ helpers.notAllowed = function(req, res, error) {
 			req.session.returnTo = nconf.get('relative_path') + req.url;
 			res.redirect(nconf.get('relative_path') + '/login');
 		}
+	}
+};
+
+helpers.redirect = function(res, url) {
+	if (res.locals.isAPI) {
+		res.status(302).json(url);
+	} else {
+		res.redirect(nconf.get('relative_path') + url);
 	}
 };
 
