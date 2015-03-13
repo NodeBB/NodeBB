@@ -156,7 +156,7 @@ var cache = LRU({
 			}
 
 			if (isDelete) {
-				cache.del(postData.pid);
+				cache.del(pid);
 				posts.delete(pid, callback);
 			} else {
 				posts.restore(pid, function(err, postData) {
