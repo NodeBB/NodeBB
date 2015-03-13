@@ -1,6 +1,6 @@
 /* Sample */
 
-.dropdown-menu {
+/*.dropdown-menu {
     border: 1px solid #ddd;
     background-color: white;
 }
@@ -17,12 +17,12 @@
 .dropdown-menu li:hover,
 .dropdown-menu .active {
     background-color: rgb(110, 183, 219);
-}
+}*/
 
 
 /* SHOULD not modify */
 
-.dropdown-menu {
+/*.dropdown-menu {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -30,4 +30,4 @@
 
 .dropdown-menu a:hover {
     cursor: pointer;
-}
+}*/
