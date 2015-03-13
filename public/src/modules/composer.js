@@ -348,7 +348,7 @@ define('composer', [
 			resize.handleResize(postContainer);
 
 			handleHelp(postContainer);
-			handleToggle(postContainer);
+			handleTogglePreview(postContainer);
 
 			$(window).trigger('action:composer.loaded', {
 				post_uuid: post_uuid
@@ -377,7 +377,7 @@ define('composer', [
 		});
 	}
 
-	function handleToggle(postContainer) {
+	function handleTogglePreview(postContainer) {
 		var showBtn = postContainer.find('.write-container .toggle-preview'),
 			hideBtn = postContainer.find('.preview-container .toggle-preview');
 
@@ -385,12 +385,16 @@ define('composer', [
 			$('.preview-container').addClass('hide');
 			$('.write-container').addClass('maximized');
 			showBtn.removeClass('hide');
+
+			$('.write').focus();
 		});
 
 		showBtn.on('click', function() {
 			$('.preview-container').removeClass('hide');
 			$('.write-container').removeClass('maximized');
 			showBtn.addClass('hide');
+
+			$('.write').focus();
 		});
 	}
 
