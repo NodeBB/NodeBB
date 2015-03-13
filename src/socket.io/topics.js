@@ -17,7 +17,7 @@ var nconf = require('nconf'),
 	meta = require('../meta'),
 	events = require('../events'),
 	utils = require('../../public/src/utils'),
-	SocketPosts = require('./posts'),
+
 
 	SocketTopics = {};
 
@@ -312,7 +312,7 @@ SocketTopics.movePost = function(socket, data, callback) {
 				return callback(err);
 			}
 
-			SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:moved_your_post');
+			require('./posts').sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:moved_your_post');
 			callback();
 		});
 	});
