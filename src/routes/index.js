@@ -173,49 +173,50 @@ module.exports = function(app, middleware) {
 
 function handle404(app, middleware) {
 	app.use(function(req, res, next) {
-		if (!plugins.hasListeners('action:meta.override404')) {
-			var relativePath = nconf.get('relative_path');
-			var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
-				isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
-
-			if (isClientScript.test(req.url)) {
-				res.type('text/javascript').status(200).send('');
-			} else if (isLanguage.test(req.url)) {
-				res.status(200).json({});
-			} else if (req.accepts('html')) {
-				if (process.env.NODE_ENV === 'development') {
-					winston.warn('Route requested but not found: ' + req.url);
-				}
-
-				res.status(404);
-
-				if (res.locals.isAPI) {
-					return res.json({path: req.path, error: 'not-found'});
-				}
-
-				middleware.buildHeader(req, res, function() {
-					res.render('404', {path: req.path});
-				});
-			} else {
-				res.status(404).type('txt').send('Not found');
-			}
-		} else {
-			plugins.fireHook('action:meta.override404', {
+		if (plugins.hasListeners('action:meta.override404')) {
+			return plugins.fireHook('action:meta.override404', {
 				req: req,
 				res: res,
 				error: {}
 			});
+		}
+
+		var relativePath = nconf.get('relative_path');
+		var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
+			isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
+
+		if (isClientScript.test(req.url)) {
+			res.type('text/javascript').status(200).send('');
+		} else if (isLanguage.test(req.url)) {
+			res.status(200).json({});
+		} else if (req.accepts('html')) {
+			if (process.env.NODE_ENV === 'development') {
+				winston.warn('Route requested but not found: ' + req.url);
+			}
+
+			res.status(404);
+
+			if (res.locals.isAPI) {
+				return res.json({path: req.path, error: 'not-found'});
+			}
+
+			middleware.buildHeader(req, res, function() {
+				res.render('404', {path: req.path});
+			});
+		} else {
+			res.status(404).type('txt').send('Not found');
 		}
 	});
 }
 
 function handleErrors(app, middleware) {
 	app.use(function(err, req, res, next) {
-		winston.error(req.path + '\n', err.stack);
-
 		if (err.code === 'EBADCSRFTOKEN') {
+			winston.error(req.path + '\n', err.message)
 			return res.sendStatus(403);
 		}
+
+		winston.error(req.path + '\n', err.stack);
 
 		if (parseInt(err.status, 10) === 302 && err.path) {
 			return res.locals.isAPI ? res.status(302).json(err.path) : res.redirect(err.path);
