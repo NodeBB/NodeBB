@@ -20,10 +20,8 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, 
 		Chats.addEventListeners();
 		Chats.setActive();
 
-		$(window).on('action:ajaxify.end', function() {
-			Chats.resizeMainWindow();
-			Chats.scrollToBottom(containerEl);
-		});
+		Chats.resizeMainWindow();
+		Chats.scrollToBottom($('.expanded-chat ul'));
 
 		Chats.initialised = true;
 	};
