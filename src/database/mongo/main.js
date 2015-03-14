@@ -41,7 +41,10 @@ module.exports = function(db, module) {
 
 	module.searchRemove = function(key, id, callback) {
 		callback = callback || helpers.noop;
-		db.collection('search').remove({key:key, id:id}, callback);
+		if (!id) {
+			return callback();
+		}
+		db.collection('search').remove({key: key, id: id}, callback);
 	};
 
 	module.flushdb = function(callback) {

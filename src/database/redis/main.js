@@ -26,7 +26,12 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.searchRemove = function(key, id, callback) {
-		if(key === 'post') {
+		callback = callback || function() {};
+		if (!id) {
+			return callback();
+		}
+
+		if (key === 'post') {
 			module.postSearch.remove(id, callback);
 		} else if(key === 'topic') {
 			module.topicSearch.remove(id, callback);
