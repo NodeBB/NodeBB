@@ -78,6 +78,10 @@ $(document).ready(function() {
 
 		$(window).trigger('action:ajaxify.start', {url: url});
 
+		if (!window.location.pathname.match(/\/(403|404)$/g)) {
+			app.previousUrl = window.location.href;
+		}
+
 		ajaxify.currentPage = url;
 
 		if (window.history && window.history.pushState) {
@@ -241,10 +245,6 @@ $(document).ready(function() {
 				return;
 			} else if (hrefEmpty(this.href) || this.protocol === 'javascript:' || $(this).attr('data-ajaxify') === 'false') {
 				return e.preventDefault();
-			}
-
-			if (!window.location.pathname.match(/\/(403|404)$/g)) {
-				app.previousUrl = window.location.href;
 			}
 
 			if (!e.ctrlKey && !e.shiftKey && !e.metaKey && e.which === 1) {
