@@ -8,8 +8,7 @@ module.exports = function(db, module) {
 	module.searchIndex = function(key, data, id, callback) {
 		callback = callback || function() {};
 		var setData = {
-			id: id,
-			key: key
+			id: id
 		};
 		for(var field in data) {
 			if (data.hasOwnProperty(field) && data[field]) {
@@ -17,7 +16,7 @@ module.exports = function(db, module) {
 			}
 		}
 
-		db.collection('search').update({key: key, id: id}, {$set: setData}, {upsert:true, w: 1}, function(err) {
+		db.collection('search' + key).update({id: id}, {$set: setData}, {upsert:true, w: 1}, function(err) {
 			if(err) {
 				winston.error('Error indexing ' + err.message);
 			}
@@ -26,9 +25,7 @@ module.exports = function(db, module) {
 	};
 
 	module.search = function(key, data, limit, callback) {
-		var searchQuery = {
-			key: key
-		};
+		var searchQuery = {};
 
 		if (data.content) {
 			searchQuery.$text = {$search: data.content};
@@ -50,7 +47,7 @@ module.exports = function(db, module) {
 			}
 		}
 
-		db.collection('search').find(searchQuery, {limit: limit}).toArray(function(err, results) {
+		db.collection('search' + key).find(searchQuery, {limit: limit}).toArray(function(err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -72,7 +69,7 @@ module.exports = function(db, module) {
 		if (!id) {
 			return callback();
 		}
-		db.collection('search').remove({key: key, id: id}, function(err, res) {
+		db.collection('search' + key).remove({id: id}, function(err, res) {
 			callback(err);
 		});
 	};
