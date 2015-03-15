@@ -185,7 +185,6 @@ var cache = LRU({
 		var cachedContent = cache.get(postData.pid);
 		if (cachedContent) {
 			postData.content = cachedContent;
-			return callback(null, postData);
 		}
 
 		plugins.fireHook('filter:parse.post', {postData: postData, uid: uid}, function(err, data) {
