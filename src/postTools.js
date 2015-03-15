@@ -185,14 +185,16 @@ var cache = LRU({
 		var cachedContent = cache.get(postData.pid);
 		if (cachedContent) {
 			postData.content = cachedContent;
-			return callback(null, postData);
+		}
+		else
+		{
+			cache.set(postData.pid, postData.content);
 		}
 
 		plugins.fireHook('filter:parse.post', {postData: postData, uid: uid}, function(err, data) {
 			if (err) {
 				return callback(err);
 			}
-			cache.set(data.postData.pid, data.postData.content);
 			callback(null, data.postData);
 		});
 	};
