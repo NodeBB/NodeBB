@@ -183,13 +183,16 @@ var async = require('async'),
 
 			categories.moveRecentReplies(tid, oldCid, cid);
 
-			topics.setTopicField(tid, 'cid', cid, callback);
-
-			plugins.fireHook('action:topic.move', {
-				tid: tid,
-				fromCid: oldCid,
-				toCid: cid,
-				uid: uid
+			topics.setTopicField(tid, 'cid', cid, function(err) {
+				if (err) {
+					return callback(err);
+				}
+				plugins.fireHook('action:topic.move', {
+					tid: tid,
+					fromCid: oldCid,
+					toCid: cid,
+					uid: uid
+				});
 			});
 		});
 	};
