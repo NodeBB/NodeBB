@@ -104,7 +104,7 @@ console.log(results)
 					privileges.posts.filter('read', results.pids, data.uid, next);
 				},
 				function(pids, next) {
-					filterAndSort(pids, data, results.searchCategories, next);
+					filterAndSort(pids, data, next);
 				},
 				function(pids, next) {
 					matchCount = pids.length;
@@ -124,18 +124,15 @@ console.log(results)
 }
 
 function filterAndSort(pids, data, callback) {
-	async.parallel({
-		posts: function(next) {
-			getMatchedPosts(pids, data, next);
-		}
-	}, function(err, results) {
+	getMatchedPosts(pids, data, function(err, posts) {
 		if (err) {
 			return callback(err);
 		}
-		if (!results.posts) {
+
+		if (!Array.isArray(posts) || !posts.length) {
 			return callback(null, pids);
 		}
-		var posts = results.posts.filter(Boolean);
+		posts = posts.filter(Boolean);
 
 		posts = filterByPostcount(posts, data.replies, data.repliesFilter);
 		posts = filterByTimerange(posts, data.timeRange, data.timeFilter);
@@ -155,20 +152,14 @@ function getMatchedPosts(pids, data, callback) {
 	var topicFields = [];
 	var categoryFields = [];
 
-	if (data.postedBy) {
-		postFields.push('uid');
-	}
-
-	if (data.sortBy && data.sortBy.startsWith('category.')) {
-		topicFields.push('cid');
-	}
-
 	if (data.replies) {
 		topicFields.push('postcount');
 	}
 
 	if (data.sortBy) {
-		if (data.sortBy.startsWith('topic.')) {
+		if (data.sortBy.startsWith('category')) {
+			topicFields.push('cid');
+		} else if (data.sortBy.startsWith('topic.')) {
 			topicFields.push(data.sortBy.split('.')[1]);
 		} else if (data.sortBy.startsWith('user.')) {
 			postFields.push('uid');
@@ -279,25 +270,6 @@ function getMatchedPosts(pids, data, callback) {
 			next(null, posts);
 		}
 	], callback);
-}
-
-function filterByUser(posts, postedByUid) {
-	if (postedByUid) {
-		postedByUid = parseInt(postedByUid, 10);
-		posts = posts.filter(function(post) {
-			return parseInt(post.uid, 10) === postedByUid;
-		});
-	}
-	return posts;
-}
-
-function filterByCategories(posts, searchCategories) {
-	if (searchCategories.length) {
-		posts = posts.filter(function(post) {
-			return post.topic && searchCategories.indexOf(post.topic.cid) !== -1;
-		});
-	}
-	return posts;
 }
 
 function filterByPostcount(posts, postCount, repliesFilter) {
@@ -475,8 +447,8 @@ search.searchQuery = function(index, content, cids, uids, callback) {
 	plugins.fireHook('filter:search.query', {
 		index: index,
 		content: content,
-		cids: cids,
-		uids: uids
+		cid: cids,
+		uid: uids
 	}, callback);
 };
 

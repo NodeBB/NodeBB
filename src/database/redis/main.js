@@ -2,19 +2,17 @@
 
 module.exports = function(redisClient, module) {
 	module.searchIndex = function(key, data, id, callback) {
-		if (key === 'post') {
-			module.postSearch.index(data, id, callback);
-		} else if(key === 'topic') {
-			module.topicSearch.index(data, id, callback);
-		}
+		var method = key === 'post' ? module.postSearch : module.topicSearch;
+
+		method.index(data, id, function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.search = function(key, data, limit, callback) {
-		if (key === 'post') {
-			module.postSearch.query(data, 0, limit - 1, callback);
-		} else if(key === 'topic') {
-			module.topicSearch.query(data, 0, limit - 1, callback);
-		}
+		var method = key === 'post' ? module.postSearch : module.topicSearch;
+
+		method.query(data, 0, limit - 1, callback);
 	};
 
 	module.searchRemove = function(key, id, callback) {
@@ -22,12 +20,11 @@ module.exports = function(redisClient, module) {
 		if (!id) {
 			return callback();
 		}
+		var method = key === 'post' ? module.postSearch : module.topicSearch;
 
-		if (key === 'post') {
-			module.postSearch.remove(id, callback);
-		} else if(key === 'topic') {
-			module.topicSearch.remove(id, callback);
-		}
+		method.remove(id, function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.flushdb = function(callback) {
