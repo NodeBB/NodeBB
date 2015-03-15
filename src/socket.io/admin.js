@@ -304,7 +304,7 @@ SocketAdmin.getMoreEvents = function(socket, next, callback) {
 	if (start < 0) {
 		return callback(null, {data: [], next: next});
 	}
-	var end = next + 10;
+	var end = start + 10;
 	events.getEvents(start, end, function(err, events) {
 		if (err) {
 			return callback(err);
