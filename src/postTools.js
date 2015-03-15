@@ -19,7 +19,7 @@ var winston = require('winston'),
 
 var cache = LRU({
 	max: 1048576,
-	length: function (n) { return n.length },
+	length: function (n) { return n.length; },
 	maxAge: 1000 * 60 * 60
 });
 
@@ -63,22 +63,32 @@ var cache = LRU({
 				},
 				topic: function(next) {
 					var tid = postData.tid;
-					posts.isMain(data.pid, function(err, isMainPost) {
+					async.parallel({
+						cid: function(next) {
+							topics.getTopicField(tid, 'cid', next);
+						},
+						isMain: function(next) {
+							posts.isMain(data.pid, next);
+						}
+					}, function(err, results) {
 						if (err) {
 							return next(err);
 						}
 
 						options.tags = options.tags || [];
 
-						if (!isMainPost) {
+						if (!results.isMain) {
 							return next(null, {
 								tid: tid,
+								cid: results.cid,
 								isMainPost: false
 							});
 						}
 
 						var topicData = {
 							tid: tid,
+							cid: results.cid,
+							uid: postData.uid,
 							mainPid: data.pid,
 							title: title,
 							slug: tid + '/' + utils.slugify(title)
@@ -98,8 +108,10 @@ var cache = LRU({
 							topics.getTopicTagsObjects(tid, function(err, tags) {
 								next(err, {
 									tid: tid,
+									cid: results.cid,
+									uid: postData.uid,
 									title: validator.escape(title),
-									isMainPost: isMainPost,
+									isMainPost: results.isMain,
 									tags: tags
 								});
 							});
@@ -114,6 +126,7 @@ var cache = LRU({
 				if (err) {
 					return callback(err);
 				}
+				postData.cid = results.topic.cid;
 				results.content = results.postData.content;
 
 				plugins.fireHook('action:post.edit', postData);

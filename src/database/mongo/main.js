@@ -12,8 +12,8 @@ module.exports = function(db, module) {
 			key: key
 		};
 		for(var field in data) {
-			if (data.hasOwnProperty(field)) {
-				setData[field] = data[field];
+			if (data.hasOwnProperty(field) && data[field]) {
+				setData[field] = data[field].toString();
 			}
 		}
 
