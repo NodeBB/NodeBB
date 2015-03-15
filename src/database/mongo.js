@@ -112,6 +112,8 @@
 
 				createIndex('search', {content:'text'}, {background:true});
 				createIndex('search', {key: 1, id: 1}, {background:true});
+				createIndex('search', {cid: 1}, {background:true});
+				createIndex('search', {uid: 1}, {background:true});
 
 				if (typeof callback === 'function') {
 					callback();

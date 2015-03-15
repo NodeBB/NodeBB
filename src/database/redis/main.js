@@ -1,27 +1,19 @@
 "use strict";
 
 module.exports = function(redisClient, module) {
-	module.searchIndex = function(key, content, id, callback) {
+	module.searchIndex = function(key, data, id, callback) {
 		if (key === 'post') {
-			module.postSearch.index(content, id, callback);
+			module.postSearch.index(data, id, callback);
 		} else if(key === 'topic') {
-			module.topicSearch.index(content, id, callback);
+			module.topicSearch.index(data, id, callback);
 		}
 	};
 
-	module.search = function(key, term, limit, callback) {
-		function search(searchObj, callback) {
-			searchObj
-				.query(term)
-				.between(0, limit - 1)
-				.type('or')
-				.end(callback);
-		}
-
-		if(key === 'post') {
-			search(module.postSearch, callback);
+	module.search = function(key, data, limit, callback) {
+		if (key === 'post') {
+			module.postSearch.query(data, 0, limit - 1, callback);
 		} else if(key === 'topic') {
-			search(module.topicSearch, callback);
+			module.topicSearch.query(data, 0, limit - 1, callback);
 		}
 	};
 

@@ -5,15 +5,19 @@ var winston = require('winston');
 module.exports = function(db, module) {
 	var helpers = module.helpers.mongo;
 
-	module.searchIndex = function(key, content, id, callback) {
+	module.searchIndex = function(key, data, id, callback) {
 		callback = callback || function() {};
-		var data = {
+		var setData = {
 			id: id,
-			key: key,
-			content: content
+			key: key
 		};
+		for(var field in data) {
+			if (data.hasOwnProperty(field)) {
+				setData[field] = data[field];
+			}
+		}
 
-		db.collection('search').update({key:key, id:id}, {$set:data}, {upsert:true, w: 1}, function(err) {
+		db.collection('search').update({key: key, id: id}, {$set: setData}, {upsert:true, w: 1}, function(err) {
 			if(err) {
 				winston.error('Error indexing ' + err.message);
 			}
@@ -21,13 +25,29 @@ module.exports = function(db, module) {
 		});
 	};
 
-	module.search = function(key, term, limit, callback) {
-		db.collection('search').find({ $text: { $search: term }, key: key}, {limit: limit}).toArray(function(err, results) {
-			if(err) {
+	module.search = function(key, data, limit, callback) {
+		var searchQuery = {
+			key: key
+		};
+
+		if (data.content) {
+			searchQuery.$text = {$search: data.content};
+		}
+
+		if (data.cid) {
+			searchQuery.cid = data.cid;
+		}
+
+		if (data.uid) {
+			searchQuery.uid = data.uid;
+		}
+
+		db.collection('search').find(searchQuery, {limit: limit}).toArray(function(err, results) {
+			if (err) {
 				return callback(err);
 			}
 
-			if(!results || !results.length) {
+			if (!results || !results.length) {
 				return callback(null, []);
 			}
 
