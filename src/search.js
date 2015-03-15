@@ -86,7 +86,7 @@ function searchInContent(data, callback) {
 			if (err) {
 				return callback(err);
 			}
-console.log(results)
+
 			var matchCount = 0;
 			if (!results || (!results.pids.length && !results.tids.length)) {
 				return callback(null, {matches: [], matchCount: matchCount});
