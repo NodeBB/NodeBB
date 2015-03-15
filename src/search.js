@@ -414,11 +414,7 @@ function getChildrenCids(cids, uid, callback) {
 
 function getSearchUids(data, callback) {
 	if (data.postedBy) {
-		if (Array.isArray(data.postedBy)) {
-			user.getUidsByUsernames(data.postedBy, callback);
-		} else {
-			user.getUidByUsername([data.postedBy], callback);
-		}
+		user.getUidsByUsernames(Array.isArray(data.postedBy) ? data.postedBy : [data.postedBy], callback);
 	} else {
 		callback(null, []);
 	}

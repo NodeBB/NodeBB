@@ -335,7 +335,15 @@ var	async = require('async'),
 	};
 
 	User.getUidsByUsernames = function(usernames, callback) {
-		db.getObjectFields('username:uid', usernames, callback);
+		db.getObjectFields('username:uid', usernames, function(err, users) {
+			if (err) {
+				return callback(err);
+			}
+			var uids = usernames.map(function(username) {
+				return users[username];
+			});
+			callback(null, uids);
+		});
 	};
 
 	User.getUidByUserslug = function(userslug, callback) {

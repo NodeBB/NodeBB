@@ -34,12 +34,20 @@ module.exports = function(db, module) {
 			searchQuery.$text = {$search: data.content};
 		}
 
-		if (data.cid) {
-			searchQuery.cid = data.cid;
+		if (Array.isArray(data.cid) && data.cid.length) {
+		 	if (data.cid.length > 1) {
+				searchQuery.cid = {$in: data.cid.map(String)};
+			} else {
+				searchQuery.cid = data.cid[0].toString();
+			}
 		}
 
-		if (data.uid) {
-			searchQuery.uid = data.uid;
+		if (Array.isArray(data.uid) && data.uid.length) {
+			if (data.uid.length > 1) {
+				searchQuery.uid = {$in: data.uid.map(String)};
+			} else {
+				searchQuery.uid = data.uid[0].toString();
+			}
 		}
 
 		db.collection('search').find(searchQuery, {limit: limit}).toArray(function(err, results) {
