@@ -85,6 +85,14 @@ define('composer', [
 
 		if (existingUUID) {
 			taskbar.updateActive(existingUUID);
+
+			// To add minimized quote
+			var postContainer = $('#cmp-uuid-' + existingUUID);
+			var bodyEl = postContainer.find('textarea');
+			var prevText = bodyEl.val();
+			bodyEl.val(bodyEl.val()+post.body);
+			preview.render(postContainer);
+
 			return composer.load(existingUUID);
 		}
 
