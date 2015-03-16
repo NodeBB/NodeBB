@@ -68,11 +68,16 @@
 						ajaxify.widgets.reposition(location);
 					}
 				}
-				
+
 				var widgetAreas = $('#content [widget-area]');
 				widgetAreas.find('img:not(.user-img)').addClass('img-responsive');
 				widgetAreas.find('span.timeago').timeago();
-
+				widgetAreas.find('img[title].teaser-pic,img[title].user-img').each(function() {
+					$(this).tooltip({
+						placement: 'top',
+						title: $(this).attr('title')
+					});
+				});
 				$(window).trigger('action:widgets.loaded', {});
 
 				if (typeof callback === 'function') {

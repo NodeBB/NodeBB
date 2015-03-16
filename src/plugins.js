@@ -168,7 +168,7 @@ var fs = require('fs'),
 
 	Plugins.getAll = function(callback) {
 		var url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins?version=' + require('../package.json').version;
-		
+
 		require('request')(url, function(err, res, body) {
 			var plugins = [];
 
@@ -262,9 +262,9 @@ var fs = require('fs'),
 
 			function(dirs, next) {
 				dirs = dirs.filter(function(dir){
-					return dir.startsWith('nodebb-plugin-') || 
-						dir.startsWith('nodebb-widget-') || 
-						dir.startsWith('nodebb-rewards-') || 
+					return dir.startsWith('nodebb-plugin-') ||
+						dir.startsWith('nodebb-widget-') ||
+						dir.startsWith('nodebb-rewards-') ||
 						dir.startsWith('nodebb-theme-');
 				}).map(function(dir){
 					return path.join(npmPluginPath, dir);
@@ -272,11 +272,7 @@ var fs = require('fs'),
 
 				async.filter(dirs, function(dir, callback){
 					fs.stat(dir, function(err, stats){
-						if (err) {
-							return callback(false);
-						}
-
-						callback(stats.isDirectory());
+						callback(!err && stats.isDirectory());
 					});
 				}, function(plugins){
 					next(null, plugins);
@@ -287,25 +283,11 @@ var fs = require('fs'),
 				var plugins = [];
 
 				async.each(files, function(file, next) {
-					var configPath;
-
 					async.waterfall([
 						function(next) {
 							Plugins.loadPluginInfo(file, next);
 						},
 						function(pluginData, next) {
-							var packageName = path.basename(file);
-
-							if (!pluginData) {
-								winston.warn("Plugin `" + packageName + "` is corrupted or invalid. Please check either package.json or plugin.json for errors.");
-								return next(null, {
-									id: packageName,
-									installed: true,
-									error: true,
-									active: null
-								});
-							}
-
 							Plugins.isActive(pluginData.name, function(err, active) {
 								if (err) {
 									return next(new Error('no-active-state'));
@@ -319,12 +301,12 @@ var fs = require('fs'),
 								next(null, pluginData);
 							});
 						}
-					], function(err, config) {
+					], function(err, pluginData) {
 						if (err) {
 							return next(); // Silently fail
 						}
 
-						plugins.push(config);
+						plugins.push(pluginData);
 						next();
 					});
 				}, function(err) {

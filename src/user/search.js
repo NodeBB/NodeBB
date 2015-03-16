@@ -15,53 +15,70 @@ module.exports = function(User) {
 		var startsWith = data.hasOwnProperty('startsWith') ? data.startsWith : true;
 		var page = data.page || 1;
 		var uid = data.uid || 0;
+		var paginate = data.hasOwnProperty('paginate') ? data.paginate : true;
 
 		if (searchBy.indexOf('ip') !== -1) {
 			return searchByIP(query, uid, callback);
 		}
 
 		var startTime = process.hrtime();
-		var keys = searchBy.map(function(searchBy) {
-			return searchBy + ':uid';
-		});
 
-		var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
-		var start = Math.max(0, page - 1) * resultsPerPage;
-		var end = start + resultsPerPage;
-		var pageCount = 1;
-		var matchCount = 0;
-		var filterBy = Array.isArray(data.filterBy) ? data.filterBy : [];
-
+		var searchResult = {};
 		async.waterfall([
 			function(next) {
-				findUids(query, keys, startsWith, next);
+				if (data.findUids) {
+					data.findUids(query, searchBy, startsWith, next);
+				} else {
+					findUids(query, searchBy, startsWith, next);
+				}
 			},
 			function(uids, next) {
+				var filterBy = Array.isArray(data.filterBy) ? data.filterBy : [];
 				filterAndSortUids(uids, filterBy, data.sortBy, next);
 			},
 			function(uids, next) {
-				matchCount = uids.length;
-				uids = uids.slice(start, end);
+				searchResult.matchCount = uids.length;
+
+				if (paginate) {
+					var pagination = user.paginate(page, uids);
+					uids = pagination.data;
+					searchResult.pagination = pagination.pagination;
+				}
 
 				User.getUsers(uids, uid, next);
 			},
 			function(userData, next) {
-				var data = {
-					timing: (process.elapsedTimeSince(startTime) / 1000).toFixed(2),
-					users: userData,
-					matchCount: matchCount
-				};
+				searchResult.timing = (process.elapsedTimeSince(startTime) / 1000).toFixed(2);
+				searchResult.users = userData;
 
-				var currentPage = Math.max(1, Math.ceil((start + 1) / resultsPerPage));
-				pageCount = Math.ceil(matchCount / resultsPerPage);
-				data.pagination = pagination.create(currentPage, pageCount);
-
-				next(null, data);
+				next(null, searchResult);
 			}
 		], callback);
 	};
 
-	function findUids(query, keys, startsWith, callback) {
+	User.paginate = function(page, data) {
+		var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
+		var start = Math.max(0, page - 1) * resultsPerPage;
+		var end = start + resultsPerPage;
+
+		var pageCount = Math.ceil(data.length / resultsPerPage);
+		var currentPage = Math.max(1, Math.ceil((start + 1) / resultsPerPage));
+
+		return {
+			pagination: pagination.create(currentPage, pageCount),
+			data: data.slice(start, end)
+		};
+	};
+
+	function findUids(query, searchBy, startsWith, callback) {
+		if (!query) {
+			return db.getSortedSetRevRange('users:joindate', 0, -1, callback);
+		}
+
+		var keys = searchBy.map(function(searchBy) {
+			return searchBy + ':uid';
+		});
+
 		db.getObjects(keys, function(err, hashes) {
 			if (err || !hashes) {
 				return callback(err, []);

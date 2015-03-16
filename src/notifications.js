@@ -207,12 +207,12 @@ var async = require('async'),
 
 	Notifications.pushGroup = function(notification, groupName, callback) {
 		callback = callback || function() {};
-		groups.get(groupName, {}, function(err, groupObj) {
-			if (err || !groupObj || !Array.isArray(groupObj.members) || !groupObj.members.length) {
+		groups.getMembers(groupName, 0, -1, function(err, members) {
+			if (err || !Array.isArray(members) || !members.length) {
 				return callback(err);
 			}
 
-			Notifications.push(notification, groupObj.members, callback);
+			Notifications.push(notification, members, callback);
 		});
 	};
 

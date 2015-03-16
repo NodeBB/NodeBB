@@ -10,17 +10,23 @@ $(document).ready(function() {
 		rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : ''),
 		apiXHR = null;
 
-	window.onpopstate = function (event) {
-		if (event !== null && event.state && event.state.url !== undefined) {
-			ajaxify.go(event.state.url, function() {
-				$(window).trigger('action:popstate', {url: event.state.url});
+	$(window).on('popstate', function (ev) {
+		ev = ev.originalEvent;
+
+		if (ev !== null && ev.state && ev.state.url !== undefined) {
+			ajaxify.go(ev.state.url, function() {
+				$(window).trigger('action:popstate', {url: ev.state.url});
 			}, true);
 		}
-	};
+	});
 
 	ajaxify.currentPage = null;
 
 	ajaxify.go = function (url, callback, quiet) {
+		if (ajaxify.handleACPRedirect(url)) {
+			return true;
+		}
+
 		app.enterRoom('');
 
 		$(window).off('scroll');
@@ -55,12 +61,26 @@ $(document).ready(function() {
 		return true;
 	};
 
+	ajaxify.handleACPRedirect = function(url) {
+		// If ajaxifying into an admin route from regular site, do a cold load.
+		url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
+		if (url.indexOf('admin') === 0 && window.location.pathname.indexOf('/admin') !== 0) {
+			window.open(RELATIVE_PATH + '/' + url, '_blank');
+			return true;
+		}
+		return false;
+	}
+
 	ajaxify.start = function(url, quiet, search) {
 		url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
 		var hash = window.location.hash;
 		search = search || '';
 
 		$(window).trigger('action:ajaxify.start', {url: url});
+
+		if (!window.location.pathname.match(/\/(403|404)$/g)) {
+			app.previousUrl = window.location.href;
+		}
 
 		ajaxify.currentPage = url;
 
@@ -87,11 +107,9 @@ $(document).ready(function() {
 				app.previousUrl = url;
 				return ajaxify.go('login');
 			} else if (status === 302) {
-				if (data.responseJSON.path) {
-					if (!ajaxify.go(data.responseJSON.path, callback, quiet)) {
-						window.location.href = data.responseJSON.path;
-					}
-				} else if (data.responseJSON) {
+				if (data.responseJSON.external) {
+					window.location.href = data.responseJSON.external;
+				} else if (typeof data.responseJSON === 'string') {
 					ajaxify.go(data.responseJSON.slice(1), callback, quiet);
 				}
 			}
@@ -182,6 +200,9 @@ $(document).ready(function() {
 				}
 			},
 			error: function(data, textStatus) {
+				if (data.status === 0 && textStatus === 'error') {
+					data.status = 500;
+				}
 				callback({
 					data: data,
 					textStatus: textStatus
@@ -226,10 +247,6 @@ $(document).ready(function() {
 				return e.preventDefault();
 			}
 
-			if (!window.location.pathname.match(/\/(403|404)$/g)) {
-				app.previousUrl = window.location.href;
-			}
-
 			if (!e.ctrlKey && !e.shiftKey && !e.metaKey && e.which === 1) {
 				if (this.host === '' || this.host === window.location.host) {
 					// Internal link
@@ -262,5 +279,6 @@ $(document).ready(function() {
 
 	ajaxifyAnchors();
 	app.load();
+	templates.cache['500'] = $('.tpl-500').html();
 
 });

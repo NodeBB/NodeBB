@@ -16,6 +16,7 @@ var	async = require('async'),
 	groups = require('../groups'),
 	user = require('../user'),
 	websockets = require('./index'),
+	socketTopics = require('./topics'),
 	events = require('../events'),
 	utils = require('../../public/src/utils'),
 
@@ -345,26 +346,63 @@ function deleteOrRestore(command, socket, data, callback) {
 }
 
 SocketPosts.purge = function(socket, data, callback) {
-	if(!data || !parseInt(data.pid, 10)) {
+	function purgePost() {
+		postTools.purge(socket.uid, data.pid, function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			websockets.in('topic_' + data.tid).emit('event:post_purged', data.pid);
+
+			events.log({
+				type: 'post-purge',
+				uid: socket.uid,
+				pid: data.pid,
+				ip: socket.ip
+			});
+
+			callback();
+		});	
+	}
+	
+	if (!data || !parseInt(data.pid, 10)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-	postTools.purge(socket.uid, data.pid, function(err) {
-		if(err) {
+
+	isMainAndLastPost(data.pid, function(err, results) {
+		if (err) {
 			return callback(err);
 		}
 
-		websockets.in('topic_' + data.tid).emit('event:post_purged', data.pid);
+		if (!results.isMain) {
+			return purgePost();
+		}
 
-		events.log({
-			type: 'post-purge',
-			uid: socket.uid,
-			pid: data.pid,
-			ip: socket.ip
+		if (!results.isLast) {
+			return callback(new Error('[[error:cant-purge-main-post]]'));
+		}
+
+		posts.getTopicFields(data.pid, ['tid', 'cid'], function(err, topic) {
+			if (err) {
+				return callback(err);
+			}
+			socketTopics.doTopicAction('delete', 'event:topic_deleted', socket, {tids: [topic.tid], cid: topic.cid}, callback);
 		});
-
-		callback();
 	});
 };
+
+function isMainAndLastPost(pid, callback) {
+	async.parallel({
+		isMain: function(next) {
+			posts.isMain(pid, next);
+		},
+		isLast: function(next) {
+			posts.getTopicFields(pid, ['postcount'], function(err, topic) {
+				next(err, topic ? parseInt(topic.postcount, 10) === 1 : false);
+			});
+		}
+	}, callback);
+}
 
 SocketPosts.getPrivileges = function(socket, pids, callback) {
 	privileges.posts.get(pids, socket.uid, function(err, privileges) {

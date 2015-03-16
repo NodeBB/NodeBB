@@ -16,6 +16,7 @@ var async = require('async'),
 	posts = require('./posts'),
 	privileges = require('./privileges'),
 	utils = require('../public/src/utils'),
+	util = require('util'),
 
 	uploadsController = require('./controllers/uploads');
 
@@ -1084,11 +1085,51 @@ var async = require('async'),
 			case 'alpha':	// intentional fall-through
 			default:
 				groups = groups.sort(function(a, b) {
-					return a.slug > b.slug;
+					return a.slug > b.slug ? 1 : -1;
 				});
 		}
 
 		next(null, groups);
+	};
+
+	Groups.searchMembers = function(data, callback) {
+
+		function findUids(query, searchBy, startsWith, callback) {
+			if (!query) {
+				return Groups.getMembers(data.groupName, 0, -1, callback);
+			}
+
+			async.waterfall([
+				function(next) {
+					Groups.getMembers(data.groupName, 0, -1, next);
+				},
+				function(members, next) {
+					user.getMultipleUserFields(members, ['uid'].concat(searchBy), next);
+				},
+				function(users, next) {
+					var uids = [];
+
+					for(var k=0; k<searchBy.length; ++k) {
+						for(var i=0; i<users.length; ++i) {
+							var field = users[i][searchBy[k]];
+							if ((startsWith && field.toLowerCase().startsWith(query)) || (!startsWith && field.toLowerCase().indexOf(query) !== -1)) {
+								uids.push(users[i].uid);
+							}
+						}
+					}
+					if (searchBy.length > 1) {
+						uids = uids.filter(function(uid, index, array) {
+							return array.indexOf(uid) === index;
+						});
+					}
+
+					next(null, uids);
+				}
+			], callback);
+		}
+
+		data.findUids = findUids;
+		user.search(data, callback);
 	};
 
 }(module.exports));
