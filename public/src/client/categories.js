@@ -67,7 +67,7 @@ define('forum/categories', function() {
 			translator.translate(html, function(translatedHTML) {
 				translatedHTML = $(translatedHTML);
 				translatedHTML.find('img').addClass('img-responsive');
-				translatedHTML.find('span.timeago').timeago();
+				translatedHTML.find('.timeago').timeago();
 				callback(translatedHTML);
 			});
 		});

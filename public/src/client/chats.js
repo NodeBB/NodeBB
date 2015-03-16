@@ -122,7 +122,7 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, 
 	function onMessagesParsed(html) {
 		var newMessage = $(html);
 		newMessage.insertBefore($('.user-typing'));
-		newMessage.find('span.timeago').timeago();
+		newMessage.find('.timeago').timeago();
 		newMessage.find('img:not(".chat-user-image")').addClass('img-responsive');
 		Chats.scrollToBottom($('.expanded-chat .chat-content'));
 	}

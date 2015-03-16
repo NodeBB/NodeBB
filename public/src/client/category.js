@@ -228,7 +228,7 @@ define('forum/category', [
 
 				topic.hide().fadeIn('slow');
 
-				topic.find('span.timeago').timeago();
+				topic.find('.timeago').timeago();
 				app.createUserTooltips();
 				updateTopicCount();
 
@@ -304,7 +304,7 @@ define('forum/category', [
 				if (typeof callback === 'function') {
 					callback();
 				}
-				html.find('span.timeago').timeago();
+				html.find('.timeago').timeago();
 				app.createUserTooltips();
 				utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			});

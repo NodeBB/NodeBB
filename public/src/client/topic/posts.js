@@ -224,7 +224,7 @@ define('forum/topic/posts', [
 		app.replaceSelfLinks(element.find('a'));
 		utils.addCommasToNumbers(element.find('.formatted-number'));
 		utils.makeNumbersHumanReadable(element.find('.human-readable-number'));
-		element.find('span.timeago').timeago();
+		element.find('.timeago').timeago();
 		element.find('.post-content img:not(.emoji)').addClass('img-responsive').each(function() {
 			var $this = $(this);
 			if (!$this.parent().is('a')) {
