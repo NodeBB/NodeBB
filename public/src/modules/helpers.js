@@ -43,6 +43,24 @@
 		return JSON.stringify(obj).replace(/&/gm,"&amp;").replace(/</gm,"&lt;").replace(/>/gm,"&gt;").replace(/"/g, '&quot;');
 	};
 
+	helpers.generateCategoryBackground = function(category) {
+		var style = [];
+
+		if (category.backgroundImage) {
+			style.push('background-image: url(' + category.backgroundImage + ')');
+		}
+
+		if (category.bgColor) {
+			style.push('background-color: ' + category.bgColor + ';');
+		}
+
+		if (category.color) {
+			style.push('color: ' + category.color + ';');
+		}
+
+		return style.join(' ');
+	};
+
 	// Groups helpers
 	helpers.membershipBtn = function(groupObj) {
 		if (groupObj.isMember) {
