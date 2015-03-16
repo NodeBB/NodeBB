@@ -1,16 +1,11 @@
 "use strict";
 
-var path = require('path'),
-	nconf = require('nconf'),
-
-	meta = require('../meta'),
-	db = require('../database'),
-	plugins = require('../plugins'),
+var meta = require('../meta'),
 	middleware = require('../middleware');
 
 
 function sendMinifiedJS(req, res, next) {
-	return res.type('text/javascript').send(meta.js.cache);
+	res.type('text/javascript').send(meta.js.cache);
 }
 
 function sendStylesheet(req, res, next) {

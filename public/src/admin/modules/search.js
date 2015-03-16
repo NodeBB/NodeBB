@@ -103,11 +103,17 @@ define(function() {
 
 				if (menuItems.html() !== '') {
 					menuItems.append('<li role="presentation" class="divider"></li>');
+				} else {
+					menuItems.append('<li role="presentation"><a role="menuitem" href="#">No results...</a></li>');
 				}
 			}
 
 			if (value.length > 0) {
-				menuItems.append('<li role="presentation"><a role="menuitem" href="' + RELATIVE_PATH + '/search/' + value + '">Search the forum for <strong>' + value + '</strong></a></li>');
+				if (config.searchEnabled) {
+					menuItems.append('<li role="presentation"><a role="menuitem" target="_top" href="' + RELATIVE_PATH + '/search/' + value + '">Search the forum for <strong>' + value + '</strong></a></li>');
+				} else if (value.length < 3) {
+					menuItems.append('<li role="presentation"><a role="menuitem" href="#">Type more to see results...</a></li>');
+				}
 			} else {
 				menuItems.append('<li role="presentation"><a role="menuitem" href="#">Start typing to see results...</a></li>');
 			}

@@ -14,7 +14,14 @@ var winston = require('winston'),
 	utils = require('../public/src/utils'),
 	plugins = require('./plugins'),
 	events = require('./events'),
-	meta = require('./meta');
+	meta = require('./meta'),
+	LRU = require('lru-cache');
+
+var cache = LRU({
+	max: 1048576,
+	length: function (n) { return n.length },
+	maxAge: 1000 * 60 * 60
+});
 
 (function(PostTools) {
 
@@ -100,6 +107,7 @@ var winston = require('winston'),
 					});
 				},
 				postData: function(next) {
+					cache.del(postData.pid);
 					PostTools.parsePost(postData, data.uid, next);
 				}
 			}, function(err, results) {
@@ -148,6 +156,7 @@ var winston = require('winston'),
 			}
 
 			if (isDelete) {
+				cache.del(pid);
 				posts.delete(pid, callback);
 			} else {
 				posts.restore(pid, function(err, postData) {
@@ -165,7 +174,7 @@ var winston = require('winston'),
 			if (err || !canEdit) {
 				return callback(err || new Error('[[error:no-privileges]]'));
 			}
-
+			cache.del(pid);
 			posts.purge(pid, callback);
 		});
 	};
@@ -173,8 +182,18 @@ var winston = require('winston'),
 	PostTools.parsePost = function(postData, uid, callback) {
 		postData.content = postData.content || '';
 
+		var cachedContent = cache.get(postData.pid);
+		if (cachedContent) {
+			postData.content = cachedContent;
+			return callback(null, postData);
+		}
+
 		plugins.fireHook('filter:parse.post', {postData: postData, uid: uid}, function(err, data) {
-			callback(err, data ? data.postData : null);
+			if (err) {
+				return callback(err);
+			}
+			cache.set(data.postData.pid, data.postData.content);
+			callback(null, data.postData);
 		});
 	};
 
@@ -182,6 +201,10 @@ var winston = require('winston'),
 		userData.signature = userData.signature || '';
 
 		plugins.fireHook('filter:parse.signature', {userData: userData, uid: uid}, callback);
+	};
+
+	PostTools.resetCache = function() {
+		cache.reset();
 	};
 
 }(exports));

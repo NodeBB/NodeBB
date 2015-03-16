@@ -17,12 +17,12 @@ app.cacheBuster = null;
 	function socketIOConnect() {
 		var ioParams = {
 			reconnectionAttempts: config.maxReconnectionAttempts,
-			reconnectionDelay : config.reconnectionDelay,
+			reconnectionDelay: config.reconnectionDelay,
 			transports: config.socketioTransports,
 			path: config.relative_path + '/socket.io'
 		};
 
-		socket = io.connect(config.websocketAddress, ioParams);
+		socket = io(config.websocketAddress, ioParams);
 		reconnecting = false;
 
 		socket.on('event:connect', function () {
@@ -41,11 +41,6 @@ app.cacheBuster = null;
 		});
 
 		socket.on('reconnecting', function (attempt) {
-			if(attempt === parseInt(config.maxReconnectionAttempts, 10)) {
-				socket.io.attempts = 0;
-				return;
-			}
-
 			reconnecting = true;
 			var reconnectEl = $('#reconnect');
 
@@ -73,6 +68,11 @@ app.cacheBuster = null;
 
 		socket.on('event:alert', function(data) {
 			app.alert(data);
+		});
+
+		socket.on('reconnect_failed', function() {
+			// Wait ten times the reconnection delay and then start over
+			setTimeout(socket.connect.bind(socket), parseInt(config.reconnectionDelay, 10) * 10);
 		});
 	}
 
@@ -372,7 +372,7 @@ app.cacheBuster = null;
 		if (utils.findBootstrapEnvironment() === 'xs') {
 			return;
 		}
-		$('#header-menu li [title]').each(function() {
+		$('#header-menu li a[title]').each(function() {
 			$(this).tooltip({
 				placement: 'bottom',
 				title: $(this).attr('title')
@@ -504,7 +504,7 @@ app.cacheBuster = null;
 			});
 
 			createHeaderTooltips();
-			showEmailConfirmWarning();
+			app.showEmailConfirmWarning();
 
 			socket.removeAllListeners('event:nodebb.ready');
 			socket.on('event:nodebb.ready', function(cacheBusters) {
@@ -537,7 +537,7 @@ app.cacheBuster = null;
 		});
 	};
 
-	function showEmailConfirmWarning() {
+	app.showEmailConfirmWarning = function(err) {
 		if (!config.requireEmailConfirmation || !app.user.uid) {
 			return;
 		}
@@ -555,7 +555,7 @@ app.cacheBuster = null;
 		} else if (!app.user['email:confirmed']) {
 			app.alert({
 				alert_id: 'email_confirm',
-				message: '[[error:email-not-confirmed]]',
+				message: err ? err.message : '[[error:email-not-confirmed]]',
 				type: 'warning',
 				timeout: 0,
 				clickfn: function() {
@@ -569,7 +569,7 @@ app.cacheBuster = null;
 				}
 			});
 		}
-	}
+	};
 
 	showWelcomeMessage = window.location.href.indexOf('loggedin') !== -1;
 

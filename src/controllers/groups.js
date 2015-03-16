@@ -51,31 +51,35 @@ groupsController.details = function(req, res, next) {
 			}
 		}
 	], function(err, ok) {
-		if (ok) {
-			async.parallel({
-				group: function(next) {
-					groups.get(res.locals.groupName, {
-						expand: true,
-						uid: uid
-					}, next);
-				},
-				posts: function(next) {
-					groups.getLatestMemberPosts(res.locals.groupName, 10, uid, next);
-				}
-			}, function(err, results) {
-				if (err) {
-					return next(err);
-				}
-
-				if (!results.group) {
-					return helpers.notFound(req, res);
-				}
-
-				res.render('groups/details', results);
-			});
-		} else {
-			return res.locals.isAPI ? res.status(302).json('/groups') : res.redirect('/groups');
+		if (err) {
+			return next(err);
 		}
+
+		if (!ok) {
+			return helpers.redirect(res, '/groups');
+		}
+
+		async.parallel({
+			group: function(next) {
+				groups.get(res.locals.groupName, {
+					expand: true,
+					uid: uid
+				}, next);
+			},
+			posts: function(next) {
+				groups.getLatestMemberPosts(res.locals.groupName, 10, uid, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return next(err);
+			}
+
+			if (!results.group) {
+				return helpers.notFound(req, res);
+			}
+
+			res.render('groups/details', results);
+		});
 	});
 };
 

@@ -32,9 +32,9 @@
     "category": "Категория",
     "descending": "В порядке возрастания",
     "ascending": "В порядке убывания",
-    "save-preferences": "Save preferences",
-    "clear-preferences": "Clear preferences",
-    "search-preferences-saved": "Search preferences saved",
+    "save-preferences": "Сохранить настройки",
+    "clear-preferences": "Очистить настройки",
+    "search-preferences-saved": "Искать сохраненные настройки",
     "search-preferences-cleared": "Search preferences cleared",
-    "show-results-as": "Show results as"
+    "show-results-as": "Показать результаты как"
 }

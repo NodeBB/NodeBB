@@ -104,10 +104,12 @@ SocketAdmin.themes.updateBranding = function(socket, data, callback) {
 };
 
 SocketAdmin.plugins.toggleActive = function(socket, plugin_id, callback) {
+	require('../postTools').resetCache();
 	plugins.toggleActive(plugin_id, callback);
 };
 
 SocketAdmin.plugins.toggleInstall = function(socket, data, callback) {
+	require('../postTools').resetCache();
 	plugins.toggleInstall(data.id, data.version, callback);
 };
 
@@ -121,7 +123,7 @@ SocketAdmin.plugins.orderActivePlugins = function(socket, data, callback) {
 			db.sortedSetAdd('plugins:active', plugin.order || 0, plugin.name, next);
 		} else {
 			next();
-		}		
+		}
 	}, callback);
 };
 
@@ -302,7 +304,7 @@ SocketAdmin.getMoreEvents = function(socket, next, callback) {
 	if (start < 0) {
 		return callback(null, {data: [], next: next});
 	}
-	var end = next + 10;
+	var end = start + 10;
 	events.getEvents(start, end, function(err, events) {
 		if (err) {
 			return callback(err);
@@ -339,12 +341,12 @@ SocketAdmin.getMoreFlags = function(socket, data, callback) {
 		posts.getUserFlags(byUsername, sortBy, socket.uid, start, end, function(err, posts) {
 			callback(err, {posts: posts, next: end + 1});
 		});
-	} else {		
+	} else {
 		var set = sortBy === 'count' ? 'posts:flags:count' : 'posts:flagged';
 		posts.getFlags(set, socket.uid, start, end, function(err, posts) {
 			callback(err, {posts: posts, next: end + 1});
 		});
-	}	
+	}
 };
 
 SocketAdmin.takeHeapSnapshot = function(socket, data, callback) {
