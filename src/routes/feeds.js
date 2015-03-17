@@ -84,8 +84,8 @@ function generateForTopic(req, res, next) {
 					feed.item({
 						title: 'Reply to ' + topicData.title + ' on ' + dateStamp,
 						description: postData.content,
-						url: nconf.get('url') + '/topic/' + topicData.slug + '#' + postData.pid,
-						author: postData.username,
+						url: nconf.get('url') + '/topic/' + topicData.slug + (postData.index ? '/' + (postData.index + 1) : ''),
+						author: postData.user ? postData.user.username : '',
 						date: dateStamp
 					});
 				}
@@ -144,8 +144,8 @@ function generateForCategory(req, res, next) {
 			if (err) {
 				return next(err);
 			}
-			sendFeed(feed, res);	
-		});		
+			sendFeed(feed, res);
+		});
 	});
 }
 
@@ -183,8 +183,8 @@ function generateForPopular(req, res, next) {
 				return next(err);
 			}
 			sendFeed(feed, res);
-		});	
-	});	
+		});
+	});
 }
 
 function disabledRSS(req, res, next) {
@@ -201,13 +201,13 @@ function generateForTopics(options, set, req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		
+
 		generateTopicsFeed(options, data.topics, function(err, feed) {
 			if (err) {
 				return next(err);
 			}
-			sendFeed(feed, res);	
-		});	
+			sendFeed(feed, res);
+		});
 	});
 }
 
@@ -215,7 +215,7 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 	var tids = feedTopics.map(function(topic) {
 		return topic ? topic.tid : null;
 	});
-	
+
 	topics.getMainPids(tids, function(err, pids) {
 		if (err) {
 			return callback(err);
@@ -252,7 +252,7 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 			});
 			callback(null, feed);
 		});
-	});	
+	});
 }
 
 function generateForRecentPosts(req, res, next) {
