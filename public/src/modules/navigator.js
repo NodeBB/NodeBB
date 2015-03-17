@@ -153,7 +153,7 @@ define('navigator', ['forum/pagination'], function(pagination) {
 	}
 
 	navigator.scrollToPost = function(postIndex, highlight, duration, offset) {
-		if (!utils.isNumber(postIndex) || !$('#post-container').length) {
+		if (!utils.isNumber(postIndex) || !components.get('topic').length) {
 			return;
 		}
 
@@ -222,7 +222,7 @@ define('navigator', ['forum/pagination'], function(pagination) {
 			}
 		}
 
-		if ($('#post-container').length) {
+		if (components.get('topic').length) {
 			animateScroll();
 		}
 	}

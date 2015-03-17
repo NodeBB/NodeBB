@@ -18,7 +18,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	};
 
 	PostTools.toggle = function(pid, isDeleted) {
-		var postEl = $('#post-container li[data-pid="' + pid + '"]');
+		var postEl = components.get('post', 'pid', pid);
 
 		postEl.find('.quote, .favourite, .post_reply, .chat, .flag').toggleClass('hidden', isDeleted);
 		postEl.find('.purge').toggleClass('hidden', !isDeleted);
@@ -38,7 +38,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	};
 
 	function addVoteHandler() {
-		$('#post-container').on('mouseenter', '.post-row .votes', function() {
+		components.get('topic').on('mouseenter', '.post-row .votes', function() {
 			loadDataAndCreateTooltip($(this));
 		});
 	}
@@ -76,7 +76,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 			}
 		});
 
-		var postContainer = $('#post-container');
+		var postContainer = components.get('topic');
 
 		postContainer.on('click', '.quote', function() {
 			if (!threadState.locked) {
@@ -241,7 +241,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 
 	function deletePost(button, tid) {
 		var pid = getData(button, 'data-pid'),
-			postEl = $('#post-container li[data-pid="' + pid + '"]'),
+			postEl = components.get('post', 'pid', pid),
 			action = !postEl.hasClass('deleted') ? 'delete' : 'restore';
 
 		postAction(action, pid, tid);

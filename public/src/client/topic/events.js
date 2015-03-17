@@ -139,14 +139,15 @@ define('forum/topic/events', [
 	}
 
 	function onPostPurged(pid) {
-		$('#post-container [data-pid="' + pid + '"]').fadeOut(500, function() {
+		components.get('post', 'pid', pid).fadeOut(500, function() {
 			$(this).remove();
 		});
+
 		postTools.updatePostCount();
 	}
 
 	function togglePostDeleteState(data) {
-		var postEl = $('#post-container [data-pid="' + data.pid + '"]');
+		var postEl = components.get('post', 'pid', data.pid);
 
 		if (!postEl.length) {
 			return;

@@ -97,7 +97,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 	}
 
 	ThreadTools.setLockedState = function(data) {
-		var threadEl = $('#post-container');
+		var threadEl = components.get('topic');
 		if (parseInt(data.tid, 10) === parseInt(threadEl.attr('data-tid'), 10)) {
 			var isLocked = data.isLocked && !app.user.isAdmin;
 
@@ -116,7 +116,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 	};
 
 	ThreadTools.setDeleteState = function(data) {
-		var threadEl = $('#post-container');
+		var threadEl = components.get('topic');
 		if (parseInt(data.tid, 10) !== parseInt(threadEl.attr('data-tid'), 10)) {
 			return;
 		}
@@ -137,7 +137,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 	};
 
 	ThreadTools.setPinnedState = function(data) {
-		var threadEl = $('#post-container');
+		var threadEl = components.get('topic');
 		if (parseInt(data.tid, 10) === parseInt(threadEl.attr('data-tid'), 10)) {
 			translator.translate('<i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.' + (data.isPinned ? 'unpin' : 'pin') + ']]', function(translated) {
 				$('.pin_thread').html(translated);

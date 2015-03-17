@@ -112,7 +112,7 @@ define('forum/topic', [
 	}
 
 	function addBlockQuoteHandler() {
-		$('#post-container').on('click', 'blockquote .toggle', function() {
+		components.get('topic').on('click', 'blockquote .toggle', function() {
 			var blockQuote = $(this).parent('blockquote');
 			var toggle = $(this);
 			blockQuote.toggleClass('uncollapsed');
@@ -124,7 +124,7 @@ define('forum/topic', [
 
 	function enableInfiniteLoadingOrPagination() {
 		if(!config.usePagination) {
-			infinitescroll.init(posts.loadMorePosts, $('#post-container .post-row[data-index="0"]').height());
+			infinitescroll.init(posts.loadMorePosts, components.get('topic').find('.post-row[data-index="0"]').height());
 		} else {
 			navigator.hide();
 
