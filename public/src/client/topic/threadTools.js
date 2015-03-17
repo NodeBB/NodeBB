@@ -21,27 +21,27 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 			ThreadTools.setPinnedState({tid: tid, isPinned: true});
 		}
 
-		$('.delete_thread').on('click', function() {
+		components.get('topic/delete').on('click', function() {
 			topicCommand(threadState.deleted ? 'restore' : 'delete', tid);
 			return false;
 		});
 
-		$('.purge_thread').on('click', function() {
+		components.get('topic/purge').on('click', function() {
 			topicCommand('purge', tid);
 			return false;
 		});
 
-		$('.lock_thread').on('click', function() {
+		components.get('topic/lock').on('click', function() {
 			socket.emit(threadState.locked ? 'topics.unlock' : 'topics.lock', {tids: [tid], cid: ajaxify.variables.get('category_id')});
 			return false;
 		});
 
-		$('.pin_thread').on('click', function() {
+		components.get('topic/pin').on('click', function() {
 			socket.emit(threadState.pinned ? 'topics.unpin' : 'topics.pin', {tids: [tid], cid: ajaxify.variables.get('category_id')});
 			return false;
 		});
 
-		$('.markAsUnreadForAll').on('click', function() {
+		components.get('topic/mark-unread-for-all').on('click', function() {
 			var btn = $(this);
 			socket.emit('topics.markAsUnreadForAll', [tid], function(err) {
 				if(err) {
@@ -53,7 +53,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 			return false;
 		});
 
-		$('.move_thread').on('click', function(e) {
+		components.get('topic/move').on('click', function(e) {
 			move.init([tid], ajaxify.variables.get('category_id'));
 			return false;
 		});
@@ -101,7 +101,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 		if (parseInt(data.tid, 10) === parseInt(threadEl.attr('data-tid'), 10)) {
 			var isLocked = data.isLocked && !app.user.isAdmin;
 
-			$('.lock_thread').translateHtml('<i class="fa fa-fw fa-' + (data.isLocked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (data.isLocked ? 'un': '') + 'lock]]');
+			components.get('topic/lock').translateHtml('<i class="fa fa-fw fa-' + (data.isLocked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (data.isLocked ? 'un': '') + 'lock]]');
 
 			translator.translate(isLocked ? '[[topic:locked]]' : '[[topic:reply]]', function(translated) {
 				var className = isLocked ? 'fa-lock' : 'fa-reply';
@@ -121,11 +121,12 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 			return;
 		}
 
-		$('.delete_thread span').translateHtml('<i class="fa fa-fw ' + (data.isDelete ? 'fa-history' : 'fa-trash-o') + '"></i> [[topic:thread_tools.' + (data.isDelete ? 'restore' : 'delete') + ']]');
+		components.get('topic/delete').translateHtml('<i class="fa fa-fw ' + (data.isDelete ? 'fa-history' : 'fa-trash-o') + '"></i> [[topic:thread_tools.' + (data.isDelete ? 'restore' : 'delete') + ']]');
 
 		threadEl.toggleClass('deleted', data.isDelete);
 		ThreadTools.threadState.deleted = data.isDelete;
-		$('.purge_thread').toggleClass('hidden', !data.isDelete);
+
+		components.get('topic/purge').toggleClass('hidden', !data.isDelete);
 
 		if (data.isDelete) {
 			translator.translate('[[topic:deleted_message]]', function(translated) {
@@ -140,7 +141,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 		var threadEl = components.get('topic');
 		if (parseInt(data.tid, 10) === parseInt(threadEl.attr('data-tid'), 10)) {
 			translator.translate('<i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.' + (data.isPinned ? 'unpin' : 'pin') + ']]', function(translated) {
-				$('.pin_thread').html(translated);
+				components.get('topic/pin').html(translated);
 				ThreadTools.threadState.pinned = data.isPinned;
 			});
 			$('[component="post/header"] i.fa-thumb-tack, .topic-title i.fa-thumb-tack').toggleClass('hide', !data.isPinned);

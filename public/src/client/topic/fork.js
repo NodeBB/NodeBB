@@ -10,7 +10,7 @@ define('forum/topic/fork', function() {
 		pids = [];
 
 	Fork.init = function() {
-		$('.fork_thread').on('click', onForkThreadClicked);
+		components.get('topic/fork').on('click', onForkThreadClicked);
 	};
 
 	function disableClicks() {
