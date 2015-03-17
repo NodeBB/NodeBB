@@ -10,7 +10,7 @@ define('forum/topic/browsing', function() {
 
 	Browsing.onUpdateUsersInRoom = function(data) {
 		if (data && data.room.indexOf('topic_' + ajaxify.variables.get('topic_id')) !== -1) {
-			$('.browsing-users').toggleClass('hidden', !data.users.length);
+			$('.thread_active_users-users, [component="topic/browsing/list"]').parent().toggleClass('hidden', !data.users.length);
 			for(var i=0; i<data.users.length; ++i) {
 				addUserIcon(data.users[i]);	
 			}
@@ -20,7 +20,7 @@ define('forum/topic/browsing', function() {
 	};
 
 	Browsing.onUserEnter = function(data) {
-		var activeEl = $('.thread_active_users');
+		var activeEl = $('.thread_active_users, [component="topic/browsing/list"]');
 		var user = activeEl.find('a[data-uid="' + data.uid + '"]');
 		if (!user.length && activeEl.first().children().length < 10) {
 			addUserIcon(data);
@@ -35,7 +35,7 @@ define('forum/topic/browsing', function() {
 		if (app.user.uid === parseInt(uid, 10)) {
 			return;
 		}
-		var user = $('.thread_active_users').find('a[data-uid="' + uid + '"]');
+		var user = $('.thread_active_users, [component="topic/browsing/list"]').find('a[data-uid="' + uid + '"]');
 		if (user.length) {
 			var count = Math.max(0, parseInt(user.attr('data-count'), 10) - 1);
 			user.attr('data-count', count);
@@ -63,7 +63,7 @@ define('forum/topic/browsing', function() {
 	}
 
 	function updateBrowsingUsers(data) {
-		var activeEl = $('.thread_active_users');
+		var activeEl = $('.thread_active_users, [component="topic/browsing/list"]');
 		var user = activeEl.find('a[data-uid="'+ data.uid + '"]');
 		if (user.length && data.status === 'offline') {
 			user.parent().remove();
@@ -74,7 +74,7 @@ define('forum/topic/browsing', function() {
 		if (!user.userslug) {
 			return;
 		}
-		var activeEl = $('.thread_active_users');
+		var activeEl = $('.thread_active_users, [component="topic/browsing/list"]');
 		var userEl = createUserIcon(user.uid, user.picture, user.userslug, user.username);
 		var isSelf = parseInt(user.uid, 10) === parseInt(app.user.uid, 10);
 		if (isSelf) {
@@ -89,7 +89,7 @@ define('forum/topic/browsing', function() {
 	}
 
 	function createUserIcon(uid, picture, userslug, username) {
-		if(!$('.thread_active_users').find('[data-uid="' + uid + '"]').length) {
+		if(!$('.thread_active_users, [component="topic/browsing/list"]').find('[data-uid="' + uid + '"]').length) {
 			return $('<div class="inline-block"><a data-uid="' + uid + '" data-count="1" href="' + config.relative_path + '/user/' + userslug + '"><img title="' + username + '" src="'+ picture +'"/></a></div>');
 		}
 	}
@@ -99,11 +99,11 @@ define('forum/topic/browsing', function() {
 		if (!count || count < 0) {
 			count = 0;
 		}
-		$('.user-count').text(count).parent().toggleClass('hidden', count === 0);
+		$('.user-count, [component="topic/browsing/count"]').text(count).parent().toggleClass('hidden', count === 0);
 	}
 
 	function increaseUserCount(incr) {
-		updateUserCount(parseInt($('.user-count').first().text(), 10) + incr);
+		updateUserCount(parseInt($('.user-count, [component="topic/browsing/count"]').first().text(), 10) + incr);
 	}
 
 	return Browsing;
