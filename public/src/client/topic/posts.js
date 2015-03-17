@@ -22,7 +22,7 @@ define('forum/topic/posts', [
 		}
 
 		for (var i=0; i<data.posts.length; ++i) {
-			var postcount = $('.user_postcount_' + data.posts[i].uid);
+			var postcount = components.get('user/postcount', data.posts[i].uid);
 			postcount.html(parseInt(postcount.html(), 10) + 1);
 		}
 

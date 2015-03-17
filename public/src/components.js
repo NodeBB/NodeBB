@@ -18,6 +18,10 @@ var components = components || {};
 		'post/anchor': function(index) {
 			var el = components.core.post('index', index).find('[component="post/anchor"]');
 			return el.length ? el : $('#post_anchor_' + index); // deprecated after 0.7x	
+		},
+		'user/postcount': function(uid) {
+			var el = $('[component="user/postcount"][data-uid="' + uid + '"]');
+			return el.length ? el : $('.user_postcount_' + uid); // deprecated after 0.7x		
 		}
 	};
 
