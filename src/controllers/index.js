@@ -52,15 +52,18 @@ Controllers.home = function(req, res, next) {
 Controllers.reset = function(req, res, next) {
 	if (req.params.code) {
 		user.reset.validate(req.params.code, function(err, valid) {
+			if (err) {
+				return next(err);
+			}
 			res.render('reset_code', {
 				valid: valid,
-				reset_code: req.params.code ? req.params.code : null,
+				code: req.params.code ? req.params.code : null,
 				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]', url: '/reset'}, {text: '[[reset_password:update_password]]'}])
 			});
 		});
 	} else {
 		res.render('reset', {
-			reset_code: req.params.code ? req.params.code : null,
+			code: req.params.code ? req.params.code : null,
 			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]'}])
 		});
 	}
