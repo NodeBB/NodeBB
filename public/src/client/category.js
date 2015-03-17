@@ -55,7 +55,7 @@ define('forum/category', [
 			navigator.init('#topics-container > .category-item', ajaxify.variables.get('topic_count'), Category.toTop, Category.toBottom, Category.navigatorCallback);
 		}
 
-		$('#topics-container').on('click', '[component="post/header"], .topic-title', function() {
+		$('#topics-container').on('click', '[component="post/header"]', function() {
 			var clickedIndex = $(this).parents('[data-index]').attr('data-index');
 			$('#topics-container li.category-item').each(function(index, el) {
 				if ($(el).offset().top - $(window).scrollTop() > 0) {

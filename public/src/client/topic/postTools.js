@@ -20,10 +20,12 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	PostTools.toggle = function(pid, isDeleted) {
 		var postEl = components.get('post', 'pid', pid);
 
-		postEl.find('.quote, .favourite, .post_reply, .chat, .flag').toggleClass('hidden', isDeleted);
-		postEl.find('.purge').toggleClass('hidden', !isDeleted);
-		postEl.find('.delete .i').toggleClass('fa-trash-o', !isDeleted).toggleClass('fa-history', isDeleted);
-		postEl.find('.delete span').translateHtml(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]');
+		postEl.find('[component="post/quote"], [component="post/favourite"], [component="post/reply"], [component="post/flag"], [component="user/chat"]')
+			.toggleClass('hidden', isDeleted);
+
+		postEl.find('[component="post/purge"]').toggleClass('hidden', !isDeleted);
+		postEl.find('[component="post/delete"] .i').toggleClass('fa-trash-o', !isDeleted).toggleClass('fa-history', isDeleted);
+		postEl.find('[component="post/delete"] span').translateHtml(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]');
 	};
 
 	PostTools.updatePostCount = function() {
@@ -78,55 +80,55 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		*   Use the components system instead.
 		*/
 
-		postContainer.on('click', '.quote, [component="post/quote"]', function() {
+		postContainer.on('click', '[component="post/quote"]', function() {
 			if (!threadState.locked) {
 				onQuoteClicked($(this), tid, topicName);
 			}
 		});
 
-		postContainer.on('click', '.post_reply, [component="post/reply"]', function() {
+		postContainer.on('click', '[component="post/reply"]', function() {
 			if (!threadState.locked) {
 				onReplyClicked($(this), tid, topicName);
 			}
 		});
 
-		postContainer.on('click', '.favourite, [component="post/favourite"]', function() {
+		postContainer.on('click', '[component="post/favourite"]', function() {
 			favouritePost($(this), getData($(this), 'data-pid'));
 		});
 
-		postContainer.on('click', '.upvote, [component="post/upvote"]', function() {
+		postContainer.on('click', '[component="post/upvote"]', function() {
 			return toggleVote($(this), '.upvoted', 'posts.upvote');
 		});
 
-		postContainer.on('click', '.downvote, [component="post/downvote"]', function() {
+		postContainer.on('click', '[component="post/downvote"]', function() {
 			return toggleVote($(this), '.downvoted', 'posts.downvote');
 		});
 
-		postContainer.on('click', '.votes, [component="post/vote-count"]', function() {
+		postContainer.on('click', '[component="post/vote-count"]', function() {
 			showVotes(getData($(this), 'data-pid'));
 		});
 
-		postContainer.on('click', '.flag, [component="post/flag"]', function() {
+		postContainer.on('click', '[component="post/flag"]', function() {
 			flagPost(getData($(this), 'data-pid'));
 		});
 
-		postContainer.on('click', '.edit, [component="post/edit"]', function(e) {
+		postContainer.on('click', '[component="post/edit"]', function(e) {
 			composer.editPost(getData($(this), 'data-pid'));
 		});
 
-		postContainer.on('click', '.delete, [component="post/delete"]', function(e) {
+		postContainer.on('click', '[component="post/delete"]', function(e) {
 			deletePost($(this), tid);
 		});
 
-		postContainer.on('click', '.purge, [component="post/purge"]', function(e) {
+		postContainer.on('click', '[component="post/purge"]', function(e) {
 			purgePost($(this), tid);
 		});
 
-		postContainer.on('click', '.move, [component="post/move"]', function(e) {
+		postContainer.on('click', '[component="post/move"]', function(e) {
 			openMovePostModal($(this));
 		});
 
-		postContainer.on('click', '.chat, [component="user/chat"]', function(e) {
+		postContainer.on('click', '[component="user/chat"]', function(e) {
 			openChat($(this));
 		});
 	}

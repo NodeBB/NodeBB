@@ -159,9 +159,9 @@ define('forum/topic/events', [
 
 		if (!app.user.isAdmin && parseInt(data.uid, 10) !== parseInt(app.user.uid, 10)) {
 			if (isDeleted) {
-				postEl.find('[component="post/content"], .post-content').translateHtml('[[topic:post_is_deleted]]');
+				postEl.find('[component="post/content"]').translateHtml('[[topic:post_is_deleted]]');
 			} else {
-				postEl.find('[component="post/content"], .post-content').html(data.content);
+				postEl.find('[component="post/content"]').html(data.content);
 			}
 		}
 	}

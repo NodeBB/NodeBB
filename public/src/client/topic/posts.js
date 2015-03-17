@@ -168,14 +168,14 @@ define('forum/topic/posts', [
 			isSelfPost = parseInt(postEl.attr('data-uid'), 10) === parseInt(app.user.uid, 10);
 
 		if (!privileges.editable) {
-			postEl.find('.edit, .delete, .purge, [component="post/edit"], [component="post/delete"], [component="post/purge"]').remove();
+			postEl.find('[component="post/edit"], [component="post/delete"], [component="post/purge"]').remove();
 		}
 
 		if (!privileges.move) {
-			postEl.find('.move, [component="post/move"]').remove();
+			postEl.find('[component="post/move"]').remove();
 		}
 
-		postEl.find('.chat, .flag, [component="user/chat"], [component="post/flag"]').toggleClass('hidden', isSelfPost || !app.user.uid);
+		postEl.find('[component="user/chat"], [component="post/flag"]').toggleClass('hidden', isSelfPost || !app.user.uid);
 	}
 
 	Posts.loadMorePosts = function(direction) {
@@ -226,14 +226,14 @@ define('forum/topic/posts', [
 		utils.addCommasToNumbers(element.find('.formatted-number'));
 		utils.makeNumbersHumanReadable(element.find('.human-readable-number'));
 		element.find('.timeago').timeago();
-		element.find('[component="post/content"] img:not(.emoji), .post-content img:not(.emoji)').addClass('img-responsive').each(function() {
+		element.find('[component="post/content"] img:not(.emoji)').addClass('img-responsive').each(function() {
 			var $this = $(this);
 			if (!$this.parent().is('a')) {
 				$this.wrap('<a href="' + $this.attr('src') + '" target="_blank">');
 			}
 		});
 		postTools.updatePostCount();
-		addBlockquoteEllipses(element.find('[component="post/content"] > blockquote, .post-content > blockquote'));
+		addBlockquoteEllipses(element.find('[component="post/content"] > blockquote'));
 		hidePostToolsForDeletedPosts(element);
 		showBottomPostBar();
 	};

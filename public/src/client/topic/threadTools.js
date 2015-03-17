@@ -105,12 +105,12 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 
 			translator.translate(isLocked ? '[[topic:locked]]' : '[[topic:reply]]', function(translated) {
 				var className = isLocked ? 'fa-lock' : 'fa-reply';
-				threadEl.find('.post_reply, [component="post/reply"]').html('<i class="fa ' + className + '"></i> ' + translated);
-				$('.post_reply, [component="post/reply"]').attr('disabled', isLocked).html(isLocked ? '<i class="fa fa-lock"></i> ' + translated : translated);
+				threadEl.find('[component="post/reply"]').html('<i class="fa ' + className + '"></i> ' + translated);
+				$('[component="post/reply"]').attr('disabled', isLocked).html(isLocked ? '<i class="fa fa-lock"></i> ' + translated : translated);
 			});
 
-			threadEl.find('.quote, .edit, .delete').toggleClass('hidden', isLocked);
-			$('[component="post/header"] i.fa-lock, .topic-title i.fa-lock').toggleClass('hide', !data.isLocked);
+			threadEl.find('[component="quote"], [component="edit"], [component="delete"]').toggleClass('hidden', isLocked);
+			$('[component="post/header"] i.fa-lock').toggleClass('hide', !data.isLocked);
 			ThreadTools.threadState.locked = data.isLocked;
 		}
 	};
@@ -144,7 +144,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 				components.get('topic/pin').html(translated);
 				ThreadTools.threadState.pinned = data.isPinned;
 			});
-			$('[component="post/header"] i.fa-thumb-tack, .topic-title i.fa-thumb-tack').toggleClass('hide', !data.isPinned);
+			$('[component="post/header"] i.fa-thumb-tack').toggleClass('hide', !data.isPinned);
 		}
 	};
 

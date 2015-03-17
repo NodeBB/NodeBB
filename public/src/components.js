@@ -8,33 +8,26 @@ var components = components || {};
 			return $('[data-' + name + '="' + value + '"]');
 		},
 		'post/content': function(pid) {
-			var el = components.core.post('pid', pid).find('[component="post/content"]');
-			return el.length ? el : $('#content_' + pid); // deprecated after 0.7x
+			return components.core.post('pid', pid).find('[component="post/content"]');
 		},
 		'post/header': function(pid) {
-			var el = components.core.post('pid', pid).find('[component="post/header"]');
-			return el.length ? el : $('#topic_title_' + pid); // deprecated after 0.7x	
+			return components.core.post('pid', pid).find('[component="post/header"]');
 		},
 		'post/anchor': function(index) {
-			var el = components.core.post('index', index).find('[component="post/anchor"]');
-			return el.length ? el : $('#post_anchor_' + index); // deprecated after 0.7x	
+			return components.core.post('index', index).find('[component="post/anchor"]');
 		},
 		'post/vote-count': function(pid) {
-			var el = components.core.post('pid', pid).find('[component="post/vote-count"]');
-			return el.length ? el : components.core.post('pid', pid).find('.votes'); // deprecated after 0.7x	
+			return components.core.post('pid', pid).find('[component="post/vote-count"]');
 		},
 		'post/favourite-count': function(pid) {
-			var el = components.core.post('pid', pid).find('[component="post/favourite-count"]');
-			return el.length ? el : components.core.post('pid', pid).find('.favouriteCount'); // deprecated after 0.7x	
+			return components.core.post('pid', pid).find('[component="post/favourite-count"]');
 		},
 
 		'user/postcount': function(uid) {
-			var el = $('[component="user/postcount"][data-uid="' + uid + '"]');
-			return el.length ? el : $('.user_postcount_' + uid); // deprecated after 0.7x		
+			return $('[component="user/postcount"][data-uid="' + uid + '"]');
 		},
 		'user/reputation': function(uid) {
-			var el = $('[component="user/reputation"][data-uid="' + uid + '"]');
-			return el.length ? el : $('.reputation[data-uid="' + uid + '"]'); // deprecated after 0.7x		
+			return $('[component="user/reputation"][data-uid="' + uid + '"]');
 		}
 	};
 
