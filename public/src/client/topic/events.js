@@ -97,11 +97,11 @@ define('forum/topic/events', [
 
 	function onPostEdited(data) {
 		var editedPostEl = components.get('post/content', data.pid),
-			editedPostTitle = $('#topic_title_' + data.pid);
+			editedPostHeader = components.get('post/header', data.pid);
 
-		if (editedPostTitle.length) {
-			editedPostTitle.fadeOut(250, function() {
-				editedPostTitle.html(data.title).fadeIn(250);
+		if (editedPostHeader.length) {
+			editedPostHeader.fadeOut(250, function() {
+				editedPostHeader.html(data.title).fadeIn(250);
 			});
 		}
 

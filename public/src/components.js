@@ -6,7 +6,11 @@ var components = components || {};
 	components.core = {
 		'post/content': function(pid) {
 			var el = $('[data-pid="' + pid + '"]').find('[component="post/content"]');
-			return el.length ? el : $('[data-pid="' + pid + '"]').find('.post-content'); // deprecated after 0.7x
+			return el.length ? el : $('#content_' + pid); // deprecated after 0.7x
+		},
+		'post/header': function(pid) {
+			var el = $('[data-pid="' + pid + '"]').find('[component="post/header"]');
+			return el.length ? el : $('#topic_title_' + pid); // deprecated after 0.7x	
 		}
 	};
 
