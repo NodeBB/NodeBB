@@ -26,7 +26,7 @@ var Controllers = {
 	accounts: require('./accounts'),
 	static: require('./static'),
 	api: require('./api'),
-	admin: require('./admin'),
+	admin: require('./admin')
 };
 
 
