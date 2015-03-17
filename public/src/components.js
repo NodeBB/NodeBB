@@ -5,7 +5,7 @@ var components = components || {};
 (function() {
 	components.core = {
 		'post': function(name, value) {
-			return value ? $('[data-' + name + '="' + value + '"]') $('[data-' + name + ']');
+			return $('[data-' + name + '="' + value + '"]');
 		},
 		'post/content': function(pid) {
 			var el = components.core.post('pid', pid).find('[component="post/content"]');
@@ -24,7 +24,7 @@ var components = components || {};
 	components.get = function() {
 		var args = Array.prototype.slice.call(arguments, 1);
 
-		if (components.core[arguments[0]]) {
+		if (components.core[arguments[0]] && args.length) {
 			return components.core[arguments[0]].apply(this, args);
 		} else {
 			return $('[component="' + arguments[0] + '"]');
