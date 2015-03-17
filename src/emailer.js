@@ -62,7 +62,8 @@ var	fs = require('fs'),
 						plaintext: translated[1],
 						template: template,
 						uid: uid,
-						pid: params.pid
+						pid: params.pid,
+						fromUid: params.fromUid
 					});
 					callback();
 				} else {

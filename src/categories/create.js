@@ -32,7 +32,7 @@ module.exports = function(Categories) {
 				order: order,
 				link: '',
 				numRecentReplies: 1,
-				class: 'col-md-3 col-xs-6',
+				class: 'col-md-3 col-xs-12',
 				imageClass: 'auto'
 			};
 
