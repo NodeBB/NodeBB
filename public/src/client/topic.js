@@ -53,7 +53,7 @@ define('forum/topic', [
 
 		handleBookmark(tid);
 
-		navigator.init('.posts > .post-row', ajaxify.variables.get('postcount'), Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
+		navigator.init(components.get('post'), ajaxify.variables.get('postcount'), Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
 
 		$(window).on('scroll', updateTopicTitle);
 
@@ -124,7 +124,7 @@ define('forum/topic', [
 
 	function enableInfiniteLoadingOrPagination() {
 		if(!config.usePagination) {
-			infinitescroll.init(posts.loadMorePosts, components.get('topic').find('.post-row[data-index="0"]').height());
+			infinitescroll.init(posts.loadMorePosts, components.get('post', 'index', 0).height());
 		} else {
 			navigator.hide();
 
