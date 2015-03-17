@@ -38,13 +38,13 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	};
 
 	function addVoteHandler() {
-		components.get('topic').on('mouseenter', '.post-row .votes', function() {
+		components.get('topic').on('mouseenter', '[data-pid] .votes', function() {
 			loadDataAndCreateTooltip($(this));
 		});
 	}
 
 	function loadDataAndCreateTooltip(el) {
-		var pid = el.parents('.post-row').attr('data-pid');
+		var pid = el.parents('[data-pid]').attr('data-pid');
 		socket.emit('posts.getUpvoters', [pid], function(err, data) {
 			if (!err && data.length) {
 				createTooltip(el, data[0]);
@@ -185,7 +185,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	}
 
 	function toggleVote(button, className, method) {
-		var post = button.parents('.post-row'),
+		var post = button.parents('[data-pid]'),
 			currentState = post.find(className).length;
 
 		socket.emit(currentState ? 'posts.unvote' : method , {
@@ -222,7 +222,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	}
 
 	function getData(button, data) {
-		return button.parents('.post-row').attr(data);
+		return button.parents('[data-pid]').attr(data);
 	}
 
 	function getUserName(button) {
@@ -290,7 +290,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		});
 
 		moveBtn.on('click', function() {
-			movePost(button.parents('.post-row'), getData(button, 'data-pid'), topicId.val());
+			movePost(button.parents('[data-pid]'), getData(button, 'data-pid'), topicId.val());
 		});
 	}
 
@@ -338,7 +338,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	}
 
 	function openChat(button) {
-		var post = button.parents('li.post-row');
+		var post = button.parents('data-pid');
 
 		app.openChat(post.attr('data-username'), post.attr('data-uid'));
 		button.parents('.btn-group').find('.dropdown-toggle').click();

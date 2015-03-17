@@ -26,7 +26,7 @@ define('forum/topic/posts', [
 			postcount.html(parseInt(postcount.html(), 10) + 1);
 		}
 
-		createNewPosts(data, '.post-row[data-index!="0"]', function(html) {
+		createNewPosts(data, components.get('post').not('[data-index=0]'), function(html) {
 			if (html) {
 				html.addClass('new');
 			}
@@ -43,7 +43,7 @@ define('forum/topic/posts', [
 		pagination.pageCount = Math.max(1, Math.ceil((posts[0].topic.postcount - 1) / config.postsPerPage));
 
 		if (pagination.currentPage === pagination.pageCount) {
-			createNewPosts(data, '.post-row[data-index!="0"]', scrollToPost);
+			createNewPosts(data, components.get('post').not('[data-index=0]'), scrollToPost);
 		} else if (parseInt(posts[0].uid, 10) === parseInt(app.user.uid, 10)) {
 			pagination.loadPage(pagination.pageCount, scrollToPost);
 		}
@@ -116,7 +116,7 @@ define('forum/topic/posts', [
 				// Save document height and position for future reference (about 5 lines down)
 				var height = $(document).height(),
 					scrollTop = $(document).scrollTop(),
-					originalPostEl = $('.post-row[data-index="0"]');
+					originalPostEl = components.get('post', 'index', 0);
 
 				// Insert the new post
 				html.insertBefore(before);
@@ -164,7 +164,7 @@ define('forum/topic/posts', [
 	}
 
 	function toggleModTools(pid, privileges) {
-		var postEl = $('.post-row[data-pid="' + pid + '"]');
+		var postEl = components.get('post', 'pid', pid);
 
 		if (!privileges.editable) {
 			postEl.find('.edit, .delete, .purge').remove();
@@ -208,7 +208,7 @@ define('forum/topic/posts', [
 			indicatorEl.fadeOut();
 
 			if (data && data.posts && data.posts.length) {
-				createNewPosts(data, '.post-row[data-index!="0"]:not(.new)', done);
+				createNewPosts(data, components.get('post').not('[data-index=0]').not('.new'), done);
 			} else {
 				if (app.user.uid) {
 					socket.emit('topics.markAsRead', [tid]);
@@ -244,7 +244,7 @@ define('forum/topic/posts', [
 	}
 
 	function hidePostToolsForDeletedPosts(element) {
-		element.find('.post-row.deleted').each(function() {
+		element.find('[data-pid].deleted').each(function() {
 			postTools.toggle($(this).attr('data-pid'), true);
 		});
 	}

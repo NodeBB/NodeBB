@@ -18,11 +18,11 @@ define('forum/topic/fork', function() {
 	}
 
 	function disableClicksOnPosts() {
-		$('.post-row').on('click', 'button,a', disableClicks);
+		components.get('post').on('click', 'button,a', disableClicks);
 	}
 
 	function enableClicksOnPosts() {
-		$('.post-row').off('click', 'button,a', disableClicks);
+		components.get('post').off('click', 'button,a', disableClicks);
 	}
 
 	function onForkThreadClicked() {
