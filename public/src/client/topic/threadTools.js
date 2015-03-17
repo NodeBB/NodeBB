@@ -110,7 +110,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 			});
 
 			threadEl.find('.quote, .edit, .delete').toggleClass('hidden', isLocked);
-			$('.topic-title i.fa-lock').toggleClass('hide', !data.isLocked);
+			$('[component="post/header"] i.fa-lock, .topic-title i.fa-lock').toggleClass('hide', !data.isLocked);
 			ThreadTools.threadState.locked = data.isLocked;
 		}
 	};
@@ -143,7 +143,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 				$('.pin_thread').html(translated);
 				ThreadTools.threadState.pinned = data.isPinned;
 			});
-			$('.topic-title i.fa-thumb-tack').toggleClass('hide', !data.isPinned);
+			$('[component="post/header"] i.fa-thumb-tack, .topic-title i.fa-thumb-tack').toggleClass('hide', !data.isPinned);
 		}
 	};
 
