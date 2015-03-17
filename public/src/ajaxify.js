@@ -69,7 +69,7 @@ $(document).ready(function() {
 			return true;
 		}
 		return false;
-	}
+	};
 
 	ajaxify.start = function(url, quiet, search) {
 		url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
