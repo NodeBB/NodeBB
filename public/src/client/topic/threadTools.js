@@ -105,8 +105,8 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 
 			translator.translate(isLocked ? '[[topic:locked]]' : '[[topic:reply]]', function(translated) {
 				var className = isLocked ? 'fa-lock' : 'fa-reply';
-				threadEl.find('.post_reply').html('<i class="fa ' + className + '"></i> ' + translated);
-				$('.topic-main-buttons .post_reply').attr('disabled', isLocked).html(isLocked ? '<i class="fa fa-lock"></i> ' + translated : translated);
+				threadEl.find('.post_reply, [component="post/reply"]').html('<i class="fa ' + className + '"></i> ' + translated);
+				$('.post_reply, [component="post/reply"]').attr('disabled', isLocked).html(isLocked ? '<i class="fa fa-lock"></i> ' + translated : translated);
 			});
 
 			threadEl.find('.quote, .edit, .delete').toggleClass('hidden', isLocked);

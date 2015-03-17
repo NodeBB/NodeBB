@@ -6,3 +6,4 @@ Deprecation TODO's for post - 0.7x
 - remove all pre-0.7x compatibility selectors for:
 	.post-content
 	.topic-title
+	.post_reply

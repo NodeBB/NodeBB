@@ -172,7 +172,7 @@ define('forum/topic/posts', [
 		if (!privileges.move) {
 			postEl.find('.move').remove();
 		}
-		postEl.find('.reply, .quote').toggleClass('hidden', !$('.post_reply').length);
+		postEl.find('.reply, .quote').toggleClass('hidden', !$('.post_reply, [component="post/reply"]').length);
 		var isSelfPost = parseInt(postEl.attr('data-uid'), 10) === parseInt(app.user.uid, 10);
 		postEl.find('.chat, .flag').toggleClass('hidden', isSelfPost || !app.user.uid);
 	}
