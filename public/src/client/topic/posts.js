@@ -164,17 +164,19 @@ define('forum/topic/posts', [
 	}
 
 	function toggleModTools(pid, privileges) {
-		var postEl = components.get('post', 'pid', pid);
+		var postEl = components.get('post', 'pid', pid),
+			isSelfPost = parseInt(postEl.attr('data-uid'), 10) === parseInt(app.user.uid, 10);
 
 		if (!privileges.editable) {
-			postEl.find('.edit, .delete, .purge').remove();
+			postEl.find('.edit, .delete, .purge, [component="post/edit"], [component="post/delete"], [component="post/purge"]').remove();
 		}
+
 		if (!privileges.move) {
-			postEl.find('.move').remove();
+			postEl.find('.move, [component="post/move"]').remove();
 		}
+		
 		postEl.find('.reply, .quote').toggleClass('hidden', !$('.post_reply, [component="post/reply"]').length);
-		var isSelfPost = parseInt(postEl.attr('data-uid'), 10) === parseInt(app.user.uid, 10);
-		postEl.find('.chat, .flag').toggleClass('hidden', isSelfPost || !app.user.uid);
+		postEl.find('.chat, .flag, [component="user/chat"], [component="post/flag"]').toggleClass('hidden', isSelfPost || !app.user.uid);
 	}
 
 	Posts.loadMorePosts = function(direction) {

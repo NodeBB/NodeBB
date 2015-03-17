@@ -7,3 +7,11 @@ Deprecation TODO's for post - 0.7x
 	.post-content
 	.topic-title
 	.post_reply
+	.edit
+	.delete
+	.purge
+	.move
+	.reply
+	.quote
+	.chat
+	.flag
