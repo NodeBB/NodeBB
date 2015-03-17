@@ -60,7 +60,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 
 		fork.init();
 
-		$('.posts').on('click', '.follow', function() {
+		components.get('topic').on('click', '[component="topic/follow"]', function() {
 			socket.emit('topics.toggleFollow', tid, function(err, state) {
 				if(err) {
 					return app.alert({
@@ -152,7 +152,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 		var iconClass = state ? 'fa fa-eye-slash' : 'fa fa-eye';
 		var text = state ? '[[topic:unwatch]]' : '[[topic:watch]]';
 
-		var followEl = $('.posts .follow');
+		var followEl = components.get('topic/follow');
 
 		translator.translate(title, function(titleTranslated) {
 			followEl.attr('title', titleTranslated).find('i').attr('class', iconClass);
