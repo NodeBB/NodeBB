@@ -61,6 +61,28 @@
 		return style.join(' ');
 	};
 
+	helpers.generateTopicClass = function(topic) {
+		var style = [];
+
+		if (topic.locked) {
+			style.push('locked');
+		}
+
+		if (topic.pinned) {
+			style.push('pinned');
+		}
+
+		if (topic.deleted) {
+			style.push('deleted');
+		}
+
+		if (topic.unread) {
+			style.push('unread');
+		}
+
+		return style.join(' ');
+	};
+
 	// Groups helpers
 	helpers.membershipBtn = function(groupObj) {
 		if (groupObj.isMember) {
