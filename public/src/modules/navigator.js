@@ -1,7 +1,7 @@
 
 'use strict';
 
-/* globals app, define, ajaxify, utils, translator, config */
+/* globals app, components, define, ajaxify, utils, translator, config */
 
 
 define('navigator', ['forum/pagination'], function(pagination) {

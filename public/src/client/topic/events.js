@@ -1,7 +1,7 @@
 
 'use strict';
 
-/* globals app, ajaxify, define, socket, translator, templates */
+/* globals app, ajaxify, components, define, socket, translator, templates */
 
 define('forum/topic/events', [
 	'forum/topic/browsing',
