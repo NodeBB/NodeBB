@@ -72,6 +72,12 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	function addPostHandlers(tid, threadState) {
 		var postContainer = components.get('topic');
 
+		/*
+		* Deprecation notice:
+		*   post-0.7.0 .classname selectors will no longer be supported
+		*   Use the components system instead.
+		*/
+
 		postContainer.on('click', '.quote, [component="post/quote"]', function() {
 			if (!threadState.locked) {
 				onQuoteClicked($(this), tid, topicName);
@@ -129,7 +135,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		var selectionText = '',
 			selection = window.getSelection ? window.getSelection() : document.selection.createRange();
 
-		if ($(selection.baseNode).parents('.post-content').length > 0) {
+		if ($(selection.baseNode).parents('[component="post/content"]').length > 0) {
 			var snippet = selection.toString();
 			if (snippet.length) {
 				selectionText = '> ' + snippet.replace(/\n/g, '\n> ') + '\n\n';
