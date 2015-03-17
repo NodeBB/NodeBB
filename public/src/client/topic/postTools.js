@@ -70,57 +70,57 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	}
 
 	function addPostHandlers(tid, threadState) {
-		$('.topic').on('click', '.post_reply', function() {
-			if (!threadState.locked) {
-				onReplyClicked($(this), tid, topicName);
-			}
-		});
-
 		var postContainer = components.get('topic');
 
-		postContainer.on('click', '.quote', function() {
+		postContainer.on('click', '.quote, [component="post/quote"]', function() {
 			if (!threadState.locked) {
 				onQuoteClicked($(this), tid, topicName);
 			}
 		});
 
-		postContainer.on('click', '.favourite', function() {
+		postContainer.on('click', '.post_reply, [component="post/reply"]', function() {
+			if (!threadState.locked) {
+				onReplyClicked($(this), tid, topicName);
+			}
+		});
+
+		postContainer.on('click', '.favourite, [component="post/favourite"]', function() {
 			favouritePost($(this), getData($(this), 'data-pid'));
 		});
 
-		postContainer.on('click', '.upvote', function() {
+		postContainer.on('click', '.upvote, [component="post/upvote"]', function() {
 			return toggleVote($(this), '.upvoted', 'posts.upvote');
 		});
 
-		postContainer.on('click', '.downvote', function() {
+		postContainer.on('click', '.downvote, [component="post/downvote"]', function() {
 			return toggleVote($(this), '.downvoted', 'posts.downvote');
 		});
 
-		postContainer.on('click', '.votes', function() {
+		postContainer.on('click', '.votes, [component="post/voters"]', function() {
 			showVotes(getData($(this), 'data-pid'));
 		});
 
-		postContainer.on('click', '.flag', function() {
+		postContainer.on('click', '.flag, [component="post/flag"]', function() {
 			flagPost(getData($(this), 'data-pid'));
 		});
 
-		postContainer.on('click', '.edit', function(e) {
+		postContainer.on('click', '.edit, [component="post/edit"]', function(e) {
 			composer.editPost(getData($(this), 'data-pid'));
 		});
 
-		postContainer.on('click', '.delete', function(e) {
+		postContainer.on('click', '.delete, [component="post/delete"]', function(e) {
 			deletePost($(this), tid);
 		});
 
-		postContainer.on('click', '.purge', function(e) {
+		postContainer.on('click', '.purge, [component="post/purge"]', function(e) {
 			purgePost($(this), tid);
 		});
 
-		postContainer.on('click', '.move', function(e) {
+		postContainer.on('click', '.move, [component="post/move"]', function(e) {
 			openMovePostModal($(this));
 		});
 
-		postContainer.on('click', '.chat', function(e) {
+		postContainer.on('click', '.chat, [component="user/chat"]', function(e) {
 			openChat($(this));
 		});
 	}
