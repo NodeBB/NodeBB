@@ -102,7 +102,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 			return toggleVote($(this), '.downvoted', 'posts.downvote');
 		});
 
-		postContainer.on('click', '.votes, [component="post/voters"]', function() {
+		postContainer.on('click', '.votes, [component="post/votes"]', function() {
 			showVotes(getData($(this), 'data-pid'));
 		});
 

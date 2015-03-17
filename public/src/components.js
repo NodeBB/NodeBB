@@ -19,9 +19,17 @@ var components = components || {};
 			var el = components.core.post('index', index).find('[component="post/anchor"]');
 			return el.length ? el : $('#post_anchor_' + index); // deprecated after 0.7x	
 		},
+		'post/votes': function(pid) {
+			var el = components.core.post('pid', pid).find('[component="post/votes"]');
+			return el.length ? el : components.core.post('pid', pid).find('.votes'); // deprecated after 0.7x	
+		},
 		'user/postcount': function(uid) {
 			var el = $('[component="user/postcount"][data-uid="' + uid + '"]');
 			return el.length ? el : $('.user_postcount_' + uid); // deprecated after 0.7x		
+		},
+		'user/reputation': function(uid) {
+			var el = $('[component="user/reputation"][data-uid="' + uid + '"]');
+			return el.length ? el : $('.reputation[data-uid="' + uid + '"]'); // deprecated after 0.7x		
 		}
 	};
 

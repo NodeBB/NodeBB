@@ -69,7 +69,7 @@ define('forum/topic/events', [
 	};
 
 	function updatePostVotesAndUserReputation(data) {
-		var votes = $('[data-pid="' + data.post.pid + '"] .votes'),
+		var votes = components.get('post/votes', data.post.pid),
 			reputationElements = $('.reputation[data-uid="' + data.post.uid + '"]');
 
 		votes.html(data.post.votes).attr('data-votes', data.post.votes);
