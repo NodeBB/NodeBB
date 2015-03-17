@@ -96,7 +96,7 @@ define('forum/topic/events', [
 	}
 
 	function onPostEdited(data) {
-		var editedPostEl = $('#content_' + data.pid),
+		var editedPostEl = components.get('post/content', data.pid),
 			editedPostTitle = $('#topic_title_' + data.pid);
 
 		if (editedPostTitle.length) {
