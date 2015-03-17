@@ -174,8 +174,7 @@ define('forum/topic/posts', [
 		if (!privileges.move) {
 			postEl.find('.move, [component="post/move"]').remove();
 		}
-		
-		postEl.find('.reply, .quote').toggleClass('hidden', !$('.post_reply, [component="post/reply"]').length);
+
 		postEl.find('.chat, .flag, [component="user/chat"], [component="post/flag"]').toggleClass('hidden', isSelfPost || !app.user.uid);
 	}
 
