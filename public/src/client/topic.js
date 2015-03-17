@@ -20,7 +20,7 @@ define('forum/topic', [
 	$(window).on('action:ajaxify.start', function(ev, data) {
 		if (ajaxify.currentPage !== data.url) {
 			navigator.hide();
-			$('.header-topic-title').find('span').text('').hide();
+			components.get('navbar/title').find('span').text('').hide();
 			app.removeAlert('bookmark');
 
 			events.removeListeners();
@@ -135,9 +135,9 @@ define('forum/topic', [
 
 	function updateTopicTitle() {
 		if($(window).scrollTop() > 50) {
-			$('.header-topic-title').find('span').text(ajaxify.variables.get('topic_name')).show();
+			components.get('navbar/title').find('span').text(ajaxify.variables.get('topic_name')).show();
 		} else {
-			$('.header-topic-title').find('span').text('').hide();
+			components.get('navbar/title').find('span').text('').hide();
 		}
 	}
 
