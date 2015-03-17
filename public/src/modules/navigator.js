@@ -161,7 +161,7 @@ define('navigator', ['forum/pagination'], function(pagination) {
 		duration = duration !== undefined ? duration : 400;
 		navigator.scrollActive = true;
 
-		if($('#post_anchor_' + postIndex).length) {
+		if(components.get('post/anchor', postIndex).length) {
 			return scrollToPid(postIndex, highlight, duration, offset);
 		}
 
@@ -188,7 +188,7 @@ define('navigator', ['forum/pagination'], function(pagination) {
 	};
 
 	function scrollToPid(postIndex, highlight, duration, offset) {
-		var scrollTo = $('#post_anchor_' + postIndex);
+		var scrollTo = components.get('post/anchor', postIndex);
 
 		if (!scrollTo) {
 			navigator.scrollActive = false;

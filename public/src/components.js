@@ -11,6 +11,10 @@ var components = components || {};
 		'post/header': function(pid) {
 			var el = $('[data-pid="' + pid + '"]').find('[component="post/header"]');
 			return el.length ? el : $('#topic_title_' + pid); // deprecated after 0.7x	
+		},
+		'post/anchor': function(pid) {
+			var el = $('[data-pid="' + pid + '"]').find('[component="post/anchor"]');
+			return el.length ? el : $('#post_anchor_' + pid); // deprecated after 0.7x	
 		}
 	};
 
