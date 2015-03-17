@@ -1,1 +1,1 @@
-<input type="hidden" template-variable="reset_code" value="{reset_code}" />
+<input type="hidden" template-variable="reset_code" value="{code}" />
