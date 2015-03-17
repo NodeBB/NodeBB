@@ -84,8 +84,8 @@ function generateForTopic(req, res, next) {
 					feed.item({
 						title: 'Reply to ' + topicData.title + ' on ' + dateStamp,
 						description: postData.content,
-						url: nconf.get('url') + '/topic/' + topicData.slug + '/' + postData.index,
-						author: postData.username,
+						url: nconf.get('url') + '/topic/' + topicData.slug + (postData.index ? '/' + (postData.index + 1) : ''),
+						author: postData.user ? postData.user.username : '',
 						date: dateStamp
 					});
 				}
