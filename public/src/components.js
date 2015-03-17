@@ -5,7 +5,7 @@ var components = components || {};
 (function() {
 	components.core = {
 		'post': function(name, value) {
-			return $('[data-' + name + '="' + value + '"]');
+			return value ? $('[data-' + name + '="' + value + '"]') $('[data-' + name + ']');
 		},
 		'post/content': function(pid) {
 			var el = components.core.post('pid', pid).find('[component="post/content"]');
