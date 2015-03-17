@@ -20,6 +20,11 @@ var components = components || {};
 
 	components.get = function() {
 		var args = Array.prototype.slice.call(arguments, 1);
-		return components.core[arguments[0]].apply(this, args);
+		
+		if (components.core[arguments[0]]) {
+			return components.core[arguments[0]].apply(this, args);
+		} else {
+			return $('[component="' + arguments[0] + '"]');
+		}
 	};
 }());
