@@ -4,6 +4,8 @@ var categoriesController = {},
 	async = require('async'),
 	nconf = require('nconf'),
 	validator = require('validator'),
+
+	db = require('../database'),
 	privileges = require('../privileges'),
 	user = require('../user'),
 	categories = require('../categories'),
