@@ -2,8 +2,8 @@
     "title": "ไม่ได้อ่าน",
     "no_unread_topics": "ไม่มีกระทู้ที่ยังไม่ได้อ่านเป็น",
     "load_more": "โหลดเพิ่มเติม",
-    "mark_as_read": "Mark as Read",
-    "selected": "Selected",
-    "all": "All",
-    "topics_marked_as_read.success": "Topics marked as read!"
+    "mark_as_read": "ทำเครื่องหมายว่าอ่านแล้ว",
+    "selected": "เลือก",
+    "all": "ทั้งหมด",
+    "topics_marked_as_read.success": "Topic ถูกทำเครื่องหมายว่าอ่านแล้วเรียบร้อย"
 }

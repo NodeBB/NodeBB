@@ -27,7 +27,7 @@
     "header.tags": "Žymos",
     "header.popular": "Populiarūs",
     "header.users": "Vartotojai",
-    "header.groups": "Groups",
+    "header.groups": "Grupės",
     "header.chats": "Susirašinėjimai",
     "header.notifications": "Pranešimai",
     "header.search": "Ieškoti",
@@ -74,8 +74,8 @@
     "guests": "Svečiai",
     "updated.title": "Forumas atnaujintas",
     "updated.message": "Forumas buvo atnaujintas iki naujausios versijos. Paspauskite čia norėdami perkrauti puslapį.",
-    "privacy": "Privacy",
-    "follow": "Follow",
-    "unfollow": "Unfollow",
-    "delete_all": "Delete All"
+    "privacy": "Privatumas",
+    "follow": "Sekti",
+    "unfollow": "Nebesekti",
+    "delete_all": "Viską ištrinti"
 }

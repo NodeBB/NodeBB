@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "ไม่มีหัวข้อสนทนาที่เกี่ยวข้องกับป้ายคำศัพท์นี้",
     "tags": "ป้ายคำศัพท์",
-    "enter_tags_here": "Enter tags here. %1-%2 characters. Press enter after each tag.",
+    "enter_tags_here": "ใส่ Tags ตรงนี้ได้ทั้งหมด %1-%2 ตัวอักษร และกรุณากดปุ่ม Enter ทุกครั้งเมื่อต้องการเพิ่ม Tag ใหม่",
     "enter_tags_here_short": "ใส่ป้ายคำศัพท์ ...",
     "no_tags": "ยังไม่มีป้ายคำศัพท์"
 }
