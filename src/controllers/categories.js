@@ -249,6 +249,11 @@ categoriesController.get = function(req, res, next) {
 			categories.getCategoryById(payload, next);
 		},
 		function(categoryData, next) {
+			if (categoryData.link) {
+				db.incrObjectField('category:' + categoryData.cid, 'timesClicked');
+				return res.redirect(categoryData.link);
+			}
+
 			var breadcrumbs = [
 				{
 					text: categoryData.name,
@@ -264,10 +269,6 @@ categoriesController.get = function(req, res, next) {
 			});
 		},
 		function(categoryData, next) {
-			if (categoryData.link) {
-				return res.redirect(categoryData.link);
-			}
-
 			categories.getRecentTopicReplies(categoryData.children, uid, function(err) {
 				next(err, categoryData);
 			});
