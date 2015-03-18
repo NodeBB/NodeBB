@@ -74,12 +74,6 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	function addPostHandlers(tid, threadState) {
 		var postContainer = components.get('topic');
 
-		/*
-		* Deprecation notice:
-		*   post-0.7.0 .classname selectors will no longer be supported
-		*   Use the components system instead.
-		*/
-
 		postContainer.on('click', '[component="post/quote"]', function() {
 			if (!threadState.locked) {
 				onQuoteClicked($(this), tid, topicName);
