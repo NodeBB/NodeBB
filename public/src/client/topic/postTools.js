@@ -125,6 +125,12 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		postContainer.on('click', '[component="user/chat"]', function(e) {
 			openChat($(this));
 		});
+
+		$('#content').on('click', '[component="topic/reply"]', function() {
+			if (!threadState.locked) {
+				onReplyClicked($(this), tid, topicName);
+			}
+		});
 	}
 
 	function onReplyClicked(button, tid, topicName) {
