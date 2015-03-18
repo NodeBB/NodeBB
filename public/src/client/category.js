@@ -20,12 +20,6 @@ define('forum/category', [
 		}
 	});
 
-	$(window).on('action:composer.topics.post', function(ev, data) {
-		localStorage.removeItem('category:' + data.data.cid + ':bookmark');
-		localStorage.removeItem('category:' + data.data.cid + ':bookmark:clicked');
-		ajaxify.go('topic/' + data.data.slug);
-	});
-
 	function removeListeners() {
 		socket.removeListener('event:new_topic', Category.onNewTopic);
 		categoryTools.removeListeners();
