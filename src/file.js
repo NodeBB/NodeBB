@@ -8,11 +8,20 @@ var fs = require('fs'),
 	Magic = mmmagic.Magic,
 	mime = require('mime'),
 
-	meta= require('./meta');
+	meta = require('./meta'),
+	utils = require('../public/src/utils');
 
 var file = {};
 
 file.saveFileToLocal = function(filename, folder, tempPath, callback) {
+	/*
+	* remarkable doesn't allow spaces in hyperlinks, once that's fixed, remove this.
+	*/
+	filename = filename.split('.');
+	filename.forEach(function(name, idx) {
+		filename[idx] = utils.slugify(name);
+	});
+	filename = filename.join('.');
 
 	var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), folder, filename);
 
@@ -23,7 +32,7 @@ file.saveFileToLocal = function(filename, folder, tempPath, callback) {
 
 	is.on('end', function () {
 		callback(null, {
-			url: nconf.get('upload_url') + folder + '/' + encodeURIComponent(filename)
+			url: nconf.get('upload_url') + folder + '/' + filename
 		});
 	});
 
