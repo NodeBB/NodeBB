@@ -293,7 +293,8 @@ SocketUser.follow = function(socket, data, callback) {
 			notifications.create({
 				bodyShort: '[[notifications:user_started_following_you, ' + userData.username + ']]',
 				nid: 'follow:' + data.uid + ':uid:' + socket.uid,
-				from: socket.uid
+				from: socket.uid,
+				user: userData
 			}, next);
 		},
 		function(notification, next) {
