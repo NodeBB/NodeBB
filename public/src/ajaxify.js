@@ -135,19 +135,17 @@ $(document).ready(function() {
 
 		templates.parse(tpl_url, data, function(template) {
 			translator.translate(template, function(translatedTemplate) {
-				setTimeout(function() {
-					$('#content').html(translatedTemplate);
+				$('#content').html(translatedTemplate);
 
-					ajaxify.end(url, tpl_url);
+				ajaxify.end(url, tpl_url);
 
-					if (typeof callback === 'function') {
-						callback();
-					}
+				if (typeof callback === 'function') {
+					callback();
+				}
 
-					$('#content, #footer').removeClass('ajaxifying');
+				$('#content, #footer').removeClass('ajaxifying');
 
-					app.refreshTitle(url);
-				}, animationDuration * 1000 - ((new Date()).getTime() - startTime));
+				app.refreshTitle(url);
 			});
 		});
 	}
