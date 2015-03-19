@@ -89,8 +89,8 @@ define('forum/category', [
 		});
 	};
 
-	Category.navigatorCallback = function(element, elementCount) {
-		return parseInt(element.attr('data-index'), 10) + 1;
+	Category.navigatorCallback = function(topIndex, bottomIndex, elementCount) {
+		return bottomIndex;
 	};
 
 	$(window).on('action:popstate', function(ev, data) {

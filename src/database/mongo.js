@@ -110,8 +110,14 @@
 				createIndex('objects', {_key: 1, value: -1}, {background:true});
 				createIndex('objects', {expireAt: 1}, {expireAfterSeconds:0, background:true});
 
-				createIndex('search', {content:'text'}, {background:true});
-				createIndex('search', {key: 1, id: 1}, {background:true});
+
+				createIndex('searchtopic', {content: 'text', uid: 1, cid: 1}, {background:true});
+				createIndex('searchtopic', {id: 1}, {background:true});
+
+
+				createIndex('searchpost', {content: 'text', uid: 1, cid: 1}, {background:true});
+				createIndex('searchpost', {id: 1}, {background:true});
+
 
 				if (typeof callback === 'function') {
 					callback();

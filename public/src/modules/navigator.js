@@ -90,18 +90,26 @@ define('navigator', ['forum/pagination'], function(pagination) {
 	navigator.update = function() {
 		toggle(!!count);
 
-		$($(navigator.selector).get().reverse()).each(function() {
+		var topIndex = 0;
+		var bottomIndex = 0;
+		$(navigator.selector).each(function() {
 			var el = $(this);
 
 			if (elementInView(el)) {
-				if (typeof navigator.callback === 'function') {
-					index = navigator.callback(el, count);
-					navigator.updateTextAndProgressBar();
+				if (!topIndex) {
+					topIndex = parseInt(el.attr('data-index'), 10) + 1;
+				} else {
+					bottomIndex = parseInt(el.attr('data-index'), 10) + 1;
 				}
-
+			} else if (topIndex && bottomIndex) {
 				return false;
 			}
 		});
+
+		if (typeof navigator.callback === 'function' && topIndex && bottomIndex) {
+			index = navigator.callback(topIndex, bottomIndex, count);
+			navigator.updateTextAndProgressBar();
+		}
 	};
 
 	navigator.updateTextAndProgressBar = function() {

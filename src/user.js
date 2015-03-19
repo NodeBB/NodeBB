@@ -158,7 +158,7 @@ var	async = require('async'),
 				if (now - parseInt(userOnlineTime, 10) < 300000) {
 					return callback();
 				}
-				db.sortedSetAdd('users:online', now, uid, next);	
+				db.sortedSetAdd('users:online', now, uid, next);
 			},
 			function(next) {
 				topics.pushUnreadCount(uid);
@@ -332,6 +332,18 @@ var	async = require('async'),
 			return callback();
 		}
 		db.getObjectField('username:uid', username, callback);
+	};
+
+	User.getUidsByUsernames = function(usernames, callback) {
+		db.getObjectFields('username:uid', usernames, function(err, users) {
+			if (err) {
+				return callback(err);
+			}
+			var uids = usernames.map(function(username) {
+				return users[username];
+			});
+			callback(null, uids);
+		});
 	};
 
 	User.getUidByUserslug = function(userslug, callback) {

@@ -50,7 +50,7 @@ define('share', function() {
 
 	function getPostUrl(clickedElement) {
 		var parts = window.location.pathname.split('/');
-		var postIndex = parseInt(clickedElement.parents('data-index').attr('data-index'), 10);
+		var postIndex = parseInt(clickedElement.parents('[data-index]').attr('data-index'), 10);
 		return '/' + parts[1] + '/' + parts[2] + (parts[3] ? '/' + parts[3] : '') + (postIndex ? '/' + (postIndex + 1) : '');
 	}
 

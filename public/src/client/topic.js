@@ -148,18 +148,18 @@ define('forum/topic', [
 		return index;
 	};
 
-	Topic.navigatorCallback = function(element, elementCount) {
+	Topic.navigatorCallback = function(topPostIndex, bottomPostIndex, elementCount) {
 		var path = ajaxify.removeRelativePath(window.location.pathname.slice(1));
 		if (!path.startsWith('topic')) {
 			return 1;
 		}
-		var postIndex = parseInt(element.attr('data-index'), 10);
-		var index = postIndex + 1;
+		var postIndex = topPostIndex;
+		var index = bottomPostIndex;
 		if (config.topicPostSort !== 'oldest_to_newest') {
-			if (postIndex === 0) {
+			if (bottomPostIndex === 0) {
 				index = 1;
 			} else  {
-				index = Math.max(elementCount - postIndex + 1, 1);
+				index = Math.max(elementCount - bottomPostIndex + 2, 1);
 			}
 		}
 
@@ -175,8 +175,8 @@ define('forum/topic', [
 			var topicId = parts[1],
 				slug = parts[2];
 			var newUrl = 'topic/' + topicId + '/' + (slug ? slug : '');
-			if (postIndex > 0) {
-				newUrl += '/' + (postIndex + 1);
+			if (postIndex > 1) {
+				newUrl += '/' + postIndex;
 			}
 
 			if (newUrl !== currentUrl) {
