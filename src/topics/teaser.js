@@ -27,7 +27,7 @@ module.exports = function(Topics) {
 			}
 		});
 
-		posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid'], function(err, postData) {
+		posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content'], function(err, postData) {
 			if (err) {
 				return callback(err);
 			}
