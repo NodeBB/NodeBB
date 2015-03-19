@@ -116,7 +116,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll']
 		infinitescroll.parseAndTranslate('account/profile', 'posts', {posts: posts}, function(html) {
 
 			$('.user-recent-posts .loading-indicator').before(html);
-			html.find('span.timeago').timeago();
+			html.find('.timeago').timeago();
 
 			callback();
 		});

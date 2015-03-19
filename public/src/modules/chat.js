@@ -406,7 +406,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 		Chats.parseMessage(data, function(html) {
 			var message = $(html);
 			message.find('img:not(".chat-user-image")').addClass('img-responsive');
-			message.find('span.timeago').timeago();
+			message.find('.timeago').timeago();
 			message.insertBefore(typingNotif);
 			Chats.scrollToBottom(chatContent);
 

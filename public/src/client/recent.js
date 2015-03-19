@@ -125,7 +125,7 @@ define('forum/recent', ['forum/infinitescroll', 'composer'], function(infinitesc
 			$('#category-no-topics').remove();
 
 			$('#topics-container').append(html);
-			html.find('span.timeago').timeago();
+			html.find('.timeago').timeago();
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			$(window).trigger('action:topics.loaded');

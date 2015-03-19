@@ -16,7 +16,7 @@ define('forum/notifications', function() {
 			});
 		});
 
-		$('span.timeago').timeago();
+		$('.timeago').timeago();
 
 		$('.notifications .delete').on('click', function() {
 			socket.emit('notifications.markAllRead', function(err) {

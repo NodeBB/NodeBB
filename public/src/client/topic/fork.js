@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, ajaxify, translator, socket */
+/* globals define, app, ajaxify, components, translator, socket */
 
 define('forum/topic/fork', function() {
 
@@ -10,7 +10,7 @@ define('forum/topic/fork', function() {
 		pids = [];
 
 	Fork.init = function() {
-		$('.fork_thread').on('click', onForkThreadClicked);
+		components.get('topic/fork').on('click', onForkThreadClicked);
 	};
 
 	function disableClicks() {
@@ -18,11 +18,11 @@ define('forum/topic/fork', function() {
 	}
 
 	function disableClicksOnPosts() {
-		$('.post-row').on('click', 'button,a', disableClicks);
+		components.get('post').on('click', 'button,a', disableClicks);
 	}
 
 	function enableClicksOnPosts() {
-		$('.post-row').off('click', 'button,a', disableClicks);
+		components.get('post').off('click', 'button,a', disableClicks);
 	}
 
 	function onForkThreadClicked() {
@@ -35,7 +35,7 @@ define('forum/topic/fork', function() {
 
 		forkModal.find('.close,#fork_thread_cancel').on('click', closeForkModal);
 		forkModal.find('#fork-title').on('change', checkForkButtonEnable);
-		$('#post-container').on('click', '[data-pid]', function() {
+		components.get('topic').on('click', '[data-pid]', function() {
 			togglePostSelection($(this));
 		});
 
@@ -58,7 +58,7 @@ define('forum/topic/fork', function() {
 			pids: pids
 		}, function(err, newTopic) {
 			function fadeOutAndRemove(pid) {
-				$('#post-container [data-pid="' + pid + '"]').fadeOut(500, function() {
+				components.get('post', 'pid', pid).fadeOut(500, function() {
 					$(this).remove();
 				});
 			}
@@ -125,10 +125,11 @@ define('forum/topic/fork', function() {
 
 	function closeForkModal() {
 		for(var i=0; i<pids.length; ++i) {
-			$('#post-container [data-pid="' + pids[i] + '"]').css('opacity', 1);
+			components.get('post', 'pid', pids[i]).css('opacity', 1);
 		}
+
 		forkModal.addClass('hide');
-		$('#post-container').off('click', '[data-pid]');
+		components.get('topic').off('click', '[data-pid]');
 		enableClicksOnPosts();
 	}
 

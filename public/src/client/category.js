@@ -20,12 +20,6 @@ define('forum/category', [
 		}
 	});
 
-	$(window).on('action:composer.topics.post', function(ev, data) {
-		localStorage.removeItem('category:' + data.data.cid + ':bookmark');
-		localStorage.removeItem('category:' + data.data.cid + ':bookmark:clicked');
-		ajaxify.go('topic/' + data.data.slug);
-	});
-
 	function removeListeners() {
 		socket.removeListener('event:new_topic', Category.onNewTopic);
 		categoryTools.removeListeners();
@@ -55,7 +49,7 @@ define('forum/category', [
 			navigator.init('#topics-container > .category-item', ajaxify.variables.get('topic_count'), Category.toTop, Category.toBottom, Category.navigatorCallback);
 		}
 
-		$('#topics-container').on('click', '.topic-title', function() {
+		$('#topics-container').on('click', '[component="post/header"]', function() {
 			var clickedIndex = $(this).parents('[data-index]').attr('data-index');
 			$('#topics-container li.category-item').each(function(index, el) {
 				if ($(el).offset().top - $(window).scrollTop() > 0) {
@@ -228,7 +222,7 @@ define('forum/category', [
 
 				topic.hide().fadeIn('slow');
 
-				topic.find('span.timeago').timeago();
+				topic.find('.timeago').timeago();
 				app.createUserTooltips();
 				updateTopicCount();
 
@@ -304,7 +298,7 @@ define('forum/category', [
 				if (typeof callback === 'function') {
 					callback();
 				}
-				html.find('span.timeago').timeago();
+				html.find('.timeago').timeago();
 				app.createUserTooltips();
 				utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			});

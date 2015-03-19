@@ -1,7 +1,7 @@
 
 'use strict';
 
-/* globals app, ajaxify, define, socket, translator, templates */
+/* globals app, ajaxify, components, define, socket, translator, templates */
 
 define('forum/topic/events', [
 	'forum/topic/browsing',
@@ -69,7 +69,7 @@ define('forum/topic/events', [
 	};
 
 	function updatePostVotesAndUserReputation(data) {
-		var votes = $('[data-pid="' + data.post.pid + '"] .votes'),
+		var votes = components.get('post/vote-count', data.post.pid),
 			reputationElements = $('.reputation[data-uid="' + data.post.uid + '"]');
 
 		votes.html(data.post.votes).attr('data-votes', data.post.votes);
@@ -96,12 +96,12 @@ define('forum/topic/events', [
 	}
 
 	function onPostEdited(data) {
-		var editedPostEl = $('#content_' + data.pid),
-			editedPostTitle = $('#topic_title_' + data.pid);
+		var editedPostEl = components.get('post/content', data.pid),
+			editedPostHeader = components.get('post/header', data.pid);
 
-		if (editedPostTitle.length) {
-			editedPostTitle.fadeOut(250, function() {
-				editedPostTitle.html(data.title).fadeIn(250);
+		if (editedPostHeader.length) {
+			editedPostHeader.fadeOut(250, function() {
+				editedPostHeader.html(data.title).fadeIn(250);
 			});
 		}
 
@@ -139,14 +139,15 @@ define('forum/topic/events', [
 	}
 
 	function onPostPurged(pid) {
-		$('#post-container [data-pid="' + pid + '"]').fadeOut(500, function() {
+		components.get('post', 'pid', pid).fadeOut(500, function() {
 			$(this).remove();
 		});
+
 		postTools.updatePostCount();
 	}
 
 	function togglePostDeleteState(data) {
-		var postEl = $('#post-container [data-pid="' + data.pid + '"]');
+		var postEl = components.get('post', 'pid', data.pid);
 
 		if (!postEl.length) {
 			return;
@@ -158,9 +159,9 @@ define('forum/topic/events', [
 
 		if (!app.user.isAdmin && parseInt(data.uid, 10) !== parseInt(app.user.uid, 10)) {
 			if (isDeleted) {
-				postEl.find('.post-content').translateHtml('[[topic:post_is_deleted]]');
+				postEl.find('[component="post/content"]').translateHtml('[[topic:post_is_deleted]]');
 			} else {
-				postEl.find('.post-content').html(data.content);
+				postEl.find('[component="post/content"]').html(data.content);
 			}
 		}
 	}

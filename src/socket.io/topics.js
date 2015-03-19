@@ -41,6 +41,10 @@ SocketTopics.post = function(socket, data, callback) {
 			return callback(err);
 		}
 
+		if (data.lock) {
+			SocketTopics.doTopicAction('lock', 'event:topic_locked', socket, {tids: [result.topicData.tid], cid: result.topicData.cid});
+		}
+
 		callback(null, result.topicData);
 		socket.emit('event:new_post', {posts: [result.postData]});
 		socket.emit('event:new_topic', result.topicData);
@@ -233,6 +237,7 @@ SocketTopics.unpin = function(socket, data, callback) {
 };
 
 SocketTopics.doTopicAction = function(action, event, socket, data, callback) {
+	callback = callback || function() {};
 	if (!socket.uid) {
 		return;
 	}
@@ -547,6 +552,15 @@ SocketTopics.loadMoreTags = function(socket, data, callback) {
 		}
 
 		callback(null, {tags: tags, nextStart: end + 1});
+	});
+};
+
+SocketTopics.isModerator = function(socket, tid, callback) {
+	topics.getTopicField(tid, 'cid', function(err, cid) {
+		if (err) {
+			return callback(err);
+		}
+		user.isModerator(socket.uid, cid, callback);
 	});
 };
 

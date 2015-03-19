@@ -234,7 +234,7 @@ app.cacheBuster = null;
 	app.processPage = function () {
 		highlightNavigationLink();
 
-		$('span.timeago').timeago();
+		$('.timeago').timeago();
 
 		utils.makeNumbersHumanReadable($('.human-readable-number'));
 

@@ -25,6 +25,8 @@ $(document).ready(function() {
 	ajaxify.go = function (url, callback, quiet) {
 		if (ajaxify.handleACPRedirect(url)) {
 			return true;
+		} else if (ajaxify.handleNonAPIRoutes(url)) {
+			return true;
 		}
 
 		app.enterRoom('');
@@ -65,6 +67,15 @@ $(document).ready(function() {
 		// If ajaxifying into an admin route from regular site, do a cold load.
 		url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
 		if (url.indexOf('admin') === 0 && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0) {
+			window.open(RELATIVE_PATH + '/' + url, '_blank');
+			return true;
+		}
+		return false;
+	};
+
+	ajaxify.handleNonAPIRoutes = function(url) {
+		url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
+		if (url.indexOf('uploads') === 0) {
 			window.open(RELATIVE_PATH + '/' + url, '_blank');
 			return true;
 		}

@@ -19,8 +19,8 @@
     "email-taken": "Email già esistente",
     "email-not-confirmed": "La tua Email deve essere ancora confermata, per favore clicca qui per confermare la tua Email.",
     "email-not-confirmed-chat": "Non potrai chattare finchè non avrai confermato la tua email",
-    "no-email-to-confirm": "This forum requires email confirmation, please click here to enter an email",
-    "email-confirm-failed": "We could not confirm your email, please try again later.",
+    "no-email-to-confirm": "Questo forum richiede la conferma dell'indirizzo email, per favore clicca qui per inserirne uno",
+    "email-confirm-failed": "Non possiamo confermare la tua email, per favore prova ancora più tardi.",
     "username-too-short": "Nome utente troppo corto",
     "username-too-long": "Nome utente troppo lungo",
     "user-banned": "Utente bannato",
@@ -77,5 +77,5 @@
     "registration-error": "Errore nella registrazione",
     "parse-error": "Qualcosa è andato storto durante l'analisi della risposta proveniente dal server",
     "wrong-login-type-email": "Please use your email to login",
-    "wrong-login-type-username": "Please use your username to login"
+    "wrong-login-type-username": "Per favore usa il tuo nome utente per accedere"
 }

@@ -1,7 +1,7 @@
 'use strict';
 
 
-/* globals define, app, templates, translator, socket, bootbox, config, ajaxify, RELATIVE_PATH, utils */
+/* globals define, app, components, templates, translator, socket, bootbox, config, ajaxify, RELATIVE_PATH, utils */
 
 define('forum/topic', [
 	'forum/pagination',
@@ -20,7 +20,7 @@ define('forum/topic', [
 	$(window).on('action:ajaxify.start', function(ev, data) {
 		if (ajaxify.currentPage !== data.url) {
 			navigator.hide();
-			$('.header-topic-title').find('span').text('').hide();
+			components.get('navbar/title').find('span').text('').hide();
 			app.removeAlert('bookmark');
 
 			events.removeListeners();
@@ -53,7 +53,7 @@ define('forum/topic', [
 
 		handleBookmark(tid);
 
-		navigator.init('.posts > .post-row', ajaxify.variables.get('postcount'), Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
+		navigator.init(components.get('post'), ajaxify.variables.get('postcount'), Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
 
 		$(window).on('scroll', updateTopicTitle);
 
@@ -112,7 +112,7 @@ define('forum/topic', [
 	}
 
 	function addBlockQuoteHandler() {
-		$('#post-container').on('click', 'blockquote .toggle', function() {
+		components.get('topic').on('click', 'blockquote .toggle', function() {
 			var blockQuote = $(this).parent('blockquote');
 			var toggle = $(this);
 			blockQuote.toggleClass('uncollapsed');
@@ -124,7 +124,7 @@ define('forum/topic', [
 
 	function enableInfiniteLoadingOrPagination() {
 		if(!config.usePagination) {
-			infinitescroll.init(posts.loadMorePosts, $('#post-container .post-row[data-index="0"]').height());
+			infinitescroll.init(posts.loadMorePosts, components.get('post', 'index', 0).height());
 		} else {
 			navigator.hide();
 
@@ -135,9 +135,9 @@ define('forum/topic', [
 
 	function updateTopicTitle() {
 		if($(window).scrollTop() > 50) {
-			$('.header-topic-title').find('span').text(ajaxify.variables.get('topic_name')).show();
+			components.get('navbar/title').find('span').text(ajaxify.variables.get('topic_name')).show();
 		} else {
-			$('.header-topic-title').find('span').text('').hide();
+			components.get('navbar/title').find('span').text('').hide();
 		}
 	}
 
