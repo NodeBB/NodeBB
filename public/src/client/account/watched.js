@@ -30,7 +30,7 @@ define('forum/account/watched', ['forum/account/header', 'forum/infinitescroll']
 
 	function onTopicsLoaded(topics, callback) {
 		infinitescroll.parseAndTranslate('account/watched', 'topics', {topics: topics}, function(html) {
-			$('#topics-container').append(html);
+			$('[component="category"]').append(html);
 			html.find('.timeago').timeago();
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));

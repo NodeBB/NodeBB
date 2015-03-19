@@ -28,6 +28,10 @@ var components = components || {};
 		},
 		'user/reputation': function(uid) {
 			return $('[component="user/reputation"][data-uid="' + uid + '"]');
+		},
+
+		'category/topic': function(name, value) {
+			return $('[data-' + name + '="' + value + '"]');
 		}
 	};
 

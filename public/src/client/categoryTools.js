@@ -173,7 +173,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 	}
 
 	function getTopicEl(tid) {
-		return $('#topics-container li[data-tid="' + tid + '"]');
+		return components.get('category/topic', 'tid', tid);
 	}
 
 	function setDeleteState(data) {

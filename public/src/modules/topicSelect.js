@@ -9,7 +9,7 @@ define('topicSelect', function() {
 	var topicsContainer;
 
 	TopicSelect.init = function(onSelect) {
-		topicsContainer = $('#topics-container');
+		topicsContainer = $('[component="category"]');
 		topicsContainer.on('selectstart', function() {
 			return false;
 		});
@@ -78,7 +78,7 @@ define('topicSelect', function() {
 	}
 
 	function getIndex(tid) {
-		return $('.category-item[data-tid="' + tid + '"]').index('#topics-container .category-item');
+		return components.get('category/topic', 'tid', tid).index('[component="category/topic"]');
 	}
 
 	return TopicSelect;
