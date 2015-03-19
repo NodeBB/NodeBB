@@ -42,7 +42,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 
 				app.alertSuccess('[[unread:topics_marked_as_read.success]]');
 
-				$('#topics-container').empty();
+				$('[component="category"]').empty();
 				$('#category-no-topics').removeClass('hidden');
 				$('.markread').addClass('hidden');
 			});
@@ -51,7 +51,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 		$('.markread').on('click', '.category', function() {
 			function getCategoryTids(cid) {
 				var tids = [];
-				$('#topics-container .category-item[data-cid="' + cid + '"]').each(function() {
+				components.get('category/topic', 'cid', cid).each(function() {
 					tids.push($(this).attr('data-tid'));
 				});
 				return tids;
@@ -72,7 +72,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 
 		topicSelect.init();
 
-		if ($("body").height() <= $(window).height() && $('#topics-container').children().length >= 20) {
+		if ($("body").height() <= $(window).height() && $('[component="category"]').children().length >= 20) {
 			$('#load-more-btn').show();
 		}
 
@@ -83,16 +83,16 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 		infinitescroll.init(loadMoreTopics);
 
 		function loadMoreTopics(direction) {
-			if(direction < 0 || !$('#topics-container').length) {
+			if(direction < 0 || !$('[component="category"]').length) {
 				return;
 			}
 
 			infinitescroll.loadMore('topics.loadMoreUnreadTopics', {
-				after: $('#topics-container').attr('data-nextstart')
+				after: $('[component="category"]').attr('data-nextstart')
 			}, function(data, done) {
 				if (data.topics && data.topics.length) {
 					recent.onTopicsLoaded('unread', data.topics, true, done);
-					$('#topics-container').attr('data-nextstart', data.nextStart);
+					$('[component="category"]').attr('data-nextstart', data.nextStart);
 				} else {
 					done();
 					$('#load-more-btn').hide();
@@ -106,7 +106,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 
 		app.alertSuccess('[[unread:topics_marked_as_read.success]]');
 
-		if (!$('#topics-container').children().length) {
+		if (!$('[component="category"]').children().length) {
 			$('#category-no-topics').removeClass('hidden');
 			$('.markread').addClass('hidden');
 		}
@@ -114,7 +114,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], 
 
 	function removeTids(tids) {
 		for(var i=0; i<tids.length; ++i) {
-			$('#topics-container .category-item[data-tid="' + tids[i] + '"]').remove();
+			components.get('category/topic', 'tid', tids[i]).remove();
 		}
 	}
 
