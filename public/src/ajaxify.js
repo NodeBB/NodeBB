@@ -130,7 +130,6 @@ $(document).ready(function() {
 	}
 
 	function renderTemplate(url, tpl_url, data, startTime, callback) {
-		var animationDuration = parseFloat($('#content').css('transition-duration')) || 0.2;
 		$(window).trigger('action:ajaxify.loadingTemplates', {});
 
 		templates.parse(tpl_url, data, function(template) {
