@@ -14,6 +14,7 @@ var	async = require('async'),
 	websockets = require('./index'),
 	meta = require('../meta'),
 	events = require('../events'),
+	emailer = require('../emailer'),
 	SocketUser = {};
 
 SocketUser.exists = function(socket, data, callback) {
