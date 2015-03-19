@@ -2,6 +2,7 @@
 
 var	async = require('async'),
 	nconf = require('nconf'),
+	db = require('../database'),
 	user = require('../user'),
 	groups = require('../groups'),
 	topics = require('../topics'),
