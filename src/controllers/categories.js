@@ -277,6 +277,7 @@ categoriesController.get = function(req, res, next) {
 		},
 		function (categoryData, next) {
 			categoryData.privileges = userPrivileges;
+			categoryData.showSelect = categoryData.privileges.editable;
 
 			res.locals.metaTags = [
 				{
