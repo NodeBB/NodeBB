@@ -179,20 +179,20 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 	function setDeleteState(data) {
 		var topic = getTopicEl(data.tid);
 		topic.toggleClass('deleted', data.isDeleted);
-		topic.find('.fa-lock').toggleClass('hide', !data.isDeleted);
+		topic.find('[component="topic/locked"]').toggleClass('hide', !data.isDeleted);
 	}
 
 	function setPinnedState(data) {
 		var topic = getTopicEl(data.tid);
 		topic.toggleClass('pinned', data.isPinned);
-		topic.find('.fa-thumb-tack').toggleClass('hide', !data.isPinned);
+		topic.find('[component="topic/pinned"]').toggleClass('hide', !data.isPinned);
 		ajaxify.refresh();
 	}
 
 	function setLockedState(data) {
 		var topic = getTopicEl(data.tid);
 		topic.toggleClass('locked', data.isLocked);
-		topic.find('.fa-lock').toggleClass('hide', !data.isLocked);
+		topic.find('[component="topic/locked"]').toggleClass('hide', !data.isLocked);
 	}
 
 	function onTopicMoved(data) {
