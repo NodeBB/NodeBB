@@ -281,7 +281,7 @@ SocketUser.follow = function(socket, data, callback) {
 	if (!socket.uid || !data) {
 		return;
 	}
-
+	var userData;
 	async.waterfall([
 		function(next) {
 			toggleFollow('follow', socket.uid, data.uid, next);
@@ -289,15 +289,16 @@ SocketUser.follow = function(socket, data, callback) {
 		function(next) {
 			user.getUserFields(socket.uid, ['username', 'userslug'], next);
 		},
-		function(userData, next) {
+		function(_userData, next) {
+			userData = _userData;
 			notifications.create({
 				bodyShort: '[[notifications:user_started_following_you, ' + userData.username + ']]',
 				nid: 'follow:' + data.uid + ':uid:' + socket.uid,
-				from: socket.uid,
-				user: userData
+				from: socket.uid
 			}, next);
 		},
 		function(notification, next) {
+			notification.user = userData;
 			notifications.push(notification, [data.uid], next);
 		}
 	], callback);
