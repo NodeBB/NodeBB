@@ -126,7 +126,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 			openChat($(this));
 		});
 
-		$('[component="topic/reply"]').on('click', function() {
+		components.get('topic/reply').on('click', function() {
 			if (!threadState.locked) {
 				onReplyClicked($(this), tid, topicName);
 			}
