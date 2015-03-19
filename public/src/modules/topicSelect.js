@@ -18,7 +18,7 @@ define('topicSelect', function() {
 			var select = $(this);
 
 			if (ev.shiftKey) {
-				selectRange($(this).parents('.category-item').attr('data-tid'));
+				selectRange($(this).parents('[component="category/topic"]').attr('data-tid'));
 				lastSelected = select;
 				return false;
 			}
@@ -35,32 +35,32 @@ define('topicSelect', function() {
 	function toggleSelect(select, isSelected) {
 		select.toggleClass('fa-check-square-o', isSelected);
 		select.toggleClass('fa-square-o', !isSelected);
-		select.parents('.category-item').toggleClass('selected', isSelected);
+		select.parents('[component="category/topic"]').toggleClass('selected', isSelected);
 	}
 
 	TopicSelect.getSelectedTids = function() {
 		var tids = [];
-		topicsContainer.find('.category-item.selected').each(function() {
+		topicsContainer.find('[component="category/topic"].selected').each(function() {
 			tids.push($(this).attr('data-tid'));
 		});
 		return tids;
 	};
 
 	TopicSelect.unselectAll = function() {
-		topicsContainer.find('.category-item.selected').removeClass('selected');
+		topicsContainer.find('[component="category/topic"].selected').removeClass('selected');
 		topicsContainer.find('.select').toggleClass('fa-check-square-o', false).toggleClass('fa-square-o', true);
 	};
 
 	function selectRange(clickedTid) {
 
 		if(!lastSelected) {
-			lastSelected = $('.category-item[data-tid]').first().find('.select');
+			lastSelected = $('[component="category/topic"]').first().find('.select');
 		}
 
-		var isClickedSelected = $('.category-item[data-tid="' + clickedTid + '"]').hasClass('selected');
+		var isClickedSelected = components.get('category/topic', 'tid', clickedTid).hasClass('selected');
 
 		var clickedIndex = getIndex(clickedTid);
-		var lastIndex = getIndex(lastSelected.parents('.category-item[data-tid]').attr('data-tid'));
+		var lastIndex = getIndex(lastSelected.parents('[component="category/topic"]').attr('data-tid'));
 		selectIndexRange(clickedIndex, lastIndex, !isClickedSelected);
 	}
 
@@ -72,7 +72,7 @@ define('topicSelect', function() {
 		}
 
 		for(var i=start; i<=end; ++i) {
-			var topic = $('.category-item[data-tid]').eq(i);
+			var topic = $('[component="category/topic"]').eq(i);
 			toggleSelect(topic.find('.select'), isSelected);
 		}
 	}

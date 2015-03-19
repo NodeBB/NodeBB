@@ -29,7 +29,7 @@ define('forum/categories', function() {
 	};
 
 	function renderNewPost(cid, post) {
-		var category = $('.category-item[data-cid="' + cid + '"]');
+		var category = components.get('category/topic', 'cid', cid);
 		if (!category.length) {
 			return;
 		}
