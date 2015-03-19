@@ -46,7 +46,6 @@ var	async = require('async'),
 
 				return topicObj;
 			});
-			return;
 
 			data.interval = interval;
 
