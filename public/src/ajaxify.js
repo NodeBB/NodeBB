@@ -41,8 +41,6 @@ $(document).ready(function() {
 
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
-		var	startTime = (new Date()).getTime();
-
 		ajaxify.variables.flush();
 		ajaxify.loadData(url, function(err, data) {
 			if (err) {
@@ -53,7 +51,7 @@ $(document).ready(function() {
 
 			translator.load(config.defaultLang, data.template.name);
 
-			renderTemplate(url, data.template.name, data, startTime, callback);
+			renderTemplate(url, data.template.name, data, callback);
 
 			require(['search'], function(search) {
 				search.topicDOM.end();
@@ -129,7 +127,7 @@ $(document).ready(function() {
 		}
 	}
 
-	function renderTemplate(url, tpl_url, data, startTime, callback) {
+	function renderTemplate(url, tpl_url, data, callback) {
 		$(window).trigger('action:ajaxify.loadingTemplates', {});
 
 		templates.parse(tpl_url, data, function(template) {
