@@ -24,6 +24,7 @@ define('forum/reset', function() {
 				successEl.addClass('hide').hide();
 				errorEl.removeClass('hide').show();
 			}
+			return false;
 		});
 	};
 

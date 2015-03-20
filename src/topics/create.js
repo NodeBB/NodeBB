@@ -93,7 +93,6 @@ module.exports = function(Topics) {
 
 	Topics.post = function(data, callback) {
 		var uid = data.uid,
-			handle = data.handle,
 			title = data.title,
 			content = data.content,
 			cid = data.cid;
@@ -135,7 +134,7 @@ module.exports = function(Topics) {
 				Topics.create({uid: uid, title: title, cid: cid, thumb: data.thumb, tags: data.tags}, next);
 			},
 			function(tid, next) {
-				Topics.reply({uid:uid, tid:tid, handle: handle, content:content, req: data.req}, next);
+				Topics.reply({uid:uid, tid:tid, handle: data.handle, content:content, req: data.req}, next);
 			},
 			function(postData, next) {
 				async.parallel({
@@ -185,30 +184,23 @@ module.exports = function(Topics) {
 	Topics.reply = function(data, callback) {
 		var tid = data.tid,
 			uid = data.uid,
-			toPid = data.toPid,
-			handle = data.handle,
 			content = data.content,
 			postData;
 
 		async.waterfall([
 			function(next) {
 				async.parallel({
-					exists: function(next) {
-						Topics.exists(tid, next);
-					},
-					locked: function(next) {
-						Topics.isLocked(tid, next);
-					},
-					canReply: function(next) {
-						privileges.topics.can('topics:reply', tid, uid, next);
-					}
+					exists: async.apply(Topics.exists, tid),
+					locked: async.apply(Topics.isLocked, tid),
+					canReply: async.apply(privileges.topics.can, 'topics:reply', tid, uid),
+					isAdmin: async.apply(user.isAdministrator, uid)
 				}, next);
 			},
 			function(results, next) {
 				if (!results.exists) {
 					return next(new Error('[[error:no-topic]]'));
 				}
-				if (results.locked) {
+				if (results.locked && !results.isAdmin) {
 					return next(new Error('[[error:topic-locked]]'));
 				}
 				if (!results.canReply) {
@@ -229,7 +221,7 @@ module.exports = function(Topics) {
 				checkContentLength(content, next);
 			},
 			function(next) {
-				posts.create({uid: uid, tid: tid, handle: handle, content: content, toPid: toPid, ip: data.req ? data.req.ip : null}, next);
+				posts.create({uid: uid, tid: tid, handle: data.handle, content: content, toPid: data.toPid, ip: data.req ? data.req.ip : null}, next);
 			},
 			function(data, next) {
 				postData = data;

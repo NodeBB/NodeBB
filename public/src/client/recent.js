@@ -94,17 +94,17 @@ define('forum/recent', ['forum/infinitescroll', 'composer'], function(infinitesc
 	};
 
 	Recent.loadMoreTopics = function(direction) {
-		if(direction < 0 || !$('#topics-container').length) {
+		if(direction < 0 || !$('[component="category"]').length) {
 			return;
 		}
 
 		infinitescroll.loadMore('topics.loadMoreFromSet', {
-			after: $('#topics-container').attr('data-nextstart'),
+			after: $('[component="category"]').attr('data-nextstart'),
 			set: 'topics:recent'
 		}, function(data, done) {
 			if (data.topics && data.topics.length) {
 				Recent.onTopicsLoaded('recent', data.topics, false, done);
-				$('#topics-container').attr('data-nextstart', data.nextStart);
+				$('[component="category"]').attr('data-nextstart', data.nextStart);
 			} else {
 				done();
 			}
@@ -114,7 +114,7 @@ define('forum/recent', ['forum/infinitescroll', 'composer'], function(infinitesc
 	Recent.onTopicsLoaded = function(templateName, topics, showSelect, callback) {
 
 		topics = topics.filter(function(topic) {
-			return !$('#topics-container li[data-tid=' + topic.tid + ']').length;
+			return !components.get('category/topic', 'tid', topic.tid).length;
 		});
 
 		if (!topics.length) {
@@ -124,8 +124,8 @@ define('forum/recent', ['forum/infinitescroll', 'composer'], function(infinitesc
 		infinitescroll.parseAndTranslate(templateName, 'topics', {topics: topics, showSelect: showSelect}, function(html) {
 			$('#category-no-topics').remove();
 
-			$('#topics-container').append(html);
-			html.find('span.timeago').timeago();
+			$('[component="category"]').append(html);
+			html.find('.timeago').timeago();
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			$(window).trigger('action:topics.loaded');

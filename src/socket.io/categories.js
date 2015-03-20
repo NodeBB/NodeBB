@@ -118,4 +118,8 @@ SocketCategories.ignore = function(socket, cid, callback) {
 	});
 };
 
+SocketCategories.isModerator = function(socket, cid, callback) {
+	user.isModerator(socket.uid, cid, callback);
+};
+
 module.exports = SocketCategories;

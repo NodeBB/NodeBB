@@ -5,15 +5,15 @@
     "recent": "กระทู้ล่าสุด",
     "users": "ผู้ใช้ที่ลงทะเบียน",
     "notifications": "แจ้งเตือน",
-    "tags": "Topics tagged under \"%1\"",
+    "tags": "หัวข้อที่ถูก Tag อยู่ภายใต้ \"%1\"",
     "user.edit": "แก้ไข \"%1\"",
     "user.following": "ผู้ใช้ที่ %1 ติดตาม",
     "user.followers": "ผู้ใช้ที่ติดตาม %1",
     "user.posts": "กระทู้โดย %1",
-    "user.topics": "Topics created by %1",
-    "user.groups": "%1's Groups",
+    "user.topics": "หัวข้อที่ถูกสร้างโดย %1",
+    "user.groups": "กลุ่มของ %1",
     "user.favourites": "กระทู้ที่ %1 ชอบ",
     "user.settings": "ตั้งค่าผู้ใช้",
-    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
-    "maintenance.messageIntro": "Additionally, the administrator has left this message:"
+    "maintenance.text": "%1 กำลังอยู่ระหว่างการปิดปรับปรุงชั่วคราว กรุณาลองใหม่อีกครั้งในภายหลัง",
+    "maintenance.messageIntro": "ผู้ดูแลระบบได้ฝากข้อความต่อไปนี้เอาไว้"
 }

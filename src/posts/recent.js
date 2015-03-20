@@ -13,16 +13,16 @@ module.exports = function(Posts) {
 	};
 
 	Posts.getRecentPosts = function(uid, start, stop, term, callback) {
-		var since = terms.day;
+		var min = 0;
 		if (terms[term]) {
-			since = terms[term];
+			min = Date.now() - terms[term];
 		}
 
 		var count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
 
 		async.waterfall([
 			function(next) {
-				db.getSortedSetRevRangeByScore('posts:pid', start, count, '+inf', Date.now() - since, next);
+				db.getSortedSetRevRangeByScore('posts:pid', start, count, '+inf', min, next);
 			},
 			function(pids, next) {
 				privileges.posts.filter('read', pids, uid, next);

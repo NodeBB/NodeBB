@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, utils, templates, translator, ajaxify, socket, bootbox */
+/* globals define, app, ajaxify, bootbox, components, socket, templates, translator, utils */
 
 define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(composer, share, navigator) {
 
@@ -18,12 +18,14 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	};
 
 	PostTools.toggle = function(pid, isDeleted) {
-		var postEl = $('#post-container li[data-pid="' + pid + '"]');
+		var postEl = components.get('post', 'pid', pid);
 
-		postEl.find('.quote, .favourite, .post_reply, .chat, .flag').toggleClass('hidden', isDeleted);
-		postEl.find('.purge').toggleClass('hidden', !isDeleted);
-		postEl.find('.delete .i').toggleClass('fa-trash-o', !isDeleted).toggleClass('fa-history', isDeleted);
-		postEl.find('.delete span').translateHtml(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]');
+		postEl.find('[component="post/quote"], [component="post/favourite"], [component="post/reply"], [component="post/flag"], [component="user/chat"]')
+			.toggleClass('hidden', isDeleted);
+
+		postEl.find('[component="post/purge"]').toggleClass('hidden', !isDeleted);
+		postEl.find('[component="post/delete"] .i').toggleClass('fa-trash-o', !isDeleted).toggleClass('fa-history', isDeleted);
+		postEl.find('[component="post/delete"] span').translateHtml(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]');
 	};
 
 	PostTools.updatePostCount = function() {
@@ -38,13 +40,13 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	};
 
 	function addVoteHandler() {
-		$('#post-container').on('mouseenter', '.post-row .votes', function() {
+		components.get('topic').on('mouseenter', '[data-pid] .votes', function() {
 			loadDataAndCreateTooltip($(this));
 		});
 	}
 
 	function loadDataAndCreateTooltip(el) {
-		var pid = el.parents('.post-row').attr('data-pid');
+		var pid = el.parents('[data-pid]').attr('data-pid');
 		socket.emit('posts.getUpvoters', [pid], function(err, data) {
 			if (!err && data.length) {
 				createTooltip(el, data[0]);
@@ -70,57 +72,67 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	}
 
 	function addPostHandlers(tid, threadState) {
-		$('.topic').on('click', '.post_reply', function() {
-			if (!threadState.locked) {
-				onReplyClicked($(this), tid, topicName);
-			}
-		});
+		function canPost() {
+			return !threadState.locked || app.user.isAdmin;
+		}
 
-		var postContainer = $('#post-container');
+		var postContainer = components.get('topic');
 
-		postContainer.on('click', '.quote', function() {
-			if (!threadState.locked) {
+		postContainer.on('click', '[component="post/quote"]', function() {
+			if (canPost()) {
 				onQuoteClicked($(this), tid, topicName);
 			}
 		});
 
-		postContainer.on('click', '.favourite', function() {
+		postContainer.on('click', '[component="post/reply"]', function() {
+			if (canPost()) {
+				onReplyClicked($(this), tid, topicName);
+			}
+		});
+
+		components.get('topic/reply').on('click', function() {
+			if (canPost()) {
+				onReplyClicked($(this), tid, topicName);
+			}
+		});
+
+		postContainer.on('click', '[component="post/favourite"]', function() {
 			favouritePost($(this), getData($(this), 'data-pid'));
 		});
 
-		postContainer.on('click', '.upvote', function() {
+		postContainer.on('click', '[component="post/upvote"]', function() {
 			return toggleVote($(this), '.upvoted', 'posts.upvote');
 		});
 
-		postContainer.on('click', '.downvote', function() {
+		postContainer.on('click', '[component="post/downvote"]', function() {
 			return toggleVote($(this), '.downvoted', 'posts.downvote');
 		});
 
-		postContainer.on('click', '.votes', function() {
+		postContainer.on('click', '[component="post/vote-count"]', function() {
 			showVotes(getData($(this), 'data-pid'));
 		});
 
-		postContainer.on('click', '.flag', function() {
+		postContainer.on('click', '[component="post/flag"]', function() {
 			flagPost(getData($(this), 'data-pid'));
 		});
 
-		postContainer.on('click', '.edit', function(e) {
+		postContainer.on('click', '[component="post/edit"]', function(e) {
 			composer.editPost(getData($(this), 'data-pid'));
 		});
 
-		postContainer.on('click', '.delete', function(e) {
+		postContainer.on('click', '[component="post/delete"]', function(e) {
 			deletePost($(this), tid);
 		});
 
-		postContainer.on('click', '.purge', function(e) {
+		postContainer.on('click', '[component="post/purge"]', function(e) {
 			purgePost($(this), tid);
 		});
 
-		postContainer.on('click', '.move', function(e) {
+		postContainer.on('click', '[component="post/move"]', function(e) {
 			openMovePostModal($(this));
 		});
 
-		postContainer.on('click', '.chat', function(e) {
+		postContainer.on('click', '[component="user/chat"]', function(e) {
 			openChat($(this));
 		});
 	}
@@ -129,7 +141,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		var selectionText = '',
 			selection = window.getSelection ? window.getSelection() : document.selection.createRange();
 
-		if ($(selection.baseNode).parents('.post-content').length > 0) {
+		if ($(selection.baseNode).parents('[component="post/content"]').length > 0) {
 			var snippet = selection.toString();
 			if (snippet.length) {
 				selectionText = '> ' + snippet.replace(/\n/g, '\n> ') + '\n\n';
@@ -185,7 +197,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	}
 
 	function toggleVote(button, className, method) {
-		var post = button.parents('.post-row'),
+		var post = button.parents('[data-pid]'),
 			currentState = post.find(className).length;
 
 		socket.emit(currentState ? 'posts.unvote' : method , {
@@ -222,7 +234,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	}
 
 	function getData(button, data) {
-		return button.parents('.post-row').attr(data);
+		return button.parents('[data-pid]').attr(data);
 	}
 
 	function getUserName(button) {
@@ -241,7 +253,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 
 	function deletePost(button, tid) {
 		var pid = getData(button, 'data-pid'),
-			postEl = $('#post-container li[data-pid="' + pid + '"]'),
+			postEl = components.get('post', 'pid', pid),
 			action = !postEl.hasClass('deleted') ? 'delete' : 'restore';
 
 		postAction(action, pid, tid);
@@ -290,7 +302,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 		});
 
 		moveBtn.on('click', function() {
-			movePost(button.parents('.post-row'), getData(button, 'data-pid'), topicId.val());
+			movePost(button.parents('[data-pid]'), getData(button, 'data-pid'), topicId.val());
 		});
 	}
 
@@ -338,7 +350,7 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	}
 
 	function openChat(button) {
-		var post = button.parents('li.post-row');
+		var post = button.parents('data-pid');
 
 		app.openChat(post.attr('data-username'), post.attr('data-uid'));
 		button.parents('.btn-group').find('.dropdown-toggle').click();

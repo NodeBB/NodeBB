@@ -70,6 +70,10 @@ SocketMeta.rooms.enter = function(socket, data, callback) {
 		socket.currentRoom = data.enter;
 		if (data.enter.indexOf('topic') !== -1) {
 			data.uid = socket.uid;
+			data.picture = validator.escape(data.picture);
+			data.username = validator.escape(data.username);
+			data.userslug = validator.escape(data.userslug);
+
 			websockets.in(data.enter).emit('event:user_enter', data);
 		}
 	}

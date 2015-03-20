@@ -7,6 +7,7 @@ var async = require('async'),
 	db = require('../database'),
 	user = require('../user'),
 	posts = require('../posts'),
+	plugins = require('../plugins'),
 	utils = require('../../public/src/utils');
 
 
@@ -27,7 +28,7 @@ module.exports = function(Topics) {
 			}
 		});
 
-		posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid'], function(err, postData) {
+		posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content'], function(err, postData) {
 			if (err) {
 				return callback(err);
 			}
@@ -61,7 +62,9 @@ module.exports = function(Topics) {
 					return tidToPost[topic.tid];
 				});
 
-				callback(null, teasers);
+				plugins.fireHook('filter:teasers.get', {teasers: teasers}, function(err, data) {
+					callback(err, data ? data.teasers : null);
+				});
 			});
 		});
 	};

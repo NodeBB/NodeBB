@@ -23,26 +23,6 @@ searchController.search = function(req, res, next) {
 			return next(err);
 		}
 
-		if (!req.params.term) {
-			var results = {
-				time: 0,
-				search_query: '',
-				posts: [],
-				users: [],
-				tags: [],
-				categories: categories,
-				breadcrumbs: breadcrumbs,
-				expandSearch: true
-			};
-			plugins.fireHook('filter:search.build', {data: {}, results: results}, function(err, data) {
-				if (err) {
-					return next(err);
-				}
-				res.render('search', data.results);	
-			});
-			return;			
-		}
-
 		req.params.term = validator.escape(req.params.term);
 		var page = Math.max(1, parseInt(req.query.page, 10)) || 1;
 		if (req.query.categories && !Array.isArray(req.query.categories)) {
@@ -77,7 +57,7 @@ searchController.search = function(req, res, next) {
 			results.breadcrumbs = breadcrumbs;
 			results.categories = categories;
 			results.expandSearch = false;
-			
+
 			plugins.fireHook('filter:search.build', {data: data, results: results}, function(err, data) {
 				if (err) {
 					return next(err);

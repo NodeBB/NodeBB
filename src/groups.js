@@ -226,9 +226,9 @@ var async = require('async'),
 					return callback(err);
 				}
 				results.base.name = !options.unescape ? validator.escape(results.base.name) : results.base.name;
-				results.base.description = options.unescape ? validator.escape(results.base.description) : results.base.description;
+				results.base.description = !options.unescape ? validator.escape(results.base.description) : results.base.description;
 				results.base.descriptionParsed = descriptionParsed;
-				results.base.userTitle = options.unescape ? validator.escape(results.base.userTitle) : results.base.userTitle;
+				results.base.userTitle = !options.unescape ? validator.escape(results.base.userTitle) : results.base.userTitle;
 				results.base.userTitleEnabled = results.base.userTitleEnabled ? !!parseInt(results.base.userTitleEnabled, 10) : true;
 				results.base.createtimeISO = utils.toISOString(results.base.createtime);
 				results.base.members = results.users.filter(Boolean);
@@ -440,7 +440,6 @@ var async = require('async'),
 						return ephemeralGroups.indexOf(slug) !== -1;
 					}));
 				},
-				async.apply(db.isObjectFields, 'groupslug:groupname', slugs),
 				async.apply(db.isSortedSetMembers, 'groups:createtime', name)
 			], function(err, results) {
 				if (err) {
@@ -448,7 +447,7 @@ var async = require('async'),
 				}
 
 				callback(null, results.map(function(result) {
-					return result[0] || result[1] || result[2];
+					return result[0] || result[1];
 				}));
 			});
 		} else {
@@ -457,16 +456,19 @@ var async = require('async'),
 				function(next) {
 					next(null, ephemeralGroups.indexOf(slug) !== -1);
 				},
-				async.apply(db.isObjectField, 'groupslug:groupname', slug),
 				async.apply(db.isSortedSetMember, 'groups:createtime', name)
 			], function(err, results) {
-				callback(err, !err ? (results[0] || results[1] || results[2]) : null);
+				callback(err, !err ? (results[0] || results[1]) : null);
 			});
 		}
 	};
 
 	Groups.existsBySlug = function(slug, callback) {
-		db.isObjectField('groupslug:groupname', slug, callback);
+		if (Array.isArray(slug)) {
+			db.isObjectFields('groupslug:groupName', slug, callback);
+		} else {
+			db.isObjectField('groupslug:groupname', slug, callback);
+		}
 	};
 
 	Groups.create = function(data, callback) {
@@ -499,7 +501,7 @@ var async = require('async'),
 					deleted: '0',
 					hidden: data.hidden || '0',
 					system: system ? '1' : '0',
-					'private': data.private || '1'
+					private: data.private || '1'
 				},
 				tasks = [
 					async.apply(db.sortedSetAdd, 'groups:createtime', now, data.name),
@@ -538,14 +540,26 @@ var async = require('async'),
 			}
 
 			var payload = {
-					userTitle: values.userTitle || '',
-					userTitleEnabled: values.userTitleEnabled === true ? '1' : '0',
-					description: values.description || '',
-					icon: values.icon || '',
-					labelColor: values.labelColor || '#000000',
-					hidden: values.hidden === true ? '1' : '0',
-					'private': values.private === false ? '0' : '1'
-				};
+				description: values.description || '',
+				icon: values.icon || '',
+				labelColor: values.labelColor || '#000000'
+			};
+
+			if (values.hasOwnProperty('userTitle')) {
+				payload.userTitle = values.userTitle || '';
+			}
+
+			if (values.hasOwnProperty('userTitleEnabled')) {
+				payload.userTitleEnabled = values.userTitleEnabled ? '1' : '0';
+			}
+
+			if (values.hasOwnProperty('hidden')) {
+				payload.hidden = values.hidden ? '1' : '0';
+			}
+
+			if (values.hasOwnProperty('private')) {
+				payload.private = values.private ? '1' : '0';
+			}
 
 			async.series([
 				async.apply(updatePrivacy, groupName, values.private),
@@ -566,9 +580,15 @@ var async = require('async'),
 	};
 
 	function updatePrivacy(groupName, newValue, callback) {
-		// Grab the group's current privacy value
+		if (!newValue) {
+			return callback();
+		}
+
 		Groups.getGroupFields(groupName, ['private'], function(err, currentValue) {
-			currentValue = currentValue.private === '1';	// Now a Boolean
+			if (err) {
+				return callback(err);
+			}
+			currentValue = currentValue.private === '1';
 
 			if (currentValue !== newValue && currentValue === true) {
 				// Group is now public, so all pending users are automatically considered members

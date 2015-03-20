@@ -43,7 +43,7 @@ search.search = function(data, callback) {
 	};
 
 	if (searchIn === 'posts' || searchIn === 'titles' || searchIn === 'titlesposts') {
-		searchInContent(query, data, done);
+		searchInContent(data, done);
 	} else if (searchIn === 'users') {
 		searchInUsers(query, data.uid, done);
 	} else if (searchIn === 'tags') {
@@ -53,91 +53,87 @@ search.search = function(data, callback) {
 	}
 };
 
-function searchInContent(query, data, callback) {
+function searchInContent(data, callback) {
 	data.uid = data.uid || 0;
 	async.parallel({
-		pids: function(next) {
-			if (data.searchIn === 'posts' || data.searchIn === 'titlesposts') {
-				search.searchQuery('post', query, next);
-			} else {
-				next(null, []);
-			}
+		searchCids: function(next) {
+			getSearchCids(data, next);
 		},
-		tids: function(next) {
-			if (data.searchIn === 'titles' || data.searchIn === 'titlesposts') {
-				search.searchQuery('topic', query, next);
-			} else {
-				next(null, []);
-			}
-		},
-		searchCategories: function(next) {
-			getSearchCategories(data, next);
-		}
-	}, function (err, results) {
-		if (err) {
-			return callback(err);
-		}
-
-		var matchCount = 0;
-		if (!results || (!results.pids.length && !results.tids.length)) {
-			return callback(null, {matches: [], matchCount: matchCount});
-		}
-
-		async.waterfall([
-			function(next) {
-				getMainPids(results.tids, next);
-			},
-			function(mainPids, next) {
-				results.pids.forEach(function(pid) {
-					if (mainPids.indexOf(pid.toString()) === -1) {
-						mainPids.push(pid);
-					}
-				});
-				
-				privileges.posts.filter('read', mainPids, data.uid, next);
-			},
-			function(pids, next) {
-				filterAndSort(pids, data, results.searchCategories, next);
-			},
-			function(pids, next) {
-				matchCount = pids.length;
-				if (data.page) {
-					var start = Math.max(0, (data.page - 1)) * 10;
-					pids = pids.slice(start, start + 10);
-				}
-
-				posts.getPostSummaryByPids(pids, data.uid, {stripTags: true, parse: false}, next);
-			},
-			function(posts, next) {
-				next(null, {matches: posts, matchCount: matchCount});
-			}
-		], callback);
-	});
-}
-
-function filterAndSort(pids, data, searchCategories, callback) {
-	async.parallel({
-		posts: function(next) {
-			getMatchedPosts(pids, data, searchCategories, next);
-		},
-		postedByUid: function(next) {
-			if (data.postedBy) {
-				user.getUidByUsername(data.postedBy, next);
-			} else {
-				next();
-			}
+		searchUids: function(next) {
+			getSearchUids(data, next);
 		}
 	}, function(err, results) {
 		if (err) {
 			return callback(err);
 		}
-		if (!results.posts) {
+
+		async.parallel({
+			pids: function(next) {
+				if (data.searchIn === 'posts' || data.searchIn === 'titlesposts') {
+					search.searchQuery('post', data.query, results.searchCids, results.searchUids, next);
+				} else {
+					next(null, []);
+				}
+			},
+			tids: function(next) {
+				if (data.searchIn === 'titles' || data.searchIn === 'titlesposts') {
+					search.searchQuery('topic', data.query, results.searchCids, results.searchUids, next);
+				} else {
+					next(null, []);
+				}
+			}
+		}, function (err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			var matchCount = 0;
+			if (!results || (!results.pids.length && !results.tids.length)) {
+				return callback(null, {matches: [], matchCount: matchCount});
+			}
+
+			async.waterfall([
+				function(next) {
+					topics.getMainPids(results.tids, next);
+				},
+				function(mainPids, next) {
+					results.pids = mainPids.concat(results.pids).filter(function(pid, index, array) {
+						return pid && array.indexOf(pid) === index;
+					});
+
+					privileges.posts.filter('read', results.pids, data.uid, next);
+				},
+				function(pids, next) {
+					filterAndSort(pids, data, next);
+				},
+				function(pids, next) {
+					matchCount = pids.length;
+					if (data.page) {
+						var start = Math.max(0, (data.page - 1)) * 10;
+						pids = pids.slice(start, start + 10);
+					}
+
+					posts.getPostSummaryByPids(pids, data.uid, {stripTags: true, parse: false}, next);
+				},
+				function(posts, next) {
+					next(null, {matches: posts, matchCount: matchCount});
+				}
+			], callback);
+		});
+	});
+}
+
+function filterAndSort(pids, data, callback) {
+	getMatchedPosts(pids, data, function(err, posts) {
+		if (err) {
+			return callback(err);
+		}
+
+		if (!Array.isArray(posts) || !posts.length) {
 			return callback(null, pids);
 		}
-		var posts = results.posts.filter(Boolean);
+		posts = posts.filter(Boolean);
 
-		posts = filterByUser(posts, results.postedByUid);
-		posts = filterByCategories(posts, searchCategories);
 		posts = filterByPostcount(posts, data.replies, data.repliesFilter);
 		posts = filterByTimerange(posts, data.timeRange, data.timeFilter);
 
@@ -151,25 +147,19 @@ function filterAndSort(pids, data, searchCategories, callback) {
 	});
 }
 
-function getMatchedPosts(pids, data, searchCategories, callback) {
+function getMatchedPosts(pids, data, callback) {
 	var postFields = ['pid', 'tid', 'timestamp'];
 	var topicFields = [];
 	var categoryFields = [];
-
-	if (data.postedBy) {
-		postFields.push('uid');
-	}
-
-	if (searchCategories.length || (data.sortBy && data.sortBy.startsWith('category.'))) {
-		topicFields.push('cid');
-	}
 
 	if (data.replies) {
 		topicFields.push('postcount');
 	}
 
 	if (data.sortBy) {
-		if (data.sortBy.startsWith('topic.')) {
+		if (data.sortBy.startsWith('category')) {
+			topicFields.push('cid');
+		} else if (data.sortBy.startsWith('topic.')) {
 			topicFields.push(data.sortBy.split('.')[1]);
 		} else if (data.sortBy.startsWith('user.')) {
 			postFields.push('uid');
@@ -282,25 +272,6 @@ function getMatchedPosts(pids, data, searchCategories, callback) {
 	], callback);
 }
 
-function filterByUser(posts, postedByUid) {
-	if (postedByUid) {
-		postedByUid = parseInt(postedByUid, 10);
-		posts = posts.filter(function(post) {
-			return parseInt(post.uid, 10) === postedByUid;
-		});
-	}
-	return posts;
-}
-
-function filterByCategories(posts, searchCategories) {
-	if (searchCategories.length) {
-		posts = posts.filter(function(post) {
-			return post.topic && searchCategories.indexOf(post.topic.cid) !== -1;
-		});
-	}
-	return posts;
-}
-
 function filterByPostcount(posts, postCount, repliesFilter) {
 	postCount = parseInt(postCount, 10);
 	if (postCount) {
@@ -391,7 +362,7 @@ function sortPosts(posts, data) {
 	}
 }
 
-function getSearchCategories(data, callback) {
+function getSearchCids(data, callback) {
 	if (!Array.isArray(data.categories) || !data.categories.length || data.categories.indexOf('all') !== -1) {
 		return callback(null, []);
 	}
@@ -441,6 +412,14 @@ function getChildrenCids(cids, uid, callback) {
 	});
 }
 
+function getSearchUids(data, callback) {
+	if (data.postedBy) {
+		user.getUidsByUsernames(Array.isArray(data.postedBy) ? data.postedBy : [data.postedBy], callback);
+	} else {
+		callback(null, []);
+	}
+}
+
 function searchInUsers(query, uid, callback) {
 	user.search({query: query, uid: uid}, function(err, results) {
 		if (err) {
@@ -460,26 +439,12 @@ function searchInTags(query, callback) {
 	});
 }
 
-function getMainPids(tids, callback) {
-	if (!Array.isArray(tids) || !tids.length) {
-		return callback(null, []);
-	}
-
-	topics.getTopicsFields(tids, ['mainPid'], function(err, topics) {
-		if (err) {
-			return callback(err);
-		}
-		topics = topics.map(function(topic) {
-			return topic && topic.mainPid && topic.mainPid.toString();
-		}).filter(Boolean);
-		callback(null, topics);
-	});
-}
-
-search.searchQuery = function(index, query, callback) {
+search.searchQuery = function(index, content, cids, uids, callback) {
 	plugins.fireHook('filter:search.query', {
 		index: index,
-		query: query
+		content: content,
+		cid: cids,
+		uid: uids
 	}, callback);
 };
 
