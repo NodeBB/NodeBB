@@ -201,7 +201,7 @@ describe('Groups', function() {
 			}, function(err) {
 				if (err) return done(err);
 
-				Groups.get('foo', {}, function(err, groupObj) {
+				Groups.get('updateTestGroup', {}, function(err, groupObj) {
 					if (err) return done(err);
 
 					assert.strictEqual('baz', groupObj.description);
@@ -217,7 +217,7 @@ describe('Groups', function() {
 			}, function(err) {
 				if (err) return done(err);
 
-				Groups.get('foobar?', {}, function(err, groupObj) {
+				Groups.get('updateTestGroup?', {}, function(err, groupObj) {
 					if (err) return done(err);
 
 					assert.strictEqual('updateTestGroup?', groupObj.name);
