@@ -94,7 +94,7 @@ module.exports = function(Meta) {
 					clientScripts = [];
 
 				pluginsScripts = plugins.clientScripts.filter(function(path) {
-					if (path.indexOf('.js') !== -1) {
+					if (path.endsWith('.js')) {
 						return true;
 					} else {
 						pluginDirectories.push(path);
