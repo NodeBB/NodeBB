@@ -187,7 +187,7 @@ describe('Groups', function() {
 
 	describe('.update()', function() {
 		before(function(done) {
-			Groups.join('foobar', 1, done);
+			Groups.join('foo', 1, done);
 		});
 		it('should change an aspect of a group', function(done) {
 			Groups.update('foo', {
