@@ -499,7 +499,7 @@ var async = require('async'),
 					deleted: '0',
 					hidden: data.hidden || '0',
 					system: system ? '1' : '0',
-					'private': data.private || '1'
+					private: data.private || '1'
 				},
 				tasks = [
 					async.apply(db.sortedSetAdd, 'groups:createtime', now, data.name),
