@@ -189,7 +189,9 @@ describe('Groups', function() {
 		before(function(done) {
 			Groups.create({
 				name: 'updateTestGroup',
-				description: 'bar'
+				description: 'bar',
+				system: 0,
+				hidden: 0
 			}, done);
 		});
 
