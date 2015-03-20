@@ -440,7 +440,6 @@ var async = require('async'),
 						return ephemeralGroups.indexOf(slug) !== -1;
 					}));
 				},
-				async.apply(db.isObjectFields, 'groupslug:groupname', slugs),
 				async.apply(db.isSortedSetMembers, 'groups:createtime', name)
 			], function(err, results) {
 				if (err) {
@@ -448,7 +447,7 @@ var async = require('async'),
 				}
 
 				callback(null, results.map(function(result) {
-					return result[0] || result[1] || result[2];
+					return result[0] || result[1];
 				}));
 			});
 		} else {
@@ -457,16 +456,19 @@ var async = require('async'),
 				function(next) {
 					next(null, ephemeralGroups.indexOf(slug) !== -1);
 				},
-				async.apply(db.isObjectField, 'groupslug:groupname', slug),
 				async.apply(db.isSortedSetMember, 'groups:createtime', name)
 			], function(err, results) {
-				callback(err, !err ? (results[0] || results[1] || results[2]) : null);
+				callback(err, !err ? (results[0] || results[1]) : null);
 			});
 		}
 	};
 
 	Groups.existsBySlug = function(slug, callback) {
-		db.isObjectField('groupslug:groupname', slug, callback);
+		if (Array.isArray(slug)) {
+			db.isObjectFields('groupslug:groupName', slug, callback);
+		} else {
+			db.isObjectField('groupslug:groupname', slug, callback);
+		}
 	};
 
 	Groups.create = function(data, callback) {
