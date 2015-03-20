@@ -221,7 +221,7 @@ describe('Groups', function() {
 					if (err) return done(err);
 
 					assert.strictEqual('updateTestGroup?', groupObj.name);
-					assert.strictEqual('updateTestGroup', groupObj.slug);
+					assert.strictEqual('updatetestgroup', groupObj.slug);
 
 					done();
 				});
