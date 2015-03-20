@@ -72,16 +72,26 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 	}
 
 	function addPostHandlers(tid, threadState) {
+		function canPost() {
+			return !threadState.locked || app.user.isAdmin;
+		}
+
 		var postContainer = components.get('topic');
 
 		postContainer.on('click', '[component="post/quote"]', function() {
-			if (!threadState.locked) {
+			if (canPost()) {
 				onQuoteClicked($(this), tid, topicName);
 			}
 		});
 
 		postContainer.on('click', '[component="post/reply"]', function() {
-			if (!threadState.locked) {
+			if (canPost()) {
+				onReplyClicked($(this), tid, topicName);
+			}
+		});
+
+		components.get('topic/reply').on('click', function() {
+			if (canPost()) {
 				onReplyClicked($(this), tid, topicName);
 			}
 		});
@@ -124,12 +134,6 @@ define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(com
 
 		postContainer.on('click', '[component="user/chat"]', function(e) {
 			openChat($(this));
-		});
-
-		components.get('topic/reply').on('click', function() {
-			if (!threadState.locked) {
-				onReplyClicked($(this), tid, topicName);
-			}
 		});
 	}
 
