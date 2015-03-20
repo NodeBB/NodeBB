@@ -365,7 +365,9 @@
 			}
 			return i < 0;
 		};
+	}
 
+	if (typeof String.prototype.endsWith != 'function') {
 		String.prototype.endsWith = function(suffix) {
 			if (this.length < suffix.length) {
 				return false;
