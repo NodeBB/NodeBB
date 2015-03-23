@@ -52,7 +52,7 @@ var async = require('async'),
 
 				postData.relativeTime = utils.toISOString(postData.timestamp);
 				postData.relativeEditTime = parseInt(postData.edited, 10) !== 0 ? utils.toISOString(postData.edited) : '';
-				postTools.parsePost(postData, uid, next);
+				postTools.parsePost(postData, next);
 			}, function(err, posts) {
 				if (err) {
 					return callback(err);

@@ -120,7 +120,7 @@ var cache = LRU({
 				},
 				postData: function(next) {
 					cache.del(postData.pid);
-					PostTools.parsePost(postData, data.uid, next);
+					PostTools.parsePost(postData, next);
 				}
 			}, function(err, results) {
 				if (err) {
@@ -176,7 +176,7 @@ var cache = LRU({
 					if (err) {
 						return callback(err);
 					}
-					PostTools.parsePost(postData, uid, callback);
+					PostTools.parsePost(postData, callback);
 				});
 			}
 		});
@@ -192,7 +192,7 @@ var cache = LRU({
 		});
 	};
 
-	PostTools.parsePost = function(postData, uid, callback) {
+	PostTools.parsePost = function(postData, callback) {
 		postData.content = postData.content || '';
 
 		var cachedContent = cache.get(postData.pid);
@@ -201,7 +201,7 @@ var cache = LRU({
 			return callback(null, postData);
 		}
 
-		plugins.fireHook('filter:parse.post', {postData: postData, uid: uid}, function(err, data) {
+		plugins.fireHook('filter:parse.post', {postData: postData}, function(err, data) {
 			if (err) {
 				return callback(err);
 			}
