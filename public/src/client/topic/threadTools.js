@@ -60,7 +60,10 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 
 		fork.init();
 
-		components.get('topic').on('click', '[component="topic/follow"]', function() {
+		components.get('topic').on('click', '[component="topic/follow"]', follow);
+		components.get('topic/follow').off('click').on('click', follow);
+
+		function follow() {
 			socket.emit('topics.toggleFollow', tid, function(err, state) {
 				if(err) {
 					return app.alert({
@@ -83,7 +86,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], func
 			});
 
 			return false;
-		});
+		}
 	};
 
 	function topicCommand(command, tid) {
