@@ -234,13 +234,13 @@ function setupDefaultConfigs(next) {
 	});
 
 	if (install.values) {
-		setOnEmpty('social:twitter:key', 'social:twitter:secret');
-		setOnEmpty('social:google:id', 'social:google:secret');
-		setOnEmpty('social:facebook:app_id', 'social:facebook:secret');
+		setIfPaired('social:twitter:key', 'social:twitter:secret');
+		setIfPaired('social:google:id', 'social:google:secret');
+		setIfPaired('social:facebook:app_id', 'social:facebook:secret');
 	}
 }
 
-function setOnEmpty(key1, key2) {
+function setIfPaired(key1, key2) {
 	var meta = require('./meta');
 	if (install.values[key1] && install.values[key2]) {
 		meta.configs.setOnEmpty(key1, install.values[key1]);
