@@ -61,7 +61,8 @@ module.exports = function(Categories) {
 
 	function assignPostsToCategory(category, posts) {
 		category.posts = posts.filter(function(post) {
-			return post.category && parseInt(post.category.cid, 10) === parseInt(category.cid, 10);
+			return !!(post.category && (parseInt(post.category.cid, 10) === parseInt(category.cid, 10)
+			) || (parseInt(post.category.parentCid, 10) === parseInt(category.cid, 10)));
 		}).sort(function(a, b) {
 			return b.timestamp - a.timestamp;
 		}).slice(0, parseInt(category.numRecentReplies, 10));

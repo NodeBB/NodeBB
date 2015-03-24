@@ -120,7 +120,7 @@ module.exports = function(Posts) {
 				return topic && array.indexOf(topic) === index;
 			});
 
-			categories.getMultipleCategoryFields(cids, ['cid', 'name', 'icon', 'slug'], function(err, categories) {
+			categories.getMultipleCategoryFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid'], function(err, categories) {
 				callback(err, {topics: topics, categories: categories});
 			});
 		});
