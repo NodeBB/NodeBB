@@ -223,9 +223,9 @@ define('navigator', ['forum/pagination'], function(pagination) {
 
 		function highlightPost() {
 			if (highlight) {
-				scrollTo.parent().find('.topic-item').addClass('highlight');
+				scrollTo.parents('[component="post"]').addClass('highlight');
 				setTimeout(function() {
-					scrollTo.parent().find('.topic-item').removeClass('highlight');
+					scrollTo.parents('[component="post"]').removeClass('highlight');
 				}, 3000);
 			}
 		}
