@@ -101,16 +101,9 @@ module.exports = function(privileges) {
 				return callback(err);
 			}
 
-			cids = cids.map(function(cid, index) {
-				return !results.categories[index].disabled ? cid : null;
-			});
-			
-			if (results.isAdmin) {
-				return callback(null, cids.filter(Boolean));
-			}
-
-			cids = cids.map(function(cid, index) {
-				return (results.allowedTo[index] || results.isModerators[index]) ? cid : null;
+			cids = cids.filter(function(cid, index) {
+				return !results.categories[index].disabled ||
+					(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
 			});
 
 			callback(null, cids.filter(Boolean));
