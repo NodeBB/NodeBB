@@ -12,6 +12,8 @@ var async = require('async'),
 
 module.exports = function(Topics) {
 
+	var unreadCutoff = 86400000;
+
 	Topics.getTotalUnread = function(uid, callback) {
 		Topics.getUnreadTids(uid, 0, 20, function(err, tids) {
 			callback(err, tids ? tids.length : 0);
@@ -54,17 +56,17 @@ module.exports = function(Topics) {
 			return callback(null, []);
 		}
 
-		var yesterday = Date.now() - 86400000;
+		var cutoff = Date.now() - unreadCutoff;
 
 		async.parallel({
 			ignoredCids: function(next) {
 				user.getIgnoredCategories(uid, next);
 			},
 			recentTids: function(next) {
-				db.getSortedSetRevRangeByScoreWithScores('topics:recent', 0, -1, '+inf', yesterday, next);
+				db.getSortedSetRevRangeByScoreWithScores('topics:recent', 0, -1, '+inf', cutoff, next);
 			},
 			userScores: function(next) {
-				db.getSortedSetRevRangeByScoreWithScores('uid:' + uid + ':tids_read', 0, -1, '+inf', yesterday, next);
+				db.getSortedSetRevRangeByScoreWithScores('uid:' + uid + ':tids_read', 0, -1, '+inf', cutoff, next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -247,8 +249,9 @@ module.exports = function(Topics) {
 			if (err) {
 				return callback(err);
 			}
+			var cutoff = Date.now() - unreadCutoff;
 			var result = tids.map(function(tid, index) {
-				return !!(results.userScores[index] && results.userScores[index] >= results.recentScores[index]);
+				return results.recentScores[index] < cutoff || !!(results.userScores[index] && results.userScores[index] >= results.recentScores[index]);
 			});
 
 			callback(null, result);
