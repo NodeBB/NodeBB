@@ -212,47 +212,30 @@ function generateForTopics(options, set, req, res, next) {
 }
 
 function generateTopicsFeed(feedOptions, feedTopics, callback) {
-	var tids = feedTopics.map(function(topic) {
-		return topic ? topic.tid : null;
-	});
 
-	topics.getMainPids(tids, function(err, pids) {
-		if (err) {
-			return callback(err);
+	feedOptions.ttl = 60;
+	feedOptions.feed_url = nconf.get('url') + feedOptions.feed_url;
+	feedOptions.site_url = nconf.get('url') + feedOptions.site_url;
+
+	var	feed = new rss(feedOptions);
+
+	if (feedTopics.length > 0) {
+		feed.pubDate = new Date(parseInt(feedTopics[0].lastposttime, 10)).toUTCString();
+	}
+
+	feedTopics.forEach(function(topicData) {
+		if (topicData && topicData.teaser && topicData.teaser.user) {
+			feed.item({
+				title: topicData.title,
+				description: topicData.teaser.content,
+				url: nconf.get('url') + '/topic/' + topicData.slug,
+				author: topicData.teaser.user.username,
+				date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
+			});
 		}
-		posts.getPostsFields(pids, ['content'], function(err, posts) {
-			if (err) {
-				return callback(err);
-			}
-
-			feedTopics.forEach(function(topic, index) {
-				if (topic && posts[index]) {
-					topic.mainPost = posts[index].content;
-				}
-			});
-
-			feedOptions.ttl = 60;
-			feedOptions.feed_url = nconf.get('url') + feedOptions.feed_url;
-			feedOptions.site_url = nconf.get('url') + feedOptions.site_url;
-
-			var	feed = new rss(feedOptions);
-
-			if (feedTopics.length > 0) {
-				feed.pubDate = new Date(parseInt(feedTopics[0].lastposttime, 10)).toUTCString();
-			}
-
-			feedTopics.forEach(function(topicData) {
-				feed.item({
-					title: topicData.title,
-					description: topicData.mainPost,
-					url: nconf.get('url') + '/topic/' + topicData.slug,
-					author: topicData.username,
-					date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
-				});
-			});
-			callback(null, feed);
-		});
 	});
+	callback(null, feed);
+
 }
 
 function generateForRecentPosts(req, res, next) {
