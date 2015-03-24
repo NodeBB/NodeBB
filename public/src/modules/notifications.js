@@ -48,7 +48,7 @@ define('notifications', ['sounds'], function(sound) {
 			});
 		});
 
-		notifList.on('click', '.mark-all-read', function() {
+		notifContainer.on('click', '.mark-all-read', function() {
 			socket.emit('notifications.markAllRead', function(err) {
 				if (err) {
 					app.alertError(err.message);

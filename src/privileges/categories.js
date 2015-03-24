@@ -102,17 +102,11 @@ module.exports = function(privileges) {
 			}
 
 			cids = cids.filter(function(cid, index) {
-				return !results.categories[index].disabled;
+				return !results.categories[index].disabled ||
+					(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
 			});
-			
-			if (results.isAdmin) {
-				return callback(null, cids);
-			}
 
-			cids = cids.filter(function(cid, index) {
-				return results.allowedTo[index] || results.isModerators[index];
-			});
-			callback(null, cids);
+			callback(null, cids.filter(Boolean));
 		});
 	};
 

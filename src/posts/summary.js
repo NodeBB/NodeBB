@@ -86,7 +86,7 @@ module.exports = function(Posts) {
 						return next(null, post);
 					}
 
-					postTools.parsePost(post, uid, function(err, post) {
+					postTools.parsePost(post, function(err, post) {
 						if (err) {
 							return next(err);
 						}

@@ -59,6 +59,17 @@
 			usernamePassword = nconf.get('mongo:username') + ':' + nconf.get('mongo:password') + '@';
 		}
 
+		// Sensible defaults for Mongo, if not set
+		if (!nconf.get('mongo:host')) {
+			nconf.set('mongo:host', '127.0.0.1');
+		}
+		if (!nconf.get('mongo:port')) {
+			nconf.set('mongo:port', 27017);
+		}
+		if (!nconf.get('mongo:database')) {
+			nconf.set('mongo:database', '0');
+		}
+
 		var connString = 'mongodb://' + usernamePassword + nconf.get('mongo:host') + ':' + nconf.get('mongo:port') + '/' + nconf.get('mongo:database');
 		var connOptions = {
 			server: {

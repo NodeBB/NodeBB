@@ -3,11 +3,13 @@
 'use strict';
 
 var async = require('async'),
+	S = require('string'),
 
 	db = require('../database'),
 	user = require('../user'),
 	posts = require('../posts'),
 	plugins = require('../plugins'),
+	postTools = require('../postTools'),
 	utils = require('../../public/src/utils');
 
 
@@ -49,21 +51,30 @@ module.exports = function(Topics) {
 					users[user.uid] = user;
 				});
 				var tidToPost = {};
-				postData.forEach(function(post) {
+
+				async.each(postData, function(post, next) {
 					post.user = users[post.uid];
 					post.timestamp = utils.toISOString(post.timestamp);
 					tidToPost[post.tid] = post;
-				});
-
-				var teasers = topics.map(function(topic, index) {
-					if (tidToPost[topic.tid]) {
-						tidToPost[topic.tid].index = counts[index];
+					postTools.parsePost(post, next);
+				}, function(err) {
+					if (err) {
+						return callback(err);
 					}
-					return tidToPost[topic.tid];
-				});
+					var teasers = topics.map(function(topic, index) {
+						if (tidToPost[topic.tid]) {
+							tidToPost[topic.tid].index = counts[index];
+							if (tidToPost[topic.tid].content) {
+								var s = S(tidToPost[topic.tid].content);
+								tidToPost[topic.tid].content = s.stripTags.apply(s, utils.stripTags).s;
+							}
+						}
+						return tidToPost[topic.tid];
+					});
 
-				plugins.fireHook('filter:teasers.get', {teasers: teasers}, function(err, data) {
-					callback(err, data ? data.teasers : null);
+					plugins.fireHook('filter:teasers.get', {teasers: teasers}, function(err, data) {
+						callback(err, data ? data.teasers : null);
+					});
 				});
 			});
 		});

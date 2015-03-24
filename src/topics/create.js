@@ -245,7 +245,7 @@ module.exports = function(Topics) {
 						posts.getPidIndex(postData.pid, uid, next);
 					},
 					content: function(next) {
-						postTools.parsePost(postData, uid, next);
+						postTools.parsePost(postData, next);
 					}
 				}, next);
 			},
