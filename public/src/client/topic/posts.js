@@ -75,7 +75,7 @@ define('forum/topic/posts', [
 				}
 			}
 
-			if (data.posts.length > 1) {
+			if (newPosts.length && data.posts.length > 1) {
 				data.posts.forEach(function(post) {
 					components.get('post', 'pid', post.pid).remove();
 				});
