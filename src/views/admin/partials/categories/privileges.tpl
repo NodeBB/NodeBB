@@ -31,7 +31,7 @@
 								<!-- END privileges.labels.groups -->
 							</tr>
 							<!-- BEGIN privileges.groups -->
-							<tr data-group-slug="{privileges.groups.slug}">
+							<tr data-group-name="{privileges.groups.name}">
 								<td>{privileges.groups.name}</td>
 								{function.spawnPrivilegeStates, privileges}
 							</tr>

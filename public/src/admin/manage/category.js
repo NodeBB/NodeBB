@@ -202,7 +202,7 @@ define('admin/manage/category', [
 				privilege = checkboxEl.parent().attr('data-privilege'),
 				state = checkboxEl.prop('checked'),
 				rowEl = checkboxEl.parents('tr'),
-				member = rowEl.attr('data-group-slug') || rowEl.attr('data-uid');
+				member = rowEl.attr('data-group-name') || rowEl.attr('data-uid');
 
 			if (member) {
 				socket.emit('admin.categories.setPrivilege', {
@@ -225,7 +225,7 @@ define('admin/manage/category', [
 	};
 
 	Category.refreshPrivilegeTable = function() {
-		socket.emit('admin.categories.getPrivilegeSettings', 2, function(err, privileges) {
+		socket.emit('admin.categories.getPrivilegeSettings', ajaxify.variables.get('cid'), function(err, privileges) {
 			if (err) {
 				return app.alertError(err.message);
 			}

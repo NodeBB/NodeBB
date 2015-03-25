@@ -92,12 +92,11 @@ module.exports = function(privileges) {
 							}).map(function(member) {
 								member.privileges = {};
 								for(var x=0,numPrivs=privileges.length;x<numPrivs;x++) {
-									member.privileges[privileges[x]] = memberSets[x].indexOf(member.slug) !== -1
+									member.privileges[privileges[x]] = memberSets[x].indexOf(member.name) !== -1
 								}
 
 								return {
 									name: member.name,
-									slug: member.slug,
 									memberCount: member.memberCount,
 									privileges: member.privileges,
 								};
