@@ -47,23 +47,20 @@ define('admin/manage/categories', function() {
 			});
 		});
 
-		function showCreateCategoryModal() {
-			$('#new-category-modal').modal();
-		}
+		$('button[data-action="create"]').on('click', Categories.create);
+	};
 
-		function createNewCategory() {
-			var category = {
-				name: $('#inputName').val(),
-				description: $('#inputDescription').val(),
-				icon: $('#new-category-modal i').attr('value'),
-				order: $('#active-categories').children().length + 1
-			};
+	Categories.create = function() {
+		bootbox.prompt('Category Name', function(name) {
+			if (!name) {
+				return;
+			}
 
-			saveNew(category);
-		}
-
-		function saveNew(category) {
-			socket.emit('admin.categories.create', category, function(err, data) {
+			socket.emit('admin.categories.create', {
+				name: name,
+				description: '',
+				icon: 'fa-comments'
+			}, function(err, data) {
 				if(err) {
 					return app.alertError(err.message);
 				}
@@ -76,13 +73,9 @@ define('admin/manage/categories', function() {
 					timeout: 2000
 				});
 
-				$('#new-category-modal').modal('hide');
-				ajaxify.refresh();
+				ajaxify.go('admin/manage/categories/' + data.cid);
 			});
-		}
-
-		$('#addNew').on('click', showCreateCategoryModal);
-		$('#create-category-btn').on('click', createNewCategory);
+		});
 	};
 
 	return Categories;
