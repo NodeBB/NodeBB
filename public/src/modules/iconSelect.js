@@ -19,29 +19,38 @@ define('iconSelect', function() {
 			$('#icons .fa-icons .fa.' + selected).addClass('selected');
 		}
 
-		bootbox.confirm('<h2>Select an icon.</h2>' + $('#icons').html(), function(confirm) {
-			if (confirm) {
-				var iconClass = $('.bootbox .selected').attr('class');
-				var categoryIconClass = $('<div/>').addClass(iconClass).removeClass('fa').removeClass('selected').attr('class');
-				if (categoryIconClass === 'fa-doesnt-exist') {
-					categoryIconClass = '';
-				}
+		templates.parse('partials/fontawesome', {}, function(html) {
+			var picker = bootbox.dialog({
+					message: html,
+					title: 'Select an Icon',
+					buttons: {
+						success: {
+							label: 'Save',
+							callback: function(confirm) {
+								var iconClass = $('.bootbox .selected').attr('class');
+								var categoryIconClass = $('<div/>').addClass(iconClass).removeClass('fa').removeClass('selected').attr('class');
+								if (categoryIconClass === 'fa-doesnt-exist') {
+									categoryIconClass = '';
+								}
 
-				el.attr('class', 'fa ' + (doubleSize ? 'fa-2x ' : '') + categoryIconClass);
-				el.val(categoryIconClass);
-				el.attr('value', categoryIconClass);
+								el.attr('class', 'fa ' + (doubleSize ? 'fa-2x ' : '') + categoryIconClass);
+								el.val(categoryIconClass);
+								el.attr('value', categoryIconClass);
 
-				console.log(el);
-				onModified(el);
-			}
-		});
+								onModified(el);
+							}
+						}
+					}
+				});
 
-		setTimeout(function() {
-			$('.bootbox .fa-icons i').on('click', function() {
-				$('.bootbox .selected').removeClass('selected');
-				$(this).addClass('selected');
+			picker.on('shown.bs.modal', function() {
+				var modalEl = $(this);
+				modalEl.find('.icon-container').on('click', 'i', function() {
+					modalEl.find('.icon-container i').removeClass('selected');
+					$(this).addClass('selected');
+				});
 			});
-		}, 500);
+		});
 	};
 
 	return iconSelect;

@@ -133,6 +133,10 @@
 					</div>
 					<hr />
 					<button class="btn btn-danger btn-block btn-xs purge"><i class="fa fa-eraser"></i> Purge Category</button>
+					<p class="help-block">
+						Purging a category will remove all topics and posts, and delete the category from the database. If you want to
+						remove a category <em>temporarily</em>, you'll want to "disable" the category instead.
+					</p>
 				</div>
 			</div>
 		</div>

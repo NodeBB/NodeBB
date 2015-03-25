@@ -3,7 +3,7 @@
 
 define('admin/manage/category', [
 	'uploader',
-	'admin/modules/iconSelect',
+	'iconSelect',
 	'admin/modules/colorpicker',
 	'autocomplete'
 ], function(uploader, iconSelect, colorpicker, autocomplete) {
