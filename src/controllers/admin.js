@@ -136,6 +136,8 @@ adminController.categories.get = function(req, res, next) {
 			return next(err);
 		}
 
+		data.privileges.columnCount = data.privileges.labels.users.length + 2;
+
 		res.render('admin/manage/category', {
 			category: data.category[0],
 			privileges: data.privileges
