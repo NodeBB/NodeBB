@@ -18,9 +18,7 @@ var async = require('async'),
 (function(Notifications) {
 
 	Notifications.init = function() {
-		if (process.env.NODE_ENV === 'development') {
-			winston.verbose('[notifications.init] Registering jobs.');
-		}
+		winston.verbose('[notifications.init] Registering jobs.');
 		new cron('*/30 * * * *', Notifications.prune, null, true);
 	};
 
@@ -57,11 +55,12 @@ var async = require('async'),
 				}
 
 				if (notification.from && !notification.image) {
-					User.getUserField(notification.from, 'picture', function(err, picture) {
+					User.getUserFields(notification.from, ['username', 'userslug', 'picture'], function(err, userData) {
 						if (err) {
 							return next(err);
 						}
-						notification.image = picture;
+						notification.image = userData.picture;
+						notification.user = userData;
 						next(null, notification);
 					});
 					return;
@@ -208,12 +207,12 @@ var async = require('async'),
 
 	Notifications.pushGroup = function(notification, groupName, callback) {
 		callback = callback || function() {};
-		groups.get(groupName, {}, function(err, groupObj) {
-			if (err || !groupObj || !Array.isArray(groupObj.members) || !groupObj.members.length) {
+		groups.getMembers(groupName, 0, -1, function(err, members) {
+			if (err || !Array.isArray(members) || !members.length) {
 				return callback(err);
 			}
 
-			Notifications.push(notification, groupObj.members, callback);
+			Notifications.push(notification, members, callback);
 		});
 	};
 
@@ -223,6 +222,22 @@ var async = require('async'),
 			return callback();
 		}
 		Notifications.markReadMultiple([nid], uid, callback);
+	};
+
+	Notifications.markUnread = function(nid, uid, callback) {
+		callback = callback || function() {};
+		if (!parseInt(uid, 10) || !nid) {
+			return callback();
+		}
+
+		db.getObjectField(nid, 'datetime', function(err, datetime) {
+			datetime = datetime || Date.now();
+
+			async.parallel([
+				async.apply(db.sortedSetRemove, 'uid:' + uid + ':notifications:read', nid),
+				async.apply(db.sortedSetAdd, 'uid:' + uid + ':notifications:unread', datetime, nid)
+			], callback);
+		});
 	};
 
 	Notifications.markReadMultiple = function(nids, uid, callback) {
@@ -270,12 +285,6 @@ var async = require('async'),
 	};
 
 	Notifications.prune = function() {
-		var start = process.hrtime();
-
-		if (process.env.NODE_ENV === 'development') {
-			winston.info('[notifications.prune] Removing expired notifications from the database.');
-		}
-
 		var	week = 604800000,
 			numPruned = 0;
 
@@ -307,12 +316,6 @@ var async = require('async'),
 				if (err) {
 					return winston.error('Encountered error pruning notifications: ' + err.message);
 				}
-
-				if (process.env.NODE_ENV === 'development') {
-					winston.info('[notifications.prune] Notification pruning completed. ' + numPruned + ' expired notification' + (numPruned !== 1 ? 's' : '') + ' removed.');
-				}
-				var diff = process.hrtime(start);
-				events.log('Pruning '+ numPruned + ' notifications took : ' + (diff[0] * 1e3 + diff[1] / 1e6) + ' ms');
 			});
 		});
 	};

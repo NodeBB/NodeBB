@@ -37,6 +37,8 @@ var adminController = {
 	settings: {},
 	logger: {},
 	sounds: {},
+	homepage: {},
+	navigation: {},
 	themes: {},
 	users: require('./admin/users'),
 	uploads: require('./admin/uploads')
@@ -113,9 +115,15 @@ function getStatsForSet(set, field, callback) {
 			db.sortedSetCount(set, now - terms.month, now, next);
 		},
 		alltime: function(next) {
-			db.getObjectField('global', field, next);
+			getGlobalField(field, next);
 		}
 	}, callback);
+}
+
+function getGlobalField(field, callback) {
+	db.getObjectField('global', field, function(err, count) {
+		callback(err, parseInt(count, 10) || 0);
+	});
 }
 
 adminController.categories.get = function(req, res, next) {
@@ -162,14 +170,24 @@ adminController.tags.get = function(req, res, next) {
 };
 
 adminController.flags.get = function(req, res, next) {
-	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
-	posts.getFlags(uid, 0, 19, function(err, posts) {
+	function done(err, posts) {
 		if (err) {
 			return next(err);
 		}
+		res.render('admin/manage/flags', {posts: posts, next: end + 1, byUsername: byUsername});
+	}
+	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
+	var sortBy = req.query.sortBy || 'count';
+	var byUsername = req.query.byUsername || '';
+	var start = 0;
+	var end = 19;
 
-		res.render('admin/manage/flags', {posts: posts, next: 20});
-	});
+	if (byUsername) {
+		posts.getUserFlags(byUsername, sortBy, uid, start, end, done);
+	} else {
+		var set = sortBy === 'count' ? 'posts:flags:count' : 'posts:flagged';
+		posts.getFlags(set, uid, start, end, done);	
+	}	
 };
 
 adminController.database.get = function(req, res, next) {
@@ -179,14 +197,14 @@ adminController.database.get = function(req, res, next) {
 };
 
 adminController.events.get = function(req, res, next) {
-	events.getLog(-1, 5000, function(err, data) {
-		if(err || !data) {
+	events.getEvents(0, 19, function(err, events) {
+		if(err || !events) {
 			return next(err);
 		}
 
 		res.render('admin/advanced/events', {
-			eventdata: data.data,
-			next: data.next
+			events: events,
+			next: 20
 		});
 	});
 };
@@ -219,6 +237,49 @@ adminController.languages.get = function(req, res, next) {
 	});
 };
 
+adminController.sounds.get = function(req, res, next) {
+	meta.sounds.getFiles(function(err, sounds) {
+		sounds = Object.keys(sounds).map(function(name) {
+			return {
+				name: name
+			};
+		});
+
+		res.render('admin/general/sounds', {
+			sounds: sounds
+		});
+	});
+};
+
+adminController.navigation.get = function(req, res, next) {
+	require('../navigation/admin').getAdmin(function(err, data) {
+		if (err) {
+			return next(err);
+		}
+		
+		res.render('admin/general/navigation', data);
+	});
+};
+
+adminController.homepage.get = function(req, res, next) {
+	plugins.fireHook('filter:homepage.get', {routes: [
+		{
+			route: 'categories',
+			name: 'Categories'
+		},
+		{
+			route: 'recent',
+			name: 'Recent'
+		},
+		{
+			route: 'popular',
+			name: 'Popular'
+		}
+	]}, function(err, data) {
+		res.render('admin/general/homepage', data);
+	});
+};
+
 adminController.settings.get = function(req, res, next) {
 	var term = req.params.term ? req.params.term : 'general';
 
@@ -242,6 +303,9 @@ adminController.extend.widgets = function(req, res, next) {
 				{ name: 'Global Sidebar', template: 'global', location: 'sidebar' },
 				{ name: 'Global Header', template: 'global', location: 'header' },
 				{ name: 'Global Footer', template: 'global', location: 'footer' },
+
+				{ name: 'Group Page (Left)', template: 'groups/details.tpl', location: 'left'},
+				{ name: 'Group Page (Right)', template: 'groups/details.tpl', location: 'right'}
 			];
 
 			plugins.fireHook('filter:widgets.getAreas', defaultAreas, next);
@@ -300,33 +364,29 @@ adminController.extend.widgets = function(req, res, next) {
 	});
 };
 
+adminController.extend.rewards = function(req, res, next) {
+	require('../rewards/admin').get(function(err, data) {
+		if (err) {
+			return next(err);
+		}
+		
+		res.render('admin/extend/rewards', data);
+	});
+};
 
 adminController.groups.get = function(req, res, next) {
 	groups.list({
 		expand: true,
-		showSystemGroups: true,
-		truncateUserList: true
+		truncateUserList: true,
+		isAdmin: true,
+		showSystemGroups: true
 	}, function(err, groups) {
 		groups = groups.filter(function(group) {
-			return group.name !== 'registered-users' && group.name !== 'guests';
+			return group.name !== 'registered-users' && group.name !== 'guests' && group.name.indexOf(':privileges:') === -1;
 		});
 		res.render('admin/manage/groups', {
 			groups: groups,
 			yourid: req.user.uid
-		});
-	});
-};
-
-adminController.sounds.get = function(req, res, next) {
-	meta.sounds.getFiles(function(err, sounds) {
-		sounds = Object.keys(sounds).map(function(name) {
-			return {
-				name: name
-			};
-		});
-
-		res.render('admin/general/sounds', {
-			sounds: sounds
 		});
 	});
 };

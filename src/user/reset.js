@@ -1,8 +1,8 @@
-
 'use strict';
 
 var async = require('async'),
 	nconf = require('nconf'),
+	winston = require('winston'),
 
 	user = require('../user'),
 	utils = require('../../public/src/utils'),
@@ -10,88 +10,113 @@ var async = require('async'),
 
 	db = require('../database'),
 	meta = require('../meta'),
-	events = require('../events'),
 	emailer = require('../emailer');
 
 (function(UserReset) {
+	var twoHours = 7200000;
 
 	UserReset.validate = function(code, callback) {
-		db.getObjectField('reset:uid', code, function(err, uid) {
-			if (err || !uid) {
-				return callback(err, false);
+		async.waterfall([
+			function(next) {
+				db.getObjectField('reset:uid', code, next);
+			},
+			function(uid, next) {
+				if (!uid) {
+					return callback(null, false);
+				}
+				db.sortedSetScore('reset:issueDate', code, next);
+			},
+			function(issueDate, next) {
+				next(null, parseInt(issueDate, 10) > Date.now() - twoHours);
 			}
-
-			db.getObjectField('reset:expiry', code, function(err, expiry) {
-				if (err) {
-					return callback(err);
-				}
-
-				if (parseInt(expiry, 10) >= Date.now() / 1000) {
-					callback(null, true);
-				} else {
-					// Expired, delete from db
-					db.deleteObjectField('reset:uid', code);
-					db.deleteObjectField('reset:expiry', code);
-					callback(null, false);
-				}
-			});
-		});
+		], callback);
 	};
 
 	UserReset.send = function(email, callback) {
-		user.getUidByEmail(email, function(err, uid) {
-			if (err || !uid) {
-				return callback(err || new Error('[[error:invalid-email]]'));
-			}
+		var reset_code = utils.generateUUID();
+		var uid;
+		async.waterfall([
+			function(next) {
+				user.getUidByEmail(email, next);
+			},
+			function(_uid, next) {
+				if (!_uid) {
+					return next(new Error('[[error:invalid-email]]'));
+				}
 
-			var reset_code = utils.generateUUID();
-			db.setObjectField('reset:uid', reset_code, uid);
-			db.setObjectField('reset:expiry', reset_code, (60 * 60) + Math.floor(Date.now() / 1000));
-
-			var reset_link = nconf.get('url') + '/reset/' + reset_code;
-
-			translator.translate('[[email:password-reset-requested, ' + (meta.config.title || 'NodeBB') + ']]', meta.config.defaultLang, function(subject) {
+				uid = _uid;
+				async.parallel([
+					async.apply(db.setObjectField, 'reset:uid', reset_code, uid),
+					async.apply(db.sortedSetAdd, 'reset:issueDate', Date.now(), reset_code)
+				], next);
+			},
+			function(results, next) {
+				translator.translate('[[email:password-reset-requested, ' + (meta.config.title || 'NodeBB') + ']]', meta.config.defaultLang, function(subject) {
+					next(null, subject);
+				});
+			},
+			function(subject, next) {
+				var reset_link = nconf.get('url') + '/reset/' + reset_code;
 				emailer.send('reset', uid, {
 					site_title: (meta.config.title || 'NodeBB'),
 					reset_link: reset_link,
 					subject: subject,
 					template: 'reset',
 					uid: uid
-				});
-				callback();
-			});
-		});
+				}, next);
+			},
+			function(next) {
+				next(null, reset_code);
+			}
+		], callback);
 	};
 
 	UserReset.commit = function(code, password, callback) {
-		UserReset.validate(code, function(err, validated) {
-			if(err) {
-				return callback(err);
-			}
-
-			if (!validated) {
-				return;
-			}
-
-			db.getObjectField('reset:uid', code, function(err, uid) {
-				if (err) {
-					return callback(err);
+		var uid;
+		async.waterfall([
+			function(next) {
+				UserReset.validate(code, next);
+			},
+			function(validated, next) {
+				if (!validated) {
+					return next(new Error('[[error:reset-code-not-valid]]'));
+				}
+				db.getObjectField('reset:uid', code, next);
+			},
+			function(_uid, next) {
+				uid = _uid;
+				if (!uid) {
+					return next(new Error('[[error:reset-code-not-valid]]'));
 				}
 
-				user.hashPassword(password, function(err, hash) {
-					if (err) {
-						return callback(err);
-					}
-					user.setUserField(uid, 'password', hash);
-					events.logPasswordReset(uid);
+				user.hashPassword(password, next);
+			},
+			function(hash, next) {
+				async.parallel([
+					async.apply(user.setUserField, uid, 'password', hash),
+					async.apply(db.deleteObjectField, 'reset:uid', code),
+					async.apply(db.sortedSetRemove, 'reset:issueDate', code),
+					async.apply(user.auth.resetLockout, uid)
+				], next);
+			}
+		], callback);
+	};
 
-					db.deleteObjectField('reset:uid', code);
-					db.deleteObjectField('reset:expiry', code);
+	UserReset.clean = function(callback) {
+		async.waterfall([
+			async.apply(db.getSortedSetRangeByScore, 'reset:issueDate', 0, -1, 0, Date.now() - twoHours),
+			function(tokens, next) {
+				if (!tokens.length) {
+					return next();
+				}
 
-					user.auth.resetLockout(uid, callback);
-				});
-			});
-		});
+				winston.verbose('[UserReset.clean] Removing ' + tokens.length + ' reset tokens from database');
+				async.parallel([
+					async.apply(db.deleteObjectFields, 'reset:uid', tokens),
+					async.apply(db.sortedSetRemove, 'reset:issueDate', tokens)
+				], next);
+			}
+		], callback);
 	};
 
 }(exports));

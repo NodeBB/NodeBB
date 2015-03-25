@@ -18,6 +18,7 @@
 							<li><a href="#" class="remove-admin-user"><i class="fa fa-fw fa-ban"></i> Remove Admin</a></li>
 							<li class="divider"></li>
 							<li><a href="#" class="validate-email"><i class="fa fa-fw fa-check"></i> Validate Email</a></li>
+							<li><a href="#" class="send-validation-email"><i class="fa fa-fw fa-mail-forward"></i> Send Validation Email</a></li>
 							<li><a href="#" class="password-reset-email"><i class="fa fa-fw fa-key"></i> Send Password Reset Email</a></li>
 							<li class="divider"></li>
 							<li><a href="#" class="ban-user"><i class="fa fa-fw fa-gavel"></i> Ban User</a></li>
@@ -123,12 +124,12 @@
 		</div>
 	</div>
 
-	<div class="col-lg-3">
+	<div class="col-lg-3 acp-sidebar">
 		<div class="panel panel-default">
 			<div class="panel-heading">Users Control Panel</div>
 			<div class="panel-body">
 				<button id="createUser" class="btn btn-primary">New User</button>
-				<a target="_blank" href="/admin/users/csv" class="btn btn-primary">Download CSV</a>
+				<a target="_blank" href="{relative_path}/api/admin/users/csv" class="btn btn-primary">Download CSV</a>
 			</div>
 		</div>
 	</div>

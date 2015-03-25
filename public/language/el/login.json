@@ -1,5 +1,7 @@
 {
-    "username": "Όνομα χρήστη / Email",
+    "username-email": "Username / Email",
+    "username": "Username",
+    "email": "Email",
     "remember_me": "Απομνημόνευση;",
     "forgot_password": "Ξέχασες τον κωδικό σου;",
     "alternative_logins": "Εναλλακτικά Login",

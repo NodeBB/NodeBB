@@ -1,6 +1,8 @@
 "use strict";
 
 module.exports = function(redisClient, module) {
+	var helpers = module.helpers.redis;
+
 	module.setAdd = function(key, value, callback) {
 		callback = callback || function() {};
 		redisClient.sadd(key, value, function(err, res) {
@@ -10,11 +12,7 @@ module.exports = function(redisClient, module) {
 
 	module.setsAdd = function(keys, value, callback) {
 		callback = callback || function() {};
-		var multi = redisClient.multi();
-		for (var i=0; i<keys.length; ++i) {
-			multi.sadd(keys[i], value);
-		}
-		multi.exec(function(err, res) {
+		helpers.multiKeysValue(redisClient, 'sadd', keys, value, function(err, res) {
 			callback(err);
 		});
 	};
@@ -28,67 +26,35 @@ module.exports = function(redisClient, module) {
 
 	module.setsRemove = function(keys, value, callback) {
 		callback = callback || function() {};
-
-		var multi = redisClient.multi();
-		for(var i=0; i<keys.length; ++i) {
-			multi.srem(keys[i], value);
-		}
-		multi.exec(function(err, res) {
+		helpers.multiKeysValue(redisClient, 'srem', keys, value, function(err, res) {
 			callback(err);
 		});
 	};
 
 	module.isSetMember = function(key, value, callback) {
 		redisClient.sismember(key, value, function(err, result) {
-			if(err) {
-				return callback(err);
-			}
-
-			callback(null, result === 1);
+			callback(err, result === 1);
 		});
 	};
 
 	module.isSetMembers = function(key, values, callback) {
-		var multi = redisClient.multi();
-		for (var i=0; i<values.length; ++i) {
-			multi.sismember(key, values[i]);
-		}
-
-		execSetMembers(multi, callback);
+		helpers.multiKeyValues(redisClient, 'sismember', key, values, function(err, results) {
+			callback(err, results ? helpers.resultsToBool(results) : null);
+		});
 	};
 
 	module.isMemberOfSets = function(sets, value, callback) {
-		var multi = redisClient.multi();
-		for (var i = 0; i < sets.length; ++i) {
-			multi.sismember(sets[i], value);
-		}
-
-		execSetMembers(multi, callback);
-	};
-
-	function execSetMembers(multi, callback) {
-		multi.exec(function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			for (var i=0; i<results.length; ++i) {
-				results[i] = results[i] === 1;
-			}
-			callback(null, results);
+		helpers.multiKeysValue(redisClient, 'sismember', sets, value, function(err, results) {
+			callback(err, results ? helpers.resultsToBool(results) : null);
 		});
-	}
+	};
 
 	module.getSetMembers = function(key, callback) {
 		redisClient.smembers(key, callback);
 	};
 
 	module.getSetsMembers = function(keys, callback) {
-		var multi = redisClient.multi();
-		for (var i=0; i<keys.length; ++i) {
-			multi.smembers(keys[i]);
-		}
-		multi.exec(callback);
+		helpers.multiKeys(redisClient, 'smembers', keys, callback);
 	};
 
 	module.setCount = function(key, callback) {
@@ -96,14 +62,11 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.setsCount = function(keys, callback) {
-		var multi = redisClient.multi();
-		for (var i=0; i<keys.length; ++i) {
-			multi.scard(keys[i]);
-		}
-		multi.exec(callback);
+		helpers.multiKeys(redisClient, 'scard', keys, callback);
 	};
 
 	module.setRemoveRandom = function(key, callback) {
+		callback = callback || function() {};
 		redisClient.spop(key, callback);
 	};
 

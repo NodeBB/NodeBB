@@ -12,6 +12,7 @@
     "notify_me": "Notică-mă de noi răspunsuri în acest subiect",
     "quote": "Citează",
     "reply": "Răspunde",
+    "guest-login-reply": "Log in to reply",
     "edit": "Editează",
     "delete": "Șterge",
     "purge": "Curăță",
@@ -74,6 +75,7 @@
     "fork_no_pids": "Nu a fost selectat nici un mesaj!",
     "fork_success": "Successfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Introdu numele subiectului aici ...",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "Renunță",
     "composer.submit": "Trimite",
     "composer.replying_to": "Îi raspunde lui %1",
@@ -92,5 +94,6 @@
     "sort_by": "Sortează de la",
     "oldest_to_newest": "Vechi la Noi",
     "newest_to_oldest": "Noi la Vechi",
-    "most_votes": "Cele mai votate"
+    "most_votes": "Cele mai votate",
+    "most_posts": "Most posts"
 }

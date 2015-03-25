@@ -5,5 +5,8 @@
     "search": "Αναζήτηση",
     "enter_username": "Γράψε ένα όνομα χρήστη προς αναζήτηση",
     "load_more": "Φόρτωση περισσότερων",
-    "users-found-search-took": "%1 χρήστης(ες) βρέθηκαν! Η αναζήτηση πήρε %2 ms."
+    "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
+    "filter-by": "Filter By",
+    "online-only": "Online only",
+    "picture-only": "Picture only"
 }

@@ -29,6 +29,15 @@
 					<input type="checkbox" data-field="requireEmailConfirmation"> <strong>Require Email Confirmation</strong>
 				</label>
 			</div>
+
+			<div class="form-group">
+				<label>Allow login with</label>
+				<select class="form-control" data-field="allowLoginWith">
+					<option value="username-email">Username or Email</option>
+					<option value="username">Username Only</option>
+					<option value="email">Email Only</option>
+				</select>
+			</div>
 		</form>
 	</div>
 </div>
@@ -58,7 +67,7 @@
 			<div class="form-group">
 				<label>Custom Gravatar Default Image</label>
 				<input id="customGravatarDefaultImage" type="text" class="form-control" placeholder="A custom image to use instead of gravatar defaults" data-field="customGravatarDefaultImage" /><br />
-				<input data-action="upload" data-target="customGravatarDefaultImage" data-route="{relative_path}/admin/uploadgravatardefault" type="button" class="btn btn-default" value="Upload"></input>
+				<input data-action="upload" data-target="customGravatarDefaultImage" data-route="{relative_path}/api/admin/uploadgravatardefault" type="button" class="btn btn-default" value="Upload"></input>
 			</div>
 
 			<div class="form-group">
@@ -98,26 +107,6 @@
 </div>
 
 <div class="panel panel-default">
-	<div class="panel-heading">User Bans</div>
-	<div class="panel-body">
-		<form>
-			<div class="form-group">
-				<label>Number of flags to ban user</label>
-				<input type="text" class="form-control" value="3" placeholder="" data-field="flagsForBan" />
-			</div>
-			<hr />
-			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="autoban:downvote"> <strong>Enable automatic banning for reaching below a reputation threshold</strong>
-				</label>
-			</div>
-			<label>Reputation threshold before receiving an automatic ban</label>
-			<input type="text" class="form-control" value="" placeholder="-50" data-field="autoban:downvote:threshold" />
-		</form>
-	</div>
-</div>
-
-<div class="panel panel-default">
 	<div class="panel-heading">User Registration</div>
 	<div class="panel-body">
 		<form>
@@ -137,6 +126,19 @@
 				<label>Forum Terms of Use <small>(Leave blank to disable)</small></label>
 				<textarea class="form-control" data-field="termsOfUse"></textarea>
 			</div>
+		</form>
+	</div>
+</div>
+
+<div class="panel panel-default">
+	<div class="panel-heading">User Search</div>
+	<div class="panel-body">
+		<form>
+			<div class="form-group">
+				<label>Number of results to display</label>
+				<input type="text" class="form-control" value="24" data-field="userSearchResultsPerPage">
+			</div>
+
 		</form>
 	</div>
 </div>

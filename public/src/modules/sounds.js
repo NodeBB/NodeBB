@@ -57,7 +57,9 @@ define('sounds', ['buzz'], function(buzz) {
 	};
 
 	Sounds.playFile = function(fileName) {
-		if (!fileName) return;
+		if (!fileName) {
+			return;
+		}
 
 		function play() {
 			if (loadedSounds[fileName]) {

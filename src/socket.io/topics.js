@@ -15,10 +15,12 @@ var nconf = require('nconf'),
 	user = require('../user'),
 	db = require('../database'),
 	meta = require('../meta'),
+	events = require('../events'),
 	utils = require('../../public/src/utils'),
-	SocketPosts = require('./posts'),
+
 
 	SocketTopics = {};
+
 
 SocketTopics.post = function(socket, data, callback) {
 	if(!data) {
@@ -37,6 +39,10 @@ SocketTopics.post = function(socket, data, callback) {
 	}, function(err, result) {
 		if (err) {
 			return callback(err);
+		}
+
+		if (data.lock) {
+			SocketTopics.doTopicAction('lock', 'event:topic_locked', socket, {tids: [result.topicData.tid], cid: result.topicData.cid});
 		}
 
 		callback(null, result.topicData);
@@ -124,7 +130,7 @@ SocketTopics.markTopicNotificationsRead = function(socket, tid, callback) {
 };
 
 SocketTopics.markAllRead = function(socket, data, callback) {
-	topics.getUnreadTids(socket.uid, 0, -1, function(err, tids) {
+	topics.getLatestTidsFromSet('topics:recent', 0, -1, 'day', function(err, tids) {
 		if (err) {
 			return callback(err);
 		}
@@ -172,7 +178,7 @@ SocketTopics.markAsUnreadForAll = function(socket, tids, callback) {
 		async.each(tids, function(tid, next) {
 			async.waterfall([
 				function(next) {
-					threadTools.exists(tid, next);
+					topics.exists(tid, next);
 				},
 				function(exists, next) {
 					if (!exists) {
@@ -182,73 +188,56 @@ SocketTopics.markAsUnreadForAll = function(socket, tids, callback) {
 				},
 				function(cid, next) {
 					user.isModerator(socket.uid, cid, next);
-				}
-			], function(err, isMod) {
-				if (err) {
-					return next(err);
-				}
-
-				if (!isAdmin && !isMod) {
-					return next(new Error('[[error:no-privileges]]'));
-				}
-
-				topics.markAsUnreadForAll(tid, function(err) {
-					if(err) {
-						return next(err);
+				},
+				function(isMod, next) {
+					if (!isAdmin && !isMod) {
+						return next(new Error('[[error:no-privileges]]'));
 					}
-
-					topics.updateRecent(tid, Date.now(), function(err) {
-						if(err) {
-							return next(err);
-						}
-						topics.pushUnreadCount(socket.uid);
-						next();
-					});
-				});
-			});
-		}, callback);
+					topics.markAsUnreadForAll(tid, next);
+				},
+				function(next) {
+					topics.updateRecent(tid, Date.now(), next);
+				}
+			], next);
+		}, function(err) {
+			if (err) {
+				return callback(err);
+			}
+			topics.pushUnreadCount(socket.uid);
+		});
 	});
 };
 
 SocketTopics.delete = function(socket, data, callback) {
-	doTopicAction('delete', socket, data, callback);
+	SocketTopics.doTopicAction('delete', 'event:topic_deleted', socket, data, callback);
 };
 
 SocketTopics.restore = function(socket, data, callback) {
-	doTopicAction('restore', socket, data, callback);
+	SocketTopics.doTopicAction('restore', 'event:topic_restored', socket, data, callback);
 };
 
 SocketTopics.purge = function(socket, data, callback) {
-	doTopicAction('purge', socket, data, function(err) {
-		if (err) {
-			return callback(err);
-		}
-
-		websockets.in('category_' + data.cid).emit('event:topic_purged', data.tids);
-		async.each(data.tids, function(tid, next) {
-			websockets.in('topic_' + tid).emit('event:topic_purged', tid);
-			next();
-		}, callback);
-	});
+	SocketTopics.doTopicAction('purge', 'event:topic_purged', socket, data, callback);
 };
 
 SocketTopics.lock = function(socket, data, callback) {
-	doTopicAction('lock', socket, data, callback);
+	SocketTopics.doTopicAction('lock', 'event:topic_locked', socket, data, callback);
 };
 
 SocketTopics.unlock = function(socket, data, callback) {
-	doTopicAction('unlock', socket, data, callback);
+	SocketTopics.doTopicAction('unlock', 'event:topic_unlocked', socket, data, callback);
 };
 
 SocketTopics.pin = function(socket, data, callback) {
-	doTopicAction('pin', socket, data, callback);
+	SocketTopics.doTopicAction('pin', 'event:topic_pinned', socket, data, callback);
 };
 
 SocketTopics.unpin = function(socket, data, callback) {
-	doTopicAction('unpin', socket, data, callback);
+	SocketTopics.doTopicAction('unpin', 'event:topic_unpinned', socket, data, callback);
 };
 
-function doTopicAction(action, socket, data, callback) {
+SocketTopics.doTopicAction = function(action, event, socket, data, callback) {
+	callback = callback || function() {};
 	if (!socket.uid) {
 		return;
 	}
@@ -258,19 +247,43 @@ function doTopicAction(action, socket, data, callback) {
 
 	async.each(data.tids, function(tid, next) {
 		privileges.topics.canEdit(tid, socket.uid, function(err, canEdit) {
-			if(err) {
+			if (err) {
 				return next(err);
 			}
 
-			if(!canEdit) {
+			if (!canEdit) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
 
-			if(typeof threadTools[action] === 'function') {
-				threadTools[action](tid, socket.uid, next);
+			if (typeof threadTools[action] !== 'function') {
+				return next();
 			}
+
+			threadTools[action](tid, socket.uid, function(err, data) {
+				if (err) {
+					return next(err);
+				}
+
+				emitToTopicAndCategory(event, data);
+
+				if (action === 'delete' || action === 'restore' || action === 'purge') {
+					events.log({
+						type: 'topic-' + action,
+						uid: socket.uid,
+						ip: socket.ip,
+						tid: tid
+					});
+				}
+
+				next();
+			});
 		});
 	}, callback);
+};
+
+function emitToTopicAndCategory(event, data) {
+	websockets.in('topic_' + data.tid).emit(event, data);
+	websockets.in('category_' + data.cid).emit(event, data);
 }
 
 SocketTopics.createTopicFromPosts = function(socket, data, callback) {
@@ -304,7 +317,7 @@ SocketTopics.movePost = function(socket, data, callback) {
 				return callback(err);
 			}
 
-			SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:moved_your_post');
+			require('./posts').sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:moved_your_post');
 			callback();
 		});
 	});
@@ -392,7 +405,7 @@ SocketTopics.moveAll = function(socket, data, callback) {
 			return callback(err || new Error('[[error:no-privileges]]'));
 		}
 
-		categories.getTopicIds('cid:' + data.currentCid + ':tids', 0, -1, function(err, tids) {
+		categories.getTopicIds('cid:' + data.currentCid + ':tids', true, 0, -1, function(err, tids) {
 			if (err) {
 				return callback(err);
 			}
@@ -404,12 +417,20 @@ SocketTopics.moveAll = function(socket, data, callback) {
 	});
 };
 
+SocketTopics.toggleFollow = function(socket, tid, callback) {
+	if(!socket.uid) {
+		return callback(new Error('[[error:not-logged-in]]'));
+	}
+
+	topics.toggleFollow(tid, socket.uid, callback);
+};
+
 SocketTopics.follow = function(socket, tid, callback) {
 	if(!socket.uid) {
 		return callback(new Error('[[error:not-logged-in]]'));
 	}
 
-	threadTools.toggleFollow(tid, socket.uid, callback);
+	topics.follow(tid, socket.uid, callback);
 };
 
 SocketTopics.loadMore = function(socket, data, callback) {
@@ -502,14 +523,6 @@ SocketTopics.getPageCount = function(socket, tid, callback) {
 	topics.getPageCount(tid, socket.uid, callback);
 };
 
-SocketTopics.getTidPage = function(socket, tid, callback) {
-	topics.getTidPage(tid, socket.uid, callback);
-};
-
-SocketTopics.getTidIndex = function(socket, tid, callback) {
-	categories.getTopicIndex(tid, callback);
-};
-
 SocketTopics.searchTags = function(socket, data, callback) {
 	topics.searchTags(data, callback);
 };
@@ -522,38 +535,7 @@ SocketTopics.searchAndLoadTags = function(socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-	if (!data.query || !data.query.length) {
-		return callback(null, []);
-	}
-	topics.searchTags(data, function(err, tags) {
-		if (err) {
-			return callback(err);
-		}
-		async.parallel({
-			counts: function(next) {
-				db.sortedSetScores('tags:topic:count', tags, next);
-			},
-			tagData: function(next) {
-				tags = tags.map(function(tag) {
-					return {value: tag};
-				});
-
-				topics.getTagData(tags, next);
-			}
-		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-			results.tagData.forEach(function(tag, index) {
-				tag.score = results.counts[index];
-			});
-			results.tagData.sort(function(a, b) {
-				return b.score - a.score;
-			});
-
-			callback(null, results.tagData);
-		});
-	});
+	topics.searchAndLoadTags(data, callback);
 };
 
 SocketTopics.loadMoreTags = function(socket, data, callback) {
@@ -570,6 +552,15 @@ SocketTopics.loadMoreTags = function(socket, data, callback) {
 		}
 
 		callback(null, {tags: tags, nextStart: end + 1});
+	});
+};
+
+SocketTopics.isModerator = function(socket, tid, callback) {
+	topics.getTopicField(tid, 'cid', function(err, cid) {
+		if (err) {
+			return callback(err);
+		}
+		user.isModerator(socket.uid, cid, callback);
 	});
 };
 

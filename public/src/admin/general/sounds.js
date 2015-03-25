@@ -1,5 +1,5 @@
 "use strict";
-/* global define, socket */
+/* global app, define, socket */
 
 define('admin/general/sounds', ['sounds', 'settings'], function(Sounds, Settings) {
 	var	SoundsAdmin = {};

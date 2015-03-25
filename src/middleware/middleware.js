@@ -12,9 +12,11 @@ var app,
 	nconf = require('nconf'),
 
 	plugins = require('./../plugins'),
+	navigation = require('./../navigation'),
 	meta = require('./../meta'),
 	translator = require('./../../public/src/translator'),
 	user = require('./../user'),
+	groups = require('./../groups'),
 	db = require('./../database'),
 	categories = require('./../categories'),
 	topics = require('./../topics'),
@@ -58,19 +60,14 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-
-		if (res.locals.isAPI) {
-			res.status(302).json(nconf.get('relative_path') + '/user/' + userslug);
-		} else {
-			res.redirect(nconf.get('relative_path') + '/user/' + userslug);
-		}
+		controllers.helpers.redirect(res, '/user/' + userslug);
 	});
 };
 
 middleware.redirectToLoginIfGuest = function(req, res, next) {
 	if (!req.user || parseInt(req.user.uid, 10) === 0) {
-		req.session.returnTo = nconf.get('relative_path') + req.url;
-		return res.redirect(nconf.get('relative_path') + '/login');
+		req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
+		return controllers.helpers.redirect(res, '/login');
 	} else {
 		next();
 	}
@@ -83,25 +80,23 @@ middleware.addSlug = function(req, res, next) {
 				return next(err);
 			}
 
-			var url = name + encodeURI(slug);
-
-			if (res.locals.isAPI) {
-				res.status(302).json(url);
-			} else {
-				res.redirect(url);
-			}
+			controllers.helpers.redirect(res, name + encodeURI(slug));
 		});
 	}
 
 	if (!req.params.slug) {
 		if (req.params.category_id) {
-			redirect(categories.getCategoryField, req.params.category_id, '/category/');
+			return redirect(categories.getCategoryField, req.params.category_id, '/category/');
 		} else if (req.params.topic_id) {
-			redirect(topics.getTopicField, req.params.topic_id, '/topic/');
-		} else {
-			return next();
+			return redirect(topics.getTopicField, req.params.topic_id, '/topic/');
 		}
-		return;
+	}
+	next();
+};
+
+middleware.validateFiles = function(req, res, next) {
+	if (!Array.isArray(req.files.files) || !req.files.files.length) {
+		return next(new Error(['[[error:invalid-files]]']));
 	}
 	next();
 };
@@ -159,17 +154,9 @@ middleware.checkAccountPermissions = function(req, res, next) {
 };
 
 middleware.isAdmin = function(req, res, next) {
-	function render() {
-		if (res.locals.isAPI) {
-			return controllers.helpers.notAllowed(req, res);
-		}
-
-		middleware.buildHeader(req, res, function() {
-			controllers.helpers.notAllowed(req, res);
-		});
-	}
 	if (!req.user) {
-		return render();
+		req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
+		return controllers.helpers.redirect(res, '/login');
 	}
 
 	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
@@ -177,7 +164,13 @@ middleware.isAdmin = function(req, res, next) {
 			return next(err);
 		}
 
-		render();
+		if (res.locals.isAPI) {
+			return controllers.helpers.notAllowed(req, res);
+		}
+
+		middleware.buildHeader(req, res, function() {
+			controllers.helpers.notAllowed(req, res);
+		});
 	});
 };
 
@@ -190,7 +183,7 @@ middleware.buildHeader = function(req, res, next) {
 				controllers.api.getConfig(req, res, next);
 			},
 			footer: function(next) {
-				app.render('footer', {}, next);
+				app.render('footer', {loggedIn: (req.user ? parseInt(req.user.uid, 10) !== 0 : false)}, next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -210,12 +203,7 @@ middleware.buildHeader = function(req, res, next) {
 middleware.renderHeader = function(req, res, callback) {
 	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
 
-	var custom_header = {
-		uid: uid,
-		'navigation': []
-	};
-
-	plugins.fireHook('filter:header.build', custom_header, function(err, custom_header) {
+	navigation.get(function(err, menuItems) {
 		if (err) {
 			return callback(err);
 		}
@@ -253,7 +241,7 @@ middleware.renderHeader = function(req, res, callback) {
 				'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 				'brand:logo': meta.config['brand:logo'] || '',
 				'brand:logo:display': meta.config['brand:logo']?'':'hide',
-				navigation: custom_header.navigation,
+				navigation: menuItems,
 				allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
 				searchEnabled: plugins.hasListeners('filter:search.query')
 			};
@@ -283,7 +271,6 @@ middleware.renderHeader = function(req, res, callback) {
 			href: nconf.get('relative_path') + '/favicon.ico'
 		});
 
-
 		async.parallel({
 			customCSS: function(next) {
 				templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1;
@@ -302,7 +289,7 @@ middleware.renderHeader = function(req, res, callback) {
 						if (err) {
 							return next(err);
 						}
-						meta.title.build(req.url.slice(1), settings.language, res.locals, next);
+						meta.title.build(req.url.slice(1), settings.userLang, res.locals, next);
 					});
 				} else {
 					meta.title.build(req.url.slice(1), meta.config.defaultLang, res.locals, next);
@@ -313,7 +300,7 @@ middleware.renderHeader = function(req, res, callback) {
 			},
 			user: function(next) {
 				if (uid) {
-					user.getUserFields(uid, ['username', 'userslug', 'picture', 'status', 'email:confirmed', 'banned'], next);
+					user.getUserFields(uid, ['username', 'userslug', 'email', 'picture', 'status', 'email:confirmed', 'banned'], next);
 				} else {
 					next(null, {
 						username: '[[global:guest]]',
@@ -336,6 +323,7 @@ middleware.renderHeader = function(req, res, callback) {
 				return;
 			}
 			results.user.isAdmin = results.isAdmin || false;
+			results.user.uid = parseInt(results.user.uid, 10);
 			results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
 
 			templateValues.browserTitle = results.title;
@@ -345,6 +333,9 @@ middleware.renderHeader = function(req, res, callback) {
 			templateValues.customCSS = results.customCSS;
 			templateValues.customJS = results.customJS;
 			templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
+
+			templateValues.template = {name: res.locals.template};
+			templateValues.template[res.locals.template] = true;
 
 			app.render('header', templateValues, callback);
 		});
@@ -374,8 +365,9 @@ middleware.processRender = function(req, res, next) {
 		}
 
 		options.loggedIn = req.user ? parseInt(req.user.uid, 10) !== 0 : false;
-		options.template = {};
+		options.template = {name: template};
 		options.template[template] = true;
+		res.locals.template = template;
 
 		if ('function' !== typeof fn) {
 			fn = defaultFn;
@@ -386,6 +378,11 @@ middleware.processRender = function(req, res, next) {
 		}
 
 		render.call(self, template, options, function(err, str) {
+			if (err) {
+				winston.error(err);
+				return fn(err);
+			}
+
 			// str = str + '<input type="hidden" ajaxify-data="' + encodeURIComponent(JSON.stringify(options)) + '" />';
 			str = (res.locals.postHeader ? res.locals.postHeader : '') + str + (res.locals.preFooter ? res.locals.preFooter : '');
 
@@ -395,17 +392,18 @@ middleware.processRender = function(req, res, next) {
 				str = str + res.locals.adminFooter;
 			}
 
-			if (res.locals.renderHeader) {
-				middleware.renderHeader(req, res, function(err, template) {
+			if (res.locals.renderHeader || res.locals.renderAdminHeader) {
+				var method = res.locals.renderHeader ? middleware.renderHeader : middleware.admin.renderHeader;
+				method(req, res, function(err, template) {
+					if (err) {
+						return fn(err);
+					}
 					str = template + str;
 					var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
 					translator.translate(str, language, function(translated) {
 						fn(err, translated);
 					});
 				});
-			} else if (res.locals.adminHeader) {
-				str = res.locals.adminHeader + str;
-				fn(err, str);
 			} else {
 				fn(err, str);
 			}
@@ -438,7 +436,7 @@ middleware.addExpiresHeaders = function(req, res, next) {
 };
 
 middleware.maintenanceMode = function(req, res, next) {
-	if (meta.config.maintenanceMode !== '1') {
+	if (parseInt(meta.config.maintenanceMode, 10) !== 1) {
 		return next();
 	}
 
@@ -446,7 +444,11 @@ middleware.maintenanceMode = function(req, res, next) {
 			'/login',
 			'/stylesheet.css',
 			'/nodebb.min.js',
-			'/vendor/fontawesome/fonts/fontawesome-webfont.woff'
+			'/vendor/fontawesome/fonts/fontawesome-webfont.woff',
+			'/src/modules/[\\w]+\.js',
+			'/api/login',
+			'/api/?',
+			'/language/.+'
 		],
 		render = function() {
 			res.status(503);
@@ -473,36 +475,47 @@ middleware.maintenanceMode = function(req, res, next) {
 					return true;
 				}
 			}
+			return false;
 		},
 		isApiRoute = /^\/api/;
 
-	if (!isAllowed(req.url)) {
-		if (!req.user) {
-			return render();
-		} else {
-			user.isAdministrator(req.user.uid, function(err, isAdmin) {
-				if (!isAdmin) {
-					return render();
-				} else {
-					return next();
-				}
-			});
-		}
-	} else {
+	if (isAllowed(req.url)) {
 		return next();
 	}
+
+	if (!req.user) {
+		return render();
+	}
+
+	user.isAdministrator(req.user.uid, function(err, isAdmin) {
+		if (err) {
+			return next(err);
+		}
+		if (!isAdmin) {
+			render();
+		} else {
+			next();
+		}
+	});
 };
 
 middleware.publicTagListing = function(req, res, next) {
-	if ((!meta.config.hasOwnProperty('publicTagListing') || parseInt(meta.config.publicTagListing, 10) === 1)) {
+	if (req.user || (!meta.config.hasOwnProperty('publicTagListing') || parseInt(meta.config.publicTagListing, 10) === 1)) {
 		next();
 	} else {
-		if (res.locals.isAPI) {
-			res.sendStatus(401);
-		} else {
-			middleware.ensureLoggedIn(req, res, next);
-		}
+		controllers.helpers.notAllowed(req, res);
 	}
+};
+
+middleware.exposeGroupName = function(req, res, next) {
+	if (!req.params.hasOwnProperty('slug')) { return next(); }
+
+	groups.getGroupNameByGroupSlug(req.params.slug, function(err, groupName) {
+		if (err) { return next(err); }
+
+		res.locals.groupName = groupName;
+		next();
+	});
 };
 
 module.exports = function(webserver) {

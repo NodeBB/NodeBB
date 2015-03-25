@@ -3,19 +3,18 @@
 var express = require('express');
 
 
-function apiRoutes(app, middleware, controllers) {
-	// todo, needs to be in api namespace
-	app.get('/users/csv', middleware.authenticate, controllers.admin.users.getCSV);
+function apiRoutes(router, middleware, controllers) {
+	router.get('/users/csv', middleware.authenticate, controllers.admin.users.getCSV);
 
 	var multipart = require('connect-multiparty');
 	var multipartMiddleware = multipart();
 
-	var middlewares = [multipartMiddleware, middleware.applyCSRF, middleware.authenticate];
+	var middlewares = [multipartMiddleware, middleware.validateFiles, middleware.applyCSRF, middleware.authenticate];
 
-	app.post('/category/uploadpicture', middlewares, controllers.admin.uploads.uploadCategoryPicture);
-	app.post('/uploadfavicon', middlewares, controllers.admin.uploads.uploadFavicon);
-	app.post('/uploadlogo', middlewares, controllers.admin.uploads.uploadLogo);
-	app.post('/uploadgravatardefault', middlewares, controllers.admin.uploads.uploadGravatarDefault);
+	router.post('/category/uploadpicture', middlewares, controllers.admin.uploads.uploadCategoryPicture);
+	router.post('/uploadfavicon', middlewares, controllers.admin.uploads.uploadFavicon);
+	router.post('/uploadlogo', middlewares, controllers.admin.uploads.uploadLogo);
+	router.post('/uploadgravatardefault', middlewares, controllers.admin.uploads.uploadGravatarDefault);
 }
 
 function adminRouter(middleware, controllers) {
@@ -25,8 +24,6 @@ function adminRouter(middleware, controllers) {
 
 	addRoutes(router, middleware, controllers);
 
-	apiRoutes(router, middleware, controllers);
-
 	return router;
 }
 
@@ -34,6 +31,8 @@ function apiRouter(middleware, controllers) {
 	var router = express.Router();
 
 	addRoutes(router, middleware, controllers);
+
+	apiRoutes(router, middleware, controllers);
 
 	return router;
 }
@@ -43,6 +42,8 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/general/dashboard', controllers.admin.home);
 	router.get('/general/languages', controllers.admin.languages.get);
 	router.get('/general/sounds', controllers.admin.sounds.get);
+	router.get('/general/navigation', controllers.admin.navigation.get);
+	router.get('/general/homepage', controllers.admin.homepage.get);
 
 	router.get('/manage/categories', controllers.admin.categories.getAll);
 	router.get('/manage/categories/:category_id', controllers.admin.categories.get);
@@ -66,6 +67,7 @@ function addRoutes(router, middleware, controllers) {
 
 	router.get('/extend/plugins', controllers.admin.plugins.get);
 	router.get('/extend/widgets', controllers.admin.extend.widgets);
+	router.get('/extend/rewards', controllers.admin.extend.rewards);
 
 	router.get('/advanced/database', controllers.admin.database.get);
 	router.get('/advanced/events', controllers.admin.events.get);

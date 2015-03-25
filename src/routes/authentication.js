@@ -4,11 +4,12 @@
 	var passport = require('passport'),
 		passportLocal = require('passport-local').Strategy,
 		nconf = require('nconf'),
-		Password = require('../password'),
 		winston = require('winston'),
 		async = require('async'),
+		validator = require('validator'),
 		express = require('express'),
 
+		Password = require('../password'),
 		meta = require('../meta'),
 		user = require('../user'),
 		plugins = require('../plugins'),
@@ -36,6 +37,13 @@
 
 		plugins.ready(function() {
 			loginStrategies.length = 0;
+
+			if (plugins.hasListeners('action:auth.overrideLogin')) {
+				winston.warn('[authentication] Login override detected, skipping local login strategy.');
+				plugins.fireHook('action:auth.overrideLogin');
+			} else {
+				passport.use(new passportLocal({passReqToCallback: true}, Auth.login));
+			}
 
 			plugins.fireHook('filter:auth.init', loginStrategies, function(err) {
 				if (err) {
@@ -68,7 +76,7 @@
 		});
 	};
 
-	Auth.login = function(username, password, next) {
+	Auth.login = function(req, username, password, next) {
 		if (!username || !password) {
 			return next(new Error('[[error:invalid-password]]'));
 		}
@@ -85,7 +93,7 @@
 					return next(new Error('[[error:no-user]]'));
 				}
 				uid = _uid;
-				user.auth.logAttempt(uid, next);
+				user.auth.logAttempt(uid, req.ip, next);
 			},
 			function(next) {
 				db.getObjectFields('user:' + uid, ['password', 'banned'], next);
@@ -109,8 +117,6 @@
 		], next);
 	};
 
-	passport.use(new passportLocal(Auth.login));
-
 	passport.serializeUser(function(user, done) {
 		done(null, user.uid);
 	});
@@ -131,20 +137,28 @@
 			req.session.returnTo = req.body.returnTo;
 		}
 
-		if (req.body.username && utils.isEmailValid(req.body.username)) {
+		if (plugins.hasListeners('action:auth.overrideLogin')) {
+			return Auth.continueLogin(req, res, next);
+		};
+
+		var loginWith = meta.config.allowLoginWith || 'username-email';
+
+		if (req.body.username && utils.isEmailValid(req.body.username) && loginWith.indexOf('email') !== -1) {
 			user.getUsernameByEmail(req.body.username, function(err, username) {
 				if (err) {
 					return next(err);
 				}
 				req.body.username = username ? username : req.body.username;
-				continueLogin(req, res, next);
+				Auth.continueLogin(req, res, next);
 			});
+		} else if (loginWith.indexOf('username') !== -1 && !validator.isEmail(req.body.username)) {
+			Auth.continueLogin(req, res, next);
 		} else {
-			continueLogin(req, res, next);
+			res.status(500).send('[[error:wrong-login-type-' + loginWith + ']]');
 		}
 	}
 
-	function continueLogin(req, res, next) {
+	Auth.continueLogin = function(req, res, next) {
 		passport.authenticate('local', function(err, userData, info) {
 			if (err) {
 				return res.status(403).send(err.message);
@@ -191,7 +205,7 @@
 				}
 			});
 		})(req, res, next);
-	}
+	};
 
 	function register(req, res) {
 		if (parseInt(meta.config.allowRegistration, 10) === 0) {

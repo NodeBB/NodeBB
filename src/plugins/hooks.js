@@ -31,7 +31,7 @@ module.exports = function(Plugins) {
 
 			if (typeof data.method === 'string' && data.method.length > 0) {
 				method = data.method.split('.').reduce(function(memo, prop) {
-					if (memo !== null && memo[prop]) {
+					if (memo && memo[prop]) {
 						return memo[prop];
 					} else {
 						// Couldn't find method by path, aborting
@@ -123,12 +123,19 @@ module.exports = function(Plugins) {
 					next();
 				}, 5000);
 
-				hookObj.method(params, function() {
+				try {
+					hookObj.method(params, function() {
+						clearTimeout(timeoutId);
+						if (!timedOut) {
+							next.apply(null, arguments);
+						}
+					});
+				} catch(err) {
+					winston.error('[plugins] Error executing \'' + hook + '\' in plugin \'' + hookObj.id + '\'');
+					winston.error(err);
 					clearTimeout(timeoutId);
-					if (!timedOut) {
-						next.apply(null, arguments);
-					}
-				});
+					next();
+				}
 			} else {
 				next();
 			}

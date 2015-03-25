@@ -5,5 +5,8 @@
     "search": "Szukaj",
     "enter_username": "Wpisz nazwę użytkownika",
     "load_more": "Więcej",
-    "users-found-search-took": "Znaleziono %1 użytkowników. Szukanie zajęło %2 ms."
+    "users-found-search-took": "Znaleziono %1 użytkownik(ów). Szukanie zajęło %2 sek.",
+    "filter-by": "Filtruj",
+    "online-only": "Tylko dostępny",
+    "picture-only": "Tylko ze zdjęciem"
 }

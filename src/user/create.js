@@ -43,6 +43,7 @@ module.exports = function(User) {
 				'profileviews': 0,
 				'reputation': 0,
 				'postcount': 0,
+				'topiccount': 0,
 				'lastposttime': 0,
 				'banned': 0,
 				'status': 'online'

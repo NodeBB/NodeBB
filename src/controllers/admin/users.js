@@ -31,7 +31,8 @@ usersController.banned = function(req, res, next) {
 };
 
 function getUsers(set, req, res, next) {
-	user.getUsersFromSet(set, 0, 49, function(err, users) {
+	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
+	user.getUsersFromSet(set, uid, 0, 49, function(err, users) {
 		if (err) {
 			return next(err);
 		}

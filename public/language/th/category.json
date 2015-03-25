@@ -1,8 +1,9 @@
 {
     "new_topic_button": "กระทู้",
+    "guest-login-post": "เข้าสู่ระบบเพื่อโพส",
     "no_topics": "<strong>ยังไม่มีกระทู้ในหมวดนี้</strong><br />โพสต์กระทู้แรก?",
     "browsing": "เรียกดู",
     "no_replies": "ยังไม่มีใครตอบ",
-    "share_this_category": "Share this category",
-    "ignore": "Ignore"
+    "share_this_category": "แชร์ Category นี้",
+    "ignore": "ไม่ต้องสนใจอีก"
 }

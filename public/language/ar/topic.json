@@ -12,6 +12,7 @@
     "notify_me": "تلق تنبيهات بالردود الجديدة في هذا الموضوع",
     "quote": "اقتبس",
     "reply": "رد",
+    "guest-login-reply": "Log in to reply",
     "edit": "تعديل",
     "delete": "حذف",
     "purge": "تطهير",
@@ -74,6 +75,7 @@
     "fork_no_pids": "لم تختر أي مشاركة",
     "fork_success": "تم إنشاء فرع للموضوع بنجاح! إضغط هنا لمعاينة الفرع.",
     "composer.title_placeholder": "أدخل عنوان موضوعك هنا...",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "نبذ التغييرات",
     "composer.submit": "حفظ",
     "composer.replying_to": "الرد على %1",
@@ -92,5 +94,6 @@
     "sort_by": "ترتيب حسب",
     "oldest_to_newest": "من الأقدم إلى الأحدث",
     "newest_to_oldest": "من الأحدث إلى الأقدم",
-    "most_votes": "الأكثر تصويتًا"
+    "most_votes": "الأكثر تصويتًا",
+    "most_posts": "Most posts"
 }

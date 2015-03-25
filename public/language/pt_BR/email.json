@@ -9,6 +9,9 @@
     "reset.text1": "Nós recebemos um pedido para reconfigurar sua senha, possivelmente porque você a esqueceu. Se este não é o caso, por favor ignore este email.",
     "reset.text2": "Para continuar com a reconfiguração de senha, por favor clique no seguinte link:",
     "reset.cta": "Clique aqui para reconfigurar sua senha",
+    "reset.notify.subject": "Senha alterada com sucesso",
+    "reset.notify.text1": "Nós estamos notificando você que em %1, sua senha foi alterada com sucesso.",
+    "reset.notify.text2": "Se você não autorizou isso, por favor notifique um administrador imediatamente.",
     "digest.notifications": "Você tem notificações não lidas de %1:",
     "digest.latest_topics": "Últimos tópicos de %1",
     "digest.cta": "Clique aqui para visitar %1",
@@ -17,6 +20,8 @@
     "notif.chat.subject": "Nova mensagem de chat recebida de %1",
     "notif.chat.cta": "Clique aqui para continuar a conversa",
     "notif.chat.unsub.info": "Esta notificação de chat foi enviada a você devido às suas configurações de assinatura.",
+    "notif.post.cta": "Clique aqui para ler o tópico completo",
+    "notif.post.unsub.info": "Esta notificação de postagem foi enviada para você devido as suas configurações de assinatura.",
     "test.text1": "Este é um e-mail de teste, para verificar que o enviador de emails está corretamente configurado no seu NodeBB.",
     "unsub.cta": "Clique aqui para alterar estas configurações",
     "closing": "Obrigado!"

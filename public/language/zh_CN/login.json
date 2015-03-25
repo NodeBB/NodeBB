@@ -1,5 +1,7 @@
 {
-    "username": "用户名/电子邮箱",
+    "username-email": "Username / Email",
+    "username": "用户名",
+    "email": "邮件",
     "remember_me": "记住我？",
     "forgot_password": "忘记密码？",
     "alternative_logins": "使用合作网站帐号登录",

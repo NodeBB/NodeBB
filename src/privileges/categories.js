@@ -46,6 +46,9 @@ module.exports = function(privileges) {
 	};
 
 	privileges.categories.can = function(privilege, cid, uid, callback) {
+		if (!cid) {
+			return callback(null, false);
+		}
 		categories.getCategoryField(cid, 'disabled', function(err, disabled) {
 			if (err) {
 				return callback(err);
@@ -81,6 +84,9 @@ module.exports = function(privileges) {
 		});
 
 		async.parallel({
+			categories: function(next) {
+				categories.getMultipleCategoryFields(cids, ['disabled'], next);
+			},
 			allowedTo: function(next) {
 				helpers.isUserAllowedTo(privilege, uid, cids, next);
 			},
@@ -95,14 +101,12 @@ module.exports = function(privileges) {
 				return callback(err);
 			}
 
-			if (results.isAdmin) {
-				return callback(null, cids);
-			}
-
 			cids = cids.filter(function(cid, index) {
-				return results.allowedTo[index] || results.isModerators[index];
+				return !results.categories[index].disabled &&
+					(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
 			});
-			callback(null, cids);
+
+			callback(null, cids.filter(Boolean));
 		});
 	};
 
@@ -140,6 +144,12 @@ module.exports = function(privileges) {
 	privileges.categories.give = function(privileges, cid, groupName, callback) {
 		async.each(privileges, function(privilege, next) {
 			groups.join('cid:' + cid + ':privileges:groups:' + privilege, groupName, next);
+		}, callback);
+	};
+
+	privileges.categories.rescind = function(privileges, cid, groupName, callback) {
+		async.each(privileges, function(privilege, next) {
+			groups.leave('cid:' + cid + ':privileges:groups:' + privilege, groupName, next);
 		}, callback);
 	};
 

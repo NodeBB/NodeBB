@@ -1,9 +1,11 @@
 {
-    "username": "Usuario / Email",
+    "username-email": "Usuario / Email",
+    "username": "Usuario",
+    "email": "Correo Electrónico",
     "remember_me": "¿Recordarme?",
     "forgot_password": "¿Olvidaste tu contraseña?",
-    "alternative_logins": "Conexiones Alternativas",
-    "failed_login_attempt": "Error al iniciar sesión, intentalo otra vez.",
-    "login_successful": "¡Te has conectado con éxito!",
-    "dont_have_account": "No tienes una cuenta creada?"
+    "alternative_logins": "Métodos alternativos",
+    "failed_login_attempt": "Error al iniciar sesión, inténtalo otra vez.",
+    "login_successful": "¡Identificado satisfactoriamente!",
+    "dont_have_account": "¿Aún no tienes cuenta?"
 }

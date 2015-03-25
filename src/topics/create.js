@@ -93,7 +93,6 @@ module.exports = function(Topics) {
 
 	Topics.post = function(data, callback) {
 		var uid = data.uid,
-			handle = data.handle,
 			title = data.title,
 			content = data.content,
 			cid = data.cid;
@@ -135,7 +134,7 @@ module.exports = function(Topics) {
 				Topics.create({uid: uid, title: title, cid: cid, thumb: data.thumb, tags: data.tags}, next);
 			},
 			function(tid, next) {
-				Topics.reply({uid:uid, tid:tid, handle: handle, content:content, req: data.req}, next);
+				Topics.reply({uid:uid, tid:tid, handle: data.handle, content:content, req: data.req}, next);
 			},
 			function(postData, next) {
 				async.parallel({
@@ -148,7 +147,7 @@ module.exports = function(Topics) {
 								return next(err);
 							}
 							if (settings.followTopicsOnCreate) {
-								threadTools.follow(postData.tid, uid, next);
+								Topics.follow(postData.tid, uid, next);
 							} else {
 								next();
 							}
@@ -166,6 +165,7 @@ module.exports = function(Topics) {
 
 				data.topicData = data.topicData[0];
 				data.topicData.unreplied = 1;
+				data.topicData.mainPost = data.postData;
 
 				plugins.fireHook('action:topic.post', data.topicData);
 
@@ -184,30 +184,23 @@ module.exports = function(Topics) {
 	Topics.reply = function(data, callback) {
 		var tid = data.tid,
 			uid = data.uid,
-			toPid = data.toPid,
-			handle = data.handle,
 			content = data.content,
 			postData;
 
 		async.waterfall([
 			function(next) {
 				async.parallel({
-					exists: function(next) {
-						threadTools.exists(tid, next);
-					},
-					locked: function(next) {
-						Topics.isLocked(tid, next);
-					},
-					canReply: function(next) {
-						privileges.topics.can('topics:reply', tid, uid, next);
-					}
+					exists: async.apply(Topics.exists, tid),
+					locked: async.apply(Topics.isLocked, tid),
+					canReply: async.apply(privileges.topics.can, 'topics:reply', tid, uid),
+					isAdmin: async.apply(user.isAdministrator, uid)
 				}, next);
 			},
 			function(results, next) {
 				if (!results.exists) {
 					return next(new Error('[[error:no-topic]]'));
 				}
-				if (results.locked) {
+				if (results.locked && !results.isAdmin) {
 					return next(new Error('[[error:topic-locked]]'));
 				}
 				if (!results.canReply) {
@@ -228,7 +221,7 @@ module.exports = function(Topics) {
 				checkContentLength(content, next);
 			},
 			function(next) {
-				posts.create({uid: uid, tid: tid, handle: handle, content: content, toPid: toPid, ip: data.req ? data.req.ip : null}, next);
+				posts.create({uid: uid, tid: tid, handle: data.handle, content: content, toPid: data.toPid, ip: data.req ? data.req.ip : null}, next);
 			},
 			function(data, next) {
 				postData = data;
@@ -243,7 +236,7 @@ module.exports = function(Topics) {
 						posts.getUserInfoForPosts([postData.uid], uid, next);
 					},
 					topicInfo: function(next) {
-						Topics.getTopicFields(tid, ['tid', 'title', 'slug', 'cid'], next);
+						Topics.getTopicFields(tid, ['tid', 'title', 'slug', 'cid', 'postcount'], next);
 					},
 					settings: function(next) {
 						user.getSettings(uid, next);
@@ -252,7 +245,7 @@ module.exports = function(Topics) {
 						posts.getPidIndex(postData.pid, uid, next);
 					},
 					content: function(next) {
-						postTools.parsePost(postData, uid, next);
+						postTools.parsePost(postData, next);
 					}
 				}, next);
 			},
@@ -266,7 +259,7 @@ module.exports = function(Topics) {
 				}
 
 				if (results.settings.followTopicsOnReply) {
-					threadTools.follow(postData.tid, uid);
+					Topics.follow(postData.tid, uid);
 				}
 				postData.index = results.postIndex - 1;
 				postData.favourited = false;
@@ -280,6 +273,10 @@ module.exports = function(Topics) {
 					Topics.notifyFollowers(postData, uid);
 				}
 
+				if (postData.index > 0) {
+					plugins.fireHook('action:topic.reply', postData);
+				}
+
 				postData.topic.title = validator.escape(postData.topic.title);
 				next(null, postData);
 			}
@@ -289,6 +286,8 @@ module.exports = function(Topics) {
 	function checkContentLength(content, callback) {
 		if (!content || content.length < parseInt(meta.config.miminumPostLength, 10)) {
 			return callback(new Error('[[error:content-too-short, '  + meta.config.minimumPostLength + ']]'));
+		} else if (content.length > parseInt(meta.config.maximumPostLength, 10)) {
+			return callback(new Error('[[error:content-too-long, '  + meta.config.maximumPostLength + ']]'));
 		}
 		callback();
 	}

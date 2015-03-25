@@ -1,8 +1,10 @@
 {
-    "username": "Nutzername / E-Mail Adresse",
+    "username-email": "Benutzername / E-Mail-Adresse",
+    "username": "Benutzername",
+    "email": "E-Mail",
     "remember_me": "Eingeloggt bleiben?",
     "forgot_password": "Passwort vergessen?",
-    "alternative_logins": "Login Alternativen",
+    "alternative_logins": "Alternative Logins",
     "failed_login_attempt": " Anmeldeversuch fehlgeschlagen, versuche es erneut.",
     "login_successful": "Du hast dich erfolgreich eingeloggt!",
     "dont_have_account": "Sie haben noch kein Konto?"

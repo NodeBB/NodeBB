@@ -8,66 +8,36 @@ var fs = require('fs'),
 
 var uploadsController = {};
 
-function validateUpload(res, req, allowedTypes) {
-	if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
-		var err = {
-			error: 'Invalid image type. Allowed types are: ' + allowedTypes.join(', ')
-		};
-
-		fs.unlink(req.files.userPhoto.path);
-		res.send(req.xhr ? err : JSON.stringify(err));
-		return false;
-	}
-
-	return true;
-}
-
-uploadsController.uploadImage = function(filename, folder, req, res) {
-	function done(err, image) {
-		fs.unlink(req.files.userPhoto.path);
-
-		var response = err ? {error: err.message} : {path: image.url};
-
-		res.send(req.xhr ? response : JSON.stringify(response));
-	}
-
-	if (plugins.hasListeners('filter:uploadImage')) {
-		plugins.fireHook('filter:uploadImage', {image: req.files.userPhoto, uid: req.user.uid}, done);
-	} else {
-		file.saveFileToLocal(filename, folder, req.files.userPhoto.path, done);
-	}
-};
-
 uploadsController.uploadCategoryPicture = function(req, res, next) {
+	var uploadedFile = req.files.files[0];
 	var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/svg+xml'],
 		params = null;
 
 	try {
 		params = JSON.parse(req.body.params);
 	} catch (e) {
-		var err = {
-			error: 'Error uploading file! Error :' + e.message
-		};
-		fs.unlink(req.files.userPhoto.path);
-		return res.send(req.xhr ? err : JSON.stringify(err));
+		fs.unlink(uploadedFile.path);
+		return next(e);
 	}
 
-	if (validateUpload(res, req, allowedTypes)) {
-		var filename =  'category-' + params.cid + path.extname(req.files.userPhoto.name);
-		uploadsController.uploadImage(filename, 'category', req, res);
+	if (validateUpload(req, res, next, uploadedFile, allowedTypes)) {
+		var filename =  'category-' + params.cid + path.extname(uploadedFile.name);
+		uploadImage(filename, 'category', uploadedFile, req, res, next);
 	}
 };
 
 uploadsController.uploadFavicon = function(req, res, next) {
+	var uploadedFile = req.files.files[0];
 	var allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'];
 
-	if (validateUpload(res, req, allowedTypes)) {
-		file.saveFileToLocal('favicon.ico', 'files', req.files.userPhoto.path, function(err, image) {
-			fs.unlink(req.files.userPhoto.path);
+	if (validateUpload(req, res, next, uploadedFile, allowedTypes)) {
+		file.saveFileToLocal('favicon.ico', 'system', uploadedFile.path, function(err, image) {
+			fs.unlink(uploadedFile.path);
+			if (err) {
+				return next(err);
+			}
 
-			var response = err ? {error: err.message} : {path: image.url};
-
-			res.send(req.xhr ? response : JSON.stringify(response));
+			res.json([{name: uploadedFile.name, url: image.url}]);
 		});
 	}
 };
@@ -81,11 +51,39 @@ uploadsController.uploadGravatarDefault = function(req, res, next) {
 };
 
 function upload(name, req, res, next) {
+	var uploadedFile = req.files.files[0];
 	var allowedTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif'];
+	if (validateUpload(req, res, next, uploadedFile, allowedTypes)) {
+		var filename = name + path.extname(uploadedFile.name);
+		uploadImage(filename, 'system', uploadedFile, req, res, next);
+	}
+}
 
-	if (validateUpload(res, req, allowedTypes)) {
-		var filename = name + path.extname(req.files.userPhoto.name);
-		uploadsController.uploadImage(filename, 'files', req, res);
+function validateUpload(req, res, next, uploadedFile, allowedTypes) {
+	if (allowedTypes.indexOf(uploadedFile.type) === -1) {
+		fs.unlink(uploadedFile.path);
+
+		res.json({error: '[[error:invalid-image-type, ' + allowedTypes.join(', ') + ']]'});
+		return false;
+	}
+
+	return true;
+}
+
+function uploadImage(filename, folder, uploadedFile, req, res, next) {
+	function done(err, image) {
+		fs.unlink(uploadedFile.path);
+		if (err) {
+			return next(err);
+		}
+
+		res.json([{name: uploadedFile.name, url: image.url}]);
+	}
+
+	if (plugins.hasListeners('filter:uploadImage')) {
+		plugins.fireHook('filter:uploadImage', {image: uploadedFile, uid: req.user.uid}, done);
+	} else {
+		file.saveFileToLocal(filename, folder, uploadedFile.path, done);
 	}
 }
 

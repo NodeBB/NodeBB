@@ -2,35 +2,34 @@
 
 /* globals define, socket, app, templates, translator, ajaxify*/
 
-define('forum/home', function() {
-	var	home = {};
+define('forum/categories', function() {
+	var	categories = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
-		if (data.url !== '') {
-			socket.removeListener('event:new_post', home.onNewPost);
+		if (ajaxify.currentPage !== data.url) {
+			socket.removeListener('event:new_post', categories.onNewPost);
 		}
 	});
 
+	categories.init = function() {
+		app.enterRoom('categories');
 
-	home.init = function() {
-		app.enterRoom('home');
+		socket.removeListener('event:new_post', categories.onNewPost);
+		socket.on('event:new_post', categories.onNewPost);
 
-		socket.removeListener('event:new_post', home.onNewPost);
-		socket.on('event:new_post', home.onNewPost);
-
-		$('.home .category-header').tooltip({
+		$('.category-header').tooltip({
 			placement: 'bottom'
 		});
 	};
 
-	home.onNewPost = function(data) {
+	categories.onNewPost = function(data) {
 		if (data && data.posts && data.posts.length && data.posts[0].topic) {
 			renderNewPost(data.posts[0].topic.cid, data.posts[0]);
 		}
 	};
 
 	function renderNewPost(cid, post) {
-		var category = $('.home .category-item[data-cid="' + cid + '"]');
+		var category = components.get('category/topic', 'cid', cid);
 		if (!category.length) {
 			return;
 		}
@@ -59,20 +58,20 @@ define('forum/home', function() {
 				recentPosts.last().remove();
 			}
 
-			$(window).trigger('action:posts.loaded');
+			$(window).trigger('action:posts.loaded', {posts: [post]});
 		});
 	}
 
 	function parseAndTranslate(posts, callback) {
-		templates.parse('home', 'posts', {categories: {posts: posts}}, function(html) {
+		templates.parse('categories', 'posts', {categories: {posts: posts}}, function(html) {
 			translator.translate(html, function(translatedHTML) {
 				translatedHTML = $(translatedHTML);
 				translatedHTML.find('img').addClass('img-responsive');
-				translatedHTML.find('span.timeago').timeago();
+				translatedHTML.find('.timeago').timeago();
 				callback(translatedHTML);
 			});
 		});
 	}
 
-	return home;
+	return categories;
 });

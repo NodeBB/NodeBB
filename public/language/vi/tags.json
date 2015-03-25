@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "Không có bài viết nào với thẻ này.",
     "tags": "Thẻ",
-    "enter_tags_here": "Nhập tên thẻ ở đây. Nhấn enter sau mỗi thẻ.",
+    "enter_tags_here": "Enter tags here. %1-%2 characters. Press enter after each tag.",
     "enter_tags_here_short": "Tên thẻ...",
     "no_tags": "Chưa có thẻ nào."
 }

@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "אין פוסטים עם תגית זו.",
     "tags": "תגיות",
-    "enter_tags_here": "יש להכניס כאן את התגיות. לחץ אנטר אחרי כל תגית.",
-    "enter_tags_here_short": "Enter tags...",
+    "enter_tags_here": "Enter tags here. %1-%2 characters. Press enter after each tag.",
+    "enter_tags_here_short": "הכנס תגיות",
     "no_tags": "אין עדיין תגיות."
 }

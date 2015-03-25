@@ -28,7 +28,9 @@ module.exports = function(Topics) {
 			return callback(new Error('[[error:invalid-pid]]'));
 		}
 
-		pids.sort();
+		pids.sort(function(a, b) {
+			return a - b;
+		});
 		var mainPid = pids[0];
 
 		async.parallel({
@@ -39,6 +41,10 @@ module.exports = function(Topics) {
 				posts.getCidByPid(mainPid, callback);
 			}
 		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			
 			Topics.create({uid: results.postData.uid, title: title, cid: results.cid}, function(err, tid) {
 				if (err) {
 					return callback(err);
@@ -74,7 +80,7 @@ module.exports = function(Topics) {
 		var postData;
 		async.waterfall([
 			function(next) {
-				threadTools.exists(tid, next);
+				Topics.exists(tid, next);
 			},
 			function(exists, next) {
 				if (!exists) {

@@ -22,7 +22,7 @@ module.exports = function(Categories) {
 						plugins.fireHook('filter:category.topics.prepare', data, next);
 					},
 					function(data, next) {
-						Categories.getTopicIds(data.targetUid ? 'cid:' + data.cid + ':uid:' + data.targetUid + ':tids' : 'cid:' + data.cid + ':tids', data.start, data.stop, next);
+						Categories.getTopicIds(data.set, data.reverse, data.start, data.stop, next);
 					},
 					function(tids, next) {
 						topics.getTopicsByTids(tids, data.uid, next);
@@ -56,8 +56,12 @@ module.exports = function(Categories) {
 		});
 	};
 
-	Categories.getTopicIds = function(set, start, stop, callback) {
-		db.getSortedSetRevRange(set, start, stop, callback);
+	Categories.getTopicIds = function(set, reverse, start, stop, callback) {
+		if (reverse) {
+			db.getSortedSetRevRange(set, start, stop, callback);
+		} else {
+			db.getSortedSetRange(set, start, stop, callback);
+		}
 	};
 
 	Categories.getTopicIndex = function(tid, callback) {
@@ -70,34 +74,29 @@ module.exports = function(Categories) {
 		});
 	};
 
-	Categories.onNewPostMade = function(postData, callback) {
-		topics.getTopicFields(postData.tid, ['cid', 'pinned'], function(err, topicData) {
-			if (err) {
-				return callback(err);
-			}
+	Categories.onNewPostMade = function(cid, pinned, postData, callback) {
+		if (!cid || !postData) {
+			return callback();
+		}
 
-			if (!topicData || !topicData.cid) {
-				return callback();
-			}
-
-			var cid = topicData.cid;
-
-			async.parallel([
-				function(next) {
-					db.sortedSetAdd('cid:' + cid + ':pids', postData.timestamp, postData.pid, next);
-				},
-				function(next) {
-					db.incrObjectField('category:' + cid, 'post_count', next);
-				},
-				function(next) {
-					if (parseInt(topicData.pinned, 10) === 1) {
-						next();
-					} else {
-						db.sortedSetAdd('cid:' + cid + ':tids', postData.timestamp, postData.tid, next);
-					}
+		async.parallel([
+			function(next) {
+				db.sortedSetAdd('cid:' + cid + ':pids', postData.timestamp, postData.pid, next);
+			},
+			function(next) {
+				db.incrObjectField('category:' + cid, 'post_count', next);
+			},
+			function(next) {
+				if (parseInt(pinned, 10) === 1) {
+					next();
+				} else {
+					db.sortedSetAdd('cid:' + cid + ':tids', postData.timestamp, postData.tid, next);
 				}
-			], callback);
-		});
+			},
+			function(next) {
+				db.sortedSetIncrBy('cid:' + cid + ':tids:posts', 1, postData.tid, next);
+			}
+		], callback);
 	};
 
 };

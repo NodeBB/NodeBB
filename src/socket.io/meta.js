@@ -40,7 +40,7 @@ SocketMeta.buildTitle = function(socket, text, callback) {
 			if (err) {
 				return callback(err);
 			}
-			meta.title.build(text, settings.language, {}, callback);
+			meta.title.build(text, settings.userLang, {}, callback);
 		});
 	} else {
 		meta.title.build(text, meta.config.defaultLang, {}, callback);
@@ -70,6 +70,10 @@ SocketMeta.rooms.enter = function(socket, data, callback) {
 		socket.currentRoom = data.enter;
 		if (data.enter.indexOf('topic') !== -1) {
 			data.uid = socket.uid;
+			data.picture = validator.escape(data.picture);
+			data.username = validator.escape(data.username);
+			data.userslug = validator.escape(data.userslug);
+
 			websockets.in(data.enter).emit('event:user_enter', data);
 		}
 	}

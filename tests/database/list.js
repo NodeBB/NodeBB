@@ -1,4 +1,5 @@
 'use strict';
+/*global require, after, before*/
 
 var	async = require('async'),
 	assert = require('assert'),
@@ -8,9 +9,9 @@ describe('List methods', function() {
 
 	describe('listAppend()', function() {
 		it('should append to a list', function(done) {
-			db.listAppend('testList', 5, function(err) {
-				assert.equal(err, null, 'db.listAppend error');
-				assert.equal(arguments.length, 1, 'arguments.length error');
+			db.listAppend('testList1', 5, function(err) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 1);
 				done();
 			});
 		});
@@ -19,8 +20,8 @@ describe('List methods', function() {
 	describe('listPrepend()', function() {
 		it('should prepend to a list', function(done) {
 			db.listPrepend('testList2', 3, function(err) {
-				assert.equal(err, null, 'db.listPrepend error');
-				assert.equal(arguments.length, 1, 'arguments.length error');
+				assert.equal(err, null);
+				assert.equal(arguments.length, 1);
 				done();
 			});
 		});
@@ -34,64 +35,99 @@ describe('List methods', function() {
 					db.listPrepend('testList2', 1, next);
 				}
 			], function(err) {
-				assert.equal(err, null, 'db.listPrepend error');
+				assert.equal(err, null);
 				done();
 			});
 		});
 	});
 
 	describe('getListRange()', function() {
+		before(function(done) {
+			async.series([
+				function(next) {
+					db.listAppend('testList3', 7, next);
+				},
+				function(next) {
+					db.listPrepend('testList3', 3, next);
+				},
+				function(next) {
+					db.listAppend('testList4', 5, next);
+				}
+			], done);
+		});
+
 		it('should return an empty list', function(done) {
 			db.getListRange('doesnotexist', 0, -1, function(err, list) {
-				assert.equal(err, null, 'db.getListRange error');
-				assert.equal(arguments.length, 2, 'arguments.length error');
-				assert.equal(Array.isArray(list), true, 'list is not an array');
-				assert.equal(list.length, 0, 'list not empty');
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(Array.isArray(list), true);
+				assert.equal(list.length, 0);
 				done();
 			});
 		});
 
 		it('should return a list with one element', function(done) {
-			db.getListRange('testList', 0, 0, function(err, list) {
-				assert.equal(err, null, 'db.getListRange error');
-				assert.equal(Array.isArray(list), true, 'list is not an array');
-				assert.equal(list[0], 5, 'list does not have value');
+			db.getListRange('testList4', 0, 0, function(err, list) {
+				assert.equal(err, null);
+				assert.equal(Array.isArray(list), true);
+				assert.equal(list[0], 5);
 				done();
 			});
 		});
 
-		it('should return a list with 3 elements 1,2,3', function(done) {
-			db.getListRange('testList2', 0, -1, function(err, list) {
-				assert.equal(err, null, 'db.getListRange error');
-				assert.equal(Array.isArray(list), true, 'list is not an array');
-				assert.equal(list.length, 3, 'list length is not 3');
-				assert.deepEqual(list, ['1', '2', '3'], 'lists not equal');
+		it('should return a list with 2 elements 3, 7', function(done) {
+			db.getListRange('testList3', 0, -1, function(err, list) {
+				assert.equal(err, null);
+				assert.equal(Array.isArray(list), true);
+				assert.equal(list.length, 2);
+				assert.deepEqual(list, ['3', '7']);
 				done();
 			});
 		});
 	});
 
 	describe('listRemoveLast()', function() {
-		it('should remove the last element of list', function(done) {
-			db.listRemoveLast('testList2', function(err, lastElement) {
-				assert.equal(err, null, 'db.listRemoveLast error');
-				assert.equal(arguments.length, 2, 'arguments.length error');
-				assert.equal(lastElement, '3', 'last element not correct');
+		before(function(done) {
+			async.series([
+				function(next) {
+					db.listAppend('testList4', 12, next);
+				},
+				function(next) {
+					db.listPrepend('testList4', 9, next);
+				}
+			], done);
+		});
+
+		it('should remove the last element of list and return it', function(done) {
+			db.listRemoveLast('testList4', function(err, lastElement) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.equal(lastElement, '12');
 				done();
 			});
 		});
 	});
 
 	describe('listRemoveAll()', function() {
-		it('should remove all the matching elements of list', function(done) {
-			db.listRemoveAll('testList2', '1', function(err) {
-				assert.equal(err, null, 'db.listRemoveAll error');
-				assert.equal(arguments.length, 1, 'arguments.length error');
+		before(function(done) {
+			async.series([
+				async.apply(db.listAppend, 'testList5', 1),
+				async.apply(db.listAppend, 'testList5', 1),
+				async.apply(db.listAppend, 'testList5', 1),
+				async.apply(db.listAppend, 'testList5', 2),
+				async.apply(db.listAppend, 'testList5', 5)
+			], done);
+		});
 
-				db.getListRange('testList2', 0, -1, function(err, list) {
-					assert.equal(Array.isArray(list), true, 'list is not an array');
-					assert.equal(list.length, 1, 'element not removed');
-					assert.equal(list.indexOf('1'), -1, 'element not removed');
+		it('should remove all the matching elements of list', function(done) {
+			db.listRemoveAll('testList5', '1', function(err) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 1);
+
+				db.getListRange('testList5', 0, -1, function(err, list) {
+					assert.equal(Array.isArray(list), true);
+					assert.equal(list.length, 2);
+					assert.equal(list.indexOf('1'), -1);
 					done();
 				});
 			});
@@ -102,18 +138,18 @@ describe('List methods', function() {
 		it('should trim list to a certain range', function(done) {
 			var list = ['1', '2', '3', '4', '5'];
 			async.eachSeries(list, function(value, next) {
-				db.listAppend('testList3', value, next);
+				db.listAppend('testList6', value, next);
 			}, function(err) {
 				if (err) {
 					return done(err);
 				}
 
-				db.listTrim('testList3', 0, 2, function(err) {
-					assert.equal(err, null, 'db.listTrim error');
-					assert.equal(arguments.length, 1, 'arguments.length error');
-					db.getListRange('testList3', 0, -1, function(err, list) {
-						assert.equal(list.length, 3, 'list length is not 3');
-						assert.deepEqual(list, ['1', '2', '3'], 'list not properly trimmed');
+				db.listTrim('testList6', 0, 2, function(err) {
+					assert.equal(err, null);
+					assert.equal(arguments.length, 1);
+					db.getListRange('testList6', 0, -1, function(err, list) {
+						assert.equal(list.length, 3);
+						assert.deepEqual(list, ['1', '2', '3']);
 						done();
 					});
 				});

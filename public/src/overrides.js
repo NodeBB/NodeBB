@@ -1,5 +1,8 @@
 'use strict';
 
+/*globals translator*/
+
+
 if ('undefined' !== typeof window) {
 
 	(function ($, undefined) {
@@ -91,7 +94,8 @@ if ('undefined' !== typeof window) {
 		.off('click.data-api.dropdown', _clearMenus)
 		.on('click.data-api.dropdown', function (e) {
 			// call the handler only when not right-click
-			e.button === 2 || _clearMenus();
+			if (e.button !== 2) {
+				_clearMenus();
+			}
 		});
-
 }

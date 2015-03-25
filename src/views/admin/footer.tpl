@@ -13,7 +13,7 @@
 					<form id="uploadForm" action="" method="post" enctype="multipart/form-data">
 						<div class="form-group">
 							<label for="userPhoto">Upload a picture</label>
-							<input type="file" id="userPhotoInput"  name="userPhoto">
+							<input type="file" id="userPhotoInput" name="files[]">
 							<p class="help-block"></p>
 						</div>
 						<input type="hidden" id="params" name="params">
@@ -43,7 +43,7 @@
 	<div class="alert-window alert-right-bottom"></div>
 
 	<div id="footer" class="container" style="padding-top: 50px; display:none;">
-		<footer class="footer">Copyright &copy; 2014 <a target="_blank" href="https://nodebb.org">NodeBB</a> by <a target="_blank" href="https://github.com/psychobunny">psychobunny</a>, <a href="https://github.com/julianlam" target="_blank">julianlam</a>, <a href="https://github.com/barisusakli" target="_blank">barisusakli</a> from <a target="_blank" href="http://www.designcreateplay.com">designcreateplay</a></footer>
+		<footer class="footer">Copyright &copy; 2015 <a target="_blank" href="https://nodebb.org">NodeBB</a> by <a target="_blank" href="https://github.com/psychobunny">psychobunny</a>, <a href="https://github.com/julianlam" target="_blank">julianlam</a>, <a href="https://github.com/barisusakli" target="_blank">barisusakli</a> from <a target="_blank" href="http://www.designcreateplay.com">designcreateplay</a></footer>
 	</div>
 </body>
 </html>

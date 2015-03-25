@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "Teemasid, mis sisaldaksid seda märksõna, ei eksisteeri.",
     "tags": "Märksõnad",
-    "enter_tags_here": "Sisesta märksõnad siia. Iga märksõna tagant sisesta enterit.",
+    "enter_tags_here": "Enter tags here. %1-%2 characters. Press enter after each tag.",
     "enter_tags_here_short": "Sisesta märksõnu...",
     "no_tags": "Siin ei ole veel ühtegi märksõna."
 }

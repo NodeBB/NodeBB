@@ -201,7 +201,7 @@ module.exports = function(db, module) {
 			});
 			callback(null, counts);
 		});
-	}
+	};
 
 	module.setRemoveRandom = function(key, callback) {
 		callback = callback || function() {};

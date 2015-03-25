@@ -1,6 +1,9 @@
 "use strict";
 
 module.exports = function(redisClient, module) {
+
+	var helpers = module.helpers.redis;
+
 	module.setObject = function(key, data, callback) {
 		callback = callback || function() {};
 		redisClient.hmset(key, data, function(err) {
@@ -20,28 +23,18 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.getObjects = function(keys, callback) {
-		var	multi = redisClient.multi();
-
-		for(var x=0; x<keys.length; ++x) {
-			multi.hgetall(keys[x]);
-		}
-
-		multi.exec(callback);
+		helpers.multiKeys(redisClient, 'hgetall', keys, callback);
 	};
 
 	module.getObjectField = function(key, field, callback) {
 		module.getObjectFields(key, [field], function(err, data) {
-			if(err) {
-				return callback(err);
-			}
-
-			callback(null, data[field]);
+			callback(err, data ? data[field] : null);
 		});
 	};
 
 	module.getObjectFields = function(key, fields, callback) {
 		module.getObjectsFields([key], fields, function(err, results) {
-			callback(err, results ? results[0]: null);
+			callback(err, results ? results[0] : null);
 		});
 	};
 
@@ -88,8 +81,21 @@ module.exports = function(redisClient, module) {
 		});
 	};
 
+	module.isObjectFields = function(key, fields, callback) {
+		helpers.multiKeyValues(redisClient, 'hexists', key, fields, function(err, results) {
+			callback(err, Array.isArray(results) ? helpers.resultsToBool(results) : null);
+		});
+	};
+
 	module.deleteObjectField = function(key, field, callback) {
+		callback = callback || function() {};
 		redisClient.hdel(key, field, function(err, res) {
+			callback(err);
+		});
+	};
+
+	module.deleteObjectFields = function(key, fields, callback) {
+		helpers.multiKeyValues(redisClient, 'hdel', key, fields, function(err, results) {
 			callback(err);
 		});
 	};

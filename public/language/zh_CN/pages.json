@@ -11,6 +11,7 @@
     "user.followers": "关注 %1 的人",
     "user.posts": "%1 发布的帖子",
     "user.topics": "%1 创建的主题",
+    "user.groups": "%1 的用户组",
     "user.favourites": "%1 收藏的帖子",
     "user.settings": "用户设置",
     "maintenance.text": "%1 正在进行维护。请稍后再来。",

@@ -77,6 +77,19 @@ define('alerts', function() {
 			alert.children().fadeIn(100);
 			alert.html(translatedHTML);
 		});
+
+		// Handle changes in the clickfn
+		alert.off('click').removeClass('pointer');
+		if (typeof params.clickfn === 'function') {
+			alert
+				.addClass('pointer')
+				.on('click', function (e) {
+					if(!$(e.target).is('.close')) {
+						params.clickfn();
+					}
+					fadeOut(alert);
+				});
+		}
 	}
 
 	function fadeOut(alert) {

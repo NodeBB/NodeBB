@@ -35,7 +35,7 @@ define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll'], 
 		infinitescroll.parseAndTranslate('account/posts', 'posts', {posts: posts}, function(html) {
 			$('.user-favourite-posts').append(html);
 			html.find('img').addClass('img-responsive');
-			html.find('span.timeago').timeago();
+			html.find('.timeago').timeago();
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			callback();

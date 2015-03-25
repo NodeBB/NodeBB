@@ -3,12 +3,16 @@
 var categoriesController = {},
 	async = require('async'),
 	nconf = require('nconf'),
+	validator = require('validator'),
+
+	db = require('../database'),
 	privileges = require('../privileges'),
 	user = require('../user'),
 	categories = require('../categories'),
 	topics = require('../topics'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
+	pagination = require('../pagination'),
 	helpers = require('./helpers'),
 	utils = require('../../public/src/utils');
 
@@ -21,13 +25,9 @@ categoriesController.recent = function(req, res, next) {
 		}
 
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
-
-		plugins.fireHook('filter:category.get', {category: data, uid: uid}, function(err, data) {
-			if (err) {
-				return next(err);
-			}
-			res.render('recent', data.category);
-		});
+		data.rssFeedUrl = nconf.get('relative_path') + '/recent.rss';
+		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[recent:title]]'}]);
+		res.render('recent', data);
 	});
 };
 
@@ -35,8 +35,13 @@ var anonCache = {}, lastUpdateTime = 0;
 
 categoriesController.popular = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
-
-	var term = req.params.term || 'daily';
+	var terms = {
+		daily: 'day',
+		weekly: 'week',
+		monthly: 'month',
+		alltime: 'alltime'
+	};
+	var term = terms[req.params.term] || 'day';
 
 	if (uid === 0) {
 		if (anonCache[term] && (Date.now() - lastUpdateTime) < 60 * 60 * 1000) {
@@ -44,24 +49,24 @@ categoriesController.popular = function(req, res, next) {
 		}
 	}
 
-	topics.getPopular(term, uid, meta.config.topicsPerList, function(err, data) {
+	topics.getPopular(term, uid, meta.config.topicsPerList, function(err, topics) {
 		if (err) {
 			return next(err);
 		}
 
-		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+		var data = {
+			topics: topics,
+			'feeds:disableRSS': parseInt(meta.config['feeds:disableRSS'], 10) === 1,
+			rssFeedUrl: nconf.get('relative_path') + '/popular/' + (req.params.term || 'daily') + '.rss',
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[global:header.popular]]'}])
+		};
 
-		plugins.fireHook('filter:category.get', {category: {topics: data}, uid: uid}, function(err, data) {
-			if (err) {
-				return next(err);
-			}
-			if (uid === 0) {
-				anonCache[term] = data.category;
-				lastUpdateTime = Date.now();
-			}
+		if (uid === 0) {
+			anonCache[term] = data;
+			lastUpdateTime = Date.now();
+		}
 
-			res.render('popular', data.category);
-		});
+		res.render('popular', data);
 	});
 };
 
@@ -73,12 +78,8 @@ categoriesController.unread = function(req, res, next) {
 			return next(err);
 		}
 
-		plugins.fireHook('filter:category.get', {category: data, uid: uid}, function(err, data) {
-			if (err) {
-				return next(err);
-			}
-			res.render('unread', data.category);
-		});
+		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[unread:title]]'}]);
+		res.render('unread', data);
 	});
 };
 
@@ -91,6 +92,69 @@ categoriesController.unreadTotal = function(req, res, next) {
 		}
 
 		res.json(data);
+	});
+};
+
+categoriesController.list = function(req, res, next) {
+	async.parallel({
+		header: function (next) {
+			res.locals.metaTags = [{
+				name: "title",
+				content: validator.escape(meta.config.title || 'NodeBB')
+			}, {
+				name: "description",
+				content: validator.escape(meta.config.description || '')
+			}, {
+				property: 'og:title',
+				content: 'Index | ' + validator.escape(meta.config.title || 'NodeBB')
+			}, {
+				property: 'og:type',
+				content: 'website'
+			}];
+
+			if(meta.config['brand:logo']) {
+				res.locals.metaTags.push({
+					property: 'og:image',
+					content: meta.config['brand:logo']
+				});
+			}
+
+			next(null);
+		},
+		categories: function (next) {
+			var uid = req.user ? req.user.uid : 0;
+			var categoryData;
+			async.waterfall([
+				function(next) {
+					categories.getCategoriesByPrivilege(uid, 'find', next);
+				},
+				function(_categoryData, next) {
+					categoryData = _categoryData;
+					var allCategories = [];
+
+					categoryData = categoryData.filter(function(category) {
+						if (!category.parent) {
+							allCategories.push(category);
+						}
+
+						if (Array.isArray(category.children) && category.children.length) {
+							allCategories.push.apply(allCategories, category.children);
+						}
+						return category && !category.parent;
+					});
+
+					categories.getRecentTopicReplies(allCategories, uid, next);
+				}
+			], function(err) {
+				next(err, categoryData);
+			});
+		}
+	}, function (err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		res.render('categories', data);
 	});
 };
 
@@ -138,8 +202,7 @@ categoriesController.get = function(req, res, next) {
 			var topicCount = parseInt(results.categoryData.topic_count, 10);
 
 			if (topicIndex < 0 || topicIndex > Math.max(topicCount - 1, 0)) {
-				var url = '/category/' + cid + '/' + req.params.slug + (topicIndex > topicCount ? '/' + topicCount : '');
-				return res.locals.isAPI ? res.status(302).json(url) : res.redirect(url);
+				return helpers.redirect(res, '/category/' + cid + '/' + req.params.slug + (topicIndex > topicCount ? '/' + topicCount : ''));
 			}
 
 			userPrivileges = results.privileges;
@@ -153,11 +216,23 @@ categoriesController.get = function(req, res, next) {
 				topicIndex = 0;
 			}
 
+			var set = 'cid:' + cid + ':tids',
+				reverse = false;
+
+			if (settings.categoryTopicSort === 'newest_to_oldest') {
+				reverse = true;
+			} else if (settings.categoryTopicSort === 'most_posts') {
+				reverse = true;
+				set = 'cid:' + cid + ':tids:posts';
+			}
+
 			var start = (page - 1) * settings.topicsPerPage + topicIndex,
 				end = start + settings.topicsPerPage - 1;
 
 			next(null, {
 				cid: cid,
+				set: set,
+				reverse: reverse,
 				start: start,
 				end: end,
 				uid: uid
@@ -166,6 +241,9 @@ categoriesController.get = function(req, res, next) {
 		function(payload, next) {
 			user.getUidByUserslug(req.query.author, function(err, uid) {
 				payload.targetUid = uid;
+				if (uid) {
+					payload.set = 'cid:' + cid + ':uid:' + uid + ':tids';
+				}
 				next(err, payload);
 			});
 		},
@@ -173,13 +251,18 @@ categoriesController.get = function(req, res, next) {
 			categories.getCategoryById(payload, next);
 		},
 		function(categoryData, next) {
+			if (categoryData.link) {
+				db.incrObjectField('category:' + categoryData.cid, 'timesClicked');
+				return res.redirect(categoryData.link);
+			}
+
 			var breadcrumbs = [
 				{
 					text: categoryData.name,
 					url: nconf.get('relative_path') + '/category/' + categoryData.slug
 				}
 			];
-			helpers.buildBreadcrumbs(categoryData.parentCid, function(err, crumbs) {
+			helpers.buildCategoryBreadcrumbs(categoryData.parentCid, function(err, crumbs) {
 				if (err) {
 					return next(err);
 				}
@@ -188,16 +271,13 @@ categoriesController.get = function(req, res, next) {
 			});
 		},
 		function(categoryData, next) {
-			if (categoryData.link) {
-				return res.redirect(categoryData.link);
-			}
-
 			categories.getRecentTopicReplies(categoryData.children, uid, function(err) {
 				next(err, categoryData);
 			});
 		},
 		function (categoryData, next) {
 			categoryData.privileges = userPrivileges;
+			categoryData.showSelect = categoryData.privileges.editable;
 
 			res.locals.metaTags = [
 				{
@@ -246,19 +326,19 @@ categoriesController.get = function(req, res, next) {
 
 		data.currentPage = page;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+		data.rssFeedUrl = nconf.get('relative_path') + '/category/' + data.cid + '.rss';
+		data.pagination = pagination.create(data.currentPage, data.pageCount);
 
-		if (!res.locals.isAPI) {
-			// Paginator for noscript
-			data.pages = [];
-			for(var x=1;x<=data.pageCount;x++) {
-				data.pages.push({
-					page: x,
-					active: x === parseInt(page, 10)
-				});
+		data.pagination.rel.forEach(function(rel) {
+			res.locals.linkTags.push(rel);
+		});
+
+		plugins.fireHook('filter:category.build', {req: req, res: res, templateData: data}, function(err, data) {
+			if (err) {
+				return next(err);
 			}
-		}
-
-		res.render('category', data);
+			res.render('category', data.templateData);
+		});
 	});
 };
 

@@ -173,39 +173,34 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move
 	}
 
 	function getTopicEl(tid) {
-		return $('#topics-container li[data-tid="' + tid + '"]');
+		return components.get('category/topic', 'tid', tid);
 	}
 
 	function setDeleteState(data) {
 		var topic = getTopicEl(data.tid);
 		topic.toggleClass('deleted', data.isDeleted);
-		topic.find('.fa-lock').toggleClass('hide', !data.isDeleted);
+		topic.find('[component="topic/locked"]').toggleClass('hide', !data.isDeleted);
 	}
 
 	function setPinnedState(data) {
 		var topic = getTopicEl(data.tid);
 		topic.toggleClass('pinned', data.isPinned);
-		topic.find('.fa-thumb-tack').toggleClass('hide', !data.isPinned);
+		topic.find('[component="topic/pinned"]').toggleClass('hide', !data.isPinned);
 		ajaxify.refresh();
 	}
 
 	function setLockedState(data) {
 		var topic = getTopicEl(data.tid);
 		topic.toggleClass('locked', data.isLocked);
-		topic.find('.fa-lock').toggleClass('hide', !data.isLocked);
+		topic.find('[component="topic/locked"]').toggleClass('hide', !data.isLocked);
 	}
 
 	function onTopicMoved(data) {
 		getTopicEl(data.tid).remove();
 	}
 
-	function onTopicPurged(tids) {
-		if (!tids) {
-			return;
-		}
-		for(var i=0; i<tids.length; ++i) {
-			getTopicEl(tids[i]).remove();
-		}
+	function onTopicPurged(data) {
+		getTopicEl(data.tid).remove();
 	}
 
 	return CategoryTools;

@@ -1,3 +1,6 @@
+'use strict';
+/*global require, process, before, beforeEach, after*/
+
 var winston = require('winston');
 
 process.on('uncaughtException', function (err) {
@@ -11,7 +14,8 @@ var	assert = require('assert'),
 var User = require('../src/user'),
 	Topics = require('../src/topics'),
 	Categories = require('../src/categories'),
-	Meta = require('../src/meta');
+	Meta = require('../src/meta'),
+	Password = require('../src/password');
 
 describe('User', function() {
 	var	userData,
@@ -164,6 +168,59 @@ describe('User', function() {
 				assert.equal(Array.isArray(searchData.users) && searchData.users.length > 0, true);
 				assert.equal(searchData.users[0].username, 'John Smith');
 				done();
+			});
+		});
+	});
+
+	describe('.delete()', function() {
+		var uid;
+		before(function(done) {
+			User.create({username: 'usertodelete', password: '123456', email: 'delete@me.com'}, function(err, newUid) {
+				assert.ifError(err);
+				uid = newUid;
+				done();
+			});
+		});
+
+		it('should delete a user account', function(done) {
+			User.delete(uid, function(err) {
+				assert.ifError(err);
+				User.exists('usertodelete', function(err, exists) {
+					assert.ifError(err);
+					assert.equal(exists, false);
+					done();
+				});
+			});
+		});
+	});
+
+	describe('passwordReset', function() {
+		var uid;
+		before(function(done) {
+			User.create({username: 'resetuser', password: '123456', email: 'reset@me.com'}, function(err, newUid) {
+				assert.ifError(err);
+				uid = newUid;
+				done();
+			});
+		});
+
+		it('should create a new reset code and reset password', function(done) {
+			User.reset.send('reset@me.com', function(err, code) {
+				assert.ifError(err);
+				assert(code);
+
+				User.reset.commit(code, 'newpassword', function(err) {
+					assert.ifError(err);
+
+					db.getObjectField('user:' + uid, 'password', function(err, newPassword) {
+						assert.ifError(err);
+						Password.compare('newpassword', newPassword, function(err, match) {
+							assert.ifError(err);
+							assert(match);
+							done();
+						});
+					});
+				});
 			});
 		});
 	});

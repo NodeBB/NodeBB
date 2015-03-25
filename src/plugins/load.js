@@ -12,32 +12,15 @@ var fs = require('fs'),
 module.exports = function(Plugins) {
 
 	Plugins.loadPlugin = function(pluginPath, callback) {
-		fs.readFile(path.join(pluginPath, 'plugin.json'), function(err, data) {
+		Plugins.loadPluginInfo(pluginPath, function(err, pluginData) {
 			if (err) {
+				if (err.message === '[[error:parse-error]]') {
+					return callback();
+				}
 				return callback(pluginPath.match('nodebb-theme') ? null : err);
 			}
 
-			var pluginData, staticDir;
-
-			try {
-				pluginData = JSON.parse(data);
-			} catch (err) {
-				var pluginDir = pluginPath.split(path.sep);
-				pluginDir = pluginDir[pluginDir.length -1];
-
-				winston.error('[plugins/' + pluginDir + '] Plugin not loaded - please check its plugin.json for errors');
-				return callback();
-			}
-
-			if (pluginData.compatibility && semver.validRange(pluginData.compatibility)) {
-				if (!semver.gtr(pkg.version, pluginData.compatibility)) {
-					// NodeBB may not be new enough to run this plugin
-					process.stdout.write('\n');
-					winston.warn('[plugins/' + pluginData.id + '] This plugin may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing.');
-					winston.warn('[plugins/' + pluginData.id + '] In the event of an unresponsive NodeBB caused by this plugin, run ./nodebb reset plugin="' + pluginData.id + '".');
-					process.stdout.write('\n');
-				}
-			}
+			versionWarning(pluginData);
 
 			async.parallel([
 				function(next) {
@@ -70,6 +53,23 @@ module.exports = function(Plugins) {
 		});
 	};
 
+	function versionWarning(pluginData) {
+		function display() {
+			process.stdout.write('\n');
+			winston.warn('[plugins/' + pluginData.id + '] This plugin may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing.');
+			winston.warn('[plugins/' + pluginData.id + '] In the event of an unresponsive NodeBB caused by this plugin, run ./nodebb reset plugin="' + pluginData.id + '".');
+			process.stdout.write('\n');
+		}
+
+		if (pluginData.nbbpm && pluginData.nbbpm.compatibility && semver.validRange(pluginData.nbbpm.compatibility)) {
+			if (!semver.gtr(pkg.version, pluginData.nbbpm.compatibility)) {
+				display();
+			}
+		} else {
+			display();
+		}
+	}
+
 	function registerHooks(pluginData, pluginPath, callback) {
 		function libraryNotFound() {
 			winston.warn('[plugins.reload] Library not found for plugin: ' + pluginData.id);
@@ -82,13 +82,9 @@ module.exports = function(Plugins) {
 
 		var libraryPath = path.join(pluginPath, pluginData.library);
 
-		fs.exists(libraryPath, function(exists) {
-			if (!exists) {
-				return libraryNotFound();
-			}
-
+		try {
 			if (!Plugins.libraries[pluginData.id]) {
-				Plugins.requireLibrary(pluginData, libraryPath);
+				Plugins.requireLibrary(pluginData.id, libraryPath);
 			}
 
 			if (Array.isArray(pluginData.hooks) && pluginData.hooks.length > 0) {
@@ -98,7 +94,10 @@ module.exports = function(Plugins) {
 			} else {
 				callback();
 			}
-		});
+		} catch(err) {
+			winston.error(err.stack);
+			libraryNotFound();
+		}
 	}
 
 	function mapStaticDirectories(pluginData, pluginPath, callback) {
@@ -198,7 +197,40 @@ module.exports = function(Plugins) {
 				callback();
 			});
 		});
-
 	}
 
+	Plugins.loadPluginInfo = function(pluginPath, callback) {
+		async.parallel({
+			package: function(next) {
+				fs.readFile(path.join(pluginPath, 'package.json'), next);
+			},
+			plugin: function(next) {
+				fs.readFile(path.join(pluginPath, 'plugin.json'), next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			try {
+				var pluginData = JSON.parse(results.plugin);
+				var packageData = JSON.parse(results.package);
+
+				pluginData.id = packageData.name;
+				pluginData.name = packageData.name;
+				pluginData.description = packageData.description;
+				pluginData.version = packageData.version;
+				pluginData.repository = packageData.repository;
+				pluginData.nbbpm = packageData.nbbpm;
+
+				callback(null, pluginData);
+			} catch(err) {
+				var pluginDir = pluginPath.split(path.sep);
+				pluginDir = pluginDir[pluginDir.length -1];
+
+				winston.error('[plugins/' + pluginDir + '] Error in plugin.json or package.json! ' + err.message);
+
+				callback(new Error('[[error:parse-error]]'));
+			}
+		});
+	};
 };

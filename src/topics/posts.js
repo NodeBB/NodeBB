@@ -29,15 +29,28 @@ module.exports = function(Topics) {
 		], callback);
 	};
 
-
 	Topics.getTopicPosts = function(tid, set, start, end, uid, reverse, callback) {
 		callback = callback || function() {};
-		posts.getPostsByTid(tid, set, start, end, uid, reverse, function(err, postData) {
+		async.parallel({
+			posts: function(next) {
+				posts.getPostsByTid(tid, set, start, end, uid, reverse, next);
+			},
+			postCount: function(next) {
+				Topics.getTopicField(tid, 'postcount', next);
+			}
+		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			Topics.addPostData(postData, uid, callback);
+			var indices = Topics.calculatePostIndices(start, end, results.postCount, reverse);
+			results.posts.forEach(function(post, index) {
+				if (post) {
+					post.index = indices[index];
+				}
+			});
+
+			Topics.addPostData(results.posts, uid, callback);
 		});
 	};
 
@@ -103,9 +116,6 @@ module.exports = function(Topics) {
 			},
 			privileges: function(next) {
 				privileges.posts.get(pids, uid, next);
-			},
-			indices: function(next) {
-				posts.getPostIndices(postData, uid, next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -114,7 +124,6 @@ module.exports = function(Topics) {
 
 			postData.forEach(function(postObj, i) {
 				if (postObj) {
-					postObj.index = results.indices[i];
 					postObj.deleted = parseInt(postObj.deleted, 10) === 1;
 					postObj.user = parseInt(postObj.uid, 10) ? results.userData[postObj.uid] : _.clone(results.userData[postObj.uid]);
 					postObj.editor = postObj.editor ? results.editors[postObj.editor] : null;
@@ -139,6 +148,19 @@ module.exports = function(Topics) {
 
 			callback(null, postData);
 		});
+	};
+
+	Topics.calculatePostIndices = function(start, end, postCount, reverse) {
+		var indices = [];
+		var count = end - start + 1;
+		for(var i=0; i<count; ++i) {
+			if (reverse) {
+				indices.push(postCount - (start + i + 1));
+			} else {
+				indices.push(start + i + 1);
+			}
+		}
+		return indices;
 	};
 
 	Topics.getLatestUndeletedPid = function(tid, callback) {
@@ -177,7 +199,7 @@ module.exports = function(Topics) {
 							return next(err);
 						}
 						latestPid = pids[0];
-						isDeleted = deleted;
+						isDeleted = parseInt(deleted, 10) === 1;
 						++index;
 						next();
 					});
@@ -218,14 +240,7 @@ module.exports = function(Topics) {
 	};
 
 	Topics.removePostFromTopic = function(tid, pid, callback) {
-		async.parallel([
-			function (next) {
-				db.sortedSetRemove('tid:' + tid + ':posts', pid, next);
-			},
-			function (next) {
-				db.sortedSetRemove('tid:' + tid + ':posts:votes', pid, next);
-			}
-		], function(err, results) {
+		db.sortedSetsRemove(['tid:' + tid + ':posts', 'tid:' + tid + ':posts:votes'], pid, function(err) {
 			if (err) {
 				return callback(err);
 			}

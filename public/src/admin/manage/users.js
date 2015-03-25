@@ -1,5 +1,5 @@
 "use strict";
-/* global socket, define, templates, bootbox, app, ajaxify,  */
+/* global config, socket, define, templates, bootbox, app, ajaxify,  */
 define('admin/manage/users', ['admin/modules/selectable'], function(selectable) {
 	var Users = {};
 
@@ -28,7 +28,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 		}
 
 		function removeSelected() {
-			$('#users-container .users-box .selected').remove();
+			$('#users-container .users-box .selected').parents('.users-box').remove();
 		}
 
 		function done(successMessage, className, flag) {
@@ -134,6 +134,19 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 			return false;
 		});
 
+		$('.send-validation-email').on('click', function() {
+			var uids = getSelectedUids();
+			if (!uids.length) {
+				return;
+			}
+			socket.emit('admin.user.sendValidationEmail', uids, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				app.alertSuccess('[[notifications:email-confirm-sent]]');
+			});
+		});
+
 		$('.password-reset-email').on('click', function() {
 			var uids = getSelectedUids();
 			if (!uids.length) {
@@ -201,7 +214,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 					}
 					$('#create-modal').modal('hide');
 					$('#create-modal').on('hidden.bs.modal', function() {
-						ajaxify.go('admin/users');
+						ajaxify.refresh();
 					});
 					app.alertSuccess('User created!');
 				});
@@ -237,7 +250,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 			timeoutId = setTimeout(function() {
 				$('.fa-spinner').removeClass('hidden');
 
-				socket.emit('admin.user.search', {type: type, query: $this.val()}, function(err, data) {
+				socket.emit('admin.user.search', {searchBy: [type], query: $this.val()}, function(err, data) {
 					if (err) {
 						return app.alertError(err.message);
 					}

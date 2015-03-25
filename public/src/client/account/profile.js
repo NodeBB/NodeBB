@@ -36,15 +36,14 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll']
 		socket.removeListener('event:user_status_change', onUserStatusChange);
 		socket.on('event:user_status_change', onUserStatusChange);
 
-		if (yourid !== theirid) {
-			socket.emit('user.increaseViewCount', theirid);
-		}
-
-		infinitescroll.init(loadMoreTopics);
+		infinitescroll.init(loadMorePosts);
 	};
 
 	function processPage() {
 		$('.user-recent-posts img, .post-signature img').addClass('img-responsive');
+
+		$('.user-recent-posts blockquote').prev('p').remove();
+		$('.user-recent-posts blockquote').remove();
 	}
 
 	function updateButtons() {
@@ -84,7 +83,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll']
 
 	}
 
-	function loadMoreTopics(direction) {
+	function loadMorePosts(direction) {
 		if(direction < 0 || !$('.user-recent-posts').length) {
 			return;
 		}
@@ -117,7 +116,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll']
 		infinitescroll.parseAndTranslate('account/profile', 'posts', {posts: posts}, function(html) {
 
 			$('.user-recent-posts .loading-indicator').before(html);
-			html.find('span.timeago').timeago();
+			html.find('.timeago').timeago();
 
 			callback();
 		});

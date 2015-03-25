@@ -27,11 +27,16 @@ var async = require('async'),
 		});
 	};
 
-	UserEmail.verify = function(uid, email) {
+	UserEmail.verify = function(uid, email, callback) {
+		callback = callback || function() {};
 		var confirm_code = utils.generateUUID(),
 			confirm_link = nconf.get('url') + '/confirm/' + confirm_code;
 
 		plugins.fireHook('filter:user.verify.code', confirm_code, function(err, confirm_code) {
+			if (err) {
+				return callback(err);
+			}
+
 			async.series([
 				function(next) {
 					db.setObject('confirm:' + confirm_code, {
@@ -43,7 +48,9 @@ var async = require('async'),
 					db.expireAt('confirm:' + confirm_code, Math.floor(Date.now() / 1000 + 60 * 60 * 2), next);
 				}
 			], function(err) {
-
+				if (err) {
+					return callback(err);
+				}
 				user.getUserField(uid, 'username', function(err, username) {
 					if (err) {
 						return winston.error(err.stack);
@@ -64,10 +71,12 @@ var async = require('async'),
 
 						if (plugins.hasListeners('action:user.verify')) {
 							plugins.fireHook('action:user.verify', {uid: uid, data: data});
+							callback();
 						} else if (plugins.hasListeners('action:email.send')) {
-							emailer.send('welcome', uid, data);
+							emailer.send('welcome', uid, data, callback);
 						} else {
 							winston.warn('No emailer to send verification email!');
+							callback();
 						}
 					});
 				});
@@ -78,21 +87,18 @@ var async = require('async'),
 	UserEmail.confirm = function(code, callback) {
 		db.getObject('confirm:' + code, function(err, confirmObj) {
 			if (err) {
-				return callback({
-					status:'error'
-				});
+				return callback(new Error('[[error:parse-error]]'));
 			}
 
 			if (confirmObj && confirmObj.uid && confirmObj.email) {
-				user.setUserField(confirmObj.uid, 'email:confirmed', 1, function() {
-					callback({
-						status: 'ok'
-					});
+				async.series([
+					async.apply(user.setUserField, confirmObj.uid, 'email:confirmed', 1),
+					async.apply(db.delete, 'confirm:' + code)
+				], function(err) {
+					callback(err ? new Error('[[error:email-confirm-failed]]') : null);
 				});
 			} else {
-				callback({
-					status: 'not_ok'
-				});
+				callback(new Error('[[error:invalid-data]]'));
 			}
 		});
 	};

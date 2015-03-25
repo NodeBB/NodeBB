@@ -3,9 +3,10 @@
     "search": "Hľadať",
     "buttons.close": "Zavrieť",
     "403.title": "Prístup zamietnutý",
-    "403.message": "K tejto stránke nemáte prístup. Zkuste sa <a href='/login'>prihlásiť</a>?",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "Stránka nenájdená",
-    "404.message": "Táto stránka bohužiaľ neexistuje. Vráťte sa na <a href='/'>domovskú stránku</a>.",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "Neznámá chyba",
     "500.message": "Jejda, vyzerá, že sa niečo pokazilo.",
     "register": "Registrovať",
@@ -26,6 +27,7 @@
     "header.tags": "tagy",
     "header.popular": "Populárne",
     "header.users": "Užívatelia",
+    "header.groups": "Groups",
     "header.chats": "Chaty",
     "header.notifications": "Notifikácie",
     "header.search": "Hľadať",
@@ -73,5 +75,7 @@
     "updated.title": "fórum bolo aktualizované",
     "updated.message": "Toto fórum bolo práve aktualizované k najnovšej verzii. Tu kliknite na aktualizáciu tejto stránky.",
     "privacy": "Privacy",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "Delete All"
 }

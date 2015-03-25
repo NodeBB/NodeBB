@@ -2,6 +2,7 @@
     "title": "Notificări",
     "no_notifs": "Nu ai nici o notificare recentă",
     "see_all": "Vezi toate notificările",
+    "mark_all_read": "Mark all notifications read",
     "back_to_home": "Înapoi la %1",
     "outgoing_link": "Link Extern",
     "outgoing_link_message": "Acum părăsești %1.",
@@ -21,7 +22,6 @@
     "user_started_following_you": "<strong>%1</strong> a început să te urmărească.",
     "email-confirmed": "Email confirmat",
     "email-confirmed-message": "Îți mulțumim pentru validarea emailului. Contul tău este acuma activat.",
-    "email-confirm-error": "S-a produs o eroare ...",
     "email-confirm-error-message": "A fost o problemă cu activarea adresei tale de email. Poate codul de activare a fost invalid sau expirat.",
     "email-confirm-sent": "Un email de confirmare a fost trimis."
 }

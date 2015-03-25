@@ -36,15 +36,26 @@ define('forum/account/settings', ['forum/account/header'], function(header) {
 				}
 
 				app.alertSuccess('[[success:settings-saved]]');
-
+				var requireReload = false;
 				for (var key in newSettings) {
 					if (newSettings.hasOwnProperty(key)) {
-						config[key] = newSettings[key];
+						if (key === 'userLang' && config.userLang !== newSettings.userLang) {
+							requireReload = true;
+						} 
+						config[key] = newSettings[key];	
 					}
 				}
-
-				if (parseInt(app.uid, 10) === parseInt(ajaxify.variables.get('theirid'), 10)) {
-					ajaxify.refresh();
+				app.exposeConfigToTemplates();
+				if (requireReload && parseInt(app.user.uid, 10) === parseInt(ajaxify.variables.get('theirid'), 10)) {
+					app.alert({
+						id: 'setting-change',
+						message: '[[user:settings-require-reload]]',
+						type: 'warning',
+						timeout: 5000,
+						clickfn: function() {
+							ajaxify.refresh();
+						}
+					});
 				}
 			});
 

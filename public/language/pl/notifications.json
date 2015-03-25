@@ -2,6 +2,7 @@
     "title": "Powiadomienia",
     "no_notifs": "Nie masz nowych powiadomień",
     "see_all": "Zobacz wszystkie powiadomienia",
+    "mark_all_read": "Oznacz wszystkie powiadomienia jako przeczytane",
     "back_to_home": "Wróć do %1",
     "outgoing_link": "Łącze wychodzące",
     "outgoing_link_message": "Opuszczasz %1.",
@@ -21,7 +22,6 @@
     "user_started_following_you": "<string>%1</strong> zaczął Cię śledzić.",
     "email-confirmed": "E-mail potwierdzony",
     "email-confirmed-message": "Dziękujemy za potwierdzenie maila. Twoje konto zostało aktywowane.",
-    "email-confirm-error": "Wystąpił błąd.",
     "email-confirm-error-message": "Wystąpił problem przy aktywacji, - kod jest błędny lub przestarzały",
     "email-confirm-sent": "E-mail potwierdzający wysłany"
 }

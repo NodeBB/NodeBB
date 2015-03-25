@@ -152,7 +152,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 						return;
 					}
 
-					if ($('#confirm-username').val() !== app.username) {
+					if ($('#confirm-username').val() !== app.user.username) {
 						app.alertError('[[error:invalid-username]]');
 						return false;
 					} else {
@@ -266,12 +266,15 @@ define('forum/account/edit', ['forum/account/header', 'uploader'], function(head
 		password_confirm.on('blur', onPasswordConfirmChanged);
 
 		$('#changePasswordBtn').on('click', function() {
-			if ((passwordvalid && passwordsmatch) || app.isAdmin) {
+			var btn = $(this);
+			if ((passwordvalid && passwordsmatch) || app.user.isAdmin) {
+				btn.addClass('disabled').find('i').removeClass('hide');
 				socket.emit('user.changePassword', {
 					'currentPassword': currentPassword.val(),
 					'newPassword': password.val(),
 					'uid': ajaxify.variables.get('theirid')
 				}, function(err) {
+					btn.removeClass('disabled').find('i').addClass('hide');
 					currentPassword.val('');
 					password.val('');
 					password_confirm.val('');

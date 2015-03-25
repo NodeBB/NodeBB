@@ -14,7 +14,17 @@ define('composer/tags', function() {
 
 		tagEl.tagsinput({
 			maxTags: config.tagsPerTopic,
-			confirmKeys: [13, 44]
+			confirmKeys: [13, 44],
+			trimValue: true			
+		});
+
+		tagEl.on('beforeItemAdd', function(event) {
+			event.cancel = event.item.length < config.minimumTagLength || event.item.length > config.maximumTagLength;
+			if (event.item.length < config.minimumTagLength) {
+				app.alertError('[[error:tag-too-short, ' + config.minimumTagLength + ']]');
+			} else if (event.item.length > config.maximumTagLength) {
+				app.alertError('[[error:tag-too-long, ' + config.maximumTagLength + ']]');
+			}
 		});
 
 		tagEl.on('itemAdded', function(event) {

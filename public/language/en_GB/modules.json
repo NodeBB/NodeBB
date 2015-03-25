@@ -18,5 +18,6 @@
 
 	"composer.user_said_in": "%1 said in %2:",
 	"composer.user_said": "%1 said:",
-	"composer.discard": "Are you sure you wish to discard this post?"
+	"composer.discard": "Are you sure you wish to discard this post?",
+	"composer.submit_and_lock": "Submit and Lock"
 }

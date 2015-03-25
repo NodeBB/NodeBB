@@ -202,7 +202,7 @@ define('composer/uploads', ['composer/preview', 'csrf'], function(preview, csrf)
 
 	function insertText(str, index, insert) {
 		return str.slice(0, index) + insert + str.slice(index);
-	};
+	}
 
 	function uploadContentFiles(params) {
 		var files = params.files,
@@ -316,8 +316,7 @@ define('composer/uploads', ['composer/preview', 'csrf'], function(preview, csrf)
 
 	function onUploadError(xhr) {
 		xhr = maybeParse(xhr);
-
-		app.alertError('[[error:upload-error, ' + xhr.responseText + ']]');
+		app.alertError(xhr.responseText);
 	}
 
 	return uploads;

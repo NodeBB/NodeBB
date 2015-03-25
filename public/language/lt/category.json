@@ -1,8 +1,9 @@
 {
     "new_topic_button": "Nauja tema",
+    "guest-login-post": "Prisijungti įrašų paskelbimui",
     "no_topics": "<strong>Šioje kategorijoje temų nėra.</strong><br/>Kodėl gi jums nesukūrus naujos?",
     "browsing": "naršo",
     "no_replies": "Niekas dar neatsakė",
     "share_this_category": "Pasidalinti šią kategoriją",
-    "ignore": "Ignore"
+    "ignore": "Nepaisyti"
 }

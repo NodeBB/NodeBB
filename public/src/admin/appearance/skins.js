@@ -1,5 +1,5 @@
 "use strict";
-/* global define, app, socket */
+/* global define, app, socket, templates */
 
 define('admin/appearance/skins', function() {
 	var Skins = {};
@@ -32,12 +32,9 @@ define('admin/appearance/skins', function() {
 					app.alert({
 						alert_id: 'admin:theme',
 						type: 'info',
-						title: 'Theme Changed',
-						message: 'Please restart your NodeBB to fully activate this theme',
-						timeout: 5000,
-						clickfn: function() {
-							socket.emit('admin.restart');
-						}
+						title: 'Skin Updated',
+						message: themeId + ' skin was successfully applied',
+						timeout: 5000
 					});
 				});
 			}
@@ -58,7 +55,8 @@ define('admin/appearance/skins', function() {
 					url: theme.preview,
 					css: theme.cssCdn
 				};
-			})
+			}),
+			showRevert: true
 		}, function(html) {
 			themeContainer.html(html);
 		});

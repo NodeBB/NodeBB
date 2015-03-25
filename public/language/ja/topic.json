@@ -12,6 +12,7 @@
     "notify_me": "このスレッドに新しいポストが投稿された際に通知する",
     "quote": "引用",
     "reply": "返答",
+    "guest-login-reply": "Log in to reply",
     "edit": "編集",
     "delete": "削除",
     "purge": "Purge",
@@ -74,6 +75,7 @@
     "fork_no_pids": "ポストが選択されていません！",
     "fork_success": "Successfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "スレッドのタイトルを入力して...",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "破棄する",
     "composer.submit": "保存する",
     "composer.replying_to": "%1へ返答中",
@@ -92,5 +94,6 @@
     "sort_by": "Sort by",
     "oldest_to_newest": "Oldest to Newest",
     "newest_to_oldest": "Newest to Oldest",
-    "most_votes": "Most votes"
+    "most_votes": "Most votes",
+    "most_posts": "Most posts"
 }

@@ -1,5 +1,7 @@
 {
-    "username": "Gebruikersnaam / Emailadres",
+    "username-email": "Username / Email",
+    "username": "Username",
+    "email": "Email",
     "remember_me": "Mij Onthouden?",
     "forgot_password": "Wachtwoord Vergeten?",
     "alternative_logins": "Alternatieve Loginmethodes",

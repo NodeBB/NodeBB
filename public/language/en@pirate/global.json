@@ -3,9 +3,10 @@
     "search": "Finderer",
     "buttons.close": "Shoot down",
     "403.title": "Not Enough Booty Power",
-    "403.message": "Ye seem to have stumbled upon a page that ye do not have access to. Perhaps ye <a href='/login'>give a go' loggin' in</a>?",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "T'ere be nut'in 'ere",
-    "404.message": "Ye seem to have stumbled upon a page that does not exist. Return to th' <a href='/'>home page</a>",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "Broken beam.",
     "500.message": "Looks like we've got somethin' in th' sails.",
     "register": "Register",
@@ -26,6 +27,7 @@
     "header.tags": "Tags",
     "header.popular": "Famous",
     "header.users": "Mates",
+    "header.groups": "Groups",
     "header.chats": "Yik-Yaks",
     "header.notifications": "Parrot Calls",
     "header.search": "Finderer",
@@ -73,5 +75,7 @@
     "updated.title": "Forum Updated",
     "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page.",
     "privacy": "Privacy",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "Delete All"
 }

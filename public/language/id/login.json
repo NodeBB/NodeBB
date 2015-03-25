@@ -1,0 +1,11 @@
+{
+    "username-email": "Username / Email",
+    "username": "Username",
+    "email": "Email",
+    "remember_me": "Ingin Diingat?",
+    "forgot_password": "Lupa Password?",
+    "alternative_logins": "Login Alternatif",
+    "failed_login_attempt": "Percobaan login gagal, cobalah kembali.",
+    "login_successful": "Kamu telah berhasil login!",
+    "dont_have_account": "Belum memiliki akun?"
+}

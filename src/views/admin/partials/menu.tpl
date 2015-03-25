@@ -2,6 +2,8 @@
 					<ul class="nav nav-list">
 						<li class="nav-header"><i class="fa fa-fw fa-dashboard"></i> General</li>
 						<li class="active"><a href="{relative_path}/admin/general/dashboard">Dashboard</a></li>
+						<li><a href="{relative_path}/admin/general/homepage">Home Page</a></li>
+						<li><a href="{relative_path}/admin/general/navigation">Navigation</a></li>
 						<li><a href="{relative_path}/admin/general/languages">Languages</a></li>
 						<li><a href="{relative_path}/admin/general/sounds">Sounds</a></li>
 					</ul>
@@ -23,6 +25,7 @@
 						<li><a href="{relative_path}/admin/settings/reputation">Reputation</a></li>
 						<li><a href="{relative_path}/admin/settings/email">Email</a></li>
 						<li><a href="{relative_path}/admin/settings/user">User</a></li>
+						<li><a href="{relative_path}/admin/settings/group">Group</a></li>
 						<li><a href="{relative_path}/admin/settings/guest">Guest</a></li>
 						<li><a href="{relative_path}/admin/settings/post">Post</a></li>
 						<li><a href="{relative_path}/admin/settings/pagination">Pagination</a></li>
@@ -46,6 +49,7 @@
 						<li class="nav-header"><i class="fa fa-fw fa-wrench"></i> Extend</li>
 						<li><a href="{relative_path}/admin/extend/plugins">Plugins</a></li>
 						<li><a href="{relative_path}/admin/extend/widgets">Widgets</a></li>
+						<li><a href="{relative_path}/admin/extend/rewards">Rewards</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">

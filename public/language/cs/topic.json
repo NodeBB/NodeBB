@@ -12,6 +12,7 @@
     "notify_me": "Sledovat toto téma",
     "quote": "Citovat",
     "reply": "Odpovědět",
+    "guest-login-reply": "Log in to reply",
     "edit": "Upravit",
     "delete": "Smazat",
     "purge": "Purge",
@@ -74,6 +75,7 @@
     "fork_no_pids": "Žádné příspěvky nebyly vybrány!",
     "fork_success": "Successfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Enter your topic title here...",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "Discard",
     "composer.submit": "Submit",
     "composer.replying_to": "Replying to %1",
@@ -92,5 +94,6 @@
     "sort_by": "Sort by",
     "oldest_to_newest": "Oldest to Newest",
     "newest_to_oldest": "Newest to Oldest",
-    "most_votes": "Most votes"
+    "most_votes": "Most votes",
+    "most_posts": "Most posts"
 }

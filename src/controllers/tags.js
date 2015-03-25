@@ -5,7 +5,8 @@ var tagsController = {},
 	nconf = require('nconf'),
 	validator = require('validator'),
 	meta = require('../meta'),
-	topics = require('../topics');
+	topics = require('../topics'),
+	helpers =  require('./helpers');
 
 tagsController.getTag = function(req, res, next) {
 	var tag = validator.escape(req.params.tag);
@@ -41,8 +42,13 @@ tagsController.getTag = function(req, res, next) {
 					content: nconf.get('url') + '/tags/' + tag
 				}
 			];
-
-			res.render('tag', {topics: topics, tag: tag, nextStart: end + 1});
+			var data = {
+				topics: topics,
+				tag: tag,
+				nextStart: end + 1,
+				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[tags:tags]]', url: '/tags'}, {text: tag}])
+			};
+			res.render('tag', data);
 		});
 	});
 };
@@ -52,8 +58,12 @@ tagsController.getTags = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-
-		res.render('tags', {tags: tags, nextStart: 100});
+		var data = {
+			tags: tags,
+			nextStart: 100,
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[tags:tags]]'}])
+		};
+		res.render('tags', data);
 	});
 };
 

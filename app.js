@@ -43,13 +43,8 @@ winston.add(winston.transports.Console, {
 		var date = new Date();
 		return date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0,5) + ' [' + global.process.pid + ']';
 	},
-	level: global.env === 'production' ? 'info' : 'verbose'
+	level: (global.env === 'production' || nconf.get('log-level') === 'info') ? 'info' : 'verbose'
 });
-
-// TODO: remove once https://github.com/flatiron/winston/issues/280 is fixed
-winston.err = function (err) {
-	winston.error(err.stack);
-};
 
 if(os.platform() === 'linux') {
 	require('child_process').exec('/usr/bin/which convert', function(err, stdout, stderr) {
@@ -121,7 +116,7 @@ function start() {
 	nconf.set('use_port', !!urlObject.port);
 	nconf.set('relative_path', relativePath);
 	nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || 4567);
-	nconf.set('upload_url', relativePath + '/uploads/');
+	nconf.set('upload_url', '/uploads/');
 
 	if (nconf.get('isPrimary') === 'true') {
 		winston.info('Time: %s', (new Date()).toString());
@@ -328,7 +323,7 @@ function resetThemes(callback) {
 
 function resetPlugin(pluginId) {
 	var db = require('./src/database');
-	db.setRemove('plugins:active', pluginId, function(err) {
+	db.sortedSetRemove('plugins:active', pluginId, function(err) {
 		if (err) {
 			winston.error('[reset] Could not disable plugin: %s encountered error %s', pluginId, err.message);
 		} else {

@@ -19,7 +19,7 @@ define('composer/categoryList', function() {
 
 			// Remove categories that are just external links
 			categories = categories.filter(function(category) {
-				return !category.link
+				return !category.link;
 			});
 
 			categories.forEach(function(category) {
@@ -35,6 +35,8 @@ define('composer/categoryList', function() {
 			if (postData.cid) {
 				postData.cid = this.value;
 			}
+
+			$('[tabindex=' + (parseInt($(this).attr('tabindex'), 10) + 1) + ']').trigger('focus');
 		});
 	};
 

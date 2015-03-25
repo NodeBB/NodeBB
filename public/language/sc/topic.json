@@ -12,6 +12,7 @@
     "notify_me": "Imbia·mi notìficas pro is rispostas noas a custa arresonada",
     "quote": "Mèntova",
     "reply": "Risponde",
+    "guest-login-reply": "Log in to reply",
     "edit": "Acontza",
     "delete": "Contzella",
     "purge": "Purge",
@@ -74,6 +75,7 @@
     "fork_no_pids": "Perunu arresonu seberadu!",
     "fork_success": "Successfully forked topic! Click here to go to the forked topic.",
     "composer.title_placeholder": "Pone su tìtulu de s'arresonada inoghe...",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "Lassa a Pèrdere",
     "composer.submit": "Imbia",
     "composer.replying_to": "Replying to %1",
@@ -92,5 +94,6 @@
     "sort_by": "Sort by",
     "oldest_to_newest": "Oldest to Newest",
     "newest_to_oldest": "Newest to Oldest",
-    "most_votes": "Most votes"
+    "most_votes": "Most votes",
+    "most_posts": "Most posts"
 }

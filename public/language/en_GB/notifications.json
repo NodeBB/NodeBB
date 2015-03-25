@@ -2,6 +2,7 @@
 	"title": "Notifications",
 	"no_notifs": "You have no new notifications",
 	"see_all": "See all Notifications",
+	"mark_all_read": "Mark all notifications read",
 
 	"back_to_home": "Back to %1",
 	"outgoing_link": "Outgoing Link",
@@ -24,7 +25,6 @@
 
 	"email-confirmed": "Email Confirmed",
 	"email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",
-	"email-confirm-error": "An error occurred...",
 	"email-confirm-error-message": "There was a problem validating your email address. Perhaps the code was invalid or has expired.",
 	"email-confirm-sent": "Confirmation email sent."
 }

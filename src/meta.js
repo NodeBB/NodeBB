@@ -8,7 +8,6 @@ var async = require('async'),
 
 	user = require('./user'),
 	groups = require('./groups'),
-	plugins = require('./plugins'),
 	emitter = require('./emitter'),
 	pubsub = require('./pubsub'),
 	auth = require('./routes/authentication');
@@ -30,7 +29,7 @@ var async = require('async'),
 	Meta.userOrGroupExists = function(slug, callback) {
 		async.parallel([
 			async.apply(user.exists, slug),
-			async.apply(groups.exists, slug)
+			async.apply(groups.existsBySlug, slug)
 		], function(err, results) {
 			callback(err, results ? results.some(function(result) { return result; }) : false);
 		});
@@ -49,6 +48,8 @@ var async = require('async'),
 
 	function reload(callback) {
 		callback = callback || function() {};
+
+		var	plugins = require('./plugins');
 		async.series([
 			async.apply(plugins.clearRequireCache),
 			async.apply(plugins.reload),
@@ -69,6 +70,7 @@ var async = require('async'),
 			if (!err) {
 				emitter.emit('nodebb:ready');
 			}
+			Meta.reloadRequired = false;
 
 			callback(err);
 		});

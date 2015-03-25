@@ -40,7 +40,7 @@ Sockets.init = function(server) {
 };
 
 function onConnection(socket) {
-	socket.ip = socket.request.connection.remoteAddress;
+	socket.ip = socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
 
 	logger.io_one(socket, socket.uid);
 
@@ -66,32 +66,19 @@ function onConnect(socket) {
 		socket.join('uid_' + socket.uid);
 		socket.join('online_users');
 
-		async.parallel({
-			user: function(next) {
-				user.getUserFields(socket.uid, ['username', 'userslug', 'picture', 'status', 'email:confirmed'], next);
-			},
-			isAdmin: function(next) {
-				user.isAdministrator(socket.uid, next);
-			}
-		}, function(err, userData) {
-			if (err || !userData.user) {
+		user.getUserFields(socket.uid, ['status'], function(err, userData) {
+			if (err || !userData) {
 				return;
 			}
-			userData.user.uid = socket.uid;
-			userData.user.isAdmin = userData.isAdmin;
-			userData.user['email:confirmed'] = parseInt(userData.user['email:confirmed'], 10) === 1;
-			socket.emit('event:connect', userData.user);
-			if (userData.user.status !== 'offline') {
-				socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: userData.user.status || 'online'});
+
+			socket.emit('event:connect');
+			if (userData.status !== 'offline') {
+				socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: userData.status || 'online'});
 			}
 		});
 	} else {
 		socket.join('online_guests');
-		socket.emit('event:connect', {
-			username: '[[global:guest]]',
-			isAdmin: false,
-			uid: 0
-		});
+		socket.emit('event:connect');
 	}
 }
 
@@ -124,11 +111,6 @@ function onMessage(socket, payload) {
 		return winston.warn('[socket.io] Empty method name');
 	}
 
-	if (ratelimit.isFlooding(socket)) {
-		winston.warn('[socket.io] Too many emits! Disconnecting uid : ' + socket.uid + '. Message : ' + eventName);
-		return socket.disconnect();
-	}
-
 	var parts = eventName.toString().split('.'),
 		namespace = parts[0],
 		methodToCall = parts.reduce(function(prev, cur) {
@@ -144,6 +126,17 @@ function onMessage(socket, payload) {
 			winston.warn('[socket.io] Unrecognized message: ' + eventName);
 		}
 		return;
+	}
+
+	socket.previousEvents = socket.previousEvents || [];
+	socket.previousEvents.push(eventName);
+	if (socket.previousEvents.length > 20) {
+		socket.previousEvents.shift();
+	}
+
+	if (!eventName.startsWith('admin.') && ratelimit.isFlooding(socket)) {
+		winston.warn('[socket.io] Too many emits! Disconnecting uid : ' + socket.uid + '. Events : ' + socket.previousEvents);
+		return socket.disconnect();
 	}
 
 	if (Namespaces[namespace].before) {
@@ -170,34 +163,31 @@ function requireModules() {
 	});
 }
 
-function authorize(socket, next) {
-	var handshake = socket.request,
-		sessionID;
+function authorize(socket, callback) {
+	var handshake = socket.request;
 
 	if (!handshake) {
-		return next(new Error('[[error:not-authorized]]'));
+		return callback(new Error('[[error:not-authorized]]'));
 	}
 
-	cookieParser(handshake, {}, function(err) {
-		if (err) {
-			return next(err);
+	async.waterfall([
+		function(next) {
+			cookieParser(handshake, {}, next);
+		},
+		function(next) {
+			db.sessionStore.get(handshake.signedCookies['express.sid'], function(err, sessionData) {
+				if (err) {
+					return next(err);
+				}
+				if (sessionData && sessionData.passport && sessionData.passport.user) {
+					socket.uid = parseInt(sessionData.passport.user, 10);
+				} else {
+					socket.uid = 0;
+				}	
+				next();
+			});
 		}
-
-		var sessionID = handshake.signedCookies['express.sid'];
-
-		db.sessionStore.get(sessionID, function(err, sessionData) {
-			if (err) {
-				return next(err);
-			}
-
-			if (sessionData && sessionData.passport && sessionData.passport.user) {
-				socket.uid = parseInt(sessionData.passport.user, 10);
-			} else {
-				socket.uid = 0;
-			}
-			next();
-		});
-	});
+	], callback);
 }
 
 function addRedisAdapter(io) {
@@ -208,13 +198,13 @@ function addRedisAdapter(io) {
 		var sub = redis.connect({return_buffers: true});
 
 		io.adapter(redisAdapter({pubClient: pub, subClient: sub}));
-	} else {
+	} else if (nconf.get('isCluster') === 'true') {
 		winston.warn('[socket.io] Clustering detected, you are advised to configure Redis as a websocket store.');
 	}
 }
 
 function callMethod(method, socket, params, callback) {
-	method.call(null, socket, params, function(err, result) {
+	method(socket, params, function(err, result) {
 		callback(err ? {message: err.message} : null, result);
 	});
 }
@@ -285,9 +275,10 @@ Sockets.getUsersInRoom = function (uid, roomName, callback) {
 	var	uids = Sockets.getUidsInRoom(roomName);
 	var total = uids.length;
 	uids = uids.slice(0, 9);
-	if (uid) {
+	if (uid && uids.indexOf(uid.toString()) === -1) {
 		uids = [uid].concat(uids);
 	}
+
 	if (!uids.length) {
 		return callback(null, {users: [], total: 0 , room: roomName});
 	}
@@ -308,13 +299,15 @@ Sockets.getUsersInRoom = function (uid, roomName, callback) {
 	});
 };
 
-Sockets.getUidsInRoom = function(roomName) {
+Sockets.getUidsInRoom = function(roomName, callback) {
+	callback = callback || function() {};
 	// TODO : doesnt work in cluster
 
 	var uids = [];
 
 	var socketids = Object.keys(io.sockets.adapter.rooms[roomName] || {});
 	if (!Array.isArray(socketids) || !socketids.length) {
+		callback(null, []);
 		return [];
 	}
 
@@ -328,7 +321,7 @@ Sockets.getUidsInRoom = function(roomName) {
 			});
 		}
 	}
-
+	callback(null, uids);
 	return uids;
 };
 

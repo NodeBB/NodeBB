@@ -15,7 +15,13 @@ var mkdirp = require('mkdirp'),
 	Templates = {};
 
 Templates.compile = function(callback) {
-	if (nconf.get('isPrimary') === 'false') {
+	var fromFile = nconf.get('from-file') || '';
+
+	if (nconf.get('isPrimary') === 'false' || fromFile.match('tpl')) {
+		if (fromFile.match('tpl')) {
+			winston.info('[minifier] Compiling templates skipped');
+		}
+
 		emitter.emit('templates:compiled');
 		if (callback) {
 			callback();
@@ -93,7 +99,7 @@ Templates.compile = function(callback) {
 					matches = null,
 					regex = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
 
-				while(matches = file.match(regex)) {
+				while((matches = file.match(regex)) !== null) {
 					var partial = "/" + matches[1];
 
 					if (paths[partial] && relativePath !== partial) {

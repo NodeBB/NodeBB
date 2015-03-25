@@ -13,24 +13,26 @@ module.exports = function(Categories) {
 				return callback(err);
 			}
 
-			var slug = cid + '/' + utils.slugify(data.name);
+			var slug = cid + '/' + utils.slugify(data.name),
+				order = data.order || cid,	// If no order provided, place it at the end
+				colours = Categories.assignColours();
 
 			var category = {
 				cid: cid,
 				name: data.name,
 				description: data.description,
 				icon: data.icon,
-				bgColor: data.bgColor,
-				color: data.color,
+				bgColor: data.bgColor || colours[0],
+				color: data.color || colours[1],
 				slug: slug,
 				parentCid: 0,
 				topic_count: 0,
 				post_count: 0,
 				disabled: 0,
-				order: data.order,
+				order: order,
 				link: '',
 				numRecentReplies: 1,
-				class: 'col-md-3 col-xs-6',
+				class: 'col-md-3 col-xs-12',
 				imageClass: 'auto'
 			};
 
@@ -38,7 +40,7 @@ module.exports = function(Categories) {
 
 			async.series([
 				async.apply(db.setObject, 'category:' + cid, category),
-				async.apply(db.sortedSetAdd, 'categories:cid', data.order, cid),
+				async.apply(db.sortedSetAdd, 'categories:cid', order, cid),
 				async.apply(privileges.categories.give, defaultPrivileges, cid, 'administrators'),
 				async.apply(privileges.categories.give, defaultPrivileges, cid, 'registered-users'),
 				async.apply(privileges.categories.give, ['find', 'read'], cid, 'guests')
@@ -50,5 +52,13 @@ module.exports = function(Categories) {
 				callback(null, category);
 			});
 		});
+	};
+
+	Categories.assignColours = function() {
+		var backgrounds = ['#AB4642', '#DC9656', '#F7CA88', '#A1B56C', '#86C1B9', '#7CAFC2', '#BA8BAF', '#A16946'],
+			text = ['#fff', '#fff', '#333', '#fff', '#333', '#fff', '#fff', '#fff'],
+			index = Math.floor(Math.random() * backgrounds.length);
+
+		return [backgrounds[index], text[index]];
 	};
 };

@@ -1,3 +1,6 @@
+'use strict';
+/* globals define, app, ajaxify */
+
 define('forum/account/header', function() {
 	var	AccountHeader = {};
 
@@ -7,15 +10,9 @@ define('forum/account/header', function() {
 	};
 
 	function displayAccountMenus() {
-		var yourid = ajaxify.variables.get('yourid'),
-			theirid = ajaxify.variables.get('theirid');
-
-		if (parseInt(yourid, 10) !== 0 && parseInt(yourid, 10) === parseInt(theirid, 10)) {
-			$('#editLink, #settingsLink, #favouritesLink').removeClass('hide');
-		} else {
-			$('.account-sub-links .plugin-link').each(function() {
-				var $this = $(this);
-				$this.toggleClass('hide', $this.hasClass('private'));
+		if (!app.user.uid || app.user.uid !== parseInt(ajaxify.variables.get('theirid'), 10)) {
+			$('.account-sub-links .plugin-link.private').each(function() {
+				$(this).addClass('hide');
 			});
 		}
 	}

@@ -1,3 +1,6 @@
+"use strict";
+/*globals define, app, socket*/
+
 define('forum/reset', function() {
 	var	ResetPassword = {};
 
@@ -21,6 +24,7 @@ define('forum/reset', function() {
 				successEl.addClass('hide').hide();
 				errorEl.removeClass('hide').show();
 			}
+			return false;
 		});
 	};
 

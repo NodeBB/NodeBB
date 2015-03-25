@@ -12,6 +12,7 @@
     "notify_me": "Erhalte eine Benachrichtigung bei neuen Antworten zu diesem Thema.",
     "quote": "zitieren",
     "reply": "antworten",
+    "guest-login-reply": "Anmelden zum Antworten",
     "edit": "bearbeiten",
     "delete": "löschen",
     "purge": "bereinigen",
@@ -74,6 +75,7 @@
     "fork_no_pids": "Keine Beiträge ausgewählt!",
     "fork_success": "Thema erfolgreich abgespalten! Klicke hier, um zum abgespalteten Thema zu gelangen.",
     "composer.title_placeholder": "Hier den Titel des Themas eingeben...",
+    "composer.handle_placeholder": "Name",
     "composer.discard": "Verwerfen",
     "composer.submit": "Absenden",
     "composer.replying_to": "Antworte auf %1",
@@ -92,5 +94,6 @@
     "sort_by": "Sortieren nach",
     "oldest_to_newest": "Älteste zuerst",
     "newest_to_oldest": "Neuster zuerst",
-    "most_votes": "Die meisten Stimmen"
+    "most_votes": "Die meisten Stimmen",
+    "most_posts": "Die meisten Beiträge"
 }

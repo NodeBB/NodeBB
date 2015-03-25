@@ -13,9 +13,10 @@ var nconf = require('nconf'),
 	adminRoutes = require('./admin'),
 	feedRoutes = require('./feeds'),
 	pluginRoutes = require('./plugins'),
-	authRoutes = require('./authentication');
+	authRoutes = require('./authentication'),
+	helpers = require('./helpers');
 
-
+var setupPageRoute = helpers.setupPageRoute;
 
 function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/', middleware, [], controllers.home);
@@ -26,7 +27,7 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/register', middleware, loginRegisterMiddleware, controllers.register);
 	setupPageRoute(app, '/confirm/:code', middleware, [], controllers.confirmEmail);
 	setupPageRoute(app, '/outgoing', middleware, [], controllers.outgoing);
-	setupPageRoute(app, '/search/:term?', middleware, [middleware.guestSearchingAllowed], controllers.search);
+	setupPageRoute(app, '/search/:term?', middleware, [middleware.guestSearchingAllowed], controllers.search.search);
 	setupPageRoute(app, '/reset/:code?', middleware, [], controllers.reset);
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
 }
@@ -50,6 +51,7 @@ function tagRoutes(app, middleware, controllers) {
 }
 
 function categoryRoutes(app, middleware, controllers) {
+	setupPageRoute(app, '/categories', middleware, [], controllers.categories.list);
 	setupPageRoute(app, '/popular/:term?', middleware, [], controllers.categories.popular);
 	setupPageRoute(app, '/recent', middleware, [], controllers.categories.recent);
 	setupPageRoute(app, '/unread', middleware, [middleware.authenticate], controllers.categories.unread);
@@ -68,8 +70,10 @@ function accountRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/user/:userslug/followers', middleware, middlewares, controllers.accounts.getFollowers);
 	setupPageRoute(app, '/user/:userslug/posts', middleware, middlewares, controllers.accounts.getPosts);
 	setupPageRoute(app, '/user/:userslug/topics', middleware, middlewares, controllers.accounts.getTopics);
+	setupPageRoute(app, '/user/:userslug/groups', middleware, middlewares, controllers.accounts.getGroups);
 
 	setupPageRoute(app, '/user/:userslug/favourites', middleware, accountMiddlewares, controllers.accounts.getFavourites);
+	setupPageRoute(app, '/user/:userslug/watched', middleware, accountMiddlewares, controllers.accounts.getWatchedTopics);
 	setupPageRoute(app, '/user/:userslug/edit', middleware, accountMiddlewares, controllers.accounts.accountEdit);
 	setupPageRoute(app, '/user/:userslug/settings', middleware, accountMiddlewares, controllers.accounts.accountSettings);
 
@@ -89,17 +93,11 @@ function userRoutes(app, middleware, controllers) {
  }
 
 function groupRoutes(app, middleware, controllers) {
-	var middlewares = [middleware.checkGlobalPrivacySettings];
+	var middlewares = [middleware.checkGlobalPrivacySettings, middleware.exposeGroupName];
 
 	setupPageRoute(app, '/groups', middleware, middlewares, controllers.groups.list);
-	setupPageRoute(app, '/groups/:name', middleware, middlewares, controllers.groups.details);
-}
-
-function setupPageRoute(router, name, middleware, middlewares, controller) {
-	middlewares = middlewares.concat([middleware.pageView]);
-
-	router.get(name, middleware.buildHeader, middlewares, controller);
-	router.get('/api' + name, middlewares, controller);
+	setupPageRoute(app, '/groups/:slug', middleware, middlewares, controllers.groups.details);
+	setupPageRoute(app, '/groups/:slug/members', middleware, middlewares, controllers.groups.members);
 }
 
 module.exports = function(app, middleware) {
@@ -175,6 +173,14 @@ module.exports = function(app, middleware) {
 
 function handle404(app, middleware) {
 	app.use(function(req, res, next) {
+		if (plugins.hasListeners('action:meta.override404')) {
+			return plugins.fireHook('action:meta.override404', {
+				req: req,
+				res: res,
+				error: {}
+			});
+		}
+
 		var relativePath = nconf.get('relative_path');
 		var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
 			isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
@@ -205,10 +211,15 @@ function handle404(app, middleware) {
 
 function handleErrors(app, middleware) {
 	app.use(function(err, req, res, next) {
+		if (err.code === 'EBADCSRFTOKEN') {
+			winston.error(req.path + '\n', err.message)
+			return res.sendStatus(403);
+		}
+
 		winston.error(req.path + '\n', err.stack);
 
-		if (err.code === 'EBADCSRFTOKEN') {
-			return res.sendStatus(403);
+		if (parseInt(err.status, 10) === 302 && err.path) {
+			return res.locals.isAPI ? res.status(302).json(err.path) : res.redirect(err.path);
 		}
 
 		res.status(err.status || 500);

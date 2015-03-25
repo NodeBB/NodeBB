@@ -18,7 +18,7 @@ var path = require('path'),
 	routes = require('./routes'),
 	emitter = require('./emitter'),
 
-	helpers = require('./../public/src/helpers')(),
+	helpers = require('./../public/src/modules/helpers'),
 	net;
 
 if(nconf.get('ssl')) {
@@ -34,19 +34,34 @@ if(nconf.get('ssl')) {
 	var	port = nconf.get('port');
 
 	module.exports.init = function() {
+		var skipJS, skipLess, fromFile = nconf.get('from-file') || '';
+
 		emailer.registerApp(app);
+
+		if (fromFile.match('js')) {
+			winston.info('[minifier] Minifying client-side JS skipped');
+			skipJS = true;
+		}
+
+		if (fromFile.match('less')) {
+			winston.info('[minifier] Compiling LESS files skipped');
+			skipLess = true;
+		}
 
 		// Preparation dependent on plugins
 		plugins.ready(function() {
 			async.parallel([
-				async.apply(!nconf.get('from-file') ? meta.js.minify : meta.js.getFromFile, app.enabled('minification')),
-				async.apply(!nconf.get('from-file') ? meta.css.minify : meta.css.getFromFile),
+				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, app.enabled('minification')),
+				async.apply(!skipLess ? meta.css.minify : meta.css.getFromFile),
 				async.apply(meta.sounds.init)
 			]);
 		});
 
 		middleware = middleware(app);
 		routes(app, middleware);
+
+		// Load server-side template helpers
+		helpers.register();
 
 		// Cache static files on production
 		if (global.env !== 'development') {
@@ -95,7 +110,7 @@ if(nconf.get('ssl')) {
 		emitter.emit('nodebb:ready');
 	});
 
-	server.setTimeout(10000);
+	server.setTimout && server.setTimeout(10000);
 
 	module.exports.listen = function(callback) {
 		logger.init(app);

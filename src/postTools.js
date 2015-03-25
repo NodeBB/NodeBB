@@ -14,7 +14,14 @@ var winston = require('winston'),
 	utils = require('../public/src/utils'),
 	plugins = require('./plugins'),
 	events = require('./events'),
-	meta = require('./meta');
+	meta = require('./meta'),
+	LRU = require('lru-cache');
+
+var cache = LRU({
+	max: 1048576,
+	length: function (n) { return n.length; },
+	maxAge: 1000 * 60 * 60
+});
 
 (function(PostTools) {
 
@@ -34,13 +41,14 @@ var winston = require('winston'),
 			},
 			function(postData, next) {
 				postData.content = data.content;
-				plugins.fireHook('filter:post.save', postData, next);
+				plugins.fireHook('filter:post.edit', {post: postData, uid: data.uid}, next);
 			}
-		], function(err, postData) {
+		], function(err, result) {
 			if (err) {
 				return callback(err);
 			}
 
+			var postData = result.post;
 			async.parallel({
 				post: function(next) {
 					var d = {
@@ -55,22 +63,32 @@ var winston = require('winston'),
 				},
 				topic: function(next) {
 					var tid = postData.tid;
-					posts.isMain(data.pid, function(err, isMainPost) {
+					async.parallel({
+						cid: function(next) {
+							topics.getTopicField(tid, 'cid', next);
+						},
+						isMain: function(next) {
+							posts.isMain(data.pid, next);
+						}
+					}, function(err, results) {
 						if (err) {
 							return next(err);
 						}
 
 						options.tags = options.tags || [];
 
-						if (!isMainPost) {
+						if (!results.isMain) {
 							return next(null, {
 								tid: tid,
+								cid: results.cid,
 								isMainPost: false
 							});
 						}
 
 						var topicData = {
 							tid: tid,
+							cid: results.cid,
+							uid: postData.uid,
 							mainPid: data.pid,
 							title: title,
 							slug: tid + '/' + utils.slugify(title)
@@ -90,8 +108,10 @@ var winston = require('winston'),
 							topics.getTopicTagsObjects(tid, function(err, tags) {
 								next(err, {
 									tid: tid,
+									cid: results.cid,
+									uid: postData.uid,
 									title: validator.escape(title),
-									isMainPost: isMainPost,
+									isMainPost: results.isMain,
 									tags: tags
 								});
 							});
@@ -99,14 +119,16 @@ var winston = require('winston'),
 					});
 				},
 				postData: function(next) {
-					PostTools.parsePost(postData, data.uid, next);
+					cache.del(postData.pid);
+					PostTools.parsePost(postData, next);
 				}
 			}, function(err, results) {
 				if (err) {
 					return callback(err);
 				}
+				postData.cid = results.topic.cid;
 				results.content = results.postData.content;
-				//events.logPostEdit(uid, pid);
+
 				plugins.fireHook('action:post.edit', postData);
 				callback(null, results);
 			});
@@ -146,15 +168,15 @@ var winston = require('winston'),
 				return callback(err);
 			}
 
-			events[isDelete ? 'logPostDelete' : 'logPostRestore'](uid, pid);
 			if (isDelete) {
+				cache.del(pid);
 				posts.delete(pid, callback);
 			} else {
 				posts.restore(pid, function(err, postData) {
 					if (err) {
 						return callback(err);
 					}
-					PostTools.parsePost(postData, uid, callback);
+					PostTools.parsePost(postData, callback);
 				});
 			}
 		});
@@ -165,16 +187,26 @@ var winston = require('winston'),
 			if (err || !canEdit) {
 				return callback(err || new Error('[[error:no-privileges]]'));
 			}
-			events.logPostPurge(uid, pid);
+			cache.del(pid);
 			posts.purge(pid, callback);
 		});
 	};
 
-	PostTools.parsePost = function(postData, uid, callback) {
+	PostTools.parsePost = function(postData, callback) {
 		postData.content = postData.content || '';
 
-		plugins.fireHook('filter:parse.post', {postData: postData, uid: uid}, function(err, data) {
-			callback(err, data ? data.postData : null);
+		var cachedContent = cache.get(postData.pid);
+		if (cachedContent) {
+			postData.content = cachedContent;
+			return callback(null, postData);
+		}
+
+		plugins.fireHook('filter:parse.post', {postData: postData}, function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+			cache.set(data.postData.pid, data.postData.content);
+			callback(null, data.postData);
 		});
 	};
 
@@ -182,6 +214,10 @@ var winston = require('winston'),
 		userData.signature = userData.signature || '';
 
 		plugins.fireHook('filter:parse.signature', {userData: userData, uid: uid}, callback);
+	};
+
+	PostTools.resetCache = function() {
+		cache.reset();
 	};
 
 }(exports));

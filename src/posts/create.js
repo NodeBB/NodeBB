@@ -68,7 +68,13 @@ module.exports = function(Posts) {
 						topics.onNewPostMade(postData, next);
 					},
 					function(next) {
-						categories.onNewPostMade(postData, next);
+						topics.getTopicFields(tid, ['cid', 'pinned'], function(err, topicData) {
+							if (err) {
+								return next(err);
+							}
+							postData.cid = topicData.cid;
+							categories.onNewPostMade(topicData.cid, topicData.pinned, postData, next);
+						});
 					},
 					function(next) {
 						db.sortedSetAdd('posts:pid', timestamp, postData.pid, next);

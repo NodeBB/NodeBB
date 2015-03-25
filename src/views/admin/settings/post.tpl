@@ -12,6 +12,14 @@
 					<option value="most_votes">Most Votes</option>
 				</select>
 			</div>
+			<div class="form-group">
+				<label>Default Topic Sorting</label>
+				<select class="form-control" data-field="categoryTopicSort">
+					<option value="newest_to_oldest">Newest to Oldest</option>
+					<option value="oldest_to_newest">Oldest to Newest</option>
+					<option value="most_posts">Most Posts</option>
+				</select>
+			</div>
 
 			<div class="form-group">
 				<label>Seconds between Posts</label>
@@ -30,6 +38,10 @@
 				<input type="number" class="form-control" value="10" data-field="initialPostDelay">
 			</div>
 			<div class="form-group">
+				<label>Number of seconds users are allowed to edit posts after posting. (0 disabled)</label>
+				<input type="number" class="form-control" value="0" data-field="postEditDuration">
+			</div>
+			<div class="form-group">
 				<label>Minimum Title Length</label>
 				<input type="number" class="form-control" value="3" data-field="minimumTitleLength">
 			</div>
@@ -40,6 +52,10 @@
 			<div class="form-group">
 				<label>Minimum Post Length</label>
 				<input type="number" class="form-control" value="8" data-field="minimumPostLength">
+			</div>
+			<div class="form-group">
+				<label>Minimum Post Length</label>
+				<input type="number" class="form-control" value="32767" data-field="maximumPostLength">
 			</div>
 			<div class="checkbox">
 				<label>
@@ -107,7 +123,10 @@
 					<input type="checkbox" data-field="allowTopicsThumbnail"> <strong>Allow users to upload topic thumbnails</strong>
 				</label>
 			</div>
-			<strong>Topic Thumb Size</strong><br /> <input type="text" class="form-control" value="120" data-field="topicThumbSize">
+			<strong>Topic Thumb Size</strong><br /> <input type="text" class="form-control" value="120" data-field="topicThumbSize"> <br />
+
+			<strong>Allowed file types, (ie png, pdf, zip). Leave empty to allow all.</strong><br /> <input type="text" class="form-control" value="" data-field="allowedFileExtensions"><br />
+
 		</form>
 	</div>
 </div>

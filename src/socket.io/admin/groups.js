@@ -8,18 +8,17 @@ Groups.create = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	groups.create(data.name, data.description, function(err, groupObj) {
-		callback(err, groupObj || undefined);
-	});
-};
-
-Groups.delete = function(socket, groupName, callback) {
-	groups.destroy(groupName, callback);
+	groups.create({
+		name: data.name, 
+		description: data.description,
+		ownerUid: socket.uid
+	}, callback);
 };
 
 Groups.get = function(socket, groupName, callback) {
 	groups.get(groupName, {
-		expand: true
+		expand: true,
+		unescape: true
 	}, callback);
 };
 
@@ -39,6 +38,7 @@ Groups.leave = function(socket, data, callback) {
 	groups.leave(data.groupName, data.uid, callback);
 };
 
+// Possibly remove this and call SocketGroups.update instead
 Groups.update = function(socket, data, callback) {
 	if(!data) {
 		return callback(new Error('[[error:invalid-data]]'));

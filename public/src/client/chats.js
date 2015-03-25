@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, ajaxify, utils, socket, templates */
+/* globals define, app, ajaxify, utils, socket, templates, translator */
 
 define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, sounds, infinitescroll) {
 	var Chats = {
@@ -18,9 +18,10 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, 
 		}
 
 		Chats.addEventListeners();
-		Chats.resizeMainWindow();
-		Chats.scrollToBottom(containerEl);
 		Chats.setActive();
+
+		Chats.resizeMainWindow();
+		Chats.scrollToBottom($('.expanded-chat ul'));
 
 		Chats.initialised = true;
 	};
@@ -121,7 +122,7 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, 
 	function onMessagesParsed(html) {
 		var newMessage = $(html);
 		newMessage.insertBefore($('.user-typing'));
-		newMessage.find('span.timeago').timeago();
+		newMessage.find('.timeago').timeago();
 		newMessage.find('img:not(".chat-user-image")').addClass('img-responsive');
 		Chats.scrollToBottom($('.expanded-chat .chat-content'));
 	}
@@ -190,7 +191,7 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, 
 	Chats.notifyTyping = function(toUid, typing) {
 		socket.emit('modules.chats.user' + (typing ? 'Start' : 'Stop') + 'Typing', {
 			touid: toUid,
-			fromUid: app.uid
+			fromUid: app.user.uid
 		});
 	};
 
@@ -203,6 +204,9 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, 
 				message:msg
 			}, function(err) {
 				if (err) {
+					if (err.message === '[[error:email-not-confirmed-chat]]') {
+						return app.showEmailConfirmWarning(err);
+					}
 					return app.alertError(err.message);
 				}
 

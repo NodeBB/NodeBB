@@ -3,7 +3,7 @@
 
 define('admin/extend/widgets', function() {
 	var Widgets = {};
-	
+
 	Widgets.init = function() {		
 		$('#widgets .nav-pills a').on('click', function(ev) {
 			var $this = $(this);
@@ -31,23 +31,25 @@ define('admin/extend/widgets', function() {
 			connectToSortable: ".widget-area"
 		});
 
-		$('#widgets .available-containers .containers > [data-container-html]').draggable({
-			helper: function(e) {
-				var target = $(e.target);
-				target = target.attr('data-container-html') ? target : target.parents('[data-container-html]');
+		$('#widgets .available-containers .containers > [data-container-html]')
+			.draggable({
+				helper: function(e) {
+					var target = $(e.target);
+					target = target.attr('data-container-html') ? target : target.parents('[data-container-html]');
 
-				return target.clone().addClass('block').width(target.width()).css('opacity', '0.5');
-			},
-			distance: 10
-		});
+					return target.clone().addClass('block').width(target.width()).css('opacity', '0.5');
+				},
+				distance: 10
+			})
+			.each(function() {
+				$(this).attr('data-container-html', $(this).attr('data-container-html').replace(/\\\{([\s\S]*?)\\\}/g, '{$1}'));
+			});
 
 		$('#widgets .widget-area').sortable({
 			update: function (event, ui) {
 				appendToggle(ui.item);
 			},
 			connectWith: "div"
-		}).on('click', '.toggle-widget', function() {
-			$(this).parents('.widget-panel').children('.panel-body').toggleClass('hidden');
 		}).on('click', '.delete-widget', function() {
 			var panel = $(this).parents('.widget-panel');
 
@@ -56,8 +58,10 @@ define('admin/extend/widgets', function() {
 					panel.remove();
 				}
 			});
-		}).on('dblclick', '.panel-heading', function() {
-			$(this).parents('.widget-panel').children('.panel-body').toggleClass('hidden');
+		}).on('mouseup', '.panel-heading', function(evt) {
+			if ( !( $(this).parents('.widget-panel').is('.ui-sortable-helper') || $(evt.target).closest('.delete-widget').length ) ) {
+				$(this).parents('.widget-panel').children('.panel-body').toggleClass('hidden');
+			}
 		});
 
 		$('#widgets .save').on('click', saveWidgets);
@@ -80,7 +84,14 @@ define('admin/extend/widgets', function() {
 					for (var d in data) {
 						if (data.hasOwnProperty(d)) {
 							if (data[d].name) {
-								widgetData[data[d].name] = data[d].value;
+								if (widgetData[data[d].name]) {
+									if(!Array.isArray(widgetData[data[d].name])) {
+										widgetData[data[d].name] = [ widgetData[data[d].name] ];
+									}
+									widgetData[data[d].name].push(data[d].value);
+								}else{
+									widgetData[data[d].name] = data[d].value;
+								}
 							}
 						}
 					}
@@ -162,7 +173,7 @@ define('admin/extend/widgets', function() {
 				title.text(title.text() + ' - ' + data.title);
 			}
 
-			widget.find('input, textarea').each(function() {
+			widget.find('input, textarea, select').each(function() {
 				var input = $(this),
 					value = data[input.attr('name')];
 

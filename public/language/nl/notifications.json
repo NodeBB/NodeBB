@@ -2,6 +2,7 @@
     "title": "Notificaties",
     "no_notifs": "Je hebt geen nieuwe notificaties",
     "see_all": "Bekijk alle Notificaties",
+    "mark_all_read": "Mark all notifications read",
     "back_to_home": "Terug naar %1",
     "outgoing_link": "Uitgaande Link",
     "outgoing_link_message": "Je verlaat nu %1",
@@ -21,7 +22,6 @@
     "user_started_following_you": "<strong>%1</strong> volgt u nu.",
     "email-confirmed": "Email adres bevestigd",
     "email-confirmed-message": "Bedankt voor het bevestigen van uw email adres. Uw account is nu volledig actief.",
-    "email-confirm-error": "Een fout vond plaats",
     "email-confirm-error-message": "Er was een probleem met het bevestigen van uw email adres. Misschien was de code niet goed of was door de tijd verstreken.",
     "email-confirm-sent": "Bevestigings email verstuurd"
 }

@@ -12,6 +12,7 @@
     "notify_me": "Bu konudaki cevaplardan haberdar ol",
     "quote": "Alıntı",
     "reply": "Cevap",
+    "guest-login-reply": "Cevaplamak için giriş yapın",
     "edit": "Düzenle",
     "delete": "Sil",
     "purge": "Temizle",
@@ -74,6 +75,7 @@
     "fork_no_pids": "Hiç bir ileti seçilmedi!",
     "fork_success": "Başlık başarıyla ayrıldı!",
     "composer.title_placeholder": "Başlık ismini buraya girin...",
+    "composer.handle_placeholder": "İsim",
     "composer.discard": "Vazgeç",
     "composer.submit": "Gönder",
     "composer.replying_to": "Yanıtlanan Konu %1",
@@ -92,5 +94,6 @@
     "sort_by": "Sırala",
     "oldest_to_newest": "En eskiden en yeniye",
     "newest_to_oldest": "En yeniden en eskiye",
-    "most_votes": "En çok oy"
+    "most_votes": "En çok oy",
+    "most_posts": "En sık yayın"
 }

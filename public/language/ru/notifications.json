@@ -2,6 +2,7 @@
     "title": "Уведомления",
     "no_notifs": "Для Вас нет новых уведомлений",
     "see_all": "Просмотреть все уведомления",
+    "mark_all_read": "Отметить все уведомления как прочитанные",
     "back_to_home": "Назад к %1",
     "outgoing_link": "Внешняя ссылка",
     "outgoing_link_message": "Вы покидаете %1.",
@@ -19,9 +20,8 @@
     "user_posted_topic": "<strong>%1</strong> открыл новую тему: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> упомянул Вас в <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> подписался на Вас.",
-    "email-confirmed": "Email Подтвержден",
+    "email-confirmed": "Email подтвержден",
     "email-confirmed-message": "Спасибо за подтверждение Вашего Email-адреса. Ваш аккаунт активирован.",
-    "email-confirm-error": "Произошла ошибка...",
     "email-confirm-error-message": "Ошибка проверки Email-адреса. Возможно, код неверен, либо у него истек срок действия.",
     "email-confirm-sent": "Письмо с проверочным кодом отправлено"
 }

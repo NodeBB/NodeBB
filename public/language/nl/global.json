@@ -3,9 +3,10 @@
     "search": "Zoeken",
     "buttons.close": "Sluiten",
     "403.title": "Toegang Geweigerd",
-    "403.message": "Het lijkt erop dat je op een pagina beland bent waar je geen toegang tot hebt. Misschien moet je <a href='/login'>inloggen</a>?",
+    "403.message": "You seem to have stumbled upon a page that you do not have access to.",
+    "403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
     "404.title": "Niet Gevonden",
-    "404.message": "Het lijkt erop dat je op een pagina beland bent die niet bestaat. Ga terug naar de <a href='/'>home pagina</a>.",
+    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
     "500.title": "Interne fout.",
     "500.message": "Oeps! Het lijkt erop dat iets is fout gegaan!",
     "register": "Registeren",
@@ -26,6 +27,7 @@
     "header.tags": "Tags",
     "header.popular": "Populair",
     "header.users": "Gebruikers",
+    "header.groups": "Groups",
     "header.chats": "Chats",
     "header.notifications": "Notificaties",
     "header.search": "Zoeken",
@@ -73,5 +75,7 @@
     "updated.title": "Forum geüpdatet",
     "updated.message": "Dit forum is zojuist geüpdatet naar de laatste versie. Klik hier om de pagina te verversen",
     "privacy": "Privé",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "delete_all": "Alles verwijderen"
 }

@@ -31,6 +31,7 @@ module.exports = function(Meta) {
 				'public/vendor/visibility/visibility.min.js',
 				'public/vendor/bootstrap/js/bootstrap.min.js',
 				'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
+				'public/vendor/jquery/textcomplete/jquery.textcomplete.min.js',
 				'public/vendor/requirejs/require.js',
 				'public/vendor/bootbox/bootbox.min.js',
 				'public/vendor/tinycon/tinycon.js',
@@ -38,15 +39,16 @@ module.exports = function(Meta) {
 				'public/vendor/xregexp/unicode/unicode-base.js',
 				'public/vendor/buzz/buzz.min.js',
 				'public/vendor/mousetrap/mousetrap.js',
+				'public/vendor/autosize.js',
 				'./node_modules/templates.js/lib/templates.js',
 				'public/src/utils.js',
 				'public/src/app.js',
 				'public/src/ajaxify.js',
-				'public/src/variables.js',
-				'public/src/widgets.js',
+				'public/src/components.js',
+				'public/src/overrides.js',
 				'public/src/translator.js',
-				'public/src/helpers.js',
-				'public/src/overrides.js'
+				'public/src/variables.js',
+				'public/src/widgets.js'
 			],
 			rjs: []
 		}
@@ -92,7 +94,7 @@ module.exports = function(Meta) {
 					clientScripts = [];
 
 				pluginsScripts = plugins.clientScripts.filter(function(path) {
-					if (path.indexOf('.js') !== -1) {
+					if (path.endsWith('.js')) {
 						return true;
 					} else {
 						pluginDirectories.push(path);
@@ -210,23 +212,30 @@ module.exports = function(Meta) {
 
 	Meta.js.getFromFile = function(minify, callback) {
 		var scriptPath = path.join(__dirname, '../../public/nodebb.min.js'),
-			mapPath = path.join(__dirname, '../../public/nodebb.min.js.map');
+			mapPath = path.join(__dirname, '../../public/nodebb.min.js.map'),
+			paths = [scriptPath];
 		fs.exists(scriptPath, function(exists) {
 			if (exists) {
 				if (nconf.get('isPrimary') === 'true') {
-					winston.verbose('[meta/js] (Experimental) Reading client-side scripts from file');
-					async.map([scriptPath, mapPath], fs.readFile, function(err, files) {
-						Meta.js.cache = files[0];
-						Meta.js.map = files[1];
+					fs.exists(mapPath, function(exists) {
+						if (exists) {
+							paths.push(mapPath);
+						}
 
-						emitter.emit('meta:js.compiled');
-						callback();
+						winston.verbose('[meta/js] Reading client-side scripts from file');
+						async.map(paths, fs.readFile, function(err, files) {
+							Meta.js.cache = files[0];
+							Meta.js.map = files[1] || '';
+
+							emitter.emit('meta:js.compiled');
+							callback();
+						});
 					});
 				} else {
 					callback();
 				}
 			} else {
-				winston.warn('[meta/js] (Experimental) No script file found on disk, re-minifying');
+				winston.warn('[meta/js] No script file found on disk, re-minifying');
 				Meta.js.minify.apply(Meta.js, arguments);
 			}
 		});

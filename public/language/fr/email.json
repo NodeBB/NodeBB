@@ -9,6 +9,9 @@
     "reset.text1": "Nous avons reçu une demande de réinitialisation de votre mot de passe, probablement parce que vous l'avez oublié. Si ce n'est pas le cas, veuillez ignorer cet email.",
     "reset.text2": "Pour confirmer la réinitialisation de votre mot de passe, veuillez cliquer sur le lien suivant :",
     "reset.cta": "Cliquez ici pour réinitialiser votre mot de passe",
+    "reset.notify.subject": "Mot de Passe modifié",
+    "reset.notify.text1": "Nous vous informons que le %1, votre mot de passe a été modifié.",
+    "reset.notify.text2": "Si vous n'avez pas autorisé ceci, veuillez contacter immédiatement un administrateur.",
     "digest.notifications": "Vous avez des notifications non-lues de %1 :",
     "digest.latest_topics": "Derniers sujets de %1 :",
     "digest.cta": "Cliquez ici pour aller sur %1",
@@ -17,6 +20,8 @@
     "notif.chat.subject": "Nouveau message de chat reçu de %1",
     "notif.chat.cta": "Cliquez ici pour continuer la conversation",
     "notif.chat.unsub.info": "Cette notification de chat a été envoyé en raison de vos paramètres d'abonnement.",
+    "notif.post.cta": "Cliquer ici pour lire le sujet complet",
+    "notif.post.unsub.info": "La notification de ce message vous a été envoyé en raison de vos paramètres d'abonnement.",
     "test.text1": "Ceci est un email de test pour vérifier que l'emailer est correctement configuré pour NodeBB.",
     "unsub.cta": "Cliquez ici pour modifier ces paramètres",
     "closing": "Merci !"

@@ -1,3 +1,6 @@
+"use strict";
+/*globals define, app, ajaxify, socket, RELATIVE_PATH*/
+
 define('forum/reset_code', function() {
 	var	ResetCode = {};
 
@@ -11,43 +14,24 @@ define('forum/reset_code', function() {
 
 		resetEl.on('click', function() {
 			if (password.val().length < 6) {
-				$('#error').addClass('hide').hide();
-				noticeEl.find('strong').html('Invalid Password');
-				noticeEl.find('p').html('The password entered is too short, please pick a different password.');
-				noticeEl.removeClass('hide').css({display: 'block'});
-			} else if (password.value !== repeat.value) {
-				$('#error').hide();
-				noticeEl.find('strong').html('Invalid Password');
-				noticeEl.find('p').html('The two passwords you\'ve entered do not match.');
-				noticeEl.removeClass('hide').css({display: 'block'});
+				app.alertError('[[reset_password:password_too_short]]');
+			} else if (password.val() !== repeat.val()) {
+				app.alertError('[[reset_password:passwords_do_not_match]]');
 			} else {
+				resetEl.prop('disabled', true).html('<i class="fa fa-spin fa-refresh"></i> Changing Password');
 				socket.emit('user.reset.commit', {
 					code: reset_code,
 					password: password.val()
 				}, function(err) {
-					if(err) {
+					if (err) {
+						ajaxify.refresh();
 						return app.alertError(err.message);
 					}
-					$('#error').addClass('hide').hide();
-					$('#notice').addClass('hide').hide();
-					$('#success').removeClass('hide').addClass('show').show();
+
+					window.location.href = RELATIVE_PATH + '/login';
 				});
 			}
-		});
-
-		socket.emit('user.reset.valid', reset_code, function(err, valid) {
-			if(err) {
-				return app.alertError(err.message);
-			}
-
-			if (valid) {
-				resetEl.prop('disabled', false);
-			} else {
-				var formEl = $('#reset-form');
-				// Show error message
-				$('#error').show();
-				formEl.remove();
-			}
+			return false;
 		});
 	};
 

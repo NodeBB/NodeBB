@@ -1,11 +1,11 @@
 <div class="tags">
-	<!-- IF !tags.length -->
-	<div class="alert alert-warning">
-		<strong>Your forum does not have any topics with tags yet!</strong>
-	</div>
-	<!-- ENDIF !tags.length -->
 
 	<div class="col-lg-9">
+		<!-- IF !tags.length -->
+		<div class="alert alert-warning">
+			<strong>Your forum does not have any topics with tags yet!</strong>
+		</div>
+		<!-- ENDIF !tags.length -->
 		<div class="panel panel-default tag-management">
 			<div class="panel-heading">Tag Management</div>
 			<div class="panel-body">
@@ -34,7 +34,7 @@
 		</div>
 	</div>
 
-	<div class="col-lg-3">
+	<div class="col-lg-3 acp-sidebar">
 		<div class="panel panel-default">
 			<div class="panel-heading">Modify Tag</div>
 			<div class="panel-body">

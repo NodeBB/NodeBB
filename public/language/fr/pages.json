@@ -11,6 +11,7 @@
     "user.followers": "Personnes qui suivent %1",
     "user.posts": "Message écrit par %1",
     "user.topics": "Sujets créés par %1",
+    "user.groups": "Les Groupes de %1",
     "user.favourites": "Messages favoris de %1",
     "user.settings": "Préférences utilisateur",
     "maintenance.text": "%1 est en maintenance. Veuillez revenir un peu plus tard.",

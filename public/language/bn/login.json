@@ -1,9 +1,11 @@
 {
-    "username": "ইউজারনেম / ইমেইল",
+    "username-email": "Username / Email",
+    "username": "Username",
+    "email": "Email",
     "remember_me": "মনে রাখুন",
     "forgot_password": "পাসওয়ার্ড ভুলে গিয়েছেন?",
     "alternative_logins": "বিকল্প প্রবেশ",
-    "failed_login_attempt": "ব্যর্থ প্রবেশের প্রচেষ্টা, আবার চেষ্টা করুন।",
+    "failed_login_attempt": "প্রবেশ সফল হয় নি, আবার চেষ্টা করুন।",
     "login_successful": "আপনি সফলভাবে প্রবেশ করেছেন!",
     "dont_have_account": "কোন একাউন্ট নেই?"
 }

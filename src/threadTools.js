@@ -1,27 +1,16 @@
 'use strict';
 
-var winston = require('winston'),
-	nconf = require('nconf'),
-	async = require('async'),
+var async = require('async'),
 
 	db = require('./database'),
 	topics = require('./topics'),
 	categories = require('./categories'),
-	user = require('./user'),
-	notifications = require('./notifications'),
 	posts = require('./posts'),
-	meta = require('./meta'),
-	websockets = require('./socket.io'),
-	events = require('./events'),
 	plugins = require('./plugins'),
 	batch = require('./batch');
 
 
 (function(ThreadTools) {
-
-	ThreadTools.exists = function(tid, callback) {
-		db.isSortedSetMember('topics:tid', tid, callback);
-	};
 
 	ThreadTools.delete = function(tid, uid, callback) {
 		toggleDelete(tid, uid, true, callback);
@@ -32,7 +21,7 @@ var winston = require('winston'),
 	};
 
 	function toggleDelete(tid, uid, isDelete, callback) {
-		topics.getTopicFields(tid, ['tid', 'cid', 'deleted', 'title', 'mainPid'], function(err, topicData) {
+		topics.getTopicFields(tid, ['tid', 'cid', 'uid', 'deleted', 'title', 'mainPid'], function(err, topicData) {
 			if (err) {
 				return callback(err);
 			}
@@ -43,12 +32,6 @@ var winston = require('winston'),
 			}
 
 			topics[isDelete ? 'delete' : 'restore'](tid, function(err) {
-				function emitTo(room) {
-					websockets.in(room).emit(isDelete ? 'event:topic_deleted' : 'event:topic_restored', {
-						tid: tid,
-						isDelete: isDelete
-					});
-				}
 				if (err) {
 					return callback(err);
 				}
@@ -60,44 +43,46 @@ var winston = require('winston'),
 					plugins.fireHook('action:topic.restore', topicData);
 				}
 
-				events[isDelete ? 'logTopicDelete' : 'logTopicRestore'](uid, tid);
+				var data = {
+					tid: tid,
+					cid: topicData.cid,
+					isDelete: isDelete,
+					uid: uid
+				};
 
-				emitTo('topic_' + tid);
-				emitTo('category_' + topicData.cid);
-
-				callback(null, {
-					tid: tid
-				});
+				callback(null, data);
 			});
 		});
 	}
 
 	ThreadTools.purge = function(tid, uid, callback) {
-		ThreadTools.exists(tid, function(err, exists) {
-			if (err || !exists) {
-				return callback(err);
-			}
-
-			batch.processSortedSet('tid:' + tid + ':posts', function(pids, next) {
-				async.eachLimit(pids, 10, posts.purge, next);
-			}, {alwaysStartAt: 0}, function(err) {
-				if (err) {
-					return callback(err);
+		var topic;
+		async.waterfall([
+			function(next) {
+				topics.exists(tid, next);
+			},
+			function(exists, next) {
+				if (!exists) {
+					return callback();
 				}
-
-				topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
-					if (err) {
-						return callback(err);
-					}
-					posts.purge(mainPid, function(err) {
-						if (err) {
-							return callback(err);
-						}
-						topics.purge(tid, callback);
-					});
-				});
-			});
-		});
+				batch.processSortedSet('tid:' + tid + ':posts', function(pids, next) {
+					async.eachLimit(pids, 10, posts.purge, next);
+				}, {alwaysStartAt: 0}, next);
+			},
+			function(next) {
+				topics.getTopicFields(tid, ['mainPid', 'cid'], next);
+			},
+			function(_topic, next) {
+				topic = _topic;
+				posts.purge(topic.mainPid, next);
+			},
+			function(next) {
+				topics.purge(tid, next);
+			},
+			function(next) {
+				next(null, {tid: tid, cid: topic.cid, uid: uid});
+			}
+		], callback);
 	};
 
 	ThreadTools.lock = function(tid, uid, callback) {
@@ -109,35 +94,24 @@ var winston = require('winston'),
 	};
 
 	function toggleLock(tid, uid, lock, callback) {
+		callback = callback || function() {};
 		topics.getTopicField(tid, 'cid', function(err, cid) {
-			function emitTo(room) {
-				websockets.in(room).emit(lock ? 'event:topic_locked' : 'event:topic_unlocked', {
-					tid: tid,
-					isLocked: lock
-				});
-			}
-
-			if (err && typeof callback === 'function') {
+			if (err) {
 				return callback(err);
 			}
 
 			topics.setTopicField(tid, 'locked', lock ? 1 : 0);
 
-			plugins.fireHook('action:topic.lock', {
+			var data = {
 				tid: tid,
 				isLocked: lock,
-				uid: uid
-			});
+				uid: uid,
+				cid: cid
+			};
 
-			emitTo('topic_' + tid);
-			emitTo('category_' + cid);
+			plugins.fireHook('action:topic.lock', data);
 
-			if (typeof callback === 'function') {
-				callback(null, {
-					tid: tid,
-					isLocked: lock
-				});
-			}
+			callback(null, data);
 		});
 	}
 
@@ -151,13 +125,6 @@ var winston = require('winston'),
 
 	function togglePin(tid, uid, pin, callback) {
 		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
-			function emitTo(room) {
-				websockets.in(room).emit(pin ? 'event:topic_pinned' : 'event:topic_unpinned', {
-					tid: tid,
-					isPinned: pin
-				});
-			}
-
 			if (err) {
 				return callback(err);
 			}
@@ -165,19 +132,16 @@ var winston = require('winston'),
 			topics.setTopicField(tid, 'pinned', pin ? 1 : 0);
 			db.sortedSetAdd('cid:' + topicData.cid + ':tids', pin ? Math.pow(2, 53) : topicData.lastposttime, tid);
 
-			plugins.fireHook('action:topic.pin', {
+			var data = {
 				tid: tid,
 				isPinned: pin,
-				uid: uid
-			});
+				uid: uid,
+				cid: topicData.cid
+			};
 
-			emitTo('topic_' + tid);
-			emitTo('category_' + topicData.cid);
+			plugins.fireHook('action:topic.pin', data);
 
-			callback(null, {
-				tid: tid,
-				isPinned: pin
-			});
+			callback(null, data);
 		});
 	}
 
@@ -185,15 +149,26 @@ var winston = require('winston'),
 		var topic;
 		async.waterfall([
 			function(next) {
-				topics.getTopicFields(tid, ['cid', 'lastposttime', 'pinned', 'deleted'], next);
+				topics.getTopicFields(tid, ['cid', 'lastposttime', 'pinned', 'deleted', 'postcount'], next);
 			},
 			function(topicData, next) {
 				topic = topicData;
-				db.sortedSetRemove('cid:' + topicData.cid + ':tids', tid, next);
+				db.sortedSetsRemove([
+					'cid:' + topicData.cid + ':tids',
+					'cid:' + topicData.cid + ':tids:posts'
+				], tid, next);
 			},
 			function(next) {
 				var timestamp = parseInt(topic.pinned, 10) ? Math.pow(2, 53) : topic.lastposttime;
-				db.sortedSetAdd('cid:' + cid + ':tids', timestamp, tid, next);
+				async.parallel([
+					function(next) {
+						db.sortedSetAdd('cid:' + cid + ':tids', timestamp, tid, next);
+					},
+					function(next) {
+						topic.postcount = topic.postcount || 0;
+						db.sortedSetAdd('cid:' + cid + ':tids:posts', topic.postcount, tid, next);
+					}
+				], next);
 			}
 		], function(err) {
 			if (err) {
@@ -208,52 +183,19 @@ var winston = require('winston'),
 
 			categories.moveRecentReplies(tid, oldCid, cid);
 
-			topics.setTopicField(tid, 'cid', cid, callback);
-
-			events.logTopicMove(uid, tid);
-
-			plugins.fireHook('action:topic.move', {
-				tid: tid,
-				fromCid: oldCid,
-				toCid: cid,
-				uid: uid
+			topics.setTopicField(tid, 'cid', cid, function(err) {
+				if (err) {
+					return callback(err);
+				}
+				plugins.fireHook('action:topic.move', {
+					tid: tid,
+					fromCid: oldCid,
+					toCid: cid,
+					uid: uid
+				});
 			});
 		});
 	};
 
-	ThreadTools.toggleFollow = function(tid, uid, callback) {
-		callback = callback || function() {};
-		async.waterfall([
-			function (next) {
-				ThreadTools.exists(tid, next);
-			},
-			function (exists, next) {
-				if (!exists) {
-					return next(new Error('[[error:no-topic]]'));
-				}
-				topics.isFollowing(tid, uid, next);
-			},
-			function (isFollowing, next) {
-				db[isFollowing ? 'setRemove' : 'setAdd']('tid:' + tid + ':followers', uid, function(err) {
-					next(err, !isFollowing);
-				});
-			}
-		], callback);
-	};
-
-	ThreadTools.follow = function(tid, uid, callback) {
-		callback = callback || function() {};
-		async.waterfall([
-			function (next) {
-				ThreadTools.exists(tid, next);
-			},
-			function (exists, next) {
-				if (!exists) {
-					return next(new Error('[[error:no-topic]]'));
-				}
-				db.setAdd('tid:' + tid + ':followers', uid, next);
-			}
-		], callback);
-	};
 
 }(exports));

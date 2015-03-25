@@ -19,7 +19,7 @@ SocketCategories.get = function(socket, data, callback) {
 };
 
 SocketCategories.loadMore = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -46,11 +46,28 @@ SocketCategories.loadMore = function(socket, data, callback) {
 			return callback(new Error('[[error:no-privileges]]'));
 		}
 
+
+		var set = 'cid:' + data.cid + ':tids',
+			reverse = false;
+
+		if (results.settings.categoryTopicSort === 'newest_to_oldest') {
+			reverse = true;
+		} else if (results.settings.categoryTopicSort === 'most_posts') {
+			reverse = true;
+			set = 'cid:' + data.cid + ':tids:posts';
+		}
+
 		var start = parseInt(data.after, 10),
 			end = start + results.settings.topicsPerPage - 1;
 
+		if (results.targetUid) {
+			set = 'cid:' + data.cid + ':uid:' + results.targetUid + ':tids';
+		}
+
 		categories.getCategoryTopics({
 			cid: data.cid,
+			set: set,
+			reverse: reverse,
 			start: start,
 			stop: end,
 			uid: socket.uid,
@@ -99,6 +116,10 @@ SocketCategories.ignore = function(socket, cid, callback) {
 		}
 		topics.pushUnreadCount(socket.uid, callback);
 	});
+};
+
+SocketCategories.isModerator = function(socket, cid, callback) {
+	user.isModerator(socket.uid, cid, callback);
 };
 
 module.exports = SocketCategories;

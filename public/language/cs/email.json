@@ -9,6 +9,9 @@
     "reset.text1": "Obdrželi jsme požadavek na obnovu hesla, pravděpodobně kvůli tomu, že jste ho zapomněli. Pokud to není tento případ, ignorujte, prosím, tento email.",
     "reset.text2": "Přejete-li si pokračovat v obnově vašeho hesla, klikněte, prosím, na následující odkaz:",
     "reset.cta": "Klikněte zde, chcete-li obnovit vaše heslo",
+    "reset.notify.subject": "Password successfully changed",
+    "reset.notify.text1": "We are notifying you that on %1, your password was changed successfully.",
+    "reset.notify.text2": "If you did not authorise this, please notify an administrator immediately.",
     "digest.notifications": "Máte tu nepřečtená oznámení od %1:",
     "digest.latest_topics": "Nejnovější témata od %1",
     "digest.cta": "Kliknutím zde navštívíte %1",
@@ -17,6 +20,8 @@
     "notif.chat.subject": "Nová zpráva z chatu od %1",
     "notif.chat.cta": "Chcete-li pokračovat v konverzaci, klikněte zde.",
     "notif.chat.unsub.info": "Toto oznámení z chatu vám bylo zasláno, protože jste si to nastavili ve vašich odběrech.",
+    "notif.post.cta": "Click here to read the full topic",
+    "notif.post.unsub.info": "This post notification was sent to you due to your subscription settings.",
     "test.text1": "Tento testovací email  slouží k ověření, že mailer je správně nastaven. NodeBB.",
     "unsub.cta": "Chcete-li změnit tyto nastavení, klikněte zde.",
     "closing": "Díky!"

@@ -1,6 +1,6 @@
 {
-    "success": "Exito!",
-    "topic-post": "Has publicado correctamente.",
-    "authentication-successful": "El inicio de sesión ha sido correcto!",
-    "settings-saved": "Su configuración ha sido guardada correctamente."
+    "success": "¡Éxito!",
+    "topic-post": "Mensaje publicado satisfactoriamente.",
+    "authentication-successful": "Identificado satisfactoriamente",
+    "settings-saved": "¡Ajustes guardados satisfactoriamente!"
 }

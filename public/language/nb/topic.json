@@ -12,6 +12,7 @@
     "notify_me": "Bli varslet om nye svar i dette emnet",
     "quote": "Siter",
     "reply": "Svar",
+    "guest-login-reply": "Log in to reply",
     "edit": "Endre",
     "delete": "Slett",
     "purge": "Tøm",
@@ -74,6 +75,7 @@
     "fork_no_pids": "Ingen innlegg valgt!",
     "fork_success": "Dette emnet ble delt! Klikk for å gå til delt emne.",
     "composer.title_placeholder": "Skriv din tråd-tittel her",
+    "composer.handle_placeholder": "Navn",
     "composer.discard": "Forkast",
     "composer.submit": "Send",
     "composer.replying_to": "Svarer i %1",
@@ -92,5 +94,6 @@
     "sort_by": "Sorter etter",
     "oldest_to_newest": "Eldste til nyeste",
     "newest_to_oldest": "Nyeste til eldste",
-    "most_votes": "Flest stemmer"
+    "most_votes": "Flest stemmer",
+    "most_posts": "Flest innlegg"
 }

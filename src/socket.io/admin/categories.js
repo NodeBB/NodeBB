@@ -36,7 +36,7 @@ Categories.search = function(socket, data, callback) {
 	var	username = data.username,
 		cid = data.cid;
 
-	user.search({query: username}, function(err, data) {
+	user.search({query: username, uid: socket.uid}, function(err, data) {
 		if (err) {
 			return callback(err);
 		}
@@ -68,7 +68,7 @@ Categories.getPrivilegeSettings = function(socket, cid, callback) {
 	async.reduce(privileges, [], function(members, privilege, next) {
 		groups.get('cid:' + cid + ':privileges:' + privilege, { expand: true }, function(err, groupObj) {
 			if (err || !groupObj) {
-				return next(err, members);
+				return next(null, members);
 			}
 
 			members = members.concat(groupObj.members);
@@ -113,11 +113,17 @@ Categories.setGroupPrivilege = function(socket, data, callback) {
 Categories.groupsList = function(socket, cid, callback) {
 	groups.list({
 		expand: false,
+		isAdmin: true,
 		showSystemGroups: true
 	}, function(err, data) {
 		if(err) {
 			return callback(err);
 		}
+
+		// Remove privilege groups
+		data = data.filter(function(groupObj) {
+			return groupObj.name.indexOf(':privileges:') === -1;
+		});
 
 		async.map(data, function(groupObj, next) {
 			privileges.categories.groupPrivileges(cid, groupObj.name, function(err, privileges) {

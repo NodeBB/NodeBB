@@ -16,6 +16,7 @@
 	<div class="clear"></div>
 </li>
 <!-- END themes -->
+<!-- IF showRevert -->
 <li data-type="bootswatch" data-theme="" data-css="">
 	<div class="pull-right">
 		<button class="btn btn-primary pull-right" data-action="use">Revert</button>
@@ -23,3 +24,4 @@
 	<h4>No Skin</h4>
 	<p>Remove applied skin and revert back to the base colours</p>
 </li>
+<!-- ENDIF showRevert -->

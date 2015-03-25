@@ -25,7 +25,7 @@
 		</div>
 	</div>
 
-	<div class="col-lg-3">
+	<div class="col-lg-3 acp-sidebar">
 		<div class="panel panel-default">
 			<div class="panel-heading">Languages Control Panel</div>
 			<div class="panel-body">

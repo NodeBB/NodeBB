@@ -15,6 +15,7 @@
 	"notify_me": "Be notified of new replies in this topic",
 	"quote": "Quote",
 	"reply": "Reply",
+	"guest-login-reply": "Log in to reply",
 	"edit": "Edit",
 	"delete": "Delete",
 	"purge": "Purge",
@@ -112,5 +113,6 @@
 	"sort_by": "Sort by",
 	"oldest_to_newest": "Oldest to Newest",
 	"newest_to_oldest": "Newest to Oldest",
-	"most_votes": "Most votes"
+	"most_votes": "Most votes",
+	"most_posts": "Most posts"
 }

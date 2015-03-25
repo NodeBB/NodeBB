@@ -11,6 +11,7 @@
     "user.followers": "Utilizatori care îl urmăresc pe %1",
     "user.posts": "Mesaje postate de %1",
     "user.topics": "Subiecte create de %1",
+    "user.groups": "%1's Groups",
     "user.favourites": "Mesajele favorite ale lui %1",
     "user.settings": "Setări Utilizator",
     "maintenance.text": "%1 este momentan în mentenanță. Întoarce-te în curând!",

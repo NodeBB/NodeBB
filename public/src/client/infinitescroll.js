@@ -14,10 +14,6 @@ define('forum/infinitescroll', function() {
 		callback = cb;
 		topOffset = _topOffest || 0;
 		$(window).off('scroll', onScroll).on('scroll', onScroll);
-
-		// if ($(document).height() === $(window).height()) {
-		// 	callback(1);
-		// }
 	};
 
 	function onScroll() {

@@ -56,11 +56,13 @@ define('admin/manage/categories', function() {
 				name: $('#inputName').val(),
 				description: $('#inputDescription').val(),
 				icon: $('#new-category-modal i').attr('value'),
-				bgColor: '#0059b2',
-				color: '#fff',
-				order: $('#disabled-categories').children().length + 1
+				order: $('#active-categories').children().length + 1
 			};
 
+			saveNew(category);
+		}
+
+		function saveNew(category) {
 			socket.emit('admin.categories.create', category, function(err, data) {
 				if(err) {
 					return app.alertError(err.message);

@@ -2,6 +2,7 @@
 @import "./mixins";
 
 @import "./general/dashboard";
+@import "./general/navigation";
 @import "./manage/groups";
 @import "./manage/tags";
 @import "./manage/flags";
@@ -9,6 +10,7 @@
 @import "./appearance/customise";
 @import "./appearance/themes";
 @import "./extend/plugins";
+@import "./extend/rewards";
 @import "./advanced/database";
 
 @import "./modules/alerts";
@@ -168,7 +170,6 @@
 		border-radius: 3px;
 		box-shadow: 0px 1px 3px 0px rgba(165, 165, 165, 0.75);
 		margin-bottom: 20px;
-		max-width: 1000px;
 
 		&.panel-default .panel-heading {
 			background: #fefefe;
@@ -183,15 +184,18 @@
 		.box-header-font
 	}
 
-	#user_dropdown {
-		padding: 6px;
+	#user_label {
+        a {
+            padding-top: 13px;
+            padding-bottom: 13px;
 
-		img {
-			width: 30px;
-			height: 30px;
-			vertical-align: -88%;
-			margin-right: 5px;
-		}
+            img {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                border: 1px solid #454;
+            }
+        }
 	}
 
 	.icon-container {
@@ -213,25 +217,40 @@
 		}
 	}
 
-	.navbar {
-		padding: 0 5px;
+    .navbar-static-top, .navbar-fixed-top {
+        box-shadow: 0px -3px 12px rgba(0, 0, 0, 0.5);
+    }
 
-		.nav-home a, .nav-home a:hover {
-			width: 30px;
-			height: 30px;
-			padding: 5px;
-			text-align: center;
-			margin-top: 10px;
-			background: #DDD;
+    .navbar-header > .navbar-toggle {
+        margin-right: 8px;
+    }
 
-			i {
-				color: black;
-				font-size: 17px;
-			}
-		}
+    .navbar-nav {
+        margin-top: 0;
+        margin-bottom: 0;
 
-	}
-	
+        >li {
+            >a {
+                padding-top: 15px;
+                padding-bottom: 15px;
+            }
+
+            >a:hover, >a:focus {
+                color: @gray-dark;
+                background-color: @gray-light;
+            }
+
+            >#reconnect {
+                color: @gray-light;
+            }
+
+            >#reconnect:focus, >#reconnect:hover {
+                color: @gray-light;
+                background-color: transparent;
+            }
+        }
+    }
+
 	#acp-search {
 		input {
 			background: black;
@@ -249,7 +268,7 @@
 				width: 200px;
 			}
 		}
-		
+
 		.search-match {
 			font-weight: 700;
 			color: black;
@@ -261,24 +280,18 @@
 	}
 }
 
-.table-reordering {
-	tr:hover {
-		cursor: move;
-	}
+// Allowing text to the right of an image-type brand
+// See: https://github.com/twbs/bootstrap/commit/8e2348e9eda51296eb680192379ab37f10355ca3
+.navbar-brand > img {
+  display: inline-block;
 }
 
-.category-preview {
-	width: 100%;
-	height: 100px;
-	text-align: center;
-	color: white;
-	margin-top: 0;
-
-	.icon {
-		width: 30px;
-		height: 30px;
-		line-height: 40px;
-		display: inline-block;
-		margin: 35px 5px 0 5px;
+@media (min-width: 1200px) {
+	.acp-sidebar {
+		position: fixed;
+		top: 70px;
+		right: 15px;
+		width: initial;
+		max-width: calc( ~"(100% - 200px)/4" );
 	}
 }

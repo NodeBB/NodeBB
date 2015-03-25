@@ -2,6 +2,7 @@
     "title": "Értesítések",
     "no_notifs": "Nincs új értesítés",
     "see_all": "Összes értesítés megtekintése",
+    "mark_all_read": "Mark all notifications read",
     "back_to_home": "Vissza - %1",
     "outgoing_link": "Külső Link",
     "outgoing_link_message": "You are now leaving %1.",
@@ -21,7 +22,6 @@
     "user_started_following_you": "<strong>%1</strong> started following you.",
     "email-confirmed": "Email Confirmed",
     "email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",
-    "email-confirm-error": "An error occurred...",
     "email-confirm-error-message": "There was a problem validating your email address. Perhaps the code was invalid or has expired.",
     "email-confirm-sent": "Confirmation email sent."
 }

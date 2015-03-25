@@ -2,6 +2,7 @@
     "title": "Bildirimler",
     "no_notifs": "Yeni bildirimleriniz yok",
     "see_all": "Bütün bildirimleri gör",
+    "mark_all_read": "Okunmuş bütün bildirimleri işaretle",
     "back_to_home": "Geri dön %1",
     "outgoing_link": "Harici Link",
     "outgoing_link_message": "Bu forumdan ayrılıyorsunuz",
@@ -21,7 +22,6 @@
     "user_started_following_you": "<strong>%1</strong> sizi takip etmeye başladı.",
     "email-confirmed": "E-posta onaylandı",
     "email-confirmed-message": "E-postanızı onaylandığınız için teşekkürler. Hesabınız tamamen aktive edildi.",
-    "email-confirm-error": "Bir hata oluştu...",
     "email-confirm-error-message": "E-posta adresinizi onaylarken bir hata oluştu. Kodunuz geçersiz ya da eski olabilir.",
     "email-confirm-sent": "Onay e-postası gönderildi."
 }

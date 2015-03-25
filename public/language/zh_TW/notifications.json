@@ -2,6 +2,7 @@
     "title": "通知",
     "no_notifs": "沒有新消息",
     "see_all": "顯示全部",
+    "mark_all_read": "Mark all notifications read",
     "back_to_home": "返回%1",
     "outgoing_link": "站外鏈接",
     "outgoing_link_message": "你正在離開 %1.",
@@ -21,7 +22,6 @@
     "user_started_following_you": "<strong>%1</strong> 開始關注你。",
     "email-confirmed": "已確認電郵",
     "email-confirmed-message": "感謝您驗證您的電郵。您的帳戶現已全面啟用。",
-    "email-confirm-error": "發生錯誤...",
     "email-confirm-error-message": "驗證您的電郵地址時出現問題。也許啟動碼無效或已過期。",
     "email-confirm-sent": "已發送確認電郵。"
 }

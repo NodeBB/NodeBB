@@ -2,15 +2,11 @@
 
 /* globals define, app, socket*/
 
-define('forum/popular', ['forum/recent', 'forum/infinitescroll'], function(recent, infinitescroll) {
+define('forum/popular', ['forum/recent'], function(recent) {
 	var Popular = {};
 
 	Popular.init = function() {
 		app.enterRoom('recent_posts');
-
-		$('#new-topics-alert').on('click', function() {
-			$(this).addClass('hide');
-		});
 
 		selectActivePill();
 	};
@@ -26,10 +22,10 @@ define('forum/popular', ['forum/recent', 'forum/infinitescroll'], function(recen
 				return false;
 			}
 		});
-	};
+	}
 
 	function getActiveSection() {
-		parts = window.location.href.split('/');
+		var parts = window.location.href.split('/');
 		return parts[parts.length - 1];
 	}
 

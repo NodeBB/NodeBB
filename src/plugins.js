@@ -6,6 +6,7 @@ var fs = require('fs'),
 	winston = require('winston'),
 	semver = require('semver'),
 	express = require('express'),
+	nconf = require('nconf'),
 
 	db = require('./database'),
 	emitter = require('./emitter'),
@@ -18,7 +19,6 @@ var fs = require('fs'),
 	app, middleware;
 
 (function(Plugins) {
-
 	require('./plugins/install')(Plugins);
 	require('./plugins/load')(Plugins);
 	require('./plugins/hooks')(Plugins);
@@ -34,8 +34,8 @@ var fs = require('fs'),
 
 	Plugins.initialized = false;
 
-	Plugins.requireLibrary = function(pluginData, libraryPath) {
-		Plugins.libraries[pluginData.id] = require(libraryPath);
+	Plugins.requireLibrary = function(pluginID, libraryPath) {
+		Plugins.libraries[pluginID] = require(libraryPath);
 		Plugins.libraryPaths.push(libraryPath);
 	};
 
@@ -90,13 +90,12 @@ var fs = require('fs'),
 		Plugins.clientScripts.length = 0;
 		Plugins.libraryPaths.length = 0;
 
-		// Read the list of activated plugins and require their libraries
 		async.waterfall([
 			function(next) {
-				db.getSetMembers('plugins:active', next);
+				db.getSortedSetRange('plugins:active', 0, -1, next);
 			},
 			function(plugins, next) {
-				if (!plugins || !Array.isArray(plugins)) {
+				if (!Array.isArray(plugins)) {
 					return next();
 				}
 
@@ -109,7 +108,7 @@ var fs = require('fs'),
 				});
 
 				async.filter(plugins, fs.exists, function(plugins){
-					async.each(plugins, Plugins.loadPlugin, next);
+					async.eachSeries(plugins, Plugins.loadPlugin, next);
 				});
 			},
 			function(next) {
@@ -156,7 +155,7 @@ var fs = require('fs'),
 							winston.warn('[plugins/' + plugin.id + '] A templates directory was defined for this plugin, but was not found.');
 						}
 
-						next(err);
+						next(false);
 					});
 				} else {
 					next(false);
@@ -168,8 +167,9 @@ var fs = require('fs'),
 	};
 
 	Plugins.getAll = function(callback) {
-		var request = require('request');
-		request('https://packages.nodebb.org/api/v1/plugins', function(err, res, body) {
+		var url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins?version=' + require('../package.json').version;
+
+		require('request')(url, function(err, res, body) {
 			var plugins = [];
 
 			try {
@@ -184,8 +184,8 @@ var fs = require('fs'),
 				plugins[i].id = plugins[i].name;
 				plugins[i].installed = false;
 				plugins[i].active = false;
-				plugins[i].url = plugins[i].repository ? plugins[i].repository.url : '';
-				plugins[i].latest = getLatestVersion(plugins[i].versions);
+				plugins[i].url = plugins[i].url ? plugins[i].url : plugins[i].repository ? plugins[i].repository.url : '';
+				plugins[i].latest = plugins[i].latest;
 				pluginMap[plugins[i].name] = plugins[i];
 			}
 
@@ -209,6 +209,7 @@ var fs = require('fs'),
 					pluginMap[plugin.id].description = plugin.description;
 					pluginMap[plugin.id].url = pluginMap[plugin.id].url || plugin.url;
 					pluginMap[plugin.id].installed = true;
+					pluginMap[plugin.id].isTheme = !!plugin.id.match('nodebb-theme-');
 					pluginMap[plugin.id].error = plugin.error || false;
 					pluginMap[plugin.id].active = plugin.active;
 					pluginMap[plugin.id].version = plugin.version;
@@ -261,18 +262,17 @@ var fs = require('fs'),
 
 			function(dirs, next) {
 				dirs = dirs.filter(function(dir){
-					return dir.substr(0, 14) === 'nodebb-plugin-' || dir.substr(0, 14) === 'nodebb-widget-';
+					return dir.startsWith('nodebb-plugin-') ||
+						dir.startsWith('nodebb-widget-') ||
+						dir.startsWith('nodebb-rewards-') ||
+						dir.startsWith('nodebb-theme-');
 				}).map(function(dir){
 					return path.join(npmPluginPath, dir);
 				});
 
 				async.filter(dirs, function(dir, callback){
 					fs.stat(dir, function(err, stats){
-						if (err) {
-							return callback(false);
-						}
-
-						callback(stats.isDirectory());
+						callback(!err && stats.isDirectory());
 					});
 				}, function(plugins){
 					next(null, plugins);
@@ -283,57 +283,30 @@ var fs = require('fs'),
 				var plugins = [];
 
 				async.each(files, function(file, next) {
-					var configPath;
-
 					async.waterfall([
 						function(next) {
-							async.parallel({
-								packageJSON: function(next) {
-									fs.readFile(path.join(file, 'package.json'), next);
-								},
-								pluginJSON: function(next) {
-									fs.readFile(path.join(file, 'plugin.json'), next);
-								}
-							}, next);
+							Plugins.loadPluginInfo(file, next);
 						},
-						function(results, next) {
-							var packageName = path.basename(file),
-								packageInfo, pluginInfo;
-
-							try {
-								packageInfo = JSON.parse(results.packageJSON);
-								pluginInfo = JSON.parse(results.pluginJSON);
-							} catch (err) {
-								winston.warn("Plugin `" + packageName + "` is corrupted or invalid. Please check either package.json or plugin.json for errors.");
-								return next(null, {
-									id: packageName,
-									installed: true,
-									error: true,
-									active: null
-								});
-							}
-
-							Plugins.isActive(packageInfo.name, function(err, active) {
+						function(pluginData, next) {
+							Plugins.isActive(pluginData.name, function(err, active) {
 								if (err) {
 									return next(new Error('no-active-state'));
 								}
 
-								delete pluginInfo.hooks;
-								delete pluginInfo.library;
-								pluginInfo.active = active;
-								pluginInfo.installed = true;
-								pluginInfo.error = false;
-								pluginInfo.version = packageInfo.version;
-
-								next(null, pluginInfo);
+								delete pluginData.hooks;
+								delete pluginData.library;
+								pluginData.active = active;
+								pluginData.installed = true;
+								pluginData.error = false;
+								next(null, pluginData);
 							});
 						}
-					], function(err, config) {
+					], function(err, pluginData) {
 						if (err) {
 							return next(); // Silently fail
 						}
 
-						plugins.push(config);
+						plugins.push(pluginData);
 						next();
 					});
 				}, function(err) {
@@ -356,16 +329,18 @@ var fs = require('fs'),
 				}).reduce(function(prev, cur) {
 					return prev.concat(cur);
 				});
-				next(null, paths);
-			}
-		], function(err, paths) {
-			for (var x=0,numPaths=paths.length;x<numPaths;x++) {
-				delete require.cache[paths[x]];
-			}
-			winston.verbose('[plugins] Plugin libraries removed from Node.js cache');
 
-			next();
-		});
+				Plugins.fireHook('filter:plugins.clearRequireCache', {paths: paths}, next);
+			},
+			function(data, next) {
+				for (var x=0,numPaths=data.paths.length;x<numPaths;x++) {
+					delete require.cache[data.paths[x]];
+				}
+				winston.verbose('[plugins] Plugin libraries removed from Node.js cache');
+
+				next();
+			},
+		], next);
 	};
 
 	function addLanguages(params, callback) {

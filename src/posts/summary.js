@@ -82,10 +82,11 @@ module.exports = function(Posts) {
 						if (options.stripTags) {
 							post.content = stripTags(post.content);
 						}
+						post.content = post.content ? validator.escape(post.content) : post.content;
 						return next(null, post);
 					}
 
-					postTools.parsePost(post, uid, function(err, post) {
+					postTools.parsePost(post, function(err, post) {
 						if (err) {
 							return next(err);
 						}
@@ -119,7 +120,7 @@ module.exports = function(Posts) {
 				return topic && array.indexOf(topic) === index;
 			});
 
-			categories.getMultipleCategoryFields(cids, ['cid', 'name', 'icon', 'slug'], function(err, categories) {
+			categories.getMultipleCategoryFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid'], function(err, categories) {
 				callback(err, {topics: topics, categories: categories});
 			});
 		});

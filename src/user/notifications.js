@@ -7,7 +7,6 @@ var async = require('async'),
 	S = require('string'),
 
 	user = require('../user'),
-	utils = require('../../public/src/utils'),
 	db = require('../database'),
 	meta = require('../meta'),
 	notifications = require('../notifications'),
@@ -37,6 +36,20 @@ var async = require('async'),
 			}
 
 			callback(null, notifications);
+		});
+	};
+
+	UserNotifications.getAll = function(uid, count, callback) {
+		getNotifications(uid, count, function(err, notifs) {
+			if (err) {
+				return callback(err);
+			}
+			notifs = notifs.unread.concat(notifs.read);
+			notifs = notifs.filter(Boolean).sort(function(a, b) {
+				return b.datetime - a.datetime;
+			});
+
+			callback(null, notifs);
 		});
 	};
 
@@ -77,7 +90,7 @@ var async = require('async'),
 						deletedNids.push(nids[index]);
 					} else {
 						notification.read = read;
-						notification.readClass = !notification.read ? 'label-warning' : '';
+						notification.readClass = !notification.read ? 'unread' : '';
 					}
 				});
 
@@ -90,47 +103,44 @@ var async = require('async'),
 		});
 	}
 
-	UserNotifications.getAll = function(uid, count, callback) {
-		getNotifications(uid, count, function(err, notifs) {
-			if (err) {
-				return callback(err);
-			}
-			notifs = notifs.unread.concat(notifs.read);
-			notifs = notifs.filter(Boolean).sort(function(a, b) {
-				return b.datetime - a.datetime;
-			});
-
-			callback(null, notifs);
-		});
-	};
-
 	UserNotifications.getNotifications = function(nids, uid, callback) {
 		notifications.getMultiple(nids, function(err, notifications) {
 			if (err) {
 				return callback(err);
 			}
 
-			var pids = notifications.map(function(notification) {
-				return notification ? notification.pid : null;
-			});
+			UserNotifications.generateNotificationPaths(notifications, uid, callback);
+		});
+	};
 
-			generatePostPaths(pids, uid, function(err, pidToPaths) {
-				if (err) {
-					return callback(err);
+	UserNotifications.generateNotificationPaths = function (notifications, uid, callback) {
+		var pids = notifications.map(function(notification) {
+			return notification ? notification.pid : null;
+		});
+
+		generatePostPaths(pids, uid, function(err, pidToPaths) {
+			if (err) {
+				return callback(err);
+			}
+
+			notifications = notifications.map(function(notification, index) {
+				if (!notification) {
+					return null;
 				}
 
-				notifications = notifications.map(function(notification, index) {
-					if (!notification) {
-						return null;
-					}
+				notification.path = pidToPaths[notification.pid] || notification.path || '';
 
-					notification.path = pidToPaths[notification.pid] || notification.path || '';
-					notification.datetimeISO = utils.toISOString(notification.datetime);
-					return notification;
-				});
+				if (notification.nid.startsWith('chat')) {
+					notification.path = nconf.get('relative_path') + '/chats/' + notification.user.userslug;
+				} else if (notification.nid.startsWith('follow')) {
+					notification.path = nconf.get('relative_path') + '/user/' + notification.user.userslug;
+				}
 
-				callback(null, notifications);
+				notification.datetimeISO = utils.toISOString(notification.datetime);
+				return notification;
 			});
+
+			callback(null, notifications);
 		});
 	};
 

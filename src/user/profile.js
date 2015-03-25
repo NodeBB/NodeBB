@@ -57,6 +57,9 @@ module.exports = function(User) {
 			}
 
 			function isUsernameAvailable(next) {
+				if (!data.username) {
+					return next();
+				}
 				User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
 
 					var userslug = utils.slugify(data.username);
@@ -96,8 +99,8 @@ module.exports = function(User) {
 					if (err) {
 						return callback(err);
 					}
-
-					User.getUserFields(uid, ['email', 'userslug', 'picture', 'gravatarpicture'], callback);
+					plugins.fireHook('action:user.updateProfile', {data: data, uid: uid});
+					User.getUserFields(uid, ['email', 'username', 'userslug', 'picture', 'gravatarpicture'], callback);
 				});
 			});
 
@@ -113,6 +116,8 @@ module.exports = function(User) {
 					return updateEmail(uid, data.email, next);
 				} else if (field === 'username') {
 					return updateUsername(uid, data.username, next);
+				} else if (field === 'fullname') {
+					return updateFullname(uid, data.fullname, next);
 				} else if (field === 'signature') {
 					data[field] = S(data[field]).stripTags().s;
 				} else if (field === 'website') {
@@ -142,8 +147,6 @@ module.exports = function(User) {
 				if (err) {
 					return callback(err);
 				}
-
-				events.logEmailChange(uid, userData.email, newEmail);
 
 				var gravatarpicture = User.createGravatarURLFromEmail(newEmail);
 				async.parallel([
@@ -175,9 +178,16 @@ module.exports = function(User) {
 	}
 
 	function updateUsername(uid, newUsername, callback) {
+		if (!newUsername) {
+			return callback();
+		}
+
 		User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
 			function update(field, object, value, callback) {
-				async.parallel([
+				async.series([
+					function(next) {
+						db.deleteObjectField(field + ':uid', userData[field], next);
+					},
 					function(next) {
 						User.setUserField(uid, field, value, next);
 					},
@@ -190,7 +200,6 @@ module.exports = function(User) {
 			if (err) {
 				return callback(err);
 			}
-			var userslug = utils.slugify(newUsername);
 
 			async.parallel([
 				function(next) {
@@ -198,28 +207,42 @@ module.exports = function(User) {
 						return next();
 					}
 
-					db.deleteObjectField('username:uid', userData.username, function(err) {
-						if (err) {
-							return next(err);
-						}
-						events.logUsernameChange(uid, userData.username, newUsername);
-						update('username', 'username:uid', newUsername, next);
-					});
+					update('username', 'username:uid', newUsername, next);
 				},
 				function(next) {
-					if (userslug === userData.userslug) {
+					var newUserslug = utils.slugify(newUsername);
+					if (newUserslug === userData.userslug) {
 						return next();
 					}
 
-					db.deleteObjectField('userslug:uid', userData.userslug, function(err) {
-						if (err) {
-							return next(err);
-						}
-						update('userslug', 'userslug:uid', userslug, next);
-					});
+					update('userslug', 'userslug:uid', newUserslug, next);
 				}
 			], callback);
 		});
+	}
+
+	function updateFullname(uid, newFullname, callback) {
+		async.waterfall([
+			function(next) {
+				User.getUserField(uid, 'fullname', next);
+			},
+			function(fullname, next) {
+				if (newFullname === fullname) {
+					return callback();
+				}
+				db.deleteObjectField('fullname:uid', fullname, next);
+			},
+			function(next) {
+				User.setUserField(uid, 'fullname', newFullname, next);
+			},
+			function(next) {
+				if (newFullname) {
+					db.setObjectField('fullname:uid', newFullname, uid, next);
+				} else {
+					next();
+				}
+			}
+		], callback);
 	}
 
 	User.changePassword = function(uid, data, callback) {
@@ -229,23 +252,11 @@ module.exports = function(User) {
 
 		function hashAndSetPassword(callback) {
 			User.hashPassword(data.newPassword, function(err, hash) {
-				if(err) {
+				if (err) {
 					return callback(err);
 				}
 
-				User.setUserField(data.uid, 'password', hash, function(err) {
-					if(err) {
-						return callback(err);
-					}
-
-					if(parseInt(uid, 10) === parseInt(data.uid, 10)) {
-						events.logPasswordChange(data.uid);
-					} else {
-						events.logAdminChangeUserPassword(uid, data.uid);
-					}
-
-					callback();
-				});
+				User.setUserField(data.uid, 'password', hash, callback);
 			});
 		}
 

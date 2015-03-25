@@ -1,36 +1,30 @@
 "use strict";
 
 module.exports = function(redisClient, module) {
-	module.searchIndex = function(key, content, id, callback) {
-		if (key === 'post') {
-			module.postSearch.index(content, id, callback);
-		} else if(key === 'topic') {
-			module.topicSearch.index(content, id, callback);
-		}
+	module.searchIndex = function(key, data, id, callback) {
+		var method = key === 'post' ? module.postSearch : module.topicSearch;
+
+		method.index(data, id, function(err, res) {
+			callback(err);
+		});
 	};
 
-	module.search = function(key, term, limit, callback) {
-		function search(searchObj, callback) {
-			searchObj
-				.query(term)
-				.between(0, limit - 1)
-				.type('or')
-				.end(callback);
-		}
+	module.search = function(key, data, limit, callback) {
+		var method = key === 'post' ? module.postSearch : module.topicSearch;
 
-		if(key === 'post') {
-			search(module.postSearch, callback);
-		} else if(key === 'topic') {
-			search(module.topicSearch, callback);
-		}
+		method.query(data, 0, limit - 1, callback);
 	};
 
 	module.searchRemove = function(key, id, callback) {
-		if(key === 'post') {
-			module.postSearch.remove(id, callback);
-		} else if(key === 'topic') {
-			module.topicSearch.remove(id, callback);
+		callback = callback || function() {};
+		if (!id) {
+			return callback();
 		}
+		var method = key === 'post' ? module.postSearch : module.topicSearch;
+
+		method.remove(id, function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.flushdb = function(callback) {
@@ -77,6 +71,7 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.deleteAll = function(keys, callback) {
+		callback = callback || function() {};
 		var multi = redisClient.multi();
 		for(var i=0; i<keys.length; ++i) {
 			multi.del(keys[i]);
@@ -91,18 +86,21 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.set = function(key, value, callback) {
+		callback = callback || function() {};
 		redisClient.set(key, value, function(err) {
 			callback(err);
 		});
 	};
 
 	module.increment = function(key, callback) {
+		callback = callback || function() {};
 		redisClient.incr(key, callback);
 	};
 
 	module.rename = function(oldKey, newKey, callback) {
+		callback = callback || function() {};
 		redisClient.rename(oldKey, newKey, function(err, res) {
-			callback(err);
+			callback(err && err.message !== 'ERR no such key' ? err : null);
 		});
 	};
 

@@ -2,14 +2,14 @@
 
 /* globals define, app, socket, utils */
 
-define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
+define('forum/recent', ['forum/infinitescroll', 'composer'], function(infinitescroll, composer) {
 	var	Recent = {};
 
 	var newTopicCount = 0,
 		newPostCount = 0;
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
-		if(data.url.indexOf('recent') !== 0) {
+		if (ajaxify.currentPage !== data.url) {
 			Recent.removeListeners();
 		}
 	});
@@ -21,6 +21,17 @@ define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
 
 		$('#new-topics-alert').on('click', function() {
 			$(this).addClass('hide');
+		});
+
+		$('#new_topic').on('click', function() {
+			socket.emit('categories.getCategoriesByPrivilege', 'topics:create', function(err, categories) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				if (categories.length) {
+					composer.newTopic(categories[0].cid);
+				}
+			});
 		});
 
 		infinitescroll.init(Recent.loadMoreTopics);
@@ -50,38 +61,50 @@ define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
 	};
 
 	Recent.updateAlertText = function() {
-		var text = 'There';
+		var text = '';
 
-		if (newTopicCount > 1) {
-			text += ' are ' + newTopicCount + ' new topics';
+		if (newTopicCount === 0) {
+			if (newPostCount === 1) {
+				text = '[[recent:there-is-a-new-post]]';
+			} else if (newPostCount > 1) {
+				text = '[[recent:there-are-new-posts, ' + newPostCount + ']]';
+			}
 		} else if (newTopicCount === 1) {
-			text += ' is a new topic';
+			if (newPostCount === 0) {
+				text = '[[recent:there-is-a-new-topic]]';
+			} else if (newPostCount === 1) {
+				text = '[[recent:there-is-a-new-topic-and-a-new-post]]';
+			} else if (newPostCount > 1) {
+				text = '[[recent:there-is-a-new-topic-and-new-posts, ' + newPostCount +']]';
+			}
+		} else if (newTopicCount > 1) {
+			if (newPostCount === 0) {
+				text = '[[recent:there-are-new-topics, ' + newTopicCount + ']]';
+			} else if (newPostCount === 1) {
+				text = '[[recent:there-are-new-topics-and-a-new-post, ' + newTopicCount + ']]';
+			} else if (newPostCount > 1) {
+				text = '[[recent:there-are-new-topics-and-new-posts, ' + newTopicCount + ', ' + newPostCount +']]';
+			}
 		}
 
-		if (newPostCount > 1) {
-			text += (newTopicCount?' and ':' are ') + newPostCount + ' new posts';
-		} else if(newPostCount === 1) {
-			text += (newTopicCount?' and ':' is ') + ' a new post';
-		}
+		text += ' [[recent:click-here-to-reload]]';
 
-		text += '. Click here to reload.';
-
-		$('#new-topics-alert').html(text).removeClass('hide').fadeIn('slow');
+		$('#new-topics-alert').translateText(text).removeClass('hide').fadeIn('slow');
 		$('#category-no-topics').addClass('hide');
 	};
 
 	Recent.loadMoreTopics = function(direction) {
-		if(direction < 0 || !$('#topics-container').length) {
+		if(direction < 0 || !$('[component="category"]').length) {
 			return;
 		}
 
 		infinitescroll.loadMore('topics.loadMoreFromSet', {
-			after: $('#topics-container').attr('data-nextstart'),
+			after: $('[component="category"]').attr('data-nextstart'),
 			set: 'topics:recent'
 		}, function(data, done) {
 			if (data.topics && data.topics.length) {
 				Recent.onTopicsLoaded('recent', data.topics, false, done);
-				$('#topics-container').attr('data-nextstart', data.nextStart);
+				$('[component="category"]').attr('data-nextstart', data.nextStart);
 			} else {
 				done();
 			}
@@ -91,7 +114,7 @@ define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
 	Recent.onTopicsLoaded = function(templateName, topics, showSelect, callback) {
 
 		topics = topics.filter(function(topic) {
-			return !$('#topics-container li[data-tid=' + topic.tid + ']').length;
+			return !components.get('category/topic', 'tid', topic.tid).length;
 		});
 
 		if (!topics.length) {
@@ -101,8 +124,8 @@ define('forum/recent', ['forum/infinitescroll'], function(infinitescroll) {
 		infinitescroll.parseAndTranslate(templateName, 'topics', {topics: topics, showSelect: showSelect}, function(html) {
 			$('#category-no-topics').remove();
 
-			$('#topics-container').append(html);
-			html.find('span.timeago').timeago();
+			$('[component="category"]').append(html);
+			html.find('.timeago').timeago();
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			$(window).trigger('action:topics.loaded');

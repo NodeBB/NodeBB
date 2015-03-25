@@ -1,5 +1,5 @@
 "use strict";
-/*global io, templates, translator, ajaxify, utils, bootbox, RELATIVE_PATH, config*/
+/*global io, templates, translator, ajaxify, utils, bootbox, RELATIVE_PATH, config, Visibility*/
 
 var	socket,
 	app = app || {};
@@ -10,10 +10,6 @@ app.currentRoom = null;
 app.widgets = {};
 app.cacheBuster = null;
 
-// TODO: deprecate in 0.7.0, use app.user
-app.username = null;
-app.uid = null;
-
 (function () {
 	var showWelcomeMessage = false;
 	var reconnecting = false;
@@ -21,22 +17,15 @@ app.uid = null;
 	function socketIOConnect() {
 		var ioParams = {
 			reconnectionAttempts: config.maxReconnectionAttempts,
-			reconnectionDelay : config.reconnectionDelay,
+			reconnectionDelay: config.reconnectionDelay,
 			transports: config.socketioTransports,
 			path: config.relative_path + '/socket.io'
 		};
 
-		socket = io.connect(config.websocketAddress, ioParams);
+		socket = io(config.websocketAddress, ioParams);
 		reconnecting = false;
 
-		socket.on('event:connect', function (data) {
-			// TODO : deprecate in 0.7.0, use app.user
-			app.username = data.username;
-			app.userslug = data.userslug;
-			app.picture = data.picture;
-			app.uid = data.uid;
-			app.isAdmin = data.isAdmin;
-
+		socket.on('event:connect', function () {
 			app.showLoginMessage();
 			app.replaceSelfLinks();
 			$(window).trigger('action:connected');
@@ -52,11 +41,6 @@ app.uid = null;
 		});
 
 		socket.on('reconnecting', function (attempt) {
-			if(attempt === parseInt(config.maxReconnectionAttempts, 10)) {
-				socket.io.attempts = 0;
-				return;
-			}
-
 			reconnecting = true;
 			var reconnectEl = $('#reconnect');
 
@@ -80,6 +64,15 @@ app.uid = null;
 			setTimeout(function() {
 				window.location.href = config.relative_path + '/';
 			}, 1000);
+		});
+
+		socket.on('event:alert', function(data) {
+			app.alert(data);
+		});
+
+		socket.on('reconnect_failed', function() {
+			// Wait ten times the reconnection delay and then start over
+			setTimeout(socket.connect.bind(socket), parseInt(config.reconnectionDelay, 10) * 10);
 		});
 	}
 
@@ -182,9 +175,9 @@ app.uid = null;
 
 			socket.emit('meta.rooms.enter', {
 				enter: room,
-				username: app.username,
-				userslug: app.userslug,
-				picture: app.picture
+				username: app.user.username,
+				userslug: app.user.userslug,
+				picture: app.user.picture
 			});
 
 			app.currentRoom = room;
@@ -232,8 +225,8 @@ app.uid = null;
 		selector = selector || $('a');
 		selector.each(function() {
 			var href = $(this).attr('href');
-			if (href && app.userslug && href.indexOf('user/_self_') !== -1) {
-				$(this).attr('href', href.replace(/user\/_self_/g, 'user/' + app.userslug));
+			if (href && app.user.userslug && href.indexOf('user/_self_') !== -1) {
+				$(this).attr('href', href.replace(/user\/_self_/g, 'user/' + app.user.userslug));
 			}
 		});
 	};
@@ -241,7 +234,7 @@ app.uid = null;
 	app.processPage = function () {
 		highlightNavigationLink();
 
-		$('span.timeago').timeago();
+		$('.timeago').timeago();
 
 		utils.makeNumbersHumanReadable($('.human-readable-number'));
 
@@ -253,16 +246,15 @@ app.uid = null;
 
 		app.replaceSelfLinks();
 
-		setTimeout(function () {
-			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.
-		}, 100);
+		// Scroll back to top of page
+		window.scrollTo(0, 0);
 	};
 
 	app.showLoginMessage = function () {
 		function showAlert() {
 			app.alert({
 				type: 'success',
-				title: '[[global:welcome_back]] ' + app.username + '!',
+				title: '[[global:welcome_back]] ' + app.user.username + '!',
 				message: '[[global:you_have_successfully_logged_in]]',
 				timeout: 5000
 			});
@@ -279,11 +271,11 @@ app.uid = null;
 	};
 
 	app.openChat = function (username, touid) {
-		if (username === app.username) {
+		if (username === app.user.username) {
 			return app.alertError('[[error:cant-chat-with-yourself]]');
 		}
 
-		if (!app.uid) {
+		if (!app.user.uid) {
 			return app.alertError('[[error:not-logged-in]]');
 		}
 
@@ -364,7 +356,7 @@ app.uid = null;
 		}
 	};
 
-	function exposeConfigToTemplates() {
+	app.exposeConfigToTemplates = function() {
 		$(document).ready(function() {
 			templates.setGlobal('loggedIn', config.loggedIn);
 			templates.setGlobal('relative_path', RELATIVE_PATH);
@@ -374,13 +366,13 @@ app.uid = null;
 				}
 			}
 		});
-	}
+	};
 
 	function createHeaderTooltips() {
 		if (utils.findBootstrapEnvironment() === 'xs') {
 			return;
 		}
-		$('#header-menu li [title]').each(function() {
+		$('#header-menu li a[title]').each(function() {
 			$(this).tooltip({
 				placement: 'bottom',
 				title: $(this).attr('title')
@@ -435,11 +427,9 @@ app.uid = null;
 		require(['search', 'mousetrap'], function(search, Mousetrap) {
 			$('#search-form').on('submit', function (e) {
 				e.preventDefault();
-				var input = $(this).find('input'),
-					term = input.val();
+				var input = $(this).find('input');
 
-
-				search.query(term, function() {
+				search.query({term: input.val()}, function() {
 					input.val('');
 				});
 			});
@@ -469,7 +459,7 @@ app.uid = null;
 	}
 
 	function collapseNavigationOnClick() {
-		$('#main-nav a, #user-control-list a, #logged-out-menu li a, #logged-in-menu .visible-xs').off('click').on('click', function() {
+		$('#nav-dropdown').off('click').on('click', '#main-nav a, #user-control-list a, #logged-out-menu li a, #logged-in-menu .visible-xs, #chat-list a', function() {
 			if($('.navbar .navbar-collapse').hasClass('in')) {
 				$('.navbar-header button').click();
 			}
@@ -491,16 +481,8 @@ app.uid = null;
 
 	app.load = function() {
 		$('document').ready(function () {
-			var url = ajaxify.removeRelativePath(window.location.pathname.slice(1).replace(/\/$/, "")),
-				tpl_url = ajaxify.getTemplateMapping(url),
-				search = window.location.search,
-				hash = window.location.hash,
-				$window = $(window);
-
-
-			$window.trigger('action:ajaxify.start', {
-				url: url
-			});
+			var url = ajaxify.start(window.location.pathname.slice(1), true, window.location.search);
+			ajaxify.end(url, app.template);
 
 			collapseNavigationOnClick();
 
@@ -522,29 +504,7 @@ app.uid = null;
 			});
 
 			createHeaderTooltips();
-			showEmailConfirmWarning();
-
-			ajaxify.variables.parse();
-			ajaxify.currentPage = url;
-
-			$window.trigger('action:ajaxify.contentLoaded', {
-				url: url
-			});
-
-			if (window.history && window.history.replaceState) {
-				window.history.replaceState({
-					url: url + search + hash
-				}, url, RELATIVE_PATH + '/' + url + search + hash);
-			}
-
-			ajaxify.loadScript(tpl_url, function() {
-				ajaxify.widgets.render(tpl_url, url, function() {
-					app.processPage();
-					$window.trigger('action:ajaxify.end', {
-						url: url
-					});
-				});
-			});
+			app.showEmailConfirmWarning();
 
 			socket.removeAllListeners('event:nodebb.ready');
 			socket.on('event:nodebb.ready', function(cacheBusters) {
@@ -568,17 +528,34 @@ app.uid = null;
 				}
 			});
 
-			require(['taskbar'], function(taskbar) {
+			require(['taskbar', 'helpers'], function(taskbar, helpers) {
 				taskbar.init();
+
+				// templates.js helpers
+				helpers.register();
 			});
 		});
 	};
 
-	function showEmailConfirmWarning() {
-		if (config.requireEmailConfirmation && app.user.uid && !app.user['email:confirmed']) {
+	app.showEmailConfirmWarning = function(err) {
+		if (!config.requireEmailConfirmation || !app.user.uid) {
+			return;
+		}
+		if (!app.user.email) {
 			app.alert({
 				alert_id: 'email_confirm',
-				message: '[[error:email-not-confirmed]]',
+				message: '[[error:no-email-to-confirm]]',
+				type: 'warning',
+				timeout: 0,
+				clickfn: function() {
+					app.removeAlert('email_confirm');
+					ajaxify.go('user/' + app.user.userslug + '/edit');
+				}
+			});
+		} else if (!app.user['email:confirmed']) {
+			app.alert({
+				alert_id: 'email_confirm',
+				message: err ? err.message : '[[error:email-not-confirmed]]',
 				type: 'warning',
 				timeout: 0,
 				clickfn: function() {
@@ -592,11 +569,11 @@ app.uid = null;
 				}
 			});
 		}
-	}
+	};
 
 	showWelcomeMessage = window.location.href.indexOf('loggedin') !== -1;
 
-	exposeConfigToTemplates();
+	app.exposeConfigToTemplates();
 
 	socketIOConnect();
 

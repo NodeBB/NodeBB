@@ -22,8 +22,7 @@ var fs = require('fs'),
 	languages = require('../languages'),
 	image = require('../image'),
 	file = require('../file'),
-	helpers = require('./helpers'),
-	websockets = require('../socket.io');
+	helpers = require('./helpers');
 
 function getUserDataByUserSlug(userslug, callerUID, callback) {
 	user.getUidByUserslug(userslug, function(err, uid) {
@@ -44,9 +43,6 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			},
 			isAdmin : function(next) {
 				user.isAdministrator(callerUID, next);
-			},
-			followStats: function(next) {
-				user.getFollowStats(uid, next);
 			},
 			ips: function(next) {
 				user.getIPs(uid, 4, next);
@@ -89,16 +85,16 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.yourid = callerUID;
 			userData.theirid = userData.uid;
 			userData.isSelf = self;
-			userData.showSettings = self || isAdmin;
+			userData.showHidden = self || isAdmin;
 			userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
 			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
 			userData.profile_links = results.profile_links;
-			userData.status = websockets.isUserOnline(userData.uid) ? (userData.status || 'online') : 'offline';
+			userData.status = require('../socket.io').isUserOnline(userData.uid) ? (userData.status || 'online') : 'offline';
 			userData.banned = parseInt(userData.banned, 10) === 1;
 			userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
-			userData.followingCount = results.followStats.followingCount;
-			userData.followerCount = results.followStats.followerCount;
+			userData.followingCount = parseInt(userData.followingCount, 10) || 0;
+			userData.followerCount = parseInt(userData.followerCount, 10) || 0;
 
 			callback(null, userData);
 		});
@@ -142,6 +138,10 @@ accountsController.getAccount = function(req, res, next) {
 
 		if (!userData) {
 			return helpers.notFound(req, res);
+		}
+
+		if (callerUID !== parseInt(userData.uid, 10)) {
+			user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
 		}
 
 		async.parallel({
@@ -188,7 +188,7 @@ accountsController.getFollowers = function(req, res, next) {
 	getFollow('account/followers', 'followers', req, res, next);
 };
 
-function getFollow(route, name, req, res, next) {
+function getFollow(tpl, name, req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 	var userData;
 
@@ -202,52 +202,40 @@ function getFollow(route, name, req, res, next) {
 				return helpers.notFound(req, res);
 			}
 			var method = name === 'following' ? 'getFollowing' : 'getFollowers';
-			user[method](userData.uid, next);
+			user[method](userData.uid, 0, 49, next);
 		}
 	], function(err, users) {
 		if(err) {
 			return next(err);
 		}
-		userData[name] = users;
-		userData[name + 'Count'] = users.length;
 
-		res.render(route, userData);
+		userData.users = users;
+		userData.nextStart = 50;
+
+		res.render(tpl, userData);
 	});
 }
 
 accountsController.getFavourites = function(req, res, next) {
-	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
-
-	getBaseUser(req.params.userslug, callerUID, function(err, userData) {
-		if (err) {
-			return next(err);
-		}
-
-		if (!userData) {
-			return helpers.notFound(req, res);
-		}
-
-		if (parseInt(userData.uid, 10) !== callerUID) {
-			return helpers.notAllowed(req, res);
-		}
-
-		posts.getPostsFromSet('uid:' + userData.uid + ':favourites', callerUID, 0, 9, function(err, favourites) {
-			if (err) {
-				return next(err);
-			}
-
-			userData.posts = favourites.posts;
-			userData.nextStart = favourites.nextStart;
-
-			res.render('account/favourites', userData);
-		});
-	});
+	getFromUserSet('account/favourites', 'favourites', posts.getPostsFromSet, 'posts', req, res, next);
 };
 
 accountsController.getPosts = function(req, res, next) {
+	getFromUserSet('account/posts', 'posts', posts.getPostsFromSet, 'posts', req, res, next);
+};
+
+accountsController.getWatchedTopics = function(req, res, next) {
+	getFromUserSet('account/watched', 'followed_tids', topics.getTopicsFromSet, 'topics', req, res, next);
+};
+
+accountsController.getTopics = function(req, res, next) {
+	getFromUserSet('account/topics', 'topics', topics.getTopicsFromSet, 'topics', req, res, next);
+};
+
+accountsController.getGroups = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
-	getBaseUser(req.params.userslug, callerUID, function(err, userData) {
+	accountsController.getBaseUser(req.params.userslug, callerUID, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -255,23 +243,23 @@ accountsController.getPosts = function(req, res, next) {
 		if (!userData) {
 			return helpers.notFound(req, res);
 		}
-		posts.getPostsFromSet('uid:' + userData.uid + ':posts', callerUID, 0, 19, function(err, userPosts) {
+
+		groups.getUserGroups([userData.uid], function(err, groups) {
 			if (err) {
 				return next(err);
 			}
 
-			userData.posts = userPosts.posts;
-			userData.nextStart = userPosts.nextStart;
+			userData.groups = groups[0];
 
-			res.render('account/posts', userData);
+			res.render('account/groups', userData);
 		});
 	});
 };
 
-accountsController.getTopics = function(req, res, next) {
+function getFromUserSet(tpl, set, method, type, req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
-	getBaseUser(req.params.userslug, callerUID, function(err, userData) {
+	accountsController.getBaseUser(req.params.userslug, callerUID, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -280,21 +268,20 @@ accountsController.getTopics = function(req, res, next) {
 			return helpers.notFound(req, res);
 		}
 
-		var set = 'uid:' + userData.uid + ':topics';
-		topics.getTopicsFromSet(set, callerUID, 0, 19, function(err, userTopics) {
-			if(err) {
+		method('uid:' + userData.uid + ':' + set, callerUID, 0, 19, function(err, data) {
+			if (err) {
 				return next(err);
 			}
 
-			userData.topics = userTopics.topics;
-			userData.nextStart = userTopics.nextStart;
+			userData[type] = data[type];
+			userData.nextStart = data.nextStart;
 
-			res.render('account/topics', userData);
+			res.render(tpl, userData);
 		});
 	});
-};
+}
 
-function getBaseUser(userslug, callerUID, callback) {
+accountsController.getBaseUser = function(userslug, callerUID, callback) {
 	user.getUidByUserslug(userslug, function (err, uid) {
 		if (err || !uid) {
 			return callback(err);
@@ -322,12 +309,12 @@ function getBaseUser(userslug, callerUID, callback) {
 			results.user.yourid = callerUID;
 			results.user.theirid = uid;
 			results.user.isSelf = parseInt(callerUID, 10) === parseInt(uid, 10);
-			results.user.showSettings = results.user.isSelf || results.isAdmin;
+			results.user.showHidden = results.user.isSelf || results.isAdmin;
 			results.user.profile_links = results.profile_links;
 			callback(null, results.user);
 		});
 	});
-}
+};
 
 accountsController.accountEdit = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
@@ -354,7 +341,7 @@ accountsController.accountEdit = function(req, res, next) {
 accountsController.accountSettings = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
-	getBaseUser(req.params.userslug, callerUID, function(err, userData) {
+	accountsController.getBaseUser(req.params.userslug, callerUID, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -367,6 +354,9 @@ accountsController.accountSettings = function(req, res, next) {
 			settings: function(next) {
 				plugins.fireHook('filter:user.settings', [], next);
 			},
+			userGroups: function(next) {
+				groups.getUserGroups([userData.uid], next);
+			},
 			languages: function(next) {
 				languages.list(next);
 			}
@@ -377,6 +367,7 @@ accountsController.accountSettings = function(req, res, next) {
 
 			userData.settings = results.settings;
 			userData.languages = results.languages;
+			userData.userGroups = results.userGroups[0];
 
 			userData.disableEmailSubscriptions = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 
@@ -386,40 +377,29 @@ accountsController.accountSettings = function(req, res, next) {
 };
 
 accountsController.uploadPicture = function (req, res, next) {
+	var userPhoto = req.files.files[0];
 	var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
-	if (req.files.userPhoto.size > uploadSize * 1024) {
-		fs.unlink(req.files.userPhoto.path);
-		return res.json({
-			error: 'Images must be smaller than ' + uploadSize + ' kb!'
-		});
-	}
-
-	var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
-	if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
-		fs.unlink(req.files.userPhoto.path);
-		return res.json({
-			error: 'Allowed image types are png, jpg and gif!'
-		});
-	}
-
-	var extension = path.extname(req.files.userPhoto.name);
-	if (!extension) {
-		fs.unlink(req.files.userPhoto.path);
-		return res.json({
-			error: 'Error uploading file! Error : Invalid extension!'
-		});
-	}
-
+	var extension = path.extname(userPhoto.name);
 	var updateUid = req.user ? req.user.uid : 0;
 	var imageDimension = parseInt(meta.config.profileImageDimension, 10) || 128;
+	var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1;
 
 	async.waterfall([
 		function(next) {
-			image.resizeImage(req.files.userPhoto.path, extension, imageDimension, imageDimension, next);
+			next(userPhoto.size > uploadSize * 1024 ? new Error('[[error:file-too-big, ' + uploadSize + ']]') : null);
 		},
 		function(next) {
-			if (parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1) {
-				image.convertImageToPng(req.files.userPhoto.path, extension, next);
+			next(!extension ? new Error('[[error:invalid-image-extension]]') : null);
+		},
+		function(next) {
+			file.isFileTypeAllowed(userPhoto.path, ['png', 'jpeg', 'jpg', 'gif'], next);
+		},
+		function(next) {
+			image.resizeImage(userPhoto.path, extension, imageDimension, imageDimension, next);
+		},
+		function(next) {
+			if (convertToPNG) {
+				image.convertImageToPng(userPhoto.path, extension, next);
 			} else {
 				next();
 			}
@@ -428,7 +408,7 @@ accountsController.uploadPicture = function (req, res, next) {
 			user.getUidByUserslug(req.params.userslug, next);
 		},
 		function(uid, next) {
-			if(parseInt(updateUid, 10) === parseInt(uid, 10)) {
+			if (parseInt(updateUid, 10) === parseInt(uid, 10)) {
 				return next();
 			}
 
@@ -447,33 +427,33 @@ accountsController.uploadPicture = function (req, res, next) {
 	], function(err, result) {
 
 		function done(err, image) {
-			fs.unlink(req.files.userPhoto.path);
-			if(err) {
+			fs.unlink(userPhoto.path);
+			if (err) {
 				return res.json({error: err.message});
 			}
 
 			user.setUserFields(updateUid, {uploadedpicture: image.url, picture: image.url});
 
-			res.json({
-				path: image.url
-			});
+			res.json([{name: userPhoto.name, url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url}]);
 		}
 
 		if (err) {
-			fs.unlink(req.files.userPhoto.path);
-			return res.json({error:err.message});
+			fs.unlink(userPhoto.path);
+			return next(err);
 		}
 
 		if (plugins.hasListeners('filter:uploadImage')) {
-			return plugins.fireHook('filter:uploadImage', {image: req.files.userPhoto, uid: updateUid}, done);
+			return plugins.fireHook('filter:uploadImage', {image: userPhoto, uid: updateUid}, done);
 		}
 
-		var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1;
 		var filename = updateUid + '-profileimg' + (convertToPNG ? '.png' : extension);
 
 		user.getUserField(updateUid, 'uploadedpicture', function (err, oldpicture) {
+			if (err) {
+				return next(err);
+			}
 			if (!oldpicture) {
-				file.saveFileToLocal(filename, 'profile', req.files.userPhoto.path, done);
+				file.saveFileToLocal(filename, 'profile', userPhoto.path, done);
 				return;
 			}
 
@@ -481,10 +461,10 @@ accountsController.uploadPicture = function (req, res, next) {
 
 			fs.unlink(absolutePath, function (err) {
 				if (err) {
-					winston.err(err);
+					winston.error(err);
 				}
 
-				file.saveFileToLocal(filename, 'profile', req.files.userPhoto.path, done);
+				file.saveFileToLocal(filename, 'profile', userPhoto.path, done);
 			});
 		});
 	});
@@ -506,7 +486,7 @@ accountsController.getChats = function(req, res, next) {
 		return helpers.notFound(req, res);
 	}
 	async.parallel({
-		contacts: async.apply(user.getFollowing, req.user.uid),
+		contacts: async.apply(user.getFollowing, req.user.uid, 0, 19),
 		recentChats: async.apply(messaging.getRecentChats, req.user.uid, 0, 19)
 	}, function(err, results) {
 		if (err) {
@@ -536,9 +516,10 @@ accountsController.getChats = function(req, res, next) {
 		async.waterfall([
 			async.apply(user.getUidByUserslug, req.params.userslug),
 			function(toUid, next) {
-				if (!toUid) {
+				if (!toUid || parseInt(toUid, 10) === parseInt(req.user.uid, 10)) {
 					return helpers.notFound(req, res);
 				}
+
 				async.parallel({
 					toUser: async.apply(user.getUserFields, toUid, ['uid', 'username']),
 					messages: async.apply(messaging.getMessages, req.user.uid, toUid, 'recent', false),

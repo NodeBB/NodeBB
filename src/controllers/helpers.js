@@ -6,12 +6,19 @@ var nconf = require('nconf'),
 
 	translator = require('../../public/src/translator'),
 	categories = require('../categories'),
+	plugins = require('../plugins'),
 	meta = require('../meta');
 
 var helpers = {};
 
 helpers.notFound = function(req, res, error) {
-	if (res.locals.isAPI) {
+	if (plugins.hasListeners('action:meta.override404')) {
+		plugins.fireHook('action:meta.override404', {
+			req: req,
+			res: res,
+			error: error
+		});
+	} else if (res.locals.isAPI) {
 		res.status(404).json({path: req.path.replace(/^\/api/, ''), error: error});
 	} else {
 		res.status(404).render('404', {path: req.path, error: error});
@@ -38,7 +45,15 @@ helpers.notAllowed = function(req, res, error) {
 	}
 };
 
-helpers.buildBreadcrumbs = function(cid, callback) {
+helpers.redirect = function(res, url) {
+	if (res.locals.isAPI) {
+		res.status(302).json(url);
+	} else {
+		res.redirect(nconf.get('relative_path') + url);
+	}
+};
+
+helpers.buildCategoryBreadcrumbs = function(cid, callback) {
 	var breadcrumbs = [];
 
 	async.whilst(function() {
@@ -62,15 +77,33 @@ helpers.buildBreadcrumbs = function(cid, callback) {
 			return callback(err);
 		}
 
-		translator.translate('[[global:home]]', meta.config.defaultLang || 'en_GB', function(translated) {
-			breadcrumbs.unshift({
-				text: translated,
-				url: nconf.get('relative_path') + '/'
-			});
-
-			callback(null, breadcrumbs);
+		breadcrumbs.unshift({
+			text: '[[global:home]]',
+			url: nconf.get('relative_path') + '/'
 		});
+
+		callback(null, breadcrumbs);
 	});
+};
+
+helpers.buildBreadcrumbs = function(crumbs) {
+	var breadcrumbs = [
+		{
+			text: '[[global:home]]',
+			url: nconf.get('relative_path') + '/'
+		}
+	];
+
+	crumbs.forEach(function(crumb) {
+		if (crumb) {
+			if (crumb.url) {
+				crumb.url = nconf.get('relative_path') + crumb.url;
+			}
+			breadcrumbs.push(crumb);
+		}
+	});
+
+	return breadcrumbs;
 };
 
 module.exports = helpers;
