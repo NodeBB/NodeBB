@@ -3,24 +3,29 @@
 		<div class="col-md-9">
 			<div class="panel panel-default">
 				<div class="panel-heading"><i class="fa fa-folder"></i> Category Settings</div>
-				<div class="panel-body">
-					<h3 data-edit-target="#cid-{category.cid}-name"><span>{category.name}</span> <small><i class="fa fa-edit"></i></small></h3>
-					<input id="cid-{category.cid}-name" type="text" class="form-control hide" placeholder="Category Name" data-name="name" value="{category.name}" />
-					<h4 data-edit-target="#cid-{category.cid}-description"><span>{category.description}</span> <small><i class="fa fa-edit"></i></small></h4>
-					<input id="cid-{category.cid}-description" data-name="description" placeholder="Category Description" value="{category.description}" class="form-control category_description input-sm description hide"></input>
+				<div class="panel-body category-settings-form">
+					<fieldset>
+						<div class="col-xs-12">
+							<h3 data-edit-target="#cid-{category.cid}-name"><span>{category.name}</span> <small><i class="fa fa-edit"></i></small></h3>
+							<input id="cid-{category.cid}-name" type="text" class="form-control hide" placeholder="Category Name" data-name="name" value="{category.name}" />
+							<h4 data-edit-target="#cid-{category.cid}-description"><span>{category.description}</span> <small><i class="fa fa-edit"></i></small></h4>
+							<input id="cid-{category.cid}-description" data-name="description" placeholder="Category Description" value="{category.description}" class="form-control category_description input-sm description hide"></input>
+						</div>
+					</fieldset>
 
 					<fieldset>
 						<div class="col-xs-12">
 							<div class="form-group">
 								<label for="cid-{category.cid}-parentCid">Parent Category</label>
-								<!-- IF categories.parent.name -->
+								<!-- IF category.parent.name -->
+								<br />
 								<div class="btn-group">
 									<button type="button" class="btn btn-default" data-action="setParent" data-parentCid="{category.parent.cid}"><i class="fa {category.parent.icon}"></i> {category.parent.name}</button>
 									<button type="button" class="btn btn-warning" data-action="removeParent" data-parentCid="{category.parent.cid}"><i class="fa fa-times"></i></button>
 								</div>
 								<!-- ELSE -->
 								<button type="button" class="btn btn-default form-control" data-action="setParent"><i class="fa fa-sitemap"></i> (None)</button>
-								<!-- ENDIF categories.parent.name -->
+								<!-- ENDIF category.parent.name -->
 							</div>
 						</div>
 					</fieldset>

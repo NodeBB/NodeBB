@@ -126,6 +126,23 @@ define('admin/manage/category', [
 			iconSelect.init($(this).find('i'), modified);
 		});
 
+		// Parent Category Selector
+		$('button[data-action="setParent"]').on('click', Category.launchParentSelector);
+		$('button[data-action="removeParent"]').on('click', function() {
+			var payload= {};
+			payload[ajaxify.variables.get('cid')] = {
+				parentCid: 0
+			};
+
+			socket.emit('admin.categories.update', payload, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				ajaxify.refresh();
+			});
+		});
+
+		setupEditTargets();
 		Category.setupPrivilegeTable();
 
 		$(function() {
@@ -152,168 +169,11 @@ define('admin/manage/category', [
 			// 	$(this).addClass('hide').hide();
 			// });
 
-			setupEditTargets();
+			
 
-			// $('button[data-action="setParent"]').on('click', function() {
-			// 	var cid = $(this).parents('[data-cid]').attr('data-cid'),
-			// 		modal = $('#setParent');
 
-			// 	modal.find('select').val($(this).attr('data-parentCid'));
-			// 	modal.attr('data-cid', cid).modal();
-			// });
-
-			// $('button[data-action="removeParent"]').on('click', function() {
-			// 	var cid = $(this).parents('[data-cid]').attr('data-cid');
-			// 	var payload= {};
-			// 	payload[cid] = {
-			// 		parentCid: 0
-			// 	};
-			// 	socket.emit('admin.categories.update', payload, function(err) {
-			// 		if (err) {
-			// 			return app.alertError(err.message);
-			// 		}
-			// 		ajaxify.go('admin/manage/categories/active');
-			// 	});
-			// });
-
-			// $('#setParent [data-cid]').on('click', function() {
-			// 	var modalEl = $('#setParent'),
-			// 		parentCid = $(this).attr('data-cid'),
-			// 		payload = {};
-
-			// 	payload[modalEl.attr('data-cid')] = {
-			// 		parentCid: parentCid
-			// 	};
-
-			// 	socket.emit('admin.categories.update', payload, function(err) {
-			// 		modalEl.one('hidden.bs.modal', function() {
-			// 			ajaxify.go('admin/manage/categories/active');
-			// 		});
-			// 		modalEl.modal('hide');
-			// 	});
-			// });
 		});
 	};
-
-	// Category.launchPermissionsModal = function(cid) {
-	// 	var	modal = $('#category-permissions-modal'),
-	// 		searchEl = modal.find('#permission-search'),
-	// 		resultsEl = modal.find('.search-results.users'),
-	// 		groupsResultsEl = modal.find('.search-results.groups'),
-	// 		searchDelay;
-
-	// 	// Clear the search field and results
-	// 	searchEl.val('');
-	// 	resultsEl.html('');
-
-	// 	searchEl.off().on('keyup', function() {
-	// 		var	searchEl = this,
-	// 			liEl;
-
-	// 		clearTimeout(searchDelay);
-
-	// 		searchDelay = setTimeout(function() {
-	// 			socket.emit('admin.categories.search', {
-	// 				username: searchEl.value,
-	// 				cid: cid
-	// 			}, function(err, results) {
-	// 				if(err) {
-	// 					return app.alertError(err.message);
-	// 				}
-
-	// 				templates.parse('admin/partials/categories/users', {
-	// 					users: results
-	// 				}, function(html) {
-	// 					resultsEl.html(html);
-	// 				});
-	// 			});
-	// 		}, 250);
-	// 	});
-
-	// 	Category.refreshPrivilegeList(cid);
-
-	// 	resultsEl.off().on('click', '[data-priv]', function(e) {
-	// 		var	anchorEl = $(this),
-	// 			uid = anchorEl.parents('li[data-uid]').attr('data-uid'),
-	// 			privilege = anchorEl.attr('data-priv');
-	// 		e.preventDefault();
-	// 		e.stopPropagation();
-
-	// 		socket.emit('admin.categories.setPrivilege', {
-	// 			cid: cid,
-	// 			uid: uid,
-	// 			privilege: privilege,
-	// 			set: !anchorEl.hasClass('active')
-	// 		}, function(err) {
-	// 			if (err) {
-	// 				return app.alertError(err.message);
-	// 			}
-	// 			anchorEl.toggleClass('active', !anchorEl.hasClass('active'));
-	// 			Category.refreshPrivilegeList(cid);
-	// 		});
-	// 	});
-
-	// 	modal.off().on('click', '.members li > img', function() {
-	// 		searchEl.val($(this).attr('title'));
-	// 		searchEl.keyup();
-	// 	});
-
-	// 	// User Groups and privileges
-	// 	socket.emit('admin.categories.groupsList', cid, function(err, results) {
-	// 		if(err) {
-	// 			return app.alertError(err.message);
-	// 		}
-
-	// 		templates.parse('admin/partials/categories/groups', {
-	// 			groups: results
-	// 		}, function(html) {
-	// 			groupsResultsEl.html(html);
-	// 		});
-	// 	});
-
-	// 	groupsResultsEl.off().on('click', '[data-priv]', function(e) {
-	// 		var	anchorEl = $(this),
-	// 			name = anchorEl.parents('li[data-name]').attr('data-name'),
-	// 			privilege = anchorEl.attr('data-priv');
-	// 		e.preventDefault();
-	// 		e.stopPropagation();
-
-	// 		socket.emit('admin.categories.setGroupPrivilege', {
-	// 			cid: cid,
-	// 			name: name,
-	// 			privilege: privilege,
-	// 			set: !anchorEl.hasClass('active')
-	// 		}, function(err) {
-	// 			if (!err) {
-	// 				anchorEl.toggleClass('active');
-	// 			}
-	// 		});
-	// 	});
-
-	// 	modal.modal();
-	// };
-
-	// Category.refreshPrivilegeList = function (cid) {
-	// 	var	modalEl = $('#category-permissions-modal'),
-	// 		memberList = $('.members');
-
-	// 	socket.emit('admin.categories.getPrivilegeSettings', cid, function(err, privilegeList) {
-	// 		var	membersLength = privilegeList.length,
-	// 			liEl, x, userObj;
-
-	// 		memberList.html('');
-	// 		if (membersLength > 0) {
-	// 			for(x = 0; x < membersLength; x++) {
-	// 				userObj = privilegeList[x];
-	// 				liEl = $('<li/>').attr('data-uid', userObj.uid).html('<img src="' + userObj.picture + '" title="' + userObj.username + '" />');
-	// 				memberList.append(liEl);
-	// 			}
-	// 		} else {
-	// 			liEl = $('<li/>').addClass('empty').html('None.');
-	// 			memberList.append(liEl);
-	// 		}
-	// 	});
-	// };
 
 	Category.setupPrivilegeTable = function() {
 		var searchEl = $('.privilege-search'),
@@ -374,6 +234,37 @@ define('admin/manage/category', [
 				privileges: privileges
 			}, function(html) {
 				$('.privilege-table-container').html(html);
+			});
+		});
+	};
+
+	Category.launchParentSelector = function() {
+		socket.emit('categories.get', function(err, categories) {
+			templates.parse('partials/category_list', {
+				categories: categories
+			}, function(html) {
+				var modal = bootbox.dialog({
+					message: html,
+					title: 'Set Parent Category'
+				});
+
+				modal.find('li[data-cid]').on('click', function() {
+					var parentCid = $(this).attr('data-cid'),
+						payload = {};
+
+					payload[ajaxify.variables.get('cid')] = {
+						parentCid: parentCid
+					};
+
+					socket.emit('admin.categories.update', payload, function(err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+
+						modal.modal('hide');
+						ajaxify.refresh();
+					});
+				});
 			});
 		});
 	};

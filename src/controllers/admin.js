@@ -129,7 +129,7 @@ function getGlobalField(field, callback) {
 
 adminController.categories.get = function(req, res, next) {
 	async.parallel({
-		category: async.apply(categories.getCategoryData, req.params.category_id),
+		category: async.apply(categories.getCategories, [req.params.category_id], req.user.uid),
 		privileges: async.apply(privileges.categories.list, req.params.category_id)
 	}, function(err, data) {
 		if (err) {
@@ -137,7 +137,7 @@ adminController.categories.get = function(req, res, next) {
 		}
 
 		res.render('admin/manage/category', {
-			category: data.category,
+			category: data.category[0],
 			privileges: data.privileges
 		});
 	});
