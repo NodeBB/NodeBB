@@ -56,9 +56,34 @@ define('forum/topic/posts', [
 		}
 
 		function removeAlreadyAddedPosts() {
-			data.posts = data.posts.filter(function(post) {
-				return components.get('post', 'pid', post.pid).length === 0;
-			});
+			var newPosts = components.get('topic').find('[data-index][data-index!="0"].new');
+
+			if (newPosts.length === data.posts.length) {
+				var allSamePids = true;
+				newPosts.each(function(index, el) {
+					if (parseInt($(el).attr('data-pid'), 10) !== parseInt(data.posts[index].pid, 10)) {
+						allSamePids = false;
+					}
+				});
+
+				if (allSamePids) {
+					newPosts.each(function() {
+						$(this).removeClass('new');
+					});
+					data.posts.length = 0;
+					return;
+				}
+			}
+
+			if (data.posts.length > 1) {
+				data.posts.forEach(function(post) {
+					components.get('post', 'pid', post.pid).remove();
+				});
+			} else {
+				data.posts = data.posts.filter(function(post) {
+					return components.get('post', 'pid', post.pid).length === 0;
+				});
+			}
 		}
 
 		var after = null,

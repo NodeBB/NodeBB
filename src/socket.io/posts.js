@@ -49,6 +49,8 @@ SocketPosts.reply = function(socket, data, callback) {
 
 		socket.emit('event:new_post', result);
 
+		user.updateOnlineUsers(socket.uid);
+
 		SocketPosts.notifyOnlineUsers(socket.uid, result);
 
 		if (data.lock) {
