@@ -6,6 +6,7 @@ var async = require('async'),
 
 	user = require('../user'),
 	categories = require('../categories'),
+	privileges = require('../privileges'),
 	posts = require('../posts'),
 	topics = require('../topics'),
 	meta = require('../meta'),
@@ -127,13 +128,17 @@ function getGlobalField(field, callback) {
 }
 
 adminController.categories.get = function(req, res, next) {
-	categories.getCategoryData(req.params.category_id, function(err, category) {
+	async.parallel({
+		category: async.apply(categories.getCategoryData, req.params.category_id),
+		privileges: async.apply(privileges.categories.list, req.params.category_id)
+	}, function(err, data) {
 		if (err) {
 			return next(err);
 		}
 
 		res.render('admin/manage/category', {
-			category: category
+			category: data.category,
+			privileges: data.privileges
 		});
 	});
 };

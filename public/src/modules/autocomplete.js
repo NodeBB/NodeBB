@@ -7,7 +7,7 @@ define('autocomplete', function() {
 	var module = {};
 
 	module.user = function (input) {
-		input.autocomplete({
+		return input.autocomplete({
 			delay: 100,
 			source: function(request, response) {
 				socket.emit('user.search', {query: request.term}, function(err, result) {
@@ -17,7 +17,15 @@ define('autocomplete', function() {
 
 					if (result && result.users) {
 						var names = result.users.map(function(user) {
-							return user && user.username;
+							return user && {
+								label: user.username,
+								value: user.username,
+								user: {
+									uid: user.uid,
+									name: user.username,
+									slug: user.userslug
+								}
+							};
 						});
 						response(names);
 					}

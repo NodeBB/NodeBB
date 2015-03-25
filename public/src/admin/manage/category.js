@@ -4,8 +4,9 @@
 define('admin/manage/category', [
 	'uploader',
 	'admin/modules/iconSelect',
-	'admin/modules/colorpicker'
-], function(uploader, iconSelect, colorpicker) {
+	'admin/modules/colorpicker',
+	'autocomplete'
+], function(uploader, iconSelect, colorpicker, autocomplete) {
 	var	Category = {};
 
 	Category.init = function() {
@@ -113,7 +114,7 @@ define('admin/manage/category', [
 
 			uploader.open(RELATIVE_PATH + '/api/admin/category/uploadpicture', { cid: cid }, 0, function(imageUrlOnServer) {
 				inputEl.val(imageUrlOnServer);
-				var previewBox = inputEl.parent().siblings('.category-preview');
+				var previewBox = inputEl.parent().parent().siblings('.category-preview');
 				previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')')
 					.css('background-size', 'cover');
 				modified(inputEl[0]);
@@ -124,6 +125,8 @@ define('admin/manage/category', [
 		$('.category-preview').on('click', function(ev) {
 			iconSelect.init($(this).find('i'), modified);
 		});
+
+		Category.setupPrivilegeTable();
 
 		$(function() {
 			
@@ -311,6 +314,69 @@ define('admin/manage/category', [
 	// 		}
 	// 	});
 	// };
+
+	Category.setupPrivilegeTable = function() {
+		var searchEl = $('.privilege-search'),
+			searchObj = autocomplete.user(searchEl);
+
+		// User search + addition to table
+		searchObj.on('autocompleteselect', function(ev, ui) {
+			socket.emit('admin.categories.setPrivilege', {
+				cid: ajaxify.variables.get('cid'),
+				privilege: 'read',
+				set: true,
+				member: ui.item.user.uid
+			}, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				Category.refreshPrivilegeTable();
+				searchEl.val('');
+			});
+		});
+
+		// Checkbox event capture
+		$('.privilege-table-container').on('change', 'input[type="checkbox"]', function() {
+			var checkboxEl = $(this),
+				privilege = checkboxEl.parent().attr('data-privilege'),
+				state = checkboxEl.prop('checked'),
+				rowEl = checkboxEl.parents('tr'),
+				member = rowEl.attr('data-group-slug') || rowEl.attr('data-uid');
+
+			if (member) {
+				socket.emit('admin.categories.setPrivilege', {
+					cid: ajaxify.variables.get('cid'),
+					privilege: privilege,
+					set: state,
+					member: member
+				}, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+
+					checkboxEl.replaceWith('<i class="fa fa-spin fa-spinner"></i>');
+					Category.refreshPrivilegeTable();
+				});
+			} else {
+				app.alertError('No member or group was selected');
+			}
+		})
+	};
+
+	Category.refreshPrivilegeTable = function() {
+		socket.emit('admin.categories.getPrivilegeSettings', 2, function(err, privileges) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			templates.parse('admin/partials/categories/privileges', {
+				privileges: privileges
+			}, function(html) {
+				$('.privilege-table-container').html(html);
+			});
+		});
+	};
 
 	return Category;
 });

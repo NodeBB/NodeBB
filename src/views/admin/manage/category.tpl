@@ -2,21 +2,8 @@
 	<form role="form" class="category" data-cid="{category.cid}">
 		<div class="col-md-9">
 			<div class="panel panel-default">
-				<div class="panel-heading"><i class="fa fa-folder"></i> Categories</div>
+				<div class="panel-heading"><i class="fa fa-folder"></i> Category Settings</div>
 				<div class="panel-body">
-					<div class="pull-right text-right">
-						<div class="form-group">
-							<div class="dropdown">
-								<button type="button" class="btn btn-default" data-toggle="dropdown"><i class="fa fa-cogs"></i> Options</button>
-								<ul class="dropdown-menu" role="menu">
-									<li class="permissions"><a href="#"><i class="fa fa-ban"></i> Access Control</a></li>
-									<hr />
-									
-								</ul>
-							</div>
-						</div>
-					</div>
-					
 					<h3 data-edit-target="#cid-{category.cid}-name"><span>{category.name}</span> <small><i class="fa fa-edit"></i></small></h3>
 					<input id="cid-{category.cid}-name" type="text" class="form-control hide" placeholder="Category Name" data-name="name" value="{category.name}" />
 					<h4 data-edit-target="#cid-{category.cid}-description"><span>{category.description}</span> <small><i class="fa fa-edit"></i></small></h4>
@@ -68,7 +55,7 @@
 						</div>
 						<div class="col-sm-4 col-xs-12">
 							<div class="form-group">
-								<label for="cid-{category.cid}-numRecentReplies"># of Recent Replies Displayed</label>
+								<label for="cid-{category.cid}-numRecentReplies"># of Recent Replies</label>
 								<input id="cid-{category.cid}-numRecentReplies" type="text" class="form-control" placeholder="2" data-name="numRecentReplies" value="{category.numRecentReplies}" />
 							</div>
 						</div>
@@ -79,6 +66,24 @@
 							</div>
 						</div>
 					</fieldset>
+				</div>
+			</div>
+
+			<div class="panel panel-default">
+				<div class="panel-heading"><i class="fa fa-key"></i> Privileges / Access Control</div>
+				<div class="panel-body">
+					<p>
+						You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or
+						a per-group basis. You can add a new user or group to this table by searching for them in the form below.
+					</p>
+					<p class="text-warning">
+						<strong>Note</strong>: Privilege settings take effect immediately. It is not necessary to save the category after adjusting
+						these settings.
+					</p>
+					<hr />
+					<input class="form-control privilege-search" type="text" placeholder="Add a user or group to this list..." />
+					<hr />
+					<!-- IMPORT admin/partials/categories/privileges.tpl -->
 				</div>
 			</div>
 		</div>
@@ -99,11 +104,11 @@
 					</div>
 					<div class="btn-group btn-group-justified">
 						<div class="btn-group">
-							<button type="button" data-cid="{category.cid}" data-name="image" data-value="{category.image}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Upload Image</button>
+							<button type="button" data-cid="{category.cid}" data-name="image" data-value="{category.image}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Upload</button>
 						</div>
 						<!-- IF category.image -->
 						<div class="btn-group">
-							<button class="btn btn-warning delete-image"><i data-name="icon" value="fa-times" class="fa fa-times"></i> Remove Image</button>
+							<button class="btn btn-warning delete-image"><i data-name="icon" value="fa-times" class="fa fa-times"></i> Remove</button>
 						</div>
 						<!-- ENDIF category.image -->
 					</div>
@@ -113,12 +118,16 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">Categories Control Panel</div>
 				<div class="panel-body">
-					<div class="btn-group">
-						<button class="btn btn-primary save">Save Changes</button>
-						<button class="btn btn-default revert">Revert</button>
+					<div class="btn-group btn-group-justified">
+						<div class="btn-group">
+							<button class="btn btn-primary save">Save</button>
+						</div>
+						<div class="btn-group">
+							<button class="btn btn-default revert">Revert</button>
+						</div>
 					</div>
 					<hr />
-					<button class="btn btn-danger purge"><i class="fa fa-eraser"></i> Purge Category</button>
+					<button class="btn btn-danger btn-block btn-xs purge"><i class="fa fa-eraser"></i> Purge Category</button>
 				</div>
 			</div>
 		</div>
@@ -134,3 +143,5 @@
 		</div>
 	</form>
 </div>
+
+<input type="hidden" template-variable="cid" value="{category.cid}" />

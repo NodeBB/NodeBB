@@ -13,6 +13,108 @@ module.exports = function(privileges) {
 
 	privileges.categories = {};
 
+	privileges.categories.list = function(cid, callback) {
+		// Method used in admin/category controller to show all users with privs in that given cid
+		async.parallel({
+			labels: function(next) {
+				async.parallel({
+					users: async.apply(plugins.fireHook, 'filter:privileges.list_human',
+						['Find category', 'Access & Read', 'Create Topics', 'Reply to Topics', 'Moderator'].map(function(name) {
+							return {
+								name: name
+							};
+						})
+					),
+					groups: async.apply(plugins.fireHook, 'filter:privileges.groups.list_human',
+						['Find category', 'Access & Read', 'Create Topics', 'Reply to Topics'].map(function(name) {
+							return {
+								name: name
+							};
+						})
+					)
+				}, next);
+			},
+			users: function(next) {
+				var privileges;
+				async.waterfall([
+					async.apply(plugins.fireHook, 'filter:privileges.list', [
+						'find', 'read', 'topics:create', 'topics:reply', 'mods'
+					]),
+					function(privs, next) {
+						privileges = privs;
+						groups.getMembersOfGroups(privs.map(function(privilege) {
+							return 'cid:' + cid + ':privileges:' + privilege;
+						}), next);
+					},
+					function(memberSets, next) {
+						// Reduce into a single array
+						var members = memberSets.reduce(function(combined, curMembers) {
+								return combined.concat(curMembers);
+							}).filter(function(member, index, combined) {
+								return combined.indexOf(member) === index;
+							});
+
+						user.getMultipleUserFields(members, ['picture', 'username'], function(err, memberData) {
+							memberData = memberData.map(function(member) {
+								member.privileges = {};
+								for(var x=0,numPrivs=privileges.length;x<numPrivs;x++) {
+									member.privileges[privileges[x]] = memberSets[x].indexOf(member.uid) !== -1
+								}
+
+								return member;
+							});
+
+							next(null, memberData);
+						});
+					}
+				], next);
+			},
+			groups: function(next) {
+				var privileges;
+				async.waterfall([
+					async.apply(plugins.fireHook, 'filter:privileges.groups.list', [
+						'groups:find', 'groups:read', 'groups:topics:create', 'groups:topics:reply'
+					]),
+					function(privs, next) {
+						privileges = privs;
+						groups.getMembersOfGroups(privs.map(function(privilege) {
+							return 'cid:' + cid + ':privileges:' + privilege;
+						}), next);
+					},
+					function(memberSets, next) {
+						// Reduce into a single array
+						var members = memberSets.reduce(function(combined, curMembers) {
+								return combined.concat(curMembers);
+							}).filter(function(member, index, combined) {
+								return combined.indexOf(member) === index;
+							});
+
+						// Special handling for "guests" group
+						members.splice(members.indexOf('guests'), 1);
+
+						groups.getMultipleGroupFields(members, ['name', 'slug', 'memberCount'], function(err, memberData) {
+							memberData.push({
+								name: 'guests',
+								slug: 'guests'
+							});
+
+							memberData = memberData.map(function(member) {
+								member.privileges = {};
+								for(var x=0,numPrivs=privileges.length;x<numPrivs;x++) {
+									member.privileges[privileges[x]] = memberSets[x].indexOf(member.name) !== -1
+								}
+
+								return member;
+							});
+
+							next(null, memberData);
+						});
+					}
+				], next);
+			}
+		}, callback);
+	};
+
 	privileges.categories.get = function(cid, uid, callback) {
 		async.parallel({
 			'topics:create': function(next) {

@@ -98,6 +98,21 @@
 		}
 	};
 
+	helpers.spawnPrivilegeStates = function(privileges) {
+		var states = [];
+		for(var priv in privileges) {
+			if (privileges.hasOwnProperty(priv)) {
+				states.push({
+					name: priv,
+					state: privileges[priv]
+				});
+			}
+		}
+		return states.map(function(priv) {
+			return '<td class="text-center" data-privilege="' + priv.name + '"><input type="checkbox"' + (priv.state ? ' checked' : '') + ' /></td>';
+		}).join('');
+	};
+
 	exports.register = function() {
 		var templates;
 
