@@ -66,46 +66,4 @@ Categories.getPrivilegeSettings = function(socket, cid, callback) {
 	privileges.categories.list(cid, callback);
 };
 
-// Categories.setGroupPrivilege = function(socket, data, callback) {
-// 	if(!data) {
-// 		return callback(new Error('[[error:invalid-data]]'));
-// 	}
-
-// 	groups[data.set ? 'join' : 'leave']('cid:' + data.cid + ':privileges:' + data.privilege, data.name, function (err) {
-// 		if (err) {
-// 			return callback(err);
-// 		}
-
-// 		groups.hide('cid:' + data.cid + ':privileges:' + data.privilege, callback);
-// 	});
-// };
-
-// Categories.groupsList = function(socket, cid, callback) {
-// 	groups.list({
-// 		expand: false,
-// 		isAdmin: true,
-// 		showSystemGroups: true
-// 	}, function(err, data) {
-// 		if(err) {
-// 			return callback(err);
-// 		}
-
-// 		// Remove privilege groups
-// 		data = data.filter(function(groupObj) {
-// 			return groupObj.name.indexOf(':privileges:') === -1;
-// 		});
-
-// 		async.map(data, function(groupObj, next) {
-// 			privileges.categories.groupPrivileges(cid, groupObj.name, function(err, privileges) {
-// 				if(err) {
-// 					return next(err);
-// 				}
-
-// 				groupObj.privileges = privileges;
-// 				next(null, groupObj);
-// 			});
-// 		}, callback);
-// 	});
-// };
-
 module.exports = Categories;

@@ -47,6 +47,7 @@ var async = require('async'),
 			getEphemeralGroup: function(groupName) {
 				return {
 					name: groupName,
+					slug: utils.slugify(groupName),
 					description: '',
 					deleted: '0',
 					hidden: '0',

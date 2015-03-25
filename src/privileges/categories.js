@@ -82,29 +82,25 @@ module.exports = function(privileges) {
 						}), next);
 					},
 					function(memberSets, next) {
-						// Reduce into a single array
-						var members = memberSets.reduce(function(combined, curMembers) {
-								return combined.concat(curMembers);
-							}).filter(function(member, index, combined) {
-								return combined.indexOf(member) === index;
-							});
-
-						// Special handling for "guests" group
-						members.splice(members.indexOf('guests'), 1);
-
-						groups.getMultipleGroupFields(members, ['name', 'slug', 'memberCount'], function(err, memberData) {
-							memberData.push({
-								name: 'guests',
-								slug: 'guests'
-							});
-
-							memberData = memberData.map(function(member) {
+						groups.list({
+							expand: false,
+							isAdmin: true,
+							showSystemGroups: true
+						}, function(err, memberData) {
+							memberData = memberData.filter(function(member) {
+								return member.name.indexOf(':privileges:') === -1;
+							}).map(function(member) {
 								member.privileges = {};
 								for(var x=0,numPrivs=privileges.length;x<numPrivs;x++) {
-									member.privileges[privileges[x]] = memberSets[x].indexOf(member.name) !== -1
+									member.privileges[privileges[x]] = memberSets[x].indexOf(member.slug) !== -1
 								}
 
-								return member;
+								return {
+									name: member.name,
+									slug: member.slug,
+									memberCount: member.memberCount,
+									privileges: member.privileges,
+								};
 							});
 
 							next(null, memberData);
