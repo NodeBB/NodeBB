@@ -21,7 +21,9 @@ define('admin/manage/category', [
 			}
 		}
 
-		function save() {
+		function save(e) {
+			e.preventDefault();
+
 			if(Object.keys(modified_categories).length) {
 				socket.emit('admin.categories.update', modified_categories, function(err, result) {
 					if (err) {
@@ -39,7 +41,6 @@ define('admin/manage/category', [
 				});
 				modified_categories = {};
 			}
-			return false;
 		}
 
 		$('.blockclass, form.category select').each(function() {
@@ -85,24 +86,21 @@ define('admin/manage/category', [
 		// Colour Picker
 		$('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 
-		// Options menu events
-		var optionsEl = $('.options');
-		optionsEl.on('click', '.save', save);
-		optionsEl.on('click', '.revert', ajaxify.refresh);
-		optionsEl.on('click', '.purge', function() {
-			var categoryRow = $(this).parents('li[data-cid]');
-			var	cid = categoryRow.attr('data-cid');
+		$('.save').on('click', save);
+		$('.revert').on('click', ajaxify.refresh);
+		$('.purge').on('click', function(e) {
+			e.preventDefault();
 
 			bootbox.confirm('<p class="lead">Do you really want to purge this category "' + $('form.category').find('input[data-name="name"]').val() + '"?</p><p><strong class="text-danger">Warning!</strong> All topics and posts in this category will be purged!</p>', function(confirm) {
 				if (!confirm) {
 					return;
 				}
-				socket.emit('admin.categories.purge', cid, function(err) {
+				socket.emit('admin.categories.purge', ajaxify.variables.get('cid'), function(err) {
 					if (err) {
 						return app.alertError(err.message);
 					}
 					app.alertSuccess('Category purged!');
-					categoryRow.remove();
+					ajaxify.go('admin/manage/categories');
 				});
 			});
 		});
@@ -144,35 +142,6 @@ define('admin/manage/category', [
 
 		setupEditTargets();
 		Category.setupPrivilegeTable();
-
-		$(function() {
-			
-
-			// $('.admin-categories').on('click', '.permissions', function() {
-			// 	var	cid = $(this).parents('li[data-cid]').attr('data-cid');
-			// 	Categories.launchPermissionsModal(cid);
-			// 	return false;
-			// });
-
-
-			// $('.admin-categories').on('click', '.delete-image', function() {
-			// 	var parent = $(this).parents('li[data-cid]'),
-			// 		inputEl = parent.find('.upload-button'),
-			// 		preview = parent.find('.preview-box'),
-			// 		bgColor = parent.find('.category_bgColor').val();
-
-			// 	inputEl.val('');
-			// 	modified(inputEl[0]);
-
-			// 	preview.css('background', bgColor);
-
-			// 	$(this).addClass('hide').hide();
-			// });
-
-			
-
-
-		});
 	};
 
 	Category.setupPrivilegeTable = function() {

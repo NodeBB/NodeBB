@@ -168,7 +168,11 @@ $(document).ready(function() {
 		return url;
 	};
 
-	ajaxify.refresh = function() {
+	ajaxify.refresh = function(e) {
+		if (e && e instanceof jQuery.Event) {
+			e.preventDefault();
+		}
+
 		ajaxify.go(ajaxify.currentPage);
 	};
 
