@@ -129,7 +129,12 @@ module.exports = function(Meta) {
 
 	Meta.js.minify = function(minify, callback) {
 		if (nconf.get('isPrimary') === 'true') {
-			var minifier = Meta.js.minifierProc = fork('minifier.js'),
+			var forkProcessParams = {};
+			if(global.v8debug) {
+				forkProcessParams = {execArgv: ['--debug-brk=' + (global.process.debugPort + 1)]};
+			}
+
+			var minifier = Meta.js.minifierProc = fork('minifier.js', [], forkProcessParams),
 				onComplete = function(err) {
 					if (err) {
 						winston.error('[meta/js] Minification failed: ' + err.message);
