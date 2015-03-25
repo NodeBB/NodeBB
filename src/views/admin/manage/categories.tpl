@@ -15,6 +15,7 @@
 						</tr>
 					</thead>
 					<tbody id="active-categories">
+						<!-- IF active.length -->
 						<!-- BEGIN active -->
 						<tr data-cid="{active.cid}">
 							<td>
@@ -39,6 +40,15 @@
 							</td>
 						</tr>
 						<!-- END active -->
+						<!-- ELSE -->
+						<tr>
+							<td colspan="6">
+								<div class="alert alert-info text-center">
+									You have no active categories.
+								</div>
+							</td>
+						</tr>
+						<!-- ENDIF active.length -->
 					</tbody>
 				</table>
 			</div>
@@ -61,6 +71,7 @@
 						</tr>
 					</thead>
 					<tbody id="disabled-categories">
+						<!-- IF disabled.length -->
 						<!-- BEGIN disabled -->
 						<tr data-cid="{disabled.cid}">
 							<td>
@@ -85,6 +96,15 @@
 							</td>
 						</tr>
 						<!-- END disabled -->
+						<!-- ELSE -->
+						<tr>
+							<td colspan="6">
+								<div class="alert alert-info text-center">
+									You have no disabled categories.
+								</div>
+							</td>
+						</tr>
+						<!-- ENDIF disabled.length -->
 					</tbody>
 				</table>
 			</div>

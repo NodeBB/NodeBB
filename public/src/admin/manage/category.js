@@ -111,7 +111,7 @@ define('admin/manage/category', [
 			var inputEl = $(this),
 				cid = inputEl.attr('data-cid');
 
-			uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', { cid: cid }, 0, function(imageUrlOnServer) {
+			uploader.open(RELATIVE_PATH + '/api/admin/category/uploadpicture', { cid: cid }, 0, function(imageUrlOnServer) {
 				inputEl.val(imageUrlOnServer);
 				var previewBox = inputEl.parent().siblings('.category-preview');
 				previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')')

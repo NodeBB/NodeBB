@@ -83,7 +83,7 @@
 			</div>
 		</div>
 
-		<div class="col-md-3 options">
+		<div class="col-md-3 options acp-sidebar">
 			<div class="panel panel-default hidden-sm">
 				<div class="panel-heading">Preview</div>
 				<div class="panel-body">
@@ -97,10 +97,14 @@
 							<i data-name="icon" value="{category.icon}" class="fa {category.icon} fa-2x"></i>
 						</div>
 					</div>
-					<div class="btn-group-vertical">
-						<button type="button" data-cid="{category.cid}" data-name="image" data-value="{category.image}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Upload Image</button>
+					<div class="btn-group btn-group-justified">
+						<div class="btn-group">
+							<button type="button" data-cid="{category.cid}" data-name="image" data-value="{category.image}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Upload Image</button>
+						</div>
 						<!-- IF category.image -->
-						<button class="btn btn-warning delete-image"><i data-name="icon" value="fa-times" class="fa fa-times"></i> Remove Image</button>
+						<div class="btn-group">
+							<button class="btn btn-warning delete-image"><i data-name="icon" value="fa-times" class="fa fa-times"></i> Remove Image</button>
+						</div>
 						<!-- ENDIF category.image -->
 					</div>
 				</div>
