@@ -129,9 +129,21 @@ module.exports = function(Meta) {
 
 	Meta.js.minify = function(minify, callback) {
 		if (nconf.get('isPrimary') === 'true') {
+			/**
+			 * Check if the parent process is running with the debug option --debug (or --debug-brk)
+			 */
 			var forkProcessParams = {};
 			if(global.v8debug) {
-				forkProcessParams = {execArgv: ['--debug-brk=' + (global.process.debugPort + 1)]};
+				/**
+				 * use the line below if you want to debug minifier.js script too (or even --debug-brk option, but
+				 * you'll have to setup your debugger and connect to the forked process)
+				 */
+				//forkProcessParams = {execArgv: ['--debug=' + (global.process.debugPort + 1), '--nolazy']};
+
+				/**
+				 * otherwise, just clean up --debug/--debug-brk options which are set up by default from the parent one
+				 */
+				forkProcessParams = {execArgv: []};
 			}
 
 			var minifier = Meta.js.minifierProc = fork('minifier.js', [], forkProcessParams),
