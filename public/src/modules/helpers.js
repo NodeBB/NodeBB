@@ -52,7 +52,7 @@
 
 	helpers.stripTags = function(str) {
 		return S(str).stripTags().s;
-	}
+	};
 
 	helpers.generateCategoryBackground = function(category) {
 		var style = [];
