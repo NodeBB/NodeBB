@@ -56,7 +56,7 @@ searchController.search = function(req, res, next) {
 			results.showAsTopics = req.query.showAs === 'topics';
 			results.breadcrumbs = breadcrumbs;
 			results.categories = categories;
-			results.expandSearch = false;
+			results.expandSearch = !req.params.term;
 
 			plugins.fireHook('filter:search.build', {data: data, results: results}, function(err, data) {
 				if (err) {
