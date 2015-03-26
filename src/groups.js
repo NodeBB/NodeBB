@@ -67,6 +67,10 @@ var async = require('async'),
 			isPrivilegeGroup: /^cid:\d+:privileges:[\w:]+$/
 		};
 
+	Groups.getEphemeralGroups = function() {
+		return ephemeralGroups;
+	};
+
 	Groups.list = function(options, callback) {
 		db.getSortedSetRevRange('groups:createtime', 0, -1, function (err, groupNames) {
 			if (err) {

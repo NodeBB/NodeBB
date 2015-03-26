@@ -58,7 +58,7 @@ module.exports = function(privileges) {
 							memberData = memberData.map(function(member) {
 								member.privileges = {};
 								for(var x=0,numPrivs=privileges.length;x<numPrivs;x++) {
-									member.privileges[privileges[x]] = memberSets[x].indexOf(member.uid) !== -1
+									member.privileges[privileges[x]] = memberSets[x].indexOf(member.uid) !== -1;
 								}
 
 								return member;
@@ -82,23 +82,26 @@ module.exports = function(privileges) {
 						}), next);
 					},
 					function(memberSets, next) {
-						groups.list({
-							expand: false,
-							isAdmin: true,
-							showSystemGroups: true
-						}, function(err, memberData) {
-							memberData = memberData.filter(function(member) {
-								return member.name.indexOf(':privileges:') === -1;
+						groups.getGroups(0, -1, function(err, groupNames) {
+							if (err) {
+								return next(err);
+							}
+
+							groupNames = groups.getEphemeralGroups().concat(groupNames);
+							groupNames.splice(0, 0, groupNames.splice(groupNames.indexOf('registered-users'), 1)[0]);
+							groupNames.splice(groupNames.indexOf('administrators'), 1);
+
+							var memberData = groupNames.filter(function(member) {
+								return member.indexOf(':privileges:') === -1;
 							}).map(function(member) {
-								member.privileges = {};
+								var memberPrivs = {};
 								for(var x=0,numPrivs=privileges.length;x<numPrivs;x++) {
-									member.privileges[privileges[x]] = memberSets[x].indexOf(member.name) !== -1
+									memberPrivs[privileges[x]] = memberSets[x].indexOf(member) !== -1;
 								}
 
 								return {
-									name: member.name,
-									memberCount: member.memberCount,
-									privileges: member.privileges,
+									name: member,
+									privileges: memberPrivs,
 								};
 							});
 
