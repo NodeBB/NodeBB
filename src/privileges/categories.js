@@ -19,14 +19,14 @@ module.exports = function(privileges) {
 			labels: function(next) {
 				async.parallel({
 					users: async.apply(plugins.fireHook, 'filter:privileges.list_human',
-						['Find category', 'Access & Read', 'Create Topics', 'Reply to Topics', 'Moderator'].map(function(name) {
+						['Find category', 'Access & Read', 'Create Topics', 'Reply to Topics', 'Moderate'].map(function(name) {
 							return {
 								name: name
 							};
 						})
 					),
 					groups: async.apply(plugins.fireHook, 'filter:privileges.groups.list_human',
-						['Find category', 'Access & Read', 'Create Topics', 'Reply to Topics'].map(function(name) {
+						['Find category', 'Access & Read', 'Create Topics', 'Reply to Topics', 'Moderate'].map(function(name) {
 							return {
 								name: name
 							};
@@ -73,7 +73,7 @@ module.exports = function(privileges) {
 				var privileges;
 				async.waterfall([
 					async.apply(plugins.fireHook, 'filter:privileges.groups.list', [
-						'groups:find', 'groups:read', 'groups:topics:create', 'groups:topics:reply'
+						'groups:find', 'groups:read', 'groups:topics:create', 'groups:topics:reply', 'groups:moderate'
 					]),
 					function(privs, next) {
 						privileges = privs;
