@@ -10,6 +10,8 @@ var async = require('async'),
 
 (function (Favourites) {
 
+	var votesInProgress = {};
+
 	function vote(type, unvote, pid, uid, callback) {
 		uid = parseInt(uid, 10);
 
@@ -127,13 +129,41 @@ var async = require('async'),
 		});
 	};
 
+	function voteInProgress(pid, uid) {
+		return Array.isArray(votesInProgress[uid]) && votesInProgress[uid].indexOf(parseInt(pid, 10)) !== -1;
+	}
+
+	function putVoteInProgress(pid, uid) {
+		votesInProgress[uid] = votesInProgress[uid] || [];
+		votesInProgress[uid].push(parseInt(pid, 10));
+	}
+
+	function clearVoteProgress(pid, uid) {
+		if (Array.isArray(votesInProgress[uid])) {
+			var index = votesInProgress[uid].indexOf(parseInt(pid, 10));
+			if (index !== -1) {
+				votesInProgress[uid].splice(index, 1);
+			}
+		}
+	}
+
 	function toggleVote(type, pid, uid, callback) {
+		function done(err, data) {
+			clearVoteProgress(pid, uid);
+			callback(err, data);
+		}
+
+		if (voteInProgress(pid, uid)) {
+			return callback(new Error('[[error:already-voting-for-this-post]]'));
+		}
+		putVoteInProgress(pid, uid);
+
 		unvote(pid, uid, type, function(err) {
 			if (err) {
-				return callback(err);
+				return done(err);
 			}
 
-			vote(type, false, pid, uid, callback);
+			vote(type, false, pid, uid, done);
 		});
 	}
 
