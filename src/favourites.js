@@ -43,7 +43,9 @@ var async = require('async'),
 					return callback(err);
 				}
 
-				db.sortedSetAdd('users:reputation', newreputation, postData.uid);
+				if (parseInt(postData.uid, 10)) {
+					db.sortedSetAdd('users:reputation', newreputation, postData.uid);
+				}
 
 				adjustPostVotes(pid, uid, type, unvote, function(err, votes) {
 					postData.votes = votes;
