@@ -110,7 +110,8 @@
 						<li><div class="on-categories"></div><span>On categories list</span></li>
 						<li><div class="reading-posts"></div><span>Reading posts</span></li>
 						<li><div class="browsing-topics"></div><span>Browsing topics</span></li>
-						<li><div class="idle"></div><span>Idle</span></li>
+						<li><div class="recent"></div><span>Recent / Unread</span></li>
+						<li><div class="tags"></div><span>Tags</span></li>
 					</ul>
 					<canvas id="analytics-presence"></canvas>
 				</div>

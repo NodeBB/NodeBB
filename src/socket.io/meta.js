@@ -88,6 +88,8 @@ SocketMeta.rooms.getAll = function(socket, data, callback) {
 			socketCount: websockets.getSocketCount(),
 			users: {
 				categories: roomClients.categories ? roomClients.categories.length : 0,
+				recent: roomClients.recent_posts ? roomClients.recent_posts.length : 0,
+				tags: roomClients.tags ? roomClients.tags.length : 0,
 				topics: 0,
 				category: 0
 			},

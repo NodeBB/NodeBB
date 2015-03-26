@@ -141,10 +141,8 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 						'<div>Connections</div>' +
 					'</div>';
 
-		var idle = data.socketCount - (data.users.categories + data.users.topics + data.users.category);
-
 		updateRegisteredGraph(data.onlineRegisteredCount, data.onlineGuestCount);
-		updatePresenceGraph(data.users.categories, data.users.topics, data.users.category, idle);
+		updatePresenceGraph(data.users);
 		updateTopicsGraph(data.topics);
 
 		$('#active-users').html(html);
@@ -248,46 +246,52 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		});
 
 		graphs.registered = new Chart(registeredCtx).Doughnut([{
-		        value: 1,
-		        color:"#F7464A",
-		        highlight: "#FF5A5E",
-		        label: "Registered Users"
-		    },
-		    {
-		        value: 1,
-		        color: "#46BFBD",
-		        highlight: "#5AD3D1",
-		        label: "Anonymous Users"
-		    }], {
-		    	responsive: true
-		    });
+				value: 1,
+				color:"#F7464A",
+				highlight: "#FF5A5E",
+				label: "Registered Users"
+			},
+			{
+				value: 1,
+				color: "#46BFBD",
+				highlight: "#5AD3D1",
+				label: "Anonymous Users"
+			}], {
+				responsive: true
+			});
 
 		graphs.presence = new Chart(presenceCtx).Doughnut([{
-		        value: 1,
-		        color:"#F7464A",
-		        highlight: "#FF5A5E",
-		        label: "On categories list"
-		    },
-		    {
-		        value: 1,
-		        color: "#46BFBD",
-		        highlight: "#5AD3D1",
-		        label: "Reading posts"
-		    },
-		    {
-		        value: 1,
-		        color: "#FDB45C",
-		        highlight: "#FFC870",
-		        label: "Browsing topics"
-		    },
-		    {
-		        value: 1,
-		        color: "#949FB1",
-		        highlight: "#A8B3C5",
-		        label: "Idle"
-		    }], {
-		    	responsive: true
-		    });
+				value: 1,
+				color:"#F7464A",
+				highlight: "#FF5A5E",
+				label: "On categories list"
+			},
+			{
+				value: 1,
+				color: "#46BFBD",
+				highlight: "#5AD3D1",
+				label: "Reading posts"
+			},
+			{
+				value: 1,
+				color: "#FDB45C",
+				highlight: "#FFC870",
+				label: "Browsing topics"
+			},
+			{
+				value: 1,
+				color: "#949FB1",
+				highlight: "#A8B3C5",
+				label: "Recent/Unread"
+			},
+			{
+				value: 1,
+				color: "#8FA633",
+				highlight: "#3FA7B8",
+				label: "Tags"
+			}], {
+				responsive: true
+			});
 
 		graphs.topics = new Chart(topicsCtx).Doughnut([], {responsive: true});
 		topicsCanvas.onclick = function(evt){
@@ -345,11 +349,13 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		graphs.registered.update();
 	}
 
-	function updatePresenceGraph(categories, posts, topics, idle) {
-		graphs.presence.segments[0].value = categories;
-		graphs.presence.segments[1].value = posts;
-		graphs.presence.segments[2].value = topics;
-		graphs.presence.segments[3].value = idle;
+	function updatePresenceGraph(users) {
+		graphs.presence.segments[0].value = users.categories;
+		graphs.presence.segments[1].value = users.topics;
+		graphs.presence.segments[2].value = users.category;
+		graphs.presence.segments[3].value = users.recent;
+		graphs.presence.segments[4].value = users.tags;
+
 		graphs.presence.update();
 	}
 
