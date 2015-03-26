@@ -1,6 +1,6 @@
 ;(function(exports) {
 	"use strict";
-	/* globals define */
+	/* globals define, utils */
 
 	// export the class if we are in a Node-like system.
 	if (typeof module === 'object' && module.exports === exports) {
@@ -8,6 +8,9 @@
 	}
 
 	var helpers = {};
+
+	var utils = utils || require('../utils'),
+		S = S || require('string');
 
 	helpers.displayMenuItem = function(data, index) {
 		var item = data.navigation[index],
@@ -42,6 +45,14 @@
 		// Turns the incoming object into a JSON string
 		return JSON.stringify(obj).replace(/&/gm,"&amp;").replace(/</gm,"&lt;").replace(/>/gm,"&gt;").replace(/"/g, '&quot;');
 	};
+
+	helpers.escape = function(str) {
+		return utils.escapeHTML(str);
+	};
+
+	helpers.stripTags = function(str) {
+		return S(str).stripTags().s;
+	}
 
 	helpers.generateCategoryBackground = function(category) {
 		var style = [];
