@@ -141,10 +141,10 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 						'<div>Connections</div>' +
 					'</div>';
 
-		var idle = data.socketCount - (data.users.home + data.users.topics + data.users.category);
+		var idle = data.socketCount - (data.users.categories + data.users.topics + data.users.category);
 
 		updateRegisteredGraph(data.onlineRegisteredCount, data.onlineGuestCount);
-		updatePresenceGraph(data.users.home, data.users.topics, data.users.category, idle);
+		updatePresenceGraph(data.users.categories, data.users.topics, data.users.category, idle);
 		updateTopicsGraph(data.topics);
 
 		$('#active-users').html(html);
@@ -266,7 +266,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		        value: 1,
 		        color:"#F7464A",
 		        highlight: "#FF5A5E",
-		        label: "On homepage"
+		        label: "On categories list"
 		    },
 		    {
 		        value: 1,
@@ -345,8 +345,8 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		graphs.registered.update();
 	}
 
-	function updatePresenceGraph(homepage, posts, topics, idle) {
-		graphs.presence.segments[0].value = homepage;
+	function updatePresenceGraph(categories, posts, topics, idle) {
+		graphs.presence.segments[0].value = categories;
 		graphs.presence.segments[1].value = posts;
 		graphs.presence.segments[2].value = topics;
 		graphs.presence.segments[3].value = idle;
@@ -424,6 +424,9 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		function buildTopicsLegend() {
 			var legend = $('#topics-legend').html('');
 
+			segments.sort(function(a, b) {
+				return b.value - a.value;
+			});
 			for (var i = 0, ii = segments.length; i < ii; i++) {
 				var topic = segments[i],
 					label = topic.tid === '0' ? topic.label : '<a title="' + topic.label + '"href="' + RELATIVE_PATH + '/topic/' + topic.tid + '" target="_blank"> ' + topic.label + '</a>';

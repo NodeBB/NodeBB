@@ -105,8 +105,8 @@ app.cacheBuster = null;
 				case 'admin':
 					room = 'admin';
 				break;
-				case 'home':
-					room = 'home';
+				case 'categories':
+					room = 'categories';
 				break;
 			}
 			app.currentRoom = '';
