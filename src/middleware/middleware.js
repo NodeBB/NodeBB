@@ -14,6 +14,7 @@ var app,
 	plugins = require('./../plugins'),
 	meta = require('./../meta'),
 	translator = require('./../../public/src/translator'),
+	utils = require('../../public/src/utils'),
 	user = require('./../user'),
 	db = require('./../database'),
 	categories = require('./../categories'),
@@ -386,6 +387,7 @@ middleware.processRender = function(req, res, next) {
 		}
 
 		if (res.locals.isAPI) {
+			options = utils.merge(options, res.locals);
 			return res.json(options);
 		}
 
