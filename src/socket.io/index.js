@@ -151,17 +151,12 @@ function onMessage(socket, payload) {
 }
 
 function requireModules() {
-	fs.readdir(__dirname, function(err, files) {
-		files.splice(files.indexOf('index.js'), 1);
+	var modules = ['admin', 'categories', 'groups', 'meta', 'modules',
+		'notifications', 'plugins', 'posts', 'topics', 'user'
+	];
 
-		async.each(files, function(lib, next) {
-			if (lib.substr(lib.length - 3) === '.js') {
-				lib = lib.slice(0, -3);
-				Namespaces[lib] = require('./' + lib);
-			}
-
-			next();
-		});
+	modules.forEach(function(module) {
+		Namespaces[module] = require('./' + module);
 	});
 }
 
