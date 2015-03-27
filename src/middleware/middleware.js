@@ -518,6 +518,21 @@ middleware.exposeGroupName = function(req, res, next) {
 	});
 };
 
+middleware.exposeUid = function(req, res, next) {
+	if (req.params.hasOwnProperty('userslug')) {
+		user.getUidByUserslug(req.params.userslug, function(err, uid) {
+			if (err) {
+				return next(err);
+			}
+
+			res.locals.uid = uid;
+			next();
+		})
+	} else {
+		next();
+	}
+};
+
 module.exports = function(webserver) {
 	app = webserver;
 	middleware.admin = require('./admin')(webserver);
