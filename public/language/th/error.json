@@ -18,7 +18,7 @@
     "username-taken": "ชื่อผู้ใช้นี้มีการใช้แล้ว",
     "email-taken": "อีเมลนี้มีการใช้แล้ว",
     "email-not-confirmed": "ยังไม่มีการยืนยันอีเมลของคุณ, โปรดกดยืนยันอีเมลของคุณตรงนี้",
-    "email-not-confirmed-chat": "คุณไม่สามารถแชทได้ จนกว่าจะได้รับการยืนยันอีเมล",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
     "no-email-to-confirm": "Forum นี้ต้องการการยืนยันอีเมล กรุณากดที่นี่เพื่อระบุอีเมล",
     "email-confirm-failed": "เราไม่สามารถยืนยันอีเมลของคุณ ณ ขณะนี้ กรุณาลองใหม่อีกครั้งภายหลัง",
     "username-too-short": "ชื่อบัญชีผู้ใช้ สั้นเกินไป",

@@ -18,7 +18,7 @@
     "username-taken": "該使用者名稱已被使用",
     "email-taken": "該信箱已被使用",
     "email-not-confirmed": "您的電郵尚未得到確認，請點擊此處確認您的電子郵件。",
-    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
     "no-email-to-confirm": "This forum requires email confirmation, please click here to enter an email",
     "email-confirm-failed": "We could not confirm your email, please try again later.",
     "username-too-short": "用戶名太短",

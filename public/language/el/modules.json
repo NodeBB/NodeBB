@@ -17,5 +17,6 @@
     "chat.three_months": "3 Μήνες",
     "composer.user_said_in": "Ο/Η %1 είπε στο %2:",
     "composer.user_said": "Ο/Η %1 είπε:",
-    "composer.discard": "Είσαι σίγουρος/η πως θέλεις να πετάξεις αυτή την δημοσίευση;"
+    "composer.discard": "Είσαι σίγουρος/η πως θέλεις να πετάξεις αυτή την δημοσίευση;",
+    "composer.submit_and_lock": "Submit and Lock"
 }

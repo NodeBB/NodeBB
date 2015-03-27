@@ -17,5 +17,6 @@
     "chat.three_months": "3 Bulan",
     "composer.user_said_in": "%1 berkata di %2: ",
     "composer.user_said": "%1 berkata:",
-    "composer.discard": "Kamu yakin akan membuang posting ini?"
+    "composer.discard": "Kamu yakin akan membuang posting ini?",
+    "composer.submit_and_lock": "Submit and Lock"
 }

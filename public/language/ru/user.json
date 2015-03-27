@@ -60,6 +60,7 @@
     "digest_monthly": "За месяц",
     "send_chat_notifications": "Уведомлять на E-mail при поступлении нового сообщения чата, когда я оффлайн",
     "send_post_notifications": "Отправлять email, когда отвечают в темы, на которые я подписан(а)",
+    "settings-require-reload": "Some setting changes require a reload. Click here to reload the page.",
     "has_no_follower": "Этого пользователя никто не читает :(",
     "follows_no_one": "Этот пользователь никого не читает :(",
     "has_no_posts": "Этот пользователь еще ничего не написал.",
@@ -76,5 +77,6 @@
     "enable_topic_searching": "Активировать поиск внутри тем",
     "topic_search_help": "Если включено, то стандартный \"Поиск на странице\" Вашего браузера будет осуществлять поиск по всей теме вместо одной её страницы.",
     "follow_topics_you_reply_to": "Следить за темами, в которых Вы отвечали.",
-    "follow_topics_you_create": "Следить за темами, которые Вы создали."
+    "follow_topics_you_create": "Следить за темами, которые Вы создали.",
+    "grouptitle": "Select the group title you would like to display"
 }

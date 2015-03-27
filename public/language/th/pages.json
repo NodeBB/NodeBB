@@ -14,6 +14,7 @@
     "user.groups": "กลุ่มของ %1",
     "user.favourites": "กระทู้ที่ %1 ชอบ",
     "user.settings": "ตั้งค่าผู้ใช้",
+    "user.watched": "Topics watched by %1",
     "maintenance.text": "%1 กำลังอยู่ระหว่างการปิดปรับปรุงชั่วคราว กรุณาลองใหม่อีกครั้งในภายหลัง",
     "maintenance.messageIntro": "ผู้ดูแลระบบได้ฝากข้อความต่อไปนี้เอาไว้"
 }

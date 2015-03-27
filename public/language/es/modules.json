@@ -17,5 +17,6 @@
     "chat.three_months": "3 meses",
     "composer.user_said_in": "%1 dijo en %2:",
     "composer.user_said": "%1 dijo:",
-    "composer.discard": "¿Estás seguro de que deseas descartar este mensaje?"
+    "composer.discard": "¿Estás seguro de que deseas descartar este mensaje?",
+    "composer.submit_and_lock": "Submit and Lock"
 }

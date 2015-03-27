@@ -17,5 +17,6 @@
     "chat.three_months": "3 Months",
     "composer.user_said_in": "%1 در %2 گفته است:",
     "composer.user_said": "%1 گفته است:",
-    "composer.discard": "آیا از دور انداختن این دیدگاه اطمینان دارید؟"
+    "composer.discard": "آیا از دور انداختن این دیدگاه اطمینان دارید؟",
+    "composer.submit_and_lock": "Submit and Lock"
 }

@@ -18,7 +18,7 @@
     "username-taken": "Имя пользователя занято",
     "email-taken": "Email занят",
     "email-not-confirmed": "Ваш email не подтвержден, нажмите для подтверждения.",
-    "email-not-confirmed-chat": "Вы не можете оставлять сообщения, пока Ваш email не подтверждён",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
     "no-email-to-confirm": "Этот форум требует подтверждения по E-mail. Нажмите здесь для ввода E-mail.",
     "email-confirm-failed": "Мы не можем подтвердить Ваш E-mail, попробуйте позже.",
     "username-too-short": "Слишком короткое имя пользователя",

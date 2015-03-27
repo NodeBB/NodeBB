@@ -14,6 +14,7 @@
     "user.groups": "%1's Groups",
     "user.favourites": "Οι αγαπημένες δημοσιεύσεις του/της %1",
     "user.settings": "Επιλογές Χρήστη",
+    "user.watched": "Topics watched by %1",
     "maintenance.text": "Το %1 αυτή την στιγμή συντηρείται. Παρακαλώ έλα αργότερα.",
     "maintenance.messageIntro": "Additionally, the administrator has left this message:"
 }

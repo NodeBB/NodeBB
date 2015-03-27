@@ -60,6 +60,7 @@
     "digest_monthly": "Maandelijks",
     "send_chat_notifications": "Verstuur mij een email als iemand een chatbericht stuurt terwijl ik niet online ben",
     "send_post_notifications": "Send an email when replies are made to topics I am subscribed to",
+    "settings-require-reload": "Some setting changes require a reload. Click here to reload the page.",
     "has_no_follower": "Deze gebruiker heeft geen volgers :(",
     "follows_no_one": "Deze gebruiker volgt niemand :(",
     "has_no_posts": "Deze gebruiker heeft nog geen berichten geplaatst",
@@ -76,5 +77,6 @@
     "enable_topic_searching": "Zet zoeken in het onderwerp aan",
     "topic_search_help": "Als het is ingeschakeld, dan zal het standaard zoeken overschrijven en zal je vanaf nu het gehele onderwerp kunnen doorzoeken ipv wat je standaard ziet.",
     "follow_topics_you_reply_to": "Volg de onderwerpen waarop u gereageerd heeft.",
-    "follow_topics_you_create": "Volg de onderwerpen die u gecreëerd heeft."
+    "follow_topics_you_create": "Volg de onderwerpen die u gecreëerd heeft.",
+    "grouptitle": "Select the group title you would like to display"
 }

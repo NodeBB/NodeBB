@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "Il n'y a aucun sujet ayant ce mot-clé",
     "tags": "Mots-clés",
-    "enter_tags_here": "Entrez les mots-clés ici. %1-%2 caractères. Tapez sur \"Entrée\" après chaque mot-clé.",
+    "enter_tags_here": "Enter tags here, between %1 and %2 characters each.",
     "enter_tags_here_short": "Entrez des mots-clés...",
     "no_tags": "Il n'y a pas encore de mots-clés."
 }

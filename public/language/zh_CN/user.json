@@ -60,6 +60,7 @@
     "digest_monthly": "每月",
     "send_chat_notifications": "当我不在线，并受到新的聊天消息时给我发邮件",
     "send_post_notifications": "我订阅的主题有回复时发送邮件",
+    "settings-require-reload": "Some setting changes require a reload. Click here to reload the page.",
     "has_no_follower": "此用户还没有粉丝 :(",
     "follows_no_one": "此用户尚未关注任何人 :(",
     "has_no_posts": "此用户尚未发布任何帖子。",
@@ -76,5 +77,6 @@
     "enable_topic_searching": "启用主题内搜索",
     "topic_search_help": "启用后，主题内搜索会替代浏览器默认的页面搜索，你可以在整个主题的全部内容进行搜索，而不是仅限于屏幕显示的内容。",
     "follow_topics_you_reply_to": "关注您回复的主题。",
-    "follow_topics_you_create": "关注您创建的主题。"
+    "follow_topics_you_create": "关注您创建的主题。",
+    "grouptitle": "Select the group title you would like to display"
 }

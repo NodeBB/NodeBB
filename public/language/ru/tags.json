@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "Нет топиков с таким тегом.",
     "tags": "Теги",
-    "enter_tags_here": "Укажите тэги здесь. %1-%2 символов(а). Нажимайте Enter после каждого тэга.",
+    "enter_tags_here": "Enter tags here, between %1 and %2 characters each.",
     "enter_tags_here_short": "Введите теги...",
     "no_tags": "Здесь еще нет тегов."
 }

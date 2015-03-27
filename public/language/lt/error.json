@@ -18,7 +18,7 @@
     "username-taken": "Vartotojo vardas jau užimtas",
     "email-taken": "El. pašto adresas jau užimtas",
     "email-not-confirmed": "Jūsų el. paštas nepatvirtintas, prašome paspausti čia norint jį patvirtinti.",
-    "email-not-confirmed-chat": "Jūs negalite kalbėtis, kol el. adresas nepatvirtintas",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
     "no-email-to-confirm": "Šis forumas reikalauja patvirtinimo el. paštu prašome spausti čia el. adreso įrašymui",
     "email-confirm-failed": "Negalime patvirtinti jūsų el. adreso, prašom bandyti vėliau.",
     "username-too-short": "Slapyvardis per trumpas",

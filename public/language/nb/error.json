@@ -18,7 +18,7 @@
     "username-taken": "Brukernavn opptatt",
     "email-taken": "E-post opptatt",
     "email-not-confirmed": "E-posten din har ikke blitt bekreftet enda, vennligst klikk for å bekrefte din e-post.",
-    "email-not-confirmed-chat": "Du kan ikke chatte før e-posten din har blitt bekreftet",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
     "no-email-to-confirm": "Dette forumet krever at e-postbekreftelse, vennligst klikk her for å skrive inn en e-post",
     "email-confirm-failed": "Vi kunne ikke godkjenne e-posten din, vennligst prøv igjen senere.",
     "username-too-short": "Brukernavnet er for kort",

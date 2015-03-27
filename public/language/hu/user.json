@@ -60,6 +60,7 @@
     "digest_monthly": "Havi",
     "send_chat_notifications": "E-mail küldése, amennyiben chat üzenetem érkezett és nem vagyok aktív",
     "send_post_notifications": "E-mail küldése, amikor válasz érkezik azokhoz a témákhoz, amelyekre feliratkoztam",
+    "settings-require-reload": "Some setting changes require a reload. Click here to reload the page.",
     "has_no_follower": "Ezt a felhasználót nem követi senki :(",
     "follows_no_one": "Ez a felhasználó nem követ senkit :(",
     "has_no_posts": "Ennek a felhasználónak még nincsen hozzászólása.",
@@ -76,5 +77,6 @@
     "enable_topic_searching": "Témán belüli keresés bekapcsolása",
     "topic_search_help": "Amennyiben be van kapcsolva, a témán belüli keresés felül fogja írni a böngésző alapértelmezett oldalon belüli keresőjét és engedélyezni fogja neked, hogy a teljes témában kereshess, ne csak abban, ami jelenleg is megjelenik a képernyőn.",
     "follow_topics_you_reply_to": "Minden olyan téma követése, amihez hozzászóltál.",
-    "follow_topics_you_create": "Minden általad létrehozott téma követése."
+    "follow_topics_you_create": "Minden általad létrehozott téma követése.",
+    "grouptitle": "Select the group title you would like to display"
 }

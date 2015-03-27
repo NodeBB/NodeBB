@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "Nie ma tematów z tym tagiem",
     "tags": "Tagi",
-    "enter_tags_here": "Tutaj wpisz tagi. %1-%2 znaków. Naciśnij enter po każdym.",
+    "enter_tags_here": "Enter tags here, between %1 and %2 characters each.",
     "enter_tags_here_short": "Wpisz tagi...",
     "no_tags": "Jeszcze nie ma tagów."
 }

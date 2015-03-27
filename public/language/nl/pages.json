@@ -14,6 +14,7 @@
     "user.groups": "%1's Groups",
     "user.favourites": "%1's Favoriete Berichten",
     "user.settings": "Gebruikersinstellingen",
+    "user.watched": "Topics watched by %1",
     "maintenance.text": "%1 is momenteel in onderhoud modus. Probeer later opnieuw",
     "maintenance.messageIntro": "daarnaast heeft de administrator het volgende bericht achtergelaten:"
 }

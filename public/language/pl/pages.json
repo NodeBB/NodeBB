@@ -14,6 +14,7 @@
     "user.groups": "Grupy %1",
     "user.favourites": "Ulubione posty %1",
     "user.settings": "Ustawienia użytkownika",
+    "user.watched": "Topics watched by %1",
     "maintenance.text": "Obecnie trwają prace konserwacyjne nad %1. Proszę wrócić później.",
     "maintenance.messageIntro": "Dodatkowo, administrator zostawił wiadomość:"
 }

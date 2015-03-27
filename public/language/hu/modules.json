@@ -17,5 +17,6 @@
     "chat.three_months": "3 hónap",
     "composer.user_said_in": "%1 válasza erre %2:",
     "composer.user_said": "%1 válasza:",
-    "composer.discard": "Biztosan elvetjük ezt a hozzászólást?"
+    "composer.discard": "Biztosan elvetjük ezt a hozzászólást?",
+    "composer.submit_and_lock": "Submit and Lock"
 }

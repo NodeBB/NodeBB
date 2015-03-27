@@ -18,7 +18,7 @@
     "username-taken": "Foglalt felhasználónév",
     "email-taken": "Foglalt e-mail",
     "email-not-confirmed": "Az e-mail címed még nem lett ellenőrizve, kérlek kattints ide az e-mail címed ellenőrzéséhez!",
-    "email-not-confirmed-chat": "Addig nem cseveghetsz, amíg az e-mail címed nincs megerősítve.",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
     "no-email-to-confirm": "Ez a fórum e-mail megerősítést kíván, kérlek kattints ide egy cím beírásához",
     "email-confirm-failed": "Nem tudtuk ellenőrizni az e-mail címedet, kérlek próbálkozz később.",
     "username-too-short": "Túl rövid felhasználónév",

@@ -60,6 +60,7 @@
     "digest_monthly": "매월",
     "send_chat_notifications": "오프라인일 때 채팅 메시지가 도착하면 알림 메일을 보냅니다.",
     "send_post_notifications": "Send an email when replies are made to topics I am subscribed to",
+    "settings-require-reload": "Some setting changes require a reload. Click here to reload the page.",
     "has_no_follower": "아무도 이 사용자를 팔로우하지 않습니다.",
     "follows_no_one": "이 사용자는 아무도 팔로우하지 않습니다.",
     "has_no_posts": "이 사용자는 게시물을 작성하지 않았습니다.",
@@ -76,5 +77,6 @@
     "enable_topic_searching": "Enable In-Topic Searching",
     "topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen.",
     "follow_topics_you_reply_to": "답글을 작성한 주제를 팔로우합니다.",
-    "follow_topics_you_create": "직접 작성한 주제를 팔로우합니다."
+    "follow_topics_you_create": "직접 작성한 주제를 팔로우합니다.",
+    "grouptitle": "Select the group title you would like to display"
 }

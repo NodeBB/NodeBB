@@ -18,7 +18,7 @@
     "username-taken": "Gebruikersnaam is al bezet",
     "email-taken": "Email adres is al gebruikt",
     "email-not-confirmed": "U email adres is niet bevestigd, Klik hier om uw email adres te bevestigen",
-    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
     "no-email-to-confirm": "This forum requires email confirmation, please click here to enter an email",
     "email-confirm-failed": "We could not confirm your email, please try again later.",
     "username-too-short": "Gebruikersnaam is te kort",

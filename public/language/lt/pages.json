@@ -14,6 +14,7 @@
     "user.groups": "%1's grupės",
     "user.favourites": "Vartotojo %1 mėgstami pranešimai",
     "user.settings": "Vartotojo nustatymai",
+    "user.watched": "Topics watched by %1",
     "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
     "maintenance.messageIntro": "Be to, administratorius paliko šį pranešimą:"
 }

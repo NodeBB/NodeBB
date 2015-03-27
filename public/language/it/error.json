@@ -18,7 +18,7 @@
     "username-taken": "Nome utente già preso",
     "email-taken": "Email già esistente",
     "email-not-confirmed": "La tua Email deve essere ancora confermata, per favore clicca qui per confermare la tua Email.",
-    "email-not-confirmed-chat": "Non potrai chattare finchè non avrai confermato la tua email",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
     "no-email-to-confirm": "Questo forum richiede la conferma dell'indirizzo email, per favore clicca qui per inserirne uno",
     "email-confirm-failed": "Non possiamo confermare la tua email, per favore prova ancora più tardi.",
     "username-too-short": "Nome utente troppo corto",

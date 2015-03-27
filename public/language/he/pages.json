@@ -14,6 +14,7 @@
     "user.groups": "הקבוצות של %1",
     "user.favourites": "הפוסטים המועדפים על %1",
     "user.settings": "הגדרות משתמש",
+    "user.watched": "Topics watched by %1",
     "maintenance.text": "%1 כרגע תחת עבודות תחזוקה. אנא חזור בזמן מאוחר יותר.",
     "maintenance.messageIntro": "בנוסף, המנהל השאיר את ההודעה הזו:"
 }

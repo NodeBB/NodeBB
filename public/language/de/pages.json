@@ -14,6 +14,7 @@
     "user.groups": "%1's Gruppen",
     "user.favourites": "Von %1 favorisierte Beiträge",
     "user.settings": "Benutzer-Einstellungen",
+    "user.watched": "Topics watched by %1",
     "maintenance.text": "%1 befindet sich derzeit in der Wartung. Bitte komm später wieder.",
     "maintenance.messageIntro": "Zusätzlich hat der Administrator diese Nachricht hinterlassen:"
 }

@@ -60,6 +60,7 @@
     "digest_monthly": "Kas mėnesį",
     "send_chat_notifications": "Jeigu gaunama nauja pokalbių žinutė ir aš neprisijungęs, siųsti el. laišką",
     "send_post_notifications": "Atsiųsti el. laišką kai parašomi atsakymai į mano prenumeruojamas temas",
+    "settings-require-reload": "Some setting changes require a reload. Click here to reload the page.",
     "has_no_follower": "Šis vartotojas neturi jokių sekėjų :(",
     "follows_no_one": "Šis vartotojas nieko neseka :(",
     "has_no_posts": "Šis vartotojas dar neparašė nė vieno pranešimo.",
@@ -76,5 +77,6 @@
     "enable_topic_searching": "Enable In-Topic Searching",
     "topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen.",
     "follow_topics_you_reply_to": "Sekite temas, į kurias jūs atsakėte.",
-    "follow_topics_you_create": "Sekite jūsų sukurtas temas."
+    "follow_topics_you_create": "Sekite jūsų sukurtas temas.",
+    "grouptitle": "Select the group title you would like to display"
 }

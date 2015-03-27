@@ -60,6 +60,7 @@
     "digest_monthly": "Månadsvis",
     "send_chat_notifications": "Skicka ett epostmeddelande om nya chatt-meddelanden tas emot när jag inte är online.",
     "send_post_notifications": "Send an email when replies are made to topics I am subscribed to",
+    "settings-require-reload": "Some setting changes require a reload. Click here to reload the page.",
     "has_no_follower": "Denna användare har inga följare :(",
     "follows_no_one": "Denna användare följer ingen :(",
     "has_no_posts": "Denna användare har inte gjort några inlägg än.",
@@ -76,5 +77,6 @@
     "enable_topic_searching": "Aktivera Sökning Inom Ämne",
     "topic_search_help": "Om aktiverat kommer sökning inom ämne överskrida webbläsarens vanliga sid-sökfunktion och tillåta dig att söka genom hela ämnet istället för det som endast visas på skärmen.",
     "follow_topics_you_reply_to": "Följ ämnen so du svarat på.",
-    "follow_topics_you_create": "Följ ämnen du skapat."
+    "follow_topics_you_create": "Följ ämnen du skapat.",
+    "grouptitle": "Select the group title you would like to display"
 }

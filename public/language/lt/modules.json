@@ -17,5 +17,6 @@
     "chat.three_months": "3 mėnesiai",
     "composer.user_said_in": "%1 parašė į %2:",
     "composer.user_said": "%1 parašė:",
-    "composer.discard": "Ar tikrai norite sunaikinti šį pranešimą?"
+    "composer.discard": "Ar tikrai norite sunaikinti šį pranešimą?",
+    "composer.submit_and_lock": "Submit and Lock"
 }
