@@ -129,6 +129,7 @@ define('admin/manage/category', [
 			inputEl.val('');
 			previewBox.css('background-image', '');
 			modified(inputEl[0]);
+			$(this).parent().addClass('hide').hide();
 		});
 
 		// Icon selection
