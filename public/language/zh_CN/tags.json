@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "此话题还没有主题帖。",
     "tags": "话题",
-    "enter_tags_here": "Enter tags here. %1-%2 characters. Press enter after each tag.",
+    "enter_tags_here": "在这里输入标签: %1 - %2 个字符。每个标签输入完后请按Enter。",
     "enter_tags_here_short": "输入话题...",
     "no_tags": "尚无话题。"
 }
