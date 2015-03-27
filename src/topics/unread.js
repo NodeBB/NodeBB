@@ -180,7 +180,7 @@ module.exports = function(Topics) {
 			}
 
 			var now = Date.now();
-			var scores = tids.map(function(tid) {
+			var scores = tids.map(function() {
 				return now;
 			});
 
