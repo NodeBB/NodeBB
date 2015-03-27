@@ -119,6 +119,18 @@ define('admin/manage/category', [
 			});
 		});
 
+		// Image Remover
+		$('.delete-image').on('click', function(e) {
+			e.preventDefault();
+
+			var inputEl = $('.upload-button'),
+				previewBox = inputEl.parent().parent().siblings('.category-preview');
+
+			inputEl.val('');
+			previewBox.css('background-image', '');
+			modified(inputEl[0]);
+		});
+
 		// Icon selection
 		$('.category-preview').on('click', function(ev) {
 			iconSelect.init($(this).find('i'), modified);
