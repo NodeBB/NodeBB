@@ -9,9 +9,6 @@
 
 	var helpers = {};
 
-	var utils = utils || require('../utils'),
-		S = S || require('string');
-
 	helpers.displayMenuItem = function(data, index) {
 		var item = data.navigation[index],
 			properties = item.properties;
@@ -47,10 +44,12 @@
 	};
 
 	helpers.escape = function(str) {
+		var utils = utils || require('../utils');
 		return utils.escapeHTML(str);
 	};
 
 	helpers.stripTags = function(str) {
+		var S = S || require('string');
 		return S(str).stripTags().s;
 	};
 
