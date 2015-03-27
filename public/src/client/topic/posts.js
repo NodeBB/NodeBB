@@ -22,8 +22,8 @@ define('forum/topic/posts', [
 		}
 
 		for (var i=0; i<data.posts.length; ++i) {
-			var postcount = components.get('user/postcount', data.posts[i].uid).attr('data-postcount');
-			postcount.html(parseInt(postcount, 10) + 1);
+			var cmp = components.get('user/postcount', data.posts[i].uid);
+			cmp.html(parseInt(cmp.attr('data-postcount'), 10) + 1);
 		}
 
 		createNewPosts(data, components.get('post').not('[data-index=0]'), function(html) {
