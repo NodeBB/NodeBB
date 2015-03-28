@@ -121,8 +121,8 @@ define('composer', [
 		}
 	}
 
-	function composerAlert(message) {
-		$('[data-action="post"]').removeAttr('disabled');
+	function composerAlert(post_uuid, message) {
+		$('#cmp-uuid-' + post_uuid).find('.composer-submit').removeAttr('disabled');
 		app.alert({
 			type: 'danger',
 			timeout: 3000,
@@ -498,17 +498,17 @@ define('composer', [
 		var checkTitle = parseInt(postData.cid, 10) || parseInt(postData.pid, 10);
 
 		if (uploads.inProgress[post_uuid] && uploads.inProgress[post_uuid].length) {
-			return composerAlert('[[error:still-uploading]]');
+			return composerAlert(post_uuid, '[[error:still-uploading]]');
 		} else if (checkTitle && titleEl.val().length < parseInt(config.minimumTitleLength, 10)) {
-			return composerAlert('[[error:title-too-short, ' + config.minimumTitleLength + ']]');
+			return composerAlert(post_uuid, '[[error:title-too-short, ' + config.minimumTitleLength + ']]');
 		} else if (checkTitle && titleEl.val().length > parseInt(config.maximumTitleLength, 10)) {
-			return composerAlert('[[error:title-too-long, ' + config.maximumTitleLength + ']]');
+			return composerAlert(post_uuid, '[[error:title-too-long, ' + config.maximumTitleLength + ']]');
 		} else if (checkTitle && !utils.slugify(titleEl.val()).length) {
-			return composerAlert('[[error:invalid-title]]');
+			return composerAlert(post_uuid, '[[error:invalid-title]]');
 		} else if (bodyEl.val().length < parseInt(config.minimumPostLength, 10)) {
-			return composerAlert('[[error:content-too-short, ' + config.minimumPostLength + ']]');
+			return composerAlert(post_uuid, '[[error:content-too-short, ' + config.minimumPostLength + ']]');
 		} else if (bodyEl.val().length > parseInt(config.maximumPostLength, 10)) {
-			return composerAlert('[[error:content-too-long, ' + config.maximumPostLength + ']]');
+			return composerAlert(post_uuid, '[[error:content-too-long, ' + config.maximumPostLength + ']]');
 		}
 
 		var composerData = {}, action;
@@ -546,7 +546,7 @@ define('composer', [
 		}
 
 		socket.emit(action, composerData, function (err, data) {
-			$('[data-action="post"]').removeAttr('disabled');
+			postContainer.find('.composer-submit').removeAttr('disabled');
 			if (err) {
 				if (err.message === '[[error:email-not-confirmed]]') {
 					return app.showEmailConfirmWarning(err);
