@@ -79,7 +79,7 @@
 				<div class="panel-body">
 					<p>
 						You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or
-						a per-group basis. You can add a new user or group to this table by searching for them in the form below.
+						a per-group basis. You can add a new user to this table by searching for them in the form below.
 					</p>
 					<p class="text-warning">
 						<strong>Note</strong>: Privilege settings take effect immediately. It is not necessary to save the category after adjusting

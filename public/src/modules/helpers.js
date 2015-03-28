@@ -108,7 +108,7 @@
 		}
 	};
 
-	helpers.spawnPrivilegeStates = function(privileges) {
+	helpers.spawnPrivilegeStates = function(member, privileges) {
 		var states = [];
 		for(var priv in privileges) {
 			if (privileges.hasOwnProperty(priv)) {
@@ -119,7 +119,7 @@
 			}
 		}
 		return states.map(function(priv) {
-			return '<td class="text-center" data-privilege="' + priv.name + '"><input type="checkbox"' + (priv.state ? ' checked' : '') + ' /></td>';
+			return '<td class="text-center" data-privilege="' + priv.name + '"><input type="checkbox"' + (priv.state ? ' checked' : '') + (member === 'guests' && priv.name === 'groups:moderate' ? ' disabled="disabled"' : '') + ' /></td>';
 		}).join('');
 	};
 

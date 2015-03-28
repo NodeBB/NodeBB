@@ -184,24 +184,24 @@ define('admin/manage/category', [
 				privilege = checkboxEl.parent().attr('data-privilege'),
 				state = checkboxEl.prop('checked'),
 				rowEl = checkboxEl.parents('tr'),
-				member = rowEl.attr('data-group-name') || rowEl.attr('data-uid');
+				member = rowEl.attr('data-group-name') || rowEl.attr('data-uid'),
+				isPrivate = parseInt(rowEl.attr('data-private') || 0, 10),
+				isGroup = rowEl.attr('data-group-name') !== undefined;
 
 			if (member) {
-				socket.emit('admin.categories.setPrivilege', {
-					cid: ajaxify.variables.get('cid'),
-					privilege: privilege,
-					set: state,
-					member: member
-				}, function(err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-
-					checkboxEl.replaceWith('<i class="fa fa-spin fa-spinner"></i>');
-					Category.refreshPrivilegeTable();
-				});
+				if (isGroup && privilege === 'groups:moderate' && !isPrivate && state) {
+					bootbox.confirm('<strong>Are you sure you wish to grant the moderation privilege to this user group?</strong> This group is public, and any users can join at will.', function(confirm) {
+						if (confirm) {
+							Category.setPrivilege(member, privilege, state, checkboxEl);
+						} else {
+							checkboxEl.prop('checked', checkboxEl.prop('checked') ^ 1);
+						}
+					});
+				} else {
+					Category.setPrivilege(member, privilege, state, checkboxEl);
+				}
 			} else {
-				app.alertError('No member or group was selected');
+				app.alertError('[[error:invalid-data]]');
 			}
 		})
 	};
@@ -217,6 +217,22 @@ define('admin/manage/category', [
 			}, function(html) {
 				$('.privilege-table-container').html(html);
 			});
+		});
+	};
+
+	Category.setPrivilege = function(member, privilege, state, checkboxEl) {
+		socket.emit('admin.categories.setPrivilege', {
+			cid: ajaxify.variables.get('cid'),
+			privilege: privilege,
+			set: state,
+			member: member
+		}, function(err) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			checkboxEl.replaceWith('<i class="fa fa-spin fa-spinner"></i>');
+			Category.refreshPrivilegeTable();
 		});
 	};
 

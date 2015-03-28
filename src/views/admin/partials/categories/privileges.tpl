@@ -11,7 +11,7 @@
 							<tr data-uid="{uid}">
 								<td><img src="{picture}" title="{username}" /></td>
 								<td>{username}</td>
-								{function.spawnPrivilegeStates, privileges}
+								{function.spawnPrivilegeStates, username, privileges}
 							</tr>
 							<!-- END privileges.users -->
 							<!-- ELSE -->
@@ -31,9 +31,14 @@
 								<!-- END privileges.labels.groups -->
 							</tr>
 							<!-- BEGIN privileges.groups -->
-							<tr data-group-name="{privileges.groups.name}">
-								<td>{privileges.groups.name}</td>
-								{function.spawnPrivilegeStates, privileges}
+							<tr data-group-name="{privileges.groups.name}" data-private="<!-- IF privileges.groups.isPrivate -->1<!-- ELSE -->0<!-- ENDIF privileges.groups.isPrivate -->">
+								<td>
+									<!-- IF privileges.groups.isPrivate -->
+									<i class="fa fa-lock text-muted" title="This group is private"></i>
+									<!-- ENDIF privileges.groups.isPrivate -->
+									{privileges.groups.name}
+								</td>
+								{function.spawnPrivilegeStates, name, privileges}
 							</tr>
 							<!-- END privileges.groups -->
 						</table>

@@ -117,6 +117,19 @@ module.exports = function(privileges) {
 
 							next(null, memberData);
 						});
+					},
+					function(memberData, next) {
+						// Grab privacy info for the groups as well
+						async.map(memberData, function(member, next) {
+							groups.isPrivate(member.name, function(err, isPrivate) {
+								if (err) {
+									return next(err);
+								}
+
+								member.isPrivate = isPrivate;
+								next(null, member);
+							});
+						}, next);
 					}
 				], next);
 			}
