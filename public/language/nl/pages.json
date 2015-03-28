@@ -11,10 +11,10 @@
     "user.followers": "Mensen die %1 Volgen",
     "user.posts": "Berichten geplaatst door %1",
     "user.topics": "Topics gecreëerd door %1",
-    "user.groups": "%1's Groups",
+    "user.groups": "%1's groepen",
     "user.favourites": "%1's Favoriete Berichten",
     "user.settings": "Gebruikersinstellingen",
-    "user.watched": "Topics watched by %1",
+    "user.watched": "Berichten die worden bekeken door %1",
     "maintenance.text": "%1 is momenteel in onderhoud modus. Probeer later opnieuw",
     "maintenance.messageIntro": "daarnaast heeft de administrator het volgende bericht achtergelaten:"
 }
