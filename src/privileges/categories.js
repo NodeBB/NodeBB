@@ -44,7 +44,17 @@ module.exports = function(privileges) {
 						privileges = privs;
 						groups.getMembersOfGroups(privs.map(function(privilege) {
 							return 'cid:' + cid + ':privileges:' + privilege;
-						}), next);
+						}), function(err, memberSets) {
+							if (err) {
+								return next(err);
+							}
+
+							next(null, memberSets.map(function(set) {
+								return set.map(function(uid) {
+									return parseInt(uid, 10);
+								});
+							}));
+						});
 					},
 					function(memberSets, next) {
 						// Reduce into a single array
@@ -58,7 +68,7 @@ module.exports = function(privileges) {
 							memberData = memberData.map(function(member) {
 								member.privileges = {};
 								for(var x=0,numPrivs=privileges.length;x<numPrivs;x++) {
-									member.privileges[privileges[x]] = memberSets[x].indexOf(member.uid) !== -1;
+									member.privileges[privileges[x]] = memberSets[x].indexOf(parseInt(member.uid, 10)) !== -1;
 								}
 
 								return member;
@@ -110,7 +120,16 @@ module.exports = function(privileges) {
 					}
 				], next);
 			}
-		}, callback);
+		}, function(err, payload) {
+			if (err) {
+				return callback(err);
+			}
+
+			// This is a hack because I can't do {labels.users.length} to echo the count in templates.js
+			payload.columnCount = payload.labels.users.length + 2;
+
+			callback(null, payload);
+		});
 	};
 
 	privileges.categories.get = function(cid, uid, callback) {
