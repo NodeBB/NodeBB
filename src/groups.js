@@ -126,7 +126,7 @@ var async = require('async'),
 
 					if (options.expand) {
 						async.waterfall([
-							async.apply(async.map, uids, user.getUserData),
+							async.apply(user.getUsers, uids, options.uid || 0),
 							function(users, next) {
 								// Filter out non-matches
 								users = users.filter(Boolean);
