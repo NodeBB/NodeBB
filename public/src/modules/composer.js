@@ -301,7 +301,8 @@ define('composer', [
 
 			var postContainer = $(composerTemplate[0]),
 				bodyEl = postContainer.find('textarea'),
-				draft = drafts.getDraft(postData.save_id);
+				draft = drafts.getDraft(postData.save_id),
+				submitBtn = postContainer.find('.composer-submit');
 
 			tags.init(postContainer, composer.posts[post_uuid]);
 			categoryList.init(postContainer, composer.posts[post_uuid]);
@@ -325,17 +326,31 @@ define('composer', [
 				composer.posts[post_uuid].modified = true;
 			});
 
-			postContainer.on('click', '[data-action="post"]', function() {
-				$(this).attr('disabled', true);
-				post(post_uuid);
+			submitBtn.on('click', function() {
+				var action = $(this).attr('data-action');
+
+				switch(action) {
+					case 'post-lock':
+						$(this).attr('disabled', true);
+						post(post_uuid, {lock: true});
+						break;
+
+					case 'post':	// intentional fall-through
+					default:
+						$(this).attr('disabled', true);
+						post(post_uuid);
+						break;
+				}
 			});
 
-			postContainer.on('click', '[data-action="post-lock"]', function() {
-				$(this).attr('disabled', true);
-				post(post_uuid, {lock: true});
+			postContainer.on('click', 'a[data-switch-action]', function() {
+				var action = $(this).attr('data-switch-action'),
+					label = $(this).html();
+
+				submitBtn.attr('data-action', action).html(label);
 			});
 
-			postContainer.on('click', '[data-action="discard"]', function() {
+			postContainer.find('.composer-discard').on('click', function() {
 				if (!composer.posts[post_uuid].modified) {
 					discard(post_uuid);
 					return;
