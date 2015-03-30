@@ -460,7 +460,7 @@ app.cacheBuster = null;
 
 	function collapseNavigationOnClick() {
 		$('#nav-dropdown').off('click').on('click', '#main-nav a, #user-control-list a, #logged-out-menu li a, #logged-in-menu .visible-xs, #chat-list a', function() {
-			if (($('.navbar .navbar-collapse').length && $('.navbar .navbar-collapse').hasClass('in')) || $('.navbar-slide-in').length)  {
+			if (($('.navbar .navbar-collapse').length && $('.navbar .navbar-collapse').hasClass('in')) || ($('body').hasClass('slide-in') && $('.navbar-slide-in').length))  {
 				$('.navbar-header button').click();
 			}
 		});
