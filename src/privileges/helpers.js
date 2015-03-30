@@ -83,30 +83,5 @@ function isGuestAllowedTo(privilege, cids, callback) {
 	groups.isMemberOfGroups('guests', groupKeys, callback);
 }
 
-helpers.hasEnoughReputationFor = function(privilege, uid, callback) {
-	if (parseInt(meta.config['privileges:disabled'], 10) || !parseInt(uid, 10)) {
-		return callback(null, false);
-	}
-
-	user.getUserField(uid, 'reputation', function(err, reputation) {
-		if (err) {
-			return callback(null, false);
-		}
-
-		reputation = parseInt(reputation, 10);
-
-		if (Array.isArray(privilege)) {
-			for(var i=0; i<privilege.length; ++i) {
-				if (reputation >= parseInt(meta.config[privilege[i]], 10)) {
-					return callback(null, true);
-				}
-			}
-
-			callback(null, false);
-		} else {
-			callback(null, reputation >= parseInt(meta.config[privilege], 10));
-		}
-	});
-};
 
 module.exports = helpers;
