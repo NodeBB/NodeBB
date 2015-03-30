@@ -1,156 +1,119 @@
-<div class="categories">
+<div class="row">
 	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-folder"></i> Categories</div>
 			<div class="panel-body">
-				<ul class="nav nav-pills">
-					<li class='active'><a href='/admin/manage/categories/active'>Active</a></li>
-					<li class=''><a href='/admin/manage/categories/disabled'>Disabled</a></li>
-				</ul>
+				<table class="table table-striped table-hover table-reordering">
+					<thead>
+						<tr>
+							<th></th>
+							<th>Name</th>
+							<th>Description</th>
+							<th class="text-center">Topics</th>
+							<th class="text-center">Posts</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody id="active-categories">
+						<!-- IF active.length -->
+						<!-- BEGIN active -->
+						<tr data-cid="{active.cid}">
+							<td>
+								<span class="label" style="
+									<!-- IF active.backgroundImage -->background-image: url({active.backgroundImage});<!-- ENDIF active.backgroundImage -->
+									<!-- IF active.bgColor -->background-color: {active.bgColor};<!-- ENDIF active.bgColor -->
+									color: {active.color};
+									background-size:cover;
+								">
+									<i data-name="icon" value="{active.icon}" class="fa fa-fw {active.icon}"></i>
+								</span>
+							</td>
+							<td>{active.name}</td>
+							<td>{active.description}</td>
+							<td class="text-center">{active.topic_count}</td>
+							<td class="text-center">{active.post_count}</td>
+							<td>
+								<div class="btn-group">
+									<a href="./categories/{active.cid}" class="btn btn-default btn-xs">Edit</a>
+									<button data-action="toggle" data-disabled="{active.disabled}" class="btn btn-default btn-xs">Disable</button>
+								</div>
+							</td>
+						</tr>
+						<!-- END active -->
+						<!-- ELSE -->
+						<tr>
+							<td colspan="6">
+								<div class="alert alert-info text-center">
+									You have no active categories.
+								</div>
+							</td>
+						</tr>
+						<!-- ENDIF active.length -->
+					</tbody>
+				</table>
+			</div>
+		</div>
 
-				<div class="row admin-categories">
-					<ul class="col-md-12" id="entry-container">
-					<!-- BEGIN categories -->
-						<li data-cid="{categories.cid}" class="entry-row">
-							<div class="well">
-								<form class="form">
-									<div class="row">
-										<div class="col-sm-2 hidden-xs text-center">
-											<div class="preview-box" style="
-												<!-- IF categories.backgroundImage -->background-image: url({categories.backgroundImage});<!-- ENDIF categories.backgroundImage -->
-												<!-- IF categories.bgColor -->background-color: {categories.bgColor};<!-- ENDIF categories.bgColor -->
-												color: {categories.color};
-												background-size:cover;
-											">
-												<div class="icon">
-													<i data-name="icon" value="{categories.icon}" class="fa {categories.icon} fa-2x"></i>
-												</div>
-											</div><br />
-											<button type="button" data-name="image" data-value="{categories.image}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Image</button>
-											<!-- IF categories.image -->
-											<br/>
-											<small class="pointer delete-image"><i data-name="icon" value="fa-times" class="fa fa-times"></i> Delete Image</small>
-											<!-- ENDIF categories.image -->
-										</div>
-										<div class="col-sm-10">
-											<div class="pull-right text-right">
-												<div class="form-group">
-													<div class="dropdown">
-														<button type="button" class="btn btn-default" data-toggle="dropdown"><i class="fa fa-cogs"></i> Options</button>
-														<ul class="dropdown-menu" role="menu">
-															<li class="permissions"><a href="#"><i class="fa fa-ban"></i> Access Control</a></li>
-															<hr />
-															<li data-disabled="{categories.disabled}">
-																<!-- IF categories.disabled -->
-																	<a href="#"><i class="fa fa-power-off"></i> Enable</a>
-																<!-- ELSE -->
-																	<a href="#"><i class="fa fa-power-off"></i> Disable</a>
-																<!-- ENDIF categories.disabled -->
-															</li>
-															<li><a href="#" class="purge"><i class="fa fa-eraser"></i> Purge</a></li>
-															<li><a href="#" class="duplicate"><i class="fa fa-copy"></i> Duplicate</a></li>
-														</ul>
-
-
-														<button class="btn btn-primary save">Save</button>
-
-													</div>
-												</div>
-											</div>
-											<h3 data-edit-target="#cid-{categories.cid}-name"><span>{categories.name}</span> <small><i class="fa fa-edit"></i></small></h3>
-											<input id="cid-{categories.cid}-name" type="text" class="form-control hide" placeholder="Category Name" data-name="name" value="{categories.name}" />
-											<h4 data-edit-target="#cid-{categories.cid}-description"><span>{categories.description}</span> <small><i class="fa fa-edit"></i></small></h4>
-											<input id="cid-{categories.cid}-description" data-name="description" placeholder="Category Description" value="{categories.description}" class="form-control category_description input-sm description hide"></input>
-
-											<fieldset>
-												<div class="col-xs-12">
-													<div class="form-group">
-														<label for="cid-{categories.cid}-parentCid">Parent Category</label>
-														<!-- IF categories.parent.name -->
-														<div class="btn-group">
-															<button type="button" class="btn btn-default" data-action="setParent" data-parentCid="{categories.parent.cid}"><i class="fa {categories.parent.icon}"></i> {categories.parent.name}</button>
-															<button type="button" class="btn btn-warning" data-action="removeParent" data-parentCid="{categories.parent.cid}"><i class="fa fa-times"></i></button>
-														</div>
-														<!-- ELSE -->
-														<button type="button" class="btn btn-default form-control" data-action="setParent"><i class="fa fa-sitemap"></i> (None)</button>
-														<!-- ENDIF categories.parent.name -->
-													</div>
-												</div>
-											</fieldset>
-											<fieldset>
-												<div class="col-sm-4 col-xs-12">
-													<div class="form-group">
-														<label for="cid-{categories.cid}-bgColor">Background Colour</label>
-														<input id="cid-{categories.cid}-bgColor" placeholder="#0059b2" data-name="bgColor" value="{categories.bgColor}" class="form-control category_bgColor" />
-													</div>
-												</div>
-												<div class="col-sm-4 col-xs-12">
-													<div class="form-group">
-														<label for="cid-{categories.cid}-color">Text Colour</label>
-														<input id="cid-{categories.cid}-color" placeholder="#fff" data-name="color" value="{categories.color}" class="form-control category_color" />
-													</div>
-												</div>
-												<div class="col-sm-4 col-xs-12">
-													<div class="form-group">
-														<label for="cid-{categories.cid}-imageClass">Image Class</label>
-															<select id="cid-{categories.cid}-imageClass" class="form-control" data-name="imageClass" data-value="{categories.imageClass}">
-															<option value="auto">auto</option>
-															<option value="cover">cover</option>
-															<option value="contain">contain</option>
-														</select>
-													</div>
-												</div>
-												<div class="col-sm-4 col-xs-12">
-													<div class="form-group">
-														<label for="cid-{categories.cid}-class">Custom Class</label>
-														<input id="cid-{categories.cid}-class" type="text" class="form-control" placeholder="col-md-6 col-xs-6" data-name="class" value="{categories.class}" />
-													</div>
-												</div>
-												<div class="col-sm-4 col-xs-12">
-													<div class="form-group">
-														<label for="cid-{categories.cid}-numRecentReplies"># of Recent Replies Displayed</label>
-														<input id="cid-{categories.cid}-numRecentReplies" type="text" class="form-control" placeholder="2" data-name="numRecentReplies" value="{categories.numRecentReplies}" />
-													</div>
-												</div>
-												<div class="col-sm-4 col-xs-12">
-													<div class="form-group">
-														<label for="cid-{categories.cid}-link">External Link</label>
-														<input id="cid-{categories.cid}-link" type="text" class="form-control" placeholder="http://domain.com" data-name="link" value="{categories.link}" />
-													</div>
-												</div>
-											</fieldset>
-
-											<input type="hidden" data-name="order" data-value="{categories.order}"></input>
-										</div>
-									</div>
-								</form>
-							</div>
-						</li>
-					<!-- END categories -->
-					</ul>
-				</div>				
+		<div class="panel panel-default">
+			<div class="panel-heading"><i class="fa fa-folder"></i> Categories</div>
+			<div class="panel-body">
+				<table class="table table-striped table-hover table-reordering">
+					<thead>
+						<tr>
+							<th></th>
+							<th>Name</th>
+							<th>Description</th>
+							<th class="text-center">Topics</th>
+							<th class="text-center">Posts</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody id="disabled-categories">
+						<!-- IF disabled.length -->
+						<!-- BEGIN disabled -->
+						<tr data-cid="{disabled.cid}">
+							<td>
+								<span class="label" style="
+									<!-- IF disabled.backgroundImage -->background-image: url({disabled.backgroundImage});<!-- ENDIF disabled.backgroundImage -->
+									<!-- IF disabled.bgColor -->background-color: {disabled.bgColor};<!-- ENDIF disabled.bgColor -->
+									color: {disabled.color};
+									background-size:cover;
+								">
+									<i data-name="icon" value="{disabled.icon}" class="fa fa-fw {disabled.icon}"></i>
+								</span>
+							</td>
+							<td>{disabled.name}</td>
+							<td>{disabled.description}</td>
+							<td class="text-center">{disabled.topic_count}</td>
+							<td class="text-center">{disabled.post_count}</td>
+							<td>
+								<div class="btn-group">
+									<a href="./categories/{disabled.cid}" class="btn btn-default btn-xs">Edit</a>
+									<button data-action="toggle" data-disabled="{disabled.disabled}" class="btn btn-default btn-xs">Enable</button>
+								</div>
+							</td>
+						</tr>
+						<!-- END disabled -->
+						<!-- ELSE -->
+						<tr>
+							<td colspan="6">
+								<div class="alert alert-info text-center">
+									You have no disabled categories.
+								</div>
+							</td>
+						</tr>
+						<!-- ENDIF disabled.length -->
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>
 
-	<div class="col-lg-3  acp-sidebar">
+	<div class="col-lg-3 acp-sidebar">
 		<div class="panel panel-default">
 			<div class="panel-heading">Categories Control Panel</div>
 			<div class="panel-body">
-				<button class="btn btn-primary" id="addNew">Create New Category</button>
-				<button class="btn btn-default" id="revertChanges">Revert Changes</button>
-			</div>
-		</div>
-	</div>
-	
-	<!-- IMPORT admin/partials/categories/new.tpl -->
-	<!-- IMPORT admin/partials/categories/permissions.tpl -->
-	<!-- IMPORT admin/partials/categories/setParent.tpl -->
-	<div id="icons" style="display:none;">
-		<div class="icon-container">
-			<div class="row fa-icons">
-				<i class="fa fa-doesnt-exist"></i>
-				<!-- IMPORT partials/fontawesome.tpl -->
+				<button type="button" class="btn btn-primary btn-block" data-action="create">Create New Category</button>
 			</div>
 		</div>
 	</div>

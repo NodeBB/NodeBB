@@ -1,7 +1,7 @@
 'use strict';
 
 
-/* globals define, app, templates, translator, socket, bootbox, config, ajaxify, RELATIVE_PATH, utils */
+/* globals define, app, components, templates, translator, socket, bootbox, config, ajaxify, RELATIVE_PATH, utils */
 
 define('forum/topic', [
 	'forum/pagination',
@@ -20,7 +20,7 @@ define('forum/topic', [
 	$(window).on('action:ajaxify.start', function(ev, data) {
 		if (ajaxify.currentPage !== data.url) {
 			navigator.hide();
-			$('.header-topic-title').find('span').text('').hide();
+			components.get('navbar/title').find('span').text('').hide();
 			app.removeAlert('bookmark');
 
 			events.removeListeners();
@@ -53,7 +53,7 @@ define('forum/topic', [
 
 		handleBookmark(tid);
 
-		navigator.init('.posts > .post-row', ajaxify.variables.get('postcount'), Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
+		navigator.init('[component="post"]', ajaxify.variables.get('postcount'), Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
 
 		$(window).on('scroll', updateTopicTitle);
 
@@ -112,7 +112,7 @@ define('forum/topic', [
 	}
 
 	function addBlockQuoteHandler() {
-		$('#post-container').on('click', 'blockquote .toggle', function() {
+		components.get('topic').on('click', 'blockquote .toggle', function() {
 			var blockQuote = $(this).parent('blockquote');
 			var toggle = $(this);
 			blockQuote.toggleClass('uncollapsed');
@@ -124,7 +124,7 @@ define('forum/topic', [
 
 	function enableInfiniteLoadingOrPagination() {
 		if(!config.usePagination) {
-			infinitescroll.init(posts.loadMorePosts, $('#post-container .post-row[data-index="0"]').height());
+			infinitescroll.init(posts.loadMorePosts, components.get('post', 'index', 0).height());
 		} else {
 			navigator.hide();
 
@@ -135,9 +135,9 @@ define('forum/topic', [
 
 	function updateTopicTitle() {
 		if($(window).scrollTop() > 50) {
-			$('.header-topic-title').find('span').text(ajaxify.variables.get('topic_name')).show();
+			components.get('navbar/title').find('span').text(ajaxify.variables.get('topic_name')).show();
 		} else {
-			$('.header-topic-title').find('span').text('').hide();
+			components.get('navbar/title').find('span').text('').hide();
 		}
 	}
 
@@ -148,18 +148,18 @@ define('forum/topic', [
 		return index;
 	};
 
-	Topic.navigatorCallback = function(element, elementCount) {
+	Topic.navigatorCallback = function(topPostIndex, bottomPostIndex, elementCount) {
 		var path = ajaxify.removeRelativePath(window.location.pathname.slice(1));
 		if (!path.startsWith('topic')) {
 			return 1;
 		}
-		var postIndex = parseInt(element.attr('data-index'), 10);
-		var index = postIndex + 1;
+		var postIndex = topPostIndex;
+		var index = bottomPostIndex;
 		if (config.topicPostSort !== 'oldest_to_newest') {
-			if (postIndex === 0) {
+			if (bottomPostIndex === 0) {
 				index = 1;
 			} else  {
-				index = Math.max(elementCount - postIndex + 1, 1);
+				index = Math.max(elementCount - bottomPostIndex + 2, 1);
 			}
 		}
 
@@ -175,8 +175,8 @@ define('forum/topic', [
 			var topicId = parts[1],
 				slug = parts[2];
 			var newUrl = 'topic/' + topicId + '/' + (slug ? slug : '');
-			if (postIndex > 0) {
-				newUrl += '/' + (postIndex + 1);
+			if (postIndex > 1) {
+				newUrl += '/' + postIndex;
 			}
 
 			if (newUrl !== currentUrl) {

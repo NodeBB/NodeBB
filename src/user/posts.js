@@ -84,6 +84,9 @@ module.exports = function(User) {
 			if (err) {
 				return callback(err);
 			}
+			if (!parseInt(uid, 10)) {
+				return callback();
+			}
 			db.sortedSetAdd('users:postcount', newpostcount, uid, callback);
 		});
 	};

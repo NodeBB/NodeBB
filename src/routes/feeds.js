@@ -84,8 +84,8 @@ function generateForTopic(req, res, next) {
 					feed.item({
 						title: 'Reply to ' + topicData.title + ' on ' + dateStamp,
 						description: postData.content,
-						url: nconf.get('url') + '/topic/' + topicData.slug + '#' + postData.pid,
-						author: postData.username,
+						url: nconf.get('url') + '/topic/' + topicData.slug + (postData.index ? '/' + (postData.index + 1) : ''),
+						author: postData.user ? postData.user.username : '',
 						date: dateStamp
 					});
 				}
@@ -144,8 +144,8 @@ function generateForCategory(req, res, next) {
 			if (err) {
 				return next(err);
 			}
-			sendFeed(feed, res);	
-		});		
+			sendFeed(feed, res);
+		});
 	});
 }
 
@@ -183,8 +183,8 @@ function generateForPopular(req, res, next) {
 				return next(err);
 			}
 			sendFeed(feed, res);
-		});	
-	});	
+		});
+	});
 }
 
 function disabledRSS(req, res, next) {
@@ -201,58 +201,41 @@ function generateForTopics(options, set, req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		
+
 		generateTopicsFeed(options, data.topics, function(err, feed) {
 			if (err) {
 				return next(err);
 			}
-			sendFeed(feed, res);	
-		});	
+			sendFeed(feed, res);
+		});
 	});
 }
 
 function generateTopicsFeed(feedOptions, feedTopics, callback) {
-	var tids = feedTopics.map(function(topic) {
-		return topic ? topic.tid : null;
-	});
-	
-	topics.getMainPids(tids, function(err, pids) {
-		if (err) {
-			return callback(err);
+
+	feedOptions.ttl = 60;
+	feedOptions.feed_url = nconf.get('url') + feedOptions.feed_url;
+	feedOptions.site_url = nconf.get('url') + feedOptions.site_url;
+
+	var	feed = new rss(feedOptions);
+
+	if (feedTopics.length > 0) {
+		feed.pubDate = new Date(parseInt(feedTopics[0].lastposttime, 10)).toUTCString();
+	}
+
+	feedTopics.forEach(function(topicData) {
+		if (topicData && topicData.teaser && topicData.teaser.user) {
+			feed.item({
+				title: topicData.title,
+				description: topicData.teaser.content,
+				url: nconf.get('url') + '/topic/' + topicData.slug,
+				author: topicData.teaser.user.username,
+				date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
+			});
 		}
-		posts.getPostsFields(pids, ['content'], function(err, posts) {
-			if (err) {
-				return callback(err);
-			}
+	});
+	callback(null, feed);
 
-			feedTopics.forEach(function(topic, index) {
-				if (topic && posts[index]) {
-					topic.mainPost = posts[index].content;
-				}
-			});
-
-			feedOptions.ttl = 60;
-			feedOptions.feed_url = nconf.get('url') + feedOptions.feed_url;
-			feedOptions.site_url = nconf.get('url') + feedOptions.site_url;
-
-			var	feed = new rss(feedOptions);
-
-			if (feedTopics.length > 0) {
-				feed.pubDate = new Date(parseInt(feedTopics[0].lastposttime, 10)).toUTCString();
-			}
-
-			feedTopics.forEach(function(topicData) {
-				feed.item({
-					title: topicData.title,
-					description: topicData.mainPost,
-					url: nconf.get('url') + '/topic/' + topicData.slug,
-					author: topicData.username,
-					date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
-				});
-			});
-			callback(null, feed);
-		});
-	});	
 }
 
 function generateForRecentPosts(req, res, next) {

@@ -14,6 +14,7 @@
     "user.groups": "Группы %1",
     "user.favourites": "Избранные сообщения %1",
     "user.settings": "Настройки",
+    "user.watched": "Topics watched by %1",
     "maintenance.text": "%1 в настоящее время на обслуживании. Пожалуйста, возвращайтесь позже.",
     "maintenance.messageIntro": "Администратор оставил сообщение:"
 }

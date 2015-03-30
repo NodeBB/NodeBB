@@ -1,9 +1,9 @@
 {
     "new_topic_button": "Új témakör",
-    "guest-login-post": "Log in to post",
+    "guest-login-post": "A hozzászóláshoz be kell lépni",
     "no_topics": "<strong>Nincs nyitva egy téma sem ebben a kategóriában.</strong>Hozzunk létre egyet.",
     "browsing": "böngészés",
     "no_replies": "Nem érkezett válasz",
     "share_this_category": "Kategória megosztása",
-    "ignore": "Figyelmen kívül hagyás"
+    "ignore": "Ignorálás"
 }

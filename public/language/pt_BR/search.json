@@ -32,9 +32,9 @@
     "category": "Categoria",
     "descending": "Em ordem descendente",
     "ascending": "Em ordem ascendente",
-    "save-preferences": "Save preferences",
-    "clear-preferences": "Clear preferences",
-    "search-preferences-saved": "Search preferences saved",
-    "search-preferences-cleared": "Search preferences cleared",
-    "show-results-as": "Show results as"
+    "save-preferences": "Salvar preferências",
+    "clear-preferences": "Limpar preferências",
+    "search-preferences-saved": "Preferências de busca salvas",
+    "search-preferences-cleared": "Preferências de busca limpas",
+    "show-results-as": "Mostrar resultados como"
 }

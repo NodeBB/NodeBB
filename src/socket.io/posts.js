@@ -49,7 +49,13 @@ SocketPosts.reply = function(socket, data, callback) {
 
 		socket.emit('event:new_post', result);
 
+		user.updateOnlineUsers(socket.uid);
+
 		SocketPosts.notifyOnlineUsers(socket.uid, result);
+
+		if (data.lock) {
+			socketTopics.doTopicAction('lock', 'event:topic_locked', socket, {tids: [postData.topic.tid], cid: postData.topic.cid});
+		}
 	});
 };
 
@@ -228,7 +234,7 @@ SocketPosts.sendNotificationToPostOwner = function(pid, fromuid, notification) {
 		async.parallel({
 			username: async.apply(user.getUserField, fromuid, 'username'),
 			topicTitle: async.apply(topics.getTopicField, postData.tid, 'title'),
-			postObj: async.apply(postTools.parsePost, postData, postData.uid)
+			postObj: async.apply(postTools.parsePost, postData)
 		}, function(err, results) {
 			if (err) {
 				return;
@@ -362,9 +368,9 @@ SocketPosts.purge = function(socket, data, callback) {
 			});
 
 			callback();
-		});	
+		});
 	}
-	
+
 	if (!data || !parseInt(data.pid, 10)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -475,7 +481,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 		function(topic, next) {
 			post.topic = topic;
 			message = '[[notifications:user_flagged_post_in, ' + userName + ', ' + topic.title + ']]';
-			postTools.parsePost(post, socket.uid, next);
+			postTools.parsePost(post, next);
 		},
 		function(post, next) {
 			async.parallel({
@@ -500,7 +506,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 				}
 				notifications.push(notification, results.admins.concat(results.moderators), next);
 			});
-		}		
+		}
 	], callback);
 };
 

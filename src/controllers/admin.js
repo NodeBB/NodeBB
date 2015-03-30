@@ -6,6 +6,7 @@ var async = require('async'),
 
 	user = require('../user'),
 	categories = require('../categories'),
+	privileges = require('../privileges'),
 	posts = require('../posts'),
 	topics = require('../topics'),
 	meta = require('../meta'),
@@ -126,33 +127,42 @@ function getGlobalField(field, callback) {
 	});
 }
 
-adminController.categories.active = function(req, res, next) {
-	filterAndRenderCategories(req, res, next, true);
+adminController.categories.get = function(req, res, next) {
+	async.parallel({
+		category: async.apply(categories.getCategories, [req.params.category_id], req.user.uid),
+		privileges: async.apply(privileges.categories.list, req.params.category_id)
+	}, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		res.render('admin/manage/category', {
+			category: data.category[0],
+			privileges: data.privileges
+		});
+	});
 };
 
-adminController.categories.disabled = function(req, res, next) {
-	filterAndRenderCategories(req, res, next, false);
-};
+adminController.categories.getAll = function(req, res, next) {
+	var uid = req.user ? parseInt(req.user.uid, 10) : 0,
+		active = [],
+		disabled = [];
 
-function filterAndRenderCategories(req, res, next, active) {
-	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
 	categories.getAllCategories(uid, function (err, categoryData) {
 		if (err) {
 			return next(err);
 		}
 
-		categoryData = categoryData.filter(function (category) {
-			if (!category) {
-				return false;
-			}
-			return active ? !category.disabled : category.disabled;
+		categoryData.filter(Boolean).forEach(function(category) {
+			(category.disabled ? disabled : active).push(category);
 		});
 
 		res.render('admin/manage/categories', {
-			categories: categoryData
+			active: active,
+			disabled: disabled
 		});
 	});
-}
+};
 
 adminController.tags.get = function(req, res, next) {
 	topics.getTags(0, 199, function(err, tags) {

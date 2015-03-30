@@ -9,7 +9,7 @@
 		utils = require('./../../public/src/utils.js'),
 		redis,
 		connectRedis,
-		reds,
+		redisSearch,
 		redisClient,
 		postSearch,
 		topicSearch;
@@ -41,7 +41,7 @@
 		try {
 			redis = require('redis');
 			connectRedis = require('connect-redis')(session);
-			reds = require('reds');
+			redisSearch = require('redisearch');
 		} catch (err) {
 			winston.error('Unable to initialize Redis! Is Redis installed? Error :' + err.message);
 			process.exit();
@@ -56,12 +56,8 @@
 			ttl: 60 * 60 * 24 * 14
 		});
 
-		reds.createClient = function () {
-			return reds.client || (reds.client = redisClient);
-		};
-
-		module.postSearch = reds.createSearch('nodebbpostsearch');
-		module.topicSearch = reds.createSearch('nodebbtopicsearch');
+		module.postSearch = redisSearch.createSearch('nodebbpostsearch', redisClient);
+		module.topicSearch = redisSearch.createSearch('nodebbtopicsearch', redisClient);
 
 		require('./redis/main')(redisClient, module);
 		require('./redis/hash')(redisClient, module);

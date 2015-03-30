@@ -356,7 +356,7 @@ accountsController.accountSettings = function(req, res, next) {
 			},
 			userGroups: function(next) {
 				groups.getUserGroups([userData.uid], next);
-			},			
+			},
 			languages: function(next) {
 				languages.list(next);
 			}
@@ -434,7 +434,7 @@ accountsController.uploadPicture = function (req, res, next) {
 
 			user.setUserFields(updateUid, {uploadedpicture: image.url, picture: image.url});
 
-			res.json([{name: userPhoto.name, url: nconf.get('relative_path') + image.url}]);
+			res.json([{name: userPhoto.name, url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url}]);
 		}
 
 		if (err) {

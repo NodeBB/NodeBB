@@ -17,5 +17,6 @@
     "chat.three_months": "৩ মাস",
     "composer.user_said_in": "%1 বলেছেন %2:",
     "composer.user_said": "%1 বলেছেনঃ",
-    "composer.discard": "আপনি কি নিশ্চিত যে আপনি এই পোস্ট বাতিল করতে ইচ্ছুক?"
+    "composer.discard": "আপনি কি নিশ্চিত যে আপনি এই পোস্ট বাতিল করতে ইচ্ছুক?",
+    "composer.submit_and_lock": "Submit and Lock"
 }

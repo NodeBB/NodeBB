@@ -29,7 +29,7 @@ define('forum/categories', function() {
 	};
 
 	function renderNewPost(cid, post) {
-		var category = $('.category-item[data-cid="' + cid + '"]');
+		var category = components.get('category/topic', 'cid', cid);
 		if (!category.length) {
 			return;
 		}
@@ -67,7 +67,7 @@ define('forum/categories', function() {
 			translator.translate(html, function(translatedHTML) {
 				translatedHTML = $(translatedHTML);
 				translatedHTML.find('img').addClass('img-responsive');
-				translatedHTML.find('span.timeago').timeago();
+				translatedHTML.find('.timeago').timeago();
 				callback(translatedHTML);
 			});
 		});

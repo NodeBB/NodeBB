@@ -18,7 +18,7 @@
     "username-taken": "Username sudah terdaftar",
     "email-taken": "Email sudah terdaftar",
     "email-not-confirmed": "Email kamu belum dikonfirmasi, klik disini untuk mengkonfirmasi email.",
-    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
     "no-email-to-confirm": "This forum requires email confirmation, please click here to enter an email",
     "email-confirm-failed": "We could not confirm your email, please try again later.",
     "username-too-short": "Username terlalu pendek",

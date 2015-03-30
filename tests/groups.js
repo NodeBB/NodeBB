@@ -186,13 +186,22 @@ describe('Groups', function() {
 	});
 
 	describe('.update()', function() {
+		before(function(done) {
+			Groups.create({
+				name: 'updateTestGroup',
+				description: 'bar',
+				system: 0,
+				hidden: 0
+			}, done);
+		});
+
 		it('should change an aspect of a group', function(done) {
-			Groups.update('foo', {
+			Groups.update('updateTestGroup', {
 				description: 'baz'
 			}, function(err) {
 				if (err) return done(err);
 
-				Groups.get('foo', {}, function(err, groupObj) {
+				Groups.get('updateTestGroup', {}, function(err, groupObj) {
 					if (err) return done(err);
 
 					assert.strictEqual('baz', groupObj.description);
@@ -203,16 +212,16 @@ describe('Groups', function() {
 		});
 
 		it('should rename a group if the name was updated', function(done) {
-			Groups.update('foo', {
-				name: 'foobar?'
+			Groups.update('updateTestGroup', {
+				name: 'updateTestGroup?'
 			}, function(err) {
 				if (err) return done(err);
 
-				Groups.get('foobar?', {}, function(err, groupObj) {
+				Groups.get('updateTestGroup?', {}, function(err, groupObj) {
 					if (err) return done(err);
 
-					assert.strictEqual('foobar?', groupObj.name);
-					assert.strictEqual('foobar', groupObj.slug);
+					assert.strictEqual('updateTestGroup?', groupObj.name);
+					assert.strictEqual('updatetestgroup', groupObj.slug);
 
 					done();
 				});

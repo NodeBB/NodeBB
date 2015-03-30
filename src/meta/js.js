@@ -44,10 +44,11 @@ module.exports = function(Meta) {
 				'public/src/utils.js',
 				'public/src/app.js',
 				'public/src/ajaxify.js',
-				'public/src/variables.js',
-				'public/src/widgets.js',
+				'public/src/components.js',
+				'public/src/overrides.js',
 				'public/src/translator.js',
-				'public/src/overrides.js'
+				'public/src/variables.js',
+				'public/src/widgets.js'
 			],
 			rjs: []
 		}
@@ -93,7 +94,7 @@ module.exports = function(Meta) {
 					clientScripts = [];
 
 				pluginsScripts = plugins.clientScripts.filter(function(path) {
-					if (path.indexOf('.js') !== -1) {
+					if (path.endsWith('.js')) {
 						return true;
 					} else {
 						pluginDirectories.push(path);

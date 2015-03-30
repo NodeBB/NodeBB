@@ -12,7 +12,7 @@
     "notify_me": "該主題有新回覆時通知我",
     "quote": "引用",
     "reply": "回覆",
-    "guest-login-reply": "Log in to reply",
+    "guest-login-reply": "登入以回覆",
     "edit": "編輯",
     "delete": "刪除",
     "purge": "清除",
@@ -75,7 +75,7 @@
     "fork_no_pids": "尚未選擇文章！",
     "fork_success": "成功分叉成新的主題！點擊這裡進入新的主題。",
     "composer.title_placeholder": "輸入標題...",
-    "composer.handle_placeholder": "Name",
+    "composer.handle_placeholder": "名字",
     "composer.discard": "放棄",
     "composer.submit": "發表",
     "composer.replying_to": "回覆給 %1",
@@ -95,5 +95,5 @@
     "oldest_to_newest": "從舊到新",
     "newest_to_oldest": "從新到舊",
     "most_votes": "得票最多",
-    "most_posts": "Most posts"
+    "most_posts": "最多post"
 }

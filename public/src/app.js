@@ -105,8 +105,8 @@ app.cacheBuster = null;
 				case 'admin':
 					room = 'admin';
 				break;
-				case 'home':
-					room = 'home';
+				case 'categories':
+					room = 'categories';
 				break;
 			}
 			app.currentRoom = '';
@@ -234,7 +234,7 @@ app.cacheBuster = null;
 	app.processPage = function () {
 		highlightNavigationLink();
 
-		$('span.timeago').timeago();
+		$('.timeago').timeago();
 
 		utils.makeNumbersHumanReadable($('.human-readable-number'));
 

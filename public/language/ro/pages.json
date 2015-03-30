@@ -14,6 +14,7 @@
     "user.groups": "%1's Groups",
     "user.favourites": "Mesajele favorite ale lui %1",
     "user.settings": "Setări Utilizator",
+    "user.watched": "Topics watched by %1",
     "maintenance.text": "%1 este momentan în mentenanță. Întoarce-te în curând!",
     "maintenance.messageIntro": "Additionally, the administrator has left this message:"
 }

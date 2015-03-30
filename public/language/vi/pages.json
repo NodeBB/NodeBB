@@ -14,6 +14,7 @@
     "user.groups": "%1's Groups",
     "user.favourites": "Các bài gửi yêu thích của %1",
     "user.settings": "Thiết lập cho người dùng",
+    "user.watched": "Topics watched by %1",
     "maintenance.text": "%1 đang được bảo trì. Xin vui lòng quay lại sau.",
     "maintenance.messageIntro": "Ban quản lí để lại lời nhắn sau:"
 }

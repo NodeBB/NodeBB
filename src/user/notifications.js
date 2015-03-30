@@ -109,34 +109,38 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			var pids = notifications.map(function(notification) {
-				return notification ? notification.pid : null;
-			});
+			UserNotifications.generateNotificationPaths(notifications, uid, callback);
+		});
+	};
 
-			generatePostPaths(pids, uid, function(err, pidToPaths) {
-				if (err) {
-					return callback(err);
+	UserNotifications.generateNotificationPaths = function (notifications, uid, callback) {
+		var pids = notifications.map(function(notification) {
+			return notification ? notification.pid : null;
+		});
+
+		generatePostPaths(pids, uid, function(err, pidToPaths) {
+			if (err) {
+				return callback(err);
+			}
+
+			notifications = notifications.map(function(notification, index) {
+				if (!notification) {
+					return null;
 				}
 
-				notifications = notifications.map(function(notification, index) {
-					if (!notification) {
-						return null;
-					}
+				notification.path = pidToPaths[notification.pid] || notification.path || '';
 
-					notification.path = pidToPaths[notification.pid] || notification.path || '';
+				if (notification.nid.startsWith('chat')) {
+					notification.path = nconf.get('relative_path') + '/chats/' + notification.user.userslug;
+				} else if (notification.nid.startsWith('follow')) {
+					notification.path = nconf.get('relative_path') + '/user/' + notification.user.userslug;
+				}
 
-					if (notification.nid.startsWith('chat')) {
-						notification.path = nconf.get('relative_path') + '/chats/' + notification.user.userslug;
-					} else if (notification.nid.startsWith('follow')) {
-						notification.path = nconf.get('relative_path') + '/user/' + notification.user.userslug;
-					}
-
-					notification.datetimeISO = utils.toISOString(notification.datetime);
-					return notification;
-				});
-
-				callback(null, notifications);
+				notification.datetimeISO = utils.toISOString(notification.datetime);
+				return notification;
 			});
+
+			callback(null, notifications);
 		});
 	};
 

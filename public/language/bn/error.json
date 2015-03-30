@@ -18,7 +18,7 @@
     "username-taken": "ইউজারনেম আগেই ব্যবহৃত",
     "email-taken": "ইমেইল আগেই ব্যবহৃত",
     "email-not-confirmed": "আপনার ইমেইল এড্রেস নিশ্চিত করা হয় নি, নিশ্চিত করতে এখানে ক্লিক করুন।",
-    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
     "no-email-to-confirm": "This forum requires email confirmation, please click here to enter an email",
     "email-confirm-failed": "We could not confirm your email, please try again later.",
     "username-too-short": "খুব ছোট ইউজারনেম",

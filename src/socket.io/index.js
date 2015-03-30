@@ -12,6 +12,7 @@ var	SocketIO = require('socket.io'),
 	user = require('../user'),
 	logger = require('../logger'),
 	ratelimit = require('../middleware/ratelimit'),
+	rooms = require('./rooms'),
 
 	Sockets = {},
 	Namespaces = {};
@@ -63,8 +64,8 @@ function onConnection(socket) {
 
 function onConnect(socket) {
 	if (socket.uid) {
-		socket.join('uid_' + socket.uid);
-		socket.join('online_users');
+		rooms.enter(socket, 'uid_' + socket.uid);
+		rooms.enter(socket, 'online_users');
 
 		user.getUserFields(socket.uid, ['status'], function(err, userData) {
 			if (err || !userData) {
@@ -77,7 +78,7 @@ function onConnect(socket) {
 			}
 		});
 	} else {
-		socket.join('online_guests');
+		rooms.enter(socket, 'online_guests');
 		socket.emit('event:connect');
 	}
 }
@@ -85,7 +86,7 @@ function onConnect(socket) {
 function onDisconnect(socket, data) {
 	if (socket.uid) {
 		var socketCount = Sockets.getUserSocketCount(socket.uid);
-		if (socketCount <= 0) {
+		if (socketCount <= 1) {
 			socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
 		}
 
@@ -96,6 +97,7 @@ function onDisconnect(socket, data) {
 			}
 		});
 	}
+	rooms.leaveAll(socket, data.rooms);
 }
 
 function onMessage(socket, payload) {
@@ -149,17 +151,12 @@ function onMessage(socket, payload) {
 }
 
 function requireModules() {
-	fs.readdir(__dirname, function(err, files) {
-		files.splice(files.indexOf('index.js'), 1);
+	var modules = ['admin', 'categories', 'groups', 'meta', 'modules',
+		'notifications', 'plugins', 'posts', 'topics', 'user'
+	];
 
-		async.each(files, function(lib, next) {
-			if (lib.substr(lib.length - 3) === '.js') {
-				lib = lib.slice(0, -3);
-				Namespaces[lib] = require('./' + lib);
-			}
-
-			next();
-		});
+	modules.forEach(function(module) {
+		Namespaces[module] = require('./' + module);
 	});
 }
 
@@ -183,7 +180,7 @@ function authorize(socket, callback) {
 					socket.uid = parseInt(sessionData.passport.user, 10);
 				} else {
 					socket.uid = 0;
-				}	
+				}
 				next();
 			});
 		}
@@ -218,27 +215,25 @@ Sockets.in = function(room) {
 };
 
 Sockets.getSocketCount = function() {
-	// TODO: io.sockets.adapter.sids is local to this worker
-	// use redis-adapter
-
-	var clients = Object.keys(io.sockets.adapter.sids || {});
-	return Array.isArray(clients) ? clients.length : 0;
+	return rooms.socketCount();
 };
 
 Sockets.getUserSocketCount = function(uid) {
-	// TODO: io.sockets.adapter.rooms is local to this worker
-	// use .clients('uid_' + uid, fn)
+	return rooms.clients('uid_' + uid).length;
+};
 
-	var roomClients = Object.keys(io.sockets.adapter.rooms['uid_' + uid] || {});
-	return Array.isArray(roomClients) ? roomClients.length : 0;
+Sockets.getOnlineUserCount = function() {
+	var count = 0;
+	Object.keys(rooms.roomClients()).forEach(function(roomName) {
+		if (roomName.startsWith('uid_')) {
+			++ count;
+		}
+	});
+	return count;
 };
 
 Sockets.getOnlineAnonCount = function () {
-	// TODO: io.sockets.adapter.rooms is local to this worker
-	// use .clients()
-
-	var guestSocketIds = Object.keys(io.sockets.adapter.rooms.online_guests || {});
-	return Array.isArray(guestSocketIds) ? guestSocketIds.length : 0;
+	return rooms.clients('online_guests').length;
 };
 
 Sockets.reqFromSocket = function(socket) {
@@ -258,9 +253,7 @@ Sockets.reqFromSocket = function(socket) {
 };
 
 Sockets.isUserOnline = function(uid) {
-	// TODO: io.sockets.adapter.rooms is local to this worker
-	// use .clients('uid_' + uid, fn)
-	return io ? !!io.sockets.adapter.rooms['uid_' + uid] : false;
+	return !!rooms.clients('uid_' + uid).length;
 };
 
 Sockets.isUsersOnline = function(uids, callback) {
@@ -301,26 +294,29 @@ Sockets.getUsersInRoom = function (uid, roomName, callback) {
 
 Sockets.getUidsInRoom = function(roomName, callback) {
 	callback = callback || function() {};
-	// TODO : doesnt work in cluster
 
 	var uids = [];
 
-	var socketids = Object.keys(io.sockets.adapter.rooms[roomName] || {});
+	var socketids = rooms.clients(roomName);
 	if (!Array.isArray(socketids) || !socketids.length) {
 		callback(null, []);
 		return [];
 	}
 
 	for(var i=0; i<socketids.length; ++i) {
-		var socketRooms = Object.keys(io.sockets.adapter.sids[socketids[i]]);
+		var socketRooms = rooms.clientRooms(socketids[i]);
 		if (Array.isArray(socketRooms)) {
 			socketRooms.forEach(function(roomName) {
-				if (roomName.indexOf('uid_') === 0 ) {
-					uids.push(roomName.split('_')[1]);
+				if (roomName.startsWith('uid_')) {
+					var uid = roomName.split('_')[1];
+					if (uids.indexOf(uid) === -1) {
+						uids.push(uid);
+					}
 				}
 			});
 		}
 	}
+
 	callback(null, uids);
 	return uids;
 };

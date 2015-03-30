@@ -120,7 +120,7 @@ var	async = require('async'),
 
 			if (user.picture) {
 				if (user.picture === user.uploadedpicture) {
-					user.picture = user.uploadedpicture = user.picture.indexOf('http') === -1 ? nconf.get('relative_path') + user.picture : user.picture;
+					user.picture = user.uploadedpicture = user.picture.startsWith('http') ? user.picture : nconf.get('relative_path') + user.picture;
 				} else {
 					user.picture = User.createGravatarURLFromEmail(user.email);
 				}
@@ -158,7 +158,7 @@ var	async = require('async'),
 				if (now - parseInt(userOnlineTime, 10) < 300000) {
 					return callback();
 				}
-				db.sortedSetAdd('users:online', now, uid, next);	
+				db.sortedSetAdd('users:online', now, uid, next);
 			},
 			function(next) {
 				topics.pushUnreadCount(uid);
@@ -334,6 +334,18 @@ var	async = require('async'),
 		db.getObjectField('username:uid', username, callback);
 	};
 
+	User.getUidsByUsernames = function(usernames, callback) {
+		db.getObjectFields('username:uid', usernames, function(err, users) {
+			if (err) {
+				return callback(err);
+			}
+			var uids = usernames.map(function(username) {
+				return users[username];
+			});
+			callback(null, uids);
+		});
+	};
+
 	User.getUidByUserslug = function(userslug, callback) {
 		if (!userslug) {
 			return callback();
@@ -403,15 +415,25 @@ var	async = require('async'),
 			});
 
 			var groupNames = uniqueCids.map(function(cid) {
-				return 'cid:' + cid + ':privileges:mods';
-			});
+					return 'cid:' + cid + ':privileges:mods';	// At some point we should *probably* change this to "moderate" as well
+				}),
+				groupListNames = uniqueCids.map(function(cid) {
+					return 'cid:' + cid + ':privileges:groups:moderate';
+				});
 
-			groups.isMemberOfGroups(uid, groupNames, function(err, isMembers) {
+			async.parallel({
+				user: async.apply(groups.isMemberOfGroups, uid, groupNames),
+				group: async.apply(groups.isMemberOfGroupsList, uid, groupListNames)
+			}, function(err, checks) {
 				if (err) {
 					return callback(err);
 				}
 
-				var map = {};
+				var isMembers = checks.user.map(function(isMember, idx) {
+						return isMember || checks.group[idx]
+					}),
+					map = {};
+
 				uniqueCids.forEach(function(cid, index) {
 					map[cid] = isMembers[index];
 				});
@@ -422,9 +444,23 @@ var	async = require('async'),
 			});
 		} else {
 			if (Array.isArray(uid)) {
-				groups.isMembers(uid, 'cid:' + cid + ':privileges:mods', filterIsModerator);
+				async.parallel([
+					async.apply(groups.isMembers, uid, 'cid:' + cid + ':privileges:mods'),
+					async.apply(groups.isMembers, uid, 'cid:' + cid + ':privileges:groups:moderate')
+				], function(err, checks) {
+					var isModerator = checks[0].map(function(isMember, idx) {
+							return isMember || checks[1][idx]
+						});
+					filterIsModerator(null, isModerator);
+				});
 			} else {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:mods', filterIsModerator);
+				async.parallel([
+					async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:mods'),
+					async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:groups:moderate')
+				], function(err, checks) {
+					var isModerator = checks[0] || checks[1];
+					filterIsModerator(null, isModerator);
+				});
 			}
 		}
 	};

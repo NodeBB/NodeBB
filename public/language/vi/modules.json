@@ -17,5 +17,6 @@
     "chat.three_months": "3 tháng",
     "composer.user_said_in": "%1 đã nói trong %2:",
     "composer.user_said": "%1 đã nói:",
-    "composer.discard": "Bạn có chắc chắn hủy bỏ bài viết này?"
+    "composer.discard": "Bạn có chắc chắn hủy bỏ bài viết này?",
+    "composer.submit_and_lock": "Submit and Lock"
 }

@@ -74,37 +74,29 @@ module.exports = function(Categories) {
 		});
 	};
 
-	Categories.onNewPostMade = function(postData, callback) {
-		topics.getTopicFields(postData.tid, ['cid', 'pinned'], function(err, topicData) {
-			if (err) {
-				return callback(err);
-			}
+	Categories.onNewPostMade = function(cid, pinned, postData, callback) {
+		if (!cid || !postData) {
+			return callback();
+		}
 
-			if (!topicData || !topicData.cid) {
-				return callback();
-			}
-
-			var cid = topicData.cid;
-
-			async.parallel([
-				function(next) {
-					db.sortedSetAdd('cid:' + cid + ':pids', postData.timestamp, postData.pid, next);
-				},
-				function(next) {
-					db.incrObjectField('category:' + cid, 'post_count', next);
-				},
-				function(next) {
-					if (parseInt(topicData.pinned, 10) === 1) {
-						next();
-					} else {
-						db.sortedSetAdd('cid:' + cid + ':tids', postData.timestamp, postData.tid, next);
-					}
-				},
-				function(next) {
-					db.sortedSetIncrBy('cid:' + cid + ':tids:posts', 1, postData.tid, next);
+		async.parallel([
+			function(next) {
+				db.sortedSetAdd('cid:' + cid + ':pids', postData.timestamp, postData.pid, next);
+			},
+			function(next) {
+				db.incrObjectField('category:' + cid, 'post_count', next);
+			},
+			function(next) {
+				if (parseInt(pinned, 10) === 1) {
+					next();
+				} else {
+					db.sortedSetAdd('cid:' + cid + ':tids', postData.timestamp, postData.tid, next);
 				}
-			], callback);
-		});
+			},
+			function(next) {
+				db.sortedSetIncrBy('cid:' + cid + ':tids:posts', 1, postData.tid, next);
+			}
+		], callback);
 	};
 
 };

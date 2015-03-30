@@ -378,6 +378,11 @@ middleware.processRender = function(req, res, next) {
 		}
 
 		render.call(self, template, options, function(err, str) {
+			if (err) {
+				winston.error(err);
+				return fn(err);
+			}
+
 			// str = str + '<input type="hidden" ajaxify-data="' + encodeURIComponent(JSON.stringify(options)) + '" />';
 			str = (res.locals.postHeader ? res.locals.postHeader : '') + str + (res.locals.preFooter ? res.locals.preFooter : '');
 
@@ -511,6 +516,21 @@ middleware.exposeGroupName = function(req, res, next) {
 		res.locals.groupName = groupName;
 		next();
 	});
+};
+
+middleware.exposeUid = function(req, res, next) {
+	if (req.params.hasOwnProperty('userslug')) {
+		user.getUidByUserslug(req.params.userslug, function(err, uid) {
+			if (err) {
+				return next(err);
+			}
+
+			res.locals.uid = uid;
+			next();
+		})
+	} else {
+		next();
+	}
 };
 
 module.exports = function(webserver) {
