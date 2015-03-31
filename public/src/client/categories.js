@@ -2,7 +2,7 @@
 
 /* globals define, socket, app, templates, translator, ajaxify*/
 
-define('forum/categories', function() {
+define('forum/categories', ['components'], function(components) {
 	var	categories = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {

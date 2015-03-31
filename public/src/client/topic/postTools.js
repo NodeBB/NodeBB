@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, app, ajaxify, bootbox, components, socket, templates, translator, utils */
+/* globals define, app, ajaxify, bootbox, socket, templates, translator, utils */
 
-define('forum/topic/postTools', ['composer', 'share', 'navigator'], function(composer, share, navigator) {
+define('forum/topic/postTools', ['composer', 'share', 'navigator', 'components'], function(composer, share, navigator, components) {
 
 	var PostTools = {},
 		topicName;

@@ -4,7 +4,7 @@
 /* globals define, app, translator, socket, bootbox, ajaxify */
 
 
-define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move, topicSelect) {
+define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components'], function(move, topicSelect, components) {
 
 	var CategoryTools = {};
 

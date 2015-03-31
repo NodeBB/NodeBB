@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, app, components, translator, ajaxify, socket, bootbox */
+/* globals define, app, translator, ajaxify, socket, bootbox */
 
-define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
+define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'components'], function(fork, move, components) {
 
 	var ThreadTools = {};
 

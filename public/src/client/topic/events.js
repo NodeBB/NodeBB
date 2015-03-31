@@ -1,14 +1,15 @@
 
 'use strict';
 
-/* globals app, ajaxify, components, define, socket, translator, templates */
+/* globals app, ajaxify, define, socket, translator, templates */
 
 define('forum/topic/events', [
 	'forum/topic/browsing',
 	'forum/topic/postTools',
 	'forum/topic/threadTools',
-	'forum/topic/posts'
-], function(browsing, postTools, threadTools, posts) {
+	'forum/topic/posts',
+	'components'
+], function(browsing, postTools, threadTools, posts, components) {
 
 	var Events = {};
 

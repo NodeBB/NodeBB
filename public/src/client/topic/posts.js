@@ -1,13 +1,14 @@
 'use strict';
 
-/* globals config, app, ajaxify, components, define, socket, utils */
+/* globals config, app, ajaxify, define, socket, utils */
 
 define('forum/topic/posts', [
 	'forum/pagination',
 	'forum/infinitescroll',
 	'forum/topic/postTools',
-	'navigator'
-], function(pagination, infinitescroll, postTools, navigator) {
+	'navigator',
+	'components'
+], function(pagination, infinitescroll, postTools, navigator, components) {
 
 	var Posts = {};
 

@@ -1,10 +1,10 @@
 
 'use strict';
 
-/* globals app, components, define, ajaxify, utils, translator, config */
+/* globals app, define, ajaxify, utils, translator, config */
 
 
-define('navigator', ['forum/pagination'], function(pagination) {
+define('navigator', ['forum/pagination', 'components'], function(pagination, components) {
 
 	var navigator = {};
 	var index = 1;
