@@ -13,7 +13,7 @@ var async = require('async'),
 			"dependencies": ["redis@~0.10.1", "connect-redis@~2.0.0"]
 		},
 		"mongo": {
-			"dependencies": ["mongodb", "connect-mongo"]
+			"dependencies": ["mongodb@^1.4.30", "connect-mongo@^0.7.0"]
 		}
 	};
 
