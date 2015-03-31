@@ -33,10 +33,6 @@ define('forum/category', [
 
 		share.addShareHandlers(ajaxify.variables.get('category_name'));
 
-		$('#new_post').on('click', function () {
-			composer.newTopic(cid);
-		});
-
 		socket.removeListener('event:new_topic', Category.onNewTopic);
 		socket.on('event:new_topic', Category.onNewTopic);
 

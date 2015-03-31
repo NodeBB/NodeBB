@@ -471,6 +471,26 @@ app.cacheBuster = null;
 		});
 	}
 
+	function handleNewTopic() {
+		$('#content').on('click', '#new_topic', function() {
+			require(['composer'], function(composer) {
+				var cid = ajaxify.variables.get('category_id');
+				if (cid) {
+					composer.newTopic(cid);
+				} else {
+					socket.emit('categories.getCategoriesByPrivilege', 'topics:create', function(err, categories) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						if (categories.length) {
+							composer.newTopic(categories[0].cid);
+						}
+					});
+				}
+			});
+		});
+	}
+
 	app.load = function() {
 		$('document').ready(function () {
 			var url = ajaxify.start(window.location.pathname.slice(1), true, window.location.search);
@@ -481,6 +501,8 @@ app.cacheBuster = null;
 			if (config.searchEnabled) {
 				handleSearch();
 			}
+
+			handleNewTopic();
 
 			$('#logout-link').on('click', app.logout);
 

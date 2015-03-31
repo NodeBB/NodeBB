@@ -23,17 +23,6 @@ define('forum/recent', ['forum/infinitescroll', 'composer', 'components'], funct
 			$(this).addClass('hide');
 		});
 
-		$('#new_topic').on('click', function() {
-			socket.emit('categories.getCategoriesByPrivilege', 'topics:create', function(err, categories) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				if (categories.length) {
-					composer.newTopic(categories[0].cid);
-				}
-			});
-		});
-
 		infinitescroll.init(Recent.loadMoreTopics);
 	};
 
