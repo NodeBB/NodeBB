@@ -9,7 +9,7 @@ var	fs = require('fs'),
 	User = require('./user'),
 	Plugins = require('./plugins'),
 	meta = require('./meta'),
-	translator = require('../public/src/translator'),
+	translator = require('../public/src/modules/translator'),
 
 	app;
 

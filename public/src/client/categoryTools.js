@@ -1,10 +1,10 @@
 
 'use strict';
 
-/* globals define, app, translator, socket, bootbox, ajaxify */
+/* globals define, app, socket, bootbox, ajaxify */
 
 
-define('forum/categoryTools', ['forum/topic/move', 'topicSelect'], function(move, topicSelect) {
+define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 'translator'], function(move, topicSelect, components, translator) {
 
 	var CategoryTools = {};
 

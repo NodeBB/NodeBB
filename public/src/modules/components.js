@@ -1,8 +1,7 @@
 "use strict";
+define('components', function() {
+	var components = {};
 
-var components = components || {};
-
-(function() {
 	components.core = {
 		'post': function(name, value) {
 			return $('[data-' + name + '="' + value + '"]');
@@ -44,4 +43,6 @@ var components = components || {};
 			return $('[component="' + arguments[0] + '"]');
 		}
 	};
-}());
+
+	return components;
+});

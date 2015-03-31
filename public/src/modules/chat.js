@@ -1,7 +1,7 @@
 "use strict";
-/* globals app, config, define, socket, translator, templates, utils, ajaxify */
+/* globals app, config, define, socket, templates, utils, ajaxify */
 
-define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar, S, sounds, Chats) {
+define('chat', ['taskbar', 'string', 'sounds', 'forum/chats', 'translator'], function(taskbar, S, sounds, Chats, translator) {
 
 	var module = {};
 	var newMessage = false;

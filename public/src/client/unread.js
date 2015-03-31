@@ -2,7 +2,7 @@
 
 /* globals define, app, socket */
 
-define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll'], function(recent, topicSelect, infinitescroll) {
+define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', 'components'], function(recent, topicSelect, infinitescroll, components) {
 	var Unread = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {

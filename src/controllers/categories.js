@@ -154,7 +154,12 @@ categoriesController.list = function(req, res, next) {
 			return next(err);
 		}
 
-		res.render('categories', data);
+		plugins.fireHook('filter:categories.build', {req: req, res: res, templateData: data}, function(err, data) {
+			if (err) {
+				return next(err);
+			}
+			res.render('categories', data.templateData);
+		});
 	});
 };
 

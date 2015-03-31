@@ -7,7 +7,7 @@ var async = require('async'),
 
 	user = require('../user'),
 	utils = require('../../public/src/utils'),
-	translator = require('../../public/src/translator'),
+	translator = require('../../public/src/modules/translator'),
 	plugins = require('../plugins'),
 	db = require('../database'),
 	meta = require('../meta'),

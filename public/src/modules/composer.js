@@ -1,9 +1,10 @@
 'use strict';
 
-/* globals define, socket, app, config, ajaxify, utils, translator, templates, bootbox */
+/* globals define, socket, app, config, ajaxify, utils, templates, bootbox */
 
 define('composer', [
 	'taskbar',
+	'translator',
 	'composer/controls',
 	'composer/uploads',
 	'composer/formatting',
@@ -12,7 +13,7 @@ define('composer', [
 	'composer/categoryList',
 	'composer/preview',
 	'composer/resize'
-], function(taskbar, controls, uploads, formatting, drafts, tags, categoryList, preview, resize) {
+], function(taskbar, translator, controls, uploads, formatting, drafts, tags, categoryList, preview, resize) {
 	var composer = {
 		active: undefined,
 		posts: {},

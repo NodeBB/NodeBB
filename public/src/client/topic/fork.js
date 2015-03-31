@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, app, ajaxify, components, translator, socket */
+/* globals define, app, ajaxify, socket */
 
-define('forum/topic/fork', function() {
+define('forum/topic/fork', ['components'], function(components) {
 
 	var Fork = {},
 		forkModal,

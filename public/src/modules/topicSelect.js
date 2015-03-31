@@ -2,7 +2,7 @@
 
 /* globals define*/
 
-define('topicSelect', function() {
+define('topicSelect', ['components'], function(components) {
 	var TopicSelect = {};
 	var lastSelected;
 

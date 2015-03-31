@@ -25,7 +25,6 @@ module.exports = function(privileges) {
 					isOwner: function(next) {
 						next(null, parseInt(uid, 10) === parseInt(topic.uid, 10));
 					},
-					manage_topic: async.apply(helpers.hasEnoughReputationFor, 'privileges:manage_topic', uid),
 					isAdministrator: async.apply(user.isAdministrator, uid),
 					isModerator: async.apply(user.isModerator, uid, topic.cid),
 					disabled: async.apply(categories.getCategoryField, topic.cid, 'disabled')
@@ -38,7 +37,7 @@ module.exports = function(privileges) {
 
 			var disabled = parseInt(results.disabled, 10) === 1;
 			var	isAdminOrMod = results.isAdministrator || results.isModerator;
-			var editable = isAdminOrMod || results.manage_topic;
+			var editable = isAdminOrMod;
 			var deletable = isAdminOrMod || results.isOwner;
 
 			plugins.fireHook('filter:privileges.topics.get', {
@@ -47,7 +46,7 @@ module.exports = function(privileges) {
 				view_thread_tools: editable || deletable,
 				editable: editable,
 				deletable: deletable,
-				view_deleted: isAdminOrMod || results.manage_topic || results.isOwner,
+				view_deleted: isAdminOrMod || results.isOwner,
 				disabled: disabled,
 				tid: tid,
 				uid: uid
@@ -105,9 +104,6 @@ module.exports = function(privileges) {
 		helpers.some([
 			function(next) {
 				topics.isOwner(tid, uid, next);
-			},
-			function(next) {
-				helpers.hasEnoughReputationFor('privileges:manage_topic', uid, next);
 			},
 			function(next) {
 				isAdminOrMod(tid, uid, next);

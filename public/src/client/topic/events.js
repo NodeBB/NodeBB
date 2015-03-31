@@ -1,14 +1,15 @@
 
 'use strict';
 
-/* globals app, ajaxify, components, define, socket, translator, templates */
+/* globals app, ajaxify, define, socket, templates */
 
 define('forum/topic/events', [
 	'forum/topic/browsing',
 	'forum/topic/postTools',
 	'forum/topic/threadTools',
-	'forum/topic/posts'
-], function(browsing, postTools, threadTools, posts) {
+	'forum/topic/posts',
+	'components'
+], function(browsing, postTools, threadTools, posts, components) {
 
 	var Events = {};
 
@@ -187,9 +188,8 @@ define('forum/topic/events', [
 
 	function togglePostVote(data) {
 		var post = $('[data-pid="' + data.post.pid + '"]');
-
-		post.find('.upvote').toggleClass('btn-primary upvoted', data.upvote);
-		post.find('.downvote').toggleClass('btn-primary downvoted', data.downvote);
+		post.find('[component="post/upvote"]').toggleClass('upvoted', data.upvote);
+		post.find('[component="post/downvote"]').toggleClass('downvoted', data.downvote);
 	}
 
 

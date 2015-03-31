@@ -1,10 +1,11 @@
 "use strict";
-/*global define, templates, socket, ajaxify, app, admin, bootbox, utils, config, translator */
+/*global define, templates, socket, ajaxify, app, admin, bootbox, utils, config */
 
 define('admin/manage/groups', [
 	'iconSelect',
-	'admin/modules/colorpicker'
-], function(iconSelect, colorpicker) {
+	'admin/modules/colorpicker',
+	'translator'
+], function(iconSelect, colorpicker, translator) {
 	var	Groups = {};
 
 	Groups.init = function() {
