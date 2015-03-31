@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, socket, app, templates, translator, ajaxify*/
+/* globals define, socket, app, templates, ajaxify*/
 
-define('forum/categories', ['components'], function(components) {
+define('forum/categories', ['components', 'translator'], function(components, translator) {
 	var	categories = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {

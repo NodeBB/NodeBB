@@ -1,7 +1,7 @@
 "use strict";
-/* global define, app, translator, config, RELATIVE_PATH */
+/* global define, app, config, RELATIVE_PATH */
 
-define('forum/login', ['csrf'], function(csrf) {
+define('forum/login', ['csrf', 'translator'], function(csrf, translator) {
 	var	Login = {};
 
 	Login.init = function() {

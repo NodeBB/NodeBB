@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, ajaxify, translator, socket */
+/* globals define, app, ajaxify, socket */
 
 define('forum/topic/fork', ['components'], function(components) {
 

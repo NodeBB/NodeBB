@@ -4,11 +4,19 @@ var ajaxify = ajaxify || {};
 
 $(document).ready(function() {
 
-	/*global app, templates, utils, socket, translator, config, RELATIVE_PATH*/
+	/*global app, templates, utils, socket, config, RELATIVE_PATH*/
 
 	var location = document.location || window.location,
 		rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : ''),
-		apiXHR = null;
+		apiXHR = null,
+
+		translator;
+
+	// Dumb hack to fool ajaxify into thinking translator is still a global
+	// When ajaxify is migrated to a require.js module, then this can be merged into the "define" call
+	require(['translator'], function(_translator) {
+		translator = _translator;
+	});
 
 	$(window).on('popstate', function (ev) {
 		ev = ev.originalEvent;
@@ -49,11 +57,9 @@ $(document).ready(function() {
 
 			app.template = data.template.name;
 
-			translator.load(config.defaultLang, data.template.name);
-
-			renderTemplate(url, data.template.name, data, callback);
-
-			require(['search'], function(search) {
+			require(['translator', 'search'], function(translator, search) {
+				translator.load(config.defaultLang, data.template.name);
+				renderTemplate(url, data.template.name, data, callback);
 				search.topicDOM.end();
 			});
 		});

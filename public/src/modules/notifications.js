@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, socket, translator, utils, config, app, ajaxify, templates, Tinycon*/
+/* globals define, socket, utils, config, app, ajaxify, templates, Tinycon*/
 
-define('notifications', ['sounds'], function(sound) {
+define('notifications', ['sounds', 'translator'], function(sound, translator) {
 	var Notifications = {};
 
 	Notifications.prepareDOM = function() {

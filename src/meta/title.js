@@ -3,7 +3,7 @@
 var winston = require('winston'),
 	validator = require('validator'),
 	user = require('../user'),
-	translator = require('../../public/src/translator');
+	translator = require('../../public/src/modules/translator');
 
 module.exports = function(Meta) {
 	Meta.title = {};

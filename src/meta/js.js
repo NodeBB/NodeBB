@@ -44,9 +44,7 @@ module.exports = function(Meta) {
 				'public/src/utils.js',
 				'public/src/app.js',
 				'public/src/ajaxify.js',
-				'public/src/components.js',
 				'public/src/overrides.js',
-				'public/src/translator.js',
 				'public/src/variables.js',
 				'public/src/widgets.js'
 			],

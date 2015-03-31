@@ -1,5 +1,5 @@
 "use strict";
-/*global io, templates, translator, ajaxify, utils, bootbox, RELATIVE_PATH, config, Visibility*/
+/*global io, templates, ajaxify, utils, bootbox, RELATIVE_PATH, config, Visibility*/
 
 var	socket,
 	app = app || {};
@@ -310,18 +310,20 @@ app.cacheBuster = null;
 				titleObj.titles[0] = window.document.title;
 			}
 
-			translator.translate(title, function(translated) {
-				titleObj.titles[1] = translated;
-				if (titleObj.interval) {
-					clearInterval(titleObj.interval);
-				}
-
-				titleObj.interval = setInterval(function() {
-					var title = titleObj.titles[titleObj.titles.indexOf(window.document.title) ^ 1];
-					if (title) {
-						window.document.title = $('<div/>').html(title).text();
+			require(['translator'], function(translator) {
+				translator.translate(title, function(translated) {
+					titleObj.titles[1] = translated;
+					if (titleObj.interval) {
+						clearInterval(titleObj.interval);
 					}
-				}, 2000);
+
+					titleObj.interval = setInterval(function() {
+						var title = titleObj.titles[titleObj.titles.indexOf(window.document.title) ^ 1];
+						if (title) {
+							window.document.title = $('<div/>').html(title).text();
+						}
+					}, 2000);
+				});
 			});
 		} else {
 			if (titleObj.interval) {

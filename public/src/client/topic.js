@@ -1,7 +1,7 @@
 'use strict';
 
 
-/* globals define, app, templates, translator, socket, bootbox, config, ajaxify, RELATIVE_PATH, utils */
+/* globals define, app, templates, socket, bootbox, config, ajaxify, RELATIVE_PATH, utils */
 
 define('forum/topic', [
 	'forum/pagination',
@@ -13,8 +13,9 @@ define('forum/topic', [
 	'forum/topic/posts',
 	'navigator',
 	'sort',
-	'components'
-], function(pagination, infinitescroll, threadTools, postTools, events, browsing, posts, navigator, sort, components) {
+	'components',
+	'translator'
+], function(pagination, infinitescroll, threadTools, postTools, events, browsing, posts, navigator, sort, components, translator) {
 	var	Topic = {},
 		currentUrl = '';
 

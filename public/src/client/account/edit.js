@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, ajaxify, socket, app, config, utils, translator, bootbox */
+/* globals define, ajaxify, socket, app, config, utils, bootbox */
 
-define('forum/account/edit', ['forum/account/header', 'uploader'], function(header, uploader) {
+define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'], function(header, uploader, translator) {
 	var AccountEdit = {},
 		gravatarPicture = '',
 		uploadedPicture = '',

@@ -1,5 +1,5 @@
 "use strict";
-/* global define, config, templates, app, utils, ajaxify, socket, translator */
+/* global define, config, templates, app, utils, ajaxify, socket */
 
 define('forum/category', [
 	'composer',
@@ -9,8 +9,9 @@ define('forum/category', [
 	'navigator',
 	'forum/categoryTools',
 	'sort',
-	'components'
-], function(composer, pagination, infinitescroll, share, navigator, categoryTools, sort, components) {
+	'components',
+	'translator'
+], function(composer, pagination, infinitescroll, share, navigator, categoryTools, sort, components, translator) {
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {

@@ -4,7 +4,7 @@ var nconf = require('nconf'),
 	async = require('async'),
 	validator = require('validator'),
 
-	translator = require('../../public/src/translator'),
+	translator = require('../../public/src/modules/translator'),
 	categories = require('../categories'),
 	plugins = require('../plugins'),
 	meta = require('../meta');

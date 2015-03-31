@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, ajaxify, app, utils, socket, translator*/
+/* globals define, ajaxify, app, utils, socket */
 
-define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll'], function(header, infinitescroll) {
+define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll', 'translator'], function(header, infinitescroll, translator) {
 	var Account = {},
 		yourid,
 		theirid,
