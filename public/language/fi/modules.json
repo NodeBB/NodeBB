@@ -17,5 +17,6 @@
     "chat.three_months": "3 kuukautta",
     "composer.user_said_in": "%1 said in %2:",
     "composer.user_said": "%1 sanoi:",
-    "composer.discard": "Oletko varma, että haluat hylätä viestin?"
+    "composer.discard": "Oletko varma, että haluat hylätä viestin?",
+    "composer.submit_and_lock": "Submit and Lock"
 }

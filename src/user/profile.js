@@ -15,14 +15,15 @@ var async = require('async'),
 module.exports = function(User) {
 
 	User.updateProfile = function(uid, data, callback) {
+		var fields = ['username', 'email', 'fullname', 'website', 'location', 'birthday', 'signature'];
 
-		plugins.fireHook('filter:user.updateProfile', {uid: uid, settings: data}, function(err, data) {
-			if(err) {
+		plugins.fireHook('filter:user.updateProfile', {uid: uid, data: data, fields: fields}, function(err, data) {
+			if (err) {
 				return callback(err);
 			}
 
-			data = data.settings;
-			var fields = ['username', 'email', 'fullname', 'website', 'location', 'birthday', 'signature'];
+			fields = data.fields;
+			data = data.data;
 
 			function isSignatureValid(next) {
 				if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {

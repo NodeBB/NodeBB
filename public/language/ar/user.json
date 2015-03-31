@@ -60,6 +60,7 @@
     "digest_monthly": "شهريًّا",
     "send_chat_notifications": "استلام رسالة إلكترونية عند ورود محادثة وأنا غير متصل.",
     "send_post_notifications": "Send an email when replies are made to topics I am subscribed to",
+    "settings-require-reload": "Some setting changes require a reload. Click here to reload the page.",
     "has_no_follower": "هذا المستخدم ليس لديه أي متابع :(",
     "follows_no_one": "هذا المستخدم لا يتابع أحد :(",
     "has_no_posts": "هذا المستخدم لم يكتب أي شيء بعد.",
@@ -76,5 +77,6 @@
     "enable_topic_searching": "تفعيل خاصية البحث داخل المواضيع",
     "topic_search_help": "في حالة تفعيلها، ستعوض خاصيةُ البحث داخل المواضيع خاصيةَ البحث الخاصة بالمتصفح، فتمكنك بالتالي بالبحث في الموضوع بأكمله دون الاقتصار على مايظهر في الشاشة فحسب.",
     "follow_topics_you_reply_to": "متابعة المشاركات التي ترد عليها",
-    "follow_topics_you_create": "متابعة المشاركات التي تكتبها"
+    "follow_topics_you_create": "متابعة المشاركات التي تكتبها",
+    "grouptitle": "Select the group title you would like to display"
 }

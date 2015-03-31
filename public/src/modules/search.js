@@ -1,7 +1,7 @@
 "use strict";
-/* globals socket, ajaxify, translator, app, define */
+/* globals socket, ajaxify, app, define */
 
-define('search', ['navigator'], function(nav) {
+define('search', ['navigator', 'translator'], function(nav, translator) {
 
 	var Search = {
 			current: {}

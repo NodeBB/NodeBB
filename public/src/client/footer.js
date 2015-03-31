@@ -1,7 +1,7 @@
 "use strict";
-/*globals define, app, translator, socket*/
+/*globals define, app, socket*/
 
-define('forum/footer', ['notifications', 'chat'], function(Notifications, Chat) {
+define('forum/footer', ['notifications', 'chat', 'components', 'translator'], function(Notifications, Chat, components, translator) {
 
 	Notifications.prepareDOM();
 	Chat.prepareDOM();
@@ -22,7 +22,7 @@ define('forum/footer', ['notifications', 'chat'], function(Notifications, Chat) 
 			return console.warn('Error updating unread count', err);
 		}
 
-		$('#chat-count')
+		components.get('chat/icon')
 			.toggleClass('unread-count', count > 0)
 			.attr('data-content', count > 20 ? '20+' : count);
 	}

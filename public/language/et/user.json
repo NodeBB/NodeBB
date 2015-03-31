@@ -60,6 +60,7 @@
     "digest_monthly": "Iga kuu",
     "send_chat_notifications": "Saada mulle email kui mulle saabub uus sõnum ja ma ei ole antud hetkel online",
     "send_post_notifications": "Send an email when replies are made to topics I am subscribed to",
+    "settings-require-reload": "Some setting changes require a reload. Click here to reload the page.",
     "has_no_follower": "Sellel kasutajal pole ühtegi jälgijat :(",
     "follows_no_one": "See kasutaja ei jälgi kedagi :(",
     "has_no_posts": "See kasutaja pole midagi postitanud veel.",
@@ -76,5 +77,6 @@
     "enable_topic_searching": "Enable In-Topic Searching",
     "topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen.",
     "follow_topics_you_reply_to": "Järgi teemasid millele vastuse kirjutad.",
-    "follow_topics_you_create": "Järgi teemasid, mis on sinu loodud."
+    "follow_topics_you_create": "Järgi teemasid, mis on sinu loodud.",
+    "grouptitle": "Select the group title you would like to display"
 }

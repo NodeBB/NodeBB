@@ -4,6 +4,8 @@ var categoriesController = {},
 	async = require('async'),
 	nconf = require('nconf'),
 	validator = require('validator'),
+
+	db = require('../database'),
 	privileges = require('../privileges'),
 	user = require('../user'),
 	categories = require('../categories'),
@@ -152,7 +154,12 @@ categoriesController.list = function(req, res, next) {
 			return next(err);
 		}
 
-		res.render('categories', data);
+		plugins.fireHook('filter:categories.build', {req: req, res: res, templateData: data}, function(err, data) {
+			if (err) {
+				return next(err);
+			}
+			res.render('categories', data.templateData);
+		});
 	});
 };
 
@@ -249,6 +256,11 @@ categoriesController.get = function(req, res, next) {
 			categories.getCategoryById(payload, next);
 		},
 		function(categoryData, next) {
+			if (categoryData.link) {
+				db.incrObjectField('category:' + categoryData.cid, 'timesClicked');
+				return res.redirect(categoryData.link);
+			}
+
 			var breadcrumbs = [
 				{
 					text: categoryData.name,
@@ -264,16 +276,13 @@ categoriesController.get = function(req, res, next) {
 			});
 		},
 		function(categoryData, next) {
-			if (categoryData.link) {
-				return res.redirect(categoryData.link);
-			}
-
 			categories.getRecentTopicReplies(categoryData.children, uid, function(err) {
 				next(err, categoryData);
 			});
 		},
 		function (categoryData, next) {
 			categoryData.privileges = userPrivileges;
+			categoryData.showSelect = categoryData.privileges.editable;
 
 			res.locals.metaTags = [
 				{

@@ -1,18 +1,18 @@
-(function (module) {
+;(function(translator) {
 	"use strict";
-	/*global RELATIVE_PATH, config*/
+	/* globals RELATIVE_PATH, config, define */
 
+	// export the class if we are in a Node-like system.
+	if (typeof module === 'object' && module.exports === translator) {
+		exports = module.exports = translator;
+	}
 
-	var translator = {},
-		languages = {};
-
-	var regexes = {
-		match: /\[\[.*?\]\]/g,
-		split: /[,][\s]*/,
-		replace: /\]+$/
-	};
-
-	module.exports = translator;
+	var	languages = {},
+		regexes = {
+			match: /\[\[.*?\]\]/g,
+			split: /[,][\s]*/,
+			replace: /\]+$/
+		};
 
 	translator.addTranslation = function(language, filename, translations) {
 		languages[language] = languages[language] || {};
@@ -79,7 +79,7 @@
 			}
 
 			$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').success(function() {
-				$('span.timeago').timeago();
+				$('.timeago').timeago();
 			}).fail(function() {
 				$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.en.js');
 			});
@@ -127,7 +127,7 @@
 			if ('undefined' !== typeof window && config) {
 				language = config.userLang || 'en_GB';
 			} else {
-				var meta = require('../../src/meta');
+				var meta = require('../../../src/meta');
 				language = meta.config.defaultLang || 'en_GB';
 			}
 		}
@@ -267,16 +267,16 @@
 		var fs = require('fs'),
 			path = require('path'),
 			winston = require('winston'),
-			meta = require('../../src/meta');
+			meta = require('../../../src/meta');
 
 		language = language || meta.config.defaultLang || 'en_GB';
 
-		if (!fs.existsSync(path.join(__dirname, '../language', language))) {
+		if (!fs.existsSync(path.join(__dirname, '../../language', language))) {
 			winston.warn('[translator] Language \'' + meta.config.defaultLang + '\' not found. Defaulting to \'en_GB\'');
 			language = 'en_GB';
 		}
 
-		fs.readFile(path.join(__dirname, '../language', language, filename + '.json'), function(err, data) {
+		fs.readFile(path.join(__dirname, '../../language', language, filename + '.json'), function(err, data) {
 			if (err) {
 				winston.error('Could not load `' + filename + '`: ' + err.message + '. Skipping...');
 				return callback({});
@@ -291,12 +291,20 @@
 		});
 	}
 
-	if ('undefined' !== typeof window) {
-		window.translator = module.exports;
-	}
+	// Use the define() function if we're in AMD land
+	if (typeof define === 'function' && define.amd) {
+		define('translator', translator);
 
-})('undefined' === typeof module ? {
-	module: {
-		exports: {}
+		// Expose a global `translator` object for backwards compatibility
+		window.translator = {
+			translate: function() {
+				console.warn('[translator] Global invocation of the translator is now deprecated, please `require` the module instead.');
+				translator.translate.apply(translator, arguments);
+			}
+		}
 	}
-} : module);
+})(
+	typeof exports === 'object' ? exports :
+	typeof define === 'function' && define.amd ? {} :
+	translator = {}
+);

@@ -367,6 +367,20 @@
 		};
 	}
 
+	if (typeof String.prototype.endsWith != 'function') {
+		String.prototype.endsWith = function(suffix) {
+			if (this.length < suffix.length) {
+				return false;
+			}
+			var len = this.length;
+			var suffixLen = suffix.length;
+			for (var i=1; (i <= suffixLen && this[len - i] === suffix[suffixLen - i]); ++i) {
+				continue;
+			}
+			return i > suffixLen;
+		};
+	}
+
 	if ('undefined' !== typeof window) {
 		window.utils = module.exports;
 	}

@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, socket, app, ajaxify, templates, translator*/
+/* globals define, socket, app, ajaxify, templates */
 
-define('forum/users', function() {
+define('forum/users', ['translator'], function(translator) {
 	var	Users = {};
 
 	var loadingMoreUsers = false;

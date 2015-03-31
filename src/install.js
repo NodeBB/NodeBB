@@ -13,7 +13,7 @@ var async = require('async'),
 			"dependencies": ["redis@~0.10.1", "connect-redis@~2.0.0"]
 		},
 		"mongo": {
-			"dependencies": ["mongodb", "connect-mongo"]
+			"dependencies": ["mongodb@~2.0.0", "connect-mongo"]
 		}
 	};
 
@@ -234,13 +234,13 @@ function setupDefaultConfigs(next) {
 	});
 
 	if (install.values) {
-		setOnEmpty('social:twitter:key', 'social:twitter:secret');
-		setOnEmpty('social:google:id', 'social:google:secret');
-		setOnEmpty('social:facebook:app_id', 'social:facebook:secret');
+		setIfPaired('social:twitter:key', 'social:twitter:secret');
+		setIfPaired('social:google:id', 'social:google:secret');
+		setIfPaired('social:facebook:app_id', 'social:facebook:secret');
 	}
 }
 
-function setOnEmpty(key1, key2) {
+function setIfPaired(key1, key2) {
 	var meta = require('./meta');
 	if (install.values[key1] && install.values[key2]) {
 		meta.configs.setOnEmpty(key1, install.values[key1]);
@@ -468,8 +468,8 @@ install.setup = function (callback) {
 		setupConfig,
 		setupDefaultConfigs,
 		enableDefaultTheme,
-		createAdministrator,
 		createCategories,
+		createAdministrator,
 		createMenuItems,
 		createWelcomePost,
 		enableDefaultPlugins,
@@ -479,7 +479,7 @@ install.setup = function (callback) {
 		}
 	], function (err) {
 		if (err) {
-			winston.warn('NodeBB Setup Aborted. ' + err.message);
+			winston.warn('NodeBB Setup Aborted.\n ' + err.stack);
 			process.exit();
 		} else {
 			callback();

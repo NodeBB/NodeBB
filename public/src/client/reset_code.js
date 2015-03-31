@@ -31,22 +31,8 @@ define('forum/reset_code', function() {
 					window.location.href = RELATIVE_PATH + '/login';
 				});
 			}
+			return false;
 		});
-
-		// socket.emit('user.reset.valid', reset_code, function(err, valid) {
-		// 	if(err) {
-		// 		return app.alertError(err.message);
-		// 	}
-
-		// 	if (valid) {
-		// 		resetEl.prop('disabled', false);
-		// 	} else {
-		// 		var formEl = $('#reset-form');
-		// 		// Show error message
-		// 		$('#error').show();
-		// 		formEl.remove();
-		// 	}
-		// });
 	};
 
 	return ResetCode;

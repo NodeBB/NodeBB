@@ -17,5 +17,6 @@
     "chat.three_months": "3 Ay",
     "composer.user_said_in": "%1 %2 içinde söyledi:",
     "composer.user_said": "%1 söyledi:",
-    "composer.discard": "Bu iletiyi iptal etmek istediğinizden eminmisiniz?"
+    "composer.discard": "Bu iletiyi iptal etmek istediğinizden eminmisiniz?",
+    "composer.submit_and_lock": "Submit and Lock"
 }

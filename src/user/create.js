@@ -8,7 +8,7 @@ var async = require('async'),
 	groups = require('../groups'),
 	meta = require('../meta'),
 	notifications = require('../notifications'),
-	translator = require('../../public/src/translator');
+	translator = require('../../public/src/modules/translator');
 
 module.exports = function(User) {
 

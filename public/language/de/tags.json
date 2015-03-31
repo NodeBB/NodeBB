@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "Es gibt keine Themen mit diesem Stichwort.",
     "tags": "Stichwörter",
-    "enter_tags_here": "Gib hier Stichwörter ein. %1-%2 Zeichen. Drücke Enter nach jedem Stichwort.",
+    "enter_tags_here": "Enter tags here, between %1 and %2 characters each.",
     "enter_tags_here_short": "Gib Stichwörter ein...",
     "no_tags": "Es gibt bisher keine Stichwörter."
 }

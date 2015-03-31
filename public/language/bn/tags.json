@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "এই ট্যাগ সম্বলিত কোন টপিক নেই",
     "tags": "ট্যাগসমূহ",
-    "enter_tags_here": "Enter tags here. %1-%2 characters. Press enter after each tag.",
+    "enter_tags_here": "Enter tags here, between %1 and %2 characters each.",
     "enter_tags_here_short": "ট্যাগ বসান",
     "no_tags": "এখন পর্যন্ত কোন ট্যাগ নেই"
 }

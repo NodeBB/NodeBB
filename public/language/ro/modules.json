@@ -17,5 +17,6 @@
     "chat.three_months": "3 Luni",
     "composer.user_said_in": "%1 a spus în %2:",
     "composer.user_said": "%1 a spus:",
-    "composer.discard": "Ești sigur că vrei să renunți la acest mesaj?"
+    "composer.discard": "Ești sigur că vrei să renunți la acest mesaj?",
+    "composer.submit_and_lock": "Submit and Lock"
 }

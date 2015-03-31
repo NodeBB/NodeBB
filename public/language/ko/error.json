@@ -18,7 +18,7 @@
     "username-taken": "이미 사용 중인 사용자 이름입니다.",
     "email-taken": "이미 사용 중인 이메일입니다.",
     "email-not-confirmed": "아직 이메일이 인증되지 않았습니다. 여기를 누르면 인증 메일을 발송할 수 있습니다.",
-    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
     "no-email-to-confirm": "This forum requires email confirmation, please click here to enter an email",
     "email-confirm-failed": "We could not confirm your email, please try again later.",
     "username-too-short": "사용자 이름이 너무 짧습니다.",

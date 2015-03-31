@@ -60,6 +60,7 @@
     "digest_monthly": "Mensualmente",
     "send_chat_notifications": "Enviar un email si recibo un mensaje de chat cuando no esté en línea.",
     "send_post_notifications": "Enviarme un email cuando se realicen contestaciones en los temas en los que estoy subscrito",
+    "settings-require-reload": "Some setting changes require a reload. Click here to reload the page.",
     "has_no_follower": "Este usuario no tiene seguidores :(",
     "follows_no_one": "Este miembro no sigue a nadie :(",
     "has_no_posts": "Este usuario aún no ha publicado nada.",
@@ -76,5 +77,6 @@
     "enable_topic_searching": "Activar la búsqueda \"in-topic\"",
     "topic_search_help": "Si está activada, la búsqueda 'in-topic' invalidará el comportamiento por defecto del navegador de buscar sólo en la página mostrada y le permitirá entonces buscar en el tema al completo, en vez de hacer una búsqueda únicamente sobre el contenido de la pantalla.",
     "follow_topics_you_reply_to": "Seguir los temas en las que respondes.",
-    "follow_topics_you_create": "Seguir publicaciones que creas."
+    "follow_topics_you_create": "Seguir publicaciones que creas.",
+    "grouptitle": "Select the group title you would like to display"
 }

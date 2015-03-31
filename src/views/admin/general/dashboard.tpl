@@ -1,6 +1,5 @@
 <div class="row dashboard">
-	<!-- Override for now, until the right sidebar graphs are fixed (pending socket.io resolution) -->
-	<div class="col-lg-12">
+	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading">Forum Traffic</div>
 			<div class="panel-body">
@@ -88,8 +87,8 @@
 			</div>
 		</div>
 	</div>
-	<!-- Override for now, until the right sidebar graphs are fixed (pending socket.io resolution) -->
-	<div class="col-lg-3 hide">
+
+	<div class="col-lg-3">
 		<div class="panel panel-default">
 			<div class="panel-heading">Anonymous vs Registered Users</div>
 			<div class="panel-body">
@@ -108,10 +107,11 @@
 			<div class="panel-body">
 				<div class="graph-container pie-chart legend-up">
 					<ul class="graph-legend">
-						<li><div class="on-homepage"></div><span>On Homepage</span></li>
+						<li><div class="on-categories"></div><span>On categories list</span></li>
 						<li><div class="reading-posts"></div><span>Reading posts</span></li>
 						<li><div class="browsing-topics"></div><span>Browsing topics</span></li>
-						<li><div class="idle"></div><span>Idle</span></li>
+						<li><div class="recent"></div><span>Recent / Unread</span></li>
+						<li><div class="tags"></div><span>Tags</span></li>
 					</ul>
 					<canvas id="analytics-presence"></canvas>
 				</div>

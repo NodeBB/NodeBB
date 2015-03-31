@@ -14,6 +14,7 @@
     "user.groups": "Les Groupes de %1",
     "user.favourites": "Messages favoris de %1",
     "user.settings": "Préférences utilisateur",
+    "user.watched": "Topics watched by %1",
     "maintenance.text": "%1 est en maintenance. Veuillez revenir un peu plus tard.",
     "maintenance.messageIntro": "De plus, l'administrateur a laissé ce message:"
 }

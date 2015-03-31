@@ -287,13 +287,17 @@ var async = require('async'),
 	};
 
 	Topics.getMainPids = function(tids, callback) {
+		if (!Array.isArray(tids) || !tids.length) {
+			return callback(null, []);
+		}
+
 		Topics.getTopicsFields(tids, ['mainPid'], function(err, topicData) {
 			if (err) {
 				return callback(err);
 			}
 
 			var mainPids = topicData.map(function(topic) {
-				return topic ? topic.mainPid : null;
+				return topic && topic.mainPid;
 			});
 			callback(null, mainPids);
 		});

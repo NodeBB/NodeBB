@@ -5,15 +5,18 @@ var winston = require('winston');
 module.exports = function(db, module) {
 	var helpers = module.helpers.mongo;
 
-	module.searchIndex = function(key, content, id, callback) {
+	module.searchIndex = function(key, data, id, callback) {
 		callback = callback || function() {};
-		var data = {
-			id: id,
-			key: key,
-			content: content
+		var setData = {
+			id: id
 		};
+		for(var field in data) {
+			if (data.hasOwnProperty(field) && data[field]) {
+				setData[field] = data[field].toString();
+			}
+		}
 
-		db.collection('search').update({key:key, id:id}, {$set:data}, {upsert:true, w: 1}, function(err) {
+		db.collection('search' + key).update({id: id}, {$set: setData}, {upsert:true, w: 1}, function(err) {
 			if(err) {
 				winston.error('Error indexing ' + err.message);
 			}
@@ -21,13 +24,35 @@ module.exports = function(db, module) {
 		});
 	};
 
-	module.search = function(key, term, limit, callback) {
-		db.collection('search').find({ $text: { $search: term }, key: key}, {limit: limit}).toArray(function(err, results) {
-			if(err) {
+	module.search = function(key, data, limit, callback) {
+		var searchQuery = {};
+
+		if (data.content) {
+			searchQuery.$text = {$search: data.content};
+		}
+
+		if (Array.isArray(data.cid) && data.cid.length) {
+		 	if (data.cid.length > 1) {
+				searchQuery.cid = {$in: data.cid.map(String)};
+			} else {
+				searchQuery.cid = data.cid[0].toString();
+			}
+		}
+
+		if (Array.isArray(data.uid) && data.uid.length) {
+			if (data.uid.length > 1) {
+				searchQuery.uid = {$in: data.uid.map(String)};
+			} else {
+				searchQuery.uid = data.uid[0].toString();
+			}
+		}
+
+		db.collection('search' + key).find(searchQuery, {limit: limit}).toArray(function(err, results) {
+			if (err) {
 				return callback(err);
 			}
 
-			if(!results || !results.length) {
+			if (!results || !results.length) {
 				return callback(null, []);
 			}
 
@@ -41,7 +66,12 @@ module.exports = function(db, module) {
 
 	module.searchRemove = function(key, id, callback) {
 		callback = callback || helpers.noop;
-		db.collection('search').remove({key:key, id:id}, callback);
+		if (!id) {
+			return callback();
+		}
+		db.collection('search' + key).remove({id: id}, function(err, res) {
+			callback(err);
+		});
 	};
 
 	module.flushdb = function(callback) {
@@ -118,7 +148,7 @@ module.exports = function(db, module) {
 			return callback();
 		}
 		db.collection('objects').findAndModify({_key: key}, {}, {$inc: {value: 1}}, {new: true, upsert: true}, function(err, result) {
-			callback(err, result ? result.value : null);
+			callback(err, result && result.value ? result.value.value : null);
 		});
 	};
 

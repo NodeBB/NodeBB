@@ -18,7 +18,7 @@
     "username-taken": "Kullanıcı İsmi Alınmış",
     "email-taken": "E-posta Alınmış",
     "email-not-confirmed": "E-postanız onaylanmamış, onaylamak için lütfen buraya tıklayın.",
-    "email-not-confirmed-chat": "Email adresiniz doğrulanmadan sohbet edemezsiniz.",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
     "no-email-to-confirm": "Bu forum e-posta doğrulaması gerektirir, lütfen buraya bir e-posta adresi girin",
     "email-confirm-failed": "E-posta adresinizi doğrulayamıyoruz. Lütfen daha sonra tekrar deneyin.",
     "username-too-short": "Kullanıcı ismi çok kısa",

@@ -18,7 +18,7 @@
     "username-taken": "Nombre de usuario ocupado",
     "email-taken": "Correo electrónico ocupado",
     "email-not-confirmed": "Su cuenta de correo electrónico no ha sido confirmada aún, por favor haga click aquí para confirmarla.",
-    "email-not-confirmed-chat": "No puedes hacer uso del chat hasta que confirmes tu email",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
     "no-email-to-confirm": "Este foro requiere confirmación de su email, por favor pulse aquí para introducir un email",
     "email-confirm-failed": "No se ha podido confirmar su email, por favor inténtelo de nuevo más tarde.",
     "username-too-short": "Nombre de usuario es demasiado corto",

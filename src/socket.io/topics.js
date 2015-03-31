@@ -17,7 +17,7 @@ var nconf = require('nconf'),
 	meta = require('../meta'),
 	events = require('../events'),
 	utils = require('../../public/src/utils'),
-	SocketPosts = require('./posts'),
+
 
 	SocketTopics = {};
 
@@ -39,6 +39,10 @@ SocketTopics.post = function(socket, data, callback) {
 	}, function(err, result) {
 		if (err) {
 			return callback(err);
+		}
+
+		if (data.lock) {
+			SocketTopics.doTopicAction('lock', 'event:topic_locked', socket, {tids: [result.topicData.tid], cid: result.topicData.cid});
 		}
 
 		callback(null, result.topicData);
@@ -233,6 +237,7 @@ SocketTopics.unpin = function(socket, data, callback) {
 };
 
 SocketTopics.doTopicAction = function(action, event, socket, data, callback) {
+	callback = callback || function() {};
 	if (!socket.uid) {
 		return;
 	}
@@ -312,7 +317,7 @@ SocketTopics.movePost = function(socket, data, callback) {
 				return callback(err);
 			}
 
-			SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:moved_your_post');
+			require('./posts').sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:moved_your_post');
 			callback();
 		});
 	});
@@ -547,6 +552,15 @@ SocketTopics.loadMoreTags = function(socket, data, callback) {
 		}
 
 		callback(null, {tags: tags, nextStart: end + 1});
+	});
+};
+
+SocketTopics.isModerator = function(socket, tid, callback) {
+	topics.getTopicField(tid, 'cid', function(err, cid) {
+		if (err) {
+			return callback(err);
+		}
+		user.isModerator(socket.uid, cid, callback);
 	});
 };
 

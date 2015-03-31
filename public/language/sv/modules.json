@@ -17,5 +17,6 @@
     "chat.three_months": "3 Månader",
     "composer.user_said_in": "%1 sa i %2:",
     "composer.user_said": "%1 sa:",
-    "composer.discard": "Är du säker på att du vill förkasta det här inlägget?"
+    "composer.discard": "Är du säker på att du vill förkasta det här inlägget?",
+    "composer.submit_and_lock": "Submit and Lock"
 }

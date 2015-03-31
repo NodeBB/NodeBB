@@ -60,6 +60,7 @@
     "digest_monthly": "חודשי",
     "send_chat_notifications": "שלח לי הודעה למייל כאשר הודעת צ'אט נשלחה אלי בזמן שאיני מחובר",
     "send_post_notifications": "שלח לי הודעה למייל כאשר תגובות חדשות פורסמו לנושאים שאני עוקב אחריהם",
+    "settings-require-reload": "Some setting changes require a reload. Click here to reload the page.",
     "has_no_follower": "למשתמש זה אין עוקבים :(",
     "follows_no_one": "משתמש זה אינו עוקב אחרי אחרים :(",
     "has_no_posts": "המשתמש הזה עוד לא פרסם כלום.",
@@ -76,5 +77,6 @@
     "enable_topic_searching": "הפעל חיפוש בתוך נושא",
     "topic_search_help": "אם מופעל, חיפוש בתוך נושא יעקוף את מנגנון החיפוש הרגיל של הדפדפן שלך על מנת לאפשר לך לחפש בתוך כל הנושא ולא רק מה שמוצג כרגע בעמוד.",
     "follow_topics_you_reply_to": "עקוב אחר נושאים שהגבת עליהם.",
-    "follow_topics_you_create": "עקוב אחר נושאים שיצרת."
+    "follow_topics_you_create": "עקוב אחר נושאים שיצרת.",
+    "grouptitle": "Select the group title you would like to display"
 }

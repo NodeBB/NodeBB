@@ -1,7 +1,7 @@
 "use strict";
-/* globals app, config, define, socket, translator, templates, utils, ajaxify */
+/* globals app, config, define, socket, templates, utils, ajaxify */
 
-define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar, S, sounds, Chats) {
+define('chat', ['taskbar', 'string', 'sounds', 'forum/chats', 'translator'], function(taskbar, S, sounds, Chats, translator) {
 
 	var module = {};
 	var newMessage = false;
@@ -406,7 +406,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats'], function(taskbar,
 		Chats.parseMessage(data, function(html) {
 			var message = $(html);
 			message.find('img:not(".chat-user-image")').addClass('img-responsive');
-			message.find('span.timeago').timeago();
+			message.find('.timeago').timeago();
 			message.insertBefore(typingNotif);
 			Chats.scrollToBottom(chatContent);
 

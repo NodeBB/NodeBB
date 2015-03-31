@@ -21,45 +21,34 @@ module.exports = function(privileges) {
 		if (!Array.isArray(pids) || !pids.length) {
 			return callback(null, []);
 		}
+
 		async.parallel({
-			manage: function(next) {
-				helpers.hasEnoughReputationFor(['privileges:manage_content', 'privileges:manage_topic'], uid, next);
-			},
-			isAdministrator: function(next) {
+			isAdmin: function(next){
 				user.isAdministrator(uid, next);
 			},
-		}, function(err, userResults) {
-			if(err) {
+			isModerator: function(next) {
+				posts.isModerator(pids, uid, next);
+			},
+			isOwner: function(next) {
+				posts.isOwner(pids, uid, next);
+			}
+		}, function(err, results) {
+			if (err) {
 				return callback(err);
 			}
 
-			var userPriv = userResults.isAdministrator || userResults.manage;
+			var privileges = [];
 
-			async.parallel({
-				isOwner: function(next) {
-					posts.isOwner(pids, uid, next);
-				},
-				isModerator: function(next) {
-					posts.isModerator(pids, uid, next);
-				}
-			}, function(err, postResults) {
-				if (err) {
-					return callback(err);
-				}
+			for (var i=0; i<pids.length; ++i) {
+				var editable = results.isAdmin || results.isModerator[i] || results.isOwner[i];
+				privileges.push({
+					editable: editable,
+					view_deleted: editable,
+					move: results.isAdmin || results.isModerator[i]
+				});
+			}
 
-				var privileges = [];
-
-				for (var i=0; i<pids.length; ++i) {
-					var editable = userPriv || postResults.isModerator[i] || postResults.isOwner[i];
-					privileges.push({
-						editable: editable,
-						view_deleted: editable,
-						move: userResults.isAdministrator || postResults.isModerator[i]
-					});
-				}
-
-				callback(null, privileges);
-			});
+			callback(null, privileges);
 		});
 	};
 
@@ -126,7 +115,7 @@ module.exports = function(privileges) {
 				return callback(new Error('[[error:post-edit-duration-expired, ' + meta.config.postEditDuration + ']]'));
 			}
 			callback(null, results.isEditable.editable);
-		});		
+		});
 	};
 
 	privileges.posts.canMove = function(pid, uid, callback) {
@@ -154,16 +143,11 @@ module.exports = function(privileges) {
 				if (isLocked) {
 					return callback(null, {isLocked: true});
 				}
-				helpers.some([
-					function(next) {
-						posts.isOwner(pid, uid, next);
-					},
-					function(next) {
-						helpers.hasEnoughReputationFor(['privileges:manage_content', 'privileges:manage_topic'], uid, next);
-					}
-				], function(err, editable) {
-					next(err, {editable: editable});
-				});
+
+				posts.isOwner(pid, uid, next);
+			},
+			function(isOwner, next) {
+				next(null, {editable: isOwner});
 			}
 		], callback);
 	}
@@ -184,7 +168,7 @@ module.exports = function(privileges) {
 					if (err || !cid) {
 						return next(err, false);
 					}
-					
+
 					user.isModerator(uid, cid, next);
 				});
 			},

@@ -30,11 +30,11 @@
     "topic-start-date": "主题开始日期",
     "username": "用户名",
     "category": "版面",
-    "descending": "逆序",
+    "descending": "倒序",
     "ascending": "顺序",
-    "save-preferences": "Save preferences",
-    "clear-preferences": "Clear preferences",
-    "search-preferences-saved": "Search preferences saved",
-    "search-preferences-cleared": "Search preferences cleared",
-    "show-results-as": "Show results as"
+    "save-preferences": "保存设置",
+    "clear-preferences": "清除设置",
+    "search-preferences-saved": "搜索设置已保存",
+    "search-preferences-cleared": "搜索设置已清除",
+    "show-results-as": "结果显示为"
 }

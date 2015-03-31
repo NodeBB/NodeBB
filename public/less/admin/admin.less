@@ -3,7 +3,6 @@
 
 @import "./general/dashboard";
 @import "./general/navigation";
-@import "./manage/categories";
 @import "./manage/groups";
 @import "./manage/tags";
 @import "./manage/flags";
@@ -294,5 +293,50 @@
 		right: 15px;
 		width: initial;
 		max-width: calc( ~"(100% - 200px)/4" );
+	}
+}
+
+.category-settings-form {
+	h3 {
+		margin-top: 0;
+		.pointer;
+	}
+
+	h4 {
+		.pointer;
+	}
+}
+
+.category-preview {
+	.pointer;
+	width: 100%;
+	height: 100px;
+	text-align: center;
+	color: white;
+	margin-top: 0;
+
+	.icon {
+		width: 30px;
+		height: 30px;
+		line-height: 40px;
+		display: inline-block;
+		margin: 35px 5px 0 5px;
+	}
+}
+
+.table-reordering {
+	tr:hover {
+		cursor: move;
+	}
+}
+
+.privilege-table {
+	th {
+		font-size: 10px;
+	}
+
+	img {
+		max-width: 24px;
+		max-height: 24px;
 	}
 }

@@ -18,7 +18,7 @@
     "username-taken": "用户名已被占用",
     "email-taken": "电子邮箱已被占用",
     "email-not-confirmed": "您的电子邮箱尚未确认，请点击这里确认您的电子邮箱。",
-    "email-not-confirmed-chat": "在确认您的邮箱之前，您不能使用聊天功能",
+    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
     "no-email-to-confirm": "本论坛需要电子邮箱确认，请点击这里输入一个电子邮箱地址",
     "email-confirm-failed": "我们无法确认您的电子邮箱，请重试",
     "username-too-short": "用户名太短",

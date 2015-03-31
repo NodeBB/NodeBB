@@ -9,16 +9,19 @@ var async = require('async'),
 module.exports = function(Posts) {
 
 	Posts.delete = function(pid, callback) {
-		Posts.setPostField(pid, 'deleted', 1, function(err) {
-			if (err) {
-				return callback(err);
-			}
-
-			Posts.getPostFields(pid, ['pid', 'tid', 'uid', 'timestamp'], function(err, postData) {
-				if (err) {
-					return callback(err);
-				}
-
+		var postData;
+		async.waterfall([
+			function(next) {
+				Posts.setPostField(pid, 'deleted', 1, next);
+			},
+			function(next) {
+				Posts.getPostFields(pid, ['pid', 'tid', 'uid', 'timestamp'], next);
+			},
+			function(_post, next) {
+				postData = _post;
+				topics.getTopicField(_post.tid, 'cid', next);
+			},
+			function(cid, next) {
 				plugins.fireHook('action:post.delete', pid);
 
 				async.parallel([
@@ -26,7 +29,7 @@ module.exports = function(Posts) {
 						updateTopicTimestamp(postData.tid, next);
 					},
 					function(next) {
-						removeFromCategoryRecentPosts(pid, postData.tid, next);
+						db.sortedSetRemove('cid:' + cid + ':pids', pid, next);
 					},
 					function(next) {
 						Posts.dismissFlag(pid, next);
@@ -34,21 +37,25 @@ module.exports = function(Posts) {
 				], function(err) {
 					callback(err, postData);
 				});
-			});
-		});
+			}
+		], callback);
 	};
 
 	Posts.restore = function(pid, callback) {
-		Posts.setPostField(pid, 'deleted', 0, function(err) {
-			if (err) {
-				return callback(err);
-			}
-
-			Posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'timestamp'], function(err, postData) {
-				if (err) {
-					return callback(err);
-				}
-
+		var postData;
+		async.waterfall([
+			function(next) {
+				Posts.setPostField(pid, 'deleted', 0, next);
+			},
+			function(next) {
+				Posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'timestamp'], next);
+			},
+			function(_post, next) {
+				postData = _post;
+				topics.getTopicField(_post.tid, 'cid', next);
+			},
+			function(cid, next) {
+				postData.cid = cid;
 				plugins.fireHook('action:post.restore', postData);
 
 				async.parallel([
@@ -56,13 +63,13 @@ module.exports = function(Posts) {
 						updateTopicTimestamp(postData.tid, next);
 					},
 					function(next) {
-						addToCategoryRecentPosts(pid, postData.tid, postData.timestamp, next);
+						db.sortedSetAdd('cid:' + cid + ':pids', postData.timestamp, pid, next);
 					}
 				], function(err) {
 					callback(err, postData);
 				});
-			});
-		});
+			}
+		], callback);
 	};
 
 	function updateTopicTimestamp(tid, callback) {
@@ -81,26 +88,6 @@ module.exports = function(Posts) {
 				}
 				callback();
 			});
-		});
-	}
-
-	function removeFromCategoryRecentPosts(pid, tid, callback) {
-		topics.getTopicField(tid, 'cid', function(err, cid) {
-			if (err) {
-				return callback(err);
-			}
-
-			db.sortedSetRemove('cid:' + cid + ':pids', pid, callback);
-		});
-	}
-
-	function addToCategoryRecentPosts(pid, tid, timestamp, callback) {
-		topics.getTopicField(tid, 'cid', function(err, cid) {
-			if (err) {
-				return callback(err);
-			}
-
-			db.sortedSetAdd('cid:' + cid + ':pids', timestamp, pid, callback);
 		});
 	}
 

@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, ajaxify, app, utils, socket, translator*/
+/* globals define, ajaxify, app, utils, socket */
 
-define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll'], function(header, infinitescroll) {
+define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll', 'translator'], function(header, infinitescroll, translator) {
 	var Account = {},
 		yourid,
 		theirid,
@@ -116,7 +116,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll']
 		infinitescroll.parseAndTranslate('account/profile', 'posts', {posts: posts}, function(html) {
 
 			$('.user-recent-posts .loading-indicator').before(html);
-			html.find('span.timeago').timeago();
+			html.find('.timeago').timeago();
 
 			callback();
 		});

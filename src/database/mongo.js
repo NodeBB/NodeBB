@@ -45,7 +45,7 @@
 			mongoClient = require('mongodb').MongoClient;
 
 			if (!nconf.get('redis')) {
-				sessionStore = require('connect-mongo')({session: session});
+				sessionStore = require('connect-mongo')(session);
 			} else {
 				sessionStore = require('connect-redis')(session);
 			}
@@ -57,6 +57,17 @@
 		var usernamePassword = '';
 		if (nconf.get('mongo:username') && nconf.get('mongo:password')) {
 			usernamePassword = nconf.get('mongo:username') + ':' + nconf.get('mongo:password') + '@';
+		}
+
+		// Sensible defaults for Mongo, if not set
+		if (!nconf.get('mongo:host')) {
+			nconf.set('mongo:host', '127.0.0.1');
+		}
+		if (!nconf.get('mongo:port')) {
+			nconf.set('mongo:port', 27017);
+		}
+		if (!nconf.get('mongo:database')) {
+			nconf.set('mongo:database', '0');
 		}
 
 		var connString = 'mongodb://' + usernamePassword + nconf.get('mongo:host') + ':' + nconf.get('mongo:port') + '/' + nconf.get('mongo:database');
@@ -74,8 +85,10 @@
 			db = _db;
 
 			module.client = db;
-
+			
 			if (!nconf.get('redis')) {
+				// TEMP: to fix connect-mongo, see https://github.com/kcbanner/connect-mongo/issues/161
+				db.openCalled = true
 				module.sessionStore = new sessionStore({
 					db: db
 				});
@@ -110,8 +123,14 @@
 				createIndex('objects', {_key: 1, value: -1}, {background:true});
 				createIndex('objects', {expireAt: 1}, {expireAfterSeconds:0, background:true});
 
-				createIndex('search', {content:'text'}, {background:true});
-				createIndex('search', {key: 1, id: 1}, {background:true});
+
+				createIndex('searchtopic', {content: 'text', uid: 1, cid: 1}, {background:true});
+				createIndex('searchtopic', {id: 1}, {background:true});
+
+
+				createIndex('searchpost', {content: 'text', uid: 1, cid: 1}, {background:true});
+				createIndex('searchpost', {id: 1}, {background:true});
+
 
 				if (typeof callback === 'function') {
 					callback();

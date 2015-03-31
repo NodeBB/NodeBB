@@ -17,5 +17,6 @@
     "chat.three_months": "3个月",
     "composer.user_said_in": "%1 在 %2 中说：",
     "composer.user_said": "%1 说：",
-    "composer.discard": "确定想要取消此帖？"
+    "composer.discard": "确定想要取消此帖？",
+    "composer.submit_and_lock": "Submit and Lock"
 }

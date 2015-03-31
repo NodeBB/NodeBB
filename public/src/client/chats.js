@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, app, ajaxify, utils, socket, templates, translator */
+/* globals define, app, ajaxify, utils, socket, templates */
 
-define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, sounds, infinitescroll) {
+define('forum/chats', ['string', 'sounds', 'forum/infinitescroll', 'translator'], function(S, sounds, infinitescroll, translator) {
 	var Chats = {
 		initialised: false
 	};
@@ -20,10 +20,8 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, 
 		Chats.addEventListeners();
 		Chats.setActive();
 
-		$(window).on('action:ajaxify.end', function() {
-			Chats.resizeMainWindow();
-			Chats.scrollToBottom(containerEl);
-		});
+		Chats.resizeMainWindow();
+		Chats.scrollToBottom($('.expanded-chat ul'));
 
 		Chats.initialised = true;
 	};
@@ -124,7 +122,7 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll'], function(S, 
 	function onMessagesParsed(html) {
 		var newMessage = $(html);
 		newMessage.insertBefore($('.user-typing'));
-		newMessage.find('span.timeago').timeago();
+		newMessage.find('.timeago').timeago();
 		newMessage.find('img:not(".chat-user-image")').addClass('img-responsive');
 		Chats.scrollToBottom($('.expanded-chat .chat-content'));
 	}

@@ -5,7 +5,7 @@ var admin = {},
 	async = require('async'),
 	plugins = require('../plugins'),
 	db = require('../database'),
-	translator = require('../../public/src/translator');
+	translator = require('../../public/src/modules/translator');
 
 
 admin.save = function(data, callback) {

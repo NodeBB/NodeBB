@@ -17,5 +17,6 @@
     "chat.three_months": "3 Months",
     "composer.user_said_in": "%1 ütles %2:",
     "composer.user_said": "%1 ütles:",
-    "composer.discard": "Oled kindel, et soovid selle postituse tühistada?"
+    "composer.discard": "Oled kindel, et soovid selle postituse tühistada?",
+    "composer.submit_and_lock": "Submit and Lock"
 }

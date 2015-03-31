@@ -11,7 +11,7 @@ var fs = require('fs'),
 	db = require('./database'),
 	emitter = require('./emitter'),
 	meta = require('./meta'),
-	translator = require('../public/src/translator'),
+	translator = require('../public/src/modules/translator'),
 	utils = require('../public/src/utils'),
 	hotswap = require('./hotswap'),
 

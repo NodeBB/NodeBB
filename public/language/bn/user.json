@@ -60,6 +60,7 @@
     "digest_monthly": "মাসিক",
     "send_chat_notifications": "যদি আমি অনলাইনে না থাকি, সেক্ষেত্রে নতুন চ্যাট মেসেজ আসলে আমাকে ইমেইল করুন",
     "send_post_notifications": "Send an email when replies are made to topics I am subscribed to",
+    "settings-require-reload": "Some setting changes require a reload. Click here to reload the page.",
     "has_no_follower": "এই সদস্যের কোন ফলোয়ার নেই :(",
     "follows_no_one": "এই সদস্য কাউকে ফলো করছেন না :(",
     "has_no_posts": "এই সদস্য এখনো কোন পোষ্ট করেন নি",
@@ -76,5 +77,6 @@
     "enable_topic_searching": "In-Topic সার্চ সক্রীয় করো",
     "topic_search_help": "যদি এনাবল করা হয়ে থাকে,  In-topic সার্চিং ব্রাউজারের ডিফল্ট সার্চের বদলে পুরো টপিকজুড়ে সার্চ করার সুবিধা দিবে, যা কেবলমাত্র বর্তমান স্কৃণে দেখানো অংশের মধ্যে সীমাবদ্ধ থাকবে না। ",
     "follow_topics_you_reply_to": "আপনার উত্তর দেয়া টপিকগুলো ফলো করুন",
-    "follow_topics_you_create": "আপনার তৈরীকরা টপিকসমূহ ফলো করুন"
+    "follow_topics_you_create": "আপনার তৈরীকরা টপিকসমূহ ফলো করুন",
+    "grouptitle": "Select the group title you would like to display"
 }

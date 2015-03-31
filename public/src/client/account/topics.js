@@ -18,12 +18,12 @@ define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'],
 
 		infinitescroll.loadMore('topics.loadMoreFromSet', {
 			set: 'uid:' + $('.account-username-box').attr('data-uid') + ':topics',
-			after: $('.user-topics').attr('data-nextstart')
+			after: $('[component="category"]').attr('data-nextstart')
 		}, function(data, done) {
 
 			if (data.topics && data.topics.length) {
 				onTopicsLoaded(data.topics, done);
-				$('.user-topics').attr('data-nextstart', data.nextStart);
+				$('[component="category"]').attr('data-nextstart', data.nextStart);
 			} else {
 				done();
 			}
@@ -32,8 +32,8 @@ define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'],
 
 	function onTopicsLoaded(topics, callback) {
 		infinitescroll.parseAndTranslate('account/topics', 'topics', {topics: topics}, function(html) {
-			$('#topics-container').append(html);
-			html.find('span.timeago').timeago();
+			$('[component="category"]').append(html);
+			html.find('.timeago').timeago();
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			$(window).trigger('action:topics.loaded');
