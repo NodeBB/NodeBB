@@ -187,9 +187,8 @@ define('forum/topic/events', [
 
 	function togglePostVote(data) {
 		var post = $('[data-pid="' + data.post.pid + '"]');
-
-		post.find('.upvote').toggleClass('btn-primary upvoted', data.upvote);
-		post.find('.downvote').toggleClass('btn-primary downvoted', data.downvote);
+		post.find('[component="post/upvote"]').toggleClass('upvoted', data.upvote);
+		post.find('[component="post/downvote"]').toggleClass('downvoted', data.downvote);
 	}
 
 
