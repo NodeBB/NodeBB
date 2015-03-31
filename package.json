@@ -47,7 +47,7 @@
     "nodebb-plugin-spam-be-gone": "^0.4.0",
     "nodebb-theme-lavender": "^1.0.22",
     "nodebb-theme-vanilla": "^1.0.80",
-    "nodebb-widget-essentials": "~0.2.12",
+    "nodebb-widget-essentials": "^1.0.0",
     "nodebb-rewards-essentials": "^0.0.1",
     "npm": "^2.1.4",
     "passport": "^0.2.1",
