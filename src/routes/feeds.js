@@ -128,7 +128,7 @@ function generateForCategory(req, res, next) {
 		set: 'cid:' + cid + ':tids',
 		reverse: true,
 		start: 0,
-		end: 25,
+		stop: 25,
 		uid: uid
 	}, function (err, categoryData) {
 		if (err) {

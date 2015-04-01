@@ -232,14 +232,14 @@ categoriesController.get = function(req, res, next) {
 			}
 
 			var start = (page - 1) * settings.topicsPerPage + topicIndex,
-				end = start + settings.topicsPerPage - 1;
+				stop = start + settings.topicsPerPage - 1;
 
 			next(null, {
 				cid: cid,
 				set: set,
 				reverse: reverse,
 				start: start,
-				end: end,
+				stop: stop,
 				uid: uid
 			});
 		},
