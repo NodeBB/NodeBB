@@ -45,24 +45,37 @@ define('composer/preview', function() {
 	};
 
 	preview.handleToggler = function(postContainer) {
-		var showBtn = postContainer.find('.write-container .toggle-preview'),
-			hideBtn = postContainer.find('.preview-container .toggle-preview');
-
-		hideBtn.on('click', function() {
-			$('.preview-container').addClass('hide');
-			$('.write-container').addClass('maximized');
+		function hidePreview() {
+			previewContainer.addClass('hide');
+			writeContainer.addClass('maximized');
 			showBtn.removeClass('hide');
 
 			$('.write').focus();
-		});
+			localStorage.setItem('composer:previewToggled', true);
+		}
 
-		showBtn.on('click', function() {
-			$('.preview-container').removeClass('hide');
-			$('.write-container').removeClass('maximized');
+		function showPreview() {
+			previewContainer.removeClass('hide');
+			writeContainer.removeClass('maximized');
 			showBtn.addClass('hide');
 
 			$('.write').focus();
-		});
+			localStorage.removeItem('composer:previewToggled');
+		}
+
+		var showBtn = postContainer.find('.write-container .toggle-preview'),
+			hideBtn = postContainer.find('.preview-container .toggle-preview'),
+			previewContainer = $('.preview-container'),
+			writeContainer = $('.write-container');
+
+		hideBtn.on('click', hidePreview);
+		showBtn.on('click', showPreview);
+
+		if (localStorage.getItem('composer:previewToggled')) {
+			hidePreview();
+		} else {
+			showPreview();
+		}
 	};
 
 	return preview;

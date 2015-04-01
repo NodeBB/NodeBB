@@ -305,6 +305,7 @@ define('composer', [
 				draft = drafts.getDraft(postData.save_id),
 				submitBtn = postContainer.find('.composer-submit');
 
+			preview.handleToggler(postContainer);
 			tags.init(postContainer, composer.posts[post_uuid]);
 			categoryList.init(postContainer, composer.posts[post_uuid]);
 
@@ -386,7 +387,6 @@ define('composer', [
 			preview.render(postContainer, function() {
 				preview.matchScroll(postContainer);
 			});
-			preview.handleToggler(postContainer);
 
 			drafts.init(postContainer, postData);
 
