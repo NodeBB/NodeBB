@@ -135,10 +135,16 @@ adminController.categories.get = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-
-		res.render('admin/manage/category', {
-			category: data.category[0],
-			privileges: data.privileges
+        
+		plugins.fireHook('filter:admin.category.get', {req: req, res: res, category: data.category[0], privileges: data.privileges}, function(err, data) {
+			if (err) {
+				return next(err);
+			}
+			
+			res.render('admin/manage/category', {
+				category: data.category,
+				privileges: data.privileges
+			});
 		});
 	});
 };
@@ -151,14 +157,20 @@ adminController.categories.getAll = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-
-		categoryData.filter(Boolean).forEach(function(category) {
-			(category.disabled ? disabled : active).push(category);
-		});
-
-		res.render('admin/manage/categories', {
-			active: active,
-			disabled: disabled
+        
+		plugins.fireHook('filter:admin.categories.get', {req: req, res: res, categories: categoryData}, function(err, data) {
+			if (err) {
+				return next(err);
+			}
+	
+			data.categories.filter(Boolean).forEach(function(category) {
+				(category.disabled ? disabled : active).push(category);
+			});
+	
+			res.render('admin/manage/categories', {
+				active: active,
+				disabled: disabled
+			});
 		});
 	});
 };
