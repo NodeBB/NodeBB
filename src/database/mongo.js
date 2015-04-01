@@ -40,6 +40,7 @@
 	module.helpers.mongo = require('./mongo/helpers');
 
 	module.init = function(callback) {
+		callback = callback || function() {};
 		try {
 			var sessionStore;
 			mongoClient = require('mongodb').MongoClient;
@@ -85,10 +86,10 @@
 			db = _db;
 
 			module.client = db;
-			
+
 			if (!nconf.get('redis')) {
 				// TEMP: to fix connect-mongo, see https://github.com/kcbanner/connect-mongo/issues/161
-				db.openCalled = true
+				db.openCalled = true;
 				module.sessionStore = new sessionStore({
 					db: db
 				});
@@ -119,29 +120,26 @@
 			}
 
 			function createIndices() {
-				createIndex('objects', {_key: 1, score: -1}, {background:true});
-				createIndex('objects', {_key: 1, value: -1}, {background:true});
-				createIndex('objects', {expireAt: 1}, {expireAfterSeconds:0, background:true});
+				async.parallel([
+					async.apply(createIndex, 'objects', {_key: 1, score: -1}, {background: true}),
+					async.apply(createIndex, 'objects', {_key: 1, value: -1}, {background: true}),
 
+					async.apply(createIndex, 'objects', {expireAt: 1}, {expireAfterSeconds: 0, background: true}),
 
-				createIndex('searchtopic', {content: 'text', uid: 1, cid: 1}, {background:true});
-				createIndex('searchtopic', {id: 1}, {background:true});
+					async.apply(createIndex, 'searchtopic', {content: 'text', uid: 1, cid: 1}, {background: true}),
+					async.apply(createIndex, 'searchtopic', {id: 1}, {background: true}),
 
-
-				createIndex('searchpost', {content: 'text', uid: 1, cid: 1}, {background:true});
-				createIndex('searchpost', {id: 1}, {background:true});
-
-
-				if (typeof callback === 'function') {
-					callback();
-				}
+					async.apply(createIndex, 'searchpost', {content: 'text', uid: 1, cid: 1}, {background: true}),
+					async.apply(createIndex, 'searchpost', {id: 1}, {background: true})
+				], callback);
 			}
 
-			function createIndex(collection, index, options) {
+			function createIndex(collection, index, options, callback) {
 				db.collection(collection).ensureIndex(index, options, function(err) {
 					if (err) {
 						winston.error('Error creating index ' + err.message);
 					}
+					callback(err);
 				});
 			}
 		});
