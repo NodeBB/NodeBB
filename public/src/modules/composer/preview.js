@@ -44,5 +44,26 @@ define('composer/preview', function() {
 		preview.scrollTop(Math.max(preview[0].scrollHeight - preview.height(), 0) * scrollPercent);
 	};
 
+	preview.handleToggler = function(postContainer) {
+		var showBtn = postContainer.find('.write-container .toggle-preview'),
+			hideBtn = postContainer.find('.preview-container .toggle-preview');
+
+		hideBtn.on('click', function() {
+			$('.preview-container').addClass('hide');
+			$('.write-container').addClass('maximized');
+			showBtn.removeClass('hide');
+
+			$('.write').focus();
+		});
+
+		showBtn.on('click', function() {
+			$('.preview-container').removeClass('hide');
+			$('.write-container').removeClass('maximized');
+			showBtn.addClass('hide');
+
+			$('.write').focus();
+		});
+	};
+
 	return preview;
 });
