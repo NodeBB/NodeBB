@@ -62,7 +62,7 @@ define('forum/users', ['translator'], function(translator) {
 			after: after
 		}, function(err, data) {
 			if (data && data.users.length) {
-				onUsersLoaded(data.users);
+				onUsersLoaded(data);
 				$('#load-more-users-btn').removeClass('disabled');
 			} else {
 				$('#load-more-users-btn').addClass('disabled');
@@ -71,13 +71,15 @@ define('forum/users', ['translator'], function(translator) {
 		});
 	}
 
-	function onUsersLoaded(users) {
-		users = users.filter(function(user) {
+	function onUsersLoaded(data) {
+		data.users = data.users.filter(function(user) {
 			return !$('.users-box[data-uid="' + user.uid + '"]').length;
 		});
 
-		templates.parse('users', 'users', {users: users}, function(html) {
+		templates.parse('users', 'users', data, function(html) {
 			translator.translate(html, function(translated) {
+				translated = $(translated);
+				translated.find('span.timeago').timeago();
 				$('#users-container').append(translated);
 				$('#users-container .anon-user').appendTo($('#users-container'));
 			});
