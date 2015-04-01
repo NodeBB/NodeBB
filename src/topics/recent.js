@@ -14,32 +14,32 @@ module.exports = function(Topics) {
 		year: 31104000000
 	};
 
-	Topics.getLatestTopics = function(uid, start, end, term, callback) {
+	Topics.getLatestTopics = function(uid, start, stop, term, callback) {
 		async.waterfall([
 			function (next) {
-				Topics.getLatestTidsFromSet('topics:recent', start, end, term, next);
+				Topics.getLatestTidsFromSet('topics:recent', start, stop, term, next);
 			},
 			function(tids, next) {
 				Topics.getTopics(tids, uid, next);
 			},
 			function(topics, next) {
-				next(null, {topics: topics, nextStart: end + 1});
+				next(null, {topics: topics, nextStart: stop + 1});
 			}
 		], callback);
 	};
 
-	Topics.getLatestTids = function(start, end, term, callback) {
+	Topics.getLatestTids = function(start, stop, term, callback) {
 		winston.warn('[deprecation warning] please use Topics.getLatestTidsFromSet("topics:recent")');
-		Topics.getLatestTidsFromSet('topics:recent', start, end, term, callback);
+		Topics.getLatestTidsFromSet('topics:recent', start, stop, term, callback);
 	};
 
-	Topics.getLatestTidsFromSet = function(set, start, end, term, callback) {
+	Topics.getLatestTidsFromSet = function(set, start, stop, term, callback) {
 		var since = terms.day;
 		if (terms[term]) {
 			since = terms[term];
 		}
 
-		var count = parseInt(end, 10) === -1 ? end : end - start + 1;
+		var count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
 
 		db.getSortedSetRevRangeByScore(set, start, count, '+inf', Date.now() - since, callback);
 	};

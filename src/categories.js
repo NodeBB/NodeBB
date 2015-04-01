@@ -38,14 +38,7 @@ var async = require('async'),
 
 			async.parallel({
 				topics: function(next) {
-					Categories.getCategoryTopics({
-						cid: data.cid,
-						set: data.set,
-						reverse: data.reverse,
-						start: data.start,
-						stop: data.end,
-						uid: data.uid
-					}, next);
+					Categories.getCategoryTopics(data, next);
 				},
 				pageCount: function(next) {
 					Categories.getPageCount(data.cid, data.uid, next);
@@ -65,7 +58,7 @@ var async = require('async'),
 
 				plugins.fireHook('filter:category.get', {category: category, uid: data.uid}, function(err, data) {
 					callback(err, data ? data.category : null);
-				});				
+				});
 			});
 		});
 	};
@@ -120,7 +113,7 @@ var async = require('async'),
 			},
 			function(cids, next) {
 				Categories.getCategories(cids, uid, next);
-			}			
+			}
 		], callback);
 	};
 

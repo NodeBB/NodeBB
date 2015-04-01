@@ -53,20 +53,20 @@ module.exports = function(User) {
 		});
 	}
 
-	User.getFollowing = function(uid, start, end, callback) {
-		getFollow(uid, 'following:' + uid, start, end, callback);
+	User.getFollowing = function(uid, start, stop, callback) {
+		getFollow(uid, 'following:' + uid, start, stop, callback);
 	};
 
-	User.getFollowers = function(uid, start, end, callback) {
-		getFollow(uid, 'followers:' + uid, start, end, callback);
+	User.getFollowers = function(uid, start, stop, callback) {
+		getFollow(uid, 'followers:' + uid, start, stop, callback);
 	};
 
-	function getFollow(uid, set, start, end, callback) {
+	function getFollow(uid, set, start, stop, callback) {
 		if (!parseInt(uid, 10)) {
 			return callback(null, []);
 		}
 
-		db.getSortedSetRevRange(set, start, end, function(err, uids) {
+		db.getSortedSetRevRange(set, start, stop, function(err, uids) {
 			if (err) {
 				return callback(err);
 			}

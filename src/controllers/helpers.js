@@ -26,13 +26,11 @@ helpers.notFound = function(req, res, error) {
 };
 
 helpers.notAllowed = function(req, res, error) {
-	var uid = req.user ? req.user.uid : 0;
-
-	if (uid) {
+	if (req.uid) {
 		if (res.locals.isAPI) {
-			res.status(403).json({path: req.path.replace(/^\/api/, ''), loggedIn: !!uid, error: error});
+			res.status(403).json({path: req.path.replace(/^\/api/, ''), loggedIn: !!req.uid, error: error});
 		} else {
-			res.status(403).render('403', {path: req.path, loggedIn: !!uid, error: error});
+			res.status(403).render('403', {path: req.path, loggedIn: !!req.uid, error: error});
 		}
 	} else {
 		if (res.locals.isAPI) {

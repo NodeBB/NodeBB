@@ -93,8 +93,8 @@ var async = require('async'),
 		});
 	};
 
-	Groups.getGroups = function(start, end, callback) {
-		db.getSortedSetRevRange('groups:createtime', start, end, callback);
+	Groups.getGroups = function(start, stop, callback) {
+		db.getSortedSetRevRange('groups:createtime', start, stop, callback);
 	};
 
 	Groups.get = function(groupName, options, callback) {
@@ -315,8 +315,8 @@ var async = require('async'),
 		});
 	};
 
-	Groups.getMembers = function(groupName, start, end, callback) {
-		db.getSortedSetRevRange('group:' + groupName + ':members', start, end, callback);
+	Groups.getMembers = function(groupName, start, stop, callback) {
+		db.getSortedSetRevRange('group:' + groupName + ':members', start, stop, callback);
 	};
 
 	Groups.getMembersOfGroups = function(groupNames, callback) {

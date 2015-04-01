@@ -10,10 +10,9 @@ var tagsController = {},
 
 tagsController.getTag = function(req, res, next) {
 	var tag = validator.escape(req.params.tag);
-	var uid = req.user ? req.user.uid : 0;
-	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+	var stop = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
 
-	topics.getTagTids(tag, 0, end, function(err, tids) {
+	topics.getTagTids(tag, 0, stop, function(err, tids) {
 		if (err) {
 			return next(err);
 		}
@@ -23,7 +22,7 @@ tagsController.getTag = function(req, res, next) {
 			return res.render('tag', {topics: [], tag: tag});
 		}
 
-		topics.getTopics(tids, uid, function(err, topics) {
+		topics.getTopics(tids, req.uid, function(err, topics) {
 			if (err) {
 				return next(err);
 			}
@@ -45,7 +44,7 @@ tagsController.getTag = function(req, res, next) {
 			var data = {
 				topics: topics,
 				tag: tag,
-				nextStart: end + 1,
+				nextStart: stop + 1,
 				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[tags:tags]]', url: '/tags'}, {text: tag}])
 			};
 			res.render('tag', data);

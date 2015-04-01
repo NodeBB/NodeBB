@@ -120,8 +120,7 @@ accountsController.getUserByUID = function(req, res, next) {
 };
 
 accountsController.getAccount = function(req, res, next) {
-	var lowercaseSlug = req.params.userslug.toLowerCase(),
-		callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
+	var lowercaseSlug = req.params.userslug.toLowerCase();
 
 	if (req.params.userslug !== lowercaseSlug) {
 		if (res.locals.isAPI) {
@@ -131,7 +130,7 @@ accountsController.getAccount = function(req, res, next) {
 		}
 	}
 
-	getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
+	getUserDataByUserSlug(req.params.userslug, req.uid, function (err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -140,19 +139,19 @@ accountsController.getAccount = function(req, res, next) {
 			return helpers.notFound(req, res);
 		}
 
-		if (callerUID !== parseInt(userData.uid, 10)) {
+		if (req.uid !== parseInt(userData.uid, 10)) {
 			user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
 		}
 
 		async.parallel({
 			isFollowing: function(next) {
-				user.isFollowing(callerUID, userData.theirid, next);
+				user.isFollowing(req.uid, userData.theirid, next);
 			},
 			posts: function(next) {
-				posts.getPostsFromSet('uid:' + userData.theirid + ':posts', callerUID, 0, 9, next);
+				posts.getPostsFromSet('uid:' + userData.theirid + ':posts', req.uid, 0, 9, next);
 			},
 			signature: function(next) {
-				postTools.parseSignature(userData, callerUID, next);
+				postTools.parseSignature(userData, req.uid, next);
 			}
 		}, function(err, results) {
 			if(err) {
@@ -170,7 +169,7 @@ accountsController.getAccount = function(req, res, next) {
 				userData.profileviews = 1;
 			}
 
-			plugins.fireHook('filter:user.account', {userData: userData, uid: callerUID}, function(err, data) {
+			plugins.fireHook('filter:user.account', {userData: userData, uid: req.uid}, function(err, data) {
 				if (err) {
 					return next(err);
 				}
@@ -189,12 +188,11 @@ accountsController.getFollowers = function(req, res, next) {
 };
 
 function getFollow(tpl, name, req, res, next) {
-	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 	var userData;
 
 	async.waterfall([
 		function(next) {
-			getUserDataByUserSlug(req.params.userslug, callerUID, next);
+			getUserDataByUserSlug(req.params.userslug, req.uid, next);
 		},
 		function(data, next) {
 			userData = data;
@@ -205,7 +203,7 @@ function getFollow(tpl, name, req, res, next) {
 			user[method](userData.uid, 0, 49, next);
 		}
 	], function(err, users) {
-		if(err) {
+		if (err) {
 			return next(err);
 		}
 
@@ -233,9 +231,7 @@ accountsController.getTopics = function(req, res, next) {
 };
 
 accountsController.getGroups = function(req, res, next) {
-	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
-
-	accountsController.getBaseUser(req.params.userslug, callerUID, function(err, userData) {
+	accountsController.getBaseUser(req.params.userslug, req.uid, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -257,9 +253,7 @@ accountsController.getGroups = function(req, res, next) {
 };
 
 function getFromUserSet(tpl, set, method, type, req, res, next) {
-	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
-
-	accountsController.getBaseUser(req.params.userslug, callerUID, function(err, userData) {
+	accountsController.getBaseUser(req.params.userslug, req.uid, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -268,7 +262,7 @@ function getFromUserSet(tpl, set, method, type, req, res, next) {
 			return helpers.notFound(req, res);
 		}
 
-		method('uid:' + userData.uid + ':' + set, callerUID, 0, 19, function(err, data) {
+		method('uid:' + userData.uid + ':' + set, req.uid, 0, 19, function(err, data) {
 			if (err) {
 				return next(err);
 			}
@@ -317,11 +311,10 @@ accountsController.getBaseUser = function(userslug, callerUID, callback) {
 };
 
 accountsController.accountEdit = function(req, res, next) {
-	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 	var userData;
 	async.waterfall([
 		function(next) {
-			getUserDataByUserSlug(req.params.userslug, callerUID, next);
+			getUserDataByUserSlug(req.params.userslug, req.uid, next);
 		},
 		function(data, next) {
 			userData = data;
@@ -339,9 +332,7 @@ accountsController.accountEdit = function(req, res, next) {
 };
 
 accountsController.accountSettings = function(req, res, next) {
-	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
-
-	accountsController.getBaseUser(req.params.userslug, callerUID, function(err, userData) {
+	accountsController.getBaseUser(req.params.userslug, req.uid, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -380,7 +371,7 @@ accountsController.uploadPicture = function (req, res, next) {
 	var userPhoto = req.files.files[0];
 	var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
 	var extension = path.extname(userPhoto.name);
-	var updateUid = req.user ? req.user.uid : 0;
+	var updateUid = req.uid;
 	var imageDimension = parseInt(meta.config.profileImageDimension, 10) || 128;
 	var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1;
 
@@ -412,7 +403,7 @@ accountsController.uploadPicture = function (req, res, next) {
 				return next();
 			}
 
-			user.isAdministrator(req.user.uid, function(err, isAdmin) {
+			user.isAdministrator(req.uid, function(err, isAdmin) {
 				if (err) {
 					return next(err);
 				}
@@ -471,7 +462,7 @@ accountsController.uploadPicture = function (req, res, next) {
 };
 
 accountsController.getNotifications = function(req, res, next) {
-	user.notifications.getAll(req.user.uid, 40, function(err, notifications) {
+	user.notifications.getAll(req.uid, 40, function(err, notifications) {
 		if (err) {
 			return next(err);
 		}

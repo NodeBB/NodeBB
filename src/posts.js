@@ -26,11 +26,11 @@ var async = require('async'),
 		db.isSortedSetMember('posts:pid', pid, callback);
 	};
 
-	Posts.getPidsFromSet = function(set, start, end, reverse, callback) {
-		if (isNaN(start) || isNaN(end)) {
+	Posts.getPidsFromSet = function(set, start, stop, reverse, callback) {
+		if (isNaN(start) || isNaN(stop)) {
 			return callback(null, []);
 		}
-		db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, end, callback);
+		db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, callback);
 	};
 
 	Posts.getPostsByPids = function(pids, uid, callback) {
@@ -73,10 +73,10 @@ var async = require('async'),
 		});
 	};
 
-	Posts.getPostsFromSet = function(set, uid, start, end, callback) {
+	Posts.getPostsFromSet = function(set, uid, start, stop, callback) {
 		async.waterfall([
 			function(next) {
-				db.getSortedSetRevRange(set, start, end, next);
+				db.getSortedSetRevRange(set, start, stop, next);
 			},
 			function(pids, next) {
 				privileges.posts.filter('read', pids, uid, next);
@@ -85,7 +85,7 @@ var async = require('async'),
 				Posts.getPostSummaryByPids(pids, uid, {stripTags: false}, next);
 			},
 			function(posts, next) {
-				next(null, {posts: posts, nextStart: end + 1});
+				next(null, {posts: posts, nextStart: stop + 1});
 			}
 		], callback);
 	};
