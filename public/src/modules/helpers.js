@@ -93,6 +93,10 @@
 		return style.join(' ');
 	};
 
+	helpers.getBookmarkFromIndex = function(topic) {
+		return (topic.index || 0) + 1;
+	};
+
 	// Groups helpers
 	helpers.membershipBtn = function(groupObj) {
 		if (groupObj.isMember) {
