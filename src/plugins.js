@@ -339,7 +339,7 @@ var fs = require('fs'),
 				winston.verbose('[plugins] Plugin libraries removed from Node.js cache');
 
 				next();
-			},
+			}
 		], next);
 	};
 
