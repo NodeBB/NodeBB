@@ -1,67 +1,68 @@
 'use strict';
 
 var qs = require('querystring');
+var winston = require('winston');
+var utils = require('../public/src/utils');
+
 
 var pagination = {};
 
-pagination.create = function(currentPage, pageCount, queryObj) {
-	if (pageCount <= 1) {
-		return {
-			prev: {page: 1, active: currentPage > 1},
-			next: {page: 1, active: currentPage < pageCount},
-			rel: [],
-			pages: []
-		};
-	}
+/* 
+* Generic Pagination logic
+*/
+pagination.create = function(
+	currentPage, // 1-based string
+	pageCount,   // total number of pages - integer. May exceed immediately displayable number of pages.
+	queryObj) {  // ? - add doc string
+	
+	currentPage   = parseInt(currentPage, 10) || 1; // 1-based
+	var pagesToShow = Math.min(pageCount, 10); // don't render more than 10 page links at once
+    var startPage = 1 + Math.floor((currentPage - 1) / pagesToShow) * pagesToShow;
+    var lastPage  = Math.min(startPage + pagesToShow, pageCount+1); // last page is just beyong current chapter
 
-	var pagesToShow = [1];
-	if (pageCount !== 1) {
-		pagesToShow.push(pageCount);
-	}
-
-	currentPage = parseInt(currentPage, 10) || 1;
-	var previous = Math.max(1, currentPage - 1);
-	var next = Math.min(pageCount, currentPage + 1);
-
-	var startPage = currentPage - 2;
-	for(var i=0; i<5; ++i) {
-		var p = startPage + i;
-		if (p >= 1 && p <= pageCount && pagesToShow.indexOf(p) === -1) {
-			pagesToShow.push(startPage + i);
-		}
-	}
-
-	pagesToShow.sort(function(a, b) {
-		return a - b;
-	});
-
+	winston.debug("[pagination]: ", currentPage,"/", pageCount, " shown=", pagesToShow," [",startPage, ":", lastPage,"]");
+	var pages = [];
 	queryObj = queryObj || {};
 
-	var pages = pagesToShow.map(function(page) {
-		queryObj.page = page;
-		return {page: page, active: page === currentPage, qs: qs.stringify(queryObj)};
-	});
+	for(var x=startPage; x < lastPage; x++) {
+		queryObj.page = x;
+		pages.push({
+			page:   x,
+			active: x == currentPage,
+			qs:     qs.stringify(queryObj)
+		});
+	}
 
 	var data = {
-		prev: {page: previous, active: currentPage > 1},
-		next: {page: next, active: currentPage < pageCount},
+	 	prev: { // prev chapter link
+			 	page: Math.max(1, startPage-1),
+			 	active: startPage > 1
+			},
+		next: { // next chapter link
+			 	page:   lastPage,
+			 	active: lastPage <= pageCount
+			},
 		rel: [],
 		pages: pages
-	};
+	 };
 
-	if (currentPage < pageCount) {
+
+	/* pagination rel tags  <link rel={prev|next} /> */
+   if (currentPage < pageCount) {
 		data.rel.push({
 			rel: 'next',
-			href: '?page=' + next
-		});
-	}
+			href: '?page=' + (currentPage+1)
+        });
+    }
 
-	if (currentPage > 1) {
+	if(currentPage > 1){
 		data.rel.push({
 			rel: 'prev',
-			href: '?page=' + previous
+			href: '?page=' + (currentPage-1)
 		});
-	}
+	 }
+
+	winston.debug("[pagination] %j", data);
 	return data;
 };
 
