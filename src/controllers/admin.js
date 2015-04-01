@@ -144,11 +144,10 @@ adminController.categories.get = function(req, res, next) {
 };
 
 adminController.categories.getAll = function(req, res, next) {
-	var uid = req.user ? parseInt(req.user.uid, 10) : 0,
-		active = [],
+	var	active = [],
 		disabled = [];
 
-	categories.getAllCategories(uid, function (err, categoryData) {
+	categories.getAllCategories(req.uid, function (err, categoryData) {
 		if (err) {
 			return next(err);
 		}
@@ -181,17 +180,17 @@ adminController.flags.get = function(req, res, next) {
 		}
 		res.render('admin/manage/flags', {posts: posts, next: stop + 1, byUsername: byUsername});
 	}
-	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
+
 	var sortBy = req.query.sortBy || 'count';
 	var byUsername = req.query.byUsername || '';
 	var start = 0;
 	var stop = 19;
 
 	if (byUsername) {
-		posts.getUserFlags(byUsername, sortBy, uid, start, stop, done);
+		posts.getUserFlags(byUsername, sortBy, req.uid, start, stop, done);
 	} else {
 		var set = sortBy === 'count' ? 'posts:flags:count' : 'posts:flagged';
-		posts.getFlags(set, uid, start, stop, done);
+		posts.getFlags(set, req.uid, start, stop, done);
 	}
 };
 

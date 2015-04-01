@@ -124,9 +124,7 @@ middleware.checkGlobalPrivacySettings = function(req, res, next) {
 
 middleware.checkAccountPermissions = function(req, res, next) {
 	// This middleware ensures that only the requested user and admins can pass
-	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
-
-	if (callerUID === 0) {
+	if (!req.uid) {
 		return controllers.helpers.notAllowed(req, res);
 	}
 
@@ -139,11 +137,11 @@ middleware.checkAccountPermissions = function(req, res, next) {
 			return controllers.helpers.notFound(req, res);
 		}
 
-		if (parseInt(uid, 10) === callerUID) {
+		if (parseInt(uid, 10) === req.uid) {
 			return next();
 		}
 
-		user.isAdministrator(callerUID, function(err, isAdmin) {
+		user.isAdministrator(req.uid, function(err, isAdmin) {
 			if (err || isAdmin) {
 				return next(err);
 			}
@@ -201,8 +199,6 @@ middleware.buildHeader = function(req, res, next) {
 };
 
 middleware.renderHeader = function(req, res, callback) {
-	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
-
 	navigation.get(function(err, menuItems) {
 		if (err) {
 			return callback(err);
@@ -284,8 +280,8 @@ middleware.renderHeader = function(req, res, callback) {
 				next(null, templateValues.useCustomJS ? meta.config.customJS : '');
 			},
 			title: function(next) {
-				if (uid) {
-					user.getSettings(uid, function(err, settings) {
+				if (req.uid) {
+					user.getSettings(req.uid, function(err, settings) {
 						if (err) {
 							return next(err);
 						}
@@ -296,11 +292,11 @@ middleware.renderHeader = function(req, res, callback) {
 				}
 			},
 			isAdmin: function(next) {
-				user.isAdministrator(uid, next);
+				user.isAdministrator(req.uid, next);
 			},
 			user: function(next) {
-				if (uid) {
-					user.getUserFields(uid, ['username', 'userslug', 'email', 'picture', 'status', 'email:confirmed', 'banned'], next);
+				if (req.uid) {
+					user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'status', 'email:confirmed', 'banned'], next);
 				} else {
 					next(null, {
 						username: '[[global:guest]]',
@@ -527,7 +523,7 @@ middleware.exposeUid = function(req, res, next) {
 
 			res.locals.uid = uid;
 			next();
-		})
+		});
 	} else {
 		next();
 	}

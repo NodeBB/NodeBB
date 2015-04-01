@@ -98,7 +98,6 @@ apiController.getConfig = function(req, res, next) {
 
 apiController.renderWidgets = function(req, res, next) {
 	var async = require('async'),
-		uid = req.user ? req.user.uid : 0,
 		areas = {
 			template: req.query.template,
 			locations: req.query.locations,
@@ -110,7 +109,7 @@ apiController.renderWidgets = function(req, res, next) {
 		return res.status(200).json({});
 	}
 
-	widgets.render(uid, {
+	widgets.render(req.uid, {
 		template: areas.template,
 		url: areas.url,
 		locations: areas.locations

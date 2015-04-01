@@ -20,7 +20,6 @@ topicsController.get = function(req, res, next) {
 	var tid = req.params.topic_id,
 		page = 1,
 		sort = req.query.sort,
-		uid = req.user ? req.user.uid : 0,
 		userPrivileges;
 
 	if (req.params.post_index && !utils.isNumber(req.params.post_index)) {
@@ -31,10 +30,10 @@ topicsController.get = function(req, res, next) {
 		function (next) {
 			async.parallel({
 				privileges: function(next) {
-					privileges.topics.get(tid, uid, next);
+					privileges.topics.get(tid, req.uid, next);
 				},
 				settings: function(next) {
-					user.getSettings(uid, next);
+					user.getSettings(req.uid, next);
 				},
 				topic: function(next) {
 					topics.getTopicFields(tid, ['slug', 'postcount', 'deleted'], next);
@@ -108,7 +107,7 @@ topicsController.get = function(req, res, next) {
 			var start = (page - 1) * settings.postsPerPage + postIndex,
 				stop = start + settings.postsPerPage - 1;
 
-			topics.getTopicWithPosts(tid, set, uid, start, stop, reverse, function (err, topicData) {
+			topics.getTopicWithPosts(tid, set, req.uid, start, stop, reverse, function (err, topicData) {
 				if (err && err.message === '[[error:no-topic]]' && !topicData) {
 					return helpers.notFound(req, res);
 				}
@@ -274,7 +273,6 @@ topicsController.get = function(req, res, next) {
 
 topicsController.teaser = function(req, res, next) {
 	var tid = req.params.topic_id;
-	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
 
 	if (!utils.isNumber(tid)) {
 		return next(new Error('[[error:invalid-tid]]'));
@@ -282,7 +280,7 @@ topicsController.teaser = function(req, res, next) {
 
 	async.waterfall([
 		function(next) {
-			privileges.topics.can('read', tid, uid, next);
+			privileges.topics.can('read', tid, req.uid, next);
 		},
 		function(canRead, next) {
 			if (!canRead) {
@@ -294,7 +292,7 @@ topicsController.teaser = function(req, res, next) {
 			if (!pid) {
 				return res.status(404).json('not-found');
 			}
-			posts.getPostSummaryByPids([pid], uid, {stripTags: false}, next);
+			posts.getPostSummaryByPids([pid], req.uid, {stripTags: false}, next);
 		}
 	], function(err, posts) {
 		if (err) {

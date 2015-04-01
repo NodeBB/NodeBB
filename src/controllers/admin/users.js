@@ -31,8 +31,7 @@ usersController.banned = function(req, res, next) {
 };
 
 function getUsers(set, req, res, next) {
-	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
-	user.getUsersFromSet(set, uid, 0, 49, function(err, users) {
+	user.getUsersFromSet(set, req.uid, 0, 49, function(err, users) {
 		if (err) {
 			return next(err);
 		}
@@ -45,7 +44,7 @@ function getUsers(set, req, res, next) {
 			search_display: 'hidden',
 			loadmore_display: 'block',
 			users: users,
-			yourid: req.user.uid,
+			yourid: req.uid,
 			requireEmailConfirmation: parseInt(meta.config.requireEmailConfirmation, 10) === 1
 		});
 	});
