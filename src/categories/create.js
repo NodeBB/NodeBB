@@ -23,7 +23,7 @@ module.exports = function(Categories) {
 				description: ( data.description ? data.description : '' ),
 				icon: ( data.icon ? data.icon : '' ),
 				bgColor: data.bgColor || colours[0],
-				color: ( data.color ? data.color : '' ),
+				color: data.color || colours[1],
 				slug: slug,
 				parentCid: ( data.parentCid ? data.parentCid : 0 ),
 				topic_count: 0,
