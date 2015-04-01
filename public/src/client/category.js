@@ -92,7 +92,7 @@ define('forum/category', [
 	};
 
 	$(window).on('action:popstate', function(ev, data) {
-		if (data.url.indexOf('category/') === 0) {
+		if (data.url.startsWith('category/')) {
 			var cid = data.url.match(/^category\/(\d+)/);
 			if (cid && cid[1]) {
 				cid = cid[1];

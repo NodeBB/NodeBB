@@ -152,7 +152,7 @@ module.exports = function(app, middleware) {
 		if (req.user || parseInt(meta.config.privateUploads, 10) !== 1) {
 			return next();
 		}
-		if (req.path.indexOf('/uploads/files') === 0) {
+		if (req.path.startsWith('/uploads/files')) {
 			return res.status(403).json('not-allowed');
 		}
 		next();

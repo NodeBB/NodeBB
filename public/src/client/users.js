@@ -171,7 +171,7 @@ define('forum/users', ['translator'], function(translator) {
 
 	function onUserStatusChange(data) {
 		var section = getActiveSection();
-		if((section.indexOf('online') === 0 || section.indexOf('users') === 0)) {
+		if ((section.startsWith('online') || section.startsWith('users'))) {
 			updateUser(data);
 		}
 	}

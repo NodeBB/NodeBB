@@ -70,7 +70,7 @@ $(document).ready(function() {
 	ajaxify.handleACPRedirect = function(url) {
 		// If ajaxifying into an admin route from regular site, do a cold load.
 		url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
-		if (url.indexOf('admin') === 0 && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0) {
+		if (url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0) {
 			window.open(RELATIVE_PATH + '/' + url, '_blank');
 			return true;
 		}
@@ -79,7 +79,7 @@ $(document).ready(function() {
 
 	ajaxify.handleNonAPIRoutes = function(url) {
 		url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
-		if (url.indexOf('uploads') === 0) {
+		if (url.startsWith('uploads')) {
 			window.open(RELATIVE_PATH + '/' + url, '_blank');
 			return true;
 		}
@@ -168,7 +168,7 @@ $(document).ready(function() {
 	};
 
 	ajaxify.removeRelativePath = function(url) {
-		if (url.indexOf(RELATIVE_PATH.slice(1)) === 0) {
+		if (url.startsWith(RELATIVE_PATH.slice(1))) {
 			url = url.slice(RELATIVE_PATH.length);
 		}
 		return url;
