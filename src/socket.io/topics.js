@@ -470,11 +470,11 @@ SocketTopics.loadMore = function(socket, data, callback) {
 			}
 		}
 
-		var end = start + results.settings.postsPerPage - 1;
+		var stop = start + results.settings.postsPerPage - 1;
 
 		async.parallel({
 			posts: function(next) {
-				topics.getTopicPosts(data.tid, set, start, end, socket.uid, reverse, next);
+				topics.getTopicPosts(data.tid, set, start, stop, socket.uid, reverse, next);
 			},
 			privileges: function(next) {
 				next(null, results.privileges);
@@ -490,33 +490,33 @@ SocketTopics.loadMore = function(socket, data, callback) {
 };
 
 SocketTopics.loadMoreUnreadTopics = function(socket, data, callback) {
-	if(!data || !data.after) {
+	if (!data || !data.after) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	var start = parseInt(data.after, 10),
-		end = start + 9;
+		stop = start + 9;
 
-	topics.getUnreadTopics(socket.uid, start, end, callback);
+	topics.getUnreadTopics(socket.uid, start, stop, callback);
 };
 
 SocketTopics.loadMoreFromSet = function(socket, data, callback) {
-	if(!data || !data.after || !data.set) {
+	if (!data || !data.after || !data.set) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	var start = parseInt(data.after, 10),
-		end = start + 9;
+		stop = start + 9;
 
-	topics.getTopicsFromSet(data.set, socket.uid, start, end, callback);
+	topics.getTopicsFromSet(data.set, socket.uid, start, stop, callback);
 };
 
 SocketTopics.loadTopics = function(socket, data, callback) {
-	if(!data || !data.set || !utils.isNumber(data.start) || !utils.isNumber(data.end)) {
+	if (!data || !data.set || !utils.isNumber(data.start) || !utils.isNumber(data.stop)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	topics.getTopicsFromSet(data.set, socket.uid, data.start, data.end, callback);
+	topics.getTopicsFromSet(data.set, socket.uid, data.start, data.stop, callback);
 };
 
 SocketTopics.getPageCount = function(socket, tid, callback) {
@@ -544,14 +544,14 @@ SocketTopics.loadMoreTags = function(socket, data, callback) {
 	}
 
 	var start = parseInt(data.after, 10),
-		end = start + 99;
+		stop = start + 99;
 
-	topics.getTags(start, end, function(err, tags) {
+	topics.getTags(start, stop, function(err, tags) {
 		if (err) {
 			return callback(err);
 		}
 
-		callback(null, {tags: tags, nextStart: end + 1});
+		callback(null, {tags: tags, nextStart: stop + 1});
 	});
 };
 

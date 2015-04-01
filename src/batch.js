@@ -28,7 +28,7 @@ var async = require('async'),
 
 		var batch = options.batch || DEFAULT_BATCH_SIZE;
 		var start = 0;
-		var end = batch;
+		var stop = batch;
 		var done = false;
 
 		async.whilst(
@@ -36,11 +36,11 @@ var async = require('async'),
 				return !done;
 			},
 			function(next) {
-				db.getSortedSetRange(setKey, start, end, function(err, ids) {
+				db.getSortedSetRange(setKey, start, stop, function(err, ids) {
 					if (err) {
 						return next(err);
 					}
-					if (!ids.length || options.doneIf(start, end, ids)) {
+					if (!ids.length || options.doneIf(start, stop, ids)) {
 						done = true;
 						return next();
 					}
@@ -49,7 +49,7 @@ var async = require('async'),
 							return next(err);
 						}
 						start += utils.isNumber(options.alwaysStartAt) ? options.alwaysStartAt : batch + 1;
-						end = start + batch;
+						stop = start + batch;
 						next();
 					});
 				});

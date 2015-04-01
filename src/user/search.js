@@ -59,14 +59,14 @@ module.exports = function(User) {
 	User.paginate = function(page, data) {
 		var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
 		var start = Math.max(0, page - 1) * resultsPerPage;
-		var end = start + resultsPerPage;
+		var stop = start + resultsPerPage;
 
 		var pageCount = Math.ceil(data.length / resultsPerPage);
 		var currentPage = Math.max(1, Math.ceil((start + 1) / resultsPerPage));
 
 		return {
 			pagination: pagination.create(currentPage, pageCount),
-			data: data.slice(start, end)
+			data: data.slice(start, stop)
 		};
 	};
 

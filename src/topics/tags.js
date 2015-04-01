@@ -72,8 +72,8 @@ module.exports = function(Topics) {
 		});
 	}
 
-	Topics.getTagTids = function(tag, start, end, callback) {
-		db.getSortedSetRevRange('tag:' + tag + ':topics', start, end, callback);
+	Topics.getTagTids = function(tag, start, stop, callback) {
+		db.getSortedSetRevRange('tag:' + tag + ':topics', start, stop, callback);
 	};
 
 	Topics.getTagTopicCount = function(tag, callback) {
@@ -121,8 +121,8 @@ module.exports = function(Topics) {
 		db.sortedSetRemove('tags:topic:count', tag);
 	};
 
-	Topics.getTags = function(start, end, callback) {
-		db.getSortedSetRevRangeWithScores('tags:topic:count', start, end, function(err, tags) {
+	Topics.getTags = function(start, stop, callback) {
+		db.getSortedSetRevRangeWithScores('tags:topic:count', start, stop, function(err, tags) {
 			if (err) {
 				return callback(err);
 			}
@@ -271,7 +271,7 @@ module.exports = function(Topics) {
 			matches = matches.slice(0, 20).sort(function(a, b) {
 				return a > b;
 			});
-			
+
 			plugins.fireHook('filter:tags.search', {data: data, matches: matches}, function(err, data) {
 				callback(err, data ? data.matches : []);
 			});

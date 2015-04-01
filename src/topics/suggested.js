@@ -11,7 +11,7 @@ var async = require('async'),
 
 module.exports = function(Topics) {
 
-	Topics.getSuggestedTopics = function(tid, uid, start, end, callback) {
+	Topics.getSuggestedTopics = function(tid, uid, start, stop, callback) {
 		async.parallel({
 			tagTids: function(next) {
 				getTidsWithSameTags(tid, next);
@@ -29,7 +29,7 @@ module.exports = function(Topics) {
 			var tids = results.tagTids.concat(results.searchTids).concat(results.categoryTids);
 			tids = tids.filter(function(_tid, index, array) {
 				return parseInt(_tid, 10) !== parseInt(tid, 10) && array.indexOf(_tid) === index;
-			}).slice(start, end + 1);
+			}).slice(start, stop + 1);
 
 			Topics.getTopics(tids, uid, callback);
 		});

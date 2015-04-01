@@ -397,7 +397,7 @@ SocketUser.getUnreadChatCount = function(socket, data, callback) {
 };
 
 SocketUser.loadMore = function(socket, data, callback) {
-	if(!data || !data.set || parseInt(data.after, 10) < 0) {
+	if (!data || !data.set || parseInt(data.after, 10) < 0) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -406,28 +406,30 @@ SocketUser.loadMore = function(socket, data, callback) {
 	}
 
 	var start = parseInt(data.after, 10),
-		end = start + 19;
+		stop = start + 19;
 
-	user.getUsersFromSet(data.set, socket.uid, start, end, function(err, userData) {
+	async.parallel({
+		isAdmin: function(next) {
+			user.isAdministrator(socket.uid, next);
+		},
+		users: function(next) {
+			user.getUsersFromSet(data.set, socket.uid, start, stop, next);
+		}
+	}, function(err, results) {
 		if (err) {
 			return callback(err);
 		}
 
-		user.isAdministrator(socket.uid, function (err, isAdministrator) {
-			if (err) {
-				return callback(err);
-			}
 
-			if (!isAdministrator && data.set === 'users:online') {
-				userData = userData.filter(function(item) {
-					return item.status !== 'offline';
-				});
-			}
-
-			callback(null, {
-				users: userData,
-				nextStart: end + 1
+		if (!results.isAdmin && data.set === 'users:online') {
+			results.users = results.users.filter(function(user) {
+				return user.status !== 'offline';
 			});
+		}
+
+		callback(null, {
+			users: results.users,
+			nextStart: stop + 1
 		});
 	});
 };

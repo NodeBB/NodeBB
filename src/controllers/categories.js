@@ -17,9 +17,8 @@ var categoriesController = {},
 	utils = require('../../public/src/utils');
 
 categoriesController.recent = function(req, res, next) {
-	var uid = req.user ? req.user.uid : 0;
-	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
-	topics.getTopicsFromSet('topics:recent', uid, 0, end, function(err, data) {
+	var stop = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+	topics.getTopicsFromSet('topics:recent', req.uid, 0, stop, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -34,7 +33,6 @@ categoriesController.recent = function(req, res, next) {
 var anonCache = {}, lastUpdateTime = 0;
 
 categoriesController.popular = function(req, res, next) {
-	var uid = req.user ? req.user.uid : 0;
 	var terms = {
 		daily: 'day',
 		weekly: 'week',
@@ -43,13 +41,13 @@ categoriesController.popular = function(req, res, next) {
 	};
 	var term = terms[req.params.term] || 'day';
 
-	if (uid === 0) {
+	if (!req.uid) {
 		if (anonCache[term] && (Date.now() - lastUpdateTime) < 60 * 60 * 1000) {
 			return res.render('popular', anonCache[term]);
 		}
 	}
 
-	topics.getPopular(term, uid, meta.config.topicsPerList, function(err, topics) {
+	topics.getPopular(term, req.uid, meta.config.topicsPerList, function(err, topics) {
 		if (err) {
 			return next(err);
 		}
@@ -61,7 +59,7 @@ categoriesController.popular = function(req, res, next) {
 			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[global:header.popular]]'}])
 		};
 
-		if (uid === 0) {
+		if (!req.uid) {
 			anonCache[term] = data;
 			lastUpdateTime = Date.now();
 		}
@@ -71,9 +69,8 @@ categoriesController.popular = function(req, res, next) {
 };
 
 categoriesController.unread = function(req, res, next) {
-	var uid = req.user ? req.user.uid : 0;
-	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
-	topics.getUnreadTopics(uid, 0, end, function (err, data) {
+	var stop = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+	topics.getUnreadTopics(req.uid, 0, stop, function (err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -84,10 +81,8 @@ categoriesController.unread = function(req, res, next) {
 };
 
 categoriesController.unreadTotal = function(req, res, next) {
-	var uid = req.user ? req.user.uid : 0;
-
-	topics.getTotalUnread(uid, function (err, data) {
-		if(err) {
+	topics.getTotalUnread(req.uid, function (err, data) {
+		if (err) {
 			return next(err);
 		}
 
@@ -122,11 +117,10 @@ categoriesController.list = function(req, res, next) {
 			next(null);
 		},
 		categories: function (next) {
-			var uid = req.user ? req.user.uid : 0;
 			var categoryData;
 			async.waterfall([
 				function(next) {
-					categories.getCategoriesByPrivilege(uid, 'find', next);
+					categories.getCategoriesByPrivilege(req.uid, 'find', next);
 				},
 				function(_categoryData, next) {
 					categoryData = _categoryData;
@@ -143,7 +137,7 @@ categoriesController.list = function(req, res, next) {
 						return category && !category.parent;
 					});
 
-					categories.getRecentTopicReplies(allCategories, uid, next);
+					categories.getRecentTopicReplies(allCategories, req.uid, next);
 				}
 			], function(err) {
 				next(err, categoryData);
@@ -166,7 +160,6 @@ categoriesController.list = function(req, res, next) {
 categoriesController.get = function(req, res, next) {
 	var cid = req.params.category_id,
 		page = req.query.page || 1,
-		uid = req.user ? req.user.uid : 0,
 		userPrivileges;
 
 	if (req.params.topic_index && !utils.isNumber(req.params.topic_index)) {
@@ -183,10 +176,10 @@ categoriesController.get = function(req, res, next) {
 					categories.getCategoryFields(cid, ['slug', 'disabled', 'topic_count'], next);
 				},
 				privileges: function(next) {
-					privileges.categories.get(cid, uid, next);
+					privileges.categories.get(cid, req.uid, next);
 				},
 				userSettings: function(next) {
-					user.getSettings(uid, next);
+					user.getSettings(req.uid, next);
 				}
 			}, next);
 		},
@@ -232,15 +225,15 @@ categoriesController.get = function(req, res, next) {
 			}
 
 			var start = (page - 1) * settings.topicsPerPage + topicIndex,
-				end = start + settings.topicsPerPage - 1;
+				stop = start + settings.topicsPerPage - 1;
 
 			next(null, {
 				cid: cid,
 				set: set,
 				reverse: reverse,
 				start: start,
-				end: end,
-				uid: uid
+				stop: stop,
+				uid: req.uid
 			});
 		},
 		function(payload, next) {
@@ -276,7 +269,7 @@ categoriesController.get = function(req, res, next) {
 			});
 		},
 		function(categoryData, next) {
-			categories.getRecentTopicReplies(categoryData.children, uid, function(err) {
+			categories.getRecentTopicReplies(categoryData.children, req.uid, function(err) {
 				next(err, categoryData);
 			});
 		},
@@ -303,7 +296,7 @@ categoriesController.get = function(req, res, next) {
 				}
 			];
 
-			if(categoryData.backgroundImage) {
+			if (categoryData.backgroundImage) {
 				res.locals.metaTags.push({
 					name: 'og:image',
 					content: categoryData.backgroundImage

@@ -6,8 +6,8 @@ var async = require('async'),
 
 module.exports = function(Posts) {
 
-	Posts.getPostsByTid = function(tid, set, start, end, uid, reverse, callback) {
-		Posts.getPidsFromSet(set, start, end, reverse, function(err, pids) {
+	Posts.getPostsByTid = function(tid, set, start, stop, uid, reverse, callback) {
+		Posts.getPidsFromSet(set, start, stop, reverse, function(err, pids) {
 			if (err) {
 				return callback(err);
 			}
