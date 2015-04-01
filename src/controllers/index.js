@@ -57,9 +57,12 @@ Controllers.reset = function(req, res, next) {
 			}
 			res.render('reset_code', {
 				valid: valid,
+				displayExpiryNotice: req.session.passwordExpired,
 				code: req.params.code ? req.params.code : null,
 				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]', url: '/reset'}, {text: '[[reset_password:update_password]]'}])
 			});
+
+			delete req.session.passwordExpired;
 		});
 	} else {
 		res.render('reset', {
