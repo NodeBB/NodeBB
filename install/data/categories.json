@@ -9,7 +9,7 @@
     },
     {
         "name": "General Discussion",
-        "description": "A place to talk about whateeeever you want",
+        "description": "A place to talk about whatever you want",
         "bgColor": "#59b3d0",
         "color": "#fff",
         "icon" : "fa-comments-o",
