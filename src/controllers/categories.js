@@ -18,8 +18,8 @@ var categoriesController = {},
 
 categoriesController.recent = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
-	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
-	topics.getTopicsFromSet('topics:recent', uid, 0, end, function(err, data) {
+	var stop = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+	topics.getTopicsFromSet('topics:recent', uid, 0, stop, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -72,8 +72,8 @@ categoriesController.popular = function(req, res, next) {
 
 categoriesController.unread = function(req, res, next) {
 	var uid = req.user ? req.user.uid : 0;
-	var end = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
-	topics.getUnreadTopics(uid, 0, end, function (err, data) {
+	var stop = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+	topics.getUnreadTopics(uid, 0, stop, function (err, data) {
 		if (err) {
 			return next(err);
 		}

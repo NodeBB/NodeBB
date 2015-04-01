@@ -38,17 +38,17 @@ module.exports = function(Posts) {
 				},
 				function(next) {
 					if (parseInt(post.uid, 10)) {
-						db.sortedSetAdd('uid:' + post.uid + ':flag:pids', now, post.pid, next);	
+						db.sortedSetAdd('uid:' + post.uid + ':flag:pids', now, post.pid, next);
 					} else {
 						next();
-					}					
+					}
 				},
 				function(next) {
 					if (parseInt(post.uid, 10)) {
 						db.setAdd('uid:' + post.uid + ':flagged_by', uid, next);
 					} else {
 						next();
-					}					
+					}
 				}
 			], function(err, results) {
 				callback(err);
@@ -69,8 +69,8 @@ module.exports = function(Posts) {
 					}
 
 					db.sortedSetsRemove([
-						'posts:flagged', 
-						'posts:flags:count', 
+						'posts:flagged',
+						'posts:flags:count',
 						'uid:' + uid + ':flag:pids'
 					], pid, next);
 				});
@@ -80,7 +80,7 @@ module.exports = function(Posts) {
 			},
 			function(next) {
 				db.delete('pid:' + pid + ':flag:uids', next);
-			}			
+			}
 		], function(err, results) {
 			callback(err);
 		});
@@ -90,8 +90,8 @@ module.exports = function(Posts) {
 		db.delete('posts:flagged', callback);
 	};
 
-	Posts.getFlags = function(set, uid, start, end, callback) {
-		db.getSortedSetRevRange(set, start, end, function(err, pids) {
+	Posts.getFlags = function(set, uid, start, stop, callback) {
+		db.getSortedSetRevRange(set, start, stop, function(err, pids) {
 			if (err) {
 				return callback(err);
 			}
@@ -100,7 +100,7 @@ module.exports = function(Posts) {
 		});
 	};
 
-	Posts.getUserFlags = function(byUsername, sortBy, callerUID, start, end, callback) {
+	Posts.getUserFlags = function(byUsername, sortBy, callerUID, start, stop, callback) {
 		async.waterfall([
 			function(next) {
 				user.getUidByUsername(byUsername, next);
@@ -108,7 +108,7 @@ module.exports = function(Posts) {
 			function(uid, next) {
 				if (!uid) {
 					return next(null, []);
-				}	
+				}
 				db.getSortedSetRevRange('uid:' + uid + ':flag:pids', 0, -1, next);
 			},
 			function(pids, next) {
@@ -120,7 +120,7 @@ module.exports = function(Posts) {
 						return b.flags - a.flags;
 					});
 				}
-				next(null, posts.slice(start, end));
+				next(null, posts.slice(start, stop));
 			}
 		], callback);
 	};

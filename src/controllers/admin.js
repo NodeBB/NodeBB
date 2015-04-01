@@ -179,20 +179,20 @@ adminController.flags.get = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		res.render('admin/manage/flags', {posts: posts, next: end + 1, byUsername: byUsername});
+		res.render('admin/manage/flags', {posts: posts, next: stop + 1, byUsername: byUsername});
 	}
 	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
 	var sortBy = req.query.sortBy || 'count';
 	var byUsername = req.query.byUsername || '';
 	var start = 0;
-	var end = 19;
+	var stop = 19;
 
 	if (byUsername) {
-		posts.getUserFlags(byUsername, sortBy, uid, start, end, done);
+		posts.getUserFlags(byUsername, sortBy, uid, start, stop, done);
 	} else {
 		var set = sortBy === 'count' ? 'posts:flags:count' : 'posts:flagged';
-		posts.getFlags(set, uid, start, end, done);	
-	}	
+		posts.getFlags(set, uid, start, stop, done);
+	}
 };
 
 adminController.database.get = function(req, res, next) {
@@ -261,7 +261,7 @@ adminController.navigation.get = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		
+
 		res.render('admin/general/navigation', data);
 	});
 };
@@ -374,7 +374,7 @@ adminController.extend.rewards = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		
+
 		res.render('admin/extend/rewards', data);
 	});
 };

@@ -225,10 +225,10 @@ var db = require('./database'),
 		db.sortedSetAdd('uid:' + uid + ':chats', Date.now(), toUid, callback);
 	};
 
-	Messaging.getRecentChats = function(uid, start, end, callback) {
+	Messaging.getRecentChats = function(uid, start, stop, callback) {
 		var websockets = require('./socket.io');
 
-		db.getSortedSetRevRange('uid:' + uid + ':chats', start, end, function(err, uids) {
+		db.getSortedSetRevRange('uid:' + uid + ':chats', start, stop, function(err, uids) {
 			if (err) {
 				return callback(err);
 			}
@@ -250,7 +250,7 @@ var db = require('./database'),
 				});
 
 				if (!results.users.length) {
-					return callback(null, {users: [], nextStart: end + 1});
+					return callback(null, {users: [], nextStart: stop + 1});
 				}
 
 				results.users.forEach(function(user, index) {
@@ -260,7 +260,7 @@ var db = require('./database'),
 					}
 				});
 
-				callback(null, {users: results.users, nextStart: end + 1});
+				callback(null, {users: results.users, nextStart: stop + 1});
 			});
 		});
 	};

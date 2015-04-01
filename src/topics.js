@@ -112,16 +112,16 @@ var async = require('async'),
 		});
 	};
 
-	Topics.getTopicsFromSet = function(set, uid, start, end, callback) {
+	Topics.getTopicsFromSet = function(set, uid, start, stop, callback) {
 		async.waterfall([
 			function(next) {
-				db.getSortedSetRevRange(set, start, end, next);
+				db.getSortedSetRevRange(set, start, stop, next);
 			},
 			function(tids, next) {
 				Topics.getTopics(tids, uid, next);
 			},
 			function(topics, next) {
-				next(null, {topics: topics, nextStart: end + 1});
+				next(null, {topics: topics, nextStart: stop + 1});
 			}
 		], callback);
 	};
@@ -209,14 +209,14 @@ var async = require('async'),
 		});
 	};
 
-	Topics.getTopicWithPosts = function(tid, set, uid, start, end, reverse, callback) {
+	Topics.getTopicWithPosts = function(tid, set, uid, start, stop, reverse, callback) {
 		Topics.getTopicData(tid, function(err, topicData) {
 			if (err || !topicData) {
 				return callback(err || new Error('[[error:no-topic]]'));
 			}
 
 			async.parallel({
-				posts: async.apply(getMainPostAndReplies, topicData, set, uid, start, end, reverse),
+				posts: async.apply(getMainPostAndReplies, topicData, set, uid, start, stop, reverse),
 				category: async.apply(Topics.getCategoryData, tid),
 				threadTools: async.apply(plugins.fireHook, 'filter:topic.thread_tools', {topic: topicData, uid: uid, tools: []}),
 				tags: async.apply(Topics.getTopicTagsObjects, tid),
@@ -244,10 +244,10 @@ var async = require('async'),
 		});
 	};
 
-	function getMainPostAndReplies(topic, set, uid, start, end, reverse, callback) {
+	function getMainPostAndReplies(topic, set, uid, start, stop, reverse, callback) {
 		async.waterfall([
 			function(next) {
-				posts.getPidsFromSet(set, start, end, reverse, next);
+				posts.getPidsFromSet(set, start, stop, reverse, next);
 			},
 			function(pids, next) {
 				if ((!Array.isArray(pids) || !pids.length) && !topic.mainPid) {
@@ -268,7 +268,7 @@ var async = require('async'),
 					posts[0].index = 0;
 				}
 
-				var indices = Topics.calculatePostIndices(start, end, topic.postcount, reverse);
+				var indices = Topics.calculatePostIndices(start, stop, topic.postcount, reverse);
 				for (var i=1; i<posts.length; ++i) {
 					if (posts[i]) {
 						posts[i].index = indices[i - 1];

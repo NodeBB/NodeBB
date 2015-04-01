@@ -19,6 +19,7 @@ define('forum/account/favourites', ['forum/account/header', 'forum/infinitescrol
 		}
 
 		infinitescroll.loadMore('posts.loadMoreFavourites', {
+			uid: ajaxify.variables.get('theirid'),
 			after: $('.user-favourite-posts').attr('data-nextstart')
 		}, function(data, done) {
 			if (data.posts && data.posts.length) {

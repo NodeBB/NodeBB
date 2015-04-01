@@ -29,11 +29,11 @@ module.exports = function(Topics) {
 		], callback);
 	};
 
-	Topics.getTopicPosts = function(tid, set, start, end, uid, reverse, callback) {
+	Topics.getTopicPosts = function(tid, set, start, stop, uid, reverse, callback) {
 		callback = callback || function() {};
 		async.parallel({
 			posts: function(next) {
-				posts.getPostsByTid(tid, set, start, end, uid, reverse, next);
+				posts.getPostsByTid(tid, set, start, stop, uid, reverse, next);
 			},
 			postCount: function(next) {
 				Topics.getTopicField(tid, 'postcount', next);
@@ -43,7 +43,7 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			var indices = Topics.calculatePostIndices(start, end, results.postCount, reverse);
+			var indices = Topics.calculatePostIndices(start, stop, results.postCount, reverse);
 			results.posts.forEach(function(post, index) {
 				if (post) {
 					post.index = indices[index];
@@ -150,9 +150,9 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.calculatePostIndices = function(start, end, postCount, reverse) {
+	Topics.calculatePostIndices = function(start, stop, postCount, reverse) {
 		var indices = [];
-		var count = end - start + 1;
+		var count = stop - start + 1;
 		for(var i=0; i<count; ++i) {
 			if (reverse) {
 				indices.push(postCount - (start + i + 1));

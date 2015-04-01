@@ -106,9 +106,9 @@ topicsController.get = function(req, res, next) {
 			}
 
 			var start = (page - 1) * settings.postsPerPage + postIndex,
-				end = start + settings.postsPerPage - 1;
+				stop = start + settings.postsPerPage - 1;
 
-			topics.getTopicWithPosts(tid, set, uid, start, end, reverse, function (err, topicData) {
+			topics.getTopicWithPosts(tid, set, uid, start, stop, reverse, function (err, topicData) {
 				if (err && err.message === '[[error:no-topic]]' && !topicData) {
 					return helpers.notFound(req, res);
 				}
@@ -255,7 +255,7 @@ topicsController.get = function(req, res, next) {
 		data['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 		data['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
-		data['rssFeedUrl'] = nconf.get('relative_path') + '/topic/' + data.tid + '.rss';
+		data.rssFeedUrl = nconf.get('relative_path') + '/topic/' + data.tid + '.rss';
 		data.pagination = pagination.create(data.currentPage, data.pageCount);
 		data.pagination.rel.forEach(function(rel) {
 			res.locals.linkTags.push(rel);
@@ -280,36 +280,31 @@ topicsController.teaser = function(req, res, next) {
 		return next(new Error('[[error:invalid-tid]]'));
 	}
 
-	privileges.topics.can('read', tid, uid, function(err, canRead) {
+	async.waterfall([
+		function(next) {
+			privileges.topics.can('read', tid, uid, next);
+		},
+		function(canRead, next) {
+			if (!canRead) {
+				return res.status(403).json('[[error:no-privileges]]');
+			}
+			topics.getLatestUndeletedPid(tid, next);
+		},
+		function(pid, next) {
+			if (!pid) {
+				return res.status(404).json('not-found');
+			}
+			posts.getPostSummaryByPids([pid], uid, {stripTags: false}, next);
+		}
+	], function(err, posts) {
 		if (err) {
 			return next(err);
 		}
 
-		if (!canRead) {
-			return res.status(403).json('[[error:no-privileges]]');
+		if (!Array.isArray(posts) || !posts.length) {
+			return res.status(404).json('not-found');
 		}
-
-		topics.getLatestUndeletedPid(tid, function(err, pid) {
-			if (err) {
-				return next(err);
-			}
-
-			if (!pid) {
-				return res.status(404).json('not-found');
-			}
-
-			posts.getPostSummaryByPids([pid], uid, {stripTags: false}, function(err, posts) {
-				if (err) {
-					return next(err);
-				}
-
-				if (!Array.isArray(posts) || !posts.length) {
-					return res.status(404).json('not-found');
-				}
-
-				res.json(posts[0]);
-			});
-		});
+		res.json(posts[0]);
 	});
 };
 

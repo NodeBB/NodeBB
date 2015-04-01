@@ -249,9 +249,9 @@ SocketModules.chats.getRecentChats = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	var start = parseInt(data.after, 10),
-		end = start + 9;
+		stop = start + 9;
 
-	Messaging.getRecentChats(socket.uid, start, end, callback);
+	Messaging.getRecentChats(socket.uid, start, stop, callback);
 };
 
 

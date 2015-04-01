@@ -511,27 +511,23 @@ SocketPosts.flag = function(socket, pid, callback) {
 };
 
 SocketPosts.loadMoreFavourites = function(socket, data, callback) {
-	if(!data || !data.after) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-
-	var start = parseInt(data.after, 10),
-		end = start + 9;
-
-	posts.getPostsFromSet('uid:' + socket.uid + ':favourites', socket.uid, start, end, callback);
+	loadMorePosts('uid:' + data.uid + ':favourites', socket.uid, data, callback);
 };
 
 SocketPosts.loadMoreUserPosts = function(socket, data, callback) {
-	if(!data || !data.uid || !utils.isNumber(data.after)) {
+	loadMorePosts('uid:' + data.uid + ':posts', socket.uid, data, callback);
+};
+
+function loadMorePosts(set, uid, data, callback) {
+	if (!data || !utils.isNumber(data.uid) || !utils.isNumber(data.after)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	var start = Math.max(0, parseInt(data.after, 10)),
-		end = start + 9;
+		stop = start + 9;
 
-	posts.getPostsFromSet('uid:' + data.uid + ':posts', socket.uid, start, end, callback);
-};
-
+	posts.getPostsFromSet(set, uid, start, stop, callback);
+}
 
 SocketPosts.getRecentPosts = function(socket, data, callback) {
 	if(!data || !data.count) {
