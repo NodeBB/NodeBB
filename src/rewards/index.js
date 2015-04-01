@@ -76,6 +76,10 @@ function filterCompletedRewards(uid, rewards, callback) {
 		});
 
 		rewards = rewards.filter(function(reward) {
+			if (!reward) {
+				return false;
+			}
+
 			var claimable = parseInt(reward.claimable, 10);
 
 			if (claimable === 0) {
