@@ -34,14 +34,12 @@ usersController.getOnlineUsers = function(req, res, next) {
 			});
 		}
 
-		var anonymousUserCount = websockets.getOnlineAnonCount();
-
 		var userData = {
+			'route_users:online': true,
 			search_display: 'hidden',
 			loadmore_display: results.count > 50 ? 'block' : 'hide',
 			users: results.users,
-			anonymousUserCount: anonymousUserCount,
-			show_anon: anonymousUserCount ? '' : 'hide'
+			anonymousUserCount: websockets.getOnlineAnonCount()
 		};
 
 		res.render('users', userData);
@@ -70,10 +68,9 @@ usersController.getUsers = function(set, count, req, res, next) {
 			search_display: 'hidden',
 			loadmore_display: data.count > count ? 'block' : 'hide',
 			users: data.users,
-			show_anon: 'hide',
 			pagination: pagination.create(1, pageCount)
 		};
-
+		userData['route_' + set] = true;
 		res.render('users', userData);
 	});
 };
@@ -109,8 +106,7 @@ usersController.getUsersForSearch = function(req, res, next) {
 		var userData = {
 			search_display: 'block',
 			loadmore_display: 'hidden',
-			users: data.users,
-			show_anon: 'hide'
+			users: data.users
 		};
 
 		res.render('users', userData);
