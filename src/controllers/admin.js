@@ -158,15 +158,15 @@ adminController.categories.getAll = function(req, res, next) {
 			return next(err);
 		}
         
-        plugins.fireHook('filter:admin.categories.get', {req: req, res: res, categories: categoryData}, function(err, data) {
+		plugins.fireHook('filter:admin.categories.get', {req: req, res: res, categories: categoryData}, function(err, data) {
 			if (err) {
 				return next(err);
 			}
-			
+	
 			data.categories.filter(Boolean).forEach(function(category) {
 				(category.disabled ? disabled : active).push(category);
 			});
-			
+	
 			res.render('admin/manage/categories', {
 				active: active,
 				disabled: disabled
