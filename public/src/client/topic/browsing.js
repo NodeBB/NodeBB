@@ -83,14 +83,14 @@ define('forum/topic/browsing', ['translator'], function(translator) {
 			activeEl.append(userEl);
 		}
 
-		activeEl.find('a[data-uid] img').tooltip({
+		activeEl.find('a[data-uid]').tooltip({
 			placement: 'top'
 		});
 	}
 
 	function createUserIcon(uid, picture, userslug, username) {
 		if(!$('[component="topic/browsing/list"]').find('[data-uid="' + uid + '"]').length) {
-			return $('<div class="inline-block"><a data-uid="' + uid + '" data-count="1" href="' + config.relative_path + '/user/' + userslug + '"><img title="' + username + '" src="'+ picture +'"/></a></div>');
+			return $('<div class="inline-block"><a title="' + username + '" data-uid="' + uid + '" data-count="1" href="' + config.relative_path + '/user/' + userslug + '"><img src="'+ picture +'"/></a></div>');
 		}
 	}
 
