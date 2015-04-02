@@ -12,6 +12,8 @@ var mkdirp = require('mkdirp'),
 	plugins = require('../plugins'),
 	utils = require('../../public/src/utils'),
 
+	TemplatesRenderer = require('../../public/src/templatesRenderer'),
+
 	Templates = {};
 
 Templates.compile = function(callback) {
@@ -95,32 +97,21 @@ Templates.compile = function(callback) {
 			}
 
 			async.each(Object.keys(paths), function(relativePath, next) {
-				var file = fs.readFileSync(paths[relativePath]).toString(),
-					matches = null,
-					regex = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
-
-				while((matches = file.match(regex)) !== null) {
-					var partial = "/" + matches[1];
-
-					if (paths[partial] && relativePath !== partial) {
-						file = file.replace(regex, fs.readFileSync(paths[partial]).toString());
-					} else {
-						winston.warn('[meta/templates] Partial not loaded: ' + matches[1]);
-						file = file.replace(regex, "");
+				Templates.compileTemplate(paths, relativePath, viewsPath, function(err, file) {
+					if (relativePath.match(/^\/admin\/[\s\S]*?/)) {
+						addIndex(relativePath, file);
 					}
-				}
-
-				if (relativePath.match(/^\/admin\/[\s\S]*?/)) {
-					addIndex(relativePath, file);
-				}
-
-				mkdirp.sync(path.join(viewsPath, relativePath.split('/').slice(0, -1).join('/')));
-				fs.writeFile(path.join(viewsPath, relativePath), file, next);
+					next();
+				});
 			}, function(err) {
 				if (err) {
 					winston.error('[meta/templates] ' + err.stack);
 				} else {
-					compileIndex(viewsPath, function() {
+					async.parallel([
+						async.apply(compileIndex, viewsPath),
+						async.apply(storeTypeIndex, paths, viewsPath)
+					],
+					function() {
 						winston.verbose('[meta/templates] Successfully compiled templates.');
 						emitter.emit('templates:compiled');
 						if (callback) {
@@ -142,5 +133,19 @@ function addIndex(path, file) {
 function compileIndex(viewsPath, callback) {
 	fs.writeFile(path.join(viewsPath, '/indexed.json'), JSON.stringify(searchIndex), callback);
 }
+
+function storeTypeIndex(paths, viewsPath, callback) {
+	var types = {};
+	Object.keys(paths).forEach(function(relativePath) {
+		var ext = path.extname(relativePath),
+			basename = relativePath.substr(1, relativePath.length - ext.length - 1);
+		types[basename] = ext;
+	});
+	TemplatesRenderer.updateTypesCache(types);
+	fs.writeFile(path.join(viewsPath, '/templateTypesCache.json'), JSON.stringify(types), callback);
+}
+
+require('./templates/manager')(Templates);
+require('./templates/tplCompiler')(Templates);
 
 module.exports = Templates;

@@ -15,6 +15,7 @@ var path = require('path'),
 	logger = require('./logger'),
 	plugins = require('./plugins'),
 	middleware = require('./middleware'),
+	templates = require('./templates'),
 	routes = require('./routes'),
 	emitter = require('./emitter'),
 
@@ -57,6 +58,7 @@ if(nconf.get('ssl')) {
 			]);
 		});
 
+		templates(app);
 		middleware = middleware(app);
 		routes(app, middleware);
 
