@@ -496,7 +496,7 @@ middleware.maintenanceMode = function(req, res, next) {
 };
 
 middleware.publicTagListing = function(req, res, next) {
-	if (req.user || (!meta.config.hasOwnProperty('publicTagListing') || parseInt(meta.config.publicTagListing, 10) === 1)) {
+	if (req.user || parseInt(meta.config.publicTagListing, 10) === 1) {
 		next();
 	} else {
 		controllers.helpers.notAllowed(req, res);
