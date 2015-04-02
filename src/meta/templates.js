@@ -98,7 +98,7 @@ Templates.compile = function(callback) {
 			}
 
 			async.each(Object.keys(paths), function(relativePath, next) {
-				templatist.compile(paths, relativePath, viewsPath, function(err, data) {
+				templatist.compile(paths, relativePath, function(err, data) {
 					if (err) {
 						next(err);
 						return;
@@ -110,11 +110,10 @@ Templates.compile = function(callback) {
 					}
 					async.each(Object.keys(data.files), function(compiledFilePath, next) {
 						if (relativePath.match(/^\/admin\/[\s\S]*?/)) {
-							// XXX have to append to index if there is more than one file for that relative path
-							addIndex(relativePath, data.files[compiledFilePath]);
+							addIndex(compiledFilePath, data.files[compiledFilePath]);
 						}
-						mkdirp.sync(path.join(path.dirname(compiledFilePath)));
-						fs.writeFile(compiledFilePath, data.files[compiledFilePath], next);
+						mkdirp.sync(path.join(viewsPath, path.dirname(compiledFilePath)));
+						fs.writeFile(path.join(viewsPath, compiledFilePath), data.files[compiledFilePath], next);
 					}, next);
 				});
 			}, function(err) {
