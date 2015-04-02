@@ -102,6 +102,10 @@
 				<label>Days to remember user login sessions</label>
 				<input type="text" class="form-control" data-field="loginDays" placeholder="14" />
 			</div>
+			<div class="form-group">
+				<label>Force password reset after a set number of days</label>
+				<input type="text" class="form-control" data-field="passwordExpiryDays" placeholder="0" />
+			</div>
 		</form>
 	</div>
 </div>

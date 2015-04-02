@@ -9,7 +9,8 @@ var	async = require('async'),
 	meta = require('./meta'),
 	topics = require('./topics'),
 	groups = require('./groups'),
-	Password = require('./password');
+	Password = require('./password'),
+	utils = require('../public/src/utils');
 
 (function(User) {
 
@@ -240,7 +241,7 @@ var	async = require('async'),
 	};
 
 	User.getUsers = function(uids, uid, callback) {
-		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'postcount', 'reputation', 'email:confirmed'];
+		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'joindate', 'postcount', 'reputation', 'email:confirmed'];
 		plugins.fireHook('filter:users.addFields', {fields: fields}, function(err, data) {
 			if (err) {
 				return callback(err);
@@ -268,6 +269,7 @@ var	async = require('async'),
 						return;
 					}
 					user.status = User.getStatus(user.status, results.isOnline[index]);
+					user.joindateISO = utils.toISOString(user.joindate);
 					user.administrator = results.isAdmin[index];
 					user.banned = parseInt(user.banned, 10) === 1;
 					user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;

@@ -426,11 +426,12 @@ SocketUser.loadMore = function(socket, data, callback) {
 				return user.status !== 'offline';
 			});
 		}
-
-		callback(null, {
+		var result = {
 			users: results.users,
-			nextStart: stop + 1
-		});
+			nextStart: stop + 1,
+		};
+		result['route_' + data.set] = true;
+		callback(null, result);
 	});
 };
 

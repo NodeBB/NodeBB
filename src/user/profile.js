@@ -257,7 +257,10 @@ module.exports = function(User) {
 					return callback(err);
 				}
 
-				User.setUserField(data.uid, 'password', hash, callback);
+				async.parallel([
+					async.apply(User.setUserField, data.uid, 'password', hash),
+					async.apply(User.reset.updateExpiry, data.uid)
+				], callback);
 			});
 		}
 

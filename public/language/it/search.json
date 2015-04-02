@@ -7,7 +7,7 @@
     "titles-posts": "Titoli e Messaggi",
     "posted-by": "Pubblicato da",
     "in-categories": "In Categorie",
-    "search-child-categories": "Search child categories",
+    "search-child-categories": "Cerca nelle sottocategorie",
     "reply-count": "Numero Risposte",
     "at-least": "Almeno",
     "at-most": "Al massimo",
@@ -23,7 +23,7 @@
     "six-months": "Sei mesi",
     "one-year": "Un anno",
     "sort-by": "Ordina per",
-    "last-reply-time": "Last reply time",
+    "last-reply-time": "Ora dell'ultima risposta",
     "topic-title": "Titolo argomento",
     "number-of-replies": "Numero di risposte",
     "number-of-views": "Numero di visite",
@@ -32,9 +32,9 @@
     "category": "Categoria",
     "descending": "In ordine decrescente",
     "ascending": "In ordine crescente",
-    "save-preferences": "Save preferences",
-    "clear-preferences": "Clear preferences",
-    "search-preferences-saved": "Search preferences saved",
-    "search-preferences-cleared": "Search preferences cleared",
-    "show-results-as": "Show results as"
+    "save-preferences": "Salva preferenze",
+    "clear-preferences": "Pulisci preferenze",
+    "search-preferences-saved": "Cerca nelle preferenze salvate",
+    "search-preferences-cleared": "Cerca nelle preferenze pulite",
+    "show-results-as": "Visualizza risultati come"
 }

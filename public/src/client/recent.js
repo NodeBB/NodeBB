@@ -2,7 +2,7 @@
 
 /* globals define, app, socket, utils */
 
-define('forum/recent', ['forum/infinitescroll', 'composer', 'components'], function(infinitescroll, composer, components) {
+define('forum/recent', ['forum/infinitescroll', 'components'], function(infinitescroll, components) {
 	var	Recent = {};
 
 	var newTopicCount = 0,

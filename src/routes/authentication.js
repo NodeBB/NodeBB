@@ -87,7 +87,7 @@
 		}
 
 		var userslug = utils.slugify(username);
-		var uid;
+		var uid, userData = {};
 
 		async.waterfall([
 			function(next) {
@@ -101,9 +101,12 @@
 				user.auth.logAttempt(uid, req.ip, next);
 			},
 			function(next) {
-				db.getObjectFields('user:' + uid, ['password', 'banned'], next);
+				db.getObjectFields('user:' + uid, ['password', 'banned', 'passwordExpiry'], next);
 			},
-			function(userData, next) {
+			function(_userData, next) {
+				userData = _userData;
+				userData.uid = uid;
+
 				if (!userData || !userData.password) {
 					return next(new Error('[[error:invalid-user-data]]'));
 				}
@@ -117,7 +120,7 @@
 					return next(new Error('[[error:invalid-password]]'));
 				}
 				user.auth.clearLoginAttempts(uid);
-				next(null, {uid: uid}, '[[success:authentication-successful]]');
+				next(null, userData, '[[success:authentication-successful]]');
 			}
 		], next);
 	};
@@ -165,6 +168,8 @@
 
 	Auth.continueLogin = function(req, res, next) {
 		passport.authenticate('local', function(err, userData, info) {
+			var passwordExpiry = userData.passwordExpiry !== undefined ? parseInt(userData.passwordExpiry, 10) : null;
+
 			if (err) {
 				return res.status(403).send(err.message);
 			}
@@ -187,28 +192,35 @@
 				req.session.cookie.expires = false;
 			}
 
-			req.login({
-				uid: userData.uid
-			}, function(err) {
-				if (err) {
-					return res.status(403).send(err.message);
-				}
-				if (userData.uid) {
-					user.logIP(userData.uid, req.ip);
+			if (passwordExpiry && passwordExpiry < Date.now()) {
+				winston.verbose('[auth] Triggering password reset for uid ' + userData.uid + ' due to password policy');
+				req.session.passwordExpired = true;
+				user.reset.generate(userData.uid, function(err, code) {
+					res.status(200).send(nconf.get('relative_path') + '/reset/' + code);
+				});
+			} else {
+				req.login({
+					uid: userData.uid
+				}, function(err) {
+					if (err) {
+						return res.status(403).send(err.message);
+					}
+					if (userData.uid) {
+						user.logIP(userData.uid, req.ip);
 
-					plugins.fireHook('action:user.loggedIn', userData.uid);
-				}
+						plugins.fireHook('action:user.loggedIn', userData.uid);
+					}
 
-				if (!req.session.returnTo) {
-					res.status(200).send(nconf.get('relative_path') + '/');
-				} else {
+					if (!req.session.returnTo) {
+						res.status(200).send(nconf.get('relative_path') + '/');
+					} else {
+						var next = req.session.returnTo;
+						delete req.session.returnTo;
 
-					var next = req.session.returnTo;
-					delete req.session.returnTo;
-
-					res.status(200).send(next);
-				}
-			});
+						res.status(200).send(next);
+					}
+				});
+			}
 		})(req, res, next);
 	};
 

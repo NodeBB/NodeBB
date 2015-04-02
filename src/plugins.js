@@ -245,15 +245,6 @@ var fs = require('fs'),
 		});
 	};
 
-	function getLatestVersion(versions) {
-		for(var version in versions) {
-			if (versions.hasOwnProperty(version) && versions[version] === 'latest') {
-				return version;
-			}
-		}
-		return '';
-	}
-
 	Plugins.showInstalled = function(callback) {
 		var npmPluginPath = path.join(__dirname, '../node_modules');
 
@@ -339,7 +330,7 @@ var fs = require('fs'),
 				winston.verbose('[plugins] Plugin libraries removed from Node.js cache');
 
 				next();
-			},
+			}
 		], next);
 	};
 

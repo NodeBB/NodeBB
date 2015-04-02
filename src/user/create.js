@@ -126,12 +126,16 @@ module.exports = function(User) {
 							if (!data.password) {
 								return next();
 							}
+
 							User.hashPassword(data.password, function(err, hash) {
 								if (err) {
 									return next(err);
 								}
 
-								User.setUserField(userData.uid, 'password', hash, next);
+								async.parallel([
+									async.apply(User.setUserField, userData.uid, 'password', hash),
+									async.apply(User.reset.updateExpiry, userData.uid)
+								], next);
 							});
 						}
 					], function(err) {
