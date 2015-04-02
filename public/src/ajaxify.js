@@ -31,9 +31,7 @@ $(document).ready(function() {
 	ajaxify.currentPage = null;
 
 	ajaxify.go = function (url, callback, quiet) {
-		if (ajaxify.handleACPRedirect(url)) {
-			return true;
-		} else if (ajaxify.handleNonAPIRoutes(url)) {
+		if (ajaxify.handleACPRedirect(url) || ajaxify.handleNonAPIRoutes(url)) {
 			return true;
 		}
 
