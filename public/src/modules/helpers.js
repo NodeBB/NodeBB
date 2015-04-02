@@ -14,9 +14,9 @@
 			properties = item.properties;
 
 		if (properties) {
-			if (properties.loggedIn && !data.loggedIn ||
-				properties.adminOnly && !data.isAdmin ||
-				properties.installed && properties.installed.search && !data.searchEnabled) {
+			if ((properties.loggedIn && !data.loggedIn) ||
+				(properties.adminOnly && !data.isAdmin) ||
+				(properties.installed && properties.installed.search && !data.searchEnabled)) {
 				return false;
 			}
 		}
