@@ -135,7 +135,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			openMovePostModal($(this));
 		});
 
-		postContainer.on('click', '[component="user/chat"]', function(e) {
+		postContainer.on('click', '[component="post/chat"]', function(e) {
 			openChat($(this));
 		});
 	}
@@ -357,7 +357,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function openChat(button) {
-		var post = button.parents('data-pid');
+		var post = button.parents('[data-pid]');
 
 		app.openChat(post.attr('data-username'), post.attr('data-uid'));
 		button.parents('.btn-group').find('.dropdown-toggle').click();
