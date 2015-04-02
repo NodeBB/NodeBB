@@ -193,6 +193,7 @@ var async = require('async'),
 					toCid: cid,
 					uid: uid
 				});
+				callback();
 			});
 		});
 	};
