@@ -55,7 +55,9 @@ define('forum/topic', [
 
 		handleBookmark(tid);
 
-		navigator.init('[component="post"]', ajaxify.variables.get('postcount'), Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
+		if (!config.usePagination) {
+			navigator.init('[component="post"]', ajaxify.variables.get('postcount'), Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
+		}
 
 		$(window).on('scroll', updateTopicTitle);
 
