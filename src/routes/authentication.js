@@ -168,8 +168,6 @@
 
 	Auth.continueLogin = function(req, res, next) {
 		passport.authenticate('local', function(err, userData, info) {
-			var passwordExpiry = userData.passwordExpiry !== undefined ? parseInt(userData.passwordExpiry, 10) : null;
-
 			if (err) {
 				return res.status(403).send(err.message);
 			}
@@ -181,6 +179,8 @@
 
 				return res.status(403).send(info);
 			}
+
+			var passwordExpiry = userData.passwordExpiry !== undefined ? parseInt(userData.passwordExpiry, 10) : null;
 
 			// Alter user cookie depending on passed-in option
 			if (req.body.remember === 'on') {
