@@ -131,16 +131,16 @@
 	};
 
 	exports.register = function() {
-		var templates;
+		var templatist;
 
 		if (typeof module === 'object') {
-			templates = require('templates.js');
+			templatist = require('nodebb-templatist');
 		} else {
-			templates = window.templates;
+			templatist = window.templatist;
 		}
 
 		Object.keys(helpers).forEach(function(helperName) {
-			templates.registerHelper(helperName, helpers[helperName]);
+			templatist.registerHelper(helperName, helpers[helperName]);
 		});
 	};
 

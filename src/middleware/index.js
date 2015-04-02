@@ -30,8 +30,8 @@ module.exports = function(app) {
 
 	middleware = require('./middleware')(app);
 
+	app.set('json spaces', process.env.NODE_ENV === 'development' ? 4 : 0);
 	app.use(flash());
-
 	app.use(compression());
 
 	setupFavicon(app);

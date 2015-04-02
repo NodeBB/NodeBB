@@ -11,10 +11,11 @@ var mkdirp = require('mkdirp'),
 	emitter = require('../emitter'),
 	plugins = require('../plugins'),
 	utils = require('../../public/src/utils'),
-
-	TemplatesRenderer = require('../../public/src/templatesRenderer'),
+	templatist = require('nodebb-templatist'),
 
 	Templates = {};
+
+require('nodebb-templatist-tpl')(templatist, nconf.get('views_dir'));
 
 Templates.compile = function(callback) {
 	var fromFile = nconf.get('from-file') || '';
@@ -97,11 +98,24 @@ Templates.compile = function(callback) {
 			}
 
 			async.each(Object.keys(paths), function(relativePath, next) {
-				Templates.compileTemplate(paths, relativePath, viewsPath, function(err, file) {
-					if (relativePath.match(/^\/admin\/[\s\S]*?/)) {
-						addIndex(relativePath, file);
+				templatist.compile(paths, relativePath, viewsPath, function(err, data) {
+					if (err) {
+						next(err);
+						return;
 					}
-					next();
+					if (data.warnings && data.warnings.length) {
+						for (var warn in data.warnings) {
+							winston.warn('[meta/templates] ' + warn);
+						}
+					}
+					async.each(Object.keys(data.files), function(compiledFilePath, next) {
+						if (relativePath.match(/^\/admin\/[\s\S]*?/)) {
+							// XXX have to append to index if there is more than one file for that relative path
+							addIndex(relativePath, data.files[compiledFilePath]);
+						}
+						mkdirp.sync(path.join(path.dirname(compiledFilePath)));
+						fs.writeFile(compiledFilePath, data.files[compiledFilePath], next);
+					}, next);
 				});
 			}, function(err) {
 				if (err) {
@@ -137,15 +151,12 @@ function compileIndex(viewsPath, callback) {
 function storeTypeIndex(paths, viewsPath, callback) {
 	var types = {};
 	Object.keys(paths).forEach(function(relativePath) {
-		var ext = path.extname(relativePath),
-			basename = relativePath.substr(1, relativePath.length - ext.length - 1);
+		var ext = path.extname(relativePath).substr(1),
+			basename = relativePath.substr(1, relativePath.length - ext.length - 2);
 		types[basename] = ext;
 	});
-	TemplatesRenderer.updateTypesCache(types);
+	templatist.updateTypesCache(types);
 	fs.writeFile(path.join(viewsPath, '/templateTypesCache.json'), JSON.stringify(types), callback);
 }
-
-require('./templates/manager')(Templates);
-require('./templates/tplCompiler')(Templates);
 
 module.exports = Templates;

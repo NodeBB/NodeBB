@@ -15,11 +15,11 @@ var path = require('path'),
 	logger = require('./logger'),
 	plugins = require('./plugins'),
 	middleware = require('./middleware'),
-	templates = require('./templates'),
 	routes = require('./routes'),
 	emitter = require('./emitter'),
 
 	helpers = require('./../public/src/modules/helpers'),
+	templatist = require('nodebb-templatist'),
 	net;
 
 if(nconf.get('ssl')) {
@@ -58,7 +58,7 @@ if(nconf.get('ssl')) {
 			]);
 		});
 
-		templates(app);
+		templatist.augmentExpress(app);
 		middleware = middleware(app);
 		routes(app, middleware);
 
