@@ -7,10 +7,10 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	var PostTools = {},
 		topicName;
 
-	PostTools.init = function(tid, threadState) {
+	PostTools.init = function(tid) {
 		topicName = ajaxify.variables.get('topic_name');
 
-		addPostHandlers(tid, threadState);
+		addPostHandlers(tid);
 
 		share.addShareHandlers(topicName);
 
@@ -71,29 +71,19 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		}
 	}
 
-	function addPostHandlers(tid, threadState) {
-		function canPost() {
-			return !threadState.locked || app.user.isAdmin;
-		}
-
+	function addPostHandlers(tid) {
 		var postContainer = components.get('topic');
 
 		postContainer.on('click', '[component="post/quote"]', function() {
-			if (canPost()) {
-				onQuoteClicked($(this), tid, topicName);
-			}
+			onQuoteClicked($(this), tid, topicName);
 		});
 
 		postContainer.on('click', '[component="post/reply"]', function() {
-			if (canPost()) {
-				onReplyClicked($(this), tid, topicName);
-			}
+			onReplyClicked($(this), tid, topicName);
 		});
 
 		components.get('topic/reply').on('click', function() {
-			if (canPost()) {
-				onReplyClicked($(this), tid, topicName);
-			}
+			onReplyClicked($(this), tid, topicName);
 		});
 
 		postContainer.on('click', '[component="post/favourite"]', function() {

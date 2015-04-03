@@ -267,7 +267,7 @@ define('forum/topic/posts', [
 
 	function showBottomPostBar() {
 		if(components.get('post').length > 1 || !components.get('post', 'index', 0).length) {
-			$('.bottom-post-bar').removeClass('hide');
+			$('.bottom-post-bar').removeClass('hidden');
 		}
 	}
 

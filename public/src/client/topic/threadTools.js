@@ -6,9 +6,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'comp
 
 	var ThreadTools = {};
 
-	ThreadTools.init = function(tid, threadState) {
-		ThreadTools.threadState = threadState;
-
+	ThreadTools.init = function(tid) {
 		components.get('topic/delete').on('click', function() {
 			topicCommand('delete', tid);
 			return false;
@@ -118,7 +116,6 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'comp
 
 		threadEl.find('[component="post/reply"], [component="post/quote"], [component="post/edit"], [component="post/delete"]').toggleClass('hidden', isLocked);
 		$('[component="post/header"] i.fa-lock').toggleClass('hidden', !data.isLocked);
-		ThreadTools.threadState.locked = data.isLocked;
 	};
 
 	ThreadTools.setDeleteState = function(data) {
@@ -133,7 +130,6 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'comp
 		components.get('topic/deleted/message').toggleClass('hidden', !data.isDelete);
 
 		threadEl.toggleClass('deleted', data.isDelete);
-		ThreadTools.threadState.deleted = data.isDelete;
 	};
 
 	ThreadTools.setPinnedState = function(data) {
@@ -142,7 +138,6 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'comp
 			return;
 		}
 
-		ThreadTools.threadState.pinned = data.isPinned;
 		components.get('topic/pin').toggleClass('hidden', data.isPinned);
 		components.get('topic/unpin').toggleClass('hidden', !data.isPinned);
 		$('[component="post/header"] i.fa-thumb-tack').toggleClass('hidden', !data.isPinned);
