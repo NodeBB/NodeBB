@@ -133,14 +133,16 @@
 	exports.register = function() {
 		var templatist;
 
-		if (typeof module === 'object') {
-			templatist = require('nodebb-templatist');
-		} else {
-			templatist = window.templatist;
-		}
-
-		Object.keys(helpers).forEach(function(helperName) {
-			templatist.registerHelper(helperName, helpers[helperName]);
+		(function(register){
+			if (typeof module === 'object') {
+				register(require('nodebb-templatist'));
+			} else {
+				require(['nodebb-templatist'], register);
+			}
+		})(function(templatist) {
+			Object.keys(helpers).forEach(function(helperName) {
+				templatist.registerHelper(helperName, helpers[helperName]);
+			});
 		});
 	};
 

@@ -154,8 +154,16 @@ function storeTypeIndex(paths, viewsPath, callback) {
 			basename = relativePath.substr(1, relativePath.length - ext.length - 2);
 		types[basename] = ext;
 	});
-	templatist.updateTypesCache(types);
 	fs.writeFile(path.join(viewsPath, '/templateTypesCache.json'), JSON.stringify(types), callback);
 }
+
+function loadTypeIndex() {
+	winston.verbose('[meta/templates] Loading Templatist types cache from file');
+
+	var viewsPath = nconf.get('views_dir');
+	var types = JSON.parse(fs.readFileSync(path.join(viewsPath, '/templateTypesCache.json')));
+	templatist.updateTypesCache(types);
+}
+emitter.on('templates:compiled', loadTypeIndex);
 
 module.exports = Templates;

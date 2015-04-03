@@ -46,7 +46,8 @@ module.exports = function(Meta) {
 				'public/src/ajaxify.js',
 				'public/src/overrides.js',
 				'public/src/variables.js',
-				'public/src/widgets.js'
+				'public/src/widgets.js',
+				'./node_modules/nodebb-templatist/client.js'
 			],
 			rjs: []
 		}
