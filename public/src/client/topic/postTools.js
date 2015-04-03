@@ -23,9 +23,9 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		postEl.find('[component="post/quote"], [component="post/favourite"], [component="post/reply"], [component="post/flag"], [component="user/chat"]')
 			.toggleClass('hidden', isDeleted);
 
+		postEl.find('[component="post/delete"]').toggleClass('hidden', isDeleted);
+		postEl.find('[component="post/restore"]').toggleClass('hidden', !isDeleted);
 		postEl.find('[component="post/purge"]').toggleClass('hidden', !isDeleted);
-		postEl.find('[component="post/delete"] .i').toggleClass('fa-trash-o', !isDeleted).toggleClass('fa-history', isDeleted);
-		postEl.find('[component="post/delete"] span').translateHtml(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]');
 	};
 
 	PostTools.updatePostCount = function() {
@@ -114,7 +114,11 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		});
 
 		postContainer.on('click', '[component="post/delete"]', function(e) {
-			deletePost($(this), tid);
+			togglePostDelete($(this), tid);
+		});
+
+		postContainer.on('click', '[component="post/restore"]', function(e) {
+			togglePostDelete($(this), tid);
 		});
 
 		postContainer.on('click', '[component="post/purge"]', function(e) {
@@ -248,7 +252,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		return username;
 	}
 
-	function deletePost(button, tid) {
+	function togglePostDelete(button, tid) {
 		var pid = getData(button, 'data-pid'),
 			postEl = components.get('post', 'pid', pid),
 			action = !postEl.hasClass('deleted') ? 'delete' : 'restore';
