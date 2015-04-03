@@ -368,41 +368,49 @@ middleware.processRender = function(req, res, next) {
 		if ('function' !== typeof fn) {
 			fn = defaultFn;
 		}
-
-		if (res.locals.isAPI) {
-			return res.json(options);
-		}
-
-		render.call(self, template, options, function(err, str) {
+		
+		plugins.fireHook('filter:render', options, function(err, options) {
+			
 			if (err) {
 				winston.error(err);
 				return fn(err);
 			}
 
-			// str = str + '<input type="hidden" ajaxify-data="' + encodeURIComponent(JSON.stringify(options)) + '" />';
-			str = (res.locals.postHeader ? res.locals.postHeader : '') + str + (res.locals.preFooter ? res.locals.preFooter : '');
-
-			if (res.locals.footer) {
-				str = str + res.locals.footer;
-			} else if (res.locals.adminFooter) {
-				str = str + res.locals.adminFooter;
+			if (res.locals.isAPI) {
+				return res.json(options);
 			}
-
-			if (res.locals.renderHeader || res.locals.renderAdminHeader) {
-				var method = res.locals.renderHeader ? middleware.renderHeader : middleware.admin.renderHeader;
-				method(req, res, function(err, template) {
-					if (err) {
-						return fn(err);
-					}
-					str = template + str;
-					var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
-					translator.translate(str, language, function(translated) {
-						fn(err, translated);
+	
+			render.call(self, template, options, function(err, str) {
+				if (err) {
+					winston.error(err);
+					return fn(err);
+				}
+	
+				// str = str + '<input type="hidden" ajaxify-data="' + encodeURIComponent(JSON.stringify(options)) + '" />';
+				str = (res.locals.postHeader ? res.locals.postHeader : '') + str + (res.locals.preFooter ? res.locals.preFooter : '');
+	
+				if (res.locals.footer) {
+					str = str + res.locals.footer;
+				} else if (res.locals.adminFooter) {
+					str = str + res.locals.adminFooter;
+				}
+	
+				if (res.locals.renderHeader || res.locals.renderAdminHeader) {
+					var method = res.locals.renderHeader ? middleware.renderHeader : middleware.admin.renderHeader;
+					method(req, res, function(err, template) {
+						if (err) {
+							return fn(err);
+						}
+						str = template + str;
+						var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
+						translator.translate(str, language, function(translated) {
+							fn(err, translated);
+						});
 					});
-				});
-			} else {
-				fn(err, str);
-			}
+				} else {
+					fn(err, str);
+				}
+			});
 		});
 	};
 
