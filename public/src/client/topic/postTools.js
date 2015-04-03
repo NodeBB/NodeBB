@@ -240,7 +240,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 	function getUserName(button) {
 		var username = '',
-			post = button.parents('li[data-pid]');
+			post = button.parents('[data-pid]');
 
 		if (post.length) {
 			username = post.attr('data-username').replace(/\s/g, '-');
@@ -275,7 +275,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 					pid: pid,
 					tid: tid
 				}, function(err) {
-					if(err) {
+					if (err) {
 						app.alertError(err.message);
 					}
 				});
@@ -319,7 +319,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		socket.emit('topics.movePost', {pid: pid, tid: tid}, function(err) {
 			$('#move-post-modal').addClass('hide');
 
-			if(err) {
+			if (err) {
 				$('#topicId').val('');
 				return app.alertError(err.message);
 			}
@@ -337,15 +337,16 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	function flagPost(pid) {
 		translator.translate('[[topic:flag_confirm]]', function(message) {
 			bootbox.confirm(message, function(confirm) {
-				if (confirm) {
-					socket.emit('posts.flag', pid, function(err) {
-						if(err) {
-							return app.alertError(err.message);
-						}
-
-						app.alertSuccess('[[topic:flag_success]]');
-					});
+				if (!confirm) {
+					return;
 				}
+				socket.emit('posts.flag', pid, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+
+					app.alertSuccess('[[topic:flag_success]]');
+				});
 			});
 		});
 	}
