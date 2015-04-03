@@ -47,6 +47,7 @@ var async = require('async'),
 					tid: tid,
 					cid: topicData.cid,
 					isDelete: isDelete,
+					isLocked: isDelete,
 					uid: uid
 				};
 
