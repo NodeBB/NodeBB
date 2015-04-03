@@ -31,7 +31,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	PostTools.updatePostCount = function() {
 		socket.emit('topics.postcount', ajaxify.variables.get('topic_id'), function(err, postCount) {
 			if (!err) {
-				var postCountEl = $('.topic-post-count');
+				var postCountEl = components.get('topic/post-count');
 				postCountEl.html(postCount).attr('title', postCount);
 				utils.makeNumbersHumanReadable(postCountEl);
 				navigator.setCount(postCount);
