@@ -1,7 +1,7 @@
 'use strict';
-/* globals define, templates */
+/* globals define  */
 
-define('alerts', ['translator'], function(translator) {
+define('alerts', ['translator', 'nodebb-templatist'], function(translator, templatist) {
 	var module = {};
 
 	module.alert = function (params) {
@@ -21,7 +21,7 @@ define('alerts', ['translator'], function(translator) {
 	};
 
 	function createNew(params) {
-		templates.parse('alert', params, function(alertTpl) {
+		templatist.render('alert', params, function(err, alertTpl) {
 			translator.translate(alertTpl, function(translatedHTML) {
 				var alert = $('#' + params.alert_id);
 				if (alert.length) {

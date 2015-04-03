@@ -1,8 +1,14 @@
 'use strict';
 
-/* globals define, app, ajaxify, utils, socket, templates */
+/* globals define, app, ajaxify, utils, socket */
 
-define('forum/chats', ['string', 'sounds', 'forum/infinitescroll', 'translator'], function(S, sounds, infinitescroll, translator) {
+define('forum/chats', [
+	'string',
+	'sounds',
+	'forum/infinitescroll',
+	'translator',
+	'nodebb-templatist'
+], function(S, sounds, infinitescroll, translator, templatist) {
 	var Chats = {
 		initialised: false
 	};
@@ -119,7 +125,7 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll', 'translator']
 		});
 	};
 
-	function onMessagesParsed(html) {
+	function onMessagesParsed(err, html) {
 		var newMessage = $(html);
 		newMessage.insertBefore($('.user-typing'));
 		newMessage.find('.timeago').timeago();
@@ -227,7 +233,7 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll', 'translator']
 	};
 
 	Chats.parseMessage = function(data, callback) {
-		templates.parse('partials/chat_message' + (Array.isArray(data) ? 's' : ''), {
+		templatist.render('partials/chat_message' + (Array.isArray(data) ? 's' : ''), {
 			messages: data
 		}, callback);
 	};

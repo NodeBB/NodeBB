@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, app, socket, templates */
+/* globals define, app, socket */
 
-define('forum/topic/move', function() {
+define('forum/topic/move', ['nodebb-templatist'], function(templatist) {
 
 	var Move = {},
 		modal,
@@ -90,7 +90,7 @@ define('forum/topic/move', function() {
 	}
 
 	function renderCategories(categories) {
-		templates.parse('partials/category_list', {categories: categories}, function(html) {
+		templatist.render('partials/category_list', {categories: categories}, function(err, html) {
 			modal.find('.modal-body').prepend(html);
 			$('#categories-loading').remove();
 		});

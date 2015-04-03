@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, socket, ajaxify, templates, app */
+/* globals define, socket, ajaxify, app */
 
-define('forum/infinitescroll', ['translator'], function(translator) {
+define('forum/infinitescroll', ['translator', 'nodebb-templatist'], function(translator, templatist) {
 
 	var scroll = {};
 	var callback;
@@ -47,7 +47,7 @@ define('forum/infinitescroll', ['translator'], function(translator) {
 	};
 
 	scroll.parseAndTranslate = function(template, blockName, data, callback) {
-		templates.parse(template, blockName, data, function(html) {
+		templatist.render(template, blockName, data, function(err, html) {
 			translator.translate(html, function(translatedHTML) {
 				callback($(translatedHTML));
 			});

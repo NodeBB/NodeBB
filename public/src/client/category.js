@@ -1,5 +1,5 @@
 "use strict";
-/* global define, config, templates, app, utils, ajaxify, socket */
+/* global define, config, app, utils, ajaxify, socket */
 
 define('forum/category', [
 	'composer',
@@ -10,8 +10,9 @@ define('forum/category', [
 	'forum/categoryTools',
 	'sort',
 	'components',
-	'translator'
-], function(composer, pagination, infinitescroll, share, navigator, categoryTools, sort, components, translator) {
+	'translator',
+	'nodebb-templatist'
+], function(composer, pagination, infinitescroll, share, navigator, categoryTools, sort, components, translator, templatist) {
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
@@ -186,11 +187,11 @@ define('forum/category', [
 
 		var editable = !!$('.thread-tools').length;
 
-		templates.parse('category', 'topics', {
+		templatist.render('category', 'topics', {
 			privileges: {editable: editable},
 			showSelect: editable,
 			topics: [topic]
-		}, function(html) {
+		}, function(err, html) {
 			translator.translate(html, function(translatedHTML) {
 				var topic = $(translatedHTML),
 					container = $('[component="category"]'),
@@ -283,7 +284,7 @@ define('forum/category', [
 
 		findInsertionPoint();
 
-		templates.parse('category', 'topics', data, function(html) {
+		templatist.render('category', 'topics', data, function(err, html) {
 			translator.translate(html, function(translatedHTML) {
 				var container = $('[component="category"]'),
 					html = $(translatedHTML);

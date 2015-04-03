@@ -105,9 +105,12 @@ $(document).ready(function() {
 		if (data) {
 			var status = parseInt(data.status, 10);
 
-			if (status === 403 || status === 404 || status === 500) {
+			if (status === 403 || status === 404 ) {
 				$('#footer, #content').removeClass('hide').addClass('ajaxifying');
-				return renderTemplate(url, status.toString(), data.responseJSON, (new Date()).getTime(), callback);
+				return renderTemplate(url, status.toString(), data.responseJSON, callback);
+			} else if (status === 500) {
+				$('#footer, #content').removeClass('hide').addClass('ajaxifying');
+				return render500(data.responseJSON, callback);
 			} else if (status === 401) {
 				app.alertError('[[global:please_log_in]]');
 				app.previousUrl = url;
@@ -127,19 +130,25 @@ $(document).ready(function() {
 	function renderTemplate(url, tpl_url, data, callback) {
 		$(window).trigger('action:ajaxify.loadingTemplates', {});
 
-		templates.parse(tpl_url, data, function(template) {
-			translator.translate(template, function(translatedTemplate) {
-				$('#content').html(translatedTemplate);
-
-				ajaxify.end(url, tpl_url);
-
-				if (typeof callback === 'function') {
-					callback();
+		require(['nodebb-templatist'], function(templatist) {
+			templatist.render(tpl_url, '', data, function(err, template) {
+				if (err) {
+					throw err;
 				}
 
-				$('#content, #footer').removeClass('ajaxifying');
+				translator.translate(template, function(translatedTemplate) {
+					$('#content').html(translatedTemplate);
 
-				app.refreshTitle(url);
+					ajaxify.end(url, tpl_url);
+
+					if (typeof callback === 'function') {
+						callback();
+					}
+
+					$('#content, #footer').removeClass('ajaxifying');
+
+					app.refreshTitle(url);
+				});
 			});
 		});
 	}
@@ -218,26 +227,7 @@ $(document).ready(function() {
 		});
 	};
 
-	ajaxify.loadTemplate = function(template, callback) {
-		if (templates.cache[template]) {
-			callback(templates.cache[template]);
-		} else {
-			$.ajax({
-				url: RELATIVE_PATH + '/templates/' + template + '.tpl' + (config['cache-buster'] ? '?v=' + config['cache-buster'] : ''),
-				type: 'GET',
-				success: function(data) {
-					callback(data.toString());
-				},
-				error: function(error) {
-					throw new Error("Unable to load template: " + template + " (" + error.statusText + ")");
-				}
-			});
-		}
-	};
-
 	function ajaxifyAnchors() {
-		templates.registerLoader(ajaxify.loadTemplate);
-
 		if (!window.history || !window.history.pushState) {
 			return; // no ajaxification for old browsers
 		}
@@ -284,8 +274,37 @@ $(document).ready(function() {
 		});
 	}
 
-	ajaxifyAnchors();
-	app.load();
-	templates.cache['500'] = $('.tpl-500').html();
+	function initializeTemplatist() {
+		require(['nodebb-templatist'], function(templatist) {
+			$(window).trigger('action:init-templatist', {relative_path: RELATIVE_PATH, cache_buster: config['cache-buster']});
+			$.getJSON(RELATIVE_PATH + '/templates/templateTypesCache.json',
+					 function(types) {
+						 templatist.updateTypesCache(types);
+					 });
+		});
+	}
 
+	function render500(data, callback) {
+		require(['translator'], function(translator) {
+			var template = $('.tpl-500').html();
+
+			translator.translate(template, function(translatedTemplate) {
+				$('#content').html(translatedTemplate);
+
+				ajaxify.end(url, tpl_url);
+
+				if (typeof callback === 'function') {
+					callback();
+				}
+
+				$('#content, #footer').removeClass('ajaxifying');
+
+				app.refreshTitle(url);
+			});
+		});
+	}
+
+	ajaxifyAnchors();
+	initializeTemplatist();
+	app.load();
 });

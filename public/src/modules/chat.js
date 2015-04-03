@@ -1,7 +1,14 @@
 "use strict";
-/* globals app, config, define, socket, templates, utils, ajaxify */
+/* globals app, config, define, socket, utils, ajaxify */
 
-define('chat', ['taskbar', 'string', 'sounds', 'forum/chats', 'translator'], function(taskbar, S, sounds, Chats, translator) {
+define('chat', [
+	'taskbar',
+	'string',
+	'sounds',
+	'forum/chats',
+	'translator',
+	'nodebb-templatist'
+], function(taskbar, S, sounds, Chats, translator, templatist) {
 
 	var module = {};
 	var newMessage = false;
@@ -159,7 +166,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats', 'translator'], fun
 	}
 
 	module.createModal = function(username, touid, callback) {
-		templates.parse('chat', {}, function(chatTpl) {
+		templatist.render('chat', {}, function(err, chatTpl) {
 			translator.translate(chatTpl, function (chatTpl) {
 
 				var chatModal = $(chatTpl),

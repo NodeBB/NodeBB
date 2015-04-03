@@ -2,7 +2,7 @@
 
 /* globals define, bootbox */
 
-define('iconSelect', function() {
+define('iconSelect', ['nodebb-templatist'], function(templatist) {
 	var iconSelect = {};
 
 	iconSelect.init = function(el, onModified) {
@@ -19,7 +19,7 @@ define('iconSelect', function() {
 			$('#icons .fa-icons .fa.' + selected).addClass('selected');
 		}
 
-		templates.parse('partials/fontawesome', {}, function(html) {
+		templatist.render('partials/fontawesome', {}, function(err, html) {
 			var picker = bootbox.dialog({
 					message: html,
 					title: 'Select an Icon',
@@ -55,4 +55,3 @@ define('iconSelect', function() {
 
 	return iconSelect;
 });
-

@@ -1,9 +1,9 @@
 "use strict";
-/* global define, app, socket, bootbox, templates, config */
+/* global define, app, socket, bootbox, config */
 
-define('admin/appearance/themes', function() {
+define('admin/appearance/themes', ['nodebb-templatist'], function(templatist) {
 	var Themes = {};
-	
+
 	Themes.init = function() {
 		$('#installed_themes').on('click', function(e){
 			var target = $(e.target),
@@ -73,9 +73,9 @@ define('admin/appearance/themes', function() {
 				instListEl.append($('<li/ >').addClass('no-themes').html('No installed themes found'));
 				return;
 			} else {
-				templates.parse('admin/partials/theme_list', {
+				templatist.render('admin/partials/theme_list', {
 					themes: themes
-				}, function(html) {
+				}, function(err, html) {
 					instListEl.html(html);
 					highlightSelectedTheme(config['theme:id']);
 				});

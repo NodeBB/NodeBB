@@ -140,12 +140,12 @@ function start() {
 		}
 		var meta = require('./src/meta');
 		meta.configs.init(function () {
-			var templates = require('templates.js'),
+			var Templatist = require('nodebb-templatist'),
 				sockets = require('./src/socket.io'),
 				plugins = require('./src/plugins'),
 				upgrade = require('./src/upgrade');
 
-			templates.setGlobal('relative_path', nconf.get('relative_path'));
+			Templatist.setGlobal('relative_path', nconf.get('relative_path'));
 
 			upgrade.check(function(schema_ok) {
 				if (schema_ok || nconf.get('check-schema') === false) {

@@ -5,8 +5,9 @@ define('admin/manage/category', [
 	'uploader',
 	'iconSelect',
 	'admin/modules/colorpicker',
-	'autocomplete'
-], function(uploader, iconSelect, colorpicker, autocomplete) {
+	'autocomplete',
+	'nodebb-templatist'
+], function(uploader, iconSelect, colorpicker, autocomplete, templatist) {
 	var	Category = {};
 
 	Category.init = function() {
@@ -212,9 +213,9 @@ define('admin/manage/category', [
 				return app.alertError(err.message);
 			}
 
-			templates.parse('admin/partials/categories/privileges', {
+			templatist.render('admin/partials/categories/privileges', {
 				privileges: privileges
-			}, function(html) {
+			}, function(err, html) {
 				$('.privilege-table-container').html(html);
 			});
 		});
@@ -238,9 +239,9 @@ define('admin/manage/category', [
 
 	Category.launchParentSelector = function() {
 		socket.emit('categories.get', function(err, categories) {
-			templates.parse('partials/category_list', {
+			templatist.render('partials/category_list', {
 				categories: categories
-			}, function(html) {
+			}, function(err, html) {
 				var modal = bootbox.dialog({
 					message: html,
 					title: 'Set Parent Category'

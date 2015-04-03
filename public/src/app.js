@@ -360,13 +360,15 @@ app.cacheBuster = null;
 
 	app.exposeConfigToTemplates = function() {
 		$(document).ready(function() {
-			templates.setGlobal('loggedIn', config.loggedIn);
-			templates.setGlobal('relative_path', RELATIVE_PATH);
-			for(var key in config) {
-				if (config.hasOwnProperty(key)) {
-					templates.setGlobal('config.' + key, config[key]);
+			require(['nodebb-templatist'], function(Templatist) {
+				Templatist.setGlobal('loggedIn', config.loggedIn);
+				Templatist.setGlobal('relative_path', RELATIVE_PATH);
+				for(var key in config) {
+					if (config.hasOwnProperty(key)) {
+						Templatist.setGlobal('config.' + key, config[key]);
+					}
 				}
-			}
+			});
 		});
 	};
 
@@ -557,8 +559,6 @@ app.cacheBuster = null;
 
 			require(['taskbar', 'helpers'], function(taskbar, helpers) {
 				taskbar.init();
-
-				// templates.js helpers
 				helpers.register();
 			});
 		});

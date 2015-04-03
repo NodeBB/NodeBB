@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, socket, app, ajaxify, templates */
+/* globals define, socket, app, ajaxify */
 
-define('forum/users', ['translator'], function(translator) {
+define('forum/users', ['translator', 'nodebb-templatist'], function(translator, templatist) {
 	var	Users = {};
 
 	var loadingMoreUsers = false;
@@ -76,7 +76,7 @@ define('forum/users', ['translator'], function(translator) {
 			return !$('.users-box[data-uid="' + user.uid + '"]').length;
 		});
 
-		templates.parse('users', 'users', data, function(html) {
+		templatist.render('users', 'users', data, function(err, html) {
 			translator.translate(html, function(translated) {
 				translated = $(translated);
 				translated.find('span.timeago').timeago();
@@ -147,11 +147,11 @@ define('forum/users', ['translator'], function(translator) {
 				return reset();
 			}
 
-			templates.parse('partials/paginator', {pagination: data.pagination}, function(html) {
+			templatist.render('partials/paginator', {pagination: data.pagination}, function(err, html) {
 				$('.pagination-container').replaceWith(html);
 			});
 
-			templates.parse('users', 'users', data, function(html) {
+			templatist.render('users', 'users', data, function(err, html) {
 				translator.translate(html, function(translated) {
 					$('#users-container').html(translated);
 

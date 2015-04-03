@@ -47,7 +47,8 @@ module.exports = function(Meta) {
 				'public/src/overrides.js',
 				'public/src/variables.js',
 				'public/src/widgets.js',
-				'./node_modules/nodebb-templatist/client.js'
+				'./node_modules/nodebb-templatist/client.js',
+				'./node_modules/nodebb-templatist-tpl/client.js'
 			],
 			rjs: []
 		}
