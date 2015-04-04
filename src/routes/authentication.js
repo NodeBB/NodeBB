@@ -24,7 +24,7 @@
 		app.use(passport.session());
 
 		app.use(function(req, res, next) {
-			req.uid = req.user ? parseInt(req.user.uid) : 0;
+			req.uid = req.user ? parseInt(req.user.uid, 10) : 0;
 			next();
 		});
 
