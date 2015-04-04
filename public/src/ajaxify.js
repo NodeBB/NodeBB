@@ -110,7 +110,7 @@ $(document).ready(function() {
 				return renderTemplate(url, status.toString(), data.responseJSON, callback);
 			} else if (status === 500) {
 				$('#footer, #content').removeClass('hide').addClass('ajaxifying');
-				return render500(data.responseJSON, callback);
+				return render500(url, data.responseJSON, callback);
 			} else if (status === 401) {
 				app.alertError('[[global:please_log_in]]');
 				app.previousUrl = url;
@@ -133,6 +133,7 @@ $(document).ready(function() {
 		require(['nodebb-templatist'], function(templatist) {
 			templatist.render(tpl_url, '', data, function(err, template) {
 				if (err) {
+					render500(url, {});
 					throw err;
 				}
 
@@ -284,22 +285,24 @@ $(document).ready(function() {
 		});
 	}
 
-	function render500(data, callback) {
+	function render500(url, data, callback) {
 		require(['translator'], function(translator) {
 			var template = $('.tpl-500').html();
 
-			translator.translate(template, function(translatedTemplate) {
-				$('#content').html(translatedTemplate);
+			templates.parse(template, '', data, function(template) {
+				translator.translate(template, function(translatedTemplate) {
+					$('#content').html(translatedTemplate);
 
-				ajaxify.end(url, tpl_url);
+					ajaxify.end(url, '500');
 
-				if (typeof callback === 'function') {
-					callback();
-				}
+					if (typeof callback === 'function') {
+						callback();
+					}
 
-				$('#content, #footer').removeClass('ajaxifying');
+					$('#content, #footer').removeClass('ajaxifying');
 
-				app.refreshTitle(url);
+					app.refreshTitle(url);
+				});
 			});
 		});
 	}
