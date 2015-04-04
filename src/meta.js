@@ -2,7 +2,7 @@
 
 var async = require('async'),
 	winston = require('winston'),
-	templates = require('templates.js'),
+	templatist = require('nodebb-templatist'),
 	os = require('os'),
 	nconf = require('nconf'),
 
@@ -61,7 +61,7 @@ var async = require('async'),
 					async.apply(Meta.templates.compile),
 					async.apply(auth.reloadRoutes),
 					function(next) {
-						templates.flush();
+						templatist.flush();
 						next();
 					}
 				], next);
