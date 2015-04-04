@@ -48,7 +48,8 @@ module.exports = function(Meta) {
 				'public/src/variables.js',
 				'public/src/widgets.js',
 				'./node_modules/nodebb-templatist/client.js',
-				'./node_modules/nodebb-templatist-tpl/client.js'
+				'./node_modules/nodebb-templatist-tpl/client.js',
+				'./node_modules/nodebb-templatist-jade/client.js'
 			],
 			rjs: []
 		}

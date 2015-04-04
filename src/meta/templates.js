@@ -16,6 +16,7 @@ var mkdirp = require('mkdirp'),
 	Templates = {};
 
 require('nodebb-templatist-tpl')(templatist, nconf.get('views_dir'));
+require('nodebb-templatist-jade')(templatist, nconf.get('views_dir'));
 
 Templates.compile = function(callback) {
 	var fromFile = nconf.get('from-file') || '';
