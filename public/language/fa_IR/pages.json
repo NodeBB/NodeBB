@@ -5,16 +5,17 @@
     "recent": "جستارهای تازه",
     "users": "کاربران نام‌نویسی شده",
     "notifications": "آگاه‌سازی‌ها",
-    "tags": "Topics tagged under \"%1\"",
+    "tags": "Tags",
+    "tag": "Topics tagged under \"%1\"",
     "user.edit": "ویرایش \"%1\"",
-    "user.following": "%1 کاربر دنبال می‌کنند",
+    "user.following": "کاربرانی که %1 دنبال می‌کند",
     "user.followers": "کاربرانی که %1 را دنبال می‌کنند",
     "user.posts": "دیدگاه‌های %1",
     "user.topics": "%1 این جستار را ساخت.",
-    "user.groups": "%1's Groups",
+    "user.groups": "گروه های %1",
     "user.favourites": "دیدگاه‌های پسندیدهٔ %1",
     "user.settings": "تنظیمات کاربر",
-    "user.watched": "Topics watched by %1",
-    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
-    "maintenance.messageIntro": "Additionally, the administrator has left this message:"
+    "user.watched": "جستارهای پاییده شده توسط %1",
+    "maintenance.text": "1% در حال حاضر تحت تعمیر و نگهدارییست. لطفا زمان دیگری مراجعه کنید.",
+    "maintenance.messageIntro": "علاوه بر این، مدیر این پیام را گذاشته است:"
 }

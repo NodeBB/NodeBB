@@ -12,11 +12,11 @@
     "chat.message-history": "Sõnumite ajalugu",
     "chat.pop-out": "Pop-out vestlus",
     "chat.maximize": "Suurenda",
-    "chat.seven_days": "7 Days",
-    "chat.thirty_days": "30 Days",
-    "chat.three_months": "3 Months",
+    "chat.seven_days": "7 Päeva",
+    "chat.thirty_days": "30 Päeva",
+    "chat.three_months": "3 Kuud",
     "composer.user_said_in": "%1 ütles %2:",
     "composer.user_said": "%1 ütles:",
     "composer.discard": "Oled kindel, et soovid selle postituse tühistada?",
-    "composer.submit_and_lock": "Submit and Lock"
+    "composer.submit_and_lock": "Kinnita ja Lukusta"
 }

@@ -12,7 +12,7 @@
     "notify_me": "Saa teateid uutest postitustest selles teemas",
     "quote": "Tsiteeri",
     "reply": "Vasta",
-    "guest-login-reply": "Log in to reply",
+    "guest-login-reply": "Logi sisse, et vastata",
     "edit": "Muuda",
     "delete": "Kustuta",
     "purge": "Kustuta",
@@ -75,7 +75,7 @@
     "fork_no_pids": "Sa ei ole postitusi valinud!",
     "fork_success": "Edukalt ''forkisid'' teema! Vajuta siia, et vaadata loodud teemat.",
     "composer.title_placeholder": "Sisesta teema pealkiri siia...",
-    "composer.handle_placeholder": "Name",
+    "composer.handle_placeholder": "Nimi",
     "composer.discard": "Katkesta",
     "composer.submit": "Postita",
     "composer.replying_to": "Vastad %1'le",
@@ -95,5 +95,5 @@
     "oldest_to_newest": "Vanematest uuemateni",
     "newest_to_oldest": "Uuematest vanemateni",
     "most_votes": "Kõige rohkem hääli",
-    "most_posts": "Most posts"
+    "most_posts": "Kõige rohkem postitusi"
 }
