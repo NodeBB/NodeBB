@@ -1,8 +1,8 @@
 {
-    "password-reset-requested": "Password Reset Requested - %1!",
-    "welcome-to": "Welcome to %1",
-    "greeting_no_name": "Hello",
-    "greeting_with_name": "Hello %1",
+    "password-reset-requested": "Parooli muutmise taotlus - %1!",
+    "welcome-to": "Tere tulemast %1",
+    "greeting_no_name": "Tere",
+    "greeting_with_name": "Tere %1",
     "welcome.text1": "Thank you for registering with %1!",
     "welcome.text2": "To fully activate your account, we need to verify that you own the email address you registered with.",
     "welcome.cta": "Click here to confirm your email address",

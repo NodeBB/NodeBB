@@ -114,6 +114,8 @@
 	}
 
 	function selectMenuItem(url) {
+		url = url.replace(/\/\d+$/, '');
+
 		$('#main-menu .nav-list > li').removeClass('active').each(function() {
 			var menu = $(this),
 				category = menu.parents('.sidebar-nav'),

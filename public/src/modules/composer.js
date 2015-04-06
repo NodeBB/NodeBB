@@ -37,7 +37,7 @@ define('composer', [
 					if (confirm) {
 						discard(composer.active);
 					} else {
-						history.pushState({}, '',  '#compose');
+						history.pushState({}, '');
 					}
 				});
 			});
@@ -48,7 +48,15 @@ define('composer', [
 		localStorage.removeItem('category:' + data.data.cid + ':bookmark');
 		localStorage.removeItem('category:' + data.data.cid + ':bookmark:clicked');
 		ajaxify.go('topic/' + data.data.slug);
+		removeComposerHistory();
 	});
+
+	function removeComposerHistory() {
+		var env = utils.findBootstrapEnvironment();
+		if (env === 'xs' || env ==='sm') {
+			history.back();
+		}
+	}
 
 	// Query server for formatting options
 	socket.emit('modules.composer.getFormattingOptions', function(err, options) {
@@ -118,7 +126,7 @@ define('composer', [
 
 		var env = utils.findBootstrapEnvironment();
 		if (env === 'xs' || env ==='sm') {
-			history.pushState({}, '',  '#compose');
+			history.pushState({}, '');
 		}
 	}
 
@@ -354,6 +362,7 @@ define('composer', [
 
 			postContainer.find('.composer-discard').on('click', function() {
 				if (!composer.posts[post_uuid].modified) {
+					removeComposerHistory();
 					discard(post_uuid);
 					return;
 				}
@@ -361,6 +370,7 @@ define('composer', [
 				translator.translate('[[modules:composer.discard]]', function(translated) {
 					bootbox.confirm(translated, function(confirm) {
 						if (confirm) {
+							removeComposerHistory();
 							discard(post_uuid);
 						}
 						btn.prop('disabled', false);
@@ -559,6 +569,7 @@ define('composer', [
 
 
 			$('html').removeClass('composing mobile');
+
 		}
 	}
 

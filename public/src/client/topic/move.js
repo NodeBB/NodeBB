@@ -78,7 +78,7 @@ define('forum/topic/move', function() {
 			modal.modal('hide');
 			$('#move_thread_commit').prop('disabled', false);
 
-			if(err) {
+			if (err) {
 				return app.alertError(err.message);
 			}
 

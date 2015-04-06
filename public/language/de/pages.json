@@ -5,7 +5,8 @@
     "recent": "Neueste Themen",
     "users": "Registrierte User",
     "notifications": "Benachrichtigungen",
-    "tags": "Themen markiert unter \"%1\"",
+    "tags": "Tags",
+    "tag": "Topics tagged under \"%1\"",
     "user.edit": "Bearbeite \"%1\"",
     "user.following": "Nutzer, die %1 folgt",
     "user.followers": "Nutzer, die %1 folgen",
@@ -14,7 +15,7 @@
     "user.groups": "%1's Gruppen",
     "user.favourites": "Von %1 favorisierte Beiträge",
     "user.settings": "Benutzer-Einstellungen",
-    "user.watched": "Topics watched by %1",
+    "user.watched": "Themen angeschaut von %1",
     "maintenance.text": "%1 befindet sich derzeit in der Wartung. Bitte komm später wieder.",
     "maintenance.messageIntro": "Zusätzlich hat der Administrator diese Nachricht hinterlassen:"
 }

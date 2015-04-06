@@ -32,6 +32,12 @@ var app,
 middleware.authenticate = function(req, res, next) {
 	if (req.user) {
 		return next();
+	} else if (plugins.hasListeners('action:middleware.authenticate')) {
+		return plugins.fireHook('action:middleware.authenticate', {
+			req: req,
+			res: res,
+			next: next
+		});
 	}
 
 	controllers.helpers.notAllowed(req, res);
@@ -124,29 +130,31 @@ middleware.checkGlobalPrivacySettings = function(req, res, next) {
 
 middleware.checkAccountPermissions = function(req, res, next) {
 	// This middleware ensures that only the requested user and admins can pass
-	if (!req.uid) {
-		return controllers.helpers.notAllowed(req, res);
-	}
-
-	user.getUidByUserslug(req.params.userslug, function (err, uid) {
+	middleware.authenticate(req, res, function(err) {
 		if (err) {
 			return next(err);
 		}
 
-		if (!uid) {
-			return controllers.helpers.notFound(req, res);
-		}
-
-		if (parseInt(uid, 10) === req.uid) {
-			return next();
-		}
-
-		user.isAdministrator(req.uid, function(err, isAdmin) {
-			if (err || isAdmin) {
+		user.getUidByUserslug(req.params.userslug, function (err, uid) {
+			if (err) {
 				return next(err);
 			}
 
-			controllers.helpers.notAllowed(req, res);
+			if (!uid) {
+				return controllers.helpers.notFound(req, res);
+			}
+
+			if (parseInt(uid, 10) === req.uid) {
+				return next();
+			}
+
+			user.isAdministrator(req.uid, function(err, isAdmin) {
+				if (err || isAdmin) {
+					return next(err);
+				}
+
+				controllers.helpers.notAllowed(req, res);
+			});
 		});
 	});
 };

@@ -30,12 +30,7 @@ define('forum/topic', [
 	});
 
 	Topic.init = function() {
-		var tid = ajaxify.variables.get('topic_id'),
-			thread_state = {
-				locked: ajaxify.variables.get('locked'),
-				deleted: ajaxify.variables.get('deleted'),
-				pinned: ajaxify.variables.get('pinned')
-			};
+		var tid = ajaxify.variables.get('topic_id');
 
 		$(window).trigger('action:topic.loading');
 
@@ -43,8 +38,8 @@ define('forum/topic', [
 
 		posts.processPage($('.topic'));
 
-		postTools.init(tid, thread_state);
-		threadTools.init(tid, thread_state);
+		postTools.init(tid);
+		threadTools.init(tid);
 		events.init();
 
 		sort.handleSort('topicPostSort', 'user.setTopicSort', 'topic/' + ajaxify.variables.get('topic_slug'));

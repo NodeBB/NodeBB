@@ -27,6 +27,7 @@
     "chat": "Chat",
     "follow": "Seguir",
     "unfollow": "Deixar de Seguir",
+    "more": "More",
     "profile_update_success": "O Perfil foi atualizado com sucesso!",
     "change_picture": "Alterar Foto",
     "edit": "Editar",
@@ -60,7 +61,7 @@
     "digest_monthly": "Mensalmente",
     "send_chat_notifications": "Enviar-me um email se uma nova mensagem de chat chegar quando eu não estiver online.",
     "send_post_notifications": "Enviar um email quando respostas forem dadas à tópicos que eu assino",
-    "settings-require-reload": "Some setting changes require a reload. Click here to reload the page.",
+    "settings-require-reload": "Algumas mudanças de configuração exigem atualizar o navegador. Clique aqui para atualizar a página.",
     "has_no_follower": "Este usuário não possui seguidores :(",
     "follows_no_one": "Este usuário não está seguindo ninguém :(",
     "has_no_posts": "Este usuário não postou nada ainda.",
@@ -78,5 +79,5 @@
     "topic_search_help": "Se habilitado, a pesquisa dentro de tópico irá substituir o funcionamento padrão de pesquisa de página do navegador e permitir que você pesquise pelo tópico todo, ao invés de apenas o que é mostrado na tela.",
     "follow_topics_you_reply_to": "Seguir tópicos que você responde.",
     "follow_topics_you_create": "Seguir tópicos que você cria.",
-    "grouptitle": "Select the group title you would like to display"
+    "grouptitle": "Escolha o título do grupo que você deseja exibir"
 }
