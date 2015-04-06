@@ -47,7 +47,7 @@ define('forum/category', [
 			navigator.init('[component="category/topic"]', ajaxify.variables.get('topic_count'), Category.toTop, Category.toBottom, Category.navigatorCallback);
 		}
 
-		$('[component="category"]').on('click', '[component="post/header"]', function() {
+		$('[component="category"]').on('click', '[component="topic/header"]', function() {
 			var clickedIndex = $(this).parents('[data-index]').attr('data-index');
 			$('[component="category/topic"]').each(function(index, el) {
 				if ($(el).offset().top - $(window).scrollTop() > 0) {
@@ -184,8 +184,11 @@ define('forum/category', [
 
 		$(window).trigger('filter:categories.new_topic', topic);
 
+		var editable = !!$('.thread-tools').length;
+
 		templates.parse('category', 'topics', {
-			privileges: {editable: !!$('.thread-tools').length},
+			privileges: {editable: editable},
+			showSelect: editable,
 			topics: [topic]
 		}, function(html) {
 			translator.translate(html, function(translatedHTML) {
@@ -275,6 +278,8 @@ define('forum/category', [
 		if(!data.topics.length) {
 			return;
 		}
+
+		data.showSelect = data.privileges.editable;
 
 		findInsertionPoint();
 

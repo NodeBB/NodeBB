@@ -18,7 +18,7 @@
     "username-taken": "Nom d’utilisateur déjà utilisé",
     "email-taken": "Email déjà utilisé",
     "email-not-confirmed": "Votre adresse email n'est pas confirmée, cliquez ici pour la valider.",
-    "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
+    "email-not-confirmed-chat": "Il ne vous est pas possible d'utiliser le chat tant que votre adresse email n'a pas été vérifiée. Veuillez cliquer ici pour confirmer votre adresse email.",
     "no-email-to-confirm": "Ce forum requiert une vérification de votre adresse email. Veuillez cliquer ici pour entrer une adresse.",
     "email-confirm-failed": "Votre adresse email n'a pas pu être vérifiée. Veuillez ré-essayer plus tard.",
     "username-too-short": "Nom d'utilisateur trop court",

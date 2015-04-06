@@ -204,6 +204,7 @@ SocketTopics.markAsUnreadForAll = function(socket, tids, callback) {
 				return callback(err);
 			}
 			topics.pushUnreadCount(socket.uid);
+			callback();
 		});
 	});
 };

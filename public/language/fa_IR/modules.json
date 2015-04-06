@@ -10,13 +10,13 @@
     "chat.recent-chats": "گفتگوهای اخیر",
     "chat.contacts": "تماس‌ها",
     "chat.message-history": "تاریخچه پیام‌ها",
-    "chat.pop-out": "Pop out chat",
+    "chat.pop-out": "پاپ آپ گفتگو",
     "chat.maximize": "تمام صفحه",
-    "chat.seven_days": "7 Days",
-    "chat.thirty_days": "30 Days",
-    "chat.three_months": "3 Months",
+    "chat.seven_days": "7 روز",
+    "chat.thirty_days": "30 روز",
+    "chat.three_months": "3 ماه",
     "composer.user_said_in": "%1 در %2 گفته است:",
     "composer.user_said": "%1 گفته است:",
     "composer.discard": "آیا از دور انداختن این دیدگاه اطمینان دارید؟",
-    "composer.submit_and_lock": "Submit and Lock"
+    "composer.submit_and_lock": "ارسال و قفل"
 }

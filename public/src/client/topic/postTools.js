@@ -7,10 +7,10 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	var PostTools = {},
 		topicName;
 
-	PostTools.init = function(tid, threadState) {
+	PostTools.init = function(tid) {
 		topicName = ajaxify.variables.get('topic_name');
 
-		addPostHandlers(tid, threadState);
+		addPostHandlers(tid);
 
 		share.addShareHandlers(topicName);
 
@@ -23,15 +23,15 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		postEl.find('[component="post/quote"], [component="post/favourite"], [component="post/reply"], [component="post/flag"], [component="user/chat"]')
 			.toggleClass('hidden', isDeleted);
 
+		postEl.find('[component="post/delete"]').toggleClass('hidden', isDeleted);
+		postEl.find('[component="post/restore"]').toggleClass('hidden', !isDeleted);
 		postEl.find('[component="post/purge"]').toggleClass('hidden', !isDeleted);
-		postEl.find('[component="post/delete"] .i').toggleClass('fa-trash-o', !isDeleted).toggleClass('fa-history', isDeleted);
-		postEl.find('[component="post/delete"] span').translateHtml(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]');
 	};
 
 	PostTools.updatePostCount = function() {
 		socket.emit('topics.postcount', ajaxify.variables.get('topic_id'), function(err, postCount) {
 			if (!err) {
-				var postCountEl = $('.topic-post-count');
+				var postCountEl = components.get('topic/post-count');
 				postCountEl.html(postCount).attr('title', postCount);
 				utils.makeNumbersHumanReadable(postCountEl);
 				navigator.setCount(postCount);
@@ -71,29 +71,19 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		}
 	}
 
-	function addPostHandlers(tid, threadState) {
-		function canPost() {
-			return !threadState.locked || app.user.isAdmin;
-		}
-
+	function addPostHandlers(tid) {
 		var postContainer = components.get('topic');
 
 		postContainer.on('click', '[component="post/quote"]', function() {
-			if (canPost()) {
-				onQuoteClicked($(this), tid, topicName);
-			}
+			onQuoteClicked($(this), tid, topicName);
 		});
 
 		postContainer.on('click', '[component="post/reply"]', function() {
-			if (canPost()) {
-				onReplyClicked($(this), tid, topicName);
-			}
+			onReplyClicked($(this), tid, topicName);
 		});
 
 		components.get('topic/reply').on('click', function() {
-			if (canPost()) {
-				onReplyClicked($(this), tid, topicName);
-			}
+			onReplyClicked($(this), tid, topicName);
 		});
 
 		postContainer.on('click', '[component="post/favourite"]', function() {
@@ -124,7 +114,11 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		});
 
 		postContainer.on('click', '[component="post/delete"]', function(e) {
-			deletePost($(this), tid);
+			togglePostDelete($(this), tid);
+		});
+
+		postContainer.on('click', '[component="post/restore"]', function(e) {
+			togglePostDelete($(this), tid);
 		});
 
 		postContainer.on('click', '[component="post/purge"]', function(e) {
@@ -135,7 +129,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			openMovePostModal($(this));
 		});
 
-		postContainer.on('click', '[component="user/chat"]', function(e) {
+		postContainer.on('click', '[component="post/chat"]', function(e) {
 			openChat($(this));
 		});
 	}
@@ -246,7 +240,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 	function getUserName(button) {
 		var username = '',
-			post = button.parents('li[data-pid]');
+			post = button.parents('[data-pid]');
 
 		if (post.length) {
 			username = post.attr('data-username').replace(/\s/g, '-');
@@ -258,7 +252,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		return username;
 	}
 
-	function deletePost(button, tid) {
+	function togglePostDelete(button, tid) {
 		var pid = getData(button, 'data-pid'),
 			postEl = components.get('post', 'pid', pid),
 			action = !postEl.hasClass('deleted') ? 'delete' : 'restore';
@@ -281,7 +275,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 					pid: pid,
 					tid: tid
 				}, function(err) {
-					if(err) {
+					if (err) {
 						app.alertError(err.message);
 					}
 				});
@@ -325,7 +319,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		socket.emit('topics.movePost', {pid: pid, tid: tid}, function(err) {
 			$('#move-post-modal').addClass('hide');
 
-			if(err) {
+			if (err) {
 				$('#topicId').val('');
 				return app.alertError(err.message);
 			}
@@ -343,21 +337,22 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	function flagPost(pid) {
 		translator.translate('[[topic:flag_confirm]]', function(message) {
 			bootbox.confirm(message, function(confirm) {
-				if (confirm) {
-					socket.emit('posts.flag', pid, function(err) {
-						if(err) {
-							return app.alertError(err.message);
-						}
-
-						app.alertSuccess('[[topic:flag_success]]');
-					});
+				if (!confirm) {
+					return;
 				}
+				socket.emit('posts.flag', pid, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+
+					app.alertSuccess('[[topic:flag_success]]');
+				});
 			});
 		});
 	}
 
 	function openChat(button) {
-		var post = button.parents('data-pid');
+		var post = button.parents('[data-pid]');
 
 		app.openChat(post.attr('data-username'), post.attr('data-uid'));
 		button.parents('.btn-group').find('.dropdown-toggle').click();

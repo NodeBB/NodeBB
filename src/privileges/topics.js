@@ -16,9 +16,11 @@ module.exports = function(privileges) {
 	privileges.topics = {};
 
 	privileges.topics.get = function(tid, uid, callback) {
+		var topic;
 		async.waterfall([
-			async.apply(topics.getTopicFields, tid, ['cid', 'uid']),
-			function(topic, next) {
+			async.apply(topics.getTopicFields, tid, ['cid', 'uid', 'locked']),
+			function(_topic, next) {
+				topic = _topic;
 				async.parallel({
 					'topics:reply': async.apply(helpers.isUserAllowedTo, 'topics:reply', uid, [topic.cid]),
 					read: async.apply(helpers.isUserAllowedTo, 'read', uid, [topic.cid]),
@@ -36,12 +38,13 @@ module.exports = function(privileges) {
 			}
 
 			var disabled = parseInt(results.disabled, 10) === 1;
+			var locked = parseInt(topic.locked, 10) === 1;
 			var	isAdminOrMod = results.isAdministrator || results.isModerator;
 			var editable = isAdminOrMod;
 			var deletable = isAdminOrMod || results.isOwner;
 
 			plugins.fireHook('filter:privileges.topics.get', {
-				'topics:reply': results['topics:reply'][0] || isAdminOrMod,
+				'topics:reply': (results['topics:reply'][0] && !locked) || isAdminOrMod,
 				read: results.read[0] || isAdminOrMod,
 				view_thread_tools: editable || deletable,
 				editable: editable,

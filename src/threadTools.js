@@ -47,6 +47,7 @@ var async = require('async'),
 					tid: tid,
 					cid: topicData.cid,
 					isDelete: isDelete,
+					isLocked: isDelete,
 					uid: uid
 				};
 
@@ -193,6 +194,7 @@ var async = require('async'),
 					toCid: cid,
 					uid: uid
 				});
+				callback();
 			});
 		});
 	};

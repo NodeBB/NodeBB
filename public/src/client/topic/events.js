@@ -168,22 +168,16 @@ define('forum/topic/events', [
 	}
 
 	function togglePostFavourite(data) {
-		var favBtn = $('[data-pid="' + data.post.pid + '"] .favourite');
+		var favBtn = $('[data-pid="' + data.post.pid + '"] [component="post/favourite"]');
+
 		if (!favBtn.length) {
 			return;
 		}
 
-		favBtn.addClass('btn-warning')
-			.attr('data-favourited', data.isFavourited);
+		favBtn.attr('data-favourited', data.isFavourited);
 
-		var icon = favBtn.find('i');
-		var className = icon.attr('class');
-		if (!className) {
-			return;
-		}
-		if (data.isFavourited ? className.indexOf('-o') !== -1 : className.indexOf('-o') === -1) {
-			icon.attr('class', data.isFavourited ? className.replace('-o', '') : className + '-o');
-		}
+		favBtn.find('[component="post/favourite/on"]').toggleClass('hidden', !data.isFavourited);
+		favBtn.find('[component="post/favourite/off"]').toggleClass('hidden', data.isFavourited);
 	}
 
 	function togglePostVote(data) {
@@ -191,7 +185,6 @@ define('forum/topic/events', [
 		post.find('[component="post/upvote"]').toggleClass('upvoted', data.upvote);
 		post.find('[component="post/downvote"]').toggleClass('downvoted', data.downvote);
 	}
-
 
 	function onNewNotification(data) {
 		var tid = ajaxify.variables.get('topic_id');

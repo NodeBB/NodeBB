@@ -5,7 +5,8 @@
     "recent": "最新主题",
     "users": "已注册用户",
     "notifications": "提醒",
-    "tags": "话题为 \"%1\" 的主题",
+    "tags": "Tags",
+    "tag": "Topics tagged under \"%1\"",
     "user.edit": "正在编辑 \"%1\"",
     "user.following": "%1 关注",
     "user.followers": "关注 %1 的人",
@@ -14,7 +15,7 @@
     "user.groups": "%1 的用户组",
     "user.favourites": "%1 收藏的帖子",
     "user.settings": "用户设置",
-    "user.watched": "Topics watched by %1",
+    "user.watched": "主题已被 %1 关注",
     "maintenance.text": "%1 正在进行维护。请稍后再来。",
     "maintenance.messageIntro": "此外，管理员留下的消息："
 }

@@ -5,8 +5,8 @@
     "search": "جستجو",
     "enter_username": "یک نام کاربری برای جستجو وارد کنید",
     "load_more": "بارگذاری بیش‌تر",
-    "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
-    "filter-by": "Filter By",
-    "online-only": "Online only",
-    "picture-only": "Picture only"
+    "users-found-search-took": "%1 کاربر(ها) یافت شد! جستجو %2 ثانیه طولید",
+    "filter-by": "غربال با",
+    "online-only": "فقط آنلاین",
+    "picture-only": "عکس فقط"
 }
