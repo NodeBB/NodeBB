@@ -432,7 +432,7 @@ var	async = require('async'),
 				}
 
 				var isMembers = checks.user.map(function(isMember, idx) {
-						return isMember || checks.group[idx]
+						return isMember || checks.group[idx];
 					}),
 					map = {};
 
@@ -451,7 +451,7 @@ var	async = require('async'),
 					async.apply(groups.isMembers, uid, 'cid:' + cid + ':privileges:groups:moderate')
 				], function(err, checks) {
 					var isModerator = checks[0].map(function(isMember, idx) {
-							return isMember || checks[1][idx]
+							return isMember || checks[1][idx];
 						});
 					filterIsModerator(null, isModerator);
 				});
