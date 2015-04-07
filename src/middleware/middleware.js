@@ -48,14 +48,19 @@ middleware.applyCSRF = csrf();
 middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login');
 
 middleware.pageView = function(req, res, next) {
-	if (req.user) {
-		user.updateLastOnlineTime(req.user.uid);
-		user.updateOnlineUsers(req.user.uid);
-	}
-
 	analytics.pageView(req.ip);
 
-	next();
+	if (req.user) {
+		user.updateLastOnlineTime(req.user.uid);
+		if (req.path.startsWith('/api/users') || req.path.startsWith('/users')) {
+			user.updateOnlineUsers(req.user.uid, next);
+		} else {
+			user.updateOnlineUsers(req.user.uid);
+			next();
+		}
+	} else {
+		next();
+	}
 };
 
 middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
