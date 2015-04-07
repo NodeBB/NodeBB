@@ -230,7 +230,7 @@ Loader.notifyWorkers = function(msg, worker_pid) {
 	});
 };
 
-nconf.argv().file({
+nconf.argv().env().file({
 	file: path.join(__dirname, '/config.json')
 });
 
