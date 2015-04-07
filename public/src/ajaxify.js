@@ -277,11 +277,10 @@ $(document).ready(function() {
 
 	function initializeTemplatist() {
 		require(['nodebb-templatist'], function(templatist) {
-			$(window).trigger('action:init-templatist', {relative_path: RELATIVE_PATH, cache_buster: config['cache-buster']});
-			$.getJSON(RELATIVE_PATH + '/templates/templateTypesCache.json',
-					 function(types) {
-						 templatist.updateTypesCache(types);
-					 });
+			$(window).trigger('action:init-templatist', {templatist: templatist, relative_path: RELATIVE_PATH, cache_buster: config['cache-buster']});
+			$.getJSON(RELATIVE_PATH + '/templates/templateTypesCache.json', function(types) {
+				templatist.updateTypesCache(types);
+			});
 		});
 	}
 
