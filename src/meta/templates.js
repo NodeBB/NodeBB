@@ -15,9 +15,6 @@ var mkdirp = require('mkdirp'),
 
 	Templates = {};
 
-require('nodebb-templatist-tpl')(templatist, nconf.get('views_dir'));
-require('nodebb-templatist-jade')(templatist, nconf.get('views_dir'));
-
 Templates.compile = function(callback) {
 	var fromFile = nconf.get('from-file') || '';
 
@@ -138,6 +135,24 @@ Templates.compile = function(callback) {
 	});
 };
 
+function loadEngines() {
+	var enginesPath = path.join(__dirname, '../../node_modules'),
+		dirs = fs.readdirSync(enginesPath);
+
+	dirs.filter(function(dir) {
+		return dir.startsWith('nodebb-templatist-');
+	}).map(function(dir) {
+		return path.join(enginesPath, dir);
+	}).forEach(function(dir) {
+		try {
+			require(dir)(templatist, nconf.get('views_dir'));
+			winston.verbose('[meta/templates] Loaded templatist engine ' + path.basename(dir));
+		} catch (e) {
+			winston.warn('[meta/templates] Error loading ' + path.basename(dir));
+		}
+	});
+};
+
 var searchIndex = {};
 
 function addIndex(path, file) {
@@ -165,6 +180,9 @@ function loadTypeIndex() {
 	var types = JSON.parse(fs.readFileSync(path.join(viewsPath, '/templateTypesCache.json')));
 	templatist.updateTypesCache(types);
 }
+
 emitter.on('templates:compiled', loadTypeIndex);
+
+loadEngines();
 
 module.exports = Templates;
