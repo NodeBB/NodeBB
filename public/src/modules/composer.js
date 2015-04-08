@@ -439,13 +439,11 @@ define('composer', [
 	}
 
 	function focusElements(postContainer) {
-		var title = postContainer.find('.title'),
-			bodyEl = postContainer.find('textarea');
-
-		if (title.is(':disabled')) {
-			bodyEl.focus().putCursorAtEnd();
-		} else {
+		var title = postContainer.find('input.title');
+		if (title.length) {
 			title.focus();
+		} else {
+			postContainer.find('textarea').focus().putCursorAtEnd();
 		}
 	}
 
