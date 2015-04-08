@@ -173,16 +173,13 @@ define('forum/users', ['translator'], function(translator) {
 
 	function onUserStatusChange(data) {
 		var section = getActiveSection();
+		
 		if ((section.startsWith('online') || section.startsWith('users'))) {
 			updateUser(data);
 		}
 	}
 
 	function updateUser(data) {
-		if (data.status === 'offline') {
-			return;
-		}
-
 		app.updateUserStatus($('#users-container [data-uid="' + data.uid +'"] [component="user/status"]'), data.status);
 	}
 
