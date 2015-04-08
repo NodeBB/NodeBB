@@ -47,9 +47,7 @@ module.exports = function(Meta) {
 				'public/src/overrides.js',
 				'public/src/variables.js',
 				'public/src/widgets.js',
-				'./node_modules/nodebb-templatist/client.js',
-				'./node_modules/nodebb-templatist-tpl/client.js',
-				'./node_modules/nodebb-templatist-jade/client.js'
+				'./node_modules/nodebb-templatist/client.js'
 			],
 			rjs: []
 		}
@@ -89,6 +87,7 @@ module.exports = function(Meta) {
 		async.parallel([
 			async.apply(Meta.js.loadRJS),	// Require.js scripts
 			async.apply(getPluginScripts),	// plugin scripts via filter:scripts.get
+			async.apply(getTemplatistScripts),
 			function(next) {	// client scripts via "scripts" config in plugin.json
 				var pluginsScripts = [],
 					pluginDirectories = [],
@@ -121,7 +120,7 @@ module.exports = function(Meta) {
 
 			// Convert all scripts to paths relative to the NodeBB base directory
 			var basePath = path.resolve(__dirname, '../..');
-			Meta.js.scripts.all = Meta.js.scripts.base.concat(Meta.js.scripts.rjs, Meta.js.scripts.plugin, Meta.js.scripts.client).map(function(script) {
+			Meta.js.scripts.all = Meta.js.scripts.base.concat(Meta.js.scripts.templatist, Meta.js.scripts.rjs, Meta.js.scripts.plugin, Meta.js.scripts.client).map(function(script) {
 				return path.relative(basePath, script).replace(/\\/g, '/');
 			});
 			callback();
@@ -271,6 +270,18 @@ module.exports = function(Meta) {
 				});
 
 			Meta.js.scripts.plugin = jsPaths.filter(Boolean);
+			callback();
+		});
+	}
+
+	function getTemplatistScripts(callback) {
+		var enginesPath = path.join(__dirname, '../../node_modules');
+		fs.readdir(enginesPath, function(err, dirs) {
+			Meta.js.scripts.templatist = dirs.filter(function(dir) {
+				return dir.startsWith('nodebb-templatist-');
+			}).map(function(dir) {
+				return path.join(enginesPath, dir, 'client.js');
+			});
 			callback();
 		});
 	}
