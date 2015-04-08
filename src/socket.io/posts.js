@@ -276,13 +276,13 @@ SocketPosts.getRawPost = function(socket, pid, callback) {
 };
 
 SocketPosts.edit = function(socket, data, callback) {
-	if(!socket.uid) {
+	if (!socket.uid) {
 		return callback(new Error('[[error:not-logged-in]]'));
-	} else if(!data || !data.pid || !data.title || !data.content) {
+	} else if (!data || !data.pid || !data.content) {
 		return callback(new Error('[[error:invalid-data]]'));
-	} else if (!data.title || data.title.length < parseInt(meta.config.minimumTitleLength, 10)) {
+	} else if (data.title && data.title.length < parseInt(meta.config.minimumTitleLength, 10)) {
 		return callback(new Error('[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]'));
-	} else if (data.title.length > parseInt(meta.config.maximumTitleLength, 10)) {
+	} else if (data.title && data.title.length > parseInt(meta.config.maximumTitleLength, 10)) {
 		return callback(new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]'));
 	} else if (!data.content || data.content.length < parseInt(meta.config.minimumPostLength, 10)) {
 		return callback(new Error('[[error:content-too-short, ' + meta.config.minimumPostLength + ']]'));
