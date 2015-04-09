@@ -363,8 +363,20 @@ function sortPosts(posts, data) {
 }
 
 function getSearchCids(data, callback) {
-	if (!Array.isArray(data.categories) || !data.categories.length || data.categories.indexOf('all') !== -1) {
+	if (!Array.isArray(data.categories) || !data.categories.length) {
 		return callback(null, []);
+	}
+
+	if (data.categories.indexOf('all') !== -1) {
+		async.waterfall([
+			function(next) {
+				db.getSortedSetRange('categories:cid', 0, -1, next);
+			},
+			function(cids, next) {
+				privileges.categories.filterCids('read', cids, data.uid, next);
+			}
+		], callback);
+		return;
 	}
 
 	async.parallel({
