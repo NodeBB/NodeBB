@@ -306,16 +306,41 @@ SocketPosts.edit = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		websockets.in('topic_' + results.topic.tid).emit('event:post_edited', {
+		var result = {
 			pid: data.pid,
 			handle: data.handle,
 			title: results.topic.title,
 			isMainPost: results.topic.isMainPost,
 			tags: results.topic.tags,
 			content: results.content
-		});
+		};
 
+		if (parseInt(results.postData.deleted) !== 1) {
+			websockets.in('topic_' + results.topic.tid).emit('event:post_edited', result);
+			callback();
+			return;
+		}
+
+		socket.emit('event:post_edited', result);
 		callback();
+
+		async.parallel({
+			admins: async.apply(groups.getMembers, 'administrators', 0, -1),
+			moderators: async.apply(groups.getMembers, 'cid:' + results.topic.cid + ':privileges:mods', 0, -1),
+			uidsInTopic: async.apply(websockets.getUidsInRoom, 'topic_' + results.topic.tid)
+		}, function(err, results) {
+			if (err) {
+				return winston.error(err);
+			}
+
+			var uids = results.uidsInTopic.filter(function(uid) {
+				return results.admins.indexOf(uid) !== -1 || results.moderators.indexOf(uid) !== -1;
+			});
+
+			uids.forEach(function(uid) {
+				websockets.in('uid_' + uid).emit('event:post_edited', result);
+			});
+		});
 	});
 };
 

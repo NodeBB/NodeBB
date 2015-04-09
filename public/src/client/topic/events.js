@@ -100,7 +100,7 @@ define('forum/topic/events', [
 		var editedPostEl = components.get('post/content', data.pid),
 			topicTitle = components.get('topic/title');
 
-		if (topicTitle.length) {
+		if (topicTitle.length && data.title) {
 			topicTitle.fadeOut(250, function() {
 				topicTitle.html(data.title).fadeIn(250);
 			});
