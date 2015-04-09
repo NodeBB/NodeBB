@@ -15,8 +15,12 @@
     "chat.seven_days": "7 ימים",
     "chat.thirty_days": "30 ימים",
     "chat.three_months": "3 חודשים",
+    "composer.compose": "Compose",
+    "composer.show_preview": "Show Preview",
+    "composer.hide_preview": "Hide Preview",
     "composer.user_said_in": "%1 אמר ב%2:",
     "composer.user_said": "%1 אמר:",
     "composer.discard": "האם למחוק פוסט זה?",
-    "composer.submit_and_lock": "Submit and Lock"
+    "composer.submit_and_lock": "Submit and Lock",
+    "composer.toggle_dropdown": "Toggle Dropdown"
 }
