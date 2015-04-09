@@ -42,7 +42,7 @@ function topicRoutes(app, middleware, controllers) {
 	app.get('/api/topic/teaser/:topic_id', controllers.topics.teaser);
 
 	setupPageRoute(app, '/topic/:topic_id/:slug/:post_index?', middleware, [], controllers.topics.get);
-	setupPageRoute(app, '/topic/:topic_id/:slug?', middleware, [middleware.addSlug], controllers.topics.get);
+	setupPageRoute(app, '/topic/:topic_id/:slug?', middleware, [], controllers.topics.get);
 }
 
 function tagRoutes(app, middleware, controllers) {
@@ -58,7 +58,7 @@ function categoryRoutes(app, middleware, controllers) {
 	app.get('/api/unread/total', middleware.authenticate, controllers.categories.unreadTotal);
 
 	setupPageRoute(app, '/category/:category_id/:slug/:topic_index', middleware, [], controllers.categories.get);
-	setupPageRoute(app, '/category/:category_id/:slug?', middleware, [middleware.addSlug], controllers.categories.get);
+	setupPageRoute(app, '/category/:category_id/:slug?', middleware, [], controllers.categories.get);
 }
 
 function accountRoutes(app, middleware, controllers) {

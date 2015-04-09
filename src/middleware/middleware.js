@@ -84,27 +84,6 @@ middleware.redirectToLoginIfGuest = function(req, res, next) {
 	}
 };
 
-middleware.addSlug = function(req, res, next) {
-	function redirect(method, id, name) {
-		method(id, 'slug', function(err, slug) {
-			if (err || !slug || slug === id + '/') {
-				return next(err);
-			}
-
-			controllers.helpers.redirect(res, name + encodeURI(slug));
-		});
-	}
-
-	if (!req.params.slug) {
-		if (req.params.category_id) {
-			return redirect(categories.getCategoryField, req.params.category_id, '/category/');
-		} else if (req.params.topic_id) {
-			return redirect(topics.getTopicField, req.params.topic_id, '/topic/');
-		}
-	}
-	next();
-};
-
 middleware.validateFiles = function(req, res, next) {
 	if (!Array.isArray(req.files.files) || !req.files.files.length) {
 		return next(new Error(['[[error:invalid-files]]']));
