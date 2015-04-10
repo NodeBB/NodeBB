@@ -338,8 +338,10 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 
 			$('#pageViewsThisMonth').html(data.monthlyPageViews.thisMonth);
 			$('#pageViewsLastMonth').html(data.monthlyPageViews.lastMonth);
+			$('#pageViewsPastDay').html(data.pastDay);
 			utils.addCommasToNumbers($('#pageViewsThisMonth'));
 			utils.addCommasToNumbers($('#pageViewsLastMonth'));
+			utils.addCommasToNumbers($('#pageViewsPastDay'));
 		});
 	}
 

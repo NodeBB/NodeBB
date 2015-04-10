@@ -19,6 +19,10 @@
 					<div><strong id="pageViewsThisMonth"></strong></div>
 					<div>Page views This Month</div>
 				</div>
+				<div class="text-center pull-left monthly-pageviews">
+					<div><strong id="pageViewsPastDay"></strong></div>
+					<div>Page views in last 24 hours</div>
+				</div>
 			</div>
 		</div>
 

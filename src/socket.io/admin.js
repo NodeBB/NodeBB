@@ -234,7 +234,10 @@ SocketAdmin.analytics.get = function(socket, data, callback) {
 				monthlyPageViews: function(next) {
 					getMonthlyPageViews(next);
 				}
-			}, callback);
+			}, function(err, data) {
+				data.pastDay = data.pageviews.reduce(function(a, b) {return parseInt(a, 10) + parseInt(b, 10);});
+				callback(err, data);
+			});
 		}
 	} else {
 		callback(new Error('Invalid analytics call'));
