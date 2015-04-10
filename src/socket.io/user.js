@@ -29,6 +29,8 @@ SocketUser.deleteAccount = function(socket, data, callback) {
 			if (err || isAdmin) {
 				return callback(err || new Error('[[error:cant-delete-admin]]'));
 			}
+
+			socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
 			user.deleteAccount(socket.uid, callback);
 		});
 	}

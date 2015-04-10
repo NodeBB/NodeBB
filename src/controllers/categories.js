@@ -188,12 +188,16 @@ categoriesController.get = function(req, res, next) {
 				return helpers.notFound(req, res);
 			}
 
-			if (cid + '/' + req.params.slug !== results.categoryData.slug) {
+			if (req.params.slug && cid + '/' + req.params.slug !== results.categoryData.slug) {
 				return helpers.notFound(req, res);
 			}
 
 			if (!results.privileges.read) {
 				return helpers.notAllowed(req, res);
+			}
+
+			if (!req.params.slug && results.categoryData.slug && results.categoryData.slug !== cid + '/') {
+				return helpers.redirect(res, '/category/' + encodeURI(results.categoryData.slug));
 			}
 
 			var topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) - 1 : 0;

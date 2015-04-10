@@ -94,10 +94,17 @@ var cache = LRU({
 								tid: tid,
 								cid: results.cid,
 								uid: postData.uid,
-								mainPid: data.pid,
-								title: title,
-								slug: tid + '/' + utils.slugify(slug)
+								mainPid: data.pid
 							};
+							
+							if (title) {
+								topicData.title = title;
+							}
+							
+							if (slug){
+								topicData.slug = tid + '/' + utils.slugify(slug);
+							}
+							
 							if (options.topic_thumb) {
 								topicData.thumb = options.topic_thumb;
 							}

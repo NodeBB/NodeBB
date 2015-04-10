@@ -2,7 +2,11 @@
 /*global define*/
 
 define('admin/general/languages', ['admin/settings'], function(Settings) {
-	$(function() {
+	var Languages = {}
+
+	Languages.init = function() {
 		Settings.prepare();
-	});
+	};
+
+	return Languages;
 });

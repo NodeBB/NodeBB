@@ -69,18 +69,11 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 	}
 
 	function onUserStatusChange(data) {
-		var onlineStatus = $('.account-online-status');
-
-		if(parseInt(ajaxify.variables.get('theirid'), 10) !== parseInt(data.uid, 10)) {
+		if (parseInt(ajaxify.variables.get('theirid'), 10) !== parseInt(data.uid, 10)) {
 			return;
 		}
 
-		translator.translate('[[global:' + data.status + ']]', function(translated) {
-			onlineStatus.attr('class', 'account-online-status fa fa-circle status ' + data.status)
-				.attr('title', translated)
-				.attr('data-original-title', translated);
-		});
-
+		app.updateUserStatus($('.account [component="user/status"]'), data.status);
 	}
 
 	function loadMorePosts(direction) {

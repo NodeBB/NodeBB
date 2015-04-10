@@ -15,8 +15,12 @@
     "chat.seven_days": "7 Zile",
     "chat.thirty_days": "30 de zile",
     "chat.three_months": "3 Luni",
+    "composer.compose": "Compose",
+    "composer.show_preview": "Show Preview",
+    "composer.hide_preview": "Hide Preview",
     "composer.user_said_in": "%1 a spus în %2:",
     "composer.user_said": "%1 a spus:",
     "composer.discard": "Ești sigur că vrei să renunți la acest mesaj?",
-    "composer.submit_and_lock": "Submit and Lock"
+    "composer.submit_and_lock": "Submit and Lock",
+    "composer.toggle_dropdown": "Toggle Dropdown"
 }

@@ -285,9 +285,10 @@ define('composer', [
 		composer.bsEnvironment = utils.findBootstrapEnvironment();
 
 		var data = {
+			title: postData.title,
 			mobile: composer.bsEnvironment === 'xs' || composer.bsEnvironment === 'sm',
 			allowTopicsThumbnail: allowTopicsThumbnail,
-			showTags: isTopic || isMain,
+			isTopicOrMain: isTopic || isMain,
 			minimumTagLength: config.minimumTagLength,
 			maximumTagLength: config.maximumTagLength,
 			isTopic: isTopic,
@@ -316,8 +317,6 @@ define('composer', [
 			preview.handleToggler(postContainer);
 			tags.init(postContainer, composer.posts[post_uuid]);
 			categoryList.init(postContainer, composer.posts[post_uuid]);
-
-			updateTitle(postData, postContainer);
 
 			activate(post_uuid);
 			resize.reposition(postContainer);
@@ -431,27 +430,6 @@ define('composer', [
 		});
 	}
 
-	function updateTitle(postData, postContainer) {
-		var titleEl = postContainer.find('.title');
-
-		if (parseInt(postData.tid, 10) > 0) {
-			titleEl.translateVal('[[topic:composer.replying_to, "' + postData.title + '"]]');
-			titleEl.prop('disabled', true);
-		} else if (parseInt(postData.pid, 10) > 0) {
-			titleEl.val(postData.title);
-			titleEl.prop('disabled', true);
-			socket.emit('modules.composer.editCheck', postData.pid, function(err, editCheck) {
-				if (!err && editCheck.titleEditable) {
-					titleEl.prop('disabled', false);
-				}
-			});
-
-		} else {
-			titleEl.val(postData.title);
-			titleEl.prop('disabled', false);
-		}
-	}
-
 	function activate(post_uuid) {
 		if(composer.active && composer.active !== post_uuid) {
 			composer.minimize(composer.active);
@@ -461,13 +439,11 @@ define('composer', [
 	}
 
 	function focusElements(postContainer) {
-		var title = postContainer.find('.title'),
-			bodyEl = postContainer.find('textarea');
-
-		if (title.is(':disabled')) {
-			bodyEl.focus().putCursorAtEnd();
-		} else {
+		var title = postContainer.find('input.title');
+		if (title.length) {
 			title.focus();
+		} else {
+			postContainer.find('textarea').focus().putCursorAtEnd();
 		}
 	}
 
@@ -487,7 +463,7 @@ define('composer', [
 			thumbEl.val(thumbEl.val().trim());
 		}
 
-		var checkTitle = parseInt(postData.cid, 10) || parseInt(postData.pid, 10);
+		var checkTitle = (parseInt(postData.cid, 10) || parseInt(postData.pid, 10)) && postContainer.find('input.title').length;
 
 		if (uploads.inProgress[post_uuid] && uploads.inProgress[post_uuid].length) {
 			return composerAlert(post_uuid, '[[error:still-uploading]]');

@@ -36,41 +36,36 @@ var async = require('async'),
 	Posts.getPostsByPids = function(pids, uid, callback) {
 		var keys = [];
 
-		for(var x=0, numPids=pids.length; x<numPids; ++x) {
+		for (var x=0, numPids=pids.length; x<numPids; ++x) {
 			keys.push('post:' + pids[x]);
 		}
 
-		db.getObjects(keys, function(err, data) {
-			if(err) {
-				return callback(err);
+		async.waterfall([
+			function(next) {
+				db.getObjects(keys, next);
+			},
+			function(posts, next) {
+				async.map(posts, function(post, next) {
+					if (!post) {
+						return next();
+					}
+
+					post.relativeTime = utils.toISOString(post.timestamp);
+					post.relativeEditTime = parseInt(post.edited, 10) !== 0 ? utils.toISOString(post.edited) : '';
+					postTools.parsePost(post, next);
+				}, next);
+			},
+			function(posts, next) {
+				plugins.fireHook('filter:post.getPosts', {posts: posts, uid: uid}, next);
+			},
+			function(data, next) {
+				if (!data || !Array.isArray(data.posts)) {
+					return next(null, []);
+				}
+				data.posts = data.posts.filter(Boolean);
+				next(null, data.posts);
 			}
-
-			async.map(data, function(postData, next) {
-				if(!postData) {
-					return next(null);
-				}
-
-				postData.relativeTime = utils.toISOString(postData.timestamp);
-				postData.relativeEditTime = parseInt(postData.edited, 10) !== 0 ? utils.toISOString(postData.edited) : '';
-				postTools.parsePost(postData, next);
-			}, function(err, posts) {
-				if (err) {
-					return callback(err);
-				}
-
-				plugins.fireHook('filter:post.getPosts', {posts: posts, uid: uid}, function(err, data) {
-					if (err) {
-						return callback(err);
-					}
-
-					if (!data || !Array.isArray(data.posts)) {
-						return callback(null, []);
-					}
-					data.posts = data.posts.filter(Boolean);
-					callback(null, data.posts);
-				});
-			});
-		});
+		], callback);
 	};
 
 	Posts.getPostsFromSet = function(set, uid, start, stop, callback) {
@@ -92,7 +87,7 @@ var async = require('async'),
 
 	Posts.getPostData = function(pid, callback) {
 		db.getObject('post:' + pid, function(err, data) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 

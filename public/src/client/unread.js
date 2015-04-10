@@ -124,7 +124,9 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 
 	function createCategoryLinks(categories) {
 		for (var i=0; i<categories.length; ++i) {
-			createCategoryLink(categories[i]);
+			if (!categories[i].link) {
+				createCategoryLink(categories[i]);
+			}
 		}
 	}
 

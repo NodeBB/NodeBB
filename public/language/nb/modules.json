@@ -15,8 +15,12 @@
     "chat.seven_days": "7 dager",
     "chat.thirty_days": "30 dager",
     "chat.three_months": "3 måneder",
+    "composer.compose": "Compose",
+    "composer.show_preview": "Show Preview",
+    "composer.hide_preview": "Hide Preview",
     "composer.user_said_in": "%1 sa i %2: ",
     "composer.user_said": "%1 sa: ",
     "composer.discard": "Er du sikker på at du vil forkaste dette innlegget?",
-    "composer.submit_and_lock": "Submit and Lock"
+    "composer.submit_and_lock": "Submit and Lock",
+    "composer.toggle_dropdown": "Toggle Dropdown"
 }
