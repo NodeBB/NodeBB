@@ -1,6 +1,6 @@
 "use strict";
-/* global config, socket, define, templates, bootbox, app, ajaxify,  */
-define('admin/manage/users', ['admin/modules/selectable'], function(selectable) {
+/* global config, socket, define, bootbox, app, ajaxify,  */
+define('admin/manage/users', ['admin/modules/selectable', 'nodebb-templatist'], function(selectable, templatist) {
 	var Users = {};
 
 	Users.init = function() {
@@ -255,7 +255,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 						return app.alertError(err.message);
 					}
 
-					templates.parse('admin/manage/users', 'users', data, function(html) {
+					templatist.render('admin/manage/users', 'users', data, function(err, html) {
 						$('#users-container').html(html);
 
 						$('.fa-spinner').addClass('hidden');
@@ -317,7 +317,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 		}
 
 		function onUsersLoaded(users) {
-			templates.parse('admin/manage/users', 'users', {users: users, requireEmailConfirmation: config.requireEmailConfirmation}, function(html) {
+			templatist.render('admin/manage/users', 'users', {users: users, requireEmailConfirmation: config.requireEmailConfirmation}, function(err, html) {
 				$('#users-container').append($(html));
 				selectable.enable('#users-container', '.user-selectable');
 			});

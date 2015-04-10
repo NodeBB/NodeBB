@@ -1,9 +1,9 @@
 "use strict";
-/* global define, app, socket, templates */
+/* global define, app, socket */
 
-define('admin/appearance/skins', function() {
+define('admin/appearance/skins', ['nodebb-templatist'], function(templatist) {
 	var Skins = {};
-	
+
 	Skins.init = function() {
 		var scriptEl = $('<script />');
 		scriptEl.attr('src', '//bootswatch.aws.af.cm/3/?callback=bootswatchListener');
@@ -44,7 +44,7 @@ define('admin/appearance/skins', function() {
 	Skins.render = function(bootswatch) {
 		var themeContainer = $('#bootstrap_themes');
 
-		templates.parse('admin/partials/theme_list', {
+		templatist.render('admin/partials/theme_list', {
 			themes: bootswatch.themes.map(function(theme) {
 				return {
 					type: 'bootswatch',
@@ -57,7 +57,7 @@ define('admin/appearance/skins', function() {
 				};
 			}),
 			showRevert: true
-		}, function(html) {
+		}, function(err, html) {
 			themeContainer.html(html);
 		});
 	};

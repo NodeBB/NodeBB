@@ -11,6 +11,7 @@ var mkdirp = require('mkdirp'),
 	emitter = require('../emitter'),
 	plugins = require('../plugins'),
 	utils = require('../../public/src/utils'),
+	templatist = require('nodebb-templatist'),
 
 	Templates = {};
 
@@ -95,32 +96,33 @@ Templates.compile = function(callback) {
 			}
 
 			async.each(Object.keys(paths), function(relativePath, next) {
-				var file = fs.readFileSync(paths[relativePath]).toString(),
-					matches = null,
-					regex = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
-
-				while((matches = file.match(regex)) !== null) {
-					var partial = "/" + matches[1];
-
-					if (paths[partial] && relativePath !== partial) {
-						file = file.replace(regex, fs.readFileSync(paths[partial]).toString());
-					} else {
-						winston.warn('[meta/templates] Partial not loaded: ' + matches[1]);
-						file = file.replace(regex, "");
+				templatist.compile(paths, relativePath, function(err, data) {
+					if (err) {
+						next(err);
+						return;
 					}
-				}
-
-				if (relativePath.match(/^\/admin\/[\s\S]*?/)) {
-					addIndex(relativePath, file);
-				}
-
-				mkdirp.sync(path.join(viewsPath, relativePath.split('/').slice(0, -1).join('/')));
-				fs.writeFile(path.join(viewsPath, relativePath), file, next);
+					if (data.warnings && data.warnings.length) {
+						for (var warn in data.warnings) {
+							winston.warn('[meta/templates] ' + warn);
+						}
+					}
+					async.each(Object.keys(data.files), function(compiledFilePath, next) {
+						if (relativePath.match(/^\/admin\/[\s\S]*?/)) {
+							addIndex(compiledFilePath, data.files[compiledFilePath]);
+						}
+						mkdirp.sync(path.join(viewsPath, path.dirname(compiledFilePath)));
+						fs.writeFile(path.join(viewsPath, compiledFilePath), data.files[compiledFilePath], next);
+					}, next);
+				});
 			}, function(err) {
 				if (err) {
 					winston.error('[meta/templates] ' + err.stack);
 				} else {
-					compileIndex(viewsPath, function() {
+					async.parallel([
+						async.apply(compileIndex, viewsPath),
+						async.apply(storeTypeIndex, paths, viewsPath)
+					],
+					function() {
 						winston.verbose('[meta/templates] Successfully compiled templates.');
 						emitter.emit('templates:compiled');
 						if (callback) {
@@ -133,6 +135,24 @@ Templates.compile = function(callback) {
 	});
 };
 
+function loadEngines() {
+	var enginesPath = path.join(__dirname, '../../node_modules'),
+		dirs = fs.readdirSync(enginesPath);
+
+	dirs.filter(function(dir) {
+		return dir.startsWith('nodebb-templatist-');
+	}).map(function(dir) {
+		return path.join(enginesPath, dir);
+	}).forEach(function(dir) {
+		try {
+			require(dir)(templatist, nconf.get('views_dir'));
+			winston.verbose('[meta/templates] Loaded templatist engine ' + path.basename(dir));
+		} catch (e) {
+			winston.warn('[meta/templates] Error loading ' + path.basename(dir));
+		}
+	});
+};
+
 var searchIndex = {};
 
 function addIndex(path, file) {
@@ -142,5 +162,27 @@ function addIndex(path, file) {
 function compileIndex(viewsPath, callback) {
 	fs.writeFile(path.join(viewsPath, '/indexed.json'), JSON.stringify(searchIndex), callback);
 }
+
+function storeTypeIndex(paths, viewsPath, callback) {
+	var types = {};
+	Object.keys(paths).forEach(function(relativePath) {
+		var ext = path.extname(relativePath).substr(1),
+			basename = relativePath.substr(1, relativePath.length - ext.length - 2);
+		types[basename] = ext;
+	});
+	fs.writeFile(path.join(viewsPath, '/templateTypesCache.json'), JSON.stringify(types), callback);
+}
+
+function loadTypeIndex() {
+	winston.verbose('[meta/templates] Loading Templatist types cache from file');
+
+	var viewsPath = nconf.get('views_dir');
+	var types = JSON.parse(fs.readFileSync(path.join(viewsPath, '/templateTypesCache.json')));
+	templatist.updateTypesCache(types);
+}
+
+emitter.on('templates:compiled', loadTypeIndex);
+
+loadEngines();
 
 module.exports = Templates;

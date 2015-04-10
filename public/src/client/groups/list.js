@@ -1,7 +1,7 @@
 "use strict";
-/* globals app, define, ajaxify, socket, bootbox, utils, templates */
+/* globals app, define, ajaxify, socket, bootbox, utils */
 
-define('forum/groups/list', function() {
+define('forum/groups/list', ['nodebb-templatist'], function(templatist) {
 	var Groups = {};
 
 	Groups.init = function() {
@@ -51,9 +51,9 @@ define('forum/groups/list', function() {
 				sort: sortEl.val()
 			}
 		}, function(err, groups) {
-			templates.parse('partials/groups/list', {
+			templatist.render('partials/groups/list', {
 				groups: groups
-			}, function(html) {
+			}, function(err, html) {
 				groupsEl.empty().append(html);
 			});
 		});

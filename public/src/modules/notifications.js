@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, socket, utils, config, app, ajaxify, templates, Tinycon*/
+/* globals define, socket, utils, config, app, ajaxify, Tinycon*/
 
-define('notifications', ['sounds', 'translator'], function(sound, translator) {
+define('notifications', ['sounds', 'translator', 'nodebb-templatist'], function(sound, translator, templatist) {
 	var Notifications = {};
 
 	Notifications.prepareDOM = function() {
@@ -32,7 +32,7 @@ define('notifications', ['sounds', 'translator'], function(sound, translator) {
 				}
 				translator.toggleTimeagoShorthand();
 
-				templates.parse('partials/notifications_list', {notifications: notifs}, function(html) {
+				templatist.render('partials/notifications_list', {notifications: notifs}, function(err, html) {
 					notifList.translateHtml(html);
 				});
 			});

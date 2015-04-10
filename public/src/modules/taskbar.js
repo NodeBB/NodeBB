@@ -1,13 +1,13 @@
 "use strict";
-/*global define, app, templates*/
+/* global define, app */
 
-define('taskbar', function() {
+define('taskbar', ['nodebb-templatist'], function(templatist) {
 	var taskbar = {};
 
 	taskbar.init = function() {
 		var self = this;
 
-		templates.parse('modules/taskbar', {}, function(html) {
+		templatist.render('modules/taskbar', {}, function(err, html) {
 			self.taskbar = $(html);
 			self.tasklist = self.taskbar.find('ul');
 			$(document.body).append(self.taskbar);
@@ -39,7 +39,7 @@ define('taskbar', function() {
 	taskbar.discard = function(module, uuid) {
 		var btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
 		btnEl.remove();
-		
+
 		update();
 	};
 

@@ -1,8 +1,8 @@
 "use strict";
-/* global define, socket, app, templates */
+/* global define, socket, app */
 
 
-define('admin/advanced/events', ['forum/infinitescroll'], function(infinitescroll) {
+define('admin/advanced/events', ['forum/infinitescroll', 'nodebb-templatist'], function(infinitescroll, templatist) {
 	var	Events = {};
 
 	Events.init = function() {
@@ -23,7 +23,7 @@ define('admin/advanced/events', ['forum/infinitescroll'], function(infinitescrol
 
 			infinitescroll.loadMore('admin.getMoreEvents', $('[data-next]').attr('data-next'), function(data, done) {
 				if (data.events && data.events.length) {
-					templates.parse('admin/advanced/events', 'events', {events: data.events}, function(html) {
+					templatist.render('admin/advanced/events', 'events', {events: data.events}, function(err, html) {
 						$('.events-list').append(html);
 						done();
 					});

@@ -19,6 +19,7 @@ var path = require('path'),
 	emitter = require('./emitter'),
 
 	helpers = require('./../public/src/modules/helpers'),
+	templatist = require('nodebb-templatist'),
 	net;
 
 if(nconf.get('ssl')) {
@@ -57,6 +58,7 @@ if(nconf.get('ssl')) {
 			]);
 		});
 
+		templatist.augmentExpress(app);
 		middleware = middleware(app);
 		routes(app, middleware);
 

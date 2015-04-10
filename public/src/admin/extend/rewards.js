@@ -1,7 +1,7 @@
 "use strict";
-/* global define, app, ajaxify, socket, templates, bootbox */
+/* global define, app, ajaxify, socket, bootbox */
 
-define('admin/extend/rewards', function() {
+define('admin/extend/rewards', ['nodebb-templatist'], function(templatist) {
 	var rewards = {};
 
 
@@ -96,7 +96,7 @@ define('admin/extend/rewards', function() {
 		inputs.forEach(function(input) {
 			html += '<label for="' + input.name + '">' + input.label + '<br />';
 			switch (input.type) {
-				case 'select': 
+				case 'select':
 						html += '<select name="' + input.name + '">';
 						input.values.forEach(function(value) {
 							html += '<option value="' + value.value + '">' + value.name + '</option>';
@@ -119,7 +119,7 @@ define('admin/extend/rewards', function() {
 
 			for (var reward in rewards) {
 				if (rewards.hasOwnProperty(reward)) {
-					div.find('[name="' + reward + '"]').val(rewards[reward]);	
+					div.find('[name="' + reward + '"]').val(rewards[reward]);
 				}
 			}
 		});
@@ -141,7 +141,7 @@ define('admin/extend/rewards', function() {
 			rewards: available,
 		};
 
-		templates.parse('admin/extend/rewards', 'active', data, function(li) {
+		templatist.render('admin/extend/rewards', 'active', data, function(err, li) {
 			li = $(li);
 			ul.append(li);
 			li.find('select').val('');
@@ -155,7 +155,7 @@ define('admin/extend/rewards', function() {
 			var data = {rewards: {}},
 				main = $(this).find('form.main').serializeArray(),
 				rewards = $(this).find('form.rewards').serializeArray();
-			
+
 			main.forEach(function(obj) {
 				data[obj.name] = obj.value;
 			});

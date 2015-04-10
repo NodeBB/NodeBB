@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, socket, app, config, ajaxify, utils, templates, bootbox */
+/* globals define, socket, app, config, ajaxify, utils, bootbox */
 
 define('composer', [
 	'taskbar',
@@ -12,8 +12,9 @@ define('composer', [
 	'composer/tags',
 	'composer/categoryList',
 	'composer/preview',
-	'composer/resize'
-], function(taskbar, translator, controls, uploads, formatting, drafts, tags, categoryList, preview, resize) {
+	'composer/resize',
+	'nodebb-templatist'
+], function(taskbar, translator, controls, uploads, formatting, drafts, tags, categoryList, preview, resize, templatist) {
 	var composer = {
 		active: undefined,
 		posts: {},
@@ -413,7 +414,7 @@ define('composer', [
 	}
 
 	function parseAndTranslate(template, data, callback) {
-		templates.parse(template, data, function(composerTemplate) {
+		templatist.render(template, data, function(err, composerTemplate) {
 			translator.translate(composerTemplate, callback);
 		});
 	}

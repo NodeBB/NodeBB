@@ -131,16 +131,18 @@
 	};
 
 	exports.register = function() {
-		var templates;
+		var templatist;
 
-		if (typeof module === 'object') {
-			templates = require('templates.js');
-		} else {
-			templates = window.templates;
-		}
-
-		Object.keys(helpers).forEach(function(helperName) {
-			templates.registerHelper(helperName, helpers[helperName]);
+		(function(register){
+			if (typeof module === 'object') {
+				register(require('nodebb-templatist'));
+			} else {
+				require(['nodebb-templatist'], register);
+			}
+		})(function(templatist) {
+			Object.keys(helpers).forEach(function(helperName) {
+				templatist.registerHelper(helperName, helpers[helperName]);
+			});
 		});
 	};
 

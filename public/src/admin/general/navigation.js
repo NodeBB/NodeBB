@@ -1,7 +1,7 @@
 "use strict";
-/* global define, app, ajaxify, socket, templates, bootbox */
+/* global define, app, ajaxify, socket, bootbox */
 
-define('admin/general/navigation', ['translator'], function(translator) {
+define('admin/general/navigation', ['translator', 'nodebb-templatist'], function(translator, templatist) {
 	var navigation = {},
 		available;
 
@@ -37,7 +37,7 @@ define('admin/general/navigation', ['translator'], function(translator) {
 
 		data.enabled = false;
 
-		templates.parse('admin/general/navigation', 'enabled', {enabled: [data]}, function(li) {
+		templatist.render('admin/general/navigation', 'enabled', {enabled: [data]}, function(err, li) {
 			li = $(translator.unescape(li));
 			el.after(li);
 			el.remove();

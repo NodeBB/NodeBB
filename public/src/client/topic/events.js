@@ -1,15 +1,16 @@
 
 'use strict';
 
-/* globals app, ajaxify, define, socket, templates */
+/* globals app, ajaxify, define, socket */
 
 define('forum/topic/events', [
 	'forum/topic/browsing',
 	'forum/topic/postTools',
 	'forum/topic/threadTools',
 	'forum/topic/posts',
-	'components'
-], function(browsing, postTools, threadTools, posts, components) {
+	'components',
+	'nodebb-templatist'
+], function(browsing, postTools, threadTools, posts, components, templatist) {
 
 	var Events = {};
 
@@ -116,7 +117,7 @@ define('forum/topic/events', [
 		});
 
 		if (data.tags && tagsUpdated(data.tags)) {
-			templates.parse('partials/post_bar', 'tags', {tags: data.tags}, function(html) {
+			templatist.render('partials/post_bar', 'tags', {tags: data.tags}, function(err, html) {
 				var tags = $('.tags');
 
 				tags.fadeOut(250, function() {

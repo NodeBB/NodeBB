@@ -9,7 +9,6 @@ var meta = require('../meta'),
 	nconf = require('nconf'),
 	winston = require('winston'),
 	flash = require('connect-flash'),
-	templates = require('templates.js'),
 	bodyParser = require('body-parser'),
 	cookieParser = require('cookie-parser'),
 	compression = require('compression'),
@@ -31,14 +30,8 @@ module.exports = function(app) {
 
 	middleware = require('./middleware')(app);
 
-	app.engine('tpl', templates.__express);
-	app.set('view engine', 'tpl');
-	app.set('views', nconf.get('views_dir'));
 	app.set('json spaces', process.env.NODE_ENV === 'development' ? 4 : 0);
 	app.use(flash());
-
-	app.enable('view cache');
-
 	app.use(compression());
 
 	setupFavicon(app);

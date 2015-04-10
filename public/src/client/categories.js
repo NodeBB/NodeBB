@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, socket, app, templates, ajaxify*/
+/* globals define, socket, app, ajaxify*/
 
-define('forum/categories', ['components', 'translator'], function(components, translator) {
+define('forum/categories', ['components', 'translator', 'nodebb-templatist'], function(components, translator, templatist) {
 	var	categories = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
@@ -63,7 +63,7 @@ define('forum/categories', ['components', 'translator'], function(components, tr
 	}
 
 	function parseAndTranslate(posts, callback) {
-		templates.parse('categories', 'posts', {categories: {posts: posts}}, function(html) {
+		templatist.render('categories', 'posts', {categories: {posts: posts}}, function(err, html) {
 			translator.translate(html, function(translatedHTML) {
 				translatedHTML = $(translatedHTML);
 				translatedHTML.find('img').addClass('img-responsive');

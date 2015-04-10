@@ -1,9 +1,15 @@
 'use strict';
 
-/* globals define, app, ajaxify, bootbox, socket, templates, utils */
+/* globals define, app, ajaxify, bootbox, socket, utils */
 
-define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator'], function(share, navigator, components, translator) {
 
+define('forum/topic/postTools', [
+	'share',
+	'navigator',
+	'components',
+	'translator',
+	'nodebb-templatist'
+], function(share, navigator, components, translator, templatist) {
 	var PostTools = {},
 		topicName;
 
@@ -219,7 +225,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 				return app.alertError(err.message);
 			}
 
-			templates.parse('partials/modals/votes_modal', data, function(html) {
+			templatist.render('partials/modals/votes_modal', data, function(err, html) {
 				var dialog = bootbox.dialog({
 					title: 'Voters',
 					message: html,
