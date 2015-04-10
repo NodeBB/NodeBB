@@ -557,6 +557,8 @@ define('composer', [
 
 		stopNotifyInterval(composer.posts[post_uuid]);
 		stopNotifyTyping(composer.posts[post_uuid]);
+
+		$('body').css({'margin-bottom': '0px'});
 	};
 
 	return composer;
