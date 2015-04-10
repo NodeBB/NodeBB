@@ -240,25 +240,30 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 		var successIcon = '<i class="fa fa-check"></i>';
 
 		function onPasswordChanged() {
-			passwordvalid = utils.isPasswordValid(password.val());
 			if (password.val().length < config.minimumPasswordLength) {
 				showError(password_notify, '[[user:change_password_error_length]]');
-			} else if (!passwordvalid) {
+				passwordvalid = false;
+			} else if (!utils.isPasswordValid(password.val())) {
 				showError(password_notify, '[[user:change_password_error]]');
+				passwordvalid = false;
 			} else {
 				showSuccess(password_notify, successIcon);
+				passwordvalid = true;
 			}
 		}
 
 		function onPasswordConfirmChanged() {
-			if(password.val()) {
-				if (password.val() !== password_confirm.val()) {
-					showError(password_confirm_notify, '[[user:change_password_error_match]]');
-					passwordsmatch = false;
-				} else {
+			if (password.val() !== password_confirm.val()) {
+				showError(password_confirm_notify, '[[user:change_password_error_match]]');
+				passwordsmatch = false;
+			} else {
+				if (password.val()) {
 					showSuccess(password_confirm_notify, successIcon);
-					passwordsmatch = true;
+				} else {
+					removeAlert(password_confirm_notify);
 				}
+
+				passwordsmatch = true;
 			}
 		}
 
@@ -266,6 +271,9 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 		password_confirm.on('blur', onPasswordConfirmChanged);
 
 		$('#changePasswordBtn').on('click', function() {
+			onPasswordChanged();
+			onPasswordConfirmChanged();
+
 			var btn = $(this);
 			if ((passwordvalid && passwordsmatch) || app.user.isAdmin) {
 				btn.addClass('disabled').find('i').removeClass('hide');
@@ -282,11 +290,21 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 					passwordvalid = false;
 
 					if (err) {
+						onPasswordChanged();
+						onPasswordConfirmChanged();
 						return app.alertError(err.message);
 					}
 
 					app.alertSuccess('[[user:change_password_success]]');
 				});
+			} else {
+				if (!passwordsmatch) {
+					app.alertError('[[user:change_password_error_match]]');
+				} 
+
+				if (!passwordvalid) {
+					app.alertError('[[user:change_password_error]]');
+				}
 			}
 			return false;
 		});
@@ -347,6 +365,11 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 				.addClass('alert-success');
 			element.show();
 		});
+	}
+
+	function removeAlert(element) {
+		element.html('');
+		element.parent().removeClass('alert-success alert-danger');
 	}
 
 	return AccountEdit;
