@@ -15,8 +15,12 @@
     "chat.seven_days": "7 Giorni",
     "chat.thirty_days": "30 Giorni",
     "chat.three_months": "3 Mesi",
+    "composer.compose": "Compose",
+    "composer.show_preview": "Show Preview",
+    "composer.hide_preview": "Hide Preview",
     "composer.user_said_in": "%1 ha detto in %2:",
     "composer.user_said": "%1 ha detto:",
     "composer.discard": "Sei sicuro di voler scartare questo post?",
-    "composer.submit_and_lock": "Invia e Blocca"
+    "composer.submit_and_lock": "Invia e Blocca",
+    "composer.toggle_dropdown": "Toggle Dropdown"
 }

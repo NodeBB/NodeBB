@@ -43,12 +43,16 @@ topicsController.get = function(req, res, next) {
 		function (results, next) {
 			userPrivileges = results.privileges;
 
-			if (userPrivileges.disabled || tid + '/' + req.params.slug !== results.topic.slug) {
+			if (userPrivileges.disabled || (req.params.slug && tid + '/' + req.params.slug !== results.topic.slug)) {
 				return helpers.notFound(req, res);
 			}
 
 			if (!userPrivileges.read || (parseInt(results.topic.deleted, 10) && !userPrivileges.view_deleted)) {
 				return helpers.notAllowed(req, res);
+			}
+
+			if (!req.params.slug && results.topic.slug && results.topic.slug !== tid + '/') {
+				return helpers.redirect(res, '/topic/' + encodeURI(results.topic.slug));
 			}
 
 			var settings = results.settings;

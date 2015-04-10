@@ -15,8 +15,12 @@
     "chat.seven_days": "7 Ημέρες",
     "chat.thirty_days": "30 Ημέρες",
     "chat.three_months": "3 Μήνες",
+    "composer.compose": "Compose",
+    "composer.show_preview": "Show Preview",
+    "composer.hide_preview": "Hide Preview",
     "composer.user_said_in": "Ο/Η %1 είπε στο %2:",
     "composer.user_said": "Ο/Η %1 είπε:",
     "composer.discard": "Είσαι σίγουρος/η πως θέλεις να πετάξεις αυτή την δημοσίευση;",
-    "composer.submit_and_lock": "Submit and Lock"
+    "composer.submit_and_lock": "Submit and Lock",
+    "composer.toggle_dropdown": "Toggle Dropdown"
 }

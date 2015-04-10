@@ -48,14 +48,19 @@ middleware.applyCSRF = csrf();
 middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login');
 
 middleware.pageView = function(req, res, next) {
-	if (req.user) {
-		user.updateLastOnlineTime(req.user.uid);
-		user.updateOnlineUsers(req.user.uid);
-	}
-
 	analytics.pageView(req.ip);
 
-	next();
+	if (req.user) {
+		user.updateLastOnlineTime(req.user.uid);
+		if (req.path.startsWith('/api/users') || req.path.startsWith('/users')) {
+			user.updateOnlineUsers(req.user.uid, next);
+		} else {
+			user.updateOnlineUsers(req.user.uid);
+			next();
+		}
+	} else {
+		next();
+	}
 };
 
 middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
@@ -77,27 +82,6 @@ middleware.redirectToLoginIfGuest = function(req, res, next) {
 	} else {
 		next();
 	}
-};
-
-middleware.addSlug = function(req, res, next) {
-	function redirect(method, id, name) {
-		method(id, 'slug', function(err, slug) {
-			if (err || !slug || slug === id + '/') {
-				return next(err);
-			}
-
-			controllers.helpers.redirect(res, name + encodeURI(slug));
-		});
-	}
-
-	if (!req.params.slug) {
-		if (req.params.category_id) {
-			return redirect(categories.getCategoryField, req.params.category_id, '/category/');
-		} else if (req.params.topic_id) {
-			return redirect(topics.getTopicField, req.params.topic_id, '/topic/');
-		}
-	}
-	next();
 };
 
 middleware.validateFiles = function(req, res, next) {

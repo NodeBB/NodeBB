@@ -253,7 +253,7 @@ define('forum/topic/posts', [
 		utils.addCommasToNumbers(element.find('.formatted-number'));
 		utils.makeNumbersHumanReadable(element.find('.human-readable-number'));
 		element.find('.timeago').timeago();
-		element.find('[component="post/content"] img:not(.emoji)').addClass('img-responsive').each(function() {
+		element.find('[component="post/content"] img:not(.emoji)').each(function() {
 			var $this = $(this);
 			if (!$this.parent().is('a')) {
 				$this.wrap('<a href="' + $this.attr('src') + '" target="_blank">');

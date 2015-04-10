@@ -173,26 +173,14 @@ define('forum/users', ['translator'], function(translator) {
 
 	function onUserStatusChange(data) {
 		var section = getActiveSection();
+		
 		if ((section.startsWith('online') || section.startsWith('users'))) {
 			updateUser(data);
 		}
 	}
 
 	function updateUser(data) {
-		if (data.status === 'offline') {
-			return;
-		}
-		var usersContainer = $('#users-container');
-		var userEl = usersContainer.find('li[data-uid="' + data.uid +'"]');
-
-		if (userEl.length) {
-			var statusEl = userEl.find('.status');
-			translator.translate('[[global:' + data.status + ']]', function(translated) {
-				statusEl.attr('class', 'fa fa-circle status ' + data.status)
-					.attr('title', translated)
-					.attr('data-original-title', translated);
-			});
-		}
+		app.updateUserStatus($('#users-container [data-uid="' + data.uid +'"] [component="user/status"]'), data.status);
 	}
 
 	function getActiveSection() {

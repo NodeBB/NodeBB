@@ -15,8 +15,12 @@
     "chat.seven_days": "7日",
     "chat.thirty_days": "30日",
     "chat.three_months": "3個月",
+    "composer.compose": "Compose",
+    "composer.show_preview": "Show Preview",
+    "composer.hide_preview": "Hide Preview",
     "composer.user_said_in": "%1在%2裡說：",
     "composer.user_said": "%1說：",
     "composer.discard": "你確定要放棄這帖子嗎？",
-    "composer.submit_and_lock": "Submit and Lock"
+    "composer.submit_and_lock": "Submit and Lock",
+    "composer.toggle_dropdown": "Toggle Dropdown"
 }

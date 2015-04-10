@@ -250,6 +250,12 @@ adminController.plugins.get = function(req, res, next) {
 
 adminController.languages.get = function(req, res, next) {
 	languages.list(function(err, languages) {
+		if (err) {
+			return next(err);
+		}
+		languages.forEach(function(language) {
+			language.selected = language.code === meta.config.defaultLang;
+		});
 		res.render('admin/general/languages', {
 			languages: languages
 		});

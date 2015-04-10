@@ -131,16 +131,39 @@ module.exports = function(User) {
 	}
 
 	function deleteUserFromFollowers(uid, callback) {
-		db.getSetMembers('followers:' + uid, function(err, uids) {
+		async.parallel({
+			followers: async.apply(db.getSortedSetRange, 'followers:' + uid, 0, -1),
+			following: async.apply(db.getSortedSetRange, 'following:' + uid, 0, -1)
+		}, function(err, results) {
+			function updateCount(uids, name, fieldName, next) {
+				async.each(uids, function(uid, next) {
+					db.sortedSetCard(name + uid, function(err, count) {
+						if (err) {
+							return next(err);
+						}
+						count = parseInt(count, 10) || 0;
+						db.setObjectField('user:' + uid, fieldName, count, next);
+					});
+				}, next);
+			}
+
 			if (err) {
 				return callback(err);
 			}
 
-			var sets = uids.map(function(uid) {
+			var followingSets = results.followers.map(function(uid) {
 				return 'following:' + uid;
 			});
 
-			db.setsRemove(sets, uid, callback);
+			var followerSets = results.following.map(function(uid) {
+				return 'followers:' + uid;
+			});
+
+			async.parallel([
+				async.apply(db.sortedSetsRemove, followerSets.concat(followingSets), uid),
+				async.apply(updateCount, results.following, 'followers:', 'followerCount'),
+				async.apply(updateCount, results.followers, 'following:', 'followingCount')
+			], callback);
 		});
 	}
 };

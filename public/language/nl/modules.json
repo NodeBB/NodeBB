@@ -15,8 +15,12 @@
     "chat.seven_days": "7 Dagen",
     "chat.thirty_days": "30 Dagen",
     "chat.three_months": "3 Maanden",
+    "composer.compose": "Compose",
+    "composer.show_preview": "Show Preview",
+    "composer.hide_preview": "Hide Preview",
     "composer.user_said_in": "%1 zegt in %2:",
     "composer.user_said": "%1 zegt:",
     "composer.discard": "Weet u het zeker dat u dit bericht niet wilt plaatsen?",
-    "composer.submit_and_lock": "Plaatsen en vergrendelen"
+    "composer.submit_and_lock": "Plaatsen en vergrendelen",
+    "composer.toggle_dropdown": "Toggle Dropdown"
 }

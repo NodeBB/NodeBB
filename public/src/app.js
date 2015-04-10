@@ -473,6 +473,19 @@ app.cacheBuster = null;
 		});
 	}
 
+	app.updateUserStatus = function(el, status) {
+		if (!el.length) {
+			return;
+		}
+
+		translator.translate('[[global:' + status + ']]', function(translated) {
+			el.removeClass('online offline dnd away')
+				.addClass(status)
+				.attr('title', translated)
+				.attr('data-original-title', translated);
+		});
+	};
+
 	function handleNewTopic() {
 		$('#content').on('click', '#new_topic', function() {
 			require(['composer'], function(composer) {

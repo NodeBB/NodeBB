@@ -15,8 +15,12 @@
     "chat.seven_days": "৭ দিন",
     "chat.thirty_days": "৩০ দিন",
     "chat.three_months": "৩ মাস",
+    "composer.compose": "Compose",
+    "composer.show_preview": "Show Preview",
+    "composer.hide_preview": "Hide Preview",
     "composer.user_said_in": "%1 বলেছেন %2:",
     "composer.user_said": "%1 বলেছেনঃ",
     "composer.discard": "আপনি কি নিশ্চিত যে আপনি এই পোস্ট বাতিল করতে ইচ্ছুক?",
-    "composer.submit_and_lock": "Submit and Lock"
+    "composer.submit_and_lock": "Submit and Lock",
+    "composer.toggle_dropdown": "Toggle Dropdown"
 }

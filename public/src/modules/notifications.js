@@ -39,12 +39,15 @@ define('notifications', ['sounds', 'translator'], function(sound, translator) {
 		});
 
 		notifList.on('click', '[data-nid]', function() {
-			var nid = this.getAttribute('data-nid');
-
-			socket.emit('notifications.markRead', nid, function(err) {
+			var unread = $(this).hasClass('unread');
+			if (!unread) {
+				return;
+			}
+			socket.emit('notifications.markRead', $(this).attr('data-nid'), function(err) {
 				if (err) {
-					app.alertError(err.message);
+					return app.alertError(err.message);
 				}
+				increaseNotifCount(-1);
 			});
 		});
 
@@ -58,14 +61,13 @@ define('notifications', ['sounds', 'translator'], function(sound, translator) {
 		});
 
 		notifList.on('click', '.mark-read', function(e) {
-			var liEl = $(this.parentNode),
-				nid = liEl.attr('data-nid'),
+			var liEl = $(this).parent(),
 				unread = liEl.hasClass('unread');
 
 			e.preventDefault();
 			e.stopPropagation();
 
-			socket.emit('notifications.mark' + (unread ? 'Read' : 'Unread'), nid, function(err) {
+			socket.emit('notifications.mark' + (unread ? 'Read' : 'Unread'), liEl.attr('data-nid'), function(err) {
 				if (err) {
 					app.alertError(err.message);
 				}
