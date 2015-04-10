@@ -115,6 +115,7 @@ var cache = LRU({
 									cid: results.cid,
 									uid: postData.uid,
 									title: validator.escape(title),
+									slug: topicData.slug,
 									isMainPost: results.isMain,
 									tags: tags
 								});
