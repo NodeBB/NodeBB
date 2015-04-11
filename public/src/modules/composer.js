@@ -284,8 +284,15 @@ define('composer', [
 
 		composer.bsEnvironment = utils.findBootstrapEnvironment();
 
+		// see
+		// https://github.com/NodeBB/NodeBB/issues/2994 and
+		// https://github.com/NodeBB/NodeBB/issues/1951
+		// remove when 1951 is resolved
+
+		var title = postData.title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+
 		var data = {
-			title: postData.title,
+			title: title,
 			mobile: composer.bsEnvironment === 'xs' || composer.bsEnvironment === 'sm',
 			allowTopicsThumbnail: allowTopicsThumbnail,
 			isTopicOrMain: isTopic || isMain,
