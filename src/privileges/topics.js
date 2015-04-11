@@ -80,6 +80,7 @@ module.exports = function(privileges) {
 				var cids = topicsData.map(function(topic) {
 					return topic.cid;
 				}).filter(function(cid, index, array) {
+					return cid && array.indexOf(cid) === index;
 				});
 
 				async.parallel({
@@ -102,6 +103,7 @@ module.exports = function(privileges) {
 					var isModOf = {};
 					cids = cids.filter(function(cid, index) {
 						isModOf[cid] = results.isModerators[index];
+						return !results.categories[index].disabled &&
 							(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
 					});
 
