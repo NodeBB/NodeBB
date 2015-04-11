@@ -72,35 +72,56 @@ module.exports = function(privileges) {
 			return callback(null, []);
 		}
 
-		topics.getTopicsFields(tids, ['tid', 'cid'], function(err, topics) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function(next) {
+				topics.getTopicsFields(tids, ['tid', 'cid', 'deleted'], next);
+			},
+			function(topicsData, next) {
+				var cids = topicsData.map(function(topic) {
+					return topic.cid;
+				}).filter(function(cid, index, array) {
+				});
+
+				async.parallel({
+					categories: function(next) {
+						categories.getMultipleCategoryFields(cids, ['disabled'], next);
+					},
+					allowedTo: function(next) {
+						helpers.isUserAllowedTo(privilege, uid, cids, next);
+					},
+					isModerators: function(next) {
+						user.isModerator(uid, cids, next);
+					},
+					isAdmin: function(next) {
+						user.isAdministrator(uid, next);
+					}
+				}, function(err, results) {
+					if (err) {
+						return callback(err);
+					}
+					var isModOf = {};
+					cids = cids.filter(function(cid, index) {
+						isModOf[cid] = results.isModerators[index];
+							(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
+					});
+
+					tids = topicsData.filter(function(topic) {
+						return cids.indexOf(topic.cid) !== -1 &&
+							(parseInt(topic.deleted, 10) !== 1 || results.isAdmin || isModOf[topic.cid]);
+					}).map(function(topic) {
+						return topic.tid;
+					});
+
+					plugins.fireHook('filter:privileges.topics.filter', {
+						privilege: privilege,
+						uid: uid,
+						tids: tids
+					}, function(err, data) {
+						next(err, data ? data.tids : null);
+					});
+				});
 			}
-
-			var cids = topics.map(function(topic) {
-				return topic.cid;
-			});
-
-			privileges.categories.filterCids(privilege, cids, uid, function(err, cids) {
-				if (err) {
-					return callback(err);
-				}
-
-				tids = topics.filter(function(topic) {
-					return cids.indexOf(topic.cid) !== -1;
-				}).map(function(topic) {
-					return topic.tid;
-				});
-
-				plugins.fireHook('filter:privileges.topics.filter', {
-					privilege: privilege,
-					uid: uid,
-					tids: tids
-				}, function(err, data) {
-					callback(err, data ? data.tids : null);
-				});
-			});
-		});
+		], callback);
 	};
 
 	privileges.topics.canEdit = function(tid, uid, callback) {
