@@ -73,6 +73,8 @@ define('forum/category', [
 
 				$('.watch').toggleClass('hidden', command === 'watch');
 				$('.ignore').toggleClass('hidden', command === 'ignore');
+
+				app.alertSuccess('[[category:' + command + '.message]]')
 			});
 		});
 	}
