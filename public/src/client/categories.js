@@ -29,23 +29,19 @@ define('forum/categories', ['components', 'translator'], function(components, tr
 	};
 
 	function renderNewPost(cid, post) {
-		var category = components.get('category/topic', 'cid', cid);
-		if (!category.length) {
-			return;
-		}
-		var categoryBox = category.find('.category-box');
+		var category = components.get('categories/category', 'cid', cid);
 		var numRecentReplies = category.attr('data-numRecentReplies');
 		if (!numRecentReplies || !parseInt(numRecentReplies, 10)) {
 			return;
 		}
 
-		var recentPosts = categoryBox.find('.post-preview');
+		var recentPosts = category.find('[component="category/posts"]');
 		var insertBefore = recentPosts.first();
 
 		parseAndTranslate([post], function(html) {
 			html.hide();
 			if(recentPosts.length === 0) {
-				html.appendTo(categoryBox);
+				html.appendTo(category);
 			} else {
 				html.insertBefore(recentPosts.first());
 			}
@@ -54,7 +50,7 @@ define('forum/categories', ['components', 'translator'], function(components, tr
 
 			app.createUserTooltips();
 
-			if (categoryBox.find('.post-preview').length > parseInt(numRecentReplies, 10)) {
+			if (category.find('[component="category/posts"]').length > parseInt(numRecentReplies, 10)) {
 				recentPosts.last().remove();
 			}
 
