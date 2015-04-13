@@ -3,8 +3,6 @@
 var accountsController = {};
 
 var fs = require('fs'),
-	path = require('path'),
-	winston = require('winston'),
 	nconf = require('nconf'),
 	async = require('async'),
 	validator = require('validator'),
@@ -20,8 +18,7 @@ var fs = require('fs'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
 	languages = require('../languages'),
-	image = require('../image'),
-	file = require('../file'),
+
 	helpers = require('./helpers');
 
 function getUserDataByUserSlug(userslug, callerUID, callback) {
@@ -369,32 +366,10 @@ accountsController.accountSettings = function(req, res, next) {
 
 accountsController.uploadPicture = function (req, res, next) {
 	var userPhoto = req.files.files[0];
-	var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
-	var extension = path.extname(userPhoto.name);
+
 	var updateUid = req.uid;
-	var imageDimension = parseInt(meta.config.profileImageDimension, 10) || 128;
-	var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1;
 
 	async.waterfall([
-		function(next) {
-			next(userPhoto.size > uploadSize * 1024 ? new Error('[[error:file-too-big, ' + uploadSize + ']]') : null);
-		},
-		function(next) {
-			next(!extension ? new Error('[[error:invalid-image-extension]]') : null);
-		},
-		function(next) {
-			file.isFileTypeAllowed(userPhoto.path, ['png', 'jpeg', 'jpg', 'gif'], next);
-		},
-		function(next) {
-			image.resizeImage(userPhoto.path, extension, imageDimension, imageDimension, next);
-		},
-		function(next) {
-			if (convertToPNG) {
-				image.convertImageToPng(userPhoto.path, extension, next);
-			} else {
-				next();
-			}
-		},
 		function(next) {
 			user.getUidByUserslug(req.params.userslug, next);
 		},
@@ -414,50 +389,17 @@ accountsController.uploadPicture = function (req, res, next) {
 				updateUid = uid;
 				next();
 			});
+		},
+		function(next) {
+			user.uploadPicture(updateUid, userPhoto, next);
 		}
-	], function(err, result) {
-
-		function done(err, image) {
-			fs.unlink(userPhoto.path);
-			if (err) {
-				return res.json({error: err.message});
-			}
-
-			user.setUserFields(updateUid, {uploadedpicture: image.url, picture: image.url});
-
-			res.json([{name: userPhoto.name, url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url}]);
-		}
-
+	], function(err, image) {
+		fs.unlink(userPhoto.path);
 		if (err) {
-			fs.unlink(userPhoto.path);
 			return next(err);
 		}
 
-		if (plugins.hasListeners('filter:uploadImage')) {
-			return plugins.fireHook('filter:uploadImage', {image: userPhoto, uid: updateUid}, done);
-		}
-
-		var filename = updateUid + '-profileimg' + (convertToPNG ? '.png' : extension);
-
-		user.getUserField(updateUid, 'uploadedpicture', function (err, oldpicture) {
-			if (err) {
-				return next(err);
-			}
-			if (!oldpicture) {
-				file.saveFileToLocal(filename, 'profile', userPhoto.path, done);
-				return;
-			}
-
-			var absolutePath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), 'profile', path.basename(oldpicture));
-
-			fs.unlink(absolutePath, function (err) {
-				if (err) {
-					winston.error(err);
-				}
-
-				file.saveFileToLocal(filename, 'profile', userPhoto.path, done);
-			});
-		});
+		res.json([{name: userPhoto.name, url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url}]);
 	});
 };
 

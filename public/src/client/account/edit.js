@@ -203,7 +203,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 				if (!url) {
 					return;
 				}
-				socket.emit('user.uploadProfileImageFromUrl', url, function(err, imageUrlOnServer) {
+				socket.emit('user.uploadProfileImageFromUrl', {url: url, uid: ajaxify.variables.get('theirid')}, function(err, imageUrlOnServer) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -300,7 +300,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 			} else {
 				if (!passwordsmatch) {
 					app.alertError('[[user:change_password_error_match]]');
-				} 
+				}
 
 				if (!passwordvalid) {
 					app.alertError('[[user:change_password_error]]');

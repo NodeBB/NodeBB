@@ -263,19 +263,27 @@ SocketUser.changePicture = function(socket, data, callback) {
 	});
 };
 
-SocketUser.uploadProfileImageFromUrl = function(socket, url, callback) {
-	if (!socket.uid || !url) {
+SocketUser.uploadProfileImageFromUrl = function(socket, data, callback) {
+	function upload() {
+		user.uploadFromUrl(data.uid, data.url, function(err, uploadedImage) {
+			callback(err, uploadedImage ? uploadedImage.url : null);
+		});
+	}
+
+	if (!socket.uid || !data.url || !data.uid) {
 		return;
 	}
 
-	plugins.fireHook('filter:uploadImage', {image: {url: url}, uid: socket.uid}, function(err, data) {
-		if (err) {
-			return callback(err);
+	if (parseInt(socket.uid, 10) === parseInt(data.uid, 10)) {
+		return upload();
+	}
+
+	user.isAdministrator(socket.uid, function(err, isAdmin) {
+		if (err || !isAdmin) {
+			return callback(err || new Error('[[error:not-allowed]]'));
 		}
 
-		user.setUserFields(socket.uid, {uploadedpicture: data.url, picture: data.url}, function(err) {
-			callback(err, data.url);
-		});
+		upload();
 	});
 };
 
