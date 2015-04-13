@@ -75,11 +75,11 @@ var cache = LRU({
 							if (err) {
 								return next(err);
 							}
-							
+
 							var postData = res.post,
 								results = res.topic,
 								slug = res.slug || title;
-							
+
 							options.tags = options.tags || [];
 
 							if (!results.isMain) {
@@ -96,15 +96,15 @@ var cache = LRU({
 								uid: postData.uid,
 								mainPid: data.pid
 							};
-							
+
 							if (title) {
 								topicData.title = title;
 							}
-							
+
 							if (slug){
 								topicData.slug = tid + '/' + utils.slugify(slug);
 							}
-							
+
 							if (options.topic_thumb) {
 								topicData.thumb = options.topic_thumb;
 							}

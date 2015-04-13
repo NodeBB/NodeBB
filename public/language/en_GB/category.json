@@ -8,5 +8,9 @@
 	"no_replies": "No one has replied",
 
 	"share_this_category": "Share this category",
-	"ignore": "Ignore"
+	"watch": "Watch",
+	"ignore": "Ignore",
+
+	"watch.message": "You are now watching updates from this category",
+	"ignore.message": "You are now ignoring updates from this category"
 }

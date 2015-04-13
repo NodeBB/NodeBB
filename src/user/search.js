@@ -43,6 +43,7 @@ module.exports = function(User) {
 					var pagination = user.paginate(page, uids);
 					uids = pagination.data;
 					searchResult.pagination = pagination.pagination;
+					searchResult.pageCount = pagination.pageCount;
 				}
 
 				User.getUsers(uids, uid, next);
@@ -66,6 +67,7 @@ module.exports = function(User) {
 
 		return {
 			pagination: pagination.create(currentPage, pageCount),
+			pageCount: pageCount,
 			data: data.slice(start, stop)
 		};
 	};

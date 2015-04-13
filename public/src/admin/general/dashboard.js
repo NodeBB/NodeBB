@@ -283,13 +283,8 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 				color: "#949FB1",
 				highlight: "#A8B3C5",
 				label: "Recent/Unread"
-			},
-			{
-				value: 1,
-				color: "#8FA633",
-				highlight: "#3FA7B8",
-				label: "Tags"
-			}], {
+			}
+			], {
 				responsive: true
 			});
 
@@ -338,8 +333,10 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 
 			$('#pageViewsThisMonth').html(data.monthlyPageViews.thisMonth);
 			$('#pageViewsLastMonth').html(data.monthlyPageViews.lastMonth);
+			$('#pageViewsPastDay').html(data.pastDay);
 			utils.addCommasToNumbers($('#pageViewsThisMonth'));
 			utils.addCommasToNumbers($('#pageViewsLastMonth'));
+			utils.addCommasToNumbers($('#pageViewsPastDay'));
 		});
 	}
 
@@ -354,7 +351,6 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		graphs.presence.segments[1].value = users.topics;
 		graphs.presence.segments[2].value = users.category;
 		graphs.presence.segments[3].value = users.recent;
-		graphs.presence.segments[4].value = users.tags;
 
 		graphs.presence.update();
 	}

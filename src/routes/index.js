@@ -233,4 +233,3 @@ function handleErrors(app, middleware) {
 		}
 	});
 }
-

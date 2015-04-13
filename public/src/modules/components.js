@@ -30,7 +30,11 @@ define('components', function() {
 		},
 
 		'category/topic': function(name, value) {
-			return $('[data-' + name + '="' + value + '"]');
+			return $('[component="category/topic"][data-' + name + '="' + value + '"]');
+		},
+
+		'categories/category': function(name, value) {
+			return $('[component="categories/category"][data-' + name + '="' + value + '"]');
 		}
 	};
 

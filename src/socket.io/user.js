@@ -138,7 +138,7 @@ SocketUser.checkStatus = function(socket, uid, callback) {
 };
 
 SocketUser.changePassword = function(socket, data, callback) {
-	if (!data || !data.uid) {
+	if (!data || !data.uid || data.newPassword.length < meta.config.minimumPasswordLength) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	if (!socket.uid) {

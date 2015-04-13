@@ -8,9 +8,9 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 	Search.init = function() {
 		var searchQuery = $('#results').attr('data-search-query');
 
-		$('#advanced-search #search-input').val(searchQuery);
+		$('#search-input').val(searchQuery);
 
-		var searchIn = $('#advanced-search #search-in');
+		var searchIn = $('#search-in');
 
 		fillOutForm();
 
@@ -23,7 +23,7 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 		$('#advanced-search').off('submit').on('submit', function(e) {
 			e.preventDefault();
 
-			var input = $(this).find('#search-input');
+			var input = $('#search-input');
 
 			var searchData = getSearchData();
 			searchData.term = input.val();
@@ -41,7 +41,7 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 	function getSearchData() {
 		var form = $('#advanced-search');
 		var searchData = {
-			in: form.find('#search-in').val()
+			in: $('#search-in').val()
 		};
 
 		if (searchData.in === 'posts' || searchData.in === 'titlesposts' || searchData.in === 'titles') {

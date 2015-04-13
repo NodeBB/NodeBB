@@ -49,8 +49,7 @@ searchController.search = function(req, res, next) {
 				return next(err);
 			}
 
-			var pageCount = Math.max(1, Math.ceil(results.matchCount / 10));
-			results.pagination = pagination.create(page, pageCount, req.query);
+			results.pagination = pagination.create(page, results.pageCount, req.query);
 			results.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
 			results.showAsTopics = req.query.showAs === 'topics';
 			results.breadcrumbs = breadcrumbs;

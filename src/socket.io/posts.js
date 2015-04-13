@@ -310,6 +310,7 @@ SocketPosts.edit = function(socket, data, callback) {
 			pid: data.pid,
 			handle: data.handle,
 			title: results.topic.title,
+			slug: results.topic.slug,
 			isMainPost: results.topic.isMainPost,
 			tags: results.topic.tags,
 			content: results.content

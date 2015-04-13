@@ -78,7 +78,7 @@ $(document).ready(function() {
 
 
 	ajaxify.start = function(url, quiet, search) {
-		url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
+		url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, ''));
 		var hash = window.location.hash;
 		search = search || '';
 

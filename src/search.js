@@ -27,6 +27,7 @@ search.search = function(data, callback) {
 		}
 		result[searchIn] = data.matches;
 		result.matchCount = data.matchCount;
+		result.pageCount = data.pageCount;
 		result.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);
 		callback(null, result);
 	}
@@ -45,7 +46,7 @@ search.search = function(data, callback) {
 	if (searchIn === 'posts' || searchIn === 'titles' || searchIn === 'titlesposts') {
 		searchInContent(data, done);
 	} else if (searchIn === 'users') {
-		searchInUsers(query, data.uid, done);
+		searchInUsers(data, done);
 	} else if (searchIn === 'tags') {
 		searchInTags(query, done);
 	} else {
@@ -89,7 +90,7 @@ function searchInContent(data, callback) {
 
 			var matchCount = 0;
 			if (!results || (!results.pids.length && !results.tids.length)) {
-				return callback(null, {matches: [], matchCount: matchCount});
+				return callback(null, {matches: [], matchCount: matchCount, pageCount: 1});
 			}
 
 			async.waterfall([
@@ -116,7 +117,7 @@ function searchInContent(data, callback) {
 					posts.getPostSummaryByPids(pids, data.uid, {stripTags: true, parse: false}, next);
 				},
 				function(posts, next) {
-					next(null, {matches: posts, matchCount: matchCount});
+					next(null, {matches: posts, matchCount: matchCount, pageCount: Math.max(1, Math.ceil(parseInt(matchCount, 10) / 10))});
 				}
 			], callback);
 		});
@@ -432,12 +433,12 @@ function getSearchUids(data, callback) {
 	}
 }
 
-function searchInUsers(query, uid, callback) {
-	user.search({query: query, uid: uid}, function(err, results) {
+function searchInUsers(data, callback) {
+	user.search(data, function(err, results) {
 		if (err) {
 			return callback(err);
 		}
-		callback(null, {matches: results.users, matchCount: results.matchCount});
+		callback(null, {matches: results.users, matchCount: results.matchCount, pageCount: results.pageCount});
 	});
 }
 
@@ -447,7 +448,7 @@ function searchInTags(query, callback) {
 			return callback(err);
 		}
 
-		callback(null, {matches: tags, matchCount: tags.length});
+		callback(null, {matches: tags, matchCount: tags.length, pageCount: 1});
 	});
 }
 
