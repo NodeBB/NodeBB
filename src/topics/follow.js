@@ -11,6 +11,7 @@ var async = require('async'),
 	posts = require('../posts'),
 	postTools = require('../postTools'),
 	notifications = require('../notifications'),
+	privileges = require('../privileges'),
 	meta = require('../meta'),
 	emailer = require('../emailer');
 
@@ -96,60 +97,73 @@ module.exports = function(Topics) {
 		db.getSetMembers('tid:' + tid + ':followers', callback);
 	};
 
-	Topics.notifyFollowers = function(postData, exceptUid) {
-		Topics.getFollowers(postData.topic.tid, function(err, followers) {
-			if (err || !Array.isArray(followers) || !followers.length) {
-				return;
-			}
+	Topics.notifyFollowers = function(postData, exceptUid, callback) {
+		callback = callback || function() {};
+		var followers, title;
 
-			var index = followers.indexOf(exceptUid.toString());
-			if (index !== -1) {
-				followers.splice(index, 1);
-			}
-
-			if (!followers.length) {
-				return;
-			}
-
-			var title = postData.topic.title;
-			if (title) {
-				title = S(title).decodeHTMLEntities().s;
-			}
-
-			notifications.create({
-				bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + title + ']]',
-				bodyLong: postData.content,
-				pid: postData.pid,
-				nid: 'tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + exceptUid,
-				tid: postData.topic.tid,
-				from: exceptUid
-			}, function(err, notification) {
-				if (!err && notification) {
-					notifications.push(notification, followers);
+		async.waterfall([
+			function(next) {
+				Topics.getFollowers(postData.topic.tid, next);
+			},
+			function(followers, next) {
+				if (!Array.isArray(followers) || !followers.length) {
+					return callback();
 				}
-			});
+				var index = followers.indexOf(exceptUid.toString());
+				if (index !== -1) {
+					followers.splice(index, 1);
+				}
+				if (!followers.length) {
+					return callback();
+				}
 
-			async.eachLimit(followers, 3, function(toUid, next) {
-				async.parallel({
-					userData: async.apply(user.getUserFields, toUid, ['username']),
-					userSettings: async.apply(user.getSettings, toUid)
-				}, function(err, data) {
-					if (data.userSettings.hasOwnProperty('sendPostNotifications') && data.userSettings.sendPostNotifications) {
-						emailer.send('notif_post', toUid, {
-							pid: postData.pid,
-							subject: '[' + (meta.config.title || 'NodeBB') + '] ' + title,
-							intro: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + title + ']]',
-							postBody: postData.content,
-							site_title: meta.config.title || 'NodeBB',
-							username: data.userData.username,
-							url: nconf.get('url') + '/topic/' + postData.topic.tid,
-							base_url: nconf.get('url')
-						}, next);
-					} else {
-						winston.debug('[topics.notifyFollowers] uid ' + toUid + ' does not have post notifications enabled, skipping.');
-					}
+				privileges.categories.filterUids('read', postData.topic.cid, followers, next);
+			},
+			function(_followers, next) {
+				followers = _followers;
+				if (!followers.length) {
+					return callback();
+				}
+				title = postData.topic.title;
+				if (title) {
+					title = S(title).decodeHTMLEntities().s;
+				}
+
+				notifications.create({
+					bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + title + ']]',
+					bodyLong: postData.content,
+					pid: postData.pid,
+					nid: 'tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + exceptUid,
+					tid: postData.topic.tid,
+					from: exceptUid
+				}, next);
+			},
+			function(notification, next) {
+				notifications.push(notification, followers);
+
+				async.eachLimit(followers, 3, function(toUid, next) {
+					async.parallel({
+						userData: async.apply(user.getUserFields, toUid, ['username']),
+						userSettings: async.apply(user.getSettings, toUid)
+					}, function(err, data) {
+						if (data.userSettings.hasOwnProperty('sendPostNotifications') && data.userSettings.sendPostNotifications) {
+							emailer.send('notif_post', toUid, {
+								pid: postData.pid,
+								subject: '[' + (meta.config.title || 'NodeBB') + '] ' + title,
+								intro: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + title + ']]',
+								postBody: postData.content,
+								site_title: meta.config.title || 'NodeBB',
+								username: data.userData.username,
+								url: nconf.get('url') + '/topic/' + postData.topic.tid,
+								base_url: nconf.get('url')
+							}, next);
+						} else {
+							winston.debug('[topics.notifyFollowers] uid ' + toUid + ' does not have post notifications enabled, skipping.');
+						}
+					});
 				});
-			});
-		});
+				next();
+			}
+		], callback);
 	};
 };
