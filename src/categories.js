@@ -252,6 +252,8 @@ var async = require('async'),
 		Categories.getMultipleCategoryFields(cids, ['parentCid'], function(err, data) {
 			if (err) {
 				return callback(err);
+			} else if (!data.hasOwnProperty('parentCid')) {
+				data.parentCid = 0;
 			}
 
 			var parentCids = data.map(function(category) {
