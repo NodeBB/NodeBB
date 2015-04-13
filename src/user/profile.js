@@ -162,7 +162,7 @@ module.exports = function(User) {
 					},
 					function(next) {
 						if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && newEmail) {
-							User.email.verify(uid, newEmail);
+							User.email.sendValidationEmail(uid, newEmail);
 						}
 						User.setUserField(uid, 'email:confirmed', 0, next);
 					},

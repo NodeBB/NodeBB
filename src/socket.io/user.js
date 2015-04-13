@@ -53,8 +53,7 @@ SocketUser.emailConfirm = function(socket, data, callback) {
 				return;
 			}
 
-			user.email.verify(socket.uid, email);
-			callback();
+			user.email.sendValidationEmail(socket.uid, email, callback);
 		});
 	}
 };

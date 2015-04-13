@@ -220,7 +220,9 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 
 	function handleEmailConfirm() {
 		$('#confirm-email').on('click', function() {
+			var btn = $(this).attr('disabled', true);
 			socket.emit('user.emailConfirm', {}, function(err) {
+				btn.removeAttr('disabled');
 				if (err) {
 					return app.alertError(err.message);
 				}
