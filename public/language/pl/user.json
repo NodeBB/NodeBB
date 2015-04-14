@@ -79,5 +79,6 @@
     "topic_search_help": "Jeśli odblokowane, szukanie w wątku zastąpi domyślną funkcję szukania przeglądarki, pozwalając na wyszukiwanie fraz tylko w wątku, a nie na całej stronie.",
     "follow_topics_you_reply_to": "Śledź tematy, w których piszesz.",
     "follow_topics_you_create": "Śledź swoje tematy.",
-    "grouptitle": "Select the group title you would like to display"
+    "grouptitle": "Select the group title you would like to display",
+    "no-group-title": "No group title"
 }

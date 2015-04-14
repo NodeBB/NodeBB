@@ -79,5 +79,6 @@
     "topic_search_help": "Hvis aktivert, vil i-emne-søk overstyre nettleseren sin standard sidesøk-oppførsel og tillate deg å søke gjennom hele emnet, i stedet for bare det som vises på skjermen.",
     "follow_topics_you_reply_to": "Følg emner du svarer i.",
     "follow_topics_you_create": "Følg emner du oppretter.",
-    "grouptitle": "Select the group title you would like to display"
+    "grouptitle": "Select the group title you would like to display",
+    "no-group-title": "No group title"
 }

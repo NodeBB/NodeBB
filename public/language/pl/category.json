@@ -5,5 +5,8 @@
     "browsing": "przegląda",
     "no_replies": "Nikt jeszcze nie odpowiedział",
     "share_this_category": "Udostępnij tę kategorię",
-    "ignore": "Ignoruj"
+    "watch": "Watch",
+    "ignore": "Ignoruj",
+    "watch.message": "You are now watching updates from this category",
+    "ignore.message": "You are now ignoring updates from this category"
 }

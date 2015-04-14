@@ -1,8 +1,8 @@
 {
     "results_matching": "%1 результатов по фразе \"%2\", (%3 секунды) ",
     "no-matches": "Совпадений не найдено",
+    "advanced-search": "Advanced Search",
     "in": "В",
-    "by": "От",
     "titles": "Названия",
     "titles-posts": "Названия и сообщения",
     "posted-by": "Написано  ",

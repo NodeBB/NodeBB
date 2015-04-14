@@ -1,8 +1,8 @@
 {
     "results_matching": "\"%2\" এর সাথে মিলিয়ে %1 ফলাফল পাওয়া গেছে,  ( %3 seconds সময় লেগেছে )",
     "no-matches": "No matches found",
+    "advanced-search": "Advanced Search",
     "in": "In",
-    "by": "By",
     "titles": "Titles",
     "titles-posts": "Titles and Posts",
     "posted-by": "Posted by",

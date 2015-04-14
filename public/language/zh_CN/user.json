@@ -79,5 +79,6 @@
     "topic_search_help": "启用后，主题内搜索会替代浏览器默认的页面搜索，你可以在整个主题的全部内容进行搜索，而不是仅限于屏幕显示的内容。",
     "follow_topics_you_reply_to": "关注您回复的主题。",
     "follow_topics_you_create": "关注您创建的主题。",
-    "grouptitle": "选择展现的组内称号"
+    "grouptitle": "选择展现的组内称号",
+    "no-group-title": "No group title"
 }

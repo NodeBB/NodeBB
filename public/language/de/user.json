@@ -79,5 +79,6 @@
     "topic_search_help": "Falls aktiviert, wird die Suche im Thema das Standardsuchverhalten des Browsers überschreiben und es Ihnen erlauben, das ganze Thema statt dessen, was sich auf dem Bildschirm befindet, zu durchsuchen.",
     "follow_topics_you_reply_to": "Folge Themen, auf die du antwortest.",
     "follow_topics_you_create": "Folge Themen, die du erstellst.",
-    "grouptitle": "Wähle den anzuzeigenden Gruppen Titel aus"
+    "grouptitle": "Wähle den anzuzeigenden Gruppen Titel aus",
+    "no-group-title": "No group title"
 }

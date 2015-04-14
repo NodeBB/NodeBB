@@ -5,5 +5,8 @@
     "browsing": "περιηγούνται",
     "no_replies": "Κανείς δεν έχει απαντήσει",
     "share_this_category": "Μοιράσου αυτή την κατηγορία",
-    "ignore": "Αγνόηση"
+    "watch": "Watch",
+    "ignore": "Αγνόηση",
+    "watch.message": "You are now watching updates from this category",
+    "ignore.message": "You are now ignoring updates from this category"
 }

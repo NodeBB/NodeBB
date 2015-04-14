@@ -21,6 +21,7 @@
     "email-not-confirmed-chat": "Вы не можете оставлять сообщения, пока Ваш email не подтверждён. Нажмите на это сообщение чтобы получить письмо повторно.",
     "no-email-to-confirm": "Этот форум требует подтверждения по E-mail. Нажмите здесь для ввода E-mail.",
     "email-confirm-failed": "Мы не можем подтвердить Ваш E-mail, попробуйте позже.",
+    "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minutes to send another one.",
     "username-too-short": "Слишком короткое имя пользователя",
     "username-too-long": "Имя пользователя слишком длинное",
     "user-banned": "Пользователь заблокирован",

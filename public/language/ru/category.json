@@ -5,5 +5,8 @@
     "browsing": "просматривают",
     "no_replies": "Нет ответов",
     "share_this_category": "Поделиться этой категорией",
-    "ignore": "Игнорировать"
+    "watch": "Watch",
+    "ignore": "Игнорировать",
+    "watch.message": "You are now watching updates from this category",
+    "ignore.message": "You are now ignoring updates from this category"
 }

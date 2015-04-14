@@ -21,6 +21,7 @@
     "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
     "no-email-to-confirm": "Dette forumet krever at e-postbekreftelse, vennligst klikk her for å skrive inn en e-post",
     "email-confirm-failed": "Vi kunne ikke godkjenne e-posten din, vennligst prøv igjen senere.",
+    "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minutes to send another one.",
     "username-too-short": "Brukernavnet er for kort",
     "username-too-long": "Brukernavnet er for langt",
     "user-banned": "Bruker utestengt",

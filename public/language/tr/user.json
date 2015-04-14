@@ -27,7 +27,7 @@
     "chat": "Sohbet",
     "follow": "Takip Et",
     "unfollow": "Takip etme",
-    "more": "More",
+    "more": "Daha Fazla",
     "profile_update_success": "Profiliniz başarıyla güncellendi!",
     "change_picture": "Resmi Değiştir",
     "edit": "Düzenle",
@@ -61,7 +61,7 @@
     "digest_monthly": "Aylık",
     "send_chat_notifications": "Çevrimiçi değilken gelen iletileri e-posta olarak gönder",
     "send_post_notifications": "Abone olduğum konulara cevap gelince bana eposta yolla",
-    "settings-require-reload": "Some setting changes require a reload. Click here to reload the page.",
+    "settings-require-reload": "Bazı ayar değişiklikleri sayfayı tekrar yüklemenizi gerektirir. Buraya tıklayarak sayfayı tekrar yükleyebilirsiniz.",
     "has_no_follower": "Bu kullanıcının hiç takipçisi yok :(",
     "follows_no_one": "Bu kullanıcı kimseyi takip etmiyor :(",
     "has_no_posts": "Bu kullanıcı henüz birşey göndermedi.",
@@ -79,5 +79,6 @@
     "topic_search_help": "Aktive edilirse, konu içi arama tarayıcının normal arama davranışını değiştirerek tüm konuyu aramanızı sağlar.",
     "follow_topics_you_reply_to": "İleti gönderdiğim konuları takip et.",
     "follow_topics_you_create": "Kendi yarattığım konuları takip et.",
-    "grouptitle": "Select the group title you would like to display"
+    "grouptitle": "Göstermek istediğiniz gurup başlığını seçin",
+    "no-group-title": "No group title"
 }

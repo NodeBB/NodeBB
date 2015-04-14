@@ -1,8 +1,8 @@
 {
     "results_matching": "%1 tane “%2“ bulundu (%3 saniye)",
     "no-matches": "Hiç eşleşme bulunamadı",
+    "advanced-search": "Advanced Search",
     "in": "Konum:",
-    "by": "Kim Tarafından :",
     "titles": "Başlıklar",
     "titles-posts": "Başlıklar ve Yayınlar",
     "posted-by": "Gönderen",

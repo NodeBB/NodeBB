@@ -27,7 +27,7 @@
     "chat": "Chat",
     "follow": "Seguir",
     "unfollow": "Deixar de Seguir",
-    "more": "More",
+    "more": "Mais",
     "profile_update_success": "O Perfil foi atualizado com sucesso!",
     "change_picture": "Alterar Foto",
     "edit": "Editar",
@@ -79,5 +79,6 @@
     "topic_search_help": "Se habilitado, a pesquisa dentro de tópico irá substituir o funcionamento padrão de pesquisa de página do navegador e permitir que você pesquise pelo tópico todo, ao invés de apenas o que é mostrado na tela.",
     "follow_topics_you_reply_to": "Seguir tópicos que você responde.",
     "follow_topics_you_create": "Seguir tópicos que você cria.",
-    "grouptitle": "Escolha o título do grupo que você deseja exibir"
+    "grouptitle": "Escolha o título do grupo que você deseja exibir",
+    "no-group-title": "No group title"
 }

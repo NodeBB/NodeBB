@@ -15,12 +15,12 @@
     "chat.seven_days": "7 Gün",
     "chat.thirty_days": "30 Gün",
     "chat.three_months": "3 Ay",
-    "composer.compose": "Compose",
-    "composer.show_preview": "Show Preview",
-    "composer.hide_preview": "Hide Preview",
+    "composer.compose": "Yaz",
+    "composer.show_preview": "Önizleme Göster",
+    "composer.hide_preview": "Önizleme Sakla",
     "composer.user_said_in": "%1 %2 içinde söyledi:",
     "composer.user_said": "%1 söyledi:",
     "composer.discard": "Bu iletiyi iptal etmek istediğinizden eminmisiniz?",
-    "composer.submit_and_lock": "Submit and Lock",
-    "composer.toggle_dropdown": "Toggle Dropdown"
+    "composer.submit_and_lock": "Gönder ve Kitle",
+    "composer.toggle_dropdown": "Menü aç"
 }

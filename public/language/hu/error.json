@@ -21,6 +21,7 @@
     "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
     "no-email-to-confirm": "Ez a fórum e-mail megerősítést kíván, kérlek kattints ide egy cím beírásához",
     "email-confirm-failed": "Nem tudtuk ellenőrizni az e-mail címedet, kérlek próbálkozz később.",
+    "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minutes to send another one.",
     "username-too-short": "Túl rövid felhasználónév",
     "username-too-long": "Túl hosszú felhasználónév",
     "user-banned": "Kitiltott felhasználó",

@@ -21,6 +21,7 @@
     "email-not-confirmed-chat": "您的电子邮箱尚未确认，无法聊天，请点击这里确认您的电子邮箱。",
     "no-email-to-confirm": "本论坛需要电子邮箱确认，请点击这里输入一个电子邮箱地址",
     "email-confirm-failed": "我们无法确认您的电子邮箱，请重试",
+    "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minutes to send another one.",
     "username-too-short": "用户名太短",
     "username-too-long": "用户名太长",
     "user-banned": "用户已禁止",

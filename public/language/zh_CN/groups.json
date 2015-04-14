@@ -20,6 +20,8 @@
     "details.kick": "踢",
     "details.owner_options": "用户组管理",
     "details.group_name": "用户组名",
+    "details.member_count": "Member Count",
+    "details.creation_date": "Creation Date",
     "details.description": "描述",
     "details.badge_preview": "标志预览",
     "details.change_icon": "更改图标",

@@ -15,12 +15,12 @@
     "chat.seven_days": "7 Jours",
     "chat.thirty_days": "30 Jours",
     "chat.three_months": "3 Mois",
-    "composer.compose": "Compose",
-    "composer.show_preview": "Show Preview",
-    "composer.hide_preview": "Hide Preview",
+    "composer.compose": "Écrire",
+    "composer.show_preview": "Afficher l'aperçu",
+    "composer.hide_preview": "Masquer l'aperçu",
     "composer.user_said_in": "%1 a dit dans %2 :",
     "composer.user_said": "%1 a dit :",
     "composer.discard": "Êtes-vous sûr de bien vouloir supprimer ce message ?",
     "composer.submit_and_lock": "Soumettre et Verrouiller",
-    "composer.toggle_dropdown": "Toggle Dropdown"
+    "composer.toggle_dropdown": "Afficher/masquer le menu"
 }

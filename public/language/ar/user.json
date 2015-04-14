@@ -79,5 +79,6 @@
     "topic_search_help": "في حالة تفعيلها، ستعوض خاصيةُ البحث داخل المواضيع خاصيةَ البحث الخاصة بالمتصفح، فتمكنك بالتالي بالبحث في الموضوع بأكمله دون الاقتصار على مايظهر في الشاشة فحسب.",
     "follow_topics_you_reply_to": "متابعة المشاركات التي ترد عليها",
     "follow_topics_you_create": "متابعة المشاركات التي تكتبها",
-    "grouptitle": "Select the group title you would like to display"
+    "grouptitle": "Select the group title you would like to display",
+    "no-group-title": "No group title"
 }

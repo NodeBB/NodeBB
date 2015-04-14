@@ -1,8 +1,8 @@
 {
     "results_matching": "%1 ผลลัพธ์ ตรงตามที่ระบุ \"%2\", (%3 วินาที)",
     "no-matches": "ไม่พบผลลัพธ์ที่สอดคล้อง",
+    "advanced-search": "Advanced Search",
     "in": "In",
-    "by": "โดย",
     "titles": "หัวข้อ",
     "titles-posts": "หัวข้อ และ ข้อความ",
     "posted-by": "บันทึกโดย",

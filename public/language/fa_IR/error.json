@@ -21,6 +21,7 @@
     "email-not-confirmed-chat": "شما تا قبل از تایید رایانامه قادر به گفتگو نیستید، لطفا برای تایید رایانامه خود اینجا کلیک کنید",
     "no-email-to-confirm": "این انجمن نیاز به تایید رایانامه دارد، لطفا برای وارد کردن رایانامه اینجا کلیک کنید",
     "email-confirm-failed": "ما نتوانستیم رایانامه شما را تایید کنیم، لطفا بعدا دوباره سعی کنید",
+    "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minutes to send another one.",
     "username-too-short": "نام کاربری خیلی کوتاه است.",
     "username-too-long": "نام کاربری بسیار طولانیست",
     "user-banned": "کاربر محروم شد.",

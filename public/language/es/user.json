@@ -79,5 +79,6 @@
     "topic_search_help": "Si está activada, la búsqueda 'in-topic' invalidará el comportamiento por defecto del navegador de buscar sólo en la página mostrada y le permitirá entonces buscar en el tema al completo, en vez de hacer una búsqueda únicamente sobre el contenido de la pantalla.",
     "follow_topics_you_reply_to": "Seguir los temas en las que respondes.",
     "follow_topics_you_create": "Seguir publicaciones que creas.",
-    "grouptitle": "Select the group title you would like to display"
+    "grouptitle": "Select the group title you would like to display",
+    "no-group-title": "No group title"
 }
