@@ -23,12 +23,10 @@ define('forum/pagination', function() {
 		callback = callback || function() {};
 		page = parseInt(page, 10);
 		if (!utils.isNumber(page) || page < 1 || page > pagination.pageCount) {
-			callback(false);
-			return false;
+			return;
 		}
 		var url = window.location.pathname.slice(1).split('/').slice(0, 3).join('/') + '?page=' + page;
 		ajaxify.go(url, callback);
-		return true;
 	};
 
 	return pagination;
