@@ -198,7 +198,8 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 		coverEl.find('.change').on('click', function() {
 			coverEl.toggleClass('active', 1);
 			coverEl.backgroundDraggable({
-				axis: 'y'
+				axis: 'y',
+				units: 'percent'
 			});
 			coverEl.on('dragover', Details.cover.onDragOver);
 			coverEl.on('drop', Details.cover.onDrop);
@@ -246,7 +247,6 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 		if (files.length && files[0].type.match('image.*')) {
 			reader.onload = function(e) {
 				coverEl.css('background-image', 'url(' + e.target.result + ')');
-				coverEl.backgroundDraggable();
 				Details.cover.newCover = e.target.result;
 			};
 

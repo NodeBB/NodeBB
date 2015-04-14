@@ -75,7 +75,7 @@
 
     // Get the image's width and height if bound
     var imageDimensions = { width: 0, height: 0 };
-    if (options.bound) {
+    if (options.bound || options.units == 'percent') {
       imageDimensions = getBackgroundImageDimensions($el);
     }
 
@@ -97,6 +97,12 @@
           xPos = parseInt(pos[1]) || 0,
           yPos = parseInt(pos[2]) || 0;
 
+      // We must convert percentage back to pixels
+      if (options.units == 'percent') {
+        xPos = Math.round(xPos / -200 * imageDimensions.width);
+        yPos = Math.round(yPos / -200 * imageDimensions.height);
+      }
+
       $window.on('mousemove.dbg touchmove.dbg', function(e) {
         e.preventDefault();
 
@@ -107,12 +113,22 @@
         var x = e.clientX,
             y = e.clientY;
 
-        xPos = options.axis === 'y' ? xPos : limit($el.innerWidth()-imageDimensions.width, 0, xPos+x-x0, options.bound);
-        yPos = options.axis === 'x' ? yPos : limit($el.innerHeight()-imageDimensions.height, 0, yPos+y-y0, options.bound);
+        if (options.units == 'percent') {
+          xPos = options.axis === 'y' ? xPos : limit(-imageDimensions.width/2, 0, xPos+x-x0, options.bound);
+          yPos = options.axis === 'x' ? yPos : limit(-imageDimensions.height/2, 0, yPos+y-y0, options.bound);
+
+          // Convert pixels to percentage
+          $el.css('background-position', xPos / imageDimensions.width * -200 + '% ' + yPos / imageDimensions.height * -200 + '%');
+        } else {
+          xPos = options.axis === 'y' ? xPos : limit($el.innerWidth()-imageDimensions.width, 0, xPos+x-x0, options.bound);
+          yPos = options.axis === 'x' ? yPos : limit($el.innerHeight()-imageDimensions.height, 0, yPos+y-y0, options.bound);
+
+          $el.css('background-position', xPos + 'px ' + yPos + 'px');
+        }
+
         x0 = x;
         y0 = y;
 
-        $el.css('background-position', xPos + 'px ' + yPos + 'px');
       });
 
       $window.on('mouseup.dbg touchend.dbg mouseleave.dbg', function() {
@@ -152,6 +168,7 @@
 
   $.fn.backgroundDraggable.defaults = {
     bound: true,
-    axis: undefined
+    axis: undefined,
+    units: 'pixels'
   };
 }(jQuery));
