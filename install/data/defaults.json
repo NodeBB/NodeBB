@@ -94,5 +94,9 @@
     {
         "field": "requireEmailConfirmation",
         "value": 0
+    },
+    {
+        "field": "profile:allowProfileImageUploads",
+        "value": 1
     }
 ]

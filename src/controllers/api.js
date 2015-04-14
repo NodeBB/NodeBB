@@ -44,6 +44,7 @@ apiController.getConfig = function(req, res, next) {
 	config.allowGuestSearching = parseInt(meta.config.allowGuestSearching, 10) === 1;
 	config.allowGuestHandles = parseInt(meta.config.allowGuestHandles, 10) === 1;
 	config.allowFileUploads = parseInt(meta.config.allowFileUploads, 10) === 1;
+	config.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads) === 1;
 	config.allowTopicsThumbnail = parseInt(meta.config.allowTopicsThumbnail, 10) === 1;
 	config.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
 	config.privateUserInfo = parseInt(meta.config.privateUserInfo, 10) === 1;

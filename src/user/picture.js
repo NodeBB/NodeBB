@@ -25,6 +25,9 @@ module.exports = function(User) {
 
 		async.waterfall([
 			function(next) {
+				next(parseInt(meta.config.allowProfileImageUploads) !== 1 ? new Error('[[error:profile-image-uploads-disabled]]') : null);
+			},
+			function(next) {
 				next(picture.size > uploadSize * 1024 ? new Error('[[error:file-too-big, ' + uploadSize + ']]') : null);
 			},
 			function(next) {
@@ -44,7 +47,6 @@ module.exports = function(User) {
 				}
 			}
 		], function(err, result) {
-
 			function done(err, image) {
 				if (err) {
 					return callback(err);
