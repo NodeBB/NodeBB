@@ -89,9 +89,16 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.profile_links = results.profile_links;
 			userData.status = require('../socket.io').isUserOnline(userData.uid) ? (userData.status || 'online') : 'offline';
 			userData.banned = parseInt(userData.banned, 10) === 1;
-			userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
+			userData.websiteName = userData.website.replace('http://', '').replace('https://', '');
 			userData.followingCount = parseInt(userData.followingCount, 10) || 0;
 			userData.followerCount = parseInt(userData.followerCount, 10) || 0;
+
+			userData.username = validator.escape(userData.username);
+			userData.email = validator.escape(userData.email);
+			userData.fullname = validator.escape(userData.fullname);
+			userData.websiteName = validator.escape(userData.websiteName);
+			userData.location = validator.escape(userData.location);
+			userData.signature = validator.escape(userData.signature);
 
 			callback(null, userData);
 		});

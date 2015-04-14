@@ -111,7 +111,6 @@ module.exports = function(User) {
 				}
 
 				data[field] = data[field].trim();
-				data[field] = validator.escape(data[field]);
 
 				if (field === 'email') {
 					return updateEmail(uid, data.email, next);
@@ -122,8 +121,8 @@ module.exports = function(User) {
 				} else if (field === 'signature') {
 					data[field] = S(data[field]).stripTags().s;
 				} else if (field === 'website') {
-					if (!data[field].startsWith(validator.escape('http://')) && !data[field].startsWith(validator.escape('https://'))) {
-						data[field] = validator.escape('http://') + data[field];
+					if (!data[field].startsWith('http://') && !data[field].startsWith('https://')) {
+						data[field] = 'http://' + data[field];
 					}
 				}
 
