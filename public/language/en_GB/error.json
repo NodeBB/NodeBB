@@ -58,7 +58,7 @@
 	"too-many-posts-newbie": "As a new user, you can only post once every %1 seconds until you have earned %2 reputation - please wait before posting again",
 	"tag-too-short": "Please enter a longer tag. Tags should contain at least %1 characters",
 	"tag-too-long": "Please enter a shorter tag. Tags can't be longer than %1 characters",
-	"file-too-big": "Maximum allowed file size is %1 kbs - please upload a smaller file",
+	"file-too-big": "Maximum allowed file size is %1 kb - please upload a smaller file",
 
 	"cant-vote-self-post": "You cannot vote for your own post",
 	"already-favourited": "You have already favourited this post",

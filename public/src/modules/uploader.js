@@ -16,8 +16,9 @@ define('uploader', ['csrf'], function(csrf) {
 		uploadForm.find('#params').val(JSON.stringify(params));
 
 		if (fileSize) {
-			uploadForm.find('#upload-file-size').html(fileSize);
-			uploadForm.find('#file-size-block').removeClass('hide');
+			uploadForm.find('#file-size-block')
+				.translateText('[[uploads:maximum-file-size, ' + fileSize + ']]')
+				.removeClass('hide');
 		} else {
 			uploadForm.find('#file-size-block').addClass('hide');
 		}
