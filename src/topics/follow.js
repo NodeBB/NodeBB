@@ -136,11 +136,17 @@ module.exports = function(Topics) {
 					nid: 'tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + exceptUid,
 					tid: postData.topic.tid,
 					from: exceptUid
-				}, next);
+				}, function(err, notification) {
+					if (err) {
+						return next(err);
+					}
+					if (notification) {
+						notifications.push(notification, followers);
+					}
+					next();
+				});
 			},
-			function(notification, next) {
-				notifications.push(notification, followers);
-
+			function(next) {
 				async.eachLimit(followers, 3, function(toUid, next) {
 					async.parallel({
 						userData: async.apply(user.getUserFields, toUid, ['username']),
