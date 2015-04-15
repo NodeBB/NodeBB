@@ -154,6 +154,7 @@ module.exports = function(Topics) {
 								postBody: postData.content,
 								site_title: meta.config.title || 'NodeBB',
 								username: data.userData.username,
+								userslug: data.userData.userslug,
 								url: nconf.get('url') + '/topic/' + postData.topic.tid,
 								base_url: nconf.get('url')
 							}, next);
