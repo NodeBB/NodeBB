@@ -255,7 +255,7 @@ $(document).ready(function() {
 			}
 
 			if (!e.ctrlKey && !e.shiftKey && !e.metaKey && e.which === 1) {
-				if (this.host === '' || this.host === window.location.host) {
+				if (this.host === '' || (this.host === window.location.host && this.protocol === window.location.protocol)) {
 					// Internal link
 					var url = this.href.replace(rootUrl + '/', '');
 
