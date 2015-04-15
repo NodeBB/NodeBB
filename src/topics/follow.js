@@ -149,7 +149,7 @@ module.exports = function(Topics) {
 			function(next) {
 				async.eachLimit(followers, 3, function(toUid, next) {
 					async.parallel({
-						userData: async.apply(user.getUserFields, toUid, ['username']),
+						userData: async.apply(user.getUserFields, toUid, ['username', 'userslug']),
 						userSettings: async.apply(user.getSettings, toUid)
 					}, function(err, data) {
 						if (data.userSettings.hasOwnProperty('sendPostNotifications') && data.userSettings.sendPostNotifications) {
