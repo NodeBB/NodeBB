@@ -79,5 +79,6 @@
     "topic_search_help": "Une fois activé, la recherche dans les sujets va remplacer la recherche de page du navigateur et vous permettra de rechercher dans l'intégralité d'un sujet au lieu des seuls posts chargés.",
     "follow_topics_you_reply_to": "Suivre les sujets auxquels vous répondez.",
     "follow_topics_you_create": "Suivre les sujets que vous créez.",
-    "grouptitle": "Sélectionnez le titre de groupe que vous souhaitez afficher"
+    "grouptitle": "Sélectionnez le titre de groupe que vous souhaitez afficher",
+    "no-group-title": "Aucun titre de groupe"
 }

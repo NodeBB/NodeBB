@@ -1,8 +1,8 @@
 {
     "results_matching": "\"%2\"와 일치하는 %1개의 결과를 찾았습니다 (검색시간: %3초)",
     "no-matches": "No matches found",
+    "advanced-search": "Advanced Search",
     "in": "In",
-    "by": "By",
     "titles": "Titles",
     "titles-posts": "Titles and Posts",
     "posted-by": "Posted by",

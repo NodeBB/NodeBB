@@ -20,6 +20,8 @@
     "details.kick": "Expulsar",
     "details.owner_options": "Administración De Grupo",
     "details.group_name": "Nombre de Grupo",
+    "details.member_count": "Member Count",
+    "details.creation_date": "Creation Date",
     "details.description": "Descripción",
     "details.badge_preview": "Previsualización de Insignia",
     "details.change_icon": "Cambiar Icono",

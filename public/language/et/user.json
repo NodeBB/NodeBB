@@ -79,5 +79,6 @@
     "topic_search_help": "Kui sisse lülitatud, siis teemasisisene otsing võtab üle brauseri tavapärase lehe otsingu käitumise ning võimaldab otsida terve teema ulatuses ainult ekraanile mahtuva teema asemel.",
     "follow_topics_you_reply_to": "Järgi teemasid millele vastuse kirjutad.",
     "follow_topics_you_create": "Järgi teemasid, mis on sinu loodud.",
-    "grouptitle": "Vali grupile tiitel mida kuvada soovid"
+    "grouptitle": "Vali grupile tiitel mida kuvada soovid",
+    "no-group-title": "No group title"
 }

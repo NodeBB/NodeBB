@@ -24,8 +24,9 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 			}
 		});
 
+		// Update the "others can mention you via" text
 		username.on('keyup', function() {
-			$('#yourUsername').text(this.value.length > 0 ? this.value : 'username');
+			$('#yourUsername').text(this.value.length > 0 ? utils.slugify(this.value) : 'username');
 		});
 
 		username.on('blur', function() {

@@ -134,6 +134,11 @@ module.exports = function(Topics) {
 				if(!canCreate) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
+
+				if (!guestHandleValid(data)) {
+					return next(new Error('[[error:guest-handle-invalid]]'));
+				}
+
 				user.isReadyToPost(uid, next);
 			},
 			function(next) {
@@ -217,6 +222,10 @@ module.exports = function(Topics) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 
+				if (!guestHandleValid(data)) {
+					return next(new Error('[[error:guest-handle-invalid]]'));
+				}
+
 				user.isReadyToPost(uid, next);
 			},
 			function(next) {
@@ -265,7 +274,7 @@ module.exports = function(Topics) {
 
 				// Username override for guests, if enabled
 				if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(postData.uid, 10) === 0 && data.handle) {
-					postData.user.username = data.handle;
+					postData.user.username = validator.escape(data.handle);
 				}
 
 				if (results.settings.followTopicsOnReply) {
@@ -300,6 +309,14 @@ module.exports = function(Topics) {
 			return callback(new Error('[[error:content-too-long, '  + meta.config.maximumPostLength + ']]'));
 		}
 		callback();
+	}
+
+	function guestHandleValid(data) {
+		if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(data.uid, 10) === 0 &&
+			data.handle && data.handle.length > meta.config.maximumUsernameLength) {
+			return false;
+		}
+		return true;
 	}
 
 };

@@ -5,5 +5,8 @@
     "browsing": "تصفح",
     "no_replies": "لم يرد أحد",
     "share_this_category": "انشر هذه الفئة",
-    "ignore": "تجاهل"
+    "watch": "Watch",
+    "ignore": "تجاهل",
+    "watch.message": "You are now watching updates from this category",
+    "ignore.message": "You are now ignoring updates from this category"
 }

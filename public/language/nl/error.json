@@ -21,6 +21,7 @@
     "email-not-confirmed-chat": "U kunt helaas geen gebruik maken van chats tot uw email adres bevestigd is.",
     "no-email-to-confirm": "Dit forum vereist email bevestiging, klikt u alstublieft hier om uw email te vermelden",
     "email-confirm-failed": "Uw email kon helaas niet bevestigd worden, probeert u het alstublieft later nog eens.",
+    "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minutes to send another one.",
     "username-too-short": "Gebruikersnaam is te kort",
     "username-too-long": "Gebruikersnaam is te lang",
     "user-banned": "Gebruiker verbannen",

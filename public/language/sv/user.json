@@ -79,5 +79,6 @@
     "topic_search_help": "Om aktiverat kommer sökning inom ämne överskrida webbläsarens vanliga sid-sökfunktion och tillåta dig att söka genom hela ämnet istället för det som endast visas på skärmen.",
     "follow_topics_you_reply_to": "Följ ämnen so du svarat på.",
     "follow_topics_you_create": "Följ ämnen du skapat.",
-    "grouptitle": "Select the group title you would like to display"
+    "grouptitle": "Select the group title you would like to display",
+    "no-group-title": "No group title"
 }

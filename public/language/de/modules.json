@@ -15,12 +15,12 @@
     "chat.seven_days": "7 Tage",
     "chat.thirty_days": "30 Tage",
     "chat.three_months": "3 Monate",
-    "composer.compose": "Compose",
-    "composer.show_preview": "Show Preview",
-    "composer.hide_preview": "Hide Preview",
+    "composer.compose": "Verfassen",
+    "composer.show_preview": "Vorschau anzeigen",
+    "composer.hide_preview": "Vorschau ausblenden",
     "composer.user_said_in": "%1 sagte in %2:",
     "composer.user_said": "%1 sagte:",
-    "composer.discard": "Bist du sicher, dass du diesen Post verwerfen möchtest?",
+    "composer.discard": "Bist du sicher, dass du diesen Beitrag verwerfen möchtest?",
     "composer.submit_and_lock": "Einreichen und Sperren",
-    "composer.toggle_dropdown": "Toggle Dropdown"
+    "composer.toggle_dropdown": "Menu aus-/einblenden"
 }

@@ -11,4 +11,4 @@
 
 ===
 
-[[email:notif.post.unsub.info]] <a href="{base_url}/user/{username}/settings">[[email:unsub.cta]]</a>.
+[[email:notif.post.unsub.info]] <a href="{base_url}/user/{userslug}/settings">[[email:unsub.cta]]</a>.

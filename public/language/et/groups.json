@@ -20,6 +20,8 @@
     "details.kick": "Viska välja",
     "details.owner_options": "Grupi haldamine",
     "details.group_name": "Grupi nimi",
+    "details.member_count": "Member Count",
+    "details.creation_date": "Creation Date",
     "details.description": "Kirjeldus",
     "details.badge_preview": "Embleemi eelvaade",
     "details.change_icon": "Vaheta ikooni",

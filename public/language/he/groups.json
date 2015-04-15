@@ -20,6 +20,8 @@
     "details.kick": "Kick",
     "details.owner_options": "ניהול הקבוצה",
     "details.group_name": "Group Name",
+    "details.member_count": "Member Count",
+    "details.creation_date": "Creation Date",
     "details.description": "Description",
     "details.badge_preview": "Badge Preview",
     "details.change_icon": "Change Icon",

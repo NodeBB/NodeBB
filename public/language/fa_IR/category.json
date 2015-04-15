@@ -5,5 +5,8 @@
     "browsing": "بیننده‌ها",
     "no_replies": "هیچ کسی پاسخ نداده است.",
     "share_this_category": "به اشتراک‌گذاری این دسته",
-    "ignore": "نادیده گرفتن"
+    "watch": "Watch",
+    "ignore": "نادیده گرفتن",
+    "watch.message": "You are now watching updates from this category",
+    "ignore.message": "You are now ignoring updates from this category"
 }

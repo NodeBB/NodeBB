@@ -21,6 +21,7 @@
     "email-not-confirmed-chat": "Sõnumeid ei ole võimalik enne saata kui sinu email on kinnitatud. Kinnitamiseks vajuta siia.",
     "no-email-to-confirm": "See foorum nõuab emaili kinnitust, palun vajuta siia, et sisestada email",
     "email-confirm-failed": "Meil ei õnnestunud sinu emaili kinnitada, proovi hiljem uuesti.",
+    "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minutes to send another one.",
     "username-too-short": "Kasutajanimi on liiga lühike",
     "username-too-long": "Kasutajanimi on liiga pikk",
     "user-banned": "Kasutaja bannitud",

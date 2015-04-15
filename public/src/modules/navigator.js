@@ -84,7 +84,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 			return;
 		}
 
-		$('.pagination-block').toggleClass('hidden', !flag);
+		$('.pagination-block').toggleClass('invisible', !flag);
 	}
 
 	navigator.update = function() {

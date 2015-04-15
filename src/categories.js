@@ -255,7 +255,11 @@ var async = require('async'),
 			}
 
 			var parentCids = data.map(function(category) {
-				return category && category.parentCid;
+				if (category && category.hasOwnProperty('parentCid') && category.parentCid) {
+					return category.parentCid;
+				} else {
+					return 0;
+				}
 			});
 
 			Categories.getCategoriesData(parentCids, callback);

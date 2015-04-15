@@ -79,5 +79,6 @@
     "topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen.",
     "follow_topics_you_reply_to": "Urmărește subiectele în care ai răspuns.",
     "follow_topics_you_create": "Urmărește subiectele care le creezi.",
-    "grouptitle": "Select the group title you would like to display"
+    "grouptitle": "Select the group title you would like to display",
+    "no-group-title": "No group title"
 }

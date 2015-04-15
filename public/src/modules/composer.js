@@ -289,7 +289,7 @@ define('composer', [
 		// https://github.com/NodeBB/NodeBB/issues/1951
 		// remove when 1951 is resolved
 
-		var title = postData.title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+		var title = $('<div/>').text(postData.title).html().replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
 		var data = {
 			title: title,

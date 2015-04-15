@@ -5,5 +5,8 @@
     "browsing": "正在浏览",
     "no_replies": "尚无回复",
     "share_this_category": "分享此版块",
-    "ignore": "忽略"
+    "watch": "订阅",
+    "ignore": "忽略",
+    "watch.message": "您现在已经订阅了此版块",
+    "ignore.message": "您现在已经取消订阅了此版块"
 }

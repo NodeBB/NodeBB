@@ -1,7 +1,7 @@
 "use strict";
 
 
-var async = require('async'),	
+var async = require('async'),
 	db = require('../../database'),
 	groups = require('../../groups'),
 	user = require('../../user'),
@@ -132,7 +132,7 @@ User.sendValidationEmail = function(socket, uids, callback) {
 	if (!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-	
+
 	if (parseInt(meta.config.requireEmailConfirmation, 10) !== 1) {
 		return callback(new Error('[[error:email-confirmations-are-disabled]]'));
 	}
@@ -144,7 +144,7 @@ User.sendValidationEmail = function(socket, uids, callback) {
 
 		async.eachLimit(usersData, 50, function(userData, next) {
 			if (userData.email && userData.uid) {
-				user.email.verify(userData.uid, userData.email, next);		
+				user.email.sendValidationEmail(userData.uid, userData.email, next);
 			} else {
 				next();
 			}

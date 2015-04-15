@@ -22,6 +22,10 @@ searchController.search = function(req, res, next) {
 			return next(err);
 		}
 
+		categories = categories.filter(function(category) {
+			return category && !category.link;
+		});
+
 		req.params.term = validator.escape(req.params.term);
 		var page = Math.max(1, parseInt(req.query.page, 10)) || 1;
 		if (req.query.categories && !Array.isArray(req.query.categories)) {

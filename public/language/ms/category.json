@@ -5,5 +5,8 @@
     "browsing": "melihat",
     "no_replies": "Tiada jawapan",
     "share_this_category": "Kongsi kategori ini",
-    "ignore": "Ignore"
+    "watch": "Watch",
+    "ignore": "Ignore",
+    "watch.message": "You are now watching updates from this category",
+    "ignore.message": "You are now ignoring updates from this category"
 }

@@ -5,5 +5,8 @@
     "browsing": "läser",
     "no_replies": "Ingen har svarat",
     "share_this_category": "Dela den här kategorin",
-    "ignore": "Ignorera"
+    "watch": "Watch",
+    "ignore": "Ignorera",
+    "watch.message": "You are now watching updates from this category",
+    "ignore.message": "You are now ignoring updates from this category"
 }

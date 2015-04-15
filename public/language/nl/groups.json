@@ -20,6 +20,8 @@
     "details.kick": "Verwijder",
     "details.owner_options": "Groeps Administratie",
     "details.group_name": "Groepsnaam",
+    "details.member_count": "Member Count",
+    "details.creation_date": "Creation Date",
     "details.description": "Beschrijving",
     "details.badge_preview": "Badge Voorvertoning",
     "details.change_icon": "Icoon veranderen",

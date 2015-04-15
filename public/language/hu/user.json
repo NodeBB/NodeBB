@@ -79,5 +79,6 @@
     "topic_search_help": "Amennyiben be van kapcsolva, a témán belüli keresés felül fogja írni a böngésző alapértelmezett oldalon belüli keresőjét és engedélyezni fogja neked, hogy a teljes témában kereshess, ne csak abban, ami jelenleg is megjelenik a képernyőn.",
     "follow_topics_you_reply_to": "Minden olyan téma követése, amihez hozzászóltál.",
     "follow_topics_you_create": "Minden általad létrehozott téma követése.",
-    "grouptitle": "Select the group title you would like to display"
+    "grouptitle": "Select the group title you would like to display",
+    "no-group-title": "No group title"
 }

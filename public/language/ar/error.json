@@ -21,6 +21,7 @@
     "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
     "no-email-to-confirm": "هذا المنتدى يستلزم تفعيل بريدك الإلكتروني، انقر هنا من فضلك لإدخاله.",
     "email-confirm-failed": "لم نستطع تفعيل بريدك الإلكتروني، المرجو المحاولة لاحقًا.",
+    "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minutes to send another one.",
     "username-too-short": "اسم المستخدم قصير.",
     "username-too-long": "اسم المستخدم طويل",
     "user-banned": "المستخدم محظور",

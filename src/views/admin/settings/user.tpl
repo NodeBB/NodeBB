@@ -48,6 +48,12 @@
 		<form>
 			<div class="checkbox">
 				<label>
+					<input type="checkbox" data-field="allowProfileImageUploads"> <strong>Allow users to upload profile images</strong>
+				</label>
+			</div>
+
+			<div class="checkbox">
+				<label>
 					<input type="checkbox" data-field="profile:convertProfileImageToPNG"> <strong>Convert profile image uploads to PNG</strong>
 				</label>
 			</div>

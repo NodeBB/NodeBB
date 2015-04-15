@@ -5,6 +5,7 @@
 var async = require('async'),
 	winston = require('winston'),
 	_ = require('underscore'),
+	validator = require('validator'),
 
 	db = require('../database'),
 	user = require('../user'),
@@ -141,7 +142,7 @@ module.exports = function(Topics) {
 
 					// Username override for guests, if enabled
 					if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(postObj.uid, 10) === 0 && postObj.handle) {
-						postObj.user.username = postObj.handle;
+						postObj.user.username = validator.escape(postObj.handle);
 					}
 				}
 			});

@@ -5,5 +5,8 @@
     "browsing": "vaatab",
     "no_replies": "Keegi pole vastanud",
     "share_this_category": "Jaga seda kategooriat",
-    "ignore": "Ignoreeri"
+    "watch": "Watch",
+    "ignore": "Ignoreeri",
+    "watch.message": "You are now watching updates from this category",
+    "ignore.message": "You are now ignoring updates from this category"
 }

@@ -26,6 +26,7 @@
 	"email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
 	"no-email-to-confirm": "This forum requires email confirmation, please click here to enter an email",
 	"email-confirm-failed": "We could not confirm your email, please try again later.",
+	"confirm-email-already-sent": "Confirmation email already sent, please wait %1 minutes to send another one.",
 
 	"username-too-short": "Username too short",
 	"username-too-long": "Username too long",
@@ -57,7 +58,7 @@
 	"too-many-posts-newbie": "As a new user, you can only post once every %1 seconds until you have earned %2 reputation - please wait before posting again",
 	"tag-too-short": "Please enter a longer tag. Tags should contain at least %1 characters",
 	"tag-too-long": "Please enter a shorter tag. Tags can't be longer than %1 characters",
-	"file-too-big": "Maximum allowed file size is %1 kbs - please upload a smaller file",
+	"file-too-big": "Maximum allowed file size is %1 kb - please upload a smaller file",
 
 	"cant-vote-self-post": "You cannot vote for your own post",
 	"already-favourited": "You have already favourited this post",

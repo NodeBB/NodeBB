@@ -5,5 +5,8 @@
     "browsing": "ব্রাউজিং",
     "no_replies": "কোন রিপ্লাই নেই",
     "share_this_category": "এই বিভাগটি অন্যের সাথে ভাগাভাগি করুন",
-    "ignore": "উপেক্ষা করুন"
+    "watch": "Watch",
+    "ignore": "উপেক্ষা করুন",
+    "watch.message": "You are now watching updates from this category",
+    "ignore.message": "You are now ignoring updates from this category"
 }

@@ -28,6 +28,8 @@
     "details.kick": "Исключить из группы",
     "details.owner_options": "Настройки группы",
     "details.group_name": "Имя группы",
+    "details.member_count": "Количество участников",
+    "details.creation_date": "Дата создания",
     "details.description": "Описание",
     "details.badge_preview": "Предпросмотр бейджа",
     "details.change_icon": "Сменить иконку",

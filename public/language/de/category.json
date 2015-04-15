@@ -5,5 +5,8 @@
     "browsing": "Aktiv",
     "no_replies": "Niemand hat geantwortet",
     "share_this_category": "Teile diese Kategorie",
-    "ignore": "Ignorieren"
+    "watch": "Beobachten",
+    "ignore": "Ignorieren",
+    "watch.message": "Du beobachtest jetzt Änderungen in dieser Kategorie",
+    "ignore.message": "Du ignorierst jetzt Änderungen in dieser Kategorie"
 }

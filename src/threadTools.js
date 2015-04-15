@@ -35,7 +35,7 @@ var async = require('async'),
 				if (err) {
 					return callback(err);
 				}
-
+				topicData.deleted = isDelete ? 1 : 0;
 				ThreadTools[isDelete ? 'lock' : 'unlock'](tid, uid);
 				if (isDelete) {
 					plugins.fireHook('action:topic.delete', tid);

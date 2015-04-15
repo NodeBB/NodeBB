@@ -116,7 +116,7 @@ module.exports = function(User) {
 							if (userData.email) {
 								db.setObjectField('email:uid', userData.email.toLowerCase(), userData.uid, next);
 								if (parseInt(userData.uid, 10) !== 1 && parseInt(meta.config.requireEmailConfirmation, 10) === 1) {
-									User.email.verify(userData.uid, userData.email);
+									User.email.sendValidationEmail(userData.uid, userData.email);
 								}
 							} else {
 								next();

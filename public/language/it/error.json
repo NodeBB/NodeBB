@@ -21,6 +21,7 @@
     "email-not-confirmed-chat": "Non potrai chattare finchè non avrai confermato la tua email, per favore clicca qui per farlo ora.",
     "no-email-to-confirm": "Questo forum richiede la conferma dell'indirizzo email, per favore clicca qui per inserirne uno",
     "email-confirm-failed": "Non possiamo confermare la tua email, per favore prova ancora più tardi.",
+    "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minutes to send another one.",
     "username-too-short": "Nome utente troppo corto",
     "username-too-long": "Nome utente troppo lungo",
     "user-banned": "Utente bannato",
