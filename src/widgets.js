@@ -71,12 +71,12 @@ var async = require('async'),
 			if (err) {
 				return callback(err);
 			}
-			
+
 			plugins.fireHook('filter:widgets.frontGetAreas', data, function(err, data) {
 				if (err) {
 					return callback(err);
 				}
-				
+
 				var returnData = {};
 
 				templates.forEach(function(template, index) {
@@ -96,7 +96,7 @@ var async = require('async'),
 				});
 
 				callback(null, returnData);
-				
+
 			});
 		});
 	};

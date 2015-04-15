@@ -4,20 +4,28 @@
     "owner": "Администратор группы",
     "new_group": "Создать группу",
     "no_groups_found": "Нет групп для отображения",
+
+    "list.sort_groupName": "Название группы",
+    "list.sort_memberCount": "Количество участников",
+    "list.sort_creationDate": "Дата создания",
+    "list.search": "Поиск",
+
     "pending.accept": "Принять",
     "pending.reject": "Отклонить",
+
     "cover-instructions": "Перетяните сюда изображение, переместите на нужную позицию и нажмите <strong>Сохранить</strong>",
     "cover-change": "Изменить",
     "cover-save": "Сохранить",
     "cover-saving": "Сохраняем",
+
     "details.title": "Информация о группе",
     "details.members": "Список пользователей",
     "details.pending": "Заявки в группу",
     "details.has_no_posts": "Пользователями этой группы не публиковали никаких записей",
     "details.latest_posts": "Последние записи",
     "details.private": "Приватная",
-    "details.grant": "Выдать/забрать администратора",
-    "details.kick": "Исключить",
+    "details.grant": "Включить или исключить из админов",
+    "details.kick": "Исключить из группы",
     "details.owner_options": "Настройки группы",
     "details.group_name": "Имя группы",
     "details.description": "Описание",
@@ -29,6 +37,8 @@
     "details.private_help": "Если включено, вступление в группы будет подтверждаться владельцем группы",
     "details.hidden": "Скрыто",
     "details.hidden_help": "Если включено, группа не будет показываться в списках, а пользователи должны приглашаться вручную",
+    "details.actions": "Действия",
+
     "event.updated": "Настройки группы обновлены",
     "event.deleted": "Группа \"%1\" удалена"
 }
