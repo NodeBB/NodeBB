@@ -105,24 +105,28 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.expire = function(key, seconds, callback) {
+		callback = callback || function() {};
 		redisClient.expire(key, seconds, function(err) {
 			callback(err);
 		});
 	};
 
 	module.expireAt = function(key, timestamp, callback) {
+		callback = callback || function() {};
 		redisClient.expireat(key, timestamp, function(err) {
 			callback(err);
 		});
 	};
 
 	module.pexpire = function(key, ms, callback) {
+		callback = callback || function() {};
 		redisClient.pexpire(key, ms, function(err) {
 			callback(err);
 		});
 	};
 
 	module.pexpireAt = function(key, timestamp, callback) {
+		callback = callback || function() {};
 		redisClient.pexpireat(key, timestamp, function(err) {
 			callback(err);
 		});
