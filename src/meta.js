@@ -53,6 +53,7 @@ var async = require('async'),
 		async.series([
 			async.apply(plugins.clearRequireCache),
 			async.apply(plugins.reload),
+			async.apply(plugins.reloadRoutes),
 			function(next) {
 				async.parallel([
 					async.apply(Meta.js.minify, false),

@@ -167,7 +167,7 @@ module.exports = function(app, middleware) {
 
 
 	// Add plugin routes
-	plugins.init(app, middleware);
+	plugins.reloadRoutes();
 	authRoutes.reloadRoutes();
 };
 

@@ -55,10 +55,21 @@ if(nconf.get('ssl')) {
 				async.apply(!skipLess ? meta.css.minify : meta.css.getFromFile),
 				async.apply(meta.sounds.init)
 			]);
+
+			plugins.fireHook('static:app.preload', {
+				app: app,
+				middleware: middleware
+			}, function(err) {
+				if (err) {
+					return winston.error('[plugins] Encountered error while executing pre-router plugins hooks: ' + err.message);
+				}
+
+				routes(app, middleware);
+			});
 		});
 
 		middleware = middleware(app);
-		routes(app, middleware);
+		plugins.init(app, middleware);
 
 		// Load server-side template helpers
 		helpers.register();

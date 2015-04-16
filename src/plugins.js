@@ -120,19 +120,23 @@ var fs = require('fs'),
 				});
 
 				next();
-			},
-			async.apply(Plugins.reloadRoutes)
+			}
 		], callback);
 	};
 
 	Plugins.reloadRoutes = function(callback) {
+		callback = callback || function() {};
 		var router = express.Router();
 		router.hotswapId = 'plugins';
 		router.render = function() {
 			app.render.apply(app, arguments);
 		};
 
-		Plugins.fireHook('static:app.load', {app: app, router: router, middleware: middleware, controllers: controllers}, function() {
+		Plugins.fireHook('static:app.load', {app: app, router: router, middleware: middleware, controllers: controllers}, function(err) {
+			if (err) {
+				return winston.error('[plugins] Encountered error while executing post-router plugins hooks: ' + err.message);
+			}
+
 			hotswap.replace('plugins', router);
 			winston.verbose('[plugins] All plugins reloaded and rerouted');
 			callback();
