@@ -121,7 +121,7 @@ module.exports = function(User) {
 				} else if (field === 'signature') {
 					data[field] = S(data[field]).stripTags().s;
 				} else if (field === 'website') {
-					if (!data[field].startsWith('http://') && !data[field].startsWith('https://')) {
+					if (data[field] && !data[field].startsWith('http://') && !data[field].startsWith('https://')) {
 						data[field] = 'http://' + data[field];
 					}
 				}
