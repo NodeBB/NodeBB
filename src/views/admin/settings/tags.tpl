@@ -6,7 +6,7 @@
 		<form>
 			<div class="checkbox">
 				<label>
-					<input type="checkbox" data-field="publicTagListing"> Make the tags list publically viewable
+					<input type="checkbox" data-field="privateTagListing"> Make the tags list private
 				</label>
 			</div>
 			<div class="form-group">
