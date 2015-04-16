@@ -65,7 +65,7 @@ module.exports = function(Topics) {
 								return next(err);
 							}
 							postData = postData.filter(function(post) {
-								return post && parseInt(post.deleted, 10) !== -1;
+								return post && parseInt(post.deleted, 10) !== 1;
 							});
 							var pidsToAdd = [], scores = [];
 							postData.forEach(function(post) {
