@@ -4,24 +4,39 @@ var async = require('async'),
 	db = require('../database'),
 
 	user = require('../user'),
+	posts = require('../posts'),
 	plugins = require('../plugins');
 
 
 module.exports = function(Topics) {
 
 	Topics.delete = function(tid, callback) {
-		async.parallel([
-			function(next) {
-				Topics.setTopicField(tid, 'deleted', 1, next);
-			},
-			function(next) {
-				db.sortedSetsRemove(['topics:recent', 'topics:posts', 'topics:views'], tid, next);
+		Topics.getTopicFields(tid, ['cid'], function(err, topicData) {
+			if (err) {
+				return callback(err);
 			}
-		], callback);
+
+			async.parallel([
+				function(next) {
+					Topics.setTopicField(tid, 'deleted', 1, next);
+				},
+				function(next) {
+					db.sortedSetsRemove(['topics:recent', 'topics:posts', 'topics:views'], tid, next);
+				},
+				function(next) {
+					Topics.getPids(tid, function(err, pids) {
+						if (err) {
+							return next(err);
+						}
+						db.sortedSetRemove('cid:' + topicData.cid + ':pids', pids, next);
+					});
+				}
+			], callback);
+		});
 	};
 
 	Topics.restore = function(tid, callback) {
-		Topics.getTopicFields(tid, ['lastposttime', 'postcount', 'viewcount'], function(err, topicData) {
+		Topics.getTopicFields(tid, ['cid', 'lastposttime', 'postcount', 'viewcount'], function(err, topicData) {
 			if (err) {
 				return callback(err);
 			}
@@ -38,6 +53,28 @@ module.exports = function(Topics) {
 				},
 				function(next) {
 					db.sortedSetAdd('topics:views', topicData.viewcount, tid, next);
+				},
+				function(next) {
+					Topics.getPids(tid, function(err, pids) {
+						if (err) {
+							return callback(err);
+						}
+
+						posts.getPostsFields(pids, ['pid', 'timestamp', 'deleted'], function(err, postData) {
+							if (err) {
+								return next(err);
+							}
+							postData = postData.filter(function(post) {
+								return post && parseInt(post.deleted, 10) !== -1;
+							});
+							var pidsToAdd = [], scores = [];
+							postData.forEach(function(post) {
+								pidsToAdd.push(post.pid);
+								scores.push(post.timestamp);
+							});
+							db.sortedSetAdd('cid:' + topicData.cid + ':pids', scores, pidsToAdd, next);
+						});
+					});
 				}
 			], callback);
 		});
