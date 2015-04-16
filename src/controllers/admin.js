@@ -3,6 +3,7 @@
 var async = require('async'),
 	fs = require('fs'),
 	path = require('path'),
+	nconf = require('nconf'),
 
 	user = require('../user'),
 	categories = require('../categories'),
@@ -16,7 +17,6 @@ var async = require('async'),
 	plugins = require('../plugins'),
 	widgets = require('../widgets'),
 	groups = require('../groups'),
-	pkg = require('../../package.json'),
 	validator = require('validator');
 
 
@@ -63,7 +63,7 @@ adminController.home = function(req, res, next) {
 			return next(err);
 		}
 		res.render('admin/general/dashboard', {
-			version: pkg.version,
+			version: nconf.get('version'),
 			notices: results.notices,
 			stats: results.stats
 		});

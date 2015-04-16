@@ -54,14 +54,6 @@ if(os.platform() === 'linux') {
 	});
 }
 
-if (!process.send) {
-	// If run using `node app`, log GNU copyright info along with server info
-	winston.info('NodeBB v' + pkg.version + ' Copyright (C) 2013-2014 NodeBB Inc.');
-	winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
-	winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
-	winston.info('');
-}
-
 // Alternate configuration file support
 var	configFile = path.join(__dirname, '/config.json'),
 	configExists;
@@ -89,7 +81,8 @@ function loadConfig() {
 	nconf.defaults({
 		base_dir: __dirname,
 		themes_path: path.join(__dirname, 'node_modules'),
-		views_dir: path.join(__dirname, 'public/templates')
+		views_dir: path.join(__dirname, 'public/templates'),
+		version: pkg.version
 	});
 
 	if (!nconf.get('isCluster')) {
@@ -101,6 +94,14 @@ function loadConfig() {
 	nconf.set('themes_path', path.resolve(__dirname, nconf.get('themes_path')));
 	nconf.set('core_templates_path', path.join(__dirname, 'src/views'));
 	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
+
+	if (!process.send) {
+		// If run using `node app`, log GNU copyright info along with server info
+		winston.info('NodeBB v' + nconf.get('version') + ' Copyright (C) 2013-2014 NodeBB Inc.');
+		winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
+		winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
+		winston.info('');
+	}
 }
 
 function start() {
@@ -120,7 +121,7 @@ function start() {
 
 	if (nconf.get('isPrimary') === 'true') {
 		winston.info('Time: %s', (new Date()).toString());
-		winston.info('Initializing NodeBB v%s', pkg.version);
+		winston.info('Initializing NodeBB v%s', nconf.get('version'));
 		winston.verbose('* using configuration stored in: %s', configFile);
 
 		var host = nconf.get(nconf.get('database') + ':host'),
