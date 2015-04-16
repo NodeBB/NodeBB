@@ -101,7 +101,7 @@ module.exports = function(Topics) {
 	};
 
 	Topics.updateTeaser = function(tid, callback) {
-		Topics.getLatestUndeletedPid(tid, function(err, pid) {
+		Topics.getLatestUndeletedReply(tid, function(err, pid) {
 			if (err) {
 				return callback(err);
 			}
