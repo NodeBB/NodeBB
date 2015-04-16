@@ -101,11 +101,12 @@ module.exports = function(Topics) {
 	};
 
 	Topics.updateTeaser = function(tid, callback) {
-		db.getSortedSetRevRange('tid:' + tid + ':posts', 0, 0, function(err, pids) {
+		Topics.getLatestUndeletedPid(tid, function(err, pid) {
 			if (err) {
 				return callback(err);
 			}
-			var pid = Array.isArray(pids) && pids.length ? pids[0] : null;
+
+			pid = pid || null;
 			Topics.setTopicField(tid, 'teaserPid', pid, callback);
 		});
 	};
