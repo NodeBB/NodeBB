@@ -265,6 +265,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 				taskbar.push('chat', chatModal.attr('UUID'), {
 					title: username,
+					touid: touid,
 					icon: 'fa-comment',
 					state: ''
 				});
