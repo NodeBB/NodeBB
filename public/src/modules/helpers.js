@@ -110,7 +110,7 @@
 	};
 
 	// Groups helpers
-	helpers.membershipBtn = function(groupObj) {
+	helpers.membershipBtn = function(groupObj) {console.log(groupObj);
 		if (groupObj.isMember) {
 			return '<button class="btn btn-danger" data-action="leave" data-group="' + groupObj.name + '"><i class="fa fa-times"></i> Leave Group</button>';
 		} else {

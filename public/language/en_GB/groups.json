@@ -5,6 +5,11 @@
 	"new_group": "Create New Group",
 	"no_groups_found": "There are no groups to see",
 
+	"list.sort_groupName": "Group Name",
+    "list.sort_memberCount": "Member Count",
+    "list.sort_creationDate": "Creation Date",
+    "list.search": "Search",
+
 	"pending.accept": "Accept",
 	"pending.reject": "Reject",
 
@@ -35,6 +40,7 @@
 	"details.private_help": "If enabled, joining of groups requires approval from a group owner",
 	"details.hidden": "Hidden",
 	"details.hidden_help": "If enabled, this group will not be found in the groups listing, and users will have to be invited manually",
+	"details.actions": "more",
 
 	"event.updated": "Group details have been updated",
 	"event.deleted": "The group \"%1\" has been deleted"

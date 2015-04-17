@@ -71,53 +71,61 @@ var cache = LRU({
 							posts.isMain(data.pid, next);
 						}
 					}, function(err, results) {
-						if (err) {
-							return next(err);
-						}
-
-						options.tags = options.tags || [];
-
-						if (!results.isMain) {
-							return next(null, {
-								tid: tid,
-								cid: results.cid,
-								isMainPost: false
-							});
-						}
-
-						var topicData = {
-							tid: tid,
-							cid: results.cid,
-							uid: postData.uid,
-							mainPid: data.pid
-						};
-
-						if (title) {
-							topicData.title = title;
-							topicData.slug = tid + '/' + utils.slugify(title);
-						}
-
-						if (options.topic_thumb) {
-							topicData.thumb = options.topic_thumb;
-						}
-
-						db.setObject('topic:' + tid, topicData, function(err) {
-							plugins.fireHook('action:topic.edit', topicData);
-						});
-
-						topics.updateTags(tid, options.tags, function(err) {
+						plugins.fireHook('filter:topic.edit', {post: postData, topic: results, title: title}, function(err, res) {
 							if (err) {
 								return next(err);
 							}
-							topics.getTopicTagsObjects(tid, function(err, tags) {
-								next(err, {
+
+							var postData = res.post,
+								results = res.topic,
+								slug = res.slug || title;
+
+							options.tags = options.tags || [];
+
+							if (!results.isMain) {
+								return next(null, {
 									tid: tid,
 									cid: results.cid,
-									uid: postData.uid,
-									title: validator.escape(title),
-									slug: topicData.slug,
-									isMainPost: results.isMain,
-									tags: tags
+									isMainPost: false
+								});
+							}
+
+							var topicData = {
+								tid: tid,
+								cid: results.cid,
+								uid: postData.uid,
+								mainPid: data.pid
+							};
+
+							if (title) {
+								topicData.title = title;
+							}
+
+							if (slug){
+								topicData.slug = tid + '/' + utils.slugify(slug);
+							}
+
+							if (options.topic_thumb) {
+								topicData.thumb = options.topic_thumb;
+							}
+
+							db.setObject('topic:' + tid, topicData, function(err) {
+								plugins.fireHook('action:topic.edit', topicData);
+							});
+
+							topics.updateTags(tid, options.tags, function(err) {
+								if (err) {
+									return next(err);
+								}
+								topics.getTopicTagsObjects(tid, function(err, tags) {
+									next(err, {
+										tid: tid,
+										cid: results.cid,
+										uid: postData.uid,
+										title: validator.escape(title),
+										isMainPost: results.isMain,
+										tags: tags
+									});
 								});
 							});
 						});

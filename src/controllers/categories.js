@@ -268,8 +268,13 @@ categoriesController.get = function(req, res, next) {
 				if (err) {
 					return next(err);
 				}
-				categoryData.breadcrumbs = crumbs.concat(breadcrumbs);
-				next(null, categoryData);
+				plugins.fireHook('filter:breadcrumbs.build', crumbs.concat(breadcrumbs), function(err, crumbs) {
+					if (err) {
+						return next(err);
+					}
+					categoryData.breadcrumbs = crumbs;
+					next(null, categoryData);
+				});
 			});
 		},
 		function(categoryData, next) {

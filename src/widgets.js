@@ -72,25 +72,32 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			var returnData = {};
+			plugins.fireHook('filter:widgets.frontGetAreas', data, function(err, data) {
+				if (err) {
+					return callback(err);
+				}
 
-			templates.forEach(function(template, index) {
-				returnData[template] = returnData[template] || {};
-				locations.forEach(function(location) {
-					if (data && data[index] && data[index][location]) {
-						try {
-							returnData[template][location] = JSON.parse(data[index][location]);
-						} catch(err) {
-							winston.error('can not parse widget data. template:  ' + template + ' location: ' + location);
+				var returnData = {};
+
+				templates.forEach(function(template, index) {
+					returnData[template] = returnData[template] || {};
+					locations.forEach(function(location) {
+						if (data && data[index] && data[index][location]) {
+							try {
+								returnData[template][location] = JSON.parse(data[index][location]);
+							} catch(err) {
+								winston.error('can not parse widget data. template:  ' + template + ' location: ' + location);
+								returnData[template][location] = [];
+							}
+						} else {
 							returnData[template][location] = [];
 						}
-					} else {
-						returnData[template][location] = [];
-					}
+					});
 				});
-			});
 
-			callback(null, returnData);
+				callback(null, returnData);
+
+			});
 		});
 	};
 
