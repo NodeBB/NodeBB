@@ -10,7 +10,8 @@ var db = require('./database'),
 	utils = require('../public/src/utils'),
 	notifications = require('./notifications'),
 	userNotifications = require('./user/notifications'),
-	emailer = require('./emailer');
+	emailer = require('./emailer'),
+	sockets = require('./socket.io');
 
 (function(Messaging) {
 	Messaging.notifyQueue = {};	// Only used to notify a user of a new chat message, see Messaging.notifyUser
@@ -226,8 +227,6 @@ var db = require('./database'),
 	};
 
 	Messaging.getRecentChats = function(uid, start, stop, callback) {
-		var websockets = require('./socket.io');
-
 		db.getSortedSetRevRange('uid:' + uid + ':chats', start, stop, function(err, uids) {
 			if (err) {
 				return callback(err);
@@ -256,7 +255,7 @@ var db = require('./database'),
 				results.users.forEach(function(user, index) {
 					if (user) {
 						user.unread = results.unread[index];
-						user.status = require('./socket.io').isUserOnline(user.uid) ? user.status : 'offline';
+						user.status = sockets.isUserOnline(user.uid) ? user.status : 'offline';
 					}
 				});
 
@@ -269,6 +268,15 @@ var db = require('./database'),
 		db.sortedSetCard('uid:' + uid + ':chats:unread', callback);
 	};
 
+	Messaging.pushUnreadCount = function(uid) {
+		Messaging.getUnreadCount(uid, function(err, unreadCount) {
+			if (err) {
+				return;
+			}
+			sockets.in('uid_' + uid).emit('event:unread.updateChatCount', null, unreadCount);
+		});
+	};
+
 	Messaging.markRead = function(uid, toUid, callback) {
 		db.sortedSetRemove('uid:' + uid + ':chats:unread', toUid, callback);
 	};
@@ -278,6 +286,23 @@ var db = require('./database'),
 	};
 
 	Messaging.notifyUser = function(fromuid, touid, messageObj) {
+		// Immediate notifications
+		// Recipient
+		Messaging.pushUnreadCount(touid);
+		sockets.in('uid_' + touid).emit('event:chats.receive', {
+			withUid: fromuid,
+			message: messageObj,
+			self: 0
+		});
+		// Sender
+		Messaging.pushUnreadCount(fromuid);
+		sockets.in('uid_' + fromuid).emit('event:chats.receive', {
+			withUid: touid,
+			message: messageObj,
+			self: 1
+		});
+
+		// Delayed notifications
 		var queueObj = Messaging.notifyQueue[fromuid + ':' + touid];
 		if (queueObj) {
 			queueObj.message.content += '\n' + messageObj.content;
@@ -344,7 +369,7 @@ var db = require('./database'),
 	};
 
 	function sendNotifications(fromuid, touid, messageObj, callback) {
-		if (require('./socket.io').isUserOnline(touid)) {
+		if (sockets.isUserOnline(touid)) {
 			return callback();
 		}
 

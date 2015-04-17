@@ -162,22 +162,6 @@ SocketModules.chats.send = function(socket, data, callback) {
 
 			Messaging.notifyUser(socket.uid, touid, message);
 
-			// Recipient
-			SocketModules.chats.pushUnreadCount(touid);
-			server.in('uid_' + touid).emit('event:chats.receive', {
-				withUid: socket.uid,
-				message: message,
-				self: 0
-			});
-
-			// Sender
-			SocketModules.chats.pushUnreadCount(socket.uid);
-			server.in('uid_' + socket.uid).emit('event:chats.receive', {
-				withUid: touid,
-				message: message,
-				self: 1
-			});
-
 			callback();
 		});
 	});
@@ -189,19 +173,10 @@ SocketModules.chats.canMessage = function(socket, toUid, callback) {
 	});
 };
 
-SocketModules.chats.pushUnreadCount = function(uid) {
-	Messaging.getUnreadCount(uid, function(err, unreadCount) {
-		if (err) {
-			return;
-		}
-		server.in('uid_' + uid).emit('event:unread.updateChatCount', null, unreadCount);
-	});
-};
-
 SocketModules.chats.markRead = function(socket, touid, callback) {
 	Messaging.markRead(socket.uid, touid, function(err) {
 		if (!err) {
-			SocketModules.chats.pushUnreadCount(socket.uid);
+			Messaging.pushUnreadCount(socket.uid);
 		}
 	});
 };
