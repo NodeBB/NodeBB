@@ -44,27 +44,35 @@ define('taskbar', function() {
 	};
 
 	taskbar.push = function(module, uuid, options) {
-		var element = taskbar.tasklist.find('li[data-uuid="' + uuid + '"]');
+		var data = {
+			module: module,
+			uuid: uuid,
+			options: options
+		};
+
+		$(window).trigger('filter:taskbar.push', data);
+
+		var element = taskbar.tasklist.find('li[data-uuid="' + data.uuid + '"]');
 
 		if (element.length) {
 			return;
 		}
 
-		var title = $('<div></div>').text(options.title || 'NodeBB Task').html();
+		var title = $('<div></div>').text(data.options.title || 'NodeBB Task').html();
 
 		var	btnEl = $('<li />')
 			.html('<a href="#">' +
-				(options.icon ? '<i class="fa ' + options.icon + '"></i> ' : '') +
-				(options.image ? '<img src="' + options.image + '"/> ': '') +
+				(data.options.icon ? '<i class="fa ' + data.options.icon + '"></i> ' : '') +
+				(data.options.image ? '<img src="' + data.options.image + '"/> ': '') +
 				'<span>' + title + '</span>' +
 				'</a>')
 			.attr({
-				'data-module': module,
-				'data-uuid': uuid
+				'data-module': data.module,
+				'data-uuid': data.uuid
 			})
-			.addClass(options.state !== undefined ? options.state : 'active');
+			.addClass(data.options.state !== undefined ? data.options.state : 'active');
 
-		if (!options.state || options.state === 'active') {
+		if (!data.options.state || data.options.state === 'active') {
 			minimizeAll();
 		}
 
