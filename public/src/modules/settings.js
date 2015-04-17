@@ -9,7 +9,8 @@ define('settings', function () {
 		'settings/textarea',
 		'settings/select',
 		'settings/array',
-		'settings/key'
+		'settings/key',
+		'settings/object'
 	];
 
 	var Settings,
