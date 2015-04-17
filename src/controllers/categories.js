@@ -189,7 +189,7 @@ categoriesController.get = function(req, res, next) {
 			}
 
 			if (req.params.slug && cid + '/' + req.params.slug !== results.categoryData.slug) {
-				return helpers.notFound(req, res);
+				return helpers.redirect('/category/' + results.categoryData.slug + (utils.isNumber(req.params.topic_index) ? '/' + req.params.topic_index : ''));
 			}
 
 			if (!results.privileges.read) {

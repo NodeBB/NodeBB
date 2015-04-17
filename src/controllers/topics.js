@@ -43,8 +43,12 @@ topicsController.get = function(req, res, next) {
 		function (results, next) {
 			userPrivileges = results.privileges;
 
-			if (userPrivileges.disabled || (req.params.slug && tid + '/' + req.params.slug !== results.topic.slug)) {
+			if (userPrivileges.disabled) {
 				return helpers.notFound(req, res);
+			}
+
+			if (req.params.slug && tid + '/' + req.params.slug !== results.topic.slug) {
+				return helpers.redirect('/topic/' + results.topic.slug + (utils.isNumber(req.params.post_index) ? '/' + req.params.post_index : ''));
 			}
 
 			if (!userPrivileges.read || (parseInt(results.topic.deleted, 10) && !userPrivileges.view_deleted)) {
