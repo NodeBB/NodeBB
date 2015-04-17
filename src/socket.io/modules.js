@@ -148,8 +148,6 @@ SocketModules.chats.send = function(socket, data, callback) {
 		return;
 	}
 
-	var msg = S(data.message).stripTags().s;
-
 	var now = Date.now();
 	socket.lastChatMessageTime = socket.lastChatMessageTime || 0;
 
@@ -177,7 +175,7 @@ SocketModules.chats.send = function(socket, data, callback) {
 				return callback(err || new Error('[[error:chat-restricted]]'));
 			}
 
-			Messaging.addMessage(socket.uid, touid, msg, function(err, message) {
+			Messaging.addMessage(socket.uid, touid, data.message, function(err, message) {
 				if (err) {
 					return callback(err);
 				}
