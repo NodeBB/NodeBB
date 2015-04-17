@@ -109,6 +109,7 @@ function generateForUserTopics(req, res, next) {
 		}
 
 		generateForTopics({
+			uid: req.uid,
 			title: 'Topics by ' + userData.username,
 			description: 'A list of topics that are posted by ' + userData.username,
 			feed_url: '/user/' + userslug + '/topics.rss',
@@ -133,6 +134,7 @@ function generateForCategory(req, res, next) {
 		}
 
 		generateTopicsFeed({
+			uid: req.uid,
 			title: categoryData.name,
 			description: categoryData.description,
 			feed_url: '/category/' + cid + '.rss',
@@ -148,6 +150,7 @@ function generateForCategory(req, res, next) {
 
 function generateForRecent(req, res, next) {
 	generateForTopics({
+		uid: req.uid,
 		title: 'Recently Active Topics',
 		description: 'A list of topics that have been active within the past 24 hours',
 		feed_url: '/recent.rss',
@@ -170,6 +173,7 @@ function generateForPopular(req, res, next) {
 		}
 
 		generateTopicsFeed({
+			uid: req.uid,
 			title: 'Popular Topics',
 			description: 'A list of topics that are sorted by post count',
 			feed_url: '/popular/' + (req.params.term || 'daily') + '.rss',
@@ -212,25 +216,44 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 	feedOptions.feed_url = nconf.get('url') + feedOptions.feed_url;
 	feedOptions.site_url = nconf.get('url') + feedOptions.site_url;
 
+	feedTopics = feedTopics.filter(Boolean);
+
 	var	feed = new rss(feedOptions);
 
 	if (feedTopics.length > 0) {
 		feed.pubDate = new Date(parseInt(feedTopics[0].lastposttime, 10)).toUTCString();
 	}
 
-	feedTopics.forEach(function(topicData) {
-		if (topicData && topicData.teaser && topicData.teaser.user) {
-			feed.item({
-				title: topicData.title,
-				description: topicData.teaser.content,
-				url: nconf.get('url') + '/topic/' + topicData.slug,
-				author: topicData.teaser.user.username,
-				date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
-			});
-		}
-	});
-	callback(null, feed);
+	async.map(feedTopics, function(topicData, next) {
+		var feedItem = {
+			title: topicData.title,
+			url: nconf.get('url') + '/topic/' + topicData.slug,
+			date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
+		};
 
+		if (topicData.teaser && topicData.teaser.user) {
+			feedItem.description = topicData.teaser.content;
+			feedItem.author = topicData.teaser.user.username;
+			return next(null, feedItem);
+		}
+
+		topics.getMainPost(topicData.tid, feedOptions.uid, function(err, mainPost) {
+			if (err) {
+				return next(err);
+			}
+			feedItem.description = mainPost.content;
+			feedItem.author = mainPost.user.username;
+			next(null, feedItem);
+		});
+	}, function(err, feedItems) {
+		if (err) {
+			return callback(err);
+		}
+		feedItems.forEach(function(feedItem) {
+			feed.item(feedItem);
+		});
+		callback(null, feed);
+	});
 }
 
 function generateForRecentPosts(req, res, next) {
