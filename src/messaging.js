@@ -27,14 +27,20 @@ var db = require('./database'),
 		return [fromuid, touid].sort();
 	}
 
-	Messaging.addMessage = function(fromuid, touid, content, callback) {
+	Messaging.addMessage = function(fromuid, touid, content, timestamp, callback) {
 		var uids = sortUids(fromuid, touid);
+
+		if (typeof timestamp === 'function') {
+			callback = timestamp;
+			timestamp = Date.now();
+		} else {
+			timestamp = timestamp || Date.now();
+		}
 
 		db.incrObjectField('global', 'nextMid', function(err, mid) {
 			if (err) {
 				return callback(err);
 			}
-			var timestamp = Date.now();
 			var message = {
 				content: content,
 				timestamp: timestamp,
