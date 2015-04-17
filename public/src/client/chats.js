@@ -2,7 +2,7 @@
 
 /* globals define, app, ajaxify, utils, socket, templates */
 
-define('forum/chats', ['string', 'sounds', 'forum/infinitescroll', 'translator'], function(S, sounds, infinitescroll, translator) {
+define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll', 'translator'], function(components, S, sounds, infinitescroll, translator) {
 	var Chats = {
 		initialised: false
 	};
@@ -69,9 +69,14 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll', 'translator']
 				uid = Chats.getRecipientUid();
 
 			if (app.previousUrl && app.previousUrl.match(/chats/)) {
+				var text = components.get('chat/input').val();
 				ajaxify.go('chats', function() {
 					app.openChat(username, uid);
 				}, true);
+
+				$(window).one('action:chat.loaded', function() {
+					components.get('chat/input').val(text);
+				});
 			} else {
 				window.history.go(-1);
 			}
