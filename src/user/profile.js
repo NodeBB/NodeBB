@@ -3,6 +3,7 @@
 
 var async = require('async'),
 	validator = require('validator'),
+	url = require('url'),
 	S = require('string'),
 
 	utils = require('../../public/src/utils'),
@@ -121,9 +122,19 @@ module.exports = function(User) {
 				} else if (field === 'signature') {
 					data[field] = S(data[field]).stripTags().s;
 				} else if (field === 'website') {
-					if (data[field] && !data[field].startsWith('http://') && !data[field].startsWith('https://')) {
-						data[field] = 'http://' + data[field];
+					var urlObj = url.parse(data[field], false, true);
+					if (!urlObj.protocol) {
+						urlObj.protocol = 'http';
+						urlObj.slashes = true;
 					}
+					if (!urlObj.hostname && urlObj.pathname) {
+						urlObj.hostname = urlObj.pathname;
+						urlObj.pathname = null;
+					}
+					if (urlObj.pathname === '/') {
+						urlObj.pathname = null;
+					}
+					data[field] = url.format(urlObj);
 				}
 
 				User.setUserField(uid, field, data[field], next);

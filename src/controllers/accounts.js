@@ -96,7 +96,6 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.username = validator.escape(userData.username);
 			userData.email = validator.escape(userData.email);
 			userData.fullname = validator.escape(userData.fullname);
-			userData.websiteName = validator.escape(userData.websiteName);
 			userData.location = validator.escape(userData.location);
 			userData.signature = validator.escape(userData.signature);
 
