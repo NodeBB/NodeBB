@@ -122,18 +122,21 @@ module.exports = function(User) {
 				} else if (field === 'signature') {
 					data[field] = S(data[field]).stripTags().s;
 				} else if (field === 'website') {
-					var urlObj = url.parse(data[field], false, true);
-					if (!urlObj.protocol) {
-						urlObj.protocol = 'http';
-						urlObj.slashes = true;
+					if (data[field].length > 0) {
+						var urlObj = url.parse(data[field], false, true);
+						if (!urlObj.protocol) {
+							urlObj.protocol = 'http';
+							urlObj.slashes = true;
+						}
+						if (!urlObj.hostname && urlObj.pathname) {
+							urlObj.hostname = urlObj.pathname;
+							urlObj.pathname = null;
+						}
+						if (urlObj.pathname === '/') {
+							urlObj.pathname = null;
+						}
 					}
-					if (!urlObj.hostname && urlObj.pathname) {
-						urlObj.hostname = urlObj.pathname;
-						urlObj.pathname = null;
-					}
-					if (urlObj.pathname === '/') {
-						urlObj.pathname = null;
-					}
+
 					data[field] = url.format(urlObj);
 				}
 
