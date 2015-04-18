@@ -210,7 +210,7 @@ define('composer', [
 				push({
 					tid: tid,
 					toPid: pid,
-					title: title,
+					title: $('<div/>').text(title).html(),
 					body: translated,
 					modified: false,
 					isMain: false,
@@ -230,7 +230,7 @@ define('composer', [
 				pid: pid,
 				uid: threadData.uid,
 				handle: threadData.handle,
-				title: $('<div/>').html(threadData.title).text(),
+				title: threadData.title,
 				body: threadData.body,
 				modified: false,
 				isMain: threadData.isMain,
@@ -304,7 +304,7 @@ define('composer', [
 		// https://github.com/NodeBB/NodeBB/issues/1951
 		// remove when 1951 is resolved
 
-		var title = $('<div/>').text(postData.title).html().replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+		var title = postData.title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
 		var data = {
 			title: title,
