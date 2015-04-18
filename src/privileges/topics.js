@@ -67,7 +67,7 @@ module.exports = function(privileges) {
 		});
 	};
 
-	privileges.topics.filter = function(privilege, tids, uid, callback) {
+	privileges.topics.filterTids = function(privilege, tids, uid, callback) {
 		if (!Array.isArray(tids) || !tids.length) {
 			return callback(null, []);
 		}
@@ -98,7 +98,7 @@ module.exports = function(privileges) {
 					}
 				}, function(err, results) {
 					if (err) {
-						return callback(err);
+						return next(err);
 					}
 					var isModOf = {};
 					cids = cids.filter(function(cid, index) {
@@ -121,6 +121,49 @@ module.exports = function(privileges) {
 					}, function(err, data) {
 						next(err, data ? data.tids : null);
 					});
+				});
+			}
+		], callback);
+	};
+
+	privileges.topics.filterUids = function(privilege, tid, uids, callback) {
+		if (!Array.isArray(uids) || !uids.length) {
+			return callback(null, []);
+		}
+
+		uids = uids.filter(function(uid, index, array) {
+			return array.indexOf(uid) === index;
+		});
+
+		async.waterfall([
+			function(next) {
+				topics.getTopicFields(tid, ['tid', 'cid', 'deleted'], next);
+			},
+			function(topicData, next) {
+				async.parallel({
+					disabled: function(next) {
+						categories.getCategoryField(topicData.cid, 'disabled', next);
+					},
+					allowedTo: function(next) {
+						helpers.isUsersAllowedTo(privilege, uids, topicData.cid, next);
+					},
+					isModerators: function(next) {
+						user.isModerator(uids, topicData.cid, next);
+					},
+					isAdmins: function(next) {
+						user.isAdministrator(uids, next);
+					}
+				}, function(err, results) {
+					if (err) {
+						return next(err);
+					}
+
+					uids = uids.filter(function(uid, index) {
+						return parseInt(results.disabled, 10) !== 1 &&
+							((results.allowedTo[index] && parseInt(topicData.deleted, 10) !== 1) || results.isAdmins[index] || results.isModerators[index]);
+					});
+
+					next(null, uids);
 				});
 			}
 		], callback);
