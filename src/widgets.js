@@ -14,7 +14,7 @@ var async = require('async'),
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
-		Widgets.getAreas(['global', area.template], area.locations, function(err, data) {
+		Widgets.getAreas(['global', area.template], area.locations, area.url, function(err, data) {
 			if (err) {
 				return callback(err);
 			}
@@ -63,7 +63,7 @@ var async = require('async'),
 		});
 	};
 
-	Widgets.getAreas = function(templates, locations, callback) {
+	Widgets.getAreas = function(templates, locations, url, callback) {
 		var keys = templates.map(function(tpl) {
 			return 'widgets:' + tpl;
 		});
@@ -71,7 +71,7 @@ var async = require('async'),
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('filter:widgets.frontGetAreas', {data: data, templates: templates, locations: locations}, function(err, data) {
+			plugins.fireHook('filter:widgets.frontGetAreas', {data: data, templates: templates, locations: locations, url: url}, function(err, data) {
 				if (err) {
 					return callback(err);
 				}
@@ -80,9 +80,9 @@ var async = require('async'),
 				templates.forEach(function(template, index) {
 					returnData[template] = returnData[template] || {};
 					locations.forEach(function(location) {
-						if (data.data && data.data[index] && data.data[index][location]) {
+						if (data && data[index] && data[index][location]) {
 							try {
-								returnData[template][location] = JSON.parse(data.data[index][location]);
+								returnData[template][location] = JSON.parse(data[index][location]);
 							} catch(err) {
 								winston.error('can not parse widget data. template:  ' + template + ' location: ' + location);
 								returnData[template][location] = [];
