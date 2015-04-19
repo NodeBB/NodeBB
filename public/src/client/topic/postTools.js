@@ -137,7 +137,8 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	function onReplyClicked(button, tid, topicName) {
 		require(['composer'], function(composer) {
 			var selectionText = '',
-				selection = window.getSelection ? window.getSelection() : document.selection.createRange();
+				selection = window.getSelection ? window.getSelection() : document.selection.createRange(),
+				topicUUID = composer.findByTid(tid);
 
 			if ($(selection.baseNode).parents('[component="post/content"]').length > 0) {
 				var snippet = selection.toString();
@@ -151,7 +152,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 				username = '';
 			}
 			if (selectionText.length) {
-				composer.addQuote(tid, ajaxify.variables.get('topic_slug'), getData(button, 'data-index'), getData(button, 'data-pid'), topicName, username, selectionText);
+				composer.addQuote(tid, ajaxify.variables.get('topic_slug'), getData(button, 'data-index'), getData(button, 'data-pid'), topicName, username, selectionText, topicUUID);
 			} else {
 				composer.newReply(tid, getData(button, 'data-pid'), topicName, username ? username + ' ' : '');
 			}
@@ -162,7 +163,8 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	function onQuoteClicked(button, tid, topicName) {
 		require(['composer'], function(composer) {
 			var username = getUserName(button),
-				pid = getData(button, 'data-pid');
+				pid = getData(button, 'data-pid'),
+				topicUUID = composer.findByTid(tid);
 
 			socket.emit('posts.getRawPost', pid, function(err, post) {
 				if(err) {
@@ -173,8 +175,8 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 					quoted = '> ' + post.replace(/\n/g, '\n> ') + '\n\n';
 				}
 
-				if($('.composer').length) {
-					composer.addQuote(tid, ajaxify.variables.get('topic_slug'), getData(button, 'data-index'), pid, topicName, username, quoted);
+				if(topicUUID) {
+					composer.addQuote(tid, ajaxify.variables.get('topic_slug'), getData(button, 'data-index'), pid, topicName, username, quoted, topicUUID);
 				} else {
 					composer.newReply(tid, pid, topicName, '[[modules:composer.user_said, ' + username + ']]\n' + quoted);
 				}

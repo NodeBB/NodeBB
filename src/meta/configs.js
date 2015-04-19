@@ -4,7 +4,7 @@
 var winston = require('winston'),
 	db = require('../database'),
 	pubsub = require('../pubsub'),
-	pkg = require('../../package.json');
+	nconf = require('nconf');
 
 module.exports = function(Meta) {
 
@@ -28,7 +28,7 @@ module.exports = function(Meta) {
 	Meta.configs.list = function (callback) {
 		db.getObject('config', function (err, config) {
 			config = config || {};
-			config.version = pkg.version;
+			config.version = nconf.get('version');
 			callback(err, config);
 		});
 	};

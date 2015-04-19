@@ -165,17 +165,23 @@ module.exports = function(Topics) {
 	};
 
 	Topics.getLatestUndeletedPid = function(tid, callback) {
-		Topics.getLatestUndeletedReply(tid, function(err, pid) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function(next) {
+				Topics.getLatestUndeletedReply(tid, next);
+			},
+			function(pid, next) {
+				if (parseInt(pid, 10)) {
+					return callback(null, pid.toString());
+				}
+				Topics.getTopicField(tid, 'mainPid', next);
+			},
+			function(mainPid, next) {
+				posts.getPostFields(mainPid, ['pid', 'deleted'], next);
+			},
+			function(mainPost, next) {
+				next(null, parseInt(mainPost.pid, 10) && parseInt(mainPost.deleted, 10) !== 1 ? mainPost.pid.toString() : null);
 			}
-			if (parseInt(pid, 10)) {
-				return callback(null, pid.toString());
-			}
-			Topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
-				callback(err, parseInt(mainPid, 10) ? mainPid.toString() : null);
-			});
-		});
+		], callback);
 	};
 
 	Topics.getLatestUndeletedReply = function(tid, callback) {
@@ -199,8 +205,11 @@ module.exports = function(Topics) {
 						if (err) {
 							return next(err);
 						}
-						latestPid = pids[0];
+
 						isDeleted = parseInt(deleted, 10) === 1;
+						if (!isDeleted) {
+							latestPid = pids[0];
+						}
 						++index;
 						next();
 					});

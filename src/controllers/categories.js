@@ -188,15 +188,11 @@ categoriesController.get = function(req, res, next) {
 				return helpers.notFound(req, res);
 			}
 
-			if (req.params.slug && cid + '/' + req.params.slug !== results.categoryData.slug) {
-				return helpers.notFound(req, res);
-			}
-
 			if (!results.privileges.read) {
 				return helpers.notAllowed(req, res);
 			}
 
-			if (!req.params.slug && results.categoryData.slug && results.categoryData.slug !== cid + '/') {
+			if ((!req.params.slug || results.categoryData.slug !== cid + '/' + req.params.slug) && (results.categoryData.slug && results.categoryData.slug !== cid + '/')) {
 				return helpers.redirect(res, '/category/' + encodeURI(results.categoryData.slug));
 			}
 

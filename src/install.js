@@ -47,7 +47,7 @@ questions.main = [
 questions.optional = [
 	{
 		name: 'port',
-		default: 4567
+		default: nconf.get('port') || 4567
 	}
 ];
 

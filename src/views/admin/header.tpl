@@ -91,17 +91,31 @@
 							</a>
 							<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
 								<li>
-									<a id="user-profile-link" href="{relative_path}/user/{user.userslug}" target="_top"><span>Profile</span></a>
+									<a href="{relative_path}/" target="_blank" title="View Forum">
+										View Forum
+									</a>
 								</li>
+								<li>
+									<a id="user-profile-link" href="{relative_path}/user/{user.userslug}" target="_top">
+										View Profile
+									</a>
+								</li>
+								<li role="presentation" class="divider"></li>
+								<li>
+									<a href="#" class="reload" title="Reload Forum">
+										Reload Forum
+									</a>
+								</li>
+								<li>
+									<a href="#" class="restart" title="Restart Forum">
+										Restart Forum
+									</a>
+								</li>
+								<li role="presentation" class="divider"></li>
 								<li id="logout-link">
 									<a href="#">Log out</a>
 								</li>
 							</ul>
-						</li>
-						<li class="nav-home pull-right">
-							<a href="{relative_path}/" target="_blank" title="Open forum homepage" data-original-title="Open forum homepage">
-								<i class="fa fa-home fa-fw"></i>
-							</a>
 						</li>
 					</ul>
 				</div>

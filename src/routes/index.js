@@ -46,8 +46,8 @@ function topicRoutes(app, middleware, controllers) {
 }
 
 function tagRoutes(app, middleware, controllers) {
-	setupPageRoute(app, '/tags/:tag', middleware, [middleware.publicTagListing], controllers.tags.getTag);
-	setupPageRoute(app, '/tags', middleware, [middleware.publicTagListing], controllers.tags.getTags);
+	setupPageRoute(app, '/tags/:tag', middleware, [middleware.privateTagListing], controllers.tags.getTag);
+	setupPageRoute(app, '/tags', middleware, [middleware.privateTagListing], controllers.tags.getTags);
 }
 
 function categoryRoutes(app, middleware, controllers) {
@@ -167,7 +167,7 @@ module.exports = function(app, middleware) {
 
 
 	// Add plugin routes
-	plugins.init(app, middleware);
+	plugins.reloadRoutes();
 	authRoutes.reloadRoutes();
 };
 

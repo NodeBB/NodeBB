@@ -117,7 +117,7 @@ module.exports = function(Topics) {
 					return callback();
 				}
 
-				privileges.categories.filterUids('read', postData.topic.cid, followers, next);
+				privileges.topics.filterUids('read', postData.topic.tid, followers, next);
 			},
 			function(_followers, next) {
 				followers = _followers;

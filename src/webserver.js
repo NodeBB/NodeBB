@@ -33,6 +33,21 @@ if(nconf.get('ssl')) {
 (function (app) {
 	var	port = nconf.get('port');
 
+	if (Array.isArray(port)) {
+		if (!port.length) {
+			winston.error('[startup] empty ports array in config.json');
+			process.exit();
+		}
+
+		winston.warn('[startup] If you want to start nodebb on multiple ports please use loader.js');
+		winston.warn('[startup] Defaulting to first port in array, ' + port[0]);
+		port = port[0];
+		if (!port) {
+			winston.error('[startup] Invalid port, exiting');
+			process.exit();
+		}
+	}
+
 	module.exports.init = function() {
 		var skipJS, skipLess, fromFile = nconf.get('from-file') || '';
 
@@ -55,10 +70,21 @@ if(nconf.get('ssl')) {
 				async.apply(!skipLess ? meta.css.minify : meta.css.getFromFile),
 				async.apply(meta.sounds.init)
 			]);
+
+			plugins.fireHook('static:app.preload', {
+				app: app,
+				middleware: middleware
+			}, function(err) {
+				if (err) {
+					return winston.error('[plugins] Encountered error while executing pre-router plugins hooks: ' + err.message);
+				}
+
+				routes(app, middleware);
+			});
 		});
 
 		middleware = middleware(app);
-		routes(app, middleware);
+		plugins.init(app, middleware);
 
 		// Load server-side template helpers
 		helpers.register();
@@ -153,6 +179,10 @@ if(nconf.get('ssl')) {
 	};
 
 	module.exports.testSocket = function(socketPath, callback) {
+		if (typeof socketPath !== 'string') {
+			return callback(new Error('invalid socket path : ' + socketPath));
+		}
+
 		async.series([
 			function(next) {
 				fs.exists(socketPath, function(exists) {

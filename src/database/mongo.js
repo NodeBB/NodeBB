@@ -22,12 +22,14 @@
 		},
 		{
 			name: 'mongo:username',
-			description: 'MongoDB username'
+			description: 'MongoDB username',
+			'default': nconf.get('mongo:username') || ''
 		},
 		{
 			name: 'mongo:password',
 			description: 'Password of your MongoDB database',
-			hidden: true
+			hidden: true,
+			before: function(value) { value = value || nconf.get('mongo:password') || ''; return value; }
 		},
 		{
 			name: "mongo:database",

@@ -129,7 +129,7 @@ var async = require('async'),
 	Topics.getTopics = function(tids, uid, callback) {
 		async.waterfall([
 			function(next) {
-				privileges.topics.filter('read', tids, uid, next);
+				privileges.topics.filterTids('read', tids, uid, next);
 			},
 			function(tids, next) {
 				Topics.getTopicsByTids(tids, uid, next);

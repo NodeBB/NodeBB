@@ -21,10 +21,12 @@
 			}
 		}
 
-		if (item.route.match('/users')) {
-			if (data.privateUserInfo && !data.isAdmin) {
-				return false;
-			}
+		if (item.route.match('/users') && data.privateUserInfo && !data.loggedIn) {
+			return false;
+		}
+
+		if (item.route.match('/tags') && data.privateTagListing && !data.loggedIn) {
+			return false;
 		}
 
 		return true;

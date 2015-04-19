@@ -1,13 +1,13 @@
 "use strict";
 /* globals define, socket, ajaxify, app, bootbox, RELATIVE_PATH, utils */
 
-define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 'vendor/jquery/draggable-background/backgroundDraggable'], function(iconSelect) {
+define('forum/groups/details', ['iconSelect', 'components', 'vendor/colorpicker/colorpicker', 'vendor/jquery/draggable-background/backgroundDraggable'], function(iconSelect, components) {
 	var Details = {
 			cover: {}
 		};
 
 	Details.init = function() {
-		var detailsPage = $('.groups'),
+		var detailsPage = components.get('groups/container'),
 			settingsFormEl = detailsPage.find('form');
 
 		if (ajaxify.variables.get('is_owner') === 'true') {
@@ -15,7 +15,7 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 			Details.initialiseCover();
 		}
 
-		$('.latest-posts .content img').addClass('img-responsive');
+		components.get('groups/activity').find('.content img').addClass('img-responsive');
 
 		detailsPage.on('click', '[data-action]', function() {
 			var btnEl = $(this),
@@ -82,7 +82,7 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 	};
 
 	Details.prepareSettings = function() {
-		var settingsFormEl = $('.groups form'),
+		var settingsFormEl = components.get('groups/settings'),
 			colorBtn = settingsFormEl.find('[data-action="color-select"]'),
 			colorValueEl = settingsFormEl.find('[name="labelColor"]'),
 			iconBtn = settingsFormEl.find('[data-action="icon-select"]'),
@@ -120,7 +120,7 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 
 		// Disable user title customisation options if the the user title itself is disabled
 		userTitleEnabledEl.on('change', function() {
-			var customOpts = $('.user-title-option input, .user-title-option button');
+			var customOpts = components.get('groups/userTitleOption');
 
 			if (this.checked) {
 				customOpts.removeAttr('disabled');
@@ -133,7 +133,7 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 	};
 
 	Details.update = function() {
-		var settingsFormEl = $('.groups form'),
+		var settingsFormEl = components.get('groups/settings'),
 			checkboxes = settingsFormEl.find('input[type="checkbox"][name]');
 
 		if (settingsFormEl.length) {
@@ -194,7 +194,7 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 	// Cover Photo Handling Code
 
 	Details.initialiseCover = function() {
-		var coverEl = $('.group-cover');
+		var coverEl = components.get('groups/cover');
 		coverEl.find('.change').on('click', function() {
 			coverEl.toggleClass('active', 1);
 			coverEl.backgroundDraggable({
@@ -214,7 +214,7 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 			groupName: ajaxify.variables.get('group_name')
 		}, function(err, data) {
 			if (!err) {
-				var coverEl = $('.group-cover');
+				var coverEl = components.get('groups/cover');
 				if (data['cover:url']) {
 					coverEl.css('background-image', 'url(' + data['cover:url'] + ')');
 				}
@@ -237,7 +237,7 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 	};
 
 	Details.cover.onDrop = function(e) {
-		var coverEl = $('.group-cover');
+		var coverEl = components.get('groups/cover');
 		e.stopPropagation();
 		e.preventDefault();
 
@@ -255,14 +255,14 @@ define('forum/groups/details', ['iconSelect', 'vendor/colorpicker/colorpicker', 
 	};
 
 	Details.cover.save = function() {
-		var coverEl = $('.group-cover');
+		var coverEl = components.get('groups/cover');
 
 		coverEl.addClass('saving');
 
 		socket.emit('groups.cover.update', {
 			groupName: ajaxify.variables.get('group_name'),
 			imageData: Details.cover.newCover || undefined,
-			position: $('.group-cover').css('background-position')
+			position: components.get('groups/cover').css('background-position')
 		}, function(err) {
 			if (!err) {
 				coverEl.toggleClass('active', 0);

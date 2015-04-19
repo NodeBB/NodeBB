@@ -14,10 +14,7 @@ pagination.create = function(currentPage, pageCount, queryObj) {
 		};
 	}
 
-	var pagesToShow = [1];
-	if (pageCount !== 1) {
-		pagesToShow.push(pageCount);
-	}
+	var pagesToShow = [1, 2, pageCount - 1, pageCount];
 
 	currentPage = parseInt(currentPage, 10) || 1;
 	var previous = Math.max(1, currentPage - 1);
@@ -25,13 +22,12 @@ pagination.create = function(currentPage, pageCount, queryObj) {
 
 	var startPage = currentPage - 2;
 	for(var i=0; i<5; ++i) {
-		var p = startPage + i;
-		if (p >= 1 && p <= pageCount && pagesToShow.indexOf(p) === -1) {
-			pagesToShow.push(startPage + i);
-		}
+		pagesToShow.push(startPage + i);
 	}
 
-	pagesToShow.sort(function(a, b) {
+	pagesToShow = pagesToShow.filter(function(page, index, array) {
+		return page > 0 && page <= pageCount && array.indexOf(page) === index;
+	}).sort(function(a, b) {
 		return a - b;
 	});
 
@@ -41,6 +37,12 @@ pagination.create = function(currentPage, pageCount, queryObj) {
 		queryObj.page = page;
 		return {page: page, active: page === currentPage, qs: qs.stringify(queryObj)};
 	});
+
+	for (i=pages.length - 1; i>0; --i) {
+		if (pages[i - 1].page !== pages[i].page - 1) {
+			pages.splice(i, 0, {separator: true});
+		}
+	}
 
 	var data = {
 		prev: {page: previous, active: currentPage > 1},
