@@ -108,16 +108,16 @@
 	};
 
 	// Groups helpers
-	helpers.membershipBtn = function(groupObj) {console.log(groupObj);
+	helpers.membershipBtn = function(groupObj) {
 		if (groupObj.isMember) {
-			return '<button class="btn btn-danger" data-action="leave" data-group="' + groupObj.name + '"><i class="fa fa-times"></i> Leave Group</button>';
+			return '<button class="btn btn-danger" data-action="leave" data-group="' + groupObj.name + '"><i class="fa fa-times"></i>[[groups:details.leaving]]</button>';
 		} else {
 			if (groupObj.isPending) {
-				return '<button class="btn btn-warning disabled"><i class="fa fa-clock-o"></i> Invitation Pending</button>';
+				return '<button class="btn btn-warning disabled"><i class="fa fa-clock-o"></i>[[groups:details.invitation]]</button>';
 			} else if (groupObj.isInvited) {
 				return '<button class="btn btn-link" data-action="rejectInvite" data-group="' + groupObj.name + '">Reject</button><button class="btn btn-success" data-action="acceptInvite" data-group="' + groupObj.name + '"><i class="fa fa-plus"></i> Accept Invitation</button>';
 			} else {
-				return '<button class="btn btn-success" data-action="join" data-group="' + groupObj.name + '"><i class="fa fa-plus"></i> Join Group</button>';
+				return '<button class="btn btn-success" data-action="join" data-group="' + groupObj.name + '"><i class="fa fa-plus"></i>[[groups:details.join]]</button>';
 			}
 		}
 	};
