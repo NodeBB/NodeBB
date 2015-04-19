@@ -25,7 +25,7 @@ define('iconSelect', function() {
 					title: 'Select an Icon',
 					buttons: {
 						success: {
-							label: 'Save',
+							label: 'Select',
 							callback: function(confirm) {
 								var iconClass = $('.bootbox .selected').attr('class');
 								var categoryIconClass = $('<div/>').addClass(iconClass).removeClass('fa').removeClass('selected').attr('class');
