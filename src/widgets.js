@@ -75,6 +75,7 @@ var async = require('async'),
 				if (err) {
 					return callback(err);
 				}
+				var data = data.data;
 				var returnData = {};
 				templates.forEach(function(template, index) {
 					returnData[template] = returnData[template] || {};
