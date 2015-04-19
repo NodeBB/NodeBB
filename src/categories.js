@@ -253,8 +253,12 @@ var async = require('async'),
 		if (!Array.isArray(category.children) || !category.children.length) {
 			return;
 		}
+		var postCount = parseInt(category.post_count, 10) || 0;
+		var topicCount = parseInt(category.topic_count, 10) || 0;
 
 		category.children.forEach(function(child) {
+			postCount += parseInt(child.post_count, 10) || 0;
+			topicCount += parseInt(child.topic_count, 10) || 0;
 		});
 		category.post_count = postCount;
 		category.topic_count = topicCount;
