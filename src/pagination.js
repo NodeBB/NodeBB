@@ -44,12 +44,11 @@ pagination.create = function(currentPage, pageCount, queryObj) {
 		}
 	}
 
-	var data = {
-		prev: {page: previous, active: currentPage > 1},
-		next: {page: next, active: currentPage < pageCount},
-		rel: [],
-		pages: pages
-	};
+	var data = {rel: [], pages: pages};
+	queryObj.page = previous;
+	data.prev = {page: previous, active: currentPage > 1, qs: qs.stringify(queryObj)};
+	queryObj.page = next;
+	data.next = {page: next, active: currentPage < pageCount, qs: qs.stringify(queryObj)};
 
 	if (currentPage < pageCount) {
 		data.rel.push({
