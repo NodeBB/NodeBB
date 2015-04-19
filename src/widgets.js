@@ -71,11 +71,10 @@ var async = require('async'),
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('filter:widgets.frontGetAreas', {data: data, templates: templates, locations: locations, url: url}, function(err, data) {
+			plugins.fireHook('filter:widgets.frontGetAreas', {data: data, templates: templates, locations: locations, url: url}, function(err, res) {
 				if (err) {
 					return callback(err);
 				}
-				var data = data.data;
 				var returnData = {};
 				templates.forEach(function(template, index) {
 					returnData[template] = returnData[template] || {};
