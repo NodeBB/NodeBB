@@ -11,7 +11,7 @@ define('forum/pagination', function() {
 		pagination.currentPage = parseInt(currentPage, 10);
 		pagination.pageCount = parseInt(pageCount, 10);
 
-		$('.pagination').on('click', '.select_page', function(e) {
+		$('.pagination').on('click', '.select-page', function(e) {
 			e.preventDefault();
 			bootbox.prompt('Enter page number:', function(pageNum) {
 				pagination.loadPage(pageNum);

@@ -487,11 +487,11 @@ middleware.maintenanceMode = function(req, res, next) {
 	});
 };
 
-middleware.publicTagListing = function(req, res, next) {
-	if (req.user || parseInt(meta.config.publicTagListing, 10) === 1) {
-		next();
-	} else {
+middleware.privateTagListing = function(req, res, next) {
+	if (!req.user && parseInt(meta.config.privateTagListing, 10) === 1) {
 		controllers.helpers.notAllowed(req, res);
+	} else {
+		next();
 	}
 };
 

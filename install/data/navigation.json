@@ -41,10 +41,7 @@
 		"enabled": true,
 		"iconClass": "fa-user",
 		"textClass": "visible-xs-inline",
-		"text": "\\[\\[global:header.users\\]\\]",
-		"properties": {
-			"loggedIn": true
-		}
+		"text": "\\[\\[global:header.users\\]\\]"
 	},
 	{
 		"route": "/groups",

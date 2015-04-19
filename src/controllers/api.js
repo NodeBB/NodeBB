@@ -1,7 +1,6 @@
 "use strict";
 
-var pkg = require('./../../package.json'),
-	meta = require('./../meta'),
+var meta = require('./../meta'),
 	user = require('./../user'),
 	plugins = require('./../plugins'),
 	widgets = require('../widgets'),
@@ -26,7 +25,7 @@ apiController.getConfig = function(req, res, next) {
 	config.relative_path = nconf.get('relative_path');
 	config.socketioTransports = nconf.get('socket.io:transports') || ['polling', 'websocket'];
 	config.websocketAddress = nconf.get('socket.io:address') || '';
-	config.version = pkg.version;
+	config.version = nconf.get('version');
 	config.siteTitle = validator.escape(meta.config.title || meta.config.browserTitle || 'NodeBB');
 	config.showSiteTitle = parseInt(meta.config.showSiteTitle, 10) === 1;
 	config.postDelay = meta.config.postDelay;
@@ -48,6 +47,7 @@ apiController.getConfig = function(req, res, next) {
 	config.allowTopicsThumbnail = parseInt(meta.config.allowTopicsThumbnail, 10) === 1;
 	config.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
 	config.privateUserInfo = parseInt(meta.config.privateUserInfo, 10) === 1;
+	config.privateTagListing = parseInt(meta.config.privateTagListing, 10) === 1;
 	config.usePagination = parseInt(meta.config.usePagination, 10) === 1;
 	config.disableSocialButtons = parseInt(meta.config.disableSocialButtons, 10) === 1;
 	config.disableChat = parseInt(meta.config.disableChat, 10) === 1;

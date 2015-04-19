@@ -76,20 +76,20 @@
 	"email_hidden": "Email Hidden",
 	"hidden": "hidden",
 
-	"paginate_description" : "Paginate topics and posts instead of using infinite scroll.",
+	"paginate_description" : "Paginate topics and posts instead of using infinite scroll",
 	"topics_per_page": "Topics per Page",
 	"posts_per_page": "Posts per Page",
 
-	"notification_sounds" : "Play a sound when you receive a notification.",
+	"notification_sounds" : "Play a sound when you receive a notification",
 
 	"browsing": "Browsing Settings",
-	"open_links_in_new_tab": "Open outgoing links in new tab?",
+	"open_links_in_new_tab": "Open outgoing links in new tab",
 
 	"enable_topic_searching": "Enable In-Topic Searching",
-	"topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen.",
+	"topic_search_help": "If enabled, in-topic searching will override the browser's default page search behaviour and allow you to search through the entire topic, instead of what is only shown on screen",
 
-	"follow_topics_you_reply_to": "Follow topics that you reply to.",
-	"follow_topics_you_create": "Follow topics you create.",
+	"follow_topics_you_reply_to": "Follow topics that you reply to",
+	"follow_topics_you_create": "Follow topics you create",
 
 	"grouptitle": "Select the group title you would like to display",
 	"no-group-title": "No group title"

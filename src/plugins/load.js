@@ -5,7 +5,7 @@ var fs = require('fs'),
 	semver = require('semver'),
 	async = require('async'),
 	winston = require('winston'),
-	pkg = require('../../package.json'),
+	nconf = require('nconf'),
 	utils = require('../../public/src/utils');
 
 
@@ -62,7 +62,7 @@ module.exports = function(Plugins) {
 		}
 
 		if (pluginData.nbbpm && pluginData.nbbpm.compatibility && semver.validRange(pluginData.nbbpm.compatibility)) {
-			if (!semver.gtr(pkg.version, pluginData.nbbpm.compatibility)) {
+			if (!semver.gtr(nconf.get('version'), pluginData.nbbpm.compatibility)) {
 				display();
 			}
 		} else {
