@@ -191,7 +191,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		} else {
 			navigator.scrollActive = false;
 			postIndex = parseInt(postIndex, 10) + 1;
-			ajaxify.go(generateUrl(postIndex));
+			ajaxify.go(generateUrl(postIndex), undefined, true);
 		}
 	};
 
