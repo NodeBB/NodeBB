@@ -55,14 +55,16 @@ $(document).ready(function() {
 
 			app.template = data.template.name;
 
-			require(['translator', 'search'], function(translator, search) {
+			require(['translator'], function(translator) {
 				translator.load(config.defaultLang, data.template.name);
 				renderTemplate(url, data.template.name, data, callback);
 			});
 		});
 
 		if (!quiet) {
-			search.topicDOM.end();
+			require(['search'], function(search) {
+				search.topicDOM.end();
+			});
 		}
 
 		return true;
