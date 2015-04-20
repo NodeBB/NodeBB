@@ -5,8 +5,8 @@
     "browsing": "gözden geçiriliyor",
     "no_replies": "Kimse yanıtlamadı",
     "share_this_category": "Bu kategoriyi paylaş",
-    "watch": "Watch",
+    "watch": "İzle",
     "ignore": "Yoksay",
-    "watch.message": "You are now watching updates from this category",
-    "ignore.message": "You are now ignoring updates from this category"
+    "watch.message": "Şuan bu kategorideki güncellemeleri izliyorsunuz",
+    "ignore.message": "Şuan bu kategoriden güncellemeleri gizliyorsunuz"
 }
