@@ -15,9 +15,14 @@ define('settings/object', function () {
 	 @param insertCb The callback to insert the elements.
 	 */
 	function addObjectPropertyElement(field, key, attributes, prop, value, separator, insertCb) {
+		var prepend = attributes['data-prepend'],
+			append = attributes['data-append'],
+			type, element;
+		delete attributes['data-prepend'];
+		delete attributes['data-append'];
 		attributes = helper.deepClone(attributes);
-		var type = attributes['data-type'] || attributes.type || 'text',
-			element = $(helper.createElementOfType(type, attributes.tagName, attributes));
+		type = attributes['data-type'] || attributes.type || 'text',
+		element = $(helper.createElementOfType(type, attributes.tagName, attributes));
 		element.attr('data-parent', '_' + key);
 		element.attr('data-prop', prop);
 		delete attributes['data-type'];
@@ -36,7 +41,13 @@ define('settings/object', function () {
 		if ($('[data-parent="_' + key + '"]', field).length) {
 			insertCb(separator);
 		}
+		if (prepend) {
+			insertCb(prepend);
+		}
 		insertCb(element);
+		if (append) {
+			insertCb(append);
+		}
 	}
 
 	SettingsObject = {
@@ -49,10 +60,9 @@ define('settings/object', function () {
 		},
 		set: function (element, value) {
 			var properties = element.data('attributes') || element.data('properties'),
-				attributes = {},
 				key = element.data('key') || element.data('parent'),
-				prop,
-				separator = element.data('split') || ', ';
+				separator = element.data('split') || ', ',
+				propertyIndex, propertyName, attributes;
 			separator = (function () {
 				try {
 					return $(separator);
@@ -64,13 +74,17 @@ define('settings/object', function () {
 			if (typeof value !== 'object') {
 				value = {};
 			}
-			if (typeof properties === 'object') {
-				for (prop in properties) {
-					attributes = properties[prop];
+			if (Array.isArray(properties)) {
+				for (propertyIndex in properties) {
+					attributes = properties[propertyIndex];
 					if (typeof attributes !== 'object') {
 						attributes = {};
 					}
-					addObjectPropertyElement(element, key, attributes, prop, value[prop], separator.clone(), function (el) {
+					propertyName = attributes['data-prop'] || attributes['data-property'] || propertyIndex;
+					if (value[propertyName] === void 0 && attributes['data-new'] !== void 0) {
+						value[propertyName] = attributes['data-new'];
+					}
+					addObjectPropertyElement(element, key, attributes, propertyName, value[propertyName], separator.clone(), function (el) {
 						element.append(el);
 					});
 				}
