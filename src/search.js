@@ -114,7 +114,7 @@ function searchInContent(data, callback) {
 						pids = pids.slice(start, start + 10);
 					}
 
-					posts.getPostSummaryByPids(pids, data.uid, {stripTags: true, parse: false}, next);
+					posts.getPostSummaryByPids(pids, data.uid, {}, next);
 				},
 				function(posts, next) {
 					next(null, {matches: posts, matchCount: matchCount, pageCount: Math.max(1, Math.ceil(parseInt(matchCount, 10) / 10))});
