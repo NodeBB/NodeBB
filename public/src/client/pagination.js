@@ -26,7 +26,7 @@ define('forum/pagination', function() {
 			return;
 		}
 		var url = window.location.pathname.slice(1).split('/').slice(0, 3).join('/') + '?page=' + page;
-		ajaxify.go(url, callback);
+		ajaxify.go(url, callback, true);
 	};
 
 	return pagination;
