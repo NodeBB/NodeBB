@@ -58,9 +58,12 @@ $(document).ready(function() {
 			require(['translator', 'search'], function(translator, search) {
 				translator.load(config.defaultLang, data.template.name);
 				renderTemplate(url, data.template.name, data, callback);
-				search.topicDOM.end();
 			});
 		});
+
+		if (!quiet) {
+			search.topicDOM.end();
+		}
 
 		return true;
 	};
