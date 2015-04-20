@@ -9,7 +9,6 @@ var async = require('async'),
 	user = require('../user'),
 	posts = require('../posts'),
 	plugins = require('../plugins'),
-	postTools = require('../postTools'),
 	utils = require('../../public/src/utils');
 
 
@@ -56,7 +55,7 @@ module.exports = function(Topics) {
 					post.user = users[post.uid];
 					post.timestamp = utils.toISOString(post.timestamp);
 					tidToPost[post.tid] = post;
-					postTools.parsePost(post, next);
+					posts.parsePost(post, next);
 				}, function(err) {
 					if (err) {
 						return callback(err);

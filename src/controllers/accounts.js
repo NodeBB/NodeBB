@@ -13,7 +13,6 @@ var fs = require('fs'),
 	topics = require('../topics'),
 	groups = require('../groups'),
 	messaging = require('../messaging'),
-	postTools = require('../postTools'),
 	utils = require('../../public/src/utils'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
@@ -154,7 +153,7 @@ accountsController.getAccount = function(req, res, next) {
 				posts.getPostsFromSet('uid:' + userData.theirid + ':posts', req.uid, 0, 9, next);
 			},
 			signature: function(next) {
-				postTools.parseSignature(userData, req.uid, next);
+				posts.parseSignature(userData, req.uid, next);
 			}
 		}, function(err, results) {
 			if(err) {

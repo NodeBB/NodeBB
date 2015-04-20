@@ -290,36 +290,22 @@ SocketPosts.edit = function(socket, data, callback) {
 		return callback(new Error('[[error:content-too-long, ' + meta.config.maximumPostLength + ']]'));
 	}
 
-	// uid, pid, title, content, options
 	postTools.edit({
 		uid: socket.uid,
 		handle: data.handle,
 		pid: data.pid,
 		title: data.title,
 		content: data.content,
-		options: {
-			topic_thumb: data.topic_thumb,
-			tags: data.tags
-		}
-	}, function(err, results) {
+		topic_thumb: data.topic_thumb,
+		tags: data.tags
+	}, function(err, result) {
 		if (err) {
 			return callback(err);
 		}
 
-		var result = {
-			pid: data.pid,
-			handle: data.handle,
-			title: results.topic.title,
-			slug: results.topic.slug,
-			isMainPost: results.topic.isMainPost,
-			tags: results.topic.tags,
-			content: results.content
-		};
-
-		if (parseInt(results.postData.deleted) !== 1) {
-			websockets.in('topic_' + results.topic.tid).emit('event:post_edited', result);
-			callback();
-			return;
+		if (parseInt(result.post.deleted) !== 1) {
+			websockets.in('topic_' + result.topic.tid).emit('event:post_edited', result);
+			return callback();
 		}
 
 		socket.emit('event:post_edited', result);
@@ -327,8 +313,8 @@ SocketPosts.edit = function(socket, data, callback) {
 
 		async.parallel({
 			admins: async.apply(groups.getMembers, 'administrators', 0, -1),
-			moderators: async.apply(groups.getMembers, 'cid:' + results.topic.cid + ':privileges:mods', 0, -1),
-			uidsInTopic: async.apply(websockets.getUidsInRoom, 'topic_' + results.topic.tid)
+			moderators: async.apply(groups.getMembers, 'cid:' + result.topic.cid + ':privileges:mods', 0, -1),
+			uidsInTopic: async.apply(websockets.getUidsInRoom, 'topic_' + result.topic.tid)
 		}, function(err, results) {
 			if (err) {
 				return winston.error(err);
@@ -507,7 +493,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 		function(topic, next) {
 			post.topic = topic;
 			message = '[[notifications:user_flagged_post_in, ' + userName + ', ' + topic.title + ']]';
-			postTools.parsePost(post, next);
+			posts.parsePost(post, next);
 		},
 		function(post, next) {
 			async.parallel({

@@ -6,7 +6,6 @@ var async = require('async'),
 	user = require('../user'),
 	groups = require('../groups'),
 	meta = require('../meta'),
-	postTools = require('../postTools'),
 	plugins = require('../plugins');
 
 
@@ -64,7 +63,7 @@ module.exports = function(Posts) {
 							userData.signature = '';
 							return next();
 						}
-						postTools.parseSignature(userData, uid, next);
+						Posts.parseSignature(userData, uid, next);
 					},
 					customProfileInfo: function(next) {
 						plugins.fireHook('filter:posts.custom_profile_info', {profile: [], uid: userData.uid}, next);
