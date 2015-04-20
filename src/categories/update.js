@@ -3,7 +3,8 @@
 
 var async = require('async'),
 	db = require('../database'),
-	utils = require('../../public/src/utils');
+	utils = require('../../public/src/utils'),
+	plugins = require('../plugins');
 
 
 module.exports = function(Categories) {
@@ -34,18 +35,21 @@ module.exports = function(Categories) {
 
 	function updateCategoryField(cid, key, value, callback) {
 		db.setObjectField('category:' + cid, key, value, function(err) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (key === 'name') {
-				var slug = cid + '/' + utils.slugify(value);
-				db.setObjectField('category:' + cid, 'slug', slug, callback);
-			} else if (key === 'order') {
-				db.sortedSetAdd('categories:cid', value, cid, callback);
-			} else {
-				callback();
-			}
+			plugins.fireHook('filter:category.updateField', {cid: cid, key: key, value: value}, function(err, data){
+				if (err) {
+					return callback(err);
+				}
+				
+				if (key === 'name') {
+					var value = data.value || utils.slugify(value);
+					var slug = cid + '/' + value;
+					db.setObjectField('category:' + cid, 'slug', slug, callback);
+				} else if (key === 'order') {
+					db.sortedSetAdd('categories:cid', value, cid, callback);
+				} else {
+					callback();
+				}
+			});
 		});
 	}
 
