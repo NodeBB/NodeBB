@@ -14,7 +14,7 @@ var async = require('async'),
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
-		Widgets.getAreas(['global', area.template], area.locations, function(err, data) {
+		Widgets.getAreas(['global', area.template], area.locations, area.url, function(err, data) {
 			if (err) {
 				return callback(err);
 			}
@@ -63,7 +63,7 @@ var async = require('async'),
 		});
 	};
 
-	Widgets.getAreas = function(templates, locations, callback) {
+	Widgets.getAreas = function(templates, locations, url, callback) {
 		var keys = templates.map(function(tpl) {
 			return 'widgets:' + tpl;
 		});
@@ -71,14 +71,11 @@ var async = require('async'),
 			if (err) {
 				return callback(err);
 			}
-
-			plugins.fireHook('filter:widgets.frontGetAreas', data, function(err, data) {
+			plugins.fireHook('filter:widgets.frontGetAreas', {data: data, templates: templates, locations: locations, url: url}, function(err, res) {
 				if (err) {
 					return callback(err);
 				}
-
 				var returnData = {};
-
 				templates.forEach(function(template, index) {
 					returnData[template] = returnData[template] || {};
 					locations.forEach(function(location) {
@@ -94,9 +91,7 @@ var async = require('async'),
 						}
 					});
 				});
-
 				callback(null, returnData);
-
 			});
 		});
 	};
