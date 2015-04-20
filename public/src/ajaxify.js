@@ -61,11 +61,11 @@ $(document).ready(function() {
 			});
 		});
 
-		if (!quiet) {
-			require(['search'], function(search) {
+		require(['search'], function(search) {
+			if (search.topicDOM.active && !url.startsWith('topic/')) {
 				search.topicDOM.end();
-			});
-		}
+			}
+		});
 
 		return true;
 	};
