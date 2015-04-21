@@ -76,6 +76,19 @@
 				</div>
 				<div class="col-sm-5 help-text" data-help="Please confirm your password."></div>
 			</div>
+
+			<p>
+				<h1><small>Configure your database</small></h1>
+				<hr />
+			</p>
+
+			<div class="row input-row">
+				<div class="col-sm-7 col-xs-12 input-field">
+					<label for="confirm">Confirm Password</label>
+					<input type="password" class="form-control" name="confirm" placeholder="Confirm Password" />	
+				</div>
+				<div class="col-sm-5 help-text" data-help="Please confirm your password."></div>
+			</div>
 		</form>
 	</div>
 
