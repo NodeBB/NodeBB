@@ -88,17 +88,19 @@
 
 			<div class="row input-row">
 				<div class="col-sm-7 col-xs-12 input-field">
-					<label for="confirm">Database Type</label>
+					<label for="database">Database Type</label>
 					<select class="form-control" name="database">
 						<option value="redis">Redis</option>
-						<option value="mongodb">MongoDB</option>
+						<option value="mongo">MongoDB</option>
 					</select>
 				</div>
 			</div>
+
+			<div id="database-config"></div>
 		</form>
 	</div>
 
-	<div class="hidea">
+	<div class="hide">
 		<!-- BEGIN databases -->
 		<div data-database="{databases.name}">
 			<!-- BEGIN questions -->

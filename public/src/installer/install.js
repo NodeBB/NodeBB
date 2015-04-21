@@ -8,7 +8,7 @@ $('document').ready(function() {
 
 
 	function setupInputs() {
-		$('.form-control').on('focus', function() {
+		$('form').on('focus', '.form-control', function() {
 			var parent = $(this).parents('.input-row');
 
 			$('.input-row.active').removeClass('active');
@@ -18,12 +18,14 @@ $('document').ready(function() {
 			help.html(help.attr('data-help'));
 		});
 
-		$('[name]').on('blur', function() {
-			validate($(this).attr('name'), $(this));
+		$('form').on('blur change', '[name]', function() {
+			activate($(this).attr('name'), $(this));
 		});
+
+		activate($('[name="database"]').val(), $('[name="database"]'));
 	}
 
-	function validate(type, el) {
+	function activate(type, el) {
 		var field = el.val(),
 			parent = el.parents('.input-row'),
 			help = parent.children('.help-text');
@@ -64,6 +66,10 @@ $('document').ready(function() {
 			}
 		}
 
+		function switchDatabase(field) {
+			$('#database-config').html($('[data-database="' + field + '"]').html());
+		}
+
 		switch (type) {
 			case 'username':
 				return validateUsername(field);
@@ -73,6 +79,8 @@ $('document').ready(function() {
 				return validateConfirmPassword(field);
 			case 'email':
 				return validateEmail(field);
+			case 'database':
+				return switchDatabase(field);
 		}
 	}
 });
