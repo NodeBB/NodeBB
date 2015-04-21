@@ -18,11 +18,8 @@ $('document').ready(function() {
 			help.html(help.attr('data-help'));
 		});
 
-		$('[name="username"]').on('blur', function() {
-			validate('username', $(this));
-		});
-		$('[name="password"]').on('blur', function() {
-			validate('password', $(this));
+		$('[name]').on('blur', function() {
+			validate($(this).attr('name'), $(this));
 		});
 	}
 
@@ -49,11 +46,22 @@ $('document').ready(function() {
 			}
 		}
 
+		function validateConfirmPassword(field) {
+			if ($('[name="password"]').val() !== $('[name="confirm"]').val()) {
+				parent.addClass('error');
+				help.html('Passwords do not match.');
+			} else {
+				parent.removeClass('error');
+			}
+		}
+
 		switch (type) {
 			case 'username':
 				return validateUsername(field);
 			case 'password':
 				return validatePassword(field);
+			case 'confirm':
+				return validateConfirmPassword(field);
 		}
 	}
 });

@@ -62,6 +62,13 @@
 				</div>
 				<div class="col-sm-5 help-text" data-help="Use a combination of numbers, symbols, and different cases. You can change the strictness of password creation in the Admin Control Panel."></div>
 			</div>
+			<div class="row input-row">
+				<div class="col-sm-7 col-xs-12 input-field">
+					<label for="confirm">Confirm Password</label>
+					<input type="password" class="form-control" name="confirm" placeholder="Confirm Password" />	
+				</div>
+				<div class="col-sm-5 help-text" data-help="Re-enter your password again."></div>
+			</div>
 		</form>
 	</div>
 
