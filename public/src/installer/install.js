@@ -55,6 +55,15 @@ $('document').ready(function() {
 			}
 		}
 
+		function validateEmail(field) {
+			if (!utils.isEmailValid(field)) {
+				parent.addClass('error');
+				help.html('Invalid Email Address.');
+			} else {
+				parent.removeClass('error');
+			}
+		}
+
 		switch (type) {
 			case 'username':
 				return validateUsername(field);
@@ -62,6 +71,8 @@ $('document').ready(function() {
 				return validatePassword(field);
 			case 'confirm':
 				return validateConfirmPassword(field);
+			case 'email':
+				return validateEmail(field);
 		}
 	}
 });

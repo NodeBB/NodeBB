@@ -57,6 +57,13 @@
 			</div>
 			<div class="row input-row">
 				<div class="col-sm-7 col-xs-12 input-field">
+					<label for="email">Email Address</label>
+					<input type="text" class="form-control" name="email" placeholder="Email Address" />	
+				</div>
+				<div class="col-sm-5 help-text" data-help="Please enter your email address."></div>
+			</div>
+			<div class="row input-row">
+				<div class="col-sm-7 col-xs-12 input-field">
 					<label for="password">Password</label>
 					<input type="password" class="form-control" name="password" placeholder="Password" />	
 				</div>
@@ -67,7 +74,7 @@
 					<label for="confirm">Confirm Password</label>
 					<input type="password" class="form-control" name="confirm" placeholder="Confirm Password" />	
 				</div>
-				<div class="col-sm-5 help-text" data-help="Re-enter your password again."></div>
+				<div class="col-sm-5 help-text" data-help="Please confirm your password."></div>
 			</div>
 		</form>
 	</div>
