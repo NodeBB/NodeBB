@@ -49,18 +49,18 @@
 		<br />
 		<form>
 			<div class="row input-row">
-				<div class="col-sm-8 col-xs-12 input-field">
+				<div class="col-sm-7 col-xs-12 input-field">
 					<label for="username">Username</label>
 					<input type="text" class="form-control" name="username" placeholder="Username" />	
 				</div>
-				<div class="col-sm-4 help-text" data-help="Enter an <strong>alphanumeric username</strong>. Spaces between words are allowed. You can always change your username later on your profile page."></div>
+				<div class="col-sm-5 help-text" data-help="Enter an <strong>alphanumeric username</strong>. Spaces between words are allowed. You can always change your username later on your profile page."></div>
 			</div>
 			<div class="row input-row">
-				<div class="col-sm-8 col-xs-12 input-field">
+				<div class="col-sm-7 col-xs-12 input-field">
 					<label for="password">Password</label>
 					<input type="password" class="form-control" name="password" placeholder="Password" />	
 				</div>
-				<div class="col-sm-4 help-text" data-help="Use a combination of numbers, symbols, and different cases. You can change the strictness of password creation in the Admin Control Panel."></div>
+				<div class="col-sm-5 help-text" data-help="Use a combination of numbers, symbols, and different cases. You can change the strictness of password creation in the Admin Control Panel."></div>
 			</div>
 		</form>
 	</div>

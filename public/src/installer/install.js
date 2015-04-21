@@ -18,21 +18,42 @@ $('document').ready(function() {
 			help.html(help.attr('data-help'));
 		});
 
-		$('[name="username"]').on('blur', validateUsername);
+		$('[name="username"]').on('blur', function() {
+			validate('username', $(this));
+		});
+		$('[name="password"]').on('blur', function() {
+			validate('password', $(this));
+		});
 	}
 
-
-	function validateUsername() {
-		var $this = $(this),
-			username = $this.val(),
-			parent = $this.parents('.input-row'),
+	function validate(type, el) {
+		var field = el.val(),
+			parent = el.parents('.input-row'),
 			help = parent.children('.help-text');
 
-		if (!utils.isUserNameValid(username) || !utils.slugify(username)) {
-			parent.addClass('error');
-			help.html('Invalid Username.');
-		} else {
-			parent.removeClass('error');
+		function validateUsername(field) {
+			if (!utils.isUserNameValid(field) || !utils.slugify(field)) {
+				parent.addClass('error');
+				help.html('Invalid Username.');
+			} else {
+				parent.removeClass('error');
+			}
+		}
+
+		function validatePassword(field) {
+			if (!utils.isPasswordValid(field)) {
+				parent.addClass('error');
+				help.html('Invalid Password.');
+			} else {
+				parent.removeClass('error');
+			}
+		}
+
+		switch (type) {
+			case 'username':
+				return validateUsername(field);
+			case 'password':
+				return validatePassword(field);
 		}
 	}
 });
