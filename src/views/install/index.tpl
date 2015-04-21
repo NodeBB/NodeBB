@@ -44,35 +44,39 @@
 
 	<div class="container">
 		<p>
-			<h1>Welcome to the NodeBB Installer! <hr /><small>You are just a few steps away from launching your own NodeBB forum</small></h1>
+			<h1>Welcome to the NodeBB Installer</h1>
+			You are just a few steps away from launching your own NodeBB forum!
 		</p>
-		<br />
 		<form>
+			<p>
+				<h1><small>Create an Administrator account</small></h1>
+				<hr />
+			</p>
 			<div class="row input-row">
 				<div class="col-sm-7 col-xs-12 input-field">
 					<label for="username">Username</label>
-					<input type="text" class="form-control" name="username" placeholder="Username" />	
+					<input type="text" class="form-control" name="username" placeholder="Username" />
 				</div>
 				<div class="col-sm-5 help-text" data-help="Enter an <strong>alphanumeric username</strong>. Spaces between words are allowed. You can always change your username later on your profile page."></div>
 			</div>
 			<div class="row input-row">
 				<div class="col-sm-7 col-xs-12 input-field">
 					<label for="email">Email Address</label>
-					<input type="text" class="form-control" name="email" placeholder="Email Address" />	
+					<input type="text" class="form-control" name="email" placeholder="Email Address" />
 				</div>
 				<div class="col-sm-5 help-text" data-help="Please enter your email address."></div>
 			</div>
 			<div class="row input-row">
 				<div class="col-sm-7 col-xs-12 input-field">
 					<label for="password">Password</label>
-					<input type="password" class="form-control" name="password" placeholder="Password" />	
+					<input type="password" class="form-control" name="password" placeholder="Password" />
 				</div>
 				<div class="col-sm-5 help-text" data-help="Use a combination of numbers, symbols, and different cases. You can change the strictness of password creation in the Admin Control Panel."></div>
 			</div>
 			<div class="row input-row">
 				<div class="col-sm-7 col-xs-12 input-field">
 					<label for="confirm">Confirm Password</label>
-					<input type="password" class="form-control" name="confirm" placeholder="Confirm Password" />	
+					<input type="password" class="form-control" name="confirm" placeholder="Confirm Password" />
 				</div>
 				<div class="col-sm-5 help-text" data-help="Please confirm your password."></div>
 			</div>
@@ -84,12 +88,29 @@
 
 			<div class="row input-row">
 				<div class="col-sm-7 col-xs-12 input-field">
-					<label for="confirm">Confirm Password</label>
-					<input type="password" class="form-control" name="confirm" placeholder="Confirm Password" />	
+					<label for="confirm">Database Type</label>
+					<select class="form-control" name="database">
+						<option value="redis">Redis</option>
+						<option value="mongodb">MongoDB</option>
+					</select>
 				</div>
-				<div class="col-sm-5 help-text" data-help="Please confirm your password."></div>
 			</div>
 		</form>
+	</div>
+
+	<div class="hidea">
+		<!-- BEGIN databases -->
+		<div data-database="{databases.name}">
+			<!-- BEGIN questions -->
+				<div class="row input-row">
+					<div class="col-sm-7 col-xs-12 input-field">
+						<label for="{databases.questions.name}">{databases.questions.description}</label>
+						<input type="<!-- IF hidden -->password<!-- ELSE -->text<!-- ENDIF hidden -->" class="form-control" name="{databases.questions.name}" placeholder="{databases.questions.default}" />
+					</div>
+				</div>
+			<!-- END questions -->
+		</div>
+		<!-- END databases -->			
 	</div>
 
 	<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>

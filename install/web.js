@@ -48,7 +48,19 @@ function setupRoutes() {
 }
 
 function install(req, res, next) {
-	res.render('install/index', {});
+	var dbs = ['redis', 'mongo'],
+		databases = [];
+
+	dbs.forEach(function(el) {
+		databases.push({
+			name: el,
+			questions: require('../src/database/' + el).questions
+		});
+	});
+
+	res.render('install/index', {
+		databases: databases
+	});
 }
 
 function compileLess(callback) {
