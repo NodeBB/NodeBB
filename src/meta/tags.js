@@ -31,6 +31,10 @@ module.exports = function(Meta) {
 				content: Meta.config['brand:logo'] || ''
 			}]),
 			async.apply(plugins.fireHook, 'filter:meta.getLinkTags', [{
+				rel: "icon",
+				type: "image/x-icon",
+				href: nconf.get('relative_path') + '/favicon.ico'
+			}, {
 				rel: 'apple-touch-icon',
 				href: nconf.get('relative_path') + '/apple-touch-icon'
 			}])
@@ -46,11 +50,6 @@ module.exports = function(Meta) {
 			});
 
 			link = tags[1].concat(link || []);
-			link.unshift({
-				rel: "icon",
-				type: "image/x-icon",
-				href: nconf.get('relative_path') + '/favicon.ico'
-			});
 
 			callback(null, {
 				meta: meta,
