@@ -1,7 +1,7 @@
 
 'use strict';
 
-/* globals config, app, ajaxify, define, socket, templates */
+/* globals config, app, ajaxify, define, socket, templates, translator, utils */
 
 define('forum/topic/events', [
 	'forum/topic/browsing',
@@ -20,8 +20,8 @@ define('forum/topic/events', [
 		'event:voted': updatePostVotesAndUserReputation,
 		'event:favourited': updateFavouriteCount,
 
-		'event:topic_deleted': toggleTopicDeleteState,
-		'event:topic_restored': toggleTopicDeleteState,
+		'event:topic_deleted': threadTools.setDeleteState,
+		'event:topic_restored': threadTools.setDeleteState,
 		'event:topic_purged': onTopicPurged,
 
 		'event:topic_locked': threadTools.setLockedState,
@@ -79,11 +79,6 @@ define('forum/topic/events', [
 
 	function updateFavouriteCount(data) {
 		$('[data-pid="' + data.post.pid + '"] .favouriteCount').html(data.post.reputation).attr('data-favourites', data.post.reputation);
-	}
-
-	function toggleTopicDeleteState(data) {
-		threadTools.setLockedState(data);
-		threadTools.setDeleteState(data);
 	}
 
 	function onTopicPurged(data) {
