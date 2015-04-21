@@ -191,142 +191,137 @@ middleware.buildHeader = function(req, res, next) {
 };
 
 middleware.renderHeader = function(req, res, callback) {
-	navigation.get(function(err, menuItems) {
+	var defaultMetaTags = [{
+			name: 'viewport',
+			content: 'width=device-width, initial-scale=1.0, user-scalable=no'
+		}, {
+			name: 'content-type',
+			content: 'text/html; charset=UTF-8'
+		}, {
+			name: 'apple-mobile-web-app-capable',
+			content: 'yes'
+		}, {
+			property: 'og:site_name',
+			content: meta.config.title || 'NodeBB'
+		}, {
+			name: 'keywords',
+			content: meta.config.keywords || ''
+		}, {
+			name: 'msapplication-badge',
+			content: 'frequency=30; polling-uri=' + nconf.get('url') + '/sitemap.xml'
+		}, {
+			name: 'msapplication-square150x150logo',
+			content: meta.config['brand:logo'] || ''
+		}],
+		defaultLinkTags = [{
+			rel: 'apple-touch-icon',
+			href: nconf.get('relative_path') + '/apple-touch-icon'
+		}],
+		templateValues = {
+			bootswatchCSS: meta.config['theme:src'],
+			title: meta.config.title || '',
+			description: meta.config.description || '',
+			'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
+			'brand:logo': meta.config['brand:logo'] || '',
+			'brand:logo:display': meta.config['brand:logo']?'':'hide',
+			allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
+			searchEnabled: plugins.hasListeners('filter:search.query')
+		};
+
+	for (var key in res.locals.config) {
+		if (res.locals.config.hasOwnProperty(key)) {
+			templateValues[key] = res.locals.config[key];
+		}
+	}
+
+	templateValues.configJSON = JSON.stringify(res.locals.config);
+
+	templateValues.metaTags = defaultMetaTags.concat(res.locals.metaTags || []).map(function(tag) {
+		if(!tag || typeof tag.content !== 'string') {
+			winston.warn('Invalid meta tag. ', tag);
+			return tag;
+		}
+
+		tag.content = validator.escape(tag.content);
+		return tag;
+	});
+
+	templateValues.linkTags = defaultLinkTags.concat(res.locals.linkTags || []);
+	templateValues.linkTags.unshift({
+		rel: "icon",
+		type: "image/x-icon",
+		href: nconf.get('relative_path') + '/favicon.ico'
+	});
+
+	async.parallel({
+		customCSS: function(next) {
+			templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1;
+			if (!templateValues.useCustomCSS || !meta.config.customCSS || !meta.config.renderedCustomCSS) {
+				return next(null, '');
+			}
+			next(null, meta.config.renderedCustomCSS);
+		},
+		customJS: function(next) {
+			templateValues.useCustomJS = parseInt(meta.config.useCustomJS, 10) === 1;
+			next(null, templateValues.useCustomJS ? meta.config.customJS : '');
+		},
+		title: function(next) {
+			if (req.uid) {
+				user.getSettings(req.uid, function(err, settings) {
+					if (err) {
+						return next(err);
+					}
+					meta.title.build(req.url.slice(1), settings.userLang, res.locals, next);
+				});
+			} else {
+				meta.title.build(req.url.slice(1), meta.config.defaultLang, res.locals, next);
+			}
+		},
+		isAdmin: function(next) {
+			user.isAdministrator(req.uid, next);
+		},
+		user: function(next) {
+			if (req.uid) {
+				user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'status', 'email:confirmed', 'banned'], next);
+			} else {
+				next(null, {
+					username: '[[global:guest]]',
+					userslug: '',
+					picture: user.createGravatarURLFromEmail(''),
+					status: 'offline',
+					banned: false,
+					uid: 0
+				});
+			}
+		},
+		navigation: async.apply(navigation.get)
+	}, function(err, results) {
 		if (err) {
 			return callback(err);
 		}
 
-		var defaultMetaTags = [{
-				name: 'viewport',
-				content: 'width=device-width, initial-scale=1.0, user-scalable=no'
-			}, {
-				name: 'content-type',
-				content: 'text/html; charset=UTF-8'
-			}, {
-				name: 'apple-mobile-web-app-capable',
-				content: 'yes'
-			}, {
-				property: 'og:site_name',
-				content: meta.config.title || 'NodeBB'
-			}, {
-				name: 'keywords',
-				content: meta.config.keywords || ''
-			}, {
-				name: 'msapplication-badge',
-				content: 'frequency=30; polling-uri=' + nconf.get('url') + '/sitemap.xml'
-			}, {
-				name: 'msapplication-square150x150logo',
-				content: meta.config['brand:logo'] || ''
-			}],
-			defaultLinkTags = [{
-				rel: 'apple-touch-icon',
-				href: nconf.get('relative_path') + '/apple-touch-icon'
-			}],
-			templateValues = {
-				bootswatchCSS: meta.config['theme:src'],
-				title: meta.config.title || '',
-				description: meta.config.description || '',
-				'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
-				'brand:logo': meta.config['brand:logo'] || '',
-				'brand:logo:display': meta.config['brand:logo']?'':'hide',
-				navigation: menuItems,
-				allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
-				searchEnabled: plugins.hasListeners('filter:search.query')
-			};
-
-		for (var key in res.locals.config) {
-			if (res.locals.config.hasOwnProperty(key)) {
-				templateValues[key] = res.locals.config[key];
-			}
+		if (results.user && parseInt(results.user.banned, 10) === 1) {
+			req.logout();
+			res.redirect('/');
+			return;
 		}
+		results.user.isAdmin = results.isAdmin || false;
+		results.user.uid = parseInt(results.user.uid, 10);
+		results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
 
-		templateValues.configJSON = JSON.stringify(res.locals.config);
+		templateValues.browserTitle = results.title;
+		templateValues.navigation = results.navigation
+		templateValues.isAdmin = results.user.isAdmin;
+		templateValues.user = results.user;
+		templateValues.userJSON = JSON.stringify(results.user);
+		templateValues.customCSS = results.customCSS;
+		templateValues.customJS = results.customJS;
+		templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
 
-		templateValues.metaTags = defaultMetaTags.concat(res.locals.metaTags || []).map(function(tag) {
-			if(!tag || typeof tag.content !== 'string') {
-				winston.warn('Invalid meta tag. ', tag);
-				return tag;
-			}
+		templateValues.template = {name: res.locals.template};
+		templateValues.template[res.locals.template] = true;
 
-			tag.content = validator.escape(tag.content);
-			return tag;
-		});
-
-		templateValues.linkTags = defaultLinkTags.concat(res.locals.linkTags || []);
-		templateValues.linkTags.unshift({
-			rel: "icon",
-			type: "image/x-icon",
-			href: nconf.get('relative_path') + '/favicon.ico'
-		});
-
-		async.parallel({
-			customCSS: function(next) {
-				templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1;
-				if (!templateValues.useCustomCSS || !meta.config.customCSS || !meta.config.renderedCustomCSS) {
-					return next(null, '');
-				}
-				next(null, meta.config.renderedCustomCSS);
-			},
-			customJS: function(next) {
-				templateValues.useCustomJS = parseInt(meta.config.useCustomJS, 10) === 1;
-				next(null, templateValues.useCustomJS ? meta.config.customJS : '');
-			},
-			title: function(next) {
-				if (req.uid) {
-					user.getSettings(req.uid, function(err, settings) {
-						if (err) {
-							return next(err);
-						}
-						meta.title.build(req.url.slice(1), settings.userLang, res.locals, next);
-					});
-				} else {
-					meta.title.build(req.url.slice(1), meta.config.defaultLang, res.locals, next);
-				}
-			},
-			isAdmin: function(next) {
-				user.isAdministrator(req.uid, next);
-			},
-			user: function(next) {
-				if (req.uid) {
-					user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'status', 'email:confirmed', 'banned'], next);
-				} else {
-					next(null, {
-						username: '[[global:guest]]',
-						userslug: '',
-						picture: user.createGravatarURLFromEmail(''),
-						status: 'offline',
-						banned: false,
-						uid: 0
-					});
-				}
-			}
-		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (results.user && parseInt(results.user.banned, 10) === 1) {
-				req.logout();
-				res.redirect('/');
-				return;
-			}
-			results.user.isAdmin = results.isAdmin || false;
-			results.user.uid = parseInt(results.user.uid, 10);
-			results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
-
-			templateValues.browserTitle = results.title;
-			templateValues.isAdmin = results.user.isAdmin;
-			templateValues.user = results.user;
-			templateValues.userJSON = JSON.stringify(results.user);
-			templateValues.customCSS = results.customCSS;
-			templateValues.customJS = results.customJS;
-			templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
-
-			templateValues.template = {name: res.locals.template};
-			templateValues.template[res.locals.template] = true;
-
-			app.render('header', templateValues, callback);
-		});
+		app.render('header', templateValues, callback);
 	});
 };
 
