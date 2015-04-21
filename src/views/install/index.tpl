@@ -35,8 +35,8 @@
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
 					<li class="active"><a href="/">Installer</a></li>
-					<li><a href="#">Get Help</a></li>
-					<li><a href="#">Community</a></li>
+					<li><a href="https://docs.nodebb.org" target="_blank">Get Help</a></li>
+					<li><a href="https://community.nodebb.org" target="_blank">Community</a></li>
 				</ul>
 			</div>
 		</div>
