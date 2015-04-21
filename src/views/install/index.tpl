@@ -54,13 +54,13 @@
 					<input type="text" class="form-control" name="username" placeholder="Username" />	
 				</div>
 				<div class="col-sm-4 help-text">
-					Here is some sample help text. Username should be between <strong>6</strong> and <strong>12</strong> characters long.
+					
 				</div>
 			</div>
 			<div class="row input-row">
 				<div class="col-sm-8 col-xs-12 input-field">
-					<label for="username">Username</label>
-					<input type="text" class="form-control" name="username" placeholder="Username" />	
+					<label for="password">Password</label>
+					<input type="password" class="form-control" name="password" placeholder="Username" />	
 				</div>
 				<div class="col-sm-4 help-text">
 					Here is some sample help text. Username should be between <strong>6</strong> and <strong>12</strong> characters long.
@@ -71,6 +71,6 @@
 
 	<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="src/installer/install.js"></script>
+	<script type="text/javascript" src="nodebb.min.js"></script>
 </body>
 </html>

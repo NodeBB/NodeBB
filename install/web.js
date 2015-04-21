@@ -5,15 +5,26 @@ var winston = require('winston'),
 	fs = require('fs'),
 	path = require('path'),
 	less = require('less'),
+	async = require('async'),
+	uglify = require('uglify-js'),
 	app = express();
 
-var web = {};
+var web = {},
+	scripts = [
+		'public/vendor/jquery/js/jquery.js',
+		'public/vendor/bootstrap/js/bootstrap.min.js',
+		'public/vendor/bootbox/bootbox.min.js',
+		'public/vendor/xregexp/xregexp.js',
+		'public/vendor/xregexp/unicode/unicode-base.js',
+		'public/src/utils.js',
+		'public/src/installer/install.js'
+	];
 
 web.install = function(port) {
 	port = port || 8080;
 	winston.info('Launching web installer on port ', port);
 
-	compileLess(function() {
+	async.parallel([compileLess, compileJS], function() {
 		setupRoutes();
 		launchExpress(port);
 	});
@@ -50,6 +61,16 @@ function compileLess(callback) {
 			fs.writeFile(path.join(__dirname, '../public/stylesheet.css'), css.css, callback);
 		});
 	});
+}
+
+function compileJS(callback) {
+	var scriptPath = path.join(__dirname, '..'),
+		result = uglify.minify(scripts.map(function(script) {
+			return path.join(scriptPath, script);
+		}));
+
+
+	fs.writeFile(path.join(__dirname, '../public/nodebb.min.js'), result.code, callback);
 }
 
 module.exports = web;
