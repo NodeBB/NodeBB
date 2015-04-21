@@ -1,12 +1,14 @@
 var nconf = require('nconf'),
 	validator = require('validator'),
+	async = require('async'),
 	plugins = require('../plugins');
 
 module.exports = function(Meta) {
 	Meta.tags = {};
 
 	Meta.tags.parse = function(meta, link, callback) {
-		var defaultMetaTags = [{
+		async.parallel([
+			async.apply(plugins.fireHook, 'filter:meta.getMetaTags', [{
 				name: 'viewport',
 				content: 'width=device-width, initial-scale=1.0, user-scalable=no'
 			}, {
@@ -27,32 +29,33 @@ module.exports = function(Meta) {
 			}, {
 				name: 'msapplication-square150x150logo',
 				content: Meta.config['brand:logo'] || ''
-			}],
-			defaultLinkTags = [{
+			}]),
+			async.apply(plugins.fireHook, 'filter:meta.getLinkTags', [{
 				rel: 'apple-touch-icon',
 				href: nconf.get('relative_path') + '/apple-touch-icon'
-			}];
+			}])
+		], function(err, tags) {
+			meta = tags[0].concat(meta || []).map(function(tag) {
+				if(!tag || typeof tag.content !== 'string') {
+					winston.warn('Invalid meta tag. ', tag);
+					return tag;
+				}
 
-		meta = defaultMetaTags.concat(meta || []).map(function(tag) {
-			if(!tag || typeof tag.content !== 'string') {
-				winston.warn('Invalid meta tag. ', tag);
+				tag.content = validator.escape(tag.content);
 				return tag;
-			}
+			});
 
-			tag.content = validator.escape(tag.content);
-			return tag;
-		});
+			link = tags[1].concat(link || []);
+			link.unshift({
+				rel: "icon",
+				type: "image/x-icon",
+				href: nconf.get('relative_path') + '/favicon.ico'
+			});
 
-		link = defaultLinkTags.concat(link || []);
-		link.unshift({
-			rel: "icon",
-			type: "image/x-icon",
-			href: nconf.get('relative_path') + '/favicon.ico'
-		});
-
-		callback(null, {
-			meta: meta,
-			link: link
+			callback(null, {
+				meta: meta,
+				link: link
+			});
 		});
 	};
 };
