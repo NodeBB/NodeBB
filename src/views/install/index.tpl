@@ -58,9 +58,9 @@
 			<div class="row input-row">
 				<div class="col-sm-8 col-xs-12 input-field">
 					<label for="password">Password</label>
-					<input type="password" class="form-control" name="password" placeholder="Username" />	
+					<input type="password" class="form-control" name="password" placeholder="Password" />	
 				</div>
-				<div class="col-sm-4 help-text" data-help="Here is some sample help text. Username should be between <strong>6</strong> and <strong>12</strong> characters long."></div>
+				<div class="col-sm-4 help-text" data-help="Use a combination of numbers, symbols, and different cases. You can change the strictness of password creation in the Admin Control Panel."></div>
 			</div>
 		</form>
 	</div>

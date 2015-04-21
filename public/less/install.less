@@ -5,9 +5,21 @@ body, small, p, div { font-family: "Roboto", sans-serif; }
 .input-row {
 	margin-bottom: 20px;
 
+	.form-control {
+		margin-bottom: 5px;
+	}
+
+	.help-text {
+		pointer-events: none;
+	}
+
+	.input-field {
+		border-right: 5px solid #FFF;
+	}
+
 	&.active {
 		.input-field {
-			border-right: 5px solid #38B44A;
+			border-right-color: #38B44A;
 			padding-right: 20px;
 		}
 
@@ -18,7 +30,7 @@ body, small, p, div { font-family: "Roboto", sans-serif; }
 
 	&.error {
 		.input-field {
-			border-right: 5px solid #BF3E11;
+			border-right-color: #BF3E11;
 			padding-right: 20px;
 		}
 
