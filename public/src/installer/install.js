@@ -22,7 +22,7 @@ $('document').ready(function() {
 			activate($(this).attr('name'), $(this));
 		});
 
-		activate($('[name="database"]').val(), $('[name="database"]'));
+		activate('database', $('[name="database"]'));
 	}
 
 	function activate(type, el) {
@@ -67,6 +67,7 @@ $('document').ready(function() {
 		}
 
 		function switchDatabase(field) {
+			console.log(field);
 			$('#database-config').html($('[data-database="' + field + '"]').html());
 		}
 
