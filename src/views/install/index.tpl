@@ -8,6 +8,7 @@
 
 	<link rel="stylesheet" type="text/css" href="https://bootswatch.com/united/bootstrap.min.css">
 	<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,500,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" href="stylesheet.css">
 
 
 	<!--[if lt IE 9]>
@@ -16,29 +17,6 @@
   		<script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
   		<script>__lt_ie_9__ = 1;</script>
 	<![endif]-->
-
-	<style type="text/css">
-	.btn, .form-control, .navbar { border-radius: 0; }
-	.container { font-size: 18px; }
-	body, small, p, div { font-family: "Roboto", sans-serif; }
-	.input-row {
-		margin-bottom: 20px;
-	}
-	.input-row.active .input-field {
-		border-right: 5px solid #BF3E11;
-		padding-right: 20px;
-	}
-	.input-row.active .help-text {
-		display: block;
-	}
-
-	.help-text {
-		line-height: 20px;
-		color: #888;
-		font-size: 85%;
-		display: none;
-	}
-	</style>
 </head>
 
 <body>

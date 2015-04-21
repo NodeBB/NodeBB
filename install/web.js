@@ -2,8 +2,9 @@
 
 var winston = require('winston'),
 	express = require('express'),
-	nconf = require('nconf'),
+	fs = require('fs'),
 	path = require('path'),
+	less = require('less'),
 	app = express();
 
 var web = {};
@@ -12,8 +13,10 @@ web.install = function(port) {
 	port = port || 8080;
 	winston.info('Launching web installer on port ', port);
 
-	setupRoutes();
-	launchExpress(port);
+	compileLess(function() {
+		setupRoutes();
+		launchExpress(port);
+	});
 };
 
 
@@ -34,9 +37,21 @@ function setupRoutes() {
 }
 
 function install(req, res, next) {
-	console.log('test');
 	res.render('install/index', {});
 }
 
+function compileLess(callback) {
+	fs.readFile(path.join(__dirname, '../public/less/install.less'), function(err, style) {
+		less.render(style.toString(), function(err, css) {
+			if(err) {
+				return winston.error('Unable to compile LESS: ', err);
+			}
+
+			console.log(css);
+
+			fs.writeFile(path.join(__dirname, '../public/stylesheet.css'), css.css, callback);
+		});
+	});
+}
 
 module.exports = web;
