@@ -65,8 +65,10 @@ configExists = fs.existsSync(configFile);
 
 if (!nconf.get('setup') && !nconf.get('install') && !nconf.get('upgrade') && !nconf.get('reset') && configExists) {
 	start();
-} else if (nconf.get('setup') || nconf.get('install') || !configExists) {
+} else if (nconf.get('setup') || nconf.get('install')) {
 	setup();
+} else if (!configExists) {
+	require('./install/web').install();
 } else if (nconf.get('upgrade')) {
 	upgrade();
 } else if (nconf.get('reset')) {
@@ -219,11 +221,7 @@ function start() {
 function setup() {
 	loadConfig();
 
-	if (nconf.get('setup')) {
-		winston.info('NodeBB Setup Triggered via Command Line');
-	} else {
-		winston.warn('Configuration not found, starting NodeBB setup');
-	}
+	winston.info('NodeBB Setup Triggered via Command Line');
 
 	var install = require('./src/install');
 
