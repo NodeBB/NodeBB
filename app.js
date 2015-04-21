@@ -68,7 +68,7 @@ if (!nconf.get('setup') && !nconf.get('install') && !nconf.get('upgrade') && !nc
 } else if (nconf.get('setup') || nconf.get('install')) {
 	setup();
 } else if (!configExists) {
-	require('./install/web').install();
+	require('./install/web').install(nconf.get('port'));
 } else if (nconf.get('upgrade')) {
 	upgrade();
 } else if (nconf.get('reset')) {
