@@ -53,7 +53,7 @@
 					<label for="username">Username</label>
 					<input type="text" class="form-control" name="username" placeholder="Username" />	
 				</div>
-				<div class="col-sm-4 help-text" data-help="<strong>Enter an alphanumeric username. Spaces between words are allowed.</strong> You can always change your username later on your profile page."></div>
+				<div class="col-sm-4 help-text" data-help="Enter an <strong>alphanumeric username</strong>. Spaces between words are allowed. You can always change your username later on your profile page."></div>
 			</div>
 			<div class="row input-row">
 				<div class="col-sm-8 col-xs-12 input-field">

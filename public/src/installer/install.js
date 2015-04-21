@@ -3,6 +3,7 @@
 
 $('document').ready(function() {
 	setupInputs();
+	$('[name="username"]').focus();
 
 
 
