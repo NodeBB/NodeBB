@@ -2,6 +2,7 @@
 
 var winston = require('winston'),
 	express = require('express'),
+	bodyParser = require('body-parser'),
 	fs = require('fs'),
 	path = require('path'),
 	less = require('less'),
@@ -24,6 +25,14 @@ web.install = function(port) {
 	port = port || 8080;
 	winston.info('Launching web installer on port ', port);
 
+	app.use(express.static('public', {}));
+	app.engine('tpl', require('templates.js').__express);
+	app.set('view engine', 'tpl');
+	app.set('views', path.join(__dirname, '../src/views'));
+	app.use(bodyParser.urlencoded({
+		extended: true
+	})); 
+
 	async.parallel([compileLess, compileJS], function() {
 		setupRoutes();
 		launchExpress(port);
@@ -32,11 +41,6 @@ web.install = function(port) {
 
 
 function launchExpress(port) {
-	app.use(express.static('public', {}));
-	app.engine('tpl', require('templates.js').__express);
-	app.set('view engine', 'tpl');
-	app.set('views', path.join(__dirname, '../src/views'));
-
 	var server = app.listen(port, function() {
 		var host = server.address().address;
 		winston.info('Web installer listening on http://%s:%s', host, port);
@@ -44,10 +48,11 @@ function launchExpress(port) {
 }
 
 function setupRoutes() {
-	app.get('/', install);
+	app.get('/', welcome);
+	app.post('/', install);
 }
 
-function install(req, res, next) {
+function welcome(req, res) {
 	var dbs = ['redis', 'mongo'],
 		databases = [];
 
@@ -61,6 +66,10 @@ function install(req, res, next) {
 	res.render('install/index', {
 		databases: databases
 	});
+}
+
+function install(req, res) {
+	console.log(req.body);
 }
 
 function compileLess(callback) {

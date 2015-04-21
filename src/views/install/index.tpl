@@ -47,7 +47,7 @@
 			<h1>Welcome to the NodeBB Installer</h1>
 			You are just a few steps away from launching your own NodeBB forum!
 		</p>
-		<form>
+		<form action="/" method="post">
 			<p>
 				<h1><small>Create an Administrator account</small></h1>
 				<hr />
@@ -97,6 +97,8 @@
 			</div>
 
 			<div id="database-config"></div>
+
+			<button type="submit" class="btn btn-lg btn-success">Install NodeBB</button>
 		</form>
 	</div>
 
