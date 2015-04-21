@@ -8,8 +8,13 @@ $('document').ready(function() {
 
 	function setupInputs() {
 		$('.form-control').on('focus', function() {
+			var parent = $(this).parents('.input-row');
+
 			$('.input-row.active').removeClass('active');
-			$(this).parents('.input-row').addClass('active');
+			parent.addClass('active').removeClass('error');
+
+			var help = parent.find('.help-text');
+			help.html(help.attr('data-help'));
 		});
 
 		$('[name="username"]').on('blur', validateUsername);
@@ -19,12 +24,14 @@ $('document').ready(function() {
 	function validateUsername() {
 		var $this = $(this),
 			username = $this.val(),
-			help = $this.parents('.input-row').children('.help-text');
+			parent = $this.parents('.input-row'),
+			help = parent.children('.help-text');
 
 		if (!utils.isUserNameValid(username) || !utils.slugify(username)) {
+			parent.addClass('error');
 			help.html('Invalid Username.');
 		} else {
-			help.html('');
+			parent.removeClass('error');
 		}
 	}
 });

@@ -53,18 +53,14 @@
 					<label for="username">Username</label>
 					<input type="text" class="form-control" name="username" placeholder="Username" />	
 				</div>
-				<div class="col-sm-4 help-text">
-					
-				</div>
+				<div class="col-sm-4 help-text" data-help="<strong>Enter an alphanumeric username. Spaces between words are allowed.</strong> You can always change your username later on your profile page."></div>
 			</div>
 			<div class="row input-row">
 				<div class="col-sm-8 col-xs-12 input-field">
 					<label for="password">Password</label>
 					<input type="password" class="form-control" name="password" placeholder="Username" />	
 				</div>
-				<div class="col-sm-4 help-text">
-					Here is some sample help text. Username should be between <strong>6</strong> and <strong>12</strong> characters long.
-				</div>
+				<div class="col-sm-4 help-text" data-help="Here is some sample help text. Username should be between <strong>6</strong> and <strong>12</strong> characters long."></div>
 			</div>
 		</form>
 	</div>
