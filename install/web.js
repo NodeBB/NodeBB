@@ -47,8 +47,6 @@ function compileLess(callback) {
 				return winston.error('Unable to compile LESS: ', err);
 			}
 
-			console.log(css);
-
 			fs.writeFile(path.join(__dirname, '../public/stylesheet.css'), css.css, callback);
 		});
 	});
