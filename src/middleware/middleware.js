@@ -191,33 +191,7 @@ middleware.buildHeader = function(req, res, next) {
 };
 
 middleware.renderHeader = function(req, res, callback) {
-	var defaultMetaTags = [{
-			name: 'viewport',
-			content: 'width=device-width, initial-scale=1.0, user-scalable=no'
-		}, {
-			name: 'content-type',
-			content: 'text/html; charset=UTF-8'
-		}, {
-			name: 'apple-mobile-web-app-capable',
-			content: 'yes'
-		}, {
-			property: 'og:site_name',
-			content: meta.config.title || 'NodeBB'
-		}, {
-			name: 'keywords',
-			content: meta.config.keywords || ''
-		}, {
-			name: 'msapplication-badge',
-			content: 'frequency=30; polling-uri=' + nconf.get('url') + '/sitemap.xml'
-		}, {
-			name: 'msapplication-square150x150logo',
-			content: meta.config['brand:logo'] || ''
-		}],
-		defaultLinkTags = [{
-			rel: 'apple-touch-icon',
-			href: nconf.get('relative_path') + '/apple-touch-icon'
-		}],
-		templateValues = {
+	var templateValues = {
 			bootswatchCSS: meta.config['theme:src'],
 			title: meta.config.title || '',
 			description: meta.config.description || '',
@@ -235,23 +209,6 @@ middleware.renderHeader = function(req, res, callback) {
 	}
 
 	templateValues.configJSON = JSON.stringify(res.locals.config);
-
-	templateValues.metaTags = defaultMetaTags.concat(res.locals.metaTags || []).map(function(tag) {
-		if(!tag || typeof tag.content !== 'string') {
-			winston.warn('Invalid meta tag. ', tag);
-			return tag;
-		}
-
-		tag.content = validator.escape(tag.content);
-		return tag;
-	});
-
-	templateValues.linkTags = defaultLinkTags.concat(res.locals.linkTags || []);
-	templateValues.linkTags.unshift({
-		rel: "icon",
-		type: "image/x-icon",
-		href: nconf.get('relative_path') + '/favicon.ico'
-	});
 
 	async.parallel({
 		customCSS: function(next) {
@@ -294,7 +251,8 @@ middleware.renderHeader = function(req, res, callback) {
 				});
 			}
 		},
-		navigation: async.apply(navigation.get)
+		navigation: async.apply(navigation.get),
+		tags: async.apply(meta.tags.parse, res.locals.metaTags, res.locals.linkTags)
 	}, function(err, results) {
 		if (err) {
 			return callback(err);
@@ -311,6 +269,8 @@ middleware.renderHeader = function(req, res, callback) {
 
 		templateValues.browserTitle = results.title;
 		templateValues.navigation = results.navigation
+		templateValues.metaTags = results.tags.meta;
+		templateValues.metalinkTags = results.tags.link;
 		templateValues.isAdmin = results.user.isAdmin;
 		templateValues.user = results.user;
 		templateValues.userJSON = JSON.stringify(results.user);
