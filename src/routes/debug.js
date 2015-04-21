@@ -9,7 +9,7 @@ var express = require('express'),
 
 module.exports = function(app, middleware, controllers) {
 	var router = express.Router();
-	app.use(nconf.get('relative_path') + '/debug', router);
+
 	router.get('/uid/:uid', function (req, res) {
 		if (!req.params.uid) {
 			return res.redirect('/404');
@@ -59,4 +59,6 @@ module.exports = function(app, middleware, controllers) {
 	router.get('/test', function(req, res) {
 		res.redirect(404);
 	});
+
+	app.use(nconf.get('relative_path') + '/debug', router);
 };
