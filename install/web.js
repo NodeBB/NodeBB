@@ -8,6 +8,7 @@ var winston = require('winston'),
 	less = require('less'),
 	async = require('async'),
 	uglify = require('uglify-js'),
+	nconf = require('nconf'),
 	app = express();
 
 var web = {},
@@ -23,7 +24,7 @@ var web = {},
 
 web.install = function(port) {
 	port = port || 8080;
-	winston.info('Launching web installer on port ', port);
+	winston.info('Launching web installer on port', port);
 
 	app.use(express.static('public', {}));
 	app.engine('tpl', require('templates.js').__express);
@@ -87,6 +88,11 @@ function install(req, res) {
 }
 
 function compileLess(callback) {
+	if ((nconf.get('from-file') || '').indexOf('less') !== -1) {
+		winston.info('LESS compilation skipped');
+		return callback(false);
+	}
+
 	fs.readFile(path.join(__dirname, '../public/less/install.less'), function(err, style) {
 		less.render(style.toString(), function(err, css) {
 			if(err) {
@@ -99,6 +105,11 @@ function compileLess(callback) {
 }
 
 function compileJS(callback) {
+	if ((nconf.get('from-file') || '').indexOf('js') !== -1) {
+		winston.info('Client-side JS compilation skipped');
+		return callback(false);
+	}
+
 	var scriptPath = path.join(__dirname, '..'),
 		result = uglify.minify(scripts.map(function(script) {
 			return path.join(scriptPath, script);
