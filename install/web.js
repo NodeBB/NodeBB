@@ -71,9 +71,7 @@ function welcome(req, res) {
 
 function install(req, res) {
 	var env = {};
-
-	req.body.port = "4567";
-
+	
 	for (var i in req.body) {
 		if (req.body.hasOwnProperty(i)) {
 			env[i.replace(':', '__')] = req.body[i];
