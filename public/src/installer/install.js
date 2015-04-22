@@ -112,5 +112,9 @@ $('document').ready(function() {
 
 	function launchForum() {
 		$('#launch .fa-spin').removeClass('hide');
+
+		$.post('/launch', function() {
+			console.log('launched');
+		});
 	}
 });
