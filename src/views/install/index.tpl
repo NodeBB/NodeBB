@@ -84,6 +84,10 @@
 				</div>
 			</div>
 
+			<!-- IF error -->
+			<a id="database-error"></a>
+			<!-- ENDIF error -->
+
 			<div class="database">
 				<p>
 					<h1><small>Configure your database</small></h1>
@@ -98,6 +102,7 @@
 							<option value="mongo">MongoDB</option>
 						</select>
 					</div>
+					<!-- IF error --><div class="col-sm-5 help-text">There was an error connecting to your database. Please try again.</div><!-- ENDIF error -->
 				</div>
 
 				<div id="database-config"></div>
@@ -105,6 +110,15 @@
 
 			<button id="submit" type="submit" class="btn btn-lg btn-success">Install NodeBB <i class="fa fa-spinner fa-spin hide"></i></button>
 		</form>
+	</div>
+
+
+	<div class="container <!-- IF !success -->hide<!-- ENDIF !success -->">
+		<p>
+			<h1>Congratulations! Your NodeBB has been set-up.</h1>
+			
+			<button id="launch" class="btn btn-lg btn-success">Launch NodeBB <i class="fa fa-spinner fa-spin hide"></i></button>
+		</p>
 	</div>
 
 	<div class="hide">

@@ -9,7 +9,8 @@ var winston = require('winston'),
 	async = require('async'),
 	uglify = require('uglify-js'),
 	nconf = require('nconf'),
-	app = express();
+	app = express(),
+	server;
 
 var web = {},
 	scripts = [
@@ -39,7 +40,7 @@ web.install = function(port) {
 
 
 function launchExpress(port) {
-	var server = app.listen(port, function() {
+	server = app.listen(port, function() {
 		var host = server.address().address;
 		winston.info('Web installer listening on http://%s:%s', host, port);
 	});
@@ -48,6 +49,7 @@ function launchExpress(port) {
 function setupRoutes() {
 	app.get('/', welcome);
 	app.post('/', install);
+	app.post('/launch', launch);
 }
 
 function welcome(req, res) {
@@ -90,6 +92,10 @@ function install(req, res) {
 
 		welcome(req, res);
 	});
+}
+
+function launch(req, res) {
+	
 }
 
 function compileLess(callback) {

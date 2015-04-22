@@ -25,6 +25,13 @@ $('document').ready(function() {
 		$('form').submit(validateAll);
 
 		activate('database', $('[name="database"]'));
+
+		if ($('#database-error').length) {
+			$('[name="database"]').parents('.input-row').addClass('error');
+			$('html, body').animate({
+				scrollTop: ($('#database-error').offset().top + 100) + 'px'
+			}, 400);
+		}
 	}
 
 	function validateAll(ev) {
