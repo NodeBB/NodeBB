@@ -63,8 +63,6 @@ function welcome(req, res) {
 		});
 	});
 
-	console.log(req.body);
-
 	res.render('install/index', {
 		databases: databases,
 		error: res.locals.error ? true : false,
