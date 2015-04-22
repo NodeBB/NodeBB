@@ -21,7 +21,7 @@ var web = {},
 	];
 
 web.install = function(port) {
-	port = port || 8080;
+	port = port || 4567;
 	winston.info('Launching web installer on port', port);
 
 	app.use(express.static('public', {}));
@@ -99,6 +99,7 @@ function launch(req, res) {
 	res.json({});
 
 	server.close();
+	require('child_process').fork('app', [], {});
 }
 
 function compileLess(callback) {
