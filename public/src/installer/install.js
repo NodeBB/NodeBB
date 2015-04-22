@@ -31,10 +31,13 @@ $('document').ready(function() {
 			help = parent.children('.help-text');
 
 		function validateUsername(field) {
+			console.log('derp');
 			if (!utils.isUserNameValid(field) || !utils.slugify(field)) {
+				console.log('derp1');
 				parent.addClass('error');
 				help.html('Invalid Username.');
 			} else {
+				console.log('derp2');
 				parent.removeClass('error');
 			}
 		}
@@ -72,13 +75,13 @@ $('document').ready(function() {
 		}
 
 		switch (type) {
-			case 'username':
+			case 'admin:username':
 				return validateUsername(field);
-			case 'password':
+			case 'admin:password':
 				return validatePassword(field);
-			case 'confirm':
+			case 'admin:confirm':
 				return validateConfirmPassword(field);
-			case 'email':
+			case 'admin:email':
 				return validateEmail(field);
 			case 'database':
 				return switchDatabase(field);
