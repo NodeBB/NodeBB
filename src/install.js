@@ -52,7 +52,8 @@ questions.optional = [
 ];
 
 function checkSetupFlag(next) {
-	var	setupVal;
+	var	envSetupKeys = ['url', 'database'],
+		setupVal;
 	try {
 		setupVal = JSON.parse(nconf.get('setup'));
 	} catch (e) {
@@ -80,6 +81,15 @@ function checkSetupFlag(next) {
 
 			process.exit();
 		}
+	} else if (envSetupKeys.every(function(key) {
+		return nconf.stores.env.store.hasOwnProperty(key);
+	})) {
+		install.values = envSetupKeys.reduce(function(config, key) {
+			config[key] = nconf.stores.env.store[key];
+			return config;
+		}, {});
+
+		next();
 	} else {
 		next();
 	}
@@ -223,7 +233,7 @@ install.installDbDependencies = function(server_conf, next) {
 };
 
 function setupDefaultConfigs(next) {
-	winston.info('Populating database with default configs, if not already set...');
+	process.stdout.write('Populating database with default configs, if not already set...\n');
 	var meta = require('./meta'),
 		defaults = require(path.join(__dirname, '../', 'install/data/defaults.json'));
 
@@ -253,11 +263,11 @@ function enableDefaultTheme(next) {
 
 	meta.configs.get('theme:id', function(err, id) {
 		if (err || id) {
-			winston.info('Previous theme detected, skipping enabling default theme');
+			process.stdout.write('Previous theme detected, skipping enabling default theme\n');
 			return next(err);
 		}
 
-		winston.info('Enabling default theme: Lavender');
+		process.stdout.write('Enabling default theme: Lavender\n');
 		meta.themes.set({
 			type: 'local',
 			id: 'nodebb-theme-lavender'
@@ -269,7 +279,7 @@ function createAdministrator(next) {
 	var Groups = require('./groups');
 	Groups.get('administrators', {}, function (err, groupObj) {
 		if (!err && groupObj && groupObj.memberCount > 0) {
-			winston.info('Administrator found, skipping Admin setup');
+			process.stdout.write('Administrator found, skipping Admin setup\n');
 			next();
 		} else {
 			createAdmin(next);
@@ -279,9 +289,10 @@ function createAdministrator(next) {
 
 function createAdmin(callback) {
 	var User = require('./user'),
-		Groups = require('./groups');
+		Groups = require('./groups'),
+		password;
 
-	winston.warn('No administrators have been detected, running initial user setup');
+	winston.warn('No administrators have been detected, running initial user setup\n');
 
 	var questions = [{
 			name: 'username',
@@ -323,7 +334,9 @@ function createAdmin(callback) {
 					return callback(new Error('invalid-values'));
 				}
 
-				Groups.join('administrators', uid, callback);
+				Groups.join('administrators', uid, function(err) {
+					callback(err, results);
+				});
 			});
 		},
 		retryPassword = function (originalResults) {
@@ -348,11 +361,17 @@ function createAdmin(callback) {
 	if (!install.values) {
 		prompt.get(questions, success);
 	} else {
+		// If automated setup did not provide a user password, generate one, it will be shown to the user upon setup completion
+		if (!install.values.hasOwnProperty('admin:password')) {
+			process.stdout.write('Password was not provided during automated setup, generating one...\n')
+			password = utils.generateUUID().slice(0, 8);
+		}
+
 		var results = {
-			username: install.values['admin:username'],
-			email: install.values['admin:email'],
-			password: install.values['admin:password'],
-			'password:confirm': install.values['admin:password:confirm']
+			username: install.values['admin:username'] || 'admin',
+			email: install.values['admin:email'] || '',
+			password: install.values['admin:password'] || password,
+			'password:confirm': install.values['admin:password:confirm'] || password
 		};
 
 		success(null, results);
@@ -368,11 +387,11 @@ function createCategories(next) {
 		}
 
 		if (Array.isArray(categoryData) && categoryData.length) {
-			winston.info('Categories OK. Found ' + categoryData.length + ' categories.');
+			process.stdout.write('Categories OK. Found ' + categoryData.length + ' categories.\n');
 			return next();
 		}
 
-		winston.warn('No categories found, populating instance with default categories');
+		process.stdout.write('No categories found, populating instance with default categories\n');
 
 		fs.readFile(path.join(__dirname, '../', 'install/data/categories.json'), function (err, default_categories) {
 			if (err) {
@@ -423,7 +442,7 @@ function createWelcomePost(next) {
 function enableDefaultPlugins(next) {
 	var Plugins = require('./plugins');
 
-	winston.info('Enabling default plugins');
+	process.stdout.write('Enabling default plugins\n');
 
 	var defaultEnabled = [
 		'nodebb-plugin-markdown',
@@ -462,6 +481,8 @@ function setCopyrightWidget(next) {
 }
 
 install.setup = function (callback) {
+	var upgrade = require('./upgrade');
+
 	async.series([
 		checkSetupFlag,
 		checkCIFlag,
@@ -475,14 +496,23 @@ install.setup = function (callback) {
 		enableDefaultPlugins,
 		setCopyrightWidget,
 		function (next) {
-			require('./upgrade').upgrade(next);
+			upgrade.check(function(uptodate) {
+				if (!uptodate) { upgrade.upgrade(next); }
+				else { next(); }
+			});
 		}
-	], function (err) {
+	], function (err, results) {
 		if (err) {
 			winston.warn('NodeBB Setup Aborted.\n ' + err.stack);
 			process.exit();
 		} else {
-			callback();
+			var data = {};
+			if (results[6]) {
+				data.username = results[6].username
+				data.password = results[6].password;
+			}
+
+			callback(null, data);
 		}
 	});
 };
@@ -500,7 +530,7 @@ install.save = function (server_conf, callback) {
 			return callback(err);
 		}
 
-		winston.info('Configuration Saved OK');
+		process.stdout.write('Configuration Saved OK\n');
 
 		nconf.file({
 			file: path.join(__dirname, '..', 'config.json')
