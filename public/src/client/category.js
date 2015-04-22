@@ -342,17 +342,16 @@ define('forum/category', [
 			after: after,
 			author: utils.params().author
 		}, function (data, done) {
-
 			if (data.topics && data.topics.length) {
 				Category.onTopicsLoaded(data, function() {
 					done();
 					callback();
 				});
-				$('[component="category"]').attr('data-nextstart', data.nextStart);
 			} else {
 				done();
 			}
 
+			$('[component="category"]').attr('data-nextstart', data.nextStart);
 			$(window).trigger('action:categories.loaded');
 		});
 	}

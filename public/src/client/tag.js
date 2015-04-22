@@ -29,11 +29,11 @@ define('forum/tag', ['forum/recent', 'forum/infinitescroll'], function(recent, i
 			}, function(data, done) {
 				if (data.topics && data.topics.length) {
 					recent.onTopicsLoaded('tag', data.topics, false, done);
-					$('[component="category"]').attr('data-nextstart', data.nextStart);
 				} else {
 					done();
 					$('#load-more-btn').hide();
 				}
+				$('[component="category"]').attr('data-nextstart', data.nextStart);
 			});
 		}
 	};
