@@ -61,7 +61,6 @@ function checkSetupFlag(next) {
 		setupVal = undefined;
 	}
 
-	console.log(setupVal);
 	if (setupVal && setupVal instanceof Object) {
 		if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:password:confirm'] && setupVal['admin:email']) {
 			install.values = setupVal;
