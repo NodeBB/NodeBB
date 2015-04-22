@@ -275,11 +275,14 @@ function getFromUserSet(tpl, set, method, type, req, res, next) {
 
 		var page = Math.max(1, parseInt(req.query.page, 10) || 1);
 		var itemsPerPage = (tpl === 'account/topics' || tpl === 'account/watched') ? results.settings.topicsPerPage : results.settings.postsPerPage;
-		itemsPerPage = parseInt(itemsPerPage, 10);
 
 		async.parallel({
-			count: function(next) {
-				db.sortedSetCard(setName, next);
+			itemCount: function(next) {
+				if (results.settings.usePagination) {
+					db.sortedSetCard(setName, next);
+				} else {
+					next(null, 0);
+				}
 			},
 			data: function(next) {
 				var start = (page - 1) * itemsPerPage;
@@ -293,7 +296,7 @@ function getFromUserSet(tpl, set, method, type, req, res, next) {
 
 			userData[type] = results.data[type];
 			userData.nextStart = results.data.nextStart;
-			var pageCount = Math.ceil(results.count / itemsPerPage);
+			var pageCount = Math.ceil(results.itemCount / itemsPerPage);
 
 			var pagination = require('../pagination');
 			userData.pagination = pagination.create(page, pageCount);
