@@ -335,7 +335,7 @@ function createAdmin(callback) {
 				}
 
 				Groups.join('administrators', uid, function(err) {
-					callback(err, results);
+					callback(err, password ? results : undefined);
 				});
 			});
 		},
@@ -362,7 +362,7 @@ function createAdmin(callback) {
 		prompt.get(questions, success);
 	} else {
 		// If automated setup did not provide a user password, generate one, it will be shown to the user upon setup completion
-		if (!install.values.hasOwnProperty('admin:password')) {
+		if (!install.values.hasOwnProperty('admin:password') && !nconf.get('admin:password')) {
 			process.stdout.write('Password was not provided during automated setup, generating one...\n')
 			password = utils.generateUUID().slice(0, 8);
 		}
@@ -370,8 +370,8 @@ function createAdmin(callback) {
 		var results = {
 			username: install.values['admin:username'] || 'admin',
 			email: install.values['admin:email'] || '',
-			password: install.values['admin:password'] || password,
-			'password:confirm': install.values['admin:password:confirm'] || password
+			password: install.values['admin:password'] || nconf.get('admin:password') || password,
+			'password:confirm': install.values['admin:password:confirm'] || nconf.get('admin:password') || password
 		};
 
 		success(null, results);
