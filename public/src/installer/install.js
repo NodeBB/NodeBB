@@ -22,7 +22,22 @@ $('document').ready(function() {
 			activate($(this).attr('name'), $(this));
 		});
 
+		$('form').submit(validateAll);
+
 		activate('database', $('[name="database"]'));
+	}
+
+	function validateAll(ev) {
+		$('form .admin [name]').each(function() {
+			activate($(this).attr('name'), $(this));
+		});
+
+		if ($('.error').length) {
+			ev.preventDefault();
+			$('html, body').animate({'scrollTop': '0px'}, 400);
+			
+			return false;
+		}
 	}
 
 	function activate(type, el) {
