@@ -63,11 +63,17 @@ function welcome(req, res) {
 		});
 	});
 
-	res.render('install/index', {
-		databases: databases,
-		error: res.locals.error ? true : false,
-		success: res.locals.success ? true : false,
-		values: req.body
+	fs.readFile(path.join(__dirname, '../config.json'), function(err, file) {
+		if (file) {
+			res.locals.success = true;
+		}
+		
+		res.render('install/index', {
+			databases: databases,
+			error: res.locals.error ? true : false,
+			success: res.locals.success ? true : false,
+			values: req.body
+		});
 	});
 }
 
