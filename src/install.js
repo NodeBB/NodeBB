@@ -55,7 +55,8 @@ function checkSetupFlag(next) {
 	var	setupVal;
 	try {
 		setupVal = JSON.parse(nconf.get('setup'));
-	} catch (e) {
+	} catch (err) {
+		winston.error('Was unable to parse JSON, continuing with regular setup.', err);
 		setupVal = undefined;
 	}
 
