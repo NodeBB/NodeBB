@@ -234,7 +234,7 @@ SocketPosts.sendNotificationToPostOwner = function(pid, fromuid, notification) {
 		async.parallel({
 			username: async.apply(user.getUserField, fromuid, 'username'),
 			topicTitle: async.apply(topics.getTopicField, postData.tid, 'title'),
-			postObj: async.apply(postTools.parsePost, postData)
+			postObj: async.apply(posts.parsePost, postData)
 		}, function(err, results) {
 			if (err) {
 				return;
