@@ -364,7 +364,7 @@ function createAdmin(callback) {
 	} else {
 		// If automated setup did not provide a user password, generate one, it will be shown to the user upon setup completion
 		if (!install.values.hasOwnProperty('admin:password') && !nconf.get('admin:password')) {
-			process.stdout.write('Password was not provided during automated setup, generating one...\n')
+			process.stdout.write('Password was not provided during automated setup, generating one...\n');
 			password = utils.generateUUID().slice(0, 8);
 		}
 
@@ -509,7 +509,7 @@ install.setup = function (callback) {
 		} else {
 			var data = {};
 			if (results[6]) {
-				data.username = results[6].username
+				data.username = results[6].username;
 				data.password = results[6].password;
 			}
 
