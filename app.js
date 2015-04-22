@@ -225,15 +225,35 @@ function setup() {
 
 	var install = require('./src/install');
 
-	winston.info('Welcome to NodeBB!');
-	winston.info('This looks like a new installation, so you\'ll have to answer a few questions about your environment before we can proceed.');
-	winston.info('Press enter to accept the default setting (shown in brackets).');
+	process.stdout.write('\nWelcome to NodeBB!\n');
+	process.stdout.write('\nThis looks like a new installation, so you\'ll have to answer a few questions about your environment before we can proceed.\n');
+	process.stdout.write('Press enter to accept the default setting (shown in brackets).\n');
 
-	install.setup(function (err) {
+	install.setup(function (err, data) {
+		var separator = '     ';
+		if (process.stdout.columns > 10) {
+			for(var x=0,cols=process.stdout.columns-10;x<cols;x++) {
+				separator += '=';
+			}
+		}
+		process.stdout.write('\n' + separator + '\n\n');
+
 		if (err) {
 			winston.error('There was a problem completing NodeBB setup: ', err.message);
 		} else {
-			winston.info('NodeBB Setup Completed. Run \'./nodebb start\' to manually start your NodeBB server.');
+			if (data.hasOwnProperty('password')) {
+				process.stdout.write('An administrative user was automatically created for you:\n')
+				process.stdout.write('    Username: ' + data.username + '\n');
+				process.stdout.write('    Password: ' + data.password + '\n');
+				process.stdout.write('\n');
+			}
+			process.stdout.write('NodeBB Setup Completed. Run \'./nodebb start\' to manually start your NodeBB server.\n');
+
+			// If I am a child process, notify the parent of the returned data before exiting (useful for notifying
+			// hosts of auto-generated username/password during headless setups)
+			if (process.send) {
+				process.send(data);
+			}
 		}
 
 		process.exit();

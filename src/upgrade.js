@@ -971,22 +971,24 @@ Upgrade.upgrade = function(callback) {
 			} else {
 				winston.info('[upgrade] Schema already up to date!');
 			}
-
-			process.exit();
 		} else {
 			switch(err.message) {
 			case 'upgrade-not-possible':
 				winston.error('[upgrade] NodeBB upgrade could not complete, as your database schema is too far out of date.');
 				winston.error('[upgrade]   Please ensure that you did not skip any minor version upgrades.');
 				winston.error('[upgrade]   (e.g. v0.1.x directly to v0.3.x)');
-				process.exit();
 				break;
 
 			default:
 				winston.error('[upgrade] Errors were encountered while updating the NodeBB schema: ' + err.message);
-				process.exit();
 				break;
 			}
+		}
+
+		if (typeof callback === 'function') {
+			callback(err);
+		} else {
+			process.exit();
 		}
 	});
 };

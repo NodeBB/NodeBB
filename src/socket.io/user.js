@@ -24,20 +24,27 @@ SocketUser.exists = function(socket, data, callback) {
 };
 
 SocketUser.deleteAccount = function(socket, data, callback) {
-	if (socket.uid) {
-		user.isAdministrator(socket.uid, function(err, isAdmin) {
-			if (err || isAdmin) {
-				return callback(err || new Error('[[error:cant-delete-admin]]'));
-			}
-
-			socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
-			user.deleteAccount(socket.uid, callback);
-		});
+	if (!socket.uid) {
+		return;
 	}
+	user.isAdministrator(socket.uid, function(err, isAdmin) {
+		if (err || isAdmin) {
+			return callback(err || new Error('[[error:cant-delete-admin]]'));
+		}
+
+		socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
+		user.deleteAccount(socket.uid, function(err) {
+			if (err) {
+				return callback(err);
+			}
+			websockets.in('uid_' + socket.uid).emit('event:logout');
+			callback();
+		});
+	});
 };
 
 SocketUser.emailExists = function(socket, data, callback) {
-	if(data && data.email) {
+	if (data && data.email) {
 		user.email.exists(data.email, callback);
 	}
 };

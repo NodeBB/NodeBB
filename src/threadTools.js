@@ -26,9 +26,10 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			var alreadyDeletedOrRestored = (parseInt(topicData.deleted, 10) && isDelete) || (!parseInt(topicData.deleted, 10) && !isDelete);
-			if (alreadyDeletedOrRestored) {
-				return callback(null, {tid: tid});
+			if (parseInt(topicData.deleted, 10) === 1 && isDelete) {
+				return callback(new Error('[[error:topic-already-deleted]]'));
+			} else if(parseInt(topicData.deleted, 10) !== 1 && !isDelete) {
+				return callback(new Error('[[error:topic-already-restored]]'));
 			}
 
 			topics[isDelete ? 'delete' : 'restore'](tid, function(err) {

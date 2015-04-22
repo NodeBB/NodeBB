@@ -115,6 +115,10 @@ var async = require('async'),
 						return next(err);
 					}
 
+					uids = uids.filter(function(uid) {
+						return uid && parseInt(uid, 10);
+					});
+
 					if (options.truncateUserList) {
 						var userListCount = parseInt(options.userListCount, 10) || 4;
 						if (uids.length > userListCount) {

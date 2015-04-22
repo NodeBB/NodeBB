@@ -66,6 +66,8 @@ app.cacheBuster = null;
 			}, 1000);
 		});
 
+		socket.on('event:logout', app.logout);
+
 		socket.on('event:alert', function(data) {
 			app.alert(data);
 		});
