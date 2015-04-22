@@ -97,6 +97,8 @@ function install(req, res) {
 
 function launch(req, res) {
 	res.json({});
+
+	server.close();
 }
 
 function compileLess(callback) {
