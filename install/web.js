@@ -69,18 +69,21 @@ function welcome(req, res) {
 }
 
 function install(req, res) {
-	req.body.url = "http://127.0.0.1";
+	var env = {};
+
 	req.body.port = "4567";
-	var parameters = JSON.stringify(req.body).replace(/"/g, '\\"');
 
+	for (var i in req.body) {
+		if (req.body.hasOwnProperty(i)) {
+			env[i.replace(':', '__')] = req.body[i];
+		}
+	}
 
-	var sys = require('sys'),
-		exec = require('child_process').exec,
-		command = 'node app.js --setup=\'' + parameters + '\'';
-
-	exec(command, function(error, stdout, stderr) {
-		res.json(error, stdout, stderr);
+	require('child_process').fork('app', ['--setup'], {
+		env: env
 	});
+
+	res.json({});
 }
 
 function compileLess(callback) {
