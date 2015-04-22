@@ -81,7 +81,7 @@ Controllers.login = function(req, res, next) {
 	data.alternate_logins = loginStrategies.length > 0;
 	data.authentication = loginStrategies;
 	data.showResetLink = emailersPresent;
-	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1;
+	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1 || parseInt(req.query.local, 10) === 1;
 	data.allowRegistration = parseInt(meta.config.allowRegistration, 10) === 1;
 	data.allowLoginWith = '[[login:' + (meta.config.allowLoginWith || 'username-email') + ']]';
 	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:login]]'}]);
