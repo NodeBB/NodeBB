@@ -114,7 +114,11 @@ $('document').ready(function() {
 		$('#launch .fa-spin').removeClass('hide');
 
 		$.post('/launch', function() {
-			console.log('launched');
+			setInterval(function() {
+				$.get('/admin', function(data) {
+					window.location = 'admin';
+				});
+			}, 750);
 		});
 	}
 });

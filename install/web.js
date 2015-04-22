@@ -96,10 +96,19 @@ function install(req, res) {
 }
 
 function launch(req, res) {
+	var pidFilePath = __dirname + '../pidfile';
 	res.json({});
-
 	server.close();
-	require('child_process').fork('app', [], {});
+
+	var child = require('child_process').spawn('node', ['app.js'], {
+		detached: true,
+		stdio: ['ignore', 'ignore', 'ignore']
+	});
+
+	fs.writeFile(__dirname + '../pidfile', child.pid, function() {
+		child.unref();
+		process.exit(0);
+	});
 }
 
 function compileLess(callback) {
