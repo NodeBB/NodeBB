@@ -100,15 +100,15 @@ function launch(req, res) {
 	res.json({});
 	server.close();
 
-	var child = require('child_process').spawn('node', ['app.js'], {
+	var child = require('child_process').spawn('node', ['loader.js'], {
 		detached: true,
 		stdio: ['ignore', 'ignore', 'ignore']
 	});
 
-	fs.writeFile(__dirname + '../pidfile', child.pid, function() {
-		child.unref();
-		process.exit(0);
-	});
+	
+	child.unref();
+	process.exit(0);
+	
 }
 
 function compileLess(callback) {
