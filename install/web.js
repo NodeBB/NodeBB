@@ -69,7 +69,18 @@ function welcome(req, res) {
 }
 
 function install(req, res) {
-	console.log(req.body);
+	req.body.url = "http://127.0.0.1";
+	req.body.port = "4567";
+	var parameters = JSON.stringify(req.body).replace(/"/g, '\\"');
+
+
+	var sys = require('sys'),
+		exec = require('child_process').exec,
+		command = 'node app.js --setup=\'' + parameters + '\'';
+
+	exec(command, function(error, stdout, stderr) {
+		res.json(error, stdout, stderr);
+	});
 }
 
 function compileLess(callback) {
