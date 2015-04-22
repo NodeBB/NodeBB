@@ -13,9 +13,6 @@ var winston = require('winston'),
 
 var web = {},
 	scripts = [
-		'public/vendor/jquery/js/jquery.js',
-		'public/vendor/bootstrap/js/bootstrap.min.js',
-		'public/vendor/bootbox/bootbox.min.js',
 		'public/vendor/xregexp/xregexp.js',
 		'public/vendor/xregexp/unicode/unicode-base.js',
 		'public/src/utils.js',
@@ -71,7 +68,7 @@ function welcome(req, res) {
 
 function install(req, res) {
 	var env = {};
-	
+
 	for (var i in req.body) {
 		if (req.body.hasOwnProperty(i)) {
 			env[i.replace(':', '__')] = req.body[i];
