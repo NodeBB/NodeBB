@@ -42,18 +42,18 @@
 		</div>
 	</nav>
 
-	<div class="container">
+	<div class="container <!-- IF success -->hide<!-- ENDIF success -->">
 		<p>
 			<h1>Welcome to the NodeBB Installer</h1>
 			You are just a few steps away from launching your own NodeBB forum!
 		</p>
-		<form action="/" method="post">
+		<form id="install" action="/" method="post">
 			<div class="admin">
 				<p>
 					<h1><small>Create an Administrator account</small></h1>
 					<hr />
 				</p>
-				
+
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
 						<label for="admin:username">Username</label>
@@ -103,7 +103,7 @@
 				<div id="database-config"></div>
 			</div>
 
-			<button type="submit" class="btn btn-lg btn-success">Install NodeBB</button>
+			<button id="submit" type="submit" class="btn btn-lg btn-success">Install NodeBB <i class="fa fa-spinner fa-spin hide"></i></button>
 		</form>
 	</div>
 

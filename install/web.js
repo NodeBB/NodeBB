@@ -62,7 +62,9 @@ function welcome(req, res) {
 	});
 
 	res.render('install/index', {
-		databases: databases
+		databases: databases,
+		error: res.locals.error ? true : false,
+		success: res.locals.success ? true : false
 	});
 }
 
@@ -75,11 +77,19 @@ function install(req, res) {
 		}
 	}
 
-	require('child_process').fork('app', ['--setup'], {
+	var child = require('child_process').fork('app', ['--setup'], {
 		env: env
 	});
 
-	res.json({});
+	child.on('close', function(data) {
+		if (data === 0) {
+			res.locals.success = true;
+		} else {
+			res.locals.error = true;
+		}
+
+		welcome(req, res);
+	});
 }
 
 function compileLess(callback) {
