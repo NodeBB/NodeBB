@@ -31,13 +31,10 @@ $('document').ready(function() {
 			help = parent.children('.help-text');
 
 		function validateUsername(field) {
-			console.log('derp');
 			if (!utils.isUserNameValid(field) || !utils.slugify(field)) {
-				console.log('derp1');
 				parent.addClass('error');
 				help.html('Invalid Username.');
 			} else {
-				console.log('derp2');
 				parent.removeClass('error');
 			}
 		}
@@ -70,7 +67,6 @@ $('document').ready(function() {
 		}
 
 		function switchDatabase(field) {
-			console.log(field);
 			$('#database-config').html($('[data-database="' + field + '"]').html());
 		}
 
