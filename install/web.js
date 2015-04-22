@@ -63,10 +63,13 @@ function welcome(req, res) {
 		});
 	});
 
+	console.log(req.body);
+
 	res.render('install/index', {
 		databases: databases,
 		error: res.locals.error ? true : false,
-		success: res.locals.success ? true : false
+		success: res.locals.success ? true : false,
+		values: req.body
 	});
 }
 
@@ -95,7 +98,7 @@ function install(req, res) {
 }
 
 function launch(req, res) {
-	
+
 }
 
 function compileLess(callback) {
