@@ -52,7 +52,7 @@ questions.optional = [
 ];
 
 function checkSetupFlag(next) {
-	var	envSetupKeys = ['url', 'database'],
+	var	envSetupKeys = ['database'],
 		setupVal;
 	try {
 		setupVal = JSON.parse(nconf.get('setup'));
