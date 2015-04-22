@@ -255,22 +255,48 @@ accountsController.getGroups = function(req, res, next) {
 };
 
 function getFromUserSet(tpl, set, method, type, req, res, next) {
-	accountsController.getBaseUser(req.params.userslug, req.uid, function(err, userData) {
+	async.parallel({
+		settings: function(next) {
+			user.getSettings(req.uid, next);
+		},
+		userData: function(next) {
+			accountsController.getBaseUser(req.params.userslug, req.uid, next);
+		}
+	}, function(err, results) {
 		if (err) {
 			return next(err);
 		}
-
+		var userData = results.userData;
 		if (!userData) {
 			return helpers.notFound(req, res);
 		}
 
-		method('uid:' + userData.uid + ':' + set, req.uid, 0, 19, function(err, data) {
+		var setName = 'uid:' + userData.uid + ':' + set;
+
+		var page = Math.max(1, parseInt(req.query.page, 10) || 1);
+		var itemsPerPage = (tpl === 'account/topics' || tpl === 'account/watched') ? results.settings.topicsPerPage : results.settings.postsPerPage;
+		itemsPerPage = parseInt(itemsPerPage, 10);
+
+		async.parallel({
+			count: function(next) {
+				db.sortedSetCard(setName, next);
+			},
+			data: function(next) {
+				var start = (page - 1) * itemsPerPage;
+				var stop = start + itemsPerPage;
+				method(setName, req.uid, start, stop, next);
+			}
+		}, function(err, results) {
 			if (err) {
 				return next(err);
 			}
 
-			userData[type] = data[type];
-			userData.nextStart = data.nextStart;
+			userData[type] = results.data[type];
+			userData.nextStart = results.data.nextStart;
+			var pageCount = Math.ceil(results.count / itemsPerPage);
+
+			var pagination = require('../pagination');
+			userData.pagination = pagination.create(page, pageCount);
 
 			res.render(tpl, userData);
 		});

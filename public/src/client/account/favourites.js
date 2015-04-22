@@ -10,7 +10,9 @@ define('forum/account/favourites', ['forum/account/header', 'forum/infinitescrol
 
 		$('.user-favourite-posts img').addClass('img-responsive');
 
-		infinitescroll.init(loadMore);
+		if (!config.usePagination) {
+			infinitescroll.init(loadMore);
+		}
 	};
 
 	function loadMore(direction) {
@@ -24,10 +26,10 @@ define('forum/account/favourites', ['forum/account/header', 'forum/infinitescrol
 		}, function(data, done) {
 			if (data.posts && data.posts.length) {
 				onPostsLoaded(data.posts, done);
-				$('.user-favourite-posts').attr('data-nextstart', data.nextStart);
 			} else {
 				done();
 			}
+			$('.user-favourite-posts').attr('data-nextstart', data.nextStart);
 		});
 	}
 

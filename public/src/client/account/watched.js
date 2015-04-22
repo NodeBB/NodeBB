@@ -7,7 +7,9 @@ define('forum/account/watched', ['forum/account/header', 'forum/infinitescroll']
 	AccountWatched.init = function() {
 		header.init();
 
-		infinitescroll.init(loadMore);
+		if (!config.usePagination) {
+			infinitescroll.init(loadMore);
+		}
 	};
 
 	function loadMore(direction) {
@@ -21,10 +23,10 @@ define('forum/account/watched', ['forum/account/header', 'forum/infinitescroll']
 		}, function(data, done) {
 			if (data.topics && data.topics.length) {
 				onTopicsLoaded(data.topics, done);
-				$('[component="category"]').attr('data-nextstart', data.nextStart);
 			} else {
 				done();
 			}
+			$('[component="category"]').attr('data-nextstart', data.nextStart);
 		});
 	}
 
