@@ -54,29 +54,29 @@
 			</p>
 			<div class="row input-row">
 				<div class="col-sm-7 col-xs-12 input-field">
-					<label for="username">Username</label>
-					<input type="text" class="form-control" name="username" placeholder="Username" />
+					<label for="admin:username">Username</label>
+					<input type="text" class="form-control" name="admin:username" placeholder="Username" />
 				</div>
 				<div class="col-sm-5 help-text" data-help="Enter an <strong>alphanumeric username</strong>. Spaces between words are allowed. You can always change your username later on your profile page."></div>
 			</div>
 			<div class="row input-row">
 				<div class="col-sm-7 col-xs-12 input-field">
-					<label for="email">Email Address</label>
-					<input type="text" class="form-control" name="email" placeholder="Email Address" />
+					<label for="admin:email">Email Address</label>
+					<input type="text" class="form-control" name="admin:email" placeholder="Email Address" />
 				</div>
 				<div class="col-sm-5 help-text" data-help="Please enter your email address."></div>
 			</div>
 			<div class="row input-row">
 				<div class="col-sm-7 col-xs-12 input-field">
-					<label for="password">Password</label>
-					<input type="password" class="form-control" name="password" placeholder="Password" />
+					<label for="admin:password">Password</label>
+					<input type="password" class="form-control" name="admin:password" placeholder="Password" />
 				</div>
 				<div class="col-sm-5 help-text" data-help="Use a combination of numbers, symbols, and different cases. You can change the strictness of password creation in the Admin Control Panel."></div>
 			</div>
 			<div class="row input-row">
 				<div class="col-sm-7 col-xs-12 input-field">
-					<label for="confirm">Confirm Password</label>
-					<input type="password" class="form-control" name="confirm" placeholder="Confirm Password" />
+					<label for="admin:password:confirm">Confirm Password</label>
+					<input type="password" class="form-control" name="admin:password:confirm" placeholder="Confirm Password" />
 				</div>
 				<div class="col-sm-5 help-text" data-help="Please confirm your password."></div>
 			</div>
