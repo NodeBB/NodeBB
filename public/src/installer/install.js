@@ -5,6 +5,17 @@ $('document').ready(function() {
 	setupInputs();
 	$('[name="username"]').focus();
 
+	activate('database', $('[name="database"]'));
+
+	if ($('#database-error').length) {
+		$('[name="database"]').parents('.input-row').addClass('error');
+		$('html, body').animate({
+			scrollTop: ($('#database-error').offset().top + 100) + 'px'
+		}, 400);
+	}
+
+	$('#launch').on('click', launchForum);
+
 
 
 	function setupInputs() {
@@ -23,15 +34,6 @@ $('document').ready(function() {
 		});
 
 		$('form').submit(validateAll);
-
-		activate('database', $('[name="database"]'));
-
-		if ($('#database-error').length) {
-			$('[name="database"]').parents('.input-row').addClass('error');
-			$('html, body').animate({
-				scrollTop: ($('#database-error').offset().top + 100) + 'px'
-			}, 400);
-		}
 	}
 
 	function validateAll(ev) {
@@ -39,7 +41,7 @@ $('document').ready(function() {
 			activate($(this).attr('name'), $(this));
 		});
 
-		if ($('.error').length) {
+		if ($('form .admin .error').length) {
 			ev.preventDefault();
 			$('html, body').animate({'scrollTop': '0px'}, 400);
 			
@@ -106,5 +108,9 @@ $('document').ready(function() {
 			case 'database':
 				return switchDatabase(field);
 		}
+	}
+
+	function launchForum() {
+		$('#launch .fa-spin').removeClass('hide');
 	}
 });

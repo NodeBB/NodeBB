@@ -8,6 +8,7 @@
 
 	<link rel="stylesheet" type="text/css" href="https://bootswatch.com/united/bootstrap.min.css">
 	<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,500,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="stylesheet.css">
 
 
@@ -57,28 +58,28 @@
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
 						<label for="admin:username">Username</label>
-						<input type="text" class="form-control" name="admin:username" value="{admin:username}" placeholder="Username" />
+						<input type="text" class="form-control" name="admin:username" value="<!-- IF admin:username -->{admin:username}<!-- ENDIF admin:username -->" placeholder="Username" />
 					</div>
 					<div class="col-sm-5 help-text" data-help="Enter an <strong>alphanumeric username</strong>. Spaces between words are allowed. You can always change your username later on your profile page."></div>
 				</div>
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
 						<label for="admin:email">Email Address</label>
-						<input type="text" class="form-control" name="admin:email" value="{admin:email}" placeholder="Email Address" />
+						<input type="text" class="form-control" name="admin:email" value="<!-- IF admin:email -->{admin:email}<!-- ENDIF admin:email -->" placeholder="Email Address" />
 					</div>
 					<div class="col-sm-5 help-text" data-help="Please enter your email address."></div>
 				</div>
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
 						<label for="admin:password">Password</label>
-						<input type="password" class="form-control" name="admin:password" value="{admin:password}" placeholder="Password" />
+						<input type="password" class="form-control" name="admin:password" value="<!-- IF admin:password -->{admin:password}<!-- ENDIF admin:password -->" placeholder="Password" />
 					</div>
 					<div class="col-sm-5 help-text" data-help="Use a combination of numbers, symbols, and different cases. You can change the strictness of password creation in the Admin Control Panel."></div>
 				</div>
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
 						<label for="admin:password:confirm">Confirm Password</label>
-						<input type="password" class="form-control" name="admin:password:confirm" value="{admin:password:confirm}" placeholder="Confirm Password" />
+						<input type="password" class="form-control" name="admin:password:confirm" value="<!-- IF admin:password:confirm -->{admin:password:confirm}<!-- ENDIF admin:password:confirm -->" placeholder="Confirm Password" />
 					</div>
 					<div class="col-sm-5 help-text" data-help="Please confirm your password."></div>
 				</div>
