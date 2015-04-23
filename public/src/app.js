@@ -187,21 +187,15 @@ app.cacheBuster = null;
 	};
 
 	function highlightNavigationLink() {
-		var path = window.location.pathname,
-			parts = path.split('/'),
-			active = parts[parts.length - 1];
-
+		var path = window.location.pathname;
 		$('#main-nav li').removeClass('active');
-		if (active) {
+		if (path) {
 			$('#main-nav li a').each(function () {
 				var href = $(this).attr('href');
-				if (active === "sort-posts" || active === "sort-reputation" || active === "search" || active === "latest" || active === "online") {
-					active = 'users';
-				}
 
-				if (href && href.match(active)) {
+				if (href && path.startsWith(href)) {
 					$(this.parentNode).addClass('active');
-					return false;
+				 	return false;
 				}
 			});
 		}
