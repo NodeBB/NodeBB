@@ -55,7 +55,9 @@ function checkSetupFlag(next) {
 	var	envSetupKeys = ['database'],
 		setupVal;
 	try {
-		setupVal = JSON.parse(nconf.get('setup'));
+		if (nconf.get('setup')) {
+			setupVal = JSON.parse(nconf.get('setup'));
+		}
 	} catch (err) {
 		winston.error('Was unable to parse JSON, continuing with regular setup.', err);
 		setupVal = undefined;
@@ -472,17 +474,17 @@ function setCopyrightWidget(next) {
 		if (err) {
 			return next(err);
 		}
-		
+
 		if (!results.footer && results.footerJSON) {
-			db.setObjectField('widgets:global', 'footer', results.footerJSON.toString(), next);	
+			db.setObjectField('widgets:global', 'footer', results.footerJSON.toString(), next);
 		} else {
 			next();
 		}
-	});	
+	});
 }
 
 install.setup = function (callback) {
-	var upgrade = require('./upgrade');
+
 
 	async.series([
 		checkSetupFlag,
@@ -497,6 +499,7 @@ install.setup = function (callback) {
 		enableDefaultPlugins,
 		setCopyrightWidget,
 		function (next) {
+			var upgrade = require('./upgrade');
 			upgrade.check(function(uptodate) {
 				if (!uptodate) { upgrade.upgrade(next); }
 				else { next(); }
