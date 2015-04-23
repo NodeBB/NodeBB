@@ -36,12 +36,10 @@ define('forum/groups/list', function() {
 		$('#search-sort').on('change', Groups.search);
 	};
 
-	Groups.search = function(event) {
+	Groups.search = function() {
 		var groupsEl = $('#groups-list'),
 			queryEl = $('#search-text'),
 			sortEl = $('#search-sort');
-
-		event.preventDefault();
 
 		socket.emit('groups.search', {
 			query: queryEl.val(),
