@@ -309,9 +309,9 @@ middleware.processRender = function(req, res, next) {
 		}
 
 		options.loggedIn = req.user ? parseInt(req.user.uid, 10) !== 0 : false;
-		options.template = options.template || {name: template};
-		options.template[options.template.name] = true;
-		res.locals.template = options.template.name;
+		options.template = {name: template};
+		options.template[template] = true;
+		res.locals.template = template;
 
 		if ('function' !== typeof fn) {
 			fn = defaultFn;
