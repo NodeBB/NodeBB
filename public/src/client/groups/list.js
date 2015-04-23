@@ -55,6 +55,7 @@ define('forum/groups/list', function() {
 				groupsEl.empty().append(html);
 			});
 		});
+		return false;
 	};
 
 	return Groups;
