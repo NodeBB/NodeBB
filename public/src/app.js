@@ -394,7 +394,7 @@ app.cacheBuster = null;
 		});
 	}
 
-	function handleSearch() {
+	app.handleSearch = function () {
 		var searchButton = $("#search-button"),
 			searchFields = $("#search-fields"),
 			searchInput = $('#search-fields input');
@@ -516,7 +516,7 @@ app.cacheBuster = null;
 			handleStatusChange();
 
 			if (config.searchEnabled) {
-				handleSearch();
+				app.handleSearch();
 			}
 
 			handleNewTopic();
