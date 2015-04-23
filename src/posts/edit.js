@@ -116,7 +116,8 @@ module.exports = function(Posts) {
 			data.tags = data.tags || [];
 
 			async.waterfall([
-				function(next) {
+				async.apply(plugins.fireHook,'filter:topic.edit', topicData),
+				function(topicData, next) {
 					db.setObject('topic:' + tid, topicData, next);
 				},
 				function(next) {
