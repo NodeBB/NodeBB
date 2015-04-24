@@ -18,7 +18,6 @@ var topicsController = {},
 
 topicsController.get = function(req, res, next) {
 	var tid = req.params.topic_id,
-		page = 1,
 		sort = req.query.sort,
 		userPrivileges;
 
@@ -82,7 +81,7 @@ topicsController.get = function(req, res, next) {
 			}
 
 			var postIndex = 0;
-			page = parseInt(req.query.page, 10) || 1;
+			var page = parseInt(req.query.page, 10) || 1;
 			req.params.post_index = parseInt(req.params.post_index, 10) || 0;
 			if (reverse && req.params.post_index === 1) {
 				req.params.post_index = 0;

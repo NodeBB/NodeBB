@@ -159,7 +159,7 @@ categoriesController.list = function(req, res, next) {
 
 categoriesController.get = function(req, res, next) {
 	var cid = req.params.category_id,
-		page = req.query.page || 1,
+		page = parseInt(req.query.page, 10) || 1,
 		userPrivileges;
 
 	if (req.params.topic_index && !utils.isNumber(req.params.topic_index)) {
