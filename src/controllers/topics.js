@@ -142,13 +142,8 @@ topicsController.get = function(req, res, next) {
 				if (err) {
 					return next(err);
 				}
-				plugins.fireHook('filter:breadcrumbs.build', crumbs.concat(breadcrumbs), function(err, crumbs) {
-					if (err) {
-						return next(err);
-					}
-					topicData.breadcrumbs = crumbs;
-					next(null, topicData);
-				});
+				topicData.breadcrumbs = crumbs.concat(breadcrumbs);
+				next(null, topicData);
 			});
 		},
 		function (topicData, next) {

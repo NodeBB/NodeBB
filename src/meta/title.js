@@ -32,7 +32,7 @@ module.exports = function(Meta) {
 				if (title) {
 					title = validator.escape(title);
 				}
-				title = (title && urlFragment != '' && urlFragment != '/forum' ? title : fallbackTitle);
+				title = (title ? title + ' | ' : '') + fallbackTitle;
 			}
 
 			callback(null, title);

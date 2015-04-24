@@ -3,12 +3,11 @@
     "no-matches": "Совпадений не найдено",
     "advanced-search": "Расширенный поиск",
     "in": "В",
-    "by": "По",
     "titles": "Названия",
     "titles-posts": "Названия и сообщения",
     "posted-by": "Написано  ",
     "in-categories": "В разделах",
-    "search-child-categories": "Искать во вложенных категориях",
+    "search-child-categories": "Искать во вложенных разделах",
     "reply-count": "Количество ответов",
     "at-least": "Минимум",
     "at-most": "Максимум",
@@ -24,7 +23,6 @@
     "six-months": "Шесть месяцев",
     "one-year": "Год",
     "sort-by": "Сортировать по",
-    "post-time": "Время размещения",
     "last-reply-time": "Время последнего ответа",
     "topic-title": "Название темы",
     "number-of-replies": "Количество ответов",
@@ -38,7 +36,5 @@
     "clear-preferences": "Очистить настройки",
     "search-preferences-saved": "Настройки поиска сохранены",
     "search-preferences-cleared": "Настройки поиска очищены",
-    "show-results-as": "Показать результаты как",
-    "all-categories": "Все категории",
-    "watched-categories": "Просмотренные категории"
+    "show-results-as": "Показать результаты как"
 }

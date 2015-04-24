@@ -195,7 +195,7 @@ function handle404(app, middleware) {
 			if (process.env.NODE_ENV === 'development') {
 				winston.warn('Route requested but not found: ' + req.url);
 			}
-			
+
 			res.status(404);
 
 			if (res.locals.isAPI) {
@@ -235,3 +235,4 @@ function handleErrors(app, middleware) {
 		}
 	});
 }
+
