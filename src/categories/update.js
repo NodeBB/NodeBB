@@ -16,10 +16,10 @@ module.exports = function(Categories) {
 					return next(err);
 				}
 
-				plugins.fireHook('filter:category.update', modified[cid], function(err, category) {
-					var fields = Object.keys(category);
+				plugins.fireHook('filter:category.update', {cid: cid, category: modified[cid]}, function(err, data) {
+					var fields = Object.keys(data.category);
 					async.each(fields, function(key, next) {
-						updateCategoryField(cid, key, category[key], next);
+						updateCategoryField(cid, key, data.category[key], next);
 					}, next);
 				});
 			});
@@ -37,10 +37,12 @@ module.exports = function(Categories) {
 			if (err) {
 				return callback(err);
 			}
-
+			
 			if (key === 'name') {
 				var slug = cid + '/' + utils.slugify(value);
 				db.setObjectField('category:' + cid, 'slug', slug, callback);
+			} else if (key === 'slug') {
+				db.setObjectField('category:' + cid, 'slug', value, callback);
 			} else if (key === 'order') {
 				db.sortedSetAdd('categories:cid', value, cid, callback);
 			} else {
