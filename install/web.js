@@ -65,6 +65,10 @@ function welcome(req, res) {
 
 	res.render('install/index', {
 		databases: databases,
+		dbBool: {
+			redis: nconf.get('database') === 'redis',
+			mongo: nconf.get('database') === 'mongo'
+		},
 		error: res.locals.error ? true : false,
 		success: res.locals.success ? true : false,
 		values: req.body

@@ -99,8 +99,8 @@
 					<div class="col-sm-7 col-xs-12 input-field">
 						<label for="database">Database Type</label>
 						<select class="form-control" name="database">
-							<option value="redis">Redis</option>
-							<option value="mongo">MongoDB</option>
+							<option value="redis"<!-- IF dbBool.redis --> selected<!-- ENDIF dbBool.redis-->>Redis</option>
+							<option value="mongo"<!-- IF dbBool.mongo --> selected<!-- ENDIF dbBool.mongo-->>MongoDB</option>
 						</select>
 					</div>
 					<div class="col-sm-5 help-text" data-help="Leave the fields blank to use the default settings."><!-- IF error -->There was an error connecting to your database. Please try again.<!-- ENDIF error --></div>
