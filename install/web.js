@@ -65,10 +65,7 @@ function welcome(req, res) {
 
 	res.render('install/index', {
 		databases: databases,
-		dbBool: {
-			redis: nconf.get('database') === 'redis',
-			mongo: nconf.get('database') === 'mongo'
-		},
+		skipDatabaseSetup: !!nconf.get('database'),
 		error: res.locals.error ? true : false,
 		success: res.locals.success ? true : false,
 		values: req.body
@@ -76,16 +73,14 @@ function welcome(req, res) {
 }
 
 function install(req, res) {
-	var env = {};
-
 	for (var i in req.body) {
-		if (req.body.hasOwnProperty(i)) {
-			env[i.replace(':', '__')] = req.body[i];
+		if (req.body.hasOwnProperty(i) && !process.env.hasOwnProperty(i)) {
+			process.env[i.replace(':', '__')] = req.body[i];
 		}
 	}
 
 	var child = require('child_process').fork('app', ['--setup'], {
-		env: env
+		env: process.env
 	});
 
 	child.on('close', function(data) {

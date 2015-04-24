@@ -89,6 +89,7 @@
 			<a id="database-error"></a>
 			<!-- ENDIF error -->
 
+			<!-- IF !skipDatabaseSetup -->
 			<div class="database">
 				<p>
 					<h1><small>Configure your database</small></h1>
@@ -99,8 +100,8 @@
 					<div class="col-sm-7 col-xs-12 input-field">
 						<label for="database">Database Type</label>
 						<select class="form-control" name="database">
-							<option value="redis"<!-- IF dbBool.redis --> selected<!-- ENDIF dbBool.redis-->>Redis</option>
-							<option value="mongo"<!-- IF dbBool.mongo --> selected<!-- ENDIF dbBool.mongo-->>MongoDB</option>
+							<option value="redis">Redis</option>
+							<option value="mongo">MongoDB</option>
 						</select>
 					</div>
 					<div class="col-sm-5 help-text" data-help="Leave the fields blank to use the default settings."><!-- IF error -->There was an error connecting to your database. Please try again.<!-- ENDIF error --></div>
@@ -108,6 +109,7 @@
 
 				<div id="database-config"></div>
 			</div>
+			<!-- ENDIF !skipDatabaseSetup -->
 
 			<button id="submit" type="submit" class="btn btn-lg btn-success">Install NodeBB <i class="fa fa-spinner fa-spin hide"></i></button>
 		</form>
