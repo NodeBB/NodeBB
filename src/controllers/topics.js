@@ -53,12 +53,13 @@ topicsController.get = function(req, res, next) {
 			var settings = results.settings;
 			var postCount = parseInt(results.topic.postcount, 10);
 			var pageCount = Math.max(1, Math.ceil((postCount - 1) / settings.postsPerPage));
+			var page = parseInt(req.query.page, 10) || 1;
 
 			if (utils.isNumber(req.params.post_index) && (req.params.post_index < 1 || req.params.post_index > postCount)) {
 				return helpers.redirect(res, '/topic/' + req.params.topic_id + '/' + req.params.slug + (req.params.post_index > postCount ? '/' + postCount : ''));
 			}
 
-			if (settings.usePagination && (req.query.page < 1 || req.query.page > pageCount)) {
+			if (settings.usePagination && (page < 1 || page > pageCount)) {
 				return helpers.notFound(req, res);
 			}
 
@@ -81,7 +82,7 @@ topicsController.get = function(req, res, next) {
 			}
 
 			var postIndex = 0;
-			var page = parseInt(req.query.page, 10) || 1;
+
 			req.params.post_index = parseInt(req.params.post_index, 10) || 0;
 			if (reverse && req.params.post_index === 1) {
 				req.params.post_index = 0;

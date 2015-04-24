@@ -184,6 +184,8 @@ categoriesController.get = function(req, res, next) {
 			}, next);
 		},
 		function(results, next) {
+			userPrivileges = results.privileges;
+
 			if (!results.exists || (results.categoryData && parseInt(results.categoryData.disabled, 10) === 1)) {
 				return helpers.notFound(req, res);
 			}
@@ -196,15 +198,18 @@ categoriesController.get = function(req, res, next) {
 				return helpers.redirect(res, '/category/' + encodeURI(results.categoryData.slug));
 			}
 
+			var settings = results.userSettings;
 			var topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) - 1 : 0;
 			var topicCount = parseInt(results.categoryData.topic_count, 10);
+			var pageCount = Math.max(1, Math.ceil(topicCount / settings.topicsPerPage));
 
 			if (topicIndex < 0 || topicIndex > Math.max(topicCount - 1, 0)) {
 				return helpers.redirect(res, '/category/' + cid + '/' + req.params.slug + (topicIndex > topicCount ? '/' + topicCount : ''));
 			}
 
-			userPrivileges = results.privileges;
-			var settings = results.userSettings;
+			if (settings.usePagination && (page < 1 || page > pageCount)) {
+				return helpers.notFound(req, res);
+			}
 
 			if (!settings.usePagination) {
 				topicIndex = Math.max(topicIndex - (settings.topicsPerPage - 1), 0);
