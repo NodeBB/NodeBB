@@ -85,61 +85,63 @@ module.exports = function(Posts) {
 				Posts.isMain(data.pid, next);
 			}
 		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (!results.isMain) {
-				return callback(null, {
-					tid: tid,
-					cid: results.cid,
-					isMainPost: false
-				});
-			}
-
-			var topicData = {
-				tid: tid,
-				cid: results.cid,
-				uid: postData.uid,
-				mainPid: data.pid
-			};
-
-			if (title) {
-				topicData.title = title;
-				topicData.slug = tid + '/' + utils.slugify(title);
-			}
-
-			if (data.topic_thumb) {
-				topicData.thumb = data.topic_thumb;
-			}
-
-			data.tags = data.tags || [];
-
-			async.waterfall([
-				async.apply(plugins.fireHook,'filter:topic.edit', topicData),
-				function(topicData, next) {
-					db.setObject('topic:' + tid, topicData, next);
-				},
-				function(next) {
-					topics.updateTags(tid, data.tags, next);
-				},
-				function(next) {
-					topics.getTopicTagsObjects(tid, next);
-				},
-				function(tags, next) {
-					topicData.tags = data.tags;
-					plugins.fireHook('action:topic.edit', topicData);
-					next(null, {
+			plugins.fireHook('filter:topic.edit', {post: postData, topic: results, title: title}, function(err, res) {
+				if (err) {
+					return next(err);
+				}
+				
+				if (!results.isMain) {
+					return callback(null, {
 						tid: tid,
 						cid: results.cid,
-						uid: postData.uid,
-						title: validator.escape(title),
-						slug: topicData.slug,
-						isMainPost: results.isMain,
-						tags: tags
+						isMainPost: false
 					});
 				}
-			], callback);
+
+				var topicData = {
+					tid: tid,
+					cid: results.cid,
+					uid: postData.uid,
+					mainPid: data.pid
+				};
+
+				if (title) {
+					topicData.title = title;
+					topicData.slug = tid + '/' + (res.slug ? res.slug : utils.slugify(title));
+				}
+
+				if (data.topic_thumb) {
+					topicData.thumb = data.topic_thumb;
+				}
+
+				data.tags = data.tags || [];
+
+				async.waterfall([
+					function(next) {
+						db.setObject('topic:' + tid, topicData, next);
+					},
+					function(next) {
+						topics.updateTags(tid, data.tags, next);
+					},
+					function(next) {
+						topics.getTopicTagsObjects(tid, next);
+					},
+					function(tags, next) {
+						topicData.tags = data.tags;
+						plugins.fireHook('action:topic.edit', topicData);
+						next(null, {
+							tid: tid,
+							cid: results.cid,
+							uid: postData.uid,
+							title: validator.escape(title),
+							slug: topicData.slug,
+							isMainPost: results.isMain,
+							tags: tags
+						});
+					}
+				], callback);
+				
+			});
 		});
 	}
 
