@@ -7,7 +7,6 @@ var async = require('async'),
 	utils = require('../public/src/utils'),
 	user = require('./user'),
 	topics = require('./topics'),
-	postTools = require('./postTools'),
 	privileges = require('./privileges'),
 	plugins = require('./plugins');
 
@@ -15,6 +14,8 @@ var async = require('async'),
 
 	require('./posts/create')(Posts);
 	require('./posts/delete')(Posts);
+	require('./posts/edit')(Posts);
+	require('./posts/parse')(Posts);
 	require('./posts/user')(Posts);
 	require('./posts/topics')(Posts);
 	require('./posts/category')(Posts);
@@ -52,7 +53,7 @@ var async = require('async'),
 
 					post.relativeTime = utils.toISOString(post.timestamp);
 					post.relativeEditTime = parseInt(post.edited, 10) !== 0 ? utils.toISOString(post.edited) : '';
-					postTools.parsePost(post, next);
+					Posts.parsePost(post, next);
 				}, next);
 			},
 			function(posts, next) {

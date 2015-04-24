@@ -82,7 +82,8 @@ define('forum/topic', [
 	function handleBookmark(tid) {
 		var bookmark = localStorage.getItem('topic:' + tid + ':bookmark');
 		var postIndex = getPostIndex();
-		if (postIndex) {
+
+		if (postIndex && window.location.search.indexOf('page=') === -1) {
 			navigator.scrollToPost(postIndex - 1, true);
 		} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1)) && ajaxify.variables.get('postcount') > 1) {
 			app.alert({

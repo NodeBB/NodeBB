@@ -46,21 +46,22 @@ define('composer/preview', function() {
 
 	preview.handleToggler = function(postContainer) {
 		function hidePreview() {
-			previewContainer.addClass('hide');
-			writeContainer.addClass('maximized');
-			showBtn.removeClass('hide');
-
-			$('.write').focus();
+			togglePreview(false);
 			localStorage.setItem('composer:previewToggled', true);
 		}
 
 		function showPreview() {
-			previewContainer.removeClass('hide');
-			writeContainer.removeClass('maximized');
-			showBtn.addClass('hide');
+			togglePreview(true);
+			localStorage.removeItem('composer:previewToggled');
+		}
+
+		function togglePreview(show) {
+			previewContainer.toggleClass('hide', !show);
+			writeContainer.toggleClass('maximized', !show);
+			showBtn.toggleClass('hide', show);
 
 			$('.write').focus();
-			localStorage.removeItem('composer:previewToggled');
+			preview.matchScroll(postContainer);
 		}
 
 		var showBtn = postContainer.find('.write-container .toggle-preview'),

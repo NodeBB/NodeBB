@@ -9,7 +9,6 @@ var async = require('async'),
 	user = require('../user'),
 	plugins = require('../plugins'),
 	categories = require('../categories'),
-	postTools = require('../postTools'),
 	utils = require('../../public/src/utils');
 
 
@@ -86,7 +85,7 @@ module.exports = function(Posts) {
 						return next(null, post);
 					}
 
-					postTools.parsePost(post, function(err, post) {
+					Posts.parsePost(post, function(err, post) {
 						if (err) {
 							return next(err);
 						}

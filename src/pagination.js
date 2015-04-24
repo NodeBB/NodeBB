@@ -13,7 +13,7 @@ pagination.create = function(currentPage, pageCount, queryObj) {
 			pages: []
 		};
 	}
-
+	pageCount = parseInt(pageCount, 10);
 	var pagesToShow = [1, 2, pageCount - 1, pageCount];
 
 	currentPage = parseInt(currentPage, 10) || 1;

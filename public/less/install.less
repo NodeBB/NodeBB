@@ -1,0 +1,54 @@
+.btn, .form-control, .navbar {
+	border-radius: 0;
+}
+
+.container {
+	font-size: 18px;
+	margin-bottom: 100px;
+}
+
+body, small, p, div {
+	font-family: "Roboto", sans-serif;
+}
+
+.input-row {
+	margin-bottom: 20px;
+
+	.form-control {
+		margin-bottom: 5px;
+	}
+
+	.help-text {
+		pointer-events: none;
+		line-height: 20px;
+		color: #888;
+		font-size: 85%;
+		display: none;
+	}
+
+	.input-field {
+		border-right: 5px solid #FFF;
+	}
+
+	&.active {
+		.input-field {
+			border-right-color: #38B44A;
+			padding-right: 20px;
+		}
+
+		.help-text {
+			display: block;
+		}
+	}
+
+	&.error {
+		.input-field {
+			border-right-color: #BF3E11;
+			padding-right: 20px;
+		}
+
+		.help-text {
+			display: block;
+		}
+	}
+}

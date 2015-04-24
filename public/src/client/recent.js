@@ -93,10 +93,10 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function(infinite
 		}, function(data, done) {
 			if (data.topics && data.topics.length) {
 				Recent.onTopicsLoaded('recent', data.topics, false, done);
-				$('[component="category"]').attr('data-nextstart', data.nextStart);
 			} else {
 				done();
 			}
+			$('[component="category"]').attr('data-nextstart', data.nextStart);
 		});
 	};
 

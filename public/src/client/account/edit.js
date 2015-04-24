@@ -157,8 +157,8 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 						return false;
 					} else {
 						socket.emit('user.deleteAccount', {}, function(err) {
-							if (!err) {
-								app.logout();
+							if (err) {
+								app.alertError(err.message);
 							}
 						});
 					}

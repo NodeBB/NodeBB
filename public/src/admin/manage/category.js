@@ -203,7 +203,9 @@ define('admin/manage/category', [
 			} else {
 				app.alertError('[[error:invalid-data]]');
 			}
-		})
+		});
+
+		Category.exposeAssumedPrivileges();
 	};
 
 	Category.refreshPrivilegeTable = function() {
@@ -216,8 +218,31 @@ define('admin/manage/category', [
 				privileges: privileges
 			}, function(html) {
 				$('.privilege-table-container').html(html);
+				Category.exposeAssumedPrivileges();
 			});
 		});
+	};
+
+	Category.exposeAssumedPrivileges = function() {
+		/*
+			If registered-users has a privilege enabled, then all users and groups of that privilege
+			should be assumed to have that privilege as well, even if not set in the db, so reflect
+			this arrangement in the table
+		*/
+		var privs = [];
+		$('.privilege-table tr[data-group-name="registered-users"] td input[type="checkbox"]').parent().each(function(idx, el) {
+			if ($(el).find('input').prop('checked')) {
+				privs.push(el.getAttribute('data-privilege'));
+			}
+		});
+		for(var x=0,numPrivs=privs.length;x<numPrivs;x++) {
+			var inputs = $('.privilege-table tr[data-group-name]:not([data-group-name="registered-users"],[data-group-name="guests"]) td[data-privilege="' + privs[x] + '"] input');
+			inputs.each(function(idx, el) {
+				if (!el.checked) {
+					el.indeterminate = true;
+				}
+			});
+		}
 	};
 
 	Category.setPrivilege = function(member, privilege, state, checkboxEl) {

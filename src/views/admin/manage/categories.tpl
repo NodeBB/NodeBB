@@ -1,7 +1,7 @@
 <div class="row">
 	<div class="col-lg-9">
 		<div class="panel panel-default">
-			<div class="panel-heading"><i class="fa fa-folder"></i> Categories</div>
+			<div class="panel-heading"><i class="fa fa-folder"></i> Active Categories</div>
 			<div class="panel-body">
 				<table class="table table-striped table-hover table-reordering">
 					<thead>
@@ -55,7 +55,7 @@
 		</div>
 
 		<div class="panel panel-default">
-			<div class="panel-heading"><i class="fa fa-folder"></i> Categories</div>
+			<div class="panel-heading"><i class="fa fa-folder"></i> Disabled Categories</div>
 			<div class="panel-body">
 				<table class="table table-striped table-hover table-reordering">
 					<thead>

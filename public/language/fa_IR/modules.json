@@ -15,12 +15,12 @@
     "chat.seven_days": "7 روز",
     "chat.thirty_days": "30 روز",
     "chat.three_months": "3 ماه",
-    "composer.compose": "Compose",
-    "composer.show_preview": "Show Preview",
-    "composer.hide_preview": "Hide Preview",
+    "composer.compose": "ارسال",
+    "composer.show_preview": "نمایش پیش‌نمایش",
+    "composer.hide_preview": "مخفی کردن پیش‌نمایش",
     "composer.user_said_in": "%1 در %2 گفته است:",
     "composer.user_said": "%1 گفته است:",
     "composer.discard": "آیا از دور انداختن این دیدگاه اطمینان دارید؟",
     "composer.submit_and_lock": "ارسال و قفل",
-    "composer.toggle_dropdown": "Toggle Dropdown"
+    "composer.toggle_dropdown": "باز و بسته کردن کرکره"
 }

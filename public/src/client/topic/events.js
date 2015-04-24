@@ -1,7 +1,7 @@
 
 'use strict';
 
-/* globals config, app, ajaxify, define, socket, templates */
+/* globals config, app, ajaxify, define, socket, templates, translator, utils */
 
 define('forum/topic/events', [
 	'forum/topic/browsing',
@@ -20,8 +20,8 @@ define('forum/topic/events', [
 		'event:voted': updatePostVotesAndUserReputation,
 		'event:favourited': updateFavouriteCount,
 
-		'event:topic_deleted': toggleTopicDeleteState,
-		'event:topic_restored': toggleTopicDeleteState,
+		'event:topic_deleted': threadTools.setDeleteState,
+		'event:topic_restored': threadTools.setDeleteState,
 		'event:topic_purged': onTopicPurged,
 
 		'event:topic_locked': threadTools.setLockedState,
@@ -81,11 +81,6 @@ define('forum/topic/events', [
 		$('[data-pid="' + data.post.pid + '"] .favouriteCount').html(data.post.reputation).attr('data-favourites', data.post.reputation);
 	}
 
-	function toggleTopicDeleteState(data) {
-		threadTools.setLockedState(data);
-		threadTools.setDeleteState(data);
-	}
-
 	function onTopicPurged(data) {
 		ajaxify.go('category/' + ajaxify.variables.get('category_id'));
 	}
@@ -97,20 +92,24 @@ define('forum/topic/events', [
 	}
 
 	function onPostEdited(data) {
-		var editedPostEl = components.get('post/content', data.pid),
+		if (!data || !data.post) {
+			return;
+		}
+		var editedPostEl = components.get('post/content', data.post.pid),
+			editorEl = $('[data-pid="' + data.post.pid + '"] [component="post/editor"]'),
 			topicTitle = components.get('topic/title');
 
-		if (topicTitle.length && data.title) {
-			var newUrl = 'topic/' + data.slug + (window.location.search ? window.location.search : '');
+		if (topicTitle.length && data.topic.title) {
+			var newUrl = 'topic/' + data.topic.slug + (window.location.search ? window.location.search : '');
 			history.replaceState({url: newUrl}, null, window.location.protocol + '//' + window.location.host + config.relative_path + '/' + newUrl);
 
 			topicTitle.fadeOut(250, function() {
-				topicTitle.html(data.title).fadeIn(250);
+				topicTitle.html(data.topic.title).fadeIn(250);
 			});
 		}
 
 		editedPostEl.fadeOut(250, function() {
-			editedPostEl.html(data.content);
+			editedPostEl.html(data.post.content);
 			editedPostEl.find('img').addClass('img-responsive');
 			app.replaceSelfLinks(editedPostEl.find('a'));
 			editedPostEl.fadeIn(250);
@@ -118,8 +117,21 @@ define('forum/topic/events', [
 			$(window).trigger('action:posts.edited', data);
 		});
 
-		if (data.tags && tagsUpdated(data.tags)) {
-			templates.parse('partials/post_bar', 'tags', {tags: data.tags}, function(html) {
+		var editData = {
+			editor: data.editor,
+			relativeEditTime: utils.toISOString(data.post.edited)
+		};
+
+		templates.parse('partials/topic/post-editor', editData, function(html) {
+			translator.translate(html, function(translated) {
+				html = $(translated);
+				editorEl.replaceWith(html);
+				html.find('.timeago').timeago();
+			});
+		});
+
+		if (data.topic.tags && tagsUpdated(data.topic.tags)) {
+			templates.parse('partials/post_bar', 'tags', {tags: data.topic.tags}, function(html) {
 				var tags = $('.tags');
 
 				tags.fadeOut(250, function() {

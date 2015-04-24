@@ -58,6 +58,7 @@
 						<li><a href="{relative_path}/admin/advanced/database">Database</a></li>
 						<li><a href="{relative_path}/admin/advanced/events">Events</a></li>
 						<li><a href="{relative_path}/admin/advanced/logs">Logs</a></li>
+						<li><a href="{relative_path}/admin/advanced/post-cache">Post Cache</a></li>
 					</ul>
 				</div>
 				<!-- IF authentication.length -->

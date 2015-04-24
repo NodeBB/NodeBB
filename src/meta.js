@@ -23,6 +23,7 @@ var async = require('async'),
 	require('./meta/sounds')(Meta);
 	require('./meta/settings')(Meta);
 	require('./meta/logs')(Meta);
+	require('./meta/tags')(Meta);
 	Meta.templates = require('./meta/templates');
 
 	/* Assorted */

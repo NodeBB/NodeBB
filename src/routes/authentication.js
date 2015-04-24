@@ -101,11 +101,23 @@
 				user.auth.logAttempt(uid, req.ip, next);
 			},
 			function(next) {
-				db.getObjectFields('user:' + uid, ['password', 'banned', 'passwordExpiry'], next);
+				async.parallel({
+					userData: function(next) {
+						db.getObjectFields('user:' + uid, ['password', 'banned', 'passwordExpiry'], next);
+					},
+					isAdmin: function(next) {
+						user.isAdministrator(uid, next);
+					}
+				}, next);
 			},
-			function(_userData, next) {
-				userData = _userData;
+			function(result, next) {
+				userData = result.userData;
 				userData.uid = uid;
+				userData.isAdmin = result.isAdmin;
+
+				if (!result.isAdmin && parseInt(meta.config.allowLocalLogin, 10) === 0) {
+					return next(new Error('[[error:local-login-disabled]]'));
+				}
 
 				if (!userData || !userData.password) {
 					return next(new Error('[[error:invalid-user-data]]'));
@@ -136,10 +148,6 @@
 	});
 
 	function login(req, res, next) {
-		if (parseInt(meta.config.allowLocalLogin, 10) === 0) {
-			return res.status(404).send('');
-		}
-
 		// Handle returnTo data
 		if (req.body.hasOwnProperty('returnTo') && !req.session.returnTo) {
 			req.session.returnTo = req.body.returnTo;
@@ -147,7 +155,7 @@
 
 		if (plugins.hasListeners('action:auth.overrideLogin')) {
 			return Auth.continueLogin(req, res, next);
-		};
+		}
 
 		var loginWith = meta.config.allowLoginWith || 'username-email';
 

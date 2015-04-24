@@ -250,6 +250,12 @@ var db = require('./database'),
 					return callback(err);
 				}
 
+				results.users.forEach(function(user, index) {
+					if (user && !parseInt(user.uid, 10)) {
+						Messaging.markRead(uid, uids[index]);
+					}
+				});
+
 				results.users = results.users.filter(function(user) {
 					return user && parseInt(user.uid, 10);
 				});

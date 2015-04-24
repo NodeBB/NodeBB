@@ -9,8 +9,6 @@ var async = require('async'),
 	user = require('../user'),
 	meta = require('../meta'),
 	posts = require('../posts'),
-	threadTools = require('../threadTools'),
-	postTools = require('../postTools'),
 	privileges = require('../privileges'),
 	categories = require('../categories');
 
@@ -264,7 +262,7 @@ module.exports = function(Topics) {
 						posts.getPidIndex(postData.pid, uid, next);
 					},
 					content: function(next) {
-						postTools.parsePost(postData, next);
+						posts.parsePost(postData, next);
 					}
 				}, next);
 			},
