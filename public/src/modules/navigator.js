@@ -161,7 +161,8 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 
 		var elTop = el.offset().top;
 		var elBottom = elTop + Math.floor(el.height());
-		return (elTop >= scrollTop && elBottom <= scrollBottom) || (elTop <= scrollTop && elBottom >= scrollTop);
+
+		return (elTop >= scrollTop && elBottom < scrollBottom) || (elTop < scrollTop && elBottom > scrollTop);
 	}
 
 	navigator.scrollToPost = function(postIndex, highlight, duration, offset) {

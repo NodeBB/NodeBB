@@ -117,14 +117,18 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 			return;
 		}
 
-		var regexStr = searchQuery.trim().split(' ').join('|');
-		var regex = new RegExp('(' + regexStr + ')', 'gi');
+		try {
+			var regexStr = searchQuery.trim().split(' ').join('|');
+			var regex = new RegExp('(' + regexStr + ')', 'gi');
 
-		$('.search-result-text').each(function() {
-			var result = $(this);
-			var text = result.html().replace(regex, '<strong>$1</strong>');
-			result.html(text).find('img').addClass('img-responsive');
-		});
+			$('.search-result-text').each(function() {
+				var result = $(this);
+				var text = result.html().replace(regex, '<strong>$1</strong>');
+				result.html(text).find('img').addClass('img-responsive');
+			});
+		} catch(e) {
+			return;
+		}
 	}
 
 	function handleSavePreferences() {
