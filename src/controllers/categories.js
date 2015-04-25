@@ -288,7 +288,11 @@ categoriesController.get = function(req, res, next) {
 				},
 				{
 					name: 'description',
-					content: categoryData.description
+					content: categoryData.metaDescription || categoryData.description
+				},
+				{
+					name: 'keywords',
+					content: categoryData.keywords || meta.config.keywords || ''
 				},
 				{
 					property: "og:type",

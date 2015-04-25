@@ -316,7 +316,7 @@ middleware.processRender = function(req, res, next) {
 		if ('function' !== typeof fn) {
 			fn = defaultFn;
 		}
-
+		
 		if (res.locals.isAPI) {
 			return res.json(options);
 		}

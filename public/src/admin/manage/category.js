@@ -79,7 +79,7 @@ define('admin/manage/category', [
 		}
 
 		// If any inputs have changed, prepare it for saving
-		$('form.category input, form.category select').on('change', function(ev) {
+		$('form.category').find('input,textarea,select').on('change', function(ev) {
 			modified(ev.target);
 		});
 

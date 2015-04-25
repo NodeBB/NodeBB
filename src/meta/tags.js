@@ -21,9 +21,6 @@ module.exports = function(Meta) {
 				property: 'og:site_name',
 				content: Meta.config.title || 'NodeBB'
 			}, {
-				name: 'keywords',
-				content: Meta.config.keywords || ''
-			}, {
 				name: 'msapplication-badge',
 				content: 'frequency=30; polling-uri=' + nconf.get('url') + '/sitemap.xml'
 			}, {
