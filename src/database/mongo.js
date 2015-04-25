@@ -74,7 +74,7 @@
 		}
 
 		var hosts = nconf.get('mongo:host').split(',');
-		var ports = nconf.get('mongo:port').split(',');
+		var ports = nconf.get('mongo:port').toString().split(',');
 		var servers = [];
 
         for (var i = 0; i < hosts.length; i++) {
@@ -161,4 +161,3 @@
 	};
 
 }(exports));
-
