@@ -534,6 +534,8 @@ var async = require('async'),
 			if (data.hasOwnProperty('ownerUid')) {
 				tasks.push(async.apply(db.setAdd, 'group:' + data.name + ':owners', data.ownerUid));
 				tasks.push(async.apply(db.sortedSetAdd, 'group:' + data.name + ':members', now, data.ownerUid));
+
+				groupData.ownerUid = data.ownerUid;
 			}
 
 			if (!data.hidden) {
@@ -545,7 +547,7 @@ var async = require('async'),
 					plugins.fireHook('action:group.create', groupData);
 				}
 
-				callback(err);
+				callback(err, groupData);
 			});
 		});
 	};
