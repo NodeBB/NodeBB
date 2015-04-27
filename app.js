@@ -160,11 +160,12 @@ function start() {
 						require('./src/user').startJobs();
 					}
 
+					webserver.listen();
+					
 					async.waterfall([
 						async.apply(meta.themes.setupPaths),
 						async.apply(plugins.ready),
-						async.apply(meta.templates.compile),
-						async.apply(webserver.listen)
+						async.apply(meta.templates.compile)
 					], function(err) {
 						if (err) {
 							winston.error(err.stack);

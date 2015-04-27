@@ -138,7 +138,7 @@ if(nconf.get('ssl')) {
 
 	server.setTimout && server.setTimeout(10000);
 
-	module.exports.listen = function(callback) {
+	module.exports.listen = function() {
 		logger.init(app);
 
 		var isSocket = isNaN(port),
@@ -149,15 +149,13 @@ if(nconf.get('ssl')) {
 		args.push(function(err) {
 			if (err) {
 				winston.info('[startup] NodeBB was unable to listen on: ' + bind_address);
-				return callback(err);
+				process.exit();
 			}
 
 			winston.info('NodeBB is now listening on: ' + (isSocket ? port : bind_address));
 			if (oldUmask) {
 				process.umask(oldUmask);
 			}
-
-			callback();
 		});
 
 		// Alter umask if necessary
@@ -166,7 +164,9 @@ if(nconf.get('ssl')) {
 			net = require('net');
 			module.exports.testSocket(port, function(err) {
 				if (!err) {
-					server.listen.apply(server, args);
+					emitter.on('nodebb:ready', function() {
+						server.listen.apply(server, args);
+					});
 				} else {
 					winston.error('[startup] NodeBB was unable to secure domain socket access (' + port + ')');
 					winston.error('[startup] ' + err.message);
@@ -174,7 +174,9 @@ if(nconf.get('ssl')) {
 				}
 			});
 		} else {
-			server.listen.apply(server, args);
+			emitter.on('nodebb:ready', function() {
+				server.listen.apply(server, args);
+			});
 		}
 	};
 
