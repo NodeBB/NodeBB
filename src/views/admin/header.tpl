@@ -74,7 +74,32 @@
 					</ul>
 				</div>
 				<div class="navbar-collapse collapse">
-					<ul id="logged-in-menu" class="navbar-nav nav navbar-right pull-right">
+					<ul id="logged-in-menu" class="navbar-nav nav navbar-right">
+						<li class="hidden-lg hidden-md hidden-sm">
+							<a href="{relative_path}/" target="_blank" title="View Forum">
+								View Forum
+							</a>
+						</li>
+						<li class="hidden-lg hidden-md hidden-sm">
+							<a id="user-profile-link" href="{relative_path}/user/{user.userslug}" target="_top">
+								View Profile
+							</a>
+						</li>
+						<li role="presentation" class="hidden-lg hidden-md hidden-sm divider"></li>
+						<li class="hidden-lg hidden-md hidden-sm">
+							<a href="#" class="reload" title="Reload Forum">
+								Reload Forum
+							</a>
+						</li>
+						<li class="hidden-lg hidden-md hidden-sm">
+							<a href="#" class="restart" title="Restart Forum">
+								Restart Forum
+							</a>
+						</li>
+						<li role="presentation" class="hidden-lg hidden-md hidden-sm divider"></li>
+						<li class="hidden-lg hidden-md hidden-sm" id="logout-link">
+							<a href="#">Log out</a>
+						</li>
 						<li style="float:left;">
 							<form class="navbar-form hidden-xs" role="search">
 								<div class="form-group" id="acp-search" >
@@ -85,7 +110,7 @@
 								</div>
 							</form>
 						</li>
-						<li id="user_label" class="dropdown pull-right">
+						<li id="user_label" class="dropdown pull-right hidden-xs">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
 								<img src="{user.picture}"/>
 							</a>
