@@ -7,15 +7,16 @@ var winston = require('winston'),
 
 module.exports = function(Meta) {
 	Meta.title = {};
-
+	
 	var tests = {
+		isCategories: /^categories\/\d+\/?/,
 		isCategory: /^category\/\d+\/?/,
 		isTopic: /^topic\/\d+\/?/,
 		isTag: /^tags\/[\s\S]+\/?/,
 		isUserPage: /^user\/[^\/]+(\/[\w]+)?/
 	};
 
-	Meta.title.build = function (urlFragment, language, locals, callback) {
+	Meta.title.build = function (urlFragment, language, locals, callback) { console.log(urlFragment)
 		var uri = '';
 		var fallbackTitle = validator.escape(Meta.config.browserTitle || Meta.config.title || 'NodeBB');
 		try {
@@ -32,7 +33,8 @@ module.exports = function(Meta) {
 				if (title) {
 					title = validator.escape(title);
 				}
-				title = (title ? title + ' | ' : '') + fallbackTitle;
+				if (Meta.config.showBrowserTitle === 1) title = (title ? title + ' | ' : '') + fallbackTitle;
+				else title = title || fallbackTitle;
 			}
 
 			callback(null, title);

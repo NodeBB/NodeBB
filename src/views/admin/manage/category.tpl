@@ -13,10 +13,12 @@
 					
 					<fieldset>
 						<div class="col-xs-12 col-sm-6">
+							<label for="cid-{category.cid}-description">Description</label>
 							<h4 data-edit-target="#cid-{category.cid}-description"><span>{category.description}</span> <small><i class="fa fa-edit"></i></small></h4>
 							<textarea id="cid-{category.cid}-description" data-name="description" placeholder="Category Description" class="form-control category_description input-sm description hide">{category.description}</textarea>
 						</div>
 						<div class="col-xs-12 col-sm-6">
+							<label for="cid-{category.cid}-metaDescription">Meta Description</label>
 							<h4 data-edit-target="#cid-{category.cid}-metaDescription"><span>{category.metaDescription}</span> <small><i class="fa fa-edit"></i></small></h4>
 							<textarea id="cid-{category.cid}-metaDescription" data-name="metaDescription" placeholder="Category Meta Description" class="form-control category_metaDescription input-sm metaDescription hide">{category.metaDescription}</textarea>
 						</div>
@@ -24,8 +26,10 @@
 					
 					<fieldset>
 						<div class="col-xs-12">
-							<h4 data-edit-target="#cid-{category.cid}-content"><span>{category.content}</span> <small><i class="fa fa-edit"></i></small></h4>
+							<label for="cid-{category.cid}-content">Content</label>
+							<h4 data-edit-target="#cid-{category.cid}-content"><span style="white-space: pre-wrap;">{category.content}</span> <small><i class="fa fa-edit"></i></small></h4>
 							<textarea id="cid-{category.cid}-content" data-name="content" placeholder="Category Content" class="form-control category_content input-sm content hide">{category.content}</textarea>
+							<a class="help-markdown" href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown supported <span class="help"><i class="fa fa-question-circle"></i></span></a>
 						</div>
 					</fieldset>
 

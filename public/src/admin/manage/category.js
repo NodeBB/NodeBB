@@ -67,14 +67,18 @@ define('admin/manage/category', [
 			$('[data-edit-target]').on('click', function() {
 				var $this = $(this),
 					target = $($this.attr('data-edit-target'));
-
+				
+				target.height($this.parent().find('h4').height());
+					
 				$this.addClass('hide');
-				target.removeClass('hide').on('blur', function() {
-					$this.removeClass('hide').children('span').html(this.value);
+				target.removeClass('hide').on('blur', function(e) {
+					$this.removeClass('hide').children('span').html($(this).val());
 					$(this).addClass('hide');
 				}).val($this.children('span').html());
 
 				target.focus();
+				
+				mdh.removeClass('hide');
 			});
 		}
 

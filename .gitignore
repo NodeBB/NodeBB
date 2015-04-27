@@ -16,6 +16,8 @@ provision.sh
 *.komodoproject
 .DS_Store
 feeds/recent.rss
+*.heapsnapshot
+dump.rdb*
 
 logs/
 
