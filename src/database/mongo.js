@@ -77,9 +77,9 @@
 		var ports = nconf.get('mongo:port').toString().split(',');
 		var servers = [];
 
-        for (var i = 0; i < hosts.length; i++) {
-            servers.push(hosts[i] + ':' + ports[i]);
-        }
+		for (var i = 0; i < hosts.length; i++) {
+			servers.push(hosts[i] + ':' + ports[i]);
+		}
 
 		var connString = 'mongodb://' + usernamePassword + servers.join() + '/' + nconf.get('mongo:database');
 
