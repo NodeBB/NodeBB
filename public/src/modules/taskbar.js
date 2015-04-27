@@ -98,7 +98,7 @@ define('taskbar', function() {
 	function createTaskbar(data) {
 		var title = $('<div></div>').text(data.options.title || 'NodeBB Task').html();
 
-		var	btnEl = $('<li />')
+		var	taskbarEl = $('<li />')
 			.addClass(data.options.className)
 			.html('<a href="#">' +
 				(data.options.icon ? '<i class="fa ' + data.options.icon + '"></i> ' : '') +
@@ -115,10 +115,11 @@ define('taskbar', function() {
 			minimizeAll();
 		}
 
-		taskbar.tasklist.append(btnEl);
+		taskbar.tasklist.append(taskbarEl);
 		update();
 
-		$(window).trigger('action:taskbar.pushed');
+		data.element = taskbarEl;
+		$(window).trigger('action:taskbar.pushed', data);
 	}
 
 	return taskbar;
