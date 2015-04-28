@@ -73,7 +73,16 @@
 			nconf.set('mongo:database', '0');
 		}
 
-		var connString = 'mongodb://' + usernamePassword + nconf.get('mongo:host') + ':' + nconf.get('mongo:port') + '/' + nconf.get('mongo:database');
+		var hosts = nconf.get('mongo:host').split(',');
+		var ports = nconf.get('mongo:port').toString().split(',');
+		var servers = [];
+
+		for (var i = 0; i < hosts.length; i++) {
+			servers.push(hosts[i] + ':' + ports[i]);
+		}
+
+		var connString = 'mongodb://' + usernamePassword + servers.join() + '/' + nconf.get('mongo:database');
+
 		var connOptions = {
 			server: {
 				poolSize: parseInt(nconf.get('mongo:poolSize'), 10) || 10
@@ -152,4 +161,3 @@
 	};
 
 }(exports));
-
