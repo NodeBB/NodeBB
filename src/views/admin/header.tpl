@@ -97,7 +97,7 @@
 							</a>
 						</li>
 						<li role="presentation" class="hidden-lg hidden-md hidden-sm divider"></li>
-						<li class="hidden-lg hidden-md hidden-sm" id="logout-link">
+						<li component="logout" class="hidden-lg hidden-md hidden-sm">
 							<a href="#">Log out</a>
 						</li>
 						<li style="float:left;">
@@ -137,7 +137,7 @@
 									</a>
 								</li>
 								<li role="presentation" class="divider"></li>
-								<li id="logout-link">
+								<li component="logout">
 									<a href="#">Log out</a>
 								</li>
 							</ul>

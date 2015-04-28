@@ -31,9 +31,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			usedTopicColors.length = 0;
 		});
 
-		$('#logout-link').on('click', function() {
-			app.logout();
-		});
+		$('[component="logout"]').on('click', app.logout);
 
 		$.get('https://api.github.com/repos/NodeBB/NodeBB/tags', function(releases) {
 			// Re-sort the releases, as they do not follow Semver (wrt pre-releases)
