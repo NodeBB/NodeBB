@@ -188,7 +188,12 @@ function forkWorker(index, isPrimary) {
 }
 
 function getPorts() {
-	var urlObject = url.parse(nconf.get('url'));
+	var url = nconf.get('url');
+	if (!url) {
+		console.log('[cluster] url is undefined, please check your config.json');
+		process.exit();
+	}
+	var urlObject = url.parse(url);
 	var port = nconf.get('port') || nconf.get('PORT') || urlObject.port || 4567;
 	if (!Array.isArray(port)) {
 		port = [port];
