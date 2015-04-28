@@ -82,7 +82,7 @@ Loader.addWorkerEvents = function(worker) {
 		if (message && typeof message === 'object' && message.action) {
 			switch (message.action) {
 				case 'ready':
-					if (Loader.js.cache) {
+					if (Loader.js.cache && !worker.isPrimary) {
 						worker.send({
 							action: 'js-propagate',
 							cache: Loader.js.cache,
@@ -91,7 +91,7 @@ Loader.addWorkerEvents = function(worker) {
 						});
 					}
 
-					if (Loader.css.cache) {
+					if (Loader.css.cache && !worker.isPrimary) {
 						worker.send({
 							action: 'css-propagate',
 							cache: Loader.css.cache,
@@ -99,6 +99,8 @@ Loader.addWorkerEvents = function(worker) {
 							hash: Loader.css.hash
 						});
 					}
+
+
 				break;
 				case 'restart':
 					console.log('[cluster] Restarting...');
@@ -130,6 +132,11 @@ Loader.addWorkerEvents = function(worker) {
 						cache: message.cache,
 						acpCache: message.acpCache,
 						hash: message.hash
+					}, worker.pid);
+				break;
+				case 'templates:compiled':
+					Loader.notifyWorkers({
+						action: 'templates:compiled',
 					}, worker.pid);
 				break;
 			}

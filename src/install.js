@@ -499,7 +499,10 @@ install.setup = function (callback) {
 		setCopyrightWidget,
 		function (next) {
 			var upgrade = require('./upgrade');
-			upgrade.check(function(uptodate) {
+			upgrade.check(function(err, uptodate) {
+				if (err) {
+					return next(err);
+				}
 				if (!uptodate) { upgrade.upgrade(next); }
 				else { next(); }
 			});

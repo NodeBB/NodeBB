@@ -25,18 +25,21 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
-		if(!value) {
+		if (err) {
+			return callback(err);
+		}
+
+		if (!value) {
 			db.set('schemaDate', latestSchema, function(err) {
-				callback(true);
+				if (err) {
+					return callback(err);
+				}
+				callback(null, true);
 			});
 			return;
 		}
 
-		if (parseInt(value, 10) >= latestSchema) {
-			callback(true);
-		} else {
-			callback(false);
-		}
+		callback(null, parseInt(value, 10) >= latestSchema);
 	});
 };
 

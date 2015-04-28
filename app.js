@@ -133,89 +133,79 @@ function start() {
 		winston.verbose('* using themes stored in: %s', nconf.get('themes_path'));
 	}
 
+	process.on('SIGTERM', shutdown);
+	process.on('SIGINT', shutdown);
+	process.on('SIGHUP', restart);
+	process.on('message', function(message) {
+		if (typeof message !== 'object') {
+			return;
+		}
+		var meta = require('./src/meta');
+		var emitter = require('./src/emitter');
+		switch (message.action) {
+			case 'reload':
+				meta.reload();
+			break;
+			case 'js-propagate':
+				meta.js.cache = message.cache;
+				meta.js.map = message.map;
+				meta.js.hash = message.hash;
+				emitter.emit('meta:js.compiled');
+				winston.verbose('[cluster] Client-side javascript and mapping propagated to worker %s', process.pid);
+			break;
+			case 'css-propagate':
+				meta.css.cache = message.cache;
+				meta.css.acpCache = message.acpCache;
+				meta.css.hash = message.hash;
+				emitter.emit('meta:css.compiled');
+				winston.verbose('[cluster] Stylesheets propagated to worker %s', process.pid);
+			break;
+			case 'templates:compiled':
+				emitter.emit('templates:compiled');
+			break;
+		}
+	});
 
-	var webserver = require('./src/webserver');
+	process.on('uncaughtException', function(err) {
+		winston.error(err.stack);
+		console.log(err.stack);
 
-	require('./src/database').init(function(err) {
+		require('./src/meta').js.killMinifier();
+		shutdown(1);
+	});
+
+	async.waterfall([
+		function(next) {
+			require('./src/database').init(next);
+		},
+		function(next) {
+			require('./src/meta').configs.init(next);
+		},
+		function(next) {
+			require('./src/upgrade').check(next);
+		},
+		function(schema_ok, next) {
+			if (!schema_ok && nconf.get('check-schema') !== false) {
+				winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
+				winston.warn('    ./nodebb upgrade');
+				process.exit();
+				return;
+			}
+			var webserver = require('./src/webserver');
+			require('./src/socket.io').init(webserver.server);
+
+			if (nconf.get('isPrimary') === 'true' && !nconf.get('jobsDisabled')) {
+				require('./src/notifications').init();
+				require('./src/user').startJobs();
+			}
+
+			webserver.listen();
+		}
+	], function(err) {
 		if (err) {
 			winston.error(err.stack);
 			process.exit();
 		}
-		var meta = require('./src/meta');
-		meta.configs.init(function () {
-			var templates = require('templates.js'),
-				sockets = require('./src/socket.io'),
-				plugins = require('./src/plugins'),
-				upgrade = require('./src/upgrade');
-
-			templates.setGlobal('relative_path', nconf.get('relative_path'));
-
-			upgrade.check(function(schema_ok) {
-				if (schema_ok || nconf.get('check-schema') === false) {
-					webserver.init();
-					sockets.init(webserver.server);
-
-					if (nconf.get('isPrimary') === 'true' && !nconf.get('jobsDisabled')) {
-						require('./src/notifications').init();
-						require('./src/user').startJobs();
-					}
-
-					webserver.listen();
-					
-					async.waterfall([
-						async.apply(meta.themes.setupPaths),
-						async.apply(plugins.ready),
-						async.apply(meta.templates.compile)
-					], function(err) {
-						if (err) {
-							winston.error(err.stack);
-							process.exit();
-						}
-
-						if (process.send) {
-							process.send({
-								action: 'ready'
-							});
-						}
-					});
-
-					process.on('SIGTERM', shutdown);
-					process.on('SIGINT', shutdown);
-					process.on('SIGHUP', restart);
-					process.on('message', function(message) {
-						switch(message.action) {
-							case 'reload':
-								meta.reload();
-							break;
-							case 'js-propagate':
-								meta.js.cache = message.cache;
-								meta.js.map = message.map;
-								meta.js.hash = message.hash;
-								winston.verbose('[cluster] Client-side javascript and mapping propagated to worker %s', process.pid);
-							break;
-							case 'css-propagate':
-								meta.css.cache = message.cache;
-								meta.css.acpCache = message.acpCache;
-								meta.css.hash = message.hash;
-								winston.verbose('[cluster] Stylesheets propagated to worker %s', process.pid);
-							break;
-						}
-					});
-
-					process.on('uncaughtException', function(err) {
-						winston.error(err.stack);
-						console.log(err.stack);
-
-						meta.js.killMinifier();
-						shutdown(1);
-					});
-				} else {
-					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
-					winston.warn('    ./nodebb upgrade');
-					process.exit();
-				}
-			});
-		});
 	});
 }
 
@@ -243,7 +233,7 @@ function setup() {
 			winston.error('There was a problem completing NodeBB setup: ', err.message);
 		} else {
 			if (data.hasOwnProperty('password')) {
-				process.stdout.write('An administrative user was automatically created for you:\n')
+				process.stdout.write('An administrative user was automatically created for you:\n');
 				process.stdout.write('    Username: ' + data.username + '\n');
 				process.stdout.write('    Password: ' + data.password + '\n');
 				process.stdout.write('\n');

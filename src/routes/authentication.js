@@ -40,44 +40,42 @@
 		var router = express.Router();
 		router.hotswapId = 'auth';
 
-		plugins.ready(function() {
-			loginStrategies.length = 0;
+		loginStrategies.length = 0;
 
-			if (plugins.hasListeners('action:auth.overrideLogin')) {
-				winston.warn('[authentication] Login override detected, skipping local login strategy.');
-				plugins.fireHook('action:auth.overrideLogin');
-			} else {
-				passport.use(new passportLocal({passReqToCallback: true}, Auth.login));
+		if (plugins.hasListeners('action:auth.overrideLogin')) {
+			winston.warn('[authentication] Login override detected, skipping local login strategy.');
+			plugins.fireHook('action:auth.overrideLogin');
+		} else {
+			passport.use(new passportLocal({passReqToCallback: true}, Auth.login));
+		}
+
+		plugins.fireHook('filter:auth.init', loginStrategies, function(err) {
+			if (err) {
+				winston.error('filter:auth.init - plugin failure');
+				return callback(err);
 			}
 
-			plugins.fireHook('filter:auth.init', loginStrategies, function(err) {
-				if (err) {
-					winston.error('filter:auth.init - plugin failure');
-					return callback(err);
-				}
-
-				loginStrategies.forEach(function(strategy) {
-					if (strategy.url) {
-						router.get(strategy.url, passport.authenticate(strategy.name, {
-							scope: strategy.scope
-						}));
-					}
-
-					router.get(strategy.callbackURL, passport.authenticate(strategy.name, {
-						successReturnToOrRedirect: nconf.get('relative_path') + '/',
-						failureRedirect: nconf.get('relative_path') + '/login'
+			loginStrategies.forEach(function(strategy) {
+				if (strategy.url) {
+					router.get(strategy.url, passport.authenticate(strategy.name, {
+						scope: strategy.scope
 					}));
-				});
-
-				router.post('/logout', Auth.middleware.applyCSRF, logout);
-				router.post('/register', Auth.middleware.applyCSRF, register);
-				router.post('/login', Auth.middleware.applyCSRF, login);
-
-				hotswap.replace('auth', router);
-				if (typeof callback === 'function') {
-					callback();
 				}
+
+				router.get(strategy.callbackURL, passport.authenticate(strategy.name, {
+					successReturnToOrRedirect: nconf.get('relative_path') + '/',
+					failureRedirect: nconf.get('relative_path') + '/login'
+				}));
 			});
+
+			router.post('/logout', Auth.middleware.applyCSRF, logout);
+			router.post('/register', Auth.middleware.applyCSRF, register);
+			router.post('/login', Auth.middleware.applyCSRF, login);
+
+			hotswap.replace('auth', router);
+			if (typeof callback === 'function') {
+				callback();
+			}
 		});
 	};
 
