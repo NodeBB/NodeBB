@@ -141,7 +141,7 @@ function cacheStaticFiles(callback) {
 }
 
 function listen(callback) {
-	var	port = nconf.get('port');
+	var port = nconf.get('port');
 
 	if (Array.isArray(port)) {
 		if (!port.length) {
