@@ -142,7 +142,9 @@
 
 					async.apply(createIndex, 'searchpost', {content: 'text', uid: 1, cid: 1}, {background: true}),
 					async.apply(createIndex, 'searchpost', {id: 1}, {background: true})
-				], callback);
+				], function(err) {
+					callback(err);
+				});
 			}
 
 			function createIndex(collection, index, options, callback) {

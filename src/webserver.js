@@ -106,7 +106,7 @@ function initializeNodeBB(callback) {
 				middleware: middleware
 			}, next);
 		},
-		function(results, next) {
+		function(next) {
 			routes(app, middleware);
 			next();
 		}
