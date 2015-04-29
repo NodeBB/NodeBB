@@ -16,7 +16,7 @@ module.exports = function(Meta) {
 		isUserPage: /^user\/[^\/]+(\/[\w]+)?/
 	};
 
-	Meta.title.build = function (urlFragment, language, locals, callback) { console.log(urlFragment)
+	Meta.title.build = function (urlFragment, language, locals, callback) {
 		var uri = '';
 		var fallbackTitle = validator.escape(Meta.config.browserTitle || Meta.config.title || 'NodeBB');
 		try {
