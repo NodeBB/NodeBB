@@ -7,7 +7,8 @@ var async = require('async'),
 	meta = require('../meta'),
 	pagination = require('../pagination'),
 	plugins = require('../plugins'),
-	db = require('../database');
+	db = require('../database'),
+	helpers = require('./helpers');
 
 usersController.getOnlineUsers = function(req, res, next) {
 	var	websockets = require('../socket.io');
@@ -96,6 +97,9 @@ function getUsersAndCount(set, uid, count, callback) {
 }
 
 usersController.getUsersForSearch = function(req, res, next) {
+	if (!req.uid) {
+		return helpers.notAllowed(req, res);
+	}
 	var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
 
 	getUsersAndCount('users:joindate', req.uid, resultsPerPage, function(err, data) {

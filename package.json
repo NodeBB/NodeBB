@@ -10,8 +10,7 @@
   },
   "main": "app.js",
   "scripts": {
-    "start": "./nodebb start",
-    "stop": "./nodebb stop",
+    "start": "node loader.js",
     "test": "mocha ./tests -t 10000"
   },
   "dependencies": {

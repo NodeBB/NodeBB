@@ -241,6 +241,9 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 			if (err) {
 				return next(err);
 			}
+			if (!mainPost) {
+				return next(null, feedItem);
+			}
 			feedItem.description = mainPost.content;
 			feedItem.author = mainPost.user.username;
 			next(null, feedItem);
@@ -250,7 +253,9 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 			return callback(err);
 		}
 		feedItems.forEach(function(feedItem) {
-			feed.item(feedItem);
+			if (feedItem) {
+				feed.item(feedItem);
+			}
 		});
 		callback(null, feed);
 	});

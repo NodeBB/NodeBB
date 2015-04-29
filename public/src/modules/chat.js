@@ -85,6 +85,11 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 				if (!isSelf && (!modal.is(":visible") || !app.isFocused)) {
 					app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
 					sounds.play('chat-incoming');
+
+					taskbar.push('chat', modal.attr('UUID'), {
+						title: username,
+						touid: data.message.fromUser.uid
+					});
 				}
 			} else {
 				module.createModal(username, data.withUid, function(modal) {
