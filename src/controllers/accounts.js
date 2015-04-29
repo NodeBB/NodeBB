@@ -97,6 +97,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.fullname = validator.escape(userData.fullname);
 			userData.location = validator.escape(userData.location);
 			userData.signature = validator.escape(userData.signature);
+			userData.aboutme = validator.escape(userData.aboutme || '');
 
 			callback(null, userData);
 		});
@@ -154,6 +155,13 @@ accountsController.getAccount = function(req, res, next) {
 			},
 			signature: function(next) {
 				posts.parseSignature(userData, req.uid, next);
+			},
+			aboutme: function(next) {
+				if (userData.aboutme) {
+					plugins.fireHook('filter:parse.raw', userData.aboutme, next);
+				} else {
+					next();
+				}
 			}
 		}, function(err, results) {
 			if(err) {
@@ -163,7 +171,7 @@ accountsController.getAccount = function(req, res, next) {
 			userData.posts = results.posts.posts.filter(function (p) {
 				return p && parseInt(p.deleted, 10) !== 1;
 			});
-
+			userData.aboutme = results.aboutme;
 			userData.nextStart = results.posts.nextStart;
 			userData.isFollowing = results.isFollowing;
 
