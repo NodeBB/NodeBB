@@ -14,7 +14,13 @@ var categoriesController = {},
 	plugins = require('../plugins'),
 	pagination = require('../pagination'),
 	helpers = require('./helpers'),
-	utils = require('../../public/src/utils');
+	utils = require('../../public/src/utils'),
+	
+	md = require('markdown-it')({
+		html: true,
+		linkify: true,
+		typographer: true
+	});
 
 categoriesController.recent = function(req, res, next) {
 	var stop = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
@@ -136,7 +142,7 @@ categoriesController.list = function(req, res, next) {
 						}
 						return category && !category.parent;
 					});
-
+					
 					categories.getRecentTopicReplies(allCategories, req.uid, next);
 				}
 			], function(err) {
@@ -147,7 +153,9 @@ categoriesController.list = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-
+		
+		if ( meta.config.content ) data.content = md.render(meta.config.content);
+		
 		plugins.fireHook('filter:categories.build', {req: req, res: res, templateData: data}, function(err, data) {
 			if (err) {
 				return next(err);
