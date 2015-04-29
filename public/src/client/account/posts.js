@@ -1,15 +1,22 @@
 'use strict';
 
-/* globals define, app, socket, utils */
+/* globals define, app, socket, utils, config, ajaxify */
 
 define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll'], function(header, infinitescroll) {
 	var AccountPosts = {};
+	var method, template;
 
 	AccountPosts.init = function() {
 		header.init();
 
-		$('.user-favourite-posts img').addClass('img-responsive');
+		$('[component="post/content"] img').addClass('img-responsive');
 
+		AccountPosts.handleInfiniteScroll('posts.loadMoreUserPosts', 'account/posts');
+	};
+
+	AccountPosts.handleInfiniteScroll = function(_method, _template) {
+		method = _method;
+		template = _template;
 		if (!config.usePagination) {
 			infinitescroll.init(loadMore);
 		}
@@ -20,22 +27,22 @@ define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll'], 
 			return;
 		}
 
-		infinitescroll.loadMore('posts.loadMoreUserPosts', {
-			uid: $('.account-username-box').attr('data-uid'),
-			after: $('.user-favourite-posts').attr('data-nextstart')
+		infinitescroll.loadMore(method, {
+			uid: ajaxify.variables.get('theirid'),
+			after: $('[component="posts"]').attr('data-nextstart')
 		}, function(data, done) {
 			if (data.posts && data.posts.length) {
 				onPostsLoaded(data.posts, done);
 			} else {
 				done();
 			}
-			$('.user-favourite-posts').attr('data-nextstart', data.nextStart);
+			$('[component="posts"]').attr('data-nextstart', data.nextStart);
 		});
 	}
 
 	function onPostsLoaded(posts, callback) {
-		infinitescroll.parseAndTranslate('account/posts', 'posts', {posts: posts}, function(html) {
-			$('.user-favourite-posts').append(html);
+		infinitescroll.parseAndTranslate(template, 'posts', {posts: posts}, function(html) {
+			$('[component="posts"]').append(html);
 			html.find('img').addClass('img-responsive');
 			html.find('.timeago').timeago();
 			app.createUserTooltips();

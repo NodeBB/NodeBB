@@ -78,8 +78,8 @@
 				</div>
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
-						<label for="admin:password:confirm">Confirm Password</label>
-						<input type="password" class="form-control" name="admin:password:confirm" value="<!-- IF admin:password:confirm -->{admin:password:confirm}<!-- ENDIF admin:password:confirm -->" placeholder="Confirm Password" />
+						<label for="admin:passwordConfirm">Confirm Password</label>
+						<input type="password" class="form-control" name="admin:passwordConfirm" value="<!-- IF admin:passwordConfirm -->{admin:passwordConfirm}<!-- ENDIF admin:passwordConfirm -->" placeholder="Confirm Password" />
 					</div>
 					<div class="col-sm-5 help-text" data-help="Please confirm your password."></div>
 				</div>
@@ -89,6 +89,7 @@
 			<a id="database-error"></a>
 			<!-- ENDIF error -->
 
+			<!-- IF !skipDatabaseSetup -->
 			<div class="database">
 				<p>
 					<h1><small>Configure your database</small></h1>
@@ -108,6 +109,7 @@
 
 				<div id="database-config"></div>
 			</div>
+			<!-- ENDIF !skipDatabaseSetup -->
 
 			<button id="submit" type="submit" class="btn btn-lg btn-success">Install NodeBB <i class="fa fa-spinner fa-spin hide"></i></button>
 		</form>
@@ -129,7 +131,7 @@
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
 						<label for="{databases.questions.name}">{databases.questions.description}</label>
-						<input type="<!-- IF hidden -->password<!-- ELSE -->text<!-- ENDIF hidden -->" class="form-control" name="{databases.questions.name}" placeholder="{databases.questions.default}" />
+						<input type="<!-- IF hidden -->password<!-- ELSE -->text<!-- ENDIF hidden -->" class="form-control" name="{databases.questions.name}" placeholder="{databases.questions.default}" value="{databases.questions.default}" />
 					</div>
 				</div>
 			<!-- END questions -->

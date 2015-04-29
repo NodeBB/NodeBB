@@ -370,8 +370,8 @@ function createAdmin(callback) {
 		}
 
 		var results = {
-			username: install.values['admin:username'] || 'admin',
-			email: install.values['admin:email'] || '',
+			username: install.values['admin:username'] || nconf.get('admin:username') || 'admin',
+			email: install.values['admin:email'] || nconf.get('admin:email') || '',
 			password: install.values['admin:password'] || nconf.get('admin:password') || password,
 			'password:confirm': install.values['admin:password:confirm'] || nconf.get('admin:password') || password
 		};
@@ -499,7 +499,10 @@ install.setup = function (callback) {
 		setCopyrightWidget,
 		function (next) {
 			var upgrade = require('./upgrade');
-			upgrade.check(function(uptodate) {
+			upgrade.check(function(err, uptodate) {
+				if (err) {
+					return next(err);
+				}
 				if (!uptodate) { upgrade.upgrade(next); }
 				else { next(); }
 			});

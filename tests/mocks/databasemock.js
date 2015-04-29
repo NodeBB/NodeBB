@@ -45,6 +45,14 @@
 				'    "password": "",' + '\n' +
 				'    "database": "1"' + '\n' +
 			'}\n'+
+			' or (mongo) in a replicaset' + '\n' +
+			'"test_database": {' + '\n' +
+		    '    "host": "127.0.0.1,127.0.0.1,127.0.0.1",' + '\n' +
+		    '    "port": "27017,27018,27019",' + '\n' +
+		    '    "username": "",' + '\n' +
+		    '    "password": "",' + '\n' +
+		    '    "database": "nodebb_test"' + '\n' +
+		    '}\n'+
 			'==========================================================='
 		);
 		winston.error(errorText);
