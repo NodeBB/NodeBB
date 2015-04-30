@@ -71,7 +71,8 @@ define('admin/manage/category', [
 					
 				$this.addClass('hide');
 				target.removeClass('hide').on('blur', function(e) {
-					$this.removeClass('hide').children('span').html(converter.makeHtml($(this).val()));
+					var html = target.is('[data-name=content]') ? converter.makeHtml($(this).val()) : $(this).val();
+					$this.removeClass('hide').children('span').html(html);
 					$(this).addClass('hide');
 				});
 				target.focus();
