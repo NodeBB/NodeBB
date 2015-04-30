@@ -52,6 +52,7 @@
 		<script type="text/javascript" src="{relative_path}/vendor/jquery/deserialize/jquery.deserialize.min.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/jquery/autoresize.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/mousetrap/mousetrap.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/vendor/showdown.js?{cache-buster}"></script>
 
 		<!-- BEGIN scripts -->
 		<script type="text/javascript" src="{scripts.src}"></script>

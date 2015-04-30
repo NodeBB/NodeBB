@@ -7,7 +7,8 @@ define('admin/manage/category', [
 	'admin/modules/colorpicker',
 	'autocomplete'
 ], function(uploader, iconSelect, colorpicker, autocomplete) {
-	var	Category = {};
+	var	Category = {},
+		converter = new Showdown.converter();;
 
 	Category.init = function() {
 		var modified_categories = {};
@@ -70,15 +71,19 @@ define('admin/manage/category', [
 					
 				$this.addClass('hide');
 				target.removeClass('hide').on('blur', function(e) {
-					$this.removeClass('hide').children('span').html($(this).val());
+					$this.removeClass('hide').children('span').html(converter.makeHtml($(this).val()));
 					$(this).addClass('hide');
-				}).val($this.children('span').html());
+				});
 				target.focus();
 				
 				if ( target.is('textarea') )
 				target.autoResize({extraSpace: 0, animate: false}).trigger('keyup');
 			});
 		}
+		
+		var fieldContent = $('form.category textarea[data-name=content]'),
+			viewContent = fieldContent.prev().children('span');
+		viewContent.html(converter.makeHtml(fieldContent.val()));
 
 		// If any inputs have changed, prepare it for saving
 		$('form.category').find('input,textarea,select').on('change', function(ev) {
