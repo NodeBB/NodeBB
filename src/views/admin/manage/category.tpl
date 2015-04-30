@@ -27,7 +27,7 @@
 					<fieldset>
 						<div class="col-xs-12">
 							<label for="cid-{category.cid}-content">Content</label>
-							<h4 data-edit-target="#cid-{category.cid}-content"><span style="white-space: pre-wrap;">{category.content}</span> <small><i class="fa fa-edit"></i></small></h4>
+							<h4 data-edit-target="#cid-{category.cid}-content"><span>{category.content}</span> <small><i class="fa fa-edit"></i></small></h4>
 							<textarea id="cid-{category.cid}-content" data-name="content" placeholder="Category Content" class="form-control category_content input-sm content hide">{category.content}</textarea>
 							<a class="help-markdown" href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown supported <span class="help"><i class="fa fa-question-circle"></i></span></a>
 						</div>

@@ -67,18 +67,16 @@ define('admin/manage/category', [
 			$('[data-edit-target]').on('click', function() {
 				var $this = $(this),
 					target = $($this.attr('data-edit-target'));
-				
-				target.height($this.parent().find('h4').height());
 					
 				$this.addClass('hide');
 				target.removeClass('hide').on('blur', function(e) {
 					$this.removeClass('hide').children('span').html($(this).val());
 					$(this).addClass('hide');
 				}).val($this.children('span').html());
-
 				target.focus();
 				
-				mdh.removeClass('hide');
+				if ( target.is('textarea') )
+				target.autoResize({extraSpace: 0, animate: false}).trigger('keyup');
 			});
 		}
 
@@ -86,6 +84,8 @@ define('admin/manage/category', [
 		$('form.category').find('input,textarea,select').on('change', function(ev) {
 			modified(ev.target);
 		});
+		
+		
 
 		// Colour Picker
 		$('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);

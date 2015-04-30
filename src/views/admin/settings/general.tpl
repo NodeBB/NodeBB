@@ -29,6 +29,7 @@
 			<input type="text" class="form-control" placeholder="A short description about your community main page" data-field="description" /><br />
 			
 			<label>Main Page Content</label>
+			<a class="help-markdown" href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown supported <span class="help"><i class="fa fa-question-circle"></i></span></a>
 			<textarea type="text" class="form-control" placeholder="The text of the upper part of the main board page" data-field="content"></textarea><br />
 
 			<label>Main Page Keywords</label>
