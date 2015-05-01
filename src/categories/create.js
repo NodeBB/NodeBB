@@ -20,8 +20,10 @@ module.exports = function(Categories) {
 			var category = {
 				cid: cid,
 				name: data.name,
+				title: data.title || '',
 				description: data.description || '',
 				metaDescription: data.metaDescription || '',
+				metaKeywords: data.metaDescription || '',
 				content: data.content || '',
 				icon: data.icon || '',
 				bgColor: data.bgColor || colours[0],

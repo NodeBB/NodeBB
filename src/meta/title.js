@@ -31,7 +31,7 @@ module.exports = function(Meta) {
 				title = fallbackTitle;
 			} else {
 				if (title) {
-					title = validator.escape(title);
+					title = validator.escape(title.title) || validator.escape(title.name);
 				}
 				if (Meta.config.showBrowserTitle === 1) title = (title ? title + ' | ' : '') + fallbackTitle;
 				else title = title || fallbackTitle;
@@ -54,7 +54,7 @@ module.exports = function(Meta) {
 		} else if (tests.isCategory.test(urlFragment)) {
 			var cid = urlFragment.match(/category\/(\d+)/)[1];
 
-			require('../categories').getCategoryField(cid, 'name', callback);
+			require('../categories').getCategoryFields(cid, ['title', 'name'], callback);
 		} else if (tests.isTopic.test(urlFragment)) {
 			var tid = urlFragment.match(/topic\/(\d+)/)[1];
 
