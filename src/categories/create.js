@@ -22,6 +22,7 @@ module.exports = function(Categories) {
 				name: data.name,
 				description: data.description || '',
 				metaDescription: data.metaDescription || '',
+				content: data.content || '',
 				icon: data.icon || '',
 				bgColor: data.bgColor || colours[0],
 				color: data.color || colours[1],
