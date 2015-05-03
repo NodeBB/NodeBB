@@ -84,6 +84,10 @@
         "value": 255
     },
     {
+        "field": "maximumAboutMeLength",
+        "value": 1000
+    },
+    {
         "field": "maximumProfileImageSize",
         "value": 256
     },
@@ -94,5 +98,9 @@
     {
         "field": "requireEmailConfirmation",
         "value": 0
+    },
+    {
+        "field": "profile:allowProfileImageUploads",
+        "value": 1
     }
 ]

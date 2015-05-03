@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "جُستاری با این برچسب وجود ندارد.",
     "tags": "برچسب‌ها",
-    "enter_tags_here": "Enter tags here, between %1 and %2 characters each.",
-    "enter_tags_here_short": "Enter tags...",
+    "enter_tags_here": "برچسب‌ها را اینجا وارد کنید. هر کدام بین %1 و %2 نویسه",
+    "enter_tags_here_short": "برچسب ها را وارد کنید ...",
     "no_tags": "هنوز برچسبی وجود ندارد."
 }

@@ -25,9 +25,7 @@ function hasCategoryPrivileges(req, res, next) {
 }
 
 function hasPrivileges(method, id, req, res, next) {
-	var uid = req.user ? req.user.uid || 0 : 0;
-
-	method('read', id, uid, function(err, canRead) {
+	method('read', id, req.uid, function(err, canRead) {
 		if (err) {
 			return next(err);
 		}
@@ -42,14 +40,13 @@ function hasPrivileges(method, id, req, res, next) {
 
 function generateForTopic(req, res, next) {
 	var tid = req.params.topic_id;
-	var uid = req.user ? req.user.uid : 0;
 
-	privileges.topics.get(tid, uid, function(err, userPrivileges) {
+	privileges.topics.get(tid, req.uid, function(err, userPrivileges) {
 		if (err) {
 			return next(err);
 		}
 
-		topics.getTopicWithPosts(tid, 'tid:' + tid + ':posts', uid, 0, 25, false, function (err, topicData) {
+		topics.getTopicWithPosts(tid, 'tid:' + tid + ':posts', req.uid, 0, 25, false, function (err, topicData) {
 			if (err) {
 				return next(err);
 			}
@@ -112,6 +109,7 @@ function generateForUserTopics(req, res, next) {
 		}
 
 		generateForTopics({
+			uid: req.uid,
 			title: 'Topics by ' + userData.username,
 			description: 'A list of topics that are posted by ' + userData.username,
 			feed_url: '/user/' + userslug + '/topics.rss',
@@ -122,20 +120,21 @@ function generateForUserTopics(req, res, next) {
 
 function generateForCategory(req, res, next) {
 	var cid = req.params.category_id;
-	var uid = req.user ? req.user.uid : 0;
+
 	categories.getCategoryById({
 		cid: cid,
 		set: 'cid:' + cid + ':tids',
 		reverse: true,
 		start: 0,
-		end: 25,
-		uid: uid
+		stop: 25,
+		uid: req.uid
 	}, function (err, categoryData) {
 		if (err) {
 			return next(err);
 		}
 
 		generateTopicsFeed({
+			uid: req.uid,
 			title: categoryData.name,
 			description: categoryData.description,
 			feed_url: '/category/' + cid + '.rss',
@@ -151,6 +150,7 @@ function generateForCategory(req, res, next) {
 
 function generateForRecent(req, res, next) {
 	generateForTopics({
+		uid: req.uid,
 		title: 'Recently Active Topics',
 		description: 'A list of topics that have been active within the past 24 hours',
 		feed_url: '/recent.rss',
@@ -159,7 +159,6 @@ function generateForRecent(req, res, next) {
 }
 
 function generateForPopular(req, res, next) {
-	var uid = req.user ? req.user.uid : 0;
 	var terms = {
 		daily: 'day',
 		weekly: 'week',
@@ -168,12 +167,13 @@ function generateForPopular(req, res, next) {
 	};
 	var term = terms[req.params.term] || 'day';
 
-	topics.getPopular(term, uid, 19, function(err, topics) {
+	topics.getPopular(term, req.uid, 19, function(err, topics) {
 		if (err) {
 			return next(err);
 		}
 
 		generateTopicsFeed({
+			uid: req.uid,
 			title: 'Popular Topics',
 			description: 'A list of topics that are sorted by post count',
 			feed_url: '/popular/' + (req.params.term || 'daily') + '.rss',
@@ -196,8 +196,7 @@ function disabledRSS(req, res, next) {
 }
 
 function generateForTopics(options, set, req, res, next) {
-	var uid = req.user ? req.user.uid : 0;
-	topics.getTopicsFromSet(set, uid, 0, 19, function (err, data) {
+	topics.getTopicsFromSet(set, req.uid, 0, 19, function (err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -217,30 +216,53 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 	feedOptions.feed_url = nconf.get('url') + feedOptions.feed_url;
 	feedOptions.site_url = nconf.get('url') + feedOptions.site_url;
 
+	feedTopics = feedTopics.filter(Boolean);
+
 	var	feed = new rss(feedOptions);
 
 	if (feedTopics.length > 0) {
 		feed.pubDate = new Date(parseInt(feedTopics[0].lastposttime, 10)).toUTCString();
 	}
 
-	feedTopics.forEach(function(topicData) {
-		if (topicData && topicData.teaser && topicData.teaser.user) {
-			feed.item({
-				title: topicData.title,
-				description: topicData.teaser.content,
-				url: nconf.get('url') + '/topic/' + topicData.slug,
-				author: topicData.teaser.user.username,
-				date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
-			});
-		}
-	});
-	callback(null, feed);
+	async.map(feedTopics, function(topicData, next) {
+		var feedItem = {
+			title: topicData.title,
+			url: nconf.get('url') + '/topic/' + topicData.slug,
+			date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
+		};
 
+		if (topicData.teaser && topicData.teaser.user) {
+			feedItem.description = topicData.teaser.content;
+			feedItem.author = topicData.teaser.user.username;
+			return next(null, feedItem);
+		}
+
+		topics.getMainPost(topicData.tid, feedOptions.uid, function(err, mainPost) {
+			if (err) {
+				return next(err);
+			}
+			if (!mainPost) {
+				return next(null, feedItem);
+			}
+			feedItem.description = mainPost.content;
+			feedItem.author = mainPost.user.username;
+			next(null, feedItem);
+		});
+	}, function(err, feedItems) {
+		if (err) {
+			return callback(err);
+		}
+		feedItems.forEach(function(feedItem) {
+			if (feedItem) {
+				feed.item(feedItem);
+			}
+		});
+		callback(null, feed);
+	});
 }
 
 function generateForRecentPosts(req, res, next) {
-	var uid = req.user ? req.user.uid : 0;
-	posts.getRecentPosts(uid, 0, 19, 'month', function(err, posts) {
+	posts.getRecentPosts(req.uid, 0, 19, 'month', function(err, posts) {
 		if (err) {
 			return next(err);
 		}
@@ -257,7 +279,6 @@ function generateForRecentPosts(req, res, next) {
 }
 
 function generateForCategoryRecentPosts(req, res, next) {
-	var uid = req.user ? req.user.uid : 0;
 	var cid = req.params.category_id;
 
 	async.parallel({
@@ -265,7 +286,7 @@ function generateForCategoryRecentPosts(req, res, next) {
 			categories.getCategoryData(cid, next);
 		},
 		posts: function(next) {
-			categories.getRecentReplies(cid, uid, 20, next);
+			categories.getRecentReplies(cid, req.uid, 20, next);
 		}
 	}, function(err, results) {
 		if (err) {

@@ -33,6 +33,9 @@ module.exports = function(Posts) {
 					},
 					function(next) {
 						Posts.dismissFlag(pid, next);
+					},
+					function(next) {
+						topics.updateTeaser(postData.tid, next);
 					}
 				], function(err) {
 					callback(err, postData);
@@ -64,6 +67,9 @@ module.exports = function(Posts) {
 					},
 					function(next) {
 						db.sortedSetAdd('cid:' + cid + ':pids', postData.timestamp, pid, next);
+					},
+					function(next) {
+						topics.updateTeaser(postData.tid, next);
 					}
 				], function(err) {
 					callback(err, postData);

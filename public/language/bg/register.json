@@ -1,0 +1,18 @@
+{
+    "register": "Регистрация",
+    "help.email": "По подразбиране, Вашата е-поща ще бъде скрита за останалите.",
+    "help.username_restrictions": "Уникално потребителско име с дължина между %1 и %2 символа. Другите ще могат да Ви споменават чрез @<span id='yourUsername'>потребител</span>.",
+    "help.minimum_password_length": "Дължината на паролата Ви трябва да е поне %1 символа.",
+    "email_address": "Е-поща",
+    "email_address_placeholder": "Въведете адрес на е-поща",
+    "username": "Потребителско име",
+    "username_placeholder": "Въведете потребителско име",
+    "password": "Парола",
+    "password_placeholder": "Въведете парола",
+    "confirm_password": "Потвърдете паролата",
+    "confirm_password_placeholder": "Потвърдете паролата",
+    "register_now_button": "Регистриране",
+    "alternative_registration": "Друг начин за регистриране",
+    "terms_of_use": "Условия за ползване",
+    "agree_to_terms_of_use": "Съгласен съм с условията за ползване"
+}

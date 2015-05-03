@@ -40,7 +40,7 @@ module.exports = function(Meta) {
 	};
 
 	Meta.title.parseFragment = function (urlFragment, language, locals, callback) {
-		var	translated = ['', 'recent', 'unread', 'users', 'notifications'];
+		var	translated = ['', 'recent', 'unread', 'users', 'notifications', 'popular', 'tags'];
 		if (translated.indexOf(urlFragment) !== -1) {
 			if (!urlFragment.length) {
 				urlFragment = 'home';
@@ -60,7 +60,7 @@ module.exports = function(Meta) {
 		} else if (tests.isTag.test(urlFragment)) {
 			var tag = urlFragment.match(/tags\/([\s\S]+)/)[1];
 
-			translator.translate('[[pages:tags, ' + tag + ']]', language, function(translated) {
+			translator.translate('[[pages:tag, ' + tag + ']]', language, function(translated) {
 				callback(null, translated);
 			});
 		} else if (tests.isUserPage.test(urlFragment)) {

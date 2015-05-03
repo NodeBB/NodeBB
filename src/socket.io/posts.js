@@ -234,7 +234,7 @@ SocketPosts.sendNotificationToPostOwner = function(pid, fromuid, notification) {
 		async.parallel({
 			username: async.apply(user.getUserField, fromuid, 'username'),
 			topicTitle: async.apply(topics.getTopicField, postData.tid, 'title'),
-			postObj: async.apply(postTools.parsePost, postData)
+			postObj: async.apply(posts.parsePost, postData)
 		}, function(err, results) {
 			if (err) {
 				return;
@@ -276,13 +276,13 @@ SocketPosts.getRawPost = function(socket, pid, callback) {
 };
 
 SocketPosts.edit = function(socket, data, callback) {
-	if(!socket.uid) {
+	if (!socket.uid) {
 		return callback(new Error('[[error:not-logged-in]]'));
-	} else if(!data || !data.pid || !data.title || !data.content) {
+	} else if (!data || !data.pid || !data.content) {
 		return callback(new Error('[[error:invalid-data]]'));
-	} else if (!data.title || data.title.length < parseInt(meta.config.minimumTitleLength, 10)) {
+	} else if (data.title && data.title.length < parseInt(meta.config.minimumTitleLength, 10)) {
 		return callback(new Error('[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]'));
-	} else if (data.title.length > parseInt(meta.config.maximumTitleLength, 10)) {
+	} else if (data.title && data.title.length > parseInt(meta.config.maximumTitleLength, 10)) {
 		return callback(new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]'));
 	} else if (!data.content || data.content.length < parseInt(meta.config.minimumPostLength, 10)) {
 		return callback(new Error('[[error:content-too-short, ' + meta.config.minimumPostLength + ']]'));
@@ -290,32 +290,44 @@ SocketPosts.edit = function(socket, data, callback) {
 		return callback(new Error('[[error:content-too-long, ' + meta.config.maximumPostLength + ']]'));
 	}
 
-	// uid, pid, title, content, options
 	postTools.edit({
 		uid: socket.uid,
 		handle: data.handle,
 		pid: data.pid,
 		title: data.title,
 		content: data.content,
-		options: {
-			topic_thumb: data.topic_thumb,
-			tags: data.tags
-		}
-	}, function(err, results) {
+		topic_thumb: data.topic_thumb,
+		tags: data.tags
+	}, function(err, result) {
 		if (err) {
 			return callback(err);
 		}
 
-		websockets.in('topic_' + results.topic.tid).emit('event:post_edited', {
-			pid: data.pid,
-			handle: data.handle,
-			title: results.topic.title,
-			isMainPost: results.topic.isMainPost,
-			tags: results.topic.tags,
-			content: results.content
-		});
+		if (parseInt(result.post.deleted) !== 1) {
+			websockets.in('topic_' + result.topic.tid).emit('event:post_edited', result);
+			return callback();
+		}
 
+		socket.emit('event:post_edited', result);
 		callback();
+
+		async.parallel({
+			admins: async.apply(groups.getMembers, 'administrators', 0, -1),
+			moderators: async.apply(groups.getMembers, 'cid:' + result.topic.cid + ':privileges:mods', 0, -1),
+			uidsInTopic: async.apply(websockets.getUidsInRoom, 'topic_' + result.topic.tid)
+		}, function(err, results) {
+			if (err) {
+				return winston.error(err);
+			}
+
+			var uids = results.uidsInTopic.filter(function(uid) {
+				return results.admins.indexOf(uid) !== -1 || results.moderators.indexOf(uid) !== -1;
+			});
+
+			uids.forEach(function(uid) {
+				websockets.in('uid_' + uid).emit('event:post_edited', result);
+			});
+		});
 	});
 };
 
@@ -481,7 +493,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 		function(topic, next) {
 			post.topic = topic;
 			message = '[[notifications:user_flagged_post_in, ' + userName + ', ' + topic.title + ']]';
-			postTools.parsePost(post, next);
+			posts.parsePost(post, next);
 		},
 		function(post, next) {
 			async.parallel({
@@ -511,27 +523,23 @@ SocketPosts.flag = function(socket, pid, callback) {
 };
 
 SocketPosts.loadMoreFavourites = function(socket, data, callback) {
-	if(!data || !data.after) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-
-	var start = parseInt(data.after, 10),
-		end = start + 9;
-
-	posts.getPostsFromSet('uid:' + socket.uid + ':favourites', socket.uid, start, end, callback);
+	loadMorePosts('uid:' + data.uid + ':favourites', socket.uid, data, callback);
 };
 
 SocketPosts.loadMoreUserPosts = function(socket, data, callback) {
-	if(!data || !data.uid || !utils.isNumber(data.after)) {
+	loadMorePosts('uid:' + data.uid + ':posts', socket.uid, data, callback);
+};
+
+function loadMorePosts(set, uid, data, callback) {
+	if (!data || !utils.isNumber(data.uid) || !utils.isNumber(data.after)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	var start = Math.max(0, parseInt(data.after, 10)),
-		end = start + 9;
+		stop = start + 9;
 
-	posts.getPostsFromSet('uid:' + data.uid + ':posts', socket.uid, start, end, callback);
-};
-
+	posts.getPostsFromSet(set, uid, start, stop, callback);
+}
 
 SocketPosts.getRecentPosts = function(socket, data, callback) {
 	if(!data || !data.count) {

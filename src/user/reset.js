@@ -32,8 +32,17 @@ var async = require('async'),
 		], callback);
 	};
 
+	UserReset.generate = function(uid, callback) {
+		var code = utils.generateUUID();
+		async.parallel([
+			async.apply(db.setObjectField, 'reset:uid', code, uid),
+			async.apply(db.sortedSetAdd, 'reset:issueDate', Date.now(), code)
+		], function(err) {
+			callback(err, code);
+		});
+	};
+
 	UserReset.send = function(email, callback) {
-		var reset_code = utils.generateUUID();
 		var uid;
 		async.waterfall([
 			function(next) {
@@ -45,18 +54,15 @@ var async = require('async'),
 				}
 
 				uid = _uid;
-				async.parallel([
-					async.apply(db.setObjectField, 'reset:uid', reset_code, uid),
-					async.apply(db.sortedSetAdd, 'reset:issueDate', Date.now(), reset_code)
-				], next);
+				UserReset.generate(uid, next);
 			},
-			function(results, next) {
+			function(code, next) {
 				translator.translate('[[email:password-reset-requested, ' + (meta.config.title || 'NodeBB') + ']]', meta.config.defaultLang, function(subject) {
-					next(null, subject);
+					next(null, subject, code);
 				});
 			},
-			function(subject, next) {
-				var reset_link = nconf.get('url') + '/reset/' + reset_code;
+			function(subject, code, next) {
+				var reset_link = nconf.get('url') + '/reset/' + code;
 				emailer.send('reset', uid, {
 					site_title: (meta.config.title || 'NodeBB'),
 					reset_link: reset_link,
@@ -64,9 +70,6 @@ var async = require('async'),
 					template: 'reset',
 					uid: uid
 				}, next);
-			},
-			function(next) {
-				next(null, reset_code);
 			}
 		], callback);
 	};
@@ -96,10 +99,20 @@ var async = require('async'),
 					async.apply(user.setUserField, uid, 'password', hash),
 					async.apply(db.deleteObjectField, 'reset:uid', code),
 					async.apply(db.sortedSetRemove, 'reset:issueDate', code),
+					async.apply(user.reset.updateExpiry, uid),
 					async.apply(user.auth.resetLockout, uid)
 				], next);
 			}
 		], callback);
+	};
+
+	UserReset.updateExpiry = function(uid, callback) {
+		var oneDay = 1000*60*60*24,
+			expireDays = parseInt(meta.config.passwordExpiryDays || 0, 10),
+			expiry = Date.now() + (oneDay * expireDays);
+
+		callback = callback || function() {};
+		user.setUserField(uid, 'passwordExpiry', expireDays > 0 ? expiry : 0, callback);
 	};
 
 	UserReset.clean = function(callback) {

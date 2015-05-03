@@ -9,6 +9,7 @@ var	async = require('async'),
 	user = require('../user'),
 	topics = require('../topics'),
 	batch = require('../batch'),
+	plugins = require('../plugins'),
 	emailer = require('../emailer'),
 	utils = require('../../public/src/utils');
 
@@ -17,6 +18,10 @@ var	async = require('async'),
 		var digestsDisabled = meta.config.disableEmailSubscriptions !== undefined && parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 		if (digestsDisabled) {
 			return winston.verbose('[user/jobs] Did not send digests (' + interval + ') because subscription system is disabled.');
+		}
+
+		if (!plugins.hasListeners('action:email.send')) {
+			return winston.error('[user/jobs] Did not send digests (' + interval + ') because no active email plugin was found.');
 		}
 
 		if (!interval) {

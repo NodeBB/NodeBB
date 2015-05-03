@@ -12,7 +12,7 @@
     "notify_me": "Được thông báo khi có trả lời mới trong chủ đề này",
     "quote": "Trích dẫn",
     "reply": "Trả lời",
-    "guest-login-reply": "Log in to reply",
+    "guest-login-reply": "Hãy đăng nhập để trả lời",
     "edit": "Chỉnh sửa",
     "delete": "Xóa",
     "purge": "Xóa hẳn",
@@ -33,7 +33,7 @@
     "not_following_topic.message": "Bạn sẽ không còn nhận được thông báo từ chủ đề này",
     "login_to_subscribe": "Xin hãy đăng ký hoặc đăng nhập để theo dõi topic này",
     "markAsUnreadForAll.success": "Chủ đề đã được đánh dấu là chưa đọc toàn bộ",
-    "watch": "Xem",
+    "watch": "Theo dõi",
     "unwatch": "Ngừng theo dõi",
     "watch.title": "Được thông báo khi có trả lời mới trong chủ đề này",
     "unwatch.title": "Ngừng theo dõi chủ đề này",
@@ -75,7 +75,7 @@
     "fork_no_pids": "Chưa chọn bài gửi nào!",
     "fork_success": "Tạo bản sao thành công! Nhấn vào đây để chuyển tới chủ đề vừa tạo.",
     "composer.title_placeholder": "Nhập tiêu đề cho chủ đề của bạn tại đây...",
-    "composer.handle_placeholder": "Name",
+    "composer.handle_placeholder": "Tên",
     "composer.discard": "Loại bỏ",
     "composer.submit": "Gửi",
     "composer.replying_to": "Đang trả lời %1",
@@ -95,5 +95,5 @@
     "oldest_to_newest": "Cũ đến mới",
     "newest_to_oldest": "Mới đến cũ",
     "most_votes": "Bình chọn nhiều nhất",
-    "most_posts": "Most posts"
+    "most_posts": "Có nhiều bài viết nhất"
 }

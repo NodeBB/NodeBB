@@ -5,5 +5,8 @@
     "browsing": "เรียกดู",
     "no_replies": "ยังไม่มีใครตอบ",
     "share_this_category": "แชร์ Category นี้",
-    "ignore": "ไม่ต้องสนใจอีก"
+    "watch": "Watch",
+    "ignore": "ไม่ต้องสนใจอีก",
+    "watch.message": "You are now watching updates from this category",
+    "ignore.message": "You are now ignoring updates from this category"
 }

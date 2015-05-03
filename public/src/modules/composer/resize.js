@@ -37,7 +37,14 @@ define('composer/resize', ['autosize'], function(autosize) {
 			}
 
 			if (env === 'md' || env === 'lg') {
-				postContainer.css('transform', 'translate(0, ' + (Math.abs(1-percentage) * 100) + '%)');
+				var transform = 'translate(0, ' + (Math.abs(1-percentage) * 100) + '%)';
+				postContainer.css({
+					'-webkit-transform': transform,
+					'-moz-transform': transform,
+					'-ms-transform': transform,
+					'-o-transform': transform,
+					'transform': transform
+				});
 			} else {
 				postContainer.removeAttr('style');
 			}

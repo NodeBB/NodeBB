@@ -22,12 +22,14 @@
 		},
 		{
 			name: 'mongo:username',
-			description: 'MongoDB username'
+			description: 'MongoDB username',
+			'default': nconf.get('mongo:username') || ''
 		},
 		{
 			name: 'mongo:password',
 			description: 'Password of your MongoDB database',
-			hidden: true
+			hidden: true,
+			before: function(value) { value = value || nconf.get('mongo:password') || ''; return value; }
 		},
 		{
 			name: "mongo:database",
@@ -40,6 +42,7 @@
 	module.helpers.mongo = require('./mongo/helpers');
 
 	module.init = function(callback) {
+		callback = callback || function() {};
 		try {
 			var sessionStore;
 			mongoClient = require('mongodb').MongoClient;
@@ -70,7 +73,16 @@
 			nconf.set('mongo:database', '0');
 		}
 
-		var connString = 'mongodb://' + usernamePassword + nconf.get('mongo:host') + ':' + nconf.get('mongo:port') + '/' + nconf.get('mongo:database');
+		var hosts = nconf.get('mongo:host').split(',');
+		var ports = nconf.get('mongo:port').toString().split(',');
+		var servers = [];
+
+		for (var i = 0; i < hosts.length; i++) {
+			servers.push(hosts[i] + ':' + ports[i]);
+		}
+
+		var connString = 'mongodb://' + usernamePassword + servers.join() + '/' + nconf.get('mongo:database');
+
 		var connOptions = {
 			server: {
 				poolSize: parseInt(nconf.get('mongo:poolSize'), 10) || 10
@@ -85,10 +97,10 @@
 			db = _db;
 
 			module.client = db;
-			
+
 			if (!nconf.get('redis')) {
 				// TEMP: to fix connect-mongo, see https://github.com/kcbanner/connect-mongo/issues/161
-				db.openCalled = true
+				db.openCalled = true;
 				module.sessionStore = new sessionStore({
 					db: db
 				});
@@ -119,29 +131,28 @@
 			}
 
 			function createIndices() {
-				createIndex('objects', {_key: 1, score: -1}, {background:true});
-				createIndex('objects', {_key: 1, value: -1}, {background:true});
-				createIndex('objects', {expireAt: 1}, {expireAfterSeconds:0, background:true});
+				async.parallel([
+					async.apply(createIndex, 'objects', {_key: 1, score: -1}, {background: true}),
+					async.apply(createIndex, 'objects', {_key: 1, value: -1}, {background: true}),
 
+					async.apply(createIndex, 'objects', {expireAt: 1}, {expireAfterSeconds: 0, background: true}),
 
-				createIndex('searchtopic', {content: 'text', uid: 1, cid: 1}, {background:true});
-				createIndex('searchtopic', {id: 1}, {background:true});
+					async.apply(createIndex, 'searchtopic', {content: 'text', uid: 1, cid: 1}, {background: true}),
+					async.apply(createIndex, 'searchtopic', {id: 1}, {background: true}),
 
-
-				createIndex('searchpost', {content: 'text', uid: 1, cid: 1}, {background:true});
-				createIndex('searchpost', {id: 1}, {background:true});
-
-
-				if (typeof callback === 'function') {
-					callback();
-				}
+					async.apply(createIndex, 'searchpost', {content: 'text', uid: 1, cid: 1}, {background: true}),
+					async.apply(createIndex, 'searchpost', {id: 1}, {background: true})
+				], function(err) {
+					callback(err);
+				});
 			}
 
-			function createIndex(collection, index, options) {
+			function createIndex(collection, index, options, callback) {
 				db.collection(collection).ensureIndex(index, options, function(err) {
 					if (err) {
 						winston.error('Error creating index ' + err.message);
 					}
+					callback(err);
 				});
 			}
 		});
@@ -152,4 +163,3 @@
 	};
 
 }(exports));
-

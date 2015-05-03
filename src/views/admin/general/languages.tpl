@@ -14,13 +14,13 @@
 						<label for="defaultLang">Default Language</label>
 						<select id="language" data-field="defaultLang" class="form-control">
 							<!-- BEGIN languages -->
-							<option value="{languages.code}">{languages.name} ({languages.code})</option>
+							<option value="{languages.code}" <!-- IF languages.selected -->selected<!-- ENDIF languages.selected -->>{languages.name} ({languages.code})</option>
 							<!-- END languages -->
 						</select>
 					</div>
 				</form>
 
-				
+
 			</div>
 		</div>
 	</div>
@@ -35,6 +35,4 @@
 	</div>
 </div>
 
-<script type="text/javascript">
-$('#language').val(translator.getLanguage());
-</script>
+

@@ -15,8 +15,12 @@
     "chat.seven_days": "7 dní",
     "chat.thirty_days": "30 dní",
     "chat.three_months": "3 měsíce",
+    "composer.compose": "Compose",
+    "composer.show_preview": "Show Preview",
+    "composer.hide_preview": "Hide Preview",
     "composer.user_said_in": "%1 said in %2:",
     "composer.user_said": "%1 said:",
     "composer.discard": "Are you sure you wish to discard this post?",
-    "composer.submit_and_lock": "Submit and Lock"
+    "composer.submit_and_lock": "Submit and Lock",
+    "composer.toggle_dropdown": "Toggle Dropdown"
 }

@@ -44,5 +44,40 @@ define('composer/preview', function() {
 		preview.scrollTop(Math.max(preview[0].scrollHeight - preview.height(), 0) * scrollPercent);
 	};
 
+	preview.handleToggler = function(postContainer) {
+		function hidePreview() {
+			togglePreview(false);
+			localStorage.setItem('composer:previewToggled', true);
+		}
+
+		function showPreview() {
+			togglePreview(true);
+			localStorage.removeItem('composer:previewToggled');
+		}
+
+		function togglePreview(show) {
+			previewContainer.toggleClass('hide', !show);
+			writeContainer.toggleClass('maximized', !show);
+			showBtn.toggleClass('hide', show);
+
+			$('.write').focus();
+			preview.matchScroll(postContainer);
+		}
+
+		var showBtn = postContainer.find('.write-container .toggle-preview'),
+			hideBtn = postContainer.find('.preview-container .toggle-preview'),
+			previewContainer = $('.preview-container'),
+			writeContainer = $('.write-container');
+
+		hideBtn.on('click', hidePreview);
+		showBtn.on('click', showPreview);
+
+		if (localStorage.getItem('composer:previewToggled')) {
+			hidePreview();
+		} else {
+			showPreview();
+		}
+	};
+
 	return preview;
 });

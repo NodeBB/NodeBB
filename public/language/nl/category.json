@@ -5,5 +5,8 @@
     "browsing": "verkennen",
     "no_replies": "Niemand heeft gereageerd",
     "share_this_category": "Deel deze categorie",
-    "ignore": "Negeren"
+    "watch": "Volgen",
+    "ignore": "Negeren",
+    "watch.message": "Je krijgt nu updates binnen van deze categorie",
+    "ignore.message": "Je krijgt geen updates meer binnen van deze categorie"
 }

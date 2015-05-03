@@ -109,7 +109,7 @@ module.exports = function(privileges) {
 				return callback(null, true);
 			}
 			if (results.isEditable.isLocked) {
-				return callback(new Error('[[error:topic-locked]]]'));
+				return callback(new Error('[[error:topic-locked]]'));
 			}
 			if (results.isEditable.isEditExpired) {
 				return callback(new Error('[[error:post-edit-duration-expired, ' + meta.config.postEditDuration + ']]'));

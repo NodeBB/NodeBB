@@ -20,6 +20,8 @@
     "details.kick": "Wykop",
     "details.owner_options": "Administracja grupy",
     "details.group_name": "Nazwa grupy",
+    "details.member_count": "Member Count",
+    "details.creation_date": "Creation Date",
     "details.description": "Opis",
     "details.badge_preview": "Podgląd plakietki",
     "details.change_icon": "Zmień ikonę",

@@ -42,12 +42,12 @@ function topicRoutes(app, middleware, controllers) {
 	app.get('/api/topic/teaser/:topic_id', controllers.topics.teaser);
 
 	setupPageRoute(app, '/topic/:topic_id/:slug/:post_index?', middleware, [], controllers.topics.get);
-	setupPageRoute(app, '/topic/:topic_id/:slug?', middleware, [middleware.addSlug], controllers.topics.get);
+	setupPageRoute(app, '/topic/:topic_id/:slug?', middleware, [], controllers.topics.get);
 }
 
 function tagRoutes(app, middleware, controllers) {
-	setupPageRoute(app, '/tags/:tag', middleware, [middleware.publicTagListing], controllers.tags.getTag);
-	setupPageRoute(app, '/tags', middleware, [middleware.publicTagListing], controllers.tags.getTags);
+	setupPageRoute(app, '/tags/:tag', middleware, [middleware.privateTagListing], controllers.tags.getTag);
+	setupPageRoute(app, '/tags', middleware, [middleware.privateTagListing], controllers.tags.getTags);
 }
 
 function categoryRoutes(app, middleware, controllers) {
@@ -58,7 +58,7 @@ function categoryRoutes(app, middleware, controllers) {
 	app.get('/api/unread/total', middleware.authenticate, controllers.categories.unreadTotal);
 
 	setupPageRoute(app, '/category/:category_id/:slug/:topic_index', middleware, [], controllers.categories.get);
-	setupPageRoute(app, '/category/:category_id/:slug?', middleware, [middleware.addSlug], controllers.categories.get);
+	setupPageRoute(app, '/category/:category_id/:slug?', middleware, [], controllers.categories.get);
 }
 
 function accountRoutes(app, middleware, controllers) {
@@ -118,7 +118,9 @@ module.exports = function(app, middleware) {
 
 	app.all(relativePath + '/api/?*', middleware.prepareAPI);
 	app.all(relativePath + '/api/admin/?*', middleware.isAdmin);
-	app.all(relativePath + '/admin/?*', middleware.ensureLoggedIn, middleware.applyCSRF, middleware.isAdmin);
+
+	var ensureLoggedIn = require('connect-ensure-login');
+	app.all(relativePath + '/admin/?*', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
 
 	adminRoutes(router, middleware, controllers);
 	metaRoutes(router, middleware, controllers);
@@ -152,7 +154,7 @@ module.exports = function(app, middleware) {
 		if (req.user || parseInt(meta.config.privateUploads, 10) !== 1) {
 			return next();
 		}
-		if (req.path.indexOf('/uploads/files') === 0) {
+		if (req.path.startsWith('/uploads/files')) {
 			return res.status(403).json('not-allowed');
 		}
 		next();
@@ -167,7 +169,7 @@ module.exports = function(app, middleware) {
 
 
 	// Add plugin routes
-	plugins.init(app, middleware);
+	plugins.reloadRoutes();
 	authRoutes.reloadRoutes();
 };
 

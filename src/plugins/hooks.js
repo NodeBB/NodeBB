@@ -55,12 +55,8 @@ module.exports = function(Plugins) {
 		callback = typeof callback === 'function' ? callback : function() {};
 
 		var hookList = Plugins.loadedHooks[hook];
-
-		if (!Array.isArray(hookList) || !hookList.length) {
-			return callback(null, params);
-		}
-
 		var hookType = hook.split(':')[0];
+
 		switch (hookType) {
 			case 'filter':
 				fireFilterHook(hook, hookList, params, callback);
@@ -78,6 +74,10 @@ module.exports = function(Plugins) {
 	};
 
 	function fireFilterHook(hook, hookList, params, callback) {
+		if (!Array.isArray(hookList) || !hookList.length) {
+			return callback(null, params);
+		}
+
 		async.reduce(hookList, params, function(params, hookObj, next) {
 			if (typeof hookObj.method !== 'function') {
 				if (global.env === 'development') {
@@ -98,6 +98,9 @@ module.exports = function(Plugins) {
 	}
 
 	function fireActionHook(hook, hookList, params, callback) {
+		if (!Array.isArray(hookList) || !hookList.length) {
+			return callback();
+		}
 		async.each(hookList, function(hookObj, next) {
 
 			if (typeof hookObj.method !== 'function') {
@@ -113,6 +116,9 @@ module.exports = function(Plugins) {
 	}
 
 	function fireStaticHook(hook, hookList, params, callback) {
+		if (!Array.isArray(hookList) || !hookList.length) {
+			return callback();
+		}
 		async.each(hookList, function(hookObj, next) {
 			if (typeof hookObj.method === 'function') {
 				var timedOut = false;

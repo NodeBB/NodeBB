@@ -23,6 +23,7 @@ var async = require('async'),
 	require('./meta/sounds')(Meta);
 	require('./meta/settings')(Meta);
 	require('./meta/logs')(Meta);
+	require('./meta/tags')(Meta);
 	Meta.templates = require('./meta/templates');
 
 	/* Assorted */
@@ -53,6 +54,7 @@ var async = require('async'),
 		async.series([
 			async.apply(plugins.clearRequireCache),
 			async.apply(plugins.reload),
+			async.apply(plugins.reloadRoutes),
 			function(next) {
 				async.parallel([
 					async.apply(Meta.js.minify, false),

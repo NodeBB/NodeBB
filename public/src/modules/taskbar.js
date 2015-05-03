@@ -46,30 +46,18 @@ define('taskbar', function() {
 	taskbar.push = function(module, uuid, options) {
 		var element = taskbar.tasklist.find('li[data-uuid="' + uuid + '"]');
 
-		if (element.length) {
-			return;
+		var data = {
+			module: module,
+			uuid: uuid,
+			options: options,
+			element: element
+		};
+
+		$(window).trigger('filter:taskbar.push', data);
+
+		if (!element.length) {
+			createTaskbar(data);
 		}
-
-		var title = $('<div></div>').text(options.title || 'NodeBB Task').html();
-
-		var	btnEl = $('<li />')
-			.html('<a href="#">' +
-				(options.icon ? '<i class="fa ' + options.icon + '"></i> ' : '') +
-				(options.image ? '<img src="' + options.image + '"/> ': '') +
-				'<span>' + title + '</span>' +
-				'</a>')
-			.attr({
-				'data-module': module,
-				'data-uuid': uuid
-			})
-			.addClass(options.state !== undefined ? options.state : 'active');
-
-		if (!options.state || options.state === 'active') {
-			minimizeAll();
-		}
-
-		taskbar.tasklist.append(btnEl);
-		update();
 	};
 
 	taskbar.minimize = function(module, uuid) {
@@ -105,6 +93,33 @@ define('taskbar', function() {
 
 	function minimizeAll() {
 		taskbar.tasklist.find('.active').removeClass('active');
+	}
+
+	function createTaskbar(data) {
+		var title = $('<div></div>').text(data.options.title || 'NodeBB Task').html();
+
+		var	taskbarEl = $('<li />')
+			.addClass(data.options.className)
+			.html('<a href="#">' +
+				(data.options.icon ? '<i class="fa ' + data.options.icon + '"></i> ' : '') +
+				(data.options.image ? '<img src="' + data.options.image + '"/> ': '') +
+				'<span>' + title + '</span>' +
+				'</a>')
+			.attr({
+				'data-module': data.module,
+				'data-uuid': data.uuid
+			})
+			.addClass(data.options.state !== undefined ? data.options.state : 'active');
+
+		if (!data.options.state || data.options.state === 'active') {
+			minimizeAll();
+		}
+
+		taskbar.tasklist.append(taskbarEl);
+		update();
+
+		data.element = taskbarEl;
+		$(window).trigger('action:taskbar.pushed', data);
 	}
 
 	return taskbar;

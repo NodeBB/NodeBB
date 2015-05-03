@@ -37,7 +37,7 @@ define('composer', [
 					if (confirm) {
 						discard(composer.active);
 					} else {
-						history.pushState({}, '',  '#compose');
+						history.pushState({}, '');
 					}
 				});
 			});
@@ -48,7 +48,15 @@ define('composer', [
 		localStorage.removeItem('category:' + data.data.cid + ':bookmark');
 		localStorage.removeItem('category:' + data.data.cid + ':bookmark:clicked');
 		ajaxify.go('topic/' + data.data.slug);
+		removeComposerHistory();
 	});
+
+	function removeComposerHistory() {
+		var env = utils.findBootstrapEnvironment();
+		if (env === 'xs' || env ==='sm') {
+			history.back();
+		}
+	}
 
 	// Query server for formatting options
 	socket.emit('modules.composer.getFormattingOptions', function(err, options) {
@@ -118,7 +126,7 @@ define('composer', [
 
 		var env = utils.findBootstrapEnvironment();
 		if (env === 'xs' || env ==='sm') {
-			history.pushState({}, '',  '#compose');
+			history.pushState({}, '');
 		}
 	}
 
@@ -132,6 +140,17 @@ define('composer', [
 			alert_id: 'post_error'
 		});
 	}
+
+	composer.findByTid = function(tid) {
+		// Iterates through the initialised composers and returns the uuid of the matching composer
+		for(var uuid in composer.posts) {
+			if (composer.posts.hasOwnProperty(uuid) && composer.posts[uuid].hasOwnProperty('tid') && parseInt(composer.posts[uuid].tid, 10) === parseInt(tid, 10)) {
+				return uuid;
+			}
+		}
+
+		return null;
+	};
 
 	composer.addButton = function(iconClass, onClick) {
 		formatting.addButton(iconClass, onClick);
@@ -153,13 +172,17 @@ define('composer', [
 		});
 	};
 
-	composer.addQuote = function(tid, topicSlug, postIndex, pid, title, username, text) {
-		var uuid = composer.active;
+	composer.addQuote = function(tid, topicSlug, postIndex, pid, title, username, text, uuid) {
+		uuid = uuid || composer.active;
 
 		if (uuid === undefined) {
 			composer.newReply(tid, pid, title, '[[modules:composer.user_said, ' + username + ']]\n' + text);
 			return;
+		} else if (uuid !== composer.active) {
+			// If the composer is not currently active, activate it
+			composer.load(uuid);
 		}
+
 		var postContainer = $('#cmp-uuid-' + uuid);
 		var bodyEl = postContainer.find('textarea');
 		var prevText = bodyEl.val();
@@ -187,7 +210,7 @@ define('composer', [
 				push({
 					tid: tid,
 					toPid: pid,
-					title: title,
+					title: $('<div/>').text(title).html(),
 					body: translated,
 					modified: false,
 					isMain: false,
@@ -207,7 +230,7 @@ define('composer', [
 				pid: pid,
 				uid: threadData.uid,
 				handle: threadData.handle,
-				title: $('<div/>').html(threadData.title).text(),
+				title: threadData.title,
 				body: threadData.body,
 				modified: false,
 				isMain: threadData.isMain,
@@ -276,10 +299,18 @@ define('composer', [
 
 		composer.bsEnvironment = utils.findBootstrapEnvironment();
 
+		// see
+		// https://github.com/NodeBB/NodeBB/issues/2994 and
+		// https://github.com/NodeBB/NodeBB/issues/1951
+		// remove when 1951 is resolved
+
+		var title = postData.title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+
 		var data = {
+			title: title,
 			mobile: composer.bsEnvironment === 'xs' || composer.bsEnvironment === 'sm',
 			allowTopicsThumbnail: allowTopicsThumbnail,
-			showTags: isTopic || isMain,
+			isTopicOrMain: isTopic || isMain,
 			minimumTagLength: config.minimumTagLength,
 			maximumTagLength: config.maximumTagLength,
 			isTopic: isTopic,
@@ -305,10 +336,9 @@ define('composer', [
 				draft = drafts.getDraft(postData.save_id),
 				submitBtn = postContainer.find('.composer-submit');
 
+			preview.handleToggler(postContainer);
 			tags.init(postContainer, composer.posts[post_uuid]);
 			categoryList.init(postContainer, composer.posts[post_uuid]);
-
-			updateTitle(postData, postContainer);
 
 			activate(post_uuid);
 			resize.reposition(postContainer);
@@ -353,6 +383,7 @@ define('composer', [
 
 			postContainer.find('.composer-discard').on('click', function() {
 				if (!composer.posts[post_uuid].modified) {
+					removeComposerHistory();
 					discard(post_uuid);
 					return;
 				}
@@ -360,6 +391,7 @@ define('composer', [
 				translator.translate('[[modules:composer.discard]]', function(translated) {
 					bootbox.confirm(translated, function(confirm) {
 						if (confirm) {
+							removeComposerHistory();
 							discard(post_uuid);
 						}
 						btn.prop('disabled', false);
@@ -382,15 +414,16 @@ define('composer', [
 			});
 
 			bodyEl.val(draft ? draft : postData.body);
+
 			preview.render(postContainer, function() {
 				preview.matchScroll(postContainer);
 			});
+
 			drafts.init(postContainer, postData);
 
 			resize.handleResize(postContainer);
 
 			handleHelp(postContainer);
-			handleTogglePreview(postContainer);
 
 			$(window).trigger('action:composer.loaded', {
 				post_uuid: post_uuid
@@ -419,48 +452,6 @@ define('composer', [
 		});
 	}
 
-	function handleTogglePreview(postContainer) {
-		var showBtn = postContainer.find('.write-container .toggle-preview'),
-			hideBtn = postContainer.find('.preview-container .toggle-preview');
-
-		hideBtn.on('click', function() {
-			$('.preview-container').addClass('hide');
-			$('.write-container').addClass('maximized');
-			showBtn.removeClass('hide');
-
-			$('.write').focus();
-		});
-
-		showBtn.on('click', function() {
-			$('.preview-container').removeClass('hide');
-			$('.write-container').removeClass('maximized');
-			showBtn.addClass('hide');
-
-			$('.write').focus();
-		});
-	}
-
-	function updateTitle(postData, postContainer) {
-		var titleEl = postContainer.find('.title');
-
-		if (parseInt(postData.tid, 10) > 0) {
-			titleEl.translateVal('[[topic:composer.replying_to, "' + postData.title + '"]]');
-			titleEl.prop('disabled', true);
-		} else if (parseInt(postData.pid, 10) > 0) {
-			titleEl.val(postData.title);
-			titleEl.prop('disabled', true);
-			socket.emit('modules.composer.editCheck', postData.pid, function(err, editCheck) {
-				if (!err && editCheck.titleEditable) {
-					titleEl.prop('disabled', false);
-				}
-			});
-
-		} else {
-			titleEl.val(postData.title);
-			titleEl.prop('disabled', false);
-		}
-	}
-
 	function activate(post_uuid) {
 		if(composer.active && composer.active !== post_uuid) {
 			composer.minimize(composer.active);
@@ -470,13 +461,11 @@ define('composer', [
 	}
 
 	function focusElements(postContainer) {
-		var title = postContainer.find('.title'),
-			bodyEl = postContainer.find('textarea');
-
-		if (title.is(':disabled')) {
-			bodyEl.focus().putCursorAtEnd();
-		} else {
+		var title = postContainer.find('input.title');
+		if (title.length) {
 			title.focus();
+		} else {
+			postContainer.find('textarea').focus().putCursorAtEnd();
 		}
 	}
 
@@ -496,7 +485,7 @@ define('composer', [
 			thumbEl.val(thumbEl.val().trim());
 		}
 
-		var checkTitle = parseInt(postData.cid, 10) || parseInt(postData.pid, 10);
+		var checkTitle = (parseInt(postData.cid, 10) || parseInt(postData.pid, 10)) && postContainer.find('input.title').length;
 
 		if (uploads.inProgress[post_uuid] && uploads.inProgress[post_uuid].length) {
 			return composerAlert(post_uuid, '[[error:still-uploading]]');
@@ -578,6 +567,7 @@ define('composer', [
 
 
 			$('html').removeClass('composing mobile');
+
 		}
 	}
 
@@ -589,6 +579,8 @@ define('composer', [
 
 		stopNotifyInterval(composer.posts[post_uuid]);
 		stopNotifyTyping(composer.posts[post_uuid]);
+
+		$('body').css({'margin-bottom': '0px'});
 	};
 
 	return composer;

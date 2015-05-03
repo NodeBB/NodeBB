@@ -35,10 +35,8 @@ function getModerators(req, res, next) {
 
 
 function getRecentPosts(req, res, next) {
-	var uid = (req.user) ? req.user.uid : 0;
-
-	posts.getRecentPosts(uid, 0, 19, req.params.term, function (err, data) {
-		if(err) {
+	posts.getRecentPosts(req.uid, 0, 19, req.params.term, function (err, data) {
+		if (err) {
 			return next(err);
 		}
 

@@ -3,8 +3,8 @@
 
 var async = require('async'),
 	db = require('../database'),
-	utils = require('../../public/src/utils');
-
+	utils = require('../../public/src/utils'),
+	plugins = require('../plugins');
 
 module.exports = function(Categories) {
 
@@ -16,12 +16,12 @@ module.exports = function(Categories) {
 					return next(err);
 				}
 
-				var category = modified[cid];
-				var fields = Object.keys(category);
-
-				async.each(fields, function(key, next) {
-					updateCategoryField(cid, key, category[key], next);
-				}, next);
+				plugins.fireHook('filter:category.update', modified[cid], function(err, category) {
+					var fields = Object.keys(category);
+					async.each(fields, function(key, next) {
+						updateCategoryField(cid, key, category[key], next);
+					}, next);
+				});
 			});
 		}
 

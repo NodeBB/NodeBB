@@ -5,5 +5,8 @@
     "browsing": "צופים בנושא זה כעת",
     "no_replies": "אין תגובות",
     "share_this_category": "שתף קטגוריה זו",
-    "ignore": "התעלם"
+    "watch": "Watch",
+    "ignore": "התעלם",
+    "watch.message": "You are now watching updates from this category",
+    "ignore.message": "You are now ignoring updates from this category"
 }

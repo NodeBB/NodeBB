@@ -21,7 +21,7 @@
 /*global require, global, process*/
 
 var nconf = require('nconf');
-nconf.argv().env();
+nconf.argv().env('__');
 
 var fs = require('fs'),
 	os = require('os'),
@@ -54,14 +54,6 @@ if(os.platform() === 'linux') {
 	});
 }
 
-if (!process.send) {
-	// If run using `node app`, log GNU copyright info along with server info
-	winston.info('NodeBB v' + pkg.version + ' Copyright (C) 2013-2014 NodeBB Inc.');
-	winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
-	winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
-	winston.info('');
-}
-
 // Alternate configuration file support
 var	configFile = path.join(__dirname, '/config.json'),
 	configExists;
@@ -73,8 +65,10 @@ configExists = fs.existsSync(configFile);
 
 if (!nconf.get('setup') && !nconf.get('install') && !nconf.get('upgrade') && !nconf.get('reset') && configExists) {
 	start();
-} else if (nconf.get('setup') || nconf.get('install') || !configExists) {
+} else if (nconf.get('setup') || nconf.get('install')) {
 	setup();
+} else if (!configExists) {
+	require('./install/web').install(nconf.get('port'));
 } else if (nconf.get('upgrade')) {
 	upgrade();
 } else if (nconf.get('reset')) {
@@ -89,7 +83,8 @@ function loadConfig() {
 	nconf.defaults({
 		base_dir: __dirname,
 		themes_path: path.join(__dirname, 'node_modules'),
-		views_dir: path.join(__dirname, 'public/templates')
+		views_dir: path.join(__dirname, 'public/templates'),
+		version: pkg.version
 	});
 
 	if (!nconf.get('isCluster')) {
@@ -101,6 +96,14 @@ function loadConfig() {
 	nconf.set('themes_path', path.resolve(__dirname, nconf.get('themes_path')));
 	nconf.set('core_templates_path', path.join(__dirname, 'src/views'));
 	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
+
+	if (!process.send) {
+		// If run using `node app`, log GNU copyright info along with server info
+		winston.info('NodeBB v' + nconf.get('version') + ' Copyright (C) 2013-2014 NodeBB Inc.');
+		winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
+		winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
+		winston.info('');
+	}
 }
 
 function start() {
@@ -120,7 +123,7 @@ function start() {
 
 	if (nconf.get('isPrimary') === 'true') {
 		winston.info('Time: %s', (new Date()).toString());
-		winston.info('Initializing NodeBB v%s', pkg.version);
+		winston.info('Initializing NodeBB v%s', nconf.get('version'));
 		winston.verbose('* using configuration stored in: %s', configFile);
 
 		var host = nconf.get(nconf.get('database') + ':host'),
@@ -130,111 +133,118 @@ function start() {
 		winston.verbose('* using themes stored in: %s', nconf.get('themes_path'));
 	}
 
+	process.on('SIGTERM', shutdown);
+	process.on('SIGINT', shutdown);
+	process.on('SIGHUP', restart);
+	process.on('message', function(message) {
+		if (typeof message !== 'object') {
+			return;
+		}
+		var meta = require('./src/meta');
+		var emitter = require('./src/emitter');
+		switch (message.action) {
+			case 'reload':
+				meta.reload();
+			break;
+			case 'js-propagate':
+				meta.js.cache = message.cache;
+				meta.js.map = message.map;
+				meta.js.hash = message.hash;
+				emitter.emit('meta:js.compiled');
+				winston.verbose('[cluster] Client-side javascript and mapping propagated to worker %s', process.pid);
+			break;
+			case 'css-propagate':
+				meta.css.cache = message.cache;
+				meta.css.acpCache = message.acpCache;
+				meta.css.hash = message.hash;
+				emitter.emit('meta:css.compiled');
+				winston.verbose('[cluster] Stylesheets propagated to worker %s', process.pid);
+			break;
+			case 'templates:compiled':
+				emitter.emit('templates:compiled');
+			break;
+		}
+	});
 
-	var webserver = require('./src/webserver');
+	process.on('uncaughtException', function(err) {
+		winston.error(err.stack);
+		console.log(err.stack);
 
-	require('./src/database').init(function(err) {
+		require('./src/meta').js.killMinifier();
+		shutdown(1);
+	});
+
+	async.waterfall([
+		function(next) {
+			require('./src/database').init(next);
+		},
+		function(next) {
+			require('./src/meta').configs.init(next);
+		},
+		function(next) {
+			require('./src/upgrade').check(next);
+		},
+		function(schema_ok, next) {
+			if (!schema_ok && nconf.get('check-schema') !== false) {
+				winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
+				winston.warn('    ./nodebb upgrade');
+				process.exit();
+				return;
+			}
+			var webserver = require('./src/webserver');
+			require('./src/socket.io').init(webserver.server);
+
+			if (nconf.get('isPrimary') === 'true' && !nconf.get('jobsDisabled')) {
+				require('./src/notifications').init();
+				require('./src/user').startJobs();
+			}
+
+			webserver.listen();
+		}
+	], function(err) {
 		if (err) {
 			winston.error(err.stack);
 			process.exit();
 		}
-		var meta = require('./src/meta');
-		meta.configs.init(function () {
-			var templates = require('templates.js'),
-				sockets = require('./src/socket.io'),
-				plugins = require('./src/plugins'),
-				upgrade = require('./src/upgrade');
-
-			templates.setGlobal('relative_path', nconf.get('relative_path'));
-
-			upgrade.check(function(schema_ok) {
-				if (schema_ok || nconf.get('check-schema') === false) {
-					webserver.init();
-					sockets.init(webserver.server);
-
-					if (nconf.get('isPrimary') === 'true' && !nconf.get('jobsDisabled')) {
-						require('./src/notifications').init();
-						require('./src/user').startJobs();
-					}
-
-					async.waterfall([
-						async.apply(meta.themes.setupPaths),
-						async.apply(plugins.ready),
-						async.apply(meta.templates.compile),
-						async.apply(webserver.listen)
-					], function(err) {
-						if (err) {
-							winston.error(err.stack);
-							process.exit();
-						}
-
-						if (process.send) {
-							process.send({
-								action: 'ready'
-							});
-						}
-					});
-
-					process.on('SIGTERM', shutdown);
-					process.on('SIGINT', shutdown);
-					process.on('SIGHUP', restart);
-					process.on('message', function(message) {
-						switch(message.action) {
-							case 'reload':
-								meta.reload();
-							break;
-							case 'js-propagate':
-								meta.js.cache = message.cache;
-								meta.js.map = message.map;
-								meta.js.hash = message.hash;
-								winston.verbose('[cluster] Client-side javascript and mapping propagated to worker %s', process.pid);
-							break;
-							case 'css-propagate':
-								meta.css.cache = message.cache;
-								meta.css.acpCache = message.acpCache;
-								meta.css.hash = message.hash;
-								winston.verbose('[cluster] Stylesheets propagated to worker %s', process.pid);
-							break;
-						}
-					});
-
-					process.on('uncaughtException', function(err) {
-						winston.error(err.stack);
-						console.log(err.stack);
-
-						meta.js.killMinifier();
-						shutdown(1);
-					});
-				} else {
-					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
-					winston.warn('    ./nodebb upgrade');
-					process.exit();
-				}
-			});
-		});
 	});
 }
 
 function setup() {
 	loadConfig();
 
-	if (nconf.get('setup')) {
-		winston.info('NodeBB Setup Triggered via Command Line');
-	} else {
-		winston.warn('Configuration not found, starting NodeBB setup');
-	}
+	winston.info('NodeBB Setup Triggered via Command Line');
 
 	var install = require('./src/install');
 
-	winston.info('Welcome to NodeBB!');
-	winston.info('This looks like a new installation, so you\'ll have to answer a few questions about your environment before we can proceed.');
-	winston.info('Press enter to accept the default setting (shown in brackets).');
+	process.stdout.write('\nWelcome to NodeBB!\n');
+	process.stdout.write('\nThis looks like a new installation, so you\'ll have to answer a few questions about your environment before we can proceed.\n');
+	process.stdout.write('Press enter to accept the default setting (shown in brackets).\n');
 
-	install.setup(function (err) {
+	install.setup(function (err, data) {
+		var separator = '     ';
+		if (process.stdout.columns > 10) {
+			for(var x=0,cols=process.stdout.columns-10;x<cols;x++) {
+				separator += '=';
+			}
+		}
+		process.stdout.write('\n' + separator + '\n\n');
+
 		if (err) {
 			winston.error('There was a problem completing NodeBB setup: ', err.message);
 		} else {
-			winston.info('NodeBB Setup Completed. Run \'./nodebb start\' to manually start your NodeBB server.');
+			if (data.hasOwnProperty('password')) {
+				process.stdout.write('An administrative user was automatically created for you:\n');
+				process.stdout.write('    Username: ' + data.username + '\n');
+				process.stdout.write('    Password: ' + data.password + '\n');
+				process.stdout.write('\n');
+			}
+			process.stdout.write('NodeBB Setup Completed. Run \'./nodebb start\' to manually start your NodeBB server.\n');
+
+			// If I am a child process, notify the parent of the returned data before exiting (useful for notifying
+			// hosts of auto-generated username/password during headless setups)
+			if (process.send) {
+				process.send(data);
+			}
 		}
 
 		process.exit();

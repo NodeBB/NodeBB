@@ -15,13 +15,16 @@ searchController.search = function(req, res, next) {
 		return helpers.notFound(req, res);
 	}
 
-	var uid = req.user ? req.user.uid : 0;
 	var breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:search]]'}]);
 
-	categories.getCategoriesByPrivilege(uid, 'read', function(err, categories) {
+	categories.getCategoriesByPrivilege(req.uid, 'read', function(err, categories) {
 		if (err) {
 			return next(err);
 		}
+
+		categories = categories.filter(function(category) {
+			return category && !category.link;
+		});
 
 		req.params.term = validator.escape(req.params.term);
 		var page = Math.max(1, parseInt(req.query.page, 10)) || 1;
@@ -42,7 +45,7 @@ searchController.search = function(req, res, next) {
 			sortBy: req.query.sortBy,
 			sortDirection: req.query.sortDirection,
 			page: page,
-			uid: uid
+			uid: req.uid
 		};
 
 		search.search(data, function(err, results) {
@@ -50,8 +53,7 @@ searchController.search = function(req, res, next) {
 				return next(err);
 			}
 
-			var pageCount = Math.max(1, Math.ceil(results.matchCount / 10));
-			results.pagination = pagination.create(page, pageCount, req.query);
+			results.pagination = pagination.create(page, results.pageCount, req.query);
 			results.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
 			results.showAsTopics = req.query.showAs === 'topics';
 			results.breadcrumbs = breadcrumbs;

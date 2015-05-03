@@ -5,6 +5,7 @@ var uploadsController = {},
 	fs = require('fs'),
 	path = require('path'),
 	async = require('async'),
+	nconf = require('nconf'),
 	validator = require('validator'),
 
 	meta = require('../meta'),
@@ -118,7 +119,7 @@ function uploadFile(uid, uploadedFile, callback) {
 	if (uploadedFile.size > parseInt(meta.config.maximumFileSize, 10) * 1024) {
 		return callback(new Error('[[error:file-too-big, ' + meta.config.maximumFileSize + ']]'));
 	}
-	
+
 	var filename = uploadedFile.name || 'upload';
 
 	filename = Date.now() + '-' + validator.escape(filename).substr(0, 255);
@@ -128,7 +129,7 @@ function uploadFile(uid, uploadedFile, callback) {
 		}
 
 		callback(null, {
-			url: upload.url,
+			url: nconf.get('relative_path') + upload.url,
 			name: uploadedFile.name
 		});
 	});

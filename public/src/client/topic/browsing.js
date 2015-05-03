@@ -12,7 +12,7 @@ define('forum/topic/browsing', ['translator'], function(translator) {
 		if (data && data.room.indexOf('topic_' + ajaxify.variables.get('topic_id')) !== -1) {
 			$('[component="topic/browsing/list"]').parent().toggleClass('hidden', !data.users.length);
 			for(var i=0; i<data.users.length; ++i) {
-				addUserIcon(data.users[i]);	
+				addUserIcon(data.users[i]);
 			}
 
 			updateUserCount(data.total);
@@ -48,19 +48,10 @@ define('forum/topic/browsing', ['translator'], function(translator) {
 	};
 
 	Browsing.onUserStatusChange = function(data) {
-		updateOnlineIcon($('.username-field[data-uid="' + data.uid + '"]'), data.status);
+		app.updateUserStatus($('[data-uid="' + data.uid + '"] [component="user/status"]'), data.status);
 
 		updateBrowsingUsers(data);
 	};
-
-	function updateOnlineIcon(el, status) {
-		translator.translate('[[global:' + status + ']]', function(translated) {
-			el.siblings('i')
-				.attr('class', 'fa fa-circle status ' + status)
-				.attr('title', translated)
-				.attr('data-original-title', translated);
-		});
-	}
 
 	function updateBrowsingUsers(data) {
 		var activeEl = $('[component="topic/browsing/list"]');
@@ -83,14 +74,14 @@ define('forum/topic/browsing', ['translator'], function(translator) {
 			activeEl.append(userEl);
 		}
 
-		activeEl.find('a[data-uid] img').tooltip({
+		activeEl.find('a[data-uid]').tooltip({
 			placement: 'top'
 		});
 	}
 
 	function createUserIcon(uid, picture, userslug, username) {
 		if(!$('[component="topic/browsing/list"]').find('[data-uid="' + uid + '"]').length) {
-			return $('<div class="inline-block"><a data-uid="' + uid + '" data-count="1" href="' + config.relative_path + '/user/' + userslug + '"><img title="' + username + '" src="'+ picture +'"/></a></div>');
+			return $('<div class="inline-block"><a title="' + username + '" data-uid="' + uid + '" data-count="1" href="' + config.relative_path + '/user/' + userslug + '"><img src="'+ picture +'"/></a></div>');
 		}
 	}
 

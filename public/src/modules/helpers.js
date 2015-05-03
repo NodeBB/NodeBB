@@ -14,17 +14,19 @@
 			properties = item.properties;
 
 		if (properties) {
-			if (properties.loggedIn && !data.loggedIn ||
-				properties.adminOnly && !data.isAdmin ||
-				properties.installed && properties.installed.search && !data.searchEnabled) {
+			if ((properties.loggedIn && !data.loggedIn) ||
+				(properties.adminOnly && !data.isAdmin) ||
+				(properties.installed && properties.installed.search && !data.searchEnabled)) {
 				return false;
 			}
 		}
 
-		if (item.route.match('/users')) {
-			if (data.privateUserInfo && !data.isAdmin) {
-				return false;
-			}
+		if (item.route.match('/users') && data.privateUserInfo && !data.loggedIn) {
+			return false;
+		}
+
+		if (item.route.match('/tags') && data.privateTagListing && !data.loggedIn) {
+			return false;
 		}
 
 		return true;
@@ -44,31 +46,41 @@
 	};
 
 	helpers.escape = function(str) {
-		var utils = utils || require('../utils');
-		return utils.escapeHTML(str);
+		if (typeof utils !== 'undefined') {
+			return utils.escapeHTML(str);
+		} else {
+			return require('../utils').escapeHTML(str);
+		}
 	};
 
 	helpers.stripTags = function(str) {
-		var S = S || require('string');
-		return S(str).stripTags().s;
+		if (typeof S !== 'undefined') {
+			return S(str).stripTags().s;
+		} else {
+			var S = require('string');
+			return S(str).stripTags().s;
+		}
 	};
 
 	helpers.generateCategoryBackground = function(category) {
 		var style = [];
 
-		if (category.backgroundImage) {
-			style.push('background-image: url(' + category.backgroundImage + ')');
-		}
-
 		if (category.bgColor) {
-			style.push('background-color: ' + category.bgColor + ';');
+			style.push('background-color: ' + category.bgColor);
 		}
 
 		if (category.color) {
-			style.push('color: ' + category.color + ';');
+			style.push('color: ' + category.color);
 		}
 
-		return style.join(' ');
+		if (category.backgroundImage) {
+			style.push('background-image: url(' + category.backgroundImage + ')');
+			if (category.imageClass) {
+				style.push('background-size: ' + category.imageClass);
+			}
+		}
+
+		return style.join('; ') + ';';
 	};
 
 	helpers.generateTopicClass = function(topic) {
@@ -91,6 +103,10 @@
 		}
 
 		return style.join(' ');
+	};
+
+	helpers.getBookmarkFromIndex = function(topic) {
+		return (topic.index || 0) + 1;
 	};
 
 	// Groups helpers

@@ -5,7 +5,8 @@
     "recent": "Discussioni Recenti",
     "users": "Utenti Registrati",
     "notifications": "Notifiche",
-    "tags": "Discussioni taggate \"%1\"",
+    "tags": "Tags",
+    "tag": "Discussioni taggate \"%1\"",
     "user.edit": "Modificando \"%1\"",
     "user.following": "Persone seguite da %1",
     "user.followers": "Persone che seguono %1",
@@ -14,7 +15,7 @@
     "user.groups": "%1's Gruppi",
     "user.favourites": "Post Favoriti da %1",
     "user.settings": "Impostazioni Utente",
-    "user.watched": "Topics watched by %1",
+    "user.watched": "Argomenti osservati da %1",
     "maintenance.text": "%1 è attualmente in manutenzione. Per favore ritorna più tardi.",
     "maintenance.messageIntro": "Inoltre, l'amministratore ha lasciato questo messaggio:"
 }

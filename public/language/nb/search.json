@@ -1,8 +1,8 @@
 {
     "results_matching": "%1 resultat(er) samsvarer med \"%2\", (%3 sekunder)",
     "no-matches": "Ingen matcher funnet",
+    "advanced-search": "Advanced Search",
     "in": "I",
-    "by": "Av",
     "titles": "Titler",
     "titles-posts": "Titler og innlegg",
     "posted-by": "Skapt av",

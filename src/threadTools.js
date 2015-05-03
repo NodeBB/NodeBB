@@ -26,17 +26,18 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			var alreadyDeletedOrRestored = (parseInt(topicData.deleted, 10) && isDelete) || (!parseInt(topicData.deleted, 10) && !isDelete);
-			if (alreadyDeletedOrRestored) {
-				return callback(null, {tid: tid});
+			if (parseInt(topicData.deleted, 10) === 1 && isDelete) {
+				return callback(new Error('[[error:topic-already-deleted]]'));
+			} else if(parseInt(topicData.deleted, 10) !== 1 && !isDelete) {
+				return callback(new Error('[[error:topic-already-restored]]'));
 			}
 
 			topics[isDelete ? 'delete' : 'restore'](tid, function(err) {
 				if (err) {
 					return callback(err);
 				}
+				topicData.deleted = isDelete ? 1 : 0;
 
-				ThreadTools[isDelete ? 'lock' : 'unlock'](tid, uid);
 				if (isDelete) {
 					plugins.fireHook('action:topic.delete', tid);
 				} else {
@@ -193,6 +194,7 @@ var async = require('async'),
 					toCid: cid,
 					uid: uid
 				});
+				callback();
 			});
 		});
 	};

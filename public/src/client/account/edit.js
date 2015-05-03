@@ -31,6 +31,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 		handleEmailConfirm();
 		handlePasswordChange();
 		updateSignature();
+		updateAboutMe();
 		updateImages();
 	};
 
@@ -43,7 +44,8 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 			website: $('#inputWebsite').val(),
 			birthday: $('#inputBirthday').val(),
 			location: $('#inputLocation').val(),
-			signature: $('#inputSignature').val()
+			signature: $('#inputSignature').val(),
+			aboutme: $('#inputAboutMe').val()
 		};
 
 		socket.emit('user.updateProfile', userData, function(err, data) {
@@ -157,8 +159,8 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 						return false;
 					} else {
 						socket.emit('user.deleteAccount', {}, function(err) {
-							if (!err) {
-								app.logout();
+							if (err) {
+								app.alertError(err.message);
 							}
 						});
 					}
@@ -203,7 +205,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 				if (!url) {
 					return;
 				}
-				socket.emit('user.uploadProfileImageFromUrl', url, function(err, imageUrlOnServer) {
+				socket.emit('user.uploadProfileImageFromUrl', {url: url, uid: ajaxify.variables.get('theirid')}, function(err, imageUrlOnServer) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -220,7 +222,9 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 
 	function handleEmailConfirm() {
 		$('#confirm-email').on('click', function() {
+			var btn = $(this).attr('disabled', true);
 			socket.emit('user.emailConfirm', {}, function(err) {
+				btn.removeAttr('disabled');
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -240,25 +244,30 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 		var successIcon = '<i class="fa fa-check"></i>';
 
 		function onPasswordChanged() {
-			passwordvalid = utils.isPasswordValid(password.val());
 			if (password.val().length < config.minimumPasswordLength) {
 				showError(password_notify, '[[user:change_password_error_length]]');
-			} else if (!passwordvalid) {
+				passwordvalid = false;
+			} else if (!utils.isPasswordValid(password.val())) {
 				showError(password_notify, '[[user:change_password_error]]');
+				passwordvalid = false;
 			} else {
 				showSuccess(password_notify, successIcon);
+				passwordvalid = true;
 			}
 		}
 
 		function onPasswordConfirmChanged() {
-			if(password.val()) {
-				if (password.val() !== password_confirm.val()) {
-					showError(password_confirm_notify, '[[user:change_password_error_match]]');
-					passwordsmatch = false;
-				} else {
+			if (password.val() !== password_confirm.val()) {
+				showError(password_confirm_notify, '[[user:change_password_error_match]]');
+				passwordsmatch = false;
+			} else {
+				if (password.val()) {
 					showSuccess(password_confirm_notify, successIcon);
-					passwordsmatch = true;
+				} else {
+					removeAlert(password_confirm_notify);
 				}
+
+				passwordsmatch = true;
 			}
 		}
 
@@ -266,6 +275,9 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 		password_confirm.on('blur', onPasswordConfirmChanged);
 
 		$('#changePasswordBtn').on('click', function() {
+			onPasswordChanged();
+			onPasswordConfirmChanged();
+
 			var btn = $(this);
 			if ((passwordvalid && passwordsmatch) || app.user.isAdmin) {
 				btn.addClass('disabled').find('i').removeClass('hide');
@@ -282,11 +294,21 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 					passwordvalid = false;
 
 					if (err) {
+						onPasswordChanged();
+						onPasswordConfirmChanged();
 						return app.alertError(err.message);
 					}
 
 					app.alertSuccess('[[user:change_password_success]]');
 				});
+			} else {
+				if (!passwordsmatch) {
+					app.alertError('[[user:change_password_error_match]]');
+				}
+
+				if (!passwordvalid) {
+					app.alertError('[[user:change_password_error]]');
+				}
 			}
 			return false;
 		});
@@ -317,15 +339,25 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 		$('#uploaded-box .fa-check').toggle(currentPicture === uploadedPicture);
 	}
 
+	function getCharsLeft(el, max) {
+		return el.length ? '(' + el.val().length + '/' + max + ')' : '';
+	}
+
 	function updateSignature() {
-		function getSignatureCharsLeft() {
-			return $('#inputSignature').length ? '(' + $('#inputSignature').val().length + '/' + config.maximumSignatureLength + ')' : '';
-		}
+		var el = $('#inputSignature');
+		$('#signatureCharCountLeft').html(getCharsLeft(el, config.maximumSignatureLength));
 
-		$('#signatureCharCountLeft').html(getSignatureCharsLeft());
+		el.on('keyup change', function() {
+			$('#signatureCharCountLeft').html(getCharsLeft(el, config.maximumSignatureLength));
+		});
+	}
 
-		$('#inputSignature').on('keyup change', function(ev) {
-			$('#signatureCharCountLeft').html(getSignatureCharsLeft());
+	function updateAboutMe() {
+		var el = $('#inputAboutMe');
+		$('#aboutMeCharCountLeft').html(getCharsLeft(el, config.maximumAboutMeLength));
+
+		el.on('keyup change', function() {
+			$('#aboutMeCharCountLeft').html(getCharsLeft(el, config.maximumAboutMeLength));
 		});
 	}
 
@@ -347,6 +379,11 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 				.addClass('alert-success');
 			element.show();
 		});
+	}
+
+	function removeAlert(element) {
+		element.html('');
+		element.parent().removeClass('alert-success alert-danger');
 	}
 
 	return AccountEdit;

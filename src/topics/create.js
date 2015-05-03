@@ -9,8 +9,6 @@ var async = require('async'),
 	user = require('../user'),
 	meta = require('../meta'),
 	posts = require('../posts'),
-	threadTools = require('../threadTools'),
-	postTools = require('../postTools'),
 	privileges = require('../privileges'),
 	categories = require('../categories');
 
@@ -19,7 +17,8 @@ module.exports = function(Topics) {
 	Topics.create = function(data, callback) {
 		var uid = data.uid,
 			title = data.title,
-			cid = data.cid;
+			cid = data.cid,
+			tags = data.tags;
 
 		db.incrObjectField('global', 'nextTid', function(err, tid) {
 			if (err) {
@@ -78,7 +77,7 @@ module.exports = function(Topics) {
 						db.incrObjectField('global', 'topicCount', next);
 					},
 					function(next) {
-						Topics.createTags(data.tags, tid, timestamp, next);
+						Topics.createTags(tags, tid, timestamp, next);
 					}
 				], function(err) {
 					if (err) {
@@ -95,7 +94,8 @@ module.exports = function(Topics) {
 		var uid = data.uid,
 			title = data.title,
 			content = data.content,
-			cid = data.cid;
+			cid = data.cid,
+			tags = data.tags;
 
 		if (title) {
 			title = title.trim();
@@ -124,6 +124,11 @@ module.exports = function(Topics) {
 				if(!canCreate) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
+
+				if (!guestHandleValid(data)) {
+					return next(new Error('[[error:guest-handle-invalid]]'));
+				}
+
 				user.isReadyToPost(uid, next);
 			},
 			function(next) {
@@ -131,7 +136,7 @@ module.exports = function(Topics) {
 			},
 			function(filteredData, next) {
 				content = filteredData.content || data.content;
-				Topics.create({uid: uid, title: title, cid: cid, thumb: data.thumb, tags: data.tags}, next);
+				Topics.create({uid: uid, title: title, cid: cid, thumb: data.thumb, tags: tags}, next);
 			},
 			function(tid, next) {
 				Topics.reply({uid:uid, tid:tid, handle: data.handle, content:content, req: data.req}, next);
@@ -207,6 +212,10 @@ module.exports = function(Topics) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 
+				if (!guestHandleValid(data)) {
+					return next(new Error('[[error:guest-handle-invalid]]'));
+				}
+
 				user.isReadyToPost(uid, next);
 			},
 			function(next) {
@@ -245,7 +254,7 @@ module.exports = function(Topics) {
 						posts.getPidIndex(postData.pid, uid, next);
 					},
 					content: function(next) {
-						postTools.parsePost(postData, next);
+						posts.parsePost(postData, next);
 					}
 				}, next);
 			},
@@ -255,7 +264,7 @@ module.exports = function(Topics) {
 
 				// Username override for guests, if enabled
 				if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(postData.uid, 10) === 0 && data.handle) {
-					postData.user.username = data.handle;
+					postData.user.username = validator.escape(data.handle);
 				}
 
 				if (results.settings.followTopicsOnReply) {
@@ -290,6 +299,14 @@ module.exports = function(Topics) {
 			return callback(new Error('[[error:content-too-long, '  + meta.config.maximumPostLength + ']]'));
 		}
 		callback();
+	}
+
+	function guestHandleValid(data) {
+		if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(data.uid, 10) === 0 &&
+			data.handle && data.handle.length > meta.config.maximumUsernameLength) {
+			return false;
+		}
+		return true;
 	}
 
 };

@@ -93,8 +93,8 @@ var async = require('async'),
 		});
 	};
 
-	Groups.getGroups = function(start, end, callback) {
-		db.getSortedSetRevRange('groups:createtime', start, end, callback);
+	Groups.getGroups = function(start, stop, callback) {
+		db.getSortedSetRevRange('groups:createtime', start, stop, callback);
 	};
 
 	Groups.get = function(groupName, options, callback) {
@@ -114,6 +114,10 @@ var async = require('async'),
 					if (err) {
 						return next(err);
 					}
+
+					uids = uids.filter(function(uid) {
+						return uid && parseInt(uid, 10);
+					});
 
 					if (options.truncateUserList) {
 						var userListCount = parseInt(options.userListCount, 10) || 4;
@@ -315,8 +319,8 @@ var async = require('async'),
 		});
 	};
 
-	Groups.getMembers = function(groupName, start, end, callback) {
-		db.getSortedSetRevRange('group:' + groupName + ':members', start, end, callback);
+	Groups.getMembers = function(groupName, start, stop, callback) {
+		db.getSortedSetRevRange('group:' + groupName + ':members', start, stop, callback);
 	};
 
 	Groups.getMembersOfGroups = function(groupNames, callback) {
@@ -530,6 +534,8 @@ var async = require('async'),
 			if (data.hasOwnProperty('ownerUid')) {
 				tasks.push(async.apply(db.setAdd, 'group:' + data.name + ':owners', data.ownerUid));
 				tasks.push(async.apply(db.sortedSetAdd, 'group:' + data.name + ':members', now, data.ownerUid));
+
+				groupData.ownerUid = data.ownerUid;
 			}
 
 			if (!data.hidden) {
@@ -541,7 +547,7 @@ var async = require('async'),
 					plugins.fireHook('action:group.create', groupData);
 				}
 
-				callback(err);
+				callback(err, groupData);
 			});
 		});
 	};

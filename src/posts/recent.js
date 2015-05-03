@@ -33,10 +33,10 @@ module.exports = function(Posts) {
 		], callback);
 	};
 
-	Posts.getRecentPosterUids = function(start, end, callback) {
+	Posts.getRecentPosterUids = function(start, stop, callback) {
 		async.waterfall([
 			function(next) {
-				db.getSortedSetRevRange('posts:pid', start, end, next);
+				db.getSortedSetRevRange('posts:pid', start, stop, next);
 			},
 			function(pids, next) {
 				Posts.getPostsFields(pids, ['uid'], next);

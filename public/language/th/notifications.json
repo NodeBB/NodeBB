@@ -8,8 +8,8 @@
     "outgoing_link_message": "You are now leaving %1.",
     "continue_to": "Continue to %1",
     "return_to": "Return to %1",
-    "new_notification": "New Notification",
-    "you_have_unread_notifications": "You have unread notifications.",
+    "new_notification": "ข้อความเตือนใหม่",
+    "you_have_unread_notifications": "คุณมีคำเตือนที่ยังไม่ได้อ่าน",
     "new_message_from": "New message from <strong>%1</strong>",
     "upvoted_your_post_in": "<strong>%1</strong> has upvoted your post in <strong>%2</strong>.",
     "moved_your_post": "<strong>%1</strong> has moved your post.",
@@ -20,8 +20,8 @@
     "user_posted_topic": "<strong>%1</strong> has posted a new topic: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> mentioned you in <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> started following you.",
-    "email-confirmed": "Email Confirmed",
-    "email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",
-    "email-confirm-error-message": "There was a problem validating your email address. Perhaps the code was invalid or has expired.",
-    "email-confirm-sent": "Confirmation email sent."
+    "email-confirmed": "Email ได้รับการยืนยันแล้ว",
+    "email-confirmed-message": "ขอบคุณที่ยืนยัน Email ของคุณ บัญชีของคุณสามารถใช้งานได้แล้ว",
+    "email-confirm-error-message": "มีปัญหาในการยืนยัน Email ของคุณ บางทีรหัสไม่ถูกต้องหรือหมดอายุแล้ว",
+    "email-confirm-sent": "Email เพื่อยืนยันได้ส่งไปแล้ว"
 }

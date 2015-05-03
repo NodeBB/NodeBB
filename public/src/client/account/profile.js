@@ -40,10 +40,10 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 	};
 
 	function processPage() {
-		$('.user-recent-posts img, .post-signature img').addClass('img-responsive');
+		$('[component="posts"] img').addClass('img-responsive');
 
-		$('.user-recent-posts blockquote').prev('p').remove();
-		$('.user-recent-posts blockquote').remove();
+		$('[component="post/content"] blockquote').prev('p').remove();
+		$('[component="post/content"] blockquote').remove();
 	}
 
 	function updateButtons() {
@@ -57,7 +57,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 		socket.emit('user.' + type, {
 			uid: theirid
 		}, function(err) {
-			if(err) {
+			if (err) {
 				return app.alertError(err.message);
 			}
 
@@ -69,44 +69,37 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 	}
 
 	function onUserStatusChange(data) {
-		var onlineStatus = $('.account-online-status');
-
-		if(parseInt(ajaxify.variables.get('theirid'), 10) !== parseInt(data.uid, 10)) {
+		if (parseInt(ajaxify.variables.get('theirid'), 10) !== parseInt(data.uid, 10)) {
 			return;
 		}
 
-		translator.translate('[[global:' + data.status + ']]', function(translated) {
-			onlineStatus.attr('class', 'account-online-status fa fa-circle status ' + data.status)
-				.attr('title', translated)
-				.attr('data-original-title', translated);
-		});
-
+		app.updateUserStatus($('.account [component="user/status"]'), data.status);
 	}
 
 	function loadMorePosts(direction) {
-		if(direction < 0 || !$('.user-recent-posts').length) {
+		if (direction < 0 || !$('[component="posts"]').length) {
 			return;
 		}
 
-		$('.loading-indicator').removeClass('hidden');
+		$('[component="posts/loading"]').removeClass('hidden');
 
 		infinitescroll.loadMore('posts.loadMoreUserPosts', {
-			after: $('.user-recent-posts').attr('data-nextstart'),
+			after: $('[component="posts"]').attr('data-nextstart'),
 			uid: theirid
 		}, function(data, done) {
 			if (data.posts && data.posts.length) {
 				onPostsLoaded(data.posts, done);
-				$('.user-recent-posts').attr('data-nextstart', data.nextStart);
 			} else {
 				done();
 			}
-			$('.loading-indicator').addClass('hidden');
+			$('[component="posts"]').attr('data-nextstart', data.nextStart);
+			$('[component="posts/loading"]').addClass('hidden');
 		});
 	}
 
 	function onPostsLoaded(posts, callback) {
 		posts = posts.filter(function(post) {
-			return !$('.user-recent-posts div[data-pid=' + post.pid + ']').length;
+			return !$('[component="posts"] [data-pid=' + post.pid + ']').length;
 		});
 
 		if (!posts.length) {
@@ -115,7 +108,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 
 		infinitescroll.parseAndTranslate('account/profile', 'posts', {posts: posts}, function(html) {
 
-			$('.user-recent-posts .loading-indicator').before(html);
+			$('[component="posts"]').append(html);
 			html.find('.timeago').timeago();
 
 			callback();

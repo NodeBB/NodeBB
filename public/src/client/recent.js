@@ -2,7 +2,7 @@
 
 /* globals define, app, socket, utils */
 
-define('forum/recent', ['forum/infinitescroll', 'composer', 'components'], function(infinitescroll, composer, components) {
+define('forum/recent', ['forum/infinitescroll', 'components'], function(infinitescroll, components) {
 	var	Recent = {};
 
 	var newTopicCount = 0,
@@ -93,10 +93,10 @@ define('forum/recent', ['forum/infinitescroll', 'composer', 'components'], funct
 		}, function(data, done) {
 			if (data.topics && data.topics.length) {
 				Recent.onTopicsLoaded('recent', data.topics, false, done);
-				$('[component="category"]').attr('data-nextstart', data.nextStart);
 			} else {
 				done();
 			}
+			$('[component="category"]').attr('data-nextstart', data.nextStart);
 		});
 	};
 

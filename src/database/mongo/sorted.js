@@ -377,8 +377,12 @@ module.exports = function(db, module) {
 	};
 
 	module.isSortedSetMember = function(key, value, callback) {
-		module.sortedSetScore(key, value, function(err, score) {
-			callback(err, !!score);
+		if (!key) {
+			return callback();
+		}
+		value = helpers.valueToString(value);
+		db.collection('objects').findOne({_key: key, value: value}, {_id: 0, value: 1}, function(err, result) {
+			callback(err, !!result);
 		});
 	};
 

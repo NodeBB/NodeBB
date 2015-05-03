@@ -42,4 +42,10 @@
 							</tr>
 							<!-- END privileges.groups -->
 						</table>
+						<div class="help-block">
+							If the <code>registered-users</code> group is granted a specific privilege, all other groups receive an
+							<strong>implicit privilege</strong>, even if they are not explicitly defined/checked. This implicit
+							privilege is shown to you because all users are part of the <code>registered-users</code> user group,
+							and so, privileges for additional groups need not be explicitly granted.
+						</div>
 					</div>

@@ -5,7 +5,8 @@
     "recent": "Последние темы",
     "users": "Зарегистрированные пользователи",
     "notifications": "Уведомления",
-    "tags": "Темы с тегом \"%1\"",
+    "tags": "Теги",
+    "tag": "Темы с тегом \"%1\"",
     "user.edit": "Редактирование \"%1\"",
     "user.following": "%1 читает",
     "user.followers": "Читают %1",
@@ -14,7 +15,7 @@
     "user.groups": "Группы %1",
     "user.favourites": "Избранные сообщения %1",
     "user.settings": "Настройки",
-    "user.watched": "Topics watched by %1",
+    "user.watched": "Темы смотрели %1",
     "maintenance.text": "%1 в настоящее время на обслуживании. Пожалуйста, возвращайтесь позже.",
     "maintenance.messageIntro": "Администратор оставил сообщение:"
 }

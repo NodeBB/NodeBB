@@ -15,7 +15,7 @@ rewards.save = function(data, callback) {
 
 			data.id = id;
 			
-			async.waterfall([
+			async.series([
 				function(next) {
 					rewards.delete(data, next);
 				},
@@ -97,7 +97,7 @@ function saveConditions(data, callback) {
 		db.setAdd('conditions:active', conditions, callback);
 
 		async.each(Object.keys(rewardsPerCondition), function(condition, next) {
-			db.setAdd('condition:' + condition + ':rewards', rewardsPerCondition[condition]);
+			db.setAdd('condition:' + condition + ':rewards', rewardsPerCondition[condition], next);
 		}, callback);
 	});
 }
@@ -114,8 +114,10 @@ function getActiveRewards(callback) {
 				db.getObject('rewards:id:' + id + ':rewards', next);
 			}
 		}, function(err, data) {
-			data.main.rewards = data.rewards;
-			activeRewards.push(data.main);
+			if (data.main) {
+				data.main.rewards = data.rewards;
+				activeRewards.push(data.main);
+			}
 
 			next(err);
 		});

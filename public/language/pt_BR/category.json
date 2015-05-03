@@ -5,5 +5,8 @@
     "browsing": "navegando",
     "no_replies": "Ninguém respondeu",
     "share_this_category": "Compartilhar esta categoria",
-    "ignore": "Ignorar"
+    "watch": "Assistir",
+    "ignore": "Ignorar",
+    "watch.message": "Agora você está assistindo à atualizações desta categoria",
+    "ignore.message": "Agora você está ignorando as atualizações desta categoria"
 }

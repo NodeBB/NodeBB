@@ -1,7 +1,7 @@
 "use strict";
 /* globals app, config, define, socket, templates, utils, ajaxify */
 
-define('chat', ['taskbar', 'string', 'sounds', 'forum/chats', 'translator'], function(taskbar, S, sounds, Chats, translator) {
+define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'translator'], function(components, taskbar, S, sounds, Chats, translator) {
 
 	var module = {};
 	var newMessage = false;
@@ -85,6 +85,11 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats', 'translator'], fun
 				if (!isSelf && (!modal.is(":visible") || !app.isFocused)) {
 					app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
 					sounds.play('chat-incoming');
+
+					taskbar.push('chat', modal.attr('UUID'), {
+						title: username,
+						touid: data.message.fromUser.uid
+					});
 				}
 			} else {
 				module.createModal(username, data.withUid, function(modal) {
@@ -118,7 +123,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats', 'translator'], fun
 
 		socket.on('event:user_status_change', function(data) {
 			var modal = module.getModal(data.uid);
-			updateStatus(modal, data.status);
+			app.updateUserStatus(modal.find('[component="user/status"]'), data.status);
 		});
 	};
 
@@ -153,20 +158,12 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats', 'translator'], fun
 			if (err) {
 				return app.alertError(err.message);
 			}
-			updateStatus(chatModal, status);
-		});
-	}
 
-	function updateStatus(chatModal, status) {
-		translator.translate('[[global:' + status + ']]', function(translated) {
-			chatModal.find('#chat-user-status').attr('class', 'fa fa-circle status ' + status)
-				.attr('title', translated)
-				.attr('data-original-title', translated);
+			app.updateUserStatus(chatModal.find('[component="user/status"]'), status);
 		});
 	}
 
 	module.createModal = function(username, touid, callback) {
-
 		templates.parse('chat', {}, function(chatTpl) {
 			translator.translate(chatTpl, function (chatTpl) {
 
@@ -213,6 +210,11 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats', 'translator'], fun
 				});
 
 				function gotoChats() {
+					var text = components.get('chat/input').val();
+					$(window).one('action:ajaxify.end', function() {
+						components.get('chat/input').val(text);
+					});
+					
 					ajaxify.go('chats/' + utils.slugify(username));
 					module.close(chatModal);
 				}
@@ -268,6 +270,7 @@ define('chat', ['taskbar', 'string', 'sounds', 'forum/chats', 'translator'], fun
 
 				taskbar.push('chat', chatModal.attr('UUID'), {
 					title: username,
+					touid: touid,
 					icon: 'fa-comment',
 					state: ''
 				});

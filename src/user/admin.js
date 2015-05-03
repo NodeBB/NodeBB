@@ -15,8 +15,8 @@ module.exports = function(User) {
 		}
 	};
 
-	User.getIPs = function(uid, end, callback) {
-		db.getSortedSetRevRange('uid:' + uid + ':ip', 0, end, function(err, ips) {
+	User.getIPs = function(uid, stop, callback) {
+		db.getSortedSetRevRange('uid:' + uid + ':ip', 0, stop, function(err, ips) {
 			if(err) {
 				return callback(err);
 			}

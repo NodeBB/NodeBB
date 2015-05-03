@@ -48,6 +48,12 @@
 		<form>
 			<div class="checkbox">
 				<label>
+					<input type="checkbox" data-field="allowProfileImageUploads"> <strong>Allow users to upload profile images</strong>
+				</label>
+			</div>
+
+			<div class="checkbox">
+				<label>
 					<input type="checkbox" data-field="profile:convertProfileImageToPNG"> <strong>Convert profile image uploads to PNG</strong>
 				</label>
 			</div>
@@ -102,6 +108,10 @@
 				<label>Days to remember user login sessions</label>
 				<input type="text" class="form-control" data-field="loginDays" placeholder="14" />
 			</div>
+			<div class="form-group">
+				<label>Force password reset after a set number of days</label>
+				<input type="text" class="form-control" data-field="passwordExpiryDays" placeholder="0" />
+			</div>
 		</form>
 	</div>
 </div>
@@ -121,6 +131,10 @@
 			<div class="form-group">
 				<label>Minimum Password Length</label>
 				<input type="text" class="form-control" value="6" data-field="minimumPasswordLength">
+			</div>
+			<div class="form-group">
+				<label>Maximum About Me Length</label>
+				<input type="text" class="form-control" value="500" data-field="maximumAboutMeLength">
 			</div>
 			<div class="form-group">
 				<label>Forum Terms of Use <small>(Leave blank to disable)</small></label>

@@ -47,7 +47,7 @@ define('forum/category', [
 			navigator.init('[component="category/topic"]', ajaxify.variables.get('topic_count'), Category.toTop, Category.toBottom, Category.navigatorCallback);
 		}
 
-		$('[component="category"]').on('click', '[component="post/header"]', function() {
+		$('[component="category"]').on('click', '[component="topic/header"]', function() {
 			var clickedIndex = $(this).parents('[data-index]').attr('data-index');
 			$('[component="category/topic"]').each(function(index, el) {
 				if ($(el).offset().top - $(window).scrollTop() > 0) {
@@ -73,6 +73,8 @@ define('forum/category', [
 
 				$('.watch').toggleClass('hidden', command === 'watch');
 				$('.ignore').toggleClass('hidden', command === 'ignore');
+
+				app.alertSuccess('[[category:' + command + '.message]]')
 			});
 		});
 	}
@@ -92,7 +94,7 @@ define('forum/category', [
 	};
 
 	$(window).on('action:popstate', function(ev, data) {
-		if (data.url.indexOf('category/') === 0) {
+		if (data.url.startsWith('category/')) {
 			var cid = data.url.match(/^category\/(\d+)/);
 			if (cid && cid[1]) {
 				cid = cid[1];
@@ -184,8 +186,11 @@ define('forum/category', [
 
 		$(window).trigger('filter:categories.new_topic', topic);
 
+		var editable = !!$('.thread-tools').length;
+
 		templates.parse('category', 'topics', {
-			privileges: {editable: !!$('.thread-tools').length},
+			privileges: {editable: editable},
+			showSelect: editable,
 			topics: [topic]
 		}, function(html) {
 			translator.translate(html, function(translatedHTML) {
@@ -276,6 +281,8 @@ define('forum/category', [
 			return;
 		}
 
+		data.showSelect = data.privileges.editable;
+
 		findInsertionPoint();
 
 		templates.parse('category', 'topics', data, function(html) {
@@ -335,17 +342,16 @@ define('forum/category', [
 			after: after,
 			author: utils.params().author
 		}, function (data, done) {
-
 			if (data.topics && data.topics.length) {
 				Category.onTopicsLoaded(data, function() {
 					done();
 					callback();
 				});
-				$('[component="category"]').attr('data-nextstart', data.nextStart);
 			} else {
 				done();
 			}
 
+			$('[component="category"]').attr('data-nextstart', data.nextStart);
 			$(window).trigger('action:categories.loaded');
 		});
 	}

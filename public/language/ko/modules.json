@@ -15,8 +15,12 @@
     "chat.seven_days": "7일",
     "chat.thirty_days": "30일",
     "chat.three_months": "3개월",
+    "composer.compose": "Compose",
+    "composer.show_preview": "Show Preview",
+    "composer.hide_preview": "Hide Preview",
     "composer.user_said_in": "%1님이 %2에서 한 말:",
     "composer.user_said": "%1님의 말:",
     "composer.discard": "이 게시물을 지우겠습니까?",
-    "composer.submit_and_lock": "Submit and Lock"
+    "composer.submit_and_lock": "Submit and Lock",
+    "composer.toggle_dropdown": "Toggle Dropdown"
 }

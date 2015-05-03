@@ -38,14 +38,7 @@ var async = require('async'),
 
 			async.parallel({
 				topics: function(next) {
-					Categories.getCategoryTopics({
-						cid: data.cid,
-						set: data.set,
-						reverse: data.reverse,
-						start: data.start,
-						stop: data.end,
-						uid: data.uid
-					}, next);
+					Categories.getCategoryTopics(data, next);
 				},
 				pageCount: function(next) {
 					Categories.getPageCount(data.cid, data.uid, next);
@@ -65,7 +58,7 @@ var async = require('async'),
 
 				plugins.fireHook('filter:category.get', {category: category, uid: data.uid}, function(err, data) {
 					callback(err, data ? data.category : null);
-				});				
+				});
 			});
 		});
 	};
@@ -120,7 +113,7 @@ var async = require('async'),
 			},
 			function(cids, next) {
 				Categories.getCategories(cids, uid, next);
-			}			
+			}
 		], callback);
 	};
 
@@ -248,12 +241,28 @@ var async = require('async'),
 					categories[i]['unread-class'] = (parseInt(categories[i].topic_count, 10) === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
 					categories[i].children = results.children[i];
 					categories[i].parent = results.parents[i] && !results.parents[i].disabled ? results.parents[i] : null;
+					calculateTopicPostCount(categories[i]);
 				}
 			}
 
 			callback(null, categories);
 		});
 	};
+
+	function calculateTopicPostCount(category) {
+		if (!Array.isArray(category.children) || !category.children.length) {
+			return;
+		}
+		var postCount = parseInt(category.post_count, 10) || 0;
+		var topicCount = parseInt(category.topic_count, 10) || 0;
+
+		category.children.forEach(function(child) {
+			postCount += parseInt(child.post_count, 10) || 0;
+			topicCount += parseInt(child.topic_count, 10) || 0;
+		});
+		category.post_count = postCount;
+		category.topic_count = topicCount;
+	}
 
 	Categories.getParents = function(cids, callback) {
 		Categories.getMultipleCategoryFields(cids, ['parentCid'], function(err, data) {
@@ -262,7 +271,11 @@ var async = require('async'),
 			}
 
 			var parentCids = data.map(function(category) {
-				return category && category.parentCid;
+				if (category && category.hasOwnProperty('parentCid') && category.parentCid) {
+					return category.parentCid;
+				} else {
+					return 0;
+				}
 			});
 
 			Categories.getCategoriesData(parentCids, callback);

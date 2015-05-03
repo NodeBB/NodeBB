@@ -28,7 +28,8 @@
 		{
 			name: 'redis:password',
 			description: 'Password of your Redis database',
-			hidden: true
+			hidden: true,
+			before: function(value) { value = value || nconf.get('redis:password') || ''; return value; }
 		},
 		{
 			name: "redis:database",

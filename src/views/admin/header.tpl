@@ -74,7 +74,32 @@
 					</ul>
 				</div>
 				<div class="navbar-collapse collapse">
-					<ul id="logged-in-menu" class="navbar-nav nav navbar-right pull-right">
+					<ul id="logged-in-menu" class="navbar-nav nav navbar-right">
+						<li class="hidden-lg hidden-md hidden-sm">
+							<a href="{relative_path}/" target="_blank" title="View Forum">
+								View Forum
+							</a>
+						</li>
+						<li class="hidden-lg hidden-md hidden-sm">
+							<a id="user-profile-link" href="{relative_path}/user/{user.userslug}" target="_top">
+								View Profile
+							</a>
+						</li>
+						<li role="presentation" class="hidden-lg hidden-md hidden-sm divider"></li>
+						<li class="hidden-lg hidden-md hidden-sm">
+							<a href="#" class="reload" title="Reload Forum">
+								Reload Forum
+							</a>
+						</li>
+						<li class="hidden-lg hidden-md hidden-sm">
+							<a href="#" class="restart" title="Restart Forum">
+								Restart Forum
+							</a>
+						</li>
+						<li role="presentation" class="hidden-lg hidden-md hidden-sm divider"></li>
+						<li component="logout" class="hidden-lg hidden-md hidden-sm">
+							<a href="#">Log out</a>
+						</li>
 						<li style="float:left;">
 							<form class="navbar-form hidden-xs" role="search">
 								<div class="form-group" id="acp-search" >
@@ -85,23 +110,37 @@
 								</div>
 							</form>
 						</li>
-						<li id="user_label" class="dropdown pull-right">
+						<li id="user_label" class="dropdown pull-right hidden-xs">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
 								<img src="{user.picture}"/>
 							</a>
 							<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
 								<li>
-									<a id="user-profile-link" href="{relative_path}/user/{user.userslug}" target="_top"><span>Profile</span></a>
+									<a href="{relative_path}/" target="_blank" title="View Forum">
+										View Forum
+									</a>
 								</li>
-								<li id="logout-link">
+								<li>
+									<a id="user-profile-link" href="{relative_path}/user/{user.userslug}" target="_top">
+										View Profile
+									</a>
+								</li>
+								<li role="presentation" class="divider"></li>
+								<li>
+									<a href="#" class="reload" title="Reload Forum">
+										Reload Forum
+									</a>
+								</li>
+								<li>
+									<a href="#" class="restart" title="Restart Forum">
+										Restart Forum
+									</a>
+								</li>
+								<li role="presentation" class="divider"></li>
+								<li component="logout">
 									<a href="#">Log out</a>
 								</li>
 							</ul>
-						</li>
-						<li class="nav-home pull-right">
-							<a href="{relative_path}/" target="_blank" title="Open forum homepage" data-original-title="Open forum homepage">
-								<i class="fa fa-home fa-fw"></i>
-							</a>
 						</li>
 					</ul>
 				</div>

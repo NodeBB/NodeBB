@@ -13,38 +13,58 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 
 		topicSelect.init(updateDropdownOptions);
 
-		$('.delete_thread').on('click', function(e) {
-			var tids = topicSelect.getSelectedTids();
-			categoryCommand(isAny(isTopicDeleted, tids) ? 'restore' : 'delete', tids);
+		components.get('topic/delete').on('click', function() {
+			categoryCommand('delete', topicSelect.getSelectedTids());
 			return false;
 		});
 
-		$('.purge_thread').on('click', function() {
+		components.get('topic/restore').on('click', function() {
+			categoryCommand('restore', topicSelect.getSelectedTids());
+			return false;
+		});
+
+		components.get('topic/purge').on('click', function() {
 			categoryCommand('purge', topicSelect.getSelectedTids());
 			return false;
 		});
 
-		$('.lock_thread').on('click', function() {
+		components.get('topic/lock').on('click', function() {
 			var tids = topicSelect.getSelectedTids();
 			if (tids.length) {
-				socket.emit(isAny(isTopicLocked, tids) ? 'topics.unlock' : 'topics.lock', {tids: tids, cid: CategoryTools.cid}, onCommandComplete);
+				socket.emit('topics.lock', {tids: tids, cid: CategoryTools.cid}, onCommandComplete);
 			}
 			return false;
 		});
 
-		$('.pin_thread').on('click', function() {
+		components.get('topic/unlock').on('click', function() {
 			var tids = topicSelect.getSelectedTids();
 			if (tids.length) {
-				socket.emit(isAny(isTopicPinned, tids) ? 'topics.unpin' : 'topics.pin', {tids: tids, cid: CategoryTools.cid}, onCommandComplete);
+				socket.emit('topics.unlock', {tids: tids, cid: CategoryTools.cid}, onCommandComplete);
 			}
 			return false;
 		});
 
-		$('.markAsUnreadForAll').on('click', function() {
+		components.get('topic/pin').on('click', function() {
+			var tids = topicSelect.getSelectedTids();
+			if (tids.length) {
+				socket.emit('topics.pin', {tids: tids, cid: CategoryTools.cid}, onCommandComplete);
+			}
+			return false;
+		});
+
+		components.get('topic/unpin').on('click', function() {
+			var tids = topicSelect.getSelectedTids();
+			if (tids.length) {
+				socket.emit('topics.unpin', {tids: tids, cid: CategoryTools.cid}, onCommandComplete);
+			}
+			return false;
+		});
+
+		components.get('topic/mark-unread-for-all').on('click', function() {
 			var tids = topicSelect.getSelectedTids();
 			if (tids.length) {
 				socket.emit('topics.markAsUnreadForAll', tids, function(err) {
-					if(err) {
+					if (err) {
 						return app.alertError(err.message);
 					}
 					app.alertSuccess('[[topic:markAsUnreadForAll.success]]');
@@ -56,7 +76,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 			return false;
 		});
 
-		$('.move_thread').on('click', function() {
+		components.get('topic/move').on('click', function() {
 			var tids = topicSelect.getSelectedTids();
 
 			if (tids.length) {
@@ -65,7 +85,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 			return false;
 		});
 
-		$('.move_all_threads').on('click', function() {
+		components.get('topic/move-all').on('click', function() {
 			move.init(null, cid, function(err) {
 				ajaxify.refresh();
 			});
@@ -130,16 +150,22 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 	}
 
 	function updateDropdownOptions() {
+
 		var tids = topicSelect.getSelectedTids();
 		var isAnyDeleted = isAny(isTopicDeleted, tids);
 		var areAllDeleted = areAll(isTopicDeleted, tids);
 		var isAnyPinned = isAny(isTopicPinned, tids);
 		var isAnyLocked = isAny(isTopicLocked, tids);
 
-		$('.delete_thread span').translateHtml('<i class="fa fa-fw ' + (isAnyDeleted ? 'fa-history' : 'fa-trash-o') + '"></i> [[topic:thread_tools.' + (isAnyDeleted ? 'restore' : 'delete') + ']]');
-		$('.pin_thread').translateHtml('<i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.' + (isAnyPinned ? 'unpin' : 'pin') + ']]');
-		$('.lock_thread').translateHtml('<i class="fa fa-fw fa-' + (isAnyLocked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (isAnyLocked ? 'un': '') + 'lock]]');
-		$('.purge_thread').toggleClass('hidden', !areAllDeleted);
+		components.get('topic/delete').toggleClass('hidden', isAnyDeleted);
+		components.get('topic/restore').toggleClass('hidden', !isAnyDeleted);
+		components.get('topic/purge').toggleClass('hidden', !areAllDeleted);
+
+		components.get('topic/lock').toggleClass('hidden', isAnyLocked);
+		components.get('topic/unlock').toggleClass('hidden', !isAnyLocked);
+
+		components.get('topic/pin').toggleClass('hidden', isAnyPinned);
+		components.get('topic/unpin').toggleClass('hidden', !isAnyPinned);
 	}
 
 	function isAny(method, tids) {

@@ -53,19 +53,17 @@ middleware.buildHeader = function(req, res, next) {
 };
 
 middleware.renderHeader = function(req, res, next) {
-	var uid = req.user ? req.user.uid : 0;
-
 	var custom_header = {
 		'plugins': [],
 		'authentication': []
 	};
 
-	user.getUserFields(uid, ['username', 'userslug', 'email', 'picture', 'email:confirmed'], function(err, userData) {
+	user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'email:confirmed'], function(err, userData) {
 		if (err) {
 			return next(err);
 		}
 
-		userData.uid = uid;
+		userData.uid = req.uid;
 		userData['email:confirmed'] = parseInt(userData['email:confirmed'], 10) === 1;
 
 		async.parallel({

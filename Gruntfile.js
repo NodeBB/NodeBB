@@ -60,7 +60,7 @@ module.exports = function(grunt) {
 				files: ['public/src/**/*.js', 'node_modules/nodebb-*/*.js', 'node_modules/nodebb-*/*/*.js', 'node_modules/nodebb-*/*/*/*.js', 'node_modules/nodebb-*/*/*/*/*.js']
 			},
 			serverUpdated: {
-				files: ['*.js', 'src/**/*.js']
+				files: ['*.js', 'install/*.js', 'src/**/*.js']
 			},
 			templatesUpdated: {
 				files: ['src/views/**/*.tpl', 'node_modules/nodebb-*/*.tpl', 'node_modules/nodebb-*/*/*.tpl', 'node_modules/nodebb-*/*/*/*.tpl', 'node_modules/nodebb-*/*/*/*/*.tpl', 'node_modules/nodebb-*/*/*/*/*/*.tpl']

@@ -2,7 +2,7 @@
 
 /* globals define, app, ajaxify, utils, socket, templates */
 
-define('forum/chats', ['string', 'sounds', 'forum/infinitescroll', 'translator'], function(S, sounds, infinitescroll, translator) {
+define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll', 'translator'], function(components, S, sounds, infinitescroll, translator) {
 	var Chats = {
 		initialised: false
 	};
@@ -69,9 +69,14 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll', 'translator']
 				uid = Chats.getRecipientUid();
 
 			if (app.previousUrl && app.previousUrl.match(/chats/)) {
+				var text = components.get('chat/input').val();
 				ajaxify.go('chats', function() {
 					app.openChat(username, uid);
 				}, true);
+
+				$(window).one('action:chat.loaded', function() {
+					components.get('chat/input').val(text);
+				});
 			} else {
 				window.history.go(-1);
 			}
@@ -163,16 +168,7 @@ define('forum/chats', ['string', 'sounds', 'forum/infinitescroll', 'translator']
 		});
 
 		socket.on('event:user_status_change', function(data) {
-			var userEl = $('.chats-list li[data-uid="' + data.uid +'"]');
-
-			if (userEl.length) {
-				var statusEl = userEl.find('.status');
-				translator.translate('[[global:' + data.status + ']]', function(translated) {
-					statusEl.attr('class', 'fa fa-circle status ' + data.status)
-						.attr('title', translated)
-						.attr('data-original-title', translated);
-				});
-			}
+			app.updateUserStatus($('.chats-list [data-uid="' + data.uid + '"] [component="user/status"]'), data.status);
 		});
 	};
 

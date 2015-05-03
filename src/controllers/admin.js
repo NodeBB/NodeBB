@@ -3,6 +3,7 @@
 var async = require('async'),
 	fs = require('fs'),
 	path = require('path'),
+	nconf = require('nconf'),
 
 	user = require('../user'),
 	categories = require('../categories'),
@@ -16,7 +17,6 @@ var async = require('async'),
 	plugins = require('../plugins'),
 	widgets = require('../widgets'),
 	groups = require('../groups'),
-	pkg = require('../../package.json'),
 	validator = require('validator');
 
 
@@ -33,6 +33,7 @@ var adminController = {
 	events: {},
 	logs: {},
 	database: {},
+	postCache: {},
 	plugins: {},
 	languages: {},
 	settings: {},
@@ -63,7 +64,7 @@ adminController.home = function(req, res, next) {
 			return next(err);
 		}
 		res.render('admin/general/dashboard', {
-			version: pkg.version,
+			version: nconf.get('version'),
 			notices: results.notices,
 			stats: results.stats
 		});
@@ -136,24 +137,38 @@ adminController.categories.get = function(req, res, next) {
 			return next(err);
 		}
 
-		res.render('admin/manage/category', {
-			category: data.category[0],
-			privileges: data.privileges
+		plugins.fireHook('filter:admin.category.get', {req: req, res: res, category: data.category[0], privileges: data.privileges}, function(err, data) {
+			if (err) {
+				return next(err);
+			}
+
+			res.render('admin/manage/category', {
+				category: data.category,
+				privileges: data.privileges
+			});
 		});
 	});
 };
 
 adminController.categories.getAll = function(req, res, next) {
-	var uid = req.user ? parseInt(req.user.uid, 10) : 0,
-		active = [],
+	var	active = [],
 		disabled = [];
 
-	categories.getAllCategories(uid, function (err, categoryData) {
+	async.waterfall([
+		function(next) {
+			db.getSortedSetRange('categories:cid', 0, -1, next);
+		},
+		function(cids, next) {
+			categories.getCategoriesData(cids, next);
+		},
+		function(categories, next) {
+			plugins.fireHook('filter:admin.categories.get', {req: req, res: res, categories: categories}, next);
+		}
+	], function(err, data) {
 		if (err) {
 			return next(err);
 		}
-
-		categoryData.filter(Boolean).forEach(function(category) {
+		data.categories.filter(Boolean).forEach(function(category) {
 			(category.disabled ? disabled : active).push(category);
 		});
 
@@ -179,20 +194,20 @@ adminController.flags.get = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		res.render('admin/manage/flags', {posts: posts, next: end + 1, byUsername: byUsername});
+		res.render('admin/manage/flags', {posts: posts, next: stop + 1, byUsername: byUsername});
 	}
-	var uid = req.user ? parseInt(req.user.uid, 10) : 0;
+
 	var sortBy = req.query.sortBy || 'count';
 	var byUsername = req.query.byUsername || '';
 	var start = 0;
-	var end = 19;
+	var stop = 19;
 
 	if (byUsername) {
-		posts.getUserFlags(byUsername, sortBy, uid, start, end, done);
+		posts.getUserFlags(byUsername, sortBy, req.uid, start, stop, done);
 	} else {
 		var set = sortBy === 'count' ? 'posts:flags:count' : 'posts:flagged';
-		posts.getFlags(set, uid, start, end, done);	
-	}	
+		posts.getFlags(set, req.uid, start, stop, done);
+	}
 };
 
 adminController.database.get = function(req, res, next) {
@@ -222,6 +237,26 @@ adminController.logs.get = function(req, res, next) {
 	});
 };
 
+adminController.postCache.get = function(req, res, next) {
+	var cache = require('../posts/cache');
+	var avgPostSize = 0;
+	var percentFull = 0;
+	if (cache.itemCount > 0) {
+		avgPostSize = parseInt((cache.length / cache.itemCount), 10);
+		percentFull = ((cache.length / cache.max) * 100).toFixed(2);
+	}
+
+	res.render('admin/advanced/post-cache', {
+		cache: {
+			length: cache.length,
+			max: cache.max,
+			itemCount: cache.itemCount,
+			percentFull: percentFull,
+			avgPostSize: avgPostSize
+		}
+	});
+};
+
 adminController.plugins.get = function(req, res, next) {
 	plugins.getAll(function(err, plugins) {
 		if (err || !Array.isArray(plugins)) {
@@ -236,6 +271,12 @@ adminController.plugins.get = function(req, res, next) {
 
 adminController.languages.get = function(req, res, next) {
 	languages.list(function(err, languages) {
+		if (err) {
+			return next(err);
+		}
+		languages.forEach(function(language) {
+			language.selected = language.code === meta.config.defaultLang;
+		});
 		res.render('admin/general/languages', {
 			languages: languages
 		});
@@ -261,7 +302,7 @@ adminController.navigation.get = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		
+
 		res.render('admin/general/navigation', data);
 	});
 };
@@ -374,7 +415,7 @@ adminController.extend.rewards = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		
+
 		res.render('admin/extend/rewards', data);
 	});
 };

@@ -31,9 +31,7 @@ $(document).ready(function() {
 	ajaxify.currentPage = null;
 
 	ajaxify.go = function (url, callback, quiet) {
-		if (ajaxify.handleACPRedirect(url)) {
-			return true;
-		} else if (ajaxify.handleNonAPIRoutes(url)) {
+		if (ajaxify.handleRedirects(url)) {
 			return true;
 		}
 
@@ -57,37 +55,35 @@ $(document).ready(function() {
 
 			app.template = data.template.name;
 
-			require(['translator', 'search'], function(translator, search) {
+			require(['translator'], function(translator) {
 				translator.load(config.defaultLang, data.template.name);
 				renderTemplate(url, data.template.name, data, callback);
-				search.topicDOM.end();
 			});
+		});
+
+		require(['search'], function(search) {
+			if (search.topicDOM.active && !url.startsWith('topic/')) {
+				search.topicDOM.end();
+			}
 		});
 
 		return true;
 	};
 
-	ajaxify.handleACPRedirect = function(url) {
-		// If ajaxifying into an admin route from regular site, do a cold load.
-		url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
-		if (url.indexOf('admin') === 0 && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0) {
+	ajaxify.handleRedirects = function(url) {
+		url = ajaxify.removeRelativePath(url.replace(/\/$/, '')).toLowerCase();
+		var isAdminRoute = url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0;
+		var uploadsOrApi = url.startsWith('uploads') || url.startsWith('api');
+		if (isAdminRoute || uploadsOrApi) {
 			window.open(RELATIVE_PATH + '/' + url, '_blank');
 			return true;
 		}
 		return false;
 	};
 
-	ajaxify.handleNonAPIRoutes = function(url) {
-		url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
-		if (url.indexOf('uploads') === 0) {
-			window.open(RELATIVE_PATH + '/' + url, '_blank');
-			return true;
-		}
-		return false;
-	};
 
 	ajaxify.start = function(url, quiet, search) {
-		url = ajaxify.removeRelativePath(url.replace(/\/$/, ''));
+		url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, ''));
 		var hash = window.location.hash;
 		search = search || '';
 
@@ -168,7 +164,7 @@ $(document).ready(function() {
 	};
 
 	ajaxify.removeRelativePath = function(url) {
-		if (url.indexOf(RELATIVE_PATH.slice(1)) === 0) {
+		if (url.startsWith(RELATIVE_PATH.slice(1))) {
 			url = url.slice(RELATIVE_PATH.length);
 		}
 		return url;
@@ -264,7 +260,7 @@ $(document).ready(function() {
 			}
 
 			if (!e.ctrlKey && !e.shiftKey && !e.metaKey && e.which === 1) {
-				if (this.host === '' || this.host === window.location.host) {
+				if (this.host === '' || (this.host === window.location.host && this.protocol === window.location.protocol)) {
 					// Internal link
 					var url = this.href.replace(rootUrl + '/', '');
 

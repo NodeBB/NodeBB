@@ -114,7 +114,7 @@ module.exports = function(Topics) {
 
 		async.waterfall([
 			function(next) {
-				privileges.topics.filter('read', tids, uid, next);
+				privileges.topics.filterTids('read', tids, uid, next);
 			},
 			function(tids, next) {
 				Topics.getTopicsFields(tids, ['tid', 'cid'], next);

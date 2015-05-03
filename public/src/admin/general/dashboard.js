@@ -31,9 +31,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			usedTopicColors.length = 0;
 		});
 
-		$('#logout-link').on('click', function() {
-			app.logout();
-		});
+		$('[component="logout"]').on('click', app.logout);
 
 		$.get('https://api.github.com/repos/NodeBB/NodeBB/tags', function(releases) {
 			// Re-sort the releases, as they do not follow Semver (wrt pre-releases)
@@ -59,61 +57,6 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 				checkEl.removeClass('alert-info').addClass('alert-warning');
 				checkEl.append('<p>You are running a <strong>development version</strong>! Unintended bugs may occur. <i class="fa fa-warning"></i></p>');
 			}
-		});
-
-		$('.restart').on('click', function() {
-			bootbox.confirm('Are you sure you wish to restart NodeBB?', function(confirm) {
-				if (confirm) {
-					app.alert({
-						alert_id: 'instance_restart',
-						type: 'info',
-						title: 'Restarting... <i class="fa fa-spin fa-refresh"></i>',
-						message: 'NodeBB is restarting.',
-						timeout: 5000
-					});
-
-					$(window).one('action:reconnected', function() {
-						app.alert({
-							alert_id: 'instance_restart',
-							type: 'success',
-							title: '<i class="fa fa-check"></i> Success',
-							message: 'NodeBB has successfully restarted.',
-							timeout: 5000
-						});
-					});
-
-					socket.emit('admin.restart');
-				}
-			});
-		});
-
-		$('.reload').on('click', function() {
-			app.alert({
-				alert_id: 'instance_reload',
-				type: 'info',
-				title: 'Reloading... <i class="fa fa-spin fa-refresh"></i>',
-				message: 'NodeBB is reloading.',
-				timeout: 5000
-			});
-
-			socket.emit('admin.reload', function(err) {
-				if (!err) {
-					app.alert({
-						alert_id: 'instance_reload',
-						type: 'success',
-						title: '<i class="fa fa-check"></i> Success',
-						message: 'NodeBB has successfully reloaded.',
-						timeout: 5000
-					});
-				} else {
-					app.alert({
-						alert_id: 'instance_reload',
-						type: 'danger',
-						title: '[[global:alert.error]]',
-						message: '[[error:reload-failed, ' + err.message + ']]'
-					});
-				}
-			});
 		});
 
 		setupGraphs();
@@ -283,13 +226,8 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 				color: "#949FB1",
 				highlight: "#A8B3C5",
 				label: "Recent/Unread"
-			},
-			{
-				value: 1,
-				color: "#8FA633",
-				highlight: "#3FA7B8",
-				label: "Tags"
-			}], {
+			}
+			], {
 				responsive: true
 			});
 
@@ -338,8 +276,10 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 
 			$('#pageViewsThisMonth').html(data.monthlyPageViews.thisMonth);
 			$('#pageViewsLastMonth').html(data.monthlyPageViews.lastMonth);
+			$('#pageViewsPastDay').html(data.pastDay);
 			utils.addCommasToNumbers($('#pageViewsThisMonth'));
 			utils.addCommasToNumbers($('#pageViewsLastMonth'));
+			utils.addCommasToNumbers($('#pageViewsPastDay'));
 		});
 	}
 
@@ -354,7 +294,6 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		graphs.presence.segments[1].value = users.topics;
 		graphs.presence.segments[2].value = users.category;
 		graphs.presence.segments[3].value = users.recent;
-		graphs.presence.segments[4].value = users.tags;
 
 		graphs.presence.update();
 	}

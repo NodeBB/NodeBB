@@ -82,7 +82,7 @@ Loader.addWorkerEvents = function(worker) {
 		if (message && typeof message === 'object' && message.action) {
 			switch (message.action) {
 				case 'ready':
-					if (Loader.js.cache) {
+					if (Loader.js.cache && !worker.isPrimary) {
 						worker.send({
 							action: 'js-propagate',
 							cache: Loader.js.cache,
@@ -91,7 +91,7 @@ Loader.addWorkerEvents = function(worker) {
 						});
 					}
 
-					if (Loader.css.cache) {
+					if (Loader.css.cache && !worker.isPrimary) {
 						worker.send({
 							action: 'css-propagate',
 							cache: Loader.css.cache,
@@ -99,6 +99,8 @@ Loader.addWorkerEvents = function(worker) {
 							hash: Loader.css.hash
 						});
 					}
+
+
 				break;
 				case 'restart':
 					console.log('[cluster] Restarting...');
@@ -130,6 +132,11 @@ Loader.addWorkerEvents = function(worker) {
 						cache: message.cache,
 						acpCache: message.acpCache,
 						hash: message.hash
+					}, worker.pid);
+				break;
+				case 'templates:compiled':
+					Loader.notifyWorkers({
+						action: 'templates:compiled',
 					}, worker.pid);
 				break;
 			}
@@ -181,7 +188,12 @@ function forkWorker(index, isPrimary) {
 }
 
 function getPorts() {
-	var urlObject = url.parse(nconf.get('url'));
+	var _url = nconf.get('url');
+	if (!_url) {
+		console.log('[cluster] url is undefined, please check your config.json');
+		process.exit();
+	}
+	var urlObject = url.parse(_url);
 	var port = nconf.get('port') || nconf.get('PORT') || urlObject.port || 4567;
 	if (!Array.isArray(port)) {
 		port = [port];
@@ -230,35 +242,42 @@ Loader.notifyWorkers = function(msg, worker_pid) {
 	});
 };
 
-nconf.argv().file({
+nconf.argv().env().file({
 	file: path.join(__dirname, '/config.json')
 });
 
-if (nconf.get('daemon') !== false) {
-	if (fs.existsSync(pidFilePath)) {
-		try {
-			var	pid = fs.readFileSync(pidFilePath, { encoding: 'utf-8' });
-			process.kill(pid, 0);
-			process.exit();
-		} catch (e) {
-			fs.unlinkSync(pidFilePath);
+fs.open(path.join(__dirname, 'config.json'), 'r', function(err) {
+	if (!err) {
+		if (nconf.get('daemon') !== false) {
+			if (fs.existsSync(pidFilePath)) {
+				try {
+					var	pid = fs.readFileSync(pidFilePath, { encoding: 'utf-8' });
+					process.kill(pid, 0);
+					process.exit();
+				} catch (e) {
+					fs.unlinkSync(pidFilePath);
+				}
+			}
+
+			require('daemon')({
+				stdout: process.stdout,
+				stderr: process.stderr
+			});
+
+			fs.writeFile(__dirname + '/pidfile', process.pid);
 		}
-	}
 
-	require('daemon')({
-		stdout: process.stdout,
-		stderr: process.stderr
-	});
-
-	fs.writeFile(__dirname + '/pidfile', process.pid);
-}
-
-async.series([
-	Loader.init,
-	Loader.displayStartupMessages,
-	Loader.start
-], function(err) {
-	if (err) {
-		console.log('[loader] Error during startup: ' + err.message);
+		async.series([
+			Loader.init,
+			Loader.displayStartupMessages,
+			Loader.start
+		], function(err) {
+			if (err) {
+				console.log('[loader] Error during startup: ' + err.message);
+			}
+		});
+	} else {
+		// No config detected, kickstart web installer
+		var child = require('child_process').fork('app');
 	}
 });

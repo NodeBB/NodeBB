@@ -7,7 +7,6 @@ var async = require('async'),
 	utils = require('../public/src/utils'),
 	user = require('./user'),
 	topics = require('./topics'),
-	postTools = require('./postTools'),
 	privileges = require('./privileges'),
 	plugins = require('./plugins');
 
@@ -15,6 +14,8 @@ var async = require('async'),
 
 	require('./posts/create')(Posts);
 	require('./posts/delete')(Posts);
+	require('./posts/edit')(Posts);
+	require('./posts/parse')(Posts);
 	require('./posts/user')(Posts);
 	require('./posts/topics')(Posts);
 	require('./posts/category')(Posts);
@@ -26,57 +27,52 @@ var async = require('async'),
 		db.isSortedSetMember('posts:pid', pid, callback);
 	};
 
-	Posts.getPidsFromSet = function(set, start, end, reverse, callback) {
-		if (isNaN(start) || isNaN(end)) {
+	Posts.getPidsFromSet = function(set, start, stop, reverse, callback) {
+		if (isNaN(start) || isNaN(stop)) {
 			return callback(null, []);
 		}
-		db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, end, callback);
+		db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, callback);
 	};
 
 	Posts.getPostsByPids = function(pids, uid, callback) {
 		var keys = [];
 
-		for(var x=0, numPids=pids.length; x<numPids; ++x) {
+		for (var x=0, numPids=pids.length; x<numPids; ++x) {
 			keys.push('post:' + pids[x]);
 		}
 
-		db.getObjects(keys, function(err, data) {
-			if(err) {
-				return callback(err);
-			}
-
-			async.map(data, function(postData, next) {
-				if(!postData) {
-					return next(null);
-				}
-
-				postData.relativeTime = utils.toISOString(postData.timestamp);
-				postData.relativeEditTime = parseInt(postData.edited, 10) !== 0 ? utils.toISOString(postData.edited) : '';
-				postTools.parsePost(postData, next);
-			}, function(err, posts) {
-				if (err) {
-					return callback(err);
-				}
-
-				plugins.fireHook('filter:post.getPosts', {posts: posts, uid: uid}, function(err, data) {
-					if (err) {
-						return callback(err);
-					}
-
-					if (!data || !Array.isArray(data.posts)) {
-						return callback(null, []);
-					}
-					data.posts = data.posts.filter(Boolean);
-					callback(null, data.posts);
-				});
-			});
-		});
-	};
-
-	Posts.getPostsFromSet = function(set, uid, start, end, callback) {
 		async.waterfall([
 			function(next) {
-				db.getSortedSetRevRange(set, start, end, next);
+				db.getObjects(keys, next);
+			},
+			function(posts, next) {
+				async.map(posts, function(post, next) {
+					if (!post) {
+						return next();
+					}
+
+					post.relativeTime = utils.toISOString(post.timestamp);
+					post.relativeEditTime = parseInt(post.edited, 10) !== 0 ? utils.toISOString(post.edited) : '';
+					Posts.parsePost(post, next);
+				}, next);
+			},
+			function(posts, next) {
+				plugins.fireHook('filter:post.getPosts', {posts: posts, uid: uid}, next);
+			},
+			function(data, next) {
+				if (!data || !Array.isArray(data.posts)) {
+					return next(null, []);
+				}
+				data.posts = data.posts.filter(Boolean);
+				next(null, data.posts);
+			}
+		], callback);
+	};
+
+	Posts.getPostsFromSet = function(set, uid, start, stop, callback) {
+		async.waterfall([
+			function(next) {
+				db.getSortedSetRevRange(set, start, stop, next);
 			},
 			function(pids, next) {
 				privileges.posts.filter('read', pids, uid, next);
@@ -85,14 +81,14 @@ var async = require('async'),
 				Posts.getPostSummaryByPids(pids, uid, {stripTags: false}, next);
 			},
 			function(posts, next) {
-				next(null, {posts: posts, nextStart: end + 1});
+				next(null, {posts: posts, nextStart: stop + 1});
 			}
 		], callback);
 	};
 
 	Posts.getPostData = function(pid, callback) {
 		db.getObject('post:' + pid, function(err, data) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 

@@ -1,9 +1,12 @@
 {
-    "new_topic_button": "\nTopik Baru",
-    "guest-login-post": "Log in to post",
-    "no_topics": "<strong>Tiada topik dalam kategori ini.</strong><br />Cuba menghantar topik yang baru?",
+    "new_topic_button": "Topik Baru",
+    "guest-login-post": "Log masuk untuk kirim",
+    "no_topics": "<strong>Tiada topik dalam kategori ini.</strong><br />Cuba hantar topik yang baru?",
     "browsing": "melihat",
     "no_replies": "Tiada jawapan",
     "share_this_category": "Kongsi kategori ini",
-    "ignore": "Ignore"
+    "watch": "Melihat",
+    "ignore": "Abai",
+    "watch.message": "Anda sedang melihat kemaskini dari kategori ini",
+    "ignore.message": "Anda sedang mengabaikan kemaskini dari kategori ini"
 }

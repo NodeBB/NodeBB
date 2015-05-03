@@ -1,8 +1,8 @@
 {
     "results_matching": "%1 resultado(s) contendo \"%2\", (%3 segundos)",
     "no-matches": "Nenhum resultado encontrado",
+    "advanced-search": "Pesquisa Avançada",
     "in": "Em",
-    "by": "Por",
     "titles": "Títulos",
     "titles-posts": "Títulos e Posts",
     "posted-by": "Postado por",
@@ -13,7 +13,7 @@
     "at-most": "No máximo",
     "post-time": "Hora da Postagem",
     "newer-than": "Mais novo que",
-    "older-than": "Mais velho que",
+    "older-than": "Mais antigo que",
     "any-date": "Qualquer data",
     "yesterday": "Ontem",
     "one-week": "Uma semana",

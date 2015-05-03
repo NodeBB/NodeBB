@@ -5,5 +5,8 @@
     "browsing": "leser",
     "no_replies": "Ingen har svart",
     "share_this_category": "Del denne kategorien",
-    "ignore": "Ignorer"
+    "watch": "Overvåk",
+    "ignore": "Ignorer",
+    "watch.message": "Du overvåker nå oppdateringer fra denne kategorien",
+    "ignore.message": "Du ignorerer nå oppdateringer fra denne kategorien"
 }

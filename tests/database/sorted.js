@@ -347,6 +347,10 @@ describe('Sorted Set methods', function() {
 	});
 
 	describe('isSortedSetMember()', function() {
+		before(function(done) {
+			db.sortedSetAdd('zeroscore', 0, 'itemwithzeroscore', done);
+		});
+
 		it('should return false if sorted set does not exist', function(done) {
 			db.isSortedSetMember('doesnotexist', 'value1', function(err, isMember) {
 				assert.equal(err, null);
@@ -369,6 +373,14 @@ describe('Sorted Set methods', function() {
 			db.isSortedSetMember('sortedSetTest1', 'value2', function(err, isMember) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
+				assert.deepEqual(isMember, true);
+				done();
+			});
+		});
+
+		it('should return true if element is in sorted set with score 0', function(done) {
+			db.isSortedSetMember('zeroscore', 'itemwithzeroscore', function(err, isMember) {
+				assert.ifError(err);
 				assert.deepEqual(isMember, true);
 				done();
 			});

@@ -1,7 +1,6 @@
 "use strict";
 
-var pkg = require('./../../package.json'),
-	meta = require('./../meta'),
+var meta = require('./../meta'),
 	user = require('./../user'),
 	plugins = require('./../plugins'),
 	widgets = require('../widgets'),
@@ -26,7 +25,7 @@ apiController.getConfig = function(req, res, next) {
 	config.relative_path = nconf.get('relative_path');
 	config.socketioTransports = nconf.get('socket.io:transports') || ['polling', 'websocket'];
 	config.websocketAddress = nconf.get('socket.io:address') || '';
-	config.version = pkg.version;
+	config.version = nconf.get('version');
 	config.siteTitle = validator.escape(meta.config.title || meta.config.browserTitle || 'NodeBB');
 	config.showSiteTitle = parseInt(meta.config.showSiteTitle, 10) === 1;
 	config.postDelay = meta.config.postDelay;
@@ -40,13 +39,16 @@ apiController.getConfig = function(req, res, next) {
 	config.maximumUsernameLength = meta.config.maximumUsernameLength;
 	config.minimumPasswordLength = meta.config.minimumPasswordLength;
 	config.maximumSignatureLength = meta.config.maximumSignatureLength;
+	config.maximumAboutMeLength = meta.config.maximumAboutMeLength;
 	config.useOutgoingLinksPage = parseInt(meta.config.useOutgoingLinksPage, 10) === 1;
 	config.allowGuestSearching = parseInt(meta.config.allowGuestSearching, 10) === 1;
 	config.allowGuestHandles = parseInt(meta.config.allowGuestHandles, 10) === 1;
 	config.allowFileUploads = parseInt(meta.config.allowFileUploads, 10) === 1;
+	config.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads) === 1;
 	config.allowTopicsThumbnail = parseInt(meta.config.allowTopicsThumbnail, 10) === 1;
 	config.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
 	config.privateUserInfo = parseInt(meta.config.privateUserInfo, 10) === 1;
+	config.privateTagListing = parseInt(meta.config.privateTagListing, 10) === 1;
 	config.usePagination = parseInt(meta.config.usePagination, 10) === 1;
 	config.disableSocialButtons = parseInt(meta.config.disableSocialButtons, 10) === 1;
 	config.disableChat = parseInt(meta.config.disableChat, 10) === 1;
@@ -98,7 +100,6 @@ apiController.getConfig = function(req, res, next) {
 
 apiController.renderWidgets = function(req, res, next) {
 	var async = require('async'),
-		uid = req.user ? req.user.uid : 0,
 		areas = {
 			template: req.query.template,
 			locations: req.query.locations,
@@ -110,7 +111,7 @@ apiController.renderWidgets = function(req, res, next) {
 		return res.status(200).json({});
 	}
 
-	widgets.render(uid, {
+	widgets.render(req.uid, {
 		template: areas.template,
 		url: areas.url,
 		locations: areas.locations

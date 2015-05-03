@@ -1,14 +1,24 @@
 'use strict';
 
-/* globals define, app, socket, utils */
+/* globals define, app, socket, utils, config, ajaxify */
 
 define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'], function(header, infinitescroll) {
 	var AccountTopics = {};
+	var template, set;
 
 	AccountTopics.init = function() {
 		header.init();
 
-		infinitescroll.init(loadMore);
+		AccountTopics.handleInfiniteScroll('account/topics', 'uid:' + ajaxify.variables.get('theirid') + ':topics');
+	};
+
+	AccountTopics.handleInfiniteScroll = function(_template, _set) {
+		template = _template;
+		set = _set;
+
+		if (!config.usePagination) {
+			infinitescroll.init(loadMore);
+		}
 	};
 
 	function loadMore(direction) {
@@ -17,16 +27,16 @@ define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'],
 		}
 
 		infinitescroll.loadMore('topics.loadMoreFromSet', {
-			set: 'uid:' + $('.account-username-box').attr('data-uid') + ':topics',
+			set: set,
 			after: $('[component="category"]').attr('data-nextstart')
 		}, function(data, done) {
-
 			if (data.topics && data.topics.length) {
 				onTopicsLoaded(data.topics, done);
-				$('[component="category"]').attr('data-nextstart', data.nextStart);
 			} else {
 				done();
 			}
+
+			$('[component="category"]').attr('data-nextstart', data.nextStart);
 		});
 	}
 

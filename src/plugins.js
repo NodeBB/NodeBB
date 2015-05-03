@@ -39,9 +39,10 @@ var fs = require('fs'),
 		Plugins.libraryPaths.push(libraryPath);
 	};
 
-	Plugins.init = function(nbbApp, nbbMiddleware) {
+	Plugins.init = function(nbbApp, nbbMiddleware, callback) {
+		callback = callback || function() {};
 		if (Plugins.initialized) {
-			return;
+			return callback();
 		}
 
 		app = nbbApp;
@@ -55,7 +56,7 @@ var fs = require('fs'),
 		Plugins.reload(function(err) {
 			if (err) {
 				winston.error('[plugins] NodeBB encountered a problem while loading plugins', err.message);
-				return;
+				return callback(err);
 			}
 
 			if (global.env === 'development') {
@@ -64,20 +65,13 @@ var fs = require('fs'),
 
 			Plugins.initialized = true;
 			emitter.emit('plugins:loaded');
+			callback();
 		});
 
 		Plugins.registerHook('core', {
 			hook: 'static:app.load',
 			method: addLanguages
 		});
-	};
-
-	Plugins.ready = function(callback) {
-		if (!Plugins.initialized) {
-			emitter.once('plugins:loaded', callback);
-		} else {
-			callback();
-		}
 	};
 
 	Plugins.reload = function(callback) {
@@ -120,19 +114,23 @@ var fs = require('fs'),
 				});
 
 				next();
-			},
-			async.apply(Plugins.reloadRoutes)
+			}
 		], callback);
 	};
 
 	Plugins.reloadRoutes = function(callback) {
+		callback = callback || function() {};
 		var router = express.Router();
 		router.hotswapId = 'plugins';
 		router.render = function() {
 			app.render.apply(app, arguments);
 		};
 
-		Plugins.fireHook('static:app.load', {app: app, router: router, middleware: middleware, controllers: controllers}, function() {
+		Plugins.fireHook('static:app.load', {app: app, router: router, middleware: middleware, controllers: controllers}, function(err) {
+			if (err) {
+				return winston.error('[plugins] Encountered error while executing post-router plugins hooks: ' + err.message);
+			}
+
 			hotswap.replace('plugins', router);
 			winston.verbose('[plugins] All plugins reloaded and rerouted');
 			callback();
@@ -245,15 +243,6 @@ var fs = require('fs'),
 		});
 	};
 
-	function getLatestVersion(versions) {
-		for(var version in versions) {
-			if (versions.hasOwnProperty(version) && versions[version] === 'latest') {
-				return version;
-			}
-		}
-		return '';
-	}
-
 	Plugins.showInstalled = function(callback) {
 		var npmPluginPath = path.join(__dirname, '../node_modules');
 
@@ -339,7 +328,7 @@ var fs = require('fs'),
 				winston.verbose('[plugins] Plugin libraries removed from Node.js cache');
 
 				next();
-			},
+			}
 		], next);
 	};
 

@@ -5,5 +5,8 @@
     "browsing": "閲覧中",
     "no_replies": "返事はまだありません",
     "share_this_category": "この板を共有",
-    "ignore": "Ignore"
+    "watch": "Watch",
+    "ignore": "Ignore",
+    "watch.message": "You are now watching updates from this category",
+    "ignore.message": "You are now ignoring updates from this category"
 }

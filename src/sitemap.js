@@ -87,7 +87,7 @@ sitemap.getDynamicUrls = function(callback) {
 					db.getSortedSetRevRange('topics:recent', 0, parseInt(meta.config.sitemapTopics, 10) || -1, next);
 				},
 				function(tids, next) {
-					privileges.topics.filter('read', tids, 0, next);
+					privileges.topics.filterTids('read', tids, 0, next);
 				},
 				function(tids, next) {
 					topics.getTopicsFields(tids, ['tid', 'title', 'lastposttime'], next);

@@ -3,6 +3,7 @@
 
 var async = require('async'),
 	validator = require('validator'),
+	url = require('url'),
 	S = require('string'),
 
 	utils = require('../../public/src/utils'),
@@ -15,7 +16,7 @@ var async = require('async'),
 module.exports = function(User) {
 
 	User.updateProfile = function(uid, data, callback) {
-		var fields = ['username', 'email', 'fullname', 'website', 'location', 'birthday', 'signature'];
+		var fields = ['username', 'email', 'fullname', 'website', 'location', 'birthday', 'signature', 'aboutme'];
 
 		plugins.fireHook('filter:user.updateProfile', {uid: uid, data: data, fields: fields}, function(err, data) {
 			if (err) {
@@ -24,6 +25,14 @@ module.exports = function(User) {
 
 			fields = data.fields;
 			data = data.data;
+
+			function isAboutMeValid(next) {
+				if (data.aboutme !== undefined && data.aboutme.length > meta.config.maximumAboutMeLength) {
+					next(new Error('[[error:about-me-too-long, ' + meta.config.maximumAboutMeLength + ']]'));
+				} else {
+					next();
+				}
+			}
 
 			function isSignatureValid(next) {
 				if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {
@@ -91,7 +100,7 @@ module.exports = function(User) {
 				});
 			}
 
-			async.series([isSignatureValid, isEmailAvailable, isUsernameAvailable], function(err, results) {
+			async.series([isAboutMeValid, isSignatureValid, isEmailAvailable, isUsernameAvailable], function(err) {
 				if (err) {
 					return callback(err);
 				}
@@ -111,7 +120,6 @@ module.exports = function(User) {
 				}
 
 				data[field] = data[field].trim();
-				data[field] = validator.escape(data[field]);
 
 				if (field === 'email') {
 					return updateEmail(uid, data.email, next);
@@ -122,9 +130,22 @@ module.exports = function(User) {
 				} else if (field === 'signature') {
 					data[field] = S(data[field]).stripTags().s;
 				} else if (field === 'website') {
-					if (!data[field].startsWith(validator.escape('http://')) && !data[field].startsWith(validator.escape('https://'))) {
-						data[field] = validator.escape('http://') + data[field];
+					if (data[field].length > 0) {
+						var urlObj = url.parse(data[field], false, true);
+						if (!urlObj.protocol) {
+							urlObj.protocol = 'http';
+							urlObj.slashes = true;
+						}
+						if (!urlObj.hostname && urlObj.pathname) {
+							urlObj.hostname = urlObj.pathname;
+							urlObj.pathname = null;
+						}
+						if (urlObj.pathname === '/') {
+							urlObj.pathname = null;
+						}
 					}
+
+					data[field] = url.format(urlObj);
 				}
 
 				User.setUserField(uid, field, data[field], next);
@@ -162,7 +183,7 @@ module.exports = function(User) {
 					},
 					function(next) {
 						if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && newEmail) {
-							User.email.verify(uid, newEmail);
+							User.email.sendValidationEmail(uid, newEmail);
 						}
 						User.setUserField(uid, 'email:confirmed', 0, next);
 					},
@@ -257,7 +278,10 @@ module.exports = function(User) {
 					return callback(err);
 				}
 
-				User.setUserField(data.uid, 'password', hash, callback);
+				async.parallel([
+					async.apply(User.setUserField, data.uid, 'password', hash),
+					async.apply(User.reset.updateExpiry, data.uid)
+				], callback);
 			});
 		}
 

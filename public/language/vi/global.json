@@ -26,8 +26,8 @@
     "header.unread": "Chưa đọc",
     "header.tags": "Tags",
     "header.popular": "Nổi bật",
-    "header.users": "Số người dùng",
-    "header.groups": "Groups",
+    "header.users": "Thành viên",
+    "header.groups": "Nhóm",
     "header.chats": "Phần Chat",
     "header.notifications": "Thông báo",
     "header.search": "Tìm kiếm",
@@ -75,7 +75,7 @@
     "updated.title": "Cập nhật diễn đàn",
     "updated.message": "Diễn đàn đã được cập nhật bản mới nhất. Click vào đây để tải lại trang.",
     "privacy": "Quyền riêng tư",
-    "follow": "Follow",
-    "unfollow": "Unfollow",
+    "follow": "Theo dõi",
+    "unfollow": "Huỷ theo dõi",
     "delete_all": "Xóa hết"
 }

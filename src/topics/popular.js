@@ -44,7 +44,7 @@ module.exports = function(Topics) {
 				}).slice(0, count).map(function(topic) {
 					return topic.tid;
 				});
-				privileges.topics.filter('read', tids, uid, next);
+				privileges.topics.filterTids('read', tids, uid, next);
 			},
 			function(tids, next) {
 				Topics.getTopicsByTids(tids, uid, next);

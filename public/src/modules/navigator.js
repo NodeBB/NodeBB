@@ -84,7 +84,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 			return;
 		}
 
-		$('.pagination-block').toggleClass('hidden', !flag);
+		$('.pagination-block').toggleClass('invisible', !flag);
 	}
 
 	navigator.update = function() {
@@ -105,6 +105,10 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 				return false;
 			}
 		});
+
+		if (topIndex && !bottomIndex) {
+			bottomIndex = topIndex;
+		}
 
 		if (typeof navigator.callback === 'function' && topIndex && bottomIndex) {
 			index = navigator.callback(topIndex, bottomIndex, count);
@@ -157,7 +161,8 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 
 		var elTop = el.offset().top;
 		var elBottom = elTop + Math.floor(el.height());
-		return (elTop >= scrollTop && elBottom <= scrollBottom) || (elTop <= scrollTop && elBottom >= scrollTop);
+
+		return (elTop >= scrollTop && elBottom < scrollBottom) || (elTop < scrollTop && elBottom > scrollTop);
 	}
 
 	navigator.scrollToPost = function(postIndex, highlight, duration, offset) {
@@ -169,17 +174,13 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		duration = duration !== undefined ? duration : 400;
 		navigator.scrollActive = true;
 
-		if(components.get('post/anchor', postIndex).length) {
+		if (components.get('post/anchor', postIndex).length) {
 			return scrollToPid(postIndex, highlight, duration, offset);
 		}
 
 		if (config.usePagination) {
-			if (window.location.search.indexOf('page') !== -1) {
-				navigator.update();
-				return;
-			}
 
-			var page = Math.ceil((postIndex + 1) / config.postsPerPage);
+			var page = Math.max(1, Math.ceil(postIndex / config.postsPerPage));
 
 			if(parseInt(page, 10) !== pagination.currentPage) {
 				pagination.loadPage(page, function() {
@@ -198,7 +199,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 	function scrollToPid(postIndex, highlight, duration, offset) {
 		var scrollTo = components.get('post/anchor', postIndex);
 
-		if (!scrollTo) {
+		if (!scrollTo.length) {
 			navigator.scrollActive = false;
 			return;
 		}

@@ -66,6 +66,8 @@ app.cacheBuster = null;
 			}, 1000);
 		});
 
+		socket.on('event:logout', app.logout);
+
 		socket.on('event:alert', function(data) {
 			app.alert(data);
 		});
@@ -185,21 +187,15 @@ app.cacheBuster = null;
 	};
 
 	function highlightNavigationLink() {
-		var path = window.location.pathname,
-			parts = path.split('/'),
-			active = parts[parts.length - 1];
-
+		var path = window.location.pathname;
 		$('#main-nav li').removeClass('active');
-		if (active) {
+		if (path) {
 			$('#main-nav li a').each(function () {
 				var href = $(this).attr('href');
-				if (active === "sort-posts" || active === "sort-reputation" || active === "search" || active === "latest" || active === "online") {
-					active = 'users';
-				}
 
-				if (href && href.match(active)) {
+				if (href && path.startsWith(href)) {
 					$(this.parentNode).addClass('active');
-					return false;
+				 	return false;
 				}
 			});
 		}
@@ -392,7 +388,7 @@ app.cacheBuster = null;
 		});
 	}
 
-	function handleSearch() {
+	app.handleSearch = function () {
 		var searchButton = $("#search-button"),
 			searchFields = $("#search-fields"),
 			searchInput = $('#search-fields input');
@@ -473,6 +469,19 @@ app.cacheBuster = null;
 		});
 	}
 
+	app.updateUserStatus = function(el, status) {
+		if (!el.length) {
+			return;
+		}
+
+		translator.translate('[[global:' + status + ']]', function(translated) {
+			el.removeClass('online offline dnd away')
+				.addClass(status)
+				.attr('title', translated)
+				.attr('data-original-title', translated);
+		});
+	};
+
 	function handleNewTopic() {
 		$('#content').on('click', '#new_topic', function() {
 			require(['composer'], function(composer) {
@@ -501,7 +510,7 @@ app.cacheBuster = null;
 			handleStatusChange();
 
 			if (config.searchEnabled) {
-				handleSearch();
+				app.handleSearch();
 			}
 
 			handleNewTopic();

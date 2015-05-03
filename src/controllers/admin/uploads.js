@@ -2,6 +2,7 @@
 
 var fs = require('fs'),
 	path = require('path'),
+	nconf = require('nconf'),
 	file = require('../../file'),
 	plugins = require('../../plugins');
 
@@ -37,7 +38,7 @@ uploadsController.uploadFavicon = function(req, res, next) {
 				return next(err);
 			}
 
-			res.json([{name: uploadedFile.name, url: image.url}]);
+			res.json([{name: uploadedFile.name, url: nconf.get('relative_path') + image.url}]);
 		});
 	}
 };
@@ -76,8 +77,7 @@ function uploadImage(filename, folder, uploadedFile, req, res, next) {
 		if (err) {
 			return next(err);
 		}
-
-		res.json([{name: uploadedFile.name, url: image.url}]);
+		res.json([{name: uploadedFile.name, url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url}]);
 	}
 
 	if (plugins.hasListeners('filter:uploadImage')) {

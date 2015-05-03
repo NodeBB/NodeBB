@@ -116,7 +116,7 @@ module.exports = function(User) {
 							if (userData.email) {
 								db.setObjectField('email:uid', userData.email.toLowerCase(), userData.uid, next);
 								if (parseInt(userData.uid, 10) !== 1 && parseInt(meta.config.requireEmailConfirmation, 10) === 1) {
-									User.email.verify(userData.uid, userData.email);
+									User.email.sendValidationEmail(userData.uid, userData.email);
 								}
 							} else {
 								next();
@@ -126,12 +126,16 @@ module.exports = function(User) {
 							if (!data.password) {
 								return next();
 							}
+
 							User.hashPassword(data.password, function(err, hash) {
 								if (err) {
 									return next(err);
 								}
 
-								User.setUserField(userData.uid, 'password', hash, next);
+								async.parallel([
+									async.apply(User.setUserField, userData.uid, 'password', hash),
+									async.apply(User.reset.updateExpiry, userData.uid)
+								], next);
 							});
 						}
 					], function(err) {

@@ -5,5 +5,8 @@
     "browsing": "이 주제를 읽고 있는 사용자",
     "no_replies": "답글이 없습니다.",
     "share_this_category": "이 카테고리를 공유",
-    "ignore": "관심 해제"
+    "watch": "Watch",
+    "ignore": "관심 해제",
+    "watch.message": "You are now watching updates from this category",
+    "ignore.message": "You are now ignoring updates from this category"
 }

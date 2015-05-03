@@ -104,12 +104,12 @@ SocketAdmin.themes.updateBranding = function(socket, data, callback) {
 };
 
 SocketAdmin.plugins.toggleActive = function(socket, plugin_id, callback) {
-	require('../postTools').resetCache();
+	require('../posts/cache').reset();
 	plugins.toggleActive(plugin_id, callback);
 };
 
 SocketAdmin.plugins.toggleInstall = function(socket, data, callback) {
-	require('../postTools').resetCache();
+	require('../posts/cache').reset();
 	plugins.toggleInstall(data.id, data.version, callback);
 };
 
@@ -234,7 +234,10 @@ SocketAdmin.analytics.get = function(socket, data, callback) {
 				monthlyPageViews: function(next) {
 					getMonthlyPageViews(next);
 				}
-			}, callback);
+			}, function(err, data) {
+				data.pastDay = data.pageviews.reduce(function(a, b) {return parseInt(a, 10) + parseInt(b, 10);});
+				callback(err, data);
+			});
 		}
 	} else {
 		callback(new Error('Invalid analytics call'));
@@ -304,12 +307,12 @@ SocketAdmin.getMoreEvents = function(socket, next, callback) {
 	if (start < 0) {
 		return callback(null, {data: [], next: next});
 	}
-	var end = start + 10;
-	events.getEvents(start, end, function(err, events) {
+	var stop = start + 10;
+	events.getEvents(start, stop, function(err, events) {
 		if (err) {
 			return callback(err);
 		}
-		callback(null, {events: events, next: end + 1});
+		callback(null, {events: events, next: stop + 1});
 	});
 };
 
@@ -336,15 +339,15 @@ SocketAdmin.getMoreFlags = function(socket, data, callback) {
 	var sortBy = data.sortBy || 'count';
 	var byUsername = data.byUsername ||  '';
 	var start = parseInt(data.after, 10);
-	var end = start + 19;
+	var stop = start + 19;
 	if (byUsername) {
-		posts.getUserFlags(byUsername, sortBy, socket.uid, start, end, function(err, posts) {
-			callback(err, {posts: posts, next: end + 1});
+		posts.getUserFlags(byUsername, sortBy, socket.uid, start, stop, function(err, posts) {
+			callback(err, {posts: posts, next: stop + 1});
 		});
 	} else {
 		var set = sortBy === 'count' ? 'posts:flags:count' : 'posts:flagged';
-		posts.getFlags(set, socket.uid, start, end, function(err, posts) {
-			callback(err, {posts: posts, next: end + 1});
+		posts.getFlags(set, socket.uid, start, stop, function(err, posts) {
+			callback(err, {posts: posts, next: stop + 1});
 		});
 	}
 };
