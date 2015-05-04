@@ -534,6 +534,7 @@ var async = require('async'),
 			if (data.hasOwnProperty('ownerUid')) {
 				tasks.push(async.apply(db.setAdd, 'group:' + data.name + ':owners', data.ownerUid));
 				tasks.push(async.apply(db.sortedSetAdd, 'group:' + data.name + ':members', now, data.ownerUid));
+				tasks.push(async.apply(db.setObjectField, 'group:' + data.name, 'memberCount', 1));
 
 				groupData.ownerUid = data.ownerUid;
 			}
@@ -542,7 +543,7 @@ var async = require('async'),
 				tasks.push(async.apply(db.setObjectField, 'groupslug:groupname', slug, data.name));
 			}
 
-			async.parallel(tasks, function(err) {
+			async.series(tasks, function(err) {
 				if (!err) {
 					plugins.fireHook('action:group.create', groupData);
 				}
