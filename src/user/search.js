@@ -5,6 +5,7 @@ var async = require('async'),
 	meta = require('../meta'),
 	user = require('../user'),
 	pagination = require('../pagination'),
+	plugins = require('../plugins'),
 	db = require('../database');
 
 module.exports = function(User) {
@@ -52,7 +53,10 @@ module.exports = function(User) {
 				searchResult.timing = (process.elapsedTimeSince(startTime) / 1000).toFixed(2);
 				searchResult.users = userData;
 
-				next(null, searchResult);
+				plugins.fireHook('filter:users.search', {result: searchResult, uid: uid}, next);
+			},
+			function(data, next) {
+				next(null, data.result);
 			}
 		], callback);
 	};

@@ -87,69 +87,73 @@ module.exports = function(User) {
 					function(uid, next) {
 						userData.uid = uid;
 						db.setObject('user:' + uid, userData, next);
-					}
-				], function(err) {
-					if (err) {
-						return callback(err);
-					}
-
-					async.parallel([
-						function(next) {
-							db.incrObjectField('global', 'userCount', next);
-						},
-						function(next) {
-							db.setObjectField('username:uid', userData.username, userData.uid, next);
-						},
-						function(next) {
-							db.setObjectField('userslug:uid', userData.userslug, userData.uid, next);
-						},
-						function(next) {
-							db.sortedSetAdd('users:joindate', timestamp, userData.uid, next);
-						},
-						function(next) {
-							db.sortedSetsAdd(['users:postcount', 'users:reputation'], 0, userData.uid, next);
-						},
-						function(next) {
-							groups.join('registered-users', userData.uid, next);
-						},
-						function(next) {
-							if (userData.email) {
-								db.setObjectField('email:uid', userData.email.toLowerCase(), userData.uid, next);
-								if (parseInt(userData.uid, 10) !== 1 && parseInt(meta.config.requireEmailConfirmation, 10) === 1) {
-									User.email.sendValidationEmail(userData.uid, userData.email);
+					},
+					function(next) {
+						async.parallel([
+							function(next) {
+								db.setObjectField('username:uid', userData.username, userData.uid, next);
+							},
+							function(next) {
+								db.setObjectField('userslug:uid', userData.userslug, userData.uid, next);
+							},
+							function(next) {
+								db.sortedSetAdd('users:joindate', timestamp, userData.uid, next);
+							},
+							function(next) {
+								db.sortedSetsAdd(['users:postcount', 'users:reputation'], 0, userData.uid, next);
+							},
+							function(next) {
+								groups.join('registered-users', userData.uid, next);
+							},
+							function(next) {
+								if (userData.email) {
+									db.setObjectField('email:uid', userData.email.toLowerCase(), userData.uid, next);
+									if (parseInt(userData.uid, 10) !== 1 && parseInt(meta.config.requireEmailConfirmation, 10) === 1) {
+										User.email.sendValidationEmail(userData.uid, userData.email);
+									}
+								} else {
+									next();
 								}
-							} else {
-								next();
-							}
-						},
-						function(next) {
-							if (!data.password) {
-								return next();
-							}
-
-							User.hashPassword(data.password, function(err, hash) {
-								if (err) {
-									return next(err);
+							},
+							function(next) {
+								if (!data.password) {
+									return next();
 								}
 
-								async.parallel([
-									async.apply(User.setUserField, userData.uid, 'password', hash),
-									async.apply(User.reset.updateExpiry, userData.uid)
-								], next);
-							});
-						}
-					], function(err) {
-						if (err) {
-							return callback(err);
-						}
+								User.hashPassword(data.password, function(err, hash) {
+									if (err) {
+										return next(err);
+									}
+
+									async.parallel([
+										async.apply(User.setUserField, userData.uid, 'password', hash),
+										async.apply(User.reset.updateExpiry, userData.uid)
+									], next);
+								});
+							}
+						], next);
+					},
+					function(results, next) {
+						User.updateUserCount(next);
+					},
+					function(next) {
 						if (userNameChanged) {
 							User.notifications.sendNameChangeNotification(userData.uid, userData.username);
 						}
 						plugins.fireHook('action:user.create', userData);
-						callback(null, userData.uid);
-					});
-				});
+						next(null, userData.uid);
+					}
+				], callback);
 			});
+		});
+	};
+
+	User.updateUserCount = function(callback) {
+		db.sortedSetCard('users:joindate', function(err, count) {
+			if (err) {
+				return callback(err);
+			}
+			db.setObjectField('global', 'userCount', count, callback);
 		});
 	};
 

@@ -106,7 +106,7 @@ module.exports = function(User) {
 						db.deleteAll(['followers:' + uid, 'following:' + uid, 'user:' + uid], next);
 					},
 					function(next) {
-						db.decrObjectField('global', 'userCount', next);
+						User.updateUserCount(next);
 					}
 				], callback);
 			});
