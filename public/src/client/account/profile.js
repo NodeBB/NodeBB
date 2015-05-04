@@ -40,7 +40,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 	};
 
 	function processPage() {
-		$('[component="posts"] img').addClass('img-responsive');
+		$('[component="posts"] img, [component="aboutme"] img').addClass('img-responsive');
 
 		$('[component="post/content"] blockquote').prev('p').remove();
 		$('[component="post/content"] blockquote').remove();
