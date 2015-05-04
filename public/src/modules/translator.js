@@ -295,11 +295,13 @@
 	if (typeof define === 'function' && define.amd) {
 		define('translator', translator);
 
+		var _translator = translator;
+
 		// Expose a global `translator` object for backwards compatibility
 		window.translator = {
 			translate: function() {
 				console.warn('[translator] Global invocation of the translator is now deprecated, please `require` the module instead.');
-				translator.translate.apply(translator, arguments);
+				_translator.translate.apply(_translator, arguments);
 			}
 		}
 	}
