@@ -133,6 +133,10 @@
 				<input type="text" class="form-control" value="6" data-field="minimumPasswordLength">
 			</div>
 			<div class="form-group">
+				<label>Maximum About Me Length</label>
+				<input type="text" class="form-control" value="500" data-field="maximumAboutMeLength">
+			</div>
+			<div class="form-group">
 				<label>Forum Terms of Use <small>(Leave blank to disable)</small></label>
 				<textarea class="form-control" data-field="termsOfUse"></textarea>
 			</div>

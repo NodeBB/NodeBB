@@ -10,19 +10,22 @@ var navigation = {},
 
 navigation.get = function(callback) {
 	admin.get(function(err, data) {
-		callback(err, data
-			.filter(function(item) {
-				return item.enabled;
-			})
-			.map(function(item) {
-				for (var i in item) {
-					if (item.hasOwnProperty(i)) {
-						item[i] = translator.unescape(item[i]);
-					}
-				}
+		if (err) {
+			return callback(err);
+		}
 
-				return item;
-			}));
+		data = data.filter(function(item) {
+			return item && item.enabled;
+		}).map(function(item) {
+			for (var i in item) {
+				if (item.hasOwnProperty(i)) {
+					item[i] = translator.unescape(item[i]);
+				}
+			}
+			return item;
+		});
+
+		callback(null, data);
 	});
 };
 
