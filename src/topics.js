@@ -61,6 +61,7 @@ var async = require('async'),
 		}
 		topic.title = validator.escape(topic.title);
 		topic.relativeTime = utils.toISOString(topic.timestamp);
+		topic.lastposttimeISO = utils.toISOString(topic.lastposttime);
 		callback(null, topic);
 	}
 
