@@ -115,6 +115,10 @@ accountsController.getUserByUID = function(req, res, next) {
 			return next(err);
 		}
 
+		if (!results.userData) {
+			return helpers.notFound(req, res);
+		}
+
 		results.userData.email = results.settings.showemail ? results.userData.email : undefined;
 		results.userData.fullname = results.settings.showfullname ? results.userData.fullname : undefined;
 
