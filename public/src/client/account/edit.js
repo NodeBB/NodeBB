@@ -31,6 +31,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 		handleEmailConfirm();
 		handlePasswordChange();
 		updateSignature();
+		updateAboutMe();
 		updateImages();
 	};
 
@@ -43,7 +44,8 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 			website: $('#inputWebsite').val(),
 			birthday: $('#inputBirthday').val(),
 			location: $('#inputLocation').val(),
-			signature: $('#inputSignature').val()
+			signature: $('#inputSignature').val(),
+			aboutme: $('#inputAboutMe').val()
 		};
 
 		socket.emit('user.updateProfile', userData, function(err, data) {
@@ -337,15 +339,25 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 		$('#uploaded-box .fa-check').toggle(currentPicture === uploadedPicture);
 	}
 
+	function getCharsLeft(el, max) {
+		return el.length ? '(' + el.val().length + '/' + max + ')' : '';
+	}
+
 	function updateSignature() {
-		function getSignatureCharsLeft() {
-			return $('#inputSignature').length ? '(' + $('#inputSignature').val().length + '/' + config.maximumSignatureLength + ')' : '';
-		}
+		var el = $('#inputSignature');
+		$('#signatureCharCountLeft').html(getCharsLeft(el, config.maximumSignatureLength));
 
-		$('#signatureCharCountLeft').html(getSignatureCharsLeft());
+		el.on('keyup change', function() {
+			$('#signatureCharCountLeft').html(getCharsLeft(el, config.maximumSignatureLength));
+		});
+	}
 
-		$('#inputSignature').on('keyup change', function(ev) {
-			$('#signatureCharCountLeft').html(getSignatureCharsLeft());
+	function updateAboutMe() {
+		var el = $('#inputAboutMe');
+		$('#aboutMeCharCountLeft').html(getCharsLeft(el, config.maximumAboutMeLength));
+
+		el.on('keyup change', function() {
+			$('#aboutMeCharCountLeft').html(getCharsLeft(el, config.maximumAboutMeLength));
 		});
 	}
 

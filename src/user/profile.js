@@ -16,7 +16,7 @@ var async = require('async'),
 module.exports = function(User) {
 
 	User.updateProfile = function(uid, data, callback) {
-		var fields = ['username', 'email', 'fullname', 'website', 'location', 'birthday', 'signature'];
+		var fields = ['username', 'email', 'fullname', 'website', 'location', 'birthday', 'signature', 'aboutme'];
 
 		plugins.fireHook('filter:user.updateProfile', {uid: uid, data: data, fields: fields}, function(err, data) {
 			if (err) {
@@ -25,6 +25,14 @@ module.exports = function(User) {
 
 			fields = data.fields;
 			data = data.data;
+
+			function isAboutMeValid(next) {
+				if (data.aboutme !== undefined && data.aboutme.length > meta.config.maximumAboutMeLength) {
+					next(new Error('[[error:about-me-too-long, ' + meta.config.maximumAboutMeLength + ']]'));
+				} else {
+					next();
+				}
+			}
 
 			function isSignatureValid(next) {
 				if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {
@@ -92,7 +100,7 @@ module.exports = function(User) {
 				});
 			}
 
-			async.series([isSignatureValid, isEmailAvailable, isUsernameAvailable], function(err, results) {
+			async.series([isAboutMeValid, isSignatureValid, isEmailAvailable, isUsernameAvailable], function(err) {
 				if (err) {
 					return callback(err);
 				}
