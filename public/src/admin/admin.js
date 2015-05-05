@@ -117,16 +117,21 @@
 	function selectMenuItem(url) {
 		url = url.replace(/\/\d+$/, '');
 
+		// If index is requested, load the dashboard
+		if (url === 'admin') {
+			url = 'admin/general/dashboard';
+		}
+
 		$('#main-menu .nav-list > li').removeClass('active').each(function() {
 			var menu = $(this),
 				category = menu.parents('.sidebar-nav'),
-				href = menu.children('a').attr('href');
+				href = menu.children('a').attr('href'),
+				isLink = menu.attr('data-link') === '1';
 
-			if (href && href.slice(1).indexOf(url) !== -1) {
+			if (!isLink && href && href.slice(1) === url) {
 				category.addClass('open');
 				menu.addClass('active');
 				modifyBreadcrumb(category.find('.nav-header').text(), menu.text());
-				return false;
 			}
 		});
 	}
