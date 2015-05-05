@@ -2,7 +2,7 @@
 
 /* globals define, socket, app */
 
-define('forum/notifications', function() {
+define('forum/notifications', ['components'], function(components) {
 	var Notifications = {};
 
 	Notifications.init = function() {
@@ -18,15 +18,14 @@ define('forum/notifications', function() {
 
 		$('.timeago').timeago();
 
-		$('.notifications .delete').on('click', function() {
+		components.get('notifications/mark_all').on('click', function() {
 			socket.emit('notifications.markAllRead', function(err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 
-				$('.notifications .delete').addClass('hidden');
-				$('.notifications .alert-info').removeClass('hidden');
-				listEl.empty();
+				console.log('here!@');
+				components.get('notifications/item').removeClass('unread');
 			});
 		});
 	};
