@@ -24,7 +24,6 @@ define('forum/notifications', ['components'], function(components) {
 					return app.alertError(err.message);
 				}
 
-				console.log('here!@');
 				components.get('notifications/item').removeClass('unread');
 			});
 		});
