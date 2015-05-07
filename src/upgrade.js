@@ -967,14 +967,18 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			function upgradeHashToSortedSet(hash, callback) {
 				db.getObject(hash, function(err, oldHash) {
-					if (err) {
+					if (err || !oldHash) {
 						return callback(err);
 					}
+
 					db.rename(hash, hash + '_old', function(err) {
 						if (err) {
 							return callback(err);
 						}
 						var keys = Object.keys(oldHash);
+						if (!keys.length) {
+							return callback();
+						}
 						async.each(keys, function(key, next) {
 							db.sortedSetAdd(hash, oldHash[key], key, next);
 						}, callback);
