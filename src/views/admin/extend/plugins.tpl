@@ -28,7 +28,7 @@
 							<button data-action="upgrade" class="btn btn-success btn-xs"><i class="fa fa-download"></i> Upgrade</button>
 						<!-- ENDIF plugins.outdated -->
 						<!-- IF plugins.url -->
-						<p>For more information: <a href="{plugins.url}">{plugins.url}</a></p>
+						<p>For more information: <a target="_blank" href="{plugins.url}">{plugins.url}</a></p>
 						<!-- ENDIF plugins.url -->
 					</li>
 					<!-- ENDIF !plugins.error -->
