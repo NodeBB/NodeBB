@@ -9,11 +9,15 @@ var	nconf = require('nconf'),
 	async = require('async'),
 	logrotate = require('logrotate-stream'),
 
-	pkg = require('./package.json'),
+	pkg = require('./package.json');
 
-	pidFilePath = __dirname + '/pidfile',
+nconf.argv().env().file({
+	file: path.join(__dirname, '/config.json')
+});
+
+var	pidFilePath = __dirname + '/pidfile',
 	output = logrotate({ file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true }),
-	silent = process.env.NODE_ENV !== 'development',
+	silent = nconf.get('silent') !== false,
 	numProcs,
 	workers = [],
 
@@ -241,10 +245,6 @@ Loader.notifyWorkers = function(msg, worker_pid) {
 		}
 	});
 };
-
-nconf.argv().env().file({
-	file: path.join(__dirname, '/config.json')
-});
 
 fs.open(path.join(__dirname, 'config.json'), 'r', function(err) {
 	if (!err) {
