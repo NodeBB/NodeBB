@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 1, 25, 6);
+	latestSchema = Date.UTC(2015, 4, 7);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -938,7 +938,7 @@ Upgrade.upgrade = function(callback) {
 						}
 						winston.info('[2015/02/24] Upgrading privilege groups to system groups done');
 						Upgrade.update(thisSchemaDate, next);
-					})
+					});
 				});
 			} else {
 				winston.info('[2015/02/24] Upgrading privilege groups to system groups skipped');
@@ -961,6 +961,48 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2015/02/25] Upgrading menu items to dynamic navigation system skipped');
+				next();
+			}
+		},
+		function(next) {
+			function upgradeHashToSortedSet(hash, callback) {
+				db.getObject(hash, function(err, oldHash) {
+					if (err) {
+						return callback(err);
+					}
+					db.rename(hash, hash + '_old', function(err) {
+						if (err) {
+							return callback(err);
+						}
+						var keys = Object.keys(oldHash);
+						async.each(keys, function(key, next) {
+							db.sortedSetAdd(hash, oldHash[key], key, next);
+						}, callback);
+					});
+				});
+			}
+
+			thisSchemaDate = Date.UTC(2015, 4, 7);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/02/25] Upgrading uid mappings to sorted set');
+
+				async.series([
+					async.apply(upgradeHashToSortedSet, 'email:uid'),
+					async.apply(upgradeHashToSortedSet, 'fullname:uid'),
+					async.apply(upgradeHashToSortedSet, 'username:uid'),
+					async.apply(upgradeHashToSortedSet, 'userslug:uid'),
+				], function(err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2015/05/07] Upgrading uid mappings to sorted set done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+
+			} else {
+				winston.info('[2015/05/07] Upgrading uid mappings to sorted set skipped');
 				next();
 			}
 		}

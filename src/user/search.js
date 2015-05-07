@@ -84,7 +84,9 @@ module.exports = function(User) {
 			return searchBy + ':uid';
 		});
 
-		db.getObjects(keys, function(err, hashes) {
+		async.map(keys, function(key, next) {
+			db.getSortedSetRangeWithScores(key, 0, -1, next);
+		}, function(err, hashes) {
 			if (err || !hashes) {
 				return callback(err, []);
 			}
@@ -97,16 +99,16 @@ module.exports = function(User) {
 			var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
 			var hardCap = resultsPerPage * 10;
 
-			for(var i=0; i<hashes.length; ++i) {
-				for(var field in hashes[i]) {
+			for (var i=0; i<hashes.length; ++i) {
+				for (var k=0; k<hashes[i].length; ++k) {
+					var field = hashes[i][k].value;
 					if ((startsWith && field.toLowerCase().startsWith(query)) || (!startsWith && field.toLowerCase().indexOf(query) !== -1)) {
-						uids.push(hashes[i][field]);
+						uids.push(hashes[i][k].score);
 						if (uids.length >= hardCap) {
 							break;
 						}
 					}
 				}
-
 				if (uids.length >= hardCap) {
 					break;
 				}

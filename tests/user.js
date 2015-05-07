@@ -36,6 +36,7 @@ describe('User', function() {
 	beforeEach(function(){
 		userData = {
 			username: 'John Smith',
+			fullname: 'John Smith McNamara',
 			password: 'swordfish',
 			email: 'john@example.com',
 			callback: undefined
@@ -250,6 +251,33 @@ describe('User', function() {
 						done();
 					});
 				});
+			});
+		});
+	});
+
+	describe('hash methods', function() {
+
+		it('should return uid from email', function(next) {
+			User.getUidByEmail('john@example.com', function(err, uid) {
+				assert.ifError(err);
+				assert.equal(parseInt(uid, 10), parseInt(testUid, 10));
+				done();
+			});
+		});
+
+		it('should return uid from username', function(next) {
+			User.getUidByUsername('John Smith', function(err, uid) {
+				assert.ifError(err);
+				assert.equal(parseInt(uid, 10), parseInt(testUid, 10));
+				done();
+			});
+		});
+
+		it('should return uid from userslug', function(next) {
+			User.getUidByUserslug('john-smith', function(err, uid) {
+				assert.ifError(err);
+				assert.equal(parseInt(uid, 10), parseInt(testUid, 10));
+				done();
 			});
 		});
 	});

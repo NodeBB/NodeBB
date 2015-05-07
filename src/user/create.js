@@ -91,10 +91,10 @@ module.exports = function(User) {
 					function(next) {
 						async.parallel([
 							function(next) {
-								db.setObjectField('username:uid', userData.username, userData.uid, next);
+								db.sortedSetAdd('username:uid', userData.uid, userData.username, next);
 							},
 							function(next) {
-								db.setObjectField('userslug:uid', userData.userslug, userData.uid, next);
+								db.sortedSetAdd('userslug:uid', userData.uid, userData.userslug, next);
 							},
 							function(next) {
 								db.sortedSetAdd('users:joindate', timestamp, userData.uid, next);
@@ -107,7 +107,7 @@ module.exports = function(User) {
 							},
 							function(next) {
 								if (userData.email) {
-									db.setObjectField('email:uid', userData.email.toLowerCase(), userData.uid, next);
+									db.sortedSetAdd('email:uid', userData.uid, userData.email.toLowerCase(), next);
 									if (parseInt(userData.uid, 10) !== 1 && parseInt(meta.config.requireEmailConfirmation, 10) === 1) {
 										User.email.sendValidationEmail(userData.uid, userData.email);
 									}

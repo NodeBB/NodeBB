@@ -49,17 +49,17 @@ module.exports = function(User) {
 
 			async.parallel([
 				function(next) {
-					db.deleteObjectField('username:uid', userData.username, next);
+					db.sortedSetRemove('username:uid', userData.username, next);
 				},
 				function(next) {
-					db.deleteObjectField('userslug:uid', userData.userslug, next);
+					db.sortedSetRemove('userslug:uid', userData.userslug, next);
 				},
 				function(next) {
-					db.deleteObjectField('fullname:uid', userData.fullname, next);
+					db.sortedSetRemove('fullname:uid', userData.fullname, next);
 				},
 				function(next) {
 					if (userData.email) {
-						db.deleteObjectField('email:uid', userData.email.toLowerCase(), next);
+						db.sortedSetRemove('email:uid', userData.email.toLowerCase(), next);
 					} else {
 						next();
 					}
