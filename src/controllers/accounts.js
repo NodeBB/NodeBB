@@ -298,7 +298,7 @@ function getFromUserSet(tpl, set, method, type, req, res, next) {
 			},
 			data: function(next) {
 				var start = (page - 1) * itemsPerPage;
-				var stop = start + itemsPerPage;
+				var stop = start + itemsPerPage - 1;
 				method(setName, req.uid, start, stop, next);
 			}
 		}, function(err, results) {
