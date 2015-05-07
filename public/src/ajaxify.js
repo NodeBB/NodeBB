@@ -158,7 +158,7 @@ $(document).ready(function() {
 			$(window).trigger('action:ajaxify.end', {url: url});
 		});
 
-		$(window).trigger('action:ajaxify.contentLoaded', {url: url});
+		$(window).trigger('action:ajaxify.contentLoaded', {url: url, tpl: tpl_url});
 
 		app.processPage();
 	};
