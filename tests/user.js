@@ -257,7 +257,7 @@ describe('User', function() {
 
 	describe('hash methods', function() {
 
-		it('should return uid from email', function(next) {
+		it('should return uid from email', function(done) {
 			User.getUidByEmail('john@example.com', function(err, uid) {
 				assert.ifError(err);
 				assert.equal(parseInt(uid, 10), parseInt(testUid, 10));
@@ -265,7 +265,7 @@ describe('User', function() {
 			});
 		});
 
-		it('should return uid from username', function(next) {
+		it('should return uid from username', function(done) {
 			User.getUidByUsername('John Smith', function(err, uid) {
 				assert.ifError(err);
 				assert.equal(parseInt(uid, 10), parseInt(testUid, 10));
@@ -273,7 +273,7 @@ describe('User', function() {
 			});
 		});
 
-		it('should return uid from userslug', function(next) {
+		it('should return uid from userslug', function(done) {
 			User.getUidByUserslug('john-smith', function(err, uid) {
 				assert.ifError(err);
 				assert.equal(parseInt(uid, 10), parseInt(testUid, 10));
