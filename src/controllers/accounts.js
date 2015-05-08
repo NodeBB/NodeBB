@@ -424,7 +424,7 @@ accountsController.accountSettings = function(req, res, next) {
 		});
 
 		userData.languages.forEach(function(language) {
-			language.selected = language.code === userData.settings.language;
+			language.selected = language.code === userData.settings.userLang;
 		});
 
 		res.render('account/settings', userData);
