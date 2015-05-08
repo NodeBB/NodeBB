@@ -1,5 +1,23 @@
 <div class="database">
 	<div class="col-sm-9">
+		<!-- IF mongo -->
+		<div class="panel panel-default">
+			<div class="panel-heading"><i class="fa fa-hdd-o"></i> Mongo</div>
+			<div class="panel-body">
+				<div class="database-info">
+					<span>Collections</span> <span class="text-right formatted-number">{collections}</span><br/>
+					<span>Objects</span> <span class="text-right formatted-number">{objects}</span><br/>
+					<span>Avg. Object Size</span> <span class="text-right">{avgObjSize} kb</span><br/>
+					<hr/>
+					<span>Data Size</span> <span class="text-right">{dataSize} mb</span><br/>
+					<span>Storage Size</span> <span class="text-right">{storageSize} mb</span><br/>
+					<span>Index Size</span> <span class="text-right">{indexSize} mb</span><br/>
+					<span>File Size</span> <span class="text-right">{fileSize} mb</span><br/>
+				</div>
+			</div>
+		</div>
+		<!-- ENDIF mongo -->
+
 		<!-- IF redis -->
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-hdd-o"></i> Redis</div>
@@ -31,29 +49,30 @@
 
 		<!-- IF mongo -->
 		<div class="panel panel-default">
-			<div class="panel-heading"><i class="fa fa-hdd-o"></i> Mongo</div>
-			<div class="panel-body">
-				<div class="database-info">
-					<span>Collections</span> <span class="text-right formatted-number">{collections}</span><br/>
-					<span>Objects</span> <span class="text-right formatted-number">{objects}</span><br/>
-					<span>Avg. Object Size</span> <span class="text-right">{avgObjSize} kb</span><br/>
-					<hr/>
-					<span>Data Size</span> <span class="text-right">{dataSize} mb</span><br/>
-					<span>Storage Size</span> <span class="text-right">{storageSize} mb</span><br/>
-					<span>Index Size</span> <span class="text-right">{indexSize} mb</span><br/>
-					<span>File Size</span> <span class="text-right">{fileSize} mb</span><br/>
+			<div class="panel-heading" data-toggle="collapse" data-target=".mongodb-raw">
+				<h3 class="panel-title"><i class="fa fa-caret-down"></i> MongoDB Raw Info</h3>
+			</div>
+
+			<div class="panel-body mongodb-raw collapse">
+				<div class="highlight">
+					<pre>{mongo.raw}</pre>
 				</div>
 			</div>
 		</div>
 		<!-- ENDIF mongo -->
 
+		<!-- IF redis -->
 		<div class="panel panel-default">
-			<div class="panel-heading"><i class="fa fa-hdd-o"></i> Raw Info</div>
-			<div class="panel-body">
+			<div class="panel-heading" data-toggle="collapse" data-target=".redis-raw">
+				<h3 class="panel-title"><i class="fa fa-caret-down"></i> Redis Raw Info</h3>
+			</div>
+
+			<div class="panel-body redis-raw collapse">
 				<div class="highlight">
-					<pre>{raw}</pre>
+					<pre>{redis.raw}</pre>
 				</div>
 			</div>
 		</div>
+		<!-- ENDIF redis -->
 	</div>
 </div>
