@@ -61,31 +61,6 @@ define('forum/account/settings', ['forum/account/header'], function(header) {
 
 			return false;
 		});
-
-		socket.emit('user.getSettings', {uid: ajaxify.variables.get('theirid')}, function(err, settings) {
-			var inputs = $('.account').find('input, textarea, select');
-
-			inputs.each(function(index, input) {
-				input = $(input);
-				var setting = input.attr('data-property');
-				if (setting) {
-					if (input.is('select')) {
-						input.val(settings[setting] || '');
-						return;
-					}
-
-					switch (input.attr('type')) {
-						case 'text' :
-						case 'textarea' :
-							input.val(settings[setting]);
-							break;
-						case 'checkbox' :
-							input.prop('checked', !!settings[setting]);
-							break;
-					}
-				}
-			});
-		});
 	};
 
 	return AccountSettings;
