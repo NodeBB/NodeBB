@@ -41,8 +41,8 @@ define('forum/account/settings', ['forum/account/header'], function(header) {
 					if (newSettings.hasOwnProperty(key)) {
 						if (key === 'userLang' && config.userLang !== newSettings.userLang) {
 							requireReload = true;
-						} 
-						config[key] = newSettings[key];	
+						}
+						config[key] = newSettings[key];
 					}
 				}
 				app.exposeConfigToTemplates();
@@ -70,7 +70,7 @@ define('forum/account/settings', ['forum/account/header'], function(header) {
 				var setting = input.attr('data-property');
 				if (setting) {
 					if (input.is('select')) {
-						input.val(settings[setting]);
+						input.val(settings[setting] || '');
 						return;
 					}
 

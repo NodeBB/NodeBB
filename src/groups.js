@@ -760,17 +760,18 @@ var async = require('async'),
 						tasks.push(async.apply(db.setAdd, 'group:' + groupName + ':owners', uid));
 					}
 					async.parallel(tasks, next);
+				},
+				function(results, next) {
+					user.setGroupTitle(groupName, uid, next);
+				},
+				function(next) {
+					plugins.fireHook('action:group.join', {
+						groupName: groupName,
+						uid: uid
+					});
+					next();
 				}
-			], function(err, results) {
-				if (err) {
-					return callback(err);
-				}
-				plugins.fireHook('action:group.join', {
-					groupName: groupName,
-					uid: uid
-				});
-				callback();
-			});
+			], callback);
 		}
 
 		callback = callback || function() {};
