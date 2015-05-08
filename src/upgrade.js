@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 4, 7);
+	latestSchema = Date.UTC(2015, 4, 8);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -1006,6 +1006,39 @@ Upgrade.upgrade = function(callback) {
 
 			} else {
 				winston.info('[2015/05/07] Upgrading uid mappings to sorted set skipped');
+				next();
+			}
+		},
+		function(next) {
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/05/08] Fixing emails');
+
+				db.getSortedSetRangeWithScores('email:uid', 0, -1, function(err, users) {
+					if (err) {
+						return next(err);
+					}
+
+						var newEmail = user.value.replace(/\uff0E/g, '.');
+						if (newEmail === user.value) {
+							return next();
+						}
+						async.series([
+							async.apply(db.sortedSetRemove, 'email:uid', user.value),
+							async.apply(db.sortedSetAdd, 'email:uid', user.score, newEmail)
+						], next);
+
+					}, function(err) {
+						if (err) {
+							return next(err);
+						}
+						winston.info('[2015/05/08] Fixing emails done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+
+			} else {
+				winston.info('[2015/05/08] Fixing emails skipped');
 				next();
 			}
 		}
