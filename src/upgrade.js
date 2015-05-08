@@ -989,7 +989,7 @@ Upgrade.upgrade = function(callback) {
 			thisSchemaDate = Date.UTC(2015, 4, 7);
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
-				winston.info('[2015/02/25] Upgrading uid mappings to sorted set');
+				winston.info('[2015/05/07] Upgrading uid mappings to sorted set');
 
 				async.series([
 					async.apply(upgradeHashToSortedSet, 'email:uid'),
