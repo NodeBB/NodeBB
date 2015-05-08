@@ -233,18 +233,17 @@ Upgrade.upgrade = function(callback) {
 							var privs = ['find', 'read', 'topics:reply', 'topics:create'];
 
 							async.each(privs, function(priv, next) {
-
 								categoryHasPrivilegesSet(cid, priv, function(err, privilegesSet) {
 									if (err || privilegesSet) {
 										return next(err);
 									}
 
 									async.eachLimit(groups, 50, function(group, next) {
-										if (group && !group.hidden) {
-											if (group.name === 'guests' && (priv === 'topics:reply' || priv === 'topics:create')) {
+										if (group) {
+											if (group === 'guests' && (priv === 'topics:reply' || priv === 'topics:create')) {
 												return next();
 											}
-											Groups.join('cid:' + cid + ':privileges:groups:' + priv, group.name, next);
+											Groups.join('cid:' + cid + ':privileges:groups:' + priv, group, next);
 										} else {
 											next();
 										}
