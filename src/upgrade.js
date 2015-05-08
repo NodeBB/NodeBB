@@ -1010,6 +1010,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
+			thisSchemaDate = Date.UTC(2015, 4, 8);
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 				winston.info('[2015/05/08] Fixing emails');
@@ -1019,6 +1020,7 @@ Upgrade.upgrade = function(callback) {
 						return next(err);
 					}
 
+					async.eachLimit(users, 100, function(user, next) {
 						var newEmail = user.value.replace(/\uff0E/g, '.');
 						if (newEmail === user.value) {
 							return next();
