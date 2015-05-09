@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 4, 7);
+	latestSchema = Date.UTC(2015, 4, 8);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -233,18 +233,17 @@ Upgrade.upgrade = function(callback) {
 							var privs = ['find', 'read', 'topics:reply', 'topics:create'];
 
 							async.each(privs, function(priv, next) {
-
 								categoryHasPrivilegesSet(cid, priv, function(err, privilegesSet) {
 									if (err || privilegesSet) {
 										return next(err);
 									}
 
 									async.eachLimit(groups, 50, function(group, next) {
-										if (group && !group.hidden) {
-											if (group.name === 'guests' && (priv === 'topics:reply' || priv === 'topics:create')) {
+										if (group) {
+											if (group === 'guests' && (priv === 'topics:reply' || priv === 'topics:create')) {
 												return next();
 											}
-											Groups.join('cid:' + cid + ':privileges:groups:' + priv, group.name, next);
+											Groups.join('cid:' + cid + ':privileges:groups:' + priv, group, next);
 										} else {
 											next();
 										}
@@ -989,7 +988,7 @@ Upgrade.upgrade = function(callback) {
 			thisSchemaDate = Date.UTC(2015, 4, 7);
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
-				winston.info('[2015/02/25] Upgrading uid mappings to sorted set');
+				winston.info('[2015/05/07] Upgrading uid mappings to sorted set');
 
 				async.series([
 					async.apply(upgradeHashToSortedSet, 'email:uid'),
@@ -1007,6 +1006,41 @@ Upgrade.upgrade = function(callback) {
 
 			} else {
 				winston.info('[2015/05/07] Upgrading uid mappings to sorted set skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 4, 8);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/05/08] Fixing emails');
+
+				db.getSortedSetRangeWithScores('email:uid', 0, -1, function(err, users) {
+					if (err) {
+						return next(err);
+					}
+
+					async.eachLimit(users, 100, function(user, next) {
+						var newEmail = user.value.replace(/\uff0E/g, '.');
+						if (newEmail === user.value) {
+							return next();
+						}
+						async.series([
+							async.apply(db.sortedSetRemove, 'email:uid', user.value),
+							async.apply(db.sortedSetAdd, 'email:uid', user.score, newEmail)
+						], next);
+
+					}, function(err) {
+						if (err) {
+							return next(err);
+						}
+						winston.info('[2015/05/08] Fixing emails done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+
+			} else {
+				winston.info('[2015/05/08] Fixing emails skipped');
 				next();
 			}
 		}
