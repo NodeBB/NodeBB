@@ -35,6 +35,10 @@ var async = require('async'),
 	};
 
 	Posts.getPostsByPids = function(pids, uid, callback) {
+		if (!Array.isArray(pids) || !pids.length) {
+			return callback(null, []);
+		}
+
 		var keys = [];
 
 		for (var x=0, numPids=pids.length; x<numPids; ++x) {

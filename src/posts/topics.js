@@ -7,38 +7,39 @@ var async = require('async'),
 module.exports = function(Posts) {
 
 	Posts.getPostsFromSet = function(set, start, stop, uid, reverse, callback) {
-		Posts.getPidsFromSet(set, start, stop, reverse, function(err, pids) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function(next) {
+				Posts.getPidsFromSet(set, start, stop, reverse, next);
+			},
+			function(pids, next) {
+				Posts.getPostsByPids(pids, uid, next);
 			}
-
-			if (!Array.isArray(pids) || !pids.length) {
-				return callback(null, []);
-			}
-
-			Posts.getPostsByPids(pids, uid, callback);
-		});
+		], callback);
 	};
 
 	Posts.isMain = function(pid, callback) {
-		Posts.getPostField(pid, 'tid', function(err, tid) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function(next) {
+				Posts.getPostField(pid, 'tid', next);
+			},
+			function(tid, next) {
+				topics.getTopicField(tid, 'mainPid', next);
+			},
+			function(mainPid, next) {
+				next(null, parseInt(pid, 10) === parseInt(mainPid, 10));
 			}
-			topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
-				callback(err, parseInt(pid, 10) === parseInt(mainPid, 10));
-			});
-		});
+		], callback);
 	};
 
 	Posts.getTopicFields = function(pid, fields, callback) {
-		Posts.getPostField(pid, 'tid', function(err, tid) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function(next) {
+				Posts.getPostField(pid, 'tid', next);
+			},
+			function(tid, next) {
+				topics.getTopicFields(tid, fields, next);
 			}
-
-			topics.getTopicFields(tid, fields, callback);
-		});
+		], callback);
 	};
 
 };
