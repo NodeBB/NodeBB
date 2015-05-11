@@ -28,11 +28,6 @@ module.exports = function(Topics) {
 		], callback);
 	};
 
-	Topics.getLatestTids = function(start, stop, term, callback) {
-		winston.warn('[deprecation warning] please use Topics.getLatestTidsFromSet("topics:recent")');
-		Topics.getLatestTidsFromSet('topics:recent', start, stop, term, callback);
-	};
-
 	Topics.getLatestTidsFromSet = function(set, start, stop, term, callback) {
 		var since = terms.day;
 		if (terms[term]) {
