@@ -73,7 +73,7 @@ var async = require('async'),
 		], callback);
 	};
 
-	Posts.getPostsFromSet = function(set, uid, start, stop, callback) {
+	Posts.getPostSummariesFromSet = function(set, uid, start, stop, callback) {
 		async.waterfall([
 			function(next) {
 				db.getSortedSetRevRange(set, start, stop, next);

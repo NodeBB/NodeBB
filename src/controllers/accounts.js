@@ -155,7 +155,7 @@ accountsController.getAccount = function(req, res, next) {
 				user.isFollowing(req.uid, userData.theirid, next);
 			},
 			posts: function(next) {
-				posts.getPostsFromSet('uid:' + userData.theirid + ':posts', req.uid, 0, 9, next);
+				posts.getPostSummariesFromSet('uid:' + userData.theirid + ':posts', req.uid, 0, 9, next);
 			},
 			signature: function(next) {
 				posts.parseSignature(userData, req.uid, next);
@@ -229,11 +229,11 @@ function getFollow(tpl, name, req, res, next) {
 }
 
 accountsController.getFavourites = function(req, res, next) {
-	getFromUserSet('account/favourites', 'favourites', posts.getPostsFromSet, 'posts', req, res, next);
+	getFromUserSet('account/favourites', 'favourites', posts.getPostSummariesFromSet, 'posts', req, res, next);
 };
 
 accountsController.getPosts = function(req, res, next) {
-	getFromUserSet('account/posts', 'posts', posts.getPostsFromSet, 'posts', req, res, next);
+	getFromUserSet('account/posts', 'posts', posts.getPostSummariesFromSet, 'posts', req, res, next);
 };
 
 accountsController.getWatchedTopics = function(req, res, next) {
