@@ -48,8 +48,12 @@ module.exports = function(Categories) {
 				return callback(err);
 			}
 			var isAdminOrMod = results.isAdmin || results.isModerator;
-			results.topics = results.topics.filter(function(topic) {
-				return (!topic.deleted || isAdminOrMod || topic.isOwner);
+			results.topics.forEach(function(topic) {
+				if (!(!topic.deleted || isAdminOrMod || topic.isOwner)) {
+					topic.title = '[[topic:topic_is_deleted]]';
+					topic.slug = topic.tid;
+					topic.teaser = null;
+				}
 			});
 
 			callback(null, {topics: results.topics, nextStart: data.stop + 1});
