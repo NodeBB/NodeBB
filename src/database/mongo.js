@@ -133,7 +133,7 @@
 			function createIndices() {
 				async.parallel([
 					async.apply(createIndex, 'objects', {_key: 1, score: -1}, {background: true}),
-					async.apply(createIndex, 'objects', {_key: 1, value: -1}, {background: true}),
+					async.apply(createIndex, 'objects', {_key: 1, value: -1}, {background: true, unique: true, sparse: true}),
 
 					async.apply(createIndex, 'objects', {expireAt: 1}, {expireAfterSeconds: 0, background: true}),
 
