@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 4, 8);
+	latestSchema = Date.UTC(2015, 4, 11);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -1041,6 +1041,47 @@ Upgrade.upgrade = function(callback) {
 
 			} else {
 				winston.info('[2015/05/08] Fixing emails skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 4, 11);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/05/11] Updating widgets to tjs 0.2x');
+
+				require('./widgets/admin').get(function(err, data) {					
+					async.each(data.areas, function(area, next) {
+						require('./widgets').getArea(area.template, area.location, function(err, widgets) {
+							if (err) {
+								return next(err);
+							}
+							
+							for (var w in widgets) {
+								if (widgets.hasOwnProperty(w)) {
+									widgets[w].data.container = widgets[w].data.container
+										.replace(/\{\{([\s\S]*?)\}\}/g, '{$1}')
+										.replace(/\{([\s\S]*?)\}/g, '{{$1}}');
+								}
+							}
+
+							require('./widgets').setArea({
+								template: area.template,
+								location: area.location,
+								widgets: widgets
+							}, next);
+						});
+					}, function(err) {
+						if (err) {
+							return next(err);
+						}
+
+						winston.info('[2015/05/11] Updating widgets to tjs 0.2x done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2015/05/11] Updating widgets to tjs 0.2x skipped');
 				next();
 			}
 		}
