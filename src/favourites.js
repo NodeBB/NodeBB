@@ -308,12 +308,6 @@ var async = require('async'),
 					posts.setPostField(pid, 'reputation', count, next);
 				},
 				function(next) {
-					plugins.fireHook('action:post.' + type, {
-						pid: pid,
-						uid: uid,
-					}, next);
-				},
-				function(next) {
 					next(null, {
 						post: results.postData,
 						isFavourited: isFavouriting
