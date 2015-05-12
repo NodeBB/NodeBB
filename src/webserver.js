@@ -41,9 +41,6 @@ server.on('error', function(err) {
 	}
 });
 
-if (server.setTimeout) {
-	server.setTimeout(10000);
-}
 
 module.exports.listen = function() {
 	emailer.registerApp(app);
