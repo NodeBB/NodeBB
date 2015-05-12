@@ -398,12 +398,13 @@ accountsController.accountSettings = function(req, res, next) {
 			}, next);
 		},
 		function(results, next) {
+			userData.settings = results.settings;
 			userData.languages = results.languages;
 			userData.userGroups = results.userGroups[0];
-			plugins.fireHook('filter:user.settings', {settings: results.settings, uid: req.uid}, next);
+			plugins.fireHook('filter:user.settings', {settings: results.settings, customSettings: [], uid: req.uid}, next);
 		},
 		function(data, next) {
-			userData.settings = data.settings;
+			userData.customSettings = data.customSettings;
 			userData.disableEmailSubscriptions = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 			next();
 		}
