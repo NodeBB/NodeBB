@@ -102,10 +102,6 @@
 			style.push('unread');
 		}
 
-		if (topic.extraClass) {
-			style.push(topic.extraClass);
-		}
-
 		return style.join(' ');
 	};
 
