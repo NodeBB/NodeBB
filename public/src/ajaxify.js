@@ -206,6 +206,7 @@ $(document).ready(function() {
 				}
 
 				data.relative_path = RELATIVE_PATH;
+				$(window).trigger('action:ajaxify.dataLoaded', {url: url, data: data});
 
 				if (callback) {
 					callback(null, data);
