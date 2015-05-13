@@ -24,7 +24,6 @@ var Controllers = {
 	users: require('./users'),
 	groups: require('./groups'),
 	accounts: require('./accounts'),
-	static: require('./static'),
 	api: require('./api'),
 	admin: require('./admin')
 };
