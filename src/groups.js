@@ -76,7 +76,10 @@ var async = require('async'),
 			if (err) {
 				return callback(err);
 			}
-			groupNames = groupNames.concat(ephemeralGroups);
+
+			groupNames = groupNames.filter(function(groupName) {
+				return groupName && groupName.indexOf(':privileges:') === -1 && groupName !== 'registered-users' && groupName !== 'guests';
+			});
 
 			async.parallel({
 				groups: async.apply(async.map, groupNames, function (groupName, next) {
