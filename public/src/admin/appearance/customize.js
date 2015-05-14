@@ -1,7 +1,7 @@
 "use strict";
 /* global ace, define, app, socket */
 
-define('admin/appearance/customise', ['admin/settings'], function(Settings) {
+define('admin/appearance/customize', ['admin/settings'], function(Settings) {
 	var Customise = {};
 	
 	Customise.init = function() {		

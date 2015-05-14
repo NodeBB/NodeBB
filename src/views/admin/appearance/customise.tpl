@@ -1,4 +1,4 @@
-<div id="customise" class="customise">
+<div id="customize" class="customize">
 	<div class="panel panel-default">
 		<div class="panel-heading">Custom CSS</div>
 		<div class="panel-body">
