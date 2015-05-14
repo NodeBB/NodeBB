@@ -1,6 +1,6 @@
 {
-    "success": "Success",
-    "topic-post": "U heeft succesvol een bericht geplaatst",
-    "authentication-successful": "Het inloggen is succesvol",
+    "success": "Succes",
+    "topic-post": "Bericht plaatsen succesvol. Bedankt voor de bijdrage.",
+    "authentication-successful": "Het aanmelden is geslaagd",
     "settings-saved": "Instellingen opgeslagen!"
 }

@@ -1,11 +1,11 @@
 {
-    "username-email": "Gebruikersnaam / Email",
+    "username-email": "Gebruikersnaam of e-mailadres",
     "username": "Gebruikersnaam",
-    "email": "Email",
-    "remember_me": "Mij Onthouden?",
-    "forgot_password": "Wachtwoord Vergeten?",
-    "alternative_logins": "Alternatieve Loginmethodes",
-    "failed_login_attempt": "Mislukte inlog poging, probeer het later opnieuw.",
-    "login_successful": "Je bent succesvol ingelogd!",
-    "dont_have_account": "Heeft u nog geen account?"
+    "email": "E-mailadres",
+    "remember_me": "Mij onthouden",
+    "forgot_password": "Wachtwoord vergeten?",
+    "alternative_logins": "Andere manieren om aan te melden",
+    "failed_login_attempt": "Aanmeldpoging niet geslaagd, probeer het later opnieuw.",
+    "login_successful": "Aanmelden geslaagd!",
+    "dont_have_account": "Nog niet in het bezit van een gebruikersaccount?"
 }

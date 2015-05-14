@@ -41,7 +41,7 @@
 						<li class="nav-header"><i class="fa fa-fw fa-paint-brush"></i> Appearance</li>
 						<li><a href="{relative_path}/admin/appearance/themes">Themes</a></li>
 						<li><a href="{relative_path}/admin/appearance/skins">Skins</a></li>
-						<li><a href="{relative_path}/admin/appearance/customise">Custom HTML &amp; CSS</a></li>
+						<li><a href="{relative_path}/admin/appearance/customize">Custom HTML &amp; CSS</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">

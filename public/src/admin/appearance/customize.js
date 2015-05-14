@@ -1,10 +1,10 @@
 "use strict";
 /* global ace, define, app, socket */
 
-define('admin/appearance/customise', ['admin/settings'], function(Settings) {
-	var Customise = {};
+define('admin/appearance/customize', ['admin/settings'], function(Settings) {
+	var Customize = {};
 	
-	Customise.init = function() {		
+	Customize.init = function() {		
 		Settings.prepare(function() {
 			$('#customCSS').text($('#customCSS-holder').val());
 			$('#customHTML').text($('#customHTML-holder').val());
@@ -28,6 +28,6 @@ define('admin/appearance/customise', ['admin/settings'], function(Settings) {
 		});
 	};
 
-	return Customise;
+	return Customize;
 });
 	
