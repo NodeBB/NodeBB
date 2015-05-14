@@ -169,7 +169,8 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.enterRoom = function (room) {
+	app.enterRoom = function (room, callback) {
+		callback = callback || function() {};
 		if (socket) {
 			if (app.currentRoom === room) {
 				return;
@@ -180,9 +181,12 @@ app.cacheBuster = null;
 				username: app.user.username,
 				userslug: app.user.userslug,
 				picture: app.user.picture
+			}, function(err) {
+				if (err) {
+					app.alertError(err.message);
+				}
+				app.currentRoom = room;
 			});
-
-			app.currentRoom = room;
 		}
 	};
 
