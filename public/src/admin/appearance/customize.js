@@ -2,9 +2,9 @@
 /* global ace, define, app, socket */
 
 define('admin/appearance/customize', ['admin/settings'], function(Settings) {
-	var Customise = {};
+	var Customize = {};
 	
-	Customise.init = function() {		
+	Customize.init = function() {		
 		Settings.prepare(function() {
 			$('#customCSS').text($('#customCSS-holder').val());
 			$('#customHTML').text($('#customHTML-holder').val());
@@ -28,6 +28,6 @@ define('admin/appearance/customize', ['admin/settings'], function(Settings) {
 		});
 	};
 
-	return Customise;
+	return Customize;
 });
 	
