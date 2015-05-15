@@ -34,7 +34,7 @@ module.exports = function(Topics) {
 		callback = callback || function() {};
 		async.parallel({
 			posts: function(next) {
-				posts.getPostsByTid(tid, set, start, stop, uid, reverse, next);
+				posts.getPostsFromSet(set, start, stop, uid, reverse, next);
 			},
 			postCount: function(next) {
 				Topics.getTopicField(tid, 'postcount', next);

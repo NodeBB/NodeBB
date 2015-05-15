@@ -179,7 +179,6 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		}
 
 		if (config.usePagination) {
-
 			var page = Math.max(1, Math.ceil(postIndex / config.postsPerPage));
 
 			if(parseInt(page, 10) !== pagination.currentPage) {

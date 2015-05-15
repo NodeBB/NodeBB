@@ -158,7 +158,7 @@ $(document).ready(function() {
 			$(window).trigger('action:ajaxify.end', {url: url});
 		});
 
-		$(window).trigger('action:ajaxify.contentLoaded', {url: url});
+		$(window).trigger('action:ajaxify.contentLoaded', {url: url, tpl: tpl_url});
 
 		app.processPage();
 	};
@@ -206,6 +206,7 @@ $(document).ready(function() {
 				}
 
 				data.relative_path = RELATIVE_PATH;
+				$(window).trigger('action:ajaxify.dataLoaded', {url: url, data: data});
 
 				if (callback) {
 					callback(null, data);

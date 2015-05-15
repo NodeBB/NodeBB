@@ -41,7 +41,7 @@ module.exports = function(Meta) {
 
 					// Link paths
 					async.each(filePaths, function(filePath, next) {
-						fs[process.platform !== 'win32' ? 'symlink' : 'link'](filePath, path.join(soundsPath, path.basename(filePath)), 'file', next);
+						fs.symlink(filePath, path.join(soundsPath, path.basename(filePath)), 'file', next);
 					}, function(err) {
 						if (!err) {
 							winston.verbose('[sounds] Sounds OK');

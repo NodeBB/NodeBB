@@ -448,13 +448,16 @@ SocketTopics.loadMore = function(socket, data, callback) {
 		},
 		postCount: function(next) {
 			topics.getPostCount(data.tid, next);
+		},
+		topic: function(next) {
+			topics.getTopicFields(data.tid, ['deleted'], next);
 		}
 	}, function(err, results) {
 		if (err) {
 			return callback(err);
 		}
 
-		if (!results.privileges.read) {
+		if (!results.privileges.read || (parseInt(results.topic.deleted, 10) && !results.privileges.view_deleted)) {
 			return callback(new Error('[[error:no-privileges]]'));
 		}
 

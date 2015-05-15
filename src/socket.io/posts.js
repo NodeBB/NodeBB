@@ -538,7 +538,7 @@ function loadMorePosts(set, uid, data, callback) {
 	var start = Math.max(0, parseInt(data.after, 10)),
 		stop = start + 9;
 
-	posts.getPostsFromSet(set, uid, start, stop, callback);
+	posts.getPostSummariesFromSet(set, uid, start, stop, callback);
 }
 
 SocketPosts.getRecentPosts = function(socket, data, callback) {
