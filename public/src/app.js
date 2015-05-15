@@ -184,6 +184,7 @@ app.cacheBuster = null;
 			}, function(err) {
 				if (err) {
 					app.alertError(err.message);
+					return;
 				}
 				app.currentRoom = room;
 			});
