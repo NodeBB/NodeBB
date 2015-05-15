@@ -514,13 +514,13 @@ var async = require('async'),
 			if (exists) {
 				return callback(new Error('[[error:group-already-exists]]'));
 			}
-			var now = Date.now();
+			var timestamp = data.timestamp || Date.now();
 
 			var slug = utils.slugify(data.name),
 				groupData = {
 					name: data.name,
 					slug: slug,
-					createtime: now,
+					createtime: timestamp,
 					userTitle: data.name,
 					description: data.description || '',
 					memberCount: 0,
@@ -530,13 +530,13 @@ var async = require('async'),
 					private: data.private || '1'
 				},
 				tasks = [
-					async.apply(db.sortedSetAdd, 'groups:createtime', now, data.name),
+					async.apply(db.sortedSetAdd, 'groups:createtime', timestamp, data.name),
 					async.apply(db.setObject, 'group:' + data.name, groupData)
 				];
 
 			if (data.hasOwnProperty('ownerUid')) {
 				tasks.push(async.apply(db.setAdd, 'group:' + data.name + ':owners', data.ownerUid));
-				tasks.push(async.apply(db.sortedSetAdd, 'group:' + data.name + ':members', now, data.ownerUid));
+				tasks.push(async.apply(db.sortedSetAdd, 'group:' + data.name + ':members', timestamp, data.ownerUid));
 				tasks.push(async.apply(db.setObjectField, 'group:' + data.name, 'memberCount', 1));
 
 				groupData.ownerUid = data.ownerUid;

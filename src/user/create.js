@@ -25,7 +25,7 @@ module.exports = function(User) {
 				return callback(err);
 			}
 			var gravatar = User.createGravatarURLFromEmail(data.email);
-			var timestamp = Date.now();
+			var timestamp = data.timestamp || Date.now();
 
 			var userData = {
 				'username': data.username,

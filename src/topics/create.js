@@ -15,6 +15,7 @@ var async = require('async'),
 module.exports = function(Topics) {
 
 	Topics.create = function(data, callback) {
+		// This is an interal method, consider using Topics.post instead
 		var uid = data.uid,
 			title = data.title,
 			cid = data.cid,
@@ -26,7 +27,7 @@ module.exports = function(Topics) {
 			}
 
 			var slug = utils.slugify(title),
-				timestamp = Date.now();
+				timestamp = data.timestamp || Date.now();
 
 			if (!slug.length) {
 				return callback(new Error('[[error:invalid-title]]'));
@@ -136,10 +137,10 @@ module.exports = function(Topics) {
 			},
 			function(filteredData, next) {
 				content = filteredData.content || data.content;
-				Topics.create({uid: uid, title: title, cid: cid, thumb: data.thumb, tags: tags}, next);
+				Topics.create({ uid: uid, title: title, cid: cid, thumb: data.thumb, tags: tags, timestamp: data.timestamp }, next);
 			},
 			function(tid, next) {
-				Topics.reply({uid:uid, tid:tid, handle: data.handle, content:content, req: data.req}, next);
+				Topics.reply({ uid:uid, tid:tid, handle: data.handle, content:content, timestamp: data.timestamp, req: data.req }, next);
 			},
 			function(postData, next) {
 				async.parallel({
@@ -230,7 +231,7 @@ module.exports = function(Topics) {
 				checkContentLength(content, next);
 			},
 			function(next) {
-				posts.create({uid: uid, tid: tid, handle: data.handle, content: content, toPid: data.toPid, ip: data.req ? data.req.ip : null}, next);
+				posts.create({uid: uid, tid: tid, handle: data.handle, content: content, toPid: data.toPid, timestamp: data.timestamp, ip: data.req ? data.req.ip : null}, next);
 			},
 			function(data, next) {
 				postData = data;
@@ -278,7 +279,7 @@ module.exports = function(Topics) {
 				postData.selfPost = false;
 				postData.relativeTime = utils.toISOString(postData.timestamp);
 
-				if (parseInt(uid, 10)) {
+				if (parseInt(uid, 10) && data.req) {
 					Topics.notifyFollowers(postData, uid);
 				}
 
