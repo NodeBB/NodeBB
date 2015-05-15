@@ -32,9 +32,12 @@ module.exports = function(User) {
 
 		async.waterfall([
 			function(next) {
-				db.getSortedSetRange('username:uid', 0, -1, next);
+				db.getSortedSetRangeWithScores('username:uid', 0, -1, next);
 			},
-			function(uids, next) {
+			function(users, next) {
+				var uids = users.map(function(user) {
+					return user.score;
+				});
 				User.getMultipleUserFields(uids, ['uid', 'email', 'username'], next);
 			},
 			function(usersData, next) {

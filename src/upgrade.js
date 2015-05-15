@@ -1050,13 +1050,13 @@ Upgrade.upgrade = function(callback) {
 				updatesMade = true;
 				winston.info('[2015/05/11] Updating widgets to tjs 0.2x');
 
-				require('./widgets/admin').get(function(err, data) {					
+				require('./widgets/admin').get(function(err, data) {
 					async.each(data.areas, function(area, next) {
 						require('./widgets').getArea(area.template, area.location, function(err, widgets) {
 							if (err) {
 								return next(err);
 							}
-							
+
 							for (var w in widgets) {
 								if (widgets.hasOwnProperty(w)) {
 									widgets[w].data.container = widgets[w].data.container
