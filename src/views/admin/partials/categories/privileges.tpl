@@ -8,10 +8,10 @@
 							</tr>
 							<!-- IF privileges.users.length -->
 							<!-- BEGIN privileges.users -->
-							<tr data-uid="{uid}">
-								<td><img src="{picture}" title="{username}" /></td>
-								<td>{username}</td>
-								{function.spawnPrivilegeStates, username, privileges}
+							<tr data-uid="{privileges.users.uid}">
+								<td><img src="{privileges.users.picture}" title="{privileges.users.username}" /></td>
+								<td>{privileges.users.username}</td>
+								{function.spawnPrivilegeStates, privileges.users.username, privileges}
 							</tr>
 							<!-- END privileges.users -->
 							<!-- ELSE -->
