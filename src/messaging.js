@@ -211,14 +211,14 @@ var db = require('./database'),
 				}
 			},
 			function(mids, next) {
-				if (typeof mids !== 'boolean') {
+				if (typeof mids !== 'boolean' && mids && mids.length) {
 					db.getObjects(['message:' + mids[0], 'message:' + mids[1]], next);
 				} else {
 					next(null, mids);
 				}
 			},
 			function(messages, next) {
-				if (typeof messages !== 'boolean') {
+				if (typeof messages !== 'boolean' && messages && messages.length) {
 					next(null, parseInt(messages[1].timestamp, 10) > parseInt(messages[0].timestamp, 10) + (1000*60*5));
 				} else {
 					next(null, messages);

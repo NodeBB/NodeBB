@@ -340,26 +340,6 @@ function toggleFollow(method, uid, theiruid, callback) {
 	});
 }
 
-SocketUser.getSettings = function(socket, data, callback) {
-	if (socket.uid) {
-		if (socket.uid === parseInt(data.uid, 10)) {
-			return user.getSettings(socket.uid, callback);
-		}
-
-		user.isAdministrator(socket.uid, function(err, isAdmin) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (!isAdmin) {
-				return callback(new Error('[[error:no-privileges]]'));
-			}
-
-			user.getSettings(data.uid, callback);
-		});
-	}
-};
-
 SocketUser.saveSettings = function(socket, data, callback) {
 	if (!socket.uid || !data) {
 		return callback(new Error('[[error:invalid-data]]'));

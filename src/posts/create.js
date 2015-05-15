@@ -14,7 +14,7 @@ module.exports = function(Posts) {
 	Posts.create = function(data, callback) {
 		var uid = data.uid,
 			tid = data.tid,
-			content = data.content,
+			content = data.content.toString(),
 			timestamp = data.timestamp || Date.now();
 
 		if (!uid && parseInt(uid, 10) !== 0) {

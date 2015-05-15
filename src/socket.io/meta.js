@@ -52,10 +52,15 @@ SocketMeta.buildTitle = function(socket, text, callback) {
 
 SocketMeta.rooms.enter = function(socket, data, callback) {
 	if (!socket.uid) {
-		return;
+		return callback();
 	}
+
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	if (data.enter && data.enter.startsWith('uid_') && data.enter !== 'uid_' + socket.uid) {
+		return callback(new Error('[[error:not-allowed]]'));
 	}
 
 	if (socket.currentRoom) {
@@ -78,6 +83,7 @@ SocketMeta.rooms.enter = function(socket, data, callback) {
 			websockets.in(data.enter).emit('event:user_enter', data);
 		}
 	}
+	callback();
 };
 
 SocketMeta.rooms.getAll = function(socket, data, callback) {

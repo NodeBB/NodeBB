@@ -7,6 +7,10 @@ module.exports = function(db, module) {
 
 	module.searchIndex = function(key, data, id, callback) {
 		callback = callback || function() {};
+		id = parseInt(id, 10);
+		if (!id) {
+			return callback();
+		}
 		var setData = {
 			id: id
 		};
@@ -17,7 +21,7 @@ module.exports = function(db, module) {
 		}
 
 		db.collection('search' + key).update({id: id}, {$set: setData}, {upsert:true, w: 1}, function(err) {
-			if(err) {
+			if (err) {
 				winston.error('Error indexing ' + err.message);
 			}
 			callback(err);
@@ -66,9 +70,11 @@ module.exports = function(db, module) {
 
 	module.searchRemove = function(key, id, callback) {
 		callback = callback || helpers.noop;
+		id = parseInt(id, 10);
 		if (!id) {
 			return callback();
 		}
+
 		db.collection('search' + key).remove({id: id}, function(err, res) {
 			callback(err);
 		});
@@ -77,24 +83,6 @@ module.exports = function(db, module) {
 	module.flushdb = function(callback) {
 		callback = callback || helpers.noop;
 		db.dropDatabase(callback);
-	};
-
-	module.info = function(callback) {
-		db.stats({scale:1024}, function(err, stats) {
-			if(err) {
-				return callback(err);
-			}
-
-			stats.avgObjSize = (stats.avgObjSize / 1024).toFixed(2);
-			stats.dataSize = (stats.dataSize / 1024).toFixed(2);
-			stats.storageSize = (stats.storageSize / 1024).toFixed(2);
-			stats.fileSize = (stats.fileSize / 1024).toFixed(2);
-			stats.indexSize = (stats.indexSize / 1024).toFixed(2);
-			stats.raw = JSON.stringify(stats, null, 4);
-			stats.mongo = true;
-
-			callback(null, stats);
-		});
 	};
 
 	module.exists = function(key, callback) {

@@ -57,7 +57,7 @@ module.exports = function(Topics) {
 				Topics.getTopicField(tid, 'title', next);
 			},
 			function(title, next) {
-				search.searchQuery('topic', title, next);
+				search.searchQuery('topic', title, [], [], next);
 			}
 		], callback);
 	}
