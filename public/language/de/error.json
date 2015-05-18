@@ -67,7 +67,7 @@
     "topic-thumbnails-are-disabled": "Vorschaubilder für Themen sind deaktiviert",
     "invalid-file": "Datei ungültig",
     "uploads-are-disabled": "Uploads sind deaktiviert",
-    "signature-too-long": "Sorry, your signature cannot be longer than %1 character(s).",
+    "signature-too-long": "Deine Signatur darf  %1 Zeichen nicht überschreiten.",
     "cant-chat-with-yourself": "Du kannst nicht mit dir selber chatten!",
     "chat-restricted": "Dieser Benutzer hat seine Chatfunktion eingeschränkt. Du kannst nur mit diesem Benutzer chatten, wenn er dir folgt.",
     "too-many-messages": "Du hast zu viele Nachrichten versandt, bitte warte eine Weile.",

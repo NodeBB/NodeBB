@@ -25,7 +25,7 @@
     "username-too-short": "اسم المستخدم قصير.",
     "username-too-long": "اسم المستخدم طويل",
     "user-banned": "المستخدم محظور",
-    "user-too-new": "Sorry, you are required to wait %1 second(s) before making your first post",
+    "user-too-new": "عذرا, يجب أن تنتظر 1% ثواني قبل قيامك بأول مشاركة",
     "no-category": "قائمة غير موجودة",
     "no-topic": "موضوع غير موجود",
     "no-post": "رد غير موجود",
@@ -78,6 +78,6 @@
     "reload-failed": "المنتدى واجه مشكلة أثناء إعادة التحميل: \"%1\".  سيواصل المنتدى خدمة العملاء السابقين لكن يجب عليك إلغاء أي تغيير قمت به قبل إعادة التحميل.",
     "registration-error": "حدث خطأ أثناء التسجيل",
     "parse-error": "Something went wrong while parsing server response",
-    "wrong-login-type-email": "Please use your email to login",
-    "wrong-login-type-username": "Please use your username to login"
+    "wrong-login-type-email": "الرجاء استعمال بريدك اﻹلكتروني للدخول",
+    "wrong-login-type-username": "الرجاء استعمال اسم المستخدم الخاص بك للدخول"
 }
