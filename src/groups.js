@@ -981,13 +981,13 @@ var async = require('async'),
 				return groupName !== 'registered-users' && groupName.indexOf(':privileges:') === -1;
 			});
 
-			Groups.getGroupsData(groupNames, function(err, groupData) {
+			Groups.getMultipleGroupFields(groupNames, ['name', 'hidden'], function(err, groupData) {
 				if (err) {
 					return callback(err);
 				}
 
 				groupData = groupData.filter(function(group) {
-					return group && !group.hidden;
+					return group && !parseInt(group.hidden, 10);
 				});
 
 				var groupSets = groupData.map(function(group) {
@@ -1003,11 +1003,11 @@ var async = require('async'),
 						var memberOf = [];
 						isMembers.forEach(function(isMember, index) {
 							if (isMember) {
-								memberOf.push(groupData[index]);
+								memberOf.push(groupData[index].name);
 							}
 						});
 
-						next(null, memberOf);
+						Groups.getGroupsData(memberOf, next);
 					});
 				}, callback);
 			});
