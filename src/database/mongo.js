@@ -7,7 +7,10 @@
 		async = require('async'),
 		nconf = require('nconf'),
 		session = require('express-session'),
+		_ = require('underscore'),
 		db, mongoClient;
+
+	_.mixin(require('underscore.deep'));
 
 	module.questions = [
 		{
@@ -88,6 +91,9 @@
 				poolSize: parseInt(nconf.get('mongo:poolSize'), 10) || 10
 			}
 		};
+
+		connOptions = _.deepExtend((nconf.get('mongo:options') || {}), connOptions);
+
 		mongoClient.connect(connString, connOptions, function(err, _db) {
 			if (err) {
 				winston.error("NodeBB could not connect to your Mongo database. Mongo returned the following error: " + err.message);
