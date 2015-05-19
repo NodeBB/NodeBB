@@ -334,26 +334,18 @@ var	async = require('async'),
 		if (!username) {
 			return callback();
 		}
-		db.getObjectField('username:uid', username, callback);
+		db.sortedSetScore('username:uid', username, callback);
 	};
 
 	User.getUidsByUsernames = function(usernames, callback) {
-		db.getObjectFields('username:uid', usernames, function(err, users) {
-			if (err) {
-				return callback(err);
-			}
-			var uids = usernames.map(function(username) {
-				return users[username];
-			});
-			callback(null, uids);
-		});
+		db.sortedSetScores('username:uid', usernames, callback);
 	};
 
 	User.getUidByUserslug = function(userslug, callback) {
 		if (!userslug) {
 			return callback();
 		}
-		db.getObjectField('userslug:uid', userslug, callback);
+		db.sortedSetScore('userslug:uid', userslug, callback);
 	};
 
 	User.getUsernamesByUids = function(uids, callback) {
@@ -382,11 +374,11 @@ var	async = require('async'),
 	};
 
 	User.getUidByEmail = function(email, callback) {
-		db.getObjectField('email:uid', email.toLowerCase(), callback);
+		db.sortedSetScore('email:uid', email.toLowerCase(), callback);
 	};
 
 	User.getUsernameByEmail = function(email, callback) {
-		db.getObjectField('email:uid', email.toLowerCase(), function(err, uid) {
+		db.sortedSetScore('email:uid', email.toLowerCase(), function(err, uid) {
 			if (err) {
 				return callback(err);
 			}

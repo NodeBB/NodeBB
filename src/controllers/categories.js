@@ -162,7 +162,7 @@ categoriesController.get = function(req, res, next) {
 		page = parseInt(req.query.page, 10) || 1,
 		userPrivileges;
 
-	if (req.params.topic_index && !utils.isNumber(req.params.topic_index)) {
+	if ((req.params.topic_index && !utils.isNumber(req.params.topic_index)) || !utils.isNumber(cid)) {
 		return helpers.notFound(req, res);
 	}
 

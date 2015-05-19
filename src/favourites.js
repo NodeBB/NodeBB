@@ -306,14 +306,22 @@ var async = require('async'),
 				function(count, next) {
 					results.postData.reputation = count;
 					posts.setPostField(pid, 'reputation', count, next);
-				},
-				function(next) {
-					next(null, {
-						post: results.postData,
-						isFavourited: isFavouriting
-					});
 				}
-			], callback);
+			], function(err) {
+				if (err) {
+					return callback(err);
+				}
+
+				plugins.fireHook('action:post.' + type, {
+					pid: pid,
+					uid: uid,
+				});
+
+				callback(null, {
+					post: results.postData,
+					isFavourited: isFavouriting
+				});
+			});
 		});
 	}
 

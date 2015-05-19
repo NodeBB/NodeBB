@@ -6,7 +6,7 @@
 
 				<ul class="nav nav-pills">
 				<!-- BEGIN templates -->
-					<li class="<!-- IF @first -->active<!-- ENDIF @first -->"><a href="#" data-template="{template}" data-toggle="pill">{template}</a></li>
+					<li class="<!-- IF @first -->active<!-- ENDIF @first -->"><a href="#" data-template="{../template}" data-toggle="pill">{../template}</a></li>
 				<!-- END templates -->
 				</ul>
 
@@ -14,10 +14,10 @@
 					<div class="col-xs-12">
 						<div class="tab-content">
 						<!-- BEGIN templates -->
-							<div class="tab-pane <!-- IF @first -->active<!-- ENDIF @first -->" data-template="{template}">
+							<div class="tab-pane <!-- IF @first -->active<!-- ENDIF @first -->" data-template="{../template}">
 							<!-- BEGIN areas -->
-								<div class="area" data-template="{template}" data-location="{areas.location}">
-									<h4>{areas.name} <small>{template} / {areas.location}</small></h4>
+								<div class="area" data-template="{templates.template}" data-location="{../location}">
+									<h4>{../name} <small>{templates.template} / {../location}</small></h4>
 									<div class="well widget-area">
 
 									</div>
@@ -72,18 +72,18 @@
 						<div class="pointer" style="padding: 20px; border: 1px dotted #dedede; margin-bottom: 20px;" data-container-html=" ">
 							None
 						</div>
-						<div class="well pointer" data-container-html='<div class="well">\{body\}</div>'>
+						<div class="well pointer" data-container-html='<div class="well">\{{body\}}</div>'>
 							Well
 						</div>
-						<div class="jumbotron pointer" data-container-html='<div class="jumbotron">\{body\}</div>'>
+						<div class="jumbotron pointer" data-container-html='<div class="jumbotron">\{{body\}}</div>'>
 							Jumbotron
 						</div>
-						<div class="panel" data-container-html='<div class="panel panel-default"><div class="panel-body">\{body\}</div></div>'>
+						<div class="panel" data-container-html='<div class="panel panel-default"><div class="panel-body">\{{body\}}</div></div>'>
 							<div class="panel-body pointer">
 								Panel
 							</div>
 						</div>
-						<div class="panel panel-default pointer" data-container-html='<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">\{title\}</h3></div><div class="panel-body">\{body\}</div></div>'>
+						<div class="panel panel-default pointer" data-container-html='<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">\{{title\}}</h3></div><div class="panel-body">\{{body\}}</div></div>'>
 							<div class="panel-heading">
 								Panel Header
 								<div class="pull-right color-selector">
@@ -100,7 +100,7 @@
 							</div>
 						</div>
 
-						<div class="alert alert-info pointer" data-container-html='<div class="alert alert-info">\{body\}</div>'>
+						<div class="alert alert-info pointer" data-container-html='<div class="alert alert-info">\{{body\}}</div>'>
 							Alert
 							<div class="pull-right color-selector">
 								<button data-class="alert-success" class="btn btn-xs btn-success">&nbsp;&nbsp;</button>

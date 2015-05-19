@@ -32,12 +32,6 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
 }
 
-function staticRoutes(app, middleware, controllers) {
-	setupPageRoute(app, '/404', middleware, [], controllers.static['404']);
-	setupPageRoute(app, '/403', middleware, [], controllers.static['403']);
-	setupPageRoute(app, '/500', middleware, [], controllers.static['500']);
-}
-
 function topicRoutes(app, middleware, controllers) {
 	app.get('/api/topic/teaser/:topic_id', controllers.topics.teaser);
 
@@ -134,7 +128,6 @@ module.exports = function(app, middleware) {
 	*/
 
 	mainRoutes(router, middleware, controllers);
-	staticRoutes(router, middleware, controllers);
 	topicRoutes(router, middleware, controllers);
 	tagRoutes(router, middleware, controllers);
 	categoryRoutes(router, middleware, controllers);
@@ -199,7 +192,7 @@ function handle404(app, middleware) {
 			res.status(404);
 
 			if (res.locals.isAPI) {
-				return res.json({path: req.path, error: 'not-found'});
+				return res.json({path: req.path});
 			}
 
 			middleware.buildHeader(req, res, function() {

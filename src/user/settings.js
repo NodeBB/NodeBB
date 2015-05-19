@@ -143,4 +143,17 @@ module.exports = function(User) {
 	User.setSetting = function(uid, key, value, callback) {
 		db.setObjectField('user:' + uid + ':settings', key, value, callback);
 	};
+
+	User.setGroupTitle = function(groupName, uid, callback) {
+		if (groupName === 'registered-users') {
+			return callback();
+		}
+		db.getObjectField('user:' + uid + ':settings', 'groupTitle', function(err, currentTitle) {
+			if (err || (currentTitle || currentTitle === '')) {
+				return callback(err);
+			}
+
+			User.setSetting(uid, 'groupTitle', groupName, callback);
+		});
+	};
 };

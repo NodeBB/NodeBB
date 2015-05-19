@@ -22,7 +22,7 @@ var async = require('async'),
 	};
 
 	UserEmail.available = function(email, callback) {
-		db.isObjectField('email:uid', email.toLowerCase(), function(err, exists) {
+		db.isSortedSetMember('email:uid', email.toLowerCase(), function(err, exists) {
 			callback(err, !exists);
 		});
 	};

@@ -43,7 +43,7 @@ usersController.getOnlineUsers = function(req, res, next) {
 			anonymousUserCount: websockets.getOnlineAnonCount()
 		};
 
-		res.render('users', userData);
+		render(req, res, userData, next);
 	});
 };
 
@@ -72,7 +72,7 @@ usersController.getUsers = function(set, count, req, res, next) {
 			pagination: pagination.create(1, pageCount)
 		};
 		userData['route_' + set] = true;
-		res.render('users', userData);
+		render(req, res, userData, next);
 	});
 };
 
@@ -113,9 +113,18 @@ usersController.getUsersForSearch = function(req, res, next) {
 			users: data.users
 		};
 
-		res.render('users', userData);
+		render(req, res, userData, next);
 	});
 };
+
+function render(req, res, data, next) {
+	plugins.fireHook('filter:users.build', {req: req, res: res, templateData: data}, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+		res.render('users', data.templateData);
+	});
+}
 
 
 

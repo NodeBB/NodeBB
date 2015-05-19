@@ -5,7 +5,7 @@
     "recent": "近期的主題",
     "users": "已註冊的使用者",
     "notifications": "新訊息通知",
-    "tags": "Tags",
+    "tags": "標籤",
     "tag": "Topics tagged under \"%1\"",
     "user.edit": "編輯中 \"%1\"",
     "user.following": "People %1 Follows",
@@ -15,7 +15,7 @@
     "user.groups": "%1 的群組",
     "user.favourites": "%1's 最喜愛的文章",
     "user.settings": "使用者設定",
-    "user.watched": "Topics watched by %1",
-    "maintenance.text": "%1目前正在進行維修。請稍後再來。",
-    "maintenance.messageIntro": "此外，管理員有以下信息："
+    "user.watched": "主題由 %1 所觀看",
+    "maintenance.text": "目前 %1 正在進行維修。請稍後再來。",
+    "maintenance.messageIntro": "此外，管理員有以下訊息："
 }

@@ -6,6 +6,7 @@ var uglifyjs = require('uglify-js'),
 	fs = require('fs'),
 	path = require('path'),
 	crypto = require('crypto'),
+	utils = require('./public/src/utils'),
 
 	Minifier = {
 		js: {}
@@ -14,7 +15,7 @@ var uglifyjs = require('uglify-js'),
 /* Javascript */
 Minifier.js.minify = function (scripts, minify, callback) {
 	scripts = scripts.filter(function(file) {
-		return fs.existsSync(file);
+		return fs.existsSync(file) && file.endsWith('.js');
 	});
 
 	if (minify) {

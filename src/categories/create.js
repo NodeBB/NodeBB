@@ -8,50 +8,49 @@ var async = require('async'),
 module.exports = function(Categories) {
 
 	Categories.create = function(data, callback) {
-		db.incrObjectField('global', 'nextCid', function(err, cid) {
-			if (err) {
-				return callback(err);
+		var category;
+		async.waterfall([
+			function(next) {
+				db.incrObjectField('global', 'nextCid', next);
+			},
+			function(cid, next) {
+				var slug = cid + '/' + utils.slugify(data.name),
+					order = data.order || cid,	// If no order provided, place it at the end
+					colours = Categories.assignColours();
+
+				category = {
+					cid: cid,
+					name: data.name,
+					description: ( data.description ? data.description : '' ),
+					icon: ( data.icon ? data.icon : '' ),
+					bgColor: data.bgColor || colours[0],
+					color: data.color || colours[1],
+					slug: slug,
+					parentCid: ( data.parentCid ? data.parentCid : 0 ),
+					topic_count: 0,
+					post_count: 0,
+					disabled: 0,
+					order: order,
+					link: '',
+					numRecentReplies: 1,
+					class: ( data.class ? data.class : 'col-md-3 col-xs-6' ),
+					imageClass: 'auto'
+				};
+
+				var defaultPrivileges = ['find', 'read', 'topics:create', 'topics:reply'];
+
+				async.series([
+					async.apply(db.setObject, 'category:' + cid, category),
+					async.apply(db.sortedSetAdd, 'categories:cid', order, cid),
+					async.apply(privileges.categories.give, defaultPrivileges, cid, 'administrators'),
+					async.apply(privileges.categories.give, defaultPrivileges, cid, 'registered-users'),
+					async.apply(privileges.categories.give, ['find', 'read'], cid, 'guests')
+				], next);
+			},
+			function(results, next) {
+				next(null, category);
 			}
-
-			var slug = cid + '/' + utils.slugify(data.name),
-				order = data.order || cid,	// If no order provided, place it at the end
-				colours = Categories.assignColours();
-
-			var category = {
-				cid: cid,
-				name: data.name,
-				description: ( data.description ? data.description : '' ),
-				icon: ( data.icon ? data.icon : '' ),
-				bgColor: data.bgColor || colours[0],
-				color: data.color || colours[1],
-				slug: slug,
-				parentCid: ( data.parentCid ? data.parentCid : 0 ),
-				topic_count: 0,
-				post_count: 0,
-				disabled: 0,
-				order: order,
-				link: '',
-				numRecentReplies: 1,
-				class: ( data.class ? data.class : 'col-md-3 col-xs-6' ),
-				imageClass: 'auto'
-			};
-
-			var defaultPrivileges = ['find', 'read', 'topics:create', 'topics:reply'];
-
-			async.series([
-				async.apply(db.setObject, 'category:' + cid, category),
-				async.apply(db.sortedSetAdd, 'categories:cid', order, cid),
-				async.apply(privileges.categories.give, defaultPrivileges, cid, 'administrators'),
-				async.apply(privileges.categories.give, defaultPrivileges, cid, 'registered-users'),
-				async.apply(privileges.categories.give, ['find', 'read'], cid, 'guests')
-			], function(err) {
-				if (err) {
-					return callback(err);
-				}
-
-				callback(null, category);
-			});
-		});
+		], callback);
 	};
 
 	Categories.assignColours = function() {

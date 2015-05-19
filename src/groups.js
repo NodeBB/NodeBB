@@ -76,7 +76,10 @@ var async = require('async'),
 			if (err) {
 				return callback(err);
 			}
-			groupNames = groupNames.concat(ephemeralGroups);
+
+			groupNames = groupNames.filter(function(groupName) {
+				return groupName && groupName.indexOf(':privileges:') === -1 && groupName !== 'registered-users' && groupName !== 'guests';
+			});
 
 			async.parallel({
 				groups: async.apply(async.map, groupNames, function (groupName, next) {
@@ -511,13 +514,13 @@ var async = require('async'),
 			if (exists) {
 				return callback(new Error('[[error:group-already-exists]]'));
 			}
-			var now = Date.now();
+			var timestamp = data.timestamp || Date.now();
 
 			var slug = utils.slugify(data.name),
 				groupData = {
 					name: data.name,
 					slug: slug,
-					createtime: now,
+					createtime: timestamp,
 					userTitle: data.name,
 					description: data.description || '',
 					memberCount: 0,
@@ -527,13 +530,14 @@ var async = require('async'),
 					private: data.private || '1'
 				},
 				tasks = [
-					async.apply(db.sortedSetAdd, 'groups:createtime', now, data.name),
+					async.apply(db.sortedSetAdd, 'groups:createtime', timestamp, data.name),
 					async.apply(db.setObject, 'group:' + data.name, groupData)
 				];
 
 			if (data.hasOwnProperty('ownerUid')) {
 				tasks.push(async.apply(db.setAdd, 'group:' + data.name + ':owners', data.ownerUid));
-				tasks.push(async.apply(db.sortedSetAdd, 'group:' + data.name + ':members', now, data.ownerUid));
+				tasks.push(async.apply(db.sortedSetAdd, 'group:' + data.name + ':members', timestamp, data.ownerUid));
+				tasks.push(async.apply(db.setObjectField, 'group:' + data.name, 'memberCount', 1));
 
 				groupData.ownerUid = data.ownerUid;
 			}
@@ -542,7 +546,7 @@ var async = require('async'),
 				tasks.push(async.apply(db.setObjectField, 'groupslug:groupname', slug, data.name));
 			}
 
-			async.parallel(tasks, function(err) {
+			async.series(tasks, function(err) {
 				if (!err) {
 					plugins.fireHook('action:group.create', groupData);
 				}
@@ -759,17 +763,18 @@ var async = require('async'),
 						tasks.push(async.apply(db.setAdd, 'group:' + groupName + ':owners', uid));
 					}
 					async.parallel(tasks, next);
+				},
+				function(results, next) {
+					user.setGroupTitle(groupName, uid, next);
+				},
+				function(next) {
+					plugins.fireHook('action:group.join', {
+						groupName: groupName,
+						uid: uid
+					});
+					next();
 				}
-			], function(err, results) {
-				if (err) {
-					return callback(err);
-				}
-				plugins.fireHook('action:group.join', {
-					groupName: groupName,
-					uid: uid
-				});
-				callback();
-			});
+			], callback);
 		}
 
 		callback = callback || function() {};
@@ -976,13 +981,13 @@ var async = require('async'),
 				return groupName !== 'registered-users' && groupName.indexOf(':privileges:') === -1;
 			});
 
-			Groups.getGroupsData(groupNames, function(err, groupData) {
+			Groups.getMultipleGroupFields(groupNames, ['name', 'hidden'], function(err, groupData) {
 				if (err) {
 					return callback(err);
 				}
 
 				groupData = groupData.filter(function(group) {
-					return group && !group.hidden;
+					return group && !parseInt(group.hidden, 10);
 				});
 
 				var groupSets = groupData.map(function(group) {
@@ -998,11 +1003,11 @@ var async = require('async'),
 						var memberOf = [];
 						isMembers.forEach(function(isMember, index) {
 							if (isMember) {
-								memberOf.push(groupData[index]);
+								memberOf.push(groupData[index].name);
 							}
 						});
 
-						next(null, memberOf);
+						Groups.getGroupsData(memberOf, next);
 					});
 				}, callback);
 			});

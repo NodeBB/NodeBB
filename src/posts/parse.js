@@ -15,6 +15,11 @@ module.exports = function(Posts) {
 			return callback(null, postData);
 		}
 
+		// Casting post content into a string, just in case
+		if (typeof postData.content !== 'string') {
+			postData.content = postData.content.toString();
+		}
+
 		plugins.fireHook('filter:parse.post', {postData: postData}, function(err, data) {
 			if (err) {
 				return callback(err);

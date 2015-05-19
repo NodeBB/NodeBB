@@ -12,9 +12,10 @@ var async = require('async'),
 
 module.exports = function(Posts) {
 	Posts.create = function(data, callback) {
+		// This is an internal method, consider using Topics.reply instead
 		var uid = data.uid,
 			tid = data.tid,
-			content = data.content,
+			content = data.content.toString(),
 			timestamp = data.timestamp || Date.now();
 
 		if (!uid && parseInt(uid, 10) !== 0) {

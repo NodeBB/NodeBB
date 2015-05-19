@@ -23,6 +23,7 @@ Templates.compile = function(callback) {
 			winston.info('[minifier] Compiling templates skipped');
 		}
 
+		emitter.emit('templates:compiled');
 		return callback();
 	}
 

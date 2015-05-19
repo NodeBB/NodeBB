@@ -3,8 +3,8 @@
 
 var async = require('async'),
 	meta = require('../meta'),
-	user = require('../user'),
 	pagination = require('../pagination'),
+	plugins = require('../plugins'),
 	db = require('../database');
 
 module.exports = function(User) {
@@ -37,10 +37,14 @@ module.exports = function(User) {
 				filterAndSortUids(uids, filterBy, data.sortBy, next);
 			},
 			function(uids, next) {
+				plugins.fireHook('filter:users.search', {uids: uids, uid: uid}, next);
+			},
+			function(data, next) {
+				var uids = data.uids;
 				searchResult.matchCount = uids.length;
 
 				if (paginate) {
-					var pagination = user.paginate(page, uids);
+					var pagination = User.paginate(page, uids);
 					uids = pagination.data;
 					searchResult.pagination = pagination.pagination;
 					searchResult.pageCount = pagination.pageCount;
@@ -51,7 +55,6 @@ module.exports = function(User) {
 			function(userData, next) {
 				searchResult.timing = (process.elapsedTimeSince(startTime) / 1000).toFixed(2);
 				searchResult.users = userData;
-
 				next(null, searchResult);
 			}
 		], callback);
@@ -81,7 +84,9 @@ module.exports = function(User) {
 			return searchBy + ':uid';
 		});
 
-		db.getObjects(keys, function(err, hashes) {
+		async.map(keys, function(key, next) {
+			db.getSortedSetRangeWithScores(key, 0, -1, next);
+		}, function(err, hashes) {
 			if (err || !hashes) {
 				return callback(err, []);
 			}
@@ -94,16 +99,16 @@ module.exports = function(User) {
 			var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
 			var hardCap = resultsPerPage * 10;
 
-			for(var i=0; i<hashes.length; ++i) {
-				for(var field in hashes[i]) {
+			for (var i=0; i<hashes.length; ++i) {
+				for (var k=0; k<hashes[i].length; ++k) {
+					var field = hashes[i][k].value;
 					if ((startsWith && field.toLowerCase().startsWith(query)) || (!startsWith && field.toLowerCase().indexOf(query) !== -1)) {
-						uids.push(hashes[i][field]);
+						uids.push(hashes[i][k].score);
 						if (uids.length >= hardCap) {
 							break;
 						}
 					}
 				}
-
 				if (uids.length >= hardCap) {
 					break;
 				}
@@ -130,7 +135,7 @@ module.exports = function(User) {
 
 		async.parallel({
 			userData: function(next) {
-				user.getMultipleUserFields(uids, fields, next);
+				User.getMultipleUserFields(uids, fields, next);
 			},
 			isOnline: function(next) {
 				if (fields.indexOf('status') !== -1) {
@@ -147,7 +152,7 @@ module.exports = function(User) {
 
 			if (results.isOnline) {
 				userData.forEach(function(userData, index) {
-					userData.status = user.getStatus(userData.status, results.isOnline[index]);
+					userData.status = User.getStatus(userData.status, results.isOnline[index]);
 				});
 			}
 

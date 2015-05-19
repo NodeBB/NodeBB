@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 1, 25, 6);
+	latestSchema = Date.UTC(2015, 4, 11);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -233,18 +233,17 @@ Upgrade.upgrade = function(callback) {
 							var privs = ['find', 'read', 'topics:reply', 'topics:create'];
 
 							async.each(privs, function(priv, next) {
-
 								categoryHasPrivilegesSet(cid, priv, function(err, privilegesSet) {
 									if (err || privilegesSet) {
 										return next(err);
 									}
 
 									async.eachLimit(groups, 50, function(group, next) {
-										if (group && !group.hidden) {
-											if (group.name === 'guests' && (priv === 'topics:reply' || priv === 'topics:create')) {
+										if (group) {
+											if (group === 'guests' && (priv === 'topics:reply' || priv === 'topics:create')) {
 												return next();
 											}
-											Groups.join('cid:' + cid + ':privileges:groups:' + priv, group.name, next);
+											Groups.join('cid:' + cid + ':privileges:groups:' + priv, group, next);
 										} else {
 											next();
 										}
@@ -938,7 +937,7 @@ Upgrade.upgrade = function(callback) {
 						}
 						winston.info('[2015/02/24] Upgrading privilege groups to system groups done');
 						Upgrade.update(thisSchemaDate, next);
-					})
+					});
 				});
 			} else {
 				winston.info('[2015/02/24] Upgrading privilege groups to system groups skipped');
@@ -961,6 +960,128 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2015/02/25] Upgrading menu items to dynamic navigation system skipped');
+				next();
+			}
+		},
+		function(next) {
+			function upgradeHashToSortedSet(hash, callback) {
+				db.getObject(hash, function(err, oldHash) {
+					if (err || !oldHash) {
+						return callback(err);
+					}
+
+					db.rename(hash, hash + '_old', function(err) {
+						if (err) {
+							return callback(err);
+						}
+						var keys = Object.keys(oldHash);
+						if (!keys.length) {
+							return callback();
+						}
+						async.each(keys, function(key, next) {
+							db.sortedSetAdd(hash, oldHash[key], key, next);
+						}, callback);
+					});
+				});
+			}
+
+			thisSchemaDate = Date.UTC(2015, 4, 7);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/05/07] Upgrading uid mappings to sorted set');
+
+				async.series([
+					async.apply(upgradeHashToSortedSet, 'email:uid'),
+					async.apply(upgradeHashToSortedSet, 'fullname:uid'),
+					async.apply(upgradeHashToSortedSet, 'username:uid'),
+					async.apply(upgradeHashToSortedSet, 'userslug:uid'),
+				], function(err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2015/05/07] Upgrading uid mappings to sorted set done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+
+			} else {
+				winston.info('[2015/05/07] Upgrading uid mappings to sorted set skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 4, 8);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/05/08] Fixing emails');
+
+				db.getSortedSetRangeWithScores('email:uid', 0, -1, function(err, users) {
+					if (err) {
+						return next(err);
+					}
+
+					async.eachLimit(users, 100, function(user, next) {
+						var newEmail = user.value.replace(/\uff0E/g, '.');
+						if (newEmail === user.value) {
+							return next();
+						}
+						async.series([
+							async.apply(db.sortedSetRemove, 'email:uid', user.value),
+							async.apply(db.sortedSetAdd, 'email:uid', user.score, newEmail)
+						], next);
+
+					}, function(err) {
+						if (err) {
+							return next(err);
+						}
+						winston.info('[2015/05/08] Fixing emails done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+
+			} else {
+				winston.info('[2015/05/08] Fixing emails skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 4, 11);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/05/11] Updating widgets to tjs 0.2x');
+
+				require('./widgets/admin').get(function(err, data) {
+					async.each(data.areas, function(area, next) {
+						require('./widgets').getArea(area.template, area.location, function(err, widgets) {
+							if (err) {
+								return next(err);
+							}
+
+							for (var w in widgets) {
+								if (widgets.hasOwnProperty(w)) {
+									widgets[w].data.container = widgets[w].data.container
+										.replace(/\{\{([\s\S]*?)\}\}/g, '{$1}')
+										.replace(/\{([\s\S]*?)\}/g, '{{$1}}');
+								}
+							}
+
+							require('./widgets').setArea({
+								template: area.template,
+								location: area.location,
+								widgets: widgets
+							}, next);
+						});
+					}, function(err) {
+						if (err) {
+							return next(err);
+						}
+
+						winston.info('[2015/05/11] Updating widgets to tjs 0.2x done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2015/05/11] Updating widgets to tjs 0.2x skipped');
 				next();
 			}
 		}

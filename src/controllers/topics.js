@@ -21,7 +21,7 @@ topicsController.get = function(req, res, next) {
 		sort = req.query.sort,
 		userPrivileges;
 
-	if (req.params.post_index && !utils.isNumber(req.params.post_index)) {
+	if ((req.params.post_index && !utils.isNumber(req.params.post_index)) || !utils.isNumber(tid)) {
 		return helpers.notFound(req, res);
 	}
 
