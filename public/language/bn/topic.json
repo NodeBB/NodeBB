@@ -5,6 +5,7 @@
     "no_topics_found": "কোন টপিক পাওয়া যায়নি!",
     "no_posts_found": "কোন পোস্ট পাওয়া যায়নি",
     "post_is_deleted": "এই পোস্টটি মুছে ফেলা হয়েছে!",
+    "topic_is_deleted": "This topic is deleted!",
     "profile": "প্রোফাইল ",
     "posted_by": "পোস্ট করেছেন %1",
     "posted_by_guest": "অতিথি পোস্ট ",
