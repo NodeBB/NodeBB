@@ -2,7 +2,7 @@
     "invalid-data": "Nesprávne údaje",
     "not-logged-in": "Nie ste prihlásený",
     "account-locked": "Váš účet bol dočasne uzamknutý.",
-    "search-requires-login": "Searching requires an account! Please login or register!",
+    "search-requires-login": "Searching requires an account - please login or register.",
     "invalid-cid": "Nesprávne ID kategórie",
     "invalid-tid": "Nesprávne ID témy",
     "invalid-pid": "Nesprávne IČ príspevku",
