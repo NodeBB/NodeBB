@@ -5,6 +5,7 @@
     "no_topics_found": "沒有找到主題！",
     "no_posts_found": "找不到文章!",
     "post_is_deleted": "文章已被刪除！",
+    "topic_is_deleted": "This topic is deleted!",
     "profile": "資料",
     "posted_by": "由 %1 張貼",
     "posted_by_guest": "由訪客張貼",
