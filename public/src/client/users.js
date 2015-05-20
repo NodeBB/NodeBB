@@ -147,7 +147,7 @@ define('forum/users', ['translator'], function(translator) {
 
 
 	function loadPage(page) {
-		socket.emit('user.loadPage', {page: page, sortBy: $('.search select').val(), onlineOnly: $('.search .online-only').is(':checked')}, function(err, data) {
+		socket.emit('user.loadSearchPage', {page: page, onlineOnly: $('.search .online-only').is(':checked')}, function(err, data) {
 			resetSearchNotify();
 			if (err) {
 				return app.alertError(err.message);

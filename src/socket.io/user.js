@@ -454,8 +454,6 @@ SocketUser.loadPage = function(socket, data, callback) {
 	var startTime = process.hrtime();
 	var controllers = require('../controllers/users');
 	var pagination = require('../pagination');
-	var set = '';
-	data.sortBy = data.sortBy || 'joindate';
 
 	var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
 	var start = Math.max(0, data.page - 1) * resultsPerPage;
@@ -468,23 +466,6 @@ SocketUser.loadPage = function(socket, data, callback) {
 			count: function(next) {
 				var now = Date.now();
 				db.sortedSetCount('users:online', now - 300000, now, next);
-			}
-		}, done);
-	} else if (data.sortBy === 'username') {
-		async.parallel({
-			count: function(next) {
-				db.sortedSetCard('username:sorted', next);
-			},
-			users: function(next) {
-				db.getSortedSetRangeByLex('username:sorted', '-', '+', start, stop - start + 1, function(err, result) {
-					if (err) {
-						return next(err);
-					}
-					var uids = result.map(function(user) {
-						return user && user.split(':')[1];
-					});
-					user.getUsers(uids, socket.uid, next);
-				});
 			}
 		}, done);
 	} else {
