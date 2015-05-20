@@ -509,4 +509,28 @@ module.exports = function(db, module) {
 			callback(err, result && result.value ? result.value.score : null);
 		});
 	};
+
+	module.getSortedSetRangeByLex = function(key, min, max, start, count, callback) {
+		var query = {_key: key};
+		if (min !== '-') {
+			query.value = {$gte: min};
+		}
+		if (max !== '+') {
+			query.value = query.value || {};
+			query.value.$lte = max;
+		}
+		db.collection('objects').find(query, {_id: 0, value: 1})
+			.sort({value: 1})
+			.skip(start)
+			.limit(count === -1 ? 0 : count)
+			.toArray(function(err, data) {
+				if (err) {
+					return callback(err);
+				}
+				data = data.map(function(item) {
+					return item && item.value;
+				});
+				callback(err, data);
+		});
+	};
 };

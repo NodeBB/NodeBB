@@ -77,7 +77,7 @@ SocketUser.search = function(socket, data, callback) {
 		page: data.page,
 		searchBy: data.searchBy,
 		sortBy: data.sortBy,
-		filterBy: data.filterBy,
+		onlineOnly: data.onlineOnly,
 		uid: socket.uid
 	}, callback);
 };
@@ -429,6 +429,60 @@ SocketUser.loadMore = function(socket, data, callback) {
 		result['route_' + data.set] = true;
 		callback(null, result);
 	});
+};
+
+SocketUser.loadPage = function(socket, data, callback) {
+	function done(err, result) {
+		if (err) {
+			return callback(err);
+		}
+		var pageCount = Math.ceil(result.count / resultsPerPage);
+		var userData = {
+			users: result.users,
+			pagination: pagination.create(data.page, pageCount)
+		};
+
+		callback(null, userData);
+	}
+
+	var controllers = require('../controllers/users');
+	var pagination = require('../pagination');
+	var set = '';
+	data.sortBy = data.sortBy || 'joindate';
+
+	var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
+	var start = Math.max(0, data.page - 1) * resultsPerPage;
+	var stop = start + resultsPerPage - 1;
+	if (data.onlineOnly) {
+		async.parallel({
+			users: function(next) {
+				user.getUsersFromSet('users:online', socket.uid, 0, 49, next);
+			},
+			count: function(next) {
+				var now = Date.now();
+				db.sortedSetCount('users:online', now - 300000, now, next);
+			}
+		}, done);
+	} else if (data.sortBy === 'username') {
+		async.parallel({
+			count: function(next) {
+				db.sortedSetCard('username:sorted', next);
+			},
+			users: function(next) {
+				db.getSortedSetRangeByLex('username:sorted', '-', '+', start, stop - start + 1, function(err, result) {
+					if (err) {
+						return next(err);
+					}
+					var uids = result.map(function(user) {
+						return user && user.split(':')[1];
+					});
+					user.getUsers(uids, socket.uid, next);
+				});
+			}
+		}, done);
+	} else {
+		controllers.getUsersAndCount('users:joindate', socket.uid, start, stop, done);
+	}
 };
 
 SocketUser.setStatus = function(socket, status, callback) {

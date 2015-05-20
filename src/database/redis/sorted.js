@@ -246,4 +246,14 @@ module.exports = function(redisClient, module) {
 	module.sortedSetIncrBy = function(key, increment, value, callback) {
 		redisClient.zincrby(key, increment, value, callback);
 	};
+
+	module.getSortedSetRangeByLex = function(key, min, max, start, count, callback) {
+		if (min !== '-') {
+			min = '[' + min;
+		}
+		if (max !== '+') {
+			max = '(' + max;
+		}
+		redisClient.zrangebylex([key, min, max, 'LIMIT', start, count], callback);
+	};
 };

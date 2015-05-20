@@ -52,6 +52,9 @@ module.exports = function(User) {
 					db.sortedSetRemove('username:uid', userData.username, next);
 				},
 				function(next) {
+					db.sortedSetRemove('username:sorted', userData.username.toLowerCase() + ':' + uid, next);
+				},
+				function(next) {
 					db.sortedSetRemove('userslug:uid', userData.userslug, next);
 				},
 				function(next) {
@@ -59,7 +62,10 @@ module.exports = function(User) {
 				},
 				function(next) {
 					if (userData.email) {
-						db.sortedSetRemove('email:uid', userData.email.toLowerCase(), next);
+						async.parallel([
+							async.apply(db.sortedSetRemove, 'email:uid', userData.email.toLowerCase()),
+							async.apply(db.sortedSetRemove, 'email:sorted', userData.email.toLowerCase() + ':' + uid)
+						], next);
 					} else {
 						next();
 					}
