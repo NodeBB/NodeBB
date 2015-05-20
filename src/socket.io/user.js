@@ -441,7 +441,8 @@ SocketUser.loadPage = function(socket, data, callback) {
 			matchCount: result.users.length,
 			timing: (process.elapsedTimeSince(startTime) / 1000).toFixed(2),
 			users: result.users,
-			pagination: pagination.create(data.page, pageCount)
+			pagination: pagination.create(data.page, pageCount),
+			pageCount: pageCount
 		};
 
 		callback(null, userData);
