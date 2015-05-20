@@ -431,7 +431,7 @@ SocketUser.loadMore = function(socket, data, callback) {
 	});
 };
 
-SocketUser.loadPage = function(socket, data, callback) {
+SocketUser.loadSearchPage = function(socket, data, callback) {
 	function done(err, result) {
 		if (err) {
 			return callback(err);
