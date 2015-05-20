@@ -445,6 +445,10 @@ SocketUser.loadPage = function(socket, data, callback) {
 		callback(null, userData);
 	}
 
+	if (!data || !data.page) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
 	var controllers = require('../controllers/users');
 	var pagination = require('../pagination');
 	var set = '';

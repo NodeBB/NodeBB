@@ -16,7 +16,7 @@ module.exports = function(User) {
 		var uid = data.uid || 0;
 		var paginate = data.hasOwnProperty('paginate') ? data.paginate : true;
 
-		if (searchBy.indexOf('ip') !== -1) {
+		if (searchBy === 'ip') {
 			return searchByIP(query, uid, callback);
 		}
 
