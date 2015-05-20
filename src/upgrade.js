@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 4, 11);
+	latestSchema = Date.UTC(2015, 4, 20);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -331,6 +331,51 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2015/05/11] Updating widgets to tjs 0.2x skipped');
+				next();
+			}
+		},
+		function(next) {
+			function upgradeSet(set, callback) {
+				db.getSortedSetRangeWithScores(set + ':uid', 0, -1, function(err, userData) {
+					if (err) {
+						return callback(err);
+					}
+					var index = 0;
+					async.eachLimit(userData, 500, function(userData, next) {
+						console.log(index++);
+						if (userData && userData.value) {
+							db.sortedSetAdd(set + ':sorted', 0, userData.value.toLowerCase() + ':' + userData.score, next);
+						} else {
+							next();
+						}
+					}, function(err) {
+						callback(err);
+					});
+				});
+			}
+
+			thisSchemaDate = Date.UTC(2015, 4, 20);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/05/20] Adding username:sorted and email:sorted');
+
+				async.series([
+					function(next) {
+						upgradeSet('username', next);
+					},
+					function(next) {
+						upgradeSet('email', next);
+					}
+				], function(err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2015/05/20] Added username:sorted and email:sorted');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2015/05/20] Adding username:sorted and email:sorted skipped');
 				next();
 			}
 		}

@@ -82,7 +82,7 @@ usersController.getUsersAndCount = function(set, uid, start, stop, callback) {
 			user.getUsersFromSet(set, uid, start, stop, next);
 		},
 		count: function(next) {
-			db.sortedSetCard(set, next);
+			db.getObjectField('global', 'userCount', next);
 		}
 	}, function(err, results) {
 		if (err) {
