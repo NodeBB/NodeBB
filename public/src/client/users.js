@@ -109,11 +109,6 @@ define('forum/users', ['translator'], function(translator) {
 	}
 
 	function doSearch(page) {
-		function reset() {
-			notify.html('<i class="fa fa-search"></i>');
-			notify.parent().removeClass('btn-warning label-warning btn-success label-success');
-		}
-
 		var username = $('#search-user').val();
 		var notify = $('#user-notfound-notify');
 		page = page || 1;
@@ -132,21 +127,28 @@ define('forum/users', ['translator'], function(translator) {
 			onlineOnly: $('.search .online-only').is(':checked')
 		}, function(err, data) {
 			if (err) {
-				reset();
+				resetSearchNotify();
 				return app.alertError(err.message);
 			}
 
 			if (!data) {
-				return reset();
+				return resetSearchNotify();
 			}
 
 			renderSearchResults(data);
 		});
 	}
 
+	function resetSearchNotify() {
+		var notify = $('#user-notfound-notify');
+		notify.html('<i class="fa fa-search"></i>');
+		notify.parent().removeClass('btn-warning label-warning btn-success label-success');
+	}
+
 
 	function loadPage(page) {
 		socket.emit('user.loadPage', {page: page, sortBy: $('.search select').val(), onlineOnly: $('.search .online-only').is(':checked')}, function(err, data) {
+			resetSearchNotify();
 			if (err) {
 				return app.alertError(err.message);
 			}

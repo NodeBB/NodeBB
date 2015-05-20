@@ -438,6 +438,8 @@ SocketUser.loadPage = function(socket, data, callback) {
 		}
 		var pageCount = Math.ceil(result.count / resultsPerPage);
 		var userData = {
+			matchCount: result.users.length,
+			timing: (process.elapsedTimeSince(startTime) / 1000).toFixed(2),
 			users: result.users,
 			pagination: pagination.create(data.page, pageCount)
 		};
@@ -448,7 +450,7 @@ SocketUser.loadPage = function(socket, data, callback) {
 	if (!data || !data.page) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-
+	var startTime = process.hrtime();
 	var controllers = require('../controllers/users');
 	var pagination = require('../pagination');
 	var set = '';
