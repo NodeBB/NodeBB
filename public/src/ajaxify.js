@@ -261,7 +261,11 @@ $(document).ready(function() {
 			}
 
 			if (!e.ctrlKey && !e.shiftKey && !e.metaKey && e.which === 1) {
-				if (this.host === '' || (this.host === window.location.host && this.protocol === window.location.protocol)) {
+				if (
+					this.host === '' ||	// Relative paths are always internal links...
+					(this.host === window.location.host && this.protocol === window.location.protocol &&	// Otherwise need to check that protocol and host match
+					(RELATIVE_PATH.length > 0 ? this.pathname.indexOf(RELATIVE_PATH) === 0 : true))	// Subfolder installs need this additional check
+				) {
 					// Internal link
 					var url = this.href.replace(rootUrl + '/', '');
 
