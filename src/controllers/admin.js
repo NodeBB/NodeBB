@@ -154,7 +154,7 @@ adminController.categories.getAll = function(req, res, next) {
 		disabled = [];
 
 	async.waterfall([
-		async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
+		async.apply(db.getSortedSetRangeByScore, 'categories:cid', 0, -1, 0, Date.now()),
 		async.apply(categories.getCategoriesData),
 		function(categories, next) {
 			plugins.fireHook('filter:admin.categories.get', {req: req, res: res, categories: categories}, next);
