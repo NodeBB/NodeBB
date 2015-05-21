@@ -258,7 +258,7 @@ var async = require('async'),
 	};
 
 	UserNotifications.sendTopicNotificationToFollowers = function(uid, topicData, postData) {
-		db.getSetMembers('followers:' + uid, function(err, followers) {
+		db.getSortedSetRange('followers:' + uid, 0, -1, function(err, followers) {
 			if (err || !Array.isArray(followers) || !followers.length) {
 				return;
 			}
