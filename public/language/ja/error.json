@@ -68,6 +68,7 @@
     "invalid-file": "無効なファイル",
     "uploads-are-disabled": "アップロードが無効された",
     "signature-too-long": "Sorry, your signature cannot be longer than %1 character(s).",
+    "about-me-too-long": "Sorry, your about me cannot be longer than %1 character(s).",
     "cant-chat-with-yourself": "自分にチャットすることはできません！",
     "chat-restricted": "This user has restricted their chat messages. They must follow you before you can chat with them",
     "too-many-messages": "You have sent too many messages, please wait awhile.",

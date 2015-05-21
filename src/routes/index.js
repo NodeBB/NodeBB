@@ -25,6 +25,7 @@ function mainRoutes(app, middleware, controllers) {
 
 	setupPageRoute(app, '/login', middleware, loginRegisterMiddleware, controllers.login);
 	setupPageRoute(app, '/register', middleware, loginRegisterMiddleware, controllers.register);
+	setupPageRoute(app, '/compose', middleware, [middleware.authenticate], controllers.compose);
 	setupPageRoute(app, '/confirm/:code', middleware, [], controllers.confirmEmail);
 	setupPageRoute(app, '/outgoing', middleware, [], controllers.outgoing);
 	setupPageRoute(app, '/search/:term?', middleware, [middleware.guestSearchingAllowed], controllers.search.search);
@@ -207,7 +208,7 @@ function handle404(app, middleware) {
 function handleErrors(app, middleware) {
 	app.use(function(err, req, res, next) {
 		if (err.code === 'EBADCSRFTOKEN') {
-			winston.error(req.path + '\n', err.message)
+			winston.error(req.path + '\n', err.message);
 			return res.sendStatus(403);
 		}
 

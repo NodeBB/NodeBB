@@ -365,7 +365,7 @@ var async = require('async'),
 			}
 			groupNames = internals.removeEphemeralGroups(groupNames);
 			if (groupNames.length === 0) {
-				return callback(null, null);
+				return callback(null, false);
 			}
 
 			Groups.isMemberOfGroups(uid, groupNames, function(err, isMembers) {
@@ -1144,7 +1144,7 @@ var async = require('async'),
 
 	Groups.searchMembers = function(data, callback) {
 
-		function findUids(query, searchBy, startsWith, callback) {
+		function findUids(query, searchBy, callback) {
 			if (!query) {
 				return Groups.getMembers(data.groupName, 0, -1, callback);
 			}
@@ -1154,25 +1154,16 @@ var async = require('async'),
 					Groups.getMembers(data.groupName, 0, -1, next);
 				},
 				function(members, next) {
-					user.getMultipleUserFields(members, ['uid'].concat(searchBy), next);
+					user.getMultipleUserFields(members, ['uid'].concat([searchBy]), next);
 				},
 				function(users, next) {
 					var uids = [];
-
-					for(var k=0; k<searchBy.length; ++k) {
-						for(var i=0; i<users.length; ++i) {
-							var field = users[i][searchBy[k]];
-							if ((startsWith && field.toLowerCase().startsWith(query)) || (!startsWith && field.toLowerCase().indexOf(query) !== -1)) {
-								uids.push(users[i].uid);
-							}
+					for(var i=0; i<users.length; ++i) {
+						var field = users[i][searchBy[k]];
+						if (field.toLowerCase().startsWith(query)) {
+							uids.push(users[i].uid);
 						}
 					}
-					if (searchBy.length > 1) {
-						uids = uids.filter(function(uid, index, array) {
-							return array.indexOf(uid) === index;
-						});
-					}
-
 					next(null, uids);
 				}
 			], callback);

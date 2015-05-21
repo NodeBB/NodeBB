@@ -11,13 +11,12 @@ module.exports = function(User) {
 
 	User.search = function(data, callback) {
 		var query = data.query || '';
-		var searchBy = data.searchBy || ['username'];
-		var startsWith = data.hasOwnProperty('startsWith') ? data.startsWith : true;
+		var searchBy = data.searchBy || 'username';
 		var page = data.page || 1;
 		var uid = data.uid || 0;
 		var paginate = data.hasOwnProperty('paginate') ? data.paginate : true;
 
-		if (searchBy.indexOf('ip') !== -1) {
+		if (searchBy === 'ip') {
 			return searchByIP(query, uid, callback);
 		}
 
@@ -27,14 +26,13 @@ module.exports = function(User) {
 		async.waterfall([
 			function(next) {
 				if (data.findUids) {
-					data.findUids(query, searchBy, startsWith, next);
+					data.findUids(query, searchBy, next);
 				} else {
-					findUids(query, searchBy, startsWith, next);
+					findUids(query, searchBy, next);
 				}
 			},
 			function(uids, next) {
-				var filterBy = Array.isArray(data.filterBy) ? data.filterBy : [];
-				filterAndSortUids(uids, filterBy, data.sortBy, next);
+				filterAndSortUids(uids, data, next);
 			},
 			function(uids, next) {
 				plugins.fireHook('filter:users.search', {uids: uids, uid: uid}, next);
@@ -75,70 +73,39 @@ module.exports = function(User) {
 		};
 	};
 
-	function findUids(query, searchBy, startsWith, callback) {
+	function findUids(query, searchBy, callback) {
 		if (!query) {
-			return db.getSortedSetRevRange('users:joindate', 0, -1, callback);
+			return callback(null, []);
 		}
+		var min = query;
+		var max = query.substr(0, query.length - 1) + String.fromCharCode(query.charCodeAt(query.length - 1) + 1);
 
-		var keys = searchBy.map(function(searchBy) {
-			return searchBy + ':uid';
-		});
+		var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
+		var hardCap = resultsPerPage * 10;
 
-		async.map(keys, function(key, next) {
-			db.getSortedSetRangeWithScores(key, 0, -1, next);
-		}, function(err, hashes) {
-			if (err || !hashes) {
-				return callback(err, []);
+		db.getSortedSetRangeByLex(searchBy + ':sorted', min, max, 0, hardCap, function(err, data) {
+			if (err) {
+				return callback(err);
 			}
 
-			hashes = hashes.filter(Boolean);
-
-			query = query.toLowerCase();
-
-			var uids = [];
-			var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
-			var hardCap = resultsPerPage * 10;
-
-			for (var i=0; i<hashes.length; ++i) {
-				for (var k=0; k<hashes[i].length; ++k) {
-					var field = hashes[i][k].value;
-					if ((startsWith && field.toLowerCase().startsWith(query)) || (!startsWith && field.toLowerCase().indexOf(query) !== -1)) {
-						uids.push(hashes[i][k].score);
-						if (uids.length >= hardCap) {
-							break;
-						}
-					}
-				}
-				if (uids.length >= hardCap) {
-					break;
-				}
-			}
-
-			if (hashes.length > 1) {
-				uids = uids.filter(function(uid, index, array) {
-					return array.indexOf(uid) === index;
-				});
-			}
-
+			var uids = data.map(function(data) {
+				return data.split(':')[1];
+			});
 			callback(null, uids);
 		});
 	}
 
-	function filterAndSortUids(uids, filterBy, sortBy, callback) {
-		sortBy = sortBy || 'joindate';
+	function filterAndSortUids(uids, data, callback) {
+		var sortBy = data.sortBy || 'joindate';
 
-		var fields = filterBy.map(function(filter) {
-			return filter.field;
-		}).concat(['uid', sortBy]).filter(function(field, index, array) {
-			return array.indexOf(field) === index;
-		});
+		var fields = ['uid', 'status', sortBy];
 
 		async.parallel({
 			userData: function(next) {
 				User.getMultipleUserFields(uids, fields, next);
 			},
 			isOnline: function(next) {
-				if (fields.indexOf('status') !== -1) {
+				if (data.onlineOnly) {
 					require('../socket.io').isUsersOnline(uids, next);
 				} else {
 					next();
@@ -148,50 +115,22 @@ module.exports = function(User) {
 			if (err) {
 				return callback(err);
 			}
+
 			var userData = results.userData;
 
-			if (results.isOnline) {
-				userData.forEach(function(userData, index) {
-					userData.status = User.getStatus(userData.status, results.isOnline[index]);
+			if (data.onlineOnly) {
+				userData = userData.filter(function(user, index) {
+					return user && user.status !== 'offline' && results.isOnline[index];
 				});
 			}
-
-			userData = filterUsers(userData, filterBy);
 
 			sortUsers(userData, sortBy);
 
 			uids = userData.map(function(user) {
 				return user && user.uid;
 			});
+
 			callback(null, uids);
-		});
-	}
-
-	function filterUsers(userData, filterBy) {
-		function passesFilter(user, filter) {
-			if (!user || !filter) {
-				return false;
-			}
-			var userValue = user[filter.field];
-			if (filter.type === '=') {
-				return userValue === filter.value;
-			} else if (filter.type === '!=') {
-				return userValue !== filter.value;
-			}
-			return false;
-		}
-
-		if (!filterBy.length) {
-			return userData;
-		}
-
-		return userData.filter(function(user) {
-			for(var i=0; i<filterBy.length; ++i) {
-				if (!passesFilter(user, filterBy[i])) {
-					return false;
-				}
-			}
-			return true;
 		});
 	}
 

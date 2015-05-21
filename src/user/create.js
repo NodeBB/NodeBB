@@ -91,7 +91,13 @@ module.exports = function(User) {
 					function(next) {
 						async.parallel([
 							function(next) {
+								db.incrObjectField('global', 'userCount', next);
+							},
+							function(next) {
 								db.sortedSetAdd('username:uid', userData.uid, userData.username, next);
+							},
+							function(next) {
+								db.sortedSetAdd('username:sorted', 0, userData.username.toLowerCase() + ':' + userData.uid, next);
 							},
 							function(next) {
 								db.sortedSetAdd('userslug:uid', userData.uid, userData.userslug, next);
@@ -107,7 +113,11 @@ module.exports = function(User) {
 							},
 							function(next) {
 								if (userData.email) {
-									db.sortedSetAdd('email:uid', userData.uid, userData.email.toLowerCase(), next);
+									async.parallel([
+										async.apply(db.sortedSetAdd, 'email:uid', userData.uid, userData.email.toLowerCase()),
+										async.apply(db.sortedSetAdd, 'email:sorted', 0, userData.email.toLowerCase() + ':' + userData.uid)
+									], next);
+
 									if (parseInt(userData.uid, 10) !== 1 && parseInt(meta.config.requireEmailConfirmation, 10) === 1) {
 										User.email.sendValidationEmail(userData.uid, userData.email);
 									}
@@ -134,9 +144,6 @@ module.exports = function(User) {
 						], next);
 					},
 					function(results, next) {
-						User.updateUserCount(next);
-					},
-					function(next) {
 						if (userNameChanged) {
 							User.notifications.sendNameChangeNotification(userData.uid, userData.username);
 						}
@@ -145,15 +152,6 @@ module.exports = function(User) {
 					}
 				], callback);
 			});
-		});
-	};
-
-	User.updateUserCount = function(callback) {
-		db.sortedSetCard('users:joindate', function(err, count) {
-			if (err) {
-				return callback(err);
-			}
-			db.setObjectField('global', 'userCount', count, callback);
 		});
 	};
 

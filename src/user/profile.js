@@ -164,8 +164,10 @@ module.exports = function(User) {
 			if (userData.email === newEmail) {
 				return callback();
 			}
-
-			db.sortedSetRemove('email:uid', userData.email.toLowerCase(), function(err) {
+			async.series([
+				async.apply(db.sortedSetRemove, 'email:uid', userData.email.toLowerCase()),
+				async.apply(db.sortedSetRemove, 'email:sorted', userData.email.toLowerCase() + ':' + uid)
+			], function(err) {
 				if (err) {
 					return callback(err);
 				}
@@ -177,6 +179,9 @@ module.exports = function(User) {
 					},
 					function(next) {
 						db.sortedSetAdd('email:uid', uid, newEmail.toLowerCase(), next);
+					},
+					function(next) {
+						db.sortedSetAdd('email:sorted',  0, newEmail.toLowerCase() + ':' + uid, next);
 					},
 					function(next) {
 						User.setUserField(uid, 'email', newEmail, next);
@@ -216,7 +221,13 @@ module.exports = function(User) {
 				function(next) {
 					var newUserslug = utils.slugify(newUsername);
 					updateUidMapping('userslug', uid, newUserslug, userData.userslug, next);
-				}
+				},
+				function(next) {
+					async.series([
+						async.apply(db.sortedSetRemove, 'username:sorted', userData.username.toLowerCase() + ':' + uid),
+						async.apply(db.sortedSetAdd, 'username:sorted', 0, newUsername.toLowerCase() + ':' + uid)
+					], next);
+				},
 			], callback);
 		});
 	}

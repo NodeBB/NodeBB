@@ -281,6 +281,7 @@ module.exports = function(Topics) {
 
 				if (parseInt(uid, 10) && data.req) {
 					Topics.notifyFollowers(postData, uid);
+					user.setUserField(uid, 'lastonline', Date.now()); 
 				}
 
 				if (postData.index > 0) {
