@@ -3,6 +3,7 @@
 var winston = require('winston'),
 	validator = require('validator'),
 	user = require('../user'),
+	plugins = require('../plugins'),
 	translator = require('../../public/src/modules/translator');
 
 module.exports = function(Meta) {
@@ -15,7 +16,7 @@ module.exports = function(Meta) {
 		isUserPage: /^user\/[^\/]+(\/[\w]+)?/
 	};
 
-	Meta.title.build = function (urlFragment, language, locals, callback) {
+	Meta.title.build = function (urlFragment, language, callback) {
 		var uri = '';
 		var fallbackTitle = validator.escape(Meta.config.browserTitle || Meta.config.title || 'NodeBB');
 		try {
@@ -25,7 +26,7 @@ module.exports = function(Meta) {
 			return callback(null, fallbackTitle);
 		}
 
-		Meta.title.parseFragment(uri, language, locals, function(err, title) {
+		Meta.title.parseFragment(uri, language, function(err, title) {
 			if (err) {
 				title = fallbackTitle;
 			} else {
@@ -39,29 +40,47 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.title.parseFragment = function (urlFragment, language, locals, callback) {
-		var	translated = ['', 'recent', 'unread', 'users', 'notifications', 'popular', 'tags'];
+	Meta.title.parseFragment = function (urlFragment, language, callback) {
+		var	translated = ['', 'recent', 'unread', 'users', 'notifications', 'popular', 'tags'],
+			onParsed = function(err, translated) {
+				if (err) {
+					return callback(err);
+				}
+
+				plugins.fireHook('filter:parse.title', {
+					fragment: urlFragment,
+					language: language,
+					parsed: translated
+				}, function(err, data) {
+					if (err) {
+						return callback(err);
+					}
+
+					callback(null, data.parsed);
+				});
+			};
+
 		if (translated.indexOf(urlFragment) !== -1) {
 			if (!urlFragment.length) {
 				urlFragment = 'home';
 			}
 
 			translator.translate('[[pages:' + urlFragment + ']]', language, function(translated) {
-				callback(null, translated);
+				onParsed(null, translated);
 			});
 		} else if (tests.isCategory.test(urlFragment)) {
 			var cid = urlFragment.match(/category\/(\d+)/)[1];
 
-			require('../categories').getCategoryField(cid, 'name', callback);
+			require('../categories').getCategoryField(cid, 'name', onParsed);
 		} else if (tests.isTopic.test(urlFragment)) {
 			var tid = urlFragment.match(/topic\/(\d+)/)[1];
 
-			require('../topics').getTopicField(tid, 'title', callback);
+			require('../topics').getTopicField(tid, 'title', onParsed);
 		} else if (tests.isTag.test(urlFragment)) {
 			var tag = urlFragment.match(/tags\/([\s\S]+)/)[1];
 
 			translator.translate('[[pages:tag, ' + tag + ']]', language, function(translated) {
-				callback(null, translated);
+				onParsed(null, translated);
 			});
 		} else if (tests.isUserPage.test(urlFragment)) {
 			var	matches = urlFragment.match(/user\/([^\/]+)\/?([\w]+)?/),
@@ -70,7 +89,7 @@ module.exports = function(Meta) {
 
 			user.getUsernameByUserslug(userslug, function(err, username) {
 				if (err) {
-					return callback(err);
+					return onParsed(err);
 				}
 
 				if (!username) {
@@ -78,15 +97,15 @@ module.exports = function(Meta) {
 				}
 
 				if (!subpage) {
-					return callback(null, username);
+					return onParsed(null, username);
 				}
 
 				translator.translate('[[pages:user.' + subpage + ', ' + username + ']]', language, function(translated) {
-					callback(null, translated);
+					onParsed(null, translated);
 				});
 			});
 		} else {
-			callback(null);
+			onParsed(null);
 		}
 	};
 };

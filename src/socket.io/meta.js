@@ -41,10 +41,10 @@ SocketMeta.buildTitle = function(socket, text, callback) {
 			if (err) {
 				return callback(err);
 			}
-			meta.title.build(text, settings.userLang, {}, callback);
+			meta.title.build(text, settings.userLang, callback);
 		});
 	} else {
-		meta.title.build(text, meta.config.defaultLang, {}, callback);
+		meta.title.build(text, meta.config.defaultLang, callback);
 	}
 };
 
