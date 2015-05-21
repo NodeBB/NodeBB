@@ -365,7 +365,7 @@ var async = require('async'),
 			}
 			groupNames = internals.removeEphemeralGroups(groupNames);
 			if (groupNames.length === 0) {
-				return callback(null, null);
+				return callback(null, false);
 			}
 
 			Groups.isMemberOfGroups(uid, groupNames, function(err, isMembers) {
