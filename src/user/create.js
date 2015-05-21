@@ -141,7 +141,7 @@ module.exports = function(User) {
 						], next);
 					},
 					function(results, next) {
-						User.updateUserCount(next);
+						db.incrObjectField('global', 'userCount', next);
 					},
 					function(next) {
 						if (userNameChanged) {
