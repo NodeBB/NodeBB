@@ -128,6 +128,9 @@ Controllers.register = function(req, res, next) {
 	});
 };
 
+Controllers.compose = function(req, res, next) {
+	res.render('composer', {});
+};
 
 Controllers.confirmEmail = function(req, res, next) {
 	user.email.confirm(req.params.code, function (err) {
