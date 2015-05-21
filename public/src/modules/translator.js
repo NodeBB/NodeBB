@@ -283,11 +283,12 @@
 			}
 
 			try {
-				callback(JSON.parse(data.toString()));
+				data = JSON.parse(data.toString());
 			} catch (e) {
 				winston.error('Could not parse `' + filename + '.json`, syntax error? Skipping...');
-				callback({});
+				data = {};
 			}
+			callback(data);
 		});
 	}
 
