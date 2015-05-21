@@ -342,7 +342,6 @@ Upgrade.upgrade = function(callback) {
 					}
 					var index = 0;
 					async.eachLimit(userData, 500, function(userData, next) {
-						console.log(index++);
 						if (userData && userData.value) {
 							db.sortedSetAdd(set + ':sorted', 0, userData.value.toLowerCase() + ':' + userData.score, next);
 						} else {
