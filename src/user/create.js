@@ -91,6 +91,9 @@ module.exports = function(User) {
 					function(next) {
 						async.parallel([
 							function(next) {
+								db.incrObjectField('global', 'userCount', next);
+							},
+							function(next) {
 								db.sortedSetAdd('username:uid', userData.uid, userData.username, next);
 							},
 							function(next) {
@@ -141,9 +144,6 @@ module.exports = function(User) {
 						], next);
 					},
 					function(results, next) {
-						db.incrObjectField('global', 'userCount', next);
-					},
-					function(next) {
 						if (userNameChanged) {
 							User.notifications.sendNameChangeNotification(userData.uid, userData.username);
 						}
@@ -152,15 +152,6 @@ module.exports = function(User) {
 					}
 				], callback);
 			});
-		});
-	};
-
-	User.updateUserCount = function(callback) {
-		db.sortedSetCard('users:joindate', function(err, count) {
-			if (err) {
-				return callback(err);
-			}
-			db.setObjectField('global', 'userCount', count, callback);
 		});
 	};
 

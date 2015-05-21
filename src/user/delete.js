@@ -80,6 +80,9 @@ module.exports = function(User) {
 					], uid, next);
 				},
 				function(next) {
+					db.decrObjectField('global', 'userCount', next);
+				},
+				function(next) {
 					var keys = [
 						'uid:' + uid + ':notifications:read', 'uid:' + uid + ':notifications:unread',
 						'uid:' + uid + ':favourites', 'uid:' + uid + ':followed_tids', 'user:' + uid + ':settings',
@@ -107,14 +110,7 @@ module.exports = function(User) {
 					return callback(err);
 				}
 
-				async.parallel([
-					function(next) {
-						db.deleteAll(['followers:' + uid, 'following:' + uid, 'user:' + uid], next);
-					},
-					function(next) {
-						User.updateUserCount(next);
-					}
-				], callback);
+				db.deleteAll(['followers:' + uid, 'following:' + uid, 'user:' + uid], callback);
 			});
 		});
 	};
