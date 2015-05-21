@@ -23,6 +23,13 @@ define('composer', [
 
 	$(window).off('resize', onWindowResize).on('resize', onWindowResize);
 
+	$(window).on('action:composer.topics.post', function(ev, data) {
+		localStorage.removeItem('category:' + data.data.cid + ':bookmark');
+		localStorage.removeItem('category:' + data.data.cid + ':bookmark:clicked');
+		ajaxify.go('topic/' + data.data.slug);
+		removeComposerHistory();
+	});
+
 	$(window).on('popstate', function(ev, data) {
 		var env = utils.findBootstrapEnvironment();
 
@@ -36,19 +43,10 @@ define('composer', [
 				bootbox.confirm(translated, function(confirm) {
 					if (confirm) {
 						discard(composer.active);
-					} else {
-						history.pushState({}, '');
 					}
 				});
 			});
 		}
-	});
-
-	$(window).on('action:composer.topics.post', function(ev, data) {
-		localStorage.removeItem('category:' + data.data.cid + ':bookmark');
-		localStorage.removeItem('category:' + data.data.cid + ':bookmark:clicked');
-		ajaxify.go('topic/' + data.data.slug);
-		removeComposerHistory();
 	});
 
 	function removeComposerHistory() {
@@ -121,13 +119,7 @@ define('composer', [
 		}
 
 		composer.posts[uuid] = post;
-
 		composer.load(uuid);
-
-		var env = utils.findBootstrapEnvironment();
-		if (env === 'xs' || env ==='sm') {
-			history.pushState({}, '');
-		}
 	}
 
 	function composerAlert(post_uuid, message) {
@@ -321,7 +313,7 @@ define('composer', [
 			isAdminOrMod: app.user.isAdmin || postData.isMod
 		};
 
-		if (data.isMobile) {
+		if (data.mobile) {
 			ajaxify.go('compose', function() {
 				renderComposer();
 			});
