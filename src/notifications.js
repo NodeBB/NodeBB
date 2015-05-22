@@ -197,8 +197,10 @@ var async = require('async'),
 			plugins.fireHook('action:notification.pushed', {notification: notification, uids: uids});
 
 			var websockets = require('./socket.io');
-			for(var i=0; i<uids.length; ++i) {
-				websockets.in('uid_' + uids[i]).emit('event:new_notification', notification);
+			if (websockets.server) {
+				for(var i=0; i<uids.length; ++i) {
+					websockets.in('uid_' + uids[i]).emit('event:new_notification', notification);
+				}
 			}
 
 			callback();

@@ -365,7 +365,7 @@ var async = require('async'),
 			}
 			groupNames = internals.removeEphemeralGroups(groupNames);
 			if (groupNames.length === 0) {
-				return callback(null, null);
+				return callback(null, false);
 			}
 
 			Groups.isMemberOfGroups(uid, groupNames, function(err, isMembers) {
@@ -514,13 +514,13 @@ var async = require('async'),
 			if (exists) {
 				return callback(new Error('[[error:group-already-exists]]'));
 			}
-			var now = Date.now();
+			var timestamp = data.timestamp || Date.now();
 
 			var slug = utils.slugify(data.name),
 				groupData = {
 					name: data.name,
 					slug: slug,
-					createtime: now,
+					createtime: timestamp,
 					userTitle: data.name,
 					description: data.description || '',
 					memberCount: 0,
@@ -530,13 +530,13 @@ var async = require('async'),
 					private: data.private || '1'
 				},
 				tasks = [
-					async.apply(db.sortedSetAdd, 'groups:createtime', now, data.name),
+					async.apply(db.sortedSetAdd, 'groups:createtime', timestamp, data.name),
 					async.apply(db.setObject, 'group:' + data.name, groupData)
 				];
 
 			if (data.hasOwnProperty('ownerUid')) {
 				tasks.push(async.apply(db.setAdd, 'group:' + data.name + ':owners', data.ownerUid));
-				tasks.push(async.apply(db.sortedSetAdd, 'group:' + data.name + ':members', now, data.ownerUid));
+				tasks.push(async.apply(db.sortedSetAdd, 'group:' + data.name + ':members', timestamp, data.ownerUid));
 				tasks.push(async.apply(db.setObjectField, 'group:' + data.name, 'memberCount', 1));
 
 				groupData.ownerUid = data.ownerUid;
@@ -981,13 +981,13 @@ var async = require('async'),
 				return groupName !== 'registered-users' && groupName.indexOf(':privileges:') === -1;
 			});
 
-			Groups.getGroupsData(groupNames, function(err, groupData) {
+			Groups.getMultipleGroupFields(groupNames, ['name', 'hidden'], function(err, groupData) {
 				if (err) {
 					return callback(err);
 				}
 
 				groupData = groupData.filter(function(group) {
-					return group && !group.hidden;
+					return group && !parseInt(group.hidden, 10);
 				});
 
 				var groupSets = groupData.map(function(group) {
@@ -1003,11 +1003,11 @@ var async = require('async'),
 						var memberOf = [];
 						isMembers.forEach(function(isMember, index) {
 							if (isMember) {
-								memberOf.push(groupData[index]);
+								memberOf.push(groupData[index].name);
 							}
 						});
 
-						next(null, memberOf);
+						Groups.getGroupsData(memberOf, next);
 					});
 				}, callback);
 			});
@@ -1144,7 +1144,7 @@ var async = require('async'),
 
 	Groups.searchMembers = function(data, callback) {
 
-		function findUids(query, searchBy, startsWith, callback) {
+		function findUids(query, searchBy, callback) {
 			if (!query) {
 				return Groups.getMembers(data.groupName, 0, -1, callback);
 			}
@@ -1154,25 +1154,16 @@ var async = require('async'),
 					Groups.getMembers(data.groupName, 0, -1, next);
 				},
 				function(members, next) {
-					user.getMultipleUserFields(members, ['uid'].concat(searchBy), next);
+					user.getMultipleUserFields(members, ['uid'].concat([searchBy]), next);
 				},
 				function(users, next) {
 					var uids = [];
-
-					for(var k=0; k<searchBy.length; ++k) {
-						for(var i=0; i<users.length; ++i) {
-							var field = users[i][searchBy[k]];
-							if ((startsWith && field.toLowerCase().startsWith(query)) || (!startsWith && field.toLowerCase().indexOf(query) !== -1)) {
-								uids.push(users[i].uid);
-							}
+					for(var i=0; i<users.length; ++i) {
+						var field = users[i][searchBy[k]];
+						if (field.toLowerCase().startsWith(query)) {
+							uids.push(users[i].uid);
 						}
 					}
-					if (searchBy.length > 1) {
-						uids = uids.filter(function(uid, index, array) {
-							return array.indexOf(uid) === index;
-						});
-					}
-
 					next(null, uids);
 				}
 			], callback);

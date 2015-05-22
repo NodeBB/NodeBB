@@ -49,17 +49,30 @@ define('admin/general/navigation', ['translator'], function(translator) {
 
 		$('#enabled li').each(function() {
 			var form = $(this).find('form').serializeArray(),
-				data = {};
+				data = {},
+				properties = {};
 
 			form.forEach(function(input) {
-				data[input.name] = translator.escape(input.value);
+				if (input.name.slice(0, 9) === 'property:' && input.value === 'on') {
+					properties[input.name.slice(9)] = true;
+				} else {
+					data[input.name] = translator.escape(input.value);
+				}
 			});
+
+			data.properties = {};
 
 			available.forEach(function(item) {
 				if (item.route.match(data.route)) {
-					data.properties = item.properties;
+					data.properties = item.properties || {};
 				}
 			});
+
+			for (var prop in properties) {
+				if (properties.hasOwnProperty(prop)) {
+					data.properties[prop] = properties[prop];
+				}
+			}
 
 			nav.push(data);
 		});

@@ -27,7 +27,7 @@
     "header.tags": "وسم",
     "header.popular": "الأكثر شهرة",
     "header.users": "المستخدمين",
-    "header.groups": "Groups",
+    "header.groups": "المجموعات",
     "header.chats": "المحادثات",
     "header.notifications": "التنبيهات",
     "header.search": "بحث",
@@ -75,7 +75,7 @@
     "updated.title": "تم تحديث المنتدى",
     "updated.message": "لقد تم تحديث المنتدى إلى آخر نسخة للتو. المرجو إعادة تحميل الصفحة.",
     "privacy": "الخصوصية",
-    "follow": "Follow",
-    "unfollow": "Unfollow",
+    "follow": "متابعة",
+    "unfollow": "إلغاء المتابعة",
     "delete_all": "حذف الكل"
 }

@@ -25,6 +25,21 @@
 							<label>Text Class: <small>optional</small>
 								<input class="form-control" type="text" name="textClass" value="{enabled.textClass}" />
 							</label>
+
+							<hr />
+							<strong>Properties:</strong>
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="property:isAdmin" <!-- IF enabled.properties.isAdmin -->checked<!-- ENDIF enabled.properties.isAdmin -->/> <strong>Only display to Admins</strong>
+								</label>
+							</div>
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="property:loggedIn" <!-- IF enabled.properties.loggedIn -->checked<!-- ENDIF enabled.properties.loggedIn -->/> <strong>Only display to logged in users</strong>
+								</label>
+							</div>
+
+
 							<hr />
 							<button class="btn btn-danger delete">Delete</button>
 							<!-- IF enabled.enabled -->
