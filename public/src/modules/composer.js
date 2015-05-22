@@ -48,6 +48,13 @@ define('composer', [
 		}
 	});
 
+	function removeComposerHistory() {
+		var env = utils.findBootstrapEnvironment();
+		if (env === 'xs' || env ==='sm') {
+			history.back();
+		}
+	}
+
 	// Query server for formatting options
 	socket.emit('modules.composer.getFormattingOptions', function(err, options) {
 		composer.formatting = options;
