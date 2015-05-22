@@ -205,7 +205,7 @@ User.deleteUsers = function(socket, uids, callback) {
 };
 
 User.search = function(socket, data, callback) {
-	user.search({query: data.query, searchBy: data.searchBy, startsWith: false, uid: socket.uid}, function(err, searchData) {
+	user.search({query: data.query, searchBy: data.searchBy, uid: socket.uid}, function(err, searchData) {
 		if (err) {
 			return callback(err);
 		}

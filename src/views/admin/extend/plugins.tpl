@@ -105,7 +105,7 @@
 			<div class="panel-heading">Interested in writing plugins for NodeBB?</div>
 			<div class="panel-body">
 				<p>
-					Full documentation regarding plugin authoring can be found in the <a target="_blank" href="https://docs.nodebb.org/en/latest/plugins/create.html">NodeBB Wiki</a>.
+					Full documentation regarding plugin authoring can be found in the <a target="_blank" href="https://docs.nodebb.org/en/latest/plugins/create.html">NodeBB Docs Portal</a>.
 				</p>
 			</div>
 		</div>

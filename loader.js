@@ -17,7 +17,7 @@ nconf.argv().env().file({
 
 var	pidFilePath = __dirname + '/pidfile',
 	output = logrotate({ file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true }),
-	silent = nconf.get('silent') !== false,
+	silent = nconf.get('silent') === 'false' ? false : nconf.get('silent') !== false,
 	numProcs,
 	workers = [],
 
@@ -248,7 +248,7 @@ Loader.notifyWorkers = function(msg, worker_pid) {
 
 fs.open(path.join(__dirname, 'config.json'), 'r', function(err) {
 	if (!err) {
-		if (nconf.get('daemon') !== false) {
+		if (nconf.get('daemon') !== 'false' && nconf.get('daemon') !== false) {
 			if (fs.existsSync(pidFilePath)) {
 				try {
 					var	pid = fs.readFileSync(pidFilePath, { encoding: 'utf-8' });
