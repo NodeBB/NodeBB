@@ -1098,19 +1098,17 @@ var async = require('async'),
 
 	Groups.search = function(query, options, callback) {
 		if (!query) {
-			query = '';
+			return callback(null, []);
 		}
-
+		query = query.toLowerCase();
 		async.waterfall([
 			async.apply(db.getObjectValues, 'groupslug:groupname'),
 			function(groupNames, next) {
 				groupNames = groupNames.filter(function(name) {
-					return name.match(new RegExp(query, 'i')) && name !== 'administrators';
+					return name.toLowerCase().indexOf(query) !== -1 && name !== 'administrators';
 				});
-
-				async.mapLimit(groupNames, 5, function(groupName, next) {
-					Groups.get(groupName, options || {}, next);
-				}, next);
+				groupNames = groupNames.slice(0, 100);
+				Groups.getGroupsData(groupNames, next);
 			},
 			async.apply(Groups.sort, options.sort)
 		], callback);
