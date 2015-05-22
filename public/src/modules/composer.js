@@ -26,7 +26,6 @@ define('composer', [
 	$(window).on('action:composer.topics.post', function(ev, data) {
 		localStorage.removeItem('category:' + data.data.cid + ':bookmark');
 		localStorage.removeItem('category:' + data.data.cid + ':bookmark:clicked');
-		ajaxify.go('topic/' + data.data.slug);
 	});
 
 	$(window).on('popstate', function(ev, data) {
@@ -548,6 +547,12 @@ define('composer', [
 
 			discard(post_uuid);
 			drafts.removeDraft(postData.save_id);
+
+			if (action === 'topics.post') {
+				ajaxify.go('topic/' + data.slug);
+			} else {
+				removeComposerHistory();
+			}
 
 			$(window).trigger('action:composer.' + action, {composerData: composerData, data: data});
 		});
