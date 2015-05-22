@@ -27,7 +27,6 @@ define('composer', [
 		localStorage.removeItem('category:' + data.data.cid + ':bookmark');
 		localStorage.removeItem('category:' + data.data.cid + ':bookmark:clicked');
 		ajaxify.go('topic/' + data.data.slug);
-		removeComposerHistory();
 	});
 
 	$(window).on('popstate', function(ev, data) {
@@ -48,13 +47,6 @@ define('composer', [
 			});
 		}
 	});
-
-	function removeComposerHistory() {
-		var env = utils.findBootstrapEnvironment();
-		if (env === 'xs' || env ==='sm') {
-			history.back();
-		}
-	}
 
 	// Query server for formatting options
 	socket.emit('modules.composer.getFormattingOptions', function(err, options) {
