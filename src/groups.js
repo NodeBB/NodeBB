@@ -1147,6 +1147,8 @@ var async = require('async'),
 				return Groups.getMembers(data.groupName, 0, -1, callback);
 			}
 
+			query = query.toLowerCase();
+
 			async.waterfall([
 				function(next) {
 					Groups.getMembers(data.groupName, 0, -1, next);
