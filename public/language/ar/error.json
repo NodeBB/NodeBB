@@ -1,7 +1,7 @@
 {
     "invalid-data": "بيانات غير صالحة",
     "not-logged-in": "لم تقم بتسجيل الدخول",
-    "account-locked": "تم إقفال حسابكم مؤقتًا.",
+    "account-locked": "تم حظر حسابك مؤقتًا.",
     "search-requires-login": "Searching requires an account - please login or register.",
     "invalid-cid": "قائمة غير موجودة",
     "invalid-tid": "موضوع غير متواجد",
