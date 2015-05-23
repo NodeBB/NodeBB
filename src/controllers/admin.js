@@ -290,9 +290,11 @@ adminController.languages.get = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
+
 		languages.forEach(function(language) {
-			language.selected = language.code === meta.config.defaultLang;
+			language.selected = language.code === (meta.config.defaultLang || 'en_GB');
 		});
+
 		res.render('admin/general/languages', {
 			languages: languages
 		});
