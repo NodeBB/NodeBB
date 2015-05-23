@@ -17,7 +17,7 @@ var db = require('./database'),
 
 	Upgrade = {},
 
-	minSchemaDate = Date.UTC(2015, 1, 8),		// This value gets updated every new MINOR version
+	minSchemaDate = Date.UTC(2015, 0, 30),		// This value gets updated every new MINOR version
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
