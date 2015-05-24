@@ -41,8 +41,7 @@ web.install = function(port) {
 
 function launchExpress(port) {
 	server = app.listen(port, function() {
-		var host = server.address().address;
-		winston.info('Web installer listening on http://%s:%s', host, port);
+		winston.info('Web installer listening on http://%s:%s', '0.0.0.0', port);
 	});
 }
 
