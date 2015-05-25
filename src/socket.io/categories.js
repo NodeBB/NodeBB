@@ -78,6 +78,11 @@ SocketCategories.loadMore = function(socket, data, callback) {
 			}
 
 			data.privileges = results.privileges;
+			data.template = {
+				category: true,
+				name: 'category'
+			};
+
 			callback(null, data);
 		});
 	});
