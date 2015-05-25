@@ -422,10 +422,17 @@ function createCategories(next) {
 }
 
 function createMenuItems(next) {
-	var navigation = require('./navigation/admin'),
-		data = require('../install/data/navigation.json');
+	var db = require('./database');
 
-	navigation.save(data, next);
+	db.exists('navigation:enabled', function(err, exists) {
+		if (err || exists) {
+			return next(err);
+		}
+		var navigation = require('./navigation/admin'),
+			data = require('../install/data/navigation.json');
+
+		navigation.save(data, next);
+	});
 }
 
 function createWelcomePost(next) {
