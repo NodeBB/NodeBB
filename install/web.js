@@ -106,6 +106,7 @@ function launch(req, res) {
 	process.stdout.write('\nStarting NodeBB\n');
 	process.stdout.write('    "./nodebb stop" to stop the NodeBB server\n');
 	process.stdout.write('    "./nodebb log" to view server output\n');
+	process.stdout.write('    "./nodebb restart" to restart NodeBB\n');
 	
 	child.unref();
 	process.exit(0);

@@ -28,6 +28,7 @@ case "$1" in
 		echo "Starting NodeBB";
 		echo "  \"./nodebb stop\" to stop the NodeBB server";
 		echo "  \"./nodebb log\" to view server output";
+		echo "  \"./nodebb restart\" to restart NodeBB";
 
 		# Start the loader daemon
 		"$node" loader "$@"
