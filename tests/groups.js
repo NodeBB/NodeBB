@@ -37,7 +37,7 @@ describe('Groups', function() {
 			Groups.list(0, 0, -1, function(err, groups) {
 				if (err) return done(err);
 
-				assert.equal(groups.length, 1);
+				assert.equal(groups.length, 2);
 				done();
 			});
 		});
