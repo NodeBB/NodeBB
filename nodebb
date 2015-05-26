@@ -3,7 +3,10 @@
 var colors = require('colors'),
 	cproc = require('child_process'),
 	argv = require('minimist')(process.argv.slice(2)),
-	fs = require('fs');
+	fs = require('fs'),
+	async = require('async'),
+	touch = require('touch'),
+	npm = require('npm');
 
 var getRunningPid = function(callback) {
 		fs.readFile(__dirname + '/pidfile', {
@@ -88,6 +91,65 @@ switch(process.argv[2]) {
 		});
 		break;
 
+	case 'log':
+		process.stdout.write('\nType '.red + 'Ctrl-C '.bold + 'to exit\n\n'.red);
+		cproc.spawn('tail', ['-F', './logs/output.log'], {
+			cwd: __dirname,
+			stdio: 'inherit'
+		});
+		break;
+
+	case 'setup':
+		cproc.fork('app.js', ['--setup'], {
+			cwd: __dirname,
+			silent: false
+		});
+		break;
+
+	case 'reset':
+		var args = process.argv.slice(0);
+		args.unshift('--reset');
+
+		cproc.fork('app.js', args, {
+			cwd: __dirname,
+			silent: false
+		});
+		break;
+
+	case 'upgrade':
+		async.series([
+			function(next) {
+				process.stdout.write('1. '.bold + 'Bringing base dependencies up to date\n'.yellow);
+				npm.load({
+					loglevel: 'silent'
+				}, function() {
+					npm.commands.install(next);
+				});
+			},
+			function(next) {
+				process.stdout.write('2. '.bold + 'Updating NodeBB data store schema\n'.yellow);
+				var upgradeProc = cproc.fork('app.js', ['--upgrade'], {
+					cwd: __dirname,
+					silent: false
+				});
+
+				upgradeProc.on('close', next)
+			},
+			function(next) {
+				process.stdout.write('3. '.bold + 'Storing upgrade date in "package.json"\n'.yellow);
+				touch(__dirname + '/package.json', {}, next);
+			}
+		], function(err) {
+			if (err) {
+				process.stdout.write('\nError'.red + ': ' + err.message + '\n');
+			} else {
+				var message = 'NodeBB Upgrade Complete!',
+					spaces = new Array(Math.floor(process.stdout.columns / 2) - (message.length / 2) + 1).join(' ');
+				process.stdout.write('\n' + spaces + message.green.bold + '\n\n');
+			}
+		});
+		break;
+
 	default:
 		process.stdout.write('\nWelcome to NodeBB\n\n'.bold);
 		process.stdout.write('Usage: ./nodebb {start|stop|reload|restart|log|setup|reset|upgrade|dev}\n\n');
@@ -104,27 +166,3 @@ switch(process.argv[2]) {
 		process.stdout.write('\n');
 		break;
 }
-
-/*
-	log)
-			clear;
-			tail -F ./logs/output.log;
-			;;
-
-	upgrade)
-			npm install
-			# ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm install
-			# ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm update
-			npm i nodebb-theme-vanilla nodebb-theme-lavender nodebb-widget-essentials
-			"$node" app --upgrade
-			touch package.json
-			;;
-
-	setup)
-			"$node" app --setup "$@"
-			;;
-
-	reset)
-			"$node" app --reset --$2
-			;;
-*/
