@@ -59,7 +59,13 @@ Categories.setPrivilege = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	groups[data.set ? 'join' : 'leave']('cid:' + data.cid + ':privileges:' + data.privilege, data.member, callback);
+	if (Array.isArray(data.privilege)) {
+		async.each(data.privilege, function(privilege, next) {
+			groups[data.set ? 'join' : 'leave']('cid:' + data.cid + ':privileges:' + privilege, data.member, next);
+		}, callback);
+	} else {
+		groups[data.set ? 'join' : 'leave']('cid:' + data.cid + ':privileges:' + data.privilege, data.member, callback);
+	}
 };
 
 Categories.getPrivilegeSettings = function(socket, cid, callback) {
