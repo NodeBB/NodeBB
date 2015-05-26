@@ -647,13 +647,12 @@ var async = require('async'),
 				uid: uid
 			});
 
-			// If this is a hidden group, and it is now empty, delete it
-			Groups.get(groupName, {}, function(err, group) {
-				if (err || !group) {
+			Groups.getGroupFields(groupName, ['hidden', 'memberCount'], function(err, groupData) {
+				if (err || !groupData) {
 					return callback(err);
 				}
 
-				if (group.hidden && group.memberCount === 0) {
+				if (parseInt(groupData.hidden, 10) === 1 && parseInt(groupData.memberCount, 10) === 0) {
 					Groups.destroy(groupName, callback);
 				} else {
 					callback();
