@@ -34,7 +34,7 @@ describe('Groups', function() {
 
 	describe('.list()', function() {
 		it('should list the groups present', function(done) {
-			Groups.list({}, function(err, groups) {
+			Groups.list(0, 0, -1, function(err, groups) {
 				if (err) return done(err);
 
 				assert.equal(groups.length, 1);
