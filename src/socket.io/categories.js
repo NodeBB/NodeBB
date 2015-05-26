@@ -20,7 +20,7 @@ SocketCategories.get = function(socket, data, callback) {
 
 SocketCategories.getWatchedCategories = function(socket, data, callback) {
 	async.parallel({
-		categories: async.apply(categories.getCategoriesByPrivilege, socket.uid, 'find')
+		categories: async.apply(categories.getCategoriesByPrivilege, socket.uid, 'find'),
 		ignoredCids: async.apply(user.getIgnoredCategories, socket.uid)
 	}, function(err, results) {
 		if (err) {
