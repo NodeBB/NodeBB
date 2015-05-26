@@ -13,6 +13,11 @@ groupsController.list = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
+
+		groups = groups.filter(function(group) {
+			return group && !group.hidden && !group.system;
+		});
+
 		res.render('groups/list', {
 			groups: groups,
 			allowGroupCreation: parseInt(meta.config.allowGroupCreation, 10) === 1
