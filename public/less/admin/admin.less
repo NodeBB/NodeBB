@@ -283,6 +283,11 @@
 	#taskbar {
 		display: none; /* not sure why I have to do this, but it only seems to show up on prod */
 	}
+
+	/* Allows the autocomplete dropbox to appear on top of a modal's backdrop */
+	.ui-autocomplete {
+		z-index: @zindex-popover;
+	}
 }
 
 // Allowing text to the right of an image-type brand
