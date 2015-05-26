@@ -22,7 +22,11 @@ var async = require('async'),
 
 (function(Groups) {
 
-		var ephemeralGroups = ['guests'],
+	require('./groups/create')(Groups);
+	require('./groups/delete')(Groups);
+	require('./groups/update')(Groups);
+
+	var ephemeralGroups = ['guests'],
 
 		internals = {
 			filterGroups: function(groups, options) {
@@ -63,9 +67,13 @@ var async = require('async'),
 				}
 
 				return groups;
-			},
-			isPrivilegeGroup: /^cid:\d+:privileges:[\w:]+$/
+			}
 		};
+
+	var isPrivilegeGroupRegex = /^cid:\d+:privileges:[\w:]+$/;
+	Groups.isPrivilegeGroup = function(groupName) {
+		return isPrivilegeGroupRegex.test(groupName);
+	};
 
 	Groups.getEphemeralGroups = function() {
 		return ephemeralGroups;
@@ -497,254 +505,9 @@ var async = require('async'),
 		}
 	};
 
-	Groups.create = function(data, callback) {
-		if (data.name.length === 0) {
-			return callback(new Error('[[error:group-name-too-short]]'));
-		}
-
-		if (data.name === 'administrators' || data.name === 'registered-users' || internals.isPrivilegeGroup.test(data.name)) {
-			var system = true;
-		}
-
-		meta.userOrGroupExists(data.name, function (err, exists) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (exists) {
-				return callback(new Error('[[error:group-already-exists]]'));
-			}
-			var timestamp = data.timestamp || Date.now();
-
-			var slug = utils.slugify(data.name),
-				groupData = {
-					name: data.name,
-					slug: slug,
-					createtime: timestamp,
-					userTitle: data.name,
-					description: data.description || '',
-					memberCount: 0,
-					deleted: '0',
-					hidden: data.hidden || '0',
-					system: system ? '1' : '0',
-					private: data.private || '1'
-				},
-				tasks = [
-					async.apply(db.sortedSetAdd, 'groups:createtime', timestamp, data.name),
-					async.apply(db.setObject, 'group:' + data.name, groupData)
-				];
-
-			if (data.hasOwnProperty('ownerUid')) {
-				tasks.push(async.apply(db.setAdd, 'group:' + data.name + ':owners', data.ownerUid));
-				tasks.push(async.apply(db.sortedSetAdd, 'group:' + data.name + ':members', timestamp, data.ownerUid));
-				tasks.push(async.apply(db.setObjectField, 'group:' + data.name, 'memberCount', 1));
-
-				groupData.ownerUid = data.ownerUid;
-			}
-
-			if (!data.hidden) {
-				tasks.push(async.apply(db.setObjectField, 'groupslug:groupname', slug, data.name));
-			}
-
-			async.series(tasks, function(err) {
-				if (!err) {
-					plugins.fireHook('action:group.create', groupData);
-				}
-
-				callback(err, groupData);
-			});
-		});
-	};
-
 	Groups.hide = function(groupName, callback) {
 		callback = callback || function() {};
 		db.setObjectField('group:' + groupName, 'hidden', 1, callback);
-	};
-
-	Groups.update = function(groupName, values, callback) {
-		callback = callback || function() {};
-		db.exists('group:' + groupName, function (err, exists) {
-			if (err || !exists) {
-				return callback(err || new Error('[[error:no-group]]'));
-			}
-
-			var payload = {
-				description: values.description || '',
-				icon: values.icon || '',
-				labelColor: values.labelColor || '#000000'
-			};
-
-			if (values.hasOwnProperty('userTitle')) {
-				payload.userTitle = values.userTitle || '';
-			}
-
-			if (values.hasOwnProperty('userTitleEnabled')) {
-				payload.userTitleEnabled = values.userTitleEnabled ? '1' : '0';
-			}
-
-			if (values.hasOwnProperty('hidden')) {
-				payload.hidden = values.hidden ? '1' : '0';
-			}
-
-			if (values.hasOwnProperty('private')) {
-				payload.private = values.private ? '1' : '0';
-			}
-
-			async.series([
-				async.apply(updatePrivacy, groupName, values.private),
-				async.apply(db.setObject, 'group:' + groupName, payload),
-				async.apply(renameGroup, groupName, values.name)
-			], function(err) {
-				if (err) {
-					return callback(err);
-				}
-
-				plugins.fireHook('action:group.update', {
-					name: groupName,
-					values: values
-				});
-				callback();
-			});
-		});
-	};
-
-	function updatePrivacy(groupName, newValue, callback) {
-		if (!newValue) {
-			return callback();
-		}
-
-		Groups.getGroupFields(groupName, ['private'], function(err, currentValue) {
-			if (err) {
-				return callback(err);
-			}
-			currentValue = currentValue.private === '1';
-
-			if (currentValue !== newValue && currentValue === true) {
-				// Group is now public, so all pending users are automatically considered members
-				db.getSetMembers('group:' + groupName + ':pending', function(err, uids) {
-					if (err) { return callback(err); }
-					else if (!uids) { return callback(); }	// No pending users, we're good to go
-
-					var now = Date.now(),
-						scores = uids.map(function() { return now; });	// There's probably a better way to initialise an Array of size x with the same value...
-
-					winston.verbose('[groups.update] Group is now public, automatically adding ' + uids.length + ' new members, who were pending prior.');
-					async.series([
-						async.apply(db.sortedSetAdd, 'group:' + groupName + ':members', scores, uids),
-						async.apply(db.delete, 'group:' + groupName + ':pending')
-					], callback);
-				});
-			} else {
-				callback();
-			}
-		});
-	}
-
-	function renameGroup(oldName, newName, callback) {
-		if (oldName === newName || !newName || newName.length === 0) {
-			return callback();
-		}
-
-		db.getObject('group:' + oldName, function(err, group) {
-			if (err || !group) {
-				return callback(err);
-			}
-
-			if (parseInt(group.system, 10) === 1 || parseInt(group.hidden, 10) === 1) {
-				return callback();
-			}
-
-			Groups.exists(newName, function(err, exists) {
-				if (err || exists) {
-					return callback(err || new Error('[[error:group-already-exists]]'));
-				}
-
-				async.series([
-					async.apply(db.setObjectField, 'group:' + oldName, 'name', newName),
-					async.apply(db.setObjectField, 'group:' + oldName, 'slug', utils.slugify(newName)),
-					async.apply(db.deleteObjectField, 'groupslug:groupname', group.slug),
-					async.apply(db.setObjectField, 'groupslug:groupname', utils.slugify(newName), newName),
-					function(next) {
-						db.getSortedSetRange('groups:createtime', 0, -1, function(err, groups) {
-							if (err) {
-								return next(err);
-							}
-							async.each(groups, function(group, next) {
-								renameGroupMember('group:' + group + ':members', oldName, newName, next);
-							}, next);
-						});
-					},
-					async.apply(db.rename, 'group:' + oldName, 'group:' + newName),
-					async.apply(db.rename, 'group:' + oldName + ':members', 'group:' + newName + ':members'),
-					async.apply(db.rename, 'group:' + oldName + ':owners', 'group:' + newName + ':owners'),
-					async.apply(db.rename, 'group:' + oldName + ':pending', 'group:' + newName + ':pending'),
-					async.apply(db.rename, 'group:' + oldName + ':invited', 'group:' + newName + ':invited'),
-					async.apply(renameGroupMember, 'groups:createtime', oldName, newName),
-					function(next) {
-						plugins.fireHook('action:group.rename', {
-							old: oldName,
-							new: newName
-						});
-
-						next();
-					}
-				], callback);
-			});
-		});
-	}
-
-	function renameGroupMember(group, oldName, newName, callback) {
-		db.isSortedSetMember(group, oldName, function(err, isMember) {
-			if (err || !isMember) {
-				return callback(err);
-			}
-			var score;
-			async.waterfall([
-				function (next) {
-					db.sortedSetScore(group, oldName, next);
-				},
-				function (_score, next) {
-					score = _score;
-					db.sortedSetRemove(group, oldName, next);
-				},
-				function (next) {
-					db.sortedSetAdd(group, score, newName, next);
-				}
-			], callback);
-		});
-	}
-
-	Groups.destroy = function(groupName, callback) {
-		Groups.getGroupsData([groupName], function(err, groupsData) {
-			if (err) {
-				return callback(err);
-			}
-			if (!Array.isArray(groupsData) || !groupsData[0]) {
-				return callback();
-			}
-			var groupObj = groupsData[0];
-			plugins.fireHook('action:group.destroy', groupObj);
-
-			async.parallel([
-				async.apply(db.delete, 'group:' + groupName),
-				async.apply(db.sortedSetRemove, 'groups:createtime', groupName),
-				async.apply(db.delete, 'group:' + groupName + ':members'),
-				async.apply(db.delete, 'group:' + groupName + ':pending'),
-				async.apply(db.delete, 'group:' + groupName + ':invited'),
-				async.apply(db.delete, 'group:' + groupName + ':owners'),
-				async.apply(db.deleteObjectField, 'groupslug:groupname', utils.slugify(groupName)),
-				function(next) {
-					db.getSortedSetRange('groups:createtime', 0, -1, function(err, groups) {
-						if (err) {
-							return next(err);
-						}
-						async.each(groups, function(group, next) {
-							db.sortedSetRemove('group:' + group + ':members', groupName, next);
-						}, next);
-					});
-				}
-			], callback);
-		});
 	};
 
 	Groups.join = function(groupName, uid, callback) {
@@ -1159,7 +922,7 @@ var async = require('async'),
 				function(users, next) {
 					var uids = [];
 					for(var i=0; i<users.length; ++i) {
-						var field = users[i][searchBy[k]];
+						var field = users[i][searchBy];
 						if (field.toLowerCase().startsWith(query)) {
 							uids.push(users[i].uid);
 						}
