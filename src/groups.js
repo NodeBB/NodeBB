@@ -363,7 +363,12 @@ var async = require('async'),
 	};
 
 	Groups.getMemberCount = function(groupName, callback) {
-		db.getObjectField('group:' + groupName, 'memberCount', callback);
+		db.getObjectField('group:' + groupName, 'memberCount', function(err, count) {
+			if (err) {
+				return callback(err);
+			}
+			callback(null, parseInt(count, 10));
+		});
 	};
 
 	Groups.isMemberOfGroupList = function(uid, groupListKey, callback) {
