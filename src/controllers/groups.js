@@ -9,11 +9,7 @@ var async = require('async'),
 	groupsController = {};
 
 groupsController.list = function(req, res, next) {
-	groups.list({
-		truncateUserList: true,
-		expand: true,
-		uid: req.uid
-	}, function(err, groups) {
+	groups.list(req.uid, 0, -1, function(err, groups) {
 		if (err) {
 			return next(err);
 		}

@@ -2,7 +2,7 @@
 	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-group"></i> Groups List</div>
-			<div class="panel-body">	
+			<div class="panel-body">
 				<ul id="groups-list">
 				<!-- BEGIN groups -->
 					<li data-groupname="{groups.name}">
@@ -18,9 +18,9 @@
 
 								<div class="btn-group">
 									<button class="btn btn-default" data-action="members">Edit</button>
-									<!-- IF groups.deletable -->
+									<!-- IF !groups.system -->
 									<button class="btn btn-danger" data-action="delete">Delete Group</button>
-									<!-- ENDIF groups.deletable -->
+									<!-- ENDIF !groups.system -->
 								</div>
 							</div>
 							<div class="col-lg-4">
@@ -32,7 +32,7 @@
 						</div>
 					</li>
 				<!-- END groups -->
-				</ul>				
+				</ul>
 			</div>
 		</div>
 	</div>

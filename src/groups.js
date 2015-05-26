@@ -80,8 +80,8 @@ var async = require('async'),
 		return ephemeralGroups;
 	};
 
-	Groups.list = function(options, callback) {
-		db.getSortedSetRevRange('groups:createtime', 0, -1, function (err, groupNames) {
+	Groups.list = function(uid, start, stop, callback) {
+		db.getSortedSetRevRange('groups:createtime', start, stop, function (err, groupNames) {
 			if (err) {
 				return callback(err);
 			}
@@ -91,16 +91,25 @@ var async = require('async'),
 			});
 
 			async.parallel({
-				groups: async.apply(async.map, groupNames, function (groupName, next) {
-					Groups.get(groupName, options, next);
-				}),
-				isAdmin: function(next) {
-					if (!options.uid || parseInt(options.uid, 10) === 0) { return next(null, false); }
-					user.isAdministrator(parseInt(options.uid, 10), next);
+				groups: function(next) {
+					Groups.getGroupsData(groupNames, next);
+				},
+				members: function(next) {
+					Groups.getMemberUsers(groupNames, 0, 3, next);
 				}
 			}, function (err, data) {
-				options.isAdmin = options.isAdmin || data.isAdmin;
-				callback(err, internals.filterGroups(data.groups, options));
+				if (err) {
+					return callback(err);
+				}
+				data.groups.forEach(function(group, index) {
+					if (!group) {
+						return;
+					}
+					group.members = data.members[index] || [];
+					group.truncated = group.memberCount > data.members.length;
+				});
+
+				callback(null, data.groups);
 			});
 		});
 	};
@@ -260,7 +269,6 @@ var async = require('async'),
 				results.base.hidden = !!parseInt(results.base.hidden, 10);
 				results.base.system = !!parseInt(results.base.system, 10);
 				results.base.private = results.base.private ? !!parseInt(results.base.private, 10) : true;
-				results.base.deletable = !results.base.system;
 				results.base.truncated = truncated;
 				results.base.isMember = results.isMember;
 				results.base.isPending = results.isPending;
@@ -413,7 +421,8 @@ var async = require('async'),
 					group.labelColor = group.labelColor || '#000000';
 					group.createtimeISO = utils.toISOString(group.createtime);
 					group.hidden = parseInt(group.hidden, 10) === 1;
-
+					group.system = parseInt(group.system, 10) === 1;
+					group.private = parseInt(group.private, 10) === 1;
 					if (!group['cover:url']) {
 						group['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';
 						group['cover:position'] = '50% 50%';

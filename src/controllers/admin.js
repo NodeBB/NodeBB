@@ -381,12 +381,7 @@ adminController.extend.rewards = function(req, res, next) {
 };
 
 adminController.groups.get = function(req, res, next) {
-	groups.list({
-		expand: true,
-		truncateUserList: true,
-		isAdmin: true,
-		showSystemGroups: true
-	}, function(err, groups) {
+	groups.list(req.uid, 0, -1, function(err, groups) {
 		if (err) {
 			return next(err);
 		}

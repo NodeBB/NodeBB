@@ -181,6 +181,18 @@ module.exports = function(Groups) {
 		db.getSortedSetRevRange('group:' + groupName + ':members', start, stop, callback);
 	};
 
+	Groups.getMemberUsers = function(groupNames, start, stop, callback) {
+		async.map(groupNames, function(groupName, next) {
+			Groups.getMembers(groupName, start, stop, function(err, uids) {
+				if (err) {
+					return next(err);
+				}
+
+				user.getMultipleUserFields(uids, ['uid', 'username', 'picture', 'userslug'], next);
+			});
+		}, callback);
+	};
+
 	Groups.getMembersOfGroups = function(groupNames, callback) {
 		db.getSortedSetsMembers(groupNames.map(function(name) {
 			return 'group:' + name + ':members';
