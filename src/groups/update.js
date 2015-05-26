@@ -2,9 +2,16 @@
 
 var async = require('async'),
 	winston = require('winston'),
+	crypto = require('crypto'),
+	path = require('path'),
+	nconf = require('nconf'),
+	fs = require('fs'),
+
 	plugins = require('../plugins'),
 	utils = require('../../public/src/utils'),
-	db = require('./../database');
+	db = require('./../database'),
+
+	uploadsController = require('../controllers/uploads');
 
 module.exports = function(Groups) {
 
@@ -52,6 +59,68 @@ module.exports = function(Groups) {
 				});
 				callback();
 			});
+		});
+	};
+
+	Groups.hide = function(groupName, callback) {
+		callback = callback || function() {};
+		db.setObjectField('group:' + groupName, 'hidden', 1, callback);
+	};
+
+	Groups.updateCoverPosition = function(groupName, position, callback) {
+		Groups.setGroupField(groupName, 'cover:position', position, callback);
+	};
+
+	Groups.updateCover = function(data, callback) {
+		var tempPath, md5sum, url;
+
+		// Position only? That's fine
+		if (!data.imageData && data.position) {
+			return Groups.updateCoverPosition(data.groupName, data.position, callback);
+		}
+
+		async.series([
+			function(next) {
+				// Calculate md5sum of image
+				// This is required because user data can be private
+				md5sum = crypto.createHash('md5');
+				md5sum.update(data.imageData);
+				md5sum = md5sum.digest('hex');
+				next();
+			},
+			function(next) {
+				// Save image
+				tempPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), md5sum);
+				var buffer = new Buffer(data.imageData.slice(data.imageData.indexOf('base64') + 7), 'base64');
+
+				fs.writeFile(tempPath, buffer, {
+					encoding: 'base64'
+				}, next);
+			},
+			function(next) {
+				uploadsController.uploadGroupCover({
+					path: tempPath
+				}, function(err, uploadData) {
+					if (err) {
+						return next(err);
+					}
+
+					url = uploadData.url;
+					next();
+				});
+			},
+			function(next) {
+				Groups.setGroupField(data.groupName, 'cover:url', url, next);
+			},
+			function(next) {
+				fs.unlink(tempPath, next);	// Delete temporary file
+			}
+		], function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			Groups.updateCoverPosition(data.groupName, data.position, callback);
 		});
 	};
 
@@ -160,6 +229,4 @@ module.exports = function(Groups) {
 			], callback);
 		});
 	}
-
-
 };
