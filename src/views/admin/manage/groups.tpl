@@ -2,37 +2,32 @@
 	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-group"></i> Groups List</div>
-			<div class="panel-body">
-				<ul id="groups-list">
-				<!-- BEGIN groups -->
-					<li data-groupname="{groups.name}">
-						<div class="row">
-							<div class="col-lg-8">
-								<h2>
-									{groups.name}
-									<!-- IF groups.system -->
-									<span class="badge">System Group</span>
-									<!-- ENDIF groups.system -->
-								</h2>
-								<p>{groups.description}</p>
-
-								<div class="btn-group">
-									<button class="btn btn-default" data-action="members">Edit</button>
-									<!-- IF !groups.system -->
-									<button class="btn btn-danger" data-action="delete">Delete Group</button>
-									<!-- ENDIF !groups.system -->
-								</div>
+			<div class="panel-body">	
+				<table class="table table-striped groups-list">
+					<tr>
+						<th>Group Name</th>
+						<th>Group Description</th>
+					</tr>
+					<!-- BEGIN groups -->
+					<tr data-groupname="{groups.name}">
+						<td>
+							{groups.name}
+							<!-- IF groups.system -->
+							<span class="badge">System Group</span>
+							<!-- ENDIF groups.system -->
+						</td>
+						<td>
+							<div class="btn-group pull-right">
+								<button class="btn btn-default btn-xs" data-action="members"><i class="fa fa-edit"></i> Edit</button>
+								<!-- IF !groups.system -->
+								<button class="btn btn-danger btn-xs" data-action="delete"><i class="fa fa-times"></i></button>
+								<!-- ENDIF !groups.system -->
 							</div>
-							<div class="col-lg-4">
-								<ul class="pull-right members">
-								<!-- BEGIN members --><li data-uid="{groups.members.uid}" data-toggle="tooltip" title="{groups.members.username}"><img src="{groups.members.picture}" /></li><!-- END members -->
-								<!-- IF groups.truncated --><li data-toggle="tooltip" title="Total: {groups.memberCount}" class="more"><i class="fa fa-users fa-2x"></i></li><!-- ENDIF groups.truncated -->
-								</ul>
-							</div>
-						</div>
-					</li>
-				<!-- END groups -->
-				</ul>
+							<p class="description">{groups.description}</p>
+						</td>
+					</tr>
+					<!-- END groups -->
+				</table>				
 			</div>
 		</div>
 	</div>
@@ -113,12 +108,12 @@
 						<div class="form-group">
 							<label>Members</label>
 							<p>Click on a user to remove them from the group</p>
-							<ul class="members current_members" id="group-details-members"></ul>
+							<ul class="members current_members user-list"></ul>
 						</div>
 						<div class="form-group">
 							<label for="add-member">Add User to Group</label>
 							<input type="text" class="form-control" id="group-details-search" placeholder="Search Users" />
-							<ul class="members" id="group-details-search-results"></ul>
+							<ul class="members user-list" id="group-details-search-results"></ul>
 						</div>
 					</form>
 				</div>
