@@ -244,7 +244,7 @@ var async = require('async'),
 				if (categories[i]) {
 					categories[i]['unread-class'] = (parseInt(categories[i].topic_count, 10) === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
 					categories[i].children = results.children[i];
-					categories[i].parent = results.parents[i] && !results.parents[i].disabled ? results.parents[i] : null;
+					categories[i].parent = results.parents[i] || undefined;
 					calculateTopicPostCount(categories[i]);
 				}
 			}
