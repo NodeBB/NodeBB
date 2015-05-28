@@ -75,7 +75,7 @@ var	async = require('async'),
 	Digest.send = function(data, callback) {
 		var	now = new Date();
 
-		user.getMultipleUserFields(data.subscribers, ['uid', 'username', 'lastonline'], function(err, users) {
+		user.getMultipleUserFields(data.subscribers, ['uid', 'username', 'userslug', 'lastonline'], function(err, users) {
 			if (err) {
 				winston.error('[user/jobs] Could not send digests (' + data.interval + '): ' + err.message);
 				return callback(err);
@@ -104,6 +104,7 @@ var	async = require('async'),
 					emailer.send('digest', userObj.uid, {
 						subject: '[' + meta.config.title + '] Digest for ' + now.getFullYear()+ '/' + (now.getMonth()+1) + '/' + now.getDate(),
 						username: userObj.username,
+						userslug: userObj.userslug,
 						url: nconf.get('url'),
 						site_title: meta.config.title || meta.config.browserTitle || 'NodeBB',
 						notifications: notifications,
