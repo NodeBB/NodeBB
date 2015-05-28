@@ -102,7 +102,7 @@ var async = require('async'),
 	Groups.get = function(groupName, options, callback) {
 		var	truncated = false,
 			numUsers;
-console.log('groups.get', groupName);
+
 		async.parallel({
 			base: function (next) {
 				if (ephemeralGroups.indexOf(groupName) === -1) {
@@ -172,12 +172,7 @@ console.log('groups.get', groupName);
 					if (err) {
 						return next(err);
 					}
-
-					if (options.expand && uids.length) {
-						async.map(uids, user.getUserData, next);
-					} else {
-						next(err, uids);
-					}
+					user.getUsersData(uids, next);
 				});
 			},
 			isMember: function(next) {
