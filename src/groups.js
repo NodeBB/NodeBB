@@ -86,6 +86,7 @@ var async = require('async'),
 					if (!group) {
 						return;
 					}
+					Groups.escapeGroupData(group);
 					group.members = data.members[index] || [];
 					group.truncated = group.memberCount > data.members.length;
 				});
@@ -171,13 +172,15 @@ var async = require('async'),
 				if (err) {
 					return callback(err);
 				}
-				results.base.name = options.escape ? validator.escape(results.base.name) : results.base.name;
-				results.base.description = options.escape ? validator.escape(results.base.description) : results.base.description;
+
+				if (options.escape) {
+					Groups.escapeGroupData(results.base);
+				}
+
 				results.base.descriptionParsed = descriptionParsed;
-				results.base.userTitle = options.escape ? validator.escape(results.base.userTitle) : results.base.userTitle;
 				results.base.userTitleEnabled = results.base.userTitleEnabled ? !!parseInt(results.base.userTitleEnabled, 10) : true;
 				results.base.createtimeISO = utils.toISOString(results.base.createtime);
-				results.base.members = results.members.filter(Boolean);
+				results.base.members = results.members;
 				results.base.pending = results.pending.filter(Boolean);
 				results.base.deleted = !!parseInt(results.base.deleted, 10);
 				results.base.hidden = !!parseInt(results.base.hidden, 10);
@@ -193,6 +196,14 @@ var async = require('async'),
 				});
 			});
 		});
+	};
+
+	Groups.escapeGroupData = function(group) {
+		if (group) {
+			group.name = validator.escape(group.name);
+			group.description = validator.escape(group.description);
+			group.userTitle = validator.escape(group.userTitle);
+		}
 	};
 
 	Groups.getByGroupslug = function(slug, options, callback) {

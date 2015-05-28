@@ -21,6 +21,10 @@ module.exports = function(Groups) {
 				groupNames = groupNames.slice(0, 100);
 				Groups.getGroupsData(groupNames, next);
 			},
+			function(groupsData, next) {
+				groupsData.forEach(Groups.escapeGroupData);
+				next(null, groupsData);
+			},
 			async.apply(Groups.sort, options.sort)
 		], callback);
 	};
