@@ -57,21 +57,6 @@ describe('Groups', function() {
 				assert.strictEqual(groupObj.name, 'Test');
 				assert.strictEqual(groupObj.description, 'Foobar!');
 				assert.strictEqual(groupObj.memberCount, 1);
-				assert.notEqual(typeof groupObj.members[0], 'object');
-
-				done();
-			});
-		});
-
-		it('with the "expand" option, should show both group information and user information', function(done) {
-			Groups.get('Test', { expand: true }, function(err, groupObj) {
-				if (err) return done(err);
-
-				assert.equal(typeof groupObj, 'object');
-				assert(Array.isArray(groupObj.members));
-				assert.strictEqual(groupObj.name, 'Test');
-				assert.strictEqual(groupObj.description, 'Foobar!');
-				assert.strictEqual(groupObj.memberCount, 1);
 				assert.equal(typeof groupObj.members[0], 'object');
 
 				done();
