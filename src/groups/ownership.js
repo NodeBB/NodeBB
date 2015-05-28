@@ -1,18 +1,16 @@
 'use strict';
 
-var	db = require('./../database');
+var	db = require('../database');
 
 module.exports = function(Groups) {
 
 	Groups.ownership = {};
 
 	Groups.ownership.isOwner = function(uid, groupName, callback) {
-		// Note: All admins automatically become owners upon joining
-		if (Array.isArray(uid)) {
-			db.isSetMembers('group:' + groupName + ':owners', uid, callback);
-		} else {
-			db.isSetMember('group:' + groupName + ':owners', uid, callback);
+		if (!uid) {
+			return callback(null, false);
 		}
+		db.isSetMember('group:' + groupName + ':owners', uid, callback);
 	};
 
 	Groups.ownership.grant = function(toUid, groupName, callback) {
@@ -25,6 +23,9 @@ module.exports = function(Groups) {
 
 		// If the owners set only contains one member, error out!
 		db.setCount('group:' + groupName + ':owners', function(err, numOwners) {
+			if (err) {
+				return callback(err);
+			}
 			if (numOwners <= 1) {
 				return callback(new Error('[[error:group-needs-owner]]'));
 			}

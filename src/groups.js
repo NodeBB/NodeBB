@@ -100,120 +100,47 @@ var async = require('async'),
 	};
 
 	Groups.get = function(groupName, options, callback) {
-		var	truncated = false,
-			numUsers;
+		if (!groupName) {
+			return callback(new Error('[[error:invalid-group]]'));
+		}
+
+		options.escape = options.hasOwnProperty('escape') ? options.escape : true;
 
 		async.parallel({
 			base: function (next) {
-				if (ephemeralGroups.indexOf(groupName) === -1) {
-					db.getObject('group:' + groupName, next);
-				} else {
-					next(null, internals.getEphemeralGroup(groupName));
-				}
+				db.getObject('group:' + groupName, next);
 			},
-			users: function (next) {
-				db.getSortedSetRevRange('group:' + groupName + ':members', 0, -1, function (err, uids) {
-					if (err) {
-						return next(err);
+			owners: function (next) {
+				async.waterfall([
+					function(next) {
+						db.getSetMembers('group:' + groupName + ':owners', next);
+					},
+					function(uids, next) {
+						user.getUsers(uids, options.uid, next);
 					}
-
-					uids = uids.filter(function(uid) {
-						return uid && parseInt(uid, 10);
-					});
-
-					if (options.truncateUserList) {
-						var userListCount = parseInt(options.userListCount, 10) || 4;
-						if (uids.length > userListCount) {
-							numUsers = uids.length;
-							uids.length = userListCount;
-							truncated = true;
-						}
-					}
-
-					if (options.expand) {
-						async.waterfall([
-							async.apply(user.getUsers, uids, options.uid || 0),
-							function(users, next) {
-								// Filter out non-matches
-								users = users.filter(Boolean);
-
-								async.mapLimit(users, 10, function(userObj, next) {
-									Groups.ownership.isOwner(userObj.uid, groupName, function(err, isOwner) {
-										if (err) {
-											winston.warn('[groups.get] Could not determine ownership in group `' + groupName + '` for uid `' + userObj.uid + '`: ' + err.message);
-											return next(null, userObj);
-										}
-
-										userObj.isOwner = isOwner;
-										next(null, userObj);
-									});
-								}, function(err, users) {
-									if (err) {
-										return next();
-									}
-
-									next(null, users.sort(function(a, b) {
-										if (a.isOwner === b.isOwner) {
-											return 0;
-										} else {
-											return a.isOwner && !b.isOwner ? -1 : 1;
-										}
-									}));
-								});
-							}
-						], next);
-					} else {
-						next(err, uids);
-					}
-				});
+				], next);
+			},
+			members: function (next) {
+				var stop = -1;
+				if (options.truncateUserList) {
+					stop = (parseInt(options.userListCount, 10) || 4) - 1;
+				}
+				user.getUsersFromSet('group:' + groupName + ':members', options.uid, 0, stop, next);
 			},
 			pending: function (next) {
-				db.getSetMembers('group:' + groupName + ':pending', function (err, uids) {
-					if (err) {
-						return next(err);
+				async.waterfall([
+					function(next) {
+						db.getSetMembers('group:' + groupName + ':pending', next);
+					},
+					function(uids, next) {
+						user.getUsersData(uids, next);
 					}
-					user.getUsersData(uids, next);
-				});
+				], next);
 			},
-			isMember: function(next) {
-				// Retrieve group membership state, if uid is passed in
-				if (!options.uid) {
-					return next();
-				}
-
-				Groups.isMember(options.uid, groupName, function(err, isMember) {
-					if (err) {
-						winston.warn('[groups.get] Could not determine membership in group `' + groupName + '` for uid `' + options.uid + '`: ' + err.message);
-						return next();
-					}
-
-					next(null, isMember);
-				});
-			},
-			isPending: function(next) {
-				// Retrieve group membership state, if uid is passed in
-				if (!options.uid) {
-					return next();
-				}
-
-				db.isSetMember('group:' + groupName + ':pending', options.uid, next);
-			},
+			isMember: async.apply(Groups.isMember, options.uid, groupName),
+			isPending: async.apply(Groups.isPending, options.uid, groupName),
 			isInvited: async.apply(Groups.isInvited, options.uid, groupName),
-			isOwner: function(next) {
-				// Retrieve group ownership state, if uid is passed in
-				if (!options.uid) {
-					return next();
-				}
-
-				Groups.ownership.isOwner(options.uid, groupName, function(err, isOwner) {
-					if (err) {
-						winston.warn('[groups.get] Could not determine ownership in group `' + groupName + '` for uid `' + options.uid + '`: ' + err.message);
-						return next();
-					}
-
-					next(null, isOwner);
-				});
-			}
+			isOwner: async.apply(Groups.ownership.isOwner, options.uid, groupName)
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -227,30 +154,39 @@ var async = require('async'),
 				results.base['cover:position'] = '50% 50%';
 			}
 
+			var ownerUids = [];
+			results.owners.forEach(function(user) {
+				if (user) {
+					user.isOwner = true;
+					ownerUids.push(user.uid.toString());
+				}
+			});
+
+			results.members = results.members.filter(function(user, index, array) {
+				return user && user.uid && ownerUids.indexOf(user.uid.toString()) === -1;
+			});
+			results.members = results.owners.concat(results.members);
+
 			plugins.fireHook('filter:parse.raw', results.base.description, function(err, descriptionParsed) {
 				if (err) {
 					return callback(err);
 				}
-				results.base.name = !options.unescape ? validator.escape(results.base.name) : results.base.name;
-				results.base.description = !options.unescape ? validator.escape(results.base.description) : results.base.description;
+				results.base.name = options.escape ? validator.escape(results.base.name) : results.base.name;
+				results.base.description = options.escape ? validator.escape(results.base.description) : results.base.description;
 				results.base.descriptionParsed = descriptionParsed;
-				results.base.userTitle = !options.unescape ? validator.escape(results.base.userTitle) : results.base.userTitle;
+				results.base.userTitle = options.escape ? validator.escape(results.base.userTitle) : results.base.userTitle;
 				results.base.userTitleEnabled = results.base.userTitleEnabled ? !!parseInt(results.base.userTitleEnabled, 10) : true;
 				results.base.createtimeISO = utils.toISOString(results.base.createtime);
-				results.base.members = results.users.filter(Boolean);
+				results.base.members = results.members.filter(Boolean);
 				results.base.pending = results.pending.filter(Boolean);
-				results.base.count = numUsers || results.base.members.length;
-				results.base.memberCount = numUsers || results.base.members.length;
 				results.base.deleted = !!parseInt(results.base.deleted, 10);
 				results.base.hidden = !!parseInt(results.base.hidden, 10);
 				results.base.system = !!parseInt(results.base.system, 10);
 				results.base.private = results.base.private ? !!parseInt(results.base.private, 10) : true;
-				results.base.truncated = truncated;
 				results.base.isMember = results.isMember;
 				results.base.isPending = results.isPending;
 				results.base.isInvited = results.isInvited;
 				results.base.isOwner = results.isOwner;
-
 
 				plugins.fireHook('filter:group.get', {group: results.base}, function(err, data) {
 					callback(err, data ? data.group : null);

@@ -17,8 +17,7 @@ Groups.create = function(socket, data, callback) {
 
 Groups.get = function(socket, groupName, callback) {
 	groups.get(groupName, {
-		expand: true,
-		unescape: true,
+		escape: false,
 		uid: socket.uid
 	}, callback);
 };

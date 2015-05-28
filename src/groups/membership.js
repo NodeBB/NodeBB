@@ -323,7 +323,16 @@ module.exports = function(Groups) {
 	};
 
 	Groups.isInvited = function(uid, groupName, callback) {
-		if (!uid) { return callback(null, false); }
+		if (!uid) {
+			return callback(null, false);
+		}
 		db.isSetMember('group:' + groupName + ':invited', uid, callback);
+	};
+
+	Groups.isPending = function(uid, groupName, callback) {
+		if (!uid) {
+			return callback(null, false);
+		}
+		db.isSetMember('group:' + groupName + ':pending', uid, callback);
 	};
 };

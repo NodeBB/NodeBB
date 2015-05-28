@@ -63,7 +63,6 @@ groupsController.details = function(req, res, next) {
 		async.parallel({
 			group: function(next) {
 				groups.get(res.locals.groupName, {
-					expand: true,
 					uid: req.uid
 				}, next);
 			},
