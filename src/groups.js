@@ -337,7 +337,7 @@ var async = require('async'),
 			if (err) {
 				return callback(err);
 			}
-			groupData = groupData.map(function(group) {
+			groupData.forEach(function(group) {
 				if (group) {
 					group.userTitle = validator.escape(group.userTitle) || validator.escape(group.name);
 					group.userTitleEnabled = group.userTitleEnabled ? parseInt(group.userTitleEnabled, 10) === 1 : true;
@@ -351,7 +351,6 @@ var async = require('async'),
 						group['cover:position'] = '50% 50%';
 					}
 				}
-				return group;
 			});
 
 			plugins.fireHook('filter:groups.get', {groups: groupData}, function(err, data) {
