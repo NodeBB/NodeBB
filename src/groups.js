@@ -2,19 +2,15 @@
 
 var async = require('async'),
 	winston = require('winston'),
-	path = require('path'),
 	nconf = require('nconf'),
-	fs = require('fs'),
 	validator = require('validator'),
 
 	user = require('./user'),
-	meta = require('./meta'),
 	db = require('./database'),
 	plugins = require('./plugins'),
 	posts = require('./posts'),
 	privileges = require('./privileges'),
-	utils = require('../public/src/utils'),
-	util = require('util');
+	utils = require('../public/src/utils');
 
 (function(Groups) {
 
@@ -235,8 +231,12 @@ var async = require('async'),
 	};
 
 	Groups.setGroupField = function(groupName, field, value, callback) {
-		plugins.fireHook('action:group.set', {field: field, value: value, type: 'set'});
-		db.setObjectField('group:' + groupName, field, value, callback);
+		db.setObjectField('group:' + groupName, field, value, function(err) {
+			if (err) {
+				return callback(err);
+			}
+			plugins.fireHook('action:group.set', {field: field, value: value, type: 'set'});
+		});
 	};
 
 	Groups.isPrivate = function(groupName, callback) {
