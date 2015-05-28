@@ -8,7 +8,11 @@ module.exports = function(Groups) {
 
 	Groups.ownership.isOwner = function(uid, groupName, callback) {
 		// Note: All admins automatically become owners upon joining
-		db.isSetMember('group:' + groupName + ':owners', uid, callback);
+		if (Array.isArray(uid)) {
+			db.isSetMembers('group:' + groupName + ':owners', uid, callback);
+		} else {
+			db.isSetMember('group:' + groupName + ':owners', uid, callback);
+		}
 	};
 
 	Groups.ownership.grant = function(toUid, groupName, callback) {
