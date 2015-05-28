@@ -28,25 +28,6 @@ var async = require('async'),
 	var ephemeralGroups = ['guests'],
 
 		internals = {
-			filterGroups: function(groups, options) {
-				// Remove system, hidden, or deleted groups from this list
-				if (groups && !options.showAllGroups) {
-					return groups.filter(function (group) {
-						if (!group) {
-							return false;
-						}
-						if (group.deleted || (group.hidden && !(group.system || group.isMember || options.isAdmin || group.isInvited)) || (!options.showSystemGroups && group.system)) {
-							return false;
-						} else if (options.removeEphemeralGroups && ephemeralGroups.indexOf(group.name) !== -1) {
-							return false;
-						} else {
-							return true;
-						}
-					});
-				} else {
-					return groups;
-				}
-			},
 			getEphemeralGroup: function(groupName) {
 				return {
 					name: groupName,
@@ -121,7 +102,7 @@ var async = require('async'),
 	Groups.get = function(groupName, options, callback) {
 		var	truncated = false,
 			numUsers;
-
+console.log('groups.get', groupName);
 		async.parallel({
 			base: function (next) {
 				if (ephemeralGroups.indexOf(groupName) === -1) {
