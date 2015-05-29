@@ -61,6 +61,9 @@ module.exports = function(Topics) {
 						return callback(err);
 					}
 					var teasers = topics.map(function(topic, index) {
+						if (!topic) {
+							return null;
+						}
 						if (tidToPost[topic.tid]) {
 							tidToPost[topic.tid].index = counts[index];
 							if (tidToPost[topic.tid].content) {
