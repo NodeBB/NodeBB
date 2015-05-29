@@ -36,7 +36,7 @@ define('forum/topic', [
 
 		app.enterRoom('topic_' + tid);
 
-		posts.processPage($('.topic'));
+		posts.processPage(components.get('post'));
 
 		postTools.init(tid);
 		threadTools.init(tid);
