@@ -236,6 +236,7 @@ var async = require('async'),
 				return callback(err);
 			}
 			plugins.fireHook('action:group.set', {field: field, value: value, type: 'set'});
+			callback();
 		});
 	};
 
