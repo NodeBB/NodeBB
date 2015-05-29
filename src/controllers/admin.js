@@ -52,9 +52,25 @@ adminController.home = function(req, res, next) {
 		},
 		notices: function(next) {
 			var notices = [
-				{done: !meta.reloadRequired, doneText: 'Reload not required', notDoneText:'Reload required'},
-				{done: plugins.hasListeners('action:email.send'), doneText: 'Emailer Installed', notDoneText:'Emailer not installed'},
-				{done: plugins.hasListeners('filter:search.query'), doneText: 'Search Plugin Installed', notDoneText:'Search Plugin not installed'}
+				{
+					done: !meta.reloadRequired,
+					doneText: 'Reload not required',
+					notDoneText:'Reload required'
+				},
+				{
+					done: plugins.hasListeners('action:email.send'),
+					doneText: 'Emailer Installed',
+					notDoneText:'Emailer not installed',
+					tooltip:'Install an emailer plugin from the plugin page in order to activate registration emails and email digests',
+					link:'/admin/extend/plugins'
+				},
+				{
+					done: plugins.hasListeners('filter:search.query'),
+					doneText: 'Search Plugin Installed',
+					notDoneText:'Search Plugin not installed',
+					tooltip: 'Install a search plugin from the plugin page in order to activate search functionality',
+					link:'/admin/extend/plugins'
+				}
 			];
 			plugins.fireHook('filter:admin.notices', notices, next);
 		}
