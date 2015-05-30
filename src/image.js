@@ -1,38 +1,28 @@
 'use strict';
 
 var fs = require('fs'),
-	gm = require('gm').subClass({imageMagick: true});
+	lwip = require('lwip');
 
 var image = {};
 
 image.resizeImage = function(path, extension, width, height, callback) {
-	function done(err, stdout, stderr) {
-		callback(err);
-	}
-
-	if(extension === '.gif') {
-		gm().in(path)
-			.in('-coalesce')
-			.in('-resize')
-			.in(width+'x'+height+'^')
-			.write(path, done);
-	} else {
-		gm(path)
-			.in('-resize')
-			.in(width+'x'+height+'^')
-			.gravity('Center')
+	lwip.open(path, function(err, image) {
+		image.batch()
+			.cover(width, height)
 			.crop(width, height)
-			.write(path, done);
-	}
+			.writeFile(path, function(err) {
+				callback(err)
+			})
+		});
 };
 
 image.convertImageToPng = function(path, extension, callback) {
 	if(extension !== '.png') {
-		gm(path).toBuffer('png', function(err, buffer) {
+		lwip.open(path, function(err, image) {
 			if (err) {
 				return callback(err);
 			}
-			fs.writeFile(path, buffer, 'binary', callback);
+			image.writeFile(path, 'png', callback)
 		});
 	} else {
 		callback();
