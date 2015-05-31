@@ -18,15 +18,11 @@ div.categories {
   li {
     min-height: @acp-line-height;
     margin: @acp-base-line 0;
-  }
 
-  > ul > li + li:before {
-    content: "";
-    display: block;
-    height: 1px;
-    width: 100%;
-    margin: @acp-base-line;
-    background: #F5F5F5;
+    &.placeholder {
+      border: 1px dashed #2196F3;
+      background-color: #E1F5FE;
+    }
   }
 
   .disabled {
@@ -50,10 +46,11 @@ div.categories {
     background-size: cover;
     float: left;
     margin-right: @acp-margin;
+    cursor: move;
   }
 
   .information {
-    float:left;
+    float: left;
   }
 
   .header {
