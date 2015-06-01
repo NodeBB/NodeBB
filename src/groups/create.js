@@ -12,9 +12,7 @@ module.exports = function(Groups) {
 			return callback(new Error('[[error:group-name-too-short]]'));
 		}
 
-		if (data.name === 'administrators' || data.name === 'registered-users' || Groups.isPrivilegeGroup(data.name)) {
-			var system = true;
-		}
+		var system = data.name === 'administrators' || data.name === 'registered-users' || Groups.isPrivilegeGroup(data.name);
 
 		meta.userOrGroupExists(data.name, function (err, exists) {
 			if (err) {
