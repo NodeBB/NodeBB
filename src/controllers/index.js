@@ -34,7 +34,7 @@ Controllers.home = function(req, res, next) {
 		hook = 'action:homepage.get:' + route;
 
 	if (plugins.hasListeners(hook)) {
-		plugins.fireHook(hook, {req: req, res: res, next: next});
+		plugins.fireHook(hook, {req: req, res: res}, next);
 	} else {
 		if (route === 'categories') {
 			Controllers.categories.list(req, res, next);
