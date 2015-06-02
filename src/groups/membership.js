@@ -13,7 +13,8 @@ module.exports = function(Groups) {
 		function join() {
 			var tasks = [
 				async.apply(db.sortedSetAdd, 'group:' + groupName + ':members', Date.now(), uid),
-				async.apply(db.incrObjectField, 'group:' + groupName, 'memberCount')
+				async.apply(db.incrObjectField, 'group:' + groupName, 'memberCount'),
+				async.apply(db.sortedSetIncrBy, 'group:visible:memberCount', 1, groupName)
 			];
 
 			async.waterfall([
@@ -132,6 +133,7 @@ module.exports = function(Groups) {
 
 		var tasks = [
 			async.apply(db.sortedSetRemove, 'group:' + groupName + ':members', uid),
+			async.apply(db.sortedSetIncrBy, 'group:visible:memberCount', -1, groupName),
 			async.apply(db.setRemove, 'group:' + groupName + ':owners', uid),
 			async.apply(db.decrObjectField, 'group:' + groupName, 'memberCount')
 		];
