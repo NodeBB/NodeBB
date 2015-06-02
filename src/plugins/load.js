@@ -71,13 +71,8 @@ module.exports = function(Plugins) {
 	}
 
 	function registerHooks(pluginData, pluginPath, callback) {
-		function libraryNotFound() {
-			winston.warn('[plugins.reload] Library not found for plugin: ' + pluginData.id);
-			callback();
-		}
-
 		if (!pluginData.library) {
-			return libraryNotFound();
+			return callback();
 		}
 
 		var libraryPath = path.join(pluginPath, pluginData.library);
@@ -96,7 +91,8 @@ module.exports = function(Plugins) {
 			}
 		} catch(err) {
 			winston.error(err.stack);
-			libraryNotFound();
+			winston.warn('[plugins] Unable to parse library for: ' + pluginData.id);
+			callback();
 		}
 	}
 
