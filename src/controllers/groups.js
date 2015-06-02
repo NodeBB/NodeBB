@@ -7,7 +7,6 @@ var async = require('async'),
 	groups = require('../groups'),
 	user = require('../user'),
 	helpers = require('./helpers'),
-	pagination = require('../pagination'),
 	groupsController = {};
 
 groupsController.list = function(req, res, next) {
