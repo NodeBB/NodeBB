@@ -51,7 +51,6 @@ define('forum/groups/list', ['forum/infinitescroll'], function(infinitescroll) {
 			sort: $('#search-sort').val(),
 			after: $('[component="groups/container"]').attr('data-nextstart')
 		}, function(data, done) {
-			console.log(data);
 			if (data && data.groups.length) {
 				templates.parse('partials/groups/list', {
 					groups: data.groups
