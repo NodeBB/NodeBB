@@ -49,6 +49,12 @@ module.exports = function(Groups) {
 				groupData.ownerUid = data.ownerUid;
 			}
 
+			if (!data.hidden && !system) {
+				tasks.push(async.apply(db.sortedSetAdd, 'groups:visible:createtime', timestamp, data.name));
+				tasks.push(async.apply(db.sortedSetAdd, 'groups:visible:memberCount', memberCount, data.name));
+				tasks.push(async.apply(db.sortedSetAdd, 'groups:visible:name', 0, data.name.toLowerCase() + ':' + data.name));
+			}
+
 			if (!data.hidden) {
 				tasks.push(async.apply(db.setObjectField, 'groupslug:groupname', slug, data.name));
 			}

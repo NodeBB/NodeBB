@@ -1,10 +1,11 @@
 "use strict";
 
-var	groups = require('../groups'),
+var	async = require('async'),
+
+	groups = require('../groups'),
 	meta = require('../meta'),
 	user = require('../user'),
-
-	async = require('async'),
+	groupsController = require('../controllers/groups'),
 
 	SocketGroups = {};
 
@@ -181,7 +182,26 @@ SocketGroups.search = function(socket, data, callback) {
 		return callback(null, []);
 	}
 
-	groups.search(data.query || '', data.options || {}, callback);
+	if (!data.query) {
+		var groupsPerPage = 9;
+		groupsController.getGroupsFromSet(socket.uid, data.options.sort, 0, groupsPerPage - 1, function(err, data) {
+			callback(err, !err ? data.groups : null);
+		});
+		return;
+	}
+
+	groups.search(data.query, data.options || {}, callback);
+};
+
+SocketGroups.loadMore = function(socket, data, callback) {
+	if (!data || !data.sort || !data.after) {
+		return callback();
+	}
+
+	var groupsPerPage = 9;
+	var start = parseInt(data.after);
+	var stop = start + groupsPerPage - 1;
+	groupsController.getGroupsFromSet(socket.uid, data.sort, start, stop, callback);
 };
 
 SocketGroups.searchMembers = function(socket, data, callback) {

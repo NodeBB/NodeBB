@@ -397,10 +397,14 @@ adminController.extend.rewards = function(req, res, next) {
 };
 
 adminController.groups.get = function(req, res, next) {
-	groups.list(req.uid, 0, -1, function(err, groups) {
+	groups.getGroupsFromSet('groups:createtime', req.uid, 0, -1, function(err, groups) {
 		if (err) {
 			return next(err);
 		}
+
+		groups = groups.filter(function(group) {
+			return group && group.name.indexOf(':privileges:') === -1 && group.name !== 'registered-users';
+		});
 
 		res.render('admin/manage/groups', {
 			groups: groups,

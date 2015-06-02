@@ -2,25 +2,42 @@
 
 var async = require('async'),
 	nconf = require('nconf'),
+	db = require('../database'),
 	meta = require('../meta'),
 	groups = require('../groups'),
 	user = require('../user'),
 	helpers = require('./helpers'),
+	pagination = require('../pagination'),
 	groupsController = {};
 
 groupsController.list = function(req, res, next) {
-	groups.list(req.uid, 0, -1, function(err, groups) {
+	var sort = req.query.sort || 'alpha';
+
+	groupsController.getGroupsFromSet(req.uid, sort, 0, 8, function(err, data) {
 		if (err) {
 			return next(err);
 		}
+		res.render('groups/list', data);
+	});
+};
 
-		groups = groups.filter(function(group) {
-			return group && !group.hidden && !group.system;
-		});
+groupsController.getGroupsFromSet = function(uid, sort, start, stop, callback) {
+	var set = 'groups:visible:name';
+	if (sort === 'count') {
+		set = 'groups:visible:memberCount';
+	} else if (sort === 'date') {
+		set = 'groups:visible:createtime';
+	}
 
-		res.render('groups/list', {
+	groups.getGroupsFromSet(set, uid, start, stop, function(err, groups) {
+		if (err) {
+			return callback(err);
+		}
+
+		callback(null, {
 			groups: groups,
-			allowGroupCreation: parseInt(meta.config.allowGroupCreation, 10) === 1
+		 	allowGroupCreation: parseInt(meta.config.allowGroupCreation, 10) === 1,
+		 	nextStart: stop + 1
 		});
 	});
 };
