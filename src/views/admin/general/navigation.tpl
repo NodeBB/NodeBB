@@ -30,7 +30,7 @@
 							<strong>Properties:</strong>
 							<div class="checkbox">
 								<label>
-									<input type="checkbox" name="property:isAdmin" <!-- IF enabled.properties.isAdmin -->checked<!-- ENDIF enabled.properties.isAdmin -->/> <strong>Only display to Admins</strong>
+									<input type="checkbox" name="property:adminOnly" <!-- IF enabled.properties.adminOnly -->checked<!-- ENDIF enabled.properties.adminOnly -->/> <strong>Only display to Admins</strong>
 								</label>
 							</div>
 							<div class="checkbox">
