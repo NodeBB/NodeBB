@@ -2,15 +2,19 @@
 /*global define, socket, app, bootbox, templates, ajaxify, RELATIVE_PATH*/
 
 define('admin/manage/categories', function() {
-	var	Categories = {}, newCategoryId = -1, sortables;
+	var	Categories = {}, newCategoryId = -1, sortables, itemTemplate;
 
 	Categories.init = function() {
-		socket.emit('admin.categories.getAll', function(error, payload){
-			if(error){
-				return app.alertError(error.message);
-			}
+		$.get(RELATIVE_PATH + '/templates/admin/partials/categories/category-item.tpl', function(data){
+			itemTemplate = data;
 
-			Categories.render(payload);
+			socket.emit('admin.categories.getAll', function(error, payload){
+				if(error){
+					return app.alertError(error.message);
+				}
+
+				Categories.render(payload);
+			});
 		});
 
 		$('button[data-action="create"]').on('click', Categories.create);
@@ -130,31 +134,7 @@ define('admin/manage/categories', function() {
 
     function renderListItem(categoryEntity){
         var listItem = $(templates.parse(
-            '<div class="row">' +
-				'<div class="col-md-9">' +
-					'<div class="clearfix">' +
-						'<div class="icon">' +
-							'<i data-name="icon" value="{icon}" class="fa {icon}"></i>' +
-						'</div>' +
-						'<div class="information">' +
-							'<h5 class="header">{name}</h5>' +
-							'<p class="description">{description}</p>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-				'<div class="col-md-3">' +
-					'<div class="clearfix pull-right">' +
-						'<ul class="fa-ul stats">' +
-							'<li class="fa-li"><i class="fa fa-book"></i> {topic_count}</li>' +
-							'<li class="fa-li"><i class="fa fa-pencil"></i> {post_count}</li>' +
-						'</ul>' +
-						'<div class="btn-group">' +
-							'<button data-action="toggle" data-disabled="{disabled}" class="btn btn-xs"></button>' +
-							'<a href="./categories/{cid}" class="btn btn-default btn-xs">Edit</a>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-			'</div>',
+			itemTemplate,
             categoryEntity
         ));
 
