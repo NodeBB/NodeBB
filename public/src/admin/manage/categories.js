@@ -1,23 +1,29 @@
 "use strict";
-/*global define, socket, app, bootbox, templates, ajaxify, RELATIVE_PATH*/
+/*global define, socket, app, bootbox, templates, ajaxify, RELATIVE_PATH, Sortable */
 
 define('admin/manage/categories', function() {
 	var	Categories = {}, newCategoryId = -1, sortables, itemTemplate;
 
 	Categories.init = function() {
-		$.get(RELATIVE_PATH + '/templates/admin/partials/categories/category-item.tpl', function(data){
-			itemTemplate = data;
+		socket.emit('admin.categories.getAll', function(error, payload){
+			if(error){
+				return app.alertError(error.message);
+			}
 
-			socket.emit('admin.categories.getAll', function(error, payload){
-				if(error){
-					return app.alertError(error.message);
-				}
-
-				Categories.render(payload);
-			});
+			Categories.render(payload);
 		});
 
 		$('button[data-action="create"]').on('click', Categories.create);
+
+		// Enable/Disable toggle events
+		$('.categories').on('click', 'button[data-action="toggle"]', function() {
+			var self = $(this),
+				rowEl = self.parents('li'),
+				cid = rowEl.attr('data-cid'),
+				disabled = rowEl.hasClass('disabled');
+
+			Categories.toggle(cid, disabled);
+		});
 	};
 
 	Categories.create = function() {
@@ -58,9 +64,25 @@ define('admin/manage/categories', function() {
                 .appendTo(container);
         }else{
             sortables = {};
-            renderList(categories, 0, container, 0);
+            renderList(categories, container, 0);
         }
 	};
+
+	Categories.toggle = function(cid, state) {
+		var payload = {};
+
+		payload[cid] = {
+			disabled: !state | 0
+		};
+
+		socket.emit('admin.categories.update', payload, function(err, result) {
+			if (err) {
+				return app.alertError(err.message);
+			} else {
+				ajaxify.refresh();
+			}
+		});
+	}
 
 	function itemDidAdd(e){
         newCategoryId = e.to.dataset.cid;
@@ -96,83 +118,31 @@ define('admin/manage/categories', function() {
      * @param container {object} parent jquery element for the list
      * @param parentId {number} parent category identifier
      */
-    function renderList(categories, level, container, parentId){
-        var i = 0, len = categories.length, category, marginLeft = 48, listItem;
-        var list = $('<ul />', {'data-cid': parentId});
+    function renderList(categories, container, parentId){
+		templates.parse('admin/partials/categories/category-rows', {
+			cid: parentId,
+			categories: categories
+		}, function(html) {
+			container.append(html);
 
-		if(level > 0){
-			list.css('margin-left', marginLeft);
-		}
-
-        for(i; i < len; ++i){
-            category = categories[i];
-
-             listItem = $('<li></li>', {'data-cid': category.cid})
-                 .append(renderListItem(category))
-                 .appendTo(list);
-
-            if(category.disabled){
-                listItem.addClass('disabled');
-            }
-
-            if(category.children.length > 0){
-                renderList(category.children, level + 1, listItem, category.cid);
-            }
-        }
-
-        list.appendTo(container);
-		sortables[parentId] = Sortable.create(list[0], {
-			group: 'cross-categories',
-			animation: 150,
-			handle: '.icon',
-            dataIdAttr: 'data-cid',
-			ghostClass: "placeholder",
-			onAdd: itemDidAdd,
-			onEnd: itemDragDidEnd
-		});
-    }
-
-    function renderListItem(categoryEntity){
-        var listItem = $(templates.parse(
-			itemTemplate,
-            categoryEntity
-        ));
-
-		var icon = listItem.find('.icon'),
-			button = listItem.find('[data-action="toggle"]');
-
-		if(categoryEntity.backgroundImage){
-			icon.css('background-image', 'url(' + categoryEntity.backgroundImage + ')');
-		}
-
-		icon
-			.css('color', categoryEntity.color)
-			.css('background-color', categoryEntity.bgColor);
-
-		if(categoryEntity.disabled){
-			button.text('Enable').addClass('btn-success');
-		}else{
-			button.text('Disable').addClass('btn-danger');
-		}
-
-		// Category enable/disable
-		button.on('click', function(e) {
-			var payload = {};
-
-			payload[categoryEntity.cid] = {
-				disabled: !categoryEntity.disabled | 0
-			};
-
-			socket.emit('admin.categories.update', payload, function(err, result) {
-				if (err) {
-					return app.alertError(err.message);
-				} else {
-					ajaxify.refresh();
+			// Handle and children categories in this level have
+			for(var x=0,numCategories=categories.length;x<numCategories;x++) {
+				if (categories[x].hasOwnProperty('children') && categories[x].children.length > 0) {
+					renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
 				}
+			}
+
+			// Make list sortable
+			sortables[parentId] = Sortable.create($('ul[data-cid="' + parentId + '"]')[0], {
+				group: 'cross-categories',
+				animation: 150,
+				handle: '.icon',
+	            dataIdAttr: 'data-cid',
+				ghostClass: "placeholder",
+				onAdd: itemDidAdd,
+				onEnd: itemDragDidEnd
 			});
 		});
-
-        return listItem;
     }
 
 	return Categories;

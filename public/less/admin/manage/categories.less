@@ -1,9 +1,14 @@
 div.categories {
 
   ul {
+    .no-select;
     list-style-type: none;
     margin: 0;
     padding: 0;
+
+    > li > ul > li {
+      margin-left: 4.5rem;
+    }
   }
 
   .fa-ul {
