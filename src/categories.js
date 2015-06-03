@@ -310,4 +310,25 @@ var async = require('async'),
 		], callback);
 	};
 
+	/**
+	 * Recursively build tree
+	 *
+	 * @param categories {array} flat list of categories
+	 * @param parentCid {number} start from 0 to build full tree
+	 */
+	Categories.getTree = function(categories, parentCid) {
+		var tree = [], i = 0, len = categories.length, category;
+
+        for(i; i < len; ++i){
+            category = categories[i];
+
+            if(category.parentCid == parentCid){
+                tree.push(category);
+                category.children = Categories.getTree(categories, category.cid);
+            }
+        }
+
+        return tree;
+	};
+
 }(exports));

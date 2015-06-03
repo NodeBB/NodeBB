@@ -166,28 +166,8 @@ adminController.categories.get = function(req, res, next) {
 };
 
 adminController.categories.getAll = function(req, res, next) {
-	var	active = [],
-		disabled = [];
-
-	async.waterfall([
-		async.apply(db.getSortedSetRangeByScore, 'categories:cid', 0, -1, 0, Date.now()),
-		async.apply(categories.getCategoriesData),
-		function(categories, next) {
-			plugins.fireHook('filter:admin.categories.get', {req: req, res: res, categories: categories}, next);
-		}
-	], function(err, data) {
-		if (err) {
-			return next(err);
-		}
-		data.categories.filter(Boolean).forEach(function(category) {
-			(category.disabled ? disabled : active).push(category);
-		});
-
-		res.render('admin/manage/categories', {
-			active: active,
-			disabled: disabled
-		});
-	});
+	//Categories list will be rendered on client side with recursion, etc.
+	res.render('admin/manage/categories', {});
 };
 
 adminController.tags.get = function(req, res, next) {
