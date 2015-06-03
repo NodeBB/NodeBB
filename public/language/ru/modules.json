@@ -22,5 +22,5 @@
     "composer.user_said": "%1 сказал:",
     "composer.discard": "Вы уверены, что хотите отказаться от этого поста?",
     "composer.submit_and_lock": "Отправить и закрыть",
-    "composer.toggle_dropdown": "Toggle Dropdown"
+    "composer.toggle_dropdown": "Показать выпадающий список"
 }

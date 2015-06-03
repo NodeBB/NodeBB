@@ -76,7 +76,7 @@
     "fork_no_pids": "لم تختر أي مشاركة",
     "fork_success": "تم إنشاء فرع للموضوع بنجاح! إضغط هنا لمعاينة الفرع.",
     "composer.title_placeholder": "أدخل عنوان موضوعك هنا...",
-    "composer.handle_placeholder": "Name",
+    "composer.handle_placeholder": "اﻹسم",
     "composer.discard": "نبذ التغييرات",
     "composer.submit": "حفظ",
     "composer.replying_to": "الرد على %1",
