@@ -2,7 +2,7 @@
 <!-- BEGIN categories -->
     <li data-cid="{categories.cid}" <!-- IF categories.disabled -->class="disabled"<!-- ENDIF categories.disabled -->>
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-9">
                 <div class="clearfix">
                     <div class="icon" style="color: {categories.color}; background-color: {categories.bgColor};<!-- IF categories.backgroundImage --> background-image: url('{categories.backgroundImage}');<!-- ENDIF categories.backgroundImage -->">
                         <i data-name="icon" value="{categories.icon}" class="fa {categories.icon}"></i>
@@ -13,7 +13,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="clearfix pull-right text-right">
                     <ul class="stats">
                         <li><i class="fa fa-book"></i> {categories.topic_count}</li>
