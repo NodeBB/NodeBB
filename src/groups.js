@@ -374,29 +374,18 @@ var async = require('async'),
 	};
 
 	Groups.getUserGroups = function(uids, callback) {
-		db.getSortedSetRevRange('groups:createtime', 0, -1, function(err, groupNames) {
-			if (err) {
-				return callback(err);
-			}
+		async.waterfall([
+			function(next) {
+				db.getSortedSetRevRange('groups:visible:createtime', 0, -1, next);
+			},
+			function(groupNames, next) {
+				groupNames.push('administrators');
 
-			groupNames = groupNames.filter(function(groupName) {
-				return groupName !== 'registered-users' && groupName.indexOf(':privileges:') === -1;
-			});
+				var groupSets = groupNames.map(function(name) {
+		 			return 'group:' + name + ':members';
+		 		});
 
-			Groups.getMultipleGroupFields(groupNames, ['name', 'hidden'], function(err, groupData) {
-				if (err) {
-					return callback(err);
-				}
-
-				groupData = groupData.filter(function(group) {
-					return group && !parseInt(group.hidden, 10);
-				});
-
-				var groupSets = groupData.map(function(group) {
-					return 'group:' + group.name + ':members';
-				});
-
-				async.map(uids, function(uid, next) {
+		 		async.map(uids, function(uid, next) {
 					db.isMemberOfSortedSets(groupSets, uid, function(err, isMembers) {
 						if (err) {
 							return next(err);
@@ -405,14 +394,15 @@ var async = require('async'),
 						var memberOf = [];
 						isMembers.forEach(function(isMember, index) {
 							if (isMember) {
-								memberOf.push(groupData[index].name);
+								memberOf.push(groupNames[index]);
 							}
 						});
 
 						Groups.getGroupsData(memberOf, next);
 					});
-				}, callback);
-			});
-		});
+				}, next);
+			}
+		], callback);
 	};
+
 }(module.exports));
