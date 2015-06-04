@@ -57,7 +57,7 @@ module.exports = function(Plugins) {
 		function display() {
 			process.stdout.write('\n');
 			winston.warn('[plugins/' + pluginData.id + '] This plugin may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing.');
-			winston.warn('[plugins/' + pluginData.id + '] In the event of an unresponsive NodeBB caused by this plugin, run ./nodebb reset plugin="' + pluginData.id + '".');
+			winston.warn('[plugins/' + pluginData.id + '] In the event of an unresponsive NodeBB caused by this plugin, run ./nodebb reset -p ' + pluginData.id + '.');
 			process.stdout.write('\n');
 		}
 
