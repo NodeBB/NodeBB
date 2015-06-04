@@ -2,10 +2,11 @@
 /*global define, socket, app, bootbox, templates, ajaxify, RELATIVE_PATH, Sortable */
 
 define('admin/manage/categories', function() {
-	var	Categories = {}, newCategoryId = -1, sortables, itemTemplate;
+	var	Categories = {}, newCategoryId = -1, sortables;
 
 	Categories.init = function() {
 		socket.emit('admin.categories.getAll', function(error, payload){
+			console.log(payload);
 			if(error){
 				return app.alertError(error.message);
 			}
@@ -55,17 +56,17 @@ define('admin/manage/categories', function() {
 	};
 
 	Categories.render = function(categories){
-        var container = $('.categories');
+		var container = $('.categories');
 
-        if(!categories || categories.length == 0){
-            $('<div></div>')
-                .addClass('alert alert-info text-center')
-                .text('You have no active categories.')
-                .appendTo(container);
-        }else{
-            sortables = {};
-            renderList(categories, container, 0);
-        }
+		if (!categories || categories.length == 0) {
+			$('<div></div>')
+				.addClass('alert alert-info text-center')
+				.text('You have no active categories.')
+				.appendTo(container);
+		} else {
+			sortables = {};
+			renderList(categories, container, 0);
+		}
 	};
 
 	Categories.toggle = function(cid, state) {
@@ -85,40 +86,40 @@ define('admin/manage/categories', function() {
 	}
 
 	function itemDidAdd(e){
-        newCategoryId = e.to.dataset.cid;
+		newCategoryId = e.to.dataset.cid;
 	}
 
 	function itemDragDidEnd(e){
-        var isCategoryUpdate = (newCategoryId != -1);
+		var isCategoryUpdate = (newCategoryId != -1);
 		//Update needed?
 		if((e.newIndex != undefined && e.oldIndex != e.newIndex) || isCategoryUpdate){
-            var parentCategory = isCategoryUpdate ? sortables[newCategoryId] : sortables[e.from.dataset.cid],
-                modified = {}, i = 0, list = parentCategory.toArray(), len = list.length;
+			var parentCategory = isCategoryUpdate ? sortables[newCategoryId] : sortables[e.from.dataset.cid],
+				modified = {}, i = 0, list = parentCategory.toArray(), len = list.length;
 
-            for(i; i < len; ++i) {
-                modified[list[i]] = {
-                    order: (i + 1)
-                }
-            }
+			for(i; i < len; ++i) {
+				modified[list[i]] = {
+					order: (i + 1)
+				}
+			}
 
-            if(isCategoryUpdate){
-                modified[e.item.dataset.cid]['parentCid'] = newCategoryId;
-            }
+			if(isCategoryUpdate){
+				modified[e.item.dataset.cid]['parentCid'] = newCategoryId;
+			}
 
-            newCategoryId = -1
-            socket.emit('admin.categories.update', modified);
-        }
+			newCategoryId = -1
+			socket.emit('admin.categories.update', modified);
+		}
 	}
 
-    /**
-     * Render categories - recursively
-     *
-     * @param categories {array} categories tree
-     * @param level {number} current sub-level of rendering
-     * @param container {object} parent jquery element for the list
-     * @param parentId {number} parent category identifier
-     */
-    function renderList(categories, container, parentId){
+	/**
+	 * Render categories - recursively
+	 *
+	 * @param categories {array} categories tree
+	 * @param level {number} current sub-level of rendering
+	 * @param container {object} parent jquery element for the list
+	 * @param parentId {number} parent category identifier
+	 */
+	function renderList(categories, container, parentId){
 		templates.parse('admin/partials/categories/category-rows', {
 			cid: parentId,
 			categories: categories
@@ -137,13 +138,13 @@ define('admin/manage/categories', function() {
 				group: 'cross-categories',
 				animation: 150,
 				handle: '.icon',
-	            dataIdAttr: 'data-cid',
+				dataIdAttr: 'data-cid',
 				ghostClass: "placeholder",
 				onAdd: itemDidAdd,
 				onEnd: itemDragDidEnd
 			});
 		});
-    }
+	}
 
 	return Categories;
 });

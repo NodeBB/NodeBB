@@ -2,7 +2,7 @@
 <!-- BEGIN categories -->
     <li data-cid="{categories.cid}" <!-- IF categories.disabled -->class="disabled"<!-- ENDIF categories.disabled -->>
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-md-8">
                 <div class="clearfix">
                     <div class="icon" style="color: {categories.color}; background-color: {categories.bgColor};<!-- IF categories.backgroundImage --> background-image: url('{categories.backgroundImage}');<!-- ENDIF categories.backgroundImage -->">
                         <i data-name="icon" value="{categories.icon}" class="fa {categories.icon}"></i>
@@ -13,11 +13,11 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="clearfix pull-right">
-                    <ul class="fa-ul stats">
-                        <li class="fa-li"><i class="fa fa-book"></i> {categories.topic_count}</li>
-                        <li class="fa-li"><i class="fa fa-pencil"></i> {categories.post_count}</li>
+            <div class="col-md-4">
+                <div class="clearfix pull-right text-right">
+                    <ul class="stats">
+                        <li><i class="fa fa-book"></i> {categories.topic_count}</li>
+                        <li><i class="fa fa-pencil"></i> {categories.post_count}</li>
                     </ul>
                     <div class="btn-group">
                         <button data-action="toggle" data-disabled="{categories.disabled}" class="btn btn-xs <!-- IF categories.disabled -->btn-primary<!-- ELSE -->btn-danger<!-- ENDIF categories.disabled -->">
