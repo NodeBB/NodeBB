@@ -425,7 +425,8 @@ define('composer', [
 				handleHelp(postContainer);
 
 				$(window).trigger('action:composer.loaded', {
-					post_uuid: post_uuid
+					post_uuid: post_uuid,
+					composerData: composer.posts[post_uuid]
 				});
 
 				formatting.addComposerButtons();
