@@ -2,10 +2,12 @@
 
 var async = require('async'),
 
+	db = require('../../database'),
 	groups = require('../../groups'),
 	user = require('../../user'),
 	categories = require('../../categories'),
 	privileges = require('../../privileges'),
+	plugins = require('../../plugins'),
 	Categories = {};
 
 Categories.create = function(socket, data, callback) {
@@ -14,6 +16,26 @@ Categories.create = function(socket, data, callback) {
 	}
 
 	categories.create(data, callback);
+};
+
+Categories.getAll = function(socket, data, callback) {
+	async.waterfall([
+		async.apply(db.getSortedSetRangeByScore, 'categories:cid', 0, -1, 0, Date.now()),
+		async.apply(categories.getCategoriesData),
+		function(categories, next) {
+			//Hook changes, there is no req, and res
+			plugins.fireHook('filter:admin.categories.get', {categories: categories}, next);
+		},
+		function(result, next){
+			next(null, categories.getTree(result.categories, 0));
+		}
+	], function(err, categoriesTree) {
+		if (err) {
+			return callback(err);
+		}
+
+		callback(null, categoriesTree);
+	});
 };
 
 Categories.purge = function(socket, cid, callback) {

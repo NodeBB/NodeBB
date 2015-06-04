@@ -316,14 +316,12 @@ define('admin/manage/category', [
 				searchObj = autocomplete.group(inputEl);
 
 			searchObj.on('autocompleteselect', function(ev, ui) {
-				console.log(ui);
 				socket.emit('admin.categories.setPrivilege', {
 					cid: ajaxify.variables.get('cid'),
 					privilege: ['groups:find', 'groups:read'],
 					set: true,
 					member: ui.item.group.name
 				}, function(err) {
-					console.log(arguments);
 					if (err) {
 						return app.alertError(err.message);
 					}

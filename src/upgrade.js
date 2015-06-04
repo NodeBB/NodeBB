@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 4, 20);
+	latestSchema = Date.UTC(2015, 5, 2);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -377,7 +377,51 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2015/05/20] Adding username:sorted and email:sorted skipped');
 				next();
 			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 5, 2);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/06/02] Creating group sorted sets');
+
+				db.getSortedSetRange('groups:createtime', 0, -1, function(err, groupNames) {
+					if (err) {
+						return callback(err);
+					}
+
+					async.eachLimit(groupNames, 500, function(groupName, next) {
+						if (!groupName) {
+							return next();
+						}
+						db.getObjectFields('group:' + groupName, ['hidden', 'system', 'createtime', 'memberCount'], function(err, groupData) {
+							if (err) {
+								return next(err);
+							}
+
+							if (parseInt(groupData.hidden, 10) === 1 || parseInt(groupData.system, 10) === 1) {
+								return next();
+							}
+							async.parallel([
+								async.apply(db.sortedSetAdd, 'groups:visible:createtime', groupData.createtime, groupName),
+								async.apply(db.sortedSetAdd, 'groups:visible:memberCount', groupData.memberCount, groupName),
+								async.apply(db.sortedSetAdd, 'groups:visible:name', 0, groupName.toLowerCase() + ':' + groupName)
+							], next);
+						});
+					}, function(err) {
+						if (err) {
+							return next(err);
+						}
+
+						winston.info('[2015/06/02] Creating group sorted sets done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2015/06/02] Creating group sorted sets skipped');
+				next();
+			}
 		}
+
 
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 24!!!

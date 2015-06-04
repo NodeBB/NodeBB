@@ -34,10 +34,10 @@ describe('Groups', function() {
 
 	describe('.list()', function() {
 		it('should list the groups present', function(done) {
-			Groups.list(0, 0, -1, function(err, groups) {
+			Groups.getGroupsFromSet('groups:createtime', 0, 0, -1, function(err, groups) {
 				if (err) return done(err);
 
-				assert.equal(groups.length, 2);
+				assert.equal(groups.length, 3);
 				done();
 			});
 		});

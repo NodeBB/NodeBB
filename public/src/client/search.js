@@ -128,6 +128,10 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 				result.html(text).find('img').addClass('img-responsive').each(function() {
 					$(this).attr('src', $(this).attr('src').replace(/<strong>([\s\S]*?)<\/strong>/gi, '$1'));
 				});
+
+				result.find('a').each(function() {
+					$(this).attr('href', $(this).attr('href').replace(/<strong>([\s\S]*?)<\/strong>/gi, '$1'));	
+				});
 			});
 		} catch(e) {
 			return;

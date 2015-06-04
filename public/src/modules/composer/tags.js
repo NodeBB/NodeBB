@@ -15,7 +15,7 @@ define('composer/tags', function() {
 		tagEl.tagsinput({
 			maxTags: config.tagsPerTopic,
 			confirmKeys: [13, 44],
-			trimValue: true			
+			trimValue: true
 		});
 
 		tagEl.on('beforeItemAdd', function(event) {
@@ -36,6 +36,9 @@ define('composer/tags', function() {
 		var input = postContainer.find('.bootstrap-tagsinput input');
 		input.autocomplete({
 			delay: 100,
+			open: function() {
+				$(this).autocomplete('widget').css('z-index', 20000);
+			},
 			source: function(request, response) {
 				socket.emit('topics.searchTags', {query: request.term, cid: postData.cid}, function(err, tags) {
 					if (err) {

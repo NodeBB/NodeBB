@@ -1,8 +1,10 @@
 @import "./bootstrap/bootstrap";
 @import "./mixins";
+@import "./vars";
 
 @import "./general/dashboard";
 @import "./general/navigation";
+@import "./manage/categories";
 @import "./manage/tags";
 @import "./manage/flags";
 @import "./manage/users";
@@ -134,10 +136,6 @@
 						padding-left: 11px;
 						outline: 0;
 
-						&:focus {
-							background-color: transparent;
-						}
-
 						span {
 							opacity: 0;
 							margin-right: -8px;
@@ -168,6 +166,12 @@
 		overflow-y: hidden;
 	}
 
+	.acp-panel-heading {
+		padding: 7px 14px;
+		border: 0;
+		.box-header-font;
+	}
+
 	.panel {
 		background-color: #FFF;
 		box-sizing: border-box;
@@ -176,11 +180,13 @@
 		margin-bottom: 20px;
 
 		&.panel-default .panel-heading {
+			.acp-panel-heading;
 			background: #fefefe;
 			color: #333;
-			padding: 7px 14px;
-			border: 0;
-			.box-header-font;
+		}
+
+		&.panel-danger .panel-heading {
+			.acp-panel-heading;
 		}
 	}
 

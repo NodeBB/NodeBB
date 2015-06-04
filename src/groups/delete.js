@@ -21,6 +21,9 @@ module.exports = function(Groups) {
 			async.parallel([
 				async.apply(db.delete, 'group:' + groupName),
 				async.apply(db.sortedSetRemove, 'groups:createtime', groupName),
+				async.apply(db.sortedSetRemove, 'groups:visible:createtime', groupName),
+				async.apply(db.sortedSetRemove, 'groups:visible:memberCount', groupName),
+				async.apply(db.sortedSetRemove, 'groups:visible:name', groupName.toLowerCase() + ':' + groupName),
 				async.apply(db.delete, 'group:' + groupName + ':members'),
 				async.apply(db.delete, 'group:' + groupName + ':pending'),
 				async.apply(db.delete, 'group:' + groupName + ':invited'),

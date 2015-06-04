@@ -57,15 +57,28 @@ var async = require('async'),
 		return ephemeralGroups;
 	};
 
-	Groups.list = function(uid, start, stop, callback) {
-		db.getSortedSetRevRange('groups:createtime', start, stop, function (err, groupNames) {
+	Groups.getGroupsFromSet = function(set, uid, start, stop, callback) {
+		var method;
+		var args;
+		if (set === 'groups:visible:name') {
+			method = db.getSortedSetRangeByLex;
+			args = [set, '-', '+', start, stop - start + 1, done];
+		} else {
+			method = db.getSortedSetRevRange;
+			args = [set, start, stop, done];
+		}
+		method.apply(null, args);
+
+		function done(err, groupNames) {
 			if (err) {
 				return callback(err);
 			}
 
-			groupNames = groupNames.filter(function(groupName) {
-				return groupName && groupName.indexOf(':privileges:') === -1 && groupName !== 'registered-users' && groupName !== 'guests';
-			});
+			if (set === 'groups:visible:name') {
+				groupNames = groupNames.map(function(name) {
+					return name.split(':')[1];
+				});
+			}
 
 			async.parallel({
 				groups: function(next) {
@@ -89,7 +102,7 @@ var async = require('async'),
 
 				callback(null, data.groups);
 			});
-		});
+		}
 	};
 
 	Groups.getGroups = function(start, stop, callback) {

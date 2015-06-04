@@ -67,11 +67,6 @@ var fs = require('fs'),
 			emitter.emit('plugins:loaded');
 			callback();
 		});
-
-		Plugins.registerHook('core', {
-			hook: 'static:app.load',
-			method: addLanguages
-		});
 	};
 
 	Plugins.reload = function(callback) {
@@ -83,6 +78,11 @@ var fs = require('fs'),
 		Plugins.lessFiles.length = 0;
 		Plugins.clientScripts.length = 0;
 		Plugins.libraryPaths.length = 0;
+
+		Plugins.registerHook('core', {
+			hook: 'static:app.load',
+			method: addLanguages
+		});
 
 		async.waterfall([
 			function(next) {

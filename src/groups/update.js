@@ -9,7 +9,7 @@ var async = require('async'),
 
 	plugins = require('../plugins'),
 	utils = require('../../public/src/utils'),
-	db = require('./../database'),
+	db = require('../database'),
 
 	uploadsController = require('../controllers/uploads');
 
@@ -46,6 +46,7 @@ module.exports = function(Groups) {
 
 			async.series([
 				async.apply(updatePrivacy, groupName, values.private),
+				async.apply(updateVisibility, groupName, values.hidden),
 				async.apply(db.setObject, 'group:' + groupName, payload),
 				async.apply(renameGroup, groupName, values.name)
 			], function(err) {
@@ -61,6 +62,27 @@ module.exports = function(Groups) {
 			});
 		});
 	};
+
+	function updateVisibility(groupName, hidden, callback) {
+		if (hidden) {
+			async.parallel([
+				async.apply(db.sortedSetRemove, 'groups:visible:createtime', groupName),
+				async.apply(db.sortedSetRemove, 'groups:visible:memberCount', groupName),
+				async.apply(db.sortedSetRemove, 'groups:visible:name', groupName.toLowerCase() + ':' + groupName)
+			], callback);
+		} else {
+			db.getObjectFields('group:' + groupName, ['createtime', 'memberCount'], function(err, groupData) {
+				if (err) {
+					return callback(err);
+				}
+				async.parallel([
+					async.apply(db.sortedSetAdd, 'groups:visible:createtime', groupData.createtime, groupName),
+					async.apply(db.sortedSetAdd, 'groups:visible:memberCount', groupData.memberCount, groupName),
+					async.apply(db.sortedSetAdd, 'groups:visible:name', 0, groupName.toLowerCase() + ':' + groupName)
+				], callback);
+			});
+		}
+	}
 
 	Groups.hide = function(groupName, callback) {
 		callback = callback || function() {};
@@ -195,7 +217,11 @@ module.exports = function(Groups) {
 					async.apply(db.rename, 'group:' + oldName + ':owners', 'group:' + newName + ':owners'),
 					async.apply(db.rename, 'group:' + oldName + ':pending', 'group:' + newName + ':pending'),
 					async.apply(db.rename, 'group:' + oldName + ':invited', 'group:' + newName + ':invited'),
+
 					async.apply(renameGroupMember, 'groups:createtime', oldName, newName),
+					async.apply(renameGroupMember, 'groups:visible:createtime', oldName, newName),
+					async.apply(renameGroupMember, 'groups:visible:memberCount', oldName, newName),
+					async.apply(renameGroupMember, 'groups:visible:name', oldName.toLowerCase() + ':' + oldName, newName.toLowerCase() + ':' + newName),
 					function(next) {
 						plugins.fireHook('action:group.rename', {
 							old: oldName,
