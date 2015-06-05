@@ -5,6 +5,7 @@
 	var winston = require('winston'),
 		nconf = require('nconf'),
 		path = require('path'),
+		semver = require('semver'),
 		session = require('express-session'),
 		utils = require('./../../public/src/utils.js'),
 		redis,
@@ -109,6 +110,17 @@
 		}
 
 		return cxn;
+	};
+
+	module.checkCompatibility = function(callback) {
+		// Redis requires v2.8.9
+		module.info(module.client, function(err, info) {
+			var err = semver.lt(info.redis_version, '2.8.9') ? new Error('Your Redis version is not new enough to support NodeBB, please upgrade Redis to v2.8.9 or higher.') : null;
+			if (err) {
+				err.stacktrace = false;
+			}
+			callback(err);
+		});
 	};
 
 	module.close = function() {

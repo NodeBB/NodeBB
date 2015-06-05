@@ -109,6 +109,7 @@ function loadConfig() {
 
 function start() {
 	loadConfig();
+	var db = require('./src/database');
 
 	// nconf defaults, if not set in config
 	if (!nconf.get('upload_path')) {
@@ -176,9 +177,8 @@ function start() {
 	});
 
 	async.waterfall([
-		function(next) {
-			require('./src/database').init(next);
-		},
+		async.apply(db.init),
+		async.apply(db.checkCompatibility),
 		function(next) {
 			require('./src/meta').configs.init(next);
 		},
@@ -204,7 +204,12 @@ function start() {
 		}
 	], function(err) {
 		if (err) {
-			winston.error(err.stack);
+			if (err.stacktrace !== false) {
+				winston.error(err.stack);
+			} else {
+				winston.error(err.message);
+			}
+
 			process.exit();
 		}
 	});
