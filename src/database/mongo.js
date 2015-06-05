@@ -7,6 +7,7 @@
 		async = require('async'),
 		nconf = require('nconf'),
 		session = require('express-session'),
+		semver = require('semver'),
 		db, mongoClient;
 
 	module.questions = [
@@ -131,6 +132,7 @@
 			}
 
 			function createIndices() {
+				winston.info('[database] Checking database indices.')
 				async.parallel([
 					async.apply(createIndex, 'objects', {_key: 1, score: -1}, {background: true}),
 					async.apply(createIndex, 'objects', {_key: 1, value: -1}, {background: true, unique: true, sparse: true}),
@@ -156,6 +158,17 @@
 				});
 			}
 		});
+	};
+
+	module.checkCompatibility = function(callback) {
+		// For MongoDB, we need to ensure that the mongodb package is >= 2.0.0
+		var mongoPkg = require.main.require('./node_modules/mongodb/package.json'),
+			err = semver.lt(mongoPkg.version, '2.0.0') ? new Error('The `mongodb` package is out-of-date, please run `./nodebb setup` again.') : null;
+
+		if (err) {
+			err.stacktrace = false;
+		}
+		callback(err);
 	};
 
 	module.info = function(db, callback) {
