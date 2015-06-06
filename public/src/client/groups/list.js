@@ -61,7 +61,10 @@ define('forum/groups/list', ['forum/infinitescroll'], function(infinitescroll) {
 			} else {
 				done();
 			}
-			$('[component="groups/container"]').attr('data-nextstart', data.nextStart);
+
+			if (data && data.nextStart) {
+				$('[component="groups/container"]').attr('data-nextstart', data.nextStart);
+			}
 		});
 	}
 
