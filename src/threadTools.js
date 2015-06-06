@@ -39,7 +39,7 @@ var async = require('async'),
 				topicData.deleted = isDelete ? 1 : 0;
 
 				if (isDelete) {
-					plugins.fireHook('action:topic.delete', tid);
+					plugins.fireHook('action:topic.delete', topicData);
 				} else {
 					plugins.fireHook('action:topic.restore', topicData);
 				}
