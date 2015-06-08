@@ -45,29 +45,23 @@ module.exports = function(Meta) {
 				'public/src/variables.js',
 				'public/src/widgets.js'
 			],
-			rjs: []
+			rjs: [
+				'public/src/client/footer.js'
+			]
 		}
 	};
 
 	Meta.js.loadRJS = function(callback) {
+		if (global.env === 'development') {
+			return callback();
+		}
+
 		var rjsPath = path.join(__dirname, '../../public/src');
 
-		async.parallel({
-			client: function(next) {
-				utils.walk(path.join(rjsPath, 'client'), next);
-			},
-			modules: function(next) {
-				if (global.env === 'development') {
-					return next(null, []);
-				}
-
-				utils.walk(path.join(rjsPath, 'modules'), next);
-			}
-		}, function(err, rjsFiles) {
+		utils.walk(path.join(rjsPath, 'modules'), function(err, rjsFiles) {
 			if (err) {
 				return callback(err);
 			}
-			rjsFiles = rjsFiles.client.concat(rjsFiles.modules);
 
 			rjsFiles = rjsFiles.map(function(file) {
 				return path.join('public/src', file.replace(rjsPath, ''));

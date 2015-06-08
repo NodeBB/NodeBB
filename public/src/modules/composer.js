@@ -2,18 +2,7 @@
 
 /* globals define, socket, app, config, ajaxify, utils, templates, bootbox */
 
-define('composer', [
-	'taskbar',
-	'translator',
-	'composer/controls',
-	'composer/uploads',
-	'composer/formatting',
-	'composer/drafts',
-	'composer/tags',
-	'composer/categoryList',
-	'composer/preview',
-	'composer/resize'
-], function(taskbar, translator, controls, uploads, formatting, drafts, tags, categoryList, preview, resize) {
+define('composer', [], function(taskbar, translator, controls, uploads, formatting, drafts, tags, categoryList, preview, resize) {
 	var composer = {
 		active: undefined,
 		posts: {},
