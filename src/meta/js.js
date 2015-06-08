@@ -46,7 +46,9 @@ module.exports = function(Meta) {
 				'public/src/widgets.js'
 			],
 			rjs: [
-				'public/src/client/footer.js'
+				'public/src/client/footer.js',
+				'public/src/client/chats.js',
+				'public/src/client/infinitescroll.js'
 			]
 		}
 	};
@@ -67,7 +69,7 @@ module.exports = function(Meta) {
 				return path.join('public/src', file.replace(rjsPath, ''));
 			});
 
-			Meta.js.scripts.rjs = rjsFiles;
+			Meta.js.scripts.rjs = Meta.js.scripts.rjs.concat(rjsFiles);
 
 			callback();
 		});
