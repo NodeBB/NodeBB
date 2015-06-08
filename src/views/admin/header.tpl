@@ -26,6 +26,7 @@
 
 		<script type="text/javascript" src="{relative_path}/vendor/chart.js/chart.min.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/hammer/hammer.min.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/vendor/jquery/sortable/Sortable.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/nodebb.min.js?{cache-buster}"></script>
 		<script>
 			require.config({

@@ -22,7 +22,6 @@ module.exports = function(Meta) {
 		scripts: {
 			base: [
 				'public/vendor/jquery/js/jquery.js',
-				'public/vendor/jquery/sortable/Sortable.js',
 				'./node_modules/socket.io-client/socket.io.js',
 				'public/vendor/jquery/timeago/jquery.timeago.min.js',
 				'public/vendor/jquery/js/jquery.form.min.js',
