@@ -19,8 +19,6 @@ module.exports = function(Meta) {
 		cache: '',
 		map: '',
 		hash: +new Date(),
-		prepared: false,
-		minFile: 'nodebb.min.js',
 		scripts: {
 			base: [
 				'public/vendor/jquery/js/jquery.js',
