@@ -6,7 +6,6 @@ define('admin/manage/categories', function() {
 
 	Categories.init = function() {
 		socket.emit('admin.categories.getAll', function(error, payload){
-			console.log(payload);
 			if(error){
 				return app.alertError(error.message);
 			}
