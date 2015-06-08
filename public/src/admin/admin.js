@@ -162,25 +162,9 @@
 		$('.restart').off('click').on('click', function() {
 			bootbox.confirm('Are you sure you wish to restart NodeBB?', function(confirm) {
 				if (confirm) {
-					app.alert({
-						alert_id: 'instance_restart',
-						type: 'info',
-						title: 'Restarting... <i class="fa fa-spin fa-refresh"></i>',
-						message: 'NodeBB is restarting.',
-						timeout: 5000
+					require(['admin/modules/instance'], function(instance) {
+						instance.restart();
 					});
-
-					$(window).one('action:reconnected', function() {
-						app.alert({
-							alert_id: 'instance_restart',
-							type: 'success',
-							title: '<i class="fa fa-check"></i> Success',
-							message: 'NodeBB has successfully restarted.',
-							timeout: 5000
-						});
-					});
-
-					socket.emit('admin.restart');
 				}
 			});
 		});

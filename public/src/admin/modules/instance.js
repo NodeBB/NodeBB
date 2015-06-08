@@ -37,6 +37,32 @@ define('admin/modules/instance', function() {
 			}
 		});
 	}
+
+	instance.restart = function(callback) {
+		app.alert({
+			alert_id: 'instance_restart',
+			type: 'info',
+			title: 'Restarting... <i class="fa fa-spin fa-refresh"></i>',
+			message: 'NodeBB is restarting.',
+			timeout: 5000
+		});
+
+		$(window).one('action:reconnected', function() {
+			app.alert({
+				alert_id: 'instance_restart',
+				type: 'success',
+				title: '<i class="fa fa-check"></i> Success',
+				message: 'NodeBB has successfully restarted.',
+				timeout: 5000
+			});
+
+			if (typeof callback === 'function') {
+				callback();
+			}
+		});
+
+		socket.emit('admin.restart');
+	}
 	
 	return instance;
 });
