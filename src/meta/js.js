@@ -48,7 +48,8 @@ module.exports = function(Meta) {
 			rjs: [
 				'public/src/client/footer.js',
 				'public/src/client/chats.js',
-				'public/src/client/infinitescroll.js'
+				'public/src/client/infinitescroll.js',
+				'public/src/client/pagination.js'
 			]
 		}
 	};
