@@ -565,6 +565,14 @@ app.cacheBuster = null;
 		});
 	};
 
+	app.loadJQueryUI = function(callback) {
+		if (typeof $().autocomplete === 'function') {
+			return callback();
+		}
+		
+		$.getScript(RELATIVE_PATH + '/vendor/jquery/js/jquery-ui-1.10.4.custom.js', callback);
+	};
+
 	app.showEmailConfirmWarning = function(err) {
 		if (!config.requireEmailConfirmation || !app.user.uid) {
 			return;
