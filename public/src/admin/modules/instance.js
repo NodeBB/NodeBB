@@ -1,6 +1,6 @@
 "use strict";
 
-/*globals define*/
+/*globals define, app, socket*/
 
 define('admin/modules/instance', function() {
 	var instance = {};
@@ -36,7 +36,7 @@ define('admin/modules/instance', function() {
 				callback();
 			}
 		});
-	}
+	};
 
 	instance.restart = function(callback) {
 		app.alert({
@@ -62,7 +62,7 @@ define('admin/modules/instance', function() {
 		});
 
 		socket.emit('admin.restart');
-	}
+	};
 	
 	return instance;
 });
