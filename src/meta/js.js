@@ -19,12 +19,9 @@ module.exports = function(Meta) {
 		cache: '',
 		map: '',
 		hash: +new Date(),
-		prepared: false,
-		minFile: 'nodebb.min.js',
 		scripts: {
 			base: [
 				'public/vendor/jquery/js/jquery.js',
-				'public/vendor/jquery/js/jquery-ui-1.10.4.custom.js',
 				'./node_modules/socket.io-client/socket.io.js',
 				'public/vendor/jquery/timeago/jquery.timeago.min.js',
 				'public/vendor/jquery/js/jquery.form.min.js',
@@ -48,35 +45,32 @@ module.exports = function(Meta) {
 				'public/src/variables.js',
 				'public/src/widgets.js'
 			],
-			rjs: []
+			rjs: [
+				'public/src/client/footer.js',
+				'public/src/client/chats.js',
+				'public/src/client/infinitescroll.js',
+				'public/src/client/pagination.js'
+			]
 		}
 	};
 
 	Meta.js.loadRJS = function(callback) {
+		if (global.env === 'development') {
+			return callback();
+		}
+
 		var rjsPath = path.join(__dirname, '../../public/src');
 
-		async.parallel({
-			client: function(next) {
-				utils.walk(path.join(rjsPath, 'client'), next);
-			},
-			modules: function(next) {
-				if (global.env === 'development') {
-					return next(null, []);
-				}
-
-				utils.walk(path.join(rjsPath, 'modules'), next);
-			}
-		}, function(err, rjsFiles) {
+		utils.walk(path.join(rjsPath, 'modules'), function(err, rjsFiles) {
 			if (err) {
 				return callback(err);
 			}
-			rjsFiles = rjsFiles.client.concat(rjsFiles.modules);
 
 			rjsFiles = rjsFiles.map(function(file) {
 				return path.join('public/src', file.replace(rjsPath, ''));
 			});
 
-			Meta.js.scripts.rjs = rjsFiles;
+			Meta.js.scripts.rjs = Meta.js.scripts.rjs.concat(rjsFiles);
 
 			callback();
 		});

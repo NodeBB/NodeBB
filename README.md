@@ -12,14 +12,12 @@ Additional functionality is enabled through the use of third-party plugins.
 
 * [Get NodeBB](http://www.nodebb.org/ "NodeBB")
 * [Demo & Meta Discussion](http://community.nodebb.org)
-* [NodeBB Blog](http://blog.nodebb.org)
 * [Documentation & Installation Instructions](http://docs.nodebb.org)
+* [Help translate NodeBB](https://www.transifex.com/projects/p/nodebb/)
+* [NodeBB Blog](http://blog.nodebb.org)
 * [Join us on IRC](https://kiwiirc.com/client/irc.freenode.net/nodebb) - #nodebb on Freenode
 * [Follow us on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter")
 * [Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")
-* [Get Plugins](http://community.nodebb.org/category/7/nodebb-plugins "NodeBB Plugins")
-* [Get Themes](http://community.nodebb.org/category/10/nodebb-themes "NodeBB Themes")
-* [Help translate NodeBB](https://www.transifex.com/projects/p/nodebb/)
 
 ## Screenshots
 
@@ -62,4 +60,6 @@ Detailed upgrade instructions are listed in [Upgrading NodeBB](https://docs.node
 
 ## License
 
-NodeBB is licensed under the **GNU General Public License v3 (GPL-3)** (http://www.gnu.org/copyleft/gpl.html)
+NodeBB is licensed under the **GNU General Public License v3 (GPL-3)** (http://www.gnu.org/copyleft/gpl.html).
+
+Interested in a sublicense agreement for use of NodeBB in a non-free/restrictive environment? Contact us at sales@nodebb.org.

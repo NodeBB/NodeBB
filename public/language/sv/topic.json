@@ -4,8 +4,8 @@
     "topic_id_placeholder": "Skriv in ID för ämne",
     "no_topics_found": "Inga ämnen hittades!",
     "no_posts_found": "Inga inlägg hittades!",
-    "post_is_deleted": "Det här inlägget är raderat.",
-    "topic_is_deleted": "This topic is deleted!",
+    "post_is_deleted": "Detta inlägg är raderat!",
+    "topic_is_deleted": "Detta ämne är raderat!",
     "profile": "Profil",
     "posted_by": "Skapat av %1",
     "posted_by_guest": "Inlägg av anonym",
@@ -13,7 +13,7 @@
     "notify_me": "Få notiser om nya svar i detta ämne",
     "quote": "Citera",
     "reply": "Svara",
-    "guest-login-reply": "Log in to reply",
+    "guest-login-reply": "Logga in för att posta",
     "edit": "Ändra",
     "delete": "Ta bort",
     "purge": "Rensa",
@@ -76,9 +76,9 @@
     "fork_no_pids": "Inga inlägg valda!",
     "fork_success": "Ämnet har blivit förgrenat. Klicka här för att gå till det förgrenade ämnet.",
     "composer.title_placeholder": "Skriv in ämnets titel här...",
-    "composer.handle_placeholder": "Name",
+    "composer.handle_placeholder": "Namn",
     "composer.discard": "Avbryt",
-    "composer.submit": "Spara",
+    "composer.submit": "Skicka",
     "composer.replying_to": "Svarar till %1",
     "composer.new_topic": "Nytt ämne",
     "composer.uploading": "laddar upp...",
@@ -96,5 +96,5 @@
     "oldest_to_newest": "Äldst till nyaste",
     "newest_to_oldest": "Nyaste till äldst",
     "most_votes": "Mest röster",
-    "most_posts": "Most posts"
+    "most_posts": "Felst inlägg"
 }

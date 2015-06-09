@@ -41,7 +41,7 @@ module.exports = function(User) {
 			},
 			function(next) {
 				if (convertToPNG) {
-					image.convertImageToPng(picture.path, extension, next);
+					image.normalise(picture.path, extension, next);
 				} else {
 					next();
 				}

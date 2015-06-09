@@ -9,7 +9,7 @@ Groups.create = function(socket, data, callback) {
 	}
 
 	groups.create({
-		name: data.name, 
+		name: data.name,
 		description: data.description,
 		ownerUid: socket.uid
 	}, callback);
@@ -17,8 +17,8 @@ Groups.create = function(socket, data, callback) {
 
 Groups.get = function(socket, groupName, callback) {
 	groups.get(groupName, {
-		expand: true,
-		unescape: true
+		escape: false,
+		uid: socket.uid
 	}, callback);
 };
 

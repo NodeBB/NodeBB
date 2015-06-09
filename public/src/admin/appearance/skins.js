@@ -33,7 +33,7 @@ define('admin/appearance/skins', function() {
 						alert_id: 'admin:theme',
 						type: 'info',
 						title: 'Skin Updated',
-						message: themeId + ' skin was successfully applied',
+						message: themeId ? (themeId + ' skin was successfully applied') : 'Skin reverted to base colours',
 						timeout: 5000
 					});
 				});

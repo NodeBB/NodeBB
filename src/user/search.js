@@ -77,6 +77,7 @@ module.exports = function(User) {
 		if (!query) {
 			return callback(null, []);
 		}
+		query = query.toLowerCase();
 		var min = query;
 		var max = query.substr(0, query.length - 1) + String.fromCharCode(query.charCodeAt(query.length - 1) + 1);
 
