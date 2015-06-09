@@ -39,15 +39,15 @@
 			<div class="panel-heading">Modify Tag</div>
 			<div class="panel-body">
 				<p>Select tags via clicking and/or dragging, use shift to select multiple.</p>
-				<button class="btn btn-primary btn-md" id="modify">Modify Selected Tags</button>
-				<button class="btn btn-warning btn-md" id="deleteSelected">Delete Selected Tags</button>
+				<button class="btn btn-primary btn-md" id="modify">Modify Tags</button>
+				<button class="btn btn-warning btn-md" id="deleteSelected">Delete Tags</button>
 			</div>
 		</div>
 
 		<div class="panel panel-default">
-			<div class="panel-heading">Search for Tags</div>
 			<div class="panel-body">
-				<input class="form-control" type="text" id="tag-search" placeholder="Search..."/><br/>
+				<input class="form-control" type="text" id="tag-search" placeholder="Search for tags..."/><br/>
+				Click <a href="/admin/settings/tags">here</a> to visit the tag settings page.
 			</div>
 		</div>
 	</div>
