@@ -21,7 +21,7 @@
     "watched": "متابع",
     "followers": "المتابعون",
     "following": "يتابع",
-    "aboutme": "About me",
+    "aboutme": "معلومة عنك او السيرة الذاتية",
     "signature": "توقيع",
     "gravatar": "Gravatar",
     "birthday": "عيد ميلاد",
@@ -80,5 +80,5 @@
     "follow_topics_you_reply_to": "متابعة المواضيع التي تقوم بالرد فيها",
     "follow_topics_you_create": "متابعة المواضيع التي تنشئها",
     "grouptitle": "Select the group title you would like to display",
-    "no-group-title": "No group title"
+    "no-group-title": "لا يوجد عنوان للمجموعة"
 }

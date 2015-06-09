@@ -18,6 +18,21 @@ SocketCategories.get = function(socket, data, callback) {
 	categories.getCategoriesByPrivilege(socket.uid, 'find', callback);
 };
 
+SocketCategories.getWatchedCategories = function(socket, data, callback) {
+	async.parallel({
+		categories: async.apply(categories.getCategoriesByPrivilege, socket.uid, 'find'),
+		ignoredCids: async.apply(user.getIgnoredCategories, socket.uid)
+	}, function(err, results) {
+		if (err) {
+			return callback(err);
+		}
+		var watchedCategories =  results.categories.filter(function(category) {
+			return category && results.ignoredCids.indexOf(category.cid.toString()) === -1;
+		});
+		callback(null, watchedCategories);
+	});
+};
+
 SocketCategories.loadMore = function(socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
@@ -78,6 +93,11 @@ SocketCategories.loadMore = function(socket, data, callback) {
 			}
 
 			data.privileges = results.privileges;
+			data.template = {
+				category: true,
+				name: 'category'
+			};
+
 			callback(null, data);
 		});
 	});

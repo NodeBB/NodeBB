@@ -34,10 +34,10 @@ describe('Groups', function() {
 
 	describe('.list()', function() {
 		it('should list the groups present', function(done) {
-			Groups.list({}, function(err, groups) {
+			Groups.getGroupsFromSet('groups:createtime', 0, 0, -1, function(err, groups) {
 				if (err) return done(err);
 
-				assert.equal(groups.length, 1);
+				assert.equal(groups.length, 3);
 				done();
 			});
 		});
@@ -50,21 +50,6 @@ describe('Groups', function() {
 
 		it('with no options, should show group information', function(done) {
 			Groups.get('Test', {}, function(err, groupObj) {
-				if (err) return done(err);
-
-				assert.equal(typeof groupObj, 'object');
-				assert(Array.isArray(groupObj.members));
-				assert.strictEqual(groupObj.name, 'Test');
-				assert.strictEqual(groupObj.description, 'Foobar!');
-				assert.strictEqual(groupObj.memberCount, 1);
-				assert.notEqual(typeof groupObj.members[0], 'object');
-
-				done();
-			});
-		});
-
-		it('with the "expand" option, should show both group information and user information', function(done) {
-			Groups.get('Test', { expand: true }, function(err, groupObj) {
 				if (err) return done(err);
 
 				assert.equal(typeof groupObj, 'object');

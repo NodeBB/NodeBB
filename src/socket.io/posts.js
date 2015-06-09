@@ -45,7 +45,7 @@ SocketPosts.reply = function(socket, data, callback) {
 			'downvote:disabled': parseInt(meta.config['downvote:disabled'], 10) === 1,
 		};
 
-		callback();
+		callback(null, postData);
 
 		socket.emit('event:new_post', result);
 
@@ -305,11 +305,11 @@ SocketPosts.edit = function(socket, data, callback) {
 
 		if (parseInt(result.post.deleted) !== 1) {
 			websockets.in('topic_' + result.topic.tid).emit('event:post_edited', result);
-			return callback();
+			return callback(null, result.post);
 		}
 
 		socket.emit('event:post_edited', result);
-		callback();
+		callback(null, result.post);
 
 		async.parallel({
 			admins: async.apply(groups.getMembers, 'administrators', 0, -1),

@@ -179,28 +179,31 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 				chatModal.css('zIndex', 100);
 				chatModal.appendTo($('body'));
 				module.center(chatModal);
-				chatModal.draggable({
-					start:function() {
-						module.bringModalToTop(chatModal);
-					},
-					stop:function() {
-						chatModal.find('#chat-message-input').focus();
-					},
-					distance: 10,
-					handle: '.modal-header'
-				});
 
-				chatModal.find('.modal-content').resizable({
-					minHeight: 250,
-					minWidth: 400
-				});
+				app.loadJQueryUI(function() {
+					chatModal.find('.modal-content').resizable({
+						minHeight: 250,
+						minWidth: 400
+					});
 
-				chatModal.find('.modal-content').on('resize', function(event, ui) {
-					if (ui.originalSize.height === ui.size.height) {
-						return;
-					}
+					chatModal.find('.modal-content').on('resize', function(event, ui) {
+						if (ui.originalSize.height === ui.size.height) {
+							return;
+						}
 
-					chatModal.find('#chat-content').css('height', module.calculateChatListHeight(chatModal));
+						chatModal.find('#chat-content').css('height', module.calculateChatListHeight(chatModal));
+					});
+					
+					chatModal.draggable({
+						start:function() {
+							module.bringModalToTop(chatModal);
+						},
+						stop:function() {
+							chatModal.find('#chat-message-input').focus();
+						},
+						distance: 10,
+						handle: '.modal-header'
+					});
 				});
 
 				chatModal.find('#chat-with-name').html(username);

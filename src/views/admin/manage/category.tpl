@@ -121,9 +121,9 @@
 						these settings.
 					</p>
 					<hr />
-					<input class="form-control privilege-search" type="text" placeholder="Add a user or group to this list..." />
-					<hr />
-					<!-- IMPORT admin/partials/categories/privileges.tpl -->
+					<div class="privilege-table-container">
+						<!-- IMPORT admin/partials/categories/privileges.tpl -->
+					</div>
 				</div>
 			</div>
 		</div>

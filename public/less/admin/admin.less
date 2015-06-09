@@ -1,9 +1,10 @@
 @import "./bootstrap/bootstrap";
 @import "./mixins";
+@import "./vars";
 
 @import "./general/dashboard";
 @import "./general/navigation";
-@import "./manage/groups";
+@import "./manage/categories";
 @import "./manage/tags";
 @import "./manage/flags";
 @import "./manage/users";
@@ -135,10 +136,6 @@
 						padding-left: 11px;
 						outline: 0;
 
-						&:focus {
-							background-color: transparent;
-						}
-
 						span {
 							opacity: 0;
 							margin-right: -8px;
@@ -169,6 +166,12 @@
 		overflow-y: hidden;
 	}
 
+	.acp-panel-heading {
+		padding: 7px 14px;
+		border: 0;
+		.box-header-font;
+	}
+
 	.panel {
 		background-color: #FFF;
 		box-sizing: border-box;
@@ -180,9 +183,7 @@
 			.panel-heading {
 				background: #fefefe;
 				color: #333;
-				padding: 7px 14px;
-				border: 0;
-				.box-header-font;
+				.acp-panel-heading;
 			}
 			.help-markdown{
 				float: right;
@@ -190,6 +191,9 @@
 				color: @gray-light;
 				margin: 4px 0;
 			}
+
+		&.panel-danger .panel-heading {
+			.acp-panel-heading;
 		}
 	}
 
@@ -291,6 +295,11 @@
 	#taskbar {
 		display: none; /* not sure why I have to do this, but it only seems to show up on prod */
 	}
+
+	/* Allows the autocomplete dropbox to appear on top of a modal's backdrop */
+	.ui-autocomplete {
+		z-index: @zindex-popover;
+	}
 }
 
 // Allowing text to the right of an image-type brand
@@ -373,5 +382,11 @@
 	img {
 		max-width: 24px;
 		max-height: 24px;
+	}
+}
+
+.groups-list {
+	.description {
+		font-size: 1rem;
 	}
 }

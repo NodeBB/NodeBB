@@ -4,8 +4,9 @@
 define('admin/manage/groups', [
 	'iconSelect',
 	'admin/modules/colorpicker',
-	'translator'
-], function(iconSelect, colorpicker, translator) {
+	'translator',
+	'components'
+], function(iconSelect, colorpicker, translator, components) {
 	var	Groups = {};
 
 	Groups.init = function() {
@@ -25,9 +26,6 @@ define('admin/manage/groups', [
 			changeGroupLabelColor = $('#change-group-label-color'),
 			groupLabelPreview = $('#group-label-preview'),
 			searchDelay;
-
-		// Tooltips
-		$('#groups-list .members li').tooltip();
 
 		createModal.on('keypress', function(e) {
 			if (e.keyCode === 13) {
@@ -87,10 +85,10 @@ define('admin/manage/groups', [
 			}, 0);
 		});
 
-		$('#groups-list').on('click', 'button[data-action]', function() {
+		$('.groups-list').on('click', 'button[data-action]', function() {
 			var el = $(this),
 				action = el.attr('data-action'),
-				groupName = el.parents('li[data-groupname]').attr('data-groupname');
+				groupName = el.parents('tr[data-groupname]').attr('data-groupname');
 
 			switch (action) {
 			case 'delete':
@@ -110,7 +108,6 @@ define('admin/manage/groups', [
 				break;
 			case 'members':
 				socket.emit('admin.groups.get', groupName, function(err, groupObj) {
-
 					changeGroupName.val(groupObj.name).prop('readonly', groupObj.system);
 					changeGroupDesc.val(groupObj.description);
 					changeGroupUserTitle.val(groupObj.userTitle);

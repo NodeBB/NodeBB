@@ -83,7 +83,13 @@
 					<div class="panel-body">
 					<!-- BEGIN notices -->
 						<div>
-							<!-- IF notices.done --><i class="fa fa-fw fa-check text-success"></i> {notices.doneText}<!-- ELSE --><i class="fa fa-fw fa-times text-danger"></i> {notices.notDoneText}<!-- ENDIF notices.done -->
+							<!-- IF notices.done -->
+							<i class="fa fa-fw fa-check text-success"></i> {notices.doneText}
+							<!-- ELSE -->
+							<!-- IF notices.link --><a href="{notices.link}" data-toggle="tooltip" title="{notices.tooltip}"><!-- ENDIF notices.link -->
+							<i class="fa fa-fw fa-times text-danger"></i> {notices.notDoneText}
+							<!-- IF notices.link --></a><!-- ENDIF notices.link -->
+							<!-- ENDIF notices.done -->
 						</div>
 					<!-- END notices -->
 					</div>

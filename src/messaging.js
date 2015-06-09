@@ -402,6 +402,7 @@ var db = require('./database'),
 				emailer.send('notif_chat', touid, {
 					subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
 					username: messageObj.toUser.username,
+					userslug: utils.slugify(messageObj.toUser.username),
 					summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
 					message: messageObj,
 					site_title: meta.config.title || 'NodeBB',

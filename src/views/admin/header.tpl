@@ -26,6 +26,7 @@
 
 		<script type="text/javascript" src="{relative_path}/vendor/chart.js/chart.min.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/hammer/hammer.min.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/vendor/jquery/sortable/Sortable.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/nodebb.min.js?{cache-buster}"></script>
 		<script>
 			require.config({
@@ -53,6 +54,7 @@
 		<script type="text/javascript" src="{relative_path}/vendor/jquery/autoresize.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/mousetrap/mousetrap.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/showdown.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/vendor/jquery/js/jquery-ui-1.10.4.custom.js?{cache-buster}"></script>
 
 		<!-- BEGIN scripts -->
 		<script type="text/javascript" src="{scripts.src}"></script>
