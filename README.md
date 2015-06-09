@@ -21,7 +21,17 @@ Additional functionality is enabled through the use of third-party plugins.
 
 ## Screenshots
 
-[<img src="http://i.imgur.com/FLOUuIqb.png" />](http://i.imgur.com/FLOUuIq.png)&nbsp;[<img src="http://i.imgur.com/Ud1LrfIb.png" />](http://i.imgur.com/Ud1LrfI.png)&nbsp;[<img src="http://i.imgur.com/ZC8W39ab.png" />](http://i.imgur.com/ZC8W39a.png)&nbsp;[<img src="http://i.imgur.com/o90kVPib.png" />](http://i.imgur.com/o90kVPi.png)&nbsp;[<img src="http://i.imgur.com/AaRRrU2b.png" />](http://i.imgur.com/AaRRrU2.png)&nbsp;[<img src="http://i.imgur.com/LmHtPhob.png" />](http://i.imgur.com/LmHtPho.png)&nbsp;[<img src="http://i.imgur.com/paiJPJkb.jpg" />](http://i.imgur.com/paiJPJk.jpg)&nbsp;[<img src="http://i.imgur.com/ZfavPHDb.png" />](http://i.imgur.com/ZfavPHD.png)&nbsp;[<img src="http://i.imgur.com/8OLssij.png" />](http://i.imgur.com/8OLssij.png)&nbsp;[<img src="http://i.imgur.com/JKOc0LZ.png"/>](http://i.imgur.com/JKOc0LZ.png)
+[![](http://i.imgur.com/VCoOFyqb.png)](http://i.imgur.com/VCoOFyq.png)
+[![](http://i.imgur.com/FLOUuIqb.png)](http://i.imgur.com/FLOUuIq.png)
+[![](http://i.imgur.com/Ud1LrfIb.png)](http://i.imgur.com/Ud1LrfI.png)
+[![](http://i.imgur.com/h6yZ66sb.png)](http://i.imgur.com/h6yZ66s.png)
+[![](http://i.imgur.com/o90kVPib.png)](http://i.imgur.com/o90kVPi.png)
+[![](http://i.imgur.com/AaRRrU2b.png)](http://i.imgur.com/AaRRrU2.png)
+[![](http://i.imgur.com/LmHtPhob.png)](http://i.imgur.com/LmHtPho.png)
+[![](http://i.imgur.com/paiJPJkb.jpg)](http://i.imgur.com/paiJPJk.jpg)
+
+[![](http://i.imgur.com/8OLssij.png)](http://i.imgur.com/8OLssij.png)
+[![](http://i.imgur.com/JKOc0LZ.png)](http://i.imgur.com/JKOc0LZ.png)
 
 ## How can I follow along/contribute?
 

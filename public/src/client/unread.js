@@ -68,7 +68,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 			});
 		});
 
-		socket.emit('categories.get', onCategoriesLoaded);
+		socket.emit('categories.getWatchedCategories', onCategoriesLoaded);
 
 		topicSelect.init();
 

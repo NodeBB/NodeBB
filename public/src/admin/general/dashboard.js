@@ -60,6 +60,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		});
 
 		setupGraphs();
+		$('[data-toggle="tooltip"]').tooltip();
 	};
 
 	Admin.updateRoomUsage = function(err, data) {

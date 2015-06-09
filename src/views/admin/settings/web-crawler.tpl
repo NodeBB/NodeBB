@@ -27,11 +27,12 @@
 			</div>
 
 			<div class="form-group">
-				<label>Number of Topic to Display in Sitemap</label>
-				<input class="form-control" type="text" placeholder="" data-field="sitemapTopics" />
+				<label>Number of Topics to display in the Sitemap</label>
+				<input class="form-control" type="text" data-field="sitemapTopics" />
 			</div>
 
 			<button id="clear-sitemap-cache" class="btn btn-warning">Clear Sitemap Cache</button>
+			<a href="/sitemap.xml" target="_blank" class="btn btn-info">View Sitemap</a>
 
 		</form>
 	</div>
