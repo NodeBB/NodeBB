@@ -269,7 +269,7 @@ middleware.renderHeader = function(req, res, callback) {
 		results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
 
 		templateValues.browserTitle = results.title;
-		templateValues.navigation = results.navigation
+		templateValues.navigation = results.navigation;
 		templateValues.metaTags = results.tags.meta;
 		templateValues.linkTags = results.tags.link;
 		templateValues.isAdmin = results.user.isAdmin;
@@ -389,7 +389,7 @@ middleware.maintenanceMode = function(req, res, next) {
 			'/stylesheet.css',
 			'/nodebb.min.js',
 			'/vendor/fontawesome/fonts/fontawesome-webfont.woff',
-			'/src/modules/[\\w]+\.js',
+			'/src/modules/[\\w]+.js',
 			'/api/login',
 			'/api/?',
 			'/language/.+'
