@@ -78,17 +78,17 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 
 middleware.redirectToLoginIfGuest = function(req, res, next) {
 	if (!req.user || parseInt(req.user.uid, 10) === 0) {
-		req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
-		return controllers.helpers.redirect(res, '/login');
-	} else {
-		next();
+		return redirectToLogin(req, res);
 	}
+	
+	next();
 };
 
 middleware.validateFiles = function(req, res, next) {
 	if (!Array.isArray(req.files.files) || !req.files.files.length) {
 		return next(new Error(['[[error:invalid-files]]']));
 	}
+
 	next();
 };
 
@@ -146,8 +146,7 @@ middleware.checkAccountPermissions = function(req, res, next) {
 
 middleware.isAdmin = function(req, res, next) {
 	if (!req.user) {
-		req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
-		return controllers.helpers.redirect(res, '/login');
+		return redirectToLogin(req, res);
 	}
 
 	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
@@ -456,7 +455,9 @@ middleware.exposeGroupName = function(req, res, next) {
 	if (!req.params.hasOwnProperty('slug')) { return next(); }
 
 	groups.getGroupNameByGroupSlug(req.params.slug, function(err, groupName) {
-		if (err) { return next(err); }
+		if (err) {
+			return next(err);
+		}
 
 		res.locals.groupName = groupName;
 		next();
@@ -477,6 +478,11 @@ middleware.exposeUid = function(req, res, next) {
 		next();
 	}
 };
+
+function redirectToLogin(req, res) {
+	req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
+	return controllers.helpers.redirect(res, '/login');
+}
 
 module.exports = function(webserver) {
 	app = webserver;
