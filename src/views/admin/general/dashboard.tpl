@@ -95,12 +95,11 @@
 			<div class="panel-heading">System Control</div>
 			<div class="panel-body">
 				<p class="text-center">
-					<button class="btn btn-warning reload">Reload</button>
-					<button class="btn btn-danger restart">Restart</button>
+					<button class="btn btn-warning reload" data-placement="bottom" data-toggle="tooltip" title="Reload NodeBB to activate new plugins">Reload</button>
+					<button class="btn btn-danger restart" data-placement="bottom" data-toggle="tooltip" title="Restarting NodeBB will drop all existing connections for a few seconds">Restart</button>
 				</p>
-				<p class="help-block text-center">
-					Restarting your NodeBB will drop all existing connections. A reload is lighter and is probably
-					what you want 99% of the time.
+				<p class="text-center">
+					<a href="/admin/settings/advanced" class="btn btn-info" data-placement="bottom" data-toggle="tooltip" title="Click here to set up maintenance mode for NodeBB">Maintenance Mode</a>
 				</p>
 			</div>
 		</div>
