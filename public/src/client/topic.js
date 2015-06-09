@@ -64,7 +64,35 @@ define('forum/topic', [
 				browsing.onUpdateUsersInRoom(data);
 			});
 		}
+
+		handleTopicSearch();
 	};
+
+	function handleTopicSearch() {
+		require(['search', 'mousetrap'], function(search, Mousetrap) {
+			$('.topic-search')
+				.on('click', '.prev', function() {
+					search.topicDOM.prev();
+				})
+				.on('click', '.next', function() {
+					search.topicDOM.next();
+				});
+
+			Mousetrap.bind('ctrl+f', function(e) {
+				if (config.topicSearchEnabled) {
+					// If in topic, open search window and populate, otherwise regular behaviour
+					var match = ajaxify.currentPage.match(/^topic\/([\d]+)/),
+						tid;
+					if (match) {
+						e.preventDefault();
+						tid = match[1];
+						$('#search-fields input').val('in:topic-' + tid + ' ');
+						app.prepareSearch();
+					}
+				}
+			});
+		});
+	}
 
 	Topic.toTop = function() {
 		navigator.scrollTop(0);

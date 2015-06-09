@@ -406,12 +406,6 @@ app.cacheBuster = null;
 			searchButton.show();
 		}
 
-		function prepareSearch() {
-			searchFields.removeClass('hide').show();
-			searchButton.hide();
-			searchInput.focus();
-		}
-
 		searchButton.on('click', function(e) {
 			if (!config.loggedIn && !config.allowGuestSearching) {
 				app.alert({
@@ -423,43 +417,26 @@ app.cacheBuster = null;
 			}
 			e.stopPropagation();
 
-			prepareSearch();
+			app.prepareSearch();
 			return false;
 		});
 
-		require(['search', 'mousetrap'], function(search, Mousetrap) {
-			$('#search-form').on('submit', function (e) {
-				e.preventDefault();
-				var input = $(this).find('input');
-
+		$('#search-form').on('submit', function () {
+			var input = $(this).find('input');
+			require(['search'], function(search) {
 				search.query({term: input.val()}, function() {
 					input.val('');
 				});
 			});
-
-			$('.topic-search')
-				.on('click', '.prev', function() {
-					search.topicDOM.prev();
-				})
-				.on('click', '.next', function() {
-					search.topicDOM.next();
-				});
-
-			Mousetrap.bind('ctrl+f', function(e) {
-				if (config.topicSearchEnabled) {
-					// If in topic, open search window and populate, otherwise regular behaviour
-					var match = ajaxify.currentPage.match(/^topic\/([\d]+)/),
-						tid;
-					if (match) {
-						e.preventDefault();
-						tid = match[1];
-						searchInput.val('in:topic-' + tid + ' ');
-						prepareSearch();
-					}
-				}
-			});
+			return false;
 		});
-	}
+	};
+
+	app.prepareSearch = function() {
+		$("#search-fields").removeClass('hide').show();
+		$("#search-button").hide();
+		$('#search-fields input').focus();
+	};
 
 	function handleStatusChange() {
 		$('#user-control-list .user-status').off('click').on('click', function(e) {
@@ -569,7 +546,7 @@ app.cacheBuster = null;
 		if (typeof $().autocomplete === 'function') {
 			return callback();
 		}
-		
+
 		$.getScript(RELATIVE_PATH + '/vendor/jquery/js/jquery-ui-1.10.4.custom.js', callback);
 	};
 
