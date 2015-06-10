@@ -312,7 +312,8 @@ define('composer', [
 		};
 
 		if (data.mobile) {
-			ajaxify.go('compose', function() {
+			var qs = '?p=' + window.location.pathname.substring(1);
+			ajaxify.go('compose' + qs, function() {
 				renderComposer();
 			});
 		} else {

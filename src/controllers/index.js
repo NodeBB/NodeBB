@@ -129,6 +129,10 @@ Controllers.register = function(req, res, next) {
 };
 
 Controllers.compose = function(req, res, next) {
+	if (req.query.p && !res.locals.isAPI) {
+		return helpers.redirect(res, '/' + req.query.p);
+	}
+
 	res.render('composer', {});
 };
 
