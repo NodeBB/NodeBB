@@ -27,6 +27,14 @@ define('forum/topic', [
 
 			events.removeListeners();
 		}
+
+		if (!data.url.startsWith('topic/')) {
+			require(['search'], function(search) {
+				if (search.topicDOM.active) {
+					search.topicDOM.end();
+				}
+			});
+		}
 	});
 
 	Topic.init = function() {
