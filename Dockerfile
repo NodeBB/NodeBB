@@ -1,8 +1,8 @@
-FROM node:0.10-onbuild
+FROM node:0.12-onbuild
 
 ENV NODE_ENV=production \
     daemon=false \
     silent=false
 
-CMD node app --setup && npm start
+CMD node app.js --setup && npm start
 EXPOSE 4567
