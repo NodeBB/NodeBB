@@ -197,10 +197,11 @@ define('forum/topic', [
 			}
 		}
 
-		var currentBookmark = localStorage.getItem('topic:' + ajaxify.variables.get('topic_id') + ':bookmark');
+		var bookmarkKey = 'topic:' + ajaxify.variables.get('topic_id') + ':bookmark';
+		var currentBookmark = localStorage.getItem(bookmarkKey);
 
-		if (!currentBookmark || parseInt(postIndex, 10) >= parseInt(currentBookmark, 10)) {
-			localStorage.setItem('topic:' + ajaxify.variables.get('topic_id') + ':bookmark', postIndex);
+		if (!currentBookmark || parseInt(postIndex, 10) > parseInt(currentBookmark, 10)) {
+			localStorage.setItem(bookmarkKey, postIndex);
 			app.removeAlert('bookmark');
 		}
 
