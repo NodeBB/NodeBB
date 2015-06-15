@@ -179,16 +179,14 @@ module.exports = function(Meta) {
 	};
 
 	Meta.js.commitToFile = function() {
-		async.parallel([
-			async.apply(fs.writeFile, path.join(__dirname, '../../public/nodebb.min.js'), Meta.js.cache)
-		], function (err) {
-			if (!err) {
-				winston.verbose('[meta/js] Client-side minfile committed to disk.');
-				emitter.emit('meta:js.compiled');
-			} else {
+		fs.writeFile(path.join(__dirname, '../../public/nodebb.min.js'), Meta.js.cache, function (err) {
+			if (err) {
 				winston.error('[meta/js] ' + err.message);
 				process.exit(0);
 			}
+
+			winston.verbose('[meta/js] Client-side minfile committed to disk.');
+			emitter.emit('meta:js.compiled');
 		});
 	};
 
