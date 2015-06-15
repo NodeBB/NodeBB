@@ -199,9 +199,19 @@ define('forum/topic', [
 
 		var bookmarkKey = 'topic:' + ajaxify.variables.get('topic_id') + ':bookmark';
 		var currentBookmark = localStorage.getItem(bookmarkKey);
+//		console.log('localStorage.getItem: current bookmark is ' + currentBookmark);
 
 		if (!currentBookmark || parseInt(postIndex, 10) > parseInt(currentBookmark, 10)) {
+//			console.log('localStorage.setItem: setting to ' + postIndex);
 			localStorage.setItem(bookmarkKey, postIndex);
+			if (app.user.uid) {
+				var data = {
+					'tid':  ajaxify.variables.get('topic_id'),
+					'uid': app.user.uid,
+					'postIndex': postIndex
+				}
+				socket.emit('topics.bookmark', data);
+			}
 			app.removeAlert('bookmark');
 		}
 

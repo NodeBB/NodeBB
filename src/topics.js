@@ -327,6 +327,10 @@ var async = require('async'),
 		});
 	}
 
+	Topics.setUserBookmark = function(data, callback) {
+		db.setObjectField('tid:' + data.tid + ':bookmarks', data.uid, data.postIndex, callback);
+	}
+
 	Topics.getTopicField = function(tid, field, callback) {
 		db.getObjectField('topic:' + tid, field, callback);
 	};
