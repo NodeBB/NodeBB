@@ -74,7 +74,8 @@ module.exports = function(Groups) {
 			async.parallel([
 				async.apply(db.sortedSetRemove, 'groups:visible:createtime', groupName),
 				async.apply(db.sortedSetRemove, 'groups:visible:memberCount', groupName),
-				async.apply(db.sortedSetRemove, 'groups:visible:name', groupName.toLowerCase() + ':' + groupName)
+				async.apply(db.sortedSetRemove, 'groups:visible:name', groupName.toLowerCase() + ':' + groupName),
+				async.apply(db.deleteObjectField, 'groupslug:groupname', utils.slugify(groupName))
 			], callback);
 		} else {
 			db.getObjectFields('group:' + groupName, ['createtime', 'memberCount'], function(err, groupData) {
@@ -84,7 +85,8 @@ module.exports = function(Groups) {
 				async.parallel([
 					async.apply(db.sortedSetAdd, 'groups:visible:createtime', groupData.createtime, groupName),
 					async.apply(db.sortedSetAdd, 'groups:visible:memberCount', groupData.memberCount, groupName),
-					async.apply(db.sortedSetAdd, 'groups:visible:name', 0, groupName.toLowerCase() + ':' + groupName)
+					async.apply(db.sortedSetAdd, 'groups:visible:name', 0, groupName.toLowerCase() + ':' + groupName),
+					async.apply(db.setObjectField, 'groupslug:groupname', utils.slugify(groupName), groupName)
 				], callback);
 			});
 		}
@@ -92,7 +94,22 @@ module.exports = function(Groups) {
 
 	Groups.hide = function(groupName, callback) {
 		callback = callback || function() {};
-		db.setObjectField('group:' + groupName, 'hidden', 1, callback);
+		async.parallel([
+			async.apply(db.setObjectField, 'group:' + groupName, 'hidden', 1),
+			async.apply(updateVisibility, groupName, true)
+		], function(err, results) {
+			callback(err);
+		});
+	};
+
+	Groups.show = function(groupName, callback) {
+		callback = callback || function() {};
+		async.parallel([
+			async.apply(db.setObjectField, 'group:' + groupName, 'hidden', 0),
+			async.apply(updateVisibility, groupName, false)
+		], function(err, results) {
+			callback(err);
+		});
 	};
 
 	Groups.updateCoverPosition = function(groupName, position, callback) {
