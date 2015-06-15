@@ -49,36 +49,26 @@ module.exports = function(Meta) {
 				'public/src/client/footer.js',
 				'public/src/client/chats.js',
 				'public/src/client/infinitescroll.js',
-				'public/src/client/pagination.js'
+				'public/src/client/pagination.js',
+				'public/src/modules/csrf.js',
+				'public/src/modules/translator.js',
+				'public/src/modules/notifications.js',
+				'public/src/modules/chat.js',
+				'public/src/modules/components.js',
+				'public/src/modules/composer/formatting.js',
+				'public/src/modules/composer/controls.js',
+				'public/src/modules/composer/preview.js',
+				'public/src/modules/categories.js',
+				'public/src/modules/taskbar.js',
+				'public/src/modules/helpers.js',
+				'public/src/modules/sounds.js',
+				'public/src/modules/string.js'
 			]
 		}
 	};
 
-	Meta.js.loadRJS = function(callback) {
-		if (global.env === 'development') {
-			return callback();
-		}
-
-		var rjsPath = path.join(__dirname, '../../public/src');
-
-		utils.walk(path.join(rjsPath, 'modules'), function(err, rjsFiles) {
-			if (err) {
-				return callback(err);
-			}
-
-			rjsFiles = rjsFiles.map(function(file) {
-				return path.join('public/src', file.replace(rjsPath, ''));
-			});
-
-			Meta.js.scripts.rjs = Meta.js.scripts.rjs.concat(rjsFiles);
-
-			callback();
-		});
-	};
-
 	Meta.js.prepare = function (callback) {
 		async.parallel([
-			async.apply(Meta.js.loadRJS),	// Require.js scripts
 			async.apply(getPluginScripts),	// plugin scripts via filter:scripts.get
 			function(next) {	// client scripts via "scripts" config in plugin.json
 				var pluginsScripts = [],

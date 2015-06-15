@@ -34,7 +34,6 @@ var fs = require('fs'),
 	pkg = require('./package.json'),
 	utils = require('./public/src/utils.js');
 
-
 global.env = process.env.NODE_ENV || 'production';
 
 winston.remove(winston.transports.Console);

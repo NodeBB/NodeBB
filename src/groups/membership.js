@@ -337,4 +337,11 @@ module.exports = function(Groups) {
 		}
 		db.isSetMember('group:' + groupName + ':pending', uid, callback);
 	};
+
+	Groups.getPending = function(groupName, callback) {
+		if (!groupName) {
+			return callback(null, []);
+		}
+		db.getSetMembers('group:' + groupName + ':pending', callback);
+	};
 };

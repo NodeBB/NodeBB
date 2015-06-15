@@ -46,7 +46,13 @@ module.exports = function(Groups) {
 
 			async.series([
 				async.apply(updatePrivacy, groupName, values.private),
-				async.apply(updateVisibility, groupName, values.hidden),
+				function(next) {
+					if (values.hasOwnProperty('hidden')) {
+						updateVisibility(groupName, values.hidden, next);
+					} else {
+						next();
+					}
+				},
 				async.apply(db.setObject, 'group:' + groupName, payload),
 				async.apply(renameGroup, groupName, values.name)
 			], function(err) {

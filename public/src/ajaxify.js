@@ -61,12 +61,6 @@ $(document).ready(function() {
 			});
 		});
 
-		require(['search'], function(search) {
-			if (search.topicDOM.active && !url.startsWith('topic/')) {
-				search.topicDOM.end();
-			}
-		});
-
 		return true;
 	};
 
