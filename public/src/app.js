@@ -468,7 +468,7 @@ app.cacheBuster = null;
 				if(err) {
 					return app.alertError(err.message);
 				}
-				$('#logged-in-menu #user_label #user-profile-link>i').attr('class', 'fa fa-circle status ' + status);
+				$('#logged-in-menu #user_label #user-profile-link>i').attr('class', 'fa fa-circle status'.attr('data-user-status', status);
 			});
 			e.preventDefault();
 		});
