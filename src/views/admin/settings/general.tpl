@@ -56,11 +56,6 @@
 		<form>
 			<div class="checkbox">
 				<label>
-					<input type="checkbox" data-field="allowGuestSearching"> <strong>Allow guests to search without logging in</strong>
-				</label>
-			</div>
-			<div class="checkbox">
-				<label>
 					<input type="checkbox" data-field="useOutgoingLinksPage"> <strong>Use Outgoing Links Warning Page</strong>
 				</label>
 			</div>
