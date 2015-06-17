@@ -445,7 +445,7 @@ app.cacheBuster = null;
 				if(err) {
 					return app.alertError(err.message);
 				}
-				$('#logged-in-menu #user_label #user-profile-link>i').attr('class', 'fa fa-circle status ' + status);
+				$('#logged-in-menu #user_label #user-profile-link>i').attr('class', 'fa fa-circle status'.attr('data-user-status', status);
 			});
 			e.preventDefault();
 		});
@@ -457,8 +457,8 @@ app.cacheBuster = null;
 		}
 
 		translator.translate('[[global:' + status + ']]', function(translated) {
-			el.removeClass('online offline dnd away')
-				.addClass(status)
+			el.removeAttr('data-user-status')
+				.attr('data-user-status', status)
 				.attr('title', translated)
 				.attr('data-original-title', translated);
 		});
