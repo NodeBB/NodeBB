@@ -71,6 +71,15 @@
 							</div>
 						</div>
 					</fieldset>
+					<fieldset>
+						<div class="col-xs-12">
+							<div class="checkbox">
+								<label>
+									<input id="cid-{category.cid}-section" data-name="section" type="checkbox" <!-- IF category.section -->checked<!-- ENDIF category.section -->> Section, <small>a container for subcategories only; does not allow direct posts</small>
+								</label>
+							</div>
+						</div>
+					</fieldset>
 				</div>
 			</div>
 

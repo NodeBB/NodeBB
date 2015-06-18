@@ -12,14 +12,24 @@ define('admin/manage/category', [
 	Category.init = function() {
 		var modified_categories = {};
 
-		function modified(el) {
-			var cid = $(el).parents('form').attr('data-cid');
+        function modified(el) {
+            var $el = $(el),
+                cid = $el.parents('form').attr('data-cid');
 
-			if (cid) {
-				modified_categories[cid] = modified_categories[cid] || {};
-				modified_categories[cid][$(el).attr('data-name')] = $(el).val();
-			}
-		}
+            if (cid) {
+                modified_categories[cid] = modified_categories[cid] || {};
+
+                console.log($(el).prop('type'));
+                switch ($el.prop('type')) {
+                    case 'checkbox':
+                        modified_categories[cid][$el.attr('data-name')] = $el.prop('checked');
+                        break;
+                    default:
+                        modified_categories[cid][$el.attr('data-name')] = $el.val();
+                        break;
+                }
+            }
+        }
 
 		function save(e) {
 			e.preventDefault();
