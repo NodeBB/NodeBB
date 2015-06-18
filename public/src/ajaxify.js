@@ -61,12 +61,6 @@ $(document).ready(function() {
 			});
 		});
 
-		require(['search'], function(search) {
-			if (search.topicDOM.active && !url.startsWith('topic/')) {
-				search.topicDOM.end();
-			}
-		});
-
 		return true;
 	};
 
@@ -150,13 +144,18 @@ $(document).ready(function() {
 	}
 
 	ajaxify.end = function(url, tpl_url) {
+		function done() {
+			if (--count === 0) {
+				$(window).trigger('action:ajaxify.end', {url: url});
+			}
+		}
+		var count = 2;
+
 		ajaxify.variables.parse();
 
-		ajaxify.loadScript(tpl_url);
+		ajaxify.loadScript(tpl_url, done);
 
-		ajaxify.widgets.render(tpl_url, url, function() {
-			$(window).trigger('action:ajaxify.end', {url: url});
-		});
+		ajaxify.widgets.render(tpl_url, url, done);
 
 		$(window).trigger('action:ajaxify.contentLoaded', {url: url, tpl: tpl_url});
 

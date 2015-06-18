@@ -14,10 +14,10 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="clearfix pull-right">
-                    <ul class="fa-ul stats">
-                        <li class="fa-li"><i class="fa fa-book"></i> {categories.topic_count}</li>
-                        <li class="fa-li"><i class="fa fa-pencil"></i> {categories.post_count}</li>
+                <div class="clearfix pull-right text-right">
+                    <ul class="stats">
+                        <li><i class="fa fa-book"></i> {categories.topic_count}</li>
+                        <li><i class="fa fa-pencil"></i> {categories.post_count}</li>
                     </ul>
                     <div class="btn-group">
                         <button data-action="toggle" data-disabled="{categories.disabled}" class="btn btn-xs <!-- IF categories.disabled -->btn-primary<!-- ELSE -->btn-danger<!-- ENDIF categories.disabled -->">

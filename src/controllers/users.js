@@ -97,7 +97,7 @@ usersController.getUsersAndCount = function(set, uid, start, stop, callback) {
 };
 
 usersController.getUsersForSearch = function(req, res, next) {
-	if (!req.uid) {
+	if (!req.uid && parseInt(meta.config.allowGuestUserSearching, 10) !== 1) {
 		return helpers.notAllowed(req, res);
 	}
 	var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;

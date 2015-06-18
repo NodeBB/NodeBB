@@ -39,14 +39,9 @@ var	async = require('async'),
 
 			// Fix relative paths in topic data
 			data.topics.topics = data.topics.topics.map(function(topicObj) {
-				if (topicObj.hasOwnProperty('teaser') && topicObj.teaser !== undefined) {
-					if (utils.isRelativeUrl(topicObj.teaser.user.picture)) {
-						topicObj.teaser.user.picture = nconf.get('url') + topicObj.teaser.user.picture;
-					}
-				} else {
-					if (utils.isRelativeUrl(topicObj.user.picture)) {
-						topicObj.user.picture = nconf.get('url') + topicObj.user.picture;
-					}
+				var user = topicObj.hasOwnProperty('teaser') && topicObj.teaser !== undefined ? topicObj.teaser.user : topicObj.user;
+				if (user && user.picture && utils.isRelativeUrl(user.picture)) {
+					user.picture = nconf.get('base_url') + user.picture;
 				}
 
 				return topicObj;

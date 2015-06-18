@@ -17,10 +17,12 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 
 		$('#submitBtn').on('click', updateProfile);
 
-		$('#inputBirthday').datepicker({
-			changeMonth: true,
-			changeYear: true,
-			yearRange: '1900:+0'
+		app.loadJQueryUI(function() {
+			$('#inputBirthday').datepicker({
+				changeMonth: true,
+				changeYear: true,
+				yearRange: '1900:+0'
+			});
 		});
 
 		currentEmail = $('#inputEmail').val();

@@ -319,16 +319,19 @@ var async = require('async'),
 	Categories.getTree = function(categories, parentCid) {
 		var tree = [], i = 0, len = categories.length, category;
 
-        for(i; i < len; ++i){
-            category = categories[i];
+		for(i; i < len; ++i) {
+			category = categories[i];
+			if (!category.hasOwnProperty('parentCid')) {
+				category.parentCid = 0;
+			}
 
-            if(category.parentCid == parentCid){
-                tree.push(category);
-                category.children = Categories.getTree(categories, category.cid);
-            }
-        }
+			if(category.parentCid == parentCid){
+				tree.push(category);
+				category.children = Categories.getTree(categories, category.cid);
+			}
+		}
 
-        return tree;
+		return tree;
 	};
 
 }(exports));

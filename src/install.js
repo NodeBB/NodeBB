@@ -348,15 +348,21 @@ function createAdmin(callback) {
 				return retryPassword(results);
 			}
 
-			User.create({username: results.username, password: results.password, email: results.email}, function (err, uid) {
-				if (err) {
-					winston.warn(err.message + ' Please try again.');
-					return callback(new Error('invalid-values'));
+			async.waterfall([
+				function(next) {
+					User.create({username: results.username, password: results.password, email: results.email}, next);
+				},
+				function(uid, next) {
+					Groups.join('administrators', uid, next);
+				},
+				function(next) {
+					Groups.show('administrators', next);
 				}
-
-				Groups.join('administrators', uid, function(err) {
-					callback(err, password ? results : undefined);
-				});
+			], function(err) {
+				if (err) {
+					return callback(err);
+				}
+				callback(null, password ? results : undefined);
 			});
 		},
 		retryPassword = function (originalResults) {
