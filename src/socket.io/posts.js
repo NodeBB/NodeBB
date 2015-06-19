@@ -510,7 +510,6 @@ SocketPosts.flag = function(socket, pid, callback) {
 			next();
 		},
 		function(next) {
-			console.log(post);
 			posts.flag(post, socket.uid, next);
 		},
 		function(next) {
