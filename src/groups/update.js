@@ -93,24 +93,23 @@ module.exports = function(Groups) {
 	}
 
 	Groups.hide = function(groupName, callback) {
-		callback = callback || function() {};
-		async.parallel([
-			async.apply(db.setObjectField, 'group:' + groupName, 'hidden', 1),
-			async.apply(updateVisibility, groupName, true)
-		], function(err, results) {
-			callback(err);
-		});
+		showHide(groupName, 'hidden', callback);
 	};
 
 	Groups.show = function(groupName, callback) {
+		showHide(groupName, 'show', callback);
+	};
+
+	function showHide(groupName, hidden, callback) {
+		hidden = hidden === 'hidden';
 		callback = callback || function() {};
 		async.parallel([
-			async.apply(db.setObjectField, 'group:' + groupName, 'hidden', 0),
-			async.apply(updateVisibility, groupName, false)
+			async.apply(db.setObjectField, 'group:' + groupName, 'hidden', hidden ? 1 : 0),
+			async.apply(updateVisibility, groupName, hidden)
 		], function(err, results) {
 			callback(err);
 		});
-	};
+	}
 
 	Groups.updateCoverPosition = function(groupName, position, callback) {
 		Groups.setGroupField(groupName, 'cover:position', position, callback);
