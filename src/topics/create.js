@@ -55,37 +55,43 @@ module.exports = function(Topics) {
 				topicData.thumb = data.thumb;
 			}
 
-			db.setObject('topic:' + tid, topicData, function(err) {
-				if (err) {
+			plugins.fireHook('filter:topic.create', topicData, function(err, data){
+				if (err){
 					return callback(err);
 				}
 
-				async.parallel([
-					function(next) {
-						db.sortedSetsAdd([
-							'topics:tid',
-							'cid:' + cid + ':tids',
-							'cid:' + cid + ':uid:' + uid + ':tids'
-						], timestamp, tid, next);
-					},
-					function(next) {
-						user.addTopicIdToUser(uid, tid, timestamp, next);
-					},
-					function(next) {
-						db.incrObjectField('category:' + cid, 'topic_count', next);
-					},
-					function(next) {
-						db.incrObjectField('global', 'topicCount', next);
-					},
-					function(next) {
-						Topics.createTags(tags, tid, timestamp, next);
-					}
-				], function(err) {
+				db.setObject('topic:' + tid, data, function(err) {
 					if (err) {
 						return callback(err);
 					}
-					plugins.fireHook('action:topic.save', topicData);
-					callback(null, tid);
+
+					async.parallel([
+						function(next) {
+							db.sortedSetsAdd([
+								'topics:tid',
+								'cid:' + cid + ':tids',
+								'cid:' + cid + ':uid:' + uid + ':tids'
+							], timestamp, tid, next);
+						},
+						function(next) {
+							user.addTopicIdToUser(uid, tid, timestamp, next);
+						},
+						function(next) {
+							db.incrObjectField('category:' + cid, 'topic_count', next);
+						},
+						function(next) {
+							db.incrObjectField('global', 'topicCount', next);
+						},
+						function(next) {
+							Topics.createTags(tags, tid, timestamp, next);
+						}
+					], function(err) {
+						if (err) {
+							return callback(err);
+						}
+						plugins.fireHook('action:topic.save', data);
+						callback(null, tid);
+					});
 				});
 			});
 		});
