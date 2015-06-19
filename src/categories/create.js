@@ -54,6 +54,7 @@ module.exports = function(Categories) {
 				], next);
 			},
 			function(results, next) {
+				plugins.fireHook('action:category.create', category);
 				next(null, category);
 			}
 		], callback);
