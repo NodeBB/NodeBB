@@ -332,7 +332,7 @@ var	async = require('async'),
 
 	User.getUidByUsername = function(username, callback) {
 		if (!username) {
-			return callback();
+			return callback(null, 0);
 		}
 		db.sortedSetScore('username:uid', username, callback);
 	};
@@ -343,7 +343,7 @@ var	async = require('async'),
 
 	User.getUidByUserslug = function(userslug, callback) {
 		if (!userslug) {
-			return callback();
+			return callback(null, 0);
 		}
 		db.sortedSetScore('userslug:uid', userslug, callback);
 	};
