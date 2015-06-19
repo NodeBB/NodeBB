@@ -163,20 +163,29 @@ module.exports = function(Groups) {
 	};
 
 	Groups.leaveAllGroups = function(uid, callback) {
-		db.getSortedSetRange('groups:createtime', 0, -1, function(err, groups) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function(next) {
+				db.getSortedSetRange('groups:createtime', 0, -1, next);
+			},
+			function(groups, next) {
+				async.each(groups, function(groupName, next) {
+					async.parallel([
+						function(next) {
+							Groups.isMember(uid, groupName, function(err, isMember) {
+								if (!err && isMember) {
+									Groups.leave(groupName, uid, next);
+								} else {
+									next();
+								}
+							});
+						},
+						function(next) {
+							Groups.rejectMembership(groupName, uid, next);
+						}
+					], next);
+				}, next);
 			}
-			async.each(groups, function(groupName, next) {
-				Groups.isMember(uid, groupName, function(err, isMember) {
-					if (!err && isMember) {
-						Groups.leave(groupName, uid, next);
-					} else {
-						next();
-					}
-				});
-			}, callback);
-		});
+		], callback);
 	};
 
 	Groups.getMembers = function(groupName, start, stop, callback) {
