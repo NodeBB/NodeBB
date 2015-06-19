@@ -471,30 +471,50 @@ SocketPosts.flag = function(socket, pid, callback) {
 
 	async.waterfall([
 		function(next) {
-			user.getUserFields(socket.uid, ['username', 'reputation'], next);
+			posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'deleted'], function(err, postData) {
+				if (parseInt(postData.deleted, 10) === 1) {
+					return next(new Error('[[error:post-deleted]]'));
+				}
+
+				post = postData;
+				next();
+			});
 		},
-		function(userData, next) {
-			if (parseInt(userData.reputation, 10) < parseInt(meta.config['privileges:flag'] || 1, 10)) {
+		function(next) {
+			topics.getTopicFields(post.tid, ['title', 'cid'], function(err, topicData) {
+				post.topic = topicData;
+				next();
+			});
+		},
+		function(next) {
+			async.parallel({
+				isAdmin: function(next) {
+					user.isAdministrator(socket.uid, next);
+				},
+				isModerator: function(next) {
+					user.isModerator(socket.uid, post.topic.cid, next);
+				},
+				userData: function(next) {
+					user.getUserFields(socket.uid, ['username', 'reputation'], next);
+				}
+			}, next);
+		},
+		function(user, next) {
+			if (!user.isAdmin && !user.isModerator && parseInt(user.userData.reputation, 10) < parseInt(meta.config['privileges:flag'] || 1, 10)) {
 				return next(new Error('[[error:not-enough-reputation-to-flag]]'));
 			}
-			flaggingUser = userData;
+
+			flaggingUser = user.userData;
 			flaggingUser.uid = socket.uid;
 
-			posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'deleted'], next);
+			next();
 		},
-		function(postData, next) {
-			if (parseInt(postData.deleted, 10) === 1) {
-				return next(new Error('[[error:post-deleted]]'));
-			}
-			post = postData;
+		function(next) {
+			console.log(post);
 			posts.flag(post, socket.uid, next);
 		},
 		function(next) {
-			topics.getTopicFields(post.tid, ['title', 'cid'], next);
-		},
-		function(topic, next) {
-			post.topic = topic;
-			message = '[[notifications:user_flagged_post_in, ' + flaggingUser.username + ', ' + topic.title + ']]';
+			message = '[[notifications:user_flagged_post_in, ' + flaggingUser.username + ', ' + post.topic.title + ']]';
 			posts.parsePost(post, next);
 		},
 		function(post, next) {
