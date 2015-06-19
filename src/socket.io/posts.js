@@ -538,7 +538,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 					return next(err);
 				}
 
-				plugins.fireHook('action:posts.flag', {post: post, flaggingUser: flaggingUser});
+				plugins.fireHook('action:post.flag', {post: post, flaggingUser: flaggingUser});
 				notifications.push(notification, results.admins.concat(results.moderators), next);
 			});
 		}
