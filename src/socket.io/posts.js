@@ -466,7 +466,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 	}
 
 	var message = '',
-		userName = '',
+		flaggingUser = {},
 		post;
 
 	async.waterfall([
@@ -477,7 +477,9 @@ SocketPosts.flag = function(socket, pid, callback) {
 			if (parseInt(userData.reputation, 10) < parseInt(meta.config['privileges:flag'] || 1, 10)) {
 				return next(new Error('[[error:not-enough-reputation-to-flag]]'));
 			}
-			userName = userData.username;
+			flaggingUser = userData;
+			flaggingUser.uid = socket.uid;
+
 			posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'deleted'], next);
 		},
 		function(postData, next) {
@@ -492,7 +494,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 		},
 		function(topic, next) {
 			post.topic = topic;
-			message = '[[notifications:user_flagged_post_in, ' + userName + ', ' + topic.title + ']]';
+			message = '[[notifications:user_flagged_post_in, ' + flaggingUser.username + ', ' + topic.title + ']]';
 			posts.parsePost(post, next);
 		},
 		function(post, next) {
@@ -516,6 +518,8 @@ SocketPosts.flag = function(socket, pid, callback) {
 				if (err || !notification) {
 					return next(err);
 				}
+
+				plugins.fireHook('action:posts.flag', {post: post, flaggingUser: flaggingUser});
 				notifications.push(notification, results.admins.concat(results.moderators), next);
 			});
 		}
