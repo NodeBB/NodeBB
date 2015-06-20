@@ -66,26 +66,7 @@ module.exports = function(Groups) {
 	};
 
 	Groups.requestMembership = function(groupName, uid, callback) {
-		async.parallel({
-			exists: async.apply(Groups.exists, groupName),
-			isMember: async.apply(Groups.isMember, uid, groupName)
-		}, function(err, checks) {
-			if (!checks.exists) {
-				return callback(new Error('[[error:no-group]]'));
-			} else if (checks.isMember) {
-				return callback(new Error('[[error:group-already-member]]'));
-			}
-
-			if (parseInt(uid, 10) > 0) {
-				db.setAdd('group:' + groupName + ':pending', uid, callback);
-				plugins.fireHook('action:group.requestMembership', {
-					groupName: groupName,
-					uid: uid
-				});
-			} else {
-				callback(new Error('[[error:not-logged-in]]'));
-			}
-		});
+		inviteOrRequestMembership(groupName, uid, 'request', callback);
 	};
 
 	Groups.acceptMembership = function(groupName, uid, callback) {
@@ -106,27 +87,41 @@ module.exports = function(Groups) {
 	};
 
 	Groups.invite = function(groupName, uid, callback) {
-		async.parallel({
-			exists: async.apply(Groups.exists, groupName),
-			isMember: async.apply(Groups.isMember, uid, groupName)
-		}, function(err, checks) {
-			if (!checks.exists) {
-				return callback(new Error('[[error:no-group]]'));
-			} else if (checks.isMember) {
-				return callback(new Error('[[error:group-already-member]]'));
-			}
+		inviteOrRequestMembership(groupName, uid, 'invite', callback);
+	};
 
-			if (parseInt(uid, 10) > 0) {
-				db.setAdd('group:' + groupName + ':invited', uid, callback);
+	function inviteOrRequestMembership(groupName, uid, type, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(new Error('[[error:not-logged-in]]'));
+		}
+		var hookName = type === 'invite' ? 'action:group.inviteMember' : 'action:group.requestMembership';
+		var set = type === 'invite' ? 'group:' + groupName + ':invited' : 'group:' + groupName + ':pending';
+
+		async.waterfall([
+			function(next) {
+				async.parallel({
+					exists: async.apply(Groups.exists, groupName),
+					isMember: async.apply(Groups.isMember, uid, groupName)
+				}, next);
+			},
+			function(checks, next) {
+				if (!checks.exists) {
+					return next(new Error('[[error:no-group]]'));
+				} else if (checks.isMember) {
+					return next(new Error('[[error:group-already-member]]'));
+				}
+
+				db.setAdd('group:' + groupName + ':invited', uid, next);
+			},
+			function(next) {
 				plugins.fireHook('action:group.inviteMember', {
 					groupName: groupName,
 					uid: uid
 				});
-			} else {
-				callback(new Error('[[error:not-logged-in]]'));
+				next();
 			}
-		});
-	};
+		], callback);
+	}
 
 	Groups.leave = function(groupName, uid, callback) {
 		callback = callback || function() {};
