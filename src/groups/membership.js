@@ -111,10 +111,10 @@ module.exports = function(Groups) {
 					return next(new Error('[[error:group-already-member]]'));
 				}
 
-				db.setAdd('group:' + groupName + ':invited', uid, next);
+				db.setAdd(set, uid, next);
 			},
 			function(next) {
-				plugins.fireHook('action:group.inviteMember', {
+				plugins.fireHook(hookName, {
 					groupName: groupName,
 					uid: uid
 				});
