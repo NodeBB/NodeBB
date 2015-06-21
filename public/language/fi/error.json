@@ -15,6 +15,7 @@
     "invalid-username-or-password": "Ole hyvä ja anna sekä käyttäjänimi että salasana",
     "invalid-search-term": "Virheellinen hakutermi",
     "invalid-pagination-value": "Virheellinen taittoarvo",
+    "invalid-website-url": "Invalid Website URL!",
     "username-taken": "Käyttäjänimi varattu",
     "email-taken": "Sähköpostiosoite varattu",
     "email-not-confirmed": "Sähköpostiasi ei ole vielä vahvistettu, ole hyvä ja napsauta tätä vahvistaaksesi sen.",
