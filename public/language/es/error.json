@@ -15,6 +15,7 @@
     "invalid-username-or-password": "Por favor especifica tanto un usuario como contraseña",
     "invalid-search-term": "Término de búsqueda inválido",
     "invalid-pagination-value": "Valor de paginación no válido.",
+    "invalid-website-url": "Invalid website URL",
     "username-taken": "Nombre de usuario ocupado",
     "email-taken": "Correo electrónico ocupado",
     "email-not-confirmed": "Su cuenta de correo electrónico no ha sido confirmada aún, por favor haga click aquí para confirmarla.",

@@ -15,6 +15,7 @@
     "invalid-username-or-password": "请确认用户名和密码",
     "invalid-search-term": "无效的搜索关键字",
     "invalid-pagination-value": "无效页码",
+    "invalid-website-url": "Invalid website URL",
     "username-taken": "此用户名已被占用",
     "email-taken": "此电子邮箱已被占用",
     "email-not-confirmed": "您的电子邮箱尚未确认，请点击这里确认您的电子邮箱。",

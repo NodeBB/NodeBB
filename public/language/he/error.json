@@ -15,6 +15,7 @@
     "invalid-username-or-password": "אנא הגדר שם משתמש וסיסמה",
     "invalid-search-term": "מילת חיפוש לא תקינה",
     "invalid-pagination-value": "ערך דפדוף שגוי",
+    "invalid-website-url": "Invalid website URL",
     "username-taken": "שם משתמש תפוס",
     "email-taken": "כתובת אימייל תפוסה",
     "email-not-confirmed": "כתובת המייל שלך עוד לא אושרה, לחץ כאן על-מנת לאשר את המייל שלך.",
