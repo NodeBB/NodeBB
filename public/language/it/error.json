@@ -15,6 +15,7 @@
     "invalid-username-or-password": "Si prega di specificare sia un nome utente che una password",
     "invalid-search-term": "Termine di ricerca non valido",
     "invalid-pagination-value": "Valore di paginazione non valido",
+    "invalid-website-url": "Invalid website URL",
     "username-taken": "Nome utente già preso",
     "email-taken": "Email già esistente",
     "email-not-confirmed": "La tua Email deve essere ancora confermata, per favore clicca qui per confermare la tua Email.",

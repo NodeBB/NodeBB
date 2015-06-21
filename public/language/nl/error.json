@@ -15,6 +15,7 @@
     "invalid-username-or-password": "Geef zowel een gebruikersnaam als wachtwoord op",
     "invalid-search-term": "Ongeldig zoekopdracht, een of meerdere termen",
     "invalid-pagination-value": "Ongeldig waarde voor paginering",
+    "invalid-website-url": "Invalid website URL",
     "username-taken": "Gebruikersnaam is al in gebruik bij een andere account",
     "email-taken": "E-mailadres is al eens eerder gebruikt",
     "email-not-confirmed": "Het e-mailadres van deze account is nog niet bevestigd. Klik hier om het e-mailadres te bevestigen en de registratie af te ronden.",

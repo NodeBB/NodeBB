@@ -15,6 +15,7 @@
     "invalid-username-or-password": "Пожалуйста, укажите и имя пользователя и пароль",
     "invalid-search-term": "Неверный поисковой запрос",
     "invalid-pagination-value": "Неверное значение пагинации",
+    "invalid-website-url": "Invalid website URL",
     "username-taken": "Имя пользователя занято",
     "email-taken": "Email занят",
     "email-not-confirmed": "Ваш email не подтвержден, нажмите для подтверждения.",

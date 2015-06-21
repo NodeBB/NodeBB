@@ -15,6 +15,7 @@
     "invalid-username-or-password": "Sila tentukan kedua-dua nama pengguna dan kata laluan",
     "invalid-search-term": "Terma pencarian tak sah",
     "invalid-pagination-value": "Nilai halaman tak sah",
+    "invalid-website-url": "Invalid website URL",
     "username-taken": "Nama pengguna telah digunakan",
     "email-taken": "Emel telah digunakan",
     "email-not-confirmed": "Emel anda belum disahkan lagi, sila klik sini untuk mengesahkan emel anda.",

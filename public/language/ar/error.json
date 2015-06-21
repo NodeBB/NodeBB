@@ -15,6 +15,7 @@
     "invalid-username-or-password": "المرجود تحديد اسم مستخدم و كلمة مرور",
     "invalid-search-term": "كلمة البحث غير صحيحة",
     "invalid-pagination-value": "رقم الصفحة غير موجود",
+    "invalid-website-url": "Invalid website URL",
     "username-taken": "اسم المستخدم مأخوذ",
     "email-taken": "البريد الالكتروني مأخوذ",
     "email-not-confirmed": "عنوان بريدك الإلكتروني غير مفعل بعد. انقر هنا لتفعيله من فضلك.",
