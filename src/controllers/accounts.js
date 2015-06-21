@@ -89,7 +89,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.status = require('../socket.io').isUserOnline(userData.uid) ? (userData.status || 'online') : 'offline';
 			userData.banned = parseInt(userData.banned, 10) === 1;
 			userData.website = validator.escape(userData.website);
-			userData.websiteName = userData.website.replace('http://', '').replace('https://', '');
+			userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
 			userData.followingCount = parseInt(userData.followingCount, 10) || 0;
 			userData.followerCount = parseInt(userData.followerCount, 10) || 0;
 
