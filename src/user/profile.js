@@ -130,6 +130,9 @@ module.exports = function(User) {
 				} else if (field === 'signature') {
 					data[field] = S(data[field]).stripTags().s;
 				} else if (field === 'website') {
+					if (!validator.isURL(data[field])) {
+						return next(new Error('[[error:invalid-website-url]]'));
+					}
 					if (data[field].length > 0) {
 						var urlObj = url.parse(data[field], false, true);
 						if (!urlObj.protocol) {

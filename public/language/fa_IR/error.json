@@ -15,6 +15,7 @@
     "invalid-username-or-password": "لطفا هم نام کاربری و هم کلمه عبور را مشخص کنید",
     "invalid-search-term": "کلمه جستجو نامعتبر است",
     "invalid-pagination-value": "عدد صفحه‌بندی نامعتبر است.",
+    "invalid-website-url": "Invalid Website URL!",
     "username-taken": "این نام کاربری گرفته شده است.",
     "email-taken": "این رایانامه گرفته شده است.",
     "email-not-confirmed": "پست الکترونیک شما تاکنون تایید نشده است، برای تایید ایمیل خود را اینجا را کلیک کنید.",

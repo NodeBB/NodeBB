@@ -15,6 +15,7 @@
     "invalid-username-or-password": "অনুগ্রহ পূর্বক ইউজারনেম এবং পাসওয়ার্ড উভয়ই প্রদান করুন",
     "invalid-search-term": "অগ্রহনযোগ্য সার্চ টার্ম",
     "invalid-pagination-value": "ভুল পৃষ্ঠা নাম্বার",
+    "invalid-website-url": "Invalid Website URL!",
     "username-taken": "ইউজারনেম আগেই ব্যবহৃত",
     "email-taken": "ইমেইল আগেই ব্যবহৃত",
     "email-not-confirmed": "আপনার ইমেইল এড্রেস নিশ্চিত করা হয় নি, নিশ্চিত করতে এখানে ক্লিক করুন।",

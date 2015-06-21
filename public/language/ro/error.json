@@ -15,6 +15,7 @@
     "invalid-username-or-password": "Te rugăm să specifici atât un nume de utilizator cât si o parolă",
     "invalid-search-term": "Cuvânt de căutare invalid",
     "invalid-pagination-value": "Date paginație invalide",
+    "invalid-website-url": "Invalid Website URL!",
     "username-taken": "Numele de utilizator este deja folosit",
     "email-taken": "Adresa de email este deja folostă",
     "email-not-confirmed": "Your email has not been confirmed yet, please click here to confirm your email.",

@@ -15,6 +15,7 @@
     "invalid-username-or-password": "Lütfen kullanıcı ismi ve parola girin.",
     "invalid-search-term": "Geçersiz arama",
     "invalid-pagination-value": "Geçersiz Sayfa Değeri",
+    "invalid-website-url": "Invalid Website URL!",
     "username-taken": "Kullanıcı İsmi Alınmış",
     "email-taken": "E-posta Alınmış",
     "email-not-confirmed": "E-postanız onaylanmamış, onaylamak için lütfen buraya tıklayın.",
