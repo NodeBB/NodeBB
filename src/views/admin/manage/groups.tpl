@@ -2,7 +2,7 @@
 	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-group"></i> Groups List</div>
-			<div class="panel-body">	
+			<div class="panel-body">
 				<table class="table table-striped groups-list">
 					<tr>
 						<th>Group Name</th>
@@ -18,7 +18,7 @@
 						</td>
 						<td>
 							<div class="btn-group pull-right">
-								<button class="btn btn-default btn-xs" data-action="members"><i class="fa fa-edit"></i> Edit</button>
+								<a href="{config.relative_path}/admin/manage/groups/{groups.slug}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> Edit</a>
 								<!-- IF !groups.system -->
 								<button class="btn btn-danger btn-xs" data-action="delete"><i class="fa fa-times"></i></button>
 								<!-- ENDIF !groups.system -->
@@ -27,7 +27,7 @@
 						</td>
 					</tr>
 					<!-- END groups -->
-				</table>				
+				</table>
 			</div>
 		</div>
 	</div>
@@ -42,8 +42,6 @@
 			</div>
 		</div>
 	</div>
-
-
 
 	<div class="modal fade" id="create-modal">
 		<div class="modal-dialog">
@@ -73,65 +71,8 @@
 		</div>
 	</div>
 
-	<div class="modal fade" id="group-details-modal">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title">Manage Group</h4>
-				</div>
-				<div class="modal-body">
-					<div class="alert alert-danger hide" id="create-modal-error"></div>
-					<form>
-						<div class="form-group">
-							<label for="change-group-name">Group Name</label>
-							<input type="text" class="form-control" id="change-group-name" placeholder="Group Name" />
-						</div>
-						<div class="form-group">
-							<label for="change-group-desc">Description</label>
-							<input type="text" class="form-control" id="change-group-desc" placeholder="A short description about your group" />
-						</div>
-						<div class="form-group">
-							<label for="change-group-user-title">Title of Members</label>
-							<input type="text" class="form-control" id="change-group-user-title" placeholder="The title of users if they are a member of this group" />
-						</div>
-						<div class="form-group">
-							<label for="change-group-icon">Group Icon</label><br/>
-							<i id="group-icon" class="fa fa-shield fa-2x"></i>
-							<button type="button" class="btn btn-default btn-sm" id="change-group-icon" placeholder="">Change Icon</button>
-						</div>
-						<div class="form-group">
-							<label for="change-group-label-color">Group Label Color</label>
-							<span id="group-label-preview" class="label label-default"></span>
-							<input id="change-group-label-color" placeholder="#0059b2" data-name="bgColor" value="" class="form-control" />
-						</div>
-						<div class="form-group">
-							<label>Members</label>
-							<p>Click on a user to remove them from the group</p>
-							<ul class="members current_members user-list"></ul>
-						</div>
-						<div class="form-group">
-							<label for="add-member">Add User to Group</label>
-							<input type="text" class="form-control" id="group-details-search" placeholder="Search Users" />
-							<ul class="members user-list" id="group-details-search-results"></ul>
-						</div>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" id="details-modal-save" data-dismiss="modal">Save</button>
-				</div>
-			</div>
-		</div>
-	</div>
 </div>
 
 <input type="hidden" template-variable="yourid" value="{yourid}" />
 
-<div id="icons" style="display:none;">
-	<div class="icon-container">
-		<div class="row fa-icons">
-			<i class="fa fa-doesnt-exist"></i>
-			<!-- IMPORT partials/fontawesome.tpl -->
-		</div>
-	</div>
-</div>
+
