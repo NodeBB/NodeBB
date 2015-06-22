@@ -133,7 +133,7 @@ Controllers.compose = function(req, res, next) {
 		return helpers.redirect(res, req.query.p);
 	}
 
-	res.render('composer', {});
+	res.render('', {});
 };
 
 Controllers.confirmEmail = function(req, res, next) {
