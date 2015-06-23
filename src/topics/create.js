@@ -97,6 +97,9 @@ module.exports = function(Topics) {
 				checkTitleLength(title, next);
 			},
 			function(next) {
+				checkTagsLength(data.tags, next);
+			},
+			function(next) {
 				checkContentLength(data.content, next);
 			},
 			function(next) {
@@ -286,6 +289,13 @@ module.exports = function(Topics) {
 			return callback(new Error('[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]'));
 		} else if (title.length > parseInt(meta.config.maximumTitleLength, 10)) {
 			return callback(new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]'));
+		}
+		callback();
+	}
+
+	function checkTagsLength(tags, callback) {
+		if (!tags || tags.length < parseInt(meta.config.minimumTagsPerTopic, 10)) {
+			return callback(new Error('[[error:not-enough-tags, ' + meta.config.minimumTagsPerTopic + ']]'));
 		}
 		callback();
 	}

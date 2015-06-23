@@ -10,7 +10,11 @@
 				</label>
 			</div>
 			<div class="form-group">
-				<label for="tagsPerTopics">Tags per Topic</label>
+				<label for="minimumTagsPerTopics">Minimum Tags per Topic</label>
+				<input id="minimumTagsPerTopics" type="text" class="form-control" value="0" data-field="minimumTagsPerTopic">
+			</div>
+			<div class="form-group">
+				<label for="tagsPerTopics">Maximum Tags per Topic</label>
 				<input id="tagsPerTopics" type="text" class="form-control" value="5" data-field="tagsPerTopic">
 			</div>
 			<div class="form-group">
