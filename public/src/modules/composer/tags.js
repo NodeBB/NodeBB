@@ -13,7 +13,6 @@ define('composer/tags', function() {
 		}
 
 		tagEl.tagsinput({
-			minTags: config.minimumTagsPerTopic,
 			maxTags: config.tagsPerTopic,
 			maxChars: config.maximumTagLength,
 			confirmKeys: [13, 44],

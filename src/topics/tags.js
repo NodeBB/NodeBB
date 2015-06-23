@@ -23,7 +23,7 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			tags = data.tags.slice(0, meta.config.tagsPerTopic || 5);
+			tags = data.tags.slice(0, meta.config.maximumTagsPerTopic || 5);
 
 			async.each(tags, function(tag, next) {
 				tag = Topics.cleanUpTag(tag);

@@ -14,8 +14,8 @@
 				<input id="minimumTagsPerTopics" type="text" class="form-control" value="0" data-field="minimumTagsPerTopic">
 			</div>
 			<div class="form-group">
-				<label for="tagsPerTopics">Maximum Tags per Topic</label>
-				<input id="tagsPerTopics" type="text" class="form-control" value="5" data-field="tagsPerTopic">
+				<label for="maximumTagsPerTopics">Maximum Tags per Topic</label>
+				<input id="maximumTagsPerTopics" type="text" class="form-control" value="5" data-field="maximumTagsPerTopic">
 			</div>
 			<div class="form-group">
 				<label for="minimumTagLength">Minimum Tag Length</label>

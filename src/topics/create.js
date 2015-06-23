@@ -296,6 +296,8 @@ module.exports = function(Topics) {
 	function checkTagsLength(tags, callback) {
 		if (!tags || tags.length < parseInt(meta.config.minimumTagsPerTopic, 10)) {
 			return callback(new Error('[[error:not-enough-tags, ' + meta.config.minimumTagsPerTopic + ']]'));
+		} else if (tags.length > parseInt(meta.config.maximumTagsPerTopic, 10)) {
+			return callback(new Error('[[error:too-many-tags, ' + meta.config.maximumTagsPerTopic + ']]'));
 		}
 		callback();
 	}
