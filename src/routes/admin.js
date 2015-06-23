@@ -60,7 +60,7 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/manage/users/banned', controllers.admin.users.banned);
 
 	router.get('/manage/groups', controllers.admin.groups.list);
-	router.get('/manage/groups/:slug', middleware.exposeGroupName, controllers.admin.groups.get);
+	router.get('/manage/groups/:name', controllers.admin.groups.get);
 
 	router.get('/settings/:term?', controllers.admin.settings.get);
 

@@ -27,7 +27,7 @@ groupsController.list = function(req, res, next) {
 };
 
 groupsController.get = function(req, res, next) {
-	var groupName = res.locals.groupName;
+	var groupName = req.params.name;
 	async.waterfall([
 		function(next){
 			groups.exists(groupName, next);
