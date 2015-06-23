@@ -6,10 +6,11 @@
 define('autocomplete', function() {
 	var module = {};
 
-	module.user = function (input) {
+	module.user = function (input, onselect) {
 		app.loadJQueryUI(function() {
-			return input.autocomplete({
+			input.autocomplete({
 				delay: 100,
+				select: onselect,
 				source: function(request, response) {
 					socket.emit('user.search', {query: request.term}, function(err, result) {
 						if (err) {
@@ -37,10 +38,11 @@ define('autocomplete', function() {
 		});
 	};
 
-	module.group = function(input) {
+	module.group = function(input, onselect) {
 		app.loadJQueryUI(function() {
-			return input.autocomplete({
+			input.autocomplete({
 				delay: 100,
+				select: onselect,
 				source: function(request, response) {
 					socket.emit('groups.search', {
 						query: request.term,

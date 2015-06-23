@@ -30,7 +30,7 @@ $(document).ready(function() {
 
 	ajaxify.currentPage = null;
 
-	ajaxify.go = function (url, callback, quiet) {
+	ajaxify.go = function (url, callback, quiet, search) {
 		if (ajaxify.handleRedirects(url)) {
 			return true;
 		}
@@ -43,7 +43,7 @@ $(document).ready(function() {
 			apiXHR.abort();
 		}
 
-		url = ajaxify.start(url, quiet);
+		url = ajaxify.start(url, quiet, search);
 
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 

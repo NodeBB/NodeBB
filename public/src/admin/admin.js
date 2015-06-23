@@ -22,6 +22,8 @@
 			setupRestartLinks();
 		});
 
+		$('[component="logout"]').on('click', app.logout);
+
 		$(window).resize(setupHeaderMenu);
 	});
 

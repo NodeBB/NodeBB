@@ -74,7 +74,8 @@ module.exports = function(Groups) {
 			async.parallel([
 				async.apply(db.sortedSetRemove, 'groups:visible:createtime', groupName),
 				async.apply(db.sortedSetRemove, 'groups:visible:memberCount', groupName),
-				async.apply(db.sortedSetRemove, 'groups:visible:name', groupName.toLowerCase() + ':' + groupName)
+				async.apply(db.sortedSetRemove, 'groups:visible:name', groupName.toLowerCase() + ':' + groupName),
+				async.apply(db.deleteObjectField, 'groupslug:groupname', utils.slugify(groupName))
 			], callback);
 		} else {
 			db.getObjectFields('group:' + groupName, ['createtime', 'memberCount'], function(err, groupData) {
@@ -84,16 +85,31 @@ module.exports = function(Groups) {
 				async.parallel([
 					async.apply(db.sortedSetAdd, 'groups:visible:createtime', groupData.createtime, groupName),
 					async.apply(db.sortedSetAdd, 'groups:visible:memberCount', groupData.memberCount, groupName),
-					async.apply(db.sortedSetAdd, 'groups:visible:name', 0, groupName.toLowerCase() + ':' + groupName)
+					async.apply(db.sortedSetAdd, 'groups:visible:name', 0, groupName.toLowerCase() + ':' + groupName),
+					async.apply(db.setObjectField, 'groupslug:groupname', utils.slugify(groupName), groupName)
 				], callback);
 			});
 		}
 	}
 
 	Groups.hide = function(groupName, callback) {
-		callback = callback || function() {};
-		db.setObjectField('group:' + groupName, 'hidden', 1, callback);
+		showHide(groupName, 'hidden', callback);
 	};
+
+	Groups.show = function(groupName, callback) {
+		showHide(groupName, 'show', callback);
+	};
+
+	function showHide(groupName, hidden, callback) {
+		hidden = hidden === 'hidden';
+		callback = callback || function() {};
+		async.parallel([
+			async.apply(db.setObjectField, 'group:' + groupName, 'hidden', hidden ? 1 : 0),
+			async.apply(updateVisibility, groupName, hidden)
+		], function(err, results) {
+			callback(err);
+		});
+	}
 
 	Groups.updateCoverPosition = function(groupName, position, callback) {
 		Groups.setGroupField(groupName, 'cover:position', position, callback);

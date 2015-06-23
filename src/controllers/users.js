@@ -36,7 +36,7 @@ usersController.getOnlineUsers = function(req, res, next) {
 		}
 
 		var userData = {
-			'route_users:online': true,
+			'users:online': true,
 			search_display: 'hidden',
 			loadmore_display: results.count > 50 ? 'block' : 'hide',
 			users: results.users,
@@ -71,7 +71,7 @@ usersController.getUsers = function(set, start, stop, req, res, next) {
 			users: data.users,
 			pagination: pagination.create(1, pageCount)
 		};
-		userData['route_' + set] = true;
+		userData[set] = true;
 		render(req, res, userData, next);
 	});
 };
@@ -97,7 +97,7 @@ usersController.getUsersAndCount = function(set, uid, start, stop, callback) {
 };
 
 usersController.getUsersForSearch = function(req, res, next) {
-	if (!req.uid) {
+	if (!req.uid && parseInt(meta.config.allowGuestUserSearching, 10) !== 1) {
 		return helpers.notAllowed(req, res);
 	}
 	var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;

@@ -69,7 +69,7 @@ SocketUser.search = function(socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-	if (!socket.uid) {
+	if (!socket.uid && parseInt(meta.config.allowGuestUserSearching, 10) !== 1) {
 		return callback(new Error('[[error:not-logged-in]]'));
 	}
 	user.search({

@@ -211,7 +211,7 @@ var async = require('async'),
 		if (group) {
 			group.name = validator.escape(group.name);
 			group.description = validator.escape(group.description);
-			group.userTitle = validator.escape(group.userTitle);
+			group.userTitle = validator.escape(group.userTitle) || group.name;
 		}
 	};
 
@@ -379,8 +379,6 @@ var async = require('async'),
 				db.getSortedSetRevRange('groups:visible:createtime', 0, -1, next);
 			},
 			function(groupNames, next) {
-				groupNames.push('administrators');
-
 				var groupSets = groupNames.map(function(name) {
 		 			return 'group:' + name + ':members';
 		 		});

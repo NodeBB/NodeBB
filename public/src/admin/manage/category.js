@@ -283,10 +283,9 @@ define('admin/manage/category', [
 		});
 
 		modal.on('shown.bs.modal', function() {
-			var inputEl = modal.find('input'),
-				searchObj = autocomplete.user(inputEl);
+			var inputEl = modal.find('input');
 
-			searchObj.on('autocompleteselect', function(ev, ui) {
+			autocomplete.user(inputEl, function(ev, ui) {
 				socket.emit('admin.categories.setPrivilege', {
 					cid: ajaxify.variables.get('cid'),
 					privilege: ['find', 'read'],
@@ -312,10 +311,9 @@ define('admin/manage/category', [
 		});
 
 		modal.on('shown.bs.modal', function() {
-			var inputEl = modal.find('input'),
-				searchObj = autocomplete.group(inputEl);
+			var inputEl = modal.find('input');
 
-			searchObj.on('autocompleteselect', function(ev, ui) {
+			autocomplete.group(inputEl, function(ev, ui) {
 				socket.emit('admin.categories.setPrivilege', {
 					cid: ajaxify.variables.get('cid'),
 					privilege: ['groups:find', 'groups:read'],

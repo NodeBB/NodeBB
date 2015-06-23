@@ -38,15 +38,12 @@ Groups.leave = function(socket, data, callback) {
 	groups.leave(data.groupName, data.uid, callback);
 };
 
-// Possibly remove this and call SocketGroups.update instead
 Groups.update = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	groups.update(data.groupName, data.values, function(err) {
-		callback(err ? err.message : null);
-	});
+	groups.update(data.groupName, data.values, callback);
 };
 
 module.exports = Groups;

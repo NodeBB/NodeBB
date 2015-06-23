@@ -313,9 +313,9 @@ define('composer', [
 
 		if (data.mobile) {
 			var qs = '?p=' + window.location.pathname;
-			ajaxify.go('compose' + qs, function() {
+			ajaxify.go('compose', function() {
 				renderComposer();
-			});
+			}, false, qs);
 		} else {
 			renderComposer();
 		}

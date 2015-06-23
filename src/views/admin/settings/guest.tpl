@@ -18,7 +18,21 @@
 					</p>
 				</label>
 			</div>
+
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" data-field="allowGuestSearching"> <strong>Allow guests to search without logging in</strong>
+				</label>
+			</div>
+
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" data-field="allowGuestUserSearching"> <strong>Allow guests to search users logging in</strong>
+				</label>
+			</div>
 		</form>
+
+
 	</div>
 </div>
 

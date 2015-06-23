@@ -109,6 +109,10 @@
 		return (topic.index || 0) + 1;
 	};
 
+	helpers.displayUserSearch = function(data, allowGuestUserSearching) {
+		return data.loggedIn || allowGuestUserSearching === 'true';
+	};
+
 	// Groups helpers
 	helpers.membershipBtn = function(groupObj) {
 		if (groupObj.isMember) {

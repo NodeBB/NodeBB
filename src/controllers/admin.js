@@ -15,7 +15,6 @@ var async = require('async'),
 	events = require('../events'),
 	languages = require('../languages'),
 	plugins = require('../plugins'),
-	groups = require('../groups'),
 	validator = require('validator');
 
 
@@ -24,7 +23,7 @@ var adminController = {
 	tags: {},
 	flags: {},
 	topics: {},
-	groups: {},
+	groups: require('./admin/groups'),
 	appearance: {},
 	extend: {
 		widgets: {}
@@ -373,23 +372,6 @@ adminController.extend.rewards = function(req, res, next) {
 		}
 
 		res.render('admin/extend/rewards', data);
-	});
-};
-
-adminController.groups.get = function(req, res, next) {
-	groups.getGroupsFromSet('groups:createtime', req.uid, 0, -1, function(err, groups) {
-		if (err) {
-			return next(err);
-		}
-
-		groups = groups.filter(function(group) {
-			return group && group.name.indexOf(':privileges:') === -1 && group.name !== 'registered-users';
-		});
-
-		res.render('admin/manage/groups', {
-			groups: groups,
-			yourid: req.user.uid
-		});
 	});
 };
 
