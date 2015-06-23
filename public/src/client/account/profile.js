@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, ajaxify, app, utils, socket */
+/* globals define, ajaxify, app, utils, socket, bootbox */
 
 define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll', 'translator'], function(header, infinitescroll, translator) {
 	var Account = {},
@@ -32,6 +32,10 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 		$('#chat-btn').on('click', function() {
 			app.openChat($('.account-username').html(), theirid);
 		});
+
+		$('#banAccountBtn').on('click', banAccount);
+		$('#unbanAccountBtn').on('click', unbanAccount);
+		$('#deleteAccountBtn').on('click', deleteAccount);
 
 		socket.removeListener('event:user_status_change', onUserStatusChange);
 		socket.on('event:user_status_change', onUserStatusChange);
@@ -109,6 +113,50 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 			html.find('.timeago').timeago();
 
 			callback();
+		});
+	}
+
+	function banAccount() {
+		translator.translate('[[user:ban_account_confirm]]', function(translated) {
+			bootbox.confirm(translated, function(confirm) {
+				if (!confirm) {
+					return;
+				}
+				socket.emit('admin.user.banUsers', [ajaxify.variables.get('theirid')], function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					$('#banAccountBtn').toggleClass('hide', true);
+					$('#banLabel, #unbanAccountBtn').toggleClass('hide', false);
+				});
+			});
+		});
+	}
+
+	function unbanAccount() {
+		socket.emit('admin.user.unbanUsers', [ajaxify.variables.get('theirid')], function(err) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+			$('#banAccountBtn').toggleClass('hide', false);
+			$('#banLabel, #unbanAccountBtn').toggleClass('hide', true);
+		});
+	}
+
+	function deleteAccount() {
+		translator.translate('[[user:delete_this_account_confirm]]', function(translated) {
+			bootbox.confirm(translated, function(confirm) {
+				if (!confirm) {
+					return;
+				}
+
+				socket.emit('admin.user.deleteUsers', [ajaxify.variables.get('theirid')], function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					history.back();
+				});
+			});
 		});
 	}
 

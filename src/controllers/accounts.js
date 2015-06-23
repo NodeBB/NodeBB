@@ -80,6 +80,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.uid = userData.uid;
 			userData.yourid = callerUID;
 			userData.theirid = userData.uid;
+			userData.isAdmin = isAdmin;
 			userData.isSelf = self;
 			userData.showHidden = self || isAdmin;
 			userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
