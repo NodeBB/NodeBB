@@ -250,7 +250,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 			timeoutId = setTimeout(function() {
 				$('.fa-spinner').removeClass('hidden');
 
-				socket.emit('admin.user.search', {searchBy: [type], query: $this.val()}, function(err, data) {
+				socket.emit('admin.user.search', {searchBy: type, query: $this.val()}, function(err, data) {
 					if (err) {
 						return app.alertError(err.message);
 					}
