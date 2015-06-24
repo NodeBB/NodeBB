@@ -214,7 +214,7 @@ SocketGroups.search = function(socket, data, callback) {
 	}
 
 	if (!data.query) {
-		var groupsPerPage = 9;
+		var groupsPerPage = 15;
 		groupsController.getGroupsFromSet(socket.uid, data.options.sort, 0, groupsPerPage - 1, function(err, data) {
 			callback(err, !err ? data.groups : null);
 		});

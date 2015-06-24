@@ -312,7 +312,7 @@ var async = require('async'),
 
 	Groups.existsBySlug = function(slug, callback) {
 		if (Array.isArray(slug)) {
-			db.isObjectFields('groupslug:groupName', slug, callback);
+			db.isObjectFields('groupslug:groupname', slug, callback);
 		} else {
 			db.isObjectField('groupslug:groupname', slug, callback);
 		}

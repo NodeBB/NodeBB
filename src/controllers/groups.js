@@ -12,7 +12,7 @@ var async = require('async'),
 groupsController.list = function(req, res, next) {
 	var sort = req.query.sort || 'alpha';
 
-	groupsController.getGroupsFromSet(req.uid, sort, 0, 8, function(err, data) {
+	groupsController.getGroupsFromSet(req.uid, sort, 0, 14, function(err, data) {
 		if (err) {
 			return next(err);
 		}

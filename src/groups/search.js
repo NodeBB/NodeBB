@@ -16,12 +16,15 @@ module.exports = function(Groups) {
 			async.apply(db.getObjectValues, 'groupslug:groupname'),
 			function(groupNames, next) {
 				groupNames = groupNames.filter(function(name) {
-					return name.toLowerCase().indexOf(query) !== -1 && name !== 'administrators';
+					return name.toLowerCase().indexOf(query) !== -1 && name !== 'administrators' && name !== 'registered-users' && !Groups.isPrivilegeGroup(name);
 				});
 				groupNames = groupNames.slice(0, 100);
 				Groups.getGroupsData(groupNames, next);
 			},
 			function(groupsData, next) {
+				groupsData = groupsData.filter(function(group) {
+					return group && !group.hidden;
+				});
 				groupsData.forEach(Groups.escapeGroupData);
 				next(null, groupsData);
 			},
