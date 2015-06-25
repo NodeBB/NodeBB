@@ -303,6 +303,16 @@ SocketPosts.edit = function(socket, data, callback) {
 			return callback(err);
 		}
 
+		if (result.topic.renamed) {
+			events.log({
+				type: 'topic-rename',
+				uid: socket.uid,
+				ip: socket.ip,
+				oldTitle: result.topic.oldTitle,
+				newTitle: result.topic.title
+			});
+		}
+
 		if (parseInt(result.post.deleted) !== 1) {
 			websockets.in('topic_' + result.topic.tid).emit('event:post_edited', result);
 			return callback(null, result.post);
