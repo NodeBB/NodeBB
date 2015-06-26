@@ -79,7 +79,12 @@
 						<li class="nav-header"><i class="fa fa-fw fa-th"></i> Installed Plugins</li>
 						<!-- BEGIN plugins -->
 						<li>
-							<a href="{relative_path}/admin{plugins.route}">{plugins.name}</a>
+							<a href="{relative_path}/admin{plugins.route}">
+							<!-- IF plugins.icon -->
+							<i class="fa {plugins.icon}"></i>
+							<!-- ENDIF plugins.icon -->
+							{plugins.name}
+							</a>
 						</li>
 						<!-- END plugins -->
 						<li data-link="1">
