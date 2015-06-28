@@ -18,7 +18,7 @@
 						</td>
 						<td>
 							<div class="btn-group pull-right">
-								<a href="{config.relative_path}/admin/manage/groups/{groups.name}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> Edit</a>
+								<a href="{config.relative_path}/admin/manage/groups/{groups.nameEncoded}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> Edit</a>
 								<!-- IF !groups.system -->
 								<button class="btn btn-danger btn-xs" data-action="delete"><i class="fa fa-times"></i></button>
 								<!-- ENDIF !groups.system -->

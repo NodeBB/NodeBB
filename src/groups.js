@@ -209,6 +209,7 @@ var async = require('async'),
 
 	Groups.escapeGroupData = function(group) {
 		if (group) {
+			group.nameEncoded = encodeURIComponent(group.name);
 			group.name = validator.escape(group.name);
 			group.description = validator.escape(group.description);
 			group.userTitle = validator.escape(group.userTitle) || group.name;
