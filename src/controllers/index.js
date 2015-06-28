@@ -77,11 +77,13 @@ Controllers.login = function(req, res, next) {
 		loginStrategies = require('../routes/authentication').getLoginStrategies(),
 		emailersPresent = plugins.hasListeners('action:email.send');
 
+	var registrationType = meta.config.registrationType || 'normal';
+
 	data.alternate_logins = loginStrategies.length > 0;
 	data.authentication = loginStrategies;
 	data.showResetLink = emailersPresent;
 	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1 || parseInt(req.query.local, 10) === 1;
-	data.allowRegistration = parseInt(meta.config.allowRegistration, 10) === 1;
+	data.allowRegistration = registrationType === 'normal' || registrationType === 'admin-approval';
 	data.allowLoginWith = '[[login:' + (meta.config.allowLoginWith || 'username-email') + ']]';
 	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:login]]'}]);
 	data.error = req.flash('error')[0];
@@ -90,7 +92,9 @@ Controllers.login = function(req, res, next) {
 };
 
 Controllers.register = function(req, res, next) {
-	if (parseInt(meta.config.allowRegistration, 10) === 0) {
+	var registrationType = meta.config.registrationType || 'normal';
+
+	if (registrationType === 'disabled') {
 		return helpers.notFound(req, res);
 	}
 

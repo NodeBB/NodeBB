@@ -241,4 +241,13 @@ User.search = function(socket, data, callback) {
 	});
 };
 
+User.acceptRegistration = function(socket, data, callback) {
+	user.acceptRegistration(data.username, callback);
+};
+
+User.rejectRegistration = function(socket, data, callback) {
+	user.rejectRegistration(data.username, callback);
+};
+
+
 module.exports = User;

@@ -289,9 +289,10 @@ var async = require('async'),
 		});
 	};
 
-	UserNotifications.sendWelcomeNotification = function(uid) {
+	UserNotifications.sendWelcomeNotification = function(uid, callback) {
+		callback = callback || function() {};
 		if (!meta.config.welcomeNotification) {
-			return;
+			return callback();
 		}
 
 		var path = meta.config.welcomeLink ? meta.config.welcomeLink : '#';
@@ -301,8 +302,13 @@ var async = require('async'),
 			path: path,
 			nid: 'welcome_' + uid
 		}, function(err, notification) {
-			if (!err && notification) {
-				notifications.push(notification, [uid]);
+			if (err) {
+				return callback(err);
+			}
+			if (notification) {
+				notifications.push(notification, [uid], callback);
+			} else {
+				callback();
 			}
 		});
 	};

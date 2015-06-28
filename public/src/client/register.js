@@ -69,7 +69,15 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 							'x-csrf-token': csrf.get()
 						},
 						success: function(data, status) {
-							window.location.href = data;
+							registerBtn.removeClass('disabled');
+							if (!data) {
+								return;
+							}
+							if (data.referrer) {
+								window.location.href = data.referrer;
+							} else if (data.message) {
+								app.alert({message: data.message, timeout: 20000});
+							}
 						},
 						error: function(data, status) {
 							var errorEl = $('#register-error-notify');
@@ -84,7 +92,7 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 			});
 		});
 
-		if(agreeTerms.length) {
+		if (agreeTerms.length) {
 			agreeTerms.on('click', function() {
 				if ($(this).prop('checked')) {
 					register.removeAttr('disabled');

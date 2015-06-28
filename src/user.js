@@ -30,6 +30,7 @@ var	async = require('async'),
 	require('./user/search')(User);
 	require('./user/jobs')(User);
 	require('./user/picture')(User);
+	require('./user/approval')(User);
 
 	User.getUserField = function(uid, field, callback) {
 		User.getUserFields(uid, [field], function(err, user) {

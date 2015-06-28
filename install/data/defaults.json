@@ -9,7 +9,7 @@
     "maximumPostLength": 32767,
     "allowGuestSearching": 0,
     "allowTopicsThumbnail": 0,
-    "allowRegistration": 1,
+    "registrationType": "normal",
     "allowLocalLogin": 1,
     "allowAccountDelete": 1,
     "allowFileUploads": 0,
