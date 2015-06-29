@@ -3,6 +3,8 @@
 
 var async = require('async'),
 	nconf = require('nconf'),
+	request = require('request'),
+
 	db = require('./../database'),
 	meta = require('../meta'),
 	emailer = require('../emailer'),
@@ -130,7 +132,26 @@ module.exports = function(User) {
 					}
 				});
 
-				next(null, users);
+				async.map(users, function(user, next) {
+					if (!user) {
+						return next(null, user);
+					}
+
+					request('http://api.stopforumspam.org/api?ip=' + user.ip + '&email=' + user.email + '&username=' + user.username + '&f=json', function (err, response, body) {
+						if (err) {
+							return next(null, user);
+						}
+						if (response.statusCode === 200) {
+							var data = JSON.parse(body);
+							user.spamData = data;
+
+							user.usernameSpam = data.username.frequency > 0 || data.username.appears > 0;
+							user.emailSpam = data.email.frequency > 0 || data.email.appears > 0;
+							user.ipSpam = data.ip.frequency > 0 || data.ip.appears > 0;
+						}
+						next(null, user);
+					});
+				}, next);
 			}
 		], callback);
 	};
