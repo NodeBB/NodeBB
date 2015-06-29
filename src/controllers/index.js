@@ -129,7 +129,7 @@ Controllers.register = function(req, res, next) {
 };
 
 Controllers.compose = function(req, res, next) {
-	res.render('composer', {});
+	res.render('', {});
 };
 
 Controllers.confirmEmail = function(req, res, next) {
