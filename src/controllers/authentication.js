@@ -33,6 +33,14 @@ authenticationController.register = function(req, res, next) {
 	var uid;
 	async.waterfall([
 		function(next) {
+			if (registrationType === 'invite-only') {
+				user.verifyInvitation(userData, next);
+			} else {
+				next();
+			}
+		},
+		function(next) {
+			console.log(userData);
 			if (!userData.email) {
 				return next(new Error('[[error:invalid-email]]'));
 			}
@@ -55,7 +63,7 @@ authenticationController.register = function(req, res, next) {
 			plugins.fireHook('filter:register.check', {req: req, res: res, userData: userData}, next);
 		},
 		function(data, next) {
-			if (registrationType === 'normal') {
+			if (registrationType === 'normal' || registrationType === 'invite-only') {
 				registerAndLoginUser(req, res, userData, next);
 			} else if (registrationType === 'admin-approval') {
 				addToApprovalQueue(req, res, userData, next);
@@ -82,6 +90,8 @@ function registerAndLoginUser(req, res, userData, callback) {
 		},
 		function(next) {
 			user.logIP(uid, req.ip);
+
+			user.deleteInvitation(userData.email);
 
 			user.notifications.sendWelcomeNotification(uid);
 

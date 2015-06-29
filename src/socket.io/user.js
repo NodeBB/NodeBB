@@ -495,6 +495,17 @@ SocketUser.setStatus = function(socket, status, callback) {
 	});
 };
 
-/* Exports */
+SocketUser.invite = function(socket, email, callback) {
+	if (!email || !socket.uid) {
+		return callback(new Error('[[error:invald-data]]'));
+	}
+
+	if (meta.config.registrationType !== 'invite-only') {
+		return callback(new Error('[[error:forum-not-invite-only]]'));
+	}
+
+	user.sendInvitationEmail(socket.uid, email, callback);
+};
+
 
 module.exports = SocketUser;

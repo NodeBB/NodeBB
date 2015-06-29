@@ -24,6 +24,12 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 			}
 		});
 
+		var query = utils.params();
+		if (query.email && query.token) {
+			email.val(query.email);
+			$('#token').val(query.token);
+		}
+
 		// Update the "others can mention you via" text
 		username.on('keyup', function() {
 			$('#yourUsername').text(this.value.length > 0 ? utils.slugify(this.value) : 'username');

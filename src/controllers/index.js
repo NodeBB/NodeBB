@@ -98,34 +98,35 @@ Controllers.register = function(req, res, next) {
 		return helpers.notFound(req, res);
 	}
 
-	var data = {},
-		loginStrategies = require('../routes/authentication').getLoginStrategies();
+	async.waterfall([
+		function(next) {
+			if (registrationType === 'invite-only') {
+				user.verifyInvitation(req.query, next);
+			} else {
+				next();
+			}
+		},
+		function(next) {
+			var loginStrategies = require('../routes/authentication').getLoginStrategies();
+			var data = {
+				'register_window:spansize': loginStrategies.length ? 'col-md-6' : 'col-md-12',
+				'alternate_logins': !!loginStrategies.length
+			};
 
-	if (loginStrategies.length === 0) {
-		data = {
-			'register_window:spansize': 'col-md-12',
-			'alternate_logins': false
-		};
-	} else {
-		data = {
-			'register_window:spansize': 'col-md-6',
-			'alternate_logins': true
-		};
-	}
+			data.authentication = loginStrategies;
 
-	data.authentication = loginStrategies;
+			data.minimumUsernameLength = meta.config.minimumUsernameLength;
+			data.maximumUsernameLength = meta.config.maximumUsernameLength;
+			data.minimumPasswordLength = meta.config.minimumPasswordLength;
+			data.termsOfUse = meta.config.termsOfUse;
+			data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[register:register]]'}]);
+			data.regFormEntry = [];
+			data.error = req.flash('error')[0];
 
-	data.minimumUsernameLength = meta.config.minimumUsernameLength;
-	data.maximumUsernameLength = meta.config.maximumUsernameLength;
-	data.minimumPasswordLength = meta.config.minimumPasswordLength;
-	data.termsOfUse = meta.config.termsOfUse;
-	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[register:register]]'}]);
-	data.regFormEntry = [];
-	data.error = req.flash('error')[0];
-
-	plugins.fireHook('filter:register.build', {req: req, res: res, templateData: data}, function(err, data) {
-		if (err && global.env === 'development') {
-			winston.warn(JSON.stringify(err));
+			plugins.fireHook('filter:register.build', {req: req, res: res, templateData: data}, next);
+		}
+	], function(err, data) {
+		if (err) {
 			return next(err);
 		}
 		res.render('register', data.templateData);

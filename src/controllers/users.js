@@ -122,6 +122,7 @@ function render(req, res, data, next) {
 		if (err) {
 			return next(err);
 		}
+		data.templateData.inviteOnly = meta.config.registrationType === 'invite-only';
 		res.render('users', data.templateData);
 	});
 }

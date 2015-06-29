@@ -39,6 +39,7 @@
 				<select class="form-control" data-field="registrationType">
 					<option value="normal">Normal</option>
 					<option value="admin-approval">Admin Approval</option>
+					<option value="invite-only">Invite Only</option>
 					<option value="disabled">No registration</option>
 				</select>
 			</div>
