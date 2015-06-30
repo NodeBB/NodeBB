@@ -256,12 +256,13 @@ accountsController.getGroups = function(req, res, next) {
 			return helpers.notFound(req, res);
 		}
 
-		groups.getUserGroups([userData.uid], function(err, groups) {
+		groups.getUserGroups([userData.uid], function(err, groupsData) {
 			if (err) {
 				return next(err);
 			}
 
-			userData.groups = groups[0];
+			userData.groups = groupsData[0];
+			userData.groups.forEach(groups.escapeGroupData);
 
 			res.render('account/groups', userData);
 		});
