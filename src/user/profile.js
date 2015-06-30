@@ -130,8 +130,9 @@ module.exports = function(User) {
 				} else if (field === 'signature') {
 					data[field] = S(data[field]).stripTags().s;
 				} else if (field === 'website') {
+					var urlObj;
 					if (data[field].length > 0) {
-						var urlObj = url.parse(data[field], false, true);
+						urlObj = url.parse(data[field], false, true);
 						if (!urlObj.protocol) {
 							urlObj.protocol = 'http';
 							urlObj.slashes = true;
@@ -144,8 +145,9 @@ module.exports = function(User) {
 							urlObj.pathname = null;
 						}
 					}
-
-					data[field] = url.format(urlObj);
+					if (urlObj) {
+						data[field] = url.format(urlObj);
+					}
 				}
 
 				User.setUserField(uid, field, data[field], next);
