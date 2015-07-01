@@ -48,8 +48,7 @@ switch(process.argv[2]) {
 
 		// Spawn a new NodeBB process
 		cproc.fork(__dirname + '/loader.js', {
-			env: process.env,
-			detatched: true
+			env: process.env
 		});
 		break;
 
