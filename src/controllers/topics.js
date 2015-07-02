@@ -36,6 +36,9 @@ topicsController.get = function(req, res, next) {
 				},
 				topic: function(next) {
 					topics.getTopicFields(tid, ['slug', 'postcount', 'deleted'], next);
+				},
+				bookmark: function(next) {
+					topics.getUserBookmark(tid, req.uid, next);
 				}
 			}, next);
 		},
@@ -54,9 +57,12 @@ topicsController.get = function(req, res, next) {
 			var postCount = parseInt(results.topic.postcount, 10);
 			var pageCount = Math.max(1, Math.ceil((postCount - 1) / settings.postsPerPage));
 			var page = parseInt(req.query.page, 10) || 1;
-
 			if (utils.isNumber(req.params.post_index) && (req.params.post_index < 1 || req.params.post_index > postCount)) {
 				return helpers.redirect(res, '/topic/' + req.params.topic_id + '/' + req.params.slug + (req.params.post_index > postCount ? '/' + postCount : ''));
+			}
+
+			if (results.bookmark && !req.params.post_index) {
+				return helpers.redirect(res, '/topic/' + req.params.topic_id + '/' + req.params.slug + '/' + results.bookmark);
 			}
 
 			if (settings.usePagination && (page < 1 || page > pageCount)) {
