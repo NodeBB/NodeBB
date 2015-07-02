@@ -327,6 +327,24 @@ var async = require('async'),
 		});
 	}
 
+//	Topics.setUserBookmark = function(data, callback) {
+//		db.setObjectField('tid:' + data.tid + ':bookmarks', data.uid, data.postIndex, callback);
+//	}
+
+//	Topics.getUserBookmark = function(tid, uid, callback) {
+//		db.getObjectField('tid:' + tid + ':bookmarks', uid, callback);
+//	}
+
+	// alternatively:
+	Topics.setUserBookmark = function(data, callback) {
+		Topics.setTopicField(data.tid + ':bookmarks', data.uid, data.postIndex, callback);
+	}
+
+	Topics.getUserBookmark = function (tid, uid, callback) {
+		Topics.getTopicField(tid + ':bookmarks', uid, callback);
+	}
+
+
 	Topics.getTopicField = function(tid, field, callback) {
 		db.getObjectField('topic:' + tid, field, callback);
 	};
