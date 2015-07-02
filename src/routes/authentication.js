@@ -57,8 +57,8 @@
 				}
 
 				router.get(strategy.callbackURL, passport.authenticate(strategy.name, {
-					successReturnToOrRedirect: nconf.get('relative_path') + '/',
-					failureRedirect: nconf.get('relative_path') + '/login'
+					successReturnToOrRedirect: nconf.get('relative_path') + (strategy.successUrl !== undefined ? strategy.successUrl : '/'),
+					failureRedirect: nconf.get('relative_path') + (strategy.failureUrl !== undefined ? strategy.failureUrl : '/login')
 				}));
 			});
 
