@@ -51,7 +51,9 @@
 		<script type="text/javascript" src="{relative_path}/vendor/semver/semver.browser.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/jquery/deserialize/jquery.deserialize.min.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/vendor/jquery/autoresize.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/mousetrap/mousetrap.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/vendor/showdown.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/jquery/js/jquery-ui-1.10.4.custom.js?{cache-buster}"></script>
 
 		<!-- BEGIN scripts -->

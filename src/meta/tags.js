@@ -21,7 +21,7 @@ module.exports = function(Meta) {
 				property: 'og:site_name',
 				content: Meta.config.title || 'NodeBB'
 			}, {
-				name: 'keywords',
+				property: 'keywords',
 				content: Meta.config.keywords || ''
 			}, {
 				name: 'msapplication-badge',
@@ -48,11 +48,18 @@ module.exports = function(Meta) {
 				tag.content = validator.escape(tag.content);
 				return tag;
 			});
-
+			
 			link = tags[1].concat(link || []);
-
+			var ishome = true,
+				nmeta = [];
+			link.forEach(function(el){
+				if (el.rel == 'alternate') ishome = false;
+			})
+			if (!ishome) meta.forEach(function(e){ if (e.property != 'keywords') nmeta.push(e); })
+			else nmeta = meta;
+			
 			callback(null, {
-				meta: meta,
+				meta: nmeta,
 				link: link
 			});
 		});

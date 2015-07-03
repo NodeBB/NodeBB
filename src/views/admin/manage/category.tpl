@@ -8,8 +8,43 @@
 						<div class="col-xs-12">
 							<h3 data-edit-target="#cid-{category.cid}-name"><span>{category.name}</span> <small><i class="fa fa-edit"></i></small></h3>
 							<input id="cid-{category.cid}-name" type="text" class="form-control hide" placeholder="Category Name" data-name="name" value="{category.name}" />
+						</div>
+					</fieldset>
+					
+					<br />
+					
+					<fieldset>
+						<div class="col-xs-12 col-sm-6">
+							<label for="cid-{category.cid}-title">Title</label>
+							<h4 data-edit-target="#cid-{category.cid}-title"><span>{category.title}</span> <small><i class="fa fa-edit"></i></small></h4>
+							<textarea id="cid-{category.cid}-title" data-name="title" placeholder="Category Title" class="form-control category_title input-sm title hide">{category.title}</textarea>
+						</div>
+						<div class="col-xs-12 col-sm-6">
+							<label for="cid-{category.cid}-description">Description</label>
 							<h4 data-edit-target="#cid-{category.cid}-description"><span>{category.description}</span> <small><i class="fa fa-edit"></i></small></h4>
-							<input id="cid-{category.cid}-description" data-name="description" placeholder="Category Description" value="{category.description}" class="form-control category_description input-sm description hide"></input>
+							<textarea id="cid-{category.cid}-description" data-name="description" placeholder="Category Description" class="form-control category_description input-sm description hide">{category.description}</textarea>
+						</div>
+					</fieldset>
+					
+					<fieldset>
+						<div class="col-xs-12 col-sm-6">
+							<label for="cid-{category.cid}-metaDescription">Meta Description</label>
+							<h4 data-edit-target="#cid-{category.cid}-metaDescription"><span>{category.metaDescription}</span> <small><i class="fa fa-edit"></i></small></h4>
+							<textarea id="cid-{category.cid}-metaDescription" data-name="metaDescription" placeholder="Category Meta Description" class="form-control category_metaDescription input-sm metaDescription hide">{category.metaDescription}</textarea>
+						</div>
+						<div class="col-xs-12 col-sm-6">
+							<label for="cid-{category.cid}-metaKeywords">Meta Keywords</label>
+							<h4 data-edit-target="#cid-{category.cid}-metaKeywords"><span>{category.metaKeywords}</span> <small><i class="fa fa-edit"></i></small></h4>
+							<textarea id="cid-{category.cid}-metaKeywords" data-name="metaKeywords" placeholder="Category Meta Keywords" class="form-control category_metaKeywords input-sm metaKeywords hide">{category.metaKeywords}</textarea>
+						</div>
+					</fieldset>
+					
+					<fieldset>
+						<div class="col-xs-12">
+							<label for="cid-{category.cid}-content">Content</label>
+							<h4 data-edit-target="#cid-{category.cid}-content"><span>{category.content}</span> <small><i class="fa fa-edit"></i></small></h4>
+							<textarea id="cid-{category.cid}-content" data-name="content" placeholder="Category Content" class="form-control category_content input-sm content hide">{category.content}</textarea>
+							<a class="help-markdown" href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown supported <span class="help"><i class="fa fa-question-circle"></i></span></a>
 						</div>
 					</fieldset>
 

@@ -100,6 +100,10 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 			});
 			return false;
 		});
+		
+		var fieldContent = $('.form-control[data-field=content]');
+		fieldContent.css({height: fieldContent.prop('scrollHeight')}).
+			autoResize();
 
 		if (typeof callback === 'function') {
 			callback();

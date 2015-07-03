@@ -9,7 +9,13 @@ var async = require('async'),
 	Groups = require('./groups'),
 	plugins = require('./plugins'),
 	validator = require('validator'),
-	privileges = require('./privileges');
+	privileges = require('./privileges'),
+	
+	md = require('markdown-it')({
+		html: true,
+		linkify: true,
+		typographer: true
+	});
 
 (function(Categories) {
 
@@ -55,7 +61,9 @@ var async = require('async'),
 				category.nextStart = results.topics.nextStart;
 				category.pageCount = results.pageCount;
 				category.isIgnored = results.isIgnored[0];
-
+				if (!category.content) category.content = false;
+				else category.content = md.render(category.content);
+				
 				plugins.fireHook('filter:category.get', {category: category, uid: data.uid}, function(err, data) {
 					callback(err, data ? data.category : null);
 				});

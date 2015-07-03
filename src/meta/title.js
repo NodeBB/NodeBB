@@ -8,8 +8,9 @@ var winston = require('winston'),
 
 module.exports = function(Meta) {
 	Meta.title = {};
-
+	
 	var tests = {
+		isCategories: /^categories\/\d+\/?/,
 		isCategory: /^category\/\d+\/?/,
 		isTopic: /^topic\/\d+\/?/,
 		isTag: /^tags\/[\s\S]+\/?/,
@@ -31,9 +32,10 @@ module.exports = function(Meta) {
 				title = fallbackTitle;
 			} else {
 				if (title) {
-					title = validator.escape(title);
+					title = validator.escape(title.title) || validator.escape(title.name);
 				}
-				title = (title ? title + ' | ' : '') + fallbackTitle;
+				if (Meta.config.showBrowserTitle === 1) title = (title ? title + ' | ' : '') + fallbackTitle;
+				else title = title || fallbackTitle;
 			}
 
 			callback(null, title);
@@ -71,7 +73,7 @@ module.exports = function(Meta) {
 		} else if (tests.isCategory.test(urlFragment)) {
 			var cid = urlFragment.match(/category\/(\d+)/)[1];
 
-			require('../categories').getCategoryField(cid, 'name', onParsed);
+			require('../categories').getCategoryField(cid, ['title', 'name'], onParsed);
 		} else if (tests.isTopic.test(urlFragment)) {
 			var tid = urlFragment.match(/topic\/(\d+)/)[1];
 

@@ -7,7 +7,8 @@ define('admin/manage/category', [
 	'admin/modules/colorpicker',
 	'autocomplete'
 ], function(uploader, iconSelect, colorpicker, autocomplete) {
-	var	Category = {};
+	var	Category = {},
+		converter = new Showdown.converter();;
 
 	Category.init = function() {
 		var modified_categories = {};
@@ -67,21 +68,30 @@ define('admin/manage/category', [
 			$('[data-edit-target]').on('click', function() {
 				var $this = $(this),
 					target = $($this.attr('data-edit-target'));
-
+					
 				$this.addClass('hide');
-				target.removeClass('hide').on('blur', function() {
-					$this.removeClass('hide').children('span').html(this.value);
+				target.removeClass('hide').on('blur', function(e) {
+					var html = target.is('[data-name=content]') ? converter.makeHtml($(this).val()) : $(this).val();
+					$this.removeClass('hide').children('span').html(html);
 					$(this).addClass('hide');
-				}).val($this.children('span').html());
-
+				});
 				target.focus();
+				
+				if ( target.is('textarea') )
+				target.autoResize({extraSpace: 0, animate: false}).trigger('keyup');
 			});
 		}
+		
+		var fieldContent = $('form.category textarea[data-name=content]'),
+			viewContent = fieldContent.prev().children('span');
+		viewContent.html(converter.makeHtml(fieldContent.val()));
 
 		// If any inputs have changed, prepare it for saving
-		$('form.category input, form.category select').on('change', function(ev) {
+		$('form.category').find('input,textarea,select').on('change', function(ev) {
 			modified(ev.target);
 		});
+		
+		
 
 		// Colour Picker
 		$('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
