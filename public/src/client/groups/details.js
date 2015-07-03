@@ -306,6 +306,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 						}
 					}, function(html) {
 						$('[component="groups/members"] tbody').html(html);
+						$('[component="groups/members"]').attr('data-nextstart', 20);
 					});
 				});
 			}, 250);
