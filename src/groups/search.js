@@ -87,7 +87,48 @@ module.exports = function(Groups) {
 			], callback);
 		}
 
+		if (!data.query) {
+			Groups.getOwnersAndMembers(data.groupName, data.uid, 0, 19, function(err, users) {
+				if (err) {
+					return callback(err);
+				}
+				callback(null, {users: users});
+			});
+			return;
+		}
+
 		data.findUids = findUids;
-		user.search(data, callback);
+		var results;
+		async.waterfall([
+			function(next) {
+				user.search(data, next);
+			},
+			function(_results, next) {
+				results = _results;
+				var uids = results.users.map(function(user) {
+					return user && user.uid;
+				});
+				Groups.ownership.isOwners(uids, data.groupName, next);
+			},
+			function(isOwners, next) {
+
+				results.users.forEach(function(user, index) {
+					if (user) {
+						user.isOwner = isOwners[index];
+					}
+				});
+
+				results.users.sort(function(a,b) {
+					if (a.isOwner && !b.isOwner) {
+						return -1;
+					} else if (!a.isOwner && b.isOwner) {
+						return 1;
+					} else {
+						return 0;
+					}
+				})
+				next(null, results);
+			}
+		], callback);
 	};
 };

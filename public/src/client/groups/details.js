@@ -1,10 +1,12 @@
 "use strict";
 /* globals define, socket, ajaxify, app, bootbox, RELATIVE_PATH, utils */
 
-define('forum/groups/details', ['iconSelect', 'components', 'vendor/colorpicker/colorpicker', 'vendor/jquery/draggable-background/backgroundDraggable'], function(iconSelect, components) {
+define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescroll', 'vendor/colorpicker/colorpicker', 'vendor/jquery/draggable-background/backgroundDraggable'], function(iconSelect, components, infinitescroll) {
 	var Details = {
 			cover: {}
 		};
+
+	var searchInterval;
 
 	Details.init = function() {
 		var detailsPage = components.get('groups/container'),
@@ -14,6 +16,9 @@ define('forum/groups/details', ['iconSelect', 'components', 'vendor/colorpicker/
 			Details.prepareSettings();
 			Details.initialiseCover();
 		}
+
+		handleMemberSearch();
+		handleMemberInfiniteScroll();
 
 		components.get('groups/activity').find('.content img').addClass('img-responsive');
 
@@ -279,6 +284,84 @@ define('forum/groups/details', ['iconSelect', 'components', 'vendor/colorpicker/
 			coverEl.removeClass('saving');
 		});
 	};
+
+	function handleMemberSearch() {
+		$('[component="groups/members/search"]').on('keyup', function() {
+			var query = $(this).val();
+			if (searchInterval) {
+				clearInterval(searchInterval);
+				searchInterval = 0;
+			}
+
+			searchInterval = setTimeout(function() {
+				socket.emit('groups.searchMembers', {groupName: ajaxify.variables.get('group_name'), query: query}, function(err, results) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+
+					infinitescroll.parseAndTranslate('groups/details', 'members', {
+						group: {
+							members: results.users,
+							isOwner: ajaxify.variables.get('is_owner') === 'true'
+						}
+					}, function(html) {
+						$('[component="groups/members"] tbody').html(html);
+					});
+				});
+			}, 250);
+		})
+	}
+
+	function handleMemberInfiniteScroll() {
+		$('[component="groups/members"] tbody').on('scroll', function() {
+			var $this = $(this);
+			var bottom = ($this[0].scrollHeight - $this.height()) * 0.9;
+			if ($this.scrollTop() > bottom) {
+				loadMoreMembers();
+			}
+		});
+	}
+
+	function loadMoreMembers() {
+		var members = $('[component="groups/members"]');
+		if (members.attr('loading')) {
+			return;
+		}
+		members.attr('loading', 1);
+		socket.emit('groups.loadMoreMembers', {
+			groupName: ajaxify.variables.get('group_name'),
+			after: members.attr('data-nextstart')
+		}, function(err, data) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			if (data && data.users.length) {
+				onMembersLoaded(data.users, function() {
+					members.removeAttr('loading');
+					members.attr('data-nextstart', data.nextStart);
+				});
+			} else {
+				members.removeAttr('loading');
+			}
+		});
+	}
+
+	function onMembersLoaded(users, callback) {
+		users = users.filter(function(user) {
+			return !$('[component="groups/members"] [data-uid="' + user.uid + '"]').length;
+		});
+
+		infinitescroll.parseAndTranslate('groups/details', 'members', {
+			group: {
+				members: users,
+				isOwner: ajaxify.variables.get('is_owner') === 'true'
+			}
+		}, function(html) {
+			$('[component="groups/members"] tbody').append(html);
+			callback();
+		});
+	}
 
 	return Details;
 });

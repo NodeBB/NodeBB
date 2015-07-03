@@ -244,6 +244,20 @@ SocketGroups.searchMembers = function(socket, data, callback) {
 	groups.searchMembers(data, callback);
 };
 
+SocketGroups.loadMoreMembers = function(socket, data, callback) {
+	if (!data || !data.groupName || !parseInt(data.after, 10)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	data.after = parseInt(data.after, 10);
+	user.getUsersFromSet('group:' + data.groupName + ':members', socket.uid, data.after, data.after + 9, function(err, users) {
+		if (err) {
+			return callback(err);
+		}
+
+		callback(null, {users: users, nextStart: data.after + 10});
+	});
+};
+
 SocketGroups.kick = function(socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));

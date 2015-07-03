@@ -13,6 +13,14 @@ module.exports = function(Groups) {
 		db.isSetMember('group:' + groupName + ':owners', uid, callback);
 	};
 
+	Groups.ownership.isOwners = function(uids, groupName, callback) {
+		if (!Array.isArray(uids)) {
+			return callback(null, []);
+		}
+
+		db.isSetMembers('group:' + groupName + ':owners', uids, callback);
+	};
+
 	Groups.ownership.grant = function(toUid, groupName, callback) {
 		// Note: No ownership checking is done here on purpose!
 		db.setAdd('group:' + groupName + ':owners', toUid, callback);
