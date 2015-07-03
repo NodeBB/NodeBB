@@ -239,24 +239,39 @@ function setupDefaultConfigs(next) {
 	var meta = require('./meta'),
 		defaults = require(path.join(__dirname, '../', 'install/data/defaults.json'));
 
-	async.each(defaults, function (configObj, next) {
-		meta.configs.setOnEmpty(configObj.field, configObj.value, next);
+	async.each(Object.keys(defaults), function (key, next) {
+		meta.configs.setOnEmpty(key, defaults[key], next);
 	}, function (err) {
-		meta.configs.init(next);
-	});
+		if (err) {
+			return next(err);
+		}
 
-	if (install.values) {
-		setIfPaired('social:twitter:key', 'social:twitter:secret');
-		setIfPaired('social:google:id', 'social:google:secret');
-		setIfPaired('social:facebook:app_id', 'social:facebook:secret');
-	}
+		if (install.values) {
+			async.parallel([
+				async.apply(setIfPaired, 'social:twitter:key', 'social:twitter:secret'),
+				async.apply(setIfPaired, 'social:google:id', 'social:google:secret'),
+				async.apply(setIfPaired, 'social:facebook:app_id', 'social:facebook:secret')
+			], function(err) {
+				if (err) {
+					return next(err);
+				}
+				meta.configs.init(next);
+			});
+		} else {
+			meta.configs.init(next);
+		}
+	});
 }
 
-function setIfPaired(key1, key2) {
+function setIfPaired(key1, key2, callback) {
 	var meta = require('./meta');
 	if (install.values[key1] && install.values[key2]) {
-		meta.configs.setOnEmpty(key1, install.values[key1]);
-		meta.configs.setOnEmpty(key2, install.values[key2]);
+		async.parallel([
+			async.apply(meta.configs.setOnEmpty, key1, install.values[key1]),
+			async.apply(meta.configs.setOnEmpty, key2, install.values[key2])
+		], callback);
+	} else {
+		callback();
 	}
 }
 
@@ -279,8 +294,11 @@ function enableDefaultTheme(next) {
 
 function createAdministrator(next) {
 	var Groups = require('./groups');
-	Groups.get('administrators', {}, function (err, groupObj) {
-		if (!err && groupObj && groupObj.memberCount > 0) {
+	Groups.getMemberCount('administrators', function (err, memberCount) {
+		if (err) {
+			return next(err);
+		}
+		if (memberCount > 0) {
 			process.stdout.write('Administrator found, skipping Admin setup\n');
 			next();
 		} else {
@@ -330,15 +348,21 @@ function createAdmin(callback) {
 				return retryPassword(results);
 			}
 
-			User.create({username: results.username, password: results.password, email: results.email}, function (err, uid) {
-				if (err) {
-					winston.warn(err.message + ' Please try again.');
-					return callback(new Error('invalid-values'));
+			async.waterfall([
+				function(next) {
+					User.create({username: results.username, password: results.password, email: results.email}, next);
+				},
+				function(uid, next) {
+					Groups.join('administrators', uid, next);
+				},
+				function(next) {
+					Groups.show('administrators', next);
 				}
-
-				Groups.join('administrators', uid, function(err) {
-					callback(err, password ? results : undefined);
-				});
+			], function(err) {
+				if (err) {
+					return callback(err);
+				}
+				callback(null, password ? results : undefined);
 			});
 		},
 		retryPassword = function (originalResults) {
@@ -407,10 +431,17 @@ function createCategories(next) {
 }
 
 function createMenuItems(next) {
-	var navigation = require('./navigation/admin'),
-		data = require('../install/data/navigation.json');
+	var db = require('./database');
 
-	navigation.save(data, next);
+	db.exists('navigation:enabled', function(err, exists) {
+		if (err || exists) {
+			return next(err);
+		}
+		var navigation = require('./navigation/admin'),
+			data = require('../install/data/navigation.json');
+
+		navigation.save(data, next);
+	});
 }
 
 function createWelcomePost(next) {

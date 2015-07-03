@@ -159,7 +159,11 @@ var async = require('async'),
 		category.disabled = parseInt(category.disabled, 10) === 1;
 		category.icon = category.icon || 'hidden';
 		if (category.hasOwnProperty('post_count')) {
-			category.post_count = category.post_count || 0;
+			category.post_count = category.totalPostCount = category.post_count || 0;
+		}
+
+		if (category.hasOwnProperty('topic_count')) {
+			category.topic_count = category.totalTopicCount = category.topic_count || 0;
 		}
 
 		if (category.description) {
@@ -240,7 +244,7 @@ var async = require('async'),
 				if (categories[i]) {
 					categories[i]['unread-class'] = (parseInt(categories[i].topic_count, 10) === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
 					categories[i].children = results.children[i];
-					categories[i].parent = results.parents[i] && !results.parents[i].disabled ? results.parents[i] : null;
+					categories[i].parent = results.parents[i] || undefined;
 					calculateTopicPostCount(categories[i]);
 				}
 			}
@@ -250,18 +254,23 @@ var async = require('async'),
 	};
 
 	function calculateTopicPostCount(category) {
-		if (!Array.isArray(category.children) || !category.children.length) {
+		if (!category) {
 			return;
 		}
 		var postCount = parseInt(category.post_count, 10) || 0;
 		var topicCount = parseInt(category.topic_count, 10) || 0;
+		if (!Array.isArray(category.children) || !category.children.length) {
+			category.totalPostCount = postCount;
+			category.totalTopicCount = topicCount;
+			return;
+		}
 
 		category.children.forEach(function(child) {
 			postCount += parseInt(child.post_count, 10) || 0;
 			topicCount += parseInt(child.topic_count, 10) || 0;
 		});
-		category.post_count = postCount;
-		category.topic_count = topicCount;
+		category.totalPostCount = postCount;
+		category.totalTopicCount = topicCount;
 	}
 
 	Categories.getParents = function(cids, callback) {
@@ -299,6 +308,30 @@ var async = require('async'),
 				}, next);
 			}
 		], callback);
+	};
+
+	/**
+	 * Recursively build tree
+	 *
+	 * @param categories {array} flat list of categories
+	 * @param parentCid {number} start from 0 to build full tree
+	 */
+	Categories.getTree = function(categories, parentCid) {
+		var tree = [], i = 0, len = categories.length, category;
+
+		for(i; i < len; ++i) {
+			category = categories[i];
+			if (!category.hasOwnProperty('parentCid')) {
+				category.parentCid = 0;
+			}
+
+			if(category.parentCid == parentCid){
+				tree.push(category);
+				category.children = Categories.getTree(categories, category.cid);
+			}
+		}
+
+		return tree;
 	};
 
 }(exports));

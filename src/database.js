@@ -30,11 +30,15 @@ function setupSecondaryDB() {
 		primaryDBhelpers = primaryDB.helpers;
 
 	primaryDB.init = function(callback) {
-		async.parallel([primaryDBinit, secondaryDB.init], callback);
+		async.parallel([primaryDBinit, secondaryDB.init], function(err, results) {
+			callback(err);
+		});
 	};
 
 	primaryDB.close = function(callback) {
-		async.parallel([primaryDBclose, secondaryDB.close], callback);
+		async.parallel([primaryDBclose, secondaryDB.close], function(err, results) {
+			callback(err);
+		});
 	};
 
 	primaryDB.helpers = {};

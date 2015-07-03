@@ -28,4 +28,4 @@
 
 ===
 
-[[email:digest.unsub.info]] [[email:unsub.cta]]: {url}/user/{username}/settings.
+[[email:digest.unsub.info]] [[email:unsub.cta]]: {url}/user/{userslug}/settings.

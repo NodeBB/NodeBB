@@ -96,7 +96,7 @@ middleware.renderHeader = function(req, res, next) {
 				relative_path: nconf.get('relative_path'),
 				configJSON: JSON.stringify(results.config),
 				user: userData,
-				userJSON: JSON.stringify(userData),
+				userJSON: JSON.stringify(userData).replace(/'/g, "\\'"),
 				plugins: results.custom_header.plugins,
 				authentication: results.custom_header.authentication,
 				scripts: results.scripts,

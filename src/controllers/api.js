@@ -42,6 +42,7 @@ apiController.getConfig = function(req, res, next) {
 	config.maximumAboutMeLength = meta.config.maximumAboutMeLength || 1000;
 	config.useOutgoingLinksPage = parseInt(meta.config.useOutgoingLinksPage, 10) === 1;
 	config.allowGuestSearching = parseInt(meta.config.allowGuestSearching, 10) === 1;
+	config.allowGuestUserSearching = parseInt(meta.config.allowGuestUserSearching, 10) === 1;
 	config.allowGuestHandles = parseInt(meta.config.allowGuestHandles, 10) === 1;
 	config.allowFileUploads = parseInt(meta.config.allowFileUploads, 10) === 1;
 	config.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads) === 1;

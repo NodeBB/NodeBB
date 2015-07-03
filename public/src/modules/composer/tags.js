@@ -14,8 +14,9 @@ define('composer/tags', function() {
 
 		tagEl.tagsinput({
 			maxTags: config.tagsPerTopic,
+			maxChars: config.maximumTagLength,
 			confirmKeys: [13, 44],
-			trimValue: true			
+			trimValue: true
 		});
 
 		tagEl.on('beforeItemAdd', function(event) {
@@ -34,23 +35,29 @@ define('composer/tags', function() {
 		addTags(postData.tags, tagEl);
 
 		var input = postContainer.find('.bootstrap-tagsinput input');
-		input.autocomplete({
-			delay: 100,
-			source: function(request, response) {
-				socket.emit('topics.searchTags', {query: request.term, cid: postData.cid}, function(err, tags) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					if (tags) {
-						response(tags);
-					}
-					$('.ui-autocomplete a').attr('data-ajaxify', 'false');
-				});
-			},
-			select: function(event, ui) {
-				// when autocomplete is selected from the dropdown simulate a enter key down to turn it into a tag
-				triggerEnter(input);
-			}
+
+		app.loadJQueryUI(function() {
+			input.autocomplete({
+				delay: 100,
+				open: function() {
+					$(this).autocomplete('widget').css('z-index', 20000);
+				},
+				source: function(request, response) {
+					socket.emit('topics.searchTags', {query: request.term, cid: postData.cid}, function(err, tags) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						if (tags) {
+							response(tags);
+						}
+						$('.ui-autocomplete a').attr('data-ajaxify', 'false');
+					});
+				},
+				select: function(event, ui) {
+					// when autocomplete is selected from the dropdown simulate a enter key down to turn it into a tag
+					triggerEnter(input);
+				}
+			});
 		});
 
 		input.attr('tabIndex', tagEl.attr('tabIndex'));

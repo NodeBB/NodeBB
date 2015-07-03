@@ -39,14 +39,14 @@ module.exports = function(db, module) {
 			return callback(null, []);
 		}
 		db.collection('objects').find({_key: {$in: keys}}, {_id: 0}).toArray(function(err, data) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
 			var map = helpers.toMap(data);
 			var returnData = [];
 
-			for(var i=0; i<keys.length; ++i) {
+			for (var i=0; i<keys.length; ++i) {
 				returnData.push(map[keys[i]]);
 			}
 

@@ -30,6 +30,8 @@ var	async = require('async'),
 	require('./user/search')(User);
 	require('./user/jobs')(User);
 	require('./user/picture')(User);
+	require('./user/approval')(User);
+	require('./user/invite')(User);
 
 	User.getUserField = function(uid, field, callback) {
 		User.getUserFields(uid, [field], function(err, user) {
@@ -332,7 +334,7 @@ var	async = require('async'),
 
 	User.getUidByUsername = function(username, callback) {
 		if (!username) {
-			return callback();
+			return callback(null, 0);
 		}
 		db.sortedSetScore('username:uid', username, callback);
 	};
@@ -343,7 +345,7 @@ var	async = require('async'),
 
 	User.getUidByUserslug = function(userslug, callback) {
 		if (!userslug) {
-			return callback();
+			return callback(null, 0);
 		}
 		db.sortedSetScore('userslug:uid', userslug, callback);
 	};
@@ -441,7 +443,7 @@ var	async = require('async'),
 			if (Array.isArray(uid)) {
 				async.parallel([
 					async.apply(groups.isMembers, uid, 'cid:' + cid + ':privileges:mods'),
-					async.apply(groups.isMembers, uid, 'cid:' + cid + ':privileges:groups:moderate')
+					async.apply(groups.isMembersOfGroupList, uid, 'cid:' + cid + ':privileges:groups:moderate')
 				], function(err, checks) {
 					var isModerator = checks[0].map(function(isMember, idx) {
 							return isMember || checks[1][idx];
@@ -451,7 +453,7 @@ var	async = require('async'),
 			} else {
 				async.parallel([
 					async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:mods'),
-					async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:groups:moderate')
+					async.apply(groups.isMemberOfGroupList, uid, 'cid:' + cid + ':privileges:groups:moderate')
 				], function(err, checks) {
 					var isModerator = checks[0] || checks[1];
 					filterIsModerator(null, isModerator);
@@ -508,3 +510,4 @@ var	async = require('async'),
 
 
 }(exports));
+

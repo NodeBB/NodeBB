@@ -30,7 +30,7 @@ $(document).ready(function() {
 
 	ajaxify.currentPage = null;
 
-	ajaxify.go = function (url, callback, quiet) {
+	ajaxify.go = function (url, callback, quiet, search) {
 		if (ajaxify.handleRedirects(url)) {
 			return true;
 		}
@@ -43,7 +43,7 @@ $(document).ready(function() {
 			apiXHR.abort();
 		}
 
-		url = ajaxify.start(url, quiet);
+		url = ajaxify.start(url, quiet, search);
 
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
@@ -59,12 +59,6 @@ $(document).ready(function() {
 				translator.load(config.defaultLang, data.template.name);
 				renderTemplate(url, data.template.name, data, callback);
 			});
-		});
-
-		require(['search'], function(search) {
-			if (search.topicDOM.active && !url.startsWith('topic/')) {
-				search.topicDOM.end();
-			}
 		});
 
 		return true;
@@ -150,13 +144,18 @@ $(document).ready(function() {
 	}
 
 	ajaxify.end = function(url, tpl_url) {
+		function done() {
+			if (--count === 0) {
+				$(window).trigger('action:ajaxify.end', {url: url});
+			}
+		}
+		var count = 2;
+
 		ajaxify.variables.parse();
 
-		ajaxify.loadScript(tpl_url);
+		ajaxify.loadScript(tpl_url, done);
 
-		ajaxify.widgets.render(tpl_url, url, function() {
-			$(window).trigger('action:ajaxify.end', {url: url});
-		});
+		ajaxify.widgets.render(tpl_url, url, done);
 
 		$(window).trigger('action:ajaxify.contentLoaded', {url: url, tpl: tpl_url});
 
@@ -261,7 +260,11 @@ $(document).ready(function() {
 			}
 
 			if (!e.ctrlKey && !e.shiftKey && !e.metaKey && e.which === 1) {
-				if (this.host === '' || (this.host === window.location.host && this.protocol === window.location.protocol)) {
+				if (
+					this.host === '' ||	// Relative paths are always internal links...
+					(this.host === window.location.host && this.protocol === window.location.protocol &&	// Otherwise need to check that protocol and host match
+					(RELATIVE_PATH.length > 0 ? this.pathname.indexOf(RELATIVE_PATH) === 0 : true))	// Subfolder installs need this additional check
+				) {
 					// Internal link
 					var url = this.href.replace(rootUrl + '/', '');
 

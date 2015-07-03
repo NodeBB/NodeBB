@@ -4,11 +4,12 @@
 			<div class="panel-heading"><i class="fa fa-user"></i> Users</div>
 			<div class="panel-body">
 				<ul class="nav nav-pills">
-					<li class='active'><a href='{relative_path}/admin/manage/users/latest'>Latest Users</a></li>
-					<li class=''><a href='{relative_path}/admin/manage/users/sort-posts'>Top Posters</a></li>
-					<li class=''><a href='{relative_path}/admin/manage/users/sort-reputation'>Most Reputation</a></li>
-					<li class=''><a href='{relative_path}/admin/manage/users/banned'>Banned</a></li>
-					<li class=''><a href='{relative_path}/admin/manage/users/search'>User Search</a></li>
+					<li class='active'><a href='{config.relative_path}/admin/manage/users/latest'>Latest Users</a></li>
+					<li class=''><a href='{config.relative_path}/admin/manage/users/sort-posts'>Top Posters</a></li>
+					<li class=''><a href='{config.relative_path}/admin/manage/users/sort-reputation'>Most Reputation</a></li>
+					<li class=''><a href='{config.relative_path}/admin/manage/users/banned'>Banned</a></li>
+					<li class=''><a href='{config.relative_path}/admin/manage/users/registration'>Registration Queue</a></li>
+					<li class=''><a href='{config.relative_path}/admin/manage/users/search'>User Search</a></li>
 
 
 					<div class="btn-group pull-right">
@@ -63,7 +64,7 @@
 							</div>
 						</div>
 
-						<a href="{relative_path}/user/{users.userslug}" target="_blank">{users.username} ({users.uid})</a><br/>
+						<a href="{config.relative_path}/user/{users.userslug}" target="_blank">{users.username} ({users.uid})</a><br/>
 						<!-- IF users.email -->
 						<small><span title="{users.email}">{users.email}</span></small>
 						<!-- ENDIF users.email -->
@@ -129,7 +130,7 @@
 			<div class="panel-heading">Users Control Panel</div>
 			<div class="panel-body">
 				<button id="createUser" class="btn btn-primary">New User</button>
-				<a target="_blank" href="{relative_path}/api/admin/users/csv" class="btn btn-primary">Download CSV</a>
+				<a target="_blank" href="{config.relative_path}/api/admin/users/csv" class="btn btn-primary">Download CSV</a>
 			</div>
 		</div>
 	</div>

@@ -7,6 +7,10 @@ module.exports = function(db, module) {
 
 	module.searchIndex = function(key, data, id, callback) {
 		callback = callback || function() {};
+		id = parseInt(id, 10);
+		if (!id) {
+			return callback();
+		}
 		var setData = {
 			id: id
 		};
@@ -17,7 +21,7 @@ module.exports = function(db, module) {
 		}
 
 		db.collection('search' + key).update({id: id}, {$set: setData}, {upsert:true, w: 1}, function(err) {
-			if(err) {
+			if (err) {
 				winston.error('Error indexing ' + err.message);
 			}
 			callback(err);
@@ -66,9 +70,11 @@ module.exports = function(db, module) {
 
 	module.searchRemove = function(key, id, callback) {
 		callback = callback || helpers.noop;
+		id = parseInt(id, 10);
 		if (!id) {
 			return callback();
 		}
+
 		db.collection('search' + key).remove({id: id}, function(err, res) {
 			callback(err);
 		});

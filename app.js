@@ -29,10 +29,10 @@ var fs = require('fs'),
 	async = require('async'),
 	semver = require('semver'),
 	winston = require('winston'),
+	colors = require('colors'),
 	path = require('path'),
 	pkg = require('./package.json'),
 	utils = require('./public/src/utils.js');
-
 
 global.env = process.env.NODE_ENV || 'production';
 
@@ -108,6 +108,7 @@ function loadConfig() {
 
 function start() {
 	loadConfig();
+	var db = require('./src/database');
 
 	// nconf defaults, if not set in config
 	if (!nconf.get('upload_path')) {
@@ -116,6 +117,7 @@ function start() {
 	// Parse out the relative_url and other goodies from the configured URL
 	var urlObject = url.parse(nconf.get('url'));
 	var relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
+	nconf.set('base_url', urlObject.protocol + '//' + urlObject.host);
 	nconf.set('use_port', !!urlObject.port);
 	nconf.set('relative_path', relativePath);
 	nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || 4567);
@@ -175,9 +177,8 @@ function start() {
 	});
 
 	async.waterfall([
-		function(next) {
-			require('./src/database').init(next);
-		},
+		async.apply(db.init),
+		async.apply(db.checkCompatibility),
 		function(next) {
 			require('./src/meta').configs.init(next);
 		},
@@ -203,7 +204,12 @@ function start() {
 		}
 	], function(err) {
 		if (err) {
-			winston.error(err.stack);
+			if (err.stacktrace !== false) {
+				winston.error(err.stack);
+			} else {
+				winston.error(err.message);
+			}
+
 			process.exit();
 		}
 	});
@@ -274,17 +280,19 @@ function reset() {
 			process.exit();
 		}
 
-		if (nconf.get('theme')) {
+		if (nconf.get('t')) {
 			resetThemes();
-		} else if (nconf.get('plugin')) {
-			resetPlugin(nconf.get('plugin'));
-		} else if (nconf.get('plugins')) {
-			resetPlugins();
-		} else if (nconf.get('widgets')) {
+		} else if (nconf.get('p')) {
+			if (nconf.get('p') === true) {
+				resetPlugins();
+			} else {
+				resetPlugin(nconf.get('p'));
+			}
+		} else if (nconf.get('w')) {
 			resetWidgets();
-		} else if (nconf.get('settings')) {
+		} else if (nconf.get('s')) {
 			resetSettings();
-		} else if (nconf.get('all')) {
+		} else if (nconf.get('a')) {
 			require('async').series([resetWidgets, resetThemes, resetPlugins, resetSettings], function(err) {
 				if (!err) {
 					winston.info('[reset] Reset complete.');
@@ -294,10 +302,17 @@ function reset() {
 				process.exit();
 			});
 		} else {
-			winston.warn('[reset] Nothing reset.');
-			winston.info('Use ./nodebb reset {theme|plugins|widgets|settings|all}');
-			winston.info(' or');
-			winston.info('Use ./nodebb reset plugin="nodebb-plugin-pluginName"');
+			process.stdout.write('\nNodeBB Reset\n'.bold);
+			process.stdout.write('No arguments passed in, so nothing was reset.\n\n'.yellow);
+			process.stdout.write('Use ./nodebb reset ' + '{-t|-p|-w|-s|-a}\n'.red);
+			process.stdout.write('    -t\tthemes\n');
+			process.stdout.write('    -p\tplugins\n');
+			process.stdout.write('    -w\twidgets\n');
+			process.stdout.write('    -s\tsettings\n');
+			process.stdout.write('    -a\tall of the above\n');
+
+			process.stdout.write('\nPlugin reset flag (-p) can take a single argument\n');
+			process.stdout.write('    e.g. ./nodebb reset -p nodebb-plugin-mentions\n');
 			process.exit();
 		}
 	});

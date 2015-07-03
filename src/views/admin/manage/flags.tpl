@@ -38,11 +38,11 @@
 					<div>
 						<div class="panel panel-default" data-pid="{posts.pid}" data-tid="{posts.topic.tid}">
 							<div class="panel-body">
-								<a href="{relative_path}/user/{posts.user.userslug}">
+								<a href="{config.relative_path}/user/{posts.user.userslug}">
 									<img title="{posts.user.username}" class="img-rounded user-img" src="{posts.user.picture}">
 								</a>
 
-								<a href="{relative_path}/user/{posts.user.userslug}">
+								<a href="{config.relative_path}/user/{posts.user.userslug}">
 									<strong><span>{posts.user.username}</span></strong>
 								</a>
 								<div class="content">
@@ -51,8 +51,8 @@
 								</div>
 								<small>
 									<span class="pull-right">
-										Posted in <a href="{relative_path}/category/{posts.category.slug}" target="_blank"><i class="fa {posts.category.icon}"></i> {posts.category.name}</a>, <span class="timeago" title="{posts.relativeTime}"></span> &bull;
-										<a href="{relative_path}/topic/{posts.topic.slug}/{posts.index}" target="_blank">Read More</a>
+										Posted in <a href="{config.relative_path}/category/{posts.category.slug}" target="_blank"><i class="fa {posts.category.icon}"></i> {posts.category.name}</a>, <span class="timeago" title="{posts.relativeTime}"></span> &bull;
+										<a href="{config.relative_path}/topic/{posts.topic.slug}/{posts.index}" target="_blank">Read More</a>
 									</span>
 								</small>
 							</div>

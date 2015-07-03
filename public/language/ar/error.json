@@ -1,8 +1,8 @@
 {
     "invalid-data": "بيانات غير صالحة",
     "not-logged-in": "لم تقم بتسجيل الدخول",
-    "account-locked": "تم إقفال حسابكم مؤقتًا.",
-    "search-requires-login": "البحث في المنتدى يستلزم توفرك على حساب! المرجو تسجيل دخولك أو إنشاء حساب!",
+    "account-locked": "تم حظر حسابك مؤقتًا.",
+    "search-requires-login": "Searching requires an account - please login or register.",
     "invalid-cid": "قائمة غير موجودة",
     "invalid-tid": "موضوع غير متواجد",
     "invalid-pid": "رد غير موجود",
@@ -25,7 +25,7 @@
     "username-too-short": "اسم المستخدم قصير.",
     "username-too-long": "اسم المستخدم طويل",
     "user-banned": "المستخدم محظور",
-    "user-too-new": "Sorry, you are required to wait %1 second(s) before making your first post",
+    "user-too-new": "عذرا, يجب أن تنتظر 1% ثواني قبل قيامك بأول مشاركة",
     "no-category": "قائمة غير موجودة",
     "no-topic": "موضوع غير موجود",
     "no-post": "رد غير موجود",
@@ -68,9 +68,10 @@
     "invalid-file": "ملف غير مقبول",
     "uploads-are-disabled": "رفع الملفات غير مفعل",
     "signature-too-long": "Sorry, your signature cannot be longer than %1 character(s).",
+    "about-me-too-long": "Sorry, your about me cannot be longer than %1 character(s).",
     "cant-chat-with-yourself": "لايمكنك فتح محادثة مع نفسك",
     "chat-restricted": "هذا المستخدم عطل المحادثات الواردة عليه. يجب أن يتبعك حتى تتمكن من فتح محادثة معه.",
-    "too-many-messages": "You have sent too many messages, please wait awhile.",
+    "too-many-messages": "لقد أرسلت الكثير من الرسائل، الرجاء اﻹنتظار قليلاً",
     "reputation-system-disabled": "نظام السمعة معطل",
     "downvoting-disabled": "التصويتات السلبية معطلة",
     "not-enough-reputation-to-downvote": "ليس لديك سمعة تكفي لإضافة صوت سلبي لهذا الموضوع",
@@ -78,6 +79,6 @@
     "reload-failed": "المنتدى واجه مشكلة أثناء إعادة التحميل: \"%1\".  سيواصل المنتدى خدمة العملاء السابقين لكن يجب عليك إلغاء أي تغيير قمت به قبل إعادة التحميل.",
     "registration-error": "حدث خطأ أثناء التسجيل",
     "parse-error": "Something went wrong while parsing server response",
-    "wrong-login-type-email": "Please use your email to login",
-    "wrong-login-type-username": "Please use your username to login"
+    "wrong-login-type-email": "الرجاء استعمال بريدك اﻹلكتروني للدخول",
+    "wrong-login-type-username": "الرجاء استعمال اسم المستخدم الخاص بك للدخول"
 }

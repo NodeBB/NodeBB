@@ -3,7 +3,7 @@
 
 	"not-logged-in": "You don't seem to be logged in.",
 	"account-locked": "Your account has been locked temporarily",
-	"search-requires-login": "Searching requires an account! Please login or register!",
+	"search-requires-login": "Searching requires an account - please login or register.",
 
 	"invalid-cid": "Invalid Category ID",
 	"invalid-tid": "Invalid Topic ID",
@@ -65,6 +65,7 @@
 	"already-unfavourited": "You have already unfavourited this post",
 
 	"cant-ban-other-admins": "You can't ban other admins!",
+	"cant-remove-last-admin": "You are the only administrator. Add another user as an administrator before removing yourself as admin",
 
 	"invalid-image-type": "Invalid image type. Allowed types are: %1",
 	"invalid-image-extension": "Invalid image extension",
@@ -88,8 +89,8 @@
 	"invalid-file": "Invalid File",
 	"uploads-are-disabled": "Uploads are disabled",
 
-	"signature-too-long" : "Sorry, your signature cannot be longer than %1 characters.",
-	"about-me-too-long" : "Sorry, your about me cannot be longer than %1 characters.",
+	"signature-too-long" : "Sorry, your signature cannot be longer than %1 character(s).",
+	"about-me-too-long" : "Sorry, your about me cannot be longer than %1 character(s).",
 
 	"cant-chat-with-yourself": "You can't chat with yourself!",
 	"chat-restricted": "This user has restricted their chat messages. They must follow you before you can chat with them",
@@ -99,6 +100,7 @@
 	"downvoting-disabled": "Downvoting is disabled",
 	"not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post",
 	"not-enough-reputation-to-flag": "You do not have enough reputation to flag this post",
+	"already-flagged": "You have already flagged this post",
 
 	"reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading.",
 

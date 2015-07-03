@@ -40,5 +40,5 @@
 
 <hr />
 <p>
-	[[email:digest.unsub.info]] <a href="{url}/user/{username}/settings">[[email:unsub.cta]]</a>.
+	[[email:digest.unsub.info]] <a href="{url}/user/{userslug}/settings">[[email:unsub.cta]]</a>.
 </p>

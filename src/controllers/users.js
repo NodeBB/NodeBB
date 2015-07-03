@@ -36,7 +36,7 @@ usersController.getOnlineUsers = function(req, res, next) {
 		}
 
 		var userData = {
-			'route_users:online': true,
+			'users:online': true,
 			search_display: 'hidden',
 			loadmore_display: results.count > 50 ? 'block' : 'hide',
 			users: results.users,
@@ -48,38 +48,38 @@ usersController.getOnlineUsers = function(req, res, next) {
 };
 
 usersController.getUsersSortedByPosts = function(req, res, next) {
-	usersController.getUsers('users:postcount', 50, req, res, next);
+	usersController.getUsers('users:postcount', 0, 49, req, res, next);
 };
 
 usersController.getUsersSortedByReputation = function(req, res, next) {
-	usersController.getUsers('users:reputation', 50, req, res, next);
+	usersController.getUsers('users:reputation', 0, 49, req, res, next);
 };
 
 usersController.getUsersSortedByJoinDate = function(req, res, next) {
-	usersController.getUsers('users:joindate', 50, req, res, next);
+	usersController.getUsers('users:joindate', 0, 49, req, res, next);
 };
 
-usersController.getUsers = function(set, count, req, res, next) {
-	getUsersAndCount(set, req.uid, count, function(err, data) {
+usersController.getUsers = function(set, start, stop, req, res, next) {
+	usersController.getUsersAndCount(set, req.uid, start, stop, function(err, data) {
 		if (err) {
 			return next(err);
 		}
 		var pageCount = Math.ceil(data.count / (parseInt(meta.config.userSearchResultsPerPage, 10) || 20));
 		var userData = {
 			search_display: 'hidden',
-			loadmore_display: data.count > count ? 'block' : 'hide',
+			loadmore_display: data.count > (stop - start + 1) ? 'block' : 'hide',
 			users: data.users,
 			pagination: pagination.create(1, pageCount)
 		};
-		userData['route_' + set] = true;
+		userData[set] = true;
 		render(req, res, userData, next);
 	});
 };
 
-function getUsersAndCount(set, uid, count, callback) {
+usersController.getUsersAndCount = function(set, uid, start, stop, callback) {
 	async.parallel({
 		users: function(next) {
-			user.getUsersFromSet(set, uid, 0, count - 1, next);
+			user.getUsersFromSet(set, uid, start, stop, next);
 		},
 		count: function(next) {
 			db.getObjectField('global', 'userCount', next);
@@ -94,15 +94,15 @@ function getUsersAndCount(set, uid, count, callback) {
 
 		callback(null, results);
 	});
-}
+};
 
 usersController.getUsersForSearch = function(req, res, next) {
-	if (!req.uid) {
+	if (!req.uid && parseInt(meta.config.allowGuestUserSearching, 10) !== 1) {
 		return helpers.notAllowed(req, res);
 	}
 	var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
 
-	getUsersAndCount('users:joindate', req.uid, resultsPerPage, function(err, data) {
+	usersController.getUsersAndCount('users:joindate', req.uid, 0, resultsPerPage - 1, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -122,6 +122,7 @@ function render(req, res, data, next) {
 		if (err) {
 			return next(err);
 		}
+		data.templateData.inviteOnly = meta.config.registrationType === 'invite-only';
 		res.render('users', data.templateData);
 	});
 }

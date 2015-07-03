@@ -130,8 +130,9 @@ module.exports = function(User) {
 				} else if (field === 'signature') {
 					data[field] = S(data[field]).stripTags().s;
 				} else if (field === 'website') {
+					var urlObj;
 					if (data[field].length > 0) {
-						var urlObj = url.parse(data[field], false, true);
+						urlObj = url.parse(data[field], false, true);
 						if (!urlObj.protocol) {
 							urlObj.protocol = 'http';
 							urlObj.slashes = true;
@@ -144,8 +145,9 @@ module.exports = function(User) {
 							urlObj.pathname = null;
 						}
 					}
-
-					data[field] = url.format(urlObj);
+					if (urlObj) {
+						data[field] = url.format(urlObj);
+					}
 				}
 
 				User.setUserField(uid, field, data[field], next);
@@ -164,8 +166,10 @@ module.exports = function(User) {
 			if (userData.email === newEmail) {
 				return callback();
 			}
-
-			db.sortedSetRemove('email:uid', userData.email.toLowerCase(), function(err) {
+			async.series([
+				async.apply(db.sortedSetRemove, 'email:uid', userData.email.toLowerCase()),
+				async.apply(db.sortedSetRemove, 'email:sorted', userData.email.toLowerCase() + ':' + uid)
+			], function(err) {
 				if (err) {
 					return callback(err);
 				}
@@ -177,6 +181,9 @@ module.exports = function(User) {
 					},
 					function(next) {
 						db.sortedSetAdd('email:uid', uid, newEmail.toLowerCase(), next);
+					},
+					function(next) {
+						db.sortedSetAdd('email:sorted',  0, newEmail.toLowerCase() + ':' + uid, next);
 					},
 					function(next) {
 						User.setUserField(uid, 'email', newEmail, next);
@@ -216,7 +223,13 @@ module.exports = function(User) {
 				function(next) {
 					var newUserslug = utils.slugify(newUsername);
 					updateUidMapping('userslug', uid, newUserslug, userData.userslug, next);
-				}
+				},
+				function(next) {
+					async.series([
+						async.apply(db.sortedSetRemove, 'username:sorted', userData.username.toLowerCase() + ':' + uid),
+						async.apply(db.sortedSetAdd, 'username:sorted', 0, newUsername.toLowerCase() + ':' + uid)
+					], next);
+				},
 			], callback);
 		});
 	}

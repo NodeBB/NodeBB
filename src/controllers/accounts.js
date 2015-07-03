@@ -80,6 +80,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.uid = userData.uid;
 			userData.yourid = callerUID;
 			userData.theirid = userData.uid;
+			userData.isAdmin = isAdmin;
 			userData.isSelf = self;
 			userData.showHidden = self || isAdmin;
 			userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
@@ -88,7 +89,8 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.profile_links = results.profile_links;
 			userData.status = require('../socket.io').isUserOnline(userData.uid) ? (userData.status || 'online') : 'offline';
 			userData.banned = parseInt(userData.banned, 10) === 1;
-			userData.websiteName = userData.website.replace('http://', '').replace('https://', '');
+			userData.website = validator.escape(userData.website);
+			userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
 			userData.followingCount = parseInt(userData.followingCount, 10) || 0;
 			userData.followerCount = parseInt(userData.followerCount, 10) || 0;
 
@@ -254,12 +256,13 @@ accountsController.getGroups = function(req, res, next) {
 			return helpers.notFound(req, res);
 		}
 
-		groups.getUserGroups([userData.uid], function(err, groups) {
+		groups.getUserGroups([userData.uid], function(err, groupsData) {
 			if (err) {
 				return next(err);
 			}
 
-			userData.groups = groups[0];
+			userData.groups = groupsData[0];
+			userData.groups.forEach(groups.escapeGroupData);
 
 			res.render('account/groups', userData);
 		});

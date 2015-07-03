@@ -96,7 +96,7 @@ module.exports = function(db, module) {
 
 	module.isSetMember = function(key, value, callback) {
 		if (!key) {
-			return callback();
+			return callback(null, false);
 		}
 		value = helpers.valueToString(value);
 

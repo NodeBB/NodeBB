@@ -34,7 +34,7 @@
 		<form>
 			<label>Site Logo</label>
 			<input id="logoUrl" type="text" class="form-control" placeholder="Path to a logo to display on forum header" data-field="brand:logo" /><br />
-			<input data-action="upload" data-target="logoUrl" data-route="{relative_path}/api/admin/uploadlogo" type="button" class="btn btn-default" value="Upload Logo"></input>
+			<input data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/uploadlogo" type="button" class="btn btn-default" value="Upload Logo"></input>
 		</form>
 	</div>
 </div>
@@ -45,7 +45,7 @@
 		<form>
 			<label>Favicon</label><br />
 			<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" /><br />
-			<input data-action="upload" data-target="faviconUrl" data-route="{relative_path}/api/admin/uploadfavicon" type="button" class="btn btn-default" value="Upload"></input>
+			<input data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" type="button" class="btn btn-default" value="Upload"></input>
 		</form>
 	</div>
 </div>
@@ -54,11 +54,6 @@
 	<div class="panel-heading">Miscellaneous</div>
 	<div class="panel-body">
 		<form>
-			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="allowGuestSearching"> <strong>Allow guests to search without logging in</strong>
-				</label>
-			</div>
 			<div class="checkbox">
 				<label>
 					<input type="checkbox" data-field="useOutgoingLinksPage"> <strong>Use Outgoing Links Warning Page</strong>

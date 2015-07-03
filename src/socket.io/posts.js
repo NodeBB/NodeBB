@@ -45,7 +45,7 @@ SocketPosts.reply = function(socket, data, callback) {
 			'downvote:disabled': parseInt(meta.config['downvote:disabled'], 10) === 1,
 		};
 
-		callback();
+		callback(null, postData);
 
 		socket.emit('event:new_post', result);
 
@@ -303,13 +303,23 @@ SocketPosts.edit = function(socket, data, callback) {
 			return callback(err);
 		}
 
+		if (result.topic.renamed) {
+			events.log({
+				type: 'topic-rename',
+				uid: socket.uid,
+				ip: socket.ip,
+				oldTitle: result.topic.oldTitle,
+				newTitle: result.topic.title
+			});
+		}
+
 		if (parseInt(result.post.deleted) !== 1) {
 			websockets.in('topic_' + result.topic.tid).emit('event:post_edited', result);
-			return callback();
+			return callback(null, result.post);
 		}
 
 		socket.emit('event:post_edited', result);
-		callback();
+		callback(null, result.post);
 
 		async.parallel({
 			admins: async.apply(groups.getMembers, 'administrators', 0, -1),
@@ -466,33 +476,54 @@ SocketPosts.flag = function(socket, pid, callback) {
 	}
 
 	var message = '',
-		userName = '',
+		flaggingUser = {},
 		post;
 
 	async.waterfall([
 		function(next) {
-			user.getUserFields(socket.uid, ['username', 'reputation'], next);
+			posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'deleted'], function(err, postData) {
+				if (parseInt(postData.deleted, 10) === 1) {
+					return next(new Error('[[error:post-deleted]]'));
+				}
+
+				post = postData;
+				next();
+			});
 		},
-		function(userData, next) {
-			if (parseInt(userData.reputation, 10) < parseInt(meta.config['privileges:flag'] || 1, 10)) {
+		function(next) {
+			topics.getTopicFields(post.tid, ['title', 'cid'], function(err, topicData) {
+				post.topic = topicData;
+				next();
+			});
+		},
+		function(next) {
+			async.parallel({
+				isAdmin: function(next) {
+					user.isAdministrator(socket.uid, next);
+				},
+				isModerator: function(next) {
+					user.isModerator(socket.uid, post.topic.cid, next);
+				},
+				userData: function(next) {
+					user.getUserFields(socket.uid, ['username', 'reputation'], next);
+				}
+			}, next);
+		},
+		function(user, next) {
+			if (!user.isAdmin && !user.isModerator && parseInt(user.userData.reputation, 10) < parseInt(meta.config['privileges:flag'] || 1, 10)) {
 				return next(new Error('[[error:not-enough-reputation-to-flag]]'));
 			}
-			userName = userData.username;
-			posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'deleted'], next);
+
+			flaggingUser = user.userData;
+			flaggingUser.uid = socket.uid;
+
+			next();
 		},
-		function(postData, next) {
-			if (parseInt(postData.deleted, 10) === 1) {
-				return next(new Error('[[error:post-deleted]]'));
-			}
-			post = postData;
+		function(next) {
 			posts.flag(post, socket.uid, next);
 		},
 		function(next) {
-			topics.getTopicFields(post.tid, ['title', 'cid'], next);
-		},
-		function(topic, next) {
-			post.topic = topic;
-			message = '[[notifications:user_flagged_post_in, ' + userName + ', ' + topic.title + ']]';
+			message = '[[notifications:user_flagged_post_in, ' + flaggingUser.username + ', ' + post.topic.title + ']]';
 			posts.parsePost(post, next);
 		},
 		function(post, next) {
@@ -516,6 +547,8 @@ SocketPosts.flag = function(socket, pid, callback) {
 				if (err || !notification) {
 					return next(err);
 				}
+
+				plugins.fireHook('action:post.flag', {post: post, flaggingUser: flaggingUser});
 				notifications.push(notification, results.admins.concat(results.moderators), next);
 			});
 		}

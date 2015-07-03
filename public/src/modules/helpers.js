@@ -102,15 +102,15 @@
 			style.push('unread');
 		}
 
-		if (topic.extraClass) {
-			style.push(topic.extraClass);
-		}
-
 		return style.join(' ');
 	};
 
 	helpers.getBookmarkFromIndex = function(topic) {
 		return (topic.index || 0) + 1;
+	};
+
+	helpers.displayUserSearch = function(data, allowGuestUserSearching) {
+		return data.loggedIn || allowGuestUserSearching === 'true';
 	};
 
 	// Groups helpers

@@ -142,6 +142,7 @@ var db = require('./database'),
 			async.waterfall([
 				async.apply(db.getObjects, keys),
 				function(messages, next) {
+					messages = messages.filter(Boolean);
 					async.map(messages, function(message, next) {
 						var self = parseInt(message.fromuid, 10) === parseInt(fromuid, 10);
 						message.fromUser = self ? userData[0] : userData[1];
@@ -211,14 +212,14 @@ var db = require('./database'),
 				}
 			},
 			function(mids, next) {
-				if (typeof mids !== 'boolean') {
+				if (typeof mids !== 'boolean' && mids && mids.length) {
 					db.getObjects(['message:' + mids[0], 'message:' + mids[1]], next);
 				} else {
 					next(null, mids);
 				}
 			},
 			function(messages, next) {
-				if (typeof messages !== 'boolean') {
+				if (typeof messages !== 'boolean' && messages && messages.length) {
 					next(null, parseInt(messages[1].timestamp, 10) > parseInt(messages[0].timestamp, 10) + (1000*60*5));
 				} else {
 					next(null, messages);
@@ -401,6 +402,7 @@ var db = require('./database'),
 				emailer.send('notif_chat', touid, {
 					subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
 					username: messageObj.toUser.username,
+					userslug: utils.slugify(messageObj.toUser.username),
 					summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
 					message: messageObj,
 					site_title: meta.config.title || 'NodeBB',

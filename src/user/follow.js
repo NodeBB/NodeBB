@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async'),
+	plugins = require('../plugins'),
 	db = require('./../database');
 
 module.exports = function(User) {
@@ -54,24 +55,31 @@ module.exports = function(User) {
 	}
 
 	User.getFollowing = function(uid, start, stop, callback) {
-		getFollow(uid, 'following:' + uid, start, stop, callback);
+		getFollow(uid, 'following', start, stop, callback);
 	};
 
 	User.getFollowers = function(uid, start, stop, callback) {
-		getFollow(uid, 'followers:' + uid, start, stop, callback);
+		getFollow(uid, 'followers', start, stop, callback);
 	};
 
-	function getFollow(uid, set, start, stop, callback) {
+	function getFollow(uid, type, start, stop, callback) {
 		if (!parseInt(uid, 10)) {
 			return callback(null, []);
 		}
 
-		db.getSortedSetRevRange(set, start, stop, function(err, uids) {
+		db.getSortedSetRevRange(type + ':' + uid, start, stop, function(err, uids) {
 			if (err) {
 				return callback(err);
 			}
 
-			User.getUsers(uids, uid, callback);
+			plugins.fireHook('filter:user.' + type, {
+				uids: uids,
+				uid: uid,
+				start: start,
+				stop: stop
+			}, function(err, data) {
+				User.getUsers(data.uids, uid, callback);
+			});
 		});
 	}
 

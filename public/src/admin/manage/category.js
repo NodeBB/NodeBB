@@ -158,26 +158,6 @@ define('admin/manage/category', [
 	};
 
 	Category.setupPrivilegeTable = function() {
-		var searchEl = $('.privilege-search'),
-			searchObj = autocomplete.user(searchEl);
-
-		// User search + addition to table
-		searchObj.on('autocompleteselect', function(ev, ui) {
-			socket.emit('admin.categories.setPrivilege', {
-				cid: ajaxify.variables.get('cid'),
-				privilege: 'read',
-				set: true,
-				member: ui.item.user.uid
-			}, function(err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-
-				Category.refreshPrivilegeTable();
-				searchEl.val('');
-			});
-		});
-
 		// Checkbox event capture
 		$('.privilege-table-container').on('change', 'input[type="checkbox"]', function() {
 			var checkboxEl = $(this),
@@ -204,6 +184,9 @@ define('admin/manage/category', [
 				app.alertError('[[error:invalid-data]]');
 			}
 		});
+
+		$('.privilege-table-container').on('click', '[data-action="search.user"]', Category.addUserToPrivilegeTable);
+		$('.privilege-table-container').on('click', '[data-action="search.group"]', Category.addGroupToPrivilegeTable);
 
 		Category.exposeAssumedPrivileges();
 	};
@@ -287,6 +270,62 @@ define('admin/manage/category', [
 						modal.modal('hide');
 						ajaxify.refresh();
 					});
+				});
+			});
+		});
+	};
+
+	Category.addUserToPrivilegeTable = function() {
+		var modal = bootbox.dialog({
+			title: 'Find a User',
+			message: '<input class="form-control input-lg" placeholder="Search for a user here..." />',
+			show: true
+		});
+
+		modal.on('shown.bs.modal', function() {
+			var inputEl = modal.find('input');
+
+			autocomplete.user(inputEl, function(ev, ui) {
+				socket.emit('admin.categories.setPrivilege', {
+					cid: ajaxify.variables.get('cid'),
+					privilege: ['find', 'read'],
+					set: true,
+					member: ui.item.user.uid
+				}, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+
+					Category.refreshPrivilegeTable();
+					modal.modal('hide');
+				});
+			});
+		});
+	};
+
+	Category.addGroupToPrivilegeTable = function() {
+		var modal = bootbox.dialog({
+			title: 'Find a Group',
+			message: '<input class="form-control input-lg" placeholder="Search for a group here..." />',
+			show: true
+		});
+
+		modal.on('shown.bs.modal', function() {
+			var inputEl = modal.find('input');
+
+			autocomplete.group(inputEl, function(ev, ui) {
+				socket.emit('admin.categories.setPrivilege', {
+					cid: ajaxify.variables.get('cid'),
+					privilege: ['groups:find', 'groups:read'],
+					set: true,
+					member: ui.item.group.name
+				}, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+
+					Category.refreshPrivilegeTable();
+					modal.modal('hide');
 				});
 			});
 		});

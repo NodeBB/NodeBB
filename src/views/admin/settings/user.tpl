@@ -6,11 +6,6 @@
 		<form role="form">
 			<div class="checkbox">
 				<label>
-					<input type="checkbox" data-field="allowRegistration" checked> <strong>Allow local registration</strong>
-				</label>
-			</div>
-			<div class="checkbox">
-				<label>
 					<input type="checkbox" data-field="allowLocalLogin" checked> <strong>Allow local login</strong>
 				</label>
 			</div>
@@ -36,6 +31,16 @@
 					<option value="username-email">Username or Email</option>
 					<option value="username">Username Only</option>
 					<option value="email">Email Only</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label>Registration Type</label>
+				<select class="form-control" data-field="registrationType">
+					<option value="normal">Normal</option>
+					<option value="admin-approval">Admin Approval</option>
+					<option value="invite-only">Invite Only</option>
+					<option value="disabled">No registration</option>
 				</select>
 			</div>
 		</form>
@@ -73,7 +78,7 @@
 			<div class="form-group">
 				<label>Custom Gravatar Default Image</label>
 				<input id="customGravatarDefaultImage" type="text" class="form-control" placeholder="A custom image to use instead of gravatar defaults" data-field="customGravatarDefaultImage" /><br />
-				<input data-action="upload" data-target="customGravatarDefaultImage" data-route="{relative_path}/api/admin/uploadgravatardefault" type="button" class="btn btn-default" value="Upload"></input>
+				<input data-action="upload" data-target="customGravatarDefaultImage" data-route="{config.relative_path}/api/admin/uploadgravatardefault" type="button" class="btn btn-default" value="Upload"></input>
 			</div>
 
 			<div class="form-group">

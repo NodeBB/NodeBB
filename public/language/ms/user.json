@@ -1,6 +1,6 @@
 {
     "banned": "Diharamkan",
-    "offline": "Tidak ditalian",
+    "offline": "Luar talian",
     "username": "Nama pengguna",
     "joindate": "Tarikh Mula",
     "postcount": "Jumlah Kiriman",
@@ -21,6 +21,7 @@
     "watched": "Melihat",
     "followers": "Pengikut",
     "following": "Mengikuti",
+    "aboutme": "About me",
     "signature": "Tandatangan",
     "gravatar": "Gravatar",
     "birthday": "Tarikh lahir",
