@@ -466,21 +466,23 @@ app.cacheBuster = null;
 
 	function handleNewTopic() {
 		$('#content').on('click', '#new_topic', function() {
-			require(['composer'], function(composer) {
-				var cid = ajaxify.variables.get('category_id');
-				if (cid) {
-					composer.newTopic(cid);
-				} else {
-					socket.emit('categories.getCategoriesByPrivilege', 'topics:create', function(err, categories) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-						if (categories.length) {
-							composer.newTopic(categories[0].cid);
-						}
-					});
-				}
-			});
+			var cid = ajaxify.variables.get('category_id');
+			if (cid) {
+				$(window).trigger('action:composer.topic.new', {
+					cid: cid
+				});
+			} else {
+				socket.emit('categories.getCategoriesByPrivilege', 'topics:create', function(err, categories) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					if (categories.length) {
+						$(window).trigger('action:composer.topic.new', {
+							cid: categories[0].cid
+						});
+					}
+				});
+			}
 		});
 	}
 

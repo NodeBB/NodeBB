@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 5, 2);
+	latestSchema = Date.UTC(2015, 6, 3);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -418,6 +418,32 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2015/06/02] Creating group sorted sets skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 6, 3);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/07/03] Enabling default composer plugin');
+
+				db.isSortedSetMember('plugins:active', 'nodebb-plugin-composer-default', function(err, active) {
+					if (!active) {
+						Plugins.toggleActive('nodebb-plugin-composer-default', function(err) {
+							if (err) {
+								return next(err);
+							}
+
+							winston.info('[2015/07/03] Enabling default composer plugin done');
+							Upgrade.update(thisSchemaDate, next);
+						});
+					} else {
+						winston.info('[2015/07/03] Enabling default composer plugin done');
+						Upgrade.update(thisSchemaDate, next);
+					}
+				});
+			} else {
+				winston.info('[2015/07/03] Enabling default composer plugin skipped');
 				next();
 			}
 		}

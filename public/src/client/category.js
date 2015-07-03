@@ -2,7 +2,6 @@
 /* global define, config, templates, app, utils, ajaxify, socket */
 
 define('forum/category', [
-	'composer',
 	'forum/pagination',
 	'forum/infinitescroll',
 	'share',
@@ -11,7 +10,7 @@ define('forum/category', [
 	'sort',
 	'components',
 	'translator'
-], function(composer, pagination, infinitescroll, share, navigator, categoryTools, sort, components, translator) {
+], function(pagination, infinitescroll, share, navigator, categoryTools, sort, components, translator) {
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {

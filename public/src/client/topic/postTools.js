@@ -108,9 +108,9 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 		postContainer.on('click', '[component="post/edit"]', function(e) {
 			var btn = $(this);
-			require(['composer'], function(composer) {
-				composer.editPost(getData(btn, 'data-pid'));
-			});
+			$(window).trigger('action:composer.post.edit', {
+				pid: getData(btn, 'data-pid')
+			})
 		});
 
 		postContainer.on('click', '[component="post/delete"]', function(e) {
@@ -135,51 +135,61 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function onReplyClicked(button, tid, topicName) {
-		require(['composer'], function(composer) {
-			var selectionText = '',
-				selection = window.getSelection ? window.getSelection() : document.selection.createRange(),
-				topicUUID = composer.findByTid(tid);
+		var selectionText = '',
+			selection = window.getSelection ? window.getSelection() : document.selection.createRange();
 
-			if ($(selection.baseNode).parents('[component="post/content"]').length > 0) {
-				var snippet = selection.toString();
-				if (snippet.length) {
-					selectionText = '> ' + snippet.replace(/\n/g, '\n> ') + '\n\n';
-				}
+		if ($(selection.baseNode).parents('[component="post/content"]').length > 0) {
+			var snippet = selection.toString();
+			if (snippet.length) {
+				selectionText = '> ' + snippet.replace(/\n/g, '\n> ') + '\n\n';
 			}
+		}
 
-			var username = getUserName(selectionText ? $(selection.baseNode) : button);
-			if (getData(button, 'data-uid') === '0') {
-				username = '';
-			}
-			if (selectionText.length) {
-				composer.addQuote(tid, ajaxify.variables.get('topic_slug'), getData(button, 'data-index'), getData(button, 'data-pid'), topicName, username, selectionText, topicUUID);
-			} else {
-				composer.newReply(tid, getData(button, 'data-pid'), topicName, username ? username + ' ' : '');
-			}
-		});
-
+		var username = getUserName(selectionText ? $(selection.baseNode) : button);
+		if (getData(button, 'data-uid') === '0') {
+			username = '';
+		}
+		if (selectionText.length) {
+			$(window).trigger('action:composer.addQuote', {
+				tid: tid,
+				slug: ajaxify.variables.get('topic_slug'),
+				index: getData(button, 'data-index'),
+				pid: getData(button, 'data-pid'),
+				topicName: topicName,
+				username: username,
+				text: selectionText
+			});
+		} else {
+			$(window).trigger('action:composer.post.new', {
+				tid: tid,
+				pid: ajaxify.variables.get('pid'),
+				topicName: topicName,
+				text: username + ' ' || ''
+			});
+		}
 	}
 
 	function onQuoteClicked(button, tid, topicName) {
-		require(['composer'], function(composer) {
-			var username = getUserName(button),
-				pid = getData(button, 'data-pid'),
-				topicUUID = composer.findByTid(tid);
+		var username = getUserName(button),
+			pid = getData(button, 'data-pid');
 
-			socket.emit('posts.getRawPost', pid, function(err, post) {
-				if(err) {
-					return app.alertError(err.message);
-				}
-				var quoted = '';
-				if(post) {
-					quoted = '> ' + post.replace(/\n/g, '\n> ') + '\n\n';
-				}
+		socket.emit('posts.getRawPost', pid, function(err, post) {
+			if(err) {
+				return app.alertError(err.message);
+			}
+			var quoted = '';
+			if(post) {
+				quoted = '> ' + post.replace(/\n/g, '\n> ') + '\n\n';
+			}
 
-				if(topicUUID) {
-					composer.addQuote(tid, ajaxify.variables.get('topic_slug'), getData(button, 'data-index'), pid, topicName, username, quoted, topicUUID);
-				} else {
-					composer.newReply(tid, pid, topicName, '[[modules:composer.user_said, ' + username + ']]\n' + quoted);
-				}
+			$(window).trigger('action:composer.addQuote', {
+				tid: tid,
+				slug: ajaxify.variables.get('topic_slug'),
+				index: getData(button, 'data-index'),
+				pid: pid,
+				username: username,
+				topicName: topicName,
+				text: quoted
 			});
 		});
 	}
