@@ -134,6 +134,7 @@ define('forum/topic/posts', [
 		findInsertionPoint();
 
 		data.title = $('<div></div>').text(ajaxify.variables.get('topic_name')).html();
+		data.slug = ajaxify.variables.get('topic_slug');
 		data.viewcount = ajaxify.variables.get('viewcount');
 
 		infinitescroll.parseAndTranslate('topic', 'posts', data, function(html) {
@@ -274,7 +275,7 @@ define('forum/topic/posts', [
 	function hidePostToolsForDeletedPosts(posts) {
 		posts.each(function() {
 			if ($(this).hasClass('deleted')) {
-				postTools.toggle($(this).attr('data-pid'), true);	
+				postTools.toggle($(this).attr('data-pid'), true);
 			}
 		});
 	}
