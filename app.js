@@ -183,7 +183,7 @@ function start() {
 			require('./src/meta').configs.init(next);
 		},
 		function(next) {
-			return next(new Error('dependencies-out-of-date'));
+			require('./src/meta').dependencies.check(next);
 		},
 		function(next) {
 			require('./src/upgrade').check(next);

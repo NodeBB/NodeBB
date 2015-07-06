@@ -24,6 +24,7 @@ var async = require('async'),
 	require('./meta/settings')(Meta);
 	require('./meta/logs')(Meta);
 	require('./meta/tags')(Meta);
+	require('./meta/dependencies')(Meta);
 	Meta.templates = require('./meta/templates');
 
 	/* Assorted */
