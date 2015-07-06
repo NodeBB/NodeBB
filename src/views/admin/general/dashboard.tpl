@@ -99,7 +99,7 @@
 					<button class="btn btn-danger restart" data-placement="bottom" data-toggle="tooltip" title="Restarting NodeBB will drop all existing connections for a few seconds">Restart</button>
 				</p>
 				<p class="text-center">
-					<a href="/admin/settings/advanced" class="btn btn-info" data-placement="bottom" data-toggle="tooltip" title="Click here to set up maintenance mode for NodeBB">Maintenance Mode</a>
+					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info" data-placement="bottom" data-toggle="tooltip" title="Click here to set up maintenance mode for NodeBB">Maintenance Mode</a>
 				</p>
 			</div>
 		</div>
