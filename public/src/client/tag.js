@@ -24,7 +24,7 @@ define('forum/tag', ['forum/recent', 'forum/infinitescroll'], function(recent, i
 			}
 
 			infinitescroll.loadMore('topics.loadMoreFromSet', {
-				set: 'tag:' + ajaxify.variables.get('tag') + ':topics',
+				set: 'tag:' + ajaxify.data.tag + ':topics',
 				after: $('[component="category"]').attr('data-nextstart')
 			}, function(data, done) {
 				if (data.topics && data.topics.length) {

@@ -4,7 +4,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 	var Users = {};
 
 	Users.init = function() {
-		var yourid = ajaxify.variables.get('yourid');
+		var yourid = ajaxify.data.yourid;
 
 		selectable.enable('#users-container', '.user-selectable');
 

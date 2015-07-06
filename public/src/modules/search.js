@@ -96,7 +96,7 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 	};
 
 	Search.checkPagePresence = function(tid, callback) {
-		if (parseInt(ajaxify.variables.get('topic_id'), 10) !== parseInt(tid, 10)) {
+		if (parseInt(ajaxify.data.tid, 10) !== parseInt(tid, 10)) {
 			ajaxify.go('topic/' + tid, callback);
 		} else {
 			callback();

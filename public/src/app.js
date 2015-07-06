@@ -92,7 +92,7 @@ app.cacheBuster = null;
 
 			switch(url_parts[0]) {
 				case 'user':
-					room = 'user/' + ajaxify.variables.get('theirid');
+					room = 'user/' + ajaxify.data.theirid;
 				break;
 				case 'topic':
 					room = 'topic_' + url_parts[1];
@@ -466,7 +466,7 @@ app.cacheBuster = null;
 
 	function handleNewTopic() {
 		$('#content').on('click', '#new_topic', function() {
-			var cid = ajaxify.variables.get('category_id');
+			var cid = ajaxify.data.cid;
 			if (cid) {
 				$(window).trigger('action:composer.topic.new', {
 					cid: cid

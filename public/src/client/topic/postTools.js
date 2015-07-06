@@ -8,7 +8,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		topicName;
 
 	PostTools.init = function(tid) {
-		topicName = ajaxify.variables.get('topic_name');
+		topicName = ajaxify.data.title;
 
 		addPostHandlers(tid);
 
@@ -29,7 +29,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	};
 
 	PostTools.updatePostCount = function() {
-		socket.emit('topics.postcount', ajaxify.variables.get('topic_id'), function(err, postCount) {
+		socket.emit('topics.postcount', ajaxify.data.tid, function(err, postCount) {
 			if (!err) {
 				var postCountEl = components.get('topic/post-count');
 				postCountEl.html(postCount).attr('title', postCount);
@@ -110,7 +110,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			var btn = $(this);
 			$(window).trigger('action:composer.post.edit', {
 				pid: getData(btn, 'data-pid')
-			})
+			});
 		});
 
 		postContainer.on('click', '[component="post/delete"]', function(e) {
@@ -152,7 +152,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		if (selectionText.length) {
 			$(window).trigger('action:composer.addQuote', {
 				tid: tid,
-				slug: ajaxify.variables.get('topic_slug'),
+				slug: ajaxify.data.slug,
 				index: getData(button, 'data-index'),
 				pid: getData(button, 'data-pid'),
 				topicName: topicName,
@@ -162,7 +162,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		} else {
 			$(window).trigger('action:composer.post.new', {
 				tid: tid,
-				pid: ajaxify.variables.get('pid'),
+				pid: getData(button, 'data-pid'),
 				topicName: topicName,
 				text: username + ' ' || ''
 			});
@@ -184,7 +184,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 			$(window).trigger('action:composer.addQuote', {
 				tid: tid,
-				slug: ajaxify.variables.get('topic_slug'),
+				slug: ajaxify.data.slug,
 				index: getData(button, 'data-index'),
 				pid: pid,
 				username: username,
@@ -226,7 +226,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function showVotes(pid) {
-		socket.emit('posts.getVoters', {pid: pid, cid: ajaxify.variables.get('category_id')}, function(err, data) {
+		socket.emit('posts.getVoters', {pid: pid, cid: ajaxify.data.cid}, function(err, data) {
 			if (err) {
 				return app.alertError(err.message);
 			}

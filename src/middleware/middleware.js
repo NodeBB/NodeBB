@@ -191,7 +191,7 @@ middleware.buildHeader = function(req, res, next) {
 };
 
 middleware.renderHeader = function(req, res, callback) {
-	var registrationType = meta.config.registrationType || 'normal'
+	var registrationType = meta.config.registrationType || 'normal';
 	var templateValues = {
 		bootswatchCSS: meta.config['theme:src'],
 		title: meta.config.title || '',
@@ -327,7 +327,7 @@ middleware.processRender = function(req, res, next) {
 				return fn(err);
 			}
 
-			// str = str + '<input type="hidden" ajaxify-data="' + encodeURIComponent(JSON.stringify(options)) + '" />';
+			str = str + '<input type="hidden" ajaxify-data="' + encodeURIComponent(JSON.stringify(options)) + '" />';
 			str = (res.locals.postHeader ? res.locals.postHeader : '') + str + (res.locals.preFooter ? res.locals.preFooter : '');
 
 			if (res.locals.footer) {

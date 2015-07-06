@@ -12,7 +12,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 		var detailsPage = components.get('groups/container'),
 			settingsFormEl = detailsPage.find('form');
 
-		if (ajaxify.variables.get('is_owner') === 'true') {
+		if (ajaxify.data.group.isOwner) {
 			Details.prepareSettings();
 			Details.initialiseCover();
 		}
@@ -34,7 +34,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 				case 'toggleOwnership':
 					socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
 						toUid: uid,
-						groupName: ajaxify.variables.get('group_name')
+						groupName: ajaxify.data.group.name
 					}, function(err) {
 						if (!err) {
 							ownerFlagEl.toggleClass('invisible');
@@ -47,7 +47,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 				case 'kick':
 					socket.emit('groups.kick', {
 						uid: uid,
-						groupName: ajaxify.variables.get('group_name')
+						groupName: ajaxify.data.group.name
 					}, function(err) {
 						if (!err) {
 							userRow.slideUp().remove();
@@ -75,7 +75,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 				case 'rejectAll':
 					socket.emit('groups.' + action, {
 						toUid: uid,
-						groupName: ajaxify.variables.get('group_name')
+						groupName: ajaxify.data.group.name
 					}, function(err) {
 						if (!err) {
 							ajaxify.refresh();
@@ -156,7 +156,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 				});
 
 				socket.emit('groups.update', {
-					groupName: ajaxify.variables.get('group_name'),
+					groupName: ajaxify.data.group.name,
 					values: settings
 				}, function(err) {
 					if (err) {
@@ -178,15 +178,15 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 	};
 
 	Details.deleteGroup = function() {
-		bootbox.confirm('Are you sure you want to delete the group: ' + utils.escapeHTML(ajaxify.variables.get('group_name')), function(confirm) {
+		bootbox.confirm('Are you sure you want to delete the group: ' + utils.escapeHTML(ajaxify.data.group.name), function(confirm) {
 			if (confirm) {
 				bootbox.prompt('Please enter the name of this group in order to delete it:', function(response) {
-					if (response === ajaxify.variables.get('group_name')) {
+					if (response === ajaxify.data.group.name) {
 						socket.emit('groups.delete', {
-							groupName: ajaxify.variables.get('group_name')
+							groupName: ajaxify.data.group.name
 						}, function(err) {
 							if (!err) {
-								app.alertSuccess('[[groups:event.deleted, ' + utils.escapeHTML(ajaxify.variables.get('group_name')) + ']]');
+								app.alertSuccess('[[groups:event.deleted, ' + utils.escapeHTML(ajaxify.data.group.name) + ']]');
 								ajaxify.go('groups');
 							} else {
 								app.alertError(err.message);
@@ -218,7 +218,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 
 	Details.cover.load = function() {
 		socket.emit('groups.cover.get', {
-			groupName: ajaxify.variables.get('group_name')
+			groupName: ajaxify.data.group.name
 		}, function(err, data) {
 			if (!err) {
 				var coverEl = components.get('groups/cover');
@@ -267,7 +267,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 		coverEl.addClass('saving');
 
 		socket.emit('groups.cover.update', {
-			groupName: ajaxify.variables.get('group_name'),
+			groupName: ajaxify.data.group.name,
 			imageData: Details.cover.newCover || undefined,
 			position: components.get('groups/cover').css('background-position')
 		}, function(err) {
@@ -294,7 +294,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 			}
 
 			searchInterval = setTimeout(function() {
-				socket.emit('groups.searchMembers', {groupName: ajaxify.variables.get('group_name'), query: query}, function(err, results) {
+				socket.emit('groups.searchMembers', {groupName: ajaxify.data.group.name, query: query}, function(err, results) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -302,7 +302,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 					infinitescroll.parseAndTranslate('groups/details', 'members', {
 						group: {
 							members: results.users,
-							isOwner: ajaxify.variables.get('is_owner') === 'true'
+							isOwner: ajaxify.data.group.isOwner
 						}
 					}, function(html) {
 						$('[component="groups/members"] tbody').html(html);
@@ -310,7 +310,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 					});
 				});
 			}, 250);
-		})
+		});
 	}
 
 	function handleMemberInfiniteScroll() {
@@ -330,7 +330,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 		}
 		members.attr('loading', 1);
 		socket.emit('groups.loadMoreMembers', {
-			groupName: ajaxify.variables.get('group_name'),
+			groupName: ajaxify.data.group.name,
 			after: members.attr('data-nextstart')
 		}, function(err, data) {
 			if (err) {
@@ -356,7 +356,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 		infinitescroll.parseAndTranslate('groups/details', 'members', {
 			group: {
 				members: users,
-				isOwner: ajaxify.variables.get('is_owner') === 'true'
+				isOwner: ajaxify.data.group.isOwner
 			}
 		}, function(html) {
 			$('[component="groups/members"] tbody').append(html);

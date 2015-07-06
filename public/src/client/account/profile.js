@@ -11,9 +11,9 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 	Account.init = function() {
 		header.init();
 
-		yourid = ajaxify.variables.get('yourid');
-		theirid = ajaxify.variables.get('theirid');
-		isFollowing = ajaxify.variables.get('isFollowing');
+		yourid = ajaxify.data.yourid;
+		theirid = ajaxify.data.theirid;
+		isFollowing = ajaxify.data.isFollowing;
 
 		app.enterRoom('user/' + theirid);
 
@@ -70,7 +70,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 	}
 
 	function onUserStatusChange(data) {
-		if (parseInt(ajaxify.variables.get('theirid'), 10) !== parseInt(data.uid, 10)) {
+		if (parseInt(ajaxify.data.theirid, 10) !== parseInt(data.uid, 10)) {
 			return;
 		}
 
@@ -122,7 +122,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 				if (!confirm) {
 					return;
 				}
-				socket.emit('admin.user.banUsers', [ajaxify.variables.get('theirid')], function(err) {
+				socket.emit('admin.user.banUsers', [ajaxify.data.theirid], function(err) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -134,7 +134,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 	}
 
 	function unbanAccount() {
-		socket.emit('admin.user.unbanUsers', [ajaxify.variables.get('theirid')], function(err) {
+		socket.emit('admin.user.unbanUsers', [ajaxify.data.theirid], function(err) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -150,7 +150,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 					return;
 				}
 
-				socket.emit('admin.user.deleteUsers', [ajaxify.variables.get('theirid')], function(err) {
+				socket.emit('admin.user.deleteUsers', [ajaxify.data.theirid], function(err) {
 					if (err) {
 						return app.alertError(err.message);
 					}
