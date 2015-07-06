@@ -86,7 +86,8 @@ groupsController.details = function(req, res, next) {
 			},
 			posts: function(next) {
 				groups.getLatestMemberPosts(res.locals.groupName, 10, req.uid, next);
-			}
+			},
+			isAdmin: async.apply(user.isAdministrator, req.uid)
 		}, function(err, results) {
 			if (err) {
 				return next(err);

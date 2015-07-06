@@ -34,7 +34,7 @@ groupsController.get = function(req, res, next) {
 		},
 		function(exists, next) {
 			if (!exists) {
-				helpers.notFound(req, res);
+				return helpers.notFound(req, res);
 			}
 			groups.get(groupName, {uid: req.uid}, next);
 		}
