@@ -34,12 +34,13 @@ Upgrade.check = function(callback) {
 				if (err) {
 					return callback(err);
 				}
-				callback(null, true);
+				callback(null);
 			});
 			return;
 		}
 
-		callback(null, parseInt(value, 10) >= latestSchema);
+		var schema_ok = parseInt(value, 10) >= latestSchema;
+		callback(!schema_ok ? new Error('schema-out-of-date') : null);
 	});
 };
 
