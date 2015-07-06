@@ -274,7 +274,7 @@ middleware.renderHeader = function(req, res, callback) {
 		templateValues.linkTags = results.tags.link;
 		templateValues.isAdmin = results.user.isAdmin;
 		templateValues.user = results.user;
-		templateValues.userJSON = JSON.stringify(results.user).replace(/'/g, "\\'");
+		templateValues.userJSON = JSON.stringify(results.user);
 		templateValues.customCSS = results.customCSS;
 		templateValues.customJS = results.customJS;
 		templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
