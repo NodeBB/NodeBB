@@ -70,9 +70,9 @@ define('admin/manage/category', [
 
 				$this.addClass('hide');
 				target.removeClass('hide').on('blur', function() {
-					$this.removeClass('hide').children('span').html(this.value);
+					$this.removeClass('hide').children('span').text(this.value).html();
 					$(this).addClass('hide');
-				}).val($this.children('span').html());
+				}).val($this.children('span').html().text());
 
 				target.focus();
 			});
