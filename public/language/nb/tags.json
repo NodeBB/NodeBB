@@ -1,7 +1,7 @@
 {
     "no_tag_topics": "Det er ingen emnet med denne taggen.",
     "tags": "Tagger",
-    "enter_tags_here": "Enter tags here, between %1 and %2 characters each.",
+    "enter_tags_here": "Skriv tagger her, mellom %1 og %2 tegn hver.",
     "enter_tags_here_short": "Skriv tagger...",
     "no_tags": "Det finnes ingen tagger enda."
 }
