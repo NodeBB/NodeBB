@@ -43,7 +43,7 @@ module.exports = function(Groups) {
 
 			case 'date':
 				groups = groups.sort(function(a, b) {
-					return a.createtime < b.createtime;
+					return b.createtime - a.createtime;
 				});
 				break;
 
