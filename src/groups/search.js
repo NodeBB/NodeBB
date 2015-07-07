@@ -37,7 +37,7 @@ module.exports = function(Groups) {
 				groups = groups.sort(function(a, b) {
 					return a.slug > b.slug;
 				}).sort(function(a, b) {
-					return a.memberCount < b.memberCount;
+					return b.memberCount - a.memberCount;
 				});
 				break;
 
