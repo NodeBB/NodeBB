@@ -26,9 +26,8 @@ module.exports = function(Groups) {
 					return group && !group.hidden;
 				});
 				groupsData.forEach(Groups.escapeGroupData);
-				next(null, groupsData);
-			},
-			async.apply(Groups.sort, options.sort)
+				Groups.sort(options.sort, groupsData, next);
+			}
 		], callback);
 	};
 
