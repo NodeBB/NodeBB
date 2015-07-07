@@ -138,7 +138,7 @@ define('admin/manage/category', [
 		});
 
 		// Parent Category Selector
-		$('button[data-action="setParent"]').on('click', Category.launchParentSelector);
+		$('button[data-action="setParent"], button[data-action="changeParent"]').on('click', Category.launchParentSelector);
 		$('button[data-action="removeParent"]').on('click', function() {
 			var payload= {};
 			payload[ajaxify.data.category.cid] = {
@@ -149,7 +149,8 @@ define('admin/manage/category', [
 				if (err) {
 					return app.alertError(err.message);
 				}
-				ajaxify.refresh();
+				$('button[data-action="removeParent"]').parent().addClass('hide');
+				$('button[data-action="setParent"]').removeClass('hide');
 			});
 		});
 
@@ -268,7 +269,8 @@ define('admin/manage/category', [
 						}
 
 						modal.modal('hide');
-						ajaxify.refresh();
+						$('button[data-action="removeParent"]').parent().removeClass('hide');
+						$('button[data-action="setParent"]').addClass('hide');
 					});
 				});
 			});
