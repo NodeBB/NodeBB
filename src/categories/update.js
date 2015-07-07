@@ -23,7 +23,7 @@ module.exports = function(Categories) {
 				}
 
 				plugins.fireHook('filter:category.update', {category:modifiedFields}, function(err, categoryData) {
-                    var category = categoryData.category;
+					var category = categoryData.category;
 					var fields = Object.keys(category);
 					async.each(fields, function(key, next) {
 						updateCategoryField(cid, key, category[key], next);
