@@ -35,8 +35,8 @@ groupsController.getGroupsFromSet = function(uid, sort, start, stop, callback) {
 
 		callback(null, {
 			groups: groups,
-		 	allowGroupCreation: parseInt(meta.config.allowGroupCreation, 10) === 1,
-		 	nextStart: stop + 1
+			allowGroupCreation: parseInt(meta.config.allowGroupCreation, 10) === 1,
+			nextStart: stop + 1
 		});
 	});
 };
