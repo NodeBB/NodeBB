@@ -34,19 +34,19 @@
 					<div class="panel-body">
 						<div id="unique-visitors">
 							<div class="text-center pull-left">
-								<div>{stats.day}</div>
+								<span class="formatted-number">{stats.day}</span>
 								<div>Day</div>
 							</div>
 							<div class="text-center pull-left">
-								<div>{stats.week}</div>
+								<span class="formatted-number">{stats.week}</span>
 								<div>Week</div>
 							</div>
 							<div class="text-center pull-left">
-								<div>{stats.month}</div>
+								<span class="formatted-number">{stats.month}</span>
 								<div>Month</div>
 							</div>
 							<div class="text-center pull-left">
-								<div>{stats.alltime}</div>
+								<span class="formatted-number">{stats.alltime}</span>
 								<div>All Time</div>
 							</div>
 						</div>
