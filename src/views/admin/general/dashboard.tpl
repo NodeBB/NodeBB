@@ -93,14 +93,17 @@
 	<div class="col-lg-3">
 		<div class="panel panel-default">
 			<div class="panel-heading">System Control</div>
-			<div class="panel-body">
-				<p class="text-center">
+			<div class="panel-body text-center">
+				<p>
 					<button class="btn btn-warning reload" data-placement="bottom" data-toggle="tooltip" title="Reload NodeBB to activate new plugins">Reload</button>
 					<button class="btn btn-danger restart" data-placement="bottom" data-toggle="tooltip" title="Restarting NodeBB will drop all existing connections for a few seconds">Restart</button>
 				</p>
-				<p class="text-center">
+				<p>
 					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info" data-placement="bottom" data-toggle="tooltip" title="Click here to set up maintenance mode for NodeBB">Maintenance Mode</a>
 				</p>
+
+				<hr />
+				<span id="toggle-realtime">Realtime Chart Updates <strong>OFF</strong> <i class="fa fa fa-toggle-off pointer"></i></span>
 			</div>
 		</div>
 
