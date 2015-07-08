@@ -144,7 +144,7 @@ switch(process.argv[2]) {
 			} else {
 				var message = 'NodeBB Upgrade Complete!',
 					spaces = new Array(Math.floor(process.stdout.columns / 2) - (message.length / 2) + 1).join(' ');
-				process.stdout.write('\n' + spaces + message.green.bold + '\n\n');
+				process.stdout.write('\n' + spaces + message.green.bold + '\n\n'.reset);
 			}
 		});
 		break;
