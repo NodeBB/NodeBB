@@ -166,12 +166,14 @@ var fs = require('fs'),
 
 	Plugins.get = function(id, callback) {
 		var url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins/' + id;
-		console.log(url);
 
 		require('request')(url, {
 			json: true
 		}, function(err, res, body) {
 			Plugins.normalise([body.payload], function(err, normalised) {
+				normalised = normalised.filter(function(plugin) {
+					return plugin.id = id;
+				});
 				return callback(err, !err ? normalised[0] : undefined);
 			});
 		});
@@ -216,8 +218,6 @@ var fs = require('fs'),
 					pluginMap[plugin.id] = pluginMap[plugin.id] || {};
 					pluginMap[plugin.id].installed = true;
 					pluginMap[plugin.id].error = true;
-					return next();
-				} else if (!pluginMap.hasOwnProperty(plugin.id)) {
 					return next();
 				}
 
