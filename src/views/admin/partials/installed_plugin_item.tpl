@@ -1,5 +1,5 @@
 					<!-- IF !installed.error -->
-					<li data-plugin-id="{installed.id}" data-version="{installed.version}" class="clearfix">
+					<li id="{installed.id}" data-plugin-id="{installed.id}" data-version="{installed.version}" class="clearfix">
 						<div class="pull-right">
 							<!-- IF installed.isTheme -->
 							<a href="{config.relative_path}/admin/appearance/themes" class="btn btn-info">Themes</a>

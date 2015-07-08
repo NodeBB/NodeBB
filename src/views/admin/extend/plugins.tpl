@@ -3,7 +3,7 @@
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-code-fork"></i> Installed Plugins</div>
 			<div class="panel-body">
-				<ul>
+				<ul class="installed">
 					<!-- BEGIN installed -->
 					<!-- IMPORT admin/partials/installed_plugin_item.tpl -->
 					<!-- END installed -->
@@ -14,7 +14,7 @@
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-code-fork"></i> Download Plugins</div>
 			<div class="panel-body">
-				<ul>
+				<ul class="download">
 					<!-- BEGIN download -->
 					<!-- IMPORT admin/partials/download_plugin_item.tpl -->
 					<!-- END download -->

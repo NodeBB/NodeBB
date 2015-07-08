@@ -1,4 +1,4 @@
-					<li data-plugin-id="{download.id}" class="clearfix">
+					<li id="{download.id}" data-plugin-id="{download.id}" class="clearfix">
 						<div class="pull-right">
 							<button data-action="toggleActive" class="btn btn-success hidden"><i class="fa fa-power-off"></i> Activate</button>
 							<button data-action="toggleInstall" data-installed="0" class="btn btn-success"><i class="fa fa-download"></i> Install</button>
