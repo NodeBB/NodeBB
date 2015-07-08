@@ -120,13 +120,17 @@ SocketMeta.rooms.getAll = function(socket, data, callback) {
 				}
 			} else if (room.match(/^category/)) {
 				socketData.users.category += roomClients[room].length;
-			} else if (room !== 'categories' && room !== 'recent_posts') {
-				socketData.users.other += roomClients[room].length;
 			}
 		}
 	}
 
+	for (var i in socketData.users) {
+		if (socketData.users.hasOwnProperty(i)) {
+			socketData.users.other -= socketData.users[i];
+		}
+	}
 
+	socketData.users.other += roomClients['online_users'].length;
 
 	var scoreKeys = Object.keys(scores),
 		mostActive = scoreKeys.sort();
