@@ -7,7 +7,11 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			rooms: false,
 			graphs: false
 		},
-		isMobile = false;
+		isMobile = false,
+		graphData = {
+			rooms: {},
+			traffic: {}
+		};
 
 	var DEFAULTS = {
 		roomInterval: 10000,
@@ -68,6 +72,12 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		if (err) {
 			return app.alertError(err.message);
 		}
+
+		if (JSON.stringify(graphData.rooms) === JSON.stringify(data)) {
+			return;
+		}
+
+		graphData.rooms = data;
 
 		var html = '<div class="text-center pull-left">' +
 						'<div>'+ data.onlineRegisteredCount +'</div>' +
@@ -265,6 +275,12 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		}
 
 		socket.emit('admin.analytics.get', {graph: "traffic"}, function (err, data) {
+			if (JSON.stringify(graphData.traffic) === JSON.stringify(data)) {
+				return;
+			}
+
+			graphData.traffic = data;
+
 			for (var i = 0, ii = data.pageviews.length; i < ii;  i++) {
 				graphs.traffic.datasets[0].points[i].value = data.pageviews[i];
 				graphs.traffic.datasets[1].points[i].value = data.uniqueVisitors[i];
