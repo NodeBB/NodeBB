@@ -35,7 +35,7 @@ module.exports = function(Meta) {
 				}
 			})
 		}, function(ok) {
-			callback(!ok ? new Error('dependencies-out-of-date') : null);
+			callback(!ok && global.env !== 'development' ? new Error('dependencies-out-of-date') : null);
 		});
 	};
 };
