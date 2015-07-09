@@ -3,6 +3,9 @@
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-group"></i> Groups List</div>
 			<div class="panel-body">
+
+				<input id="group-search" type="text" class="form-control" placeholder="Search" /><br/>
+
 				<table class="table table-striped groups-list">
 					<tr>
 						<th>Group Name</th>
@@ -28,6 +31,7 @@
 					</tr>
 					<!-- END groups -->
 				</table>
+				<!-- IMPORT partials/paginator.tpl -->
 			</div>
 		</div>
 	</div>

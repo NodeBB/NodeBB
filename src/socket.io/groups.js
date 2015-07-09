@@ -219,7 +219,7 @@ SocketGroups.search = function(socket, data, callback) {
 	if (!data) {
 		return callback(null, []);
 	}
-
+	data.options = data.options || {};
 	if (!data.query) {
 		var groupsPerPage = 15;
 		groupsController.getGroupsFromSet(socket.uid, data.options.sort, 0, groupsPerPage - 1, function(err, data) {

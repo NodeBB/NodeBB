@@ -22,9 +22,12 @@ module.exports = function(Groups) {
 				Groups.getGroupsData(groupNames, next);
 			},
 			function(groupsData, next) {
-				groupsData = groupsData.filter(function(group) {
-					return group && !group.hidden;
-				});
+				groupsData = groupsData.filter(Boolean);
+				if (options.filterHidden) {
+					groupsData = groupsData.filter(function(group) {
+						return !group.hidden;
+					});
+				}
 				groupsData.forEach(Groups.escapeGroupData);
 				Groups.sort(options.sort, groupsData, next);
 			}
