@@ -7,10 +7,13 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 		};
 
 	var searchInterval;
+	var groupName;
 
 	Details.init = function() {
 		var detailsPage = components.get('groups/container'),
 			settingsFormEl = detailsPage.find('form');
+
+		groupName = decodeURIComponent(ajaxify.data.group.nameEncoded);
 
 		if (ajaxify.data.group.isOwner) {
 			Details.prepareSettings();
@@ -34,7 +37,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 				case 'toggleOwnership':
 					socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
 						toUid: uid,
-						groupName: ajaxify.data.group.name
+						groupName: groupName
 					}, function(err) {
 						if (!err) {
 							ownerFlagEl.toggleClass('invisible');
@@ -47,7 +50,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 				case 'kick':
 					socket.emit('groups.kick', {
 						uid: uid,
-						groupName: ajaxify.data.group.name
+						groupName: groupName
 					}, function(err) {
 						if (!err) {
 							userRow.slideUp().remove();
@@ -75,7 +78,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 				case 'rejectAll':
 					socket.emit('groups.' + action, {
 						toUid: uid,
-						groupName: ajaxify.data.group.name
+						groupName: groupName
 					}, function(err) {
 						if (!err) {
 							ajaxify.refresh();
@@ -156,7 +159,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 				});
 
 				socket.emit('groups.update', {
-					groupName: ajaxify.data.group.name,
+					groupName: groupName,
 					values: settings
 				}, function(err) {
 					if (err) {
@@ -178,15 +181,15 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 	};
 
 	Details.deleteGroup = function() {
-		bootbox.confirm('Are you sure you want to delete the group: ' + utils.escapeHTML(ajaxify.data.group.name), function(confirm) {
+		bootbox.confirm('Are you sure you want to delete the group: ' + utils.escapeHTML(groupName), function(confirm) {
 			if (confirm) {
 				bootbox.prompt('Please enter the name of this group in order to delete it:', function(response) {
-					if (response === ajaxify.data.group.name) {
+					if (response === groupName) {
 						socket.emit('groups.delete', {
-							groupName: ajaxify.data.group.name
+							groupName: groupName
 						}, function(err) {
 							if (!err) {
-								app.alertSuccess('[[groups:event.deleted, ' + utils.escapeHTML(ajaxify.data.group.name) + ']]');
+								app.alertSuccess('[[groups:event.deleted, ' + utils.escapeHTML(groupName) + ']]');
 								ajaxify.go('groups');
 							} else {
 								app.alertError(err.message);
@@ -218,7 +221,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 
 	Details.cover.load = function() {
 		socket.emit('groups.cover.get', {
-			groupName: ajaxify.data.group.name
+			groupName: groupName
 		}, function(err, data) {
 			if (!err) {
 				var coverEl = components.get('groups/cover');
@@ -267,7 +270,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 		coverEl.addClass('saving');
 
 		socket.emit('groups.cover.update', {
-			groupName: ajaxify.data.group.name,
+			groupName: groupName,
 			imageData: Details.cover.newCover || undefined,
 			position: components.get('groups/cover').css('background-position')
 		}, function(err) {
@@ -294,7 +297,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 			}
 
 			searchInterval = setTimeout(function() {
-				socket.emit('groups.searchMembers', {groupName: ajaxify.data.group.name, query: query}, function(err, results) {
+				socket.emit('groups.searchMembers', {groupName: groupName, query: query}, function(err, results) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -324,13 +327,15 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 	}
 
 	function loadMoreMembers() {
+
 		var members = $('[component="groups/members"]');
 		if (members.attr('loading')) {
 			return;
 		}
+
 		members.attr('loading', 1);
 		socket.emit('groups.loadMoreMembers', {
-			groupName: ajaxify.data.group.name,
+			groupName: groupName,
 			after: members.attr('data-nextstart')
 		}, function(err, data) {
 			if (err) {
