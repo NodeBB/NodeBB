@@ -12,9 +12,9 @@
 						<th>Group Description</th>
 					</tr>
 					<!-- BEGIN groups -->
-					<tr data-groupname="{groups.name}">
+					<tr data-groupname="{groups.displayName}">
 						<td>
-							{groups.name}
+							{groups.displayName}
 							<!-- IF groups.system -->
 							<span class="badge">System Group</span>
 							<!-- ENDIF groups.system -->

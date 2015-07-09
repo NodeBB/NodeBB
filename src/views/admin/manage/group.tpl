@@ -1,5 +1,5 @@
 <div class="row">
-	<form role="form" class="group" data-groupname="{group.name}">
+	<form role="form" class="group" data-groupname="{group.displayName}">
 		<div class="col-md-9">
 			<div class="panel panel-default">
 				<div class="panel-heading"><i class="fa fa-folder"></i> Group Settings</div>
@@ -9,7 +9,7 @@
 				<fieldset>
 					<div class="col-xs-12">
 						<label for="change-group-name">Name</label>
-						<input type="text" class="form-control" id="change-group-name" placeholder="Group Name" value="{group.name}" <!-- IF group.system -->readonly<!-- ENDIF group.system -->/>
+						<input type="text" class="form-control" id="change-group-name" placeholder="Group Name" value="{group.displayName}" <!-- IF group.system -->readonly<!-- ENDIF group.system -->/>
 					</div>
 				</fieldset>
 
@@ -123,4 +123,3 @@
 	</div>
 </div>
 
-<input type="hidden" template-variable="groupName" value="{group.name}" />

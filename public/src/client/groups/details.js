@@ -13,7 +13,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 		var detailsPage = components.get('groups/container'),
 			settingsFormEl = detailsPage.find('form');
 
-		groupName = decodeURIComponent(ajaxify.data.group.nameEncoded);
+		groupName = ajaxify.data.group.name;
 
 		if (ajaxify.data.group.isOwner) {
 			Details.prepareSettings();
