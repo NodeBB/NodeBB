@@ -15,10 +15,6 @@
             </div>
             <div class="col-md-3">
                 <div class="clearfix pull-right text-right">
-                    <ul class="stats">
-                        <li><i class="fa fa-book"></i> {categories.topic_count}</li>
-                        <li><i class="fa fa-pencil"></i> {categories.post_count}</li>
-                    </ul>
                     <div class="btn-group">
                         <button data-action="toggle" data-disabled="{categories.disabled}" class="btn btn-xs <!-- IF categories.disabled -->btn-primary<!-- ELSE -->btn-danger<!-- ENDIF categories.disabled -->">
                             <!-- IF categories.disabled -->Enable<!-- ELSE -->Disable<!-- ENDIF categories.disabled -->
