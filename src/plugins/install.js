@@ -96,8 +96,11 @@ module.exports = function(Plugins) {
 				if (err) {
 					return callback(err);
 				}
-				Plugins.fireHook('action:plugin.' + type, id);
-				callback(null, {id: id, installed: !installed});
+
+				Plugins.get(id, function(err, pluginData) {
+					Plugins.fireHook('action:plugin.' + type, id);
+					callback(null, pluginData);
+				});
 			});
 		});
 	}

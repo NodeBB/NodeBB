@@ -5,7 +5,7 @@ define('forum/reset_code', function() {
 	var	ResetCode = {};
 
 	ResetCode.init = function() {
-		var reset_code = ajaxify.variables.get('reset_code');
+		var reset_code = ajaxify.data.code;
 
 		var resetEl = $('#reset'),
 			password = $('#password'),

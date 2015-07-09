@@ -16,7 +16,7 @@
 
 	ajaxify.widgets.render = function(template, url, callback) {
 		if (template.match(/^admin/)) {
-			return false;
+			return callback();
 		}
 		
 		var widgetLocations = ['sidebar', 'footer', 'header'], numLocations;

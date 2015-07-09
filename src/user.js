@@ -3,6 +3,7 @@
 var	async = require('async'),
 	nconf = require('nconf'),
 	gravatar = require('gravatar'),
+	validator = require('validator'),
 
 	plugins = require('./plugins'),
 	db = require('./database'),
@@ -110,6 +111,8 @@ var	async = require('async'),
 			if (!user) {
 				return;
 			}
+
+			user.username = validator.escape(user.username);
 
 			if (user.password) {
 				user.password = undefined;

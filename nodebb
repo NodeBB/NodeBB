@@ -35,7 +35,7 @@ switch(process.argv[2]) {
 				process.stdout.write('\t"' + './nodebb restart'.yellow + '" to restart NodeBB\n\n');
 			} else {
 				process.stdout.write('\nNodeBB is not running\n'.bold);
-				process.stdout.write('\t"' + './nodebb start'.yellow + '" to launch the NodeBB server\n\n');
+				process.stdout.write('\t"' + './nodebb start'.yellow + '" to launch the NodeBB server\n\n'.reset);
 			}
 		})
 		break;
@@ -44,7 +44,7 @@ switch(process.argv[2]) {
 		process.stdout.write('\nStarting NodeBB\n'.bold);
 		process.stdout.write('  "' + './nodebb stop'.yellow + '" to stop the NodeBB server\n');
 		process.stdout.write('  "' + './nodebb log'.yellow + '" to view server output\n');
-		process.stdout.write('  "' + './nodebb restart'.yellow + '" to restart NodeBB\n\n');
+		process.stdout.write('  "' + './nodebb restart'.yellow + '" to restart NodeBB\n\n'.reset);
 
 		// Spawn a new NodeBB process
 		cproc.fork(__dirname + '/loader.js', {
@@ -91,7 +91,8 @@ switch(process.argv[2]) {
 		break;
 
 	case 'log':
-		process.stdout.write('\nType '.red + 'Ctrl-C '.bold + 'to exit\n\n'.red);
+		process.stdout.write('\nType '.red + 'Ctrl-C '.bold + 'to exit'.red);
+		process.stdout.write('\n\n'.reset);
 		cproc.spawn('tail', ['-F', './logs/output.log'], {
 			cwd: __dirname,
 			stdio: 'inherit'
@@ -144,7 +145,7 @@ switch(process.argv[2]) {
 			} else {
 				var message = 'NodeBB Upgrade Complete!',
 					spaces = new Array(Math.floor(process.stdout.columns / 2) - (message.length / 2) + 1).join(' ');
-				process.stdout.write('\n' + spaces + message.green.bold + '\n\n');
+				process.stdout.write('\n' + spaces + message.green.bold + '\n\n'.reset);
 			}
 		});
 		break;
@@ -162,6 +163,6 @@ switch(process.argv[2]) {
 		process.stdout.write('\t' + 'upgrade'.yellow + '\tRun NodeBB upgrade scripts, ensure packages are up-to-date\n');
 		process.stdout.write('\t' + 'dev'.yellow + '\tStart NodeBB in interactive development mode\n');
 		process.stdout.write('\t' + 'watch'.yellow + '\tStart NodeBB in development mode and watch for changes\n');
-		process.stdout.write('\n');
+		process.stdout.write('\n'.reset);
 		break;
 }

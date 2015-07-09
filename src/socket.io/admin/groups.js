@@ -23,7 +23,7 @@ Groups.get = function(socket, groupName, callback) {
 };
 
 Groups.join = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -31,8 +31,12 @@ Groups.join = function(socket, data, callback) {
 };
 
 Groups.leave = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	if (socket.uid === parseInt(data.uid, 10) && data.groupName === 'administrators') {
+		return callback(new Error('[[error:cant-remove-self-as-admin]]'));
 	}
 
 	groups.leave(data.groupName, data.uid, callback);

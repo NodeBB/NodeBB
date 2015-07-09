@@ -1,71 +1,78 @@
 div.categories {
+	ul {
+		.no-select;
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
 
-  ul {
-    .no-select;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+		> li > ul > li {
+			margin-left: 4.5rem;
+		}
 
-    > li > ul > li {
-      margin-left: 4.5rem;
-    }
-  }
+		.row {
+			margin-left: -15px;
+			margin-right: -15px;
+			border-bottom: 1px dashed #ddd;
+			padding-bottom: 12px;
+			margin-bottom: 12px;
+		}
+	}
 
-  .stats {
-    display: inline-block;
+	.stats {
+		display: inline-block;
 
-    li {
-      min-height: 0;
-      display: inline;
-      margin: 0 @acp-margin 0 0;
-      left: 0;
-    }
-  }
+		li {
+			min-height: 0;
+			display: inline;
+			margin: 0 @acp-margin 0 0;
+			left: 0;
+		}
+	}
 
-  li {
-    min-height: @acp-line-height;
-    margin: @acp-base-line 0;
+	li {
+		min-height: @acp-line-height;
+		margin: @acp-base-line 0;
 
-    &.placeholder {
-      border: 1px dashed #2196F3;
-      background-color: #E1F5FE;
-    }
-  }
+		&.placeholder {
+			border: 1px dashed #2196F3;
+			background-color: #E1F5FE;
+		}
+	}
 
-  .disabled {
+	.disabled {
 
-    .icon, .header, .description {
-      opacity: 0.5;
-    }
+		.icon, .header, .description {
+			opacity: 0.5;
+		}
 
-    .stats {
-      opacity: 0.3;
-    }
-  }
+		.stats {
+			opacity: 0.3;
+		}
+	}
 
-  .icon {
-    width: @acp-line-height;
-    height: @acp-line-height;
-    border-radius: 50%;
-    line-height: @acp-line-height;
-    text-align: center;
-    vertical-align: bottom;
-    background-size: cover;
-    float: left;
-    margin-right: @acp-margin;
-    cursor: move;
-  }
+	.icon {
+		width: @acp-line-height;
+		height: @acp-line-height;
+		border-radius: 50%;
+		line-height: @acp-line-height;
+		text-align: center;
+		vertical-align: bottom;
+		background-size: cover;
+		float: left;
+		margin-right: @acp-margin;
+		cursor: move;
+	}
 
-  .information {
-    float: left;
-  }
+	.information {
+		float: left;
+	}
 
-  .header {
-    margin-top: 0;
-    margin-bottom: @acp-base-line;
-  }
+	.header {
+		margin-top: 0;
+		margin-bottom: @acp-base-line;
+	}
 
-  .description {
-    margin: 0;
-  }
+	.description {
+		margin: 0;
+	}
 }

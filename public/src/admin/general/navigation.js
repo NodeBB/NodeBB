@@ -6,7 +6,7 @@ define('admin/general/navigation', ['translator'], function(translator) {
 		available;
 
 	navigation.init = function() {
-		available = JSON.parse(ajaxify.variables.get('available'));
+		available = ajaxify.data.available;
 
 		$('#enabled').html(translator.unescape($('#enabled').html()));
 		translator.translate(translator.unescape($('#available').html()), function(html) {

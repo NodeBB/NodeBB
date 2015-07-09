@@ -1,5 +1,5 @@
 "use strict";
-/*global define, socket, app, ajaxify, utils, Mousetrap, Hammer, RELATIVE_PATH*/
+/*global define, socket, app, ajaxify, utils, bootbox, Mousetrap, Hammer, RELATIVE_PATH*/
 
 (function() {
 	$(document).ready(function() {
@@ -20,6 +20,7 @@
 			selectMenuItem(data.url);
 			setupHeaderMenu();
 			setupRestartLinks();
+			setupCheckboxes();
 		});
 
 		$('[component="logout"]').on('click', app.logout);
@@ -73,15 +74,6 @@
 		Mousetrap.bind('ctrl+shift+a R', function() {
 			console.log('[admin] Restarting NodeBB...');
 			socket.emit('admin.restart');
-		});
-
-		Mousetrap.bind('ctrl+shift+a d', function() {
-			var tid = ajaxify.variables.get('topic_id'),
-				cid = ajaxify.variables.get('category_id');
-
-			if (tid && cid) {
-				socket.emit('topics.delete', { tids: [tid], cid: cid });
-			}
 		});
 
 		Mousetrap.bind('/', function(e) {
@@ -177,4 +169,26 @@
 			});
 		});
 	}
+
+	function setupCheckboxes() {
+		$('[type=checkbox]').each(function() {
+			var checkbox = $(this),
+				checked = checkbox.is(':checked');
+
+			if (checked) {
+				checkbox.after('<i class="fa fa-toggle-on"></i>');
+			} 
+			else {
+				checkbox.after('<i class="fa fa-toggle-off"></i>');   
+			}
+		});
+
+		$('[type=checkbox]').change(function() {
+			var checked = $(this).is(':checked');
+
+			$(this).siblings('[class*=fa-]').toggleClass('fa-toggle-off', !checked)
+				.toggleClass('fa-toggle-on', checked);
+		});
+	}
+
 }());

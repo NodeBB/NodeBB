@@ -115,27 +115,18 @@ var async = require('async'),
 		}
 
 		options.escape = options.hasOwnProperty('escape') ? options.escape : true;
+		var stop = -1;
 
 		async.parallel({
 			base: function (next) {
 				db.getObject('group:' + groupName, next);
 			},
-			owners: function (next) {
-				async.waterfall([
-					function(next) {
-						db.getSetMembers('group:' + groupName + ':owners', next);
-					},
-					function(uids, next) {
-						user.getUsers(uids, options.uid, next);
-					}
-				], next);
-			},
 			members: function (next) {
-				var stop = -1;
 				if (options.truncateUserList) {
 					stop = (parseInt(options.userListCount, 10) || 4) - 1;
 				}
-				user.getUsersFromSet('group:' + groupName + ':members', options.uid, 0, stop, next);
+
+				Groups.getOwnersAndMembers(groupName, options.uid, 0, stop, next);
 			},
 			pending: function (next) {
 				async.waterfall([
@@ -164,19 +155,6 @@ var async = require('async'),
 				results.base['cover:position'] = '50% 50%';
 			}
 
-			var ownerUids = [];
-			results.owners.forEach(function(user) {
-				if (user) {
-					user.isOwner = true;
-					ownerUids.push(user.uid.toString());
-				}
-			});
-
-			results.members = results.members.filter(function(user, index, array) {
-				return user && user.uid && ownerUids.indexOf(user.uid.toString()) === -1;
-			});
-			results.members = results.owners.concat(results.members);
-
 			plugins.fireHook('filter:parse.raw', results.base.description, function(err, descriptionParsed) {
 				if (err) {
 					return callback(err);
@@ -190,6 +168,7 @@ var async = require('async'),
 				results.base.userTitleEnabled = results.base.userTitleEnabled ? !!parseInt(results.base.userTitleEnabled, 10) : true;
 				results.base.createtimeISO = utils.toISOString(results.base.createtime);
 				results.base.members = results.members;
+				results.base.membersNextStart = stop + 1;
 				results.base.pending = results.pending.filter(Boolean);
 				results.base.deleted = !!parseInt(results.base.deleted, 10);
 				results.base.hidden = !!parseInt(results.base.hidden, 10);
@@ -204,6 +183,43 @@ var async = require('async'),
 					callback(err, data ? data.group : null);
 				});
 			});
+		});
+	};
+
+	Groups.getOwnersAndMembers = function(groupName, uid, start, stop, callback) {
+		async.parallel({
+			owners: function (next) {
+				async.waterfall([
+					function(next) {
+						db.getSetMembers('group:' + groupName + ':owners', next);
+					},
+					function(uids, next) {
+						user.getUsers(uids, uid, next);
+					}
+				], next);
+			},
+			members: function (next) {
+				user.getUsersFromSet('group:' + groupName + ':members', uid, start, stop, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			var ownerUids = [];
+			results.owners.forEach(function(user) {
+				if (user) {
+					user.isOwner = true;
+					ownerUids.push(user.uid.toString());
+				}
+			});
+
+			results.members = results.members.filter(function(user, index, array) {
+				return user && user.uid && ownerUids.indexOf(user.uid.toString()) === -1;
+			});
+			results.members = results.owners.concat(results.members);
+
+			callback(null, results.members);
 		});
 	};
 

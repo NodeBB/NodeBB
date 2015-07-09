@@ -90,7 +90,11 @@ module.exports = function(User) {
 	};
 
 	User.uploadFromUrl = function(uid, url, callback) {
-		var filename = 'uid:' + uid + ':tmp-image';
+		var extension = url.substring(url.lastIndexOf('.') + 1);
+		if (['png', 'jpeg', 'jpg', 'gif'].indexOf(extension) == -1) {
+			return callback('[[error:invalid-image-extension]]');
+		}
+		var filename = 'uid_' + uid + '_tmp-image.' + extension;
 		downloadFromUrl(url, filename, function(err, downloadedImage) {
 			if (err) {
 				return callback(err);

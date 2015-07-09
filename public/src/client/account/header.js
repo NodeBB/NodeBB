@@ -10,7 +10,7 @@ define('forum/account/header', function() {
 	};
 
 	function hidePrivateLinks() {
-		if (!app.user.uid || app.user.uid !== parseInt(ajaxify.variables.get('theirid'), 10)) {
+		if (!app.user.uid || app.user.uid !== parseInt(ajaxify.data.theirid, 10)) {
 			$('.account-sub-links .plugin-link.private').addClass('hide');
 		}
 	}

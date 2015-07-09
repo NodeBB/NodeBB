@@ -390,7 +390,8 @@ var db = require('./database'),
 			bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
 			bodyLong: messageObj.content,
 			nid: 'chat_' + fromuid + '_' + touid,
-			from: fromuid
+			from: fromuid,
+			path: '/chats/' + messageObj.fromUser.username
 		}, function(err, notification) {
 			if (!err && notification) {
 				notifications.push(notification, [touid], callback);

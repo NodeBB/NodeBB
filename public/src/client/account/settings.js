@@ -30,7 +30,7 @@ define('forum/account/settings', ['forum/account/header'], function(header) {
 				}
 			});
 
-			socket.emit('user.saveSettings', {uid: ajaxify.variables.get('theirid'), settings: settings}, function(err, newSettings) {
+			socket.emit('user.saveSettings', {uid: ajaxify.data.theirid, settings: settings}, function(err, newSettings) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -46,7 +46,7 @@ define('forum/account/settings', ['forum/account/header'], function(header) {
 					}
 				}
 				app.exposeConfigToTemplates();
-				if (requireReload && parseInt(app.user.uid, 10) === parseInt(ajaxify.variables.get('theirid'), 10)) {
+				if (requireReload && parseInt(app.user.uid, 10) === parseInt(ajaxify.data.theirid, 10)) {
 					app.alert({
 						id: 'setting-change',
 						message: '[[user:settings-require-reload]]',

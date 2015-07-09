@@ -21,7 +21,7 @@
     "user_mentioned_you_in": "<strong>%1</strong> mainis sind postituses <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> hakkas sind jälgima.",
     "email-confirmed": "Emaili aadress kinnitatud",
-    "email-confirmed-message": "Täname, et kinnitasite oma emaili aadressi. Teie kasutaja omn nüüd täielikult aktiveeritud.",
+    "email-confirmed-message": "Täname, et kinnitasite oma emaili aadressi. Teie kasutaja on nüüd täielikult aktiveeritud.",
     "email-confirm-error-message": "Emaili aadressi kinnitamisel tekkis viga. Võibolla kinnituskood oli vale või aegunud.",
     "email-confirm-sent": "Kinnituskiri on saadetud."
 }

@@ -129,25 +129,6 @@ module.exports = function(User) {
 					return updateFullname(uid, data.fullname, next);
 				} else if (field === 'signature') {
 					data[field] = S(data[field]).stripTags().s;
-				} else if (field === 'website') {
-					var urlObj;
-					if (data[field].length > 0) {
-						urlObj = url.parse(data[field], false, true);
-						if (!urlObj.protocol) {
-							urlObj.protocol = 'http';
-							urlObj.slashes = true;
-						}
-						if (!urlObj.hostname && urlObj.pathname) {
-							urlObj.hostname = urlObj.pathname;
-							urlObj.pathname = null;
-						}
-						if (urlObj.pathname === '/') {
-							urlObj.pathname = null;
-						}
-					}
-					if (urlObj) {
-						data[field] = url.format(urlObj);
-					}
 				}
 
 				User.setUserField(uid, field, data[field], next);

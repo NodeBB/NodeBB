@@ -96,7 +96,8 @@ SocketMeta.rooms.getAll = function(socket, data, callback) {
 				categories: roomClients.categories ? roomClients.categories.length : 0,
 				recent: roomClients.recent_posts ? roomClients.recent_posts.length : 0,
 				topics: 0,
-				category: 0
+				category: 0,
+				other: 0
 			},
 			topics: {}
 		};
@@ -122,6 +123,14 @@ SocketMeta.rooms.getAll = function(socket, data, callback) {
 			}
 		}
 	}
+
+	for (var i in socketData.users) {
+		if (socketData.users.hasOwnProperty(i)) {
+			socketData.users.other -= socketData.users[i];
+		}
+	}
+
+	socketData.users.other += roomClients['online_users'].length;
 
 	var scoreKeys = Object.keys(scores),
 		mostActive = scoreKeys.sort();

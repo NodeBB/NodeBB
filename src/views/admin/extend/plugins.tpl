@@ -3,51 +3,10 @@
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-code-fork"></i> Installed Plugins</div>
 			<div class="panel-body">
-				<ul>
-					<!-- BEGIN plugins -->
-					<!-- IF plugins.installed -->
-					<!-- IF !plugins.error -->
-					<li data-plugin-id="{plugins.id}" data-version="{plugins.version}" class="clearfix">
-						<div class="pull-right">
-							<!-- IF plugins.isTheme -->
-							<a href="{config.relative_path}/admin/appearance/themes" class="btn btn-info">Themes</a>
-							<!-- ELSE -->
-							<button data-action="toggleActive" class="btn <!-- IF plugins.active --> btn-warning<!-- ELSE --> btn-success<!-- ENDIF plugins.active -->"><i class="fa fa-power-off"></i> <!-- IF plugins.active -->Deactivate<!-- ELSE -->Activate<!-- ENDIF plugins.active --></button>
-							<!-- ENDIF plugins.isTheme -->
-
-							<button data-action="toggleInstall" data-installed="1" class="btn btn-danger"><i class="fa fa-trash-o"></i> Uninstall</button>
-						</div>
-
-						<h2><strong>{plugins.name}</strong></h2>
-
-						<!-- IF plugins.description -->
-						<p>{plugins.description}</p>
-						<!-- ENDIF plugins.description -->
-						<!-- IF plugins.outdated --><i class="fa fa-exclamation-triangle text-danger"></i> <!-- ENDIF plugins.outdated --><small>Installed <strong class="currentVersion">{plugins.version}</strong> | Latest <strong class="latestVersion">{plugins.latest}</strong></small>
-						<!-- IF plugins.outdated -->
-							<button data-action="upgrade" class="btn btn-success btn-xs"><i class="fa fa-download"></i> Upgrade</button>
-						<!-- ENDIF plugins.outdated -->
-						<!-- IF plugins.url -->
-						<p>For more information: <a target="_blank" href="{plugins.url}">{plugins.url}</a></p>
-						<!-- ENDIF plugins.url -->
-					</li>
-					<!-- ENDIF !plugins.error -->
-					<!-- IF plugins.error -->
-					<li data-plugin-id="{plugins.id}" class="clearfix">
-						<div class="pull-right">
-							<button class="btn btn-default disabled"><i class="fa fa-exclamation-triangle"></i> Unknown</button>
-
-							<button data-action="toggleInstall" data-installed="1" class="btn btn-danger"><i class="fa fa-trash-o"></i> Uninstall</button>
-						</div>
-
-						<h2><strong>{plugins.id}</strong></h2>
-						<p>
-							The state of this plugin could not be determined, possibly due to a misconfiguration error.
-						</p>
-					</li>
-					<!-- ENDIF plugins.error -->
-					<!-- ENDIF plugins.installed -->
-					<!-- END plugins -->
+				<ul class="installed">
+					<!-- BEGIN installed -->
+					<!-- IMPORT admin/partials/installed_plugin_item.tpl -->
+					<!-- END installed -->
 				</ul>
 			</div>
 		</div>
@@ -55,29 +14,10 @@
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-code-fork"></i> Download Plugins</div>
 			<div class="panel-body">
-				<ul>
-					<!-- BEGIN plugins -->
-					<!-- IF !plugins.installed -->
-					<li data-plugin-id="{plugins.id}" class="clearfix">
-						<div class="pull-right">
-							<button data-action="toggleActive" class="btn btn-success hidden"><i class="fa fa-power-off"></i> Activate</button>
-							<button data-action="toggleInstall" data-installed="0" class="btn btn-success"><i class="fa fa-download"></i> Install</button>
-						</div>
-
-						<h2><strong>{plugins.name}</strong></h2>
-
-						<!-- IF plugins.description -->
-						<p>{plugins.description}</p>
-						<!-- ENDIF plugins.description -->
-
-						<small>Latest <strong class="latestVersion">{plugins.latest}</strong></small>
-
-						<!-- IF plugins.url -->
-						<p>For more information: <a target="_blank" href="{plugins.url}">{plugins.url}</a></p>
-						<!-- ENDIF plugins.url -->
-					</li>
-					<!-- ENDIF !plugins.installed -->
-					<!-- END plugins -->
+				<ul class="download">
+					<!-- BEGIN download -->
+					<!-- IMPORT admin/partials/download_plugin_item.tpl -->
+					<!-- END download -->
 				</ul>
 			</div>
 		</div>

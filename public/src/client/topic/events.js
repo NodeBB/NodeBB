@@ -82,7 +82,7 @@ define('forum/topic/events', [
 	}
 
 	function onTopicPurged(data) {
-		ajaxify.go('category/' + ajaxify.variables.get('category_id'));
+		ajaxify.go('category/' + ajaxify.data.cid);
 	}
 
 	function onTopicMoved(data) {
@@ -202,7 +202,7 @@ define('forum/topic/events', [
 	}
 
 	function onNewNotification(data) {
-		var tid = ajaxify.variables.get('topic_id');
+		var tid = ajaxify.data.tid;
 		if (data && data.tid && parseInt(data.tid, 10) === parseInt(tid, 10)) {
 			socket.emit('topics.markTopicNotificationsRead', tid);
 		}

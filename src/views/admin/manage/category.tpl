@@ -17,15 +17,12 @@
 						<div class="col-xs-12">
 							<div class="form-group">
 								<label for="cid-{category.cid}-parentCid">Parent Category</label>
-								<!-- IF category.parent.name -->
-								<br />
-								<div class="btn-group">
-									<button type="button" class="btn btn-default" data-action="setParent" data-parentCid="{category.parent.cid}"><i class="fa {category.parent.icon}"></i> {category.parent.name}</button>
+								<br/>
+								<div class="btn-group <!-- IF !category.parent.name -->hide<!-- ENDIF !category.parent.name-->">
+									<button type="button" class="btn btn-default" data-action="changeParent" data-parentCid="{category.parent.cid}"><i class="fa {category.parent.icon}"></i> {category.parent.name}</button>
 									<button type="button" class="btn btn-warning" data-action="removeParent" data-parentCid="{category.parent.cid}"><i class="fa fa-times"></i></button>
 								</div>
-								<!-- ELSE -->
-								<button type="button" class="btn btn-default form-control" data-action="setParent"><i class="fa fa-sitemap"></i> (None)</button>
-								<!-- ENDIF category.parent.name -->
+								<button type="button" class="btn btn-default form-control <!-- IF category.parent.name -->hide<!-- ENDIF category.parent.name-->" data-action="setParent"><i class="fa fa-sitemap"></i> (None)</button>
 							</div>
 						</div>
 					</fieldset>

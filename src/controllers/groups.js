@@ -35,8 +35,8 @@ groupsController.getGroupsFromSet = function(uid, sort, start, stop, callback) {
 
 		callback(null, {
 			groups: groups,
-		 	allowGroupCreation: parseInt(meta.config.allowGroupCreation, 10) === 1,
-		 	nextStart: stop + 1
+			allowGroupCreation: parseInt(meta.config.allowGroupCreation, 10) === 1,
+			nextStart: stop + 1
 		});
 	});
 };
@@ -79,12 +79,15 @@ groupsController.details = function(req, res, next) {
 		async.parallel({
 			group: function(next) {
 				groups.get(res.locals.groupName, {
-					uid: req.uid
+					uid: req.uid,
+					truncateUserList: true,
+					userListCount: 20
 				}, next);
 			},
 			posts: function(next) {
 				groups.getLatestMemberPosts(res.locals.groupName, 10, req.uid, next);
-			}
+			},
+			isAdmin: async.apply(user.isAdministrator, req.uid)
 		}, function(err, results) {
 			if (err) {
 				return next(err);

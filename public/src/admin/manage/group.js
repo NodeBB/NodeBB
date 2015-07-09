@@ -18,7 +18,7 @@ define('admin/manage/group', [
 			searchDelay;
 
 
-		var groupName = ajaxify.variables.get('groupName');
+		var groupName = ajaxify.data.group.name;
 
 		changeGroupUserTitle.keyup(function() {
 			groupLabelPreview.text(changeGroupUserTitle.val());

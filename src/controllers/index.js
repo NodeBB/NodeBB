@@ -135,6 +135,9 @@ Controllers.register = function(req, res, next) {
 
 Controllers.compose = function(req, res, next) {
 	if (req.query.p && !res.locals.isAPI) {
+		if (req.query.p.startsWith(nconf.get('relative_path'))) {
+			req.query.p = req.query.p.replace(nconf.get('relative_path'), '');
+		}
 		return helpers.redirect(res, req.query.p);
 	}
 
