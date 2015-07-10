@@ -361,13 +361,26 @@ var async = require('async'),
 			return callback(null, []);
 		}
 		var keys = groupNames.map(function(groupName) {
-			return 'group:' + groupName;
-		});
+				return 'group:' + groupName;
+			}),
+			ephemeralIdx = groupNames.reduce(function(memo, cur, idx) {
+				if (ephemeralGroups.indexOf(cur) !== -1) {
+					memo.push(idx);
+				}
+				return memo;
+			}, []);
 
 		db.getObjects(keys, function(err, groupData) {
 			if (err) {
 				return callback(err);
 			}
+
+			if (ephemeralIdx.length) {
+				ephemeralIdx.forEach(function(idx) {
+					groupData[idx] = internals.getEphemeralGroup(groupNames[idx]);
+				});
+			}
+
 			groupData.forEach(function(group) {
 				if (group) {
 					group.userTitle = validator.escape(group.userTitle) || validator.escape(group.name);

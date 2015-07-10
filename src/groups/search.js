@@ -3,7 +3,8 @@
 var	async = require('async'),
 
 	user = require('../user'),
-	db = require('./../database');
+	db = require('./../database'),
+	groups = module.parent.exports;
 
 module.exports = function(Groups) {
 
@@ -15,8 +16,10 @@ module.exports = function(Groups) {
 		async.waterfall([
 			async.apply(db.getObjectValues, 'groupslug:groupname'),
 			function(groupNames, next) {
+				// Ephemeral groups and the registered-users groups are searchable
+				groupNames = groups.getEphemeralGroups().concat(groupNames).concat('registered-users');
 				groupNames = groupNames.filter(function(name) {
-					return name.toLowerCase().indexOf(query) !== -1 && name !== 'administrators' && name !== 'registered-users' && !Groups.isPrivilegeGroup(name);
+					return name.toLowerCase().indexOf(query) !== -1 && name !== 'administrators' && !Groups.isPrivilegeGroup(name);
 				});
 				groupNames = groupNames.slice(0, 100);
 				Groups.getGroupsData(groupNames, next);
