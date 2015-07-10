@@ -189,6 +189,12 @@
 			$(this).siblings('[class*=fa-]').toggleClass('fa-toggle-off', !checked)
 				.toggleClass('fa-toggle-on', checked);
 		});
+
+		$.propHooks.checked = {
+			set: function(elem, value, name) {
+				$(elem).trigger("change");
+			}
+		}; 
 	}
 
 }());
