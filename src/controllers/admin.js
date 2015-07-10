@@ -275,7 +275,12 @@ adminController.plugins.get = function(req, res, next) {
 		}
 
 		res.render('admin/extend/plugins' , {
-			plugins: plugins
+			installed: plugins.filter(function(plugin) {
+				return plugin.installed;
+			}),
+			download: plugins.filter(function(plugin) {
+				return !plugin.installed;
+			})
 		});
 	});
 };

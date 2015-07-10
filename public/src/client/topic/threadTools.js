@@ -23,22 +23,22 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'comp
 		});
 
 		components.get('topic/lock').on('click', function() {
-			socket.emit('topics.lock', {tids: [tid], cid: ajaxify.variables.get('category_id')});
+			socket.emit('topics.lock', {tids: [tid], cid: ajaxify.data.cid});
 			return false;
 		});
 
 		components.get('topic/unlock').on('click', function() {
-			socket.emit('topics.unlock', {tids: [tid], cid: ajaxify.variables.get('category_id')});
+			socket.emit('topics.unlock', {tids: [tid], cid: ajaxify.data.cid});
 			return false;
 		});
 
 		components.get('topic/pin').on('click', function() {
-			socket.emit('topics.pin', {tids: [tid], cid: ajaxify.variables.get('category_id')});
+			socket.emit('topics.pin', {tids: [tid], cid: ajaxify.data.cid});
 			return false;
 		});
 
 		components.get('topic/unpin').on('click', function() {
-			socket.emit('topics.unpin', {tids: [tid], cid: ajaxify.variables.get('category_id')});
+			socket.emit('topics.unpin', {tids: [tid], cid: ajaxify.data.cid});
 			return false;
 		});
 
@@ -55,7 +55,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'comp
 		});
 
 		components.get('topic/move').on('click', function(e) {
-			move.init([tid], ajaxify.variables.get('category_id'));
+			move.init([tid], ajaxify.data.cid);
 			return false;
 		});
 
@@ -95,7 +95,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'comp
 		translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function(msg) {
 			bootbox.confirm(msg, function(confirm) {
 				if (confirm) {
-					socket.emit('topics.' + command, {tids: [tid], cid: ajaxify.variables.get('category_id')});
+					socket.emit('topics.' + command, {tids: [tid], cid: ajaxify.data.cid});
 				}
 			});
 		});

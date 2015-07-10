@@ -141,6 +141,7 @@ module.exports = function(Meta) {
 				switch(message.type) {
 				case 'end':
 					Meta.js.cache = message.minified;
+					Meta.js.map = message.sourceMap;
 					onComplete();
 					break;
 				case 'hash':

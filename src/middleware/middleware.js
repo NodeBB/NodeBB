@@ -80,7 +80,7 @@ middleware.redirectToLoginIfGuest = function(req, res, next) {
 	if (!req.user || parseInt(req.user.uid, 10) === 0) {
 		return redirectToLogin(req, res);
 	}
-	
+
 	next();
 };
 
@@ -191,16 +191,17 @@ middleware.buildHeader = function(req, res, next) {
 };
 
 middleware.renderHeader = function(req, res, callback) {
+	var registrationType = meta.config.registrationType || 'normal';
 	var templateValues = {
-			bootswatchCSS: meta.config['theme:src'],
-			title: meta.config.title || '',
-			description: meta.config.description || '',
-			'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
-			'brand:logo': meta.config['brand:logo'] || '',
-			'brand:logo:display': meta.config['brand:logo']?'':'hide',
-			allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
-			searchEnabled: plugins.hasListeners('filter:search.query')
-		};
+		bootswatchCSS: meta.config['theme:src'],
+		title: meta.config.title || '',
+		description: meta.config.description || '',
+		'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
+		'brand:logo': meta.config['brand:logo'] || '',
+		'brand:logo:display': meta.config['brand:logo']?'':'hide',
+		allowRegistration: registrationType === 'normal' || registrationType === 'admin-approval',
+		searchEnabled: plugins.hasListeners('filter:search.query')
+	};
 
 	for (var key in res.locals.config) {
 		if (res.locals.config.hasOwnProperty(key)) {
@@ -273,7 +274,7 @@ middleware.renderHeader = function(req, res, callback) {
 		templateValues.linkTags = results.tags.link;
 		templateValues.isAdmin = results.user.isAdmin;
 		templateValues.user = results.user;
-		templateValues.userJSON = JSON.stringify(results.user).replace(/'/g, "\\'");
+		templateValues.userJSON = JSON.stringify(results.user);
 		templateValues.customCSS = results.customCSS;
 		templateValues.customJS = results.customJS;
 		templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
@@ -326,7 +327,7 @@ middleware.processRender = function(req, res, next) {
 				return fn(err);
 			}
 
-			// str = str + '<input type="hidden" ajaxify-data="' + encodeURIComponent(JSON.stringify(options)) + '" />';
+			str = str + '<input type="hidden" ajaxify-data="' + encodeURIComponent(JSON.stringify(options)) + '" />';
 			str = (res.locals.postHeader ? res.locals.postHeader : '') + str + (res.locals.preFooter ? res.locals.preFooter : '');
 
 			if (res.locals.footer) {

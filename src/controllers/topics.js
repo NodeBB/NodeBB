@@ -89,9 +89,9 @@ topicsController.get = function(req, res, next) {
 			}
 			if (!settings.usePagination) {
 				if (reverse) {
-					postIndex = Math.max(0, postCount - (req.params.post_index || postCount) - (settings.postsPerPage / 2));
+					postIndex = Math.max(0, postCount - (req.params.post_index || postCount) - Math.ceil(settings.postsPerPage / 2));
 				} else {
-					postIndex = Math.max(0, (req.params.post_index || 1) - (settings.postsPerPage / 2));
+					postIndex = Math.max(0, (req.params.post_index || 1) - Math.ceil(settings.postsPerPage / 2));
 				}
 			} else if (!req.query.page) {
 				var index = 0;

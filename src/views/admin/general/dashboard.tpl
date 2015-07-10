@@ -34,19 +34,19 @@
 					<div class="panel-body">
 						<div id="unique-visitors">
 							<div class="text-center pull-left">
-								<div>{stats.day}</div>
+								<span class="formatted-number">{stats.day}</span>
 								<div>Day</div>
 							</div>
 							<div class="text-center pull-left">
-								<div>{stats.week}</div>
+								<span class="formatted-number">{stats.week}</span>
 								<div>Week</div>
 							</div>
 							<div class="text-center pull-left">
-								<div>{stats.month}</div>
+								<span class="formatted-number">{stats.month}</span>
 								<div>Month</div>
 							</div>
 							<div class="text-center pull-left">
-								<div>{stats.alltime}</div>
+								<span class="formatted-number">{stats.alltime}</span>
 								<div>All Time</div>
 							</div>
 						</div>
@@ -93,14 +93,17 @@
 	<div class="col-lg-3">
 		<div class="panel panel-default">
 			<div class="panel-heading">System Control</div>
-			<div class="panel-body">
-				<p class="text-center">
+			<div class="panel-body text-center">
+				<p>
 					<button class="btn btn-warning reload" data-placement="bottom" data-toggle="tooltip" title="Reload NodeBB to activate new plugins">Reload</button>
 					<button class="btn btn-danger restart" data-placement="bottom" data-toggle="tooltip" title="Restarting NodeBB will drop all existing connections for a few seconds">Restart</button>
 				</p>
-				<p class="text-center">
-					<a href="/admin/settings/advanced" class="btn btn-info" data-placement="bottom" data-toggle="tooltip" title="Click here to set up maintenance mode for NodeBB">Maintenance Mode</a>
+				<p>
+					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info" data-placement="bottom" data-toggle="tooltip" title="Click here to set up maintenance mode for NodeBB">Maintenance Mode</a>
 				</p>
+
+				<hr />
+				<span id="toggle-realtime">Realtime Chart Updates <strong>OFF</strong> <i class="fa fa fa-toggle-off pointer"></i></span>
 			</div>
 		</div>
 

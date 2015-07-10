@@ -16,7 +16,9 @@ var async = require('async'),
 	authenticationController = {};
 
 authenticationController.register = function(req, res, next) {
-	if (parseInt(meta.config.allowRegistration, 10) === 0) {
+	var registrationType = meta.config.registrationType || 'normal';
+
+	if (registrationType === 'disabled') {
 		return res.sendStatus(403);
 	}
 
@@ -31,6 +33,14 @@ authenticationController.register = function(req, res, next) {
 	var uid;
 	async.waterfall([
 		function(next) {
+			if (registrationType === 'invite-only') {
+				user.verifyInvitation(userData, next);
+			} else {
+				next();
+			}
+		},
+		function(next) {
+			console.log(userData);
 			if (!userData.email) {
 				return next(new Error('[[error:invalid-email]]'));
 			}
@@ -53,7 +63,26 @@ authenticationController.register = function(req, res, next) {
 			plugins.fireHook('filter:register.check', {req: req, res: res, userData: userData}, next);
 		},
 		function(data, next) {
-			user.create(data.userData, next);
+			if (registrationType === 'normal' || registrationType === 'invite-only') {
+				registerAndLoginUser(req, res, userData, next);
+			} else if (registrationType === 'admin-approval') {
+				addToApprovalQueue(req, res, userData, next);
+			}
+		}
+	], function(err, data) {
+		if (err) {
+			return res.status(400).send(err.message);
+		}
+
+		res.json(data);
+	});
+};
+
+function registerAndLoginUser(req, res, userData, callback) {
+	var uid;
+	async.waterfall([
+		function(next) {
+			user.create(userData, next);
 		},
 		function(_uid, next) {
 			uid = _uid;
@@ -62,18 +91,26 @@ authenticationController.register = function(req, res, next) {
 		function(next) {
 			user.logIP(uid, req.ip);
 
+			user.deleteInvitation(userData.email);
+
 			user.notifications.sendWelcomeNotification(uid);
 
-			plugins.fireHook('filter:register.complete', {uid: uid, referrer: req.body.referrer}, next);
+			plugins.fireHook('filter:register.complete', {uid: uid, referrer: req.body.referrer || nconf.get('relative_path') + '/'}, next);
 		}
-	], function(err, data) {
-		if (err) {
-			return res.status(400).send(err.message);
-		}
+	], callback);
+}
 
-		res.status(200).send(data.referrer ? data.referrer : nconf.get('relative_path') + '/');
-	});
-};
+function addToApprovalQueue(req, res, userData, callback) {
+	async.waterfall([
+		function(next) {
+			userData.ip = req.ip;
+			user.addToApprovalQueue(userData, next);
+		},
+		function(next) {
+			next(null, {message: '[[register:registration-added-to-queue]]'});
+		}
+	], callback);
+}
 
 authenticationController.login = function(req, res, next) {
 	// Handle returnTo data

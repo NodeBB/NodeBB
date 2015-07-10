@@ -55,9 +55,7 @@ module.exports = function(Groups) {
 				tasks.push(async.apply(db.sortedSetAdd, 'groups:visible:name', 0, data.name.toLowerCase() + ':' + data.name));
 			}
 
-			if (!data.hidden) {
-				tasks.push(async.apply(db.setObjectField, 'groupslug:groupname', slug, data.name));
-			}
+			tasks.push(async.apply(db.setObjectField, 'groupslug:groupname', slug, data.name));
 
 			async.series(tasks, function(err) {
 				if (!err) {

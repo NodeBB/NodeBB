@@ -3,22 +3,25 @@
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-group"></i> Groups List</div>
 			<div class="panel-body">
+
+				<input id="group-search" type="text" class="form-control" placeholder="Search" /><br/>
+
 				<table class="table table-striped groups-list">
 					<tr>
 						<th>Group Name</th>
 						<th>Group Description</th>
 					</tr>
 					<!-- BEGIN groups -->
-					<tr data-groupname="{groups.name}">
+					<tr data-groupname="{groups.displayName}">
 						<td>
-							{groups.name}
+							{groups.displayName}
 							<!-- IF groups.system -->
 							<span class="badge">System Group</span>
 							<!-- ENDIF groups.system -->
 						</td>
 						<td>
 							<div class="btn-group pull-right">
-								<a href="{config.relative_path}/admin/manage/groups/{groups.slug}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> Edit</a>
+								<a href="{config.relative_path}/admin/manage/groups/{groups.nameEncoded}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> Edit</a>
 								<!-- IF !groups.system -->
 								<button class="btn btn-danger btn-xs" data-action="delete"><i class="fa fa-times"></i></button>
 								<!-- ENDIF !groups.system -->
@@ -28,6 +31,7 @@
 					</tr>
 					<!-- END groups -->
 				</table>
+				<!-- IMPORT partials/paginator.tpl -->
 			</div>
 		</div>
 	</div>

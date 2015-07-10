@@ -16,16 +16,21 @@ module.exports = function(Groups) {
 			async.apply(db.getObjectValues, 'groupslug:groupname'),
 			function(groupNames, next) {
 				groupNames = groupNames.filter(function(name) {
-					return name.toLowerCase().indexOf(query) !== -1 && name !== 'administrators';
+					return name.toLowerCase().indexOf(query) !== -1 && name !== 'administrators' && name !== 'registered-users' && !Groups.isPrivilegeGroup(name);
 				});
 				groupNames = groupNames.slice(0, 100);
 				Groups.getGroupsData(groupNames, next);
 			},
 			function(groupsData, next) {
+				groupsData = groupsData.filter(Boolean);
+				if (options.filterHidden) {
+					groupsData = groupsData.filter(function(group) {
+						return !group.hidden;
+					});
+				}
 				groupsData.forEach(Groups.escapeGroupData);
-				next(null, groupsData);
-			},
-			async.apply(Groups.sort, options.sort)
+				Groups.sort(options.sort, groupsData, next);
+			}
 		], callback);
 	};
 
@@ -35,13 +40,13 @@ module.exports = function(Groups) {
 				groups = groups.sort(function(a, b) {
 					return a.slug > b.slug;
 				}).sort(function(a, b) {
-					return a.memberCount < b.memberCount;
+					return b.memberCount - a.memberCount;
 				});
 				break;
 
 			case 'date':
 				groups = groups.sort(function(a, b) {
-					return a.createtime < b.createtime;
+					return b.createtime - a.createtime;
 				});
 				break;
 
@@ -84,7 +89,48 @@ module.exports = function(Groups) {
 			], callback);
 		}
 
+		if (!data.query) {
+			Groups.getOwnersAndMembers(data.groupName, data.uid, 0, 19, function(err, users) {
+				if (err) {
+					return callback(err);
+				}
+				callback(null, {users: users});
+			});
+			return;
+		}
+
 		data.findUids = findUids;
-		user.search(data, callback);
+		var results;
+		async.waterfall([
+			function(next) {
+				user.search(data, next);
+			},
+			function(_results, next) {
+				results = _results;
+				var uids = results.users.map(function(user) {
+					return user && user.uid;
+				});
+				Groups.ownership.isOwners(uids, data.groupName, next);
+			},
+			function(isOwners, next) {
+
+				results.users.forEach(function(user, index) {
+					if (user) {
+						user.isOwner = isOwners[index];
+					}
+				});
+
+				results.users.sort(function(a,b) {
+					if (a.isOwner && !b.isOwner) {
+						return -1;
+					} else if (!a.isOwner && b.isOwner) {
+						return 1;
+					} else {
+						return 0;
+					}
+				})
+				next(null, results);
+			}
+		], callback);
 	};
 };

@@ -181,28 +181,32 @@ define('admin/extend/plugins', function() {
 		socket.emit('admin.plugins.toggleInstall', {
 			id: pluginID,
 			version: version
-		}, function(err, status) {
+		}, function(err, pluginData) {
 			if (err) {
 				return app.alertError(err.message);
 			}
 
-			if (status.installed) {
-				btn.html('<i class="fa fa-trash-o"></i> Uninstall');
-			} else {
-				btn.html('<i class="fa fa-download"></i> Install');
-			}
+			var targetList = (pluginData.installed ? 'installed' : 'download'),
+				otherList = (pluginData.installed ? 'download' : 'installed'),
+				payload = {};
 
-			activateBtn.toggleClass('hidden', !status.installed);
+			payload[targetList] = pluginData;
+			templates.parse('admin/partials/' + targetList + '_plugin_item', payload, function(html) {
+				var pluginList = $('ul.' + targetList);
 
-			btn.toggleClass('btn-danger', status.installed)
-				.toggleClass('btn-success', !status.installed)
-				.attr('disabled', false)
-				.attr('data-installed', status.installed ? 1 : 0);
+				pluginList.append(html);
+				$('ul.' + otherList).find('li[data-plugin-id="' + pluginID + '"]').slideUp('slow', function() {
+					$(this).remove();
+					$('html,body').animate({
+						scrollTop: pluginList.find('li').last().offset().top - 48
+					}, 1000);
+				});
+			});
 
 			app.alert({
 				alert_id: 'plugin_toggled',
-				title: 'Plugin ' + (status.installed ? 'Installed' : 'Uninstalled'),
-				message: status.installed ? 'Plugin successfully installed, please activate the plugin.' : 'The plugin has been successfully deactivated and uninstalled.',
+				title: 'Plugin ' + (pluginData.installed ? 'Installed' : 'Uninstalled'),
+				message: pluginData.installed ? 'Plugin successfully installed, please activate the plugin.' : 'The plugin has been successfully deactivated and uninstalled.',
 				type: 'info',
 				timeout: 5000
 			});

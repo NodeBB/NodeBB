@@ -9,7 +9,7 @@ define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'],
 	AccountTopics.init = function() {
 		header.init();
 
-		AccountTopics.handleInfiniteScroll('account/topics', 'uid:' + ajaxify.variables.get('theirid') + ':topics');
+		AccountTopics.handleInfiniteScroll('account/topics', 'uid:' + ajaxify.data.theirid + ':topics');
 	};
 
 	AccountTopics.handleInfiniteScroll = function(_template, _set) {

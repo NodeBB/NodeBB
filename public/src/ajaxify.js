@@ -203,7 +203,7 @@ $(document).ready(function() {
 				if (!data) {
 					return;
 				}
-
+				ajaxify.data = data;
 				data.relative_path = RELATIVE_PATH;
 				$(window).trigger('action:ajaxify.dataLoaded', {url: url, data: data});
 

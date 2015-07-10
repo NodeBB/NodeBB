@@ -76,7 +76,8 @@ define('forum/groups/list', ['forum/infinitescroll'], function(infinitescroll) {
 		socket.emit('groups.search', {
 			query: queryEl.val(),
 			options: {
-				sort: sortEl.val()
+				sort: sortEl.val(),
+				filterHidden: true
 			}
 		}, function(err, groups) {
 			templates.parse('partials/groups/list', {

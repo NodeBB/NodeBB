@@ -20,7 +20,7 @@ module.exports = function(User) {
 			data.email = validator.escape(data.email.trim());
 		}
 
-		isDataValid(data, function(err) {
+		User.isDataValid(data, function(err) {
 			if (err)  {
 				return callback(err);
 			}
@@ -155,7 +155,7 @@ module.exports = function(User) {
 		});
 	};
 
-	function isDataValid(userData, callback) {
+	User.isDataValid = function(userData, callback) {
 		async.parallel({
 			emailValid: function(next) {
 				if (userData.email) {
@@ -186,8 +186,10 @@ module.exports = function(User) {
 					next();
 				}
 			}
-		}, callback);
-	}
+		}, function(err, results) {
+			callback(err);
+		});
+	};
 
 	function renameUsername(userData, callback) {
 		meta.userOrGroupExists(userData.userslug, function(err, exists) {

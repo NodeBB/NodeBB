@@ -22,6 +22,8 @@ define('forum/users', ['translator'], function(translator) {
 
 		handleSearch();
 
+		handleInvite();
+
 		socket.removeListener('event:user_status_change', onUserStatusChange);
 		socket.on('event:user_status_change', onUserStatusChange);
 
@@ -198,6 +200,23 @@ define('forum/users', ['translator'], function(translator) {
 		var url = window.location.href,
 			parts = url.split('/');
 		return parts[parts.length - 1];
+	}
+
+	function handleInvite() {
+		$('[component="user/invite"]').on('click', function() {
+			bootbox.prompt('Email: ', function(email) {
+				if (!email) {
+					return;
+				}
+
+				socket.emit('user.invite', email, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					app.alertSuccess('[[users:invitation-email-sent, ' + email + ']]');
+				});
+			});
+		});
 	}
 
 	return Users;

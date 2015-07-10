@@ -78,8 +78,8 @@ module.exports = function(Posts) {
 		var title = data.title.trim();
 
 		async.parallel({
-			cid: function(next) {
-				topics.getTopicField(tid, 'cid', next);
+			topic: function(next) {
+				topics.getTopicFields(tid, ['cid', 'title'], next);
 			},
 			isMain: function(next) {
 				Posts.isMain(data.pid, next);
@@ -92,14 +92,15 @@ module.exports = function(Posts) {
 			if (!results.isMain) {
 				return callback(null, {
 					tid: tid,
-					cid: results.cid,
-					isMainPost: false
+					cid: results.topic.cid,
+					isMainPost: false,
+					renamed: false
 				});
 			}
 
 			var topicData = {
 				tid: tid,
-				cid: results.cid,
+				cid: results.topic.cid,
 				uid: postData.uid,
 				mainPid: data.pid
 			};
@@ -131,11 +132,13 @@ module.exports = function(Posts) {
 					plugins.fireHook('action:topic.edit', topicData);
 					next(null, {
 						tid: tid,
-						cid: results.cid,
+						cid: results.topic.cid,
 						uid: postData.uid,
 						title: validator.escape(title),
+						oldTitle: results.topic.title,
 						slug: topicData.slug,
-						isMainPost: results.isMain,
+						isMainPost: true,
+						renamed: title !== results.topic.title,
 						tags: tags
 					});
 				}

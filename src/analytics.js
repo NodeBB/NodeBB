@@ -63,5 +63,7 @@ var cronJob = require('cron').CronJob,
 		}
 	};
 
-
+	Analytics.getUnwrittenPageviews = function() {
+		return pageViews;
+	};
 }(exports));

@@ -7,11 +7,15 @@ define('admin/manage/groups', [
 ], function(translator, components) {
 	var	Groups = {};
 
+	var intervalId = 0;
+
 	Groups.init = function() {
 		var	createModal = $('#create-modal'),
 			createGroupName = $('#create-group-name'),
 			createModalGo = $('#create-modal-go'),
 			createModalError = $('#create-modal-error');
+
+		handleSearch();
 
 		createModal.on('keypress', function(e) {
 			if (e.keyCode === 13) {
@@ -76,8 +80,41 @@ define('admin/manage/groups', [
 				break;
 			}
 		});
-
 	};
+
+	function handleSearch() {
+		function doSearch() {
+			if (!queryEl.val()) {
+				return ajaxify.refresh();
+			}
+			$('.pagination').addClass('hide');
+			var groupsEl = $('.groups-list');
+			socket.emit('groups.search', {
+				query: queryEl.val(),
+				options: {
+					sort: 'date'
+				}
+			}, function(err, groups) {
+				templates.parse('admin/manage/groups', 'groups', {
+					groups: groups
+				}, function(html) {
+					groupsEl.find('[data-groupname]').remove();
+					groupsEl.find('tr').after(html);
+				});
+			});
+		}
+
+		var queryEl = $('#group-search');
+
+		queryEl.on('keyup', function() {
+			if (intervalId) {
+				clearTimeout(intervalId);
+				intervalId = 0;
+			}
+			intervalId = setTimeout(doSearch, 200);
+		});
+	}
+
 
 	return Groups;
 });
