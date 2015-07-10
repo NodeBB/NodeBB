@@ -67,6 +67,22 @@
 </div>
 
 <div class="panel panel-default">
+	<div class="panel-heading">Teaser Settings</div>
+	<div class="panel-body">
+		<form>
+			<div class="form-group">
+				<label>Teaser Post</label>
+				<select class="form-control" data-field="teaserPost">
+					<option value="last">Last</option>
+					<option value="first">First</option>
+				</select>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+<div class="panel panel-default">
 	<div class="panel-heading">Signature Settings</div>
 	<div class="panel-body">
 		<form>
