@@ -50,32 +50,6 @@ Categories.update = function(socket, data, callback) {
 	categories.update(data, callback);
 };
 
-Categories.search = function(socket, data, callback) {
-	if(!data) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-
-	var	username = data.username,
-		cid = data.cid;
-
-	user.search({query: username, uid: socket.uid}, function(err, data) {
-		if (err) {
-			return callback(err);
-		}
-
-		async.map(data.users, function(userObj, next) {
-			privileges.categories.userPrivileges(cid, userObj.uid, function(err, privileges) {
-				if(err) {
-					return next(err);
-				}
-
-				userObj.privileges = privileges;
-				next(null, userObj);
-			});
-		}, callback);
-	});
-};
-
 Categories.setPrivilege = function(socket, data, callback) {
 	if(!data) {
 		return callback(new Error('[[error:invalid-data]]'));
