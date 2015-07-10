@@ -171,6 +171,10 @@
 	}
 
 	function setupCheckboxes() {
+		if (ajaxify.currentPage.match(/^admin\/manage\/categories/)) {
+			return $('[type=checkbox]').show();
+		}
+
 		$('[type=checkbox]').each(function() {
 			var checkbox = $(this),
 				checked = checkbox.is(':checked');
