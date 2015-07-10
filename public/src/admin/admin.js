@@ -179,6 +179,7 @@
 			var checkbox = $(this),
 				checked = checkbox.is(':checked');
 
+			checkbox.hide();
 			if (checked) {
 				checkbox.after('<i class="fa fa-toggle-on"></i>');
 			} 
