@@ -40,7 +40,6 @@ authenticationController.register = function(req, res, next) {
 			}
 		},
 		function(next) {
-			console.log(userData);
 			if (!userData.email) {
 				return next(new Error('[[error:invalid-email]]'));
 			}
