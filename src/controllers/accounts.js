@@ -490,6 +490,13 @@ accountsController.getChats = function(req, res, next) {
 	if (parseInt(meta.config.disableChat) === 1) {
 		return helpers.notFound(req, res);
 	}
+
+	// In case a userNAME is passed in instead of a slug, the route should not 404
+	var slugified = utils.slugify(req.params.userslug);
+	if (req.params.userslug !== slugified) {
+		return res.redirect(nconf.get('relative_path') + '/chats/' + slugified);
+	}
+
 	async.parallel({
 		contacts: async.apply(user.getFollowing, req.user.uid, 0, 19),
 		recentChats: async.apply(messaging.getRecentChats, req.user.uid, 0, 19)
