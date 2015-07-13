@@ -103,8 +103,11 @@ $(document).ready(function() {
 
 		if (data) {
 			var status = parseInt(data.status, 10);
+			if (status === 403 || status === 404 || status === 500 || status === 502) {
+				if (status === 502) {
+					status = 500;
+				}
 
-			if (status === 403 || status === 404 || status === 500) {
 				$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 				return renderTemplate(url, status.toString(), data.responseJSON, (new Date()).getTime(), callback);
 			} else if (status === 401) {
