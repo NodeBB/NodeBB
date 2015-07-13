@@ -18,6 +18,7 @@ module.exports =  function(app, middleware, controllers) {
 	router.get('/post/:pid', controllers.posts.getPost);
 	router.get('/categories/:cid/moderators', getModerators);
 	router.get('/recent/posts/:term?', getRecentPosts);
+	router.get('/unread/total', middleware.authenticate, controllers.unread.unreadTotal);
 
 	var multipart = require('connect-multiparty');
 	var multipartMiddleware = multipart();
