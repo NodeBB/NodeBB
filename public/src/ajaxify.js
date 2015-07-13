@@ -31,6 +31,17 @@ $(document).ready(function() {
 	ajaxify.currentPage = null;
 
 	ajaxify.go = function (url, callback, quiet, search) {
+		if (!socket.connected) {
+			if (ajaxify.reconnectAction) {
+				$(window).off('action:reconnected', ajaxify.reconnectAction);
+			}
+			ajaxify.reconnectAction = function(e) {
+				ajaxify.go(url, callback, quiet, search);
+				$(window).off(e);
+			}
+			$(window).on('action:reconnected', ajaxify.reconnectAction);
+		}
+
 		if (ajaxify.handleRedirects(url)) {
 			return true;
 		}
