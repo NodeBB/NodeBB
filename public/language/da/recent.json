@@ -1,0 +1,19 @@
+{
+    "title": "Seneste",
+    "day": "Dag",
+    "week": "Uge",
+    "month": "Måned",
+    "year": "År",
+    "alltime": "Al tid",
+    "no_recent_topics": "Der er ingen seneste tråde",
+    "no_popular_topics": "Der er ingen populære tråde.",
+    "there-is-a-new-topic": "Der er en ny tråd.",
+    "there-is-a-new-topic-and-a-new-post": "Der er en ny tråd og et nyt indlæg.",
+    "there-is-a-new-topic-and-new-posts": "Der er en tråd og %1 nye indlæg",
+    "there-are-new-topics": "Der er %1 nye indlæg.",
+    "there-are-new-topics-and-a-new-post": "Der er %1 nye indlæg og et nyt indlæg.",
+    "there-are-new-topics-and-new-posts": "Der er %1 nye tråde og %2 nye indlæg.",
+    "there-is-a-new-post": "Der er et nyt indlæg.",
+    "there-are-new-posts": "Der er %1 nye indlæg.",
+    "click-here-to-reload": "Klik her for at genindlæse."
+}
