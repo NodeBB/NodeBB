@@ -84,7 +84,9 @@ function userRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/users/sort-reputation', middleware, middlewares, controllers.users.getUsersSortedByReputation);
 	setupPageRoute(app, '/users/latest', middleware, middlewares, controllers.users.getUsersSortedByJoinDate);
 	setupPageRoute(app, '/users/search', middleware, middlewares, controllers.users.getUsersForSearch);
+	setupPageRoute(app, '/users/map', middleware, middlewares, controllers.users.getMap);
  }
+
 
 function groupRoutes(app, middleware, controllers) {
 	var middlewares = [middleware.checkGlobalPrivacySettings, middleware.exposeGroupName];

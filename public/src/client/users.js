@@ -8,7 +8,7 @@ define('forum/users', ['translator'], function(translator) {
 	var loadingMoreUsers = false;
 
 	Users.init = function() {
-
+		app.enterRoom('user_list');
 		var active = getActiveSection();
 
 		$('.nav-pills li').removeClass('active');

@@ -2,11 +2,11 @@
 
 /* globals define, app, socket*/
 
-define('forum/popular', ['forum/recent'], function(recent) {
+define('forum/popular', function() {
 	var Popular = {};
 
 	Popular.init = function() {
-		app.enterRoom('recent_posts');
+		app.enterRoom('popular_topics');
 
 		selectActivePill();
 	};

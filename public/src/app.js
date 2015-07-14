@@ -100,9 +100,14 @@ app.cacheBuster = null;
 				case 'category':
 					room = 'category_' + url_parts[1];
 				break;
-				case 'recent':	// intentional fall-through
+				case 'recent':
+					room = 'recent_topics';
+				break;
 				case 'unread':
-					room = 'recent_posts';
+					room = 'unread_topics';
+				break;
+				case 'popular':
+					room = 'popular_topics';
 				break;
 				case 'admin':
 					room = 'admin';

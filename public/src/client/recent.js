@@ -15,7 +15,7 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function(infinite
 	});
 
 	Recent.init = function() {
-		app.enterRoom('recent_posts');
+		app.enterRoom('recent_topics');
 
 		Recent.watchForNewPosts();
 

@@ -85,7 +85,7 @@ SocketTopics.enter = function(socket, tid, callback) {
 			SocketTopics.markAsRead(socket, [tid], next);
 		},
 		users: function(next) {
-			websockets.getUsersInRoom(socket.uid, 'topic_' + tid, next);
+			websockets.getUsersInRoom(socket.uid, 'topic_' + tid, 0, 9, next);
 		}
 	}, function(err, result) {
 		callback(err, result ? result.users : null);

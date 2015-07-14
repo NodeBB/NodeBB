@@ -12,7 +12,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 	});
 
 	Unread.init = function() {
-		app.enterRoom('recent_posts');
+		app.enterRoom('unread_topics');
 
 		$('#new-topics-alert').on('click', function() {
 			$(this).addClass('hide');

@@ -62,7 +62,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		});
 
 		$('[data-toggle="tooltip"]').tooltip();
-		
+
 		setupRealtimeButton();
 		setupGraphs();
 		initiateDashboard();
@@ -237,13 +237,13 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 				value: 1,
 				color: "#949FB1",
 				highlight: "#A8B3C5",
-				label: "Recent/Unread"
+				label: "Recent"
 			},
 			{
 				value: 1,
-				color: "#4D5360",
+				color: "#9FB194",
 				highlight: "#A8B3C5",
-				label: "Other"
+				label: "Unread"
 			}
 			], {
 				responsive: true
@@ -317,7 +317,8 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		graphs.presence.segments[1].value = users.topics;
 		graphs.presence.segments[2].value = users.category;
 		graphs.presence.segments[3].value = users.recent;
-		graphs.presence.segments[4].value = users.other;
+		graphs.presence.segments[4].value = users.unread;
+
 
 		graphs.presence.update();
 	}
