@@ -90,17 +90,17 @@ sitemap.getDynamicUrls = function(callback) {
 					privileges.topics.filterTids('read', tids, 0, next);
 				},
 				function(tids, next) {
-					topics.getTopicsFields(tids, ['tid', 'title', 'lastposttime'], next);
+					topics.getTopicsFields(tids, ['tid', 'title', 'slug', 'lastposttime'], next);
 				}
 			], function(err, topics) {
 				if (err) {
 					return next(err);
 				}
 
-				topics.forEach(function(topic) {
+				topics.forEach(function(topic) {console.log(topic)
 					if (topic) {
 						topicUrls.push({
-							url: '/topic/' + topic.tid + '/' + encodeURIComponent(utils.slugify(topic.title)),
+							url: '/topic/' + topic.slug,
 							lastmodISO: utils.toISOString(topic.lastposttime),
 							changefreq: 'daily',
 							priority: '0.6'
