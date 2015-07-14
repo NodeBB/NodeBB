@@ -184,7 +184,7 @@ usersController.getMap = function(req, res, next) {
 			}
 		});
 
-		res.render('usersMap', {names: roomNames, rooms: data});
+		res.render('usersMap', {rooms: data});
 	});
 };
 
