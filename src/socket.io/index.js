@@ -290,7 +290,7 @@ Sockets.getUsersInRoom = function (uid, roomName, start, stop, callback) {
 		callback(null, {
 			users: users,
 			room: roomName,
-			total: total,
+			total: users.length ? total : 0,
 			hidden: Math.max(0, total - uids.length)
 		});
 	});
