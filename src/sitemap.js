@@ -69,7 +69,7 @@ sitemap.getDynamicUrls = function(callback) {
 				categoriesData.forEach(function(category) {
 					if (category) {
 						categoryUrls.push({
-							url: '/category/' + category.cid + '/' + encodeURIComponent(utils.slugify(category.name)),
+							url: '/category/' + category.slug,
 							changefreq: 'weekly',
 							priority: '0.4'
 						});
