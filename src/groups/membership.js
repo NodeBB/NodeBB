@@ -101,7 +101,9 @@ module.exports = function(Groups) {
 			function(next) {
 				async.parallel({
 					exists: async.apply(Groups.exists, groupName),
-					isMember: async.apply(Groups.isMember, uid, groupName)
+					isMember: async.apply(Groups.isMember, uid, groupName),
+					isPending: async.apply(Groups.isPending, uid, groupName),
+					isInvited: async.apply(Groups.isInvited, uid, groupName)
 				}, next);
 			},
 			function(checks, next) {
@@ -109,6 +111,10 @@ module.exports = function(Groups) {
 					return next(new Error('[[error:no-group]]'));
 				} else if (checks.isMember) {
 					return next(new Error('[[error:group-already-member]]'));
+				} else if (type === 'invite' && checks.isInvited) {
+					return next(new Error('[[error:group-already-invited]]'));
+				} else if (type === 'request' && checks.isPending) {
+					return next(new Error('[[error:group-already-requested]]'));
 				}
 
 				db.setAdd(set, uid, next);

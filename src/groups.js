@@ -138,6 +138,16 @@ var async = require('async'),
 					}
 				], next);
 			},
+			invited: function (next) {
+				async.waterfall([
+					function(next) {
+						db.getSetMembers('group:' + groupName + ':invited', next);
+					},
+					function(uids, next) {
+						user.getUsersData(uids, next);
+					}
+				], next);
+			},
 			isMember: async.apply(Groups.isMember, options.uid, groupName),
 			isPending: async.apply(Groups.isPending, options.uid, groupName),
 			isInvited: async.apply(Groups.isInvited, options.uid, groupName),
@@ -170,6 +180,7 @@ var async = require('async'),
 				results.base.members = results.members;
 				results.base.membersNextStart = stop + 1;
 				results.base.pending = results.pending.filter(Boolean);
+				results.base.invited = results.invited.filter(Boolean);
 				results.base.deleted = !!parseInt(results.base.deleted, 10);
 				results.base.hidden = !!parseInt(results.base.hidden, 10);
 				results.base.system = !!parseInt(results.base.system, 10);
