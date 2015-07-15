@@ -157,7 +157,7 @@ module.exports = function(Topics) {
 								pid: postData.pid,
 								subject: '[' + (meta.config.title || 'NodeBB') + '] ' + title,
 								intro: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + title + ']]',
-								postBody: postData.content,
+								postBody: postData.content.replace(/"\/\//g, '"http://'),
 								site_title: meta.config.title || 'NodeBB',
 								username: data.userData.username,
 								userslug: data.userData.userslug,
