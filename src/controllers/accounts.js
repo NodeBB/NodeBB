@@ -493,7 +493,7 @@ accountsController.getChats = function(req, res, next) {
 
 	// In case a userNAME is passed in instead of a slug, the route should not 404
 	var slugified = utils.slugify(req.params.userslug);
-	if (req.params.userslug !== slugified) {
+	if (req.params.userslug && req.params.userslug !== slugified) {
 		return res.redirect(nconf.get('relative_path') + '/chats/' + slugified);
 	}
 
