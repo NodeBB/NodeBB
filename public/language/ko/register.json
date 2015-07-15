@@ -14,5 +14,6 @@
     "register_now_button": "회원가입",
     "alternative_registration": "다른 방법으로 회원가입",
     "terms_of_use": "이용약관",
-    "agree_to_terms_of_use": "이용약관에 동의합니다."
+    "agree_to_terms_of_use": "이용약관에 동의합니다.",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
 }

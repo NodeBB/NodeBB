@@ -6,6 +6,8 @@
     "no_groups_found": "لاوجدود لمجموعات يمكن معاينتها",
     "pending.accept": "موافق",
     "pending.reject": "رفض",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "اسحب وأسقِط صورة، اسحبها للموضع المرغوب، وانقر على <strong>حفظ</strong>",
     "cover-change": "تغيير",
     "cover-save": "حفظ",

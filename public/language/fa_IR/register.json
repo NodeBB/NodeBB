@@ -14,5 +14,6 @@
     "register_now_button": "اکنون نام‌نویسی کنید",
     "alternative_registration": "روش نام‌نویسی جایگزین",
     "terms_of_use": "شرایط استفاده",
-    "agree_to_terms_of_use": "با شرایط استفاده موافقم"
+    "agree_to_terms_of_use": "با شرایط استفاده موافقم",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
 }

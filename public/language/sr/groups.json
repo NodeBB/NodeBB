@@ -6,6 +6,8 @@
     "no_groups_found": "Нема група за преглед",
     "pending.accept": "Прихвати",
     "pending.reject": "Одбиј",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "Превуците и испустите фотографију, одвуците до позиције и притисните <strong>Сними</strong>",
     "cover-change": "Измени",
     "cover-save": "Сними",

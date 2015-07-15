@@ -6,6 +6,8 @@
     "no_groups_found": "Det er ingen grupper å se",
     "pending.accept": "Aksepter",
     "pending.reject": "Avslå",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "Dra og slipp et bilde, dra til posisjon, og trykk <strong>Lagre</strong>",
     "cover-change": "Endre",
     "cover-save": "Lagre",

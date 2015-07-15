@@ -6,6 +6,8 @@
     "no_groups_found": "אין קבוצות לצפייה",
     "pending.accept": "Accept",
     "pending.reject": "Reject",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "גרור תמונה, הזז למיקום הרצוי ואז לחץ על <strong>שמור</strong>",
     "cover-change": "שנה",
     "cover-save": "שמור",

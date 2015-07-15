@@ -6,6 +6,8 @@
     "no_groups_found": "ยังไม่มี Group",
     "pending.accept": "ยอมรับ",
     "pending.reject": "ไม่ยอมรับ",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "ลากรูปภาพไปวางยังตำแหน่งที่ต้องการแล้วกดที่ปุ่ม <strong>บันทึก</strong>",
     "cover-change": "ปรับปรุง",
     "cover-save": "บันทึก",

@@ -6,6 +6,8 @@
     "no_groups_found": "Non ci sono gruppi da vedere",
     "pending.accept": "Accetta",
     "pending.reject": "Rigetta",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "Drag and Drop una fotografia, spostarla ad una posizione, e premere <strong>Salva</strong>",
     "cover-change": "Cambia",
     "cover-save": "Salva",

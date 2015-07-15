@@ -8,5 +8,14 @@
     "users-found-search-took": "Намерени са %1 потребител(и)! Търсенето отне %2 секунди.",
     "filter-by": "Филтриране",
     "online-only": "Само тези на линия",
-    "picture-only": "Само със снимка"
+    "picture-only": "Само със снимка",
+    "invite": "Invite",
+    "invitation-email-sent": "An invitation email has been sent to %1",
+    "user_list": "User List",
+    "recent_topics": "Recent Topics",
+    "popular_topics": "Popular Topics",
+    "unread_topics": "Unread Topics",
+    "categories": "Categories",
+    "tags": "Tags",
+    "map": "Map"
 }

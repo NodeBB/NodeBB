@@ -6,6 +6,8 @@
     "no_groups_found": "Brak grup do wyświetlenia",
     "pending.accept": "Przyjmij",
     "pending.reject": "Odrzuć",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "Przeciągnij i upuść zdjęcie, ustaw w odpowiedniej pozycji i kliknij <strong>Zapisz</strong>",
     "cover-change": "Zmień",
     "cover-save": "Zapisz",

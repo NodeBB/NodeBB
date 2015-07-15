@@ -8,5 +8,14 @@
     "users-found-search-took": "找到 %1 位用户！搜索耗时 %2 毫秒。",
     "filter-by": "过滤选项",
     "online-only": "只看在线",
-    "picture-only": "只看图片"
+    "picture-only": "只看图片",
+    "invite": "Invite",
+    "invitation-email-sent": "An invitation email has been sent to %1",
+    "user_list": "User List",
+    "recent_topics": "Recent Topics",
+    "popular_topics": "Popular Topics",
+    "unread_topics": "Unread Topics",
+    "categories": "Categories",
+    "tags": "Tags",
+    "map": "Map"
 }

@@ -6,6 +6,8 @@
     "no_groups_found": "Нет групп для отображения",
     "pending.accept": "Принять",
     "pending.reject": "Отклонить",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "Перетяните сюда изображение, переместите на нужную позицию и нажмите <strong>Сохранить</strong>",
     "cover-change": "Изменить",
     "cover-save": "Сохранить",

@@ -6,6 +6,8 @@
     "no_groups_found": "Ei ole ühtegi gruppi",
     "pending.accept": "Aktsepteeri",
     "pending.reject": "Lükka tagasi",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "Lohista kaanepilt siia ning vajuta <strong>salvesta</strong>",
     "cover-change": "Muuda",
     "cover-save": "Salvesta",

@@ -6,6 +6,8 @@
     "no_groups_found": "這裡看不到任何群組",
     "pending.accept": "接受",
     "pending.reject": "拒絕",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "拖拉一本相簿，並拖到此位置，以及點擊 <strong>儲存</strong>",
     "cover-change": "變更",
     "cover-save": "儲存",

@@ -6,6 +6,8 @@
     "no_groups_found": "尚无小组信息",
     "pending.accept": "接受",
     "pending.reject": "拒绝",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "拖放照片到此位置，然后点击 <strong>保存</strong>",
     "cover-change": "更改",
     "cover-save": "保存",

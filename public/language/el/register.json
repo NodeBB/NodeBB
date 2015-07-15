@@ -14,5 +14,6 @@
     "register_now_button": "Εγγραφή Τώρα",
     "alternative_registration": "Εναλλακτική Εγγραφή",
     "terms_of_use": "Όροι Χρήσης",
-    "agree_to_terms_of_use": "Συμφωνώ με τους Όρους Χρήσης"
+    "agree_to_terms_of_use": "Συμφωνώ με τους Όρους Χρήσης",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
 }

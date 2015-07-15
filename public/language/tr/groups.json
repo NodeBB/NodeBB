@@ -6,6 +6,8 @@
     "no_groups_found": "Henüz hiç grup yok",
     "pending.accept": "Onayla",
     "pending.reject": "Reddet",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "Bir fotoğrafı Sürükleyin ve Bırakın, uygun yere sürükleyip <strong>Kaydet</strong>'e tıklayın.",
     "cover-change": "Değiştir",
     "cover-save": "Kaydet",

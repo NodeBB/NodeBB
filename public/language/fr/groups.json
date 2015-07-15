@@ -6,6 +6,8 @@
     "no_groups_found": "Il n'y a aucun groupe",
     "pending.accept": "Accepter",
     "pending.reject": "Refuser",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "Glissez-déposez une image, ajustez la position, et cliquez sur <strong>Enregistrer</strong>",
     "cover-change": "Modifier",
     "cover-save": "Enregistrer",

@@ -14,5 +14,6 @@
     "register_now_button": "Registruotis",
     "alternative_registration": "Alternatyvūs registracijos būdai",
     "terms_of_use": "Naudojimo sąlygos",
-    "agree_to_terms_of_use": "Aš sutinku su vartojimo sąlygomis"
+    "agree_to_terms_of_use": "Aš sutinku su vartojimo sąlygomis",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
 }

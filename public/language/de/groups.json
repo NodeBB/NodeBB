@@ -6,6 +6,8 @@
     "no_groups_found": "Es sind keine Gruppen vorhanden",
     "pending.accept": "Annehmen",
     "pending.reject": "Abweisen",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "Foto auf eine Position bewegen, und <strong>Speichern</strong> drücken",
     "cover-change": "Ändern",
     "cover-save": "Speichern",

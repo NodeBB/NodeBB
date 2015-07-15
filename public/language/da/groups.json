@@ -6,6 +6,8 @@
     "no_groups_found": "Der er ingen grupper at se",
     "pending.accept": "Accepter",
     "pending.reject": "Afvis",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "Træk og slip et billede, træk til positionen og tryk <strong>Gem</strong>",
     "cover-change": "Ændre",
     "cover-save": "Gem",

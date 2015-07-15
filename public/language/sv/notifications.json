@@ -20,6 +20,7 @@
     "user_posted_topic": "<strong>%1</strong> har skapat ett nytt ämne: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> nämnde dig i <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> började följa dig.",
+    "new_register": "<strong>%1</strong> sent a registration request.",
     "email-confirmed": "Epost bekräftad",
     "email-confirmed-message": "Tack för att du bekräftat din epostadress. Ditt konto är nu fullt ut aktiverat.",
     "email-confirm-error-message": "Det uppstod ett fel med att bekräfta din epostadress. Kanske var koden ogiltig eller har gått ut.",

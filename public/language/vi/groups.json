@@ -6,6 +6,8 @@
     "no_groups_found": "Không có nhóm nào để hiển thị",
     "pending.accept": "Chấp nhận",
     "pending.reject": "Từ chối",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "Drag and Drop a photo, drag to position, and hit <strong>Save</strong>",
     "cover-change": "Thay đổi",
     "cover-save": "Lưu",

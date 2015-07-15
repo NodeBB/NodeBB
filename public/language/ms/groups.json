@@ -6,6 +6,8 @@
     "no_groups_found": "Tiada kumpulan untuk dilihat",
     "pending.accept": "Terima",
     "pending.reject": "Tolak",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "Seret dan lepas gambar, lepas ke posisi, dan tekan <strong>Simpan</strong>",
     "cover-change": "Ubah",
     "cover-save": "Simpan",

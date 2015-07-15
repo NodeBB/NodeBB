@@ -14,5 +14,6 @@
     "register_now_button": "Registrarse ahora",
     "alternative_registration": "Métodos de registro alternativos",
     "terms_of_use": "Términos y Condiciones de uso",
-    "agree_to_terms_of_use": "Acepto los Términos y Condiciones de uso"
+    "agree_to_terms_of_use": "Acepto los Términos y Condiciones de uso",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
 }

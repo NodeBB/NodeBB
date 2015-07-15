@@ -6,6 +6,8 @@
     "no_groups_found": "Não há grupos para ver",
     "pending.accept": "Aceitar",
     "pending.reject": "Rejeitar",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "Arraste uma foto, arraste para a posição correta e clique em <strong>Salvar</strong>",
     "cover-change": "Alterar",
     "cover-save": "Salvar",

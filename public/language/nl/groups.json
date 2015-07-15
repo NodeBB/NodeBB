@@ -6,6 +6,8 @@
     "no_groups_found": "Geen groepen voor weergave",
     "pending.accept": "Accepteer",
     "pending.reject": "Afwijzen",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "Sleep een afbeelding, sleep om te positioneren en klik tenslotte op <strong>Opslaan</strong>",
     "cover-change": "Bewerken",
     "cover-save": "Opslaan",

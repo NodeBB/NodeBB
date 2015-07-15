@@ -20,6 +20,7 @@
     "user_posted_topic": "<strong>%1</strong> has posted a new topic: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> te-a menționat în <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> a început să te urmărească.",
+    "new_register": "<strong>%1</strong> sent a registration request.",
     "email-confirmed": "Email confirmat",
     "email-confirmed-message": "Îți mulțumim pentru validarea emailului. Contul tău este acuma activat.",
     "email-confirm-error-message": "A fost o problemă cu activarea adresei tale de email. Poate codul de activare a fost invalid sau expirat.",

@@ -6,6 +6,8 @@
     "no_groups_found": "There are no groups to see",
     "pending.accept": "Priimti",
     "pending.reject": "Atmesti",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "Vilkite čia nuotrauką, perkelkite į reikalingą poziciją ir spauskite <strong>Save</strong>",
     "cover-change": "Keisti",
     "cover-save": "Saugoti",

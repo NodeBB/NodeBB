@@ -6,6 +6,8 @@
     "no_groups_found": "گروهی برای دیدن وجود ندارد",
     "pending.accept": "قبول",
     "pending.reject": "رد",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "کشیدن و انداختن عکس، به محل بکشید، و <strong>ذخیره</strong> را بزنید",
     "cover-change": "تغییر",
     "cover-save": "ذخیره",

@@ -6,6 +6,8 @@
     "no_groups_found": "Няма групи",
     "pending.accept": "Приемане",
     "pending.reject": "Отхвърляне",
+    "pending.accept_all": "Accept All",
+    "pending.reject_all": "Reject All",
     "cover-instructions": "Плъзнете снимка, наместете я в предпочитаната позиция и натистнете <strong>Запазване</strong>",
     "cover-change": "Промяна",
     "cover-save": "Запазване",

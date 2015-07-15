@@ -14,5 +14,6 @@
     "register_now_button": "Đăng ký ngay",
     "alternative_registration": "Đăng ký tài khoản khác",
     "terms_of_use": "Điều khoản sử dụng",
-    "agree_to_terms_of_use": "Tôi đồng ý với các điều khoản sử dụng"
+    "agree_to_terms_of_use": "Tôi đồng ý với các điều khoản sử dụng",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
 }

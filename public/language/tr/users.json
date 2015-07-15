@@ -8,5 +8,14 @@
     "users-found-search-took": "%1 kullanıcı(lar) bulundu! Arama %2 saniye sürdü.",
     "filter-by": "Şu şekilde filtrele",
     "online-only": "Sadece çevrimiçi",
-    "picture-only": "Sadece resim"
+    "picture-only": "Sadece resim",
+    "invite": "Invite",
+    "invitation-email-sent": "An invitation email has been sent to %1",
+    "user_list": "User List",
+    "recent_topics": "Recent Topics",
+    "popular_topics": "Popular Topics",
+    "unread_topics": "Unread Topics",
+    "categories": "Categories",
+    "tags": "Tags",
+    "map": "Map"
 }
