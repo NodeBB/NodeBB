@@ -280,18 +280,19 @@ $(document).ready(function() {
 					(RELATIVE_PATH.length > 0 ? this.pathname.indexOf(RELATIVE_PATH) === 0 : true))	// Subfolder installs need this additional check
 				) {
 					// Internal link
-					var url = this.href.replace(rootUrl + '/', '');
+					var url = this.href.replace(rootUrl + RELATIVE_PATH + '/', '');
 
-					if(window.location.pathname === this.pathname && this.hash) {
+					if(window.location.pathname !== this.pathname) {
+						if (ajaxify.go(url)) {
+							e.preventDefault();
+						}
+					} else {
+						// Special handling for urls with hashes
 						if (this.hash !== window.location.hash) {
 							window.location.hash = this.hash;
 						}
 
 						e.preventDefault();
-					} else {
-						if (ajaxify.go(url)) {
-							e.preventDefault();
-						}
 					}
 				} else if (window.location.pathname !== '/outgoing') {
 					// External Link
