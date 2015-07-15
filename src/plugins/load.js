@@ -159,7 +159,8 @@ module.exports = function(Plugins) {
 			return callback();
 		}
 
-		var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
+		var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages),
+			fallbackMap = {};
 
 		utils.walk(pathToFolder, function(err, languages) {
 			var arr = [];
@@ -183,13 +184,20 @@ module.exports = function(Plugins) {
 						route: pathToLang.replace(pathToFolder, '')
 					});
 
+					if (pluginData.defaultLang) {
+						fallbackMap[path.basename(pathToLang, '.json')] = path.join(pathToFolder, pluginData.defaultLang, path.basename(pathToLang));
+					}
+
 					next();
 				});
 			}, function(err) {
 				if (err) {
 					return callback(err);
 				}
+
 				Plugins.customLanguages = Plugins.customLanguages.concat(arr);
+				Plugins.customLanguageFallbacks = fallbackMap;
+
 				callback();
 			});
 		});

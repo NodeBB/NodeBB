@@ -364,6 +364,15 @@ var fs = require('fs'),
 			translator.addTranslation(language, filename, lang.file);
 		});
 
+		var fallbackPath;
+		for(var resource in Plugins.customLanguageFallbacks) {
+			fallbackPath = Plugins.customLanguageFallbacks[resource];
+			params.router.get('/language/:lang/' + resource + '.json', function(req, res, next) {
+				winston.verbose('[translator] No resource file found for ' + req.params.lang + '/' + resource + ', using provided fallback language file');
+				res.sendFile(fallbackPath);
+			});
+		}
+
 		callback(null);
 	}
 
