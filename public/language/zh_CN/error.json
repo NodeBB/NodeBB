@@ -60,6 +60,8 @@
     "group-name-change-not-allowed": "不允许更改小组名称",
     "group-already-member": "您已经是此小组的成员",
     "group-needs-owner": "小组需要指定至少一名组长",
+    "group-already-invited": "This user has already been invited",
+    "group-already-requested": "Your membership request has already been submitted",
     "post-already-deleted": "此帖已被删除",
     "post-already-restored": "此帖已经恢复",
     "topic-already-deleted": "此主题已被删除",

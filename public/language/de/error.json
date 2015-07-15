@@ -60,6 +60,8 @@
     "group-name-change-not-allowed": "Du kannst den Namen der Gruppe nicht ändern",
     "group-already-member": "Du bist bereits Teil dieser Gruppe",
     "group-needs-owner": "Diese Gruppe muss mindestens einen Besitzer vorweisen",
+    "group-already-invited": "This user has already been invited",
+    "group-already-requested": "Your membership request has already been submitted",
     "post-already-deleted": "Dieser Beitrag ist bereits gelöscht worden",
     "post-already-restored": "Dieser Beitrag ist bereits wiederhergestellt worden",
     "topic-already-deleted": "Dieses Thema ist bereits gelöscht worden",

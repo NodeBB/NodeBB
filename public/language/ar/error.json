@@ -60,6 +60,8 @@
     "group-name-change-not-allowed": "لايسمح بتغيير أسماء المجموعات",
     "group-already-member": "أنت بالفعل عضو في هذه المجموعة ",
     "group-needs-owner": "هذه المجموعة تتطلب مالك واحد على اﻷقل",
+    "group-already-invited": "This user has already been invited",
+    "group-already-requested": "Your membership request has already been submitted",
     "post-already-deleted": "سبق وتم حذف هذا الرد",
     "post-already-restored": "سبق وتم إلغاء حذف هذا الرد",
     "topic-already-deleted": "سبق وتم حذف هذا الموضوع",

@@ -60,6 +60,8 @@
     "group-name-change-not-allowed": "Изменение названия группы запрещено",
     "group-already-member": "Вы уже состоите в этой группе",
     "group-needs-owner": "У группы должен быть как минимум один владелец",
+    "group-already-invited": "This user has already been invited",
+    "group-already-requested": "Your membership request has already been submitted",
     "post-already-deleted": "Этот пост уже удалён",
     "post-already-restored": "Этот пост уже восстановлен",
     "topic-already-deleted": "Тема уже удалена",

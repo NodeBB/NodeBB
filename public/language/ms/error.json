@@ -60,6 +60,8 @@
     "group-name-change-not-allowed": "Pengubahan nama kumpulan tidak dibenarkan",
     "group-already-member": "Anda telah pun menjadi ahli kumpulan ini",
     "group-needs-owner": "Kumpulan ini memerlukan sekurang-kurangnya seorang pemilik",
+    "group-already-invited": "This user has already been invited",
+    "group-already-requested": "Your membership request has already been submitted",
     "post-already-deleted": "Kiriman ini telah dipadam",
     "post-already-restored": "Kiriman ini telah dipulihkan",
     "topic-already-deleted": "Topik ini telah dipadam",

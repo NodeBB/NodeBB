@@ -60,6 +60,8 @@
     "group-name-change-not-allowed": "Gruppenavn ikke tillatt",
     "group-already-member": "Du er allerede en del av denne gruppen",
     "group-needs-owner": "Denne gruppen kreves minst en eier",
+    "group-already-invited": "This user has already been invited",
+    "group-already-requested": "Your membership request has already been submitted",
     "post-already-deleted": "Dette innlegget har blitt slettet",
     "post-already-restored": "Dette innlegget har allerede blitt gjenopprettet",
     "topic-already-deleted": "Dette emnet har allerede blitt slettet",

@@ -60,6 +60,8 @@
     "group-name-change-not-allowed": "Nie można zmieniać nazwy tej grupy.",
     "group-already-member": "Już należysz do tej grupy",
     "group-needs-owner": "Ta grupa musi mieć przynajmniej jednego właściciela",
+    "group-already-invited": "This user has already been invited",
+    "group-already-requested": "Your membership request has already been submitted",
     "post-already-deleted": "Ten post został już skasowany",
     "post-already-restored": "Ten post został już przywrócony",
     "topic-already-deleted": "Ten temat został już skasowany",

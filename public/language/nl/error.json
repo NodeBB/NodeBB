@@ -60,6 +60,8 @@
     "group-name-change-not-allowed": "Het veranderen van de groepsnaam is niet toegestaan!",
     "group-already-member": "Groepslidmaatschap al aanwezig",
     "group-needs-owner": "De groep vereist ten minste 1 eigenaar",
+    "group-already-invited": "This user has already been invited",
+    "group-already-requested": "Your membership request has already been submitted",
     "post-already-deleted": "Dit bericht is al verwijderd",
     "post-already-restored": "Dit bericht is al hersteld",
     "topic-already-deleted": "Dit onderwerp is al verwijderd",

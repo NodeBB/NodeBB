@@ -60,6 +60,8 @@
     "group-name-change-not-allowed": "Grup ismini değiştiremezsiniz",
     "group-already-member": "Bu grubun zaten bir parçasısınız.",
     "group-needs-owner": "Bu grubu en az bir kişi sahiplenmesi gerekiyor",
+    "group-already-invited": "This user has already been invited",
+    "group-already-requested": "Your membership request has already been submitted",
     "post-already-deleted": "İleti zaten silinmiş",
     "post-already-restored": "İleti zaten geri getirilmiş",
     "topic-already-deleted": "Başlık zaten silinmiş",

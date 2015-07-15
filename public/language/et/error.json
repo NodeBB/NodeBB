@@ -60,6 +60,8 @@
     "group-name-change-not-allowed": "Grupi nimevahetus ei ole lubatud",
     "group-already-member": "Sa oled juba selle grupi liige",
     "group-needs-owner": "See grupp nõuab vähemalt ühte omanikku",
+    "group-already-invited": "This user has already been invited",
+    "group-already-requested": "Your membership request has already been submitted",
     "post-already-deleted": "Postitus on juba kustutatud",
     "post-already-restored": "Postitus on juba taastatud",
     "topic-already-deleted": "Teema on juba kustutatud",

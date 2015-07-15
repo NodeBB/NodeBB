@@ -60,6 +60,8 @@
     "group-name-change-not-allowed": "تغیر نام گروه نیاز به دسترسی دارد.",
     "group-already-member": "شما الان هم عضوی از این گروه هستید",
     "group-needs-owner": "این گروه حداقل یک مالک باید داشته باشد",
+    "group-already-invited": "This user has already been invited",
+    "group-already-requested": "Your membership request has already been submitted",
     "post-already-deleted": "این دیدگاه پیش‌تر پاک شده است",
     "post-already-restored": "دیدگاه پیش‌تر بازگردانی شده است.",
     "topic-already-deleted": "جستار پیش‌تر حذف شده است",

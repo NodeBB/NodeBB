@@ -60,6 +60,8 @@
     "group-name-change-not-allowed": "לא ניתן לשנות את שם הקבוצה",
     "group-already-member": "אתה כבר חבר בקבוצה זו",
     "group-needs-owner": "קבוצה זו חייבת לפחות מנהל אחד",
+    "group-already-invited": "This user has already been invited",
+    "group-already-requested": "Your membership request has already been submitted",
     "post-already-deleted": "פוסט זה כבר נמחק",
     "post-already-restored": "פוסט זה כבר שוחזר",
     "topic-already-deleted": "נושא זה כבר נמחק",

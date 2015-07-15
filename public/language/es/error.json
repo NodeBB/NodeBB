@@ -60,6 +60,8 @@
     "group-name-change-not-allowed": "El nombre del grupo deseado no está permitido.",
     "group-already-member": "Ya formas parte de este grupo",
     "group-needs-owner": "Este grupo requiere al menos un propietario",
+    "group-already-invited": "This user has already been invited",
+    "group-already-requested": "Your membership request has already been submitted",
     "post-already-deleted": "Este publicación ya ha sido borrada",
     "post-already-restored": "Esta publicación ya ha sido restaurada",
     "topic-already-deleted": "Este tema ya ha sido borrado",

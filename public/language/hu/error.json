@@ -60,6 +60,8 @@
     "group-name-change-not-allowed": "A csoport névváltoztatás nem engedélyezett",
     "group-already-member": "Már a tagja vagy ennek a csoportnak",
     "group-needs-owner": "Ennek a csoportnak lennie kell legalább egy tulajdonosnak.",
+    "group-already-invited": "This user has already been invited",
+    "group-already-requested": "Your membership request has already been submitted",
     "post-already-deleted": "Ez a bejegyzés mát törlésre került",
     "post-already-restored": "Ez a bejegyzés már visszaállításra került",
     "topic-already-deleted": "Ezt a témakör már törlésre került",
