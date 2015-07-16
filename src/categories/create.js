@@ -38,7 +38,7 @@ module.exports = function(Categories) {
 					imageClass: 'auto'
 				};
 
-				plugins.fireHook('filter:category.create', {category: category}, next);
+				plugins.fireHook('filter:category.create', {category: category, data: data}, next);
 			},
 			function(data, next) {
 				category = data.category;
