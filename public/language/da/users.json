@@ -9,13 +9,13 @@
     "filter-by": "Filtre Efter",
     "online-only": "Kun online",
     "picture-only": "Kun billeder",
-    "invite": "Invite",
-    "invitation-email-sent": "An invitation email has been sent to %1",
-    "user_list": "User List",
-    "recent_topics": "Recent Topics",
-    "popular_topics": "Popular Topics",
-    "unread_topics": "Unread Topics",
-    "categories": "Categories",
+    "invite": "Invitér",
+    "invitation-email-sent": "En invitations email er blevet sendt til %1",
+    "user_list": "Bruger Liste",
+    "recent_topics": "Seneste Tråde",
+    "popular_topics": "Populærer Tråde",
+    "unread_topics": "Ulæste Tråde",
+    "categories": "Kategorier",
     "tags": "Tags",
-    "map": "Map"
+    "map": "Kort"
 }

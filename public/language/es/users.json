@@ -9,13 +9,13 @@
     "filter-by": "Filtrar Por",
     "online-only": "Sólo en línea",
     "picture-only": "Sólo imagen",
-    "invite": "Invite",
-    "invitation-email-sent": "An invitation email has been sent to %1",
-    "user_list": "User List",
-    "recent_topics": "Recent Topics",
-    "popular_topics": "Popular Topics",
-    "unread_topics": "Unread Topics",
-    "categories": "Categories",
-    "tags": "Tags",
-    "map": "Map"
+    "invite": "Invitar",
+    "invitation-email-sent": "Un correo de invitación ha sido enviado a %1",
+    "user_list": "Lista de Usuarios",
+    "recent_topics": "Temas Recientes",
+    "popular_topics": "Temas Populares",
+    "unread_topics": "Temas no leídos",
+    "categories": "Categorías ",
+    "tags": "Etiquetas",
+    "map": "Actividad"
 }
