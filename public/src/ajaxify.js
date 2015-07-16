@@ -257,10 +257,6 @@ $(document).ready(function() {
 	function ajaxifyAnchors() {
 		templates.registerLoader(ajaxify.loadTemplate);
 
-		if (!window.history || !window.history.pushState) {
-			return; // no ajaxification for old browsers
-		}
-
 		function hrefEmpty(href) {
 			return href === undefined || href === '' || href === 'javascript:;' || href === window.location.href + "#" || href.slice(0, 1) === "#";
 		}
@@ -282,7 +278,7 @@ $(document).ready(function() {
 					// Internal link
 					var url = this.href.replace(rootUrl + RELATIVE_PATH + '/', '');
 
-					if(window.location.pathname !== this.pathname) {
+					if(window.location.pathname !== this.pathname || this.search !== window.location.search) {
 						if (ajaxify.go(url)) {
 							e.preventDefault();
 						}
@@ -308,7 +304,11 @@ $(document).ready(function() {
 		});
 	}
 
-	ajaxifyAnchors();
+	if (window.history && window.history.pushState) {
+		// Progressive Enhancement, ajaxify available only to modern browsers
+		ajaxifyAnchors();
+	}
+
 	app.load();
 	templates.cache['500'] = $('.tpl-500').html();
 
