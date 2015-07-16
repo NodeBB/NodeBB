@@ -32,9 +32,12 @@
 	<div class="panel-heading">Site Logo</div>
 	<div class="panel-body">
 		<form>
-			<label>Site Logo</label>
+			<label>Image</label>
 			<input id="logoUrl" type="text" class="form-control" placeholder="Path to a logo to display on forum header" data-field="brand:logo" /><br />
-			<input data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/uploadlogo" type="button" class="btn btn-default" value="Upload Logo"></input>
+			<input data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/uploadlogo" type="button" class="btn btn-default" value="Upload"></input>
+			<br/><br/>
+			<label>URL</label>
+			<input type="text" class="form-control" placeholder="The URL of the site logo" data-field="brand:logo:url" /><br />
 		</form>
 	</div>
 </div>
