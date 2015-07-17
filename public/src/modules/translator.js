@@ -9,7 +9,7 @@
 
 	var	languages = {},
 		regexes = {
-			match: /\[\[[\s\S]*?\]\]/g,
+			match: /\[\[\w+:.+\]\]/g,
 			split: /[,][\s]*/,
 			replace: /\]+$/
 		};
