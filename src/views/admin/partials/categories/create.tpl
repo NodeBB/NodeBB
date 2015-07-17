@@ -6,6 +6,7 @@
 	<div class="form-group">
 		<label for="parentCid">(Optional) Parent Category</label>
 		<select class="form-control" name="parentCid" id="parentCid">
+			<option value=""></option>
 			<!-- BEGIN categories -->
 			<option value="{categories.cid}">{categories.name}</option>
 			<!-- END categories -->
