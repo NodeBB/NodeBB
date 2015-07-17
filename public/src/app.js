@@ -545,6 +545,8 @@ app.cacheBuster = null;
 
 				// templates.js helpers
 				helpers.register();
+
+				$(window).trigger('action:app.load');
 			});
 		});
 	};
@@ -608,5 +610,4 @@ app.cacheBuster = null;
 	});
 
 	app.alternatingTitle('');
-
 }());
