@@ -51,6 +51,8 @@ middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_pa
 middleware.pageView = function(req, res, next) {
 	analytics.pageView(req.ip);
 
+	plugins.fireHook('action:middleware.pageView', {req: req});
+
 	if (req.user) {
 		user.updateLastOnlineTime(req.user.uid);
 		if (req.path.startsWith('/api/users') || req.path.startsWith('/users')) {
