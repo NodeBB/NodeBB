@@ -278,16 +278,12 @@ $(document).ready(function() {
 					// Internal link
 					var url = this.href.replace(rootUrl + RELATIVE_PATH + '/', '');
 
-					if(window.location.pathname !== this.pathname || this.search !== window.location.search) {
-						if (ajaxify.go(url)) {
-							e.preventDefault();
-						}
-					} else {
-						// Special handling for urls with hashes
-						if (this.hash !== window.location.hash) {
-							window.location.hash = this.hash;
-						}
+					// Special handling for urls with hashes
+					if (this.hash !== window.location.hash) {
+						window.location.hash = this.hash;
+					}
 
+					if (ajaxify.go(url)) {
 						e.preventDefault();
 					}
 				} else if (window.location.pathname !== '/outgoing') {
