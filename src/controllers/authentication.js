@@ -261,6 +261,8 @@ authenticationController.logout = function(req, res, next) {
 				return next(err);
 			}
 			req.logout();
+
+			plugins.fireHook('action:user.loggedOut', req.user.uid);
 			res.status(200).send('');
 		});
 	} else {
