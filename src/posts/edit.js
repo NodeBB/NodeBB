@@ -63,6 +63,7 @@ module.exports = function(Posts) {
 					editMainPost(data, postData, next);
 				},
 				post: function(next) {
+					cache.del(postData.pid);
 					pubsub.publish('post:edit', postData.pid);
 					Posts.parsePost(postData, next);
 				}
