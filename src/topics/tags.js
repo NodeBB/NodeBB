@@ -206,19 +206,17 @@ module.exports = function(Topics) {
 
 	Topics.updateTags = function(tid, tags, callback) {
 		callback = callback || function() {};
-		Topics.getTopicField(tid, 'timestamp', function(err, timestamp) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function(next) {
+				Topics.deleteTopicTags(tid, next);
+			},
+			function(next) {
+				Topics.getTopicField(tid, 'timestamp', next);
+			},
+			function(timestamp, next) {
+				Topics.createTags(tags, tid, timestamp, next);
 			}
-
-			Topics.deleteTopicTags(tid, function(err) {
-				if (err) {
-					return callback(err);
-				}
-
-				Topics.createTags(tags, tid, timestamp, callback);
-			});
-		});
+		], callback);
 	};
 
 	Topics.deleteTopicTags = function(tid, callback) {
@@ -243,7 +241,9 @@ module.exports = function(Topics) {
 						updateTagCount(tag, next);
 					}, next);
 				}
-			], callback);
+			], function(err, results) {
+				callback(err);
+			});
 		});
 	};
 
