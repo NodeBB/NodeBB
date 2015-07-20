@@ -137,6 +137,8 @@ define('forum/topic/posts', [
 		data.slug = ajaxify.data.slug;
 		data.viewcount = ajaxify.data.viewcount;
 
+		$(window).trigger('action:posts.loading', {posts: data.posts, after: after, before: before});
+
 		infinitescroll.parseAndTranslate('topic', 'posts', data, function(html) {
 			if (after) {
 				html.insertAfter(after);
