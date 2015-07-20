@@ -188,7 +188,7 @@ $(document).ready(function() {
 			e.preventDefault();
 		}
 
-		ajaxify.go(ajaxify.currentPage);
+		ajaxify.go(ajaxify.currentPage, null, true);
 	};
 
 	ajaxify.loadScript = function(tpl_url, callback) {
