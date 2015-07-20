@@ -20,7 +20,6 @@
 			selectMenuItem(data.url);
 			setupHeaderMenu();
 			setupRestartLinks();
-			setupCheckboxes();
 		});
 
 		$(window).on('action:admin.settingsLoaded', setupCheckboxes);
@@ -43,6 +42,7 @@
 
 		// move this to admin.config
 		app.config = config;
+		$(window).trigger('action:config.loaded');
 	});
 
 	function setupMenu() {
