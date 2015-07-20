@@ -104,6 +104,8 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 		if (typeof callback === 'function') {
 			callback();
 		}
+
+		$(window).trigger('action:admin.settingsLoaded');
 	};
 
 	function handleUploads() {
