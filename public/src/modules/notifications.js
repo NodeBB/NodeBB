@@ -47,7 +47,7 @@ define('notifications', ['sounds', 'translator'], function(sound, translator) {
 				if (err) {
 					return app.alertError(err.message);
 				}
-				increaseNotifCount(-1);
+				incrementNotifCount(-1);
 			});
 		});
 
@@ -56,7 +56,7 @@ define('notifications', ['sounds', 'translator'], function(sound, translator) {
 				if (err) {
 					app.alertError(err.message);
 				}
-				updateNotifCount(0);
+				Notifications.updateNotifCount(0);
 			});
 		});
 
@@ -73,33 +73,20 @@ define('notifications', ['sounds', 'translator'], function(sound, translator) {
 				}
 
 				liEl.toggleClass('unread');
-				increaseNotifCount(unread ? -1 : 1);
+				incrementNotifCount(unread ? -1 : 1);
 			});
 		});
 
-		function updateNotifCount(count) {
-			if (count > 0) {
-				notifIcon.removeClass('fa-bell-o').addClass('fa-bell');
-			} else {
-				notifIcon.removeClass('fa-bell').addClass('fa-bell-o');
-			}
-
-			notifIcon.toggleClass('unread-count', count > 0);
-			notifIcon.attr('data-content', count > 20 ? '20+' : count);
-
-			Tinycon.setBubble(count);
-		}
-
-		function increaseNotifCount(delta) {
+		function incrementNotifCount(delta) {
 			var count = parseInt(notifIcon.attr('data-content'), 10) + delta;
-			updateNotifCount(count);
+			Notifications.updateNotifCount(count);
 		}
 
 		socket.emit('notifications.getCount', function(err, count) {
 			if (!err) {
-				updateNotifCount(count);
+				Notifications.updateNotifCount(count);
 			} else {
-				updateNotifCount(0);
+				Notifications.updateNotifCount(0);
 			}
 		});
 
@@ -117,14 +104,29 @@ define('notifications', ['sounds', 'translator'], function(sound, translator) {
 				ajaxify.refresh();
 			}
 
-			increaseNotifCount(1);
+			incrementNotifCount(1);
 
 			sound.play('notification');
 		});
 
 		socket.on('event:notifications.updateCount', function(count) {
-			updateNotifCount(count);
+			Notifications.updateNotifCount(count);
 		});
+	};
+
+	Notifications.updateNotifCount = function(count) {
+		var notifIcon = $('.notification-icon');
+
+		if (count > 0) {
+			notifIcon.removeClass('fa-bell-o').addClass('fa-bell');
+		} else {
+			notifIcon.removeClass('fa-bell').addClass('fa-bell-o');
+		}
+
+		notifIcon.toggleClass('unread-count', count > 0);
+		notifIcon.attr('data-content', count > 20 ? '20+' : count);
+
+		Tinycon.setBubble(count);
 	};
 
 	return Notifications;
