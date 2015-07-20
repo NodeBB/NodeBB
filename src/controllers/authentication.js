@@ -262,7 +262,7 @@ authenticationController.logout = function(req, res, next) {
 			}
 			req.logout();
 
-			plugins.fireHook('action:user.loggedOut', req.user.uid);
+			plugins.fireHook('action:user.loggedOut', {req: req, res: res, uid: req.user.uid});
 			res.status(200).send('');
 		});
 	} else {
