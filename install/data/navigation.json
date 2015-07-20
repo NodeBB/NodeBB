@@ -67,7 +67,7 @@
 		"textClass": "visible-xs-inline",
 		"text": "\\[\\[global:header.admin\\]\\]",
 		"properties": {
-			"target": "_top",
+			"targetBlank": false,
 			"adminOnly": true
 		}
 	},

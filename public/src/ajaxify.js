@@ -80,7 +80,7 @@ $(document).ready(function() {
 		var isAdminRoute = url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0;
 		var uploadsOrApi = url.startsWith('uploads') || url.startsWith('api');
 		if (isAdminRoute || uploadsOrApi) {
-			window.open(RELATIVE_PATH + '/' + url, '_blank');
+			window.open(RELATIVE_PATH + '/' + url, '_top');
 			return true;
 		}
 		return false;
