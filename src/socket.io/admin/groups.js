@@ -9,7 +9,7 @@ Groups.create = function(socket, data, callback) {
 	}
 
 	groups.create({
-		name: data.name, 
+		name: data.name,
 		description: data.description,
 		ownerUid: socket.uid
 	}, callback);
@@ -17,13 +17,13 @@ Groups.create = function(socket, data, callback) {
 
 Groups.get = function(socket, groupName, callback) {
 	groups.get(groupName, {
-		expand: true,
-		unescape: true
+		escape: false,
+		uid: socket.uid
 	}, callback);
 };
 
 Groups.join = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -31,22 +31,23 @@ Groups.join = function(socket, data, callback) {
 };
 
 Groups.leave = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	if (socket.uid === parseInt(data.uid, 10) && data.groupName === 'administrators') {
+		return callback(new Error('[[error:cant-remove-self-as-admin]]'));
 	}
 
 	groups.leave(data.groupName, data.uid, callback);
 };
 
-// Possibly remove this and call SocketGroups.update instead
 Groups.update = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	groups.update(data.groupName, data.values, function(err) {
-		callback(err ? err.message : null);
-	});
+	groups.update(data.groupName, data.values, callback);
 };
 
 module.exports = Groups;

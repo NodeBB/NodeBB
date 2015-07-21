@@ -2,7 +2,7 @@
 
 /* globals define, socket, app */
 
-define('forum/notifications', ['components'], function(components) {
+define('forum/notifications', ['components', 'notifications'], function(components, notifs) {
 	var Notifications = {};
 
 	Notifications.init = function() {
@@ -25,6 +25,7 @@ define('forum/notifications', ['components'], function(components) {
 				}
 
 				components.get('notifications/item').removeClass('unread');
+				notifs.updateNotifCount(0);
 			});
 		});
 	};

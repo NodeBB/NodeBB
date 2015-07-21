@@ -67,11 +67,6 @@ var fs = require('fs'),
 			emitter.emit('plugins:loaded');
 			callback();
 		});
-
-		Plugins.registerHook('core', {
-			hook: 'static:app.load',
-			method: addLanguages
-		});
 	};
 
 	Plugins.reload = function(callback) {
@@ -83,6 +78,11 @@ var fs = require('fs'),
 		Plugins.lessFiles.length = 0;
 		Plugins.clientScripts.length = 0;
 		Plugins.libraryPaths.length = 0;
+
+		Plugins.registerHook('core', {
+			hook: 'static:app.load',
+			method: addLanguages
+		});
 
 		async.waterfall([
 			function(next) {
@@ -164,81 +164,100 @@ var fs = require('fs'),
 		});
 	};
 
+	Plugins.get = function(id, callback) {
+		var url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins/' + id;
+
+		require('request')(url, {
+			json: true
+		}, function(err, res, body) {
+			Plugins.normalise([body.payload], function(err, normalised) {
+				normalised = normalised.filter(function(plugin) {
+					return plugin.id = id;
+				});
+				return callback(err, !err ? normalised[0] : undefined);
+			});
+		});
+	};
+
 	Plugins.getAll = function(callback) {
 		var url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins?version=' + require('../package.json').version;
 
-		require('request')(url, function(err, res, body) {
+		require('request')(url, {
+			json: true
+		}, function(err, res, body) {
 			var plugins = [];
 
-			try {
-				plugins = JSON.parse(body);
-			} catch(err) {
+			if (err) {
 				winston.error('Error parsing plugins : ' + err.message);
 				plugins = [];
 			}
 
-			var pluginMap = {};
-			for(var i=0; i<plugins.length; ++i) {
-				plugins[i].id = plugins[i].name;
-				plugins[i].installed = false;
-				plugins[i].active = false;
-				plugins[i].url = plugins[i].url ? plugins[i].url : plugins[i].repository ? plugins[i].repository.url : '';
-				plugins[i].latest = plugins[i].latest;
-				pluginMap[plugins[i].name] = plugins[i];
+			Plugins.normalise(body, callback);
+		});
+	};
+
+	Plugins.normalise = function(apiReturn, callback) {
+		var pluginMap = {};
+		for(var i=0; i<apiReturn.length; ++i) {
+			apiReturn[i].id = apiReturn[i].name;
+			apiReturn[i].installed = false;
+			apiReturn[i].active = false;
+			apiReturn[i].url = apiReturn[i].url ? apiReturn[i].url : apiReturn[i].repository ? apiReturn[i].repository.url : '';
+			apiReturn[i].latest = apiReturn[i].latest;
+			pluginMap[apiReturn[i].name] = apiReturn[i];
+		}
+
+		Plugins.showInstalled(function(err, installedPlugins) {
+			if (err) {
+				return callback(err);
 			}
 
-			Plugins.showInstalled(function(err, installedPlugins) {
+			async.each(installedPlugins, function(plugin, next) {
+				// If it errored out because a package.json or plugin.json couldn't be read, no need to do this stuff
+				if (plugin.error) {
+					pluginMap[plugin.id] = pluginMap[plugin.id] || {};
+					pluginMap[plugin.id].installed = true;
+					pluginMap[plugin.id].error = true;
+					return next();
+				}
+
+				pluginMap[plugin.id] = pluginMap[plugin.id] || {};
+				pluginMap[plugin.id].id = pluginMap[plugin.id].id || plugin.id;
+				pluginMap[plugin.id].name = plugin.name || pluginMap[plugin.id].name;
+				pluginMap[plugin.id].description = plugin.description;
+				pluginMap[plugin.id].url = pluginMap[plugin.id].url || plugin.url;
+				pluginMap[plugin.id].installed = true;
+				pluginMap[plugin.id].isTheme = !!plugin.id.match('nodebb-theme-');
+				pluginMap[plugin.id].error = plugin.error || false;
+				pluginMap[plugin.id].active = plugin.active;
+				pluginMap[plugin.id].version = plugin.version;
+				pluginMap[plugin.id].latest = pluginMap[plugin.id].latest || plugin.version;
+				pluginMap[plugin.id].outdated = semver.gt(pluginMap[plugin.id].latest, pluginMap[plugin.id].version);
+				next();
+			}, function(err) {
 				if (err) {
 					return callback(err);
 				}
 
-				async.each(installedPlugins, function(plugin, next) {
-					// If it errored out because a package.json or plugin.json couldn't be read, no need to do this stuff
-					if (plugin.error) {
-						pluginMap[plugin.id] = pluginMap[plugin.id] || {};
-						pluginMap[plugin.id].installed = true;
-						pluginMap[plugin.id].error = true;
-						return next();
+				var pluginArray = [];
+
+				for (var key in pluginMap) {
+					if (pluginMap.hasOwnProperty(key)) {
+						pluginArray.push(pluginMap[key]);
 					}
+				}
 
-					pluginMap[plugin.id] = pluginMap[plugin.id] || {};
-					pluginMap[plugin.id].id = pluginMap[plugin.id].id || plugin.id;
-					pluginMap[plugin.id].name = plugin.name || pluginMap[plugin.id].name;
-					pluginMap[plugin.id].description = plugin.description;
-					pluginMap[plugin.id].url = pluginMap[plugin.id].url || plugin.url;
-					pluginMap[plugin.id].installed = true;
-					pluginMap[plugin.id].isTheme = !!plugin.id.match('nodebb-theme-');
-					pluginMap[plugin.id].error = plugin.error || false;
-					pluginMap[plugin.id].active = plugin.active;
-					pluginMap[plugin.id].version = plugin.version;
-					pluginMap[plugin.id].latest = pluginMap[plugin.id].latest || plugin.version;
-					pluginMap[plugin.id].outdated = semver.gt(pluginMap[plugin.id].latest, pluginMap[plugin.id].version);
-					next();
-				}, function(err) {
-					if (err) {
-						return callback(err);
+				pluginArray.sort(function(a, b) {
+					if (a.name > b.name ) {
+						return 1;
+					} else if (a.name < b.name ){
+						return -1;
+					} else {
+						return 0;
 					}
-
-					var pluginArray = [];
-
-					for (var key in pluginMap) {
-						if (pluginMap.hasOwnProperty(key)) {
-							pluginArray.push(pluginMap[key]);
-						}
-					}
-
-					pluginArray.sort(function(a, b) {
-						if (a.name > b.name ) {
-							return 1;
-						} else if (a.name < b.name ){
-							return -1;
-						} else {
-							return 0;
-						}
-					});
-
-					callback(null, pluginArray);
 				});
+
+				callback(null, pluginArray);
 			});
 		});
 	};
@@ -344,6 +363,15 @@ var fs = require('fs'),
 
 			translator.addTranslation(language, filename, lang.file);
 		});
+
+		var fallbackPath;
+		for(var resource in Plugins.customLanguageFallbacks) {
+			fallbackPath = Plugins.customLanguageFallbacks[resource];
+			params.router.get('/language/:lang/' + resource + '.json', function(req, res, next) {
+				winston.verbose('[translator] No resource file found for ' + req.params.lang + '/' + resource + ', using provided fallback language file');
+				res.sendFile(fallbackPath);
+			});
+		}
 
 		callback(null);
 	}

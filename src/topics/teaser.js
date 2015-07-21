@@ -5,6 +5,7 @@
 var async = require('async'),
 	S = require('string'),
 
+	meta = require('../meta'),
 	db = require('../database'),
 	user = require('../user'),
 	posts = require('../posts'),
@@ -24,8 +25,12 @@ module.exports = function(Topics) {
 
 		topics.forEach(function(topic) {
 			counts.push(topic && (parseInt(topic.postcount, 10) || 0));
-			if (topic && topic.teaserPid) {
-				teaserPids.push(topic.teaserPid);
+			if (topic) {
+				if (meta.config.teaserPost === 'first') {
+					teaserPids.push(topic.mainPid);
+				} else {
+					teaserPids.push(topic.teaserPid);
+				}
 			}
 		});
 
@@ -65,7 +70,7 @@ module.exports = function(Topics) {
 							return null;
 						}
 						if (tidToPost[topic.tid]) {
-							tidToPost[topic.tid].index = counts[index];
+							tidToPost[topic.tid].index = meta.config.teaserPost === 'first' ? 1 : counts[index];
 							if (tidToPost[topic.tid].content) {
 								var s = S(tidToPost[topic.tid].content);
 								tidToPost[topic.tid].content = s.stripTags.apply(s, utils.stripTags).s;

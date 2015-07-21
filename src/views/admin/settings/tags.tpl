@@ -10,8 +10,12 @@
 				</label>
 			</div>
 			<div class="form-group">
-				<label for="tagsPerTopics">Tags per Topic</label>
-				<input id="tagsPerTopics" type="text" class="form-control" value="5" data-field="tagsPerTopic">
+				<label for="minimumTagsPerTopics">Minimum Tags per Topic</label>
+				<input id="minimumTagsPerTopics" type="text" class="form-control" value="0" data-field="minimumTagsPerTopic">
+			</div>
+			<div class="form-group">
+				<label for="maximumTagsPerTopics">Maximum Tags per Topic</label>
+				<input id="maximumTagsPerTopics" type="text" class="form-control" value="5" data-field="maximumTagsPerTopic">
 			</div>
 			<div class="form-group">
 				<label for="minimumTagLength">Minimum Tag Length</label>
@@ -22,6 +26,7 @@
 				<input id="maximumTagLength" type="text" class="form-control" value="15" data-field="maximumTagLength">
 			</div>
 		</form>
+		Click <a href="/admin/manage/tags">here</a> to visit the tag management page.
 	</div>
 </div>
 

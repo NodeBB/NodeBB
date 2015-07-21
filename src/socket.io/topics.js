@@ -85,7 +85,7 @@ SocketTopics.enter = function(socket, tid, callback) {
 			SocketTopics.markAsRead(socket, [tid], next);
 		},
 		users: function(next) {
-			websockets.getUsersInRoom(socket.uid, 'topic_' + tid, next);
+			websockets.getUsersInRoom(socket.uid, 'topic_' + tid, 0, 9, next);
 		}
 	}, function(err, result) {
 		callback(err, result ? result.users : null);
@@ -140,24 +140,12 @@ SocketTopics.markAllRead = function(socket, data, callback) {
 };
 
 SocketTopics.markCategoryTopicsRead = function(socket, cid, callback) {
-	topics.getUnreadTids(socket.uid, 0, -1, function(err, tids) {
+	topics.getUnreadTids(cid, socket.uid, 0, -1, function(err, tids) {
 		if (err) {
 			return callback(err);
 		}
 
-		topics.getTopicsFields(tids, ['tid', 'cid'], function(err, topicData) {
-			if (err) {
-				return callback(err);
-			}
-
-			tids = topicData.filter(function(topic) {
-				return topic && parseInt(topic.cid, 10) === parseInt(cid, 10);
-			}).map(function(topic) {
-				return topic.tid;
-			});
-
-			SocketTopics.markAsRead(socket, tids, callback);
-		});
+		SocketTopics.markAsRead(socket, tids, callback);
 	});
 };
 
@@ -501,7 +489,7 @@ SocketTopics.loadMoreUnreadTopics = function(socket, data, callback) {
 	var start = parseInt(data.after, 10),
 		stop = start + 9;
 
-	topics.getUnreadTopics(socket.uid, start, stop, callback);
+	topics.getUnreadTopics(data.cid, socket.uid, start, stop, callback);
 };
 
 SocketTopics.loadMoreFromSet = function(socket, data, callback) {

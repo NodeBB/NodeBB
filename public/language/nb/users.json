@@ -5,8 +5,17 @@
     "search": "Søk",
     "enter_username": "Skriv ett brukernavn for å søke",
     "load_more": "Last flere",
-    "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
+    "users-found-search-took": "%1 bruker(e) funnet. Søket tok %2 sekunder.",
     "filter-by": "Filtrer etter",
     "online-only": "Bare påloggede",
-    "picture-only": "Bare bilde"
+    "picture-only": "Bare bilde",
+    "invite": "Invite",
+    "invitation-email-sent": "An invitation email has been sent to %1",
+    "user_list": "User List",
+    "recent_topics": "Recent Topics",
+    "popular_topics": "Popular Topics",
+    "unread_topics": "Unread Topics",
+    "categories": "Categories",
+    "tags": "Tags",
+    "map": "Map"
 }

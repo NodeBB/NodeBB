@@ -3,6 +3,7 @@
 var	async = require('async'),
 	nconf = require('nconf'),
 	gravatar = require('gravatar'),
+	validator = require('validator'),
 
 	plugins = require('./plugins'),
 	db = require('./database'),
@@ -30,6 +31,8 @@ var	async = require('async'),
 	require('./user/search')(User);
 	require('./user/jobs')(User);
 	require('./user/picture')(User);
+	require('./user/approval')(User);
+	require('./user/invite')(User);
 
 	User.getUserField = function(uid, field, callback) {
 		User.getUserFields(uid, [field], function(err, user) {
@@ -108,6 +111,8 @@ var	async = require('async'),
 			if (!user) {
 				return;
 			}
+
+			user.username = validator.escape(user.username);
 
 			if (user.password) {
 				user.password = undefined;
@@ -332,7 +337,7 @@ var	async = require('async'),
 
 	User.getUidByUsername = function(username, callback) {
 		if (!username) {
-			return callback();
+			return callback(null, 0);
 		}
 		db.sortedSetScore('username:uid', username, callback);
 	};
@@ -343,7 +348,7 @@ var	async = require('async'),
 
 	User.getUidByUserslug = function(userslug, callback) {
 		if (!userslug) {
-			return callback();
+			return callback(null, 0);
 		}
 		db.sortedSetScore('userslug:uid', userslug, callback);
 	};
@@ -508,3 +513,4 @@ var	async = require('async'),
 
 
 }(exports));
+

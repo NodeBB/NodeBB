@@ -19,12 +19,9 @@ module.exports = function(Meta) {
 		cache: '',
 		map: '',
 		hash: +new Date(),
-		prepared: false,
-		minFile: 'nodebb.min.js',
 		scripts: {
 			base: [
 				'public/vendor/jquery/js/jquery.js',
-				'public/vendor/jquery/js/jquery-ui-1.10.4.custom.js',
 				'./node_modules/socket.io-client/socket.io.js',
 				'public/vendor/jquery/timeago/jquery.timeago.min.js',
 				'public/vendor/jquery/js/jquery.form.min.js',
@@ -48,43 +45,30 @@ module.exports = function(Meta) {
 				'public/src/variables.js',
 				'public/src/widgets.js'
 			],
-			rjs: []
+			rjs: [
+				'public/src/client/footer.js',
+				'public/src/client/chats.js',
+				'public/src/client/infinitescroll.js',
+				'public/src/client/pagination.js',
+				'public/src/modules/csrf.js',
+				'public/src/modules/translator.js',
+				'public/src/modules/notifications.js',
+				'public/src/modules/chat.js',
+				'public/src/modules/components.js',
+				'public/src/modules/composer/formatting.js',
+				'public/src/modules/composer/controls.js',
+				'public/src/modules/composer/preview.js',
+				'public/src/modules/categories.js',
+				'public/src/modules/taskbar.js',
+				'public/src/modules/helpers.js',
+				'public/src/modules/sounds.js',
+				'public/src/modules/string.js'
+			]
 		}
-	};
-
-	Meta.js.loadRJS = function(callback) {
-		var rjsPath = path.join(__dirname, '../../public/src');
-
-		async.parallel({
-			client: function(next) {
-				utils.walk(path.join(rjsPath, 'client'), next);
-			},
-			modules: function(next) {
-				if (global.env === 'development') {
-					return next(null, []);
-				}
-
-				utils.walk(path.join(rjsPath, 'modules'), next);
-			}
-		}, function(err, rjsFiles) {
-			if (err) {
-				return callback(err);
-			}
-			rjsFiles = rjsFiles.client.concat(rjsFiles.modules);
-
-			rjsFiles = rjsFiles.map(function(file) {
-				return path.join('public/src', file.replace(rjsPath, ''));
-			});
-
-			Meta.js.scripts.rjs = rjsFiles;
-
-			callback();
-		});
 	};
 
 	Meta.js.prepare = function (callback) {
 		async.parallel([
-			async.apply(Meta.js.loadRJS),	// Require.js scripts
 			async.apply(getPluginScripts),	// plugin scripts via filter:scripts.get
 			function(next) {	// client scripts via "scripts" config in plugin.json
 				var pluginsScripts = [],
@@ -157,6 +141,7 @@ module.exports = function(Meta) {
 				switch(message.type) {
 				case 'end':
 					Meta.js.cache = message.minified;
+					Meta.js.map = message.sourceMap;
 					onComplete();
 					break;
 				case 'hash':
@@ -195,16 +180,14 @@ module.exports = function(Meta) {
 	};
 
 	Meta.js.commitToFile = function() {
-		async.parallel([
-			async.apply(fs.writeFile, path.join(__dirname, '../../public/nodebb.min.js'), Meta.js.cache)
-		], function (err) {
-			if (!err) {
-				winston.verbose('[meta/js] Client-side minfile committed to disk.');
-				emitter.emit('meta:js.compiled');
-			} else {
+		fs.writeFile(path.join(__dirname, '../../public/nodebb.min.js'), Meta.js.cache, function (err) {
+			if (err) {
 				winston.error('[meta/js] ' + err.message);
 				process.exit(0);
 			}
+
+			winston.verbose('[meta/js] Client-side minfile committed to disk.');
+			emitter.emit('meta:js.compiled');
 		});
 	};
 

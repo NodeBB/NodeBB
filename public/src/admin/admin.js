@@ -1,5 +1,5 @@
 "use strict";
-/*global define, socket, app, ajaxify, utils, Mousetrap, Hammer, RELATIVE_PATH*/
+/*global define, socket, app, ajaxify, utils, bootbox, Mousetrap, Hammer, RELATIVE_PATH*/
 
 (function() {
 	$(document).ready(function() {
@@ -14,13 +14,17 @@
 			activateMobile();
 		}
 
-		$(window).on('action:ajaxify.end', function(ev, data) {
+		$(window).on('action:ajaxify.contentLoaded', function(ev, data) {
 			var url = data.url;
 
 			selectMenuItem(data.url);
 			setupHeaderMenu();
 			setupRestartLinks();
 		});
+
+		$(window).on('action:admin.settingsLoaded', setupCheckboxes);
+
+		$('[component="logout"]').on('click', app.logout);
 
 		$(window).resize(setupHeaderMenu);
 	});
@@ -38,6 +42,7 @@
 
 		// move this to admin.config
 		app.config = config;
+		$(window).trigger('action:config.loaded');
 	});
 
 	function setupMenu() {
@@ -63,22 +68,14 @@
 
 	function setupKeybindings() {
 		Mousetrap.bind('ctrl+shift+a r', function() {
-			console.log('[admin] Reloading NodeBB...');
-			socket.emit('admin.reload');
+			require(['admin/modules/instance'], function(instance) {
+				instance.reload();
+			});
 		});
 
 		Mousetrap.bind('ctrl+shift+a R', function() {
 			console.log('[admin] Restarting NodeBB...');
 			socket.emit('admin.restart');
-		});
-
-		Mousetrap.bind('ctrl+shift+a d', function() {
-			var tid = ajaxify.variables.get('topic_id'),
-				cid = ajaxify.variables.get('category_id');
-
-			if (tid && cid) {
-				socket.emit('topics.delete', { tids: [tid], cid: cid });
-			}
 		});
 
 		Mousetrap.bind('/', function(e) {
@@ -161,56 +158,51 @@
 		$('.restart').off('click').on('click', function() {
 			bootbox.confirm('Are you sure you wish to restart NodeBB?', function(confirm) {
 				if (confirm) {
-					app.alert({
-						alert_id: 'instance_restart',
-						type: 'info',
-						title: 'Restarting... <i class="fa fa-spin fa-refresh"></i>',
-						message: 'NodeBB is restarting.',
-						timeout: 5000
+					require(['admin/modules/instance'], function(instance) {
+						instance.restart();
 					});
-
-					$(window).one('action:reconnected', function() {
-						app.alert({
-							alert_id: 'instance_restart',
-							type: 'success',
-							title: '<i class="fa fa-check"></i> Success',
-							message: 'NodeBB has successfully restarted.',
-							timeout: 5000
-						});
-					});
-
-					socket.emit('admin.restart');
 				}
 			});
 		});
 
 		$('.reload').off('click').on('click', function() {
-			app.alert({
-				alert_id: 'instance_reload',
-				type: 'info',
-				title: 'Reloading... <i class="fa fa-spin fa-refresh"></i>',
-				message: 'NodeBB is reloading.',
-				timeout: 5000
-			});
-
-			socket.emit('admin.reload', function(err) {
-				if (!err) {
-					app.alert({
-						alert_id: 'instance_reload',
-						type: 'success',
-						title: '<i class="fa fa-check"></i> Success',
-						message: 'NodeBB has successfully reloaded.',
-						timeout: 5000
-					});
-				} else {
-					app.alert({
-						alert_id: 'instance_reload',
-						type: 'danger',
-						title: '[[global:alert.error]]',
-						message: '[[error:reload-failed, ' + err.message + ']]'
-					});
-				}
+			require(['admin/modules/instance'], function(instance) {
+				instance.reload();
 			});
 		});
 	}
+
+	function setupCheckboxes() {
+		if (ajaxify.currentPage.match(/^admin\/manage\/categories/)) {
+			return $('[type=checkbox]').show();
+		}
+
+		$('[type=checkbox]').change(function() {
+			var checked = $(this).is(':checked');
+
+			$(this).siblings('[class*=fa-]').toggleClass('fa-toggle-off', !checked)
+				.toggleClass('fa-toggle-on', checked);
+		});
+
+		$('[type=checkbox]').each(function() {
+			var checkbox = $(this),
+				checked = checkbox.is(':checked');
+
+			if (checkbox.attr('data-toggle-added')) {
+				return;
+			}
+
+			checkbox.hide();
+
+			if (checked) {
+				checkbox.after('<i class="fa fa-toggle-on"></i>');
+			} 
+			else {
+				checkbox.after('<i class="fa fa-toggle-off"></i>');   
+			}
+
+			checkbox.attr('data-toggle-added', true);
+		});
+	}
+
 }());

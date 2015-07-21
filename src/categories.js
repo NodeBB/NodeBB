@@ -198,6 +198,15 @@ var async = require('async'),
 		});
 	};
 
+	Categories.getAllCategoryFields = function(fields, callback) {
+		async.waterfall([
+			async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
+			function(cids, next) {
+				Categories.getMultipleCategoryFields(cids, fields, next);
+			}
+		], callback);
+	};
+
 	Categories.getCategoryFields = function(cid, fields, callback) {
 		db.getObjectFields('category:' + cid, fields, callback);
 	};
@@ -244,7 +253,7 @@ var async = require('async'),
 				if (categories[i]) {
 					categories[i]['unread-class'] = (parseInt(categories[i].topic_count, 10) === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
 					categories[i].children = results.children[i];
-					categories[i].parent = results.parents[i] && !results.parents[i].disabled ? results.parents[i] : null;
+					categories[i].parent = results.parents[i] || undefined;
 					calculateTopicPostCount(categories[i]);
 				}
 			}
@@ -308,6 +317,30 @@ var async = require('async'),
 				}, next);
 			}
 		], callback);
+	};
+
+	/**
+	 * Recursively build tree
+	 *
+	 * @param categories {array} flat list of categories
+	 * @param parentCid {number} start from 0 to build full tree
+	 */
+	Categories.getTree = function(categories, parentCid) {
+		var tree = [], i = 0, len = categories.length, category;
+
+		for(i; i < len; ++i) {
+			category = categories[i];
+			if (!category.hasOwnProperty('parentCid')) {
+				category.parentCid = 0;
+			}
+
+			if(category.parentCid == parentCid){
+				tree.push(category);
+				category.children = Categories.getTree(categories, category.cid);
+			}
+		}
+
+		return tree;
 	};
 
 }(exports));

@@ -20,6 +20,7 @@
     "user_posted_topic": "<strong>%1</strong> has posted a new topic: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> mentioned you in <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> started following you.",
+    "new_register": "<strong>%1</strong> sent a registration request.",
     "email-confirmed": "Email bol potvrdený",
     "email-confirmed-message": "Ďakujeme za potvrdenie tvojho emailu. Účet je plne aktivovaný.",
     "email-confirm-error-message": "Vyskytla sa chyba pri overení tvojej emailovej adresy. ",

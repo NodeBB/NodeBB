@@ -1,0 +1,19 @@
+{
+    "register": "Tilmeld",
+    "help.email": "Den email er skjult som standard.",
+    "help.username_restrictions": "Et unikt brugernavn mellem %1 og %2 karakterer. Andre kan nævne dig med @<span id='yourUsername'>brugernavn</span>.",
+    "help.minimum_password_length": "Din adgangskode skal være på mindst %1 karakterer.",
+    "email_address": "Emailadresse",
+    "email_address_placeholder": "Indtast emailadresse",
+    "username": "Brugernavn",
+    "username_placeholder": "Indtast brugernavn",
+    "password": "Adgangskode",
+    "password_placeholder": "Indtast adgangskode",
+    "confirm_password": "Bekræft adgangskode",
+    "confirm_password_placeholder": "Bekræft adgangskode",
+    "register_now_button": "Registrer nu",
+    "alternative_registration": "Alternativ registrering",
+    "terms_of_use": "Betingelser for brug",
+    "agree_to_terms_of_use": "Jeg acceptere betingelserne for brug",
+    "registration-added-to-queue": "Din registrering er blevet tilføjet til godkendelses køen. Du vil mostage en email når du er blevet accepteret af en administrator."
+}

@@ -57,15 +57,17 @@ helpers.buildCategoryBreadcrumbs = function(cid, callback) {
 	async.whilst(function() {
 		return parseInt(cid, 10);
 	}, function(next) {
-		categories.getCategoryFields(cid, ['name', 'slug', 'parentCid'], function(err, data) {
+		categories.getCategoryFields(cid, ['name', 'slug', 'parentCid', 'disabled'], function(err, data) {
 			if (err) {
 				return next(err);
 			}
 
-			breadcrumbs.unshift({
-				text: validator.escape(data.name),
-				url: nconf.get('relative_path') + '/category/' + data.slug
-			});
+			if (!parseInt(data.disabled, 10)) {
+				breadcrumbs.unshift({
+					text: validator.escape(data.name),
+					url: nconf.get('relative_path') + '/category/' + data.slug
+				});
+			}
 
 			cid = data.parentCid;
 			next();

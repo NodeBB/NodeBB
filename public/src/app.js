@@ -92,7 +92,7 @@ app.cacheBuster = null;
 
 			switch(url_parts[0]) {
 				case 'user':
-					room = 'user/' + ajaxify.variables.get('theirid');
+					room = 'user/' + ajaxify.data.theirid;
 				break;
 				case 'topic':
 					room = 'topic_' + url_parts[1];
@@ -100,9 +100,14 @@ app.cacheBuster = null;
 				case 'category':
 					room = 'category_' + url_parts[1];
 				break;
-				case 'recent':	// intentional fall-through
+				case 'recent':
+					room = 'recent_topics';
+				break;
 				case 'unread':
-					room = 'recent_posts';
+					room = 'unread_topics';
+				break;
+				case 'popular':
+					room = 'popular_topics';
 				break;
 				case 'admin':
 					room = 'admin';
@@ -406,12 +411,6 @@ app.cacheBuster = null;
 			searchButton.show();
 		}
 
-		function prepareSearch() {
-			searchFields.removeClass('hide').show();
-			searchButton.hide();
-			searchInput.focus();
-		}
-
 		searchButton.on('click', function(e) {
 			if (!config.loggedIn && !config.allowGuestSearching) {
 				app.alert({
@@ -423,43 +422,26 @@ app.cacheBuster = null;
 			}
 			e.stopPropagation();
 
-			prepareSearch();
+			app.prepareSearch();
 			return false;
 		});
 
-		require(['search', 'mousetrap'], function(search, Mousetrap) {
-			$('#search-form').on('submit', function (e) {
-				e.preventDefault();
-				var input = $(this).find('input');
-
+		$('#search-form').on('submit', function () {
+			var input = $(this).find('input');
+			require(['search'], function(search) {
 				search.query({term: input.val()}, function() {
 					input.val('');
 				});
 			});
-
-			$('.topic-search')
-				.on('click', '.prev', function() {
-					search.topicDOM.prev();
-				})
-				.on('click', '.next', function() {
-					search.topicDOM.next();
-				});
-
-			Mousetrap.bind('ctrl+f', function(e) {
-				if (config.topicSearchEnabled) {
-					// If in topic, open search window and populate, otherwise regular behaviour
-					var match = ajaxify.currentPage.match(/^topic\/([\d]+)/),
-						tid;
-					if (match) {
-						e.preventDefault();
-						tid = match[1];
-						searchInput.val('in:topic-' + tid + ' ');
-						prepareSearch();
-					}
-				}
-			});
+			return false;
 		});
-	}
+	};
+
+	app.prepareSearch = function() {
+		$("#search-fields").removeClass('hide').show();
+		$("#search-button").hide();
+		$('#search-fields input').focus();
+	};
 
 	function handleStatusChange() {
 		$('#user-control-list .user-status').off('click').on('click', function(e) {
@@ -489,21 +471,23 @@ app.cacheBuster = null;
 
 	function handleNewTopic() {
 		$('#content').on('click', '#new_topic', function() {
-			require(['composer'], function(composer) {
-				var cid = ajaxify.variables.get('category_id');
-				if (cid) {
-					composer.newTopic(cid);
-				} else {
-					socket.emit('categories.getCategoriesByPrivilege', 'topics:create', function(err, categories) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-						if (categories.length) {
-							composer.newTopic(categories[0].cid);
-						}
-					});
-				}
-			});
+			var cid = ajaxify.data.cid;
+			if (cid) {
+				$(window).trigger('action:composer.topic.new', {
+					cid: cid
+				});
+			} else {
+				socket.emit('categories.getCategoriesByPrivilege', 'topics:create', function(err, categories) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					if (categories.length) {
+						$(window).trigger('action:composer.topic.new', {
+							cid: categories[0].cid
+						});
+					}
+				});
+			}
 		});
 	}
 
@@ -561,8 +545,18 @@ app.cacheBuster = null;
 
 				// templates.js helpers
 				helpers.register();
+
+				$(window).trigger('action:app.load');
 			});
 		});
+	};
+
+	app.loadJQueryUI = function(callback) {
+		if (typeof $().autocomplete === 'function') {
+			return callback();
+		}
+
+		$.getScript(RELATIVE_PATH + '/vendor/jquery/js/jquery-ui-1.10.4.custom.js', callback);
 	};
 
 	app.showEmailConfirmWarning = function(err) {
@@ -616,5 +610,4 @@ app.cacheBuster = null;
 	});
 
 	app.alternatingTitle('');
-
 }());

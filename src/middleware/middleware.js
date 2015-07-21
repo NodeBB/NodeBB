@@ -51,6 +51,8 @@ middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_pa
 middleware.pageView = function(req, res, next) {
 	analytics.pageView(req.ip);
 
+	plugins.fireHook('action:middleware.pageView', {req: req});
+
 	if (req.user) {
 		user.updateLastOnlineTime(req.user.uid);
 		if (req.path.startsWith('/api/users') || req.path.startsWith('/users')) {
@@ -78,17 +80,17 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 
 middleware.redirectToLoginIfGuest = function(req, res, next) {
 	if (!req.user || parseInt(req.user.uid, 10) === 0) {
-		req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
-		return controllers.helpers.redirect(res, '/login');
-	} else {
-		next();
+		return redirectToLogin(req, res);
 	}
+
+	next();
 };
 
 middleware.validateFiles = function(req, res, next) {
 	if (!Array.isArray(req.files.files) || !req.files.files.length) {
 		return next(new Error(['[[error:invalid-files]]']));
 	}
+
 	next();
 };
 
@@ -146,8 +148,7 @@ middleware.checkAccountPermissions = function(req, res, next) {
 
 middleware.isAdmin = function(req, res, next) {
 	if (!req.user) {
-		req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
-		return controllers.helpers.redirect(res, '/login');
+		return redirectToLogin(req, res);
 	}
 
 	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
@@ -192,16 +193,18 @@ middleware.buildHeader = function(req, res, next) {
 };
 
 middleware.renderHeader = function(req, res, callback) {
+	var registrationType = meta.config.registrationType || 'normal';
 	var templateValues = {
-			bootswatchCSS: meta.config['theme:src'],
-			title: meta.config.title || '',
-			description: meta.config.description || '',
-			'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
-			'brand:logo': meta.config['brand:logo'] || '',
-			'brand:logo:display': meta.config['brand:logo']?'':'hide',
-			allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
-			searchEnabled: plugins.hasListeners('filter:search.query')
-		};
+		bootswatchCSS: meta.config['theme:src'],
+		title: meta.config.title || '',
+		description: meta.config.description || '',
+		'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
+		'brand:logo': meta.config['brand:logo'] || '',
+		'brand:logo:url': meta.config['brand:logo:url'] || '',
+		'brand:logo:display': meta.config['brand:logo']?'':'hide',
+		allowRegistration: registrationType === 'normal' || registrationType === 'admin-approval',
+		searchEnabled: plugins.hasListeners('filter:search.query')
+	};
 
 	for (var key in res.locals.config) {
 		if (res.locals.config.hasOwnProperty(key)) {
@@ -269,7 +272,7 @@ middleware.renderHeader = function(req, res, callback) {
 		results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
 
 		templateValues.browserTitle = results.title;
-		templateValues.navigation = results.navigation
+		templateValues.navigation = results.navigation;
 		templateValues.metaTags = results.tags.meta;
 		templateValues.linkTags = results.tags.link;
 		templateValues.isAdmin = results.user.isAdmin;
@@ -327,7 +330,7 @@ middleware.processRender = function(req, res, next) {
 				return fn(err);
 			}
 
-			// str = str + '<input type="hidden" ajaxify-data="' + encodeURIComponent(JSON.stringify(options)) + '" />';
+			str = str + '<input type="hidden" ajaxify-data="' + encodeURIComponent(JSON.stringify(options)) + '" />';
 			str = (res.locals.postHeader ? res.locals.postHeader : '') + str + (res.locals.preFooter ? res.locals.preFooter : '');
 
 			if (res.locals.footer) {
@@ -389,7 +392,8 @@ middleware.maintenanceMode = function(req, res, next) {
 			'/stylesheet.css',
 			'/nodebb.min.js',
 			'/vendor/fontawesome/fonts/fontawesome-webfont.woff',
-			'/src/modules/[\\w]+\.js',
+			'/src/(modules|client)/[\\w/]+.js',
+			'/templates/[\\w/]+.tpl',
 			'/api/login',
 			'/api/?',
 			'/language/.+'
@@ -455,7 +459,9 @@ middleware.exposeGroupName = function(req, res, next) {
 	if (!req.params.hasOwnProperty('slug')) { return next(); }
 
 	groups.getGroupNameByGroupSlug(req.params.slug, function(err, groupName) {
-		if (err) { return next(err); }
+		if (err) {
+			return next(err);
+		}
 
 		res.locals.groupName = groupName;
 		next();
@@ -476,6 +482,11 @@ middleware.exposeUid = function(req, res, next) {
 		next();
 	}
 };
+
+function redirectToLogin(req, res) {
+	req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
+	return controllers.helpers.redirect(res, '/login');
+}
 
 module.exports = function(webserver) {
 	app = webserver;

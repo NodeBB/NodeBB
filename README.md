@@ -12,18 +12,26 @@ Additional functionality is enabled through the use of third-party plugins.
 
 * [Get NodeBB](http://www.nodebb.org/ "NodeBB")
 * [Demo & Meta Discussion](http://community.nodebb.org)
-* [NodeBB Blog](http://blog.nodebb.org)
 * [Documentation & Installation Instructions](http://docs.nodebb.org)
+* [Help translate NodeBB](https://www.transifex.com/projects/p/nodebb/)
+* [NodeBB Blog](http://blog.nodebb.org)
 * [Join us on IRC](https://kiwiirc.com/client/irc.freenode.net/nodebb) - #nodebb on Freenode
 * [Follow us on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter")
 * [Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")
-* [Get Plugins](http://community.nodebb.org/category/7/nodebb-plugins "NodeBB Plugins")
-* [Get Themes](http://community.nodebb.org/category/10/nodebb-themes "NodeBB Themes")
-* [Help translate NodeBB](https://www.transifex.com/projects/p/nodebb/)
 
 ## Screenshots
 
-[<img src="http://i.imgur.com/FLOUuIqb.png" />](http://i.imgur.com/FLOUuIq.png)&nbsp;[<img src="http://i.imgur.com/Ud1LrfIb.png" />](http://i.imgur.com/Ud1LrfI.png)&nbsp;[<img src="http://i.imgur.com/ZC8W39ab.png" />](http://i.imgur.com/ZC8W39a.png)&nbsp;[<img src="http://i.imgur.com/o90kVPib.png" />](http://i.imgur.com/o90kVPi.png)&nbsp;[<img src="http://i.imgur.com/AaRRrU2b.png" />](http://i.imgur.com/AaRRrU2.png)&nbsp;[<img src="http://i.imgur.com/LmHtPhob.png" />](http://i.imgur.com/LmHtPho.png)&nbsp;[<img src="http://i.imgur.com/paiJPJkb.jpg" />](http://i.imgur.com/paiJPJk.jpg)&nbsp;[<img src="http://i.imgur.com/ZfavPHDb.png" />](http://i.imgur.com/ZfavPHD.png)&nbsp;[<img src="http://i.imgur.com/8OLssij.png" />](http://i.imgur.com/8OLssij.png)&nbsp;[<img src="http://i.imgur.com/JKOc0LZ.png"/>](http://i.imgur.com/JKOc0LZ.png)
+[![](http://i.imgur.com/VCoOFyqb.png)](http://i.imgur.com/VCoOFyq.png)
+[![](http://i.imgur.com/FLOUuIqb.png)](http://i.imgur.com/FLOUuIq.png)
+[![](http://i.imgur.com/Ud1LrfIb.png)](http://i.imgur.com/Ud1LrfI.png)
+[![](http://i.imgur.com/h6yZ66sb.png)](http://i.imgur.com/h6yZ66s.png)
+[![](http://i.imgur.com/o90kVPib.png)](http://i.imgur.com/o90kVPi.png)
+[![](http://i.imgur.com/AaRRrU2b.png)](http://i.imgur.com/AaRRrU2.png)
+[![](http://i.imgur.com/LmHtPhob.png)](http://i.imgur.com/LmHtPho.png)
+[![](http://i.imgur.com/paiJPJkb.jpg)](http://i.imgur.com/paiJPJk.jpg)
+
+[![](http://i.imgur.com/8OLssij.png)](http://i.imgur.com/8OLssij.png)
+[![](http://i.imgur.com/JKOc0LZ.png)](http://i.imgur.com/JKOc0LZ.png)
 
 ## How can I follow along/contribute?
 
@@ -62,4 +70,6 @@ Detailed upgrade instructions are listed in [Upgrading NodeBB](https://docs.node
 
 ## License
 
-NodeBB is licensed under the **GNU General Public License v3 (GPL-3)** (http://www.gnu.org/copyleft/gpl.html)
+NodeBB is licensed under the **GNU General Public License v3 (GPL-3)** (http://www.gnu.org/copyleft/gpl.html).
+
+Interested in a sublicense agreement for use of NodeBB in a non-free/restrictive environment? Contact us at sales@nodebb.org.

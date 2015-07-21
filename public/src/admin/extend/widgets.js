@@ -58,9 +58,9 @@ define('admin/extend/widgets', function() {
 					panel.remove();
 				}
 			});
-		}).on('mouseup', '.panel-heading', function(evt) {
-			if ( !( $(this).parents('.widget-panel').is('.ui-sortable-helper') || $(evt.target).closest('.delete-widget').length ) ) {
-				$(this).parents('.widget-panel').children('.panel-body').toggleClass('hidden');
+		}).on('mouseup', '> .panel > .panel-heading', function(evt) {
+			if ( !( $(this).parent().is('.ui-sortable-helper') || $(evt.target).closest('.delete-widget').length ) ) {
+				$(this).parent().children('.panel-body').toggleClass('hidden');
 			}
 		});
 
@@ -177,8 +177,8 @@ define('admin/extend/widgets', function() {
 				var input = $(this),
 					value = data[input.attr('name')];
 
-				if (this.type === 'checkbox') {
-					input.attr('checked', !!value);
+				if (input.attr('type') === 'checkbox') {
+					input.prop('checked', !!value).trigger('change');
 				} else {
 					input.val(value);
 				}

@@ -17,6 +17,7 @@ var	async = require('async'),
 	events = require('../events'),
 	emailer = require('../emailer'),
 	db = require('../database'),
+	analytics = require('../analytics'),
 	index = require('./index'),
 
 
@@ -236,6 +237,7 @@ SocketAdmin.analytics.get = function(socket, data, callback) {
 				}
 			}, function(err, data) {
 				data.pastDay = data.pageviews.reduce(function(a, b) {return parseInt(a, 10) + parseInt(b, 10);});
+				data.pageviews[data.pageviews.length - 1] = parseInt(data.pageviews[data.pageviews.length - 1], 10) + analytics.getUnwrittenPageviews();
 				callback(err, data);
 			});
 		}

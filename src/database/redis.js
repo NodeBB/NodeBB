@@ -113,12 +113,16 @@
 	};
 
 	module.checkCompatibility = function(callback) {
-		// Redis requires v2.8.9
 		module.info(module.client, function(err, info) {
-			var err = semver.lt(info.redis_version, '2.8.9') ? new Error('Your Redis version is not new enough to support NodeBB, please upgrade Redis to v2.8.9 or higher.') : null;
 			if (err) {
+				return callback(err);
+			}
+
+			if (semver.lt(info.redis_version, '2.8.9')) {
+				err = new Error('Your Redis version is not new enough to support NodeBB, please upgrade Redis to v2.8.9 or higher.');
 				err.stacktrace = false;
 			}
+
 			callback(err);
 		});
 	};

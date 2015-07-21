@@ -1,19 +1,28 @@
 "use strict";
 /* globals define, socket, ajaxify, app, bootbox, RELATIVE_PATH, utils */
 
-define('forum/groups/details', ['iconSelect', 'components', 'vendor/colorpicker/colorpicker', 'vendor/jquery/draggable-background/backgroundDraggable'], function(iconSelect, components) {
+define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescroll', 'vendor/colorpicker/colorpicker', 'vendor/jquery/draggable-background/backgroundDraggable'], function(iconSelect, components, infinitescroll) {
 	var Details = {
 			cover: {}
 		};
+
+	var searchInterval;
+	var groupName;
 
 	Details.init = function() {
 		var detailsPage = components.get('groups/container'),
 			settingsFormEl = detailsPage.find('form');
 
-		if (ajaxify.variables.get('is_owner') === 'true') {
+		groupName = ajaxify.data.group.name;
+
+		if (ajaxify.data.group.isOwner) {
 			Details.prepareSettings();
 			Details.initialiseCover();
 		}
+
+		handleMemberSearch();
+		handleMemberInfiniteScroll();
+		handleMemberInvitations();
 
 		components.get('groups/activity').find('.content img').addClass('img-responsive');
 
@@ -29,7 +38,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'vendor/colorpicker/
 				case 'toggleOwnership':
 					socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
 						toUid: uid,
-						groupName: ajaxify.variables.get('group_name')
+						groupName: groupName
 					}, function(err) {
 						if (!err) {
 							ownerFlagEl.toggleClass('invisible');
@@ -42,7 +51,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'vendor/colorpicker/
 				case 'kick':
 					socket.emit('groups.kick', {
 						uid: uid,
-						groupName: ajaxify.variables.get('group_name')
+						groupName: groupName
 					}, function(err) {
 						if (!err) {
 							userRow.slideUp().remove();
@@ -64,11 +73,15 @@ define('forum/groups/details', ['iconSelect', 'components', 'vendor/colorpicker/
 				case 'leave':
 				case 'accept':
 				case 'reject':
+				case 'issueInvite':
+				case 'rescindInvite':
 				case 'acceptInvite':
 				case 'rejectInvite':
+				case 'acceptAll':
+				case 'rejectAll':
 					socket.emit('groups.' + action, {
 						toUid: uid,
-						groupName: ajaxify.variables.get('group_name')
+						groupName: groupName
 					}, function(err) {
 						if (!err) {
 							ajaxify.refresh();
@@ -149,7 +162,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'vendor/colorpicker/
 				});
 
 				socket.emit('groups.update', {
-					groupName: ajaxify.variables.get('group_name'),
+					groupName: groupName,
 					values: settings
 				}, function(err) {
 					if (err) {
@@ -171,15 +184,15 @@ define('forum/groups/details', ['iconSelect', 'components', 'vendor/colorpicker/
 	};
 
 	Details.deleteGroup = function() {
-		bootbox.confirm('Are you sure you want to delete the group: ' + utils.escapeHTML(ajaxify.variables.get('group_name')), function(confirm) {
+		bootbox.confirm('Are you sure you want to delete the group: ' + utils.escapeHTML(groupName), function(confirm) {
 			if (confirm) {
 				bootbox.prompt('Please enter the name of this group in order to delete it:', function(response) {
-					if (response === ajaxify.variables.get('group_name')) {
+					if (response === groupName) {
 						socket.emit('groups.delete', {
-							groupName: ajaxify.variables.get('group_name')
+							groupName: groupName
 						}, function(err) {
 							if (!err) {
-								app.alertSuccess('[[groups:event.deleted, ' + utils.escapeHTML(ajaxify.variables.get('group_name')) + ']]');
+								app.alertSuccess('[[groups:event.deleted, ' + utils.escapeHTML(groupName) + ']]');
 								ajaxify.go('groups');
 							} else {
 								app.alertError(err.message);
@@ -211,7 +224,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'vendor/colorpicker/
 
 	Details.cover.load = function() {
 		socket.emit('groups.cover.get', {
-			groupName: ajaxify.variables.get('group_name')
+			groupName: groupName
 		}, function(err, data) {
 			if (!err) {
 				var coverEl = components.get('groups/cover');
@@ -260,7 +273,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'vendor/colorpicker/
 		coverEl.addClass('saving');
 
 		socket.emit('groups.cover.update', {
-			groupName: ajaxify.variables.get('group_name'),
+			groupName: groupName,
 			imageData: Details.cover.newCover || undefined,
 			position: components.get('groups/cover').css('background-position')
 		}, function(err) {
@@ -277,6 +290,107 @@ define('forum/groups/details', ['iconSelect', 'components', 'vendor/colorpicker/
 			coverEl.removeClass('saving');
 		});
 	};
+
+	function handleMemberSearch() {
+		$('[component="groups/members/search"]').on('keyup', function() {
+			var query = $(this).val();
+			if (searchInterval) {
+				clearInterval(searchInterval);
+				searchInterval = 0;
+			}
+
+			searchInterval = setTimeout(function() {
+				socket.emit('groups.searchMembers', {groupName: groupName, query: query}, function(err, results) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+
+					infinitescroll.parseAndTranslate('groups/details', 'members', {
+						group: {
+							members: results.users,
+							isOwner: ajaxify.data.group.isOwner
+						}
+					}, function(html) {
+						$('[component="groups/members"] tbody').html(html);
+						$('[component="groups/members"]').attr('data-nextstart', 20);
+					});
+				});
+			}, 250);
+		});
+	}
+
+	function handleMemberInfiniteScroll() {
+		$('[component="groups/members"] tbody').on('scroll', function() {
+			var $this = $(this);
+			var bottom = ($this[0].scrollHeight - $this.height()) * 0.9;
+			if ($this.scrollTop() > bottom) {
+				loadMoreMembers();
+			}
+		});
+	}
+
+	function handleMemberInvitations() {
+		if (ajaxify.data.group.isOwner) {
+			var searchInput = $('[component="groups/members/invite"]');
+			require(['autocomplete'], function(autocomplete) {
+				autocomplete.user(searchInput, function(e, selected) {
+					socket.emit('groups.issueInvite', {
+						toUid: selected.item.user.uid,
+						groupName: ajaxify.data.group.name
+					}, function(err) {
+						if (!err) {
+							ajaxify.refresh();
+						} else {
+							app.alertError(err.message);
+						}
+					});
+				});
+			});
+		}
+	}
+
+	function loadMoreMembers() {
+
+		var members = $('[component="groups/members"]');
+		if (members.attr('loading')) {
+			return;
+		}
+
+		members.attr('loading', 1);
+		socket.emit('groups.loadMoreMembers', {
+			groupName: groupName,
+			after: members.attr('data-nextstart')
+		}, function(err, data) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			if (data && data.users.length) {
+				onMembersLoaded(data.users, function() {
+					members.removeAttr('loading');
+					members.attr('data-nextstart', data.nextStart);
+				});
+			} else {
+				members.removeAttr('loading');
+			}
+		});
+	}
+
+	function onMembersLoaded(users, callback) {
+		users = users.filter(function(user) {
+			return !$('[component="groups/members"] [data-uid="' + user.uid + '"]').length;
+		});
+
+		infinitescroll.parseAndTranslate('groups/details', 'members', {
+			group: {
+				members: users,
+				isOwner: ajaxify.data.group.isOwner
+			}
+		}, function(html) {
+			$('[component="groups/members"] tbody').append(html);
+			callback();
+		});
+	}
 
 	return Details;
 });

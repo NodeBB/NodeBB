@@ -15,6 +15,10 @@
 	};
 
 	ajaxify.widgets.render = function(template, url, callback) {
+		if (template.match(/^admin/)) {
+			return callback();
+		}
+		
 		var widgetLocations = ['sidebar', 'footer', 'header'], numLocations;
 
 		$('#content [widget-area]').each(function() {

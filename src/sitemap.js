@@ -69,7 +69,7 @@ sitemap.getDynamicUrls = function(callback) {
 				categoriesData.forEach(function(category) {
 					if (category) {
 						categoryUrls.push({
-							url: '/category/' + category.cid + '/' + encodeURIComponent(utils.slugify(category.name)),
+							url: '/category/' + category.slug,
 							changefreq: 'weekly',
 							priority: '0.4'
 						});
@@ -90,7 +90,7 @@ sitemap.getDynamicUrls = function(callback) {
 					privileges.topics.filterTids('read', tids, 0, next);
 				},
 				function(tids, next) {
-					topics.getTopicsFields(tids, ['tid', 'title', 'lastposttime'], next);
+					topics.getTopicsFields(tids, ['tid', 'title', 'slug', 'lastposttime'], next);
 				}
 			], function(err, topics) {
 				if (err) {
@@ -100,7 +100,7 @@ sitemap.getDynamicUrls = function(callback) {
 				topics.forEach(function(topic) {
 					if (topic) {
 						topicUrls.push({
-							url: '/topic/' + topic.tid + '/' + encodeURIComponent(utils.slugify(topic.title)),
+							url: '/topic/' + topic.slug,
 							lastmodISO: utils.toISOString(topic.lastposttime),
 							changefreq: 'daily',
 							priority: '0.6'

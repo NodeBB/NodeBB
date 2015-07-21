@@ -94,7 +94,9 @@ SocketMeta.rooms.getAll = function(socket, data, callback) {
 			socketCount: websockets.getSocketCount(),
 			users: {
 				categories: roomClients.categories ? roomClients.categories.length : 0,
-				recent: roomClients.recent_posts ? roomClients.recent_posts.length : 0,
+				recent: roomClients.recent_topics ? roomClients.recent_topics.length : 0,
+				unread: roomClients.unread_topics ? roomClients.unread_topics.length: 0,
+				popular: roomClients.popular_topics ? roomClients.popular_topics.length: 0,
 				topics: 0,
 				category: 0
 			},

@@ -1,106 +1,31 @@
-[
-    {
-        "field": "title",
-        "value": "NodeBB"
-    },
-    {
-        "field": "showSiteTitle",
-        "value": "1"
-    },
-    {
-        "field": "postDelay",
-        "value": 10
-    },
-    {
-        "field": "initialPostDelay",
-        "value": 10
-    },
-    {
-        "field": "newbiePostDelay",
-        "value": 120
-    },
-    {
-        "field": "newbiePostDelayThreshold",
-        "value": 3
-    },
-    {
-        "field": "minimumPostLength",
-        "value": 8
-    },
-    {
-        "field": "maximumPostLength",
-        "value": 32767
-    },
-    {
-        "field": "allowGuestSearching",
-        "value": 0
-    },
-    {
-        "field": "allowTopicsThumbnail",
-        "value": 0
-    },
-    {
-        "field": "allowRegistration",
-        "value": 1
-    },
-    {
-        "field": "allowLocalLogin",
-        "value": 1
-    },
-    {
-        "field": "allowAccountDelete",
-        "value": 1
-    },
-    {
-        "field": "allowFileUploads",
-        "value": 0
-    },
-    {
-        "field": "maximumFileSize",
-        "value": 2048
-    },
-    {
-        "field": "minimumTitleLength",
-        "value": 3
-    },
-    {
-        "field": "maximumTitleLength",
-        "value": 255
-    },
-    {
-        "field": "minimumUsernameLength",
-        "value": 2
-    },
-    {
-        "field": "maximumUsernameLength",
-        "value": 16
-    },
-    {
-        "field": "minimumPasswordLength",
-        "value": 6
-    },
-    {
-        "field": "maximumSignatureLength",
-        "value": 255
-    },
-    {
-        "field": "maximumAboutMeLength",
-        "value": 1000
-    },
-    {
-        "field": "maximumProfileImageSize",
-        "value": 256
-    },
-    {
-        "field": "profileImageDimension",
-        "value": 128
-    },
-    {
-        "field": "requireEmailConfirmation",
-        "value": 0
-    },
-    {
-        "field": "profile:allowProfileImageUploads",
-        "value": 1
-    }
-]
+{
+    "title": "NodeBB",
+    "showSiteTitle": 1,
+    "postDelay": 10,
+    "initialPostDelay": 10,
+    "newbiePostDelay": 120,
+    "newbiePostDelayThreshold": 3,
+    "minimumPostLength": 8,
+    "maximumPostLength": 32767,
+    "minimumTagsPerTopic": 0,
+    "maximumTagsPerTopic": 5,
+    "allowGuestSearching": 0,
+    "allowTopicsThumbnail": 0,
+    "registrationType": "normal",
+    "allowLocalLogin": 1,
+    "allowAccountDelete": 1,
+    "allowFileUploads": 0,
+    "maximumFileSize": 2048,
+    "minimumTitleLength": 3,
+    "maximumTitleLength": 255,
+    "minimumUsernameLength": 2,
+    "maximumUsernameLength": 16,
+    "minimumPasswordLength": 6,
+    "maximumSignatureLength": 255,
+    "maximumAboutMeLength": 1000,
+    "maximumProfileImageSize": 256,
+    "profileImageDimension": 128,
+    "requireEmailConfirmation": 0,
+    "profile:allowProfileImageUploads": 1,
+    "teaserPost": "last"
+}

@@ -20,6 +20,7 @@
     "user_posted_topic": "<strong>%1</strong> on kirjoittanut uuden aiheen: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> mainitsi sinut viestissä <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> alkoi seurata sinua.",
+    "new_register": "<strong>%1</strong> sent a registration request.",
     "email-confirmed": "Sähköpostiosoite vahvistettu",
     "email-confirmed-message": "Kiitos sähköpostiosoitteesi vahvistamisesta. Käyttäjätilisi on nyt täysin aktivoitu.",
     "email-confirm-error-message": "Ongelma sähköpostiosoitteen vahvistamisessa. Ehkäpä koodi oli virheellinen tai vanhentunut.",

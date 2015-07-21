@@ -68,28 +68,6 @@ categoriesController.popular = function(req, res, next) {
 	});
 };
 
-categoriesController.unread = function(req, res, next) {
-	var stop = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
-	topics.getUnreadTopics(req.uid, 0, stop, function (err, data) {
-		if (err) {
-			return next(err);
-		}
-
-		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[unread:title]]'}]);
-		res.render('unread', data);
-	});
-};
-
-categoriesController.unreadTotal = function(req, res, next) {
-	topics.getTotalUnread(req.uid, function (err, data) {
-		if (err) {
-			return next(err);
-		}
-
-		res.json(data);
-	});
-};
-
 categoriesController.list = function(req, res, next) {
 	async.parallel({
 		header: function (next) {

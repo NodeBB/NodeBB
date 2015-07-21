@@ -11,10 +11,10 @@ define('admin/extend/rewards', function() {
 		conditionals;
 
 	rewards.init = function() {
-		available = JSON.parse(ajaxify.variables.get('rewards'));
-		active = JSON.parse(ajaxify.variables.get('active'));
-		conditions = JSON.parse(ajaxify.variables.get('conditions'));
-		conditionals = JSON.parse(ajaxify.variables.get('conditionals'));
+		available = ajaxify.data.rewards;
+		active = ajaxify.data.active;
+		conditions = ajaxify.data.conditions;
+		conditionals = ajaxify.data.conditionals;
 
 		$('[data-selected]').each(function() {
 			select($(this));
@@ -96,7 +96,7 @@ define('admin/extend/rewards', function() {
 		inputs.forEach(function(input) {
 			html += '<label for="' + input.name + '">' + input.label + '<br />';
 			switch (input.type) {
-				case 'select': 
+				case 'select':
 						html += '<select name="' + input.name + '">';
 						input.values.forEach(function(value) {
 							html += '<option value="' + value.value + '">' + value.name + '</option>';
@@ -119,7 +119,7 @@ define('admin/extend/rewards', function() {
 
 			for (var reward in rewards) {
 				if (rewards.hasOwnProperty(reward)) {
-					div.find('[name="' + reward + '"]').val(rewards[reward]);	
+					div.find('[name="' + reward + '"]').val(rewards[reward]);
 				}
 			}
 		});
@@ -155,7 +155,7 @@ define('admin/extend/rewards', function() {
 			var data = {rewards: {}},
 				main = $(this).find('form.main').serializeArray(),
 				rewards = $(this).find('form.rewards').serializeArray();
-			
+
 			main.forEach(function(obj) {
 				data[obj.name] = obj.value;
 			});

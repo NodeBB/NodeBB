@@ -9,13 +9,13 @@ define('forum/topic/browsing', ['translator'], function(translator) {
 	var Browsing = {};
 
 	Browsing.onUpdateUsersInRoom = function(data) {
-		if (data && data.room.indexOf('topic_' + ajaxify.variables.get('topic_id')) !== -1) {
+		if (data && data.room.indexOf('topic_' + ajaxify.data.tid) !== -1) {
 			$('[component="topic/browsing/list"]').parent().toggleClass('hidden', !data.users.length);
 			for(var i=0; i<data.users.length; ++i) {
 				addUserIcon(data.users[i]);
 			}
 
-			updateUserCount(data.total);
+			updateUserCount(data.hidden);
 		}
 	};
 

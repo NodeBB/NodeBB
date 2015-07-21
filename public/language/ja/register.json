@@ -14,5 +14,6 @@
     "register_now_button": "今すぐ登録する",
     "alternative_registration": "ほかの登録方法",
     "terms_of_use": "利用規約",
-    "agree_to_terms_of_use": "利用規約に同意する"
+    "agree_to_terms_of_use": "利用規約に同意する",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
 }

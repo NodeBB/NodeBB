@@ -3,6 +3,7 @@
 var async = require('async'),
 	db = require('../database'),
 	privileges = require('../privileges'),
+	plugins = require('../plugins'),
 	utils = require('../../public/src/utils');
 
 module.exports = function(Categories) {
@@ -37,17 +38,23 @@ module.exports = function(Categories) {
 					imageClass: 'auto'
 				};
 
+				plugins.fireHook('filter:category.create', {category: category, data: data}, next);
+			},
+			function(data, next) {
+				category = data.category;
+
 				var defaultPrivileges = ['find', 'read', 'topics:create', 'topics:reply'];
 
 				async.series([
-					async.apply(db.setObject, 'category:' + cid, category),
-					async.apply(db.sortedSetAdd, 'categories:cid', order, cid),
-					async.apply(privileges.categories.give, defaultPrivileges, cid, 'administrators'),
-					async.apply(privileges.categories.give, defaultPrivileges, cid, 'registered-users'),
-					async.apply(privileges.categories.give, ['find', 'read'], cid, 'guests')
+					async.apply(db.setObject, 'category:' + category.cid, category),
+					async.apply(db.sortedSetAdd, 'categories:cid', category.order, category.cid),
+					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'administrators'),
+					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'registered-users'),
+					async.apply(privileges.categories.give, ['find', 'read'], category.cid, 'guests')
 				], next);
 			},
 			function(results, next) {
+				plugins.fireHook('action:category.create', category);
 				next(null, category);
 			}
 		], callback);

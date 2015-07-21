@@ -70,9 +70,9 @@ define('admin/manage/category', [
 
 				$this.addClass('hide');
 				target.removeClass('hide').on('blur', function() {
-					$this.removeClass('hide').children('span').html(this.value);
+					$this.removeClass('hide').children('span').text(this.value).html();
 					$(this).addClass('hide');
-				}).val($this.children('span').html());
+				}).val($this.children('span').html().text());
 
 				target.focus();
 			});
@@ -95,7 +95,7 @@ define('admin/manage/category', [
 				if (!confirm) {
 					return;
 				}
-				socket.emit('admin.categories.purge', ajaxify.variables.get('cid'), function(err) {
+				socket.emit('admin.categories.purge', ajaxify.data.category.cid, function(err) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -138,10 +138,10 @@ define('admin/manage/category', [
 		});
 
 		// Parent Category Selector
-		$('button[data-action="setParent"]').on('click', Category.launchParentSelector);
+		$('button[data-action="setParent"], button[data-action="changeParent"]').on('click', Category.launchParentSelector);
 		$('button[data-action="removeParent"]').on('click', function() {
 			var payload= {};
-			payload[ajaxify.variables.get('cid')] = {
+			payload[ajaxify.data.category.cid] = {
 				parentCid: 0
 			};
 
@@ -149,7 +149,8 @@ define('admin/manage/category', [
 				if (err) {
 					return app.alertError(err.message);
 				}
-				ajaxify.refresh();
+				$('button[data-action="removeParent"]').parent().addClass('hide');
+				$('button[data-action="setParent"]').removeClass('hide');
 			});
 		});
 
@@ -158,26 +159,6 @@ define('admin/manage/category', [
 	};
 
 	Category.setupPrivilegeTable = function() {
-		var searchEl = $('.privilege-search'),
-			searchObj = autocomplete.user(searchEl);
-
-		// User search + addition to table
-		searchObj.on('autocompleteselect', function(ev, ui) {
-			socket.emit('admin.categories.setPrivilege', {
-				cid: ajaxify.variables.get('cid'),
-				privilege: 'read',
-				set: true,
-				member: ui.item.user.uid
-			}, function(err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-
-				Category.refreshPrivilegeTable();
-				searchEl.val('');
-			});
-		});
-
 		// Checkbox event capture
 		$('.privilege-table-container').on('change', 'input[type="checkbox"]', function() {
 			var checkboxEl = $(this),
@@ -205,11 +186,14 @@ define('admin/manage/category', [
 			}
 		});
 
+		$('.privilege-table-container').on('click', '[data-action="search.user"]', Category.addUserToPrivilegeTable);
+		$('.privilege-table-container').on('click', '[data-action="search.group"]', Category.addGroupToPrivilegeTable);
+
 		Category.exposeAssumedPrivileges();
 	};
 
 	Category.refreshPrivilegeTable = function() {
-		socket.emit('admin.categories.getPrivilegeSettings', ajaxify.variables.get('cid'), function(err, privileges) {
+		socket.emit('admin.categories.getPrivilegeSettings', ajaxify.data.category.cid, function(err, privileges) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -247,7 +231,7 @@ define('admin/manage/category', [
 
 	Category.setPrivilege = function(member, privilege, state, checkboxEl) {
 		socket.emit('admin.categories.setPrivilege', {
-			cid: ajaxify.variables.get('cid'),
+			cid: ajaxify.data.category.cid,
 			privilege: privilege,
 			set: state,
 			member: member
@@ -275,7 +259,7 @@ define('admin/manage/category', [
 					var parentCid = $(this).attr('data-cid'),
 						payload = {};
 
-					payload[ajaxify.variables.get('cid')] = {
+					payload[ajaxify.data.category.cid] = {
 						parentCid: parentCid
 					};
 
@@ -285,8 +269,65 @@ define('admin/manage/category', [
 						}
 
 						modal.modal('hide');
-						ajaxify.refresh();
+						$('button[data-action="removeParent"]').parent().removeClass('hide');
+						$('button[data-action="setParent"]').addClass('hide');
 					});
+				});
+			});
+		});
+	};
+
+	Category.addUserToPrivilegeTable = function() {
+		var modal = bootbox.dialog({
+			title: 'Find a User',
+			message: '<input class="form-control input-lg" placeholder="Search for a user here..." />',
+			show: true
+		});
+
+		modal.on('shown.bs.modal', function() {
+			var inputEl = modal.find('input');
+
+			autocomplete.user(inputEl, function(ev, ui) {
+				socket.emit('admin.categories.setPrivilege', {
+					cid: ajaxify.data.category.cid,
+					privilege: ['find', 'read'],
+					set: true,
+					member: ui.item.user.uid
+				}, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+
+					Category.refreshPrivilegeTable();
+					modal.modal('hide');
+				});
+			});
+		});
+	};
+
+	Category.addGroupToPrivilegeTable = function() {
+		var modal = bootbox.dialog({
+			title: 'Find a Group',
+			message: '<input class="form-control input-lg" placeholder="Search for a group here..." />',
+			show: true
+		});
+
+		modal.on('shown.bs.modal', function() {
+			var inputEl = modal.find('input');
+
+			autocomplete.group(inputEl, function(ev, ui) {
+				socket.emit('admin.categories.setPrivilege', {
+					cid: ajaxify.data.category.cid,
+					privilege: ['groups:find', 'groups:read'],
+					set: true,
+					member: ui.item.group.name
+				}, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+
+					Category.refreshPrivilegeTable();
+					modal.modal('hide');
 				});
 			});
 		});

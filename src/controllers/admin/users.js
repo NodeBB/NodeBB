@@ -30,6 +30,15 @@ usersController.banned = function(req, res, next) {
 	getUsers('users:banned', req, res, next);
 };
 
+usersController.registrationQueue = function(req, res, next) {
+	user.getRegistrationQueue(0, -1, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+		res.render('admin/manage/registration', {users: data});
+	})
+};
+
 function getUsers(set, req, res, next) {
 	user.getUsersFromSet(set, req.uid, 0, 49, function(err, users) {
 		if (err) {

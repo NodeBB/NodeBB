@@ -7,7 +7,17 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			rooms: false,
 			graphs: false
 		},
-		isMobile = false;
+		isMobile = false,
+		graphData = {
+			rooms: {},
+			traffic: {}
+		};
+
+	var DEFAULTS = {
+		roomInterval: 10000,
+		graphInterval: 15000,
+		realtimeInterval: 1500
+	};
 
 
 	Admin.init = function() {
@@ -15,12 +25,6 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
 
 		isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-		intervals.rooms = setInterval(function() {
-			if (app.isFocused && app.isConnected) {
-				socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
-			}
-		}, 10000);
 
 		$(window).on('action:ajaxify.start', function(ev, data) {
 			clearInterval(intervals.rooms);
@@ -30,8 +34,6 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			intervals.graphs = null;
 			usedTopicColors.length = 0;
 		});
-
-		$('[component="logout"]').on('click', app.logout);
 
 		$.get('https://api.github.com/repos/NodeBB/NodeBB/tags', function(releases) {
 			// Re-sort the releases, as they do not follow Semver (wrt pre-releases)
@@ -59,13 +61,23 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			}
 		});
 
+		$('[data-toggle="tooltip"]').tooltip();
+
+		setupRealtimeButton();
 		setupGraphs();
+		initiateDashboard();
 	};
 
 	Admin.updateRoomUsage = function(err, data) {
 		if (err) {
 			return app.alertError(err.message);
 		}
+
+		if (JSON.stringify(graphData.rooms) === JSON.stringify(data)) {
+			return;
+		}
+
+		graphData.rooms = data;
 
 		var html = '<div class="text-center pull-left">' +
 						'<div>'+ data.onlineRegisteredCount +'</div>' +
@@ -225,7 +237,13 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 				value: 1,
 				color: "#949FB1",
 				highlight: "#A8B3C5",
-				label: "Recent/Unread"
+				label: "Recent"
+			},
+			{
+				value: 1,
+				color: "#9FB194",
+				highlight: "#A8B3C5",
+				label: "Unread"
 			}
 			], {
 				responsive: true
@@ -239,7 +257,6 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			}
 		};
 
-		intervals.graphs = setInterval(updateTrafficGraph, 15000);
 		updateTrafficGraph();
 
 		$(window).on('resize', adjustPieCharts);
@@ -264,6 +281,12 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		}
 
 		socket.emit('admin.analytics.get', {graph: "traffic"}, function (err, data) {
+			if (JSON.stringify(graphData.traffic) === JSON.stringify(data)) {
+				return;
+			}
+
+			graphData.traffic = data;
+
 			for (var i = 0, ii = data.pageviews.length; i < ii;  i++) {
 				graphs.traffic.datasets[0].points[i].value = data.pageviews[i];
 				graphs.traffic.datasets[1].points[i].value = data.uniqueVisitors[i];
@@ -294,6 +317,8 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		graphs.presence.segments[1].value = users.topics;
 		graphs.presence.segments[2].value = users.category;
 		graphs.presence.segments[3].value = users.recent;
+		graphs.presence.segments[4].value = users.unread;
+
 
 		graphs.presence.update();
 	}
@@ -389,6 +414,34 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		buildTopicsLegend();
 
 		graphs.topics.update();
+	}
+
+	function setupRealtimeButton() {
+		$('#toggle-realtime .fa').on('click', function() {
+			var $this = $(this);
+			if ($this.hasClass('fa-toggle-on')) {
+				$this.removeClass('fa-toggle-on').addClass('fa-toggle-off');
+				$this.parent().find('strong').html('OFF');
+				initiateDashboard(false);
+			} else {
+				$this.removeClass('fa-toggle-off').addClass('fa-toggle-on');
+				$this.parent().find('strong').html('ON');
+				initiateDashboard(true);
+			}
+		});
+	}
+
+	function initiateDashboard(realtime) {
+		clearInterval(intervals.rooms);
+		clearInterval(intervals.graphs);
+
+		intervals.rooms = setInterval(function() {
+			if (app.isFocused && app.isConnected) {
+				socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
+			}
+		}, realtime ? DEFAULTS.realtimeInterval : DEFAULTS.roomInterval);
+
+		intervals.graphs = setInterval(updateTrafficGraph, realtime ? DEFAULTS.realtimeInterval : DEFAULTS.graphInterval);
 	}
 
 	return Admin;

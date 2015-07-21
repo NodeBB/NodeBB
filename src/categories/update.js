@@ -16,11 +16,28 @@ module.exports = function(Categories) {
 					return next(err);
 				}
 
-				plugins.fireHook('filter:category.update', modified[cid], function(err, category) {
+				var modifiedFields = modified[cid];
+
+				if (modifiedFields.hasOwnProperty('name')) {
+					modifiedFields.slug = cid + '/' + utils.slugify(modifiedFields.name);
+				}
+
+				plugins.fireHook('filter:category.update', {category: modifiedFields}, function(err, categoryData) {
+					if (err) {
+						return next(err);
+					}
+
+					var category = categoryData.category;
 					var fields = Object.keys(category);
 					async.each(fields, function(key, next) {
 						updateCategoryField(cid, key, category[key], next);
-					}, next);
+					}, function(err) {
+						if (err) {
+							return next(err);
+						}
+						plugins.fireHook('action:category.update', {cid: cid, modified: category});
+						next();
+					});
 				});
 			});
 		}
@@ -38,10 +55,7 @@ module.exports = function(Categories) {
 				return callback(err);
 			}
 
-			if (key === 'name') {
-				var slug = cid + '/' + utils.slugify(value);
-				db.setObjectField('category:' + cid, 'slug', slug, callback);
-			} else if (key === 'order') {
+			if (key === 'order') {
 				db.sortedSetAdd('categories:cid', value, cid, callback);
 			} else {
 				callback();

@@ -28,6 +28,7 @@
 	"pagination.enter_index": "Enter index",
 
 	"header.admin": "Admin",
+	"header.categories": "Categories",
 	"header.recent": "Recent",
 	"header.unread": "Unread",
 	"header.tags": "Tags",
@@ -64,6 +65,7 @@
 	"reputation": "Reputation",
 
 	"read_more": "read more",
+	"more": "More",
 
 	"posted_ago_by_guest": "posted %1 by Guest",
 	"posted_ago_by": "posted %1 by %2",

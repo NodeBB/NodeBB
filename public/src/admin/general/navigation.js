@@ -6,7 +6,7 @@ define('admin/general/navigation', ['translator'], function(translator) {
 		available;
 
 	navigation.init = function() {
-		available = JSON.parse(ajaxify.variables.get('available'));
+		available = ajaxify.data.available;
 
 		$('#enabled').html(translator.unescape($('#enabled').html()));
 		translator.translate(translator.unescape($('#available').html()), function(html) {
@@ -61,12 +61,6 @@ define('admin/general/navigation', ['translator'], function(translator) {
 			});
 
 			data.properties = {};
-
-			available.forEach(function(item) {
-				if (item.route.match(data.route)) {
-					data.properties = item.properties || {};
-				}
-			});
 
 			for (var prop in properties) {
 				if (properties.hasOwnProperty(prop)) {

@@ -13,7 +13,7 @@ define('forum/topic/posts', [
 	var Posts = {};
 
 	Posts.onNewPost = function(data) {
-		var tid = ajaxify.variables.get('topic_id');
+		var tid = ajaxify.data.tid;
 		if (data && data.posts && data.posts.length && parseInt(data.posts[0].tid, 10) !== parseInt(tid, 10)) {
 			return;
 		}
@@ -133,8 +133,11 @@ define('forum/topic/posts', [
 
 		findInsertionPoint();
 
-		data.title = $('<div></div>').text(ajaxify.variables.get('topic_name')).html();
-		data.viewcount = ajaxify.variables.get('viewcount');
+		data.title = $('<div></div>').text(ajaxify.data.title).html();
+		data.slug = ajaxify.data.slug;
+		data.viewcount = ajaxify.data.viewcount;
+
+		$(window).trigger('action:posts.loading', {posts: data.posts, after: after, before: before});
 
 		infinitescroll.parseAndTranslate('topic', 'posts', data, function(html) {
 			if (after) {
@@ -218,7 +221,7 @@ define('forum/topic/posts', [
 	};
 
 	function loadPostsAfter(after) {
-		var tid = ajaxify.variables.get('topic_id');
+		var tid = ajaxify.data.tid;
 		if (!utils.isNumber(tid) || !utils.isNumber(after) || (after === 0 && components.get('post', 'index', 1).length)) {
 			return;
 		}
@@ -247,21 +250,21 @@ define('forum/topic/posts', [
 		});
 	}
 
-	Posts.processPage = function(element) {
+	Posts.processPage = function(posts) {
 		app.createUserTooltips();
-		app.replaceSelfLinks(element.find('a'));
-		utils.addCommasToNumbers(element.find('.formatted-number'));
-		utils.makeNumbersHumanReadable(element.find('.human-readable-number'));
-		element.find('.timeago').timeago();
-		element.find('[component="post/content"] img:not(.emoji)').each(function() {
+		app.replaceSelfLinks(posts.find('a'));
+		utils.addCommasToNumbers(posts.find('.formatted-number'));
+		utils.makeNumbersHumanReadable(posts.find('.human-readable-number'));
+		posts.find('.timeago').timeago();
+		posts.find('[component="post/content"] img:not(.emoji)').each(function() {
 			var $this = $(this);
 			if (!$this.parent().is('a')) {
 				$this.wrap('<a href="' + $this.attr('src') + '" target="_blank">');
 			}
 		});
 		postTools.updatePostCount();
-		addBlockquoteEllipses(element.find('[component="post/content"] > blockquote'));
-		hidePostToolsForDeletedPosts(element);
+		addBlockquoteEllipses(posts.find('[component="post/content"] > blockquote'));
+		hidePostToolsForDeletedPosts(posts);
 		showBottomPostBar();
 	};
 
@@ -271,9 +274,11 @@ define('forum/topic/posts', [
 		}
 	}
 
-	function hidePostToolsForDeletedPosts(element) {
-		element.find('[data-pid].deleted').each(function() {
-			postTools.toggle($(this).attr('data-pid'), true);
+	function hidePostToolsForDeletedPosts(posts) {
+		posts.each(function() {
+			if ($(this).hasClass('deleted')) {
+				postTools.toggle($(this).attr('data-pid'), true);
+			}
 		});
 	}
 

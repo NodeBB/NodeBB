@@ -1,9 +1,10 @@
 {
     "title": "Olästa",
-    "no_unread_topics": "Det finns inga ilästa ämnen.",
+    "no_unread_topics": "Det finns inga olästa ämnen.",
     "load_more": "Ladda fler",
     "mark_as_read": "Markerad som läst",
     "selected": "Vald",
     "all": "Alla",
+    "all_categories": "All categories",
     "topics_marked_as_read.success": "Ämnet markerat som läst."
 }

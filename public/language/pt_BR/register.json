@@ -14,5 +14,6 @@
     "register_now_button": "Registrar Agora",
     "alternative_registration": "Cadastro Alternativo",
     "terms_of_use": "Termos de Uso",
-    "agree_to_terms_of_use": "Eu concordo com os Termos de Uso"
+    "agree_to_terms_of_use": "Eu concordo com os Termos de Uso",
+    "registration-added-to-queue": "Teu cadastro foi adicionado à fila de aprovação. Você receberá um email quando ele for aceito por um administrador."
 }

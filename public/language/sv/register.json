@@ -14,5 +14,6 @@
     "register_now_button": "Registrera nu",
     "alternative_registration": "Alternativ registrering",
     "terms_of_use": "Användarvillkor",
-    "agree_to_terms_of_use": "Jag godkänner användarvillkoren"
+    "agree_to_terms_of_use": "Jag godkänner användarvillkoren",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
 }

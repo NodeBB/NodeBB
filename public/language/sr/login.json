@@ -1,0 +1,11 @@
+{
+    "username-email": "Корисничко име / Лозинка",
+    "username": "Корисничко име",
+    "email": "Е-пошта",
+    "remember_me": "Памти ме?",
+    "forgot_password": "Заборављена лозинка?",
+    "alternative_logins": "Алтернативно пријављивање",
+    "failed_login_attempt": "Неуспело пријављивање, покушајте поново.",
+    "login_successful": "Успешно сте се пријавили!",
+    "dont_have_account": "Немате налог?"
+}

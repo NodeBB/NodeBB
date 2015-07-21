@@ -10,17 +10,19 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 		currentEmail;
 
 	AccountEdit.init = function() {
-		gravatarPicture = ajaxify.variables.get('gravatarpicture');
-		uploadedPicture = ajaxify.variables.get('uploadedpicture');
+		gravatarPicture = ajaxify.data.gravatarpicture;
+		uploadedPicture = ajaxify.data.uploadedpicture;
 
 		header.init();
 
 		$('#submitBtn').on('click', updateProfile);
 
-		$('#inputBirthday').datepicker({
-			changeMonth: true,
-			changeYear: true,
-			yearRange: '1900:+0'
+		app.loadJQueryUI(function() {
+			$('#inputBirthday').datepicker({
+				changeMonth: true,
+				changeYear: true,
+				yearRange: '1900:+0'
+			});
 		});
 
 		currentEmail = $('#inputEmail').val();
@@ -85,7 +87,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 	}
 
 	function updateHeader(picture, username, userslug) {
-		if (parseInt(ajaxify.variables.get('theirid'), 10) !== parseInt(ajaxify.variables.get('yourid'), 10)) {
+		if (parseInt(ajaxify.data.theirid, 10) !== parseInt(ajaxify.data.yourid, 10)) {
 			return;
 		}
 
@@ -188,7 +190,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 		$('#uploadPictureBtn').on('click', function() {
 
 			$('#change-picture-modal').modal('hide');
-			uploader.open(config.relative_path + '/api/user/' + ajaxify.variables.get('userslug') + '/uploadpicture', {}, config.maximumProfileImageSize, function(imageUrlOnServer) {
+			uploader.open(config.relative_path + '/api/user/' + ajaxify.data.userslug + '/uploadpicture', {}, config.maximumProfileImageSize, function(imageUrlOnServer) {
 				onUploadComplete(imageUrlOnServer);
 			});
 
@@ -205,7 +207,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 				if (!url) {
 					return;
 				}
-				socket.emit('user.uploadProfileImageFromUrl', {url: url, uid: ajaxify.variables.get('theirid')}, function(err, imageUrlOnServer) {
+				socket.emit('user.uploadProfileImageFromUrl', {url: url, uid: ajaxify.data.theirid}, function(err, imageUrlOnServer) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -284,7 +286,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 				socket.emit('user.changePassword', {
 					'currentPassword': currentPassword.val(),
 					'newPassword': password.val(),
-					'uid': ajaxify.variables.get('theirid')
+					'uid': ajaxify.data.theirid
 				}, function(err) {
 					btn.removeClass('disabled').find('i').addClass('hide');
 					currentPassword.val('');
@@ -317,7 +319,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 	function changeUserPicture(type, callback) {
 		socket.emit('user.changePicture', {
 			type: type,
-			uid: ajaxify.variables.get('theirid')
+			uid: ajaxify.data.theirid
 		}, callback);
 	}
 

@@ -2,6 +2,7 @@
 
 var async = require('async'),
 	nconf = require('nconf'),
+	db = require('../database'),
 	meta = require('../meta'),
 	groups = require('../groups'),
 	user = require('../user'),
@@ -9,17 +10,33 @@ var async = require('async'),
 	groupsController = {};
 
 groupsController.list = function(req, res, next) {
-	groups.list({
-		truncateUserList: true,
-		expand: true,
-		uid: req.uid
-	}, function(err, groups) {
+	var sort = req.query.sort || 'alpha';
+
+	groupsController.getGroupsFromSet(req.uid, sort, 0, 14, function(err, data) {
 		if (err) {
 			return next(err);
 		}
-		res.render('groups/list', {
+		res.render('groups/list', data);
+	});
+};
+
+groupsController.getGroupsFromSet = function(uid, sort, start, stop, callback) {
+	var set = 'groups:visible:name';
+	if (sort === 'count') {
+		set = 'groups:visible:memberCount';
+	} else if (sort === 'date') {
+		set = 'groups:visible:createtime';
+	}
+
+	groups.getGroupsFromSet(set, uid, start, stop, function(err, groups) {
+		if (err) {
+			return callback(err);
+		}
+
+		callback(null, {
 			groups: groups,
-			allowGroupCreation: parseInt(meta.config.allowGroupCreation, 10) === 1
+			allowGroupCreation: parseInt(meta.config.allowGroupCreation, 10) === 1,
+			nextStart: stop + 1
 		});
 	});
 };
@@ -62,13 +79,15 @@ groupsController.details = function(req, res, next) {
 		async.parallel({
 			group: function(next) {
 				groups.get(res.locals.groupName, {
-					expand: true,
-					uid: req.uid
+					uid: req.uid,
+					truncateUserList: true,
+					userListCount: 20
 				}, next);
 			},
 			posts: function(next) {
 				groups.getLatestMemberPosts(res.locals.groupName, 10, req.uid, next);
-			}
+			},
+			isAdmin: async.apply(user.isAdministrator, req.uid)
 		}, function(err, results) {
 			if (err) {
 				return next(err);

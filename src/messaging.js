@@ -390,7 +390,8 @@ var db = require('./database'),
 			bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
 			bodyLong: messageObj.content,
 			nid: 'chat_' + fromuid + '_' + touid,
-			from: fromuid
+			from: fromuid,
+			path: '/chats/' + messageObj.fromUser.username
 		}, function(err, notification) {
 			if (!err && notification) {
 				notifications.push(notification, [touid], callback);
@@ -402,6 +403,7 @@ var db = require('./database'),
 				emailer.send('notif_chat', touid, {
 					subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
 					username: messageObj.toUser.username,
+					userslug: utils.slugify(messageObj.toUser.username),
 					summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
 					message: messageObj,
 					site_title: meta.config.title || 'NodeBB',

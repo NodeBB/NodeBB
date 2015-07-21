@@ -38,10 +38,6 @@ User.removeAdmins = function(socket, uids, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	if (uids.indexOf(socket.uid.toString()) !== -1) {
-		return callback(new Error('[[error:cant-remove-self-as-admin]]'));
-	}
-
 	async.eachSeries(uids, function(uid, next) {
 		groups.getMemberCount('administrators', function(err, count) {
 			if (err) {
@@ -244,5 +240,14 @@ User.search = function(socket, data, callback) {
 		});
 	});
 };
+
+User.acceptRegistration = function(socket, data, callback) {
+	user.acceptRegistration(data.username, callback);
+};
+
+User.rejectRegistration = function(socket, data, callback) {
+	user.rejectRegistration(data.username, callback);
+};
+
 
 module.exports = User;

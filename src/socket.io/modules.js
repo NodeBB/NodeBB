@@ -1,128 +1,16 @@
 "use strict";
 
-var	nconf = require('nconf'),
-	async = require('async'),
-	S = require('string'),
-	winston = require('winston'),
-	_ = require('underscore'),
-
-	posts = require('../posts'),
-	postTools = require('../postTools'),
-	topics = require('../topics'),
-	meta = require('../meta'),
+var	meta = require('../meta'),
 	Messaging = require('../messaging'),
-	user = require('../user'),
-	plugins = require('../plugins'),
 	utils = require('../../public/src/utils'),
-	privileges = require('../privileges'),
 
 	server = require('./'),
 
-
 	SocketModules = {
-		composer: {},
 		chats: {},
 		sounds: {},
 		settings: {}
 	};
-
-/* Posts Composer */
-
-SocketModules.composer.push = function(socket, pid, callback) {
-	privileges.posts.can('read', pid, socket.uid, function(err, canRead) {
-		if (err || !canRead) {
-			return callback(err || new Error('[[error:no-privileges]]'));
-		}
-		posts.getPostFields(pid, ['content', 'tid', 'uid', 'handle'], function(err, postData) {
-			if(err || (!postData && !postData.content)) {
-				return callback(err || new Error('[[error:invalid-pid]]'));
-			}
-
-			async.parallel({
-				topic: function(next) {
-					topics.getTopicDataByPid(pid, next);
-				},
-				tags: function(next) {
-					topics.getTopicTags(postData.tid, next);
-				},
-				isMain: function(next) {
-					posts.isMain(pid, next);
-				}
-			}, function(err, results) {
-				if(err) {
-					return callback(err);
-				}
-
-				if (!results.topic) {
-					return callback(new Error('[[error:no-topic]]'));
-				}
-
-				callback(null, {
-					pid: pid,
-					uid: postData.uid,
-					handle: parseInt(meta.config.allowGuestHandles, 10) ? postData.handle : undefined,
-					body: postData.content,
-					title: results.topic.title,
-					topic_thumb: results.topic.thumb,
-					tags: results.tags,
-					isMain: results.isMain
-				});
-			});
-		});
-	});
-};
-
-SocketModules.composer.editCheck = function(socket, pid, callback) {
-	posts.isMain(pid, function(err, isMain) {
-		callback(err, {
-			titleEditable: isMain
-		});
-	});
-};
-
-SocketModules.composer.renderPreview = function(socket, content, callback) {
-	plugins.fireHook('filter:parse.raw', content, callback);
-};
-
-SocketModules.composer.renderHelp = function(socket, data, callback) {
-	var helpText = meta.config['composer:customHelpText'] || '';
-
-	if (meta.config['composer:showHelpTab'] === '0') {
-		return callback(new Error('help-hidden'));
-	}
-
-	plugins.fireHook('filter:parse.raw', helpText, function(err, helpText) {
-		if (!meta.config['composer:allowPluginHelp'] || meta.config['composer:allowPluginHelp'] === '1') {
-			plugins.fireHook('filter:composer.help', helpText, callback);
-		} else {
-			callback(null, helpText);
-		}
-	});
-};
-
-SocketModules.composer.notifyTyping = function(socket, data) {
-	if (!socket.uid || !parseInt(data.tid, 10)) {
-		return;
-	}
-	server.in('topic_' + data.tid).emit('event:topic.notifyTyping', data);
-};
-
-SocketModules.composer.stopNotifyTyping = function(socket, data) {
-	if (!socket.uid || !parseInt(data.tid, 10)) {
-		return;
-	}
-	server.in('topic_' + data.tid).emit('event:topic.stopNotifyTyping', data);
-};
-
-SocketModules.composer.getFormattingOptions = function(socket, data, callback) {
-	plugins.fireHook('filter:composer.formatting', {
-		options: [
-			{ name: 'tags', className: 'fa fa-tags', mobile: true }
-		]
-	}, function(err, payload) {
-		callback(err, payload.options);
-	});
-};
 
 /* Chat */
 

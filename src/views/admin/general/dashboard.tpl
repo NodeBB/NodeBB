@@ -34,19 +34,19 @@
 					<div class="panel-body">
 						<div id="unique-visitors">
 							<div class="text-center pull-left">
-								<div>{stats.day}</div>
+								<span class="formatted-number">{stats.day}</span>
 								<div>Day</div>
 							</div>
 							<div class="text-center pull-left">
-								<div>{stats.week}</div>
+								<span class="formatted-number">{stats.week}</span>
 								<div>Week</div>
 							</div>
 							<div class="text-center pull-left">
-								<div>{stats.month}</div>
+								<span class="formatted-number">{stats.month}</span>
 								<div>Month</div>
 							</div>
 							<div class="text-center pull-left">
-								<div>{stats.alltime}</div>
+								<span class="formatted-number">{stats.alltime}</span>
 								<div>All Time</div>
 							</div>
 						</div>
@@ -65,14 +65,6 @@
 						<p>
 							Always make sure that your NodeBB is up to date for the latest security patches and bug fixes.
 						</p>
-						<p class="text-center">
-							<button class="btn btn-warning reload">Reload</button>
-							<button class="btn btn-danger restart">Restart</button>
-						</p>
-						<p class="help-block text-center">
-							Restarting your NodeBB will drop all existing connections. A reload is lighter and is probably
-							what you want 99% of the time.
-						</p>
 					</div>
 				</div>
 			</div>
@@ -83,7 +75,13 @@
 					<div class="panel-body">
 					<!-- BEGIN notices -->
 						<div>
-							<!-- IF notices.done --><i class="fa fa-fw fa-check text-success"></i> {notices.doneText}<!-- ELSE --><i class="fa fa-fw fa-times text-danger"></i> {notices.notDoneText}<!-- ENDIF notices.done -->
+							<!-- IF notices.done -->
+							<i class="fa fa-fw fa-check text-success"></i> {notices.doneText}
+							<!-- ELSE -->
+							<!-- IF notices.link --><a href="{notices.link}" data-toggle="tooltip" title="{notices.tooltip}"><!-- ENDIF notices.link -->
+							<i class="fa fa-fw fa-times text-danger"></i> {notices.notDoneText}
+							<!-- IF notices.link --></a><!-- ENDIF notices.link -->
+							<!-- ENDIF notices.done -->
 						</div>
 					<!-- END notices -->
 					</div>
@@ -93,6 +91,22 @@
 	</div>
 
 	<div class="col-lg-3">
+		<div class="panel panel-default">
+			<div class="panel-heading">System Control</div>
+			<div class="panel-body text-center">
+				<p>
+					<button class="btn btn-warning reload" data-placement="bottom" data-toggle="tooltip" title="Reload NodeBB to activate new plugins">Reload</button>
+					<button class="btn btn-danger restart" data-placement="bottom" data-toggle="tooltip" title="Restarting NodeBB will drop all existing connections for a few seconds">Restart</button>
+				</p>
+				<p>
+					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info" data-placement="bottom" data-toggle="tooltip" title="Click here to set up maintenance mode for NodeBB">Maintenance Mode</a>
+				</p>
+
+				<hr />
+				<span id="toggle-realtime">Realtime Chart Updates <strong>OFF</strong> <i class="fa fa fa-toggle-off pointer"></i></span>
+			</div>
+		</div>
+
 		<div class="panel panel-default">
 			<div class="panel-heading">Anonymous vs Registered Users</div>
 			<div class="panel-body">
@@ -114,7 +128,8 @@
 						<li><div class="on-categories"></div><span>On categories list</span></li>
 						<li><div class="reading-posts"></div><span>Reading posts</span></li>
 						<li><div class="browsing-topics"></div><span>Browsing topics</span></li>
-						<li><div class="recent"></div><span>Recent / Unread</span></li>
+						<li><div class="recent"></div><span>Recent</span></li>
+						<li><div class="unread"></div><span>Unread</span></li>
 					</ul>
 					<canvas id="analytics-presence"></canvas>
 				</div>

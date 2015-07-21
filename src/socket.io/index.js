@@ -260,14 +260,17 @@ Sockets.isUsersOnline = function(uids, callback) {
 	callback(null, uids.map(Sockets.isUserOnline));
 };
 
-Sockets.getUsersInRoom = function (uid, roomName, callback) {
+Sockets.getUsersInRoom = function (uid, roomName, start, stop, callback) {
 	if (!roomName) {
 		return;
 	}
 
 	var	uids = Sockets.getUidsInRoom(roomName);
 	var total = uids.length;
-	uids = uids.slice(0, 9);
+	if (stop !== -1) {
+		uids = uids.slice(start, stop);
+	}
+
 	if (uid && uids.indexOf(uid.toString()) === -1) {
 		uids = [uid].concat(uids);
 	}
@@ -287,7 +290,8 @@ Sockets.getUsersInRoom = function (uid, roomName, callback) {
 		callback(null, {
 			users: users,
 			room: roomName,
-			total: Math.max(0, total - uids.length)
+			total: users.length ? total : 0,
+			hidden: Math.max(0, total - uids.length)
 		});
 	});
 };

@@ -1,9 +1,10 @@
 @import "./bootstrap/bootstrap";
 @import "./mixins";
+@import "./vars";
 
 @import "./general/dashboard";
 @import "./general/navigation";
-@import "./manage/groups";
+@import "./manage/categories";
 @import "./manage/tags";
 @import "./manage/flags";
 @import "./manage/users";
@@ -15,6 +16,7 @@
 
 @import "./modules/alerts";
 @import "./modules/selectable";
+@import "./modules/checkboxes";
 
 .admin {
 	padding-top: 70px;
@@ -23,6 +25,14 @@
 	.container {
 		width: 100% !important;
 		padding: 0px 15px;
+	}
+
+	.jumbotron {
+		padding: @jumbotron-padding;
+	}
+
+	.btn {
+		border-radius: 0;
 	}
 
 	.user-img {
@@ -135,10 +145,6 @@
 						padding-left: 11px;
 						outline: 0;
 
-						&:focus {
-							background-color: transparent;
-						}
-
 						span {
 							opacity: 0;
 							margin-right: -8px;
@@ -169,6 +175,12 @@
 		overflow-y: hidden;
 	}
 
+	.acp-panel-heading {
+		padding: 7px 14px;
+		border: 0;
+		.box-header-font;
+	}
+
 	.panel {
 		background-color: #FFF;
 		box-sizing: border-box;
@@ -177,11 +189,13 @@
 		margin-bottom: 20px;
 
 		&.panel-default .panel-heading {
+			.acp-panel-heading;
 			background: #fefefe;
 			color: #333;
-			padding: 7px 14px;
-			border: 0;
-			.box-header-font;
+		}
+
+		&.panel-danger .panel-heading {
+			.acp-panel-heading;
 		}
 	}
 
@@ -213,6 +227,7 @@
 				.pointer;
 				line-height: 20px;
 				text-align: center;
+				color: @gray-dark;
 
 				&:hover, &.selected {
 					background: black;
@@ -282,6 +297,11 @@
 
 	#taskbar {
 		display: none; /* not sure why I have to do this, but it only seems to show up on prod */
+	}
+
+	/* Allows the autocomplete dropbox to appear on top of a modal's backdrop */
+	.ui-autocomplete {
+		z-index: @zindex-popover;
 	}
 }
 

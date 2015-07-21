@@ -50,6 +50,7 @@
     "views": "조회 수",
     "reputation": "인기도",
     "read_more": "전체 보기",
+    "more": "More",
     "posted_ago_by_guest": "익명 사용자가 %1에 작성했습니다.",
     "posted_ago_by": "%2님이 %1에 작성했습니다.",
     "posted_ago": "%1에 작성되었습니다.",

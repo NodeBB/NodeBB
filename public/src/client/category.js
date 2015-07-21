@@ -2,7 +2,6 @@
 /* global define, config, templates, app, utils, ajaxify, socket */
 
 define('forum/category', [
-	'composer',
 	'forum/pagination',
 	'forum/infinitescroll',
 	'share',
@@ -11,7 +10,7 @@ define('forum/category', [
 	'sort',
 	'components',
 	'translator'
-], function(composer, pagination, infinitescroll, share, navigator, categoryTools, sort, components, translator) {
+], function(pagination, infinitescroll, share, navigator, categoryTools, sort, components, translator) {
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
@@ -28,23 +27,23 @@ define('forum/category', [
 	}
 
 	Category.init = function() {
-		var	cid = ajaxify.variables.get('category_id');
+		var	cid = ajaxify.data.cid;
 
 		app.enterRoom('category_' + cid);
 
-		share.addShareHandlers(ajaxify.variables.get('category_name'));
+		share.addShareHandlers(ajaxify.data.name);
 
 		socket.removeListener('event:new_topic', Category.onNewTopic);
 		socket.on('event:new_topic', Category.onNewTopic);
 
 		categoryTools.init(cid);
 
-		sort.handleSort('categoryTopicSort', 'user.setCategorySort', 'category/' + ajaxify.variables.get('category_slug'));
+		sort.handleSort('categoryTopicSort', 'user.setCategorySort', 'category/' + ajaxify.data.slug);
 
 		enableInfiniteLoadingOrPagination();
 
 		if (!config.usePagination) {
-			navigator.init('[component="category/topic"]', ajaxify.variables.get('topic_count'), Category.toTop, Category.toBottom, Category.navigatorCallback);
+			navigator.init('[component="category/topic"]', ajaxify.data.topic_count, Category.toTop, Category.toBottom, Category.navigatorCallback);
 		}
 
 		$('[component="category"]').on('click', '[component="topic/header"]', function() {
@@ -84,7 +83,7 @@ define('forum/category', [
 	};
 
 	Category.toBottom = function() {
-		socket.emit('categories.getTopicCount', ajaxify.variables.get('category_id'), function(err, count) {
+		socket.emit('categories.getTopicCount', ajaxify.data.cid, function(err, count) {
 			navigator.scrollBottom(count - 1);
 		});
 	};
@@ -158,7 +157,7 @@ define('forum/category', [
 		}
 
 		var scrollTo = components.get('category/topic', 'index', bookmarkIndex);
-		var	cid = ajaxify.variables.get('category_id');
+		var	cid = ajaxify.data.cid;
 		if (scrollTo.length && cid) {
 			$('html, body').animate({
 				scrollTop: (scrollTo.offset().top - $('#header-menu').height() - offset) + 'px'
@@ -174,12 +173,12 @@ define('forum/category', [
 			infinitescroll.init(Category.loadMoreTopics);
 		} else {
 			navigator.hide();
-			pagination.init(ajaxify.variables.get('currentPage'), ajaxify.variables.get('pageCount'));
+			pagination.init(ajaxify.data.currentPage, ajaxify.data.pageCount);
 		}
 	}
 
 	Category.onNewTopic = function(topic) {
-		var	cid = ajaxify.variables.get('category_id');
+		var	cid = ajaxify.data.cid;
 		if (!topic || parseInt(topic.cid, 10) !== parseInt(cid, 10)) {
 			return;
 		}
@@ -236,7 +235,7 @@ define('forum/category', [
 	};
 
 	function updateTopicCount() {
-		socket.emit('categories.getTopicCount', ajaxify.variables.get('category_id'), function(err, topicCount) {
+		socket.emit('categories.getTopicCount', ajaxify.data.cid, function(err, topicCount) {
 			if(err) {
 				return app.alertError(err.message);
 			}
@@ -338,7 +337,7 @@ define('forum/category', [
 
 		$(window).trigger('action:categories.loading');
 		infinitescroll.loadMore('categories.loadMore', {
-			cid: ajaxify.variables.get('category_id'),
+			cid: ajaxify.data.cid,
 			after: after,
 			author: utils.params().author
 		}, function (data, done) {

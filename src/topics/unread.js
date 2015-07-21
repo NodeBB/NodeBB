@@ -12,15 +12,15 @@ var async = require('async'),
 
 module.exports = function(Topics) {
 
-	var unreadCutoff = 86400000;
+	var unreadCutoff = 86400000 * 2;
 
 	Topics.getTotalUnread = function(uid, callback) {
-		Topics.getUnreadTids(uid, 0, 20, function(err, tids) {
+		Topics.getUnreadTids(0, uid, 0, 20, function(err, tids) {
 			callback(err, tids ? tids.length : 0);
 		});
 	};
 
-	Topics.getUnreadTopics = function(uid, start, stop, callback) {
+	Topics.getUnreadTopics = function(cid, uid, start, stop, callback) {
 
 		var unreadTopics = {
 			showSelect: true,
@@ -30,7 +30,7 @@ module.exports = function(Topics) {
 
 		async.waterfall([
 			function(next) {
-				Topics.getUnreadTids(uid, start, stop, next);
+				Topics.getUnreadTids(cid, uid, start, stop, next);
 			},
 			function(tids, next) {
 				if (!tids.length) {
@@ -50,7 +50,7 @@ module.exports = function(Topics) {
 		], callback);
 	};
 
-	Topics.getUnreadTids = function(uid, start, stop, callback) {
+	Topics.getUnreadTids = function(cid, uid, start, stop, callback) {
 		uid = parseInt(uid, 10);
 		if (uid === 0) {
 			return callback(null, []);
@@ -91,7 +91,7 @@ module.exports = function(Topics) {
 
 			tids = tids.slice(0, 100);
 
-			filterTopics(uid, tids, results.ignoredCids, function(err, tids) {
+			filterTopics(uid, tids, cid, results.ignoredCids, function(err, tids) {
 				if (err) {
 					return callback(err);
 				}
@@ -107,7 +107,7 @@ module.exports = function(Topics) {
 		});
 	};
 
-	function filterTopics(uid, tids, ignoredCids, callback) {
+	function filterTopics(uid, tids, cid, ignoredCids, callback) {
 		if (!Array.isArray(ignoredCids) || !tids.length) {
 			return callback(null, tids);
 		}
@@ -121,7 +121,7 @@ module.exports = function(Topics) {
 			},
 			function(topics, next) {
 				tids = topics.filter(function(topic) {
-					return topic && topic.cid && ignoredCids.indexOf(topic.cid.toString()) === -1;
+					return topic && topic.cid && ignoredCids.indexOf(topic.cid.toString()) === -1 && (!cid || parseInt(cid, 10) === parseInt(topic.cid, 10));
 				}).map(function(topic) {
 					return topic.tid;
 				});

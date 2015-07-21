@@ -6,11 +6,6 @@
 		<form role="form">
 			<div class="checkbox">
 				<label>
-					<input type="checkbox" data-field="allowRegistration" checked> <strong>Allow local registration</strong>
-				</label>
-			</div>
-			<div class="checkbox">
-				<label>
 					<input type="checkbox" data-field="allowLocalLogin" checked> <strong>Allow local login</strong>
 				</label>
 			</div>
@@ -36,6 +31,16 @@
 					<option value="username-email">Username or Email</option>
 					<option value="username">Username Only</option>
 					<option value="email">Email Only</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label>Registration Type</label>
+				<select class="form-control" data-field="registrationType">
+					<option value="normal">Normal</option>
+					<option value="admin-approval">Admin Approval</option>
+					<option value="invite-only">Invite Only</option>
+					<option value="disabled">No registration</option>
 				</select>
 			</div>
 		</form>

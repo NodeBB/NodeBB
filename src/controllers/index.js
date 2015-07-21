@@ -5,7 +5,6 @@ var async = require('async'),
 	validator = require('validator'),
 	winston = require('winston'),
 
-	auth = require('../routes/authentication'),
 	meta = require('../meta'),
 	user = require('../user'),
 	posts = require('../posts'),
@@ -19,11 +18,13 @@ var Controllers = {
 	posts: require('./posts'),
 	topics: require('./topics'),
 	categories: require('./categories'),
+	unread: require('./unread'),
 	tags: require('./tags'),
 	search: require('./search'),
 	users: require('./users'),
 	groups: require('./groups'),
 	accounts: require('./accounts'),
+	authentication: require('./authentication'),
 	api: require('./api'),
 	admin: require('./admin')
 };
@@ -74,14 +75,16 @@ Controllers.reset = function(req, res, next) {
 
 Controllers.login = function(req, res, next) {
 	var data = {},
-		loginStrategies = auth.getLoginStrategies(),
+		loginStrategies = require('../routes/authentication').getLoginStrategies(),
 		emailersPresent = plugins.hasListeners('action:email.send');
+
+	var registrationType = meta.config.registrationType || 'normal';
 
 	data.alternate_logins = loginStrategies.length > 0;
 	data.authentication = loginStrategies;
 	data.showResetLink = emailersPresent;
 	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1 || parseInt(req.query.local, 10) === 1;
-	data.allowRegistration = parseInt(meta.config.allowRegistration, 10) === 1;
+	data.allowRegistration = registrationType === 'normal' || registrationType === 'admin-approval';
 	data.allowLoginWith = '[[login:' + (meta.config.allowLoginWith || 'username-email') + ']]';
 	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:login]]'}]);
 	data.error = req.flash('error')[0];
@@ -90,38 +93,41 @@ Controllers.login = function(req, res, next) {
 };
 
 Controllers.register = function(req, res, next) {
-	if(meta.config.allowRegistration !== undefined && parseInt(meta.config.allowRegistration, 10) === 0) {
-		return res.redirect(nconf.get('relative_path') + '/403');
+	var registrationType = meta.config.registrationType || 'normal';
+
+	if (registrationType === 'disabled') {
+		return helpers.notFound(req, res);
 	}
 
-	var data = {},
-		loginStrategies = auth.getLoginStrategies();
+	async.waterfall([
+		function(next) {
+			if (registrationType === 'invite-only') {
+				user.verifyInvitation(req.query, next);
+			} else {
+				next();
+			}
+		},
+		function(next) {
+			var loginStrategies = require('../routes/authentication').getLoginStrategies();
+			var data = {
+				'register_window:spansize': loginStrategies.length ? 'col-md-6' : 'col-md-12',
+				'alternate_logins': !!loginStrategies.length
+			};
 
-	if (loginStrategies.length === 0) {
-		data = {
-			'register_window:spansize': 'col-md-12',
-			'alternate_logins': false
-		};
-	} else {
-		data = {
-			'register_window:spansize': 'col-md-6',
-			'alternate_logins': true
-		};
-	}
+			data.authentication = loginStrategies;
 
-	data.authentication = loginStrategies;
+			data.minimumUsernameLength = meta.config.minimumUsernameLength;
+			data.maximumUsernameLength = meta.config.maximumUsernameLength;
+			data.minimumPasswordLength = meta.config.minimumPasswordLength;
+			data.termsOfUse = meta.config.termsOfUse;
+			data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[register:register]]'}]);
+			data.regFormEntry = [];
+			data.error = req.flash('error')[0];
 
-	data.minimumUsernameLength = meta.config.minimumUsernameLength;
-	data.maximumUsernameLength = meta.config.maximumUsernameLength;
-	data.minimumPasswordLength = meta.config.minimumPasswordLength;
-	data.termsOfUse = meta.config.termsOfUse;
-	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[register:register]]'}]);
-	data.regFormEntry = [];
-	data.error = req.flash('error')[0];
-
-	plugins.fireHook('filter:register.build', {req: req, res: res, templateData: data}, function(err, data) {
-		if (err && global.env === 'development') {
-			winston.warn(JSON.stringify(err));
+			plugins.fireHook('filter:register.build', {req: req, res: res, templateData: data}, next);
+		}
+	], function(err, data) {
+		if (err) {
 			return next(err);
 		}
 		res.render('register', data.templateData);
@@ -129,6 +135,13 @@ Controllers.register = function(req, res, next) {
 };
 
 Controllers.compose = function(req, res, next) {
+	if (req.query.p && !res.locals.isAPI) {
+		if (req.query.p.startsWith(nconf.get('relative_path'))) {
+			req.query.p = req.query.p.replace(nconf.get('relative_path'), '');
+		}
+		return helpers.redirect(res, req.query.p);
+	}
+
 	res.render('', {});
 };
 

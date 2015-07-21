@@ -57,7 +57,7 @@ module.exports = function(Plugins) {
 		function display() {
 			process.stdout.write('\n');
 			winston.warn('[plugins/' + pluginData.id + '] This plugin may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing.');
-			winston.warn('[plugins/' + pluginData.id + '] In the event of an unresponsive NodeBB caused by this plugin, run ./nodebb reset plugin="' + pluginData.id + '".');
+			winston.warn('[plugins/' + pluginData.id + '] In the event of an unresponsive NodeBB caused by this plugin, run ./nodebb reset -p ' + pluginData.id + '.');
 			process.stdout.write('\n');
 		}
 
@@ -71,13 +71,8 @@ module.exports = function(Plugins) {
 	}
 
 	function registerHooks(pluginData, pluginPath, callback) {
-		function libraryNotFound() {
-			winston.warn('[plugins.reload] Library not found for plugin: ' + pluginData.id);
-			callback();
-		}
-
 		if (!pluginData.library) {
-			return libraryNotFound();
+			return callback();
 		}
 
 		var libraryPath = path.join(pluginPath, pluginData.library);
@@ -96,7 +91,8 @@ module.exports = function(Plugins) {
 			}
 		} catch(err) {
 			winston.error(err.stack);
-			libraryNotFound();
+			winston.warn('[plugins] Unable to parse library for: ' + pluginData.id);
+			callback();
 		}
 	}
 
@@ -163,7 +159,8 @@ module.exports = function(Plugins) {
 			return callback();
 		}
 
-		var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
+		var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages),
+			fallbackMap = {};
 
 		utils.walk(pathToFolder, function(err, languages) {
 			var arr = [];
@@ -187,13 +184,20 @@ module.exports = function(Plugins) {
 						route: pathToLang.replace(pathToFolder, '')
 					});
 
+					if (pluginData.defaultLang) {
+						fallbackMap[path.basename(pathToLang, '.json')] = path.join(pathToFolder, pluginData.defaultLang, path.basename(pathToLang));
+					}
+
 					next();
 				});
 			}, function(err) {
 				if (err) {
 					return callback(err);
 				}
+
 				Plugins.customLanguages = Plugins.customLanguages.concat(arr);
+				Plugins.customLanguageFallbacks = fallbackMap;
+
 				callback();
 			});
 		});

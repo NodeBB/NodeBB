@@ -39,14 +39,9 @@ var	async = require('async'),
 
 			// Fix relative paths in topic data
 			data.topics.topics = data.topics.topics.map(function(topicObj) {
-				if (topicObj.hasOwnProperty('teaser') && topicObj.teaser !== undefined) {
-					if (utils.isRelativeUrl(topicObj.teaser.user.picture)) {
-						topicObj.teaser.user.picture = nconf.get('url') + topicObj.teaser.user.picture;
-					}
-				} else {
-					if (utils.isRelativeUrl(topicObj.user.picture)) {
-						topicObj.user.picture = nconf.get('url') + topicObj.user.picture;
-					}
+				var user = topicObj.hasOwnProperty('teaser') && topicObj.teaser !== undefined ? topicObj.teaser.user : topicObj.user;
+				if (user && user.picture && utils.isRelativeUrl(user.picture)) {
+					user.picture = nconf.get('base_url') + user.picture;
 				}
 
 				return topicObj;
@@ -75,7 +70,7 @@ var	async = require('async'),
 	Digest.send = function(data, callback) {
 		var	now = new Date();
 
-		user.getMultipleUserFields(data.subscribers, ['uid', 'username', 'lastonline'], function(err, users) {
+		user.getMultipleUserFields(data.subscribers, ['uid', 'username', 'userslug', 'lastonline'], function(err, users) {
 			if (err) {
 				winston.error('[user/jobs] Could not send digests (' + data.interval + '): ' + err.message);
 				return callback(err);
@@ -104,6 +99,7 @@ var	async = require('async'),
 					emailer.send('digest', userObj.uid, {
 						subject: '[' + meta.config.title + '] Digest for ' + now.getFullYear()+ '/' + (now.getMonth()+1) + '/' + now.getDate(),
 						username: userObj.username,
+						userslug: userObj.userslug,
 						url: nconf.get('url'),
 						site_title: meta.config.title || meta.config.browserTitle || 'NodeBB',
 						notifications: notifications,
