@@ -284,10 +284,10 @@ function enableDefaultTheme(next) {
 			return next(err);
 		}
 
-		process.stdout.write('Enabling default theme: Lavender\n');
+		process.stdout.write('Enabling default theme: Persona\n');
 		meta.themes.set({
 			type: 'local',
-			id: 'nodebb-theme-lavender'
+			id: 'nodebb-theme-persona'
 		}, next);
 	});
 }
