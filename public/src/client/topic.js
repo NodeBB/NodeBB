@@ -208,10 +208,19 @@ define('forum/topic', [
 					'uid': app.user.uid,
 					'postIndex': postIndex
 				}
-				socket.emit('topics.bookmark', data);
+				socket.emit('topics.bookmark', data, function(err) {
+					if (err) {
+						console.warn('Error saving bookmark:', err);
+					}
+					ajaxify.data.bookmark = postIndex;
+				});
 			} else {
 				localStorage.setItem(bookmarkKey, postIndex);
 			}
+		}
+
+		// removes the bookmark alert when we get to / past the bookmark
+		if (!currentBookmark || parseInt(postIndex, 10) >= parseInt(currentBookmark, 10)) {
 			app.removeAlert('bookmark');
 		}
 
