@@ -20,7 +20,7 @@
     "user_posted_topic": "<strong>%1</strong> hat ein neues Thema erstellt: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> erwähnte dich in <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> folgt dir jetzt.",
-    "new_register": "<strong>%1</strong> sent a registration request.",
+    "new_register": "<strong>%1</strong> hat eine Registrationsanfrage geschickt.",
     "email-confirmed": "E-Mail bestätigt",
     "email-confirmed-message": "Vielen Dank für Ihre E-Mail-Validierung. Ihr Konto ist nun vollständig aktiviert.",
     "email-confirm-error-message": "Es gab ein Problem bei der Validierung Ihrer E-Mail-Adresse. Möglicherweise ist der Code ungültig oder abgelaufen.",

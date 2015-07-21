@@ -20,7 +20,7 @@
     "user_posted_topic": "<strong>%1</strong> heeft een nieuw onderwerp geplaatst: <strong>%2</strong>",
     "user_mentioned_you_in": "Onze naam is genoemd door <strong>%1</strong> in <strong>%2</strong>.",
     "user_started_following_you": "<strong>%1</strong> volgt ons nu.",
-    "new_register": "<strong>%1</strong> sent a registration request.",
+    "new_register": "<strong>%1</strong> heeft een registratie verzoek aangevraagd.",
     "email-confirmed": "E-mailadres bevestigd",
     "email-confirmed-message": "Bedankt voor het bevestigen van het e-mailadres. Deze account is nu volledig geactiveerd.",
     "email-confirm-error-message": "Er was een probleem met het bevestigen van dit e-mailadres. Misschien is de code niet goed ingevoerd of was de beschikbare tijd inmiddels verstreken.",
