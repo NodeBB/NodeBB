@@ -96,6 +96,11 @@ SocketTopics.postcount = function(socket, tid, callback) {
 	topics.getTopicField(tid, 'postcount', callback);
 };
 
+SocketTopics.bookmark = function(socket, data, callback) {
+	// data contains tid, uid, and postIndex
+	topics.setUserBookmark(data, callback);
+}
+
 SocketTopics.markAsRead = function(socket, tids, callback) {
 	if(!Array.isArray(tids) || !socket.uid) {
 		return callback(new Error('[[error:invalid-data]]'));
