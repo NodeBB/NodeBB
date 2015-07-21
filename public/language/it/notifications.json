@@ -20,7 +20,7 @@
     "user_posted_topic": "<strong>%1</strong> ha postato un nuovo Topic: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> ti ha menzionato in <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> ha iniziato a seguirti.",
-    "new_register": "<strong>%1</strong> sent a registration request.",
+    "new_register": "<strong>%1</strong> ha inviato una richiesta di registrazione.",
     "email-confirmed": "Email Confermata",
     "email-confirmed-message": "Grazie per aver validato la tua email. Il tuo account è ora completamente attivato.",
     "email-confirm-error-message": "C'è stato un problema nella validazione del tuo indirizzo email. Potrebbe essere il codice non valido o scaduto.",

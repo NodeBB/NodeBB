@@ -20,7 +20,7 @@
     "user_posted_topic": "<strong>%1</strong> یک جستار جدید ارسال کرده: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> در \n<strong>%1</strong> mentioned you in <strong>%2</strong> از شما نام برده",
     "user_started_following_you": "<strong>%1</strong> شروع به دنبال کردن شما کرده",
-    "new_register": "<strong>%1</strong> sent a registration request.",
+    "new_register": "<strong>%1</strong> یک درخواست ثبت نام ارسال کرده است",
     "email-confirmed": "رایانامه تایید شد",
     "email-confirmed-message": "بابت تایید ایمیلتان سپاس‌گزاریم. حساب کاربری شما اکنون به صورت کامل فعال شده است.",
     "email-confirm-error-message": "خطایی در تایید آدرس ایمیل شما پیش آمده است. ممکن است کد نا‌معتبر و یا منقضی شده باشد.",

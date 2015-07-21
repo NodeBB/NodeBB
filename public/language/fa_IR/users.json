@@ -9,13 +9,13 @@
     "filter-by": "غربال با",
     "online-only": "فقط آنلاین",
     "picture-only": "عکس فقط",
-    "invite": "Invite",
-    "invitation-email-sent": "An invitation email has been sent to %1",
-    "user_list": "User List",
-    "recent_topics": "Recent Topics",
-    "popular_topics": "Popular Topics",
-    "unread_topics": "Unread Topics",
-    "categories": "Categories",
-    "tags": "Tags",
-    "map": "Map"
+    "invite": "دعوت",
+    "invitation-email-sent": "رایانامه ی دعوتنامه به %1 ارسال شد",
+    "user_list": "فهرست کاربران",
+    "recent_topics": "جستارهای اخیر",
+    "popular_topics": "جستارهای محبوب",
+    "unread_topics": "جستارهای خوانده نشده",
+    "categories": "دسته ها",
+    "tags": "برچسب‌ها",
+    "map": "نقشه"
 }
