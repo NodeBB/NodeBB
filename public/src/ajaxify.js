@@ -276,14 +276,14 @@ $(document).ready(function() {
 					(RELATIVE_PATH.length > 0 ? this.pathname.indexOf(RELATIVE_PATH) === 0 : true))	// Subfolder installs need this additional check
 				) {
 					// Internal link
-					var url = this.pathname.replace(RELATIVE_PATH + '/', '');
+					var pathname = this.href.replace(rootUrl + RELATIVE_PATH + '/', '');
 
 					// Special handling for urls with hashes
 					if (window.location.pathname === this.pathname && this.hash.length) {
 						window.location.hash = this.hash;
 					} else {
 						window.location.hash = '';
-						if (ajaxify.go(url)) {
+						if (ajaxify.go(pathname)) {
 							e.preventDefault();
 						}
 					}
