@@ -51,6 +51,8 @@ middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_pa
 middleware.pageView = function(req, res, next) {
 	analytics.pageView(req.ip);
 
+	plugins.fireHook('action:middleware.pageView', {req: req});
+
 	if (req.user) {
 		user.updateLastOnlineTime(req.user.uid);
 		if (req.path.startsWith('/api/users') || req.path.startsWith('/users')) {
@@ -198,6 +200,7 @@ middleware.renderHeader = function(req, res, callback) {
 		description: meta.config.description || '',
 		'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 		'brand:logo': meta.config['brand:logo'] || '',
+		'brand:logo:url': meta.config['brand:logo:url'] || '',
 		'brand:logo:display': meta.config['brand:logo']?'':'hide',
 		allowRegistration: registrationType === 'normal' || registrationType === 'admin-approval',
 		searchEnabled: plugins.hasListeners('filter:search.query')

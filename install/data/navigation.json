@@ -1,5 +1,13 @@
 [
 	{
+		"route": "/categories",
+		"title": "\\[\\[global:header.categories\\]\\]",
+		"enabled": true,
+		"iconClass": "fa-list",
+		"textClass": "visible-xs-inline",
+		"text": "\\[\\[global:header.categories\\]\\]"
+	},
+	{
 		"id": "unread-count",
 		"route": "/unread",
 		"title": "\\[\\[global:header.unread\\]\\]",
@@ -59,7 +67,7 @@
 		"textClass": "visible-xs-inline",
 		"text": "\\[\\[global:header.admin\\]\\]",
 		"properties": {
-			"target": "_top",
+			"targetBlank": false,
 			"adminOnly": true
 		}
 	},

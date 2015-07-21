@@ -7,6 +7,8 @@
     "newbiePostDelayThreshold": 3,
     "minimumPostLength": 8,
     "maximumPostLength": 32767,
+    "minimumTagsPerTopic": 0,
+    "maximumTagsPerTopic": 5,
     "allowGuestSearching": 0,
     "allowTopicsThumbnail": 0,
     "registrationType": "normal",
@@ -24,5 +26,6 @@
     "maximumProfileImageSize": 256,
     "profileImageDimension": 128,
     "requireEmailConfirmation": 0,
-    "profile:allowProfileImageUploads": 1
+    "profile:allowProfileImageUploads": 1,
+    "teaserPost": "last"
 }

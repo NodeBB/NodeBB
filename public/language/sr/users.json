@@ -1,0 +1,21 @@
+{
+    "latest_users": "Последњи корисник",
+    "top_posters": "Највише порука",
+    "most_reputation": "Највећи углед",
+    "search": "Претрага",
+    "enter_username": "Унесите корисничко име за претрагу",
+    "load_more": "Учитај више",
+    "users-found-search-took": "Нађено је %1 корисника! Претрага је завршена за %2 секунде.",
+    "filter-by": "Филтрирај према",
+    "online-only": "Само корисници на вези",
+    "picture-only": "Само слике",
+    "invite": "Invite",
+    "invitation-email-sent": "An invitation email has been sent to %1",
+    "user_list": "User List",
+    "recent_topics": "Recent Topics",
+    "popular_topics": "Popular Topics",
+    "unread_topics": "Unread Topics",
+    "categories": "Categories",
+    "tags": "Tags",
+    "map": "Map"
+}

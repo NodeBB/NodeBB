@@ -1,0 +1,12 @@
+{
+    "new_topic_button": "Nova Tema",
+    "guest-login-post": "Пријавите се за слање порука",
+    "no_topics": "<strong>Ne postoji nijedna tema u ovoj kategoriji.</strong><br />Zasto ne bi postavio jednu?",
+    "browsing": "gleda",
+    "no_replies": "Jos uvek nema odgovora",
+    "share_this_category": "Podeli ovu kategoriju",
+    "watch": "Прати",
+    "ignore": "Игнориши",
+    "watch.message": "Сада пратите ажурирања ове категорије",
+    "ignore.message": "Сада игноришете ажурирања ове категорије"
+}

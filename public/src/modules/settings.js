@@ -471,7 +471,7 @@ define('settings', function () {
 				}
 
 				$(formEl).deserialize(values);
-				$(formEl).find('input[type="checkbox"]').trigger('change');
+				$(window).trigger('action:admin.settingsLoaded');
 
 				callback(null, values);
 			});

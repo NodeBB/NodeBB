@@ -20,6 +20,7 @@
     "user_posted_topic": "<strong>%1</strong> העלה נושא חדש: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> הזכיר אותך ב <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> התחיל לעקוב אחריך.",
+    "new_register": "<strong>%1</strong> sent a registration request.",
     "email-confirmed": "כתובת המייל אושרה",
     "email-confirmed-message": "תודה שאישרת את כתובת המייל שלך. החשבון שלך פעיל כעת.",
     "email-confirm-error-message": "אירעה שגיאה בעת אישור המייל שלך. ייתכן כי הקוד היה שגוי או פג תוקף.",

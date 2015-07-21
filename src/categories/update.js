@@ -18,11 +18,15 @@ module.exports = function(Categories) {
 
 				var modifiedFields = modified[cid];
 
-				if(modifiedFields.hasOwnProperty('name')){
+				if (modifiedFields.hasOwnProperty('name')) {
 					modifiedFields.slug = cid + '/' + utils.slugify(modifiedFields.name);
 				}
 
-				plugins.fireHook('filter:category.update', {category:modifiedFields}, function(err, categoryData) {
+				plugins.fireHook('filter:category.update', {category: modifiedFields}, function(err, categoryData) {
+					if (err) {
+						return next(err);
+					}
+
 					var category = categoryData.category;
 					var fields = Object.keys(category);
 					async.each(fields, function(key, next) {

@@ -177,8 +177,8 @@ define('admin/extend/widgets', function() {
 				var input = $(this),
 					value = data[input.attr('name')];
 
-				if (this.type === 'checkbox') {
-					input.attr('checked', !!value);
+				if (input.attr('type') === 'checkbox') {
+					input.prop('checked', !!value).trigger('change');
 				} else {
 					input.val(value);
 				}

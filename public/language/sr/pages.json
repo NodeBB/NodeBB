@@ -1,0 +1,21 @@
+{
+    "home": "Почетна",
+    "unread": "Непрочитане теме",
+    "popular": "Полуларне теме",
+    "recent": "Скорашње теме",
+    "users": "Регистровани корисници",
+    "notifications": "Обавештења",
+    "tags": "Ознаке",
+    "tag": "Теме са ознаком „%1“",
+    "user.edit": "Уређивање „%1“",
+    "user.following": "Особе које %1 прати",
+    "user.followers": "Особе које прате %1",
+    "user.posts": "Поруке од %1",
+    "user.topics": "Теме од %1",
+    "user.groups": "Групе корисника %1",
+    "user.favourites": "Омиљене поруке корисника $1",
+    "user.settings": "Корисничке поставке",
+    "user.watched": "Теме које %1 прати",
+    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "maintenance.messageIntro": "Additionally, the administrator has left this message:"
+}

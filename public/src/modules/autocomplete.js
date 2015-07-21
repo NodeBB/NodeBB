@@ -45,10 +45,7 @@ define('autocomplete', function() {
 				select: onselect,
 				source: function(request, response) {
 					socket.emit('groups.search', {
-						query: request.term,
-						options: {
-							filterHidden: true
-						}
+						query: request.term
 					}, function(err, results) {
 						if (err) {
 							return app.alertError(err.message);

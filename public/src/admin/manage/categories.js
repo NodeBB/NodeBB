@@ -1,7 +1,7 @@
 "use strict";
 /*global define, socket, app, bootbox, templates, ajaxify, RELATIVE_PATH, Sortable */
 
-define('admin/manage/categories', function() {
+define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-serializeobject.min'], function() {
 	var	Categories = {}, newCategoryId = -1, sortables;
 
 	Categories.init = function() {
@@ -13,7 +13,7 @@ define('admin/manage/categories', function() {
 			Categories.render(payload);
 		});
 
-		$('button[data-action="create"]').on('click', Categories.create);
+		$('button[data-action="create"]').on('click', Categories.throwCreateModal);
 
 		// Enable/Disable toggle events
 		$('.categories').on('click', 'button[data-action="toggle"]', function() {
@@ -26,31 +26,47 @@ define('admin/manage/categories', function() {
 		});
 	};
 
-	Categories.create = function() {
-		bootbox.prompt('Category Name', function(name) {
-			if (!name) {
-				return;
+	Categories.throwCreateModal = function() {
+		socket.emit('admin.categories.getNames', {}, function(err, categories) {
+			templates.parse('admin/partials/categories/create', {
+				categories: categories
+			}, function(html) {
+				var modal = bootbox.dialog({
+					title: 'Create a Category',
+					message: html,
+					buttons: {
+						save: {
+							label: 'Save',
+							className: 'btn-primary',
+							callback: function() {
+								var formData = modal.find('form').serializeObject();
+								formData.description = '';
+								formData.icon = 'fa-comments';
+
+								Categories.create(formData);
+							}
+						}
+					}
+				});
+			});
+		});
+	};
+
+	Categories.create = function(payload) {
+		socket.emit('admin.categories.create', payload, function(err, data) {
+			if(err) {
+				return app.alertError(err.message);
 			}
 
-			socket.emit('admin.categories.create', {
-				name: name,
-				description: '',
-				icon: 'fa-comments'
-			}, function(err, data) {
-				if(err) {
-					return app.alertError(err.message);
-				}
-
-				app.alert({
-					alert_id: 'category_created',
-					title: 'Created',
-					message: 'Category successfully created!',
-					type: 'success',
-					timeout: 2000
-				});
-
-				ajaxify.go('admin/manage/categories/' + data.cid);
+			app.alert({
+				alert_id: 'category_created',
+				title: 'Created',
+				message: 'Category successfully created!',
+				type: 'success',
+				timeout: 2000
 			});
+
+			ajaxify.go('admin/manage/categories/' + data.cid);
 		});
 	};
 

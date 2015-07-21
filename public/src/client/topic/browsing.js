@@ -15,7 +15,7 @@ define('forum/topic/browsing', ['translator'], function(translator) {
 				addUserIcon(data.users[i]);
 			}
 
-			updateUserCount(data.total);
+			updateUserCount(data.hidden);
 		}
 	};
 

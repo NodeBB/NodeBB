@@ -40,7 +40,6 @@ authenticationController.register = function(req, res, next) {
 			}
 		},
 		function(next) {
-			console.log(userData);
 			if (!userData.email) {
 				return next(new Error('[[error:invalid-email]]'));
 			}
@@ -255,13 +254,15 @@ authenticationController.localLogin = function(req, username, password, next) {
 
 authenticationController.logout = function(req, res, next) {
 	if (req.user && parseInt(req.user.uid, 10) > 0 && req.sessionID) {
-
+		var uid = parseInt(req.user.uid, 10);
 		require('../socket.io').logoutUser(req.user.uid);
 		db.sessionStore.destroy(req.sessionID, function(err) {
 			if (err) {
 				return next(err);
 			}
 			req.logout();
+
+			plugins.fireHook('action:user.loggedOut', {req: req, res: res, uid: uid});
 			res.status(200).send('');
 		});
 	} else {

@@ -49,8 +49,7 @@ function categoryRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/categories', middleware, [], controllers.categories.list);
 	setupPageRoute(app, '/popular/:term?', middleware, [], controllers.categories.popular);
 	setupPageRoute(app, '/recent', middleware, [], controllers.categories.recent);
-	setupPageRoute(app, '/unread', middleware, [middleware.authenticate], controllers.categories.unread);
-	app.get('/api/unread/total', middleware.authenticate, controllers.categories.unreadTotal);
+	setupPageRoute(app, '/unread', middleware, [middleware.authenticate], controllers.unread.unread);
 
 	setupPageRoute(app, '/category/:category_id/:slug/:topic_index', middleware, [], controllers.categories.get);
 	setupPageRoute(app, '/category/:category_id/:slug?', middleware, [], controllers.categories.get);
@@ -85,7 +84,9 @@ function userRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/users/sort-reputation', middleware, middlewares, controllers.users.getUsersSortedByReputation);
 	setupPageRoute(app, '/users/latest', middleware, middlewares, controllers.users.getUsersSortedByJoinDate);
 	setupPageRoute(app, '/users/search', middleware, middlewares, controllers.users.getUsersForSearch);
+	setupPageRoute(app, '/users/map', middleware, middlewares, controllers.users.getMap);
  }
+
 
 function groupRoutes(app, middleware, controllers) {
 	var middlewares = [middleware.checkGlobalPrivacySettings, middleware.exposeGroupName];

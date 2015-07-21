@@ -5,5 +5,6 @@
     "mark_as_read": "Pažymėti kaip perskaitytus",
     "selected": "Pasirinkti",
     "all": "Visi",
+    "all_categories": "All categories",
     "topics_marked_as_read.success": "Temos pažymėtos kaip perskaitytos."
 }

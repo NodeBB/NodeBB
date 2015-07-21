@@ -5,5 +5,6 @@
     "mark_as_read": "Marcar como leído",
     "selected": "Seleccionados",
     "all": "Todos",
+    "all_categories": "Todos los foros",
     "topics_marked_as_read.success": "¡Temas marcados como leídos!"
 }

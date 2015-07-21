@@ -18,6 +18,7 @@ var Controllers = {
 	posts: require('./posts'),
 	topics: require('./topics'),
 	categories: require('./categories'),
+	unread: require('./unread'),
 	tags: require('./tags'),
 	search: require('./search'),
 	users: require('./users'),

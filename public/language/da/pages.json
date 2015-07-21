@@ -1,0 +1,21 @@
+{
+    "home": "Forside",
+    "unread": "Ulæste tråde",
+    "popular": "Populære tråde",
+    "recent": "Seneste tråde",
+    "users": "Registrerede brugere",
+    "notifications": "Notifikationer",
+    "tags": "Tags",
+    "tag": "Tråde tagget under \"%1\"",
+    "user.edit": "Redigere \"%1\"",
+    "user.following": "Folk som %1 følger",
+    "user.followers": "Folk der følger %1",
+    "user.posts": "Indlæg skrevet af %1",
+    "user.topics": "Tråde oprettet af %1",
+    "user.groups": "%1s grupper",
+    "user.favourites": "%1s favorit indlæg",
+    "user.settings": "Brugerindstillinger",
+    "user.watched": "Tråde overvåget af %1",
+    "maintenance.text": "%1 er under vedligeholdelse. Kom venligst tilbage senere.",
+    "maintenance.messageIntro": "Administratoren har yderligere vedlagt denne besked:"
+}

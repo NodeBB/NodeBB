@@ -58,6 +58,9 @@
 	"too-many-posts-newbie": "As a new user, you can only post once every %1 second(s) until you have earned %2 reputation - please wait before posting again",
 	"tag-too-short": "Please enter a longer tag. Tags should contain at least %1 character(s)",
 	"tag-too-long": "Please enter a shorter tag. Tags can't be longer than %1 character(s)",
+	"not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",
+	"too-many-tags": "Too many tags. Topics can't have more than %1 tag(s)",
+
 	"file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
 
 	"cant-vote-self-post": "You cannot vote for your own post",
@@ -76,6 +79,8 @@
 	"group-name-change-not-allowed": "Group name change not allowed",
 	"group-already-member": "You are already part of this group",
 	"group-needs-owner": "This group requires at least one owner",
+	"group-already-invited": "This user has already been invited",
+	"group-already-requested": "Your membership request has already been submitted",
 
 	"post-already-deleted": "This post has already been deleted",
 	"post-already-restored": "This post has already been restored",

@@ -31,6 +31,17 @@ $(document).ready(function() {
 	ajaxify.currentPage = null;
 
 	ajaxify.go = function (url, callback, quiet, search) {
+		if (!socket.connected) {
+			if (ajaxify.reconnectAction) {
+				$(window).off('action:reconnected', ajaxify.reconnectAction);
+			}
+			ajaxify.reconnectAction = function(e) {
+				ajaxify.go(url, callback, quiet, search);
+				$(window).off(e);
+			}
+			$(window).on('action:reconnected', ajaxify.reconnectAction);
+		}
+
 		if (ajaxify.handleRedirects(url)) {
 			return true;
 		}
@@ -69,7 +80,7 @@ $(document).ready(function() {
 		var isAdminRoute = url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0;
 		var uploadsOrApi = url.startsWith('uploads') || url.startsWith('api');
 		if (isAdminRoute || uploadsOrApi) {
-			window.open(RELATIVE_PATH + '/' + url, '_blank');
+			window.open(RELATIVE_PATH + '/' + url, '_top');
 			return true;
 		}
 		return false;
@@ -103,8 +114,11 @@ $(document).ready(function() {
 
 		if (data) {
 			var status = parseInt(data.status, 10);
+			if (status === 403 || status === 404 || status === 500 || status === 502) {
+				if (status === 502) {
+					status = 500;
+				}
 
-			if (status === 403 || status === 404 || status === 500) {
 				$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 				return renderTemplate(url, status.toString(), data.responseJSON, (new Date()).getTime(), callback);
 			} else if (status === 401) {
@@ -174,7 +188,7 @@ $(document).ready(function() {
 			e.preventDefault();
 		}
 
-		ajaxify.go(ajaxify.currentPage);
+		ajaxify.go(ajaxify.currentPage, null, true);
 	};
 
 	ajaxify.loadScript = function(tpl_url, callback) {
@@ -243,19 +257,15 @@ $(document).ready(function() {
 	function ajaxifyAnchors() {
 		templates.registerLoader(ajaxify.loadTemplate);
 
-		if (!window.history || !window.history.pushState) {
-			return; // no ajaxification for old browsers
-		}
-
 		function hrefEmpty(href) {
-			return href === undefined || href === '' || href === 'javascript:;' || href === window.location.href + "#" || href.slice(0, 1) === "#";
+			return href === undefined || href === '' || href === 'javascript:;';
 		}
 
 		// Enhancing all anchors to ajaxify...
 		$(document.body).on('click', 'a', function (e) {
-			if (this.target !== '') {
+			if (this.target !== '' || (this.protocol !== 'http:' && this.protocol !== 'https:')) {
 				return;
-			} else if (hrefEmpty(this.href) || this.protocol === 'javascript:' || $(this).attr('data-ajaxify') === 'false') {
+			} else if (hrefEmpty(this.href) || this.protocol === 'javascript:' || $(this).attr('data-ajaxify') === 'false' || $(this).attr('href') === '#') {
 				return e.preventDefault();
 			}
 
@@ -266,15 +276,13 @@ $(document).ready(function() {
 					(RELATIVE_PATH.length > 0 ? this.pathname.indexOf(RELATIVE_PATH) === 0 : true))	// Subfolder installs need this additional check
 				) {
 					// Internal link
-					var url = this.href.replace(rootUrl + '/', '');
+					var url = this.pathname.replace(RELATIVE_PATH + '/', '');
 
-					if(window.location.pathname === this.pathname && this.hash) {
-						if (this.hash !== window.location.hash) {
-							window.location.hash = this.hash;
-						}
-
-						e.preventDefault();
+					// Special handling for urls with hashes
+					if (window.location.pathname === this.pathname && this.hash.length) {
+						window.location.hash = this.hash;
 					} else {
+						window.location.hash = '';
 						if (ajaxify.go(url)) {
 							e.preventDefault();
 						}
@@ -293,7 +301,11 @@ $(document).ready(function() {
 		});
 	}
 
-	ajaxifyAnchors();
+	if (window.history && window.history.pushState) {
+		// Progressive Enhancement, ajaxify available only to modern browsers
+		ajaxifyAnchors();
+	}
+
 	app.load();
 	templates.cache['500'] = $('.tpl-500').html();
 

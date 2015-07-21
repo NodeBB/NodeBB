@@ -14,5 +14,6 @@
     "register_now_button": "قم بالتسجيل الآن",
     "alternative_registration": "طريقة تسجيل بديلة",
     "terms_of_use": "شروط الاستخدام",
-    "agree_to_terms_of_use": "أوافق على شروط الاستخدام"
+    "agree_to_terms_of_use": "أوافق على شروط الاستخدام",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
 }

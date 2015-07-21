@@ -14,5 +14,6 @@
     "register_now_button": "現在註冊",
     "alternative_registration": "其他註冊方式",
     "terms_of_use": "使用條款",
-    "agree_to_terms_of_use": "同意遵守使用條款"
+    "agree_to_terms_of_use": "同意遵守使用條款",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
 }

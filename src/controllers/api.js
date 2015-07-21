@@ -55,7 +55,8 @@ apiController.getConfig = function(req, res, next) {
 	config.disableChat = parseInt(meta.config.disableChat, 10) === 1;
 	config.maxReconnectionAttempts = meta.config.maxReconnectionAttempts || 5;
 	config.reconnectionDelay = meta.config.reconnectionDelay || 1500;
-	config.tagsPerTopic = meta.config.tagsPerTopic || 5;
+	config.minimumTagsPerTopic = meta.config.minimumTagsPerTopic || 0;
+	config.maximumTagsPerTopic = meta.config.maximumTagsPerTopic || 5;
 	config.minimumTagLength = meta.config.minimumTagLength || 3;
 	config.maximumTagLength = meta.config.maximumTagLength || 15;
 	config.topicsPerPage = meta.config.topicsPerPage || 20;

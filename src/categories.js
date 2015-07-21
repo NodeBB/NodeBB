@@ -198,6 +198,15 @@ var async = require('async'),
 		});
 	};
 
+	Categories.getAllCategoryFields = function(fields, callback) {
+		async.waterfall([
+			async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
+			function(cids, next) {
+				Categories.getMultipleCategoryFields(cids, fields, next);
+			}
+		], callback);
+	};
+
 	Categories.getCategoryFields = function(cid, fields, callback) {
 		db.getObjectFields('category:' + cid, fields, callback);
 	};

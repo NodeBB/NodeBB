@@ -1,0 +1,19 @@
+{
+    "title": "Недавно",
+    "day": "Дан",
+    "week": "Седмица",
+    "month": "Месец",
+    "year": "Година",
+    "alltime": "Одувек",
+    "no_recent_topics": "Нема скорашњих тема.",
+    "no_popular_topics": "Нема популарних тема.",
+    "there-is-a-new-topic": "Доступна је нова тема.",
+    "there-is-a-new-topic-and-a-new-post": "Доступна је нова тема у нова порука.",
+    "there-is-a-new-topic-and-new-posts": "Доступна је нова тема и %1 нових порука.",
+    "there-are-new-topics": "Доступне су %1  нове теме.",
+    "there-are-new-topics-and-a-new-post": "Доступне су %1 нове теме и нова порука.",
+    "there-are-new-topics-and-new-posts": "Доступне су %1 нове теме и %2 нових порука.",
+    "there-is-a-new-post": "Доступна је нова порука.",
+    "there-are-new-posts": "Доступне су %1 нове поруке.",
+    "click-here-to-reload": "Кликните овде за поновно учитавање."
+}

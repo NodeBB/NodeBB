@@ -138,6 +138,16 @@ var async = require('async'),
 					}
 				], next);
 			},
+			invited: function (next) {
+				async.waterfall([
+					function(next) {
+						db.getSetMembers('group:' + groupName + ':invited', next);
+					},
+					function(uids, next) {
+						user.getUsersData(uids, next);
+					}
+				], next);
+			},
 			isMember: async.apply(Groups.isMember, options.uid, groupName),
 			isPending: async.apply(Groups.isPending, options.uid, groupName),
 			isInvited: async.apply(Groups.isInvited, options.uid, groupName),
@@ -170,6 +180,7 @@ var async = require('async'),
 				results.base.members = results.members;
 				results.base.membersNextStart = stop + 1;
 				results.base.pending = results.pending.filter(Boolean);
+				results.base.invited = results.invited.filter(Boolean);
 				results.base.deleted = !!parseInt(results.base.deleted, 10);
 				results.base.hidden = !!parseInt(results.base.hidden, 10);
 				results.base.system = !!parseInt(results.base.system, 10);
@@ -361,13 +372,26 @@ var async = require('async'),
 			return callback(null, []);
 		}
 		var keys = groupNames.map(function(groupName) {
-			return 'group:' + groupName;
-		});
+				return 'group:' + groupName;
+			}),
+			ephemeralIdx = groupNames.reduce(function(memo, cur, idx) {
+				if (ephemeralGroups.indexOf(cur) !== -1) {
+					memo.push(idx);
+				}
+				return memo;
+			}, []);
 
 		db.getObjects(keys, function(err, groupData) {
 			if (err) {
 				return callback(err);
 			}
+
+			if (ephemeralIdx.length) {
+				ephemeralIdx.forEach(function(idx) {
+					groupData[idx] = internals.getEphemeralGroup(groupNames[idx]);
+				});
+			}
+
 			groupData.forEach(function(group) {
 				if (group) {
 					group.userTitle = validator.escape(group.userTitle) || validator.escape(group.name);

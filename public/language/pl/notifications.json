@@ -20,6 +20,7 @@
     "user_posted_topic": "<strong>%1</strong> wysłał nowy temat: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> wspomniał cię w <strong>%2</strong>",
     "user_started_following_you": "<string>%1</strong> zaczął Cię śledzić.",
+    "new_register": "<strong>%1</strong> sent a registration request.",
     "email-confirmed": "E-mail potwierdzony",
     "email-confirmed-message": "Dziękujemy za potwierdzenie maila. Twoje konto zostało aktywowane.",
     "email-confirm-error-message": "Wystąpił problem przy aktywacji, - kod jest błędny lub przestarzały",

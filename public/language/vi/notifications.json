@@ -20,6 +20,7 @@
     "user_posted_topic": "<strong>%1</strong> đã gởi chủ đề mới ở <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> nhắc đến bạn trong <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> đã theo dõi bạn.",
+    "new_register": "<strong>%1</strong> sent a registration request.",
     "email-confirmed": "Đã xác nhận email",
     "email-confirmed-message": "Cảm ơn bạn đã xác nhận địa chỉ email của bạn. Tài khoản của bạn đã được kích hoạt đầy đủ.",
     "email-confirm-error-message": "Đã có lỗi khi xác nhận địa chỉ email. Có thể đoạn mã không đúng hoặc đã hết hạn.",
