@@ -116,7 +116,8 @@ define('forum/topic', [
 	};
 
 	function handleBookmark(tid) {
-		var bookmark = localStorage.getItem('topic:' + tid + ':bookmark');
+		// use the user's bookmark data if available, fallback to local if available
+		var bookmark = ajaxify.data.bookmark || localStorage.getItem('topic:' + tid + ':bookmark');
 		var postIndex = getPostIndex();
 
 		if (postIndex && window.location.search.indexOf('page=') === -1) {
@@ -198,10 +199,9 @@ define('forum/topic', [
 		}
 
 		var bookmarkKey = 'topic:' + ajaxify.data.tid + ':bookmark';
-		var currentBookmark = localStorage.getItem(bookmarkKey);
+		var currentBookmark = ajaxify.data.bookmark || localStorage.getItem(bookmarkKey);
 
 		if (!currentBookmark || parseInt(postIndex, 10) > parseInt(currentBookmark, 10)) {
-			localStorage.setItem(bookmarkKey, postIndex);
 			if (app.user.uid) {
 				var data = {
 					'tid':  ajaxify.data.tid,
@@ -209,6 +209,8 @@ define('forum/topic', [
 					'postIndex': postIndex
 				}
 				socket.emit('topics.bookmark', data);
+			} else {
+				localStorage.setItem(bookmarkKey, postIndex);
 			}
 			app.removeAlert('bookmark');
 		}
