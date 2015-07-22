@@ -347,6 +347,7 @@ middleware.processRender = function(req, res, next) {
 					}
 					str = template + str;
 					var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
+					language = req.query.lang || language;
 					translator.translate(str, language, function(translated) {
 						fn(err, translated);
 					});
