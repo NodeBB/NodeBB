@@ -50,11 +50,11 @@ define('admin/manage/category', [
 
 		function enableColorPicker(idx, inputEl) {
 			var $inputEl = $(inputEl),
-				previewEl = $inputEl.parents('[data-cid]').find('.preview-box');
+				previewEl = $inputEl.parents('[data-cid]').find('.category-preview');
 
 			colorpicker.enable($inputEl, function(hsb, hex) {
 				if ($inputEl.attr('data-name') === 'bgColor') {
-					previewEl.css('background', '#' + hex);
+					previewEl.css('background-color', '#' + hex);
 				} else if ($inputEl.attr('data-name') === 'color') {
 					previewEl.css('color', '#' + hex);
 				}
@@ -81,6 +81,11 @@ define('admin/manage/category', [
 		// If any inputs have changed, prepare it for saving
 		$('form.category input, form.category select').on('change', function(ev) {
 			modified(ev.target);
+		});
+
+		// Update preview image size on change
+		$('[data-name="imageClass"]').on('change', function(ev) {
+			$('.category-preview').css('background-size', $(this).val());
 		});
 
 		// Colour Picker
@@ -113,8 +118,7 @@ define('admin/manage/category', [
 			uploader.open(RELATIVE_PATH + '/api/admin/category/uploadpicture', { cid: cid }, 0, function(imageUrlOnServer) {
 				inputEl.val(imageUrlOnServer);
 				var previewBox = inputEl.parent().parent().siblings('.category-preview');
-				previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')')
-					.css('background-size', 'cover');
+				previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')');
 				modified(inputEl[0]);
 			});
 		});
