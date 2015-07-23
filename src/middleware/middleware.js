@@ -168,6 +168,7 @@ middleware.isAdmin = function(req, res, next) {
 
 middleware.buildHeader = function(req, res, next) {
 	res.locals.renderHeader = true;
+	res.locals.isAPI = false;
 
 	middleware.applyCSRF(req, res, function() {
 		async.parallel({
