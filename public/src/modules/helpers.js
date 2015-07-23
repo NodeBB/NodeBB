@@ -116,7 +116,11 @@
 	// Groups helpers
 	helpers.membershipBtn = function(groupObj) {
 		if (groupObj.isMember) {
-			return '<button class="btn btn-danger" data-action="leave" data-group="' + groupObj.displayName + '"><i class="fa fa-times"></i> Leave Group</button>';
+			if (groupObj.name==='administrators') {
+                		return '';
+            		} else {
+				return '<button class="btn btn-danger" data-action="leave" data-group="' + groupObj.displayName + '"><i class="fa fa-times"></i> Leave Group</button>';
+            		}
 		} else {
 			if (groupObj.isPending) {
 				return '<button class="btn btn-warning disabled"><i class="fa fa-clock-o"></i> Invitation Pending</button>';
