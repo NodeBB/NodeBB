@@ -11,7 +11,7 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 		var term = data.term;
 
 		// Detect if a tid was specified
-		var topicSearch = term.match(/in:topic-([\d]+)/);
+		var topicSearch = term.match(/^in:topic-([\d]+) /);
 
 		if (!topicSearch) {
 			term = term.replace(/^[ ?#]*/, '');
@@ -28,7 +28,9 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 			var cleanedTerm = term.replace(topicSearch[0], ''),
 				tid = topicSearch[1];
 
-			Search.queryTopic(tid, cleanedTerm, callback);
+			if (cleanedTerm.length > 0) {
+				Search.queryTopic(tid, cleanedTerm, callback);
+			}
 		}
 	};
 
