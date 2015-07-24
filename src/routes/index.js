@@ -101,6 +101,18 @@ module.exports = function(app, middleware) {
 		pluginRouter = express.Router(),
 		authRouter = express.Router(),
 		relativePath = nconf.get('relative_path');
+		
+	app.use(function(req, res, next) {
+        	if (plugins.hasListeners('action:request.earlyProcessing')) {
+            		return plugins.fireHook('action:request.earlyProcessing', {
+                		req: req,
+                		res: res,
+                		next: next
+            		});
+        	} else {
+            		next();
+        	}
+    	});
 
 	pluginRouter.render = function() {
 		app.render.apply(app, arguments);
