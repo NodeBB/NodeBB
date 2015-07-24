@@ -168,6 +168,7 @@ middleware.isAdmin = function(req, res, next) {
 
 middleware.buildHeader = function(req, res, next) {
 	res.locals.renderHeader = true;
+	res.locals.isAPI = false;
 
 	middleware.applyCSRF(req, res, function() {
 		async.parallel({
@@ -347,6 +348,7 @@ middleware.processRender = function(req, res, next) {
 					}
 					str = template + str;
 					var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
+					language = req.query.lang || language;
 					translator.translate(str, language, function(translated) {
 						fn(err, translated);
 					});
