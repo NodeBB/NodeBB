@@ -57,6 +57,11 @@ module.exports = function(Topics) {
 				var tidToPost = {};
 
 				async.each(postData, function(post, next) {
+					// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
+					if (!users.hasOwnProperty(post.uid)) {
+						post.uid = 0;
+					}
+
 					post.user = users[post.uid];
 					post.timestamp = utils.toISOString(post.timestamp);
 					tidToPost[post.tid] = post;

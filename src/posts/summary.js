@@ -72,6 +72,11 @@ module.exports = function(Posts) {
 				});
 
 				async.map(posts, function(post, next) {
+					// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
+					if (!results.users.hasOwnProperty(post.uid)) {
+						post.uid = 0;
+					}
+
 					post.user = results.users[post.uid];
 					post.topic = results.topics[post.tid];
 					post.category = results.categories[post.topic.cid];
