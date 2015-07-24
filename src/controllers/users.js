@@ -175,7 +175,7 @@ usersController.getMap = function(req, res, next) {
 		});
 	}, function(err, data) {
 		data.sort(function(a, b) {
-			return b.total - a.total;
+			return b.users.length - a.users.length;
 		});
 
 		data.forEach(function(room) {
