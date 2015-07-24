@@ -9,7 +9,8 @@
 // Once they are closed switch to .clients() and async calls
 
 
-var pubsub = require('../pubsub');
+var pubsub = require('../pubsub'),
+	async = require('async');
 
 var rooms = {};
 
@@ -30,6 +31,29 @@ rooms.leaveAll = function(socket, roomsToLeave) {
 	roomsToLeave.forEach(function(room) {
 		rooms.leave(socket, room);
 	});
+};
+
+rooms.broadcast = function(socket, room, msg, data, callback) {
+	var io = require('./'),
+		socketIds = rooms.clients(room);
+
+	callback = callback || function() {};
+
+	async.map(socketIds, function(id, next) {
+		var timeout;
+		if (socket.id === id) {
+			return setImmediate(next, null, []);
+		}
+
+		timeout = setTimeout(function() {
+			next(null, []);
+		}, 500);
+
+		io.server.sockets.connected[id].emit(msg, data || {}, function(chats) {
+			clearTimeout(timeout);
+			next(null, chats);
+		});
+	}, callback);
 };
 
 pubsub.on('socket:join', onSocketJoin);

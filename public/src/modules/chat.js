@@ -11,6 +11,9 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 			chatsListEl = $('#chat-list'),
 			dropdownEl;
 
+		// Sync open chats between all user socket sessions
+		module.sync();
+
 		chatsToggleEl.on('click', function() {
 			if (chatsToggleEl.parent().hasClass('open')) {
 				return;
@@ -92,7 +95,10 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					});
 				}
 			} else {
-				module.createModal(username, data.withUid, function(modal) {
+				module.createModal({
+					username: username,
+					touid: data.withUid
+				}, function(modal) {
 					module.toggleNew(modal.attr('UUID'), true);
 					if (!isSelf) {
 						app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
@@ -124,6 +130,42 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		socket.on('event:user_status_change', function(data) {
 			var modal = module.getModal(data.uid);
 			app.updateUserStatus(modal.find('[component="user/status"]'), data.status);
+		});
+
+		socket.on('query:chats.sync', function(data, callback) {
+			var chats = Array.prototype.map.call(taskbar.get('chat'), function(chatObj) {
+					return {
+						username: chatObj.options.title,
+						uid: chatObj.options.touid,
+						new: chatObj.element.hasClass('new')
+					}
+				});
+
+			callback(chats);
+		});
+
+		socket.on('event:chats.open', function(data) {
+			data.silent = true;
+			module.createModal(data);
+		});
+
+		socket.on('event:chats.close', function(uid) {
+			module.close(module.getModal(uid), true);
+		});
+
+		socket.on('event:chats.toggleNew', function(data) {
+			var uuid = module.getModal(data.uid).attr('UUID');
+			module.toggleNew(uuid, data.state, true);
+		});
+
+		$(window).on('action:taskbar.toggleNew', function(ev, uuid) {
+			var modal = $('.chat-modal[uuid="' + uuid + '"]'),
+				touid = modal.attr('touid');
+
+			socket.emit('modules.chats.toggleNew', {
+				uid: touid,
+				state: false
+			});
 		});
 	};
 
@@ -163,7 +205,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		});
 	}
 
-	module.createModal = function(username, touid, callback) {
+	module.createModal = function(data, callback) {
 		templates.parse('chat', {}, function(chatTpl) {
 			translator.translate(chatTpl, function (chatTpl) {
 
@@ -171,8 +213,8 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					uuid = utils.generateUUID(),
 					dragged = false;
 
-				chatModal.attr('id', 'chat-modal-' + touid);
-				chatModal.attr('touid', touid);
+				chatModal.attr('id', 'chat-modal-' + data.touid);
+				chatModal.attr('touid', data.touid);
 				chatModal.attr('intervalId', 0);
 				chatModal.attr('UUID', uuid);
 				chatModal.css('position', 'fixed');
@@ -206,7 +248,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					});
 				});
 
-				chatModal.find('#chat-with-name').html(username);
+				chatModal.find('#chat-with-name').html(data.username);
 
 				chatModal.find('#chat-close-btn').on('click', function() {
 					module.close(chatModal);
@@ -218,7 +260,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 						components.get('chat/input').val(text);
 					});
 					
-					ajaxify.go('chats/' + utils.slugify(username));
+					ajaxify.go('chats/' + utils.slugify(data.username));
 					module.close(chatModal);
 				}
 
@@ -243,7 +285,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 				chatModal.on('mousemove keypress click', function() {
 					if (newMessage) {
-						socket.emit('modules.chats.markRead', touid);
+						socket.emit('modules.chats.markRead', data.touid);
 						newMessage = false;
 					}
 				});
@@ -262,25 +304,31 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					checkStatus(chatModal);
 				});
 
-				module.canMessage(touid, function(err) {
+				module.canMessage(data.touid, function(err) {
 					if (err) {
 						// Disable the text input
 						chatModal.find('input[type="text"]').attr('disabled', true);
 					}
 				});
 
-				chatModal.find('.user-typing .text').translateText('[[modules:chat.user_typing, ' + username + ']]');
+				chatModal.find('.user-typing .text').translateText('[[modules:chat.user_typing, ' + data.username + ']]');
 
 				taskbar.push('chat', chatModal.attr('UUID'), {
-					title: username,
-					touid: touid,
+					title: data.username,
+					touid: data.touid,
 					icon: 'fa-comment',
 					state: ''
 				});
 
+				if (!data.silent) {
+					socket.emit('modules.chats.open', data);
+				}
+
 				$(window).trigger('action:chat.loaded', chatModal);
 
-				callback(chatModal);
+				if (typeof callback === 'function') {
+					callback(chatModal);
+				}
 			});
 		});
 	};
@@ -289,13 +337,17 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		chatModal.find('#chat-message-input').focus();
 	};
 
-	module.close = function(chatModal) {
+	module.close = function(chatModal, silent) {
 		clearInterval(chatModal.attr('intervalId'));
 		chatModal.attr('intervalId', 0);
 		chatModal.remove();
 		chatModal.data('modal', null);
 		taskbar.discard('chat', chatModal.attr('UUID'));
 		Chats.notifyTyping(chatModal.attr('touid'), false);
+
+		if (!silent) {
+			socket.emit('modules.chats.close', chatModal.attr('touid'));
+		}
 
 		if (chatModal.attr('data-mobile')) {
 			module.disableMobileBehaviour(chatModal);
@@ -422,12 +474,29 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		});
 	};
 
-	module.toggleNew = function(uuid, state) {
-		taskbar.toggleNew(uuid, state);
-	};
+	module.toggleNew = taskbar.toggleNew;
 
 	module.canMessage = function(toUid, callback) {
 		socket.emit('modules.chats.canMessage', toUid, callback);
+	};
+
+	module.sync = function() {
+		socket.emit('modules.chats.sync', function(err, users) {
+			for(var x=0,numUsers=users.length,user;x<numUsers;x++) {
+				user = users[x];
+				if (!module.modalExists(user.uid)) {
+					module.createModal({
+						username: user.username,
+						touid: user.uid,
+						silent: true
+					}, function(modal) {
+						if (user.new) {
+							module.toggleNew(modal.attr('UUID'), true, true);
+						}
+					});
+				}
+			}
+		});
 	};
 
 	return module;

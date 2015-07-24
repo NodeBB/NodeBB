@@ -293,7 +293,10 @@ app.cacheBuster = null;
 			}
 
 			if (!chat.modalExists(touid)) {
-				chat.createModal(username, touid, loadAndCenter);
+				chat.createModal({
+					username: username,
+					touid: touid
+				}, loadAndCenter);
 			} else {
 				loadAndCenter(chat.getModal(touid));
 			}
