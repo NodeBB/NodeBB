@@ -3,6 +3,7 @@
 var meta = require('../meta'),
 	db = require('../database'),
 	auth = require('../routes/authentication'),
+	plugins = require('../plugins'),
 
 	path = require('path'),
 	fs = require('fs'),
@@ -80,6 +81,18 @@ module.exports = function(app) {
 
 	app.use(middleware.processRender);
 	auth.initialize(app, middleware);
+	
+	app.use(function(req, res, next) {
+        	if (plugins.hasListeners('action:request.earlyProcessing')) {
+            		return plugins.fireHook('action:request.earlyProcessing', {
+                		req: req,
+                		res: res,
+                		next: next
+            		});
+        	} else {
+            		next();
+        	}
+    	});
 
 	return middleware;
 };
