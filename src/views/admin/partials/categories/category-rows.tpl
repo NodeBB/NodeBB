@@ -9,7 +9,7 @@
                     </div>
                     <div class="information">
                         <h5 class="header">{categories.name}</h5>
-                        <p class="description">{categories.description}</p>
+                        <p class="description">{categories.descriptionParsed}</p>
                     </div>
                 </div>
             </div>
