@@ -38,6 +38,7 @@
     "details.private_help": "Gruba katılmak için eğer etkinse grup sahibini onayı gerekir, ",
     "details.hidden": "Gizli",
     "details.hidden_help": "Bu grup eğer etkinse grup listelerinde bulunmaz, ve kullanıcılar bizzat davet eder",
+    "details.delete_group": "Delete Group",
     "event.updated": "Grup detayları güncellenmiştir",
     "event.deleted": "\"%1\" grubu silinmiş",
     "membership.accept-invitation": "Accept Invitation",

@@ -38,6 +38,7 @@
     "details.private_help": "Se abilitato, l'ingresso ai gruppi richiede l'approvazione di uno dei proprietari",
     "details.hidden": "Nascosto",
     "details.hidden_help": "Se abilitato, questo gruppo non sarà visibile nella lista dei gruppi e gli utenti dovranno essere invitati manualmente",
+    "details.delete_group": "Delete Group",
     "event.updated": "I dettagli del Gruppo sono stati aggiornati",
     "event.deleted": "Il gruppo \"%1\" è stato eliminato",
     "membership.accept-invitation": "Accept Invitation",

@@ -38,6 +38,7 @@
     "details.private_help": "Wenn aktiviert, setzt ein Gruppenbeitritt die Zustimmung eines Gruppenbesitzers voraus",
     "details.hidden": "Versteckt",
     "details.hidden_help": "Wenn aktiviert, wird diese Gruppe in der Gruppenliste nicht zu finden sein, und Benutzer werden manuell eingeladen werden müssen.",
+    "details.delete_group": "Delete Group",
     "event.updated": "Gruppendetails wurden aktualisiert",
     "event.deleted": "Die Gruppe \"%1\" wurde gelöscht.",
     "membership.accept-invitation": "Accept Invitation",
