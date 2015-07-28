@@ -11,11 +11,11 @@
     "picture-only": "صورة فقط",
     "invite": "Invite",
     "invitation-email-sent": "An invitation email has been sent to %1",
-    "user_list": "User List",
-    "recent_topics": "Recent Topics",
+    "user_list": "قائمة اﻷعضاء",
+    "recent_topics": "أحدث المواضيع",
     "popular_topics": "Popular Topics",
-    "unread_topics": "Unread Topics",
-    "categories": "Categories",
-    "tags": "Tags",
+    "unread_topics": "المواضيع الغير مقروءة",
+    "categories": "الفئات",
+    "tags": "الكلمات الدلالية",
     "map": "Map"
 }

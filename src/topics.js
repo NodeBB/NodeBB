@@ -2,9 +2,10 @@
 
 var async = require('async'),
 	validator = require('validator'),
-
 	_ = require('underscore'),
+
 	db = require('./database'),
+	meta = require('./meta'),
 	posts = require('./posts'),
 	utils = require('../public/src/utils'),
 	plugins = require('./plugins'),
@@ -195,7 +196,7 @@ var async = require('async'),
 						topics[i].locked = parseInt(topics[i].locked, 10) === 1;
 						topics[i].deleted = parseInt(topics[i].deleted, 10) === 1;
 						topics[i].unread = !results.hasRead[i];
-						topics[i].unreplied = parseInt(topics[i].postcount, 10) <= 1;
+						topics[i].unreplied = parseInt(topics[i].postcount, 10) <= 1 && meta.config.teaserPost !== 'first';
 					}
 				}
 

@@ -30,11 +30,11 @@ unreadController.unread = function(req, res, next) {
 		},
 		function(_results, next) {
 			results = _results;
-			categories.getMultipleCategoryFields(results.watchedCategories, ['cid', 'name', 'slug', 'icon', 'link'], next);
+			categories.getMultipleCategoryFields(results.watchedCategories, ['cid', 'name', 'slug', 'icon', 'link', 'disabled'], next);
 		},
 		function(categories, next) {
 			categories = categories.filter(function(category) {
-				return category && !category.link;
+				return category && !category.link && !category.disabled;
 			});
 			categories.forEach(function(category) {
 				category.selected = parseInt(category.cid, 10) === parseInt(cid, 10);

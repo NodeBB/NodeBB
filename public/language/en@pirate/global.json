@@ -22,6 +22,7 @@
     "pagination.out_of": "%1 out of %2",
     "pagination.enter_index": "Enter index",
     "header.admin": "Captains only",
+    "header.categories": "Categories",
     "header.recent": "Recent",
     "header.unread": "Undiscovered",
     "header.tags": "Tags",

@@ -156,7 +156,7 @@ var async = require('async'),
 		}
 
 		category.name = validator.escape(category.name);
-		category.disabled = parseInt(category.disabled, 10) === 1;
+		category.disabled = category.hasOwnProperty('disabled') ? parseInt(category.disabled, 10) === 1 : undefined;
 		category.icon = category.icon || 'hidden';
 		if (category.hasOwnProperty('post_count')) {
 			category.post_count = category.totalPostCount = category.post_count || 0;
@@ -166,15 +166,22 @@ var async = require('async'),
 			category.topic_count = category.totalTopicCount = category.topic_count || 0;
 		}
 
-		if (category.description) {
-			category.description = validator.escape(category.description);
-		}
-
 		if (category.image) {
 			category.backgroundImage = category.image;
 		}
 
-		callback(null, category);
+		if (category.description) {
+			plugins.fireHook('filter:parse.raw', category.description, function(err, parsedDescription) {
+				if (err) {
+					return callback(err);
+				}
+				category.descriptionParsed = parsedDescription;
+				category.description = validator.escape(category.description);
+				callback(null, category);
+			});
+		} else {
+			callback(null, category);
+		}
 	}
 
 	Categories.getCategoryField = function(cid, field, callback) {

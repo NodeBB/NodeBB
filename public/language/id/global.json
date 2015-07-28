@@ -22,6 +22,7 @@
     "pagination.out_of": "%1 dari %2",
     "pagination.enter_index": "Masukkan index",
     "header.admin": "Admin",
+    "header.categories": "Categories",
     "header.recent": "Terbaru",
     "header.unread": "Belum dibaca",
     "header.tags": "Tag",

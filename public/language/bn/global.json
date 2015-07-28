@@ -22,6 +22,7 @@
     "pagination.out_of": "%2 এর মাঝে %1",
     "pagination.enter_index": "সূচক লিখুন",
     "header.admin": "অ্যাডমিন",
+    "header.categories": "Categories",
     "header.recent": "সাম্প্রতিক",
     "header.unread": "অপঠিত",
     "header.tags": "ট্যাগ",

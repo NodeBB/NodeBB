@@ -22,6 +22,7 @@
     "pagination.out_of": "%1 од %2",
     "pagination.enter_index": "Enter index",
     "header.admin": "Админ",
+    "header.categories": "Categories",
     "header.recent": "Недавно",
     "header.unread": "Непрочитано",
     "header.tags": "Ознаке",

@@ -38,6 +38,12 @@
     "details.private_help": "Si está habilitado, entrar en los grupos requiere aprobación de sus propietarios",
     "details.hidden": "Oculto",
     "details.hidden_help": "Si está habilitado, este grupo no aparecerá en los listados de grupos, y los usuarios tendrán que ser invitados manualmente",
+    "details.delete_group": "Delete Group",
     "event.updated": "Los detalles del grupo han sido actualizados",
-    "event.deleted": "El grupo \"%1\" ha sido eliminado"
+    "event.deleted": "El grupo \"%1\" ha sido eliminado",
+    "membership.accept-invitation": "Aceptar Invitación",
+    "membership.invitation-pending": "Invitación Pendiente",
+    "membership.join-group": "Unirse al grupo",
+    "membership.leave-group": "Dejar el grupo",
+    "membership.reject": "Rechazar"
 }

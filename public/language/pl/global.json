@@ -22,6 +22,7 @@
     "pagination.out_of": "%1 z %2",
     "pagination.enter_index": "Wpisz indeks.",
     "header.admin": "Administracja",
+    "header.categories": "Categories",
     "header.recent": "Ostatnie",
     "header.unread": "Nieprzeczytane",
     "header.tags": "Tagi",

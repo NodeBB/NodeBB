@@ -22,6 +22,7 @@
     "pagination.out_of": "%1/%2",
     "pagination.enter_index": "Syötä indeksi",
     "header.admin": "Ylläpitäjä",
+    "header.categories": "Categories",
     "header.recent": "Viimeisimmät",
     "header.unread": "Lukemattomat",
     "header.tags": "Tagit",

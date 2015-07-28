@@ -46,6 +46,8 @@
     "too-many-posts-newbie": "Como nuevo usuario, solo puedes publicar una vez cada %1 segundo(s) hasta hayas ganado una reputación de %2 - por favor espera antes de volver a publicar",
     "tag-too-short": "Por favor introduce una etiqueta más larga. Las etiquetas deben contener por lo menos %1 caractere(s)",
     "tag-too-long": "Por favor introduce una etiqueta más corta. Las etiquetas no pueden exceder los %1 caractere(s)",
+    "not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",
+    "too-many-tags": "Too many tags. Topics can't have more than %1 tag(s)",
     "file-too-big": "El tamaño de fichero máximo es de %1 kB - por favor, suba un fichero más pequeño",
     "cant-vote-self-post": "No puedes votar tus propios posts",
     "already-favourited": "Ya ha marcado esta publicación como favorita",

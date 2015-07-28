@@ -22,6 +22,7 @@
     "pagination.out_of": "%1 z %2",
     "pagination.enter_index": "Enter index",
     "header.admin": "Administrácia",
+    "header.categories": "Categories",
     "header.recent": "Aktuality",
     "header.unread": "Neprečítané",
     "header.tags": "tagy",
