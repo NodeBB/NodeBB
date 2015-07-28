@@ -82,7 +82,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					taskbar.updateActive(modal.attr('UUID'));
 					Chats.scrollToBottom(modal.find('#chat-content'));
 				} else {
-					module.toggleNew(modal.attr('UUID'), true);
+					module.toggleNew(modal.attr('UUID'), true, true);
 				}
 
 				if (!isSelf && (!modal.is(":visible") || !app.isFocused)) {
@@ -97,9 +97,10 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 			} else {
 				module.createModal({
 					username: username,
-					touid: data.withUid
+					touid: data.withUid,
+					silent: true
 				}, function(modal) {
-					module.toggleNew(modal.attr('UUID'), true);
+					module.toggleNew(modal.attr('UUID'), true, true);
 					if (!isSelf) {
 						app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
 						sounds.play('chat-incoming');

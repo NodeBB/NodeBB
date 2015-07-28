@@ -74,7 +74,6 @@ define('taskbar', function() {
 	};
 
 	taskbar.toggleNew = function(uuid, state, silent) {
-		console.log('TOGGLING');
 		var btnEl = taskbar.tasklist.find('[data-uuid="' + uuid + '"]');
 		btnEl.toggleClass('new', state);
 
