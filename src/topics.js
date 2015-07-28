@@ -330,12 +330,12 @@ var async = require('async'),
 	}
 
 	Topics.getUserBookmark = function (tid, uid, callback) {
-		Topics.getTopicField(tid + ':bookmarks', uid, callback);
-	}
+		db.getObjectField('topic:' + tid + ':bookmarks', uid, callback);
+	};
 
 	Topics.setUserBookmark = function(data, callback) {
-		Topics.setTopicField(data.tid + ':bookmarks', data.uid, data.postIndex, callback);
-	}
+		db.setObjectField('topic:' + data.tid + ':bookmarks', data.uid, data.postIndex, callback);
+	};
 
 	Topics.getTopicField = function(tid, field, callback) {
 		db.getObjectField('topic:' + tid, field, callback);
