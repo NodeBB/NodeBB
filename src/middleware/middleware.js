@@ -66,6 +66,15 @@ middleware.pageView = function(req, res, next) {
 	}
 };
 
+middleware.pluginHooks = function(req, res, next) {
+	async.each(plugins.loadedHooks['filter:router.page'] || [], function(hookObj, next) {
+		hookObj.method(req, res, next)
+	}, function(req, res) {
+		// If it got here, then none of the subscribed hooks did anything, or there were no hooks
+		next();
+	});
+};
+
 middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 	if (!req.user) {
 		return next();
@@ -483,6 +492,14 @@ middleware.exposeUid = function(req, res, next) {
 	} else {
 		next();
 	}
+};
+
+middleware.requireUser = function(req, res, next) {
+	if (req.user) {
+		return next();
+	}
+
+	res.render('403', {});
 };
 
 function redirectToLogin(req, res) {

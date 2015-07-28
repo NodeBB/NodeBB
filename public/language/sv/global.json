@@ -22,6 +22,7 @@
     "pagination.out_of": "%1 av %2",
     "pagination.enter_index": "Skriv in index ",
     "header.admin": "Admin",
+    "header.categories": "Categories",
     "header.recent": "Senaste",
     "header.unread": "Olästa",
     "header.tags": "Märkningar",

@@ -38,6 +38,12 @@
     "details.private_help": "Уколико је укључено,  приступање групи захтева одобрење власника групе.",
     "details.hidden": "Скривена",
     "details.hidden_help": "Уколико је укључено, група неће бити видљива на списку група, и корисницима се позивнице морају слати ручно.",
+    "details.delete_group": "Delete Group",
     "event.updated": "Детаљи групе су ажурирани",
-    "event.deleted": "Група „%1“ је обрисана"
+    "event.deleted": "Група „%1“ је обрисана",
+    "membership.accept-invitation": "Accept Invitation",
+    "membership.invitation-pending": "Invitation Pending",
+    "membership.join-group": "Join Group",
+    "membership.leave-group": "Leave Group",
+    "membership.reject": "Reject"
 }

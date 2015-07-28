@@ -22,6 +22,7 @@
     "pagination.out_of": "%1개 중 %2개",
     "pagination.enter_index": "이동할 게시물 번호를 입력하세요.",
     "header.admin": "관리자",
+    "header.categories": "Categories",
     "header.recent": "최근 주제",
     "header.unread": "읽지 않은 주제",
     "header.tags": "태그",

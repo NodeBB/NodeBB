@@ -9,13 +9,13 @@
     "filter-by": "Filtreeri",
     "online-only": "Ainult seesolevad",
     "picture-only": "Ainult pilt",
-    "invite": "Invite",
-    "invitation-email-sent": "An invitation email has been sent to %1",
-    "user_list": "User List",
-    "recent_topics": "Recent Topics",
-    "popular_topics": "Popular Topics",
-    "unread_topics": "Unread Topics",
-    "categories": "Categories",
-    "tags": "Tags",
-    "map": "Map"
+    "invite": "Kutsuge",
+    "invitation-email-sent": "Kutse on saadetud e-mailile %1",
+    "user_list": "Kasutajate list",
+    "recent_topics": "Viimased teemad",
+    "popular_topics": "Populaarsed teemad",
+    "unread_topics": "Lugemata teemad",
+    "categories": "Kategooriad",
+    "tags": "Märksõnad",
+    "map": "Kaart"
 }

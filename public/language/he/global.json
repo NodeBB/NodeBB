@@ -22,6 +22,7 @@
     "pagination.out_of": "%1 מתוך %2",
     "pagination.enter_index": "יש להכניס אינדקס",
     "header.admin": "ניהול",
+    "header.categories": "Categories",
     "header.recent": "פוסטים אחרונים",
     "header.unread": "לא נקרא",
     "header.tags": "תגיות",

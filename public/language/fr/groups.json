@@ -38,6 +38,12 @@
     "details.private_help": "Si cette case est cochée, rejoindre un groupe nécessite l'accord d'un propriétaire du groupe.",
     "details.hidden": "Masqué",
     "details.hidden_help": "Si cette case est cochée, ce groupe n'est pas affiché dans la liste des groupes, et les utilisateurs devront être invités manuellement.",
+    "details.delete_group": "Delete Group",
     "event.updated": "Les détails du groupe ont été mis à jour",
-    "event.deleted": "Le groupe \"%1\" a été supprimé"
+    "event.deleted": "Le groupe \"%1\" a été supprimé",
+    "membership.accept-invitation": "Accepter l'invitation",
+    "membership.invitation-pending": "Invitation en attente",
+    "membership.join-group": "Rejoindre le groupe",
+    "membership.leave-group": "Quitter le groupe",
+    "membership.reject": "Refuser"
 }

@@ -22,6 +22,7 @@
     "pagination.out_of": "%1 из %2",
     "pagination.enter_index": "Перейти на главную",
     "header.admin": "Админка",
+    "header.categories": "Categories",
     "header.recent": "Последние",
     "header.unread": "Непрочитанное",
     "header.tags": "Тэги",
