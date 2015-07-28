@@ -115,6 +115,10 @@
 
 	// Groups helpers
 	helpers.membershipBtn = function(groupObj) {
+		if (groupObj.name === 'administrators') {
+			return '';
+		}
+
 		if (groupObj.isMember) {
 			return '<button class="btn btn-danger" data-action="leave" data-group="' + groupObj.displayName + '"><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>';
 		} else {
