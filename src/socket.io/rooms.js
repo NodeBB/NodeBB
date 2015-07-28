@@ -39,19 +39,29 @@ rooms.broadcast = function(socket, room, msg, data, callback) {
 
 	callback = callback || function() {};
 
+	// Filter out socketIds that aren't actually connected
+	socketIds = socketIds.filter(function(id) {
+		return io.server.sockets.connected.hasOwnProperty(id);
+	});
+
 	async.map(socketIds, function(id, next) {
-		var timeout;
+		var timeout,
+			timeoutPassed = false;
+
 		if (socket.id === id) {
 			return setImmediate(next, null, []);
 		}
 
 		timeout = setTimeout(function() {
+			timeoutPassed = true;
 			next(null, []);
 		}, 500);
 
-		io.server.sockets.connected[id].emit(msg, data || {}, function(chats) {
+		io.server.sockets.connected[id].emit(msg, data || {}, function(err, returnData) {
 			clearTimeout(timeout);
-			next(null, chats);
+			if (!timeoutPassed) {
+				next(null, returnData);
+			}
 		});
 	}, callback);
 };

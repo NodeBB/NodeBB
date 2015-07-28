@@ -142,7 +142,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					}
 				});
 
-			callback(chats);
+			callback(null, chats);
 		});
 
 		socket.on('event:chats.open', function(data) {
