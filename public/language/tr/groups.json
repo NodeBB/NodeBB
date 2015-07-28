@@ -39,5 +39,10 @@
     "details.hidden": "Gizli",
     "details.hidden_help": "Bu grup eğer etkinse grup listelerinde bulunmaz, ve kullanıcılar bizzat davet eder",
     "event.updated": "Grup detayları güncellenmiştir",
-    "event.deleted": "\"%1\" grubu silinmiş"
+    "event.deleted": "\"%1\" grubu silinmiş",
+    "membership.accept-invitation": "Accept Invitation",
+    "membership.invitation-pending": "Invitation Pending",
+    "membership.join-group": "Join Group",
+    "membership.leave-group": "Leave Group",
+    "membership.reject": "Reject"
 }

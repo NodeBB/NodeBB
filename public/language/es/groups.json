@@ -39,5 +39,10 @@
     "details.hidden": "Oculto",
     "details.hidden_help": "Si está habilitado, este grupo no aparecerá en los listados de grupos, y los usuarios tendrán que ser invitados manualmente",
     "event.updated": "Los detalles del grupo han sido actualizados",
-    "event.deleted": "El grupo \"%1\" ha sido eliminado"
+    "event.deleted": "El grupo \"%1\" ha sido eliminado",
+    "membership.accept-invitation": "Accept Invitation",
+    "membership.invitation-pending": "Invitation Pending",
+    "membership.join-group": "Join Group",
+    "membership.leave-group": "Leave Group",
+    "membership.reject": "Reject"
 }

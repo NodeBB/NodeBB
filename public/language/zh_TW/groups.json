@@ -39,5 +39,10 @@
     "details.hidden": "隱藏",
     "details.hidden_help": "If enabled, this group will not be found in the groups listing, and users will have to be invited manually",
     "event.updated": "群組詳細訊息已被更新",
-    "event.deleted": "此 \"%1\" 群組已被刪除了"
+    "event.deleted": "此 \"%1\" 群組已被刪除了",
+    "membership.accept-invitation": "Accept Invitation",
+    "membership.invitation-pending": "Invitation Pending",
+    "membership.join-group": "Join Group",
+    "membership.leave-group": "Leave Group",
+    "membership.reject": "Reject"
 }

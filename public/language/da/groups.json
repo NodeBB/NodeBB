@@ -39,5 +39,10 @@
     "details.hidden": "Skjult",
     "details.hidden_help": "Hvis aktiveret, så vil denne gruppe ikke kunne ses i gruppelisten og bruhere skal inviteres manuelt",
     "event.updated": "Gruppe detaljer er blevet opdateret",
-    "event.deleted": "Gruppen \"%1\" er blevet slettet"
+    "event.deleted": "Gruppen \"%1\" er blevet slettet",
+    "membership.accept-invitation": "Accept Invitation",
+    "membership.invitation-pending": "Invitation Pending",
+    "membership.join-group": "Join Group",
+    "membership.leave-group": "Leave Group",
+    "membership.reject": "Reject"
 }

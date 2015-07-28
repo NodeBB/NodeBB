@@ -39,5 +39,10 @@
     "details.hidden": "Peidetud",
     "details.hidden_help": "Kui sisse lülitatud, siis seda gruppi ei kuvata gruppide nimekirjas ning liikmed tuleb lisada manuaalselt",
     "event.updated": "Grupi lisainformatsiooni on uuendatud",
-    "event.deleted": "Grupp \"%1\" on kustutatud"
+    "event.deleted": "Grupp \"%1\" on kustutatud",
+    "membership.accept-invitation": "Accept Invitation",
+    "membership.invitation-pending": "Invitation Pending",
+    "membership.join-group": "Join Group",
+    "membership.leave-group": "Leave Group",
+    "membership.reject": "Reject"
 }

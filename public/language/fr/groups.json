@@ -39,5 +39,10 @@
     "details.hidden": "Masqué",
     "details.hidden_help": "Si cette case est cochée, ce groupe n'est pas affiché dans la liste des groupes, et les utilisateurs devront être invités manuellement.",
     "event.updated": "Les détails du groupe ont été mis à jour",
-    "event.deleted": "Le groupe \"%1\" a été supprimé"
+    "event.deleted": "Le groupe \"%1\" a été supprimé",
+    "membership.accept-invitation": "Accept Invitation",
+    "membership.invitation-pending": "Invitation Pending",
+    "membership.join-group": "Join Group",
+    "membership.leave-group": "Leave Group",
+    "membership.reject": "Reject"
 }

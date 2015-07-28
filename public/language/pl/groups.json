@@ -39,5 +39,10 @@
     "details.hidden": "Ukryty",
     "details.hidden_help": "Jeśli aktywowane, ta grupa nie będzie widoczna w wykazie grup, a użytkownicy będą musieli być zapraszani manualnie.",
     "event.updated": "Dane grupy zostały zaktualizowane",
-    "event.deleted": "Grupa \"%1\" została skasowana"
+    "event.deleted": "Grupa \"%1\" została skasowana",
+    "membership.accept-invitation": "Accept Invitation",
+    "membership.invitation-pending": "Invitation Pending",
+    "membership.join-group": "Join Group",
+    "membership.leave-group": "Leave Group",
+    "membership.reject": "Reject"
 }
