@@ -67,7 +67,7 @@ middleware.pageView = function(req, res, next) {
 };
 
 middleware.pluginHooks = function(req, res, next) {
-	async.each(plugins.loadedHooks['filter:router.page'], function(hookObj, next) {
+	async.each(plugins.loadedHooks['filter:router.page'] || [], function(hookObj, next) {
 		hookObj.method(req, res, next)
 	}, function(req, res) {
 		// If it got here, then none of the subscribed hooks did anything, or there were no hooks
