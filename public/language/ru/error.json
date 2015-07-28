@@ -46,6 +46,8 @@
     "too-many-posts-newbie": "Вы новый пользователь, поэтому можете делать пост раз в %1 сек., пока не заработаете %2 п. репутации.",
     "tag-too-short": "Слишком короткий тэг. Минимум символов: %1.",
     "tag-too-long": "Слишком длинный тэг. Максимум символов: %1.",
+    "not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",
+    "too-many-tags": "Too many tags. Topics can't have more than %1 tag(s)",
     "file-too-big": "Слишком большой файл. Максимальный размер: %1 Кбайт.",
     "cant-vote-self-post": "Вы не можете проголосовать за Ваш пост",
     "already-favourited": "Вы уже добавили этот пост в избранное",

@@ -46,6 +46,8 @@
     "too-many-posts-newbie": "Yeni bir kullanıcı olarak, %2 saygınlık kazanana kadar %1 saniye içinde bir ileti gönderebilirsiniz - tekrar ileti göndermeden önce lütfen bekleyin.",
     "tag-too-short": "Lütfen daha uzun bir etiket girin. Etiketler en az %1 karakter içermelidir.",
     "tag-too-long": "Lütfen daha kısa bir etiket girin. Etiketler %1 karakterden uzun olamaz.",
+    "not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",
+    "too-many-tags": "Too many tags. Topics can't have more than %1 tag(s)",
     "file-too-big": "İzin verilen en büyük dosya boyutu %1 kb - lütfen daha küçük bir dosya yükleyin",
     "cant-vote-self-post": "Kendi iletinize oy veremezsiniz",
     "already-favourited": "Bu iletiyi zaten favorilerinize eklediniz",

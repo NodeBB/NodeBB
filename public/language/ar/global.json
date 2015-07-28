@@ -22,6 +22,7 @@
     "pagination.out_of": "%1 من %2",
     "pagination.enter_index": "أدخل الرقم التسلسلي",
     "header.admin": "مدبر نظام",
+    "header.categories": "Categories",
     "header.recent": "حديث",
     "header.unread": "غير مقروء",
     "header.tags": "وسم",

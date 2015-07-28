@@ -22,6 +22,7 @@
     "pagination.out_of": "%1 iš %2",
     "pagination.enter_index": "Įrašykite indeksą",
     "header.admin": "Administratorius",
+    "header.categories": "Categories",
     "header.recent": "Naujausi",
     "header.unread": "Neskaityti",
     "header.tags": "Žymos",
