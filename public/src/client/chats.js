@@ -136,11 +136,13 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	Chats.addSocketListeners = function() {
 		socket.on('event:chats.receive', function(data) {
 			var typingNotifEl = $('.user-typing'),
-				containerEl = $('.expanded-chat ul');
+				containerEl = $('.expanded-chat ul'),
+				lastSpeaker = parseInt(containerEl.find('.chat-message').last().attr('data-uid'), 10);
 
 			if (Chats.isCurrentChat(data.withUid)) {
 				newMessage = data.self === 0;
 				data.message.self = data.self;
+				data.message.newSet = lastSpeaker !== data.message.fromuid;
 				Chats.parseMessage(data.message, onMessagesParsed);
 			} else {
 				$('.chats-list li[data-uid="' + data.withUid + '"]').addClass('unread');
