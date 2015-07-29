@@ -164,7 +164,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	};
 
 	Chats.resizeMainWindow = function() {
-		var	messagesList = $('.expanded-chat ul');
+		var	messagesList = $('.expanded-chat .chat-content');
 
 		if (messagesList.length) {
 			var	margin = $('.expanded-chat ul').outerHeight(true) - $('.expanded-chat ul').height(),
