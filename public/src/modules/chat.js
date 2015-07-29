@@ -80,7 +80,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 				if (modal.is(":visible")) {
 					taskbar.updateActive(modal.attr('UUID'));
-					Chats.scrollToBottom(modal.find('#chat-content'));
+					Chats.scrollToBottom(modal.find('.chat-content'));
 				} else {
 					module.toggleNew(modal.attr('UUID'), true, true);
 				}
@@ -111,7 +111,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 		socket.on('event:chats.userStartTyping', function(withUid) {
 			var modal = module.getModal(withUid);
-			var chatContent = modal.find('#chat-content');
+			var chatContent = modal.find('.chat-content');
 			if (!chatContent.length) {
 				return;
 			}
@@ -234,7 +234,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 							return;
 						}
 
-						chatModal.find('#chat-content').css('height', module.calculateChatListHeight(chatModal));
+						chatModal.find('.chat-content').css('height', module.calculateChatListHeight(chatModal));
 					});
 					
 					chatModal.draggable({
@@ -373,7 +373,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		chatModal.removeClass('hide');
 		checkStatus(chatModal);
 		taskbar.updateActive(uuid);
-		Chats.scrollToBottom(chatModal.find('#chat-content'));
+		Chats.scrollToBottom(chatModal.find('.chat-content'));
 		module.bringModalToTop(chatModal);
 		module.focusInput(chatModal);
 		socket.emit('modules.chats.markRead', chatModal.attr('touid'));
@@ -387,7 +387,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 	module.enableMobileBehaviour = function(modalEl) {
 		app.toggleNavbar(false);
 		modalEl.attr('data-mobile', '1');
-		var messagesEl = modalEl.find('#chat-content');
+		var messagesEl = modalEl.find('.chat-content');
 		messagesEl.css('height', module.calculateChatListHeight(modalEl));
 
 		$(window).on('resize', function() {
@@ -402,7 +402,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 	module.calculateChatListHeight = function(modalEl) {
 		var totalHeight = modalEl.find('.modal-content').outerHeight() - modalEl.find('.modal-header').outerHeight(),
 			padding = parseInt(modalEl.find('.modal-body').css('padding-top'), 10) + parseInt(modalEl.find('.modal-body').css('padding-bottom'), 10),
-			contentMargin = parseInt(modalEl.find('#chat-content').css('margin-top'), 10) + parseInt(modalEl.find('#chat-content').css('margin-bottom'), 10),
+			contentMargin = parseInt(modalEl.find('.chat-content').css('margin-top'), 10) + parseInt(modalEl.find('.chat-content').css('margin-bottom'), 10),
 			sinceHeight = modalEl.find('.since-bar').outerHeight(true),
 			inputGroupHeight = modalEl.find('.input-group').outerHeight();
 
@@ -426,7 +426,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 	function loadChatSince(chatModal, since, callback) {
 		socket.emit('modules.chats.get', {touid: chatModal.attr('touid'), since: since}, function(err, messages) {
-			var chatContent = chatModal.find('#chat-content');
+			var chatContent = chatModal.find('.chat-content');
 			chatContent.find('.chat-message').remove();
 			module.appendChatMessage(chatModal, messages, callback);
 		});
@@ -457,7 +457,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 	}
 
 	module.appendChatMessage = function(chatModal, data, done) {
-		var chatContent = chatModal.find('#chat-content');
+		var chatContent = chatModal.find('.chat-content');
 
 		Chats.parseMessage(data, function(html) {
 			var message = $(html);
