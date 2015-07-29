@@ -460,7 +460,9 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		var chatContent = chatModal.find('.chat-content'),
 			lastSpeaker = parseInt(chatContent.find('.chat-message').last().attr('data-uid'), 10);
 
-		data.newSet = lastSpeaker !== data.fromuid;
+		if (!Array.isArray(data)) {
+			data.newSet = lastSpeaker !== data.fromuid;
+		}
 
 		Chats.parseMessage(data, function(html) {
 			var message = $(html);
