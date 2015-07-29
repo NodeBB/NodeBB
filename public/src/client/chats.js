@@ -148,22 +148,10 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		});
 
 		socket.on('event:chats.userStartTyping', function(withUid) {
-			var typingNotifEl = $('.user-typing');
-
-			if (Chats.isCurrentChat(withUid)) {
-				typingNotifEl.removeClass('hide');
-			}
-
 			$('.chats-list li[data-uid="' + withUid + '"]').addClass('typing');
 		});
 
 		socket.on('event:chats.userStopTyping', function(withUid) {
-			var typingNotifEl = $('.user-typing');
-
-			if (Chats.isCurrentChat(withUid)) {
-				typingNotifEl.addClass('hide');
-			}
-
 			$('.chats-list li[data-uid="' + withUid + '"]').removeClass('typing');
 		});
 

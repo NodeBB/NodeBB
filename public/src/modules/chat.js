@@ -312,8 +312,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					}
 				});
 
-				chatModal.find('.user-typing .text').translateText('[[modules:chat.user_typing, ' + data.username + ']]');
-
 				taskbar.push('chat', chatModal.attr('UUID'), {
 					title: data.username,
 					touid: data.touid,
@@ -459,14 +457,13 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 	}
 
 	module.appendChatMessage = function(chatModal, data, done) {
-		var chatContent = chatModal.find('#chat-content'),
-			typingNotif = chatModal.find('.user-typing');
+		var chatContent = chatModal.find('#chat-content');
 
 		Chats.parseMessage(data, function(html) {
 			var message = $(html);
 			message.find('img:not(".chat-user-image")').addClass('img-responsive');
 			message.find('.timeago').timeago();
-			message.insertBefore(typingNotif);
+			message.appendTo(chatContent);
 			Chats.scrollToBottom(chatContent);
 
 			if (typeof done === 'function') {
