@@ -38,11 +38,12 @@
     "details.private_help": "Hvis aktiveret, så vil det kræve godkendelse af gruppe ejeren for at tilslutte sig en gruppe",
     "details.hidden": "Skjult",
     "details.hidden_help": "Hvis aktiveret, så vil denne gruppe ikke kunne ses i gruppelisten og bruhere skal inviteres manuelt",
+    "details.delete_group": "Delete Group",
     "event.updated": "Gruppe detaljer er blevet opdateret",
     "event.deleted": "Gruppen \"%1\" er blevet slettet",
-    "membership.accept-invitation": "Accept Invitation",
-    "membership.invitation-pending": "Invitation Pending",
-    "membership.join-group": "Join Group",
-    "membership.leave-group": "Leave Group",
-    "membership.reject": "Reject"
+    "membership.accept-invitation": "Acceptér Invitation",
+    "membership.invitation-pending": "Afventende Invitationer",
+    "membership.join-group": "Bliv medlem af gruppe",
+    "membership.leave-group": "Forlad Gruppe",
+    "membership.reject": "Afvis"
 }

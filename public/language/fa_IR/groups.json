@@ -38,6 +38,7 @@
     "details.private_help": "اگر فعال باشد، پیوستن به گروه مستلزم موافقت صاحب گروه است",
     "details.hidden": "پنهان",
     "details.hidden_help": "اگر فعال باشد، این گروه در فهرست گروه‌ها پیدا نمی‌شود و کاربران باید دستی فراخوانده شوند",
+    "details.delete_group": "Delete Group",
     "event.updated": "جزییات گروه با موفقیت به روز گردید",
     "event.deleted": "گروه \"%1\" حدف شد",
     "membership.accept-invitation": "Accept Invitation",

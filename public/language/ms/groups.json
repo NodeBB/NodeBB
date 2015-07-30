@@ -38,6 +38,7 @@
     "details.private_help": "Jika dibolehkan, menyertai kumpulan memerlukan kelulusan pemilik kumpulan",
     "details.hidden": "Sembunyi",
     "details.hidden_help": "Jika dibolehkan, kumpulan ini tidak akan dijumpai di senarai kumpulan, dan pengguna hendaklah di jemput secara manual",
+    "details.delete_group": "Delete Group",
     "event.updated": "Perincian kumpulan telah dikemaskini",
     "event.deleted": "Kumpulan \"%1\" telah dipadam",
     "membership.accept-invitation": "Accept Invitation",

@@ -38,6 +38,7 @@
     "details.private_help": "If enabled, joining of groups requires approval from a group owner",
     "details.hidden": "Paslėptas",
     "details.hidden_help": "If enabled, this group will not be found in the groups listing, and users will have to be invited manually",
+    "details.delete_group": "Delete Group",
     "event.updated": "Grupės informacija atnaujinta",
     "event.deleted": "Grupė \"%1\" pašalinta",
     "membership.accept-invitation": "Accept Invitation",

@@ -38,6 +38,7 @@
     "details.private_help": "Kui sisse lülitatud, siis grupiga liitumine nõuab grupi omaniku nõusolekut",
     "details.hidden": "Peidetud",
     "details.hidden_help": "Kui sisse lülitatud, siis seda gruppi ei kuvata gruppide nimekirjas ning liikmed tuleb lisada manuaalselt",
+    "details.delete_group": "Delete Group",
     "event.updated": "Grupi lisainformatsiooni on uuendatud",
     "event.deleted": "Grupp \"%1\" on kustutatud",
     "membership.accept-invitation": "Accept Invitation",
