@@ -185,7 +185,8 @@ app.cacheBuster = null;
 				enter: room,
 				username: app.user.username,
 				userslug: app.user.userslug,
-				picture: app.user.picture
+				picture: app.user.picture,
+				status: app.user.status
 			}, function(err) {
 				if (err) {
 					app.alertError(err.message);
@@ -454,6 +455,7 @@ app.cacheBuster = null;
 					return app.alertError(err.message);
 				}
 				$('#logged-in-menu #user_label #user-profile-link>i').attr('class', 'fa fa-circle status ' + status);
+				app.user.status = status;
 			});
 			e.preventDefault();
 		});
