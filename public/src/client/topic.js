@@ -129,7 +129,7 @@ define('forum/topic', [
 				timeout: 0,
 				type: 'info',
 				clickfn : function() {
-					navigator.scrollToPost(parseInt(bookmark, 10), true);
+					navigator.scrollToPost(parseInt(bookmark - 1, 10), true);
 				},
 				closefn : function() {
 					localStorage.removeItem('topic:' + tid + ':bookmark');
