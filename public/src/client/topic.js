@@ -203,12 +203,11 @@ define('forum/topic', [
 
 		if (!currentBookmark || parseInt(postIndex, 10) > parseInt(currentBookmark, 10)) {
 			if (app.user.uid) {
-				var data = {
-					'tid':  ajaxify.data.tid,
-					'uid': app.user.uid,
-					'postIndex': postIndex
-				}
-				socket.emit('topics.bookmark', data, function(err) {
+				var payload = {
+					'tid': ajaxify.data.tid,
+					'index': postIndex
+				};
+				socket.emit('topics.bookmark', payload, function(err) {
 					if (err) {
 						console.warn('Error saving bookmark:', err);
 					}

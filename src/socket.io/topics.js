@@ -96,10 +96,9 @@ SocketTopics.postcount = function(socket, tid, callback) {
 	topics.getTopicField(tid, 'postcount', callback);
 };
 
-SocketTopics.bookmark = function(socket, data, callback) {
-	// data contains tid, uid, and postIndex
-	topics.setUserBookmark(data, callback);
-}
+SocketTopics.bookmark = function(socket, payload, callback) {
+	topics.setUserBookmark(payload.tid, socket.uid, payload.index, callback);
+};
 
 SocketTopics.markAsRead = function(socket, tids, callback) {
 	if(!Array.isArray(tids) || !socket.uid) {
