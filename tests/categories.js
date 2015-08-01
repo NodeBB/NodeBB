@@ -41,7 +41,7 @@ describe('Categories', function() {
 				end: -1,
 				uid: 0
 			}, function(err, categoryData) {
-				assert(categoryData);
+				if (err) return done(err);
 				assert.equal(categoryObj.name, categoryData.name);
 				assert.equal(categoryObj.description, categoryData.description);
 
