@@ -56,7 +56,7 @@ describe('Groups', function() {
 				assert(Array.isArray(groupObj.members));
 				assert.strictEqual(groupObj.name, 'Test');
 				assert.strictEqual(groupObj.description, 'Foobar!');
-				assert.strictEqual(groupObj.memberCount, 1);
+				assert.equal(groupObj.memberCount, 1);
 				assert.equal(typeof groupObj.members[0], 'object');
 
 				done();

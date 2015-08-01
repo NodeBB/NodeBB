@@ -5,8 +5,7 @@ var path = require('path'),
 	async = require('async'),
 	semver = require('semver'),
 	winston = require('winston'),
-
-	pkg = require.main.require('./package.json');
+	pkg = require('../../package.json');
 
 module.exports = function(Meta) {
 	Meta.dependencies = {};

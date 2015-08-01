@@ -23,7 +23,7 @@
 	});
 
 	var dbType = nconf.get('database'),
-		testDbConfig = nconf.get('test_database'),
+		testDbConfig = nconf.get('test_database_'+dbType),
 		productionDbConfig = nconf.get(dbType);
 
 	if(!testDbConfig){
@@ -32,21 +32,22 @@
 			'\n===========================================================\n'+
 			'Please, add parameters for test database in config.json\n'+
 			'For example (redis):\n'+
-				'"test_database": {' + '\n' +
+				'"test_database_redis": {' + '\n' +
 				'    "host": "127.0.0.1",' + '\n' +
 				'    "port": "6379",' + '\n' +
 				'    "password": "",' + '\n' +
 				'    "database": "1"' + '\n' +
 			'}\n'+
 			' or (mongo):\n' +
-				'"test_database": {' + '\n' +
+				'"test_database_mongo": {' + '\n' +
 				'    "host": "127.0.0.1",' + '\n' +
 				'    "port": "27017",' + '\n' +
+			    '    "username": "",' + '\n' +
 				'    "password": "",' + '\n' +
 				'    "database": "1"' + '\n' +
 			'}\n'+
 			' or (mongo) in a replicaset' + '\n' +
-			'"test_database": {' + '\n' +
+			'"test_database_mongo": {' + '\n' +
 		    '    "host": "127.0.0.1,127.0.0.1,127.0.0.1",' + '\n' +
 		    '    "port": "27017,27018,27019",' + '\n' +
 		    '    "username": "",' + '\n' +
