@@ -26,13 +26,13 @@ categoriesController.recent = function(req, res, next) {
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 		data.rssFeedUrl = nconf.get('relative_path') + '/recent.rss';
 		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[recent:title]]'}]);
-		
+
 		plugins.fireHook('filter:recent.build', {req: req, res: res, templateData: data}, function(err, data) {
-            		if (err) {
-                		return next(err);
-            		}
-            		res.render('recent', data.templateData);
-        	});
+			if (err) {
+				return next(err);
+			}
+			res.render('recent', data.templateData);
+		});
 	});
 };
 
