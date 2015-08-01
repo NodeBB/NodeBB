@@ -47,12 +47,12 @@
 
 	"event.updated": "Group details have been updated",
 	"event.deleted": "The group \"%1\" has been deleted",
-  
-  "membership.accept-invitation": "Accept Invitation",
-  "membership.invitation-pending": "Invitation Pending",
-  "membership.join-group": "Join Group",
-  "membership.leave-group": "Leave Group",
-  "membership.reject": "Reject",
-  
-  "new-group.group_name": "Group Name:"
+
+	"membership.accept-invitation": "Accept Invitation",
+	"membership.invitation-pending": "Invitation Pending",
+	"membership.join-group": "Join Group",
+	"membership.leave-group": "Leave Group",
+	"membership.reject": "Reject",
+
+	"new-group.group_name": "Group Name:"
 }
