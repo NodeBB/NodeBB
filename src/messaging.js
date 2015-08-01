@@ -164,6 +164,9 @@ var db = require('./database'),
 						if (index > 0 && parseInt(message.timestamp, 10) > parseInt(messages[index-1].timestamp, 10) + (1000*60*5)) {
 							// If it's been 5 minutes, this is a new set of messages
 							message.newSet = true;
+						} else if (index > 0 && message.fromuid !== messages[index-1].fromuid) {
+							// If the previous message was from the other person, this is also a new set
+							message.newSet = true
 						}
 
 						return message;

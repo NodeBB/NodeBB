@@ -284,10 +284,10 @@ function enableDefaultTheme(next) {
 			return next(err);
 		}
 
-		process.stdout.write('Enabling default theme: Lavender\n');
+		process.stdout.write('Enabling default theme: Persona\n');
 		meta.themes.set({
 			type: 'local',
-			id: 'nodebb-theme-lavender'
+			id: 'nodebb-theme-persona'
 		}, next);
 	});
 }
@@ -478,11 +478,13 @@ function enableDefaultPlugins(next) {
 	process.stdout.write('Enabling default plugins\n');
 
 	var defaultEnabled = [
+		'nodebb-plugin-composer-default',
 		'nodebb-plugin-markdown',
 		'nodebb-plugin-mentions',
 		'nodebb-widget-essentials',
 		'nodebb-rewards-essentials',
-		'nodebb-plugin-soundpack-default'
+		'nodebb-plugin-soundpack-default',
+		'nodebb-plugin-emoji-extended'
 	];
 	var	db = require('./database');
 	var order = defaultEnabled.map(function(plugin, index) {

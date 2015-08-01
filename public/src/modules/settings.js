@@ -471,6 +471,7 @@ define('settings', function () {
 				}
 
 				$(formEl).deserialize(values);
+				$(window).trigger('action:admin.settingsLoaded');
 
 				callback(null, values);
 			});

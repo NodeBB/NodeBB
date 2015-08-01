@@ -38,6 +38,10 @@ Categories.getAll = function(socket, data, callback) {
 	});
 };
 
+Categories.getNames = function(socket, data, callback) {
+	categories.getAllCategoryFields(['cid', 'name'], callback);
+};
+
 Categories.purge = function(socket, cid, callback) {
 	categories.purge(cid, callback);
 };

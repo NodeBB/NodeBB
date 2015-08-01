@@ -8,5 +8,14 @@
     "users-found-search-took": "%1 utente(i) trovati! La ricerca ha impiegato %2 secondi.",
     "filter-by": "Filtra per",
     "online-only": "Solo online",
-    "picture-only": "Solo con foto"
+    "picture-only": "Solo con foto",
+    "invite": "Invite",
+    "invitation-email-sent": "An invitation email has been sent to %1",
+    "user_list": "User List",
+    "recent_topics": "Recent Topics",
+    "popular_topics": "Popular Topics",
+    "unread_topics": "Unread Topics",
+    "categories": "Categories",
+    "tags": "Tags",
+    "map": "Map"
 }

@@ -8,5 +8,14 @@
     "users-found-search-took": "%1 משתמשים נמצאו! החיפוש ערך %2 שניות.",
     "filter-by": "פלטר על-פי",
     "online-only": "אונליין בלבד",
-    "picture-only": "תמונה בלבד"
+    "picture-only": "תמונה בלבד",
+    "invite": "Invite",
+    "invitation-email-sent": "An invitation email has been sent to %1",
+    "user_list": "User List",
+    "recent_topics": "Recent Topics",
+    "popular_topics": "Popular Topics",
+    "unread_topics": "Unread Topics",
+    "categories": "Categories",
+    "tags": "Tags",
+    "map": "Map"
 }

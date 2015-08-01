@@ -14,5 +14,6 @@
     "register_now_button": "ลงทะเบียน",
     "alternative_registration": "เข้าสู่ระบบโดยทางอื่น",
     "terms_of_use": "เงื่อนไขการใช้งาน",
-    "agree_to_terms_of_use": "ยอมรับข้อตกลงในการใช้งาน"
+    "agree_to_terms_of_use": "ยอมรับข้อตกลงในการใช้งาน",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
 }

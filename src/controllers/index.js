@@ -181,7 +181,7 @@ Controllers.robots = function (req, res) {
 Controllers.outgoing = function(req, res, next) {
 	var url = req.query.url,
 		data = {
-			url: url,
+			url: validator.escape(url),
 			title: meta.config.title,
 			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[notifications:outgoing_link]]'}])
 		};

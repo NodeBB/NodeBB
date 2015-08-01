@@ -14,5 +14,6 @@
     "register_now_button": "Hemen Kayıt Ol",
     "alternative_registration": "Alternatif Kayıt",
     "terms_of_use": "Kullanım Şartları",
-    "agree_to_terms_of_use": "Kullanım Şartlarını kabul ediyorum"
+    "agree_to_terms_of_use": "Kullanım Şartlarını kabul ediyorum",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
 }

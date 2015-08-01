@@ -14,14 +14,15 @@
 			activateMobile();
 		}
 
-		$(window).on('action:ajaxify.end', function(ev, data) {
+		$(window).on('action:ajaxify.contentLoaded', function(ev, data) {
 			var url = data.url;
 
 			selectMenuItem(data.url);
 			setupHeaderMenu();
 			setupRestartLinks();
-			setupCheckboxes();
 		});
+
+		$(window).on('action:admin.settingsLoaded', setupCheckboxes);
 
 		$('[component="logout"]').on('click', app.logout);
 
@@ -41,6 +42,7 @@
 
 		// move this to admin.config
 		app.config = config;
+		$(window).trigger('action:config.loaded');
 	});
 
 	function setupMenu() {
@@ -175,19 +177,6 @@
 			return $('[type=checkbox]').show();
 		}
 
-		$('[type=checkbox]').each(function() {
-			var checkbox = $(this),
-				checked = checkbox.is(':checked');
-
-			checkbox.hide();
-			if (checked) {
-				checkbox.after('<i class="fa fa-toggle-on"></i>');
-			} 
-			else {
-				checkbox.after('<i class="fa fa-toggle-off"></i>');   
-			}
-		});
-
 		$('[type=checkbox]').change(function() {
 			var checked = $(this).is(':checked');
 
@@ -195,11 +184,25 @@
 				.toggleClass('fa-toggle-on', checked);
 		});
 
-		$.propHooks.checked = {
-			set: function(elem, value, name) {
-				$(elem).trigger("change");
+		$('[type=checkbox]').each(function() {
+			var checkbox = $(this),
+				checked = checkbox.is(':checked');
+
+			if (checkbox.attr('data-toggle-added')) {
+				return;
 			}
-		}; 
+
+			checkbox.hide();
+
+			if (checked) {
+				checkbox.after('<i class="fa fa-toggle-on"></i>');
+			} 
+			else {
+				checkbox.after('<i class="fa fa-toggle-off"></i>');   
+			}
+
+			checkbox.attr('data-toggle-added', true);
+		});
 	}
 
 }());

@@ -4,14 +4,14 @@
 
 /* globals define, app, config, socket, ajaxify */
 
-define('forum/topic/browsing', ['translator'], function(translator) {
+define('forum/topic/browsing', function() {
 
 	var Browsing = {};
 
 	Browsing.onUpdateUsersInRoom = function(data) {
 		if (data && data.room.indexOf('topic_' + ajaxify.data.tid) !== -1) {
 			$('[component="topic/browsing/list"]').parent().toggleClass('hidden', !data.users.length);
-			for(var i=0; i<data.users.length; ++i) {
+			for (var i=0; i<data.users.length; ++i) {
 				addUserIcon(data.users[i]);
 			}
 
@@ -29,6 +29,7 @@ define('forum/topic/browsing', ['translator'], function(translator) {
 		} else {
 			increaseUserCount(1);
 		}
+		Browsing.onUserStatusChange(data);
 	};
 
 	Browsing.onUserLeave = function(uid) {
@@ -56,8 +57,8 @@ define('forum/topic/browsing', ['translator'], function(translator) {
 	function updateBrowsingUsers(data) {
 		var activeEl = $('[component="topic/browsing/list"]');
 		var user = activeEl.find('a[data-uid="'+ data.uid + '"]');
-		if (user.length && data.status === 'offline') {
-			user.parent().remove();
+		if (user.length) {
+			user.parent().toggleClass('hidden', data.status === 'offline');
 		}
 	}
 
@@ -80,7 +81,7 @@ define('forum/topic/browsing', ['translator'], function(translator) {
 	}
 
 	function createUserIcon(uid, picture, userslug, username) {
-		if(!$('[component="topic/browsing/list"]').find('[data-uid="' + uid + '"]').length) {
+		if (!$('[component="topic/browsing/list"]').find('[data-uid="' + uid + '"]').length) {
 			return $('<div class="inline-block"><a title="' + username + '" data-uid="' + uid + '" data-count="1" href="' + config.relative_path + '/user/' + userslug + '"><img src="'+ picture +'"/></a></div>');
 		}
 	}

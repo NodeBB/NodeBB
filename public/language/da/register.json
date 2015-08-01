@@ -14,5 +14,6 @@
     "register_now_button": "Registrer nu",
     "alternative_registration": "Alternativ registrering",
     "terms_of_use": "Betingelser for brug",
-    "agree_to_terms_of_use": "Jeg acceptere betingelserne for brug"
+    "agree_to_terms_of_use": "Jeg acceptere betingelserne for brug",
+    "registration-added-to-queue": "Din registrering er blevet tilføjet til godkendelses køen. Du vil mostage en email når du er blevet accepteret af en administrator."
 }

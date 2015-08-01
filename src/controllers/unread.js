@@ -5,6 +5,7 @@ var async = require('async'),
 
 	meta = require('../meta'),
 	categories = require('../categories'),
+	privileges = require('../privileges'),
 	user = require('../user'),
 	topics = require('../topics'),
 	helpers = require('./helpers');
@@ -30,7 +31,11 @@ unreadController.unread = function(req, res, next) {
 		},
 		function(_results, next) {
 			results = _results;
-			categories.getMultipleCategoryFields(results.watchedCategories, ['cid', 'name', 'slug', 'icon', 'link'], next);
+
+			privileges.categories.filterCids('read', results.watchedCategories, req.uid, next);
+		},
+		function(cids, next) {
+			categories.getMultipleCategoryFields(cids, ['cid', 'name', 'slug', 'icon', 'link'], next);
 		},
 		function(categories, next) {
 			categories = categories.filter(function(category) {

@@ -62,12 +62,6 @@ define('admin/general/navigation', ['translator'], function(translator) {
 
 			data.properties = {};
 
-			available.forEach(function(item) {
-				if (item.route.match(data.route)) {
-					data.properties = item.properties || {};
-				}
-			});
-
 			for (var prop in properties) {
 				if (properties.hasOwnProperty(prop)) {
 					data.properties[prop] = properties[prop];

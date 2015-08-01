@@ -8,9 +8,14 @@ var async = require('async'),
 	privileges = require('../privileges'),
 	plugins = require('../plugins'),
 	cache = require('./cache'),
+	pubsub = require('../pubsub'),
 	utils = require('../../public/src/utils');
 
 module.exports = function(Posts) {
+
+	pubsub.on('post:edit', function(pid) {
+		cache.del(pid);
+	});
 
 	Posts.edit = function(data, callback) {
 		var now = Date.now();
@@ -59,6 +64,7 @@ module.exports = function(Posts) {
 				},
 				post: function(next) {
 					cache.del(postData.pid);
+					pubsub.publish('post:edit', postData.pid);
 					Posts.parsePost(postData, next);
 				}
 			}, function(err, results) {

@@ -43,6 +43,10 @@ SocketGroups.leave = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-uid]]'));
 	}
 
+	if (data.groupName === 'administrators') {
+		return callback(new Error('[[error:cant-remove-self-as-admin]]'));
+	}
+
 	groups.leave(data.groupName, socket.uid, callback);
 };
 
@@ -132,6 +136,34 @@ function acceptRejectAll(type, socket, data, callback) {
 		], callback);
 	});
 }
+
+SocketGroups.issueInvite = function(socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	groups.ownership.isOwner(socket.uid, data.groupName, function(err, isOwner) {
+		if (err || !isOwner) {
+			return callback(err || new Error('[[error:no-privileges]]'));
+		}
+
+		groups.invite(data.groupName, data.toUid, callback);
+	});
+};
+
+SocketGroups.rescindInvite = function(socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	groups.ownership.isOwner(socket.uid, data.groupName, function(err, isOwner) {
+		if (err || !isOwner) {
+			return callback(err || new Error('[[error:no-privileges]]'));
+		}
+
+		groups.rejectMembership(data.groupName, data.toUid, callback);
+	});
+};
 
 SocketGroups.acceptInvite = function(socket, data, callback) {
 	if (!data) {

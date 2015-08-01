@@ -14,5 +14,6 @@
     "register_now_button": "Registreeri",
     "alternative_registration": "Alternatiivne registreerimismeetod",
     "terms_of_use": "Foorumi reeglid",
-    "agree_to_terms_of_use": "Nõustun foorumi reeglitega"
+    "agree_to_terms_of_use": "Nõustun foorumi reeglitega",
+    "registration-added-to-queue": "Teie registreerimine vaadatakse üle. Te saate e-kirja kui administraator on aktsepteerinud registreermimise."
 }

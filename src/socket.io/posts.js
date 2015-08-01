@@ -284,6 +284,10 @@ SocketPosts.edit = function(socket, data, callback) {
 		return callback(new Error('[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]'));
 	} else if (data.title && data.title.length > parseInt(meta.config.maximumTitleLength, 10)) {
 		return callback(new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]'));
+	} else if (data.tags && data.tags.length < parseInt(meta.config.minimumTagsPerTopic, 10)) {
+		return callback(new Error('[[error:not-enough-tags, ' + meta.config.minimumTagsPerTopic + ']]'));
+	} else if (data.tags && data.tags.length > parseInt(meta.config.maximumTagsPerTopic, 10)) {
+		return callback(new Error('[[error:too-many-tags, ' + meta.config.maximumTagsPerTopic + ']]'));
 	} else if (!data.content || data.content.length < parseInt(meta.config.minimumPostLength, 10)) {
 		return callback(new Error('[[error:content-too-short, ' + meta.config.minimumPostLength + ']]'));
 	} else if (data.content.length > parseInt(meta.config.maximumPostLength, 10)) {

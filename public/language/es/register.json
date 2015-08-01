@@ -14,5 +14,6 @@
     "register_now_button": "Registrarse ahora",
     "alternative_registration": "Métodos de registro alternativos",
     "terms_of_use": "Términos y Condiciones de uso",
-    "agree_to_terms_of_use": "Acepto los Términos y Condiciones de uso"
+    "agree_to_terms_of_use": "Acepto los Términos y Condiciones de uso",
+    "registration-added-to-queue": "Tu registro se ha añadido a la cola de aprobación,. Recibirás un correo cuando este sea aceptado por un administrador. "
 }

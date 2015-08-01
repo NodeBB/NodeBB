@@ -113,8 +113,6 @@ define('forum/topic/events', [
 			editedPostEl.find('img').addClass('img-responsive');
 			app.replaceSelfLinks(editedPostEl.find('a'));
 			editedPostEl.fadeIn(250);
-
-			$(window).trigger('action:posts.edited', data);
 		});
 
 		var editData = {
@@ -127,6 +125,8 @@ define('forum/topic/events', [
 				html = $(translated);
 				editorEl.replaceWith(html);
 				html.find('.timeago').timeago();
+
+				$(window).trigger('action:posts.edited', data);
 			});
 		});
 

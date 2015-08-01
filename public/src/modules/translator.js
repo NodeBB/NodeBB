@@ -9,7 +9,7 @@
 
 	var	languages = {},
 		regexes = {
-			match: /\[\[[\s\S]*?\]\]/g,
+			match: /\[\[\w+:[\s\S]+?\]\]/g,
 			split: /[,][\s]*/,
 			replace: /\]+$/
 		};
@@ -125,7 +125,7 @@
 		if (typeof language === 'function') {
 			callback = language;
 			if ('undefined' !== typeof window && config) {
-				language = config.userLang || 'en_GB';
+				language = utils.params().lang || config.userLang || 'en_GB';
 			} else {
 				var meta = require('../../../src/meta');
 				language = meta.config.defaultLang || 'en_GB';

@@ -63,7 +63,7 @@
 
 		var usernamePassword = '';
 		if (nconf.get('mongo:username') && nconf.get('mongo:password')) {
-			usernamePassword = nconf.get('mongo:username') + ':' + nconf.get('mongo:password') + '@';
+			usernamePassword = nconf.get('mongo:username') + ':' + encodeURIComponent(nconf.get('mongo:password')) + '@';
 		}
 
 		// Sensible defaults for Mongo, if not set

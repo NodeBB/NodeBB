@@ -8,5 +8,14 @@
     "users-found-search-took": "%1 kasutaja(t) leiti! Otsing kestis %2 sekundit.",
     "filter-by": "Filtreeri",
     "online-only": "Ainult seesolevad",
-    "picture-only": "Ainult pilt"
+    "picture-only": "Ainult pilt",
+    "invite": "Kutsuge",
+    "invitation-email-sent": "Kutse on saadetud e-mailile %1",
+    "user_list": "Kasutajate list",
+    "recent_topics": "Viimased teemad",
+    "popular_topics": "Populaarsed teemad",
+    "unread_topics": "Lugemata teemad",
+    "categories": "Kategooriad",
+    "tags": "Märksõnad",
+    "map": "Kaart"
 }

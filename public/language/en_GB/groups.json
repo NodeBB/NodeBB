@@ -9,6 +9,11 @@
 	"pending.reject": "Reject",
 	"pending.accept_all": "Accept All",
 	"pending.reject_all": "Reject All",
+	"pending.none": "There are no pending members at this time",
+
+	"invited.none": "There are no invited members at this time",
+	"invited.uninvite": "Rescind Invitation",
+	"invited.search": "Search for a user to invite to this group",
 
 	"cover-instructions": "Drag and Drop a photo, drag to position, and hit <strong>Save</strong>",
 	"cover-change": "Change",
@@ -18,6 +23,7 @@
 	"details.title": "Group Details",
 	"details.members": "Member List",
 	"details.pending": "Pending Members",
+	"details.invited": "Invited Members",
 	"details.has_no_posts": "This group's members have not made any posts.",
 	"details.latest_posts": "Latest Posts",
 	"details.private": "Private",
@@ -37,7 +43,14 @@
 	"details.private_help": "If enabled, joining of groups requires approval from a group owner",
 	"details.hidden": "Hidden",
 	"details.hidden_help": "If enabled, this group will not be found in the groups listing, and users will have to be invited manually",
+	"details.delete_group": "Delete Group",
 
 	"event.updated": "Group details have been updated",
-	"event.deleted": "The group \"%1\" has been deleted"
+	"event.deleted": "The group \"%1\" has been deleted",
+  
+  "membership.accept-invitation": "Accept Invitation",
+  "membership.invitation-pending": "Invitation Pending",
+  "membership.join-group": "Join Group",
+  "membership.leave-group": "Leave Group",
+  "membership.reject": "Reject"
 }

@@ -14,5 +14,6 @@
     "register_now_button": "Zaregistrovať sa",
     "alternative_registration": "Iný spôsob registrácie",
     "terms_of_use": "Podmienky používania",
-    "agree_to_terms_of_use": "Súhlasím s podmienkami používania"
+    "agree_to_terms_of_use": "Súhlasím s podmienkami používania",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
 }

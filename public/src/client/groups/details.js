@@ -22,6 +22,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 
 		handleMemberSearch();
 		handleMemberInfiniteScroll();
+		handleMemberInvitations();
 
 		components.get('groups/activity').find('.content img').addClass('img-responsive');
 
@@ -72,6 +73,8 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 				case 'leave':
 				case 'accept':
 				case 'reject':
+				case 'issueInvite':
+				case 'rescindInvite':
 				case 'acceptInvite':
 				case 'rejectInvite':
 				case 'acceptAll':
@@ -324,6 +327,26 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 				loadMoreMembers();
 			}
 		});
+	}
+
+	function handleMemberInvitations() {
+		if (ajaxify.data.group.isOwner) {
+			var searchInput = $('[component="groups/members/invite"]');
+			require(['autocomplete'], function(autocomplete) {
+				autocomplete.user(searchInput, function(e, selected) {
+					socket.emit('groups.issueInvite', {
+						toUid: selected.item.user.uid,
+						groupName: ajaxify.data.group.name
+					}, function(err) {
+						if (!err) {
+							ajaxify.refresh();
+						} else {
+							app.alertError(err.message);
+						}
+					});
+				});
+			});
+		}
 	}
 
 	function loadMoreMembers() {

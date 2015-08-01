@@ -91,10 +91,14 @@ module.exports = function(Topics) {
 	Topics.post = function(data, callback) {
 		var uid = data.uid;
 		var title = data.title ? data.title.trim() : data.title;
+		data.tags = data.tags || [];
 
 		async.waterfall([
 			function(next) {
 				checkTitleLength(title, next);
+			},
+			function(next) {
+				checkTagsLength(data.tags, next);
 			},
 			function(next) {
 				checkContentLength(data.content, next);
@@ -286,6 +290,15 @@ module.exports = function(Topics) {
 			return callback(new Error('[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]'));
 		} else if (title.length > parseInt(meta.config.maximumTitleLength, 10)) {
 			return callback(new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]'));
+		}
+		callback();
+	}
+
+	function checkTagsLength(tags, callback) {
+		if (!tags || tags.length < parseInt(meta.config.minimumTagsPerTopic, 10)) {
+			return callback(new Error('[[error:not-enough-tags, ' + meta.config.minimumTagsPerTopic + ']]'));
+		} else if (tags.length > parseInt(meta.config.maximumTagsPerTopic, 10)) {
+			return callback(new Error('[[error:too-many-tags, ' + meta.config.maximumTagsPerTopic + ']]'));
 		}
 		callback();
 	}

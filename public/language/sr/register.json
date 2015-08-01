@@ -14,5 +14,6 @@
     "register_now_button": "Региструјте се",
     "alternative_registration": "Алтернативно регистровање",
     "terms_of_use": "Услови коришћења",
-    "agree_to_terms_of_use": "Слажем се са условима коришћења"
+    "agree_to_terms_of_use": "Слажем се са условима коришћења",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
 }

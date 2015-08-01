@@ -164,7 +164,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 				tid: tid,
 				pid: getData(button, 'data-pid'),
 				topicName: topicName,
-				text: username + ' ' || ''
+				text: username ? username + ' ' : ''
 			});
 		}
 	}

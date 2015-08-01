@@ -20,6 +20,7 @@
     "user_posted_topic": "<strong>%1</strong> أنشأ موضوعًا جديدًا: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> ذكرَ اسمك في <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> صار يتابعك.",
+    "new_register": "<strong>%1</strong> sent a registration request.",
     "email-confirmed": "تم التحقق من عنوان البريد الإلكتروني",
     "email-confirmed-message": "شكرًا على إثبات صحة عنوان بريدك الإلكتروني. صار حسابك مفعلًا بالكامل.",
     "email-confirm-error-message": "حدث خطأ أثناء التحقق من عنوان بريدك الإلكتروني. ربما رمز التفعيل خاطئ أو انتهت صلاحيته.",

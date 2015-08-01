@@ -5,18 +5,10 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 	var Settings = {};
 
 	Settings.init = function() {
-		Settings.prepare();
+		$(window).on('action:config.loaded', Settings.prepare);
 	};
 
 	Settings.prepare = function(callback) {
-		// Come back in 125ms if the config isn't ready yet
-		if (!app.config) {
-			setTimeout(function() {
-				Settings.prepare(callback);
-			}, 125);
-			return;
-		}
-
 		// Populate the fields on the page from the config
 		var fields = $('#content [data-field]'),
 			numFields = fields.length,
@@ -104,6 +96,8 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 		if (typeof callback === 'function') {
 			callback();
 		}
+
+		$(window).trigger('action:admin.settingsLoaded');
 	};
 
 	function handleUploads() {

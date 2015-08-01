@@ -185,7 +185,8 @@ app.cacheBuster = null;
 				enter: room,
 				username: app.user.username,
 				userslug: app.user.userslug,
-				picture: app.user.picture
+				picture: app.user.picture,
+				status: app.user.status
 			}, function(err) {
 				if (err) {
 					app.alertError(err.message);
@@ -293,7 +294,10 @@ app.cacheBuster = null;
 			}
 
 			if (!chat.modalExists(touid)) {
-				chat.createModal(username, touid, loadAndCenter);
+				chat.createModal({
+					username: username,
+					touid: touid
+				}, loadAndCenter);
 			} else {
 				loadAndCenter(chat.getModal(touid));
 			}
@@ -451,6 +455,7 @@ app.cacheBuster = null;
 					return app.alertError(err.message);
 				}
 				$('#logged-in-menu #user_label #user-profile-link>i').attr('class', 'fa fa-circle status ' + status);
+				app.user.status = status;
 			});
 			e.preventDefault();
 		});
@@ -545,6 +550,8 @@ app.cacheBuster = null;
 
 				// templates.js helpers
 				helpers.register();
+
+				$(window).trigger('action:app.load');
 			});
 		});
 	};
@@ -608,5 +615,4 @@ app.cacheBuster = null;
 	});
 
 	app.alternatingTitle('');
-
 }());

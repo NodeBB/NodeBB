@@ -20,6 +20,7 @@
     "user_posted_topic": "<strong>%1</strong> has posted a new topic: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong>, <strong>%2</strong> এ আপনার নাম উল্লেখ করেছেন",
     "user_started_following_you": "<strong>%1</strong> আপনাকে অনুসরন করা শুরু করেছেন।",
+    "new_register": "<strong>%1</strong> sent a registration request.",
     "email-confirmed": "ইমেইল নিশ্চিত করা হয়েছে",
     "email-confirmed-message": "আপনার ইমেইল যাচাই করার জন্য আপনাকে ধন্যবাদ। আপনার অ্যাকাউন্টটি এখন সম্পূর্ণরূপে সক্রিয়।",
     "email-confirm-error-message": "আপনার ইমেল ঠিকানার বৈধতা যাচাইয়ে একটি সমস্যা হয়েছে। সম্ভবত কোডটি ভুল ছিল অথবা কোডের মেয়াদ শেষ হয়ে গিয়েছে।",

@@ -64,7 +64,14 @@ var	async = require('async'),
 	};
 
 	Digest.getSubscribers = function(interval, callback) {
-		db.getSortedSetRange('digest:' + interval + ':uids', 0, -1, callback);
+		db.getSortedSetRange('digest:' + interval + ':uids', 0, -1, function(err, subscribers) {
+			plugins.fireHook('filter:digest.subscribers', {
+				interval: interval,
+				subscribers: subscribers
+			}, function(err, returnData) {
+				callback(err, returnData.subscribers);
+			});
+		});
 	};
 
 	Digest.send = function(data, callback) {

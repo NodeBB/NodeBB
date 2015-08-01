@@ -270,6 +270,9 @@ var async = require('async'),
 		var isFavouriting = type === 'favourite';
 
 		async.parallel({
+			owner: function(next) {
+				posts.getPostField(pid, 'uid', next);
+			},
 			postData: function(next) {
 				posts.getPostFields(pid, ['pid', 'uid'], next);
 			},
@@ -312,9 +315,13 @@ var async = require('async'),
 					return callback(err);
 				}
 
+				var current = results.hasFavourited ? 'favourited' : 'unfavourited';
+
 				plugins.fireHook('action:post.' + type, {
 					pid: pid,
 					uid: uid,
+					owner: results.owner,
+					current: current
 				});
 
 				callback(null, {
