@@ -19,6 +19,12 @@ module.exports = function(Meta) {
 			fs.readFile(path.join(__dirname, '../../node_modules/', module, 'package.json'), {
 				encoding: 'utf-8'
 			}, function(err, pkgData) {
+				// If a bundled plugin/theme is not present, skip the dep check (#3384)
+				if (err && err.code === 'ENOENT' && (module.startsWith('nodebb-plugin') || module.startsWith('nodebb-theme'))) {
+					winston.warn('[meta/dependencies] Bundled plugin ' + module + ' not found, skipping dependency check.');
+					return next(true);
+				}
+
 				try {
 					var pkgData = JSON.parse(pkgData),
 						ok = semver.satisfies(pkgData.version, pkg.dependencies[module]);
@@ -30,7 +36,7 @@ module.exports = function(Meta) {
 						next(false);
 					}
 				} catch(e) {
-					winston.error('[meta.dependencies] Could not read: ' + module);
+					winston.error('[meta/dependencies] Could not read: ' + module);
 					process.exit();
 				}
 			})
