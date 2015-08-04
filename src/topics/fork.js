@@ -44,7 +44,7 @@ module.exports = function(Topics) {
 			if (err) {
 				return callback(err);
 			}
-			
+
 			Topics.create({uid: results.postData.uid, title: title, cid: results.cid}, function(err, tid) {
 				if (err) {
 					return callback(err);
@@ -94,7 +94,7 @@ module.exports = function(Topics) {
 				}
 
 				if (parseInt(post.tid, 10) === parseInt(tid, 10)) {
-					return next(new Error('[[error:cant-move-to-same-topic]]'))
+					return next(new Error('[[error:cant-move-to-same-topic]]'));
 				}
 
 				postData = post;
@@ -117,6 +117,12 @@ module.exports = function(Topics) {
 						Topics.addPostToTopic(tid, pid, postData.timestamp, postData.votes, next);
 					}
 				], next);
+			},
+			function(results, next) {
+				async.parallel([
+					async.apply(updateRecentTopic, tid),
+					async.apply(updateRecentTopic, postData.tid)
+				], next);
 			}
 		], function(err) {
 			if (err) {
@@ -126,4 +132,23 @@ module.exports = function(Topics) {
 			callback();
 		});
 	};
+
+	function updateRecentTopic(tid, callback) {
+		async.waterfall([
+			function(next) {
+				Topics.getLatestUndeletedPid(tid, next);
+			},
+			function(pid, next) {
+				if (!pid) {
+					return callback();
+				}
+				posts.getPostField(pid, 'timestamp', next);
+			},
+			function(timestamp, next) {
+				Topics.updateTimestamp(tid, timestamp, next);
+			}
+		], callback);
+	}
+
+
 };
