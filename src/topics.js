@@ -196,7 +196,7 @@ var async = require('async'),
 						topics[i].locked = parseInt(topics[i].locked, 10) === 1;
 						topics[i].deleted = parseInt(topics[i].deleted, 10) === 1;
 						topics[i].unread = !results.hasRead[i];
-						topics[i].unreplied = parseInt(topics[i].postcount, 10) <= 1 && meta.config.teaserPost !== 'first';
+						topics[i].unreplied = !topics[i].teaser;
 					}
 				}
 
