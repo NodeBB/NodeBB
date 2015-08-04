@@ -498,7 +498,7 @@ accountsController.getChats = function(req, res, next) {
 	}
 
 	async.parallel({
-		contacts: async.apply(user.getFollowing, req.user.uid, 0, 19),
+		contacts: async.apply(user.getFollowing, req.user.uid, 0, 199),
 		recentChats: async.apply(messaging.getRecentChats, req.user.uid, 0, 19)
 	}, function(err, results) {
 		if (err) {
