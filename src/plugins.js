@@ -170,9 +170,13 @@ var fs = require('fs'),
 		require('request')(url, {
 			json: true
 		}, function(err, res, body) {
+			if (res.statusCode === 404 || !body.payload) {
+				return callback(err, {});
+			}
+
 			Plugins.normalise([body.payload], function(err, normalised) {
 				normalised = normalised.filter(function(plugin) {
-					return plugin.id = id;
+					return plugin.id === id;
 				});
 				return callback(err, !err ? normalised[0] : undefined);
 			});

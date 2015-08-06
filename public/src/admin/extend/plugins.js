@@ -186,22 +186,7 @@ define('admin/extend/plugins', function() {
 				return app.alertError(err.message);
 			}
 
-			var targetList = (pluginData.installed ? 'installed' : 'download'),
-				otherList = (pluginData.installed ? 'download' : 'installed'),
-				payload = {};
-
-			payload[targetList] = pluginData;
-			templates.parse('admin/partials/' + targetList + '_plugin_item', payload, function(html) {
-				var pluginList = $('ul.' + targetList);
-
-				pluginList.append(html);
-				$('ul.' + otherList).find('li[data-plugin-id="' + pluginID + '"]').slideUp('slow', function() {
-					$(this).remove();
-					$('html,body').animate({
-						scrollTop: pluginList.find('li').last().offset().top - 48
-					}, 1000);
-				});
-			});
+			ajaxify.refresh();
 
 			app.alert({
 				alert_id: 'plugin_toggled',
