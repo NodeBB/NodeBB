@@ -59,6 +59,7 @@ define('forum/topic/browsing', function() {
 		var user = activeEl.find('a[data-uid="'+ data.uid + '"]');
 		if (user.length) {
 			user.parent().toggleClass('hidden', data.status === 'offline');
+			activeEl.parent().toggleClass('hidden', !activeEl.children(':not(.hidden)').length);
 		}
 	}
 
