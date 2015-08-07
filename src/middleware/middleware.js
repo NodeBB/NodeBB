@@ -407,7 +407,8 @@ middleware.maintenanceMode = function(req, res, next) {
 			'/templates/[\\w/]+.tpl',
 			'/api/login',
 			'/api/?',
-			'/language/.+'
+			'/language/.+',
+			'/uploads/system/site-logo.png'
 		],
 		render = function() {
 			res.status(503);
