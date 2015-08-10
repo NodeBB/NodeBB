@@ -30,15 +30,15 @@ $(document).ready(function() {
 
 	ajaxify.currentPage = null;
 
-	ajaxify.go = function (url, callback, quiet, search) {
+	ajaxify.go = function (url, callback, quiet) {
 		if (!socket.connected) {
 			if (ajaxify.reconnectAction) {
 				$(window).off('action:reconnected', ajaxify.reconnectAction);
 			}
 			ajaxify.reconnectAction = function(e) {
-				ajaxify.go(url, callback, quiet, search);
+				ajaxify.go(url, callback, quiet);
 				$(window).off(e);
-			}
+			};
 			$(window).on('action:reconnected', ajaxify.reconnectAction);
 		}
 
@@ -54,7 +54,7 @@ $(document).ready(function() {
 			apiXHR.abort();
 		}
 
-		url = ajaxify.start(url, quiet, search);
+		url = ajaxify.start(url, quiet);
 
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
@@ -87,10 +87,8 @@ $(document).ready(function() {
 	};
 
 
-	ajaxify.start = function(url, quiet, search) {
+	ajaxify.start = function(url, quiet) {
 		url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, ''));
-		var hash = window.location.hash;
-		search = search || '';
 
 		$(window).trigger('action:ajaxify.start', {url: url});
 
@@ -102,8 +100,8 @@ $(document).ready(function() {
 
 		if (window.history && window.history.pushState) {
 			window.history[!quiet ? 'pushState' : 'replaceState']({
-				url: url + search + hash
-			}, url, RELATIVE_PATH + '/' + url + search + hash);
+				url: url
+			}, url, RELATIVE_PATH + '/' + url);
 		}
 		return url;
 	};
@@ -282,9 +280,6 @@ $(document).ready(function() {
 					if (window.location.pathname === this.pathname && this.hash.length) {
 						window.location.hash = this.hash;
 					} else {
-						if (window.location.hash) {
-							window.location.hash = '';
-						}
 						if (ajaxify.go(pathname)) {
 							e.preventDefault();
 						}
