@@ -345,7 +345,7 @@ function resetThemes(callback) {
 
 	meta.themes.set({
 		type: 'local',
-		id: 'nodebb-theme-vanilla'
+		id: 'nodebb-theme-persona'
 	}, function(err) {
 		winston.info('[reset] Theme reset to Vanilla');
 		if (typeof callback === 'function') {
