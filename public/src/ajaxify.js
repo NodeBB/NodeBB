@@ -282,7 +282,9 @@ $(document).ready(function() {
 					if (window.location.pathname === this.pathname && this.hash.length) {
 						window.location.hash = this.hash;
 					} else {
-						window.location.hash = '';
+						if (window.location.hash) {
+							window.location.hash = '';
+						}
 						if (ajaxify.go(pathname)) {
 							e.preventDefault();
 						}
