@@ -168,6 +168,7 @@
 		var variables = key.split(regexes.split);
 
 		var parsedKey = key.replace('[[', '').replace(']]', '').split(':');
+		parsedKey = [parsedKey[0]].concat(parsedKey.slice(1).join(':'));
 		if (!(parsedKey[0] && parsedKey[1])) {
 			return callback(data);
 		}
