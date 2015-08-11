@@ -381,7 +381,8 @@ app.cacheBuster = null;
 	};
 
 	function createHeaderTooltips() {
-		if (utils.findBootstrapEnvironment() === 'xs') {
+		var env = utils.findBootstrapEnvironment();
+		if (env === 'xs' || env === 'sm') {
 			return;
 		}
 		$('#header-menu li a[title]').each(function() {
