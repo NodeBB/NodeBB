@@ -13,6 +13,10 @@
 					<span>Storage Size</span> <span class="text-right">{mongo.storageSize} mb</span><br/>
 					<span>Index Size</span> <span class="text-right">{mongo.indexSize} mb</span><br/>
 					<span>File Size</span> <span class="text-right">{mongo.fileSize} mb</span><br/>
+					<hr/>
+					<span>Resident Memory</span> <span class="text-right">{mongo.mem.resident} mb</span><br/>
+					<span>Virtual Memory</span> <span class="text-right">{mongo.mem.virtual} mb</span><br/>
+					<span>Mapped Memory</span> <span class="text-right">{mongo.mem.mapped} mb</span><br/>
 				</div>
 			</div>
 		</div>
