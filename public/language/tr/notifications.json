@@ -20,7 +20,7 @@
     "user_posted_topic": "<strong>%1</strong> yeni bir konu yarattı: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> <strong>%2</strong> başlığında sizden bahsetti.",
     "user_started_following_you": "<strong>%1</strong> sizi takip etmeye başladı.",
-    "new_register": "<strong>%1</strong> sent a registration request.",
+    "new_register": "<strong>%1</strong> kayıt olma isteği gönderdi.",
     "email-confirmed": "E-posta onaylandı",
     "email-confirmed-message": "E-postanızı onaylandığınız için teşekkürler. Hesabınız tamamen aktive edildi.",
     "email-confirm-error-message": "E-posta adresinizi onaylarken bir hata oluştu. Kodunuz geçersiz ya da eski olabilir.",
