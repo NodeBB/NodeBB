@@ -37,7 +37,7 @@ module.exports = function(db, module) {
 
 		if (Array.isArray(data.cid) && data.cid.length) {
 			data.cid = data.cid.filter(Boolean);
-		 	if (data.cid.length > 1) {
+			if (data.cid.length > 1) {
 				searchQuery.cid = {$in: data.cid.map(String)};
 			} else if (data.cid[0]) {
 				searchQuery.cid = data.cid[0].toString();
