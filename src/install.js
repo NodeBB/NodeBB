@@ -486,6 +486,15 @@ function enableDefaultPlugins(next) {
 		'nodebb-plugin-soundpack-default',
 		'nodebb-plugin-emoji-extended'
 	];
+
+	if (Array.isArray(nconf.get('defaultPlugins'))) {
+		defaultEnabled = defaultEnabled.concat(nconf.get('defaultPlugins'));
+	}
+
+	defaultEnabled = defaultEnabled.filter(function(plugin, index, array) {
+		return array.indexOf(plugin) === -1;
+	});
+
 	var	db = require('./database');
 	var order = defaultEnabled.map(function(plugin, index) {
 		return index;
