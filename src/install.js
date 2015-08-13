@@ -495,7 +495,7 @@ function enableDefaultPlugins(next) {
 		return array.indexOf(plugin) === -1;
 	});
 
-	var	db = require('./database');
+	var db = require('./database');
 	var order = defaultEnabled.map(function(plugin, index) {
 		return index;
 	});
