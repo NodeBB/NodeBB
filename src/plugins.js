@@ -216,6 +216,10 @@ var fs = require('fs'),
 				return callback(err);
 			}
 
+			installedPlugins = installedPlugins.filter(function(plugin) {
+				return plugin && !plugin.system;
+			});
+
 			async.each(installedPlugins, function(plugin, next) {
 				// If it errored out because a package.json or plugin.json couldn't be read, no need to do this stuff
 				if (plugin.error) {
