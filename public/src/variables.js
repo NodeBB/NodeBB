@@ -8,8 +8,8 @@
 
 	ajaxify.variables.set = function(key, value) {
 		if (typeof console !== 'undefined' && console.warn) {
-		 	console.warn('[deprecated] variables.set is deprecated, please use ajaxify.data, key=' + key);
-		 }
+			console.warn('[deprecated] variables.set is deprecated, please use ajaxify.data, key=' + key);
+		}
 		parsedVariables[key] = value;
 	};
 
