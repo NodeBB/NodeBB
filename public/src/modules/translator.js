@@ -302,7 +302,9 @@
 		// Expose a global `translator` object for backwards compatibility
 		window.translator = {
 			translate: function() {
-				console.warn('[translator] Global invocation of the translator is now deprecated, please `require` the module instead.');
+				if (typeof console !== 'undefined' && console.warn) {
+					console.warn('[translator] Global invocation of the translator is now deprecated, please `require` the module instead.');
+				}
 				_translator.translate.apply(_translator, arguments);
 			}
 		}

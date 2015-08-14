@@ -7,14 +7,14 @@
 	ajaxify.variables = {};
 
 	ajaxify.variables.set = function(key, value) {
-		if (console && console.warn) {
-			console.warn('[deprecated] variables.set is deprecated, please use ajaxify.data, key=' + key);
-		}
+		if (typeof console !== 'undefined' && console.warn) {
+		 	console.warn('[deprecated] variables.set is deprecated, please use ajaxify.data, key=' + key);
+		 }
 		parsedVariables[key] = value;
 	};
 
 	ajaxify.variables.get = function(key) {
-		if (console && console.warn) {
+		if (typeof console !== 'undefined' && console.warn) {
 			console.warn('[deprecated] variables.get is deprecated, please use ajaxify.data, key=' + key);
 		}
 		return parsedVariables[key];

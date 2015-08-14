@@ -253,8 +253,6 @@ $(document).ready(function() {
 	};
 
 	function ajaxifyAnchors() {
-		templates.registerLoader(ajaxify.loadTemplate);
-
 		function hrefEmpty(href) {
 			return href === undefined || href === '' || href === 'javascript:;';
 		}
@@ -297,6 +295,8 @@ $(document).ready(function() {
 			}
 		});
 	}
+
+	templates.registerLoader(ajaxify.loadTemplate);
 
 	if (window.history && window.history.pushState) {
 		// Progressive Enhancement, ajaxify available only to modern browsers

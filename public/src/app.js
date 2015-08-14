@@ -92,7 +92,7 @@ app.cacheBuster = null;
 
 			switch(url_parts[0]) {
 				case 'user':
-					room = 'user/' + ajaxify.data.theirid;
+					room = 'user/' + ajaxify.data ? ajaxify.data.theirid : 0;
 				break;
 				case 'topic':
 					room = 'topic_' + url_parts[1];
