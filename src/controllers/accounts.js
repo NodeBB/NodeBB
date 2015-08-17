@@ -424,6 +424,82 @@ accountsController.accountSettings = function(req, res, next) {
 			{value: 'month', name: '[[user:digest_monthly]]', selected: 'month' === userData.settings.dailyDigestFreq}
 		];
 
+
+		userData.bootswatchSkinOptions = [
+			{
+				"name": "Default",
+				"value": "default"
+			},
+			{
+				"name": "Cerulean",
+				"value": "cerulean"
+			},
+			{
+				"name": "Cosmo",
+				"value": "cosmo"
+			},
+			{
+				"name": "Cyborg",
+				"value": "cyborg"
+			},
+			{
+				"name": "Darkly",
+				"value": "darkly"
+			},
+			{
+				"name": "Flatly",
+				"value": "flatly"
+			},
+			{
+				"name": "Journal",
+				"value": "journal"
+			},
+			{
+				"name": "Lumen",
+				"value": "lumen"
+			},
+			{
+				"name": "Paper",
+				"value": "paper"
+			},
+			{
+				"name": "Readable",
+				"value": "readable"
+			},
+			{
+				"name": "Sandstone",
+				"value": "sandstone"
+			},
+			{
+				"name": "Simplex",
+				"value": "simplex"
+			},
+			{
+				"name": "Slate",
+				"value": "slate"
+			},
+			{
+				"name": "Spacelab",
+				"value": "spacelab"
+			},
+			{
+				"name": "Superhero",
+				"value": "superhero"
+			},
+			{
+				"name": "United",
+				"value": "united"
+			},
+			{
+				"name": "Yeti",
+				"value": "yeti"
+			}
+		];
+
+		userData.bootswatchSkinOptions.forEach(function(skin) {
+			skin.selected = skin.value === userData.settings.bootswatchSkin;
+		});
+
 		userData.userGroups.forEach(function(group) {
 			group.selected = group.name === userData.settings.groupTitle;
 		});

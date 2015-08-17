@@ -243,6 +243,11 @@ middleware.renderHeader = function(req, res, callback) {
 					if (err) {
 						return next(err);
 					}
+
+					if (settings.bootswatchSkin && settings.bootswatchSkin !== 'default') {
+						templateValues.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + settings.bootswatchSkin + '/bootstrap.min.css';
+					}
+
 					meta.title.build(req.url.slice(1), settings.userLang, next);
 				});
 			} else {
