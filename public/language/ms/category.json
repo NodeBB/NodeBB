@@ -1,9 +1,12 @@
 {
+    "category": "Kategori",
+    "subcategories": "Subkategori",
     "new_topic_button": "Topik Baru",
     "guest-login-post": "Log masuk untuk kirim",
     "no_topics": "<strong>Tiada topik dalam kategori ini.</strong><br />Cuba hantar topik yang baru?",
     "browsing": "melihat",
     "no_replies": "Tiada jawapan",
+    "no_new_posts": "Tiada kiriman baru.",
     "share_this_category": "Kongsi kategori ini",
     "watch": "Melihat",
     "ignore": "Abai",

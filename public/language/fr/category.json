@@ -1,9 +1,12 @@
 {
+    "category": "Catégorie",
+    "subcategories": "Sous-catégories",
     "new_topic_button": "Nouveau sujet",
     "guest-login-post": "Se connecter pour poster",
     "no_topics": "<strong>Il n'y a aucun sujet dans cette catégorie.</strong><br />Pourquoi ne pas en créer un ?",
     "browsing": "parcouru par",
     "no_replies": "Personne n'a répondu",
+    "no_new_posts": "Pas de nouveau message",
     "share_this_category": "Partager cette catégorie",
     "watch": "Suivre",
     "ignore": "Ne plus suivre",

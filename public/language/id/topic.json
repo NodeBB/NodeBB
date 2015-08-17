@@ -2,10 +2,10 @@
     "topic": "Topik",
     "topic_id": "ID Topik",
     "topic_id_placeholder": "Masukkan ID topik",
-    "no_topics_found": "Tidak topik yang ditemukan!",
+    "no_topics_found": "Topik tidak ditemukan!",
     "no_posts_found": "Tidak ada posting yang ditemukan!",
     "post_is_deleted": "Posting ini telah dihapus!",
-    "topic_is_deleted": "This topic is deleted!",
+    "topic_is_deleted": "Topik terhapus!",
     "profile": "Profil",
     "posted_by": "Dibuat oleh %1",
     "posted_by_guest": "Dibuat oleh Tamu",
@@ -13,7 +13,7 @@
     "notify_me": "Beritahukan balasan baru untuk topik ini",
     "quote": "Kutip",
     "reply": "Balas",
-    "guest-login-reply": "Log in to reply",
+    "guest-login-reply": "Log in untuk membalas",
     "edit": "Ubah",
     "delete": "Hapus",
     "purge": "Musnahkan",
@@ -76,7 +76,7 @@
     "fork_no_pids": "Tidak ada posting yang dipilih!",
     "fork_success": "Topik berhasil dicabangkan! Klik disini untuk menuju topik yang telah dicabangkan.",
     "composer.title_placeholder": "Masukkan judul topik di sini...",
-    "composer.handle_placeholder": "Name",
+    "composer.handle_placeholder": "Nama",
     "composer.discard": "Buang",
     "composer.submit": "Kirim",
     "composer.replying_to": "Membalas ke %1",
@@ -96,5 +96,5 @@
     "oldest_to_newest": "Terlama ke Terbaru",
     "newest_to_oldest": "Terbaru ke Terlama",
     "most_votes": "Vote terbanyak",
-    "most_posts": "Most posts"
+    "most_posts": "Postingan terbanyak"
 }

@@ -45,5 +45,6 @@
     "membership.invitation-pending": "Ubutumire Buracyategereje",
     "membership.join-group": "Injira mu Itsinda",
     "membership.leave-group": "Va mu Itsinda",
-    "membership.reject": "Hakanira"
+    "membership.reject": "Hakanira",
+    "new-group.group_name": "Izina ry'Itsinda:"
 }

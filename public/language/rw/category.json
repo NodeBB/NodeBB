@@ -1,9 +1,12 @@
 {
+    "category": "Icyiciro",
+    "subcategories": "Icyiciro gito",
     "new_topic_button": "Ikiganiro Gishya",
     "guest-login-post": "Injiramo wandike",
     "no_topics": "<strong>Nta biganiro byo muri iki cyiciro bihari</strong><br />Watangije kimwe hano se?",
     "browsing": "abari kureba",
     "no_replies": "Nta muntu urasubiza",
+    "no_new_posts": "Nta bishya.",
     "share_this_category": "Sangiza iki cyiciro",
     "watch": "Kurikirana",
     "ignore": "Ihorere",

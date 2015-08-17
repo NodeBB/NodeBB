@@ -1,9 +1,12 @@
 {
+    "category": "Category",
+    "subcategories": "Subcategories",
     "new_topic_button": "Topik Baru",
     "guest-login-post": "Log in to post",
     "no_topics": "<strong>Tidak ada topik dikategori ini</strong><br/> Mengapa anda tidak mencoba  membuat yang baru?",
     "browsing": "penjelajahan",
     "no_replies": "Belum ada orang yang menjawab",
+    "no_new_posts": "No new posts.",
     "share_this_category": "Bagikan kategori ini",
     "watch": "Watch",
     "ignore": "Abaikan",
