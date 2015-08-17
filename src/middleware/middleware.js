@@ -211,6 +211,7 @@ middleware.renderHeader = function(req, res, callback) {
 		'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 		'brand:logo': meta.config['brand:logo'] || '',
 		'brand:logo:url': meta.config['brand:logo:url'] || '',
+		'brand:logo:alt': meta.config['brand:logo:alt'] || '',
 		'brand:logo:display': meta.config['brand:logo']?'':'hide',
 		allowRegistration: registrationType === 'normal' || registrationType === 'admin-approval',
 		searchEnabled: plugins.hasListeners('filter:search.query')

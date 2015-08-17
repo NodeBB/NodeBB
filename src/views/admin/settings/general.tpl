@@ -47,6 +47,10 @@
 				When the logo is clicked, send users to this address. If left blank, user will be sent to the forum index.
 			</p>
 		</div>
+		<div class="form-group">
+			<label for="brand:logo:alt">Alt Text</label>
+			<input id ="brand:logo:alt" type="text" class="form-control" placeholder="Alternative text for accessibility" data-field="brand:logo:alt" />
+		</div>
 	</div>
 </div>
 
