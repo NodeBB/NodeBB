@@ -291,6 +291,7 @@ middleware.renderHeader = function(req, res, callback) {
 		templateValues.customCSS = results.customCSS;
 		templateValues.customJS = results.customJS;
 		templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
+		templateValues.defaultLang = res.locals.config.defaultLang;
 
 		templateValues.template = {name: res.locals.template};
 		templateValues.template[res.locals.template] = true;
