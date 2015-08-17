@@ -1,5 +1,5 @@
 // Romanian
-$.timeago.settings.strings = {
+jQuery.timeago.settings.strings = {
   prefixAgo: "acum",
   prefixFromNow: "in timp de",
   suffixAgo: "",

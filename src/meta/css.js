@@ -69,6 +69,7 @@ module.exports = function(Meta) {
 				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/textcomplete/jquery.textcomplete.css";';
 				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/generics.less";';
+				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/mixins.less";';
 
 				var acpSource = '\n@import "..' + path.sep + 'public/less/admin/admin";\n' + source;
 				acpSource += '\n@import "..' + path.sep + 'public/less/generics.less";';

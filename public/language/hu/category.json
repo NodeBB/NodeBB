@@ -1,9 +1,12 @@
 {
+    "category": "Category",
+    "subcategories": "Subcategories",
     "new_topic_button": "Új témakör",
     "guest-login-post": "A hozzászóláshoz be kell lépni",
     "no_topics": "<strong>Nincs nyitva egy téma sem ebben a kategóriában.</strong>Hozzunk létre egyet.",
     "browsing": "böngészés",
     "no_replies": "Nem érkezett válasz",
+    "no_new_posts": "No new posts.",
     "share_this_category": "Kategória megosztása",
     "watch": "Watch",
     "ignore": "Ignorálás",

@@ -105,8 +105,8 @@ var async = require('async'),
 		}
 	};
 
-	Groups.getGroups = function(start, stop, callback) {
-		db.getSortedSetRevRange('groups:createtime', start, stop, callback);
+	Groups.getGroups = function(set, start, stop, callback) {
+		db.getSortedSetRevRange(set, start, stop, callback);
 	};
 
 	Groups.get = function(groupName, options, callback) {

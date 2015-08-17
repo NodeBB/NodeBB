@@ -20,7 +20,7 @@
     "user_posted_topic": "<strong>%1</strong> membuka topik baru : <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> sebut anda di <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> mula mengikut anda.",
-    "new_register": "<strong>%1</strong> sent a registration request.",
+    "new_register": "<strong>%1</strong> menghantar jemputan pendaftaran.",
     "email-confirmed": "EMel Disahkan",
     "email-confirmed-message": "Terima kasih kerana mengesahkan emel anda. Akaun anda telah diaktifkan sepenuhnya.",
     "email-confirm-error-message": "Berlaku masalah semasa mengesahkan emel anda. Mungkin kod tidak sah atau tamat tempoh.",

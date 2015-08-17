@@ -1,5 +1,5 @@
 "use strict";
-/* global define, socket, config */
+/* global app, define, socket, config */
 
 define('sounds', ['buzz'], function(buzz) {
 	var	Sounds = {};
@@ -17,7 +17,7 @@ define('sounds', ['buzz'], function(buzz) {
 	function loadFiles() {
 		socket.emit('modules.sounds.getSounds', function(err, sounds) {
 			if (err) {
-				return console.log('[sounds] Could not initialise!');
+				return app.alertError('[sounds] Could not initialise!');
 			}
 
 			files = sounds;
@@ -27,7 +27,7 @@ define('sounds', ['buzz'], function(buzz) {
 	function loadMapping() {
 		socket.emit('modules.sounds.getMapping', function(err, mapping) {
 			if (err) {
-				return console.log('[sounds] Could not load sound mapping!');
+				return app.alertError('[sounds] Could not load sound mapping!');
 			}
 			eventSoundMapping = mapping;
 		});
@@ -65,7 +65,7 @@ define('sounds', ['buzz'], function(buzz) {
 			if (loadedSounds[fileName]) {
 				loadedSounds[fileName].play();
 			} else {
-				console.log('[sounds] Not found:', fileName);
+				app.alertError('[sounds] Not found: ' + fileName);
 			}
 		}
 

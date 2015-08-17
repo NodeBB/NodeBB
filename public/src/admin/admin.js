@@ -74,7 +74,6 @@
 		});
 
 		Mousetrap.bind('ctrl+shift+a R', function() {
-			console.log('[admin] Restarting NodeBB...');
 			socket.emit('admin.restart');
 		});
 
@@ -196,9 +195,9 @@
 
 			if (checked) {
 				checkbox.after('<i class="fa fa-toggle-on"></i>');
-			} 
+			}
 			else {
-				checkbox.after('<i class="fa fa-toggle-off"></i>');   
+				checkbox.after('<i class="fa fa-toggle-off"></i>');
 			}
 
 			checkbox.attr('data-toggle-added', true);

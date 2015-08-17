@@ -15,12 +15,12 @@
     "chat.seven_days": "7 Dagar",
     "chat.thirty_days": "30 Dagar",
     "chat.three_months": "3 Månader",
-    "composer.compose": "Compose",
-    "composer.show_preview": "Show Preview",
-    "composer.hide_preview": "Hide Preview",
+    "composer.compose": "Komponera",
+    "composer.show_preview": "Visa förhandsgranskning",
+    "composer.hide_preview": "Dölj förhandsgranskning",
     "composer.user_said_in": "%1 sa i %2:",
     "composer.user_said": "%1 sa:",
     "composer.discard": "Är du säker på att du vill förkasta det här inlägget?",
-    "composer.submit_and_lock": "Submit and Lock",
-    "composer.toggle_dropdown": "Toggle Dropdown"
+    "composer.submit_and_lock": "Skicka och lås",
+    "composer.toggle_dropdown": "Visa/Dölj dropdown"
 }

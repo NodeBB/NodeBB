@@ -211,6 +211,7 @@ middleware.renderHeader = function(req, res, callback) {
 		'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 		'brand:logo': meta.config['brand:logo'] || '',
 		'brand:logo:url': meta.config['brand:logo:url'] || '',
+		'brand:logo:alt': meta.config['brand:logo:alt'] || '',
 		'brand:logo:display': meta.config['brand:logo']?'':'hide',
 		allowRegistration: registrationType === 'normal' || registrationType === 'admin-approval',
 		searchEnabled: plugins.hasListeners('filter:search.query')
@@ -242,6 +243,11 @@ middleware.renderHeader = function(req, res, callback) {
 					if (err) {
 						return next(err);
 					}
+
+					if (settings.bootswatchSkin && settings.bootswatchSkin !== 'default') {
+						templateValues.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + settings.bootswatchSkin + '/bootstrap.min.css';
+					}
+
 					meta.title.build(req.url.slice(1), settings.userLang, next);
 				});
 			} else {
@@ -291,6 +297,7 @@ middleware.renderHeader = function(req, res, callback) {
 		templateValues.customCSS = results.customCSS;
 		templateValues.customJS = results.customJS;
 		templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
+		templateValues.defaultLang = res.locals.config.defaultLang;
 
 		templateValues.template = {name: res.locals.template};
 		templateValues.template[res.locals.template] = true;
@@ -407,7 +414,8 @@ middleware.maintenanceMode = function(req, res, next) {
 			'/templates/[\\w/]+.tpl',
 			'/api/login',
 			'/api/?',
-			'/language/.+'
+			'/language/.+',
+			'/uploads/system/site-logo.png'
 		],
 		render = function() {
 			res.status(503);

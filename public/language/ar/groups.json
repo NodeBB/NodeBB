@@ -38,12 +38,13 @@
     "details.private_help": "في حالة تفعيل الخيار، الانضمام إلى المجموعة يستلزم قبول مالكها",
     "details.hidden": "مخفي",
     "details.hidden_help": "في حالة تفعيل الخيار، لن تظهر المجموعة للعموم والإنضمام إليها سيتلزم دعوة يدوية.",
-    "details.delete_group": "Delete Group",
+    "details.delete_group": "حذف المجموعة",
     "event.updated": "تم تحديث بيانات المجموعة",
     "event.deleted": "تم حذف المجموعة %1",
     "membership.accept-invitation": "Accept Invitation",
     "membership.invitation-pending": "Invitation Pending",
     "membership.join-group": "Join Group",
     "membership.leave-group": "Leave Group",
-    "membership.reject": "Reject"
+    "membership.reject": "Reject",
+    "new-group.group_name": "Group Name:"
 }

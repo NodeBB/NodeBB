@@ -1,9 +1,12 @@
 {
+    "category": "Category",
+    "subcategories": "Subcategories",
     "new_topic_button": "Uus teema",
     "guest-login-post": "Postitamiseks logi sisse",
     "no_topics": "<strong>Kahjuks ei leidu siin kategoorias ühtegi teemat.</strong><br />Soovid postitada?",
     "browsing": "vaatab",
     "no_replies": "Keegi pole vastanud",
+    "no_new_posts": "No new posts.",
     "share_this_category": "Jaga seda kategooriat",
     "watch": "Vaata",
     "ignore": "Ignoreeri",

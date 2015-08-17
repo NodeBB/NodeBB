@@ -14,6 +14,8 @@ module.exports = function(Topics) {
 
 	var unreadCutoff = 86400000 * 2;
 
+	Topics.unreadCutoff = unreadCutoff;
+
 	Topics.getTotalUnread = function(uid, callback) {
 		Topics.getUnreadTids(0, uid, 0, 20, function(err, tids) {
 			callback(err, tids ? tids.length : 0);

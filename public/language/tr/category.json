@@ -1,9 +1,12 @@
 {
+    "category": "Kategori",
+    "subcategories": "Alt kategoriler",
     "new_topic_button": "Yeni Başlık",
     "guest-login-post": "Göndermek için giriş yapın",
     "no_topics": "<strong> Bu kategoride hiç konu yok. </strong> <br /> Yeni bir konu açmak istemez misiniz?",
     "browsing": "gözden geçiriliyor",
     "no_replies": "Kimse yanıtlamadı",
+    "no_new_posts": "Yeni ileti yok",
     "share_this_category": "Bu kategoriyi paylaş",
     "watch": "İzle",
     "ignore": "Yoksay",

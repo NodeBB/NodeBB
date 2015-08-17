@@ -1,9 +1,12 @@
 {
+    "category": "Category",
+    "subcategories": "Subcategories",
     "new_topic_button": "新主題",
     "guest-login-post": "登錄後才能發表",
     "no_topics": "<strong>這個類別還沒有任何主題。</strong><br />為何不來發點東西呢？",
     "browsing": "正在瀏覽",
     "no_replies": "還沒有回覆",
+    "no_new_posts": "No new posts.",
     "share_this_category": "分享這類別",
     "watch": "觀看",
     "ignore": "忽略",

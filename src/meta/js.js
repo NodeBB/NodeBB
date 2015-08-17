@@ -23,7 +23,7 @@ module.exports = function(Meta) {
 			base: [
 				'public/vendor/jquery/js/jquery.js',
 				'./node_modules/socket.io-client/socket.io.js',
-				'public/vendor/jquery/timeago/jquery.timeago.min.js',
+				'public/vendor/jquery/timeago/jquery.timeago.js',
 				'public/vendor/jquery/js/jquery.form.min.js',
 				'public/vendor/visibility/visibility.min.js',
 				'public/vendor/bootstrap/js/bootstrap.min.js',

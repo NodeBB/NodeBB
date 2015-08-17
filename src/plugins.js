@@ -170,9 +170,13 @@ var fs = require('fs'),
 		require('request')(url, {
 			json: true
 		}, function(err, res, body) {
+			if (res.statusCode === 404 || !body.payload) {
+				return callback(err, {});
+			}
+
 			Plugins.normalise([body.payload], function(err, normalised) {
 				normalised = normalised.filter(function(plugin) {
-					return plugin.id = id;
+					return plugin.id === id;
 				});
 				return callback(err, !err ? normalised[0] : undefined);
 			});
@@ -211,6 +215,10 @@ var fs = require('fs'),
 			if (err) {
 				return callback(err);
 			}
+
+			installedPlugins = installedPlugins.filter(function(plugin) {
+				return plugin && !plugin.system;
+			});
 
 			async.each(installedPlugins, function(plugin, next) {
 				// If it errored out because a package.json or plugin.json couldn't be read, no need to do this stuff

@@ -45,5 +45,6 @@
     "membership.invitation-pending": "Invitation Pending",
     "membership.join-group": "Join Group",
     "membership.leave-group": "Leave Group",
-    "membership.reject": "Reject"
+    "membership.reject": "Reject",
+    "new-group.group_name": "Group Name:"
 }

@@ -27,7 +27,7 @@
 
 			<div class="checkbox">
 				<label>
-					<input type="checkbox" data-field="allowGuestUserSearching"> <strong>Allow guests to search users logging in</strong>
+					<input type="checkbox" data-field="allowGuestUserSearching"> <strong>Allow guests to search users without logging in</strong>
 				</label>
 			</div>
 		</form>

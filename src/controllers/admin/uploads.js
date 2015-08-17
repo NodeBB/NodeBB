@@ -38,7 +38,7 @@ uploadsController.uploadFavicon = function(req, res, next) {
 				return next(err);
 			}
 
-			res.json([{name: uploadedFile.name, url: nconf.get('relative_path') + image.url}]);
+			res.json([{name: uploadedFile.name, url: image.url}]);
 		});
 	}
 };

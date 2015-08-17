@@ -203,6 +203,15 @@
 			return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
 		},
 
+		overrideTimeago: function() {
+			var timeagoFn = $.fn.timeago;
+			$.fn.timeago = function() {
+				timeagoFn.apply(this, arguments).each(function() {
+					$(this).attr('title', (new Date($(this).attr('title'))).toString());
+				});
+			};
+		},
+
 		toISOString: function(timestamp) {
 			if (!timestamp || !Date.prototype.toISOString) {
 				return '';

@@ -43,6 +43,10 @@ SocketGroups.leave = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-uid]]'));
 	}
 
+	if (data.groupName === 'administrators') {
+		return callback(new Error('[[error:cant-remove-self-as-admin]]'));
+	}
+
 	groups.leave(data.groupName, socket.uid, callback);
 };
 
@@ -131,7 +135,7 @@ function acceptRejectAll(type, socket, data, callback) {
 			}
 		], callback);
 	});
-};
+}
 
 SocketGroups.issueInvite = function(socket, data, callback) {
 	if (!data) {

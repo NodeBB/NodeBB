@@ -1,9 +1,12 @@
 {
+    "category": "Category",
+    "subcategories": "Subcategories",
     "new_topic_button": "Nova Tema",
     "guest-login-post": "Пријавите се за слање порука",
     "no_topics": "<strong>Ne postoji nijedna tema u ovoj kategoriji.</strong><br />Zasto ne bi postavio jednu?",
     "browsing": "gleda",
     "no_replies": "Jos uvek nema odgovora",
+    "no_new_posts": "No new posts.",
     "share_this_category": "Podeli ovu kategoriju",
     "watch": "Прати",
     "ignore": "Игнориши",

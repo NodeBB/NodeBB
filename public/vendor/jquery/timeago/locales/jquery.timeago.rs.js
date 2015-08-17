@@ -39,7 +39,7 @@
         months: function (value) {
             return numpf(value, "%d mesec", "%d meseca", "%d meseci");
         },
-        year: "pre godinu dana",
+        year: "godinu dana",
         years: function (value) {
             return numpf(value, "%d godinu", "%d godine", "%d godina");
         },

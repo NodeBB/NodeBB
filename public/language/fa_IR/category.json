@@ -1,9 +1,12 @@
 {
+    "category": "Category",
+    "subcategories": "Subcategories",
     "new_topic_button": "جستار تازه",
     "guest-login-post": "برای ثبت نظر وارد شوید",
     "no_topics": "<strong>هیچ پستی در این دسته نیست.</strong><br />چرا شما یکی نفرستید؟",
     "browsing": "بیننده‌ها",
     "no_replies": "هیچ کسی پاسخ نداده است.",
+    "no_new_posts": "No new posts.",
     "share_this_category": "به اشتراک‌گذاری این دسته",
     "watch": "نظارت کردن",
     "ignore": "نادیده گرفتن",

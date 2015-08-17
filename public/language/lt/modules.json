@@ -15,12 +15,12 @@
     "chat.seven_days": "7 dienos",
     "chat.thirty_days": "30 dienų",
     "chat.three_months": "3 mėnesiai",
-    "composer.compose": "Compose",
-    "composer.show_preview": "Show Preview",
-    "composer.hide_preview": "Hide Preview",
+    "composer.compose": "Sukomponuoti",
+    "composer.show_preview": "Rodyti pavyzdį",
+    "composer.hide_preview": "Slėpti pavyzdį",
     "composer.user_said_in": "%1 parašė į %2:",
     "composer.user_said": "%1 parašė:",
     "composer.discard": "Ar tikrai norite sunaikinti šį pranešimą?",
-    "composer.submit_and_lock": "Submit and Lock",
-    "composer.toggle_dropdown": "Toggle Dropdown"
+    "composer.submit_and_lock": "Pateikti ir užrakinti",
+    "composer.toggle_dropdown": "Perjungti Nukritimą"
 }

@@ -273,7 +273,7 @@ Upgrade.upgrade = function(callback) {
 					async.eachLimit(users, 100, function(user, next) {
 						var newEmail = user.value.replace(/\uff0E/g, '.');
 						if (newEmail === user.value) {
-							return next();
+							return process.nextTick(next);
 						}
 						async.series([
 							async.apply(db.sortedSetRemove, 'email:uid', user.value),
@@ -341,13 +341,13 @@ Upgrade.upgrade = function(callback) {
 					if (err) {
 						return callback(err);
 					}
-					var index = 0;
+
+					userData = userData.filter(function(user) {
+						return user && user.value;
+					});
+
 					async.eachLimit(userData, 500, function(userData, next) {
-						if (userData && userData.value) {
-							db.sortedSetAdd(set + ':sorted', 0, userData.value.toLowerCase() + ':' + userData.score, next);
-						} else {
-							next();
-						}
+						db.sortedSetAdd(set + ':sorted', 0, userData.value.toLowerCase() + ':' + userData.score, next);
 					}, function(err) {
 						callback(err);
 					});
@@ -390,10 +390,9 @@ Upgrade.upgrade = function(callback) {
 						return callback(err);
 					}
 
+					groupNames = groupNames.filter(Boolean);
+
 					async.eachLimit(groupNames, 500, function(groupName, next) {
-						if (!groupName) {
-							return next();
-						}
 						db.getObjectFields('group:' + groupName, ['hidden', 'system', 'createtime', 'memberCount'], function(err, groupData) {
 							if (err) {
 								return next(err);

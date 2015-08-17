@@ -1,9 +1,12 @@
 {
+    "category": "Category",
+    "subcategories": "Subcategories",
     "new_topic_button": "נושא חדש",
     "guest-login-post": "Log in to post",
     "no_topics": "<strong>קטגוריה זו ריקה מנושאים.</strong><br />למה שלא תנסה להוסיף נושא חדש?",
     "browsing": "צופים בנושא זה כעת",
     "no_replies": "אין תגובות",
+    "no_new_posts": "No new posts.",
     "share_this_category": "שתף קטגוריה זו",
     "watch": "Watch",
     "ignore": "התעלם",
