@@ -47,33 +47,38 @@
 		// Load the appropriate timeago locale file, and correct NodeBB language codes to timeago codes, if necessary
 		var	languageCode;
 		switch(config.userLang) {
-		case 'cs':
-			languageCode = 'cz';
-			break;
+			case 'en_GB':
+			case 'en_US':
+				languageCode = 'en';
+				break;
 
-		case 'fa_IR':
-			languageCode = 'fa';
-			break;
+			case 'cs':
+				languageCode = 'cz';
+				break;
 
-		case 'pt_BR':
-			languageCode = 'pt-br';
-			break;
+			case 'fa_IR':
+				languageCode = 'fa';
+				break;
 
-		case 'nb':
-			languageCode = 'no';
-			break;
+			case 'pt_BR':
+				languageCode = 'pt-br';
+				break;
 
-		case 'zh_TW':
-			languageCode = 'zh-TW';
-			break;
+			case 'nb':
+				languageCode = 'no';
+				break;
 
-		case 'zh_CN':
-			languageCode = 'zh-CN';
-			break;
+			case 'zh_TW':
+				languageCode = 'zh-TW';
+				break;
 
-		default:
-			languageCode = config.userLang;
-			break;
+			case 'zh_CN':
+				languageCode = 'zh-CN';
+				break;
+
+			default:
+				languageCode = config.userLang;
+				break;
 		}
 
 		$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').success(function() {
