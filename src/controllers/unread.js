@@ -12,8 +12,7 @@ var async = require('async'),
 
 var unreadController = {};
 
-
-unreadController.unread = function(req, res, next) {
+unreadController.get = function(req, res, next) {
 	var stop = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
 	var results;
 	var cid = req.query.cid;

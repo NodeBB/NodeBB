@@ -9,70 +9,12 @@ var categoriesController = {},
 	privileges = require('../privileges'),
 	user = require('../user'),
 	categories = require('../categories'),
-	topics = require('../topics'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
 	pagination = require('../pagination'),
 	helpers = require('./helpers'),
 	utils = require('../../public/src/utils');
 
-categoriesController.recent = function(req, res, next) {
-	var stop = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
-	topics.getTopicsFromSet('topics:recent', req.uid, 0, stop, function(err, data) {
-		if (err) {
-			return next(err);
-		}
-
-		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
-		data.rssFeedUrl = nconf.get('relative_path') + '/recent.rss';
-		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[recent:title]]'}]);
-
-		plugins.fireHook('filter:recent.build', {req: req, res: res, templateData: data}, function(err, data) {
-			if (err) {
-				return next(err);
-			}
-			res.render('recent', data.templateData);
-		});
-	});
-};
-
-var anonCache = {}, lastUpdateTime = 0;
-
-categoriesController.popular = function(req, res, next) {
-	var terms = {
-		daily: 'day',
-		weekly: 'week',
-		monthly: 'month',
-		alltime: 'alltime'
-	};
-	var term = terms[req.params.term] || 'day';
-
-	if (!req.uid) {
-		if (anonCache[term] && (Date.now() - lastUpdateTime) < 60 * 60 * 1000) {
-			return res.render('popular', anonCache[term]);
-		}
-	}
-
-	topics.getPopular(term, req.uid, meta.config.topicsPerList, function(err, topics) {
-		if (err) {
-			return next(err);
-		}
-
-		var data = {
-			topics: topics,
-			'feeds:disableRSS': parseInt(meta.config['feeds:disableRSS'], 10) === 1,
-			rssFeedUrl: nconf.get('relative_path') + '/popular/' + (req.params.term || 'daily') + '.rss',
-			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[global:header.popular]]'}])
-		};
-
-		if (!req.uid) {
-			anonCache[term] = data;
-			lastUpdateTime = Date.now();
-		}
-
-		res.render('popular', data);
-	});
-};
 
 categoriesController.list = function(req, res, next) {
 	async.parallel({
