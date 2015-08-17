@@ -31,25 +31,36 @@
 <div class="panel panel-default">
 	<div class="panel-heading">Site Logo</div>
 	<div class="panel-body">
-		<form>
-			<label>Image</label>
-			<input id="logoUrl" type="text" class="form-control" placeholder="Path to a logo to display on forum header" data-field="brand:logo" /><br />
-			<input data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/uploadlogo" type="button" class="btn btn-default" value="Upload"></input>
-			<br/><br/>
-			<label>URL</label>
-			<input type="text" class="form-control" placeholder="The URL of the site logo" data-field="brand:logo:url" /><br />
-		</form>
+		<div class="form-group">
+			<label for="logoUrl">Image</label>
+			<div class="input-group">
+				<input id="logoUrl" type="text" class="form-control" placeholder="Path to a logo to display on forum header" data-field="brand:logo" data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/uploadlogo" readonly />
+				<span class="input-group-btn">
+					<input data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/uploadlogo" type="button" class="btn btn-default" value="Upload"></input>
+				</span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="brand:logo:url">URL</label>
+			<input id ="brand:logo:url" type="text" class="form-control" placeholder="The URL of the site logo" data-field="brand:logo:url" />
+			<p class="help-block">
+				When the logo is clicked, send users to this address. If left blank, user will be sent to the forum index.
+			</p>
+		</div>
 	</div>
 </div>
 
 <div class="panel panel-default">
 	<div class="panel-heading">Favicon</div>
 	<div class="panel-body">
-		<form>
-			<label>Favicon</label><br />
-			<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" /><br />
-			<input data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" type="button" class="btn btn-default" value="Upload"></input>
-		</form>
+		<div class="form-group">
+			<div class="input-group">
+				<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" readonly />
+				<span class="input-group-btn">
+					<input data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" type="button" class="btn btn-default" value="Upload"></input>
+				</span>
+			</div>
+		</div>
 	</div>
 </div>
 
