@@ -5,7 +5,8 @@ var uglifyjs = require('uglify-js'),
 	async = require('async'),
 	fs = require('fs'),
 	crypto = require('crypto'),
-
+	utils = require('./public/src/utils'),
+ 
 	Minifier = {
 		js: {}
 	};
