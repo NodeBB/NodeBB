@@ -241,9 +241,9 @@ app.cacheBuster = null;
 	app.processPage = function () {
 		highlightNavigationLink();
 
-		$('.timeago').timeago().each(function() {
-			$(this).attr('title', (new Date($(this).attr('title'))).toString());
-		});
+		utils.overrideTimeago();
+
+		$('.timeago').timeago();
 
 		utils.makeNumbersHumanReadable($('.human-readable-number'));
 

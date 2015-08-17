@@ -255,9 +255,7 @@ define('forum/topic/posts', [
 		app.replaceSelfLinks(posts.find('a'));
 		utils.addCommasToNumbers(posts.find('.formatted-number'));
 		utils.makeNumbersHumanReadable(posts.find('.human-readable-number'));
-		posts.find('.timeago').timeago().each(function() {
-			$(this).attr('title', (new Date($(this).attr('title'))).toString());
-		});
+		posts.find('.timeago').timeago();
 		posts.find('[component="post/content"] img:not(.emoji)').each(function() {
 			var $this = $(this);
 			if (!$this.parent().is('a')) {
