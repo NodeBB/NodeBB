@@ -63,6 +63,7 @@ apiController.getConfig = function(req, res, next) {
 	config.postsPerPage = meta.config.postsPerPage || 20;
 	config.maximumFileSize = meta.config.maximumFileSize;
 	config['theme:id'] = meta.config['theme:id'];
+	config['theme:src'] = meta.config['theme:src'];
 	config.defaultLang = meta.config.defaultLang || 'en_GB';
 	config.userLang = req.query.lang || config.defaultLang;
 	config.environment = process.env.NODE_ENV;

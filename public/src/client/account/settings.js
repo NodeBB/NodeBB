@@ -61,6 +61,13 @@ define('forum/account/settings', ['forum/account/header'], function(header) {
 
 			return false;
 		});
+
+		$('#bootswatchSkin').on('change', function() {
+			var css = $('#bootswatchCSS'),
+				val = $(this).val() === 'default' ? config['theme:src'] : 'http://maxcdn.bootstrapcdn.com/bootswatch/latest/' + $(this).val() + '/bootstrap.min.css';
+
+			css.attr('href', val);
+		});
 	};
 
 	return AccountSettings;
