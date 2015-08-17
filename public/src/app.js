@@ -469,11 +469,13 @@ app.cacheBuster = null;
 			return;
 		}
 
-		translator.translate('[[global:' + status + ']]', function(translated) {
-			el.removeClass('online offline dnd away')
-				.addClass(status)
-				.attr('title', translated)
-				.attr('data-original-title', translated);
+		require(['translator'], function(translator) {
+			translator.translate('[[global:' + status + ']]', function(translated) {
+				el.removeClass('online offline dnd away')
+					.addClass(status)
+					.attr('title', translated)
+					.attr('data-original-title', translated);
+			});
 		});
 	};
 
