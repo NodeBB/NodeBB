@@ -44,81 +44,72 @@
 	};
 
 	translator.prepareDOM = function() {
-		// Load the appropriate timeago locale file
-		if (config.userLang !== 'en_GB' && config.userLang !== 'en_US') {
-			// Correct NodeBB language codes to timeago codes, if necessary
-			var	languageCode;
-			switch(config.userLang) {
-			case 'cs':
-				languageCode = 'cz';
-				break;
+		// Load the appropriate timeago locale file, and correct NodeBB language codes to timeago codes, if necessary
+		var	languageCode;
+		switch(config.userLang) {
+		case 'cs':
+			languageCode = 'cz';
+			break;
 
-			case 'fa_IR':
-				languageCode = 'fa';
-				break;
+		case 'fa_IR':
+			languageCode = 'fa';
+			break;
 
-			case 'pt_BR':
-				languageCode = 'pt-br';
-				break;
+		case 'pt_BR':
+			languageCode = 'pt-br';
+			break;
 
-			case 'nb':
-				languageCode = 'no';
-				break;
+		case 'nb':
+			languageCode = 'no';
+			break;
 
-			case 'zh_TW':
-				languageCode = 'zh-TW';
-				break;
+		case 'zh_TW':
+			languageCode = 'zh-TW';
+			break;
 
-			case 'zh_CN':
-				languageCode = 'zh-CN';
-				break;
+		case 'zh_CN':
+			languageCode = 'zh-CN';
+			break;
 
-			default:
-				languageCode = config.userLang;
-				break;
-			}
+		default:
+			languageCode = config.userLang;
+			break;
+		}
 
-			$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').success(function() {
-				$('.timeago').timeago();
+		$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').success(function() {
+			$('.timeago').timeago();
+			translator.timeagoShort = $.extend({}, jQuery.timeago.settings.strings);
+
+			// Retrieve the shorthand timeago values as well
+			$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').success(function() {
+				// Switch back to long-form
+				translator.toggleTimeagoShorthand();
 			}).fail(function() {
+				$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.en-short.js').success(function() {
+					// Switch back to long-form
+					translator.toggleTimeagoShorthand();
+				});
+			});
+		}).fail(function() {
+			$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.en-short.js').success(function() {
+				// Switch back to long-form
+				translator.toggleTimeagoShorthand();
 				$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.en.js');
 			});
+		});
 
-			// Add directional code if necessary
-			translator.translate('[[language:dir]]', function(value) {
-				if (value) {
-					$('html').css('direction', value).attr('data-dir', value);
-				}
-			});
-		}
+		// Add directional code if necessary
+		translator.translate('[[language:dir]]', function(value) {
+			if (value) {
+				$('html').css('direction', value).attr('data-dir', value);
+			}
+		});
 	};
 
 	translator.toggleTimeagoShorthand = function() {
-		if (!translator.timeagoStrings) {
-			translator.timeagoStrings = $.extend({}, jQuery.timeago.settings.strings);
-			jQuery.timeago.settings.strings = {
-				prefixAgo: null,
-				prefixFromNow: null,
-				suffixAgo: "",
-				suffixFromNow: "",
-				seconds: "1m",
-				minute: "1m",
-				minutes: "%dm",
-				hour: "1h",
-				hours: "%dh",
-				day: "1d",
-				days: "%dd",
-				month: "1mo",
-				months: "%dmo",
-				year: "1yr",
-				years: "%dyr",
-				wordSeparator: " ",
-				numbers: []
-			};
-		} else {
-			jQuery.timeago.settings.strings = $.extend({}, translator.timeagoStrings);
-			delete translator.timeagoStrings;
-		}
+		var tmp = $.extend({}, jQuery.timeago.settings.strings);
+		jQuery.timeago.settings.strings = $.extend({}, translator.timeagoShort);
+		translator.timeagoShort = $.extend({}, tmp);
 	};
 
 	translator.translate = function (text, language, callback) {
