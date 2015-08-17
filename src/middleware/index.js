@@ -57,6 +57,10 @@ module.exports = function(app) {
 		cookie.domain = meta.config.cookieDomain;
 	}
 
+	if (nconf.get('secure')) {
+		cookie.secure = true;
+	}
+
 	app.use(session({
 		store: db.sessionStore,
 		secret: nconf.get('secret'),
