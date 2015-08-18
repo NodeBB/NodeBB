@@ -110,6 +110,9 @@ Controllers.register = function(req, res, next) {
 			}
 		},
 		function(next) {
+			plugins.fireHook('filter:parse.post', {postData: {content: meta.config.termsOfUse}}, next);
+		},
+		function(tos, next) {
 			var loginStrategies = require('../routes/authentication').getLoginStrategies();
 			var data = {
 				'register_window:spansize': loginStrategies.length ? 'col-md-6' : 'col-md-12',
@@ -121,7 +124,7 @@ Controllers.register = function(req, res, next) {
 			data.minimumUsernameLength = meta.config.minimumUsernameLength;
 			data.maximumUsernameLength = meta.config.maximumUsernameLength;
 			data.minimumPasswordLength = meta.config.minimumPasswordLength;
-			data.termsOfUse = meta.config.termsOfUse;
+			data.termsOfUse = tos.postData.content;
 			data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[register:register]]'}]);
 			data.regFormEntry = [];
 			data.error = req.flash('error')[0];

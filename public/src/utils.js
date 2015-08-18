@@ -206,9 +206,13 @@
 		overrideTimeago: function() {
 			var timeagoFn = $.fn.timeago;
 			$.fn.timeago = function() {
-				timeagoFn.apply(this, arguments).each(function() {
-					$(this).attr('title', (new Date($(this).attr('title'))).toString());
-				});
+				var els = timeagoFn.apply(this, arguments);
+
+				if (els) {
+					els.each(function() {
+						$(this).attr('title', (new Date($(this).attr('title'))).toString());
+					});
+				}
 			};
 		},
 
