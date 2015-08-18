@@ -59,6 +59,10 @@ SocketMeta.rooms.enter = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
+	if (data.enter) {
+		data.enter = data.enter.toString();
+	}
+
 	if (data.enter && data.enter.startsWith('uid_') && data.enter !== 'uid_' + socket.uid) {
 		return callback(new Error('[[error:not-allowed]]'));
 	}
