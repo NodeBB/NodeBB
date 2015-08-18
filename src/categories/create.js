@@ -10,6 +10,8 @@ module.exports = function(Categories) {
 
 	Categories.create = function(data, callback) {
 		var category;
+		var parentCid = data.parentCid ? data.parentCid : 0;
+
 		async.waterfall([
 			function(next) {
 				db.incrObjectField('global', 'nextCid', next);
@@ -27,7 +29,7 @@ module.exports = function(Categories) {
 					bgColor: data.bgColor || colours[0],
 					color: data.color || colours[1],
 					slug: slug,
-					parentCid: ( data.parentCid ? data.parentCid : 0 ),
+					parentCid: parentCid,
 					topic_count: 0,
 					post_count: 0,
 					disabled: 0,
@@ -48,6 +50,7 @@ module.exports = function(Categories) {
 				async.series([
 					async.apply(db.setObject, 'category:' + category.cid, category),
 					async.apply(db.sortedSetAdd, 'categories:cid', category.order, category.cid),
+					async.apply(db.sortedSetAdd, 'cid:' + parentCid + ':children', category.order, category.cid),
 					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'administrators'),
 					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'registered-users'),
 					async.apply(privileges.categories.give, ['find', 'read'], category.cid, 'guests')

@@ -17,7 +17,7 @@ searchController.search = function(req, res, next) {
 
 	var breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:search]]'}]);
 
-	categories.getCategoriesByPrivilege(req.uid, 'read', function(err, categories) {
+	categories.getCategoriesByPrivilege('categories:cid', req.uid, 'read', function(err, categories) {
 		if (err) {
 			return next(err);
 		}

@@ -50,16 +50,62 @@ module.exports = function(Categories) {
 	};
 
 	function updateCategoryField(cid, key, value, callback) {
+		if (key === 'parentCid') {
+			return updateParent(cid, value, callback);
+		}
+
 		db.setObjectField('category:' + cid, key, value, function(err) {
 			if (err) {
 				return callback(err);
 			}
 
 			if (key === 'order') {
-				db.sortedSetAdd('categories:cid', value, cid, callback);
+				updateOrder(cid, value, callback);
 			} else {
 				callback();
 			}
+		});
+	}
+
+	function updateParent(cid, newParent, callback) {
+		Categories.getCategoryField(cid, 'parentCid', function(err, oldParent) {
+			if (err) {
+				return callback(err);
+			}
+
+			async.series([
+				function (next) {
+					oldParent = parseInt(oldParent, 10) || 0;
+					db.sortedSetRemove('cid:' + oldParent + ':children', cid, next);
+				},
+				function (next) {
+					newParent = parseInt(newParent, 10) || 0;
+					db.sortedSetAdd('cid:' + newParent + ':children', cid, cid, next);
+				},
+				function (next) {
+					db.setObjectField('category:' + cid, 'parentCid', newParent, next);
+				}
+			], function(err, results) {
+				callback(err);
+			});
+		});
+	}
+
+	function updateOrder(cid, order, callback) {
+		Categories.getCategoryField(cid, 'parentCid', function(err, parentCid) {
+			if (err) {
+				return callback(err);
+			}
+
+			async.parallel([
+				function (next) {
+					db.sortedSetAdd('categories:cid', order, cid, next);
+				},
+				function (next) {
+					parentCid = parseInt(parentCid, 10) || 0;
+					db.sortedSetAdd('cid:' + parentCid + ':children', order, cid, next);
+				}
+			], callback);
 		});
 	}
 

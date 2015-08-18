@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 6, 3);
+	latestSchema = Date.UTC(2015, 7, 18);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -444,6 +444,46 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2015/07/03] Enabling default composer plugin skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 7, 18);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/08/18] Creating children category sorted sets');
+
+				db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+					if (err) {
+						return next(err);
+					}
+
+					async.each(cids, function(cid, next) {
+						db.getObjectFields('category:' + cid, ['parentCid', 'order'], function(err, category) {
+							if (err) {
+								return next(err);
+							}
+							if (!category) {
+								return next();
+							}
+							if (parseInt(category.parentCid, 10)) {
+								db.sortedSetAdd('cid:' + category.parentCid + ':children', parseInt(category.order, 10), cid, next);
+							} else {
+								db.sortedSetAdd('cid:0:children', parseInt(category.order, 10), cid, next);
+							}
+						});
+					}, function(err) {
+						if (err) {
+							return next(err);
+						}
+
+						winston.info('[2015/08/18] Creating children category sorted sets done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+
+			} else {
+				winston.info('[2015/08/18] Creating children category sorted sets skipped');
 				next();
 			}
 		}
