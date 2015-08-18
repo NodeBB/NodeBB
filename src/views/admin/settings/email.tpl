@@ -14,6 +14,13 @@
 				</p>
 				<input type="text" class="form-control input-lg" id="email:from" data-field="email:from" placeholder="info@example.org" /><br />
 			</div>
+			<div class="form-group">
+				<label for="email:from_name"><strong>From Name</strong></label>
+				<p class="help-block">
+					The from name to display in the email.
+				</p>
+				<input type="text" class="form-control input-lg" id="email:from_name" data-field="email:from_name" placeholder="NodeBB" /><br />
+			</div>
 			<button class="btn btn-block btn-default" type="button" data-action="email.test">Send Test Email</button>
 			<p class="help-block">
 				The test email will be sent to the currently logged in user's email address.

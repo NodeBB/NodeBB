@@ -71,6 +71,7 @@ var	fs = require('fs'),
 					Plugins.fireHook('action:email.send', {
 						to: email,
 						from: meta.config['email:from'] || 'no-reply@localhost.lan',
+						from_name: meta.config['email:from_name'] || 'NodeBB',
 						subject: translated[2],
 						html: translated[0],
 						plaintext: translated[1],
