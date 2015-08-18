@@ -42,9 +42,9 @@ Controllers.home = function(req, res, next) {
 		if (route === 'categories') {
 			Controllers.categories.list(req, res, next);
 		} else if (route === 'recent') {
-			Controllers.categories.recent(req, res, next);
+			Controllers.recent.get(req, res, next);
 		} else if (route === 'popular') {
-			Controllers.categories.popular(req, res, next);
+			Controllers.popular.get(req, res, next);
 		} else {
 			next();
 		}
