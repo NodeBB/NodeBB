@@ -15,7 +15,7 @@ SocketCategories.getRecentReplies = function(socket, cid, callback) {
 };
 
 SocketCategories.get = function(socket, data, callback) {
-	categories.getCategoriesByPrivilege(socket.uid, 'find', callback);
+	categories.getCategoriesByPrivilege('categories:cid', socket.uid, 'find', callback);
 };
 
 SocketCategories.getWatchedCategories = function(socket, data, callback) {
@@ -117,7 +117,7 @@ SocketCategories.getUsersInCategory = function(socket, cid, callback) {
 };
 
 SocketCategories.getCategoriesByPrivilege = function(socket, privilege, callback) {
-	categories.getCategoriesByPrivilege(socket.uid, privilege, callback);
+	categories.getCategoriesByPrivilege('categories:cid', socket.uid, privilege, callback);
 };
 
 SocketCategories.watch = function(socket, cid, callback) {

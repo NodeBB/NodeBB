@@ -33,7 +33,7 @@ categoriesController.list = function(req, res, next) {
 				content: 'website'
 			}];
 
-			if(meta.config['brand:logo']) {
+			if (meta.config['brand:logo']) {
 				res.locals.metaTags.push({
 					property: 'og:image',
 					content: meta.config['brand:logo']
@@ -46,22 +46,13 @@ categoriesController.list = function(req, res, next) {
 			var categoryData;
 			async.waterfall([
 				function(next) {
-					categories.getCategoriesByPrivilege(req.uid, 'find', next);
+					categories.getCategoriesByPrivilege('cid:0:children', req.uid, 'find', next);
 				},
 				function(_categoryData, next) {
 					categoryData = _categoryData;
+
 					var allCategories = [];
-
-					categoryData = categoryData.filter(function(category) {
-						if (!category.parent) {
-							allCategories.push(category);
-						}
-
-						if (Array.isArray(category.children) && category.children.length) {
-							allCategories.push.apply(allCategories, category.children);
-						}
-						return category && !category.parent;
-					});
+					categories.flattenCategories(allCategories, categoryData);
 
 					categories.getRecentTopicReplies(allCategories, req.uid, next);
 				}
@@ -200,7 +191,9 @@ categoriesController.get = function(req, res, next) {
 			});
 		},
 		function(categoryData, next) {
-			categories.getRecentTopicReplies(categoryData.children, req.uid, function(err) {
+			var allCategories = [];
+			categories.flattenCategories(allCategories, [categoryData]);
+			categories.getRecentTopicReplies(allCategories, req.uid, function(err) {
 				next(err, categoryData);
 			});
 		},

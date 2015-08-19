@@ -103,10 +103,10 @@ var async = require('async'),
 		});
 	};
 
-	Categories.getCategoriesByPrivilege = function(uid, privilege, callback) {
+	Categories.getCategoriesByPrivilege = function(set, uid, privilege, callback) {
 		async.waterfall([
 			function(next) {
-				db.getSortedSetRange('categories:cid', 0, -1, next);
+				db.getSortedSetRange(set, 0, -1, next);
 			},
 			function(cids, next) {
 				privileges.categories.filterCids(privilege, cids, uid, next);
@@ -273,6 +273,7 @@ var async = require('async'),
 		if (!category) {
 			return;
 		}
+
 		var postCount = parseInt(category.post_count, 10) || 0;
 		var topicCount = parseInt(category.topic_count, 10) || 0;
 		if (!Array.isArray(category.children) || !category.children.length) {
@@ -282,9 +283,11 @@ var async = require('async'),
 		}
 
 		category.children.forEach(function(child) {
-			postCount += parseInt(child.post_count, 10) || 0;
-			topicCount += parseInt(child.topic_count, 10) || 0;
+			calculateTopicPostCount(child);
+			postCount += parseInt(child.totalPostCount, 10) || 0;
+			topicCount += parseInt(child.totalTopicCount, 10) || 0;
 		});
+
 		category.totalPostCount = postCount;
 		category.totalTopicCount = topicCount;
 	}
@@ -308,22 +311,57 @@ var async = require('async'),
 	};
 
 	Categories.getChildren = function(cids, uid, callback) {
+		var categories = cids.map(function(cid) {
+			return {cid: cid};
+		});
+
+		async.each(categories, function(category, next) {
+			getChildrenRecursive(category, uid, next);
+		}, function (err) {
+			callback(err, categories.map(function(c) {
+				return c && c.children;
+			}));
+		});
+	};
+
+	function getChildrenRecursive(category, uid, callback) {
 		async.waterfall([
-			async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
-			function(cids, next) {
-				privileges.categories.filterCids('find', cids, uid, next);
+			function (next) {
+				db.getSortedSetRange('cid:' + category.cid + ':children', 0, -1, next);
 			},
-			function (cids, next) {
-				Categories.getCategoriesData(cids, next);
+			function (children, next) {
+				privileges.categories.filterCids('find', children, uid, next);
 			},
-			function (categories, next) {
-				async.map(cids, function(cid, next) {
-					next(null, categories.filter(function(category) {
-						return category && parseInt(category.parentCid, 10) === parseInt(cid, 10);
-					}));
+			function (children, next) {
+				if (!children.length) {
+					category.children = [];
+					return callback();
+				}
+				Categories.getCategoriesData(children, next);
+			},
+			function (childrenData, next) {
+				category.children = childrenData;
+				async.each(category.children, function(child, next) {
+					getChildrenRecursive(child, uid, next);
 				}, next);
 			}
 		], callback);
+	}
+
+	Categories.flattenCategories = function(allCategories, categoryData) {
+		categoryData.forEach(function(category) {
+			if (!category) {
+				return;
+			}
+
+			if (!category.parent) {
+				allCategories.push(category);
+			}
+
+			if (Array.isArray(category.children) && category.children.length) {
+				Categories.flattenCategories(allCategories, category.children);
+			}
+		});
 	};
 
 	/**
@@ -335,13 +373,13 @@ var async = require('async'),
 	Categories.getTree = function(categories, parentCid) {
 		var tree = [], i = 0, len = categories.length, category;
 
-		for(i; i < len; ++i) {
+		for (i; i < len; ++i) {
 			category = categories[i];
 			if (!category.hasOwnProperty('parentCid')) {
 				category.parentCid = 0;
 			}
 
-			if(category.parentCid == parentCid){
+			if (category.parentCid == parentCid){
 				tree.push(category);
 				category.children = Categories.getTree(categories, category.cid);
 			}

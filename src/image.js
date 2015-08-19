@@ -18,12 +18,16 @@ image.resizeImage = function(path, extension, width, height, callback) {
 		});
 	} else {
 		lwip.open(path, function(err, image) {
+			if (err) {
+				return callback(err);
+			}
+
 			image.batch()
 				.cover(width, height)
 				.crop(width, height)
 				.writeFile(path, function(err) {
-					callback(err)
-				})
+					callback(err);
+				});
 			});
 	}
 };
@@ -41,7 +45,7 @@ image.normalise = function(path, extension, callback) {
 			if (err) {
 				return callback(err);
 			}
-			image.writeFile(path, 'png', callback)
+			image.writeFile(path, 'png', callback);
 		});
 	}
 };

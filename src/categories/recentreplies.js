@@ -56,9 +56,10 @@ module.exports = function(Categories) {
 				}
 			},
 			function(posts, next) {
-				categoryData.forEach(function(category) {
-					assignPostsToCategory(category, posts);
-				});
+				assignPostsToCategories(categoryData, posts);
+
+				bubbleUpChildrenPosts(categoryData);
+
 				next();
 			}
 		], callback);
@@ -87,13 +88,33 @@ module.exports = function(Categories) {
 		], callback);
 	}
 
-	function assignPostsToCategory(category, posts) {
-		category.posts = posts.filter(function(post) {
-			return post.category && (parseInt(post.category.cid, 10) === parseInt(category.cid, 10) ||
-				parseInt(post.category.parentCid, 10) === parseInt(category.cid, 10));
-		}).sort(function(a, b) {
-			return b.timestamp - a.timestamp;
-		}).slice(0, parseInt(category.numRecentReplies, 10));
+	function bubbleUpChildrenPosts(categoryData) {
+		categoryData.forEach(function(category) {
+			if (category.posts.length) {
+				return;
+			}
+			var latestPost;
+			category.children.forEach(function(children) {
+				if (children.posts.length && (!latestPost || (latestPost && latestPost.timestamp < children.posts[0].timestamp))) {
+					latestPost = children.posts[0];
+				}
+			});
+
+			if (latestPost) {
+				category.posts = [latestPost];
+			}
+		});
+	}
+
+	function assignPostsToCategories(categories, posts) {
+		categories.forEach(function(category) {
+			category.posts = posts.filter(function(post) {
+				return post.category && (parseInt(post.category.cid, 10) === parseInt(category.cid, 10) ||
+					parseInt(post.category.parentCid, 10) === parseInt(category.cid, 10));
+			}).sort(function(a, b) {
+				return b.timestamp - a.timestamp;
+			}).slice(0, parseInt(category.numRecentReplies, 10));
+		});
 	}
 
 	function getRecentTopicPids(category, callback) {

@@ -41,7 +41,7 @@
 						</div>
 						<div class="col-sm-4 col-xs-12">
 							<div class="form-group">
-								<label for="cid-{category.cid}-imageClass">Image Class</label>
+								<label for="cid-{category.cid}-imageClass">Background Image Size</label>
 									<select id="cid-{category.cid}-imageClass" class="form-control" data-name="imageClass" data-value="{category.imageClass}">
 									<option value="auto">auto</option>
 									<option value="cover">cover</option>
@@ -97,8 +97,8 @@
 					<div class="category-preview" style="
 						<!-- IF category.backgroundImage -->background-image: url({category.backgroundImage});<!-- ENDIF category.backgroundImage -->
 						<!-- IF category.bgColor -->background-color: {category.bgColor};<!-- ENDIF category.bgColor -->
+						<!-- IF category.imageClass -->background-size: {category.imageClass};<!-- ENDIF category.imageClass -->
 						color: {category.color};
-						background-size:cover;
 					">
 						<div class="icon">
 							<i data-name="icon" value="{category.icon}" class="fa {category.icon} fa-2x"></i>

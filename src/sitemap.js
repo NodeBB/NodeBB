@@ -61,7 +61,7 @@ sitemap.getDynamicUrls = function(callback) {
 	async.parallel({
 		categoryUrls: function(next) {
 			var categoryUrls = [];
-			categories.getCategoriesByPrivilege(0, 'find', function(err, categoriesData) {
+			categories.getCategoriesByPrivilege('categories:cid', 0, 'find', function(err, categoriesData) {
 				if (err) {
 					return next(err);
 				}

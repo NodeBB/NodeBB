@@ -92,7 +92,7 @@ app.cacheBuster = null;
 
 			switch(url_parts[0]) {
 				case 'user':
-					room = 'user/' + ajaxify.data ? ajaxify.data.theirid : 0;
+					room = 'user/' + (ajaxify.data ? ajaxify.data.theirid : 0);
 				break;
 				case 'topic':
 					room = 'topic_' + url_parts[1];
@@ -503,7 +503,7 @@ app.cacheBuster = null;
 
 	app.load = function() {
 		$('document').ready(function () {
-			var url = ajaxify.start(window.location.pathname.slice(1), true, window.location.search);
+			var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search, true);
 			ajaxify.end(url, app.template);
 
 			handleStatusChange();

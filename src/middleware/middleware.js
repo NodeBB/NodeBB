@@ -186,6 +186,9 @@ middleware.buildHeader = function(req, res, next) {
 			},
 			footer: function(next) {
 				app.render('footer', {loggedIn: (req.user ? parseInt(req.user.uid, 10) !== 0 : false)}, next);
+			},
+			plugins: function(next) {
+				plugins.fireHook('filter:middleware.buildHeader', {req: req, locals: res.locals}, next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -297,12 +300,18 @@ middleware.renderHeader = function(req, res, callback) {
 		templateValues.customCSS = results.customCSS;
 		templateValues.customJS = results.customJS;
 		templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
-		templateValues.defaultLang = res.locals.config.defaultLang;
+		templateValues.defaultLang = meta.config.defaultLang || 'en_GB';
 
 		templateValues.template = {name: res.locals.template};
 		templateValues.template[res.locals.template] = true;
 
-		app.render('header', templateValues, callback);
+		plugins.fireHook('filter:middleware.renderHeader', {templateValues: templateValues, req: req, res: res}, function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			app.render('header', data.templateValues, callback);
+		});
 	});
 };
 
