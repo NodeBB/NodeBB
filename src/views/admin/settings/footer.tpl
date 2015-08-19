@@ -5,5 +5,6 @@
 <script>
 	require(['admin/settings'], function(Settings) {
 		Settings.prepare();
+		Settings.populateTOC();
 	});
 </script>

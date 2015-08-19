@@ -8,6 +8,16 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 		$(window).on('action:config.loaded', Settings.prepare);
 	};
 
+	Settings.populateTOC = function() {
+		$('.settings-header').each(function() {
+			var header = $(this).text(),
+				anchor = header.toLowerCase().replace(/ /g, '-').trim();
+
+			$(this).prepend('<a name="' + anchor + '"></a>');
+			$('.section-content ul').append('<li><a href="#' + anchor + '">' + header + '</a></li>');
+		});
+	};
+
 	Settings.prepare = function(callback) {
 		// Populate the fields on the page from the config
 		var fields = $('#content [data-field]'),

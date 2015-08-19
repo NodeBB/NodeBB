@@ -3,6 +3,17 @@
 
 <div class="row">
 	<div class="col-xs-2 settings-header">
+		Contents
+	</div>
+	<div class="col-xs-10">
+		<nav class="section-content">
+			<ul></ul>
+		</nav>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-2 settings-header">
 		Site Settings
 	</div>
 	<div class="col-xs-10">
