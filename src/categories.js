@@ -316,7 +316,7 @@ var async = require('async'),
 		});
 
 		async.each(categories, function(category, next) {
-			getChildrenRecursive(category, category.cid, uid, next);
+			getChildrenRecursive(category, uid, next);
 		}, function (err) {
 			callback(err, categories.map(function(c) {
 				return c && c.children;
@@ -324,10 +324,10 @@ var async = require('async'),
 		});
 	};
 
-	function getChildrenRecursive(category, parentCid, uid, callback) {
+	function getChildrenRecursive(category, uid, callback) {
 		async.waterfall([
 			function (next) {
-				db.getSortedSetRange('cid:' + parentCid + ':children', 0, -1, next);
+				db.getSortedSetRange('cid:' + category.cid + ':children', 0, -1, next);
 			},
 			function (children, next) {
 				privileges.categories.filterCids('find', children, uid, next);
@@ -342,7 +342,7 @@ var async = require('async'),
 			function (childrenData, next) {
 				category.children = childrenData;
 				async.each(category.children, function(child, next) {
-					getChildrenRecursive(child, child.cid, uid, next);
+					getChildrenRecursive(child, uid, next);
 				}, next);
 			}
 		], callback);
@@ -362,7 +362,7 @@ var async = require('async'),
 				Categories.flattenCategories(allCategories, category.children);
 			}
 		});
-	}
+	};
 
 	/**
 	 * Recursively build tree
