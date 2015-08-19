@@ -186,11 +186,16 @@ middleware.buildHeader = function(req, res, next) {
 			},
 			footer: function(next) {
 				app.render('footer', {loggedIn: (req.user ? parseInt(req.user.uid, 10) !== 0 : false)}, next);
+			},
+			plugins: function(next){
+				plugins.fireHook('filter:header.build', { locals: res.locals }, next);
 			}
 		}, function(err, results) {
 			if (err) {
 				return next(err);
 			}
+			
+			res.locals = results.plugins.locals;
 
 			res.locals.config = results.config;
 
