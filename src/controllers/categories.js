@@ -191,7 +191,9 @@ categoriesController.get = function(req, res, next) {
 			});
 		},
 		function(categoryData, next) {
-			categories.getRecentTopicReplies(categoryData.children, req.uid, function(err) {
+			var allCategories = [];
+			categories.flattenCategories(allCategories, [categoryData]);
+			categories.getRecentTopicReplies(allCategories, req.uid, function(err) {
 				next(err, categoryData);
 			});
 		},
