@@ -1,8 +1,11 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">Site Settings</div>
-	<div class="panel-body">
+
+<div class="row">
+	<div class="col-xs-2 settings-header">
+		Site Settings
+	</div>
+	<div class="col-xs-10">
 		<form>
 			<label>Site Title</label>
 			<input class="form-control" type="text" placeholder="Your Community Name" data-field="title" />
@@ -28,9 +31,9 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Site Logo</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Site Logo</div>
+	<div class="col-xs-10">
 		<div class="form-group">
 			<label for="logoUrl">Image</label>
 			<div class="input-group">
@@ -54,9 +57,11 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Favicon</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">
+		Favicon
+	</div>
+	<div class="col-xs-10">
 		<div class="form-group">
 			<div class="input-group">
 				<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" readonly />
@@ -68,9 +73,9 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Miscellaneous</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Miscellaneous</div>
+	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
 				<label>
