@@ -148,11 +148,5 @@
 				</div>
 			</div>
 		</nav>
-
-		<div class="wrapper">
-			<div id="main-menu" class="nano">
-				<div class="nano-content">
-					<!-- IMPORT admin/partials/menu.tpl -->
-				</div>
-			</div>
-			<div class="col-sm-12" id="content">
+		
+		<div class="container" id="content">

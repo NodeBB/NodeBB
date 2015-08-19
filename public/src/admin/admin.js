@@ -3,7 +3,6 @@
 
 (function() {
 	$(document).ready(function() {
-		setupMenu();
 		setupKeybindings();
 
 		if(!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
@@ -18,15 +17,12 @@
 			var url = data.url;
 
 			selectMenuItem(data.url);
-			setupHeaderMenu();
 			setupRestartLinks();
 		});
 
 		$(window).on('action:admin.settingsLoaded', setupCheckboxes);
 
 		$('[component="logout"]').on('click', app.logout);
-
-		$(window).resize(setupHeaderMenu);
 	});
 
 	socket.emit('admin.config.get', function(err, config) {
@@ -44,27 +40,6 @@
 		app.config = config;
 		$(window).trigger('action:config.loaded');
 	});
-
-	function setupMenu() {
-		var listElements = $('.sidebar-nav li');
-
-		listElements.on('click', function() {
-			var $this = $(this);
-
-			if ($this.hasClass('nav-header')) {
-				$this.parents('.sidebar-nav').toggleClass('open').bind('animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd', function (ev) {
-					$('.nano').nanoScroller();
-				});
-			} else {
-				listElements.removeClass('active');
-				$this.addClass('active');
-			}
-		});
-
-		$('.nano').nanoScroller();
-
-		$('#main-menu .nav-list > li a').append('<span class="pull-right"><i class="fa fa-inverse fa-arrow-circle-right"></i>&nbsp;</span>');
-	}
 
 	function setupKeybindings() {
 		Mousetrap.bind('ctrl+shift+a r', function() {
@@ -136,21 +111,6 @@
 		var caret = ' <i class="fa fa-angle-right"></i> ';
 
 		$('#breadcrumbs').html(caret + Array.prototype.slice.call(arguments).join(caret));
-	}
-
-	function setupHeaderMenu() {
-		var env = utils.findBootstrapEnvironment();
-
-		if (env !== 'lg') {
-			if ($('.mobile-header').length || $('#content .col-lg-9').first().height() < 2000) {
-				return;
-			}
-
-			($('#content .col-lg-3').first().clone().addClass('mobile-header'))
-				.insertBefore($('#content .col-lg-9').first());
-		} else {
-			$('.mobile-header').remove();
-		}
 	}
 
 	function setupRestartLinks() {
