@@ -302,7 +302,13 @@ middleware.renderHeader = function(req, res, callback) {
 		templateValues.template = {name: res.locals.template};
 		templateValues.template[res.locals.template] = true;
 
-		app.render('header', templateValues, callback);
+		plugins.fireHook('filter:middleware.renderHeader', {templateValues: templateValues, req: req, res: res}, function(err, data) {
+            		if (err) {
+    				return callback(err);
+			} 
+            		
+            		app.render('header', data.templateValues, callback);
+        	});
 	});
 };
 
