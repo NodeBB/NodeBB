@@ -29,7 +29,7 @@ module.exports = function(Meta) {
 					var pkgData = JSON.parse(pkgData),
 						ok = semver.satisfies(pkgData.version, pkg.dependencies[module]);
 
-					if (ok) {
+					if (ok || pkgData._resolved.indexOf('//github.com') != -1) {
 						next(true);
 					} else {
 						process.stdout.write('[' + 'outdated'.yellow + '] ' + module.bold + ' v' + pkgData.version + ', requires ' + pkg.dependencies[module] + '\n')
