@@ -17,6 +17,11 @@ define('admin/extend/widgets', function() {
 			return false;
 		});
 
+		$('#widget-selector').on('change', function() {
+			$('.available-widgets [data-widget]').addClass('hide');
+			$('.available-widgets [data-widget="' + $(this).val() + '"]').removeClass('hide');
+		});
+
 		loadWidgetData();
 	};
 

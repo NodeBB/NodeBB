@@ -42,10 +42,17 @@
 					<!-- IF !widgets.length -->
 					<div class="alert alert-info">No widgets found! Activate the essential widgets plugin in the <a href="/admin/extend/plugins">plugins</a> control panel.</div>
 					<!-- ENDIF !widgets.length -->
+					<p>
+						<select id="widget-selector" class="form-control">
+							<!-- BEGIN widgets -->
+							<option value="{widgets.widget}">{widgets.name}</option>
+							<!-- END widgets -->
+						</select>
+					</p>
 					<div class="row">
 						<!-- BEGIN widgets -->
-						<div class="col-md-6 col-sm-12">
-							<div data-widget="{widgets.widget}" class="panel widget-panel panel-default pointer">
+						<div class="col-xs-12">
+							<div data-widget="{widgets.widget}" class="panel widget-panel panel-default pointer hide">
 								<div class="panel-heading">
 									<strong>{widgets.name}</strong>
 									<small><br />{widgets.description}</small>
@@ -67,7 +74,6 @@
 			<div class="panel-body">
 				<p>Drag and drop on top of any active widget</p>
 				<div class="available-containers">
-					<h4>Available Containers <small>Drag and drop on top of any widget</small></h4>
 					<div class="containers">
 						<div class="pointer" style="padding: 20px; border: 1px dotted #dedede; margin-bottom: 20px;" data-container-html=" ">
 							None
