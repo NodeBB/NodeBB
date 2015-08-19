@@ -8,14 +8,6 @@
 			margin: 0.25em 1em;
 			list-style-type: none;
 			.pointer;
-			-webkit-border-radius: 10px;
-			-moz-border-radius: 10px;
-			border-radius: 10px;
-			-webkit-transition: background-color 250ms linear;
-			-moz-transition: background-color 250ms linear;
-			-ms-transition: background-color 250ms linear;
-			-o-transition: background-color 250ms linear;
-			transition: background-color 250ms linear;
 
 			img {
 				max-width: 150px;
@@ -30,12 +22,20 @@
 				font-size: 0.9em;
 			}
 
-			&:hover {
-				background-color: rgba(128, 128, 128, 0.2);
-			}
-
 			&.no-themes {
 				font-style: italic;
+			}
+		}
+	}
+
+	.theme-card {
+		.mdl-card__title {
+			height: 250px;
+
+			.mdl-card__title-text {
+				background: rgba(0,0,0,0.65);
+				color: white;
+				padding: 5px 20px;
 			}
 		}
 	}

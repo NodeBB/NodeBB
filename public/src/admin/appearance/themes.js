@@ -84,8 +84,8 @@ define('admin/appearance/themes', function() {
 	};
 
 	function highlightSelectedTheme(themeId) {
-		$('.themes li[data-theme]').removeClass('btn-warning');
-		$('.themes li[data-theme="' + themeId + '"]').addClass('btn-warning');
+		$('.themes li[data-theme]').removeClass('selected');
+		$('.themes li[data-theme="' + themeId + '"]').addClass('selected');
 	}
 
 	return Themes;
