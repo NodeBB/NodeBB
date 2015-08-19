@@ -1,9 +1,9 @@
 <nav class="header">
-	<ul>
-		<li>
+	<ul id="main-menu">
+		<li class="menu-item">
 			<a href="{relative_path}/admin/general/dashboard">Dashboard</a>
 		</li>
-		<li class="dropdown">
+		<li class="dropdown menu-item">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">General</a>
 			<ul class="dropdown-menu" role="menu">
 				<li><a href="{relative_path}/admin/general/homepage">Home Page</a></li>
@@ -12,7 +12,7 @@
 				<li><a href="{relative_path}/admin/general/sounds">Sounds</a></li>
 			</ul>
 		</li>
-		<li class="dropdown">
+		<li class="dropdown menu-item">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Manage</a>
 			<ul class="dropdown-menu" role="menu">
 				<li><a href="{relative_path}/admin/manage/categories">Categories</a></li>
@@ -22,7 +22,7 @@
 				<li><a href="{relative_path}/admin/manage/flags">Flags</a></li>
 			</ul>
 		</li>
-		<li class="dropdown">
+		<li class="dropdown menu-item">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Settings</a>
 			<ul class="dropdown-menu" role="menu">
 				<li><a href="{relative_path}/admin/settings/general">General</a></li>
@@ -40,7 +40,7 @@
 				<li><a href="{relative_path}/admin/settings/advanced">Advanced</a></li>
 			</ul>
 		</li>
-		<li class="dropdown">
+		<li class="dropdown menu-item">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Appearance</a>
 			<ul class="dropdown-menu" role="menu">
 				<li><a href="{relative_path}/admin/appearance/themes">Themes</a></li>
@@ -48,7 +48,7 @@
 				<li><a href="{relative_path}/admin/appearance/customise">Custom HTML &amp; CSS</a></li>
 			</ul>
 		</li>
-		<li class="dropdown">
+		<li class="dropdown menu-item">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Extend</a>
 			<ul class="dropdown-menu" role="menu">
 				<li><a href="{relative_path}/admin/extend/plugins">Plugins</a></li>
@@ -57,7 +57,7 @@
 			</ul>
 		</li>
 		<!-- IF authentication.length -->
-		<li class="dropdown">
+		<li class="dropdown menu-item">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Social Authentication</a>
 			<ul class="dropdown-menu" role="menu">
 				<!-- BEGIN authentication -->
@@ -69,7 +69,7 @@
 		</li>
 		<!-- ENDIF authentication.length -->
 		<!-- IF plugins.length -->
-		<li class="dropdown">
+		<li class="dropdown menu-item">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Plugins</a>
 			<ul class="dropdown-menu" role="menu">
 				<!-- BEGIN plugins -->
@@ -84,7 +84,7 @@
 			</ul>
 		</li>
 		<!-- ENDIF plugins.length -->
-		<li class="dropdown">
+		<li class="dropdown menu-item">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Advanced</a>
 			<ul class="dropdown-menu" role="menu">
 				<li><a href="{relative_path}/admin/advanced/database">Database</a></li>

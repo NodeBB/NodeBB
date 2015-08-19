@@ -93,24 +93,18 @@
 			url = 'admin/general/dashboard';
 		}
 
-		$('#main-menu .nav-list > li').removeClass('active').each(function() {
+		$('#main-menu li').removeClass('active');
+		$('#main-menu a').removeClass('active').each(function() {
 			var menu = $(this),
-				category = menu.parents('.sidebar-nav'),
-				href = menu.children('a').attr('href'),
+				href = menu.attr('href'),
 				isLink = menu.attr('data-link') === '1';
 
 			if (!isLink && href && href.slice(1) === url) {
-				category.addClass('open');
-				menu.addClass('active');
-				modifyBreadcrumb(category.find('.nav-header').text(), menu.text());
+				menu
+					.parent().addClass('active')
+					.parents('.menu-item').addClass('active');
 			}
 		});
-	}
-
-	function modifyBreadcrumb() {
-		var caret = ' <i class="fa fa-angle-right"></i> ';
-
-		$('#breadcrumbs').html(caret + Array.prototype.slice.call(arguments).join(caret));
 	}
 
 	function setupRestartLinks() {

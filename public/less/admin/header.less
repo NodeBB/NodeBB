@@ -10,17 +10,23 @@
 		list-style-type: none;
 		padding: 0px;
 		position: absolute;
-		bottom: 10px;
+		bottom: -10px;
 		left: 50px;
 
 		> li {
 			float: left;
 			margin-right: 30px;
 
+			&.active {
+				border-bottom: 3px solid @brand-primary;
+    			padding-bottom: 10px;
+			}
+
 			> a {
 				color: white;
 				text-transform: uppercase;
 				text-decoration: none;
+				outline: none;
 			}
 		}
 	}
