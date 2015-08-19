@@ -287,6 +287,10 @@ middleware.renderHeader = function(req, res, callback) {
 		templateValues.template[res.locals.template] = true;
 
 		plugins.fireHook('filter:middleware.renderHeader', {templateValues: templateValues, req: req, res: res}, function(err, data) {
+            		if (err) {
+    				return callback(err);
+			} 
+            		
             		app.render('header', data.templateValues, callback);
         	});
 	});
