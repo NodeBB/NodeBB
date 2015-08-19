@@ -6,6 +6,8 @@
 
 	<link rel="stylesheet" href="{relative_path}/vendor/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css?{cache-buster}">
 	<link rel="stylesheet" type="text/css" href="{relative_path}/admin.css?{cache-buster}" />
+	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/mdl/mdl.min.css?{cache-buster}" />
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
 	<script>
 		var RELATIVE_PATH = "{relative_path}";
@@ -23,6 +25,7 @@
 		<script>__lt_ie_9__ = 1;</script>
 	<![endif]-->
 
+		<script src="https://storage.googleapis.com/code.getmdl.io/1.0.3/material.min.js"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/chart.js/chart.min.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/hammer/hammer.min.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/jquery/sortable/Sortable.js?{cache-buster}"></script>
