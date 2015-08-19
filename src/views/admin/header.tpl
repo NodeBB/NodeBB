@@ -60,7 +60,8 @@
 	</head>
 
 	<body class="admin">
-		<nav class="navbar navbar-inverse navbar-fixed-top header">
+
+		<!--<nav class="navbar navbar-inverse navbar-fixed-top header">
 			<div class="container">
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -147,6 +148,6 @@
 					</ul>
 				</div>
 			</div>
-		</nav>
+		</nav>-->
 		
 		<div class="container" id="content">
