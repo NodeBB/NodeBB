@@ -2,7 +2,7 @@
 
 
 <div class="row">
-	<div class="col-xs-2 settings-header">
+	<div class="col-xs-2">
 		Contents
 	</div>
 	<div class="col-xs-10">
