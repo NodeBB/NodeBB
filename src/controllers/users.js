@@ -157,6 +157,7 @@ usersController.getMap = function(req, res, next) {
 					}
 					data.room = validator.escape(categoryData.name);
 					data.link = '/category/' + categoryData.slug;
+					data.core = false;
 					next(null, data);
 				});
 			} else if (roomName.startsWith('topic_')) {
@@ -167,13 +168,18 @@ usersController.getMap = function(req, res, next) {
 					}
 					data.room = validator.escape(topicData.title);
 					data.link = '/topic/' + topicData.slug;
+					data.core = false;
 					next(null, data);
 				});
 			} else {
+				data.core = true;
 				next(null, data);
 			}
 		});
 	}, function(err, data) {
+		if (err) {
+			return next(err);
+		}
 		data.sort(function(a, b) {
 			return b.total - a.total;
 		});
