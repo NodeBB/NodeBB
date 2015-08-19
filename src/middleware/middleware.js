@@ -186,6 +186,9 @@ middleware.buildHeader = function(req, res, next) {
 			},
 			footer: function(next) {
 				app.render('footer', {loggedIn: (req.user ? parseInt(req.user.uid, 10) !== 0 : false)}, next);
+			},
+			plugins: function(next) {
+				plugins.fireHook('filter:middleware.buildHeader', {req: req, locals: res.locals}, next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -303,12 +306,12 @@ middleware.renderHeader = function(req, res, callback) {
 		templateValues.template[res.locals.template] = true;
 
 		plugins.fireHook('filter:middleware.renderHeader', {templateValues: templateValues, req: req, res: res}, function(err, data) {
-            		if (err) {
-    				return callback(err);
-			} 
-            		
-            		app.render('header', data.templateValues, callback);
-        	});
+			if (err) {
+				return callback(err);
+			}
+
+			app.render('header', data.templateValues, callback);
+		});
 	});
 };
 
