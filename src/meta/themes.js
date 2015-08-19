@@ -119,7 +119,7 @@ module.exports = function(Meta) {
 				return callback(err);
 			}
 
-			var themeId = data.currentThemeId || 'nodebb-theme-persona';
+			var themeId = data.currentThemeId || 'nodebb-theme-vanilla';
 
 			var	themeObj = data.themesData.filter(function(themeObj) {
 					return themeObj.id === themeId;

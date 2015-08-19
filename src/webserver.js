@@ -90,12 +90,6 @@ function initializeNodeBB(callback) {
 			plugins.init(app, middleware, next);
 		},
 		function(next) {
-			plugins.fireHook('static:app.preload', {
-				app: app,
-				middleware: middleware
-			}, next);
-		},
-		function(next) {
 			async.parallel([
 				async.apply(meta.templates.compile),
 				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, app.enabled('minification')),
@@ -104,6 +98,12 @@ function initializeNodeBB(callback) {
 			], next);
 		},
 		function(results, next) {
+			plugins.fireHook('static:app.preload', {
+				app: app,
+				middleware: middleware
+			}, next);
+		},
+		function(next) {
 			routes(app, middleware);
 			next();
 		}
