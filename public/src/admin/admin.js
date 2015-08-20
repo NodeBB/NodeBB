@@ -9,8 +9,6 @@
 			require(['admin/modules/search'], function(search) {
 				search.init();
 			});
-		} else {
-			activateMobile();
 		}
 
 		$(window).on('action:ajaxify.contentLoaded', function(ev, data) {
@@ -56,32 +54,6 @@
 			$('#acp-search input').focus();
 
 			return false;
-		});
-	}
-
-
-	function activateMobile() {
-		$('.admin').addClass('mobile');
-		$('#main-menu').addClass('transitioning');
-
-		Hammer(document.body).on('swiperight', function(e) {
-			$('#main-menu').addClass('open');
-		});
-
-		Hammer(document.body).on('swipeleft', function(e) {
-			$('#main-menu').removeClass('open');
-		});
-
-		Hammer($('#main-menu')[0]).on('swiperight', function(e) {
-			$('#main-menu').addClass('open');
-		});
-
-		Hammer($('#main-menu')[0]).on('swipeleft', function(e) {
-			$('#main-menu').removeClass('open');
-		});
-
-		$(window).on('scroll', function() {
-			$('#main-menu').height($(window).height() + 20);
 		});
 	}
 
