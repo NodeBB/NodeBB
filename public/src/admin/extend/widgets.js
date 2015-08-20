@@ -21,6 +21,8 @@ define('admin/extend/widgets', function() {
 			$('.available-widgets [data-widget]').addClass('hide');
 			$('.available-widgets [data-widget="' + $(this).val() + '"]').removeClass('hide');
 		});
+		
+		$('#widget-selector').trigger('change');
 
 		loadWidgetData();
 	};

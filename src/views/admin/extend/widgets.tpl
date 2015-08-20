@@ -1,34 +1,28 @@
-<div id="widgets">
+<div id="widgets" class="row">
 	<div class="col-md-7">
-		<div class="panel panel-default">
-			<div class="panel-heading">Widget Areas</div>
-			<div class="panel-body">
+		<ul class="nav nav-pills">
+		<!-- BEGIN templates -->
+			<li class="<!-- IF @first -->active<!-- ENDIF @first -->"><a href="#" data-template="{../template}" data-toggle="pill">{../template}</a></li>
+		<!-- END templates -->
+		</ul>
 
-				<ul class="nav nav-pills">
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="tab-content">
 				<!-- BEGIN templates -->
-					<li class="<!-- IF @first -->active<!-- ENDIF @first -->"><a href="#" data-template="{../template}" data-toggle="pill">{../template}</a></li>
-				<!-- END templates -->
-				</ul>
+					<div class="tab-pane <!-- IF @first -->active<!-- ENDIF @first -->" data-template="{../template}">
+					<!-- BEGIN areas -->
+						<div class="area" data-template="{templates.template}" data-location="{../location}">
+							<h4>{../name} <small>{templates.template} / {../location}</small></h4>
+							<div class="well widget-area">
 
-				<div class="row">
-					<div class="col-xs-12">
-						<div class="tab-content">
-						<!-- BEGIN templates -->
-							<div class="tab-pane <!-- IF @first -->active<!-- ENDIF @first -->" data-template="{../template}">
-							<!-- BEGIN areas -->
-								<div class="area" data-template="{templates.template}" data-location="{../location}">
-									<h4>{../name} <small>{templates.template} / {../location}</small></h4>
-									<div class="well widget-area">
-
-									</div>
-								</div>
-							<!-- END areas -->
 							</div>
-						<!-- END templates -->
 						</div>
-						<button class="btn btn-success save pull-right">Save</button>
+					<!-- END areas -->
 					</div>
+				<!-- END templates -->
 				</div>
+				<button class="btn btn-success save pull-right">Save</button>
 			</div>
 		</div>
 	</div>
@@ -38,7 +32,7 @@
 			<div class="panel-heading">Available Widgets</div>
 			<div class="panel-body">
 				<div class="available-widgets">
-					<p>Drag and drop widgets into templates</p>
+					<p>Select a widget and then drag and drop it into a template's widget area on the left.</p>
 					<!-- IF !widgets.length -->
 					<div class="alert alert-info">No widgets found! Activate the essential widgets plugin in the <a href="/admin/extend/plugins">plugins</a> control panel.</div>
 					<!-- ENDIF !widgets.length -->
