@@ -1,5 +1,42 @@
 <nav class="header">
 	<h1 id="main-page-title"></h1>
+	<ul id="user_label" class="pull-right">
+		<li class="dropdown pull-right hidden-xs">
+			<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
+				<i class="fa fa-ellipsis-v"></i>
+			</a>
+			<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
+				<li>
+					<a href="{relative_path}/" target="_blank" title="View Forum">
+						View Forum
+					</a>
+				</li>
+				<li role="presentation" class="divider"></li>
+				<li>
+					<a href="#" class="reload" title="Reload Forum">
+						Reload Forum
+					</a>
+				</li>
+				<li>
+					<a href="#" class="restart" title="Restart Forum">
+						Restart Forum
+					</a>
+				</li>
+				<li role="presentation" class="divider"></li>
+				<li component="logout">
+					<a href="#">Log out</a>
+				</li>
+			</ul>
+		</li>
+		<form class="hidden-xs pull-right" role="search">
+			<div class="" id="acp-search" >
+				<div class="dropdown" >
+					<input type="text" data-toggle="dropdown" class="form-control" placeholder="Search...">
+					<ul class="dropdown-menu" role="menu"></ul>
+				</div>
+			</div>
+		</form>
+	</ul>
 	<ul id="main-menu">
 		<li class="menu-item">
 			<a href="{relative_path}/admin/general/dashboard">Dashboard</a>
@@ -98,43 +135,5 @@
 				<!-- ENDIF env -->
 			</ul>
 		</li>
-	</ul>
-
-	<ul id="user_label" class="pull-right">
-		<li class="dropdown pull-right hidden-xs">
-			<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
-				<i class="fa fa-ellipsis-v"></i>
-			</a>
-			<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
-				<li>
-					<a href="{relative_path}/" target="_blank" title="View Forum">
-						View Forum
-					</a>
-				</li>
-				<li role="presentation" class="divider"></li>
-				<li>
-					<a href="#" class="reload" title="Reload Forum">
-						Reload Forum
-					</a>
-				</li>
-				<li>
-					<a href="#" class="restart" title="Restart Forum">
-						Restart Forum
-					</a>
-				</li>
-				<li role="presentation" class="divider"></li>
-				<li component="logout">
-					<a href="#">Log out</a>
-				</li>
-			</ul>
-		</li>
-		<form class="hidden-xs pull-right" role="search">
-			<div class="" id="acp-search" >
-				<div class="dropdown" >
-					<input type="text" data-toggle="dropdown" class="form-control" placeholder="Search...">
-					<ul class="dropdown-menu" role="menu"></ul>
-				</div>
-			</div>
-		</form>
 	</ul>
 </nav>
