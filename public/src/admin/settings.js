@@ -9,6 +9,11 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 	};
 
 	Settings.populateTOC = function() {
+		var title = ajaxify.currentPage
+				.replace('admin/settings/', '')
+				.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+
+		$('#settings-title').text(title + ' Settings');
 		$('.settings-header').each(function() {
 			var header = $(this).text(),
 				anchor = header.toLowerCase().replace(/ /g, '-').trim();
