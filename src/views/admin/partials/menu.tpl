@@ -99,4 +99,39 @@
 			</ul>
 		</li>
 	</ul>
+
+	<ul id="user_label" class="pull-right">
+		<li class="dropdown pull-right hidden-xs">
+			<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
+				<i class="fa fa-ellipsis-v"></i>
+			</a>
+			<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
+				<li>
+					<a href="{relative_path}/" target="_blank" title="View Forum">
+						View Forum
+					</a>
+				</li>
+				<li>
+					<a id="user-profile-link" href="{relative_path}/user/{user.userslug}" target="_top">
+						View Profile
+					</a>
+				</li>
+				<li role="presentation" class="divider"></li>
+				<li>
+					<a href="#" class="reload" title="Reload Forum">
+						Reload Forum
+					</a>
+				</li>
+				<li>
+					<a href="#" class="restart" title="Restart Forum">
+						Restart Forum
+					</a>
+				</li>
+				<li role="presentation" class="divider"></li>
+				<li component="logout">
+					<a href="#">Log out</a>
+				</li>
+			</ul>
+		</li>
+	</ul>
 </nav>
