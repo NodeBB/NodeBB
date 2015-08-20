@@ -1,7 +1,7 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
 <div class="row">
-	<div class="col-xs-2 settings-header">User List</div>
+	<div class="col-xs-2 settings-header">Authentication</div>
 	<div class="col-xs-10">
 		<form role="form">
 			<div class="checkbox">
@@ -9,16 +9,7 @@
 					<input type="checkbox" data-field="allowLocalLogin" checked> <strong>Allow local login</strong>
 				</label>
 			</div>
-			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="allowAccountDelete" checked> <strong>Allow account deletion</strong>
-				</label>
-			</div>
-			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="privateUserInfo"> <strong>Make user info private</strong>
-				</label>
-			</div>
+
 			<div class="checkbox">
 				<label>
 					<input type="checkbox" data-field="requireEmailConfirmation"> <strong>Require Email Confirmation</strong>
@@ -42,6 +33,24 @@
 					<option value="invite-only">Invite Only</option>
 					<option value="disabled">No registration</option>
 				</select>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-2 settings-header">Account Settings</div>
+	<div class="col-xs-10">
+		<form>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" data-field="allowAccountDelete" checked> <strong>Allow account deletion</strong>
+				</label>
+			</div>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" data-field="privateUserInfo"> <strong>Make user info private</strong>
+				</label>
 			</div>
 		</form>
 	</div>
