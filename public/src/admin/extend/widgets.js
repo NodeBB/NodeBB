@@ -71,7 +71,7 @@ define('admin/extend/widgets', function() {
 			}
 		});
 
-		$('#widgets .save').on('click', saveWidgets);
+		$('#save').on('click', saveWidgets);
 
 		function saveWidgets() {
 			var total = $('#widgets [data-template][data-location]').length;
