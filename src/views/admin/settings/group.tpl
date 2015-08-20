@@ -1,8 +1,8 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">General</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">General</div>
+	<div class="col-xs-10">
 		<form role="form">
 			<div class="checkbox">
 				<label>
