@@ -1,8 +1,8 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">Post Settings</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Post Sorting</div>
+	<div class="col-xs-10">
 		<form>
 			<div class="form-group">
 				<label>Default Post Sorting</label>
@@ -20,55 +20,57 @@
 					<option value="most_posts">Most Posts</option>
 				</select>
 			</div>
+		</form>
+	</div>
+</div>
 
+<div class="row">
+	<div class="col-xs-2 settings-header">Posting Restrictions</div>
+	<div class="col-xs-10">
+		<form>
 			<div class="form-group">
 				<label>Seconds between Posts</label>
-				<input type="number" class="form-control" value="10" data-field="postDelay">
+				<input type="text" class="form-control" value="10" data-field="postDelay">
 			</div>
-			<div class="form-group col-sm-6">
+			<div class="form-group">
 				<label>Seconds between Posts for New Users</label>
-				<input type="number" class="form-control" value="120" data-field="newbiePostDelay">
+				<input type="text" class="form-control" value="120" data-field="newbiePostDelay">
 			</div>
-			<div class="form-group col-sm-6">
+			<div class="form-group">
 				<label>Reputation threshold before this restriction is lifted</label>
-				<input type="number" class="form-control" value="3" data-field="newbiePostDelayThreshold">
+				<input type="text" class="form-control" value="3" data-field="newbiePostDelayThreshold">
 			</div>
 			<div class="form-group">
 				<label>Seconds before new user can post</label>
-				<input type="number" class="form-control" value="10" data-field="initialPostDelay">
+				<input type="text" class="form-control" value="10" data-field="initialPostDelay">
 			</div>
 			<div class="form-group">
 				<label>Number of seconds users are allowed to edit posts after posting. (0 disabled)</label>
-				<input type="number" class="form-control" value="0" data-field="postEditDuration">
+				<input type="text" class="form-control" value="0" data-field="postEditDuration">
 			</div>
 			<div class="form-group">
 				<label>Minimum Title Length</label>
-				<input type="number" class="form-control" value="3" data-field="minimumTitleLength">
+				<input type="text" class="form-control" value="3" data-field="minimumTitleLength">
 			</div>
 			<div class="form-group">
 				<label>Maximum Title Length</label>
-				<input type="number" class="form-control" value="255" data-field="maximumTitleLength">
+				<input type="text" class="form-control" value="255" data-field="maximumTitleLength">
 			</div>
 			<div class="form-group">
 				<label>Minimum Post Length</label>
-				<input type="number" class="form-control" value="8" data-field="minimumPostLength">
+				<input type="text" class="form-control" value="8" data-field="minimumPostLength">
 			</div>
 			<div class="form-group">
 				<label>Maximum Post Length</label>
-				<input type="number" class="form-control" value="32767" data-field="maximumPostLength">
-			</div>
-			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="trackIpPerPost"> <strong>Track IP Address for each post</strong>
-				</label>
+				<input type="text" class="form-control" value="32767" data-field="maximumPostLength">
 			</div>
 		</form>
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Teaser Settings</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Teaser Settings</div>
+	<div class="col-xs-10">
 		<form>
 			<div class="form-group">
 				<label>Teaser Post</label>
@@ -82,9 +84,9 @@
 </div>
 
 
-<div class="panel panel-default">
-	<div class="panel-heading">Signature Settings</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Signature Settings</div>
+	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
 				<label>
@@ -109,18 +111,18 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Chat Settings</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Chat Settings</div>
+	<div class="col-xs-10">
 		<form>
 			<strong>Chat Message Inbox Size</strong><br /> <input type="text" class="form-control" value="250" data-field="chatMessageInboxSize">
 		</form>
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Upload Settings</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Upload Settings</div>
+	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
 				<label>
@@ -147,9 +149,9 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Composer Settings</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Composer Settings</div>
+	<div class="col-xs-10">
 		<form>
 			<p>
 				The following settings govern the functionality and/or appearance of the post composer shown
@@ -175,4 +177,16 @@
 	</div>
 </div>
 
+<div class="row">
+	<div class="col-xs-2 settings-header">IP Tracking</div>
+	<div class="col-xs-10">
+		<form>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" data-field="trackIpPerPost"> <strong>Track IP Address for each post</strong>
+				</label>
+			</div>
+		</form>
+	</div>
+</div>
 <!-- IMPORT admin/settings/footer.tpl -->
