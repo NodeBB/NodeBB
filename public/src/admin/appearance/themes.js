@@ -10,7 +10,7 @@ define('admin/appearance/themes', function() {
 				action = target.attr('data-action');
 
 			if (action && action === 'use') {
-				var parentEl = target.parents('li'),
+				var parentEl = target.parents('[data-theme]'),
 					themeType = parentEl.attr('data-type'),
 					cssSrc = parentEl.attr('data-css'),
 					themeId = parentEl.attr('data-theme');
