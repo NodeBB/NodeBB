@@ -63,8 +63,19 @@ define('admin/appearance/skins', function() {
 	};
 
 	function highlightSelectedTheme(themeId) {
-		$('.themes li[data-theme]').removeClass('selected').find('[data-action="use"]').html('Use Theme').removeClass('btn-success').addClass('btn-primary');
-		$('.themes li[data-theme="' + themeId + '"]').addClass('selected').find('[data-action="use"]').html('Current Theme').removeClass('btn-primary').addClass('btn-success');
+		$('[data-theme]')
+			.removeClass('selected')
+			.find('[data-action="use"]')
+				.html('Select Theme')
+				.removeClass('btn-success')
+				.addClass('btn-primary');
+
+		$('[data-theme="' + themeId + '"]')
+			.addClass('selected')
+			.find('[data-action="use"]')
+				.html('Current Theme')
+				.removeClass('btn-primary')
+				.addClass('btn-success');
 	}
 
 	return Skins;

@@ -84,8 +84,19 @@ define('admin/appearance/themes', function() {
 	};
 
 	function highlightSelectedTheme(themeId) {
-		$('.themes li[data-theme]').removeClass('selected');
-		$('.themes li[data-theme="' + themeId + '"]').addClass('selected');
+		$('[data-theme]')
+			.removeClass('selected')
+			.find('[data-action="use"]')
+				.html('Select Theme')
+				.removeClass('btn-success')
+				.addClass('btn-primary');
+
+		$('[data-theme="' + themeId + '"]')
+			.addClass('selected')
+			.find('[data-action="use"]')
+				.html('Current Theme')
+				.removeClass('btn-primary')
+				.addClass('btn-success');
 	}
 
 	return Themes;
