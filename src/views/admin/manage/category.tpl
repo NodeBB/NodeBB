@@ -99,15 +99,6 @@
 							</fieldset>
 
 							<hr />
-							<div class="btn-group btn-group-justified">
-								<div class="btn-group">
-									<button class="btn btn-primary save">Save</button>
-								</div>
-								<div class="btn-group">
-									<button class="btn btn-default revert">Revert</button>
-								</div>
-							</div>
-							<hr />
 							<button class="btn btn-danger btn-block purge"><i class="fa fa-eraser"></i> Purge Category</button>
 						</div>
 					</div>
@@ -135,5 +126,9 @@
 		</div>
 	</form>
 </div>
+
+<button id="save" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+    <i class="material-icons">save</i>
+</button>
 
 <input type="hidden" template-variable="cid" value="{category.cid}" />

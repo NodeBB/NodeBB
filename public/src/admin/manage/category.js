@@ -76,8 +76,7 @@ define('admin/manage/category', [
 		// Colour Picker
 		$('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 
-		$('.save').on('click', save);
-		$('.revert').on('click', ajaxify.refresh);
+		$('#save').on('click', save);
 		$('.purge').on('click', function(e) {
 			e.preventDefault();
 
