@@ -1,8 +1,8 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">Maintenance Mode</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Maintenance Mode</div>
+	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
 				<label>
@@ -21,9 +21,9 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Domain Settings</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Domain Settings</div>
+	<div class="col-xs-10">
 		<form>
 			<div class="form-group">
 				<label for="allow-from-uri">Set ALLOW-FROM to Place NodeBB in an iFrame:</label>

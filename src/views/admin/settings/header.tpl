@@ -1,5 +1,5 @@
 <div class="settings">
-	<h1 id="settings-title">General Settings</h1>
+	<h1 id="settings-title"></h1>
 
 	<div class="row">
 		<div class="col-xs-2">

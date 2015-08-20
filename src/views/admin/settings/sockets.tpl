@@ -1,8 +1,8 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">Web Socket Settings</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Reconnection Settings</div>
+	<div class="col-xs-10">
 		<form>
 			<div class="form-group">
 				<label for="maxReconnectionAttempts">Max Reconnection Attempts</label>
