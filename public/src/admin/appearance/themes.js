@@ -44,12 +44,12 @@ define('admin/appearance/themes', function() {
 				if (confirm) {
 					socket.emit('admin.themes.set', {
 						type: 'local',
-						id: 'nodebb-theme-vanilla'
+						id: 'nodebb-theme-persona'
 					}, function(err) {
 						if (err) {
 							return app.alertError(err.message);
 						}
-						highlightSelectedTheme('nodebb-theme-vanilla');
+						highlightSelectedTheme('nodebb-theme-persona');
 						app.alert({
 							alert_id: 'admin:theme',
 							type: 'success',
