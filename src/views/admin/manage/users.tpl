@@ -8,7 +8,6 @@
 					<li><a href='{config.relative_path}/admin/manage/users/sort-posts'>Top Posters</a></li>
 					<li><a href='{config.relative_path}/admin/manage/users/sort-reputation'>Most Reputation</a></li>
 					<li><a href='{config.relative_path}/admin/manage/users/banned'>Banned</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/registration'>Registration Queue</a></li>
 					<li><a href='{config.relative_path}/admin/manage/users/search'>User Search</a></li>
 
 

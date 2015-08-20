@@ -19,6 +19,7 @@
 				<li><a href="{relative_path}/admin/manage/categories">Categories</a></li>
 				<li><a href="{relative_path}/admin/manage/tags">Tags</a></li>
 				<li><a href="{relative_path}/admin/manage/users">Users</a></li>
+				<li><a href="{relative_path}/admin/manage/registration">Registration Queue</a></li>
 				<li><a href="{relative_path}/admin/manage/groups">Groups</a></li>
 				<li><a href="{relative_path}/admin/manage/flags">Flags</a></li>
 			</ul>
