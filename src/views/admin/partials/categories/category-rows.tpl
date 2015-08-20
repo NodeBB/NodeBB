@@ -8,7 +8,7 @@
                         <i data-name="icon" value="{categories.icon}" class="fa {categories.icon}"></i>
                     </div>
                     <div class="information">
-                        <h5 class="header">{categories.name}</h5>
+                        <h5 class="category-header">{categories.name}</h5>
                         <p class="description">{categories.descriptionParsed}</p>
                     </div>
                 </div>
