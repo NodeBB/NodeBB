@@ -35,8 +35,8 @@
 			<div class="panel-heading">Modify Tag</div>
 			<div class="panel-body">
 				<p>Select tags via clicking and/or dragging, use shift to select multiple.</p>
-				<button class="btn btn-primary btn-md" id="modify">Modify Tags</button>
-				<button class="btn btn-warning btn-md" id="deleteSelected">Delete Tags</button>
+				<button class="btn btn-primary btn-block" id="modify">Modify Tags</button>
+				<button class="btn btn-warning btn-block" id="deleteSelected">Delete Tags</button>
 			</div>
 		</div>
 
