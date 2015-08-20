@@ -59,16 +59,30 @@ define('admin/appearance/skins', function() {
 			showRevert: true
 		}, function(html) {
 			themeContainer.html(html);
+
+			var skin = config['theme:src']
+				.match(/latest\/(\S+)\/bootstrap.min.css/)[1]
+				.replace(/(^|\s)([a-z])/g , function(m,p1,p2){return p1+p2.toUpperCase();});
+
+			highlightSelectedTheme(skin);
 		});
 	};
 
 	function highlightSelectedTheme(themeId) {
 		$('[data-theme]')
 			.removeClass('selected')
-			.find('[data-action="use"]')
-				.html('Select Theme')
-				.removeClass('btn-success')
-				.addClass('btn-primary');
+			.find('[data-action="use"]').each(function() {
+				if ($(this).parents('[data-theme]').attr('data-theme')) {
+					$(this)
+						.html('Select Theme')
+						.removeClass('btn-success')
+						.addClass('btn-primary');
+				}
+			});
+
+		if (!themeId) {
+			return;
+		}
 
 		$('[data-theme="' + themeId + '"]')
 			.addClass('selected')
