@@ -4,7 +4,7 @@
 		<li><a href="#custom-header" data-toggle="tab">Custom Header</a></li>
 	</ul>
 	<br />
-	<div id="myTabContent" class="tab-content">
+	<div class="tab-content">
 		<div class="tab-pane fade active in" id="custom-css">
 			<p>
 				Enter your own CSS declarations here, which will be applied after all other styles.
