@@ -54,10 +54,6 @@ define(function() {
 			routes.push($(link).attr('href'));
 		});
 
-		input.on('blur', function() {
-			$(this).val('').attr('placeholder', '/');
-		});
-
 		input.on('keyup focus', function() {
 			var $input = $(this),
 				value = $input.val().toLowerCase(),
@@ -66,8 +62,6 @@ define(function() {
 			function toUpperCase(txt){
 				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
 			}
-
-			$input.attr('placeholder', '');
 
 			firstResult = null;
 

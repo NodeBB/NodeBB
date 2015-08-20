@@ -111,11 +111,6 @@
 						View Forum
 					</a>
 				</li>
-				<li>
-					<a id="user-profile-link" href="{relative_path}/user/{user.userslug}" target="_top">
-						View Profile
-					</a>
-				</li>
 				<li role="presentation" class="divider"></li>
 				<li>
 					<a href="#" class="reload" title="Reload Forum">
@@ -133,5 +128,13 @@
 				</li>
 			</ul>
 		</li>
+		<form class="hidden-xs pull-right" role="search">
+			<div class="" id="acp-search" >
+				<div class="dropdown" >
+					<input type="text" data-toggle="dropdown" class="form-control" placeholder="Search...">
+					<ul class="dropdown-menu" role="menu"></ul>
+				</div>
+			</div>
+		</form>
 	</ul>
 </nav>

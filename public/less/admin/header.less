@@ -19,9 +19,34 @@
 		position: absolute;
 		right: 30px;
 		bottom: 0px;
-		
+
 		#user_dropdown {
 			font-size: 25px;
+		}
+	}
+
+	#acp-search {
+		margin-top: 2px;
+		margin-right: 20px;
+
+		input {
+			padding: 10px 20px;
+			width: 250px;
+			height: 44px;
+			background-color: rgba(0, 0, 0, 0.2);
+			border-radius: 3px;
+			box-shadow: none;
+			.transition(.4s ease background-color);
+
+			&:focus {
+				background-color: #eee;
+				color: #333;
+			}
+		}
+
+		.search-match {
+			font-weight: 700;
+			color: black;
 		}
 	}
 
