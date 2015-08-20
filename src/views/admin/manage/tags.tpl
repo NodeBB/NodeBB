@@ -1,11 +1,12 @@
-<div class="tags">
+<div class="tags row">
 
 	<div class="col-lg-9">
-		<div class="tag-management">
-			<!-- IF !tags.length -->
-			<h5>Your forum does not have any topics with tags yet.</h5>
-			<!-- ENDIF !tags.length -->
-			<div class="row">
+		<div class="panel panel-default tag-management">
+			<div class="panel-body">
+				<!-- IF !tags.length -->
+				Your forum does not have any topics with tags yet.
+				<!-- ENDIF !tags.length -->
+			
 				<div class="tag-list">
 					<!-- BEGIN tags -->
 					<div class="tag-row" data-tag="{tags.value}">
