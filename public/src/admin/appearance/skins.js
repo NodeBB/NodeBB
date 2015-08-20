@@ -9,12 +9,12 @@ define('admin/appearance/skins', function() {
 		scriptEl.attr('src', '//bootswatch.aws.af.cm/3/?callback=bootswatchListener');
 		$('body').append(scriptEl);
 
-		$('#bootstrap_themes').on('click', function(e){
+		$('#skins').on('click', function(e){
 			var target = $(e.target),
 				action = target.attr('data-action');
 
 			if (action && action === 'use') {
-				var parentEl = target.parents('li'),
+				var parentEl = target.parents('[data-theme]'),
 					themeType = parentEl.attr('data-type'),
 					cssSrc = parentEl.attr('data-css'),
 					themeId = parentEl.attr('data-theme');
