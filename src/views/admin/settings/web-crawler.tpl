@@ -1,8 +1,8 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">Crawlability Settings</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Crawlability Settings</div>
+	<div class="col-xs-10">
 		<form>
 			<strong>Custom Robots.txt <small>Leave blank for default</small></strong><br />
 			<textarea class="form-control" data-field="robots.txt"></textarea>
@@ -10,9 +10,9 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Sitemap & Feed Settings</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Sitemap & Feed Settings</div>
+	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
 				<label>
@@ -31,8 +31,11 @@
 				<input class="form-control" type="text" data-field="sitemapTopics" />
 			</div>
 
-			<button id="clear-sitemap-cache" class="btn btn-warning">Clear Sitemap Cache</button>
-			<a href="/sitemap.xml" target="_blank" class="btn btn-info">View Sitemap</a>
+			<br />
+			<p>
+				<button id="clear-sitemap-cache" class="btn btn-warning">Clear Sitemap Cache</button>
+				<a href="/sitemap.xml" target="_blank" class="btn btn-link">View Sitemap</a>
+			</p>
 
 		</form>
 	</div>
