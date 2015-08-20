@@ -1,8 +1,8 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">Tag Settings</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Tag Settings</div>
+	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
 				<label>

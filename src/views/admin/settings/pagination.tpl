@@ -1,8 +1,8 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">Pagination Settings</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Pagination Settings</div>
+	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
 				<label>
@@ -13,18 +13,18 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Topic Pagination</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Topic Pagination</div>
+	<div class="col-xs-10">
 		<form>
 			<strong>Posts per Page</strong><br /> <input type="text" class="form-control" value="20" data-field="postsPerPage">
 		</form>
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Category Pagination</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Category Pagination</div>
+	<div class="col-xs-10">
 		<form>
 			<strong>Topics per Page</strong><br /> <input type="text" class="form-control" value="20" data-field="topicsPerPage"><br />
 			<strong>Initial Number of Topics to Load on Unread, Recent, and Popular</strong><br /> <input type="text" class="form-control" value="20" data-field="topicsPerList">
