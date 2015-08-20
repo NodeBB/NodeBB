@@ -187,12 +187,12 @@ module.exports = function(privileges) {
 		if (!cid) {
 			return callback(null, false);
 		}
-		categories.getCategoryField(cid, 'disabled', function(err, disabled) {
+		categories.getCategoryFields(cid, ['disabled', 'section'], function(err, fields) {
 			if (err) {
 				return callback(err);
 			}
 
-			if (parseInt(disabled, 10) === 1) {
+			if (fields.disabled || fields.section) {
 				return callback(null, false);
 			}
 
