@@ -1,8 +1,8 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">Email Settings</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Email Settings</div>
+	<div class="col-xs-10">
 		<form>
 			<p>
 				Please ensure that you have installed a third-party emailer (e.g. PostageApp, Mailgun, Mandrill, SendGrid, etc), otherwise emails will not be sent by NodeBB
@@ -21,7 +21,7 @@
 				</p>
 				<input type="text" class="form-control input-lg" id="email:from_name" data-field="email:from_name" placeholder="NodeBB" /><br />
 			</div>
-			<button class="btn btn-block btn-default" type="button" data-action="email.test">Send Test Email</button>
+			<button class="btn btn-primary" type="button" data-action="email.test">Send Test Email</button>
 			<p class="help-block">
 				The test email will be sent to the currently logged in user's email address.
 			</p>
@@ -29,9 +29,9 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Email Subscriptions</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Email Subscriptions</div>
+	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
 				<label for="disableEmailSubscriptions">
