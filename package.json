@@ -51,7 +51,7 @@
     "nodebb-theme-lavender": "1.0.52",
     "nodebb-theme-persona": "2.0.17",
     "nodebb-theme-vanilla": "3.0.10",
-    "nodebb-widget-essentials": "1.0.4",
+    "nodebb-widget-essentials": "1.0.5",
     "npm": "^2.1.4",
     "passport": "^0.2.1",
     "passport-local": "1.0.0",
