@@ -75,6 +75,8 @@
 				menu
 					.parent().addClass('active')
 					.parents('.menu-item').addClass('active');
+
+				$('#main-page-title').text(menu.text() + (menu.parents('.menu-item').children('a').text() === 'Settings' ? ' Settings' : ''));
 			}
 		});
 	}

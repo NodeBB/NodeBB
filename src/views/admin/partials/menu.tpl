@@ -1,4 +1,5 @@
 <nav class="header">
+	<h1 id="main-page-title"></h1>
 	<ul id="main-menu">
 		<li class="menu-item">
 			<a href="{relative_path}/admin/general/dashboard">Dashboard</a>
