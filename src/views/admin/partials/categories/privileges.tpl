@@ -15,16 +15,14 @@
 						<!-- END privileges.users -->
 						<tr>
 							<td colspan="{privileges.columnCount}">
-								<button type="button" class="btn btn-primary btn-xs pull-right" data-ajaxify="false" data-action="search.user"><i class="fa fa-plus"></i> Add User</button>
+								<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.user"> Add User</button>
 							</td>
 						</tr>
 						<!-- ELSE -->
 						<tr>
 							<td colspan="{privileges.columnCount}">
-								<div class="alert alert-info">
-									<button type="button" class="btn btn-primary btn-xs pull-right" data-ajaxify="false" data-action="search.user"><i class="fa fa-plus"></i> Add User</button>
-									No user-specific privileges in this category.
-								</div>
+								<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.user"> Add User</button>
+								No user-specific privileges in this category.
 							</td>
 						</tr>
 						<!-- ENDIF privileges.users.length -->
@@ -52,16 +50,14 @@
 						<!-- END privileges.groups -->
 						<tr>
 							<td colspan="{privileges.columnCount}">
-								<button type="button" class="btn btn-primary btn-xs pull-right" data-ajaxify="false" data-action="search.group"><i class="fa fa-plus"></i> Add Group</button>
+								<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.group"> Add Group</button>
 							</td>
 						</tr>
 						<!-- ELSE -->
 						<tr>
 							<td colspan="{privileges.columnCount}">
-								<div class="alert alert-info">
-									<button type="button" class="btn btn-primary btn-xs pull-right" data-ajaxify="false" data-action="search.group"><i class="fa fa-plus"></i> Add Group</button>
-									No group-specific privileges in this category.
-								</div>
+								<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.group"> Add Group</button>
+								No group-specific privileges in this category.
 							</td>
 						</tr>
 						<!-- ENDIF privileges.groups.length -->

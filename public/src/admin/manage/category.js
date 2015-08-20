@@ -96,7 +96,7 @@ define('admin/manage/category', [
 		$('.purge').on('click', function(e) {
 			e.preventDefault();
 
-			bootbox.confirm('<p class="lead">Do you really want to purge this category "' + $('form.category').find('input[data-name="name"]').val() + '"?</p><p><strong class="text-danger">Warning!</strong> All topics and posts in this category will be purged!</p>', function(confirm) {
+			bootbox.confirm('<p class="lead">Do you really want to purge this category "' + $('form.category').find('input[data-name="name"]').val() + '"?</p><h5><strong class="text-danger">Warning!</strong> All topics and posts in this category will be purged!</h5> <p class="help-block">Purging a category will remove all topics and posts, and delete the category from the database. If you want to remove a category <em>temporarily</em>, you\'ll want to "disable" the category instead.</p>', function(confirm) {
 				if (!confirm) {
 					return;
 				}
