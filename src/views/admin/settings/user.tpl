@@ -1,8 +1,8 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">User List</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">User List</div>
+	<div class="col-xs-10">
 		<form role="form">
 			<div class="checkbox">
 				<label>
@@ -47,9 +47,9 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Avatars</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Avatars</div>
+	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
 				<label>
@@ -77,8 +77,12 @@
 
 			<div class="form-group">
 				<label>Custom Gravatar Default Image</label>
-				<input id="customGravatarDefaultImage" type="text" class="form-control" placeholder="A custom image to use instead of gravatar defaults" data-field="customGravatarDefaultImage" /><br />
-				<input data-action="upload" data-target="customGravatarDefaultImage" data-route="{config.relative_path}/api/admin/uploadgravatardefault" type="button" class="btn btn-default" value="Upload"></input>
+				<div class="input-group">
+					<input id="customGravatarDefaultImage" type="text" class="form-control" placeholder="A custom image to use instead of gravatar defaults" data-field="customGravatarDefaultImage" />
+					<span class="input-group-btn">
+						<input data-action="upload" data-target="customGravatarDefaultImage" data-route="{config.relative_path}/api/admin/uploadgravatardefault" type="button" class="btn btn-default" value="Upload"></input>
+					</span>
+				</div>
 			</div>
 
 			<div class="form-group">
@@ -94,9 +98,9 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Account Protection</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">Account Protection</div>
+	<div class="col-xs-10">
 		<form>
 			<div class="form-group">
 				<label for="loginAttempts">Login attempts per hour</label>
@@ -121,9 +125,9 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">User Registration</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">User Registration</div>
+	<div class="col-xs-10">
 		<form>
 			<div class="form-group">
 				<label>Minimum Username Length</label>
@@ -149,9 +153,9 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">User Search</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-xs-2 settings-header">User Search</div>
+	<div class="col-xs-10">
 		<form>
 			<div class="form-group">
 				<label>Number of results to display</label>
