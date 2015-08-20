@@ -31,6 +31,7 @@ var fs = require('fs'),
 	Plugins.clientScripts = [];
 	Plugins.customLanguages = [];
 	Plugins.libraryPaths = [];
+	Plugins.versionWarning = [];
 
 	Plugins.initialized = false;
 
@@ -74,6 +75,7 @@ var fs = require('fs'),
 		Plugins.libraries = {};
 		Plugins.loadedHooks = {};
 		Plugins.staticDirs = {};
+		Plugins.versionWarning = [];
 		Plugins.cssFiles.length = 0;
 		Plugins.lessFiles.length = 0;
 		Plugins.clientScripts.length = 0;
@@ -106,6 +108,16 @@ var fs = require('fs'),
 				});
 			},
 			function(next) {
+				// If some plugins are incompatible, throw the warning here
+				if (Plugins.versionWarning.length) {
+					process.stdout.write('\n');
+					winston.warn('[plugins/load] The following plugins may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing. In the event of an unresponsive NodeBB caused by this plugin, run `./nodebb reset -p PLUGINNAME` to disable it.');
+					for(var x=0,numPlugins=Plugins.versionWarning.length;x<numPlugins;x++) {
+						process.stdout.write('  * '.yellow + Plugins.versionWarning[x].reset + '\n');
+					}
+					process.stdout.write('\n');
+				}
+
 				Object.keys(Plugins.loadedHooks).forEach(function(hook) {
 					var hooks = Plugins.loadedHooks[hook];
 					hooks = hooks.sort(function(a, b) {
