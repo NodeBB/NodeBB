@@ -5,10 +5,11 @@ var async = require('async'),
 	nconf = require('nconf'),
 	request = require('request'),
 
-	db = require('./../database'),
+	db = require('../database'),
 	meta = require('../meta'),
 	emailer = require('../emailer'),
 	notifications = require('../notifications'),
+	groups = require('../groups'),
 	translator = require('../../public/src/modules/translator'),
 	utils = require('../../public/src/utils');
 
@@ -97,9 +98,26 @@ module.exports = function(User) {
 			},
 			function(next) {
 				removeFromQueue(username, next);
+			},
+			function(next) {
+				markNotificationRead(username, next);
 			}
 		], callback);
 	};
+
+	function markNotificationRead(username, callback) {
+		var nid = 'new_register:' + username;
+		async.waterfall([
+			function (next) {
+				groups.getMembers('administrators', 0, -1, next);
+			},
+			function (uids, next) {
+				async.each(uids, function(uid, next) {
+					notifications.markRead(nid, uid, next);
+				}, next);
+			}
+		], callback);
+	}
 
 	User.rejectRegistration = function(username, callback) {
 		removeFromQueue(username, callback);
@@ -109,7 +127,9 @@ module.exports = function(User) {
 		async.parallel([
 			async.apply(db.sortedSetRemove, 'registration:queue', username),
 			async.apply(db.delete, 'registration:queue:name:' + username)
-		], callback);
+		], function(err, results) {
+			callback(err);
+		});
 	}
 
 	User.getRegistrationQueue = function(start, stop, callback) {
