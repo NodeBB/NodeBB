@@ -1,5 +1,5 @@
 <div id="navigation">
-	<div class="col-lg-6">
+	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading">Active Navigation</div>
 			<div class="panel-body">
@@ -87,13 +87,8 @@
 			</div>
 		</div>
 	</div>
-
-	<div class="col-lg-3 acp-sidebar">
-		<div class="panel panel-default">
-			<div class="panel-heading">Navigation Control</div>
-			<div class="panel-body">
-				<button class="btn btn-primary btn-md" id="save">Save Changes</button>
-			</div>
-		</div>
-	</div>
 </div>
+
+<button id="save" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+	<i class="material-icons">save</i>
+</button>
