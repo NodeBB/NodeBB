@@ -40,7 +40,7 @@ define('admin/appearance/themes', function() {
 		});
 
 		$('#revert_theme').on('click', function() {
-			bootbox.confirm('Are you sure you wish to remove the custom theme and restore the NodeBB default theme?', function(confirm) {
+			bootbox.confirm('Are you sure you wish to restore the default NodeBB theme?', function(confirm) {
 				if (confirm) {
 					socket.emit('admin.themes.set', {
 						type: 'local',
