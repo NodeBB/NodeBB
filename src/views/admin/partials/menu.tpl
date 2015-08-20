@@ -79,7 +79,7 @@
 				<!-- END plugins -->
 				<li class="divider"></li>
 				<li data-link="1">
-					<a href="{relative_path}/admin/extend/plugins"><i class="fa fa-plus"></i> Install Plugins</a>
+					<a href="{relative_path}/admin/extend/plugins">Install Plugins</a>
 				</li>
 			</ul>
 		</li>

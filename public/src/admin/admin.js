@@ -69,7 +69,7 @@
 		$('#main-menu a').removeClass('active').each(function() {
 			var menu = $(this),
 				href = menu.attr('href'),
-				isLink = menu.attr('data-link') === '1';
+				isLink = menu.parent().attr('data-link') === '1';
 
 			if (!isLink && href && href.slice(1) === url) {
 				menu
