@@ -63,21 +63,6 @@ define('admin/manage/category', [
 			});
 		}
 
-		function setupEditTargets() {
-			$('[data-edit-target]').on('click', function() {
-				var $this = $(this),
-					target = $($this.attr('data-edit-target'));
-
-				$this.addClass('hide');
-				target.removeClass('hide').on('blur', function() {
-					$this.removeClass('hide').children('span').text(this.value).html();
-					$(this).addClass('hide');
-				}).val($this.children('span').html().text());
-
-				target.focus();
-			});
-		}
-
 		// If any inputs have changed, prepare it for saving
 		$('form.category input, form.category select').on('change', function(ev) {
 			modified(ev.target);
@@ -158,7 +143,6 @@ define('admin/manage/category', [
 			});
 		});
 
-		setupEditTargets();
 		Category.setupPrivilegeTable();
 	};
 

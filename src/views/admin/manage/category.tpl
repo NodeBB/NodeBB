@@ -5,28 +5,26 @@
 				<div class="panel-heading"><i class="fa fa-folder"></i> Category Settings</div>
 				<div class="panel-body category-settings-form">
 					<fieldset>
-						<div class="col-xs-12">
-							<h3 data-edit-target="#cid-{category.cid}-name"><span>{category.name}</span> <small><i class="fa fa-edit"></i></small></h3>
-							<input id="cid-{category.cid}-name" type="text" class="form-control hide" placeholder="Category Name" data-name="name" value="{category.name}" />
-							<h4 data-edit-target="#cid-{category.cid}-description"><span>{category.description}</span> <small><i class="fa fa-edit"></i></small></h4>
-							<input id="cid-{category.cid}-description" data-name="description" placeholder="Category Description" value="{category.description}" class="form-control category_description input-sm description hide"></input>
-						</div>
+						<label for="cid-{category.cid}-name">Category Name</label>
+						<input id="cid-{category.cid}-name" type="text" class="form-control" placeholder="Category Name" data-name="name" value="{category.name}" /><br />
+
+						<label for="cid-{category.cid}-description">Category Description</label>
+						<input id="cid-{category.cid}-description" data-name="description" placeholder="Category Description" value="{category.description}" class="form-control category_description description"></input><br />
 					</fieldset>
 
 					<fieldset>
-						<div class="col-xs-12">
-							<div class="form-group">
-								<label for="cid-{category.cid}-parentCid">Parent Category</label>
-								<br/>
-								<div class="btn-group <!-- IF !category.parent.name -->hide<!-- ENDIF !category.parent.name-->">
-									<button type="button" class="btn btn-default" data-action="changeParent" data-parentCid="{category.parent.cid}"><i class="fa {category.parent.icon}"></i> {category.parent.name}</button>
-									<button type="button" class="btn btn-warning" data-action="removeParent" data-parentCid="{category.parent.cid}"><i class="fa fa-times"></i></button>
-								</div>
-								<button type="button" class="btn btn-default form-control <!-- IF category.parent.name -->hide<!-- ENDIF category.parent.name-->" data-action="setParent"><i class="fa fa-sitemap"></i> (None)</button>
+						<div class="form-group">
+							<label for="cid-{category.cid}-parentCid">Parent Category</label>
+							<br/>
+							<div class="btn-group <!-- IF !category.parent.name -->hide<!-- ENDIF !category.parent.name-->">
+								<button type="button" class="btn btn-default" data-action="changeParent" data-parentCid="{category.parent.cid}"><i class="fa {category.parent.icon}"></i> {category.parent.name}</button>
+								<button type="button" class="btn btn-warning" data-action="removeParent" data-parentCid="{category.parent.cid}"><i class="fa fa-times"></i></button>
 							</div>
+							<button type="button" class="btn btn-default <!-- IF category.parent.name -->hide<!-- ENDIF category.parent.name-->" data-action="setParent"><i class="fa fa-sitemap"></i> (None)</button><br />
 						</div>
 					</fieldset>
-					<fieldset>
+
+					<fieldset class="row">
 						<div class="col-sm-4 col-xs-12">
 							<div class="form-group">
 								<label for="cid-{category.cid}-bgColor">Background Colour</label>
@@ -48,7 +46,7 @@
 									<option value="contain">contain</option>
 								</select>
 							</div>
-						</div>
+						</div><br />
 						<div class="col-sm-4 col-xs-12">
 							<div class="form-group">
 								<label for="cid-{category.cid}-class">Custom Class</label>
