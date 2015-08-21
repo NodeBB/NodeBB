@@ -18,8 +18,6 @@
 			setupRestartLinks();
 		});
 
-		$(window).on('action:admin.settingsLoaded', setupCheckboxes);
-
 		$('[component="logout"]').on('click', app.logout);
 	});
 
@@ -100,38 +98,4 @@
 			});
 		});
 	}
-
-	function setupCheckboxes() {
-		if (ajaxify.currentPage.match(/^admin\/manage\/categories/)) {
-			return $('[type=checkbox]').show();
-		}
-
-		$('[type=checkbox]').change(function() {
-			var checked = $(this).is(':checked');
-
-			$(this).siblings('[class*=fa-]').toggleClass('fa-toggle-off', !checked)
-				.toggleClass('fa-toggle-on', checked);
-		});
-
-		$('[type=checkbox]').each(function() {
-			var checkbox = $(this),
-				checked = checkbox.is(':checked');
-
-			if (checkbox.attr('data-toggle-added')) {
-				return;
-			}
-
-			checkbox.hide();
-
-			if (checked) {
-				checkbox.after('<i class="fa fa-toggle-on"></i>');
-			}
-			else {
-				checkbox.after('<i class="fa fa-toggle-off"></i>');
-			}
-
-			checkbox.attr('data-toggle-added', true);
-		});
-	}
-
 }());
