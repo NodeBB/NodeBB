@@ -453,13 +453,13 @@ Upgrade.upgrade = function(callback) {
 					}
 
 					var now = Date.now();
-
+					
+					userSettings = userSettings.filter(function(setting) {
+						return setting && setting.dailyDigestFreq !== 'off';
+					});
+					
 					async.eachLimit(userSettings, 50, function(setting, next) {
-						if (setting.dailyDigestFreq !== 'off') {
-							db.sortedSetAdd('digest:' + setting.dailyDigestFreq + ':uids', now, setting.uid, next);
-						} else {
-							setImmediate(next);
-						}
+						db.sortedSetAdd('digest:' + setting.dailyDigestFreq + ':uids', now, setting.uid, next);
 					}, function(err) {
 						if (err) {
 							winston.error('[2014/12/20] Error encountered while updating digest settings');
