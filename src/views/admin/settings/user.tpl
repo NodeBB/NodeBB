@@ -1,8 +1,8 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
 <div class="row">
-	<div class="col-xs-2 settings-header">Authentication</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">Authentication</div>
+	<div class="col-sm-10 col-xs-12">
 		<form role="form">
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
@@ -41,8 +41,8 @@
 </div>
 
 <div class="row">
-	<div class="col-xs-2 settings-header">Account Settings</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">Account Settings</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
@@ -61,8 +61,8 @@
 </div>
 
 <div class="row">
-	<div class="col-xs-2 settings-header">Avatars</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">Avatars</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
@@ -114,8 +114,8 @@
 </div>
 
 <div class="row">
-	<div class="col-xs-2 settings-header">Account Protection</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">Account Protection</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
 				<label for="loginAttempts">Login attempts per hour</label>
@@ -141,8 +141,8 @@
 </div>
 
 <div class="row">
-	<div class="col-xs-2 settings-header">User Registration</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">User Registration</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
 				<label>Minimum Username Length</label>
@@ -169,8 +169,8 @@
 </div>
 
 <div class="row">
-	<div class="col-xs-2 settings-header">User Search</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">User Search</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
 				<label>Number of results to display</label>

@@ -1,8 +1,8 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
 <div class="row">
-	<div class="col-xs-2 settings-header">Email Settings</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">Email Settings</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<p>
 				Please ensure that you have installed a third-party emailer (e.g. PostageApp, Mailgun, Mandrill, SendGrid, etc), otherwise emails will not be sent by NodeBB
@@ -30,8 +30,8 @@
 </div>
 
 <div class="row">
-	<div class="col-xs-2 settings-header">Email Subscriptions</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">Email Subscriptions</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
 				<label for="disableEmailSubscriptions" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">

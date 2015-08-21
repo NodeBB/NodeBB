@@ -2,7 +2,7 @@
 	<form role="form">
 		<div class="row">
 			<div class="col-xs-2">Notifications</div>
-			<div class="col-xs-10">
+			<div class="col-sm-10 col-xs-12">
 				<label for="notification">Notifications</label>
 				<div class="row">
 					<div class="form-group col-xs-9">
@@ -22,7 +22,7 @@
 
 		<div class="row">
 			<div class="col-xs-2">Chat Messages</div>
-			<div class="col-xs-10">
+			<div class="col-sm-10 col-xs-12">
 				<label for="chat-incoming">Incoming Message</label>
 				<div class="row">
 					<div class="form-group col-xs-9">

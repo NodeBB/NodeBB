@@ -1,8 +1,8 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
 <div class="row">
-	<div class="col-xs-2 settings-header">Reconnection Settings</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">Reconnection Settings</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
 				<label for="maxReconnectionAttempts">Max Reconnection Attempts</label>

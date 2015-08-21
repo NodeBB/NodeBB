@@ -1,7 +1,7 @@
 <div class="languages">
 	<div class="row">
 		<div class="col-xs-2">Language Settings</div>
-		<div class="col-xs-10">
+		<div class="col-sm-10 col-xs-12">
 			<p>
 				The default language determines the language settings for all users who
 				are visiting your forum. <br />

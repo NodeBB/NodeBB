@@ -1,8 +1,8 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
 <div class="row">
-	<div class="col-xs-2 settings-header">Crawlability Settings</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">Crawlability Settings</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<strong>Custom Robots.txt <small>Leave blank for default</small></strong><br />
 			<textarea class="form-control" data-field="robots.txt"></textarea>
@@ -11,8 +11,8 @@
 </div>
 
 <div class="row">
-	<div class="col-xs-2 settings-header">Sitemap & Feed Settings</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">Sitemap & Feed Settings</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">

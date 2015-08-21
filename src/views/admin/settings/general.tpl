@@ -1,10 +1,10 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
 <div class="row">
-	<div class="col-xs-2 settings-header">
+	<div class="col-sm-2 col-xs-12 settings-header">
 		Site Settings
 	</div>
-	<div class="col-xs-10">
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<label>Site Title</label>
 			<input class="form-control" type="text" placeholder="Your Community Name" data-field="title" />
@@ -32,8 +32,8 @@
 </div>
 
 <div class="row">
-	<div class="col-xs-2 settings-header">Site Logo</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">Site Logo</div>
+	<div class="col-sm-10 col-xs-12">
 		<div class="form-group">
 			<label for="logoUrl">Image</label>
 			<div class="input-group">
@@ -58,10 +58,10 @@
 </div>
 
 <div class="row">
-	<div class="col-xs-2 settings-header">
+	<div class="col-sm-2 col-xs-12 settings-header">
 		Favicon
 	</div>
-	<div class="col-xs-10">
+	<div class="col-sm-10 col-xs-12">
 		<div class="form-group">
 			<div class="input-group">
 				<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" readonly />
@@ -74,8 +74,8 @@
 </div>
 
 <div class="row">
-	<div class="col-xs-2 settings-header">Miscellaneous</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">Miscellaneous</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">

@@ -1,8 +1,8 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
 <div class="row">
-	<div class="col-xs-2 settings-header">Post Sorting</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">Post Sorting</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
 				<label>Default Post Sorting</label>
@@ -25,8 +25,8 @@
 </div>
 
 <div class="row">
-	<div class="col-xs-2 settings-header">Posting Restrictions</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">Posting Restrictions</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
 				<label>Seconds between Posts</label>
@@ -69,8 +69,8 @@
 </div>
 
 <div class="row">
-	<div class="col-xs-2 settings-header">Teaser Settings</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">Teaser Settings</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
 				<label>Teaser Post</label>
@@ -85,8 +85,8 @@
 
 
 <div class="row">
-	<div class="col-xs-2 settings-header">Signature Settings</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">Signature Settings</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
@@ -115,8 +115,8 @@
 </div>
 
 <div class="row">
-	<div class="col-xs-2 settings-header">Chat Settings</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">Chat Settings</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<strong>Chat Message Inbox Size</strong><br /> <input type="text" class="form-control" value="250" data-field="chatMessageInboxSize">
 		</form>
@@ -124,8 +124,8 @@
 </div>
 
 <div class="row">
-	<div class="col-xs-2 settings-header">Upload Settings</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">Upload Settings</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
@@ -156,8 +156,8 @@
 </div>
 
 <div class="row">
-	<div class="col-xs-2 settings-header">Composer Settings</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">Composer Settings</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<p>
 				The following settings govern the functionality and/or appearance of the post composer shown
@@ -184,8 +184,8 @@
 </div>
 
 <div class="row">
-	<div class="col-xs-2 settings-header">IP Tracking</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">IP Tracking</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">

@@ -1,8 +1,8 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
 <div class="row">
-	<div class="col-xs-2 settings-header">General</div>
-	<div class="col-xs-10">
+	<div class="col-sm-2 col-xs-12 settings-header">General</div>
+	<div class="col-sm-10 col-xs-12">
 		<form role="form">
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
