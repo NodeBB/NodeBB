@@ -21,6 +21,7 @@
 		});
 
 		$('[component="logout"]').on('click', app.logout);
+		app.alert = launchSnackbar;
 	});
 
 	socket.emit('admin.config.get', function(err, config) {
@@ -99,5 +100,17 @@
 				instance.reload();
 			});
 		});
+	}
+
+	function launchSnackbar(params) {
+		var bar = $.snackbar({
+			content: "<strong>" + params.title + "</strong> &nbsp;&nbsp;&nbsp;&nbsp;" + params.message,
+			timeout: 3000,
+			htmlAllowed: true
+		});
+
+		if (params.clickfn) {
+			bar.on('click', clickfn);
+		}
 	}
 }());
