@@ -2,7 +2,7 @@
 	<form role="form" class="category" data-cid="{category.cid}">
 		<div class="col-md-9">
 			<div class="panel panel-default">
-				<div class="panel-heading"><i class="fa fa-folder"></i> Category Settings</div>
+				<div class="panel-heading"><i class="fa fa-folder"></i> [[admin:category.category_settings]]</div>
 				<div class="panel-body category-settings-form">
 					<fieldset>
 						<div class="col-xs-12">
@@ -16,36 +16,36 @@
 					<fieldset>
 						<div class="col-xs-12">
 							<div class="form-group">
-								<label for="cid-{category.cid}-parentCid">Parent Category</label>
+								<label for="cid-{category.cid}-parentCid">[[admin:category.parent_category]]</label>
 								<br/>
 								<div class="btn-group <!-- IF !category.parent.name -->hide<!-- ENDIF !category.parent.name-->">
 									<button type="button" class="btn btn-default" data-action="changeParent" data-parentCid="{category.parent.cid}"><i class="fa {category.parent.icon}"></i> {category.parent.name}</button>
 									<button type="button" class="btn btn-warning" data-action="removeParent" data-parentCid="{category.parent.cid}"><i class="fa fa-times"></i></button>
 								</div>
-								<button type="button" class="btn btn-default form-control <!-- IF category.parent.name -->hide<!-- ENDIF category.parent.name-->" data-action="setParent"><i class="fa fa-sitemap"></i> (None)</button>
+								<button type="button" class="btn btn-default form-control <!-- IF category.parent.name -->hide<!-- ENDIF category.parent.name-->" data-action="setParent"><i class="fa fa-sitemap"></i> [[admin:category.none]]</button>
 							</div>
 						</div>
 					</fieldset>
 					<fieldset>
 						<div class="col-sm-4 col-xs-12">
 							<div class="form-group">
-								<label for="cid-{category.cid}-bgColor">Background Colour</label>
+								<label for="cid-{category.cid}-bgColor">[[admin:category.background_colour]]</label>
 								<input id="cid-{category.cid}-bgColor" placeholder="#0059b2" data-name="bgColor" value="{category.bgColor}" class="form-control category_bgColor" />
 							</div>
 						</div>
 						<div class="col-sm-4 col-xs-12">
 							<div class="form-group">
-								<label for="cid-{category.cid}-color">Text Colour</label>
+								<label for="cid-{category.cid}-color">[[admin:category.text_colour]]</label>
 								<input id="cid-{category.cid}-color" placeholder="#fff" data-name="color" value="{category.color}" class="form-control category_color" />
 							</div>
 						</div>
 						<div class="col-sm-4 col-xs-12">
 							<div class="form-group">
-								<label for="cid-{category.cid}-imageClass">Background Image Size</label>
+								<label for="cid-{category.cid}-imageClass">[[admin:category.background_image_size]]</label>
 									<select id="cid-{category.cid}-imageClass" class="form-control" data-name="imageClass" data-value="{category.imageClass}">
-									<option value="auto">auto</option>
-									<option value="cover">cover</option>
-									<option value="contain">contain</option>
+									<option value="auto">[[admin:category.auto]]</option>
+									<option value="cover">[[admin:category.cover]]</option>
+									<option value="contain">[[admin:category.contain]]</option>
 								</select>
 							</div>
 						</div>

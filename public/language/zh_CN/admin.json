@@ -90,5 +90,18 @@
 	"dashboard.recent": "最新",
 	"dashboard.unread": "未读",
 	"dashboard.high_presence_topics": "热门帖",
-	"dashboard.active_users": "活跃用户"
+	"dashboard.active_users": "活跃用户",
+
+	"categories.categories": "版面",
+	"categories.categories_control_panel": "版面控制面板",
+	"categories.create_new_category": "创建新版面",
+	"category.category_settings": "版面设置",
+	"category.parent_category": "父板块",
+	"category.none": "(无)",
+	"category.background_colour": "背景色",
+	"category.text_colour": "文字颜色",
+	"category.background_image_size": "背景图大小",
+	"category.auto": "自动",
+	"category.cover": "拉伸",
+	"category.contain": "contain"
 }

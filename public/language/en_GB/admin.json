@@ -90,5 +90,18 @@
 	"dashboard.recent": "Recent",
 	"dashboard.unread": "Unread",
 	"dashboard.high_presence_topics": "High Presence Topics",
-	"dashboard.active_users": "Active Users"
+	"dashboard.active_users": "Active Users",
+
+	"categories.categories": "Categories",
+	"categories.categories_control_panel": "Categories Control Panel",
+	"categories.create_new_category": "Create New Category",
+	"category.category_settings": "Category Settings",
+	"category.parent_category": "Parent Category",
+	"category.none": "(None)",
+	"category.background_colour": "Background Colour",
+	"category.text_colour": "Text Colour",
+	"category.background_image_size": "Background Image Size",
+	"category.auto": "auto",
+	"category.cover": "cover",
+	"category.contain": "contain"
 }
