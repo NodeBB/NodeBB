@@ -1,7 +1,7 @@
 <nav class="header">
 	<h1 id="main-page-title"></h1>
 	<ul id="user_label" class="pull-right">
-		<li class="dropdown pull-right hidden-xs">
+		<li class="dropdown pull-right">
 			<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
 				<i class="fa fa-ellipsis-v"></i>
 			</a>
@@ -28,7 +28,7 @@
 				</li>
 			</ul>
 		</li>
-		<form class="hidden-xs pull-right" role="search">
+		<form class="pull-right hidden-sm hidden-xs" role="search">
 			<div class="" id="acp-search" >
 				<div class="dropdown">
 					<input type="text" data-toggle="dropdown" class="form-control" placeholder="Search...">
