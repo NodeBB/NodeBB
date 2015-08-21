@@ -30,9 +30,9 @@
 		</li>
 		<form class="hidden-xs pull-right" role="search">
 			<div class="" id="acp-search" >
-				<div class="dropdown" >
+				<div class="dropdown">
 					<input type="text" data-toggle="dropdown" class="form-control" placeholder="Search...">
-					<ul class="dropdown-menu" role="menu"></ul>
+					<ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
 				</div>
 			</div>
 		</form>
