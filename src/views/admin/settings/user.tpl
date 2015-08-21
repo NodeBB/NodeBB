@@ -5,14 +5,16 @@
 	<div class="col-xs-10">
 		<form role="form">
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="allowLocalLogin" checked> <strong>Allow local login</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="allowLocalLogin" checked>
+					<span class="mdl-switch__label"><strong>Allow local login</strong></span>
 				</label>
 			</div>
 
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="requireEmailConfirmation"> <strong>Require Email Confirmation</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="requireEmailConfirmation">
+					<span class="mdl-switch__label"><strong>Require Email Confirmation</strong></span>
 				</label>
 			</div>
 
@@ -43,13 +45,15 @@
 	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="allowAccountDelete" checked> <strong>Allow account deletion</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="allowAccountDelete" checked>
+					<span class="mdl-switch__label"><strong>Allow account deletion</strong></span>
 				</label>
 			</div>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="privateUserInfo"> <strong>Make user info private</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="privateUserInfo">
+					<span class="mdl-switch__label"><strong>Make user info private</strong></span>
 				</label>
 			</div>
 		</form>
@@ -61,14 +65,16 @@
 	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="allowProfileImageUploads"> <strong>Allow users to upload profile images</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="allowProfileImageUploads">
+					<span class="mdl-switch__label"><strong>Allow users to upload profile images</strong></span>
 				</label>
 			</div>
 
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="profile:convertProfileImageToPNG"> <strong>Convert profile image uploads to PNG</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="profile:convertProfileImageToPNG">
+					<span class="mdl-switch__label"><strong>Convert profile image uploads to PNG</strong></span>
 				</label>
 			</div>
 
