@@ -1,5 +1,5 @@
 "use strict";
-/*global define, socket, app, ajaxify, utils, bootbox, Mousetrap, Hammer, RELATIVE_PATH*/
+/*global componentHandler, define, socket, app, ajaxify, utils, bootbox, Mousetrap, Hammer, RELATIVE_PATH*/
 
 (function() {
 	$(document).ready(function() {
@@ -16,6 +16,8 @@
 
 			selectMenuItem(data.url);
 			setupRestartLinks();
+
+			componentHandler.upgradeDom();
 		});
 
 		$('[component="logout"]').on('click', app.logout);
