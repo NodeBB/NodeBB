@@ -58,6 +58,52 @@
 			display: none;
 		}
 	}
+
+	
+	.slideout-menu {
+		position: fixed;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		z-index: 0;
+		width: 256px;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+		display: none;
+	}
+
+
+	.slideout-panel {
+		position: relative;
+		z-index: 1;
+	}
+
+	.slideout-open,
+	.slideout-open body,
+	.slideout-open .slideout-panel {
+		overflow: hidden;
+		overflow-y: hidden !important;
+	}
+
+	.slideout-open .slideout-menu {
+		display: block;
+	}
+
+	html {
+		height: 100%;
+		overflow-y: hidden;
+	}
+	
+	.slideout-open {
+		overflow-y: hidden;
+		height: 100%;
+	}
+
+	body {
+		overflow-y: scroll;
+		overflow-x: hidden;
+	}
 }
 
 @media (max-width: 768px) {
