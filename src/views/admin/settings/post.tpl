@@ -89,18 +89,21 @@
 	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="disableSignatures"> <strong>Disable signatures</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="disableSignatures">
+					<span class="mdl-switch__label"><strong>Disable signatures</strong></span>
 				</label>
 			</div>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="signatures:disableLinks"> <strong>Disable links in signatures</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="signatures:disableLinks">
+					<span class="mdl-switch__label"><strong>Disable links in signatures</strong></span>
 				</label>
 			</div>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="signatures:disableImages"> <strong>Disable images in signatures</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="signatures:disableImages">
+					<span class="mdl-switch__label"><strong>Disable images in signatures</strong></span>
 				</label>
 			</div>
 			<div class="form-group">
@@ -125,20 +128,23 @@
 	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="allowFileUploads"> <strong>Allow users to upload regular files</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="allowFileUploads">
+					<span class="mdl-switch__label"><strong>Allow users to upload regular files</strong></span>
 				</label>
 			</div>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="privateUploads"> <strong>Make uploaded files private</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="privateUploads">
+					<span class="mdl-switch__label"><strong>Make uploaded files private</strong></span>
 				</label>
 			</div>
 			<strong>Maximum File Size</strong><br /> <input type="text" class="form-control" value="2048" data-field="maximumFileSize"><br />
 
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="allowTopicsThumbnail"> <strong>Allow users to upload topic thumbnails</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="allowTopicsThumbnail">
+					<span class="mdl-switch__label"><strong>Allow users to upload topic thumbnails</strong></span>
 				</label>
 			</div>
 			<strong>Topic Thumb Size</strong><br /> <input type="text" class="form-control" value="120" data-field="topicThumbSize"> <br />
@@ -158,15 +164,15 @@
 				to users when they create new topics, or reply to existing topics.
 			</p>
 			<div class="checkbox">
-				<label for="composer:showHelpTab">
-					<input type="checkbox" id="composer:showHelpTab" data-field="composer:showHelpTab" checked />
-					Show "Help" tab
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="composer:showHelpTab">
+					<input class="mdl-switch__input" type="checkbox" id="composer:showHelpTab" data-field="composer:showHelpTab" checked />
+					<span class="mdl-switch__label">Show "Help" tab</span>
 				</label>
 			</div>
 			<div class="checkbox">
-				<label for="composer:allowPluginHelp">
-					<input type="checkbox" id="composer:allowPluginHelp" data-field="composer:allowPluginHelp" checked />
-					Allow plugins to add content to the help tab
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="composer:allowPluginHelp">
+					<input class="mdl-switch__input" type="checkbox" id="composer:allowPluginHelp" data-field="composer:allowPluginHelp" checked />
+					<span class="mdl-switch__label">Allow plugins to add content to the help tab</span>
 				</label>
 			</div>
 			<div class="form-group">
@@ -182,8 +188,9 @@
 	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="trackIpPerPost"> <strong>Track IP Address for each post</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="trackIpPerPost">
+					<span class="mdl-switch__label"><strong>Track IP Address for each post</strong></span>
 				</label>
 			</div>
 		</form>
