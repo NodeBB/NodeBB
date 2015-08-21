@@ -393,6 +393,9 @@ define('settings', function () {
 					helper.whenReady(function () {
 						helper.use(values);
 						helper.initFields(wrapper || 'form');
+
+						$(window).trigger('action:admin.settingsLoaded');
+
 						if (typeof callback === 'function') {
 							callback();
 						}
