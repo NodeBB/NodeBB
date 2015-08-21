@@ -10,8 +10,9 @@
 			<input class="form-control" type="text" placeholder="Your Community Name" data-field="title" />
 
 			<div class="checkbox">
-				<label for="showSiteTitle">
-					<input type="checkbox" id="showSiteTitle" data-field="showSiteTitle" name="showSiteTitle" /> Show Site Title in Header
+				<label for="showSiteTitle" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="showSiteTitle" name="showSiteTitle" />
+					<span class="mdl-switch__label">Show Site Title in Header</span>
 				</label>
 			</div>
 
@@ -77,18 +78,21 @@
 	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="useOutgoingLinksPage"> <strong>Use Outgoing Links Warning Page</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="useOutgoingLinksPage">
+					<span class="mdl-switch__label"><strong>Use Outgoing Links Warning Page</strong></span>
 				</label>
 			</div>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="disableSocialButtons"> <strong>Disable social buttons</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="disableSocialButtons">
+					<span class="mdl-switch__label"><strong>Disable social buttons</strong></span>
 				</label>
 			</div>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="disableChat"> <strong>Disable chat</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="disableChat">
+					<span class="mdl-switch__label"><strong>Disable chat</strong></span>
 				</label>
 			</div>
 		</form>
