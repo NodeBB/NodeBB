@@ -15,9 +15,9 @@
 			<br />
 			<form class="form">
 				<div class="form-group">
-					<label for="useCustomCSS">
-						Use Custom CSS?
-						<input id="useCustomCSS" type="checkbox" data-field="useCustomCSS" />
+					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="useCustomCSS">
+						<input class="mdl-switch__input" id="useCustomCSS" type="checkbox" data-field="useCustomCSS" />
+						<span class="mdl-switch__label">Enable Custom CSS</span>
 					</label>
 				</div>
 			</form>
@@ -33,9 +33,9 @@
 			<br />
 			<form class="form">
 				<div class="form-group">
-					<label for="useCustomJS">
-						Use Custom Header?
-						<input id="useCustomJS" type="checkbox" data-field="useCustomJS" />
+					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="useCustomJS">
+						<input class="mdl-switch__input" id="useCustomJS" type="checkbox" data-field="useCustomJS" />
+						<span class="mdl-switch__label">Enable Custom Header</span>
 					</label>
 				</div>
 			</form>
