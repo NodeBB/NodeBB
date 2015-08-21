@@ -1,5 +1,13 @@
 <nav class="header">
-	<h1 id="main-page-title"></h1>
+	<div class="pull-left">
+		<button id="mobile-menu">
+			<div class="bar"></div>
+			<div class="bar"></div>
+			<div class="bar"></div>
+		</button>
+		<h1 id="main-page-title"></h1>
+	</div>	
+	
 	<ul id="user_label" class="pull-right">
 		<li class="dropdown pull-right">
 			<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">

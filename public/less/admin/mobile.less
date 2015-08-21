@@ -1,3 +1,7 @@
+#mobile-menu {
+	display: none;
+}
+
 @media (max-width: 1200px) {
 
 }
@@ -7,18 +11,41 @@
 		padding-top: 90px;
 	}
 
+	#mobile-menu {
+		width: 31px;
+		background: none;
+		border: none;
+		vertical-align: 10%;
+		margin-right: 10px;
+		margin-left: -15px;
+		outline: none !important;
+		display: block;
+
+		position: absolute;
+		top: 22px;
+		left: 22px;
+
+		.bar {
+			width: 100%;
+			height: 2px;
+			background: #fff;
+			margin-bottom: 3px;
+			border-radius: 10px;
+		}
+	}
+
 	.header {
-		height: 60px;
+		height: 58px;
 		box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.26);
 		position: fixed;
 		top: 0px;
 		z-index: 1;
 
 		#main-page-title {
-			bottom: -29px;
+			bottom: -31px;
 			font-size: 20px;
 			color: #FFF;
-			left: 20px;
+			left: 52px;
 			font-weight: 400;
 		}
 
