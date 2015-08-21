@@ -48,7 +48,7 @@ module.exports = function(User) {
 		notifications.create({
 			bodyShort: '[[notifications:new_register, ' + username + ']]',
 			nid: 'new_register:' + username,
-			path: '/admin/manage/users/registration'
+			path: '/admin/manage/registration'
 		}, function(err, notification) {
 			if (err) {
 				return callback(err);
