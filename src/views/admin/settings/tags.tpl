@@ -5,8 +5,9 @@
 	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="privateTagListing"> Make the tags list private
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="privateTagListing">
+					<span class="mdl-switch__label">Make the tags list private</span>
 				</label>
 			</div>
 			<div class="form-group">

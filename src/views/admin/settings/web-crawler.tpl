@@ -15,14 +15,16 @@
 	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="feeds:disableRSS"> <strong>Disable RSS Feeds</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="feeds:disableRSS">
+					<span class="mdl-switch__label"><strong>Disable RSS Feeds</strong></span>
 				</label>
 			</div>
 
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="feeds:disableSitemap"> <strong>Disable Sitemap.xml</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="feeds:disableSitemap">
+					<span class="mdl-switch__label"><strong>Disable Sitemap.xml</strong></span>
 				</label>
 			</div>
 
