@@ -5,8 +5,9 @@
 	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="usePagination"> <strong>Paginate topics and posts instead of using infinite scroll.</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="usePagination">
+					<span class="mdl-switch__label"><strong>Paginate topics and posts instead of using infinite scroll.</strong></span>
 				</label>
 			</div>
 		</form>
