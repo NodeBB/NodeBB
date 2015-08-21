@@ -103,5 +103,21 @@
 	"category.background_image_size": "背景图大小",
 	"category.auto": "自动",
 	"category.cover": "拉伸",
-	"category.contain": "contain"
+	"category.contain": "居中",
+	"category.Custom Class": "自定义类",
+
+	"group.group_settings": "小组设置",
+	"group.name": "名称",
+	"group.readonly": "只读",
+	"group.description": "描述",
+	"group.title_of_members": "小组成员头衔",
+	"group.group_icon": "小组图标",
+	"group.group_label_color": "小组标签颜色",
+	"group.checked": "已选",
+	"group.add_user_to_group": "添加用户到小组",
+	"group.members": "组员",
+	"group.members_description": "点击用户即可将用户踢出小组",
+	"group.groups_control_panel": "小组控制面板",
+	"group.save": "保存",
+	"group.revert": "重置"
 }

@@ -51,7 +51,7 @@
 						</div>
 						<div class="col-sm-4 col-xs-12">
 							<div class="form-group">
-								<label for="cid-{category.cid}-class">Custom Class</label>
+								<label for="cid-{category.cid}-class">[[admin:category.custom_class]]</label>
 								<input id="cid-{category.cid}-class" type="text" class="form-control" placeholder="col-md-6 col-xs-6" data-name="class" value="{category.class}" />
 							</div>
 						</div>

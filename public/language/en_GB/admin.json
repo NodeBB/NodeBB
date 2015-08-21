@@ -103,5 +103,22 @@
 	"category.background_image_size": "Background Image Size",
 	"category.auto": "auto",
 	"category.cover": "cover",
-	"category.contain": "contain"
+	"category.contain": "contain",
+	"category.Custom Class": "Custom Class",
+	"category.": "",
+
+	"group.group_settings": "Group Settings",
+	"group.name": "Name",
+	"group.readonly": "readonly",
+	"group.description": "Description",
+	"group.title_of_members": "Title of Members",
+	"group.group_icon": "Group Icon",
+	"group.group_label_color": "Group Label Color",
+	"group.checked": "checked",
+	"group.add_user_to_group": "Add User to Group",
+	"group.members": "Members",
+	"group.members_description": "Click on a user to remove them from the group",
+	"group.groups_control_panel": "Groups Control Panel",
+	"group.save": "Save",
+	"group.revert": "Revert"
 }
