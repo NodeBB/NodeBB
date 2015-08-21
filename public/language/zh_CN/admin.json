@@ -1,0 +1,8 @@
+{
+	"header.title": "NodeBB 管理控制面板",
+	"header.view_forum": "查看论坛",
+	"header.view_profile": "查看资料",
+	"header.reload_forum": "刷新论坛",
+	"header.restart_forum": "重启论坛",
+	"header.log_out": "登出",
+}

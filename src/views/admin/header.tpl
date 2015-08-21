@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>NodeBB Admin Control Panel</title>
+	<title>[[admin:header.title]]</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<link rel="stylesheet" href="{relative_path}/vendor/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css?{cache-buster}">
@@ -78,29 +78,29 @@
 				<div class="navbar-collapse collapse">
 					<ul id="logged-in-menu" class="navbar-nav nav navbar-right">
 						<li class="hidden-lg hidden-md hidden-sm">
-							<a href="{relative_path}/" target="_blank" title="View Forum">
-								View Forum
+							<a href="{relative_path}/" target="_blank" title="[[admin:header.view_forum]]">
+								[[admin:header.view_forum]]
 							</a>
 						</li>
 						<li class="hidden-lg hidden-md hidden-sm">
 							<a id="user-profile-link" href="{relative_path}/user/{user.userslug}" target="_top">
-								View Profile
+								[[admin:header.view_profile]]
 							</a>
 						</li>
 						<li role="presentation" class="hidden-lg hidden-md hidden-sm divider"></li>
 						<li class="hidden-lg hidden-md hidden-sm">
 							<a href="#" class="reload" title="Reload Forum">
-								Reload Forum
+								[[admin:header.reload_forum]]
 							</a>
 						</li>
 						<li class="hidden-lg hidden-md hidden-sm">
-							<a href="#" class="restart" title="Restart Forum">
-								Restart Forum
+							<a href="#" class="restart" title="[[header.restart_forum]]">
+								[[admin:header.restart_forum]]
 							</a>
 						</li>
 						<li role="presentation" class="hidden-lg hidden-md hidden-sm divider"></li>
 						<li component="logout" class="hidden-lg hidden-md hidden-sm">
-							<a href="#">Log out</a>
+							<a href="#">[[admin:header.log_out]]</a>
 						</li>
 						<li style="float:left;">
 							<form class="navbar-form hidden-xs" role="search">
@@ -119,28 +119,28 @@
 							<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
 								<li>
 									<a href="{relative_path}/" target="_blank" title="View Forum">
-										View Forum
+										[[admin:header.view_forum]]
 									</a>
 								</li>
 								<li>
 									<a id="user-profile-link" href="{relative_path}/user/{user.userslug}" target="_top">
-										View Profile
+										[[admin:header.view_profile]]
 									</a>
 								</li>
 								<li role="presentation" class="divider"></li>
 								<li>
-									<a href="#" class="reload" title="Reload Forum">
-										Reload Forum
+									<a href="#" class="reload" title="[[admin:header.reload_forum]]">
+										[[admin:header.reload_forum]]
 									</a>
 								</li>
 								<li>
-									<a href="#" class="restart" title="Restart Forum">
-										Restart Forum
+									<a href="#" class="restart" title="[[admin:header.restart_forum]]">
+										[[admin:header.restart_forum]]
 									</a>
 								</li>
 								<li role="presentation" class="divider"></li>
 								<li component="logout">
-									<a href="#">Log out</a>
+									<a href="#">[[admin:header.log_out]]</a>
 								</li>
 							</ul>
 						</li>

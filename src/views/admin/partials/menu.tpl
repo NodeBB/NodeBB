@@ -1,21 +1,21 @@
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header"><i class="fa fa-fw fa-dashboard"></i> General</li>
-						<li class="active"><a href="{relative_path}/admin/general/dashboard">Dashboard</a></li>
-						<li><a href="{relative_path}/admin/general/homepage">Home Page</a></li>
-						<li><a href="{relative_path}/admin/general/navigation">Navigation</a></li>
-						<li><a href="{relative_path}/admin/general/languages">Languages</a></li>
-						<li><a href="{relative_path}/admin/general/sounds">Sounds</a></li>
+						<li class="nav-header"><i class="fa fa-fw fa-dashboard"></i> [[admin:partials.menu.general]]</li>
+						<li class="active"><a href="{relative_path}/admin/general/dashboard">[[admin:partials.menu.dashboard]]</a></li>
+						<li><a href="{relative_path}/admin/general/homepage">[[admin:partials.menu.home_page]]</a></li>
+						<li><a href="{relative_path}/admin/general/navigation">[[admin:partials.menu.navigation]]</a></li>
+						<li><a href="{relative_path}/admin/general/languages">[[admin:partials.menu.languages]]</a></li>
+						<li><a href="{relative_path}/admin/general/sounds">[[admin:partials.menu.sounds]]</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header"><i class="fa fa-fw fa-comments-o"></i> Manage</li>
-						<li><a href="{relative_path}/admin/manage/categories">Categories</a></li>
-						<li><a href="{relative_path}/admin/manage/tags">Tags</a></li>
-						<li><a href="{relative_path}/admin/manage/users">Users</a></li>
-						<li><a href="{relative_path}/admin/manage/groups">Groups</a></li>
-						<li><a href="{relative_path}/admin/manage/flags">Flags</a></li>
+						<li class="nav-header"><i class="fa fa-fw fa-comments-o"></i> [[admin:partials.menu.manage]]</li>
+						<li><a href="{relative_path}/admin/manage/categories">[[admin:partials.menu.categories]]</a></li>
+						<li><a href="{relative_path}/admin/manage/tags">[[admin:partials.menu.tags]]</a></li>
+						<li><a href="{relative_path}/admin/manage/users">[[admin:partials.menu.users]]</a></li>
+						<li><a href="{relative_path}/admin/manage/groups">[[admin:partials.menu.groups]]</a></li>
+						<li><a href="{relative_path}/admin/manage/flags">[[admin:partials.menu.flags]]</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">
