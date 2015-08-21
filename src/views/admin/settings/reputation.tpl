@@ -6,13 +6,15 @@
 	<div class="col-xs-10">
 		<form>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="reputation:disabled"> <strong>Disable Reputation System</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" data-field="reputation:disabled">
+					<span class="mdl-switch__label"><strong>Disable Reputation System</strong></span>
 				</label>
 			</div>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="downvote:disabled"> <strong>Disable Down Voting</trong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" data-field="downvote:disabled">
+					<span class="mdl-switch__label"><strong>Disable Down Voting</trong></strong>
 				</label>
 			</div>
 		</form>
