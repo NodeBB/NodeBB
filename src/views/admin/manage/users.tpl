@@ -1,33 +1,33 @@
 <div class="manage-users">
 	<div class="col-lg-9">
 		<div class="panel panel-default">
-			<div class="panel-heading"><i class="fa fa-user"></i> Users</div>
+			<div class="panel-heading"><i class="fa fa-user"></i> [[admin:users.users]]</div>
 			<div class="panel-body">
 				<ul class="nav nav-pills">
-					<li class='active'><a href='{config.relative_path}/admin/manage/users/latest'>Latest Users</a></li>
-					<li class=''><a href='{config.relative_path}/admin/manage/users/sort-posts'>Top Posters</a></li>
-					<li class=''><a href='{config.relative_path}/admin/manage/users/sort-reputation'>Most Reputation</a></li>
-					<li class=''><a href='{config.relative_path}/admin/manage/users/banned'>Banned</a></li>
-					<li class=''><a href='{config.relative_path}/admin/manage/users/registration'>Registration Queue</a></li>
-					<li class=''><a href='{config.relative_path}/admin/manage/users/search'>User Search</a></li>
+					<li class='active'><a href='{config.relative_path}/admin/manage/users/latest'>[[admin:users.latest_users]]</a></li>
+					<li class=''><a href='{config.relative_path}/admin/manage/users/sort-posts'>[[admin:users.top_posters]]</a></li>
+					<li class=''><a href='{config.relative_path}/admin/manage/users/sort-reputation'>[[admin:users.most_reputation]]</a></li>
+					<li class=''><a href='{config.relative_path}/admin/manage/users/banned'>[[admin:users.banned]]</a></li>
+					<li class=''><a href='{config.relative_path}/admin/manage/users/registration'>[[admin:users.registration_queue]]</a></li>
+					<li class=''><a href='{config.relative_path}/admin/manage/users/search'>[[admin:users.user_search]]</a></li>
 
 
 					<div class="btn-group pull-right">
-						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">Edit <span class="caret"></span></button>
+						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[admin:users.edit]] <span class="caret"></span></button>
 						<ul class="dropdown-menu">
-							<li><a href="#" class="admin-user"><i class="fa fa-fw fa-shield"></i> Make Admin</a></li>
-							<li><a href="#" class="remove-admin-user"><i class="fa fa-fw fa-ban"></i> Remove Admin</a></li>
+							<li><a href="#" class="admin-user"><i class="fa fa-fw fa-shield"></i> [[admin:users.make_admin]]</a></li>
+							<li><a href="#" class="remove-admin-user"><i class="fa fa-fw fa-ban"></i> [[admin:users.remove_admin]]</a></li>
 							<li class="divider"></li>
-							<li><a href="#" class="validate-email"><i class="fa fa-fw fa-check"></i> Validate Email</a></li>
-							<li><a href="#" class="send-validation-email"><i class="fa fa-fw fa-mail-forward"></i> Send Validation Email</a></li>
-							<li><a href="#" class="password-reset-email"><i class="fa fa-fw fa-key"></i> Send Password Reset Email</a></li>
+							<li><a href="#" class="validate-email"><i class="fa fa-fw fa-check"></i> [[admin:users.validate_email]]</a></li>
+							<li><a href="#" class="send-validation-email"><i class="fa fa-fw fa-mail-forward"></i> [[admin:users.send_validation_email]]</a></li>
+							<li><a href="#" class="password-reset-email"><i class="fa fa-fw fa-key"></i> [[admin:users.send_password_reset_email]]</a></li>
 							<li class="divider"></li>
-							<li><a href="#" class="ban-user"><i class="fa fa-fw fa-gavel"></i> Ban User</a></li>
-							<li><a href="#" class="unban-user"><i class="fa fa-fw fa-comment-o"></i> Unban User</a></li>
-							<li><a href="#" class="reset-lockout"><i class="fa fa-fw fa-unlock"></i> Reset Lockout</a></li>
-							<li><a href="#" class="reset-flags"><i class="fa fa-fw fa-flag"></i> Reset Flags</a></li>
+							<li><a href="#" class="ban-user"><i class="fa fa-fw fa-gavel"></i> [[admin:users.ban_user]]</a></li>
+							<li><a href="#" class="unban-user"><i class="fa fa-fw fa-comment-o"></i> [[admin:users.unban_user]]</a></li>
+							<li><a href="#" class="reset-lockout"><i class="fa fa-fw fa-unlock"></i> [[admin:users.reset_lockout]]</a></li>
+							<li><a href="#" class="reset-flags"><i class="fa fa-fw fa-flag"></i> [[admin:users.reset_flags]]</a></li>
 							<li class="divider"></li>
-							<li><a href="#" class="delete-user"><i class="fa fa-fw fa-trash-o"></i> Delete User</a></li>
+							<li><a href="#" class="delete-user"><i class="fa fa-fw fa-trash-o"></i> [[admin:users.delete_user]]</a></li>
 						</ul>
 					</div>
 				</ul>
@@ -35,17 +35,17 @@
 				<br />
 
 				<div class="search {search_display} well">
-					<label>By User Name</label>
-					<input class="form-control" id="search-user-name" data-search-type="username" type="text" placeholder="Enter a username to search"/><br />
+					<label>[[admin:users.by_user_name]]</label>
+					<input class="form-control" id="search-user-name" data-search-type="username" type="text" placeholder="[[admin:users.by_user_name_description]]"/><br />
 
-					<label>By Email </label>
-					<input class="form-control" id="search-user-email" data-search-type="email" type="text" placeholder="Enter a email to search"/><br />
+					<label>[[admin:users.by_email]]</label>
+					<input class="form-control" id="search-user-email" data-search-type="email" type="text" placeholder="[[admin:users.by_email_description]]"/><br />
 
-					<label>By IP Address </label>
-					<input class="form-control" id="search-user-ip" data-search-type="ip" type="text" placeholder="Enter an IP Address to search"/><br />
+					<label>[[admin:users.by_ip_address]]</label>
+					<input class="form-control" id="search-user-ip" data-search-type="ip" type="text" placeholder="[[admin:users.by_ip_address_description]]"/><br />
 
 					<i class="fa fa-spinner fa-spin hidden"></i>
-					<span id="user-notfound-notify" class="label label-danger hide">User not found!</span><br/>
+					<span id="user-notfound-notify" class="label label-danger hide">[[admin:users.user_not_found]]</span><br/>
 				</div>
 
 				<ul id="users-container">
@@ -56,11 +56,11 @@
 							<div class="labels">
 								<!-- IF config.requireEmailConfirmation -->
 								<!-- IF !users.email:confirmed -->
-								<span class="notvalidated label label-danger">Not Validated</span>
+								<span class="notvalidated label label-danger">[[admin:users.not_validated]]</span>
 								<!-- ENDIF !users.email:confirmed -->
 								<!-- ENDIF config.requireEmailConfirmation -->
-								<span class="administrator label label-primary <!-- IF !users.administrator -->hide<!-- ENDIF !users.administrator -->">Admin</span>
-								<span class="ban label label-danger <!-- IF !users.banned -->hide<!-- ENDIF !users.banned -->">Banned</span>
+								<span class="administrator label label-primary <!-- IF !users.administrator -->[[admin:users.hide]]<!-- ENDIF !users.administrator -->">[[admin:users.admin]]</span>
+								<span class="ban label label-danger <!-- IF !users.banned -->[[admin:users.hide]]<!-- ENDIF !users.banned -->">[[admin:users.banned]]</span>
 							</div>
 						</div>
 
@@ -80,35 +80,35 @@
 						<div class="modal-content">
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-								<h4 class="modal-title">Create User</h4>
+								<h4 class="modal-title">[[admin:users.create_user]]</h4>
 							</div>
 							<div class="modal-body">
 								<div class="alert alert-danger hide" id="create-modal-error"></div>
 								<form>
 									<div class="form-group">
-										<label for="group-name">User Name</label>
+										<label for="group-name">[[admin:users.user_name]]</label>
 										<input type="text" class="form-control" id="create-user-name" placeholder="User Name" />
 									</div>
 									<div class="form-group">
-										<label for="group-name">Email</label>
+										<label for="group-name">[[admin:users.email]]</label>
 										<input type="text" class="form-control" id="create-user-email" placeholder="Email of this user" />
 									</div>
 
 									<div class="form-group">
-										<label for="group-name">Password</label>
-										<input type="password" class="form-control" id="create-user-password" placeholder="Password" />
+										<label for="group-name">[[admin:users.password]]</label>
+										<input type="password" class="form-control" id="create-user-password" placeholder="[[admin:users.password]]" />
 									</div>
 
 									<div class="form-group">
-										<label for="group-name">Password Confirm</label>
-										<input type="password" class="form-control" id="create-user-password-again" placeholder="Password" />
+										<label for="group-name">[[admin:users.password_confirm]]</label>
+										<input type="password" class="form-control" id="create-user-password-again" placeholder="[[admin:users.password]]" />
 									</div>
 
 								</form>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-								<button type="button" class="btn btn-primary" id="create-modal-go">Create</button>
+								<button type="button" class="btn btn-default" data-dismiss="modal">[[admin:users.close]]</button>
+								<button type="button" class="btn btn-primary" id="create-modal-go">[[admin:users.create]]</button>
 							</div>
 						</div>
 					</div>
@@ -117,7 +117,7 @@
 
 
 				<div class="text-center {loadmore_display}">
-					<button id="load-more-users-btn" class="btn btn-primary">Load More</button>
+					<button id="load-more-users-btn" class="btn btn-primary">[[admin:users.load_more]]</button>
 				</div>
 				<input type="hidden" template-variable="yourid" value="{yourid}" />
 
@@ -127,10 +127,10 @@
 
 	<div class="col-lg-3 acp-sidebar">
 		<div class="panel panel-default">
-			<div class="panel-heading">Users Control Panel</div>
+			<div class="panel-heading">[[admin:users.users_control_panel]]</div>
 			<div class="panel-body">
-				<button id="createUser" class="btn btn-primary">New User</button>
-				<a target="_blank" href="{config.relative_path}/api/admin/users/csv" class="btn btn-primary">Download CSV</a>
+				<button id="createUser" class="btn btn-primary">[[admin:users.new_user]]</button>
+				<a target="_blank" href="{config.relative_path}/api/admin/users/csv" class="btn btn-primary">[[admin:users.download_csv]]</a>
 			</div>
 		</div>
 	</div>
