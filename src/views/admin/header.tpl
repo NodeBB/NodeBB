@@ -68,7 +68,7 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand nodebb-logo" href="{relative_path}/admin/general/dashboard"><img src="{relative_path}/images/logo.png" alt="NodeBB ACP" /> Admin Control Panel <span id="breadcrumbs" class="hidden-xs"></span></a>
+					<a class="navbar-brand nodebb-logo" href="{relative_path}/admin/general/dashboard"><img src="{relative_path}/images/logo.png" alt="NodeBB ACP" /> [[admin:header.admin_control_panel]] <span id="breadcrumbs" class="hidden-xs"></span></a>
 					<ul class="nav navbar-nav pull-left">
 						<li>
 							<a href="#" id="reconnect"></a>

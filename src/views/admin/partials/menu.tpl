@@ -20,51 +20,51 @@
 				</div>
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header"><i class="fa fa-fw fa-cogs"></i> Settings</li>
-						<li><a href="{relative_path}/admin/settings/general">General</a></li>
-						<li><a href="{relative_path}/admin/settings/reputation">Reputation</a></li>
-						<li><a href="{relative_path}/admin/settings/email">Email</a></li>
-						<li><a href="{relative_path}/admin/settings/user">User</a></li>
-						<li><a href="{relative_path}/admin/settings/group">Group</a></li>
-						<li><a href="{relative_path}/admin/settings/guest">Guests</a></li>
-						<li><a href="{relative_path}/admin/settings/post">Post</a></li>
-						<li><a href="{relative_path}/admin/settings/pagination">Pagination</a></li>
-						<li><a href="{relative_path}/admin/settings/tags">Tags</a></li>
-						<li><a href="{relative_path}/admin/settings/notifications">Notifications</a></li>
-						<li><a href="{relative_path}/admin/settings/web-crawler">Web Crawler</a></li>
-						<li><a href="{relative_path}/admin/settings/sockets">Sockets</a></li>
-						<li><a href="{relative_path}/admin/settings/advanced">Advanced</a></li>
+						<li class="nav-header"><i class="fa fa-fw fa-cogs"></i> [[admin:partials.menu.settings]]</li>
+						<li><a href="{relative_path}/admin/settings/general">[[admin:partials.menu.general]]</a></li>
+						<li><a href="{relative_path}/admin/settings/reputation">[[admin:partials.menu.reputation]]</a></li>
+						<li><a href="{relative_path}/admin/settings/email">[[admin:partials.menu.email]]</a></li>
+						<li><a href="{relative_path}/admin/settings/user">[[admin:partials.menu.user]]</a></li>
+						<li><a href="{relative_path}/admin/settings/group">[[admin:partials.menu.group]]</a></li>
+						<li><a href="{relative_path}/admin/settings/guest">[[admin:partials.menu.guest]]</a></li>
+						<li><a href="{relative_path}/admin/settings/post">[[admin:partials.menu.post]]</a></li>
+						<li><a href="{relative_path}/admin/settings/pagination">[[admin:partials.menu.pagination]]</a></li>
+						<li><a href="{relative_path}/admin/settings/tags">[[admin:partials.menu.tags]]</a></li>
+						<li><a href="{relative_path}/admin/settings/notifications">[[admin:partials.menu.notifications]]</a></li>
+						<li><a href="{relative_path}/admin/settings/web-crawler">[[admin:partials.menu.web_crawler]]</a></li>
+						<li><a href="{relative_path}/admin/settings/sockets">[[admin:partials.menu.sounds]]</a></li>
+						<li><a href="{relative_path}/admin/settings/advanced">[[admin:partials.menu.advanced]]</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header"><i class="fa fa-fw fa-paint-brush"></i> Appearance</li>
-						<li><a href="{relative_path}/admin/appearance/themes">Themes</a></li>
-						<li><a href="{relative_path}/admin/appearance/skins">Skins</a></li>
-						<li><a href="{relative_path}/admin/appearance/customise">Custom HTML &amp; CSS</a></li>
+						<li class="nav-header"><i class="fa fa-fw fa-paint-brush"></i> [[admin:partials.menu.appearance]]</li>
+						<li><a href="{relative_path}/admin/appearance/themes">[[admin:partials.menu.themes]]</a></li>
+						<li><a href="{relative_path}/admin/appearance/skins">[[admin:partials.menu.skins]]</a></li>
+						<li><a href="{relative_path}/admin/appearance/customise">[[admin:partials.menu.customise]]</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header"><i class="fa fa-fw fa-wrench"></i> Extend</li>
-						<li><a href="{relative_path}/admin/extend/plugins">Plugins</a></li>
-						<li><a href="{relative_path}/admin/extend/widgets">Widgets</a></li>
-						<li><a href="{relative_path}/admin/extend/rewards">Rewards</a></li>
+						<li class="nav-header"><i class="fa fa-fw fa-wrench"></i> [[admin:partials.menu.extend]]</li>
+						<li><a href="{relative_path}/admin/extend/plugins">[[admin:partials.menu.plugins]]</a></li>
+						<li><a href="{relative_path}/admin/extend/widgets">[[admin:partials.menu.widgets]]</a></li>
+						<li><a href="{relative_path}/admin/extend/rewards">[[admin:partials.menu.rewards]]</a></li>
 					</ul>
 				</div>
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header"><i class="fa fa-fw fa-hdd-o"></i> Advanced</li>
-						<li><a href="{relative_path}/admin/advanced/database">Database</a></li>
-						<li><a href="{relative_path}/admin/advanced/events">Events</a></li>
-						<li><a href="{relative_path}/admin/advanced/logs">Logs</a></li>
-						<li><a href="{relative_path}/admin/advanced/post-cache">Post Cache</a></li>
+						<li class="nav-header"><i class="fa fa-fw fa-hdd-o"></i> [[admin:partials.menu.advanced]]</li>
+						<li><a href="{relative_path}/admin/advanced/database">[[admin:partials.menu.database]]</a></li>
+						<li><a href="{relative_path}/admin/advanced/events">[[admin:partials.menu.events]]</a></li>
+						<li><a href="{relative_path}/admin/advanced/logs">[[admin:partials.menu.logs]]</a></li>
+						<li><a href="{relative_path}/admin/advanced/post-cache">[[admin:partials.menu.post_cache]]</a></li>
 					</ul>
 				</div>
 				<!-- IF authentication.length -->
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header"><i class="fa fa-fw fa-facebook-square"></i> Social Authentication</li>
+						<li class="nav-header"><i class="fa fa-fw fa-facebook-square"></i> [[admin:partials.menu.social_authentication]]</li>
 						<!-- BEGIN authentication -->
 						<li>
 							<a href="{relative_path}/admin{authentication.route}">{authentication.name}</a>
@@ -76,7 +76,7 @@
 				<!-- IF plugins.length -->
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header"><i class="fa fa-fw fa-th"></i> Installed Plugins</li>
+						<li class="nav-header"><i class="fa fa-fw fa-th"></i> [[admin:partials.menu.installed_plugins]]</li>
 						<!-- BEGIN plugins -->
 						<li>
 							<a href="{relative_path}/admin{plugins.route}">
@@ -88,7 +88,7 @@
 						</li>
 						<!-- END plugins -->
 						<li data-link="1">
-							<a href="{relative_path}/admin/extend/plugins"><i class="fa fa-plus"></i> Install Plugins</a>
+							<a href="{relative_path}/admin/extend/plugins"><i class="fa fa-plus"></i> [[admin:partials.menu.install_plugins]]</a>
 						</li>
 					</ul>
 				</div>
@@ -96,8 +96,8 @@
 				<!-- IF env -->
 				<div class="sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header"><i class="fa fa-fw fa-th"></i> Development</li>
-						<li><a href="{relative_path}/admin/development/logger">Logger</a></li>
+						<li class="nav-header"><i class="fa fa-fw fa-th"></i> [[admin:partials.menu.development]]</li>
+						<li><a href="{relative_path}/admin/development/logger">[[admin:partials.menu.logger]]</a></li>
 					</ul>
 				</div>
 				<!-- ENDIF env -->
