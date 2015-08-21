@@ -491,6 +491,9 @@ app.cacheBuster = null;
 					if (err) {
 						return app.alertError(err.message);
 					}
+					categories = categories.filter(function(category) {
+						return !category.link && !parseInt(category.parentCid, 10);
+					});
 					if (categories.length) {
 						$(window).trigger('action:composer.topic.new', {
 							cid: categories[0].cid
