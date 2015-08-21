@@ -9,7 +9,7 @@
 		</tr>
 		<!-- IF !users.length -->
 		<p>
-			There are no users in the registration queue. To enable this feature go to <a href="{relative_path}/admin/settings/user#authentication">Settings -> User -> Authentication</a> and set <strong>Registration Type</strong> to "Admin Approval".
+			There are no users in the registration queue. To enable this feature go to <a href="{config.relative_path}/admin/settings/user#authentication">Settings -> User -> Authentication</a> and set <strong>Registration Type</strong> to "Admin Approval".
 		</p>
 		<!-- ENDIF !users.length -->
 		<!-- BEGIN users -->
