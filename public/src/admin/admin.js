@@ -73,7 +73,7 @@
 				href = menu.attr('href'),
 				isLink = menu.parent().attr('data-link') === '1';
 
-			if (!isLink && href && href.slice(1) === url) {
+			if (!isLink && href && href === [config.relative_path, url].join('/')) {
 				menu
 					.parent().addClass('active')
 					.parents('.menu-item').addClass('active');
