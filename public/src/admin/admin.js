@@ -22,6 +22,8 @@
 
 		$('[component="logout"]').on('click', app.logout);
 		app.alert = launchSnackbar;
+
+		configureSlidemenu();
 	});
 
 	socket.emit('admin.config.get', function(err, config) {
@@ -112,5 +114,44 @@
 		if (params.clickfn) {
 			bar.on('click', clickfn);
 		}
+	}
+
+	function configureSlidemenu() {
+		var slideout = new Slideout({
+			'panel': document.getElementById('panel'),
+			'menu': document.getElementById('menu'),
+			'padding': 256,
+			'tolerance': 70
+		});
+
+		$('#mobile-menu').on('click', function() {
+			slideout.toggle();
+		});
+
+		$('#menu a').on('click', function() {
+			slideout.close();
+		});
+
+		$(window).on('resize', function() {
+			slideout.close();
+		});
+
+		function onOpeningMenu() {
+			$('#header').css({
+				'top': $('#panel').position().top * -1 + 'px',
+				'position': 'absolute'
+			});
+		}
+
+		slideout.on('beforeopen', onOpeningMenu);
+		slideout.on('open', onOpeningMenu);
+		slideout.on('translate', onOpeningMenu);
+
+		slideout.on('close', function() {
+			$('#header').css({
+				'top': '0px',
+				'position': 'fixed'
+			});
+		});
 	}
 }());
