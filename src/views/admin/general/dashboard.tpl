@@ -1,27 +1,27 @@
 <div class="row dashboard">
 	<div class="col-lg-9">
 		<div class="panel panel-default">
-			<div class="panel-heading">Forum Traffic</div>
+			<div class="panel-heading"></div>
 			<div class="panel-body">
 				<div class="graph-container">
 					<ul class="graph-legend">
-						<li><div class="page-views"></div><span>Page Views</span></li>
-						<li><div class="unique-visitors"></div><span>Unique Visitors</span></li>
+						<li><div class="page-views"></div><span>[[admin:dashboard.page_views]]</span></li>
+						<li><div class="unique-visitors"></div><span>[[admin:dashboard.unique_visitors]]</span></li>
 					</ul>
 					<canvas id="analytics-traffic" width="100%" height="400"></canvas>
 				</div>
 				<hr/>
 				<div class="text-center pull-left monthly-pageviews">
 					<div><strong id="pageViewsLastMonth"></strong></div>
-					<div>Page views Last Month</div>
+					<div>[[admin:dashboard.page_views_last_month]]</div>
 				</div>
 				<div class="text-center pull-left monthly-pageviews">
 					<div><strong id="pageViewsThisMonth"></strong></div>
-					<div>Page views This Month</div>
+					<div>[[admin:dashboard.page_views_this_month]]</div>
 				</div>
 				<div class="text-center pull-left monthly-pageviews">
 					<div><strong id="pageViewsPastDay"></strong></div>
-					<div>Page views in last 24 hours</div>
+					<div>[[admin:dashboard.page_views_in_last_24_hours]]</div>
 				</div>
 			</div>
 		</div>
@@ -35,19 +35,19 @@
 						<div id="unique-visitors">
 							<div class="text-center pull-left">
 								<span class="formatted-number">{stats.day}</span>
-								<div>Day</div>
+								<div>[[admin:dashboard.day]]</div>
 							</div>
 							<div class="text-center pull-left">
 								<span class="formatted-number">{stats.week}</span>
-								<div>Week</div>
+								<div>[[admin:dashboard.week]]</div>
 							</div>
 							<div class="text-center pull-left">
 								<span class="formatted-number">{stats.month}</span>
-								<div>Month</div>
+								<div>[[admin:dashboard.month]]</div>
 							</div>
 							<div class="text-center pull-left">
 								<span class="formatted-number">{stats.alltime}</span>
-								<div>All Time</div>
+								<div>[[admin:dashboard.all_time]]</div>
 							</div>
 						</div>
 					</div>
@@ -57,13 +57,13 @@
 
 			<div class="col-lg-6">
 				<div class="panel panel-default">
-					<div class="panel-heading">Updates</div>
+					<div class="panel-heading">[[admin:dashboard.updates]]</div>
 					<div class="panel-body">
 						<div class="alert alert-info version-check">
-							<p>You are running <strong>NodeBB v<span id="version">{version}</span></strong>.</p>
+							<p>[[admin:dashboard.running]] <strong>NodeBB v<span id="version">{version}</span></strong>.</p>
 						</div>
 						<p>
-							Always make sure that your NodeBB is up to date for the latest security patches and bug fixes.
+							[[admin:dashboard.update_notice]]
 						</p>
 					</div>
 				</div>
@@ -71,7 +71,7 @@
 
 			<div class="col-lg-6">
 				<div class="panel panel-default">
-					<div class="panel-heading">Notices</div>
+					<div class="panel-heading">[[admin:dashboard.notices]]</div>
 					<div class="panel-body">
 					<!-- BEGIN notices -->
 						<div>
@@ -92,28 +92,28 @@
 
 	<div class="col-lg-3">
 		<div class="panel panel-default">
-			<div class="panel-heading">System Control</div>
+			<div class="panel-heading">[[admin:dashboard.system_control]]</div>
 			<div class="panel-body text-center">
 				<p>
-					<button class="btn btn-warning reload" data-placement="bottom" data-toggle="tooltip" title="Reload NodeBB to activate new plugins">Reload</button>
-					<button class="btn btn-danger restart" data-placement="bottom" data-toggle="tooltip" title="Restarting NodeBB will drop all existing connections for a few seconds">Restart</button>
+					<button class="btn btn-warning reload" data-placement="bottom" data-toggle="tooltip" title="[[admin:dashboard.reload_tooltip]]">[[admin:dashboard.reload]]</button>
+					<button class="btn btn-danger restart" data-placement="bottom" data-toggle="tooltip" title="[[admin:dashboard.restart_tooltip]]">[[admin:dashboard.restart]]</button>
 				</p>
 				<p>
-					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info" data-placement="bottom" data-toggle="tooltip" title="Click here to set up maintenance mode for NodeBB">Maintenance Mode</a>
+					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info" data-placement="bottom" data-toggle="tooltip" title="[[admin:dashboard.maintenance_mode_tooltip]]">[[admin:dashboard.maintenance_mode]]</a>
 				</p>
 
 				<hr />
-				<span id="toggle-realtime">Realtime Chart Updates <strong>OFF</strong> <i class="fa fa fa-toggle-off pointer"></i></span>
+				<span id="toggle-realtime">[[admin:dashboard.realtime_chart_updates]] <strong>OFF</strong> <i class="fa fa fa-toggle-off pointer"></i></span>
 			</div>
 		</div>
 
 		<div class="panel panel-default">
-			<div class="panel-heading">Anonymous vs Registered Users</div>
+			<div class="panel-heading">[[admin:dashboard.user]]</div>
 			<div class="panel-body">
 				<div class="graph-container pie-chart legend-up">
 					<ul class="graph-legend">
-						<li><div class="anonymous"></div><span>Anonymous</span></li>
-						<li><div class="registered"></div><span>Registered</span></li>
+						<li><div class="anonymous"></div><span>[[admin:dashboard.anonymous]]</span></li>
+						<li><div class="registered"></div><span>[[admin:dashboard.registered]]</span></li>
 					</ul>
 					<canvas id="analytics-registered"></canvas>
 				</div>
@@ -121,15 +121,15 @@
 		</div>
 
 		<div class="panel panel-default">
-			<div class="panel-heading">User Presence</div>
+			<div class="panel-heading">[[admin:dashboard.user_presence]]</div>
 			<div class="panel-body">
 				<div class="graph-container pie-chart legend-up">
 					<ul class="graph-legend">
-						<li><div class="on-categories"></div><span>On categories list</span></li>
-						<li><div class="reading-posts"></div><span>Reading posts</span></li>
-						<li><div class="browsing-topics"></div><span>Browsing topics</span></li>
-						<li><div class="recent"></div><span>Recent</span></li>
-						<li><div class="unread"></div><span>Unread</span></li>
+						<li><div class="on-categories"></div><span>[[admin:dashboard.on_categories_list]]</span></li>
+						<li><div class="reading-posts"></div><span>[[admin:dashboard.reading_posts]]</span></li>
+						<li><div class="browsing-topics"></div><span>[[admin:dashboard.browsing_topics]]</span></li>
+						<li><div class="recent"></div><span>[[admin:dashboard.recent]]</span></li>
+						<li><div class="unread"></div><span>[[admin:dashboard.unread]]</span></li>
 					</ul>
 					<canvas id="analytics-presence"></canvas>
 				</div>
@@ -137,7 +137,7 @@
 		</div>
 
 		<div class="panel panel-default">
-			<div class="panel-heading">High Presence Topics</div>
+			<div class="panel-heading">[[admin:dashboard.high_presence_topics]]</div>
 			<div class="panel-body">
 				<div class="graph-container pie-chart legend-down">
 					<canvas id="analytics-topics"></canvas>
@@ -149,7 +149,7 @@
 
 
 		<div class="panel panel-default">
-			<div class="panel-heading">Active Users</div>
+			<div class="panel-heading">[[admin:dashboard.active_users]]</div>
 			<div class="panel-body">
 				<div id="active-users"></div>
 			</div>
