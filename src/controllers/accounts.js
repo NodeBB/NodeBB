@@ -175,6 +175,10 @@ accountsController.getAccount = function(req, res, next) {
 				return next(err);
 			}
 
+			if (parseInt(meta.config['reputation:disabled'], 10) === 1) {
+				delete userData.reputation;
+			}
+
 			userData.posts = results.posts.posts.filter(function (p) {
 				return p && parseInt(p.deleted, 10) !== 1;
 			});
