@@ -106,7 +106,7 @@
 
 	function launchSnackbar(params) {
 		var bar = $.snackbar({
-			content: "<strong>" + params.title + "</strong> &nbsp;&nbsp;&nbsp;&nbsp;" + params.message,
+			content: "<strong>" + params.title + "</strong>" + params.message,
 			timeout: 3000,
 			htmlAllowed: true
 		});
