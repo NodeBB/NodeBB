@@ -1,26 +1,26 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
 <div class="panel panel-default">
-	<div class="panel-heading">General</div>
+	<div class="panel-heading">[[admin:group.general]]</div>
 	<div class="panel-body">
 		<form role="form">
 			<div class="checkbox">
 				<label>
-					<input type="checkbox" data-field="allowPrivateGroups" checked> <strong>Private Groups</strong>
+					<input type="checkbox" data-field="allowPrivateGroups" checked> <strong>[[admin:group.private_groups]]</strong>
 					<p class="help-block">
-						If enabled, joining of groups requires the approval of the group owner <em>(Default: enabled)</em>
+						[[admin:group.private_groups.help]]
 					</p>
 					<p class="help-block">
-						<strong>Beware!</strong> If this option is disabled and you have private groups, they automatically become public.
+						[[admin:group.private_groups.help2]]
 					</p>
 				</label>
 			</div>
 
 			<div class="checkbox">
 				<label>
-					<input type="checkbox" data-field="allowGroupCreation"> <strong>Allow Group Creation</strong>
+					<input type="checkbox" data-field="allowGroupCreation"> <strong>[[admin:group.allow_group_creation]]</strong>
 					<p class="help-block">
-						If enabled, users can create groups <em>(Default: disabled)</em>
+						[[admin:group.allow_group_creation.help]]
 					</p>
 				</label>
 			</div>

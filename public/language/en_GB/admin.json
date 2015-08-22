@@ -226,6 +226,13 @@
     "general.disable_social_buttons": "Disable social buttons",
     "general.disable_chat": "Disable chat",
 
+    "group.general": "General",
+    "group.private_groups": "Private Groups",
+    "group.private_groups.help": "If enabled, joining of groups requires the approval of the group owner <em>(Default: enabled)</em>",
+    "group.private_groups.help2": "<strong>Beware!</strong> If this option is disabled and you have private groups, they automatically become public.",
+    "group.allow_group_creation": "Allow Group Creation",
+    "group.allow_group_creation.help": "If enabled, users can create groups <em>(Default: disabled)</em>",
+
 	"users.users": "Users",
 	"users.latest_users": "Latest Users",
 	"users.top_posters": "Top Posters",
