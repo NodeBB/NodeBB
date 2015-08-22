@@ -1,38 +1,42 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">Guests</div>
-	<div class="panel-body">
-		<p class="alert alert-info">
-			These options affect guest users as a whole. Control over which categories a guest can see or post to is handled in
-			the categories themselves
-		</p>
-
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Guest Handles</div>
+	<div class="col-sm-10 col-xs-12">
 		<form role="form">
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="allowGuestHandles"> <strong>Allow guest handles</strong>
-					<p class="help-block">
-						This option exposes a new field that allows guests to pick a name to associate with each post they make. If disabled,
-						the will simply be called "Guest" (or the equivalent in the forum&apos;s selected language)
-					</p>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="allowGuestHandles">
+					<span class="mdl-switch__label"><strong>Allow guest handles</strong></span>
+				</label>
+			</div>
+			<p class="help-block">
+				This option exposes a new field that allows guests to pick a name to associate with each post they make. If disabled,
+				the will simply be called "Guest"
+			</p>
+		</form>
+	</div>
+</div>
+
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Guest Privileges</div>
+	<div class="col-sm-10 col-xs-12">
+		<form role="form">
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="allowGuestSearching">
+					<span class="mdl-switch__label"><strong>Allow guests to search without logging in</strong></span>
 				</label>
 			</div>
 
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="allowGuestSearching"> <strong>Allow guests to search without logging in</strong>
-				</label>
-			</div>
-
-			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="allowGuestUserSearching"> <strong>Allow guests to search users without logging in</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="allowGuestUserSearching">
+					<span class="mdl-switch__label"><strong>Allow guests to search users without logging in</strong></span>
 				</label>
 			</div>
 		</form>
-
-
 	</div>
 </div>
 

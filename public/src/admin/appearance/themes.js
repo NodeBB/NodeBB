@@ -10,7 +10,7 @@ define('admin/appearance/themes', function() {
 				action = target.attr('data-action');
 
 			if (action && action === 'use') {
-				var parentEl = target.parents('li'),
+				var parentEl = target.parents('[data-theme]'),
 					themeType = parentEl.attr('data-type'),
 					cssSrc = parentEl.attr('data-css'),
 					themeId = parentEl.attr('data-theme');
@@ -40,16 +40,16 @@ define('admin/appearance/themes', function() {
 		});
 
 		$('#revert_theme').on('click', function() {
-			bootbox.confirm('Are you sure you wish to remove the custom theme and restore the NodeBB default theme?', function(confirm) {
+			bootbox.confirm('Are you sure you wish to restore the default NodeBB theme?', function(confirm) {
 				if (confirm) {
 					socket.emit('admin.themes.set', {
 						type: 'local',
-						id: 'nodebb-theme-vanilla'
+						id: 'nodebb-theme-persona'
 					}, function(err) {
 						if (err) {
 							return app.alertError(err.message);
 						}
-						highlightSelectedTheme('nodebb-theme-vanilla');
+						highlightSelectedTheme('nodebb-theme-persona');
 						app.alert({
 							alert_id: 'admin:theme',
 							type: 'success',
@@ -84,8 +84,19 @@ define('admin/appearance/themes', function() {
 	};
 
 	function highlightSelectedTheme(themeId) {
-		$('.themes li[data-theme]').removeClass('btn-warning');
-		$('.themes li[data-theme="' + themeId + '"]').addClass('btn-warning');
+		$('[data-theme]')
+			.removeClass('selected')
+			.find('[data-action="use"]')
+				.html('Select Theme')
+				.removeClass('btn-success')
+				.addClass('btn-primary');
+
+		$('[data-theme="' + themeId + '"]')
+			.addClass('selected')
+			.find('[data-action="use"]')
+				.html('Current Theme')
+				.removeClass('btn-primary')
+				.addClass('btn-success');
 	}
 
 	return Themes;

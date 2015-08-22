@@ -1,15 +1,18 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">Site Settings</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">
+		Site Settings
+	</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<label>Site Title</label>
 			<input class="form-control" type="text" placeholder="Your Community Name" data-field="title" />
 
 			<div class="checkbox">
-				<label for="showSiteTitle">
-					<input type="checkbox" id="showSiteTitle" data-field="showSiteTitle" name="showSiteTitle" /> Show Site Title in Header
+				<label for="showSiteTitle" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="showSiteTitle" name="showSiteTitle" />
+					<span class="mdl-switch__label">Show Site Title in Header</span>
 				</label>
 			</div>
 
@@ -28,9 +31,9 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Site Logo</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Site Logo</div>
+	<div class="col-sm-10 col-xs-12">
 		<div class="form-group">
 			<label for="logoUrl">Image</label>
 			<div class="input-group">
@@ -54,9 +57,11 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Favicon</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">
+		Favicon
+	</div>
+	<div class="col-sm-10 col-xs-12">
 		<div class="form-group">
 			<div class="input-group">
 				<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" readonly />
@@ -68,23 +73,26 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Miscellaneous</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Miscellaneous</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="useOutgoingLinksPage"> <strong>Use Outgoing Links Warning Page</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="useOutgoingLinksPage">
+					<span class="mdl-switch__label"><strong>Use Outgoing Links Warning Page</strong></span>
 				</label>
 			</div>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="disableSocialButtons"> <strong>Disable social buttons</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="disableSocialButtons">
+					<span class="mdl-switch__label"><strong>Disable social buttons</strong></span>
 				</label>
 			</div>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="disableChat"> <strong>Disable chat</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="disableChat">
+					<span class="mdl-switch__label"><strong>Disable chat</strong></span>
 				</label>
 			</div>
 		</form>

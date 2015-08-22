@@ -13,6 +13,8 @@ define('admin/extend/plugins', function() {
 			return;
 		}
 
+		$('#plugin-search').val('');
+
 		pluginsList.on('click', 'button[data-action="toggleActive"]', function() {
 			pluginID = $(this).parents('li').attr('data-plugin-id');
 			var btn = $(this);

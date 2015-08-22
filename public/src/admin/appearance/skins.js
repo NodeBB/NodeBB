@@ -9,12 +9,12 @@ define('admin/appearance/skins', function() {
 		scriptEl.attr('src', '//bootswatch.aws.af.cm/3/?callback=bootswatchListener');
 		$('body').append(scriptEl);
 
-		$('#bootstrap_themes').on('click', function(e){
+		$('#skins').on('click', function(e){
 			var target = $(e.target),
 				action = target.attr('data-action');
 
 			if (action && action === 'use') {
-				var parentEl = target.parents('li'),
+				var parentEl = target.parents('[data-theme]'),
 					themeType = parentEl.attr('data-type'),
 					cssSrc = parentEl.attr('data-css'),
 					themeId = parentEl.attr('data-theme');
@@ -59,12 +59,37 @@ define('admin/appearance/skins', function() {
 			showRevert: true
 		}, function(html) {
 			themeContainer.html(html);
+
+			var skin = config['theme:src']
+				.match(/latest\/(\S+)\/bootstrap.min.css/)[1]
+				.replace(/(^|\s)([a-z])/g , function(m,p1,p2){return p1+p2.toUpperCase();});
+
+			highlightSelectedTheme(skin);
 		});
 	};
 
 	function highlightSelectedTheme(themeId) {
-		$('.themes li[data-theme]').removeClass('btn-warning');
-		$('.themes li[data-theme="' + themeId + '"]').addClass('btn-warning');
+		$('[data-theme]')
+			.removeClass('selected')
+			.find('[data-action="use"]').each(function() {
+				if ($(this).parents('[data-theme]').attr('data-theme')) {
+					$(this)
+						.html('Select Theme')
+						.removeClass('btn-success')
+						.addClass('btn-primary');
+				}
+			});
+
+		if (!themeId) {
+			return;
+		}
+
+		$('[data-theme="' + themeId + '"]')
+			.addClass('selected')
+			.find('[data-action="use"]')
+				.html('Current Theme')
+				.removeClass('btn-primary')
+				.addClass('btn-success');
 	}
 
 	return Skins;
