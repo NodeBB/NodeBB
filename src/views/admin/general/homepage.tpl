@@ -1,5 +1,5 @@
 <div class="row">
-	<div class="col-xs-2">Home Page</div>
+	<div class="col-sm-2 col-xs-12 settings-header">Home Page</div>
 	<div class="col-sm-10 col-xs-12">
 		<p>
 			Choose what page is shown when users navigate to the root URL of your forum.

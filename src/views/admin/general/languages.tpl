@@ -1,6 +1,6 @@
 <div class="languages">
 	<div class="row">
-		<div class="col-xs-2">Language Settings</div>
+		<div class="col-sm-2 col-xs-12 settings-header">Language Settings</div>
 		<div class="col-sm-10 col-xs-12">
 			<p>
 				The default language determines the language settings for all users who
