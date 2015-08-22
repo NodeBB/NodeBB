@@ -5,7 +5,11 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 	var Settings = {};
 
 	Settings.init = function() {
-		$(window).on('action:config.loaded', Settings.prepare);
+		if (!app.config) {
+			$(window).on('action:config.loaded', Settings.prepare);
+		} else {
+			Settings.prepare();
+		}
 	};
 
 	Settings.populateTOC = function() {
