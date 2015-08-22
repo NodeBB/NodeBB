@@ -7,9 +7,9 @@
 					<fieldset>
 						<div class="col-xs-12">
 							<h3 data-edit-target="#cid-{category.cid}-name"><span>{category.name}</span> <small><i class="fa fa-edit"></i></small></h3>
-							<input id="cid-{category.cid}-name" type="text" class="form-control hide" placeholder="Category Name" data-name="name" value="{category.name}" />
+							<input id="cid-{category.cid}-name" type="text" class="form-control hide" placeholder="[[admin:category.category_name]]" data-name="name" value="{category.name}" />
 							<h4 data-edit-target="#cid-{category.cid}-description"><span>{category.description}</span> <small><i class="fa fa-edit"></i></small></h4>
-							<input id="cid-{category.cid}-description" data-name="description" placeholder="Category Description" value="{category.description}" class="form-control category_description input-sm description hide"></input>
+							<input id="cid-{category.cid}-description" data-name="description" placeholder="[[admin:category.category_description]]" value="{category.description}" class="form-control category_description input-sm description hide"></input>
 						</div>
 					</fieldset>
 
@@ -18,11 +18,11 @@
 							<div class="form-group">
 								<label for="cid-{category.cid}-parentCid">[[admin:category.parent_category]]</label>
 								<br/>
-								<div class="btn-group <!-- IF !category.parent.name -->hide<!-- ENDIF !category.parent.name-->">
+								<div class="btn-group <!-- IF !category.parent.name -->[[admin:category.hide]]<!-- ENDIF !category.parent.name-->">
 									<button type="button" class="btn btn-default" data-action="changeParent" data-parentCid="{category.parent.cid}"><i class="fa {category.parent.icon}"></i> {category.parent.name}</button>
 									<button type="button" class="btn btn-warning" data-action="removeParent" data-parentCid="{category.parent.cid}"><i class="fa fa-times"></i></button>
 								</div>
-								<button type="button" class="btn btn-default form-control <!-- IF category.parent.name -->hide<!-- ENDIF category.parent.name-->" data-action="setParent"><i class="fa fa-sitemap"></i> [[admin:category.none]]</button>
+								<button type="button" class="btn btn-default form-control <!-- IF category.parent.name -->[[admin:category.hide]]<!-- ENDIF category.parent.name-->" data-action="setParent"><i class="fa fa-sitemap"></i> [[admin:category.none]]</button>
 							</div>
 						</div>
 					</fieldset>
@@ -57,13 +57,13 @@
 						</div>
 						<div class="col-sm-4 col-xs-12">
 							<div class="form-group">
-								<label for="cid-{category.cid}-numRecentReplies"># of Recent Replies</label>
+								<label for="cid-{category.cid}-numRecentReplies">[[admin:category.num_of_recent_replies]]</label>
 								<input id="cid-{category.cid}-numRecentReplies" type="text" class="form-control" placeholder="2" data-name="numRecentReplies" value="{category.numRecentReplies}" />
 							</div>
 						</div>
 						<div class="col-sm-4 col-xs-12">
 							<div class="form-group">
-								<label for="cid-{category.cid}-link">External Link</label>
+								<label for="cid-{category.cid}-link">[[admin:category.external_link]]</label>
 								<input id="cid-{category.cid}-link" type="text" class="form-control" placeholder="http://domain.com" data-name="link" value="{category.link}" />
 							</div>
 						</div>
@@ -72,15 +72,13 @@
 			</div>
 
 			<div class="panel panel-default">
-				<div class="panel-heading"><i class="fa fa-key"></i> Privileges / Access Control</div>
+				<div class="panel-heading"><i class="fa fa-key"></i>[[admin:category.privileges]]</div>
 				<div class="panel-body">
 					<p>
-						You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or
-						a per-group basis. You can add a new user to this table by searching for them in the form below.
+						[[admin:category.privileges_description]]
 					</p>
 					<p class="text-warning">
-						<strong>Note</strong>: Privilege settings take effect immediately. It is not necessary to save the category after adjusting
-						these settings.
+						<strong>[[admin:category.note]]</strong>: [[admin:category.privileges_note]]
 					</p>
 					<hr />
 					<div class="privilege-table-container">
@@ -92,7 +90,7 @@
 
 		<div class="col-md-3 options acp-sidebar">
 			<div class="panel panel-default hidden-sm">
-				<div class="panel-heading">Preview</div>
+				<div class="panel-heading">[[admin:category.preview]]</div>
 				<div class="panel-body">
 					<div class="category-preview" style="
 						<!-- IF category.backgroundImage -->background-image: url({category.backgroundImage});<!-- ENDIF category.backgroundImage -->
@@ -106,11 +104,11 @@
 					</div>
 					<div class="btn-group btn-group-justified">
 						<div class="btn-group">
-							<button type="button" data-cid="{category.cid}" data-name="image" data-value="{category.image}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Upload</button>
+							<button type="button" data-cid="{category.cid}" data-name="image" data-value="{category.image}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> [[admin:category.upload]]</button>
 						</div>
 						<!-- IF category.image -->
 						<div class="btn-group">
-							<button class="btn btn-warning delete-image"><i data-name="icon" value="fa-times" class="fa fa-times"></i> Remove</button>
+							<button class="btn btn-warning delete-image"><i data-name="icon" value="fa-times" class="fa fa-times"></i> [[admin:category.remove]]</button>
 						</div>
 						<!-- ENDIF category.image -->
 					</div>
@@ -118,21 +116,20 @@
 			</div>
 
 			<div class="panel panel-default">
-				<div class="panel-heading">Categories Control Panel</div>
+				<div class="panel-heading">[[admin:category.categories_control_panel]]</div>
 				<div class="panel-body">
 					<div class="btn-group btn-group-justified">
 						<div class="btn-group">
-							<button class="btn btn-primary save">Save</button>
+							<button class="btn btn-primary save">[[admin:category.save]]</button>
 						</div>
 						<div class="btn-group">
-							<button class="btn btn-default revert">Revert</button>
+							<button class="btn btn-default revert">[[admin:category.revert]]</button>
 						</div>
 					</div>
 					<hr />
-					<button class="btn btn-danger btn-block btn-xs purge"><i class="fa fa-eraser"></i> Purge Category</button>
+					<button class="btn btn-danger btn-block btn-xs purge"><i class="fa fa-eraser"></i> [[admin:category.purge_category]]</button>
 					<p class="help-block">
-						Purging a category will remove all topics and posts, and delete the category from the database. If you want to
-						remove a category <em>temporarily</em>, you'll want to "disable" the category instead.
+						[[admin:category.purge_category_description]]
 					</p>
 				</div>
 			</div>
