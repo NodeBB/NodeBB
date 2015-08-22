@@ -138,6 +138,12 @@
 	"group.save": "Save",
 	"group.revert": "Revert",
 
+	"registration.registration_queue": "Registration Queue",
+	"registration.name": "Name",
+	"registration.email": "Email",
+	"registration.ip": "IP",
+	"registration.time": "Time",
+
 	"users.users": "Users",
 	"users.latest_users": "Latest Users",
 	"users.top_posters": "Top Posters",

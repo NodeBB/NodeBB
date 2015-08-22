@@ -1,14 +1,14 @@
 <div class="registration">
 	<div class="col-lg-9">
 		<div class="panel panel-default">
-			<div class="panel-heading"><i class="fa fa-group"></i> Registration Queue</div>
+			<div class="panel-heading"><i class="fa fa-group"></i> [[admin:registration.registration_queue]]</div>
 			<div class="panel-body">
 				<table class="table table-striped users-list">
 					<tr>
-						<th>Name</th>
-						<th>Email</th>
-						<th>IP</th>
-						<th>Time</th>
+						<th>[[admin:registration.name]]</th>
+						<th>[[admin:registration.email]]</th>
+						<th>[[admin:registration.ip]]</th>
+						<th>[[admin:registration.time]]</th>
 						<th></th>
 					</tr>
 					<!-- BEGIN users -->

@@ -136,6 +136,12 @@
 	"group.save": "保存",
 	"group.revert": "重置",
 
+	"registration.registration_queue": "注册审核",
+	"registration.name": "名称",
+	"registration.email": "邮箱",
+	"registration.ip": "IP",
+	"registration.time": "时间",
+
 	"users.users": "会员",
 	"users.latest_users": "最新注册",
 	"users.top_posters": "最多发贴",
@@ -176,5 +182,4 @@
 	"users.users_control_panel": "会员控制面板",
 	"users.new_user": "新建会员",
 	"users.download_csv": "下载 CSV"
-
 }
