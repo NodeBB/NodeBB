@@ -160,6 +160,19 @@ app.cacheBuster = null;
 		}
 	}
 
+	function overrideTimeago() {
+		var timeagoFn = $.fn.timeago;
+		$.fn.timeago = function() {
+			var els = timeagoFn.apply(this, arguments);
+
+			if (els) {
+				els.each(function() {
+					$(this).attr('title', (new Date($(this).attr('title'))).toString());
+				});
+			}
+		};
+	}
+
 	app.logout = function() {
 		require(['csrf'], function(csrf) {
 			$.ajax(RELATIVE_PATH + '/logout', {
@@ -270,8 +283,6 @@ app.cacheBuster = null;
 
 	app.processPage = function () {
 		highlightNavigationLink();
-
-		utils.overrideTimeago();
 
 		$('.timeago').timeago();
 
@@ -559,6 +570,7 @@ app.cacheBuster = null;
 			});
 
 			overrideBootbox();
+			overrideTimeago();
 			createHeaderTooltips();
 			app.showEmailConfirmWarning();
 
