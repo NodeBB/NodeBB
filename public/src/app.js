@@ -130,6 +130,36 @@ app.cacheBuster = null;
 		}
 	}
 
+	function overrideBootbox() {
+		var dialog = bootbox.dialog,
+			prompt = bootbox.prompt,
+			confirm = bootbox.confirm;
+
+		function translate(modal) {
+			translator.translate(modal.html(), function(html) {
+				modal.html(html);
+			});
+		}
+
+		bootbox.dialog = function() {
+			var modal = $(dialog.apply(this, arguments)[0]);
+			translate(modal);
+			return modal;
+		}
+
+		bootbox.prompt = function() {
+			var modal = $(prompt.apply(this, arguments)[0]);
+			translate(modal);
+			return modal;
+		}
+
+		bootbox.confirm = function() {
+			var modal = $(confirm.apply(this, arguments)[0]);
+			translate(modal);
+			return modal;
+		}
+	}
+
 	app.logout = function() {
 		require(['csrf'], function(csrf) {
 			$.ajax(RELATIVE_PATH + '/logout', {
@@ -528,6 +558,7 @@ app.cacheBuster = null;
 				}
 			});
 
+			overrideBootbox();
 			createHeaderTooltips();
 			app.showEmailConfirmWarning();
 
