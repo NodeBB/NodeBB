@@ -31,7 +31,7 @@
 			<div class="panel-heading">Available Widgets</div>
 			<div class="panel-body">
 				<div class="available-widgets">
-					<p>Select a widget and then drag and drop it into a template's widget area on the left.</p>
+					<p>Select a widget from the dropdown menu and then drag and drop it into a template's widget area on the left.</p>
 					<!-- IF !widgets.length -->
 					<div class="alert alert-info">No widgets found! Activate the essential widgets plugin in the <a href="/admin/extend/plugins">plugins</a> control panel.</div>
 					<!-- ENDIF !widgets.length -->
