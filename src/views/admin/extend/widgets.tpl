@@ -1,5 +1,5 @@
 <div id="widgets" class="row">
-	<div class="col-md-7">
+	<div class="col-md-7" id="active-widgets">
 		<ul class="nav nav-pills">
 		<!-- BEGIN templates -->
 			<li class="<!-- IF @first -->active<!-- ENDIF @first -->"><a href="#" data-template="{../template}" data-toggle="pill">{../template}</a></li>
