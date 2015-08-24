@@ -27,7 +27,7 @@ module.exports = function(Meta) {
 
 				try {
 					var pkgData = JSON.parse(pkgData),
-						ok = semver.satisfies(pkgData.version, pkg.dependencies[module]);
+						ok = !semver.validRange(pkg.dependencies[module]) || semver.satisfies(pkgData.version, pkg.dependencies[module]);
 
 					if (ok || (pkgData._resolved && pkgData._resolved.indexOf('//github.com') !== -1)) {
 						next(true);
