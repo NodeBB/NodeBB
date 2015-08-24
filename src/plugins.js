@@ -195,8 +195,13 @@ var fs = require('fs'),
 		});
 	};
 
-	Plugins.getAll = function(callback) {
-		var url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins?version=' + require('../package.json').version;
+	Plugins.list = function(matching, callback) {
+		if (arguments.length === 1 && typeof matching === 'function') {
+			callback = matching;
+			matching = true;
+		}
+
+		var url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins' + (matching !== false ? '?version=' + require('../package.json').version : '');
 
 		require('request')(url, {
 			json: true
