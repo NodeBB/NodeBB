@@ -60,11 +60,13 @@ define('admin/appearance/skins', function() {
 		}, function(html) {
 			themeContainer.html(html);
 
-			var skin = config['theme:src']
-				.match(/latest\/(\S+)\/bootstrap.min.css/)[1]
-				.replace(/(^|\s)([a-z])/g , function(m,p1,p2){return p1+p2.toUpperCase();});
+			if (config['theme:src']) {
+				var skin = config['theme:src']
+					.match(/latest\/(\S+)\/bootstrap.min.css/)[1]
+					.replace(/(^|\s)([a-z])/g , function(m,p1,p2){return p1+p2.toUpperCase();});
 
-			highlightSelectedTheme(skin);
+				highlightSelectedTheme(skin);
+			}
 		});
 	};
 

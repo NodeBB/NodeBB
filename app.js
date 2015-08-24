@@ -348,7 +348,7 @@ function resetThemes(callback) {
 		type: 'local',
 		id: 'nodebb-theme-persona'
 	}, function(err) {
-		winston.info('[reset] Theme reset to Vanilla');
+		winston.info('[reset] Theme reset to Persona');
 		if (typeof callback === 'function') {
 			callback(err);
 		} else {
