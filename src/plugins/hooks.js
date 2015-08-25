@@ -5,7 +5,8 @@ var winston = require('winston'),
 
 module.exports = function(Plugins) {
 	Plugins.deprecatedHooks = [
-		'filter:user.delete'
+		'filter:user.delete',
+		'filter:user.custom_fields'
 	];
 
 	/*
