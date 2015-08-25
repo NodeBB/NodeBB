@@ -218,7 +218,9 @@ var fs = require('fs'),
 	};
 
 	Plugins.normalise = function(apiReturn, callback) {
-		var pluginMap = {};
+		var pluginMap = {},
+			dependencies = require.main.require('./package.json').dependencies;
+
 		for(var i=0; i<apiReturn.length; ++i) {
 			apiReturn[i].id = apiReturn[i].name;
 			apiReturn[i].installed = false;
@@ -256,7 +258,13 @@ var fs = require('fs'),
 				pluginMap[plugin.id].error = plugin.error || false;
 				pluginMap[plugin.id].active = plugin.active;
 				pluginMap[plugin.id].version = plugin.version;
-				pluginMap[plugin.id].latest = pluginMap[plugin.id].latest || plugin.version;
+
+				// If package.json defines a version to use, stick to that
+				if (dependencies.hasOwnProperty(plugin.id) && semver.valid(dependencies[plugin.id])) {
+					pluginMap[plugin.id].latest = dependencies[plugin.id];
+				} else {
+					pluginMap[plugin.id].latest = pluginMap[plugin.id].latest || plugin.version;
+				}
 				pluginMap[plugin.id].outdated = semver.gt(pluginMap[plugin.id].latest, pluginMap[plugin.id].version);
 				next();
 			}, function(err) {
