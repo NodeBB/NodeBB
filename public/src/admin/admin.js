@@ -112,7 +112,7 @@
 		});
 
 		if (params.clickfn) {
-			bar.on('click', clickfn);
+			bar.on('click', params.clickfn);
 		}
 	}
 
