@@ -185,6 +185,7 @@ accountsController.getAccount = function(req, res, next) {
 			userData.aboutme = results.aboutme;
 			userData.nextStart = results.posts.nextStart;
 			userData.isFollowing = results.isFollowing;
+			userData.disableCustomUserSkins = meta.config.disableCustomUserSkins;
 
 			if (!userData.profileviews) {
 				userData.profileviews = 1;
