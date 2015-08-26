@@ -485,7 +485,7 @@ trans.zh_CN = public/language/zh_CN/users.json
 trans.zh_TW = public/language/zh_TW/users.json
 type = KEYVALUEJSON
 
-[nodebb.language]
+[nodebb.language-1]
 file_filter = public/language/<lang>/language.json
 source_file = public/language/en_GB/language.json
 source_lang = en_GB
