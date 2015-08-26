@@ -3,6 +3,7 @@
 var winston = require('winston'),
 	validator = require('validator'),
 	user = require('../user'),
+	groups = require('../groups'),
 	plugins = require('../plugins'),
 	translator = require('../../public/src/modules/translator');
 
@@ -13,7 +14,8 @@ module.exports = function(Meta) {
 		isCategory: /^category\/\d+\/?/,
 		isTopic: /^topic\/\d+\/?/,
 		isTag: /^tags\/[\s\S]+\/?/,
-		isUserPage: /^user\/[^\/]+(\/[\w]+)?/
+		isUserPage: /^user\/[^\/]+(\/[\w]+)?/,
+		isGroup: /^groups\/[\s\S]+\/?/
 	};
 
 	Meta.title.build = function (urlFragment, language, callback) {
@@ -85,6 +87,18 @@ module.exports = function(Meta) {
 
 			translator.translate('[[pages:tag, ' + tag + ']]', language, function(translated) {
 				onParsed(null, translated);
+			});
+		} else if (tests.isGroup.test(urlFragment)) {
+			var slug = urlFragment.match(/groups\/([\s\S]+)/)[1];
+
+			groups.getGroupNameByGroupSlug(slug, function(err, groupname) {
+				if (err) {
+					return onParsed(err);
+				}
+
+				translator.translate('[[pages:group, ' + groupname + ']]', language, function(translated) {
+					onParsed(null, translated);
+				});
 			});
 		} else if (tests.isUserPage.test(urlFragment)) {
 			var	matches = urlFragment.match(/user\/([^\/]+)\/?([\w]+)?/),

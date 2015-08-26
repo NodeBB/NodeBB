@@ -19,7 +19,9 @@
 	"login": "Login to your account",
 	"reset": "Reset your account password",
 	"categories": "Categories",
+
 	"groups": "Groups",
+	"group": "%1 group",
 
 	"user.edit": "Editing \"%1\"",
 	"user.following": "People %1 Follows",
