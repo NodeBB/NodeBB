@@ -58,7 +58,7 @@ usersController.getOnlineUsers = function(req, res, next) {
 };
 
 usersController.getUsersSortedByPosts = function(req, res, next) {
-	usersController.getUsers('users:postcount', , 0, 49, req, res, next);
+	usersController.getUsers('users:postcount', 0, 49, req, res, next);
 };
 
 usersController.getUsersSortedByReputation = function(req, res, next) {
