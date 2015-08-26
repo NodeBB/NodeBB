@@ -14,6 +14,10 @@ var async = require('async'),
 	db = require('../database'),
 	helpers = require('./helpers');
 
+usersController.redirectToOnlineUsers = function(req, res, next) {
+	helpers.redirect(res, '/users/online');
+};
+
 usersController.getOnlineUsers = function(req, res, next) {
 	var	websockets = require('../socket.io');
 
