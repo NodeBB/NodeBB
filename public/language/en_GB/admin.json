@@ -1,11 +1,12 @@
 {
 	"header.title": "NodeBB Admin Control Panel",
-	"header.admin_control_panel": "Admin Control Panel",
-	"header.view_forum": "View Forum",
-	"header.view_profile": "View Profile",
-	"header.reload_forum": "Reload Forum",
-	"header.restart_forum": "Restart Forum",
-	"header.log_out": "Log out",
+	"partials.menu.admin_control_panel": "Admin Control Panel",
+	"partials.menu.view_forum": "View Forum",
+	"partials.menu.view_profile": "View Profile",
+	"partials.menu.reload_forum": "Reload Forum",
+	"partials.menu.restart_forum": "Restart Forum",
+	"partials.menu.log_out": "Log out",
+	"partials.menu.search": "Search...",
 
 	"partials.menu.general": "General",
 	"partials.menu.dashboard": "Dashboard",

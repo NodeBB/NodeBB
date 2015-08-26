@@ -118,14 +118,14 @@
 				</a>
 				<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
 					<li>
-						<a href="{relative_path}/" target="_blank" title="View Forum">[[admin:partials.menu.view_forum]]</a>
+						<a href="{relative_path}/" target="_blank" title="[[admin:partials.menu.view_forum]]">[[admin:partials.menu.view_forum]]</a>
 					</li>
 					<li role="presentation" class="divider"></li>
 					<li>
-						<a href="#" class="reload" title="Reload Forum">[[admin:partials.menu.reload_forum]]</a>
+						<a href="#" class="reload" title="[[admin:partials.menu.reload_forum]]">[[admin:partials.menu.reload_forum]]</a>
 					</li>
 					<li>
-						<a href="#" class="restart" title="Restart Forum">[[admin:partials.menu.restart_forum]]</a>
+						<a href="#" class="restart" title="[[admin:partials.menu.restart_forum]]">[[admin:partials.menu.restart_forum]]</a>
 					</li>
 					<li role="presentation" class="divider"></li>
 					<li component="logout">
@@ -136,7 +136,7 @@
 			<form class="pull-right hidden-sm hidden-xs" role="search">
 				<div class="" id="acp-search" >
 					<div class="dropdown">
-						<input type="text" data-toggle="dropdown" class="form-control" placeholder="Search...">
+						<input type="text" data-toggle="dropdown" class="form-control" placeholder="[[admin:partials.menu.search]]">
 						<ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
 					</div>
 				</div>
@@ -174,7 +174,7 @@
 					<li><a href="{relative_path}/admin/settings/email">[[admin:partials.menu.email]]</a></li>
 					<li><a href="{relative_path}/admin/settings/user">[[admin:partials.menu.user]]</a></li>
 					<li><a href="{relative_path}/admin/settings/group">[[admin:partials.menu.group]]</a></li>
-					<li><a href="{relative_path}/admin/settings/guest">[[admin:partials.menu.guests]]</a></li>
+					<li><a href="{relative_path}/admin/settings/guest">[[admin:partials.menu.guest]]</a></li>
 					<li><a href="{relative_path}/admin/settings/post">[[admin:partials.menu.post]]</a></li>
 					<li><a href="{relative_path}/admin/settings/pagination">[[admin:partials.menu.pagination]]</a></li>
 					<li><a href="{relative_path}/admin/settings/tags">[[admin:partials.menu.tags]]</a></li>
@@ -189,7 +189,7 @@
 				<ul class="dropdown-menu" role="menu">
 					<li><a href="{relative_path}/admin/appearance/themes">[[admin:partials.menu.themes]]</a></li>
 					<li><a href="{relative_path}/admin/appearance/skins">[[admin:partials.menu.skins]]</a></li>
-					<li><a href="{relative_path}/admin/appearance/customise">Custom HTML &amp; CSS</a></li>
+					<li><a href="{relative_path}/admin/appearance/customise">[[admin:partials.menu.customise]]</a></li>
 				</ul>
 			</li>
 			<li class="dropdown menu-item">

@@ -1,11 +1,12 @@
 {
 	"header.title": "NodeBB 管理控制面板",
-	"header.admin_control_panel": "管理控制面板",
-	"header.view_forum": "查看论坛",
-	"header.view_profile": "查看资料",
-	"header.reload_forum": "刷新论坛",
-	"header.restart_forum": "重启论坛",
-	"header.log_out": "登出",
+	"partials.menu.admin_control_panel": "管理控制面板",
+	"partials.menu.view_forum": "查看论坛",
+	"partials.menu.view_profile": "查看资料",
+	"partials.menu.reload_forum": "刷新论坛",
+	"partials.menu.restart_forum": "重启论坛",
+	"partials.menu.log_out": "登出",
+	"partials.menu.search": "搜索...",
 
 	"partials.menu.general": "常规",
 	"partials.menu.dashboard": "仪表板",
