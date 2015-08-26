@@ -1,7 +1,7 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">General</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin:group.general]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form role="form">
 			<div class="checkbox">
@@ -12,21 +12,21 @@
 			</div>
 
 			<p class="help-block">
-				If enabled, joining of groups requires the approval of the group owner <em>(Default: enabled)</em>
+			        [[admin:group.private_groups.help]]
 			</p>
 			<p class="help-block">
-				<strong>Beware!</strong> If this option is disabled and you have private groups, they automatically become public.
+			        [[admin:group.private_groups.help2]]
 			</p>
 
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="allowGroupCreation">
-					<span class="mdl-switch__label"><strong>Allow Group Creation</strong></span>
+					<span class="mdl-switch__label"><strong>[[admin:group.allow_group_creation]]</strong></span>
 				</label>
 			</div>
 
 			<p class="help-block">
-				If enabled, users can create groups <em>(Default: disabled)</em>
+				[[admin:group.allow_group_creation.help]]
 			</p>
 		</form>
 	</div>

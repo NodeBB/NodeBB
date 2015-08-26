@@ -1,10 +1,10 @@
 <div class="registration">
 	<table class="table table-striped users-list">
 		<tr>
-			<th>Name</th>
-			<th>Email</th>
-			<th>IP</th>
-			<th>Time</th>
+			<th>[[admin:registration.name]]</th>
+			<th>[[admin:registration.email]]</th>
+			<th>[[admin:registration.ip]]</th>
+			<th>[[admin:registration.time]]</th>
 			<th></th>
 		</tr>
 		<!-- IF !users.length -->
