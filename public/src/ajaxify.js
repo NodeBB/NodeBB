@@ -150,7 +150,7 @@ $(document).ready(function() {
 
 				$('#content, #footer').removeClass('ajaxifying');
 
-				app.refreshTitle(url);
+				app.refreshTitle(data.title);
 			});
 		});
 	}

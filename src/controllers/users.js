@@ -49,7 +49,8 @@ usersController.getOnlineUsers = function(req, res, next) {
 			loadmore_display: results.count > 50 ? 'block' : 'hide',
 			users: results.users,
 			anonymousUserCount: websockets.getOnlineAnonCount(),
-			defaultGravatar: user.createGravatarURLFromEmail('')
+			defaultGravatar: user.createGravatarURLFromEmail(''),
+			title: '[[pages:users/online]]'
 		};
 
 		render(req, res, userData, next);
@@ -57,18 +58,18 @@ usersController.getOnlineUsers = function(req, res, next) {
 };
 
 usersController.getUsersSortedByPosts = function(req, res, next) {
-	usersController.getUsers('users:postcount', 0, 49, req, res, next);
+	usersController.getUsers('users:postcount', '[[pages:users/sort-posts]]', 0, 49, req, res, next);
 };
 
 usersController.getUsersSortedByReputation = function(req, res, next) {
-	usersController.getUsers('users:reputation', 0, 49, req, res, next);
+	usersController.getUsers('users:reputation', '[[pages:users/sort-reputation]]', 0, 49, req, res, next);
 };
 
 usersController.getUsersSortedByJoinDate = function(req, res, next) {
-	usersController.getUsers('users:joindate', 0, 49, req, res, next);
+	usersController.getUsers('users:joindate', '[[pages:users/latest]]', 0, 49, req, res, next);
 };
 
-usersController.getUsers = function(set, start, stop, req, res, next) {
+usersController.getUsers = function(set, title, start, stop, req, res, next) {
 	usersController.getUsersAndCount(set, req.uid, start, stop, function(err, data) {
 		if (err) {
 			return next(err);
@@ -78,7 +79,8 @@ usersController.getUsers = function(set, start, stop, req, res, next) {
 			search_display: 'hidden',
 			loadmore_display: data.count > (stop - start + 1) ? 'block' : 'hide',
 			users: data.users,
-			pagination: pagination.create(1, pageCount)
+			pagination: pagination.create(1, pageCount),
+			title: title
 		};
 		userData['route_' + set] = true;
 		render(req, res, userData, next);
@@ -119,7 +121,8 @@ usersController.getUsersForSearch = function(req, res, next) {
 		var userData = {
 			search_display: 'block',
 			loadmore_display: 'hidden',
-			users: data.users
+			users: data.users,
+			title: '[[pages:users/search]]'
 		};
 
 		render(req, res, userData, next);
@@ -195,7 +198,7 @@ usersController.getMap = function(req, res, next) {
 			}
 		});
 
-		res.render('usersMap', {rooms: data});
+		res.render('usersMap', {rooms: data, title: '[[pages:users/map]]'});
 	});
 };
 

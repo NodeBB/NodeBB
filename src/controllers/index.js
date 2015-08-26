@@ -61,7 +61,8 @@ Controllers.reset = function(req, res, next) {
 				valid: valid,
 				displayExpiryNotice: req.session.passwordExpired,
 				code: req.params.code ? req.params.code : null,
-				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]', url: '/reset'}, {text: '[[reset_password:update_password]]'}])
+				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]', url: '/reset'}, {text: '[[reset_password:update_password]]'}]),
+				title: '[[pages:reset]]'
 			});
 
 			delete req.session.passwordExpired;
@@ -69,7 +70,8 @@ Controllers.reset = function(req, res, next) {
 	} else {
 		res.render('reset', {
 			code: req.params.code ? req.params.code : null,
-			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]'}])
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]'}]),
+			title: '[[pages:reset]]'
 		});
 	}
 
@@ -90,6 +92,7 @@ Controllers.login = function(req, res, next) {
 	data.allowLoginWith = '[[login:' + (meta.config.allowLoginWith || 'username-email') + ']]';
 	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:login]]'}]);
 	data.error = req.flash('error')[0];
+	data.title = '[[pages:login]]';
 
 	res.render('login', data);
 };
@@ -128,6 +131,7 @@ Controllers.register = function(req, res, next) {
 			data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[register:register]]'}]);
 			data.regFormEntry = [];
 			data.error = req.flash('error')[0];
+			data.title = '[[pages:register]]';
 
 			plugins.fireHook('filter:register.build', {req: req, res: res, templateData: data}, next);
 		}

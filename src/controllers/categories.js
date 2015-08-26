@@ -65,6 +65,8 @@ categoriesController.list = function(req, res, next) {
 			return next(err);
 		}
 
+		data.title = '[[pages:categories]]';
+
 		plugins.fireHook('filter:categories.build', {req: req, res: res, templateData: data}, function(err, data) {
 			if (err) {
 				return next(err);
@@ -250,7 +252,7 @@ categoriesController.get = function(req, res, next) {
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 		data.rssFeedUrl = nconf.get('relative_path') + '/category/' + data.cid + '.rss';
 		data.pagination = pagination.create(data.currentPage, data.pageCount);
-
+		data.title = data.name;
 		data.pagination.rel.forEach(function(rel) {
 			res.locals.linkTags.push(rel);
 		});

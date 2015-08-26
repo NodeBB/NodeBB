@@ -230,6 +230,7 @@ function getFollow(tpl, name, req, res, next) {
 
 		userData.users = users;
 		userData.nextStart = 50;
+		userData.title = '[[pages:' + tpl + ', ' + userData.username + ']]';
 
 		res.render(tpl, userData);
 	});
@@ -268,7 +269,7 @@ accountsController.getGroups = function(req, res, next) {
 
 			userData.groups = groupsData[0];
 			userData.groups.forEach(groups.escapeGroupData);
-
+			userData.title = '[[pages:account/groups, ' + userData.username + ']]';
 			res.render('account/groups', userData);
 		});
 	});
@@ -320,6 +321,8 @@ function getFromUserSet(tpl, set, method, type, req, res, next) {
 
 			var pagination = require('../pagination');
 			userData.pagination = pagination.create(page, pageCount);
+
+			userData.title = '[[pages:' + tpl + ', ' + userData.username + ']]';
 
 			res.render(tpl, userData);
 		});
@@ -377,7 +380,7 @@ accountsController.accountEdit = function(req, res, next) {
 		}
 
 		userData.hasPassword = !!password;
-
+		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
 		res.render('account/edit', userData);
 	});
 };
@@ -514,6 +517,8 @@ accountsController.accountSettings = function(req, res, next) {
 
 		userData.disableCustomUserSkins = parseInt(meta.config.disableCustomUserSkins, 10) === 1;
 
+		userData.title = '[[pages:account/settings]]';
+
 		res.render('account/settings', userData);
 	});
 };
@@ -563,7 +568,8 @@ accountsController.getNotifications = function(req, res, next) {
 			return next(err);
 		}
 		res.render('notifications', {
-			notifications: notifications
+			notifications: notifications,
+			title: '[[pages:notifications]]'
 		});
 	});
 };
@@ -603,7 +609,8 @@ accountsController.getChats = function(req, res, next) {
 				chats: results.recentChats.users,
 				nextStart: results.recentChats.nextStart,
 				contacts: results.contacts,
-				allowed: true
+				allowed: true,
+				title: '[[pages:chats]]'
 			});
 		}
 
@@ -631,7 +638,8 @@ accountsController.getChats = function(req, res, next) {
 				contacts: results.contacts,
 				meta: data.toUser,
 				messages: data.messages,
-				allowed: data.allowed
+				allowed: data.allowed,
+				title: '[[pages:chat, ' + data.toUser.username + ']]'
 			});
 		});
 	});

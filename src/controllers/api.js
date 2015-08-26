@@ -27,6 +27,7 @@ apiController.getConfig = function(req, res, next) {
 	config.websocketAddress = nconf.get('socket.io:address') || '';
 	config.version = nconf.get('version');
 	config.siteTitle = validator.escape(meta.config.title || meta.config.browserTitle || 'NodeBB');
+	config.browserTitle = validator.escape(meta.config.browserTitle || meta.config.title || 'NodeBB');
 	config.showSiteTitle = parseInt(meta.config.showSiteTitle, 10) === 1;
 	config.postDelay = meta.config.postDelay;
 	config.minimumTitleLength = meta.config.minimumTitleLength;

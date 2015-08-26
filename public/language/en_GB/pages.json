@@ -1,7 +1,10 @@
 {
 	"home": "Home",
 	"unread": "Unread Topics",
-	"popular": "Popular Topics",
+	"popular-day": "Popular topics today",
+	"popular-week": "Popular topics this week",
+	"popular-month": "Popular topics this month",
+	"popular-alltime": "All time popular topics",
 	"recent": "Recent Topics",
 
 	"users/online": "Online Users",
@@ -25,15 +28,15 @@
 	"chats": "Chats",
 	"chat": "Chatting with %1",
 
-	"user.edit": "Editing \"%1\"",
-	"user.following": "People %1 Follows",
-	"user.followers": "People who Follow %1",
-	"user.posts": "Posts made by %1",
-	"user.topics": "Topics created by %1",
-	"user.groups": "%1's Groups",
-	"user.favourites": "%1's Favourite Posts",
-	"user.settings": "User Settings",
-	"user.watched": "Topics watched by %1",
+	"account/edit": "Editing \"%1\"",
+	"account/following": "People %1 follows",
+	"account/followers": "People who follow %1",
+	"account/posts": "Posts made by %1",
+	"account/topics": "Topics created by %1",
+	"account/groups": "%1's Groups",
+	"account/favourites": "%1's Favourite Posts",
+	"account/settings": "User Settings",
+	"account/watched": "Topics watched by %1",
 
 	"maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
 	"maintenance.messageIntro": "Additionally, the administrator has left this message:"

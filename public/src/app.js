@@ -389,19 +389,13 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.refreshTitle = function(url) {
-		if (!url) {
-			var a = document.createElement('a');
-			a.href = document.location;
-			url = a.pathname.slice(1);
-		}
-
-		socket.emit('meta.buildTitle', url, function(err, title, numNotifications) {
-			if (err) {
-				return;
-			}
-			titleObj.titles[0] = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') + title;
-			app.alternatingTitle('');
+	app.refreshTitle = function(title) {
+		require(['translator'], function(translator) {
+			translator.translate(title, function(translated) {
+				translated = translated ? (translated + ' | ' + config.browserTitle) : config.browserTitle;
+				titleObj.titles[0] = translated;
+				app.alternatingTitle('');
+			});
 		});
 	};
 
