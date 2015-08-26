@@ -1,15 +1,19 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">[[admin:general.site_settings]]</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">
+		[[admin:general.site_settings]]
+	</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<label>[[admin:general.site_title]]</label>
 			<input class="form-control" type="text" placeholder="[[admin:general.site_title.placeholder]]" data-field="title" />
 
 			<div class="checkbox">
-				<label for="showSiteTitle">
-					<input type="checkbox" id="showSiteTitle" data-field="showSiteTitle" name="showSiteTitle" />[[admin:general.show_site_title_in_header]]</label>
+				<label for="showSiteTitle" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="showSiteTitle" name="showSiteTitle" />
+					<span class="mdl-switch__label">[[admin:general.show_site_title_in_header]]</span>
+				</label>
 			</div>
 
 			<label>[[admin:general.browser_title]]</label>
@@ -27,9 +31,9 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">[[admin:general.site_logo]]</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin:general.site_logo]]</div>
+	<div class="col-sm-10 col-xs-12">
 		<div class="form-group">
 			<label for="logoUrl">[[admin:general.image]]</label>
 			<div class="input-group">
@@ -53,9 +57,11 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">[[admin:general.favicon]]</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">
+		[[admin:general.favicon]]
+	</div>
+	<div class="col-sm-10 col-xs-12">
 		<div class="form-group">
 			<div class="input-group">
 				<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" readonly />
@@ -67,23 +73,26 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">[[admin:general.miscellaneous]]</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Miscellaneous</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="useOutgoingLinksPage"> <strong>[[admin:general.use_outgoing_links_warning_page]]</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="useOutgoingLinksPage">
+					<span class="mdl-switch__label"><strong>[[admin:general.use_outgoing_links_warning_page]]</strong></span>
 				</label>
 			</div>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="disableSocialButtons"> <strong>[[admin:general.disable_social_buttons]]</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="disableSocialButtons">
+					<span class="mdl-switch__label"><strong>[[admin:general.disable_social_buttons]]</strong></span>
 				</label>
 			</div>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="disableChat"> <strong>[[admin:general.disable_chat]]</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="disableChat">
+					<span class="mdl-switch__label"><strong>[[admin:general.disable_chat]]</strong></span>
 				</label>
 			</div>
 		</form>

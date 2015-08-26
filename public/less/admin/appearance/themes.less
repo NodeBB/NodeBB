@@ -8,14 +8,6 @@
 			margin: 0.25em 1em;
 			list-style-type: none;
 			.pointer;
-			-webkit-border-radius: 10px;
-			-moz-border-radius: 10px;
-			border-radius: 10px;
-			-webkit-transition: background-color 250ms linear;
-			-moz-transition: background-color 250ms linear;
-			-ms-transition: background-color 250ms linear;
-			-o-transition: background-color 250ms linear;
-			transition: background-color 250ms linear;
 
 			img {
 				max-width: 150px;
@@ -30,13 +22,36 @@
 				font-size: 0.9em;
 			}
 
-			&:hover {
-				background-color: rgba(128, 128, 128, 0.2);
-			}
-
 			&.no-themes {
 				font-style: italic;
 			}
+		}
+	}
+
+	.theme-card {
+		margin-bottom: 30px;
+
+		.mdl-card__title {
+			height: 223px;
+			background-size: contain;
+		}
+
+		.mdl-card__supporting-text h2 {
+			margin-bottom: 15px;
+		}
+	}
+
+	[data-theme].selected .mdl-button {
+		color: black;
+	}
+
+	[data-type="bootswatch"] {
+		.mdl-card__title {
+			height: 198px;
+		}
+
+		.mdl-card__title-text {
+			display: none;
 		}
 	}
 

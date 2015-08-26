@@ -4,12 +4,11 @@
 			<div class="panel-heading"><i class="fa fa-user"></i> [[admin:users.users]]</div>
 			<div class="panel-body">
 				<ul class="nav nav-pills">
-					<li class='active'><a href='{config.relative_path}/admin/manage/users/latest'>[[admin:users.latest_users]]</a></li>
-					<li class=''><a href='{config.relative_path}/admin/manage/users/sort-posts'>[[admin:users.top_posters]]</a></li>
-					<li class=''><a href='{config.relative_path}/admin/manage/users/sort-reputation'>[[admin:users.most_reputation]]</a></li>
-					<li class=''><a href='{config.relative_path}/admin/manage/users/banned'>[[admin:users.banned]]</a></li>
-					<li class=''><a href='{config.relative_path}/admin/manage/users/registration'>[[admin:users.registration_queue]]</a></li>
-					<li class=''><a href='{config.relative_path}/admin/manage/users/search'>[[admin:users.user_search]]</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/latest'>[[admin:users.latest_users]]</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/sort-posts'>[[admin:users.top_posters]]</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/sort-reputation'>[[admin:users.most_reputation]]</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/banned'>[[admin:users.banned]]</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/search'>[[admin:users.user_search]]</a></li>
 
 
 					<div class="btn-group pull-right">

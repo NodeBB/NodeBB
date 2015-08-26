@@ -1,12 +1,13 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">[[admin:advanced.maintenance_mode]]</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin:advanced.maintenance_mode]]</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="maintenanceMode"> <strong>[[admin:advanced.maintenance_mode]]</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="maintenanceMode">
+					<span class="mdl-switch__label"><strong>[[admin:advanced.maintenance_mode]]</strong></span>
 				</label>
 			</div>
 			<p class="help-block">
@@ -20,9 +21,9 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">[[admin:advanced.domain_settings]]</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin:advanced.domain_settings]]</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
 				<label for="allow-from-uri">[[admin:advanced.set_allow_from_to_place_nodebb_in_an_iframe]]</label>

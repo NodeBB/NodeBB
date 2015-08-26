@@ -1,17 +1,12 @@
 </div>
 
-<div class="col-lg-3 acp-sidebar">
-	<div class="panel panel-default">
-		<div class="panel-heading">[[admin:footer.save_settings]]</div>
-		<div class="panel-body">
-			<button class="btn btn-primary btn-md" id="save">[[admin:footer.save_changes]]</button>
-			<button class="btn btn-warning btn-md" id="revert">[[admin:footer.revert_changes]]</button>
-		</div>
-	</div>
-</div>
+<button id="save" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+	<i class="material-icons">[[admin:footer.save_changes]]</i>
+</button>
 
 <script>
 	require(['admin/settings'], function(Settings) {
-		Settings.prepare();
+		Settings.init();
+		Settings.populateTOC();
 	});
 </script>

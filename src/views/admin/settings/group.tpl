@@ -1,29 +1,33 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">[[admin:group.general]]</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin:group.general]]</div>
+	<div class="col-sm-10 col-xs-12">
 		<form role="form">
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="allowPrivateGroups" checked> <strong>[[admin:group.private_groups]]</strong>
-					<p class="help-block">
-						[[admin:group.private_groups.help]]
-					</p>
-					<p class="help-block">
-						[[admin:group.private_groups.help2]]
-					</p>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="allowPrivateGroups" checked>
+					<span class="mdl-switch__label"><strong>Private Groups</strong></span>
 				</label>
 			</div>
 
+			<p class="help-block">
+			        [[admin:group.private_groups.help]]
+			</p>
+			<p class="help-block">
+			        [[admin:group.private_groups.help2]]
+			</p>
+
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="allowGroupCreation"> <strong>[[admin:group.allow_group_creation]]</strong>
-					<p class="help-block">
-						[[admin:group.allow_group_creation.help]]
-					</p>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="allowGroupCreation">
+					<span class="mdl-switch__label"><strong>[[admin:group.allow_group_creation]]</strong></span>
 				</label>
 			</div>
+
+			<p class="help-block">
+				[[admin:group.allow_group_creation.help]]
+			</p>
 		</form>
 	</div>
 </div>

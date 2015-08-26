@@ -1,8 +1,8 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">[[admin:email.email_settings]]</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin:email.email_settings]]</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<p>
 			    [[admin:email.email_settings_help]]
@@ -21,7 +21,7 @@
 				</p>
 				<input type="text" class="form-control input-lg" id="email:from_name" data-field="email:from_name" placeholder="NodeBB" /><br />
 			</div>
-			<button class="btn btn-block btn-default" type="button" data-action="email.test">[[admin:email.send_test_email]]</button>
+			<button class="btn btn-primary" type="button" data-action="email.test">[[admin:email.send_test_email]]</button>
 			<p class="help-block">
 				[[admin:email.send_test_email_help]]
 			</p>
@@ -29,13 +29,15 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">[[admin:email.email_subscriptions]]</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin:email.email_subscriptions]]</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
-				<label for="disableEmailSubscriptions">
-					<input type="checkbox" id="disableEmailSubscriptions" data-field="disableEmailSubscriptions" name="disableEmailSubscriptions" />[[admin:email.disable_subscriber_notification_emails]]</label>
+				<label for="disableEmailSubscriptions" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" id="disableEmailSubscriptions" data-field="disableEmailSubscriptions" name="disableEmailSubscriptions" />
+					<span class="mdl-switch__label">[[admin:email.disable_subscriber_notification_emails]]</span>
+				</label>
 			</div>
 		</form>
 	</div>

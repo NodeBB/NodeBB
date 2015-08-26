@@ -63,21 +63,6 @@ define('admin/manage/category', [
 			});
 		}
 
-		function setupEditTargets() {
-			$('[data-edit-target]').on('click', function() {
-				var $this = $(this),
-					target = $($this.attr('data-edit-target'));
-
-				$this.addClass('hide');
-				target.removeClass('hide').on('blur', function() {
-					$this.removeClass('hide').children('span').text(this.value).html();
-					$(this).addClass('hide');
-				}).val($this.children('span').html().text());
-
-				target.focus();
-			});
-		}
-
 		// If any inputs have changed, prepare it for saving
 		$('form.category input, form.category select').on('change', function(ev) {
 			modified(ev.target);
@@ -91,12 +76,11 @@ define('admin/manage/category', [
 		// Colour Picker
 		$('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 
-		$('.save').on('click', save);
-		$('.revert').on('click', ajaxify.refresh);
+		$('#save').on('click', save);
 		$('.purge').on('click', function(e) {
 			e.preventDefault();
 
-			bootbox.confirm('<p class="lead">Do you really want to purge this category "' + $('form.category').find('input[data-name="name"]').val() + '"?</p><p><strong class="text-danger">Warning!</strong> All topics and posts in this category will be purged!</p>', function(confirm) {
+			bootbox.confirm('<p class="lead">Do you really want to purge this category "' + $('form.category').find('input[data-name="name"]').val() + '"?</p><h5><strong class="text-danger">Warning!</strong> All topics and posts in this category will be purged!</h5> <p class="help-block">Purging a category will remove all topics and posts, and delete the category from the database. If you want to remove a category <em>temporarily</em>, you\'ll want to "disable" the category instead.</p>', function(confirm) {
 				if (!confirm) {
 					return;
 				}
@@ -158,7 +142,6 @@ define('admin/manage/category', [
 			});
 		});
 
-		setupEditTargets();
 		Category.setupPrivilegeTable();
 	};
 

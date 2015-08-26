@@ -1,28 +1,25 @@
-<div class="col-lg-9">	
-	<div class="panel panel-default">
-		<div class="panel-heading">[[admin:homepage.home_page]]</div>
-		<div class="panel-body">
-			<form>
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin:homepage.home_page]]</div>
+	<div class="col-sm-10 col-xs-12">
+		<p>
+			Choose what page is shown when users navigate to the root URL of your forum.
+		</p>
+		<form class="row">
+			<div class="col-xs-6">
 				<label>[[admin:homepage.home_page_route]]</label>
 				<select class="form-control" data-field="homePageRoute">
 					<!-- BEGIN routes -->
 					<option value="{routes.route}">{routes.name}</option>
 					<!-- END routes -->
 				</select>
-			</form>
-		</div>
+			</div>
+		</form>
 	</div>
 </div>
 
-<div class="col-lg-3 acp-sidebar">
-	<div class="panel panel-default">
-		<div class="panel-heading">[[admin:homepage.save_settings]]</div>
-		<div class="panel-body">
-			<button class="btn btn-primary btn-md" id="save">[[admin:homepage.save_changes]]</button>
-			<button class="btn btn-warning btn-md" id="revert">[[admin:homepage.revert_changes]]</button>
-		</div>
-	</div>
-</div>
+<button id="save" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+	<i class="material-icons">[[admin:homepage.save_changes]]</i>
+</button>
 
 <script>
 	require(['admin/settings'], function(Settings) {
