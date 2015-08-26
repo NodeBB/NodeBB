@@ -41,8 +41,12 @@ module.exports = function(Meta) {
 	};
 
 	Meta.title.parseFragment = function (urlFragment, language, callback) {
-		var	translated = ['', 'recent', 'unread', 'users', 'notifications', 'popular', 'tags'],
-			onParsed = function(err, translated) {
+		var	translated = [
+			'', 'recent', 'unread', 'notifications', 'popular', 'tags',
+			'users/online', 'users/latest', 'users/sort-posts', 'users/sort-reputation', 'users/map', 'users/search'
+		];
+		
+		var	onParsed = function(err, translated) {
 				if (err) {
 					return callback(err);
 				}
