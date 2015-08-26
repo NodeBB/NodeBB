@@ -7,8 +7,8 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 	var newMessage = false;
 
 	module.prepareDOM = function() {
-		var	chatsToggleEl = $('#chat_dropdown'),
-			chatsListEl = $('#chat-list'),
+		var	chatsToggleEl = components.get('chat/dropdown'),
+			chatsListEl = components.get('chat/list'),
 			dropdownEl;
 
 		// Sync open chats between all user socket sessions
