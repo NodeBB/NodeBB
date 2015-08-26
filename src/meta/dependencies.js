@@ -32,7 +32,7 @@ module.exports = function(Meta) {
 					if (ok || (pkgData._resolved && pkgData._resolved.indexOf('//github.com') !== -1)) {
 						next(true);
 					} else {
-						process.stdout.write('[' + 'outdated'.yellow + '] ' + module.bold + ' v' + pkgData.version + ', requires ' + pkg.dependencies[module] + '\n')
+						process.stdout.write('[' + 'outdated'.yellow + '] ' + module.bold + ' installed v' + pkgData.version + ', package.json requires ' + pkg.dependencies[module] + '\n')
 						next(false);
 					}
 				} catch(e) {
