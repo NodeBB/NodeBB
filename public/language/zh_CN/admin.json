@@ -18,6 +18,7 @@
 	"partials.menu.categories": "版面",
 	"partials.menu.tags": "话题",
 	"partials.menu.users": "会员",
+	"partials.menu.registration_queue": "注册审核",
 	"partials.menu.groups": "小组",
 	"partials.menu.flags": "举报",
 

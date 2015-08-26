@@ -18,6 +18,7 @@
 	"partials.menu.categories": "Categories",
 	"partials.menu.tags": "Tags",
 	"partials.menu.users": "Users",
+	"partials.menu.registration_queue": "Registration Queue",
 	"partials.menu.groups": "Groups",
 	"partials.menu.flags": "Flags",
 

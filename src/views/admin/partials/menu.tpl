@@ -30,7 +30,7 @@
 			<li><a href="{relative_path}/admin/settings/email">[[admin:partials.menu.email]]</a></li>
 			<li><a href="{relative_path}/admin/settings/user">[[admin:partials.menu.user]]</a></li>
 			<li><a href="{relative_path}/admin/settings/group">[[admin:partials.menu.group]]</a></li>
-			<li><a href="{relative_path}/admin/settings/guest">[[admin:partials.menu.guests]]</a></li>
+			<li><a href="{relative_path}/admin/settings/guest">[[admin:partials.menu.guest]]</a></li>
 			<li><a href="{relative_path}/admin/settings/post">[[admin:partials.menu.post]]</a></li>
 			<li><a href="{relative_path}/admin/settings/pagination">[[admin:partials.menu.pagination]]</a></li>
 			<li><a href="{relative_path}/admin/settings/tags">[[admin:partials.menu.tags]]</a></li>
@@ -46,7 +46,7 @@
 		<ul class="menu-section-list">
 			<li><a href="{relative_path}/admin/appearance/themes">[[admin:partials.menu.themes]]</a></li>
 			<li><a href="{relative_path}/admin/appearance/skins">[[admin:partials.menu.skins]]</a></li>
-			<li><a href="{relative_path}/admin/appearance/customise">Custom HTML &amp; CSS</a></li>
+			<li><a href="{relative_path}/admin/appearance/customise">[[admin:partials.menu.customise]]</a></li>
 		</ul>
 	</section>
 
