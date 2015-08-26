@@ -17,25 +17,7 @@ define('notifications', ['sounds', 'translator'], function(sound, translator) {
 				return;
 			}
 
-			socket.emit('notifications.get', null, function(err, data) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-
-				var notifs = data.unread.concat(data.read).sort(function(a, b) {
-					return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
-				});
-
-				translator.toggleTimeagoShorthand();
-				for(var i=0; i<notifs.length; ++i) {
-					notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
-				}
-				translator.toggleTimeagoShorthand();
-
-				templates.parse('partials/notifications_list', {notifications: notifs}, function(html) {
-					notifList.translateHtml(html);
-				});
-			});
+			Notifications.loadNotifications();
 		});
 
 		notifList.on('click', '[data-nid]', function() {
@@ -111,6 +93,28 @@ define('notifications', ['sounds', 'translator'], function(sound, translator) {
 
 		socket.on('event:notifications.updateCount', function(count) {
 			Notifications.updateNotifCount(count);
+		});
+	};
+
+	Notifications.loadNotifications = function(notifList) {
+		socket.emit('notifications.get', null, function(err, data) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			var notifs = data.unread.concat(data.read).sort(function(a, b) {
+				return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
+			});
+
+			translator.toggleTimeagoShorthand();
+			for(var i=0; i<notifs.length; ++i) {
+				notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
+			}
+			translator.toggleTimeagoShorthand();
+
+			templates.parse('partials/notifications_list', {notifications: notifs}, function(html) {
+				notifList.translateHtml(html);
+			});
 		});
 	};
 
