@@ -35,18 +35,6 @@ emitter.on('nodebb:ready', function() {
 	});
 });
 
-SocketMeta.buildTitle = function(socket, text, callback) {
-	if (socket.uid) {
-		user.getSettings(socket.uid, function(err, settings) {
-			if (err) {
-				return callback(err);
-			}
-			meta.title.build(text, settings.userLang, callback);
-		});
-	} else {
-		meta.title.build(text, meta.config.defaultLang, callback);
-	}
-};
 
 /* Rooms */
 

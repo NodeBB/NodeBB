@@ -68,7 +68,7 @@ middleware.pageView = function(req, res, next) {
 
 middleware.pluginHooks = function(req, res, next) {
 	async.each(plugins.loadedHooks['filter:router.page'] || [], function(hookObj, next) {
-		hookObj.method(req, res, next)
+		hookObj.method(req, res, next);
 	}, function(req, res) {
 		// If it got here, then none of the subscribed hooks did anything, or there were no hooks
 		next();
@@ -143,12 +143,12 @@ middleware.checkAccountPermissions = function(req, res, next) {
 			}
 
 			user.isAdministrator(req.uid, next);
-		}	
+		}
 	], function (err, allowed) {
 		if (err || allowed) {
 			return next(err);
 		}
-		controllers.helpers.notAllowed(req, res);	
+		controllers.helpers.notAllowed(req, res);
 	});
 };
 
@@ -202,7 +202,7 @@ middleware.buildHeader = function(req, res, next) {
 	});
 };
 
-middleware.renderHeader = function(req, res, callback) {
+middleware.renderHeader = function(req, res, data, callback) {
 	var registrationType = meta.config.registrationType || 'normal';
 	var templateValues = {
 		bootswatchCSS: meta.config['theme:src'],
@@ -237,22 +237,17 @@ middleware.renderHeader = function(req, res, callback) {
 			templateValues.useCustomJS = parseInt(meta.config.useCustomJS, 10) === 1;
 			next(null, templateValues.useCustomJS ? meta.config.customJS : '');
 		},
-		title: function(next) {
+		settings: function(next) {
 			if (req.uid) {
-				user.getSettings(req.uid, function(err, settings) {
-					if (err) {
-						return next(err);
-					}
-
-					if (settings.bootswatchSkin && settings.bootswatchSkin !== 'default') {
-						templateValues.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + settings.bootswatchSkin + '/bootstrap.min.css';
-					}
-
-					meta.title.build(req.url.slice(1), settings.userLang, next);
-				});
+				user.getSettings(req.uid, next);
 			} else {
-				meta.title.build(req.url.slice(1), meta.config.defaultLang, next);
+				next();
 			}
+		},
+		title: function(next) {
+			var title = validator.escape(meta.config.browserTitle || meta.config.title || 'NodeBB');
+			title = data.title ? (data.title + ' | ' + title) : title;
+			next(null, title);
 		},
 		isAdmin: function(next) {
 			user.isAdministrator(req.uid, next);
@@ -280,12 +275,15 @@ middleware.renderHeader = function(req, res, callback) {
 
 		if (results.user && parseInt(results.user.banned, 10) === 1) {
 			req.logout();
-			res.redirect('/');
-			return;
+			return res.redirect('/');
 		}
 		results.user.isAdmin = results.isAdmin || false;
 		results.user.uid = parseInt(results.user.uid, 10);
 		results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
+
+		if (results.settings && results.settings.bootswatchSkin && results.settings.bootswatchSkin !== 'default') {
+			templateValues.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + settings.bootswatchSkin + '/bootstrap.min.css';
+		}
 
 		templateValues.browserTitle = results.title;
 		templateValues.navigation = results.navigation;
@@ -364,7 +362,7 @@ middleware.processRender = function(req, res, next) {
 
 			if (res.locals.renderHeader || res.locals.renderAdminHeader) {
 				var method = res.locals.renderHeader ? middleware.renderHeader : middleware.admin.renderHeader;
-				method(req, res, function(err, template) {
+				method(req, res, options, function(err, template) {
 					if (err) {
 						return fn(err);
 					}

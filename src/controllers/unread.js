@@ -55,6 +55,8 @@ unreadController.get = function(req, res, next) {
 		}
 
 		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[unread:title]]'}]);
+		data.title = '[[pages:unread]]';
+
 		res.render('unread', data);
 	});
 };
