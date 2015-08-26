@@ -42,7 +42,7 @@ module.exports = function(Meta) {
 
 	Meta.title.parseFragment = function (urlFragment, language, callback) {
 		var	translated = [
-			'', 'recent', 'unread', 'notifications', 'popular', 'tags',
+			'', 'recent', 'unread', 'notifications', 'popular', 'tags', 'chats', 'register', 'login', 'reset', 'categories', 'groups',
 			'users/online', 'users/latest', 'users/sort-posts', 'users/sort-reputation', 'users/map', 'users/search'
 		];
 		
