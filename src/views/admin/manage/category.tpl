@@ -85,7 +85,7 @@
 								</div>
 								<!-- ENDIF category.image -->
 							</div><br />
-						
+
 							<fieldset>
 								<div class="form-group text-center">
 									<label for="cid-{category.cid}-parentCid">Parent Category</label>

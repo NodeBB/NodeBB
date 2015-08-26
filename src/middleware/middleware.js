@@ -126,32 +126,29 @@ middleware.checkGlobalPrivacySettings = function(req, res, next) {
 
 middleware.checkAccountPermissions = function(req, res, next) {
 	// This middleware ensures that only the requested user and admins can pass
-	middleware.authenticate(req, res, function(err) {
-		if (err) {
-			return next(err);
-		}
-
-		user.getUidByUserslug(req.params.userslug, function (err, uid) {
-			if (err) {
-				return next(err);
-			}
-
+	async.waterfall([
+		function (next) {
+			middleware.authenticate(req, res, next);
+		},
+		function (next) {
+			user.getUidByUserslug(req.params.userslug, next);
+		},
+		function (uid, next) {
 			if (!uid) {
 				return controllers.helpers.notFound(req, res);
 			}
 
 			if (parseInt(uid, 10) === req.uid) {
-				return next();
+				return next(null, true);
 			}
 
-			user.isAdministrator(req.uid, function(err, isAdmin) {
-				if (err || isAdmin) {
-					return next(err);
-				}
-
-				controllers.helpers.notAllowed(req, res);
-			});
-		});
+			user.isAdministrator(req.uid, next);
+		}	
+	], function (err, allowed) {
+		if (err || allowed) {
+			return next(err);
+		}
+		controllers.helpers.notAllowed(req, res);	
 	});
 };
 

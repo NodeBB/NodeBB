@@ -512,6 +512,8 @@ accountsController.accountSettings = function(req, res, next) {
 			language.selected = language.code === userData.settings.userLang;
 		});
 
+		userData.disableCustomUserSkins = parseInt(meta.config.disableCustomUserSkins, 10) === 1;
+
 		res.render('account/settings', userData);
 	});
 };

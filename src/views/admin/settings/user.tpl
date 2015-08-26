@@ -114,6 +114,20 @@
 </div>
 
 <div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Themes</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="disableCustomUserSkins">
+					<span class="mdl-switch__label"><strong>Prevent users from choosing a custom skin</strong></span>
+				</label>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">Account Protection</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>

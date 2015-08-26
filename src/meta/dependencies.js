@@ -27,12 +27,12 @@ module.exports = function(Meta) {
 
 				try {
 					var pkgData = JSON.parse(pkgData),
-						ok = semver.satisfies(pkgData.version, pkg.dependencies[module]);
+						ok = !semver.validRange(pkg.dependencies[module]) || semver.satisfies(pkgData.version, pkg.dependencies[module]);
 
 					if (ok || (pkgData._resolved && pkgData._resolved.indexOf('//github.com') !== -1)) {
 						next(true);
 					} else {
-						process.stdout.write('[' + 'outdated'.yellow + '] ' + module.bold + ' v' + pkgData.version + ', requires ' + pkg.dependencies[module] + '\n')
+						process.stdout.write('[' + 'outdated'.yellow + '] ' + module.bold + ' installed v' + pkgData.version + ', package.json requires ' + pkg.dependencies[module] + '\n')
 						next(false);
 					}
 				} catch(e) {

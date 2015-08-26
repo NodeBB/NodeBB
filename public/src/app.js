@@ -136,8 +136,9 @@ app.cacheBuster = null;
 			confirm = bootbox.confirm;
 
 		function translate(modal) {
-			translator.translate(modal.html(), function(html) {
-				modal.html(html);
+			var footer = modal.find('.modal-footer');
+			translator.translate(footer.html(), function(html) {
+				footer.html(html);
 			});
 		}
 

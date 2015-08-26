@@ -44,7 +44,8 @@ usersController.getOnlineUsers = function(req, res, next) {
 			search_display: 'hidden',
 			loadmore_display: results.count > 50 ? 'block' : 'hide',
 			users: results.users,
-			anonymousUserCount: websockets.getOnlineAnonCount()
+			anonymousUserCount: websockets.getOnlineAnonCount(),
+			defaultGravatar: user.createGravatarURLFromEmail('')
 		};
 
 		render(req, res, userData, next);

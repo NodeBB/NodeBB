@@ -4,6 +4,10 @@ var winston = require('winston'),
 	async = require('async');
 
 module.exports = function(Plugins) {
+	Plugins.deprecatedHooks = [
+		'filter:user.delete',
+		'filter:user.custom_fields'
+	];
 
 	/*
 		`data` is an object consisting of (* is required):
@@ -22,6 +26,10 @@ module.exports = function(Plugins) {
 		}
 
 		var method;
+
+		if (Plugins.deprecatedHooks.indexOf(data.hook) !== -1) {
+			winston.warn('[plugins/' + id + '] Hook `' + data.hook + '` is deprecated, please use an alternative');
+		}
 
 		if (data.hook && data.method) {
 			data.id = id;

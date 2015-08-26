@@ -120,7 +120,14 @@ module.exports = function(User) {
 	}
 
 	User.rejectRegistration = function(username, callback) {
-		removeFromQueue(username, callback);
+		async.waterfall([
+			function (next) {
+				removeFromQueue(username, next);
+			},
+			function (next) {
+				markNotificationRead(username, next);
+			}
+		], callback);
 	};
 
 	function removeFromQueue(username, callback) {
