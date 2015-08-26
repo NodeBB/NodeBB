@@ -77,7 +77,7 @@
 							</div>
 							<div class="btn-group btn-group-justified">
 								<div class="btn-group">
-									<button type="button" data-cid="{category.cid}" data-name="image" data-value="{category.image}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Upload</button>
+									<button type="button" data-cid="{category.cid}" data-name="image" data-value="{category.image}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Upload Image</button>
 								</div>
 								<!-- IF category.image -->
 								<div class="btn-group">
@@ -85,7 +85,7 @@
 								</div>
 								<!-- ENDIF category.image -->
 							</div><br />
-						
+
 							<fieldset>
 								<div class="form-group text-center">
 									<label for="cid-{category.cid}-parentCid">Parent Category</label>
