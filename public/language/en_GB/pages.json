@@ -14,7 +14,6 @@
 	"notifications": "Notifications",
 	"tags": "Tags",
 	"tag": "Topics tagged under \"%1\"",
-	"chats": "Chats",
 	"register": "Register an account",
 	"login": "Login to your account",
 	"reset": "Reset your account password",
@@ -22,6 +21,9 @@
 
 	"groups": "Groups",
 	"group": "%1 group",
+
+	"chats": "Chats",
+	"chat": "Chatting with %1",
 
 	"user.edit": "Editing \"%1\"",
 	"user.following": "People %1 Follows",

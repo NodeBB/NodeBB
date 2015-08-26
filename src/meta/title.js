@@ -15,7 +15,8 @@ module.exports = function(Meta) {
 		isTopic: /^topic\/\d+\/?/,
 		isTag: /^tags\/[\s\S]+\/?/,
 		isUserPage: /^user\/[^\/]+(\/[\w]+)?/,
-		isGroup: /^groups\/[\s\S]+\/?/
+		isGroup: /^groups\/[\s\S]+\/?/,
+		isChat: /^chats\/[\s\S]+\/?/
 	};
 
 	Meta.title.build = function (urlFragment, language, callback) {
@@ -97,6 +98,18 @@ module.exports = function(Meta) {
 				}
 
 				translator.translate('[[pages:group, ' + groupname + ']]', language, function(translated) {
+					onParsed(null, translated);
+				});
+			});
+		} else if (tests.isChat.test(urlFragment)) {
+			var userslug = urlFragment.match(/chats\/([\s\S]+)/)[1];
+
+			user.getUsernameByUserslug(userslug, function(err, username) {
+				if (err) {
+					return onParsed(err);
+				}
+
+				translator.translate('[[pages:chat, ' + username + ']]', language, function(translated) {
 					onParsed(null, translated);
 				});
 			});
