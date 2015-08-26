@@ -1,7 +1,7 @@
 <div class="row dashboard">
 	<div class="col-lg-9">
 		<div class="panel panel-default">
-			<div class="panel-heading"></div>
+			<div class="panel-heading">[[admin:dashboard.forum_traffic]]</div>
 			<div class="panel-body">
 				<div class="graph-container">
 					<ul class="graph-legend">
