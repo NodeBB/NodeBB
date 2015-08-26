@@ -2,7 +2,7 @@
 	<form role="form" class="category" data-cid="{category.cid}">
 		<ul class="nav nav-pills">
 			<li class="active"><a href="#category-settings" data-toggle="tab">[[admin:category.category_settings]]</a></li>
-			<li><a href="#privileges" data-toggle="tab">Privileges</a></li>
+			<li><a href="#privileges" data-toggle="tab">[[admin:category.privileges]]</a></li>
 		</ul>
 		<br />
 		<div class="tab-content">
@@ -88,18 +88,18 @@
 
 							<fieldset>
 								<div class="form-group text-center">
-									<label for="cid-{category.cid}-parentCid">Parent Category</label>
+									<label for="cid-{category.cid}-parentCid">[[admin:category.parent_category]]</label>
 									<br/>
 									<div class="btn-group <!-- IF !category.parent.name -->hide<!-- ENDIF !category.parent.name-->">
 										<button type="button" class="btn btn-default" data-action="changeParent" data-parentCid="{category.parent.cid}"><i class="fa {category.parent.icon}"></i> {category.parent.name}</button>
 										<button type="button" class="btn btn-warning" data-action="removeParent" data-parentCid="{category.parent.cid}"><i class="fa fa-times"></i></button>
 									</div>
-									<button type="button" class="btn btn-default btn-block <!-- IF category.parent.name -->hide<!-- ENDIF category.parent.name-->" data-action="setParent"><i class="fa fa-sitemap"></i> (None)</button>
+									<button type="button" class="btn btn-default btn-block <!-- IF category.parent.name -->hide<!-- ENDIF category.parent.name-->" data-action="setParent"><i class="fa fa-sitemap"></i> [[admin:category.none]]</button>
 								</div>
 							</fieldset>
 
 							<hr />
-							<button class="btn btn-danger btn-block purge"><i class="fa fa-eraser"></i> Purge Category</button>
+							<button class="btn btn-danger btn-block purge"><i class="fa fa-eraser"></i> [[admin:category.purge_category]]</button>
 						</div>
 					</div>
 				</div>

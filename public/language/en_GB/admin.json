@@ -112,7 +112,7 @@
 	"category.hide": "hide",
 	"category.num_of_recent_replies": "# of Recent Replies",
 	"category.external_link": "External Link",
-	"category.privileges": "Privileges / Access Control",
+	"category.privileges": "Privileges",
 	"category.privileges_description": "You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or a per-group basis. You can add a new user to this table by searching for them in the form below.",
 	"category.note": "Note",
 	"category.privileges_note": "Privilege settings take effect immediately. It is not necessary to save the category after adjusting these settings.",
