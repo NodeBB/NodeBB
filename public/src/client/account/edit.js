@@ -87,20 +87,18 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 	}
 
 	function updateHeader(picture, username, userslug) {
-		require(['components'], function(components) {
-			if (parseInt(ajaxify.data.theirid, 10) !== parseInt(ajaxify.data.yourid, 10)) {
-				return;
-			}
+		if (parseInt(ajaxify.data.theirid, 10) !== parseInt(ajaxify.data.yourid, 10)) {
+			return;
+		}
 
-			if (picture) {
-				components.get('header/userpicture').attr('src', picture);
-			}
+		if (picture) {
+			$('#user-header-picture').attr('src', picture);
+		}
 
-			if (username && userslug) {
-				components.get('header/profilelink').attr('href', config.relative_path + '/user/' + userslug);
-				components.get('header/username').text(username);
-			}
-		});
+		if (username && userslug) {
+			$('#user-profile-link').attr('href', config.relative_path + '/user/' + userslug);
+			$('#user-header-name').text(username);
+		}
 	}
 
 	function handleImageChange() {
