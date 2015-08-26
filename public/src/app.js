@@ -487,13 +487,13 @@ app.cacheBuster = null;
 	};
 
 	function handleStatusChange() {
-		$('#user-control-list .user-status').off('click').on('click', function(e) {
+		$('[component="header/usercontrol"] [data-status]').off('click').on('click', function(e) {
 			var status = $(this).attr('data-status');
 			socket.emit('user.setStatus', status, function(err, data) {
 				if(err) {
 					return app.alertError(err.message);
 				}
-				$('#logged-in-menu #user_label #user-profile-link>i').attr('class', 'fa fa-circle status ' + status);
+				$('[component="user/status"]').attr('class', 'fa fa-circle status ' + status);
 				app.user.status = status;
 			});
 			e.preventDefault();
