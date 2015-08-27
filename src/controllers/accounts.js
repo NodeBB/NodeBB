@@ -623,7 +623,12 @@ accountsController.getChats = function(req, res, next) {
 
 				async.parallel({
 					toUser: async.apply(user.getUserFields, toUid, ['uid', 'username']),
-					messages: async.apply(messaging.getMessages, req.user.uid, toUid, 'recent', false),
+					messages: async.apply(messaging.getMessages, {
+						fromuid: req.user.uid,
+						touid: toUid,
+						since: 'recent',
+						isNew: false
+					}),
 					allowed: async.apply(messaging.canMessage, req.user.uid, toUid)
 				}, next);
 			}
