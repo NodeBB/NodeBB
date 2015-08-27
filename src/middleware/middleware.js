@@ -300,7 +300,7 @@ middleware.renderHeader = function(req, res, data, callback) {
 		templateValues.template = {name: res.locals.template};
 		templateValues.template[res.locals.template] = true;
 
-		if (req.route.path === '/') {
+		if (req.route && req.route.path === '/') {
 			modifyTitle(templateValues);
 		}
 
@@ -346,7 +346,7 @@ middleware.processRender = function(req, res, next) {
 		}
 
 		if (res.locals.isAPI) {
-			if (req.route.path === '/api/') {
+			if (req.route && req.route.path === '/api/') {
 				options.title = '[[pages:home]]';
 			}
 
