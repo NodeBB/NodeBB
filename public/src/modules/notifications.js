@@ -17,7 +17,7 @@ define('notifications', ['sounds', 'translator'], function(sound, translator) {
 				return;
 			}
 
-			Notifications.loadNotifications();
+			Notifications.loadNotifications(notifList);
 		});
 
 		notifList.on('click', '[data-nid]', function() {
