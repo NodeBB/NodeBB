@@ -282,7 +282,7 @@ middleware.renderHeader = function(req, res, data, callback) {
 		results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
 
 		if (results.settings && results.settings.bootswatchSkin && results.settings.bootswatchSkin !== 'default') {
-			templateValues.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + settings.bootswatchSkin + '/bootstrap.min.css';
+			templateValues.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + results.settings.bootswatchSkin + '/bootstrap.min.css';
 		}
 
 		templateValues.browserTitle = results.title;
