@@ -193,7 +193,7 @@ function handle404(app, middleware) {
 			}
 
 			middleware.buildHeader(req, res, function() {
-				res.render('404', {path: req.path});
+				res.render('404', {path: req.path, title: '[[global:404.title]]'});
 			});
 		} else {
 			res.status(404).type('txt').send('Not found');

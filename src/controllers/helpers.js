@@ -19,9 +19,17 @@ helpers.notFound = function(req, res, error) {
 			error: error
 		});
 	} else if (res.locals.isAPI) {
-		res.status(404).json({path: req.path.replace(/^\/api/, ''), error: error});
+		res.status(404).json({
+			path: req.path.replace(/^\/api/, ''),
+			error: error,
+			title: '[[global:404.title]]'
+		});
 	} else {
-		res.status(404).render('404', {path: req.path, error: error});
+		res.status(404).render('404', {
+			path: req.path,
+			error: error,
+			title: '[[global:404.title]]'
+		});
 	}
 };
 
