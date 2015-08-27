@@ -121,7 +121,9 @@ define('forum/topic', [
 		var postIndex = getPostIndex();
 
 		if (postIndex && window.location.search.indexOf('page=') === -1) {
-			navigator.scrollToPost(postIndex - 1, true);
+			if (components.get('post/anchor', postIndex).length) {
+				return navigator.scrollToPostIndex(postIndex - 1, true);
+			}
 		} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1)) && ajaxify.data.postcount > 1) {
 			app.alert({
 				alert_id: 'bookmark',
@@ -140,10 +142,18 @@ define('forum/topic', [
 
 	function getPostIndex() {
 		var parts = window.location.pathname.split('/');
-		if (parts[parts.length - 1] && utils.isNumber(parts[parts.length - 1])) {
-			return parseInt(parts[parts.length - 1], 10);
+		var lastPart = parts[parts.length - 1];
+		if (lastPart && utils.isNumber(lastPart)) {
+			lastPart = parseInt(lastPart, 10);
+		} else {
+			return 0;
 		}
-		return 0;
+
+		while (lastPart > 0 && !components.get('post/anchor', lastPart).length) {
+			lastPart --;
+		}
+
+		return lastPart;
 	}
 
 	function addBlockQuoteHandler() {
