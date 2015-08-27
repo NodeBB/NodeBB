@@ -118,7 +118,6 @@
 				<div class="text-center {loadmore_display}">
 					<button id="load-more-users-btn" class="btn btn-primary">Load More</button>
 				</div>
-				<input type="hidden" template-variable="yourid" value="{yourid}" />
 
 			</div>
 		</div>

@@ -131,4 +131,3 @@
     <i class="material-icons">save</i>
 </button>
 
-<input type="hidden" template-variable="cid" value="{category.cid}" />
