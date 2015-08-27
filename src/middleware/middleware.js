@@ -300,6 +300,10 @@ middleware.renderHeader = function(req, res, data, callback) {
 		templateValues.template = {name: res.locals.template};
 		templateValues.template[res.locals.template] = true;
 
+		if (req.route.path === '/') {
+			modifyTitle(templateValues);
+		}
+
 		plugins.fireHook('filter:middleware.renderHeader', {templateValues: templateValues, req: req, res: res}, function(err, data) {
 			if (err) {
 				return callback(err);
@@ -342,6 +346,10 @@ middleware.processRender = function(req, res, next) {
 		}
 
 		if (res.locals.isAPI) {
+			if (req.route.path === '/api/') {
+				options.title = 'Index';
+			}
+
 			return res.json(options);
 		}
 
@@ -517,6 +525,21 @@ middleware.requireUser = function(req, res, next) {
 function redirectToLogin(req, res) {
 	req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
 	return controllers.helpers.redirect(res, '/login');
+}
+
+function modifyTitle(obj) {
+	var title = 'Index | ' + validator.escape(meta.config.title || 'NodeBB');
+	obj.browserTitle = title;
+
+	if (obj.metaTags) {
+		obj.metaTags.forEach(function(tag, i) {
+			if (tag.property === 'og:title') {
+				obj.metaTags[i].content = title;
+			}
+		});
+	}
+
+	return title;
 }
 
 module.exports = function(webserver) {
