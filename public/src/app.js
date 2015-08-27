@@ -553,7 +553,7 @@ app.cacheBuster = null;
 
 			handleNewTopic();
 
-			$('#logout-link').on('click', app.logout);
+			components.get('user/logout').on('click', app.logout);
 
 			Visibility.change(function(e, state){
 				if (state === 'visible') {
