@@ -26,20 +26,20 @@ module.exports = function(Meta) {
 				}
 
 				try {
-					var pkgData = JSON.parse(pkgData),
-						ok = !semver.validRange(pkg.dependencies[module]) || semver.satisfies(pkgData.version, pkg.dependencies[module]);
+					pkgData = JSON.parse(pkgData);
+					var ok = !semver.validRange(pkg.dependencies[module]) || semver.satisfies(pkgData.version, pkg.dependencies[module]);
 
 					if (ok || (pkgData._resolved && pkgData._resolved.indexOf('//github.com') !== -1)) {
 						next(true);
 					} else {
-						process.stdout.write('[' + 'outdated'.yellow + '] ' + module.bold + ' installed v' + pkgData.version + ', package.json requires ' + pkg.dependencies[module] + '\n')
+						process.stdout.write('[' + 'outdated'.yellow + '] ' + module.bold + ' installed v' + pkgData.version + ', package.json requires ' + pkg.dependencies[module] + '\n');
 						next(false);
 					}
 				} catch(e) {
 					winston.error('[meta/dependencies] Could not read: ' + module);
 					process.exit();
 				}
-			})
+			});
 		}, function(ok) {
 			callback(!ok && global.env !== 'development' ? new Error('dependencies-out-of-date') : null);
 		});
