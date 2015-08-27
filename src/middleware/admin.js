@@ -93,15 +93,16 @@ middleware.renderHeader = function(req, res, data, next) {
 			res.locals.config = results.config;
 
 			var templateValues = {
-				relative_path: nconf.get('relative_path'),
+				config: results.config,
 				configJSON: JSON.stringify(results.config),
+				relative_path: results.config.relative_path,
 				user: userData,
 				userJSON: JSON.stringify(userData).replace(/'/g, "\\'"),
 				plugins: results.custom_header.plugins,
 				authentication: results.custom_header.authentication,
 				scripts: results.scripts,
 				'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
-				env: process.env.NODE_ENV ? true : false,
+				env: process.env.NODE_ENV ? true : false
 			};
 
 			templateValues.template = {name: res.locals.template};

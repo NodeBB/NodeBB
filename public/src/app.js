@@ -406,18 +406,6 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.exposeConfigToTemplates = function() {
-		$(document).ready(function() {
-			templates.setGlobal('loggedIn', config.loggedIn);
-			templates.setGlobal('relative_path', RELATIVE_PATH);
-			for(var key in config) {
-				if (config.hasOwnProperty(key)) {
-					templates.setGlobal('config.' + key, config[key]);
-				}
-			}
-		});
-	};
-
 	function createHeaderTooltips() {
 		var env = utils.findBootstrapEnvironment();
 		if (env === 'xs' || env === 'sm') {
@@ -650,8 +638,6 @@ app.cacheBuster = null;
 	};
 
 	showWelcomeMessage = window.location.href.indexOf('loggedin') !== -1;
-
-	app.exposeConfigToTemplates();
 
 	socketIOConnect();
 

@@ -214,14 +214,10 @@ middleware.renderHeader = function(req, res, data, callback) {
 		'brand:logo:alt': meta.config['brand:logo:alt'] || '',
 		'brand:logo:display': meta.config['brand:logo']?'':'hide',
 		allowRegistration: registrationType === 'normal' || registrationType === 'admin-approval',
-		searchEnabled: plugins.hasListeners('filter:search.query')
+		searchEnabled: plugins.hasListeners('filter:search.query'),
+		config: res.locals.config,
+		relative_path: res.locals.config.relative_path
 	};
-
-	for (var key in res.locals.config) {
-		if (res.locals.config.hasOwnProperty(key)) {
-			templateValues[key] = res.locals.config[key];
-		}
-	}
 
 	templateValues.configJSON = JSON.stringify(res.locals.config);
 
@@ -337,6 +333,7 @@ middleware.processRender = function(req, res, next) {
 		}
 
 		options.loggedIn = req.user ? parseInt(req.user.uid, 10) !== 0 : false;
+		options.relative_path = nconf.get('relative_path');
 		options.template = {name: template};
 		options.template[template] = true;
 		res.locals.template = template;
