@@ -194,7 +194,7 @@ usersController.getMap = function(req, res, next) {
 			return next(err);
 		}
 		data.sort(function(a, b) {
-			return b.total - a.total;
+			return b.users.length - a.users.length;
 		});
 
 		data.forEach(function(room) {

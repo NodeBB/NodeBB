@@ -7,9 +7,8 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 	var newMessage = false;
 
 	module.prepareDOM = function() {
-		var	chatsToggleEl = $('#chat_dropdown'),
-			chatsListEl = $('#chat-list'),
-			dropdownEl;
+		var	chatsToggleEl = components.get('chat/dropdown'),
+			chatsListEl = components.get('chat/list');
 
 		// Sync open chats between all user socket sessions
 		module.sync();
@@ -19,46 +18,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 				return;
 			}
 
-			socket.emit('modules.chats.getRecentChats', {after: 0}, function(err, chats) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				chats = chats.users;
-				var	userObj;
-
-				chatsListEl.empty();
-
-				if (!chats.length) {
-					translator.translate('[[modules:chat.no_active]]', function(str) {
-						$('<li />')
-							.addClass('no_active')
-							.html('<a href="#">' + str + '</a>')
-							.appendTo(chatsListEl);
-					});
-					return;
-				}
-
-				for(var x = 0; x<chats.length; ++x) {
-					userObj = chats[x];
-					dropdownEl = $('<li class="' + (userObj.unread ? 'unread' : '') + '"/>')
-						.attr('data-uid', userObj.uid)
-						.html('<a data-ajaxify="false">'+
-							'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' +
-							'<i class="fa fa-circle status ' + userObj.status + '"></i> ' +
-							userObj.username + '</a>')
-						.appendTo(chatsListEl);
-
-					(function(userObj) {
-						dropdownEl.click(function() {
-							if (!ajaxify.currentPage.match(/^chats\//)) {
-								app.openChat(userObj.username, userObj.uid);
-							} else {
-								ajaxify.go('chats/' + utils.slugify(userObj.username));
-							}
-						});
-					})(userObj);
-				}
-			});
+			module.loadChats(chatsListEl);
 		});
 
 		socket.on('event:chats.receive', function(data) {
@@ -139,7 +99,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 						username: chatObj.options.title,
 						uid: chatObj.options.touid,
 						new: chatObj.element.hasClass('new')
-					}
+					};
 				});
 
 			callback(null, chats);
@@ -167,6 +127,51 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 				uid: touid,
 				state: false
 			});
+		});
+	};
+
+	module.loadChats = function(chatsListEl) {
+		var dropdownEl;
+
+		socket.emit('modules.chats.getRecentChats', {after: 0}, function(err, chats) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+			chats = chats.users;
+			var	userObj;
+
+			chatsListEl.empty();
+
+			if (!chats.length) {
+				translator.translate('[[modules:chat.no_active]]', function(str) {
+					$('<li />')
+						.addClass('no_active')
+						.html('<a href="#">' + str + '</a>')
+						.appendTo(chatsListEl);
+				});
+				return;
+			}
+
+			for(var x = 0; x<chats.length; ++x) {
+				userObj = chats[x];
+				dropdownEl = $('<li class="' + (userObj.unread ? 'unread' : '') + '"/>')
+					.attr('data-uid', userObj.uid)
+					.html('<a data-ajaxify="false">'+
+						'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' +
+						'<i class="fa fa-circle status ' + userObj.status + '"></i> ' +
+						userObj.username + '</a>')
+					.appendTo(chatsListEl);
+
+				(function(userObj) {
+					dropdownEl.click(function() {
+						if (!ajaxify.currentPage.match(/^chats\//)) {
+							app.openChat(userObj.username, userObj.uid);
+						} else {
+							ajaxify.go('chats/' + utils.slugify(userObj.username));
+						}
+					});
+				})(userObj);
+			}
 		});
 	};
 

@@ -27,7 +27,7 @@ categoriesController.list = function(req, res, next) {
 				content: validator.escape(meta.config.description || '')
 			}, {
 				property: 'og:title',
-				content: 'Index | ' + validator.escape(meta.config.title || 'NodeBB')
+				content: '[[pages:categories]]'
 			}, {
 				property: 'og:type',
 				content: 'website'
