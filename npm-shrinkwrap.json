@@ -97,7 +97,7 @@
         },
         "type-is": {
           "version": "1.6.7",
-          "from": "type-is@>=1.6.6 <1.7.0",
+          "from": "type-is@>=1.6.4 <1.7.0",
           "resolved": "https://registry.npmjs.org/type-is/-/type-is-1.6.7.tgz",
           "dependencies": {
             "media-typer": {
@@ -463,7 +463,7 @@
           "dependencies": {
             "unpipe": {
               "version": "1.0.0",
-              "from": "unpipe@>=1.0.0 <1.1.0",
+              "from": "unpipe@1.0.0",
               "resolved": "https://registry.npmjs.org/unpipe/-/unpipe-1.0.0.tgz"
             }
           }
@@ -573,7 +573,7 @@
         },
         "type-is": {
           "version": "1.6.7",
-          "from": "type-is@>=1.6.6 <1.7.0",
+          "from": "type-is@>=1.6.4 <1.7.0",
           "resolved": "https://registry.npmjs.org/type-is/-/type-is-1.6.7.tgz",
           "dependencies": {
             "media-typer": {
@@ -1174,9 +1174,9 @@
       "resolved": "https://registry.npmjs.org/nodebb-theme-lavender/-/nodebb-theme-lavender-1.0.52.tgz"
     },
     "nodebb-theme-persona": {
-      "version": "2.1.7",
-      "from": "nodebb-theme-persona@2.1.7",
-      "resolved": "https://registry.npmjs.org/nodebb-theme-persona/-/nodebb-theme-persona-2.1.7.tgz"
+      "version": "2.1.8",
+      "from": "nodebb-theme-persona@2.1.8",
+      "resolved": "https://registry.npmjs.org/nodebb-theme-persona/-/nodebb-theme-persona-2.1.8.tgz"
     },
     "nodebb-theme-vanilla": {
       "version": "3.1.3",
@@ -2794,7 +2794,7 @@
           "dependencies": {
             "mime-db": {
               "version": "1.17.0",
-              "from": "mime-db@>=1.16.0 <2.0.0",
+              "from": "mime-db@>=1.17.0 <1.18.0",
               "resolved": "https://registry.npmjs.org/mime-db/-/mime-db-1.17.0.tgz"
             }
           }
