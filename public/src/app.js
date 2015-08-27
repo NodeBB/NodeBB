@@ -553,7 +553,9 @@ app.cacheBuster = null;
 
 			handleNewTopic();
 
-			components.get('user/logout').on('click', app.logout);
+			require(['components'], function(components) {
+				components.get('user/logout').on('click', app.logout);
+			});
 
 			Visibility.change(function(e, state){
 				if (state === 'visible') {
