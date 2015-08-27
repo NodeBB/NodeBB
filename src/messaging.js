@@ -104,7 +104,7 @@ var db = require('./database'),
 			count = params.count || parseInt(meta.config.chatMessageInboxSize, 10) || 250;
 
 		var uids = sortUids(fromuid, touid),
-			min = Date.now() - (terms[since] || terms.day);
+			min = params.count ? 0 : Date.now() - (terms[since] || terms.day);
 
 		if (since === 'recent') {
 			count = 49;
