@@ -493,7 +493,10 @@ app.cacheBuster = null;
 				if(err) {
 					return app.alertError(err.message);
 				}
-				$('[component="user/status"]').attr('class', 'fa fa-circle status ' + status);
+				$('[component="user/status"]')
+					.removeClass('away online dnd offline')
+					.addClass(status);
+
 				app.user.status = status;
 			});
 			e.preventDefault();
