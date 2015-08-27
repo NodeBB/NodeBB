@@ -9,7 +9,7 @@ define('notifications', ['sounds', 'translator'], function(sound, translator) {
 		var notifContainer = $('.notifications'),
 			notifTrigger = notifContainer.children('a'),
 			notifList = $('#notif-list'),
-			notifIcon = $('.notification-icon');
+			notifIcon = components.get('notifications/icon');
 
 		notifTrigger.on('click', function(e) {
 			e.preventDefault();
@@ -119,7 +119,7 @@ define('notifications', ['sounds', 'translator'], function(sound, translator) {
 	};
 
 	Notifications.updateNotifCount = function(count) {
-		var notifIcon = $('.notification-icon');
+		var notifIcon = components.get('notifications/icon');
 
 		if (count > 0) {
 			notifIcon.removeClass('fa-bell-o').addClass('fa-bell');
