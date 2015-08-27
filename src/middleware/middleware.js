@@ -347,7 +347,7 @@ middleware.processRender = function(req, res, next) {
 
 		if (res.locals.isAPI) {
 			if (req.route.path === '/api/') {
-				options.title = 'Index';
+				options.title = '[[pages:home]]';
 			}
 
 			return res.json(options);
@@ -528,7 +528,7 @@ function redirectToLogin(req, res) {
 }
 
 function modifyTitle(obj) {
-	var title = 'Index | ' + validator.escape(meta.config.title || 'NodeBB');
+	var title = '[[pages:home]] | ' + validator.escape(meta.config.title || 'NodeBB');
 	obj.browserTitle = title;
 
 	if (obj.metaTags) {
