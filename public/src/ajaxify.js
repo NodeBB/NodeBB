@@ -58,7 +58,6 @@ $(document).ready(function() {
 
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
-		ajaxify.variables.flush();
 		ajaxify.loadData(url, function(err, data) {
 			if (err) {
 				return onAjaxError(err, url, callback, quiet);
