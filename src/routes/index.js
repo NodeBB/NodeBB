@@ -189,11 +189,11 @@ function handle404(app, middleware) {
 			res.status(404);
 
 			if (res.locals.isAPI) {
-				return res.json({path: req.path});
+				return res.json({path: req.path, title: '[[global:404.title]]'});
 			}
 
 			middleware.buildHeader(req, res, function() {
-				res.render('404', {path: req.path});
+				res.render('404', {path: req.path, title: '[[global:404.title]]'});
 			});
 		} else {
 			res.status(404).type('txt').send('Not found');
