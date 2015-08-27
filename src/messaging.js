@@ -96,11 +96,16 @@ var db = require('./database'),
 		});
 	};
 
-	Messaging.getMessages = function(fromuid, touid, since, isNew, callback) {
-		var uids = sortUids(fromuid, touid);
+	Messaging.getMessages = function(params, callback) {
+		var fromuid = params.fromuid,
+			touid = params.touid,
+			since = params.since,
+			isNew = params.isNew,
+			count = params.count || parseInt(meta.config.chatMessageInboxSize, 10) || 250;
 
-		var count = parseInt(meta.config.chatMessageInboxSize, 10) || 250;
-		var min = Date.now() - (terms[since] || terms.day);
+		var uids = sortUids(fromuid, touid),
+			min = Date.now() - (terms[since] || terms.day);
+
 		if (since === 'recent') {
 			count = 49;
 			min = 0;
@@ -166,7 +171,7 @@ var db = require('./database'),
 							message.newSet = true;
 						} else if (index > 0 && message.fromuid !== messages[index-1].fromuid) {
 							// If the previous message was from the other person, this is also a new set
-							message.newSet = true
+							message.newSet = true;
 						}
 
 						return message;
