@@ -16,6 +16,12 @@ div.categories {
 			padding-bottom: 12px;
 			margin-bottom: 12px;
 		}
+
+		> li li:last-child {
+			.row {
+				border-bottom: 0px;
+			}
+		}
 	}
 
 	.stats {
@@ -32,6 +38,7 @@ div.categories {
 	li {
 		min-height: @acp-line-height;
 		margin: @acp-base-line 0;
+		margin-top: 28px;
 
 		&.placeholder {
 			border: 1px dashed #2196F3;
@@ -41,7 +48,7 @@ div.categories {
 
 	.disabled {
 
-		.icon, .header, .description {
+		.icon, .category-header, .description {
 			opacity: 0.5;
 		}
 
@@ -67,7 +74,7 @@ div.categories {
 		float: left;
 	}
 
-	.header {
+	.category-header {
 		margin-top: 0;
 		margin-bottom: @acp-base-line;
 	}

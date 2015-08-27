@@ -31,14 +31,31 @@ module.exports = function(Categories) {
 				db.sortedSetRemove('categories:cid', cid, next);
 			},
 			function(next) {
+				removeFromParent(cid, next);
+			},
+			function(next) {
 				db.deleteAll([
 					'cid:' + cid + ':tids',
 					'cid:' + cid + ':tids:posts',
 					'cid:' + cid + ':pids',
 					'cid:' + cid + ':read_by_uid',
+					'cid:' + cid + ':children',
 					'category:' + cid
 				], next);
 			}
 		], callback);
+	}
+
+	function removeFromParent(cid, callback) {
+		async.waterfall([
+			function(next) {
+				Categories.getCategoryField(cid, 'parentCid', next);
+			},
+			function(parentCid, next) {
+				parentCid = parseInt(parentCid, 10) || 0;
+				db.sortedSetRemove('cid:' + parentCid + ':children', cid, next);
+			}
+		], callback);
+
 	}
 };

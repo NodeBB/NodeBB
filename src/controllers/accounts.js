@@ -175,6 +175,10 @@ accountsController.getAccount = function(req, res, next) {
 				return next(err);
 			}
 
+			if (parseInt(meta.config['reputation:disabled'], 10) === 1) {
+				delete userData.reputation;
+			}
+
 			userData.posts = results.posts.posts.filter(function (p) {
 				return p && parseInt(p.deleted, 10) !== 1;
 			});
@@ -226,6 +230,7 @@ function getFollow(tpl, name, req, res, next) {
 
 		userData.users = users;
 		userData.nextStart = 50;
+		userData.title = '[[pages:' + tpl + ', ' + userData.username + ']]';
 
 		res.render(tpl, userData);
 	});
@@ -264,7 +269,7 @@ accountsController.getGroups = function(req, res, next) {
 
 			userData.groups = groupsData[0];
 			userData.groups.forEach(groups.escapeGroupData);
-
+			userData.title = '[[pages:account/groups, ' + userData.username + ']]';
 			res.render('account/groups', userData);
 		});
 	});
@@ -316,6 +321,8 @@ function getFromUserSet(tpl, set, method, type, req, res, next) {
 
 			var pagination = require('../pagination');
 			userData.pagination = pagination.create(page, pageCount);
+
+			userData.title = '[[pages:' + tpl + ', ' + userData.username + ']]';
 
 			res.render(tpl, userData);
 		});
@@ -373,7 +380,7 @@ accountsController.accountEdit = function(req, res, next) {
 		}
 
 		userData.hasPassword = !!password;
-
+		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
 		res.render('account/edit', userData);
 	});
 };
@@ -424,6 +431,82 @@ accountsController.accountSettings = function(req, res, next) {
 			{value: 'month', name: '[[user:digest_monthly]]', selected: 'month' === userData.settings.dailyDigestFreq}
 		];
 
+
+		userData.bootswatchSkinOptions = [
+			{
+				"name": "Default",
+				"value": "default"
+			},
+			{
+				"name": "Cerulean",
+				"value": "cerulean"
+			},
+			{
+				"name": "Cosmo",
+				"value": "cosmo"
+			},
+			{
+				"name": "Cyborg",
+				"value": "cyborg"
+			},
+			{
+				"name": "Darkly",
+				"value": "darkly"
+			},
+			{
+				"name": "Flatly",
+				"value": "flatly"
+			},
+			{
+				"name": "Journal",
+				"value": "journal"
+			},
+			{
+				"name": "Lumen",
+				"value": "lumen"
+			},
+			{
+				"name": "Paper",
+				"value": "paper"
+			},
+			{
+				"name": "Readable",
+				"value": "readable"
+			},
+			{
+				"name": "Sandstone",
+				"value": "sandstone"
+			},
+			{
+				"name": "Simplex",
+				"value": "simplex"
+			},
+			{
+				"name": "Slate",
+				"value": "slate"
+			},
+			{
+				"name": "Spacelab",
+				"value": "spacelab"
+			},
+			{
+				"name": "Superhero",
+				"value": "superhero"
+			},
+			{
+				"name": "United",
+				"value": "united"
+			},
+			{
+				"name": "Yeti",
+				"value": "yeti"
+			}
+		];
+
+		userData.bootswatchSkinOptions.forEach(function(skin) {
+			skin.selected = skin.value === userData.settings.bootswatchSkin;
+		});
+
 		userData.userGroups.forEach(function(group) {
 			group.selected = group.name === userData.settings.groupTitle;
 		});
@@ -431,6 +514,10 @@ accountsController.accountSettings = function(req, res, next) {
 		userData.languages.forEach(function(language) {
 			language.selected = language.code === userData.settings.userLang;
 		});
+
+		userData.disableCustomUserSkins = parseInt(meta.config.disableCustomUserSkins, 10) === 1;
+
+		userData.title = '[[pages:account/settings]]';
 
 		res.render('account/settings', userData);
 	});
@@ -481,7 +568,8 @@ accountsController.getNotifications = function(req, res, next) {
 			return next(err);
 		}
 		res.render('notifications', {
-			notifications: notifications
+			notifications: notifications,
+			title: '[[pages:notifications]]'
 		});
 	});
 };
@@ -498,7 +586,7 @@ accountsController.getChats = function(req, res, next) {
 	}
 
 	async.parallel({
-		contacts: async.apply(user.getFollowing, req.user.uid, 0, 19),
+		contacts: async.apply(user.getFollowing, req.user.uid, 0, 199),
 		recentChats: async.apply(messaging.getRecentChats, req.user.uid, 0, 19)
 	}, function(err, results) {
 		if (err) {
@@ -521,7 +609,8 @@ accountsController.getChats = function(req, res, next) {
 				chats: results.recentChats.users,
 				nextStart: results.recentChats.nextStart,
 				contacts: results.contacts,
-				allowed: true
+				allowed: true,
+				title: '[[pages:chats]]'
 			});
 		}
 
@@ -549,7 +638,8 @@ accountsController.getChats = function(req, res, next) {
 				contacts: results.contacts,
 				meta: data.toUser,
 				messages: data.messages,
-				allowed: data.allowed
+				allowed: data.allowed,
+				title: '[[pages:chat, ' + data.toUser.username + ']]'
 			});
 		});
 	});

@@ -52,7 +52,7 @@ middleware.buildHeader = function(req, res, next) {
 	});
 };
 
-middleware.renderHeader = function(req, res, next) {
+middleware.renderHeader = function(req, res, data, next) {
 	var custom_header = {
 		'plugins': [],
 		'authentication': []
@@ -92,7 +92,7 @@ middleware.renderHeader = function(req, res, next) {
 			}
 			res.locals.config = results.config;
 
-			var data = {
+			var templateValues = {
 				relative_path: nconf.get('relative_path'),
 				configJSON: JSON.stringify(results.config),
 				user: userData,
@@ -104,10 +104,10 @@ middleware.renderHeader = function(req, res, next) {
 				env: process.env.NODE_ENV ? true : false,
 			};
 
-			data.template = {name: res.locals.template};
-			data.template[res.locals.template] = true;
+			templateValues.template = {name: res.locals.template};
+			templateValues.template[res.locals.template] = true;
 
-			app.render('admin/header', data, next);
+			app.render('admin/header', templateValues, next);
 		});
 	});
 };

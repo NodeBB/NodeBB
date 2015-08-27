@@ -14,6 +14,10 @@ var async = require('async'),
 	db = require('../database'),
 	helpers = require('./helpers');
 
+usersController.redirectToOnlineUsers = function(req, res, next) {
+	helpers.redirect(res, '/users/online');
+};
+
 usersController.getOnlineUsers = function(req, res, next) {
 	var	websockets = require('../socket.io');
 
@@ -40,11 +44,13 @@ usersController.getOnlineUsers = function(req, res, next) {
 		}
 
 		var userData = {
-			'users:online': true,
+			'route_users:online': true,
 			search_display: 'hidden',
 			loadmore_display: results.count > 50 ? 'block' : 'hide',
 			users: results.users,
-			anonymousUserCount: websockets.getOnlineAnonCount()
+			anonymousUserCount: websockets.getOnlineAnonCount(),
+			defaultGravatar: user.createGravatarURLFromEmail(''),
+			title: '[[pages:users/online]]'
 		};
 
 		render(req, res, userData, next);
@@ -64,6 +70,11 @@ usersController.getUsersSortedByJoinDate = function(req, res, next) {
 };
 
 usersController.getUsers = function(set, start, stop, req, res, next) {
+	var setToTitles = {
+		'users:postcount': '[[pages:users/sort-posts]]',
+		'users:reputation': '[[pages:users/sort-reputation]]',
+		'users:joindate': '[[pages:users/latest]]'
+	};
 	usersController.getUsersAndCount(set, req.uid, start, stop, function(err, data) {
 		if (err) {
 			return next(err);
@@ -73,9 +84,10 @@ usersController.getUsers = function(set, start, stop, req, res, next) {
 			search_display: 'hidden',
 			loadmore_display: data.count > (stop - start + 1) ? 'block' : 'hide',
 			users: data.users,
-			pagination: pagination.create(1, pageCount)
+			pagination: pagination.create(1, pageCount),
+			title: setToTitles[set] || '[[pages:users/latest]]'
 		};
-		userData[set] = true;
+		userData['route_' + set] = true;
 		render(req, res, userData, next);
 	});
 };
@@ -114,7 +126,8 @@ usersController.getUsersForSearch = function(req, res, next) {
 		var userData = {
 			search_display: 'block',
 			loadmore_display: 'hidden',
-			users: data.users
+			users: data.users,
+			title: '[[pages:users/search]]'
 		};
 
 		render(req, res, userData, next);
@@ -157,6 +170,7 @@ usersController.getMap = function(req, res, next) {
 					}
 					data.room = validator.escape(categoryData.name);
 					data.link = '/category/' + categoryData.slug;
+					data.core = false;
 					next(null, data);
 				});
 			} else if (roomName.startsWith('topic_')) {
@@ -167,13 +181,18 @@ usersController.getMap = function(req, res, next) {
 					}
 					data.room = validator.escape(topicData.title);
 					data.link = '/topic/' + topicData.slug;
+					data.core = false;
 					next(null, data);
 				});
 			} else {
+				data.core = true;
 				next(null, data);
 			}
 		});
 	}, function(err, data) {
+		if (err) {
+			return next(err);
+		}
 		data.sort(function(a, b) {
 			return b.users.length - a.users.length;
 		});
@@ -184,7 +203,7 @@ usersController.getMap = function(req, res, next) {
 			}
 		});
 
-		res.render('usersMap', {rooms: data});
+		res.render('usersMap', {rooms: data, title: '[[pages:users/map]]'});
 	});
 };
 

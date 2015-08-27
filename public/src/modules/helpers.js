@@ -147,6 +147,10 @@
 		}).join('');
 	};
 
+	helpers.localeToHTML = function(locale) {
+		return locale.replace('_', '-');
+	};
+
 	exports.register = function() {
 		var templates;
 

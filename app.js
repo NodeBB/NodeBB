@@ -118,6 +118,7 @@ function start() {
 	var urlObject = url.parse(nconf.get('url'));
 	var relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
 	nconf.set('base_url', urlObject.protocol + '//' + urlObject.host);
+	nconf.set('secure', urlObject.protocol === 'https');
 	nconf.set('use_port', !!urlObject.port);
 	nconf.set('relative_path', relativePath);
 	nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || 4567);
@@ -345,9 +346,9 @@ function resetThemes(callback) {
 
 	meta.themes.set({
 		type: 'local',
-		id: 'nodebb-theme-vanilla'
+		id: 'nodebb-theme-persona'
 	}, function(err) {
-		winston.info('[reset] Theme reset to Vanilla');
+		winston.info('[reset] Theme reset to Persona');
 		if (typeof callback === 'function') {
 			callback(err);
 		} else {

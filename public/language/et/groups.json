@@ -38,12 +38,13 @@
     "details.private_help": "Kui sisse lülitatud, siis grupiga liitumine nõuab grupi omaniku nõusolekut",
     "details.hidden": "Peidetud",
     "details.hidden_help": "Kui sisse lülitatud, siis seda gruppi ei kuvata gruppide nimekirjas ning liikmed tuleb lisada manuaalselt",
-    "details.delete_group": "Delete Group",
+    "details.delete_group": "Kustuta grupp",
     "event.updated": "Grupi lisainformatsiooni on uuendatud",
     "event.deleted": "Grupp \"%1\" on kustutatud",
-    "membership.accept-invitation": "Accept Invitation",
-    "membership.invitation-pending": "Invitation Pending",
-    "membership.join-group": "Join Group",
-    "membership.leave-group": "Leave Group",
-    "membership.reject": "Reject"
+    "membership.accept-invitation": "Aktsepteeri kutse",
+    "membership.invitation-pending": "Kutse ootel",
+    "membership.join-group": "Liitu grupiga",
+    "membership.leave-group": "Lahku grupist",
+    "membership.reject": "Lükka tagasi",
+    "new-group.group_name": "Group Name:"
 }

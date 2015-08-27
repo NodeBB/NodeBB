@@ -233,7 +233,7 @@ SocketAdmin.analytics.get = function(socket, data, callback) {
 					getHourlyStatsForSet('analytics:pageviews', data.amount, next);
 				},
 				monthlyPageViews: function(next) {
-					getMonthlyPageViews(next);
+					analytics.getMonthlyPageViews(next);
 				}
 			}, function(err, data) {
 				data.pastDay = data.pageviews.reduce(function(a, b) {return parseInt(a, 10) + parseInt(b, 10);});
@@ -283,24 +283,6 @@ function getHourlyStatsForSet(set, hours, callback) {
 		});
 
 		callback(null, termsArr);
-	});
-}
-
-function getMonthlyPageViews(callback) {
-	var thisMonth = new Date();
-	var lastMonth = new Date();
-	thisMonth.setMonth(thisMonth.getMonth(), 1);
-	thisMonth.setHours(0, 0, 0, 0);
-	lastMonth.setMonth(thisMonth.getMonth() - 1, 1);
-	lastMonth.setHours(0, 0, 0, 0);
-
-	var values = [thisMonth.getTime(), lastMonth.getTime()];
-
-	db.sortedSetScores('analytics:pageviews:month', values, function(err, scores) {
-		if (err) {
-			return callback(err);
-		}
-		callback(null, {thisMonth: scores[0] || 0, lastMonth: scores[1] || 0});
 	});
 }
 

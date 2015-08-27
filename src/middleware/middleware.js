@@ -68,7 +68,7 @@ middleware.pageView = function(req, res, next) {
 
 middleware.pluginHooks = function(req, res, next) {
 	async.each(plugins.loadedHooks['filter:router.page'] || [], function(hookObj, next) {
-		hookObj.method(req, res, next)
+		hookObj.method(req, res, next);
 	}, function(req, res) {
 		// If it got here, then none of the subscribed hooks did anything, or there were no hooks
 		next();
@@ -126,32 +126,29 @@ middleware.checkGlobalPrivacySettings = function(req, res, next) {
 
 middleware.checkAccountPermissions = function(req, res, next) {
 	// This middleware ensures that only the requested user and admins can pass
-	middleware.authenticate(req, res, function(err) {
-		if (err) {
-			return next(err);
-		}
-
-		user.getUidByUserslug(req.params.userslug, function (err, uid) {
-			if (err) {
-				return next(err);
-			}
-
+	async.waterfall([
+		function (next) {
+			middleware.authenticate(req, res, next);
+		},
+		function (next) {
+			user.getUidByUserslug(req.params.userslug, next);
+		},
+		function (uid, next) {
 			if (!uid) {
 				return controllers.helpers.notFound(req, res);
 			}
 
 			if (parseInt(uid, 10) === req.uid) {
-				return next();
+				return next(null, true);
 			}
 
-			user.isAdministrator(req.uid, function(err, isAdmin) {
-				if (err || isAdmin) {
-					return next(err);
-				}
-
-				controllers.helpers.notAllowed(req, res);
-			});
-		});
+			user.isAdministrator(req.uid, next);
+		}
+	], function (err, allowed) {
+		if (err || allowed) {
+			return next(err);
+		}
+		controllers.helpers.notAllowed(req, res);
 	});
 };
 
@@ -186,6 +183,9 @@ middleware.buildHeader = function(req, res, next) {
 			},
 			footer: function(next) {
 				app.render('footer', {loggedIn: (req.user ? parseInt(req.user.uid, 10) !== 0 : false)}, next);
+			},
+			plugins: function(next) {
+				plugins.fireHook('filter:middleware.buildHeader', {req: req, locals: res.locals}, next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -202,7 +202,7 @@ middleware.buildHeader = function(req, res, next) {
 	});
 };
 
-middleware.renderHeader = function(req, res, callback) {
+middleware.renderHeader = function(req, res, data, callback) {
 	var registrationType = meta.config.registrationType || 'normal';
 	var templateValues = {
 		bootswatchCSS: meta.config['theme:src'],
@@ -211,6 +211,7 @@ middleware.renderHeader = function(req, res, callback) {
 		'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 		'brand:logo': meta.config['brand:logo'] || '',
 		'brand:logo:url': meta.config['brand:logo:url'] || '',
+		'brand:logo:alt': meta.config['brand:logo:alt'] || '',
 		'brand:logo:display': meta.config['brand:logo']?'':'hide',
 		allowRegistration: registrationType === 'normal' || registrationType === 'admin-approval',
 		searchEnabled: plugins.hasListeners('filter:search.query')
@@ -236,17 +237,17 @@ middleware.renderHeader = function(req, res, callback) {
 			templateValues.useCustomJS = parseInt(meta.config.useCustomJS, 10) === 1;
 			next(null, templateValues.useCustomJS ? meta.config.customJS : '');
 		},
-		title: function(next) {
+		settings: function(next) {
 			if (req.uid) {
-				user.getSettings(req.uid, function(err, settings) {
-					if (err) {
-						return next(err);
-					}
-					meta.title.build(req.url.slice(1), settings.userLang, next);
-				});
+				user.getSettings(req.uid, next);
 			} else {
-				meta.title.build(req.url.slice(1), meta.config.defaultLang, next);
+				next();
 			}
+		},
+		title: function(next) {
+			var title = validator.escape(meta.config.browserTitle || meta.config.title || 'NodeBB');
+			title = data.title ? (data.title + ' | ' + title) : title;
+			next(null, title);
 		},
 		isAdmin: function(next) {
 			user.isAdministrator(req.uid, next);
@@ -274,12 +275,15 @@ middleware.renderHeader = function(req, res, callback) {
 
 		if (results.user && parseInt(results.user.banned, 10) === 1) {
 			req.logout();
-			res.redirect('/');
-			return;
+			return res.redirect('/');
 		}
 		results.user.isAdmin = results.isAdmin || false;
 		results.user.uid = parseInt(results.user.uid, 10);
 		results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
+
+		if (results.settings && results.settings.bootswatchSkin && results.settings.bootswatchSkin !== 'default') {
+			templateValues.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + settings.bootswatchSkin + '/bootstrap.min.css';
+		}
 
 		templateValues.browserTitle = results.title;
 		templateValues.navigation = results.navigation;
@@ -291,11 +295,18 @@ middleware.renderHeader = function(req, res, callback) {
 		templateValues.customCSS = results.customCSS;
 		templateValues.customJS = results.customJS;
 		templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
+		templateValues.defaultLang = meta.config.defaultLang || 'en_GB';
 
 		templateValues.template = {name: res.locals.template};
 		templateValues.template[res.locals.template] = true;
 
-		app.render('header', templateValues, callback);
+		plugins.fireHook('filter:middleware.renderHeader', {templateValues: templateValues, req: req, res: res}, function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			app.render('header', data.templateValues, callback);
+		});
 	});
 };
 
@@ -351,7 +362,7 @@ middleware.processRender = function(req, res, next) {
 
 			if (res.locals.renderHeader || res.locals.renderAdminHeader) {
 				var method = res.locals.renderHeader ? middleware.renderHeader : middleware.admin.renderHeader;
-				method(req, res, function(err, template) {
+				method(req, res, options, function(err, template) {
 					if (err) {
 						return fn(err);
 					}
@@ -407,7 +418,8 @@ middleware.maintenanceMode = function(req, res, next) {
 			'/templates/[\\w/]+.tpl',
 			'/api/login',
 			'/api/?',
-			'/language/.+'
+			'/language/.+',
+			'/uploads/system/site-logo.png'
 		],
 		render = function() {
 			res.status(503);

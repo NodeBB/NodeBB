@@ -5,8 +5,7 @@ var colors = require('colors'),
 	argv = require('minimist')(process.argv.slice(2)),
 	fs = require('fs'),
 	async = require('async'),
-	touch = require('touch'),
-	npm = require('npm');
+	touch = require('touch');
 
 var getRunningPid = function(callback) {
 		fs.readFile(__dirname + '/pidfile', {
@@ -119,15 +118,12 @@ switch(process.argv[2]) {
 	case 'upgrade':
 		async.series([
 			function(next) {
-				process.stdout.write('1. '.bold + 'Bringing base dependencies up to date\n'.yellow);
-				npm.load({
-					loglevel: 'silent'
-				}, function() {
-					npm.commands.install(next);
-				});
+				process.stdout.write('1. '.bold + 'Bringing base dependencies up to date... '.yellow);
+				require('child_process').execFile('/usr/bin/env', ['npm', 'i', '--production'], next);
 			},
 			function(next) {
-				process.stdout.write('2. '.bold + 'Updating NodeBB data store schema\n'.yellow);
+				process.stdout.write('OK\n'.green);
+				process.stdout.write('2. '.bold + 'Updating NodeBB data store schema.\n'.yellow);
 				var upgradeProc = cproc.fork('app.js', ['--upgrade'], {
 					cwd: __dirname,
 					silent: false
@@ -136,7 +132,7 @@ switch(process.argv[2]) {
 				upgradeProc.on('close', next)
 			},
 			function(next) {
-				process.stdout.write('3. '.bold + 'Storing upgrade date in "package.json"\n'.yellow);
+				process.stdout.write('3. '.bold + 'Storing upgrade date in "package.json"... '.yellow);
 				touch(__dirname + '/package.json', {}, next);
 			}
 		], function(err) {
@@ -145,6 +141,8 @@ switch(process.argv[2]) {
 			} else {
 				var message = 'NodeBB Upgrade Complete!',
 					spaces = new Array(Math.floor(process.stdout.columns / 2) - (message.length / 2) + 1).join(' ');
+
+				process.stdout.write('OK\n'.green);
 				process.stdout.write('\n' + spaces + message.green.bold + '\n\n'.reset);
 			}
 		});

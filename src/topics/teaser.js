@@ -22,39 +22,36 @@ module.exports = function(Topics) {
 
 		var counts = [];
 		var teaserPids = [];
+		var postData;
+		var tidToPost = {};
 
 		topics.forEach(function(topic) {
 			counts.push(topic && (parseInt(topic.postcount, 10) || 0));
 			if (topic) {
-				if (meta.config.teaserPost === 'first') {
-					teaserPids.push(topic.mainPid);
-				} else {
-					teaserPids.push(topic.teaserPid);
-				}
+				teaserPids.push(meta.config.teaserPost === 'first' ? topic.mainPid : topic.teaserPid);
 			}
 		});
 
-		posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content'], function(err, postData) {
-			if (err) {
-				return callback(err);
-			}
+		async.waterfall([
+			function(next) {
+				posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content'], next);
+			},
+			function(_postData, next) {
+				postData = _postData;
+				var uids = postData.map(function(post) {
+					return post.uid;
+				}).filter(function(uid, index, array) {
+					return array.indexOf(uid) === index;
+				});
 
-			var uids = postData.map(function(post) {
-				return post.uid;
-			}).filter(function(uid, index, array) {
-				return array.indexOf(uid) === index;
-			});
-
-			user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, usersData) {
-				if (err) {
-					return callback(err);
-				}
-
+				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+			},
+			function(usersData, next) {
 				var users = {};
 				usersData.forEach(function(user) {
 					users[user.uid] = user;
 				});
-				var tidToPost = {};
+
 
 				async.each(postData, function(post, next) {
 					// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
@@ -66,30 +63,29 @@ module.exports = function(Topics) {
 					post.timestamp = utils.toISOString(post.timestamp);
 					tidToPost[post.tid] = post;
 					posts.parsePost(post, next);
-				}, function(err) {
-					if (err) {
-						return callback(err);
+				}, next);
+			},
+			function(next) {
+				var teasers = topics.map(function(topic, index) {
+					if (!topic) {
+						return null;
 					}
-					var teasers = topics.map(function(topic, index) {
-						if (!topic) {
-							return null;
+					if (tidToPost[topic.tid]) {
+						tidToPost[topic.tid].index = meta.config.teaserPost === 'first' ? 1 : counts[index];
+						if (tidToPost[topic.tid].content) {
+							var s = S(tidToPost[topic.tid].content);
+							tidToPost[topic.tid].content = s.stripTags.apply(s, utils.stripTags).s;
 						}
-						if (tidToPost[topic.tid]) {
-							tidToPost[topic.tid].index = meta.config.teaserPost === 'first' ? 1 : counts[index];
-							if (tidToPost[topic.tid].content) {
-								var s = S(tidToPost[topic.tid].content);
-								tidToPost[topic.tid].content = s.stripTags.apply(s, utils.stripTags).s;
-							}
-						}
-						return tidToPost[topic.tid];
-					});
-
-					plugins.fireHook('filter:teasers.get', {teasers: teasers}, function(err, data) {
-						callback(err, data ? data.teasers : null);
-					});
+					}
+					return tidToPost[topic.tid];
 				});
-			});
-		});
+
+				plugins.fireHook('filter:teasers.get', {teasers: teasers}, next);
+			},
+			function(data, next) {
+				next(null, data.teasers);
+			}
+		], callback);
 	};
 
 	Topics.getTeasersByTids = function(tids, callback) {

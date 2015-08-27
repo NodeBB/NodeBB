@@ -47,9 +47,9 @@ function tagRoutes(app, middleware, controllers) {
 
 function categoryRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/categories', middleware, [], controllers.categories.list);
-	setupPageRoute(app, '/popular/:term?', middleware, [], controllers.categories.popular);
-	setupPageRoute(app, '/recent', middleware, [], controllers.categories.recent);
-	setupPageRoute(app, '/unread', middleware, [middleware.authenticate], controllers.unread.unread);
+	setupPageRoute(app, '/popular/:term?', middleware, [], controllers.popular.get);
+	setupPageRoute(app, '/recent', middleware, [], controllers.recent.get);
+	setupPageRoute(app, '/unread', middleware, [middleware.authenticate], controllers.unread.get);
 
 	setupPageRoute(app, '/category/:category_id/:slug/:topic_index', middleware, [], controllers.categories.get);
 	setupPageRoute(app, '/category/:category_id/:slug?', middleware, [], controllers.categories.get);
@@ -78,7 +78,7 @@ function accountRoutes(app, middleware, controllers) {
 function userRoutes(app, middleware, controllers) {
 	var middlewares = [middleware.checkGlobalPrivacySettings];
 
-	setupPageRoute(app, '/users', middleware, middlewares, controllers.users.getOnlineUsers);
+	setupPageRoute(app, '/users', middleware, middlewares, controllers.users.redirectToOnlineUsers);
 	setupPageRoute(app, '/users/online', middleware, middlewares, controllers.users.getOnlineUsers);
 	setupPageRoute(app, '/users/sort-posts', middleware, middlewares, controllers.users.getUsersSortedByPosts);
 	setupPageRoute(app, '/users/sort-reputation', middleware, middlewares, controllers.users.getUsersSortedByReputation);

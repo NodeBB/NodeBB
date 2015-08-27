@@ -1,42 +1,38 @@
 // Slovenian with support for dual
 (function () {
     var numpf;
-    numpf = function (n, d, m) {
-        if (n == 2) {
-            return d;
-        } else {
-            return m;
-        }
+    numpf = function (n, a) {
+        return a[n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0];
     };
 
     jQuery.timeago.settings.strings = {
-        prefixAgo: "pred",
+        prefixAgo: null,
         prefixFromNow: "čez",
-        suffixAgo: null,
+        suffixAgo: "nazaj",
         suffixFromNow: null,
         second: "sekundo",
         seconds: function (value) {
-            return numpf(value, "%d sekundama", "%d sekundami");
+            return numpf(value, ["%d sekund", "%d sekundo", "%d sekundi", "%d sekunde"]);
         },
         minute: "minuto",
         minutes: function (value) {
-            return numpf(value, "%d minutama", "%d minutami");
+            return numpf(value, ["%d minut", "%d minuto", "%d minuti", "%d minute"]);
         },
-        hour: "uro",
+        hour: "eno uro",
         hours: function (value) {
-            return numpf(value, "%d urama", "%d urami");
+            return numpf(value, ["%d ur", "%d uro", "%d uri", "%d ure"]);
         },
-        day: "dnevom",
+        day: "en dan",
         days: function (value) {
-            return numpf(value, "%d dnevi", "%d dnevi");
+            return numpf(value, ["%d dni", "%d dan", "%d dneva", "%d dni"]);
         },
-        month: "enim mescem",
+        month: "en mesec",
         months: function (value) {
-            return numpf(value, "%d mesecema", "%d meseci");
+            return numpf(value, ["%d mescov", "%d mesec", "%d mesca", "%d mesce"]);
         },
-        year: "enim letom",
+        year: "eno leto",
         years: function (value) {
-            return numpf(value, "%d letoma", "%d leti");
+            return numpf(value, ["%d let", "%d leto", "%d leti", "%d leta"]);
         },
         wordSeparator: " "
     };

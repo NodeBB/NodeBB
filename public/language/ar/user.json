@@ -7,7 +7,7 @@
     "email": "البريد الإلكتروني",
     "confirm_email": "تأكيد عنوان البريد الإلكتروني",
     "ban_account": "Ban Account",
-    "ban_account_confirm": "Do you really want to ban this user?",
+    "ban_account_confirm": "هل تريد حقاً حظر هاذا العضو؟",
     "unban_account": "Unban Account",
     "delete_account": "حذف الحساب",
     "delete_account_confirm": "هل أن متأكد أنك تريد حذف حسابك؟<br /><strong> هذه العملية غير قابلة للإلغاء ولن يكون بالإمكان استعادة بياناتك</strong><br /><br />أدخل اسم المستخدم الخاص بك لتأكيد عملية الحذف",

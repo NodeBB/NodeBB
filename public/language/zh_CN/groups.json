@@ -38,12 +38,13 @@
     "details.private_help": "启用此选项后，加入小组需要组长审批。",
     "details.hidden": "隐藏",
     "details.hidden_help": "启用此选项后，小组将不在小组列表中展现，成员只能通过邀请加入。",
-    "details.delete_group": "Delete Group",
+    "details.delete_group": "删除小组",
     "event.updated": "小组信息已更新",
     "event.deleted": "小组 \"%1\" 已被删除",
-    "membership.accept-invitation": "Accept Invitation",
-    "membership.invitation-pending": "Invitation Pending",
-    "membership.join-group": "Join Group",
-    "membership.leave-group": "Leave Group",
-    "membership.reject": "Reject"
+    "membership.accept-invitation": "接受邀请",
+    "membership.invitation-pending": "邀请中",
+    "membership.join-group": "加入小组",
+    "membership.leave-group": "退出小组",
+    "membership.reject": "拒绝",
+    "new-group.group_name": "组名: "
 }

@@ -17,7 +17,6 @@ var async = require('async'),
 
 	require('./meta/configs')(Meta);
 	require('./meta/themes')(Meta);
-	require('./meta/title')(Meta);
 	require('./meta/js')(Meta);
 	require('./meta/css')(Meta);
 	require('./meta/sounds')(Meta);

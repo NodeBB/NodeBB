@@ -478,15 +478,31 @@ function enableDefaultPlugins(next) {
 	process.stdout.write('Enabling default plugins\n');
 
 	var defaultEnabled = [
-		'nodebb-plugin-composer-default',
-		'nodebb-plugin-markdown',
-		'nodebb-plugin-mentions',
-		'nodebb-widget-essentials',
-		'nodebb-rewards-essentials',
-		'nodebb-plugin-soundpack-default',
-		'nodebb-plugin-emoji-extended'
-	];
-	var	db = require('./database');
+			'nodebb-plugin-composer-default',
+			'nodebb-plugin-markdown',
+			'nodebb-plugin-mentions',
+			'nodebb-widget-essentials',
+			'nodebb-rewards-essentials',
+			'nodebb-plugin-soundpack-default',
+			'nodebb-plugin-emoji-extended'
+		],
+		customDefaults = nconf.get('defaultPlugins');
+
+	if (customDefaults && customDefaults.length) {
+		try {
+			customDefaults = JSON.parse(customDefaults);
+			defaultEnabled = defaultEnabled.concat(customDefaults);
+		} catch (e) {
+			// Invalid value received
+			winston.warn('[install/enableDefaultPlugins] Invalid defaultPlugins value received. Ignoring.');
+		}
+	}
+
+	defaultEnabled = defaultEnabled.filter(function(plugin, index, array) {
+		return array.indexOf(plugin) === index;
+	});
+
+	var db = require('./database');
 	var order = defaultEnabled.map(function(plugin, index) {
 		return index;
 	});

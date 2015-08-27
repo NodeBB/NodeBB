@@ -38,12 +38,13 @@
     "details.private_help": "Wanneer ingeschakeld, zal eerst een groepseigenaar goedkeuring moeten verlenen voordat nieuwe leden kunnen toetreden",
     "details.hidden": "Niet getoond",
     "details.hidden_help": "Indien geactiveerd zal deze groep niet getoond worden in de groepslijst en zullen gebruikers handmatig uitgenodigd moeten worden.",
-    "details.delete_group": "Delete Group",
+    "details.delete_group": "Groep verwijderen",
     "event.updated": "Groepsdetails zijn bijgewerkt",
     "event.deleted": "De groep \"%1\" is verwijderd",
-    "membership.accept-invitation": "Accept Invitation",
-    "membership.invitation-pending": "Invitation Pending",
-    "membership.join-group": "Join Group",
-    "membership.leave-group": "Leave Group",
-    "membership.reject": "Reject"
+    "membership.accept-invitation": "Uitnodiging accepteren",
+    "membership.invitation-pending": "Openstaande uitnodiging",
+    "membership.join-group": "Deelnemen aan groep",
+    "membership.leave-group": "Verlaat groep",
+    "membership.reject": "Afwijzen",
+    "new-group.group_name": "Groepsnaam:"
 }

@@ -1,27 +1,24 @@
 <!-- BEGIN themes -->
-<li data-type="{themes.type}" data-theme="{themes.id}"<!-- IF themes.css --> data-css="{themes.css}"<!-- ENDIF themes.css -->>
-	<img title="{themes.id}" src="{themes.screenshot_url}" />
-	<div>
-		<div class="pull-right">
-			<button class="btn btn-primary" data-action="use">Use</button>
-		</div>
-		<h4>{themes.name}</h4>
-		<p>
-			{themes.description}
+<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12" data-type="{themes.type}" data-theme="{themes.id}"<!-- IF themes.css --> data-css="{themes.css}"<!-- ENDIF themes.css -->>
+	<div class="theme-card mdl-card mdl-shadow--2dp">
+		<div class="mdl-card__title mdl-card--expand" style="background-image: url('{themes.screenshot_url}');"></div>
+		<div class="mdl-card__supporting-text">
+			<h2 class="mdl-card__title-text">{themes.name}</h2>
+			<p>
+				{themes.description}
+			</p>
+
 			<!-- IF themes.url -->
-			(<a href="{themes.url}" target="_blank">Homepage</a>)
+			<p>
+				<a href="{themes.url}" target="_blank">Homepage</a>
+			</p>
 			<!-- ENDIF themes.url -->
-		</p>
+		</div>
+		<div class="mdl-card__actions mdl-card--border">
+			<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" data-action="use">
+				Select Theme
+			</a>
+		</div>
 	</div>
-	<div class="clear"></div>
-</li>
+</div>
 <!-- END themes -->
-<!-- IF showRevert -->
-<li data-type="bootswatch" data-theme="" data-css="">
-	<div class="pull-right">
-		<button class="btn btn-primary pull-right" data-action="use">Revert</button>
-	</div>
-	<h4>No Skin</h4>
-	<p>Remove applied skin and revert back to the base colours</p>
-</li>
-<!-- ENDIF showRevert -->

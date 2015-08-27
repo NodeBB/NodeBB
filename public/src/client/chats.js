@@ -66,20 +66,21 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 
 		popoutEl.on('click', function() {
 			var	username = $('.expanded-chat').attr('data-username'),
-				uid = Chats.getRecipientUid();
+				uid = Chats.getRecipientUid(),
+				text = components.get('chat/input').val();
 
 			if (app.previousUrl && app.previousUrl.match(/chats/)) {
-				var text = components.get('chat/input').val();
 				ajaxify.go('chats', function() {
 					app.openChat(username, uid);
 				}, true);
-
-				$(window).one('action:chat.loaded', function() {
-					components.get('chat/input').val(text);
-				});
 			} else {
 				window.history.go(-1);
+				app.openChat(username, uid);
 			}
+
+			$(window).one('action:chat.loaded', function() {
+				components.get('chat/input').val(text);
+			});
 		});
 
 		$('.recent-chats').on('scroll', function() {
@@ -125,8 +126,9 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	};
 
 	function onMessagesParsed(html) {
-		var newMessage = $(html);
-		newMessage.insertBefore($('.user-typing'));
+		var newMessage = $(html),
+			chatContainer = $('.chat-content');
+		newMessage.appendTo(chatContainer);
 		newMessage.find('.timeago').timeago();
 		newMessage.find('img:not(".chat-user-image")').addClass('img-responsive');
 		Chats.scrollToBottom($('.expanded-chat .chat-content'));
@@ -135,11 +137,13 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	Chats.addSocketListeners = function() {
 		socket.on('event:chats.receive', function(data) {
 			var typingNotifEl = $('.user-typing'),
-				containerEl = $('.expanded-chat ul');
+				containerEl = $('.expanded-chat ul'),
+				lastSpeaker = parseInt(containerEl.find('.chat-message').last().attr('data-uid'), 10);
 
 			if (Chats.isCurrentChat(data.withUid)) {
 				newMessage = data.self === 0;
 				data.message.self = data.self;
+				data.message.newSet = lastSpeaker !== data.message.fromuid;
 				Chats.parseMessage(data.message, onMessagesParsed);
 			} else {
 				$('.chats-list li[data-uid="' + data.withUid + '"]').addClass('unread');
@@ -148,22 +152,10 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		});
 
 		socket.on('event:chats.userStartTyping', function(withUid) {
-			var typingNotifEl = $('.user-typing');
-
-			if (Chats.isCurrentChat(withUid)) {
-				typingNotifEl.removeClass('hide');
-			}
-
 			$('.chats-list li[data-uid="' + withUid + '"]').addClass('typing');
 		});
 
 		socket.on('event:chats.userStopTyping', function(withUid) {
-			var typingNotifEl = $('.user-typing');
-
-			if (Chats.isCurrentChat(withUid)) {
-				typingNotifEl.addClass('hide');
-			}
-
 			$('.chats-list li[data-uid="' + withUid + '"]').removeClass('typing');
 		});
 
@@ -173,7 +165,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	};
 
 	Chats.resizeMainWindow = function() {
-		var	messagesList = $('.expanded-chat ul');
+		var	messagesList = $('.expanded-chat .chat-content');
 
 		if (messagesList.length) {
 			var	margin = $('.expanded-chat ul').outerHeight(true) - $('.expanded-chat ul').height(),

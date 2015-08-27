@@ -1,12 +1,13 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">Maintenance Mode</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Maintenance Mode</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="maintenanceMode"> <strong>Maintenance Mode</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="maintenanceMode">
+					<span class="mdl-switch__label"><strong>Maintenance Mode</strong></span>
 				</label>
 			</div>
 			<p class="help-block">
@@ -21,9 +22,9 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Domain Settings</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Domain Settings</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
 				<label for="allow-from-uri">Set ALLOW-FROM to Place NodeBB in an iFrame:</label>

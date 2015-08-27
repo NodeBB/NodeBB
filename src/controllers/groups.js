@@ -16,6 +16,7 @@ groupsController.list = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
+		data.title = '[[pages:groups]]';
 		res.render('groups/list', data);
 	});
 };
@@ -97,6 +98,7 @@ groupsController.details = function(req, res, next) {
 				return helpers.notFound(req, res);
 			}
 
+			results.title = '[[pages:group, ' + results.group.displayName + ']]';
 			res.render('groups/details', results);
 		});
 	});

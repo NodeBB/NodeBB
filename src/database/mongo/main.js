@@ -36,17 +36,19 @@ module.exports = function(db, module) {
 		}
 
 		if (Array.isArray(data.cid) && data.cid.length) {
-		 	if (data.cid.length > 1) {
+			data.cid = data.cid.filter(Boolean);
+			if (data.cid.length > 1) {
 				searchQuery.cid = {$in: data.cid.map(String)};
-			} else {
+			} else if (data.cid[0]) {
 				searchQuery.cid = data.cid[0].toString();
 			}
 		}
 
 		if (Array.isArray(data.uid) && data.uid.length) {
+			data.uid = data.uid.filter(Boolean);
 			if (data.uid.length > 1) {
 				searchQuery.uid = {$in: data.uid.map(String)};
-			} else {
+			} else if (data.uid[0]) {
 				searchQuery.uid = data.uid[0].toString();
 			}
 		}

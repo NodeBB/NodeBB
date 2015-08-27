@@ -1,9 +1,12 @@
 {
+    "category": "Categoría",
+    "subcategories": "Subcategorías",
     "new_topic_button": "Nuevo tema",
     "guest-login-post": "Acceder para poder escribir un mensaje",
     "no_topics": "<strong>No hay temas en esta categoría.</strong><br />¿Por qué no te animas y publicas uno?",
     "browsing": "viendo ahora",
     "no_replies": "Nadie ha respondido aún",
+    "no_new_posts": "No hay mensajes nuevos.",
     "share_this_category": "Compartir esta categoría",
     "watch": "Seguir",
     "ignore": "Ignorar",

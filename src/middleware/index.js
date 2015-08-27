@@ -22,7 +22,7 @@ var middleware = {};
 function setupFavicon(app) {
 	var faviconPath = path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico');
 	if (fs.existsSync(faviconPath)) {
-		app.use(favicon(faviconPath));
+		app.use(nconf.get('relative_path'), favicon(faviconPath));
 	}
 }
 
@@ -55,6 +55,10 @@ module.exports = function(app) {
 
 	if (meta.config.cookieDomain) {
 		cookie.domain = meta.config.cookieDomain;
+	}
+
+	if (nconf.get('secure')) {
+		cookie.secure = true;
 	}
 
 	app.use(session({
