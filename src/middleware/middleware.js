@@ -519,7 +519,7 @@ middleware.requireUser = function(req, res, next) {
 		return next();
 	}
 
-	res.render('403', {});
+	res.render('403', {title: '[[global:403.title]]'});
 };
 
 function redirectToLogin(req, res) {
