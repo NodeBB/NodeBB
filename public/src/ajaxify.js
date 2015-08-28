@@ -110,6 +110,7 @@ $(document).ready(function() {
 			textStatus = err.textStatus;
 
 		if (data) {
+			data.responseJSON.config = config;
 			var status = parseInt(data.status, 10);
 			if (status === 403 || status === 404 || status === 500 || status === 502) {
 				if (status === 502) {
@@ -117,7 +118,7 @@ $(document).ready(function() {
 				}
 
 				$('#footer, #content').removeClass('hide').addClass('ajaxifying');
-				return renderTemplate(url, status.toString(), data.responseJSON, (new Date()).getTime(), callback);
+				return renderTemplate(url, status.toString(), data.responseJSON, callback);
 			} else if (status === 401) {
 				app.alertError('[[global:please_log_in]]');
 				app.previousUrl = url;
