@@ -254,7 +254,7 @@ var db = require('./database'),
 				users: function(next) {
 					user.getMultipleUserFields(uids, ['uid', 'username', 'picture', 'status'] , next);
 				},
-				chatTeasers: function(next) {
+				teasers: function(next) {
 					var teasers = [];
 					async.each(uids, function(fromuid, next) {
 						Messaging.getMessages({
@@ -293,7 +293,7 @@ var db = require('./database'),
 					if (user) {
 						user.unread = results.unread[index];
 						user.status = sockets.isUserOnline(user.uid) ? user.status : 'offline';
-						user.chatTeaser = results.chatTeasers[index];
+						user.teaser = results.teasers[index];
 					}
 				});
 
