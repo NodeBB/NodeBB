@@ -641,6 +641,8 @@ app.cacheBuster = null;
 
 	socketIOConnect();
 
+	templates.setGlobal('config', config);
+
 	app.cacheBuster = config['cache-buster'];
 
 	require(['csrf'], function(csrf) {
