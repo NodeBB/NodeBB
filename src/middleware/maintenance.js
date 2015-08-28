@@ -1,5 +1,6 @@
 'use strict';
 
+var nconf = require('nconf');
 var meta = require('../meta');
 var user = require('../user');
 var translator = require('../../public/src/modules/translator');
@@ -8,39 +9,36 @@ var translator = require('../../public/src/modules/translator');
 module.exports = function(middleware) {
 
 	middleware.maintenanceMode = function(req, res, next) {
-		console.log(req.path, meta.config.maintenanceMode)
 		if (parseInt(meta.config.maintenanceMode, 10) !== 1) {
 			return next();
 		}
+		var url = req.url.replace(nconf.get('relative_path'), '');
 
 		var allowedRoutes = [
-				'/login',
-				'/stylesheet.css',
-				'/nodebb.min.js',
-				'/vendor/fontawesome/fonts/fontawesome-webfont.woff',
-				'/src/(modules|client)/[\\w/]+.js',
-				'/templates/[\\w/]+.tpl',
-				'/api/login',
-				'/api/?',
-				'/language/.+',
-				'/uploads/system/site-logo.png'
+				'^/login',
+				'^/stylesheet.css',
+				'^/favicon',
+				'^/nodebb.min.js',
+				'^/vendor/fontawesome/fonts/fontawesome-webfont.woff',
+				'^/src/(modules|client)/[\\w/]+.js',
+				'^/templates/[\\w/]+.tpl',
+				'^/api/login',
+				'^/api/widgets/render',
+				'^/language/.+',
+				'^/uploads/system/site-logo.png'
 			],
 			render = function() {
 				res.status(503);
-
-				if (!isApiRoute.test(req.url)) {
+				var data = {
+					site_title: meta.config.title || 'NodeBB',
+					message: meta.config.maintenanceModeMessage
+				};
+				if (!isApiRoute.test(url)) {
 					middleware.buildHeader(req, res, function() {
-						res.render('maintenance', {
-							site_title: meta.config.title || 'NodeBB',
-							message: meta.config.maintenanceModeMessage
-						});
+						res.render('503', data);
 					});
 				} else {
-					translator.translate('[[pages:maintenance.text, ' + meta.config.title + ']]', meta.config.defaultLang || 'en_GB', function(translated) {
-						res.json({
-							error: translated
-						});
-					});
+					res.json(data);
 				}
 			},
 			isAllowed = function(url) {
@@ -54,7 +52,7 @@ module.exports = function(middleware) {
 			},
 			isApiRoute = /^\/api/;
 
-		if (isAllowed(req.url)) {
+		if (isAllowed(url)) {
 			return next();
 		}
 
