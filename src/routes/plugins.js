@@ -44,11 +44,11 @@ module.exports = function(app, middleware, controllers) {
 				if (matches.length) {
 					res.sendFile(matches[0]);
 				} else {
-					helpers.notFound(req, res);
+					next();
 				}
 			});
 		} else {
-			helpers.notFound(req, res);
+			next();
 		}
 	});
 };

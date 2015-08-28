@@ -16,12 +16,10 @@ postsController.getPost = function(req, res, next) {
 			posts.getPostData(req.params.pid, next);
 		}
 	}, function(err, results) {
-		if (err) {
+		if (err || !results.postData) {
 			return next(err);
 		}
-		if (!results.postData) {
-			return helpers.notFound(req, res);
-		}
+
 		if (!results.canRead) {
 			return helpers.notAllowed(req, res);
 		}

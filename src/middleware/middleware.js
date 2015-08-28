@@ -134,10 +134,6 @@ middleware.checkAccountPermissions = function(req, res, next) {
 			user.getUidByUserslug(req.params.userslug, next);
 		},
 		function (uid, next) {
-			if (!uid) {
-				return controllers.helpers.notFound(req, res);
-			}
-
 			if (parseInt(uid, 10) === req.uid) {
 				return next(null, true);
 			}

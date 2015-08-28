@@ -76,13 +76,13 @@ categoriesController.list = function(req, res, next) {
 	});
 };
 
-categoriesController.get = function(req, res, next) {
+categoriesController.get = function(req, res, callback) {
 	var cid = req.params.category_id,
 		page = parseInt(req.query.page, 10) || 1,
 		userPrivileges;
 
 	if ((req.params.topic_index && !utils.isNumber(req.params.topic_index)) || !utils.isNumber(cid)) {
-		return helpers.notFound(req, res);
+		return callback();
 	}
 
 	async.waterfall([
@@ -106,7 +106,7 @@ categoriesController.get = function(req, res, next) {
 			userPrivileges = results.privileges;
 
 			if (!results.exists || (results.categoryData && parseInt(results.categoryData.disabled, 10) === 1)) {
-				return helpers.notFound(req, res);
+				return callback();
 			}
 
 			if (!results.privileges.read) {
@@ -127,7 +127,7 @@ categoriesController.get = function(req, res, next) {
 			}
 
 			if (settings.usePagination && (page < 1 || page > pageCount)) {
-				return helpers.notFound(req, res);
+				return callback();
 			}
 
 			if (!settings.usePagination) {
@@ -245,7 +245,7 @@ categoriesController.get = function(req, res, next) {
 		}
 	], function (err, data) {
 		if (err) {
-			return next(err);
+			return callback(err);
 		}
 
 		data.currentPage = page;
@@ -259,7 +259,7 @@ categoriesController.get = function(req, res, next) {
 
 		plugins.fireHook('filter:category.build', {req: req, res: res, templateData: data}, function(err, data) {
 			if (err) {
-				return next(err);
+				return callback(err);
 			}
 			res.render('category', data.templateData);
 		});
