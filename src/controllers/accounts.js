@@ -524,14 +524,13 @@ accountsController.getChats = function(req, res, callback) {
 			return callback(err);
 		}
 
-		//Remove entries if they were already present as a followed contact
-		if (results.contacts && results.contacts.length) {
-			var contactUids = results.contacts.map(function(contact) {
-					return parseInt(contact.uid, 10);
+		if (results.recentChats.users && results.recentChats.users.length) {
+			var contactUids = results.recentChats.users.map(function(chatObj) {
+					return parseInt(chatObj.uid, 10);
 				});
 
-			results.recentChats.users = results.recentChats.users.filter(function(chatObj) {
-				return contactUids.indexOf(parseInt(chatObj.uid, 10)) === -1;
+			results.contacts = results.contacts.filter(function(contact) {
+				return contactUids.indexOf(parseInt(contact.uid, 10)) === -1;
 			});
 		}
 
