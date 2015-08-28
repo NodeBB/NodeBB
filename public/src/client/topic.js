@@ -124,7 +124,7 @@ define('forum/topic', [
 			if (components.get('post/anchor', postIndex).length) {
 				return navigator.scrollToPostIndex(postIndex, true);
 			}
-		} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1)) && ajaxify.data.postcount > 1) {
+		} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1)) && ajaxify.data.postcount > 10) {
 			app.alert({
 				alert_id: 'bookmark',
 				message: '[[topic:bookmark_instructions]]',
@@ -137,6 +137,9 @@ define('forum/topic', [
 					localStorage.removeItem('topic:' + tid + ':bookmark');
 				}
 			});
+			setTimeout(function() {
+				app.removeAlert('bookmark');
+			}, 10000);
 		}
 	}
 
@@ -184,6 +187,7 @@ define('forum/topic', [
 		} else {
 			components.get('navbar/title').find('span').text('').hide();
 		}
+		app.removeAlert('bookmark');
 	}
 
 	Topic.calculateIndex = function(index, elementCount) {
