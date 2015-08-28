@@ -101,7 +101,7 @@ Controllers.register = function(req, res, next) {
 	var registrationType = meta.config.registrationType || 'normal';
 
 	if (registrationType === 'disabled') {
-		return helpers.notFound(req, res);
+		return next();
 	}
 
 	async.waterfall([
@@ -164,7 +164,7 @@ Controllers.confirmEmail = function(req, res, next) {
 
 Controllers.sitemap = function(req, res, next) {
 	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
-		return helpers.notFound(req, res);
+		return next();
 	}
 
 	var sitemap = require('../sitemap.js');
@@ -204,7 +204,7 @@ Controllers.outgoing = function(req, res, next) {
 
 Controllers.termsOfUse = function(req, res, next) {
 	if (!meta.config.termsOfUse) {
-		return helpers.notFound(req, res);
+		return next();
 	}
 	res.render('tos', {termsOfUse: meta.config.termsOfUse});
 };

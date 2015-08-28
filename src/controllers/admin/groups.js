@@ -50,7 +50,7 @@ groupsController.list = function(req, res, next) {
 	});
 };
 
-groupsController.get = function(req, res, next) {
+groupsController.get = function(req, res, callback) {
 	var groupName = req.params.name;
 	async.waterfall([
 		function(next){
@@ -58,13 +58,13 @@ groupsController.get = function(req, res, next) {
 		},
 		function(exists, next) {
 			if (!exists) {
-				return helpers.notFound(req, res);
+				return callback();
 			}
 			groups.get(groupName, {uid: req.uid}, next);
 		}
 	], function(err, group) {
 		if (err) {
-			return next(err);
+			return callback(err);
 		}
 		res.render('admin/manage/group', {group: group});
 	});

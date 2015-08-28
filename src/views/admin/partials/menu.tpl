@@ -83,6 +83,7 @@
 			<!-- END plugins -->
 		</ul>
 	</section>
+	<!-- ENDIF plugins.length -->
 
 	<section class="menu-section">
 		<h3 class="menu-section-title">Advanced</h3>
@@ -97,8 +98,6 @@
 		</ul>
 	</section>
 </nav>
-
-
 
 <main id="panel">
 	<nav class="header" id="header">

@@ -122,7 +122,7 @@ define('forum/topic', [
 
 		if (postIndex && window.location.search.indexOf('page=') === -1) {
 			if (components.get('post/anchor', postIndex).length) {
-				return navigator.scrollToPostIndex(postIndex - 1, true);
+				return navigator.scrollToPostIndex(postIndex, true);
 			}
 		} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1)) && ajaxify.data.postcount > 1) {
 			app.alert({
@@ -144,7 +144,7 @@ define('forum/topic', [
 		var parts = window.location.pathname.split('/');
 		var lastPart = parts[parts.length - 1];
 		if (lastPart && utils.isNumber(lastPart)) {
-			lastPart = parseInt(lastPart, 10);
+			lastPart = Math.max(0, parseInt(lastPart, 10) - 1);
 		} else {
 			return 0;
 		}
