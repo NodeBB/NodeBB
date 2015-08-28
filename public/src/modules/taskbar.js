@@ -60,14 +60,26 @@ define('taskbar', function() {
 		}
 	};
 
+	taskbar.get = function(module) {
+		var items = $('[data-module="' + module + '"]').map(function(idx, el) {
+			return $(el).data();
+		});
+
+		return items;
+	};
+
 	taskbar.minimize = function(module, uuid) {
 		var btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
 		btnEl.removeClass('active');
 	};
 
-	taskbar.toggleNew = function(uuid, state) {
+	taskbar.toggleNew = function(uuid, state, silent) {
 		var btnEl = taskbar.tasklist.find('[data-uuid="' + uuid + '"]');
 		btnEl.toggleClass('new', state);
+
+		if (!silent) {
+			$(window).trigger('action:taskbar.toggleNew', uuid);
+		}
 	};
 
 	taskbar.updateActive = function(uuid) {
@@ -119,6 +131,8 @@ define('taskbar', function() {
 		update();
 
 		data.element = taskbarEl;
+
+		taskbarEl.data(data);
 		$(window).trigger('action:taskbar.pushed', data);
 	}
 

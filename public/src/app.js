@@ -92,7 +92,7 @@ app.cacheBuster = null;
 
 			switch(url_parts[0]) {
 				case 'user':
-					room = 'user/' + ajaxify.data.theirid;
+					room = 'user/' + (ajaxify.data ? ajaxify.data.theirid : 0);
 				break;
 				case 'topic':
 					room = 'topic_' + url_parts[1];
@@ -128,6 +128,50 @@ app.cacheBuster = null;
 				reconnectEl.removeClass('active').addClass('hide');
 			}, 3000);
 		}
+	}
+
+	function overrideBootbox() {
+		var dialog = bootbox.dialog,
+			prompt = bootbox.prompt,
+			confirm = bootbox.confirm;
+
+		function translate(modal) {
+			var footer = modal.find('.modal-footer');
+			translator.translate(footer.html(), function(html) {
+				footer.html(html);
+			});
+		}
+
+		bootbox.dialog = function() {
+			var modal = $(dialog.apply(this, arguments)[0]);
+			translate(modal);
+			return modal;
+		}
+
+		bootbox.prompt = function() {
+			var modal = $(prompt.apply(this, arguments)[0]);
+			translate(modal);
+			return modal;
+		}
+
+		bootbox.confirm = function() {
+			var modal = $(confirm.apply(this, arguments)[0]);
+			translate(modal);
+			return modal;
+		}
+	}
+
+	function overrideTimeago() {
+		var timeagoFn = $.fn.timeago;
+		$.fn.timeago = function() {
+			var els = timeagoFn.apply(this, arguments);
+
+			if (els) {
+				els.each(function() {
+					$(this).attr('title', (new Date($(this).attr('title'))).toString());
+				});
+			}
+		};
 	}
 
 	app.logout = function() {
@@ -185,7 +229,8 @@ app.cacheBuster = null;
 				enter: room,
 				username: app.user.username,
 				userslug: app.user.userslug,
-				picture: app.user.picture
+				picture: app.user.picture,
+				status: app.user.status
 			}, function(err) {
 				if (err) {
 					app.alertError(err.message);
@@ -293,7 +338,10 @@ app.cacheBuster = null;
 			}
 
 			if (!chat.modalExists(touid)) {
-				chat.createModal(username, touid, loadAndCenter);
+				chat.createModal({
+					username: username,
+					touid: touid
+				}, loadAndCenter);
 			} else {
 				loadAndCenter(chat.getModal(touid));
 			}
@@ -341,19 +389,13 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.refreshTitle = function(url) {
-		if (!url) {
-			var a = document.createElement('a');
-			a.href = document.location;
-			url = a.pathname.slice(1);
-		}
-
-		socket.emit('meta.buildTitle', url, function(err, title, numNotifications) {
-			if (err) {
-				return;
-			}
-			titleObj.titles[0] = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') + title;
-			app.alternatingTitle('');
+	app.refreshTitle = function(title) {
+		require(['translator'], function(translator) {
+			translator.translate(title, function(translated) {
+				translated = translated ? (translated + ' | ' + config.browserTitle) : config.browserTitle;
+				titleObj.titles[0] = translated;
+				app.alternatingTitle('');
+			});
 		});
 	};
 
@@ -364,20 +406,9 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.exposeConfigToTemplates = function() {
-		$(document).ready(function() {
-			templates.setGlobal('loggedIn', config.loggedIn);
-			templates.setGlobal('relative_path', RELATIVE_PATH);
-			for(var key in config) {
-				if (config.hasOwnProperty(key)) {
-					templates.setGlobal('config.' + key, config[key]);
-				}
-			}
-		});
-	};
-
 	function createHeaderTooltips() {
-		if (utils.findBootstrapEnvironment() === 'xs') {
+		var env = utils.findBootstrapEnvironment();
+		if (env === 'xs' || env === 'sm') {
 			return;
 		}
 		$('#header-menu li a[title]').each(function() {
@@ -444,13 +475,17 @@ app.cacheBuster = null;
 	};
 
 	function handleStatusChange() {
-		$('#user-control-list .user-status').off('click').on('click', function(e) {
+		$('[component="header/usercontrol"] [data-status]').off('click').on('click', function(e) {
 			var status = $(this).attr('data-status');
 			socket.emit('user.setStatus', status, function(err, data) {
 				if(err) {
 					return app.alertError(err.message);
 				}
-				$('#logged-in-menu #user_label #user-profile-link>i').attr('class', 'fa fa-circle status ' + status);
+				$('[component="user/status"]')
+					.removeClass('away online dnd offline')
+					.addClass(status);
+
+				app.user.status = status;
 			});
 			e.preventDefault();
 		});
@@ -461,11 +496,13 @@ app.cacheBuster = null;
 			return;
 		}
 
-		translator.translate('[[global:' + status + ']]', function(translated) {
-			el.removeClass('online offline dnd away')
-				.addClass(status)
-				.attr('title', translated)
-				.attr('data-original-title', translated);
+		require(['translator'], function(translator) {
+			translator.translate('[[global:' + status + ']]', function(translated) {
+				el.removeClass('online offline dnd away')
+					.addClass(status)
+					.attr('title', translated)
+					.attr('data-original-title', translated);
+			});
 		});
 	};
 
@@ -481,6 +518,9 @@ app.cacheBuster = null;
 					if (err) {
 						return app.alertError(err.message);
 					}
+					categories = categories.filter(function(category) {
+						return !category.link && !parseInt(category.parentCid, 10);
+					});
 					if (categories.length) {
 						$(window).trigger('action:composer.topic.new', {
 							cid: categories[0].cid
@@ -493,7 +533,7 @@ app.cacheBuster = null;
 
 	app.load = function() {
 		$('document').ready(function () {
-			var url = ajaxify.start(window.location.pathname.slice(1), true, window.location.search);
+			var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search, true);
 			ajaxify.end(url, app.template);
 
 			handleStatusChange();
@@ -504,7 +544,9 @@ app.cacheBuster = null;
 
 			handleNewTopic();
 
-			$('#logout-link').on('click', app.logout);
+			require(['components'], function(components) {
+				components.get('user/logout').on('click', app.logout);
+			});
 
 			Visibility.change(function(e, state){
 				if (state === 'visible') {
@@ -515,6 +557,8 @@ app.cacheBuster = null;
 				}
 			});
 
+			overrideBootbox();
+			overrideTimeago();
 			createHeaderTooltips();
 			app.showEmailConfirmWarning();
 
@@ -594,8 +638,6 @@ app.cacheBuster = null;
 	};
 
 	showWelcomeMessage = window.location.href.indexOf('loggedin') !== -1;
-
-	app.exposeConfigToTemplates();
 
 	socketIOConnect();
 

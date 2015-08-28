@@ -5,6 +5,7 @@ var async = require('async'),
 	templates = require('templates.js'),
 
 	plugins = require('../plugins'),
+	translator = require('../../public/src/modules/translator'),
 	db = require('../database');
 
 var widgets = {};
@@ -29,7 +30,6 @@ widgets.render = function(uid, area, callback) {
 			}
 
 			async.map(widgetsByLocation[location], function(widget, next) {
-
 				if (!widget || !widget.data || (!!widget.data['hide-registered'] && uid !== 0) || (!!widget.data['hide-guests'] && uid === 0)) {
 					return next();
 				}
@@ -48,13 +48,17 @@ widgets.render = function(uid, area, callback) {
 					}
 
 					if (widget.data.container && widget.data.container.match('{body}')) {
-						html = templates.parse(widget.data.container, {
-							title: widget.data.title,
-							body: html
-						});
-					}
+						translator.translate(widget.data.title, function(title) {
+							html = templates.parse(widget.data.container, {
+								title: title,
+								body: html
+							});
 
-					next(null, {html: html});
+							next(null, {html: html});
+						});
+					} else {
+						next(null, {html: html});
+					}
 				});
 			}, function(err, result) {
 				done(err, {location: location, widgets: result.filter(Boolean)});

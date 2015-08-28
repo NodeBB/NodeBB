@@ -5,10 +5,11 @@ var async = require('async'),
 	nconf = require('nconf'),
 	request = require('request'),
 
-	db = require('./../database'),
+	db = require('../database'),
 	meta = require('../meta'),
 	emailer = require('../emailer'),
 	notifications = require('../notifications'),
+	groups = require('../groups'),
 	translator = require('../../public/src/modules/translator'),
 	utils = require('../../public/src/utils');
 
@@ -46,8 +47,8 @@ module.exports = function(User) {
 	function sendNotificationToAdmins(username, callback) {
 		notifications.create({
 			bodyShort: '[[notifications:new_register, ' + username + ']]',
-			nid: 'new_register' + username,
-			path: '/admin/manage/users/registration'
+			nid: 'new_register:' + username,
+			path: '/admin/manage/registration'
 		}, function(err, notification) {
 			if (err) {
 				return callback(err);
@@ -97,19 +98,45 @@ module.exports = function(User) {
 			},
 			function(next) {
 				removeFromQueue(username, next);
+			},
+			function(next) {
+				markNotificationRead(username, next);
 			}
 		], callback);
 	};
 
+	function markNotificationRead(username, callback) {
+		var nid = 'new_register:' + username;
+		async.waterfall([
+			function (next) {
+				groups.getMembers('administrators', 0, -1, next);
+			},
+			function (uids, next) {
+				async.each(uids, function(uid, next) {
+					notifications.markRead(nid, uid, next);
+				}, next);
+			}
+		], callback);
+	}
+
 	User.rejectRegistration = function(username, callback) {
-		removeFromQueue(username, callback);
+		async.waterfall([
+			function (next) {
+				removeFromQueue(username, next);
+			},
+			function (next) {
+				markNotificationRead(username, next);
+			}
+		], callback);
 	};
 
 	function removeFromQueue(username, callback) {
 		async.parallel([
 			async.apply(db.sortedSetRemove, 'registration:queue', username),
 			async.apply(db.delete, 'registration:queue:name:' + username)
-		], callback);
+		], function(err, results) {
+			callback(err);
+		});
 	}
 
 	User.getRegistrationQueue = function(start, stop, callback) {
@@ -136,6 +163,9 @@ module.exports = function(User) {
 					if (!user) {
 						return next(null, user);
 					}
+
+					// temporary: see http://www.stopforumspam.com/forum/viewtopic.php?id=6392
+					user.ip = user.ip.replace('::ffff:', '');
 
 					request('http://api.stopforumspam.org/api?ip=' + user.ip + '&email=' + user.email + '&username=' + user.username + '&f=json', function (err, response, body) {
 						if (err) {

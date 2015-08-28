@@ -20,7 +20,7 @@
     "user_posted_topic": "<strong>%1</strong> 发表了新主题：<strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> 在 <strong>%2</strong> 中提到了您",
     "user_started_following_you": "<strong>%1</strong>关注了您。",
-    "new_register": "<strong>%1</strong> sent a registration request.",
+    "new_register": "<strong>%1</strong> 发出了注册请求",
     "email-confirmed": "电子邮箱已确认",
     "email-confirmed-message": "感谢您验证您的电子邮箱。您的帐户现已全面激活。",
     "email-confirm-error-message": "验证您电子邮箱地址时出现了问题。可能是因为验证码无效或已过期。",

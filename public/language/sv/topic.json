@@ -34,7 +34,7 @@
     "not_following_topic.message": "Du kommer inte längre få notiser från detta ämne.",
     "login_to_subscribe": "Var god registrera eller logga in för att kunna prenumerera på detta ämne.",
     "markAsUnreadForAll.success": "Ämne markerat som oläst av alla.",
-    "watch": "Följ",
+    "watch": "Bevaka",
     "unwatch": "Sluta bevaka",
     "watch.title": "Få notis om nya svar till det här ämnet",
     "unwatch.title": "Sluta bevaka detta ämne",

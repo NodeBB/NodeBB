@@ -46,6 +46,8 @@
     "too-many-posts-newbie": "Som ny bruger kan du kun skrive et indlæg engang hvert %1. sekund() indtil du har optjent %2 omdømme point - venligst vent et øjeblik før næste indlæg.",
     "tag-too-short": "Indtast et længere tag. Tags skal indeholde mindst %1 karakter(er).",
     "tag-too-long": "Indtast et længere tag. Tags kan ikke være længere end %1 karakter(er).",
+    "not-enough-tags": "Ikke nok tags. Tråde skal have mindst %1 tag(s)",
+    "too-many-tags": "For mange tags. Tråde kan ikke have mere end %1 tag(s)",
     "file-too-big": "Maksimum filstørrelse er %1 kB - venligst overfør en mindre fil",
     "cant-vote-self-post": "Du kan ikke stemme på dit eget indlæg",
     "already-favourited": "Du har allerede føjet dette indlæg til dine favoritter",

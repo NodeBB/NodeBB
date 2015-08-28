@@ -417,11 +417,14 @@ function getChildrenCids(cids, uid, callback) {
 		}
 
 		var childrenCids = [];
+		var allCategories = [];
+
 		childrenCategories.forEach(function(childrens) {
-			childrenCids = childrenCids.concat(childrens.map(function(category) {
-				return category && category.cid;
-			}));
-		});
+			categories.flattenCategories(allCategories, childrens);
+		 	childrenCids = childrenCids.concat(allCategories.map(function(category) {
+		 		return category && category.cid;
+		 	}));
+		 });
 
 		callback(null, childrenCids);
 	});

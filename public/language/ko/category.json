@@ -1,9 +1,12 @@
 {
+    "category": "Category",
+    "subcategories": "Subcategories",
     "new_topic_button": "새 주제 생성",
     "guest-login-post": "로그인",
     "no_topics": "<strong>이 카테고리에는 생성된 주제가 없습니다.</strong><br />먼저 주제를 생성해 보세요.",
     "browsing": "이 주제를 읽고 있는 사용자",
     "no_replies": "답글이 없습니다.",
+    "no_new_posts": "No new posts.",
     "share_this_category": "이 카테고리를 공유",
     "watch": "관심 주제",
     "ignore": "관심 해제",

@@ -87,18 +87,20 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 	}
 
 	function updateHeader(picture, username, userslug) {
-		if (parseInt(ajaxify.data.theirid, 10) !== parseInt(ajaxify.data.yourid, 10)) {
-			return;
-		}
+		require(['components'], function(components) {
+			if (parseInt(ajaxify.data.theirid, 10) !== parseInt(ajaxify.data.yourid, 10)) {
+				return;
+			}
 
-		if (picture) {
-			$('#user-header-picture').attr('src', picture);
-		}
+			if (picture) {
+				components.get('header/userpicture').attr('src', picture);
+			}
 
-		if (username && userslug) {
-			$('#user-profile-link').attr('href', config.relative_path + '/user/' + userslug);
-			$('#user-header-name').text(username);
-		}
+			if (username && userslug) {
+				components.get('header/profilelink').attr('href', config.relative_path + '/user/' + userslug);
+				components.get('header/username').text(username);
+			}
+		});
 	}
 
 	function handleImageChange() {
@@ -266,7 +268,9 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 				if (password.val()) {
 					showSuccess(password_confirm_notify, successIcon);
 				} else {
-					removeAlert(password_confirm_notify);
+					password_confirm_notify.parent().removeClass('alert-success alert-danger');
+					password_confirm_notify.children().show();
+					password_confirm_notify.find('.msg').html('');
 				}
 
 				passwordsmatch = true;
@@ -365,7 +369,8 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 
 	function showError(element, msg) {
 		translator.translate(msg, function(msg) {
-			element.html(msg);
+			element.find('.msg').html(msg).siblings().hide();
+
 			element.parent()
 				.removeClass('alert-success')
 				.addClass('alert-danger');
@@ -375,17 +380,12 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 
 	function showSuccess(element, msg) {
 		translator.translate(msg, function(msg) {
-			element.html(msg);
+			element.find('.msg').html(msg);
 			element.parent()
 				.removeClass('alert-danger')
 				.addClass('alert-success');
 			element.show();
 		});
-	}
-
-	function removeAlert(element) {
-		element.html('');
-		element.parent().removeClass('alert-success alert-danger');
 	}
 
 	return AccountEdit;

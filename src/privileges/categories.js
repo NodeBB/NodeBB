@@ -92,7 +92,7 @@ module.exports = function(privileges) {
 						}), next);
 					},
 					function(memberSets, next) {
-						groups.getGroups(0, -1, function(err, groupNames) {
+						groups.getGroups('groups:createtime', 0, -1, function(err, groupNames) {
 							if (err) {
 								return next(err);
 							}

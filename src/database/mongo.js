@@ -177,16 +177,25 @@
 	};
 
 	module.info = function(db, callback) {
-		db.stats({scale:1024}, function(err, stats) {
-			if(err) {
+		async.parallel({
+			serverStats: function(next) {
+				db.command({'serverStatus': 1}, next);
+			},
+			stats: function(next) {
+				db.stats({scale:1024}, next);
+			}
+		}, function(err, results) {
+			if (err) {
 				return callback(err);
 			}
+			var stats = results.stats;
 
 			stats.avgObjSize = (stats.avgObjSize / 1024).toFixed(2);
 			stats.dataSize = (stats.dataSize / 1024).toFixed(2);
 			stats.storageSize = (stats.storageSize / 1024).toFixed(2);
 			stats.fileSize = (stats.fileSize / 1024).toFixed(2);
 			stats.indexSize = (stats.indexSize / 1024).toFixed(2);
+			stats.mem = results.serverStats.mem;
 			stats.raw = JSON.stringify(stats, null, 4);
 			stats.mongo = true;
 

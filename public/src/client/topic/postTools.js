@@ -139,10 +139,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			selection = window.getSelection ? window.getSelection() : document.selection.createRange();
 
 		if ($(selection.baseNode).parents('[component="post/content"]').length > 0) {
-			var snippet = selection.toString();
-			if (snippet.length) {
-				selectionText = '> ' + snippet.replace(/\n/g, '\n> ') + '\n\n';
-			}
+			selectionText = selection.toString();
 		}
 
 		var username = getUserName(selectionText ? $(selection.baseNode) : button);
@@ -177,10 +174,6 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			if(err) {
 				return app.alertError(err.message);
 			}
-			var quoted = '';
-			if(post) {
-				quoted = '> ' + post.replace(/\n/g, '\n> ') + '\n\n';
-			}
 
 			$(window).trigger('action:composer.addQuote', {
 				tid: tid,
@@ -189,7 +182,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 				pid: pid,
 				username: username,
 				topicName: topicName,
-				text: quoted
+				text: post
 			});
 		});
 	}

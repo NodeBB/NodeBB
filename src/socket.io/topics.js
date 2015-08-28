@@ -96,8 +96,12 @@ SocketTopics.postcount = function(socket, tid, callback) {
 	topics.getTopicField(tid, 'postcount', callback);
 };
 
+SocketTopics.bookmark = function(socket, payload, callback) {
+	topics.setUserBookmark(payload.tid, socket.uid, payload.index, callback);
+};
+
 SocketTopics.markAsRead = function(socket, tids, callback) {
-	if(!Array.isArray(tids) || !socket.uid) {
+	if (!Array.isArray(tids) || !socket.uid) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -123,14 +127,14 @@ SocketTopics.markAsRead = function(socket, tids, callback) {
 };
 
 SocketTopics.markTopicNotificationsRead = function(socket, tid, callback) {
-	if(!tid || !socket.uid) {
+	if (!tid || !socket.uid) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	topics.markTopicNotificationsRead(tid, socket.uid);
 };
 
 SocketTopics.markAllRead = function(socket, data, callback) {
-	topics.getLatestTidsFromSet('topics:recent', 0, -1, 'day', function(err, tids) {
+	db.getSortedSetRevRangeByScore('topics:recent', 0, -1, '+inf', Date.now() - topics.unreadCutoff, function(err, tids) {
 		if (err) {
 			return callback(err);
 		}

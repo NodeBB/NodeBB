@@ -97,5 +97,7 @@
 	"follow_topics_you_create": "Follow topics you create",
 
 	"grouptitle": "Select the group title you would like to display",
-	"no-group-title": "No group title"
+	"no-group-title": "No group title",
+
+	"select-skin": "Select a Skin"
 }

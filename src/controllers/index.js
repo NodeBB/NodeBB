@@ -19,6 +19,8 @@ var Controllers = {
 	topics: require('./topics'),
 	categories: require('./categories'),
 	unread: require('./unread'),
+	recent: require('./recent'),
+	popular: require('./popular'),
 	tags: require('./tags'),
 	search: require('./search'),
 	users: require('./users'),
@@ -40,9 +42,9 @@ Controllers.home = function(req, res, next) {
 		if (route === 'categories') {
 			Controllers.categories.list(req, res, next);
 		} else if (route === 'recent') {
-			Controllers.categories.recent(req, res, next);
+			Controllers.recent.get(req, res, next);
 		} else if (route === 'popular') {
-			Controllers.categories.popular(req, res, next);
+			Controllers.popular.get(req, res, next);
 		} else {
 			next();
 		}
@@ -59,7 +61,8 @@ Controllers.reset = function(req, res, next) {
 				valid: valid,
 				displayExpiryNotice: req.session.passwordExpired,
 				code: req.params.code ? req.params.code : null,
-				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]', url: '/reset'}, {text: '[[reset_password:update_password]]'}])
+				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]', url: '/reset'}, {text: '[[reset_password:update_password]]'}]),
+				title: '[[pages:reset]]'
 			});
 
 			delete req.session.passwordExpired;
@@ -67,7 +70,8 @@ Controllers.reset = function(req, res, next) {
 	} else {
 		res.render('reset', {
 			code: req.params.code ? req.params.code : null,
-			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]'}])
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]'}]),
+			title: '[[pages:reset]]'
 		});
 	}
 
@@ -88,6 +92,7 @@ Controllers.login = function(req, res, next) {
 	data.allowLoginWith = '[[login:' + (meta.config.allowLoginWith || 'username-email') + ']]';
 	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:login]]'}]);
 	data.error = req.flash('error')[0];
+	data.title = '[[pages:login]]';
 
 	res.render('login', data);
 };
@@ -108,6 +113,9 @@ Controllers.register = function(req, res, next) {
 			}
 		},
 		function(next) {
+			plugins.fireHook('filter:parse.post', {postData: {content: meta.config.termsOfUse}}, next);
+		},
+		function(tos, next) {
 			var loginStrategies = require('../routes/authentication').getLoginStrategies();
 			var data = {
 				'register_window:spansize': loginStrategies.length ? 'col-md-6' : 'col-md-12',
@@ -119,10 +127,11 @@ Controllers.register = function(req, res, next) {
 			data.minimumUsernameLength = meta.config.minimumUsernameLength;
 			data.maximumUsernameLength = meta.config.maximumUsernameLength;
 			data.minimumPasswordLength = meta.config.minimumPasswordLength;
-			data.termsOfUse = meta.config.termsOfUse;
+			data.termsOfUse = tos.postData.content;
 			data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[register:register]]'}]);
 			data.regFormEntry = [];
 			data.error = req.flash('error')[0];
+			data.title = '[[pages:register]]';
 
 			plugins.fireHook('filter:register.build', {req: req, res: res, templateData: data}, next);
 		}
@@ -181,7 +190,7 @@ Controllers.robots = function (req, res) {
 Controllers.outgoing = function(req, res, next) {
 	var url = req.query.url,
 		data = {
-			url: url,
+			url: validator.escape(url),
 			title: meta.config.title,
 			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[notifications:outgoing_link]]'}])
 		};

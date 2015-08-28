@@ -22,6 +22,7 @@
     "pagination.out_of": "%1 out of %2",
     "pagination.enter_index": "Enter index",
     "header.admin": "管理",
+    "header.categories": "Categories",
     "header.recent": "最近",
     "header.unread": "未読",
     "header.tags": "Tags",

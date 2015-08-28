@@ -86,7 +86,8 @@ module.exports = function(Topics) {
 				db.deleteAll([
 					'tid:' + tid + ':followers',
 					'tid:' + tid + ':posts',
-					'tid:' + tid + ':posts:votes'
+					'tid:' + tid + ':posts:votes',
+					'tid:' + tid + ':bookmarks'
 				], next);
 			},
 			function(next) {

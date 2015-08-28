@@ -2,7 +2,8 @@
 
 'use strict';
 
-var db = require('../database'),
+var async = require('async'),
+	db = require('../database'),
 	posts = require('../posts');
 
 
@@ -19,24 +20,22 @@ module.exports = function(Topics) {
 	};
 
 	Topics.getUids = function(tid, callback) {
-		Topics.getPids(tid, function(err, pids) {
-			if (err) {
-				return callback(err);
-			}
-
-			posts.getPostsFields(pids, ['uid'], function(err, postData) {
-				if (err) {
-					return callback(err);
-				}
-
+		async.waterfall([
+			function(next) {
+				Topics.getPids(tid, next);
+			},
+			function(pids, next) {
+				posts.getPostsFields(pids, ['uid'], next);
+			},
+			function(postData, next) {
 				var uids = postData.map(function(post) {
 					return post && post.uid;
 				}).filter(function(uid, index, array) {
-					return array.indexOf(uid) === index;
+					return uid && array.indexOf(uid) === index;
 				});
 
-				callback(null, uids);
-			});
-		});
+				next(null, uids);
+			}
+		], callback);
 	};
 };

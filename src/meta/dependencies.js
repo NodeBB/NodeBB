@@ -19,21 +19,27 @@ module.exports = function(Meta) {
 			fs.readFile(path.join(__dirname, '../../node_modules/', module, 'package.json'), {
 				encoding: 'utf-8'
 			}, function(err, pkgData) {
-				try {
-					var pkgData = JSON.parse(pkgData),
-						ok = semver.satisfies(pkgData.version, pkg.dependencies[module]);
+				// If a bundled plugin/theme is not present, skip the dep check (#3384)
+				if (err && err.code === 'ENOENT' && (module.startsWith('nodebb-plugin') || module.startsWith('nodebb-theme'))) {
+					winston.warn('[meta/dependencies] Bundled plugin ' + module + ' not found, skipping dependency check.');
+					return next(true);
+				}
 
-					if (ok) {
+				try {
+					pkgData = JSON.parse(pkgData);
+					var ok = !semver.validRange(pkg.dependencies[module]) || semver.satisfies(pkgData.version, pkg.dependencies[module]);
+
+					if (ok || (pkgData._resolved && pkgData._resolved.indexOf('//github.com') !== -1)) {
 						next(true);
 					} else {
-						process.stdout.write('[' + 'outdated'.yellow + '] ' + module.bold + ' v' + pkgData.version + ', requires ' + pkg.dependencies[module] + '\n')
+						process.stdout.write('[' + 'outdated'.yellow + '] ' + module.bold + ' installed v' + pkgData.version + ', package.json requires ' + pkg.dependencies[module] + '\n');
 						next(false);
 					}
 				} catch(e) {
-					winston.error('[meta.dependencies] Could not read: ' + module);
+					winston.error('[meta/dependencies] Could not read: ' + module);
 					process.exit();
 				}
-			})
+			});
 		}, function(ok) {
 			callback(!ok && global.env !== 'development' ? new Error('dependencies-out-of-date') : null);
 		});

@@ -1,9 +1,12 @@
 {
+    "category": "版面",
+    "subcategories": "子版面",
     "new_topic_button": "新主题",
     "guest-login-post": "登录后发表",
     "no_topics": "<strong>此版块还没有任何内容。</strong><br />赶紧来发帖吧！",
     "browsing": "正在浏览",
     "no_replies": "尚无回复",
+    "no_new_posts": "没有新帖",
     "share_this_category": "分享此版块",
     "watch": "关注",
     "ignore": "忽略",

@@ -5,8 +5,8 @@
     "recent": "Paskutinės temos",
     "users": "Registruoti vartotojai",
     "notifications": "Pranešimai",
-    "tags": "Tags",
-    "tag": "Topics tagged under \"%1\"",
+    "tags": "Žymos",
+    "tag": "Temos su šia žymą \"%1\"",
     "user.edit": "Redaguojama \"%1\"",
     "user.following": "Vartotojas %1 seka",
     "user.followers": "Žmonės, kurie seka %1",
@@ -15,7 +15,7 @@
     "user.groups": "%1's grupės",
     "user.favourites": "Vartotojo %1 mėgstami pranešimai",
     "user.settings": "Vartotojo nustatymai",
-    "user.watched": "Topics watched by %1",
-    "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+    "user.watched": "Temos stebimos %1",
+    "maintenance.text": "%1 dabar atnaujinimo darbuose. Prašome grįžti vėliau",
     "maintenance.messageIntro": "Be to, administratorius paliko šį pranešimą:"
 }

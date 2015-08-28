@@ -1,0 +1,21 @@
+{
+    "home": "Imbere",
+    "unread": "Ibiganiro Bitarasomwa",
+    "popular": "Ibiganiro Bikunzwe",
+    "recent": "Ibiganiro Biheruka",
+    "users": "Abantu Banditse",
+    "notifications": "Amatangazo",
+    "tags": "Ibimenyetso",
+    "tag": "Ibiganiro bifite ibimenyetso bya \"%1\"",
+    "user.edit": "Uguhinduraho kwa \"%1\"",
+    "user.following": "Abantu %1 Akurikira",
+    "user.followers": "Abantu Bakurikira %1",
+    "user.posts": "Ibyashyizweho na %1",
+    "user.topics": "Ibiganiro byatangijwe na %1",
+    "user.groups": "Amatsinda ya %1",
+    "user.favourites": "Ibyo %1 Yatonesheje",
+    "user.settings": "Ugutunganya",
+    "user.watched": "Ibiganiro bikurikirwa na %1",
+    "maintenance.text": "%1 ntiboneka kuko ubu iri gutunganywa. Muze kongera kugaruka. ",
+    "maintenance.messageIntro": "Byongeye, kandi, umuyobozi yasize ubu butumwa: "
+}

@@ -47,70 +47,79 @@ module.exports = function(User) {
 				return callback(err);
 			}
 
-			async.parallel([
-				function(next) {
-					db.sortedSetRemove('username:uid', userData.username, next);
-				},
-				function(next) {
-					db.sortedSetRemove('username:sorted', userData.username.toLowerCase() + ':' + uid, next);
-				},
-				function(next) {
-					db.sortedSetRemove('userslug:uid', userData.userslug, next);
-				},
-				function(next) {
-					db.sortedSetRemove('fullname:uid', userData.fullname, next);
-				},
-				function(next) {
-					if (userData.email) {
-						async.parallel([
-							async.apply(db.sortedSetRemove, 'email:uid', userData.email.toLowerCase()),
-							async.apply(db.sortedSetRemove, 'email:sorted', userData.email.toLowerCase() + ':' + uid)
-						], next);
-					} else {
-						next();
-					}
-				},
-				function(next) {
-					db.sortedSetsRemove([
-						'users:joindate',
-						'users:postcount',
-						'users:reputation',
-						'users:banned',
-						'users:online'
-					], uid, next);
-				},
-				function(next) {
-					db.decrObjectField('global', 'userCount', next);
-				},
-				function(next) {
-					var keys = [
-						'uid:' + uid + ':notifications:read', 'uid:' + uid + ':notifications:unread',
-						'uid:' + uid + ':favourites', 'uid:' + uid + ':followed_tids', 'user:' + uid + ':settings',
-						'uid:' + uid + ':topics', 'uid:' + uid + ':posts',
-						'uid:' + uid + ':chats', 'uid:' + uid + ':chats:unread',
-						'uid:' + uid + ':upvote', 'uid:' + uid + ':downvote',
-						'uid:' + uid + ':ignored:cids', 'uid:' + uid + ':flag:pids'
-					];
-					db.deleteAll(keys, next);
-				},
-				function(next) {
-					deleteUserIps(uid, next);
-				},
-				function(next) {
-					deleteUserFromFollowers(uid, next);
-				},
-				function(next) {
-					groups.leaveAllGroups(uid, next);
-				},
-				function(next) {
-					plugins.fireHook('filter:user.delete', uid, next);
-				}
-			], function(err) {
+			plugins.fireHook('static:user.delete', {
+				uid: uid
+			}, function(err) {
 				if (err) {
 					return callback(err);
 				}
 
-				db.deleteAll(['followers:' + uid, 'following:' + uid, 'user:' + uid], callback);
+				async.parallel([
+					function(next) {
+						db.sortedSetRemove('username:uid', userData.username, next);
+					},
+					function(next) {
+						db.sortedSetRemove('username:sorted', userData.username.toLowerCase() + ':' + uid, next);
+					},
+					function(next) {
+						db.sortedSetRemove('userslug:uid', userData.userslug, next);
+					},
+					function(next) {
+						db.sortedSetRemove('fullname:uid', userData.fullname, next);
+					},
+					function(next) {
+						if (userData.email) {
+							async.parallel([
+								async.apply(db.sortedSetRemove, 'email:uid', userData.email.toLowerCase()),
+								async.apply(db.sortedSetRemove, 'email:sorted', userData.email.toLowerCase() + ':' + uid)
+							], next);
+						} else {
+							next();
+						}
+					},
+					function(next) {
+						db.sortedSetsRemove([
+							'users:joindate',
+							'users:postcount',
+							'users:reputation',
+							'users:banned',
+							'users:online'
+						], uid, next);
+					},
+					function(next) {
+						db.decrObjectField('global', 'userCount', next);
+					},
+					function(next) {
+						var keys = [
+							'uid:' + uid + ':notifications:read', 'uid:' + uid + ':notifications:unread',
+							'uid:' + uid + ':favourites', 'uid:' + uid + ':followed_tids', 'user:' + uid + ':settings',
+							'uid:' + uid + ':topics', 'uid:' + uid + ':posts',
+							'uid:' + uid + ':chats', 'uid:' + uid + ':chats:unread',
+							'uid:' + uid + ':upvote', 'uid:' + uid + ':downvote',
+							'uid:' + uid + ':ignored:cids', 'uid:' + uid + ':flag:pids'
+						];
+						db.deleteAll(keys, next);
+					},
+					function(next) {
+						deleteUserIps(uid, next);
+					},
+					function(next) {
+						deleteUserFromFollowers(uid, next);
+					},
+					function(next) {
+						groups.leaveAllGroups(uid, next);
+					},
+					function(next) {
+						// Deprecated as of v0.7.4, remove in v1.0.0
+						plugins.fireHook('filter:user.delete', uid, next);
+					}
+				], function(err) {
+					if (err) {
+						return callback(err);
+					}
+
+					db.deleteAll(['followers:' + uid, 'following:' + uid, 'user:' + uid], callback);
+				});
 			});
 		});
 	};

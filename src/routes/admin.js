@@ -58,7 +58,7 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/manage/users/sort-posts', controllers.admin.users.sortByPosts);
 	router.get('/manage/users/sort-reputation', controllers.admin.users.sortByReputation);
 	router.get('/manage/users/banned', controllers.admin.users.banned);
-	router.get('/manage/users/registration', controllers.admin.users.registrationQueue);
+	router.get('/manage/registration', controllers.admin.users.registrationQueue);
 
 	router.get('/manage/groups', controllers.admin.groups.list);
 	router.get('/manage/groups/:name', controllers.admin.groups.get);

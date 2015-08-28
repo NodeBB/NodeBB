@@ -1,9 +1,12 @@
 {
+    "category": "Category",
+    "subcategories": "Subcategories",
     "new_topic_button": "กระทู้",
     "guest-login-post": "เข้าสู่ระบบเพื่อโพส",
     "no_topics": "<strong>ยังไม่มีกระทู้ในหมวดนี้</strong><br />โพสต์กระทู้แรก?",
     "browsing": "เรียกดู",
     "no_replies": "ยังไม่มีใครตอบ",
+    "no_new_posts": "No new posts.",
     "share_this_category": "แชร์ Category นี้",
     "watch": "Watch",
     "ignore": "ไม่ต้องสนใจอีก",

@@ -39,6 +39,7 @@
 	"header.notifications": "Notifications",
 	"header.search": "Search",
 	"header.profile": "Profile",
+	"header.navigation": "Navigation",
 
 	"notifications.loading": "Loading Notifications",
 	"chats.loading": "Loading Chats",
@@ -87,7 +88,7 @@
 
 	"online": "Online",
 	"away": "Away",
-	"dnd": "Do not Disturb",
+	"dnd": "Do not disturb",
 	"invisible": "Invisible",
 	"offline": "Offline",
 

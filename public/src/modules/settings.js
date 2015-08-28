@@ -294,7 +294,6 @@ define('settings', function () {
 							message: "NodeBB failed to save the settings.",
 							timeout: 5000
 						});
-						console.log('[settings] Unable to set settings for hash: ', hash);
 					} else {
 						app.alert({
 							title: 'Settings Saved',
@@ -387,7 +386,6 @@ define('settings', function () {
 				hash: hash
 			}, function (err, values) {
 				if (err) {
-					console.log('[settings] Unable to load settings for hash: ', hash);
 					if (typeof callback === 'function') {
 						callback(err);
 					}
@@ -455,10 +453,9 @@ define('settings', function () {
 				hash: hash
 			}, function (err, values) {
 				if (err) {
-					console.log('[settings] Unable to load settings for hash: ', hash);
 					return callback(err);
 				}
-				
+
 				// Parse all values. If they are json, return json
 				for(var key in values) {
 					if (values.hasOwnProperty(key)) {
@@ -508,8 +505,6 @@ define('settings', function () {
 						});
 					}
 				});
-			} else {
-				console.log('[settings] Form not found.');
 			}
 		}
 	};

@@ -22,6 +22,7 @@
     "pagination.out_of": "%1 - %2",
     "pagination.enter_index": "Írj be egy számot",
     "header.admin": "Admin",
+    "header.categories": "Categories",
     "header.recent": "Friss",
     "header.unread": "Olvasatlan",
     "header.tags": "Címkék",

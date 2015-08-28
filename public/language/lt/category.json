@@ -1,12 +1,15 @@
 {
+    "category": "Category",
+    "subcategories": "Subcategories",
     "new_topic_button": "Nauja tema",
     "guest-login-post": "Prisijungti įrašų paskelbimui",
     "no_topics": "<strong>Šioje kategorijoje temų nėra.</strong><br/>Kodėl gi jums nesukūrus naujos?",
     "browsing": "naršo",
     "no_replies": "Niekas dar neatsakė",
+    "no_new_posts": "No new posts.",
     "share_this_category": "Pasidalinti šią kategoriją",
-    "watch": "Watch",
+    "watch": "Stebėti",
     "ignore": "Nepaisyti",
-    "watch.message": "You are now watching updates from this category",
-    "ignore.message": "You are now ignoring updates from this category"
+    "watch.message": "Jūs dabar stebite atnaujinimus iš šios kategorijos",
+    "ignore.message": "Jūs dabar ignoruojate atnaujinimus iš šios kategorijos"
 }

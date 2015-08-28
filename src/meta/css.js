@@ -34,7 +34,7 @@ module.exports = function(Meta) {
 				return callback(err);
 			}
 
-			var themeId = (themeData['theme:id'] || 'nodebb-theme-vanilla'),
+			var themeId = (themeData['theme:id'] || 'nodebb-theme-persona'),
 				baseThemePath = path.join(nconf.get('themes_path'), (themeData['theme:type'] && themeData['theme:type'] === 'local' ? themeId : 'nodebb-theme-vanilla')),
 				paths = [
 					baseThemePath,
@@ -69,6 +69,7 @@ module.exports = function(Meta) {
 				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/textcomplete/jquery.textcomplete.css";';
 				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/generics.less";';
+				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/mixins.less";';
 
 				var acpSource = '\n@import "..' + path.sep + 'public/less/admin/admin";\n' + source;
 				acpSource += '\n@import "..' + path.sep + 'public/less/generics.less";';

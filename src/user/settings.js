@@ -75,6 +75,7 @@ module.exports = function(User) {
 			settings.sendPostNotifications = parseInt(settings.sendPostNotifications, 10) === 1;
 			settings.restrictChat = parseInt(settings.restrictChat, 10) === 1;
 			settings.topicSearchEnabled = parseInt(settings.topicSearchEnabled, 10) === 1;
+			settings.bootswatchSkin = settings.bootswatchSkin || 'default';
 
 			callback(null, settings);
 		});
@@ -107,6 +108,7 @@ module.exports = function(User) {
 					sendPostNotifications: data.sendPostNotifications,
 					restrictChat: data.restrictChat,
 					topicSearchEnabled: data.topicSearchEnabled,
+					bootswatchSkin: data.bootswatchSkin,
 					groupTitle: data.groupTitle
 				}, next);
 			},
