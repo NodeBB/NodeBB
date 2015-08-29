@@ -121,8 +121,10 @@ define('forum/topic', [
 		var postIndex = getPostIndex();
 
 		if (postIndex && window.location.search.indexOf('page=') === -1) {
-			navigator.scrollToPost(postIndex - 1, true);
-		} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1)) && ajaxify.data.postcount > 1) {
+			if (components.get('post/anchor', postIndex).length) {
+				return navigator.scrollToPostIndex(postIndex, true);
+			}
+		} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1)) && ajaxify.data.postcount > 10) {
 			app.alert({
 				alert_id: 'bookmark',
 				message: '[[topic:bookmark_instructions]]',
@@ -135,15 +137,26 @@ define('forum/topic', [
 					localStorage.removeItem('topic:' + tid + ':bookmark');
 				}
 			});
+			setTimeout(function() {
+				app.removeAlert('bookmark');
+			}, 10000);
 		}
 	}
 
 	function getPostIndex() {
 		var parts = window.location.pathname.split('/');
-		if (parts[parts.length - 1] && utils.isNumber(parts[parts.length - 1])) {
-			return parseInt(parts[parts.length - 1], 10);
+		var lastPart = parts[parts.length - 1];
+		if (lastPart && utils.isNumber(lastPart)) {
+			lastPart = Math.max(0, parseInt(lastPart, 10) - 1);
+		} else {
+			return 0;
 		}
-		return 0;
+
+		while (lastPart > 0 && !components.get('post/anchor', lastPart).length) {
+			lastPart --;
+		}
+
+		return lastPart;
 	}
 
 	function addBlockQuoteHandler() {
@@ -174,6 +187,7 @@ define('forum/topic', [
 		} else {
 			components.get('navbar/title').find('span').text('').hide();
 		}
+		app.removeAlert('bookmark');
 	}
 
 	Topic.calculateIndex = function(index, elementCount) {

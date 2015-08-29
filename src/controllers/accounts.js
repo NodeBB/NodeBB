@@ -22,12 +22,8 @@ var fs = require('fs'),
 
 function getUserDataByUserSlug(userslug, callerUID, callback) {
 	user.getUidByUserslug(userslug, function(err, uid) {
-		if (err) {
+		if (err || !uid) {
 			return callback(err);
-		}
-
-		if (!uid) {
-			return callback(null, null);
 		}
 
 		async.parallel({
@@ -50,7 +46,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 				groups.getUserGroups([uid], next);
 			}
 		}, function(err, results) {
-			if(err || !results.userData) {
+			if (err || !results.userData) {
 				return callback(err || new Error('[[error:invalid-uid]]'));
 			}
 
@@ -111,15 +107,11 @@ accountsController.getUserByUID = function(req, res, next) {
 	var uid = req.params.uid ? req.params.uid : 0;
 
 	async.parallel({
-		settings: async.apply(user.getSettings, uid),
-		userData: async.apply(user.getUserData, uid)
+		userData: async.apply(user.getUserData, uid),
+		settings: async.apply(user.getSettings, uid)
 	}, function(err, results) {
-		if (err) {
+		if (err || !results.userData) {
 			return next(err);
-		}
-
-		if (!results.userData) {
-			return helpers.notFound(req, res);
 		}
 
 		results.userData.email = results.settings.showemail ? results.userData.email : undefined;
@@ -141,12 +133,8 @@ accountsController.getAccount = function(req, res, next) {
 	}
 
 	getUserDataByUserSlug(req.params.userslug, req.uid, function (err, userData) {
-		if (err) {
+		if (err || !userData) {
 			return next(err);
-		}
-
-		if (!userData) {
-			return helpers.notFound(req, res);
 		}
 
 		if (req.uid !== parseInt(userData.uid, 10)) {
@@ -208,7 +196,7 @@ accountsController.getFollowers = function(req, res, next) {
 	getFollow('account/followers', 'followers', req, res, next);
 };
 
-function getFollow(tpl, name, req, res, next) {
+function getFollow(tpl, name, req, res, callback) {
 	var userData;
 
 	async.waterfall([
@@ -218,18 +206,19 @@ function getFollow(tpl, name, req, res, next) {
 		function(data, next) {
 			userData = data;
 			if (!userData) {
-				return helpers.notFound(req, res);
+				return callback();
 			}
 			var method = name === 'following' ? 'getFollowing' : 'getFollowers';
 			user[method](userData.uid, 0, 49, next);
 		}
 	], function(err, users) {
 		if (err) {
-			return next(err);
+			return callback(err);
 		}
 
 		userData.users = users;
 		userData.nextStart = 50;
+		userData.title = '[[pages:' + tpl + ', ' + userData.username + ']]';
 
 		res.render(tpl, userData);
 	});
@@ -253,12 +242,8 @@ accountsController.getTopics = function(req, res, next) {
 
 accountsController.getGroups = function(req, res, next) {
 	accountsController.getBaseUser(req.params.userslug, req.uid, function(err, userData) {
-		if (err) {
+		if (err || !userData) {
 			return next(err);
-		}
-
-		if (!userData) {
-			return helpers.notFound(req, res);
 		}
 
 		groups.getUserGroups([userData.uid], function(err, groupsData) {
@@ -268,7 +253,7 @@ accountsController.getGroups = function(req, res, next) {
 
 			userData.groups = groupsData[0];
 			userData.groups.forEach(groups.escapeGroupData);
-
+			userData.title = '[[pages:account/groups, ' + userData.username + ']]';
 			res.render('account/groups', userData);
 		});
 	});
@@ -283,13 +268,11 @@ function getFromUserSet(tpl, set, method, type, req, res, next) {
 			accountsController.getBaseUser(req.params.userslug, req.uid, next);
 		}
 	}, function(err, results) {
-		if (err) {
+		if (err || !results.userData) {
 			return next(err);
 		}
+
 		var userData = results.userData;
-		if (!userData) {
-			return helpers.notFound(req, res);
-		}
 
 		var setName = 'uid:' + userData.uid + ':' + set;
 
@@ -320,6 +303,8 @@ function getFromUserSet(tpl, set, method, type, req, res, next) {
 
 			var pagination = require('../pagination');
 			userData.pagination = pagination.create(page, pageCount);
+
+			userData.title = '[[pages:' + tpl + ', ' + userData.username + ']]';
 
 			res.render(tpl, userData);
 		});
@@ -377,12 +362,12 @@ accountsController.accountEdit = function(req, res, next) {
 		}
 
 		userData.hasPassword = !!password;
-
+		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
 		res.render('account/edit', userData);
 	});
 };
 
-accountsController.accountSettings = function(req, res, next) {
+accountsController.accountSettings = function(req, res, callback) {
 	var userData;
 	async.waterfall([
 		function(next) {
@@ -391,7 +376,7 @@ accountsController.accountSettings = function(req, res, next) {
 		function(_userData, next) {
 			userData = _userData;
 			if (!userData) {
-				return helpers.notFound(req, res);
+				return callback();
 			}
 			async.parallel({
 				settings: function(next) {
@@ -418,7 +403,7 @@ accountsController.accountSettings = function(req, res, next) {
 		}
 	], function(err) {
 		if (err) {
-			return next(err);
+			return callback(err);
 		}
 
 		userData.dailyDigestFreqOptions = [
@@ -430,74 +415,23 @@ accountsController.accountSettings = function(req, res, next) {
 
 
 		userData.bootswatchSkinOptions = [
-			{
-				"name": "Default",
-				"value": "default"
-			},
-			{
-				"name": "Cerulean",
-				"value": "cerulean"
-			},
-			{
-				"name": "Cosmo",
-				"value": "cosmo"
-			},
-			{
-				"name": "Cyborg",
-				"value": "cyborg"
-			},
-			{
-				"name": "Darkly",
-				"value": "darkly"
-			},
-			{
-				"name": "Flatly",
-				"value": "flatly"
-			},
-			{
-				"name": "Journal",
-				"value": "journal"
-			},
-			{
-				"name": "Lumen",
-				"value": "lumen"
-			},
-			{
-				"name": "Paper",
-				"value": "paper"
-			},
-			{
-				"name": "Readable",
-				"value": "readable"
-			},
-			{
-				"name": "Sandstone",
-				"value": "sandstone"
-			},
-			{
-				"name": "Simplex",
-				"value": "simplex"
-			},
-			{
-				"name": "Slate",
-				"value": "slate"
-			},
-			{
-				"name": "Spacelab",
-				"value": "spacelab"
-			},
-			{
-				"name": "Superhero",
-				"value": "superhero"
-			},
-			{
-				"name": "United",
-				"value": "united"
-			},
-			{
-				"name": "Yeti",
-				"value": "yeti"
-			}
+			{ "name": "Default", "value": "default" },
+			{ "name": "Cerulean", "value": "cerulean" },
+			{ "name": "Cosmo", "value": "cosmo"	},
+			{ "name": "Cyborg", "value": "cyborg" },
+			{ "name": "Darkly", "value": "darkly" },
+			{ "name": "Flatly", "value": "flatly" },
+			{ "name": "Journal", "value": "journal"	},
+			{ "name": "Lumen", "value": "lumen" },
+			{ "name": "Paper", "value": "paper" },
+			{ "name": "Readable", "value": "readable" },
+			{ "name": "Sandstone", "value": "sandstone" },
+			{ "name": "Simplex", "value": "simplex" },
+			{ "name": "Slate", "value": "slate"	},
+			{ "name": "Spacelab", "value": "spacelab" },
+			{ "name": "Superhero", "value": "superhero" },
+			{ "name": "United", "value": "united" },
+			{ "name": "Yeti", "value": "yeti" }
 		];
 
 		userData.bootswatchSkinOptions.forEach(function(skin) {
@@ -513,6 +447,8 @@ accountsController.accountSettings = function(req, res, next) {
 		});
 
 		userData.disableCustomUserSkins = parseInt(meta.config.disableCustomUserSkins, 10) === 1;
+
+		userData.title = '[[pages:account/settings]]';
 
 		res.render('account/settings', userData);
 	});
@@ -563,14 +499,15 @@ accountsController.getNotifications = function(req, res, next) {
 			return next(err);
 		}
 		res.render('notifications', {
-			notifications: notifications
+			notifications: notifications,
+			title: '[[pages:notifications]]'
 		});
 	});
 };
 
-accountsController.getChats = function(req, res, next) {
-	if (parseInt(meta.config.disableChat) === 1) {
-		return helpers.notFound(req, res);
+accountsController.getChats = function(req, res, callback) {
+	if (parseInt(meta.config.disableChat, 10) === 1) {
+		return callback();
 	}
 
 	// In case a userNAME is passed in instead of a slug, the route should not 404
@@ -584,17 +521,16 @@ accountsController.getChats = function(req, res, next) {
 		recentChats: async.apply(messaging.getRecentChats, req.user.uid, 0, 19)
 	}, function(err, results) {
 		if (err) {
-			return next(err);
+			return callback(err);
 		}
 
-		//Remove entries if they were already present as a followed contact
-		if (results.contacts && results.contacts.length) {
-			var contactUids = results.contacts.map(function(contact) {
-					return parseInt(contact.uid, 10);
+		if (results.recentChats.users && results.recentChats.users.length) {
+			var contactUids = results.recentChats.users.map(function(chatObj) {
+					return parseInt(chatObj.uid, 10);
 				});
 
-			results.recentChats.users = results.recentChats.users.filter(function(chatObj) {
-				return contactUids.indexOf(parseInt(chatObj.uid, 10)) === -1;
+			results.contacts = results.contacts.filter(function(contact) {
+				return contactUids.indexOf(parseInt(contact.uid, 10)) === -1;
 			});
 		}
 
@@ -603,7 +539,8 @@ accountsController.getChats = function(req, res, next) {
 				chats: results.recentChats.users,
 				nextStart: results.recentChats.nextStart,
 				contacts: results.contacts,
-				allowed: true
+				allowed: true,
+				title: '[[pages:chats]]'
 			});
 		}
 
@@ -611,18 +548,23 @@ accountsController.getChats = function(req, res, next) {
 			async.apply(user.getUidByUserslug, req.params.userslug),
 			function(toUid, next) {
 				if (!toUid || parseInt(toUid, 10) === parseInt(req.user.uid, 10)) {
-					return helpers.notFound(req, res);
+					return callback();
 				}
 
 				async.parallel({
 					toUser: async.apply(user.getUserFields, toUid, ['uid', 'username']),
-					messages: async.apply(messaging.getMessages, req.user.uid, toUid, 'recent', false),
+					messages: async.apply(messaging.getMessages, {
+						fromuid: req.user.uid,
+						touid: toUid,
+						since: 'recent',
+						isNew: false
+					}),
 					allowed: async.apply(messaging.canMessage, req.user.uid, toUid)
 				}, next);
 			}
 		], function(err, data) {
 			if (err) {
-				return next(err);
+				return callback(err);
 			}
 
 			res.render('chats', {
@@ -631,7 +573,8 @@ accountsController.getChats = function(req, res, next) {
 				contacts: results.contacts,
 				meta: data.toUser,
 				messages: data.messages,
-				allowed: data.allowed
+				allowed: data.allowed,
+				title: '[[pages:chat, ' + data.toUser.username + ']]'
 			});
 		});
 	});

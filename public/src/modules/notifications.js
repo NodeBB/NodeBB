@@ -2,14 +2,14 @@
 
 /* globals define, socket, utils, config, app, ajaxify, templates, Tinycon*/
 
-define('notifications', ['sounds', 'translator'], function(sound, translator) {
+define('notifications', ['sounds', 'translator', 'components'], function(sound, translator, components) {
 	var Notifications = {};
 
 	Notifications.prepareDOM = function() {
 		var notifContainer = $('.notifications'),
 			notifTrigger = notifContainer.children('a'),
 			notifList = $('#notif-list'),
-			notifIcon = $('.notification-icon');
+			notifIcon = components.get('notifications/icon');
 
 		notifTrigger.on('click', function(e) {
 			e.preventDefault();
@@ -17,25 +17,7 @@ define('notifications', ['sounds', 'translator'], function(sound, translator) {
 				return;
 			}
 
-			socket.emit('notifications.get', null, function(err, data) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-
-				var notifs = data.unread.concat(data.read).sort(function(a, b) {
-					return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
-				});
-
-				translator.toggleTimeagoShorthand();
-				for(var i=0; i<notifs.length; ++i) {
-					notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
-				}
-				translator.toggleTimeagoShorthand();
-
-				templates.parse('partials/notifications_list', {notifications: notifs}, function(html) {
-					notifList.translateHtml(html);
-				});
-			});
+			Notifications.loadNotifications(notifList);
 		});
 
 		notifList.on('click', '[data-nid]', function() {
@@ -114,8 +96,30 @@ define('notifications', ['sounds', 'translator'], function(sound, translator) {
 		});
 	};
 
+	Notifications.loadNotifications = function(notifList) {
+		socket.emit('notifications.get', null, function(err, data) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			var notifs = data.unread.concat(data.read).sort(function(a, b) {
+				return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
+			});
+
+			translator.toggleTimeagoShorthand();
+			for(var i=0; i<notifs.length; ++i) {
+				notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
+			}
+			translator.toggleTimeagoShorthand();
+
+			templates.parse('partials/notifications_list', {notifications: notifs}, function(html) {
+				notifList.translateHtml(html);
+			});
+		});
+	};
+
 	Notifications.updateNotifCount = function(count) {
-		var notifIcon = $('.notification-icon');
+		var notifIcon = components.get('notifications/icon');
 
 		if (count > 0) {
 			notifIcon.removeClass('fa-bell-o').addClass('fa-bell');

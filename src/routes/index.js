@@ -78,7 +78,7 @@ function accountRoutes(app, middleware, controllers) {
 function userRoutes(app, middleware, controllers) {
 	var middlewares = [middleware.checkGlobalPrivacySettings];
 
-	setupPageRoute(app, '/users', middleware, middlewares, controllers.users.getOnlineUsers);
+	setupPageRoute(app, '/users', middleware, middlewares, controllers.users.redirectToOnlineUsers);
 	setupPageRoute(app, '/users/online', middleware, middlewares, controllers.users.getOnlineUsers);
 	setupPageRoute(app, '/users/sort-posts', middleware, middlewares, controllers.users.getUsersSortedByPosts);
 	setupPageRoute(app, '/users/sort-reputation', middleware, middlewares, controllers.users.getUsersSortedByReputation);
@@ -189,11 +189,11 @@ function handle404(app, middleware) {
 			res.status(404);
 
 			if (res.locals.isAPI) {
-				return res.json({path: req.path});
+				return res.json({path: req.path.replace(/^\/api/, ''), title: '[[global:404.title]]'});
 			}
 
 			middleware.buildHeader(req, res, function() {
-				res.render('404', {path: req.path});
+				res.render('404', {path: req.path, title: '[[global:404.title]]'});
 			});
 		} else {
 			res.status(404).type('txt').send('Not found');

@@ -389,19 +389,13 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.refreshTitle = function(url) {
-		if (!url) {
-			var a = document.createElement('a');
-			a.href = document.location;
-			url = a.pathname.slice(1);
-		}
-
-		socket.emit('meta.buildTitle', url, function(err, title, numNotifications) {
-			if (err) {
-				return;
-			}
-			titleObj.titles[0] = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') + title;
-			app.alternatingTitle('');
+	app.refreshTitle = function(title) {
+		require(['translator'], function(translator) {
+			translator.translate(title, function(translated) {
+				translated = translated ? (translated + ' | ' + config.browserTitle) : config.browserTitle;
+				titleObj.titles[0] = translated;
+				app.alternatingTitle('');
+			});
 		});
 	};
 
@@ -410,18 +404,6 @@ app.cacheBuster = null;
 		if (navbarEl) {
 			navbarEl.toggleClass('hidden', !!!state);
 		}
-	};
-
-	app.exposeConfigToTemplates = function() {
-		$(document).ready(function() {
-			templates.setGlobal('loggedIn', config.loggedIn);
-			templates.setGlobal('relative_path', RELATIVE_PATH);
-			for(var key in config) {
-				if (config.hasOwnProperty(key)) {
-					templates.setGlobal('config.' + key, config[key]);
-				}
-			}
-		});
 	};
 
 	function createHeaderTooltips() {
@@ -493,13 +475,16 @@ app.cacheBuster = null;
 	};
 
 	function handleStatusChange() {
-		$('#user-control-list .user-status').off('click').on('click', function(e) {
+		$('[component="header/usercontrol"] [data-status]').off('click').on('click', function(e) {
 			var status = $(this).attr('data-status');
 			socket.emit('user.setStatus', status, function(err, data) {
 				if(err) {
 					return app.alertError(err.message);
 				}
-				$('#logged-in-menu #user_label #user-profile-link>i').attr('class', 'fa fa-circle status ' + status);
+				$('[component="user/status"]')
+					.removeClass('away online dnd offline')
+					.addClass(status);
+
 				app.user.status = status;
 			});
 			e.preventDefault();
@@ -559,7 +544,9 @@ app.cacheBuster = null;
 
 			handleNewTopic();
 
-			$('#logout-link').on('click', app.logout);
+			require(['components'], function(components) {
+				components.get('user/logout').on('click', app.logout);
+			});
 
 			Visibility.change(function(e, state){
 				if (state === 'visible') {
@@ -652,9 +639,9 @@ app.cacheBuster = null;
 
 	showWelcomeMessage = window.location.href.indexOf('loggedin') !== -1;
 
-	app.exposeConfigToTemplates();
-
 	socketIOConnect();
+
+	templates.setGlobal('config', config);
 
 	app.cacheBuster = config['cache-buster'];
 

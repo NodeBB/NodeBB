@@ -12,7 +12,7 @@ var searchController = {},
 
 searchController.search = function(req, res, next) {
 	if (!plugins.hasListeners('filter:search.query')) {
-		return helpers.notFound(req, res);
+		return next();
 	}
 
 	var breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:search]]'}]);

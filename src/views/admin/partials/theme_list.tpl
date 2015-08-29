@@ -1,5 +1,5 @@
 <!-- BEGIN themes -->
-<div class="col-xs-4" data-type="{themes.type}" data-theme="{themes.id}"<!-- IF themes.css --> data-css="{themes.css}"<!-- ENDIF themes.css -->>
+<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12" data-type="{themes.type}" data-theme="{themes.id}"<!-- IF themes.css --> data-css="{themes.css}"<!-- ENDIF themes.css -->>
 	<div class="theme-card mdl-card mdl-shadow--2dp">
 		<div class="mdl-card__title mdl-card--expand" style="background-image: url('{themes.screenshot_url}');"></div>
 		<div class="mdl-card__supporting-text">

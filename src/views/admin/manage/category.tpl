@@ -129,4 +129,3 @@
     <i class="material-icons">[[admin:category.save]]</i>
 </button>
 
-<input type="hidden" template-variable="cid" value="{category.cid}" />

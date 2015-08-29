@@ -34,7 +34,7 @@ module.exports = function(Meta) {
 				return callback(err);
 			}
 
-			var themeId = (themeData['theme:id'] || 'nodebb-theme-vanilla'),
+			var themeId = (themeData['theme:id'] || 'nodebb-theme-persona'),
 				baseThemePath = path.join(nconf.get('themes_path'), (themeData['theme:type'] && themeData['theme:type'] === 'local' ? themeId : 'nodebb-theme-vanilla')),
 				paths = [
 					baseThemePath,

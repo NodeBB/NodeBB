@@ -105,15 +105,17 @@
 	}
 
 	function launchSnackbar(params) {
-		var bar = $.snackbar({
-			content: "<strong>" + params.title + "</strong>" + params.message,
-			timeout: 3000,
-			htmlAllowed: true
-		});
+		translator.translate("<strong>" + params.title + "</strong>" + params.message, function(html) {
+			var bar = $.snackbar({
+				content: html,
+				timeout: 3000,
+				htmlAllowed: true
+			});
 
-		if (params.clickfn) {
-			bar.on('click', params.clickfn);
-		}
+			if (params.clickfn) {
+				bar.on('click', params.clickfn);
+			}
+		});
 	}
 
 	function configureSlidemenu() {

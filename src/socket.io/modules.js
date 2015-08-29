@@ -22,7 +22,12 @@ SocketModules.chats.get = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	Messaging.getMessages(socket.uid, data.touid, data.since, false, callback);
+	Messaging.getMessages({
+		fromuid: socket.uid,
+		touid: data.touid,
+		since: data.since,
+		isNew: false
+	}, callback);
 };
 
 SocketModules.chats.send = function(socket, data, callback) {
