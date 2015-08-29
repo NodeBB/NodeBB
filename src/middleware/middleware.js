@@ -68,7 +68,7 @@ middleware.pageView = function(req, res, next) {
 
 middleware.pluginHooks = function(req, res, next) {
 	async.each(plugins.loadedHooks['filter:router.page'] || [], function(hookObj, next) {
-		hookObj.method(req, res, next)
+		hookObj.method(req, res, next);
 	}, function(req, res) {
 		// If it got here, then none of the subscribed hooks did anything, or there were no hooks
 		next();
@@ -126,32 +126,25 @@ middleware.checkGlobalPrivacySettings = function(req, res, next) {
 
 middleware.checkAccountPermissions = function(req, res, next) {
 	// This middleware ensures that only the requested user and admins can pass
-	middleware.authenticate(req, res, function(err) {
-		if (err) {
+	async.waterfall([
+		function (next) {
+			middleware.authenticate(req, res, next);
+		},
+		function (next) {
+			user.getUidByUserslug(req.params.userslug, next);
+		},
+		function (uid, next) {
+			if (parseInt(uid, 10) === req.uid) {
+				return next(null, true);
+			}
+
+			user.isAdministrator(req.uid, next);
+		}
+	], function (err, allowed) {
+		if (err || allowed) {
 			return next(err);
 		}
-
-		user.getUidByUserslug(req.params.userslug, function (err, uid) {
-			if (err) {
-				return next(err);
-			}
-
-			if (!uid) {
-				return controllers.helpers.notFound(req, res);
-			}
-
-			if (parseInt(uid, 10) === req.uid) {
-				return next();
-			}
-
-			user.isAdministrator(req.uid, function(err, isAdmin) {
-				if (err || isAdmin) {
-					return next(err);
-				}
-
-				controllers.helpers.notAllowed(req, res);
-			});
-		});
+		controllers.helpers.notAllowed(req, res);
 	});
 };
 
@@ -205,7 +198,7 @@ middleware.buildHeader = function(req, res, next) {
 	});
 };
 
-middleware.renderHeader = function(req, res, callback) {
+middleware.renderHeader = function(req, res, data, callback) {
 	var registrationType = meta.config.registrationType || 'normal';
 	var templateValues = {
 		bootswatchCSS: meta.config['theme:src'],
@@ -217,14 +210,10 @@ middleware.renderHeader = function(req, res, callback) {
 		'brand:logo:alt': meta.config['brand:logo:alt'] || '',
 		'brand:logo:display': meta.config['brand:logo']?'':'hide',
 		allowRegistration: registrationType === 'normal' || registrationType === 'admin-approval',
-		searchEnabled: plugins.hasListeners('filter:search.query')
+		searchEnabled: plugins.hasListeners('filter:search.query'),
+		config: res.locals.config,
+		relative_path: res.locals.config.relative_path
 	};
-
-	for (var key in res.locals.config) {
-		if (res.locals.config.hasOwnProperty(key)) {
-			templateValues[key] = res.locals.config[key];
-		}
-	}
 
 	templateValues.configJSON = JSON.stringify(res.locals.config);
 
@@ -240,22 +229,17 @@ middleware.renderHeader = function(req, res, callback) {
 			templateValues.useCustomJS = parseInt(meta.config.useCustomJS, 10) === 1;
 			next(null, templateValues.useCustomJS ? meta.config.customJS : '');
 		},
-		title: function(next) {
+		settings: function(next) {
 			if (req.uid) {
-				user.getSettings(req.uid, function(err, settings) {
-					if (err) {
-						return next(err);
-					}
-
-					if (settings.bootswatchSkin && settings.bootswatchSkin !== 'default') {
-						templateValues.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + settings.bootswatchSkin + '/bootstrap.min.css';
-					}
-
-					meta.title.build(req.url.slice(1), settings.userLang, next);
-				});
+				user.getSettings(req.uid, next);
 			} else {
-				meta.title.build(req.url.slice(1), meta.config.defaultLang, next);
+				next();
 			}
+		},
+		title: function(next) {
+			var title = validator.escape(meta.config.browserTitle || meta.config.title || 'NodeBB');
+			title = data.title ? (data.title + ' | ' + title) : title;
+			next(null, title);
 		},
 		isAdmin: function(next) {
 			user.isAdministrator(req.uid, next);
@@ -283,12 +267,15 @@ middleware.renderHeader = function(req, res, callback) {
 
 		if (results.user && parseInt(results.user.banned, 10) === 1) {
 			req.logout();
-			res.redirect('/');
-			return;
+			return res.redirect('/');
 		}
 		results.user.isAdmin = results.isAdmin || false;
 		results.user.uid = parseInt(results.user.uid, 10);
 		results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
+
+		if (results.settings && results.settings.bootswatchSkin && results.settings.bootswatchSkin !== 'default') {
+			templateValues.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + results.settings.bootswatchSkin + '/bootstrap.min.css';
+		}
 
 		templateValues.browserTitle = results.title;
 		templateValues.navigation = results.navigation;
@@ -304,6 +291,10 @@ middleware.renderHeader = function(req, res, callback) {
 
 		templateValues.template = {name: res.locals.template};
 		templateValues.template[res.locals.template] = true;
+
+		if (req.route && req.route.path === '/') {
+			modifyTitle(templateValues);
+		}
 
 		plugins.fireHook('filter:middleware.renderHeader', {templateValues: templateValues, req: req, res: res}, function(err, data) {
 			if (err) {
@@ -338,6 +329,7 @@ middleware.processRender = function(req, res, next) {
 		}
 
 		options.loggedIn = req.user ? parseInt(req.user.uid, 10) !== 0 : false;
+		options.relative_path = nconf.get('relative_path');
 		options.template = {name: template};
 		options.template[template] = true;
 		res.locals.template = template;
@@ -347,6 +339,10 @@ middleware.processRender = function(req, res, next) {
 		}
 
 		if (res.locals.isAPI) {
+			if (req.route && req.route.path === '/api/') {
+				options.title = '[[pages:home]]';
+			}
+
 			return res.json(options);
 		}
 
@@ -367,7 +363,7 @@ middleware.processRender = function(req, res, next) {
 
 			if (res.locals.renderHeader || res.locals.renderAdminHeader) {
 				var method = res.locals.renderHeader ? middleware.renderHeader : middleware.admin.renderHeader;
-				method(req, res, function(err, template) {
+				method(req, res, options, function(err, template) {
 					if (err) {
 						return fn(err);
 					}
@@ -409,71 +405,7 @@ middleware.addExpiresHeaders = function(req, res, next) {
 	next();
 };
 
-middleware.maintenanceMode = function(req, res, next) {
-	if (parseInt(meta.config.maintenanceMode, 10) !== 1) {
-		return next();
-	}
 
-	var allowedRoutes = [
-			'/login',
-			'/stylesheet.css',
-			'/nodebb.min.js',
-			'/vendor/fontawesome/fonts/fontawesome-webfont.woff',
-			'/src/(modules|client)/[\\w/]+.js',
-			'/templates/[\\w/]+.tpl',
-			'/api/login',
-			'/api/?',
-			'/language/.+',
-			'/uploads/system/site-logo.png'
-		],
-		render = function() {
-			res.status(503);
-
-			if (!isApiRoute.test(req.url)) {
-				middleware.buildHeader(req, res, function() {
-					res.render('maintenance', {
-						site_title: meta.config.title || 'NodeBB',
-						message: meta.config.maintenanceModeMessage
-					});
-				});
-			} else {
-				translator.translate('[[pages:maintenance.text, ' + meta.config.title + ']]', meta.config.defaultLang || 'en_GB', function(translated) {
-					res.json({
-						error: translated
-					});
-				});
-			}
-		},
-		isAllowed = function(url) {
-			for(var x=0,numAllowed=allowedRoutes.length,route;x<numAllowed;x++) {
-				route = new RegExp(allowedRoutes[x]);
-				if (route.test(url)) {
-					return true;
-				}
-			}
-			return false;
-		},
-		isApiRoute = /^\/api/;
-
-	if (isAllowed(req.url)) {
-		return next();
-	}
-
-	if (!req.user) {
-		return render();
-	}
-
-	user.isAdministrator(req.user.uid, function(err, isAdmin) {
-		if (err) {
-			return next(err);
-		}
-		if (!isAdmin) {
-			render();
-		} else {
-			next();
-		}
-	});
-};
 
 middleware.privateTagListing = function(req, res, next) {
 	if (!req.user && parseInt(meta.config.privateTagListing, 10) === 1) {
@@ -516,7 +448,7 @@ middleware.requireUser = function(req, res, next) {
 		return next();
 	}
 
-	res.render('403', {});
+	res.render('403', {title: '[[global:403.title]]'});
 };
 
 function redirectToLogin(req, res) {
@@ -524,9 +456,26 @@ function redirectToLogin(req, res) {
 	return controllers.helpers.redirect(res, '/login');
 }
 
+function modifyTitle(obj) {
+	var title = '[[pages:home]] | ' + validator.escape(meta.config.title || 'NodeBB');
+	obj.browserTitle = title;
+
+	if (obj.metaTags) {
+		obj.metaTags.forEach(function(tag, i) {
+			if (tag.property === 'og:title') {
+				obj.metaTags[i].content = title;
+			}
+		});
+	}
+
+	return title;
+}
+
 module.exports = function(webserver) {
 	app = webserver;
 	middleware.admin = require('./admin')(webserver);
+
+	require('./maintenance')(middleware);
 
 	return middleware;
 };

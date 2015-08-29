@@ -17,6 +17,13 @@ define('admin/extend/widgets', function() {
 			return false;
 		});
 
+		$('#widget-selector').on('change', function() {
+			$('.available-widgets [data-widget]').addClass('hide');
+			$('.available-widgets [data-widget="' + $(this).val() + '"]').removeClass('hide');
+		});
+		
+		$('#widget-selector').trigger('change');
+
 		loadWidgetData();
 	};
 
@@ -64,7 +71,7 @@ define('admin/extend/widgets', function() {
 			}
 		});
 
-		$('#widgets .save').on('click', saveWidgets);
+		$('#save').on('click', saveWidgets);
 
 		function saveWidgets() {
 			var total = $('#widgets [data-template][data-location]').length;
@@ -198,7 +205,7 @@ define('admin/extend/widgets', function() {
 
 				for (var k=0; k<area.data.length; ++k) {
 					var widgetData = area.data[k],
-						widgetEl = $('.available-widgets [data-widget="' + widgetData.widget + '"]').clone(true);
+						widgetEl = $('.available-widgets [data-widget="' + widgetData.widget + '"]').clone(true).removeClass('hide');
 
 					widgetArea.append(populateWidget(widgetEl, widgetData.data));
 					appendToggle(widgetEl);

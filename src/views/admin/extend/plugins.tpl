@@ -1,24 +1,27 @@
-<div class="plugins">
+<ul class="nav nav-pills">
+	<li class="active"><a href="#installed" data-toggle="tab">Installed Plugins</a></li>
+	<li><a href="#download" data-toggle="tab">Download Plugins</a></li>
+</ul>
+<br />
+
+<div class="plugins row">
 	<div class="col-lg-9">
-		<div class="panel panel-default">
-			<div class="panel-heading"><i class="fa fa-code-fork"></i> Installed Plugins</div>
-			<div class="panel-body">
+		<div class="tab-content">
+			<div class="tab-pane fade active in" id="installed">
 				<ul class="installed">
 					<!-- BEGIN installed -->
 					<!-- IMPORT admin/partials/installed_plugin_item.tpl -->
 					<!-- END installed -->
 				</ul>
 			</div>
-		</div>
-
-		<div class="panel panel-default">
-			<div class="panel-heading"><i class="fa fa-code-fork"></i> Download Plugins</div>
-			<div class="panel-body">
-				<ul class="download">
-					<!-- BEGIN download -->
-					<!-- IMPORT admin/partials/download_plugin_item.tpl -->
-					<!-- END download -->
-				</ul>
+			<div class="tab-pane fade" id="download">
+				<div class="panel-body">
+					<ul class="download">
+						<!-- BEGIN download -->
+						<!-- IMPORT admin/partials/download_plugin_item.tpl -->
+						<!-- END download -->
+					</ul>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -35,9 +38,6 @@
 			<div class="panel-heading">Re-order Plugins</div>
 			<div class="panel-body">
 				<button class="btn btn-default btn-block" id="plugin-order"><i class="fa fa-exchange"></i> Order Active Plugins</button>
-				<p class="help-block">
-					Certain plugins work ideally when they are initialised before/after other plugins. You can alter this loading behaviour here.
-				</p>
 			</div>
 		</div>
 
@@ -60,10 +60,13 @@
 					<h4 class="modal-title">Order Active Plugins</h4>
 				</div>
 				<div class="modal-body">
-					<p>Plugins load in the order specified here, from top to bottom</p>
-					<ul class="plugin-list">
-
-					</ul>
+					<p>
+						Certain plugins work ideally when they are initialised before/after other plugins.
+					</p>
+					<p>
+						Plugins load in the order specified here, from top to bottom
+					</p>
+					<ul class="plugin-list"></ul>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

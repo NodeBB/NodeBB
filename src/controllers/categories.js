@@ -27,7 +27,7 @@ categoriesController.list = function(req, res, next) {
 				content: validator.escape(meta.config.description || '')
 			}, {
 				property: 'og:title',
-				content: 'Index | ' + validator.escape(meta.config.title || 'NodeBB')
+				content: '[[pages:categories]]'
 			}, {
 				property: 'og:type',
 				content: 'website'
@@ -65,6 +65,8 @@ categoriesController.list = function(req, res, next) {
 			return next(err);
 		}
 
+		data.title = '[[pages:categories]]';
+
 		plugins.fireHook('filter:categories.build', {req: req, res: res, templateData: data}, function(err, data) {
 			if (err) {
 				return next(err);
@@ -74,13 +76,13 @@ categoriesController.list = function(req, res, next) {
 	});
 };
 
-categoriesController.get = function(req, res, next) {
+categoriesController.get = function(req, res, callback) {
 	var cid = req.params.category_id,
 		page = parseInt(req.query.page, 10) || 1,
 		userPrivileges;
 
 	if ((req.params.topic_index && !utils.isNumber(req.params.topic_index)) || !utils.isNumber(cid)) {
-		return helpers.notFound(req, res);
+		return callback();
 	}
 
 	async.waterfall([
@@ -104,7 +106,7 @@ categoriesController.get = function(req, res, next) {
 			userPrivileges = results.privileges;
 
 			if (!results.exists || (results.categoryData && parseInt(results.categoryData.disabled, 10) === 1)) {
-				return helpers.notFound(req, res);
+				return callback();
 			}
 
 			if (!results.privileges.read) {
@@ -125,7 +127,7 @@ categoriesController.get = function(req, res, next) {
 			}
 
 			if (settings.usePagination && (page < 1 || page > pageCount)) {
-				return helpers.notFound(req, res);
+				return callback();
 			}
 
 			if (!settings.usePagination) {
@@ -243,21 +245,21 @@ categoriesController.get = function(req, res, next) {
 		}
 	], function (err, data) {
 		if (err) {
-			return next(err);
+			return callback(err);
 		}
 
 		data.currentPage = page;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 		data.rssFeedUrl = nconf.get('relative_path') + '/category/' + data.cid + '.rss';
 		data.pagination = pagination.create(data.currentPage, data.pageCount);
-
+		data.title = data.name;
 		data.pagination.rel.forEach(function(rel) {
 			res.locals.linkTags.push(rel);
 		});
 
 		plugins.fireHook('filter:category.build', {req: req, res: res, templateData: data}, function(err, data) {
 			if (err) {
-				return next(err);
+				return callback(err);
 			}
 			res.render('category', data.templateData);
 		});

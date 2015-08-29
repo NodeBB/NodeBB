@@ -16,13 +16,13 @@ var topicsController = {},
 	pagination = require('../pagination'),
 	utils = require('../../public/src/utils');
 
-topicsController.get = function(req, res, next) {
+topicsController.get = function(req, res, callback) {
 	var tid = req.params.topic_id,
 		sort = req.query.sort,
 		userPrivileges;
 
 	if ((req.params.post_index && !utils.isNumber(req.params.post_index)) || !utils.isNumber(tid)) {
-		return helpers.notFound(req, res);
+		return callback();
 	}
 
 	async.waterfall([
@@ -60,7 +60,7 @@ topicsController.get = function(req, res, next) {
 			}
 
 			if (settings.usePagination && (page < 1 || page > pageCount)) {
-				return helpers.notFound(req, res);
+				return callback();
 			}
 
 			var set = 'tid:' + tid + ':posts',
@@ -109,7 +109,7 @@ topicsController.get = function(req, res, next) {
 
 			topics.getTopicWithPosts(tid, set, req.uid, start, stop, reverse, function (err, topicData) {
 				if (err && err.message === '[[error:no-topic]]' && !topicData) {
-					return helpers.notFound(req, res);
+					return callback();
 				}
 
 				if (err && !topicData) {
@@ -247,7 +247,7 @@ topicsController.get = function(req, res, next) {
 		}
 	], function (err, data) {
 		if (err) {
-			return next(err);
+			return callback(err);
 		}
 
 		data.privileges = userPrivileges;
@@ -264,7 +264,7 @@ topicsController.get = function(req, res, next) {
 
 		plugins.fireHook('filter:topic.build', {req: req, res: res, templateData: data}, function(err, data) {
 			if (err) {
-				return next(err);
+				return callback(err);
 			}
 			res.render('topic', data.templateData);
 		});

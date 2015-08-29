@@ -1,38 +1,57 @@
 @import "./bootstrap/bootstrap";
+@import "./bootswatch";
 @import "./mixins";
 @import "./vars";
+
+@import "./header";
+@import "./mobile";
 
 @import "./general/dashboard";
 @import "./general/navigation";
 @import "./manage/categories";
 @import "./manage/tags";
 @import "./manage/flags";
+@import "./manage/groups";
 @import "./manage/users";
 @import "./appearance/customise";
 @import "./appearance/themes";
 @import "./extend/plugins";
 @import "./extend/rewards";
 @import "./advanced/database";
+@import "./settings";
 
 @import "./modules/alerts";
 @import "./modules/selectable";
-@import "./modules/checkboxes";
+@import "./modules/snackbar";
 
 .admin {
-	padding-top: 70px;
-	background: #f0f0f0;
+	background: #fff;
+	font-size: 14px;
 
-	.container {
-		width: 100% !important;
-		padding: 0px 15px;
+	h1 {
+		font-size: 35px;
+		margin-bottom: 50px;
 	}
 
-	.jumbotron {
-		padding: @jumbotron-padding;
+	label {
+		font-weight: 700;
 	}
+
 
 	.btn {
 		border-radius: 0;
+	}
+
+	.btn-link {
+		color: @link-color;
+	}
+
+	.floating-button {
+		background: @brand-primary !important;
+		position: fixed;
+		right: 30px;
+		bottom: 30px;
+		z-index: 1;
 	}
 
 	.user-img {
@@ -52,127 +71,8 @@
 		color: #fff;
 	}
 
-	&.mobile {
-		#content {
-			padding-left: 20px;
-		}
-
-		#main-menu {
-			width: 200px;
-			height: 100%;
-
-
-			-webkit-transform: translateX(-190px);
-    		transform: translateX(-190px);
-
-			&.transitioning {
-				.transition(.3s ease all);
-			}
-
-			&.open {
-				-webkit-transform: translateX(0);
-    			transform: translateX(0);
-			}
-		}
-	}
-
-
-	#main-menu {
-		position: fixed;
-		width: 200px;
-		height: 100%;
-		padding-top: 50px;
-		top: 0px;
-		left: 0px;
-		background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgAQMAAACxAfVuAAAAA3NCSVQICAjb4U/gAAAABlBMVEU5OTk1NTVxIqOYAAAACXBIWXMAAArrAAAK6wGCiw1aAAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M26LyyjAAAABZ0RVh0Q3JlYXRpb24gVGltZQAxNC8xMS8xMc34jO8AAAFQSURBVEiJ7ZUxbsMwDEV/68Fbc4M4aC+QsYOhXstDELg3c9CLqPAFNHYo4tKkEBoMhxgoPEkD8aRBIkV+Enh4VRFvswkLwu4HY09m6pXQ/D6NA5lpUMLHtRojmSkq4RyqS2xD9Z2U0DX1Zzo19ZCU6KW6Tx2ZJT1+SDddZuQ7MyEEcqTdk1ECO0b7KSqBQ9i3ElEmcLAv7xJ7JvmW54P8Uqbtlrx5vL1+zDm699ONyI09NDX/zVdUwmlHmeGvVEJHHvB/J6UVh3wTZbtPSpKjMBeHEkwZMcEUHBNMaTLdivh1QRvnyIjJ99ONyI3dSIgJRkJMsMKQdKw5XEpI8m4kxARTRqJ3U3DSGUxpSg8xEpJus9kyEpLXXT/diNzYjYSYYCTEBCMMphWHRkJyp5GQ5MjtyW73dvu8kdDGOSrzqMyjMo/+KUdlHpV5VObR/foD6jrYlpchAFAAAAAASUVORK5CYII=);
-		z-index: 1;
-		overflow-y: auto;
-
-		.nano-content {
-			top: 51px !important;
-		}
-
-		.sidebar-nav {
-			overflow: hidden;
-			.transition(.4s ease-in-out max-height);
-			max-height: 100%;
-			cursor: pointer;
-			max-height: 38px;
-
-			&.open {
-				max-height: 500px;
-			}
-
-			.nav-header {
-				color: #fff;
-				border-top: 1px solid #32353E;
-				border-bottom: 1px solid #1A1C20;
-				background-color: #272727;
-				text-shadow: 0px 0px 2px #111;
-				padding: 10px;
-				.user-select(none);
-			}
-
-			.nav-list {
-				background: #232323;
-
-				li {
-					i {
-						margin-right: 6px;
-					}
-
-					&:hover a {
-						background-color: #3f3f3f;
-
-						span {
-							opacity: 0.8;
-						}
-					}
-
-					&.active a {
-						padding-left: 20px;
-						background-color: #3f3f3f;
-
-						span {
-							opacity: 0;
-						}
-					}
-
-					a {
-						color: white;
-						padding: 7px 15px;
-						font-size: 13px;
-						padding-left: 11px;
-						outline: 0;
-
-						span {
-							opacity: 0;
-							margin-right: -8px;
-							.transition(.3s ease-in opacity);
-						}
-
-						-webkit-transition: background-color .3s ease-in, padding-left .3s ease-in;
-						   -moz-transition: background-color .3s ease-in, padding-left .3s ease-in;
-						     -o-transition: background-color .3s ease-in, padding-left .3s ease-in;
-						        transition: background-color .3s ease-in, padding-left .3s ease-in;
-					}
-				}
-			}
-		}
-	}
-
-	#content {
-		padding-left: 215px;
-		padding-right: 15px;
-	}
-
 	#breadcrumbs {
 		cursor: default;
-	}
-
-	.wrapper {
-		width: 100%;
-		overflow-y: hidden;
 	}
 
 	.acp-panel-heading {
@@ -201,20 +101,6 @@
 
 	.nav-header {
 		.box-header-font
-	}
-
-	#user_label {
-        a {
-            padding-top: 13px;
-            padding-bottom: 13px;
-
-            img {
-                width: 24px;
-                height: 24px;
-                border-radius: 50%;
-                border: 1px solid #454;
-            }
-        }
 	}
 
 	.icon-container {
@@ -271,30 +157,6 @@
         }
     }
 
-	#acp-search {
-		input {
-			background: black;
-			border: 0;
-			color: white;
-			box-shadow: none;
-			.transition(.4s ease width);
-			font-family: @font-family-monospace;
-			width: 30px;
-			height: 30px;
-			vertical-align: -30%;
-			border-radius: 0;
-
-			&:focus {
-				width: 200px;
-			}
-		}
-
-		.search-match {
-			font-weight: 700;
-			color: black;
-		}
-	}
-
 	#taskbar {
 		display: none; /* not sure why I have to do this, but it only seems to show up on prod */
 	}
@@ -309,16 +171,6 @@
 // See: https://github.com/twbs/bootstrap/commit/8e2348e9eda51296eb680192379ab37f10355ca3
 .navbar-brand > img {
   display: inline-block;
-}
-
-@media (min-width: 1200px) {
-	.acp-sidebar {
-		position: fixed;
-		top: 70px;
-		right: 15px;
-		width: initial;
-		max-width: calc( ~"(100% - 200px)/4" );
-	}
 }
 
 .category-settings-form {
@@ -364,4 +216,20 @@
 		max-width: 24px;
 		max-height: 24px;
 	}
+}
+
+.mdl-switch.is-checked .mdl-switch__ripple-container {
+	cursor: pointer !important;
+}
+
+.mdl-switch.is-checked .mdl-switch__thumb {
+	background: @brand-primary !important;
+}
+
+.mdl-switch.is-checked .mdl-switch__track {
+	background: lighten(@brand-primary, 20%) !important;
+}
+
+* > .checkbox:first-child {
+	margin-top: 0px;
 }

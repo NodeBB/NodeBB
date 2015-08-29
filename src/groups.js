@@ -296,11 +296,10 @@ var async = require('async'),
 	Groups.isHidden = function(groupName, callback) {
 		Groups.getGroupFields(groupName, ['hidden'], function(err, values) {
 			if (err) {
-				winston.warn('[groups.isHidden] Could not determine group hidden state (group: ' + groupName + ')');
-				return callback(null, true);	// Default true
+				return callback(err);
 			}
 
-			callback(null, parseInt(values.hidden, 10));
+			callback(null, parseInt(values.hidden, 10) === 1);
 		});
 	};
 

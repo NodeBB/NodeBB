@@ -1,7 +1,7 @@
 {
     "topic": "جُستار",
-    "topic_id": "ID جستار",
-    "topic_id_placeholder": "ID جستار را بنویسید",
+    "topic_id": "شناسه جستار",
+    "topic_id_placeholder": "شناسه جستار را بنویسید",
     "no_topics_found": "هیچ جستاری یافت نشد!",
     "no_posts_found": "دیدگاهی یافت نشد!",
     "post_is_deleted": "این دیدگاه پاک شده!",

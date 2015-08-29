@@ -66,20 +66,21 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 
 		popoutEl.on('click', function() {
 			var	username = $('.expanded-chat').attr('data-username'),
-				uid = Chats.getRecipientUid();
+				uid = Chats.getRecipientUid(),
+				text = components.get('chat/input').val();
 
 			if (app.previousUrl && app.previousUrl.match(/chats/)) {
-				var text = components.get('chat/input').val();
 				ajaxify.go('chats', function() {
 					app.openChat(username, uid);
 				}, true);
-
-				$(window).one('action:chat.loaded', function() {
-					components.get('chat/input').val(text);
-				});
 			} else {
 				window.history.go(-1);
+				app.openChat(username, uid);
 			}
+
+			$(window).one('action:chat.loaded', function() {
+				components.get('chat/input').val(text);
+			});
 		});
 
 		$('.recent-chats').on('scroll', function() {

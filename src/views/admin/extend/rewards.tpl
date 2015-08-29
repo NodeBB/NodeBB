@@ -60,10 +60,6 @@
 					</li>
 					<!-- END active -->
 				</ul>
-				<input type="hidden" template-variable="rewards" value="{function.stringify, rewards}" />
-				<input type="hidden" template-variable="active" value="{function.stringify, active}" />
-				<input type="hidden" template-variable="conditions" value="{function.stringify, conditions}" />
-				<input type="hidden" template-variable="conditionals" value="{function.stringify, conditionals}" />
 			</div>
 		</div>
 	</div>

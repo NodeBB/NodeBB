@@ -1,14 +1,9 @@
 <div id="themes" class="themes">
-	<div class="panel panel-default">
-		<div class="panel-heading">Installed Themes</div>
-		<div class="panel-body">
-			<p>
-				The following themes are currently installed on your forum.
-			</p>
-
-			<ul class="directory" id="installed_themes">
-				<li><i class="fa fa-refresh fa-spin"></i> Checking for installed themes...</li>
-			</ul>
-		</div>
+	<div class="directory row" id="installed_themes">
+		<i class="fa fa-refresh fa-spin"></i> Checking for installed themes...
 	</div>
 </div>
+
+<button id="revert_theme" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+	<i class="material-icons">undo</i>
+</button>

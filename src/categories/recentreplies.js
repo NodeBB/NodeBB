@@ -93,16 +93,25 @@ module.exports = function(Categories) {
 			if (category.posts.length) {
 				return;
 			}
-			var latestPost;
-			category.children.forEach(function(children) {
-				if (children.posts.length && (!latestPost || (latestPost && latestPost.timestamp < children.posts[0].timestamp))) {
-					latestPost = children.posts[0];
-				}
-			});
+			var posts = [];
+			getPostsRecursive(category, posts);
 
-			if (latestPost) {
-				category.posts = [latestPost];
+			posts.sort(function(a, b) {
+				return b.timestamp - a.timestamp;
+			});
+			if (posts.length) {
+				category.posts = [posts[0]];
 			}
+		});
+	}
+
+	function getPostsRecursive(category, posts) {
+		category.posts.forEach(function(p) {
+			posts.push(p);
+		});
+
+		category.children.forEach(function(child) {
+			getPostsRecursive(child, posts);
 		});
 	}
 
