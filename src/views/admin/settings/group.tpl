@@ -7,7 +7,7 @@
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="allowPrivateGroups" checked>
-					<span class="mdl-switch__label"><strong>Private Groups</strong></span>
+					<span class="mdl-switch__label"><strong>[[admin:group.private_groups]]</strong></span>
 				</label>
 			</div>
 
