@@ -1,5 +1,7 @@
 {
 	"header.title": "NodeBB Admin Control Panel",
+	"header.title": "Contents",
+	
 	"partials.menu.admin_control_panel": "Admin Control Panel",
 	"partials.menu.view_forum": "View Forum",
 	"partials.menu.view_profile": "View Profile",

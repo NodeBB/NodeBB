@@ -1,5 +1,7 @@
 {
 	"header.title": "NodeBB 管理控制面板",
+	"header.contents": "目录",
+
 	"partials.menu.admin_control_panel": "管理控制面板",
 	"partials.menu.view_forum": "查看论坛",
 	"partials.menu.view_profile": "查看资料",
@@ -349,7 +351,7 @@
     "tags.maximum_tag_length": "话题最大长度",
     "tags.click": "点击",
     "tags.here": "这里",
-    "tags.visit": " 访问话题管理页面。",
+    "tags.visit": "访问话题管理页面。",
 
    	"users.users": "会员",
 	"users.latest_users": "最新注册",
