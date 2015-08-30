@@ -479,6 +479,11 @@
     "guest.allow_guests_to_search_without_logging_in": "Allow guests to search without logging in",
     "guest.allow_guests_to_search_users_without_logging_in": "Allow guests to search users without logging in",
 
+    "privileges.user": "User",
+    "privileges.add_user": "Add User",
+    "privileges.group": "Group",
+    "privileges.add_group": "Add Group",
+
    	"users.users": "Users",
 	"users.latest_users": "Latest Users",
 	"users.top_posters": "Top Posters",

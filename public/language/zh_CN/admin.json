@@ -480,6 +480,11 @@
     "partials.users.reply_to_topics": "回复主题",
     "partials.users.moderator": "管理",
 
+    "privileges.user": "会员",
+    "privileges.add_user": "添加会员",
+    "privileges.group": "小组",
+    "privileges.add_group": "添加小组",
+
    	"users.users": "会员",
 	"users.latest_users": "最新注册",
 	"users.top_posters": "最多发贴",
