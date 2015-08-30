@@ -448,6 +448,20 @@
     "rewards.new_reward": "新建奖励",
     "rewards.save_changes": "保存",
 
+    "customise.custom_css": "自定义 CSS",
+    "customise.custom_css_help": "在此处输入 CSS 定义，这些定义会在其他所有样式生效后应用。",
+    "customise.custom_header": "自定义 Header",
+    "customise.custom_header_help": "在此处输入 HTML (例如 JavaScript, Meta 标签, 等等), 这些定义将会追加到论坛的 <code>&lt;head&gt;</code> 标签中。",
+    "customise.enable_custom_css": "启用自定义 CSS",
+    "customise.enable_custom_header": "启用自定义 Header",
+    "customise.save": "保存",
+
+    "skins.loading_themes": "正在加载主题",
+    "skins.undo": "撤销",
+
+    "themes.checking": "正在检查已安装的主题...",
+    "themes.undo": "撤销",
+
    	"users.users": "会员",
 	"users.latest_users": "最新注册",
 	"users.top_posters": "最多发贴",
