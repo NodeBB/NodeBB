@@ -1,6 +1,6 @@
 <ul class="nav nav-pills">
-	<li class="active"><a href="#installed" data-toggle="tab">Installed Plugins</a></li>
-	<li><a href="#download" data-toggle="tab">Download Plugins</a></li>
+	<li class="active"><a href="#installed" data-toggle="tab">[[admin:plugins.installed_plugins]]</a></li>
+	<li><a href="#download" data-toggle="tab">[[admin:plugins.download_plugins]]</a></li>
 </ul>
 <br />
 
@@ -28,24 +28,23 @@
 
 	<div class="col-lg-3 acp-sidebar">
 		<div class="panel panel-default">
-			<div class="panel-heading">Plugin Search</div>
+			<div class="panel-heading">[[admin:plugins.plugin_search]]</div>
 			<div class="panel-body">
-				<input class="form-control" type="text" id="plugin-search" placeholder="Search for plugin..."/><br/>
+				<input class="form-control" type="text" id="plugin-search" placeholder="[[admin:plugins.plugin_search_placeholder]]"/><br/>
 			</div>
 		</div>
 
 		<div class="panel panel-default">
-			<div class="panel-heading">Re-order Plugins</div>
+			<div class="panel-heading">[[admin:plugins.re_order_plugins]]</div>
 			<div class="panel-body">
-				<button class="btn btn-default btn-block" id="plugin-order"><i class="fa fa-exchange"></i> Order Active Plugins</button>
+				<button class="btn btn-default btn-block" id="plugin-order"><i class="fa fa-exchange"></i>[[admin:plugins.order_active_plugins]]</button>
 			</div>
 		</div>
 
 		<div class="panel panel-default">
-			<div class="panel-heading">Interested in writing plugins for NodeBB?</div>
+			<div class="panel-heading">[[admin:plugins.interested_in_writing_plugins_for_nodebb]]</div>
 			<div class="panel-body">
-				<p>
-					Full documentation regarding plugin authoring can be found in the <a target="_blank" href="https://docs.nodebb.org/en/latest/plugins/create.html">NodeBB Docs Portal</a>.
+				<p>[[admin:plugins.help]]
 				</p>
 			</div>
 		</div>
@@ -57,20 +56,20 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title">Order Active Plugins</h4>
+					<h4 class="modal-title">[[admin:plugins.order_active_plugins]]</h4>
 				</div>
 				<div class="modal-body">
 					<p>
-						Certain plugins work ideally when they are initialised before/after other plugins.
+						[[admin:plugins.order_active_plugins_line1]]
 					</p>
 					<p>
-						Plugins load in the order specified here, from top to bottom
+						[[admin:plugins.order_active_plugins_line2]]
 					</p>
 					<ul class="plugin-list"></ul>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary" id="save-plugin-order">Save</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">[[admin:plugins.close]]</button>
+					<button type="button" class="btn btn-primary" id="save-plugin-order">[[admin:plugins.save]]</button>
 				</div>
 			</div>
 		</div>
@@ -78,5 +77,3 @@
 
 
 </div>
-
-
