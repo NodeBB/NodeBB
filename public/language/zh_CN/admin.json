@@ -485,6 +485,14 @@
     "privileges.group": "小组",
     "privileges.add_group": "添加小组",
 
+    "tags.empty": "暂无主题设置话题。",
+    "tags.background_colour": "背景颜色",
+    "tags.text_colour": "文字颜色",
+    "tags.modify_tag": "修改话题",
+    "tags.help": "点击或拖动选择话题，使用 SHIFT 多选。",
+    "tags.modify_tags": "修改话题",
+    "tags.delete_tags": "删除话题",
+
    	"users.users": "会员",
 	"users.latest_users": "最新注册",
 	"users.top_posters": "最多发贴",

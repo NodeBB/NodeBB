@@ -483,6 +483,14 @@
     "privileges.add_user": "Add User",
     "privileges.group": "Group",
     "privileges.add_group": "Add Group",
+ 
+    "tags.empty": "Your forum does not have any topics with tags yet.",
+    "tags.background_colour": "Background Colour",
+    "tags.text_colour": "Text Colour",
+    "tags.modify_tag": "Modify Tag",
+    "tags.help": "Select tags via clicking and/or dragging, use shift to select multiple.",
+    "tags.modify_tags": "Modify Tags",
+    "tags.delete_tags": "Delete Tags",
 
    	"users.users": "Users",
 	"users.latest_users": "Latest Users",
