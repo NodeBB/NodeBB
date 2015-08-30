@@ -6,6 +6,7 @@ var fs = require('fs'),
 	nconf = require('nconf'),
 	async = require('async'),
 	validator = require('validator'),
+	winston = require('winston'),
 
 	db = require('../database'),
 	user = require('../user'),
@@ -484,7 +485,9 @@ accountsController.uploadPicture = function (req, res, next) {
 			user.uploadPicture(updateUid, userPhoto, next);
 		}
 	], function(err, image) {
-		fs.unlink(userPhoto.path);
+		fs.unlink(userPhoto.path, function(err) {
+			winston.error('unabled to delete picture', err);
+		});
 		if (err) {
 			return next(err);
 		}
