@@ -245,7 +245,6 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 		var password_confirm = $('#inputNewPasswordAgain');
 		var passwordvalid = false;
 		var passwordsmatch = false;
-		var successIcon = '<i class="fa fa-check"></i>';
 
 		function onPasswordChanged() {
 			if (password.val().length < config.minimumPasswordLength) {
@@ -255,7 +254,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 				showError(password_notify, '[[user:change_password_error]]');
 				passwordvalid = false;
 			} else {
-				showSuccess(password_notify, successIcon);
+				showSuccess(password_notify);
 				passwordvalid = true;
 			}
 		}
@@ -266,7 +265,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 				passwordsmatch = false;
 			} else {
 				if (password.val()) {
-					showSuccess(password_confirm_notify, successIcon);
+					showSuccess(password_confirm_notify);
 				} else {
 					password_confirm_notify.parent().removeClass('alert-success alert-danger');
 					password_confirm_notify.children().show();
@@ -369,7 +368,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 
 	function showError(element, msg) {
 		translator.translate(msg, function(msg) {
-			element.find('.msg').html(msg).siblings().hide();
+			element.find('.error').html(msg).removeClass('hide').siblings().addClass('hide');
 
 			element.parent()
 				.removeClass('alert-success')
@@ -378,14 +377,12 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 		});
 	}
 
-	function showSuccess(element, msg) {
-		translator.translate(msg, function(msg) {
-			element.find('.msg').html(msg);
-			element.parent()
-				.removeClass('alert-danger')
-				.addClass('alert-success');
-			element.show();
-		});
+	function showSuccess(element) {
+		element.find('.success').removeClass('hide').siblings().addClass('hide');
+		element.parent()
+			.removeClass('alert-danger')
+			.addClass('alert-success');
+		element.show();
 	}
 
 	return AccountEdit;
