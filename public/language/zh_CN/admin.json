@@ -468,6 +468,19 @@
     "create.category_name": "版面名称",
     "create.optional_parent_category": "(可选) 父版面",
 
+    "partials.category_rows.enable": "启用",
+    "partials.category_rows.disable": "禁用",
+    "partials.category_rows.edit": "编辑",
+
+    "partials.users.access_read": "访问与阅读",
+    "partials.users.privileges": "权限",
+    "partials.users.find_category": "查找版面",
+    "partials.users.active": "active",
+    "partials.users.create_topics": "发表主题",
+    "partials.users.reply_to_topics": "回复主题",
+    "partials.users.moderator": "管理",
+
+
    	"users.users": "会员",
 	"users.latest_users": "最新注册",
 	"users.top_posters": "最多发贴",

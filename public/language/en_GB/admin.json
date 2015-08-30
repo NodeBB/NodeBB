@@ -126,8 +126,20 @@
 	"category.purge_category": "Purge Category",
 	"category.purge_category_description": "Purging a category will remove all topics and posts, and delete the category from the database. If you want to remove a category <em>temporarily</em>, you'll want to \"disable\" the category instead.",
 
-    "create.category_name": "Category Name",
-    "create.optional_parent_category": "(Optional) Parent Category",
+    "partials.create.category_name": "Category Name",
+    "partials.create.optional_parent_category": "(Optional) Parent Category",
+
+    "partials.category_rows.enable": "Enable",
+    "partials.category_rows.disable": "Disable",
+    "partials.category_rows.edit": "Edit",
+
+    "partials.users.access_read": "Access &amp; Read",
+    "partials.users.privileges": "Privileges",
+    "partials.users.find_category": "Find category",
+    "partials.users.active": "active",
+    "partials.users.create_topics": "Create Topics",
+    "partials.users.reply_to_topics": "Reply to Topics",
+    "partials.users.moderator": "Moderator",
 
 	"group.group_settings": "Group Settings",
 	"group.name": "Name",
