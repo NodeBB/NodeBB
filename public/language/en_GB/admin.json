@@ -122,10 +122,12 @@
 	"category.upload": "Upload",
 	"category.remove": "Remove",
 	"category.categories_control_panel": "Categories Control Panel",
-	"category.save": "Save",
 	"category.revert": "Revert",
 	"category.purge_category": "Purge Category",
 	"category.purge_category_description": "Purging a category will remove all topics and posts, and delete the category from the database. If you want to remove a category <em>temporarily</em>, you'll want to \"disable\" the category instead.",
+
+    "create.category_name": "Category Name",
+    "create.optional_parent_category": "(Optional) Parent Category",
 
 	"group.group_settings": "Group Settings",
 	"group.name": "Name",
@@ -433,7 +435,6 @@
     "widgets.panel_header": "Panel Header",
     "widgets.panel_body": "Panel Body",
     "widgets.alert": "Alert",
-    "widgets.save": "save",
 
     "rewards.rewards": "Rewards",
     "rewards.if_user": "If User's",
@@ -454,13 +455,17 @@
     "customise.custom_header_help": "Enter custom HTML here (ex. JavaScript, Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup.",
     "customise.enable_custom_css": "Enable Custom CSS",
     "customise.enable_custom_header": "Enable Custom Header",
-    "customise.save": "save",
 
     "skins.loading_themes": "Loading Themes",
-    "skins.undo": "undo",
     
     "themes.checking": "Checking for installed themes...",
-    "themes.undo": "undo",
+
+    "guest.guest_handles": "Guest Handles",
+    "guest.allow_guest_handles": "Allow guest handles",
+    "guest.guest_handles_help": "This option exposes a new field that allows guests to pick a name to associate with each post they make. If disabled, the will simply be called \"Guest\"",
+    "guest.guest_privileges": "Guest Privileges",
+    "guest.allow_guests_to_search_without_logging_in": "Allow guests to search without logging in",
+    "guest.allow_guests_to_search_users_without_logging_in": "Allow guests to search users without logging in",
 
    	"users.users": "Users",
 	"users.latest_users": "Latest Users",

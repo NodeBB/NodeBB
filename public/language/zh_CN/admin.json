@@ -433,7 +433,6 @@
     "widgets.panel_header": "面板标题",
     "widgets.panel_body": "面板内容",
     "widgets.alert": "提醒",
-    "widgets.save": "保存",
 
     "rewards.rewards": "奖励",
     "rewards.if_user": "当会员的",
@@ -458,6 +457,16 @@
     "skins.loading_themes": "正在加载主题",
 
     "themes.checking": "正在检查已安装的主题...",
+
+    "guest.guest_handles": "访客署名",
+    "guest.allow_guest_handles": "允许访客署名",
+    "guest.guest_handles_help": "此选项允许访客给发帖署名。如果禁用，则都会被署名为 \"访客\"",
+    "guest.guest_privileges": "访客权限",
+    "guest.allow_guests_to_search_without_logging_in": "允许访客使用搜索",
+    "guest.allow_guests_to_search_users_without_logging_in": "允许访客搜索会员",
+
+    "create.category_name": "版面名称",
+    "create.optional_parent_category": "(可选) 父版面",
 
    	"users.users": "会员",
 	"users.latest_users": "最新注册",
