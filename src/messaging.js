@@ -256,14 +256,14 @@ var db = require('./database'),
 				},
 				teasers: function(next) {
 					var teasers = [];
-					async.eachSeries(uids, function(fromuid, next) {
+					async.each(uids, function(fromuid, next) {
 						Messaging.getMessages({
 							fromuid: fromuid,
 							touid: uid,
 							isNew: false,
 							count: 1
 						}, function(err, teaser) {
-							teasers.push(teaser[0]);
+							teasers[uids.indexOf(fromuid)] = teaser[0];
 							next(err);
 						});
 					}, function(err) {
