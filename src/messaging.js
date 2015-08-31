@@ -256,7 +256,7 @@ var db = require('./database'),
 				},
 				teasers: function(next) {
 					var teasers = [];
-					async.each(uids, function(fromuid, next) {
+					async.eachSeries(uids, function(fromuid, next) {
 						Messaging.getMessages({
 							fromuid: fromuid,
 							touid: uid,
