@@ -84,5 +84,6 @@
     "follow_topics_you_reply_to": "Следване на темите, на които отговаряте",
     "follow_topics_you_create": "Следване на темите, които създавате",
     "grouptitle": "Изберете заглавието на групата, което искате да се показва",
-    "no-group-title": "Няма заглавие на група"
+    "no-group-title": "Няма заглавие на група",
+    "select-skin": "Select a Skin"
 }

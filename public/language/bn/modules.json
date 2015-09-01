@@ -5,7 +5,7 @@
     "chat.no_active": "আপনার কোন সচল কথোপকথন নেই",
     "chat.user_typing": "%1 লিখছেন",
     "chat.user_has_messaged_you": "%1 আপনাকে বার্তা পাঠিয়েছেন",
-    "chat.see_all": "সকল কথোপকথন দেখুন",
+    "chat.see_all": "See all chats",
     "chat.no-messages": "মেসেজ হিস্টোরী দেখতে প্রাপক নির্বাচন করুন",
     "chat.recent-chats": "সাম্প্রতিক চ্যাটসমূহ",
     "chat.contacts": "কন্টাক্টস",
@@ -22,5 +22,8 @@
     "composer.user_said": "%1 বলেছেনঃ",
     "composer.discard": "আপনি কি নিশ্চিত যে আপনি এই পোস্ট বাতিল করতে ইচ্ছুক?",
     "composer.submit_and_lock": "Submit and Lock",
-    "composer.toggle_dropdown": "Toggle Dropdown"
+    "composer.toggle_dropdown": "Toggle Dropdown",
+    "bootbox.ok": "OK",
+    "bootbox.cancel": "Cancel",
+    "bootbox.confirm": "Confirm"
 }

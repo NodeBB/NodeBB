@@ -5,7 +5,7 @@
     "chat.no_active": "Нямате текущи чатове.",
     "chat.user_typing": "%1 пише...",
     "chat.user_has_messaged_you": "%1 Ви написа съобщение.",
-    "chat.see_all": "Вижте всички чатове",
+    "chat.see_all": "See all chats",
     "chat.no-messages": "Моля, изберете получател, за да видите историята на чат съобщенията",
     "chat.recent-chats": "Скорошни чатове",
     "chat.contacts": "Контакти",
@@ -22,5 +22,8 @@
     "composer.user_said": "%1 каза:",
     "composer.discard": "Сигурни ли сте, че искате да отхвърлите тази публикация?",
     "composer.submit_and_lock": "Публикуване и заключване",
-    "composer.toggle_dropdown": "Превключване на падащото меню"
+    "composer.toggle_dropdown": "Превключване на падащото меню",
+    "bootbox.ok": "OK",
+    "bootbox.cancel": "Cancel",
+    "bootbox.confirm": "Confirm"
 }

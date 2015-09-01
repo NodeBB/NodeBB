@@ -5,7 +5,7 @@
     "chat.no_active": "Vous n'avez aucune discussion en cours.",
     "chat.user_typing": "%1 est en train d'écrire ...",
     "chat.user_has_messaged_you": "%1 vous a envoyé un message.",
-    "chat.see_all": "Voir toutes les discussions",
+    "chat.see_all": "See all chats",
     "chat.no-messages": "Veuillez sélectionner un destinataire pour voir l'historique des discussions",
     "chat.recent-chats": "Discussions récentes",
     "chat.contacts": "Contacts",
@@ -22,5 +22,8 @@
     "composer.user_said": "%1 a dit :",
     "composer.discard": "Êtes-vous sûr de bien vouloir supprimer ce message ?",
     "composer.submit_and_lock": "Soumettre et Verrouiller",
-    "composer.toggle_dropdown": "Afficher/masquer le menu"
+    "composer.toggle_dropdown": "Afficher/masquer le menu",
+    "bootbox.ok": "OK",
+    "bootbox.cancel": "Cancel",
+    "bootbox.confirm": "Confirm"
 }
