@@ -198,7 +198,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 					return app.alertError(err.message);
 				}
 
-				inputEl.val('');
 				sounds.play('chat-outgoing');
 				Chats.notifyTyping(toUid, false);
 			});
