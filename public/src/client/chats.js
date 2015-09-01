@@ -202,6 +202,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 				sounds.play('chat-outgoing');
 				Chats.notifyTyping(toUid, false);
 			});
+			inputEl.val('');
 		}
 	};
 
