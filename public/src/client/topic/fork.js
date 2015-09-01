@@ -53,6 +53,7 @@ define('forum/topic/fork', ['components'], function(components) {
 	}
 
 	function createTopicFromPosts() {
+		forkCommit.attr('disabled', true);
 		socket.emit('topics.createTopicFromPosts', {
 			title: forkModal.find('#fork-title').val(),
 			pids: pids
@@ -62,7 +63,7 @@ define('forum/topic/fork', ['components'], function(components) {
 					$(this).remove();
 				});
 			}
-
+			forkCommit.removeAttr('disabled');
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -116,7 +117,7 @@ define('forum/topic/fork', ['components'], function(components) {
 	}
 
 	function checkForkButtonEnable() {
-		if(forkModal.find('#fork-title').length && pids.length) {
+		if (forkModal.find('#fork-title').length && pids.length) {
 			forkCommit.removeAttr('disabled');
 		} else {
 			forkCommit.attr('disabled', true);
