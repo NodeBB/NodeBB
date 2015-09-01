@@ -63,10 +63,17 @@ define('admin/manage/category', [
 			});
 		}
 
-		// If any inputs have changed, prepare it for saving
-		$('form.category input, form.category select').on('change', function(ev) {
-			modified(ev.target);
-		});
+		
+		$('form.category input, form.category select')
+			.on('change', function(ev) {
+				modified(ev.target);
+			})
+			.on('keydown', function(ev) {
+				if (ev.which === 13) {
+					ev.preventDefault();
+					return false;
+				}
+			});
 
 		// Update preview image size on change
 		$('[data-name="imageClass"]').on('change', function(ev) {
