@@ -14,18 +14,18 @@
 			properties = item.properties;
 
 		if (properties) {
-			if ((properties.loggedIn && !data.loggedIn) ||
+			if ((properties.loggedIn && !data.config.loggedIn) ||
 				(properties.adminOnly && !data.isAdmin) ||
 				(properties.installed && properties.installed.search && !data.searchEnabled)) {
 				return false;
 			}
 		}
 
-		if (item.route.match('/users') && data.privateUserInfo && !data.loggedIn) {
+		if (item.route.match('/users') && data.config.privateUserInfo && !data.config.loggedIn) {
 			return false;
 		}
 
-		if (item.route.match('/tags') && data.privateTagListing && !data.loggedIn) {
+		if (item.route.match('/tags') && data.config.privateTagListing && !data.config.loggedIn) {
 			return false;
 		}
 

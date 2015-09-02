@@ -1,1 +1,0 @@
-<input type="hidden" template-variable="tag" value="{tag}" />

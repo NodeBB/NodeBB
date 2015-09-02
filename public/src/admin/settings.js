@@ -46,7 +46,9 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 						break;
 
 					case 'checkbox':
-						field.prop('checked', parseInt(app.config[key], 10) === 1);
+						var checked = parseInt(app.config[key], 10) === 1;
+						field.prop('checked', checked);
+						field.parents('.mdl-switch').toggleClass('is-checked', checked);
 						break;
 					}
 				}

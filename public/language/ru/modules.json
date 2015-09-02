@@ -5,7 +5,7 @@
     "chat.no_active": "У вас нет активных чатов.",
     "chat.user_typing": "%1 печатает ...",
     "chat.user_has_messaged_you": "%1 отправил вам сообщение.",
-    "chat.see_all": "Просмотр всех диалогов",
+    "chat.see_all": "See all chats",
     "chat.no-messages": "Пожалуйста, выберите собеседника для просмотра истории сообщений",
     "chat.recent-chats": "Последние переписки",
     "chat.contacts": "Контакты",
@@ -22,5 +22,8 @@
     "composer.user_said": "%1 сказал:",
     "composer.discard": "Вы уверены, что хотите отказаться от этого поста?",
     "composer.submit_and_lock": "Отправить и закрыть",
-    "composer.toggle_dropdown": "Показать выпадающий список"
+    "composer.toggle_dropdown": "Показать выпадающий список",
+    "bootbox.ok": "OK",
+    "bootbox.cancel": "Cancel",
+    "bootbox.confirm": "Confirm"
 }

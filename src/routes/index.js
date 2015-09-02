@@ -189,7 +189,7 @@ function handle404(app, middleware) {
 			res.status(404);
 
 			if (res.locals.isAPI) {
-				return res.json({path: req.path, title: '[[global:404.title]]'});
+				return res.json({path: req.path.replace(/^\/api/, ''), title: '[[global:404.title]]'});
 			}
 
 			middleware.buildHeader(req, res, function() {

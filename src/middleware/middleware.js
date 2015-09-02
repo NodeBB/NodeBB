@@ -134,10 +134,6 @@ middleware.checkAccountPermissions = function(req, res, next) {
 			user.getUidByUserslug(req.params.userslug, next);
 		},
 		function (uid, next) {
-			if (!uid) {
-				return controllers.helpers.notFound(req, res);
-			}
-
 			if (parseInt(uid, 10) === req.uid) {
 				return next(null, true);
 			}
@@ -214,14 +210,10 @@ middleware.renderHeader = function(req, res, data, callback) {
 		'brand:logo:alt': meta.config['brand:logo:alt'] || '',
 		'brand:logo:display': meta.config['brand:logo']?'':'hide',
 		allowRegistration: registrationType === 'normal' || registrationType === 'admin-approval',
-		searchEnabled: plugins.hasListeners('filter:search.query')
+		searchEnabled: plugins.hasListeners('filter:search.query'),
+		config: res.locals.config,
+		relative_path: res.locals.config.relative_path
 	};
-
-	for (var key in res.locals.config) {
-		if (res.locals.config.hasOwnProperty(key)) {
-			templateValues[key] = res.locals.config[key];
-		}
-	}
 
 	templateValues.configJSON = JSON.stringify(res.locals.config);
 
@@ -337,6 +329,7 @@ middleware.processRender = function(req, res, next) {
 		}
 
 		options.loggedIn = req.user ? parseInt(req.user.uid, 10) !== 0 : false;
+		options.relative_path = nconf.get('relative_path');
 		options.template = {name: template};
 		options.template[template] = true;
 		res.locals.template = template;
@@ -412,71 +405,7 @@ middleware.addExpiresHeaders = function(req, res, next) {
 	next();
 };
 
-middleware.maintenanceMode = function(req, res, next) {
-	if (parseInt(meta.config.maintenanceMode, 10) !== 1) {
-		return next();
-	}
 
-	var allowedRoutes = [
-			'/login',
-			'/stylesheet.css',
-			'/nodebb.min.js',
-			'/vendor/fontawesome/fonts/fontawesome-webfont.woff',
-			'/src/(modules|client)/[\\w/]+.js',
-			'/templates/[\\w/]+.tpl',
-			'/api/login',
-			'/api/?',
-			'/language/.+',
-			'/uploads/system/site-logo.png'
-		],
-		render = function() {
-			res.status(503);
-
-			if (!isApiRoute.test(req.url)) {
-				middleware.buildHeader(req, res, function() {
-					res.render('maintenance', {
-						site_title: meta.config.title || 'NodeBB',
-						message: meta.config.maintenanceModeMessage
-					});
-				});
-			} else {
-				translator.translate('[[pages:maintenance.text, ' + meta.config.title + ']]', meta.config.defaultLang || 'en_GB', function(translated) {
-					res.json({
-						error: translated
-					});
-				});
-			}
-		},
-		isAllowed = function(url) {
-			for(var x=0,numAllowed=allowedRoutes.length,route;x<numAllowed;x++) {
-				route = new RegExp(allowedRoutes[x]);
-				if (route.test(url)) {
-					return true;
-				}
-			}
-			return false;
-		},
-		isApiRoute = /^\/api/;
-
-	if (isAllowed(req.url)) {
-		return next();
-	}
-
-	if (!req.user) {
-		return render();
-	}
-
-	user.isAdministrator(req.user.uid, function(err, isAdmin) {
-		if (err) {
-			return next(err);
-		}
-		if (!isAdmin) {
-			render();
-		} else {
-			next();
-		}
-	});
-};
 
 middleware.privateTagListing = function(req, res, next) {
 	if (!req.user && parseInt(meta.config.privateTagListing, 10) === 1) {
@@ -545,6 +474,8 @@ function modifyTitle(obj) {
 module.exports = function(webserver) {
 	app = webserver;
 	middleware.admin = require('./admin')(webserver);
+
+	require('./maintenance')(middleware);
 
 	return middleware;
 };

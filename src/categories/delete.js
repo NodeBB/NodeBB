@@ -49,13 +49,30 @@ module.exports = function(Categories) {
 	function removeFromParent(cid, callback) {
 		async.waterfall([
 			function(next) {
-				Categories.getCategoryField(cid, 'parentCid', next);
+				async.parallel({
+					parentCid: function(next) {
+						Categories.getCategoryField(cid, 'parentCid', next);
+					},
+					children: function(next) {
+						db.getSortedSetRange('cid:' + cid + ':children', 0, -1, next);
+					}
+				}, next);
 			},
-			function(parentCid, next) {
-				parentCid = parseInt(parentCid, 10) || 0;
-				db.sortedSetRemove('cid:' + parentCid + ':children', cid, next);
+			function(results, next) {
+				async.parallel([
+					function(next) {
+						results.parentCid = parseInt(results.parentCid, 10) || 0;
+						db.sortedSetRemove('cid:' + results.parentCid + ':children', cid, next);
+					},
+					function(next) {
+						async.each(results.children, function(cid, next) {
+							db.setObjectField('category:' + cid, 'parentCid', 0, next);
+						}, next);
+					}
+				], next);
 			}
-		], callback);
-
+		], function(err, results) {
+			callback(err);
+		});
 	}
 };

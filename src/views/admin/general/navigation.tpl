@@ -82,7 +82,6 @@
 						<span class="pull-right badge"><!-- IF available.core -->core<!-- ELSE -->plugin<!-- ENDIF available.core --></span>
 					</li>
 					<!-- END available -->
-					<input type="hidden" template-variable="available" value="{function.stringify, available}" />
 				</ul>
 			</div>
 		</div>

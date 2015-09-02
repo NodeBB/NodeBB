@@ -58,7 +58,6 @@ $(document).ready(function() {
 
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
-		ajaxify.variables.flush();
 		ajaxify.loadData(url, function(err, data) {
 			if (err) {
 				return onAjaxError(err, url, callback, quiet);
@@ -111,14 +110,15 @@ $(document).ready(function() {
 			textStatus = err.textStatus;
 
 		if (data) {
+			data.responseJSON.config = config;
 			var status = parseInt(data.status, 10);
-			if (status === 403 || status === 404 || status === 500 || status === 502) {
+			if (status === 403 || status === 404 || status === 500 || status === 502 || status === 503) {
 				if (status === 502) {
 					status = 500;
 				}
 
 				$('#footer, #content').removeClass('hide').addClass('ajaxifying');
-				return renderTemplate(url, status.toString(), data.responseJSON, (new Date()).getTime(), callback);
+				return renderTemplate(url, status.toString(), data.responseJSON, callback);
 			} else if (status === 401) {
 				app.alertError('[[global:please_log_in]]');
 				app.previousUrl = url;
@@ -215,8 +215,10 @@ $(document).ready(function() {
 				if (!data) {
 					return;
 				}
+
 				ajaxify.data = data;
-				data.relative_path = RELATIVE_PATH;
+				data.config = config;
+
 				$(window).trigger('action:ajaxify.dataLoaded', {url: url, data: data});
 
 				if (callback) {

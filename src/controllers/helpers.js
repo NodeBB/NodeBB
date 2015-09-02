@@ -11,28 +11,6 @@ var nconf = require('nconf'),
 
 var helpers = {};
 
-helpers.notFound = function(req, res, error) {
-	if (plugins.hasListeners('action:meta.override404')) {
-		plugins.fireHook('action:meta.override404', {
-			req: req,
-			res: res,
-			error: error
-		});
-	} else if (res.locals.isAPI) {
-		res.status(404).json({
-			path: req.path.replace(/^\/api/, ''),
-			error: error,
-			title: '[[global:404.title]]'
-		});
-	} else {
-		res.status(404).render('404', {
-			path: req.path,
-			error: error,
-			title: '[[global:404.title]]'
-		});
-	}
-};
-
 helpers.notAllowed = function(req, res, error) {
 	if (req.uid) {
 		if (res.locals.isAPI) {

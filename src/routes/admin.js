@@ -38,45 +38,47 @@ function apiRouter(middleware, controllers) {
 }
 
 function addRoutes(router, middleware, controllers) {
-	router.get('/', controllers.admin.home);
-	router.get('/general/dashboard', controllers.admin.home);
-	router.get('/general/languages', controllers.admin.languages.get);
-	router.get('/general/sounds', controllers.admin.sounds.get);
-	router.get('/general/navigation', controllers.admin.navigation.get);
-	router.get('/general/homepage', controllers.admin.homepage.get);
+	var middlewares = [middleware.pluginHooks];
 
-	router.get('/manage/categories', controllers.admin.categories.getAll);
-	router.get('/manage/categories/:category_id', controllers.admin.categories.get);
+	router.get('/', middlewares, controllers.admin.home);
+	router.get('/general/dashboard', middlewares, controllers.admin.home);
+	router.get('/general/languages', middlewares, controllers.admin.languages.get);
+	router.get('/general/sounds', middlewares, controllers.admin.sounds.get);
+	router.get('/general/navigation', middlewares, controllers.admin.navigation.get);
+	router.get('/general/homepage', middlewares, controllers.admin.homepage.get);
 
-	router.get('/manage/tags', controllers.admin.tags.get);
+	router.get('/manage/categories', middlewares, controllers.admin.categories.getAll);
+	router.get('/manage/categories/:category_id', middlewares, controllers.admin.categories.get);
 
-	router.get('/manage/flags', controllers.admin.flags.get);
+	router.get('/manage/tags', middlewares, controllers.admin.tags.get);
 
-	router.get('/manage/users', controllers.admin.users.sortByJoinDate);
-	router.get('/manage/users/search', controllers.admin.users.search);
-	router.get('/manage/users/latest', controllers.admin.users.sortByJoinDate);
-	router.get('/manage/users/sort-posts', controllers.admin.users.sortByPosts);
-	router.get('/manage/users/sort-reputation', controllers.admin.users.sortByReputation);
-	router.get('/manage/users/banned', controllers.admin.users.banned);
-	router.get('/manage/registration', controllers.admin.users.registrationQueue);
+	router.get('/manage/flags', middlewares, controllers.admin.flags.get);
 
-	router.get('/manage/groups', controllers.admin.groups.list);
-	router.get('/manage/groups/:name', controllers.admin.groups.get);
+	router.get('/manage/users', middlewares, controllers.admin.users.sortByJoinDate);
+	router.get('/manage/users/search', middlewares, controllers.admin.users.search);
+	router.get('/manage/users/latest', middlewares, controllers.admin.users.sortByJoinDate);
+	router.get('/manage/users/sort-posts', middlewares, controllers.admin.users.sortByPosts);
+	router.get('/manage/users/sort-reputation', middlewares, controllers.admin.users.sortByReputation);
+	router.get('/manage/users/banned', middlewares, controllers.admin.users.banned);
+	router.get('/manage/registration', middlewares, controllers.admin.users.registrationQueue);
 
-	router.get('/settings/:term?', controllers.admin.settings.get);
+	router.get('/manage/groups', middlewares, controllers.admin.groups.list);
+	router.get('/manage/groups/:name', middlewares, controllers.admin.groups.get);
 
-	router.get('/appearance/:term?', controllers.admin.appearance.get);
+	router.get('/settings/:term?', middlewares, controllers.admin.settings.get);
 
-	router.get('/extend/plugins', controllers.admin.plugins.get);
-	router.get('/extend/widgets', controllers.admin.extend.widgets);
-	router.get('/extend/rewards', controllers.admin.extend.rewards);
+	router.get('/appearance/:term?', middlewares, controllers.admin.appearance.get);
 
-	router.get('/advanced/database', controllers.admin.database.get);
-	router.get('/advanced/events', controllers.admin.events.get);
-	router.get('/advanced/logs', controllers.admin.logs.get);
-	router.get('/advanced/post-cache', controllers.admin.postCache.get);
+	router.get('/extend/plugins', middlewares, controllers.admin.plugins.get);
+	router.get('/extend/widgets', middlewares, controllers.admin.extend.widgets);
+	router.get('/extend/rewards', middlewares, controllers.admin.extend.rewards);
 
-	router.get('/development/logger', controllers.admin.logger.get);
+	router.get('/advanced/database', middlewares, controllers.admin.database.get);
+	router.get('/advanced/events', middlewares, controllers.admin.events.get);
+	router.get('/advanced/logs', middlewares, controllers.admin.logs.get);
+	router.get('/advanced/post-cache', middlewares, controllers.admin.postCache.get);
+
+	router.get('/development/logger', middlewares, controllers.admin.logger.get);
 }
 
 module.exports = function(app, middleware, controllers) {

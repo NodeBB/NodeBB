@@ -5,7 +5,7 @@
     "chat.no_active": "Non hai chat attive.",
     "chat.user_typing": "%1 sta scrivendo...",
     "chat.user_has_messaged_you": "%1 ti ha scritto.",
-    "chat.see_all": "Vedi tutte le Chat",
+    "chat.see_all": "See all chats",
     "chat.no-messages": "Si prega di selezionare un destinatario per vedere la cronologia dei messaggi",
     "chat.recent-chats": "Chat Recenti",
     "chat.contacts": "Contatti",
@@ -22,5 +22,8 @@
     "composer.user_said": "%1 ha detto:",
     "composer.discard": "Sei sicuro di voler scartare questo post?",
     "composer.submit_and_lock": "Invia e Blocca",
-    "composer.toggle_dropdown": "Mostra/Nascondi menu a discesa"
+    "composer.toggle_dropdown": "Mostra/Nascondi menu a discesa",
+    "bootbox.ok": "OK",
+    "bootbox.cancel": "Cancel",
+    "bootbox.confirm": "Confirm"
 }

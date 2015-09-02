@@ -58,7 +58,7 @@ var async = require('async'),
 				}, next);
 			},
 			function(next) {
-				db.expireAt('confirm:' + confirm_code, Math.floor(Date.now() / 1000 + 60 * 60 * 2), next);
+				db.expireAt('confirm:' + confirm_code, Math.floor(Date.now() / 1000 + 60 * 60 * 24), next);
 			},
 			function(next) {
 				user.getUserField(uid, 'username', next);

@@ -5,7 +5,7 @@
     "chat.no_active": "Du har ingen aktive chats.",
     "chat.user_typing": "%1 skriver ...",
     "chat.user_has_messaged_you": "1% har skrevet til dig.",
-    "chat.see_all": "Se alle chats.",
+    "chat.see_all": "See all chats",
     "chat.no-messages": "Vælg en modtager for at se beskedhistorikken",
     "chat.recent-chats": "Seneste chats",
     "chat.contacts": "Kontakter",
@@ -22,5 +22,8 @@
     "composer.user_said": "%1 sagde:",
     "composer.discard": "Er du sikker på at du vil kassere dette indlæg?",
     "composer.submit_and_lock": "Send og lås",
-    "composer.toggle_dropdown": "Skift mellem dropdown"
+    "composer.toggle_dropdown": "Skift mellem dropdown",
+    "bootbox.ok": "OK",
+    "bootbox.cancel": "Cancel",
+    "bootbox.confirm": "Confirm"
 }

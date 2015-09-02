@@ -182,15 +182,19 @@ var async = require('async'),
 				return callback(err);
 			}
 			var oldCid = topic.cid;
-
-			if(!parseInt(topic.deleted, 10)) {
-				categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1);
-				categories.incrementCategoryFieldBy(cid, 'topic_count', 1);
-			}
-
 			categories.moveRecentReplies(tid, oldCid, cid);
 
-			topics.setTopicField(tid, 'cid', cid, function(err) {
+			async.parallel([
+				function (next) {
+					categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1, next);
+				},
+				function (next) {
+					categories.incrementCategoryFieldBy(cid, 'topic_count', 1, next);
+				},
+				function (next) {
+					topics.setTopicField(tid, 'cid', cid, next);
+				}
+			], function(err) {
 				if (err) {
 					return callback(err);
 				}
