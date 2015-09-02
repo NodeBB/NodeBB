@@ -488,6 +488,8 @@ function enableDefaultPlugins(next) {
 		],
 		customDefaults = nconf.get('defaultPlugins');
 
+	winston.info('[install/defaultPlugins] customDefaults', customDefaults);
+
 	if (customDefaults && customDefaults.length) {
 		try {
 			customDefaults = JSON.parse(customDefaults);
@@ -501,6 +503,8 @@ function enableDefaultPlugins(next) {
 	defaultEnabled = defaultEnabled.filter(function(plugin, index, array) {
 		return array.indexOf(plugin) === index;
 	});
+
+	winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);
 
 	var db = require('./database');
 	var order = defaultEnabled.map(function(plugin, index) {

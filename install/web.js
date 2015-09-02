@@ -30,7 +30,7 @@ web.install = function(port) {
 	app.set('views', path.join(__dirname, '../src/views'));
 	app.use(bodyParser.urlencoded({
 		extended: true
-	})); 
+	}));
 
 	async.parallel([compileLess, compileJS], function() {
 		setupRoutes();
@@ -78,6 +78,8 @@ function install(req, res) {
 		}
 	}
 
+	winston.info('running nodebb setup with env ', process.env);
+
 	var child = require('child_process').fork('app', ['--setup'], {
 		env: process.env
 	});
@@ -107,10 +109,10 @@ function launch(req, res) {
 	process.stdout.write('    "./nodebb stop" to stop the NodeBB server\n');
 	process.stdout.write('    "./nodebb log" to view server output\n');
 	process.stdout.write('    "./nodebb restart" to restart NodeBB\n');
-	
+
 	child.unref();
 	process.exit(0);
-	
+
 }
 
 function compileLess(callback) {
