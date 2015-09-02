@@ -1,67 +1,67 @@
 <nav id="menu" class="visible-xs visible-sm">
 	<section class="menu-section">
-		<h3 class="menu-section-title">General</h3>
+		<h3 class="menu-section-title">[[admin:partials.menu.general]]</h3>
 		<ul class="menu-section-list">
-			<a href="{relative_path}/admin/general/dashboard">Dashboard</a>
-			<li><a href="{relative_path}/admin/general/homepage">Home Page</a></li>
-			<li><a href="{relative_path}/admin/general/navigation">Navigation</a></li>
-			<li><a href="{relative_path}/admin/general/languages">Languages</a></li>
-			<li><a href="{relative_path}/admin/general/sounds">Sounds</a></li>
+			<a href="{relative_path}/admin/general/dashboard">[[admin:partials.menu.dashboard]]</a>
+			<li><a href="{relative_path}/admin/general/homepage">[[admin:partials.menu.home_page]]</a></li>
+			<li><a href="{relative_path}/admin/general/navigation">[[admin:partials.menu.navigation]]</a></li>
+			<li><a href="{relative_path}/admin/general/languages">[[admin:partials.menu.languages]]</a></li>
+			<li><a href="{relative_path}/admin/general/sounds">[[admin:partials.menu.sounds]]</a></li>
 		</ul>
 	</section>
 
 	<section class="menu-section">
-		<h3 class="menu-section-title">Manage</h3>
+		<h3 class="menu-section-title">[[admin:partials.menu.manage]]</h3>
 		<ul class="menu-section-list">
-			<li><a href="{relative_path}/admin/manage/categories">Categories</a></li>
-			<li><a href="{relative_path}/admin/manage/tags">Tags</a></li>
-			<li><a href="{relative_path}/admin/manage/users">Users</a></li>
-			<li><a href="{relative_path}/admin/manage/registration">Registration Queue</a></li>
-			<li><a href="{relative_path}/admin/manage/groups">Groups</a></li>
-			<li><a href="{relative_path}/admin/manage/flags">Flags</a></li>			
+			<li><a href="{relative_path}/admin/manage/categories">[[admin:partials.menu.categories]]</a></li>
+			<li><a href="{relative_path}/admin/manage/tags">[[admin:partials.menu.tags]]</a></li>
+			<li><a href="{relative_path}/admin/manage/users">[[admin:partials.menu.users]]</a></li>
+			<li><a href="{relative_path}/admin/manage/registration">[[admin:partials.menu.registration_queue]]</a></li>
+			<li><a href="{relative_path}/admin/manage/groups">[[admin:partials.menu.groups]]</a></li>
+			<li><a href="{relative_path}/admin/manage/flags">[[admin:partials.menu.flags]]</a></li>
 		</ul>
 	</section>
 
 	<section class="menu-section">
-		<h3 class="menu-section-title">Settings</h3>
+		<h3 class="menu-section-title">[[admin:partials.menu.settings]]</h3>
 		<ul class="menu-section-list">
-			<li><a href="{relative_path}/admin/settings/general">General</a></li>
-			<li><a href="{relative_path}/admin/settings/reputation">Reputation</a></li>
-			<li><a href="{relative_path}/admin/settings/email">Email</a></li>
-			<li><a href="{relative_path}/admin/settings/user">User</a></li>
-			<li><a href="{relative_path}/admin/settings/group">Group</a></li>
-			<li><a href="{relative_path}/admin/settings/guest">Guests</a></li>
-			<li><a href="{relative_path}/admin/settings/post">Post</a></li>
-			<li><a href="{relative_path}/admin/settings/pagination">Pagination</a></li>
-			<li><a href="{relative_path}/admin/settings/tags">Tags</a></li>
-			<li><a href="{relative_path}/admin/settings/notifications">Notifications</a></li>
-			<li><a href="{relative_path}/admin/settings/web-crawler">Web Crawler</a></li>
-			<li><a href="{relative_path}/admin/settings/sockets">Sockets</a></li>
-			<li><a href="{relative_path}/admin/settings/advanced">Advanced</a></li>
+			<li><a href="{relative_path}/admin/settings/general">[[admin:partials.menu.general]]</a></li>
+			<li><a href="{relative_path}/admin/settings/reputation">[[admin:partials.menu.reputation]]</a></li>
+			<li><a href="{relative_path}/admin/settings/email">[[admin:partials.menu.email]]</a></li>
+			<li><a href="{relative_path}/admin/settings/user">[[admin:partials.menu.user]]</a></li>
+			<li><a href="{relative_path}/admin/settings/group">[[admin:partials.menu.group]]</a></li>
+			<li><a href="{relative_path}/admin/settings/guest">[[admin:partials.menu.guest]]</a></li>
+			<li><a href="{relative_path}/admin/settings/post">[[admin:partials.menu.post]]</a></li>
+			<li><a href="{relative_path}/admin/settings/pagination">[[admin:partials.menu.pagination]]</a></li>
+			<li><a href="{relative_path}/admin/settings/tags">[[admin:partials.menu.tags]]</a></li>
+			<li><a href="{relative_path}/admin/settings/notifications">[[admin:partials.menu.notifications]]</a></li>
+			<li><a href="{relative_path}/admin/settings/web-crawler">[[admin:partials.menu.web_crawler]]</a></li>
+			<li><a href="{relative_path}/admin/settings/sockets">[[admin:partials.menu.sockets]]</a></li>
+			<li><a href="{relative_path}/admin/settings/advanced">[[admin:partials.menu.advanced]]</a></li>
 		</ul>
 	</section>
 
 	<section class="menu-section">
-		<h3 class="menu-section-title">Appearance</h3>
+		<h3 class="menu-section-title">[[admin:partials.menu.appearance]]</h3>
 		<ul class="menu-section-list">
-			<li><a href="{relative_path}/admin/appearance/themes">Themes</a></li>
-			<li><a href="{relative_path}/admin/appearance/skins">Skins</a></li>
-			<li><a href="{relative_path}/admin/appearance/customise">Custom HTML &amp; CSS</a></li>
+			<li><a href="{relative_path}/admin/appearance/themes">[[admin:partials.menu.themes]]</a></li>
+			<li><a href="{relative_path}/admin/appearance/skins">[[admin:partials.menu.skins]]</a></li>
+			<li><a href="{relative_path}/admin/appearance/customise">[[admin:partials.menu.customise]]</a></li>
 		</ul>
 	</section>
 
 	<section class="menu-section">
-		<h3 class="menu-section-title">Extend</h3>
+		<h3 class="menu-section-title">[[admin:partials.menu.extend]]</h3>
 		<ul class="menu-section-list">
-			<li><a href="{relative_path}/admin/extend/plugins">Plugins</a></li>
-			<li><a href="{relative_path}/admin/extend/widgets">Widgets</a></li>
-			<li><a href="{relative_path}/admin/extend/rewards">Rewards</a></li>
+			<li><a href="{relative_path}/admin/extend/plugins">[[admin:partials.menu.plugins]]</a></li>
+			<li><a href="{relative_path}/admin/extend/widgets">[[admin:partials.menu.widgets]]</a></li>
+			<li><a href="{relative_path}/admin/extend/rewards">[[admin:partials.menu.rewards]]</a></li>
 		</ul>
 	</section>
 
 	<!-- IF authentication.length -->
 	<section class="menu-section">
-		<h3 class="menu-section-title">Social Authentication</h3>
+		<h3 class="menu-section-title">[[admin:partials.menu.social_authentication]]</h3>
 		<ul class="menu-section-list">
 			<!-- BEGIN authentication -->
 			<li>
@@ -74,7 +74,7 @@
 
 	<!-- IF plugins.length -->
 	<section class="menu-section">
-		<h3 class="menu-section-title">Plugins</h3>
+		<h3 class="menu-section-title">[[admin:partials.menu.plugins]]</h3>
 		<ul class="menu-section-list">
 			<!-- BEGIN plugins -->
 			<li>
@@ -86,14 +86,14 @@
 	<!-- ENDIF plugins.length -->
 
 	<section class="menu-section">
-		<h3 class="menu-section-title">Advanced</h3>
+		<h3 class="menu-section-title">[[admin:partials.menu.advanced]]</h3>
 		<ul class="menu-section-list">
-			<li><a href="{relative_path}/admin/advanced/database">Database</a></li>
-			<li><a href="{relative_path}/admin/advanced/events">Events</a></li>
-			<li><a href="{relative_path}/admin/advanced/logs">Logs</a></li>
-			<li><a href="{relative_path}/admin/advanced/post-cache">Post Cache</a></li>
+			<li><a href="{relative_path}/admin/advanced/database">[[admin:partials.menu.database]]</a></li>
+			<li><a href="{relative_path}/admin/advanced/events">[[admin:partials.menu.events]]</a></li>
+			<li><a href="{relative_path}/admin/advanced/logs">[[admin:partials.menu.logs]]</a></li>
+			<li><a href="{relative_path}/admin/advanced/post-cache">[[admin:partials.menu.post_cache]]</a></li>
 			<!-- IF env -->
-			<li><a href="{relative_path}/admin/development/logger">Logger</a></li>
+			<li><a href="{relative_path}/admin/development/logger">[[admin:partials.menu.logger]]</a></li>
 			<!-- ENDIF env -->
 		</ul>
 	</section>
@@ -108,8 +108,8 @@
 				<div class="bar"></div>
 			</button>
 			<h1 id="main-page-title"></h1>
-		</div>	
-		
+		</div>
+
 		<ul id="user_label" class="pull-right">
 			<li class="dropdown pull-right">
 				<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
@@ -117,31 +117,25 @@
 				</a>
 				<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
 					<li>
-						<a href="{relative_path}/" target="_blank" title="View Forum">
-							View Forum
-						</a>
+						<a href="{relative_path}/" target="_blank" title="[[admin:partials.menu.view_forum]]">[[admin:partials.menu.view_forum]]</a>
 					</li>
 					<li role="presentation" class="divider"></li>
 					<li>
-						<a href="#" class="reload" title="Reload Forum">
-							Reload Forum
-						</a>
+						<a href="#" class="reload" title="[[admin:partials.menu.reload_forum]]">[[admin:partials.menu.reload_forum]]</a>
 					</li>
 					<li>
-						<a href="#" class="restart" title="Restart Forum">
-							Restart Forum
-						</a>
+						<a href="#" class="restart" title="[[admin:partials.menu.restart_forum]]">[[admin:partials.menu.restart_forum]]</a>
 					</li>
 					<li role="presentation" class="divider"></li>
 					<li component="logout">
-						<a href="#">Log out</a>
+						<a href="#">[[admin:partials.menu.log_out]]</a>
 					</li>
 				</ul>
 			</li>
 			<form class="pull-right hidden-sm hidden-xs" role="search">
 				<div class="" id="acp-search" >
 					<div class="dropdown">
-						<input type="text" data-toggle="dropdown" class="form-control" placeholder="Search...">
+						<input type="text" data-toggle="dropdown" class="form-control" placeholder="[[admin:partials.menu.search]]">
 						<ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
 					</div>
 				</div>
@@ -149,65 +143,65 @@
 		</ul>
 		<ul id="main-menu">
 			<li class="menu-item">
-				<a href="{relative_path}/admin/general/dashboard">Dashboard</a>
+				<a href="{relative_path}/admin/general/dashboard">[[admin:partials.menu.dashboard]]</a>
 			</li>
 			<li class="dropdown menu-item">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">General</a>
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin:partials.menu.general]]</a>
 				<ul class="dropdown-menu" role="menu">
-					<li><a href="{relative_path}/admin/general/homepage">Home Page</a></li>
-					<li><a href="{relative_path}/admin/general/navigation">Navigation</a></li>
-					<li><a href="{relative_path}/admin/general/languages">Languages</a></li>
-					<li><a href="{relative_path}/admin/general/sounds">Sounds</a></li>
+					<li><a href="{relative_path}/admin/general/homepage">[[admin:partials.menu.home_page]]</a></li>
+					<li><a href="{relative_path}/admin/general/navigation">[[admin:partials.menu.navigation]]</a></li>
+					<li><a href="{relative_path}/admin/general/languages">[[admin:partials.menu.languages]]</a></li>
+					<li><a href="{relative_path}/admin/general/sounds">[[admin:partials.menu.sounds]]</a></li>
 				</ul>
 			</li>
 			<li class="dropdown menu-item">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Manage</a>
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin:partials.menu.manage]]</a>
 				<ul class="dropdown-menu" role="menu">
-					<li><a href="{relative_path}/admin/manage/categories">Categories</a></li>
-					<li><a href="{relative_path}/admin/manage/tags">Tags</a></li>
-					<li><a href="{relative_path}/admin/manage/users">Users</a></li>
-					<li><a href="{relative_path}/admin/manage/registration">Registration Queue</a></li>
-					<li><a href="{relative_path}/admin/manage/groups">Groups</a></li>
-					<li><a href="{relative_path}/admin/manage/flags">Flags</a></li>
+					<li><a href="{relative_path}/admin/manage/categories">[[admin:partials.menu.categories]]</a></li>
+					<li><a href="{relative_path}/admin/manage/tags">[[admin:partials.menu.tags]]</a></li>
+					<li><a href="{relative_path}/admin/manage/users">[[admin:partials.menu.users]]</a></li>
+					<li><a href="{relative_path}/admin/manage/registration">[[admin:partials.menu.registration_queue]]</a></li>
+					<li><a href="{relative_path}/admin/manage/groups">[[admin:partials.menu.groups]]</a></li>
+					<li><a href="{relative_path}/admin/manage/flags">[[admin:partials.menu.flags]]</a></li>
 				</ul>
 			</li>
 			<li class="dropdown menu-item">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Settings</a>
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin:partials.menu.settings]]</a>
 				<ul class="dropdown-menu" role="menu">
-					<li><a href="{relative_path}/admin/settings/general">General</a></li>
-					<li><a href="{relative_path}/admin/settings/reputation">Reputation</a></li>
-					<li><a href="{relative_path}/admin/settings/email">Email</a></li>
-					<li><a href="{relative_path}/admin/settings/user">User</a></li>
-					<li><a href="{relative_path}/admin/settings/group">Group</a></li>
-					<li><a href="{relative_path}/admin/settings/guest">Guests</a></li>
-					<li><a href="{relative_path}/admin/settings/post">Post</a></li>
-					<li><a href="{relative_path}/admin/settings/pagination">Pagination</a></li>
-					<li><a href="{relative_path}/admin/settings/tags">Tags</a></li>
-					<li><a href="{relative_path}/admin/settings/notifications">Notifications</a></li>
-					<li><a href="{relative_path}/admin/settings/web-crawler">Web Crawler</a></li>
-					<li><a href="{relative_path}/admin/settings/sockets">Sockets</a></li>
-					<li><a href="{relative_path}/admin/settings/advanced">Advanced</a></li>
+					<li><a href="{relative_path}/admin/settings/general">[[admin:partials.menu.general]]</a></li>
+					<li><a href="{relative_path}/admin/settings/reputation">[[admin:partials.menu.reputation]]</a></li>
+					<li><a href="{relative_path}/admin/settings/email">[[admin:partials.menu.email]]</a></li>
+					<li><a href="{relative_path}/admin/settings/user">[[admin:partials.menu.user]]</a></li>
+					<li><a href="{relative_path}/admin/settings/group">[[admin:partials.menu.group]]</a></li>
+					<li><a href="{relative_path}/admin/settings/guest">[[admin:partials.menu.guest]]</a></li>
+					<li><a href="{relative_path}/admin/settings/post">[[admin:partials.menu.post]]</a></li>
+					<li><a href="{relative_path}/admin/settings/pagination">[[admin:partials.menu.pagination]]</a></li>
+					<li><a href="{relative_path}/admin/settings/tags">[[admin:partials.menu.tags]]</a></li>
+					<li><a href="{relative_path}/admin/settings/notifications">[[admin:partials.menu.notifications]]</a></li>
+					<li><a href="{relative_path}/admin/settings/web-crawler">[[admin:partials.menu.web_crawler]]</a></li>
+					<li><a href="{relative_path}/admin/settings/sockets">[[admin:partials.menu.sockets]]</a></li>
+					<li><a href="{relative_path}/admin/settings/advanced">[[admin:partials.menu.advanced]]</a></li>
 				</ul>
 			</li>
 			<li class="dropdown menu-item">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Appearance</a>
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin:partials.menu.appearance]]</a>
 				<ul class="dropdown-menu" role="menu">
-					<li><a href="{relative_path}/admin/appearance/themes">Themes</a></li>
-					<li><a href="{relative_path}/admin/appearance/skins">Skins</a></li>
-					<li><a href="{relative_path}/admin/appearance/customise">Custom HTML &amp; CSS</a></li>
+					<li><a href="{relative_path}/admin/appearance/themes">[[admin:partials.menu.themes]]</a></li>
+					<li><a href="{relative_path}/admin/appearance/skins">[[admin:partials.menu.skins]]</a></li>
+					<li><a href="{relative_path}/admin/appearance/customise">[[admin:partials.menu.customise]]</a></li>
 				</ul>
 			</li>
 			<li class="dropdown menu-item">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Extend</a>
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin:partials.menu.extend]]</a>
 				<ul class="dropdown-menu" role="menu">
-					<li><a href="{relative_path}/admin/extend/plugins">Plugins</a></li>
-					<li><a href="{relative_path}/admin/extend/widgets">Widgets</a></li>
-					<li><a href="{relative_path}/admin/extend/rewards">Rewards</a></li>
+					<li><a href="{relative_path}/admin/extend/plugins">[[admin:partials.menu.plugins]]</a></li>
+					<li><a href="{relative_path}/admin/extend/widgets">[[admin:partials.menu.widgets]]</a></li>
+					<li><a href="{relative_path}/admin/extend/rewards">[[admin:partials.menu.rewards]]</a></li>
 				</ul>
 			</li>
 			<!-- IF authentication.length -->
 			<li class="dropdown menu-item">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Social Authentication</a>
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin:partials.menu.social_authentication]]</a>
 				<ul class="dropdown-menu" role="menu">
 					<!-- BEGIN authentication -->
 					<li>
@@ -219,7 +213,7 @@
 			<!-- ENDIF authentication.length -->
 			<!-- IF plugins.length -->
 			<li class="dropdown menu-item">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Plugins</a>
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin:partials.menu.plugins]]</a>
 				<ul class="dropdown-menu" role="menu">
 					<!-- BEGIN plugins -->
 					<li>
@@ -228,20 +222,20 @@
 					<!-- END plugins -->
 					<li class="divider"></li>
 					<li data-link="1">
-						<a href="{relative_path}/admin/extend/plugins">Install Plugins</a>
+						<a href="{relative_path}/admin/extend/plugins">[[admin:partials.menu.install_plugins]]</a>
 					</li>
 				</ul>
 			</li>
 			<!-- ENDIF plugins.length -->
 			<li class="dropdown menu-item">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Advanced</a>
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin:partials.menu.advanced]]</a>
 				<ul class="dropdown-menu" role="menu">
-					<li><a href="{relative_path}/admin/advanced/database">Database</a></li>
-					<li><a href="{relative_path}/admin/advanced/events">Events</a></li>
-					<li><a href="{relative_path}/admin/advanced/logs">Logs</a></li>
-					<li><a href="{relative_path}/admin/advanced/post-cache">Post Cache</a></li>
+					<li><a href="{relative_path}/admin/advanced/database">[[admin:partials.menu.database]]</a></li>
+					<li><a href="{relative_path}/admin/advanced/events">[[admin:partials.menu.events]]</a></li>
+					<li><a href="{relative_path}/admin/advanced/logs">[[admin:partials.menu.logs]]</a></li>
+					<li><a href="{relative_path}/admin/advanced/post-cache">[[admin:partials.menu.post_cache]]</a></li>
 					<!-- IF env -->
-					<li><a href="{relative_path}/admin/development/logger">Logger</a></li>
+					<li><a href="{relative_path}/admin/development/logger">[[admin:partials.menu.logger]]</a></li>
 					<!-- ENDIF env -->
 				</ul>
 			</li>

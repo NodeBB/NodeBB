@@ -1,6 +1,6 @@
 					<table class="table table-striped table-hover privilege-table">
 						<tr>
-							<th colspan="2">User</th>
+							<th colspan="2">[[admin:privileges.user]]</th>
 							<!-- BEGIN privileges.labels.users -->
 							<th class="text-center">{privileges.labels.users.name}</th>
 							<!-- END privileges.labels.users -->
@@ -15,13 +15,13 @@
 						<!-- END privileges.users -->
 						<tr>
 							<td colspan="{privileges.columnCount}">
-								<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.user"> Add User</button>
+								<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.user">[[admin:privileges.add_user]]</button>
 							</td>
 						</tr>
 						<!-- ELSE -->
 						<tr>
 							<td colspan="{privileges.columnCount}">
-								<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.user"> Add User</button>
+								<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.user">[[admin:privileges.add_user]]</button>
 								No user-specific privileges in this category.
 							</td>
 						</tr>
@@ -30,7 +30,7 @@
 
 					<table class="table table-striped table-hover privilege-table">
 						<tr>
-							<th colspan="2">Group</th>
+							<th colspan="2">[[admin:privileges.group]]</th>
 							<!-- BEGIN privileges.labels.groups -->
 							<th class="text-center">{privileges.labels.groups.name}</th>
 							<!-- END privileges.labels.groups -->
@@ -50,21 +50,20 @@
 						<!-- END privileges.groups -->
 						<tr>
 							<td colspan="{privileges.columnCount}">
-								<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.group"> Add Group</button>
+								<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.group">[[admin:privileges.add_group]]</button>
 							</td>
 						</tr>
 						<!-- ELSE -->
 						<tr>
 							<td colspan="{privileges.columnCount}">
-								<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.group"> Add Group</button>
+								<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.group">[[admin:privileges.add_group]]</button>
 								No group-specific privileges in this category.
 							</td>
 						</tr>
 						<!-- ENDIF privileges.groups.length -->
 					</table>
-					<div class="help-block">
-						If the <code>registered-users</code> group is granted a specific privilege, all other groups receive an
-						<strong>implicit privilege</strong>, even if they are not explicitly defined/checked. This implicit
+					<div class="help-block">If the<code>registered-users</code> group is granted a specific privilege, all other groups receive an
+						<strong>implicit-privilege</strong>, even if they are not explicitly defined/checked. This implicit
 						privilege is shown to you because all users are part of the <code>registered-users</code> user group,
 						and so, privileges for additional groups need not be explicitly granted.
 					</div>

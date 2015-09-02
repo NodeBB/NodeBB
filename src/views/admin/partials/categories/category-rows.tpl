@@ -17,9 +17,9 @@
                 <div class="clearfix pull-right text-right">
                     <div class="btn-group">
                         <button data-action="toggle" data-disabled="{categories.disabled}" class="btn <!-- IF categories.disabled -->btn-primary<!-- ELSE -->btn-danger<!-- ENDIF categories.disabled -->">
-                            <!-- IF categories.disabled -->Enable<!-- ELSE -->Disable<!-- ENDIF categories.disabled -->
+                            <!-- IF categories.disabled -->[[admin:partials.category_rows.enable]]<!-- ELSE -->[[admin:partials.category_rows.disable]]<!-- ENDIF categories.disabled -->
                         </button>
-                        <a href="./categories/{categories.cid}" class="btn btn-default">Edit</a>
+                        <a href="./categories/{categories.cid}" class="btn btn-default">[[admin:partials.category_rows.edit]]</a>
                     </div>
                 </div>
             </div>
