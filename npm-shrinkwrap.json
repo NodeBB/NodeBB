@@ -1,6 +1,6 @@
 {
   "name": "nodebb",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "dependencies": {
     "async": {
       "version": "1.4.2",
