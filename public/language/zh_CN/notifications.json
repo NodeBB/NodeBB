@@ -1,7 +1,7 @@
 {
     "title": "通知",
     "no_notifs": "您没有新的通知",
-    "see_all": "See all notifications",
+    "see_all": "查看全部消息",
     "mark_all_read": "标记全部为已读",
     "back_to_home": "返回 %1",
     "outgoing_link": "站外链接",

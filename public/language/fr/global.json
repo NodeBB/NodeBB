@@ -68,7 +68,7 @@
     "recentposts": "Messages récents",
     "recentips": "Adresses IP récemment enregistées",
     "away": "Absent",
-    "dnd": "Do not disturb",
+    "dnd": "Occupé",
     "invisible": "Invisible",
     "offline": "Hors-ligne",
     "email": "Email",
@@ -78,7 +78,7 @@
     "updated.title": "Forum mis à jour",
     "updated.message": "Ce forum a été mis à jour à la dernière version. Cliquez ici pour recharger la page.",
     "privacy": "Vie privée",
-    "follow": "S'abonner",
-    "unfollow": "Se désabonner",
+    "follow": "Suivre",
+    "unfollow": "Ne plus suivre",
     "delete_all": "Tout supprimer"
 }
