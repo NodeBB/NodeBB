@@ -12,6 +12,16 @@ var winston = require('winston'),
 	app = express(),
 	server;
 
+winston.add(winston.transports.File, {
+	filename: 'logs/webinstall.log',
+	colorize: true,
+	timestamp: function() {
+		var date = new Date();
+		return date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0,5) + ' [' + global.process.pid + ']';
+	},
+	level: 'verbose'
+});
+
 var web = {},
 	scripts = [
 		'public/vendor/xregexp/xregexp.js',
@@ -77,8 +87,6 @@ function install(req, res) {
 			process.env[i.replace(':', '__')] = req.body[i];
 		}
 	}
-
-	winston.info('running nodebb setup with env ', process.env);
 
 	var child = require('child_process').fork('app', ['--setup'], {
 		env: process.env
