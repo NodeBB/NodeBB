@@ -503,6 +503,10 @@
     "privileges.add_user": "添加会员",
     "privileges.group": "小组",
     "privileges.add_group": "添加小组",
+    "privileges.group_is_private": "此小组是私密小组",
+    "privileges.no_user_specific_privileges": "此版面没有定制的会员权限。",
+    "privileges.no_group_specific_privileges": "此版面没有定制的小组权限。",
+    "privileges.help": "如果给<code>注册会员(registered-users)<\/code>组授予权限，即使没有给其他组显式授予该权限，也会拥有<strong>隐式权限(implicit-privilege)<\/strong>。因为所有会员都属于<code>注册会员(registered-users)</code>组，所以别的不需要显式授权。",
 
     "tags.empty": "暂无主题设置话题。",
     "tags.background_colour": "背景颜色",

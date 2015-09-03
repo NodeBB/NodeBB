@@ -22,7 +22,7 @@
 						<tr>
 							<td colspan="{privileges.columnCount}">
 								<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.user">[[admin:privileges.add_user]]</button>
-								No user-specific privileges in this category.
+								[[admin:privileges.no_user_specific_privileges]]
 							</td>
 						</tr>
 						<!-- ENDIF privileges.users.length -->
@@ -40,7 +40,7 @@
 						<tr data-group-name="{privileges.groups.name}" data-private="<!-- IF privileges.groups.isPrivate -->1<!-- ELSE -->0<!-- ENDIF privileges.groups.isPrivate -->">
 							<td>
 								<!-- IF privileges.groups.isPrivate -->
-								<i class="fa fa-lock text-muted" title="This group is private"></i>
+								<i class="fa fa-lock text-muted" title="[[admin:privileges.group_is_private]]"></i>
 								<!-- ENDIF privileges.groups.isPrivate -->
 								{privileges.groups.name}
 							</td>
@@ -57,13 +57,10 @@
 						<tr>
 							<td colspan="{privileges.columnCount}">
 								<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.group">[[admin:privileges.add_group]]</button>
-								No group-specific privileges in this category.
+								[[admin:privileges.no_group_specific_privileges]]
 							</td>
 						</tr>
 						<!-- ENDIF privileges.groups.length -->
 					</table>
-					<div class="help-block">If the<code>registered-users</code> group is granted a specific privilege, all other groups receive an
-						<strong>implicit-privilege</strong>, even if they are not explicitly defined/checked. This implicit
-						privilege is shown to you because all users are part of the <code>registered-users</code> user group,
-						and so, privileges for additional groups need not be explicitly granted.
+					<div class="help-block">[[admin:privileges.help]]
 					</div>
