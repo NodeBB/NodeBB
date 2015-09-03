@@ -382,6 +382,11 @@
     "tags.here": "here",
     "tags.visit": " to visit the tag management page.",
 
+    "footer.upload_picture": "Upload Picture",
+    "footer.upload_a_picture": "Upload a picture",
+    "footer.success": "success",
+    "footer.close": "Close",
+    
     "user.authentication": "Authentication",
     "user.allow_local_login": "Allow local login",
     "user.require_email_confirmation": "Require Email Confirmation",
@@ -555,6 +560,8 @@
     "navigation.enable": "Enable",
     "navigation.available_menu_items": "Available Menu Items",
     "navigation.custom_route": "Custom Route",
+    "navigation.core": "core",
+    "navigation.plugin": "pluin",
 
     "languages.language_settings": "Language Settings",
     "languages.help": "The default language determines the language settings for all users who are visiting your forum. <br \/>Individual users can override the default language on their account settings page.",

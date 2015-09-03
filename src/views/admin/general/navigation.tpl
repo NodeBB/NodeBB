@@ -78,7 +78,7 @@
 					<!-- BEGIN available -->
 					<li data-id="@index" class="alert <!-- IF available.core -->alert-info<!-- ELSE -->alert-success<!-- ENDIF available.core -->">
 						<strong>{available.text}</strong> {available.route}
-						<span class="pull-right badge"><!-- IF available.core -->core<!-- ELSE -->plugin<!-- ENDIF available.core --></span>
+						<span class="pull-right badge"><!-- IF available.core -->[[admin:navigation.core]]<!-- ELSE -->[[admin:navigation.plugin]]<!-- ENDIF available.core --></span>
 					</li>
 					<!-- END available -->
 				</ul>

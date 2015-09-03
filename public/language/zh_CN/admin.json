@@ -556,6 +556,8 @@
     "navigation.enable": "启用",
     "navigation.available_menu_items": "已启用的菜单项",
     "navigation.custom_route": "自定义路由",
+    "navigation.core": "核心",
+    "navigation.plugin": "插件",
 
     "languages.language_settings": "语言设置",
     "languages.help": "默认语言决定所有用户访问论坛的语言设置。<br \/>会员可以在他们的帐户设置中自己选择语言。",
@@ -566,6 +568,11 @@
     "sounds.chat_messages": "聊天信息",
     "sounds.incoming_message": "收到信息",
     "sounds.outgoing_message": "发出信息",
+
+    "footer.upload_picture": "上传图片",
+    "footer.upload_a_picture": "上传图片",
+    "footer.success": "成功",
+    "footer.close": "关闭",
 
    	"users.users": "会员",
 	"users.latest_users": "最新注册",
