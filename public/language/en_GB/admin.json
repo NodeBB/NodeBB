@@ -160,6 +160,13 @@
 	"registration.email": "Email",
 	"registration.ip": "IP",
 	"registration.time": "Time",
+    "registration.notice1": "There are no users in the registration queue. To enable this feature go to ",
+    "registration.notice2": "Settings -> User -> Authentication",
+    "registration.notice3": " and set <strong>Registration Type<\/strong> to \"Admin Approval\".",
+    "registration.frequency": "Frequency",
+    "registration.appears": "Appears",
+    "registration.confidence": "Confidence",
+
 
 	"groups.groups_list": "Groups List",
 	"groups.group_name": "Group Name",

@@ -146,6 +146,12 @@
 	"registration.email": "邮箱",
 	"registration.ip": "IP",
 	"registration.time": "时间",
+    "registration.notice1": "审核队列中占无会员。启用此特性，请前往",
+    "registration.notice2": "设置 -> 会员 -> 验证",
+    "registration.notice3": "，然后将 <strong>注册方式<\/strong> 设置 \"管理员审核\"。",
+    "registration.frequency": "频率",
+    "registration.appears": "来源",
+    "registration.confidence": "置信度",
 
 	"groups.groups_list": "小组列表",
 	"groups.group_name": "小组名称",
@@ -354,7 +360,7 @@
 
     "user.authentication": "验证",
     "user.allow_local_login": "允许本地登录",
-    "user.require_email_confirmation": "要求邮件确认",
+    "user.require_email_confirmation": "强制邮件验证",
     "user.allow_login_with": "允许登录使用",
     "user.username_or_email": "用户名或邮箱名",
     "user.username_only": "仅用户名",
