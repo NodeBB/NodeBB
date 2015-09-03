@@ -93,9 +93,9 @@
 			<div class="form-group">
 				<label>[[admin:user.custom_gravatar_default_image]]</label>
 				<div class="input-group">
-					<input id="customGravatarDefaultImage" type="text" class="form-control" placeholder="A custom image to use instead of gravatar defaults" data-field="customGravatarDefaultImage" />
+					<input id="customGravatarDefaultImage" type="text" class="form-control" placeholder="[[admin:user.custom_gravatar_default_image.placeholder]]" data-field="customGravatarDefaultImage" />
 					<span class="input-group-btn">
-						<input data-action="upload" data-target="customGravatarDefaultImage" data-route="{config.relative_path}/api/admin/uploadgravatardefault" type="button" class="btn btn-default" value="Upload"></input>
+						<input data-action="upload" data-target="customGravatarDefaultImage" data-route="{config.relative_path}/api/admin/uploadgravatardefault" type="button" class="btn btn-default" value="[[admin:user.upload]]"></input>
 					</span>
 				</div>
 			</div>
@@ -107,7 +107,7 @@
 
 			<div class="form-group">
 				<label>[[admin:user.maximum_user_image_file_size]]</label>
-				<input type="text" class="form-control" placeholder="Maximum size of uploaded user images in kilobytes" data-field="maximumProfileImageSize" />
+				<input type="text" class="form-control" placeholder="[[admin:user.maximum_user_image_file_size.placeholder]]" data-field="maximumProfileImageSize" />
 			</div>
 		</form>
 	</div>
@@ -135,7 +135,7 @@
 				<label for="loginAttempts">[[admin:user.login_attempts_per_hour]]</label>
 				<input id="loginAttempts" type="text" class="form-control" data-field="loginAttempts" placeholder="5" />
 				<p class="help-block">
-					If login attempts to a user&apos;s account exceeds this threshold, that account will be locked for a pre-configured amount of time
+					[[admin:user.login_attempts_per_hour.help]]
 				</p>
 			</div>
 			<div class="form-group">
