@@ -311,10 +311,12 @@
     "notifications.welcome_notification_link": "Welcome Notification Link",
 
     "pagination.pagination_settings": "Pagination Settings",
+    "pagination.pagination_settings": "Paginate topics and posts instead of using infinite scroll.",
     "pagination.topic_pagination": "Topic Pagination",
     "pagination.posts_per_page": "Posts per Page",
     "pagination.category_pagination": "Category Pagination",
     "pagination.topics_per_page": "Topics per Page",
+    "pagination.topics_per_page_help": "Initial Number of Topics to Load on Unread, Recent, and Popular",
 
     "post.post_sorting": "Post Sorting",
     "post.default_post_sorting": "Default Post Sorting",
@@ -481,6 +483,8 @@
     "skins.loading_themes": "Loading Themes",
     
     "themes.checking": "Checking for installed themes...",
+    "themes.homepage": "Homepage",
+    "themes.select_theme": "Select Theme",
 
     "guest.guest_handles": "Guest Handles",
     "guest.allow_guest_handles": "Allow guest handles",
