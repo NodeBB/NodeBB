@@ -4,7 +4,7 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin:web-crawler.crawlability_settings]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-			<strong>Custom Robots.txt <small>[[admin:web-crawler.leave_blank_for_default]]</small></strong><br />
+			<strong>[[admin:web-crawler.custom]]</strong><br />
 			<textarea class="form-control" data-field="robots.txt"></textarea>
 		</form>
 	</div>
@@ -24,7 +24,7 @@
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="feeds:disableSitemap">
-					<span class="mdl-switch__label"><strong>Disable Sitemap.xml</strong></span>
+					<span class="mdl-switch__label"><strong>[[admin:web-crawler.disable_sitemap_xml]]</strong></span>
 				</label>
 			</div>
 

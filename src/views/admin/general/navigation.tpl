@@ -36,17 +36,17 @@
 							<strong>[[admin:navigation.properties]]</strong>
 							<div class="checkbox">
 								<label>
-									<input type="checkbox" name="property:adminOnly" <!-- IF enabled.properties.adminOnly -->[[admin:navigation.checked]]<!-- ENDIF enabled.properties.adminOnly -->/> <strong>[[admin:navigation.only_display_to_admins]]</strong>
+									<input type="checkbox" name="property:adminOnly" <!-- IF enabled.properties.adminOnly -->checked<!-- ENDIF enabled.properties.adminOnly -->/> <strong>[[admin:navigation.only_display_to_admins]]</strong>
 								</label>
 							</div>
 							<div class="checkbox">
 								<label>
-									<input type="checkbox" name="property:loggedIn" <!-- IF enabled.properties.loggedIn -->[[admin:navigation.checked]]<!-- ENDIF enabled.properties.loggedIn -->/> <strong>[[admin:navigation.only_display_to_logged_in_users]]</strong>
+									<input type="checkbox" name="property:loggedIn" <!-- IF enabled.properties.loggedIn -->checked<!-- ENDIF enabled.properties.loggedIn -->/> <strong>[[admin:navigation.only_display_to_logged_in_users]]</strong>
 								</label>
 							</div>
 							<div class="checkbox">
 								<label>
-									<input type="checkbox" name="property:targetBlank" <!-- IF enabled.properties.targetBlank -->[[admin:navigation.checked]]<!-- ENDIF enabled.properties.targetBlank -->/> <strong>[[admin:navigation.open_in_a_new_window]]</strong>
+									<input type="checkbox" name="property:targetBlank" <!-- IF enabled.properties.targetBlank -->checked<!-- ENDIF enabled.properties.targetBlank -->/> <strong>[[admin:navigation.open_in_a_new_window]]</strong>
 								</label>
 							</div>
 

@@ -172,6 +172,7 @@
     "registration.confidence": "Confidence",
 
 	"groups.groups_list": "Groups List",
+	"groups.search": "Search",
 	"groups.group_name": "Group Name",
 	"groups.group_description": "Group Description",
 	"groups.system_group": "System Group",
@@ -431,9 +432,10 @@
     "user.number_of_results_to_display": "Number of results to display",
 
     "web-crawler.crawlability_settings": "Crawlability Settings",
-    "web-crawler.leave_blank_for_default": "Leave blank for default",
+    "web-crawler.custom": "Custom Robots.txt <small>Leave blank for default</small>",
     "web-crawler.sitemap_feed_settings": "Sitemap & Feed Settings",
     "web-crawler.disable_rss_feeds": "Disable RSS Feeds",
+    "web-crawler.disable_sitemap_xml": "Disable Sitemap.xml",
     "web-crawler.number_of_topics_to_display_in_the_sitemap": "Number of Topics to display in the Sitemap",
     "web-crawler.clear_sitemap_cache": "Clear Sitemap Cache",
     "web-crawler.view_sitemap": "View Sitemap",
@@ -557,6 +559,12 @@
     "languages.language_settings": "Language Settings",
     "languages.help": "The default language determines the language settings for all users who are visiting your forum. <br \/>Individual users can override the default language on their account settings page.",
     "languages.default_language": "Default Language",
+
+    "sounds.notifications": "Notifications",
+    "sounds.play": "Play",
+    "sounds.chat_messages": "Chat Messages",
+    "sounds.incoming_message": "Incoming Message",
+    "sounds.outgoing_message": "Outgoing Message",
 
    	"users.users": "Users",
 	"users.latest_users": "Latest Users",

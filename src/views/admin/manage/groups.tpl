@@ -4,7 +4,7 @@
 			<div class="panel-heading"><i class="fa fa-group"></i> [[admin:groups.groups_list]]</div>
 			<div class="panel-body">
 
-				<input id="group-search" type="text" class="form-control" placeholder="Search" /><br/>
+				<input id="group-search" type="text" class="form-control" placeholder="[[admin:groups.search]]" /><br/>
 
 				<table class="table table-striped groups-list">
 					<tr>

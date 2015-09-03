@@ -15,7 +15,7 @@
 	"partials.menu.home_page": "首页",
 	"partials.menu.navigation": "导航",
 	"partials.menu.languages": "语言",
-	"partials.menu.sounds": "提示音",
+	"partials.menu.sounds": "声音",
 
 	"partials.menu.manage": "管理",
 	"partials.menu.categories": "版面",
@@ -158,6 +158,7 @@
     "registration.confidence": "置信度",
 
 	"groups.groups_list": "小组列表",
+    "groups.search": "搜索",
 	"groups.group_name": "小组名称",
 	"groups.group_description": "小组描述",
 	"groups.system_group": "系统组",
@@ -417,9 +418,10 @@
     "user.number_of_results_to_display": "显示的结果数",
 
     "web-crawler.crawlability_settings": "爬虫设置",
-    "web-crawler.leave_blank_for_default": "留空则为缺省值",
+    "web-crawler.custom": "自定义 Robots.txt <small>留空则为缺省值</small>",
     "web-crawler.sitemap_feed_settings": "Sitemap 与订阅设置",
     "web-crawler.disable_rss_feeds": "禁用 RSS 订阅",
+    "web-crawler.disable_sitemap_xml": "禁用 Sitemap.xml",
     "web-crawler.number_of_topics_to_display_in_the_sitemap": "Sitemap 中显示的主题数",
     "web-crawler.clear_sitemap_cache": "清空 sitemap 缓存",
     "web-crawler.view_sitemap": "查看 Sitemap",
@@ -456,8 +458,8 @@
     "rewards.if_user": "当会员的",
     "rewards.is": "满足:",
     "rewards.then": "则:",
-    "rewards.amount_of_times_reward_is_claimable": "Amount of times reward is claimable",
-    "rewards.enter_0_for_infinite": "0 代表无限",
+    "rewards.amount_of_times_reward_is_claimable": "奖励授予次数",
+    "rewards.enter_0_for_infinite": "0 为无次数限制",
     "rewards.delete": "删除",
     "rewards.enable": "启用",
     "rewards.disable": "禁用",
@@ -558,6 +560,12 @@
     "languages.language_settings": "语言设置",
     "languages.help": "默认语言决定所有用户访问论坛的语言设置。<br \/>会员可以在他们的帐户设置中自己选择语言。",
     "languages.default_language": "默认语言",
+
+    "sounds.notifications": "提示",
+    "sounds.play": "播放",
+    "sounds.chat_messages": "聊天信息",
+    "sounds.incoming_message": "收到信息",
+    "sounds.outgoing_message": "发出信息",
 
    	"users.users": "会员",
 	"users.latest_users": "最新注册",
