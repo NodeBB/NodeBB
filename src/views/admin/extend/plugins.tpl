@@ -30,7 +30,7 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">[[admin:plugins.plugin_search]]</div>
 			<div class="panel-body">
-				<input class="form-control" type="text" id="plugin-search" placeholder="[[admin:plugins.plugin_search_placeholder]]"/><br/>
+				<input autofocus class="form-control" type="text" id="plugin-search" placeholder="[[admin:plugins.plugin_search_placeholder]]"/><br/>
 			</div>
 		</div>
 

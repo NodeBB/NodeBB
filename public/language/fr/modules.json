@@ -22,5 +22,8 @@
     "composer.user_said": "%1 a dit :",
     "composer.discard": "Êtes-vous sûr de bien vouloir supprimer ce message ?",
     "composer.submit_and_lock": "Soumettre et Verrouiller",
-    "composer.toggle_dropdown": "Afficher/masquer le menu"
+    "composer.toggle_dropdown": "Afficher/masquer le menu",
+    "bootbox.ok": "OK",
+    "bootbox.cancel": "Annuler",
+    "bootbox.confirm": "Confirmer"
 }

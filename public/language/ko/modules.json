@@ -5,7 +5,7 @@
     "chat.no_active": "활성화된 채팅이 없습니다.",
     "chat.user_typing": "%1님이 입력 중입니다.",
     "chat.user_has_messaged_you": "%1님이 메시지를 보냈습니다.",
-    "chat.see_all": "모든 대화 기록 보기",
+    "chat.see_all": "See all chats",
     "chat.no-messages": "대화 기록을 보려면 대화 상대를 선택하세요.",
     "chat.recent-chats": "최근 대화 내용",
     "chat.contacts": "연락처",
@@ -22,5 +22,8 @@
     "composer.user_said": "%1님의 말:",
     "composer.discard": "이 게시물을 지우겠습니까?",
     "composer.submit_and_lock": "Submit and Lock",
-    "composer.toggle_dropdown": "Toggle Dropdown"
+    "composer.toggle_dropdown": "Toggle Dropdown",
+    "bootbox.ok": "OK",
+    "bootbox.cancel": "Cancel",
+    "bootbox.confirm": "Confirm"
 }

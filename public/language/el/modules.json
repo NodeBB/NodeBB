@@ -5,7 +5,7 @@
     "chat.no_active": "Δεν έχεις ενεργές συνομιλίες.",
     "chat.user_typing": "Ο/Η %1 πληκτρολογεί...",
     "chat.user_has_messaged_you": "Ο/Η %1 σου έστειλε μήνυμα.",
-    "chat.see_all": "Προβολή όλων των Συνομιλιών",
+    "chat.see_all": "See all chats",
     "chat.no-messages": "Παρακαλώ επέλεξε έναν παραλήπτη για να δείς το ιστορικό της συνομιλίας",
     "chat.recent-chats": "Πρόσφατες Συνομιλίες",
     "chat.contacts": "Επαφές",
@@ -22,5 +22,8 @@
     "composer.user_said": "Ο/Η %1 είπε:",
     "composer.discard": "Είσαι σίγουρος/η πως θέλεις να πετάξεις αυτή την δημοσίευση;",
     "composer.submit_and_lock": "Submit and Lock",
-    "composer.toggle_dropdown": "Toggle Dropdown"
+    "composer.toggle_dropdown": "Toggle Dropdown",
+    "bootbox.ok": "OK",
+    "bootbox.cancel": "Cancel",
+    "bootbox.confirm": "Confirm"
 }

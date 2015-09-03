@@ -152,8 +152,8 @@ define('forum/topic', [
 			return 0;
 		}
 
-		while (lastPart > 0 && !components.get('post/anchor', lastPart).length) {
-			lastPart --;
+		if (lastPart > 0 && !components.get('post/anchor', lastPart).length) {
+			return components.get('post/anchor').last().attr('name');
 		}
 
 		return lastPart;

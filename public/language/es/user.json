@@ -84,5 +84,6 @@
     "follow_topics_you_reply_to": "Seguir los temas en los que respondes",
     "follow_topics_you_create": "Seguir publicaciones que creas",
     "grouptitle": "Selecciona el título del grupo que deseas visualizar",
-    "no-group-title": "Sin título de grupo"
+    "no-group-title": "Sin título de grupo",
+    "select-skin": "Select a Skin"
 }

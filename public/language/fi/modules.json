@@ -5,7 +5,7 @@
     "chat.no_active": "Sinulla ei ole aktiivisia keskusteluita.",
     "chat.user_typing": "%1 kirjoittaa ...",
     "chat.user_has_messaged_you": "%1 lähetti sinulle viestin.",
-    "chat.see_all": "Näytä kaikki keskustelut",
+    "chat.see_all": "See all chats",
     "chat.no-messages": "Valitse vastaanottaja katsellaksesi keskusteluhistoriaa",
     "chat.recent-chats": "Viimeisimmät keskustelut",
     "chat.contacts": "Contacts",
@@ -22,5 +22,8 @@
     "composer.user_said": "%1 sanoi:",
     "composer.discard": "Oletko varma, että haluat hylätä viestin?",
     "composer.submit_and_lock": "Submit and Lock",
-    "composer.toggle_dropdown": "Toggle Dropdown"
+    "composer.toggle_dropdown": "Toggle Dropdown",
+    "bootbox.ok": "OK",
+    "bootbox.cancel": "Cancel",
+    "bootbox.confirm": "Confirm"
 }

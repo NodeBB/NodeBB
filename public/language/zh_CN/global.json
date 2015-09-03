@@ -33,6 +33,7 @@
     "header.notifications": "通知",
     "header.search": "搜索",
     "header.profile": "设置",
+    "header.navigation": "导航",
     "notifications.loading": "正在加载通知",
     "chats.loading": "正在加载聊天",
     "motd.welcome": "欢迎来到 NodeBB，未来的社区论坛平台。",

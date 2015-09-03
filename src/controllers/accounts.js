@@ -23,8 +23,12 @@ var fs = require('fs'),
 
 function getUserDataByUserSlug(userslug, callerUID, callback) {
 	user.getUidByUserslug(userslug, function(err, uid) {
-		if (err || !uid) {
+		if (err) {
 			return callback(err);
+		}
+
+		if (!uid) {
+			return callback(null, null);
 		}
 
 		async.parallel({
@@ -347,7 +351,7 @@ accountsController.getBaseUser = function(userslug, callerUID, callback) {
 	});
 };
 
-accountsController.accountEdit = function(req, res, next) {
+accountsController.accountEdit = function(req, res, callback) {
 	var userData;
 	async.waterfall([
 		function(next) {
@@ -355,11 +359,14 @@ accountsController.accountEdit = function(req, res, next) {
 		},
 		function(data, next) {
 			userData = data;
+			if (!userData) {
+				return callback();
+			}
 			db.getObjectField('user:' + userData.uid, 'password', next);
 		}
 	], function(err, password) {
 		if (err) {
-			return next(err);
+			return callback(err);
 		}
 
 		userData.hasPassword = !!password;
