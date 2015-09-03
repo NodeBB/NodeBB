@@ -5,7 +5,7 @@
     "chat.no_active": "Bạn hiện giờ không có cuộc chat nào",
     "chat.user_typing": "%1b đang gõ",
     "chat.user_has_messaged_you": "%1 đã gửi tin cho bạn.",
-    "chat.see_all": "Tất cả tin nhắn.",
+    "chat.see_all": "See all chats",
     "chat.no-messages": "Hãy chọn 1 tài khoản để xem lịch sử chat",
     "chat.recent-chats": "Vừa chat",
     "chat.contacts": "Liên hệ",
@@ -22,5 +22,8 @@
     "composer.user_said": "%1 đã nói:",
     "composer.discard": "Bạn có chắc chắn hủy bỏ bài viết này?",
     "composer.submit_and_lock": "Submit and Lock",
-    "composer.toggle_dropdown": "Toggle Dropdown"
+    "composer.toggle_dropdown": "Toggle Dropdown",
+    "bootbox.ok": "OK",
+    "bootbox.cancel": "Cancel",
+    "bootbox.confirm": "Confirm"
 }

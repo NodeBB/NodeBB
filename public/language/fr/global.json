@@ -33,6 +33,7 @@
     "header.notifications": "Notifications",
     "header.search": "Recherche",
     "header.profile": "Profil",
+    "header.navigation": "Navigation",
     "notifications.loading": "Chargement des notifications",
     "chats.loading": "Chargement des chats",
     "motd.welcome": "Bienvenue sur NodeBB, la plate-forme de discussion du futur.",
@@ -77,7 +78,7 @@
     "updated.title": "Forum mis à jour",
     "updated.message": "Ce forum a été mis à jour à la dernière version. Cliquez ici pour recharger la page.",
     "privacy": "Vie privée",
-    "follow": "S'abonner",
-    "unfollow": "Se désabonner",
+    "follow": "Suivre",
+    "unfollow": "Ne plus suivre",
     "delete_all": "Tout supprimer"
 }

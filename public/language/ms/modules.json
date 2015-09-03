@@ -5,7 +5,7 @@
     "chat.no_active": "Anda tiada pesanan yang aktif",
     "chat.user_typing": "%1 menaip",
     "chat.user_has_messaged_you": "%1 mesej anda.",
-    "chat.see_all": "Lihat semua Sembang",
+    "chat.see_all": "See all chats",
     "chat.no-messages": "Sila pilih penerima untuk lihat sejarah sembang",
     "chat.recent-chats": "Sembang Terbaru",
     "chat.contacts": "Hubungi",
@@ -22,5 +22,8 @@
     "composer.user_said": "%1 berkata:",
     "composer.discard": "Anda yakin untuk membuang kiriman ini?",
     "composer.submit_and_lock": "Hantar dan Kunci",
-    "composer.toggle_dropdown": "Togol Kebawah"
+    "composer.toggle_dropdown": "Togol Kebawah",
+    "bootbox.ok": "OK",
+    "bootbox.cancel": "Cancel",
+    "bootbox.confirm": "Confirm"
 }

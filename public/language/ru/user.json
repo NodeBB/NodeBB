@@ -84,5 +84,6 @@
     "follow_topics_you_reply_to": "Следить за темами в которых вы отвечаете",
     "follow_topics_you_create": "Следить за темами которые вы создаёте",
     "grouptitle": "Выберите бейдж группы для отображения",
-    "no-group-title": "Не показывать бейдж"
+    "no-group-title": "Не показывать бейдж",
+    "select-skin": "Select a Skin"
 }

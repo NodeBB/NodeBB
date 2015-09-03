@@ -84,5 +84,6 @@
     "follow_topics_you_reply_to": "متابعة المواضيع التي تقوم بالرد فيها",
     "follow_topics_you_create": "متابعة المواضيع التي تنشئها",
     "grouptitle": "حدد عنوان المجموعة الذي تريد عرضه",
-    "no-group-title": "لا يوجد عنوان للمجموعة"
+    "no-group-title": "لا يوجد عنوان للمجموعة",
+    "select-skin": "Select a Skin"
 }

@@ -6,6 +6,7 @@ var fs = require('fs'),
 	nconf = require('nconf'),
 	async = require('async'),
 	validator = require('validator'),
+	winston = require('winston'),
 
 	db = require('../database'),
 	user = require('../user'),
@@ -22,8 +23,12 @@ var fs = require('fs'),
 
 function getUserDataByUserSlug(userslug, callerUID, callback) {
 	user.getUidByUserslug(userslug, function(err, uid) {
-		if (err || !uid) {
+		if (err) {
 			return callback(err);
+		}
+
+		if (!uid) {
+			return callback(null, null);
 		}
 
 		async.parallel({
@@ -346,7 +351,7 @@ accountsController.getBaseUser = function(userslug, callerUID, callback) {
 	});
 };
 
-accountsController.accountEdit = function(req, res, next) {
+accountsController.accountEdit = function(req, res, callback) {
 	var userData;
 	async.waterfall([
 		function(next) {
@@ -354,11 +359,14 @@ accountsController.accountEdit = function(req, res, next) {
 		},
 		function(data, next) {
 			userData = data;
+			if (!userData) {
+				return callback();
+			}
 			db.getObjectField('user:' + userData.uid, 'password', next);
 		}
 	], function(err, password) {
 		if (err) {
-			return next(err);
+			return callback(err);
 		}
 
 		userData.hasPassword = !!password;
@@ -484,7 +492,9 @@ accountsController.uploadPicture = function (req, res, next) {
 			user.uploadPicture(updateUid, userPhoto, next);
 		}
 	], function(err, image) {
-		fs.unlink(userPhoto.path);
+		fs.unlink(userPhoto.path, function(err) {
+			winston.error('unable to delete picture', err);
+		});
 		if (err) {
 			return next(err);
 		}
