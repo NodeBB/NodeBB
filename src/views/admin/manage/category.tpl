@@ -106,19 +106,15 @@
 			</div>
 
 			<div class="tab-pane fade col-xs-12" id="privileges">
-				<div class="panel panel-default">
-					<div class="panel-body">
-						<p>
-							[[admin:category.privileges_description]]
-						</p>
-						<p class="text-warning">
-							<strong>[[admin:category.note]]</strong>: [[admin:category.privileges_note]]
-						</p>
-						<hr />
-						<div class="privilege-table-container">
-							<!-- IMPORT admin/partials/categories/privileges.tpl -->
-						</div>
-					</div>
+				<p>
+					[[admin:category.privileges_description]]
+				</p>
+				<p class="text-warning">
+					<strong>[[admin:category.note]]</strong>: [[admin:category.privileges_note]]
+				</p>
+				<hr />
+				<div class="privilege-table-container">
+					<!-- IMPORT admin/partials/categories/privileges.tpl -->
 				</div>
 			</div>
 		</div>
