@@ -1,7 +1,7 @@
 <div id="navigation">
 	<div class="col-lg-9">
 		<div class="panel panel-default">
-			<div class="panel-heading">Active Navigation</div>
+			<div class="panel-heading">[[admin:navigation.active_navigation]]</div>
 			<div class="panel-body">
 				<ul id="enabled">
 					<!-- BEGIN enabled -->
@@ -9,24 +9,23 @@
 						<form>
 							<div class="row">
 								<div class="col-sm-6">
-									<label>ID: <small>optional</small>
+									<label>[[admin:navigation.id]]<small>[[admin:navigation.optional]]</small>
 										<input class="form-control" type="text" name="id" value="{enabled.id}" />
 									</label>
-									<label>Title: <small>shown upon mouseover</small>
+									<label>[[admin:navigation.title]]<small>[[admin:navigation.shown_upon_mouseover]]</small>
 										<input class="form-control" type="text" name="title" value="{enabled.title}" />
 									</label>
-									<label>Icon Class: <small><a href="http://fortawesome.github.io/Font-Awesome/cheatsheet/" target="_blank">pick one</a></small>
+									<label>[[admin:navigation.icon_class]]<small><a href="http://fortawesome.github.io/Font-Awesome/cheatsheet/" target="_blank">[[admin:navigation.pick_one]]</a></small>
 										<input class="form-control" type="text" name="iconClass" value="{enabled.iconClass}" />
 									</label>
 								</div>
 								<div class="col-sm-6">
-									<label>Route: <small>ex. /unread</small>
+									<label>[[admin:navigation.route]]<small>[[admin:navigation.route_ex]]</small>
 										<input class="form-control" type="text" name="route" value="{enabled.route}" />
 									</label>
-									<label>Text:
-										<input class="form-control" type="text" name="text" value="{enabled.text}" />
+									<label>[[admin:navigation.text]]<input class="form-control" type="text" name="text" value="{enabled.text}" />
 									</label>
-									<label>Text Class: <small>optional</small>
+									<label>[[admin:navigation.text_class]]<small>[[admin:navigation.optional]]</small>
 										<input class="form-control" type="text" name="textClass" value="{enabled.textClass}" />
 									</label>
 								</div>
@@ -34,30 +33,30 @@
 
 							<hr />
 
-							<strong>Properties:</strong>
+							<strong>[[admin:navigation.properties]]</strong>
 							<div class="checkbox">
 								<label>
-									<input type="checkbox" name="property:adminOnly" <!-- IF enabled.properties.adminOnly -->checked<!-- ENDIF enabled.properties.adminOnly -->/> <strong>Only display to Admins</strong>
+									<input type="checkbox" name="property:adminOnly" <!-- IF enabled.properties.adminOnly -->[[admin:navigation.checked]]<!-- ENDIF enabled.properties.adminOnly -->/> <strong>[[admin:navigation.only_display_to_admins]]</strong>
 								</label>
 							</div>
 							<div class="checkbox">
 								<label>
-									<input type="checkbox" name="property:loggedIn" <!-- IF enabled.properties.loggedIn -->checked<!-- ENDIF enabled.properties.loggedIn -->/> <strong>Only display to logged in users</strong>
+									<input type="checkbox" name="property:loggedIn" <!-- IF enabled.properties.loggedIn -->[[admin:navigation.checked]]<!-- ENDIF enabled.properties.loggedIn -->/> <strong>[[admin:navigation.only_display_to_logged_in_users]]</strong>
 								</label>
 							</div>
 							<div class="checkbox">
 								<label>
-									<input type="checkbox" name="property:targetBlank" <!-- IF enabled.properties.targetBlank -->checked<!-- ENDIF enabled.properties.targetBlank -->/> <strong>Open in a new window</strong>
+									<input type="checkbox" name="property:targetBlank" <!-- IF enabled.properties.targetBlank -->[[admin:navigation.checked]]<!-- ENDIF enabled.properties.targetBlank -->/> <strong>[[admin:navigation.open_in_a_new_window]]</strong>
 								</label>
 							</div>
 
 
 							<hr />
-							<button class="btn btn-danger delete">Delete</button>
+							<button class="btn btn-danger delete">[[admin:navigation.delete]]</button>
 							<!-- IF enabled.enabled -->
-							<button class="btn btn-warning toggle">Disable</button>
+							<button class="btn btn-warning toggle">[[admin:navigation.disable]]</button>
 							<!-- ELSE -->
-							<button class="btn btn-success toggle">Enable</button>
+							<button class="btn btn-success toggle">[[admin:navigation.enable]]</button>
 							<!-- ENDIF enabled.enabled -->
 							<input type="hidden" name="enabled" value="{enabled.enabled}" />
 						</form>
@@ -70,14 +69,14 @@
 
 	<div class="col-lg-3">
 		<div class="panel panel-default">
-			<div class="panel-heading">Available Menu Items</div>
+			<div class="panel-heading">[[admin:navigation.available_menu_items]]</div>
 			<div class="panel-body">
 				<ul id="available">
 					<li data-id="custom" class="alert alert-warning">
-						<strong>Custom Route</strong>
+						<strong>[[admin:navigation.custom_route]]</strong>
 					</li>
 					<!-- BEGIN available -->
-					<li data-id="@index" class="alert <!-- IF available.core -->alert-info<!-- ELSE -->alert-success<!-- ENDIF available.core -->">
+					<li data-id="@index" class="alert <!-- IF available.core -->alert_info<!-- ELSE -->alert_success<!-- ENDIF available.core -->">
 						<strong>{available.text}</strong> {available.route}
 						<span class="pull-right badge"><!-- IF available.core -->core<!-- ELSE -->plugin<!-- ENDIF available.core --></span>
 					</li>
