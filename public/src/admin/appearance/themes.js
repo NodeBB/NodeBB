@@ -76,8 +76,10 @@ define('admin/appearance/themes', function() {
 				templates.parse('admin/partials/theme_list', {
 					themes: themes
 				}, function(html) {
-					instListEl.html(html);
-					highlightSelectedTheme(config['theme:id']);
+					translator.translate(html, function(html) {
+						instListEl.html(html);
+						highlightSelectedTheme(config['theme:id']);
+					});
 				});
 			}
 		});
