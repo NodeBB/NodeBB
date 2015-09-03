@@ -242,6 +242,7 @@
     "general.site_keywords.placeholder": "Keywords describing your community, comma-seperated",
     "general.site_logo": "Site Logo",
     "general.image": "Image",
+    "general.image.placeholder": "Path to a logo to display on forum header",
     "general.upload": "Upload",
     "general.url": "URL",
     "general.url.placeholder": "The URL of the site logo",
