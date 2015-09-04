@@ -498,6 +498,7 @@
     "themes.checking": "Checking for installed themes...",
     "themes.homepage": "Homepage",
     "themes.select_theme": "Select Theme",
+    "themes.current_theme": "Current Theme",
 
     "guest.guest_handles": "Guest Handles",
     "guest.allow_guest_handles": "Allow guest handles",

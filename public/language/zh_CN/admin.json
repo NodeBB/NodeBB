@@ -479,6 +479,7 @@
     "themes.checking": "正在检查已安装的主题...",
     "themes.homepage": "首页",
     "themes.select_theme": "选择主题",
+    "themes.current_theme": "当前主题",
 
     "guest.guest_handles": "访客署名",
     "guest.allow_guest_handles": "允许访客署名",
