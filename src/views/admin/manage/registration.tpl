@@ -9,14 +9,14 @@
 		</tr>
 		<!-- IF !users.length -->
 		<p>
-			There are no users in the registration queue. To enable this feature go to <a href="{config.relative_path}/admin/settings/user">Settings -> User -> Authentication</a> and set <strong>Registration Type</strong> to "Admin Approval".
+			[[admin:registration.notice1]]<a href="{config.relative_path}/admin/settings/user">[[admin:registration.notice2]]</a>[[admin:registration.notice3]]
 		</p>
 		<!-- ENDIF !users.length -->
 		<!-- BEGIN users -->
 		<tr data-username="{users.username}">
 			<td>
 				<!-- IF users.usernameSpam -->
-				<i class="fa fa-times-circle text-danger" title="Frequency: {users.spamData.username.frequency} Appears: {users.spamData.username.appears} Confidence: {users.spamData.username.confidence}"></i>
+				<i class="fa fa-times-circle text-danger" title="[[admin:registration.frequency]]: {users.spamData.username.frequency} [[admin:registration.appears]]: {users.spamData.username.appears} [[admin:registration.appears]]: {users.spamData.username.confidence}"></i>
 				<!-- ELSE -->
 				<i class="fa fa-check text-success"></i>
 				<!-- ENDIF users.usernameSpam -->
@@ -24,7 +24,7 @@
 			</td>
 			<td>
 				<!-- IF users.emailSpam -->
-				<i class="fa fa-times-circle text-danger" title="Frequency: {users.spamData.email.frequency} Appears: {users.spamData.email.appears}"></i>
+				<i class="fa fa-times-circle text-danger" title="[[admin:registration.frequency]]: {users.spamData.email.frequency} [[admin:registration.appears]]: {users.spamData.email.appears}"></i>
 				<!-- ELSE -->
 				<i class="fa fa-check text-success"></i>
 				<!-- ENDIF users.emailSpam -->
@@ -32,7 +32,7 @@
 			</td>
 			<td>
 				<!-- IF users.ipSpam -->
-				<i class="fa fa-times-circle text-danger" title="Frequency: {users.spamData.ip.frequency} Appears: {users.spamData.ip.appears}"></i>
+				<i class="fa fa-times-circle text-danger" title="[[admin:registration.frequency]]: {users.spamData.ip.frequency} [[admin:registration.appears]]: {users.spamData.ip.appears}"></i>
 				<!-- ELSE -->
 				<i class="fa fa-check text-success"></i>
 				<!-- ENDIF users.ipSpam -->

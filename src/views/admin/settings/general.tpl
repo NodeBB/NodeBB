@@ -37,7 +37,7 @@
 		<div class="form-group">
 			<label for="logoUrl">[[admin:general.image]]</label>
 			<div class="input-group">
-				<input id="logoUrl" type="text" class="form-control" placeholder="Path to a logo to display on forum header" data-field="brand:logo" data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/uploadlogo" readonly />
+				<input id="logoUrl" type="text" class="form-control" placeholder="[[admin:general.image.placeholder]]" data-field="brand:logo" data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/uploadlogo" readonly />
 				<span class="input-group-btn">
 					<input data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/uploadlogo" type="button" class="btn btn-default" value="[[admin:general.upload]]"></input>
 					<button data-action="removeLogo" type="button" class="btn btn-default btn-danger"><i class="fa fa-times"></i></button>
@@ -75,7 +75,7 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Miscellaneous</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin:general.miscellaneous]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">

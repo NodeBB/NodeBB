@@ -110,7 +110,7 @@
 					[[admin:category.privileges_description]]
 				</p>
 				<p class="text-warning">
-					<strong>[[admin:category.note]]</strong>: [[admin:category.privileges_note]]
+					[[admin:category.note]]
 				</p>
 				<hr />
 				<div class="privilege-table-container">

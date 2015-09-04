@@ -2,7 +2,7 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin:homepage.home_page]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<p>
-			Choose what page is shown when users navigate to the root URL of your forum.
+			[[admin:homepage.help]]
 		</p>
 		<form class="row">
 			<div class="col-xs-6">

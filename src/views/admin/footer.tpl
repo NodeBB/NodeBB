@@ -7,12 +7,12 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-					<h3 id="myModalLabel">Upload Picture</h3>
+					<h3 id="myModalLabel">[[admin:footer.upload_picture]]</h3>
 				</div>
 				<div class="modal-body">
 					<form id="uploadForm" action="" method="post" enctype="multipart/form-data">
 						<div class="form-group">
-							<label for="userPhoto">Upload a picture</label>
+							<label for="userPhoto">[[admin:footer.upload_a_picture]]</label>
 							<input type="file" id="userPhotoInput" name="files[]">
 							<p class="help-block"></p>
 						</div>
@@ -21,7 +21,7 @@
 
 					<div id="upload-progress-box" class="progress progress-striped">
 						<div id="upload-progress-bar" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0">
-							<span class="sr-only"> success</span>
+							<span class="sr-only">[[admin:footer.success]]</span>
 						</div>
 					</div>
 
@@ -30,8 +30,8 @@
 					<div id="alert-error" class="alert alert-danger hide"></div>
 				</div>
 				<div class="modal-footer">
-					<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
-					<button id="pictureUploadSubmitBtn" class="btn btn-primary">Upload Picture</button>
+					<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">[[admin:footer.close]]</button>
+					<button id="pictureUploadSubmitBtn" class="btn btn-primary">[[admin:footer.upload_picture]]</button>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
@@ -43,7 +43,7 @@
 	<div class="alert-window alert-right-bottom"></div>
 
 	<div id="footer" class="container" style="padding-top: 50px; display:none;">
-		<footer class="footer">Copyright &copy; 2015 <a target="_blank" href="https://nodebb.org">NodeBB</a> by <a target="_blank" href="https://github.com/psychobunny">psychobunny</a>, <a href="https://github.com/julianlam" target="_blank">julianlam</a>, <a href="https://github.com/barisusakli" target="_blank">barisusakli</a> from <a target="_blank" href="http://www.designcreateplay.com">designcreateplay</a></footer>
+		<footer class="footer">Copyright &copy; 2015 <a target="_blank" href="https://nodebb.org">NodeBB</a>by<a target="_blank" href="https://github.com/psychobunny">psychobunny</a>, <a href="https://github.com/julianlam" target="_blank">julianlam</a>, <a href="https://github.com/barisusakli" target="_blank">barisusakli</a> from <a target="_blank" href="http://www.designcreateplay.com">designcreateplay</a></footer>
 	</div>
 </body>
 </html>

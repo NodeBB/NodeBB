@@ -4,17 +4,17 @@
 			<div class="group-settings-form">
 				<fieldset>
 					<label for="change-group-name">[[admin:group.name]]</label>
-					<input type="text" class="form-control" id="change-group-name" placeholder="Group Name" value="{group.displayName}" <!-- IF group.system -->[[admin:group.readonly]]<!-- ENDIF group.system -->/><br />
+					<input type="text" class="form-control" id="change-group-name" placeholder="[[admin:group.name.placeholder]]" value="{group.displayName}" <!-- IF group.system -->[[admin:group.readonly]]<!-- ENDIF group.system -->/><br />
 				</fieldset>
 
 				<fieldset>
 					<label for="change-group-desc">[[admin:group.description]]</label>
-					<input type="text" class="form-control" id="change-group-desc" placeholder="A short description about your group" value="{group.description}" /><br />
+					<input type="text" class="form-control" id="change-group-desc" placeholder="[[admin:group.description.placeholder]]" value="{group.description}" /><br />
 				</fieldset>
 
 				<fieldset>
 					<label for="change-group-user-title">[[admin:group.title_of_members]]</label>
-					<input type="text" class="form-control" id="change-group-user-title" placeholder="The title of users if they are a member of this group" value="{group.userTitle}"/><br />
+					<input type="text" class="form-control" id="change-group-user-title" placeholder="[[admin:group.title_of_members.placeholder]]" value="{group.userTitle}"/><br />
 				</fieldset>
 
 				<fieldset>
@@ -52,7 +52,7 @@
 
 				<fieldset>
 					<label for="add-member">[[admin:group.add_user_to_group]]</label>
-					<input type="text" class="form-control" id="group-details-search" placeholder="Search Users" />
+					<input type="text" class="form-control" id="group-details-search" placeholder="[[admin:group.add_user_to_group.placeholder]]" />
 					<ul class="members user-list" id="group-details-search-results"></ul>
 				</fieldset>
 

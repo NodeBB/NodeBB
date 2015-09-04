@@ -7,7 +7,7 @@
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="usePagination">
-					<span class="mdl-switch__label"><strong>Paginate topics and posts instead of using infinite scroll.</strong></span>
+					<span class="mdl-switch__label"><strong>[[admin:pagination.pagination_settings_help]]</strong></span>
 				</label>
 			</div>
 		</form>
@@ -28,7 +28,7 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<strong>[[admin:pagination.topics_per_page]]</strong><br /> <input type="text" class="form-control" value="20" data-field="topicsPerPage"><br />
-			<strong>Initial Number of Topics to Load on Unread, Recent, and Popular</strong><br /> <input type="text" class="form-control" value="20" data-field="topicsPerList">
+			<strong>[[admin:pagination.topics_per_page_help]]</strong><br /> <input type="text" class="form-control" value="20" data-field="topicsPerList">
 		</form>
 	</div>
 </div>
