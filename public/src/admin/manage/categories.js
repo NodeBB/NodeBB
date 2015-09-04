@@ -139,24 +139,26 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 			cid: parentId,
 			categories: categories
 		}, function(html) {
-			container.append(html);
+			translator.translate(html, function(translatedHTML) {
+				container.append(translatedHTML);
 
-			// Handle and children categories in this level have
-			for(var x=0,numCategories=categories.length;x<numCategories;x++) {
-				if (categories[x].hasOwnProperty('children') && categories[x].children.length > 0) {
-					renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
+				// Handle and children categories in this level have
+				for(var x=0,numCategories=categories.length;x<numCategories;x++) {
+					if (categories[x].hasOwnProperty('children') && categories[x].children.length > 0) {
+						renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
+					}
 				}
-			}
 
-			// Make list sortable
-			sortables[parentId] = Sortable.create($('ul[data-cid="' + parentId + '"]')[0], {
-				group: 'cross-categories',
-				animation: 150,
-				handle: '.icon',
-				dataIdAttr: 'data-cid',
-				ghostClass: "placeholder",
-				onAdd: itemDidAdd,
-				onEnd: itemDragDidEnd
+				// Make list sortable
+				sortables[parentId] = Sortable.create($('ul[data-cid="' + parentId + '"]')[0], {
+					group: 'cross-categories',
+					animation: 150,
+					handle: '.icon',
+					dataIdAttr: 'data-cid',
+					ghostClass: "placeholder",
+					onAdd: itemDidAdd,
+					onEnd: itemDragDidEnd
+				});
 			});
 		});
 	}
