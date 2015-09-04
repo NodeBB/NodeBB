@@ -1,50 +1,50 @@
 <div class="logger">
 	<div class="col-lg-9">
 		<div class="panel panel-default">
-			<div class="panel-heading">Logger Settings</div>
+			<div class="panel-heading">[[admin:logger.logger_settings]]</div>
 			<div class="panel-body">
 				<p>
-					By enabling the check boxes, you will receive logs to your terminal. If you specify a path, logs will then be saved to a file instead. HTTP logging is useful for collecting statistics about who, when, and what people access on your forum. In addition to logging HTTP requests, we can also log socket.io events. Socket.io logging, in combination with redis-cli monitor, can be very helpful for learning NodeBB's internals.
+					[[admin:logger.logger_settings_help1]]
 				</p>
 				<br/>
 				<p>
-					Simply check/uncheck the logging settings to enable or disable logging on the fly. No restart needed.
+					[[admin:logger.logger_settings_help2]]
 				</p>
 				<br/>
 
 				<form>
 
 					<label>
-						<input type="checkbox" data-field="loggerStatus"> <strong>Enable HTTP logging</strong>
+						<input type="checkbox" data-field="loggerStatus"> <strong>[[admin:logger.enable_http_logging]]</strong>
 					</label>
 					<br/>
 					<br/>
 
 					<label>
-						<input type="checkbox" data-field="loggerIOStatus"> <strong>Enable socket.io event logging</strong>
+						<input type="checkbox" data-field="loggerIOStatus"> <strong>[[admin:logger.enable_event_logging]]</strong>
 					</label>
 					<br/>
 					<br/>
 
-					<label>Path to log file</label>
-					<input class="form-control" type="text" placeholder="/path/to/log/file.log ::: leave blank to log to your terminal" data-field="loggerPath" />
+					<label>[[admin:logger.path_to_log_file]]</label>
+					<input class="form-control" type="text" placeholder="[[admin:logger.path_to_log_file_placeholder]]" data-field="loggerPath" />
 				</form>
 			</div>
 		</div>
 
 		<div class="panel panel-default">
-			<div class="panel-heading">Heap Snapshot</div>
+			<div class="panel-heading">[[admin:logger.heap_snapshot]]</div>
 			<div class="panel-body">
-				<button class="btn btn-primary" id="heap-snapshot">Take Heap Snapshot</button>
+				<button class="btn btn-primary" id="heap-snapshot">[[admin:logger.take_heap_snapshot]]</button>
 			</div>
 		</div>
 	</div>
 
 	<div class="col-lg-3 acp-sidebar">
 		<div class="panel panel-default">
-			<div class="panel-heading">Logger Control Panel</div>
+			<div class="panel-heading">[[admin:logger.logger_control_panel]]</div>
 			<div class="panel-body">
-				<button class="btn btn-primary" id="save">Update Logger Settings</button>
+				<button class="btn btn-primary" id="save">[[admin:logger.update_logger_settings]]</button>
 			</div>
 		</div>
 	</div>
@@ -60,7 +60,7 @@
 				if (err) {
 					return app.alertError(err.message);
 				}
-				app.alertSuccess('Heap Snapshot saved! ' + filename);
+				app.alertSuccess('[[admin:logger.heap_snapshot_saved]]' + filename);
 			});
 		})
 	});
