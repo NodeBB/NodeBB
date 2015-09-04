@@ -12,7 +12,7 @@
 				</div>
 
 				<div class="form-group">
-					<label>Sort By</label>
+					<label>[[admin:flags.sort_by]]</label>
 					<div class="row">
 						<div class="col-md-6">
 							<select id="flag-sort-by" class="form-control" name="sortBy">

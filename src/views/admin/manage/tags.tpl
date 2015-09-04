@@ -42,7 +42,7 @@
 
 		<div class="panel panel-default">
 			<div class="panel-body">
-				<input class="form-control" type="text" id="tag-search" placeholder="Search for tags..."/><br/>Click<a href="/admin/settings/tags">here</a> to visit the tag settings page.
+				<input class="form-control" type="text" id="tag-search" placeholder="[[admin:tags.help2.placeholder]]"/><br/>[[admin:tags.help2]]
 			</div>
 		</div>
 	</div>

@@ -45,7 +45,7 @@
 				<input type="text" class="form-control" value="10" data-field="initialPostDelay">
 			</div>
 			<div class="form-group">
-				<label>Number of seconds users are allowed to edit posts after posting. (0 disabled)</label>
+				<label>[[admin:post.edit_duration]]</label>
 				<input type="text" class="form-control" value="0" data-field="postEditDuration">
 			</div>
 			<div class="form-group">
