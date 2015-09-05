@@ -105,7 +105,9 @@
 	}
 
 	function launchSnackbar(params) {
-		translator.translate("<strong>" + params.title + "</strong>" + params.message, function(html) {
+		var message = (params.title ? "<strong>" + params.title + "</strong>" : '') + (params.message ? params.message : '');
+
+		translator.translate(message, function(html) {
 			var bar = $.snackbar({
 				content: html,
 				timeout: 3000,
