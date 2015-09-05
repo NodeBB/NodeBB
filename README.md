@@ -6,7 +6,7 @@
 [![Code Climate](https://codeclimate.com/github/NodeBB/NodeBB/badges/gpa.svg)](https://codeclimate.com/github/NodeBB/NodeBB)
 [![Documentation Status](https://readthedocs.org/projects/nodebb/badge/?version=latest)](https://readthedocs.org/projects/nodebb/?badge=latest)
 
-**NodeBB Forum Software** is powered by Node.js and built on either a Redis or MongoDB database. It utilizes web sockets for instant interactions and real-time notifications. NodeBB is compatible down to IE8 and has many modern features out of the box such as social network integration and streaming discussions.
+[**NodeBB Forum Software**](https://nodebb.org) is powered by Node.js and built on either a Redis or MongoDB database. It utilizes web sockets for instant interactions and real-time notifications. NodeBB is compatible down to IE8 and has many modern features out of the box such as social network integration and streaming discussions.
 
 Additional functionality is enabled through the use of third-party plugins.
 
