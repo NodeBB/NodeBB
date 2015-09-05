@@ -1,5 +1,5 @@
 "use strict";
-/*global componentHandler, define, socket, app, ajaxify, utils, bootbox, Mousetrap, Hammer, RELATIVE_PATH*/
+/*global config, translator, componentHandler, define, socket, app, ajaxify, utils, bootbox, Mousetrap, Hammer, Slideout, RELATIVE_PATH*/
 
 (function() {
 	$(document).ready(function() {
