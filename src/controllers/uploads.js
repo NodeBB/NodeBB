@@ -136,9 +136,14 @@ function uploadFile(uid, uploadedFile, callback) {
 }
 
 function deleteTempFiles(files) {
-	for(var i=0; i<files.length; ++i) {
-		fs.unlink(files[i].path);
-	}
+	async.each(files, function(file, next) {
+		fs.unlink(file.path, function(err) {
+			if (err) {
+				winston.error(err);
+			}
+			next();
+		});
+	});
 }
 
 
