@@ -457,7 +457,7 @@ function redirectToLogin(req, res) {
 }
 
 function modifyTitle(obj) {
-	var title = '[[pages:home]] | ' + validator.escape(meta.config.title || 'NodeBB');
+	var title = '[[pages:home]] | ' + validator.escape(meta.config.browserTitle || meta.config.title || 'NodeBB');
 	obj.browserTitle = title;
 
 	if (obj.metaTags) {
