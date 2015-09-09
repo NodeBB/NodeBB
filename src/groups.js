@@ -197,6 +197,10 @@ var async = require('async'),
 		});
 	};
 
+	Groups.getOwners = function(groupName, callback) {
+		db.getSetMembers('group:' + groupName + ':owners', callback);
+	};
+
 	Groups.getOwnersAndMembers = function(groupName, uid, start, stop, callback) {
 		async.parallel({
 			owners: function (next) {
