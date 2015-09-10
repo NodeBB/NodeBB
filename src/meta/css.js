@@ -18,8 +18,6 @@ module.exports = function(Meta) {
 	Meta.css = {};
 	Meta.css.cache = undefined;
 	Meta.css.acpCache = undefined;
-	Meta.css.branding = {};
-	Meta.css.defaultBranding = {};
 
 	Meta.css.minify = function(callback) {
 		callback = callback || function() {};
