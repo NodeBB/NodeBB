@@ -184,7 +184,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	};
 
 	Chats.sendMessage = function(toUid, inputEl) {
-		var msg = S(inputEl.val()).stripTags().s;
+		var msg = inputEl.val();
 		if (msg.length) {
 			msg = msg +'\n';
 			socket.emit('modules.chats.send', {
