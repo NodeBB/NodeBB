@@ -347,16 +347,20 @@ function createAdmin(callback) {
 				winston.warn("Passwords did not match, please try again");
 				return retryPassword(results);
 			}
-
+			var adminUid;
 			async.waterfall([
 				function(next) {
 					User.create({username: results.username, password: results.password, email: results.email}, next);
 				},
 				function(uid, next) {
+					adminUid = uid;
 					Groups.join('administrators', uid, next);
 				},
 				function(next) {
 					Groups.show('administrators', next);
+				},
+				function(next) {
+					Groups.ownership.grant(adminUid, 'administrators', next);
 				}
 			], function(err) {
 				if (err) {
