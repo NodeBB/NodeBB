@@ -153,7 +153,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 	function handleAccountDelete() {
 		$('#deleteAccountBtn').on('click', function() {
 			translator.translate('[[user:delete_account_confirm]]', function(translated) {
-				bootbox.confirm(translated + '<p><input type="text" class="form-control" id="confirm-username" /></p>', function(confirm) {
+				var modal = bootbox.confirm(translated + '<p><input type="text" class="form-control" id="confirm-username" /></p>', function(confirm) {
 					if (!confirm) {
 						return;
 					}
@@ -168,6 +168,10 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 							}
 						});
 					}
+				});
+
+				modal.on('shown.bs.modal', function() {
+					modal.find('input').focus();
 				});
 			});
 			return false;
