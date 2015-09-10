@@ -44,7 +44,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 	};
 
 	function processPage() {
-		$('[component="posts"] img, [component="aboutme"] img').addClass('img-responsive');
+		$('[component="posts"] img:not(.not-responsive), [component="aboutme"] img:not(.not-responsive)').addClass('img-responsive');
 	}
 
 	function updateButtons() {
