@@ -7,16 +7,16 @@ var async = require('async'),
 	db = require('../database');
 
 module.exports = function(Groups) {
-	Groups.create = function(data, callback) {
-		if (data.name.length === 0) {
-			return callback(new Error('[[error:group-name-too-short]]'));
-		}
 
+	Groups.create = function(data, callback) {
 		var system = data.name === 'administrators' || data.name === 'registered-users' || Groups.isPrivilegeGroup(data.name);
 		var groupData;
 		var timestamp = data.timestamp || Date.now();
 
 		async.waterfall([
+			function (next) {
+				validateGroupName(data.name, next);
+			},
 			function (next) {
 				meta.userOrGroupExists(data.name, next);
 			},
@@ -71,4 +71,14 @@ module.exports = function(Groups) {
 		], callback);
 
 	};
+
+	function validateGroupName(name, callback) {
+		if (!name) {
+			return callback(new Error('[[error:group-name-too-short]]'));
+		}
+
+		if (name.indexOf('/') !== -1) {
+			return callback(new Error('[[error:invalid-group-name]]'));
+		}
+	}
 };
