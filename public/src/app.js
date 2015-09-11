@@ -434,7 +434,7 @@ app.cacheBuster = null;
 			searchFields = $("#search-fields"),
 			searchInput = $('#search-fields input');
 
-		$('#advanced-search').on('mousedown', function() {
+		$('#search-form .advanced-search-link').on('mousedown', function() {
 			ajaxify.go('/search');
 		});
 
