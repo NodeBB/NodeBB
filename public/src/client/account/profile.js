@@ -154,6 +154,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 					if (err) {
 						return app.alertError(err.message);
 					}
+					app.alertSuccess('[[user:account-deleted]]');
 					history.back();
 				});
 			});
