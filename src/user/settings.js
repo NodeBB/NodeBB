@@ -60,25 +60,34 @@ module.exports = function(User) {
 
 			settings.showemail = parseInt(settings.showemail, 10) === 1;
 			settings.showfullname = parseInt(settings.showfullname, 10) === 1;
-			settings.openOutgoingLinksInNewTab = parseInt(settings.openOutgoingLinksInNewTab, 10) === 1;
-			settings.dailyDigestFreq = settings.dailyDigestFreq || 'off';
-			settings.usePagination = (settings.usePagination === null || settings.usePagination === undefined) ? parseInt(meta.config.usePagination, 10) === 1 : parseInt(settings.usePagination, 10) === 1;
+			settings.openOutgoingLinksInNewTab = parseInt(getSetting(settings, 'openOutgoingLinksInNewTab', 0), 10) === 1;
+			settings.dailyDigestFreq = getSetting(settings, 'dailyDigestFreq', 'off');
+			settings.usePagination = parseInt(getSetting(settings, 'usePagination', 0), 10) === 1;
 			settings.topicsPerPage = Math.min(settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : defaultTopicsPerPage, defaultTopicsPerPage);
 			settings.postsPerPage = Math.min(settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : defaultPostsPerPage, defaultPostsPerPage);
 			settings.notificationSounds = parseInt(settings.notificationSounds, 10) === 1;
 			settings.userLang = settings.userLang || meta.config.defaultLang || 'en_GB';
-			settings.topicPostSort = settings.topicPostSort || meta.config.topicPostSort || 'oldest_to_newest';
-			settings.categoryTopicSort = settings.categoryTopicSort || meta.config.categoryTopicSort || 'newest_to_oldest';
-			settings.followTopicsOnCreate = (settings.followTopicsOnCreate === null || settings.followTopicsOnCreate === undefined) ? true : parseInt(settings.followTopicsOnCreate, 10) === 1;
-			settings.followTopicsOnReply = parseInt(settings.followTopicsOnReply, 10) === 1;
-			settings.sendChatNotifications = parseInt(settings.sendChatNotifications, 10) === 1;
-			settings.sendPostNotifications = parseInt(settings.sendPostNotifications, 10) === 1;
+			settings.topicPostSort = getSetting(settings, 'topicPostSort', 'oldest_to_newest');
+			settings.categoryTopicSort = getSetting(settings, 'categoryTopicSort', 'newest_to_oldest');
+			settings.followTopicsOnCreate = parseInt(getSetting(settings, 'followTopicsOnCreate', 1), 10) === 1;
+			settings.followTopicsOnReply = parseInt(getSetting(settings, 'followTopicsOnReply', 0), 10) === 1;
+			settings.sendChatNotifications = parseInt(getSetting(settings, 'sendChatNotifications', 0), 10) === 1;
+			settings.sendPostNotifications = parseInt(getSetting(settings, 'sendPostNotifications', 0), 10) === 1;
 			settings.restrictChat = parseInt(settings.restrictChat, 10) === 1;
-			settings.topicSearchEnabled = parseInt(settings.topicSearchEnabled, 10) === 1;
+			settings.topicSearchEnabled = parseInt(getSetting(settings, 'topicSearchEnabled', 0), 10) === 1;
 			settings.bootswatchSkin = settings.bootswatchSkin || 'default';
 
 			callback(null, settings);
 		});
+	}
+
+	function getSetting(settings, key, base) {
+		if (settings[key] || settings[key] === 0) {
+			return settings[key];
+		} else if (meta.config[key] || meta.config[key] === 0) {
+			return meta.config[key];
+		}
+		return base;
 	}
 
 	User.saveSettings = function(uid, data, callback) {
