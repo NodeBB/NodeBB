@@ -287,7 +287,7 @@ function enableDefaultTheme(next) {
 		process.stdout.write('Enabling default theme: Persona\n');
 		meta.themes.set({
 			type: 'local',
-			id: 'nodebb-theme-persona'
+			id: nconf.get('defaultTheme') || 'nodebb-theme-persona'
 		}, next);
 	});
 }
