@@ -92,8 +92,7 @@ module.exports = function(Meta) {
 						process.send({
 							action: 'css-propagate',
 							cache: minified[0],
-							acpCache: minified[1],
-							hash: Meta.css.hash
+							acpCache: minified[1]
 						});
 					}
 
@@ -185,14 +184,6 @@ module.exports = function(Meta) {
 			}
 
 			Meta.css[destination] = lessOutput.css;
-
-			if (destination === 'cache') {
-				// Calculate css buster
-				var hasher = crypto.createHash('md5');
-
-				hasher.update(lessOutput.css, 'utf-8');
-				Meta.css.hash = hasher.digest('hex').slice(0, 8);
-			}
 
 			// Save the compiled CSS in public/ so things like nginx can serve it
 			if (nconf.get('isPrimary') === 'true') {
