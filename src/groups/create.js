@@ -80,5 +80,7 @@ module.exports = function(Groups) {
 		if (name.indexOf('/') !== -1) {
 			return callback(new Error('[[error:invalid-group-name]]'));
 		}
+
+		callback();
 	}
 };
