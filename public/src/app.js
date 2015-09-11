@@ -434,11 +434,15 @@ app.cacheBuster = null;
 			searchFields = $("#search-fields"),
 			searchInput = $('#search-fields input');
 
+		$('#advanced-search').on('mousedown', function() {
+			ajaxify.go('/search');
+		});
+
 		$('#search-form').on('submit', dismissSearch);
 		searchInput.on('blur', dismissSearch);
 
 		function dismissSearch(){
-			searchFields.hide();
+			searchFields.addClass('hide');
 			searchButton.show();
 		}
 
@@ -469,7 +473,7 @@ app.cacheBuster = null;
 	};
 
 	app.prepareSearch = function() {
-		$("#search-fields").removeClass('hide').show();
+		$("#search-fields").removeClass('hide');
 		$("#search-button").hide();
 		$('#search-fields input').focus();
 	};
