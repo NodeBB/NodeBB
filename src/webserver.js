@@ -117,24 +117,6 @@ function cacheStaticFiles(callback) {
 
 	app.enable('cache');
 	app.enable('minification');
-
-	// Configure cache-buster timestamp
-	require('child_process').exec('git describe --tags', {
-		cwd: path.join(__dirname, '../')
-	}, function(err, stdOut) {
-		if (!err) {
-			meta.config['cache-buster'] = stdOut.trim();
-			callback();
-		} else {
-			fs.stat(path.join(__dirname, '../package.json'), function(err, stats) {
-				if (err) {
-					return callback(err);
-				}
-				meta.config['cache-buster'] = new Date(stats.mtime).getTime();
-				callback();
-			});
-		}
-	});
 }
 
 function listen(callback) {

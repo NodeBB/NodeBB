@@ -70,8 +70,6 @@ apiController.getConfig = function(req, res, next) {
 	config.environment = process.env.NODE_ENV;
 	config.loggedIn = !!req.user;
 	config['cache-buster'] = meta.config['cache-buster'] || '';
-	config['script-buster'] = meta.js.hash || '';
-	config['css-buster'] = meta.css.hash || '';
 	config.requireEmailConfirmation = parseInt(meta.config.requireEmailConfirmation, 10) === 1;
 	config.topicPostSort = meta.config.topicPostSort || 'oldest_to_newest';
 	config.categoryTopicSort = meta.config.categoryTopicSort || 'newest_to_oldest';
