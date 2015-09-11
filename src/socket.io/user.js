@@ -2,6 +2,7 @@
 
 var	async = require('async'),
 	nconf = require('nconf'),
+	winston = require('winston'),
 	user = require('../user'),
 	groups = require('../groups'),
 	topics = require('../topics'),
@@ -166,6 +167,18 @@ SocketUser.changePassword = function(socket, data, callback) {
 	});
 };
 
+function isAdminOrSelf(socket, uid, callback) {
+	if (socket.uid === parseInt(uid, 10)) {
+		return callback();
+	}
+	user.isAdministrator(socket.uid, function(err, isAdmin) {
+		if (err || !isAdmin) {
+			return callback(err || new Error('[[error:no-privileges]]'));
+		}
+		callback();
+	});
+}
+
 SocketUser.updateProfile = function(socket, data, callback) {
 	function update(oldUserData) {
 		function done(err, userData) {
@@ -197,15 +210,10 @@ SocketUser.updateProfile = function(socket, data, callback) {
 			callback(null, userData);
 		}
 
-		if (socket.uid === parseInt(data.uid, 10)) {
-			return user.updateProfile(socket.uid, data, done);
-		}
-
-		user.isAdministrator(socket.uid, function(err, isAdmin) {
-			if (err || !isAdmin) {
-				return callback(err || new Error('[[error:no-privileges]]'));
+		isAdminOrSelf(socket, data.uid, function(err) {
+			if (err) {
+				return callback(err);
 			}
-
 			user.updateProfile(data.uid, data, done);
 		});
 	}
@@ -238,16 +246,6 @@ SocketUser.changePicture = function(socket, data, callback) {
 
 	var type = data.type;
 
-	function changePicture(uid, callback) {
-		user.getUserField(uid, type, function(err, picture) {
-			if (err) {
-				return callback(err);
-			}
-
-			user.setUserField(uid, 'picture', picture, callback);
-		});
-	}
-
 	if (type === 'gravatar') {
 		type = 'gravatarpicture';
 	} else if (type === 'uploaded') {
@@ -256,41 +254,60 @@ SocketUser.changePicture = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-image-type, ' + ['gravatar', 'uploadedpicture'].join(', ') + ']]'));
 	}
 
-	if (socket.uid === parseInt(data.uid, 10)) {
-		return changePicture(socket.uid, callback);
-	}
-
-	user.isAdministrator(socket.uid, function(err, isAdmin) {
-		if (err || !isAdmin) {
-			return callback(err || new Error('[[error:no-privileges]]'));
+	async.waterfall([
+		function (next) {
+			isAdminOrSelf(socket, data.uid, next);
+		},
+		function (next) {
+			user.getUserField(data.uid, type, next);
+		},
+		function (picture, next) {
+			user.setUserField(data.uid, 'picture', picture, next);
 		}
-
-		changePicture(data.uid, callback);
-	});
+	], callback);
 };
 
 SocketUser.uploadProfileImageFromUrl = function(socket, data, callback) {
-	function upload() {
-		user.uploadFromUrl(data.uid, data.url, function(err, uploadedImage) {
-			callback(err, uploadedImage ? uploadedImage.url : null);
-		});
-	}
-
 	if (!socket.uid || !data.url || !data.uid) {
 		return;
 	}
 
-	if (parseInt(socket.uid, 10) === parseInt(data.uid, 10)) {
-		return upload();
+	isAdminOrSelf(socket, data.uid, function(err) {
+		if (err) {
+			return callback(err);
+		}
+		user.uploadFromUrl(data.uid, data.url, function(err, uploadedImage) {
+			callback(err, uploadedImage ? uploadedImage.url : null);
+		});
+	});
+};
+
+SocketUser.removeUploadedPicture = function(socket, data, callback) {
+	if (!socket.uid || !data.uid) {
+		return;
 	}
 
-	user.isAdministrator(socket.uid, function(err, isAdmin) {
-		if (err || !isAdmin) {
-			return callback(err || new Error('[[error:not-allowed]]'));
+	async.waterfall([
+		function (next) {
+			isAdminOrSelf(socket, data.uid, next);
+		},
+		function (next) {
+			user.getUserField(data.uid, 'uploadedpicture', next);
+		},
+		function(uploadedPicture, next) {
+			if (!uploadedPicture.startsWith('http')) {
+				require('fs').unlink(uploadedPicture, function(err) {
+					if (err) {
+						winston.error(err);
+					}
+				});
+			}
+			user.setUserField(data.uid, 'uploadedpicture', '', next);
+		},
+		function(next) {
+			user.getUserField(data.uid, 'picture', next);
 		}
-
-		upload();
-	});
+	], callback);
 };
 
 SocketUser.follow = function(socket, data, callback) {
@@ -346,19 +363,10 @@ SocketUser.saveSettings = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	if (socket.uid === parseInt(data.uid, 10)) {
-		return user.saveSettings(socket.uid, data.settings, callback);
-	}
-
-	user.isAdministrator(socket.uid, function(err, isAdmin) {
+	isAdminOrSelf(socket, data.uid, function(err) {
 		if (err) {
 			return callback(err);
 		}
-
-		if (!isAdmin) {
-			return callback(new Error('[[error:no-privileges]]'));
-		}
-
 		user.saveSettings(data.uid, data.settings, callback);
 	});
 };
