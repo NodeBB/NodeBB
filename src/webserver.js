@@ -117,6 +117,7 @@ function cacheStaticFiles(callback) {
 
 	app.enable('cache');
 	app.enable('minification');
+	callback();
 }
 
 function listen(callback) {
