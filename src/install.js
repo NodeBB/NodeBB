@@ -283,11 +283,11 @@ function enableDefaultTheme(next) {
 			process.stdout.write('Previous theme detected, skipping enabling default theme\n');
 			return next(err);
 		}
-
-		process.stdout.write('Enabling default theme: Persona\n');
+		var defaultTheme = nconf.get('defaultTheme') || 'nodebb-theme-persona';
+		process.stdout.write('Enabling default theme: ' + defaultTheme + '\n');
 		meta.themes.set({
 			type: 'local',
-			id: nconf.get('defaultTheme') || 'nodebb-theme-persona'
+			id: defaultTheme
 		}, next);
 	});
 }
