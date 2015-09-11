@@ -32,6 +32,7 @@ define('forum/topic/posts', [
 			if (html) {
 				html.addClass('new');
 			}
+			navigator.scrollBottom(data.posts[0].index);
 		});
 	};
 
