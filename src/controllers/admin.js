@@ -348,32 +348,28 @@ adminController.navigation.get = function(req, res, next) {
 };
 
 adminController.homepage.get = function(req, res, next) {
-	async.parallel({
-		categoryData: function(next) {
-			async.waterfall([
-				function(next) {
-					db.getSortedSetRange('cid:0:children', 0, -1, next);
-				},
-				function(cids, next) {
-					privileges.categories.filterCids('find', cids, 0, next);
-				},
-				function(cids, next) {
-					categories.getMultipleCategoryFields(cids, ['name', 'slug'], next);
-				},
-				function(categoryData, next) {
-					async.map(categoryData, function(category, next) {
-						var route = 'category/' + category.slug;
+	async.waterfall([
+		function(next) {
+			db.getSortedSetRange('cid:0:children', 0, -1, next);
+		},
+		function(cids, next) {
+			privileges.categories.filterCids('find', cids, 0, next);
+		},
+		function(cids, next) {
+			categories.getMultipleCategoryFields(cids, ['name', 'slug'], next);
+		},
+		function(categoryData, next) {
+			async.map(categoryData, function(category, next) {
+				var route = 'category/' + category.slug;
 
-						next(null, {
-							route: route,
-							name: 'Category: ' + category.name
-						});
-					}, next);
-				}
-			], next);
+				next(null, {
+					route: route,
+					name: 'Category: ' + category.name
+				});
+			}, next);
 		}
-	}, function(err, results) {
-		if (err || !results || !results.categoryData) results = {categoryData:[]};
+	], function(err, categoryData) {
+		if (err || !categoryData) categoryData = [];
 
 		plugins.fireHook('filter:homepage.get', {routes: [
 			{
@@ -388,7 +384,7 @@ adminController.homepage.get = function(req, res, next) {
 				route: 'popular',
 				name: 'Popular'
 			}
-		].concat(results.categoryData)}, function(err, data) {
+		].concat(categoryData)}, function(err, data) {
 			data.routes.push({
 				route: '',
 				name: 'Custom'
