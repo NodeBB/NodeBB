@@ -348,21 +348,55 @@ adminController.navigation.get = function(req, res, next) {
 };
 
 adminController.homepage.get = function(req, res, next) {
-	plugins.fireHook('filter:homepage.get', {routes: [
-		{
-			route: 'categories',
-			name: 'Categories'
-		},
-		{
-			route: 'recent',
-			name: 'Recent'
-		},
-		{
-			route: 'popular',
-			name: 'Popular'
+	async.parallel({
+		categoryData: function(next) {
+			async.waterfall([
+				function(next) {
+					db.getSortedSetRange('cid:0:children', 0, -1, next);
+				},
+				function(cids, next) {
+					privileges.categories.filterCids('find', cids, 0, next);
+				},
+				function(cids, next) {
+					categories.getMultipleCategoryFields(cids, ['name', 'slug'], next);
+				},
+				function(categoryData, next) {
+					async.map(categoryData, function(category, next) {
+						var route = 'category/' + category.slug,
+							hook = 'action:homepage.get:' + route;
+
+						next(null, {
+							route: route,
+							name: 'Category: ' + category.name
+						});
+					}, next);
+				}
+			], next);
 		}
-	]}, function(err, data) {
-		res.render('admin/general/homepage', data);
+	}, function(err, results) {
+		if (err || !results || !results.categoryData) results = {categoryData:[]};
+
+		plugins.fireHook('filter:homepage.get', {routes: [
+			{
+				route: 'categories',
+				name: 'Categories'
+			},
+			{
+				route: 'recent',
+				name: 'Recent'
+			},
+			{
+				route: 'popular',
+				name: 'Popular'
+			}
+		].concat(results.categoryData)}, function(err, data) {
+			data.routes.push({
+				route: '',
+				name: 'Custom'
+			});
+
+			res.render('admin/general/homepage', data);
+		});
 	});
 };
 
