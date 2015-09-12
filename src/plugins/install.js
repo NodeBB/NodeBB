@@ -44,8 +44,8 @@ module.exports = function(Plugins) {
 						if (err) {
 							return next(err);
 						}
-						db.sortedSetAdd('plugins:active', count, id, next);	
-					});				
+						db.sortedSetAdd('plugins:active', count, id, next);
+					});
 				}
 			},
 			function(next) {
