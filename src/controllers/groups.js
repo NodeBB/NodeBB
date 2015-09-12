@@ -2,6 +2,7 @@
 
 var async = require('async'),
 	nconf = require('nconf'),
+	validator = require('validator'),
 	db = require('../database'),
 	meta = require('../meta'),
 	groups = require('../groups'),
@@ -91,18 +92,20 @@ groupsController.details = function(req, res, callback) {
 			}
 
 			results.title = '[[pages:group, ' + results.group.displayName + ']]';
-			results.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:groups]]', url: '/groups' }, {text: results.group.slug}]);
+			results.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:groups]]', url: '/groups' }, {text: results.group.displayName}]);
 			res.render('groups/details', results);
 		});
 	});
 };
 
 groupsController.members = function(req, res, next) {
+	var groupName;
 	async.waterfall([
 		function(next) {
 			groups.getGroupNameByGroupSlug(req.params.slug, next);
 		},
-		function(groupName, next) {
+		function(_groupName, next) {
+			groupName = _groupName;
 			user.getUsersFromSet('group:' + groupName + ':members', req.uid, 0, 49, next);
 		},
 	], function(err, users) {
@@ -112,7 +115,7 @@ groupsController.members = function(req, res, next) {
 
 		var breadcrumbs = helpers.buildBreadcrumbs([
 			{text: '[[pages:groups]]', url: '/groups' },
-			{text: req.params.slug, url: '/groups/' + req.params.slug},
+			{text: validator.escape(groupName), url: '/groups/' + req.params.slug},
 			{text: '[[groups:details.members]]'}
 		]);
 
