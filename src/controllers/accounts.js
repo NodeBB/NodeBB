@@ -175,9 +175,11 @@ accountsController.getAccount = function(req, res, next) {
 			userData.posts = results.posts.posts.filter(function (p) {
 				return p && parseInt(p.deleted, 10) !== 1;
 			});
+
 			userData.aboutme = results.aboutme;
 			userData.nextStart = results.posts.nextStart;
 			userData.isFollowing = results.isFollowing;
+			userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username}]);
 
 			if (!userData.profileviews) {
 				userData.profileviews = 1;
@@ -224,25 +226,26 @@ function getFollow(tpl, name, req, res, callback) {
 		userData.users = users;
 		userData.nextStart = 50;
 		userData.title = '[[pages:' + tpl + ', ' + userData.username + ']]';
+		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:' + name + ']]'}]);
 
 		res.render(tpl, userData);
 	});
 }
 
 accountsController.getFavourites = function(req, res, next) {
-	getFromUserSet('account/favourites', 'favourites', posts.getPostSummariesFromSet, 'posts', req, res, next);
+	getFromUserSet('account/favourites', 'favourites', '[[user:favourites]]', posts.getPostSummariesFromSet, 'posts', req, res, next);
 };
 
 accountsController.getPosts = function(req, res, next) {
-	getFromUserSet('account/posts', 'posts', posts.getPostSummariesFromSet, 'posts', req, res, next);
+	getFromUserSet('account/posts', 'posts', '[[global:posts]]', posts.getPostSummariesFromSet, 'posts', req, res, next);
 };
 
 accountsController.getWatchedTopics = function(req, res, next) {
-	getFromUserSet('account/watched', 'followed_tids', topics.getTopicsFromSet, 'topics', req, res, next);
+	getFromUserSet('account/watched', 'followed_tids', '[[user:watched]]',topics.getTopicsFromSet, 'topics', req, res, next);
 };
 
 accountsController.getTopics = function(req, res, next) {
-	getFromUserSet('account/topics', 'topics', topics.getTopicsFromSet, 'topics', req, res, next);
+	getFromUserSet('account/topics', 'topics', '[[global:topics]]', topics.getTopicsFromSet, 'topics', req, res, next);
 };
 
 accountsController.getGroups = function(req, res, next) {
@@ -259,12 +262,13 @@ accountsController.getGroups = function(req, res, next) {
 			userData.groups = groupsData[0];
 			userData.groups.forEach(groups.escapeGroupData);
 			userData.title = '[[pages:account/groups, ' + userData.username + ']]';
+			userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[global:header.groups]]'}]);
 			res.render('account/groups', userData);
 		});
 	});
 };
 
-function getFromUserSet(tpl, set, method, type, req, res, next) {
+function getFromUserSet(tpl, set, crumb, method, type, req, res, next) {
 	async.parallel({
 		settings: function(next) {
 			user.getSettings(req.uid, next);
@@ -310,6 +314,7 @@ function getFromUserSet(tpl, set, method, type, req, res, next) {
 			userData.pagination = pagination.create(page, pageCount);
 
 			userData.title = '[[pages:' + tpl + ', ' + userData.username + ']]';
+			userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: crumb}]);
 
 			res.render(tpl, userData);
 		});
@@ -371,6 +376,7 @@ accountsController.accountEdit = function(req, res, callback) {
 
 		userData.hasPassword = !!password;
 		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
+		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:edit]]'}]);
 		res.render('account/edit', userData);
 	});
 };
@@ -457,6 +463,7 @@ accountsController.accountSettings = function(req, res, callback) {
 		userData.disableCustomUserSkins = parseInt(meta.config.disableCustomUserSkins, 10) === 1;
 
 		userData.title = '[[pages:account/settings]]';
+		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:settings]]'}]);
 
 		res.render('account/settings', userData);
 	});
@@ -587,7 +594,7 @@ accountsController.getChats = function(req, res, callback) {
 				messages: data.messages,
 				allowed: data.allowed,
 				title: '[[pages:chat, ' + data.toUser.username + ']]',
-				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[pages:chats]]', url: nconf.get('relative_path') + '/chats'}, {text: data.toUser.username}])
+				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[pages:chats]]', url: '/chats'}, {text: data.toUser.username}])
 			});
 		});
 	});

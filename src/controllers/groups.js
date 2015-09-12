@@ -17,6 +17,7 @@ groupsController.list = function(req, res, next) {
 			return next(err);
 		}
 		data.title = '[[pages:groups]]';
+		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:groups]]'}]);
 		res.render('groups/list', data);
 	});
 };
@@ -90,6 +91,7 @@ groupsController.details = function(req, res, callback) {
 			}
 
 			results.title = '[[pages:group, ' + results.group.displayName + ']]';
+			results.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:groups]]', url: '/groups' }, {text: results.group.slug}]);
 			res.render('groups/details', results);
 		});
 	});
@@ -108,10 +110,17 @@ groupsController.members = function(req, res, next) {
 			return next(err);
 		}
 
+		var breadcrumbs = helpers.buildBreadcrumbs([
+			{text: '[[pages:groups]]', url: '/groups' },
+			{text: req.params.slug, url: '/groups/' + req.params.slug},
+			{text: '[[groups:details.members]]'}
+		]);
+
 		res.render('groups/members', {
 			users: users,
 			nextStart: 50,
 			loadmore_display: users.length > 50 ? 'block' : 'hide',
+			breadcrumbs: breadcrumbs
 		});
 	});
 };

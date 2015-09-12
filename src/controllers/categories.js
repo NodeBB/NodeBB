@@ -66,6 +66,9 @@ categoriesController.list = function(req, res, next) {
 		}
 
 		data.title = '[[pages:categories]]';
+		if (req.path.startsWith('/api/categories') || req.path.startsWith('/categories')) {
+			data.breadcrumbs = helpers.buildBreadcrumbs([{text: data.title}]);
+		}
 
 		plugins.fireHook('filter:categories.build', {req: req, res: res, templateData: data}, function(err, data) {
 			if (err) {
