@@ -133,13 +133,14 @@ module.exports = function(Topics) {
 					bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + title + ']]',
 					bodyLong: postData.content,
 					pid: postData.pid,
-					nid: 'tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + exceptUid,
+					nid: 'new_post:tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + exceptUid,
 					tid: postData.topic.tid,
 					from: exceptUid
 				}, function(err, notification) {
 					if (err) {
 						return next(err);
 					}
+
 					if (notification) {
 						notifications.push(notification, followers);
 					}
