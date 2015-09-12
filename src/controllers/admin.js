@@ -362,8 +362,7 @@ adminController.homepage.get = function(req, res, next) {
 				},
 				function(categoryData, next) {
 					async.map(categoryData, function(category, next) {
-						var route = 'category/' + category.slug,
-							hook = 'action:homepage.get:' + route;
+						var route = 'category/' + category.slug;
 
 						next(null, {
 							route: route,
