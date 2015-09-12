@@ -320,7 +320,6 @@ middleware.processRender = function(req, res, next) {
 
 				self.send(str);
 			};
-
 		options = options || {};
 
 		if ('function' === typeof options) {
@@ -346,13 +345,14 @@ middleware.processRender = function(req, res, next) {
 			return res.json(options);
 		}
 
+		var ajaxifyData = encodeURIComponent(JSON.stringify(options));
 		render.call(self, template, options, function(err, str) {
 			if (err) {
 				winston.error(err);
 				return fn(err);
 			}
 
-			str = str + '<input type="hidden" ajaxify-data="' + encodeURIComponent(JSON.stringify(options)) + '" />';
+			str = str + '<input type="hidden" ajaxify-data="' + ajaxifyData + '" />';
 			str = (res.locals.postHeader ? res.locals.postHeader : '') + str + (res.locals.preFooter ? res.locals.preFooter : '');
 
 			if (res.locals.footer) {
