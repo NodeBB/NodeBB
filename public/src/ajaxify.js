@@ -124,7 +124,7 @@ $(document).ready(function() {
 				app.alertError('[[global:please_log_in]]');
 				app.previousUrl = url;
 				return ajaxify.go('login');
-			} else if (status === 302) {
+			} else if (status === 302 || status === 308) {
 				if (data.responseJSON.external) {
 					window.location.href = data.responseJSON.external;
 				} else if (typeof data.responseJSON === 'string') {
