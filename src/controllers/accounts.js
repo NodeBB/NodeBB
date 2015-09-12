@@ -510,7 +510,8 @@ accountsController.getNotifications = function(req, res, next) {
 		}
 		res.render('notifications', {
 			notifications: notifications,
-			title: '[[pages:notifications]]'
+			title: '[[pages:notifications]]',
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[pages:notifications]]'}])
 		});
 	});
 };
@@ -550,7 +551,8 @@ accountsController.getChats = function(req, res, callback) {
 				nextStart: results.recentChats.nextStart,
 				contacts: results.contacts,
 				allowed: true,
-				title: '[[pages:chats]]'
+				title: '[[pages:chats]]',
+				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[pages:chats]]'}])
 			});
 		}
 
@@ -584,7 +586,8 @@ accountsController.getChats = function(req, res, callback) {
 				meta: data.toUser,
 				messages: data.messages,
 				allowed: data.allowed,
-				title: '[[pages:chat, ' + data.toUser.username + ']]'
+				title: '[[pages:chat, ' + data.toUser.username + ']]',
+				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[pages:chats]]', url: nconf.get('relative_path') + '/chats'}, {text: data.toUser.username}])
 			});
 		});
 	});
