@@ -485,7 +485,7 @@ app.cacheBuster = null;
 				if(err) {
 					return app.alertError(err.message);
 				}
-				$('[component="user/status"]')
+				$('[data-uid="' + app.user.uid + '"] [component="user/status"], [component="header/profilelink"] [component="user/status"]')
 					.removeClass('away online dnd offline')
 					.addClass(status);
 
