@@ -18,6 +18,10 @@ define('forum/topic/posts', [
 			return;
 		}
 
+		if (!data || !data.posts || !data.posts.length) {
+			return;
+		}
+
 		if (config.usePagination) {
 			return onNewPostPagination(data);
 		}
@@ -32,13 +36,20 @@ define('forum/topic/posts', [
 			if (html) {
 				html.addClass('new');
 			}
-			navigator.scrollBottom(data.posts[0].index);
+			scrollToPostIfSelf(data.posts[0]);
 		});
 	};
 
+	function scrollToPostIfSelf(post) {
+		var isSelfPost = parseInt(post.uid, 10) === parseInt(app.user.uid, 10);
+		if (isSelfPost) {
+			navigator.scrollBottom(post.index);
+		}
+	}
+
 	function onNewPostPagination(data) {
 		function scrollToPost() {
-			navigator.scrollBottom(data.posts[0].index);
+			scrollToPostIfSelf(data.posts[0]);
 		}
 
 		var posts = data.posts;
