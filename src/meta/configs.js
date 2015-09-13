@@ -4,7 +4,8 @@
 var winston = require('winston'),
 	db = require('../database'),
 	pubsub = require('../pubsub'),
-	nconf = require('nconf');
+	nconf = require('nconf'),
+	utils = require('../../public/src/utils');
 
 module.exports = function(Meta) {
 
@@ -19,6 +20,8 @@ module.exports = function(Meta) {
 				winston.error(err.stack);
 				return callback(err);
 			}
+
+			config['cache-buster'] = utils.generateUUID();
 
 			Meta.config = config;
 			callback();

@@ -6,7 +6,7 @@ var uglifyjs = require('uglify-js'),
 	fs = require('fs'),
 	crypto = require('crypto'),
 	utils = require('./public/src/utils'),
- 
+
 	Minifier = {
 		js: {}
 	};
@@ -47,17 +47,7 @@ function minifyScripts(scripts, callback) {
 		var minified = uglifyjs.minify(scripts, {
 				// outSourceMap: "nodebb.min.js.map",
 				compress: false
-			}),
-			hasher = crypto.createHash('md5'),
-			hash;
-
-		// Calculate js hash
-		hasher.update(minified.code, 'utf-8');
-		hash = hasher.digest('hex');
-		process.send({
-			type: 'hash',
-			payload: hash.slice(0, 8)
-		});
+			});
 
 		callback(minified.code/*, minified.map*/);
 	} catch(err) {

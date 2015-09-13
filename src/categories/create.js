@@ -37,7 +37,7 @@ module.exports = function(Categories) {
 					link: '',
 					numRecentReplies: 1,
 					class: ( data.class ? data.class : 'col-md-3 col-xs-6' ),
-					imageClass: 'auto'
+					imageClass: 'cover'
 				};
 
 				plugins.fireHook('filter:category.create', {category: category, data: data}, next);

@@ -152,14 +152,12 @@ function start() {
 			case 'js-propagate':
 				meta.js.cache = message.cache;
 				meta.js.map = message.map;
-				meta.js.hash = message.hash;
 				emitter.emit('meta:js.compiled');
 				winston.verbose('[cluster] Client-side javascript and mapping propagated to worker %s', process.pid);
 			break;
 			case 'css-propagate':
 				meta.css.cache = message.cache;
 				meta.css.acpCache = message.acpCache;
-				meta.css.hash = message.hash;
 				emitter.emit('meta:css.compiled');
 				winston.verbose('[cluster] Stylesheets propagated to worker %s', process.pid);
 			break;

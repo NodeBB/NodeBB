@@ -8,8 +8,8 @@
     "no_replies": "Personne n'a répondu",
     "no_new_posts": "Pas de nouveau message",
     "share_this_category": "Partager cette catégorie",
-    "watch": "Suivre",
-    "ignore": "Ne plus suivre",
-    "watch.message": "Vous suivez désormais les mises à jour de cette catégorie.",
-    "ignore.message": "Vous ne suivez plus les mises jour de cette catégorie."
+    "watch": "Surveiller",
+    "ignore": "Ne plus surveiller",
+    "watch.message": "Vous surveillez désormais les mises à jour de cette catégorie.",
+    "ignore.message": "Vous ne surveillez plus les mises jour de cette catégorie."
 }

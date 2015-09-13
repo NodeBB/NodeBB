@@ -6,9 +6,9 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 	var Notifications = {};
 
 	Notifications.prepareDOM = function() {
-		var notifContainer = $('.notifications'),
+		var notifContainer = components.get('notifications'),
 			notifTrigger = notifContainer.children('a'),
-			notifList = $('#notif-list'),
+			notifList = components.get('notifications/list'),
 			notifIcon = components.get('notifications/icon');
 
 		notifTrigger.on('click', function(e) {

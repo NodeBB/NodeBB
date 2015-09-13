@@ -130,7 +130,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			chatContainer = $('.chat-content');
 		newMessage.appendTo(chatContainer);
 		newMessage.find('.timeago').timeago();
-		newMessage.find('img:not(".chat-user-image")').addClass('img-responsive');
+		newMessage.find('img:not(.not-responsive)').addClass('img-responsive');
 		Chats.scrollToBottom($('.expanded-chat .chat-content'));
 	}
 
@@ -184,7 +184,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	};
 
 	Chats.sendMessage = function(toUid, inputEl) {
-		var msg = S(inputEl.val()).stripTags().s;
+		var msg = inputEl.val();
 		if (msg.length) {
 			msg = msg +'\n';
 			socket.emit('modules.chats.send', {

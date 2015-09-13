@@ -208,11 +208,11 @@ function handleErrors(app, middleware) {
 			return res.sendStatus(403);
 		}
 
-		winston.error(req.path + '\n', err.stack);
-
 		if (parseInt(err.status, 10) === 302 && err.path) {
 			return res.locals.isAPI ? res.status(302).json(err.path) : res.redirect(err.path);
 		}
+
+		winston.error(req.path + '\n', err.stack);
 
 		res.status(err.status || 500);
 

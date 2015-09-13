@@ -63,17 +63,22 @@ define('admin/manage/category', [
 			});
 		}
 
-		// If any inputs have changed, prepare it for saving
-		$('form.category input, form.category select').on('change', function(ev) {
-			modified(ev.target);
-		});
+		
+		$('form.category input, form.category select')
+			.on('change', function(ev) {
+				modified(ev.target);
+			})
+			.on('keydown', function(ev) {
+				if (ev.which === 13) {
+					ev.preventDefault();
+					return false;
+				}
+			});
 
-		// Update preview image size on change
 		$('[data-name="imageClass"]').on('change', function(ev) {
 			$('.category-preview').css('background-size', $(this).val());
 		});
 
-		// Colour Picker
 		$('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 
 		$('#save').on('click', save);
@@ -94,7 +99,6 @@ define('admin/manage/category', [
 			});
 		});
 
-		// Image Uploader
 		$('.upload-button').on('click', function() {
 			var inputEl = $(this),
 				cid = inputEl.attr('data-cid');
@@ -107,7 +111,6 @@ define('admin/manage/category', [
 			});
 		});
 
-		// Image Remover
 		$('.delete-image').on('click', function(e) {
 			e.preventDefault();
 
@@ -120,12 +123,10 @@ define('admin/manage/category', [
 			$(this).parent().addClass('hide').hide();
 		});
 
-		// Icon selection
 		$('.category-preview').on('click', function(ev) {
 			iconSelect.init($(this).find('i'), modified);
 		});
 
-		// Parent Category Selector
 		$('button[data-action="setParent"], button[data-action="changeParent"]').on('click', Category.launchParentSelector);
 		$('button[data-action="removeParent"]').on('click', function() {
 			var payload= {};
@@ -146,7 +147,6 @@ define('admin/manage/category', [
 	};
 
 	Category.setupPrivilegeTable = function() {
-		// Checkbox event capture
 		$('.privilege-table-container').on('change', 'input[type="checkbox"]', function() {
 			var checkboxEl = $(this),
 				privilege = checkboxEl.parent().attr('data-privilege'),

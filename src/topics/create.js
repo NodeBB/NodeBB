@@ -121,7 +121,7 @@ module.exports = function(Topics) {
 					return next(new Error('[[error:guest-handle-invalid]]'));
 				}
 
-				user.isReadyToPost(data.uid, next);
+				user.isReadyToPost(data.uid, data.cid, next);
 			},
 			function(next) {
 				plugins.fireHook('filter:topic.post', data, next);
@@ -184,22 +184,30 @@ module.exports = function(Topics) {
 			content = data.content,
 			postData;
 
+		var cid;
 		async.waterfall([
 			function(next) {
+				Topics.getTopicField(tid, 'cid', next);
+			},
+			function(_cid, next) {
+				cid = _cid;
 				async.parallel({
 					exists: async.apply(Topics.exists, tid),
 					locked: async.apply(Topics.isLocked, tid),
 					canReply: async.apply(privileges.topics.can, 'topics:reply', tid, uid),
-					isAdmin: async.apply(user.isAdministrator, uid)
+					isAdmin: async.apply(user.isAdministrator, uid),
+					isModerator: async.apply(user.isModerator, uid, cid)
 				}, next);
 			},
 			function(results, next) {
 				if (!results.exists) {
 					return next(new Error('[[error:no-topic]]'));
 				}
-				if (results.locked && !results.isAdmin) {
+
+				if (results.locked && !results.isAdmin && !results.isModerator) {
 					return next(new Error('[[error:topic-locked]]'));
 				}
+
 				if (!results.canReply) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
@@ -208,7 +216,7 @@ module.exports = function(Topics) {
 					return next(new Error('[[error:guest-handle-invalid]]'));
 				}
 
-				user.isReadyToPost(uid, next);
+				user.isReadyToPost(uid, cid, next);
 			},
 			function(next) {
 				plugins.fireHook('filter:topic.reply', data, next);

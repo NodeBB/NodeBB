@@ -241,7 +241,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 						chatModal.find('.chat-content').css('height', module.calculateChatListHeight(chatModal));
 					});
-					
+
 					chatModal.draggable({
 						start:function() {
 							module.bringModalToTop(chatModal);
@@ -265,7 +265,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					$(window).one('action:ajaxify.end', function() {
 						components.get('chat/input').val(text);
 					});
-					
+
 					ajaxify.go('chats/' + utils.slugify(data.username));
 					module.close(chatModal);
 				}
@@ -471,7 +471,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 		Chats.parseMessage(data, function(html) {
 			var message = $(html);
-			message.find('img:not(".chat-user-image")').addClass('img-responsive');
+			message.find('img:not(.not-responsive)').addClass('img-responsive');
 			message.find('.timeago').timeago();
 			message.appendTo(chatContent);
 			Chats.scrollToBottom(chatContent);

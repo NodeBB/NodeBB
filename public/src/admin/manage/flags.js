@@ -2,15 +2,15 @@
 /*global define, socket, app, admin, utils, bootbox, RELATIVE_PATH*/
 
 define('admin/manage/flags', [
-	'forum/infinitescroll', 
-	'admin/modules/selectable', 
+	'forum/infinitescroll',
+	'admin/modules/selectable',
 	'autocomplete'
 ], function(infinitescroll, selectable, autocomplete) {
 
 	var	Flags = {};
 
 	Flags.init = function() {
-		$('.post-container .content img').addClass('img-responsive');
+		$('.post-container .content img:not(.not-responsive)').addClass('img-responsive');
 
 		var params = utils.params();
 		$('#flag-sort-by').val(params.sortBy);
@@ -91,7 +91,7 @@ define('admin/manage/flags', [
 					infinitescroll.parseAndTranslate('admin/manage/flags', 'posts', {posts: data.posts}, function(html) {
 						$('[data-next]').attr('data-next', data.next);
 						$('.post-container').append(html);
-						html.find('img').addClass('img-responsive');
+						html.find('img:not(.not-responsive)').addClass('img-responsive');
 						done();
 					});
 				} else {

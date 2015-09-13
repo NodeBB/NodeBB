@@ -18,7 +18,7 @@
 		if (template.match(/^admin/)) {
 			return callback();
 		}
-		
+
 		var widgetLocations = ['sidebar', 'footer', 'header'], numLocations;
 
 		$('#content [widget-area]').each(function() {
@@ -74,7 +74,7 @@
 				}
 
 				var widgetAreas = $('#content [widget-area]');
-				widgetAreas.find('img:not(.user-img)').addClass('img-responsive');
+				widgetAreas.find('img:not(.not-responsive)').addClass('img-responsive');
 				widgetAreas.find('.timeago').timeago();
 				widgetAreas.find('img[title].teaser-pic,img[title].user-img').each(function() {
 					$(this).tooltip({

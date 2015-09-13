@@ -6,7 +6,7 @@ var async = require('async'),
 
 module.exports = function(User) {
 
-	User.isReadyToPost = function(uid, callback) {
+	User.isReadyToPost = function(uid, cid, callback) {
 		if (parseInt(uid, 10) === 0) {
 			return callback();
 		}
@@ -20,6 +20,9 @@ module.exports = function(User) {
 			},
 			isAdmin: function(next) {
 				User.isAdministrator(uid, next);
+			},
+			isModerator: function(next) {
+				User.isModerator(uid, cid, next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -30,7 +33,7 @@ module.exports = function(User) {
 				return callback(new Error('[[error:no-user]]'));
 			}
 
-			if (results.isAdmin) {
+			if (results.isAdmin || results.isModerator) {
 				return callback();
 			}
 

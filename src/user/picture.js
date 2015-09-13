@@ -101,7 +101,11 @@ module.exports = function(User) {
 			}
 
 			User.uploadPicture(uid, downloadedImage, function(err, image) {
-				fs.unlink(filename);
+				fs.unlink(filename, function(err) {
+					if (err) {
+						winston.error(err);
+					}
+				});
 				callback(err, image);
 			});
 		});

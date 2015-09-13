@@ -26,7 +26,7 @@
 			<input type="text" class="form-control" placeholder="A short description about your community" data-field="description" /><br />
 
 			<label>Site Keywords</label>
-			<input type="text" class="form-control" placeholder="Keywords describing your community, comma-seperated" data-field="keywords" /><br />
+			<input type="text" class="form-control" placeholder="Keywords describing your community, comma-separated" data-field="keywords" /><br />
 		</form>
 	</div>
 </div>
@@ -40,6 +40,7 @@
 				<input id="logoUrl" type="text" class="form-control" placeholder="Path to a logo to display on forum header" data-field="brand:logo" data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/uploadlogo" readonly />
 				<span class="input-group-btn">
 					<input data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/uploadlogo" type="button" class="btn btn-default" value="Upload"></input>
+					<button data-action="removeLogo" type="button" class="btn btn-default btn-danger"><i class="fa fa-times"></i></button>
 				</span>
 			</div>
 		</div>

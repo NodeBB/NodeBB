@@ -1,7 +1,7 @@
 {
     "title": "通知センター",
     "no_notifs": "新しい通知はありません",
-    "see_all": "すべての通知を確認",
+    "see_all": "See all notifications",
     "mark_all_read": "Mark all notifications read",
     "back_to_home": "Back to %1",
     "outgoing_link": "外部サイトへのリンク",

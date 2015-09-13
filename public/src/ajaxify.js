@@ -110,20 +110,21 @@ $(document).ready(function() {
 			textStatus = err.textStatus;
 
 		if (data) {
-			data.responseJSON.config = config;
 			var status = parseInt(data.status, 10);
 			if (status === 403 || status === 404 || status === 500 || status === 502 || status === 503) {
 				if (status === 502) {
 					status = 500;
 				}
-
+				if (data.responseJSON) {
+					data.responseJSON.config = config;
+				}
 				$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 				return renderTemplate(url, status.toString(), data.responseJSON, callback);
 			} else if (status === 401) {
 				app.alertError('[[global:please_log_in]]');
 				app.previousUrl = url;
 				return ajaxify.go('login');
-			} else if (status === 302) {
+			} else if (status === 302 || status === 308) {
 				if (data.responseJSON.external) {
 					window.location.href = data.responseJSON.external;
 				} else if (typeof data.responseJSON === 'string') {

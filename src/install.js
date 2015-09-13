@@ -283,11 +283,11 @@ function enableDefaultTheme(next) {
 			process.stdout.write('Previous theme detected, skipping enabling default theme\n');
 			return next(err);
 		}
-
-		process.stdout.write('Enabling default theme: Persona\n');
+		var defaultTheme = nconf.get('defaultTheme') || 'nodebb-theme-persona';
+		process.stdout.write('Enabling default theme: ' + defaultTheme + '\n');
 		meta.themes.set({
 			type: 'local',
-			id: 'nodebb-theme-persona'
+			id: defaultTheme
 		}, next);
 	});
 }
@@ -347,16 +347,20 @@ function createAdmin(callback) {
 				winston.warn("Passwords did not match, please try again");
 				return retryPassword(results);
 			}
-
+			var adminUid;
 			async.waterfall([
 				function(next) {
 					User.create({username: results.username, password: results.password, email: results.email}, next);
 				},
 				function(uid, next) {
+					adminUid = uid;
 					Groups.join('administrators', uid, next);
 				},
 				function(next) {
 					Groups.show('administrators', next);
+				},
+				function(next) {
+					Groups.ownership.grant(adminUid, 'administrators', next);
 				}
 			], function(err) {
 				if (err) {
@@ -488,6 +492,8 @@ function enableDefaultPlugins(next) {
 		],
 		customDefaults = nconf.get('defaultPlugins');
 
+	winston.info('[install/defaultPlugins] customDefaults', customDefaults);
+
 	if (customDefaults && customDefaults.length) {
 		try {
 			customDefaults = JSON.parse(customDefaults);
@@ -501,6 +507,8 @@ function enableDefaultPlugins(next) {
 	defaultEnabled = defaultEnabled.filter(function(plugin, index, array) {
 		return array.indexOf(plugin) === index;
 	});
+
+	winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);
 
 	var db = require('./database');
 	var order = defaultEnabled.map(function(plugin, index) {

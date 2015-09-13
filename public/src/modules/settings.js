@@ -468,6 +468,9 @@ define('settings', function () {
 				}
 
 				$(formEl).deserialize(values);
+				$(formEl).find('input[type="checkbox"]').each(function() {
+					$(this).parents('.mdl-switch').toggleClass('is-checked', $(this).is(':checked'));
+				});
 				$(window).trigger('action:admin.settingsLoaded');
 
 				callback(null, values);

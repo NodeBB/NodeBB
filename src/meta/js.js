@@ -18,7 +18,6 @@ module.exports = function(Meta) {
 	Meta.js = {
 		cache: '',
 		map: '',
-		hash: +new Date(),
 		scripts: {
 			base: [
 				'public/vendor/jquery/js/jquery.js',
@@ -142,8 +141,7 @@ module.exports = function(Meta) {
 						process.send({
 							action: 'js-propagate',
 							cache: Meta.js.cache,
-							map: Meta.js.map,
-							hash: Meta.js.hash
+							map: Meta.js.map
 						});
 					}
 
@@ -160,9 +158,6 @@ module.exports = function(Meta) {
 					Meta.js.cache = message.minified;
 					Meta.js.map = message.sourceMap;
 					onComplete();
-					break;
-				case 'hash':
-					Meta.js.hash = message.payload;
 					break;
 				case 'error':
 					winston.error('[meta/js] Could not compile client-side scripts! ' + message.payload.message);

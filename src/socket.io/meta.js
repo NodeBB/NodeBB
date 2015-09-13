@@ -29,9 +29,7 @@ SocketMeta.reconnected = function(socket, data, callback) {
 
 emitter.on('nodebb:ready', function() {
 	websockets.server.sockets.emit('event:nodebb.ready', {
-		general: meta.config['cache-buster'],
-		css: meta.css.hash,
-		js: meta.js.hash
+		'cache-buster': meta.config['cache-buster']
 	});
 });
 

@@ -280,11 +280,11 @@ function emitToTopicAndCategory(event, data) {
 }
 
 SocketTopics.createTopicFromPosts = function(socket, data, callback) {
-	if(!socket.uid) {
+	if (!socket.uid) {
 		return callback(new Error('[[error:not-logged-in]]'));
 	}
 
-	if(!data || !data.title || !data.pids || !Array.isArray(data.pids)) {
+	if (!data || !data.title || !data.pids || !Array.isArray(data.pids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 

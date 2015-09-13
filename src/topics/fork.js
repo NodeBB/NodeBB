@@ -6,6 +6,7 @@ var async = require('async'),
 
 	db = require('../database'),
 
+	user = require('../user'),
 	posts = require('../posts'),
 	privileges = require('../privileges'),
 	postTools = require('../postTools'),
@@ -32,37 +33,33 @@ module.exports = function(Topics) {
 			return a - b;
 		});
 		var mainPid = pids[0];
-
-		async.parallel({
-			postData: function(callback) {
-				posts.getPostData(mainPid, callback);
+		var cid;
+		var tid;
+		async.waterfall([
+			function(next) {
+				posts.getCidByPid(mainPid, next);
 			},
-			cid: function(callback) {
-				posts.getCidByPid(mainPid, callback);
-			}
-		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			Topics.create({uid: results.postData.uid, title: title, cid: results.cid}, function(err, tid) {
-				if (err) {
-					return callback(err);
-				}
-
-				async.eachSeries(pids, move, function(err) {
-					if (err) {
-						return callback(err);
+			function(_cid, next) {
+				cid = _cid;
+				async.parallel({
+					postData: function(next) {
+						posts.getPostData(mainPid, next);
+					},
+					isAdmin: function(next) {
+						user.isAdministrator(uid, next);
+					},
+					isModerator: function(next) {
+						user.isModerator(uid, cid, next);
 					}
-
-					Topics.updateTimestamp(tid, Date.now(), function(err) {
-						if (err) {
-							return callback(err);
-						}
-						Topics.getTopicData(tid, callback);
-					});
-				});
-
+				}, next);
+			},
+			function(results, next) {
+				if (!results.isAdmin && !results.isModerator) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
+				Topics.create({uid: results.postData.uid, title: title, cid: cid}, next);
+			},
+			function(_tid, next) {
 				function move(pid, next) {
 					privileges.posts.canEdit(pid, uid, function(err, canEdit) {
 						if(err || !canEdit) {
@@ -72,8 +69,16 @@ module.exports = function(Topics) {
 						Topics.movePostToTopic(pid, tid, next);
 					});
 				}
-			});
-		});
+				tid = _tid;
+				async.eachSeries(pids, move, next);
+			},
+			function(next) {
+				Topics.updateTimestamp(tid, Date.now(), next);
+			},
+			function(next) {
+				Topics.getTopicData(tid, next);
+			}
+		], callback);
 	};
 
 	Topics.movePostToTopic = function(pid, tid, callback) {

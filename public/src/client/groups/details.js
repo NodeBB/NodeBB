@@ -24,7 +24,7 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 		handleMemberInfiniteScroll();
 		handleMemberInvitations();
 
-		components.get('groups/activity').find('.content img').addClass('img-responsive');
+		components.get('groups/activity').find('.content img:not(.not-responsive)').addClass('img-responsive');
 
 		detailsPage.on('click', '[data-action]', function() {
 			var btnEl = $(this),

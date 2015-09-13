@@ -50,7 +50,8 @@ usersController.getOnlineUsers = function(req, res, next) {
 			users: results.users,
 			anonymousUserCount: websockets.getOnlineAnonCount(),
 			defaultGravatar: user.createGravatarURLFromEmail(''),
-			title: '[[pages:users/online]]'
+			title: '[[pages:users/online]]',
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[pages:users/online]]'}])
 		};
 
 		render(req, res, userData, next);
@@ -75,6 +76,12 @@ usersController.getUsers = function(set, start, stop, req, res, next) {
 		'users:reputation': '[[pages:users/sort-reputation]]',
 		'users:joindate': '[[pages:users/latest]]'
 	};
+
+	var setToCrumbs = {
+		'users:postcount': '[[users:top_posters]]',
+		'users:reputation': '[[users:most_reputation]]',
+		'users:joindate': '[[pages:users/latest]]'
+	};
 	usersController.getUsersAndCount(set, req.uid, start, stop, function(err, data) {
 		if (err) {
 			return next(err);
@@ -85,7 +92,8 @@ usersController.getUsers = function(set, start, stop, req, res, next) {
 			loadmore_display: data.count > (stop - start + 1) ? 'block' : 'hide',
 			users: data.users,
 			pagination: pagination.create(1, pageCount),
-			title: setToTitles[set] || '[[pages:users/latest]]'
+			title: setToTitles[set] || '[[pages:users/latest]]',
+			breadcrumbs: helpers.buildBreadcrumbs([{text: setToCrumbs[set]}])
 		};
 		userData['route_' + set] = true;
 		render(req, res, userData, next);
@@ -127,7 +135,8 @@ usersController.getUsersForSearch = function(req, res, next) {
 			search_display: 'block',
 			loadmore_display: 'hidden',
 			users: data.users,
-			title: '[[pages:users/search]]'
+			title: '[[pages:users/search]]',
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[pages:users/search]]'}])
 		};
 
 		render(req, res, userData, next);
@@ -203,7 +212,7 @@ usersController.getMap = function(req, res, next) {
 			}
 		});
 
-		res.render('usersMap', {rooms: data, title: '[[pages:users/map]]'});
+		res.render('usersMap', {rooms: data, title: '[[pages:users/map]]', breadcrumbs: helpers.buildBreadcrumbs([{text: '[[pages:users/map]]'}])});
 	});
 };
 
@@ -212,6 +221,7 @@ function render(req, res, data, next) {
 		if (err) {
 			return next(err);
 		}
+
 		data.templateData.inviteOnly = meta.config.registrationType === 'invite-only';
 		res.render('users', data.templateData);
 	});

@@ -195,4 +195,64 @@
 	</div>
 </div>
 
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Default User Settings</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="openOutgoingLinksInNewTab">
+					<span class="mdl-switch__label"><strong>[[user:open_links_in_new_tab]]</strong></span>
+				</label>
+			</div>
+
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="topicSearchEnabled">
+					<span class="mdl-switch__label"><strong>[[user:enable_topic_searching]]</strong></span>
+				</label>
+			</div>
+
+			<div class="form-group">
+				<label>[[user:digest_label]]</label>
+				<select class="form-control" data-field="dailyDigestFreq">
+					<option value="off">Off</option>
+					<option value="day">Daily</option>
+					<option value="week">Weekly</option>
+					<option value="month">Monthly</option>
+				</select>
+			</div>
+
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="sendChatNotifications">
+					<span class="mdl-switch__label"><strong>[[user:send_chat_notifications]]</strong></span>
+				</label>
+			</div>
+
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="sendPostNotifications">
+					<span class="mdl-switch__label"><strong>[[user:send_post_notifications]]</strong></span>
+				</label>
+			</div>
+
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="followTopicsOnCreate">
+					<span class="mdl-switch__label"><strong>[[user:follow_topics_you_create]]</strong></span>
+				</label>
+			</div>
+
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="followTopicsOnReply">
+					<span class="mdl-switch__label"><strong>[[user:follow_topics_you_reply_to]]</strong></span>
+				</label>
+			</div>
+
+		</form>
+	</div>
+</div>
+
 <!-- IMPORT admin/settings/footer.tpl -->

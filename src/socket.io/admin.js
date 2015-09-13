@@ -100,10 +100,6 @@ SocketAdmin.themes.set = function(socket, data, callback) {
 	}
 };
 
-SocketAdmin.themes.updateBranding = function(socket, data, callback) {
-	meta.css.updateBranding();
-};
-
 SocketAdmin.plugins.toggleActive = function(socket, plugin_id, callback) {
 	require('../posts/cache').reset();
 	plugins.toggleActive(plugin_id, callback);
@@ -205,6 +201,10 @@ SocketAdmin.settings.set = function(socket, data, callback) {
 SocketAdmin.settings.clearSitemapCache = function(socket, data, callback) {
 	require('../sitemap').clearCache();
 	callback();
+};
+
+SocketAdmin.settings.removeLogo = function(socket, data, callback) {
+	db.setObjectField('config', 'brand:logo', '', callback);
 };
 
 SocketAdmin.email.test = function(socket, data, callback) {
