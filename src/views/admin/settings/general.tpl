@@ -25,8 +25,8 @@
 			<label>Site Description</label>
 			<input type="text" class="form-control" placeholder="A short description about your community" data-field="description" /><br />
 
-			<label>Site Keywords</label>
-			<input type="text" class="form-control" placeholder="Keywords describing your community, comma-separated" data-field="keywords" /><br />
+			<label>Main Page Keywords</label>
+			<input type="text" class="form-control" placeholder="Keywords describing your community main page, comma-seperated" data-field="keywords" /><br />
 		</form>
 	</div>
 </div>
