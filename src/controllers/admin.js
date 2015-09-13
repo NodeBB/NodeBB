@@ -359,14 +359,13 @@ adminController.homepage.get = function(req, res, next) {
 			categories.getMultipleCategoryFields(cids, ['name', 'slug'], next);
 		},
 		function(categoryData, next) {
-			async.map(categoryData, function(category, next) {
-				var route = 'category/' + category.slug;
-
-				next(null, {
-					route: route,
+			categoryData = categoryData.map(function(category) {
+				return {
+					route: 'category/' + category.slug,
 					name: 'Category: ' + category.name
-				});
-			}, next);
+				};
+			});
+			next(null, categoryData);
 		}
 	], function(err, categoryData) {
 		if (err || !categoryData) categoryData = [];
