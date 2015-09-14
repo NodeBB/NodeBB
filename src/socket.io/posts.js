@@ -294,7 +294,7 @@ SocketPosts.edit = function(socket, data, callback) {
 		return callback(new Error('[[error:content-too-long, ' + meta.config.maximumPostLength + ']]'));
 	}
 
-	postTools.edit({
+	posts.edit({
 		uid: socket.uid,
 		handle: data.handle,
 		pid: data.pid,

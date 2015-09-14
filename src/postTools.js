@@ -8,10 +8,6 @@ var async = require('async'),
 
 (function(PostTools) {
 
-	PostTools.edit = function(data, callback) {
-		posts.edit(data, callback);
-	};
-
 	PostTools.delete = function(uid, pid, callback) {
 		togglePostDelete(uid, pid, true, callback);
 	};
