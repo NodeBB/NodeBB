@@ -78,6 +78,9 @@ var async = require('async'),
 		var uid;
 		async.waterfall([
 			function(next) {
+				user.isPasswordValid(password, next);
+			},
+			function(next) {
 				UserReset.validate(code, next);
 			},
 			function(validated, next) {

@@ -52,11 +52,7 @@ authenticationController.register = function(req, res, next) {
 				return next(new Error('[[error:username-too-long'));
 			}
 
-			if (!userData.password || userData.password.length < meta.config.minimumPasswordLength) {
-				return next(new Error('[[user:change_password_error_length]]'));
-			}
-
-			next();
+			user.isPasswordValid(userData.password, next);
 		},
 		function(next) {
 			plugins.fireHook('filter:register.check', {req: req, res: res, userData: userData}, next);
