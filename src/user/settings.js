@@ -99,27 +99,32 @@ module.exports = function(User) {
 
 		plugins.fireHook('action:user.saveSettings', {uid: uid, settings: data});
 
+		var settings = {
+			showemail: data.showemail,
+			showfullname: data.showfullname,
+			openOutgoingLinksInNewTab: data.openOutgoingLinksInNewTab,
+			dailyDigestFreq: data.dailyDigestFreq || 'off',
+			usePagination: data.usePagination,
+			topicsPerPage: Math.min(data.topicsPerPage, parseInt(meta.config.topicsPerPage, 10) || 20),
+			postsPerPage: Math.min(data.postsPerPage, parseInt(meta.config.postsPerPage, 10) || 20),
+			notificationSounds: data.notificationSounds,
+			userLang: data.userLang || meta.config.defaultLang,
+			followTopicsOnCreate: data.followTopicsOnCreate,
+			followTopicsOnReply: data.followTopicsOnReply,
+			sendChatNotifications: data.sendChatNotifications,
+			sendPostNotifications: data.sendPostNotifications,
+			restrictChat: data.restrictChat,
+			topicSearchEnabled: data.topicSearchEnabled,
+			groupTitle: data.groupTitle
+		};
+
+		if (data.bootswatchSkin) {
+			settings.bootswatchSkin = data.bootswatchSkin;
+		}
+		
 		async.waterfall([
 			function(next) {
-				db.setObject('user:' + uid + ':settings', {
-					showemail: data.showemail,
-					showfullname: data.showfullname,
-					openOutgoingLinksInNewTab: data.openOutgoingLinksInNewTab,
-					dailyDigestFreq: data.dailyDigestFreq || 'off',
-					usePagination: data.usePagination,
-					topicsPerPage: Math.min(data.topicsPerPage, parseInt(meta.config.topicsPerPage, 10) || 20),
-					postsPerPage: Math.min(data.postsPerPage, parseInt(meta.config.postsPerPage, 10) || 20),
-					notificationSounds: data.notificationSounds,
-					userLang: data.userLang || meta.config.defaultLang,
-					followTopicsOnCreate: data.followTopicsOnCreate,
-					followTopicsOnReply: data.followTopicsOnReply,
-					sendChatNotifications: data.sendChatNotifications,
-					sendPostNotifications: data.sendPostNotifications,
-					restrictChat: data.restrictChat,
-					topicSearchEnabled: data.topicSearchEnabled,
-					bootswatchSkin: data.bootswatchSkin,
-					groupTitle: data.groupTitle
-				}, next);
+				db.setObject('user:' + uid + ':settings', settings, next);
 			},
 			function(next) {
 				updateDigestSetting(uid, data.dailyDigestFreq, next);
