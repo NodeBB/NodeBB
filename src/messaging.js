@@ -274,23 +274,14 @@ var db = require('./database'),
 				results.users.forEach(function(user, index) {
 					if (user && !parseInt(user.uid, 10)) {
 						Messaging.markRead(uid, uids[index]);
+						user.unread = results.unread[index];
+						user.status = sockets.isUserOnline(user.uid) ? user.status : 'offline';
+						user.teaser = results.teasers[index];
 					}
 				});
 
 				results.users = results.users.filter(function(user) {
 					return user && parseInt(user.uid, 10);
-				});
-
-				if (!results.users.length) {
-					return callback(null, {users: [], nextStart: stop + 1});
-				}
-
-				results.users.forEach(function(user, index) {
-					if (user) {
-						user.unread = results.unread[index];
-						user.status = sockets.isUserOnline(user.uid) ? user.status : 'offline';
-						user.teaser = results.teasers[index];
-					}
 				});
 
 				callback(null, {users: results.users, nextStart: stop + 1});
