@@ -455,6 +455,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 		chatModal.find('#chat-message-send-btn').off('click').on('click', function(e){
 			Chats.sendMessage(chatModal.attr('touid'), input);
+			input.focus();
 			return false;
 		});
 	}

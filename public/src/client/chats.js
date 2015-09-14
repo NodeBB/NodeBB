@@ -186,7 +186,8 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	Chats.sendMessage = function(toUid, inputEl) {
 		var msg = inputEl.val();
 		if (msg.length) {
-			msg = msg +'\n';
+			inputEl.val('');
+			msg = msg + '\n';
 			socket.emit('modules.chats.send', {
 				touid:toUid,
 				message:msg
@@ -198,7 +199,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 					return app.alertError(err.message);
 				}
 
-				inputEl.val('');
 				sounds.play('chat-outgoing');
 				Chats.notifyTyping(toUid, false);
 			});
