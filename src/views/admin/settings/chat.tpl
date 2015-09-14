@@ -10,7 +10,7 @@
 
 		<div class="form-group">
 			<label>Maximum length of chat messages</label>
-			<input type="text" class="form-control" value="1000" data-field="maximumChatLength">
+			<input type="text" class="form-control" value="1000" data-field="maximumChatMessageLength">
 		</div>
 	</div>
 </div>

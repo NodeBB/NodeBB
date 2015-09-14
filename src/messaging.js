@@ -28,14 +28,22 @@ var db = require('./database'),
 	}
 
 	Messaging.addMessage = function(fromuid, touid, content, timestamp, callback) {
-		var uids = sortUids(fromuid, touid);
-
 		if (typeof timestamp === 'function') {
 			callback = timestamp;
 			timestamp = Date.now();
 		} else {
 			timestamp = timestamp || Date.now();
 		}
+
+		if (!content) {
+			return callback(new Error('[[error:invalid-chat-message]]'));
+		}
+
+		if (content.length > (meta.config.maximumChatMessageLength || 1000)) {
+			return callback(new Error('[[error:chat-message-too-long]]'));
+		}
+
+		var uids = sortUids(fromuid, touid);
 
 		db.incrObjectField('global', 'nextMid', function(err, mid) {
 			if (err) {
