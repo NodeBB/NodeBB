@@ -348,21 +348,49 @@ adminController.navigation.get = function(req, res, next) {
 };
 
 adminController.homepage.get = function(req, res, next) {
-	plugins.fireHook('filter:homepage.get', {routes: [
-		{
-			route: 'categories',
-			name: 'Categories'
+	async.waterfall([
+		function(next) {
+			db.getSortedSetRange('cid:0:children', 0, -1, next);
 		},
-		{
-			route: 'recent',
-			name: 'Recent'
+		function(cids, next) {
+			privileges.categories.filterCids('find', cids, 0, next);
 		},
-		{
-			route: 'popular',
-			name: 'Popular'
+		function(cids, next) {
+			categories.getMultipleCategoryFields(cids, ['name', 'slug'], next);
+		},
+		function(categoryData, next) {
+			categoryData = categoryData.map(function(category) {
+				return {
+					route: 'category/' + category.slug,
+					name: 'Category: ' + category.name
+				};
+			});
+			next(null, categoryData);
 		}
-	]}, function(err, data) {
-		res.render('admin/general/homepage', data);
+	], function(err, categoryData) {
+		if (err || !categoryData) categoryData = [];
+
+		plugins.fireHook('filter:homepage.get', {routes: [
+			{
+				route: 'categories',
+				name: 'Categories'
+			},
+			{
+				route: 'recent',
+				name: 'Recent'
+			},
+			{
+				route: 'popular',
+				name: 'Popular'
+			}
+		].concat(categoryData)}, function(err, data) {
+			data.routes.push({
+				route: '',
+				name: 'Custom'
+			});
+
+			res.render('admin/general/homepage', data);
+		});
 	});
 };
 
