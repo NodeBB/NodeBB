@@ -12,7 +12,8 @@ var async = require('async'),
 	favourites = require('../favourites'),
 	posts = require('../posts'),
 	privileges = require('../privileges'),
-	meta = require('../meta');
+	meta = require('../meta'),
+	plugins = require('../plugins');
 
 module.exports = function(Topics) {
 
@@ -123,7 +124,7 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			postData.forEach(function(postObj, i) {
+			async.forEachOf(postData, function (postObj, i, next) {
 				if (postObj) {
 					postObj.deleted = parseInt(postObj.deleted, 10) === 1;
 					postObj.user = parseInt(postObj.uid, 10) ? results.userData[postObj.uid] : _.clone(results.userData[postObj.uid]);
@@ -135,6 +136,7 @@ module.exports = function(Topics) {
 					postObj.display_moderator_tools = results.privileges[i].editable;
 					postObj.display_move_tools = results.privileges[i].move && postObj.index !== 0;
 					postObj.selfPost = parseInt(uid, 10) === parseInt(postObj.uid, 10);
+					postObj.tools = [];
 
 					if(postObj.deleted && !results.privileges[i].view_deleted) {
 						postObj.content = '[[topic:post_is_deleted]]';
@@ -145,9 +147,13 @@ module.exports = function(Topics) {
 						postObj.user.username = validator.escape(postObj.handle);
 					}
 				}
-			});
 
-			callback(null, postData);
+				plugins.fireHook('filter:posts.build', postObj, next);
+			}, function (err) {
+				if(err) callback(err);
+
+				callback(null, postData);
+			});
 		});
 	};
 
