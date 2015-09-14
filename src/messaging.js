@@ -255,20 +255,16 @@ var db = require('./database'),
 					user.getMultipleUserFields(uids, ['uid', 'username', 'picture', 'status'] , next);
 				},
 				teasers: function(next) {
-					var teasers = [];
-					async.each(uids, function(fromuid, next) {
+					async.map(uids, function(fromuid, next) {
 						Messaging.getMessages({
 							fromuid: fromuid,
 							touid: uid,
 							isNew: false,
 							count: 1
 						}, function(err, teaser) {
-							teasers[uids.indexOf(fromuid)] = teaser[0];
-							next(err);
+							next(err, teaser[0]);
 						});
-					}, function(err) {
-						next(err, teasers);
-					});
+					}, next);
 				}
 			}, function(err, results) {
 				if (err) {
