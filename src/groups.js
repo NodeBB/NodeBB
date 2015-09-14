@@ -444,7 +444,7 @@ var async = require('async'),
 							}
 						});
 
-						Groups.getGroupsData(memberOf, next);
+						Groups.getGroupsAndMembers(memberOf, next);
 					});
 				}, next);
 			}
