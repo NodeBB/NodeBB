@@ -45,49 +45,64 @@ var	fs = require('fs'),
 	};
 
 	Emailer.sendToEmail = function(template, email, language, params, callback) {
-		callback = callback || function() {};
-		async.parallel({
-			html: function(next) {
-				app.render('emails/' + template, params, next);
-			},
-			plaintext: function(next) {
-				app.render('emails/' + template + '_plaintext', params, next);
-			}
-		}, function(err, results) {
-			if (err) {
-				winston.error('[emailer] Error sending digest : ' + err.stack);
-				return callback(err);
-			}
-			async.map([results.html, results.plaintext, params.subject], function(raw, next) {
-				translator.translate(raw, language || meta.config.defaultLang || 'en_GB', function(translated) {
-					next(undefined, translated);
-				});
-			}, function(err, translated) {
-				if (err) {
-					return callback(err);
-				}
-
-				if (Plugins.hasListeners('action:email.send')) {
-					Plugins.fireHook('action:email.send', {
-						to: email,
-						from: meta.config['email:from'] || 'no-reply@localhost.lan',
-						from_name: meta.config['email:from_name'] || 'NodeBB',
-						subject: translated[2],
-						html: translated[0],
-						plaintext: translated[1],
-						template: template,
-						uid: params.uid,
-						pid: params.pid,
-						fromUid: params.fromUid
+		function renderAndTranslate(tpl, params, callback) {
+			async.waterfal([
+				function (next) {
+					app.render(template, params, next);
+				},
+				function (html, next) {
+					translator.translate(html, lang, function(translated) {
+						next(null, translated);
 					});
-					callback();
-				} else {
-					winston.warn('[emailer] No active email plugin found!');
-					callback();
 				}
-			});
-		});
+			], callback);
+		}
 
+		callback = callback || function() {};
+
+		if (!Plugins.hasListeners('action:email.send')) {
+			winston.warn('[emailer] No active email plugin found!');
+			return callback();
+		}
+
+		var lang = language || meta.config.defaultLang || 'en_GB';
+
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					html: function(next) {
+						renderAndTranslate('emails/' + template, params, next);
+					},
+					plaintext: function(next) {
+						renderAndTranslate('emails/' + template + '_plaintext', params, next);
+					},
+					subject: function(next) {
+						translator.translate(params.subject, lang, function(translated) {
+							next(null, translated);
+						});
+					}
+				}, next);
+			},
+			function (results, next) {
+				var data = {
+					to: email,
+					from: meta.config['email:from'] || 'no-reply@localhost.lan',
+					from_name: meta.config['email:from_name'] || 'NodeBB',
+					subject: results.subject,
+					html: results.html,
+					plaintext: results.plaintext,
+					template: template,
+					uid: params.uid,
+					pid: params.pid,
+					fromUid: params.fromUid
+				};
+				Plugins.fireHook('filter:email.send', data, next);
+			},
+			function (data, next) {
+				Plugins.fireHook('action:email.send', data);
+				next();
+			}
+		], callback);
 	};
 
 
