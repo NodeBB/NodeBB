@@ -81,7 +81,8 @@ topicsController.get = function(req, res, callback) {
 				set = 'tid:' + tid + ':posts:votes';
 			}
 
-			var postIndex = 0;
+			var postIndex = 0,
+				index = 0;
 
 			req.params.post_index = parseInt(req.params.post_index, 10) || 0;
 			if (reverse && req.params.post_index === 1) {
@@ -94,7 +95,6 @@ topicsController.get = function(req, res, callback) {
 					postIndex = Math.max(0, (req.params.post_index || 1) - Math.ceil(settings.postsPerPage / 2));
 				}
 			} else if (!req.query.page) {
-				var index = 0;
 				if (reverse) {
 					index = Math.max(0, postCount - (req.params.post_index || postCount));
 				} else {
@@ -118,6 +118,7 @@ topicsController.get = function(req, res, callback) {
 
 				topicData.pageCount = pageCount;
 				topicData.currentPage = page;
+				topicData.postIndex = postIndex || index || req.params.post_index;
 
 				if (page > 1) {
 					topicData.posts.splice(0, 1);
@@ -147,10 +148,11 @@ topicsController.get = function(req, res, callback) {
 			});
 		},
 		function (topicData, next) {
-			var description = '';
+			var description = '',
+				idx = topicData.postIndex;
 
-			if (topicData.posts[0] && topicData.posts[0].content) {
-				description = S(topicData.posts[0].content).stripTags().decodeHTMLEntities().s;
+			if (topicData.posts[idx] && topicData.posts[idx].content) {
+				description = S(topicData.posts[idx].content).stripTags().decodeHTMLEntities().s;
 			}
 
 			if (description.length > 255) {
@@ -163,8 +165,8 @@ topicsController.get = function(req, res, callback) {
 			var ogImageUrl = '';
 			if (topicData.thumb) {
 				ogImageUrl = topicData.thumb;
-			} else if(topicData.posts.length && topicData.posts[0] && topicData.posts[0].user && topicData.posts[0].user.picture){
-				ogImageUrl = topicData.posts[0].user.picture;
+			} else if(topicData.posts.length && topicData.posts[idx] && topicData.posts[idx].user && topicData.posts[idx].user.picture){
+				ogImageUrl = topicData.posts[idx].user.picture;
 			} else if(meta.config['brand:logo']) {
 				ogImageUrl = meta.config['brand:logo'];
 			} else {
