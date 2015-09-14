@@ -185,24 +185,26 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 
 	Chats.sendMessage = function(toUid, inputEl) {
 		var msg = inputEl.val();
-		if (msg.length) {
-			inputEl.val('');
-			msg = msg + '\n';
-			socket.emit('modules.chats.send', {
-				touid:toUid,
-				message:msg
-			}, function(err) {
-				if (err) {
-					if (err.message === '[[error:email-not-confirmed-chat]]') {
-						return app.showEmailConfirmWarning(err);
-					}
-					return app.alertError(err.message);
-				}
-
-				sounds.play('chat-outgoing');
-				Chats.notifyTyping(toUid, false);
-			});
+		if (msg.length > config.maximumChatMessageLength) {
+			return app.alertError('[[error:chat-message-too-long]]');
 		}
+
+		inputEl.val('');
+		msg = msg + '\n';
+		socket.emit('modules.chats.send', {
+			touid:toUid,
+			message:msg
+		}, function(err) {
+			if (err) {
+				if (err.message === '[[error:email-not-confirmed-chat]]') {
+					return app.showEmailConfirmWarning(err);
+				}
+				return app.alertError(err.message);
+			}
+
+			sounds.play('chat-outgoing');
+			Chats.notifyTyping(toUid, false);
+		});
 	};
 
 	Chats.scrollToBottom = function(containerEl) {

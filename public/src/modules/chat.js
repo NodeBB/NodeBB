@@ -440,6 +440,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		input.off('keypress').on('keypress', function(e) {
 			if (e.which === 13 && !e.shiftKey) {
 				Chats.sendMessage(chatModal.attr('touid'), input);
+				return false;
 			}
 		});
 
