@@ -18,7 +18,7 @@
 			<li><a href="{relative_path}/admin/manage/users">Users</a></li>
 			<li><a href="{relative_path}/admin/manage/registration">Registration Queue</a></li>
 			<li><a href="{relative_path}/admin/manage/groups">Groups</a></li>
-			<li><a href="{relative_path}/admin/manage/flags">Flags</a></li>			
+			<li><a href="{relative_path}/admin/manage/flags">Flags</a></li>
 		</ul>
 	</section>
 
@@ -32,6 +32,7 @@
 			<li><a href="{relative_path}/admin/settings/group">Group</a></li>
 			<li><a href="{relative_path}/admin/settings/guest">Guests</a></li>
 			<li><a href="{relative_path}/admin/settings/post">Post</a></li>
+			<li><a href="{relative_path}/admin/settings/chat">Chat</a></li>
 			<li><a href="{relative_path}/admin/settings/pagination">Pagination</a></li>
 			<li><a href="{relative_path}/admin/settings/tags">Tags</a></li>
 			<li><a href="{relative_path}/admin/settings/notifications">Notifications</a></li>
@@ -108,8 +109,8 @@
 				<div class="bar"></div>
 			</button>
 			<h1 id="main-page-title"></h1>
-		</div>	
-		
+		</div>
+
 		<ul id="user_label" class="pull-right">
 			<li class="dropdown pull-right">
 				<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
