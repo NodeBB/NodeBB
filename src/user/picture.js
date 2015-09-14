@@ -90,28 +90,10 @@ module.exports = function(User) {
 	};
 
 	User.uploadFromUrl = function(uid, url, callback) {
-		var extension = url.substring(url.lastIndexOf('.') + 1);
-		if (['png', 'jpeg', 'jpg', 'gif'].indexOf(extension) == -1) {
-			return callback('[[error:invalid-image-extension]]');
+		if (!plugins.hasListeners('filter:uploadImage')) {
+			return callback(new Error('[[error:no-plugin]]'));
 		}
-		var filename = 'uid_' + uid + '_tmp-image.' + extension;
-		downloadFromUrl(url, filename, function(err, downloadedImage) {
-			if (err) {
-				return callback(err);
-			}
 
-			User.uploadPicture(uid, downloadedImage, function(err, image) {
-				fs.unlink(filename, function(err) {
-					if (err) {
-						winston.error(err);
-					}
-				});
-				callback(err, image);
-			});
-		});
-	};
-
-	function downloadFromUrl(url, filename, callback) {
 		request.head(url, function(err, res, body) {
 			if (err) {
 				return callback(err);
@@ -121,21 +103,22 @@ module.exports = function(User) {
 			var type = res.headers['content-type'];
 			var extension = mime.extension(type);
 
+			if (['png', 'jpeg', 'jpg', 'gif'].indexOf(extension) === -1) {
+				return callback(new Error('[[error:invalid-image-extension]]'));
+			}
+
 			if (size > uploadSize * 1024) {
 				return callback(new Error('[[error:file-too-big, ' + uploadSize + ']]'));
 			}
 
-			request.get(url)
-				.on('error', function(err) {
-					winston.error(err);
-				})
-				.pipe(fs.createWriteStream(filename))
-				.on('close', function(err) {
-					if (err) {
-						return callback(err);
-					}
-					callback(null, {path: filename, size: size, type: type, name: filename + '.' + extension});
-				});
+			var picture = {url: url, name: ''};
+			plugins.fireHook('filter:uploadImage', {image: picture, uid: uid}, function(err, image) {
+				if (err) {
+					return callback(err);
+				}
+				User.setUserFields(uid, {uploadedpicture: image.url, picture: image.url});
+				callback(null, image);
+			});
 		});
-	}
+	};
 };
