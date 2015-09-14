@@ -152,8 +152,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 				return;
 			}
 
-			for(var x = 0; x<chats.length; ++x) {
-				userObj = chats[x];
+			chats.forEach(function(userObj) {
 				dropdownEl = $('<li class="' + (userObj.unread ? 'unread' : '') + '"/>')
 					.attr('data-uid', userObj.uid)
 					.html('<a data-ajaxify="false">'+
@@ -162,16 +161,15 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 						userObj.username + '</a>')
 					.appendTo(chatsListEl);
 
-				(function(userObj) {
-					dropdownEl.click(function() {
-						if (!ajaxify.currentPage.match(/^chats\//)) {
-							app.openChat(userObj.username, userObj.uid);
-						} else {
-							ajaxify.go('chats/' + utils.slugify(userObj.username));
-						}
-					});
-				})(userObj);
-			}
+
+				dropdownEl.click(function() {
+					if (!ajaxify.currentPage.match(/^chats\//)) {
+						app.openChat(userObj.username, userObj.uid);
+					} else {
+						ajaxify.go('chats/' + utils.slugify(userObj.username));
+					}
+				});
+			});
 		});
 	};
 
@@ -490,8 +488,11 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 	module.sync = function() {
 		socket.emit('modules.chats.sync', function(err, users) {
-			for(var x=0,numUsers=users.length,user;x<numUsers;x++) {
-				user = users[x];
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			users.forEach(function(user) {
 				if (!module.modalExists(user.uid)) {
 					module.createModal({
 						username: user.username,
@@ -503,7 +504,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 						}
 					});
 				}
-			}
+			});
 		});
 	};
 
