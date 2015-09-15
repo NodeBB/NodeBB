@@ -322,7 +322,7 @@ SocketTopics.move = function(socket, data, callback) {
 	}
 
 	async.eachLimit(data.tids, 10, function(tid, next) {
-		var oldCid;
+		var topicData;
 		async.waterfall([
 			function(next) {
 				privileges.topics.canMove(tid, socket.uid, next);
@@ -334,10 +334,10 @@ SocketTopics.move = function(socket, data, callback) {
 				next();
 			},
 			function(next) {
-				topics.getTopicField(tid, 'cid', next);
+				topics.getTopicFields(tid, ['cid', 'slug'], next);
 			},
-			function(cid, next) {
-				oldCid = cid;
+			function(_topicData, next) {
+				topicData = _topicData;
 				threadTools.move(tid, data.cid, socket.uid, next);
 			}
 		], function(err) {
@@ -346,11 +346,13 @@ SocketTopics.move = function(socket, data, callback) {
 			}
 
 			websockets.in('topic_' + tid).emit('event:topic_moved', {
-				tid: tid
+				tid: tid,
+				slug: topicData.slug
 			});
 
-			websockets.in('category_' + oldCid).emit('event:topic_moved', {
-				tid: tid
+			websockets.in('category_' + topicData.cid).emit('event:topic_moved', {
+				tid: tid,
+				slug: topicData.slug
 			});
 
 			SocketTopics.sendNotificationToTopicOwner(tid, socket.uid, 'notifications:moved_your_topic');
