@@ -18,7 +18,7 @@ define('forum/topic/move', function() {
 		Move.moveAll = tids ? false : true;
 
 		modal.on('shown.bs.modal', onMoveModalShown);
-		$('#move-confirm').hide();
+		$('#move-confirm').addClass('hide');
 
 		if (Move.moveAll || (tids && tids.length > 1)) {
 			modal.find('.modal-header h3').translateText('[[topic:move_topics]]');
@@ -52,7 +52,7 @@ define('forum/topic/move', function() {
 
 	function selectCategory(category) {
 		modal.find('#confirm-category-name').html(category.html());
-		$('#move-confirm').show();
+		$('#move-confirm').removeClass('hide');
 
 		targetCid = category.attr('data-cid');
 		targetCategoryLabel = category.html();
