@@ -286,9 +286,9 @@ var async = require('async'),
 					}
 				}
 
-				Topics.addPostData(posts, uid, callback);
+				Topics.addPostData(posts, uid, next);
 			}
-		]);
+		], callback);
 	}
 
 	Topics.getMainPost = function(tid, uid, callback) {
