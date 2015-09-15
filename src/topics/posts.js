@@ -44,12 +44,7 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			var indices = Topics.calculatePostIndices(start, stop, results.postCount, reverse);
-			results.posts.forEach(function(post, index) {
-				if (post) {
-					post.index = indices[index];
-				}
-			});
+			Topics.calculatePostIndices(results.posts, start, stop, results.postCount, reverse);
 
 			Topics.addPostData(results.posts, uid, callback);
 		});
@@ -151,17 +146,14 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.calculatePostIndices = function(start, stop, postCount, reverse) {
-		var indices = [];
-		var count = stop - start + 1;
-		for(var i=0; i<count; ++i) {
+	Topics.calculatePostIndices = function(posts, start, stop, postCount, reverse) {
+		posts.forEach(function(post, index) {
 			if (reverse) {
-				indices.push(postCount - (start + i + 1));
+				post.index = postCount - (start + index + 1);
 			} else {
-				indices.push(start + i + 1);
+				post.index = start + index + 1;
 			}
-		}
-		return indices;
+		});
 	};
 
 	Topics.getLatestUndeletedPid = function(tid, callback) {
