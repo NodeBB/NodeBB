@@ -65,7 +65,7 @@
     "digest_monthly": "Monatlich",
     "send_chat_notifications": "Sende eine E-Mail, wenn eine neue Chat-Nachricht eingeht und ich nicht online bin",
     "send_post_notifications": "Sende eine E-Mail wenn auf Themen die ich abonniert habe geantwortet wird",
-    "settings-require-reload": "Manche Einstellungsänderung benötigt ein aktualisieren. Drücke hier um die Seite neu zu laden.",
+    "settings-require-reload": "Einige Einstellungsänderung benötigen eine Aktualisierung. Hier klicken um die Seite neu zu laden.",
     "has_no_follower": "Dieser User hat noch keine Follower.",
     "follows_no_one": "Dieser User folgt noch niemandem :(",
     "has_no_posts": "Dieser Nutzer hat noch nichts gepostet.",
@@ -85,5 +85,5 @@
     "follow_topics_you_create": "Themen folgen, die du erstellst",
     "grouptitle": "Wähle den anzuzeigenden Gruppen Titel aus",
     "no-group-title": "Kein Gruppentitel",
-    "select-skin": "Select a Skin"
+    "select-skin": "Einen Skin auswählen"
 }

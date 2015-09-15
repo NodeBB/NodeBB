@@ -5,7 +5,7 @@
     "chat.no_active": "Er zijn geen actieve chats.",
     "chat.user_typing": "%1 is aan het typen ...",
     "chat.user_has_messaged_you": "%1 heeft een bericht gestuurd",
-    "chat.see_all": "See all chats",
+    "chat.see_all": "Laat alle chats zien",
     "chat.no-messages": "Selecteer een ontvanger om de chatgeschiedenis in te zien",
     "chat.recent-chats": "Recent gevoerde gesprekken",
     "chat.contacts": "Contacten",
@@ -24,6 +24,6 @@
     "composer.submit_and_lock": "Plaats een bericht en vergrendel direct het onderwerp",
     "composer.toggle_dropdown": "Keuzelijst schakelen",
     "bootbox.ok": "OK",
-    "bootbox.cancel": "Cancel",
-    "bootbox.confirm": "Confirm"
+    "bootbox.cancel": "Anuleren",
+    "bootbox.confirm": "Bevestig"
 }
