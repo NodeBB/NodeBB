@@ -338,6 +338,7 @@ SocketTopics.move = function(socket, data, callback) {
 			},
 			function(_topicData, next) {
 				topicData = _topicData;
+				topicData.tid = tid;
 				threadTools.move(tid, data.cid, socket.uid, next);
 			}
 		], function(err) {
@@ -345,15 +346,9 @@ SocketTopics.move = function(socket, data, callback) {
 				return next(err);
 			}
 
-			websockets.in('topic_' + tid).emit('event:topic_moved', {
-				tid: tid,
-				slug: topicData.slug
-			});
+			websockets.in('topic_' + tid).emit('event:topic_moved', topicData);
 
-			websockets.in('category_' + topicData.cid).emit('event:topic_moved', {
-				tid: tid,
-				slug: topicData.slug
-			});
+			websockets.in('category_' + topicData.cid).emit('event:topic_moved', topicData);
 
 			SocketTopics.sendNotificationToTopicOwner(tid, socket.uid, 'notifications:moved_your_topic');
 
