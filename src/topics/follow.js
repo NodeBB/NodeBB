@@ -46,6 +46,9 @@ module.exports = function(Topics) {
 
 	Topics.follow = function(tid, uid, callback) {
 		callback = callback || function() {};
+		if (!parseInt(uid, 10)) {
+			return callback();
+		}
 		async.waterfall([
 			function (next) {
 				Topics.exists(tid, next);

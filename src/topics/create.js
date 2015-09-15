@@ -131,7 +131,10 @@ module.exports = function(Topics) {
 				Topics.create({uid: data.uid, title: data.title, cid: data.cid, thumb: data.thumb, tags: data.tags, timestamp: data.timestamp}, next);
 			},
 			function(tid, next) {
-				Topics.reply({uid: data.uid, tid: tid, handle: data.handle, content: data.content, timestamp: data.timestamp, req: data.req}, next);
+				posts.create({uid: data.uid, tid: tid, handle: data.handle, content: data.content, timestamp: data.timestamp, ip: data.req ? data.req.ip : null}, next);
+			},
+			function(postData, next) {
+				onNewPost(postData, data, next);
 			},
 			function(postData, next) {
 				async.parallel({
@@ -163,6 +166,7 @@ module.exports = function(Topics) {
 				data.topicData = data.topicData[0];
 				data.topicData.unreplied = 1;
 				data.topicData.mainPost = data.postData;
+				data.postData.index = 0;
 
 				plugins.fireHook('action:topic.post', data.topicData);
 
@@ -232,8 +236,40 @@ module.exports = function(Topics) {
 			function(next) {
 				posts.create({uid: uid, tid: tid, handle: data.handle, content: content, toPid: data.toPid, timestamp: data.timestamp, ip: data.req ? data.req.ip : null}, next);
 			},
-			function(data, next) {
-				postData = data;
+			function(_postData, next) {
+				postData = _postData;
+				onNewPost(postData, data, next);
+			},
+			function(postData, next) {
+				user.getSettings(uid, next);
+			},
+			function(settings, next) {
+				if (settings.followTopicsOnReply) {
+					Topics.follow(postData.tid, uid);
+				}
+
+				posts.getPidIndex(postData.pid, postData.tid, settings.topicPostSort, next);
+			},
+			function(postIndex, next) {
+				postData.index = postIndex;
+
+				if (parseInt(uid, 10)) {
+					Topics.notifyFollowers(postData, uid);
+					user.setUserField(uid, 'lastonline', Date.now());
+				}
+
+				plugins.fireHook('action:topic.reply', postData);
+
+				next(null, postData);
+			}
+		], callback);
+	};
+
+	function onNewPost(postData, data, callback) {
+		var tid = postData.tid;
+		var uid = postData.uid;
+		async.waterfall([
+			function(next) {
 				Topics.markAsUnreadForAll(tid, next);
 			},
 			function(next) {
@@ -246,12 +282,6 @@ module.exports = function(Topics) {
 					},
 					topicInfo: function(next) {
 						Topics.getTopicFields(tid, ['tid', 'title', 'slug', 'cid', 'postcount'], next);
-					},
-					settings: function(next) {
-						user.getSettings(uid, next);
-					},
-					postIndex: function(next) {
-						posts.getPidIndex(postData.pid, uid, next);
 					},
 					content: function(next) {
 						posts.parsePost(postData, next);
@@ -267,31 +297,18 @@ module.exports = function(Topics) {
 					postData.user.username = validator.escape(data.handle);
 				}
 
-				if (results.settings.followTopicsOnReply) {
-					Topics.follow(postData.tid, uid);
-				}
-				postData.index = results.postIndex - 1;
 				postData.favourited = false;
 				postData.votes = 0;
 				postData.display_moderator_tools = true;
 				postData.display_move_tools = true;
 				postData.selfPost = false;
 				postData.relativeTime = utils.toISOString(postData.timestamp);
-
-				if (parseInt(uid, 10) && data.req) {
-					Topics.notifyFollowers(postData, uid);
-					user.setUserField(uid, 'lastonline', Date.now());
-				}
-
-				if (postData.index > 0) {
-					plugins.fireHook('action:topic.reply', postData);
-				}
-
 				postData.topic.title = validator.escape(postData.topic.title);
+
 				next(null, postData);
 			}
 		], callback);
-	};
+	}
 
 	function checkTitleLength(title, callback) {
 		if (!title || title.length < parseInt(meta.config.minimumTitleLength, 10)) {

@@ -579,7 +579,7 @@ function loadMorePosts(set, uid, data, callback) {
 }
 
 SocketPosts.getRecentPosts = function(socket, data, callback) {
-	if(!data || !data.count) {
+	if (!data || !data.count) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -590,8 +590,11 @@ SocketPosts.getCategory = function(socket, pid, callback) {
 	posts.getCidByPid(pid, callback);
 };
 
-SocketPosts.getPidIndex = function(socket, pid, callback) {
-	posts.getPidIndex(pid, socket.uid, callback);
+SocketPosts.getPidIndex = function(socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	posts.getPidIndex(data.pid, data.tid, data.topicPostSort, callback);
 };
 
 module.exports = SocketPosts;
