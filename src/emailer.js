@@ -48,7 +48,7 @@ var	fs = require('fs'),
 		function renderAndTranslate(tpl, params, callback) {
 			async.waterfall([
 				function (next) {
-					app.render(template, params, next);
+					app.render(tpl, params, next);
 				},
 				function (html, next) {
 					translator.translate(html, lang, function(translated) {
