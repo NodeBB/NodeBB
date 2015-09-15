@@ -19,7 +19,7 @@ var async = require('async'),
 
 
 var adminController = {
-	categories: {},
+	categories: require('./admin/categories'),
 	tags: {},
 	flags: {},
 	topics: {},
@@ -141,33 +141,6 @@ function getGlobalField(field, callback) {
 		callback(err, parseInt(count, 10) || 0);
 	});
 }
-
-adminController.categories.get = function(req, res, next) {
-	async.parallel({
-		category: async.apply(categories.getCategories, [req.params.category_id], req.user.uid),
-		privileges: async.apply(privileges.categories.list, req.params.category_id)
-	}, function(err, data) {
-		if (err) {
-			return next(err);
-		}
-
-		plugins.fireHook('filter:admin.category.get', {req: req, res: res, category: data.category[0], privileges: data.privileges}, function(err, data) {
-			if (err) {
-				return next(err);
-			}
-
-			res.render('admin/manage/category', {
-				category: data.category,
-				privileges: data.privileges
-			});
-		});
-	});
-};
-
-adminController.categories.getAll = function(req, res, next) {
-	//Categories list will be rendered on client side with recursion, etc.
-	res.render('admin/manage/categories', {});
-};
 
 adminController.tags.get = function(req, res, next) {
 	topics.getTags(0, 199, function(err, tags) {
