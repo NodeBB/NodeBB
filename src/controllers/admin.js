@@ -350,7 +350,7 @@ adminController.navigation.get = function(req, res, next) {
 adminController.homepage.get = function(req, res, next) {
 	async.waterfall([
 		function(next) {
-			db.getSortedSetRange('cid:0:children', 0, -1, next);
+			db.getSortedSetRange('categories:cid', 0, -1, next);
 		},
 		function(cids, next) {
 			privileges.categories.filterCids('find', cids, 0, next);
