@@ -280,7 +280,7 @@ var db = require('./database'),
 				}
 
 				results.users.forEach(function(user, index) {
-					if (user && !parseInt(user.uid, 10)) {
+					if (user && parseInt(user.uid, 10)) {
 						Messaging.markRead(uid, uids[index]);
 						user.unread = results.unread[index];
 						user.status = sockets.isUserOnline(user.uid) ? user.status : 'offline';
