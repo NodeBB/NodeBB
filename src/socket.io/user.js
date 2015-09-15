@@ -231,6 +231,10 @@ SocketUser.updateProfile = function(socket, data, callback) {
 			return callback(err);
 		}
 
+		if (parseInt(meta.config['username:disableEdit'], 10) === 1) {
+			data.username = oldUserData.username;
+		}
+
 		update(oldUserData, callback);
 	});
 };

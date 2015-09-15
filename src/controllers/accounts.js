@@ -374,6 +374,8 @@ accountsController.accountEdit = function(req, res, callback) {
 			return callback(err);
 		}
 
+		userData['username:disableEdit'] = parseInt(meta.config['username:disableEdit'], 10) === 1;
+		
 		userData.hasPassword = !!password;
 		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
 		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:edit]]'}]);
