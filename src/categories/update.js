@@ -68,6 +68,9 @@ module.exports = function(Categories) {
 	}
 
 	function updateParent(cid, newParent, callback) {
+		if (parseInt(cid, 10) === parseInt(newParent, 10)) {
+			return callback(new Error('[[error:cant-set-self-as-parent]]'));
+		}
 		Categories.getCategoryField(cid, 'parentCid', function(err, oldParent) {
 			if (err) {
 				return callback(err);

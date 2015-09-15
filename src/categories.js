@@ -333,6 +333,9 @@ var async = require('async'),
 				privileges.categories.filterCids('find', children, uid, next);
 			},
 			function (children, next) {
+				children = children.filter(function(cid) {
+					return parseInt(category.cid, 10) !== parseInt(cid, 10);
+				});
 				if (!children.length) {
 					category.children = [];
 					return callback();
