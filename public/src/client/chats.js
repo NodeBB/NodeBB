@@ -189,11 +189,14 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			return app.alertError('[[error:chat-message-too-long]]');
 		}
 
+		if (!msg.length) {
+			return;
+		}
+
 		inputEl.val('');
-		msg = msg + '\n';
 		socket.emit('modules.chats.send', {
-			touid:toUid,
-			message:msg
+			touid: toUid,
+			message: msg
 		}, function(err) {
 			if (err) {
 				if (err.message === '[[error:email-not-confirmed-chat]]') {
