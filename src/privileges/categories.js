@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async'),
+	_ = require('underscore'),
 
 	user = require('../user'),
 	categories = require('../categories'),
@@ -14,64 +15,60 @@ module.exports = function(privileges) {
 	privileges.categories = {};
 
 	privileges.categories.list = function(cid, callback) {
-		// Method used in admin/category controller to show all users with privs in that given cid
+		// Method used in admin/category controller to show all users/groups with privs in that given cid
+
+		var privilegeLabels = [
+			{name: 'Find category'},
+			{name: 'Access & Read'},
+			{name: 'Create Topics'},
+			{name: 'Reply to Topics'},
+			{name: 'Moderate'}
+		];
+
+		var userPrivilegeList = [
+			'find', 'read', 'topics:create', 'topics:reply', 'mods'
+		];
+		var groupPrivilegeList = [
+			'groups:find', 'groups:read', 'groups:topics:create', 'groups:topics:reply', 'groups:moderate'
+		];
+
 		async.parallel({
 			labels: function(next) {
 				async.parallel({
-					users: async.apply(plugins.fireHook, 'filter:privileges.list_human',
-						['Find category', 'Access & Read', 'Create Topics', 'Reply to Topics', 'Moderate'].map(function(name) {
-							return {
-								name: name
-							};
-						})
-					),
-					groups: async.apply(plugins.fireHook, 'filter:privileges.groups.list_human',
-						['Find category', 'Access & Read', 'Create Topics', 'Reply to Topics', 'Moderate'].map(function(name) {
-							return {
-								name: name
-							};
-						})
-					)
+					users: async.apply(plugins.fireHook, 'filter:privileges.list_human', privilegeLabels),
+					groups: async.apply(plugins.fireHook, 'filter:privileges.groups.list_human', privilegeLabels)
 				}, next);
 			},
 			users: function(next) {
 				var privileges;
 				async.waterfall([
-					async.apply(plugins.fireHook, 'filter:privileges.list', [
-						'find', 'read', 'topics:create', 'topics:reply', 'mods'
-					]),
+					async.apply(plugins.fireHook, 'filter:privileges.list', userPrivilegeList),
 					function(privs, next) {
 						privileges = privs;
 						groups.getMembersOfGroups(privs.map(function(privilege) {
 							return 'cid:' + cid + ':privileges:' + privilege;
-						}), function(err, memberSets) {
+						}), next);
+					},
+					function(memberSets, next) {
+
+						memberSets = memberSets.map(function(set) {
+							return set.map(function(uid) {
+								return parseInt(uid, 10);
+							});
+						});
+
+						var members = _.unique(_.flatten(memberSets));
+
+						user.getMultipleUserFields(members, ['picture', 'username'], function(err, memberData) {
 							if (err) {
 								return next(err);
 							}
 
-							next(null, memberSets.map(function(set) {
-								return set.map(function(uid) {
-									return parseInt(uid, 10);
-								});
-							}));
-						});
-					},
-					function(memberSets, next) {
-						// Reduce into a single array
-						var members = memberSets.reduce(function(combined, curMembers) {
-								return combined.concat(curMembers);
-							}).filter(function(member, index, combined) {
-								return combined.indexOf(member) === index;
-							});
-
-						user.getMultipleUserFields(members, ['picture', 'username'], function(err, memberData) {
-							memberData = memberData.map(function(member) {
+							memberData.forEach(function(member) {
 								member.privileges = {};
 								for(var x=0,numPrivs=privileges.length;x<numPrivs;x++) {
 									member.privileges[privileges[x]] = memberSets[x].indexOf(parseInt(member.uid, 10)) !== -1;
 								}
-
-								return member;
 							});
 
 							next(null, memberData);
@@ -82,9 +79,7 @@ module.exports = function(privileges) {
 			groups: function(next) {
 				var privileges;
 				async.waterfall([
-					async.apply(plugins.fireHook, 'filter:privileges.groups.list', [
-						'groups:find', 'groups:read', 'groups:topics:create', 'groups:topics:reply', 'groups:moderate'
-					]),
+					async.apply(plugins.fireHook, 'filter:privileges.groups.list', groupPrivilegeList),
 					function(privs, next) {
 						privileges = privs;
 						groups.getMembersOfGroups(privs.map(function(privilege) {
@@ -92,34 +87,39 @@ module.exports = function(privileges) {
 						}), next);
 					},
 					function(memberSets, next) {
+
+						var uniqueGroups = _.unique(_.flatten(memberSets));
+
 						groups.getGroups('groups:createtime', 0, -1, function(err, groupNames) {
 							if (err) {
 								return next(err);
 							}
 
+							groupNames = groupNames.filter(function(groupName) {
+								return groupName.indexOf(':privileges:') === -1 && uniqueGroups.indexOf(groupName) !== -1;
+							});
+
 							groupNames = groups.getEphemeralGroups().concat(groupNames);
 							groupNames.splice(0, 0, groupNames.splice(groupNames.indexOf('registered-users'), 1)[0]);
-							groupNames.splice(groupNames.indexOf('administrators'), 1);
 
-							var memberPrivs, boolSet,
-								memberData = groupNames.filter(function(member) {
-								return member.indexOf(':privileges:') === -1;
-							}).map(function(member) {
+							var adminIndex = groupNames.indexOf('administrators');
+							if (adminIndex !== -1) {
+								groupNames.splice(adminIndex, 1);
+							}
+
+							var memberPrivs;
+
+							var memberData = groupNames.map(function(member) {
 								memberPrivs = {};
-								boolSet = [];	// Here, the boolSet is used as a quick way to determine whether a given group's privilege set is empty or not (see below)
-								for(var x=0,numPrivs=privileges.length;x<numPrivs;x++) {
-									boolSet.push(memberPrivs[privileges[x]] = memberSets[x].indexOf(member) !== -1);
-								}
 
-								if (boolSet.some(Boolean)) {
-									return {
-										name: member,
-										privileges: memberPrivs,
-									};
-								} else {
-									return null;
+								for(var x=0,numPrivs=privileges.length;x<numPrivs;x++) {
+									memberPrivs[privileges[x]] = memberSets[x].indexOf(member) !== -1;
 								}
-							}).filter(Boolean);
+								return {
+									name: member,
+									privileges: memberPrivs,
+								};
+							});
 
 							next(null, memberData);
 						});
