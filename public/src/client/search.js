@@ -80,9 +80,11 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 				$('#posted-by-user').val(params.by);
 			}
 
-			if (params.categories) {
-				$('#posted-in-categories').val(params.categories);
-			}
+			loadCategories(function() {
+				if (params.categories) {
+					$('#posted-in-categories').val(params.categories);
+				}
+			});
 
 			if (params.searchChildren) {
 				$('#search-children').prop('checked', true);
@@ -110,6 +112,38 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 				$('#show-as-posts').prop('checked', isPost).parent().toggleClass('active', isPost);
 			}
 		}
+	}
+
+	function loadCategories(callback) {
+		var listEl = $('#posted-in-categories');
+
+		socket.emit('categories.getCategoriesByPrivilege', 'read', function(err, categories) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			categories = categories.filter(function(category) {
+				return !category.link && !parseInt(category.parentCid, 10);
+			});
+
+			categories.forEach(function(category) {
+				recursive(category, listEl, '');
+			});
+			listEl.attr('size', listEl.find('option').length);
+			callback();
+		});
+	}
+
+	function recursive(category, listEl, level) {
+		if (category.link) {
+			return;
+		}
+		var bullet = level ? '&bull; ' : '';
+		$('<option value="' + category.cid + '">' + level + bullet + category.name + '</option>').appendTo(listEl);
+
+		category.children.forEach(function(child) {
+			recursive(child, listEl, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
+		});
 	}
 
 	function highlightMatches(searchQuery) {
