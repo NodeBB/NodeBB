@@ -46,7 +46,7 @@ var	fs = require('fs'),
 
 	Emailer.sendToEmail = function(template, email, language, params, callback) {
 		function renderAndTranslate(tpl, params, callback) {
-			async.waterfal([
+			async.waterfall([
 				function (next) {
 					app.render(template, params, next);
 				},
