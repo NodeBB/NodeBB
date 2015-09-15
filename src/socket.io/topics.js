@@ -234,42 +234,33 @@ SocketTopics.doTopicAction = function(action, event, socket, data, callback) {
 	if (!socket.uid) {
 		return;
 	}
-	if(!data || !Array.isArray(data.tids) || !data.cid) {
+
+	if (!data || !Array.isArray(data.tids) || !data.cid) {
 		return callback(new Error('[[error:invalid-tid]]'));
 	}
 
+	if (typeof threadTools[action] !== 'function') {
+		return callback();
+	}
+
 	async.each(data.tids, function(tid, next) {
-		privileges.topics.canEdit(tid, socket.uid, function(err, canEdit) {
+		threadTools[action](tid, socket.uid, function(err, data) {
 			if (err) {
 				return next(err);
 			}
 
-			if (!canEdit) {
-				return next(new Error('[[error:no-privileges]]'));
+			emitToTopicAndCategory(event, data);
+
+			if (action === 'delete' || action === 'restore' || action === 'purge') {
+				events.log({
+					type: 'topic-' + action,
+					uid: socket.uid,
+					ip: socket.ip,
+					tid: tid
+				});
 			}
 
-			if (typeof threadTools[action] !== 'function') {
-				return next();
-			}
-
-			threadTools[action](tid, socket.uid, function(err, data) {
-				if (err) {
-					return next(err);
-				}
-
-				emitToTopicAndCategory(event, data);
-
-				if (action === 'delete' || action === 'restore' || action === 'purge') {
-					events.log({
-						type: 'topic-' + action,
-						uid: socket.uid,
-						ip: socket.ip,
-						tid: tid
-					});
-				}
-
-				next();
-			});
+			next();
 		});
 	}, callback);
 };
@@ -325,7 +316,7 @@ SocketTopics.move = function(socket, data, callback) {
 		var topicData;
 		async.waterfall([
 			function(next) {
-				privileges.topics.canMove(tid, socket.uid, next);
+				privileges.topics.isAdminOrMod(tid, socket.uid, next);
 			},
 			function(canMove, next) {
 				if (!canMove) {

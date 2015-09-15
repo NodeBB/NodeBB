@@ -183,6 +183,17 @@ module.exports = function(privileges) {
 		});
 	};
 
+	privileges.categories.isAdminOrMod = function(cid, uid, callback) {
+		helpers.some([
+			function (next) {
+				user.isModerator(uid, cid, next);
+			},
+			function (next) {
+				user.isAdministrator(uid, next);
+			}
+		], callback);
+	};
+
 	privileges.categories.can = function(privilege, cid, uid, callback) {
 		if (!cid) {
 			return callback(null, false);

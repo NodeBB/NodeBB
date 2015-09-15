@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async'),
+	winston = require('winston'),
 
 	db = require('../database'),
 	topics = require('../topics'),
@@ -170,21 +171,27 @@ module.exports = function(privileges) {
 	};
 
 	privileges.topics.canEdit = function(tid, uid, callback) {
+		winston.warn('[deprecated] please use privileges.topics.isOwnerOrAdminOrMod');
+		privileges.topics.isOwnerOrAdminOrMod(tid, uid, callback);
+	};
+
+	privileges.topics.isOwnerOrAdminOrMod = function(tid, uid, callback) {
 		helpers.some([
 			function(next) {
 				topics.isOwner(tid, uid, next);
 			},
 			function(next) {
-				isAdminOrMod(tid, uid, next);
+				privileges.topics.isAdminOrMod(tid, uid, next);
 			}
 		], callback);
 	};
 
 	privileges.topics.canMove = function(tid, uid, callback) {
-		isAdminOrMod(tid, uid, callback);
+		winston.warn('[deprecated] please use privileges.topics.isAdminOrMod');
+		privileges.topics.isAdminOrMod(tid, uid, callback);
 	};
 
-	function isAdminOrMod(tid, uid, callback) {
+	privileges.topics.isAdminOrMod = function(tid, uid, callback) {
 		helpers.some([
 			function(next) {
 				topics.getTopicField(tid, 'cid', function(err, cid) {
@@ -198,5 +205,5 @@ module.exports = function(privileges) {
 				user.isAdministrator(uid, next);
 			}
 		], callback);
-	}
+	};
 };
