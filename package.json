@@ -67,7 +67,7 @@
     "socket.io-redis": "^0.1.3",
     "socketio-wildcard": "~0.1.1",
     "string": "^3.0.0",
-    "templates.js": "0.2.12",
+    "templates.js": "0.2.13",
     "touch": "1.0.0",
     "uglify-js": "^2.4.24",
     "underscore": "~1.8.3",
