@@ -471,9 +471,9 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 		Chats.parseMessage(data, function(html) {
 			var message = $(html);
+			message.appendTo(chatContent);
 			message.find('img:not(.not-responsive)').addClass('img-responsive');
 			message.find('.timeago').timeago();
-			message.appendTo(chatContent);
 			Chats.scrollToBottom(chatContent);
 
 			if (typeof done === 'function') {
