@@ -155,7 +155,33 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 				data.message.newSet = lastSpeaker !== data.message.fromuid;
 				Chats.parseMessage(data.message, onMessagesParsed);
 			} else {
-				$('.chats-list li[data-uid="' + data.withUid + '"]').addClass('unread');
+				var contactEl = $('.chats-list li[data-uid="' + data.withUid + '"]'),
+					userKey = data.withUid === data.message.fromuid ? 'fromUser' : 'toUser';
+
+				// Spawn a new contact if required
+				if (!contactEl.length) {
+					templates.parse('partials/chat_contact', {
+						uid: data.withUid,
+						username: data.message[userKey].username,
+						status: data.message[userKey].status,
+						picture: data.message[userKey].picture,
+						teaser: {
+							content: data.message.cleanedContent,
+							timestampISO: new Date(Date.now()).toISOString()
+						}
+					}, function(html) {
+						translator.translate(html, function(translatedHTML) {
+							$('.chats-list').prepend(translatedHTML);
+
+							// Mark that contact list entry unread
+							$('.chats-list li[data-uid="' + data.withUid + '"]').addClass('unread').find('.timeago').timeago();
+						});
+					});
+				} else {
+					// Mark that contact list entry unread
+					$('.chats-list li[data-uid="' + data.withUid + '"]').addClass('unread');
+				}
+
 				app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + data.message.fromUser.username + ']]');
 			}
 		});

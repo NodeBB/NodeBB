@@ -145,7 +145,7 @@ var db = require('./database'),
 	};
 
 	function getMessages(mids, fromuid, touid, isNew, callback) {
-		user.getMultipleUserFields([fromuid, touid], ['uid', 'username', 'userslug', 'picture'], function(err, userData) {
+		user.getMultipleUserFields([fromuid, touid], ['uid', 'username', 'userslug', 'picture', 'status'], function(err, userData) {
 			if(err) {
 				return callback(err);
 			}
@@ -168,6 +168,7 @@ var db = require('./database'),
 
 						Messaging.parse(message.content, message.fromuid, fromuid, userData[1], userData[0], isNew, function(result) {
 							message.content = result;
+							message.cleanedContent = S(result).stripTags().decodeHTMLEntities().s;
 							next(null, message);
 						});
 					}, next);
