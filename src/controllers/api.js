@@ -123,7 +123,9 @@ apiController.renderWidgets = function(req, res, next) {
 			return next(err);
 		}
 		res.status(200).json(widgets);
-	});
+	},
+		req,
+		res);
 };
 
 module.exports = apiController;
