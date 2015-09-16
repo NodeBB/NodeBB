@@ -14,10 +14,6 @@ var async = require('async'),
 	db = require('../database'),
 	helpers = require('./helpers');
 
-usersController.redirectToOnlineUsers = function(req, res, next) {
-	helpers.redirect(res, '/users/online');
-};
-
 usersController.getOnlineUsers = function(req, res, next) {
 	var	websockets = require('../socket.io');
 
@@ -51,7 +47,7 @@ usersController.getOnlineUsers = function(req, res, next) {
 			anonymousUserCount: websockets.getOnlineAnonCount(),
 			defaultGravatar: user.createGravatarURLFromEmail(''),
 			title: '[[pages:users/online]]',
-			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[pages:users/online]]'}])
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[global:users]]', url: '/users'}, {text: '[[pages:users/online]]'}])
 		};
 
 		render(req, res, userData, next);
@@ -80,12 +76,20 @@ usersController.getUsers = function(set, start, stop, req, res, next) {
 	var setToCrumbs = {
 		'users:postcount': '[[users:top_posters]]',
 		'users:reputation': '[[users:most_reputation]]',
-		'users:joindate': '[[pages:users/latest]]'
+		'users:joindate': '[[global:users]]'
 	};
+
+	var breadcrumbs = [{text: setToCrumbs[set]}];
+
+	if (set !== 'users:joindate') {
+		breadcrumbs.unshift({text: '[[global:users]]', url: '/users'});
+	}
+
 	usersController.getUsersAndCount(set, req.uid, start, stop, function(err, data) {
 		if (err) {
 			return next(err);
 		}
+
 		var pageCount = Math.ceil(data.count / (parseInt(meta.config.userSearchResultsPerPage, 10) || 20));
 		var userData = {
 			search_display: 'hidden',
@@ -93,7 +97,7 @@ usersController.getUsers = function(set, start, stop, req, res, next) {
 			users: data.users,
 			pagination: pagination.create(1, pageCount),
 			title: setToTitles[set] || '[[pages:users/latest]]',
-			breadcrumbs: helpers.buildBreadcrumbs([{text: setToCrumbs[set]}])
+			breadcrumbs: helpers.buildBreadcrumbs(breadcrumbs)
 		};
 		userData['route_' + set] = true;
 		render(req, res, userData, next);
@@ -136,7 +140,7 @@ usersController.getUsersForSearch = function(req, res, next) {
 			loadmore_display: 'hidden',
 			users: data.users,
 			title: '[[pages:users/search]]',
-			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[pages:users/search]]'}])
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[global:users]]', url: '/users'}, {text: '[[global:search]]'}])
 		};
 
 		render(req, res, userData, next);
@@ -212,7 +216,11 @@ usersController.getMap = function(req, res, next) {
 			}
 		});
 
-		res.render('usersMap', {rooms: data, title: '[[pages:users/map]]', breadcrumbs: helpers.buildBreadcrumbs([{text: '[[pages:users/map]]'}])});
+		res.render('usersMap', {
+			rooms: data,
+			title: '[[pages:users/map]]',
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[global:users]]', url: '/users'}, {text: '[[global:map]]'}])
+		});
 	});
 };
 
