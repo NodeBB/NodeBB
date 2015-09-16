@@ -1,7 +1,7 @@
 
 'use strict';
 
-var searchController = {},
+var async = require('async'),
 	validator = require('validator'),
 	plugins = require('../plugins'),
 	search = require('../search'),
@@ -9,6 +9,8 @@ var searchController = {},
 	pagination = require('../pagination'),
 	helpers = require('./helpers');
 
+
+var searchController = {};
 
 searchController.search = function(req, res, next) {
 	if (!plugins.hasListeners('filter:search.query')) {
@@ -37,18 +39,23 @@ searchController.search = function(req, res, next) {
 		uid: req.uid
 	};
 
-	search.search(data, function(err, results) {
+	async.parallel({
+		categories: async.apply(buildCategories, req.uid),
+		search: async.apply(search.search, data)
+	}, function(err, results) {
 		if (err) {
 			return next(err);
 		}
+		var searchData = results.search;
+		searchData.categories = results.categories;
+		searchData.categoriesCount = results.categories.length;
+		searchData.pagination = pagination.create(page, searchData.pageCount, req.query);
+		searchData.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
+		searchData.showAsTopics = req.query.showAs === 'topics';
+		searchData.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:search]]'}]);
+		searchData.expandSearch = !req.params.term;
 
-		results.pagination = pagination.create(page, results.pageCount, req.query);
-		results.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
-		results.showAsTopics = req.query.showAs === 'topics';
-		results.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:search]]'}]);
-		results.expandSearch = !req.params.term;
-
-		plugins.fireHook('filter:search.build', {data: data, results: results}, function(err, data) {
+		plugins.fireHook('filter:search.build', {data: data, results: searchData}, function(err, data) {
 			if (err) {
 				return next(err);
 			}
@@ -56,5 +63,45 @@ searchController.search = function(req, res, next) {
 		});
 	});
 };
+
+function buildCategories(uid, callback) {
+	categories.getCategoriesByPrivilege('cid:0:children', uid, 'read', function(err, categories) {
+		if (err) {
+			return callback(err);
+		}
+
+		var categoriesData = [
+			{value: 'all', text: '[[unread:all_categories]]'},
+			{value: 'watched', text: '[[category:watched-categories]]'}
+		];
+
+		categories = categories.filter(function(category) {
+			return !category.link && !parseInt(category.parentCid, 10);
+		});
+
+		categories.forEach(function(category) {
+			recursive(category, categoriesData, '');
+		});
+		callback(null, categoriesData);
+	});
+}
+
+
+function recursive(category, categoriesData, level) {
+	if (category.link) {
+		return;
+	}
+
+	var bullet = level ? '&bull; ' : '';
+
+	categoriesData.push({
+		value: category.cid,
+		text: level + bullet + category.name
+	});
+
+	category.children.forEach(function(child) {
+		recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
+	});
+}
 
 module.exports = searchController;
