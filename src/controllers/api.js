@@ -119,7 +119,7 @@ apiController.renderWidgets = function(req, res, next) {
 			template: areas.template,
 			url: areas.url,
 			locations: areas.locations,
-	  },
+		},
 		req,
 		res,
 		function(err, widgets) {
