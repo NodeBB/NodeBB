@@ -22,14 +22,15 @@ module.exports = function(privileges) {
 			{name: 'Access & Read'},
 			{name: 'Create Topics'},
 			{name: 'Reply to Topics'},
+			{name: 'Purge'},
 			{name: 'Moderate'}
 		];
 
 		var userPrivilegeList = [
-			'find', 'read', 'topics:create', 'topics:reply', 'mods'
+			'find', 'read', 'topics:create', 'topics:reply', 'purge', 'mods'
 		];
 		var groupPrivilegeList = [
-			'groups:find', 'groups:read', 'groups:topics:create', 'groups:topics:reply', 'groups:moderate'
+			'groups:find', 'groups:read', 'groups:topics:create', 'groups:topics:reply', 'groups:purge', 'groups:moderate'
 		];
 
 		async.parallel({
@@ -192,6 +193,15 @@ module.exports = function(privileges) {
 				user.isAdministrator(uid, next);
 			}
 		], callback);
+	};
+
+	privileges.categories.isUserAllowedTo = function(privilege, cid, uid, callback) {
+		if (!cid) {
+			return callback(null, false);
+		}
+		helpers.isUserAllowedTo(privilege, uid, [cid], function(err, results) {
+			callback(err, Array.isArray(results) && results.length ? results[0] : false);
+		});
 	};
 
 	privileges.categories.can = function(privilege, cid, uid, callback) {

@@ -75,10 +75,10 @@ var async = require('async'),
 				if (!exists) {
 					return callback();
 				}
-				privileges.topics.isOwnerOrAdminOrMod(tid, uid, next);
+				privileges.topics.canPurge(tid, uid, next);
 			},
-			function (isOwnerOrAdminOrMod, next) {
-				if (!isOwnerOrAdminOrMod) {
+			function (canPurge, next) {
+				if (!canPurge) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 

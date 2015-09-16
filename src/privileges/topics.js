@@ -170,6 +170,24 @@ module.exports = function(privileges) {
 		], callback);
 	};
 
+	privileges.topics.canPurge = function(tid, uid, callback) {
+		async.waterfall([
+			function (next) {
+				topics.getTopicField(tid, 'cid', next);
+			},
+			function (cid, next) {
+				async.parallel({
+					purge: async.apply(privileges.categories.isUserAllowedTo, 'purge', cid, uid),
+					owner: async.apply(topics.isOwner, tid, uid),
+					isAdminOrMod: async.apply(privileges.categories.isAdminOrMod, cid, uid)
+				}, next);
+			},
+			function (results, next) {
+				next(null, results.isAdminOrMod || (results.purge && results.owner));
+			}
+		], callback);
+	};
+
 	privileges.topics.canEdit = function(tid, uid, callback) {
 		winston.warn('[deprecated] please use privileges.topics.isOwnerOrAdminOrMod');
 		privileges.topics.isOwnerOrAdminOrMod(tid, uid, callback);

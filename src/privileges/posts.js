@@ -127,6 +127,24 @@ module.exports = function(privileges) {
 		});
 	};
 
+	privileges.posts.canPurge = function(pid, uid, callback) {
+		async.waterfall([
+			function (next) {
+				posts.getCidByPid(pid, next);
+			},
+			function (cid, next) {
+				async.parallel({
+					purge: async.apply(privileges.categories.isUserAllowedTo, 'purge', cid, uid),
+					owner: async.apply(posts.isOwner, pid, uid),
+					isAdminOrMod: async.apply(privileges.categories.isAdminOrMod, cid, uid)
+				}, next);
+			},
+			function (results, next) {
+				next(null, results.isAdminOrMod || (results.purge && results.owner));
+			}
+		], callback);
+	};
+
 	function isPostEditable(pid, uid, callback) {
 		async.waterfall([
 			function(next) {

@@ -56,13 +56,18 @@ var async = require('async'),
 	}
 
 	PostTools.purge = function(uid, pid, callback) {
-		privileges.posts.canEdit(pid, uid, function(err, canEdit) {
-			if (err || !canEdit) {
-				return callback(err || new Error('[[error:no-privileges]]'));
+		async.waterfall([
+			function (next) {
+				privileges.posts.canPurge(pid, uid, next);
+			},
+			function (canPurge, next) {
+				if (!canPurge) {
+					return callback(new Error('[[error:no-privileges]]'));
+				}
+				cache.del(pid);
+				posts.purge(pid, next);
 			}
-			cache.del(pid);
-			posts.purge(pid, callback);
-		});
+		], callback);
 	};
 
 
