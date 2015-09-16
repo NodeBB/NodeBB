@@ -8,26 +8,8 @@ define('forum/popular', function() {
 	Popular.init = function() {
 		app.enterRoom('popular_topics');
 
-		selectActivePill();
+		$('.nav-pills li').removeClass('active').find('a[href="' + window.location.pathname + '"]').parent().addClass('active');
 	};
-
-	function selectActivePill() {
-		var active = getActiveSection();
-
-		$('.nav-pills li').removeClass('active');
-		$('.nav-pills li a').each(function() {
-			var $this = $(this);
-			if ($this.attr('href').match(active)) {
-				$this.parent().addClass('active');
-				return false;
-			}
-		});
-	}
-
-	function getActiveSection() {
-		var parts = window.location.href.split('/');
-		return parts[parts.length - 1];
-	}
 
 	return Popular;
 });

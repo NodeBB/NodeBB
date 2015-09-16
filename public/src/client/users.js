@@ -9,16 +9,8 @@ define('forum/users', ['translator'], function(translator) {
 
 	Users.init = function() {
 		app.enterRoom('user_list');
-		var active = getActiveSection();
 
-		$('.nav-pills li').removeClass('active');
-		$('.nav-pills li a').each(function() {
-			var $this = $(this);
-			if ($this.attr('href').match(active)) {
-				$this.parent().addClass('active');
-				return false;
-			}
-		});
+		$('.nav-pills li').removeClass('active').find('a[href="' + window.location.pathname + '"]').parent().addClass('active');
 
 		handleSearch();
 
@@ -41,14 +33,14 @@ define('forum/users', ['translator'], function(translator) {
 	function loadMoreUsers() {
 		var set = '';
 		var activeSection = getActiveSection();
-		if (activeSection === 'latest') {
-			set = 'users:joindate';
-		} else if (activeSection === 'sort-posts') {
+		if (activeSection === 'sort-posts') {
 			set = 'users:postcount';
 		} else if (activeSection === 'sort-reputation') {
 			set = 'users:reputation';
-		} else if (activeSection === 'online' || activeSection === 'users') {
+		} else if (activeSection === 'online') {
 			set = 'users:online';
+		} else if (activeSection === 'users') {
+			set = 'users:joindate';
 		}
 
 		if (set) {
@@ -81,8 +73,8 @@ define('forum/users', ['translator'], function(translator) {
 		templates.parse('users', 'users', data, function(html) {
 			translator.translate(html, function(translated) {
 				translated = $(translated);
-				translated.find('span.timeago').timeago();
 				$('#users-container').append(translated);
+				translated.find('span.timeago').timeago();
 				$('#users-container .anon-user').appendTo($('#users-container'));
 			});
 		});

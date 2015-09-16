@@ -104,5 +104,6 @@
 	"privacy": "Privacy",
 	"follow": "Follow",
 	"unfollow": "Unfollow",
-	"delete_all": "Delete All"
+	"delete_all": "Delete All",
+	"map": "Map"
 }
