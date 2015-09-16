@@ -26,7 +26,7 @@
 			<input type="text" class="form-control" placeholder="A short description about your community" data-field="description" /><br />
 
 			<label>Site Keywords</label>
-			<input type="text" class="form-control" placeholder="Keywords describing your community, comma-seperated" data-field="keywords" /><br />
+			<input type="text" class="form-control" placeholder="Keywords describing your community, comma-separated" data-field="keywords" /><br />
 		</form>
 	</div>
 </div>
@@ -90,12 +90,7 @@
 					<span class="mdl-switch__label"><strong>Disable social buttons</strong></span>
 				</label>
 			</div>
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="disableChat">
-					<span class="mdl-switch__label"><strong>Disable chat</strong></span>
-				</label>
-			</div>
+
 		</form>
 	</div>
 </div>

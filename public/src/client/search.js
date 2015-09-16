@@ -80,9 +80,11 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 				$('#posted-by-user').val(params.by);
 			}
 
-			if (params.categories) {
-				$('#posted-in-categories').val(params.categories);
-			}
+			loadCategories(function() {
+				if (params.categories) {
+					$('#posted-in-categories').val(params.categories);
+				}
+			});
 
 			if (params.searchChildren) {
 				$('#search-children').prop('checked', true);
@@ -112,6 +114,38 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 		}
 	}
 
+	function loadCategories(callback) {
+		var listEl = $('#posted-in-categories');
+
+		socket.emit('categories.getCategoriesByPrivilege', 'read', function(err, categories) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			categories = categories.filter(function(category) {
+				return !category.link && !parseInt(category.parentCid, 10);
+			});
+
+			categories.forEach(function(category) {
+				recursive(category, listEl, '');
+			});
+			listEl.attr('size', listEl.find('option').length);
+			callback();
+		});
+	}
+
+	function recursive(category, listEl, level) {
+		if (category.link) {
+			return;
+		}
+		var bullet = level ? '&bull; ' : '';
+		$('<option value="' + category.cid + '">' + level + bullet + category.name + '</option>').appendTo(listEl);
+
+		category.children.forEach(function(child) {
+			recursive(child, listEl, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
+		});
+	}
+
 	function highlightMatches(searchQuery) {
 		if (!searchQuery) {
 			return;
@@ -125,12 +159,12 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 				var result = $(this);
 
 				var text = result.html().replace(regex, '<strong>$1</strong>');
-				result.html(text).find('img').addClass('img-responsive').each(function() {
+				result.html(text).find('img:not(.not-responsive)').addClass('img-responsive').each(function() {
 					$(this).attr('src', $(this).attr('src').replace(/<strong>([\s\S]*?)<\/strong>/gi, '$1'));
 				});
 
 				result.find('a').each(function() {
-					$(this).attr('href', $(this).attr('href').replace(/<strong>([\s\S]*?)<\/strong>/gi, '$1'));	
+					$(this).attr('href', $(this).attr('href').replace(/<strong>([\s\S]*?)<\/strong>/gi, '$1'));
 				});
 			});
 		} catch(e) {

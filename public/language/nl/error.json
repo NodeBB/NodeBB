@@ -77,6 +77,8 @@
     "cant-chat-with-yourself": "Het is niet mogelijk met jezelf een chatgesprek te houden.",
     "chat-restricted": "Deze gebruiker heeft beperkingen aan de chatfunctie opgelegd waardoor deze eerst iemand moet volgen voordat deze persoon een nieuwe chat mag initiëren.",
     "too-many-messages": "Er zijn in korte tijd teveel berichten verzonden, een moment geduld.",
+    "invalid-chat-message": "Invalid chat message",
+    "chat-message-too-long": "Chat message is too long",
     "reputation-system-disabled": "Reputatie systeem is uitgeschakeld.",
     "downvoting-disabled": "Negatief stemmen staat uitgeschakeld.",
     "not-enough-reputation-to-downvote": "Deze gebruikersaccount beschikt over onvoldoende reputatie om een negatieve stem uit te mogen brengen.",

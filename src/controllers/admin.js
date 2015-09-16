@@ -19,7 +19,7 @@ var async = require('async'),
 
 
 var adminController = {
-	categories: {},
+	categories: require('./admin/categories'),
 	tags: {},
 	flags: {},
 	topics: {},
@@ -141,33 +141,6 @@ function getGlobalField(field, callback) {
 		callback(err, parseInt(count, 10) || 0);
 	});
 }
-
-adminController.categories.get = function(req, res, next) {
-	async.parallel({
-		category: async.apply(categories.getCategories, [req.params.category_id], req.user.uid),
-		privileges: async.apply(privileges.categories.list, req.params.category_id)
-	}, function(err, data) {
-		if (err) {
-			return next(err);
-		}
-
-		plugins.fireHook('filter:admin.category.get', {req: req, res: res, category: data.category[0], privileges: data.privileges}, function(err, data) {
-			if (err) {
-				return next(err);
-			}
-
-			res.render('admin/manage/category', {
-				category: data.category,
-				privileges: data.privileges
-			});
-		});
-	});
-};
-
-adminController.categories.getAll = function(req, res, next) {
-	//Categories list will be rendered on client side with recursion, etc.
-	res.render('admin/manage/categories', {});
-};
 
 adminController.tags.get = function(req, res, next) {
 	topics.getTags(0, 199, function(err, tags) {
@@ -348,21 +321,49 @@ adminController.navigation.get = function(req, res, next) {
 };
 
 adminController.homepage.get = function(req, res, next) {
-	plugins.fireHook('filter:homepage.get', {routes: [
-		{
-			route: 'categories',
-			name: 'Categories'
+	async.waterfall([
+		function(next) {
+			db.getSortedSetRange('categories:cid', 0, -1, next);
 		},
-		{
-			route: 'recent',
-			name: 'Recent'
+		function(cids, next) {
+			privileges.categories.filterCids('find', cids, 0, next);
 		},
-		{
-			route: 'popular',
-			name: 'Popular'
+		function(cids, next) {
+			categories.getMultipleCategoryFields(cids, ['name', 'slug'], next);
+		},
+		function(categoryData, next) {
+			categoryData = categoryData.map(function(category) {
+				return {
+					route: 'category/' + category.slug,
+					name: 'Category: ' + category.name
+				};
+			});
+			next(null, categoryData);
 		}
-	]}, function(err, data) {
-		res.render('admin/general/homepage', data);
+	], function(err, categoryData) {
+		if (err || !categoryData) categoryData = [];
+
+		plugins.fireHook('filter:homepage.get', {routes: [
+			{
+				route: 'categories',
+				name: 'Categories'
+			},
+			{
+				route: 'recent',
+				name: 'Recent'
+			},
+			{
+				route: 'popular',
+				name: 'Popular'
+			}
+		].concat(categoryData)}, function(err, data) {
+			data.routes.push({
+				route: '',
+				name: 'Custom'
+			});
+
+			res.render('admin/general/homepage', data);
+		});
 	});
 };
 

@@ -77,6 +77,8 @@
     "cant-chat-with-yourself": "Вы не можете общаться с самим собой",
     "chat-restricted": "Пользователь ограничил прием сообщений. Он должен быть подписан на Вас, чтобы Вы могли вести переписку с ним.",
     "too-many-messages": "Вы отправили слишком много сообщений, подождите немного.",
+    "invalid-chat-message": "Invalid chat message",
+    "chat-message-too-long": "Chat message is too long",
     "reputation-system-disabled": "Система репутации отключена.",
     "downvoting-disabled": "Понижение оценки отключено",
     "not-enough-reputation-to-downvote": "У Вас недостаточно репутации для понижения оценки поста",

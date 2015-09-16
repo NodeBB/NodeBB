@@ -146,19 +146,19 @@ app.cacheBuster = null;
 			var modal = $(dialog.apply(this, arguments)[0]);
 			translate(modal);
 			return modal;
-		}
+		};
 
 		bootbox.prompt = function() {
 			var modal = $(prompt.apply(this, arguments)[0]);
 			translate(modal);
 			return modal;
-		}
+		};
 
 		bootbox.confirm = function() {
 			var modal = $(confirm.apply(this, arguments)[0]);
 			translate(modal);
 			return modal;
-		}
+		};
 	}
 
 	function overrideTimeago() {
@@ -434,11 +434,15 @@ app.cacheBuster = null;
 			searchFields = $("#search-fields"),
 			searchInput = $('#search-fields input');
 
+		$('#search-form .advanced-search-link').on('mousedown', function() {
+			ajaxify.go('/search');
+		});
+
 		$('#search-form').on('submit', dismissSearch);
 		searchInput.on('blur', dismissSearch);
 
 		function dismissSearch(){
-			searchFields.hide();
+			searchFields.addClass('hide');
 			searchButton.show();
 		}
 
@@ -469,7 +473,7 @@ app.cacheBuster = null;
 	};
 
 	app.prepareSearch = function() {
-		$("#search-fields").removeClass('hide').show();
+		$("#search-fields").removeClass('hide');
 		$("#search-button").hide();
 		$('#search-fields input').focus();
 	};
@@ -481,7 +485,7 @@ app.cacheBuster = null;
 				if(err) {
 					return app.alertError(err.message);
 				}
-				$('[component="user/status"]')
+				$('[data-uid="' + app.user.uid + '"] [component="user/status"], [component="header/profilelink"] [component="user/status"]')
 					.removeClass('away online dnd offline')
 					.addClass(status);
 
@@ -563,14 +567,9 @@ app.cacheBuster = null;
 			app.showEmailConfirmWarning();
 
 			socket.removeAllListeners('event:nodebb.ready');
-			socket.on('event:nodebb.ready', function(cacheBusters) {
-				if (
-					!app.cacheBusters ||
-					app.cacheBusters.general !== cacheBusters.general ||
-					app.cacheBusters.css !== cacheBusters.css ||
-					app.cacheBusters.js !== cacheBusters.js
-				) {
-					app.cacheBusters = cacheBusters;
+			socket.on('event:nodebb.ready', function(data) {
+				if (!app.cacheBusters || app.cacheBusters['cache-buster'] !== data['cache-buster']) {
+					app.cacheBusters = data;
 
 					app.alert({
 						alert_id: 'forum_updated',

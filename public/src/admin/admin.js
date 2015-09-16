@@ -1,5 +1,5 @@
 "use strict";
-/*global componentHandler, define, socket, app, ajaxify, utils, bootbox, Mousetrap, Hammer, RELATIVE_PATH*/
+/*global config, translator, componentHandler, define, socket, app, ajaxify, utils, bootbox, Mousetrap, Hammer, Slideout, RELATIVE_PATH*/
 
 (function() {
 	$(document).ready(function() {
@@ -105,7 +105,9 @@
 	}
 
 	function launchSnackbar(params) {
-		translator.translate("<strong>" + params.title + "</strong>" + params.message, function(html) {
+		var message = (params.title ? "<strong>" + params.title + "</strong>" : '') + (params.message ? params.message : '');
+
+		translator.translate(message, function(html) {
 			var bar = $.snackbar({
 				content: html,
 				timeout: 3000,

@@ -80,33 +80,37 @@ var async = require('async'),
 				});
 			}
 
-			async.parallel({
-				groups: function(next) {
-					Groups.getGroupsData(groupNames, next);
-				},
-				members: function(next) {
-					Groups.getMemberUsers(groupNames, 0, 3, next);
-				}
-			}, function (err, data) {
-				if (err) {
-					return callback(err);
-				}
-				data.groups.forEach(function(group, index) {
-					if (!group) {
-						return;
-					}
-					Groups.escapeGroupData(group);
-					group.members = data.members[index] || [];
-					group.truncated = group.memberCount > data.members.length;
-				});
-
-				callback(null, data.groups);
-			});
+			Groups.getGroupsAndMembers(groupNames, callback);
 		}
 	};
 
 	Groups.getGroups = function(set, start, stop, callback) {
 		db.getSortedSetRevRange(set, start, stop, callback);
+	};
+
+	Groups.getGroupsAndMembers = function(groupNames, callback) {	
+		async.parallel({
+			groups: function(next) {
+				Groups.getGroupsData(groupNames, next);
+			},
+			members: function(next) {
+				Groups.getMemberUsers(groupNames, 0, 3, next);
+			}
+		}, function (err, data) {
+			if (err) {
+				return callback(err);
+			}
+			data.groups.forEach(function(group, index) {
+				if (!group) {
+					return;
+				}
+				Groups.escapeGroupData(group);
+				group.members = data.members[index] || [];
+				group.truncated = group.memberCount > data.members.length;
+			});
+
+			callback(null, data.groups);
+		});
 	};
 
 	Groups.get = function(groupName, options, callback) {
@@ -195,6 +199,10 @@ var async = require('async'),
 				});
 			});
 		});
+	};
+
+	Groups.getOwners = function(groupName, callback) {
+		db.getSetMembers('group:' + groupName + ':owners', callback);
 	};
 
 	Groups.getOwnersAndMembers = function(groupName, uid, start, stop, callback) {
@@ -436,7 +444,7 @@ var async = require('async'),
 							}
 						});
 
-						Groups.getGroupsData(memberOf, next);
+						Groups.getGroupsAndMembers(memberOf, next);
 					});
 				}, next);
 			}

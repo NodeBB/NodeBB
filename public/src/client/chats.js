@@ -46,6 +46,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		inputEl.on('keypress', function(e) {
 			if(e.which === 13 && !e.shiftKey) {
 				Chats.sendMessage(Chats.getRecipientUid(), inputEl);
+				return false;
 			}
 		});
 
@@ -130,7 +131,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			chatContainer = $('.chat-content');
 		newMessage.appendTo(chatContainer);
 		newMessage.find('.timeago').timeago();
-		newMessage.find('img:not(".chat-user-image")').addClass('img-responsive');
+		newMessage.find('img:not(.not-responsive)').addClass('img-responsive');
 		Chats.scrollToBottom($('.expanded-chat .chat-content'));
 	}
 
@@ -184,25 +185,30 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	};
 
 	Chats.sendMessage = function(toUid, inputEl) {
-		var msg = S(inputEl.val()).stripTags().s;
-		if (msg.length) {
-			msg = msg +'\n';
-			socket.emit('modules.chats.send', {
-				touid:toUid,
-				message:msg
-			}, function(err) {
-				if (err) {
-					if (err.message === '[[error:email-not-confirmed-chat]]') {
-						return app.showEmailConfirmWarning(err);
-					}
-					return app.alertError(err.message);
-				}
-
-				inputEl.val('');
-				sounds.play('chat-outgoing');
-				Chats.notifyTyping(toUid, false);
-			});
+		var msg = inputEl.val();
+		if (msg.length > config.maximumChatMessageLength) {
+			return app.alertError('[[error:chat-message-too-long]]');
 		}
+
+		if (!msg.length) {
+			return;
+		}
+
+		inputEl.val('');
+		socket.emit('modules.chats.send', {
+			touid: toUid,
+			message: msg
+		}, function(err) {
+			if (err) {
+				if (err.message === '[[error:email-not-confirmed-chat]]') {
+					return app.showEmailConfirmWarning(err);
+				}
+				return app.alertError(err.message);
+			}
+
+			sounds.play('chat-outgoing');
+			Chats.notifyTyping(toUid, false);
+		});
 	};
 
 	Chats.scrollToBottom = function(containerEl) {

@@ -94,9 +94,15 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'comp
 	function topicCommand(command, tid) {
 		translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function(msg) {
 			bootbox.confirm(msg, function(confirm) {
-				if (confirm) {
-					socket.emit('topics.' + command, {tids: [tid], cid: ajaxify.data.cid});
+				if (!confirm) {
+					return;
 				}
+
+				socket.emit('topics.' + command, {tids: [tid], cid: ajaxify.data.cid}, function(err) {
+					if (err) {
+						app.alertError(err.message);
+					}
+				});
 			});
 		});
 	}

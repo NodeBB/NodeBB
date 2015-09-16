@@ -10,7 +10,8 @@ var async = require('async'),
 	groups = require('./groups'),
 	emitter = require('./emitter'),
 	pubsub = require('./pubsub'),
-	auth = require('./routes/authentication');
+	auth = require('./routes/authentication'),
+	utils = require('../public/src/utils');
 
 (function (Meta) {
 	Meta.reloadRequired = false;
@@ -63,6 +64,7 @@ var async = require('async'),
 					async.apply(Meta.templates.compile),
 					async.apply(auth.reloadRoutes),
 					function(next) {
+						Meta.config['cache-buster'] = utils.generateUUID();
 						templates.flush();
 						next();
 					}

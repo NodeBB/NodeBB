@@ -12,6 +12,7 @@
     "delete_account": "Deletar Conta",
     "delete_account_confirm": "Você tem certeza que deseja excluir a sua conta?<br /><strong>Esta ação é irreversível e você não poderá recuperar quaisquer dos seus dados</strong><br /><br />Entre com o seu nome de usuário para confirmar que deseja destruir esta conta.",
     "delete_this_account_confirm": "Você tem certeza que deseja excluir essa conta? <br /><strong>Essa ação é irreversível e você não poderá recuperar quaisquer dados</strong><br /><br />",
+    "account-deleted": "Account deleted",
     "fullname": "Nome Completo",
     "website": "Website",
     "location": "Local",
@@ -52,6 +53,7 @@
     "username_taken_workaround": "O nome de usuário que você escolheu já existia, então nós o alteramos um pouquinho. Agora você é conhecido como <strong>%1</strong>",
     "upload_picture": "Carregar Foto",
     "upload_a_picture": "Carregue uma Foto",
+    "remove_uploaded_picture": "Remove Uploaded Picture",
     "image_spec": "Você pode usar somente arquivos PNG, JPG ou GIF",
     "settings": "Configurações",
     "show_email": "Mostrar Meu Email",
@@ -85,5 +87,5 @@
     "follow_topics_you_create": "Seguir tópicos que você cria",
     "grouptitle": "Escolha o título do grupo que você deseja exibir",
     "no-group-title": "Sem título de grupo",
-    "select-skin": "Select a Skin"
+    "select-skin": "Escolha uma Skin"
 }

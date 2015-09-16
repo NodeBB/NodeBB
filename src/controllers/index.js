@@ -33,20 +33,20 @@ var Controllers = {
 
 
 Controllers.home = function(req, res, next) {
-	var route = meta.config.homePageRoute || 'categories',
+	var route = meta.config.homePageRoute || meta.config.homePageCustom || 'categories',
 		hook = 'action:homepage.get:' + route;
 
 	if (plugins.hasListeners(hook)) {
 		plugins.fireHook(hook, {req: req, res: res, next: next});
 	} else {
-		if (route === 'categories') {
+		if (route === 'categories' || route === '/') {
 			Controllers.categories.list(req, res, next);
 		} else if (route === 'recent') {
 			Controllers.recent.get(req, res, next);
 		} else if (route === 'popular') {
 			Controllers.popular.get(req, res, next);
 		} else {
-			next();
+			res.redirect(route);
 		}
 	}
 };

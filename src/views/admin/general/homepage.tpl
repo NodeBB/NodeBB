@@ -12,6 +12,11 @@
 					<option value="{routes.route}">{routes.name}</option>
 					<!-- END routes -->
 				</select>
+				<br>
+				<div id="homePageCustom" style="display: none;">
+					<label>Custom Route</label>
+					<input type="text" class="form-control" data-field="homePageCustom"/>
+				</div>
 			</div>
 		</form>
 	</div>

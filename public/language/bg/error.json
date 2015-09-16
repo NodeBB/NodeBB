@@ -77,6 +77,8 @@
     "cant-chat-with-yourself": "Не можете да пишете съобщение на себе си!",
     "chat-restricted": "Този потребител е ограничил съобщенията до себе си. Той трябва първо да Ви последва, преди да можете да си пишете с него.",
     "too-many-messages": "Изпратили сте твърде много съобщения. Моля, изчакайте малко.",
+    "invalid-chat-message": "Invalid chat message",
+    "chat-message-too-long": "Chat message is too long",
     "reputation-system-disabled": "Системата за репутация е изключена.",
     "downvoting-disabled": "Отрицателното гласуване е изключено",
     "not-enough-reputation-to-downvote": "Нямате достатъчно репутация, за да гласувате отрицателно за тази публикация",

@@ -19,7 +19,7 @@ define('forum/account/header', function() {
 		$('.account-sub-links li').removeClass('active').each(function() {
 			var href = $(this).find('a').attr('href');
 
-			if (href === window.location.pathname) {
+			if (decodeURIComponent(href) === decodeURIComponent(window.location.pathname)) {
 				$(this).addClass('active');
 				return false;
 			}

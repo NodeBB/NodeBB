@@ -28,14 +28,22 @@ var db = require('./database'),
 	}
 
 	Messaging.addMessage = function(fromuid, touid, content, timestamp, callback) {
-		var uids = sortUids(fromuid, touid);
-
 		if (typeof timestamp === 'function') {
 			callback = timestamp;
 			timestamp = Date.now();
 		} else {
 			timestamp = timestamp || Date.now();
 		}
+
+		if (!content) {
+			return callback(new Error('[[error:invalid-chat-message]]'));
+		}
+
+		if (content.length > (meta.config.maximumChatMessageLength || 1000)) {
+			return callback(new Error('[[error:chat-message-too-long]]'));
+		}
+
+		var uids = sortUids(fromuid, touid);
 
 		db.incrObjectField('global', 'nextMid', function(err, mid) {
 			if (err) {
@@ -255,20 +263,16 @@ var db = require('./database'),
 					user.getMultipleUserFields(uids, ['uid', 'username', 'picture', 'status'] , next);
 				},
 				teasers: function(next) {
-					var teasers = [];
-					async.each(uids, function(fromuid, next) {
+					async.map(uids, function(fromuid, next) {
 						Messaging.getMessages({
 							fromuid: fromuid,
 							touid: uid,
 							isNew: false,
 							count: 1
 						}, function(err, teaser) {
-							teasers[uids.indexOf(fromuid)] = teaser[0];
-							next(err);
+							next(err, teaser[0]);
 						});
-					}, function(err) {
-						next(err, teasers);
-					});
+					}, next);
 				}
 			}, function(err, results) {
 				if (err) {
@@ -276,25 +280,16 @@ var db = require('./database'),
 				}
 
 				results.users.forEach(function(user, index) {
-					if (user && !parseInt(user.uid, 10)) {
+					if (user && parseInt(user.uid, 10)) {
 						Messaging.markRead(uid, uids[index]);
+						user.unread = results.unread[index];
+						user.status = sockets.isUserOnline(user.uid) ? user.status : 'offline';
+						user.teaser = results.teasers[index];
 					}
 				});
 
 				results.users = results.users.filter(function(user) {
 					return user && parseInt(user.uid, 10);
-				});
-
-				if (!results.users.length) {
-					return callback(null, {users: [], nextStart: stop + 1});
-				}
-
-				results.users.forEach(function(user, index) {
-					if (user) {
-						user.unread = results.unread[index];
-						user.status = sockets.isUserOnline(user.uid) ? user.status : 'offline';
-						user.teaser = results.teasers[index];
-					}
 				});
 
 				callback(null, {users: results.users, nextStart: stop + 1});

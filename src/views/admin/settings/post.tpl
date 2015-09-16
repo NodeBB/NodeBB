@@ -115,15 +115,6 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Chat Settings</div>
-	<div class="col-sm-10 col-xs-12">
-		<form>
-			<strong>Chat Message Inbox Size</strong><br /> <input type="text" class="form-control" value="250" data-field="chatMessageInboxSize">
-		</form>
-	</div>
-</div>
-
-<div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">Upload Settings</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>

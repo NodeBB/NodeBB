@@ -45,7 +45,7 @@ define('forum/account/settings', ['forum/account/header'], function(header) {
 						config[key] = newSettings[key];
 					}
 				}
-				app.exposeConfigToTemplates();
+
 				if (requireReload && parseInt(app.user.uid, 10) === parseInt(ajaxify.data.theirid, 10)) {
 					app.alert({
 						id: 'setting-change',

@@ -36,9 +36,12 @@ popularController.get = function(req, res, next) {
 			topics: topics,
 			'feeds:disableRSS': parseInt(meta.config['feeds:disableRSS'], 10) === 1,
 			rssFeedUrl: nconf.get('relative_path') + '/popular/' + (req.params.term || 'daily') + '.rss',
-			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[global:header.popular]]'}]),
 			title: '[[pages:popular-' + term + ']]'
 		};
+
+		if (req.path.startsWith('/api/popular') || req.path.startsWith('/popular')) {
+			data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:header.popular]]'}]);
+		}
 
 		if (!req.uid) {
 			anonCache[term] = data;

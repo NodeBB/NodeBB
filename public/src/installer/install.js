@@ -75,7 +75,7 @@ $('document').ready(function() {
 		}
 
 		function validateConfirmPassword(field) {
-			if ($('[name="admin:password"]').val() !== $('[name="admin:password:confirm"]').val()) {
+			if ($('[name="admin:password"]').val() !== $('[name="admin:passwordConfirm"]').val()) {
 				parent.addClass('error');
 				help.html('Passwords do not match.');
 			} else {
@@ -101,7 +101,7 @@ $('document').ready(function() {
 				return validateUsername(field);
 			case 'admin:password':
 				return validatePassword(field);
-			case 'admin:password:confirm':
+			case 'admin:passwordConfirm':
 				return validateConfirmPassword(field);
 			case 'admin:email':
 				return validateEmail(field);

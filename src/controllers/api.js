@@ -54,6 +54,7 @@ apiController.getConfig = function(req, res, next) {
 	config.usePagination = parseInt(meta.config.usePagination, 10) === 1;
 	config.disableSocialButtons = parseInt(meta.config.disableSocialButtons, 10) === 1;
 	config.disableChat = parseInt(meta.config.disableChat, 10) === 1;
+	config.maximumChatMessageLength = parseInt(meta.config.maximumChatMessageLength, 10) || 1000;
 	config.maxReconnectionAttempts = meta.config.maxReconnectionAttempts || 5;
 	config.reconnectionDelay = meta.config.reconnectionDelay || 1500;
 	config.minimumTagsPerTopic = meta.config.minimumTagsPerTopic || 0;
@@ -70,8 +71,6 @@ apiController.getConfig = function(req, res, next) {
 	config.environment = process.env.NODE_ENV;
 	config.loggedIn = !!req.user;
 	config['cache-buster'] = meta.config['cache-buster'] || '';
-	config['script-buster'] = meta.js.hash || '';
-	config['css-buster'] = meta.css.hash || '';
 	config.requireEmailConfirmation = parseInt(meta.config.requireEmailConfirmation, 10) === 1;
 	config.topicPostSort = meta.config.topicPostSort || 'oldest_to_newest';
 	config.categoryTopicSort = meta.config.categoryTopicSort || 'newest_to_oldest';

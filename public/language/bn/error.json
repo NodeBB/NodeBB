@@ -77,6 +77,8 @@
     "cant-chat-with-yourself": "আপনি নিজের সাথে চ্যাট করতে পারবেন না!",
     "chat-restricted": "এই সদস্য তার বার্তালাপ সংরক্ষিত রেখেছেন। এই সদস্য আপনাকে ফলো করার পরই কেবলমাত্র আপনি তার সাথে চ্যাট করতে পারবেন",
     "too-many-messages": "You have sent too many messages, please wait awhile.",
+    "invalid-chat-message": "Invalid chat message",
+    "chat-message-too-long": "Chat message is too long",
     "reputation-system-disabled": "সম্মাননা ব্যাবস্থা নিস্ক্রীয় রাখা হয়েছে",
     "downvoting-disabled": "ঋণাত্মক ভোট নিস্ক্রীয় রাখা হয়েছে।",
     "not-enough-reputation-to-downvote": "আপনার এই পোস্ট downvote করার জন্য পর্যাপ্ত সম্মাননা নেই",

@@ -5,7 +5,9 @@ var	async = require('async'),
 	_ = require('underscore'),
 
 	user = require('../user'),
+	utils = require('../../public/src/utils'),
 	plugins = require('../plugins'),
+	notifications = require('../notifications'),
 	db = require('./../database');
 
 module.exports = function(Groups) {
@@ -66,7 +68,29 @@ module.exports = function(Groups) {
 	};
 
 	Groups.requestMembership = function(groupName, uid, callback) {
-		inviteOrRequestMembership(groupName, uid, 'request', callback);
+		async.waterfall([
+			async.apply(inviteOrRequestMembership, groupName, uid, 'request'),
+			function(next) {
+				user.getUserField(uid, 'username', function(err, username) {
+					if (err) {
+						return next(err);
+					}
+					next(null, {
+						bodyShort: '[[groups:request.notification_title, ' + username + ']]',
+						bodyLong: '[[groups:request.notification_text, ' + username + ', ' + groupName + ']]',
+						nid: 'group:' + groupName + ':uid:' + uid + ':request',
+						path: '/groups/' + utils.slugify(groupName)
+					});
+				});
+			},
+			async.apply(notifications.create),
+			function(notification, next) {
+				Groups.getOwners(groupName, function(err, ownerUids) {
+					next(null, notification, ownerUids);
+				});
+			},
+			async.apply(notifications.push)
+		], callback);
 	};
 
 	Groups.acceptMembership = function(groupName, uid, callback) {
@@ -87,7 +111,19 @@ module.exports = function(Groups) {
 	};
 
 	Groups.invite = function(groupName, uid, callback) {
-		inviteOrRequestMembership(groupName, uid, 'invite', callback);
+		async.waterfall([
+			async.apply(inviteOrRequestMembership, groupName, uid, 'invite'),
+			async.apply(notifications.create, {
+				bodyShort: '[[groups:invited.notification_title, ' + groupName + ']]',
+				bodyLong: '',
+				nid: 'group:' + groupName + ':uid:' + uid + ':invite',
+				path: '/groups/' + utils.slugify(groupName)
+			}),
+			function(notification, next) {
+				next(null, notification, [uid]);
+			},
+			async.apply(notifications.push)
+		], callback);
 	};
 
 	function inviteOrRequestMembership(groupName, uid, type, callback) {

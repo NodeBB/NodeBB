@@ -77,6 +77,8 @@
     "cant-chat-with-yourself": "Anda tidak boleh sembang dengan diri sendiri!",
     "chat-restricted": "Pengguna ini menyekat ruangan sembangnya. Dia hendaklah mengikut anda sebelum kalian dapat bersembang",
     "too-many-messages": "Anda menghantar terlalu banyak pesanan, sila tunggu seketika.",
+    "invalid-chat-message": "Invalid chat message",
+    "chat-message-too-long": "Chat message is too long",
     "reputation-system-disabled": "Sistem reputasi dilumpuhkan.",
     "downvoting-disabled": "Undi turun dilumpuhkan",
     "not-enough-reputation-to-downvote": "Anda tidak mempunyai reputasi mencukupi untuk mengundi turun kiriman ini",

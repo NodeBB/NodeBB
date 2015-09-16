@@ -53,6 +53,7 @@ module.exports = function(Categories) {
 					topic.title = '[[topic:topic_is_deleted]]';
 					topic.slug = topic.tid;
 					topic.teaser = null;
+					topic.noAnchor = true;
 				}
 			});
 

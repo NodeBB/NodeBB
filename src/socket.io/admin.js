@@ -100,10 +100,6 @@ SocketAdmin.themes.set = function(socket, data, callback) {
 	}
 };
 
-SocketAdmin.themes.updateBranding = function(socket, data, callback) {
-	meta.css.updateBranding();
-};
-
 SocketAdmin.plugins.toggleActive = function(socket, plugin_id, callback) {
 	require('../posts/cache').reset();
 	plugins.toggleActive(plugin_id, callback);

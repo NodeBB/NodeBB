@@ -77,6 +77,8 @@
     "cant-chat-with-yourself": "Du kannst nicht mit dir selber chatten!",
     "chat-restricted": "Dieser Benutzer hat seine Chatfunktion eingeschränkt. Du kannst nur mit diesem Benutzer chatten, wenn er dir folgt.",
     "too-many-messages": "Du hast zu viele Nachrichten versandt, bitte warte eine Weile.",
+    "invalid-chat-message": "Invalid chat message",
+    "chat-message-too-long": "Chat message is too long",
     "reputation-system-disabled": "Das Reputationssystem ist deaktiviert.",
     "downvoting-disabled": "Downvotes sind deaktiviert.",
     "not-enough-reputation-to-downvote": "Deine Reputation ist zu niedrig, um diesen Beitrag negativ zu bewerten.",

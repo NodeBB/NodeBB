@@ -157,7 +157,7 @@ module.exports = function(User) {
 			},
 			passwordValid: function(next) {
 				if (userData.password) {
-					next(!utils.isPasswordValid(userData.password) ? new Error('[[error:invalid-password]]') : null);
+					User.isPasswordValid(userData.password, next);
 				} else {
 					next();
 				}
@@ -177,6 +177,17 @@ module.exports = function(User) {
 		}, function(err, results) {
 			callback(err);
 		});
+	};
+
+	User.isPasswordValid = function(password, callback) {
+		if (!password || !utils.isPasswordValid(password)) {
+			return callback(new Error('[[error:invalid-password]]'));
+		}
+
+		if (password.length < meta.config.minimumPasswordLength) {
+			return callback(new Error('[[user:change_password_error_length]]'));
+		}
+		callback();
 	};
 
 	function renameUsername(userData, callback) {

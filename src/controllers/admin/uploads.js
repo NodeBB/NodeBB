@@ -3,6 +3,7 @@
 var fs = require('fs'),
 	path = require('path'),
 	nconf = require('nconf'),
+	winston = require('winston'),
 	file = require('../../file'),
 	plugins = require('../../plugins');
 
@@ -17,7 +18,11 @@ uploadsController.uploadCategoryPicture = function(req, res, next) {
 	try {
 		params = JSON.parse(req.body.params);
 	} catch (e) {
-		fs.unlink(uploadedFile.path);
+		fs.unlink(uploadedFile.path, function(err) {
+			if (err) {
+				winston.error(err);
+			}
+		});
 		return next(e);
 	}
 
@@ -33,7 +38,11 @@ uploadsController.uploadFavicon = function(req, res, next) {
 
 	if (validateUpload(req, res, next, uploadedFile, allowedTypes)) {
 		file.saveFileToLocal('favicon.ico', 'system', uploadedFile.path, function(err, image) {
-			fs.unlink(uploadedFile.path);
+			fs.unlink(uploadedFile.path, function(err) {
+				if (err) {
+					winston.error(err);
+				}
+			});
 			if (err) {
 				return next(err);
 			}
@@ -62,7 +71,11 @@ function upload(name, req, res, next) {
 
 function validateUpload(req, res, next, uploadedFile, allowedTypes) {
 	if (allowedTypes.indexOf(uploadedFile.type) === -1) {
-		fs.unlink(uploadedFile.path);
+		fs.unlink(uploadedFile.path, function(err) {
+			if (err) {
+				winston.error(err);
+			}
+		});
 
 		res.json({error: '[[error:invalid-image-type, ' + allowedTypes.join(', ') + ']]'});
 		return false;
@@ -73,7 +86,11 @@ function validateUpload(req, res, next, uploadedFile, allowedTypes) {
 
 function uploadImage(filename, folder, uploadedFile, req, res, next) {
 	function done(err, image) {
-		fs.unlink(uploadedFile.path);
+		fs.unlink(uploadedFile.path, function(err) {
+			if (err) {
+				winston.error(err);
+			}
+		});
 		if (err) {
 			return next(err);
 		}

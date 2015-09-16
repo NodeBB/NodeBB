@@ -152,8 +152,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 				return;
 			}
 
-			for(var x = 0; x<chats.length; ++x) {
-				userObj = chats[x];
+			chats.forEach(function(userObj) {
 				dropdownEl = $('<li class="' + (userObj.unread ? 'unread' : '') + '"/>')
 					.attr('data-uid', userObj.uid)
 					.html('<a data-ajaxify="false">'+
@@ -162,16 +161,15 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 						userObj.username + '</a>')
 					.appendTo(chatsListEl);
 
-				(function(userObj) {
-					dropdownEl.click(function() {
-						if (!ajaxify.currentPage.match(/^chats\//)) {
-							app.openChat(userObj.username, userObj.uid);
-						} else {
-							ajaxify.go('chats/' + utils.slugify(userObj.username));
-						}
-					});
-				})(userObj);
-			}
+
+				dropdownEl.click(function() {
+					if (!ajaxify.currentPage.match(/^chats\//)) {
+						app.openChat(userObj.username, userObj.uid);
+					} else {
+						ajaxify.go('chats/' + utils.slugify(userObj.username));
+					}
+				});
+			});
 		});
 	};
 
@@ -241,7 +239,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 						chatModal.find('.chat-content').css('height', module.calculateChatListHeight(chatModal));
 					});
-					
+
 					chatModal.draggable({
 						start:function() {
 							module.bringModalToTop(chatModal);
@@ -265,7 +263,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					$(window).one('action:ajaxify.end', function() {
 						components.get('chat/input').val(text);
 					});
-					
+
 					ajaxify.go('chats/' + utils.slugify(data.username));
 					module.close(chatModal);
 				}
@@ -442,6 +440,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		input.off('keypress').on('keypress', function(e) {
 			if (e.which === 13 && !e.shiftKey) {
 				Chats.sendMessage(chatModal.attr('touid'), input);
+				return false;
 			}
 		});
 
@@ -457,6 +456,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 		chatModal.find('#chat-message-send-btn').off('click').on('click', function(e){
 			Chats.sendMessage(chatModal.attr('touid'), input);
+			input.focus();
 			return false;
 		});
 	}
@@ -471,9 +471,9 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 		Chats.parseMessage(data, function(html) {
 			var message = $(html);
-			message.find('img:not(".chat-user-image")').addClass('img-responsive');
-			message.find('.timeago').timeago();
 			message.appendTo(chatContent);
+			message.find('img:not(.not-responsive)').addClass('img-responsive');
+			message.find('.timeago').timeago();
 			Chats.scrollToBottom(chatContent);
 
 			if (typeof done === 'function') {
@@ -490,8 +490,11 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 	module.sync = function() {
 		socket.emit('modules.chats.sync', function(err, users) {
-			for(var x=0,numUsers=users.length,user;x<numUsers;x++) {
-				user = users[x];
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			users.forEach(function(user) {
 				if (!module.modalExists(user.uid)) {
 					module.createModal({
 						username: user.username,
@@ -503,7 +506,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 						}
 					});
 				}
-			}
+			});
 		});
 	};
 

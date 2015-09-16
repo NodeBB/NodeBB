@@ -82,12 +82,14 @@ define('forum/topic/events', [
 	}
 
 	function onTopicPurged(data) {
-		ajaxify.go('category/' + ajaxify.data.cid);
+		if (ajaxify.data.category && ajaxify.data.category.slug) {
+			ajaxify.go('category/' + ajaxify.data.category.slug, null, true);
+		}
 	}
 
 	function onTopicMoved(data) {
-		if (data && data.tid > 0) {
-			ajaxify.go('topic/' + data.tid);
+		if (data && data.slug) {
+			ajaxify.go('topic/' + data.slug, null, true);
 		}
 	}
 
@@ -110,7 +112,7 @@ define('forum/topic/events', [
 
 		editedPostEl.fadeOut(250, function() {
 			editedPostEl.html(data.post.content);
-			editedPostEl.find('img').addClass('img-responsive');
+			editedPostEl.find('img:not(.not-responsive)').addClass('img-responsive');
 			app.replaceSelfLinks(editedPostEl.find('a'));
 			editedPostEl.fadeIn(250);
 		});

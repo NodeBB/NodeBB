@@ -234,6 +234,14 @@ define('admin/manage/category', [
 
 	Category.launchParentSelector = function() {
 		socket.emit('categories.get', function(err, categories) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			categories = categories.filter(function(category) {
+				return category && parseInt(category.cid, 10) !== parseInt(ajaxify.data.category.cid, 10);
+			});
+			
 			templates.parse('partials/category_list', {
 				categories: categories
 			}, function(html) {

@@ -153,7 +153,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 	function handleAccountDelete() {
 		$('#deleteAccountBtn').on('click', function() {
 			translator.translate('[[user:delete_account_confirm]]', function(translated) {
-				bootbox.confirm(translated + '<p><input type="text" class="form-control" id="confirm-username" /></p>', function(confirm) {
+				var modal = bootbox.confirm(translated + '<p><input type="text" class="form-control" id="confirm-username" /></p>', function(confirm) {
 					if (!confirm) {
 						return;
 					}
@@ -169,6 +169,10 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 						});
 					}
 				});
+
+				modal.on('shown.bs.modal', function() {
+					modal.find('input').focus();
+				});
 			});
 			return false;
 		});
@@ -182,8 +186,16 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 			$('#user-uploaded-picture').attr('src', urlOnServer);
 			updateHeader(urlOnServer);
 			uploadedPicture = urlOnServer;
+			$('#removeUploadedPictureBtn').removeClass('hide');
 		}
 
+		function onRemoveComplete(urlOnServer) {
+			$('#user-current-picture').attr('src', urlOnServer);
+			$('#user-uploaded-picture').attr('src', '');
+			updateHeader(urlOnServer);
+			uploadedPicture = '';
+			$('#removeUploadedPictureBtn').addClass('hide');
+		}
 
 		$('#upload-picture-modal').on('hide', function() {
 			$('#userPhotoInput').val('');
@@ -222,6 +234,16 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 			});
 			return false;
 		});
+
+		$('#removeUploadedPictureBtn').on('click', function() {
+			socket.emit('user.removeUploadedPicture', {uid: ajaxify.data.theirid}, function(err, imageUrlOnServer) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				onRemoveComplete(imageUrlOnServer);
+				$('#change-picture-modal').modal('hide');
+			});
+		})
 	}
 
 	function handleEmailConfirm() {

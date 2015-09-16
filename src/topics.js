@@ -274,21 +274,17 @@ var async = require('async'),
 				if (!posts.length) {
 					return next(null, []);
 				}
-
+				var replies = posts;
 				if (topic.mainPid) {
 					posts[0].index = 0;
+					replies = posts.slice(1);
 				}
 
-				var indices = Topics.calculatePostIndices(start, stop, topic.postcount, reverse);
-				for (var i=1; i<posts.length; ++i) {
-					if (posts[i]) {
-						posts[i].index = indices[i - 1];
-					}
-				}
+				Topics.calculatePostIndices(replies, start, stop, topic.postcount, reverse);
 
-				Topics.addPostData(posts, uid, callback);
+				Topics.addPostData(posts, uid, next);
 			}
-		]);
+		], callback);
 	}
 
 	Topics.getMainPost = function(tid, uid, callback) {
