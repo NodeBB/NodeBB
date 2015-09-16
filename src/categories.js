@@ -293,21 +293,34 @@ var async = require('async'),
 	}
 
 	Categories.getParents = function(cids, callback) {
-		Categories.getMultipleCategoryFields(cids, ['parentCid'], function(err, data) {
-			if (err) {
-				return callback(err);
-			}
+		var categoriesData;
+		var parentCids;
+		async.waterfall([
+			function (next) {
+				Categories.getMultipleCategoryFields(cids, ['parentCid'], next);
+			},
+			function (_categoriesData, next) {
+				categoriesData = _categoriesData;
 
-			var parentCids = data.map(function(category) {
-				if (category && category.hasOwnProperty('parentCid') && category.parentCid) {
-					return category.parentCid;
-				} else {
-					return 0;
+				parentCids = categoriesData.filter(function(category) {
+					return category && category.hasOwnProperty('parentCid') && category.parentCid;
+				}).map(function(category) {
+					return parseInt(category.parentCid, 10);
+				});
+
+				if (!parentCids.length) {
+					return callback(null, cids.map(function() {return null;}));
 				}
-			});
 
-			Categories.getCategoriesData(parentCids, callback);
-		});
+				Categories.getCategoriesData(parentCids, next);
+			},
+			function (parentData, next) {
+				parentData = categoriesData.map(function(category) {
+					return parentData[parentCids.indexOf(parseInt(category.parentCid, 10))];
+				});
+				next(null, parentData);
+			}
+		], callback);
 	};
 
 	Categories.getChildren = function(cids, uid, callback) {
