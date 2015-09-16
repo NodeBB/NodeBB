@@ -10,7 +10,8 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	var newMessage = false;
 
 	Chats.init = function() {
-		var containerEl = $('.expanded-chat ul');
+		var containerEl = $('.expanded-chat ul'),
+			env = utils.findBootstrapEnvironment();
 
 		if (!Chats.initialised) {
 			Chats.addSocketListeners();
@@ -18,9 +19,11 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		}
 
 		Chats.addEventListeners();
-		Chats.setActive();
 
-		Chats.resizeMainWindow();
+		if (env === 'md' || env === 'lg') {
+			Chats.resizeMainWindow();
+		}
+
 		Chats.scrollToBottom($('.expanded-chat ul'));
 
 		Chats.initialised = true;
@@ -40,7 +43,12 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			popoutEl = $('[data-action="pop-out"]');
 
 		$('.chats-list').on('click', 'li', function(e) {
-			ajaxify.go('chats/' + utils.slugify($(this).attr('data-username')));
+			var env = utils.findBootstrapEnvironment();
+			if (env === 'xs' || env === 'sm') {
+				app.openChat($(this).attr('data-username'), $(this).attr('data-uid'));
+			} else {
+				ajaxify.go('chats/' + utils.slugify($(this).attr('data-username')));
+			}
 		});
 
 		inputEl.on('keypress', function(e) {
@@ -175,6 +183,8 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 
 			messagesList.height($(window).height() - (fromTop + inputHeight + (margin * 4)));
 		}
+
+		Chats.setActive();
 	};
 
 	Chats.notifyTyping = function(toUid, typing) {
