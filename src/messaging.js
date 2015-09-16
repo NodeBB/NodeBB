@@ -4,6 +4,8 @@ var db = require('./database'),
 	async = require('async'),
 	nconf = require('nconf'),
 	winston = require('winston'),
+	S = require('string'),
+
 	user = require('./user'),
 	plugins = require('./plugins'),
 	meta = require('./meta'),
@@ -270,7 +272,9 @@ var db = require('./database'),
 							isNew: false,
 							count: 1
 						}, function(err, teaser) {
-							next(err, teaser[0]);
+							var teaser = teaser[0];
+							teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;
+							next(err, teaser);
 						});
 					}, next);
 				}
