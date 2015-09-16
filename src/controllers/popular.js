@@ -13,13 +13,17 @@ var anonCache = {}, lastUpdateTime = 0;
 var terms = {
 	daily: 'day',
 	weekly: 'week',
-	monthly: 'month',
-	alltime: 'alltime'
+	monthly: 'month'
 };
 
 popularController.get = function(req, res, next) {
 
-	var term = terms[req.params.term] || 'alltime';
+	var term = terms[req.params.term];
+
+	if (!term && req.params.term) {
+		return next();
+	}
+	term = term || 'alltime';
 
 	var termToBreadcrumb = {
 		day: '[[recent:day]]',
