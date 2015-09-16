@@ -10,7 +10,7 @@ var async = require('async'),
 
 var widgets = {};
 
-widgets.render = function(uid, area, callback) {
+widgets.render = function(uid, area, req, res, callback) {
 	if (!area.locations || !area.template) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -37,7 +37,9 @@ widgets.render = function(uid, area, callback) {
 				plugins.fireHook('filter:widget.render:' + widget.widget, {
 					uid: uid,
 					area: area,
-					data: widget.data
+					data: widget.data,
+					req: req,
+					res: res
 				}, function(err, html) {
 					if (err) {
 						return next(err);
