@@ -115,6 +115,16 @@ switch(process.argv[2]) {
 		});
 		break;
 
+	case 'activate':
+		var args = process.argv.slice(0);
+			args.unshift('--activate');
+
+			cproc.fork('app.js', args, {
+				cwd: __dirname,
+				silent: false
+			});
+			break;
+
 	case 'upgrade':
 		async.series([
 			function(next) {

@@ -63,9 +63,7 @@ if (nconf.get('config')) {
 }
 configExists = fs.existsSync(configFile);
 
-if (!nconf.get('setup') && !nconf.get('install') && !nconf.get('upgrade') && !nconf.get('reset') && configExists) {
-	start();
-} else if (nconf.get('setup') || nconf.get('install')) {
+if (nconf.get('setup') || nconf.get('install')) {
 	setup();
 } else if (!configExists) {
 	require('./install/web').install(nconf.get('port'));
@@ -73,6 +71,10 @@ if (!nconf.get('setup') && !nconf.get('install') && !nconf.get('upgrade') && !nc
 	upgrade();
 } else if (nconf.get('reset')) {
 	reset();
+} else if (nconf.get('activate')) {
+	activate();
+} else {
+	start();
 }
 
 function loadConfig() {
@@ -277,6 +279,17 @@ function upgrade() {
 		require('./src/meta').configs.init(function () {
 			require('./src/upgrade').upgrade();
 		});
+	});
+}
+
+function activate() {
+	loadConfig();
+
+	require('./src/database').init(function(err) {
+		var plugin = nconf.get('activate'),
+			db = require('./src/database');
+
+		db.sortedSetAdd('plugins:active', plugin, 1, start);
 	});
 }
 
