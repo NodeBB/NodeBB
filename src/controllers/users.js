@@ -47,7 +47,7 @@ usersController.getOnlineUsers = function(req, res, next) {
 			anonymousUserCount: websockets.getOnlineAnonCount(),
 			defaultGravatar: user.createGravatarURLFromEmail(''),
 			title: '[[pages:users/online]]',
-			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[global:users]]', url: '/users'}, {text: '[[pages:users/online]]'}])
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[global:users]]', url: '/users'}, {text: '[[global:online]]'}])
 		};
 
 		render(req, res, userData, next);
