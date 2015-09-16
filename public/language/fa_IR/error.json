@@ -77,6 +77,8 @@
     "cant-chat-with-yourself": "شما نمی‌توانید با خودتان گفتگو کنید!",
     "chat-restricted": "این کاربر پیام های گفتگوی خود را محدود کرده است . آنها بایدشما را دنبال کنند تا اینکه شما بتوانید به آنها پیامی بفرستید",
     "too-many-messages": "شما پیامهای خیلی زیادی فرستاده اید، لطفا مدتی صبر نمایید",
+    "invalid-chat-message": "Invalid chat message",
+    "chat-message-too-long": "Chat message is too long",
     "reputation-system-disabled": "سیستم اعتبار غیر فعال شده است",
     "downvoting-disabled": "رای منفی غیر فعال شده است",
     "not-enough-reputation-to-downvote": "شما اعتبار کافی برای دادن رای منفی به این دیدگاه را ندارید.",

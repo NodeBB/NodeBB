@@ -77,6 +77,8 @@
     "cant-chat-with-yourself": "Bạn không thể chat với chính bạn!",
     "chat-restricted": "Người dùng này đã bật chế độ hạn chế tin nhắn chat. Bạn phải được anh/cô ta follow thì mới có thể gởi tin nhắn đến họ được.",
     "too-many-messages": "You have sent too many messages, please wait awhile.",
+    "invalid-chat-message": "Invalid chat message",
+    "chat-message-too-long": "Chat message is too long",
     "reputation-system-disabled": "Hệ thống tín nhiệm đã bị vô hiệu hóa.",
     "downvoting-disabled": "Downvote đã bị tắt",
     "not-enough-reputation-to-downvote": "Bạn không có đủ phiếu tín nhiệm để downvote bài này",

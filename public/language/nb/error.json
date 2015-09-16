@@ -77,6 +77,8 @@
     "cant-chat-with-yourself": "Du kan ikke chatte med deg selv!",
     "chat-restricted": "Denne brukeren har begrenset sine chat-meldinger. De må følge deg før du kan chatte med dem",
     "too-many-messages": "Du har sendt for mange meldinger, vennligst vent en stund.",
+    "invalid-chat-message": "Invalid chat message",
+    "chat-message-too-long": "Chat message is too long",
     "reputation-system-disabled": "Ryktesystem er deaktivert.",
     "downvoting-disabled": "Nedstemming av deaktivert",
     "not-enough-reputation-to-downvote": "Du har ikke nok rykte til å nedstemme det innlegget",

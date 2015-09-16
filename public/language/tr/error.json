@@ -77,6 +77,8 @@
     "cant-chat-with-yourself": "Kendinizle sohbet edemezsiniz!",
     "chat-restricted": "Bu kullanıcı sohbet ayarlarını kısıtlamış. Bu kişiye mesaj gönderebilmeniz için sizi takip etmeleri gerekiyor",
     "too-many-messages": "Ardı ardına çok fazla mesaj yolladınız, lütfen biraz bekleyiniz.",
+    "invalid-chat-message": "Invalid chat message",
+    "chat-message-too-long": "Chat message is too long",
     "reputation-system-disabled": "Saygınlık sistemi kapatılmış.",
     "downvoting-disabled": "Aşagı oylama kapatılmış",
     "not-enough-reputation-to-downvote": "Bu iletiyi aşagı oylamak için yeterince saygınlığınız yok.",

@@ -77,6 +77,8 @@
     "cant-chat-with-yourself": "Nem cseveghetsz magaddal!",
     "chat-restricted": "Ez a felhasználó korlátozta a chat beállításait. Csak akkor cseveghetsz vele, miután felvett a követettek közé téged",
     "too-many-messages": "Túl sok üzenetet küldtél, kérlek várj egy picit.",
+    "invalid-chat-message": "Invalid chat message",
+    "chat-message-too-long": "Chat message is too long",
     "reputation-system-disabled": "Hírnév funkció kikapcsolva.",
     "downvoting-disabled": "Leszavazás funkció kikapcsolva",
     "not-enough-reputation-to-downvote": "Nem rendelkezel elég Hírnév ponttal, hogy leszavazhasd ezt a hozzászólást",

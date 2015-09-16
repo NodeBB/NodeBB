@@ -77,6 +77,8 @@
     "cant-chat-with-yourself": "لايمكنك فتح محادثة مع نفسك",
     "chat-restricted": "هذا المستخدم عطل المحادثات الواردة عليه. يجب أن يتبعك حتى تتمكن من فتح محادثة معه.",
     "too-many-messages": "لقد أرسلت الكثير من الرسائل، الرجاء اﻹنتظار قليلاً",
+    "invalid-chat-message": "Invalid chat message",
+    "chat-message-too-long": "Chat message is too long",
     "reputation-system-disabled": "نظام السمعة معطل",
     "downvoting-disabled": "التصويتات السلبية معطلة",
     "not-enough-reputation-to-downvote": "ليس لديك سمعة تكفي لإضافة صوت سلبي لهذا الموضوع",

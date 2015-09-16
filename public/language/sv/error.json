@@ -77,6 +77,8 @@
     "cant-chat-with-yourself": "Du kan inte chatta med dig själv.",
     "chat-restricted": "Denna användaren har begränsat sina chatt-meddelanden. Användaren måste följa dig innan ni kan chatta med varann",
     "too-many-messages": "Du har skickat för många meddelanden, var god vänta",
+    "invalid-chat-message": "Invalid chat message",
+    "chat-message-too-long": "Chat message is too long",
     "reputation-system-disabled": "Ryktessystemet är inaktiverat.",
     "downvoting-disabled": "Nedröstning är inaktiverat",
     "not-enough-reputation-to-downvote": "Du har inte tillräckligt förtroende för att rösta ner det här meddelandet",

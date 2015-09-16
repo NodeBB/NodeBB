@@ -5,7 +5,7 @@
     "chat.no_active": "Você não tem chats ativos.",
     "chat.user_typing": "%1 está digitando ...",
     "chat.user_has_messaged_you": "%1 te enviou uma mensagem.",
-    "chat.see_all": "See all chats",
+    "chat.see_all": "Ver todos os chats",
     "chat.no-messages": "Por favor, escolha um destinatário para visualizar o histórico de conversas",
     "chat.recent-chats": "Conversas Recentes",
     "chat.contacts": "Contatos",
@@ -24,6 +24,6 @@
     "composer.submit_and_lock": "Envie e Tranque",
     "composer.toggle_dropdown": "Alternar Dropdown",
     "bootbox.ok": "OK",
-    "bootbox.cancel": "Cancel",
-    "bootbox.confirm": "Confirm"
+    "bootbox.cancel": "Cancelar",
+    "bootbox.confirm": "Confirmar"
 }
