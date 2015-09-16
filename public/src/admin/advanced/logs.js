@@ -6,7 +6,7 @@ define('admin/advanced/logs', function() {
 
 	Logs.init = function() {
 		var logsEl = $('.logs pre');
-
+		logsEl.scrollTop(logsEl.prop('scrollHeight'));
 		// Affix menu
 		$('.affix').affix();
 
@@ -19,6 +19,7 @@ define('admin/advanced/logs', function() {
 					socket.emit('admin.logs.get', function(err, logs) {
 						if (!err) {
 							logsEl.text(logs);
+							logsEl.scrollTop(logsEl.prop('scrollHeight'));
 						} else {
 							app.alertError(err.message);
 						}
