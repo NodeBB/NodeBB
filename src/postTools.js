@@ -62,7 +62,7 @@ var async = require('async'),
 			},
 			function (canPurge, next) {
 				if (!canPurge) {
-					return callback(new Error('[[error:no-privileges]]'));
+					return next(new Error('[[error:no-privileges]]'));
 				}
 				cache.del(pid);
 				posts.purge(pid, next);
