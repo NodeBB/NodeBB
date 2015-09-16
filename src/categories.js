@@ -303,7 +303,7 @@ var async = require('async'),
 				categoriesData = _categoriesData;
 
 				parentCids = categoriesData.filter(function(category) {
-					return category && category.hasOwnProperty('parentCid') && category.parentCid;
+					return category && category.hasOwnProperty('parentCid') && parseInt(category.parentCid, 10);
 				}).map(function(category) {
 					return parseInt(category.parentCid, 10);
 				});
