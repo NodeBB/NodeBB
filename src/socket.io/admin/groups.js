@@ -15,13 +15,6 @@ Groups.create = function(socket, data, callback) {
 	}, callback);
 };
 
-Groups.get = function(socket, groupName, callback) {
-	groups.get(groupName, {
-		escape: false,
-		uid: socket.uid
-	}, callback);
-};
-
 Groups.join = function(socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));

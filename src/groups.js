@@ -88,7 +88,7 @@ var async = require('async'),
 		db.getSortedSetRevRange(set, start, stop, callback);
 	};
 
-	Groups.getGroupsAndMembers = function(groupNames, callback) {	
+	Groups.getGroupsAndMembers = function(groupNames, callback) {
 		async.parallel({
 			groups: function(next) {
 				Groups.getGroupsData(groupNames, next);
@@ -100,11 +100,12 @@ var async = require('async'),
 			if (err) {
 				return callback(err);
 			}
+
 			data.groups.forEach(function(group, index) {
 				if (!group) {
 					return;
 				}
-				Groups.escapeGroupData(group);
+
 				group.members = data.members[index] || [];
 				group.truncated = group.memberCount > data.members.length;
 			});
@@ -118,7 +119,6 @@ var async = require('async'),
 			return callback(new Error('[[error:invalid-group]]'));
 		}
 
-		options.escape = options.hasOwnProperty('escape') ? options.escape : true;
 		var stop = -1;
 
 		async.parallel({
@@ -174,9 +174,7 @@ var async = require('async'),
 					return callback(err);
 				}
 
-				if (options.escape) {
-					Groups.escapeGroupData(results.base);
-				}
+				Groups.escapeGroupData(results.base);
 
 				results.base.descriptionParsed = descriptionParsed;
 				results.base.userTitleEnabled = results.base.userTitleEnabled ? !!parseInt(results.base.userTitleEnabled, 10) : true;
@@ -401,7 +399,7 @@ var async = require('async'),
 
 			groupData.forEach(function(group) {
 				if (group) {
-					group.userTitle = validator.escape(group.userTitle) || validator.escape(group.name);
+					Groups.escapeGroupData(group);
 					group.userTitleEnabled = group.userTitleEnabled ? parseInt(group.userTitleEnabled, 10) === 1 : true;
 					group.labelColor = group.labelColor || '#000000';
 					group.createtimeISO = utils.toISOString(group.createtime);
@@ -444,7 +442,7 @@ var async = require('async'),
 							}
 						});
 
-						Groups.getGroupsAndMembers(memberOf, next);
+						Groups.getGroupsData(memberOf, next);
 					});
 				}, next);
 			}

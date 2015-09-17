@@ -249,22 +249,40 @@ accountsController.getTopics = function(req, res, next) {
 };
 
 accountsController.getGroups = function(req, res, next) {
-	accountsController.getBaseUser(req.params.userslug, req.uid, function(err, userData) {
-		if (err || !userData) {
+	var userData;
+	var groupsData;
+	async.waterfall([
+		function (next) {
+			accountsController.getBaseUser(req.params.userslug, req.uid, next);
+		},
+		function (_userData, next) {
+			userData = _userData;
+
+			groups.getUserGroups([userData.uid], next);
+		},
+		function (_groupsData, next) {
+			groupsData = _groupsData[0];
+			var groupNames = groupsData.map(function(group) {
+				return group.name;
+			});
+
+			groups.getMemberUsers(groupNames, 0, 3, next);
+		},
+		function (members, next) {
+			groupsData.forEach(function(group, index) {
+				group.members = members[index];
+			});
+			next();
+		}
+	], function(err) {
+		if (err) {
 			return next(err);
 		}
 
-		groups.getUserGroups([userData.uid], function(err, groupsData) {
-			if (err) {
-				return next(err);
-			}
-
-			userData.groups = groupsData[0];
-			userData.groups.forEach(groups.escapeGroupData);
-			userData.title = '[[pages:account/groups, ' + userData.username + ']]';
-			userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[global:header.groups]]'}]);
-			res.render('account/groups', userData);
-		});
+		userData.groups = groupsData;
+		userData.title = '[[pages:account/groups, ' + userData.username + ']]';
+		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[global:header.groups]]'}]);
+		res.render('account/groups', userData);
 	});
 };
 
@@ -375,7 +393,7 @@ accountsController.accountEdit = function(req, res, callback) {
 		}
 
 		userData['username:disableEdit'] = parseInt(meta.config['username:disableEdit'], 10) === 1;
-		
+
 		userData.hasPassword = !!password;
 		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
 		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:edit]]'}]);

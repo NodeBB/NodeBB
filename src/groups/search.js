@@ -31,7 +31,7 @@ module.exports = function(Groups) {
 						return !group.hidden;
 					});
 				}
-				groupsData.forEach(Groups.escapeGroupData);
+
 				Groups.sort(options.sort, groupsData, next);
 			}
 		], callback);

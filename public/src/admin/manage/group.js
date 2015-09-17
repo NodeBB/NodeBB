@@ -86,25 +86,19 @@ define('admin/manage/group', [
 		groupMembersEl.on('click', 'li[data-uid]', function() {
 			var uid = $(this).attr('data-uid');
 
-			socket.emit('admin.groups.get', groupName, function(err, groupObj){
-				if (err) {
-					return app.alertError(err.message);
+			bootbox.confirm('Are you sure you want to remove this user?', function(confirm) {
+				if (!confirm) {
+					return;
 				}
 
-				bootbox.confirm('Are you sure you want to remove this user?', function(confirm) {
-					if (!confirm) {
-						return;
+				socket.emit('admin.groups.leave', {
+					groupName: groupName,
+					uid: uid
+				}, function(err, data) {
+					if (err) {
+						return app.alertError(err.message);
 					}
-
-					socket.emit('admin.groups.leave', {
-						groupName: groupName,
-						uid: uid
-					}, function(err, data) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-						groupMembersEl.find('li[data-uid="' + uid + '"]').remove();
-					});
+					groupMembersEl.find('li[data-uid="' + uid + '"]').remove();
 				});
 			});
 		});
