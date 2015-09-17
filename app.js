@@ -291,7 +291,7 @@ function activate() {
 
 		winston.info('Activating plugin %s', plugin);
 
-		db.sortedSetAdd('plugins:active', plugin, 1, start);
+		db.sortedSetAdd('plugins:active', 0, plugin, start);
 	});
 }
 
