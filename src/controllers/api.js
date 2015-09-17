@@ -114,11 +114,15 @@ apiController.renderWidgets = function(req, res, next) {
 		return res.status(200).json({});
 	}
 
-	widgets.render(req.uid, {
-		template: areas.template,
-		url: areas.url,
-		locations: areas.locations
-	}, function(err, widgets) {
+	widgets.render(req.uid,
+		{
+			template: areas.template,
+			url: areas.url,
+			locations: areas.locations,
+		},
+		req,
+		res,
+		function(err, widgets) {
 		if (err) {
 			return next(err);
 		}
