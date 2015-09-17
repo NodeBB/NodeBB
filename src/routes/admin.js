@@ -40,8 +40,8 @@ function apiRouter(middleware, controllers) {
 function addRoutes(router, middleware, controllers) {
 	var middlewares = [middleware.pluginHooks];
 
-	router.get('/', middlewares, controllers.admin.home);
-	router.get('/general/dashboard', middlewares, controllers.admin.home);
+	router.get('/', middlewares, controllers.admin.dashboard.get);
+	router.get('/general/dashboard', middlewares, controllers.admin.dashboard.get);
 	router.get('/general/languages', middlewares, controllers.admin.languages.get);
 	router.get('/general/sounds', middlewares, controllers.admin.sounds.get);
 	router.get('/general/navigation', middlewares, controllers.admin.navigation.get);
@@ -70,8 +70,8 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/appearance/:term?', middlewares, controllers.admin.appearance.get);
 
 	router.get('/extend/plugins', middlewares, controllers.admin.plugins.get);
-	router.get('/extend/widgets', middlewares, controllers.admin.extend.widgets);
-	router.get('/extend/rewards', middlewares, controllers.admin.extend.rewards);
+	router.get('/extend/widgets', middlewares, controllers.admin.extend.widgets.get);
+	router.get('/extend/rewards', middlewares, controllers.admin.extend.rewards.get);
 
 	router.get('/advanced/database', middlewares, controllers.admin.database.get);
 	router.get('/advanced/events', middlewares, controllers.admin.events.get);
