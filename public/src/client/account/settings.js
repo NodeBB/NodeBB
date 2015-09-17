@@ -68,7 +68,20 @@ define('forum/account/settings', ['forum/account/header'], function(header) {
 
 			css.attr('href', val);
 		});
+
+		$('[data-property="homePageRoute"]').on('change', toggleCustomRoute);
+
+		toggleCustomRoute();
 	};
+
+	function toggleCustomRoute() {
+		$('[data-property="homePageCustom"]').val('');
+		if ($('[data-property="homePageRoute"]').val() === 'custom') {
+			$('#homePageCustom').show();
+		}else{
+			$('#homePageCustom').hide();
+		}
+	}
 
 	return AccountSettings;
 });
