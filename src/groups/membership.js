@@ -44,7 +44,7 @@ module.exports = function(Groups) {
 
 		callback = callback || function() {};
 
-		if (!groupName || !parseInt(uid, 10)) {
+		if (!groupName) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
