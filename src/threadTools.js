@@ -66,7 +66,7 @@ var async = require('async'),
 	}
 
 	ThreadTools.purge = function(tid, uid, callback) {
-		var topic;
+		var cid;
 		async.waterfall([
 			function(next) {
 				topics.exists(tid, next);
@@ -82,23 +82,15 @@ var async = require('async'),
 					return next(new Error('[[error:no-privileges]]'));
 				}
 
-				topics.getTopicFields(tid, ['mainPid', 'cid'], next);
+				topics.getTopicField(tid, 'cid', next);
 			},
-			function (_topic, next) {
-				topic = _topic;
+			function (_cid, next) {
+				cid = _cid;
 
-				batch.processSortedSet('tid:' + tid + ':posts', function(pids, next) {
-					async.eachLimit(pids, 10, posts.purge, next);
-				}, {alwaysStartAt: 0}, next);
+				topics.purgePostsAndTopic(tid, next);
 			},
 			function (next) {
-				posts.purge(topic.mainPid, next);
-			},
-			function (next) {
-				topics.purge(tid, next);
-			},
-			function (next) {
-				next(null, {tid: tid, cid: topic.cid, uid: uid});
+				next(null, {tid: tid, cid: cid, uid: uid});
 			}
 		], callback);
 	};

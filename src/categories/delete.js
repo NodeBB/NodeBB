@@ -4,15 +4,14 @@ var async = require('async'),
 	db = require('../database'),
 	batch = require('../batch'),
 	plugins = require('../plugins'),
-	threadTools = require('../threadTools');
-
+	topics = require('../topics');
 
 module.exports = function(Categories) {
 
 	Categories.purge = function(cid, callback) {
 		batch.processSortedSet('cid:' + cid + ':tids', function(tids, next) {
 			async.eachLimit(tids, 10, function(tid, next) {
-				threadTools.purge(tid, 0, next);
+				topics.purgePostsAndTopic(tid, next);
 			}, next);
 		}, {alwaysStartAt: 0}, function(err) {
 			if (err) {
