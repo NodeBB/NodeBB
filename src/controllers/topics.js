@@ -40,6 +40,11 @@ topicsController.get = function(req, res, callback) {
 			}, next);
 		},
 		function (results, next) {
+
+			if (!results.topic.slug) {
+				return callback();
+			}
+
 			userPrivileges = results.privileges;
 
 			if (!userPrivileges.read || (parseInt(results.topic.deleted, 10) && !userPrivileges.view_deleted)) {

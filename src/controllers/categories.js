@@ -91,9 +91,6 @@ categoriesController.get = function(req, res, callback) {
 	async.waterfall([
 		function(next) {
 			async.parallel({
-				exists: function(next) {
-					categories.exists(cid, next);
-				},
 				categoryData: function(next) {
 					categories.getCategoryFields(cid, ['slug', 'disabled', 'topic_count'], next);
 				},
@@ -108,7 +105,7 @@ categoriesController.get = function(req, res, callback) {
 		function(results, next) {
 			userPrivileges = results.privileges;
 
-			if (!results.exists || (results.categoryData && parseInt(results.categoryData.disabled, 10) === 1)) {
+			if (!results.categoryData.slug || (results.categoryData && parseInt(results.categoryData.disabled, 10) === 1)) {
 				return callback();
 			}
 
