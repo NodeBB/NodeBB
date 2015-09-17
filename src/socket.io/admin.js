@@ -89,9 +89,7 @@ SocketAdmin.themes.set = function(socket, data, callback) {
 	}
 
 	var wrappedCallback = function(err) {
-		meta.themes.set(data, function() {
-			callback();
-		});
+		meta.themes.set(data, callback);
 	};
 	if (data.type === 'bootswatch') {
 		wrappedCallback();
