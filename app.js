@@ -289,6 +289,8 @@ function activate() {
 		var plugin = nconf.get('activate'),
 			db = require('./src/database');
 
+		winston.info('Activating plugin %s', plugin);
+
 		db.sortedSetAdd('plugins:active', plugin, 1, start);
 	});
 }
