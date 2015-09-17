@@ -9,7 +9,6 @@ var async = require('async'),
 	user = require('../user'),
 	posts = require('../posts'),
 	privileges = require('../privileges'),
-	postTools = require('../postTools'),
 	plugins = require('../plugins'),
 	threadTools = require('../threadTools');
 

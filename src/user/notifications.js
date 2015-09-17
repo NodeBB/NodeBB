@@ -11,7 +11,6 @@ var async = require('async'),
 	meta = require('../meta'),
 	notifications = require('../notifications'),
 	posts = require('../posts'),
-	postTools = require('../postTools'),
 	topics = require('../topics'),
 	privileges = require('../privileges'),
 	utils = require('../../public/src/utils');
