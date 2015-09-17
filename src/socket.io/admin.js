@@ -201,10 +201,6 @@ SocketAdmin.settings.clearSitemapCache = function(socket, data, callback) {
 	callback();
 };
 
-SocketAdmin.settings.removeLogo = function(socket, data, callback) {
-	db.setObjectField('config', 'brand:logo', '', callback);
-};
-
 SocketAdmin.email.test = function(socket, data, callback) {
 	if (plugins.hasListeners('action:email.send')) {
 		emailer.send('test', socket.uid, {
