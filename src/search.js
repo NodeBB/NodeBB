@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async'),
+	validator = require('validator'),
 
 	db = require('./database'),
 	posts = require('./posts'),
@@ -21,7 +22,7 @@ search.search = function(data, callback) {
 			return callback(err);
 		}
 
-		result.search_query = query;
+		result.search_query = validator.escape(query);
 		if (searchIn === 'titles' || searchIn === 'titlesposts') {
 			searchIn = 'posts';
 		}
