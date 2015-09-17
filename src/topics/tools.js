@@ -2,22 +2,23 @@
 
 var async = require('async'),
 
-	db = require('./database'),
-	topics = require('./topics'),
-	categories = require('./categories'),
-	posts = require('./posts'),
-	plugins = require('./plugins'),
-	batch = require('./batch'),
-	privileges = require('./privileges');
+	db = require('../database'),
+	categories = require('../categories'),
+	plugins = require('../plugins'),
+	privileges = require('../privileges');
 
 
-(function(ThreadTools) {
+module.exports = function(Topics) {
 
-	ThreadTools.delete = function(tid, uid, callback) {
+	var topicTools = {};
+	Topics.tools = topicTools;
+
+
+	topicTools.delete = function(tid, uid, callback) {
 		toggleDelete(tid, uid, true, callback);
 	};
 
-	ThreadTools.restore = function(tid, uid, callback) {
+	topicTools.restore = function(tid, uid, callback) {
 		toggleDelete(tid, uid, false, callback);
 	};
 
@@ -31,7 +32,7 @@ var async = require('async'),
 				if (!isOwnerOrAdminOrMod) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
-				topics.getTopicFields(tid, ['tid', 'cid', 'uid', 'deleted', 'title', 'mainPid'], next);
+				Topics.getTopicFields(tid, ['tid', 'cid', 'uid', 'deleted', 'title', 'mainPid'], next);
 			},
 			function (_topicData, next) {
 				topicData = _topicData;
@@ -42,7 +43,7 @@ var async = require('async'),
 					return callback(new Error('[[error:topic-already-restored]]'));
 				}
 
-				topics[isDelete ? 'delete' : 'restore'](tid, next);
+				Topics[isDelete ? 'delete' : 'restore'](tid, next);
 			},
 			function (next) {
 				topicData.deleted = isDelete ? 1 : 0;
@@ -65,11 +66,11 @@ var async = require('async'),
 		], callback);
 	}
 
-	ThreadTools.purge = function(tid, uid, callback) {
+	topicTools.purge = function(tid, uid, callback) {
 		var cid;
 		async.waterfall([
 			function(next) {
-				topics.exists(tid, next);
+				Topics.exists(tid, next);
 			},
 			function(exists, next) {
 				if (!exists) {
@@ -82,12 +83,12 @@ var async = require('async'),
 					return next(new Error('[[error:no-privileges]]'));
 				}
 
-				topics.getTopicField(tid, 'cid', next);
+				Topics.getTopicField(tid, 'cid', next);
 			},
 			function (_cid, next) {
 				cid = _cid;
 
-				topics.purgePostsAndTopic(tid, next);
+				Topics.purgePostsAndTopic(tid, next);
 			},
 			function (next) {
 				next(null, {tid: tid, cid: cid, uid: uid});
@@ -95,11 +96,11 @@ var async = require('async'),
 		], callback);
 	};
 
-	ThreadTools.lock = function(tid, uid, callback) {
+	topicTools.lock = function(tid, uid, callback) {
 		toggleLock(tid, uid, true, callback);
 	};
 
-	ThreadTools.unlock = function(tid, uid, callback) {
+	topicTools.unlock = function(tid, uid, callback) {
 		toggleLock(tid, uid, false, callback);
 	};
 
@@ -110,7 +111,7 @@ var async = require('async'),
 
 		async.waterfall([
 			function (next) {
-				topics.getTopicField(tid, 'cid', next);
+				Topics.getTopicField(tid, 'cid', next);
 			},
 			function (_cid, next) {
 				cid = _cid;
@@ -124,7 +125,7 @@ var async = require('async'),
 					return next(new Error('[[error:no-privileges]]'));
 				}
 
-				topics.setTopicField(tid, 'locked', lock ? 1 : 0, next);
+				Topics.setTopicField(tid, 'locked', lock ? 1 : 0, next);
 			},
 			function (next) {
 				var data = {
@@ -141,11 +142,11 @@ var async = require('async'),
 		], callback);
 	}
 
-	ThreadTools.pin = function(tid, uid, callback) {
+	topicTools.pin = function(tid, uid, callback) {
 		togglePin(tid, uid, true, callback);
 	};
 
-	ThreadTools.unpin = function(tid, uid, callback) {
+	topicTools.unpin = function(tid, uid, callback) {
 		togglePin(tid, uid, false, callback);
 	};
 
@@ -153,13 +154,13 @@ var async = require('async'),
 		var topicData;
 		async.waterfall([
 			function (next) {
-				topics.exists(tid, next);
+				Topics.exists(tid, next);
 			},
 			function (exists, next) {
 				if (!exists) {
 					return callback();
 				}
-				topics.getTopicFields(tid, ['cid', 'lastposttime'], next);
+				Topics.getTopicFields(tid, ['cid', 'lastposttime'], next);
 			},
 			function (_topicData, next) {
 				topicData = _topicData;
@@ -170,7 +171,7 @@ var async = require('async'),
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				async.parallel([
-					async.apply(topics.setTopicField, tid, 'pinned', pin ? 1 : 0),
+					async.apply(Topics.setTopicField, tid, 'pinned', pin ? 1 : 0),
 					async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids', pin ? Math.pow(2, 53) : topicData.lastposttime, tid)
 				], next);
 			},
@@ -189,11 +190,11 @@ var async = require('async'),
 		], callback);
 	}
 
-	ThreadTools.move = function(tid, cid, uid, callback) {
+	topicTools.move = function(tid, cid, uid, callback) {
 		var topic;
 		async.waterfall([
 			function(next) {
-				topics.getTopicFields(tid, ['cid', 'lastposttime', 'pinned', 'deleted', 'postcount'], next);
+				Topics.getTopicFields(tid, ['cid', 'lastposttime', 'pinned', 'deleted', 'postcount'], next);
 			},
 			function(topicData, next) {
 				topic = topicData;
@@ -229,7 +230,7 @@ var async = require('async'),
 					categories.incrementCategoryFieldBy(cid, 'topic_count', 1, next);
 				},
 				function (next) {
-					topics.setTopicField(tid, 'cid', cid, next);
+					Topics.setTopicField(tid, 'cid', cid, next);
 				}
 			], function(err) {
 				if (err) {
@@ -247,4 +248,4 @@ var async = require('async'),
 	};
 
 
-}(exports));
+};

@@ -22,6 +22,7 @@ var async = require('async'),
 	require('./posts/summary')(Posts);
 	require('./posts/recent')(Posts);
 	require('./posts/flags')(Posts);
+	require('./posts/tools')(Posts);
 
 	Posts.exists = function(pid, callback) {
 		db.isSortedSetMember('posts:pid', pid, callback);

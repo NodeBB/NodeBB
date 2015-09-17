@@ -11,7 +11,6 @@ var	async = require('async'),
 	meta = require('../meta'),
 	topics = require('../topics'),
 	favourites = require('../favourites'),
-	postTools = require('../postTools'),
 	notifications = require('../notifications'),
 	groups = require('../groups'),
 	user = require('../user'),
@@ -346,28 +345,27 @@ SocketPosts.edit = function(socket, data, callback) {
 };
 
 SocketPosts.delete = function(socket, data, callback) {
-	deleteOrRestore('delete', socket, data, callback);
+	doPostAction('delete', 'event:post_deleted', socket, data, callback);
 };
 
 SocketPosts.restore = function(socket, data, callback) {
-	deleteOrRestore('restore', socket, data, callback);
+	doPostAction('restore', 'event:post_restored', socket, data, callback);
 };
 
-function deleteOrRestore(command, socket, data, callback) {
+function doPostAction(command, eventName, socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	postTools[command](socket.uid, data.pid, function(err, postData) {
+	posts.tools[command](socket.uid, data.pid, function(err, postData) {
 		if (err) {
 			return callback(err);
 		}
 
-		var eventName = command === 'delete' ? 'event:post_deleted' : 'event:post_restored';
 		websockets.in('topic_' + data.tid).emit(eventName, postData);
 
 		events.log({
-			type: command === 'delete' ? 'post-delete' : 'post-restore',
+			type: 'post-' + command,
 			uid: socket.uid,
 			pid: data.pid,
 			ip: socket.ip
@@ -379,7 +377,7 @@ function deleteOrRestore(command, socket, data, callback) {
 
 SocketPosts.purge = function(socket, data, callback) {
 	function purgePost() {
-		postTools.purge(socket.uid, data.pid, function(err) {
+		posts.tools.purge(socket.uid, data.pid, function(err) {
 			if (err) {
 				return callback(err);
 			}

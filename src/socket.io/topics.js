@@ -10,7 +10,6 @@ var nconf = require('nconf'),
 	privileges = require('../privileges'),
 	plugins = require('../plugins'),
 	notifications = require('../notifications'),
-	threadTools = require('../threadTools'),
 	websockets = require('./index'),
 	user = require('../user'),
 	db = require('../database'),
@@ -239,12 +238,12 @@ SocketTopics.doTopicAction = function(action, event, socket, data, callback) {
 		return callback(new Error('[[error:invalid-tid]]'));
 	}
 
-	if (typeof threadTools[action] !== 'function') {
+	if (typeof topics.tools[action] !== 'function') {
 		return callback();
 	}
 
 	async.each(data.tids, function(tid, next) {
-		threadTools[action](tid, socket.uid, function(err, data) {
+		topics.tools[action](tid, socket.uid, function(err, data) {
 			if (err) {
 				return next(err);
 			}
@@ -330,7 +329,7 @@ SocketTopics.move = function(socket, data, callback) {
 			function(_topicData, next) {
 				topicData = _topicData;
 				topicData.tid = tid;
-				threadTools.move(tid, data.cid, socket.uid, next);
+				topics.tools.move(tid, data.cid, socket.uid, next);
 			}
 		], function(err) {
 			if(err) {
@@ -392,7 +391,7 @@ SocketTopics.moveAll = function(socket, data, callback) {
 			}
 
 			async.eachLimit(tids, 10, function(tid, next) {
-				threadTools.move(tid, data.cid, socket.uid, next);
+				topics.tools.move(tid, data.cid, socket.uid, next);
 			}, callback);
 		});
 	});

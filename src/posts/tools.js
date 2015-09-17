@@ -2,27 +2,27 @@
 
 var async = require('async'),
 
-	posts = require('./posts'),
-	privileges = require('./privileges'),
-	cache = require('./posts/cache');
+	privileges = require('../privileges'),
+	cache = require('./cache');
 
-(function(PostTools) {
+module.exports = function(Posts) {
+	Posts.tools = {};
 
-	PostTools.delete = function(uid, pid, callback) {
+	Posts.tools.delete = function(uid, pid, callback) {
 		togglePostDelete(uid, pid, true, callback);
 	};
 
-	PostTools.restore = function(uid, pid, callback) {
+	Posts.tools.restore = function(uid, pid, callback) {
 		togglePostDelete(uid, pid, false, callback);
 	};
 
 	function togglePostDelete(uid, pid, isDelete, callback) {
 		async.waterfall([
 			function(next) {
-				posts.getPostField(pid, 'deleted', next);
+				Posts.getPostField(pid, 'deleted', next);
 			},
 			function(deleted, next) {
-				if(parseInt(deleted, 10) === 1 && isDelete) {
+				if (parseInt(deleted, 10) === 1 && isDelete) {
 					return next(new Error('[[error:post-already-deleted]]'));
 				} else if(parseInt(deleted, 10) !== 1 && !isDelete) {
 					return next(new Error('[[error:post-already-restored]]'));
@@ -43,19 +43,19 @@ var async = require('async'),
 
 			if (isDelete) {
 				cache.del(pid);
-				posts.delete(pid, callback);
+				Posts.delete(pid, callback);
 			} else {
-				posts.restore(pid, function(err, postData) {
+				Posts.restore(pid, function(err, postData) {
 					if (err) {
 						return callback(err);
 					}
-					posts.parsePost(postData, callback);
+					Posts.parsePost(postData, callback);
 				});
 			}
 		});
 	}
 
-	PostTools.purge = function(uid, pid, callback) {
+	Posts.tools.purge = function(uid, pid, callback) {
 		async.waterfall([
 			function (next) {
 				privileges.posts.canPurge(pid, uid, next);
@@ -65,10 +65,10 @@ var async = require('async'),
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				cache.del(pid);
-				posts.purge(pid, next);
+				Posts.purge(pid, next);
 			}
 		], callback);
 	};
 
+};
 
-}(exports));

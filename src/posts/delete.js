@@ -38,7 +38,7 @@ module.exports = function(Posts) {
 						topics.updateTeaser(postData.tid, next);
 					}
 				], function(err) {
-					callback(err, postData);
+					next(err, postData);
 				});
 			}
 		], callback);
