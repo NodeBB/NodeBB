@@ -142,7 +142,10 @@ function onMessage(socket, payload) {
 	}
 
 	if (Namespaces[namespace].before) {
-		Namespaces[namespace].before(socket, eventName, function() {
+		Namespaces[namespace].before(socket, eventName, params, function(err) {
+			if (err) {
+				return callback({message: err.message});
+			}
 			callMethod(methodToCall, socket, params, callback);
 		});
 	} else {

@@ -38,7 +38,7 @@ var	async = require('async'),
 		logs: {}
 	};
 
-SocketAdmin.before = function(socket, method, next) {
+SocketAdmin.before = function(socket, method, data, next) {
 	if (!socket.uid) {
 		return;
 	}
