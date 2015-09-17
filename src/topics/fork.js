@@ -5,12 +5,10 @@ var async = require('async'),
 	winston = require('winston'),
 
 	db = require('../database'),
-
 	user = require('../user'),
 	posts = require('../posts'),
 	privileges = require('../privileges'),
-	plugins = require('../plugins'),
-	threadTools = require('../threadTools');
+	plugins = require('../plugins');
 
 
 module.exports = function(Topics) {
