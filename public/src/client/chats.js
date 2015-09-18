@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, ajaxify, utils, socket, templates */
+/* globals define, config, app, ajaxify, utils, socket, templates */
 
 define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll', 'translator'], function(components, S, sounds, infinitescroll, translator) {
 	var Chats = {
@@ -10,8 +10,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	var newMessage = false;
 
 	Chats.init = function() {
-		var containerEl = $('.expanded-chat ul'),
-			env = utils.findBootstrapEnvironment();
+		var env = utils.findBootstrapEnvironment();
 
 		if (!Chats.initialised) {
 			Chats.addSocketListeners();
@@ -76,11 +75,15 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			}
 		});
 
-		$('.expanded-chat [data-since]').on('click', function() {
+		Chats.addSinceHandler(Chats.getRecipientUid(), $('.expanded-chat .chat-content'), $('.expanded-chat [data-since]'));
+	};
+
+	Chats.addSinceHandler = function(toUid, chatContentEl, sinceEl) {
+		sinceEl.on('click', function() {
 			var since = $(this).attr('data-since');
-			$('.expanded-chat [data-since]').removeClass('selected');
+			sinceEl.removeClass('selected');
 			$(this).addClass('selected');
-			loadChatSince(since);
+			Chats.loadChatSince(toUid, chatContentEl, since);
 			return false;
 		});
 	};
@@ -111,17 +114,20 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		});
 	};
 
-	function loadChatSince(since) {
-		var uid = Chats.getRecipientUid();
-		if (!uid) {
+	Chats.loadChatSince = function(toUid, chatContentEl, since) {
+		if (!toUid) {
 			return;
 		}
-		socket.emit('modules.chats.get', {touid: uid, since: since}, function(err, messages) {
-			var chatContent = $('.expanded-chat .chat-content');
-			chatContent.find('.chat-message').remove();
-			Chats.parseMessage(messages, onMessagesParsed);
+		socket.emit('modules.chats.get', {touid: toUid, since: since}, function(err, messages) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			chatContentEl.find('.chat-message').remove();
+
+			Chats.appendChatMessage(chatContentEl, messages);
 		});
-	}
+	};
 
 	Chats.addGlobalEventListeners = function() {
 		$(window).on('resize', Chats.resizeMainWindow);
@@ -136,26 +142,34 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		});
 	};
 
-	function onMessagesParsed(html) {
-		var newMessage = $(html),
-			chatContainer = $('.chat-content');
-		newMessage.appendTo(chatContainer);
+	Chats.appendChatMessage = function(chatContentEl, data) {
+
+		var lastSpeaker = parseInt(chatContentEl.find('.chat-message').last().attr('data-uid'), 10);
+		if (!Array.isArray(data)) {
+			data.newSet = lastSpeaker !== data.fromuid;
+		}
+
+		Chats.parseMessage(data, function(html) {
+			onMessagesParsed(chatContentEl, html);
+		});
+	};
+
+	function onMessagesParsed(chatContentEl, html) {
+		var newMessage = $(html);
+
+		newMessage.appendTo(chatContentEl);
 		newMessage.find('.timeago').timeago();
 		newMessage.find('img:not(.not-responsive)').addClass('img-responsive');
-		Chats.scrollToBottom($('.expanded-chat .chat-content'));
+		Chats.scrollToBottom(chatContentEl);
 	}
 
 	Chats.addSocketListeners = function() {
 		socket.on('event:chats.receive', function(data) {
-			var typingNotifEl = $('.user-typing'),
-				containerEl = $('.expanded-chat ul'),
-				lastSpeaker = parseInt(containerEl.find('.chat-message').last().attr('data-uid'), 10);
-
 			if (Chats.isCurrentChat(data.withUid)) {
 				newMessage = data.self === 0;
 				data.message.self = data.self;
-				data.message.newSet = lastSpeaker !== data.message.fromuid;
-				Chats.parseMessage(data.message, onMessagesParsed);
+
+				Chats.appendChatMessage($('.expanded-chat .chat-content'), data.message);
 			} else {
 				var contactEl = $('[component="chat/recent"] li[data-uid="' + data.withUid + '"]'),
 					userKey = data.withUid === data.message.fromuid ? 'fromUser' : 'toUser';
@@ -208,6 +222,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 				fromTop = messagesList.offset().top;
 
 			messagesList.height($(window).height() - (fromTop + inputHeight + (margin * 4)));
+			components.get('chat/recent').height($('.expanded-chat').height());
 		}
 
 		Chats.setActive();

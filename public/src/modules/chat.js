@@ -18,7 +18,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 				return;
 			}
 
-			module.loadChats(chatsListEl);
+			module.loadChatsDropdown(chatsListEl);
 		});
 
 		socket.on('event:chats.receive', function(data) {
@@ -36,7 +36,8 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 			newMessage = data.self === 0;
 			if (module.modalExists(data.withUid)) {
 				var modal = module.getModal(data.withUid);
-				module.appendChatMessage(modal, data.message);
+
+				Chats.appendChatMessage(modal.find('.chat-content'), data.message);
 
 				if (modal.is(":visible")) {
 					taskbar.updateActive(modal.attr('UUID'));
@@ -130,7 +131,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		});
 	};
 
-	module.loadChats = function(chatsListEl) {
+	module.loadChatsDropdown = function(chatsListEl) {
 		var dropdownEl;
 
 		socket.emit('modules.chats.getRecentChats', {after: 0}, function(err, chats) {
@@ -138,7 +139,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 				return app.alertError(err.message);
 			}
 			chats = chats.users;
-			var	userObj;
 
 			chatsListEl.empty();
 
@@ -294,19 +294,13 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					}
 				});
 
-				chatModal.find('[data-since]').on('click', function() {
-					var since = $(this).attr('data-since');
-					chatModal.find('[data-since]').removeClass('selected');
-					$(this).addClass('selected');
-					loadChatSince(chatModal, since);
-					return false;
-				});
+				Chats.addSinceHandler(chatModal.attr('touid'), chatModal.find('.chat-content'), chatModal.find('[data-since]'));
 
 				Chats.addSendHandlers(chatModal.attr('touid'), chatModal.find('#chat-message-input'), chatModal.find('#chat-message-send-btn'));
 
-				getChatMessages(chatModal, function() {
-					checkStatus(chatModal);
-				});
+				Chats.loadChatSince(chatModal.attr('touid'), chatModal.find('.chat-content'), 'recent')
+
+				checkStatus(chatModal);
 
 				module.canMessage(data.touid, function(err) {
 					if (err) {
@@ -419,41 +413,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		clearInterval(chatModal.attr('intervalId'));
 		chatModal.attr('intervalId', 0);
 		Chats.notifyTyping(chatModal.attr('touid'), false);
-	};
-
-	function getChatMessages(chatModal, callback) {
-		socket.emit('modules.chats.get', {touid: chatModal.attr('touid'), since: 'recent'}, function(err, messages) {
-			module.appendChatMessage(chatModal, messages, callback);
-		});
-	}
-
-	function loadChatSince(chatModal, since, callback) {
-		socket.emit('modules.chats.get', {touid: chatModal.attr('touid'), since: since}, function(err, messages) {
-			var chatContent = chatModal.find('.chat-content');
-			chatContent.find('.chat-message').remove();
-			module.appendChatMessage(chatModal, messages, callback);
-		});
-	}
-
-	module.appendChatMessage = function(chatModal, data, done) {
-		var chatContent = chatModal.find('.chat-content'),
-			lastSpeaker = parseInt(chatContent.find('.chat-message').last().attr('data-uid'), 10);
-
-		if (!Array.isArray(data)) {
-			data.newSet = lastSpeaker !== data.fromuid;
-		}
-
-		Chats.parseMessage(data, function(html) {
-			var message = $(html);
-			message.appendTo(chatContent);
-			message.find('img:not(.not-responsive)').addClass('img-responsive');
-			message.find('.timeago').timeago();
-			Chats.scrollToBottom(chatContent);
-
-			if (typeof done === 'function') {
-				done();
-			}
-		});
 	};
 
 	module.toggleNew = taskbar.toggleNew;
