@@ -17,7 +17,7 @@ image.resizeImage = function(path, extension, width, height, callback) {
 			callback(err);
 		});
 	} else {
-		lwip.open(path, function(err, image) {
+		tryOpen(path, function(err, image) {
 			if (err) {
 				return callback(err);
 			}
@@ -41,7 +41,7 @@ image.normalise = function(path, extension, callback) {
 			callback(err);
 		});
 	} else {
-		lwip.open(path, function(err, image) {
+		tryOpen(path, function(err, image) {
 			if (err) {
 				return callback(err);
 			}
@@ -49,6 +49,14 @@ image.normalise = function(path, extension, callback) {
 		});
 	}
 };
+
+function tryOpen(path, callback) {
+	try {
+		lwip.open(path, callback);
+	} catch (err) {
+		callback(err);
+	}
+}
 
 image.convertImageToBase64 = function(path, callback) {
 	fs.readFile(path, function(err, data) {
