@@ -298,7 +298,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 				Chats.addSendHandlers(chatModal.attr('touid'), chatModal.find('#chat-message-input'), chatModal.find('#chat-message-send-btn'));
 
-				Chats.loadChatSince(chatModal.attr('touid'), chatModal.find('.chat-content'), 'recent')
+				Chats.loadChatSince(chatModal.attr('touid'), chatModal.find('.chat-content'), 'recent');
 
 				checkStatus(chatModal);
 
