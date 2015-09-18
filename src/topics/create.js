@@ -95,13 +95,13 @@ module.exports = function(Topics) {
 
 		async.waterfall([
 			function(next) {
-				checkTitleLength(title, next);
+				check(title, meta.config.minimumTitleLength, meta.config.maximumTitleLength, 'title-too-short', 'title-too-long', next);
 			},
 			function(next) {
-				checkTagsLength(data.tags, next);
+				check(data.tags, meta.config.minimumTagsPerTopic, meta.config.maximumTagsPerTopic, 'not-enough-tags', 'too-many-tags', next);
 			},
 			function(next) {
-				checkContentLength(data.content, next);
+				check(data.content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long', next);
 			},
 			function(next) {
 				categories.exists(data.cid, next);
@@ -231,7 +231,7 @@ module.exports = function(Topics) {
 					content = content.trim();
 				}
 
-				checkContentLength(content, next);
+				check(content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long', next);
 			},
 			function(next) {
 				posts.create({uid: uid, tid: tid, handle: data.handle, content: content, toPid: data.toPid, timestamp: data.timestamp, ip: data.req ? data.req.ip : null}, next);
@@ -310,29 +310,11 @@ module.exports = function(Topics) {
 		], callback);
 	}
 
-	function checkTitleLength(title, callback) {
-		if (!title || title.length < parseInt(meta.config.minimumTitleLength, 10)) {
-			return callback(new Error('[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]'));
-		} else if (title.length > parseInt(meta.config.maximumTitleLength, 10)) {
-			return callback(new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]'));
-		}
-		callback();
-	}
-
-	function checkTagsLength(tags, callback) {
-		if (!tags || tags.length < parseInt(meta.config.minimumTagsPerTopic, 10)) {
-			return callback(new Error('[[error:not-enough-tags, ' + meta.config.minimumTagsPerTopic + ']]'));
-		} else if (tags.length > parseInt(meta.config.maximumTagsPerTopic, 10)) {
-			return callback(new Error('[[error:too-many-tags, ' + meta.config.maximumTagsPerTopic + ']]'));
-		}
-		callback();
-	}
-
-	function checkContentLength(content, callback) {
-		if (!content || content.length < parseInt(meta.config.miminumPostLength, 10)) {
-			return callback(new Error('[[error:content-too-short, '  + meta.config.minimumPostLength + ']]'));
-		} else if (content.length > parseInt(meta.config.maximumPostLength, 10)) {
-			return callback(new Error('[[error:content-too-long, '  + meta.config.maximumPostLength + ']]'));
+	function check(item, min, max, minError, maxError, callback) {
+		if (!item || item.length < parseInt(min, 10)) {
+			return callback(new Error('[[error:'+ minError + ', ' + min + ']]'));
+		} else if (item.length > parseInt(max, 10)) {
+			return callback(new Error('[[error:'+ maxError + ', ' + max + ']]'));
 		}
 		callback();
 	}
