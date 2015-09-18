@@ -2,16 +2,13 @@
 
 var winston = require('winston');
 var nconf = require('nconf');
+var db = require('./database');
 
 var Reset = {};
 
 
-module.exports = Reset;
-
 Reset.reset = function() {
-	loadConfig();
-
-	require('./src/database').init(function(err) {
+	db.init(function(err) {
 		if (err) {
 			winston.error(err.message);
 			process.exit();
@@ -56,7 +53,7 @@ Reset.reset = function() {
 };
 
 function resetSettings(callback) {
-	var meta = require('./src/meta');
+	var meta = require('./meta');
 	meta.configs.set('allowLocalLogin', 1, function(err) {
 		winston.info('[reset] Settings reset to default');
 		if (typeof callback === 'function') {
@@ -68,7 +65,7 @@ function resetSettings(callback) {
 }
 
 function resetThemes(callback) {
-	var meta = require('./src/meta');
+	var meta = require('./meta');
 
 	meta.themes.set({
 		type: 'local',
@@ -84,7 +81,6 @@ function resetThemes(callback) {
 }
 
 function resetPlugin(pluginId) {
-	var db = require('./src/database');
 	db.sortedSetRemove('plugins:active', pluginId, function(err) {
 		if (err) {
 			winston.error('[reset] Could not disable plugin: %s encountered error %s', pluginId, err.message);
@@ -97,7 +93,6 @@ function resetPlugin(pluginId) {
 }
 
 function resetPlugins(callback) {
-	var db = require('./src/database');
 	db.delete('plugins:active', function(err) {
 		winston.info('[reset] All Plugins De-activated');
 		if (typeof callback === 'function') {
@@ -118,3 +113,5 @@ function resetWidgets(callback) {
 		}
 	});
 }
+
+module.exports = Reset;
