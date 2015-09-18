@@ -302,7 +302,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					return false;
 				});
 
-				addSendHandler(chatModal);
+				Chats.addSendHandlers(chatModal.attr('touid'), chatModal.find('#chat-message-input'), chatModal.find('#chat-message-send-btn'));
 
 				getChatMessages(chatModal, function() {
 					checkStatus(chatModal);
@@ -432,32 +432,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 			var chatContent = chatModal.find('.chat-content');
 			chatContent.find('.chat-message').remove();
 			module.appendChatMessage(chatModal, messages, callback);
-		});
-	}
-
-	function addSendHandler(chatModal) {
-		var input = chatModal.find('#chat-message-input');
-		input.off('keypress').on('keypress', function(e) {
-			if (e.which === 13 && !e.shiftKey) {
-				Chats.sendMessage(chatModal.attr('touid'), input);
-				return false;
-			}
-		});
-
-		input.off('keyup').on('keyup', function() {
-			var val = !!$(this).val();
-			if ((val && $(this).attr('data-typing') === 'true') || (!val && $(this).attr('data-typing') === 'false')) {
-				return;
-			}
-
-			Chats.notifyTyping(chatModal.attr('touid'), val);
-			$(this).attr('data-typing', val);
-		});
-
-		chatModal.find('#chat-message-send-btn').off('click').on('click', function(e){
-			Chats.sendMessage(chatModal.attr('touid'), input);
-			input.focus();
-			return false;
 		});
 	}
 

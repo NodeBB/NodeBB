@@ -38,10 +38,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	};
 
 	Chats.addEventListeners = function() {
-		var inputEl = $('.chat-input'),
-			sendEl = $('.expanded-chat button[data-action="send"]'),
-			popoutEl = $('[data-action="pop-out"]');
-
 		$('.chats-list').on('click', 'li', function(e) {
 			var env = utils.findBootstrapEnvironment();
 			if (env === 'xs' || env === 'sm') {
@@ -51,29 +47,9 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			}
 		});
 
-		inputEl.on('keypress', function(e) {
-			if(e.which === 13 && !e.shiftKey) {
-				Chats.sendMessage(Chats.getRecipientUid(), inputEl);
-				return false;
-			}
-		});
+		Chats.addSendHandlers(Chats.getRecipientUid(), $('.chat-input'), $('.expanded-chat button[data-action="send"]'));
 
-		inputEl.on('keyup', function() {
-			var val = !!$(this).val();
-			if ((val && $(this).attr('data-typing') === 'true') || (!val && $(this).attr('data-typing') === 'false')) {
-				return;
-			}
-
-			Chats.notifyTyping(Chats.getRecipientUid(), val);
-			$(this).attr('data-typing', val);
-		});
-
-		sendEl.on('click', function(e) {
-			Chats.sendMessage(Chats.getRecipientUid(), inputEl);
-			return false;
-		});
-
-		popoutEl.on('click', function() {
+		$('[data-action="pop-out"]').on('click', function() {
 			var	username = $('.expanded-chat').attr('data-username'),
 				uid = Chats.getRecipientUid(),
 				text = components.get('chat/input').val();
@@ -105,6 +81,32 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			$('.expanded-chat [data-since]').removeClass('selected');
 			$(this).addClass('selected');
 			loadChatSince(since);
+			return false;
+		});
+	};
+
+	Chats.addSendHandlers = function(toUid, inputEl, sendEl) {
+
+		inputEl.off('keypress').on('keypress', function(e) {
+			if (e.which === 13 && !e.shiftKey) {
+				Chats.sendMessage(toUid, inputEl);
+				return false;
+			}
+		});
+
+		inputEl.off('keyup').on('keyup', function() {
+			var val = !!$(this).val();
+			if ((val && $(this).attr('data-typing') === 'true') || (!val && $(this).attr('data-typing') === 'false')) {
+				return;
+			}
+
+			Chats.notifyTyping(toUid, val);
+			$(this).attr('data-typing', val);
+		});
+
+		sendEl.off('click').on('click', function(e) {
+			Chats.sendMessage(toUid, inputEl);
+			inputEl.focus();
 			return false;
 		});
 	};
