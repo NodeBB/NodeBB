@@ -72,10 +72,11 @@ file.allowedExtensions = function() {
 		extension = extension.trim();
 		return extension.replace(/\./g, '');
 	});
+
 	if (allowedExtensions.indexOf('jpg') !== -1 && allowedExtensions.indexOf('jpeg') === -1) {
 		allowedExtensions.push('jpeg');
 	}
-	console.log(allowedExtensions)
+
 	return allowedExtensions;
 };
 
