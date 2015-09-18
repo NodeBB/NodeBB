@@ -65,7 +65,14 @@ module.exports = function(Categories) {
 					},
 					function(next) {
 						async.each(results.children, function(cid, next) {
-							db.setObjectField('category:' + cid, 'parentCid', 0, next);
+							async.parallel([
+								function(next) {
+									db.setObjectField('category:' + cid, 'parentCid', 0, next);
+								},
+								function(next) {
+									db.sortedSetAdd('cid:0:children', cid, cid, next);
+								}
+							], next);
 						}, next);
 					}
 				], next);
