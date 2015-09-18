@@ -61,6 +61,17 @@ function isOwner(next) {
 	};
 }
 
+function isInvited(next) {
+	return function (socket, data, callback) {
+		groups.isInvited(socket.uid, data.groupName, function(err, invited) {
+			if (err || !invited) {
+				return callback(err || new Error('[[error:not-invited]]'));
+			}
+			next(socket, data, callback);
+		});
+	};
+}
+
 SocketGroups.grant = isOwner(function(socket, data, callback) {
 	groups.ownership.grant(data.toUid, data.groupName, callback);
 });
@@ -106,25 +117,13 @@ SocketGroups.rescindInvite = isOwner(function(socket, data, callback) {
 	groups.rejectMembership(data.groupName, data.toUid, callback);
 });
 
-SocketGroups.acceptInvite = function(socket, data, callback) {
-	groups.isInvited(socket.uid, data.groupName, function(err, invited) {
-		if (err || !invited) {
-			return callback(err || new Error('[[error:no-privileges]]'));
-		}
+SocketGroups.acceptInvite = isInvited(function(socket, data, callback) {
+	groups.acceptMembership(data.groupName, socket.uid, callback);
+});
 
-		groups.acceptMembership(data.groupName, socket.uid, callback);
-	});
-};
-
-SocketGroups.rejectInvite = function(socket, data, callback) {
-	groups.isInvited(socket.uid, data.groupName, function(err, invited) {
-		if (err || !invited) {
-			return callback(err || new Error('[[error:no-privileges]]'));
-		}
-
-		groups.rejectMembership(data.groupName, socket.uid, callback);
-	});
-};
+SocketGroups.rejectInvite = isInvited(function(socket, data, callback) {
+	groups.rejectMembership(data.groupName, socket.uid, callback);
+});
 
 SocketGroups.update = isOwner(function(socket, data, callback) {
 	groups.update(data.groupName, data.values, callback);
