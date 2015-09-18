@@ -1,5 +1,9 @@
 'use strict';
 
+/* global bootbox, translator */
+
+var overrides = overrides || {};
+
 if ('undefined' !== typeof window) {
 
 	(function ($, undefined) {
@@ -101,5 +105,49 @@ if ('undefined' !== typeof window) {
 				}
 			});
 	})();
+
+	overrides.overrideBootbox = function () {
+		var dialog = bootbox.dialog,
+			prompt = bootbox.prompt,
+			confirm = bootbox.confirm;
+
+		function translate(modal) {
+			var footer = modal.find('.modal-footer');
+			translator.translate(footer.html(), function(html) {
+				footer.html(html);
+			});
+		}
+
+		bootbox.dialog = function() {
+			var modal = $(dialog.apply(this, arguments)[0]);
+			translate(modal);
+			return modal;
+		};
+
+		bootbox.prompt = function() {
+			var modal = $(prompt.apply(this, arguments)[0]);
+			translate(modal);
+			return modal;
+		};
+
+		bootbox.confirm = function() {
+			var modal = $(confirm.apply(this, arguments)[0]);
+			translate(modal);
+			return modal;
+		};
+	};
+
+	overrides.overrideTimeago = function() {
+		var timeagoFn = $.fn.timeago;
+		$.fn.timeago = function() {
+			var els = timeagoFn.apply(this, arguments);
+
+			if (els) {
+				els.each(function() {
+					$(this).attr('title', (new Date($(this).attr('title'))).toString());
+				});
+			}
+		};
+	};
 
 }

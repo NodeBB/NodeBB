@@ -1,178 +1,86 @@
 "use strict";
 /*global io, templates, ajaxify, utils, bootbox, RELATIVE_PATH, config, Visibility*/
 
-var	socket,
-	app = app || {};
+var app = app || {};
 
 app.isFocused = true;
-app.isConnected = false;
 app.currentRoom = null;
 app.widgets = {};
 app.cacheBuster = null;
 
 (function () {
-	var showWelcomeMessage = false;
-	var reconnecting = false;
+	var showWelcomeMessage = !!utils.params().loggedin;
 
-	function socketIOConnect() {
-		var ioParams = {
-			reconnectionAttempts: config.maxReconnectionAttempts,
-			reconnectionDelay: config.reconnectionDelay,
-			transports: config.socketioTransports,
-			path: config.relative_path + '/socket.io'
-		};
+	templates.setGlobal('config', config);
 
-		socket = io(config.websocketAddress, ioParams);
-		reconnecting = false;
+	app.cacheBuster = config['cache-buster'];
 
-		socket.on('event:connect', function () {
-			app.showLoginMessage();
-			app.replaceSelfLinks();
-			$(window).trigger('action:connected');
-			app.isConnected = true;
-		});
+	require(['csrf'], function(csrf) {
+		csrf.set(config.csrf_token);
+	});
 
-		socket.on('connect', onSocketConnect);
+	bootbox.setDefaults({
+		locale: config.userLang
+	});
 
-		socket.on('event:disconnect', function() {
-			$(window).trigger('action:disconnected');
-			app.isConnected = false;
-			socket.connect();
-		});
+	app.load = function() {
+		$('document').ready(function () {
+			var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search, true);
+			ajaxify.end(url, app.template);
 
-		socket.on('reconnecting', function (attempt) {
-			reconnecting = true;
-			var reconnectEl = $('#reconnect');
+			handleStatusChange();
 
-			if (!reconnectEl.hasClass('active')) {
-				reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
+			if (config.searchEnabled) {
+				app.handleSearch();
 			}
 
-			reconnectEl.addClass('active').removeClass("hide").tooltip({
-				placement: 'bottom'
-			});
-		});
+			handleNewTopic();
 
-		socket.on('event:banned', function() {
-			app.alert({
-				title: '[[global:alert.banned]]',
-				message: '[[global:alert.banned.message]]',
-				type: 'danger',
-				timeout: 1000
+			require(['components'], function(components) {
+				components.get('user/logout').on('click', app.logout);
 			});
 
-			setTimeout(function() {
-				window.location.href = config.relative_path + '/';
-			}, 1000);
-		});
-
-		socket.on('event:logout', app.logout);
-
-		socket.on('event:alert', function(data) {
-			app.alert(data);
-		});
-
-		socket.on('reconnect_failed', function() {
-			// Wait ten times the reconnection delay and then start over
-			setTimeout(socket.connect.bind(socket), parseInt(config.reconnectionDelay, 10) * 10);
-		});
-	}
-
-	function onSocketConnect(data) {
-		if (reconnecting) {
-			var reconnectEl = $('#reconnect');
-
-			reconnectEl.tooltip('destroy');
-			reconnectEl.html('<i class="fa fa-check"></i>');
-			reconnecting = false;
-
-			// Rejoin room that was left when we disconnected
-			var	url_parts = window.location.pathname.slice(RELATIVE_PATH.length).split('/').slice(1);
-			var room;
-
-			switch(url_parts[0]) {
-				case 'user':
-					room = 'user/' + (ajaxify.data ? ajaxify.data.theirid : 0);
-				break;
-				case 'topic':
-					room = 'topic_' + url_parts[1];
-				break;
-				case 'category':
-					room = 'category_' + url_parts[1];
-				break;
-				case 'recent':
-					room = 'recent_topics';
-				break;
-				case 'unread':
-					room = 'unread_topics';
-				break;
-				case 'popular':
-					room = 'popular_topics';
-				break;
-				case 'admin':
-					room = 'admin';
-				break;
-				case 'categories':
-					room = 'categories';
-				break;
-			}
-			app.currentRoom = '';
-			app.enterRoom(room);
-
-			socket.emit('meta.reconnected');
-
-			app.isConnected = true;
-			$(window).trigger('action:reconnected');
-
-			setTimeout(function() {
-				reconnectEl.removeClass('active').addClass('hide');
-			}, 3000);
-		}
-	}
-
-	function overrideBootbox() {
-		var dialog = bootbox.dialog,
-			prompt = bootbox.prompt,
-			confirm = bootbox.confirm;
-
-		function translate(modal) {
-			var footer = modal.find('.modal-footer');
-			translator.translate(footer.html(), function(html) {
-				footer.html(html);
+			Visibility.change(function(e, state){
+				if (state === 'visible') {
+					app.isFocused = true;
+					app.alternatingTitle('');
+				} else if (state === 'hidden') {
+					app.isFocused = false;
+				}
 			});
-		}
 
-		bootbox.dialog = function() {
-			var modal = $(dialog.apply(this, arguments)[0]);
-			translate(modal);
-			return modal;
-		};
+			overrides.overrideBootbox();
+			overrides.overrideTimeago();
+			createHeaderTooltips();
+			app.showEmailConfirmWarning();
 
-		bootbox.prompt = function() {
-			var modal = $(prompt.apply(this, arguments)[0]);
-			translate(modal);
-			return modal;
-		};
+			socket.removeAllListeners('event:nodebb.ready');
+			socket.on('event:nodebb.ready', function(data) {
+				if (!app.cacheBusters || app.cacheBusters['cache-buster'] !== data['cache-buster']) {
+					app.cacheBusters = data;
 
-		bootbox.confirm = function() {
-			var modal = $(confirm.apply(this, arguments)[0]);
-			translate(modal);
-			return modal;
-		};
-	}
+					app.alert({
+						alert_id: 'forum_updated',
+						title: '[[global:updated.title]]',
+						message: '[[global:updated.message]]',
+						clickfn: function() {
+							window.location.reload();
+						},
+						type: 'warning'
+					});
+				}
+			});
 
-	function overrideTimeago() {
-		var timeagoFn = $.fn.timeago;
-		$.fn.timeago = function() {
-			var els = timeagoFn.apply(this, arguments);
+			require(['taskbar', 'helpers'], function(taskbar, helpers) {
+				taskbar.init();
 
-			if (els) {
-				els.each(function() {
-					$(this).attr('title', (new Date($(this).attr('title'))).toString());
-				});
-			}
-		};
-	}
+				// templates.js helpers
+				helpers.register();
+
+				$(window).trigger('action:app.load');
+			});
+		});
+	};
 
 	app.logout = function() {
 		require(['csrf'], function(csrf) {
@@ -245,14 +153,7 @@ app.cacheBuster = null;
 		var path = window.location.pathname;
 		$('#main-nav li').removeClass('active');
 		if (path) {
-			$('#main-nav li a').each(function () {
-				var href = $(this).attr('href');
-
-				if (href && path.startsWith(href)) {
-					$(this.parentNode).addClass('active');
-				 	return false;
-				}
-			});
+			$('#main-nav li').removeClass('active').find('a[href="' + path + '"]').parent().addClass('active');
 		}
 	}
 
@@ -535,65 +436,6 @@ app.cacheBuster = null;
 		});
 	}
 
-	app.load = function() {
-		$('document').ready(function () {
-			var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search, true);
-			ajaxify.end(url, app.template);
-
-			handleStatusChange();
-
-			if (config.searchEnabled) {
-				app.handleSearch();
-			}
-
-			handleNewTopic();
-
-			require(['components'], function(components) {
-				components.get('user/logout').on('click', app.logout);
-			});
-
-			Visibility.change(function(e, state){
-				if (state === 'visible') {
-					app.isFocused = true;
-					app.alternatingTitle('');
-				} else if (state === 'hidden') {
-					app.isFocused = false;
-				}
-			});
-
-			overrideBootbox();
-			overrideTimeago();
-			createHeaderTooltips();
-			app.showEmailConfirmWarning();
-
-			socket.removeAllListeners('event:nodebb.ready');
-			socket.on('event:nodebb.ready', function(data) {
-				if (!app.cacheBusters || app.cacheBusters['cache-buster'] !== data['cache-buster']) {
-					app.cacheBusters = data;
-
-					app.alert({
-						alert_id: 'forum_updated',
-						title: '[[global:updated.title]]',
-						message: '[[global:updated.message]]',
-						clickfn: function() {
-							window.location.reload();
-						},
-						type: 'warning'
-					});
-				}
-			});
-
-			require(['taskbar', 'helpers'], function(taskbar, helpers) {
-				taskbar.init();
-
-				// templates.js helpers
-				helpers.register();
-
-				$(window).trigger('action:app.load');
-			});
-		});
-	};
-
 	app.loadJQueryUI = function(callback) {
 		if (typeof $().autocomplete === 'function') {
 			return callback();
@@ -636,21 +478,5 @@ app.cacheBuster = null;
 		}
 	};
 
-	showWelcomeMessage = window.location.href.indexOf('loggedin') !== -1;
 
-	socketIOConnect();
-
-	templates.setGlobal('config', config);
-
-	app.cacheBuster = config['cache-buster'];
-
-	require(['csrf'], function(csrf) {
-		csrf.set(config.csrf_token);
-	});
-
-	bootbox.setDefaults({
-		locale: config.userLang
-	});
-
-	app.alternatingTitle('');
 }());
