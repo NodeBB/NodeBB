@@ -356,6 +356,7 @@ var async = require('async'),
 				Categories.getCategoriesData(children, next);
 			},
 			function (childrenData, next) {
+				childrenData = childrenData.filter(Boolean);
 				category.children = childrenData;
 				async.each(category.children, function(child, next) {
 					getChildrenRecursive(child, uid, next);
