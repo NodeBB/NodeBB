@@ -1,5 +1,5 @@
 "use strict";
-/*global io, templates, ajaxify, utils, bootbox, RELATIVE_PATH, config, Visibility*/
+/*global io, templates, ajaxify, utils, bootbox, overrides, socket, config, Visibility*/
 
 var app = app || {};
 
@@ -84,13 +84,13 @@ app.cacheBuster = null;
 
 	app.logout = function() {
 		require(['csrf'], function(csrf) {
-			$.ajax(RELATIVE_PATH + '/logout', {
+			$.ajax(config.relative_path + '/logout', {
 				type: 'POST',
 				headers: {
 					'x-csrf-token': csrf.get()
 				},
 				success: function() {
-					window.location.href = RELATIVE_PATH + '/';
+					window.location.href = config.relative_path + '/';
 				}
 			});
 		});
@@ -441,7 +441,7 @@ app.cacheBuster = null;
 			return callback();
 		}
 
-		$.getScript(RELATIVE_PATH + '/vendor/jquery/js/jquery-ui-1.10.4.custom.js', callback);
+		$.getScript(config.relative_path + '/vendor/jquery/js/jquery-ui-1.10.4.custom.js', callback);
 	};
 
 	app.showEmailConfirmWarning = function(err) {
