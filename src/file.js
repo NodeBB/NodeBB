@@ -46,10 +46,6 @@ file.isFileTypeAllowed = function(path, allowedExtensions, callback) {
 		return callback();
 	}
 
-	allowedExtensions = allowedExtensions.filter(Boolean).map(function(extension) {
-		return extension.trim();
-	});
-
 	var magic = new Magic(mmmagic.MAGIC_MIME_TYPE);
 	magic.detectFile(path, function(err, mimeType) {
 		if (err) {
@@ -72,6 +68,14 @@ file.allowedExtensions = function() {
 		return [];
 	}
 	allowedExtensions = allowedExtensions.split(',');
+	allowedExtensions = allowedExtensions.filter(Boolean).map(function(extension) {
+		extension = extension.trim();
+		return extension.replace(/\./g, '');
+	});
+	if (allowedExtensions.indexOf('jpg') !== -1 && allowedExtensions.indexOf('jpeg') === -1) {
+		allowedExtensions.push('jpeg');
+	}
+	console.log(allowedExtensions)
 	return allowedExtensions;
 };
 
