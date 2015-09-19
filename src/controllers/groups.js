@@ -95,9 +95,9 @@ groupsController.details = function(req, res, callback) {
 			results.title = '[[pages:group, ' + results.group.displayName + ']]';
 			results.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:groups]]', url: '/groups' }, {text: results.group.displayName}]);
 			
-			plugins.fireHook('filter:groups.build', { req: req, res: res, templateData: results }, function (err, results) {
+			plugins.fireHook('filter:group.build', { req: req, res: res, templateData: results }, function (err, results) {
 				if(err) {
-					return next(err);
+					return callback(err);
 				}
 				res.render('groups/details', results.templateData);
 			});
