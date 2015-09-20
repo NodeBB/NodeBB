@@ -8,6 +8,7 @@ var async = require('async'),
 	groups = require('../groups'),
 	user = require('../user'),
 	helpers = require('./helpers'),
+	plugins = require('../plugins'),
 	groupsController = {};
 
 groupsController.list = function(req, res, next) {
@@ -93,7 +94,13 @@ groupsController.details = function(req, res, callback) {
 
 			results.title = '[[pages:group, ' + results.group.displayName + ']]';
 			results.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:groups]]', url: '/groups' }, {text: results.group.displayName}]);
-			res.render('groups/details', results);
+			
+			plugins.fireHook('filter:group.build', { req: req, res: res, templateData: results }, function (err, results) {
+				if(err) {
+					return callback(err);
+				}
+				res.render('groups/details', results.templateData);
+			});
 		});
 	});
 };
