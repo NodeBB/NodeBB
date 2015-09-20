@@ -15,11 +15,11 @@ tagsController.getTag = function(req, res, next) {
 
 	async.waterfall([
 		function(next) {
-			topics.getTagTids(tag, 0, stop, next);
+			topics.getTagTids(req.params.tag, 0, stop, next);
 		},
 		function(tids, next) {
 			if (Array.isArray(tids) && !tids.length) {
-				topics.deleteTag(tag);
+				topics.deleteTag(req.params.tag);
 				return res.render('tag', {
 					topics: [],
 					tag: tag,
