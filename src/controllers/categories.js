@@ -266,6 +266,21 @@ categoriesController.get = function(req, res, callback) {
 	});
 };
 
+categoriesController.getCategory = function(req, res, next) {
+	async.parallel({
+		canRead: async.apply(privileges.categories.can, 'read', req.params.cid, req.uid),
+		categoryData: async.apply(categories.getCategoryData, req.params.cid)
+	}, function(err, results) {
+		if (err || !results.categoryData) {
+			return next(err);
+		}
 
+		if (!results.canRead) {
+			return helpers.notAllowed(req, res);
+		}
+
+		res.json(results.categoryData);
+	});
+};
 
 module.exports = categoriesController;
