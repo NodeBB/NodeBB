@@ -428,7 +428,7 @@ accountsController.accountSettings = function(req, res, callback) {
 			userData.settings = results.settings;
 			userData.languages = results.languages;
 			userData.userGroups = results.userGroups[0];
-			plugins.fireHook('filter:user.settings', {settings: results.settings, customSettings: [], uid: req.uid}, next);
+			plugins.fireHook('filter:user.customSettings', {settings: results.settings, customSettings: [], uid: req.uid}, next);
 		},
 		function(data, next) {
 			userData.customSettings = data.customSettings;
