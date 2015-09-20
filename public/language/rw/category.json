@@ -11,5 +11,6 @@
     "watch": "Kurikirana",
     "ignore": "Ihorere",
     "watch.message": "Uzajya ubu ukurikirana ibishya byongewe muri iki cyiciro",
-    "ignore.message": "Ubu urekeye aho kuzajya ubona ibishya byongewe muri iki cyiciro"
+    "ignore.message": "Ubu urekeye aho kuzajya ubona ibishya byongewe muri iki cyiciro",
+    "watched-categories": "Watched categories"
 }

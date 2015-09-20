@@ -11,5 +11,6 @@
     "watch": "Theo dõi",
     "ignore": "Bỏ qua",
     "watch.message": "Bạn đang theo dõi các cập nhật của danh mục này",
-    "ignore.message": "Bạn đang gỡ bỏ theo dõi danh mục này"
+    "ignore.message": "Bạn đang gỡ bỏ theo dõi danh mục này",
+    "watched-categories": "Watched categories"
 }

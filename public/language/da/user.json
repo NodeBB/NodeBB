@@ -12,7 +12,7 @@
     "delete_account": "Slet konto",
     "delete_account_confirm": "Er du sikker på du vil slette din konto? <br /><strong>Dette kan ikke fortrydes, og du vil ikke være istand til at genoprette dine data</strong><br /><br />Indtast dit brugernavn for at bekræfte at du ønsker at slette din konto.",
     "delete_this_account_confirm": "Er du sikker på at du vil slette denne konto?<br /><strong>Denne handling kan ikke fortrydes, og du kan ikke genskabe nogen data.</strong><br /><br />",
-    "account-deleted": "Account deleted",
+    "account-deleted": "Konto slettet",
     "fullname": "Fulde navn",
     "website": "Webside",
     "location": "Lokation",
@@ -53,7 +53,7 @@
     "username_taken_workaround": "Det valgte brugernavn er allerede taget, så vi har ændret det en smule. Du hedder nu <strong>%1</strong>",
     "upload_picture": "Upload billede",
     "upload_a_picture": "Upload et billede",
-    "remove_uploaded_picture": "Remove Uploaded Picture",
+    "remove_uploaded_picture": "Fjern uploaded billede",
     "image_spec": "Du kan kun uploade PNG, JPG eller GIF billeder",
     "settings": "Indstillinger",
     "show_email": "Vis min emailaddresse",
@@ -87,5 +87,5 @@
     "follow_topics_you_create": "Følg emner du opretter",
     "grouptitle": "Vælg gruppe titlen du gerne vil fremvise",
     "no-group-title": "Ingen gruppe titel",
-    "select-skin": "Select a Skin"
+    "select-skin": "Vælg et skin"
 }

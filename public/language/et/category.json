@@ -11,5 +11,6 @@
     "watch": "Vaata",
     "ignore": "Ignoreeri",
     "watch.message": "Jälgid nüüdsest teateid sellest kategooriast",
-    "ignore.message": "Ignoreerid nüüdsest teateid sellest kategooriast"
+    "ignore.message": "Ignoreerid nüüdsest teateid sellest kategooriast",
+    "watched-categories": "Watched categories"
 }

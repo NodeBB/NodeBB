@@ -8,8 +8,9 @@
     "no_replies": "Ninguém respondeu",
     "no_new_posts": "Nenhum post novo.",
     "share_this_category": "Compartilhar esta categoria",
-    "watch": "Assistir",
+    "watch": "Acompanhar",
     "ignore": "Ignorar",
-    "watch.message": "Agora você está assistindo à atualizações desta categoria",
-    "ignore.message": "Agora você está ignorando as atualizações desta categoria"
+    "watch.message": "Agora você está acompanhando as atualizações desta categoria",
+    "ignore.message": "Agora você está ignorando as atualizações desta categoria",
+    "watched-categories": "Categorias acompanhadas"
 }

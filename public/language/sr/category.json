@@ -11,5 +11,6 @@
     "watch": "Прати",
     "ignore": "Игнориши",
     "watch.message": "Сада пратите ажурирања ове категорије",
-    "ignore.message": "Сада игноришете ажурирања ове категорије"
+    "ignore.message": "Сада игноришете ажурирања ове категорије",
+    "watched-categories": "Watched categories"
 }

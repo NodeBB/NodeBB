@@ -11,5 +11,6 @@
     "watch": "İzle",
     "ignore": "Yoksay",
     "watch.message": "Şuan bu kategorideki güncellemeleri izliyorsunuz",
-    "ignore.message": "Şuan bu kategoriden güncellemeleri gizliyorsunuz"
+    "ignore.message": "Şuan bu kategoriden güncellemeleri gizliyorsunuz",
+    "watched-categories": "Takip edilen kategoriler"
 }

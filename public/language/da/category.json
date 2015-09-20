@@ -11,5 +11,6 @@
     "watch": "Overvåg",
     "ignore": "Ignorer",
     "watch.message": "Du overvåger nu opdateringer fra denne kategori",
-    "ignore.message": "Du ignorere nu opdateringer fra denne kategori"
+    "ignore.message": "Du ignorere nu opdateringer fra denne kategori",
+    "watched-categories": "Fulgte kategorier"
 }

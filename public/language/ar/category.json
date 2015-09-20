@@ -11,5 +11,6 @@
     "watch": "متابعة",
     "ignore": "تجاهل",
     "watch.message": "أنت اﻷن متابع لتحديثات هذه الفئة",
-    "ignore.message": "أنت اﻷن تتجاهل تحديثات هذه الفئة"
+    "ignore.message": "أنت اﻷن تتجاهل تحديثات هذه الفئة",
+    "watched-categories": "Watched categories"
 }

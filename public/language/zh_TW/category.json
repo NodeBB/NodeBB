@@ -11,5 +11,6 @@
     "watch": "觀看",
     "ignore": "忽略",
     "watch.message": "您正觀看著此類別的更新",
-    "ignore.message": "您已忽略此類別的更新"
+    "ignore.message": "您已忽略此類別的更新",
+    "watched-categories": "Watched categories"
 }

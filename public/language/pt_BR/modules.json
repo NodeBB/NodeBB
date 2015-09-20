@@ -21,7 +21,7 @@
     "composer.user_said_in": "%1 disse em %2:",
     "composer.user_said": "%1 disse:",
     "composer.discard": "Tem certeza que deseja descartar essa postagem?",
-    "composer.submit_and_lock": "Envie e Tranque",
+    "composer.submit_and_lock": "Enviar e Trancar",
     "composer.toggle_dropdown": "Alternar Dropdown",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Cancelar",

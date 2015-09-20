@@ -11,5 +11,6 @@
     "watch": "Stebėti",
     "ignore": "Nepaisyti",
     "watch.message": "Jūs dabar stebite atnaujinimus iš šios kategorijos",
-    "ignore.message": "Jūs dabar ignoruojate atnaujinimus iš šios kategorijos"
+    "ignore.message": "Jūs dabar ignoruojate atnaujinimus iš šios kategorijos",
+    "watched-categories": "Watched categories"
 }

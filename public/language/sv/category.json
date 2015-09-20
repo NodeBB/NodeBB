@@ -11,5 +11,6 @@
     "watch": "Bevaka",
     "ignore": "Ignorera",
     "watch.message": "Du bevakar nu uppdateringar ifrån denna kategori",
-    "ignore.message": "Du ignorerar nu uppdateringar ifrån denna kategori"
+    "ignore.message": "Du ignorerar nu uppdateringar ifrån denna kategori",
+    "watched-categories": "Watched categories"
 }

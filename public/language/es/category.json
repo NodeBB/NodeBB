@@ -11,5 +11,6 @@
     "watch": "Seguir",
     "ignore": "Ignorar",
     "watch.message": "Ahora estás viendo actualizaciones de esta categoría",
-    "ignore.message": "Ahora estás ignorando las actualizaciones de esta categoría"
+    "ignore.message": "Ahora estás ignorando las actualizaciones de esta categoría",
+    "watched-categories": "Watched categories"
 }

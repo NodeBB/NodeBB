@@ -4,7 +4,7 @@
     "buttons.close": "Fechar",
     "403.title": "Acesso Negado",
     "403.message": "Parece que você chegou à uma página à qual você não tem acesso.",
-    "403.login": "Talvez você deveria <a href='%1/login'>tentar logar</a>?",
+    "403.login": "Talvez você deveria <a href='%1/login'>tentar fazer login</a>?",
     "404.title": "Não Encontrado",
     "404.message": "Parece que você chegou à uma página que não existe. Voltar para a <a href='%1/'>página inicial</a>.",
     "500.title": "Erro interno.",

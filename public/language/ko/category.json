@@ -11,5 +11,6 @@
     "watch": "관심 주제",
     "ignore": "관심 해제",
     "watch.message": "You are now watching updates from this category",
-    "ignore.message": "You are now ignoring updates from this category"
+    "ignore.message": "You are now ignoring updates from this category",
+    "watched-categories": "Watched categories"
 }

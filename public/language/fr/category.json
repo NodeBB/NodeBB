@@ -11,5 +11,6 @@
     "watch": "Surveiller",
     "ignore": "Ne plus surveiller",
     "watch.message": "Vous surveillez désormais les mises à jour de cette catégorie.",
-    "ignore.message": "Vous ne surveillez plus les mises jour de cette catégorie."
+    "ignore.message": "Vous ne surveillez plus les mises jour de cette catégorie.",
+    "watched-categories": "Catégories Suivies"
 }
