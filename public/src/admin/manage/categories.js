@@ -41,6 +41,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 					formData.icon = 'fa-comments';
 
 					Categories.create(formData);
+					modal.modal('hide');
 					return false;
 				}
 
@@ -51,9 +52,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 						save: {
 							label: 'Save',
 							className: 'btn-primary',
-							callback: function() {
-								submit();
-							}
+							callback: submit
 						}
 					}
 				});
