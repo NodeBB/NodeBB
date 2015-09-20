@@ -1,5 +1,5 @@
 "use strict";
-/*global define, app, socket, ajaxify, RELATIVE_PATH, bootbox */
+/*global define, app, socket, ajaxify, RELATIVE_PATH, bootbox, templates */
 
 define('admin/manage/category', [
 	'uploader',
@@ -63,7 +63,7 @@ define('admin/manage/category', [
 			});
 		}
 
-		
+
 		$('form.category input, form.category select')
 			.on('change', function(ev) {
 				modified(ev.target);
@@ -139,6 +139,7 @@ define('admin/manage/category', [
 					return app.alertError(err.message);
 				}
 				$('button[data-action="removeParent"]').parent().addClass('hide');
+				$('button[data-action="changeParent"]').parent().addClass('hide');
 				$('button[data-action="setParent"]').removeClass('hide');
 			});
 		});
@@ -241,7 +242,7 @@ define('admin/manage/category', [
 			categories = categories.filter(function(category) {
 				return category && parseInt(category.cid, 10) !== parseInt(ajaxify.data.category.cid, 10);
 			});
-			
+
 			templates.parse('partials/category_list', {
 				categories: categories
 			}, function(html) {
@@ -262,10 +263,16 @@ define('admin/manage/category', [
 						if (err) {
 							return app.alertError(err.message);
 						}
+						var parent = categories.filter(function(category) {
+							return category && parseInt(category.cid, 10) === parseInt(parentCid, 10);
+						});
+						parent = parent[0];
 
 						modal.modal('hide');
 						$('button[data-action="removeParent"]').parent().removeClass('hide');
 						$('button[data-action="setParent"]').addClass('hide');
+						var buttonHtml = '<i class="fa ' + parent.icon + '"></i> ' + parent.name;
+						$('button[data-action="changeParent"]').html(buttonHtml).parent().removeClass('hide');
 					});
 				});
 			});
