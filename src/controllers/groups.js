@@ -8,6 +8,7 @@ var async = require('async'),
 	groups = require('../groups'),
 	user = require('../user'),
 	helpers = require('./helpers'),
+	plugins = require('../plugins'),
 	groupsController = {};
 
 groupsController.list = function(req, res, next) {
@@ -47,14 +48,14 @@ groupsController.getGroupsFromSet = function(uid, sort, start, stop, callback) {
 groupsController.details = function(req, res, callback) {
 	async.waterfall([
 		async.apply(groups.exists, res.locals.groupName),
-		function(exists, next) {
+		function (exists, next) {
 			if (!exists) {
 				return callback();
 			}
 
 			groups.isHidden(res.locals.groupName, next);
 		},
-		function(hidden, next) {
+		function (hidden, next) {
 			if (!hidden) {
 				return next();
 			}
@@ -68,33 +69,36 @@ groupsController.details = function(req, res, callback) {
 				}
 				callback();
 			});
+		},
+		function (next) {
+			async.parallel({
+				group: function(next) {
+					groups.get(res.locals.groupName, {
+						uid: req.uid,
+						truncateUserList: true,
+						userListCount: 20
+					}, next);
+				},
+				posts: function(next) {
+					groups.getLatestMemberPosts(res.locals.groupName, 10, req.uid, next);
+				},
+				isAdmin: async.apply(user.isAdministrator, req.uid)
+			}, next);
+		},
+		function (results, next) {
+			if (!results.group) {
+				return callback();
+			}
+			results.title = '[[pages:group, ' + results.group.displayName + ']]';
+			results.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:groups]]', url: '/groups' }, {text: results.group.displayName}]);
+			plugins.fireHook('filter:group.build', {req: req, res: res, templateData: results}, next);
 		}
-	], function(err) {
+	], function(err, results) {
 		if (err) {
 			return callback(err);
 		}
 
-		async.parallel({
-			group: function(next) {
-				groups.get(res.locals.groupName, {
-					uid: req.uid,
-					truncateUserList: true,
-					userListCount: 20
-				}, next);
-			},
-			posts: function(next) {
-				groups.getLatestMemberPosts(res.locals.groupName, 10, req.uid, next);
-			},
-			isAdmin: async.apply(user.isAdministrator, req.uid)
-		}, function(err, results) {
-			if (err || !results.group) {
-				return callback(err);
-			}
-
-			results.title = '[[pages:group, ' + results.group.displayName + ']]';
-			results.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:groups]]', url: '/groups' }, {text: results.group.displayName}]);
-			res.render('groups/details', results);
-		});
+		res.render('groups/details', results.templateData);
 	});
 };
 
