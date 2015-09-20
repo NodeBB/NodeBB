@@ -28,9 +28,22 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 
 	Categories.throwCreateModal = function() {
 		socket.emit('admin.categories.getNames', {}, function(err, categories) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
 			templates.parse('admin/partials/categories/create', {
 				categories: categories
 			}, function(html) {
+				function submit() {
+					var formData = modal.find('form').serializeObject();
+					formData.description = '';
+					formData.icon = 'fa-comments';
+
+					Categories.create(formData);
+					return false;
+				}
+
 				var modal = bootbox.dialog({
 					title: 'Create a Category',
 					message: html,
@@ -39,22 +52,20 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 							label: 'Save',
 							className: 'btn-primary',
 							callback: function() {
-								var formData = modal.find('form').serializeObject();
-								formData.description = '';
-								formData.icon = 'fa-comments';
-
-								Categories.create(formData);
+								submit();
 							}
 						}
 					}
 				});
+
+				modal.find('form').on('submit', submit);
 			});
 		});
 	};
 
 	Categories.create = function(payload) {
 		socket.emit('admin.categories.create', payload, function(err, data) {
-			if(err) {
+			if (err) {
 				return app.alertError(err.message);
 			}
 
@@ -73,7 +84,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 	Categories.render = function(categories){
 		var container = $('.categories');
 
-		if (!categories || categories.length == 0) {
+		if (!categories || !categories.length) {
 			$('<div></div>')
 				.addClass('alert alert-info text-center')
 				.text('You have no active categories.')
@@ -98,9 +109,9 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 				ajaxify.refresh();
 			}
 		});
-	}
+	};
 
-	function itemDidAdd(e){
+	function itemDidAdd(e) {
 		newCategoryId = e.to.dataset.cid;
 	}
 
@@ -114,14 +125,14 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 			for(i; i < len; ++i) {
 				modified[list[i]] = {
 					order: (i + 1)
-				}
+				};
 			}
 
-			if(isCategoryUpdate){
-				modified[e.item.dataset.cid]['parentCid'] = newCategoryId;
+			if (isCategoryUpdate){
+				modified[e.item.dataset.cid].parentCid = newCategoryId;
 			}
 
-			newCategoryId = -1
+			newCategoryId = -1;
 			socket.emit('admin.categories.update', modified);
 		}
 	}
