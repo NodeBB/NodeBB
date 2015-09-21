@@ -203,7 +203,7 @@ SocketAdmin.settings.clearSitemapCache = function(socket, data, callback) {
 
 SocketAdmin.email.test = function(socket, data, callback) {
 	if (plugins.hasListeners('action:email.send')) {
-		emailer.send('test', socket.uid, {
+		emailer.send(data.template, socket.uid, {
 			subject: '[NodeBB] Test Email',
 			site_title: meta.config.title || 'NodeBB'
 		});

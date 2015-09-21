@@ -21,11 +21,23 @@
 				</p>
 				<input type="text" class="form-control input-lg" id="email:from_name" data-field="email:from_name" placeholder="NodeBB" /><br />
 			</div>
-			<button class="btn btn-primary" type="button" data-action="email.test">Send Test Email</button>
-			<p class="help-block">
-				The test email will be sent to the currently logged in user's email address.
-			</p>
 		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Email Testing</div>
+	<div class="col-sm-10 col-xs-12">
+		<label>Select Email Template</label><br />
+		<select id="test-email" class="form-control">
+			<!-- BEGIN emails -->
+			<option value="{emails.path}">{emails.path}</option>
+			<!-- END emails -->
+		</select><br />
+		<button class="btn btn-primary" type="button" data-action="email.test">Send Test Email</button>
+		<p class="help-block">
+			The test email will be sent to the currently logged in user's email address.
+		</p>
 	</div>
 </div>
 

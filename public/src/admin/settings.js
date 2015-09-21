@@ -93,7 +93,7 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 		handleUploads();
 
 		$('button[data-action="email.test"]').off('click').on('click', function() {
-			socket.emit('admin.email.test', function(err) {
+			socket.emit('admin.email.test', {template: $('#test-email').val()}, function(err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
