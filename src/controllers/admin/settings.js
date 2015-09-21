@@ -28,19 +28,16 @@ function renderEmail(req, res, next) {
 		async.map(emails, function(email, next) {
 			var path = email.replace(emailsPath, '').substr(1).replace('.tpl', '');
 
-			function callback(err, str) {
+			fs.readFile(email, function(err, original) {
+				var text = meta.config['email:custom:' + path] ? meta.config['email:custom:' + path] : original.toString();
+
 				next(err, {
 					path: path,
 					fullpath: email,
-					text: str.toString()
+					text: text,
+					original: original.toString()
 				});
-			}
-
-			if (meta.config['email:custom:' + path]) {
-				return callback(null, meta.config['email:custom:' + path]);
-			}
-
-			fs.readFile(email, callback);
+			});
 		}, function(err, emails) {
 			res.render('admin/settings/email', {
 				emails: emails,

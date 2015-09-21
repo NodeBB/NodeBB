@@ -33,6 +33,16 @@ define('admin/settings/email', ['admin/settings'], function(settings) {
 		    $('#email-editor-holder').val(emailEditor.getValue());
 		});
 
+		$('button[data-action="email.revert"]').off('click').on('click', function() {
+			ajaxify.data.emails.forEach(function(email) {
+				if (email.path === $('#email-editor-selector').val()) {
+					emailEditor.getSession().setValue(email.original);
+					$('#email-editor-holder')
+						.val(email.original);
+				}
+			});
+		});
+
 		updateEmailEditor();
 	}
 

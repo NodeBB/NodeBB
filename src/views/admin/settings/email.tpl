@@ -33,9 +33,12 @@
 			<!-- BEGIN emails -->
 			<option value="{emails.path}">{emails.path}</option>
 			<!-- END emails -->
-		</select><br />
+		</select>
+		<br />
 		<div id="email-editor"></div>
 		<input type="hidden" id="email-editor-holder" value="" data-field="" />
+		<br />
+		<button class="btn btn-warning" type="button" data-action="email.revert">Revert to Original</button>
 	</div>
 </div>
 
