@@ -47,10 +47,14 @@ var	fs = require('fs'),
 	Emailer.sendToEmail = function(template, email, language, params, callback) {
 		function renderAndTranslate(tpl, params, callback) {
 			async.waterfall([
-				function (next) {
+				function(next) {
+					app.render('emails/partials/footer' + (tpl.indexOf('_plaintext') !== -1 ? '_plaintext' : ''), params, next);
+				},
+				function(footer, next) {
+					params.footer = footer;
 					app.render(tpl, params, next);
 				},
-				function (html, next) {
+				function(html, next) {
 					translator.translate(html, lang, function(translated) {
 						next(null, translated);
 					});
