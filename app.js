@@ -24,7 +24,6 @@ var nconf = require('nconf');
 nconf.argv().env('__');
 
 var fs = require('fs'),
-	os = require('os'),
 	url = require('url'),
 	async = require('async'),
 	semver = require('semver'),
@@ -45,14 +44,6 @@ winston.add(winston.transports.Console, {
 	},
 	level: nconf.get('log-level') || (global.env === 'production' ? 'info' : 'verbose')
 });
-
-if (os.platform() === 'linux') {
-	require('child_process').exec('/usr/bin/which convert', function(err, stdout, stderr) {
-		if(err || !stdout) {
-			winston.warn('Couldn\'t find convert. Did you install imagemagick?');
-		}
-	});
-}
 
 if (!process.send) {
 	// If run using `node app`, log GNU copyright info along with server info
