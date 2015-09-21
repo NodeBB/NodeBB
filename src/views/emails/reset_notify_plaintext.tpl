@@ -4,5 +4,4 @@
 
 [[email:reset.notify.text2]]
 
-[[email:closing]]
-{site_title}
+{footer_plaintext}

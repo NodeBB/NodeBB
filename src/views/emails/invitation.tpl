@@ -8,7 +8,4 @@
 	<a href="{registerLink}">[[email:invitation.ctr]]</a>
 </blockquote>
 
-<p>
-	[[email:closing]]<br />
-	<strong>{site_title}</strong>
-</p>
+{footer}

@@ -23,8 +23,7 @@
 [[email:digest.cta, {site_title}]]: {url}
 
 
-[[email:closing]]
-{site_title}
+{footer_plaintext}
 
 ===
 

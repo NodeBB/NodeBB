@@ -5,10 +5,7 @@
 
 <a href="{url}">[[email:notif.post.cta]]</a>
 
-<p>
-	[[email:closing]]<br />
-	<strong>{site_title}</strong>
-</p>
+{footer}
 
 <hr />
 <p>

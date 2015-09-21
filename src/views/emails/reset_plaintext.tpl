@@ -6,5 +6,4 @@
 
     {reset_link}
 
-[[email:closing]]
-{site_title}
+{footer_plaintext}

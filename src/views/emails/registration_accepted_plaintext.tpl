@@ -5,5 +5,4 @@
 [[email:welcome.text3]]
 
 
-[[email:closing]]
-{site_title}
+{footer_plaintext}

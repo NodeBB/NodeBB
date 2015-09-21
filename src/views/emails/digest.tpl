@@ -33,10 +33,7 @@
 	<a href="{url}">[[email:digest.cta, {site_title}]]</a>
 </p>
 
-<p>
-	[[email:closing]]<br />
-	<strong>{site_title}</strong>
-</p>
+{footer}
 
 <hr />
 <p>

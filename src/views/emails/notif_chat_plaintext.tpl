@@ -7,8 +7,7 @@
 [[email:notif.chat.cta]]: {url}/chats/{fromUserslug}
 
 
-[[email:closing]]
-{site_title}
+{footer_plaintext}
 
 ===
 

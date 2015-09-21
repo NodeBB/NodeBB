@@ -6,8 +6,7 @@
 
 [[email:notif.post.cta]]: {url}
 
-[[email:closing]]
-{site_title}
+{footer_plaintext}
 
 ===
 
