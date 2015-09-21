@@ -35,10 +35,10 @@ function renderEmail(req, res, next) {
 		}, function(err, emails) {
 			res.render('admin/settings/email', {
 				emails: emails.filter(function(email) {
-					return email.path.indexOf('_plaintext') === -1 && email.path.indexOf('partials') === -1
+					return email.path.indexOf('_plaintext') === -1 && email.path.indexOf('partials') === -1;
 				})
 			});
-;		});
+		});
 	});
 }
 
