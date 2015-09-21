@@ -10,6 +10,7 @@ var	fs = require('fs'),
 	Plugins = require('./plugins'),
 	meta = require('./meta'),
 	translator = require('../public/src/modules/translator'),
+	tjs = require('templates.js'),
 
 	app;
 
@@ -48,11 +49,11 @@ var	fs = require('fs'),
 		function renderAndTranslate(tpl, params, callback) {
 			async.waterfall([
 				function(next) {
-					app.render('emails/partials/footer' + (tpl.indexOf('_plaintext') !== -1 ? '_plaintext' : ''), params, next);
+					render('emails/partials/footer' + (tpl.indexOf('_plaintext') !== -1 ? '_plaintext' : ''), params, next);
 				},
 				function(footer, next) {
 					params.footer = footer;
-					app.render(tpl, params, next);
+					render(tpl, params, next);
 				},
 				function(html, next) {
 					translator.translate(html, lang, function(translated) {
@@ -60,6 +61,15 @@ var	fs = require('fs'),
 					});
 				}
 			], callback);
+		}
+
+		function render(tpl, params, next) {
+			if (meta.config['email:custom:' + tpl.replace('emails/', '')]) {
+				var text = templates.parse(meta.config['email:custom:' + tpl.replace('emails/', '')], params);
+				next(null, text);
+			} else {
+				app.render(tpl, params, next);
+			}
 		}
 
 		callback = callback || function() {};
