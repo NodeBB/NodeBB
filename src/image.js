@@ -1,7 +1,8 @@
 'use strict';
 
 var fs = require('fs'),
-	lwip = require('lwip'),
+	Jimp = require('jimp'),
+	async = require('async'),
 	plugins = require('./plugins');
 
 var image = {};
@@ -17,18 +18,44 @@ image.resizeImage = function(path, extension, width, height, callback) {
 			callback(err);
 		});
 	} else {
-		tryOpen(path, function(err, image) {
+		new Jimp(path, function(err, image) {
 			if (err) {
 				return callback(err);
 			}
 
-			image.batch()
-				.cover(width, height)
-				.crop(width, height)
-				.writeFile(path, function(err) {
-					callback(err);
-				});
+			var w = image.bitmap.width,
+				h = image.bitmap.height,
+				origRatio = w/h,
+				desiredRatio = width/height,
+				x = 0,
+				y = 0,
+				crop;
+
+			if (desiredRatio > origRatio) {
+				desiredRatio = 1/desiredRatio;
+			}
+			if (origRatio >= 1) {
+				y = 0;	// height is the smaller dimension here
+				x = Math.floor((w/2) - (h * desiredRatio / 2));
+				crop = async.apply(image.crop.bind(image), x, y, h * desiredRatio, h);
+			} else {
+				x = 0;	// width is the smaller dimension here
+				y = Math.floor(h/2 - (w * desiredRatio / 2));
+				crop = async.apply(image.crop.bind(image), x, y, w, w * desiredRatio);
+			}
+
+			async.waterfall([
+				crop,
+				function(image, next) {
+					image.resize(width, height, next);
+				},
+				function(image, next) {
+					image.write(path, next);
+				}
+			], function(err) {
+				callback(err);
 			});
+		});
 	}
 };
 
@@ -41,22 +68,14 @@ image.normalise = function(path, extension, callback) {
 			callback(err);
 		});
 	} else {
-		tryOpen(path, function(err, image) {
+		new Jimp(path, function(err, image) {
 			if (err) {
 				return callback(err);
 			}
-			image.writeFile(path, 'png', callback);
+			image.write(path + '.png', callback);
 		});
 	}
 };
-
-function tryOpen(path, callback) {
-	try {
-		lwip.open(path, callback);
-	} catch (err) {
-		callback(err);
-	}
-}
 
 image.convertImageToBase64 = function(path, callback) {
 	fs.readFile(path, function(err, data) {
