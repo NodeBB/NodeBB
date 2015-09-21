@@ -313,21 +313,5 @@ topicsController.teaser = function(req, res, next) {
 	});
 };
 
-topicsController.getTopic = function(req, res, next) {
-	async.parallel({
-		canRead: async.apply(privileges.topics.can, 'read', req.params.tid, req.uid),
-		topicData: async.apply(topics.getTopicData, req.params.tid)
-	}, function(err, results) {
-		if (err || !results.topicData) {
-			return next(err);
-		}
-
-		if (!results.canRead) {
-			return helpers.notAllowed(req, res);
-		}
-
-		res.json(results.topicData);
-	});
-};
 
 module.exports = topicsController;
