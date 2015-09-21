@@ -212,7 +212,7 @@ middleware.renderHeader = function(req, res, data, callback) {
 		allowRegistration: registrationType === 'normal' || registrationType === 'admin-approval',
 		searchEnabled: plugins.hasListeners('filter:search.query'),
 		config: res.locals.config,
-		relative_path: res.locals.config.relative_path
+		relative_path: nconf.get('relative_path')
 	};
 
 	templateValues.configJSON = JSON.stringify(res.locals.config);
