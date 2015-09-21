@@ -26,13 +26,27 @@
 </div>
 
 <div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Edit Email Template</div>
+	<div class="col-sm-10 col-xs-12">
+		<label>Select Email Template</label><br />
+		<select id="email-editor-selector" class="form-control">
+			<!-- BEGIN emails -->
+			<option value="{emails.path}">{emails.path}</option>
+			<!-- END emails -->
+		</select><br />
+		<div id="email-editor"></div>
+		<input type="hidden" id="email-editor-holder" value="" data-field="" />
+	</div>
+</div>
+
+<div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">Email Testing</div>
 	<div class="col-sm-10 col-xs-12">
 		<label>Select Email Template</label><br />
 		<select id="test-email" class="form-control">
-			<!-- BEGIN emails -->
-			<option value="{emails.path}">{emails.path}</option>
-			<!-- END emails -->
+			<!-- BEGIN sendable -->
+			<option value="{sendable.path}">{sendable.path}</option>
+			<!-- END sendable -->
 		</select><br />
 		<button class="btn btn-primary" type="button" data-action="email.test">Send Test Email</button>
 		<p class="help-block">

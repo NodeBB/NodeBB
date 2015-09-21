@@ -92,16 +92,6 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 
 		handleUploads();
 
-		$('button[data-action="email.test"]').off('click').on('click', function() {
-			socket.emit('admin.email.test', {template: $('#test-email').val()}, function(err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				app.alertSuccess('Test Email Sent');
-			});
-			return false;
-		});
-
 		$('#clear-sitemap-cache').off('click').on('click', function() {
 			socket.emit('admin.settings.clearSitemapCache', function() {
 				app.alertSuccess('Sitemap Cache Cleared!');
