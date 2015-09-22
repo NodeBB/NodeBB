@@ -5,7 +5,11 @@ var	user = require('../user'),
 	SocketNotifs = {};
 
 SocketNotifs.get = function(socket, data, callback) {
-	user.notifications.get(socket.uid, callback);
+	if (data && Array.isArray(data.nids) && socket.uid) {
+		user.notifications.getNotifications(data.nids, socket.uid, callback);
+	} else {
+		user.notifications.get(socket.uid, callback);
+	}
 };
 
 SocketNotifs.getCount = function(socket, data, callback) {
