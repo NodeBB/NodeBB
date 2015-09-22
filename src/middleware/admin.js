@@ -85,6 +85,9 @@ middleware.renderHeader = function(req, res, data, next) {
 			},
 			config: function(next) {
 				controllers.api.getConfig(req, res, next);
+			},
+			configs: function(next) {
+				meta.configs.list(next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -96,6 +99,7 @@ middleware.renderHeader = function(req, res, data, next) {
 				config: results.config,
 				configJSON: JSON.stringify(results.config),
 				relative_path: results.config.relative_path,
+				adminConfigJSON: encodeURIComponent(JSON.stringify(results.configs)),
 				user: userData,
 				userJSON: JSON.stringify(userData).replace(/'/g, "\\'"),
 				plugins: results.custom_header.plugins,

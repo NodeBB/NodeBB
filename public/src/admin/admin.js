@@ -26,22 +26,6 @@
 		configureSlidemenu();
 	});
 
-	socket.emit('admin.config.get', function(err, config) {
-		if(err) {
-			return app.alert({
-				alert_id: 'config_status',
-				timeout: 2500,
-				title: 'Error',
-				message: 'NodeBB encountered a problem getting config: ' + err.message,
-				type: 'danger'
-			});
-		}
-
-		// move this to admin.config
-		app.config = config;
-		$(window).trigger('action:config.loaded');
-	});
-
 	function setupKeybindings() {
 		Mousetrap.bind('ctrl+shift+a r', function() {
 			require(['admin/modules/instance'], function(instance) {

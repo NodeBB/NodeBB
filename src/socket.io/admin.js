@@ -134,10 +134,6 @@ SocketAdmin.widgets.set = function(socket, data, callback) {
 	widgets.setArea(data, callback);
 };
 
-SocketAdmin.config.get = function(socket, data, callback) {
-	meta.configs.list(callback);
-};
-
 SocketAdmin.config.set = function(socket, data, callback) {
 	if(!data) {
 		return callback(new Error('[[error:invalid-data]]'));

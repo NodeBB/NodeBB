@@ -14,7 +14,8 @@
 		var config = JSON.parse('{{configJSON}}');
 		var app = {
 			template: "{template.name}",
-			user: JSON.parse('{{userJSON}}')
+			user: JSON.parse('{{userJSON}}'),
+			config: JSON.parse(decodeURIComponent('{{adminConfigJSON}}'))
 		};
 	</script>
 
