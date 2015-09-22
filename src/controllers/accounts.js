@@ -49,7 +49,11 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			},
 			groups: function(next) {
 				groups.getUserGroups([uid], next);
-			}
+			},
+			sso: async.apply(plugins.fireHook, 'filter:auth.list', {
+				uid: uid,
+				associations: []
+			})
 		}, function(err, results) {
 			if (err || !results.userData) {
 				return callback(err || new Error('[[error:invalid-uid]]'));
@@ -88,6 +92,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
 			userData.profile_links = results.profile_links;
+			userData.sso = results.sso.associations;
 			userData.status = require('../socket.io').isUserOnline(userData.uid) ? (userData.status || 'online') : 'offline';
 			userData.banned = parseInt(userData.banned, 10) === 1;
 			userData.website = validator.escape(userData.website);
