@@ -74,8 +74,8 @@ var	fs = require('fs'),
 
 		callback = callback || function() {};
 
-		if (!Plugins.hasListeners('action:email.send')) {
-			winston.warn('[emailer] No active email plugin found!');
+		if (!Plugins.hasListeners('filter:email.send')) {
+			winston.warn('[emailer] No active email plugin found to send "' + template + '" email');
 			return callback();
 		}
 
@@ -110,11 +110,10 @@ var	fs = require('fs'),
 					pid: params.pid,
 					fromUid: params.fromUid
 				};
-				Plugins.fireHook('filter:email.send', data, next);
+				Plugins.fireHook('filter:email.modify', data, next);
 			},
 			function (data, next) {
-				Plugins.fireHook('action:email.send', data);
-				next();
+				Plugins.fireHook('filter:email.send', data, next);
 			}
 		], callback);
 	};

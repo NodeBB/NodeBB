@@ -20,7 +20,7 @@ var	async = require('async'),
 			return winston.verbose('[user/jobs] Did not send digests (' + interval + ') because subscription system is disabled.');
 		}
 
-		if (!plugins.hasListeners('action:email.send')) {
+		if (!plugins.hasListeners('filter:email.send')) {
 			return winston.error('[user/jobs] Did not send digests (' + interval + ') because no active email plugin was found.');
 		}
 

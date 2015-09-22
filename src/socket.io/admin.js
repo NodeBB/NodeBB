@@ -198,12 +198,11 @@ SocketAdmin.settings.clearSitemapCache = function(socket, data, callback) {
 };
 
 SocketAdmin.email.test = function(socket, data, callback) {
-	if (plugins.hasListeners('action:email.send')) {
+	if (plugins.hasListeners('filter:email.send')) {
 		emailer.send(data.template, socket.uid, {
 			subject: '[NodeBB] Test Email',
 			site_title: meta.config.title || 'NodeBB'
-		});
-		callback();
+		}, callback);
 	} else {
 		callback(new Error('[[error:no-emailers-configured]]'));
 	}

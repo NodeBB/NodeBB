@@ -43,12 +43,7 @@ module.exports = function(User) {
 						template: 'invitation'
 					};
 
-					if (plugins.hasListeners('action:email.send')) {
-						emailer.sendToEmail('invitation', email, meta.config.defaultLang, data, next);
-					} else {
-						winston.warn('No emailer to send verification email!');
-						next();
-					}
+					emailer.sendToEmail('invitation', email, meta.config.defaultLang, data, next);
 				});
 			}
 		], callback);

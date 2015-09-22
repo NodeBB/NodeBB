@@ -79,7 +79,7 @@ Controllers.reset = function(req, res, next) {
 Controllers.login = function(req, res, next) {
 	var data = {},
 		loginStrategies = require('../routes/authentication').getLoginStrategies(),
-		emailersPresent = plugins.hasListeners('action:email.send');
+		emailersPresent = plugins.hasListeners('filter:email.send');
 
 	var registrationType = meta.config.registrationType || 'normal';
 
