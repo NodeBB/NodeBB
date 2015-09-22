@@ -237,9 +237,7 @@ middleware.renderHeader = function(req, res, data, callback) {
 			}
 		},
 		title: function(next) {
-			var title = validator.escape(meta.config.browserTitle || meta.config.title || 'NodeBB');
-			title = data.title ? (data.title + ' | ' + title) : title;
-			next(null, title);
+			next(null, buildTitle(data.title));
 		},
 		isAdmin: function(next) {
 			user.isAdministrator(req.uid, next);
@@ -456,8 +454,17 @@ function redirectToLogin(req, res) {
 	return controllers.helpers.redirect(res, '/login');
 }
 
+function buildTitle(pageTitle) {
+	var titleLayout = meta.config.titleLayout || '{pageTitle} | {browserTitle}';
+
+	var browserTitle = validator.escape(meta.config.browserTitle || meta.config.title || 'NodeBB');
+	pageTitle = pageTitle || '';
+	var title = titleLayout.replace('{pageTitle}', pageTitle).replace('{browserTitle}', browserTitle);
+	return title;
+}
+
 function modifyTitle(obj) {
-	var title = '[[pages:home]] | ' + validator.escape(meta.config.browserTitle || meta.config.title || 'NodeBB');
+	var title = buildTitle('[[pages:home]]');
 	obj.browserTitle = title;
 
 	if (obj.metaTags) {

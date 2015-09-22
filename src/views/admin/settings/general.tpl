@@ -22,6 +22,12 @@
 				If no browser title is specified, the site title will be used
 			</p>
 
+			<label>Title Layout</label>
+			<input class="form-control" type="text" placeholder="Title Layout" data-field="titleLayout" />
+			<p class="help-block">
+				Define how the browser title will be structured ie. &#123;pageTitle&#125; | &#123;browserTitle&#125;
+			</p>
+
 			<label>Site Description</label>
 			<input type="text" class="form-control" placeholder="A short description about your community" data-field="description" /><br />
 

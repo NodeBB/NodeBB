@@ -292,8 +292,8 @@ app.cacheBuster = null;
 
 	app.refreshTitle = function(title) {
 		require(['translator'], function(translator) {
+			title = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}').replace('{pageTitle}', title).replace('{browserTitle}', config.browserTitle);
 			translator.translate(title, function(translated) {
-				translated = translated ? (translated + ' | ' + config.browserTitle) : config.browserTitle;
 				titleObj.titles[0] = translated;
 				app.alternatingTitle('');
 			});

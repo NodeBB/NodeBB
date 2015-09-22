@@ -34,6 +34,7 @@ apiController.getConfig = function(req, res, next) {
 	config.version = nconf.get('version');
 	config.siteTitle = validator.escape(meta.config.title || meta.config.browserTitle || 'NodeBB');
 	config.browserTitle = validator.escape(meta.config.browserTitle || meta.config.title || 'NodeBB');
+	config.titleLayout = (meta.config.titleLayout || '{pageTitle} || {browserTitle}').replace(/{/g, '&#123;').replace(/}/g, '&#125;');
 	config.showSiteTitle = parseInt(meta.config.showSiteTitle, 10) === 1;
 	config.postDelay = meta.config.postDelay;
 	config.minimumTitleLength = meta.config.minimumTitleLength;
