@@ -188,11 +188,6 @@ module.exports = function(privileges) {
 		], callback);
 	};
 
-	privileges.topics.canEdit = function(tid, uid, callback) {
-		winston.warn('[deprecated] please use privileges.topics.isOwnerOrAdminOrMod');
-		privileges.topics.isOwnerOrAdminOrMod(tid, uid, callback);
-	};
-
 	privileges.topics.isOwnerOrAdminOrMod = function(tid, uid, callback) {
 		helpers.some([
 			function(next) {
@@ -204,10 +199,6 @@ module.exports = function(privileges) {
 		], callback);
 	};
 
-	privileges.topics.canMove = function(tid, uid, callback) {
-		winston.warn('[deprecated] please use privileges.topics.isAdminOrMod');
-		privileges.topics.isAdminOrMod(tid, uid, callback);
-	};
 
 	privileges.topics.isAdminOrMod = function(tid, uid, callback) {
 		helpers.some([
