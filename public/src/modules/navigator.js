@@ -197,7 +197,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 
 	navigator.scrollToPostIndex = function(postIndex, highlight, duration, offset) {
 		var scrollTo = components.get('post/anchor', postIndex);
-
+			
 		if (!scrollTo.length) {
 			navigator.scrollActive = false;
 			return;
@@ -207,8 +207,10 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		navigator.scrollActive = true;
 		var done = false;
 		function animateScroll() {
+			var scrollTop = (scrollTo.offset().top - ($(window).height() / 2) - offset) + 'px';
+
 			$('html, body').animate({
-				scrollTop: (scrollTo.offset().top - $('#header-menu').height() - offset) + 'px'
+				scrollTop: scrollTop
 			}, duration, function() {
 				if (done) {
 					return;
