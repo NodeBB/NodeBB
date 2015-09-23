@@ -93,8 +93,7 @@ SocketMeta.rooms.getAll = function(socket, data, callback) {
 			topics: {}
 		};
 
-	var scores = {},
-		topTenTopics = [],
+	var	topTenTopics = [],
 		tid;
 
 	for (var room in roomClients) {
@@ -104,34 +103,29 @@ SocketMeta.rooms.getAll = function(socket, data, callback) {
 				var length = roomClients[room].length;
 				socketData.users.topics += length;
 
-				if (scores[length]) {
-					scores[length].push(tid[1]);
-				} else {
-					scores[length] = [tid[1]];
-				}
+				topTenTopics.push({tid: tid[1], count: length});
 			} else if (room.match(/^category/)) {
 				socketData.users.category += roomClients[room].length;
 			}
 		}
 	}
 
-	var scoreKeys = Object.keys(scores),
-		mostActive = scoreKeys.sort();
+	topTenTopics = topTenTopics.sort(function(a, b) {
+		return b.count - a.count;
+	}).slice(0, 10);
 
-	while(topTenTopics.length < 10 && mostActive.length > 0) {
-		topTenTopics = topTenTopics.concat(scores[mostActive.pop()]);
-	}
+	var topTenTids = topTenTopics.map(function(topic) {
+		return topic.tid;
+	});
 
-	topTenTopics = topTenTopics.slice(0, 10);
-
-	topics.getTopicsFields(topTenTopics, ['title'], function(err, titles) {
+	topics.getTopicsFields(topTenTids, ['title'], function(err, titles) {
 		if (err) {
 			return callback(err);
 		}
-		topTenTopics.forEach(function(tid, id) {
-			socketData.topics[tid] = {
-				value: Array.isArray(roomClients['topic_' + tid]) ? roomClients['topic_' + tid].length : 0,
-				title: validator.escape(titles[id].title)
+		topTenTopics.forEach(function(topic, index) {
+			socketData.topics[topic.tid] = {
+				value: topic.count || 0,
+				title: validator.escape(titles[index].title)
 			};
 		});
 
@@ -139,7 +133,5 @@ SocketMeta.rooms.getAll = function(socket, data, callback) {
 	});
 
 };
-
-/* Exports */
 
 module.exports = SocketMeta;
