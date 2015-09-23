@@ -171,7 +171,6 @@ topicsController.get = function(req, res, callback) {
 			}
 
 			description = validator.escape(description);
-			description = description.replace(/&apos;/g, '&#x27;');
 
 			var ogImageUrl = '';
 			if (topicData.thumb) {
