@@ -163,14 +163,12 @@ topicsController.get = function(req, res, callback) {
 			var postAtIndex = findPost(Math.max(0, req.params.post_index - 1));
 
 			if (postAtIndex && postAtIndex.content) {
-				description = S(postAtIndex.content).stripTags().decodeHTMLEntities().s;
+				description = S(postAtIndex.content).decodeHTMLEntities().stripTags().s;
 			}
 
 			if (description.length > 255) {
 				description = description.substr(0, 255) + '...';
 			}
-
-			description = validator.escape(description);
 
 			var ogImageUrl = '';
 			if (topicData.thumb) {
