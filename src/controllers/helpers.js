@@ -100,4 +100,13 @@ helpers.buildBreadcrumbs = function(crumbs) {
 	return breadcrumbs;
 };
 
+helpers.buildTitle = function(pageTitle) {
+	var titleLayout = meta.config.titleLayout || '{pageTitle} | {browserTitle}';
+
+	var browserTitle = validator.escape(meta.config.browserTitle || meta.config.title || 'NodeBB');
+	pageTitle = pageTitle || '';
+	var title = titleLayout.replace('{pageTitle}', pageTitle).replace('{browserTitle}', browserTitle);
+	return title;
+};
+
 module.exports = helpers;
