@@ -217,6 +217,10 @@ categoriesController.get = function(req, res, callback) {
 					content: categoryData.description
 				},
 				{
+					name: 'keywords',
+					content: categoryData.metaKeywords || ''
+				},
+				{
 					property: "og:type",
 					content: 'website'
 				}
