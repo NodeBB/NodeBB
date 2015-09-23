@@ -80,5 +80,6 @@
     "privacy": "隱私",
     "follow": "追蹤",
     "unfollow": "取消追蹤",
-    "delete_all": "全部刪除"
+    "delete_all": "全部刪除",
+    "map": "Map"
 }

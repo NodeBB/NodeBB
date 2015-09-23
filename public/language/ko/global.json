@@ -80,5 +80,6 @@
     "privacy": "개인정보",
     "follow": "Follow",
     "unfollow": "Unfollow",
-    "delete_all": "Delete All"
+    "delete_all": "Delete All",
+    "map": "Map"
 }

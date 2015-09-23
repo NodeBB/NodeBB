@@ -80,5 +80,6 @@
     "privacy": "Yksityisyys",
     "follow": "Seuraa",
     "unfollow": "Älä seuraa",
-    "delete_all": "Poista kaikki"
+    "delete_all": "Poista kaikki",
+    "map": "Map"
 }

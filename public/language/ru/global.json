@@ -22,7 +22,7 @@
     "pagination.out_of": "%1 из %2",
     "pagination.enter_index": "Перейти на главную",
     "header.admin": "Админка",
-    "header.categories": "Categories",
+    "header.categories": "Категории",
     "header.recent": "Последние",
     "header.unread": "Непрочитанное",
     "header.tags": "Тэги",
@@ -68,7 +68,7 @@
     "recentposts": "Свежие записи",
     "recentips": "Последние IP-адреса, с которых был осуществлен вход",
     "away": "Отсутствует",
-    "dnd": "Do not disturb",
+    "dnd": "Не беспокоить",
     "invisible": "Невидимый",
     "offline": "Не в сети",
     "email": "Email",
@@ -80,5 +80,6 @@
     "privacy": "Безопасность",
     "follow": "Подписаться",
     "unfollow": "Отписаться",
-    "delete_all": "Удалить все"
+    "delete_all": "Удалить все",
+    "map": "Карта"
 }

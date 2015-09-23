@@ -1,5 +1,5 @@
 {
-    "home": "Ana Sayfa",
+    "home": "Anasayfa",
     "search": "Arama",
     "buttons.close": "Kapat",
     "403.title": "Erişim Engellendi",
@@ -17,7 +17,7 @@
     "welcome_back": "Tekrar Hoşgeldiniz",
     "you_have_successfully_logged_in": "Başarıyla giriş yaptınız!",
     "save_changes": "Değişiklikleri kaydet",
-    "close": "Yakın",
+    "close": "Kapat",
     "pagination": "Sayfalara numara koyma",
     "pagination.out_of": "%1 - %2",
     "pagination.enter_index": "İndex gir",
@@ -80,5 +80,6 @@
     "privacy": "Gizlilik",
     "follow": "Takip et",
     "unfollow": "Takip etmeyi bırak",
-    "delete_all": "Hepsini Sil"
+    "delete_all": "Hepsini Sil",
+    "map": "Harita"
 }

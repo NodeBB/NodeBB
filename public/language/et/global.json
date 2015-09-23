@@ -33,7 +33,7 @@
     "header.notifications": "Teated",
     "header.search": "Otsi",
     "header.profile": "Profiil",
-    "header.navigation": "Navigation",
+    "header.navigation": "Navigatsioon",
     "notifications.loading": "Laen teateid",
     "chats.loading": "Laen vestlusi",
     "motd.welcome": "Tere tulemast NodeBB foorumisse.",
@@ -68,7 +68,7 @@
     "recentposts": "Hiljutised postitused",
     "recentips": "Hiljutised IP'd, millelt sisse logitud",
     "away": "Eemal",
-    "dnd": "Do not disturb",
+    "dnd": "Mitte segada",
     "invisible": "Nähtamatu",
     "offline": "Väljas",
     "email": "Emaili aadress",
@@ -80,5 +80,6 @@
     "privacy": "Privaatsus",
     "follow": "Jälgi",
     "unfollow": "Ära jälgi",
-    "delete_all": "Kustuta kõik"
+    "delete_all": "Kustuta kõik",
+    "map": "Kaart"
 }

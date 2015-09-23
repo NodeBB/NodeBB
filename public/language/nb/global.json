@@ -22,7 +22,7 @@
     "pagination.out_of": "%1 ut av %2",
     "pagination.enter_index": "Skriv indeks",
     "header.admin": "Admin",
-    "header.categories": "Categories",
+    "header.categories": "Kategorier",
     "header.recent": "Seneste",
     "header.unread": "Uleste",
     "header.tags": "Tagger",
@@ -33,7 +33,7 @@
     "header.notifications": "Varsler",
     "header.search": "Søk",
     "header.profile": "Profil",
-    "header.navigation": "Navigation",
+    "header.navigation": "Navigasjon",
     "notifications.loading": "Laster varsler",
     "chats.loading": "Laster chatter",
     "motd.welcome": "Velkommen til NodeBB, fremtidens diskusjonsplatform.",
@@ -52,7 +52,7 @@
     "views": "Visninger",
     "reputation": "Rykte",
     "read_more": "les mer",
-    "more": "More",
+    "more": "Mer",
     "posted_ago_by_guest": "skrevet %1 av Gjest",
     "posted_ago_by": "skrevet %1 av %2",
     "posted_ago": "skrevet %1",
@@ -68,7 +68,7 @@
     "recentposts": "Seneste innlegg",
     "recentips": "Seneste innloggede IP-er",
     "away": "Borte",
-    "dnd": "Do not disturb",
+    "dnd": "Ikke forstyrr",
     "invisible": "Usynlig",
     "offline": "Offline",
     "email": "E-post",
@@ -80,5 +80,6 @@
     "privacy": "Personvern",
     "follow": "Følg",
     "unfollow": "Avfølg",
-    "delete_all": "Slett alle"
+    "delete_all": "Slett alle",
+    "map": "Kart"
 }
