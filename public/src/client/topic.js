@@ -103,7 +103,7 @@ define('forum/topic', [
 	}
 
 	Topic.toTop = function() {
-		navigator.scrollTop(0);
+		navigator.scrollTop();
 	};
 
 	Topic.toBottom = function() {
