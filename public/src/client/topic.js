@@ -247,13 +247,19 @@ define('forum/topic', [
 			}
 
 			if (newUrl !== currentUrl) {
-				if (history.replaceState) {
-					var search = (window.location.search ? window.location.search : '');
-					history.replaceState({
-						url: newUrl + search
-					}, null, window.location.protocol + '//' + window.location.host + RELATIVE_PATH + '/' + newUrl + search);
+				if (Topic.replaceURLTimeout) {
+					clearTimeout(Topic.replaceURLTimeout);
 				}
-				currentUrl = newUrl;
+				Topic.replaceURLTimeout = setTimeout(function() {
+					Topic.replaceURLTimeout = 0;
+					if (history.replaceState) {
+						var search = (window.location.search ? window.location.search : '');
+						history.replaceState({
+							url: newUrl + search
+						}, null, window.location.protocol + '//' + window.location.host + RELATIVE_PATH + '/' + newUrl + search);
+					}
+					currentUrl = newUrl;
+				}, 500);
 			}
 		}
 		return index;
