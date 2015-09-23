@@ -213,7 +213,7 @@ topicsController.get = function(req, res, callback) {
 				},
 				{
 					property: "og:url",
-					content: nconf.get('url') + '/topic/' + topicData.slug
+					content: nconf.get('url') + '/topic/' + topicData.slug + (req.params.post_index ? ('/' + req.params.post_index) : '');
 				},
 				{
 					property: 'og:image',
