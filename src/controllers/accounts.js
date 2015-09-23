@@ -185,7 +185,7 @@ accountsController.getAccount = function(req, res, next) {
 			userData.nextStart = results.posts.nextStart;
 			userData.isFollowing = results.isFollowing;
 			userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username}]);
-
+			userData.title = userData.username;
 			if (!userData.profileviews) {
 				userData.profileviews = 1;
 			}
