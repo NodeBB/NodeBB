@@ -4,8 +4,7 @@ var colors = require('colors'),
 	cproc = require('child_process'),
 	argv = require('minimist')(process.argv.slice(2)),
 	fs = require('fs'),
-	async = require('async'),
-	touch = require('touch');
+	async = require('async');
 
 var getRunningPid = function(callback) {
 		fs.readFile(__dirname + '/pidfile', {
@@ -140,10 +139,6 @@ switch(process.argv[2]) {
 				});
 
 				upgradeProc.on('close', next)
-			},
-			function(next) {
-				process.stdout.write('3. '.bold + 'Storing upgrade date in "package.json"... '.yellow);
-				touch(__dirname + '/package.json', {}, next);
 			}
 		], function(err) {
 			if (err) {
