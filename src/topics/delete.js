@@ -32,7 +32,9 @@ module.exports = function(Topics) {
 						db.sortedSetRemove('cid:' + topicData.cid + ':pids', pids, next);
 					});
 				}
-			], callback);
+			], function(err, results) {
+				callback(err);
+			});
 		});
 	};
 
@@ -77,7 +79,9 @@ module.exports = function(Topics) {
 						});
 					});
 				}
-			], callback);
+			], function(err, results) {
+				callback(err);
+			});
 		});
 	};
 

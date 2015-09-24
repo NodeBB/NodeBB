@@ -1,6 +1,8 @@
 'use strict';
 
 var async = require('async'),
+	_ = require('underscore'),
+
 	db = require('../database'),
 	topics = require('../topics'),
 	user = require('../user'),
@@ -59,7 +61,7 @@ module.exports = function(Posts) {
 			},
 			function(cid, next) {
 				postData.cid = cid;
-				plugins.fireHook('action:post.restore', postData);
+				plugins.fireHook('action:post.restore', _.clone(postData));
 
 				async.parallel([
 					function(next) {

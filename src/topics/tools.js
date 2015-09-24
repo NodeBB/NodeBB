@@ -61,7 +61,7 @@ module.exports = function(Topics) {
 					uid: uid
 				};
 
-				callback(null, data);
+				next(null, data);
 			}
 		], callback);
 	}
