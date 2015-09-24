@@ -186,6 +186,52 @@ Controllers.robots = function (req, res) {
 	}
 };
 
+Controllers.manifest = function(req, res) {
+	var manifest = {
+			name: meta.config.title || 'NodeBB',
+			start_url: nconf.get('relative_path') + '/',
+			display: 'standalone',
+			orientation: 'portrait',
+			icons: []
+		};
+
+	if (meta.config['brand:touchIcon']) {
+		manifest.icons.push({
+			src: nconf.get('relative_path') + '/uploads/system/touchicon-36.png',
+			sizes: '36x36',
+			type: 'image/png',
+			density: 0.75
+		}, {
+			src: nconf.get('relative_path') + '/uploads/system/touchicon-48.png',
+			sizes: '48x48',
+			type: 'image/png',
+			density: 1.0
+		}, {
+			src: nconf.get('relative_path') + '/uploads/system/touchicon-72.png',
+			sizes: '72x72',
+			type: 'image/png',
+			density: 1.5
+		}, {
+			src: nconf.get('relative_path') + '/uploads/system/touchicon-96.png',
+			sizes: '96x96',
+			type: 'image/png',
+			density: 2.0
+		}, {
+			src: nconf.get('relative_path') + '/uploads/system/touchicon-144.png',
+			sizes: '144x144',
+			type: 'image/png',
+			density: 3.0
+		}, {
+			src: nconf.get('relative_path') + '/uploads/system/touchicon-192.png',
+			sizes: '192x192',
+			type: 'image/png',
+			density: 4.0
+		})
+	}
+
+	res.status(200).json(manifest);
+};
+
 Controllers.outgoing = function(req, res, next) {
 	var url = req.query.url,
 		data = {

@@ -2,9 +2,11 @@
 
 var fs = require('fs'),
 	path = require('path'),
+	async = require('async'),
 	nconf = require('nconf'),
 	winston = require('winston'),
 	file = require('../../file'),
+	image = require('../../image'),
 	plugins = require('../../plugins');
 
 
@@ -48,6 +50,41 @@ uploadsController.uploadFavicon = function(req, res, next) {
 			}
 
 			res.json([{name: uploadedFile.name, url: image.url}]);
+		});
+	}
+};
+
+uploadsController.uploadTouchIcon = function(req, res, next) {
+	var uploadedFile = req.files.files[0],
+		allowedTypes = ['image/png'],
+		sizes = [36, 48, 72, 96, 144, 192];
+
+	if (validateUpload(req, res, next, uploadedFile, allowedTypes)) {
+		file.saveFileToLocal('touchicon-orig.png', 'system', uploadedFile.path, function(err, imageObj) {
+			// Resize the image into squares for use as touch icons at various DPIs
+			async.each(sizes, function(size, next) {
+				async.series([
+					async.apply(file.saveFileToLocal, 'touchicon-' + size + '.png', 'system', uploadedFile.path),
+					async.apply(image.resizeImage, {
+						path: path.join(nconf.get('base_dir'), nconf.get('upload_path'), 'system', 'touchicon-' + size + '.png'),
+						extension: 'png',
+						width: size,
+						height: size
+					})
+				], next);
+			}, function(err) {
+				fs.unlink(uploadedFile.path, function(err) {
+					if (err) {
+						winston.error(err);
+					}
+				});
+
+				if (err) {
+					return next(err);
+				}
+
+				res.json([{name: uploadedFile.name, url: imageObj.url}]);
+			});
 		});
 	}
 };

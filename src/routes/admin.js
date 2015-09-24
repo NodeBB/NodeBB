@@ -13,6 +13,7 @@ function apiRoutes(router, middleware, controllers) {
 
 	router.post('/category/uploadpicture', middlewares, controllers.admin.uploads.uploadCategoryPicture);
 	router.post('/uploadfavicon', middlewares, controllers.admin.uploads.uploadFavicon);
+	router.post('/uploadTouchIcon', middlewares, controllers.admin.uploads.uploadTouchIcon);
 	router.post('/uploadlogo', middlewares, controllers.admin.uploads.uploadLogo);
 	router.post('/uploadgravatardefault', middlewares, controllers.admin.uploads.uploadGravatarDefault);
 }

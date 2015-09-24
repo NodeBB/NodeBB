@@ -7,18 +7,18 @@ var fs = require('fs'),
 
 var image = {};
 
-image.resizeImage = function(path, extension, width, height, callback) {
+image.resizeImage = function(data, callback) {
 	if (plugins.hasListeners('filter:image.resize')) {
 		plugins.fireHook('filter:image.resize', {
-			path: path,
-			extension: extension,
-			width: width,
-			height: height
+			path: data.path,
+			extension: data.extension,
+			width: data.width,
+			height: data.height
 		}, function(err, data) {
 			callback(err);
 		});
 	} else {
-		new Jimp(path, function(err, image) {
+		new Jimp(data.path, function(err, image) {
 			if (err) {
 				return callback(err);
 			}
@@ -26,7 +26,7 @@ image.resizeImage = function(path, extension, width, height, callback) {
 			var w = image.bitmap.width,
 				h = image.bitmap.height,
 				origRatio = w/h,
-				desiredRatio = width/height,
+				desiredRatio = data.width/data.height,
 				x = 0,
 				y = 0,
 				crop;
@@ -47,10 +47,10 @@ image.resizeImage = function(path, extension, width, height, callback) {
 			async.waterfall([
 				crop,
 				function(image, next) {
-					image.resize(width, height, next);
+					image.resize(data.width, data.height, next);
 				},
 				function(image, next) {
-					image.write(path, next);
+					image.write(data.target || data.path, next);
 				}
 			], function(err) {
 				callback(err);

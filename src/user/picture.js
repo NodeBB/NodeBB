@@ -37,7 +37,12 @@ module.exports = function(User) {
 				file.isFileTypeAllowed(picture.path, ['png', 'jpeg', 'jpg', 'gif'], next);
 			},
 			function(next) {
-				image.resizeImage(picture.path, extension, imageDimension, imageDimension, next);
+				image.resizeImage({
+					path: picture.path,
+					extension: extension,
+					width: imageDimension,
+					height: imageDimension
+				}, next);
 			},
 			function(next) {
 				if (convertToPNG) {

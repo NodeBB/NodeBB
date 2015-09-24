@@ -40,6 +40,16 @@
 		return '<meta ' + name + property + content + '/>';
 	};
 
+	helpers.buildLinkTag = function(tag) {
+		var link = tag.link ? 'link="' + tag.link + '" ' : '',
+			rel = tag.rel ? 'rel="' + tag.rel + '" ' : '',
+			type = tag.type ? 'type="' + tag.type + '" ' : '',
+			href = tag.href ? 'href="' + tag.href + '" ' : '',
+			sizes = tag.sizes ? 'sizes="' + tag.sizes + '" ' : '';
+
+		return '<link ' + link + rel + type + sizes + href + '/>';
+	};
+
 	helpers.stringify = function(obj) {
 		// Turns the incoming object into a JSON string
 		return JSON.stringify(obj).replace(/&/gm,"&amp;").replace(/</gm,"&lt;").replace(/>/gm,"&gt;").replace(/"/g, '&quot;');
