@@ -16,7 +16,7 @@
 							<label for="cid-{category.cid}-description">Category Description</label>
 							<input id="cid-{category.cid}-description" data-name="description" placeholder="Category Description" value="{category.description}" class="form-control category_description description"></input><br />
 							
-							<label for="cid-{category.cid}-metaKeywords">Meta Keywords</label>
+							<label for="cid-{category.cid}-metaKeywords">Keywords</label>
 							<input id="cid-{category.cid}-metaKeywords" data-name="metaKeywords" placeholder="Category Meta Keywords" class="form-control category_metaKeywords metaKeywords" value="{category.metaKeywords}" /><br />
 						</fieldset>
 
