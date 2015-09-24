@@ -115,7 +115,9 @@ var	fs = require('fs'),
 			function (data, next) {
 				Plugins.fireHook('filter:email.send', data, next);
 			}
-		], callback);
+		], function (err, data) {
+			callback(err);
+		});
 	};
 
 
