@@ -141,6 +141,7 @@ module.exports = function(Groups) {
 			},
 			function(next) {
 				uploadsController.uploadGroupCover({
+					name: 'groupCover',
 					path: tempPath
 				}, function(err, uploadData) {
 					if (err) {
