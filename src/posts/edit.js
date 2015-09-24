@@ -2,6 +2,7 @@
 
 var async = require('async'),
 	validator = require('validator'),
+	_ = require('underscore'),
 	db = require('../database'),
 	topics = require('../topics'),
 	user = require('../user'),
@@ -20,25 +21,26 @@ module.exports = function(Posts) {
 	Posts.edit = function(data, callback) {
 		var now = Date.now();
 		var postData;
+		var results;
 
 		async.waterfall([
 			function (next) {
 				privileges.posts.canEdit(data.pid, data.uid, next);
 			},
-			function(canEdit, next) {
+			function (canEdit, next) {
 				if (!canEdit) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				Posts.getPostData(data.pid, next);
 			},
-			function(_postData, next) {
+			function (_postData, next) {
 				postData = _postData;
 				postData.content = data.content;
 				postData.edited = now;
 				postData.editor = data.uid;
 				plugins.fireHook('filter:post.edit', {post: postData, uid: data.uid}, next);
 			},
-			function(result, next) {
+			function (result, next) {
 				postData = result.post;
 				var updateData = {
 					edited: postData.edited,
@@ -49,34 +51,34 @@ module.exports = function(Posts) {
 					updateData.handle = data.handle;
 				}
 				Posts.setPostFields(data.pid, updateData, next);
-			}
-		], function(err, result) {
-			if (err) {
-				return callback(err);
-			}
+			},
+			function (next) {
+				async.parallel({
+					editor: function(next) {
+						user.getUserFields(data.uid, ['username', 'userslug'], next);
+					},
+					topic: function(next) {
+						editMainPost(data, postData, next);
+					}
+				}, next);
+			},
+			function (_results, next) {
+				results = _results;
 
-			async.parallel({
-				editor: function(next) {
-					user.getUserFields(data.uid, ['username', 'userslug'], next);
-				},
-				topic: function(next) {
-					editMainPost(data, postData, next);
-				},
-				post: function(next) {
-					cache.del(postData.pid);
-					pubsub.publish('post:edit', postData.pid);
-					Posts.parsePost(postData, next);
-				}
-			}, function(err, results) {
-				if (err) {
-					return callback(err);
-				}
 				postData.cid = results.topic.cid;
-				plugins.fireHook('action:post.edit', postData);
 
-				callback(null, results);
-			});
-		});
+				plugins.fireHook('action:post.edit', _.clone(postData));
+
+				cache.del(postData.pid);
+				pubsub.publish('post:edit', postData.pid);
+
+				Posts.parsePost(postData, next);
+			},
+			function (postData, next) {
+				results.post = postData;
+				next(null, results);
+			}
+		], callback);
 	};
 
 	function editMainPost(data, postData, callback) {
