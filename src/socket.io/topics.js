@@ -439,7 +439,7 @@ SocketTopics.loadMore = function(socket, data, callback) {
 
 		var set = 'tid:' + data.tid + ':posts';
 		var reverse = results.settings.topicPostSort === 'newest_to_oldest' || results.settings.topicPostSort === 'most_votes';
-		var	start = Math.max(0, parseInt(data.after, 10));
+		var start = Math.max(0, parseInt(data.after, 10));
 
 		var infScrollPostsPerPage = 10;
 
