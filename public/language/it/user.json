@@ -87,5 +87,8 @@
     "follow_topics_you_create": "Segui le discussioni che hai iniziato",
     "grouptitle": "Seleziona il titolo del gruppo che vorresti vedere",
     "no-group-title": "Nessun titolo al gruppo",
-    "select-skin": "Seleziona uno Skin"
+    "select-skin": "Seleziona uno Skin",
+    "sso.title": "Single Sign-on Services",
+    "sso.associated": "Associated with",
+    "sso.not-associated": "Click here to associate with"
 }

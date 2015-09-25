@@ -87,5 +87,8 @@
     "follow_topics_you_create": "جستارهایی که ایجاد کرده ای را دنبال کن",
     "grouptitle": "عنوان گروهی که میخواهید نشان داده شود را انتخاب کنید.",
     "no-group-title": "عنوان گروه ای نیست",
-    "select-skin": "Select a Skin"
+    "select-skin": "Select a Skin",
+    "sso.title": "Single Sign-on Services",
+    "sso.associated": "Associated with",
+    "sso.not-associated": "Click here to associate with"
 }

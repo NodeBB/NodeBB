@@ -3,7 +3,7 @@
     "subcategories": "Underkategorier",
     "new_topic_button": "Nytt emne",
     "guest-login-post": "Logg inn til innlegg",
-    "no_topics": "<strong>Det er ingen emner i denne kategorien</strong><br />Hvorfor ikke lage et?",
+    "no_topics": "<strong>Det er ingen emner i denne kategorien</strong><br />Hvorfor ikke opprette et?",
     "browsing": "leser",
     "no_replies": "Ingen har svart",
     "no_new_posts": "Ingen nye innlegg.",
@@ -12,5 +12,5 @@
     "ignore": "Ignorer",
     "watch.message": "Du overvåker nå oppdateringer fra denne kategorien",
     "ignore.message": "Du ignorerer nå oppdateringer fra denne kategorien",
-    "watched-categories": "Watched categories"
+    "watched-categories": "Overvåkede kategorier"
 }

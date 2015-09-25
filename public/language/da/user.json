@@ -87,5 +87,8 @@
     "follow_topics_you_create": "Følg emner du opretter",
     "grouptitle": "Vælg gruppe titlen du gerne vil fremvise",
     "no-group-title": "Ingen gruppe titel",
-    "select-skin": "Vælg et skin"
+    "select-skin": "Vælg et skin",
+    "sso.title": "Single Sign-on Services",
+    "sso.associated": "Associated with",
+    "sso.not-associated": "Click here to associate with"
 }

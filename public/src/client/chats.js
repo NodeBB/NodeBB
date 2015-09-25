@@ -21,6 +21,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 
 		if (env === 'md' || env === 'lg') {
 			Chats.resizeMainWindow();
+			Chats.addHotkeys();
 		}
 
 		Chats.scrollToBottom($('.expanded-chat ul'));
@@ -42,7 +43,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			if (env === 'xs' || env === 'sm') {
 				app.openChat($(this).attr('data-username'), $(this).attr('data-uid'));
 			} else {
-				ajaxify.go('chats/' + utils.slugify($(this).attr('data-username')));
+				Chats.switchChat(parseInt($(this).attr('data-uid'), 10), $(this).attr('data-username'));
 			}
 		});
 
@@ -76,6 +77,29 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		});
 
 		Chats.addSinceHandler(Chats.getRecipientUid(), $('.expanded-chat .chat-content'), $('.expanded-chat [data-since]'));
+	};
+
+	Chats.addHotkeys = function() {
+		Mousetrap.bind('ctrl+up', function() {
+			var activeContact = $('.chats-list .bg-primary'),
+				prev = activeContact.prev();
+
+			if (prev.length) {
+				Chats.switchChat(parseInt(prev.attr('data-uid'), 10), prev.attr('data-username'));
+			}
+
+			$('[component="chat/input"]').focus();
+		});
+		Mousetrap.bind('ctrl+down', function() {
+			var activeContact = $('.chats-list .bg-primary'),
+				next = activeContact.next();
+
+			if (next.length) {
+				Chats.switchChat(parseInt(next.attr('data-uid'), 10), next.attr('data-username'));
+			}
+
+			$('[component="chat/input"]').focus();
+		});
 	};
 
 	Chats.addSinceHandler = function(toUid, chatContentEl, sinceEl) {
@@ -112,6 +136,29 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			inputEl.focus();
 			return false;
 		});
+	};
+
+	Chats.switchChat = function(uid, username) {
+		if (!$('[component="chat/messages"]').length) {
+			ajaxify.go('chats/' + username);
+		}
+
+		var contactEl = $('.chats-list [data-uid="' + uid + '"]');
+
+		Chats.loadChatSince(uid, $('.chat-content'), 'recent');
+		Chats.addSendHandlers(uid, $('[component="chat/input"]'), $('[data-action="send"]'));
+		contactEl.addClass('bg-primary').siblings().removeClass('bg-primary');
+		$('[component="chat/title"]').text(username);
+		$('[component="chat/messages"]').attr('data-uid', uid).attr('data-username', username);
+		$('[component="breadcrumb/current"]').text(username);
+
+		if (window.history && window.history.pushState) {
+			var url = 'chats/' + utils.slugify(username);
+
+			window.history.pushState({
+				url: url
+			}, url, RELATIVE_PATH + '/' + url);
+		}
 	};
 
 	Chats.loadChatSince = function(toUid, chatContentEl, since) {

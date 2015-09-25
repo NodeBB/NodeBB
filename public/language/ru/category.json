@@ -1,16 +1,16 @@
 {
-    "category": "Category",
-    "subcategories": "Subcategories",
+    "category": "Категория",
+    "subcategories": "Подкатегории",
     "new_topic_button": "Создать тему",
     "guest-login-post": "Войдите чтобы создавать сообщения",
     "no_topics": "<strong>В этой категории еще нет тем.</strong><br />Почему бы вам не создать первую?",
     "browsing": "просматривают",
     "no_replies": "Нет ответов",
-    "no_new_posts": "No new posts.",
+    "no_new_posts": "Нет новых сообщений.",
     "share_this_category": "Поделиться этой категорией",
     "watch": "Следить",
     "ignore": "Игнорировать",
     "watch.message": "Вы теперь следите за обновлениями из этой категории",
     "ignore.message": "Вы теперь игнорируете обновления из этой категории",
-    "watched-categories": "Watched categories"
+    "watched-categories": "Наблюдаемые категории"
 }

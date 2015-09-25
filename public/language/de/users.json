@@ -1,5 +1,5 @@
 {
-    "latest_users": "neuste Benutzer",
+    "latest_users": "Neuste Benutzer",
     "top_posters": "meiste Beiträge",
     "most_reputation": "höchstes Ansehen",
     "search": "Suchen",
@@ -16,6 +16,6 @@
     "popular_topics": "Beliebte Themen",
     "unread_topics": "Ungelesen Themen",
     "categories": "Kategorien",
-    "tags": "Stichwörter",
+    "tags": "Schlagworte",
     "map": "Karte"
 }

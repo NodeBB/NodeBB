@@ -1,7 +1,7 @@
 {
     "title": "Varsler",
     "no_notifs": "Du har ingen nye varsler",
-    "see_all": "See all notifications",
+    "see_all": "Se alle notifikasjoner",
     "mark_all_read": "Merk alle varsler som lest",
     "back_to_home": "Tilbake til %1",
     "outgoing_link": "Utgående link",
@@ -20,9 +20,9 @@
     "user_posted_topic": "<strong>%1</strong> har skrevet et nytt emne: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> nevnte deg i <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> begynte å følge deg.",
-    "new_register": "<strong>%1</strong> sent a registration request.",
+    "new_register": "<strong>%1</strong> sendte en forespørsel om registrering",
     "email-confirmed": "E-post bekreftet",
-    "email-confirmed-message": "Thank for at du har validert din e-post. Kontoen din er nå fullstendig aktivert.",
+    "email-confirmed-message": "Takk for at du har validert din e-post. Kontoen din er nå fullstendig aktivert.",
     "email-confirm-error-message": "Det oppsto et problem under valdiering av din e-post. Koden kan ha vært ugyldig eller ha utløpt.",
     "email-confirm-sent": "Bekreftelsesepost sendt."
 }

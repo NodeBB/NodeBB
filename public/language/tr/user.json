@@ -87,5 +87,8 @@
     "follow_topics_you_create": "Kendi konularımı takip et",
     "grouptitle": "Göstermek istediğiniz gurup başlığını seçin",
     "no-group-title": "Grup başlığı yok",
-    "select-skin": "Bir deri şeçin"
+    "select-skin": "Bir deri şeçin",
+    "sso.title": "Tek giriş servisleri",
+    "sso.associated": "Birleştirilmiş",
+    "sso.not-associated": "Birleştirmek için buraya tıklayın"
 }

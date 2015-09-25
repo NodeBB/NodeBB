@@ -87,5 +87,8 @@
     "follow_topics_you_create": "Volg de onderwerpen waarvan ik de oorspronkelijke auteur ben",
     "grouptitle": "Selecteer de groepstitel voor weergave",
     "no-group-title": "Geen groepstitel",
-    "select-skin": "Selecteer een uiterlijk"
+    "select-skin": "Selecteer een uiterlijk",
+    "sso.title": "Single Sign-on Services",
+    "sso.associated": "Associated with",
+    "sso.not-associated": "Click here to associate with"
 }

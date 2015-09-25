@@ -12,9 +12,9 @@
     "invited.none": "Hetkel ei ole kutsutud kasutajaid",
     "invited.uninvite": "Tühistage kutse",
     "invited.search": "Otsige kasutajat, keda kutsuda antud gruppi.",
-    "invited.notification_title": "You have been invited to join <strong>%1</strong>",
-    "request.notification_title": "Group Membership Request from <strong>%1</strong>",
-    "request.notification_text": "<strong>%1</strong> has requested to become a member of <strong>%2</strong>",
+    "invited.notification_title": "Sind on kutsutud liituma grupiga <strong>%1</strong>",
+    "request.notification_title": "Grupiga liitumise taotlus kasutajalt <strong>%1</strong>",
+    "request.notification_text": "<strong>%1</strong> on avaldanud soovi liituda grupiga <strong>%2</strong>",
     "cover-instructions": "Lohista kaanepilt siia ning vajuta <strong>salvesta</strong>",
     "cover-change": "Muuda",
     "cover-save": "Salvesta",
@@ -49,5 +49,5 @@
     "membership.join-group": "Liitu grupiga",
     "membership.leave-group": "Lahku grupist",
     "membership.reject": "Lükka tagasi",
-    "new-group.group_name": "Group Name:"
+    "new-group.group_name": "Grupi nimi:"
 }

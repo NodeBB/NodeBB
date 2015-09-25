@@ -87,5 +87,8 @@
     "follow_topics_you_create": "Ikut topik yang anda buat",
     "grouptitle": "Pilih nama kumpulan yang anda ingin tunjukkan",
     "no-group-title": "Tiada nama kumpulan",
-    "select-skin": "Select a Skin"
+    "select-skin": "Select a Skin",
+    "sso.title": "Single Sign-on Services",
+    "sso.associated": "Associated with",
+    "sso.not-associated": "Click here to associate with"
 }

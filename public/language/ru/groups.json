@@ -12,9 +12,9 @@
     "invited.none": "На данный момент нет приглашенных пользователей",
     "invited.uninvite": "Аннулировать приглашение",
     "invited.search": "Поиск пользователя для приглашение в эту группу",
-    "invited.notification_title": "You have been invited to join <strong>%1</strong>",
-    "request.notification_title": "Group Membership Request from <strong>%1</strong>",
-    "request.notification_text": "<strong>%1</strong> has requested to become a member of <strong>%2</strong>",
+    "invited.notification_title": "Вы были приглашены в <strong>%1</strong>",
+    "request.notification_title": "Запрос на участие в группе от <strong>%1</strong>",
+    "request.notification_text": "<strong>%1</strong> запросил участие в группе <strong>%2</strong>",
     "cover-instructions": "Перетяните сюда изображение, переместите на нужную позицию и нажмите <strong>Сохранить</strong>",
     "cover-change": "Изменить",
     "cover-save": "Сохранить",
@@ -49,5 +49,5 @@
     "membership.join-group": "Вступить",
     "membership.leave-group": "Покинуть",
     "membership.reject": "Отклонить",
-    "new-group.group_name": "Group Name:"
+    "new-group.group_name": "Название группы:"
 }

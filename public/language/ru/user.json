@@ -12,7 +12,7 @@
     "delete_account": "Удалить аккаунт",
     "delete_account_confirm": "Вы уверены, что хотите удалить учетную запись? <br /><strong>Это действие необратимо, Вы не сможете восстановить свои данные</strong><br /><br />Введите имя пользователя для подтверждения уничтожения аккаунта.",
     "delete_this_account_confirm": "Вы уверены, что хотите удалить этот аккаунт? <br /><strong>Это действие является необратимым и вы не сможете восстановить любые данные</strong><br /><br />",
-    "account-deleted": "Account deleted",
+    "account-deleted": "Аккаунт удален",
     "fullname": "Полное имя",
     "website": "Сайт",
     "location": "Откуда",
@@ -53,7 +53,7 @@
     "username_taken_workaround": "Логин, который Вы запросили, уже занят. Мы его немного изменили. Теперь Ваш  логин <strong>%1</strong>",
     "upload_picture": "Загрузить фотографию",
     "upload_a_picture": "Загрузить фотографию",
-    "remove_uploaded_picture": "Remove Uploaded Picture",
+    "remove_uploaded_picture": "Удалить загруженные фотографии",
     "image_spec": "Поддерживаются только PNG, JPG или GIF файлы",
     "settings": "Настройки",
     "show_email": "Показывать мой Email",
@@ -87,5 +87,8 @@
     "follow_topics_you_create": "Следить за темами которые вы создаёте",
     "grouptitle": "Выберите бейдж группы для отображения",
     "no-group-title": "Не показывать бейдж",
-    "select-skin": "Select a Skin"
+    "select-skin": "Выбрать скин",
+    "sso.title": "Сервис единого входа*(https://ru.wikipedia.org/wiki/%D0%A2%D0%B5%D1%85%D0%BD%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%B5%D0%B4%D0%B8%D0%BD%D0%BE%D0%B3%D0%BE_%D0%B2%D1%85%D0%BE%D0%B4%D0%B0)",
+    "sso.associated": "Связан с",
+    "sso.not-associated": "Нажмите здесь, что бы связать себя с"
 }
