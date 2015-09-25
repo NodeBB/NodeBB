@@ -8,6 +8,8 @@ var nconf = require('nconf'),
 	plugins = require('../plugins'),
 	express = require('express'),
 
+	accountRoutes = require('./accounts'),
+
 	metaRoutes = require('./meta'),
 	apiRoutes = require('./api'),
 	adminRoutes = require('./admin'),
@@ -53,26 +55,6 @@ function categoryRoutes(app, middleware, controllers) {
 
 	setupPageRoute(app, '/category/:category_id/:slug/:topic_index', middleware, [], controllers.categories.get);
 	setupPageRoute(app, '/category/:category_id/:slug?', middleware, [], controllers.categories.get);
-}
-
-function accountRoutes(app, middleware, controllers) {
-	var middlewares = [middleware.checkGlobalPrivacySettings];
-	var accountMiddlewares = [middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions];
-
-	setupPageRoute(app, '/user/:userslug', middleware, middlewares, controllers.accounts.getAccount);
-	setupPageRoute(app, '/user/:userslug/following', middleware, middlewares, controllers.accounts.getFollowing);
-	setupPageRoute(app, '/user/:userslug/followers', middleware, middlewares, controllers.accounts.getFollowers);
-	setupPageRoute(app, '/user/:userslug/posts', middleware, middlewares, controllers.accounts.getPosts);
-	setupPageRoute(app, '/user/:userslug/topics', middleware, middlewares, controllers.accounts.getTopics);
-	setupPageRoute(app, '/user/:userslug/groups', middleware, middlewares, controllers.accounts.getGroups);
-
-	setupPageRoute(app, '/user/:userslug/favourites', middleware, accountMiddlewares, controllers.accounts.getFavourites);
-	setupPageRoute(app, '/user/:userslug/watched', middleware, accountMiddlewares, controllers.accounts.getWatchedTopics);
-	setupPageRoute(app, '/user/:userslug/edit', middleware, accountMiddlewares, controllers.accounts.accountEdit);
-	setupPageRoute(app, '/user/:userslug/settings', middleware, accountMiddlewares, controllers.accounts.accountSettings);
-
-	setupPageRoute(app, '/notifications', middleware, [middleware.authenticate], controllers.accounts.getNotifications);
-	setupPageRoute(app, '/chats/:userslug?', middleware, [middleware.redirectToLoginIfGuest], controllers.accounts.getChats);
 }
 
 function userRoutes(app, middleware, controllers) {

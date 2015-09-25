@@ -1,6 +1,6 @@
 "use strict";
 
-var accountsController = {};
+
 
 var fs = require('fs'),
 	nconf = require('nconf'),
@@ -21,97 +21,12 @@ var fs = require('fs'),
 
 	helpers = require('./helpers');
 
-function getUserDataByUserSlug(userslug, callerUID, callback) {
-	user.getUidByUserslug(userslug, function(err, uid) {
-		if (err) {
-			return callback(err);
-		}
 
-		if (!uid) {
-			return callback(null, null);
-		}
+var accountsController = {
+	profile: require('./accounts/profile'),
+	edit: require('./accounts/edit')
+};
 
-		async.parallel({
-			userData : function(next) {
-				user.getUserData(uid, next);
-			},
-			userSettings : function(next) {
-				user.getSettings(uid, next);
-			},
-			isAdmin : function(next) {
-				user.isAdministrator(callerUID, next);
-			},
-			ips: function(next) {
-				user.getIPs(uid, 4, next);
-			},
-			profile_links: function(next) {
-				plugins.fireHook('filter:user.profileLinks', [], next);
-			},
-			groups: function(next) {
-				groups.getUserGroups([uid], next);
-			},
-			sso: async.apply(plugins.fireHook, 'filter:auth.list', {
-				uid: uid,
-				associations: []
-			})
-		}, function(err, results) {
-			if (err || !results.userData) {
-				return callback(err || new Error('[[error:invalid-uid]]'));
-			}
-
-			var userData = results.userData;
-			var userSettings = results.userSettings;
-			var isAdmin = results.isAdmin;
-			var self = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
-
-			userData.joindate = utils.toISOString(userData.joindate);
-			userData.lastonline = userData.lastonline ? utils.toISOString(userData.lastonline) : userData.joindate;
-			userData.age = userData.birthday ? Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000) : '';
-
-			if (!(isAdmin || self || (userData.email && userSettings.showemail))) {
-				userData.email = '';
-			}
-
-			userData.emailClass = (self && !userSettings.showemail) ? '' : 'hide';
-
-			if (!self && !userSettings.showfullname) {
-				userData.fullname = '';
-			}
-
-			if (isAdmin || self) {
-				userData.ips = results.ips;
-			}
-
-			userData.uid = userData.uid;
-			userData.yourid = callerUID;
-			userData.theirid = userData.uid;
-			userData.isAdmin = isAdmin;
-			userData.isSelf = self;
-			userData.showHidden = self || isAdmin;
-			userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
-			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
-			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
-			userData.profile_links = results.profile_links;
-			userData.sso = results.sso.associations;
-			userData.status = require('../socket.io').isUserOnline(userData.uid) ? (userData.status || 'online') : 'offline';
-			userData.banned = parseInt(userData.banned, 10) === 1;
-			userData.website = validator.escape(userData.website);
-			userData.websiteLink = !userData.website.startsWith('http') ? 'http://' + userData.website : userData.website;
-			userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
-			userData.followingCount = parseInt(userData.followingCount, 10) || 0;
-			userData.followerCount = parseInt(userData.followerCount, 10) || 0;
-
-			userData.username = validator.escape(userData.username);
-			userData.email = validator.escape(userData.email);
-			userData.fullname = validator.escape(userData.fullname);
-			userData.location = validator.escape(userData.location);
-			userData.signature = validator.escape(userData.signature);
-			userData.aboutme = validator.escape(userData.aboutme || '');
-
-			callback(null, userData);
-		});
-	});
-}
 
 accountsController.getUserByUID = function(req, res, next) {
 	var uid = req.params.uid ? req.params.uid : 0;
@@ -131,74 +46,6 @@ accountsController.getUserByUID = function(req, res, next) {
 	});
 };
 
-accountsController.getAccount = function(req, res, next) {
-	var lowercaseSlug = req.params.userslug.toLowerCase();
-
-	if (req.params.userslug !== lowercaseSlug) {
-		if (res.locals.isAPI) {
-			req.params.userslug = lowercaseSlug;
-		} else {
-			return res.redirect(nconf.get('relative_path') + '/user/' + lowercaseSlug);
-		}
-	}
-
-	getUserDataByUserSlug(req.params.userslug, req.uid, function (err, userData) {
-		if (err || !userData) {
-			return next(err);
-		}
-
-		if (req.uid !== parseInt(userData.uid, 10)) {
-			user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
-		}
-
-		async.parallel({
-			isFollowing: function(next) {
-				user.isFollowing(req.uid, userData.theirid, next);
-			},
-			posts: function(next) {
-				posts.getPostSummariesFromSet('uid:' + userData.theirid + ':posts', req.uid, 0, 9, next);
-			},
-			signature: function(next) {
-				posts.parseSignature(userData, req.uid, next);
-			},
-			aboutme: function(next) {
-				if (userData.aboutme) {
-					plugins.fireHook('filter:parse.raw', userData.aboutme, next);
-				} else {
-					next();
-				}
-			}
-		}, function(err, results) {
-			if(err) {
-				return next(err);
-			}
-
-			if (parseInt(meta.config['reputation:disabled'], 10) === 1) {
-				delete userData.reputation;
-			}
-
-			userData.posts = results.posts.posts.filter(function (p) {
-				return p && parseInt(p.deleted, 10) !== 1;
-			});
-
-			userData.aboutme = results.aboutme;
-			userData.nextStart = results.posts.nextStart;
-			userData.isFollowing = results.isFollowing;
-			userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username}]);
-			userData.title = userData.username;
-			if (!userData.profileviews) {
-				userData.profileviews = 1;
-			}
-
-			plugins.fireHook('filter:user.account', {userData: userData, uid: req.uid}, function(err, data) {
-				if (err) {
-					return next(err);
-				}
-				res.render('account/profile', data.userData);
-			});
-		});
-	});
-};
 
 accountsController.getFollowing = function(req, res, next) {
 	getFollow('account/following', 'following', req, res, next);
@@ -213,7 +60,7 @@ function getFollow(tpl, name, req, res, callback) {
 
 	async.waterfall([
 		function(next) {
-			getUserDataByUserSlug(req.params.userslug, req.uid, next);
+			accountsController.getBaseUser(req.params.userslug, req.uid, next);
 		},
 		function(data, next) {
 			userData = data;
@@ -376,33 +223,6 @@ accountsController.getBaseUser = function(userslug, callerUID, callback) {
 			results.user.profile_links = results.profile_links;
 			callback(null, results.user);
 		});
-	});
-};
-
-accountsController.accountEdit = function(req, res, callback) {
-	var userData;
-	async.waterfall([
-		function(next) {
-			getUserDataByUserSlug(req.params.userslug, req.uid, next);
-		},
-		function(data, next) {
-			userData = data;
-			if (!userData) {
-				return callback();
-			}
-			db.getObjectField('user:' + userData.uid, 'password', next);
-		}
-	], function(err, password) {
-		if (err) {
-			return callback(err);
-		}
-
-		userData['username:disableEdit'] = parseInt(meta.config['username:disableEdit'], 10) === 1;
-
-		userData.hasPassword = !!password;
-		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:edit]]'}]);
-		res.render('account/edit', userData);
 	});
 };
 
