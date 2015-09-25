@@ -321,7 +321,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function movePost(post, pid, tid) {
-		socket.emit('topics.movePost', {pid: pid, tid: tid}, function(err) {
+		socket.emit('posts.movePost', {pid: pid, tid: tid}, function(err) {
 			$('#move-post-modal').addClass('hide');
 
 			if (err) {
