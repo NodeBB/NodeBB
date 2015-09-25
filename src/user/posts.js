@@ -80,6 +80,13 @@ module.exports = function(User) {
 		db.sortedSetAdd('uid:' + uid + ':posts', timestamp, pid, callback);
 	};
 
+	User.addTopicIdToUser = function(uid, tid, timestamp, callback) {
+		async.parallel([
+			async.apply(db.sortedSetAdd, 'uid:' + uid + ':topics', timestamp, tid),
+			async.apply(User.incrementUserFieldBy, uid, 'topiccount', 1)
+		], callback);
+	};
+
 	User.incrementUserPostCountBy = function(uid, value, callback) {
 		callback = callback || function() {};
 		User.incrementUserFieldBy(uid, 'postcount', value, function(err, newpostcount) {
