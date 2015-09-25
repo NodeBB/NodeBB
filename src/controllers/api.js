@@ -195,6 +195,9 @@ apiController.getUserByUID = function(req, res, next) {
 
 apiController.getModerators = function(req, res, next) {
 	categories.getModerators(req.params.cid, function(err, moderators) {
+		if (err) {
+			return next(err);
+		}
 		res.json({moderators: moderators});
 	});
 };
