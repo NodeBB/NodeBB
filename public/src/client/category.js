@@ -79,7 +79,7 @@ define('forum/category', [
 	}
 
 	Category.toTop = function() {
-		navigator.scrollTop();
+		navigator.scrollTop(0);
 	};
 
 	Category.toBottom = function() {

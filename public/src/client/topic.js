@@ -88,7 +88,7 @@ define('forum/topic', [
 
 	function onKeyDown(ev) {
 		if (ev.which === 36) { // home key
-			navigator.scrollTop(0);
+			Topic.toTop();
 			return false;
 		} else if (ev.which === 35) { // end key
 			Topic.toBottom();
@@ -123,7 +123,7 @@ define('forum/topic', [
 	}
 
 	Topic.toTop = function() {
-		navigator.scrollTop();
+		navigator.scrollTop(0);
 	};
 
 	Topic.toBottom = function() {
