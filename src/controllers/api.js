@@ -174,4 +174,40 @@ apiController.getObject = function(req, res, next) {
 };
 
 
+apiController.getUserByUID = function(req, res, next) {
+	var uid = req.params.uid ? req.params.uid : 0;
+
+	async.parallel({
+		userData: async.apply(user.getUserData, uid),
+		settings: async.apply(user.getSettings, uid)
+	}, function(err, results) {
+		if (err || !results.userData) {
+			return next(err);
+		}
+
+		results.userData.email = results.settings.showemail ? results.userData.email : undefined;
+		results.userData.fullname = results.settings.showfullname ? results.userData.fullname : undefined;
+
+		res.json(results.userData);
+	});
+};
+
+
+apiController.getModerators = function(req, res, next) {
+	categories.getModerators(req.params.cid, function(err, moderators) {
+		res.json({moderators: moderators});
+	});
+};
+
+
+apiController.getRecentPosts = function(req, res, next) {
+	posts.getRecentPosts(req.uid, 0, 19, req.params.term, function (err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		res.json(data);
+	});
+};
+
 module.exports = apiController;

@@ -105,4 +105,42 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 	], callback);
 };
 
+
+helpers.getBaseUser = function(userslug, callerUID, callback) {
+	async.waterfall([
+		function (next) {
+			user.getUidByUserslug(userslug, next);
+		},
+		function (uid, next) {
+			if (!uid) {
+				return callback(null, null);
+			}
+
+			async.parallel({
+				user: function(next) {
+					user.getUserFields(uid, ['uid', 'username', 'userslug'], next);
+				},
+				isAdmin: function(next) {
+					user.isAdministrator(callerUID, next);
+				},
+				profile_links: function(next) {
+					plugins.fireHook('filter:user.profileLinks', [], next);
+				}
+			}, next);
+		},
+		function (results, next) {
+			if (!results.user) {
+				return callback();
+			}
+
+			results.user.yourid = callerUID;
+			results.user.theirid = results.user.uid;
+			results.user.isSelf = parseInt(callerUID, 10) === parseInt(results.user.uid, 10);
+			results.user.showHidden = results.user.isSelf || results.isAdmin;
+			results.user.profile_links = results.profile_links;
+			next(null, results.user);
+		}
+	], callback);
+};
+
 module.exports = helpers;
