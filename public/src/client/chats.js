@@ -21,6 +21,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 
 		if (env === 'md' || env === 'lg') {
 			Chats.resizeMainWindow();
+			Chats.addHotkeys();
 		}
 
 		Chats.scrollToBottom($('.expanded-chat ul'));
@@ -76,6 +77,29 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		});
 
 		Chats.addSinceHandler(Chats.getRecipientUid(), $('.expanded-chat .chat-content'), $('.expanded-chat [data-since]'));
+	};
+
+	Chats.addHotkeys = function() {
+		Mousetrap.bind('ctrl+up', function() {
+			var activeContact = $('.chats-list .bg-primary'),
+				prev = activeContact.prev();
+
+			if (prev.length) {
+				Chats.switchChat(parseInt(prev.attr('data-uid'), 10), prev.attr('data-username'));
+			}
+
+			$('[component="chat/input"]').focus();
+		});
+		Mousetrap.bind('ctrl+down', function() {
+			var activeContact = $('.chats-list .bg-primary'),
+				next = activeContact.next();
+
+			if (next.length) {
+				Chats.switchChat(parseInt(next.attr('data-uid'), 10), next.attr('data-username'));
+			}
+
+			$('[component="chat/input"]').focus();
+		});
 	};
 
 	Chats.addSinceHandler = function(toUid, chatContentEl, sinceEl) {
