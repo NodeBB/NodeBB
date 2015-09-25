@@ -119,9 +119,11 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			ajaxify.go('chats/' + username);
 		}
 
+		var contactEl = $('.chats-list [data-uid="' + uid + '"]');
+
 		Chats.loadChatSince(uid, $('.chat-content'), 'recent');
 		Chats.addSendHandlers(uid, $('[component="chat/input"]'), $('[data-action="send"]'));
-		$(this).addClass('bg-primary').siblings().removeClass('bg-primary');
+		contactEl.addClass('bg-primary').siblings().removeClass('bg-primary');
 		$('[component="chat/title"]').text(username);
 		$('[component="chat/messages"]').attr('data-uid', uid).attr('data-username', username);
 		$('[component="breadcrumb/current"]').text(username);
@@ -129,7 +131,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		if (window.history && window.history.pushState) {
 			var url = 'chats/' + utils.slugify(username);
 
-			window.history.replaceState({
+			window.history.pushState({
 				url: url
 			}, url, RELATIVE_PATH + '/' + url);
 		}
