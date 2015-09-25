@@ -45,14 +45,6 @@ winston.add(winston.transports.Console, {
 	level: nconf.get('log-level') || (global.env === 'production' ? 'info' : 'verbose')
 });
 
-if (!process.send) {
-	// If run using `node app`, log GNU copyright info along with server info
-	winston.info('NodeBB v' + nconf.get('version') + ' Copyright (C) 2013-2014 NodeBB Inc.');
-	winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
-	winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
-	winston.info('');
-}
-
 
 // Alternate configuration file support
 var	configFile = path.join(__dirname, '/config.json');
@@ -64,6 +56,15 @@ if (nconf.get('config')) {
 var configExists = fs.existsSync(configFile);
 
 loadConfig();
+
+if (!process.send) {
+	// If run using `node app`, log GNU copyright info along with server info
+	winston.info('NodeBB v' + nconf.get('version') + ' Copyright (C) 2013-2014 NodeBB Inc.');
+	winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
+	winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
+	winston.info('');
+}
+
 
 if (nconf.get('setup') || nconf.get('install')) {
 	setup();
