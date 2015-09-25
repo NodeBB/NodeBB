@@ -191,7 +191,7 @@ function getMatchedPosts(pids, data, callback) {
 						var uids = posts.map(function(post) {
 							return post.uid;
 						});
-						user.getMultipleUserFields(uids, ['username'], next);
+						user.getUsersFields(uids, ['username'], next);
 					} else {
 						next();
 					}

@@ -82,6 +82,7 @@ categoriesController.list = function(req, res, next) {
 categoriesController.get = function(req, res, callback) {
 	var cid = req.params.category_id,
 		page = parseInt(req.query.page, 10) || 1,
+		pageCount = 1,
 		userPrivileges;
 
 	if ((req.params.topic_index && !utils.isNumber(req.params.topic_index)) || !utils.isNumber(cid)) {
@@ -120,7 +121,7 @@ categoriesController.get = function(req, res, callback) {
 			var settings = results.userSettings;
 			var topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) - 1 : 0;
 			var topicCount = parseInt(results.categoryData.topic_count, 10);
-			var pageCount = Math.max(1, Math.ceil(topicCount / settings.topicsPerPage));
+			pageCount = Math.max(1, Math.ceil(topicCount / settings.topicsPerPage));
 
 			if (topicIndex < 0 || topicIndex > Math.max(topicCount - 1, 0)) {
 				return helpers.redirect(res, '/category/' + cid + '/' + req.params.slug + (topicIndex > topicCount ? '/' + topicCount : ''));
@@ -249,6 +250,7 @@ categoriesController.get = function(req, res, callback) {
 		}
 
 		data.currentPage = page;
+		data.pageCount = pageCount;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 		data.rssFeedUrl = nconf.get('relative_path') + '/category/' + data.cid + '.rss';
 		data.pagination = pagination.create(data.currentPage, data.pageCount);

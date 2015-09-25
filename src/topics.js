@@ -15,6 +15,8 @@ var async = require('async'),
 
 (function(Topics) {
 
+
+	require('./topics/data')(Topics);
 	require('./topics/create')(Topics);
 	require('./topics/delete')(Topics);
 	require('./topics/unread')(Topics);
@@ -32,40 +34,6 @@ var async = require('async'),
 	Topics.exists = function(tid, callback) {
 		db.isSortedSetMember('topics:tid', tid, callback);
 	};
-
-	Topics.getTopicData = function(tid, callback) {
-		db.getObject('topic:' + tid, function(err, topic) {
-			if (err || !topic) {
-				return callback(err);
-			}
-			modifyTopic(topic, callback);
-		});
-	};
-
-	Topics.getTopicsData = function(tids, callback) {
-		var keys = [];
-
-		for (var i=0; i<tids.length; ++i) {
-			keys.push('topic:' + tids[i]);
-		}
-
-		db.getObjects(keys, function(err, topics) {
-			if (err) {
-				return callback(err);
-			}
-			async.map(topics, modifyTopic, callback);
-		});
-	};
-
-	function modifyTopic(topic, callback) {
-		if (!topic) {
-			return callback(null, topic);
-		}
-		topic.title = validator.escape(topic.title);
-		topic.relativeTime = utils.toISOString(topic.timestamp);
-		topic.lastposttimeISO = utils.toISOString(topic.lastposttime);
-		callback(null, topic);
-	}
 
 	Topics.getPageCount = function(tid, uid, callback) {
 		Topics.getTopicField(tid, 'postcount', function(err, postCount) {
@@ -102,16 +70,6 @@ var async = require('async'),
 				return callback(err);
 			}
 			callback(null, Math.ceil((results.index + 1) / results.settings.topicsPerPage));
-		});
-	};
-
-	Topics.getCategoryData = function(tid, callback) {
-		Topics.getTopicField(tid, 'cid', function(err, cid) {
-			if (err) {
-				return callback(err);
-			}
-
-			categories.getCategoryData(cid, callback);
 		});
 	};
 
@@ -166,10 +124,10 @@ var async = require('async'),
 
 				async.parallel({
 					users: function(next) {
-						user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+						user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
 					},
 					categories: function(next) {
-						categories.getMultipleCategoryFields(cids, ['cid', 'name', 'slug', 'icon', 'bgColor', 'color', 'disabled'], next);
+						categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'bgColor', 'color', 'disabled'], next);
 					},
 					hasRead: function(next) {
 						Topics.hasReadTopics(tids, uid, next);
@@ -340,28 +298,6 @@ var async = require('async'),
 
 	Topics.setUserBookmark = function(tid, uid, index, callback) {
 		db.sortedSetAdd('tid:' + tid + ':bookmarks', index, uid, callback);
-	};
-
-	Topics.getTopicField = function(tid, field, callback) {
-		db.getObjectField('topic:' + tid, field, callback);
-	};
-
-	Topics.getTopicFields = function(tid, fields, callback) {
-		db.getObjectFields('topic:' + tid, fields, callback);
-	};
-
-	Topics.getTopicsFields = function(tids, fields, callback) {
-		if (!Array.isArray(tids) || !tids.length) {
-			return callback(null, []);
-		}
-		var keys = tids.map(function(tid) {
-			return 'topic:' + tid;
-		});
-		db.getObjectsFields(keys, fields, callback);
-	};
-
-	Topics.setTopicField = function(tid, field, value, callback) {
-		db.setObjectField('topic:' + tid, field, value, callback);
 	};
 
 	Topics.isLocked = function(tid, callback) {

@@ -38,7 +38,7 @@ module.exports = function(User) {
 				var uids = users.map(function(user) {
 					return user.score;
 				});
-				User.getMultipleUserFields(uids, ['uid', 'email', 'username'], next);
+				User.getUsersFields(uids, ['uid', 'email', 'username'], next);
 			},
 			function(usersData, next) {
 				usersData.forEach(function(user, index) {

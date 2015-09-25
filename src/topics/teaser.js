@@ -44,7 +44,7 @@ module.exports = function(Topics) {
 					return array.indexOf(uid) === index;
 				});
 
-				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+				user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
 			},
 			function(usersData, next) {
 				var users = {};

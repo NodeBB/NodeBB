@@ -145,7 +145,7 @@ var db = require('./database'),
 	};
 
 	function getMessages(mids, fromuid, touid, isNew, callback) {
-		user.getMultipleUserFields([fromuid, touid], ['uid', 'username', 'userslug', 'picture', 'status'], function(err, userData) {
+		user.getUsersFields([fromuid, touid], ['uid', 'username', 'userslug', 'picture', 'status'], function(err, userData) {
 			if(err) {
 				return callback(err);
 			}
@@ -263,7 +263,7 @@ var db = require('./database'),
 					db.isSortedSetMembers('uid:' + uid + ':chats:unread', uids, next);
 				},
 				users: function(next) {
-					user.getMultipleUserFields(uids, ['uid', 'username', 'picture', 'status'] , next);
+					user.getUsersFields(uids, ['uid', 'username', 'picture', 'status'] , next);
 				},
 				teasers: function(next) {
 					async.map(uids, function(fromuid, next) {

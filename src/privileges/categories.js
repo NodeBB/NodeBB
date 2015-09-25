@@ -60,7 +60,7 @@ module.exports = function(privileges) {
 
 						var members = _.unique(_.flatten(memberSets));
 
-						user.getMultipleUserFields(members, ['picture', 'username'], function(err, memberData) {
+						user.getUsersFields(members, ['picture', 'username'], function(err, memberData) {
 							if (err) {
 								return next(err);
 							}
@@ -244,7 +244,7 @@ module.exports = function(privileges) {
 
 		async.parallel({
 			categories: function(next) {
-				categories.getMultipleCategoryFields(cids, ['disabled'], next);
+				categories.getCategoriesFields(cids, ['disabled'], next);
 			},
 			allowedTo: function(next) {
 				helpers.isUserAllowedTo(privilege, uid, cids, next);

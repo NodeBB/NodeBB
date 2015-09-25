@@ -38,7 +38,7 @@ module.exports = function(privileges) {
 
 	function isModeratorOfCategories(cids, uid, callback) {
 		if (!parseInt(uid, 10)) {
-			return filterIsModerator(null, cids.map(function() {return false;}));
+			return filterIsModerator(cids, uid, cids.map(function() {return false;}), callback);
 		}
 
 		var uniqueCids = cids.filter(function(cid, index, array) {

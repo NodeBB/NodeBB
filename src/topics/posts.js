@@ -99,7 +99,7 @@ module.exports = function(Topics) {
 					}
 				}
 
-				user.getMultipleUserFields(editors, ['uid', 'username', 'userslug'], function(err, editors) {
+				user.getUsersFields(editors, ['uid', 'username', 'userslug'], function(err, editors) {
 					if (err) {
 						return next(err);
 					}

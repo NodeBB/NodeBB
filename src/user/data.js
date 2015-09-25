@@ -16,7 +16,7 @@ module.exports = function(User) {
 	};
 
 	User.getUserFields = function(uid, fields, callback) {
-		User.getMultipleUserFields([uid], fields, function(err, users) {
+		User.getUsersFields([uid], fields, function(err, users) {
 			callback(err, users ? users[0] : null);
 		});
 	};

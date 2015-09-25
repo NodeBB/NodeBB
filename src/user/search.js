@@ -103,7 +103,7 @@ module.exports = function(User) {
 
 		async.parallel({
 			userData: function(next) {
-				User.getMultipleUserFields(uids, fields, next);
+				User.getUsersFields(uids, fields, next);
 			},
 			isOnline: function(next) {
 				if (data.onlineOnly) {

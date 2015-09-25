@@ -77,7 +77,7 @@ var	async = require('async'),
 	Digest.send = function(data, callback) {
 		var	now = new Date();
 
-		user.getMultipleUserFields(data.subscribers, ['uid', 'username', 'userslug', 'lastonline'], function(err, users) {
+		user.getUsersFields(data.subscribers, ['uid', 'username', 'userslug', 'lastonline'], function(err, users) {
 			if (err) {
 				winston.error('[user/jobs] Could not send digests (' + data.interval + '): ' + err.message);
 				return callback(err);

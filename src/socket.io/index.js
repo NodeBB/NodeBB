@@ -281,7 +281,7 @@ Sockets.getUsersInRoom = function (uid, roomName, start, stop, callback) {
 	if (!uids.length) {
 		return callback(null, {users: [], total: 0 , room: roomName});
 	}
-	user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status'], function(err, users) {
+	user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status'], function(err, users) {
 		if (err) {
 			return callback(err);
 		}

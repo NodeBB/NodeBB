@@ -240,7 +240,7 @@ module.exports = function(Groups) {
 					return next(err);
 				}
 
-				user.getMultipleUserFields(uids, ['uid', 'username', 'picture', 'userslug'], next);
+				user.getUsersFields(uids, ['uid', 'username', 'picture', 'userslug'], next);
 			});
 		}, callback);
 	};

@@ -77,7 +77,7 @@ module.exports = function(Groups) {
 					Groups.getMembers(data.groupName, 0, -1, next);
 				},
 				function(members, next) {
-					user.getMultipleUserFields(members, ['uid'].concat([searchBy]), next);
+					user.getUsersFields(members, ['uid'].concat([searchBy]), next);
 				},
 				function(users, next) {
 					var uids = [];

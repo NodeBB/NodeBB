@@ -103,7 +103,7 @@ var	async = require('async'),
 			});
 			async.parallel({
 				userData: function(next) {
-					User.getMultipleUserFields(uids, data.fields, next);
+					User.getUsersFields(uids, data.fields, next);
 				},
 				isAdmin: function(next) {
 					User.isAdministrator(uids, next);
@@ -193,7 +193,7 @@ var	async = require('async'),
 	};
 
 	User.getUsernamesByUids = function(uids, callback) {
-		User.getMultipleUserFields(uids, ['username'], function(err, users) {
+		User.getUsersFields(uids, ['username'], function(err, users) {
 			if (err) {
 				return callback(err);
 			}

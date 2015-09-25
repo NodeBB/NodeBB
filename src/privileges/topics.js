@@ -86,7 +86,7 @@ module.exports = function(privileges) {
 
 				async.parallel({
 					categories: function(next) {
-						categories.getMultipleCategoryFields(cids, ['disabled'], next);
+						categories.getCategoriesFields(cids, ['disabled'], next);
 					},
 					allowedTo: function(next) {
 						helpers.isUserAllowedTo(privilege, uid, cids, next);

@@ -34,7 +34,7 @@ unreadController.get = function(req, res, next) {
 			privileges.categories.filterCids('read', results.watchedCategories, req.uid, next);
 		},
 		function(cids, next) {
-			categories.getMultipleCategoryFields(cids, ['cid', 'name', 'slug', 'icon', 'link'], next);
+			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'link'], next);
 		},
 		function(categories, next) {
 			categories = categories.filter(function(category) {
