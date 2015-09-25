@@ -10,7 +10,6 @@ var	fs = require('fs'),
 	Plugins = require('./plugins'),
 	meta = require('./meta'),
 	translator = require('../public/src/modules/translator'),
-	tjs = require('templates.js'),
 
 	app;
 
