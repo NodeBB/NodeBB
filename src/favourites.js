@@ -106,7 +106,16 @@ var async = require('async'),
 			return callback(new Error('[[error:reputation-system-disabled]]'));
 		}
 
-		toggleVote('upvote', pid, uid, callback);
+		if (voteInProgress(pid, uid)) {
+			return callback(new Error('[[error:already-voting-for-this-post]]'));
+		}
+
+		putVoteInProgress(pid, uid);
+
+		toggleVote('upvote', pid, uid, function(err, data) {
+			clearVoteProgress(pid, uid);
+			callback(err, data);
+		});
 	};
 
 	Favourites.downvote = function(pid, uid, callback) {
@@ -118,6 +127,12 @@ var async = require('async'),
 			return callback(new Error('[[error:downvoting-disabled]]'));
 		}
 
+		if (voteInProgress(pid, uid)) {
+			return callback(new Error('[[error:already-voting-for-this-post]]'));
+		}
+
+		putVoteInProgress(pid, uid);
+
 		user.getUserField(uid, 'reputation', function(err, reputation) {
 			if (err) {
 				return callback(err);
@@ -127,7 +142,23 @@ var async = require('async'),
 				return callback(new Error('[[error:not-enough-reputation-to-downvote]]'));
 			}
 
-			toggleVote('downvote', pid, uid, callback);
+			toggleVote('downvote', pid, uid, function(err, data) {
+				clearVoteProgress(pid, uid);
+				callback(err, data);
+			});
+		});
+	};
+
+	Favourites.unvote = function(pid, uid, callback) {
+		if (voteInProgress(pid, uid)) {
+			return callback(new Error('[[error:already-voting-for-this-post]]'));
+		}
+
+		putVoteInProgress(pid, uid);
+
+		unvote(pid, uid, 'unvote', function(err, data) {
+			clearVoteProgress(pid, uid);
+			callback(err, data);
 		});
 	};
 
@@ -150,28 +181,14 @@ var async = require('async'),
 	}
 
 	function toggleVote(type, pid, uid, callback) {
-		function done(err, data) {
-			clearVoteProgress(pid, uid);
-			callback(err, data);
-		}
-
-		if (voteInProgress(pid, uid)) {
-			return callback(new Error('[[error:already-voting-for-this-post]]'));
-		}
-		putVoteInProgress(pid, uid);
-
 		unvote(pid, uid, type, function(err) {
 			if (err) {
-				return done(err);
+				return callback(err);
 			}
 
-			vote(type, false, pid, uid, done);
+			vote(type, false, pid, uid, callback);
 		});
 	}
-
-	Favourites.unvote = function(pid, uid, callback) {
-		unvote(pid, uid, 'unvote', callback);
-	};
 
 	function unvote(pid, uid, command, callback) {
 		async.parallel({

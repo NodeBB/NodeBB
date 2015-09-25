@@ -142,13 +142,12 @@ module.exports = function(SocketPosts) {
 				return callback(err);
 			}
 
-			socket.emit('posts.' + command, result);
-
 			if (result && eventName) {
+				socket.emit('posts.' + command, result);
 				websockets.in(data.room_id).emit('event:' + eventName, result);
 			}
 
-			if (notification) {
+			if (result && notification) {
 				SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, notification);
 			}
 			callback();
