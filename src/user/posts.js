@@ -2,7 +2,8 @@
 
 var async = require('async'),
 	db = require('../database'),
-	meta = require('../meta');
+	meta = require('../meta'),
+	privileges = require('../privileges');
 
 module.exports = function(User) {
 
@@ -18,11 +19,8 @@ module.exports = function(User) {
 			exists: function(next) {
 				db.exists('user:' + uid, next);
 			},
-			isAdmin: function(next) {
-				User.isAdministrator(uid, next);
-			},
-			isModerator: function(next) {
-				User.isModerator(uid, cid, next);
+			isAdminOrMod: function(next) {
+				privileges.categories.isAdminOrMod(cid, uid, next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -33,7 +31,7 @@ module.exports = function(User) {
 				return callback(new Error('[[error:no-user]]'));
 			}
 
-			if (results.isAdmin || results.isModerator) {
+			if (results.isAdminOrMod) {
 				return callback();
 			}
 
@@ -46,6 +44,7 @@ module.exports = function(User) {
 			if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
 				return callback(new Error('[[error:email-not-confirmed]]'));
 			}
+
 			var now = Date.now();
 			if (now - parseInt(userData.joindate, 10) < parseInt(meta.config.initialPostDelay, 10) * 1000) {
 				return callback(new Error('[[error:user-too-new, ' + meta.config.initialPostDelay + ']]'));

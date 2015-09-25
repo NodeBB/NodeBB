@@ -4,17 +4,15 @@ var async = require('async'),
 	db = require('../database'),
 	user = require('../user'),
 	topics = require('../topics'),
-	plugins = require('../plugins');
+	plugins = require('../plugins'),
+	privileges = require('../privileges');
 
 module.exports = function(Categories) {
 
 	Categories.getCategoryTopics = function(data, callback) {
 		async.parallel({
-			isAdmin: function(next) {
-				user.isAdministrator(data.uid, next);
-			},
-			isModerator: function(next) {
-				user.isModerator(data.uid, data.cid, next);
+			isAdminOrMod: function(next) {
+				privileges.categories.isAdminOrMod(data.cid, data.uid, next);
 			},
 			topics: function(next) {
 				async.waterfall([
@@ -47,9 +45,9 @@ module.exports = function(Categories) {
 			if (err) {
 				return callback(err);
 			}
-			var isAdminOrMod = results.isAdmin || results.isModerator;
+
 			results.topics.forEach(function(topic) {
-				if (!(!topic.deleted || isAdminOrMod || topic.isOwner)) {
+				if (!(!topic.deleted || results.isAdminOrMod || topic.isOwner)) {
 					topic.title = '[[topic:topic_is_deleted]]';
 					topic.slug = topic.tid;
 					topic.teaser = null;

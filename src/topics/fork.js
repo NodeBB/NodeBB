@@ -42,16 +42,13 @@ module.exports = function(Topics) {
 					postData: function(next) {
 						posts.getPostData(mainPid, next);
 					},
-					isAdmin: function(next) {
-						user.isAdministrator(uid, next);
-					},
-					isModerator: function(next) {
-						user.isModerator(uid, cid, next);
+					isAdminOrMod: function(next) {
+						privileges.categories.isAdminOrMod(cid, uid, next);
 					}
 				}, next);
 			},
 			function(results, next) {
-				if (!results.isAdmin && !results.isModerator) {
+				if (!results.isAdminOrMod) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				Topics.create({uid: results.postData.uid, title: title, cid: cid}, next);

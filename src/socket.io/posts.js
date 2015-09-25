@@ -90,55 +90,42 @@ SocketPosts.getVoters = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	var pid = data.pid,
-		cid = data.cid;
-
-	async.parallel({
-		isAdmin: function(next) {
-			user.isAdministrator(socket.uid, next);
+	async.waterfall([
+		function (next) {
+			privileges.categories.isAdminOrMod(data.cid, socket.uid, next);
 		},
-		isModerator: function(next) {
-			user.isModerator(socket.uid, cid, next);
-		}
-	}, function(err, tests) {
-		if (err) {
-			return callback(err);
-		}
-
-		if (tests.isAdmin || tests.isModerator) {
-			getVoters(pid, callback);
-		}
-	});
-};
-
-function getVoters(pid, callback) {
-	async.parallel({
-		upvoteUids: function(next) {
-			db.getSetMembers('pid:' + pid + ':upvote', next);
-		},
-		downvoteUids: function(next) {
-			db.getSetMembers('pid:' + pid + ':downvote', next);
-		}
-	}, function(err, results) {
-		if (err) {
-			return callback(err);
-		}
-		async.parallel({
-			upvoters: function(next) {
-				user.getMultipleUserFields(results.upvoteUids, ['username', 'userslug', 'picture'], next);
-			},
-			upvoteCount: function(next) {
-				next(null, results.upvoteUids.length);
-			},
-			downvoters: function(next) {
-				user.getMultipleUserFields(results.downvoteUids, ['username', 'userslug', 'picture'], next);
-			},
-			downvoteCount: function(next) {
-				next(null, results.downvoteUids.length);
+		function (isAdminOrMod, next) {
+			if (!isAdminOrMod) {
+				return next(new Error('[[error:no-privileges]]'));
 			}
-		}, callback);
-	});
-}
+
+			async.parallel({
+				upvoteUids: function(next) {
+					db.getSetMembers('pid:' + data.pid + ':upvote', next);
+				},
+				downvoteUids: function(next) {
+					db.getSetMembers('pid:' + data.pid + ':downvote', next);
+				}
+			}, next);
+		},
+		function (results, next) {
+			async.parallel({
+				upvoters: function(next) {
+					user.getMultipleUserFields(results.upvoteUids, ['username', 'userslug', 'picture'], next);
+				},
+				upvoteCount: function(next) {
+					next(null, results.upvoteUids.length);
+				},
+				downvoters: function(next) {
+					user.getMultipleUserFields(results.downvoteUids, ['username', 'userslug', 'picture'], next);
+				},
+				downvoteCount: function(next) {
+					next(null, results.downvoteUids.length);
+				}
+			}, next);
+		}
+	], callback);
+};
 
 SocketPosts.upvote = function(socket, data, callback) {
 	favouriteCommand(socket, 'upvote', 'voted', 'notifications:upvoted_your_post_in', data, callback);
@@ -500,11 +487,8 @@ SocketPosts.flag = function(socket, pid, callback) {
 		},
 		function(next) {
 			async.parallel({
-				isAdmin: function(next) {
-					user.isAdministrator(socket.uid, next);
-				},
-				isModerator: function(next) {
-					user.isModerator(socket.uid, post.topic.cid, next);
+				isAdminOrMod: function(next) {
+					privileges.categories.isAdminOrMod(post.topic.cid, next);
 				},
 				userData: function(next) {
 					user.getUserFields(socket.uid, ['username', 'reputation'], next);
@@ -512,7 +496,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 			}, next);
 		},
 		function(user, next) {
-			if (!user.isAdmin && !user.isModerator && parseInt(user.userData.reputation, 10) < parseInt(meta.config['privileges:flag'] || 1, 10)) {
+			if (!user.isAdminOrMod && parseInt(user.userData.reputation, 10) < parseInt(meta.config['privileges:flag'] || 1, 10)) {
 				return next(new Error('[[error:not-enough-reputation-to-flag]]'));
 			}
 
