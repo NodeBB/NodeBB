@@ -147,20 +147,20 @@ SocketTopics.sendNotificationToTopicOwner = function(tid, fromuid, notification)
 
 
 SocketTopics.toggleFollow = function(socket, tid, callback) {
-	if (!socket.uid) {
-		return callback(new Error('[[error:not-logged-in]]'));
-	}
-
-	topics.toggleFollow(tid, socket.uid, callback);
+	followCommand(topics.toggleFollow, socket, tid, callback);
 };
 
 SocketTopics.follow = function(socket, tid, callback) {
+	followCommand(topics.follow, socket, tid, callback);
+};
+
+function followCommand(method, socket, tid, callback) {
 	if (!socket.uid) {
 		return callback(new Error('[[error:not-logged-in]]'));
 	}
 
-	topics.follow(tid, socket.uid, callback);
-};
+	topics[method](tid, socket.uid, callback);
+}
 
 SocketTopics.search = function(socket, data, callback) {
 	topics.search(data.tid, data.term, callback);
