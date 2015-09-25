@@ -76,7 +76,7 @@ SocketAdmin.restart = function(socket, data, callback) {
 };
 
 SocketAdmin.fireEvent = function(socket, data, callback) {
-	index.server.sockets.emit(data.name, data.payload || {});
+	index.server.emit(data.name, data.payload || {});
 };
 
 SocketAdmin.themes.getInstalled = function(socket, data, callback) {

@@ -93,7 +93,7 @@ function onDisconnect(socket, data) {
 		// see https://github.com/Automattic/socket.io/issues/1814
 		data.rooms.forEach(function(roomName) {
 			if (roomName.startsWith('topic')) {
-				io.sockets.in(roomName).emit('event:user_leave', socket.uid);
+				io.in(roomName).emit('event:user_leave', socket.uid);
 			}
 		});
 	}
@@ -210,11 +210,11 @@ function callMethod(method, socket, params, callback) {
 }
 
 Sockets.logoutUser = function(uid) {
-	io.sockets.in('uid_' + uid).emit('event:disconnect');
+	io.in('uid_' + uid).emit('event:disconnect');
 };
 
 Sockets.in = function(room) {
-	return io.sockets.in(room);
+	return io.in(room);
 };
 
 Sockets.getSocketCount = function() {

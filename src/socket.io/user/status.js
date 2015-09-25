@@ -38,7 +38,7 @@ module.exports = function(SocketUser) {
 				uid: socket.uid,
 				status: status
 			};
-			websockets.server.sockets.emit('event:user_status_change', data);
+			websockets.server.emit('event:user_status_change', data);
 			callback(null, data);
 		});
 	};
