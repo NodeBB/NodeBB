@@ -197,7 +197,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 
 	navigator.scrollToPostIndex = function(postIndex, highlight, duration, offset) {
 		var scrollTo = components.get('post/anchor', postIndex);
-			
+
 		if (!scrollTo.length) {
 			navigator.scrollActive = false;
 			return;
