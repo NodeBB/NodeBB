@@ -42,7 +42,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			if (env === 'xs' || env === 'sm') {
 				app.openChat($(this).attr('data-username'), $(this).attr('data-uid'));
 			} else {
-				ajaxify.go('chats/' + utils.slugify($(this).attr('data-username')));
+				Chats.switchChat(parseInt($(this).attr('data-uid'), 10), $(this).attr('data-username'));
 			}
 		});
 
@@ -112,6 +112,27 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			inputEl.focus();
 			return false;
 		});
+	};
+
+	Chats.switchChat = function(uid, username) {
+		if (!$('[component="chat/messages"]').length) {
+			ajaxify.go('chats/' + username);
+		}
+
+		Chats.loadChatSince(uid, $('.chat-content'), 'recent');
+		Chats.addSendHandlers(uid, $('[component="chat/input"]'), $('[data-action="send"]'));
+		$(this).addClass('bg-primary').siblings().removeClass('bg-primary');
+		$('[component="chat/title"]').text(username);
+		$('[component="chat/messages"]').attr('data-uid', uid).attr('data-username', username);
+		$('[component="breadcrumb/current"]').text(username);
+
+		if (window.history && window.history.pushState) {
+			var url = 'chats/' + utils.slugify(username);
+
+			window.history.replaceState({
+				url: url
+			}, url, RELATIVE_PATH + '/' + url);
+		}
 	};
 
 	Chats.loadChatSince = function(toUid, chatContentEl, since) {
