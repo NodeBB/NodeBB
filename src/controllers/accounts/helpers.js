@@ -19,7 +19,7 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 		},
 		function (uid, next) {
 			if (!uid) {
-				callback(null, null);
+				return callback(null, null);
 			}
 
 			async.parallel({
