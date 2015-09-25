@@ -26,6 +26,7 @@ define('forum/topic', [
 			app.removeAlert('bookmark');
 
 			events.removeListeners();
+			$(window).off('keydown', onKeyDown);
 		}
 
 		if (!data.url.startsWith('topic/')) {
@@ -58,11 +59,12 @@ define('forum/topic', [
 
 		handleBookmark(tid);
 
+		handleKeys();
+
 		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
 
 		$(window).on('scroll', updateTopicTitle);
 
-		$(window).trigger('action:topic.loaded');
 
 		if (app.user.uid) {
 			socket.emit('topics.enter', tid, function(err, data) {
@@ -74,7 +76,25 @@ define('forum/topic', [
 		}
 
 		handleTopicSearch();
+
+		$(window).trigger('action:topic.loaded');
 	};
+
+	function handleKeys() {
+		if (!config.usePagination) {
+			$(window).off('keydown', onKeyDown).on('keydown', onKeyDown);
+		}
+	}
+
+	function onKeyDown(ev) {
+		if (ev.which === 36) { // home key
+			navigator.scrollTop(0);
+			return false;
+		} else if (ev.which === 35) { // end key
+			Topic.toBottom();
+			return false;
+		}
+	}
 
 	function handleTopicSearch() {
 		require(['search', 'mousetrap'], function(search, Mousetrap) {
@@ -182,7 +202,7 @@ define('forum/topic', [
 
 
 	function updateTopicTitle() {
-		if($(window).scrollTop() > 50) {
+		if ($(window).scrollTop() > 50) {
 			components.get('navbar/title').find('span').text(ajaxify.data.title).show();
 		} else {
 			components.get('navbar/title').find('span').text('').hide();
