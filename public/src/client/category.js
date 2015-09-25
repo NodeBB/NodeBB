@@ -161,7 +161,7 @@ define('forum/category', [
 		var	cid = ajaxify.data.cid;
 
 		if (scrollTo.length && cid) {
-					$('html, body').animate({
+			$('html, body').animate({
 				scrollTop: (scrollTo.offset().top - offset) + 'px'
 			}, duration !== undefined ? duration : 400, function() {
 				Category.highlightTopic(clickedIndex);
