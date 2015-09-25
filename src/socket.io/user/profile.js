@@ -1,5 +1,7 @@
 'use strict';
 
+var async = require('async');
+
 var user = require('../../user');
 var meta = require('../../meta');
 var events = require('../../events');
@@ -31,44 +33,6 @@ module.exports = function(SocketUser) {
 
 
 	SocketUser.updateProfile = function(socket, data, callback) {
-		function update(oldUserData) {
-			function done(err, userData) {
-				if (err) {
-					return callback(err);
-				}
-
-				if (userData.email !== oldUserData.email) {
-					events.log({
-						type: 'email-change',
-						uid: socket.uid,
-						targetUid: data.uid,
-						ip: socket.ip,
-						oldEmail: oldUserData.email,
-						newEmail: userData.email
-					});
-				}
-
-				if (userData.username !== oldUserData.username) {
-					events.log({
-						type: 'username-change',
-						uid: socket.uid,
-						targetUid: data.uid,
-						ip: socket.ip,
-						oldUsername: oldUserData.username,
-						newUsername: userData.username
-					});
-				}
-				callback(null, userData);
-			}
-
-			SocketUser.isAdminOrSelf(socket, data.uid, function(err) {
-				if (err) {
-					return callback(err);
-				}
-				user.updateProfile(data.uid, data, done);
-			});
-		}
-
 		if (!socket.uid) {
 			return callback('[[error:invalid-uid]]');
 		}
@@ -77,17 +41,46 @@ module.exports = function(SocketUser) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
-		user.getUserFields(data.uid, ['email', 'username'], function(err, oldUserData) {
-			if (err) {
-				return callback(err);
-			}
+		var oldUserData;
+		async.waterfall([
+			function (next) {
+				user.getUserFields(data.uid, ['email', 'username'], next);
+			},
+			function (_oldUserData, next) {
+				oldUserData = _oldUserData;
+				if (!oldUserData || !oldUserData.username) {
+					return next(new Error('[[error-invalid-data]]'));
+				}
 
-			if (parseInt(meta.config['username:disableEdit'], 10) === 1) {
-				data.username = oldUserData.username;
-			}
+				if (parseInt(meta.config['username:disableEdit'], 10) === 1) {
+					data.username = oldUserData.username;
+				}
+				SocketUser.isAdminOrSelf(socket, data.uid, next);
+			},
+			function (next) {
+				user.updateProfile(data.uid, data, next);
+			},
+			function (userData, next) {
+				function log(type, eventData) {
+					eventData.type = type;
+					eventData.uid = socket.uid;
+					eventData.targetUid = data.uid;
+					eventData.ip = socket.ip;
 
-			update(oldUserData, callback);
-		});
+					events.log(eventData);
+				}
+
+				if (userData.email !== oldUserData.email) {
+					log('email-change', {oldEmail: oldUserData.email, newEmail: userData.email});
+				}
+
+				if (userData.username !== oldUserData.username) {
+					log('username-change', {oldUsername: oldUserData.username, newUsername: userData.username});
+				}
+
+				next(null, userData);
+			}
+		], callback);
 	};
 
 
