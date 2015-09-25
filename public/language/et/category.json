@@ -1,16 +1,16 @@
 {
-    "category": "Category",
-    "subcategories": "Subcategories",
+    "category": "Kategooria",
+    "subcategories": "Alamkategooriad",
     "new_topic_button": "Uus teema",
     "guest-login-post": "Postitamiseks logi sisse",
     "no_topics": "<strong>Kahjuks ei leidu siin kategoorias ühtegi teemat.</strong><br />Soovid postitada?",
     "browsing": "vaatab",
     "no_replies": "Keegi pole vastanud",
-    "no_new_posts": "No new posts.",
+    "no_new_posts": "Uusi postitusi pole",
     "share_this_category": "Jaga seda kategooriat",
     "watch": "Vaata",
     "ignore": "Ignoreeri",
     "watch.message": "Jälgid nüüdsest teateid sellest kategooriast",
     "ignore.message": "Ignoreerid nüüdsest teateid sellest kategooriast",
-    "watched-categories": "Watched categories"
+    "watched-categories": "Jälgitavad kategooriad"
 }

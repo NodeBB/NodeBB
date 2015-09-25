@@ -87,5 +87,8 @@
     "follow_topics_you_create": "Följ ämnen du skapat",
     "grouptitle": "Välj tittel för gruppen så som du vill att den ska visas",
     "no-group-title": "Ingen titel på gruppen",
-    "select-skin": "Select a Skin"
+    "select-skin": "Select a Skin",
+    "sso.title": "Single Sign-on Services",
+    "sso.associated": "Associated with",
+    "sso.not-associated": "Click here to associate with"
 }

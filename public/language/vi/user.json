@@ -87,5 +87,8 @@
     "follow_topics_you_create": "Follow topics you create",
     "grouptitle": "Chọn tên nhóm mà bạn muốn hiển thị",
     "no-group-title": "No group title",
-    "select-skin": "Select a Skin"
+    "select-skin": "Select a Skin",
+    "sso.title": "Single Sign-on Services",
+    "sso.associated": "Associated with",
+    "sso.not-associated": "Click here to associate with"
 }

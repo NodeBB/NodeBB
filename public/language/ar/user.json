@@ -87,5 +87,8 @@
     "follow_topics_you_create": "متابعة المواضيع التي تنشئها",
     "grouptitle": "حدد عنوان المجموعة الذي تريد عرضه",
     "no-group-title": "لا يوجد عنوان للمجموعة",
-    "select-skin": "Select a Skin"
+    "select-skin": "Select a Skin",
+    "sso.title": "Single Sign-on Services",
+    "sso.associated": "Associated with",
+    "sso.not-associated": "Click here to associate with"
 }

@@ -12,7 +12,7 @@
     "delete_account": "Kustuta kasutaja",
     "delete_account_confirm": "Oled kindel, et soovid oma kasutaja kustutada?<br /><strong>Pärast kustutamist pole võimalik andmeid ja kasutajat taastada.</strong><br /><br />Sisesta oma kasutajanimi, et kinnitada kasutaja kustutamine.",
     "delete_this_account_confirm": "Olete kindel, et soovide seda kasutajat kustutada? <br /><strong>Pärast seda pole võimalik kasutajat ja andmeid taastada</strong><br /><br />",
-    "account-deleted": "Account deleted",
+    "account-deleted": "Kasutaja kustutatud",
     "fullname": "Täisnimi",
     "website": "Koduleht",
     "location": "Asukoht",
@@ -53,7 +53,7 @@
     "username_taken_workaround": "Kasutajanimi mida soovisid, ei olnud saadaval, seeg muutsime seda natukene. Sinu uus kasutajanimi on nüüd: <strong>%1</strong>",
     "upload_picture": "Laadi pilt",
     "upload_a_picture": "Lae pilt üles",
-    "remove_uploaded_picture": "Remove Uploaded Picture",
+    "remove_uploaded_picture": "Eemalda üleslaetud pilt",
     "image_spec": "Failid peavad olema PNG, JPG või GIF vormingus.",
     "settings": "Seaded",
     "show_email": "Näita minu emaili",
@@ -87,5 +87,8 @@
     "follow_topics_you_create": "Järgi teemasi, mis on teie loodud.",
     "grouptitle": "Vali grupile tiitel mida kuvada soovid",
     "no-group-title": "Grupi tiitel puudub",
-    "select-skin": "Select a Skin"
+    "select-skin": "Vali välimus",
+    "sso.title": "Ühekordse sisselogimisega teenused",
+    "sso.associated": "Seotud koos",
+    "sso.not-associated": "Kliki siia, et siduda koos"
 }

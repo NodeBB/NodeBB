@@ -12,7 +12,7 @@
     "delete_account": "删除帐号",
     "delete_account_confirm": "确认要删除您的帐户吗？<br /><strong>此操作是不可逆转的，您将无法恢复您的任何数据</strong><br /><br />请输入您的用户名，确认您想要删除此帐户。",
     "delete_this_account_confirm": "您确定要删除账户吗？ <br /><strong>这个操作不可逆，而且您可能不能找回任何数据</strong><br /><br />",
-    "account-deleted": "Account deleted",
+    "account-deleted": "帐号已删除",
     "fullname": "姓名",
     "website": "网站",
     "location": "位置",
@@ -53,7 +53,7 @@
     "username_taken_workaround": "您申请的用户名已被占用，所以我们稍作更改。您现在的用户名是 <strong>%1</strong>",
     "upload_picture": "上传头像",
     "upload_a_picture": "上传头像",
-    "remove_uploaded_picture": "Remove Uploaded Picture",
+    "remove_uploaded_picture": "删除已上传的头像",
     "image_spec": "您只能上传 PNG, JPG 或者 GIF 图片文件",
     "settings": "设置",
     "show_email": "显示我的电子邮箱",
@@ -87,5 +87,8 @@
     "follow_topics_you_create": "关注您创建的主题",
     "grouptitle": "选择展示的小组称号",
     "no-group-title": "不展示小组称号",
-    "select-skin": "选择皮肤"
+    "select-skin": "选择皮肤",
+    "sso.title": "Single Sign-on Services",
+    "sso.associated": "Associated with",
+    "sso.not-associated": "Click here to associate with"
 }

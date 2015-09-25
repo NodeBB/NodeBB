@@ -1,7 +1,7 @@
 {
     "title": "Benachrichtigungen",
-    "no_notifs": "Du hast keine neuen Benachrichtigungen",
-    "see_all": "Alle Benachrichtigungen anzeigen",
+    "no_notifs": "Keine neuen Benachrichtigungen",
+    "see_all": "Alle Benachrichtigungen zeigen",
     "mark_all_read": "Alle Benachrichtigungen als gelesen markieren",
     "back_to_home": "Zurück zu %1",
     "outgoing_link": "Externer Link",

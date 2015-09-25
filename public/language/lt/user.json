@@ -87,5 +87,8 @@
     "follow_topics_you_create": "Sekti tas temas kurias sukuri tu",
     "grouptitle": "Pasirinkite grupės pavadinimą kurį norėtumėte kad atvaizduotu",
     "no-group-title": "Nėra grupės pavadinimo",
-    "select-skin": "Select a Skin"
+    "select-skin": "Select a Skin",
+    "sso.title": "Single Sign-on Services",
+    "sso.associated": "Associated with",
+    "sso.not-associated": "Click here to associate with"
 }

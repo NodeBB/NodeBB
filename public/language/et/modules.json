@@ -5,7 +5,7 @@
     "chat.no_active": "Sul ei ole hetkel aktiivseid vestlusi.",
     "chat.user_typing": "%1 kirjutab sõnumit...",
     "chat.user_has_messaged_you": "%1 saatis sulle sõnumi.",
-    "chat.see_all": "See all chats",
+    "chat.see_all": "Vaata kõiki vestluseid",
     "chat.no-messages": "Vali sõnumisaaja, et vaadata sõnumite ajalugu.",
     "chat.recent-chats": "Hiljutised vestlused",
     "chat.contacts": "Kontaktid",
@@ -23,7 +23,7 @@
     "composer.discard": "Oled kindel, et soovid selle postituse tühistada?",
     "composer.submit_and_lock": "Kinnita ja Lukusta",
     "composer.toggle_dropdown": "Aktiveeri rippmenüü",
-    "bootbox.ok": "OK",
-    "bootbox.cancel": "Cancel",
-    "bootbox.confirm": "Confirm"
+    "bootbox.ok": "Olgu",
+    "bootbox.cancel": "Katkesta",
+    "bootbox.confirm": "Kinnita"
 }
