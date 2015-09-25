@@ -61,7 +61,7 @@ SocketCategories.loadMore = function(socket, data, callback) {
 			return callback(new Error('[[error:no-privileges]]'));
 		}
 
-
+		var infScrollTopicsPerPage = 20;
 		var set = 'cid:' + data.cid + ':tids',
 			reverse = false;
 
@@ -72,8 +72,16 @@ SocketCategories.loadMore = function(socket, data, callback) {
 			set = 'cid:' + data.cid + ':tids:posts';
 		}
 
-		var start = parseInt(data.after, 10),
-			stop = start + results.settings.topicsPerPage - 1;
+		var start = Math.max(0, parseInt(data.after, 10)) + 1;
+
+		if (data.direction === -1) {
+			start = start - (reverse ? infScrollTopicsPerPage : -infScrollTopicsPerPage);
+		}
+
+		var stop = start + infScrollTopicsPerPage - 1;
+
+		start = Math.max(0, start);
+		stop = Math.max(0, stop);
 
 		if (results.targetUid) {
 			set = 'cid:' + data.cid + ':uid:' + results.targetUid + ':tids';

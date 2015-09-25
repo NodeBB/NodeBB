@@ -414,7 +414,7 @@ SocketTopics.follow = function(socket, tid, callback) {
 };
 
 SocketTopics.loadMore = function(socket, data, callback) {
-	if(!data || !data.tid || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0)  {
+	if (!data || !data.tid || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0)  {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -425,11 +425,8 @@ SocketTopics.loadMore = function(socket, data, callback) {
 		privileges: function(next) {
 			privileges.topics.get(data.tid, socket.uid, next);
 		},
-		postCount: function(next) {
-			topics.getPostCount(data.tid, next);
-		},
 		topic: function(next) {
-			topics.getTopicFields(data.tid, ['deleted'], next);
+			topics.getTopicFields(data.tid, ['postcount', 'deleted'], next);
 		}
 	}, function(err, results) {
 		if (err) {
@@ -440,22 +437,35 @@ SocketTopics.loadMore = function(socket, data, callback) {
 			return callback(new Error('[[error:no-privileges]]'));
 		}
 
-		var set = 'tid:' + data.tid + ':posts',
-			reverse = false,
-			start = Math.max(parseInt(data.after, 10) - 1, 0);
+		var set = 'tid:' + data.tid + ':posts';
+		var reverse = results.settings.topicPostSort === 'newest_to_oldest' || results.settings.topicPostSort === 'most_votes';
+		var	start = Math.max(0, parseInt(data.after, 10));
 
-		if (results.settings.topicPostSort === 'newest_to_oldest' || results.settings.topicPostSort === 'most_votes') {
-			reverse = true;
-			data.after = results.postCount - 1 - data.after;
-			start = Math.max(parseInt(data.after, 10), 0);
+		var infScrollPostsPerPage = 10;
+
+		if (data.direction === -1) {
+			start = start - (reverse ? -infScrollPostsPerPage : infScrollPostsPerPage);
+		}
+
+		if (reverse) {
+			start = results.topic.postcount - 1 - start;
 			if (results.settings.topicPostSort === 'most_votes') {
 				set = 'tid:' + data.tid + ':posts:votes';
 			}
 		}
 
-		var stop = start + results.settings.postsPerPage - 1;
+		var stop = start + (infScrollPostsPerPage - 1);
+
+		start = Math.max(0, start);
+		stop = Math.max(0, stop);
 
 		async.parallel({
+			mainPost: function(next) {
+				if (start > 0) {
+					return next();
+				}
+				topics.getMainPost(data.tid, socket.uid, next);
+			},
 			posts: function(next) {
 				topics.getTopicPosts(data.tid, set, start, stop, socket.uid, reverse, next);
 			},
@@ -468,7 +478,13 @@ SocketTopics.loadMore = function(socket, data, callback) {
 			'downvote:disabled': function(next) {
 				next(null, parseInt(meta.config['downvote:disabled'], 10) === 1);
 			}
-		}, callback);
+		}, function(err, results) {
+			if (results.mainPost) {
+				results.posts = [results.mainPost].concat(results.posts);
+			}
+
+			callback(err, results);
+		});
 	});
 };
 

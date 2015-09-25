@@ -171,8 +171,8 @@ define('forum/topic', [
 
 
 	function enableInfiniteLoadingOrPagination() {
-		if(!config.usePagination) {
-			infinitescroll.init(posts.loadMorePosts, components.get('post', 'index', 0).height());
+		if (!config.usePagination) {
+			infinitescroll.init(posts.loadMorePosts);
 		} else {
 			navigator.hide();
 

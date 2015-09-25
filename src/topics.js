@@ -266,7 +266,7 @@ var async = require('async'),
 					return callback(null, []);
 				}
 
-				if (topic.mainPid) {
+				if (topic.mainPid && start === 0) {
 					pids.unshift(topic.mainPid);
 				}
 				posts.getPostsByPids(pids, uid, next);
@@ -276,7 +276,7 @@ var async = require('async'),
 					return next(null, []);
 				}
 				var replies = posts;
-				if (topic.mainPid) {
+				if (topic.mainPid && start === 0) {
 					posts[0].index = 0;
 					replies = posts.slice(1);
 				}
