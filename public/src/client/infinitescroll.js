@@ -17,7 +17,7 @@ define('forum/infinitescroll', ['translator'], function(translator) {
 	};
 
 	function onScroll() {
-		var	top = $(window).height() * 0.15 + topOffset,
+		var	top = $(window).height() * 0.3 + topOffset,
 			bottom = ($(document).height() - $(window).height()) * 0.85,
 			currentScrollTop = $(window).scrollTop();
 
