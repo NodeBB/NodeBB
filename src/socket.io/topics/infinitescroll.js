@@ -34,19 +34,23 @@ module.exports = function(SocketTopics) {
 			}
 
 			var set = 'tid:' + data.tid + ':posts';
+			if (results.settings.topicPostSort === 'most_votes') {
+				set = 'tid:' + data.tid + ':posts:votes';
+			}
 			var reverse = results.settings.topicPostSort === 'newest_to_oldest' || results.settings.topicPostSort === 'most_votes';
 			var start = Math.max(0, parseInt(data.after, 10));
 
 			var infScrollPostsPerPage = 10;
 
-			if (data.direction === -1) {
-				start = start - (reverse ? -infScrollPostsPerPage : infScrollPostsPerPage);
-			}
-
-			if (reverse) {
-				start = results.topic.postcount - 1 - start;
-				if (results.settings.topicPostSort === 'most_votes') {
-					set = 'tid:' + data.tid + ':posts:votes';
+			if (data.direction > 0) {
+				if (reverse) {
+					start = results.topic.postcount - start;
+				}
+			} else {
+				if (reverse) {
+					start = results.topic.postcount - start - infScrollPostsPerPage - 1;
+				} else {
+					start = start - infScrollPostsPerPage - 1;
 				}
 			}
 

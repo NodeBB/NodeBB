@@ -17,13 +17,14 @@ define('forum/infinitescroll', ['translator'], function(translator) {
 	};
 
 	function onScroll() {
-		var	top = $(window).height() * 0.3 + topOffset,
-			bottom = ($(document).height() - $(window).height()) * 0.85,
-			currentScrollTop = $(window).scrollTop();
+		var currentScrollTop = $(window).scrollTop();
+		var scrollPercent = 100 * currentScrollTop / ($(document).height() - $(window).height());
 
-		if (currentScrollTop < top && currentScrollTop < previousScrollTop) {
+		var top = 20, bottom = 80;
+
+		if (scrollPercent < top && currentScrollTop < previousScrollTop) {
 			callback(-1);
-		} else if (currentScrollTop > bottom && currentScrollTop > previousScrollTop) {
+		} else if (scrollPercent > bottom && currentScrollTop > previousScrollTop) {
 			callback(1);
 		}
 		previousScrollTop = currentScrollTop;

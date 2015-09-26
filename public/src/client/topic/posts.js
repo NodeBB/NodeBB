@@ -106,11 +106,16 @@ define('forum/topic/posts', [
 				data.posts.forEach(function(post) {
 					var p = components.get('post', 'pid', post.pid);
 					if (p.hasClass('new')) {
-						p.remove()
+						p.remove();
 					}
 				});
 			}
+
 			data.posts = data.posts.filter(function(post) {
+				if (components.get('post', 'pid', post.pid).length !== 0) {
+				console.log('removed', post.pid)
+				}
+
 				return components.get('post', 'pid', post.pid).length === 0;
 			});
 		}
@@ -141,16 +146,17 @@ define('forum/topic/posts', [
 			} else if (before) {
 				// Save document height and position for future reference (about 5 lines down)
 				var height = $(document).height(),
-					scrollTop = $(document).scrollTop();
+					scrollTop = $(window).scrollTop();
 
-				// Insert the new post
 				html.insertBefore(before);
 
 				// Now restore the relative position the user was on prior to new post insertion
-				$(document).scrollTop(scrollTop + ($(document).height() - height));
+				$(window).scrollTop(scrollTop + ($(document).height() - height));
 			} else {
 				components.get('topic').append(html);
 			}
+
+			removeExtraPosts(direction);
 
 			html.hide().fadeIn('slow');
 
@@ -163,6 +169,23 @@ define('forum/topic/posts', [
 			onNewPostsLoaded(html, pids);
 			callback(html);
 		});
+	}
+
+	function removeExtraPosts(direction) {
+		var posts = components.get('post');
+		if (posts.length > 40) {
+			var removeCount = posts.length - 40;
+			if (direction > 0) {
+				var height = $(document).height(),
+					scrollTop = $(window).scrollTop();
+
+				posts.slice(0, removeCount).remove();
+
+				$(window).scrollTop(scrollTop + ($(document).height() - height));
+			} else {
+				posts.slice(posts.length - removeCount).remove();
+			}
+		}
 	}
 
 	function onNewPostsLoaded(html, pids) {
