@@ -112,10 +112,6 @@ define('forum/topic/posts', [
 			}
 
 			data.posts = data.posts.filter(function(post) {
-				if (components.get('post', 'pid', post.pid).length !== 0) {
-				console.log('removed', post.pid)
-				}
-
 				return components.get('post', 'pid', post.pid).length === 0;
 			});
 		}
