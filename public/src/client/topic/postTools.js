@@ -289,53 +289,63 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function openMovePostModal(button) {
-		var moveModal = $('#move-post-modal'),
-			moveBtn = moveModal.find('#move_post_commit'),
-			topicId = moveModal.find('#topicId');
+		parseMoveModal(function(html) {
+			var moveModal = $(html);
 
-		showMoveModal();
+			var	moveBtn = moveModal.find('#move_post_commit'),
+				topicId = moveModal.find('#topicId');
 
-		moveModal.find('.close,#move_post_cancel').on('click', function() {
-			moveModal.addClass('hide');
-		});
+			moveModal.on('hidden.bs.modal', function() {
+				moveModal.remove();
+			});
 
-		topicId.on('change', function() {
-			if(topicId.val().length) {
-				moveBtn.removeAttr('disabled');
-			} else {
-				moveBtn.attr('disabled', true);
-			}
-		});
+			showMoveModal(moveModal);
 
-		moveBtn.on('click', function() {
-			movePost(button.parents('[data-pid]'), getData(button, 'data-pid'), topicId.val());
+			moveModal.find('.close, #move_post_cancel').on('click', function() {
+				moveModal.addClass('hide');
+			});
+
+			topicId.on('keyup change', function() {
+				moveBtn.attr('disabled', !topicId.val())
+			});
+
+			moveBtn.on('click', function() {
+				movePost(button.parents('[data-pid]'), getData(button, 'data-pid'), topicId.val(), function() {
+					moveModal.modal('hide');
+					topicId.val('');
+				});
+			});
+
 		});
 	}
 
-	function showMoveModal() {
-		$('#move-post-modal').removeClass('hide')
+	function parseMoveModal(callback) {
+		templates.parse('partials/move_post_modal', {}, function(html) {
+			translator.translate(html, callback);
+		});
+	}
+
+	function showMoveModal(modal) {
+		modal.modal('show')
 			.css("position", "fixed")
-			.css("left", Math.max(0, (($(window).width() - $($('#move-post-modal')).outerWidth()) / 2) + $(window).scrollLeft()) + "px")
+			.css("left", Math.max(0, (($(window).width() - modal.outerWidth()) / 2) + $(window).scrollLeft()) + "px")
 			.css("top", "0px")
 			.css("z-index", "2000");
 	}
 
-	function movePost(post, pid, tid) {
+	function movePost(post, pid, tid, callback) {
 		socket.emit('posts.movePost', {pid: pid, tid: tid}, function(err) {
-			$('#move-post-modal').addClass('hide');
-
 			if (err) {
-				$('#topicId').val('');
-				return app.alertError(err.message);
+				app.alertError(err.message);
+				return callback();
 			}
 
 			post.fadeOut(500, function() {
 				post.remove();
 			});
 
-			$('#topicId').val('');
-
 			app.alertSuccess('[[topic:post_moved]]');
+			callback();
 		});
 	}
 
