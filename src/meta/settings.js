@@ -18,10 +18,13 @@ module.exports = function(Meta) {
 	};
 
 	Meta.settings.set = function(hash, values, callback) {
-		hash = 'settings:' + hash;
-		db.setObject(hash, values, function(err) {
+		var key = 'settings:' + hash;
+		db.setObject(key, values, function(err) {
 			if (!err) {
-				plugins.fireHook('action:settings.set', hash, values);
+				plugins.fireHook('action:settings.set', {
+					plugin: hash,
+					settings: values
+				});
 			}
 
 			callback.apply(this, arguments);
