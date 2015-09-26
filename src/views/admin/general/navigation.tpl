@@ -3,32 +3,56 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">Active Navigation</div>
 			<div class="panel-body">
+
+				<div class="clearfix">
+					<ul id="main-nav" class="nav navbar-nav">
+						<!-- BEGIN navigation -->
+						<li data-index="{navigation.index}" class="{navigation.class} <!-- IF navigation.selected --> active <!-- ENDIF navigation.selected -->">
+							<a href="#" title="{navigation.title}" id="{navigation.id}">
+								<!-- IF navigation.iconClass -->
+								<i class="fa fa-fw {navigation.iconClass}"></i>
+								<!-- ENDIF navigation.iconClass -->
+
+								<!-- IF navigation.text -->
+								<span class="{navigation.textClass}">{navigation.text}</span>
+								<!-- ENDIF navigation.text -->
+							</a>
+						</li>
+						<!-- END navigation -->
+					</ul>
+				</div>
+
+				<hr/>
+
 				<ul id="enabled">
 					<!-- BEGIN enabled -->
-					<li class="well">
+					<li data-index="{enabled.index}" class="well <!-- IF !enabled.selected -->hidden<!-- ENDIF !enabled.selected -->">
 						<form>
 							<div class="row">
 								<div class="col-sm-6">
-									<label>ID: <small>optional</small>
-										<input class="form-control" type="text" name="id" value="{enabled.id}" />
-									</label>
-									<label>Title: <small>shown upon mouseover</small>
-										<input class="form-control" type="text" name="title" value="{enabled.title}" />
-									</label>
-									<label>Icon Class: <small><a href="http://fortawesome.github.io/Font-Awesome/cheatsheet/" target="_blank">pick one</a></small>
-										<input class="form-control" type="text" name="iconClass" value="{enabled.iconClass}" />
-									</label>
+									<label>ID: <small>optional</small></label>
+									<input class="form-control" type="text" name="id" value="{enabled.id}" />
+
+									<label>Title: <small>shown upon mouseover</small></label>
+									<input class="form-control" type="text" name="title" value="{enabled.title}" />
+
+									<label>Icon Class:</label>
+									<br/>
+									<span class="iconPicker"><i class="fa fa-2x {enabled.iconClass}"></i>
+									<input class="form-control" type="hidden" name="iconClass" value="{enabled.iconClass}" />
+									</span>
+
 								</div>
+
 								<div class="col-sm-6">
-									<label>Route: <small>ex. /unread</small>
-										<input class="form-control" type="text" name="route" value="{enabled.route}" />
-									</label>
-									<label>Text:
-										<input class="form-control" type="text" name="text" value="{enabled.text}" />
-									</label>
-									<label>Text Class: <small>optional</small>
-										<input class="form-control" type="text" name="textClass" value="{enabled.textClass}" />
-									</label>
+									<label>Route: <small>ex. /unread</small></label>
+									<input class="form-control" type="text" name="route" value="{enabled.route}" />
+
+									<label>Text:</label>
+									<input class="form-control" type="text" name="text" value="{enabled.text}" />
+
+									<label>Text Class: <small>optional</small></label>
+									<input class="form-control" type="text" name="textClass" value="{enabled.textClass}" />
 								</div>
 							</div>
 

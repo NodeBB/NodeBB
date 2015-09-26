@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, ajaxify, socket, templates, bootbox */
 
-define('admin/general/navigation', ['translator'], function(translator) {
+define('admin/general/navigation', ['translator', 'iconSelect'], function(translator, iconSelect) {
 	var navigation = {},
 		available;
 
@@ -9,46 +9,87 @@ define('admin/general/navigation', ['translator'], function(translator) {
 		available = ajaxify.data.available;
 
 		$('#enabled').html(translator.unescape($('#enabled').html()));
+
+		$('#main-nav').html(translator.unescape($('#main-nav').html()));
+
 		translator.translate(translator.unescape($('#available').html()), function(html) {
 			$('#available').html(html)
 				.find('li').draggable({
-					connectToSortable: '#enabled',
+					connectToSortable: '#main-nav',
 					helper: 'clone',
 					distance: 10,
 					stop: drop
 				});
 		});
 
-		$('#enabled')
-			.on('click', '.delete', remove)
-			.on('click', '.toggle', toggle)
-			.sortable()
-			.droppable({
-				accept: $('#available li')
+		$('#main-nav').sortable().droppable({
+			accept: $('#available li')
+		});
+
+		$('#enabled').on('click', '.iconPicker', function() {
+			var iconEl = $(this).find('i');
+			iconSelect.init(iconEl, function(el) {
+				var newIconClass = el.attr('value');
+				var index = iconEl.parents('[data-index]').attr('data-index');
+				$('#main-nav [data-index="' + index + '"] i').attr('class', 'fa fa-fw ' + newIconClass);
+				iconEl.siblings('[name="iconClass"]').val(newIconClass);
 			});
+		});
+
+		$('#main-nav').on('click', 'li', onSelect);
+
+		$('#enabled')
+		 	.on('click', '.delete', remove)
+		 	.on('click', '.toggle', toggle);
 
 		$('#save').on('click', save);
 	};
 
+	function onSelect() {
+		var clickedIndex = $(this).attr('data-index');
+		$('#main-nav li').removeClass('active');
+		$(this).addClass('active');
+
+		var detailsForm = $('#enabled').children().eq(clickedIndex);
+		$('#enabled li').addClass('hidden');
+
+		if (detailsForm.length) {
+			detailsForm.removeClass('hidden');
+		}
+		return false;
+	}
+
 	function drop(ev, ui) {
 		var id = ui.helper.attr('data-id'),
-			el = $('#enabled [data-id="' + id + '"]'),
-			data = id === 'custom' ? {} : available[id];
+			el = $('#main-nav [data-id="' + id + '"]'),
+			data = id === 'custom' ? {iconClass: 'fa-navicon'} : available[id];
 
 		data.enabled = false;
+		data.index = Math.max(0, $('#main-nav').children().length - 1);
 
-		templates.parse('admin/general/navigation', 'enabled', {enabled: [data]}, function(li) {
+		templates.parse('admin/general/navigation', 'navigation', {navigation: [data]}, function(li) {
 			li = $(translator.unescape(li));
 			el.after(li);
 			el.remove();
+		});
+
+		templates.parse('admin/general/navigation', 'enabled', {enabled: [data]}, function(li) {
+			li = $(translator.unescape(li));
+			$('#enabled').append(li);
 		});
 	}
 
 	function save() {
 		var nav = [];
 
-		$('#enabled li').each(function() {
-			var form = $(this).find('form').serializeArray(),
+		var indices = [];
+		$('#main-nav li').each(function() {
+			indices.push($(this).attr('data-index'));
+		});
+
+		indices.forEach(function(index) {
+			var el = $('#enabled').children().eq(index);
+			var form = el.find('form').serializeArray(),
 				data = {},
 				properties = {};
 
@@ -81,7 +122,9 @@ define('admin/general/navigation', ['translator'], function(translator) {
 	}
 
 	function remove() {
-		$(this).parents('li').remove();
+		var index = $(this).parents('[data-index]').attr('data-index');
+		$('#main-nav [data-index="' + index + '"]').remove();
+		$('#enabled [data-index="' + index + '"]').remove();
 		return false;
 	}
 
