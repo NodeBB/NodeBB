@@ -20,9 +20,9 @@ define('forum/topic/browsing', function() {
 	};
 
 	Browsing.onUserEnter = function(data) {
-		var activeEl = $('[component="topic/browsing/list"]');
-		var user = activeEl.find('a[data-uid="' + data.uid + '"]');
-		if (!user.length && activeEl.first().children().length < 10) {
+		var browsingList = $('[component="topic/browsing/list"]');
+		var user = browsingList.find('a[data-uid="' + data.uid + '"]');
+		if (!user.length && browsingList.first().children().length < 10) {
 			addUserIcon(data);
 		} else if (user.length) {
 			user.attr('data-count', parseInt(user.attr('data-count'), 10) + 1);
@@ -36,12 +36,16 @@ define('forum/topic/browsing', function() {
 		if (app.user.uid === parseInt(uid, 10)) {
 			return;
 		}
-		var user = $('[component="topic/browsing/list"]').find('a[data-uid="' + uid + '"]');
+		var browsingList = $('[component="topic/browsing/list"]');
+		var user = browsingList.find('a[data-uid="' + uid + '"]');
 		if (user.length) {
 			var count = Math.max(0, parseInt(user.attr('data-count'), 10) - 1);
 			user.attr('data-count', count);
 			if (count <= 0) {
 				user.parent().remove();
+				if (!browsingList.children(':not(.hidden)').length) {
+					browsingList.parent().addClass('hidden');
+				}
 			}
 		} else {
 			increaseUserCount(-1);
@@ -55,11 +59,11 @@ define('forum/topic/browsing', function() {
 	};
 
 	function updateBrowsingUsers(data) {
-		var activeEl = $('[component="topic/browsing/list"]');
-		var user = activeEl.find('a[data-uid="'+ data.uid + '"]');
+		var browsingList = $('[component="topic/browsing/list"]');
+		var user = browsingList.find('a[data-uid="'+ data.uid + '"]');
 		if (user.length) {
 			user.parent().toggleClass('hidden', data.status === 'offline');
-			activeEl.parent().toggleClass('hidden', !activeEl.children(':not(.hidden)').length);
+			browsingList.parent().toggleClass('hidden', !browsingList.children(':not(.hidden)').length);
 		}
 	}
 
@@ -67,16 +71,16 @@ define('forum/topic/browsing', function() {
 		if (!user.userslug) {
 			return;
 		}
-		var activeEl = $('[component="topic/browsing/list"]');
+		var browsingList = $('[component="topic/browsing/list"]');
 		var userEl = createUserIcon(user.uid, user.picture, user.userslug, user.username);
 		var isSelf = parseInt(user.uid, 10) === parseInt(app.user.uid, 10);
 		if (isSelf) {
-			activeEl.prepend(userEl);
+			browsingList.prepend(userEl);
 		} else {
-			activeEl.append(userEl);
+			browsingList.append(userEl);
 		}
 
-		activeEl.find('a[data-uid]').tooltip({
+		browsingList.find('a[data-uid]').tooltip({
 			placement: 'top'
 		});
 	}
