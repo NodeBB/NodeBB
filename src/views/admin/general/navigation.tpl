@@ -8,7 +8,7 @@
 					<ul id="main-nav" class="nav navbar-nav">
 						<!-- BEGIN navigation -->
 						<li data-index="{navigation.index}" class="{navigation.class} <!-- IF navigation.selected --> active <!-- ENDIF navigation.selected -->">
-							<a href="#" title="{navigation.title}" id="{navigation.id}">
+							<a href="#" title="{navigation.route}" id="{navigation.id}">
 								<!-- IF navigation.iconClass -->
 								<i class="fa fa-fw {navigation.iconClass}"></i>
 								<!-- ENDIF navigation.iconClass -->
@@ -30,29 +30,41 @@
 						<form>
 							<div class="row">
 								<div class="col-sm-6">
-									<label>ID: <small>optional</small></label>
-									<input class="form-control" type="text" name="id" value="{enabled.id}" />
 
-									<label>Title: <small>shown upon mouseover</small></label>
-									<input class="form-control" type="text" name="title" value="{enabled.title}" />
+									<div class="from-group">
+										<label>Icon Class:</label>
+										<br/>
+										<span class="iconPicker"><i class="fa fa-2x {enabled.iconClass}"></i>
+											<input class="form-control" type="hidden" name="iconClass" value="{enabled.iconClass}" />
+										</span>
+									</div>
 
-									<label>Icon Class:</label>
-									<br/>
-									<span class="iconPicker"><i class="fa fa-2x {enabled.iconClass}"></i>
-									<input class="form-control" type="hidden" name="iconClass" value="{enabled.iconClass}" />
-									</span>
+									<div class="from-group">
+										<label>Route: <small>ex. /unread</small></label>
+										<input class="form-control" type="text" name="route" value="{enabled.route}" />
+									</div>
 
+									<div class="form-group">
+										<label>Title: <small>shown upon mouseover</small></label>
+										<input class="form-control" type="text" name="title" value="{enabled.title}" />
+									</div>
 								</div>
 
 								<div class="col-sm-6">
-									<label>Route: <small>ex. /unread</small></label>
-									<input class="form-control" type="text" name="route" value="{enabled.route}" />
+									<div class="from-group">
+										<label>Text:</label>
+										<input class="form-control" type="text" name="text" value="{enabled.text}" />
+									</div>
 
-									<label>Text:</label>
-									<input class="form-control" type="text" name="text" value="{enabled.text}" />
+									<div class="from-group">
+										<label>Text Class: <small>optional</small></label>
+										<input class="form-control" type="text" name="textClass" value="{enabled.textClass}" />
+									</div>
 
-									<label>Text Class: <small>optional</small></label>
-									<input class="form-control" type="text" name="textClass" value="{enabled.textClass}" />
+									<div class="form-group">
+										<label>ID: <small>optional</small></label>
+										<input class="form-control" type="text" name="id" value="{enabled.id}" />
+									</div>
 								</div>
 							</div>
 
