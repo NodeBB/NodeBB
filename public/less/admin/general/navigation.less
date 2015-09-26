@@ -1,15 +1,33 @@
-#main-nav {
-	.active {
-		background-color: #eee;
+
+
+#navigation {
+
+	#main-nav {
+		.active {
+			background-color: #eee;
+		}
+
+		li a {
+			cursor: move;
+		}
 	}
 
-	li {
-		cursor: move;
+	#available {
+		.drag-item {
+			cursor: move;
+			margin-right: 10px;
+		}
 	}
-}
-#navigation {
+
+	#enabled {
+		.iconPicker i {
+			cursor: pointer;
+		}
+	}
+
 	ul {
 		list-style-type: none;
 		padding: 0;
 	}
 }
+

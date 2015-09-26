@@ -109,13 +109,21 @@
 			<div class="panel-heading">Available Menu Items</div>
 			<div class="panel-body">
 				<ul id="available">
-					<li data-id="custom" class="alert alert-warning">
+					<li data-id="custom" class="clearfix">
+						<div data-id="custom" class="drag-item alert alert-warning pull-left">
+							<i class="fa fa-fw fa-navicon"></i>
+						</div>
 						<strong>Custom Route</strong>
 					</li>
 					<!-- BEGIN available -->
-					<li data-id="@index" class="alert <!-- IF available.core -->alert-info<!-- ELSE -->alert-success<!-- ENDIF available.core -->">
-						<strong>{available.text}</strong> {available.route}
-						<span class="pull-right badge"><!-- IF available.core -->core<!-- ELSE -->plugin<!-- ENDIF available.core --></span>
+					<li data-id="@index" class="clearfix">
+						<div data-id="@index" class="drag-item alert <!-- IF available.core -->alert-info<!-- ELSE -->alert-success<!-- ENDIF available.core --> pull-left">
+							<i class="fa fa-fw <!-- IF available.iconClass -->{available.iconClass}<!-- ELSE -->fa-navicon<!-- ENDIF available.iconClass -->"></i>
+						</div>
+						<p>
+							<strong>{available.text}</strong> {available.route} <br/>
+							<!-- IF available.core --> core <!-- ELSE --> plugin <!-- ENDIF available.core -->
+						</p>
 					</li>
 					<!-- END available -->
 				</ul>

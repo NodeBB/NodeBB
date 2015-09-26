@@ -14,7 +14,7 @@ define('admin/general/navigation', ['translator', 'iconSelect'], function(transl
 
 		translator.translate(translator.unescape($('#available').html()), function(html) {
 			$('#available').html(html)
-				.find('li').draggable({
+				.find('li .drag-item').draggable({
 					connectToSortable: '#main-nav',
 					helper: 'clone',
 					distance: 10,
@@ -23,7 +23,7 @@ define('admin/general/navigation', ['translator', 'iconSelect'], function(transl
 		});
 
 		$('#main-nav').sortable().droppable({
-			accept: $('#available li')
+			accept: $('#available li .drag-item')
 		});
 
 		$('#enabled').on('click', '.iconPicker', function() {
@@ -50,7 +50,7 @@ define('admin/general/navigation', ['translator', 'iconSelect'], function(transl
 		$('#main-nav li').removeClass('active');
 		$(this).addClass('active');
 
-		var detailsForm = $('#enabled').children().eq(clickedIndex);
+		var detailsForm = $('#enabled').children('[data-index="' + clickedIndex + '"]');
 		$('#enabled li').addClass('hidden');
 
 		if (detailsForm.length) {
@@ -65,7 +65,7 @@ define('admin/general/navigation', ['translator', 'iconSelect'], function(transl
 			data = id === 'custom' ? {iconClass: 'fa-navicon'} : available[id];
 
 		data.enabled = false;
-		data.index = Math.max(0, $('#main-nav').children().length - 1);
+		data.index = parseInt($('#enabled').children().last().attr('data-index'), 10) + 1;
 
 		templates.parse('admin/general/navigation', 'navigation', {navigation: [data]}, function(li) {
 			li = $(translator.unescape(li));
@@ -88,7 +88,7 @@ define('admin/general/navigation', ['translator', 'iconSelect'], function(transl
 		});
 
 		indices.forEach(function(index) {
-			var el = $('#enabled').children().eq(index);
+			var el = $('#enabled').children('[data-index="' + index + '"]');
 			var form = el.find('form').serializeArray(),
 				data = {},
 				properties = {};
