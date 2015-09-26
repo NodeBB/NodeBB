@@ -159,7 +159,7 @@ function followCommand(method, socket, tid, callback) {
 		return callback(new Error('[[error:not-logged-in]]'));
 	}
 
-	topics[method](tid, socket.uid, callback);
+	method(tid, socket.uid, callback);
 }
 
 SocketTopics.search = function(socket, data, callback) {
