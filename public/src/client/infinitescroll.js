@@ -22,8 +22,9 @@ define('forum/infinitescroll', ['translator'], function(translator) {
 
 	function onScroll() {
 		var currentScrollTop = $(window).scrollTop();
+		var wh = $(window).height();
 		var offsetTop = container.offset() ? container.offset().top : 0;
-		var scrollPercent = 100 * (currentScrollTop - offsetTop) / (container.height() - $(window).height());
+		var scrollPercent = 100 * (currentScrollTop - offsetTop) / Math.max(wh, (container.height() - wh));
 
 		var top = 20, bottom = 80;
 
