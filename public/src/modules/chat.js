@@ -156,7 +156,9 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 				dropdownEl = $('<li class="' + (userObj.unread ? 'unread' : '') + '"/>')
 					.attr('data-uid', userObj.uid)
 					.html('<a data-ajaxify="false">'+
-						'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' +
+						(userObj.picture ?
+							'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' :
+							'<div class="user-icon" style="background-color: ' + userObj['icon:bgColor'] + '">' + userObj['icon:text'] + '</div>') +
 						'<i class="fa fa-circle status ' + userObj.status + '"></i> ' +
 						userObj.username + '</a>')
 					.appendTo(chatsListEl);
