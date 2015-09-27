@@ -301,11 +301,11 @@ module.exports = function(privileges) {
 	};
 
 	privileges.categories.give = function(privileges, cid, groupName, callback) {
-		giveOrRescind(groups.join, privileges, groupName, callback);
+		giveOrRescind(groups.join, privileges, cid, groupName, callback);
 	};
 
 	privileges.categories.rescind = function(privileges, cid, groupName, callback) {
-		giveOrRescind(groups.leave, privileges, groupName, callback);
+		giveOrRescind(groups.leave, privileges, cid, groupName, callback);
 	};
 
 	function giveOrRescind(method, privileges, cid, groupName, callback) {
