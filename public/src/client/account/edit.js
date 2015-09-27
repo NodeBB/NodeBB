@@ -4,13 +4,11 @@
 
 define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'], function(header, uploader, translator) {
 	var AccountEdit = {},
-		gravatarPicture = '',
 		uploadedPicture = '',
 		selectedImageType = '',
 		currentEmail;
 
 	AccountEdit.init = function() {
-		gravatarPicture = ajaxify.data.gravatarpicture;
 		uploadedPicture = ajaxify.data.uploadedpicture;
 
 		header.init();
@@ -61,11 +59,6 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 				$('#user-current-picture').attr('src', data.picture);
 			}
 
-			if (data.gravatarpicture) {
-				$('#user-gravatar-picture').attr('src', data.gravatarpicture);
-				gravatarPicture = data.gravatarpicture;
-			}
-
 			if (data.userslug) {
 				var oldslug = $('.account-username-box').attr('data-userslug');
 				$('.account-username-box a').each(function(index) {
@@ -105,7 +98,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 
 	function handleImageChange() {
 		function selectImageType(type) {
-			$('#gravatar-box .fa-check').toggle(type === 'gravatar');
+			$('#default-box .fa-check').toggle(type === 'default');
 			$('#uploaded-box .fa-check').toggle(type === 'uploaded');
 			selectedImageType = type;
 		}
@@ -120,8 +113,8 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 			return false;
 		});
 
-		$('#gravatar-box').on('click', function() {
-			selectImageType('gravatar');
+		$('#default-box').on('click', function() {
+			selectImageType('default');
 		});
 
 		$('#uploaded-box').on('click', function() {
@@ -139,9 +132,10 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 					return app.alertError(err.message);
 				}
 
-				if (selectedImageType === 'gravatar') {
-					$('#user-current-picture').attr('src', gravatarPicture);
-					updateHeader(gravatarPicture);
+				if (selectedImageType === 'default') {
+					console.log('update pictures here');
+					// $('#user-current-picture').attr('src', defaultPicture);
+					// updateHeader(defaultPicture);
 				} else if (selectedImageType === 'uploaded') {
 					$('#user-current-picture').attr('src', uploadedPicture);
 					updateHeader(uploadedPicture);
@@ -351,18 +345,14 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 	function updateImages() {
 		var currentPicture = $('#user-current-picture').attr('src');
 
-		if (gravatarPicture) {
-			$('#user-gravatar-picture').attr('src', gravatarPicture);
-		}
-
 		if (uploadedPicture) {
 			$('#user-uploaded-picture').attr('src', uploadedPicture);
 		}
 
-		$('#gravatar-box').toggle(!!gravatarPicture);
+		$('#default-box').toggle(true).find('.user-icon').css('background-color', ajaxify.data['icon:bgColor']).text(ajaxify.data['username'].slice(0, 1));
 		$('#uploaded-box').toggle(!!uploadedPicture);
 
-		$('#gravatar-box .fa-check').toggle(currentPicture !== uploadedPicture);
+		$('#default-box .fa-check').toggle(currentPicture !== uploadedPicture);
 		$('#uploaded-box .fa-check').toggle(currentPicture === uploadedPicture);
 	}
 
