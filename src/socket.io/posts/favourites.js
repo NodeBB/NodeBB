@@ -37,13 +37,13 @@ module.exports = function(SocketPosts) {
 			function (results, next) {
 				async.parallel({
 					upvoters: function(next) {
-						user.getUsersFields(results.upvoteUids, ['username', 'userslug', 'picture'], next);
+						user.getUsersFields(results.upvoteUids, ['username', 'userslug', 'picture', 'icon:bgColor', 'icon:text'], next);
 					},
 					upvoteCount: function(next) {
 						next(null, results.upvoteUids.length);
 					},
 					downvoters: function(next) {
-						user.getUsersFields(results.downvoteUids, ['username', 'userslug', 'picture'], next);
+						user.getUsersFields(results.downvoteUids, ['username', 'userslug', 'picture', 'icon:bgColor', 'icon:text'], next);
 					},
 					downvoteCount: function(next) {
 						next(null, results.downvoteUids.length);
