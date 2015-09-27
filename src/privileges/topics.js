@@ -188,6 +188,10 @@ module.exports = function(privileges) {
 		], callback);
 	};
 
+	privileges.topics.canEdit = function(tid, uid, callback) {
+		privileges.topics.isOwnerOrAdminOrMod(tid, uid, callback);
+	};
+
 	privileges.topics.isOwnerOrAdminOrMod = function(tid, uid, callback) {
 		helpers.some([
 			function(next) {
