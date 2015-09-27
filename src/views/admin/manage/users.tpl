@@ -51,7 +51,11 @@
 					<!-- BEGIN users -->
 					<div class="users-box" data-uid="{users.uid}" data-username="{users.username}">
 						<div class="user-image">
+							<!-- IF users.picture -->
 							<img src="{users.picture}" class="img-thumbnail user-selectable"/>
+							<!-- ELSE -->
+							<div class="user-icon user-selectable" style="background-color: {users.icon:bgColor};">{users.icon:text}</div>
+							<!-- ENDIF users.picture -->
 							<div class="labels">
 								<!-- IF config.requireEmailConfirmation -->
 								<!-- IF !users.email:confirmed -->

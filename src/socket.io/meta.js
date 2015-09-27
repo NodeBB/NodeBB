@@ -1,7 +1,6 @@
 'use strict';
 
 var	nconf = require('nconf'),
-	gravatar = require('gravatar'),
 	winston = require('winston'),
 	validator = require('validator'),
 

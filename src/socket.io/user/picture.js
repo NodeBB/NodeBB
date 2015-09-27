@@ -18,12 +18,12 @@ module.exports = function(SocketUser) {
 
 		var type = data.type;
 
-		if (type === 'gravatar') {
-			type = 'gravatarpicture';
+		if (type === 'default') {
+			type = null;
 		} else if (type === 'uploaded') {
 			type = 'uploadedpicture';
 		} else {
-			return callback(new Error('[[error:invalid-image-type, ' + ['gravatar', 'uploadedpicture'].join(', ') + ']]'));
+			return callback(new Error('[[error:invalid-image-type, ' + ['default', 'uploadedpicture'].join(', ') + ']]'));
 		}
 
 		async.waterfall([
@@ -31,6 +31,9 @@ module.exports = function(SocketUser) {
 				SocketUser.isAdminOrSelf(socket, data.uid, next);
 			},
 			function (next) {
+				if (!type) {
+					next(null, '');
+				}
 				user.getUserField(data.uid, type, next);
 			},
 			function (picture, next) {

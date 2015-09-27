@@ -20,7 +20,7 @@ module.exports = function(Posts) {
 				user.getMultipleUserSettings(uids, next);
 			},
 			userData: function(next) {
-				user.getUsersFields(uids, ['uid', 'username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status'], next);
+				user.getUsersFields(uids, ['uid', 'username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status', 'icon:bgColor', 'icon:text'], next);
 			},
 			online: function(next) {
 				require('../socket.io').isUsersOnline(uids, next);
@@ -55,7 +55,7 @@ module.exports = function(Posts) {
 				userData.reputation = userData.reputation || 0;
 				userData.postcount = userData.postcount || 0;
 				userData.banned = parseInt(userData.banned, 10) === 1;
-				userData.picture = userData.picture || user.createGravatarURLFromEmail('');
+				userData.picture = userData.picture || '';
 
 				async.parallel({
 					signature: function(next) {

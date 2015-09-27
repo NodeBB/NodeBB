@@ -36,6 +36,7 @@ var	async = require('async'),
 	require('./user/picture')(User);
 	require('./user/approval')(User);
 	require('./user/invite')(User);
+	require('./user/icon')(User);
 
 	User.updateLastOnlineTime = function(uid, callback) {
 		callback = callback || function() {};
@@ -93,7 +94,7 @@ var	async = require('async'),
 	};
 
 	User.getUsers = function(uids, uid, callback) {
-		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'joindate', 'postcount', 'reputation', 'email:confirmed'];
+		var fields = ['uid', 'username', 'userslug', 'picture', 'icon:bgColor', 'icon:text', 'status', 'banned', 'joindate', 'postcount', 'reputation', 'email:confirmed'];
 		plugins.fireHook('filter:users.addFields', {fields: fields}, function(err, data) {
 			if (err) {
 				return callback(err);

@@ -65,7 +65,11 @@
 							<ul class="members current_members user-list">
 								<!-- BEGIN group.members -->
 									<li data-uid="{group.members.uid}">
+										<!-- IF group.members.picture -->
 										<img src="{group.members.picture}" />
+										<!-- ELSE -->
+										<div class="user-icon" style="background-color: {group.members.icon:bgColor};">{group.members.icon:text}</div>
+										<!-- ENDIF group.members.picture -->
 										<span>{group.members.username}</span>
 									</li>
 								<!-- END group.members -->

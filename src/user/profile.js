@@ -110,7 +110,7 @@ module.exports = function(User) {
 						return callback(err);
 					}
 					plugins.fireHook('action:user.updateProfile', {data: data, uid: uid});
-					User.getUserFields(uid, ['email', 'username', 'userslug', 'picture', 'gravatarpicture'], callback);
+					User.getUserFields(uid, ['email', 'username', 'userslug', 'picture'], callback);
 				});
 			});
 
@@ -155,11 +155,7 @@ module.exports = function(User) {
 					return callback(err);
 				}
 
-				var gravatarpicture = User.createGravatarURLFromEmail(newEmail);
 				async.parallel([
-					function(next) {
-						User.setUserField(uid, 'gravatarpicture', gravatarpicture, next);
-					},
 					function(next) {
 						db.sortedSetAdd('email:uid', uid, newEmail.toLowerCase(), next);
 					},
@@ -174,14 +170,7 @@ module.exports = function(User) {
 							User.email.sendValidationEmail(uid, newEmail);
 						}
 						User.setUserField(uid, 'email:confirmed', 0, next);
-					},
-					function(next) {
-						if (userData.picture !== userData.uploadedpicture) {
-							User.setUserField(uid, 'picture', gravatarpicture, next);
-						} else {
-							next();
-						}
-					},
+					}
 				], callback);
 			});
 		});

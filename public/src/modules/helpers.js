@@ -161,6 +161,14 @@
 		return locale.replace('_', '-');
 	};
 
+	helpers.renderTopicImage = function(topicObj) {
+		if (topicObj.thumb) {
+			return '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.username + '" />';
+		} else {
+			return '<img src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />';
+		}
+	};
+
 	exports.register = function() {
 		var templates;
 

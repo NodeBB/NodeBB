@@ -29,15 +29,32 @@
 			background: #eee;
 		}
 
-		img {
+		img, .user-icon {
 			float: left;
-			max-width: 36px;
-			padding-right: 1rem;
+			height: 36px;
+			width: 36px;
+			margin-right: 1rem;
+			line-height: 36px;
+			font-size: 1.8rem;
 		}
 
 		span {
 			vertical-align: middle;
 			display: inline-block;
 		}
+	}
+}
+
+.user-icon {
+	display: inline-block;
+	text-align: center;
+	color: @gray-lighter;
+	font-weight: normal;
+
+	&:before {
+		content: '';
+		display: inline-block;
+		height: 100%;
+		vertical-align: middle;
 	}
 }

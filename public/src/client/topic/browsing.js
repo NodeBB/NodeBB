@@ -71,8 +71,9 @@ define('forum/topic/browsing', function() {
 		if (!user.userslug) {
 			return;
 		}
+		console.log(user);
 		var browsingList = $('[component="topic/browsing/list"]');
-		var userEl = createUserIcon(user.uid, user.picture, user.userslug, user.username);
+		var userEl = createUserIcon(user.uid, user.picture, user.userslug, user.username, user['icon:bgColor'], user['icon:text']);
 		var isSelf = parseInt(user.uid, 10) === parseInt(app.user.uid, 10);
 		if (isSelf) {
 			browsingList.prepend(userEl);
@@ -85,9 +86,14 @@ define('forum/topic/browsing', function() {
 		});
 	}
 
-	function createUserIcon(uid, picture, userslug, username) {
+	function createUserIcon(uid, picture, userslug, username, iconBg, iconText) {
 		if (!$('[component="topic/browsing/list"]').find('[data-uid="' + uid + '"]').length) {
-			return $('<div class="inline-block"><a title="' + username + '" data-uid="' + uid + '" data-count="1" href="' + config.relative_path + '/user/' + userslug + '"><img src="'+ picture +'"/></a></div>');
+			console.log(iconBg, iconText);
+			var imgOrIcon = picture ?
+				'<img src="'+ picture +'" />' :
+				'<div class="user-icon" style="background-color: ' + iconBg + ';">' + iconText + '</div>';
+
+			return $('<div class="inline-block"><a title="' + username + '" data-uid="' + uid + '" data-count="1" href="' + config.relative_path + '/user/' + userslug + '">' + imgOrIcon + '</a></div>');
 		}
 	}
 

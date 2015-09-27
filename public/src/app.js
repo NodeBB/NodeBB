@@ -138,7 +138,9 @@ app.cacheBuster = null;
 				username: app.user.username,
 				userslug: app.user.userslug,
 				picture: app.user.picture,
-				status: app.user.status
+				status: app.user.status,
+				'icon:bgColor': app.user['icon:bgColor'],
+				'icon:text': app.user['icon:text']
 			}, function(err) {
 				if (err) {
 					app.alertError(err.message);
@@ -158,7 +160,7 @@ app.cacheBuster = null;
 	}
 
 	app.createUserTooltips = function() {
-		$('img[title].teaser-pic,img[title].user-img').each(function() {
+		$('img[title].teaser-pic,img[title].user-img,div.user-icon').each(function() {
 			$(this).tooltip({
 				placement: 'top',
 				title: $(this).attr('title')

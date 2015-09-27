@@ -44,7 +44,6 @@ module.exports = function(User) {
 
 		if (fields.indexOf('picture') !== -1) {
 			addField('email');
-			addField('gravatarpicture');
 			addField('uploadedpicture');
 		}
 
@@ -102,15 +101,11 @@ module.exports = function(User) {
 				user.uid = 0;
 				user.username = '[[global:guest]]';
 				user.userslug = '';
-				user.picture = User.createGravatarURLFromEmail('');
+				user.picture = '';
 			}
 
-			if (user.picture) {
-				if (user.picture === user.uploadedpicture) {
-					user.picture = user.uploadedpicture = user.picture.startsWith('http') ? user.picture : nconf.get('relative_path') + user.picture;
-				} else {
-					user.picture = User.createGravatarURLFromEmail(user.email);
-				}
+			if (user.picture && user.picture === user.uploadedpicture) {
+				user.picture = user.uploadedpicture = user.picture.startsWith('http') ? user.picture : nconf.get('relative_path') + user.picture;
 			}
 
 			for(var i=0; i<fieldsToRemove.length; ++i) {

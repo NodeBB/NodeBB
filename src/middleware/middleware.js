@@ -244,7 +244,7 @@ middleware.renderHeader = function(req, res, data, callback) {
 		},
 		user: function(next) {
 			if (req.uid) {
-				user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'status', 'email:confirmed', 'banned'], next);
+				user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'status', 'email:confirmed', 'banned', 'icon:bgColor', 'icon:text'], next);
 			} else {
 				next(null, {
 					username: '[[global:guest]]',

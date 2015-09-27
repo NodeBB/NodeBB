@@ -124,7 +124,7 @@ var async = require('async'),
 
 				async.parallel({
 					users: function(next) {
-						user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+						user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'icon:bgColor', 'icon:text'], next);
 					},
 					categories: function(next) {
 						categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'bgColor', 'color', 'disabled'], next);
