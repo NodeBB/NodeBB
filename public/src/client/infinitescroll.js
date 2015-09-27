@@ -31,10 +31,14 @@ define('forum/infinitescroll', ['translator'], function(translator) {
 
 		var top = 20, bottom = 80;
 
+		var direction = currentScrollTop > previousScrollTop ? 1 : -1;
+
 		if (scrollPercent < top && currentScrollTop < previousScrollTop) {
-			callback(-1);
+			callback(direction);
 		} else if (scrollPercent > bottom && currentScrollTop > previousScrollTop) {
-			callback(1);
+			callback(direction);
+		} else if (scrollPercent < 0 && direction > 0 && viewportHeight < 0) {
+			callback(direction);
 		}
 
 		previousScrollTop = currentScrollTop;
