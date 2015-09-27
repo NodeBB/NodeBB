@@ -8,17 +8,22 @@ define('forum/infinitescroll', ['translator'], function(translator) {
 	var callback;
 	var previousScrollTop = 0;
 	var loadingMore	= false;
-	var topOffset = 0;
+	var container;
 
-	scroll.init = function(cb, _topOffest) {
+	scroll.init = function(el, cb) {
+		if (typeof el === 'function') {
+			cb = el;
+			el = null;
+		}
 		callback = cb;
-		topOffset = _topOffest || 0;
+		container = el || $(document);
 		$(window).off('scroll', onScroll).on('scroll', onScroll);
 	};
 
 	function onScroll() {
 		var currentScrollTop = $(window).scrollTop();
-		var scrollPercent = 100 * currentScrollTop / ($(document).height() - $(window).height());
+		var offsetTop = container.offset() ? container.offset().top : 0;
+		var scrollPercent = 100 * (currentScrollTop - offsetTop) / (container.height() - $(window).height());
 
 		var top = 20, bottom = 80;
 
@@ -27,6 +32,7 @@ define('forum/infinitescroll', ['translator'], function(translator) {
 		} else if (scrollPercent > bottom && currentScrollTop > previousScrollTop) {
 			callback(1);
 		}
+
 		previousScrollTop = currentScrollTop;
 	}
 

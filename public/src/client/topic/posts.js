@@ -124,9 +124,9 @@ define('forum/topic/posts', [
 
 		var after, before;
 
-		if (direction === 1 && repliesSelector.length) {
+		if (direction > 0 && repliesSelector.length) {
 			after = repliesSelector.last();
-		} else if (direction === -1 && repliesSelector.length) {
+		} else if (direction < 0 && repliesSelector.length) {
 			before = repliesSelector.first();
 		}
 

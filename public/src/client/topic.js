@@ -192,7 +192,7 @@ define('forum/topic', [
 
 	function enableInfiniteLoadingOrPagination() {
 		if (!config.usePagination) {
-			infinitescroll.init(posts.loadMorePosts);
+			infinitescroll.init($('[component="topic"]'), posts.loadMorePosts);
 		} else {
 			navigator.hide();
 

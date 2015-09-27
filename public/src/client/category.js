@@ -172,7 +172,7 @@ define('forum/category', [
 
 	function enableInfiniteLoadingOrPagination() {
 		if (!config.usePagination) {
-			infinitescroll.init(Category.loadMoreTopics);
+			infinitescroll.init($('[component="category"]'), Category.loadMoreTopics);
 		} else {
 			navigator.hide();
 			pagination.init(ajaxify.data.currentPage, ajaxify.data.pageCount);
@@ -245,94 +245,16 @@ define('forum/category', [
 		});
 	}
 
-	Category.onTopicsLoaded = function(data, callback) {
-		if(!data || !data.topics.length) {
-			return;
-		}
-
-		function removeAlreadyAddedTopics(topics) {
-			return topics.filter(function(topic) {
-				return components.get('category/topic', 'tid', topic.tid).length === 0;
-			});
-		}
-
-		var after = null,
-			before = null;
-
-		function findInsertionPoint() {
-			var topics = components.get('category/topic');
-
-			if (!topics.length) {
-				return;
-			}
-
-			var last = topics.last(),
-				lastIndex = last.attr('data-index'),
-				firstIndex = data.topics[data.topics.length - 1].index;
-
-			if (firstIndex > lastIndex) {
-				after = last;
-			} else {
-				before = topics.first();
-			}
-		}
-
-		data.topics = removeAlreadyAddedTopics(data.topics);
-		if(!data.topics.length) {
-			return;
-		}
-
-		data.showSelect = data.privileges.editable;
-
-		findInsertionPoint();
-
-		templates.parse('category', 'topics', data, function(html) {
-			translator.translate(html, function(translatedHTML) {
-				var container = $('[component="category"]'),
-					html = $(translatedHTML);
-
-				$('[component="category"]').removeClass('hidden');
-				$('.category-sidebar').removeClass('hidden');
-
-				$('#category-no-topics').remove();
-
-				if(config.usePagination) {
-					container.empty().append(html);
-				} else {
-					if(after) {
-						html.insertAfter(after);
-					} else if(before) {
-						html.insertBefore(before);
-					} else {
-						container.append(html);
-					}
-				}
-
-				if (typeof callback === 'function') {
-					callback();
-				}
-				html.find('.timeago').timeago();
-				app.createUserTooltips();
-				utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
-			});
-		});
-	};
-
 	Category.loadMoreTopics = function(direction) {
 		if (!$('[component="category"]').length || !$('[component="category"]').children().length) {
 			return;
 		}
 
-		var topics = components.get('category/topic');
+		var topics = $('[component="category/topic"]');
 		var afterEl = direction > 0 ? topics.last() : topics.first();
 		var after = parseInt(afterEl.attr('data-index'), 10) || 0;
-		var offset = $('#header-menu').height();
 
-		loadTopicsAfter(after, direction, function() {
-			if (direction < 0 && afterEl.length) {
-				Category.scrollToTopic(afterEl.attr('data-index'), null, 0, offset);
-			}
-		});
+		loadTopicsAfter(after, direction);
 	};
 
 	function loadTopicsAfter(after, direction, callback) {
@@ -348,18 +270,97 @@ define('forum/category', [
 			author: utils.params().author
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {
-				Category.onTopicsLoaded(data, function() {
-					done();
-					callback();
-				});
+				Category.onTopicsLoaded(data, direction, done);
 			} else {
 				done();
 			}
 
-			$('[component="category"]').attr('data-nextstart', data.nextStart);
 			$(window).trigger('action:categories.loaded');
 		});
 	}
+
+
+	Category.onTopicsLoaded = function(data, direction, callback) {
+		if (!data || !data.topics.length) {
+			return callback();
+		}
+
+		function removeAlreadyAddedTopics(topics) {
+			return topics.filter(function(topic) {
+				return components.get('category/topic', 'tid', topic.tid).length === 0;
+			});
+		}
+
+		data.topics = removeAlreadyAddedTopics(data.topics);
+		if (!data.topics.length) {
+			return callback();
+		}
+
+		data.showSelect = data.privileges.editable;
+
+		var after, before;
+		var topics = $('[component="category/topic"]');
+
+		if (direction > 0 && topics.length) {
+			after = topics.last();
+		} else if (direction < 0 && topics.length) {
+			before = topics.first();
+		}
+
+		templates.parse('category', 'topics', data, function(html) {
+			translator.translate(html, function(translatedHTML) {
+				var container = $('[component="category"]'),
+					html = $(translatedHTML);
+
+				$('[component="category"]').removeClass('hidden');
+				$('.category-sidebar').removeClass('hidden');
+
+				$('#category-no-topics').remove();
+
+
+				if (after) {
+					html.insertAfter(after);
+				} else if (before) {
+					var height = $(document).height(),
+					 	scrollTop = $(window).scrollTop();
+
+					html.insertBefore(before);
+
+					$(window).scrollTop(scrollTop + ($(document).height() - height));
+				} else {
+					container.append(html);
+				}
+
+				removeExtraTopics(direction);
+
+				if (typeof callback === 'function') {
+					callback();
+				}
+
+				html.find('.timeago').timeago();
+				app.createUserTooltips();
+				utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
+			});
+		});
+	};
+
+	function removeExtraTopics(direction) {
+		var topics = $('[component="category/topic"]');
+		if (topics.length > 60) {
+			var removeCount = topics.length - 60;
+			if (direction > 0) {
+				var height = $(document).height(),
+					scrollTop = $(window).scrollTop();
+
+				topics.slice(0, removeCount).remove();
+
+				$(window).scrollTop(scrollTop + ($(document).height() - height));
+			} else {
+				topics.slice(topics.length - removeCount).remove();
+			}
+		}
+	}
+
 
 	return Category;
 });
