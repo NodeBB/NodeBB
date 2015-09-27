@@ -22,7 +22,7 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function(infinite
 		$('#new-topics-alert').on('click', function() {
 			$(this).addClass('hide');
 		});
-
+console.log('da fuq is going on')
 		infinitescroll.init(Recent.loadMoreTopics);
 	};
 

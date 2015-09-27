@@ -12,19 +12,22 @@ define('forum/infinitescroll', ['translator'], function(translator) {
 
 	scroll.init = function(el, cb) {
 		if (typeof el === 'function') {
-			cb = el;
-			el = null;
+			callback = el;
+			container = $(document);
+		} else {
+			callback = cb;
+			container = el || $(document);
 		}
-		callback = cb;
-		container = el || $(document);
+
 		$(window).off('scroll', onScroll).on('scroll', onScroll);
 	};
 
 	function onScroll() {
 		var currentScrollTop = $(window).scrollTop();
 		var wh = $(window).height();
+		var viewportHeight = container.height() - wh;
 		var offsetTop = container.offset() ? container.offset().top : 0;
-		var scrollPercent = 100 * (currentScrollTop - offsetTop) / Math.max(wh, (container.height() - wh));
+		var scrollPercent = 100 * (currentScrollTop - offsetTop) / (viewportHeight <= 0 ? wh : viewportHeight);
 
 		var top = 20, bottom = 80;
 
