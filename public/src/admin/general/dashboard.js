@@ -32,6 +32,8 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 
 			intervals.rooms = null;
 			intervals.graphs = null;
+			graphData.rooms = null;
+			graphData.traffic = null;
 			usedTopicColors.length = 0;
 		});
 
