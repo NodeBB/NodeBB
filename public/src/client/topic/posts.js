@@ -152,7 +152,7 @@ define('forum/topic/posts', [
 				components.get('topic').append(html);
 			}
 
-			removeExtraPosts(direction);
+			infinitescroll.removeExtra(components.get('posts'), direction, 40);
 
 			html.hide().fadeIn('slow');
 
@@ -165,23 +165,6 @@ define('forum/topic/posts', [
 			onNewPostsLoaded(html, pids);
 			callback(html);
 		});
-	}
-
-	function removeExtraPosts(direction) {
-		var posts = components.get('post');
-		if (posts.length > 40) {
-			var removeCount = posts.length - 40;
-			if (direction > 0) {
-				var height = $(document).height(),
-					scrollTop = $(window).scrollTop();
-
-				posts.slice(0, removeCount).remove();
-
-				$(window).scrollTop(scrollTop + ($(document).height() - height));
-			} else {
-				posts.slice(posts.length - removeCount).remove();
-			}
-		}
 	}
 
 	function onNewPostsLoaded(html, pids) {

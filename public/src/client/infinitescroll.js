@@ -68,5 +68,23 @@ define('forum/infinitescroll', ['translator'], function(translator) {
 		});
 	};
 
+	scroll.removeExtra = function(els, direction, count) {
+		if (els.length <= count) {
+			return;
+		}
+
+		var removeCount = els.length - count;
+		if (direction > 0) {
+			var height = $(document).height(),
+				scrollTop = $(window).scrollTop();
+
+			els.slice(0, removeCount).remove();
+
+			$(window).scrollTop(scrollTop + ($(document).height() - height));
+		} else {
+			els.slice(els.length - removeCount).remove();
+		}
+	};
+
 	return scroll;
 });

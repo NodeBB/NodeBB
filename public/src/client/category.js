@@ -10,6 +10,7 @@ define('forum/category', [
 	'sort',
 	'components',
 	'translator'
+
 ], function(pagination, infinitescroll, share, navigator, categoryTools, sort, components, translator) {
 	var Category = {};
 
@@ -307,60 +308,34 @@ define('forum/category', [
 			before = topics.first();
 		}
 
-		templates.parse('category', 'topics', data, function(html) {
-			translator.translate(html, function(translatedHTML) {
-				var container = $('[component="category"]'),
-					html = $(translatedHTML);
+		infinitescroll.parseAndTranslate('category', 'topics', data, function(html) {
+			$('[component="category"]').removeClass('hidden');
+			$('.category-sidebar').removeClass('hidden');
 
-				$('[component="category"]').removeClass('hidden');
-				$('.category-sidebar').removeClass('hidden');
+			$('#category-no-topics').remove();
 
-				$('#category-no-topics').remove();
-
-
-				if (after) {
-					html.insertAfter(after);
-				} else if (before) {
-					var height = $(document).height(),
-					 	scrollTop = $(window).scrollTop();
-
-					html.insertBefore(before);
-
-					$(window).scrollTop(scrollTop + ($(document).height() - height));
-				} else {
-					container.append(html);
-				}
-
-				removeExtraTopics(direction);
-
-				if (typeof callback === 'function') {
-					callback();
-				}
-
-				html.find('.timeago').timeago();
-				app.createUserTooltips();
-				utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
-			});
-		});
-	};
-
-	function removeExtraTopics(direction) {
-		var topics = $('[component="category/topic"]');
-		if (topics.length > 60) {
-			var removeCount = topics.length - 60;
-			if (direction > 0) {
+			if (after) {
+				html.insertAfter(after);
+			} else if (before) {
 				var height = $(document).height(),
-					scrollTop = $(window).scrollTop();
+				 	scrollTop = $(window).scrollTop();
 
-				topics.slice(0, removeCount).remove();
+				html.insertBefore(before);
 
 				$(window).scrollTop(scrollTop + ($(document).height() - height));
 			} else {
-				topics.slice(topics.length - removeCount).remove();
+				$('[component="category"]').append(html);
 			}
-		}
-	}
 
+			infinitescroll.removeExtra($('[component="category/topic"]'), direction, 60);
+
+			html.find('.timeago').timeago();
+			app.createUserTooltips();
+			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
+
+			callback();
+		});
+	};
 
 	return Category;
 });
