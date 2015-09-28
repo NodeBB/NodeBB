@@ -73,20 +73,25 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 				$('#confirm-email').removeClass('hide');
 			}
 
-			updateHeader(data.picture, userData.username, data.userslug);
+			updateHeader(userData.username, data.userslug);
 		});
 
 		return false;
 	}
 
-	function updateHeader(picture, username, userslug) {
+	function updateHeader(username, userslug) {
 		require(['components'], function(components) {
 			if (parseInt(ajaxify.data.theirid, 10) !== parseInt(ajaxify.data.yourid, 10)) {
 				return;
 			}
 
-			if (picture) {
-				components.get('header/userpicture').attr('src', picture);
+			// Update the picture
+			if (ajaxify.data.picture !== null) {
+				components.get('header/usericon').hide();
+				components.get('header/userpicture').prop('src', ajaxify.data.picture).show();
+			} else {
+				components.get('header/userpicture').hide();
+				components.get('header/usericon').show();
 			}
 
 			if (username && userslug) {
@@ -132,14 +137,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 					return app.alertError(err.message);
 				}
 
-				if (selectedImageType === 'default') {
-					console.log('update pictures here');
-					// $('#user-current-picture').attr('src', defaultPicture);
-					// updateHeader(defaultPicture);
-				} else if (selectedImageType === 'uploaded') {
-					$('#user-current-picture').attr('src', uploadedPicture);
-					updateHeader(uploadedPicture);
-				}
+				ajaxify.refresh(null, updateHeader);
 			});
 		});
 	}
@@ -178,7 +176,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 
 			$('#user-current-picture').attr('src', urlOnServer);
 			$('#user-uploaded-picture').attr('src', urlOnServer);
-			updateHeader(urlOnServer);
+			updateHeader();
 			uploadedPicture = urlOnServer;
 			$('#removeUploadedPictureBtn').removeClass('hide');
 		}
@@ -186,7 +184,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 		function onRemoveComplete(urlOnServer) {
 			$('#user-current-picture').attr('src', urlOnServer);
 			$('#user-uploaded-picture').attr('src', '');
-			updateHeader(urlOnServer);
+			updateHeader();
 			uploadedPicture = '';
 			$('#removeUploadedPictureBtn').addClass('hide');
 		}

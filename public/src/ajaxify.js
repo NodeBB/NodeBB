@@ -182,12 +182,12 @@ $(document).ready(function() {
 		return url;
 	};
 
-	ajaxify.refresh = function(e) {
+	ajaxify.refresh = function(e, callback) {
 		if (e && e instanceof jQuery.Event) {
 			e.preventDefault();
 		}
 
-		ajaxify.go(ajaxify.currentPage, null, true);
+		ajaxify.go(ajaxify.currentPage, callback, true);
 	};
 
 	ajaxify.loadScript = function(tpl_url, callback) {
