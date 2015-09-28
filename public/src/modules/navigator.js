@@ -92,7 +92,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 
 		var middleOfViewport = $(window).scrollTop() + $(window).height() / 2;
 		
-		index = 0;
+		index = parseInt($(navigator.selector).first().attr('data-index'), 10);
 
 		$(navigator.selector).each(function() {
 			var el = $(this);
