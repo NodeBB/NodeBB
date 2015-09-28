@@ -152,7 +152,7 @@ define('forum/topic/posts', [
 				components.get('topic').append(html);
 			}
 
-			infinitescroll.removeExtra(components.get('posts'), direction, 40);
+			infinitescroll.removeExtra(components.get('post'), direction, 40);
 
 			html.hide().fadeIn('slow');
 
