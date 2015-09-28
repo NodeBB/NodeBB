@@ -153,9 +153,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 
 			// Handle and children categories in this level have
 			for(var x=0,numCategories=categories.length;x<numCategories;x++) {
-				if (categories[x].hasOwnProperty('children') && categories[x].children.length > 0) {
-					renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
-				}
+				renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
 			}
 
 			// Make list sortable
