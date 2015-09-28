@@ -73,6 +73,9 @@
 	};
 
 	helpers.generateCategoryBackground = function(category) {
+		if (!category) {
+			return '';
+		}
 		var style = [];
 
 		if (category.bgColor) {

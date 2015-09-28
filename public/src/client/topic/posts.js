@@ -106,10 +106,11 @@ define('forum/topic/posts', [
 				data.posts.forEach(function(post) {
 					var p = components.get('post', 'pid', post.pid);
 					if (p.hasClass('new')) {
-						p.remove()
+						p.remove();
 					}
 				});
 			}
+
 			data.posts = data.posts.filter(function(post) {
 				return components.get('post', 'pid', post.pid).length === 0;
 			});
@@ -123,9 +124,9 @@ define('forum/topic/posts', [
 
 		var after, before;
 
-		if (direction === 1 && repliesSelector.length) {
+		if (direction > 0 && repliesSelector.length) {
 			after = repliesSelector.last();
-		} else if (direction === -1 && repliesSelector.length) {
+		} else if (direction < 0 && repliesSelector.length) {
 			before = repliesSelector.first();
 		}
 
@@ -141,16 +142,17 @@ define('forum/topic/posts', [
 			} else if (before) {
 				// Save document height and position for future reference (about 5 lines down)
 				var height = $(document).height(),
-					scrollTop = $(document).scrollTop();
+					scrollTop = $(window).scrollTop();
 
-				// Insert the new post
 				html.insertBefore(before);
 
 				// Now restore the relative position the user was on prior to new post insertion
-				$(document).scrollTop(scrollTop + ($(document).height() - height));
+				$(window).scrollTop(scrollTop + ($(document).height() - height));
 			} else {
 				components.get('topic').append(html);
 			}
+
+			infinitescroll.removeExtra(components.get('posts'), direction, 40);
 
 			html.hide().fadeIn('slow');
 
@@ -258,7 +260,7 @@ define('forum/topic/posts', [
 	};
 
 	function showBottomPostBar() {
-		if(components.get('post').length > 1 || !components.get('post', 'index', 0).length) {
+		if (components.get('post').length > 1 || !components.get('post', 'index', 0).length) {
 			$('.bottom-post-bar').removeClass('hidden');
 		}
 	}

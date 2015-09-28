@@ -4,7 +4,7 @@ define('components', function() {
 
 	components.core = {
 		'post': function(name, value) {
-			return $('[data-' + name + '="' + value + '"]');
+			return $('[component="post"][data-' + name + '="' + value + '"]');
 		},
 		'post/content': function(pid) {
 			return components.core.post('pid', pid).find('[component="post/content"]');

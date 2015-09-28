@@ -301,16 +301,18 @@ module.exports = function(privileges) {
 	};
 
 	privileges.categories.give = function(privileges, cid, groupName, callback) {
-		async.each(privileges, function(privilege, next) {
-			groups.join('cid:' + cid + ':privileges:groups:' + privilege, groupName, next);
-		}, callback);
+		giveOrRescind(groups.join, privileges, cid, groupName, callback);
 	};
 
 	privileges.categories.rescind = function(privileges, cid, groupName, callback) {
-		async.each(privileges, function(privilege, next) {
-			groups.leave('cid:' + cid + ':privileges:groups:' + privilege, groupName, next);
-		}, callback);
+		giveOrRescind(groups.leave, privileges, cid, groupName, callback);
 	};
+
+	function giveOrRescind(method, privileges, cid, groupName, callback) {
+		async.each(privileges, function(privilege, next) {
+			method('cid:' + cid + ':privileges:groups:' + privilege, groupName, next);
+		}, callback);
+	}
 
 	privileges.categories.canMoveAllTopics = function(currentCid, targetCid, uid, callback) {
 		async.parallel({

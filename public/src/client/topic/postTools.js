@@ -246,7 +246,9 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	function getUserName(button) {
 		var username = '',
 			post = button.parents('[data-pid]');
-
+		if (button.attr('component') === 'topic/reply') {
+			return username;
+		}
 		if (post.length) {
 			username = post.attr('data-username').replace(/\s/g, '-');
 		}

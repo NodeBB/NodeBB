@@ -87,12 +87,14 @@ define('forum/topic', [
 	}
 
 	function onKeyDown(ev) {
-		if (ev.which === 36) { // home key
-			Topic.toTop();
-			return false;
-		} else if (ev.which === 35) { // end key
-			Topic.toBottom();
-			return false;
+		if (ev.target.nodeName === 'BODY') {
+			if (ev.which === 36) { // home key
+				Topic.toTop();
+				return false;
+			} else if (ev.which === 35) { // end key
+				Topic.toBottom();
+				return false;
+			}
 		}
 	}
 
@@ -192,7 +194,7 @@ define('forum/topic', [
 
 	function enableInfiniteLoadingOrPagination() {
 		if (!config.usePagination) {
-			infinitescroll.init(posts.loadMorePosts);
+			infinitescroll.init($('[component="topic"]'), posts.loadMorePosts);
 		} else {
 			navigator.hide();
 

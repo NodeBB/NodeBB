@@ -350,19 +350,15 @@ function sortPosts(posts, data) {
 			});
 		}
 	} else {
-		if (data.sortDirection === 'desc') {
-			posts.sort(function(p1, p2) {
-				if (p1[fields[0]][fields[1]] < p2[fields[0]][fields[1]]) return -1;
-				if (p1[fields[0]][fields[1]] > p2[fields[0]][fields[1]]) return 1;
-				return 0;
-			});
-		} else {
-			posts.sort(function(p1, p2) {
-				if (p1[fields[0]][fields[1]] > p2[fields[0]][fields[1]]) return -1;
-				if (p1[fields[0]][fields[1]] < p2[fields[0]][fields[1]]) return 1;
-				return 0;
-			});
-		}
+		var direction = data.sortDirection === 'desc' ? 1 : -1;
+		posts.sort(function(p1, p2) {
+			if (p1[fields[0]][fields[1]] > p2[fields[0]][fields[1]]) {
+				return direction;
+			} else if (p1[fields[0]][fields[1]] < p2[fields[0]][fields[1]]) {
+				return -direction;
+			}
+			return 0;
+		});
 	}
 }
 

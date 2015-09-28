@@ -8,24 +8,39 @@ define('forum/infinitescroll', ['translator'], function(translator) {
 	var callback;
 	var previousScrollTop = 0;
 	var loadingMore	= false;
-	var topOffset = 0;
+	var container;
 
-	scroll.init = function(cb, _topOffest) {
-		callback = cb;
-		topOffset = _topOffest || 0;
+	scroll.init = function(el, cb) {
+		if (typeof el === 'function') {
+			callback = el;
+			container = $(document);
+		} else {
+			callback = cb;
+			container = el || $(document);
+		}
+
 		$(window).off('scroll', onScroll).on('scroll', onScroll);
 	};
 
 	function onScroll() {
-		var	top = $(window).height() * 0.3 + topOffset,
-			bottom = ($(document).height() - $(window).height()) * 0.85,
-			currentScrollTop = $(window).scrollTop();
+		var currentScrollTop = $(window).scrollTop();
+		var wh = $(window).height();
+		var viewportHeight = container.height() - wh;
+		var offsetTop = container.offset() ? container.offset().top : 0;
+		var scrollPercent = 100 * (currentScrollTop - offsetTop) / (viewportHeight <= 0 ? wh : viewportHeight);
 
-		if (currentScrollTop < top && currentScrollTop < previousScrollTop) {
-			callback(-1);
-		} else if (currentScrollTop > bottom && currentScrollTop > previousScrollTop) {
-			callback(1);
+		var top = 20, bottom = 80;
+
+		var direction = currentScrollTop > previousScrollTop ? 1 : -1;
+
+		if (scrollPercent < top && currentScrollTop < previousScrollTop) {
+			callback(direction);
+		} else if (scrollPercent > bottom && currentScrollTop > previousScrollTop) {
+			callback(direction);
+		} else if (scrollPercent < 0 && direction > 0 && viewportHeight < 0) {
+			callback(direction);
 		}
+
 		previousScrollTop = currentScrollTop;
 	}
 
@@ -51,6 +66,24 @@ define('forum/infinitescroll', ['translator'], function(translator) {
 				callback($(translatedHTML));
 			});
 		});
+	};
+
+	scroll.removeExtra = function(els, direction, count) {
+		if (els.length <= count) {
+			return;
+		}
+
+		var removeCount = els.length - count;
+		if (direction > 0) {
+			var height = $(document).height(),
+				scrollTop = $(window).scrollTop();
+
+			els.slice(0, removeCount).remove();
+
+			$(window).scrollTop(scrollTop + ($(document).height() - height));
+		} else {
+			els.slice(els.length - removeCount).remove();
+		}
 	};
 
 	return scroll;
