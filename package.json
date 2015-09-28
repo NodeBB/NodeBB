@@ -30,7 +30,6 @@
     "express-session": "^1.8.2",
     "gravatar": "^1.1.0",
     "heapdump": "^0.3.0",
-    "jimp": "^0.2.5",
     "less": "^2.0.0",
     "logrotate-stream": "^0.2.3",
     "lru-cache": "^2.6.1",
