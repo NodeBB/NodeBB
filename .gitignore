@@ -42,5 +42,6 @@ pidfile
 *.ipr
 *.iws
 
-## Transifex for Windows
+## Transifex
 tx.exe
+.transifexrc
