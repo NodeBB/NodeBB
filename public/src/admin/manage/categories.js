@@ -94,19 +94,18 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 		}
 	};
 
-	Categories.toggle = function(cid, state) {
+	Categories.toggle = function(cid, disabled) {
 		var payload = {};
 
 		payload[cid] = {
-			disabled: !state | 0
+			disabled: disabled ? 1 : 0
 		};
 
 		socket.emit('admin.categories.update', payload, function(err, result) {
 			if (err) {
 				return app.alertError(err.message);
-			} else {
-				ajaxify.refresh();
 			}
+			ajaxify.refresh();
 		});
 	};
 
@@ -114,8 +113,9 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 		newCategoryId = e.to.dataset.cid;
 	}
 
-	function itemDragDidEnd(e){
+	function itemDragDidEnd(e) {
 		var isCategoryUpdate = (newCategoryId != -1);
+
 		//Update needed?
 		if((e.newIndex != undefined && e.oldIndex != e.newIndex) || isCategoryUpdate){
 			var parentCategory = isCategoryUpdate ? sortables[newCategoryId] : sortables[e.from.dataset.cid],

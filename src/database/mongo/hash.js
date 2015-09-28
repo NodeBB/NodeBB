@@ -68,7 +68,7 @@ module.exports = function(db, module) {
 				return callback(err, null);
 			}
 
-			callback(null, item[field] || null);
+			callback(null, item.hasOwnProperty(field) ? item[field] : null);
 		});
 	};
 
