@@ -154,8 +154,6 @@ define('forum/topic/posts', [
 
 			infinitescroll.removeExtra(components.get('post'), direction, 40);
 
-			html.hide().fadeIn('slow');
-
 			var pids = [];
 			for(var i=0; i<data.posts.length; ++i) {
 				pids.push(data.posts[i].pid);
