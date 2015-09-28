@@ -55,11 +55,11 @@ var async = require('async'),
 				}
 
 				if (notification.from && !notification.image) {
-					User.getUserFields(notification.from, ['username', 'userslug', 'picture'], function(err, userData) {
+					User.getUserFields(notification.from, ['username', 'userslug', 'picture', 'icon:bgColor', 'icon:text'], function(err, userData) {
 						if (err) {
 							return next(err);
 						}
-						notification.image = userData.picture;
+						notification.image = userData.picture || null;
 						notification.user = userData;
 						next(null, notification);
 					});
