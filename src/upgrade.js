@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 7, 18);
+	latestSchema = Date.UTC(2015, 8, 27);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -484,6 +484,27 @@ Upgrade.upgrade = function(callback) {
 
 			} else {
 				winston.info('[2015/08/18] Creating children category sorted sets skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 8, 27);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/09/27] Generating user icons');
+
+				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
+					async.eachLimit(uids, 20, User.icon.generate, function(err) {
+						if (err) {
+							return next(err);
+						}
+
+						winston.info('[2015/09/27] Generating user icons done');
+						Upgrade.update(thisSchemaDate, next);
+					})
+				})
+			} else {
+				winston.info('[2015/09/27] Generating user icons skipped');
 				next();
 			}
 		}

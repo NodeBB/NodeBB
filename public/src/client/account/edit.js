@@ -349,7 +349,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 			$('#user-uploaded-picture').attr('src', uploadedPicture);
 		}
 
-		$('#default-box').toggle(true).find('.user-icon').css('background-color', ajaxify.data['icon:bgColor']).text(ajaxify.data['username'].slice(0, 1));
+		$('#default-box').toggle(true).find('.user-icon').css('background-color', ajaxify.data['icon:bgColor']).text(ajaxify.data['username'].slice(0, 1).toUpperCase());
 		$('#uploaded-box').toggle(!!uploadedPicture);
 
 		$('#default-box .fa-check').toggle(currentPicture !== uploadedPicture);
