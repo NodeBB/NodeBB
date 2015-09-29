@@ -195,7 +195,21 @@ define('forum/topic', [
 
 	function addParentHandler() {
 		components.get('topic').on('click', '[component="post/parent"]', function() {
-			navigator.scrollToPost(parseInt(this.getAttribute('data-index'), 10), true);
+			var toPid = $(this).attr('data-topid');
+			var content = $(this).parents('[component="post"]').find('[component="post/parent/content"]');
+			if (!content.hasClass('hidden')) {
+				return content.addClass('hidden');
+			} else if (content.html().length) {
+				return content.removeClass('hidden');
+			}
+
+			socket.emit('posts.getPost', toPid, function(err, post) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				content.html(post.content).removeClass('hidden');
+			});
 		});
 	}
 

@@ -115,42 +115,36 @@ module.exports = function(Topics) {
 			},
 			parents: function(next) {
 				var parentPids = postData.map(function(postObj) {
-						return postObj.hasOwnProperty('toPid') ? parseInt(postObj.toPid, 10) : null
-					}).filter(Boolean),
-					parentUids;
+						return postObj.hasOwnProperty('toPid') ? parseInt(postObj.toPid, 10) : null;
+					}).filter(Boolean);
+				var parentUids;
 
-				if (parentPids) {
-					async.waterfall([
-						async.apply(posts.getPostsFields, parentPids, ['pid', 'tid', 'uid']),
-						function(postsArr, next) {
-							// To use Posts.getUserInfoForPosts would be overkill here...
-							parentUids = postsArr.map(function(postObj) { return parseInt(postObj.uid, 10); }).filter(function(uid, idx, users) {
-								return users.indexOf(uid) === idx;
-							});
-
-							user.getUsersFields(parentUids, ['username'], function(err, userDataArr) {
-								var userData = {};
-								userDataArr.forEach(function(user) {
-									userData[user.uid] = user;
-								});
-								next(err, postsArr, userData);
-							});
-						},
-						function(postsArr, userData, next) {
-							var returnData = {};
-							posts.getPostIndices(postsArr, uid, function(err, indices) {
-								postsArr.forEach(function(post, idx) {
-									var pid = parseInt(post.pid, 10);
-									returnData[pid] = _.clone(userData[parseInt(post.uid, 10)]);
-									returnData[pid].index = indices[idx]+0;
-								});
-								next(err, returnData);
-							});
-						}
-					], next);
-				} else {
-					next();
+				if (!parentPids.length) {
+					return next(null, []);
 				}
+				var parentPosts;
+				async.waterfall([
+					async.apply(posts.getPostsFields, parentPids, ['pid', 'uid']),
+					function(_parentPosts, next) {
+						parentPosts = _parentPosts;
+						parentUids = parentPosts.map(function(postObj) { return parseInt(postObj.uid, 10); }).filter(function(uid, idx, users) {
+							return users.indexOf(uid) === idx;
+						});
+
+						user.getUsersFields(parentUids, ['username'], next);
+					},
+					function (userData, next) {
+						var usersMap = {};
+						userData.forEach(function(user) {
+							usersMap[user.uid] = user.username;
+						});
+						var parents = {};
+						parentPosts.forEach(function(post, i) {
+							parents[parentPids[i]] = {username: usersMap[post.uid]};
+						});
+						next(null, parents);
+					}
+				], next);
 			}
 		}, function(err, results) {
 			if (err) {
