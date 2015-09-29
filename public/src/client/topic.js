@@ -196,19 +196,20 @@ define('forum/topic', [
 	function addParentHandler() {
 		components.get('topic').on('click', '[component="post/parent"]', function() {
 			var toPid = $(this).attr('data-topid');
-			var content = $(this).parents('[component="post"]').find('[component="post/parent/content"]');
-			if (!content.hasClass('hidden')) {
-				return content.addClass('hidden');
-			} else if (content.html().length) {
-				return content.removeClass('hidden');
+
+			var toPost = $('[component="post"][data-pid="' + toPid + '"]');
+			if (toPost.length) {
+				return navigator.scrollToPost(toPost.attr('data-index'), true);
 			}
 
-			socket.emit('posts.getPost', toPid, function(err, post) {
+			socket.emit('posts.getPidIndex', {pid: toPid, tid: ajaxify.data.tid, topicPostSort: config.topicPostSort}, function(err, index) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 
-				content.html(post.content).removeClass('hidden');
+				if (utils.isNumber(index)) {
+					navigator.scrollToPost(index, true);
+				}
 			});
 		});
 	}

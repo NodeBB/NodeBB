@@ -145,30 +145,6 @@ SocketPosts.getRawPost = function(socket, pid, callback) {
 	], callback);
 };
 
-SocketPosts.getPost = function(socket, pid, callback) {
-	async.waterfall([
-		function(next) {
-			privileges.posts.can('read', pid, socket.uid, next);
-		},
-		function(canRead, next) {
-			if (!canRead) {
-				return next(new Error('[[error:no-privileges]]'));
-			}
-			posts.getPostsByPids([pid], socket.uid, next);
-		},
-		function(postData, next) {
-			if (!postData.length) {
-				return next(new Error('[[error:no-post]]'));
-			}
-			postData = postData[0];
-			if (parseInt(postData.deleted, 10) === 1) {
-				return next(new Error('[[error:no-post]]'));
-			}
-			next(null, postData);
-		}
-	], callback);
-}
-
 SocketPosts.getPrivileges = function(socket, pids, callback) {
 	privileges.posts.get(pids, socket.uid, function(err, privileges) {
 		if (err) {
